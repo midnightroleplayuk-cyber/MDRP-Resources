@@ -827,6 +827,35 @@ unless overridden in VehiclesSettings below.
             },
 
         },
+        [`ukpucj`] = {
+
+            sirenModes    = {                                                        --addon siren sounds vehicle specific
+                { audioName = 'SIREN_CHARLIE', audioRef = "DLC_WMSIRENS_SOUNDSET" }, --Primary // dlc bank name
+                { audioName = 'SIREN_DELTA',   audioRef = "DLC_WMSIRENS_SOUNDSET" }, --yelp // dlc bank name
+                { audioName = 'SIREN_FOXTROT', audioRef = "DLC_WMSIRENS_SOUNDSET" }, --wail // dlc bank name
+            },
+
+            horn          = {
+                audioName = 'SIREN_ALPHA', audioRef = "DLC_WMSIRENS_SOUNDSET", -- horn sound // dlc bank name
+            },
+
+            automaticpark = { extra = 2, linkextras = {}, offextras = {} },  -- extras to turn on when parked automatically (for non els siren nodes must be placed in an extra heirarchy in zmodler or blender)
+
+            takedowns     = { extra = 10, linkextras = {}, offextras = {} }, -- extras to turn on when key pressed H (takwdown must be set up as an extra  in zmodler or blender
+
+            Stages        = {                                                --
+                [1] = {
+                    extra = 2, linkextras = {}, offextras = {},              -- 1 → At Scene
+                },
+                [2] = {
+                    extra = 4, linkextras = { 6 }, offextras = {}, -- 2 → Urgent
+                },
+                [3] = {
+                    extra = 5, linkextras = { 6, 7, 8 }, offextras = {}, -- 3 → 999 MODE Full emergency
+                },
+            },
+
+        },
 
         -- ELS vehicle example
         [`smspenisula`] = {
