@@ -16,7 +16,7 @@ jobs:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
-                    port: 22
+          port: 22
           capture_stdout: true
           script: |
             powershell.exe -NoProfile -NonInteractive -Command "& {
