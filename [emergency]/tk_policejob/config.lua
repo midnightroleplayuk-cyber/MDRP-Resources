@@ -30,7 +30,7 @@ Config.Controls = {
 
 Config.Keybinds = { -- https://docs.fivem.net/docs/game-references/input-mapper-parameter-ids/keyboard/
     radar = {
-        toggle = 'F7',
+       -- toggle = 'F7',
         moveMode = 'F9',
         lockFront = 'NUMPAD8',
         lockBack = 'NUMPAD2',
@@ -38,7 +38,7 @@ Config.Keybinds = { -- https://docs.fivem.net/docs/game-references/input-mapper-
         frontLane = 'NUMPAD4',
         backLane = 'NUMPAD6',
     },
-    policeMenu = 'F6',
+   -- policeMenu = 'F6',
     tackle = 'Q',
     softCuff = 'UP',
     --hardCuff = '',
@@ -119,7 +119,7 @@ Config.Items = {
 }
 Config.HandcuffsOnlyForPolice = true
 Config.GiveKeyOnCuff = false -- false | true, should you get they handcuffs key item when cuffing someone
-Config.RequireFaceTargetWhenCuffing = false -- false | true, should you need to face target when cuffing/uncuffing
+Config.RequireFaceTargetWhenCuffing = true -- false | true, should you need to face target when cuffing/uncuffing
 Config.AllowCuffingCuffedTarget = false -- false | true, if set to true you can cuff target even if they are already cuffed
 Config.CuffControlsToDisable = {
     soft = {140, 69, 92, 114, 56, 21, 24, 25, 263, 45, 22, 44, 37, 23, 288, 289, 170, 167, 0, 26, 73, 199, 59, 71, 72, 36, 47, 264, 257, 141, 142, 143, 75, 80, 250, 310},
