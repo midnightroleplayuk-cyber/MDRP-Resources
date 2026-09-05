@@ -1,0 +1,47 @@
+{
+    "crimeReportTemplates": [
+        {
+            "category": "arrest",
+            "id": "arrest_report",
+            "description": "<b>ARREST DETAILS</b><br><br><b>Date/Time:</b> [DATE/TIME]<br><b>Location:</b> [LOCATION]<br><b>Arresting Officer:</b> [OFFICER NAME]<br><br><b>INCIDENT SUMMARY</b><br>[DESCRIBE CIRCUMSTANCES LEADING TO ARREST]<br><br><b>SUSPECT INFORMATION</b><br><b>Name:</b> [SUSPECT NAME]<br><b>DOB:</b> [DATE OF BIRTH]<br><b>Address:</b> [SUSPECT ADDRESS]<br><br><b>CHARGES</b><br><ul><li>[CHARGE 1]</li><li>[CHARGE 2]</li><li>[ADDITIONAL CHARGES]</li></ul><br><b>EVIDENCE COLLECTED</b><br><ul><li>[EVIDENCE ITEM 1]</li><li>[EVIDENCE ITEM 2]</li></ul><br><br><b>POLICE CAUTION</b><br>POLICE CAUTION was [READ/NOT READ] to the suspect at [TIME].<br><br><b>ADDITIONAL NOTES</b><br>[ANY ADDITIONAL INFORMATION]",
+            "title": "Arrest Report - [SUSPECT NAME] - [CHARGES]",
+            "name": "Arrest Report"
+        },
+        {
+            "category": "traffic",
+            "id": "traffic_stop",
+            "description": "<b>TRAFFIC STOP DETAILS</b><br><br><b>Date/Time:</b> [DATE/TIME]<br><b>Location:</b> [LOCATION]<br><b>Officer:</b> [OFFICER NAME]<br><br><b>VEHICLE INFORMATION</b><br><b>License Plate:</b> [VEHICLE PLATE]<br><b>Make/Model:</b> [VEHICLE MAKE/MODEL]<br><b>Color:</b> [VEHICLE COLOR]<br><br><b>DRIVER INFORMATION</b><br><b>Name:</b> [DRIVER NAME]<br><b>License #:</b> [LICENSE NUMBER]<br><b>DOB:</b> [DATE OF BIRTH]<br><br><b>REASON FOR STOP</b><br>[DESCRIBE REASON FOR TRAFFIC STOP]<br><br><b>VIOLATIONS OBSERVED</b><br><ul><li>[VIOLATION 1]</li><li>[VIOLATION 2]</li></ul><br><br><b>DISPOSITION</b><br>[CITATION ISSUED/WARNING GIVEN/ARREST MADE]<br><br><b>ADDITIONAL NOTES</b><br>[ANY ADDITIONAL INFORMATION]",
+            "title": "Traffic Stop - [VEHICLE PLATE] - [VIOLATION]",
+            "name": "Traffic Stop Report"
+        },
+        {
+            "category": "force",
+            "id": "use_of_force",
+            "description": "<b>USE OF FORCE INCIDENT</b><br><br><b>Date/Time:</b> [DATE/TIME]<br><b>Location:</b> [LOCATION]<br><b>Reporting Officer:</b> [OFFICER NAME]<br><br><b>SUBJECT INFORMATION</b><br><b>Name:</b> [SUBJECT NAME]<br><b>DOB:</b> [DATE OF BIRTH]<br><b>Physical Description:</b> [HEIGHT/WEIGHT/RACE/GENDER]<br><br><b>INCIDENT DETAILS</b><br><b>Initial Contact Reason:</b> [REASON FOR CONTACT]<br><b>Subject Behavior:</b> [DESCRIBE SUBJECT'S ACTIONS/BEHAVIOR]<br><b>Threat Level:</b> [LOW/MEDIUM/HIGH]<br><br><b>FORCE USED</b><br><b>Type of Force:</b> [VERBAL COMMANDS/PHYSICAL CONTROL/TASER/FIREARM/OTHER]<br><b>Duration:</b> [DURATION OF FORCE]<br><b>Effectiveness:</b> [EFFECTIVE/PARTIALLY EFFECTIVE/NOT EFFECTIVE]<br><br><b>INJURIES</b><br><b>Subject Injuries:</b> [DESCRIBE ANY INJURIES TO SUBJECT]<br><b>Officer Injuries:</b> [DESCRIBE ANY INJURIES TO OFFICERS]<br><b>Medical Attention:</b> [YES/NO - DESCRIBE]<br><br><b>WITNESSES</b><br><ul><li>[WITNESS 1 NAME AND CONTACT]</li><li>[WITNESS 2 NAME AND CONTACT]</li></ul><br><br><b>NARRATIVE</b><br>[DETAILED DESCRIPTION OF EVENTS]",
+            "title": "Use of Force - [INCIDENT TYPE] - [SUBJECT NAME]",
+            "name": "Use of Force Report"
+        },
+        {
+            "category": "domestic",
+            "id": "domestic_violence",
+            "description": "<b>DOMESTIC VIOLENCE INCIDENT</b><br><br><b>Date/Time:</b> [DATE/TIME]<br><b>Location:</b> [INCIDENT LOCATION]<br><b>Responding Officer:</b> [OFFICER NAME]<br><br><b>VICTIM INFORMATION</b><br><b>Name:</b> [VICTIM NAME]<br><b>DOB:</b> [VICTIM DOB]<br><b>Address:</b> [VICTIM ADDRESS]<br><b>Phone:</b> [VICTIM PHONE]<br><br><b>SUSPECT INFORMATION</b><br><b>Name:</b> [SUSPECT NAME]<br><b>DOB:</b> [SUSPECT DOB]<br><b>Address:</b> [SUSPECT ADDRESS]<br><b>Relationship to Victim:</b> [RELATIONSHIP]<br><br><b>INCIDENT DETAILS</b><br><b>Type of Violence:</b> [PHYSICAL/VERBAL/THREATS/PROPERTY DAMAGE]<br><b>Injuries Observed:</b> [DESCRIBE VISIBLE INJURIES]<br><b>Weapons Used:</b> [YES/NO - DESCRIBE]<br><br><b>CHILDREN PRESENT</b><br><b>Children at Scene:</b> [YES/NO]<br><b>Names/Ages:</b> [LIST CHILDREN IF PRESENT]<br><b>Protective Services Notified:</b> [YES/NO]<br><br><b>PROTECTIVE ORDER</b><br><b>Existing Order:</b> [YES/NO]<br><b>Order Violated:</b> [YES/NO]<br><br><b>VICTIM STATEMENT</b><br>[RECORD VICTIM'S ACCOUNT OF INCIDENT]<br><br><b>SUSPECT STATEMENT</b><br>[RECORD SUSPECT'S ACCOUNT IF AVAILABLE]<br><br><b>DISPOSITION</b><br>[ARREST MADE/REPORT FILED/REFERRED TO PROSECUTOR]",
+            "title": "Domestic Violence - [VICTIM NAME] vs [SUSPECT NAME]",
+            "name": "Domestic Violence Report"
+        },
+        {
+            "category": "property",
+            "id": "burglary_report",
+            "description": "<b>BURGLARY INCIDENT</b><br><br><b>Date/Time Reported:</b> [DATE/TIME REPORTED]<br><b>Date/Time Occurred:</b> [DATE/TIME OCCURRED]<br><b>Location:</b> [PROPERTY ADDRESS]<br><b>Reporting Officer:</b> [OFFICER NAME]<br><br><b>VICTIM/COMPLAINANT</b><br><b>Name:</b> [VICTIM NAME]<br><b>DOB:</b> [VICTIM DOB]<br><b>Address:</b> [VICTIM ADDRESS]<br><b>Phone:</b> [VICTIM PHONE]<br><b>Relationship to Property:</b> [OWNER/TENANT/BUSINESS OWNER]<br><br><b>PROPERTY INFORMATION</b><br><b>Type:</b> [RESIDENCE/BUSINESS/VEHICLE/OTHER]<br><b>Security Features:</b> [ALARMS/CAMERAS/LOCKS/NONE]<br><b>Point of Entry:</b> [FRONT DOOR/WINDOW/BACK DOOR/OTHER]<br><b>Method of Entry:</b> [FORCED/UNLAWFUL ENTRY/KEY/UNKNOWN]<br><br><b>STOLEN ITEMS</b><br><ul><li>[ITEM 1 - DESCRIPTION AND VALUE]</li><li>[ITEM 2 - DESCRIPTION AND VALUE]</li><li>[ITEM 3 - DESCRIPTION AND VALUE]</li></ul><br><b>Total Estimated Loss:</b> $[TOTAL VALUE]<br><br><b>EVIDENCE COLLECTED</b><br><ul><li>[FINGERPRINTS/DNA/PHOTOS/OTHER]</li></ul><br><br><b>WITNESSES</b><br><ul><li>[WITNESS 1 NAME AND CONTACT]</li><li>[WITNESS 2 NAME AND CONTACT]</li></ul><br><br><b>SUSPECT INFORMATION</b><br>[KNOWN SUSPECT INFORMATION OR 'UNKNOWN' IF NO SUSPECTS]<br><br><b>ADDITIONAL NOTES</b><br>[ANY ADDITIONAL RELEVANT INFORMATION]",
+            "title": "Burglary - [PROPERTY ADDRESS] - [DATE]",
+            "name": "Burglary Report"
+        },
+        {
+            "category": "general",
+            "id": "incident_report",
+            "description": "<b>INCIDENT REPORT</b><br><br><b>Date/Time:</b> [DATE/TIME]<br><b>Location:</b> [INCIDENT LOCATION]<br><b>Reporting Officer:</b> [OFFICER NAME]<br><b>Incident Type:</b> [TYPE OF INCIDENT]<br><br><b>INVOLVED PARTIES</b><br><b>Complainant:</b> [COMPLAINANT NAME]<br><b>Other Parties:</b> [OTHER INVOLVED PARTIES]<br><br><b>INCIDENT SUMMARY</b><br>[BRIEF SUMMARY OF WHAT OCCURRED]<br><br><b>DETAILED NARRATIVE</b><br>[DETAILED DESCRIPTION OF EVENTS IN CHRONOLOGICAL ORDER]<br><br><b>EVIDENCE/PROPERTY</b><br><ul><li>[EVIDENCE ITEM 1]</li><li>[EVIDENCE ITEM 2]</li></ul><br><br><b>WITNESSES</b><br><ul><li>[WITNESS 1 NAME AND CONTACT]</li><li>[WITNESS 2 NAME AND CONTACT]</li></ul><br><br><b>DISPOSITION</b><br>[REPORT FILED/REFERRED TO DETECTIVE/CASE CLOSED]<br><br><b>FOLLOW-UP REQUIRED</b><br>[YES/NO - DESCRIBE IF YES]",
+            "title": "Incident Report - [INCIDENT TYPE] - [LOCATION]",
+            "name": "General Incident Report"
+        }
+    ],
+    "customTemplates": []
+}

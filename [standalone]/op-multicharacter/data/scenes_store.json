@@ -1,0 +1,455 @@
+{
+    "cayo": {
+        "SceneCoords": {
+            "y": -4903.8926,
+            "z": 3.4867,
+            "w": 174.4742,
+            "x": 4893.3608
+        },
+        "InitialCamLookAtCoords": {
+            "y": -4951.0298,
+            "z": 2.5879,
+            "w": 29.2787,
+            "x": 4881.5386
+        },
+        "charactersPlacement": [
+            {
+                "insideVehicle": false,
+                "camera": {
+                    "duration": 3.0,
+                    "zoom": 30.0,
+                    "toCoords": {
+                        "y": -4946.5171,
+                        "z": 3.4353,
+                        "w": 201.5674,
+                        "x": 4880.2852
+                    }
+                },
+                "coords": {
+                    "y": -4951.0298,
+                    "z": 2.5879,
+                    "w": 29.2787,
+                    "x": 4881.5386
+                },
+                "weapon": false,
+                "animation": {
+                    "Dict": "anim_heist@arcade_combined@",
+                    "Lib": "ped_female@_stand@_03b@_base_base"
+                },
+                "insideVehicleSeat": 0,
+                "prop": false
+            },
+            {
+                "insideVehicle": false,
+                "camera": {
+                    "duration": 3.0,
+                    "zoom": 20.0,
+                    "toCoords": {
+                        "y": -4946.3887,
+                        "z": 3.5261,
+                        "w": 149.419,
+                        "x": 4876.6748
+                    }
+                },
+                "coords": {
+                    "y": -4952.9634,
+                    "z": 3.233,
+                    "w": 359.0229,
+                    "x": 4874.4858
+                },
+                "weapon": false,
+                "animation": {
+                    "Dict": "mrwitt@chin_support_on_floor",
+                    "Lib": "mrwitt"
+                },
+                "insideVehicleSeat": 0,
+                "prop": false
+            }
+        ],
+        "vehicles": {},
+        "InitialCamCoords": {
+            "y": -4922.6084,
+            "z": 11.4874,
+            "w": 220.0356,
+            "x": 4858.5122
+        },
+        "customProps": [],
+        "newCharacter": {
+            "coords": {
+                "y": 329.4693,
+                "z": 198.4861,
+                "w": 183.4883,
+                "x": -763.3376
+            }
+        },
+        "InitialCamTime": 7.0,
+        "weather": {
+            "hour": 12,
+            "minute": 0,
+            "weather": "EXTRASUNNY"
+        }
+    },
+    "_meta": {
+        "disabled": [
+            "xmas",
+            "cayo",
+            "MIDNIGHT"
+        ]
+    },
+    "scene_1": {
+        "InitialCamTime": 7,
+        "InitialCamLookAtCoords": {
+            "y": 7188.3491,
+            "z": 1.4332,
+            "w": 59.7735,
+            "x": 66.0174
+        },
+        "charactersPlacement": [
+            {
+                "insideVehicle": false,
+                "camera": {
+                    "duration": 2,
+                    "zoom": 20,
+                    "toCoords": {
+                        "y": 7200.063,
+                        "z": 2.8786,
+                        "w": 227.4351,
+                        "x": 64.6069
+                    }
+                },
+                "coords": {
+                    "y": 7194.3882,
+                    "z": 1.5501,
+                    "w": 42.4638,
+                    "x": 67.7456
+                },
+                "weapon": false,
+                "prop": false,
+                "insideVehicleSeat": 0,
+                "animation": {
+                    "Dict": "missdocksshowoffcar@idle_a",
+                    "Lib": "idle_b_5"
+                }
+            },
+            {
+                "insideVehicle": "vehicle_1",
+                "camera": {
+                    "duration": 3,
+                    "zoom": 20,
+                    "toCoords": {
+                        "y": 7192.1289,
+                        "z": 2.8725,
+                        "w": 227.2279,
+                        "x": 61.9422
+                    }
+                },
+                "coords": {
+                    "y": 7188.3491,
+                    "z": 1.4332,
+                    "w": 59.7735,
+                    "x": 66.0174
+                },
+                "weapon": false,
+                "prop": false,
+                "insideVehicleSeat": 1,
+                "animation": false
+            },
+            {
+                "insideVehicle": false,
+                "camera": {
+                    "duration": 3,
+                    "zoom": 20,
+                    "toCoords": {
+                        "y": 7188.792,
+                        "z": 2.8235,
+                        "w": 170.8597,
+                        "x": 60.75
+                    }
+                },
+                "coords": {
+                    "y": 7183.2471,
+                    "z": 1.6228,
+                    "w": 322.9862,
+                    "x": 59.711
+                },
+                "weapon": false,
+                "prop": {
+                    "Prop": "ba_prop_battle_whiskey_bottle_2_s",
+                    "PropBone": 28422,
+                    "PropPlacement": [
+                        0,
+                        0,
+                        0.05,
+                        0,
+                        0,
+                        0
+                    ]
+                },
+                "insideVehicleSeat": 0,
+                "animation": {
+                    "Dict": "amb@world_human_drinking@coffee@male@idle_a",
+                    "Lib": "idle_c"
+                }
+            }
+        ],
+        "vehicles": {
+            "vehicle_1": {
+                "model": "stryder",
+                "coords": {
+                    "y": 7188.75634765625,
+                    "z": 1.8767043352127,
+                    "w": -268.5,
+                    "x": 66.04606628417969
+                },
+                "settings": [],
+                "key": "vehicle_1"
+            }
+        },
+        "InitialCamCoords": {
+            "y": 7192.349609375,
+            "z": 3.08867168426513,
+            "w": 57.88377380371094,
+            "x": 59.01602554321289
+        },
+        "customProps": [
+            {
+                "coords": {
+                    "y": 7188.8125,
+                    "z": 1.1861,
+                    "w": 274.8404,
+                    "x": 69.933
+                },
+                "name": "xm_prop_base_tripod_lampb"
+            },
+            {
+                "coords": {
+                    "y": 7186.2432,
+                    "z": 1.2403,
+                    "w": 179.5323,
+                    "x": 67.5469
+                },
+                "name": "xm_prop_base_tripod_lampb"
+            }
+        ],
+        "newCharacter": {
+            "coords": {
+                "y": 329.4693,
+                "z": 198.4861,
+                "w": 183.4883,
+                "x": -763.3376
+            }
+        },
+        "SceneCoords": {
+            "y": 7184.5527,
+            "z": 2.4002,
+            "w": 64.6467,
+            "x": 49.2859
+        },
+        "weather": {
+            "hour": 23,
+            "minute": 0,
+            "weather": "SMOG"
+        }
+    },
+    "MIDNIGHT": {
+        "SceneCoords": {
+            "y": 11.26364994049072,
+            "z": 113.55486297607422,
+            "w": 315.4322814941406,
+            "x": 927.32666015625
+        },
+        "InitialCamLookAtCoords": {
+            "y": 11.26364994049072,
+            "z": 113.55486297607422,
+            "w": 315.4322814941406,
+            "x": 927.32666015625
+        },
+        "charactersPlacement": [
+            {
+                "insideVehicle": false,
+                "camera": {
+                    "duration": 2,
+                    "zoom": 50,
+                    "toCoords": {
+                        "y": 0,
+                        "z": 0,
+                        "w": 0,
+                        "x": 0
+                    }
+                },
+                "coords": {
+                    "y": 0,
+                    "z": 0,
+                    "w": 0,
+                    "x": 0
+                },
+                "weapon": false,
+                "animation": false,
+                "insideVehicleSeat": 0,
+                "prop": false
+            }
+        ],
+        "vehicles": {
+            "vehicle_1": {
+                "model": "blista",
+                "coords": {
+                    "y": 0,
+                    "z": 0,
+                    "w": 0,
+                    "x": 0
+                },
+                "settings": [],
+                "key": "vehicle_1"
+            }
+        },
+        "InitialCamCoords": {
+            "y": 11.26364994049072,
+            "z": 113.55486297607422,
+            "w": 315.4322814941406,
+            "x": 927.32666015625
+        },
+        "customProps": [],
+        "npcs": [],
+        "InitialCamTime": 7,
+        "newCharacter": {
+            "coords": {
+                "y": 11.26364994049072,
+                "z": 113.55486297607422,
+                "w": 315.4322814941406,
+                "x": 927.32666015625
+            }
+        },
+        "weather": {
+            "hour": 20,
+            "minute": 0,
+            "weather": "CLEAR"
+        }
+    },
+    "xmas": {
+        "SceneCoords": {
+            "y": -912.0629,
+            "z": 31.3267,
+            "w": 258.4043,
+            "x": 173.666
+        },
+        "InitialCamLookAtCoords": {
+            "y": -919.8946,
+            "z": 32.8227,
+            "w": 47.9994,
+            "x": 165.9147
+        },
+        "charactersPlacement": [
+            {
+                "insideVehicle": false,
+                "camera": {
+                    "duration": 3.0,
+                    "zoom": 20.0,
+                    "toCoords": {
+                        "y": -926.8345,
+                        "z": 31.3267,
+                        "w": 75.3578,
+                        "x": 169.611
+                    }
+                },
+                "coords": {
+                    "y": -926.8589,
+                    "z": 30.6239,
+                    "w": 218.164,
+                    "x": 163.314
+                },
+                "weapon": false,
+                "animation": {
+                    "Dict": "anim@scripted@player@fix_astu_ig8_weed_smoke_v1@male@",
+                    "Lib": "male_pos_a_p2_base"
+                },
+                "insideVehicleSeat": 0,
+                "prop": false
+            },
+            {
+                "insideVehicle": false,
+                "camera": {
+                    "duration": 3.0,
+                    "zoom": 50.0,
+                    "toCoords": {
+                        "y": -925.0262,
+                        "z": 31.3221,
+                        "w": 11.7331,
+                        "x": 168.6161
+                    }
+                },
+                "coords": {
+                    "y": -918.2198,
+                    "z": 30.3717,
+                    "w": 192.0681,
+                    "x": 165.9431
+                },
+                "weapon": false,
+                "animation": {
+                    "Dict": "anim@scripted@freemode@ig7_office_cell_floor@heeled@",
+                    "Lib": "base_pose_01"
+                },
+                "insideVehicleSeat": 0,
+                "prop": false
+            },
+            {
+                "insideVehicle": false,
+                "camera": {
+                    "duration": 3.0,
+                    "zoom": 40.0,
+                    "toCoords": {
+                        "y": -922.1199,
+                        "z": 32.7531,
+                        "w": 302.8799,
+                        "x": 165.6446
+                    }
+                },
+                "coords": {
+                    "y": -917.3516,
+                    "z": 30.3267,
+                    "w": 151.3287,
+                    "x": 173.1998
+                },
+                "weapon": false,
+                "animation": {
+                    "Dict": "amb@world_human_aa_coffee@base",
+                    "Lib": "base"
+                },
+                "insideVehicleSeat": 0,
+                "prop": {
+                    "Prop": "pata_christmasfood1",
+                    "PropBone": 28422,
+                    "PropPlacement": [
+                        0.01,
+                        -0.11,
+                        -0.13,
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                }
+            }
+        ],
+        "vehicles": {},
+        "InitialCamCoords": {
+            "y": -941.9056,
+            "z": 35.9057,
+            "w": 47.8419,
+            "x": 190.3594
+        },
+        "customProps": [],
+        "newCharacter": {
+            "coords": {
+                "y": 329.4693,
+                "z": 198.4861,
+                "w": 183.4883,
+                "x": -763.3376
+            }
+        },
+        "InitialCamTime": 7.0,
+        "weather": {
+            "hour": 21,
+            "minute": 0,
+            "weather": "XMAS"
+        }
+    }
+}

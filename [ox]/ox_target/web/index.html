@@ -1,0 +1,85 @@
+<html>
+  <head>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" />
+    <link href="style.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <div id="target-root" class="is-hidden">
+      <div id="target-hub" class="target-hub is-hidden">
+  <i class="fa-solid fa-circle" style="color: var(--rs-accent); font-size: 7px;"></i>
+</div>
+      <span id="target-spline" class="target-spline radial-spoke" aria-hidden="true"></span>
+
+      <div id="target-panel" class="target-panel">
+        <div class="rs-tilt-stage-y-right rs-tilt-origin-center-right ctx-menu-stage">
+          <div class="rs-tilt-y-right ctx-menu-tilt">
+            <div class="ctx-menu-panel">
+              <header class="ctx-menu-header">
+                <button id="ctx-back" type="button" class="ctx-menu-back is-hidden" aria-label="Back">
+                  <i class="fa-solid fa-chevron-left"></i>
+                </button>
+
+                <span class="context-icon-frame" aria-hidden="true">
+                  <svg viewBox="0 0 34 34" aria-hidden="true">
+                    <rect x="1.5" y="1.5" width="31" height="31" rx="6" ry="6" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="1.5"></rect>
+                  </svg>
+                  <span class="rs-icon-block" style="--icon-rgb: 232, 232, 232">
+                    <i class="fa-solid fa-list fa-fw" style="color: var(--rs-accent)"></i>
+                  </span>
+                </span>
+
+                <div class="ctx-menu-header-main">
+                  <div class="ctx-menu-header-text">
+                    <p id="ctx-title" class="ctx-menu-title">Target</p>
+                    <p id="ctx-subtitle" class="ctx-menu-subtitle">0 options</p>
+                  </div>
+
+                  <div class="ctx-menu-header-meta">
+                    <span class="ctx-menu-badge-row">
+                      <span class="ctx-menu-badge-dot" aria-hidden="true"></span>
+                      <span id="ctx-badge-label" class="ctx-menu-badge-label">Menu</span>
+                    </span>
+                    <button type="button" class="ctx-menu-close" aria-hidden="true" tabindex="-1">
+                      <i class="fa-solid fa-xmark"></i>
+                    </button>
+                  </div>
+                </div>
+              </header>
+
+              <div class="ctx-menu-body-wrap">
+                <div class="ctx-menu-body-inner">
+                  <div id="options-list" class="ctx-menu-list sb-scroll"></div>
+                  <span class="ctx-menu-fade-top" aria-hidden="true"></span>
+                  <span class="ctx-menu-fade-bottom" aria-hidden="true"></span>
+                </div>
+              </div>
+
+              <footer class="ctx-menu-footer">
+                <span class="ctx-menu-guide">
+                  <span class="ctx-menu-guide-label">Move</span>
+                  <span class="ctx-menu-kbd-row">
+                    <kbd class="rs-icon-block ctx-menu-kbd" style="--icon-rgb: 232, 232, 232"><i class="fa-solid fa-chevron-up fa-fw"></i></kbd>
+                    <kbd class="rs-icon-block ctx-menu-kbd" style="--icon-rgb: 232, 232, 232"><i class="fa-solid fa-chevron-down fa-fw"></i></kbd>
+                  </span>
+                </span>
+                <span class="ctx-menu-guide">
+                  <span class="ctx-menu-guide-label">Select</span>
+                  <kbd class="rs-icon-block ctx-menu-kbd" style="--icon-rgb: 232, 232, 232"><i class="fa-solid fa-arrow-turn-down fa-fw"></i></kbd>
+                </span>
+                <span id="ctx-back-guide" class="ctx-menu-guide is-hidden">
+                  <span class="ctx-menu-guide-label">Back</span>
+                  <kbd class="rs-icon-block ctx-menu-kbd" style="--icon-rgb: 232, 232, 232"><i class="fa-solid fa-delete-left fa-fw"></i></kbd>
+                </span>
+                <span class="ctx-menu-guide">
+                  <span class="ctx-menu-guide-label">Close</span>
+                  <kbd class="rs-icon-block ctx-menu-kbd" style="--icon-rgb: 232, 232, 232"><i class="fa-solid fa-xmark fa-fw"></i></kbd>
+                </span>
+              </footer>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script defer type="module" src="js/main.js"></script>
+  </body>
+</html>

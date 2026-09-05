@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html>
+	<head>
+        <script src="nui://game/ui/jquery.js"></script>
+		<!--<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>-->
+		<style>
+			body {
+				margin: 0;
+				padding: 0;
+				background: transparent;
+				font-family: 'Arial', sans-serif;
+			}
+
+			#keypadHolder {
+				background: linear-gradient(145deg, #2c2c2c, #1a1a1a);
+				border: 2px solid #0a0a0a;
+				border-radius: 15px;
+				height: 320px;
+				margin: 50px auto;
+				max-width: 220px;
+				padding: 25px;
+				box-shadow: 
+					0 8px 32px rgba(0, 0, 0, 0.6),
+					inset 0 1px 0 rgba(255, 255, 255, 0.1),
+					inset 0 -1px 0 rgba(0, 0, 0, 0.5);
+			}
+
+			.screen {
+				background: linear-gradient(180deg, #0f1419, #1a2028);
+				border: 3px inset #333;
+				border-radius: 8px;
+				color: #ffffff;
+				font-family: 'Courier New', monospace;
+				font-size: 24px;
+				font-weight: bold;
+				height: 50px;
+				line-height: 50px;
+				text-align: center;
+				position: relative;
+				box-shadow: 
+					inset 0 2px 5px rgba(0, 0, 0, 0.8),
+					0 1px 0 rgba(255, 255, 255, 0.1);
+				letter-spacing: 3px;
+			}
+
+			.screen::before {
+				content: '';
+				position: absolute;
+				top: 5px;
+				left: 5px;
+				right: 5px;
+				height: 1px;
+				background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+			}
+
+			.text {
+				text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+				position: relative;
+				transition: all 0.3s ease;
+			}
+
+			.screen:hover .text {
+				color: #ffffff;
+				text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+			}
+
+			.keypad {
+				background: transparent;
+				border-radius: 8px;
+				display: grid;
+				grid-template-columns: repeat(3, 1fr);
+				grid-template-rows: repeat(4, 1fr);
+				gap: 8px;
+				margin-top: 25px;
+				padding: 10px;
+			}
+
+			button {
+				background: linear-gradient(145deg, #4a4a4a, #2a2a2a);
+				border: 2px outset #555;
+				border-radius: 8px;
+				color: #ffffff;
+				cursor: pointer;
+				font-family: 'Arial', sans-serif;
+				font-size: 16px;
+				font-weight: bold;
+				height: 45px;
+				width: 60px;
+				min-width: 60px;
+				max-width: 60px;
+				text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+				box-shadow: 
+					0 3px 6px rgba(0, 0, 0, 0.4),
+					inset 0 1px 0 rgba(255, 255, 255, 0.2);
+				transition: all 0.1s ease;
+				white-space: nowrap;
+				overflow: hidden;
+			}
+
+			button:hover {
+				background: linear-gradient(145deg, #5a5a5a, #3a3a3a);
+				box-shadow: 
+					0 2px 4px rgba(0, 0, 0, 0.4),
+					inset 0 1px 0 rgba(255, 255, 255, 0.3);
+			}
+
+			button:active {
+				background: linear-gradient(145deg, #2a2a2a, #4a4a4a);
+				border: 2px inset #555;
+				box-shadow: 
+					inset 0 2px 4px rgba(0, 0, 0, 0.6),
+					0 1px 2px rgba(0, 0, 0, 0.3);
+				transform: translateY(1px);
+			}
+
+			.cancel-btn {
+				background: linear-gradient(145deg, #4169e1, #1e3a8a) !important;
+				color: #ffffff !important;
+			}
+
+			.cancel-btn:hover {
+				background: linear-gradient(145deg, #5179f1, #2e4a9a) !important;
+			}
+
+			.cancel-btn:active {
+				background: linear-gradient(145deg, #1e3a8a, #4169e1) !important;
+			}
+
+			.del-btn {
+				background: linear-gradient(145deg, #8b4444, #5a2a2a) !important;
+				color: #ffdddd !important;
+			}
+
+			.del-btn:hover {
+				background: linear-gradient(145deg, #9b5454, #6a3a3a) !important;
+			}
+
+			.del-btn:active {
+				background: linear-gradient(145deg, #5a2a2a, #8b4444) !important;
+			}
+		</style>
+    </head>
+    <body>
+		<div id="keypadHolder" style="display: none;">
+			<div class="screen">
+				<span class="text"></span>
+			</div>
+			<div class="keypad">
+				<button onclick="addInput(1)">1</button>
+				<button onclick="addInput(2)">2</button>
+				<button onclick="addInput(3)">3</button>
+				<button onclick="addInput(4)">4</button>
+				<button onclick="addInput(5)">5</button>
+				<button onclick="addInput(6)">6</button>
+				<button onclick="addInput(7)">7</button>
+				<button onclick="addInput(8)">8</button>
+				<button onclick="addInput(9)">9</button>
+				<button class="cancel-btn" onclick="cancelInput()">ESC</button>
+				<button onclick="addInput(0)">0</button>
+				<button class="del-btn" onclick="removeInput()">DEL</button>
+			</div>
+		</div>
+		<script>
+			var currentCode = '';
+			var currentGate = '';
+			var currentCallback = '';
+			var isHovering = false;
+
+			$(function () {
+				$('.screen').hover(
+					function() {
+						isHovering = true;
+						$('.text').html(currentCode);
+					},
+					function() {
+						isHovering = false;
+						updateDisplay();
+					}
+				);
+				var MainGateSound = null;
+				var SideGateSound = null;
+				var AlarmSound = null;
+
+				window.addEventListener("message", function (event) {
+					if (event.data.action == "PlayMainGateSound") {
+						if (MainGateSound != null) {
+							MainGateSound.pause();
+							MainGateSound = null;
+						}
+
+						MainGateSound = new Audio("./sounds/gate.ogg");
+						MainGateSound.loop = true
+						MainGateSound.volume = event.data.volume;
+						MainGateSound.play();
+					} else if (event.data.action == "StopMainGateSound") {
+						if (MainGateSound != null) {
+							MainGateSound.pause();
+							MainGateSound = null;
+						}
+                    } else if (event.data.action == "ChangeMainGateVolume") {
+						if (MainGateSound == null) {
+							MainGateSound = new Audio("./sounds/gate.ogg");
+							MainGateSound.loop = true
+							MainGateSound.volume = event.data.volume;
+							MainGateSound.play();
+						}
+
+						MainGateSound.volume = event.data.volume;
+					} else if (event.data.action == "PlaySideGateSound") {
+						if (SideGateSound != null) {
+							SideGateSound.pause();
+							SideGateSound = null;
+						}
+
+						SideGateSound = new Audio("./sounds/gate.ogg");
+						SideGateSound.loop = true
+						SideGateSound.volume = event.data.volume;
+						SideGateSound.play();
+					} else if (event.data.action == "StopSideGateSound") {
+						if (SideGateSound != null) {
+							SideGateSound.pause();
+							SideGateSound = null;
+						}
+                    } else if (event.data.action == "ChangeSideGateVolume") {
+						if (SideGateSound == null) {
+							SideGateSound = new Audio("./sounds/gate.ogg");
+							SideGateSound.loop = true
+							SideGateSound.volume = event.data.volume;
+							SideGateSound.play();
+						}
+
+						SideGateSound.volume = event.data.volume;
+                    } else if (event.data.action == "PlayAlarmSound") {
+						if (AlarmSound != null) {
+							AlarmSound.pause();
+							AlarmSound = null;
+						}
+
+						AlarmSound = new Audio("./sounds/alarm.ogg");
+						AlarmSound.loop = true
+						AlarmSound.volume = event.data.volume;
+						AlarmSound.play();
+					} else if (event.data.action == "StopAlarmSound") {
+						if (AlarmSound != null) {
+							AlarmSound.pause();
+							AlarmSound = null;
+						}
+                    } else if (event.data.action == "ChangeAlarmVolume") {
+						if (AlarmSound == null) {
+							AlarmSound = new Audio("./sounds/alarm.ogg");
+							AlarmSound.loop = true
+							AlarmSound.volume = event.data.volume;
+							AlarmSound.play();
+						}
+
+						AlarmSound.volume = event.data.volume;
+                    } else if (event.data.action == "Visible") {
+						if (event.data.status) {
+							currentGate = event.data.gate
+							currentCode = '';
+
+							if (event.data.forGate) {
+								currentCallback = 'gate'
+							} else {
+								currentCallback = 'alarm'
+							}
+
+							updateDisplay();
+
+							$('#keypadHolder').fadeIn()
+						} else {
+							$('#keypadHolder').fadeOut()
+						}
+					}
+                })
+			});
+
+			function updateDisplay()
+			{
+				if (isHovering) {
+					$('.text').html(currentCode);
+				} else {
+					var dots = '';
+					for (var i = 0; i < currentCode.length; i++) {
+						dots += '•';
+					}
+					$('.text').html(dots);
+				}
+			}
+
+			function addInput(input)
+			{
+				currentCode += input
+				updateDisplay();
+
+				if (currentCode.length >= 4) {
+					// console.log("Send the code to the client, stop focus")
+				    $.post(`https://${GetParentResourceName()}/pinCode`, JSON.stringify({
+						code: currentCode,
+						gate: currentGate,
+						interaction: currentCallback
+					}));
+
+					return;
+				}
+			}
+
+			function removeInput()
+			{
+				currentCode = currentCode.substring(0, currentCode.length - 1);
+				updateDisplay();
+			}
+
+			function cancelInput()
+			{
+				$.post(`https://${GetParentResourceName()}/cancelKeypad`, JSON.stringify({}));
+			}
+		</script>
+	</body>
+</html>

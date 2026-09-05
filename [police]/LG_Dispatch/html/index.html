@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LG Dispatch</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="toast-container"></div>
+
+    <div id="dispatch" class="hidden">
+        <aside id="sidebar">
+            <div class="sidebar-brand">
+                <img src="logo.png" alt="Logo" class="brand-logo">
+                <div class="brand-text">
+                    <span class="brand-title">United Kingdom</span>
+                    <span class="brand-title">Police</span>
+                    <span class="brand-sub">Command &amp; Control</span>
+                </div>
+            </div>
+            <div class="sidebar-check"></div>
+            <nav id="sidebar-nav">
+                <button class="nav-btn active" data-tab="calls">
+                    <i class="fas fa-phone-alt"></i>
+                    <span>Calls</span>
+                    <span class="badge" id="calls-badge"></span>
+                </button>
+                <button class="nav-btn" data-tab="units">
+                    <i class="fas fa-users"></i>
+                    <span>Units</span>
+                    <span class="badge" id="units-badge"></span>
+                </button>
+                <button class="nav-btn" data-tab="map">
+                    <i class="fas fa-map-marked-alt"></i>
+                    <span>Map</span>
+                </button>
+                <button class="nav-btn" data-tab="settings">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
+                </button>
+            </nav>
+            <div class="sidebar-footer">
+                <div class="my-callsign" id="my-callsign">--</div>
+                <div class="my-status" id="my-status">Off Duty</div>
+            </div>
+        </aside>
+
+        <main id="main">
+            <header id="topbar">
+                <div class="topbar-left">
+                    <h2 id="tab-title">Active Calls</h2>
+                </div>
+                <div class="topbar-right">
+                    <select id="status-select" class="status-select"></select>
+                    <div class="clock" id="clock">00:00</div>
+                    <button id="theme-toggle" title="Toggle Theme">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                    <button class="icon-btn" id="close-btn" title="Close">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </header>
+
+            <section class="tab-panel active" id="tab-calls">
+                <div class="calls-toolbar">
+                    <button class="btn btn-primary" id="create-call-btn">
+                        <i class="fas fa-plus"></i> New Call
+                    </button>
+                    <input type="text" class="search-input" id="calls-search" placeholder="Search calls...">
+                </div>
+                <div class="calls-split">
+                    <div class="calls-list" id="calls-list">
+                        <div class="empty-state">
+                            <i class="fas fa-check-circle"></i>
+                            <p>No active calls</p>
+                        </div>
+                    </div>
+                    <div class="call-detail" id="call-detail">
+                        <div class="empty-state">
+                            <i class="fas fa-phone-alt"></i>
+                            <p>Select a call to view details</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="tab-panel" id="tab-units">
+                <div class="units-toolbar">
+                    <div class="filter-group" id="units-filter-group">
+                        <button class="filter-btn active" data-filter="all">All</button>
+                    </div>
+                    <input type="text" class="search-input" id="units-search" placeholder="Search units...">
+                </div>
+                <div class="units-grid" id="units-list"></div>
+            </section>
+
+            <section class="tab-panel" id="tab-map">
+                <div class="map-toolbar">
+                    <div class="filter-group" id="map-filter-group">
+                        <button class="filter-btn active" data-mapfilter="all">All</button>
+                        <button class="filter-btn" data-mapfilter="available">Available Only</button>
+                    </div>
+                    <button class="btn btn-sm btn-outline" id="heatmap-toggle" title="Toggle Heat Map">
+                        <i class="fas fa-fire"></i> Heat Map
+                    </button>
+                </div>
+                <div class="map-body">
+                    <div id="dispatch-map"></div>
+                    <div id="map-unit-list" class="map-unit-list"></div>
+                </div>
+            </section>
+
+            <section class="tab-panel" id="tab-settings">
+                <div class="settings-container">
+                    <div class="settings-card">
+                        <h3><i class="fas fa-id-badge"></i> My Details</h3>
+                        <div class="setting-row">
+                            <label for="settings-callsign">Callsign</label>
+                            <div class="setting-input-group">
+                                <input type="text" id="settings-callsign" placeholder="e.g. XR12">
+                                <button class="btn btn-sm btn-primary" id="save-callsign-btn">Save</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="settings-card">
+                        <h3><i class="fas fa-sliders-h"></i> Preferences</h3>
+                        <div class="setting-row">
+                            <label for="pref-sounds">Alert Sounds</label>
+                            <label class="toggle">
+                                <input type="checkbox" id="pref-sounds" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        <div class="setting-row">
+                            <label for="pref-theme">Dark Mode</label>
+                            <label class="toggle">
+                                <input type="checkbox" id="pref-theme" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        <div class="setting-row">
+                            <label for="pref-compact">Compact View</label>
+                            <label class="toggle">
+                                <input type="checkbox" id="pref-compact">
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        <div class="setting-row">
+                            <label for="pref-autowp">Auto Set Waypoint</label>
+                            <label class="toggle">
+                                <input type="checkbox" id="pref-autowp" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        <div class="setting-row">
+                            <label for="pref-direct-backup">Allow Direct Backup Requests</label>
+                            <label class="toggle">
+                                <input type="checkbox" id="pref-direct-backup" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="settings-card">
+                        <h3><i class="fas fa-sign-out-alt"></i> Unit Management</h3>
+                        <button class="btn btn-danger" id="go-offduty-btn">
+                            <i class="fas fa-sign-out-alt"></i> Go Off Duty
+                        </button>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <div class="modal-overlay hidden" id="create-call-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>Create New Call</h3>
+                <button class="icon-btn modal-close"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Call Type</label>
+                    <select id="new-call-type"></select>
+                </div>
+                <div class="form-group">
+                    <label>Priority</label>
+                    <select id="new-call-priority"></select>
+                </div>
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea id="new-call-description" rows="2" placeholder="Describe the incident..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Street / Location</label>
+                    <input type="text" id="new-call-street" placeholder="Auto-detected from GPS if empty">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Suspect Info</label>
+                        <input type="text" id="new-call-suspect" placeholder="Description...">
+                    </div>
+                    <div class="form-group">
+                        <label>Vehicle Info</label>
+                        <input type="text" id="new-call-vehicle" placeholder="Plate / description...">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Caller Notes</label>
+                    <textarea id="new-call-notes" rows="2" placeholder="Additional notes..."></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary modal-close">Cancel</button>
+                <button class="btn btn-primary" id="submit-call-btn">Create Call</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay hidden" id="register-modal">
+        <div class="modal modal-sm">
+            <div class="modal-header">
+                <h3><i class="fas fa-broadcast-tower"></i> Go On Duty</h3>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Enter your callsign</label>
+                    <input type="text" id="register-callsign" placeholder="e.g. XR12, ARV03, NPAS1">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="register-cancel">Cancel</button>
+                <button class="btn btn-primary" id="register-confirm">Go On Duty</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay hidden" id="place-marker-modal">
+        <div class="modal modal-sm">
+            <div class="modal-header">
+                <h3><i class="fas fa-map-pin"></i> Place Marker</h3>
+                <button class="icon-btn modal-close"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Label</label>
+                    <input type="text" id="marker-label" placeholder="e.g. Roadblock, Scene, POI">
+                </div>
+                <div class="form-group">
+                    <label>Color</label>
+                    <div class="color-picker-row" id="marker-color-picker">
+                        <button class="color-swatch active" data-color="#ef4444" style="background:#ef4444"></button>
+                        <button class="color-swatch" data-color="#f59e0b" style="background:#f59e0b"></button>
+                        <button class="color-swatch" data-color="#22c55e" style="background:#22c55e"></button>
+                        <button class="color-swatch" data-color="#3b82f6" style="background:#3b82f6"></button>
+                        <button class="color-swatch" data-color="#8b5cf6" style="background:#8b5cf6"></button>
+                        <button class="color-swatch" data-color="#ec4899" style="background:#ec4899"></button>
+                        <button class="color-swatch" data-color="#ffffff" style="background:#ffffff;border:1px solid #666"></button>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary modal-close">Cancel</button>
+                <button class="btn btn-primary" id="submit-marker-btn">Place Marker</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

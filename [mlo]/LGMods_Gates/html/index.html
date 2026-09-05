@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script src="nui://game/ui/jquery.js"></script>
+        <style>
+            * {
+                box-sizing: border-box;
+                margin: 0;
+                padding: 0;
+            }
+
+            body {
+                background: transparent;
+            }
+
+            #keypadHolder {
+                background: #1a1a1a;
+                border: 2px solid #333;
+                border-radius: 14px;
+                display: none;
+                left: 50%;
+                padding: 18px;
+                position: fixed;
+                top: 50%;
+                transform: translate(-50%, -50%);
+                width: 200px;
+            }
+
+            .screen {
+                background: #111;
+                border: 1px solid #2a2a2a;
+                border-radius: 6px;
+                color: #aaa;
+                font-family: 'VT323', Courier, monospace;
+                font-size: 30px;
+                height: 44px;
+                letter-spacing: 6px;
+                line-height: 44px;
+                overflow: hidden;
+                padding: 0 12px;
+                text-align: center;
+                transition: color 0.15s, border-color 0.15s;
+            }
+
+            .screen.rejected {
+                animation: rejectFlash 0.5s ease;
+                border-color: #c0392b;
+                color: #c0392b;
+            }
+
+            @keyframes rejectFlash {
+                0%   { background: #1a1a1a; }
+                25%  { background: #3b0000; }
+                75%  { background: #3b0000; }
+                100% { background: #111; }
+            }
+
+            .keypad {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: flex-end;
+                margin-top: 14px;
+                gap: 4px;
+            }
+
+            button {
+                background: #222;
+                border: 1px solid #333;
+                border-radius: 6px;
+                color: #999;
+                cursor: pointer;
+                font-family: 'VT323', Courier, monospace;
+                font-size: 22px;
+                font-weight: bold;
+                height: 40px;
+                transition: background 0.1s, color 0.1s;
+                width: 31%;
+            }
+
+            button:hover {
+                background: #2e2e2e;
+                color: #ccc;
+            }
+
+            button:active {
+                background: #3a3a3a;
+            }
+
+            /* DEL button spans wider */
+            button.del {
+                width: 65%;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="keypadHolder">
+            <div class="screen">
+                <span class="text"></span>
+            </div>
+            <div class="keypad">
+                <button onclick="addInput(1)">1</button>
+                <button onclick="addInput(2)">2</button>
+                <button onclick="addInput(3)">3</button>
+                <button onclick="addInput(4)">4</button>
+                <button onclick="addInput(5)">5</button>
+                <button onclick="addInput(6)">6</button>
+                <button onclick="addInput(7)">7</button>
+                <button onclick="addInput(8)">8</button>
+                <button onclick="addInput(9)">9</button>
+                <button onclick="addInput(0)">0</button>
+                <button class="del" onclick="removeInput()">DEL</button>
+            </div>
+        </div>
+
+        <script>
+            var currentCode = '';
+            var currentGate = '';
+            var currentCallback = '';
+            var GateSound  = null;
+            var AlarmSound = null;
+
+            $(function () {
+                window.addEventListener("message", function (event) {
+                    var d = event.data;
+
+                    // ── Gate sound ─────────────────────────────
+                    // Plays once through to the end of the file — no manual stop needed.
+                    if (d.action === "PlayGateSound") {
+                        if (GateSound) { GateSound.pause(); GateSound = null; }
+                        GateSound = new Audio("./sounds/gate.ogg");
+                        GateSound.loop   = (d.loop === true);  // false by default
+                        GateSound.volume = d.volume;
+                        GateSound.play();
+                        GateSound.addEventListener("ended", function () {
+                            GateSound = null;
+                        }, { once: true });
+
+                    } else if (d.action === "StopGateSound") {
+                        if (GateSound) { GateSound.pause(); GateSound = null; }
+
+                    } else if (d.action === "ChangeGateVolume") {
+                        if (GateSound) { GateSound.volume = d.volume; }
+
+                    // ── Alarm sound ────────────────────────────
+                    // Plays once through to the end, then fires the "alarmEnded"
+                    // NUI callback so the client script knows to open the gate.
+                    } else if (d.action === "PlayAlarmSound") {
+                        if (AlarmSound) { AlarmSound.pause(); AlarmSound = null; }
+                        AlarmSound = new Audio("./sounds/alarm.ogg");
+                        AlarmSound.loop   = (d.loop === true);  // false by default
+                        AlarmSound.volume = d.volume;
+                        AlarmSound.play();
+                        AlarmSound.addEventListener("ended", function () {
+                            AlarmSound = null;
+                            // Tell the Lua client the alarm finished — gate can now open
+                            fetch("https://" + GetParentResourceName() + "/alarmEnded", {
+                                method: "POST",
+                                headers: { "Content-Type": "application/json" },
+                                body: JSON.stringify({})
+                            });
+                        }, { once: true });
+
+                    } else if (d.action === "StopAlarmSound") {
+                        if (AlarmSound) { AlarmSound.pause(); AlarmSound = null; }
+
+                    } else if (d.action === "ChangeAlarmVolume") {
+                        if (AlarmSound) { AlarmSound.volume = d.volume; }
+
+                    // ── Keypad visibility ──────────────────────
+                    } else if (d.action === "Visible") {
+                        if (d.status) {
+                            currentGate     = d.gate;
+                            currentCode     = '';
+                            currentCallback = d.forGate ? 'gate' : 'alarm';
+                            $('.text').html('');
+                            $('#keypadHolder').fadeIn(150);
+                        } else {
+                            $('#keypadHolder').fadeOut(150);
+                        }
+
+                    // ── Wrong PIN flash ────────────────────────
+                    } else if (d.action === "PinRejected") {
+                        currentCode = '';
+                        $('.text').html('');
+                        var screen = $('.screen');
+                        screen.addClass('rejected');
+                        setTimeout(function () { screen.removeClass('rejected'); }, 500);
+                    }
+                });
+            });
+
+            function addInput(input) {
+                if (currentCode.length >= 4) return;
+
+                currentCode += input;
+                // Show dots for entered digits
+                $('.text').html('•'.repeat(currentCode.length));
+
+                if (currentCode.length >= 4) {
+                    $.post('https://' + GetParentResourceName() + '/pinCode', JSON.stringify({
+                        code:        currentCode,
+                        gate:        currentGate,
+                        interaction: currentCallback
+                    }));
+                }
+            }
+
+            function removeInput() {
+                currentCode = currentCode.substring(0, currentCode.length - 1);
+                $('.text').html('•'.repeat(currentCode.length));
+            }
+        </script>
+    </body>
+</html>

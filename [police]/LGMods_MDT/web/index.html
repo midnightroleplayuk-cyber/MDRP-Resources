@@ -1,0 +1,753 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>UK Police National Computer</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Sora:wght@500;600;700&display=swap" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://unpkg.com/@lucide/web@latest"></script>
+    <link rel="stylesheet" href="css/fingerprint.css">
+    <link rel="stylesheet" href="css/v5c.css">
+    <link rel="stylesheet" href="css/styles.css">
+    <script>
+      if (typeof GetParentResourceName !== 'function') {
+          window.GetParentResourceName = function() {
+              return 'lgmods_mdt';
+          };
+      }
+    </script>
+    <style>
+.media-card,.media-link{transition:.2s ease-in-out}#resultsContainer,.pnc-content{scrollbar-color:#374151 #1f2937;scrollbar-width:thin}.pnc-window,.services-window{position:absolute;top:50%;left:50%;overflow:hidden}.service-options button,button{transition:.2s;border-radius:8px}:root{--mdt-accent:#2563eb;--mdt-accent-soft:rgba(37, 99, 235, 0.35)}body{background-color:transparent;font-family:Sora,system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif}.media-link{color:#60a5fa!important;text-decoration:none;padding:2px 4px;border-radius:4px;display:inline-flex;align-items:center;background-color:rgba(37,99,235,.1);border:1px solid rgba(37,99,235,.2);font-family:monospace;word-break:break-all}.media-link:hover{background-color:rgba(37,99,235,.2);color:#93c5fd!important;border-color:rgba(37,99,235,.4);transform:translateY(-1px)}.media-card:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,.3);border-color:rgba(37,99,235,.5)!important}.pnc-window{width:1600px;height:900px;transform:translate(-50%,-50%) scale(.97);opacity:0;background:linear-gradient(165deg,#151a28 0,#0f121c 55%,#0c0f18 100%);border-radius:14px;box-shadow:0 0 0 1px rgba(255,255,255,.06),0 24px 80px rgba(0,0,0,.65),0 0 60px var(--mdt-accent-soft,rgba(37,99,235,.18));display:none;flex-direction:column;border:1px solid rgba(59,130,246,.22);transition:opacity .35s,transform .45s cubic-bezier(.22, 1, .36, 1);font-family:Sora,system-ui,sans-serif}.pnc-content,.pnc-window.active,.services-window.active{display:flex}.pnc-window.mdt-window-visible{opacity:1;transform:translate(-50%,-50%) scale(1)}.pnc-content{flex:1;min-height:0;flex-direction:column;overflow:hidden}#resultsContainer{max-height:calc(100vh - 400px);overflow-y:auto;margin-bottom:1.5rem;transition:.3s;border-radius:8px}#resultsContainer.hidden{opacity:0;transform:translateY(10px)}::-webkit-scrollbar{width:6px;height:6px}::-webkit-scrollbar-track{background:rgba(31,41,55,.5);border-radius:4px}::-webkit-scrollbar-thumb{background:#4b5563;border-radius:4px}::-webkit-scrollbar-thumb:hover{background:#60a5fa}.styled-scrollbar{scrollbar-width:thin;scrollbar-color:#60a5fa #1f2937}.styled-scrollbar::-webkit-scrollbar{width:4px}.styled-scrollbar::-webkit-scrollbar-track{background:#1f2937;border-radius:4px}.styled-scrollbar::-webkit-scrollbar-thumb{background:#60a5fa;border-radius:4px}.styled-scrollbar::-webkit-scrollbar-thumb:hover{background:#3b82f6}@keyframes fadeIn{from{opacity:0;transform:translate(-50%,-20px)}to{opacity:1;transform:translate(-50%,0)}}@keyframes fadeOut{from{opacity:1;transform:translate(-50%,0)}to{opacity:0;transform:translate(-50%,-20px)}}.services-window{width:800px;height:600px;transform:translate(-50%,-50%);background:linear-gradient(to bottom,#1a1f2e,#141824);border-radius:12px;box-shadow:0 8px 32px rgba(0,0,0,.4);display:none;flex-direction:column;border:1px solid rgba(59,130,246,.2)}.services-content{flex:1;overflow-y:auto;min-height:0}.service-options{display:flex;justify-content:space-around;margin-top:1rem;gap:.75rem}.service-options button{flex:1;margin:0;padding:.75rem;font-weight:500}.fade-in{animation:.3s ease-in fadeIn}@keyframes fadeIn{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}input:focus{box-shadow:0 0 0 2px rgba(59,130,246,.5);outline:0}button:hover{transform:translateY(-1px);filter:brightness(110%)}button:active{transform:translateY(0);filter:brightness(90%)}.bg-gray-700,.dashboard-card{transition:.3s;border-radius:8px;border:1px solid rgba(255,255,255,.05)}#vehicleResultsContainer,.vehicle-reports{overflow-y:auto;padding-right:12px;border-radius:8px}.bg-gray-700:hover,.dashboard-card:hover{box-shadow:0 4px 12px rgba(0,0,0,.2);border-color:rgba(59,130,246,.3)}.bg-green-400{animation:2s infinite pulse}@keyframes pulse{0%,100%{opacity:1}50%{opacity:.7}}.animate-spin{animation:1s linear infinite spin}@keyframes spin{from{transform:rotate(0)}to{transform:rotate(360deg)}}.vehicle-reports{max-height:400px}#vehicleResultsContainer{max-height:calc(100vh - 250px);margin-bottom:1rem}.pnc-footer{position:sticky;bottom:0;width:100%;background:rgba(17,24,39,.95);border-top:1px solid #1f2937;padding:.75rem;z-index:10}.management-row,.suspect-name-input{background-color:#1f2937;transition:.2s}.mugshot-preview{width:100px;height:154px;object-fit:cover;cursor:pointer;border-radius:6px;border:2px solid rgba(255,255,255,.2);transition:.2s ease-in-out;box-shadow:0 2px 6px rgba(0,0,0,.2)}.mugshot-preview:hover{transform:scale(1.05);border-color:rgba(59,130,246,.6)}.suspect-name-input{color:#fff;border:1px solid #374151;padding:.75rem 1rem;border-radius:8px;width:100%;max-width:300px;margin-bottom:1rem;font-size:1rem;box-sizing:border-box;text-align:center}.suspect-name-input:focus{outline:0;border-color:#3b82f6;box-shadow:0 0 0 2px rgba(59,130,246,.3)}.management-row{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;margin-bottom:8px;border:1px solid rgba(55,65,81,.5);border-radius:8px}.dashboard-card,.search-section{padding:1.25rem;background:rgba(31,41,55,.8);box-shadow:0 4px 6px rgba(0,0,0,.1)}.management-row:hover{background-color:#252f3f;border-color:rgba(59,130,246,.3)}.management-row .officer-name{color:#fbbf24;font-size:1rem;font-weight:500;flex:1}.management-row .new-grade{background-color:#2d3748;color:#fff;border:1px solid #4b5563;padding:6px 10px;border-radius:6px;margin-right:10px}.management-row button.update-grade{background-color:#2563eb;color:#fff;border:none;padding:8px 14px;border-radius:6px;cursor:pointer;transition:.2s;font-weight:500}.management-row button.update-grade:hover{background-color:#1d4ed8;transform:translateY(-1px)}#managementTab.disabled{opacity:.5;pointer-events:none}.dashboard-grid{display:grid;grid-template-columns:300px 1fr;gap:1.5rem;margin-bottom:1.5rem}.dashboard-card{border-radius:10px;border:1px solid rgba(55,65,81,.5);transition:.3s}.dashboard-card:hover{box-shadow:0 8px 15px rgba(0,0,0,.15);border-color:rgba(59,130,246,.3)}.dashboard-card h3{color:#f3f4f6;font-size:1.1rem;font-weight:600;margin-bottom:.85rem;display:flex;align-items:center;border-bottom:1px solid rgba(75,85,99,.4);padding-bottom:.5rem}.dashboard-card h3 i{margin-right:.5rem;color:#cbd5e1}.search-section{margin-left:316px;border-radius:10px;border:1px solid rgba(55,65,81,.5)}
+    </style>
+  </head>
+  <body>
+    <div class="pnc-window" id="pncWindow">
+      <div class="mdt-classified-strip" aria-hidden="true">CLASSIFIED // RESTRICTED ACCESS // OFFICIAL USE ONLY</div>
+      <header class="mdt-shell-header relative overflow-hidden border-b border-white/10 bg-gradient-to-r from-slate-950 via-blue-950 to-slate-950 py-3 px-5 shadow-lg">
+        <div class="pointer-events-none absolute inset-0 opacity-30 bg-[radial-gradient(ellipse_at_top,_var(--mdt-accent-soft),_transparent_55%)]"></div>
+        <div class="relative z-10 container mx-auto flex flex-wrap justify-between items-center gap-3">
+          <div class="flex items-center gap-3 min-w-0">
+            <img src="images/logo.png" alt="Logo" class="w-14 h-14 shrink-0 -ml-1"
+              onerror="this.onerror=null; this.outerHTML='<i data-lucide=&quot;shield&quot; class=&quot;text-amber-300 w-11 h-11 shrink-0&quot;></i>'">
+            <div class="min-w-0">
+              <h1 id="mdtSystemTitle" class="text-xl sm:text-2xl font-bold text-white tracking-tight truncate">United Kingdom Police</h1>
+              <p id="mdtTerminalSubtitle" class="text-[11px] sm:text-xs text-sky-200/90 font-medium">Police National Computer Terminal</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-4 sm:gap-6">
+            <div class="text-right text-white min-w-0">
+              <div class="text-sm font-semibold truncate max-w-[200px] sm:max-w-xs" id="officerName"></div>
+              <div class="text-[11px] text-sky-200/90">
+                <span id="officerIdLabel">ID:</span> <span id="officerId" class="font-mono"></span>
+                <span class="text-slate-500"> | </span>
+                <span id="mdtJobLabel" class="text-white/90 font-medium"></span>
+              </div>
+            </div>
+            <button type="button" class="mdt-close-btn p-2.5 rounded-xl border border-white/10 bg-white/5 hover:bg-red-600/90 hover:border-red-500/60 transition-colors" id="closeButton" title="Close (Esc)">
+              <i data-lucide="log-out" class="w-5 h-5 text-white"></i>
+            </button>
+          </div>
+        </div>
+      </header>
+      <div class="pnc-content mdt-pnc-scroll">
+        <main class="mdt-main-shell flex flex-col flex-1 min-h-0">
+          <div class="mdt-status-strip text-[11px] sm:text-xs px-4 py-2 flex flex-wrap items-center justify-between gap-2 border-b border-white/5 bg-slate-950/80 text-white">
+            <div class="flex flex-wrap items-center gap-3 sm:gap-4">
+              <span class="flex items-center gap-1.5 font-mono text-sky-100/90">
+                <i data-lucide="clock" class="w-3.5 h-3.5 text-sky-300"></i>
+                <span id="currentTime"></span>
+              </span>
+              <span class="flex items-center gap-1.5 text-emerald-300">
+                <span class="relative flex h-2 w-2">
+                  <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-60"></span>
+                  <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-400"></span>
+                </span>
+                System online
+              </span>
+              <span class="flex items-center gap-1.5 text-slate-300">
+                <i data-lucide="wifi" class="w-3.5 h-3.5 text-sky-400"></i>
+                <span id="mdtNetworkLabel">LG National Law Enforcement Network</span>
+              </span>
+            </div>
+            <span class="text-sky-200/80 font-mono text-[10px] sm:text-xs">Terminal <span class="text-white" id="terminalId">—</span></span>
+          </div>
+
+          <div class="mdt-body-row flex flex-1 min-h-0 overflow-hidden">
+            <aside class="mdt-sidebar flex flex-col border-r border-slate-700/50 bg-slate-950 shrink-0">
+              <div class="mdt-sidebar-head px-3 py-3 text-[10px] font-bold tracking-[0.2em] text-slate-500 uppercase border-b border-slate-800">Modules</div>
+              <nav class="mdt-nav search-buttons flex flex-col gap-1.5 p-2.5 overflow-y-auto styled-scrollbar flex-1">
+                <button type="button" id="personSearchBtn" class="tab-btn mdt-nav-btn flex flex-nowrap w-full items-center text-left">
+                  <span class="mdt-nav-icon"><i data-lucide="user" class="w-4 h-4"></i></span>
+                  <span class="mdt-nav-label">Person</span>
+                </button>
+                <button type="button" id="vehicleSearchBtn" class="tab-btn mdt-nav-btn flex flex-nowrap w-full items-center text-left">
+                  <span class="mdt-nav-icon"><i data-lucide="car" class="w-4 h-4"></i></span>
+                  <span class="mdt-nav-label">Vehicle</span>
+                </button>
+                <button type="button" id="warrantSearchBtn" class="tab-btn mdt-nav-btn flex flex-nowrap w-full items-center text-left">
+                  <span class="mdt-nav-icon"><i data-lucide="gavel" class="w-4 h-4"></i></span>
+                  <span class="mdt-nav-label">Warrants</span>
+                </button>
+                <button type="button" id="crimeReportsSearchBtn" class="tab-btn mdt-nav-btn flex flex-nowrap w-full items-center text-left">
+                  <span class="mdt-nav-icon"><i data-lucide="file-text" class="w-4 h-4"></i></span>
+                  <span class="mdt-nav-label">Crime Reports</span>
+                </button>
+                <button type="button" id="witnessStatementsSearchBtn" class="tab-btn mdt-nav-btn flex flex-nowrap w-full items-center text-left">
+                  <span class="mdt-nav-icon"><i data-lucide="scroll-text" class="w-4 h-4"></i></span>
+                  <span class="mdt-nav-label">Witness statements</span>
+                </button>
+                <button type="button" id="evidenceSearchBtn" class="tab-btn mdt-nav-btn flex flex-nowrap w-full items-center text-left">
+                  <span class="mdt-nav-icon"><i data-lucide="briefcase" class="w-4 h-4"></i></span>
+                  <span class="mdt-nav-label">Evidence</span>
+                </button>
+                <button type="button" id="managementTab" class="tab-btn mdt-nav-btn flex flex-nowrap w-full items-center text-left">
+                  <span class="mdt-nav-icon"><i data-lucide="settings" class="w-4 h-4"></i></span>
+                  <span class="mdt-nav-label">Management</span>
+                </button>
+                <div class="my-2 border-t border-slate-800"></div>
+                <button type="button" id="createCrimeReportBtn" class="mdt-nav-secondary flex flex-nowrap w-full items-center text-left">
+                  <span class="mdt-nav-icon mdt-nav-icon--light"><i data-lucide="plus" class="w-4 h-4"></i></span>
+                  <span class="mdt-nav-label">Create Report</span>
+                </button>
+                <button type="button" id="createWitnessStatementBtn" class="mdt-nav-secondary flex flex-nowrap w-full items-center text-left" style="display: none;">
+                  <span class="mdt-nav-icon mdt-nav-icon--light"><i data-lucide="plus" class="w-4 h-4"></i></span>
+                  <span class="mdt-nav-label">New witness statement</span>
+                </button>
+                <button type="button" id="createEvidenceBtn" class="mdt-nav-secondary flex flex-nowrap w-full items-center text-left">
+                  <span class="mdt-nav-icon mdt-nav-icon--light"><i data-lucide="plus" class="w-4 h-4"></i></span>
+                  <span class="mdt-nav-label">Add Evidence</span>
+                </button>
+              </nav>
+            </aside>
+
+            <div class="mdt-workspace flex-1 min-w-0 flex flex-col overflow-hidden p-4 gap-4">
+              <div class="mdt-ws-columns flex flex-col lg:flex-row flex-1 min-h-0 gap-4 overflow-hidden">
+                <div class="w-full lg:w-[300px] shrink-0 space-y-4 overflow-y-auto styled-scrollbar pr-1">
+                  <div class="dashboard-card mdt-glass-card">
+                    <h3>
+                      <i data-lucide="gavel"></i>
+                      Active Warrants
+                    </h3>
+                    <div class="space-y-2 max-h-[180px] overflow-y-auto pr-1" id="activeWarrantsList">
+                    </div>
+                  </div>
+
+                  <div class="dashboard-card mdt-glass-card mdt-dash-quick-card">
+                    <h3>
+                      <i data-lucide="zap"></i>
+                      Quick Actions
+                    </h3>
+                    <div class="mdt-dash-quick">
+                      <button type="button" id="quickCreateCrimeReport" class="mdt-dash-cta">
+                        <i data-lucide="file-plus" class="w-4 h-4 shrink-0"></i>
+                        <span>Create Crime Report</span>
+                      </button>
+
+                      <div class="mdt-dash-subpanel">
+                        <h4 class="mdt-dash-subtitle">Registration search</h4>
+                        <div class="mdt-dash-input-row">
+                          <input type="text"
+                                 id="quickPlateInput"
+                                 placeholder="Enter registration…"
+                                 maxlength="8"
+                                 class="mdt-dash-input"
+                                 autocomplete="off"
+                                 spellcheck="false" />
+                          <button type="button" id="quickPlateSearch" class="mdt-dash-btn mdt-dash-btn--accent">Search</button>
+                          <button type="button" id="quickPlateClear" class="mdt-dash-btn">Clear</button>
+                        </div>
+                        <div id="quickPlateResults" class="mdt-dash-plate-results">
+                          <div class="mdt-dash-hint">Enter a registration to search.</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div class="dashboard-card mdt-glass-card">
+                    <h3>
+                      <i data-lucide="users"></i>
+                      On-Duty Officers
+                    </h3>
+                    <div class="space-y-2 max-h-[180px] overflow-y-auto pr-1" id="onDutyOfficersList">
+                      <div class="text-sm text-gray-500 text-center py-2">Loading officers...</div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="mdt-ws-main flex-1 min-w-0 flex flex-col min-h-0 gap-4 overflow-hidden">
+                  <div class="bg-gray-900/70 p-4 sm:p-5 rounded-xl shadow-xl border border-white/5 shrink-0">
+                    <div class="flex flex-wrap gap-2 mb-3 text-[11px] text-slate-500 uppercase tracking-wide font-semibold">Search workspace</div>
+                    <form id="searchForm" class="flex flex-col sm:flex-row gap-2">
+                      <input type="text" id="searchInput" placeholder="Select search type…" class="flex-1 min-w-0 px-4 py-3 bg-gray-800/90 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500/80 border border-gray-600/80 text-white font-mono text-sm disabled:opacity-45" disabled />
+                      <button type="submit" class="px-6 py-3 rounded-lg flex items-center justify-center gap-2 transition-all disabled:opacity-45 disabled:cursor-not-allowed text-white font-semibold bg-gradient-to-b from-blue-600 to-blue-800 hover:from-blue-500 hover:to-blue-700 border border-white/5 shadow-md shrink-0" disabled>
+                        <i data-lucide="search" class="w-5 h-5"></i>
+                        <span>Search</span>
+                      </button>
+                    </form>
+                  </div>
+                  
+                  <div id="resultsContainer" class="bg-gray-900/70 p-5 rounded-xl shadow-xl border border-white/5 hidden flex-1 min-h-0 overflow-y-auto styled-scrollbar">
+                  </div>
+                  
+                  <div id="managementContainer" class="bg-gray-900/70 p-5 rounded-xl shadow-xl border border-white/5 hidden flex-1 min-h-0 overflow-y-auto styled-scrollbar">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </main>
+      </div>
+      <footer class="pnc-footer border-t border-white/5">
+        <p class="text-slate-500 text-[11px] text-center font-mono tracking-wide">PNC v1.1.2 · National Law Enforcement Database · LGMods</p>
+      </footer>
+
+      <div id="mdtBootOverlay" class="mdt-boot-overlay" aria-hidden="true">
+        <div class="mdt-boot-panel">
+          <div class="mdt-boot-badge">SECURE CHANNEL</div>
+          <h2 class="mdt-boot-title">POLICE NATIONAL COMPUTER</h2>
+          <p class="mdt-boot-sub">Establishing encrypted session…</p>
+          <div class="mdt-boot-track">
+            <div class="mdt-boot-bar-fill"></div>
+          </div>
+          <p class="mdt-boot-status" id="mdtBootStatus">AUTHENTICATING…</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="services-window" id="servicesWindow">
+      <header class="bg-blue-900 p-4 shadow-lg border-b border-blue-700">
+        <div class="container mx-auto flex justify-between items-center">
+          <div class="flex items-center space-x-3">
+            <i data-lucide="car" class="text-yellow-400 w-8 h-8"></i>
+            <div>
+              <h1 class="text-2xl font-bold text-white">Vehicle Services</h1>
+              <p class="text-xs text-blue-300">Insurance, Road Tax &amp; V5C</p>
+            </div>
+          </div>
+          <button class="p-2 hover:bg-blue-800 rounded-full transition-colors" id="closeServicesButton">
+            <i data-lucide="x" class="w-5 h-5 text-white"></i>
+          </button>
+        </div>
+      </header>
+      <div class="services-content">
+        <main class="p-6">
+          <div class="bg-gray-800 p-6 rounded-lg shadow-xl mb-6 border border-gray-700">
+            <form id="vehicleSearchForm" class="flex space-x-2">
+              <input type="text" id="plateInput" placeholder="Enter vehicle registration..." 
+                class="flex-1 px-4 py-3 bg-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 border border-gray-600 text-white uppercase" 
+                maxlength="8" />
+              <button type="submit" class="px-6 py-3 bg-blue-600 hover:bg-blue-700 rounded-lg flex items-center space-x-2 transition-colors text-white font-medium">
+                <i data-lucide="search" class="w-5 h-5"></i>
+                <span>Check Vehicle</span>
+              </button>
+            </form>
+            <div class="service-options mt-4" id="serviceOptions" style="display: none;">
+              <button id="claimV5CBtn" class="px-4 py-3 bg-green-600 hover:bg-green-700 rounded-lg text-white font-medium flex items-center justify-center">
+                <i data-lucide="file-text" class="w-5 h-5 mr-2"></i>
+                <span>Claim V5C Document</span>
+              </button>
+              <button id="vehicleInfoBtn" class="px-4 py-3 bg-blue-600 hover:bg-blue-700 rounded-lg text-white font-medium flex items-center justify-center">
+                <i data-lucide="info" class="w-5 h-5 mr-2"></i>
+                <span>Vehicle Information</span>
+              </button>
+            </div>
+          </div>
+          <div id="vehicleResultsContainer" class="bg-gray-800 p-6 rounded-lg shadow-xl border border-gray-700 hidden"></div>
+        </main>
+      </div>
+    </div>
+
+    <div class="v5c-window" id="v5cWindow">
+      <div class="v5c-document">
+        <div class="v5c-header">
+          <div class="header-left">
+            <div class="dvla-branding">
+              <i data-lucide="crown" style="font-size: 1.6rem; position: absolute; left: 0; top: 0;"></i>
+              <p class="dvla-text">
+                Driver & Vehicle<br>
+                Licensing Agency<br>
+                <span id="documentRef">1/19</span>
+              </p>
+            </div>
+          </div>
+
+          <div class="header-right">
+            <div class="certificate-title">
+              <h1>UNITED KINGDOM</h1>
+              <h2>UK Registration Certificate</h2>
+            </div>
+            <div class="registration-number">
+              <span>V5C Ref Number:</span>
+              <strong id="v5cNumber"></strong>
+            </div>
+          </div>
+        </div>
+
+        <div class="v5c-body">
+          <div class="main-notice">
+            <h3>THIS DOCUMENT IS NOT PROOF OF OWNERSHIP</h3>
+            <p>It shows who is responsible for registering and taxing the vehicle.</p>
+          </div>
+
+          <div class="buyer-info">
+            <strong>Buyer beware...</strong>
+            <p>Last V5C issue date: <span id="issueDate"></span></p>
+          </div>
+
+          <div class="translations">
+            <h4>Registration Certificate translations</h4>
+            <p>European Community</p>
+          </div>
+
+          <div class="v5c-details">
+            <div class="detail-item">
+              <span class="detail-label">Plate:</span>
+              <span id="plateNumber" class="mono-text"></span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">VIN/Chassis No:</span>
+              <span id="vinNumber" class="mono-text"></span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">Make & Model:</span>
+              <span id="vehicleModel" class="mono-text"></span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">Vehicle Class:</span>
+              <span id="vehicleClass" class="mono-text"></span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">Registered Keeper:</span>
+              <span id="keeperName" class="mono-text"></span>
+            </div>
+            <div class="detail-warning">
+              <strong>WARNING:</strong> This document is not proof of ownership. Do not rely on it as proof of right to ownership.
+            </div>
+          </div>      
+
+          <div class="instructions">
+            <h3>How to fill in your V5C Registration Certificate (log book)</h3>
+            <ol>
+              <li>Use black ink only when filling in this document.</li>
+              <li>Complete section(s) relevant to the changes you need to make.</li>
+              <li>Sign and date where required.</li>
+              <li>Return the complete document to DVLA, Swansea, SA99 1BA.</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="officerView" class="container hidden">
+      <div class="panel bg-gray-900 rounded-lg shadow-lg p-5">
+        <div class="panel-header flex items-center justify-between mb-4">
+          <div class="flex items-center space-x-2">
+            <i data-lucide="fingerprint" class="icon text-blue-400 w-6 h-6"></i>
+            <h2 class="text-2xl font-bold text-white">Officer Control Panel</h2>
+          </div>
+          <button id="closeFingerprint" class="text-gray-400 hover:text-white p-1 rounded-full hover:bg-gray-800 transition-colors">
+            <i data-lucide="x" class="w-5 h-5"></i>
+          </button>
+        </div>
+        <div class="panel-content">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div class="scanner-section flex flex-col items-center justify-center bg-gray-800 p-6 rounded-lg">
+              <div class="fingerprint-container relative mb-4">
+                <i data-lucide="fingerprint" class="fingerprint-icon text-blue-300 w-24 h-24"></i>
+                <div class="pulse-effect hidden absolute inset-0 rounded-full border-2 border-blue-400"></div>
+              </div>
+              <div class="text-center">
+                <h3 class="text-lg font-semibold text-white mb-2">Fingerprint Scanner</h3>
+                <p class="text-sm text-gray-400">Place suspect's finger on the scanner</p>
+              </div>
+            </div>
+            
+            <div class="status-section space-y-4">
+              <div class="status-box bg-gray-800 p-4 rounded-lg border border-gray-700">
+                <h3 class="text-lg font-semibold text-white mb-2 flex items-center">
+                  <i data-lucide="alert-circle" class="w-5 h-5 mr-2 text-yellow-500"></i>
+                  Scan Status
+                </h3>
+                <div class="status-info">
+                  <div class="status-indicator flex items-center space-x-2 p-2 bg-gray-700 rounded-md">
+                    <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+                    <span id="scanStatus" class="text-white">Waiting for suspect to place finger on scanner...</span>
+                  </div>
+                  <div id="fingerprintIdBox" class="fingerprint-id hidden mt-3 p-2 bg-gray-700 rounded-md">
+                    <p class="label text-gray-400 text-sm">Fingerprint ID</p>
+                    <p id="fingerprintId" class="value text-white text-xl font-mono"></p>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="status-box bg-gray-800 p-4 rounded-lg border border-gray-700">
+                <h3 class="text-lg font-semibold text-white mb-2 flex items-center">
+                  <i data-lucide="user" class="w-5 h-5 mr-2 text-blue-400"></i>
+                  Suspect Information
+                </h3>
+                <div class="status-info mb-4">
+                  <div class="p-2 bg-gray-700 rounded-md mb-2">
+                    <p id="suspectNameDisplay" class="value text-white">Suspect: Unknown</p>
+                  </div>
+                  <div class="p-2 bg-gray-700 rounded-md mb-2">
+                    <p id="fingerprintIdDisplay" class="value text-white">Fingerprint ID: N/A</p>
+                  </div>
+                  <div id="suspectStatus" class="text-white mt-2 p-2 bg-gray-700 rounded-md"></div>
+                </div>
+                <button id="saveButton" class="save-button bg-green-500 hover:bg-green-600 text-white font-bold py-2.5 px-4 rounded-md transition-all duration-200 w-full flex items-center justify-center">
+                  <i data-lucide="save" class="w-5 h-5 mr-2"></i>
+                  Save
+                </button>
+              </div>
+              
+              <div class="status-box bg-gray-800 p-4 rounded-lg border border-gray-700">
+                <h3 class="text-lg font-semibold text-white mb-2 flex items-center">
+                  <i data-lucide="help-circle" class="w-5 h-5 mr-2 text-blue-400"></i>
+                  Instructions
+                </h3>
+                <ol class="list-decimal list-inside text-white text-sm space-y-1.5 bg-gray-700 p-3 rounded-md">
+                  <li>Direct suspect to the scanning terminal</li>
+                  <li>Instruct suspect to place and hold finger on the scanner</li>
+                  <li>Wait for scan completion</li>
+                  <li>Record the generated Fingerprint ID</li>
+                  <li class="text-yellow-400 font-semibold">You must press save when the status says "Scan complete"!!</li>
+                </ol>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="suspectView" class="container hidden">
+      <div class="panel bg-gray-900 rounded-lg shadow-lg p-5 max-w-md mx-auto">
+        <div class="panel-header flex items-center justify-center mb-6">
+          <i data-lucide="hand-metal" class="icon text-blue-400 w-8 h-8 mr-3"></i>
+          <h2 class="text-2xl font-bold text-white">Fingerprint Scanner</h2>
+        </div>
+        <div class="panel-content center flex flex-col items-center">
+          <input id="suspectName" type="text" placeholder="Enter your name" class="suspect-name-input mb-6 text-center" readonly />
+          <button id="scanButton" class="scan-button bg-blue-600 hover:bg-blue-700 rounded-full p-8 transition-all duration-300 mb-6">
+            <i data-lucide="fingerprint" class="fingerprint-icon w-20 h-20 text-white"></i>
+            <div class="pulse-effect hidden absolute inset-0 rounded-full border-4 border-blue-400"></div>
+          </button>
+          <div class="progress-container w-full mb-4">
+            <div class="progress-bar bg-gray-700 h-2 rounded-full overflow-hidden">
+              <div class="progress-fill bg-blue-500 h-full w-0 transition-all duration-300"></div>
+            </div>
+          </div>
+          <div class="scan-text text-center">
+            <p id="scanInstruction" class="primary-text text-white text-lg font-medium mb-2">Press and hold to scan</p>
+            <p class="secondary-text text-gray-400 text-sm">Keep your finger still until the scan is complete</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="crimeReportChargesPage" class="hidden p-6 bg-gray-900 rounded-lg shadow-lg mb-6" style="position: relative; z-index: 1000;">
+      <div class="mb-6 border-b border-gray-700 pb-4">
+        <div class="flex items-center justify-between">
+          <div>
+            <h2 class="text-2xl font-bold text-white mb-2">Assign Charges to Involved Citizens</h2>
+            <p class="text-gray-300">Select charges for each involved citizen. The total prison time and fine will be calculated automatically.</p>
+          </div>
+          <i data-lucide="file-text" class="text-blue-400 w-12 h-12"></i>
+        </div>
+      </div>
+      
+      <div id="citizenChargesContainer" class="space-y-6 max-h-[500px] overflow-y-auto pr-2 mb-6">
+      </div>
+      
+      <div class="flex justify-between mt-6 pt-4 border-t border-gray-700">
+        <button id="backToCrimeReportBtn" class="bg-gray-600 text-white px-5 py-2.5 rounded-lg hover:bg-gray-700 flex items-center">
+          <i data-lucide="arrow-left" class="w-5 h-5 mr-2"></i>
+          Back
+        </button>
+        <button id="processCrimeChargesBtn" class="bg-green-600 text-white px-5 py-2.5 rounded-lg hover:bg-green-700 flex items-center font-medium">
+          <i data-lucide="check-circle" class="w-5 h-5 mr-2"></i>
+          Process Charges & Submit Report
+        </button>
+      </div>
+    </div>
+
+    <template id="citizenChargesTemplate">
+      <div class="citizen-charges bg-gray-800 p-5 rounded-lg border border-gray-700 shadow-md">
+        <div class="flex items-center justify-between mb-4">
+          <div>
+            <h3 class="text-xl font-semibold text-yellow-400 mb-1 citizen-name"></h3>
+            <p class="text-gray-400 citizen-id"></p>
+          </div>
+          <i data-lucide="user" class="text-blue-400 w-6 h-6"></i>
+        </div>
+        
+        <div class="charges-selector mb-4">
+          <div class="flex justify-between items-center mb-3">
+            <label class="text-white font-medium flex items-center">
+              <i data-lucide="list" class="w-4 h-4 mr-2 text-gray-400"></i>
+              Select Charges:
+            </label>
+            <button class="add-charge-btn bg-blue-600 text-white px-3 py-1.5 rounded-md text-sm hover:bg-blue-700 flex items-center">
+              <i data-lucide="plus" class="w-4 h-4 mr-1.5"></i>
+              Add Charge
+            </button>
+          </div>
+          <div class="selected-charges space-y-3 max-h-[200px] overflow-y-auto pr-2">
+          </div>
+        </div>
+        
+        <div class="charge-summary bg-gray-700 p-4 rounded-lg flex justify-between items-center">
+          <div class="flex items-center">
+            <i data-lucide="calendar" class="w-5 h-5 mr-2 text-yellow-400"></i>
+            <p class="text-white">Total Prison Time: <span class="total-prison-time font-bold">0</span> months</p>
+          </div>
+          <div class="flex items-center">
+            <i data-lucide="pound-sterling" class="w-5 h-5 mr-2 text-green-400"></i>
+            <p class="text-white">Total Fine: £<span class="total-fine font-bold">0</span></p>
+          </div>
+        </div>
+      </div>
+    </template>
+
+    <template id="chargeSelectionRowTemplate">
+      <div class="charge-row flex space-x-2 items-center bg-gray-700 p-2.5 rounded-md">
+        <select class="charge-category-select bg-gray-800 text-white p-2 rounded-md flex-grow border border-gray-600">
+          <option value="">Select Category</option>
+        </select>
+        <select class="charge-select bg-gray-800 text-white p-2 rounded-md flex-grow border border-gray-600" disabled>
+          <option value="">Select Charge</option>
+        </select>
+        <button class="remove-charge-btn bg-red-600 text-white p-2 rounded-md hover:bg-red-700 flex-shrink-0">
+          <i data-lucide="trash-2" class="w-5 h-5"></i>
+        </button>
+      </div>
+    </template>
+
+    <div id="evidenceContainer" class="hidden p-6 bg-gray-900 rounded-lg shadow-lg mb-6" style="position: relative; z-index: 1000;">
+      <div class="evidence-search-results mb-6" style="display: none;">
+        <div class="flex items-center justify-between mb-4 border-b border-gray-700 pb-4">
+          <h2 class="text-2xl font-bold text-white">Evidence Search Results</h2>
+          <i data-lucide="briefcase" class="text-blue-400 w-8 h-8"></i>
+        </div>
+        <div id="evidenceSearchResults" class="space-y-4 max-h-[500px] overflow-y-auto pr-2">
+        </div>
+      </div>
+      
+      <div id="evidenceDetails" class="mb-6 max-h-[700px] overflow-y-auto" style="display: none;">
+        <div class="flex justify-between items-center mb-5 pb-4 border-b border-gray-700">
+          <div class="flex items-center">
+            <i data-lucide="briefcase" class="w-7 h-7 text-blue-400 mr-3"></i>
+            <h2 class="text-2xl font-bold text-white">Evidence Details</h2>
+          </div>
+          <div class="flex space-x-3">
+            <button id="editEvidenceBtn" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center transition-colors shadow-sm">
+              <i data-lucide="edit" class="w-4 h-4 mr-2"></i>
+              Edit
+            </button>
+            <button id="deleteEvidenceBtn" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg flex items-center transition-colors shadow-sm">
+              <i data-lucide="trash-2" class="w-4 h-4 mr-2"></i>
+              Delete
+            </button>
+            <button id="backToEvidenceBtn" class="bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded-lg flex items-center transition-colors shadow-sm">
+              <i data-lucide="arrow-left" class="w-4 h-4 mr-2"></i>
+              Back
+            </button>
+          </div>
+        </div>
+        
+        <div class="bg-gradient-to-br from-gray-800 to-gray-900 rounded-lg p-6 border border-gray-700 shadow-lg">
+          <div class="grid grid-cols-2 gap-4 text-white mb-6">
+            <div class="p-4 bg-gray-800/60 rounded-lg border border-gray-700 hover:border-blue-500/30 transition-all">
+              <p class="text-gray-400 text-sm mb-1.5">Evidence ID</p>
+              <p id="evidenceId" class="text-lg font-semibold"></p>
+            </div>
+            <div class="p-4 bg-gray-800/60 rounded-lg border border-gray-700 hover:border-blue-500/30 transition-all">
+              <p class="text-gray-400 text-sm mb-1.5">Date Created</p>
+              <p id="evidenceCreatedAt" class="text-lg"></p>
+            </div>
+            <div class="p-4 bg-gray-800/60 rounded-lg border border-gray-700 hover:border-blue-500/30 transition-all">
+              <p class="text-gray-400 text-sm mb-1.5">Title</p>
+              <p id="evidenceTitle" class="text-lg font-medium"></p>
+            </div>
+            <div class="p-4 bg-gray-800/60 rounded-lg border border-gray-700 hover:border-blue-500/30 transition-all">
+              <p class="text-gray-400 text-sm mb-1.5">Created By</p>
+              <p id="evidenceOfficer" class="text-lg"></p>
+            </div>
+          </div>
+          
+          <div class="mb-6 p-4 bg-gray-800/60 rounded-lg border border-gray-700 hover:border-blue-500/30 transition-all">
+            <div class="flex items-center mb-3 pb-2 border-b border-gray-700/50">
+              <i data-lucide="align-left" class="w-5 h-5 text-blue-400 mr-2"></i>
+              <p class="text-white font-medium">Description</p>
+            </div>
+            <p id="evidenceDescription" class="text-gray-300 leading-relaxed whitespace-pre-line"></p>
+          </div>
+          
+          <div class="mb-6">
+            <div class="flex items-center mb-3 pb-2 border-b border-gray-700">
+              <i data-lucide="users" class="w-5 h-5 text-blue-400 mr-2"></i>
+              <p class="text-white font-medium">Involved Citizens</p>
+            </div>
+            <div id="evidenceInvolvedCitizens" class="flex flex-wrap gap-2 mt-3 p-4 bg-gray-800/60 rounded-lg min-h-[70px] border border-gray-700 hover:border-blue-500/30 transition-all">
+            </div>
+          </div>
+          
+          <div>
+            <div class="flex items-center mb-3 pb-2 border-b border-gray-700">
+              <i data-lucide="image" class="w-5 h-5 text-blue-400 mr-2"></i>
+              <p class="text-white font-medium">Media Evidence</p>
+            </div>
+            <div id="evidenceMediaLinks" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-3 p-4 bg-gray-800/60 rounded-lg min-h-[120px] border border-gray-700 hover:border-blue-500/30 transition-all">
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div id="evidenceForm" style="display: none;">
+        <div class="flex justify-between items-center mb-4 border-b border-gray-700 pb-4">
+          <div class="flex items-center">
+            <i data-lucide="folder-plus" class="w-7 h-7 text-blue-400 mr-3"></i>
+            <h2 class="text-2xl font-bold text-white">Add Evidence</h2>
+          </div>
+          <button id="cancelEvidenceBtn" class="bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded-lg flex items-center transition-colors">
+            <i data-lucide="x" class="w-4 h-4 mr-2"></i>
+            Cancel
+          </button>
+        </div>
+        
+        <form id="addEvidenceForm" class="bg-gradient-to-br from-gray-800 to-gray-900 rounded-lg p-6 space-y-5 border border-gray-700 shadow-lg">
+          <input type="hidden" id="evidenceFormMode" value="add">
+          <input type="hidden" id="editEvidenceId" value="">
+          
+          <div class="grid grid-cols-1 gap-6">
+            <div class="col-span-1">
+              <label for="evidenceFormTitle" class="block text-white mb-2 font-medium flex items-center">
+                <i data-lucide="file-text" class="w-4 h-4 mr-2 text-blue-400"></i>
+                Title
+              </label>
+              <input type="text" id="evidenceFormTitle" 
+                class="w-full bg-gray-700 text-white rounded-lg p-3 border border-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all" 
+                placeholder="Enter a descriptive title for this evidence..." required>
+            </div>
+            
+            <div class="col-span-1">
+              <label for="evidenceFormDescription" class="block text-white mb-2 font-medium flex items-center">
+                <i data-lucide="align-left" class="w-4 h-4 mr-2 text-blue-400"></i>
+                Description
+              </label>
+              <textarea id="evidenceFormDescription" 
+                class="w-full bg-gray-700 text-white rounded-lg p-3 border border-gray-600 h-32 focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none transition-all" 
+                placeholder="Provide detailed information about this evidence including when, where, and how it was obtained..." required></textarea>
+            </div>
+            
+            <div class="col-span-1">
+              <label class="block text-white mb-2 font-medium flex items-center">
+                <i data-lucide="users" class="w-4 h-4 mr-2 text-blue-400"></i>
+                Involved Citizens
+              </label>
+              <div class="flex flex-col gap-3">
+                <button type="button" onclick="openCitizenSelection()" class="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg transition-colors flex items-center justify-center">
+                  <i data-lucide="user-plus" class="w-4 h-4 mr-2"></i>
+                  <span>Select Citizens</span>
+                </button>
+                <div id="selectedCitizens" class="flex flex-wrap gap-2 p-4 bg-gray-700/50 rounded-lg min-h-[70px] border border-gray-600 transition-all">
+                </div>
+                <p class="text-gray-400 text-xs flex items-center">
+                  <i data-lucide="info" class="w-3 h-3 mr-1"></i>
+                  Add any citizens who are connected to this evidence
+                </p>
+              </div>
+            </div>
+            
+            <div class="col-span-1">
+              <label class="block text-white mb-2 font-medium flex items-center">
+                <i data-lucide="image" class="w-4 h-4 mr-2 text-blue-400"></i>
+                Media Links
+              </label>
+              <div class="flex items-center mb-2">
+                <input type="text" id="mediaLinkInput" 
+                  class="flex-1 bg-gray-700 text-white rounded-lg p-3 border border-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all" 
+                  placeholder="Enter link to media (image or video)...">
+                <button type="button" id="addMediaLinkBtn" 
+                  class="ml-2 bg-blue-600 text-white px-4 py-3 rounded-lg hover:bg-blue-700 flex items-center transition-colors" onclick="addMediaLink(document.getElementById('mediaLinkInput').value)">
+                  <i data-lucide="plus" class="w-5 h-5 mr-2"></i>
+                  Add
+                </button>
+              </div>
+              <div id="mediaLinksList" class="grid grid-cols-2 gap-3 mt-2 p-4 bg-gray-700/50 rounded-lg min-h-[120px] border border-gray-600 transition-all">
+              </div>
+              <p class="text-gray-400 text-xs mt-1 flex items-center">
+                <i data-lucide="info" class="w-3 h-3 mr-1"></i>
+                Supported links: Imgur, Discord attachments, and other direct image/video URLs
+              </p>
+            </div>
+          </div>
+          
+          <div class="flex justify-end mt-6 pt-4 border-t border-gray-700">
+            <button type="submit" id="submitEvidenceBtn" class="bg-gradient-to-r from-green-600 to-green-700 text-white px-6 py-3 rounded-lg hover:from-green-500 hover:to-green-600 font-medium flex items-center shadow-md transition-all">
+              <i data-lucide="save" class="w-5 h-5 mr-2"></i>
+              Submit Evidence
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+    
+    <template id="evidenceResultTemplate">
+      <div class="evidence-result">
+        <div class="flex justify-between items-start">
+          <div>
+            <div class="flex items-center mb-2">
+              <i data-lucide="briefcase" class="w-5 h-5 text-blue-400 mr-2"></i>
+              <h3 class="text-xl font-semibold text-white evidence-title"></h3>
+            </div>
+            <span class="evidence-id"></span>
+            <div class="evidence-date"></div>
+          </div>
+          <div class="text-right">
+            <div class="evidence-officer"></div>
+          </div>
+        </div>
+      </div>
+    </template>
+    
+    <template id="citizenBadgeTemplate">
+      <div class="citizen-badge bg-blue-700/80 text-white px-3 py-1.5 rounded-lg flex items-center shadow-sm hover:bg-blue-700 transition-colors">
+        <i data-lucide="user" class="w-4 h-4 mr-2"></i>
+        <span class="citizen-name mr-2"></span>
+        <input type="hidden" class="citizen-id">
+        <button class="remove-citizen text-white hover:text-red-300 ml-1 transition-colors">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+    </template>
+    
+    <template id="mediaLinkTemplate">
+      <div class="media-link-item bg-gray-800 p-3 rounded-lg border border-gray-700 shadow-sm hover:border-blue-500/30 transition-all duration-200">
+        <div class="media-preview mb-2 flex justify-center">
+          <img src="" alt="Media Preview" class="media-thumbnail max-h-32 rounded-md hover:opacity-90 transition-opacity">
+        </div>
+        <div class="flex justify-between items-center">
+          <a href="#" target="_blank" class="text-blue-400 hover:text-blue-300 text-xs truncate media-link-url transition-colors"></a>
+          <button class="remove-media-link text-white hover:text-red-300 transition-colors">
+            <i data-lucide="x" class="w-4 h-4"></i>
+          </button>
+        </div>
+      </div>
+    </template>
+    
+    <div id="root"></div>
+    <script src="js/vehicle_services.js"></script>
+    <script src="js/evidence.js"></script>
+    <script src="js/rich-text-editor.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/fingerprint.js"></script>
+    <script src="js/v5c.js"></script>
+    <script>
+const _0x4a9184=_0x1f2c;function _0x2f7c(){const _0xf28be8=['19601131KYgruS','ZJCIi','jdluz','Dnvmb','debug','ById','JtWPO','YedQG','vvlde','GYndO','message','nable\x20to\x20c','ent','GetParentR','value','plmGI','KPdlj','esourceNam','3210831cFTVun','8gAaAyY','4542555XTCnXt','1064JQCRqn','NUZiD','click','rrLeW','config','Loaded','copy','function','NuzEV','yMega','9999','lgmods_mdt','removeChil','YgfAe','zenBtn','2|5|4|0|3|','absolute','data','citizenSea','getElement','zIndex','4796001dFmgsX','ZCMyW','UtynL','rchResults','textarea','YGLFd','QCjyD','searchCiti','action','createElem','opy\x20VIN','target','cWtRs','stener','DOMContent','IoQgi','position','appendChil','VCskc','BuzMv','ylojU','body','3397598QqkVPi','veYjd','style','10ownICL','T:Debug]\x20U','execComman','3945162RmHHJf','vin','split','20656UAezNY','addEventLi','[LGMods_MD','select','1QmkbTf','error'];_0x2f7c=function(){return _0xf28be8;};return _0x2f7c();}function _0x1f2c(_0x46d428,_0x1bc480){_0x46d428=_0x46d428-(-0x1910+0x1930+0x73);const _0xb9a01d=_0x2f7c();let _0x1c545d=_0xb9a01d[_0x46d428];return _0x1c545d;}(function(_0x4433c3,_0x4ec16d){const _0x362407=_0x1f2c,_0x1b9778=_0x4433c3();while(!![]){try{const _0x5924c0=-parseInt(_0x362407(0xab))/(0x1*0x471+-0x9*0x24a+0x102a)*(parseInt(_0x362407(0x9e))/(-0x78*0x4f+0x2*-0x1258+0x49ba))+-parseInt(_0x362407(0xd7))/(-0xaa*0x32+-0x153e+0x3*0x1227)+parseInt(_0x362407(0xc0))/(0x8*0x2f3+0x30f+-0x1aa3*0x1)*(parseInt(_0x362407(0xc1))/(0x1*-0x3fb+0x1*-0x219c+0x12ce*0x2))+parseInt(_0x362407(0xa4))/(0x76a+-0x4a*-0x47+0x2*-0xdf5)+-parseInt(_0x362407(0xc2))/(0x26c6+-0x1862+-0x1*0xe5d)*(-parseInt(_0x362407(0xa7))/(0x2*0x90f+0x62a+0xc20*-0x2))+-parseInt(_0x362407(0xbf))/(0x35*-0x92+-0x1d35+0x3b78)+parseInt(_0x362407(0xa1))/(-0x18d*0x17+0x1af4+0x8c1)*(parseInt(_0x362407(0xad))/(0x1*0xcf6+0x20b1+-0x2d9c));if(_0x5924c0===_0x4ec16d)break;else _0x1b9778['push'](_0x1b9778['shift']());}catch(_0x3b69a1){_0x1b9778['push'](_0x1b9778['shift']());}}}(_0x2f7c,0x57658*-0x2+-0x1b51a*0x1+-0x1*-0x1bcf5f),document[_0x4a9184(0xa8)+_0x4a9184(0x95)](_0x4a9184(0x96)+_0x4a9184(0xc7),function(){const _0x36c758=_0x4a9184,_0x26dbc4={'jdluz':function(_0x4af161,_0x20df72){return _0x4af161===_0x20df72;},'YGLFd':_0x36c758(0xcd),'BuzMv':_0x36c758(0xd4)+_0x36c758(0xda),'vvlde':_0x36c758(0xd2),'QCjyD':_0x36c758(0xcc),'KPdlj':_0x36c758(0xde)+_0x36c758(0xd0),'yMega':function(_0x1a7fc6,_0x477115,_0x31b4af){return _0x1a7fc6(_0x477115,_0x31b4af);},'JtWPO':_0x36c758(0xc4),'IoQgi':function(_0xca93a1,_0x5881b8){return _0xca93a1===_0x5881b8;},'YgfAe':_0x36c758(0xc8),'UtynL':_0x36c758(0xd1)+'1','NUZiD':_0x36c758(0xdb),'NuzEV':function(_0x54d211,_0x25d3c6){return _0x54d211===_0x25d3c6;},'ZJCIi':_0x36c758(0xa9)+_0x36c758(0xa2)+_0x36c758(0xb8)+_0x36c758(0xe1),'GYndO':function(_0x5c14f1,_0x6f980b){return _0x5c14f1!==_0x6f980b;},'veYjd':_0x36c758(0xc9),'VCskc':function(_0x4ecb87){return _0x4ecb87();},'YedQG':_0x36c758(0xb7)};function _0x132aad(_0x49cf00){const _0x16467c=_0x36c758;if(window[_0x16467c(0xc6)]&&_0x26dbc4[_0x16467c(0xaf)](window[_0x16467c(0xc6)][_0x16467c(0xb1)],!![])){}}_0x26dbc4[_0x36c758(0xb6)](typeof GetParentResourceName,_0x26dbc4[_0x36c758(0x9f)])&&(window[_0x36c758(0xba)+_0x36c758(0xbe)+'e']=function(){const _0x1c3753=_0x36c758;return _0x26dbc4[_0x1c3753(0xdc)];});const _0x274815=function(){const _0xdfea52=_0x36c758,_0x121999={'plmGI':_0x26dbc4[_0xdfea52(0x9b)],'ZCMyW':_0x26dbc4[_0xdfea52(0xb5)],'cWtRs':_0x26dbc4[_0xdfea52(0xdd)],'ylojU':function(_0x3da09b,_0xaf815f){const _0x2b089d=_0xdfea52;return _0x26dbc4[_0x2b089d(0xaf)](_0x3da09b,_0xaf815f);},'Dnvmb':_0x26dbc4[_0xdfea52(0xbd)],'rrLeW':function(_0x567741,_0x3fc0de,_0x2feb3d){const _0x3f45eb=_0xdfea52;return _0x26dbc4[_0x3f45eb(0xcb)](_0x567741,_0x3fc0de,_0x2feb3d);}},_0x43437e=document[_0xdfea52(0xd5)+_0xdfea52(0xb2)](_0x26dbc4[_0xdfea52(0x9b)]);_0x43437e&&(_0x43437e[_0xdfea52(0xa0)][_0xdfea52(0x98)]=_0x26dbc4[_0xdfea52(0xb5)],_0x43437e[_0xdfea52(0xa0)][_0xdfea52(0xd6)]=_0x26dbc4[_0xdfea52(0xdd)]),document[_0xdfea52(0xa8)+_0xdfea52(0x95)](_0x26dbc4[_0xdfea52(0xb3)],function(_0x3fb6b5){const _0xb7363c=_0xdfea52;_0x3fb6b5[_0xb7363c(0x93)]&&_0x121999[_0xb7363c(0x9c)](_0x3fb6b5[_0xb7363c(0x93)]['id'],_0x121999[_0xb7363c(0xb0)])&&_0x121999[_0xb7363c(0xc5)](setTimeout,function(){const _0x1aa794=_0xb7363c,_0x14f07f=document[_0x1aa794(0xd5)+_0x1aa794(0xb2)](_0x121999[_0x1aa794(0xbc)]);_0x14f07f&&(_0x14f07f[_0x1aa794(0xa0)][_0x1aa794(0x98)]=_0x121999[_0x1aa794(0xd8)],_0x14f07f[_0x1aa794(0xa0)][_0x1aa794(0xd6)]=_0x121999[_0x1aa794(0x94)]);},-0x232d+0x214f*-0x1+0x2270*0x2);});};_0x26dbc4[_0x36c758(0x9a)](_0x274815),window[_0x36c758(0xa8)+_0x36c758(0x95)](_0x26dbc4[_0x36c758(0xb4)],function(_0xeb9422){const _0x4d945e=_0x36c758;if(_0x26dbc4[_0x4d945e(0x97)](_0xeb9422[_0x4d945e(0xd3)][_0x4d945e(0xdf)],_0x26dbc4[_0x4d945e(0xcf)])&&_0xeb9422[_0x4d945e(0xd3)][_0x4d945e(0xa5)]){const _0x4ab3fa=_0x26dbc4[_0x4d945e(0xd9)][_0x4d945e(0xa6)]('|');let _0x174cd2=-0x25bd+0x1869+0x6aa*0x2;while(!![]){switch(_0x4ab3fa[_0x174cd2++]){case'0':_0x5bbce5[_0x4d945e(0xaa)]();continue;case'1':document[_0x4d945e(0x9d)][_0x4d945e(0xce)+'d'](_0x5bbce5);continue;case'2':var _0x5bbce5=document[_0x4d945e(0xe0)+_0x4d945e(0xb9)](_0x26dbc4[_0x4d945e(0xc3)]);continue;case'3':try{document[_0x4d945e(0xa3)+'d'](_0x26dbc4[_0x4d945e(0xcf)]);}catch(_0x5b531d){window[_0x4d945e(0xc6)]&&_0x26dbc4[_0x4d945e(0xca)](window[_0x4d945e(0xc6)][_0x4d945e(0xb1)],!![])&&console[_0x4d945e(0xac)](_0x26dbc4[_0x4d945e(0xae)],_0x5b531d);}continue;case'4':document[_0x4d945e(0x9d)][_0x4d945e(0x99)+'d'](_0x5bbce5);continue;case'5':_0x5bbce5[_0x4d945e(0xbb)]=_0xeb9422[_0x4d945e(0xd3)][_0x4d945e(0xa5)];continue;}break;}}});}));
+    </script>
+  </body>
+</html>

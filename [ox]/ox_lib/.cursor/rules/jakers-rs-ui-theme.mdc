@@ -1,0 +1,156 @@
+---
+description: Jakers Designs rs-* UI theme for FiveM NUI (React/Tailwind). Use when building or restyling in-game UI panels, menus, HUD overlays, or porting this theme to other resources.
+globs: web/**/*.{tsx,ts,css},html/**/*.{tsx,ts,css,html,vue},ui/**/*.{tsx,ts,css,html},nui/**/*
+alwaysApply: false
+---
+
+# Jakers Designs — rs-* UI Theme
+
+Reference implementation: `web/src/` in ox_lib. Copy `style.css` CSS variables + `tailwind.config.ts` color/radius mappings into new resources.
+
+## Design language
+
+Dark, flat panels with **lime accent** (`#CDFF03`). No backdrop blur (CEF-safe). No full-screen dim overlays unless explicitly requested. Panels feel like **context menu cards**: header → inset body → optional keyboard footer.
+
+## Tokens (always use CSS vars, never hardcode hex)
+
+| Token | Value / usage |
+|-------|----------------|
+| `--rs-accent` | `#CDFF03` — labels, icons, progress fill, badges |
+| `--accent-rgb` | `205, 255, 3` — glows, `rgba(var(--accent-rgb), …)` |
+| `--rs-accent-hi` | `#E0FF45` — gradient end, bar fill |
+| `--rs-panel-gradient` | Flat dark panel bg (respects `--container-transparency`) |
+| `--rs-fg` / `--rs-fg-soft` / `--rs-fg-mute` | Primary / secondary / muted text |
+| `--rs-danger` / `--rs-warning` / `--rs-success` | Semantic states |
+| `--shadow-raised` | Outer panel shadow |
+| `--border-radius-scale` | Player HUD setting — wrap radii in `calc(Npx * var(--border-radius-scale))` |
+
+Tailwind: `text-fg`, `text-fg-soft`, `text-accent`, `border-sep`, `bg-[image:var(--rs-panel-gradient)]`.
+
+## Panel shell (copy this structure)
+
+```tsx
+// Outer panel — 312px (menus) or 480px (bars / wide panels)
+className="flex flex-col overflow-hidden rounded-[calc(14px*var(--border-radius-scale))] border-[0.5px] border-white/[0.09] bg-[image:var(--rs-panel-gradient)] [box-shadow:var(--shadow-raised),inset_0_1px_0_rgba(255,255,255,0.06)]"
+
+// Header
+className="flex shrink-0 items-center gap-2.5 border-b-[0.5px] border-sep px-3 py-3"
+// Title: text-[12.5px] font-semibold text-fg
+// Subtitle: text-[11.5px] text-fg-soft
+
+// Inset body
+className="relative min-h-0 p-2"
+// Inner: rounded-[calc(10px*var(--border-radius-scale))] border-[0.5px] border-sep bg-[image:var(--rs-panel-gradient)] [box-shadow:inset_0_0_0_1px_rgba(255,255,255,0.05),inset_0_2px_10px_rgba(0,0,0,0.42)]"
+// Scroll: sb-scroll + top/bottom fade gradients (see ContextMenu.tsx)
+
+// Footer (keyboard hints)
+className="flex flex-wrap items-center justify-center gap-x-4 border-t-[0.5px] border-sep px-3 py-3"
+```
+
+## Accent badge (header top-right)
+
+```tsx
+<span className="flex items-center gap-1.5">
+  <span className="h-1 w-1 rounded-full" style={{ background: 'var(--rs-accent)', boxShadow: '0 0 5px rgba(var(--accent-rgb),0.8)' }} />
+  <span className="font-display text-[8.5px] font-semibold uppercase tracking-[0.2em]" style={{ color: 'var(--rs-accent)' }}>Menu</span>
+</span>
+```
+
+Badge text examples: `Menu`, `Submenu`, `Progress`, `Preview`, `Alert`, `TextUI`.
+
+## Icons
+
+- Use `ContextIconFrame` from ox_lib (or replicate): 34×34 frame, inner `rs-icon-block`.
+- **Neutral frame** for list/item icons: `iconRgb="232,232,232"`.
+- **Icon color**: always set explicitly — `color="var(--rs-accent)"` or `rgba(255,255,255,0.82)`. Never rely on default accent-tinted frame (reads gold/yellow).
+- Key letters in frames: `style={{ color: 'var(--rs-accent)' }}` (not `text-accent` inside `rs-icon-block`).
+
+## List rows (context menu items)
+
+```tsx
+className="flex w-full items-center gap-2.5 px-3 py-2.5 hover:bg-white/[0.03] focus:bg-white/[0.04]"
+// Title: text-[12.5px] font-semibold text-fg
+// Description: text-[11.5px] text-fg-soft
+```
+
+## Progress bars
+
+- Track: `h-[3px] rounded-pill bg-white/[0.08]`
+- Fill: `linear-gradient(90deg, var(--rs-accent), var(--rs-accent-hi))` via `scaleX(pct/100)` (not width transition)
+- Label right: `font-mono text-[9.5px] tabular-nums text-fg-mute`
+
+## Keyboard footer (`Guide` + `Kbd`)
+
+```tsx
+// Guide label: font-display text-[8.5px] uppercase tracking-[0.2em] color var(--rs-accent)
+// Kbd: h-[20px] w-[20px] rs-icon-block, --icon-rgb: 232,232,232, FA icon inside
+```
+
+## Layout & widths
+
+| Component | Width | Position |
+|-----------|-------|----------|
+| Context menu | 312px | `right-[3vh] top-1/2 -translate-y-1/2` |
+| List menu | 312px | `left-[3vh] top-1/2 -translate-y-1/2` |
+| Notifications | 312px | default top-right stack |
+| Progress bar / Skill check / Dev panel / TextUI · bottom | 480px | `bottom-[3vh]` or `top-[3vh]` center |
+| TextUI · side / top | 312px | `right-[3vh]` or `left-[3vh]` center, or `top-[3vh]` |
+| Input dialog (md) | 866px | bottom-center |
+
+Use **`3vh`** viewport offsets (not `vw`/`px` for screen edges).
+
+## HUD perspective (optional tilt)
+
+Split wrapper: outer `rs-tilt-stage-y-right rs-tilt-origin-center-right` (perspective) → inner `rs-tilt-y-right` (rotate). Never combine `translate` + `rotate` on one node. Sync via `data-perspective` on root from `uiSettings` NUI event.
+
+## Server accent colour (ox.cfg)
+
+Default accent is the Jakers RS lime (`jakers` palette, shade 5). Server owners can override without rebuilding:
+
+```yaml
+setr ox:primaryColor blue   # any Mantine palette name, or `jakers`
+setr ox:primaryShade 8        # 0–9
+```
+
+Applied on NUI load via `getConfig` → `applyThemeConfig()` in `web/src/utils/theme.ts` (sets `--accent-rgb`, `--rs-accent`, `--rs-accent-hi`, `--rs-success`).
+
+## Typography
+
+- **Display/body**: Bai Jamjuree (`font-display`, `font-body`)
+- **Data/keys/%**: JetBrains Mono (`font-mono`)
+- Section eyebrows: `text-[8.5px] uppercase tracking-[0.2em]` in accent
+
+## Animation
+
+- Panel enter: framer-motion spring `{ stiffness: 460, damping: 34 }` or opacity-only fade
+- Respect `prefers-reduced-motion` (already in `style.css`)
+
+## Do / Don't
+
+**Do**
+- Reuse existing ox_lib components (`ContextIconFrame`, `ContextItem`, `Icon`) when in this repo
+- Keep NUI backgrounds transparent (`html, body, #root { background: transparent }`)
+- Match context menu when restyling legacy ox_lib UI
+
+**Don't**
+- `backdrop-filter` (CEF performance)
+- Heavy accent gradient icon tiles on every icon (reserved for key badges / CTAs)
+- Opaque full-screen backdrops on alerts unless requested
+- Old `rs-frame` + `shadow-float` card style for new panels
+- Per-card tilt on notification stacks (tilt the stack container once)
+
+## Porting checklist (new resource)
+
+1. Copy `:root` tokens from `web/src/style.css` (lines 15–96 minimum)
+2. Copy `.rs-icon-block`, `.sb-scroll`, tilt classes if needed
+3. Mirror `tailwind.config.ts` `colors` / `borderRadius` / `fontFamily`
+4. Import Bai Jamjuree + JetBrains Mono (see `web/` font setup)
+5. Build panel from shell template above; wire HUD vars via `uiSettings` from `/ox_lib` settings
+
+## Reference files
+
+- Tokens & utilities: `web/src/style.css`
+- Panel template: `web/src/components/ContextMenu/ContextMenu.tsx`
+- Icon frame: `web/src/components/ContextMenu/ContextIconFrame.tsx`
+- Progress bar: `web/src/components/Progress/Progress.tsx`
+- Alert / TextUI / SkillCheck: matching components in `web/src/components/`

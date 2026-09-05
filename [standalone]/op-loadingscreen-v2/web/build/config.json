@@ -1,0 +1,205 @@
+{
+  "logo": "logo.png",
+  "background": {
+    "type": "images",
+    "video": {
+      "url": "https://r2.fivemanage.com/ndFcLdpEBmH5hfeWfIGW9/myvid.mp4  -- This is example how url should look!"
+    },
+    "images": {
+      "folder": "images",
+      "list": ["screen1.png", "screen2.png", "screen3.png", "screen4.png", "screen5.png", "screen6.jpg", "screen7.png"],
+      "intervalMs": 5000
+    }
+  },
+  "music": {
+    "enable": true,
+    "autoplay": true,
+    "loopPlaylist": true,
+    "hideButPlay": false,
+    "volume": 0.15,
+    "playerStyle": "classic",
+    "tracks": [
+      {
+        "id": "track1",
+        "label": "Deaf Havana - Worship",
+        "file": "music/worship.mp3",
+        "image": "music/worship.png"
+      },
+      {
+        "id": "track2",
+        "label": "Elderbrook - Inner Light",
+        "file": "music/inner.mp3",
+        "image": "music/inner.png"
+      }
+    ]
+  },
+  "tips": {
+    "enable": true,
+    "intervalMs": 7000,
+    "list": [
+      "Stay in character at all times — let your character think, react, and speak as they would.",
+      "Give others room to roleplay — don't rush scenes, let stories breathe.",
+      "Actions speak louder than words — use emotes and descriptions to show what your character does.",
+      "Don't force RP — create opportunities, not outcomes.",
+      "Losing is part of RP — let your character fail sometimes, it makes stories better.",
+      "Don't break immersion — avoid using OOC unless absolutely needed.",
+      "Remember: your character isn't you — keep emotions separate.",
+      "Build your story through relationships — talk, interact, form connections.",
+      "Give meaningful reactions — even small events can shape your character.",
+      "Don't chase action — slice-of-life moments often create the best roleplay."
+    ]
+  },
+  "links": {
+    "enable": true,
+    "list": [
+      {
+        "icon": "fa-brands fa-discord",
+        "link": "https://discord.gg/RQArbRYpYj",
+        "label": "Discord"
+      },
+      {
+        "icon": "fa-solid fa-store",
+        "link": "https://otherplanet.dev",
+        "label": "Store"
+      },
+      {
+        "icon": "fa-brands fa-tiktok",
+        "link": "https://tiktok.com/@thekapperdiaries",
+        "label": "TikTok"
+      }
+    ]
+  },
+  "loadingBar": true,
+  "buttons": true,
+  "faq": {
+    "enable": true,
+    "list": [
+      {
+        "icon": "fa-solid fa-circle-question",
+        "q": "What is the server about?",
+        "a": "Our server focuses on immersive roleplay with custom systems, realistic economy, and unique gameplay mechanics."
+      },
+      {
+        "icon": "fa-solid fa-circle-question",
+        "q": "What are the basic RP rules?",
+        "a": "Value your life, avoid RDM/VDM, stay in character, and always roleplay your actions realistically."
+      },
+      {
+        "icon": "fa-solid fa-circle-question",
+        "q": "Can I play with my friends?",
+        "a": "Of course! Just make sure all interactions follow RP rules and don't break immersion for others."
+      },
+      {
+        "icon": "fa-solid fa-circle-question",
+        "q": "Is there economy progression?",
+        "a": "Yes. You can earn money through legal and illegal jobs, purchase vehicles, properties and participate in various activities."
+      },
+      {
+        "icon": "fa-solid fa-circle-question",
+        "q": "What should I do if I encounter a cheater?",
+        "a": "Take a clip and report it on Discord in the proper section. Staff will handle it as fast as possible."
+      },
+      {
+        "icon": "fa-solid fa-circle-question",
+        "q": "Is voice communication required?",
+        "a": "Yes, a working microphone is required for proper voice roleplay and server interactions."
+      },
+      {
+        "icon": "fa-solid fa-circle-question",
+        "q": "Can I create a gang or organization?",
+        "a": "Yes. You can apply for a gang slot through Discord. Approved groups receive custom tools and features."
+      },
+      {
+        "icon": "fa-solid fa-circle-question",
+        "q": "What should I do if I find a bug?",
+        "a": "Record it or describe it clearly and open a ticket on Discord. Developers will review and fix it asap."
+      }
+    ]
+  },
+  "rules": {
+    "enable": true,
+    "list": [
+      {
+        "icon": "fa-solid fa-gun",
+        "name": "RDM",
+        "desc": "Random Deathmatch — killing another player without valid roleplay reason or escalation is strictly forbidden."
+      },
+      {
+        "icon": "fa-solid fa-car-burst",
+        "name": "VDM",
+        "desc": "Vehicle Deathmatch — using a vehicle as a weapon without proper RP context is not allowed."
+      },
+      {
+        "icon": "fa-brands fa-discord",
+        "name": "META GAMING",
+        "desc": "Using OOC information (streams, Discord, etc.) that your character would not know in-game."
+      },
+      {
+        "icon": "fa-solid fa-plug",
+        "name": "POWER GAMING",
+        "desc": "Forcing actions on others without giving them a chance to respond or roleplay out the scene."
+      },
+      {
+        "icon": "fa-solid fa-arrow-right-from-bracket",
+        "name": "COMBAT LOG",
+        "desc": "Disconnecting during an active RP scene or to avoid consequences is prohibited."
+      }
+    ]
+  },
+  "changelog": {
+    "enable": true,
+    "list": [
+      {
+        "name": "Update v2.0.0",
+        "desc": "Brand new modern loading screen with YouTube background support and custom music player."
+      },
+      {
+        "name": "Update v1.0.4",
+        "desc": "Performance improvements and UI polish across multicharacter systems."
+      },
+      {
+        "name": "Update v1.0.3",
+        "desc": "New spawn selector modes and scene creator enhancements."
+      },
+      {
+        "name": "Update v1.0.2",
+        "desc": "Character menu presets — classic, modern, and interactive layouts."
+      },
+      {
+        "name": "Update v1.0.1",
+        "desc": "Initial public release of OP Multicharacter v2."
+      }
+    ]
+  },
+  "keybinds": {
+    "enable": true,
+    "list": [
+      { "key": "U", "desc": "Close/Open Vehicles" },
+      { "key": "L", "desc": "Toggle Lights" },
+      { "key": "CAPS LOCK", "desc": "Open guns menu" },
+      { "key": "T", "desc": "Use Chat" },
+      { "key": "1", "desc": "Toggle Inventory Bind" }
+    ]
+  },
+  "translations": {
+    "loading": "Loading",
+    "nowplay": "Now Playing",
+    "faq": "Frequently Asked Questions",
+    "faqheader": "FAQ",
+    "rules": "Server Rules",
+    "changelog": "Changelog",
+    "keybinds": "Keybinds",
+    "keybinds_header": "Keybinds List",
+    "keybinds_desc": "Click on your keyboard or on the on-screen keyboard to check what the selected key does.",
+    "keybinds_pressed": "Pressed Key",
+    "keybinds_noassigned": "This key has no action assigned",
+    "tip_label": "Tip",
+    "music_mute": "Mute music",
+    "music_play": "Play music",
+    "music_prev": "Previous track",
+    "music_next": "Next track",
+    "music_volume": "Music volume",
+    "bg_volume": "Background volume",
+    "music_from_video": "Audio from background video"
+  }
+}

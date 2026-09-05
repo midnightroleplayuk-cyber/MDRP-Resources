@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080, initial-scale=1.0" />
+    <title>OP Spawn Selector</title>
+    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.1.1/css/all.css" />
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&family=Work+Sans:wght@300;400;600&display=swap');
+
+        :root{
+            --bg: #0a0a0a;
+            --panel: rgba(19, 19, 19, 0.92);
+            --panel-border: rgba(49, 49, 49, 0.85);
+            --text: rgba(255, 255, 255, 0.92);
+            --dim: rgba(255, 255, 255, 0.58);
+            --faint: rgba(255, 255, 255, 0.35);
+            --card-border: rgba(49, 49, 49, 0.90);
+            --card-border-hover: rgba(255, 255, 255, 0.18);
+            --good: rgba(18, 240, 18, 0.85);
+            --good-soft: rgba(18, 240, 18, 0.22);
+        }
+
+        * { box-sizing: border-box; }
+
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 1920px;
+            height: 1080px;
+            overflow: hidden;
+            background:
+                radial-gradient(ellipse 60% 45% at 50% 0%, rgba(255, 255, 255, 0.035) 0%, transparent 55%),
+                radial-gradient(ellipse 60% 45% at 50% 110%, rgba(255, 255, 255, 0.025) 0%, transparent 55%),
+                linear-gradient(180deg, rgba(0,0,0,0.0) 0%, rgba(0,0,0,0.55) 55%, rgba(0,0,0,0.85) 100%),
+                var(--bg);
+            font-family: 'Work Sans', sans-serif;
+        }
+
+        #contentInside {
+            width: 1920px;
+            height: 1080px;
+            position: relative;
+        }
+
+        #wrap {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 72px 0 64px;
+        }
+
+        #frame {
+            width: 1560px;
+            border-radius: 16px;
+            padding: 22px 22px 18px;
+            background: transparent;
+            border: 0;
+            box-shadow: none;
+        }
+
+        #head h1 {
+            margin: 0;
+            text-align: center;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 900;
+            font-size: 82px;
+            color: var(--text);
+            line-height: 1;
+            letter-spacing: 0.4px;
+        }
+
+        #head p {
+            margin: 6px 0 0;
+            text-align: center;
+            font-size: 24px;
+            font-weight: 400;
+            color: var(--dim);
+            line-height: 1;
+        }
+
+        #locations {
+            display: grid;
+            grid-template-columns: 760px 760px;
+            gap: 14px;
+            width: 1530px;
+            margin: 22px auto 0;
+            justify-content: center;
+        }
+
+        .location {
+            position: relative;
+            width: 760px;
+            height: 240px;
+            background-size: cover;
+            background-position: center;
+            border-radius: 14px;
+            border: 1px solid var(--card-border);
+            cursor: pointer;
+            overflow: hidden;
+            box-shadow: 0 10px 28px rgba(0,0,0,0.48);
+            transform: translateZ(0);
+            transition: transform 0.16s ease, filter 0.16s ease, border-color 0.16s ease, box-shadow 0.16s ease;
+        }
+
+        .location.is-selected {
+            border-color: rgba(18, 240, 18, 0.65);
+            box-shadow:
+                0 10px 28px rgba(0,0,0,0.48),
+                0 0 0 2px var(--good-soft);
+        }
+
+        .location.is-hovered:not(.disabled) {
+            transform: translateY(-2px);
+            filter: brightness(0.90) saturate(1.05);
+            border-color: var(--card-border-hover);
+        }
+
+        .location.disabled {
+            cursor: not-allowed;
+            filter: grayscale(0.7);
+        }
+
+        .location h3 {
+            position: absolute;
+            left: 20px;
+            bottom: 20px;
+            margin: 0;
+            font-size: 34px;
+            font-weight: 600;
+            color: var(--text);
+            z-index: 2;
+            text-shadow: 0 10px 26px rgba(0,0,0,0.65);
+        }
+
+        .location .shadow {
+            position: absolute;
+            inset: 0;
+            background:
+                linear-gradient(180deg, rgba(0,0,0,0.10) 0%, rgba(0,0,0,0.78) 78%, rgba(0,0,0,0.92) 100%);
+            pointer-events: none;
+        }
+
+        .badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            display: none;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 16px;
+            border-radius: 999px;
+            color: #fff;
+            z-index: 3;
+            border: 1px solid rgba(255,255,255,0.12);
+            backdrop-filter: blur(8px);
+        }
+
+        .badge.selected {
+            display: flex;
+            background: var(--good);
+            color: rgba(0,0,0,0.92);
+            border-color: rgba(18, 240, 18, 0.35);
+        }
+
+        .badge.disabled {
+            display: flex;
+            background: rgba(240, 18, 18, 0.85);
+        }
+
+        .badge h2 {
+            margin: 0;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 900;
+            font-size: 20px;
+        }
+
+        .badge i { font-size: 24px; }
+
+        #clickChooseBtn {
+            display: block;
+            width: 1530px;
+            margin: 22px auto 0;
+            padding: 18px 0;
+            border: 0;
+            border-radius: 14px;
+            text-align: center;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 900;
+            font-size: 32px;
+            letter-spacing: 0.6px;
+            color: #000;
+            background: radial-gradient(circle, rgb(255, 255, 255) 0%, rgb(165, 165, 165) 100%);
+            box-shadow: 0 14px 34px rgba(0,0,0,0.48);
+            transition: filter 0.18s ease, transform 0.12s ease;
+            cursor: pointer;
+        }
+
+        #clickChooseBtn.is-hovered {
+            filter: brightness(0.92);
+            transform: translateY(-1px);
+        }
+    </style>
+</head>
+<body>
+    <div id="contentInside"></div>
+
+    <script>
+        const BASE_W = 1920;
+        const BASE_H = 1080;
+        const resourceName = (() => {
+            const host = window.location.hostname || '';
+            if (host.startsWith('cfx-nui-')) return host.slice('cfx-nui-'.length);
+            return 'op-multicharacter';
+        })();
+        let currentChoosed = '1';
+
+        function nuiPost(endpoint, payload) {
+            return fetch(`https://${resourceName}/${endpoint}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload || {}),
+            }).catch(() => {});
+        }
+
+        function publishHitRegions() {
+            const regions = [];
+
+            for (let i = 1; i <= 4; i++) {
+                const el = document.getElementById('loc_' + i);
+                if (!el || el.classList.contains('disabled')) continue;
+                const r = el.getBoundingClientRect();
+                regions.push({
+                    name: String(i),
+                    minX: Math.max(0, Math.floor(r.left)),
+                    maxX: Math.min(BASE_W, Math.ceil(r.right)),
+                    minY: Math.max(0, Math.floor(r.top)),
+                    maxY: Math.min(BASE_H, Math.ceil(r.bottom)),
+                });
+            }
+
+            const btn = document.getElementById('clickChooseBtn');
+            if (btn) {
+                const r = btn.getBoundingClientRect();
+                regions.push({
+                    name: 'spawnBtn',
+                    minX: Math.max(0, Math.floor(r.left)),
+                    maxX: Math.min(BASE_W, Math.ceil(r.right)),
+                    minY: Math.max(0, Math.floor(r.top)),
+                    maxY: Math.min(BASE_H, Math.ceil(r.bottom)),
+                });
+            }
+
+            nuiPost('onDuiHitRegions', { regions });
+        }
+
+        function setSelected(id) {
+            currentChoosed = String(id);
+            for (let i = 1; i <= 4; i++) {
+                const el = document.getElementById('loc_' + i);
+                const badge = document.getElementById('choosed_' + i);
+                if (!el) continue;
+                const selected = String(i) === currentChoosed && !el.classList.contains('disabled');
+                el.classList.toggle('is-selected', selected);
+                if (badge) badge.style.display = selected ? 'flex' : 'none';
+            }
+        }
+
+        function setHover(id, active) {
+            const el = document.getElementById('loc_' + id);
+            if (!el || el.classList.contains('disabled')) return;
+            el.classList.toggle('is-hovered', active);
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            nuiPost('onDuiReady', { ready: true });
+        });
+
+        window.addEventListener('message', (event) => {
+            const data = event.data || {};
+
+            if (data.action === 'setDetails') {
+                const root = document.getElementById('contentInside');
+                const isInsideNew = data.isInsideNew === true || data.isNew === true;
+                const locations = data.locations || {};
+
+                const isDisabledLoc = (loc) => isInsideNew && loc && loc.isLastLocation === true;
+
+                const disabledByIndex = {
+                    1: isDisabledLoc(locations.loc_1),
+                    2: isDisabledLoc(locations.loc_2),
+                    3: isDisabledLoc(locations.loc_3),
+                    4: isDisabledLoc(locations.loc_4),
+                };
+
+                currentChoosed = '1';
+                for (let i = 1; i <= 4; i++) {
+                    if (!disabledByIndex[i]) {
+                        currentChoosed = String(i);
+                        break;
+                    }
+                }
+
+                const renderLoc = (idx) => {
+                    const loc = locations['loc_' + idx] || {};
+                    const disabled = disabledByIndex[idx] === true;
+                    const selected = String(idx) === currentChoosed && !disabled;
+
+                    return `
+                        <div class="location${disabled ? ' disabled' : ''}${selected ? ' is-selected' : ''}" id="loc_${idx}"
+                            style="background-image:url('${loc.image || ''}')">
+                            <h3>${loc.label || ''}</h3>
+                            <div class="shadow"></div>
+                            ${disabled ? `
+                                <div class="badge disabled" id="disabled_${idx}">
+                                    <i class="fa-solid fa-circle-xmark"></i>
+                                    <h2>${data.disabled || ''}</h2>
+                                </div>
+                            ` : `
+                                <div class="badge selected" id="choosed_${idx}" style="display:${selected ? 'flex' : 'none'}">
+                                    <i class="fa-solid fa-circle-check"></i>
+                                    <h2>${data.selected || ''}</h2>
+                                </div>
+                            `}
+                        </div>
+                    `;
+                };
+
+                root.innerHTML = `
+                    <div id="wrap">
+                        <div id="frame">
+                            <div id="head">
+                                <h1>${data.header || ''}</h1>
+                                <p>${data.desc || ''}</p>
+                            </div>
+                            <div id="locations">
+                                ${renderLoc(1)}
+                                ${renderLoc(2)}
+                                ${renderLoc(3)}
+                                ${renderLoc(4)}
+                            </div>
+                            <button type="button" id="clickChooseBtn">${data.spawn || ''}</button>
+                        </div>
+                    </div>
+                `;
+
+                requestAnimationFrame(() => {
+                    requestAnimationFrame(publishHitRegions);
+                });
+            }
+
+            if (data.action === 'hover') {
+                setHover(String(data.id), true);
+            } else if (data.action === 'unhover') {
+                setHover(String(data.id), false);
+            } else if (data.action === 'choosed') {
+                setSelected(String(data.id));
+            } else if (data.action === 'button_hover') {
+                const btn = document.getElementById('clickChooseBtn');
+                if (!btn) return;
+                btn.classList.toggle('is-hovered', data.type === 'hover');
+            }
+        });
+    </script>
+</body>
+</html>

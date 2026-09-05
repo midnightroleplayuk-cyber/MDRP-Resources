@@ -1,0 +1,390 @@
+:root {
+
+  --tint-green: linear-gradient(180deg, #2a2a2d 0%, #0f0f11 100%);
+  --tint-green-light: linear-gradient(180deg, #3d3d3f 0%, #1a1a1c 100%);
+  --tint-blue: linear-gradient(180deg, #2a313d 0%, #0f141c 100%);
+  --tint-sky: linear-gradient(180deg, #3a4050 0%, #13181f 100%);
+  --tint-pink: linear-gradient(180deg, #b23a5a 0%, #4a0f1e 100%);
+  --tint-yellow: linear-gradient(135deg, #CDFF03 0%, #a8cc02 100%);
+  --tint-gray: linear-gradient(180deg, #3a3a3c 0%, #111113 100%);
+  --tint-slate: linear-gradient(180deg, #4a4c52 0%, #1a1b1e 100%);
+  --tint-black: linear-gradient(180deg, #1c1c1e 0%, #000 100%);
+  --tint-white: linear-gradient(180deg, #e8e8ea 0%, #9a9a9c 100%);
+  --tint-orange: linear-gradient(180deg, #ff9500 0%, #cc7700 100%);
+
+  --rs-bg:          #101010;
+  --rs-surface-01:  #141414;
+  --rs-surface-02:  #1a1a1a;
+  --rs-surface-03:  #222222;
+
+  /* Accent defaults (Jakers RS). Override at runtime via ox:primaryColor / ox:primaryShade. */
+  /* Player-adjustable via the /ox_lib settings menu (synced at runtime) */
+  --container-transparency: 0.98;
+  --border-radius-scale: 1;
+  --gradient-intensity: 0;
+  --accent-rgb: 205, 255, 3;
+  --accent-hi-rgb: 224, 255, 69;
+
+  --rs-panel:     rgba(16, 16, 16, var(--container-transparency));
+  --rs-panel-hi:  rgba(26, 26, 26, var(--container-transparency));
+
+  /* Accent wash at top — intensity from /ox_lib gradient slider (--gradient-intensity, 0–0.08) */
+  --rs-panel-gradient:
+    linear-gradient(180deg, rgba(var(--accent-rgb), var(--gradient-intensity)) 0%, transparent 42%),
+    linear-gradient(180deg, rgba(16, 16, 16, var(--container-transparency)) 0%, rgba(16, 16, 16, var(--container-transparency)) 100%);
+
+  --rs-surface:    rgba(255, 255, 255, 0.04);
+  --rs-surface-hi: rgba(255, 255, 255, 0.08);
+
+  --rs-fg:      #f5f5f5;
+  --rs-fg-soft: rgba(216, 216, 216, 0.78);
+  --rs-fg-mute: rgba(138, 138, 138, 0.85);
+  --rs-sep:     rgba(var(--accent-rgb), 0.16);
+
+  --rs-accent:      #CDFF03;
+  --rs-accent-hi:   #E0FF45;
+  --rs-accent-soft: rgba(var(--accent-rgb), 0.12);
+  --rs-accent-glow: 0 0 20px rgba(var(--accent-rgb), 0.28);
+
+  --rs-border-glow:  rgba(var(--accent-rgb), 0.15);
+  --rs-border-hover: rgba(var(--accent-rgb), 0.3);
+  --rs-accent-gradient: linear-gradient(135deg, var(--rs-accent) 0%, var(--rs-accent-hi) 100%);
+
+  --rs-danger:  #ef4444;
+  --rs-warning: #ff9500;
+  --rs-success: #CDFF03;
+  --rs-info:    #e8e8e8;
+
+  --danger-rgb:  239, 68, 68;
+  --warning-rgb: 255, 149, 0;
+  --success-rgb: 205, 255, 3;
+  --info-rgb:    232, 232, 232;
+
+  /* CRT scanline texture (mnx_char signature) — CEF-safe, no backdrop-filter */
+  --scanlines: repeating-linear-gradient(to bottom, rgba(255, 255, 255, 0.035) 0px, rgba(255, 255, 255, 0.035) 1px, transparent 1px, transparent 3px);
+
+  --tracking-display:  -0.03em;
+  --tracking-heading:  -0.02em;
+  --tracking-eyebrow:   0.18em;
+
+  --rs-radius-sm:   calc(4px * var(--border-radius-scale));
+  --rs-radius-md:   calc(6px * var(--border-radius-scale));
+  --rs-radius-lg:   calc(8px * var(--border-radius-scale));
+  --rs-radius-xl:   calc(8px * var(--border-radius-scale));
+  --rs-radius-pill: 99px;
+  --rs-radius-icon: calc(6px * var(--border-radius-scale));
+  --rs-radius-full: 50%;
+
+  --shadow-inset-xs:     rgba(255, 255, 255, 0.04) 0px 0px 24px 0px inset;
+  --shadow-inset-sm:     rgba(255, 255, 255, 0.06) 0px 0px 24px 0px inset;
+  --shadow-inset-accent: rgba(var(--accent-rgb), 0.10)   0px -7px 11px 0px inset;
+  --shadow-inset-tile:   inset 0 1px 0 rgba(255, 255, 255, 0.12),
+                         inset 0 -2px 0 rgba(0, 0, 0, 0.18);
+
+  /* Terminal glow shadows */
+  --shadow-glow-sm: 0 0 4px  rgba(var(--accent-rgb), 0.10);
+  --shadow-glow-md: 0 0 8px  rgba(var(--accent-rgb), 0.15);
+  --shadow-glow-lg: 0 0 16px rgba(var(--accent-rgb), 0.20);
+
+  --shadow-card:   0 4px 16px  rgba(0, 0, 0, 0.40);
+  --shadow-raised: 0 6px 16px  rgba(0, 0, 0, 0.38);
+  --shadow-float:  0 20px 60px rgba(0, 0, 0, 0.60), 0 0 0 1px rgba(0, 0, 0, 0.80);
+  --shadow-cta:    0 6px 18px  rgba(var(--accent-rgb), 0.35);
+
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+
+  /* Matches ox_inventory / mnx_char: Bai Jamjuree for body, JetBrains Mono for data readouts */
+  --font-display: 'Bai Jamjuree', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-body:    'Bai Jamjuree', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-mono:    'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+}
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body, #root { width: 100%; height: 100%; }
+
+body {
+  font-family: var(--font-body);
+  color: var(--rs-fg);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow: hidden;
+
+  user-select: none;
+  -webkit-user-select: none;
+  cursor: default;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+  background: transparent;
+  border: none;
+  color: inherit;
+  padding: 0;
+  text-align: inherit;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+input,
+textarea,
+select,
+[contenteditable='true'] {
+  user-select: text;
+  -webkit-user-select: text;
+  cursor: auto;
+}
+
+html,
+body {
+  -webkit-tap-highlight-color: transparent;
+}
+*:focus,
+*:focus-visible {
+  outline: none;
+}
+button,
+a {
+  -webkit-user-drag: none;
+}
+
+::selection {
+  background: rgba(var(--accent-rgb), 0.3);
+  color: #fff;
+}
+
+html { color-scheme: normal !important; }
+html, body, #root {
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
+}
+
+.sb-scroll {
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.sb-scroll::-webkit-scrollbar { width: 0; height: 0; display: none; }
+
+/* ── Corner bracket frames (mnx_char signature) ──────────────
+   L-shaped accent ticks on a panel's outer corners. Curves to
+   match the panel radius (--rs-radius-lg, scales with the slider). */
+.rs-frame { position: relative; }
+.rs-frame::before,
+.rs-frame::after {
+  content: '';
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  border-color: rgba(var(--accent-rgb), 0.5);
+  pointer-events: none;
+  z-index: 3;
+}
+.rs-frame::before {
+  top: -1px; left: -1px;
+  border-top: 1px solid; border-left: 1px solid;
+  border-top-left-radius: var(--rs-radius-lg);
+}
+.rs-frame::after {
+  bottom: -1px; right: -1px;
+  border-bottom: 1px solid; border-right: 1px solid;
+  border-bottom-right-radius: var(--rs-radius-lg);
+}
+/* Inset variant for panels that clip overflow */
+.rs-frame-inset::before { top: 0; left: 0; }
+.rs-frame-inset::after { bottom: 0; right: 0; }
+
+/* Recessed square icon tile (notifications) */
+.rs-icon-block {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background:
+    linear-gradient(180deg, rgba(0, 0, 0, 0.5) 0%, rgba(0, 0, 0, 0) 42%),
+    linear-gradient(0deg, rgba(0, 0, 0, 0.38) 0%, rgba(0, 0, 0, 0) 46%),
+    linear-gradient(180deg, var(--rs-surface-03) 0%, var(--rs-bg) 100%);
+  border: 0.5px solid rgba(255, 255, 255, 0.05);
+  border-radius: var(--rs-radius-md);
+  box-shadow:
+    inset 0 4px 10px rgba(0, 0, 0, 0.78),
+    inset 0 1px 3px rgba(0, 0, 0, 0.55),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.04);
+}
+.rs-icon-block::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  box-shadow: inset 0 1px 0 rgba(var(--icon-rgb, var(--accent-rgb)), 0.18);
+}
+
+/* ── Scanline header texture (mnx_char signature) ────────────
+   Faint CRT lines layered over a header via an overlay pseudo. */
+.rs-scanlines { position: relative; }
+.rs-scanlines::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--scanlines);
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.alert-md { font-size: 13.5px; line-height: 1.55; color: var(--rs-fg-soft); }
+.alert-md > *:first-child { margin-top: 0; }
+.alert-md > *:last-child { margin-bottom: 0; }
+.alert-md p { margin: 0 0 8px; }
+.alert-md strong { color: var(--rs-fg); font-weight: 600; }
+.alert-md em { font-style: italic; }
+.alert-md a { color: var(--rs-accent); text-decoration: none; }
+.alert-md a:hover { text-decoration: underline; }
+.alert-md ul, .alert-md ol { margin: 0 0 8px; padding-left: 18px; }
+.alert-md li { margin: 2px 0; }
+.alert-md code {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  background: var(--rs-surface-02);
+  border: 0.5px solid rgba(255, 255, 255, 0.08);
+  border-radius: 5px;
+  padding: 1px 5px;
+}
+.alert-md h1, .alert-md h2, .alert-md h3 {
+  color: var(--rs-fg);
+  font-weight: 600;
+  letter-spacing: var(--tracking-heading);
+  margin: 4px 0 6px;
+}
+.alert-md h1 { font-size: 17px; }
+.alert-md h2 { font-size: 15px; }
+.alert-md h3 { font-size: 14px; }
+.alert-md hr { border: none; border-top: 0.5px solid var(--rs-sep); margin: 10px 0; }
+.alert-md.centered { text-align: center; }
+.alert-md.centered ul, .alert-md.centered ol { display: inline-block; text-align: left; }
+
+.textui-md { font-size: 14px; line-height: 1.4; color: var(--rs-fg); }
+.textui-md p { margin: 0; }
+.textui-md p + p { margin-top: 4px; }
+.textui-md strong { color: var(--rs-fg); font-weight: 600; }
+.textui-md em { font-style: italic; }
+.textui-md code {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  background: var(--rs-surface-02);
+  border: 0.5px solid rgba(255, 255, 255, 0.08);
+  border-radius: 5px;
+  padding: 1px 5px;
+}
+
+.star-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 3px;
+  border-radius: 100px;
+  background: rgba(255, 255, 255, 0.1);
+  outline: none;
+  cursor: pointer;
+}
+.star-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--rs-accent) 0%, var(--rs-accent-hi) 100%);
+  box-shadow: 0 0 8px rgba(var(--accent-rgb), 0.5);
+  cursor: pointer;
+}
+.star-slider::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border: none;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--rs-accent) 0%, var(--rs-accent-hi) 100%);
+  box-shadow: 0 0 8px rgba(var(--accent-rgb), 0.5);
+  cursor: pointer;
+}
+
+@keyframes screen-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+@keyframes pulse-dot {
+  0%, 100% { opacity: 0.55; transform: scale(0.82); }
+  50%      { opacity: 1;    transform: scale(1.1); }
+}
+@keyframes shake {
+  10%, 90% { transform: translateX(-1px); }
+  20%, 80% { transform: translateX(2px); }
+  30%, 50%, 70% { transform: translateX(-5px); }
+  40%, 60% { transform: translateX(5px); }
+}
+.animate-shake { animation: shake 0.4s cubic-bezier(0.36, 0.07, 0.19, 0.97) both; }
+
+input[type='number']::-webkit-inner-spin-button,
+input[type='number']::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+input[type='number'] { -moz-appearance: textfield; appearance: textfield; }
+
+/* HUD perspective setting (data-perspective synced from /ox_lib settings).
+   Stage holds perspective; inner node rotates. Keeps fixed anchors stable. */
+.rs-tilt-stage-y-right,
+.rs-tilt-stage-y-left,
+.rs-tilt-y-right,
+.rs-tilt-y-left {
+  transform-style: preserve-3d;
+}
+[data-perspective='tilt-10'] .rs-tilt-stage-y-right,
+[data-perspective='tilt-20'] .rs-tilt-stage-y-right,
+[data-perspective='tilt-30'] .rs-tilt-stage-y-right,
+[data-perspective='tilt-10'] .rs-tilt-stage-y-left,
+[data-perspective='tilt-20'] .rs-tilt-stage-y-left,
+[data-perspective='tilt-30'] .rs-tilt-stage-y-left {
+  perspective: 1600px;
+}
+.rs-tilt-origin-top-right { perspective-origin: right top; }
+.rs-tilt-origin-center-right { perspective-origin: right center; }
+.rs-tilt-origin-bottom-right { perspective-origin: right bottom; }
+.rs-tilt-origin-top-left { perspective-origin: left top; }
+.rs-tilt-origin-center-left { perspective-origin: left center; }
+.rs-tilt-origin-bottom-left { perspective-origin: left bottom; }
+/* Top/bottom stacks share the context-menu rotation axis (viewport right @ 50vh). */
+.rs-tilt-axis-viewport-y-right { perspective-origin: right calc(50vh - 3vh); }
+.rs-tilt-axis-viewport-y-right > .rs-tilt-y-right { transform-origin: right calc(50vh - 3vh); }
+.rs-tilt-axis-viewport-y-left { perspective-origin: left calc(50vh - 3vh); }
+.rs-tilt-axis-viewport-y-left > .rs-tilt-y-left { transform-origin: left calc(50vh - 3vh); }
+.rs-tilt-axis-viewport-y-right-bottom { perspective-origin: right calc(100% - 47vh); }
+.rs-tilt-axis-viewport-y-right-bottom > .rs-tilt-y-right { transform-origin: right calc(100% - 47vh); }
+.rs-tilt-axis-viewport-y-left-bottom { perspective-origin: left calc(100% - 47vh); }
+.rs-tilt-axis-viewport-y-left-bottom > .rs-tilt-y-left { transform-origin: left calc(100% - 47vh); }
+.rs-tilt-y-right { transform-origin: right center; }
+.rs-tilt-y-left { transform-origin: left center; }
+.rs-tilt-origin-top-right .rs-tilt-y-right { transform-origin: right top; }
+.rs-tilt-origin-center-right .rs-tilt-y-right { transform-origin: right center; }
+.rs-tilt-origin-bottom-right .rs-tilt-y-right { transform-origin: right bottom; }
+.rs-tilt-origin-top-left .rs-tilt-y-left { transform-origin: left top; }
+.rs-tilt-origin-center-left .rs-tilt-y-left { transform-origin: left center; }
+.rs-tilt-origin-bottom-left .rs-tilt-y-left { transform-origin: left bottom; }
+[data-perspective='tilt-10'] .rs-tilt-y-right { transform: rotateY(-8.5deg); }
+[data-perspective='tilt-20'] .rs-tilt-y-right { transform: rotateY(-15deg); }
+[data-perspective='tilt-30'] .rs-tilt-y-right { transform: rotateY(-20deg); }
+[data-perspective='tilt-10'] .rs-tilt-y-left { transform: rotateY(8.5deg); }
+[data-perspective='tilt-20'] .rs-tilt-y-left { transform: rotateY(15deg); }
+[data-perspective='tilt-30'] .rs-tilt-y-left { transform: rotateY(20deg); }

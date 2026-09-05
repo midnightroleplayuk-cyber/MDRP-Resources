@@ -1,0 +1,577 @@
+{
+    "shops": {
+        "grapeseed": {
+            "coords": {
+                "z": 42.06315231323242,
+                "w": 352.9936218261719,
+                "x": 1693.8143310546876,
+                "y": 4826.33935546875
+            },
+            "pricing": {
+                "modules": {
+                    "clothing": 25
+                }
+            },
+            "fittingRoom": {
+                "w": 352.9936218261719,
+                "radius": 5,
+                "z": 42.06315231323242,
+                "x": 1693.8143310546876,
+                "y": 4826.33935546875
+            },
+            "template": "defaultstore",
+            "label": "Clothing Shop",
+            "allowedCategories": "all",
+            "blip": {
+                "shortRange": true,
+                "sprite": 73,
+                "enabled": true,
+                "scale": 0.8,
+                "color": 47
+            }
+        },
+        "tattoo_paleto": {
+            "coords": {
+                "z": 31.48833847045898,
+                "w": 53.58670425415039,
+                "x": -294.0353088378906,
+                "y": 6199.41748046875
+            },
+            "blip": {
+                "shortRange": true,
+                "sprite": 75,
+                "enabled": true,
+                "scale": 0.8,
+                "color": 1
+            },
+            "fittingRoom": {
+                "w": 53.58670425415039,
+                "radius": 3,
+                "z": 31.48833847045898,
+                "x": -294.0353088378906,
+                "y": 6199.41748046875
+            },
+            "template": "tattoo",
+            "label": "Tattoo Parlor",
+            "allowedCategories": "all"
+        },
+        "barber_ghetto": {
+            "coords": {
+                "z": 29.2914867401123,
+                "w": 314.521484375,
+                "x": 136.15972900390626,
+                "y": -1708.2130126953126
+            },
+            "blip": {
+                "shortRange": true,
+                "sprite": 71,
+                "enabled": true,
+                "scale": 0.8,
+                "color": 25
+            },
+            "fittingRoom": {
+                "w": 314.521484375,
+                "radius": 4,
+                "z": 29.2914867401123,
+                "x": 136.15972900390626,
+                "y": -1708.2130126953126
+            },
+            "template": "barber",
+            "label": "Barber Shop",
+            "allowedCategories": "all"
+        },
+        "maskshop": {
+            "coords": {
+                "z": 4.88159704208374,
+                "w": 108.80284881591796,
+                "x": -1338.43994140625,
+                "y": -1277.613525390625
+            },
+            "blip": {
+                "shortRange": true,
+                "sprite": 362,
+                "enabled": true,
+                "scale": 0.8,
+                "color": 0
+            },
+            "fittingRoom": {
+                "w": 108.80284881591796,
+                "radius": 4,
+                "z": 4.88159704208374,
+                "x": -1338.43994140625,
+                "y": -1277.613525390625
+            },
+            "template": "mask",
+            "label": "Mask Shop"
+        },
+        "binco3": {
+            "coords": {
+                "z": 11.32922077178955,
+                "w": 188.56814575195313,
+                "x": -824.00830078125,
+                "y": -1074.62255859375
+            },
+            "blip": {
+                "shortRange": true,
+                "sprite": 73,
+                "enabled": true,
+                "scale": 0.8,
+                "color": 47
+            },
+            "fittingRoom": {
+                "w": 188.56814575195313,
+                "radius": 6,
+                "z": 11.32922077178955,
+                "x": -824.01171875,
+                "y": -1074.6138916015626
+            },
+            "template": "binco",
+            "logo": "binco.png",
+            "label": "Binco"
+        },
+        "barber_vinewood": {
+            "coords": {
+                "z": 57.07115173339844,
+                "w": 159.82327270507813,
+                "x": -32.718017578125,
+                "y": -152.59445190429688
+            },
+            "blip": {
+                "shortRange": true,
+                "sprite": 71,
+                "enabled": true,
+                "scale": 0.8,
+                "color": 25
+            },
+            "fittingRoom": {
+                "w": 159.82327270507813,
+                "radius": 4,
+                "z": 57.07115173339844,
+                "x": -32.718017578125,
+                "y": -152.59445190429688
+            },
+            "template": "barber",
+            "label": "Barber Shop",
+            "allowedCategories": "all"
+        },
+        "tattoo_highway": {
+            "coords": {
+                "z": 20.82918548583984,
+                "w": 339.2193908691406,
+                "x": -3170.13037109375,
+                "y": 1075.836181640625
+            },
+            "blip": {
+                "shortRange": true,
+                "sprite": 75,
+                "enabled": true,
+                "scale": 0.8,
+                "color": 1
+            },
+            "fittingRoom": {
+                "w": 339.2193908691406,
+                "radius": 2.5,
+                "z": 20.82918548583984,
+                "x": -3170.13037109375,
+                "y": 1075.836181640625
+            },
+            "template": "tattoo",
+            "label": "Tattoo Parlor",
+            "allowedCategories": "all"
+        },
+        "ponsonbys_3": {
+            "coords": {
+                "z": 49.80441284179687,
+                "w": 168.88473510742188,
+                "x": -1453.397705078125,
+                "y": -236.06515502929688
+            },
+            "blip": {
+                "shortRange": true,
+                "sprite": 73,
+                "enabled": true,
+                "scale": 0.8,
+                "color": 4
+            },
+            "fittingRoom": {
+                "w": 168.88473510742188,
+                "radius": 6,
+                "z": 49.80441284179687,
+                "x": -1453.397705078125,
+                "y": -236.06515502929688
+            },
+            "pricing": {
+                "modules": {
+                    "clothing": 90
+                }
+            },
+            "allowedCategories": "all",
+            "logo": "ponsonbys.png",
+            "template": "ponsonbys",
+            "label": "Ponsonbys"
+        },
+        "barber_paleto": {
+            "coords": {
+                "z": 31.69550514221191,
+                "w": 227.1664123535156,
+                "x": -278.9394226074219,
+                "y": 6228.95556640625
+            },
+            "blip": {
+                "shortRange": true,
+                "sprite": 71,
+                "enabled": true,
+                "scale": 0.8,
+                "color": 25
+            },
+            "fittingRoom": {
+                "w": 227.1664123535156,
+                "radius": 4,
+                "z": 31.69550514221191,
+                "x": -278.9394226074219,
+                "y": 6228.95556640625
+            },
+            "template": "barber",
+            "label": "Barber Shop",
+            "allowedCategories": "all"
+        },
+        "tattoo": {
+            "coords": {
+                "z": 52.27526473999023,
+                "w": 39.33711624145508,
+                "x": 1323.0394287109376,
+                "y": -1652.4898681640626
+            },
+            "blip": {
+                "shortRange": true,
+                "sprite": 75,
+                "enabled": true,
+                "scale": 0.8,
+                "color": 1
+            },
+            "fittingRoom": {
+                "w": 39.33711624145508,
+                "radius": 3,
+                "z": 52.27526473999023,
+                "x": 1323.0394287109376,
+                "y": -1652.4898681640626
+            },
+            "template": "tattoo",
+            "label": "Tattoo Parlor"
+        },
+        "barber": {
+            "coords": {
+                "z": 32.84442138671875,
+                "w": 19.70942497253418,
+                "x": 1932.0445556640626,
+                "y": 3729.34326171875
+            },
+            "blip": {
+                "shortRange": true,
+                "sprite": 71,
+                "enabled": true,
+                "scale": 0.8,
+                "color": 25
+            },
+            "fittingRoom": {
+                "w": 19.70942497253418,
+                "radius": 4,
+                "z": 32.84442138671875,
+                "x": 1932.0445556640626,
+                "y": 3729.34326171875
+            },
+            "template": "barber",
+            "label": "Barber Shop"
+        },
+        "suburban_1": {
+            "coords": {
+                "z": 54.55781936645508,
+                "w": 156.2669677734375,
+                "x": 124.14735412597656,
+                "y": -218.55679321289066
+            },
+            "blip": {
+                "shortRange": true,
+                "sprite": 73,
+                "enabled": true,
+                "scale": 0.8,
+                "color": 47
+            },
+            "fittingRoom": {
+                "w": 156.2669677734375,
+                "radius": 7,
+                "z": 54.55781936645508,
+                "x": 124.14735412597656,
+                "y": -218.55679321289066
+            },
+            "template": "suburban",
+            "logo": "suburban.png",
+            "label": "Suburban"
+        },
+        "ghetto": {
+            "coords": {
+                "z": 29.37584495544433,
+                "w": 282.9700927734375,
+                "x": 74.04667663574219,
+                "y": -1396.447021484375
+            },
+            "blip": {
+                "shortRange": true,
+                "sprite": 73,
+                "enabled": true,
+                "scale": 0.8,
+                "color": 47
+            },
+            "fittingRoom": {
+                "w": 282.9700927734375,
+                "radius": 5,
+                "z": 29.37584495544433,
+                "x": 74.04667663574219,
+                "y": -1396.447021484375
+            },
+            "template": "defaultstore",
+            "label": "Clothing Shop"
+        },
+        "ponsonbys_2": {
+            "coords": {
+                "z": 37.41514587402344,
+                "w": 282.3087158203125,
+                "x": -713.025390625,
+                "y": -155.2489776611328
+            },
+            "blip": {
+                "shortRange": true,
+                "sprite": 73,
+                "enabled": true,
+                "scale": 0.8,
+                "color": 4
+            },
+            "fittingRoom": {
+                "w": 282.3087158203125,
+                "radius": 6.5,
+                "z": 37.41514587402344,
+                "x": -713.025390625,
+                "y": -155.2489776611328
+            },
+            "template": "ponsonbys",
+            "logo": "ponsonbys.png",
+            "label": "Ponsonbys"
+        },
+        "tattoo_beach": {
+            "coords": {
+                "z": 4.95445871353149,
+                "w": 120.75211334228516,
+                "x": -1153.9549560546876,
+                "y": -1426.10791015625
+            },
+            "blip": {
+                "shortRange": true,
+                "sprite": 75,
+                "enabled": true,
+                "scale": 0.8,
+                "color": 1
+            },
+            "fittingRoom": {
+                "w": 120.75211334228516,
+                "radius": 3,
+                "z": 4.95445871353149,
+                "x": -1153.9549560546876,
+                "y": -1426.10791015625
+            },
+            "template": "tattoo",
+            "label": "Tattoo Parlor",
+            "allowedCategories": "all"
+        },
+        "paletobay": {
+            "coords": {
+                "z": 31.87786674499511,
+                "w": 299.3838195800781,
+                "x": 7.27015209197998,
+                "y": 6514.51123046875
+            },
+            "pricing": {
+                "modules": {
+                    "clothing": 25
+                }
+            },
+            "fittingRoom": {
+                "w": 299.3838195800781,
+                "radius": 5,
+                "z": 31.87786674499511,
+                "x": 7.27015209197998,
+                "y": 6514.51123046875
+            },
+            "template": "defaultstore",
+            "label": "Clothing Shop",
+            "allowedCategories": "all",
+            "blip": {
+                "shortRange": true,
+                "sprite": 73,
+                "enabled": true,
+                "scale": 0.8,
+                "color": 47
+            }
+        },
+        "suburban_highway": {
+            "coords": {
+                "z": 20.86320495605468,
+                "w": 152.9049072265625,
+                "x": -3171.697509765625,
+                "y": 1048.936279296875
+            },
+            "blip": {
+                "shortRange": true,
+                "sprite": 73,
+                "enabled": true,
+                "scale": 0.8,
+                "color": 47
+            },
+            "fittingRoom": {
+                "w": 152.9049072265625,
+                "radius": 7,
+                "z": 20.86320495605468,
+                "x": -3171.697509765625,
+                "y": 1048.936279296875
+            },
+            "pricing": {
+                "modules": {
+                    "clothing": 55
+                }
+            },
+            "allowedCategories": "all",
+            "logo": "suburban.png",
+            "template": "suburban",
+            "label": "Suburban"
+        },
+        "binco_2": {
+            "coords": {
+                "z": 29.49111366271972,
+                "w": 143.89505004882813,
+                "x": 425.532958984375,
+                "y": -802.4736328125
+            },
+            "blip": {
+                "shortRange": true,
+                "sprite": 73,
+                "enabled": true,
+                "scale": 0.8,
+                "color": 47
+            },
+            "fittingRoom": {
+                "w": 143.89505004882813,
+                "radius": 6,
+                "z": 29.49111366271972,
+                "x": 425.532958984375,
+                "y": -802.4736328125
+            },
+            "pricing": {
+                "modules": {
+                    "clothing": 35
+                }
+            },
+            "allowedCategories": "all",
+            "logo": "binco.png",
+            "template": "binco",
+            "label": "Binco"
+        },
+        "ponsonbys_1": {
+            "coords": {
+                "z": 39.73331451416016,
+                "w": 250.6908416748047,
+                "x": -160.87777709960938,
+                "y": -302.9795532226563
+            },
+            "blip": {
+                "shortRange": true,
+                "sprite": 73,
+                "enabled": true,
+                "scale": 0.8,
+                "color": 4
+            },
+            "fittingRoom": {
+                "w": 250.6908416748047,
+                "radius": 6,
+                "z": 39.73331451416016,
+                "x": -160.87777709960938,
+                "y": -302.9795532226563
+            },
+            "template": "ponsonbys",
+            "logo": "ponsonbys.png",
+            "label": "Ponsonbys"
+        },
+        "tattoo_vinewood": {
+            "coords": {
+                "z": 103.58643341064452,
+                "w": 290.9552917480469,
+                "x": 322.1933288574219,
+                "y": 180.64256286621098
+            },
+            "blip": {
+                "shortRange": true,
+                "sprite": 75,
+                "enabled": true,
+                "scale": 0.8,
+                "color": 1
+            },
+            "fittingRoom": {
+                "w": 290.9552917480469,
+                "radius": 3,
+                "z": 103.58643341064452,
+                "x": 322.1933288574219,
+                "y": 180.64256286621098
+            },
+            "template": "tattoo",
+            "label": "Tattoo Parlor",
+            "allowedCategories": "all"
+        },
+        "sandy": {
+            "coords": {
+                "z": 19.10786628723144,
+                "w": 295.4609375,
+                "x": -1103.1427001953126,
+                "y": 2708.27294921875
+            },
+            "pricing": {
+                "modules": {
+                    "clothing": 25
+                }
+            },
+            "fittingRoom": {
+                "w": 295.4609375,
+                "radius": 5,
+                "z": 19.10786628723144,
+                "x": -1103.1427001953126,
+                "y": 2708.27294921875
+            },
+            "template": "defaultstore",
+            "label": "Clothing Shop",
+            "allowedCategories": "all",
+            "blip": {
+                "shortRange": true,
+                "sprite": 73,
+                "enabled": true,
+                "scale": 0.8,
+                "color": 47
+            }
+        }
+    },
+    "templates": {
+        "defaultstore": {
+            "label": "Clothing Store",
+            "pricing": {
+                "modules": {
+                    "clothing": 25
+                }
+            },
+            "allowedCategories": "all",
+            "type": "clothing",
+            "blip": {
+                "shortRange": true,
+                "sprite": 73,
+                "enabled": true,
+                "scale": 0.8,
+                "color": 0
+            }
+        }
+    }
+}

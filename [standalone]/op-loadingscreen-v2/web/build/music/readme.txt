@@ -1,0 +1,1 @@
+.mp3 and .png files are not shipped with script.

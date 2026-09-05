@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>CX Chat</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+    <link rel="stylesheet" href="css/themes.css" />
+    <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+    <div id="root">
+
+        <div id="msg-wrap">
+            <div id="msgs"></div>
+        </div>
+
+        <div id="inp-panel">
+            <div class="inp-header">
+                <div class="ch-badge" id="ch-label">
+                    <i class="fa-solid fa-earth-americas"></i> Global
+                </div>
+                <div class="inp-header-right">
+                    <button class="btn-theme-picker" id="btn-move" title="Move Chat">
+                        <i class="fa-solid fa-up-down-left-right"></i>
+                    </button>
+                    <button class="btn-theme-picker" id="btn-theme-picker" title="Change Theme">
+                        <i class="fa-solid fa-palette"></i>
+                    </button>
+                    <button class="btn-report" id="btn-quick-report">
+                        <i class="fa-solid fa-shield-halved"></i> Report
+                    </button>
+                </div>
+            </div>
+            <div style="position:relative;">
+                <input
+                    type="text"
+                    id="chat-inp"
+                    placeholder="Type a message or /command..."
+                    autocomplete="off"
+                    spellcheck="false"
+                />
+                <div id="cmd-popup"></div>
+            </div>
+        </div>
+
+    </div>
+
+    <div id="report-ui">
+        <div class="rep-head">
+            <span>Submit Report</span>
+            <i class="fa-solid fa-xmark rep-close" id="rep-close"></i>
+        </div>
+        <div class="rep-body">
+
+            <div class="custom-dd" id="dd-cat">
+                <div class="dd-header">
+                    <span id="dd-cat-val">Select Category</span>
+                    <i class="fa-solid fa-chevron-down"></i>
+                </div>
+                <div class="dd-list" id="dd-cat-list"></div>
+            </div>
+
+            <div class="custom-dd" id="dd-player" style="display:none;">
+                <div class="dd-header">
+                    <span id="dd-player-val">Loading nearby players...</span>
+                    <i class="fa-solid fa-chevron-down"></i>
+                </div>
+                <div class="dd-list" id="dd-player-list"></div>
+            </div>
+
+            <textarea id="rep-ta" placeholder="Describe your issue in detail..."></textarea>
+
+            <div class="rep-foot">
+                <span class="rep-len" id="rep-len">0 / 512</span>
+                <button class="rep-btn" id="rep-send">Send Report</button>
+            </div>
+
+        </div>
+    </div>
+
+    <div id="theme-picker">
+        <div class="tp-backdrop" id="tp-backdrop"></div>
+        <div class="tp-panel">
+            <div class="tp-head">
+                <div class="tp-title">
+                    <i class="fa-solid fa-palette"></i>
+                    <span>Choose Theme</span>
+                </div>
+                <i class="fa-solid fa-xmark tp-close" id="tp-close"></i>
+            </div>
+            <div class="tp-preview" id="tp-preview">
+                <div class="tp-preview-msg">
+                    <span class="tp-preview-tag">PREVIEW</span>
+                    <span class="tp-preview-name">Player Name:</span>
+                    <span class="tp-preview-text">This is what your chat will look like.</span>
+                </div>
+                <div class="tp-preview-msg tp-preview-sys">
+                    <span class="tp-preview-tag tp-sys-tag">SYSTEM</span>
+                    <span class="tp-preview-text">Server message example here.</span>
+                </div>
+            </div>
+            <div class="tp-grid" id="tp-grid"></div>
+            <div class="tp-foot">
+                <span class="tp-hint">Hover to preview · Click to apply</span>
+                <button class="tp-apply-btn" id="tp-apply">Apply Theme</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/chat.js"></script>
+    <script src="js/ui-utils.js"></script>
+    <script src="js/reactions.js"></script>
+    <script src="js/mentions.js"></script>
+    <script src="js/quick-actions.js"></script>
+    <script src="js/features.js"></script>
+    <script src="js/commands.js"></script>
+    <script src="js/report.js"></script>
+    <script src="js/theme-picker.js"></script>
+    <script src="js/reposition.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,1331 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LG Bank</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body>
+    
+    <div id="notification-popup" class="notification-popup"></div>
+
+    <div id="bankPrompt">
+      <div class="bank-name"></div>
+      <div class="key-prompt">Press <span class="key">E</span> to access bank</div>
+  </div>
+
+  <div id="atmPrompt">
+    <div class="key-prompt">Press <span class="key">E</span> to access Cashpoint</div>
+  </div>
+
+<div id="banking-ui" class="hidden">
+  <div class="bank-container">
+    <div class="bank-layout">
+      <aside class="bank-sidebar">
+        <div class="logo use-image">
+          <img src="images/logos/logo.png" alt="LG Bank" class="logo-img">
+          <div class="logo-glow"></div>
+        </div>
+        <nav class="tabs">
+              <div class="tabs-top">
+                <button id="personal-tab" class="tab active">
+                  <i class="fas fa-user"></i>
+                  <span>Personal</span>
+                  <div class="tab-highlight"></div>
+                </button>
+                <button id="business-tab" class="tab">
+                  <i class="fas fa-briefcase"></i>
+                  <span>Business</span>
+                  <div class="tab-highlight"></div>
+                </button>
+                <button id="savings-tab" class="tab">
+                  <i class="fas fa-piggy-bank"></i>
+                  <span>Savings</span>
+                  <div class="tab-highlight"></div>
+                </button>
+                <button id="joint-tab" class="tab">
+                  <i class="fas fa-users"></i>
+                  <span>Joint Account</span>
+                  <div class="tab-highlight"></div>
+                </button>
+                <button id="payee-tab" class="tab">
+                  <i class="fas fa-plus"></i>
+                  <span>Payees</span>
+                  <div class="tab-highlight"></div>
+                </button>
+                <button id="personal-transactions-tab" class="tab">
+                  <i class="fas fa-list"></i>
+                  <span>Personal Transactions</span>
+                  <div class="tab-highlight"></div>
+                </button>
+                <button id="business-transactions-tab" class="tab">
+                  <i class="fas fa-list"></i>
+                  <span>Business Transactions</span>
+                  <div class="tab-highlight"></div>
+                </button>
+                <button id="invoices-tab" class="tab">
+                  <i class="fas fa-file-invoice"></i>
+                  <span>Invoices</span>
+                  <div class="tab-highlight"></div>
+                </button>
+                <button id="standing-orders-tab" class="tab">
+                  <i class="fas fa-calendar-alt"></i>
+                  <span>Standing Orders</span>
+                  <div class="tab-highlight"></div>
+                </button>
+                <button id="loans-tab" class="tab">
+                  <i class="fas fa-hand-holding-usd"></i>
+                  <span>Loans</span>
+                  <div class="tab-highlight"></div>
+                </button>
+              </div>
+              <div class="tabs-bottom">
+                <button id="settings-tab" class="tab">
+                  <i class="fas fa-cog"></i>
+                  <span>Settings</span>
+                  <div class="tab-highlight"></div>
+                </button>
+              </div>
+            </nav>
+          </aside>
+
+          <main class="bank-main">
+
+<div id="standing-orders-section" class="account-section hidden">
+  <h1>Standing Orders</h1>
+  <form id="create-standing-order-form">
+    <div class="input-group">
+      <label for="standing-order-account">Recipient Account Number</label>
+      <input type="text" id="standing-order-account" placeholder="Account Number" required>
+    </div>
+    <div class="input-group">
+      <label for="standing-order-sortcode">Recipient Sort Code</label>
+      <input type="text" id="standing-order-sortcode" placeholder="Sort Code" required>
+    </div>
+    <div class="input-group">
+      <label for="standing-order-amount">Amount (£)</label>
+      <input type="number" id="standing-order-amount" placeholder="Enter amount" step="0.01" required>
+    </div>
+    <div class="input-group">
+      <label for="standing-order-frequency">Frequency</label>
+      <select id="standing-order-frequency">
+        <option value="Daily">Daily</option>
+        <option value="Weekly">Weekly</option>
+        <option value="Monthly">Monthly</option>
+      </select>
+    </div>
+    <div class="input-group">
+      <label for="standing-order-next-due">Next Due Date</label>
+      <input type="text" id="standing-order-next-due" placeholder="dd/MM/yyyy HH:mm" required>
+    </div>
+    <div class="input-group">
+      <label for="standing-order-nickname">Nickname</label>
+      <input type="text" id="standing-order-nickname" placeholder="e.g. Rent Payment">
+    </div>
+    <div class="modal-actions">
+      <button type="submit" class="invoice-btn pay">Create Standing Order</button>
+      <button type="button" class="invoice-btn cancel" id="cancel-standing-order-form">Cancel</button>
+    </div>
+  </form>
+
+  <div id="standing-orders-list">
+
+  </div>
+</div>
+
+<div id="edit-standing-order-modal" class="modal hidden">
+  <div class="modal-content">
+    <h2>Edit Standing Order</h2>
+    <form id="edit-standing-order-form">
+      <input type="hidden" id="edit-standing-order-id">
+      <div class="input-group">
+        <label for="edit-standing-order-account">Recipient Account Number</label>
+        <input type="text" id="edit-standing-order-account" required>
+      </div>
+      <div class="input-group">
+        <label for="edit-standing-order-sortcode">Recipient Sort Code</label>
+        <input type="text" id="edit-standing-order-sortcode" required>
+      </div>
+      <div class="input-group">
+        <label for="edit-standing-order-amount">Amount (£)</label>
+        <input type="number" id="edit-standing-order-amount" step="0.01" required>
+      </div>
+      <div class="input-group">
+        <label for="edit-standing-order-frequency">Frequency</label>
+        <select id="edit-standing-order-frequency">
+          <option value="Daily">Daily</option>
+          <option value="Weekly">Weekly</option>
+          <option value="Monthly">Monthly</option>
+        </select>
+      </div>
+      <div class="input-group">
+        <label for="edit-standing-order-next-due">Next Due Date</label>
+        <input type="text" id="edit-standing-order-next-due" placeholder="dd/MM/yyyy HH:mm" required>
+      </div>
+      <div class="input-group">
+        <label for="edit-standing-order-nickname">Nickname</label>
+        <input type="text" id="edit-standing-order-nickname">
+      </div>
+      <div class="modal-actions">
+        <button type="submit" class="invoice-btn pay">Update Order</button>
+        <button type="button" class="invoice-btn cancel" id="cancel-edit-standing-order">Cancel</button>
+      </div>
+    </form>
+    <button class="modal-close" id="close-edit-standing-order-modal"><i class="fas fa-times"></i></button>
+  </div>
+</div>
+
+<div id="loans-section" class="account-section hidden">
+  <div class="loans-section">
+    <div class="loans-header">
+      <h2><i class="fas fa-file-invoice"></i> Loans & Credit</h2>
+      <div class="loans-summary">
+        <div class="summary-item">
+          <span class="label">Available Credit</span>
+          <span class="value" id="available-credit">£50,000</span>
+        </div>
+        <div class="summary-item">
+          <span class="label">Active Loans</span>
+          <span class="value" id="active-loans-count">0</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="credit-score-card">
+      <div class="card-header">
+        <i class="fas fa-chart-line"></i>
+        <h3>Credit Score</h3>
+      </div>
+      <div class="card-content">
+        <div class="score-display">
+          <div class="score-value" id="credit-score-value">--</div>
+          <div class="score-rating" id="credit-score-rating">Loading...</div>
+        </div>
+        <div class="score-gauge">
+          <div class="gauge-labels">
+            <span>Poor</span>
+            <span>Fair</span>
+            <span>Good</span>
+            <span>Excellent</span>
+          </div>
+          <div class="gauge-bar">
+            <div class="gauge-fill" id="credit-score-fill"></div>
+          </div>
+        </div>
+        <div class="score-info">
+          <p>Your credit score is a key factor in determining your loan eligibility and interest rates.</p>
+          <div class="score-ranges">
+            <div class="range">
+              <span class="range-label">Poor (300-579)</span>
+              <span class="range-desc">Limited loan options, high interest rates</span>
+            </div>
+            <div class="range">
+              <span class="range-label">Fair (580-669)</span>
+              <span class="range-desc">Moderate loan options, higher interest rates</span>
+            </div>
+            <div class="range">
+              <span class="range-label">Good (670-739)</span>
+              <span class="range-desc">Good loan options, competitive rates</span>
+            </div>
+            <div class="range">
+              <span class="range-label">Excellent (740-850)</span>
+              <span class="range-desc">Best loan options, lowest interest rates</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="loans-grid">
+      <div class="loans-main">
+        <div class="loans-card active-loans">
+          <div class="card-header">
+            <h3><i class="fas fa-file-invoice"></i> Active Loans</h3>
+            <div class="card-actions">
+              <button class="refresh-btn" id="refresh-loans">
+                <i class="fas fa-sync-alt"></i>
+              </button>
+            </div>
+          </div>
+          <div class="card-content">
+            <div class="loans-hint">
+              <i class="fas fa-info-circle"></i>
+              <span>Use the "Repay Loan" section below to make payments on your loans</span>
+            </div>
+            <div id="active-loans-list" class="loans-list">
+              <div class="empty-state" id="no-active-loans-message">
+                <i class="fas fa-file-alt"></i>
+                <p>No Active Loans</p>
+                <span>Apply for a loan to see it here</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="loans-card loan-history">
+          <div class="card-header">
+            <h3><i class="fas fa-history"></i> Loan History</h3>
+          </div>
+          <div class="card-content">
+            <div id="loan-history-list" class="loans-list">
+              <div class="empty-state" id="no-history-loans-message">
+                <i class="fas fa-folder-open"></i>
+                <p>No Loan History</p>
+                <span>Your completed loans will appear here</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="loans-sidebar">
+        <div class="loans-card apply-loan">
+          <div class="card-header">
+            <h3><i class="fas fa-hand-holding"></i> Apply for a Loan</h3>
+          </div>
+          <div class="card-content">
+            <form id="loan-application-form" class="loan-form">
+              <div class="form-group">
+                <label for="loan-amount">Loan Amount</label>
+                <div class="amount-input">
+                  <span class="currency-symbol">£</span>
+                  <input 
+                    type="number" 
+                    id="loan-amount" 
+                    min="1000" 
+                    max="50000" 
+                    step="100" 
+                    value="5000"
+                    oninput="syncSliderWithInput('loan-amount-slider', 'loan-amount')"
+                  >
+                </div>
+                <div class="slider-container">
+                  <input 
+                    type="range" 
+                    id="loan-amount-slider" 
+                    min="1000" 
+                    max="50000" 
+                    step="100" 
+                    value="5000"
+                    oninput="syncSliderWithInput('loan-amount', 'loan-amount-slider')"
+                  >
+                  <div class="slider-labels">
+                    <span>£1,000</span>
+                    <span>£50,000</span>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="form-group">
+                <label for="loan-term">Repayment Period</label>
+                <select id="loan-term" onchange="updateLoanCalculation()">
+                </select>
+              </div>
+              
+              <div class="loan-summary">
+                <div class="summary-row">
+                  <span class="label">Interest Rate:</span>
+                  <span class="value" id="loan-interest-rate">--%</span>
+                </div>
+                <div class="summary-row">
+                  <span class="label">Total Repayment:</span>
+                  <span class="value" id="loan-total-repayment">£--</span>
+                </div>
+                <div class="summary-row highlight">
+                  <span class="label">Each Payment:</span>
+                  <span class="value" id="loan-payment-amount">£--</span>
+                </div>
+              </div>
+              
+              <button type="submit" class="primary-button">
+                <div class="btn-content">
+                  <i class="fas fa-check-circle"></i>
+                  Apply for Loan
+                </div>
+                <div class="loading-spinner hidden"></div>
+              </button>
+            </form>
+          </div>
+        </div>
+
+        <div class="loans-card repay-loan">
+          <div class="card-header">
+            <h3><i class="fas fa-money-bill-wave"></i> Repay Loan</h3>
+          </div>
+          <div class="card-content">
+            <div id="repay-loan-form" class="loan-form">
+              <div class="form-group">
+                <label for="repay-loan-select">Select Loan to Repay</label>
+                <select id="repay-loan-select" onchange="updateRepaymentOptions()">
+                  <option value="">Select a loan...</option>
+                </select>
+              </div>
+              
+              <div id="repayment-options" class="repayment-options hidden">
+                <div class="loan-summary">
+                  <div class="summary-row">
+                    <span class="label">Remaining Balance:</span>
+                    <span class="value" id="repay-remaining-balance">£--</span>
+                  </div>
+                  <div class="summary-row">
+                    <span class="label">Next Payment:</span>
+                    <span class="value" id="repay-next-payment">£--</span>
+                  </div>
+                  <div class="summary-row">
+                    <span class="label">Payments Left:</span>
+                    <span class="value" id="repay-payments-left">--</span>
+                  </div>
+                </div>
+
+                <div class="repayment-tabs">
+                  <button class="tab-button active" onclick="switchRepaymentTab('early')">
+                    <i class="fas fa-bolt"></i>
+                    Early Repayment
+                  </button>
+                  <button class="tab-button" onclick="switchRepaymentTab('custom')">
+                    <i class="fas fa-calculator"></i>
+                    Custom Payment
+                  </button>
+                </div>
+
+                <div id="early-repayment-tab" class="repayment-tab active">
+                  <div class="early-repayment-info">
+                    <p><i class="fas fa-info-circle"></i> Pay off your entire loan early with a 5% fee</p>
+                  </div>
+                  <div class="payment-info">
+                    <small><i class="fas fa-pound-sign"></i> Total amount: <span id="early-repayment-total">£0.00</span></small>
+                  </div>
+                  <button id="repay-early-btn" class="repay-button">
+                    <div class="btn-content">
+                      <i class="fas fa-bolt"></i>
+                      Repay Early
+                    </div>
+                    <div class="loading-spinner hidden">
+                      <i class="fas fa-spinner fa-spin"></i>
+                    </div>
+                  </button>
+                </div>
+
+                <div id="custom-payment-tab" class="repayment-tab hidden">
+                  <div class="custom-payment-info">
+                    <p><i class="fas fa-info-circle"></i> Make a custom payment towards your loan</p>
+                  </div>
+                  <div class="custom-payment-input-group">
+                    <div class="amount-input">
+                      <span class="currency-symbol">£</span>
+                      <input 
+                        type="number" 
+                        id="custom-payment-amount" 
+                        min="10" 
+                        step="0.01" 
+                        placeholder="Enter amount"
+                      >
+                    </div>
+                  </div>
+                  <div class="payment-info">
+                    <small><i class="fas fa-info-circle"></i> Minimum payment: £10.00</small>
+                  </div>
+                  <button id="custom-payment-btn" class="custom-payment-button">
+                    <div class="btn-content">
+                      <i class="fas fa-credit-card"></i>
+                      Make Payment
+                    </div>
+                    <div class="loading-spinner hidden">
+                      <i class="fas fa-spinner fa-spin"></i>
+                    </div>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+            
+            <div id="personal-section" class="account-section active">
+              <div class="account-header">
+                <h1>Personal Account</h1>
+                <div class="account-info">
+                  <div class="info-item">
+                    <span class="label">Sort Code</span>
+                    <div class="value-container">
+                      <span id="personal-sortcode" class="value">--</span>
+                      <button class="copy-btn" onclick="copyText('personal-sortcode')">
+                        <i class="fas fa-copy"></i>
+                        <span class="tooltip">Copy</span>
+                      </button>
+                    </div>
+                  </div>
+                  <div class="info-item">
+                    <span class="label">Account Number</span>
+                    <div class="value-container">
+                      <span id="personal-accountnumber" class="value">--</span>
+                      <button class="copy-btn" onclick="copyText('personal-accountnumber')">
+                        <i class="fas fa-copy"></i>
+                        <span class="tooltip">Copy</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="balance-card">
+                <div class="balance-content">
+                  <span class="balance-label">Available Balance</span>
+                  <div class="balance-row">
+                    <span id="personal-balance" class="balance-amount">£0.00</span>
+                    <button id="refresh-personal-balance" class="refresh-balance-btn" title="Refresh Balance">
+                      <i class="fas fa-sync-alt"></i>
+                    </button>
+                  </div>
+                </div>
+                <div class="balance-particles"></div>
+              </div>
+
+              <div class="transaction-panel">
+                <div class="amount-input">
+                  <span class="currency-symbol">£</span>
+                  <input type="number" id="personal-amount" placeholder="Enter amount">
+                </div>
+                <div class="action-grid">
+                  <button id="personal-deposit" class="action-btn deposit">
+                    <div class="btn-glow"></div>
+                    <i class="fas fa-arrow-up"></i>
+                    <span>Deposit</span>
+                  </button>
+                  <button id="personal-withdraw" class="action-btn withdraw">
+                    <div class="btn-glow"></div>
+                    <i class="fas fa-arrow-down"></i>
+                    <span>Withdraw</span>
+                  </button>
+                  <button id="personal-transfer" class="action-btn transfer">
+                    <div class="btn-glow"></div>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5">
+                      <line x1="22" x2="11" y1="2" y2="13"></line>
+                      <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                    </svg>
+                    <span>Transfer</span>
+                  </button>                  
+                </div>
+              </div>
+            </div>
+
+            <div id="business-section" class="account-section">
+              <div class="account-header">
+                <h1>Business Account</h1>
+                <div class="account-info">
+                  <div class="info-item">
+                    <span class="label">Sort Code</span>
+                    <div class="value-container">
+                      <span id="business-sortcode" class="value">--</span>
+                      <button class="copy-btn" onclick="copyText('business-sortcode')">
+                        <i class="fas fa-copy"></i>
+                        <span class="tooltip">Copy</span>
+                      </button>
+                    </div>
+                  </div>
+                  <div class="info-item">
+                    <span class="label">Account Number</span>
+                    <div class="value-container">
+                      <span id="business-accountnumber" class="value">--</span>
+                      <button class="copy-btn" onclick="copyText('business-accountnumber')">
+                        <i class="fas fa-copy"></i>
+                        <span class="tooltip">Copy</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="balance-card">
+                <div class="balance-content">
+                  <span class="balance-label">Available Balance</span>
+                  <div class="balance-row">
+                    <span id="business-balance" class="balance-amount">£0.00</span>
+                    <button id="refresh-business-balance" class="refresh-balance-btn" title="Refresh Balance">
+                      <i class="fas fa-sync-alt"></i>
+                    </button>
+                  </div>
+                </div>
+                <div class="balance-particles"></div>
+              </div>
+              <div class="transaction-panel">
+                <div class="amount-input">
+                  <span class="currency-symbol">£</span>
+                  <input type="number" id="business-amount" placeholder="Enter amount">
+                </div>
+                <div class="action-grid">
+                  <button id="business-deposit" class="action-btn deposit">
+                    <div class="btn-glow"></div>
+                    <i class="fas fa-arrow-up"></i>
+                    <span>Deposit</span>
+                  </button>
+                  <button id="business-withdraw" class="action-btn withdraw">
+                    <div class="btn-glow"></div>
+                    <i class="fas fa-arrow-down"></i>
+                    <span>Withdraw</span>
+                  </button>
+                  <button id="business-transfer" class="action-btn transfer">
+                    <div class="btn-glow"></div>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5">
+                      <line x1="22" x2="11" y1="2" y2="13"></line>
+                      <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                    </svg>
+                    <span>Transfer</span>
+                  </button>    
+                </div>
+              </div>
+            </div>
+            
+            <div id="savings-section" class="account-section">
+              <div class="account-header">
+                <h1>Savings Account</h1>
+              </div>
+              <div class="balance-card">
+                <div class="balance-content">
+                  <span class="balance-label">Available Balance</span>
+                  <div class="balance-row">
+                    <span id="savings-balance" class="balance-amount">£0.00</span>
+                    <button id="refresh-savings-balance" class="refresh-balance-btn" title="Refresh Balance">
+                      <i class="fas fa-sync-alt"></i>
+                    </button>
+                  </div>
+                </div>
+                <div class="balance-particles"></div>
+              </div>
+              <div class="transaction-panel">
+                <div class="amount-input">
+                  <span class="currency-symbol">£</span>
+                  <input type="number" id="savings-amount" placeholder="Enter amount">
+                </div>
+                <div class="action-grid">
+                  <button id="savings-deposit" class="action-btn deposit">
+                    <div class="btn-glow"></div>
+                    <i class="fas fa-arrow-up"></i>
+                    <span>Deposit</span>
+                  </button>
+                  <button id="savings-withdraw" class="action-btn withdraw">
+                    <div class="btn-glow"></div>
+                    <i class="fas fa-arrow-down"></i>
+                    <span>Withdraw</span>
+                  </button>
+                </div>
+              </div>
+              <div class="savings-extra-info" style="margin-top: 8px; font-size: 0.85em; color: #ccc; text-align: center;">
+                <span id="savings-interest-rate-label">Interest Rate: <span id="savings-interest-rate">--%</span></span>
+                &nbsp;|&nbsp;
+                <span id="savings-next-payment-label">Next Interest Payment: <span id="savings-next-payout">--:--:--</span></span>
+              </div>              
+            </div>
+
+            <div id="joint-section" class="account-section hidden">
+              <div class="account-header">
+                <h1>Joint Accounts</h1>
+              </div>
+              
+              <div class="joint-dashboard">
+                <div class="joint-panel joint-panel-left">
+                  <div class="joint-panel-section joint-accounts-section">
+                    <div class="section-header">
+                      <h2>Your Joint Accounts</h2>
+                    </div>
+                    <div id="joint-accounts-list" class="joint-accounts-list">
+                      <div class="no-accounts-message">You don't have any joint accounts</div>
+                    </div>
+                  </div>
+                  
+                  <div class="joint-panel-section joint-create-section">
+                    <div class="section-header">
+                      <h2>Create New Account</h2>
+                    </div>
+                    <div class="create-joint-form">
+                      <div class="input-group">
+                        <label for="joint-account-name">Account Name</label>
+                        <input type="text" id="joint-account-name" placeholder="Enter account name">
+                      </div>
+                      <button id="create-joint-account" class="action-btn deposit">
+                        <div class="btn-content">
+                          <i class="fas fa-plus"></i>
+                          <span>Create Account</span>
+                        </div>
+                        <div class="loading-spinner hidden"></div>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="joint-panel joint-panel-right">
+                  <div class="joint-panel-section joint-invites-section">
+                    <div class="section-header">
+                      <h2>Pending Invitations</h2>
+                    </div>
+                    <div id="joint-invites-list" class="joint-invites-list">
+                      <div class="no-invites-message">No pending invitations</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <div id="joint-details-section" class="joint-details-section hidden">
+                <div id="joint-account-details" class="joint-account-details">
+                  <div class="account-header joint-details-header">
+                    <button id="back-to-joint-accounts" class="back-btn">
+                      <i class="fas fa-arrow-left"></i>
+                      <span>Back to Accounts</span>
+                    </button>
+                    <h2 id="selected-joint-account-name">Account Name</h2>
+                  </div>
+                  
+                  <div class="joint-details-dashboard">
+                    <div class="joint-details-column">
+                      <div class="balance-card">
+                        <div class="balance-content">
+                          <span class="balance-label">Available Balance</span>
+                          <div class="balance-row">
+                            <span id="joint-balance" class="balance-amount">£0.00</span>
+                            <button id="refresh-joint-balance" class="refresh-balance-btn" title="Refresh Balance">
+                              <i class="fas fa-sync-alt"></i>
+                            </button>
+                          </div>
+                        </div>
+                        <div class="balance-particles"></div>
+                      </div>
+                      
+                      <div class="transaction-panel joint-transaction-panel">
+                        <div class="amount-input">
+                          <span class="currency-symbol">£</span>
+                          <input type="number" id="joint-amount" placeholder="Enter amount">
+                        </div>
+                        <div class="action-grid">
+                          <button id="joint-deposit" class="action-btn deposit">
+                            <div class="btn-glow"></div>
+                            <div class="btn-content">
+                              <i class="fas fa-arrow-up"></i>
+                              <span>Deposit</span>
+                            </div>
+                            <div class="loading-spinner hidden"></div>
+                          </button>
+                          <button id="joint-withdraw" class="action-btn withdraw">
+                            <div class="btn-glow"></div>
+                            <div class="btn-content">
+                              <i class="fas fa-arrow-down"></i>
+                              <span>Withdraw</span>
+                            </div>
+                            <div class="loading-spinner hidden"></div>
+                          </button>
+                        </div>
+                      </div>
+                      
+                      <div class="joint-panel-section joint-transactions">
+                        <div class="section-header">
+                          <h3>Recent Transactions</h3>
+                        </div>
+                        <div class="transaction-history">
+                          <table class="transactions-table">
+                            <thead>
+                              <tr>
+                                <th>Date</th>
+                                <th>Type</th>
+                                <th>Amount</th>
+                                <th>Note</th>
+                              </tr>
+                            </thead>
+                            <tbody id="joint-transaction-list">
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div class="joint-details-column">
+                      <div id="joint-admin-controls" class="joint-panel-section joint-admin-controls hidden">
+                        <div class="section-header">
+                          <h3>Invite New Member</h3>
+                        </div>
+                        <div class="invite-form">
+                          <div class="input-group">
+                            <label for="joint-invite-player-id">Player ID</label>
+                            <input type="number" id="joint-invite-player-id" placeholder="Server ID of player to invite">
+                          </div>
+                          <button id="joint-invite-player" class="action-btn">
+                            <div class="btn-content">
+                              <i class="fas fa-user-plus"></i>
+                              <span>Send Invitation</span>
+                            </div>
+                            <div class="loading-spinner hidden"></div>
+                          </button>
+                        </div>
+                      </div>
+                      
+                      <div id="joint-account-management" class="joint-panel-section joint-account-management">
+                        <div class="section-header">
+                          <h3>Account Management</h3>
+                        </div>
+                        <div class="account-management-actions">
+                          <button id="close-joint-account" class="action-btn danger">
+                            <div class="btn-content">
+                              <i class="fas fa-ban"></i>
+                              <span>Close Account</span>
+                            </div>
+                            <div class="loading-spinner hidden"></div>
+                          </button>
+                          <p class="management-warning">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            Closing the account will remove all members and withdraw remaining funds.
+                          </p>
+                        </div>
+                      </div>
+                      
+                      <div class="joint-panel-section joint-members-section">
+                        <div class="section-header">
+                          <h3>Account Members</h3>
+                        </div>
+                        <div id="joint-members-list" class="joint-members-list">
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div id="payee-section" class="account-section">
+              <div class="account-header">
+                <h1>Payees</h1>
+                <button id="create-payee" class="action-btn deposit">
+                  <i class="fas fa-plus"></i>
+                  Add New Payee
+                </button>
+              </div>
+              <div id="payee-list" class="payee-list">
+              </div>
+            </div>
+
+            <div id="personal-transactions-section" class="account-section">
+              <div class="account-header">
+                <h1>Personal Transaction History</h1>
+                <button id="personal-edit-btn" class="action-btn">Edit</button>
+              </div>
+              <div id="personal-edit-controls" class="transaction-edit-controls hidden">
+                <button id="personal-select-all-btn">Select All</button>
+                <span id="personal-selected-info">Selected: 0 (Total: £0.00)</span>
+                <button id="personal-delete-btn">Delete</button>
+                <button id="personal-done-btn">Done</button>
+              </div>
+              <div class="transaction-history">
+                <table class="transactions-table">
+                  <thead id="personal-transactions-thead">
+                    <tr>
+                      <th>Date</th>
+                      <th>Type</th>
+                      <th>Amount</th>
+                      <th>Note</th>
+                    </tr>
+                  </thead>
+                  <tbody id="personal-transaction-list">
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <div id="business-transactions-section" class="account-section">
+              <div class="account-header">
+                <h1>Business Transaction History</h1>
+                <button id="business-edit-btn" class="action-btn">Edit</button>
+              </div>
+              <div id="business-edit-controls" class="transaction-edit-controls hidden">
+                <button id="business-select-all-btn">Select All</button>
+                <span id="business-selected-info">Selected: 0 (Total: £0.00)</span>
+                <button id="business-delete-btn">Delete</button>
+                <button id="business-done-btn">Done</button>
+              </div>
+              <div class="transaction-history">
+                <table class="transactions-table">
+                  <thead id="business-transactions-thead">
+                    <tr>
+                      <th>Date</th>
+                      <th>Type</th>
+                      <th>Amount</th>
+                      <th>Note</th>
+                    </tr>
+                  </thead>
+                  <tbody id="business-transaction-list">
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <div id="transfer-modal" class="modal hidden">
+              <div class="modal-content">
+                <h2>Transfer Money</h2>
+                <div class="transfer-form">
+                  <div id="verification-status" class="verification-status hidden">
+                    <div class="status-icon">
+                      <i class="fas fa-check status-svg"></i>
+                    </div>
+                    <span class="status-message"></span>
+                  </div>
+                  <div class="input-group">
+                    <label>Sort Code</label>
+                    <input type="text" id="transfer-sortcode" placeholder="00-00-00" maxlength="8">
+                  </div>
+                  <div class="input-group">
+                    <label>Account Number</label>
+                    <input type="text" id="transfer-accountnumber" placeholder="12345678" maxlength="8">
+                  </div>
+                  <div class="input-group">
+                    <label>Amount</label>
+                    <div class="amount-input">
+                      <input type="number" id="transfer-amount" placeholder="£ Enter amount">
+                    </div>
+                  </div>
+                  <div id="recipient-details" class="hidden">
+                    <div class="recipient-info">
+                      <span class="label">Recipient:</span>
+                      <span id="recipient-name" class="value">--</span>
+                    </div>
+                  </div>
+                  <div class="transfer-actions">
+                    <button id="verify-account" class="verify-btn">
+                      <span class="btn-content">
+                        <i class="fas fa-shield-alt"></i>
+                        <span class="verify-text">Verify Account</span>
+                      </span>
+                      <div class="loading-spinner hidden"></div>
+                    </button>
+                    <button id="confirm-transfer" class="confirm-btn hidden">
+                      <span class="btn-content">
+                        <i class="fas fa-exchange-alt"></i>
+                        <span>Confirm Transfer</span>
+                      </span>
+                      <div class="loading-spinner hidden"></div>
+                    </button>
+                  </div>
+                </div>
+                <button class="modal-close">
+                  <i class="fas fa-times"></i>
+                </button>
+              </div>
+            </div>
+
+<div id="invoices-section" class="account-section hidden">
+  <div class="account-header">
+    <h1>Invoices</h1>
+    <button id="create-invoice-btn">
+      <i class="fas fa-plus"></i>
+      Create New Invoice
+    </button>
+  </div>
+
+  <div id="invoice-list">
+  </div>
+</div>
+
+
+<div id="create-invoice-modal" class="modal hidden">
+  <div class="modal-content">
+    <h2>Create New Invoice</h2>
+    <form id="create-invoice-form">
+      <div class="input-group">
+        <label for="invoice-sender-accountnumber">Receive Payment Into - Account Number</label>
+        <input type="text" id="invoice-sender-accountnumber" placeholder="Account Number" maxlength="8" required>
+      </div>
+      <div class="input-group">
+        <label for="invoice-sender-sortcode">Receive Payment Into - Sort Code</label>
+        <input type="text" id="invoice-sender-sortcode" placeholder="00-00-00" maxlength="8" required>
+      </div>
+      <div class="input-group">
+        <label for="invoice-payer-sortcode">Payer Sort Code</label>
+        <input type="text" id="invoice-payer-sortcode" placeholder="00-00-00" maxlength="8" required>
+      </div>
+      <div class="input-group">
+        <label for="invoice-payer-accountnumber">Payer Account Number</label>
+        <input type="text" id="invoice-payer-accountnumber" placeholder="Account Number" maxlength="8" required>
+      </div>
+      <div class="input-group">
+        <label for="invoice-amount">Amount</label>
+        <div class="amount-input">
+          <span class="currency-symbol">£</span>
+          <input type="number" id="invoice-amount" placeholder="Enter amount" step="0.01" required>
+        </div>
+      </div>
+      <div class="input-group">
+        <label for="invoice-note">Note (Optional)</label>
+        <textarea id="invoice-note" placeholder="Add a note or description..."></textarea>
+      </div>
+      <div class="modal-actions">
+        <button type="submit" class="invoice-btn pay">Create Invoice</button>
+        <button type="button" class="invoice-btn cancel" id="cancel-create-invoice">Cancel</button>
+      </div>
+    </form>
+    <button class="modal-close" id="close-create-invoice-modal">
+      <i class="fas fa-times"></i>
+    </button>
+  </div>
+</div>
+
+
+            <div id="settings-section" class="account-section">
+              <div class="account-header">
+                <h1>Settings</h1>
+              </div>
+              <div class="settings-container">
+                <div class="pin-reset-panel">
+                  <h2>Reset Your PIN</h2>
+                  <p>
+                    Resetting your PIN costs <span id="pin-reset-cost">£1000</span>.
+                  </p>
+                  <div class="reset-pin-section">
+                    <label for="reset-pin-input">Enter new 4‑digit PIN:</label>
+                    <input type="password" inputmode="numeric" id="reset-pin-input" placeholder="Enter New PIN" maxlength="4">
+                    <button id="reset-pin-btn" class="action-btn">Reset PIN</button>
+                  </div>
+                </div>
+                <div class="debit-card-panel">
+                  <h2>Claim a New Debit Card</h2>
+                  <p id="debit-card-info">
+                    You currently do not have a debit card.
+                  </p>
+                  <button id="claim-debit-card-btn" class="action-btn">Claim Debit Card</button>
+                </div>
+                <div class="bank-card-panel">
+                  <h2>Your Debit Card</h2>
+                  <div class="bank-card-container">
+                    <div class="bank-card">
+                      <div class="card-background">
+                        <img src="images/bank_card.png" alt="Bank Card" class="card-image">
+                      </div>
+                      <div class="card-overlay">
+                        <div class="card-number">
+                          <span id="display-card-number">**** **** **** ****</span>
+                        </div>
+                        <div class="card-holder">
+                          <span class="card-label">CARD HOLDER</span>
+                          <span id="display-card-holder">CARD HOLDER NAME</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="website-panel">
+                  <h2>Visit Our Website</h2>
+                  <p>Click the icon below to check out our official website for more information.</p>
+                  <a id="website-link" href="#" target="_blank" title="Visit our website">
+                    <i class="fas fa-globe fa-3x"></i>
+                  </a>
+                </div>
+              </div>
+            </div>
+
+            <div id="payee-modal" class="modal hidden">
+              <div class="modal-content">
+                <h2 id="payee-modal-title">Create Payee</h2>
+                <div class="payee-form">
+                  <div class="input-group">
+                    <label>Name</label>
+                    <input type="text" id="payee-name" placeholder="Payee Name">
+                  </div>
+                  <div class="input-group">
+                    <label>Sort Code</label>
+                    <input type="text" id="payee-sortcode" placeholder="00-00-00" maxlength="8">
+                  </div>
+                  <div class="input-group">
+                    <label>Account Number</label>
+                    <input type="text" id="payee-accountnumber" placeholder="12345678" maxlength="8">
+                  </div>
+                  <div class="modal-actions">
+                    <button id="save-payee" class="confirm-btn">
+                      <span class="btn-content">Save</span>
+                      <div class="loading-spinner hidden"></div>
+                    </button>
+                  </div>
+                </div>
+                <button class="modal-close" id="payee-modal-close">
+                  <i class="fas fa-times"></i>
+                </button>
+              </div>
+            </div>
+
+            <div id="payee-payment-modal" class="modal hidden">
+              <div class="modal-content">
+                <h2>Pay Payee</h2>
+                <div class="payment-details">
+                  <div class="payee-info">
+                    <strong id="payee-payment-payee-name"></strong>
+                    <p id="payee-payment-payee-details"></p>
+                  </div>
+                  <div class="input-group">
+                    <label for="payee-payment-account-select">Select Account to Transfer From</label>
+                    <select id="payee-payment-account-select"></select>
+                  </div>
+                  <div class="input-group">
+                    <label for="payee-payment-amount">Amount</label>
+                    <input type="number" id="payee-payment-amount" placeholder="Enter amount" min="0" step="0.01">
+                  </div>
+                </div>
+                <div class="modal-actions">
+                  <button id="confirm-payee-payment" class="confirm-btn">
+                    <span class="btn-content">Confirm Payment</span>
+                    <div class="loading-spinner hidden"></div>
+                  </button>
+                </div>
+                <button class="modal-close" onclick="closePayeePaymentModal()">
+                  <i class="fas fa-times"></i>
+                </button>
+              </div>
+            </div>
+
+            <div id="confirm-remove-modal" class="modal hidden">
+              <div class="modal-content">
+                <h2>Remove Member</h2>
+                <p id="confirm-remove-text">Are you sure you want to remove this member from the account?</p>
+                <div class="modal-actions">
+                  <button id="confirm-remove-btn" class="action-btn danger">
+                    <div class="btn-content">
+                      <i class="fas fa-user-minus"></i>
+                      <span>Remove Member</span>
+                    </div>
+                    <div class="loading-spinner hidden"></div>
+                  </button>
+                  <button id="cancel-remove-btn" class="action-btn">
+                    <div class="btn-content">
+                      <i class="fas fa-times"></i>
+                      <span>Cancel</span>
+                    </div>
+                  </button>
+                </div>
+                <button class="modal-close" id="close-remove-modal">
+                  <i class="fas fa-times"></i>
+                </button>
+              </div>
+            </div>
+          </main>
+        </div>
+
+        
+
+        <button id="close-btn" class="close-btn">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+    </div>
+
+    <div id="transaction-message" class="transaction-message"></div>
+
+    <div class="container">
+      <div id="atm-ui" class="atm hidden">
+      <div class="screen-area">
+        <div class="side-buttons left">
+          <button class="side-button">
+            <i data-lucide="chevron-right"></i>
+          </button>
+          <button class="side-button">
+            <i data-lucide="chevron-right"></i>
+          </button>
+          <button class="side-button">
+            <i data-lucide="chevron-right"></i>
+          </button>
+          <button class="side-button">
+            <i data-lucide="chevron-right"></i>
+          </button>
+        </div>
+
+        <div class="screen">
+          <div class="screen-content">
+            <div class="welcome-screen">
+              <i data-lucide="credit-card" class="card-icon"></i>
+              <p>Insert your card to begin</p>
+            </div>
+            <div id="pinScreen" class="pin-screen hidden">
+              <p>Enter your PIN</p>
+              <div class="pin-dots">
+                <div class="pin-dot"></div>
+                <div class="pin-dot"></div>
+                <div class="pin-dot"></div>
+                <div class="pin-dot"></div>
+              </div>
+            </div>
+            <div id="menuScreen" class="menu-screen hidden">
+              <div class="menu-left">
+                <div class="menu-item">← Withdraw</div>
+                <div></div>
+                <div></div>
+                <div class="menu-item">← Deposit</div>
+              </div>
+              <div class="menu-right">
+                <div class="menu-item">Cancel →</div>
+                <div></div>
+                <div></div>
+                <div></div>
+              </div>
+            </div>
+            <div class="amount-screen hidden">
+              <div class="transaction-type"></div>
+              <p>Enter amount:</p>
+              <div id="atm-amount-display" class="amount-input">£0</div>
+              <p class="amount-note">(For withdrawals, use multiples of £10)</p>
+            </div>
+            <div class="remove-card-screen hidden">
+              <i data-lucide="credit-card" class="card-icon"></i>
+              <p>Please remove your card</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="side-buttons right">
+          <button class="side-button">
+            <i data-lucide="chevron-left"></i>
+          </button>
+          <button class="side-button">
+            <i data-lucide="chevron-left"></i>
+          </button>
+          <button class="side-button">
+            <i data-lucide="chevron-left"></i>
+          </button>
+          <button class="side-button">
+            <i data-lucide="chevron-left"></i>
+          </button>
+        </div>
+      </div>
+
+      <div class="slots-area">
+        <div class="slot-container">
+          <div class="slot-label">CARD</div>
+          <div class="card-slot">
+            <div class="slot-indicator"></div>
+          </div>
+        </div>
+        <div class="slot-container">
+          <div class="slot-label">CASH</div>
+          <div class="cash-slot"></div>
+        </div>
+      </div>
+
+      <div class="keypad">
+        <button class="number-key">1</button>
+        <button class="number-key">2</button>
+        <button class="number-key">3</button>
+        <button class="number-key">4</button>
+        <button class="number-key">5</button>
+        <button class="number-key">6</button>
+        <button class="number-key">7</button>
+        <button class="number-key">8</button>
+        <button class="number-key">9</button>
+        <button class="cancel-key">CANCEL</button>
+        <button class="number-key">0</button>
+        <button class="clear-key">CLEAR</button>
+        <button class="enter-key">ENTER</button>
+      </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="invoice-menu" class="hidden">
+        <div class="card">
+            <div class="header">
+                <h2><i class="fas fa-file-invoice"></i> Personal Invoice Management</h2>
+                <button id="close-invoice-menu" class="close-btn"><i class="fas fa-times"></i></button>
+            </div>
+            
+            <div class="content">
+                <div class="tabs">
+                    <button id="manage-invoices-tab" class="invoice-tab active">
+                        <i class="fas fa-list"></i> Manage Invoices
+                    </button>
+                    <button id="create-invoice-tab" class="invoice-tab">
+                        <i class="fas fa-plus-circle"></i> Create Invoice
+                    </button>
+                </div>
+                
+                <div id="manage-invoices-section" class="invoice-section">
+                    <div class="section-header">
+                        <h3>Your Invoices</h3>
+                    </div>
+                    <button id="refresh-invoices-btn" class="refresh-btn">
+                        <i class="fas fa-sync-alt"></i> Refresh
+                    </button>
+                    <div class="clearfix"></div>
+                    <div id="invoice-menu-list">
+                    </div>
+                </div>
+                
+                <div id="create-invoice-section" class="invoice-section hidden">
+                    <div class="section-header">
+                        <h3>Create New Invoice</h3>
+                    </div>
+                    <form id="invoice-menu-create-form">
+                        <div class="form-group">
+                            <label for="im-sender-accountnumber">Your Account Number</label>
+                            <input type="text" id="im-sender-accountnumber" placeholder="Account Number" maxlength="8" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="im-sender-sortcode">Your Sort Code</label>
+                            <input type="text" id="im-sender-sortcode" placeholder="00-00-00" maxlength="8" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="im-payer-sortcode">Payer Sort Code</label>
+                            <input type="text" id="im-payer-sortcode" placeholder="00-00-00" maxlength="8" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="im-payer-accountnumber">Payer Account Number</label>
+                            <input type="text" id="im-payer-accountnumber" placeholder="Account Number" maxlength="8" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <button type="button" id="auto-fill-nearest-player" class="auto-fill-btn">
+                                <i class="fas fa-user-friends"></i> Auto Fill Nearest Player
+                            </button>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="im-amount">Amount</label>
+                            <div class="input-with-icon">
+                                <span>£</span>
+                                <input type="number" id="im-amount" placeholder="Enter amount" step="0.01" required>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="im-note">Note (Optional)</label>
+                            <textarea id="im-note" placeholder="Add a note or description..."></textarea>
+                        </div>
+                        
+                        <div class="form-actions">
+                            <button type="button" id="cancel-create-invoice" class="cancel-btn">
+                                <i class="fas fa-times"></i> Cancel
+                            </button>
+                            <button type="submit" class="submit-btn">
+                                <i class="fas fa-paper-plane"></i> Create Invoice
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="confirmation-dialog" class="confirmation-dialog">
+        <div class="confirmation-dialog-content">
+            <h3>Confirm Action</h3>
+            <p id="confirmation-message">Are you sure you want to proceed?</p>
+            <div class="confirmation-dialog-actions">
+                <button id="confirmation-cancel" class="confirmation-btn confirmation-btn-cancel">Cancel</button>
+                <button id="confirmation-confirm" class="confirmation-btn confirmation-btn-confirm">Confirm</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="nui://game/ui/jquery.js"></script>
+    <script src="script.js"></script>
+  </body>
+</html>

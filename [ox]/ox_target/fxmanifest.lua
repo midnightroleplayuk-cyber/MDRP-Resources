@@ -1,0 +1,56 @@
+-- FX Information
+fx_version 'cerulean'
+use_experimental_fxv2_oal 'yes'
+nui_callback_strict_mode 'true'
+lua54 'yes'
+game 'gta5'
+
+-- Resource Information
+name 'ox_target'
+author 'Overextended'
+version '1.18.1.2'
+repository 'https://github.com/overextended/ox_target'
+description 'A Modified Version By Jakers'
+
+-- Manifest
+ui_page 'web/index.html'
+
+shared_scripts {
+    '@ox_lib/init.lua',
+}
+
+client_scripts {
+    'client/main.lua',
+    'client/uisettings.lua',
+}
+
+server_scripts {
+    'server/main.lua'
+}
+
+files {
+    'web/**',
+    'locales/*.json',
+    'client/api.lua',
+    'client/utils.lua',
+    'client/state.lua',
+    'client/debug.lua',
+    'client/defaults.lua',
+    'client/framework/nd.lua',
+    'client/framework/ox.lua',
+    'client/framework/esx.lua',
+    'client/framework/qbx.lua',
+    'client/compat/qtarget.lua',
+}
+
+provide 'qtarget'
+
+
+escrow_ignore {
+    'client/**/*',
+    'server/**/*',
+    'locales/**/*',
+    'web/**/*',
+}
+
+dependency '/assetpacks'

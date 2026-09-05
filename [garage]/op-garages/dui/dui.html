@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:900|Work+Sans:300" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel='stylesheet' href='https://site-assets.fontawesome.com/releases/v6.1.1/css/all.css'>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+    <title>Car Info</title>
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Montserrat;
+            line-height: 0.15;
+            color: white;
+            background-color: transparent;
+            font-size: 14px;
+        }
+
+        #info-box {
+            position: fixed;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #131313;
+            border: 2px solid rgba(90, 90, 90, 0.377);
+            padding: 14px 20px 18px 20px;
+            width: 500px !important;
+            border-radius: 7px;
+        }
+
+        #header {
+            display: flex;
+            align-items: start !important;
+            justify-content: space-between;
+            gap: 4px;
+        }
+
+        #leftD {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 0px !important;
+            margin: 0px !important;
+        }
+
+        #rightD {
+            margin-top: -10px;
+            display: flex;
+        }
+
+        .favortieBtn {
+            position: relative;
+            z-index: 5000;
+            opacity: 0.6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            font-size: 20px;
+            color: #ffffff;
+            border-radius: 7px;
+            background-color: rgba(110, 110, 110, 0.062);
+            -webkit-box-shadow: inset 0px 0px 58px -4px rgba(255, 255, 255, 0.262);
+            -moz-box-shadow: inset 0px 0px 58px -4px rgba(255, 255, 255, 0.262);
+            box-shadow: inset 0px 0px 58px -4px rgba(255, 255, 255, 0.262);
+            transition: all ease 0.3s;
+            cursor: pointer;
+        }
+
+        #activeFav {
+            opacity: 1;
+            color: #ffbc2c;
+            background-color: rgba(255, 157, 9, 0.329);
+            -webkit-box-shadow: inset 0px 0px 58px -4px rgba(255, 157, 9, 0.329);
+            -moz-box-shadow: inset 0px 0px 58px -4px rgba(255, 157, 9, 0.329);
+            box-shadow: inset 0px 0px 58px -4px rgba(255, 157, 9, 0.329);
+        }
+
+        #rightD p {
+            background-color: #0066ff;
+            background-image: linear-gradient(169deg, #0066ff 0%, #0548ad 93%);
+            line-height: 1;
+            color: #fff;
+            font-family: 'Work Sans';
+            font-weight: 500;
+            padding: 4px 10px;
+            font-size: 10px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            white-space: nowrap;
+            gap: 2px;
+        }
+
+        #header h1 {
+            font-family: 'Montserrat';
+            font-weight: 900;
+            color: #ffffff;
+            font-size: 28px;
+            background-color: rgba(110, 110, 110, 0.062);
+            -webkit-box-shadow: inset 0px 0px 58px -4px rgba(255, 255, 255, 0.262);
+            -moz-box-shadow: inset 0px 0px 58px -4px rgba(255, 255, 255, 0.262);
+            box-shadow: inset 0px 0px 58px -4px rgba(255, 255, 255, 0.262);
+            margin: 0;
+            line-height: 1;
+            padding: 3.5px 14px;
+            border-radius: 7px;
+            display: flex;
+            align-items: center;
+        }
+
+        /* NEW STATS CONTAINER */
+
+        #statsContainer {
+            display: grid;
+            gap: 4px;
+            width: 100%;
+            position: relative;
+            margin-top: 15px;
+        }
+
+        #statsContainer .stats {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+
+        #statsContainer .stats #statsHead {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-bottom: 3px;
+        }
+
+        #statsContainer .stats #statsHead .progressname {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        #statsContainer .stats .fuel {
+            color: #00ff95;
+        }
+
+        #statsContainer .stats .vehicleDamage {
+            color: #ffc400;
+        }
+
+        #statsContainer .stats .vehicleBody {
+            color: #ff3c00;
+        }
+
+        #statsContainer .stats i {
+            width: 13px !important;
+            min-width: 13px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px !important;
+            border-radius: 6px;
+        }
+
+        #statsContainer .stats p {
+            color: #fff;
+            font-family: 'Work Sans';
+            font-weight: 500;
+            font-size: 12px;
+            line-height: 1;
+            margin: 0;
+        }
+
+        #statsContainer .stats #progressBox {
+            border-radius: 6px;
+            background-color: rgb(175, 175, 175);
+            width: 100%;
+            min-width: 20%;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        #statsContainer .stats #progressBox #progressBar {
+            height: 5px;
+            border-radius: 20px;
+            width: 100%;
+            overflow: hidden;
+            background-color: #000000b7;
+        }
+
+        #statsContainer .stats #progressBox #progressBar #progressBarFill {
+            height: 5px;
+            transition: all ease 0.4s;
+        }
+
+        #statsContainer .stats #progressBox .fuel {
+            background-color: #00ff95;
+        }
+
+        #statsContainer .stats #progressBox .vehicleDamage {
+            background-color: #ffc400;
+        }
+
+        #statsContainer .stats #progressBox .vehicleBody {
+            background-color: #ff3c00;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="info-box">
+
+    </div>
+
+    <script>
+        var isSet = false
+
+        function fakeCar() {
+            let event = {}
+            event.data = {
+                action: "addInfo",
+                isFav: false,
+                label: "Ferrari 488",
+                location: "Los Santos",
+                fuelLevel: 100,
+                damageLevel: 100,
+                bodyLevel: 100,
+                plate: "XYZ 1234",
+                locale: {
+                    statBox_fuel: "Fuel",
+                    statBox_engine: "Engine",
+                    statBox_body: "Body",
+                }
+            }
+
+            var vehdata = localStorage.getItem("vehicles")
+            isSet = true
+
+            try {
+                vehdata = JSON.parse(vehdata);
+                if (typeof vehdata !== "object" || vehdata === null) {
+                    vehdata = {};
+                }
+            } catch (e) {
+                vehdata = {};
+            }
+
+            let thisVeh
+            if (vehdata && typeof vehdata === "object") {
+                thisVeh = vehdata[event.data.plate];
+                if (thisVeh) {
+                    event.data.isFav = thisVeh.isFav;
+                    event.data.label = thisVeh.playerLabel;
+                }
+            }
+
+
+            let vehicleData = `
+                <div id="header">
+                    <div id="leftD">
+                        ${event.data.isFav === true
+                    ? '<i class="material-symbols-outlined favortieBtn" id="activeFav">favorite</i>'
+                    : '<i class="material-symbols-outlined favortieBtn">favorite</i>'
+                }
+                        <h1 id="vehicleName">${event.data.label}</h1>
+                    </div>
+                    <div id="rightD">
+                        <p><i class="fa-solid fa-location-crosshairs"></i> ${event.data.location}</p>
+                    </div>
+                </div>
+
+                <div id="statsContainer">
+                    <div class="stats">
+                        <div id="statsHead">
+                            <p class="fuel progressname">
+                                <i class="material-symbols-outlined fuel">local_gas_station</i>
+                                ${event.data.locale['statBox_fuel']}
+                            </p>
+                            <p>${event.data.fuelLevel}</p>
+                        </div>
+
+                        <div id="progressBox">
+                            <div id="progressBar">
+                                <div 
+                                    id="progressBarFill" 
+                                    class="fuel" 
+                                    style="width: ${event.data.fuelLevel}%;">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stats">
+                        <div id="statsHead">
+                            <p class="vehicleDamage progressname">
+                                <i class="material-symbols-outlined vehicleDamage">oil_barrel</i>
+                                ${event.data.locale['statBox_engine']}
+                            </p>
+                            <p>${event.data.damageLevel}</p>
+                        </div>
+
+                        <div id="progressBox">
+                            <div id="progressBar">
+                                <div 
+                                    id="progressBarFill" 
+                                    class="vehicleDamage" 
+                                    style="width: ${event.data.damageLevel}%;">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stats">
+                        <div id="statsHead">
+                            <p class="vehicleBody progressname">
+                                <i class="material-symbols-outlined vehicleBody">directions_car</i>
+                                ${event.data.locale['statBox_body']}
+                            </p>
+                            <p>${event.data.bodyLevel}</p>
+                        </div>
+
+                        <div id="progressBox">
+                            <div id="progressBar">
+                                <div 
+                                    id="progressBarFill" 
+                                    class="vehicleBody" 
+                                    style="width: ${event.data.bodyLevel}%;">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            $('#info-box').append(vehicleData)
+        }
+
+        window.addEventListener('message', function (event) {
+            if (event.data.action == "addInfo") {
+                if (isSet == false) {
+                    var vehdata = localStorage.getItem("vehicles")
+                    isSet = true
+
+                    try {
+                        vehdata = JSON.parse(vehdata);
+                        if (typeof vehdata !== "object" || vehdata === null) {
+                            vehdata = {};
+                        }
+                    } catch (e) {
+                        vehdata = {};
+                    }
+
+                    let thisVeh
+                    if (vehdata && typeof vehdata === "object") {
+                        thisVeh = vehdata[event.data.plate];
+                        if (thisVeh) {
+                            event.data.isFav = thisVeh.isFav;
+                            event.data.label = thisVeh.playerLabel;
+                        }
+                    }
+
+                    let vehicleData = `
+                        <div id="header">
+                            <div id="leftD">
+                                ${event.data.isFav === true
+                                    ? '<i class="material-symbols-outlined favortieBtn" id="activeFav">favorite</i>'
+                                    : '<i class="material-symbols-outlined favortieBtn">favorite</i>'
+                                }
+                                <h1 id="vehicleName">${event.data.label}</h1>
+                            </div>
+                            <div id="rightD">
+                                <p><i class="fa-solid fa-location-crosshairs"></i> ${event.data.location}</p>
+                            </div>
+                        </div>
+
+                        <div id="statsContainer">
+                            <div class="stats">
+                                <div id="statsHead">
+                                    <p class="fuel progressname">
+                                        <i class="material-symbols-outlined fuel">local_gas_station</i>
+                                        ${event.data.locale['statBox_fuel']}
+                                    </p>
+                                    <p>${event.data.fuelLevel}</p>
+                                </div>
+
+                                <div id="progressBox">
+                                    <div id="progressBar">
+                                        <div 
+                                            id="progressBarFill" 
+                                            class="fuel" 
+                                            style="width: ${event.data.fuelLevel}%;">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="stats">
+                                <div id="statsHead">
+                                    <p class="vehicleDamage progressname">
+                                        <i class="material-symbols-outlined vehicleDamage">oil_barrel</i>
+                                        ${event.data.locale['statBox_engine']}
+                                    </p>
+                                    <p>${event.data.damageLevel}</p>
+                                </div>
+
+                                <div id="progressBox">
+                                    <div id="progressBar">
+                                        <div 
+                                            id="progressBarFill" 
+                                            class="vehicleDamage" 
+                                            style="width: ${event.data.damageLevel}%;">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="stats">
+                                <div id="statsHead">
+                                    <p class="vehicleBody progressname">
+                                        <i class="material-symbols-outlined vehicleBody">directions_car</i>
+                                        ${event.data.locale['statBox_body']}
+                                    </p>
+                                    <p>${event.data.bodyLevel}</p>
+                                </div>
+
+                                <div id="progressBox">
+                                    <div id="progressBar">
+                                        <div 
+                                            id="progressBarFill" 
+                                            class="vehicleBody" 
+                                            style="width: ${event.data.bodyLevel}%;">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+
+                    $('#info-box').append(vehicleData)
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>

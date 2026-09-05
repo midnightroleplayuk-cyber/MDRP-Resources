@@ -1,0 +1,274 @@
+.radial-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 600;
+  display: grid;
+  place-items: center;
+  background: transparent;
+}
+
+.radial-wheel {
+  position: relative;
+  width: 360px;
+  height: 360px;
+  display: grid;
+  place-items: center;
+  animation: radial-wheel-in 300ms var(--ease-out);
+}
+
+@keyframes radial-wheel-in {
+  from { opacity: 0; transform: scale(0.92); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.radial-wheel.sub {
+  animation: radial-wheel-sub 280ms var(--ease-out);
+}
+
+@keyframes radial-wheel-sub {
+  from { opacity: 0; transform: scale(0.86); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.radial-spoke {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 132px;
+  height: 1px;
+  transform-origin: 0 50%;
+  pointer-events: none;
+  overflow: hidden;
+  animation: radial-fade 320ms var(--ease-out) backwards;
+  animation-delay: var(--d);
+}
+
+.radial-spoke::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent 0 58px,
+    rgba(255, 255, 255, 0.04) 64px,
+    rgba(255, 255, 255, 0.1) 108px,
+    rgba(255, 255, 255, 0.14) 114px,
+    transparent 118px
+  );
+}
+
+.radial-spoke::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  height: 100%;
+  width: 22px;
+  left: 0;
+  border-radius: 2px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.35), transparent);
+  animation: spoke-flow 2.6s var(--ease-out) infinite;
+  animation-delay: var(--d);
+}
+
+@keyframes radial-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes spoke-flow {
+  0% { transform: translateX(54px); opacity: 0; }
+  25% { opacity: 0.45; }
+  78% { opacity: 0.45; }
+  100% { transform: translateX(96px); opacity: 0; }
+}
+
+.radial-spoke.active::before {
+  background: linear-gradient(
+    90deg,
+    transparent 0 56px,
+    rgba(var(--accent-rgb), 0.35) 60px,
+    rgba(var(--accent-rgb), 0.85) 110px,
+    var(--rs-accent-hi) 116px,
+    transparent 120px
+  );
+}
+
+.radial-spoke.active::after {
+  width: 26px;
+  background: linear-gradient(90deg, transparent, rgba(var(--accent-rgb), 0.85), transparent);
+  animation-duration: 1.1s;
+}
+
+.radial-hub {
+  position: absolute;
+  z-index: 2;
+  width: 128px;
+  min-height: 128px;
+  display: grid;
+  place-items: center;
+  padding: 12px;
+  background: var(--rs-panel-gradient);
+  border: 0.5px solid rgba(255, 255, 255, 0.09);
+  border-radius: calc(14px * var(--border-radius-scale));
+  box-shadow:
+    var(--shadow-raised),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  color: var(--rs-fg);
+  text-align: center;
+  cursor: default;
+  transition:
+    border-color 0.15s var(--ease-out),
+    background 0.15s var(--ease-out),
+    transform 0.15s var(--ease-out);
+}
+
+.radial-hub.back {
+  cursor: pointer;
+}
+
+.radial-hub.back:hover {
+  border-color: rgba(255, 255, 255, 0.14);
+  background: var(--rs-panel-gradient);
+}
+
+.radial-hub.back:active {
+  transform: scale(0.97);
+}
+
+.radial-hub-in {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  animation: radial-hub-in 160ms var(--ease-out);
+}
+
+@keyframes radial-hub-in {
+  from { opacity: 0; transform: scale(0.9); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.radial-hub-copy {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.radial-hub-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  line-height: 1.3;
+  color: var(--rs-fg);
+  max-width: 96px;
+}
+
+.radial-hub-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-display);
+  font-size: 8.5px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--rs-accent);
+}
+
+.radial-hub-dot {
+  width: 4px;
+  height: 4px;
+  border-radius: var(--rs-radius-full);
+  background: var(--rs-accent);
+  box-shadow: 0 0 5px rgba(var(--accent-rgb), 0.8);
+}
+
+.radial-node {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  width: 72px;
+  padding: 0;
+  z-index: 2;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--rs-fg-soft);
+  transition: color 0.15s var(--ease-out), transform 0.15s var(--ease-out);
+  animation: radial-fade 280ms var(--ease-out) backwards;
+  animation-delay: var(--d);
+}
+
+.radial-node-label {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  line-height: 1.25;
+  text-align: center;
+}
+
+.radial-node-tile {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  background: var(--rs-panel-gradient);
+  border: 0.5px solid rgba(255, 255, 255, 0.09);
+  border-radius: calc(10px * var(--border-radius-scale));
+  box-shadow:
+    var(--shadow-raised),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.04);
+  transition:
+    border-color 0.15s var(--ease-out),
+    box-shadow 0.15s var(--ease-out),
+    transform 0.15s var(--ease-out);
+}
+
+.radial-node:hover .radial-node-tile {
+  border-color: rgba(255, 255, 255, 0.14);
+}
+
+.radial-node.active .radial-node-tile {
+  border-color: rgba(var(--accent-rgb), 0.35);
+  box-shadow:
+    var(--shadow-raised),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    0 0 14px rgba(var(--accent-rgb), 0.22);
+}
+
+.radial-node:hover {
+  color: var(--rs-fg);
+}
+
+.radial-node.active {
+  color: var(--rs-accent);
+}
+
+.radial-node:active {
+  opacity: 0.92;
+}
+
+.radial-footer {
+  position: absolute;
+  bottom: 8%;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 12px 16px;
+  padding: 10px 14px;
+  border: 0.5px solid rgba(255, 255, 255, 0.09);
+  border-radius: calc(14px * var(--border-radius-scale));
+  background: var(--rs-panel-gradient);
+  box-shadow:
+    var(--shadow-raised),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  animation: radial-fade 400ms var(--ease-out) 120ms backwards;
+}
