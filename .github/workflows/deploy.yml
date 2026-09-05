@@ -17,15 +17,5 @@ jobs:
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
           port: 22
-          
           script: |
-            powershell.exe -NoProfile -NonInteractive -Command "& {
-              Set-Location 'C:\Users\Administrator\Desktop\devserver\resources'
-              git fetch origin
-              if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-              git reset --hard origin/main
-              if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-              git lfs pull
-              if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-              git log -1 --oneline
-            }"
+            powershell.exe -NoProfile -NonInteractive -File "C:\Users\Administrator\Desktop\devserver\update-resources.ps1"
