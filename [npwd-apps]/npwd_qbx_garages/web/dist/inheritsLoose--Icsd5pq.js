@@ -1,0 +1,1 @@
+function f(t,o){if(t==null)return{};var e={},r=Object.keys(t),n,c;for(c=0;c<r.length;c++)n=r[c],!(o.indexOf(n)>=0)&&(e[n]=t[n]);return e}function p(t,o){return p=Object.setPrototypeOf?Object.setPrototypeOf.bind():function(e,r){return e.__proto__=r,e},p(t,o)}function u(t,o){t.prototype=Object.create(o.prototype),t.prototype.constructor=t,p(t,o)}export{u as _,f as a};
