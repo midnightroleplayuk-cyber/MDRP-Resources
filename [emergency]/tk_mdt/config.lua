@@ -39,7 +39,7 @@ Config.NeedItemCommand = false -- true / false, should player need the item to u
 Config.UseProfileImagesForEmployeePage = false -- true / false, use profile images for employee page
 
 Config.PoliceReportLocations = { -- coords for police report remove if you dont want to use
-    {coords = vec4(441.1595, -978.8431, 30.6896, 178.8787), dist = 5.0, ped = `s_f_y_cop_01`, scenario = 'WORLD_HUMAN_COP_IDLES', page = 'police'},
+--    {coords = vec4(441.1595, -978.8431, 30.6896, 178.8787), dist = 5.0, ped = `s_f_y_cop_01`, scenario = 'WORLD_HUMAN_COP_IDLES', page = 'police'},
 }
 
 Config.MDTs = {
@@ -56,7 +56,7 @@ Config.MDTs = {
         items = {'pol_mdt'},
         command = 'polmdt',
         locations = {
-            {coords = vec4(449.33, -984.9, 30.69, 90.0), dist = 3.0, ped = `s_f_y_cop_01`, scenario = 'WORLD_HUMAN_COP_IDLES'},
+        --    {coords = vec4(449.33, -984.9, 30.69, 90.0), dist = 3.0, ped = `s_f_y_cop_01`, scenario = 'WORLD_HUMAN_COP_IDLES'},
         },
         statuses = {'Active', 'Inactive'}, -- for employee page
         licenses = {'Motorcycle', 'Helicopter', 'Investigation'}, -- for employee page
