@@ -22,3 +22,5 @@ jobs:
             git fetch origin
             git reset --hard origin/main
             git lfs pull
+            git log -1 --oneline
+            
