@@ -47,9 +47,9 @@ local function TriggerEventHooks(event, payload)
 				self.success = false
 			end
 
-			Wait(50)
-
-			triggerPostEvents(self, self.success, payload)
+			SetTimeout(50, function()
+				triggerPostEvents(self, self.success, payload)
+			end)
 		end
 	})
 
@@ -93,7 +93,7 @@ local function TriggerEventHooks(event, payload)
 						payload.metadata = response
 					end
 				elseif response == false then
-					if hook.print or server.printhookrejection then
+					if hook.print or server.loghookrejection then
 						shared.info(('Event hook "%s" has rejected the action.'):format(hook.hookId))
 					end
 

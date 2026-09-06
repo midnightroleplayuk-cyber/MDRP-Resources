@@ -45,16 +45,6 @@ end
 
 for id, data in pairs(lib.load('data.crafting') or {}) do createCraftingBench(data.name or id, data) end
 
--- Allow other modules (e.g. dynamic DB-backed benches) to register/replace a
--- bench at runtime.
-exports('RegisterCraftingBench', function(id, data)
-	createCraftingBench(id, data)
-end)
-
-exports('RemoveCraftingBench', function(id)
-	CraftingBenches[id] = nil
-end)
-
 ---@param bench table
 ---@param index number
 ---@return table?
@@ -206,7 +196,7 @@ lib.callback.register('ox_inventory:craftItem', function(source, id, index, reci
                 lockIds[#lockIds + 1] = ('inventory-%s:slot-%s'):format(left.id, slot)
             end
 
-            local activeSlots <close> = GetLocks(tbl)
+            local activeSlots <close> = GetLocks(lockIds)
 
             if not activeSlots then return end
 

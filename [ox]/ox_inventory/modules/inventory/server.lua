@@ -654,7 +654,7 @@ function Inventory.Remove(inv)
         end
     end
 
-    if not inv.datastore and inv.changed then
+    if not inv.datastore and (inv.changed or inv.player) then
         Inventory.Save(inv)
     end
 
@@ -1636,6 +1636,7 @@ local function dropItem(source, playerInventory, fromData, data)
 	})
 
 	if not hooks.success then return end
+	if Inventories[playerInventory.id] ~= playerInventory then hooks.success = false return end
 
     fromData.count -= data.count
     fromData.weight = Inventory.SlotWeight(Items(fromData.name), fromData)
@@ -1691,7 +1692,7 @@ lib.callback.register('ox_inventory:swapItems', function(source, data)
         return
     end
 
-	if data.count < 1 then return end
+	data.count = math.max(1, math.floor(data.count or 1))
 
 	local playerInventory = Inventory(source)
 
@@ -1729,6 +1730,13 @@ lib.callback.register('ox_inventory:swapItems', function(source, data)
 	local fromOtherPlayer = fromInventory.player and fromInventory ~= playerInventory
 	local toOtherPlayer = toInventory.player and toInventory ~= playerInventory
 	local toData = toInventory.items[data.toSlot]
+
+	---@return boolean
+	local function partiesPresent()
+		return Inventories[playerInventory.id] == playerInventory
+			and Inventories[fromInventory.id] == fromInventory
+			and Inventories[toInventory.id] == toInventory
+	end
 
 	if not sameInventory and (fromInventory.type == 'policeevidence' or (toInventory.type == 'policeevidence' and toData)) then
 		local group, rank = server.hasGroup(playerInventory, shared.police)
@@ -1794,6 +1802,7 @@ lib.callback.register('ox_inventory:swapItems', function(source, data)
 						local hooks <close> = TriggerEventHooks('swapItems', hookPayload)
 
 						if not hooks.success then return end
+						if not partiesPresent() then hooks.success = false return end
 
 						if containerItem then
 							local toContainer = toInventory.type == 'container'
@@ -1829,15 +1838,21 @@ lib.callback.register('ox_inventory:swapItems', function(source, data)
 					local hooks <close> = TriggerEventHooks('swapItems', hookPayload)
 
 					if not hooks.success then return end
+					if not partiesPresent() then hooks.success = false return end
 
 					toData, fromData = Inventory.SwapSlots(fromInventory, toInventory, data.fromSlot, data.toSlot)
 				end
 
 			elseif toData and toData.name == fromData.name and table.matches(toData.metadata, fromData.metadata) then
-				-- Stack items
-				toData.count += data.count
-				fromData.count -= data.count
+				local originalFromCount, originalToCount = fromData.count, toData.count
+				local fromCount, toCount = originalFromCount - data.count, originalToCount + data.count
+				local originalFromWeight = fromData.weight
+
+				fromData.count, toData.count = fromCount, toCount
+				local fromSlotWeight = Inventory.SlotWeight(Items(fromData.name), fromData)
 				local toSlotWeight = Inventory.SlotWeight(Items(toData.name), toData)
+				fromData.count, toData.count = originalFromCount, originalToCount
+
 				local totalWeight = toInventory.weight - toData.weight + toSlotWeight
 
 				if fromInventory.type == 'container' or sameInventory or totalWeight <= toInventory.maxWeight then
@@ -1845,18 +1860,14 @@ lib.callback.register('ox_inventory:swapItems', function(source, data)
 
 					local hooks <close> = TriggerEventHooks('swapItems', hookPayload)
 
-					if not hooks.success then
-						toData.count -= data.count
-						fromData.count += data.count
+					if not hooks.success then return end
+					if not partiesPresent() then hooks.success = false return end
 
-						return
-					end
-
-					local fromSlotWeight = Inventory.SlotWeight(Items(fromData.name), fromData)
+					fromData.count, toData.count = fromCount, toCount
 					toData.weight = toSlotWeight
 
 					if not sameInventory then
-						fromInventory.weight = fromInventory.weight - fromData.weight + fromSlotWeight
+						fromInventory.weight = fromInventory.weight - originalFromWeight + fromSlotWeight
 						toInventory.weight = totalWeight
 
 						if container then
@@ -1876,8 +1887,6 @@ lib.callback.register('ox_inventory:swapItems', function(source, data)
 
 					fromData.weight = fromSlotWeight
 				else
-					toData.count -= data.count
-					fromData.count += data.count
 					return false, 'cannot_carry'
 				end
 			elseif data.count <= fromData.count then
@@ -1893,6 +1902,7 @@ lib.callback.register('ox_inventory:swapItems', function(source, data)
 					local hooks <close> = TriggerEventHooks('swapItems', hookPayload)
 
 					if not hooks.success then return end
+					if not partiesPresent() then hooks.success = false return end
 
 					if not sameInventory then
 						local toContainer = toInventory.type == 'container'
@@ -2204,10 +2214,12 @@ function Inventory.GetSlotForItem(inv, itemName, metadata)
 	for i = 1, inventory.slots do
 		local slotData = items[i]
 
+		if not slotData and not emptySlot then
+			emptySlot = i
+		end
+
 		if item.stack and slotData and slotData.name == item.name and table.matches(slotData.metadata, metadata) then
 			return i
-		elseif not item.stack and not slotData and not emptySlot then
-			emptySlot = i
 		end
 	end
 
@@ -2482,7 +2494,7 @@ local function giveItem(playerId, slot, target, count)
 
 	if not fromInventory or not toInventory then return end
 
-	if type(count) ~= 'number' or count <= 0 then count = 1 end
+	count = math.max(1, math.floor(count or 1))
 
 	if toInventory.player then
 		local data = fromInventory.items[slot]
@@ -2502,6 +2514,8 @@ local function giveItem(playerId, slot, target, count)
 		end
 
 		local toSlot = Inventory.GetSlotForItem(toInventory, data.name, data.metadata)
+
+		if not toSlot then return { 'cannot_give', count, data.label } end
 
         local activeSlots <close> = GetLocks({
             ('inventory-%s:slot-%s'):format(fromInventory.id, slot),
