@@ -1,43 +1,36 @@
---TEST
 local Config = {}
-Config.ToggleKey = 344 -- Key code for F11
+Config.Duration = 7000 -- Display duration in milliseconds (7 seconds)
 
-local showServerId = false
-local displayTimer = 0
+local displayUntil = 0
+
+-- Register the command and keybind together
+RegisterCommand('toggleServerId', function()
+    displayUntil = GetGameTimer() + Config.Duration
+end, false)
 
 RegisterKeyMapping('toggleServerId', 'Toggle Server ID Display', 'keyboard', 'F11')
 
--- Command handler registered via Key Mapping
-RegisterCommand('toggleServerId', function()
-    showServerId = true
-    displayTimer = GetGameTimer() + 7000 -- Set timer to 7 seconds (7000 ms) from now
-end, false)
-
--- Loop to handle drawing text while timer is active
+-- Main loop to draw text when timer is active
 Citizen.CreateThread(function()
     while true do
-        local sleep = 1000
+        local currentTime = GetGameTimer()
 
-        if showServerId then
-            if GetGameTimer() < displayTimer then
-                sleep = 0 -- Run frame-by-frame while active to avoid flickering
-
-                for _, player in ipairs(GetActivePlayers()) do
-                    local ped = GetPlayerPed(player)
+        if currentTime < displayUntil then
+            -- Run every frame while the 7-second timer is active
+            for _, player in ipairs(GetActivePlayers()) do
+                local ped = GetPlayerPed(player)
+                if DoesEntityExist(ped) then
                     local pedCoords = GetEntityCoords(ped)
                     local serverId = GetPlayerServerId(player)
 
-                    local x, y, z = table.unpack(pedCoords)
-                    z = z + 1.0  -- Height above player's head
-
-                    DrawText3D(x, y, z, '~p~' .. serverId)
+                    DrawText3D(pedCoords.x, pedCoords.y, pedCoords.z + 1.0, '~p~' .. serverId)
                 end
-            else
-                showServerId = false -- Reset state after 7 seconds
             end
+            Citizen.Wait(0)
+        else
+            -- Idle wait when inactive to save performance
+            Citizen.Wait(500)
         end
-
-        Citizen.Wait(sleep)
     end
 end)
 
@@ -45,22 +38,14 @@ function DrawText3D(x, y, z, text)
     local onScreen, _x, _y = World3dToScreen2d(x, y, z)
 
     if onScreen then
-        SetTextScale(1.0, 0.5)
+        SetTextScale(1.0, 0.3)
         SetTextFont(4)
         SetTextProportional(1)
         SetTextColour(0, 0, 255, 255)
-        SetTextDropshadow(0, 0, 0, 0, 255)
-        SetTextEdge(2, 0, 0, 0, 150)
-        SetTextDropShadow()
         SetTextOutline()
-
-        BeginTextCommandWidth("STRING")
-        AddTextComponentString(text)
-        local width = EndTextCommandGetWidth(0)
-        local height = 0.02
 
         SetTextEntry("STRING")
         AddTextComponentString(text)
-        EndTextCommandDisplayText(_x - width / 2, _y - height / 2)
+        DrawText(_x, _y)
     end
 end
