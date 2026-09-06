@@ -6,6 +6,29 @@ local Query = {
     UPSERT_STASH =
     'INSERT INTO ox_inventory (data, owner, name) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE data = VALUES(data)',
     INSERT_STASH = 'INSERT INTO ox_inventory (owner, name) VALUES (?, ?)',
+    -- Dynamic, in-game created stashes (definition rows, not item contents).
+    SELECT_DYNAMIC_STASHES = 'SELECT * FROM ox_inventory_stashes',
+    UPSERT_DYNAMIC_STASH =
+    'INSERT INTO ox_inventory_stashes (name, label, owner, slots, maxweight, groups, coords, target, prop, instance, showmarker, createdby) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE label = VALUES(label), owner = VALUES(owner), slots = VALUES(slots), maxweight = VALUES(maxweight), groups = VALUES(groups), coords = VALUES(coords), target = VALUES(target), prop = VALUES(prop), instance = VALUES(instance), showmarker = VALUES(showmarker)',
+    DELETE_DYNAMIC_STASH = 'DELETE FROM ox_inventory_stashes WHERE name = ?',
+    DELETE_DYNAMIC_STASH_CONTENTS = 'DELETE FROM ox_inventory WHERE name = ? OR name LIKE ?',
+    COUNT_DYNAMIC_STASHES = 'SELECT COUNT(*) FROM ox_inventory_stashes',
+    COUNT_DYNAMIC_CRAFTING = 'SELECT COUNT(*) FROM ox_inventory_crafting',
+    -- Dynamic, in-game created crafting benches.
+    SELECT_DYNAMIC_CRAFTING = 'SELECT * FROM ox_inventory_crafting',
+    UPSERT_DYNAMIC_CRAFTING =
+    'INSERT INTO ox_inventory_crafting (id, label, groups, recipes, coords, target, prop, showmarker, blip, createdby) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE label = VALUES(label), groups = VALUES(groups), recipes = VALUES(recipes), coords = VALUES(coords), target = VALUES(target), prop = VALUES(prop), showmarker = VALUES(showmarker), blip = VALUES(blip)',
+    DELETE_DYNAMIC_CRAFTING = 'DELETE FROM ox_inventory_crafting WHERE id = ?',
+    -- Dynamic, in-game created shops.
+    SELECT_DYNAMIC_SHOPS = 'SELECT * FROM ox_inventory_shops',
+    UPSERT_DYNAMIC_SHOP =
+    'INSERT INTO ox_inventory_shops (id, label, groups, inventory, coords, prop, ped, showmarker, blip, blipsprite, blipcolor, createdby) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE label = VALUES(label), groups = VALUES(groups), inventory = VALUES(inventory), coords = VALUES(coords), prop = VALUES(prop), ped = VALUES(ped), showmarker = VALUES(showmarker), blip = VALUES(blip), blipsprite = VALUES(blipsprite), blipcolor = VALUES(blipcolor)',
+    DELETE_DYNAMIC_SHOP = 'DELETE FROM ox_inventory_shops WHERE id = ?',
+    COUNT_DYNAMIC_SHOPS = 'SELECT COUNT(*) FROM ox_inventory_shops',
+    -- Global marker / blip appearance (single row).
+    SELECT_APPEARANCE = 'SELECT data FROM ox_inventory_appearance WHERE id = 1',
+    UPSERT_APPEARANCE =
+    'INSERT INTO ox_inventory_appearance (id, data) VALUES (1, ?) ON DUPLICATE KEY UPDATE data = VALUES(data)',
     SELECT_GLOVEBOX = 'SELECT plate, glovebox FROM `{vehicle_table}` WHERE `{vehicle_column}` = ?',
     SELECT_TRUNK = 'SELECT plate, trunk FROM `{vehicle_table}` WHERE `{vehicle_column}` = ?',
     SELECT_PLAYER = 'SELECT inventory FROM `{user_table}` WHERE `{user_column}` = ?',
@@ -113,6 +136,92 @@ Citizen.CreateThreadNow(function()
         MySQL.query(('ALTER TABLE `%s` ADD COLUMN `inventory` LONGTEXT NULL'):format(playerTable))
     end
 
+    -- Table that stores in-game created (dynamic) stash definitions.
+    local hasDynamicTable = pcall(MySQL.scalar.await, 'SELECT 1 FROM ox_inventory_stashes')
+
+    if not hasDynamicTable then
+        MySQL.query([[CREATE TABLE `ox_inventory_stashes` (
+			`name` varchar(100) NOT NULL,
+			`label` varchar(100) NOT NULL,
+			`owner` varchar(16) DEFAULT NULL,
+			`slots` int(11) NOT NULL DEFAULT 50,
+			`maxweight` int(11) NOT NULL DEFAULT 100000,
+			`groups` longtext DEFAULT NULL,
+			`coords` longtext DEFAULT NULL,
+			`target` longtext DEFAULT NULL,
+			`prop` longtext DEFAULT NULL,
+			`instance` int(11) DEFAULT NULL,
+			`showmarker` tinyint(1) NOT NULL DEFAULT 1,
+			`createdby` varchar(60) DEFAULT NULL,
+			`createdat` timestamp NULL DEFAULT current_timestamp(),
+			PRIMARY KEY (`name`)
+		)]])
+    else
+        pcall(MySQL.query.await, 'ALTER TABLE ox_inventory_stashes ADD COLUMN showmarker tinyint(1) NOT NULL DEFAULT 1')
+    end
+
+    -- Table that stores in-game created (dynamic) crafting benches.
+    local hasCraftingTable = pcall(MySQL.scalar.await, 'SELECT 1 FROM ox_inventory_crafting')
+
+    if not hasCraftingTable then
+        MySQL.query([[CREATE TABLE `ox_inventory_crafting` (
+			`id` varchar(100) NOT NULL,
+			`label` varchar(100) NOT NULL,
+			`groups` longtext DEFAULT NULL,
+			`recipes` longtext DEFAULT NULL,
+			`coords` longtext DEFAULT NULL,
+			`target` longtext DEFAULT NULL,
+			`prop` longtext DEFAULT NULL,
+			`showmarker` tinyint(1) NOT NULL DEFAULT 1,
+			`blip` tinyint(1) NOT NULL DEFAULT 0,
+			`createdby` varchar(60) DEFAULT NULL,
+			`createdat` timestamp NULL DEFAULT current_timestamp(),
+			PRIMARY KEY (`id`)
+		)]])
+    else
+        pcall(MySQL.query.await, 'ALTER TABLE ox_inventory_crafting ADD COLUMN showmarker tinyint(1) NOT NULL DEFAULT 1')
+        pcall(MySQL.query.await, 'ALTER TABLE ox_inventory_crafting ADD COLUMN blip tinyint(1) NOT NULL DEFAULT 0')
+    end
+
+    -- Table that stores in-game created (dynamic) shops.
+    local hasShopsTable = pcall(MySQL.scalar.await, 'SELECT 1 FROM ox_inventory_shops')
+
+    if not hasShopsTable then
+        MySQL.query([[CREATE TABLE `ox_inventory_shops` (
+			`id` varchar(100) NOT NULL,
+			`label` varchar(100) NOT NULL,
+			`groups` longtext DEFAULT NULL,
+			`inventory` longtext DEFAULT NULL,
+			`coords` longtext DEFAULT NULL,
+			`prop` longtext DEFAULT NULL,
+			`ped` longtext DEFAULT NULL,
+			`showmarker` tinyint(1) NOT NULL DEFAULT 1,
+			`blip` tinyint(1) NOT NULL DEFAULT 0,
+			`blipsprite` int(11) DEFAULT NULL,
+			`blipcolor` int(11) DEFAULT NULL,
+			`createdby` varchar(60) DEFAULT NULL,
+			`createdat` timestamp NULL DEFAULT current_timestamp(),
+			PRIMARY KEY (`id`)
+		)]])
+    else
+        pcall(MySQL.query.await, 'ALTER TABLE ox_inventory_shops ADD COLUMN showmarker tinyint(1) NOT NULL DEFAULT 1')
+        pcall(MySQL.query.await, 'ALTER TABLE ox_inventory_shops ADD COLUMN blip tinyint(1) NOT NULL DEFAULT 0')
+        -- Per-shop map blip sprite/colour (null = fall back to the global appearance).
+        pcall(MySQL.query.await, 'ALTER TABLE ox_inventory_shops ADD COLUMN blipsprite int(11) DEFAULT NULL')
+        pcall(MySQL.query.await, 'ALTER TABLE ox_inventory_shops ADD COLUMN blipcolor int(11) DEFAULT NULL')
+    end
+
+    -- Single-row table that stores the global marker / blip appearance config.
+    local hasAppearanceTable = pcall(MySQL.scalar.await, 'SELECT 1 FROM ox_inventory_appearance')
+
+    if not hasAppearanceTable then
+        MySQL.query([[CREATE TABLE `ox_inventory_appearance` (
+			`id` tinyint(1) NOT NULL DEFAULT 1,
+			`data` longtext DEFAULT NULL,
+			PRIMARY KEY (`id`)
+		)]])
+    end
+
     local clearStashes = GetConvar('inventory:clearstashes', '6 MONTH')
 
     if clearStashes ~= '' then
@@ -128,19 +237,187 @@ function db.loadPlayer(identifier)
 end
 
 function db.savePlayer(owner, inventory)
-    return MySQL.prepare.await(Query.UPDATE_PLAYER, { inventory, owner })
+    return MySQL.prepare(Query.UPDATE_PLAYER, { inventory, owner })
 end
 
 function db.saveStash(owner, dbId, inventory)
-    return MySQL.prepare.await(Query.UPSERT_STASH, { inventory, owner and tostring(owner) or '', dbId })
+    return MySQL.prepare(Query.UPSERT_STASH, { inventory, owner and tostring(owner) or '', dbId })
 end
 
 function db.loadStash(owner, name)
     return MySQL.prepare.await(Query.SELECT_STASH, { owner and tostring(owner) or '', name })
 end
 
+-- Dynamic (in-game created) stash definitions.
+function db.loadDynamicStashes()
+    return MySQL.query.await(Query.SELECT_DYNAMIC_STASHES) or {}
+end
+
+---@param stash table definition row already encoded (groups/coords/target/prop as json strings)
+function db.saveDynamicStash(stash)
+    return MySQL.prepare.await(Query.UPSERT_DYNAMIC_STASH, {
+        stash.name,
+        stash.label,
+        stash.owner,
+        stash.slots,
+        stash.maxweight,
+        stash.groups,
+        stash.coords,
+        stash.target,
+        stash.prop,
+        stash.instance,
+        stash.showmarker == false and 0 or 1,
+        stash.createdby,
+    })
+end
+
+function db.deleteDynamicStash(name)
+    MySQL.prepare.await(Query.DELETE_DYNAMIC_STASH, { name })
+    -- Wipe its stored contents too (shared + every personal `name:owner` row).
+    return MySQL.prepare.await(Query.DELETE_DYNAMIC_STASH_CONTENTS, { name, name .. ':%' })
+end
+
+function db.countDynamicStashes()
+    return MySQL.scalar.await(Query.COUNT_DYNAMIC_STASHES) or 0
+end
+
+function db.countDynamicCrafting()
+    return MySQL.scalar.await(Query.COUNT_DYNAMIC_CRAFTING) or 0
+end
+
+-- Dynamic (in-game created) crafting benches.
+function db.loadDynamicCrafting()
+    return MySQL.query.await(Query.SELECT_DYNAMIC_CRAFTING) or {}
+end
+
+function db.saveDynamicCrafting(bench)
+    return MySQL.prepare.await(Query.UPSERT_DYNAMIC_CRAFTING, {
+        bench.id,
+        bench.label,
+        bench.groups,
+        bench.recipes,
+        bench.coords,
+        bench.target,
+        bench.prop,
+        bench.showmarker == false and 0 or 1,
+        bench.blip and 1 or 0,
+        bench.createdby,
+    })
+end
+
+function db.deleteDynamicCrafting(id)
+    return MySQL.prepare.await(Query.DELETE_DYNAMIC_CRAFTING, { id })
+end
+
+-- Dynamic (in-game created) shops.
+function db.loadDynamicShops()
+    return MySQL.query.await(Query.SELECT_DYNAMIC_SHOPS) or {}
+end
+
+function db.saveDynamicShop(shop)
+    return MySQL.prepare.await(Query.UPSERT_DYNAMIC_SHOP, {
+        shop.id,
+        shop.label,
+        shop.groups,
+        shop.inventory,
+        shop.coords,
+        shop.prop,
+        shop.ped,
+        shop.showmarker == false and 0 or 1,
+        shop.blip and 1 or 0,
+        shop.blipsprite,
+        shop.blipcolor,
+        shop.createdby,
+    })
+end
+
+function db.deleteDynamicShop(id)
+    return MySQL.prepare.await(Query.DELETE_DYNAMIC_SHOP, { id })
+end
+
+function db.countDynamicShops()
+    return MySQL.scalar.await(Query.COUNT_DYNAMIC_SHOPS) or 0
+end
+
+-- Global marker / blip appearance (returns the decoded table, or nil if unset).
+function db.loadAppearance()
+    local data = MySQL.scalar.await(Query.SELECT_APPEARANCE) --[[@as string?]]
+    return data and json.decode(data) or nil
+end
+
+---@param data table appearance config (marker / blip)
+function db.saveAppearance(data)
+    return MySQL.prepare.await(Query.UPSERT_APPEARANCE, { json.encode(data) })
+end
+
+-- Returns the server's jobs and their grades for the admin UI.
+-- ESX reads the `jobs`/`job_grades` tables; QBox/QBCore keep jobs in shared Lua
+-- (no DB table), so we pull them from the core export instead. Safe no-op on
+-- frameworks we can't enumerate.
+function db.getJobsList()
+    if shared.framework == 'esx' then
+        local ok, jobs = pcall(MySQL.query.await, 'SELECT name, label FROM jobs ORDER BY label')
+        if not ok or not jobs then return {} end
+
+        local grades = {}
+        local ok2, gradeRows = pcall(MySQL.query.await, 'SELECT job_name, grade, label FROM job_grades ORDER BY job_name, grade')
+
+        if ok2 and gradeRows then
+            for i = 1, #gradeRows do
+                local g = gradeRows[i]
+                grades[g.job_name] = grades[g.job_name] or {}
+                grades[g.job_name][#grades[g.job_name] + 1] = { grade = g.grade, label = g.label }
+            end
+        end
+
+        for i = 1, #jobs do
+            jobs[i].grades = grades[jobs[i].name] or {}
+        end
+
+        return jobs
+    end
+
+    -- QBox / QBCore: jobs live in shared config, exposed via qbx_core:GetJobs()
+    -- (or qb-core's Shared.Jobs). Grades are a map keyed by grade number, with the
+    -- grade name under `name`.
+    if shared.framework == 'qbx' or shared.framework == 'qb' then
+        local ok, coreJobs = pcall(function()
+            if GetResourceState('qbx_core') == 'started' then return exports.qbx_core:GetJobs() end
+            if GetResourceState('qb-core') == 'started' then return exports['qb-core']:GetCoreObject().Shared.Jobs end
+            return nil
+        end)
+
+        if not ok or type(coreJobs) ~= 'table' then return {} end
+
+        local list, n = {}, 0
+
+        for name, job in pairs(coreJobs) do
+            local grades = {}
+
+            if type(job.grades) == 'table' then
+                for gradeKey, grade in pairs(job.grades) do
+                    grades[#grades + 1] = {
+                        grade = tonumber(gradeKey) or 0,
+                        label = (type(grade) == 'table' and (grade.name or grade.label)) or tostring(gradeKey),
+                    }
+                end
+                table.sort(grades, function(a, b) return a.grade < b.grade end)
+            end
+
+            n += 1
+            list[n] = { name = name, label = job.label or name, grades = grades }
+        end
+
+        table.sort(list, function(a, b) return (a.label or '') < (b.label or '') end)
+
+        return list
+    end
+
+    return {}
+end
+
 function db.saveGlovebox(id, inventory)
-    return MySQL.prepare.await(Query.UPDATE_GLOVEBOX, { inventory, id })
+    return MySQL.prepare(Query.UPDATE_GLOVEBOX, { inventory, id })
 end
 
 function db.loadGlovebox(id)
@@ -148,7 +425,7 @@ function db.loadGlovebox(id)
 end
 
 function db.saveTrunk(id, inventory)
-    return MySQL.prepare.await(Query.UPDATE_TRUNK, { inventory, id })
+    return MySQL.prepare(Query.UPDATE_TRUNK, { inventory, id })
 end
 
 function db.loadTrunk(id)

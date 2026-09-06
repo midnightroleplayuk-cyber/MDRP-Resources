@@ -148,12 +148,26 @@ end)
 function Utils.CreateBlip(settings, coords)
     local blip = AddBlipForCoord(coords.x, coords.y, coords.z)
     SetBlipSprite(blip, settings.id)
-    SetBlipDisplay(blip, 4)
+    SetBlipDisplay(blip, settings.display or 4)
     SetBlipScale(blip, settings.scale)
     SetBlipColour(blip, settings.colour)
-    SetBlipAsShortRange(blip, true)
-    BeginTextCommandSetBlipName(settings.name)
-    EndTextCommandSetBlipName(blip)
+    SetBlipAsShortRange(blip, settings.shortRange == nil and true or settings.shortRange)
+
+    if settings.alpha then SetBlipAlpha(blip, settings.alpha) end
+
+    -- `name` may be a pre-registered text-entry key OR raw display text. If it's
+    -- raw text (contains a space or isn't a known label), use the literal-string
+    -- helper so it shows correctly on the map.
+    if settings.name then
+        if DoesTextLabelExist(settings.name) then
+            BeginTextCommandSetBlipName(settings.name)
+            EndTextCommandSetBlipName(blip)
+        else
+            AddTextEntry('ox_blip_tmp', settings.name)
+            BeginTextCommandSetBlipName('ox_blip_tmp')
+            EndTextCommandSetBlipName(blip)
+        end
+    end
 
     return blip
 end
@@ -241,10 +255,9 @@ end
 
 ---@param serverID number
 ---@return string
-local function defaultGetPlayerName(serverId)
-    local playerId = GetPlayerFromServerId(serverId)
-    local playerName = GetPlayerName(playerId)
-    return ('[%d] %s'):format(serverId, playerName)
+local function defaultGetPlayerName(serverID)
+    local playerName = GetPlayerName(serverID)
+    return ('[%d] %s'):format(serverID, playerName)
 end
 
 local getPlayerName = defaultGetPlayerName

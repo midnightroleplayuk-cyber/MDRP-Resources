@@ -4,7 +4,7 @@ lua54 'yes'
 game 'gta5'
 name 'ox_inventory'
 author 'Overextended'
-version '2.47.9'
+version '2.47.4'
 repository 'https://github.com/overextended/ox_inventory'
 description 'Slot-based inventory with item metadata support'
 
@@ -39,9 +39,25 @@ files {
     'web/build/index.html',
     'web/build/assets/*.js',
     'web/build/assets/*.css',
+    'web/build/assets/*.woff2',
     'web/images/*.png',
     'modules/**/shared.lua',
     'modules/**/client.lua',
     'modules/bridge/**/client.lua',
     'data/*.lua',
 }
+
+-- ───────────────────────────────────────────────────────────
+-- OPEN-SOURCE build: ox_inventory is GPL-3.0, so nothing here is ever
+-- encrypted. Every file stays readable and editable, escrow or not.
+escrow_ignore {
+    '*.lua',
+    '*.md',
+    'data/**/*',
+    'locales/**/*',
+    'modules/**/*',
+    'setup/**/*',
+    'web/**/*',
+}
+
+dependency '/assetpacks'

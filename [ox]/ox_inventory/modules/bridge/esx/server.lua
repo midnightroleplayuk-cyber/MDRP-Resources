@@ -91,9 +91,11 @@ function server.convertInventory(playerId, items)
 		if player then
 			for name in pairs(server.accounts) do
 				if not items[name] then
-					local account = player.getAccount(name)
+					-- Nil-safe: a missing/unknown account must never crash player
+					-- load (which would leave the inventory stuck on "is busy").
+					local ok, account = pcall(player.getAccount, name)
 
-					if account.money then
+					if ok and type(account) == 'table' and account.money then
 						items[name] = account.money
 					end
 				end
