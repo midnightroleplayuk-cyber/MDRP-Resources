@@ -32,19 +32,7 @@ local nearbyZones
 local toggleHotkey = GetConvarInt('ox_target:toggleHotkey', 0) == 1
 local mouseButton = GetConvarInt('ox_target:leftClick', 1) == 1 and 24 or 25
 local debug = GetConvarInt('ox_target:debug', 0) == 1
-local autoFocus = GetConvarInt('ox_target:autoFocus', 1) == 1
 local vec0 = vec3(0, 0, 0)
-
-local function sendLeftTarget()
-    state.setNuiFocus(false, false)
-    SendNuiMessage('{"event": "leftTarget"}')
-end
-
-local function tryAutoFocus()
-    if autoFocus and state.isActive() then
-        state.setNuiFocus(true, true)
-    end
-end
 
 ---@param option OxTargetOption
 ---@param distance number
@@ -139,7 +127,6 @@ local function startTargeting()
     if state.isDisabled() or state.isActive() or IsNuiFocused() or IsPauseMenuActive() then return end
 
     state.setActive(true)
-    LocalPlayer.state.invHotkeys = false
 
     local flag = 511
     local hit, entityHit, endCoords, distance, lastEntity, entityType, entityModel, hasTarget, zonesChanged
@@ -213,7 +200,7 @@ local function startTargeting()
             end
         end
 
-        nearbyZones, zonesChanged = utils.getNearbyZones(endCoords, playerCoords)
+        nearbyZones, zonesChanged = utils.getNearbyZones(endCoords)
 
         local entityChanged = entityHit ~= lastEntity
         local newOptions = (zonesChanged or entityChanged or menuChanged) and true
@@ -242,7 +229,7 @@ local function startTargeting()
         end
 
         if hasTarget and (zonesChanged or entityChanged and hasTarget > 1) then
-            sendLeftTarget()
+            SendNuiMessage('{"event": "leftTarget"}')
 
             if entityChanged then options:wipe() end
 
@@ -309,7 +296,7 @@ local function startTargeting()
             if hasTarget and hidden == totalOptions then
                 if hasTarget and hasTarget ~= 1 then
                     hasTarget = false
-                    sendLeftTarget()
+                    SendNuiMessage('{"event": "leftTarget"}')
                 end
             elseif menuChanged or hasTarget ~= 1 and hidden ~= totalOptions then
                 hasTarget = options.size
@@ -329,10 +316,7 @@ local function startTargeting()
                     event = 'setTarget',
                     options = options,
                     zones = zones,
-                    menu = currentMenu,
                 }, { sort_keys = true }))
-
-                tryAutoFocus()
             end
 
             menuChanged = false
@@ -359,8 +343,6 @@ local function startTargeting()
     options:wipe()
 
     if nearbyZones then table.wipe(nearbyZones) end
-
-    LocalPlayer.state.invHotkeys = true
 end
 
 do
@@ -419,11 +401,6 @@ local function getResponse(option, server)
 
     return response
 end
-
-RegisterNUICallback('requestFocus', function(_, cb)
-    tryAutoFocus()
-    cb(1)
-end)
 
 RegisterNUICallback('select', function(data, cb)
     cb(1)

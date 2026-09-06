@@ -175,25 +175,14 @@ function lib.require(modName)
         local loader, data = package.searchers[i](modName)
 
         if loader then
-            local ok, result = pcall(function()
-                if type(loader) == 'function' then return loader(modName, data) end
-                return loader
-            end)
-
-            if not ok then
-                loaded[modName] = nil
-                error(result, 2)
-            end
-
-            loaded[modName] = result or result == nil
+            if type(loader) == 'function' then loader = loader(modName, data) end
+            loaded[modName] = loader or loader == nil
 
             return loaded[modName]
         end
 
         err[#err + 1] = data
     end
-
-    loaded[modName] = nil
 
     error(("%s"):format(table.concat(err, "\n\t")))
 end

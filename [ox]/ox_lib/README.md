@@ -1,12 +1,4 @@
-
-
 <div align="center">
-
-# add to ox cfg
-
-# Set ox_lib colors
-setr ox:primaryColor jakers
-setr ox:primaryShade 5
 
 # ox_lib
 

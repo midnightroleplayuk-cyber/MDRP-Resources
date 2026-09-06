@@ -36,8 +36,6 @@ local input
 ---@class InputDialogOptionsProps
 ---@field allowCancel? boolean
 ---@field size? 'xs' | 'sm' | 'md' | 'lg' | 'xl'
----@field subtitle? string
----@field badge? string
 
 ---@param heading string
 ---@param rows string[] | InputDialogRowProps[]
@@ -57,8 +55,7 @@ function lib.inputDialog(heading, rows, options)
             or row
     end
 
-    -- Full NUI capture: cursor + keyboard on the dialog, not the game.
-    lib.setNuiFocus(false, false)
+    lib.setNuiFocus(false)
     SendNUIMessage({
         action = 'openDialog',
         data = {

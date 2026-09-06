@@ -8,9 +8,9 @@ game 'gta5'
 -- Resource Information
 name 'ox_target'
 author 'Overextended'
-version '1.18.1.2'
+version '1.18.1'
 repository 'https://github.com/overextended/ox_target'
-description 'A Modified Version By Jakers'
+description ''
 
 -- Manifest
 ui_page 'web/index.html'
@@ -21,7 +21,6 @@ shared_scripts {
 
 client_scripts {
     'client/main.lua',
-    'client/uisettings.lua',
 }
 
 server_scripts {
@@ -45,12 +44,4 @@ files {
 
 provide 'qtarget'
 
-
-escrow_ignore {
-    'client/**/*',
-    'server/**/*',
-    'locales/**/*',
-    'web/**/*',
-}
-
-dependency '/assetpacks'
+dependency 'ox_lib'

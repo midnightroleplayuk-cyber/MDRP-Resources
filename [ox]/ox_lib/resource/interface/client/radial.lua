@@ -362,7 +362,7 @@ lib.addKeybind({
             Wait(0)
         end
     end,
-     onReleased = lib.hideRadial,
+    -- onReleased = lib.hideRadial,
 })
 
 AddEventHandler('onClientResourceStop', function(resource)
