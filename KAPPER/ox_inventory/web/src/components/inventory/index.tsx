@@ -151,7 +151,7 @@ const Inventory: React.FC = () => {
               {settings.showEscHint && (
                 <div className="esc-hint">
                   <kbd>ESC</kbd>
-                  <span>{Locale.ui_fechar || 'Fechar'}</span>
+                  <span>{Locale.ui_fechar || 'Close'}</span>
                 </div>
               )}
             </>

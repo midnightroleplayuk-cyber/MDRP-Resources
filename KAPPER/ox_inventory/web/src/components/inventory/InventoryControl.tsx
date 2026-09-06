@@ -117,8 +117,8 @@ const InventoryControl: React.FC = () => {
             </svg>
           </div>
           <div className="inventory-grid-title-text">
-            <p className="inventory-grid-label">{Locale.ui_actions || 'Ações'}</p>
-            <span className="inventory-grid-subtitle">{Locale.ui_actions_sub || 'Usar, dar, dividir ou descartar'}</span>
+            <p className="inventory-grid-label">{Locale.ui_actions || 'Actions'}</p>
+            <span className="inventory-grid-subtitle">{Locale.ui_actions_sub || 'Use, give, split or drop'}</span>
           </div>
         </div>
         <div className="action-bar">
@@ -145,10 +145,10 @@ const InventoryControl: React.FC = () => {
           ref={(el) => {
             use(el);
           }}
-          title="Arrasta um item aqui (ou tecla U) para usar"
+          title="Drag an item here (or press U) to use"
         >
           <UseIcon size={28} />
-          <span className="action-btn-label">{Locale.ui_use || 'Usar'}</span>
+          <span className="action-btn-label">{Locale.ui_use || 'Use'}</span>
         </button>
 
         <button
@@ -157,24 +157,24 @@ const InventoryControl: React.FC = () => {
             give(el);
           }}
           onClick={() => handleSetGiveOpen(!giveOpen)}
-          title="Arrasta um item aqui (ou tecla G) para dar"
+          title="Drag an item here (or press G) to give"
         >
           <UsersGiveIcon size={28} />
-          <span className="action-btn-label">{Locale.ui_give || 'Dar'}</span>
+          <span className="action-btn-label">{Locale.ui_give || 'Give'}</span>
         </button>
 
-        <button className="action-bar-button" title="Shift + arrastar para dividir uma pilha">
+        <button className="action-bar-button" title="Shift + drag to split a stack">
           <svg viewBox="0 0 24 24" width={28} height={28} fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
             <path d="M6 9a3 3 0 1 0 0-6 3 3 0 0 0 0 6z M6 21a3 3 0 1 0 0-6 3 3 0 0 0 0 6z M20 4L8.12 15.88 M14.47 14.48L20 20 M8.12 8.12L12 12" />
           </svg>
-          <span className="action-btn-label">{Locale.ui_split || 'Dividir'}</span>
+          <span className="action-btn-label">{Locale.ui_split || 'Split'}</span>
         </button>
 
-        <button className="action-bar-button action-bar-button-discard" title="Arrasta um item para fora da janela para descartar">
+        <button className="action-bar-button action-bar-button-discard" title="Drag an item outside the window to discard">
           <svg viewBox="0 0 24 24" width={28} height={28} fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
             <path d="M3 6h18 M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2 M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6 M10 11v6 M14 11v6" />
           </svg>
-          <span className="action-btn-label">{Locale.ui_discard || 'Descartar'}</span>
+          <span className="action-btn-label">{Locale.ui_discard || 'Discard'}</span>
         </button>
         </div>
       </div>
