@@ -19,14 +19,14 @@ PinkFrogConfig = {
     },
 
     -- Accent color — drives every highlighted element (buttons, icons, hotkeys, glow)
-    mainAccent     = '#e3b536',
+    mainAccent     = '#7836e3',
 
     -- Base color of card / panel backgrounds — every other surface shade is derived from it by the UI
     secondaryColor = '#111217',
 
     -- Notification sound (notification-1 … notification-10)
     notifSound        = 'notification-10',
-    notifSoundVolume  = 10,           -- 0–100
+    notifSoundVolume  = 20,           -- 0–100
 
     -- Sound options shown in the /uiSettings select — edit labels freely
     notifSoundOptions = {
@@ -48,7 +48,7 @@ PinkFrogConfig = {
 
     -- Shown at the bottom of every panel (context menu, list menu, ...) as a
     -- quiet shining line. Put your server name here; empty string hides it.
-    serverName = 'Your Server Name',
+    serverName = 'Midnight Roleplay',
 
     uiSettingsCommand = 'uiSettings',  -- command name to open the settings menu
 
