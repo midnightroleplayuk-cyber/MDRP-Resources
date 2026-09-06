@@ -12,7 +12,7 @@ CreateThread(function()
     exports.ox_target:addModel(atmModels, {
         {
             name = 'use_atm_target',
-            icon = 'fas --credit-card',
+            icon = 'fa-solid fa-credit-card', -- Fixed FontAwesome icon syntax
             label = 'Use ATM',
             distance = 3.0,
             onSelect = function(data)
@@ -21,4 +21,9 @@ CreateThread(function()
             end
         }
     })
+end)
+
+-- Listens for server approval and triggers /atm on the player's client
+RegisterNetEvent('hf1_atms:client:openATM', function()
+    ExecuteCommand('atm')
 end)

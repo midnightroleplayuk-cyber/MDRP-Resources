@@ -233,7 +233,7 @@ Config.Shops = {
 Config.SellShops = {
     {
         name = 'Dealer',
-        coords = vec4(1100.61, -782.87, 58.26, 186.0),
+        coords = vec4(418.19, 347.23, 101.42, 131.41),
         ped = 's_m_y_dealer_01',
         moneyType = 'money',
         items = {
