@@ -18,4 +18,3 @@ dependencies {
     'ox_lib',
     'qbx_core'
 }
-}
