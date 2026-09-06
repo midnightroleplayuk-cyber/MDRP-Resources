@@ -1809,7 +1809,7 @@ Config.Shops = {
     },
     {
         name = 'Equipment Store',
-        coords = vec4(-68.82, 6256.33, 31.09, 153.0),
+        coords = vector4(-169.222, 6144.622, 43.637, 267.546),
         ped = 's_m_y_robber_01',
         moneyType = 'money',
         items = {
