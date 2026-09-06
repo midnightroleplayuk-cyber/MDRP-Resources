@@ -1,15 +1,21 @@
 fx_version 'cerulean'
 game 'gta5'
 
-name 'HF! Player IDS'
+name 'HF1 Player IDS'
 description 'Shows player ID above head on keypress'
-author 'Qbox Community'
+author 'HardyF1'
 version '1.0.0'
+
+fx_version 'cerulean'
+game 'gta5'
+
+-- Import ox_lib initialization
+shared_script '@ox_lib/init.lua'
 
 client_script 'client.lua'
 server_script 'server.lua'
 
 dependencies {
-    'qbx_core',
-    'ox_lib'
+    'ox_lib',
+    'qbx_core'
 }

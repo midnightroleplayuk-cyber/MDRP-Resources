@@ -1,3 +1,4 @@
+local lib = exports.ox_lib:import('init') -- Add this if shared_script is not in fxmanifest
 local showingIds = false
 
 -- Helper function to draw 3D text
