@@ -10,15 +10,15 @@ Reference implementation: `web/src/` in ox_lib. Copy `style.css` CSS variables +
 
 ## Design language
 
-Dark, flat panels with **lime accent** (`#CDFF03`). No backdrop blur (CEF-safe). No full-screen dim overlays unless explicitly requested. Panels feel like **context menu cards**: header → inset body → optional keyboard footer.
+Dark, flat panels with **lime accent** (`#6e03ff`) --PURPLE HF1. No backdrop blur (CEF-safe). No full-screen dim overlays unless explicitly requested. Panels feel like **context menu cards**: header → inset body → optional keyboard footer.
 
 ## Tokens (always use CSS vars, never hardcode hex)
 
 | Token | Value / usage |
 |-------|----------------|
-| `--rs-accent` | `#CDFF03` — labels, icons, progress fill, badges |
-| `--accent-rgb` | `205, 255, 3` — glows, `rgba(var(--accent-rgb), …)` |
-| `--rs-accent-hi` | `#E0FF45` — gradient end, bar fill |
+| `--rs-accent` | `#6e03ff` — labels, icons, progress fill, badges |
+| `--accent-rgb` | `110, 3, 255` — glows, `rgba(var(--accent-rgb), …)` |
+| `--rs-accent-hi` | `#8b45ff` — gradient end, bar fill |
 | `--rs-panel-gradient` | Flat dark panel bg (respects `--container-transparency`) |
 | `--rs-fg` / `--rs-fg-soft` / `--rs-fg-mute` | Primary / secondary / muted text |
 | `--rs-danger` / `--rs-warning` / `--rs-success` | Semantic states |
@@ -108,8 +108,8 @@ Split wrapper: outer `rs-tilt-stage-y-right rs-tilt-origin-center-right` (perspe
 Default accent is the Jakers RS lime (`jakers` palette, shade 5). Server owners can override without rebuilding:
 
 ```yaml
-setr ox:primaryColor blue   # any Mantine palette name, or `jakers`
-setr ox:primaryShade 8        # 0–9
+setr ox:primaryColor grape   # any Mantine palette name, or `jakers`
+setr ox:primaryShade 9        # 0–9
 ```
 
 Applied on NUI load via `getConfig` → `applyThemeConfig()` in `web/src/utils/theme.ts` (sets `--accent-rgb`, `--rs-accent`, `--rs-accent-hi`, `--rs-success`).
