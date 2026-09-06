@@ -1,3 +1,4 @@
+--TEST
 local Config = {}
 Config.ToggleKey = 344 -- Key code for F11
 
