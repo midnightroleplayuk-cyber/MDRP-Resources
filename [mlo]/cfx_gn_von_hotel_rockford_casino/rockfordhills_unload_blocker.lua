@@ -23,5 +23,5 @@ Citizen.CreateThread(function()
     DoorSystemSetDoorState(1, 0, false, false)
     DoorSystemSetDoorState(2, 0, false, false)
     
-    print("^2[Rockford Hills Casino]^7 Portes enregistrées et déverrouillées")
+    --print("^2[Rockford Hills Casino]^7 Portes enregistrées et déverrouillées")
 end)

@@ -9,7 +9,5 @@ export async function fetchNui(eventName, data) {
     body: JSON.stringify(data),
   });
 
-  const text = await resp.text();
-
-  return text ? JSON.parse(text) : null;
+  return await resp.json();
 }

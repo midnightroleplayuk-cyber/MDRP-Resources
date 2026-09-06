@@ -16,7 +16,7 @@ Config = {}
 Config.Locale = "en" -- Supported: EN / FR / HR / HU / LT / SK / SL / CZ / SV / TR / DE / EL / ES / PL
 Config.Debug = false
 Config.DisableBlackScreens = true
-Config.DisableBugHunter = false
+Config.DisableBugHunter = true
 Config.EnableNativeBlackScreens = false -- Enabled DoScreenFadeIn and DoScreenFadeOut
 
 -- IMPORTANT: DisableBlackScreens will disable all fade in/out animations, additional loading screens etc!

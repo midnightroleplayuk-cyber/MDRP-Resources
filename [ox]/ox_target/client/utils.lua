@@ -33,66 +33,44 @@ function utils.getTexture()
 end
 
 -- SetDrawOrigin is limited to 32 calls per frame. Set as 0 to disable.
+local drawZoneSprites = GetConvarInt('ox_target:drawSprite', 24)
 local SetDrawOrigin = SetDrawOrigin
 local DrawSprite = DrawSprite
 local ClearDrawOrigin = ClearDrawOrigin
-local GetGameTimer = GetGameTimer
-local GetAspectRatio = GetAspectRatio
 local colour = vector(155, 155, 155, 175)
-local hover = vector(205, 255, 3, 255)
+local hover = vector(98, 135, 236, 255)
 local currentZones = {}
 local previousZones = {}
 local drawZones = {}
 local drawN = 0
-local baseSize = 0.02
+local width = 0.02
+local height = width * GetAspectRatio(false)
 
-local function getDrawSpriteLimit()
-    local limit = GetConvarInt('ox_target:drawSprite', 24)
-    return limit == 0 and -1 or limit
-end
-
-local function getSquarePulse()
-    return (math.sin(GetGameTimer() * 0.004) + 1) * 0.5
-end
-
-local function getSpriteColourComponents(spriteColour)
-    return spriteColour.r or spriteColour.x, spriteColour.g or spriteColour.y, spriteColour.b or spriteColour.z,
-        spriteColour.a or spriteColour.w or 175
-end
+if drawZoneSprites == 0 then drawZoneSprites = -1 end
 
 ---@param coords vector3
----@param playerCoords? vector3
 ---@return CZone[], boolean
-function utils.getNearbyZones(coords, playerCoords)
+function utils.getNearbyZones(coords)
     if not Zones then return currentZones, false end
-
-    playerCoords = playerCoords or coords
 
     local n = 0
     local nearbyZones = lib.zones.getNearbyZones()
     drawN = 0
     previousZones, currentZones = currentZones, table.wipe(previousZones)
 
-    local drawLimit = getDrawSpriteLimit()
-
     for i = 1, #nearbyZones do
         local zone = nearbyZones[i]
-        local contains = zone:contains(coords, true)
+        local contains = zone:contains(coords)
 
         if contains then
             n += 1
             currentZones[n] = zone
         end
 
-        if drawLimit > 0 and drawN < drawLimit and zone.drawSprite ~= false then
-            local spriteDistance = #(zone.coords - playerCoords)
-            local nearPlayer = spriteDistance < 7 or zone:contains(playerCoords)
-
-            if nearPlayer then
-                drawN += 1
-                drawZones[drawN] = zone
-                zone.colour = contains and hover or nil
-            end
+        if drawN <= drawZoneSprites and zone.drawSprite ~= false and (contains or (zone.distance or 7) < 7) then
+            drawN += 1
+            drawZones[drawN] = zone
+            zone.colour = contains and hover or nil
         end
     end
 
@@ -128,24 +106,14 @@ end
 function utils.drawZoneSprites(dict, texture)
     if drawN == 0 then return end
 
-    local pulse = getSquarePulse()
-    local scale = baseSize * (0.82 + pulse * 0.36)
-    local width = scale
-    local height = scale * GetAspectRatio(false)
-
     for i = 1, drawN do
         local zone = drawZones[i]
         local spriteColour = zone.colour or colour
-        local r, g, b, a = getSpriteColourComponents(spriteColour)
 
         if zone.drawSprite ~= false then
             SetDrawOrigin(zone.coords.x, zone.coords.y, zone.coords.z)
-
-            local glowAlpha = math.floor(a * (0.18 + pulse * 0.22))
-            DrawSprite(dict, texture, 0, 0, width * 1.35, height * 1.35, 0, r, g, b, glowAlpha)
-
-            local alpha = math.floor(a * (0.62 + pulse * 0.38))
-            DrawSprite(dict, texture, 0, 0, width, height, 0, r, g, b, alpha)
+            DrawSprite(dict, texture, 0, 0, width, height, 0, spriteColour.r, spriteColour.g, spriteColour.b,
+                spriteColour.a)
         end
     end
 
