@@ -21,10 +21,12 @@ shared_scripts {
 
 client_scripts {
     'client/main.lua',
+    'client/theme.lua',
 }
 
 server_scripts {
-    'server/main.lua'
+    'server/main.lua',
+    'server/theme.lua',
 }
 
 files {
@@ -45,3 +47,17 @@ files {
 provide 'qtarget'
 
 dependency 'ox_lib'
+
+-- ───────────────────────────────────────────────────────────
+-- OPEN-SOURCE build (MIT): every file stays fully readable and
+-- editable, even when uploaded through the Cfx asset system.
+escrow_ignore {
+    'client/**/*',
+    'server/**/*',
+    'locales/*.json',
+    'web/**/*',
+    'LICENSE',
+    '*.md',
+}
+
+dependency '/assetpacks'

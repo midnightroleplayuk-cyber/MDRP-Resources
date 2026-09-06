@@ -1,25 +1,42 @@
 import { createOptions } from "./createOptions.js";
+import { applyTheme } from "./theme.js";
+import { initStudio, openStudio, isStudioOpen } from "./studio.js";
+import { fetchNui } from "./fetchNui.js";
 
 const optionsWrapper = document.getElementById("options-wrapper");
 const body = document.body;
-const eye = document.getElementById("eyeSvg");
+const reticle = document.getElementById("reticle");
+
+// default look until the client pushes the stored theme
+applyTheme(null);
+initStudio();
+
+const popReticle = () => {
+  reticle.classList.remove("pop");
+  void reticle.offsetWidth;
+  reticle.classList.add("pop");
+};
 
 window.addEventListener("message", (event) => {
   switch (event.data.event) {
     case "visible": {
+      if (isStudioOpen()) return;
       optionsWrapper.innerHTML = "";
       body.style.visibility = event.data.state ? "visible" : "hidden";
-      return eye.classList.remove("eye-hover");
+      if (event.data.state) popReticle();
+      return reticle.classList.remove("on-target");
     }
 
     case "leftTarget": {
+      if (isStudioOpen()) return;
       optionsWrapper.innerHTML = "";
-      return eye.classList.remove("eye-hover");
+      return reticle.classList.remove("on-target");
     }
 
     case "setTarget": {
+      if (isStudioOpen()) return;
       optionsWrapper.innerHTML = "";
-      eye.classList.add("eye-hover");
+      reticle.classList.add("on-target");
 
       if (event.data.options) {
         for (const type in event.data.options) {
@@ -36,6 +53,18 @@ window.addEventListener("message", (event) => {
           });
         }
       }
+      return;
+    }
+
+    case "setTheme": {
+      return applyTheme(event.data.settings || null);
+    }
+
+    case "openStudio": {
+      return openStudio(event.data);
     }
   }
 });
+
+// tell the client the NUI is mounted so it can push the stored theme
+fetchNui("themeReady").catch(() => {});
