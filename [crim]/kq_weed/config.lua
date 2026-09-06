@@ -271,7 +271,8 @@ Config.vendors = {
             ['kq_weed_fertilizer_yield'] = { label = "Fertilizer [Yield amount]", price = 200 },
             ['kq_weed_fertilizer_resistance'] = { label = "Fertilizer [Resistance booster]", price = 200 },
             ['kq_weed_fertilizer_blackmarket'] = { label = "Fertilizer [Blackmarket]", price = 400 },
-            ['kq_weed_pesticide_spray'] = { label = "Pesticide Spray", price = 50 },
+            ['watering_can'] = { label = "Watering Can", price = 50 },
+            
         },
         blip = {
             enabled = true,
