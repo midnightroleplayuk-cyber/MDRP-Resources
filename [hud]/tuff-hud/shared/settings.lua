@@ -186,10 +186,10 @@ Settings.PlayerInfoSpecificLocks = {
 
 -- Configure allowed visibility options per module in HUD settings ("ALWAYS", "CAR", "FOOT", "NEVER")
 Settings.AllowedOptions = {
-    COMPASS  = { "ALWAYS", "CAR", "FOOT", "NEVER" },
-    WAYPOINT = { "ALWAYS", "CAR", "FOOT", "NEVER" },
-    POSTAL   = { "ALWAYS", "CAR", "FOOT", "NEVER" },
-    MAP      = { "ALWAYS", "CAR", "NEVER" }
+    COMPASS  = { "CAR" },
+    WAYPOINT = { "NEVER" },
+    POSTAL   = { "CAR", "FOOT" },
+    MAP      = { "CAR" }
 }
 
 Settings.Logo = {
