@@ -1776,7 +1776,7 @@ Config.Addiction = {
 Config.Shops = {
     {
         name = 'General Store',
-        coords = vec4(-1164.78, -1566.37, 3.45, 299.5),
+        coords = vec4(-1164.78, -1566.37, 4.45, 299.5),
         ped = 's_m_y_robber_01',
         moneyType = 'money',
         items = {
