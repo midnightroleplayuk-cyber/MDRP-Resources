@@ -58,7 +58,7 @@ Settings.TogglePlayerInfoKeybind = {
 -- 4. MINIMAP & MAP CONFIGURATION
 --==============================================================================
 Settings.CustomMap = {
-    enabled = false,   -- Enable/Disable custom map
+    enabled = true,   -- Enable/Disable custom map
     radarZoom = 1100,  -- Radar zoom level (default 1100, higher values zoom out)
     refreshRate = 500, -- Radar position & zoom update interval in ms
 }
@@ -141,11 +141,11 @@ Settings.GlobalLocks = {
     LockHudEditor        = false, -- Prevent players from opening HUD Editor / moving & scaling HUD elements
     LockResetSettings    = false, -- Prevent players from resetting their HUD settings to default
     LockPerformanceMode  = false, -- Lock FPS target selection (forces Settings.Default.FPS)
-    LockMapType          = false, -- Lock Map shape (SQUARE / CIRCLE - forces Settings.Default.MAPTYPE)
-    LockMapVisibility    = false, -- Lock Map visibility mode (forces Settings.Default.MAP)
-    LockCompass          = false, -- Lock Compass visibility & color (forces Settings.Default.COMPASS & COMPASSCOLOR)
-    LockWaypoint         = false, -- Lock Waypoint distance visibility & color (forces Settings.Default.WAYPOINT & WAYPOINTCOLOR)
-    LockPostal           = false, -- Lock Nearest Postal visibility & color (forces Settings.Default.POSTAL & POSTALCOLOR)
+    LockMapType          = true, -- Lock Map shape (SQUARE / CIRCLE - forces Settings.Default.MAPTYPE)
+    LockMapVisibility    = true, -- Lock Map visibility mode (forces Settings.Default.MAP)
+    LockCompass          = true, -- Lock Compass visibility & color (forces Settings.Default.COMPASS & COMPASSCOLOR)
+    LockWaypoint         = true, -- Lock Waypoint distance visibility & color (forces Settings.Default.WAYPOINT & WAYPOINTCOLOR)
+    LockPostal           = true, -- Lock Nearest Postal visibility & color (forces Settings.Default.POSTAL & POSTALCOLOR)
     LockCinematicMode    = false, -- Prevent players from toggling Cinematic black bars (forces Settings.Default.CINEMATIC)
 
     -- --- Speedometer Settings Locks ---
@@ -203,13 +203,13 @@ Settings.Logo = {
 --==============================================================================
 Settings.Default = {
     FPS = "60",
-    MAP = "ALWAYS",
+    MAP = "CAR",
     MAPTYPE = "SQUARE",
-    COMPASS = "ALWAYS",
+    COMPASS = "CAR",
     COMPASSCOLOR = "#9748ff",
     WAYPOINT = "NEVER",
     WAYPOINTCOLOR = "#8e48ff",
-    POSTAL = "ALWAYS",
+    POSTAL = {"CAR", "FOOT"},
     POSTALCOLOR = "#8e48ff",
     SPEEDUNIT = "mph",
     SPEEDTYPE = 1,
