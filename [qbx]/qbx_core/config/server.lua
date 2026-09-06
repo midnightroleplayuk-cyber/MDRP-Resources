@@ -68,7 +68,7 @@ return {
         {'player_vehicles', 'citizenid'},
         {'player_groups', 'citizenid'},
         {'players', 'citizenid'},
-    }, -- Rows to be deleted when the character is deleted
+    }, -- Rows to be deleted when the character is deleted, NPWD Removed
 
     server = {
         pvp = true, -- Enable or disable pvp on the server (Ability to shoot other players)
