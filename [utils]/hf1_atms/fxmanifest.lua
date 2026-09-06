@@ -1,8 +1,8 @@
-fxversion 'cerulean'
+fx_version 'cerulean'
 game 'gta5'
 
 name 'hf1_atms'
-description 'ATM Target Script for LGBanking ATMS, using ox_target'
+description 'ATM Targeting for LGMNods Banking.'
 version '1.0.0'
 
 client_script 'client.lua'
