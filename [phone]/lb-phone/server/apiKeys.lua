@@ -33,9 +33,9 @@ DISCORD_TOKEN = nil -- you can set a discord bot token here to get the players d
 -- Affiliate link - purchases made through this link will give us a commission at no extra cost to you
 -- A video tutorial for how to set up Fivemanage can be found here: https://www.youtube.com/watch?v=y3bCaHS6Moc
 API_KEYS = {
-    Video = "API_KEY_HERE",
-    Image = "API_KEY_HERE",
-    Audio = "API_KEY_HERE",
+    Video = "eysEQthStGEML5udoUXEpng0lYymaMrx",
+    Image = "eysEQthStGEML5udoUXEpng0lYymaMrx",
+    Audio = "eysEQthStGEML5udoUXEpng0lYymaMrx",
 }
 
 -- Here you can set your credentials for Config.DynamicWebRTC
