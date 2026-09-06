@@ -8,7 +8,7 @@ local function DrawText3D(coords, text)
         SetTextScale(1.0, 0.5)
         SetTextFont(4)
         SetTextProportional(1)
-        SetTextColour(160, 32, 240, 255) -- Purple RGB Color
+        SetTextColour(179, 83, 253, 255) -- Purple RGB Color
         SetTextOutline()
         SetTextEntry("STRING")
         SetTextCentre(1)
