@@ -2221,4 +2221,127 @@ return {
     label = "Weed 1g",
     weight = 1,
 },
+
+-- HOUSE ROBBERY
+["silver_coin"] = {
+		label = 'Silver Coin',
+		weight = 50,
+	},
+
+	["gold_coin"] = {
+		label = 'Gold Coin',
+		weight = 50,
+	},
+
+	["charlotte_ring"] = {
+		label = 'Charlotte Ring',
+		weight = 50,
+	},
+
+	["simbolos_chain"] = {
+		label = 'Simbolos Chain',
+		weight = 100,
+	},
+
+	["action_figure"] = {
+		label = 'Action Figure',
+		weight = 100,
+	},
+
+	["nominos_ring"] = {
+		label = 'Nominos Ring',
+		weight = 50,
+	},
+
+	["boss_chain"] = {
+		label = 'BOSS Chain',
+		weight = 200,
+	},
+
+	["branded_cigarette"] = {
+		label = 'Branded Cigarette',
+		weight = 10,
+	},
+
+	["branded_cigarette_box"] = {
+		label = 'Branded Cigarette Box',
+		weight = 200,
+	},
+
+	["ninja_figure"] = {
+		label = 'Ninja Figure',
+		weight = 50,
+	},
+
+	["painting"] = {
+		label = 'Painting',
+		weight = 100,
+	},
+
+	["statue"] = {
+		label = 'Statue',
+		weight = 200,
+	},
+
+	["ancient_egypt_artifact"] = {
+		label = 'Ancient Egypt Artifact',
+		weight = 200,
+	},
+
+	["ruby"] = {
+		label = 'Ruby',
+		weight = 100,
+	},
+
+	["diamond"] = {
+		label = 'Diamond',
+		weight = 100,
+	},
+
+	["danburite"] = {
+		label = 'Danburite',
+		weight = 100,
+	},
+
+	["television"] = {
+		label = 'Television',
+		weight = 5000,
+		stack = false
+	},
+
+   ["coffee_machine"] = {
+		label = 'Coffee Machine',
+		weight = 1000,
+		stack = false
+	},
+
+	["computer"] = {
+		label = 'Computer',
+		weight = 2500,
+		stack = false
+	},
+
+	["microwave"] = {
+		label = 'Microwave',
+		weight = 3500,
+		stack = false
+	},
+
+	["music_player"] = {
+		label = 'Music Player',
+		weight = 2000,
+		stack = false
+	},
+
+	["lockpick"] = {
+		label = 'Lockpick',
+		weight = 10,
+		stack = true
+	},
+
+	["cutter"] = {
+		label = 'Cutter',
+		weight = 1000,
+		stack = true
+	},
 }
