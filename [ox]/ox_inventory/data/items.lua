@@ -2331,4 +2331,259 @@ return {
 		weight = 1000,
 		stack = true
 	},
+
+-- KV WEEED
+['kq_weed_pot'] = {
+        label = "Weed pot",
+        weight = 2000,
+        stack = true,
+        consume = 0,
+        server = {
+            export = 'kq_weed.UsePot',
+        },
+    },
+
+    ['kq_weed_table'] = {
+        label = "Weed Packing Table",
+        weight = 8000,
+        stack = true,
+        consume = 0,
+        server = {
+            export = 'kq_weed.UseTable',
+        },
+    },
+
+    ['kq_weed_press'] = {
+        label = "Weed Press",
+        weight = 10000,
+        stack = true,
+        consume = 0,
+        server = {
+            export = 'kq_weed.UsePress',
+        },
+    },
+
+    ['kq_weed_tent'] = {
+        label = "Grow tent",
+        weight = 4000,
+        stack = true,
+        consume = 0,
+    },
+
+    ['kq_weed_watering_system'] = {
+        label = "Plant watering system",
+        weight = 3000,
+        stack = true,
+        consume = 0,
+    },
+
+    ['kq_weed_bag_empty'] = {
+        label = "Plastic baggie",
+        weight = 1,
+        stack = true,
+        consume = 0,
+    },
+
+    ['kq_weed_paper'] = {
+        label = "Rolling paper",
+        weight = 1,
+        stack = true,
+        consume = 0,
+    },
+
+    ['kq_weed_pesticide_spray'] = {
+        label = "Pesticide Spray",
+        weight = 500,
+        stack = true,
+        consume = 0,
+    },
+
+    ['kq_weed_fertilizer_speed'] = {
+        label = "Fertilizer (Growth Speed)",
+        weight = 500,
+        stack = true,
+        consume = 0,
+    },
+
+    ['kq_weed_fertilizer_yield'] = {
+        label = "Fertilizer (Yield Amount)",
+        weight = 500,
+        stack = true,
+        consume = 0,
+    },
+
+    ['kq_weed_fertilizer_resistance'] = {
+        label = "Fertilizer (Resistance Booster)",
+        weight = 500,
+        stack = true,
+        consume = 0,
+    },
+
+    ['kq_weed_fertilizer_blackmarket'] = {
+        label = "Fertilizer (Blackmarket)",
+        weight = 500,
+        stack = true,
+        consume = 0,
+    },
+
+    ['kq_weed_bud_og_kush'] = {
+        label = "Weed bud (OG Kush)",
+        weight = 5,
+        stack = true,
+        consume = 0,
+    },
+
+    ['kq_weed_seed_og_kush'] = {
+        label = "Weed seed (OG Kush)",
+        weight = 1,
+        stack = true,
+        consume = 0,
+    },
+
+    ['kq_weed_bag_og_kush'] = {
+        label = "Weed baggie (OG Kush)",
+        weight = 5,
+        stack = true,
+        consume = 0,
+    },
+
+    ['kq_weed_joint_og_kush'] = {
+        label = "Joint (OG Kush)",
+        weight = 3,
+        stack = true,
+        close = true,
+        consume = 0,
+        server = {
+            export = 'kq_weed.SmokeJoint',
+        },
+    },
+
+    ['kq_weed_brick_og_kush'] = {
+        label = "Weed brick (OG Kush)",
+        weight = 100,
+        stack = true,
+        consume = 0,
+    },
+
+
+
+    ['kq_weed_bud_purple_haze'] = {
+        label = "Weed bud (Purple Haze)",
+        weight = 5,
+        stack = true,
+        consume = 0,
+    },
+
+    ['kq_weed_seed_purple_haze'] = {
+        label = "Weed seed (Purple Haze)",
+        weight = 1,
+        stack = true,
+        consume = 0,
+    },
+
+    ['kq_weed_bag_purple_haze'] = {
+        label = "Weed baggie (Purple Haze)",
+        weight = 5,
+        stack = true,
+        consume = 0,
+    },
+
+    ['kq_weed_joint_purple_haze'] = {
+        label = "Joint (Purple Haze)",
+        weight = 3,
+        stack = true,
+        close = true,
+        consume = 0,
+        server = {
+            export = 'kq_weed.SmokeJoint',
+        },
+    },
+
+    ['kq_weed_brick_purple_haze'] = {
+        label = "Weed brick (Purple Haze)",
+        weight = 100,
+        stack = true,
+        consume = 0,
+    },
+
+
+
+    ['kq_weed_bud_white_widow'] = {
+        label = "Weed bud (White widow)",
+        weight = 5,
+        stack = true,
+        consume = 0,
+    },
+
+    ['kq_weed_seed_white_widow'] = {
+        label = "Weed seed (White widow)",
+        weight = 1,
+        stack = true,
+        consume = 0,
+    },
+
+    ['kq_weed_bag_white_widow'] = {
+        label = "Weed baggie (White widow)",
+        weight = 5,
+        stack = true,
+        consume = 0,
+    },
+
+    ['kq_weed_joint_white_widow'] = {
+        label = "Joint (White widow)",
+        weight = 3,
+        stack = true,
+        close = true,
+        consume = 0,
+        server = {
+            export = 'kq_weed.SmokeJoint',
+        },
+    },
+
+    ['kq_weed_brick_white_widow'] = {
+        label = "Weed brick (White widow)",
+        weight = 100,
+        stack = true,
+        consume = 0,
+    },
+
+
+    ['kq_weed_bud_blue_dream'] = {
+        label = "Weed bud (Blue dream)",
+        weight = 5,
+        stack = true,
+        consume = 0,
+    },
+
+    ['kq_weed_seed_blue_dream'] = {
+        label = "Weed seed (Blue dream)",
+        weight = 1,
+        stack = true,
+        consume = 0,
+    },
+
+    ['kq_weed_bag_blue_dream'] = {
+        label = "Weed baggie (Blue dream)",
+        weight = 5,
+        stack = true,
+        consume = 0,
+    },
+
+    ['kq_weed_joint_blue_dream'] = {
+        label = "Joint (Blue dream)",
+        weight = 3,
+        stack = true,
+        close = true,
+        consume = 0,
+        server = {
+            export = 'kq_weed.SmokeJoint',
+        },
+    },
+
+    ['kq_weed_brick_blue_dream'] = {
+        label = "Weed brick (Blue dream)",
+        weight = 100,
+        stack = true,
+        consume = 0,
+    },    
 }
