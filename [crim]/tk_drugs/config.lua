@@ -1804,7 +1804,7 @@ Config.Shops = {
             {name = 'phos', price = 10, amount = 1},
             {name = 'baggy', price = 1, amount = 1},
             {name = 'empty_tray', price = 5, amount = 1},
-            {name = 'trap_phone', price = 500, amount = 1},
+            {name = 'trap_phone', price = 500, amount = 1}, --
         }
     },
     {
