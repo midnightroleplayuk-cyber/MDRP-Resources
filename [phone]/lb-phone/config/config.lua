@@ -48,7 +48,7 @@ Config.QBOldJobMethod = false -- use the old method to check job in qb-core? thi
 
 Config.Item = {}
 -- If you want to set up multiple items & frame colours, see https://docs.lbscripts.com/phone/configuration/#multiple-items--colored-phones
-Config.Item.Require = false -- require a phone item to use the phone
+Config.Item.Require = true -- require a phone item to use the phone
 Config.Item.Name = "phone" -- name of the phone item
 -- Config.Item.Names = {
 --     {
@@ -82,8 +82,8 @@ Config.Item.Name = "phone" -- name of the phone item
 --     }
 -- }
 
-Config.Item.Unique = false -- should each phone be unique? https://docs.lbscripts.com/phone/configuration/#unique-phones
-Config.Item.Inventory = "auto" --[[
+Config.Item.Unique = true -- should each phone be unique? https://docs.lbscripts.com/phone/configuration/#unique-phones
+Config.Item.Inventory = "ox_inventory" --[[
     The inventory you use, IGNORE IF YOU HAVE Config.Item.Unique DISABLED.
 
     Supported inventory scripts: (if you do not have one of the inventories below, you will have to leave Config.Item.Unique disabled)
@@ -169,10 +169,10 @@ Config.DeleteAccount = {
 
 Config.Companies = {}
 Config.Companies.Enabled = true -- allow players to call companies?
-Config.Companies.MessageOffline = true -- if true, players can message companies even if no one in the company is online
+Config.Companies.MessageOffline = false -- if true, players can message companies even if no one in the company is online
 Config.Companies.DefaultCallsDisabled = false -- should receiving company calls be disabled by default?
 Config.Companies.AllowAnonymous = false -- allow players to call companies with "hide caller id" enabled?
-Config.Companies.SeeEmployees = "everyone" -- who should be able to see employees? they will see name, online status & phone number. options are: "everyone", "employees" or "none"
+Config.Companies.SeeEmployees = "employees" -- who should be able to see employees? they will see name, online status & phone number. options are: "everyone", "employees" or "none"
 Config.Companies.DeleteConversations = true -- allow employees to delete conversations?
 Config.Companies.AllowNoService = false -- allow players to call & message companies even if they have no phone service (reception)?
 Config.Companies.Services = {
@@ -184,7 +184,7 @@ Config.Companies.Services = {
         canMessage = true, -- if true, players can message the company
         bossRanks = { "boss" }, -- ranks that can manage the company
         location = {
-            name = "Mission Row",
+            name = "Midnight Police",
             coords = {
                 x = 428.9,
                 y = -984.5,
@@ -208,7 +208,7 @@ Config.Companies.Services = {
         canMessage = true, -- if true, players can message the company
         bossRanks = {"boss", "doctor"}, -- ranks that can manage the company
         location = {
-            name = "Pillbox",
+            name = "Midnight Health Service",
             coords = {
                 x = 304.2,
                 y = -587.0
@@ -269,7 +269,7 @@ Config.Companies.Management = {
 Config.CustomApps = {} -- https://docs.lbscripts.com/phone/custom-apps/
 
 Config.Valet = {}
-Config.Valet.Enabled = true -- allow players to get their vehicles from the phone
+Config.Valet.Enabled = false -- allow players to get their vehicles from the phone
 Config.Valet.VehicleTypes = { "car", "vehicle" }
 Config.Valet.Price = 100 -- price to get your vehicle
 Config.Valet.Model = `S_M_Y_XMech_01`
@@ -289,10 +289,10 @@ Config.HouseScript = "auto" --[[
 
 --[[ VOICE OPTIONS ]] --
 Config.Voice = {}
-Config.Voice.CallEffects = false -- enable call effects while on speaker mode? (NOTE: This may create sound-issues if you have too many submixes registered in your server)
+Config.Voice.CallEffects = true -- enable call effects while on speaker mode? (NOTE: This may create sound-issues if you have too many submixes registered in your server)
 Config.Voice.SpatialAudio = true -- enable 3D audio for the speakerphone?
 Config.Voice.SpatialAudioSubmixes = 1 -- the amount of submixes that are created for spatial audio
-Config.Voice.System = "auto"
+Config.Voice.System = "pma-voice"
 --[[
     Supported voice systems:
         * pma: pma-voice - HIGHLY RECOMMENDED
@@ -408,7 +408,7 @@ Config.Sound.AppNotifications = {
 }
 
 Config.CellTowers = {}
-Config.CellTowers.Enabled = true -- use the cell towers defined in the cellTowers.lua file to calculate service? if this is set to false, GetZoneScumminess will be used instead
+Config.CellTowers.Enabled = false -- use the cell towers defined in the cellTowers.lua file to calculate service? if this is set to false, GetZoneScumminess will be used instead
 Config.CellTowers.Debug = false -- show the cell towers on the map?
 Config.CellTowers.MinService = 0 -- you will always have at least this many bars
 Config.CellTowers.Range = {
@@ -555,21 +555,17 @@ Config.Locales = { -- If your desired language isn't here, you may contribute at
 }
 
 Config.DefaultLocale = "en"
-Config.DateLocale = "en-US" -- https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat/DateTimeFormat
+Config.DateLocale = "en-GB" -- https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat/DateTimeFormat
 Config.DateFormat = "auto" -- auto: use the date format from the locale, or set a custom format (e.g. "DDDD, MMMM DD")
 
-Config.FrameColor = "#39334d" -- This is the color of the phone frame. Default (#39334d) is purple.
+Config.FrameColor = "#3e334d" -- This is the color of the phone frame. Default (#39334d) is purple.
 Config.AllowFrameColorChange = true -- Allow players to change the color of their phone frame?
 
 Config.PhoneNumber = {}
-Config.PhoneNumber.Format = "({3}) {3}-{4}" -- Don't touch unless you know what you're doing. IMPORTANT: The sum of the numbers needs to be equal to the phone number length + prefix length
-Config.PhoneNumber.Length = 7 -- This is the length of the phone number WITHOUT the prefix.
+Config.PhoneNumber.Format = "({2}) {9}" -- Don't touch unless you know what you're doing. IMPORTANT: The sum of the numbers needs to be equal to the phone number length + prefix length
+Config.PhoneNumber.Length = 9 -- This is the length of the phone number WITHOUT the prefix.
 Config.PhoneNumber.Prefixes = { -- These are the first numbers of the phone number, usually the area code. They all need to be the same length
-    "205",
-    "907",
-    "480",
-    "520",
-    "602"
+    "07"
 }
 
 Config.Battery = {} -- WITH THESE SETTINGS, A FULL CHARGE WILL LAST AROUND 2 HOURS.
@@ -579,7 +575,7 @@ Config.Battery.DischargeInterval = { 50, 60 } -- How many seconds for each perce
 Config.Battery.DischargeWhenInactiveInterval = { 80, 120 } -- How many seconds for each percent to be removed from the battery when the phone is inactive
 Config.Battery.DischargeWhenInactive = true -- Should the phone remove battery when the phone is closed?
 
-Config.CurrencyFormat = "$%s" -- ($100) Choose the formatting of the currency. %s will be replaced with the amount.
+Config.CurrencyFormat = "£%s" -- ($100) Choose the formatting of the currency. %s will be replaced with the amount.
 Config.MaxTransferAmount = 1000000 -- The maximum amount of money that can be transferred at once via wallet / messages.
 Config.TransferOffline = true -- Allow players to transfer money to offline players via the wallet app?
 
@@ -592,11 +588,11 @@ Config.EnableVoiceMessages = true -- Allow players to send voice messages?
 Config.EnableGIFs = true
 Config.GIFsFilter = "low" -- Content filter for GIFs: "off" | "low" | "medium" | "high"
 
-Config.CityName = "Los Santos" -- The name that's being used in the weather app etc.
+Config.CityName = "Midnight" -- The name that's being used in the weather app etc.
 Config.RealTime = true -- if true, the time will use real life time depending on where the user lives, if false, the time will be the ingame time.
 Config.CustomTime = false -- NOTE: disable Config.RealTime if using this. you can set this to a function that returns custom time, as a table: { hour = 0-24, minute = 0-60 }
 
-Config.EmailDomain = "lbscripts.com"
+Config.EmailDomain = "midnightrp.co.uk"
 Config.AutoCreateEmail = false -- should the phone automatically create an email for the player when they set up the phone?
 Config.DeleteMail = true -- allow players to delete mails in the mail app?
 Config.ConvertMailToMarkdown = true -- convert mails from html to markdown?
@@ -608,14 +604,14 @@ Config.SyncFlash = true -- should flashlights be synced across all players? May 
 Config.EndLiveClose = false -- should InstaPic live end when you close the phone?
 
 Config.AllowExternal = { -- allow people to upload external images? (note: this means they can upload nsfw / gore etc)
-    Gallery = false, -- allow importing external links to the gallery?
-    Birdy = false, -- set to true to enable external images on that specific app, set to false to disable it.
+    Gallery = true, -- allow importing external links to the gallery?
+    Birdy = true, -- set to true to enable external images on that specific app, set to false to disable it.
     InstaPic = false,
     Spark = false,
     Trendy = false,
     Pages = false,
-    Marketplace = false,
-    Mail = false,
+    Marketplace = true,
+    Mail = true,
     Messages = false,
     Other = false, -- other apps that don't have a specific setting (ex: setting a profile picture for a contact, backgrounds for the phone etc)
 }
@@ -635,6 +631,7 @@ Config.ExternalWhitelistedHostnames = {
     -- "*.fivemanage.com",
     -- "*.fmfile.com",
     "r2.qbox.re",
+    "freeimage.host",
 }
 
 -- Whitelisted domains for external images (allows all subdomains too)
@@ -725,7 +722,7 @@ Config.PromoteBirdy.Views = 100 -- how many views does a promoted post get?
 Config.Verified = {}
 Config.Verified.Birdy = {
     [1] = {
-        color = "#1d9af0",
+        color = "#911df0",
         label = "APPS.TWITTER.VERIFIED.LABEL",
         description = "APPS.TWITTER.VERIFIED.DESCRIPTION"
     },
@@ -817,7 +814,7 @@ Config.DynamicWebRTC.RemoveStun = false -- remove the stun servers?
 -- }
 
 Config.Crypto = {}
-Config.Crypto.Enabled = true
+Config.Crypto.Enabled = false
 Config.Crypto.Refund = false --[[
     The method used to refund users with old (real-life) cryptocurrencies.
     Can be set to:

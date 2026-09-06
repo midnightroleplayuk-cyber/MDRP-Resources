@@ -1497,29 +1497,29 @@
             "CLOSE": "Close",
             "BUY_POPUP": {
                 "TITLE": "Buy {coin}",
-                "DESCRIPTION": "Enter the amount of {coin} (in $) you want to buy",
-                "PLACEHOLDER": "$1000",
+                "DESCRIPTION": "Enter the amount of {coin} (in £) you want to buy",
+                "PLACEHOLDER": "£1000",
                 "CANCEL": "Cancel",
                 "PROCEED": "Proceed"
             },
             "SELL_POPUP": {
                 "TITLE": "Sell {coin}",
-                "DESCRIPTION": "Enter the amount of {coin} (in $) you want to sell",
-                "PLACEHOLDER": "$1000"
+                "DESCRIPTION": "Enter the amount of {coin} (in £) you want to sell",
+                "PLACEHOLDER": "£1000"
             },
             "SELL_ALL_POPUP": {
                 "TITLE": "Sell all {coin}",
-                "DESCRIPTION": "Are you sure you want to sell all your {coin} for ${amount}?"
+                "DESCRIPTION": "Are you sure you want to sell all your {coin} for £{amount}?"
             },
             "TRANSFER_POPUP": {
                 "TITLE": "Transfer {coin}",
-                "DESCRIPTION": "Enter the amount of {coin} (in $) you want to transfer (select contact in next step)",
-                "PLACEHOLDER": "$1000",
+                "DESCRIPTION": "Enter the amount of {coin} (in £) you want to transfer (select contact in next step)",
+                "PLACEHOLDER": "£1000",
                 "NEXT": "Next"
             },
             "SUCCESSFULLY_TRANSFERED_POPUP": {
                 "TITLE": "Successfully transfered",
-                "DESCRIPTION": "You successfully transfered ${amount} of {coin} to {number}",
+                "DESCRIPTION": "You successfully transfered £{amount} of {coin} to {number}",
                 "CLOSE": "Close"
             },
             "REFUND_TRANSACTION": "Refund due to removed cryptocurrencies.",
@@ -1951,7 +1951,7 @@
         },
         "CRYPTO": {
             "RECEIVED_TRANSFER_TITLE": "Received {coin}",
-            "RECEIVED_TRANSFER_DESCRIPTION": "You received {amount} {coin} worth ${value}"
+            "RECEIVED_TRANSFER_DESCRIPTION": "You received {amount} {coin} worth £{value}"
         },
         "MAIL": {
             "AUTOMATIC_PASSWORD": {
@@ -1973,13 +1973,13 @@
             "NEW_SERVICE_TITLE": "New message",
             "NEW_SERVICE_CONTENT": "{sender} sent a message to {channel}: {message}",
 
-            "RECEIVED_TITLE": "Received ${amount}",
-            "PAID_TITLE": "Paid ${amount}",
-            "TRANSACTION": "{number} made a transaction of ${amount} to {company}",
+            "RECEIVED_TITLE": "Received £{amount}",
+            "PAID_TITLE": "Paid £{amount}",
+            "TRANSACTION": "{number} made a transaction of £{amount} to {company}",
 
             "BOUGHT_CRYPTO": "Bought crypto",
             "SOLD_CRYPTO": "Sold crypto",
-            "CRYPTO_DETAILS": "**Coin**: {coin}\n**Amount**: {amount}\n**Value**: ${price}",
+            "CRYPTO_DETAILS": "**Coin**: {coin}\n**Amount**: {amount}\n**Value**: £{price}",
             "TRANSFERRED_CRYPTO": "Transferred crypto",
             "TRANSFERRED_CRYPTO_DETAILS": "**Coin**: {coin}\n**Amount**: {amount}\n**To**: {to}\n**From**: {from}",
 
@@ -1989,7 +1989,7 @@
             "DARKCHAT_MESSAGE_DESCRIPTION": "{sender} sent a message in {channel}: {message}",
 
             "MARKETPLACE_NEW_TITLE": "New listing",
-            "MARKETPLACE_NEW_DESCRIPTION": "**Seller**: {seller}\n**Title**: {title}\n**Price**: ${price}\n**Description**: {description}\n**Attachments**: {attachments}\n**ID:** {id}",
+            "MARKETPLACE_NEW_DESCRIPTION": "**Seller**: {seller}\n**Title**: {title}\n**Price**: £{price}\n**Description**: {description}\n**Attachments**: {attachments}\n**ID:** {id}",
             "MARKETPLACE_DELETED": "Post deleted",
 
             "YELLOWPAGES_NEW_TITLE": "New post",
