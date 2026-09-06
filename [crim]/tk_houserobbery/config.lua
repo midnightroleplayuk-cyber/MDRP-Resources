@@ -1,13 +1,13 @@
 Config = {} -- You can place webhook link for logs in server/main_editable.lua
 
-Config.Framework = 'esx' -- 'esx' | 'qb'
-Config.NotificationType = 'esx' -- 'esx' | 'qb' | 'ox' | 'mythic'
+Config.Framework = 'qb' -- 'esx' | 'qb'
+Config.NotificationType = 'ox' -- 'esx' | 'qb' | 'ox' | 'mythic'
 Config.Locale = 'en' -- 'en' | 'fi'
 Config.ImagePath = 'nui://ox_inventory/web/images' -- path for images used in UI (for QB: nui://qb-inventory/html/images) (for ox_inventory: nui://ox_inventory/web/images)
 Config.DebugMode = false -- false | true
 
-Config.Inventory = 'default' -- 'default' | 'ox' | 'qs'
-Config.Target = 'none' -- 'none' | 'ox' | 'qb'
+Config.Inventory = 'ox' -- 'default' | 'ox' | 'qs'
+Config.Target = 'ox' -- 'none' | 'ox' | 'qb'
 Config.Dispatch = 'default' -- 'default' | 'tk' | 'cd'
 Config.UseOxLib = false -- false | true, remember to add " shared_script '@ox_lib/init.lua' " to fxmanifest.lua if set to true
 
