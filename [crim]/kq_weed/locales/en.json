@@ -1,0 +1,191 @@
+{
+    "minigames": {
+        "bagging": {
+            "guide": "Grab baggies out of the dispenser\nDrag the weed buds into the baggies\n~c~Hold ~INPUT_JUMP~ to exit/finish"
+        },
+        "collecting": {
+            "guide": "Hold ~INPUT_ATTACK~ on the buds to collect\nHold ~INPUT_AIM~ to look around\n~c~Hold ~INPUT_JUMP~ to exit/finish"
+        },
+        "fertilizing": {
+            "guide": "Click ~INPUT_ATTACK~ on the bottle to fertilize\n~c~Hold ~INPUT_JUMP~ to exit/finish"
+        },
+        "pressing": {
+            "guide": "Click ~INPUT_ATTACK~ on the buds to add to press\n~c~Hold ~INPUT_JUMP~ to exit/finish"
+        },
+        "rolling": {
+            "guide": "Drop weed buds into the grinder\nDrag ground weed into the rolling papers\n~c~Hold ~INPUT_JUMP~ to exit/finish"
+        },
+        "watering": {
+            "guide": "Water the soil evenly\n~c~Hold ~INPUT_JUMP~ to exit/finish"
+        },
+        "spraying": {
+            "guide": "Click ~INPUT_ATTACK~ on all the brown spots on the plant\n~c~Hold ~INPUT_JUMP~ to exit/finish"
+        }
+    },
+    "hud": {
+        "progress": "Progress",
+        "health": "Health",
+        "decay": "Decay",
+        "water": "Water",
+        "fertilizer": "Fertilizer",
+        "none": "None"
+    },
+    "placement": {
+        "pot": "Weed pot",
+        "table": "Weed table",
+        "press": "Weed press",
+        "cant_place": "You can not place the {{name}} here",
+        "cant_pickup": "You are not allowed to pick this up",
+        "cant_place_limit": "You've reached your placement limit of the {{name}}",
+        "no_required_item": "You do not have the required item",
+        "no_inventory": "You do not have enough room",
+        "guide": "Press ~INPUT_PICKUP~ to place\nPress ~INPUT_JUMP~ to exit"
+    },
+    "growop": {
+        "no_access": "You do not have access to this",
+        "interact": {
+            "open_camera": {
+                "3d_text": "~p~[~w~E~p~]~w~ View the security camera",
+                "target": "View the security camera"
+            },
+            "open_door": {
+                "3d_text": "~p~[~w~E~p~]~w~ Open door",
+                "target": "Open door"
+            },
+            "close_door": {
+                "3d_text": "~p~[~w~E~p~]~w~ Close door",
+                "target": "Close door"
+            }
+        },
+        "cctv": {
+            "guide": "Press ~INPUT_JUMP~ to exit"
+        }
+    },
+    "lockup": {
+        "no_access": "You do not have access to this",
+        "interact": {
+            "open_door": {
+                "3d_text": "~p~[~w~E~p~]~w~ Open door",
+                "target": "Open door"
+            },
+            "close_door": {
+                "3d_text": "~p~[~w~E~p~]~w~ Close door",
+                "target": "Close door"
+            },
+            "lights": {
+                "uv": {
+                    "3d_text": "~p~[~w~E~p~]~w~ Set lights to UV",
+                    "target": "Set lights to UV"
+                },
+                "white": {
+                    "3d_text": "~p~[~w~E~p~]~w~ Set lights to white light",
+                    "target": "Set lights to white light"
+                }
+            }
+        }
+    },
+    "pot": {
+        "addons": {
+            "tent": {
+                "no_room": "There is not enough room for a tent"
+            }
+        },
+        "no_seed": "You do not have the seed",
+        "no_tent": "You do not have a tent",
+        "no_watering": "You do not have an auto watering system",
+        "no_water_item": "You do not have the required item to water",
+        "no_fertilizer": "You do not have the fertilizer",
+        "no_pesticide": "You do not have any pesticide spray",
+        "interact": {
+            "plant": {
+                "3d_text": "~p~[~w~E~p~]~w~ Plant {{name}}",
+                "target": "Plant {{name}}"
+            },
+            "water": {
+                "3d_text": "~p~[~w~E~p~]~w~ Water the plant",
+                "target": "Water the plant"
+            },
+            "fertilize": {
+                "3d_text": "~p~[~w~E~p~]~w~ Fertilize the plant [{{name}}]",
+                "target": "Fertilize the plant [{{name}}]"
+            },
+            "collect": {
+                "3d_text": "~p~[~w~E~p~]~w~ Collect weed buds",
+                "target": "Collect weed buds"
+            },
+            "destroy": {
+                "3d_text": "~p~[~w~E~p~]~w~ Destroy plant",
+                "target": "Destroy plant"
+            },
+            "add_tent": {
+                "3d_text": "~p~[~w~E~p~]~w~ Install growing tent",
+                "target": "Install growing tent"
+            },
+            "add_watering": {
+                "3d_text": "~p~[~w~E~p~]~w~ Install auto watering system",
+                "target": "Install auto watering system"
+            },
+            "pickup": {
+                "3d_text": "~p~[~w~E~p~]~w~ Pickup the pot",
+                "target": "Pickup the pot"
+            },
+            "spray": {
+                "3d_text": "~p~[~w~E~p~]~w~ Spray pesticide",
+                "target": "Spray pesticide"
+            }
+        }
+    },
+    "press": {
+        "taken": "This press is occupied",
+        "not_enough": "You don't have enough buds to create a brick",
+        "brick_cant_carry": "Something went wrong. You could not carry the brick",
+        "interact": {
+            "use": {
+                "3d_text": "~p~[~w~E~p~]~w~ Press into bricks [{{name}}]",
+                "target": "Press into bricks [{{name}}]"
+            },
+            "pickup": {
+                "3d_text": "~p~[~w~E~p~]~w~ Pickup the press",
+                "target": "Pickup the press"
+            }
+        }
+    },
+    "table": {
+        "taken": "This table is occupied",
+        "no_baggies": "You don't have any empty baggies",
+        "no_paper": "You don't have any rolling papers",
+        "joints_cant_carry": "Something went wrong. You could not carry the joints",
+        "baggies_cant_carry": "Something went wrong. You could not carry the joints",
+        "interact": {
+            "bag": {
+                "3d_text": "~p~[~w~E~p~]~w~ Bag [{{name}}]",
+                "target": "Bag [{{name}}]"
+            },
+            "roll": {
+                "3d_text": "~p~[~w~E~p~]~w~ Roll joints [{{name}}]",
+                "target": "Roll joints [{{name}}]"
+            },
+            "pickup": {
+                "3d_text": "~p~[~w~E~p~]~w~ Pickup the table",
+                "target": "Pickup the table"
+            }
+        }
+    },
+    "vendor": {
+        "cant_afford": "You can not afford this",
+        "purchase_label": {
+            "3d_text": "~p~[~w~E~p~]~w~ Purchase {{item}} {{amount}} for ${{price}}",
+            "target": "Purchase {{item}} {{amount}} for ${{price}}"
+        }
+    },
+    "misc": {
+        "quality": "Quality",
+        "cant_place": "You can not place the {{name}} here",
+        "items_missing": "Something went wrong. Required items are missing",
+        "whitelisted_area": "Weed Growing Area"
+    },
+    "wild": {
+        "collect": "Collect wild weed",
+        "inventory_full": "You can't carry any more"
+    }
+}
