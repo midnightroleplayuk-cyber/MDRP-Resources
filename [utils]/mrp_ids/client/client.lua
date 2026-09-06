@@ -6,17 +6,17 @@
 
 
 local Config = {} -- This defines the config table
-Config.ToggleKey = 56 -- This toggle key is set to F9
+Config.ToggleKey = 344 -- This toggle key is set to F11
 
 local showServerId = false
 
-RegisterKeyMapping('toggleServerId', 'Toggle Server ID Display', 'keyboard', 'F9')
+RegisterKeyMapping('toggleServerId', 'Toggle Server ID Display', 'keyboard', 'F11')
 
 Citizen.CreateThread(function()
     while true do
         Citizen.Wait(0)
 
-        if IsControlJustReleased(0, Config.ToggleKey) then -- This is F9 key
+        if IsControlJustReleased(0, Config.ToggleKey) then -- This is F11 key
             showServerId = not showServerId
         end
 
@@ -30,7 +30,7 @@ Citizen.CreateThread(function()
                 local x, y, z = table.unpack(pedCoords)
                 z = z + 1.0  -- The height to display the text above head
 
-                DrawText3D(x, y, z, '~p~ID: ' .. serverId)
+                DrawText3D(x, y, z, '~p~' .. serverId)
             end
         end
     end
@@ -40,7 +40,7 @@ function DrawText3D(x, y, z, text)
     local onScreen, _x, _y = World3dToScreen2d(x, y, z)
 
     if onScreen then
-        SetTextScale(1.0, 1.0)  -- Text scale and size
+        SetTextScale(1.0, 0.5)  -- Text scale and size
         SetTextFont(4)
         SetTextProportional(1)
         SetTextColour(0, 0, 255, 255)  -- Colour of text set to blue
