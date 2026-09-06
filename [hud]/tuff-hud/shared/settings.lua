@@ -58,7 +58,7 @@ Settings.TogglePlayerInfoKeybind = {
 -- 4. MINIMAP & MAP CONFIGURATION
 --==============================================================================
 Settings.CustomMap = {
-    enabled = true,   -- Enable/Disable custom map
+    enabled = false,   -- Enable/Disable custom map
     radarZoom = 1100,  -- Radar zoom level (default 1100, higher values zoom out)
     refreshRate = 500, -- Radar position & zoom update interval in ms
 }
@@ -82,7 +82,7 @@ Settings.MinimapTypes = {
         blurOffsetY = 0.081,
         blurWidthOffset = 0.102,
         blurHeightOffset = 0.135,
-        clipType = 1,
+        clipType = 0,
         useSquareMask = true
     },
     CIRCLE = {
