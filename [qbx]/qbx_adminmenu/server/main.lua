@@ -285,11 +285,10 @@ lib.callback.register('qbx_admin:server:getPlayer', function(source, playerToGet
 end)
 
 lib.callback.register('qbx_admin:server:clothingMenu', function(source, target)
-    if not IsPlayerAceAllowed(source, config.eventPerms.clothingMenu) then exports.qbx_core:Notify(source, locale('error.no_perms'), 'error') return false end
+    if not IsPlayerAceAllowed(source, config.eventPerms.clothingMenu) then  exports.qbx_core:Notify(source, locale('error.no_perms'), 'error') return false end
     if not exports.qbx_core:IsOptin(source) then exports.qbx_core:Notify(source, locale('error.not_optin'), 'error') return false end
 
-    local opts = {} -- Add any custom options here if required by op-clothing
-    exports['op-clothing']:OpenCharacterCreator(target, opts)
+    exports['op-clothing']:OpenCharacterCreator(src, opts) --HF1 CHANGE
     return true
 end)
 
