@@ -6,7 +6,7 @@ Config.debug = false
 Config.locale = 'en'
 
 Config.sql = {
-    driver = 'oxmysql', -- oxmysql or ghmattimysql or mysql
+    driver = 'mysql', -- oxmysql or ghmattimysql or mysql
     -- If you're using an older version of oxmysql set this to false
     newOxMysql = true,
 }
@@ -58,7 +58,7 @@ Config.misc = {
     allowSecurityCameraMovement = true,
 
     -- Whether the the pesticide spray should be consumed after usage. It will be required regardless
-    consumePesticideSprayItem = false,
+    consumePesticideSprayItem = true,
 
     -- Whether to display plant status in a UI box when standing near it
     showPlantStatusUI = false,
@@ -71,7 +71,7 @@ Config.misc = {
     collectionMaxBudCount = 12,
 
     -- Whether the weather should be set to CLEAR when inside a grow op. Disable sync calls also get made
-    setWeatherInGrowops = true,
+    setWeatherInGrowops = false,
 
     -- Type of the mini-game interaction indication
     -- 'default' (Native FiveM outline) (Problematic for QuantV users but by far the best looking)
@@ -121,10 +121,10 @@ Config.watering = {
     -- Require the player to have an item in order to water plants
     requiredItem = {
         -- Whether the required item check is enabled
-        enabled = false,
+        enabled = true,
 
         -- The item the player must have to water
-        itemName = 'water',
+        itemName = 'watering_can',
 
         -- Whether to consume one of the item on each watering
         consume = true,
@@ -192,7 +192,7 @@ Config.placing = {
 
     -- Whether only the player who has placed an object can pick it back up
     -- <!> Administrators can always pick them up. Check the editable server file for admin definition.
-    onlyOwnerCanPickup = true,
+    onlyOwnerCanPickup = false,
 }
 
 -- You can utilize our debug placement commands to easily gather these coordinates
@@ -271,7 +271,8 @@ Config.vendors = {
             ['kq_weed_fertilizer_yield'] = { label = "Fertilizer [Yield amount]", price = 200 },
             ['kq_weed_fertilizer_resistance'] = { label = "Fertilizer [Resistance booster]", price = 200 },
             ['kq_weed_fertilizer_blackmarket'] = { label = "Fertilizer [Blackmarket]", price = 400 },
-            ['kq_weed_pesticide_spray'] = { label = "Pesticide Spray", price = 50 },
+            ['watering_can'] = { label = "Watering Can", price = 50 },
+            
         },
         blip = {
             enabled = true,
@@ -341,7 +342,7 @@ Config.qualityMetadata = {
     -- Whether to enable the quality in the metadata for product. (Buds, bricks, baggies, joints)
     -- If you do not know how to setup your selling systems to work with the quality metadata, there is no point in enabling it.
     -- This is purely an option for advanced usage
-    enabled = true,
+    enabled = false,
 
     -- Whether to use the quality metadata for seeds as well. The quality of the seed will be the maximum quality of the weed buds collected
     seedQuality = false,

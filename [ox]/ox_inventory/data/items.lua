@@ -2585,5 +2585,11 @@ return {
         weight = 100,
         stack = true,
         consume = 0,
-    },    
+    }, 
+    
+    ['watering_can'] = {
+        label = 'Watering Can',
+        weight = 100,
+        stack = false,
+    },   
 }
