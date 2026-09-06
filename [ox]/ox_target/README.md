@@ -1,16 +1,17 @@
+<div align="center">
+
 # ox_target
 
-![](https://img.shields.io/github/downloads/overextended/ox_target/total?logo=github)
-![](https://img.shields.io/github/downloads/overextended/ox_target/latest/total?logo=github)
-![](https://img.shields.io/github/contributors/overextended/ox_target?logo=github)
-![](https://img.shields.io/github/v/release/overextended/ox_target?logo=github) 
+A "third-eye" interaction system for FiveM/RedM that lets players interact with the world, different entities, and zones.
 
+[![](https://img.shields.io/github/downloads/overextended/ox_target/total?style=for-the-badge&logo=github)](https://github.com/overextended/ox_target/releases/latest/download/ox_target.zip)
+[![](https://img.shields.io/github/downloads/overextended/ox_target/latest/total?style=for-the-badge&logo=github)](https://github.com/overextended/ox_target/releases/latest/download/ox_target.zip)
+[![](https://img.shields.io/github/v/release/overextended/ox_target?style=for-the-badge&logo=github)](https://github.com/overextended/ox_target/releases/latest/)\
+[![](https://badges.5metrics.dev/ox_target/serverRank.svg?style=for-the-badge)](https://5metrics.dev/resource/ox_target)
+[![](https://badges.5metrics.dev/ox_target/servers.svg?style=for-the-badge)](https://5metrics.dev/resource/ox_target)
+[![](https://badges.5metrics.dev/ox_target/players.svg?style=for-the-badge)](https://5metrics.dev/resource/ox_target)
 
-A performant and flexible standalone "third-eye" targeting resource, with additional functionality for supported frameworks.
-
-ox_target is the successor to qtarget, which was a mostly-compatible fork of bt-target.
-To improve many design flaws, ox_target has been written from scratch and drops support for bt-target/qtarget standards, though partial compatibility is being implemented where possible.
-
+</div>
 
 ## 📚 Documentation
 

@@ -14,13 +14,16 @@ function onClick() {
 export function createOptions(type, data, id, zoneId) {
   if (data.hide) return;
 
+  const index = optionsWrapper.childElementCount + 1;
   const option = document.createElement("div");
   const iconElement = `<i class="fa-fw ${data.icon} option-icon" ${
     data.iconColor ? `style = color:${data.iconColor} !important` : null
   }"></i>`;
 
-  option.innerHTML = `${iconElement}<p class="option-label">${data.label}</p>`;
+  option.innerHTML = `<span class="option-index">${String(index).padStart(2, "0")}</span>${iconElement}<p class="option-label">${data.label}</p>`;
   option.className = "option-container";
+  // stagger order for the opening animations
+  option.style.setProperty("--i", index - 1);
   option.targetType = type;
   option.targetId = id;
   option.zoneId = zoneId;

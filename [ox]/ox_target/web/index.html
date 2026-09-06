@@ -1,13 +1,141 @@
 <html>
   <head>
+    <meta charset="utf-8" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" />
     <link href="style.css" rel="stylesheet" type="text/css" />
   </head>
-  <body>
-    <div id="eye">
-      <svg id="eyeSvg" xmlns="http://www.w3.org/2000/svg" height="36px" viewBox="0 0 24 24" width="36px" fill="#000000"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M12 4C7 4 2.73 7.11 1 11.5 2.73 15.89 7 19 12 19s9.27-3.11 11-7.5C21.27 7.11 17 4 12 4zm0 12.5c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
+  <body data-reticle="eye" data-anim="cascade">
+    <!-- Volt reticle — five styles, switched via body[data-reticle] -->
+    <div id="reticle">
+      <div class="ret ret-ticks">
+        <span class="dot"></span>
+        <span class="tick t-n"></span>
+        <span class="tick t-e"></span>
+        <span class="tick t-s"></span>
+        <span class="tick t-w"></span>
+      </div>
+      <div class="ret ret-dot"><span class="dot"></span></div>
+      <div class="ret ret-ring"><span class="ring"></span><span class="dot"></span></div>
+      <div class="ret ret-square"><span class="sq"></span><span class="dot"></span></div>
+      <div class="ret ret-eye">
+        <svg xmlns="http://www.w3.org/2000/svg" height="30" viewBox="0 0 24 24" width="30" fill="currentColor"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M12 4C7 4 2.73 7.11 1 11.5 2.73 15.89 7 19 12 19s9.27-3.11 11-7.5C21.27 7.11 17 4 12 4zm0 12.5c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
+      </div>
     </div>
+
     <div id="options-wrapper"></div>
+
+    <!-- Target Studio (/oxtarget) -->
+    <aside id="studio" class="hidden">
+      <header class="st-header">
+        <div>
+          <p class="st-eyebrow">// OX_TARGET · UI</p>
+          <h1 class="st-title">Target Studio</h1>
+        </div>
+        <button id="st-close" class="st-iconbtn"><i class="fa-solid fa-xmark"></i></button>
+      </header>
+
+      <div class="st-content">
+        <!-- ADMIN -->
+        <section class="st-admin">
+          <div class="st-admin-row">
+            <div>
+              <p class="st-admin-title">Admin mode</p>
+              <p class="st-admin-desc">When saved, this theme is applied to every player on the server. Turn it off and save to restore individual themes.</p>
+            </div>
+            <button id="st-admin-toggle" class="st-switch" data-on="false"><span></span></button>
+          </div>
+          <p id="st-admin-locked" class="st-admin-locked hidden"><i class="fa-solid fa-lock"></i> No admin permission</p>
+          <p id="st-admin-forced" class="st-admin-forced hidden">Global theme active</p>
+        </section>
+
+        <!-- PRESETS -->
+        <p class="st-label"><span>// Presets</span><span class="st-index">[ 01 ]</span></p>
+        <div id="st-presets" class="st-presets"></div>
+
+        <!-- COLORS -->
+        <p class="st-label"><span>// Colors</span><span class="st-index">[ 02 ]</span></p>
+        <div class="st-colors">
+          <div class="st-color-row">
+            <span class="st-color-name">Brand color</span>
+            <input type="text" id="st-brand-hex" class="st-hex" maxlength="7" />
+            <input type="color" id="st-brand" class="st-color" />
+          </div>
+          <div class="st-color-row">
+            <span class="st-color-name">Card background</span>
+            <input type="text" id="st-bg-hex" class="st-hex" maxlength="7" />
+            <input type="color" id="st-bg" class="st-color" />
+          </div>
+          <div class="st-color-row">
+            <span class="st-color-name">Text</span>
+            <input type="text" id="st-text-hex" class="st-hex" maxlength="7" />
+            <input type="color" id="st-text" class="st-color" />
+          </div>
+        </div>
+
+        <!-- RETICLE -->
+        <p class="st-label"><span>// Reticle</span><span class="st-index">[ 03 ]</span></p>
+        <div id="st-reticles" class="st-chips">
+          <button class="st-chip" data-reticle="ticks">Ticks</button>
+          <button class="st-chip" data-reticle="dot">Dot</button>
+          <button class="st-chip" data-reticle="ring">Ring</button>
+          <button class="st-chip" data-reticle="square">Square</button>
+          <button class="st-chip" data-reticle="eye">Eye</button>
+        </div>
+        <div class="st-slider-row">
+          <p class="st-slider-label"><span>Reticle scale</span><span id="st-scale-v" class="st-v"></span></p>
+          <input type="range" id="st-scale" min="60" max="170" step="5" />
+        </div>
+
+        <!-- MENU -->
+        <p class="st-label"><span>// Options menu</span><span class="st-index">[ 04 ]</span></p>
+        <div class="st-slider-row">
+          <p class="st-slider-label"><span>Corner radius</span><span id="st-radius-v" class="st-v"></span></p>
+          <input type="range" id="st-radius" min="0" max="12" step="1" />
+        </div>
+        <div class="st-slider-row">
+          <p class="st-slider-label"><span>45&deg; notch</span><span id="st-notch-v" class="st-v"></span></p>
+          <input type="range" id="st-notch" min="0" max="14" step="1" />
+        </div>
+        <div class="st-slider-row">
+          <p class="st-slider-label"><span>Card opacity</span><span id="st-alpha-v" class="st-v"></span></p>
+          <input type="range" id="st-alpha" min="40" max="100" step="2" />
+        </div>
+        <div class="st-slider-row">
+          <p class="st-slider-label"><span>Menu offset</span><span id="st-offset-v" class="st-v"></span></p>
+          <input type="range" id="st-offset" min="10" max="60" step="2" />
+        </div>
+        <div class="st-toggle-row">
+          <span>Mono uppercase labels</span>
+          <button id="st-mono" class="st-switch" data-on="false"><span></span></button>
+        </div>
+        <div class="st-toggle-row">
+          <span>Index numbers</span>
+          <button id="st-idx" class="st-switch" data-on="true"><span></span></button>
+        </div>
+
+        <!-- ANIMATION -->
+        <p class="st-label"><span>// Open animation</span><span class="st-index">[ 05 ]</span></p>
+        <div id="st-anims" class="st-chips">
+          <button class="st-chip" data-anim="cascade">Cascade</button>
+          <button class="st-chip" data-anim="sweep">Sweep</button>
+          <button class="st-chip" data-anim="scale">Scale</button>
+          <button class="st-chip" data-anim="fade">Fade</button>
+          <button class="st-chip" data-anim="none">None</button>
+        </div>
+        <div class="st-slider-row">
+          <p class="st-slider-label"><span>Animation speed</span><span id="st-speed-v" class="st-v"></span></p>
+          <input type="range" id="st-speed" min="50" max="200" step="10" />
+        </div>
+        <button id="st-replay" class="st-ghostbtn">Replay animation</button>
+      </div>
+
+      <footer class="st-footer">
+        <button id="st-reset" class="st-ghostbtn">Reset</button>
+        <button id="st-cancel" class="st-secbtn">Cancel</button>
+        <button id="st-save" class="st-primarybtn">Save</button>
+      </footer>
+    </aside>
+
     <script defer type="module" src="js/main.js"></script>
   </body>
 </html>
