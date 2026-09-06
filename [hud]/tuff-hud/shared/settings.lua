@@ -206,11 +206,11 @@ Settings.Default = {
     MAP = "ALWAYS",
     MAPTYPE = "SQUARE",
     COMPASS = "ALWAYS",
-    COMPASSCOLOR = "#C4FF48",
-    WAYPOINT = "ALWAYS",
-    WAYPOINTCOLOR = "#C4FF48",
+    COMPASSCOLOR = "#9748ff",
+    WAYPOINT = "NEVER",
+    WAYPOINTCOLOR = "#8e48ff",
     POSTAL = "ALWAYS",
-    POSTALCOLOR = "#C4FF48",
+    POSTALCOLOR = "#8e48ff",
     SPEEDUNIT = "mph",
     SPEEDTYPE = 1,
     HIDESPEED = 0,
@@ -242,12 +242,12 @@ Settings.Default = {
             ID = { TEXT = "#F0F7FA", BG = "#0E0F11" },
             TIME = { TEXT = "#F0F7FA", BG = "#0E0F11" },
             DATE = { TEXT = "#F0F7FA", BG = "#0E0F11" },
-            BANK = { TEXT = "#C4FF48", BG = "#C4FF48" },
+            BANK = { TEXT = "#a748ff", BG = "#a748ff" },
             CASH = { TEXT = "#00FFA6", BG = "#00FFA6" },
             BLACKMONEY = { TEXT = "#F0F7FA", BG = "#C91D15" },
             JOB = { TEXT = "#F0F7FA", BG = "#0E0F11" },
             GANG = { TEXT = "#F0F7FA", BG = "#9A33FF" },
-            AMMO = { TEXT = "#C4FF48", BG = "#AFAFAF" }
+            AMMO = { TEXT = "#9748ff", BG = "#AFAFAF" }
         },
         STATUS = {
             HIDE = false,
@@ -269,7 +269,7 @@ Settings.Default = {
                 WATER = "#00D0FF",
                 OXYGEN = "#00FFA6",
                 STRESS = "#B672FF",
-                STAMINA = "#C4FF48"
+                STAMINA = "#9748ff"
             }
         }
     }
