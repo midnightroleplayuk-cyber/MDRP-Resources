@@ -5,7 +5,7 @@ local function DrawText3D(coords, text)
     local onScreen, _x, _y = World3dToScreen2d(coords.x, coords.y, coords.z + 1.0)
     
     if onScreen then
-        SetTextScale(0.38, 0.38)
+        SetTextScale(1.0, 0.5)
         SetTextFont(4)
         SetTextProportional(1)
         SetTextColour(160, 32, 240, 255) -- Purple RGB Color
@@ -34,7 +34,7 @@ RegisterNetEvent('qbx_overheadid:client:displayIds', function(playerData)
     if showingIds then return end
     showingIds = true
 
-    local endTime = GetGameTimer() + 7000 -- 7 Seconds
+    local endTime = GetGameTimer() + 5000 -- 5 Seconds
 
     CreateThread(function()
         while GetGameTimer() < endTime do
