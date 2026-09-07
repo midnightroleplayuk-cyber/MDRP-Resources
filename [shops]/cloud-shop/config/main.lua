@@ -64,7 +64,7 @@ return {
 				--{ name = "usb_black", label = "USB", category = "electronics", price = 10000 },
 
 				-- Tools
-				--{ name = "lockpick", label = "Lockpick", category = "tools", price = 75 },
+				{ name = "kq_weed_bag_empty", label = "Empty Baggie", category = "all", price = 1 },
 				--{ name = "ziptie", label = "Zip tie", category = "tools", price = 150 },
 				--{ name = "paperbag", label = "Paper bag", category = "tools", price = 200 },
 
