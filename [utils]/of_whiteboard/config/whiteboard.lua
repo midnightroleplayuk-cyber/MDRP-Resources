@@ -79,7 +79,7 @@ Config.logs = {
   -- Posters are data URIs, which Discord can't render from an embed. Set a host
   -- to upload them first; "none" logs the entry without a preview
   image_host = {
-    provider    = "none", -- "none" or "fivemanage"
+    provider    = "fivemanage", -- "none" or "fivemanage"
     key_convar  = "of_whiteboard_media_key",
     endpoint    = "https://api.fivemanage.com/api/v3/file/base64",
   },
