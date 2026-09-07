@@ -51,7 +51,7 @@ return {
 				-- Food
 				--{ name = "fries", label = "Fries", category = "food", price = 30 },
 				{ name = "burger", label = "Burger", category = "food", price = 40 },
-				{ name = "burger_chicken", label = "Chicken Burger", category = "food", price = 50 },
+				--{ name = "burger_chicken", label = "Chicken Burger", category = "food", price = 50 },
 
 				-- Drinks
 				{ name = "water", label = "Water Bottle", category = "drinks", price = 25 },
@@ -152,105 +152,22 @@ return {
 			},
 		},
 
-		["weapon_shop"] = {
+		["Phone_Shop"] = {
 			PointRadius = 25.0,
 
 			Locations = {
-				vector4(22.6509, -1105.4863, 29.7970, 161.7508), -- Elgin Ave
-				vector4(-662.2554, -933.3735, 21.8292, 183.0097), -- Palomino Ave
-				vector4(842.3751, -1035.5238, 28.1948, 356.2464), -- Olympic Fwy
-				vector4(254.0491, -50.7247, 69.9410, 76.7617), -- Spanish Ave
-				vector4(2567.8792, 292.3385, 108.7348, 3.7121), -- Palomino Fwy
-				vector4(1692.0569, 3761.0879, 34.7053, 227.8851), -- Algonquin Blvd
-				vector4(-331.7583, 6085.2231, 31.4548, 220.9601), -- Great Ocean Hwy
-				vector4(-1119.0983, 2699.9138, 18.5541, 223.6154), -- Route 68
-				vector4(-1303.8849, -394.7360, 36.6958, 76.3115), -- Morningwood Blvd
-				vector4(810.1567, -2159.2566, 29.6190, 1.3184), -- Popular St
-				vector4(-3173.7952, 1088.4893, 20.8387, 250.4138), -- Barbareno Rd
+				vector4(85.427, -225.704, 54.628, 75.238),
 			},
 
 			Categories = {
 				{ name = "All Products", type = "all", icon = "ic:round-clear-all" },
-				{ name = "Weapons", type = "weapons", icon = "mdi:pistol" },
-				{ name = "Ammo", type = "ammo", icon = "mdi:ammunition" },
-				{ name = "Attachments", type = "attachments", icon = "game-icons:machine-gun-magazine" },
-				{ name = "Armour", type = "armour", icon = "game-icons:kevlar-vest" },
+				{ name = "Phones", type = "Phones", icon = "mdi:pistol" },
 			},
 
 			Items = {
-				-- Pistols
-				{ name = "WEAPON_GADGETPISTOL", label = "Gadgetpistol", category = "weapons", price = 250 },
-				{ name = "WEAPON_SNSPISTOL", label = "SNS Pistol", category = "weapons", price = 350 },
-				{ name = "WEAPON_CERAMICPISTOL", label = "Ceramicpistol", category = "weapons", price = 450 },
-				{ name = "WEAPON_PISTOL", label = "Pistol", category = "weapons", price = 550 },
-				{ name = "WEAPON_PISTOLXM3", label = "WM 29 Pistol", category = "weapons", price = 750 },
-
-				-- Melee
-				{ name = "WEAPON_KNUCKLE", label = "Knuckle", category = "weapons", price = 150 },
-				{ name = "WEAPON_KNIFE", label = "Knife", category = "weapons", price = 200 },
-				{ name = "WEAPON_SWITCHBLADE", label = "Switchblade", category = "weapons", price = 250 },
-				{ name = "WEAPON_DAGGER", label = "Dagger", category = "weapons", price = 300 },
-				{ name = "WEAPON_MACHETE", label = "Machete", category = "weapons", price = 350 },
-				{ name = "WEAPON_HATCHET", label = "Hatchet", category = "weapons", price = 400 },
-				{ name = "WEAPON_BATTLEAXE", label = "Battleaxe", category = "weapons", price = 450 },
-				{ name = "WEAPON_STONE_HATCHET", label = "Stone Hatchet", category = "weapons", price = 500 },
-				{ name = "WEAPON_BOTTLE", label = "Broken Bottle", category = "weapons", price = 100 },
-				{ name = "WEAPON_BAT", label = "Bat", category = "weapons", price = 200 },
-				{ name = "WEAPON_CROWBAR", label = "Crowbar", category = "weapons", price = 250 },
-				{ name = "WEAPON_GOLFCLUB", label = "Golfclub", category = "weapons", price = 300 },
-				{ name = "WEAPON_HAMMER", label = "Hammer", category = "weapons", price = 250 },
-				{ name = "WEAPON_POOLCUE", label = "Poolcue", category = "weapons", price = 150 },
-				{ name = "WEAPON_WRENCH", label = "Wrench", category = "weapons", price = 200 },
-
-				-- Ammo
-				{ name = "ammo-9", label = "9mm Ammo", category = "ammo", price = 100 },
-				{ name = "ammo-22", label = ".22 LR Ammo", category = "ammo", price = 120 },
-				{ name = "ammo-38", label = ".38 LC Ammo", category = "ammo", price = 140 },
-				{ name = "ammo-44", label = ".44 Magnum Ammo", category = "ammo", price = 160 },
-				{ name = "ammo-45", label = ".45 ACP Ammo", category = "ammo", price = 180 },
-				{ name = "ammo-rifle", label = "5.56x45 Ammo", category = "ammo", price = 200 },
-				{ name = "ammo-rifle2", label = "7.62x39 Ammo", category = "ammo", price = 220 },
-				{ name = "ammo-shotgun", label = "12 Gauge Ammo", category = "ammo", price = 150 },
-				{ name = "ammo-sniper", label = "7.62x51 Ammo", category = "ammo", price = 250 },
-				{ name = "ammo-heavysniper", label = ".50 BMG Ammo", category = "ammo", price = 300 },
-				{ name = "ammo-musket", label = ".50 Ball Ammo", category = "ammo", price = 350 },
-				{ name = "ammo-flare", label = "Flare Ammo", category = "ammo", price = 120 },
-
-				-- Armor
-				{ name = "small_armour", label = "Small Armour", category = "armour", price = 150 },
-				{ name = "medium_armour", label = "Medium Armour", category = "armour", price = 200 },
-				{ name = "heavy_armour", label = "Heavy Armour", category = "armour", price = 250 },
-
-				-- Attachments
-				{ name = "at_suppressor", label = "Suppressor", category = "attachments", price = 200 },
-				{ name = "at_grip", label = "Grip", category = "attachments", price = 150 },
-				{ name = "at_flashlight", label = "Flashlight", category = "attachments", price = 180 },
-				{ name = "at_barrel", label = "Barrel", category = "attachments", price = 220 },
-
-				-- Magazines
-				{ name = "at_clip_extended", label = "Extended Light Magazine", category = "attachments", price = 200 },
-				{ name = "at_clip_extended2", label = "Extended Heavy Magazine", category = "attachments", price = 225 },
-				{ name = "at_clip_drum", label = "Drum Magazine", category = "attachments", price = 250 },
-
-				-- Scopes
-				{ name = "at_scope_macro", label = "Macro Scope", category = "attachments", price = 300 },
-				{ name = "at_scope_small", label = "Small Scope", category = "attachments", price = 250 },
-				{ name = "at_scope_medium", label = "Medium Scope", category = "attachments", price = 270 },
-				{ name = "at_scope_large", label = "Large Scope", category = "attachments", price = 300 },
-				{ name = "at_scope_advanced", label = "Advanced Scope", category = "attachments", price = 350 },
-				{ name = "at_scope_nv", label = "NV-Scope", category = "attachments", price = 400 },
-				{ name = "at_scope_thermal", label = "Thermal Scope", category = "attachments", price = 450 },
-				{ name = "at_scope_holo", label = "Holo Scope", category = "attachments", price = 500 },
-
-				-- Muzzles
-				{ name = "at_muzzle_flat", label = "Flat Muzzle", category = "attachments", price = 150 },
-				{ name = "at_muzzle_tactical", label = "Tactical Muzzle", category = "attachments", price = 180 },
-				{ name = "at_muzzle_fat", label = "Fat Muzzle", category = "attachments", price = 200 },
-				{ name = "at_muzzle_heavy", label = "Heavy Muzzle", category = "attachments", price = 250 },
-				{ name = "at_muzzle_slanted", label = "Slanted Muzzle", category = "attachments", price = 180 },
-				{ name = "at_muzzle_split", label = "Split Muzzle", category = "attachments", price = 200 },
-				{ name = "at_muzzle_squared", label = "Squared Muzzle", category = "attachments", price = 220 },
-				{ name = "at_muzzle_bell", label = "Bell Muzzle", category = "attachments", price = 250 },
+				-- Phones
+				{ name = "phone", label = "LB Phone", category = "Phones", price = 600 },
+			
 			},
 
 			Requirement = {
@@ -270,8 +187,8 @@ return {
 					},
 				},
 				License = {
-					required = true,
-					buyDialog = true,
+					required = false,
+					buyDialog = false,
 					label = "Weapon License",
 					type = "weapon",
 					price = 1000,
@@ -280,9 +197,9 @@ return {
 
 			Locales = {
 				MainHeader = {
-					title = "Weapon Shop",
-					tag = "24/7",
-					description = "Welcome to your local weapon shop, where we're always here for you, day or night!\nExplore a curated selection of premium goods, tailored to meet your every need.",
+					title = "Phone Store",
+					tag = "MN Electronics",
+					description = "Welcome to your local electronics shop, where we're always here for you, day or night!\nExplore a curated selection of premium goods, tailored to meet your every need.",
 				},
 				CartHeader = {
 					title = "Shopping",
@@ -293,7 +210,7 @@ return {
 
 			Blip = {
 				enabled = true,
-				name = "Weapon Shop [24/7]",
+				name = "MN Electronics",
 				sprite = 110,
 				color = 0,
 				scale = 0.7,
@@ -301,7 +218,7 @@ return {
 
 			Indicator = {
 				Ped = {
-					enabled = true,
+					enabled = false,
 					model = `mp_m_weapexp_01`,
 					scenario = "WORLD_HUMAN_GUARD_STAND",
 				},
