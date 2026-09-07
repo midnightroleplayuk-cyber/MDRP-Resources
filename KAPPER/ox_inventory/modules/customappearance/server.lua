@@ -7,14 +7,14 @@ if not lib then return end
     (stash / craft / shop), each with its own marker + blip. It's loaded on start
     and pushed to every client; admins edit each type from /oxinventory · Settings
     and the change is broadcast live (props/zones don't rebuild — only the drawn
-    marker + blips read the new values).
+    marker + blips read the new values). - fuck portuguese
 ]]
 
 local db = require 'modules.mysql.server'
 
 local CustomAppearance = {}
 
-local ACE_PERMISSION = 'ox_inventory.admin'
+local ACE_PERMISSION = 'group.admin'
 local KINDS = { 'stash', 'craft', 'shop' }
 
 local function isAdmin(source)
