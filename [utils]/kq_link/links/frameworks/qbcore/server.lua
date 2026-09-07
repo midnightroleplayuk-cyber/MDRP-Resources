@@ -1,0 +1,227 @@
+if Link.framework ~= 'qb-core' and Link.framework ~= 'qbcore' then
+    return
+end
+
+QBCore = exports['qb-core']:GetCoreObject()
+
+
+function GetPlayerJob(player)
+    local xPlayer = QBCore.Functions.GetPlayer(player)
+    local job = xPlayer and xPlayer.PlayerData and xPlayer.PlayerData.job and xPlayer.PlayerData.job.name
+    local grade = xPlayer and xPlayer.PlayerData and xPlayer.PlayerData.job and xPlayer.PlayerData.job.grade and xPlayer.PlayerData.job.grade.level
+
+    return job, grade
+end
+
+function GetPlayerGang(player)
+    local xPlayer = QBCore.Functions.GetPlayer(player)
+    local gang = xPlayer and xPlayer.PlayerData and xPlayer.PlayerData.gang
+    local name = gang and gang.name
+    local grade = gang and gang.grade and gang.grade.level
+
+    return name, grade
+end
+
+function GetPlayersWithJob(jobs, minGrade)
+    local matchingPlayers = {}
+    local players = GetPlayers()
+    local isTable = type(jobs) == 'table'
+    minGrade = minGrade or 0
+
+    for _, playerId in ipairs(players) do
+        local src = tonumber(playerId)
+        local job, grade = GetPlayerJob(src)
+
+        if job and grade then
+            if isTable then
+                for _, name in ipairs(jobs) do
+                    if job == name and grade >= minGrade then
+                        table.insert(matchingPlayers, src)
+                        break
+                    end
+                end
+            elseif job == jobs and grade >= minGrade then
+                table.insert(matchingPlayers, src)
+            end
+        end
+    end
+
+    return matchingPlayers
+end
+
+local ACCOUNT_ALIASES = {
+    money = 'cash',
+    wallet = 'cash',
+    dirty_money = 'cash',
+    black_money = 'cash',
+    dirty = 'cash',
+    black = 'cash',
+    marked_bills = 'cash',
+    markedbills = 'cash',
+}
+
+local function ParseAccount(account)
+    if not account then
+        return nil
+    end
+
+    return ACCOUNT_ALIASES[account] or account
+end
+
+function CanPlayerAfford(player, amount, account)
+    local xPlayer = QBCore.Functions.GetPlayer(player)
+    account = ParseAccount(account)
+
+    if account then
+        return xPlayer.Functions.GetMoney(account) >= amount
+    end
+
+    if xPlayer.Functions.GetMoney('cash') >= amount then
+        return true
+    end
+
+    if xPlayer.Functions.GetMoney('bank') >= amount then
+        return true
+    end
+
+    return false
+end
+
+function AddPlayerMoney(player, amount, account)
+    local xPlayer = QBCore.Functions.GetPlayer(player)
+
+    if not xPlayer then
+        return false
+    end
+
+    return xPlayer.Functions.AddMoney(ParseAccount(account) or 'cash', amount)
+end
+
+function RemovePlayerMoney(player, amount, account)
+    local xPlayer = QBCore.Functions.GetPlayer(player)
+    account = ParseAccount(account)
+
+    if not CanPlayerAfford(player, amount, account) then
+        return false
+    end
+
+    if account then
+        xPlayer.Functions.RemoveMoney(account, amount)
+        return true
+    end
+
+    if xPlayer.Functions.GetMoney('cash') >= amount then
+        xPlayer.Functions.RemoveMoney('cash', amount)
+        return true
+    end
+
+    if xPlayer.Functions.GetMoney('bank') >= amount then
+        xPlayer.Functions.RemoveMoney('bank', amount)
+        return true
+    end
+
+    return false
+end
+
+function RegisterUsableItem(...)
+    QBCore.Functions.CreateUseableItem(...)
+end
+
+if Link.inventory == 'framework' or Link.inventory == 'qb-inventory' then
+    function GetPlayerItemData(player, item)
+        local xPlayer = QBCore.Functions.GetPlayer(player)
+
+        local data    = xPlayer.Functions.GetItemByName(item)
+        return data
+    end
+
+    function GetPlayerItemCount(player, item)
+        local data = GetPlayerItemData(player, item)
+        if not data then
+            return 0
+        end
+        return data.amount or data.count or 0
+    end
+
+    function AddPlayerItem(player, item, amount, meta)
+        local xPlayer = QBCore.Functions.GetPlayer(tonumber(player))
+        return xPlayer.Functions.AddItem(item, amount or 1)
+    end
+
+    function RemovePlayerItem(player, item, amount)
+        local xPlayer = QBCore.Functions.GetPlayer(tonumber(player))
+        return xPlayer.Functions.RemoveItem(item, amount or 1)
+    end
+
+    -- Stash
+    function OpenCustomStash(player, stashId, label, slots, weight)
+        local data = { label = label, maxweight = weight, slots = slots }
+        exports['qb-inventory']:OpenInventory(player, stashId, data)
+    end
+
+    function GetStashItems(stashId)
+        local invData = exports['qb-inventory']:GetInventory(stashId)
+        if invData == nil or invData == {} then
+            return {}
+        end
+        return invData.items
+    end
+
+    function AddPlayerWeapon(player, weapon, ammo)
+        return AddPlayerItem(player, weapon, 1, { ammo = ammo or 0 })
+    end
+
+    function DoesPlayerHaveWeapon(player, weapon)
+        return GetPlayerItemCount(player, weapon) > 0
+    end
+
+    function RemovePlayerWeapon(player, weapon)
+        return RemovePlayerItem(player, weapon, 1)
+    end
+
+    function GetPlayerInventory(player)
+        local xPlayer = QBCore.Functions.GetPlayer(tonumber(player))
+        if not xPlayer or not xPlayer.PlayerData then
+            return {}
+        end
+
+        return NormalizeInventoryOutput(xPlayer.PlayerData.items or {})
+    end
+
+    function GetItemBySlot(player, slot)
+        -- Not available in base framework inv
+        return nil
+    end
+
+    function SetItemDurability(player, slot, durability)
+        -- Not available in base framework inv
+        return true
+    end
+end
+
+function GetPlayerCharacterId(player)
+    local xPlayer = QBCore.Functions.GetPlayer(tonumber(player))
+
+    if not xPlayer or not xPlayer.PlayerData then
+        return nil
+    end
+
+    return xPlayer.PlayerData.citizenid
+end
+
+function GetPlayerCharacterName(player)
+    local xPlayer = QBCore.Functions.GetPlayer(tonumber(player))
+    if not xPlayer or not xPlayer.PlayerData or not xPlayer.PlayerData.charinfo then
+        return GetPlayerName(player) or 'Unknown'
+    end
+
+    local charinfo = xPlayer.PlayerData.charinfo
+    local firstName = charinfo.firstname
+    local lastName = charinfo.lastname
+
+    if firstName and lastName then
+        return firstName .. ' ' .. lastName
+    end
+
+    return GetPlayerName(player) or 'Unknown'
+end
