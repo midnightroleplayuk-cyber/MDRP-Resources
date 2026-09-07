@@ -249,7 +249,110 @@ return {
 					drawSprite = true,
 					distance = 2.5,
 				},
+
 			},
+			
+		},
+		["Hardware_Store"] = {
+			PointRadius = 25.0,
+
+			Locations = {
+				vector4(49.877, -813.212, 31.592, 168.374),
+			},
+
+			Categories = {
+				{ name = "All Products", type = "all", icon = "ic:round-clear-all" },
+			},
+
+			Items = {
+				{ name = "lockpick", label = "Lockpick", category = "all", price = 100 },
+				{ name = "cutter", label = "Cutter", category = "all", price = 100 }
+			
+			},
+
+			Requirement = {
+				Job = {
+					required = false,
+					jobs = {
+						{
+							label = "Police",
+							name = "police",
+							grade = 0,
+						},
+						{
+							label = "Sheriff",
+							name = "sheriff",
+							grade = 0,
+						},
+					},
+				},
+				License = {
+					required = false,
+					buyDialog = false,
+					label = "Weapon License",
+					type = "weapon",
+					price = 1000,
+				},
+			},
+
+			Locales = {
+				MainHeader = {
+					title = "Hardware Store",
+					tag = "MN Hardware",
+					description = "Welcome to your local electronics shop, where we're always here for you, day or night!\nExplore a curated selection of premium goods, tailored to meet your every need.",
+				},
+				CartHeader = {
+					title = "Shopping",
+					tag = "Cart",
+					description = "Review your chosen items and proceed to secure, easy\ncheckout with multiple payment options.",
+				},
+			},
+
+			Blip = {
+				enabled = true,
+				name = "MN Hardware",
+				sprite = 628,
+				color = 28,
+				scale = 0.7,
+			},
+
+			Indicator = {
+				Ped = {
+					enabled = true,
+					model = `csb_chef`,
+					scenario = "WORLD_HUMAN_WINDOW_SHOP_BROWSE",
+				},
+				Marker = {
+					enabled = false,
+					type = 20,
+					size = vec3(0.7, 0.7, 0.7),
+					color = { 65, 133, 235, 120 },
+					bobUpAndDown = false,
+					faceCamera = false,
+					rotate = true,
+				},
+			},
+
+			Interaction = {
+				OpenKey = 3,
+
+				HelpText = {
+					enabled = true,
+					distance = 2.5,
+				},
+				FloatingText = {
+					enabled = false,
+					distance = 2.5,
+				},
+				Target = {
+					enabled = true,
+					boxZoneSize = vec3(4, 4, 4),
+					drawSprite = true,
+					distance = 2.5,
+				},
+
+			},
+			
 		},
 	},
 }
