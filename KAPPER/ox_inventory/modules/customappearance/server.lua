@@ -14,7 +14,7 @@ local db = require 'modules.mysql.server'
 
 local CustomAppearance = {}
 
-local ACE_PERMISSION = 'ox_inventory.admin'
+local ACE_PERMISSION = 'group.admin'
 local KINDS = { 'stash', 'craft', 'shop' }
 
 local function isAdmin(source)
