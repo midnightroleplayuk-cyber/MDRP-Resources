@@ -161,7 +161,7 @@ return {
 
 			Categories = {
 				{ name = "All Products", type = "all", icon = "ic:round-clear-all" },
-				{ name = "Phones", type = "Phones", icon = "mdi:pistol" },
+				{ name = "Phones", type = "Phones", icon = "mdi:phone" },
 			},
 
 			Items = {
@@ -241,7 +241,7 @@ return {
 					distance = 2.5,
 				},
 				FloatingText = {
-					enabled = true,
+					enabled = false,
 					distance = 2.5,
 				},
 				Target = {
