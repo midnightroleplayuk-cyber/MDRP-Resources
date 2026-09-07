@@ -1,0 +1,6 @@
+fx_version 'cerulean'
+game 'gta5'
+lua54 'yes'
+author 'Vortex Mapping'
+description 'Phone Store'
+dependency '/assetpacks'
