@@ -237,7 +237,7 @@ return {
 				OpenKey = 3,
 
 				HelpText = {
-					enabled = false,
+					enabled = true,
 					distance = 2.5,
 				},
 				FloatingText = {
