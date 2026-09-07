@@ -186,7 +186,7 @@ return {
                 label = 'Question #4',
                 description = 'What does CTRL + A do?',
                 icon = 'fas fa-keyboard',
-                required = true,
+                required = false,
             },
             -- Add more questions here, following the same format as above
             -- Be sure to increment the numbers correctly, [5], [6], etc
