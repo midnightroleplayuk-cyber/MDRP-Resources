@@ -14,6 +14,32 @@ local db = require 'modules.mysql.server'
 local Items = require 'modules.items.server'
 local Inventory = require 'modules.inventory.server'
 local Utils = require 'modules.utils.server'
+local CustomStash = require 'modules.customstash.server'
+local CustomCraft = require 'modules.customcraft.server'
+local CustomShop = require 'modules.customshop.server'
+require 'modules.customappearance.server'
+require 'modules.uitheme.server'
+require 'modules.clothing.server'
+
+-- Admin command: (re)import the original static stashes/crafts/shops from the
+-- data/*_migrate.lua files into the DB. Merges in anything missing without
+-- clobbering existing rows; the example debug_crafting bench is never re-added.
+RegisterCommand('oxinventory_migrate', function(source)
+    if source ~= 0 and not IsPlayerAceAllowed(source --[[@as string]], 'ox_inventory.admin') then
+        return TriggerClientEvent('ox_lib:notify', source, { type = 'error', description = 'You are not allowed to use this command.' })
+    end
+
+    local s = CustomStash.ForceMigrate and CustomStash.ForceMigrate() or 0
+    local c = CustomCraft.ForceMigrate and CustomCraft.ForceMigrate() or 0
+    local sh = CustomShop.ForceMigrate and CustomShop.ForceMigrate() or 0
+
+    local msg = ('Migrated %d stash(es), %d bench(es), %d shop(s) from the data files.'):format(s, c, sh)
+    print(('[ox_inventory] %s'):format(msg))
+
+    if source ~= 0 then
+        TriggerClientEvent('ox_lib:notify', source, { type = 'success', description = msg })
+    end
+end, false)
 
 ---@param player table
 ---@param data table?
@@ -63,10 +89,7 @@ function server.setPlayerInventory(player, data)
 
     if inv then
         inv.player = server.setPlayerData(player)
-
-        repeat
-            inv.player.ped = GetPlayerPed(player.source)
-        until inv.player.ped ~= 0
+        inv.player.ped = GetPlayerPed(player.source)
 
         if server.syncInventory then server.syncInventory(inv) end
         TriggerClientEvent('ox_inventory:setPlayerInventory', player.source, Inventory.Drops, inventory, totalWeight,
