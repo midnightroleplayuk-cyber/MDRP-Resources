@@ -117,13 +117,13 @@ return {
         -- When a player is attempting to hack the computer how many
         -- Attempts do you want to allow? By default, after 3 failed attempts
         -- The robbery will end and not proceed any further
-        item = 'trojan_usb',
         maxAttempts = 3,
         -- Do you want to enable the questionnaire hack? If true, this will replace
         -- The skillcheck hack with a series of questions the player must answer correctly
         questionnaire = false,
         -- Customize the minigame (skillcheck) difficulty below
         minigame = {
+            item = 'trojan_usb',
             -- Set the skillcheck difficulty levels below
             -- You can set 'easy', 'medium' or 'hard' in any order
             -- And in any amount/quantity - Learn more about the skillcheck
