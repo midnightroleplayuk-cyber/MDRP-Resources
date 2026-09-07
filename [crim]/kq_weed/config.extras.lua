@@ -3,7 +3,7 @@ Config.extras = {
     addonPressRecipes = {
         --- This example is made specifically for "kq_cocaine". All you have to do is add the "coke_brick" item to your server or change it to an existing cocaine brick item
         ['kq_cocaine_coke'] = {
-            enabled = false, -- Enable only when using kq_cocaine, or if modified to work with your current items
+            enabled = true, -- Enable only when using kq_cocaine, or if modified to work with your current items
             label = 'Cocaine',
             chunkModel = 'kq_coke_chunk',
             brickModel = 'kq_coke_brick',
@@ -19,7 +19,7 @@ Config.extras = {
     addonBaggingRecipes = {
         --- This example is made specifically for "kq_cocaine". All you have to do is add the "coke_bag" item to your server or change it to an existing cocaine brick item
         ['kq_cocaine_coke'] = {
-            enabled = false, -- Enable only when using kq_cocaine, or if modified to work with your current items
+            enabled = true, -- Enable only when using kq_cocaine, or if modified to work with your current items
             label = 'Cocaine',
             chunkModel = 'kq_coke_chunk',
             fullBaggieModel = 'kq_coke_baggie_full',
