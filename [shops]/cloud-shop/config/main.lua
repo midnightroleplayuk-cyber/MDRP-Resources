@@ -41,8 +41,8 @@ return {
 			Categories = { --! Required for all shops
 				{ name = "Food", type = "food", icon = "mdi:food-drumstick" },
 				{ name = "Drinks", type = "drinks", icon = "ion:water-sharp" },
-				{ name = "All Products", type = "all", icon = "ic:round-clear-all" }, --! Required for all shops
 				{ name = "Other", type = "other", icon = "ion:hammer" },
+				{ name = "All Products", type = "all", icon = "ic:round-clear-all" }, --! Required for all shops
 				--{ name = "Healing", type = "healing", icon = "material-symbols:healing" },
 			},
 
@@ -63,7 +63,7 @@ return {
 				--{ name = "usb_black", label = "USB", category = "electronics", price = 10000 },
 
 				-- Tools
-				{ name = "kq_weed_bag_empty", label = "Empty Baggie", category = "Other", price = 1 },
+				{ name = "kq_weed_bag_empty", label = "Empty Baggie", category = "other", price = 1 },
 				--{ name = "ziptie", label = "Zip tie", category = "tools", price = 150 },
 				--{ name = "paperbag", label = "Paper bag", category = "tools", price = 200 },
 
