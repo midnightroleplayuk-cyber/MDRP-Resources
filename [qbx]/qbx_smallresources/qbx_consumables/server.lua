@@ -53,7 +53,7 @@ end
 ---@param source number
 ---@param min number lower limit for random generation
 ---@param max number upper limit for rancom generation
-local function relieveStress(source, min, max)
+--[[ local function relieveStress(source, min, max)
     local playerState = Player(source).state
     local verifiedMin = (type(min) == "number" and min) or config.defaultStressRelief.min
     local verifiedMax = max or config.defaultStressRelief.max
@@ -67,7 +67,7 @@ local function relieveStress(source, min, max)
     else
         exports.qbx_core:Notify(source, locale('success.stress_relief'), 'inform', 2500, nil, nil, { '#141517', '#ffffff' }, 'brain', '#0F52BA')
     end
-end
+end ]]
 
 for alcohol, params in pairs(config.consumables.alcohol) do
     exports.qbx_core:CreateUseableItem(alcohol, function(source, item)

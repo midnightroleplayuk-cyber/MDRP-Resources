@@ -2591,5 +2591,35 @@ return {
         weight = 1,
         stack = false,
         consume = 0,
-    },    
+    },  
+    
+    
+-- WHITEBOARDS
+  ['place_poster'] = {
+      label = 'Poster',
+      server = {
+        export = "of_whiteboard.place_image"  
+      },
+      weight = 100,
+  },
+  ['edit_poster'] = {
+      label = 'Marker set',
+      server = {
+        export = "of_whiteboard.edit_image"  
+      },
+      weight = 100,
+  },
+  ['remove_poster'] = {
+      label = 'Clean tools',
+      server = {
+        export = "of_whiteboard.remove_image"  
+      },
+      weight = 100,
+  },
+
+
+
+
+
+
 }
