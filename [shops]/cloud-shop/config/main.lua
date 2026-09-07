@@ -1,7 +1,7 @@
 --? For support, join our Discord server: https://discord.gg/jAnEnyGBef
 
 return {
-	Framework = "auto", -- Options: "esx", "qbox", "qbcore", "custom", or "auto" (auto-detects avaible options)
+	Framework = "qbox", -- Options: "esx", "qbox", "qbcore", "custom", or "auto" (auto-detects avaible options)
 	Locale = "en", -- Options: "en", "de"
 	DebugMode = "prod", -- Options: "prod" (minimal logs), "dev" (detailed logs), false (disable logs)
 
