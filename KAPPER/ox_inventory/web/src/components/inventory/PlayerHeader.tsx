@@ -79,14 +79,14 @@ const PlayerHeader: React.FC = () => {
           <CashIcon size={18} />
           <div className="player-money-text">
             <span className="player-money-amt">${fmt(cash)}</span>
-            <span className="player-money-lbl">{Locale.ui_cash || 'Cash'}</span>
+            <span className="player-money-lbl">{Locale.ui_cash || 'Dinheiro'}</span>
           </div>
         </div>
         <div className="player-money-card">
           <BankIcon size={18} />
           <div className="player-money-text">
             <span className="player-money-amt">${fmt(bank)}</span>
-            <span className="player-money-lbl">{Locale.ui_bank || 'Bank'}</span>
+            <span className="player-money-lbl">{Locale.ui_bank || 'Banco'}</span>
           </div>
         </div>
       </div>
@@ -94,17 +94,17 @@ const PlayerHeader: React.FC = () => {
       <div className="player-card-list">
         <div className="player-info-row">
           <span className="player-row-ic"><RowIcon d={PATHS.faction} /></span>
-          <div className="player-row-text"><span className="player-row-k">{Locale.ui_faction || 'Faction'}</span><span className="player-row-v">{jobLabel}</span></div>
+          <div className="player-row-text"><span className="player-row-k">{Locale.ui_faction || 'Facção'}</span><span className="player-row-v">{jobLabel}</span></div>
           <Chevron />
         </div>
         <div className="player-info-row">
           <span className="player-row-ic"><RowIcon d={PATHS.cargo} /></span>
-          <div className="player-row-text"><span className="player-row-k">{Locale.ui_grade || 'Rank'}</span><span className="player-row-v">{gradeLabel}</span></div>
+          <div className="player-row-text"><span className="player-row-k">{Locale.ui_grade || 'Cargo'}</span><span className="player-row-v">{gradeLabel}</span></div>
           <Chevron />
         </div>
         <div className="player-info-row">
           <span className="player-row-ic"><RowIcon d={PATHS.license} /></span>
-          <div className="player-row-text"><span className="player-row-k">{Locale.ui_licenses || 'Licenses'}</span><span className="player-row-v">{licenses}</span></div>
+          <div className="player-row-text"><span className="player-row-k">{Locale.ui_licenses || 'Habilitações'}</span><span className="player-row-v">{licenses}</span></div>
           <Chevron />
         </div>
         <div className="player-info-row">
@@ -116,7 +116,7 @@ const PlayerHeader: React.FC = () => {
 
       <div className="player-card-footer">
         <div className="player-card-cap-head">
-          <span className="player-card-cap-label">{Locale.ui_capacity || 'Capacity'}</span>
+          <span className="player-card-cap-label">{Locale.ui_capacity || 'Capacidade'}</span>
           <span className="player-card-cap-value">
             {(weight / 1000).toFixed(1)} / {(maxWeight / 1000).toFixed(0)} kg
           </span>
@@ -128,8 +128,8 @@ const PlayerHeader: React.FC = () => {
           />
         </div>
         <div className="player-card-cap-foot">
-          <span>{usedSlots} {Locale.ui_items || 'items'}</span>
-          <span>{Math.round(weightPct)}% {Locale.ui_full || 'full'}</span>
+          <span>{usedSlots} {Locale.ui_items || 'itens'}</span>
+          <span>{Math.round(weightPct)}% {Locale.ui_full || 'cheio'}</span>
         </div>
       </div>
     </div>

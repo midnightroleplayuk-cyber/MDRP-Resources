@@ -39,10 +39,10 @@ const Slot: React.FC<{ item: ClothingItem }> = ({ item }) => (
       <p className="clothing-slot-name">{item.header}</p>
       <p className="clothing-slot-state">
         {item.worn
-          ? Locale.ui_equipped || 'Equipped · click to remove'
+          ? Locale.ui_equipped || 'Equipado · clica para tirar'
           : item.canRestore
-            ? Locale.ui_removed || 'Removed · click to equip'
-            : Locale.ui_empty || 'Empty'}
+            ? Locale.ui_removed || 'Removido · clica para vestir'
+            : Locale.ui_empty || 'Vazio'}
       </p>
     </div>
     <div className={`clothing-dot${item.worn ? ' on' : ''}`} />
