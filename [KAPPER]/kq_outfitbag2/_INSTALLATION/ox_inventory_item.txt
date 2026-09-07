@@ -1,0 +1,13 @@
+-- You can add this item to your ox_inventory list if using it.
+-- This will only work if you're using ESX or QBCore. Other frameworks require custom implementations.
+
+    ["kq_outfitbag"] = {
+        label = "Outfit bag",
+        weight = 4,
+        stack = true,
+        close = true,
+        consume = 0,
+        server = {
+            export = 'kq_outfitbag2.UseBag',
+        },
+    },
