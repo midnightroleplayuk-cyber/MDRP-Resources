@@ -22,7 +22,7 @@ Link = {
     --- 'vrp' -- You will need to add the necessary vrp imports to the fxmanifest.
     --- 'none' / 'standalone'
 
-    framework = 'auto',
+    framework = 'qbox',
 
 
     -- Framework specific detail options (DO NOT REMOVE)
@@ -62,7 +62,7 @@ Link.inventory = 'auto'
 --- '17mov' -- Notifications system made by 17Movement
 ---
 --- 'standalone' -- A standalone solution will be used for notifications (top left display)
-Link.notifications = 'standalone'
+Link.notifications = 'auto'
 
 
 ------------------------
