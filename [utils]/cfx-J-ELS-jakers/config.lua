@@ -856,7 +856,81 @@ unless overridden in VehiclesSettings below.
             },
 
         },
+        [`ukpucj`] = {
 
+            sirenModes = {                                                           --addon siren sounds vehicle specific
+                { audioName = 'SIREN_CHARLIE', audioRef = "DLC_WMSIRENS_SOUNDSET" }, --Primary // dlc bank name
+                { audioName = 'SIREN_DELTA',   audioRef = "DLC_WMSIRENS_SOUNDSET" }, --yelp // dlc bank name
+                { audioName = 'SIREN_FOXTROT', audioRef = "DLC_WMSIRENS_SOUNDSET" }, --wail // dlc bank name
+            },
+
+            horn       = {
+                audioName = 'SIREN_ALPHA', audioRef = "DLC_WMSIRENS_SOUNDSET", -- horn sound // dlc bank name
+            },
+
+            scenesync  = true, -- sync flash patterns with other scenesync vehicles via shared clock
+
+            -- ELS configuration
+            Els        = {
+                -- Extras: visual/spatial properties per extra (defined once, shared across all stages) create this via elsdebug tool for easy work flow
+                Extras = {
+                    [1] = { Color = 'blue', Environments = true, Offset = { x = -0.360, y = -0.330, z = 1.330 }, Direction = { x = -5.000, y = -5.000, z = -1.000 }, Range = 50.5, Intensity = 0.1020 },
+                    [2] = { Color = 'blue', Environments = true, Offset = { x = -0.360, y = -0.330, z = 1.330 }, Direction = { x = -5.000, y = 10.000, z = -1.000 }, Range = 50.5, Intensity = 0.1020 },
+                    [3] = { Color = 'blue', Environments = true, Offset = { x = 0.360, y = -0.330, z = 1.330 }, Direction = { x = 5.000, y = 10.000, z = -1.000 }, Range = 50.5, Intensity = 0.1020 },
+                    [4] = { Color = 'blue', Environments = true, Offset = { x = 0.360, y = -0.330, z = 1.330 }, Direction = { x = 5.000, y = -5.000, z = -1.000 }, Range = 50.5, Intensity = 0.1020 },
+                    [5] = { Color = 'white', Environments = true, Offset = { x = -0.320, y = 2.190, z = 0.200 }, Direction = { x = 0.000, y = 10.000, z = -1.000 }, Range = 48.5, Intensity = 0.1330 },
+                    [6] = { Color = 'white', Environments = true, Offset = { x = 0.320, y = 2.190, z = 0.200 }, Direction = { x = 0.000, y = 10.000, z = -1.000 }, Range = 48.5, Intensity = 0.1330 },
+                    [7] = { Color = 'red', Environments = true, Offset = { x = 0.150, y = -0.450, z = 1.320 }, Direction = { x = 0.000, y = -10.000, z = -1.000 }, Range = 49.0, Intensity = 0.1270 },
+                    [9] = { Color = 'red', Environments = true, Offset = { x = -0.150, y = -0.450, z = 1.320 }, Direction = { x = 0.000, y = -10.000, z = -1.000 }, Range = 49.0, Intensity = 0.1270 },
+                    [11] = { Color = 'white', Environments = false, Offset = { x = 0.000, y = 0.000, z = 1.000 }, Direction = { x = 0.000, y = 0.000, z = -1.000 }, Range = 10.0, Intensity = 0.0500 },
+                    [12] = { Color = 'white', Environments = true, Offset = { x = 0.000, y = -0.320, z = 1.320 }, Direction = { x = 0.000, y = 0.000, z = -1.000 }, Range = 100.0, Intensity = 0.1740 },
+                },
+                -- per-stage park flash patterns
+                ParkPattern = {
+                    [1] = { -- park pattern when stage 1 is active
+                        [7] = { BPM = 100, Sequencer = 2863311530 },
+                        [9] = { BPM = 100, Sequencer = 1431655765 },
+                    },
+                    [2] = { -- park pattern when stage 2 is active
+                        [7] = { BPM = 500, Sequencer = 88166443 },
+                        [9] = { BPM = 500, Sequencer = 2821327552 },
+                    },
+                    [3] = { -- park pattern when stage 3 is active
+                        [7] = { BPM = 800, Sequencer = 88166443 },
+                        [9] = { BPM = 800, Sequencer = 2821327552 },
+                    },
+                },
+
+                ParkPatternOff = { -- per-stage extras to turn OFF when parked
+                    [1] = {},      --add extras to turn off when parked in stage 1
+                    [2] = {},      --add extras to turn off when parked in stage 2
+                    [3] = {},      --add extras to turn off when parked in stage 3
+                },
+
+                Takedowns = { extra = 5, linkextras = { 6 }, offextras = {} }, --  -- Extra IDs that act as takedown/alley lights, toggled with H (steady-on)
+
+                -- Stages: each stage defines which extras are active and their flash pattern
+                Stages = {
+                    [1] = { -- Stage 1
+                        [7] = { BPM = 100, Sequencer = 2863311530 },
+                        [9] = { BPM = 100, Sequencer = 1431655765 },
+                    },
+                    [2] = { -- Stage 2
+                        [1] = { BPM = 500, Sequencer = 2821327552 },
+                        [4] = { BPM = 500, Sequencer = 88166443 },
+                        [5] = { BPM = 500, Sequencer = 2821327552 },
+                        [6] = { BPM = 500, Sequencer = 88166443 },
+                    },
+                    [3] = { -- Stage 3
+                        [1] = { BPM = 800, Sequencer = 2821327552 },
+                        [2] = { BPM = 800, Sequencer = 2821327552 },
+                        [3] = { BPM = 800, Sequencer = 88166443 },
+                        [4] = { BPM = 800, Sequencer = 88166443 },
+                        [5] = { BPM = 800, Sequencer = 2821327552 },
+                        [6] = { BPM = 800, Sequencer = 88166443 },
+                    },
+                },
+            },
         -- ELS vehicle example
         [`smspenisula`] = {
 
