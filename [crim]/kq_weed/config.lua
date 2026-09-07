@@ -82,7 +82,7 @@ Config.misc = {
 
     blips = {
         growop = {
-            enabled = true,
+            enabled = false,
 
             label = 'Weed Grow-op',
             sprite = 496,
@@ -176,7 +176,7 @@ Config.placing = {
         whitelistedAreas = {
             enabled = false,
 
-            showBlips = true,
+            showBlips = false,
             areas = {
                 { -- Grape Seed fields area
                     coords = vec3(1933.0, 4922.0, 46.0),
