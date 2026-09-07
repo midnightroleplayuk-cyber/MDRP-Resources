@@ -234,7 +234,7 @@ return {
 			},
 
 			Interaction = {
-				OpenKey = 38,
+				OpenKey = 3,
 
 				HelpText = {
 					enabled = false,
@@ -245,7 +245,7 @@ return {
 					distance = 2.5,
 				},
 				Target = {
-					enabled = false,
+					enabled = true,
 					boxZoneSize = vec3(4, 4, 4),
 					drawSprite = true,
 					distance = 2.5,
