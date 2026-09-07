@@ -1,0 +1,94 @@
+{
+  "ui": {
+    "currency": {
+      "symbol": "€",
+      "position": "after"
+    },
+    "main": {
+      "item": {
+        "add_cart": "In den Warenkorb"
+      }
+    },
+    "cart": {
+      "payment": {
+        "title": "Zahlung",
+        "pay_bank": "Karte",
+        "pay_cash": "Bar"
+      }
+    }
+  },
+
+  "interaction": {
+    "help_text": "~INPUT_CONTEXT~ Produktkatalog anzeigen",
+    "floating_text": "~INPUT_CONTEXT~ Produktkatalog anzeigen",
+    "target": {
+      "icon": "fa-solid fa-cart-shopping",
+      "label": "Produktkatalog anzeigen"
+    }
+  },
+
+  "dialog": {
+    "license": {
+      "header": "Eine **%s** ist erforderlich, um auf diesen Laden zuzugreifen!",
+      "content": "Möchtest du eine **%s** für **%s€** kaufen?"
+    }
+  },
+
+  "notify": {
+    "requirement": {
+      "job": {
+        "title": "Zugriffsvoraussetzung",
+        "description": "Der Job **%s** ist erforderlich, um auf diesen Laden zuzugreifen!",
+        "type": "warning"
+      },
+      "job_grade": {
+        "title": "Zugriffsvoraussetzung",
+        "description": "Dein Job-Rang erfüllt nicht die Voraussetzungen für diesen Laden!",
+        "type": "warning"
+      },
+      "license": {
+        "title": "Zugriffsvoraussetzung",
+        "description": "Ein **%s** ist erforderlich, um auf diesen Laden zuzugreifen!",
+        "type": "warning"
+      }
+    },
+
+    "cant_add": {
+      "item": {
+        "title": "Kauf Nicht Möglich",
+        "description": "Beim Kauf von dem Artikel '**%s**' ist ein Fehler aufgetreten.",
+        "type": "error"
+      },
+      "weapon": {
+        "title": "Tragebeschränkung",
+        "description": "Du kannst nicht mehrere **%s** tragen.",
+        "type": "error"
+      }
+    },
+
+    "no_money": {
+      "shop": {
+        "title": "Kauf Nicht Möglich",
+        "description": "Du hast nicht genug Geld, um den Artikel '**%s**' für **%s€** zu kaufen.",
+        "type": "error"
+      },
+      "license": {
+        "title": "Kauf Nicht Möglich",
+        "description": "Du hast nicht genug Geld, um **%s** zu kaufen.",
+        "type": "error"
+      }
+    },
+    "payment_success": {
+      "shop": {
+        "title": "Kauf Abgeschlossen",
+        "description": "Artikel erfolgreich für **%s€** gekauft.",
+        "type": "success"
+      },
+      "license": {
+        "title": "Kauf Abgeschlossen",
+        "description": "**%s** erfolgreich für **%s€** gekauft.",
+        "type": "success"
+      }
+    }
+  }
+}

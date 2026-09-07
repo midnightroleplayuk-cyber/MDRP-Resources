@@ -1,0 +1,92 @@
+{
+  "ui": {
+    "currency": {
+      "symbol": "$",
+      "position": "before"
+    },
+    "main": {
+      "item": {
+        "add_cart": "Add To Cart"
+      }
+    },
+    "cart": {
+      "payment": {
+        "title": "Payment",
+        "pay_bank": "Card",
+        "pay_cash": "Cash"
+      }
+    }
+  },
+
+  "interaction": {
+    "help_text": "~INPUT_CONTEXT~  View Product Catalog",
+    "floating_text": "~INPUT_CONTEXT~ View Product Catalog",
+    "target": {
+      "icon": "fa-solid fa-cart-shopping",
+      "label": "View Product Catalog"
+    }
+  },
+
+  "dialog": {
+    "license": {
+      "header": "A **%s** is required to access this shop!",
+      "content": "Would you like to purchase a **%s** for **$%s**?"
+    }
+  },
+
+  "notify": {
+    "requirement": {
+      "job": {
+        "title": "Access Requirement",
+        "description": "The **%s** job is required to access this shop!",
+        "type": "warning"
+      },
+      "job_grade": {
+        "title": "Access Requirement",
+        "description": "Your job grade doesn't meet the requirements to access this shop!.",
+        "type": "warning"
+      },
+      "license": {
+        "title": "Access Requirement",
+        "description": "A **%s** is required to access this shop!",
+        "type": "warning"
+      }
+    },
+    "cant_add": {
+      "item": {
+        "title": "Purchase Failed",
+        "description": "An error occurred while trying to purchase the **%s**.",
+        "type": "error"
+      },
+      "weapon": {
+        "title": "Carry Restriction",
+        "description": "You cannot carry multiple **%s**'s*.",
+        "type": "error"
+      }
+    },
+    "no_money": {
+      "shop": {
+        "title": "Purchase Failed",
+        "description": "You don't have enough money to buy the **%s** for **$%s**.",
+        "type": "error"
+      },
+      "license": {
+        "title": "Purchase Failed",
+        "description": "You don't have enough money to buy the **%s**.",
+        "type": "error"
+      }
+    },
+    "payment_success": {
+      "shop": {
+        "title": "Purchase Complete",
+        "description": "Successfully purchased item(s) for **$%s**.",
+        "type": "success"
+      },
+      "license": {
+        "title": "Purchase Complete",
+        "description": "Successfully purchased a **%s** for **$%s**.",
+        "type": "success"
+      }
+    }
+  }
+}
