@@ -931,6 +931,7 @@ unless overridden in VehiclesSettings below.
                     },
                 },
             },
+        },    
         -- ELS vehicle example
         [`smspenisula`] = {
 
