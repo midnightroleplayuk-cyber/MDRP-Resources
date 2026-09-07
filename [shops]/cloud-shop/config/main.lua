@@ -133,14 +133,14 @@ return {
 			},
 
 			Interaction = {
-				OpenKey = 38, -- Default: 38 (E key) --? Reference: https://docs.fivem.net/docs/game-references/controls
+				OpenKey = 3, -- Default: 38 (E key) --? Reference: https://docs.fivem.net/docs/game-references/controls
 
 				HelpText = {
 					enabled = false, -- If true, displays floating help text near the interaction point
 					distance = 2.5, -- Distance within which help text appears and is interactable
 				},
 				FloatingText = {
-					enabled = true, -- If true, displays floating text above the shop NPC
+					enabled = false, -- If true, displays floating text above the shop NPC
 					distance = 2.5, -- Distance within which floating text is visible and interactable
 				},
 				Target = { -- Uses ox_target by default --? (modifiable in config/functions.lua)
