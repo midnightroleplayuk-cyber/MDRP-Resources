@@ -120,10 +120,9 @@ return {
         maxAttempts = 3,
         -- Do you want to enable the questionnaire hack? If true, this will replace
         -- The skillcheck hack with a series of questions the player must answer correctly
-        questionnaire = false,
+        questionnaire = true,
         -- Customize the minigame (skillcheck) difficulty below
         minigame = {
-            item = 'trojan_usb',
             -- Set the skillcheck difficulty levels below
             -- You can set 'easy', 'medium' or 'hard' in any order
             -- And in any amount/quantity - Learn more about the skillcheck
@@ -163,22 +162,22 @@ return {
         questions = {
             [1] = {
                 type = 'input',
-                label = 'Question #1',
-                description = 'What is a PSU?',
+                label = '#1',
+                description = 'Enter Character 1',
                 icon = 'fas fa-bolt',
                 required = true
             },
             [2] = {
                 type = 'input',
-                label = 'Question #2',
-                description = 'What does "HTTPS" stand for?',
+                label = '#2',
+                description = 'Enter Character 4',
                 icon = 'fas fa-lock',
                 required = true
             },
             [3] = {
                 type = 'input',
-                label = 'Question #3',
-                description = 'What is a GPU?',
+                label = '#3',
+                description = 'Enter Character 8',
                 icon = 'fas fa-desktop',
                 required = true
             },
@@ -187,9 +186,9 @@ return {
                 label = 'Question #4',
                 description = 'What does CTRL + A do?',
                 icon = 'fas fa-keyboard',
-                required = true,
+                required = false,
                 options = {
-                    { value = 1, label = 'Copy text' },
+                    { value = 1, label = '' },
                     { value = 2, label = 'Paste text' },
                     { value = 3, label = 'Select all' },
                     { value = 4, label = 'Print page' },
@@ -203,10 +202,9 @@ return {
         -- The answer to question [3] above should be [3] here as well
         -- Note: answers to type = 'select' should be the value numer
         answers = {
-            [1] = 'power supply unit',
-            [2] = 'hypertext transfer protocol secure',
-            [3] = 'graphics processing unit',
-            [4] = 3
+            [1] = 'M',
+            [2] = 'N',
+            [3] = 'T',
         }
     }
 
