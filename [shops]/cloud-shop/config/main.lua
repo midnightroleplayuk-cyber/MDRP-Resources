@@ -210,8 +210,8 @@ return {
 			Blip = {
 				enabled = true,
 				name = "MN Electronics",
-				sprite = 110,
-				color = 0,
+				sprite = 899,
+				color = 83,
 				scale = 0.7,
 			},
 
