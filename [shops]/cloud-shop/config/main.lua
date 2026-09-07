@@ -144,7 +144,7 @@ return {
 					distance = 2.5, -- Distance within which floating text is visible and interactable
 				},
 				Target = { -- Uses ox_target by default --? (modifiable in config/functions.lua)
-					enabled = false, -- If true, enables targeting system
+					enabled = true, -- If true, enables targeting system
 					boxZoneSize = vec3(4, 4, 4), -- Size of the target zone
 					drawSprite = true, -- If true, displays a sprite for the target zone
 					distance = 2.5, -- Interaction distance
