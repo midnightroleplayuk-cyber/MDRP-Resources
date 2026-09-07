@@ -257,7 +257,7 @@ return {
 			PointRadius = 25.0,
 
 			Locations = {
-				vector4(49.877, -813.212, 31.592, 168.374),
+				vector4(49.843, -813.385, 31.592, 337.401),
 			},
 
 			Categories = {
