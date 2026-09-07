@@ -1,0 +1,198 @@
+import { fabric } from "fabric";
+import { useCallback, useEffect, useState } from "react";
+import { animateZoomTo } from "../../core/utils/canvas";
+
+interface CanvasProps {
+  canvas: fabric.Canvas | null;
+  canvasRef: React.Ref<HTMLCanvasElement>;
+  className?: string;
+  zoomButtonClassName?: string;
+  background?: string;
+  canvasWrapperClassName?: string;
+}
+
+export const CanvasEditor: React.FC<CanvasProps> = ({
+  canvas,
+  canvasRef,
+  className = "",
+  zoomButtonClassName = "",
+  background,
+  canvasWrapperClassName = "",
+}) => {
+  const [isSpaceDown, setIsSpaceDown] = useState(false);
+  const isReady = !!canvas;
+
+  const handleZoomIn = useCallback(() => {
+    if (!canvas) return;
+    const current = canvas.getZoom();
+    animateZoomTo(canvas, current * 1.2);
+  }, [canvas]);
+
+  const handleZoomOut = useCallback(() => {
+    if (!canvas) return;
+    const current = canvas.getZoom();
+    animateZoomTo(canvas, current / 1.2);
+  }, [canvas]);
+
+  useEffect(() => {
+    if (!canvas) return;
+    let isPanning = false;
+    let spacePressed = false;
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.code === "Space") {
+        e.preventDefault();
+        spacePressed = true;
+        setIsSpaceDown(true);
+        canvas.setCursor("grab");
+      }
+    };
+    const onKeyPress = (e: KeyboardEvent) => {
+      if (e.code === "Space") {
+        e.preventDefault();
+      }
+    };
+    const onKeyUp = (e: KeyboardEvent) => {
+      if (e.code === "Space") {
+        e.preventDefault();
+        spacePressed = false;
+        setIsSpaceDown(false);
+        canvas.setCursor("default");
+      }
+    };
+    const onMouseDown = (opt: fabric.IEvent<Event>) => {
+      const evt = opt.e as MouseEvent;
+      if (evt.button === 0 && spacePressed) {
+        isPanning = true;
+        canvas.setCursor("grabbing");
+      }
+    };
+    const onMouseMove = (opt: fabric.IEvent<Event>) => {
+      if (!isPanning) return;
+      const evt = opt.e as MouseEvent;
+      const vpt = canvas.viewportTransform!;
+      vpt[4] += evt.movementX;
+      vpt[5] += evt.movementY;
+      canvas.requestRenderAll();
+    };
+    const onMouseUp = () => {
+      isPanning = false;
+      canvas.setCursor(spacePressed ? "grab" : "default");
+    };
+    window.addEventListener("keydown", onKeyDown, { capture: true });
+    window.addEventListener("keypress", onKeyPress, { capture: true });
+    window.addEventListener("keyup", onKeyUp);
+    canvas.on("mouse:down", onMouseDown);
+    canvas.on("mouse:move", onMouseMove);
+    canvas.on("mouse:up", onMouseUp);
+    return () => {
+      window.removeEventListener("keydown", onKeyDown, { capture: true } as any);
+      window.removeEventListener("keypress", onKeyPress, { capture: true } as any);
+      window.removeEventListener("keyup", onKeyUp);
+      canvas.off("mouse:down", onMouseDown);
+      canvas.off("mouse:move", onMouseMove);
+      canvas.off("mouse:up", onMouseUp);
+    };
+  }, [canvas]);
+
+  return (
+    <div className={`canvas-container ${className}`}>
+      <div
+        className={`canvas-wrapper ${canvasWrapperClassName}`}
+        style={background ? { background } : undefined}
+      >
+        <canvas ref={canvasRef} className="canvas-element" />
+
+        {isReady && (
+          <div
+            style={{
+              position: "absolute",
+              right: 16,
+              bottom: 16,
+              display: "flex",
+              gap: 8,
+              background: "rgba(17,24,39,0.75)",
+              border: "1px solid rgba(255,255,255,0.08)",
+              borderRadius: 12,
+              padding: 6,
+              backdropFilter: "blur(8px)",
+              boxShadow: "0 10px 20px rgba(0,0,0,0.35)",
+            }}
+          >
+            <button
+              type="button"
+              title="Zoom out"
+              onClick={handleZoomOut}
+              className={`zoom-button zoom-out ${zoomButtonClassName}`}
+              style={
+                !zoomButtonClassName
+                  ? {
+                      background: "#1f2937",
+                      color: "#d1d5db",
+                      borderColor: "rgba(255,255,255,0.08)",
+                    }
+                  : {}
+              }
+            >
+              −
+            </button>
+            <button
+              type="button"
+              title="Zoom in"
+              onClick={handleZoomIn}
+              className={`zoom-button zoom-in ${zoomButtonClassName}`}
+              style={
+                !zoomButtonClassName
+                  ? {
+                      background: "#3b82f6",
+                      color: "white",
+                      borderColor: "rgba(59,130,246,0.35)",
+                    }
+                  : {}
+              }
+            >
+              +
+            </button>
+          </div>
+        )}
+
+        {isReady && !isSpaceDown && window.innerWidth > 768 && (
+          <div
+            style={{
+              position: "absolute",
+              left: 16,
+              bottom: 16,
+              display: "flex",
+              alignItems: "center",
+              gap: 8,
+              color: "#9ca3af",
+              fontSize: 12,
+              background: "rgba(17,24,39,0.35)",
+              border: "1px solid rgba(255,255,255,0.06)",
+              borderRadius: 10,
+              padding: "6px 10px",
+              backdropFilter: "blur(6px)",
+            }}
+          >
+            <div
+              style={{
+                width: 28,
+                height: 18,
+                borderRadius: 4,
+                border: "1px solid #4b5563",
+                background: "transparent",
+                color: "#d1d5db",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                fontSize: 10,
+              }}
+            >
+              Space
+            </div>
+            <span style={{ opacity: 0.75 }}>Press and drag to pan</span>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
