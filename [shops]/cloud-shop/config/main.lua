@@ -38,12 +38,12 @@ return {
 			},
 
 			--? For icons, use Iconify: https://icon-sets.iconify.design
-			Categories = {
-				{ name = "All Products", type = "all", icon = "ic:round-clear-all" }, --! Required for all shops
+			Categories = { --! Required for all shops
 				{ name = "Food", type = "food", icon = "mdi:food-drumstick" },
 				{ name = "Drinks", type = "drinks", icon = "ion:water-sharp" },
+				{ name = "All Products", type = "all", icon = "ic:round-clear-all" }, --! Required for all shops
 				--{ name = "Electronics", type = "electronics", icon = "ic:round-phone-iphone" },
-				--{ name = "Tools", type = "tools", icon = "ion:hammer" },
+				{ name = "other", type = "other", icon = "ion:hammer" },
 				--{ name = "Healing", type = "healing", icon = "material-symbols:healing" },
 			},
 
@@ -64,7 +64,7 @@ return {
 				--{ name = "usb_black", label = "USB", category = "electronics", price = 10000 },
 
 				-- Tools
-				{ name = "kq_weed_bag_empty", label = "Empty Baggie", category = "all", price = 1 },
+				{ name = "kq_weed_bag_empty", label = "Empty Baggie", category = "other", price = 1 },
 				--{ name = "ziptie", label = "Zip tie", category = "tools", price = 150 },
 				--{ name = "paperbag", label = "Paper bag", category = "tools", price = 200 },
 
