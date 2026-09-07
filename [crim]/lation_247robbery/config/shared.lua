@@ -106,7 +106,7 @@ return {
         -- After a player succesfully robs a register, there is this "noteChance" they
         -- "Find" the safe's PIN "under the register" and can skip the computer hacking
         -- Step if found. In percentage, what chance do they have to find this note?
-        noteChance = 10
+        noteChance = 0
     },
 
     ----------------------------------------------
@@ -128,7 +128,7 @@ return {
             -- You can set 'easy', 'medium' or 'hard' in any order
             -- And in any amount/quantity - Learn more about the skillcheck
             -- Here: https://overextended.dev/ox_lib/Modules/Interface/Client/skillcheck
-            difficulty = { 'easy', 'easy', 'easy', 'easy', 'easy','easy', },
+            difficulty = { 'medium', 'medium', 'medium', 'medium', 'medium','medium', },
             -- The 'inputs' are the keys that will be used for the skillcheck
             -- Minigame and can be set to any key or keys of your choice
             inputs = { 'W', 'A', 'S', 'D' }
