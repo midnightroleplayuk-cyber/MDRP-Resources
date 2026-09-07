@@ -8,7 +8,7 @@ Config.locale = 'en'
 Config.sql = {
     driver = 'mysql', -- oxmysql or ghmattimysql or mysql
     -- If you're using an older version of oxmysql set this to false
-    newOxMysql = true,
+    newOxMysql = false,
 }
 
 -- Plant saving system
