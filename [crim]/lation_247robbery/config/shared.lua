@@ -55,7 +55,7 @@ return {
         -- How many police must be online in order to start a robbery?
         count = 0,
         -- Add your police job(s) below
-        jobs = { 'police', 'sheriff' },
+        jobs = { 'police' },
         -- Set your dispatch system
         -- Available options: 'cd_dispatch', 'ps-dispatch', 'qs-dispatch'
         -- 'core_dispatch', 'rcore_dispatch', aty_dispatch', 'op-dispatch',
