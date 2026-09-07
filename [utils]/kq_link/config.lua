@@ -71,7 +71,7 @@ Link.notifications = 'auto'
 Link.input = {
     target = {
         -- Whether to use a targeting system
-        enabled = ox_target,
+        enabled = 'ox_target',
         --- 'ox_target' -- ox targeting system
         --- 'qb-target' -- QBCore targeting system
         --- 'qtarget' -- The classic qtarget system commonly used in esx
