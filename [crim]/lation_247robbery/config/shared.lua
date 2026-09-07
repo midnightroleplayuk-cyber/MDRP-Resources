@@ -177,22 +177,16 @@ return {
             [3] = {
                 type = 'input',
                 label = '#3',
-                description = 'Enter Character 8',
+                description = 'Enter Character 6',
                 icon = 'fas fa-desktop',
                 required = true
             },
             [4] = {
-                type = 'select',
+                type = 'input',
                 label = 'Question #4',
                 description = 'What does CTRL + A do?',
                 icon = 'fas fa-keyboard',
-                required = false,
-                options = {
-                    { value = 1, label = '' },
-                    { value = 2, label = 'Paste text' },
-                    { value = 3, label = 'Select all' },
-                    { value = 4, label = 'Print page' },
-                }
+                required = true,
             },
             -- Add more questions here, following the same format as above
             -- Be sure to increment the numbers correctly, [5], [6], etc
@@ -204,6 +198,7 @@ return {
         answers = {
             [1] = 'M',
             [2] = 'N',
+            [3] = 'G',
             [3] = 'T',
         }
     }
