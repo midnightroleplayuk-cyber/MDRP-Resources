@@ -284,12 +284,17 @@ Config.ServerDetails = {
 -- (Information) ► Works separately from itemShop in Config.Misc.
 -- ─────────────────────────────────────────────────────────────────────────
 Config.StarterItems = {
-    enable = false,
+    enable = true,
     list = {
         {
             type      = "item",
-            nameSpawn = "bread",
-            quanity   = 3
+            nameSpawn = "lockpick",
+            quanity   = 1
+        },
+        {
+            type      = "item",
+            nameSpawn = "Phone",
+            quanity   = 1
         },
         {
             type      = "money", -- money, bank
