@@ -1,0 +1,101 @@
+if Link.framework ~= 'none' and Link.framework ~= 'standalone' then
+    return
+end
+
+function GetPlayerJob(player)
+    return '', ''
+end
+
+function GetPlayerGang(player)
+    return nil
+end
+
+function GetPlayersWithJob(jobs)
+    return {}
+end
+
+function CanPlayerAfford(player, amount, account)
+    return true
+end
+
+function AddPlayerMoney(player, amount, account)
+    return true
+end
+
+function RemovePlayerMoney(player, amount, account)
+    return true
+end
+
+function GetPlayerItemData(player, item)
+    return nil
+end
+
+function GetPlayerItemCount(player, item)
+    return 1000
+end
+
+function AddPlayerItem(player, item, amount, meta)
+    return true
+end
+
+function RemovePlayerItem(player, item, amount)
+    return true
+end
+
+function GetPlayerCharacterId(player)
+    return GetPlayerIdentifierByType(player, 'license')
+end
+
+function GetPlayerCharacterName(player)
+    return GetPlayerName(player) or 'Unknown'
+end
+
+function AddPlayerWeapon(player, weapon, ammo)
+    GiveWeaponToPed(GetPlayerPed(player), weapon, ammo or 0, false, true)
+    return true
+end
+
+function DoesPlayerHaveWeapon(player, weapon)
+    return GetSelectedPedWeapon(GetPlayerPed(player)) == GetHashKey(weapon)
+end
+
+function RemovePlayerWeapon(player, weapon)
+    RemoveWeaponFromPed(GetPlayerPed(player), GetHashKey(weapon))
+    return true
+end
+
+-- no inventory to use items from: the item name becomes a command
+function RegisterUsableItem(item, cb)
+    RegisterCommand(item, function(source)
+        if source > 0 then
+            cb(source)
+        end
+    end, false)
+
+    return true
+end
+
+function OpenCustomStash()
+    -- Not available in standalone
+    return true
+end
+
+function GetStashItems()
+    -- Not available in standalone
+    return {}
+end
+
+function GetPlayerInventory()
+    -- Not available in standalone
+    return {}
+end
+
+function GetItemBySlot(player, slot)
+    -- Not available in standalone
+    return nil
+end
+
+function SetItemDurability(player, slot, durability)
+    -- Not available in standalone
+    return true
+end

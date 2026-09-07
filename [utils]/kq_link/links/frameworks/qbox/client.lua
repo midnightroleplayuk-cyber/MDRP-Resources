@@ -1,0 +1,46 @@
+if Link.framework ~= 'qbox' and Link.framework ~= 'qbx' and Link.framework ~= 'qbx-core' then
+    return
+end
+
+require '@qbx_core.modules.playerdata'
+
+PLAYER_DATA = QBX.PlayerData
+
+RegisterNetEvent('QBCore:Client:OnPlayerLoaded')
+AddEventHandler('QBCore:Client:OnPlayerLoaded', function()
+    PLAYER_DATA = QBX.PlayerData
+    TriggerEvent('kq_link:jobUpdated', PLAYER_DATA.job.name)
+    TriggerEvent('kq_link:playerLoaded')
+end)
+
+RegisterNetEvent('QBCore:Client:OnJobUpdate')
+AddEventHandler('QBCore:Client:OnJobUpdate', function(jobData)
+    PLAYER_DATA.job = jobData
+    TriggerEvent('kq_link:jobUpdated', PLAYER_DATA.job.name)
+end)
+
+RegisterNetEvent('QBCore:Client:OnGangUpdate')
+AddEventHandler('QBCore:Client:OnGangUpdate', function(gangData)
+    PLAYER_DATA.gang = gangData
+    TriggerEvent('kq_link:gangUpdated', gangData and gangData.name)
+end)
+
+function GetPlayerJob()
+    if not PLAYER_DATA or not PLAYER_DATA.job then
+        return nil
+    end
+
+    return PLAYER_DATA.job.name
+end
+
+function GetPlayerGang()
+    if not PLAYER_DATA or not PLAYER_DATA.gang then
+        return nil
+    end
+
+    return PLAYER_DATA.gang.name
+end
+
+function NotifyViaFramework(message, type)
+    exports.qbx_core:Notify(message, type, 4000)
+end

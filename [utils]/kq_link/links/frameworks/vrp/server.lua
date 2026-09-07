@@ -1,0 +1,214 @@
+if Link.framework ~= 'vrp' then
+    return
+end
+
+local Tunnel = module("vrp", "lib/Tunnel")
+local Proxy = module("vrp", "lib/Proxy")
+vRP = Proxy.getInterface("vRP")
+
+function GetPlayerJob(player)
+    local userId = vRP.getUserId(player)
+    if not userId then return nil end
+
+    local job = vRP.getUserGroupByType(userId, "job")
+
+    return job, 1
+end
+
+-- No native gangs in this framework
+function GetPlayerGang(player)
+    return nil
+end
+
+function GetPlayersWithJob(jobs)
+    local matchingPlayers = {}
+    local users = vRP.getUsers()
+    local isTable = type(jobs) == 'table'
+
+    for userId, _ in pairs(users) do
+        local src = vRP.getUserSource(userId)
+        if src then
+            if isTable then
+                for _, name in ipairs(jobs) do
+                    if vRP.hasGroup(userId, name) then
+                        table.insert(matchingPlayers, src)
+                        break
+                    end
+                end
+            elseif vRP.hasGroup(userId, jobs) then
+                table.insert(matchingPlayers, src)
+            end
+        end
+    end
+
+    return matchingPlayers
+end
+
+
+local function ParseAccount(account)
+    if account == "bank" then
+        return "bank"
+    end
+    return account and "wallet" or nil
+end
+
+function CanPlayerAfford(player, amount, account)
+    local user_id = vRP.getUserId({player})
+    account = ParseAccount(account)
+    if user_id then
+        if account == "bank" then
+            return vRP.getBankMoney({user_id}) >= amount
+        end
+        local player_money = vRP.getMoney({user_id})
+        return player_money >= amount
+    end
+    return false
+end
+
+function AddPlayerMoney(player, amount, account)
+    local user_id = vRP.getUserId({player})
+    if user_id then
+        if account == "bank" then
+            vRP.giveBankMoney({user_id, amount})
+        else
+            vRP.giveMoney({user_id, amount})
+        end
+        return true
+    end
+    return false
+end
+
+function RemovePlayerMoney(player, amount, account)
+    local user_id = vRP.getUserId({player})
+    account = ParseAccount(account)
+    if user_id then
+        if account == "bank" then
+            local bank = vRP.getBankMoney({user_id})
+            if bank >= amount then
+                vRP.setBankMoney({user_id, bank - amount})
+                return true
+            end
+            return false
+        end
+        if CanPlayerAfford(player, amount, account) then
+            vRP.tryPayment({user_id, amount})
+            return true
+        end
+    end
+    return false
+end
+
+function GetPlayerItemData(player, item)
+    local user_id = vRP.getUserId(player)
+    local itemCount = vRP.getInventoryItemAmount(user_id, item)
+    return {
+        count = itemCount
+    }
+end
+
+function GetPlayerItemData(player, item)
+    local user_id = vRP.getUserId({player})
+    if not user_id then
+        return { count = 0 }
+    end
+
+    local itemCount = vRP.getInventoryItemAmount({user_id, item})
+    return {
+        count = itemCount or 0
+    }
+end
+
+function GetPlayerItemCount(player, item)
+    local data = GetPlayerItemData(player, item)
+    return data.count
+end
+
+function AddPlayerItem(player, item, amount, meta)
+    local user_id = vRP.getUserId({player})
+    if not user_id then
+        return false
+    end
+
+    vRP.giveInventoryItem({user_id, item, amount})
+    return true
+end
+
+function RemovePlayerItem(player, item, amount)
+    local user_id = vRP.getUserId({player})
+    if not user_id then
+        return false
+    end
+
+    return vRP.tryGetInventoryItem({user_id, item, amount})
+end
+
+
+function RegisterUsableItem(item, cb)
+    return true -- needs to be defined on the item itself in VRP
+end
+
+function OpenCustomStash()
+    -- Not available in vrp
+    return true
+end
+
+function GetStashItems()
+    -- Not available in vrp
+    return {}
+end
+
+function GetPlayerCharacterId(player)
+    local userId = vRP.getUserId({player})
+    return userId
+end
+
+function GetPlayerCharacterName(player)
+    local userId = vRP.getUserId({player})
+    if not userId then
+        return GetPlayerName(player) or 'Unknown'
+    end
+
+    local identity = vRP.getUserIdentity({userId})
+    if identity and identity.firstname and identity.lastname then
+        return identity.firstname .. ' ' .. identity.lastname
+    end
+
+    return GetPlayerName(player) or 'Unknown'
+end
+
+function AddPlayerWeapon(player, weapon, ammo)
+    local userId = vRP.getUserId({player})
+    if not userId then
+        return false
+    end
+
+    vRP.giveInventoryItem({userId, weapon, 1})
+    if ammo and ammo > 0 then
+        local ammoType = weapon:gsub('WEAPON_', 'AMMO_')
+        vRP.giveInventoryItem({userId, ammoType, ammo})
+    end
+    return true
+end
+
+function DoesPlayerHaveWeapon(player, weapon)
+    return GetPlayerItemCount(player, weapon) > 0
+end
+
+function RemovePlayerWeapon(player, weapon)
+    return RemovePlayerItem(player, weapon, 1)
+end
+
+function GetPlayerInventory(player)
+    -- Not available in vrp
+    return {}
+end
+
+function GetItemBySlot(player, slot)
+    -- Not available in vrp
+    return nil
+end
+
+function SetItemDurability(player, slot, durability)
+    -- Not available in vrp
+    return true
+end
