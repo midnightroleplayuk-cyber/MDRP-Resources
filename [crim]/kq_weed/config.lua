@@ -285,8 +285,8 @@ Config.vendors = {
         },
     },
     ["seed_store"] = {
-        coords = vec3(-277.773, 2205.427, 130.400),
-        heading = 243.061,
+        coords = vec3(-276.774, 2198.294, 133.231),
+        heading = 153.061,
         model = "g_m_y_famdnf_01",
         idleAnim = {
             dict = "amb@world_human_leaning@male@wall@back@foot_up@idle_a",
