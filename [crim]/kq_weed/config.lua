@@ -202,56 +202,56 @@ Config.placing = {
 Config.prePlaced = {
     pots = {
         -- Barn up north
-        { optimal = false, showTent = false, autoWatering = false, coords = vec3(433.70, 6455.19, 27.75),   rotation = vec3(0, 0, 320) },
-        { optimal = false, showTent = false, autoWatering = false, coords = vec3(434.41, 6454.69, 27.75),   rotation = vec3(0, 0, 320) },
-        { optimal = false, showTent = false, autoWatering = false, coords = vec3(435.09, 6454.19, 27.75),   rotation = vec3(0, 0, 320) },
-        { optimal = false, showTent = false, autoWatering = false, coords = vec3(435.80, 6453.69, 27.75),   rotation = vec3(0, 0, 320) },
-        { optimal = false, showTent = false, autoWatering = false, coords = vec3(436.51, 6453.19, 27.75),   rotation = vec3(0, 0, 320) },
-        { optimal = false, showTent = false, autoWatering = false, coords = vec3(437.22, 6452.69, 27.75),   rotation = vec3(0, 0, 320) },
+    --    { optimal = false, showTent = false, autoWatering = false, coords = vec3(433.70, 6455.19, 27.75),   rotation = vec3(0, 0, 320) },
+    --    { optimal = false, showTent = false, autoWatering = false, coords = vec3(434.41, 6454.69, 27.75),   rotation = vec3(0, 0, 320) },
+    --    { optimal = false, showTent = false, autoWatering = false, coords = vec3(435.09, 6454.19, 27.75),   rotation = vec3(0, 0, 320) },
+    --    { optimal = false, showTent = false, autoWatering = false, coords = vec3(435.80, 6453.69, 27.75),   rotation = vec3(0, 0, 320) },
+    --    { optimal = false, showTent = false, autoWatering = false, coords = vec3(436.51, 6453.19, 27.75),   rotation = vec3(0, 0, 320) },
+    --   { optimal = false, showTent = false, autoWatering = false, coords = vec3(437.22, 6452.69, 27.75),   rotation = vec3(0, 0, 320) },
 
         -- Trevor's beach house
-        { optimal = true,  showTent = true,  autoWatering = false, coords = vec3(-1150.66, -1513.53, 9.63), rotation = vec3(0, 0, 290) },
+    --    { optimal = true,  showTent = true,  autoWatering = false, coords = vec3(-1150.66, -1513.53, 9.63), rotation = vec3(0, 0, 290) },
 
         -- Franklin's Mansion
-        { optimal = true,  showTent = true,  autoWatering = false, coords = vec3(5.74, 530.42, 174.34),       rotation = vec3(0, 0, 331) },
-        { optimal = true,  showTent = true,  autoWatering = false, coords = vec3(4.94, 530.86, 174.34),      rotation = vec3(0, 0, 331) },
-        { optimal = true,  showTent = true,  autoWatering = false, coords = vec3(4.14, 531.3, 174.34),      rotation = vec3(0, 0, 331) },
-        { optimal = true,  showTent = true,  autoWatering = false, coords = vec3(3.34, 531.74, 174.34),      rotation = vec3(0, 0, 331) },
+    --    { optimal = true,  showTent = true,  autoWatering = false, coords = vec3(5.74, 530.42, 174.34),       rotation = vec3(0, 0, 331) },
+    --    { optimal = true,  showTent = true,  autoWatering = false, coords = vec3(4.94, 530.86, 174.34),      rotation = vec3(0, 0, 331) },
+    --    { optimal = true,  showTent = true,  autoWatering = false, coords = vec3(4.14, 531.3, 174.34),      rotation = vec3(0, 0, 331) },
+    --    { optimal = true,  showTent = true,  autoWatering = false, coords = vec3(3.34, 531.74, 174.34),      rotation = vec3(0, 0, 331) },
 
         -- Lost MC HQ
-        { optimal = false, showTent = false, autoWatering = false, coords = vec3(985.14, -90.25, 73.84), rotation = vec3(0, 0, 133) },
-        { optimal = false, showTent = false, autoWatering = false, coords = vec3(985.58, -90.73, 73.84), rotation = vec3(0, 0, 133) },
-        { optimal = false, showTent = false, autoWatering = false, coords = vec3(986.02, -91.21, 73.84), rotation = vec3(0, 0, 133) },
-        { optimal = false, showTent = false, autoWatering = false, coords = vec3(986.46, -91.69, 73.84), rotation = vec3(0, 0, 133) },
-        { optimal = false, showTent = false, autoWatering = false, coords = vec3(986.90, -92.17, 73.84), rotation = vec3(0, 0, 133) },
+    --    { optimal = false, showTent = false, autoWatering = false, coords = vec3(985.14, -90.25, 73.84), rotation = vec3(0, 0, 133) },
+    --    { optimal = false, showTent = false, autoWatering = false, coords = vec3(985.58, -90.73, 73.84), rotation = vec3(0, 0, 133) },
+    --    { optimal = false, showTent = false, autoWatering = false, coords = vec3(986.02, -91.21, 73.84), rotation = vec3(0, 0, 133) },
+    --    { optimal = false, showTent = false, autoWatering = false, coords = vec3(986.46, -91.69, 73.84), rotation = vec3(0, 0, 133) },
+    --    { optimal = false, showTent = false, autoWatering = false, coords = vec3(986.90, -92.17, 73.84), rotation = vec3(0, 0, 133) },
 
         -- Train cart in LS near Legion
-        { optimal = true, showTent = true, autoWatering = false, coords = vec3(563.98, -510.97, 24.89), rotation = vec3(0, 0, 82) },
-        { optimal = true, showTent = true, autoWatering = false, coords = vec3(564.11, -510.08, 24.89), rotation = vec3(0, 0, 82) },
-        { optimal = true, showTent = true, autoWatering = false, coords = vec3(564.24, -509.19, 24.89), rotation = vec3(0, 0, 82) },
-        { optimal = true, showTent = true, autoWatering = false, coords = vec3(564.37, -508.30, 24.89), rotation = vec3(0, 0, 82) },
-        { optimal = true, showTent = true, autoWatering = false, coords = vec3(564.50, -507.41, 24.89), rotation = vec3(0, 0, 82) },
+    --    { optimal = true, showTent = true, autoWatering = false, coords = vec3(563.98, -510.97, 24.89), rotation = vec3(0, 0, 82) },
+    --    { optimal = true, showTent = true, autoWatering = false, coords = vec3(564.11, -510.08, 24.89), rotation = vec3(0, 0, 82) },
+    --    { optimal = true, showTent = true, autoWatering = false, coords = vec3(564.24, -509.19, 24.89), rotation = vec3(0, 0, 82) },
+    --    { optimal = true, showTent = true, autoWatering = false, coords = vec3(564.37, -508.30, 24.89), rotation = vec3(0, 0, 82) },
+    --    { optimal = true, showTent = true, autoWatering = false, coords = vec3(564.50, -507.41, 24.89), rotation = vec3(0, 0, 82) },
 
     },
     tables = {
         -- Barn up north
-        { coords = vec3(439.45, 6453.96, 27.77), rotation = vec3(0, 0, 51) },
+    --    { coords = vec3(439.45, 6453.96, 27.77), rotation = vec3(0, 0, 51) },
 
         -- Franklin's Mansion
-        { coords = vec3(-2.15, 528.62, 173.99), rotation = vec3(0, 0, 59) },
+    --    { coords = vec3(-2.15, 528.62, 173.99), rotation = vec3(0, 0, 59) },
 
         -- Lost MC HQ
-        { coords = vec3(983.52, -91.41, 73.85), rotation = vec3(0, 0, 222) },
+    --    { coords = vec3(983.52, -91.41, 73.85), rotation = vec3(0, 0, 222) },
 
         -- Train cart in LS near Legion
-        { coords = vec3(565.26, -501.37, 24.89), rotation = vec3(0, 0, 82) },
+    --    { coords = vec3(565.26, -501.37, 24.89), rotation = vec3(0, 0, 82) },
     },
     presses = {
         -- Barn up north
-        { coords = vec3(435.37, 6457.92, 27.82), rotation = vec3(0, 0, 225) },
+    --    { coords = vec3(435.37, 6457.92, 27.82), rotation = vec3(0, 0, 225) },
 
         -- Train cart in LS near Legion
-        { coords = vec3(565.52, -499.61, 24.89), rotation = vec3(0, 0, 82) },
+    --    { coords = vec3(565.52, -499.61, 24.89), rotation = vec3(0, 0, 82) },
     },
 }
 
