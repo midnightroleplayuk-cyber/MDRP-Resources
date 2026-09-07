@@ -259,7 +259,11 @@ Config.prePlaced = {
 -- We highly recommend adding these items to your shops, heists, robberies etc. instead
 Config.vendors = {
     ["fertilizer_store"] = {
+<<<<<<< HEAD
         coords = vec3(2221.893, 5612.799, 55.009),
+=======
+        coords = vec3 (2221.594, 5611.972, 54.699),
+>>>>>>> eb9fc9eaf0f1b89795e146e6952486e761d6149e
         heading = 80.0,
         model = "a_m_m_hillbilly_01",
         idleAnim = {
