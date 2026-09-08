@@ -318,7 +318,7 @@ Config.app = {
     -- roadphone (manual setup on the phone's side, see ROADPHONE_APP.md)
     customApp = {
         -- Whether to register the app into supported phone resources at all
-        enabled = true,
+        enabled = false,
 
         -- Whether to push notifications through the phone
         notifications = true,
