@@ -50,7 +50,7 @@ Config = {
     AllowOnBikes = true, -- Allow emotes when on a vehicle with handlebars
 
     -- Ragdoll
-    RagdollEnabled = false,
+    RagdollEnabled = true,
     RagdollKeybind = 'U',
     RagdollAsToggle = true,
 
