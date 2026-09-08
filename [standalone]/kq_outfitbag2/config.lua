@@ -14,7 +14,7 @@ Config.esxSettings = {
 }
 
 Config.qbSettings = {
-    enabled = false,
+    enabled = true,
 }
 
 ----------------------------------
