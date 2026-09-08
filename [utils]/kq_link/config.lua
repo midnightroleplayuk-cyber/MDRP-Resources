@@ -47,7 +47,7 @@ Link = {
 --- 'chezza' -- Chezza inventory system
 --- 'tgiann-inventory' -- Tgiann inventory system
 --- 'jaksam_inventory' -- Jaksam's inventory system
-Link.inventory = 'auto'
+Link.inventory = 'ox_inventory'
 
 
 --- NOTIFICATION OPTIONS
@@ -62,7 +62,7 @@ Link.inventory = 'auto'
 --- '17mov' -- Notifications system made by 17Movement
 ---
 --- 'standalone' -- A standalone solution will be used for notifications (top left display)
-Link.notifications = 'auto'
+Link.notifications = 'ox'
 
 
 ------------------------
