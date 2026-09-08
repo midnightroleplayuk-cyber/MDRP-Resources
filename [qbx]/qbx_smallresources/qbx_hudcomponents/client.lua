@@ -3,15 +3,18 @@ local disableHudComponents = config.disable.hudComponents
 local disableControls = config.disable.controls
 local displayAmmo = config.disable.displayAmmo
 
+-- HUD components must be hidden every frame. Using SetHudComponentSize only once can
+-- allow GTA/FiveM to restore some components (such as cash/bank) after Alt+Tab.
 CreateThread(function()
-    for i = 1, #disableHudComponents do
-        SetHudComponentSize(disableHudComponents[i],0.0,0.0)
-    end
-
     while true do
+        for i = 1, #disableHudComponents do
+            HideHudComponentThisFrame(disableHudComponents[i])
+        end
+
         for i = 1, #disableControls do
             DisableControlAction(2, disableControls[i], true)
         end
+
         Wait(0)
     end
 end)
@@ -35,13 +38,15 @@ end
 
 local function addDisableHudComponents(hudComponents)
     local hudComponentsType = type(hudComponents)
+
     if hudComponentsType == 'number' then
-        disableHudComponents[#disableHudComponents+1] = hudComponents
-        SetHudComponentSize(hudComponents,0.0,0.0)
+        disableHudComponents[#disableHudComponents + 1] = hudComponents
+        SetHudComponentSize(hudComponents, 0.0, 0.0)
     elseif hudComponentsType == 'table' and table.type(hudComponents) == 'array' then
         for i = 1, #hudComponents do
-            disableHudComponents[#disableHudComponents+1] = hudComponents[i]
-            SetHudComponentSize(hudComponents,0.0,0.0)
+            local component = hudComponents[i]
+            disableHudComponents[#disableHudComponents + 1] = component
+            SetHudComponentSize(component, 0.0, 0.0)
         end
     end
 end
@@ -52,19 +57,23 @@ exports('AddDisableHudComponents', addDisableHudComponents)
 
 local function removeDisableHudComponents(hudComponents)
     local hudComponentsType = type(hudComponents)
+
     if hudComponentsType == 'number' then
-        for i = 1, #disableHudComponents do
+        for i = #disableHudComponents, 1, -1 do
             if disableHudComponents[i] == hudComponents then
                 table.remove(disableHudComponents, i)
-                ResetHudComponentValues(i)
+                ResetHudComponentValues(hudComponents)
                 break
             end
         end
     elseif hudComponentsType == 'table' and table.type(hudComponents) == 'array' then
-        for i = 1, #disableHudComponents do
-            for i2 = 1, #hudComponents do
-                if disableHudComponents[i] == hudComponents[i2] then
-                    ResetHudComponentValues(i)
+        for i2 = 1, #hudComponents do
+            local component = hudComponents[i2]
+
+            for i = #disableHudComponents, 1, -1 do
+                if disableHudComponents[i] == component then
+                    table.remove(disableHudComponents, i)
+                    ResetHudComponentValues(component)
                 end
             end
         end
@@ -85,11 +94,12 @@ exports('GetDisableHudComponents', getDisableHudComponents)
 
 local function addDisableControls(controls)
     local controlsType = type(controls)
+
     if controlsType == 'number' then
-        disableControls[#disableControls+1] = controls
+        disableControls[#disableControls + 1] = controls
     elseif controlsType == 'table' and table.type(controls) == 'array' then
         for i = 1, #controls do
-            disableControls[#disableControls+1] = controls[i]
+            disableControls[#disableControls + 1] = controls[i]
         end
     end
 end
@@ -100,17 +110,20 @@ exports('AddDisableControls', addDisableControls)
 
 local function removeDisableControls(controls)
     local controlsType = type(controls)
+
     if controlsType == 'number' then
-        for i = 1, #disableControls do
+        for i = #disableControls, 1, -1 do
             if disableControls[i] == controls then
                 table.remove(disableControls, i)
                 break
             end
         end
     elseif controlsType == 'table' and table.type(controls) == 'array' then
-        for i = 1, #disableControls do
-            for i2 = 1, #controls do
-                if disableControls[i] == controls[i2] then
+        for i2 = 1, #controls do
+            local control = controls[i2]
+
+            for i = #disableControls, 1, -1 do
+                if disableControls[i] == control then
                     table.remove(disableControls, i)
                 end
             end
