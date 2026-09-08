@@ -213,6 +213,12 @@ RegisterNetEvent("pma-voice:radioActive", function(talkingState)
         radioId = tostring(Radio.playerServerID),
         radioTalking = talkingState
     })
+
+    -- Play our local PTT sound on both press and release.
+    -- This only fires for the local player's PTT state, not other radio users.
+    if Radio.onRadio and Radio.userData[Radio.identifier] and Radio.userData[Radio.identifier].enableClicks ~= false then
+        Radio:SendSvelteMessage("playRadioClick", { talking = talkingState })
+    end
 end)
 
 RegisterNetEvent("pma-voice:setTalkingOnRadio", function(source, talkingState)

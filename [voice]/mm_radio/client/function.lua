@@ -62,7 +62,8 @@ function Radio:SetDefaultData(cid)
                 x = 10,
                 y = 15,
             },
-        }
+        },
+        enableClicks = true
     }
     SetResourceKvp('radioSettings2', json.encode(self.userData))
 end
@@ -90,8 +91,14 @@ function Radio:Init(data)
         end
     end
 
-    if not self.userData[self.identifier].enableClicks then
-        exports['pma-voice']:setVoiceProperty('micClicks', false)
+    -- mm_radio handles its own radio PTT sound. Always disable pma-voice's
+    -- built-in mic clicks so the stock beep does not play over the custom radio PTT sounds.
+    exports['pma-voice']:setVoiceProperty('micClicks', false)
+
+    -- Migrate existing saved settings which pre-date enableClicks.
+    if self.userData[self.identifier].enableClicks == nil then
+        self.userData[self.identifier].enableClicks = true
+        SetResourceKvp('radioSettings2', json.encode(self.userData))
     end
 
     self:doRadioCheck()

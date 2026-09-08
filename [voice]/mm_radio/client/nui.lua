@@ -104,7 +104,8 @@ end)
 RegisterNUICallback('enableClicks', function(data, cb)
     Radio.userData[Radio.identifier].enableClicks = data
     SetResourceKvp('radioSettings2', json.encode(Radio.userData))
-    exports['pma-voice']:setVoiceProperty('micClicks', data)
+    -- Keep pma-voice's stock clicks disabled; this setting now controls the custom radio PTT sounds.
+    exports['pma-voice']:setVoiceProperty('micClicks', false)
     cb("ok")
 end)
 

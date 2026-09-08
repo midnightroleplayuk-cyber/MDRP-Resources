@@ -30,7 +30,9 @@ server_script {
 
 files {
     'build/**',
-    'locales/*.json'
+    'locales/*.json',
+    'radio_speak.ogg',
+    'radio_end.ogg'
 }
 
 dependencies {
