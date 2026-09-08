@@ -50,6 +50,7 @@ function Radio:SetDefaultData(cid)
         overlaySizeMultiplier = 50,
         radioSizeMultiplier = 50,
         allowMovement = false,
+        enableClicks = true,
         playerlist = {
             show = false,
             coords = {
@@ -75,6 +76,10 @@ function Radio:Init(data)
     self.PlayerGang = player.gang.name
     if not self.userData[self.identifier] then self:SetDefaultData(self.identifier) end
     self.userData[self.identifier].name = self.userData[self.identifier].name or player.charinfo.firstname .. " " .. player.charinfo.lastname
+    if self.userData[self.identifier].enableClicks == nil then
+        self.userData[self.identifier].enableClicks = true
+        SetResourceKvp('radioSettings2', json.encode(self.userData))
+    end
     local rec = {}
     for k, v in pairs(Shared.RestrictedChannels) do
         if v.type == 'job' and lib.table.contains(v.name, self.PlayerJob) then
