@@ -8248,6 +8248,14 @@ return {
         type = 'automobile',
         hash = `kv_vigero2`,
     },
-
+     cheetahfel = {
+        name = 'Cheetahfel',
+        brand = 'Grotti',
+        model = 'cheetahfel',
+        price = 140000,
+        category = 'super',
+        type = 'automobile',
+        hash = `cheetahfel`,
+    },
 
 }
