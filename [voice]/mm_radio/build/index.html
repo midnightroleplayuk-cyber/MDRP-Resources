@@ -11,25 +11,6 @@
   </head>
   <body>
     <div id="app"></div>
-
-    <script>
-      // Custom push-to-talk sounds sent by client/event.lua.
-      // Both files live in the mm_radio resource root.
-      const radioSpeak = new Audio('../radio_speak.ogg');
-      const radioEnd = new Audio('../radio_end.ogg');
-      radioSpeak.preload = 'auto';
-      radioEnd.preload = 'auto';
-
-      window.addEventListener('message', (event) => {
-        if (event.data?.action !== 'playRadioClick') return;
-
-        // talking=true = PTT pressed, talking=false = PTT released.
-        const sound = event.data?.data?.talking ? radioSpeak : radioEnd;
-        sound.pause();
-        sound.currentTime = 0;
-        sound.play().catch(() => {});
-      });
-    </script>
     
   </body>
 </html>

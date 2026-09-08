@@ -62,20 +62,21 @@ function Radio:SetDefaultData(cid)
                 x = 10,
                 y = 15,
             },
-        },
-        enableClicks = true
+        }
     }
     SetResourceKvp('radioSettings2', json.encode(self.userData))
 end
 
 function Radio:Init(data)
-    local player = data or QBX.PlayerData
+    local player = data or Framework.core.getPlayerData()
     self.identifier = player.cid
     self.PlayerJob = player.job.name
-    self.PlayerDuty = player.job.onduty
-    self.PlayerGang = player.gang.name
+    self.PlayerDuty = player.job.onDuty
+    if Shared.Core == 'qb' then
+        self.PlayerGang = player.gang.name
+    end
     if not self.userData[self.identifier] then self:SetDefaultData(self.identifier) end
-    self.userData[self.identifier].name = self.userData[self.identifier].name or player.charinfo.firstname .. " " .. player.charinfo.lastname
+    self.userData[self.identifier].name = self.userData[self.identifier].name or player.firstName .. " " .. player.lastName
     local rec = {}
     for k, v in pairs(Shared.RestrictedChannels) do
         if v.type == 'job' and lib.table.contains(v.name, self.PlayerJob) then
@@ -91,14 +92,8 @@ function Radio:Init(data)
         end
     end
 
-    -- mm_radio handles its own radio PTT sound. Always disable pma-voice's
-    -- built-in mic clicks so the stock beep does not play over the custom radio PTT sounds.
-    exports['pma-voice']:setVoiceProperty('micClicks', false)
-
-    -- Migrate existing saved settings which pre-date enableClicks.
-    if self.userData[self.identifier].enableClicks == nil then
-        self.userData[self.identifier].enableClicks = true
-        SetResourceKvp('radioSettings2', json.encode(self.userData))
+    if not self.userData[self.identifier].enableClicks then
+        exports['pma-voice']:setVoiceProperty('micClicks', false)
     end
 
     self:doRadioCheck()
@@ -126,15 +121,16 @@ function Radio:connecttoradio(channel)
     end
 end
 
-function Radio:doRadioCheck(_)
+function Radio:doRadioCheck(items)
+    if not Shared.Inventory then self.hasRadio = true return end
     self.batteryData = {}
     self.hasRadio = false
-    local playerItems = exports.ox_inventory:Search('slots', Shared.RadioItem)
+    local playerItems = items or Framework.inventory.playerItems()
     for _, v in pairs(playerItems) do
         if lib.table.contains(Shared.RadioItem, v.name) then
             self.hasRadio = true
             if v.metadata?.radioId or v.info?.radioId then
-                self.batteryData[#self.batteryData+1] = v['metadata'].radioId
+                self.batteryData[#self.batteryData+1] = v[Shared.Inventory == 'ox' and 'metadata' or 'info'].radioId
             end
         end
     end
@@ -469,7 +465,9 @@ lib.addKeybind({
     defaultKey = 'EQUALS',
     onPressed = function()
         if not Radio.usingRadio then
-            if Radio.hasRadio then
+            if Shared.Inventory and Radio.hasRadio then
+                TriggerEvent('mm_radio:client:use')
+            elseif not Shared.Inventory then
                 TriggerEvent('mm_radio:client:use')
             end
         end

@@ -1,6 +1,6 @@
 AddEventHandler('onResourceStart', function(resource)
     if GetCurrentResourceName() == resource then
-        if LocalPlayer.state.isLoggedIn then
+        if Shared.Core and Framework.core.playerLoaded() then
             Radio:Init()
             Radio.playerLoaded = true
             TriggerServerEvent('mm_radio:server:createdefaultjammer')
@@ -51,7 +51,7 @@ end)
 
 RegisterNetEvent('mm_radio:client:usejammer', function()
     if not Shared.Jammer.permission or not (lib.table.contains(Shared.Jammer.permission, Radio.PlayerJob) or lib.table.contains(Shared.Jammer.permission, Radio.PlayerGang)) then
-        lib.notify({
+        return Framework.notify({
             title = 'You dont have permission to use this item',
             type = 'error'
         })
@@ -213,12 +213,6 @@ RegisterNetEvent("pma-voice:radioActive", function(talkingState)
         radioId = tostring(Radio.playerServerID),
         radioTalking = talkingState
     })
-
-    -- Play our local PTT sound on both press and release.
-    -- This only fires for the local player's PTT state, not other radio users.
-    if Radio.onRadio and Radio.userData[Radio.identifier] and Radio.userData[Radio.identifier].enableClicks ~= false then
-        Radio:SendSvelteMessage("playRadioClick", { talking = talkingState })
-    end
 end)
 
 RegisterNetEvent("pma-voice:setTalkingOnRadio", function(source, talkingState)
@@ -228,7 +222,7 @@ RegisterNetEvent("pma-voice:setTalkingOnRadio", function(source, talkingState)
     })
 end)
 
-RegisterNetEvent('QBCore:Client:OnPlayerLoaded', function()
+RegisterNetEvent('bl_bridge:client:playerLoaded', function()
     Radio.playerLoaded = true
     Radio:Init()
     TriggerServerEvent('mm_radio:server:createdefaultjammer')
@@ -239,14 +233,14 @@ RegisterNetEvent('QBCore:Client:OnPlayerLoaded', function()
     end
 end)
 
-RegisterNetEvent('QBCore:Client:OnPlayerUnload', function()
+RegisterNetEvent('bl_bridge:client:playerUnloaded', function()
     Radio.hasRadio = false
     Radio:leaveradio()
     Radio.playerLoaded = false
 end)
 
-RegisterNetEvent('QBCore:Client:OnJobUpdate', function(job)
-    local player = QBX.PlayerData
+RegisterNetEvent('bl_bridge:client:jobUpdated', function(job)
+    local player = Framework.core.getPlayerData()
     player.job = job
     Radio:Init(player)
 end)
@@ -259,8 +253,8 @@ RegisterNetEvent('QBCore:Player:SetPlayerData', function(val)
     end
 end)
 
-RegisterNetEvent('QBCore:Client:OnGangUpdate', function(gang)
-    local player = QBX.PlayerData
+RegisterNetEvent('bl_bridge:client:gangUpdated', function(gang)
+    local player = Framework.core.getPlayerData()
     player.gang = gang
     Radio:Init(player)
 end)

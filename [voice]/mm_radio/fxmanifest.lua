@@ -1,8 +1,8 @@
 fx_version 'cerulean'
-game 'gta5'
+game "gta5"
 
-author 'Master Mind'
-version '0.2.1'
+author "Master Mind"
+version '2.0.7'
 description 'A beautiful Radio Resource for FiveM'
 repository 'https://github.com/SOH69/mm_radio'
 
@@ -12,12 +12,12 @@ ui_page 'build/index.html'
 -- ui_page 'http://localhost:3000/' --for dev
 
 shared_script {
-    '@ox_lib/init.lua',
-    'shared/**'
+    "@ox_lib/init.lua",
+    "shared/**"
 }
 
 client_script {
-    '@qbx_core/modules/playerdata.lua',
+    '@bl_bridge/imports/client.lua',
     'client/interface.lua',
     'client/function.lua',
     'client/event.lua',
@@ -25,18 +25,18 @@ client_script {
 }
 
 server_script {
-    'server/main.lua',
+    '@bl_bridge/imports/server.lua',
+    "server/main.lua",
 }
 
 files {
     'build/**',
-    'locales/*.json',
-    'radio_speak.ogg',
-    'radio_end.ogg'
+    'locales/*.json'
 }
 
 dependencies {
     'pma-voice',
     'ox_lib',
-    '/onesync'
-}
+    '/onesync',
+    'bl_bridge'
+  }
