@@ -48,7 +48,7 @@ Config.Progress = {
 Config.Hacking = {
     Minigame = 'ox_lib', -- ox_lib, utk_fingerprint, ps-ui, ps-ui-circle, ps-ui-maze, ps-ui-scrambler
     PsGame = 'circle', -- circle, maze, scrambler
-    OxLibDifficulty = { 'easy', 'easy', { areaSize = 60, speedMultiplier = 1 }, 'easy' },
+    OxLibDifficulty = { 'medium', 'easy', { areaSize = 60, speedMultiplier = 1 }, 'easy' },
     OxLibKeys = { 'w', 'a', 's', 'd' },
     PsCircle = { circles = 4, time = 60 },
     PsMaze = { time = 20 },
