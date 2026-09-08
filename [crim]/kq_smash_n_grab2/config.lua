@@ -61,8 +61,6 @@ Config.policeAlerts = {
     -- Jobs which will get notified about the van
     policeJobs = {
         'police',
-        'lspd',
-        'bcso',
     },
 
     -- List of possible titles for the dispatch message
@@ -179,7 +177,7 @@ Config.lootTypes = {
         -- Chance of the loot being empty (not giving anything)
         emptyChance = 0,
         items = {
-            { item = 'cannabis', min = 1, max = 5 },
+            { item = 'kq_weed_bag_og_kush', min = 1, max = 5 },
         },
         models = {
             {
@@ -195,7 +193,7 @@ Config.lootTypes = {
         -- Chance of the loot being empty (not giving anything)
         emptyChance = 50,
         items = {
-            { item = 'stolen_weapon_case', min = 1, max = 1 },
+            { item = 'weapon_bat', min = 1, max = 1 },
         },
         models = {
             {
