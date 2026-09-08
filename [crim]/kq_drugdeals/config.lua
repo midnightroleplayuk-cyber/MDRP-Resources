@@ -417,7 +417,7 @@ Config.contacts = {
     enabled = true,
 
     -- Chance (0-100) a buyer asks to be saved after a completed deal
-    addChance = 15,
+    addChance = 100,
 
     -- Guarantees the first contact. Once the player has completed this many app deals and still has no active contacts
     -- 0 = disabled
