@@ -18,14 +18,14 @@ Config.extras = {
 
     addonBaggingRecipes = {
         --- This example is made specifically for "kq_cocaine". All you have to do is add the "coke_bag" item to your server or change it to an existing cocaine brick item
-        ['kq_cocaine_coke'] = {
+        ['cokebaggy'] = {
             enabled = true, -- Enable only when using kq_cocaine, or if modified to work with your current items
             label = 'Cocaine',
-            chunkModel = 'kq_coke_chunk',
-            fullBaggieModel = 'kq_coke_baggie_full',
+            chunkModel = 'coke',
+            fullBaggieModel = 'cokebaggy',
 
             chunkItem = 'coke',
-            baggieItem = 'coke_bag',
+            baggieItem = 'cokebaggy',
             chunksPerBaggie = 1, -- Amount of chunks per baggie (minigame will always represent this amount as 1 object)
 
             metadataKey = 'quality',
