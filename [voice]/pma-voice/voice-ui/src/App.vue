@@ -1,7 +1,7 @@
 <template>
 	<body>
-		<audio id="audio_on" src="mic_click_on.ogg"></audio>
-		<audio id="audio_off" src="mic_click_off.ogg"></audio>
+		<audio id="audio_on" src="radio_speak.ogg"></audio>
+		<audio id="audio_off" src="radio_end.ogg"></audio>
 		<div v-if="voice.uiEnabled" class="voiceInfo">
 			<p v-if="voice.callInfo !== 0" :class="{ talking: voice.talking }">
 				[Call]
