@@ -25,7 +25,7 @@ Config.extras = {
             fullBaggieModel = 'cokebaggy',
 
             chunkItem = 'coke',
-            baggieItem = 'cokebaggy',
+            baggieItem = 'kq_weed_bag_empty',
             chunksPerBaggie = 1, -- Amount of chunks per baggie (minigame will always represent this amount as 1 object)
 
             metadataKey = 'quality',
