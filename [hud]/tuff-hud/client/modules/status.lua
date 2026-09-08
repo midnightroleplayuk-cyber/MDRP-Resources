@@ -44,7 +44,21 @@ function PlayerStatus:Start()
                 local speaking = NetworkIsPlayerTalking(playerId)
                 Client.PlayerData.Speaking = speaking
 
-                local proximity = Voice and Voice.GetProximityRange and Voice.GetProximityRange() or 2
+                -- pma-voice stores its current proximity mode in the local player state bag.
+                -- Tuff HUD expects a mode index (1 = whisper, 2 = normal, 3 = shout),
+                -- not PMA's actual distance value (for example 3.0 / 7.0 / 15.0).
+                local proximity = 2
+                if GetResourceState('pma-voice') == 'started' then
+                    local pmaProximity = LocalPlayer.state.proximity
+                    if type(pmaProximity) == 'table' and pmaProximity.index then
+                        proximity = tonumber(pmaProximity.index) or 2
+                    end
+                elseif Voice and Voice.GetProximityRange then
+                    proximity = Voice.GetProximityRange() or 2
+                end
+
+                -- Keep the value inside the range the NUI is designed for.
+                proximity = math.max(1, math.min(3, math.floor(proximity + 0.5)))
                 Client.PlayerData.Proximity = proximity
                 
                 local PlayerData = Client.PlayerData
