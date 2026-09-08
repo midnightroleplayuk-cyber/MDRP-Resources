@@ -1,0 +1,36 @@
+    ['kq_plugphone'] = {
+        label = "Plug Phone",
+        weight = 250,
+        stack = false,
+        consume = 0,
+        server = {
+            export = 'kq_drugdeals.UsePlugPhone',
+        },
+    },
+
+    ['kq_trapphone'] = {
+        label = "Trap Phone",
+        weight = 150,
+        stack = false,
+        consume = 0,
+        server = {
+            export = 'kq_drugdeals.UseTrapPhone',
+        },
+    },
+
+    ['kq_stingphone'] = {
+        label = "Sting Phone",
+        weight = 250,
+        stack = false,
+        consume = 0,
+        server = {
+            export = 'kq_drugdeals.UseStingPhone',
+        },
+    },
+
+    ['kq_drugpackage'] = {
+        label = "Sealed Drug Package",
+        weight = 1000,
+        stack = true,
+        consume = 0,
+    },

@@ -1,0 +1,1970 @@
+{
+    "app": {
+        "name": "Plug",
+        "description": "Sell your goods on the PLUG market. Quick, Easy and Safe",
+        "tags": "Business • Illegal",
+        "police_name": "LSPD: Narcotics",
+        "police_description": "Narcotics division case terminal. Authorized personnel only",
+        "police_tags": "Police • Restricted",
+        "notification": {
+            "buyer_title": "New message",
+            "buyer_content": "{{name}} sent you a message",
+            "mail_title": "New mail",
+            "mail_content": "{{name}} sent you mail"
+        },
+        "player_dropped": [
+            "its down",
+            "dropped, its all urs",
+            "done, its there",
+            "left it right where u wanted",
+            "package down",
+            "its there waiting on u"
+        ],
+        "player_accepted": [
+            "deal. ${{price}} each",
+            "${{price}} each it is",
+            "yeah ${{price}} works. {{qty}}x, ${{total}}",
+            "ok ${{price}} a piece",
+            "thats a deal at ${{price}}"
+        ],
+        "player_accepted_delivery": [
+            "on my way",
+            "on it",
+            "headed there now",
+            "say less, im moving",
+            "on my way"
+        ],
+        "player_declined": [
+            "not happening",
+            "nah, im good",
+            "not for that, sorry",
+            "ill pass",
+            "nah man, not worth it to me"
+        ],
+        "player_countered": [
+            "${{price}} each",
+            "i can do ${{price}} each",
+            "${{price}} a piece and its urs",
+            "${{price}} each. {{qty}}x puts u at ${{total}}",
+            "meet me at ${{price}} each",
+            "${{price}} each. thats me being fair"
+        ],
+        "contact_offer_sent": [
+            "yo. got {{drug}} on me. ${{price}} each if u want in",
+            "got {{drug}} rn. ${{price}} a piece, interested?",
+            "got fresh {{drug}}. ${{price}} each. u buying?",
+            "{{drug}} in stock. ${{price}} per. want some?",
+            "sitting on {{drug}}. ${{price}} each, say the word"
+        ],
+        "orgmail": {
+            "enemy": {
+                "subject": [
+                    "Word travels fast",
+                    "We heard things",
+                    "About your recent business",
+                    "Whose side are you on",
+                    "We keep a list",
+                    "You made a mistake"
+                ],
+                "body": [
+                    "Word got back to us. You've been moving product for {{enemy}}.\n\nWe don't forget who feeds our enemies. Think about that.\n\n- {{org}}",
+                    "Somebody saw you with {{enemy}}. That's not the company we keep.\n\nDon't make a habit of it.\n\n- {{org}}",
+                    "You did business with {{enemy}}. We know.\n\nEvery crate you hand them costs you with us.\n\n- {{org}}",
+                    "Heard you've been friendly with {{enemy}} lately.\n\nTheir friends don't get our prices. Your call.\n\n- {{org}}"
+                ]
+            },
+            "levelup": {
+                "2": {
+                    "subject": [
+                        "Small steps",
+                        "We're watching",
+                        "A little slack",
+                        "Noted",
+                        "Less of a problem"
+                    ],
+                    "body": [
+                        "You've made yourself useful lately. We still remember, but the bosses agreed to stop lowballing you quite so hard.\n\nKeep going.\n\n- {{org}}",
+                        "Product keeps arriving and nobody's had to chase you.\n\nThat buys you a little slack. A little.\n\n- {{org}}",
+                        "You're less of a problem than you were. That's an update, not a compliment.\n\nCheck the rates.\n\n- {{org}}",
+                        "The bosses noticed you showing up. Rates moved a hair in your favor.\n\nDon't waste it.\n\n- {{org}}"
+                    ]
+                },
+                "3": {
+                    "subject": [
+                        "We're square",
+                        "Clean slate",
+                        "Settled",
+                        "No grudges",
+                        "Back to normal"
+                    ],
+                    "body": [
+                        "Whatever was between us, consider it settled.\n\nYou bring product, we pay fair. Don't complicate it.\n\n- {{org}}",
+                        "The bosses talked. You're square with us. Normal rates, no grudges.\n\nWhat you build from here is on you.\n\n- {{org}}",
+                        "Clean slate as of today.\n\nYou get the same deal as anybody else. Earn better if you want it.\n\n- {{org}}",
+                        "Nobody's holding anything against you anymore.\n\nThat's worth more than the rate change. Use it.\n\n- {{org}}"
+                    ]
+                },
+                "4": {
+                    "subject": [
+                        "You've earned something",
+                        "Good business",
+                        "The bosses noticed",
+                        "Worth keeping around",
+                        "Moving up"
+                    ],
+                    "body": [
+                        "You've been steady, and steady is rare in this line of work.\n\nThe bosses want you close. You'll see it in the numbers.\n\n- {{org}}",
+                        "We like how you move. Quiet, reliable, no drama.\n\nPeople like that get paid better here. Check the rates.\n\n- {{org}}",
+                        "Your name came up in a good way for once.\n\nThe rates went up with it.\n\n- {{org}}",
+                        "You keep showing up, and the product keeps being what you said it was.\n\nThat's worth money. It's in your rates now.\n\n- {{org}}"
+                    ]
+                },
+                "5": {
+                    "subject": [
+                        "Family",
+                        "Top of the list",
+                        "Untouchable",
+                        "Best we pay anybody",
+                        "You're one of ours"
+                    ],
+                    "body": [
+                        "There aren't many people we'd call untouchable. As of today you're one of them.\n\nBest rates we pay anybody. Don't make us regret it.\n\n- {{org}}",
+                        "Your name came up at the table last night. Nobody had a bad word.\n\nWhatever you're selling, we're buying first, at the best price you'll find.\n\n- {{org}}",
+                        "You're one of ours now. Top dollar, no questions.\n\nIt also means we expect you to act like it.\n\n- {{org}}",
+                        "Short list. You're on it.\n\nNobody gets better numbers out of us than you do.\n\n- {{org}}"
+                    ]
+                }
+            },
+            "leveldown": {
+                "1": {
+                    "subject": [
+                        "You're done",
+                        "Last notice",
+                        "Scrap prices",
+                        "That's it then",
+                        "Don't expect much"
+                    ],
+                    "body": [
+                        "Whatever trust there was is gone.\n\nWe'll still take your product. At scrap prices. Don't expect a welcome.\n\n- {{org}}",
+                        "The bosses are through with you.\n\nBottom dollar until you make things right, if that's even possible.\n\n- {{org}}",
+                        "You burned it. All of it.\n\nCome by if you want, but you'll get what we give anyone we don't trust.\n\n- {{org}}",
+                        "You know how you got here.\n\nThe rates are at the floor. So is our patience.\n\n- {{org}}"
+                    ]
+                },
+                "2": {
+                    "subject": [
+                        "Thin ice",
+                        "Watch yourself",
+                        "The rates moved",
+                        "Not impressed",
+                        "Consider this a warning"
+                    ],
+                    "body": [
+                        "You're on thin ice.\n\nThe rates just got worse. They'll keep getting worse if this continues.\n\n- {{org}}",
+                        "Choices have prices. Yours just cost you ours.\n\nCheck the rates and think about where this is heading.\n\n- {{org}}",
+                        "The bosses are asking questions about you. That's never good.\n\nYou get less from us until they stop.\n\n- {{org}}",
+                        "We took a step back from you today.\n\nOne more and you're nobody to us.\n\n- {{org}}"
+                    ]
+                },
+                "3": {
+                    "subject": [
+                        "Don't get comfortable",
+                        "Noted",
+                        "Back to standard",
+                        "The favors stop here",
+                        "Nothing special"
+                    ],
+                    "body": [
+                        "Whatever goodwill you'd built, you've spent some of it.\n\nBack to treating you like anyone else off the street.\n\n- {{org}}",
+                        "The special treatment is over.\n\nStandard rates from here. Earn better ones back if you care to.\n\n- {{org}}",
+                        "You're average to us now. That's a fall, not an insult.\n\n- {{org}}",
+                        "We stopped doing you favors as of today.\n\nNothing personal. You just stopped earning them.\n\n- {{org}}"
+                    ]
+                },
+                "4": {
+                    "subject": [
+                        "Slipping",
+                        "A word",
+                        "You were doing better",
+                        "The bosses noticed",
+                        "Fix it"
+                    ],
+                    "body": [
+                        "You were top of our list. Were.\n\nThe bosses saw things they didn't like and the rates moved to match.\n\n- {{org}}",
+                        "Consider this a friendly warning, since you've earned that much.\n\nYou're slipping. Don't slip further.\n\n- {{org}}",
+                        "Something changed with you, and it wasn't for the better.\n\nYour numbers changed with it.\n\n- {{org}}",
+                        "We had you high. Not that high anymore.\n\nGet back to how you were.\n\n- {{org}}"
+                    ]
+                }
+            },
+            "favour_package": {
+                "subject": [
+                    "A small errand",
+                    "Something needs moving",
+                    "Delivery work",
+                    "Take this somewhere",
+                    "Easy money"
+                ],
+                "body": [
+                    "Our man handed you a package. It goes to {{location}}, you got {{minutes}} minutes.\n\nDon't open it. Don't be late. Don't get followed.\n\n- {{org}}",
+                    "You've got the package. {{location}}, {{minutes}} minutes.\n\nLeave it and walk like you were never there.\n\n- {{org}}",
+                    "Simple job. The package goes to {{location}}.\n\nYou have {{minutes}} minutes before we start assuming the worst.\n\n- {{org}}",
+                    "Package to {{location}}. {{minutes}} minutes on the clock.\n\nMap's below. Don't make us send someone after it.\n\n- {{org}}"
+                ]
+            },
+            "favour_hit": {
+                "subject": [
+                    "A problem to solve",
+                    "Someone's been talking",
+                    "Cleanup job",
+                    "A name came up",
+                    "He needs to stop"
+                ],
+                "body": [
+                    "Someone's been a problem for us. He's around {{location}} right now.\n\nMake him stop being a problem inside {{minutes}} minutes. Don't get seen.\n\n- {{org}}",
+                    "There's a guy at {{location}} nobody will miss.\n\n{{minutes}} minutes before he moves on. We'll remember this one.\n\n- {{org}}",
+                    "A rat's sitting at {{location}}.\n\nHandle him however you like. Just make it inside {{minutes}} minutes.\n\n- {{org}}",
+                    "{{location}}. Our problem is standing right there.\n\n{{minutes}} minutes. Map's below.\n\n- {{org}}"
+                ]
+            },
+            "favour_vehicle": {
+                "subject": [
+                    "Car full of product needs to go",
+                    "A car needs to disappear",
+                    "Burn notice",
+                    "Loose end on wheels",
+                    "Scrap it"
+                ],
+                "body": [
+                    "There's a car at {{location}} that needs to stop existing.\n\nTorch it, wreck it, drive it off a cliff. {{minutes}} minutes.\n\n- {{org}}",
+                    "A car at {{location}} is a loose end.\n\nMake it scrap inside {{minutes}} minutes and we're square.\n\n- {{org}}",
+                    "Somebody left their ride at {{location}}.\n\nBe a shame if something happened to it in the next {{minutes}} minutes.\n\n- {{org}}",
+                    "{{location}}. One vehicle. {{minutes}} minutes.\n\nWe don't care how. Map's below.\n\n- {{org}}"
+                ]
+            },
+            "favour_done": {
+                "subject": [
+                    "Good work",
+                    "It's done then",
+                    "Noted and appreciated",
+                    "Clean job",
+                    "We owe you one"
+                ],
+                "body": [
+                    "Heard it went clean.\n\nThe bosses noticed. You'll see it in how we treat you.\n\n- {{org}}",
+                    "Job's done and nobody's asking questions.\n\nExactly how we like it. We owe you one.\n\n- {{org}}",
+                    "Word came back. Good work.\n\nKeep this up and doors start opening.\n\n- {{org}}",
+                    "That's handled. No mess, no names.\n\nYou're worth more to us today than you were yesterday.\n\n- {{org}}"
+                ]
+            },
+            "favour_enemy": {
+                "subject": [
+                    "You picked a side",
+                    "That was ours",
+                    "We know it was you",
+                    "Wrong people, wrong job",
+                    "We keep the ledger"
+                ],
+                "body": [
+                    "That was our property you touched, doing {{rival}}'s dirty work.\n\nWe don't forget faces. Watch yourself.\n\n- {{org}}",
+                    "You did a job on us for {{rival}} and figured nobody would connect it.\n\nWe did. Every door of ours just got heavier.\n\n- {{org}}",
+                    "You hurt us to please {{rival}}. Fine.\n\nChoices like that have a price, and we keep the ledger.\n\n- {{org}}",
+                    "{{rival}} pointed and you moved. On us.\n\nRemember that the next time you need something from us.\n\n- {{org}}"
+                ]
+            },
+            "favour_fail": {
+                "subject": [
+                    "Disappointing",
+                    "That didn't happen",
+                    "We noticed",
+                    "You said yes",
+                    "Wasted time"
+                ],
+                "body": [
+                    "The job didn't get done.\n\nWe don't hand out chances like that twice in a row. Remember whose time you wasted.\n\n- {{org}}",
+                    "We asked for one thing. It's still not done, and now it's too late.\n\nThe bosses will remember.\n\n- {{org}}",
+                    "You said yes and then nothing happened.\n\nThat costs you with us.\n\n- {{org}}",
+                    "The deadline came and went.\n\nNext time we give the work to someone who finishes it.\n\n- {{org}}"
+                ]
+            }
+        },
+        "thread_failed": {
+            "no_location": "The buyer had nowhere safe to meet. Deal off.",
+            "stolen": "The package was gone when the buyer arrived."
+        },
+        "templates": {
+            "opener": {
+                "broke": [
+                    "yo ur {{drug}} listing still up?",
+                    "saw ur page for {{drug}}. still got any?",
+                    "u still doing {{drug}}? heads up, im not loaded",
+                    "{{drug}}, is that still going? cant spend big tho",
+                    "yo. {{drug}}. cant pay big but i wont waste ur time",
+                    "u still on? need {{drug}} but im working with pennies",
+                    "hey, {{drug}} still going? gotta warn u im light this week"
+                ],
+                "cheap": [
+                    "yo saw ur {{drug}} listing. still got some?",
+                    "{{drug}} still available or is that page dead",
+                    "sup. ur listing says {{drug}}. still good?",
+                    "u still got {{drug}}?",
+                    "{{drug}}. still got? and whats it run me",
+                    "yo saw the {{drug}} post. still live or nah",
+                    "u the one moving {{drug}}? still got stock?"
+                ],
+                "rushed": [
+                    "{{drug}}. u got it right now?",
+                    "saw ur listing. {{drug}} in stock? need to know quick",
+                    "u have {{drug}} or do i keep looking",
+                    "ur page says {{drug}}. still true?",
+                    "{{drug}}. now. u got it or no",
+                    "need {{drug}} tonight. u good?",
+                    "someone said u move {{drug}}. still true?"
+                ],
+                "regular": [
+                    "hey, saw ur {{drug}} listing. still available?",
+                    "yo ur page came up for {{drug}}. u stocked?",
+                    "whats good. looking for {{drug}}, saw u selling",
+                    "hey man, u still got {{drug}} going?",
+                    "yo u still moving {{drug}}?",
+                    "hey buddy of mine sent me ur page for {{drug}}. still on?",
+                    "whats good, u got {{drug}} on u rn?"
+                ],
+                "rich": [
+                    "Evening. Is your {{drug}} listing still available?",
+                    "Your listing came up when I searched {{drug}}. Still in stock?",
+                    "Hello. I'm interested in {{drug}}, if you still got it.",
+                    "Saw your listing. Is the {{drug}} still available?",
+                    "Good evening. I understand you got {{drug}}.",
+                    "Your {{drug}} listing caught my eye. Still selling?",
+                    "Hello. Looking to get some {{drug}}, can  you hook me up?"
+                ]
+            },
+            "offer": {
+                "broke": [
+                    "{{qty}}x then. ${{price}} each, ${{total}} all in. thats everything i got",
+                    "ok so {{qty}}. ${{price}} a piece is my limit, ${{total}}. workable?",
+                    "i want {{qty}}. ${{price}} each is all i can scrape together",
+                    "{{qty}} is what i need. ${{price}} each, ${{total}}. thats the whole jar",
+                    "look. {{qty}}x at ${{price}}. ${{total}} and im cleaned out",
+                    "can do {{qty}} at ${{price}} each. ${{total}}. thats everything in the account"
+                ],
+                "cheap": [
+                    "{{qty}}x. ${{price}} each, ${{total}} total. thats what im paying",
+                    "ill take {{qty}} at ${{price}} a piece. ${{total}}. dont squeeze me",
+                    "{{qty}} of them, ${{price}} each. thats ${{total}}. sound alright?",
+                    "{{qty}}x, ${{price}} a piece. ${{total}}. take it or ill find someone",
+                    "${{price}} each for {{qty}}. ${{total}}. thats market and u know it",
+                    "{{qty}} at ${{price}}. ${{total}} total. no games"
+                ],
+                "rushed": [
+                    "{{qty}}x, ${{price}} each, ${{total}}. quick yes or no",
+                    "ill take {{qty}} at ${{price}}. ${{total}} total. im in a hurry",
+                    "{{qty}}. ${{price}} a piece, ${{total}}. we doing this or not",
+                    "{{qty}} at ${{price}}. ${{total}}. answer",
+                    "${{price}} each, {{qty}} of them, ${{total}}. clocks running",
+                    "{{qty}}x ${{price}}. ${{total}}. yes or im gone"
+                ],
+                "regular": [
+                    "cool. {{qty}}x at ${{price}} each, ${{total}} total. that fair?",
+                    "ill take {{qty}}. offering ${{price}} a piece, ${{total}} all in",
+                    "{{qty}} of them at ${{price}} each. ${{total}}. we good?",
+                    "{{qty}} at ${{price}} each works for me. ${{total}} all in",
+                    "how about {{qty}}x, ${{price}} a piece. ${{total}}",
+                    "ill do {{qty}} at ${{price}}. thats ${{total}}, sound right?"
+                ],
+                "rich": [
+                    "{{qty}} units at ${{price}} each. ${{total}} total. I pay well for the real thing.",
+                    "I'll take {{qty}}. ${{price}} per unit, ${{total}}. The quality had better match the listing.",
+                    "{{qty}}x at ${{price}} each. ${{total}}. I can be generous if this goes smoothly.",
+                    "{{qty}} at ${{price}}. ${{total}}. I don't waste time on small orders.",
+                    "I'll take {{qty}} units, ${{price}} each. ${{total}} on delivery.",
+                    "{{qty}}x at ${{price}} per unit. ${{total}}. Straightforward, I hope."
+                ]
+            },
+            "counter": {
+                "broke": [
+                    "i can do ${{price}}. thats money i needed for other things",
+                    "${{price}} each. push further and im just out",
+                    "ok ${{price}}. thats scraping the bottom",
+                    "${{price}}. i checked twice, thats what i have",
+                    "ill do ${{price}} each. thats borrowed money already",
+                    "${{price}} a piece and im eating cereal all week"
+                ],
+                "cheap": [
+                    "${{price}} each. thats me being generous already",
+                    "ill go ${{price}}. dont push it",
+                    "fine, ${{price}} a piece. thats a stretch",
+                    "${{price}}. thats my number",
+                    "${{price}} each. i know what this stuff goes for",
+                    "ill pay ${{price}}. not a dollar over"
+                ],
+                "rushed": [
+                    "${{price}} each. can we move now",
+                    "ok ${{price}}. im literally waiting on u",
+                    "${{price}} a piece. done. lets go",
+                    "${{price}}. deal?",
+                    "${{price}} each, im already driving",
+                    "fine. ${{price}}. say yes"
+                ],
+                "regular": [
+                    "i can stretch to ${{price}} each",
+                    "${{price}} a piece. meet me there",
+                    "alright, ${{price}} each. thats me coming to u",
+                    "${{price}} each and im happy",
+                    "ill meet u at ${{price}} a piece",
+                    "how about ${{price}} each, call it done"
+                ],
+                "rich": [
+                    "${{price}} per unit. A reasonable step up.",
+                    "I can do ${{price}} each. I don't haggle for sport.",
+                    "${{price}} a unit. Let's not drag this out.",
+                    "${{price}} per unit. That's a fair step.",
+                    "I'll go ${{price}}. I value my time more than the difference.",
+                    "${{price}} each. Let's close this."
+                ]
+            },
+            "agreed": {
+                "broke": [
+                    "yes. ok. thank u seriously",
+                    "deal. u dont know how bad i needed this",
+                    "ok cool. im in",
+                    "yes. thank u bro, genuinely",
+                    "deal. u just saved my week",
+                    "ok. done. appreciate u"
+                ],
+                "cheap": [
+                    "aight, deal",
+                    "cool. thats settled",
+                    "yeah alright. done",
+                    "fine. deal",
+                    "done. thats fair enough",
+                    "yeah alright, thats a deal"
+                ],
+                "rushed": [
+                    "good. done",
+                    "yes. finally",
+                    "deal. moving now",
+                    "yes. lets go",
+                    "done. moving",
+                    "deal. now"
+                ],
+                "regular": [
+                    "bet. deal",
+                    "aight, thats a deal",
+                    "cool, locked in",
+                    "yeah thats a deal",
+                    "sweet, done",
+                    "works for me. deal"
+                ],
+                "rich": [
+                    "We have a deal",
+                    "Yeah",
+                    "Excellent",
+                    "Settled.",
+                    "Good. We're agreed",
+                    "Done. I appreciate a clean negotiation"
+                ]
+            },
+            "counter_accepted": {
+                "broke": [
+                    "${{price}} it is. thats me cleaned out but ok",
+                    "fine, ${{price}}. deal",
+                    "ok ${{price}} each. done",
+                    "${{price}} ok. that works",
+                    "deal at ${{price}}. thanks for working with me",
+                    "${{price}} each. thanks"
+                ],
+                "cheap": [
+                    "ugh. fine, ${{price}}. deal",
+                    "${{price}} each then. done",
+                    "aight ${{price}}. u drive a hard bargain",
+                    "${{price}}. fine",
+                    "alright, ${{price}}. thats better"
+                ],
+                "rushed": [
+                    "${{price}}, fine!",
+                    "yes ${{price}}, I can do that",
+                    "${{price}} each. lets move",
+                    "okay ${{price}} it is then",
+                    "done! ${{price}}, be quick with it",
+                    "${{price}} each, fine, be quick"
+                ],
+                "regular": [
+                    "aight ${{price}} each, deal",
+                    "${{price}} works, done",
+                    "cool, ${{price}} a piece",
+                    "${{price}} each, thats fine by me",
+                    "yeah ok, ${{price}}",
+                    "${{price}} is fine. lets do it"
+                ],
+                "rich": [
+                    "${{price}} per unit. Agreed",
+                    "Fine. ${{price}} each. We have a deal",
+                    "${{price}}. Done",
+                    "${{price}}. Lets do this",
+                    "Very good. ${{price}} each",
+                    "${{price}} each. We're agreed"
+                ]
+            },
+            "declined": {
+                "broke": [
+                    "figures. worth a shot",
+                    "yeah ok. couldnt afford u anyway",
+                    "aight. maybe when your prices are better",
+                    "yeah i figured",
+                    "worth a try"
+                ],
+                "cheap": [
+                    "whatever. ur loss",
+                    "fine. someone else will do it cheaper",
+                    "aight then",
+                    "ur loss",
+                    "whatever, you scammer"
+                ],
+                "rushed": [
+                    "are u serious. wasted my time",
+                    "fuck off",
+                    "great. thanks for nothing",
+                    "waste of time",
+                    "i found someone else anyway"
+                ],
+                "regular": [
+                    "all good. hit me another time",
+                    "no worries. later",
+                    "aight, ill look elsewhere",
+                    "all good, another time",
+                    "all good man, take care"
+                ],
+                "rich": [
+                    "Disappointing...",
+                    "Unfortunate. I'll find someone else",
+                    "Shame",
+                    "That's a shame.",
+                    "Another time then"
+                ]
+            },
+            "walked": {
+                "broke": [
+                    "im done. i cant reach ur prices",
+                    "forget it. this was never gonna work",
+                    "yeah nah",
+                    "nah im tripping, im dead broke lol, cant afford ur shit",
+                    "cant keep going back and forth over money i dont have"
+                ],
+                "cheap": [
+                    "nah ur robbing people. im out",
+                    "forget it, ur greedy",
+                    "done wasting my time",
+                    "nah, lower your prices fam",
+                    "aint paying tourist prices, who u think i am"
+                ],
+                "rushed": [
+                    "thats it, im done",
+                    "nah, finding someone faster AND cheaper",
+                    "forget it",
+                    "no time for this",
+                    "done talking. bye"
+                ],
+                "regular": [
+                    "nah man, ur tripping on price. im out",
+                    "forget it, too pricey for me",
+                    "cant do business like this",
+                    "this isnt going anywhere. later",
+                    "nahhhhh, im done"
+                ],
+                "rich": [
+                    "I'm not being scammed, bye.",
+                    "This stopped being worth my time",
+                    "No, I'm not getting scammed like this again.",
+                    "I decline to be haggled at. Goodbye.",
+                    "We're wasting each other's time."
+                ]
+            },
+            "expired": [
+                "guess you're busy. found another plug",
+                "no answer. i'm good elsewhere",
+                "you left me hanging. deal off",
+                "took too long. moved on",
+                "you went quiet. handled it elsewhere",
+                "waited long enough. done",
+                "nothing back from you. moving on",
+                "found someone else."
+            ],
+            "buyer_cancel": [
+                "something came up. forget the deal",
+                "can't do this today. i'm out",
+                "plans changed. deal off",
+                "i have to go. another time maybe",
+                "not feeling this one. forget it",
+                "changed my mind. don't come",
+                "sorry. can't make it happen today"
+            ],
+            "complete": {
+                "broke": [
+                    "got it. u dont know what this means, thank u",
+                    "received. appreciate u working with me",
+                    "all good. ill remember this",
+                    "got it. thank u man",
+                    "all here. thanks for the deal",
+                    "picked up. thanks for not scamming me"
+                ],
+                "cheap": [
+                    "got it",
+                    "nice, ty",
+                    "all good on my end",
+                    "thanks",
+                    "all there, thanks for the deal",
+                    "thanks for the deal"
+                ],
+                "rushed": [
+                    "got it",
+                    "received, ty",
+                    "picked up. thanks",
+                    "got it. bye",
+                    "have it, im out",
+                    "collected. good"
+                ],
+                "regular": [
+                    "got it, pleasure doing business",
+                    "received, ima try it soon",
+                    "all good. stay safe out there",
+                    "got it, appreciate u",
+                    "all good, nice doing this",
+                    "picked up, thanks bro"
+                ],
+                "rich": [
+                    "Received. I'll be in touch",
+                    "Excellent. Thank you for the deal",
+                    "Got it. Thanks again!",
+                    "Collected. Looks good so far, can't wait to try it.",
+                    "Have it. We'll do this again.",
+                    "Received. Good business."
+                ]
+            },
+            "proposal": {
+                "npc": [
+                    "im at {{location}} with the cash. you have {{minutes}} minutes to get it to me",
+                    "bring it to {{location}}. I'm waiting, i gotta go in {{minutes}} minutes so be quick",
+                    "{{location}}. hand it to me and i'll pay on the spot. {{minutes}} minutes is all you get",
+                    "meet me at {{location}}. you have {{minutes}} minutes, I wont be there if ur late",
+                    "bring it to me, you have {{minutes}} minutes.",
+                    "i'll be waiting at {{location}} for {{minutes}} minutes. don't leave me standing there"
+                ],
+                "deaddrop": [
+                    "leave it at {{location}} and walk off. you have {{minutes}} minutes to get it there",
+                    "drop it at {{location}} within {{minutes}} minutes. money hits your app once i collect",
+                    "you got {{minutes}} minutes to stash it here",
+                    "put it down at {{location}}. cant take longer than {{minutes}} minutes, i need it by then",
+                    "you have {{minutes}} minutes to get it to {{location}}. leave it and go, don't hang around",
+                    "drop it at {{location}}. i need it in max {{minutes}} minutes, don't be slow"
+                ]
+            },
+            "delivery_go": {
+                "npc": [
+                    "im there now. don't leave me standing around",
+                    "go, be quick",
+                    "im waiting, make it quick",
+                    "im out there now",
+                    "hurry up. im waiting on you"
+                ],
+                "deaddrop": [
+                    "drop it and go. money comes after i get it",
+                    "leave it clean. nobody's watching",
+                    "get it there and leave. i'll handle the rest",
+                    "drop it and get away",
+                    "leave it clean, i'll do the rest"
+                ]
+            },
+            "running_low": [
+                "clock's ticking on this one. are you close?",
+                "how long? i can't sit at {{location}} all night",
+                "give me a sign you're moving. i'm not waiting forever",
+                "starting to think you're not coming. {{location}}, yeah?",
+                "are you moving or not? i don't have long",
+                "i'll have to go soon",
+                "{{location}}. still here, not for much longer",
+                "how's it looking? clock's nearly up"
+            ],
+            "late_cancel": [
+                "done waiting. the deal is off, and your rating will show it",
+                "wasted my whole day. cancelled. one star",
+                "unreliable. i'm out, and people will hear about it",
+                "no. deal off. should have gone with a real plug",
+                "i'm gone. don't bother now",
+                "that's it, the deal is dead. thanks for nothing",
+                "left. your rating will say why"
+            ],
+            "filler": [
+                "hold on",
+                "one second",
+                "let me think",
+                "hmm",
+                "give me a second",
+                "wait",
+                "counting my cash",
+                "doing the math",
+                "hold up",
+                "one moment",
+                "hang on"
+            ],
+            "counter_hardball": [
+                "wrong move. it's ${{price}} each now",
+                "haggle again and it drops again. ${{price}}",
+                "no. ${{price}} a piece now. should have taken the first number",
+                "every push costs you. ${{price}} each",
+                "keep pushing and it keeps falling. ${{price}}",
+                "you squeezed, so now it's ${{price}} each",
+                "${{price}} now. that's what greed costs"
+            ],
+            "low_rating": [
+                "your rating is trash, by the way. nobody out here pays full market for a name like that",
+                "people talk. your stars are low, so don't expect market price from anyone",
+                "sort your rating out. stars that low and nobody pays what it's actually worth",
+                "your rep is the problem. low stars means low offers, that's just how it goes",
+                "i'd go higher if you were rated better. right now nobody will",
+                "your stars are why i'm lowballing, not the product",
+                "fix your rating and i'll pay real money"
+            ],
+            "good_quality": {
+                "regular": [
+                    "this {{drug}} is proper. way better than i expected",
+                    "quality on this is top shelf, appreciate it",
+                    "you looked after me on this one, thats the good {{drug}}",
+                    "this is worth more than i paid, hella good quality",
+                    "best {{drug}} ive had off anyone, ill defo be back",
+                    "you didnt have to give me the good stuff. respect",
+                    "thats the high grade shit right there"
+                ]
+            },
+            "poor_quality": {
+                "regular": [
+                    "quality on this {{drug}} is weak man, you know that",
+                    "this is low grade and you charged me full price",
+                    "paid good money and got bottom shelf {{drug}}",
+                    "this {{drug}} is cut to hell. not worth what i gave you",
+                    "thats barely worth half what i paid you",
+                    "you sold me the cheap stuff at the real price",
+                    "my grandma has stronger stuff and shes been dead six years",
+                    "i think you sold me your expired stock",
+                    "bro this {{drug}} is trash",
+                    "this taste like shit, even my local crackhead dont want it",
+                    "this in a bag and it still smell like shit",
+                    "this does not even look like {{drug}}",
+                    "i've had better out a bin behind the pharmacy",
+                    "the quality of this is trash homie ion even want this shit",
+                    "you charged me designer prices for ths shit",
+                    "genuinely might frame this as a warning to others, the quality's ass"
+                ]
+            },
+            "drop_ack": {
+                "broke": [
+                    "ok good. give me a bit, im walking",
+                    "appreciate it. ill get it as soon as i can",
+                    "got it. bit of a walk for me but ill be there",
+                    "aight. picking it up shortly",
+                    "ok. money will be with u once i have it in hand"
+                ],
+                "cheap": [
+                    "aight. ill swing by in a bit",
+                    "cool. grabbing it soon",
+                    "ok. dont worry about it, ill collect",
+                    "noted. ill be by shortly",
+                    "good. ill pick it up when im out that way"
+                ],
+                "rushed": [
+                    "finally. on my way now",
+                    "good. im close, grabbing it",
+                    "ok im moving. should be quick",
+                    "right. ill have it in a minute",
+                    "on it. dont hang around there"
+                ],
+                "regular": [
+                    "bet. ill grab it shortly",
+                    "aight. im heading over now",
+                    "perfect. picking it up in a bit",
+                    "appreciate it. ill collect it soon",
+                    "good looking. on my way over"
+                ],
+                "rich": [
+                    "Noted. Someone will collect shortly.",
+                    "Good. It'll be picked up soon.",
+                    "Understood. I'm on my way.",
+                    "Excellent. I'll have it collected.",
+                    "Very good. Won't be long."
+                ]
+            },
+            "counter_greedy": {
+                "broke": [
+                    "${{price}}?? im broke not stupid",
+                    "im poor, not an idiot. ${{price}} lmao",
+                    "ur trying to rob a man with no money",
+                    "${{price}} each. i dont have that in my whole account",
+                    "for {{drug}}? get outta here man"
+                ],
+                "cheap": [
+                    "${{price}}? fuck off lmao",
+                    "${{price}} each?? do i look like an atm",
+                    "lmao no. thats robbery with extra steps",
+                    "u smoking ur own product?",
+                    "${{price}}. for {{drug}}. absolute clown behavior",
+                    "thats not a price thats a scam"
+                ],
+                "rushed": [
+                    "${{price}}?? fuck off, im not paying tourist prices",
+                    "quit wasting my time with numbers like that",
+                    "are u serious rn. ${{price}}.",
+                    "no. and now ur annoying me",
+                    "i said hurry up not rob me"
+                ],
+                "regular": [
+                    "${{price}}? come on man, be serious",
+                    "thats double what its worth and u know it",
+                    "nah. u must think im new here",
+                    "${{price}} lmao. ill pretend i didnt see that",
+                    "dont insult me, i know what {{drug}} costs"
+                ],
+                "rich": [
+                    "I have money. That doesn't make me a mark.",
+                    "${{price}}? I pay well. I don't pay stupid.",
+                    "Cute. No.",
+                    "I can afford it. I'm simply not an idiot.",
+                    "You saw money and got excited, didn't you."
+                ]
+            },
+            "counter_bargain": {
+                "broke": [
+                    "${{price}}?? yes. yes before u think about it",
+                    "deal deal deal. thank u fr",
+                    "${{price}} each?! ur a lifesaver",
+                    "taking that before u change ur mind"
+                ],
+                "cheap": [
+                    "${{price}}? lmao done. easiest yes ever",
+                    "sold. ur terrible at this btw",
+                    "done. and im not telling u why im smiling",
+                    "${{price}} each. u sure? no dont answer. deal"
+                ],
+                "rushed": [
+                    "${{price}}? done, thats a steal, whatever, im late",
+                    "yes. instantly yes",
+                    "deal. not even haggling that, thats free money"
+                ],
+                "regular": [
+                    "${{price}}? man ur robbing urself. deal",
+                    "done. shouldve asked double honestly",
+                    "ok thats too cheap but im not arguing",
+                    "deal. learn ur prices tho, seriously"
+                ],
+                "rich": [
+                    "${{price}}? I'd have paid triple. Deal.",
+                    "Done. Painfully done.",
+                    "That was almost too easy. Deal.",
+                    "You undersold badly. I'm taking it anyway."
+                ]
+            },
+            "counter_refused": {
+                "broke": [
+                    "cant. im not haggling, i genuinely dont have that",
+                    "thats money i dont have. wish i did",
+                    "nah. thats outside whats in my pocket",
+                    "i literally cant. its not a tactic",
+                    "no chance. that money doesnt exist for me",
+                    "cant do it. im already at the bottom"
+                ],
+                "cheap": [
+                    "nah. not paying that",
+                    "thats too much, im not doing it",
+                    "pass. way over what i had in mind",
+                    "nah. not at that",
+                    "no. i know better than that",
+                    "thats a no. try again"
+                ],
+                "rushed": [
+                    "no. too much and im out of time",
+                    "nah. next",
+                    "not paying that. quit stalling",
+                    "no. wasting my time",
+                    "nah too much. hurry up",
+                    "no. next number or im out"
+                ],
+                "regular": [
+                    "thats over what i can do man",
+                    "nah, cant go there. sorry",
+                    "too steep. not gonna work",
+                    "cant do that price man",
+                    "nah thats a bit much for me",
+                    "sorry, thats over my head"
+                ],
+                "rich": [
+                    "No. I pay well. I don't get taken advantage of.",
+                    "That's beyond what I'm willing to spend.",
+                    "I have money. That doesn't mean I waste it.",
+                    "No. I know what this is worth.",
+                    "That isn't a serious number.",
+                    "No. Try again, or we're finished."
+                ]
+            },
+            "ask": {
+                "broke": [
+                    "i need {{qty}}. what are u charging? go easy, im broke",
+                    "{{qty}} of them. how much are u asking?",
+                    "how much for {{qty}}? tell me its cheap",
+                    "{{qty}}. whats it run me? be nice",
+                    "how much for {{qty}}, and be honest im broke",
+                    "{{qty}} of them. give me a number i can survive"
+                ],
+                "cheap": [
+                    "{{qty}}. whats ur price? dont try me",
+                    "how much u want for {{qty}}?",
+                    "gimme a number for {{qty}}. a sensible one",
+                    "{{qty}}. price? and dont insult me",
+                    "whats {{qty}} costing me",
+                    "give me a number for {{qty}}. a real one"
+                ],
+                "rushed": [
+                    "{{qty}}. price. now",
+                    "how much for {{qty}}? quick",
+                    "name ur price for {{qty}}, im not shopping around",
+                    "{{qty}}. how much. quick",
+                    "price for {{qty}}, im moving",
+                    "{{qty}}. number. go"
+                ],
+                "regular": [
+                    "ill take {{qty}}. what do u charge?",
+                    "{{qty}} of them. whats ur price?",
+                    "how much are u asking for {{qty}}?",
+                    "{{qty}}. what are u thinking price wise?",
+                    "how much would {{qty}} run me?",
+                    "{{qty}} of them. name a price"
+                ],
+                "rich": [
+                    "{{qty}} units. Name your price.",
+                    "I want {{qty}}. What are you asking per unit?",
+                    "Quote me for {{qty}}. I can be generous if it's fair.",
+                    "{{qty}}. What is your asking price?",
+                    "Quote {{qty}} for me. I don't barter much.",
+                    "{{qty}} units. Your number, please."
+                ]
+            },
+            "drop_missing": {
+                "broke": [
+                    "i went to {{location}} and theres NOTHING there. did u even drop it",
+                    "nothing at {{location}}. i saved up for this man",
+                    "theres nothing here. u played me",
+                    "theres nothing here man. i needed that",
+                    "{{location}} is empty. did u even drop it"
+                ],
+                "cheap": [
+                    "nothing at {{location}}. figures",
+                    "i checked {{location}} twice. empty. thanks for nothing",
+                    "no package. knew this was too good",
+                    "empty. u played me",
+                    "nothing at {{location}}. thats coming off ur rating"
+                ],
+                "rushed": [
+                    "im at {{location}} and its EMPTY. wasted my time",
+                    "nothing here. i drove all the way out for this",
+                    "empty. unbelievable",
+                    "nothing here. wasted trip",
+                    "{{location}}, empty. thanks for nothing"
+                ],
+                "regular": [
+                    "yo theres nothing at {{location}}. someone got there first?",
+                    "i checked {{location}}, no package. what happened",
+                    "nothing at the spot man. thats on u",
+                    "spots empty. somebody beat me to it?",
+                    "nothing at {{location}}. what happened"
+                ],
+                "rich": [
+                    "I went to {{location}}. There was nothing. I don't appreciate that.",
+                    "The drop was empty. Handle your business better.",
+                    "Nothing at {{location}}. This reflects poorly on you.",
+                    "I drove out to an empty spot. Explain.",
+                    "{{location}} was empty. I expect better."
+                ]
+            },
+            "paid": [
+                "sent ur money",
+                "thats paid, appreciate u",
+                "money sent. good doing business",
+                "sent it over",
+                "paid. dont spend it all at once"
+            ],
+            "contact_opener": {
+                "broke": [
+                    "yo its me again. u got {{drug}}? im short on cash as always",
+                    "hey. me again. any {{drug}} going? go easy on me",
+                    "its ur favorite broke customer. {{drug}}?",
+                    "yo. need {{drug}} again. wallet is crying but i need it"
+                ],
+                "cheap": [
+                    "me again. {{drug}}. same as last time, no funny prices",
+                    "yo. u got some {{drug}}? fair price this time",
+                    "its me. need {{drug}}. dont get greedy on a regular",
+                    "back again for {{drug}}. regulars get deals right?"
+                ],
+                "rushed": [
+                    "its me. {{drug}}. now?",
+                    "yo. {{drug}} again. quick one",
+                    "me. need {{drug}} asap",
+                    "u up? {{drug}}. in a hurry as usual"
+                ],
+                "regular": [
+                    "yo its me. u have {{drug}} rn?",
+                    "hey man, me again. got {{drug}}?",
+                    "whats good. need some {{drug}} again",
+                    "yo. same as usual? {{drug}}",
+                    "wyd, u got {{drug}}?"
+                ],
+                "rich": [
+                    "Hello again. Is there {{drug}} to be had?",
+                    "It's me. I'm restocking on {{drug}}.",
+                    "Good evening. Same order as before - {{drug}}.",
+                    "Me again. {{drug}}, if you're selling."
+                ]
+            },
+            "referral_opener": [
+                "yo. {{referrer}} gave me ur number, said ur the plug for {{drug}}. that true?",
+                "hey. friend of {{referrer}}. they said u dont mess around. looking for {{drug}}",
+                "{{referrer}} vouched for u. said u could sort me out with {{drug}}",
+                "sup. {{referrer}} sent me. need {{drug}} and they said ur solid",
+                "u dont know me but {{referrer}} does. said ur good for {{drug}}. one deal and if its clean im keeping ur number"
+            ],
+            "contact_request": {
+                "broke": [
+                    "yo that was solid. im {{name}} btw. can i save ur number? swear ill actually pay next time too",
+                    "ur alright man. names {{name}}. lemme keep ur contact? ill hit u up when im less broke",
+                    "im {{name}} by the way. can i save u? cheap AND reliable is rare"
+                ],
+                "cheap": [
+                    "decent deal for once. im {{name}}. mind if i save ur number?",
+                    "aight ur fair. names {{name}}. can i keep ur contact for next time?",
+                    "ill be honest, thats the best price ive had. im {{name}}. can i save u?"
+                ],
+                "rushed": [
+                    "fast. i like fast. im {{name}}. saving ur number, that cool?",
+                    "u dont waste time. names {{name}}. can i keep ur contact?",
+                    "quick and clean. im {{name}} btw. lemme save u for next time?"
+                ],
+                "regular": [
+                    "good doing business. im {{name}} btw. mind if i save ur number for next time?",
+                    "ur solid. names {{name}}. can i keep ur contact?",
+                    "smooth deal. im {{name}}. lemme save u, ill come straight to u next time",
+                    "they call me {{name}}. can i add u to my contacts? rather buy from someone i know"
+                ],
+                "rich": [
+                    "Quality service. The name is {{name}}. I'd like to keep your contact, if you don't object.",
+                    "I prefer a reliable supplier over shopping around. Call me {{name}}. May I save your number?",
+                    "That went well. I'm {{name}}. I'll keep your contact for future orders, agreed?"
+                ]
+            },
+            "contact_added": {
+                "broke": [
+                    "saved. ur my guy now",
+                    "done. ill hit u up when the money comes in",
+                    "sweet. talk soon"
+                ],
+                "cheap": [
+                    "saved. keep the prices fair and ill keep coming",
+                    "done. see u around",
+                    "good. ill be in touch"
+                ],
+                "rushed": [
+                    "saved. later",
+                    "done. gotta run",
+                    "good. ill message u"
+                ],
+                "regular": [
+                    "saved. ill hit u up",
+                    "bet. talk soon",
+                    "done. good to know a solid plug",
+                    "saved ur number. catch u later"
+                ],
+                "rich": [
+                    "Saved. Expect my business.",
+                    "Done. I'll be in touch.",
+                    "Excellent. Until next time."
+                ]
+            },
+            "contact_accept": [
+                "aight im in. ill take {{qty}}x at ${{price}}. ${{total}} total",
+                "yeah i want that. {{qty}} of them, ${{price}} each. ${{total}}",
+                "good timing. gimme {{qty}}x. ${{total}} at ur price",
+                "say less. {{qty}} at ${{price}} each. ${{total}} all in",
+                "deal. {{qty}}x {{drug}}, ${{total}} total"
+            ],
+            "contact_decline": [
+                "nah im good rn",
+                "not this time. money aint right",
+                "pass for now. hit me another day",
+                "nah. not at that price today",
+                "im sitting this one out",
+                "not right now man"
+            ],
+            "contact_later": [
+                "cant do it right now. bad timing",
+                "not today. things are hot",
+                "another time. right now is no good",
+                "cant move rn. later"
+            ],
+            "contact_neverbuys": [
+                "i hit U up when i need something. dont call me",
+                "nah. thats not how this works. i message first",
+                "dont push product on me. ill ask when i want it",
+                "u got my number backwards. I do the ordering"
+            ],
+            "contact_nag": [
+                "chill. i said ill hit u up",
+                "u just asked me. relax",
+                "stop blowing up my phone man",
+                "again? give it a rest",
+                "pushy much? ill ask when i want it"
+            ],
+            "contact_block": [
+                "im done with u. lose this number",
+                "thats it. dont contact me again",
+                "we're finished. deleting u",
+                "ur bad business. dont message me again"
+            ],
+            "contact_farewell": [
+                "im done with all this. going clean, for real this time. dont message this number",
+                "they got me. cops everywhere, im wiping this phone. u never knew me",
+                "leaving the city tonight. dont ask why. this number is dead in an hour",
+                "my girl found out about everything. im out. deleting everything, take care",
+                "lawyer says i gotta drop every contact i have. nothing personal. bye",
+                "checking into rehab tomorrow. cant have this number active. stay safe man",
+                "too much heat lately. burning this phone. if u see me around, u dont know me"
+            ]
+        },
+        "player_confirm": [
+            "yeah i got u. how much u need?",
+            "yeah i got it. how many?",
+            "still got some. what u after?",
+            "yeah thats live. how much u want?",
+            "in stock. say the number"
+        ],
+        "buyer_name_tags": [
+            "Big",
+            "Lil",
+            "Fat",
+            "Slim",
+            "Tiny",
+            "Tall",
+            "Stinky",
+            "Sweaty",
+            "Dirty",
+            "Greasy",
+            "Thicc",
+            "Angry",
+            "Mad",
+            "Crazy",
+            "Drunk",
+            "Loco",
+            "Wild",
+            "Grumpy",
+            "Quiet",
+            "Silent",
+            "Shaky",
+            "Chopped",
+            "Cooked",
+            "Old",
+            "Cute",
+            "Lucky",
+            "Broke",
+            "Cheap",
+            "Rich",
+            "Fast",
+            "Slow",
+            "Sleepy",
+            "Hungry",
+            "Sketchy",
+            "Loud",
+            "Clapped",
+            "Girthy",
+            "Black",
+            "White",
+            "Blue",
+            "Smooth",
+            "Clumsy",
+            "Not",
+            "Real",
+            "Bald",
+            "Ugly",
+            "Pretty"
+        ],
+        "buyer_name_names": [
+            "Tim",
+            "Boy",
+            "Diddler",
+            "Bozo",
+            "Gangsta",
+            "Tyrone",
+            "Tommy",
+            "Lucia",
+            "Cholo",
+            "Alien",
+            "Jason",
+            "Xing",
+            "Marco",
+            "Rico",
+            "Pablo",
+            "Diesel",
+            "Nacho",
+            "Gas",
+            "Chico",
+            "Vladimir",
+            "Omar",
+            "Kev",
+            "Ricky",
+            "Dwayne",
+            "Barbie",
+            "Princess",
+            "Moe",
+            "Ray",
+            "Snake",
+            "Tank",
+            "Bones",
+            "Pizza",
+            "Mechanic",
+            "Fingers",
+            "Pockets",
+            "Slice",
+            "Domino",
+            "Toe",
+            "Crackhead",
+            "Mouse",
+            "Dealer",
+            "Addict",
+            "Killer",
+            "Smoke",
+            "Rat",
+            "Kuz",
+            "Bobby",
+            "Officer",
+            "Dumbass",
+            "Officer",
+            "Nickel",
+            "Dime",
+            "Chains",
+            "Tooth",
+            "Trevor",
+            "Sanchez",
+            "Duke",
+            "Mike",
+            "Wolf"
+        ],
+        "payment_received": "Payment received: ${{total}}"
+    },
+    "street": {
+        "offer_prompt": "Offer product"
+    },
+    "corner": {
+        "blip": "Corner",
+        "post_prompt": "Post up",
+        "posted": "You're on the corner. Buyers will approach you",
+        "error": {
+            "invalid": "This corner is not available right now",
+            "too_far": "You are too far away",
+            "laying_low": "The block is too hot right now, nobody's buying",
+            "full": "Someone is already working this corner",
+            "no_drugs": "You have nothing left to sell here"
+        }
+    },
+    "drugs": {
+        "unknown_label": "Unsorted"
+    },
+    "delivery": {
+        "handover_prompt": "Hand over the goods",
+        "dropoff_prompt": "Drop package",
+        "blip": "Deal location",
+        "error": {
+            "no_items": "You are not carrying the goods for this deal",
+            "too_far": "You are too far away",
+            "invalid": "That deal is no longer valid",
+            "cannot_carry": "You can't carry that"
+        },
+        "pickup_prompt": "Take package",
+        "queued_payout": "Dead drop money came through while you were away: ${{total}}"
+    },
+    "org": {
+        "contact_prompt": "Talk",
+        "favour": {
+            "blip": "Favour target",
+            "blip_package": "Package drop-off",
+            "requested": "{{org}} has a task for you, they'll email the details shortly",
+            "requested_app": "{{org}} has a task for you, they'll contact you via the PLUG app shortly",
+            "drop_prompt": "Drop the package",
+            "error": {
+                "invalid": "Nothing to drop here",
+                "too_far": "You are too far away",
+                "no_items": "You don't have the package"
+            }
+        },
+        "error": {
+            "laying_low": "{{name}} is laying low right now and won't talk",
+            "laying_low_fallback": "The organisation",
+            "limit_reached": "This organisation does not accept more product at this time"
+        }
+    },
+    "fixer": {
+        "prompt": "Talk",
+        "unlocked": "You've unlocked {{org}}. Their location is now revealed and you can deal with them",
+        "error": {
+            "no_items": "You don't have enough items to pay"
+        }
+    },
+    "police": {
+        "blip": "Sting drop",
+        "no_access": "You have no access to this device"
+    },
+    "dispatch": {
+        "titles": [
+            "Suspicious Activity",
+            "Drug Dealing Reported"
+        ],
+        "messages": [
+            "Someone is offering drugs on the street",
+            "Someone is dealing drugs in the area",
+            "Drug dealer reported"
+        ]
+    },
+    "editor": {
+        "no_permission": "You don't have permission to do that",
+        "save_failed": "Saving failed"
+    },
+    "nui": {
+        "currency": "$",
+        "setup": {
+            "title": "Setup & imports",
+            "subtitle": "Run a data import to seed the resource",
+            "explain_1": "Imports are ready-made data packs that fill the resource's own tables for you: drugs, delivery drop-offs, corners, organizations and more. So you don't have to place every one by hand in the editor",
+            "explain_2": "Tick the packs you want and press Import",
+            "open": "Setup & imports",
+            "import": "Import",
+            "selected_count": "{{count}} selected",
+            "done": "Import ran",
+            "done_rows": "Import ran, {{rows}} rows affected",
+            "failed": "Import failed: {{error}}",
+            "close": "Close",
+            "empty": "No imports configured",
+            "empty_hint": "Add them in server/editable/setup.lua"
+        },
+        "handover": {
+            "title": "Select product type",
+            "hint": "{{count}}x {{drug}}",
+            "confirm": "Confirm",
+            "cancel": "Cancel"
+        },
+        "quality": {
+            "1": "Bad",
+            "2": "Poor",
+            "3": "Neutral",
+            "4": "Good",
+            "5": "Great"
+        },
+        "app": {
+            "title": "PLUG",
+            "loading": "Connecting...",
+            "nav_contacts": "Contacts",
+            "section_orgs": "Organisations",
+            "section_people": "Contacts",
+            "contact_buys_nothing": "Not buying anything right now",
+            "no_contacts": "No organisations yet",
+            "no_people": "No saved contacts yet",
+            "person": {
+                "deleted_name": "User Deleted",
+                "status_blocked": "Blocked",
+                "status_deleted": "Deleted",
+                "note_blocked": "You have been blocked",
+                "note_deleted": "This profile no longer exists",
+                "buys": "Interested in",
+                "message": "View conversation",
+                "start_offer": "Create offer",
+                "remove": "Delete contact",
+                "remove_confirm": "Tap again to confirm",
+                "offer_pick": "What are you offering",
+                "offer_price": "Your price",
+                "offer_send": "Send offer"
+            },
+            "contact_card": {
+                "title": "{{name}} wants to be added to your contacts",
+                "add": "Add",
+                "ignore": "Ignore"
+            },
+            "inbox": "Messages",
+            "market": "Street value",
+            "no_listings": "No product types available",
+            "no_threads": "No active conversations",
+            "accept": "Accept ${{price}}",
+            "counter": "Counter",
+            "decline": "Decline",
+            "accept_delivery": "Accept",
+            "mark_route": "Mark route",
+            "route_set": "Route set",
+            "state": {
+                "inquiry": "New",
+                "open": "Active",
+                "waiting": "Active",
+                "agreed": "Active",
+                "delivery": "Active",
+                "complete": "Completed",
+                "declined": "Declined",
+                "walked": "Declined",
+                "expired": "Expired",
+                "failed": "Expired",
+                "notice": "Declined"
+            },
+            "accept_plain": "Accept",
+            "per_unit": "Per unit",
+            "send_quote": "Send",
+            "nav_prices": "Prices",
+            "prices_hint": "Current market rates",
+            "no_prices": "Nothing on the market",
+            "sort_alpha": "A-Z",
+            "sort_price": "Price",
+            "sort_demand": "Demand",
+            "section_active": "Active Conversations",
+            "section_history": "Archived Conversations",
+            "standing_label": "Standing",
+            "standing": {
+                "1": "Bad",
+                "2": "Poor",
+                "3": "Neutral",
+                "4": "Good",
+                "5": "Great"
+            },
+            "contact_prices": "Prices",
+            "contact_batch": "{{size}} / batch",
+            "mail_title": "Mail",
+            "payment_title": "Payment Received",
+            "peek_new": "New message!",
+            "no_mail": "Inbox empty",
+            "no_threads_waiting": "No active conversations",
+            "nav_profile": "Profile",
+            "profile": {
+                "name_prefix": "Dealer",
+                "deals": "{{count}} completed deals",
+                "name": "Display name",
+                "picture": "Profile picture",
+                "save": "Save profile",
+                "name_blocked": "Pick a different name"
+            },
+            "listing": {
+                "none": "No active listing",
+                "active": "Active listing",
+                "posting": "Posting...",
+                "create": "Create listing",
+                "edit": "Edit",
+                "delete": "Delete",
+                "pick": "What are you selling",
+                "rating_needed": "{{stars}} needed",
+                "publish": "Post listing",
+                "save": "Save changes",
+                "just_now": "just now",
+                "minutes": "{{count}}m ago",
+                "hours": "{{count}}h ago",
+                "and": "and",
+                "intros": [
+                    "Back in stock and it's moving quick. Everything below is on hand right now, nothing on order.",
+                    "Fresh drop came in this morning, nothing sitting around getting old. Here's what's on the table.",
+                    "Restocked and sorted for the week. Quality speaks for itself, I don't need to oversell it.",
+                    "Open for business, same as always. If it's on this list I've got it on me right now.",
+                    "New batch landed and it's a good one. Took me long enough to get hold of, so it won't sit long.",
+                    "Got my hands on a proper load this time. More than I usually carry, so take advantage while it lasts.",
+                    "Everything below is ready to go, no waiting around. Straight swap, you turn up and we're done.",
+                    "Shelves are full again after a slow couple of days. Stocked up on the stuff people keep asking for.",
+                    "Just got resupplied, limited amounts on each. Hit me up!",
+                    "Working tonight and I got a fair bit stashed. Here's what I've got, prices are what they're worth.",
+                    "Sorted for the week, so take a look. Same quality as last time, same as the time before that.",
+                    "Straight off the boat, all of it. Not been sitting in someone's flat for a month like the other stuff going round."
+                ],
+                "outros": [
+                    "Hit me up. I'm around most of the night and I don't mess people about.",
+                    "Hit me up, but I don't do time wasters. If you're not ready to meet, don't message me.",
+                    "Message me and I'll sort you out. Quick and quiet, in and out, no hanging around.",
+                    "Serious buyers only. If you know what you want, say so and we'll get it done.",
+                    "First come, first served. I'm not holding anything for anyone, so don't ask me to.",
+                    "Say the word and it's yours. I'll come to you if you're not too far out.",
+                    "Quick meets only, I'm not standing about waiting. Message me when you're actually free.",
+                    "You know where to find me. Been doing this long enough that I don't need to advertise twice.",
+                    "Prices are fair so don't insult me.",
+                    "Hit me up before it's gone, because it will be. Everyone wants the same thing this week.",
+                    "In and out, no small talk. Turn up on time and you'll be dealing with me again.",
+                    "Message me. First time buyers welcome as long as you're not stupid about it."
+                ]
+            },
+            "nav_mail": "Mail"
+        },
+        "street": {
+            "title": "Offer price per unit",
+            "offer": "Offer",
+            "cancel": "Cancel",
+            "variants": "{{count}} grades"
+        },
+        "corner": {
+            "wants": "Got any {{drug}}?",
+            "accept": "Accept",
+            "other": "Offer another drug",
+            "decline": "Decline",
+            "no_requested": "You are not carrying any {{drug}}",
+            "no_other": "You are not carrying anything else to offer"
+        },
+        "classic": {
+            "brand": "PLUG",
+            "menu_inbox": "Inbox",
+            "menu_listings": "Listings",
+            "menu_prices": "Prices",
+            "menu_orgs": "Contacts",
+            "menu_mail": "Mail",
+            "standing": "Standing",
+            "no_mail": "No mail",
+            "archived": "Archived",
+            "each": "Per unit",
+            "no_orgs": "No organisations",
+            "section_orgs": "Organisations",
+            "section_people": "Contacts",
+            "no_people": "No saved contacts",
+            "person_deleted": "User Deleted",
+            "person_blocked": "Blocked",
+            "person_buys": "Buys",
+            "person_deals": "Deals",
+            "person_message": "Message",
+            "person_remove": "Delete",
+            "person_remove_confirm": "Sure?",
+            "offer_pick": "Offer product",
+            "offer_send": "Send offer",
+            "empty_inbox": "No messages",
+            "no_listings": "No product types available",
+            "accept": "Accept",
+            "decline": "Decline",
+            "counter": "Counter",
+            "quote": "Quote",
+            "send": "Send",
+            "back": "Back",
+            "route": "Mark route",
+            "route_set": "Route set",
+            "me": "ME",
+            "them": "BUYER",
+            "select": "Select",
+            "listed": "LISTED",
+            "unlisted": "NO LISTING",
+            "no_listing": "No listings",
+            "create_listing": "Create",
+            "edit_listing": "Edit",
+            "delete_listing": "Delete",
+            "pick_drugs": "Select product",
+            "publish_listing": "Post listing",
+            "save_listing": "Save changes",
+            "rating_needed": "{{stars}}*+",
+            "just_now": "just now",
+            "minutes": "{{count}}m ago",
+            "hours": "{{count}}h ago"
+        },
+        "phone": {
+            "carrier": "KQTEL",
+            "notes": "Notes",
+            "settings": "Settings",
+            "done": "Done",
+            "note_placeholder": "Write something...",
+            "note_empty": "Empty note",
+            "no_notes": "No notes yet",
+            "wallpaper": "Wallpaper",
+            "brightness": "Brightness",
+            "notifications": "Notifications",
+            "sounds": "Sounds"
+        },
+        "police": {
+            "app_name": "Sting",
+            "heatmap_app_name": "Hotspots",
+            "tab_operation": "Sting",
+            "tab_hotspots": "Hotspots",
+            "heatmap_title": "Dealing hotspots",
+            "heatmap_subtitle": "Recent reported activity",
+            "heatmap_legend_low": "Low",
+            "heatmap_legend_high": "High",
+            "unit": "LSPD",
+            "division": "Narcotics division",
+            "status_label": "Status",
+            "site_index": "Site {{index}}",
+            "last_attempt": "Last attempt",
+            "clearance": "Clearance",
+            "clearance_control": "Full control",
+            "clearance_view": "View only",
+            "booting": "Connecting...",
+            "denied_title": "Access denied",
+            "denied_body": "Authorized LSPD personnel only",
+            "no_operation": "No active operation",
+            "no_operation_hint": "Pose as a buyer and catch the seller at the drop",
+            "view_only": "View only. Your rank cannot run operations",
+            "start_operation": "Start operation",
+            "choose_site": "Choose a drop site",
+            "select": "Select",
+            "cancel": "Cancel",
+            "site": "Drop site",
+            "initiated_by": "Initiated by",
+            "initiated_at": "Initiated at",
+            "choose_drug": "Choose decoy product",
+            "retry": {
+                "declined": "The target declined. Choose a new target",
+                "expired": "No response from the target. Choose a new target",
+                "dark": "The target went offline. Choose a new target",
+                "noshow": "The target never delivered. Choose a new target"
+            },
+            "targets": "Potential targets",
+            "no_targets": "No dealers active right now",
+            "rating": "PLUG Rating",
+            "busy": "In an operation",
+            "start_failed": "Could not set that up. Try again",
+            "target": "Target",
+            "goods": "Goods",
+            "agreed_price": "Agreed",
+            "log": "Conversation",
+            "log_empty": "Nothing recorded yet",
+            "back": "Back",
+            "cooldown_label": "Cooldown",
+            "cooldown_notice": "Next operation available in {{minutes}} min",
+            "understaffed_label": "Force status",
+            "understaffed_notice": "Not enough Police Force is on duty",
+            "sender_target": "Target",
+            "sender_cover": "Undercover",
+            "sender_system": "System",
+            "mark_route": "Mark route",
+            "route_set": "Route set",
+            "terminate": "Terminate",
+            "confirm_terminate": "Terminate the operation?",
+            "clear": "Close file",
+            "state": {
+                "setup": "Awaiting target",
+                "pending": "Negotiating with the target",
+                "agreed": "Deal agreed",
+                "closed": "Operation closed"
+            },
+            "outcome": {
+                "cancelled": "Operation cancelled"
+            }
+        },
+        "org": {
+            "selling": "Selling",
+            "batch_sub": "batches of {{size}}",
+            "batch_count": "{{batches}} batches",
+            "batch_count_one": "1 batch",
+            "batch_units": "({{units}} units)",
+            "per_batch": "${{price}}/batch",
+            "all": "Max",
+            "estimate": "Payout",
+            "sell": "Sell",
+            "cancel": "Leave",
+            "favour": "Favour",
+            "favour_hint": "Ask if they have any work for you. Doing favours improves your standing",
+            "limit_reached": "This organisation does not accept more product at this time",
+            "favour_busy": "You've already got a job running",
+            "favour_cooldown": "Nothing for you right now, come back later",
+            "favour_inventory": "Free up your pockets first",
+            "favour_no_phone": "The organisation has no way to send you the details",
+            "favour_none": "Nothing for you right now"
+        },
+        "fixer": {
+            "title": "The Fixer",
+            "cost": "Cost",
+            "explainer": "Pay the buy-in once and {{name}} will trade with you in bulk. Their sell point shows on your map and their contact shows up in your phone",
+            "buy": "Pay",
+            "buying": "...",
+            "no_offers": "Nothing to offer you right now",
+            "leave": "Leave"
+        },
+        "placement": {
+            "key": {
+                "fly": "Fly",
+                "heading": "Heading",
+                "radius": "Radius",
+                "boost": "Fly faster",
+                "confirm": "Save",
+                "cancel": "Cancel",
+                "point": "Add point",
+                "remove_point": "Delete point",
+                "wipe": "Clear area",
+                "grab_point": "Move / insert point"
+            }
+        },
+        "editor": {
+            "resource": "Drug deals",
+            "title": "Admin Panel",
+            "credit": "Powered by",
+            "sort": {
+                "label": "Sort",
+                "updated": "Last updated",
+                "created": "Last created",
+                "name": "Name"
+            },
+            "tabs": {
+                "drugs": "Drugs",
+                "hotspots": "Hotspots",
+                "corners": "Corners",
+                "organizations": "Organizations",
+                "deliveries": "Locations",
+                "vehicles": "Favour Vehicles"
+            },
+            "create": {
+                "drugs": "New drug",
+                "hotspots": "New hotspot",
+                "corners": "New corner",
+                "organizations": "New organization",
+                "deliveries": "New delivery spot",
+                "vehicles": "New vehicle spot"
+            },
+            "list": {
+                "inactive": "Inactive",
+                "activate": "Activate",
+                "deactivate": "Deactivate",
+                "goto": "Go to",
+                "empty": "Nothing here yet"
+            },
+            "form": {
+                "save": "Save",
+                "cancel": "Back",
+                "delete": "Delete",
+                "delete_confirm": "Click again to confirm delete"
+            },
+            "coords": {
+                "not_set": "No position set",
+                "place": "Place with freecam"
+            },
+            "drug": {
+                "tab_general": "General",
+                "tab_pricing": "Pricing",
+                "label": "Name",
+                "label_placeholder": "Cocaine Baggy",
+                "item": "Item name",
+                "item_hint": "Must match the inventory item exactly",
+                "item_placeholder": "coke_baggy",
+                "street_section": "Street deals",
+                "street_section_hint": "Ambient NPCs approached on foot or from a car",
+                "app_section": "Phone app",
+                "app_section_hint": "Buyers who message the player through the Plug app",
+                "channel_street": "Sell on the street",
+                "channel_app": "Sell through the app",
+                "app_rating_toggle": "Require a PLUG rating",
+                "app_rating_desc": "Only dealers at or above a star rating can list this drug",
+                "app_rating": "Minimum rating (stars)",
+                "app_rating_hint": "Dealers below this rating can't put the drug on their listing",
+                "quantity": "Units per deal",
+                "quantity_to": "to",
+                "street_chance": "Sale chance at market price",
+                "street_chance_hint": "Sale odds when asking exactly market price",
+                "prop": "Hand-over prop",
+                "pricing_hint": "Market value behind every channel. Organisations pay their multiplier of it",
+                "base_price": "Price per unit ($)",
+                "use_meta": "Metadata based pricing",
+                "use_meta_desc": "Price per metadata step (purity, strain, ...)",
+                "meta_key": "Metadata key",
+                "meta_kind": "Step type",
+                "meta_steps_hint": "Items with missing metadata count as the \"Neutral\" grade step",
+                "satisfaction_note": "Phone buyers never ask for a grade. They all pay the price of the Neutral step, then judge whatever the player actually hands over: above Neutral earns rating and contact standing and gets praised, below it loses both and gets complained about. Leave a grade on Neutral and buyers pass it without comment",
+                "kind_range": "Range",
+                "kind_value": "Value",
+                "step_label": "Label",
+                "step_value": "Metadata value",
+                "step_min": "Min",
+                "step_max": "Max",
+                "step_price": "Price",
+                "step_satisfaction": "Satisfaction",
+                "add_step": "Add step",
+                "tab_channels": "Selling"
+            },
+            "hotspot": {
+                "name": "Name",
+                "name_placeholder": "Grove Street",
+                "area": "Area",
+                "place_title": "Draw hotspot area",
+                "approach_toggle": "Override willingness to talk",
+                "approach_label": "Chance to talk",
+                "approach_hint": "Overrides how often NPCs in this zone talk at all. Other modifiers still apply",
+                "draw": "Draw area",
+                "redraw": "Redraw area",
+                "drugs": "Drugs",
+                "no_drugs": "No drugs configured yet",
+                "price_multiplier": "Drug value multiplier",
+                "price_multiplier_hint": "Multiplies what the drug is worth to buyers here",
+                "price_effective": "Buyers here value it at ~${{price}}",
+                "chance_multiplier": "Successful sale rate",
+                "chance_multiplier_hint": "Extra rolls of the sale chance",
+                "chance_effective": "~{{percent}}% at market price",
+                "row_summary": "{{drugs}} drug(s)"
+            },
+            "org": {
+                "name": "Name",
+                "name_placeholder": "Vagos, Cartel, The Firm...",
+                "details": "Organization",
+                "place_title": "Place sell point",
+                "sell_spots": "Sell points",
+                "sell_spots_hint": "One is picked at random on every server start",
+                "add_sell_spot": "Add sell point",
+                "min_quantity": "Batch size",
+                "buyin_cash": "Cash ($, 0 = none)",
+                "buyin_no_drug": "No product hand-over",
+                "buyin_drug": "Product hand-over",
+                "buyin_drug_amount": "Units",
+                "fixer_spots": "Fixer spots",
+                "fixer_spots_hint": "One is picked at random on every server start",
+                "fixer_place_title": "Place fixer spot",
+                "add_fixer_spot": "Add fixer spot",
+                "no_fixer_warning": "Buy-in set but no fixer spots. Nobody can ever unlock this organisation",
+                "buys_hint": "Multiplier of market value, based on the player's standing",
+                "limits": "Sell limits",
+                "limits_enabled": "Limit how much they buy",
+                "limits_enabled_desc": "Caps how many batches the organisation accepts before it stops buying for a while",
+                "limits_per_player": "Per player",
+                "limits_per_player_desc": "Each player gets their own allowance instead of one shared pool",
+                "limits_max_batches": "Max batches",
+                "limits_max_batches_hint": "Batches accepted before the cooldown starts",
+                "limits_cooldown": "Cooldown (minutes)",
+                "limits_cooldown_hint": "How long they stop buying once the limit is hit",
+                "multiplier_min": "Bad",
+                "multiplier_mid": "Neutral",
+                "multiplier_max": "Great",
+                "description": "Description",
+                "description_placeholder": "Who they are, what they want...",
+                "enemies_hint": "Selling or doing favours for enemies drops standing for {{name}}",
+                "no_enemies": "No other organizations yet",
+                "no_drugs": "Create drugs first",
+                "jobs": "Job / gang restriction",
+                "jobs_desc": "Off = anyone may interact with this organization",
+                "jobs_hint": "Only players whose job or gang is listed see the organisation, its blip, its contact and its fixer",
+                "jobs_empty_warning": "No jobs or gangs listed. Nobody can reach this organisation while the restriction is on",
+                "jobs_name": "Job / gang name",
+                "jobs_placeholder": "cartel",
+                "jobs_grade": "Min. grade",
+                "add_job": "Add job / gang",
+                "reset_unlocks": "Reset unlocks for everyone",
+                "reset_unlocks_confirm": "Click again to confirm",
+                "reset_unlocks_hint": "Locks this organization again for every player who paid the buy-in",
+                "tab_general": "General",
+                "tab_access": "Unlocking",
+                "tab_trading": "Drugs",
+                "tab_limits": "Limits",
+                "tab_relations": "Relations",
+                "peds": "Ped models",
+                "boss_ped": "Boss (sell point contact)",
+                "member_peds": "Members",
+                "member_peds_hint": "The fixer and enemy favour targets",
+                "ped_choose": "Choose model...",
+                "ped_members_choose": "Choose members...",
+                "ped_custom": "Custom model",
+                "ped_custom_placeholder": "s_m_y_dealer_01...",
+                "ped_no_match": "No peds match",
+                "ped_modal_search": "Search models...",
+                "ped_custom_apply": "Use model",
+                "ped_select": "Select",
+                "unlock_public": "Public",
+                "unlock_public_desc": "On the map and in the app from the start",
+                "unlock_hidden": "Hidden",
+                "unlock_hidden_desc": "Anyone can trade, revealed after the first sale",
+                "unlock_buyin": "Buy-in",
+                "unlock_buyin_desc": "Paid entry at this organisation's fixer",
+                "unlock_closed": "Closed",
+                "unlock_closed_desc": "Unlocked only through script exports",
+                "closed_hint": "Another script has to unlock this organisation per player. See DOCS.md for the exports",
+                "enemies_hint_fallback": "this organisation",
+                "ped_invalid": "Model is invalid or not available on this game build",
+                "ped_checking": "Checking..."
+            },
+            "deliveryloc": {
+                "name": "Name",
+                "name_placeholder": "Legion Square Corner",
+                "type": "What this spot is used for",
+                "type_npc": "Buyer handover",
+                "type_npc_desc": "App sales to NPCs",
+                "type_deaddrop": "Sale dead drop",
+                "type_deaddrop_desc": "App sales deaddrop locations",
+                "position": "Position",
+                "place_title": "Place delivery spot",
+                "type_favour": "Favour location",
+                "type_favour_desc": "Organisation favours happen here. Drop-offs and targets"
+            },
+            "vehicleloc": {
+                "name": "Name",
+                "name_placeholder": "Elysian Island Dock",
+                "hint": "Vehicle destruction favours spawn the target vehicle here",
+                "position": "Position",
+                "place_title": "Place vehicle spot"
+            },
+            "corner": {
+                "police_warning": "Your job is police. Corners are hidden from police, you won't see their blips or prompts and can't test with this job active",
+                "tab_general": "General",
+                "tab_drugs": "Drugs",
+                "tab_access": "Access",
+                "hint": "Players post up inside the area and buyers walk up to them. The corner is only visible and functional for players carrying at least one street sellable drug",
+                "name": "Name",
+                "name_placeholder": "Grove Street corner",
+                "position": "Area",
+                "place_title": "Place corner",
+                "buyers": "Buyers",
+                "max_players": "Dealer slots",
+                "max_players_hint": "How many players can work this corner at once",
+                "interval": "Buyer interval (seconds)",
+                "interval_hint": "Approximate time between buyers, per player. (Treat this as an average, depends on how busy and walkable the area is for NPCs)",
+                "allow_vehicle": "Allow posting up in a vehicle",
+                "allow_vehicle_desc": "Drivers can work the corner from their car. Buyers walk up to the window for the deal",
+                "drugs": "Drugs asked for here",
+                "drugs_hint": "Buyers only ask for the ticked drugs. Players can still offer any street sellable drug. At least one is required",
+                "no_drugs": "No active drugs to pick from",
+                "check_all": "Check all",
+                "uncheck_all": "Uncheck all",
+                "different_chance": "Different drug sale chance",
+                "different_chance_hint": "Odds a buyer takes any other drug than the one they asked for, at market price. Overpricing lowers it further like any offer",
+                "jobs": "Restrict to jobs / gangs",
+                "jobs_desc": "Only players whose job or gang is listed can see and work this corner",
+                "jobs_hint": "Only players whose job or gang is listed see the corner, its blip and its prompt",
+                "jobs_empty_warning": "No jobs or gangs listed. Nobody can reach this corner while the restriction is on"
+            },
+            "market": {
+                "reset": "Reset this price back to base"
+            },
+            "validation": {
+                "incomplete": "Fill in the required fields",
+                "name": "A name is required",
+                "coords": "Place it on the map first",
+                "drug_label": "A display name is required",
+                "drug_item": "An inventory item name is required",
+                "drug_item_duplicate": "Item already used by \"{{name}}\". Two drugs on one item share their stock",
+                "quantity_missing": "Set both ends of the quantity range",
+                "quantity_order": "The lowest quantity cannot be above the highest",
+                "quantity_range": "Quantities must be between {{min}} and {{max}}",
+                "base_price": "A base price above 0 is required",
+                "base_price_range": "Base price must be between {{min}} and {{max}}",
+                "meta_key": "A metadata key is required",
+                "meta_steps_empty": "Metadata pricing needs at least one grade",
+                "meta_steps_too_many": "No more than {{max}} grades",
+                "step_label": "Grade {{step}} needs a label",
+                "step_price": "Grade \"{{step}}\" needs a price above 0",
+                "step_price_range": "Price for \"{{step}}\" must be between {{min}} and {{max}}",
+                "step_value": "Grade \"{{step}}\" needs a metadata value to match",
+                "step_value_duplicate": "Two grades both match \"{{value}}\". Only the first would ever price",
+                "step_range": "Grade \"{{step}}\" needs both a from and a to value",
+                "step_range_order": "Grade \"{{step}}\" has its from above its to",
+                "step_range_limits": "Grade \"{{step}}\" must stay between {{min}} and {{max}}",
+                "step_range_overlap": "Grades \"{{first}}\" and \"{{second}}\" overlap. Only the lower one would price",
+                "org_sell_spots": "Add and place at least one sell point",
+                "org_sell_too_many": "No more than {{max}} sell points",
+                "org_buyin_cash": "The buy-in cash cannot be negative",
+                "org_buyin_amount": "Set how many units the buy-in drug costs",
+                "org_fixer_unplaced": "Every fixer spot must be placed on the map",
+                "org_fixer_too_many": "No more than {{max}} fixer spots",
+                "org_multiplier": "Rate for \"{{name}}\" must be between {{min}}x and {{max}}x",
+                "org_drug_duplicate": "\"{{name}}\" is listed twice. Only the first entry would price",
+                "org_limit_batches": "Max batches must be between {{min}} and {{max}}",
+                "org_limit_cooldown": "Cooldown must be between {{min}} and {{max}} minutes",
+                "delivery_no_use": "Pick at least one use for this spot",
+                "hotspot_polygon": "Draw an area with at least {{min}} points",
+                "org_buyin_cost": "Set a cash or product cost for the buy-in",
+                "corner_max_players": "Dealer slots must be at least {{min}}",
+                "corner_interval": "Buyer interval must be between {{min}} and {{max}} seconds",
+                "corner_drugs": "Tick at least one drug"
+            }
+        },
+        "options": {
+            "max_reached": "Limit reached"
+        }
+    }
+}

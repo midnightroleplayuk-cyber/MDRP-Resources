@@ -1,0 +1,1970 @@
+{
+    "app": {
+        "name": "Plug",
+        "description": "Verkoop je waar op de PLUG markt. Snel, makkelijk en veilig",
+        "tags": "Zaken • Illegaal",
+        "police_name": "LSPD: Narcotics",
+        "police_description": "Zaakterminal van de narcotica-afdeling. Alleen bevoegd personeel",
+        "police_tags": "Politie • Beperkt",
+        "notification": {
+            "buyer_title": "Nieuw bericht",
+            "buyer_content": "{{name}} heeft je een bericht gestuurd",
+            "mail_title": "Nieuwe mail",
+            "mail_content": "{{name}} heeft je mail gestuurd"
+        },
+        "player_dropped": [
+            "hij ligt er",
+            "gedropt, is allemaal van jou",
+            "klaar, ligt er",
+            "precies neergelegd waar je m wou",
+            "pakketje ligt er",
+            "ligt op je te wachten"
+        ],
+        "player_accepted": [
+            "deal. ${{price}} per stuk",
+            "${{price}} per stuk dan",
+            "ja ${{price}} is goed. {{qty}}x, ${{total}}",
+            "ok ${{price}} per stuk",
+            "das een deal voor ${{price}}"
+        ],
+        "player_accepted_delivery": [
+            "ben onderweg",
+            "komt goed",
+            "ik rij er nu heen",
+            "zeg niks meer, ik ben al bezig",
+            "onderweg"
+        ],
+        "player_declined": [
+            "gaat niet gebeuren",
+            "nah, laat maar",
+            "niet voor die prijs, sorry",
+            "ik sla over",
+            "nah man, niet de moeite voor mij"
+        ],
+        "player_countered": [
+            "${{price}} per stuk",
+            "ik kan ${{price}} per stuk doen",
+            "${{price}} per stuk en het is van jou",
+            "${{price}} per stuk. {{qty}}x komt op ${{total}}",
+            "kom me tegemoet op ${{price}} per stuk",
+            "${{price}} per stuk. meer dan eerlijk"
+        ],
+        "contact_offer_sent": [
+            "yo. heb {{drug}} bij me. ${{price}} per stuk als je wil",
+            "heb nu {{drug}}. ${{price}} per stuk, interesse?",
+            "verse {{drug}} binnen. ${{price}} per stuk. koop je?",
+            "{{drug}} op voorraad. ${{price}} per stuk. wil je wat?",
+            "zit op een lading {{drug}}. ${{price}} per stuk, zeg het maar"
+        ],
+        "orgmail": {
+            "enemy": {
+                "subject": [
+                    "Nieuws reist snel",
+                    "We hebben dingen gehoord",
+                    "Over je recente handel",
+                    "Aan wiens kant sta je",
+                    "Wij houden een lijst bij",
+                    "Je hebt een fout gemaakt"
+                ],
+                "body": [
+                    "Het is ons ter ore gekomen. Je hebt handel gedraaid voor {{enemy}}.\n\nWij vergeten niet wie onze vijanden voedt. Denk daar maar eens over na.\n\n- {{org}}",
+                    "Iemand heeft je gezien met {{enemy}}. Dat is niet het gezelschap dat wij dulden.\n\nMaak er geen gewoonte van.\n\n- {{org}}",
+                    "Je hebt zaken gedaan met {{enemy}}. Wij weten het.\n\nElke krat die je hen geeft, kost je iets bij ons.\n\n- {{org}}",
+                    "We horen dat je de laatste tijd vriendelijk bent met {{enemy}}.\n\nHun vrienden krijgen onze prijzen niet. Aan jou de keuze.\n\n- {{org}}"
+                ]
+            },
+            "levelup": {
+                "2": {
+                    "subject": [
+                        "Kleine stappen",
+                        "We houden je in de gaten",
+                        "Wat speling",
+                        "Genoteerd",
+                        "Minder een probleem"
+                    ],
+                    "body": [
+                        "Je hebt je de laatste tijd nuttig gemaakt. We zijn niets vergeten, maar de bazen zijn bereid je iets minder hard uit te knijpen.\n\nGa zo door.\n\n- {{org}}",
+                        "De waar blijft binnenkomen en niemand heeft achter je aan hoeven zitten.\n\nDat koopt je wat speling. Een beetje.\n\n- {{org}}",
+                        "Je bent minder een probleem dan je was. Dat is een constatering, geen compliment.\n\nBekijk de tarieven.\n\n- {{org}}",
+                        "De bazen hebben gezien dat je komt opdagen. De tarieven zijn een fractie in jouw voordeel verschoven.\n\nVerspil het niet.\n\n- {{org}}"
+                    ]
+                },
+                "3": {
+                    "subject": [
+                        "We staan quitte",
+                        "Schone lei",
+                        "Vereffend",
+                        "Geen wrok",
+                        "Terug naar normaal"
+                    ],
+                    "body": [
+                        "Wat er tussen ons stond, beschouw het als vereffend.\n\nJij levert de waar, wij betalen eerlijk. Maak het niet ingewikkeld.\n\n- {{org}}",
+                        "De bazen hebben gesproken. Je staat quitte met ons. Normale tarieven, geen wrok.\n\nWat je vanaf hier opbouwt, is aan jou.\n\n- {{org}}",
+                        "Schone lei vanaf vandaag.\n\nJe krijgt dezelfde deal als ieder ander. Verdien iets beters als je dat wilt.\n\n- {{org}}",
+                        "Niemand houdt nog iets tegen je.\n\nDat is meer waard dan het tarief. Gebruik het.\n\n- {{org}}"
+                    ]
+                },
+                "4": {
+                    "subject": [
+                        "Je hebt iets verdiend",
+                        "Goede zaken",
+                        "De bazen hebben het gezien",
+                        "De moeite waard om te houden",
+                        "Je klimt op"
+                    ],
+                    "body": [
+                        "Je bent betrouwbaar geweest, en betrouwbaar is zeldzaam in dit vak.\n\nDe bazen willen je dichtbij houden. Je zult het zien in de cijfers.\n\n- {{org}}",
+                        "We houden van hoe je werkt. Stil, betrouwbaar, geen drama.\n\nZulke mensen worden hier beter betaald. Bekijk de tarieven.\n\n- {{org}}",
+                        "Je naam viel voor de verandering eens in positieve zin.\n\nDe tarieven zijn meegestegen.\n\n- {{org}}",
+                        "Je blijft komen opdagen, en de waar blijft wat je zei dat het was.\n\nDat is geld waard. Het zit nu in je tarieven.\n\n- {{org}}"
+                    ]
+                },
+                "5": {
+                    "subject": [
+                        "Familie",
+                        "Bovenaan de lijst",
+                        "Onaantastbaar",
+                        "Het beste dat wij iemand betalen",
+                        "Je bent er nu een van ons"
+                    ],
+                    "body": [
+                        "Er zijn weinig mensen die wij onaantastbaar noemen. Vanaf vandaag ben jij er een van.\n\nDe beste tarieven die wij iemand betalen. Laat ons er geen spijt van krijgen.\n\n- {{org}}",
+                        "Je naam viel gisteravond aan tafel. Niemand had een kwaad woord.\n\nWat je ook verkoopt, wij kopen als eerste, tegen de beste prijs die je zult vinden.\n\n- {{org}}",
+                        "Je bent nu een van ons. Topprijzen, geen vragen.\n\nHet betekent ook dat we verwachten dat je je ernaar gedraagt.\n\n- {{org}}",
+                        "Korte lijst. Jij staat erop.\n\nNiemand krijgt betere cijfers uit ons dan jij.\n\n- {{org}}"
+                    ]
+                }
+            },
+            "leveldown": {
+                "1": {
+                    "subject": [
+                        "Je bent klaar",
+                        "Laatste waarschuwing",
+                        "Schrootprijzen",
+                        "Dat was het dan",
+                        "Verwacht niet veel"
+                    ],
+                    "body": [
+                        "Wat er aan vertrouwen was, is weg.\n\nWe nemen je waar nog steeds aan. Tegen schrootprijzen. Verwacht geen warm welkom.\n\n- {{org}}",
+                        "De bazen zijn klaar met je.\n\nBodemprijzen tot je het goedmaakt, als dat al mogelijk is.\n\n- {{org}}",
+                        "Je hebt het verbrand. Alles.\n\nKom langs als je wilt, maar je krijgt wat we geven aan iedereen die we niet vertrouwen.\n\n- {{org}}",
+                        "Je weet hoe je hier bent beland.\n\nDe tarieven staan op de bodem. Ons geduld ook.\n\n- {{org}}"
+                    ]
+                },
+                "2": {
+                    "subject": [
+                        "Dun ijs",
+                        "Pas op je tellen",
+                        "De tarieven zijn verschoven",
+                        "Niet onder de indruk",
+                        "Beschouw dit als een waarschuwing"
+                    ],
+                    "body": [
+                        "Je begeeft je op dun ijs.\n\nDe tarieven zijn zojuist verslechterd. Ze blijven verslechteren als dit doorgaat.\n\n- {{org}}",
+                        "Keuzes hebben een prijs. De jouwe hebben je zojuist de onze gekost.\n\nBekijk de tarieven en denk na over waar dit heen gaat.\n\n- {{org}}",
+                        "De bazen stellen vragen over je. Dat is nooit goed.\n\nJe krijgt minder van ons tot ze ermee stoppen.\n\n- {{org}}",
+                        "We hebben vandaag een stap bij je vandaan gezet.\n\nNog een en je bent niemand voor ons.\n\n- {{org}}"
+                    ]
+                },
+                "3": {
+                    "subject": [
+                        "Word niet te gemakkelijk",
+                        "Genoteerd",
+                        "Terug naar standaard",
+                        "De gunsten stoppen hier",
+                        "Niets bijzonders"
+                    ],
+                    "body": [
+                        "Wat je aan goodwill had opgebouwd, heb je deels verspeeld.\n\nWe behandelen je weer als ieder ander van de straat.\n\n- {{org}}",
+                        "De voorkeursbehandeling is voorbij.\n\nStandaardtarieven vanaf nu. Verdien betere terug als het je iets kan schelen.\n\n- {{org}}",
+                        "Je bent nu gemiddeld voor ons. Dat is een val, geen belediging.\n\n- {{org}}",
+                        "We zijn vandaag gestopt met je gunsten te doen.\n\nNiets persoonlijks. Je verdiende ze gewoon niet meer.\n\n- {{org}}"
+                    ]
+                },
+                "4": {
+                    "subject": [
+                        "Je zakt af",
+                        "Een woordje",
+                        "Je deed het beter",
+                        "De bazen hebben het gezien",
+                        "Los het op"
+                    ],
+                    "body": [
+                        "Je stond bovenaan onze lijst. Stond.\n\nDe bazen zagen dingen die hen niet bevielen en de tarieven zijn meebewogen.\n\n- {{org}}",
+                        "Beschouw dit als een vriendelijke waarschuwing, want die heb je nog verdiend.\n\nJe zakt af. Zak niet verder.\n\n- {{org}}",
+                        "Er is iets veranderd bij je, en niet ten goede.\n\nJe cijfers zijn mee veranderd.\n\n- {{org}}",
+                        "We hadden je hoog zitten. Niet meer zo hoog.\n\nWord weer wie je was.\n\n- {{org}}"
+                    ]
+                }
+            },
+            "favour_package": {
+                "subject": [
+                    "Een kleine boodschap",
+                    "Er moet iets verplaatst worden",
+                    "Bezorgwerk",
+                    "Breng dit ergens heen",
+                    "Makkelijk geld"
+                ],
+                "body": [
+                    "Onze man heeft je een pakket gegeven. Het gaat naar {{location}}, je hebt {{minutes}} minuten.\n\nMaak het niet open. Kom niet te laat. Word niet gevolgd.\n\n- {{org}}",
+                    "Je hebt het pakket. {{location}}, {{minutes}} minuten.\n\nLeg het neer en loop weg alsof je er nooit was.\n\n- {{org}}",
+                    "Simpele klus. Het pakket gaat naar {{location}}.\n\nJe hebt {{minutes}} minuten voordat wij van het ergste uitgaan.\n\n- {{org}}",
+                    "Pakket naar {{location}}. {{minutes}} minuten op de klok.\n\nKaart staat hieronder. Zorg dat we niemand achter het pakket aan hoeven te sturen.\n\n- {{org}}"
+                ]
+            },
+            "favour_hit": {
+                "subject": [
+                    "Een probleem om op te lossen",
+                    "Iemand heeft gepraat",
+                    "Opruimklus",
+                    "Er viel een naam",
+                    "Hij moet stoppen"
+                ],
+                "body": [
+                    "Iemand is een probleem voor ons. Hij bevindt zich nu rond {{location}}.\n\nZorg dat hij binnen {{minutes}} minuten geen probleem meer is. Laat je niet zien.\n\n- {{org}}",
+                    "Er staat een man bij {{location}} die niemand zal missen.\n\n{{minutes}} minuten voordat hij verder trekt. Deze zullen we onthouden.\n\n- {{org}}",
+                    "Er zit een rat bij {{location}}.\n\nHandel het af zoals je wilt. Zolang het maar binnen {{minutes}} minuten gebeurt.\n\n- {{org}}",
+                    "{{location}}. Ons probleem staat daar.\n\n{{minutes}} minuten. Kaart staat hieronder.\n\n- {{org}}"
+                ]
+            },
+            "favour_vehicle": {
+                "subject": [
+                    "Auto vol waar moet weg",
+                    "Een auto moet verdwijnen",
+                    "Brandopdracht",
+                    "Los eindje op wielen",
+                    "Sloop het"
+                ],
+                "body": [
+                    "Er staat een auto bij {{location}} die moet ophouden te bestaan.\n\nSteek hem in brand, rij hem total loss, duw hem van een klif. {{minutes}} minuten.\n\n- {{org}}",
+                    "Een auto bij {{location}} is een los eindje.\n\nMaak er binnen {{minutes}} minuten schroot van en we staan quitte.\n\n- {{org}}",
+                    "Iemand heeft zijn wagen bij {{location}} laten staan.\n\nZou zonde zijn als er de komende {{minutes}} minuten iets mee gebeurt.\n\n- {{org}}",
+                    "{{location}}. Eén voertuig. {{minutes}} minuten.\n\nHoe maakt ons niet uit. Kaart staat hieronder.\n\n- {{org}}"
+                ]
+            },
+            "favour_done": {
+                "subject": [
+                    "Goed werk",
+                    "Het is dus gebeurd",
+                    "Genoteerd en gewaardeerd",
+                    "Schone klus",
+                    "We staan bij je in het krijt"
+                ],
+                "body": [
+                    "We hoorden dat het netjes is verlopen.\n\nDe bazen hebben het gezien. Je zult het merken aan hoe we je behandelen.\n\n- {{org}}",
+                    "De klus is geklaard en niemand stelt vragen.\n\nPrecies zoals wij het graag zien. We staan bij je in het krijt.\n\n- {{org}}",
+                    "Het bericht kwam terug. Goed werk.\n\nGa zo door en er gaan deuren open.\n\n- {{org}}",
+                    "Dat is afgehandeld. Geen rommel, geen namen.\n\nJe bent ons vandaag meer waard dan gisteren.\n\n- {{org}}"
+                ]
+            },
+            "favour_enemy": {
+                "subject": [
+                    "Je hebt een kant gekozen",
+                    "Dat was van ons",
+                    "We weten dat jij het was",
+                    "Verkeerde mensen, verkeerde klus",
+                    "Wij houden de boeken bij"
+                ],
+                "body": [
+                    "Dat was ons eigendom waar je aanzat, terwijl je het vuile werk van {{rival}} opknapte.\n\nWij vergeten geen gezichten. Pas op je tellen.\n\n- {{org}}",
+                    "Je hebt een klus op ons gedaan voor {{rival}} en dacht dat niemand het verband zou leggen.\n\nWij wel. Elke deur van ons is zojuist zwaarder geworden.\n\n- {{org}}",
+                    "Je hebt ons geschaad om {{rival}} te plezieren. Prima.\n\nZulke keuzes hebben een prijs, en wij houden de boeken bij.\n\n- {{org}}",
+                    "{{rival}} wees en jij bewoog. Tegen ons.\n\nOnthoud dat de volgende keer dat je iets van ons nodig hebt.\n\n- {{org}}"
+                ]
+            },
+            "favour_fail": {
+                "subject": [
+                    "Teleurstellend",
+                    "Dat is niet gebeurd",
+                    "Het is ons opgevallen",
+                    "Je zei ja",
+                    "Verspilde tijd"
+                ],
+                "body": [
+                    "De klus is niet geklaard.\n\nZulke kansen delen wij geen twee keer op rij uit. Onthoud wiens tijd je hebt verspild.\n\n- {{org}}",
+                    "We vroegen om één ding. Het is nog steeds niet gedaan, en nu is het te laat.\n\nDe bazen zullen het onthouden.\n\n- {{org}}",
+                    "Je zei ja en vervolgens gebeurde er niets.\n\nDat kost je iets bij ons.\n\n- {{org}}",
+                    "De deadline kwam en ging.\n\nDe volgende keer geven we het werk aan iemand die het afmaakt.\n\n- {{org}}"
+                ]
+            }
+        },
+        "thread_failed": {
+            "no_location": "De koper had geen veilige plek om af te spreken. Deal gaat niet door.",
+            "stolen": "Het pakket was weg toen de koper aankwam."
+        },
+        "templates": {
+            "opener": {
+                "broke": [
+                    "yo staat je {{drug}} advertentie nog online?",
+                    "zag je pagina voor {{drug}}. heb je nog?",
+                    "doe je nog {{drug}}? ff eerlijk, ik zit krap",
+                    "{{drug}}, loopt dat nog? kan niet veel uitgeven trouwens",
+                    "yo. {{drug}}. kan niet veel betalen maar ik verspil je tijd niet",
+                    "ben je er nog? heb {{drug}} nodig maar ik leef van centen",
+                    "hey, {{drug}} nog te doen? moet je waarschuwen, ik zit deze week krap"
+                ],
+                "cheap": [
+                    "yo zag je {{drug}} advertentie. nog wat over?",
+                    "{{drug}} nog beschikbaar of is die pagina dood",
+                    "sup. je advertentie zegt {{drug}}. nog goed?",
+                    "heb je nog {{drug}}?",
+                    "{{drug}}. nog op voorraad? en wat kost me dat",
+                    "yo zag de {{drug}} post. loopt ie nog of niet",
+                    "ben jij degene die {{drug}} verkoopt? nog voorraad?"
+                ],
+                "rushed": [
+                    "{{drug}}. heb je het nu?",
+                    "zag je advertentie. {{drug}} op voorraad? moet het snel weten",
+                    "heb je {{drug}} of moet ik verder zoeken",
+                    "je pagina zegt {{drug}}. klopt dat nog?",
+                    "{{drug}}. nu. heb je het of niet",
+                    "heb vanavond {{drug}} nodig. lukt dat?",
+                    "iemand zei dat jij {{drug}} verkoopt. klopt dat nog?"
+                ],
+                "regular": [
+                    "hey, zag je {{drug}} advertentie. nog beschikbaar?",
+                    "yo je pagina kwam voorbij voor {{drug}}. heb je voorraad?",
+                    "eyo. zoek {{drug}}, zag dat jij verkoopt",
+                    "hey man, heb je nog {{drug}} lopen?",
+                    "yo verkoop je nog {{drug}}?",
+                    "hey een maat van me stuurde je pagina voor {{drug}}. nog actief?",
+                    "gozer, heb je nu {{drug}} bij je?"
+                ],
+                "rich": [
+                    "Goedenavond. Is uw {{drug}} advertentie nog beschikbaar?",
+                    "Uw advertentie kwam boven toen ik zocht op {{drug}}. Nog op voorraad?",
+                    "Hallo. Ik ben geïnteresseerd in {{drug}}, als u het nog heeft.",
+                    "Zag uw advertentie. Is de {{drug}} nog beschikbaar?",
+                    "Goedenavond. Ik begrijp dat u {{drug}} heeft.",
+                    "Uw {{drug}} advertentie trok mijn aandacht. Verkoopt u nog?",
+                    "Hallo. Ik zoek wat {{drug}}, kunt u mij helpen?"
+                ]
+            },
+            "offer": {
+                "broke": [
+                    "{{qty}}x dan. ${{price}} per stuk, ${{total}} alles bij elkaar. das echt alles wat ik heb",
+                    "ok dus {{qty}}. ${{price}} per stuk is m'n max, ${{total}}. haalbaar?",
+                    "ik wil {{qty}}. ${{price}} per stuk is alles wat ik bij elkaar kan schrapen",
+                    "{{qty}} heb ik nodig. ${{price}} per stuk, ${{total}}. das de hele spaarpot",
+                    "kijk. {{qty}}x voor ${{price}}. ${{total}} en ik ben leeg",
+                    "kan {{qty}} doen voor ${{price}} per stuk. ${{total}}. das alles op de rekening"
+                ],
+                "cheap": [
+                    "{{qty}}x. ${{price}} per stuk, ${{total}} totaal. das wat ik betaal",
+                    "ik neem er {{qty}} voor ${{price}} per stuk. ${{total}}. ga me niet uitknijpen",
+                    "{{qty}} stuks, ${{price}} per stuk. das ${{total}}. klinkt goed?",
+                    "{{qty}}x, ${{price}} per stuk. ${{total}}. pak het of ik zoek iemand anders",
+                    "${{price}} per stuk voor {{qty}}. ${{total}}. das marktprijs en dat weet je",
+                    "{{qty}} voor ${{price}}. ${{total}} totaal. geen spelletjes"
+                ],
+                "rushed": [
+                    "{{qty}}x, ${{price}} per stuk, ${{total}}. snel ja of nee",
+                    "ik neem {{qty}} voor ${{price}}. ${{total}} totaal. heb haast",
+                    "{{qty}}. ${{price}} per stuk, ${{total}}. doen we dit of niet",
+                    "{{qty}} voor ${{price}}. ${{total}}. antwoord",
+                    "${{price}} per stuk, {{qty}} stuks, ${{total}}. de klok tikt",
+                    "{{qty}}x ${{price}}. ${{total}}. ja of ik ben weg"
+                ],
+                "regular": [
+                    "chill. {{qty}}x voor ${{price}} per stuk, ${{total}} totaal. eerlijk toch?",
+                    "ik neem er {{qty}}. bied ${{price}} per stuk, ${{total}} alles bij elkaar",
+                    "{{qty}} stuks voor ${{price}} per stuk. ${{total}}. deal?",
+                    "{{qty}} voor ${{price}} per stuk is prima voor mij. ${{total}} totaal",
+                    "wat dacht je van {{qty}}x, ${{price}} per stuk. ${{total}}",
+                    "ik doe {{qty}} voor ${{price}}. das ${{total}}, klopt dat?"
+                ],
+                "rich": [
+                    "{{qty}} stuks voor ${{price}} per stuk. ${{total}} totaal. Ik betaal goed voor het echte werk.",
+                    "Ik neem er {{qty}}. ${{price}} per stuk, ${{total}}. De kwaliteit kan maar beter kloppen met de advertentie.",
+                    "{{qty}}x voor ${{price}} per stuk. ${{total}}. Ik kan gul zijn als dit soepel verloopt.",
+                    "{{qty}} voor ${{price}}. ${{total}}. Ik verspil geen tijd aan kleine bestellingen.",
+                    "Ik neem {{qty}} stuks, ${{price}} per stuk. ${{total}} bij levering.",
+                    "{{qty}}x voor ${{price}} per stuk. ${{total}}. Zonder gedoe, hoop ik."
+                ]
+            },
+            "counter": {
+                "broke": [
+                    "ik kan ${{price}} doen. das geld dat ik voor andere dingen nodig had",
+                    "${{price}} per stuk. druk je verder en ik ben gwn weg",
+                    "ok ${{price}}. das echt de bodem",
+                    "${{price}}. twee keer geteld, das wat ik heb",
+                    "ik doe ${{price}} per stuk. das al geleend geld",
+                    "${{price}} per stuk en ik eet de hele week droog brood"
+                ],
+                "cheap": [
+                    "${{price}} per stuk. das al gul van me",
+                    "ik ga naar ${{price}}. push het niet",
+                    "vooruit, ${{price}} per stuk. das al veel gevraagd",
+                    "${{price}}. das mijn nummer",
+                    "${{price}} per stuk. ik weet wat dit spul kost",
+                    "ik betaal ${{price}}. geen dollar meer"
+                ],
+                "rushed": [
+                    "${{price}} per stuk. kunnen we nu opschieten",
+                    "ok ${{price}}. ik zit letterlijk op je te wachten",
+                    "${{price}} per stuk. klaar. gaan",
+                    "${{price}}. deal?",
+                    "${{price}} per stuk, ik rij al",
+                    "vooruit. ${{price}}. zeg ja"
+                ],
+                "regular": [
+                    "ik kan rekken tot ${{price}} per stuk",
+                    "${{price}} per stuk. zie je daar",
+                    "oke, ${{price}} per stuk. dan kom ik wel naar jou",
+                    "${{price}} per stuk en ik ben blij",
+                    "ik kom je tegemoet op ${{price}} per stuk",
+                    "wat dacht je van ${{price}} per stuk, klaar"
+                ],
+                "rich": [
+                    "${{price}} per stuk. Een redelijke stap omhoog.",
+                    "Ik kan ${{price}} per stuk doen. Ik afdingen niet voor de sport.",
+                    "${{price}} per stuk. Laten we dit niet rekken.",
+                    "${{price}} per stuk. Dat is een eerlijke stap.",
+                    "Ik ga naar ${{price}}. Mijn tijd is meer waard dan het verschil.",
+                    "${{price}} per stuk. Laten we dit afronden."
+                ]
+            },
+            "agreed": {
+                "broke": [
+                    "ja. ok. dankje serieus",
+                    "deal. je weet niet hoe hard ik dit nodig had",
+                    "ok chill. ik doe mee",
+                    "ja. dankje bro, echt",
+                    "deal. je hebt m'n week gered",
+                    "ok. klaar. waardeer je"
+                ],
+                "cheap": [
+                    "aight, deal",
+                    "chill. das geregeld",
+                    "ja oke. klaar",
+                    "prima. deal",
+                    "klaar. das eerlijk genoeg",
+                    "ja oke, das een deal"
+                ],
+                "rushed": [
+                    "goed. klaar",
+                    "ja. eindelijk",
+                    "deal. ik ga nu",
+                    "ja. gaan",
+                    "klaar. onderweg",
+                    "deal. nu"
+                ],
+                "regular": [
+                    "is goed. deal",
+                    "aight, das een deal",
+                    "chill, staat vast",
+                    "ja das een deal",
+                    "nice, klaar",
+                    "prima voor mij. deal"
+                ],
+                "rich": [
+                    "We hebben een deal",
+                    "Ja",
+                    "Uitstekend",
+                    "Afgesproken.",
+                    "Goed. We zijn het eens",
+                    "Klaar. Ik waardeer een nette onderhandeling"
+                ]
+            },
+            "counter_accepted": {
+                "broke": [
+                    "${{price}} dan. dan ben ik leeg maar ok",
+                    "prima, ${{price}}. deal",
+                    "ok ${{price}} per stuk. klaar",
+                    "${{price}} ok. dat lukt",
+                    "deal voor ${{price}}. thanks dat je meedenkt",
+                    "${{price}} per stuk. thanks"
+                ],
+                "cheap": [
+                    "ugh. prima, ${{price}}. deal",
+                    "${{price}} per stuk dan. klaar",
+                    "aight ${{price}}. je onderhandelt hard",
+                    "${{price}}. prima",
+                    "oke, ${{price}}. das beter"
+                ],
+                "rushed": [
+                    "${{price}}, prima!",
+                    "ja ${{price}}, dat kan ik doen",
+                    "${{price}} per stuk. opschieten",
+                    "oke ${{price}} dan",
+                    "klaar! ${{price}}, wees er snel mee",
+                    "${{price}} per stuk, prima, snel dan"
+                ],
+                "regular": [
+                    "aight ${{price}} per stuk, deal",
+                    "${{price}} is goed, klaar",
+                    "chill, ${{price}} per stuk",
+                    "${{price}} per stuk, prima voor mij",
+                    "ja ok, ${{price}}",
+                    "${{price}} is prima. doen we"
+                ],
+                "rich": [
+                    "${{price}} per stuk. Akkoord",
+                    "Prima. ${{price}} per stuk. We hebben een deal",
+                    "${{price}}. Klaar",
+                    "${{price}}. Doen we",
+                    "Heel goed. ${{price}} per stuk",
+                    "${{price}} per stuk. We zijn het eens"
+                ]
+            },
+            "declined": {
+                "broke": [
+                    "dacht ik al. poging waard",
+                    "ja ok. kon je toch niet betalen",
+                    "aight. misschien als je prijzen beter zijn",
+                    "ja dat dacht ik al",
+                    "poging waard"
+                ],
+                "cheap": [
+                    "boeie. jouw verlies",
+                    "prima. iemand anders doet het goedkoper",
+                    "aight dan",
+                    "jouw verlies",
+                    "boeie, oplichter"
+                ],
+                "rushed": [
+                    "meen je dit. tijdverspilling",
+                    "rot op",
+                    "top. bedankt voor niks",
+                    "zonde van m'n tijd",
+                    "heb toch al iemand anders gevonden"
+                ],
+                "regular": [
+                    "al goed. app me een andere keer",
+                    "geen zorgen. later",
+                    "aight, ik kijk wel ergens anders",
+                    "al goed, andere keer",
+                    "al goed man, het beste"
+                ],
+                "rich": [
+                    "Teleurstellend...",
+                    "Jammer. Ik vind wel iemand anders",
+                    "Zonde",
+                    "Dat is jammer.",
+                    "Een andere keer dan"
+                ]
+            },
+            "walked": {
+                "broke": [
+                    "ik ben klaar. ik kan jouw prijzen niet aan",
+                    "vergeet het maar. dit ging nooit lukken",
+                    "ja nee",
+                    "nah ik ben gek, ik ben kk blut lol, kan je spul niet betalen",
+                    "kan niet blijven heen en weer gaan over geld dat ik niet heb"
+                ],
+                "cheap": [
+                    "nah je berooft mensen. ik ben weg",
+                    "vergeet het, gierigaard",
+                    "klaar met m'n tijd verspillen",
+                    "nah, doe je prijzen omlaag fam",
+                    "ik betaal geen toeristenprijzen, voor wie zie je me aan"
+                ],
+                "rushed": [
+                    "das het dan, ik ben klaar",
+                    "nah, ik zoek iemand die sneller EN goedkoper is",
+                    "vergeet het",
+                    "geen tijd voor dit",
+                    "klaar met praten. doei"
+                ],
+                "regular": [
+                    "nah man, je bent gek met die prijs. ik ben weg",
+                    "vergeet het, te prijzig voor mij",
+                    "zo kan ik geen zaken doen",
+                    "dit gaat nergens heen. later",
+                    "neeeee, ik ben klaar"
+                ],
+                "rich": [
+                    "Ik laat me niet oplichten, gedag.",
+                    "Dit is mijn tijd niet meer waard",
+                    "Nee, ik laat me niet nog eens zo oplichten.",
+                    "Ik weiger afgeperst te worden. Vaarwel.",
+                    "We verspillen elkaars tijd."
+                ]
+            },
+            "expired": [
+                "je hebt het zeker druk. andere plug gevonden",
+                "geen antwoord. ik zit ergens anders goed",
+                "je liet me hangen. deal gaat niet door",
+                "duurde te lang. doorgegaan",
+                "je werd stil. ergens anders geregeld",
+                "lang genoeg gewacht. klaar",
+                "niks van je gehoord. ik ga verder",
+                "iemand anders gevonden."
+            ],
+            "buyer_cancel": [
+                "er kwam iets tussen. vergeet de deal",
+                "kan vandaag niet. ik ben weg",
+                "plannen veranderd. deal gaat niet door",
+                "ik moet gaan. andere keer misschien",
+                "voel deze niet. vergeet het",
+                "bedacht me. kom niet",
+                "sorry. vandaag gaat het niet lukken"
+            ],
+            "complete": {
+                "broke": [
+                    "hebbes. je weet niet wat dit betekent, dankje",
+                    "ontvangen. waardeer dat je meedacht",
+                    "helemaal goed. ik onthou dit",
+                    "hebbes. dankje man",
+                    "alles binnen. thanks voor de deal",
+                    "opgehaald. thanks dat je me niet hebt opgelicht"
+                ],
+                "cheap": [
+                    "hebbes",
+                    "nice, ty",
+                    "alles goed aan mijn kant",
+                    "thanks",
+                    "alles compleet, thanks voor de deal",
+                    "thanks voor de deal"
+                ],
+                "rushed": [
+                    "hebbes",
+                    "ontvangen, ty",
+                    "opgehaald. thanks",
+                    "hebbes. doei",
+                    "heb het, ik ben weg",
+                    "binnen. goed"
+                ],
+                "regular": [
+                    "hebbes, goed zaken doen met je",
+                    "ontvangen, ga het zo proberen",
+                    "helemaal goed. hou je taai",
+                    "hebbes, waardeer je",
+                    "alles goed, mooi geregeld",
+                    "opgehaald, thanks bro"
+                ],
+                "rich": [
+                    "Ontvangen. Ik laat nog van me horen",
+                    "Uitstekend. Bedankt voor de deal",
+                    "Binnen. Nogmaals bedankt!",
+                    "Opgehaald. Ziet er goed uit, kan niet wachten om het te proberen.",
+                    "Heb het. Dit doen we nog eens.",
+                    "Ontvangen. Goede zaken."
+                ]
+            },
+            "proposal": {
+                "npc": [
+                    "ik sta bij {{location}} met het geld. je hebt {{minutes}} minuten om het te brengen",
+                    "breng het naar {{location}}. ik wacht, ik moet over {{minutes}} minuten weg dus schiet op",
+                    "{{location}}. geef het aan mij en ik betaal direct. {{minutes}} minuten, meer krijg je niet",
+                    "zie me bij {{location}}. je hebt {{minutes}} minuten, ik sta er niet meer als je te laat bent",
+                    "breng het naar me, je hebt {{minutes}} minuten.",
+                    "ik wacht {{minutes}} minuten bij {{location}}. laat me daar niet staan"
+                ],
+                "deaddrop": [
+                    "leg het bij {{location}} en loop door. je hebt {{minutes}} minuten om het er te krijgen",
+                    "drop het binnen {{minutes}} minuten bij {{location}}. geld komt op je app zodra ik het heb",
+                    "je hebt {{minutes}} minuten om het hier te stashen",
+                    "leg het neer bij {{location}}. mag niet langer dan {{minutes}} minuten duren, ik heb het dan nodig",
+                    "je hebt {{minutes}} minuten om het naar {{location}} te krijgen. leg neer en ga, blijf niet hangen",
+                    "drop het bij {{location}}. ik heb het binnen max {{minutes}} minuten nodig, wees niet traag"
+                ]
+            },
+            "delivery_go": {
+                "npc": [
+                    "ik sta er nu. laat me niet staan",
+                    "ga, snel",
+                    "ik wacht, maak het snel",
+                    "ik sta er nu buiten",
+                    "schiet op. ik wacht op je"
+                ],
+                "deaddrop": [
+                    "drop het en ga. geld komt zodra ik het heb",
+                    "leg het netjes neer. niemand kijkt",
+                    "breng het er en vertrek. ik regel de rest",
+                    "drop het en maak dat je wegkomt",
+                    "leg het netjes neer, ik doe de rest"
+                ]
+            },
+            "running_low": [
+                "de klok tikt op deze. ben je in de buurt?",
+                "hoe lang nog? ik kan niet de hele nacht bij {{location}} zitten",
+                "geef een teken dat je onderweg bent. ik wacht niet eeuwig",
+                "begin te denken dat je niet komt. {{location}}, toch?",
+                "ben je onderweg of niet? ik heb niet lang",
+                "ik moet zo weg",
+                "{{location}}. nog steeds hier, niet lang meer",
+                "hoe staat het ervoor? de tijd is bijna om"
+            ],
+            "late_cancel": [
+                "klaar met wachten. de deal is van tafel, en je rating gaat het laten zien",
+                "hele dag verspild. geannuleerd. één ster",
+                "onbetrouwbaar. ik ben weg, en mensen gaan het horen",
+                "nee. deal van tafel. had een echte plug moeten nemen",
+                "ik ben weg. hoef niet meer te komen",
+                "das het dan, de deal is dood. bedankt voor niks",
+                "vertrokken. je rating gaat vertellen waarom"
+            ],
+            "filler": [
+                "wacht ff",
+                "momentje",
+                "ff denken",
+                "hmm",
+                "geef me een seconde",
+                "wacht",
+                "ff checken",
+                "effe kijken",
+                "wacht even",
+                "één moment",
+                "ff geduld"
+            ],
+            "counter_hardball": [
+                "verkeerde zet. het is nu ${{price}} per stuk",
+                "nog een keer afdingen en hij zakt weer. ${{price}}",
+                "nee. ${{price}} per stuk nu. had het eerste bod moeten pakken",
+                "elke duw kost je wat. ${{price}} per stuk",
+                "blijf duwen en hij blijft zakken. ${{price}}",
+                "je kneep, dus nu is het ${{price}} per stuk",
+                "${{price}} nu. dat kost hebzucht"
+            ],
+            "low_rating": [
+                "je rating is trouwens ruk. niemand hier betaalt de volle marktprijs voor zo'n naam",
+                "mensen praten. je sterren zijn laag, dus verwacht van niemand marktprijs",
+                "fix je rating. met zulke lage sterren betaalt niemand wat het echt waard is",
+                "je rep is het probleem. lage sterren betekent lage biedingen, zo werkt het gwn",
+                "ik zou hoger gaan als je beter beoordeeld was. nu doet niemand dat",
+                "je sterren zijn waarom ik laag bied, niet het spul",
+                "fix je rating en ik betaal echt geld"
+            ],
+            "good_quality": {
+                "regular": [
+                    "deze {{drug}} is dik in orde. veel beter dan verwacht",
+                    "kwaliteit hiervan is topplank, waardeer het",
+                    "je hebt goed voor me gezorgd, dit is de goeie {{drug}}",
+                    "dit is meer waard dan ik betaald heb, kk goede kwaliteit",
+                    "beste {{drug}} die ik van iemand heb gehad, kom sws terug",
+                    "je hoefde me niet het goeie spul te geven. respect",
+                    "dit is dat high grade spul"
+                ]
+            },
+            "poor_quality": {
+                "regular": [
+                    "kwaliteit van deze {{drug}} is slap man, dat weet je zelf",
+                    "dit is laaggradig en je rekende me de volle prijs",
+                    "goed geld betaald en onderste plank {{drug}} gekregen",
+                    "deze {{drug}} is helemaal versneden. niet waard wat ik je gaf",
+                    "dit is amper de helft waard van wat ik betaalde",
+                    "je verkocht me het goedkope spul voor de echte prijs",
+                    "m'n oma heeft sterker spul en die is al zes jaar dood",
+                    "volgens mij heb je me je verlopen voorraad verkocht",
+                    "bro deze {{drug}} is ruk",
+                    "dit smaakt naar niks, zelfs de junk op de hoek wil het niet",
+                    "dit zit in een zakje en het ruikt alsnog naar stront",
+                    "dit lijkt niet eens op {{drug}}",
+                    "ik heb beter gehad uit een container achter de apotheek",
+                    "de kwaliteit hiervan is ruk homie ik wil dit niet eens",
+                    "je rekende designerprijzen voor deze troep",
+                    "ga dit serieus inlijsten als waarschuwing voor anderen, kwaliteit is echt ruk"
+                ]
+            },
+            "drop_ack": {
+                "broke": [
+                    "ok goed. geef me ff, ik loop",
+                    "waardeer het. ik pak het zo snel als ik kan",
+                    "hebbes. stukje lopen voor me maar ik kom",
+                    "aight. haal het zo op",
+                    "ok. geld komt zodra ik het in handen heb"
+                ],
+                "cheap": [
+                    "aight. ik kom zo langs",
+                    "chill. pak het zo",
+                    "ok. maak je geen zorgen, ik haal het op",
+                    "genoteerd. ben er zo",
+                    "goed. ik pak het op als ik die kant op ga"
+                ],
+                "rushed": [
+                    "eindelijk. onderweg nu",
+                    "goed. ik ben dichtbij, ik pak het",
+                    "ok ik ga. moet snel gaan",
+                    "juist. heb het zo",
+                    "komt goed. blijf daar niet rondhangen"
+                ],
+                "regular": [
+                    "is goed. ik pak het zo",
+                    "aight. ik ga er nu heen",
+                    "perfect. haal het zo op",
+                    "waardeer het. haal het snel op",
+                    "mooi. ik ben onderweg"
+                ],
+                "rich": [
+                    "Genoteerd. Iemand haalt het zo op.",
+                    "Goed. Het wordt spoedig opgehaald.",
+                    "Begrepen. Ik ben onderweg.",
+                    "Uitstekend. Ik laat het ophalen.",
+                    "Heel goed. Duurt niet lang."
+                ]
+            },
+            "counter_greedy": {
+                "broke": [
+                    "${{price}}?? ik ben blut, niet dom",
+                    "ik ben arm, geen idioot. ${{price}} lmao",
+                    "je probeert een man zonder geld te beroven",
+                    "${{price}} per stuk. dat heb ik niet eens op m'n hele rekening",
+                    "voor {{drug}}? kom op man"
+                ],
+                "cheap": [
+                    "${{price}}? rot op lmao",
+                    "${{price}} per stuk?? zie ik eruit als een pinautomaat",
+                    "lmao nee. das je reinste afzetterij",
+                    "rook je je eigen spul ofzo?",
+                    "${{price}}. voor {{drug}}. wat een poppenkast zeg",
+                    "das geen prijs das een scam"
+                ],
+                "rushed": [
+                    "${{price}}?? rot op, ik betaal geen toeristenprijzen",
+                    "stop met m'n tijd verspillen met zulke nummers",
+                    "meen je dit nu. ${{price}}.",
+                    "nee. en nu irriteer je me",
+                    "ik zei schiet op, niet beroof me"
+                ],
+                "regular": [
+                    "${{price}}? kom op man, doe normaal",
+                    "das het dubbele van wat het waard is en dat weet je",
+                    "nah. je denkt zeker dat ik nieuw ben",
+                    "${{price}} lmao. ik doe alsof ik dat niet gezien heb",
+                    "beledig me niet, ik weet wat {{drug}} kost"
+                ],
+                "rich": [
+                    "Ik heb geld. Dat maakt me nog geen doelwit.",
+                    "${{price}}? Ik betaal goed. Ik betaal niet dom.",
+                    "Schattig. Nee.",
+                    "Ik kan het betalen. Ik ben alleen geen idioot.",
+                    "Je zag geld en werd enthousiast, nietwaar."
+                ]
+            },
+            "counter_bargain": {
+                "broke": [
+                    "${{price}}?? ja. ja voordat je erover nadenkt",
+                    "deal deal deal. dankje fr",
+                    "${{price}} per stuk?! je bent een redder",
+                    "pak ik voordat je je bedenkt"
+                ],
+                "cheap": [
+                    "${{price}}? lmao klaar. makkelijkste ja ooit",
+                    "verkocht. je bent hier slecht in trouwens",
+                    "klaar. en ik zeg niet waarom ik lach",
+                    "${{price}} per stuk. zeker weten? nee niet antwoorden. deal"
+                ],
+                "rushed": [
+                    "${{price}}? klaar, das een koopje, boeie, ik ben laat",
+                    "ja. meteen ja",
+                    "deal. daar ga ik niet eens over afdingen, das gratis geld"
+                ],
+                "regular": [
+                    "${{price}}? man je berooft jezelf. deal",
+                    "klaar. had eerlijk gezegd het dubbele moeten vragen",
+                    "ok das te goedkoop maar ik ga niet klagen",
+                    "deal. leer wel je prijzen, serieus"
+                ],
+                "rich": [
+                    "${{price}}? Ik had het driedubbele betaald. Deal.",
+                    "Klaar. Pijnlijk snel klaar.",
+                    "Dat was bijna te makkelijk. Deal.",
+                    "U heeft zichzelf zwaar tekortgedaan. Ik neem het toch."
+                ]
+            },
+            "counter_refused": {
+                "broke": [
+                    "kan niet. ik ding niet af, ik heb het echt niet",
+                    "das geld dat ik niet heb. wou dat het anders was",
+                    "nah. das meer dan er in m'n zak zit",
+                    "ik kan letterlijk niet. het is geen tactiek",
+                    "geen kans. dat geld bestaat niet voor mij",
+                    "lukt niet. ik zit al op de bodem"
+                ],
+                "cheap": [
+                    "nah. dat betaal ik niet",
+                    "das te veel, doe ik niet",
+                    "pass. veel meer dan ik in gedachten had",
+                    "nah. niet voor dat",
+                    "nee. ik weet wel beter",
+                    "das een nee. probeer nog eens"
+                ],
+                "rushed": [
+                    "nee. te veel en ik heb geen tijd meer",
+                    "nah. volgende",
+                    "dat betaal ik niet. stop met rekken",
+                    "nee. tijdverspilling",
+                    "nah te veel. schiet op",
+                    "nee. volgend nummer of ik ben weg"
+                ],
+                "regular": [
+                    "das meer dan ik kan doen man",
+                    "nah, daar kan ik niet heen. sorry",
+                    "te gortig. gaat niet werken",
+                    "die prijs kan ik niet doen man",
+                    "nah das wat veel voor mij",
+                    "sorry, das boven m'n budget"
+                ],
+                "rich": [
+                    "Nee. Ik betaal goed. Ik laat me niet uitbuiten.",
+                    "Dat is meer dan ik bereid ben uit te geven.",
+                    "Ik heb geld. Dat betekent niet dat ik het verspil.",
+                    "Nee. Ik weet wat dit waard is.",
+                    "Dat is geen serieus bedrag.",
+                    "Nee. Probeer opnieuw, of we zijn klaar."
+                ]
+            },
+            "ask": {
+                "broke": [
+                    "ik heb {{qty}} nodig. wat vraag je? doe rustig, ik ben blut",
+                    "{{qty}} stuks. hoeveel vraag je ervoor?",
+                    "hoeveel voor {{qty}}? zeg dat het goedkoop is",
+                    "{{qty}}. wat kost me dat? wees lief",
+                    "hoeveel voor {{qty}}, en wees eerlijk ik ben blut",
+                    "{{qty}} stuks. geef me een nummer dat ik overleef"
+                ],
+                "cheap": [
+                    "{{qty}}. wat is je prijs? probeer me niet",
+                    "hoeveel wil je voor {{qty}}?",
+                    "geef me een nummer voor {{qty}}. een verstandig nummer",
+                    "{{qty}}. prijs? en beledig me niet",
+                    "wat kost {{qty}} me",
+                    "geef me een nummer voor {{qty}}. een echt nummer"
+                ],
+                "rushed": [
+                    "{{qty}}. prijs. nu",
+                    "hoeveel voor {{qty}}? snel",
+                    "noem je prijs voor {{qty}}, ik ga niet shoppen",
+                    "{{qty}}. hoeveel. snel",
+                    "prijs voor {{qty}}, ik ben onderweg",
+                    "{{qty}}. nummer. nu"
+                ],
+                "regular": [
+                    "ik neem er {{qty}}. wat vraag je?",
+                    "{{qty}} stuks. wat is je prijs?",
+                    "hoeveel vraag je voor {{qty}}?",
+                    "{{qty}}. wat denk je qua prijs?",
+                    "wat zou {{qty}} me kosten?",
+                    "{{qty}} stuks. noem een prijs"
+                ],
+                "rich": [
+                    "{{qty}} stuks. Noem uw prijs.",
+                    "Ik wil er {{qty}}. Wat vraagt u per stuk?",
+                    "Geef me een prijs voor {{qty}}. Ik kan gul zijn als het eerlijk is.",
+                    "{{qty}}. Wat is uw vraagprijs?",
+                    "Prijs voor {{qty}} graag. Ik onderhandel weinig.",
+                    "{{qty}} stuks. Uw bedrag, alstublieft."
+                ]
+            },
+            "drop_missing": {
+                "broke": [
+                    "ik ben bij {{location}} en er ligt NIKS. heb je het wel gedropt",
+                    "niks bij {{location}}. ik heb hiervoor gespaard man",
+                    "er ligt hier niks. je hebt me gespeeld",
+                    "er ligt hier niks man. ik had dat nodig",
+                    "{{location}} is leeg. heb je het wel gedropt"
+                ],
+                "cheap": [
+                    "niks bij {{location}}. dacht ik al",
+                    "twee keer gecheckt bij {{location}}. leeg. bedankt voor niks",
+                    "geen pakket. wist dat dit te mooi was",
+                    "leeg. je hebt me gespeeld",
+                    "niks bij {{location}}. dat gaat van je rating af"
+                ],
+                "rushed": [
+                    "ik sta bij {{location}} en het is LEEG. tijdverspilling",
+                    "niks hier. ik ben er helemaal voor omgereden",
+                    "leeg. ongelooflijk",
+                    "niks hier. voor niks gereden",
+                    "{{location}}, leeg. bedankt voor niks"
+                ],
+                "regular": [
+                    "yo er ligt niks bij {{location}}. was iemand me voor?",
+                    "ik heb {{location}} gecheckt, geen pakket. wat is er gebeurd",
+                    "niks op de spot man. das jouw schuld",
+                    "spot is leeg. was iemand me voor?",
+                    "niks bij {{location}}. wat is er gebeurd"
+                ],
+                "rich": [
+                    "Ik ben naar {{location}} gegaan. Er lag niets. Dat waardeer ik niet.",
+                    "De drop was leeg. Regel uw zaken beter.",
+                    "Niets bij {{location}}. Dit werpt een slecht licht op u.",
+                    "Ik ben naar een lege plek gereden. Leg uit.",
+                    "{{location}} was leeg. Ik verwacht beter."
+                ]
+            },
+            "paid": [
+                "je geld is verstuurd",
+                "das betaald, waardeer je",
+                "geld verstuurd. goed zaken doen",
+                "overgemaakt",
+                "betaald. geef niet alles in één keer uit"
+            ],
+            "contact_opener": {
+                "broke": [
+                    "yo ik ben het weer. heb je {{drug}}? zit krap zoals altijd",
+                    "hey. ik weer. nog {{drug}} lopen? doe rustig met me",
+                    "je favoriete blutte klant hier. {{drug}}?",
+                    "yo. weer {{drug}} nodig. m'n portemonnee huilt maar ik heb het nodig"
+                ],
+                "cheap": [
+                    "ik weer. {{drug}}. zelfde als vorige keer, geen gekke prijzen",
+                    "yo. heb je wat {{drug}}? eerlijke prijs deze keer",
+                    "ik ben het. heb {{drug}} nodig. word niet hebberig bij een vaste klant",
+                    "weer terug voor {{drug}}. vaste klanten krijgen korting toch?"
+                ],
+                "rushed": [
+                    "ik ben het. {{drug}}. nu?",
+                    "yo. weer {{drug}}. snelle",
+                    "ik. {{drug}} nodig asap",
+                    "ben je wakker? {{drug}}. haast zoals altijd"
+                ],
+                "regular": [
+                    "yo ik ben het. heb je nu {{drug}}?",
+                    "hey man, ik weer. heb je {{drug}}?",
+                    "eyo. weer wat {{drug}} nodig",
+                    "yo. zelfde als altijd? {{drug}}",
+                    "wat doe je, heb je {{drug}}?"
+                ],
+                "rich": [
+                    "Hallo weer. Is er {{drug}} te krijgen?",
+                    "Ik ben het. Ik sla weer {{drug}} in.",
+                    "Goedenavond. Zelfde bestelling als vorige keer - {{drug}}.",
+                    "Ik weer. {{drug}}, als u verkoopt."
+                ]
+            },
+            "referral_opener": [
+                "yo. {{referrer}} gaf me je nummer, zei dat jij de plug bent voor {{drug}}. klopt dat?",
+                "hey. vriend van {{referrer}}. die zei dat je niet loopt te klooien. zoek {{drug}}",
+                "{{referrer}} stond voor je in. zei dat je me kon helpen met {{drug}}",
+                "sup. {{referrer}} stuurde me. heb {{drug}} nodig en die zei dat je solide bent",
+                "je kent me niet maar {{referrer}} wel. zei dat je goed bent voor {{drug}}. één deal en als het netjes is hou ik je nummer"
+            ],
+            "contact_request": {
+                "broke": [
+                    "yo dat was netjes. ik ben {{name}} btw. mag ik je nummer bewaren? zweer dat ik volgende keer ook echt betaal",
+                    "je bent oke man. naam is {{name}}. mag ik je contact houden? ik app je als ik minder blut ben",
+                    "ik ben {{name}} trouwens. mag ik je opslaan? goedkoop EN betrouwbaar is zeldzaam"
+                ],
+                "cheap": [
+                    "fatsoenlijke deal voor de verandering. ik ben {{name}}. mag ik je nummer opslaan?",
+                    "aight je bent eerlijk. naam is {{name}}. mag ik je contact houden voor volgende keer?",
+                    "eerlijk gezegd, das de beste prijs die ik heb gehad. ik ben {{name}}. mag ik je opslaan?"
+                ],
+                "rushed": [
+                    "snel. ik hou van snel. ik ben {{name}}. sla je nummer op, chill?",
+                    "je verspilt geen tijd. naam is {{name}}. mag ik je contact houden?",
+                    "snel en netjes. ik ben {{name}} btw. mag ik je opslaan voor volgende keer?"
+                ],
+                "regular": [
+                    "goed zaken doen. ik ben {{name}} btw. mag ik je nummer bewaren voor volgende keer?",
+                    "je bent solide. naam is {{name}}. mag ik je contact houden?",
+                    "soepele deal. ik ben {{name}}. laat me je opslaan, kom volgende keer direct naar jou",
+                    "ze noemen me {{name}}. mag ik je toevoegen aan m'n contacten? koop liever van iemand die ik ken"
+                ],
+                "rich": [
+                    "Kwaliteitsservice. De naam is {{name}}. Ik zou uw contact graag bewaren, als u geen bezwaar heeft.",
+                    "Ik heb liever een betrouwbare leverancier dan rondshoppen. Noem me {{name}}. Mag ik uw nummer opslaan?",
+                    "Dat verliep goed. Ik ben {{name}}. Ik bewaar uw contact voor toekomstige bestellingen, akkoord?"
+                ]
+            },
+            "contact_added": {
+                "broke": [
+                    "opgeslagen. jij bent nu m'n gast",
+                    "klaar. ik app je als het geld binnen is",
+                    "nice. spreek je snel"
+                ],
+                "cheap": [
+                    "opgeslagen. hou de prijzen eerlijk en ik blijf komen",
+                    "klaar. zie je in de buurt",
+                    "goed. ik laat van me horen"
+                ],
+                "rushed": [
+                    "opgeslagen. later",
+                    "klaar. moet rennen",
+                    "goed. ik app je"
+                ],
+                "regular": [
+                    "opgeslagen. ik app je",
+                    "is goed. spreek je snel",
+                    "klaar. fijn om een solide plug te kennen",
+                    "je nummer opgeslagen. tot later"
+                ],
+                "rich": [
+                    "Opgeslagen. Verwacht mijn bestellingen.",
+                    "Klaar. Ik laat van me horen.",
+                    "Uitstekend. Tot de volgende keer."
+                ]
+            },
+            "contact_accept": [
+                "aight ik doe mee. ik neem {{qty}}x voor ${{price}}. ${{total}} totaal",
+                "ja dat wil ik. {{qty}} stuks, ${{price}} per stuk. ${{total}}",
+                "goede timing. geef me {{qty}}x. ${{total}} voor jouw prijs",
+                "zeg niks meer. {{qty}} voor ${{price}} per stuk. ${{total}} alles bij elkaar",
+                "deal. {{qty}}x {{drug}}, ${{total}} totaal"
+            ],
+            "contact_decline": [
+                "nah ik zit goed nu",
+                "niet deze keer. geld zit niet lekker",
+                "pass voor nu. app me een andere dag",
+                "nah. niet voor die prijs vandaag",
+                "ik sla deze over",
+                "nu even niet man"
+            ],
+            "contact_later": [
+                "kan nu niet. slechte timing",
+                "niet vandaag. het is heet buiten",
+                "andere keer. nu komt het niet uit",
+                "kan nu niet bewegen. later"
+            ],
+            "contact_neverbuys": [
+                "IK app JOU als ik iets nodig heb. bel me niet",
+                "nah. zo werkt dit niet. ik stuur eerst",
+                "ga me geen spul opdringen. ik vraag wel als ik het wil",
+                "je hebt m'n nummer verkeerd om. IK bestel hier"
+            ],
+            "contact_nag": [
+                "chill. ik zei dat ik je zou appen",
+                "je vroeg het net al. relax",
+                "stop met m'n telefoon plat te spammen man",
+                "alweer? geef het rust",
+                "opdringerig hoor. ik vraag wel als ik het wil"
+            ],
+            "contact_block": [
+                "ik ben klaar met je. vergeet dit nummer",
+                "das het dan. neem geen contact meer op",
+                "we zijn klaar. ik verwijder je",
+                "je bent slechte handel. stuur me niks meer"
+            ],
+            "contact_farewell": [
+                "ik ben klaar met dit alles. ga clean, echt deze keer. stuur niks naar dit nummer",
+                "ze hebben me. overal politie, ik wis deze telefoon. je hebt me nooit gekend",
+                "ik verlaat vanavond de stad. vraag niet waarom. dit nummer is over een uur dood",
+                "m'n meisje kwam achter alles. ik stop. verwijder alles, het beste",
+                "advocaat zegt dat ik elk contact moet droppen. niks persoonlijks. doei",
+                "ga morgen een kliniek in. kan dit nummer niet actief houden. hou je taai man",
+                "te veel hitte de laatste tijd. deze telefoon gaat eraan. als je me ziet, ken je me niet"
+            ]
+        },
+        "player_confirm": [
+            "ja ik heb je. hoeveel heb je nodig?",
+            "ja heb ik. hoeveel?",
+            "nog steeds op voorraad. waar zoek je naar?",
+            "ja das live. hoeveel wil je?",
+            "op voorraad. noem het aantal"
+        ],
+        "buyer_name_tags": [
+            "Big",
+            "Lil",
+            "Dikke",
+            "Magere",
+            "Kleintje",
+            "Lange",
+            "Stinkende",
+            "Zwetende",
+            "Vieze",
+            "Vette",
+            "Thicc",
+            "Boze",
+            "Gekke",
+            "Gestoorde",
+            "Dronken",
+            "Loco",
+            "Wilde",
+            "Chagrijnige",
+            "Stille",
+            "Zwijgende",
+            "Trillende",
+            "Chopped",
+            "Cooked",
+            "Oude",
+            "Schattige",
+            "Gelukkige",
+            "Blut",
+            "Goedkope",
+            "Rijke",
+            "Snelle",
+            "Trage",
+            "Slaperige",
+            "Hongerige",
+            "Sketchy",
+            "Luide",
+            "Clapped",
+            "Girthy",
+            "Zwarte",
+            "Witte",
+            "Blauwe",
+            "Smooth",
+            "Onhandige",
+            "Niet",
+            "Echte",
+            "Kale",
+            "Lelijke",
+            "Knappe"
+        ],
+        "buyer_name_names": [
+            "Tim",
+            "Boy",
+            "Diddler",
+            "Bozo",
+            "Gangsta",
+            "Tyrone",
+            "Tommy",
+            "Lucia",
+            "Cholo",
+            "Alien",
+            "Jason",
+            "Xing",
+            "Marco",
+            "Rico",
+            "Pablo",
+            "Diesel",
+            "Nacho",
+            "Gas",
+            "Chico",
+            "Vladimir",
+            "Omar",
+            "Kev",
+            "Ricky",
+            "Dwayne",
+            "Barbie",
+            "Princess",
+            "Moe",
+            "Ray",
+            "Snake",
+            "Tank",
+            "Bones",
+            "Pizza",
+            "Mechanic",
+            "Fingers",
+            "Pockets",
+            "Slice",
+            "Domino",
+            "Toe",
+            "Crackhead",
+            "Mouse",
+            "Dealer",
+            "Addict",
+            "Killer",
+            "Smoke",
+            "Rat",
+            "Kuz",
+            "Bobby",
+            "Officer",
+            "Dumbass",
+            "Officer",
+            "Nickel",
+            "Dime",
+            "Chains",
+            "Tooth",
+            "Trevor",
+            "Sanchez",
+            "Duke",
+            "Mike",
+            "Wolf"
+        ],
+        "payment_received": "Betaling ontvangen: ${{total}}"
+    },
+    "street": {
+        "offer_prompt": "Waar aanbieden"
+    },
+    "corner": {
+        "blip": "Hoek",
+        "post_prompt": "Post op",
+        "posted": "Je staat op de hoek. Kopers komen naar je toe",
+        "error": {
+            "invalid": "Deze hoek is nu niet beschikbaar",
+            "too_far": "Je bent te ver weg",
+            "laying_low": "Het blok is nu te heet, niemand koopt",
+            "full": "Iemand anders werkt deze hoek al",
+            "no_drugs": "Je hebt hier niets meer te verkopen"
+        }
+    },
+    "drugs": {
+        "unknown_label": "Ongesorteerd"
+    },
+    "delivery": {
+        "handover_prompt": "Waar overhandigen",
+        "dropoff_prompt": "Pakket droppen",
+        "blip": "Deallocatie",
+        "error": {
+            "no_items": "Je hebt de waar voor deze deal niet bij je",
+            "too_far": "Je bent te ver weg",
+            "invalid": "Die deal is niet meer geldig",
+            "cannot_carry": "Dat kun je niet dragen"
+        },
+        "pickup_prompt": "Pakket pakken",
+        "queued_payout": "Dead drop geld kwam binnen terwijl je weg was: ${{total}}"
+    },
+    "org": {
+        "contact_prompt": "Praten",
+        "favour": {
+            "blip": "Klusdoelwit",
+            "blip_package": "Pakket afleverpunt",
+            "requested": "{{org}} heeft een klus voor je, de details komen zo per mail",
+            "requested_app": "{{org}} heeft een klus voor je, ze nemen zo contact op via de PLUG-app",
+            "drop_prompt": "Pakket droppen",
+            "error": {
+                "invalid": "Hier valt niets te droppen",
+                "too_far": "Je bent te ver weg",
+                "no_items": "Je hebt het pakket niet"
+            }
+        },
+        "error": {
+            "laying_low": "{{name}} houdt zich nu gedeisd en wil niet praten",
+            "laying_low_fallback": "De organisatie",
+            "limit_reached": "Deze organisatie neemt momenteel geen product meer aan"
+        }
+    },
+    "fixer": {
+        "prompt": "Praten",
+        "unlocked": "Je hebt {{org}} ontgrendeld. Hun locatie is nu zichtbaar en je kunt met ze handelen",
+        "error": {
+            "no_items": "Je hebt niet genoeg spullen om te betalen"
+        }
+    },
+    "police": {
+        "blip": "Sting drop",
+        "no_access": "Je hebt geen toegang tot dit apparaat"
+    },
+    "dispatch": {
+        "titles": [
+            "Verdachte activiteit",
+            "Drugshandel gemeld"
+        ],
+        "messages": [
+            "Iemand biedt drugs aan op straat",
+            "Iemand dealt drugs in de buurt",
+            "Drugsdealer gemeld"
+        ]
+    },
+    "editor": {
+        "no_permission": "Daar heb je geen toestemming voor",
+        "save_failed": "Opslaan mislukt"
+    },
+    "nui": {
+        "currency": "$",
+        "setup": {
+            "title": "Setup & imports",
+            "subtitle": "Draai een data-import om de resource te vullen",
+            "explain_1": "Imports zijn kant-en-klare datapakketten die de tabellen van de resource voor je vullen: drugs, afleverpunten, hoeken, organisaties en meer. Zo hoef je niet alles handmatig in de editor te plaatsen",
+            "explain_2": "Vink de pakketten aan die je wilt en druk op Importeren",
+            "open": "Setup & imports",
+            "import": "Importeren",
+            "selected_count": "{{count}} geselecteerd",
+            "done": "Import uitgevoerd",
+            "done_rows": "Import uitgevoerd, {{rows}} rijen aangepast",
+            "failed": "Import mislukt: {{error}}",
+            "close": "Sluiten",
+            "empty": "Geen imports geconfigureerd",
+            "empty_hint": "Voeg ze toe in server/editable/setup.lua"
+        },
+        "handover": {
+            "title": "Kies producttype",
+            "hint": "{{count}}x {{drug}}",
+            "confirm": "Bevestigen",
+            "cancel": "Annuleren"
+        },
+        "quality": {
+            "1": "Slecht",
+            "2": "Matig",
+            "3": "Neutraal",
+            "4": "Goed",
+            "5": "Top"
+        },
+        "app": {
+            "title": "PLUG",
+            "loading": "Verbinden...",
+            "nav_contacts": "Contacten",
+            "section_orgs": "Organisaties",
+            "section_people": "Contacten",
+            "contact_buys_nothing": "Koopt momenteel niets",
+            "no_contacts": "Nog geen organisaties",
+            "no_people": "Nog geen opgeslagen contacten",
+            "person": {
+                "deleted_name": "Gebruiker verwijderd",
+                "status_blocked": "Geblokkeerd",
+                "status_deleted": "Verwijderd",
+                "note_blocked": "Je bent geblokkeerd",
+                "note_deleted": "Dit profiel bestaat niet meer",
+                "buys": "Geïnteresseerd in",
+                "message": "Bekijk gesprek",
+                "start_offer": "Aanbod maken",
+                "remove": "Contact verwijderen",
+                "remove_confirm": "Tik nogmaals om te bevestigen",
+                "offer_pick": "Wat bied je aan",
+                "offer_price": "Jouw prijs",
+                "offer_send": "Aanbod versturen"
+            },
+            "contact_card": {
+                "title": "{{name}} wil toegevoegd worden aan je contacten",
+                "add": "Toevoegen",
+                "ignore": "Negeren"
+            },
+            "inbox": "Berichten",
+            "market": "Straatwaarde",
+            "no_listings": "Geen producttypes beschikbaar",
+            "no_threads": "Geen actieve gesprekken",
+            "accept": "Accepteer ${{price}}",
+            "counter": "Tegenbod",
+            "decline": "Weigeren",
+            "accept_delivery": "Accepteren",
+            "mark_route": "Route markeren",
+            "route_set": "Route gezet",
+            "state": {
+                "inquiry": "Nieuw",
+                "open": "Actief",
+                "waiting": "Actief",
+                "agreed": "Actief",
+                "delivery": "Actief",
+                "complete": "Afgerond",
+                "declined": "Geweigerd",
+                "walked": "Geweigerd",
+                "expired": "Verlopen",
+                "failed": "Verlopen",
+                "notice": "Geweigerd"
+            },
+            "accept_plain": "Accepteren",
+            "per_unit": "Per stuk",
+            "send_quote": "Versturen",
+            "nav_prices": "Prijzen",
+            "prices_hint": "Huidige marktprijzen",
+            "no_prices": "Niets op de markt",
+            "sort_alpha": "A-Z",
+            "sort_price": "Prijs",
+            "sort_demand": "Vraag",
+            "section_active": "Actieve gesprekken",
+            "section_history": "Gearchiveerde gesprekken",
+            "standing_label": "Aanzien",
+            "standing": {
+                "1": "Slecht",
+                "2": "Matig",
+                "3": "Neutraal",
+                "4": "Goed",
+                "5": "Top"
+            },
+            "contact_prices": "Prijzen",
+            "contact_batch": "{{size}} / partij",
+            "mail_title": "Mail",
+            "payment_title": "Betaling ontvangen",
+            "peek_new": "Nieuw bericht!",
+            "no_mail": "Inbox leeg",
+            "no_threads_waiting": "Geen actieve gesprekken",
+            "nav_profile": "Profiel",
+            "profile": {
+                "name_prefix": "Dealer",
+                "deals": "{{count}} afgeronde deals",
+                "name": "Weergavenaam",
+                "picture": "Profielfoto",
+                "save": "Profiel opslaan",
+                "name_blocked": "Kies een andere naam"
+            },
+            "listing": {
+                "none": "Geen actieve advertentie",
+                "active": "Actieve advertentie",
+                "posting": "Plaatsen...",
+                "create": "Advertentie maken",
+                "edit": "Bewerken",
+                "delete": "Verwijderen",
+                "pick": "Wat verkoop je",
+                "rating_needed": "{{stars}} nodig",
+                "publish": "Advertentie plaatsen",
+                "save": "Wijzigingen opslaan",
+                "just_now": "zojuist",
+                "minutes": "{{count}}m geleden",
+                "hours": "{{count}}u geleden",
+                "and": "en",
+                "intros": [
+                    "Weer op voorraad en het gaat hard. Alles hieronder is nu op hand, niets in bestelling.",
+                    "Verse lading vanochtend binnen, niets dat ligt te verouderen. Dit ligt er op tafel.",
+                    "Bijgevuld en gesorteerd voor de week. Kwaliteit spreekt voor zich, ik hoef niet te overdrijven.",
+                    "Open voor zaken, zoals altijd. Staat het op deze lijst, dan heb ik het nu bij me.",
+                    "Nieuwe batch geland en het is een goeie. Kostte me genoeg moeite om te krijgen, dus hij blijft niet lang liggen.",
+                    "Deze keer een flinke lading te pakken. Meer dan ik normaal draag, dus sla je slag zolang het kan.",
+                    "Alles hieronder ligt klaar, geen wachttijden. Rechte ruil, jij komt en we zijn klaar.",
+                    "Schappen weer vol na een paar trage dagen. Ingeslagen op het spul waar mensen om blijven vragen.",
+                    "Net bevoorraad, beperkte hoeveelheden per stuk. App me!",
+                    "Vannacht aan het werk en ik heb flink wat liggen. Dit heb ik, prijzen zijn wat het waard is.",
+                    "Gesorteerd voor de week, dus kijk rond. Zelfde kwaliteit als vorige keer, en de keer daarvoor.",
+                    "Recht van de boot, allemaal. Niet een maand bij iemand thuis liggen verstoffen zoals dat andere spul dat rondgaat."
+                ],
+                "outros": [
+                    "App me. Ik ben het grootste deel van de nacht bereikbaar en ik laat mensen niet hangen.",
+                    "App me, maar geen tijdverspillers. Ben je niet klaar om af te spreken, stuur me dan niks.",
+                    "Stuur me een bericht en ik regel het. Snel en stil, in en uit, niet rondhangen.",
+                    "Alleen serieuze kopers. Weet je wat je wilt, zeg het en we regelen het.",
+                    "Wie het eerst komt, het eerst maalt. Ik hou niks vast voor niemand, dus vraag er niet om.",
+                    "Zeg het woord en het is van jou. Ik kom naar jou als je niet te ver zit.",
+                    "Alleen snelle meets, ik ga niet staan wachten. App me als je echt vrij bent.",
+                    "Je weet me te vinden. Doe dit lang genoeg dat ik geen twee keer hoef te adverteren.",
+                    "Prijzen zijn eerlijk dus beledig me niet.",
+                    "App me voor het weg is, want dat gaat het. Iedereen wil deze week hetzelfde.",
+                    "In en uit, geen kletspraat. Kom op tijd en je doet nog eens zaken met me.",
+                    "Stuur me een bericht. Nieuwe kopers welkom zolang je er niet dom over doet."
+                ]
+            },
+            "nav_mail": "Mail"
+        },
+        "street": {
+            "title": "Bied prijs per stuk",
+            "offer": "Bieden",
+            "cancel": "Annuleren",
+            "variants": "{{count}} soorten"
+        },
+        "corner": {
+            "wants": "Heb je {{drug}}?",
+            "accept": "Accepteren",
+            "other": "Ander product aanbieden",
+            "decline": "Weigeren",
+            "no_requested": "Je hebt geen {{drug}} bij je",
+            "no_other": "Je hebt niets anders bij je om aan te bieden"
+        },
+        "classic": {
+            "brand": "PLUG",
+            "menu_inbox": "Inbox",
+            "menu_listings": "Advertenties",
+            "menu_prices": "Prijzen",
+            "menu_orgs": "Contacten",
+            "menu_mail": "Mail",
+            "standing": "Aanzien",
+            "no_mail": "Geen mail",
+            "archived": "Gearchiveerd",
+            "each": "Per stuk",
+            "no_orgs": "Geen organisaties",
+            "section_orgs": "Organisaties",
+            "section_people": "Contacten",
+            "no_people": "Geen opgeslagen contacten",
+            "person_deleted": "Gebruiker verwijderd",
+            "person_blocked": "Geblokkeerd",
+            "person_buys": "Koopt",
+            "person_deals": "Deals",
+            "person_message": "Bericht",
+            "person_remove": "Verwijderen",
+            "person_remove_confirm": "Zeker?",
+            "offer_pick": "Waar aanbieden",
+            "offer_send": "Aanbod versturen",
+            "empty_inbox": "Geen berichten",
+            "no_listings": "Geen producttypes beschikbaar",
+            "accept": "Accepteren",
+            "decline": "Weigeren",
+            "counter": "Tegenbod",
+            "quote": "Prijs",
+            "send": "Versturen",
+            "back": "Terug",
+            "route": "Route markeren",
+            "route_set": "Route gezet",
+            "me": "IK",
+            "them": "KOPER",
+            "select": "Kiezen",
+            "listed": "GEPLAATST",
+            "unlisted": "GEEN ADVERTENTIE",
+            "no_listing": "Geen advertenties",
+            "create_listing": "Maken",
+            "edit_listing": "Bewerken",
+            "delete_listing": "Verwijderen",
+            "pick_drugs": "Kies product",
+            "publish_listing": "Advertentie plaatsen",
+            "save_listing": "Wijzigingen opslaan",
+            "rating_needed": "{{stars}}*+",
+            "just_now": "zojuist",
+            "minutes": "{{count}}m geleden",
+            "hours": "{{count}}u geleden"
+        },
+        "phone": {
+            "carrier": "KQTEL",
+            "notes": "Notities",
+            "settings": "Instellingen",
+            "done": "Klaar",
+            "note_placeholder": "Schrijf iets...",
+            "note_empty": "Lege notitie",
+            "no_notes": "Nog geen notities",
+            "wallpaper": "Achtergrond",
+            "brightness": "Helderheid",
+            "notifications": "Meldingen",
+            "sounds": "Geluiden"
+        },
+        "police": {
+            "app_name": "Sting",
+            "heatmap_app_name": "Hotspots",
+            "tab_operation": "Sting",
+            "tab_hotspots": "Hotspots",
+            "heatmap_title": "Dealer-hotspots",
+            "heatmap_subtitle": "Recent gemelde activiteit",
+            "heatmap_legend_low": "Laag",
+            "heatmap_legend_high": "Hoog",
+            "unit": "LSPD",
+            "division": "Narcotica-afdeling",
+            "status_label": "Status",
+            "site_index": "Locatie {{index}}",
+            "last_attempt": "Laatste poging",
+            "clearance": "Bevoegdheid",
+            "clearance_control": "Volledige controle",
+            "clearance_view": "Alleen inzien",
+            "booting": "Verbinden...",
+            "denied_title": "Toegang geweigerd",
+            "denied_body": "Alleen geautoriseerd LSPD-personeel",
+            "no_operation": "Geen actieve operatie",
+            "no_operation_hint": "Doe je voor als koper en pak de verkoper bij de drop",
+            "view_only": "Alleen inzien. Jouw rang kan geen operaties draaien",
+            "start_operation": "Operatie starten",
+            "choose_site": "Kies een droplocatie",
+            "select": "Selecteren",
+            "cancel": "Annuleren",
+            "site": "Droplocatie",
+            "initiated_by": "Gestart door",
+            "initiated_at": "Gestart om",
+            "choose_drug": "Kies lokproduct",
+            "retry": {
+                "declined": "Het doelwit weigerde. Kies een nieuw doelwit",
+                "expired": "Geen reactie van het doelwit. Kies een nieuw doelwit",
+                "dark": "Het doelwit ging offline. Kies een nieuw doelwit",
+                "noshow": "Het doelwit leverde nooit. Kies een nieuw doelwit"
+            },
+            "targets": "Mogelijke doelwitten",
+            "no_targets": "Geen dealers actief op dit moment",
+            "rating": "PLUG Rating",
+            "busy": "In een operatie",
+            "start_failed": "Kon dat niet opzetten. Probeer opnieuw",
+            "target": "Doelwit",
+            "goods": "Waar",
+            "agreed_price": "Afgesproken",
+            "log": "Gesprek",
+            "log_empty": "Nog niets vastgelegd",
+            "back": "Terug",
+            "cooldown_label": "Cooldown",
+            "cooldown_notice": "Volgende operatie beschikbaar over {{minutes}} min",
+            "understaffed_label": "Bezetting",
+            "understaffed_notice": "Er is onvoldoende politie in dienst",
+            "sender_target": "Doelwit",
+            "sender_cover": "Undercover",
+            "sender_system": "Systeem",
+            "mark_route": "Route markeren",
+            "route_set": "Route gezet",
+            "terminate": "Beëindigen",
+            "confirm_terminate": "Operatie beëindigen?",
+            "clear": "Dossier sluiten",
+            "state": {
+                "setup": "Wacht op doelwit",
+                "pending": "Onderhandelt met het doelwit",
+                "agreed": "Deal gesloten",
+                "closed": "Operatie gesloten"
+            },
+            "outcome": {
+                "cancelled": "Operatie geannuleerd"
+            }
+        },
+        "org": {
+            "selling": "Verkopen",
+            "batch_sub": "partijen van {{size}}",
+            "batch_count": "{{batches}} partijen",
+            "batch_count_one": "1 partij",
+            "batch_units": "({{units}} stuks)",
+            "per_batch": "${{price}}/partij",
+            "all": "Max",
+            "estimate": "Uitbetaling",
+            "sell": "Verkopen",
+            "cancel": "Weggaan",
+            "favour": "Klus",
+            "favour_hint": "Vraag of ze werk voor je hebben. Klussen doen verbetert je aanzien",
+            "limit_reached": "Deze organisatie neemt momenteel geen product meer aan",
+            "favour_busy": "Je hebt al een klus lopen",
+            "favour_cooldown": "Nu niets voor je, kom later terug",
+            "favour_inventory": "Maak eerst je zakken leeg",
+            "favour_no_phone": "De organisatie kan je de details niet sturen",
+            "favour_none": "Nu niets voor je"
+        },
+        "fixer": {
+            "title": "De Fixer",
+            "cost": "Kosten",
+            "explainer": "Betaal eenmalig de buy-in en {{name}} handelt in bulk met je. Hun verkooppunt verschijnt op je kaart en hun contact in je telefoon",
+            "buy": "Betalen",
+            "buying": "...",
+            "no_offers": "Momenteel niets voor je",
+            "leave": "Weggaan"
+        },
+        "placement": {
+            "key": {
+                "fly": "Vliegen",
+                "heading": "Richting",
+                "radius": "Radius",
+                "boost": "Sneller vliegen",
+                "confirm": "Opslaan",
+                "cancel": "Annuleren",
+                "point": "Punt toevoegen",
+                "remove_point": "Punt verwijderen",
+                "wipe": "Gebied wissen",
+                "grab_point": "Punt verplaatsen / invoegen"
+            }
+        },
+        "editor": {
+            "resource": "Drug deals",
+            "title": "Adminpaneel",
+            "credit": "Mogelijk gemaakt door",
+            "sort": {
+                "label": "Sorteren",
+                "updated": "Laatst bijgewerkt",
+                "created": "Laatst aangemaakt",
+                "name": "Naam"
+            },
+            "tabs": {
+                "drugs": "Drugs",
+                "hotspots": "Hotspots",
+                "corners": "Hoeken",
+                "organizations": "Organisaties",
+                "deliveries": "Locaties",
+                "vehicles": "Klusvoertuigen"
+            },
+            "create": {
+                "drugs": "Nieuwe drug",
+                "hotspots": "Nieuwe hotspot",
+                "corners": "Nieuwe hoek",
+                "organizations": "Nieuwe organisatie",
+                "deliveries": "Nieuw afleverpunt",
+                "vehicles": "Nieuwe voertuigplek"
+            },
+            "list": {
+                "inactive": "Inactief",
+                "activate": "Activeren",
+                "deactivate": "Deactiveren",
+                "goto": "Ga naar",
+                "empty": "Nog niets hier"
+            },
+            "form": {
+                "save": "Opslaan",
+                "cancel": "Terug",
+                "delete": "Verwijderen",
+                "delete_confirm": "Klik nogmaals om verwijderen te bevestigen"
+            },
+            "coords": {
+                "not_set": "Geen positie ingesteld",
+                "place": "Plaatsen met freecam"
+            },
+            "drug": {
+                "tab_general": "Algemeen",
+                "tab_pricing": "Prijzen",
+                "label": "Naam",
+                "label_placeholder": "Cocaine Baggy",
+                "item": "Itemnaam",
+                "item_hint": "Moet exact overeenkomen met het inventory-item",
+                "item_placeholder": "coke_baggy",
+                "street_section": "Straatdeals",
+                "street_section_hint": "Ambient NPC's benaderd te voet of vanuit een auto",
+                "app_section": "Telefoonapp",
+                "app_section_hint": "Kopers die de speler berichten via de Plug app",
+                "channel_street": "Verkopen op straat",
+                "channel_app": "Verkopen via de app",
+                "app_rating_toggle": "PLUG rating vereisen",
+                "app_rating_desc": "Alleen dealers op of boven een sterrenrating kunnen deze drug aanbieden",
+                "app_rating": "Minimale rating (sterren)",
+                "app_rating_hint": "Dealers onder deze rating kunnen de drug niet op hun advertentie zetten",
+                "quantity": "Stuks per deal",
+                "quantity_to": "tot",
+                "street_chance": "Verkoopkans op marktprijs",
+                "street_chance_hint": "Verkoopkans bij exact de marktprijs vragen",
+                "prop": "Overdrachtsprop",
+                "pricing_hint": "Marktwaarde achter elk kanaal. Organisaties betalen hun multiplier ervan",
+                "base_price": "Prijs per stuk ($)",
+                "use_meta": "Prijzen op basis van metadata",
+                "use_meta_desc": "Prijs per metadata-stap (zuiverheid, soort, ...)",
+                "meta_key": "Metadata-sleutel",
+                "meta_kind": "Staptype",
+                "meta_steps_hint": "Items zonder metadata tellen als de \"Neutraal\" kwaliteitsstap",
+                "satisfaction_note": "Telefoonkopers vragen nooit om een kwaliteit. Ze betalen allemaal de prijs van de Neutraal-stap en beoordelen daarna wat de speler daadwerkelijk overhandigt: boven Neutraal levert rating en contactaanzien op en krijgt lof, eronder verliest beide en krijgt klachten. Laat een kwaliteit op Neutraal staan en kopers laten het zonder commentaar passeren",
+                "kind_range": "Bereik",
+                "kind_value": "Waarde",
+                "step_label": "Label",
+                "step_value": "Metadata-waarde",
+                "step_min": "Min",
+                "step_max": "Max",
+                "step_price": "Prijs",
+                "step_satisfaction": "Tevredenheid",
+                "add_step": "Stap toevoegen",
+                "tab_channels": "Verkoop"
+            },
+            "hotspot": {
+                "name": "Naam",
+                "name_placeholder": "Grove Street",
+                "area": "Gebied",
+                "place_title": "Teken hotspotgebied",
+                "approach_toggle": "Spraakbereidheid overschrijven",
+                "approach_label": "Kans op gesprek",
+                "approach_hint": "Overschrijft hoe vaak NPC's in deze zone überhaupt praten. Andere modifiers gelden nog steeds",
+                "draw": "Gebied tekenen",
+                "redraw": "Gebied opnieuw tekenen",
+                "drugs": "Drugs",
+                "no_drugs": "Nog geen drugs geconfigureerd",
+                "price_multiplier": "Waardemultiplier",
+                "price_multiplier_hint": "Vermenigvuldigt wat de drug hier waard is voor kopers",
+                "price_effective": "Kopers waarderen het hier op ~${{price}}",
+                "chance_multiplier": "Succesvolle verkoopkans",
+                "chance_multiplier_hint": "Extra worpen van de verkoopkans",
+                "chance_effective": "~{{percent}}% op marktprijs",
+                "row_summary": "{{drugs}} drug(s)"
+            },
+            "org": {
+                "name": "Naam",
+                "name_placeholder": "Vagos, Cartel, The Firm...",
+                "details": "Organisatie",
+                "place_title": "Verkooppunt plaatsen",
+                "sell_spots": "Verkooppunten",
+                "sell_spots_hint": "Er wordt er bij elke serverstart willekeurig één gekozen",
+                "add_sell_spot": "Verkooppunt toevoegen",
+                "min_quantity": "Partijgrootte",
+                "buyin_cash": "Contant ($, 0 = geen)",
+                "buyin_no_drug": "Geen productoverdracht",
+                "buyin_drug": "Productoverdracht",
+                "buyin_drug_amount": "Stuks",
+                "fixer_spots": "Fixerplekken",
+                "fixer_spots_hint": "Er wordt er bij elke serverstart willekeurig één gekozen",
+                "fixer_place_title": "Fixerplek plaatsen",
+                "add_fixer_spot": "Fixerplek toevoegen",
+                "no_fixer_warning": "Buy-in ingesteld maar geen fixerplekken. Niemand kan deze organisatie ooit ontgrendelen",
+                "buys_hint": "Multiplier van marktwaarde, op basis van het aanzien van de speler",
+                "limits": "Verkooplimieten",
+                "limits_enabled": "Beperk hoeveel ze kopen",
+                "limits_enabled_desc": "Begrenst hoeveel batches de organisatie aanneemt voordat ze een tijdje stoppen met kopen",
+                "limits_per_player": "Per speler",
+                "limits_per_player_desc": "Elke speler krijgt zijn eigen quotum in plaats van één gedeelde pool",
+                "limits_max_batches": "Max batches",
+                "limits_max_batches_hint": "Aangenomen batches voordat de cooldown start",
+                "limits_cooldown": "Cooldown (minuten)",
+                "limits_cooldown_hint": "Hoe lang ze stoppen met kopen zodra de limiet is bereikt",
+                "multiplier_min": "Slecht",
+                "multiplier_mid": "Neutraal",
+                "multiplier_max": "Top",
+                "description": "Beschrijving",
+                "description_placeholder": "Wie ze zijn, wat ze willen...",
+                "enemies_hint": "Verkopen aan of klussen doen voor vijanden verlaagt je aanzien bij {{name}}",
+                "no_enemies": "Nog geen andere organisaties",
+                "no_drugs": "Maak eerst drugs aan",
+                "jobs": "Job- / gangrestrictie",
+                "jobs_desc": "Uit = iedereen mag met deze organisatie omgaan",
+                "jobs_hint": "Alleen spelers met een vermelde job of gang zien de organisatie, de blip, het contact en de fixer",
+                "jobs_empty_warning": "Geen jobs of gangs vermeld. Niemand kan deze organisatie bereiken zolang de restrictie aanstaat",
+                "jobs_name": "Job- / gangnaam",
+                "jobs_placeholder": "cartel",
+                "jobs_grade": "Min. grade",
+                "add_job": "Job / gang toevoegen",
+                "reset_unlocks": "Unlocks voor iedereen resetten",
+                "reset_unlocks_confirm": "Klik nogmaals om te bevestigen",
+                "reset_unlocks_hint": "Vergrendelt deze organisatie opnieuw voor elke speler die de buy-in heeft betaald",
+                "tab_general": "Algemeen",
+                "tab_access": "Ontgrendelen",
+                "tab_trading": "Drugs",
+                "tab_limits": "Limieten",
+                "tab_relations": "Relaties",
+                "peds": "Ped-modellen",
+                "boss_ped": "Baas (contact bij verkooppunt)",
+                "member_peds": "Leden",
+                "member_peds_hint": "De fixer en vijandelijke klusdoelwitten",
+                "ped_choose": "Kies model...",
+                "ped_members_choose": "Kies leden...",
+                "ped_custom": "Eigen model",
+                "ped_custom_placeholder": "s_m_y_dealer_01...",
+                "ped_no_match": "Geen peds gevonden",
+                "ped_modal_search": "Modellen zoeken...",
+                "ped_custom_apply": "Model gebruiken",
+                "ped_select": "Selecteren",
+                "unlock_public": "Openbaar",
+                "unlock_public_desc": "Vanaf het begin op de kaart en in de app",
+                "unlock_hidden": "Verborgen",
+                "unlock_hidden_desc": "Iedereen kan handelen, onthuld na de eerste verkoop",
+                "unlock_buyin": "Buy-in",
+                "unlock_buyin_desc": "Betaalde toegang via de fixer van deze organisatie",
+                "unlock_closed": "Gesloten",
+                "unlock_closed_desc": "Alleen te ontgrendelen via script-exports",
+                "closed_hint": "Een ander script moet deze organisatie per speler ontgrendelen. Zie DOCS.md voor de exports",
+                "enemies_hint_fallback": "deze organisatie",
+                "ped_invalid": "Model is ongeldig of niet beschikbaar op deze gamebuild",
+                "ped_checking": "Controleren..."
+            },
+            "deliveryloc": {
+                "name": "Naam",
+                "name_placeholder": "Legion Square Corner",
+                "type": "Waar deze plek voor dient",
+                "type_npc": "Koper-overdracht",
+                "type_npc_desc": "App-verkopen aan NPC's",
+                "type_deaddrop": "Verkoop dead drop",
+                "type_deaddrop_desc": "Deaddrop-locaties voor app-verkopen",
+                "position": "Positie",
+                "place_title": "Afleverpunt plaatsen",
+                "type_favour": "Kluslocatie",
+                "type_favour_desc": "Organisatieklussen gebeuren hier. Afleveringen en doelwitten"
+            },
+            "vehicleloc": {
+                "name": "Naam",
+                "name_placeholder": "Elysian Island Dock",
+                "hint": "Voertuigvernietigingsklussen spawnen hier het doelvoertuig",
+                "position": "Positie",
+                "place_title": "Voertuigplek plaatsen"
+            },
+            "corner": {
+                "police_warning": "Je job is politie. Hoeken zijn verborgen voor politie, je ziet hun blips of prompts niet en kunt met deze job niet testen",
+                "tab_general": "Algemeen",
+                "tab_drugs": "Drugs",
+                "tab_access": "Toegang",
+                "hint": "Spelers posten in het gebied en kopers lopen naar ze toe. De hoek is alleen zichtbaar en bruikbaar voor spelers met minstens één op straat verkoopbare drug",
+                "name": "Naam",
+                "name_placeholder": "Grove Street hoek",
+                "position": "Gebied",
+                "place_title": "Hoek plaatsen",
+                "buyers": "Kopers",
+                "max_players": "Dealerplekken",
+                "max_players_hint": "Hoeveel spelers deze hoek tegelijk kunnen werken",
+                "interval": "Koperinterval (seconden)",
+                "interval_hint": "Geschatte tijd tussen kopers, per speler. (Zie dit als een gemiddelde, hangt af van hoe druk en beloopbaar het gebied is voor NPC's)",
+                "allow_vehicle": "Posten vanuit een voertuig toestaan",
+                "allow_vehicle_desc": "Bestuurders kunnen de hoek vanuit hun auto werken. Kopers lopen naar het raam voor de deal",
+                "drugs": "Drugs waar hier om gevraagd wordt",
+                "drugs_hint": "Kopers vragen alleen om de aangevinkte drugs. Spelers kunnen nog steeds elke op straat verkoopbare drug aanbieden. Minstens één is vereist",
+                "no_drugs": "Geen actieve drugs om uit te kiezen",
+                "check_all": "Alles aanvinken",
+                "uncheck_all": "Alles uitvinken",
+                "different_chance": "Verkoopkans ander product",
+                "different_chance_hint": "Kans dat een koper een andere drug neemt dan gevraagd, op marktprijs. Te duur vragen verlaagt het verder zoals bij elk bod",
+                "jobs": "Beperken tot jobs / gangs",
+                "jobs_desc": "Alleen spelers met een vermelde job of gang kunnen deze hoek zien en werken",
+                "jobs_hint": "Alleen spelers met een vermelde job of gang zien de hoek, de blip en de prompt",
+                "jobs_empty_warning": "Geen jobs of gangs vermeld. Niemand kan deze hoek bereiken zolang de restrictie aanstaat"
+            },
+            "market": {
+                "reset": "Zet deze prijs terug naar de basis"
+            },
+            "validation": {
+                "incomplete": "Vul de verplichte velden in",
+                "name": "Een naam is verplicht",
+                "coords": "Plaats het eerst op de kaart",
+                "drug_label": "Een weergavenaam is verplicht",
+                "drug_item": "Een inventory-itemnaam is verplicht",
+                "drug_item_duplicate": "Item al in gebruik door \"{{name}}\". Twee drugs op één item delen hun voorraad",
+                "quantity_missing": "Stel beide kanten van het aantal-bereik in",
+                "quantity_order": "Het laagste aantal kan niet boven het hoogste liggen",
+                "quantity_range": "Aantallen moeten tussen {{min}} en {{max}} liggen",
+                "base_price": "Een basisprijs boven 0 is verplicht",
+                "base_price_range": "Basisprijs moet tussen {{min}} en {{max}} liggen",
+                "meta_key": "Een metadata-sleutel is verplicht",
+                "meta_steps_empty": "Metadata-prijzen vereisen minstens één kwaliteit",
+                "meta_steps_too_many": "Niet meer dan {{max}} kwaliteiten",
+                "step_label": "Kwaliteit {{step}} heeft een label nodig",
+                "step_price": "Kwaliteit \"{{step}}\" heeft een prijs boven 0 nodig",
+                "step_price_range": "Prijs voor \"{{step}}\" moet tussen {{min}} en {{max}} liggen",
+                "step_value": "Kwaliteit \"{{step}}\" heeft een metadata-waarde nodig om op te matchen",
+                "step_value_duplicate": "Twee kwaliteiten matchen beide \"{{value}}\". Alleen de eerste zou ooit prijzen",
+                "step_range": "Kwaliteit \"{{step}}\" heeft zowel een van- als een tot-waarde nodig",
+                "step_range_order": "Kwaliteit \"{{step}}\" heeft zijn van boven zijn tot",
+                "step_range_limits": "Kwaliteit \"{{step}}\" moet tussen {{min}} en {{max}} blijven",
+                "step_range_overlap": "Kwaliteiten \"{{first}}\" en \"{{second}}\" overlappen. Alleen de laagste zou prijzen",
+                "org_sell_spots": "Voeg minstens één verkooppunt toe en plaats het",
+                "org_sell_too_many": "Niet meer dan {{max}} verkooppunten",
+                "org_buyin_cash": "Het buy-in bedrag kan niet negatief zijn",
+                "org_buyin_amount": "Stel in hoeveel stuks de buy-in drug kost",
+                "org_fixer_unplaced": "Elke fixerplek moet op de kaart geplaatst zijn",
+                "org_fixer_too_many": "Niet meer dan {{max}} fixerplekken",
+                "org_multiplier": "Tarief voor \"{{name}}\" moet tussen {{min}}x en {{max}}x liggen",
+                "org_drug_duplicate": "\"{{name}}\" staat er twee keer in. Alleen het eerste item zou prijzen",
+                "org_limit_batches": "Max batches moet tussen {{min}} en {{max}} liggen",
+                "org_limit_cooldown": "Cooldown moet tussen {{min}} en {{max}} minuten liggen",
+                "delivery_no_use": "Kies minstens één gebruik voor deze plek",
+                "hotspot_polygon": "Teken een gebied met minstens {{min}} punten",
+                "org_buyin_cost": "Stel een geld- of productkost in voor de buy-in",
+                "corner_max_players": "Dealerplekken moet minstens {{min}} zijn",
+                "corner_interval": "Koperinterval moet tussen {{min}} en {{max}} seconden liggen",
+                "corner_drugs": "Vink minstens één drug aan"
+            }
+        },
+        "options": {
+            "max_reached": "Limiet bereikt"
+        }
+    }
+}

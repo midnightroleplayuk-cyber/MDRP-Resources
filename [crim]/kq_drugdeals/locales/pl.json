@@ -1,0 +1,1970 @@
+{
+    "app": {
+        "name": "Plug",
+        "description": "Sprzedawaj towar na rynku PLUG. Szybko, łatwo i bezpiecznie",
+        "tags": "Biznes • Nielegalne",
+        "police_name": "LSPD: Narcotics",
+        "police_description": "Terminal spraw wydziału narkotykowego. Tylko upoważniony personel",
+        "police_tags": "Policja • Zastrzeżone",
+        "notification": {
+            "buyer_title": "Nowa wiadomość",
+            "buyer_content": "{{name}} wysłał ci wiadomość",
+            "mail_title": "Nowa poczta",
+            "mail_content": "{{name}} wysłał ci wiadomość"
+        },
+        "player_dropped": [
+            "leży",
+            "zostawione, całe twoje",
+            "zrobione, jest na miejscu",
+            "zostawiłem dokładnie tam gdzie chciałeś",
+            "paczka na ziemi",
+            "leży i czeka na ciebie"
+        ],
+        "player_accepted": [
+            "deal. ${{price}} za sztukę",
+            "niech będzie ${{price}} za sztukę",
+            "no ${{price}} pasuje. {{qty}}x, ${{total}}",
+            "ok ${{price}} za sztukę",
+            "umowa stoi, ${{price}}"
+        ],
+        "player_accepted_delivery": [
+            "już jadę",
+            "robi się",
+            "lecę tam",
+            "nic nie mów, już się ruszam",
+            "jestem w drodze"
+        ],
+        "player_declined": [
+            "nie ma opcji",
+            "nie, dzięki",
+            "nie za tyle, sorry",
+            "podziękuję",
+            "nie stary, mi się to nie opłaca"
+        ],
+        "player_countered": [
+            "${{price}} za sztukę",
+            "mogę dać po ${{price}}",
+            "${{price}} za sztukę i jest twoje",
+            "${{price}} za sztukę. {{qty}}x wychodzi ${{total}}",
+            "spotkajmy się na ${{price}} za sztukę",
+            "${{price}} za sztukę. i tak jestem fair"
+        ],
+        "contact_offer_sent": [
+            "elo. mam {{drug}} przy sobie. ${{price}} za sztukę jak chcesz",
+            "mam {{drug}} na teraz. ${{price}} za sztukę, wchodzisz?",
+            "świeży {{drug}}. ${{price}} za sztukę. bierzesz?",
+            "{{drug}} na stanie. ${{price}} za sztukę. chcesz trochę?",
+            "siedzę na {{drug}}. ${{price}} za sztukę, daj znać"
+        ],
+        "orgmail": {
+            "enemy": {
+                "subject": [
+                    "Wieści szybko się roznoszą",
+                    "Doszły nas słuchy",
+                    "W sprawie twoich ostatnich interesów",
+                    "Po czyjej jesteś stronie",
+                    "Prowadzimy listę",
+                    "Popełniłeś błąd"
+                ],
+                "body": [
+                    "Doszło do nas. Ruszasz towar dla {{enemy}}.\n\nNie zapominamy, kto karmi naszych wrogów. Przemyśl to sobie.\n\n- {{org}}",
+                    "Ktoś cię widział z {{enemy}}. To nie jest towarzystwo, z którym się zadajemy.\n\nNiech to nie wejdzie ci w nawyk.\n\n- {{org}}",
+                    "Robiłeś interesy z {{enemy}}. Wiemy o tym.\n\nKażda skrzynka, którą im oddajesz, kosztuje cię u nas.\n\n- {{org}}",
+                    "Słyszeliśmy, że ostatnio kolegujesz się z {{enemy}}.\n\nIch przyjaciele nie dostają naszych cen. Twój wybór.\n\n- {{org}}"
+                ]
+            },
+            "levelup": {
+                "2": {
+                    "subject": [
+                        "Małe kroki",
+                        "Patrzymy",
+                        "Odrobina luzu",
+                        "Odnotowano",
+                        "Mniejszy problem"
+                    ],
+                    "body": [
+                        "Ostatnio zrobiłeś się przydatny. Wciąż pamiętamy, ale szefowie zgodzili się nie zbijać ci ceny aż tak mocno.\n\nTak trzymaj.\n\n- {{org}}",
+                        "Towar dociera i nikt nie musiał za tobą ganiać.\n\nTo kupuje ci trochę luzu. Trochę.\n\n- {{org}}",
+                        "Jesteś mniejszym problemem niż byłeś. To informacja, nie komplement.\n\nSprawdź stawki.\n\n- {{org}}",
+                        "Szefowie zauważyli, że się pojawiasz. Stawki drgnęły odrobinę na twoją korzyść.\n\nNie zmarnuj tego.\n\n- {{org}}"
+                    ]
+                },
+                "3": {
+                    "subject": [
+                        "Jesteśmy kwita",
+                        "Czysta karta",
+                        "Załatwione",
+                        "Bez urazy",
+                        "Wracamy do normy"
+                    ],
+                    "body": [
+                        "Cokolwiek między nami było, uznaj to za załatwione.\n\nTy przynosisz towar, my płacimy uczciwie. Nie komplikuj tego.\n\n- {{org}}",
+                        "Szefowie porozmawiali. Jesteś z nami kwita. Normalne stawki, bez urazy.\n\nCo zbudujesz od teraz, zależy od ciebie.\n\n- {{org}}",
+                        "Od dziś czysta karta.\n\nDostajesz to samo co każdy inny. Chcesz więcej, to sobie zapracuj.\n\n- {{org}}",
+                        "Nikt już niczego przeciwko tobie nie trzyma.\n\nTo warte więcej niż zmiana stawki. Wykorzystaj to.\n\n- {{org}}"
+                    ]
+                },
+                "4": {
+                    "subject": [
+                        "Na coś zasłużyłeś",
+                        "Dobry interes",
+                        "Szefowie zauważyli",
+                        "Warto cię mieć",
+                        "Idziesz w górę"
+                    ],
+                    "body": [
+                        "Jesteś solidny, a solidność to rzadkość w tej branży.\n\nSzefowie chcą cię mieć blisko. Zobaczysz to w liczbach.\n\n- {{org}}",
+                        "Podoba nam się, jak działasz. Cicho, pewnie, bez dramatów.\n\nTacy ludzie dostają u nas lepiej płacone. Sprawdź stawki.\n\n- {{org}}",
+                        "Twoje nazwisko padło w dobrym kontekście, dla odmiany.\n\nStawki poszły w górę razem z nim.\n\n- {{org}}",
+                        "Wciąż się pojawiasz, a towar wciąż jest tym, czym miał być.\n\nTo jest warte pieniądze. Masz je teraz w stawkach.\n\n- {{org}}"
+                    ]
+                },
+                "5": {
+                    "subject": [
+                        "Rodzina",
+                        "Szczyt listy",
+                        "Nietykalny",
+                        "Najlepsze stawki, jakie płacimy",
+                        "Jesteś jednym z naszych"
+                    ],
+                    "body": [
+                        "Niewielu ludzi nazwalibyśmy nietykalnymi. Od dziś jesteś jednym z nich.\n\nNajlepsze stawki, jakie komukolwiek płacimy. Nie każ nam tego żałować.\n\n- {{org}}",
+                        "Twoje nazwisko padło wczoraj przy stole. Nikt nie miał złego słowa.\n\nCokolwiek sprzedajesz, kupujemy pierwsi, po najlepszej cenie, jaką znajdziesz.\n\n- {{org}}",
+                        "Jesteś teraz jednym z naszych. Najwyższe stawki, bez pytań.\n\nTo znaczy też, że oczekujemy, że będziesz się odpowiednio prowadził.\n\n- {{org}}",
+                        "Krótka lista. Jesteś na niej.\n\nNikt nie wyciąga z nas lepszych liczb niż ty.\n\n- {{org}}"
+                    ]
+                }
+            },
+            "leveldown": {
+                "1": {
+                    "subject": [
+                        "Koniec z tobą",
+                        "Ostatnie ostrzeżenie",
+                        "Ceny złomu",
+                        "No to tyle",
+                        "Nie oczekuj wiele"
+                    ],
+                    "body": [
+                        "Zaufanie, jakie było, przepadło.\n\nDalej weźmiemy twój towar. Po cenach złomu. Nie licz na miłe przyjęcie.\n\n- {{org}}",
+                        "Szefowie mają cię dość.\n\nNajniższe stawki, dopóki nie naprawisz spraw, o ile to w ogóle możliwe.\n\n- {{org}}",
+                        "Spaliłeś to. Wszystko.\n\nWpadnij, jeśli chcesz, ale dostaniesz to, co dajemy każdemu, komu nie ufamy.\n\n- {{org}}",
+                        "Wiesz, jak tu trafiłeś.\n\nStawki są na dnie. Nasza cierpliwość też.\n\n- {{org}}"
+                    ]
+                },
+                "2": {
+                    "subject": [
+                        "Cienki lód",
+                        "Uważaj na siebie",
+                        "Stawki się ruszyły",
+                        "Bez wrażenia",
+                        "Potraktuj to jako ostrzeżenie"
+                    ],
+                    "body": [
+                        "Stąpasz po cienkim lodzie.\n\nStawki właśnie się pogorszyły. Będą gorsze, jeśli to się nie skończy.\n\n- {{org}}",
+                        "Wybory mają ceny. Twoje właśnie kosztowały cię nasze.\n\nSprawdź stawki i pomyśl, dokąd to zmierza.\n\n- {{org}}",
+                        "Szefowie zadają o ciebie pytania. To nigdy nie jest dobre.\n\nDostajesz od nas mniej, dopóki nie przestaną.\n\n- {{org}}",
+                        "Zrobiliśmy dziś krok w tył od ciebie.\n\nJeszcze jeden i jesteś dla nas nikim.\n\n- {{org}}"
+                    ]
+                },
+                "3": {
+                    "subject": [
+                        "Nie rozsiadaj się",
+                        "Odnotowano",
+                        "Powrót do standardu",
+                        "Koniec przysług",
+                        "Nic specjalnego"
+                    ],
+                    "body": [
+                        "Cokolwiek dobrego sobie wypracowałeś, część właśnie roztrwoniłeś.\n\nWracamy do traktowania cię jak każdego z ulicy.\n\n- {{org}}",
+                        "Specjalne traktowanie się skończyło.\n\nOd teraz standardowe stawki. Zapracuj na lepsze, jeśli ci zależy.\n\n- {{org}}",
+                        "Jesteś dla nas przeciętny. To spadek, nie obelga.\n\n- {{org}}",
+                        "Od dziś kończymy z przysługami dla ciebie.\n\nNic osobistego. Po prostu przestałeś na nie zasługiwać.\n\n- {{org}}"
+                    ]
+                },
+                "4": {
+                    "subject": [
+                        "Obsuwasz się",
+                        "Na słówko",
+                        "Szło ci lepiej",
+                        "Szefowie zauważyli",
+                        "Napraw to"
+                    ],
+                    "body": [
+                        "Byłeś na szczycie naszej listy. Byłeś.\n\nSzefowie zobaczyli rzeczy, które im się nie spodobały, i stawki ruszyły się razem z tym.\n\n- {{org}}",
+                        "Potraktuj to jako przyjacielskie ostrzeżenie, bo na tyle zasłużyłeś.\n\nObsuwasz się. Nie obsuwaj się dalej.\n\n- {{org}}",
+                        "Coś się z tobą zmieniło i nie na lepsze.\n\nTwoje liczby zmieniły się razem z tym.\n\n- {{org}}",
+                        "Mieliśmy cię wysoko. Już nie aż tak.\n\nWróć do formy.\n\n- {{org}}"
+                    ]
+                }
+            },
+            "favour_package": {
+                "subject": [
+                    "Drobne zlecenie",
+                    "Coś trzeba przewieźć",
+                    "Robota kurierska",
+                    "Zanieś to w jedno miejsce",
+                    "Łatwy zarobek"
+                ],
+                "body": [
+                    "Nasz człowiek przekazał ci paczkę. Idzie do {{location}}, masz {{minutes}} minut.\n\nNie otwieraj jej. Nie spóźnij się. Nie daj się śledzić.\n\n- {{org}}",
+                    "Masz paczkę. {{location}}, {{minutes}} minut.\n\nZostaw ją i odejdź, jakby cię tam nigdy nie było.\n\n- {{org}}",
+                    "Prosta robota. Paczka idzie do {{location}}.\n\nMasz {{minutes}} minut, zanim zaczniemy zakładać najgorsze.\n\n- {{org}}",
+                    "Paczka do {{location}}. {{minutes}} minut na zegarze.\n\nMapa poniżej. Nie każ nam nikogo za nią wysyłać.\n\n- {{org}}"
+                ]
+            },
+            "favour_hit": {
+                "subject": [
+                    "Problem do rozwiązania",
+                    "Ktoś za dużo gada",
+                    "Sprzątanie",
+                    "Padło pewne nazwisko",
+                    "On musi przestać"
+                ],
+                "body": [
+                    "Ktoś jest dla nas problemem. Kręci się teraz przy {{location}}.\n\nSpraw, żeby przestał być problemem w {{minutes}} minut. Nie daj się zobaczyć.\n\n- {{org}}",
+                    "Przy {{location}} jest gość, za którym nikt nie zatęskni.\n\n{{minutes}} minut, zanim się przeniesie. Ten zapamiętamy.\n\n- {{org}}",
+                    "Szczur siedzi przy {{location}}.\n\nZałatw go, jak chcesz. Byle w {{minutes}} minut.\n\n- {{org}}",
+                    "{{location}}. Nasz problem stoi właśnie tam.\n\n{{minutes}} minut. Mapa poniżej.\n\n- {{org}}"
+                ]
+            },
+            "favour_vehicle": {
+                "subject": [
+                    "Fura pełna towaru musi zniknąć",
+                    "Pewne auto ma zniknąć",
+                    "Do spalenia",
+                    "Luźny koniec na kołach",
+                    "Na złom z tym"
+                ],
+                "body": [
+                    "Przy {{location}} stoi auto, które ma przestać istnieć.\n\nSpal je, rozbij, zepchnij z klifu. {{minutes}} minut.\n\n- {{org}}",
+                    "Auto przy {{location}} to luźny koniec.\n\nZrób z niego złom w {{minutes}} minut i jesteśmy kwita.\n\n- {{org}}",
+                    "Ktoś zostawił swoją furę przy {{location}}.\n\nSzkoda by było, gdyby coś jej się stało w ciągu najbliższych {{minutes}} minut.\n\n- {{org}}",
+                    "{{location}}. Jeden pojazd. {{minutes}} minut.\n\nNie obchodzi nas jak. Mapa poniżej.\n\n- {{org}}"
+                ]
+            },
+            "favour_done": {
+                "subject": [
+                    "Dobra robota",
+                    "A więc załatwione",
+                    "Odnotowane i docenione",
+                    "Czysta robota",
+                    "Mamy u ciebie dług"
+                ],
+                "body": [
+                    "Słyszeliśmy, że poszło czysto.\n\nSzefowie zauważyli. Zobaczysz to w tym, jak cię traktujemy.\n\n- {{org}}",
+                    "Robota zrobiona i nikt nie zadaje pytań.\n\nDokładnie tak, jak lubimy. Mamy u ciebie dług.\n\n- {{org}}",
+                    "Wieści wróciły. Dobra robota.\n\nTrzymaj poziom, a drzwi zaczną się otwierać.\n\n- {{org}}",
+                    "Załatwione. Bez bałaganu, bez nazwisk.\n\nJesteś dziś dla nas wart więcej niż wczoraj.\n\n- {{org}}"
+                ]
+            },
+            "favour_enemy": {
+                "subject": [
+                    "Wybrałeś stronę",
+                    "To było nasze",
+                    "Wiemy, że to ty",
+                    "Źli ludzie, zła robota",
+                    "Prowadzimy rachunki"
+                ],
+                "body": [
+                    "To była nasza własność, a ty odwalałeś brudną robotę dla {{rival}}.\n\nNie zapominamy twarzy. Uważaj na siebie.\n\n- {{org}}",
+                    "Zrobiłeś nam robotę na zlecenie {{rival}} i myślałeś, że nikt tego nie połączy.\n\nMy połączyliśmy. Każde nasze drzwi właśnie zrobiły się cięższe.\n\n- {{org}}",
+                    "Uderzyłeś w nas, żeby zadowolić {{rival}}. W porządku.\n\nTakie wybory mają cenę, a my prowadzimy rachunki.\n\n- {{org}}",
+                    "{{rival}} wskazał palcem, a ty ruszyłeś. Na nas.\n\nPrzypomnij to sobie, kiedy następnym razem będziesz czegoś od nas potrzebował.\n\n- {{org}}"
+                ]
+            },
+            "favour_fail": {
+                "subject": [
+                    "Rozczarowanie",
+                    "To się nie wydarzyło",
+                    "Zauważyliśmy",
+                    "Powiedziałeś tak",
+                    "Zmarnowany czas"
+                ],
+                "body": [
+                    "Robota nie została zrobiona.\n\nNie rozdajemy takich szans dwa razy z rzędu. Zapamiętaj, czyj czas zmarnowałeś.\n\n- {{org}}",
+                    "Poprosiliśmy o jedną rzecz. Wciąż nie jest zrobiona, a teraz jest już za późno.\n\nSzefowie zapamiętają.\n\n- {{org}}",
+                    "Powiedziałeś tak, a potem nic się nie wydarzyło.\n\nTo cię u nas kosztuje.\n\n- {{org}}",
+                    "Termin przyszedł i minął.\n\nNastępnym razem damy robotę komuś, kto ją kończy.\n\n- {{org}}"
+                ]
+            }
+        },
+        "thread_failed": {
+            "no_location": "Kupujący nie miał bezpiecznego miejsca na spotkanie. Deal odwołany.",
+            "stolen": "Paczki nie było, gdy kupujący dotarł na miejsce."
+        },
+        "templates": {
+            "opener": {
+                "broke": [
+                    "elo, ogłoszenie z {{drug}} nadal aktualne?",
+                    "widziałem twoją stronę z {{drug}}. masz jeszcze?",
+                    "dalej robisz w {{drug}}? uprzedzam, nie mam za dużo hajsu",
+                    "{{drug}}, to jeszcze gra? ale dużo nie wydam",
+                    "elo. {{drug}}. nie zapłacę dużo ale nie zmarnuję ci czasu",
+                    "działasz jeszcze? potrzebuję {{drug}} ale operuję groszami",
+                    "hej, {{drug}} jeszcze jest? ostrzegam, w tym tygodniu cienko u mnie"
+                ],
+                "cheap": [
+                    "elo widziałem ogłoszenie z {{drug}}. masz jeszcze coś?",
+                    "{{drug}} nadal dostępne czy ta strona umarła",
+                    "siema. ogłoszenie mówi {{drug}}. aktualne?",
+                    "masz jeszcze {{drug}}?",
+                    "{{drug}}. jest? i ile mnie to wyniesie",
+                    "elo widziałem post z {{drug}}. żyje to jeszcze czy nie",
+                    "to ty ruszasz {{drug}}? masz towar?"
+                ],
+                "rushed": [
+                    "{{drug}}. masz na już?",
+                    "widziałem ogłoszenie. {{drug}} na stanie? muszę wiedzieć szybko",
+                    "masz {{drug}} czy szukam dalej",
+                    "twoja strona mówi {{drug}}. nadal prawda?",
+                    "{{drug}}. teraz. masz czy nie",
+                    "potrzebuję {{drug}} na dziś wieczór. działasz?",
+                    "ktoś mówił że ruszasz {{drug}}. prawda to?"
+                ],
+                "regular": [
+                    "hej, widziałem twoje ogłoszenie z {{drug}}. nadal dostępne?",
+                    "elo twoja strona wyskoczyła mi przy {{drug}}. masz towar?",
+                    "co tam. szukam {{drug}}, widziałem że sprzedajesz",
+                    "hej stary, masz jeszcze {{drug}}?",
+                    "elo dalej ruszasz {{drug}}?",
+                    "hej, kolega podesłał mi twoją stronę z {{drug}}. aktualne?",
+                    "co tam, masz {{drug}} przy sobie na teraz?"
+                ],
+                "rich": [
+                    "Dobry wieczór. Czy oferta na {{drug}} jest nadal aktualna?",
+                    "Pana ogłoszenie wyskoczyło mi przy wyszukiwaniu {{drug}}. Nadal na stanie?",
+                    "Witam. Jestem zainteresowany {{drug}}, jeśli pan jeszcze ma.",
+                    "Widziałem ogłoszenie. Czy {{drug}} jest jeszcze dostępny?",
+                    "Dobry wieczór. Rozumiem, że ma pan {{drug}}.",
+                    "Pana oferta na {{drug}} wpadła mi w oko. Nadal pan sprzedaje?",
+                    "Witam. Chciałbym nabyć trochę {{drug}}, da się coś załatwić?"
+                ]
+            },
+            "offer": {
+                "broke": [
+                    "no to {{qty}}x. ${{price}} za sztukę, ${{total}} razem. to wszystko co mam",
+                    "ok czyli {{qty}}. ${{price}} za sztukę to mój limit, ${{total}}. da radę?",
+                    "chcę {{qty}}. ${{price}} za sztukę to wszystko co uzbieram",
+                    "{{qty}} mi trzeba. ${{price}} za sztukę, ${{total}}. to cały słoik",
+                    "słuchaj. {{qty}}x po ${{price}}. ${{total}} i jestem wyczyszczony",
+                    "mogę wziąć {{qty}} po ${{price}}. ${{total}}. to wszystko z konta"
+                ],
+                "cheap": [
+                    "{{qty}}x. ${{price}} za sztukę, ${{total}} razem. tyle płacę",
+                    "wezmę {{qty}} po ${{price}} za sztukę. ${{total}}. nie wyciskaj mnie",
+                    "{{qty}} sztuk, ${{price}} za każdą. to ${{total}}. pasuje?",
+                    "{{qty}}x, ${{price}} za sztukę. ${{total}}. bierz albo znajdę kogoś innego",
+                    "${{price}} za sztukę za {{qty}}. ${{total}}. to cena rynkowa i wiesz o tym",
+                    "{{qty}} po ${{price}}. ${{total}} razem. bez gierek"
+                ],
+                "rushed": [
+                    "{{qty}}x, ${{price}} za sztukę, ${{total}}. szybko, tak czy nie",
+                    "wezmę {{qty}} po ${{price}}. ${{total}} razem. spieszę się",
+                    "{{qty}}. ${{price}} za sztukę, ${{total}}. robimy to czy nie",
+                    "{{qty}} po ${{price}}. ${{total}}. odpowiadaj",
+                    "${{price}} za sztukę, {{qty}} sztuk, ${{total}}. zegar tyka",
+                    "{{qty}}x ${{price}}. ${{total}}. tak albo znikam"
+                ],
+                "regular": [
+                    "spoko. {{qty}}x po ${{price}} za sztukę, ${{total}} razem. fair?",
+                    "wezmę {{qty}}. daję ${{price}} za sztukę, ${{total}} razem",
+                    "{{qty}} sztuk po ${{price}}. ${{total}}. gramy?",
+                    "{{qty}} po ${{price}} za sztukę mi pasuje. ${{total}} razem",
+                    "co powiesz na {{qty}}x, ${{price}} za sztukę. ${{total}}",
+                    "wezmę {{qty}} po ${{price}}. to ${{total}}, zgadza się?"
+                ],
+                "rich": [
+                    "{{qty}} sztuk po ${{price}}. ${{total}} razem. Za prawdziwy towar płacę dobrze.",
+                    "Wezmę {{qty}}. ${{price}} za sztukę, ${{total}}. Jakość ma się zgadzać z ogłoszeniem.",
+                    "{{qty}}x po ${{price}}. ${{total}}. Mogę być hojny, jeśli pójdzie gładko.",
+                    "{{qty}} po ${{price}}. ${{total}}. Nie tracę czasu na małe zamówienia.",
+                    "Wezmę {{qty}} sztuk, ${{price}} za każdą. ${{total}} przy odbiorze.",
+                    "{{qty}}x po ${{price}} za sztukę. ${{total}}. Bez kombinowania, mam nadzieję."
+                ]
+            },
+            "counter": {
+                "broke": [
+                    "mogę dać ${{price}}. to hajs który był na co innego",
+                    "${{price}} za sztukę. dociśniesz i po prostu odpadam",
+                    "ok ${{price}}. skrobię już po dnie",
+                    "${{price}}. liczyłem dwa razy, tyle mam",
+                    "dam ${{price}} za sztukę. to już pożyczone pieniądze",
+                    "${{price}} za sztukę i cały tydzień jem płatki"
+                ],
+                "cheap": [
+                    "${{price}} za sztukę. i tak już jestem hojny",
+                    "dam ${{price}}. nie przeciągaj",
+                    "dobra, ${{price}} za sztukę. to już jest naciągane",
+                    "${{price}}. to moja liczba",
+                    "${{price}} za sztukę. wiem po ile ten towar chodzi",
+                    "zapłacę ${{price}}. ani dolara więcej"
+                ],
+                "rushed": [
+                    "${{price}} za sztukę. możemy już działać",
+                    "ok ${{price}}. dosłownie czekam na ciebie",
+                    "${{price}} za sztukę. koniec. jedziemy",
+                    "${{price}}. deal?",
+                    "${{price}} za sztukę, już jadę",
+                    "dobra. ${{price}}. powiedz tak"
+                ],
+                "regular": [
+                    "mogę się naciągnąć do ${{price}} za sztukę",
+                    "${{price}} za sztukę. widzimy się na miejscu",
+                    "dobra, ${{price}} za sztukę. i to ja przyjeżdżam do ciebie",
+                    "${{price}} za sztukę i jestem zadowolony",
+                    "spotkajmy się na ${{price}} za sztukę",
+                    "co powiesz na ${{price}} za sztukę i zamykamy temat"
+                ],
+                "rich": [
+                    "${{price}} za sztukę. Rozsądny krok w górę.",
+                    "Mogę dać ${{price}} za sztukę. Nie targuję się dla sportu.",
+                    "${{price}} za sztukę. Nie przeciągajmy tego.",
+                    "${{price}} za sztukę. To uczciwy krok.",
+                    "Dam ${{price}}. Cenię swój czas bardziej niż tę różnicę.",
+                    "${{price}} za sztukę. Zamknijmy to."
+                ]
+            },
+            "agreed": {
+                "broke": [
+                    "tak. ok. dzięki, serio",
+                    "deal. nie wiesz jak bardzo tego potrzebowałem",
+                    "ok spoko. wchodzę",
+                    "tak. dzięki bracie, szczerze",
+                    "deal. właśnie uratowałeś mi tydzień",
+                    "ok. zrobione. szanuję"
+                ],
+                "cheap": [
+                    "dobra, deal",
+                    "spoko. załatwione",
+                    "no dobra. zrobione",
+                    "dobra. deal",
+                    "zrobione. wystarczająco fair",
+                    "no dobra, umowa stoi"
+                ],
+                "rushed": [
+                    "dobrze. zrobione",
+                    "tak. w końcu",
+                    "deal. już się ruszam",
+                    "tak. jedziemy",
+                    "zrobione. ruszam",
+                    "deal. teraz"
+                ],
+                "regular": [
+                    "git. deal",
+                    "dobra, umowa stoi",
+                    "spoko, klepnięte",
+                    "no deal",
+                    "sztos, zrobione",
+                    "pasuje mi. deal"
+                ],
+                "rich": [
+                    "Mamy umowę",
+                    "Tak",
+                    "Znakomicie",
+                    "Ustalone.",
+                    "Dobrze. Jesteśmy umówieni",
+                    "Zrobione. Doceniam czyste negocjacje"
+                ]
+            },
+            "counter_accepted": {
+                "broke": [
+                    "niech będzie ${{price}}. jestem wyczyszczony ale ok",
+                    "dobra, ${{price}}. deal",
+                    "ok ${{price}} za sztukę. zrobione",
+                    "${{price}} ok. może być",
+                    "deal za ${{price}}. dzięki że poszedłeś mi na rękę",
+                    "${{price}} za sztukę. dzięki"
+                ],
+                "cheap": [
+                    "ehh. dobra, ${{price}}. deal",
+                    "no to ${{price}} za sztukę. zrobione",
+                    "dobra ${{price}}. twardo się targujesz",
+                    "${{price}}. niech będzie",
+                    "dobra, ${{price}}. tak lepiej"
+                ],
+                "rushed": [
+                    "${{price}}, dobra!",
+                    "tak ${{price}}, dam radę",
+                    "${{price}} za sztukę. ruszamy",
+                    "okej niech będzie ${{price}}",
+                    "zrobione! ${{price}}, tylko szybko",
+                    "${{price}} za sztukę, dobra, byle szybko"
+                ],
+                "regular": [
+                    "dobra ${{price}} za sztukę, deal",
+                    "${{price}} pasuje, zrobione",
+                    "spoko, ${{price}} za sztukę",
+                    "${{price}} za sztukę, mi to gra",
+                    "no dobra, ${{price}}",
+                    "${{price}} jest ok. robimy to"
+                ],
+                "rich": [
+                    "${{price}} za sztukę. Zgoda",
+                    "Dobrze. ${{price}} za sztukę. Mamy umowę",
+                    "${{price}}. Zrobione",
+                    "${{price}}. Działajmy",
+                    "Bardzo dobrze. ${{price}} za sztukę",
+                    "${{price}} za sztukę. Jesteśmy umówieni"
+                ]
+            },
+            "declined": {
+                "broke": [
+                    "no jasne. warto było spróbować",
+                    "no ok. i tak nie było mnie na ciebie stać",
+                    "dobra. może jak ceny będą lepsze",
+                    "no tak myślałem",
+                    "warto było spróbować"
+                ],
+                "cheap": [
+                    "jak chcesz. twoja strata",
+                    "dobra. ktoś inny zrobi taniej",
+                    "no to nara",
+                    "twoja strata",
+                    "jak chcesz, oszuście"
+                ],
+                "rushed": [
+                    "ty tak serio. zmarnowany czas",
+                    "spadaj",
+                    "super. dzięki za nic",
+                    "strata czasu",
+                    "i tak znalazłem kogoś innego"
+                ],
+                "regular": [
+                    "spoko. odezwij się innym razem",
+                    "nie ma sprawy. nara",
+                    "dobra, poszukam gdzie indziej",
+                    "spoko, innym razem",
+                    "spoko stary, trzymaj się"
+                ],
+                "rich": [
+                    "Rozczarowujące...",
+                    "Szkoda. Znajdę kogoś innego",
+                    "Szkoda",
+                    "A to szkoda.",
+                    "W takim razie innym razem"
+                ]
+            },
+            "walked": {
+                "broke": [
+                    "kończę. nie dosięgnę twoich cen",
+                    "zapomnij. to nigdy nie miało wyjść",
+                    "no nie",
+                    "nie no odleciałem, jestem spłukany lol, nie stać mnie na twój towar",
+                    "nie mogę się dalej przerzucać o hajs którego nie mam"
+                ],
+                "cheap": [
+                    "nie, ty okradasz ludzi. wypadam",
+                    "zapomnij, jesteś chciwy",
+                    "koniec marnowania mojego czasu",
+                    "nie, obniż te ceny ziomek",
+                    "nie płacę cen dla turystów, za kogo ty mnie masz"
+                ],
+                "rushed": [
+                    "to tyle, kończę",
+                    "nie, znajdę kogoś szybszego i tańszego",
+                    "zapomnij",
+                    "nie mam na to czasu",
+                    "koniec gadania. nara"
+                ],
+                "regular": [
+                    "nie stary, odlatujesz z ceną. wypadam",
+                    "zapomnij, za drogo dla mnie",
+                    "tak się nie robi interesów",
+                    "to donikąd nie zmierza. nara",
+                    "nieee, kończę"
+                ],
+                "rich": [
+                    "Nie dam się oskubać, do widzenia.",
+                    "To przestało być warte mojego czasu",
+                    "Nie, nie dam się znowu tak naciągnąć.",
+                    "Odmawiam bycia wyciskanym. Żegnam.",
+                    "Marnujemy nawzajem swój czas."
+                ]
+            },
+            "expired": [
+                "widać jesteś zajęty. znalazłem innego dostawcę",
+                "brak odpowiedzi. załatwiłem gdzie indziej",
+                "zostawiłeś mnie na lodzie. deal odwołany",
+                "za długo to trwało. poszedłem dalej",
+                "zamilkłeś. załatwione gdzie indziej",
+                "czekałem wystarczająco. koniec",
+                "zero odzewu. idę dalej",
+                "znalazłem kogoś innego."
+            ],
+            "buyer_cancel": [
+                "coś mi wypadło. zapomnij o dealu",
+                "dziś nie dam rady. wypadam",
+                "plany się zmieniły. deal odwołany",
+                "muszę lecieć. może innym razem",
+                "nie czuję tego. zapomnij",
+                "zmieniłem zdanie. nie przyjeżdżaj",
+                "sorry. dziś się nie uda"
+            ],
+            "complete": {
+                "broke": [
+                    "mam. nie wiesz ile to dla mnie znaczy, dzięki",
+                    "odebrane. dzięki że poszedłeś mi na rękę",
+                    "wszystko gra. zapamiętam to",
+                    "mam. dzięki stary",
+                    "wszystko jest. dzięki za deal",
+                    "odebrane. dzięki że mnie nie oszukałeś"
+                ],
+                "cheap": [
+                    "mam",
+                    "nice, dzięki",
+                    "u mnie wszystko gra",
+                    "dzięki",
+                    "wszystko jest, dzięki za deal",
+                    "dzięki za deal"
+                ],
+                "rushed": [
+                    "mam",
+                    "odebrane, dzięki",
+                    "zabrane. dzięki",
+                    "mam. nara",
+                    "mam to, znikam",
+                    "odebrane. git"
+                ],
+                "regular": [
+                    "mam, miło się robiło interesy",
+                    "odebrane, zaraz przetestuję",
+                    "wszystko gra. uważaj na siebie",
+                    "mam, szanuję",
+                    "wszystko git, dobrze się handlowało",
+                    "zabrane, dzięki bracie"
+                ],
+                "rich": [
+                    "Odebrane. Odezwę się",
+                    "Znakomicie. Dziękuję za transakcję",
+                    "Mam. Jeszcze raz dzięki!",
+                    "Odebrane. Na razie wygląda dobrze, nie mogę się doczekać.",
+                    "Mam. Powtórzymy to.",
+                    "Odebrane. Dobry interes."
+                ]
+            },
+            "proposal": {
+                "npc": [
+                    "jestem przy {{location}} z gotówką. masz {{minutes}} minut żeby mi to dostarczyć",
+                    "przynieś to do {{location}}. czekam, za {{minutes}} minut muszę iść więc szybko",
+                    "{{location}}. dasz mi do ręki i płacę na miejscu. masz tylko {{minutes}} minut",
+                    "spotkajmy się przy {{location}}. masz {{minutes}} minut, spóźnisz się to mnie nie będzie",
+                    "przynieś mi to, masz {{minutes}} minut.",
+                    "będę czekał przy {{location}} przez {{minutes}} minut. nie każ mi tam sterczeć"
+                ],
+                "deaddrop": [
+                    "zostaw to przy {{location}} i odejdź. masz {{minutes}} minut żeby to tam dostarczyć",
+                    "podrzuć to do {{location}} w {{minutes}} minut. hajs wpada na apkę jak odbiorę",
+                    "masz {{minutes}} minut żeby to tu schować",
+                    "połóż to przy {{location}}. nie dłużej niż {{minutes}} minut, do tego czasu muszę to mieć",
+                    "masz {{minutes}} minut żeby to dowieźć do {{location}}. zostaw i idź, nie kręć się",
+                    "podrzuć do {{location}}. potrzebuję tego w max {{minutes}} minut, nie guzdraj się"
+                ]
+            },
+            "delivery_go": {
+                "npc": [
+                    "już tam jestem. nie każ mi sterczeć",
+                    "leć, tylko szybko",
+                    "czekam, pospiesz się",
+                    "już tam stoję",
+                    "pospiesz się. czekam na ciebie"
+                ],
+                "deaddrop": [
+                    "zostaw i idź. hajs po tym jak odbiorę",
+                    "zostaw czysto. nikt nie patrzy",
+                    "dowieź i odejdź. resztą się zajmę",
+                    "podrzuć i zjeżdżaj",
+                    "zostaw czysto, resztę zrobię ja"
+                ]
+            },
+            "running_low": [
+                "zegar tyka. jesteś blisko?",
+                "ile jeszcze? nie mogę siedzieć przy {{location}} całą noc",
+                "daj znak że się ruszasz. nie będę czekać wiecznie",
+                "zaczynam myśleć że nie przyjdziesz. {{location}}, tak?",
+                "ruszasz się czy nie? nie mam dużo czasu",
+                "zaraz będę musiał iść",
+                "{{location}}. wciąż tu jestem, ale już niedługo",
+                "jak to wygląda? czas prawie minął"
+            ],
+            "late_cancel": [
+                "koniec czekania. deal odwołany, a twoja ocena to pokaże",
+                "zmarnowałeś mi cały dzień. anulowane. jedna gwiazdka",
+                "niesolidny. wypadam, a ludzie się dowiedzą",
+                "nie. deal odwołany. trzeba było iść do prawdziwego dostawcy",
+                "poszedłem. teraz się już nie fatyguj",
+                "to tyle, deal umarł. dzięki za nic",
+                "poszedłem. twoja ocena powie dlaczego"
+            ],
+            "filler": [
+                "czekaj",
+                "sekunda",
+                "daj pomyśleć",
+                "hmm",
+                "daj mi chwilę",
+                "moment",
+                "liczę hajs",
+                "przeliczam",
+                "czekaj no",
+                "chwila",
+                "zaraz"
+            ],
+            "counter_hardball": [
+                "zły ruch. teraz jest ${{price}} za sztukę",
+                "potarguj się jeszcze raz a spadnie znowu. ${{price}}",
+                "nie. teraz ${{price}} za sztukę. trzeba było brać pierwszą liczbę",
+                "każde dociskanie cię kosztuje. ${{price}} za sztukę",
+                "ciśnij dalej a będzie spadać. ${{price}}",
+                "wyciskałeś, to teraz jest ${{price}} za sztukę",
+                "${{price}} teraz. tyle kosztuje chciwość"
+            ],
+            "low_rating": [
+                "swoją drogą twoja ocena to śmieć. nikt tu nie płaci pełnej ceny komuś z taką renomą",
+                "ludzie gadają. masz mało gwiazdek, więc nie licz na cenę rynkową od nikogo",
+                "ogarnij swoją ocenę. z takimi gwiazdkami nikt nie zapłaci tyle ile to naprawdę warte",
+                "twoja reputacja to problem. mało gwiazdek to niskie oferty, tak to działa",
+                "dałbym więcej gdybyś miał lepszą ocenę. na razie nikt nie da",
+                "zbijam cenę przez twoje gwiazdki, nie przez towar",
+                "napraw ocenę to zapłacę prawdziwe pieniądze"
+            ],
+            "good_quality": {
+                "regular": [
+                    "ten {{drug}} to konkret. dużo lepszy niż się spodziewałem",
+                    "jakość z górnej półki, szanuję",
+                    "zadbałeś o mnie, to jest ten dobry {{drug}}",
+                    "to jest warte więcej niż zapłaciłem, mega jakość",
+                    "najlepszy {{drug}} jaki miałem od kogokolwiek, na pewno wrócę",
+                    "nie musiałeś dawać mi tego dobrego. szacunek",
+                    "to jest ten towar z najwyższej półki"
+                ]
+            },
+            "poor_quality": {
+                "regular": [
+                    "jakość tego {{drug}} jest słaba stary, wiesz o tym",
+                    "to jest niska półka a policzyłeś mi pełną cenę",
+                    "zapłaciłem dobre pieniądze i dostałem {{drug}} z dna",
+                    "ten {{drug}} jest zmieszany na maksa. niewart tego co ci dałem",
+                    "to jest warte ledwo połowę tego co zapłaciłem",
+                    "sprzedałeś mi tani towar po prawdziwej cenie",
+                    "moja babcia ma mocniejszy towar a nie żyje od sześciu lat",
+                    "chyba sprzedałeś mi przeterminowany towar",
+                    "bracie ten {{drug}} to śmieć",
+                    "to smakuje jak gówno, nawet lokalny ćpun tego nie chce",
+                    "to jest w torebce i dalej śmierdzi",
+                    "to nawet nie wygląda jak {{drug}}",
+                    "lepsze rzeczy wyciągałem ze śmietnika za apteką",
+                    "jakość tego to tragedia ziomek, nawet tego nie chcę",
+                    "policzyłeś mi ceny z butiku za ten syf",
+                    "serio mógłbym to oprawić w ramkę jako ostrzeżenie dla innych, jakość z dupy"
+                ]
+            },
+            "drop_ack": {
+                "broke": [
+                    "ok dobrze. daj mi chwilę, idę pieszo",
+                    "dzięki. odbiorę jak tylko dam radę",
+                    "przyjąłem. kawałek drogi na nogach ale będę",
+                    "dobra. zaraz to odbieram",
+                    "ok. hajs będzie u ciebie jak tylko będę to miał w ręku"
+                ],
+                "cheap": [
+                    "dobra. wpadnę za chwilę",
+                    "spoko. zaraz zgarniam",
+                    "ok. nie martw się, odbiorę",
+                    "przyjąłem. niedługo tam będę",
+                    "git. zgarnę jak będę w okolicy"
+                ],
+                "rushed": [
+                    "w końcu. już jadę",
+                    "dobrze. jestem blisko, zgarniam",
+                    "ok ruszam. powinno pójść szybko",
+                    "dobra. za minutę to mam",
+                    "robi się. nie kręć się tam"
+                ],
+                "regular": [
+                    "git. zaraz to zgarnę",
+                    "dobra. już tam jadę",
+                    "idealnie. odbieram za chwilę",
+                    "dzięki. niedługo to odbiorę",
+                    "szacun. już jadę po to"
+                ],
+                "rich": [
+                    "Przyjąłem. Ktoś to wkrótce odbierze.",
+                    "Dobrze. Zaraz zostanie odebrane.",
+                    "Zrozumiałem. Jestem w drodze.",
+                    "Znakomicie. Każę to odebrać.",
+                    "Bardzo dobrze. To nie potrwa długo."
+                ]
+            },
+            "counter_greedy": {
+                "broke": [
+                    "${{price}}?? jestem biedny a nie głupi",
+                    "jestem spłukany, nie głupi. ${{price}} xd",
+                    "próbujesz okraść człowieka bez pieniędzy",
+                    "${{price}} za sztukę. tyle nie mam na całym koncie",
+                    "za {{drug}}? spadaj stary"
+                ],
+                "cheap": [
+                    "${{price}}? spadaj xd",
+                    "${{price}} za sztukę?? wyglądam ci na bankomat",
+                    "xd nie. to zwykłe zdzierstwo",
+                    "palisz własny towar?",
+                    "${{price}}. za {{drug}}. urwał ci się film",
+                    "to nie cena tylko scam"
+                ],
+                "rushed": [
+                    "${{price}}?? spadaj, nie płacę cen dla turystów",
+                    "przestań marnować mój czas takimi liczbami",
+                    "ty tak na serio. ${{price}}.",
+                    "nie. i zaczynasz mnie wkurzać",
+                    "mówiłem pospiesz się a nie okradnij mnie"
+                ],
+                "regular": [
+                    "${{price}}? no weź, bądź poważny",
+                    "to dwa razy tyle ile to warte i dobrze wiesz",
+                    "nie. musisz myśleć że jestem tu nowy",
+                    "${{price}} xd. udam że tego nie widziałem",
+                    "nie obrażaj mnie, wiem ile kosztuje {{drug}}"
+                ],
+                "rich": [
+                    "Mam pieniądze. To nie czyni ze mnie frajera.",
+                    "${{price}}? Płacę dobrze. Nie płacę głupio.",
+                    "Urocze. Nie.",
+                    "Stać mnie. Po prostu nie jestem idiotą.",
+                    "Zobaczyłeś pieniądze i się podekscytowałeś, prawda."
+                ]
+            },
+            "counter_bargain": {
+                "broke": [
+                    "${{price}}?? tak. tak zanim się zastanowisz",
+                    "deal deal deal. dzięki serio",
+                    "${{price}} za sztukę?! ratujesz mi życie",
+                    "biorę zanim zmienisz zdanie"
+                ],
+                "cheap": [
+                    "${{price}}? xd zrobione. najłatwiejsze tak w życiu",
+                    "sprzedane. btw jesteś w tym słaby",
+                    "zrobione. i nie powiem ci czemu się uśmiecham",
+                    "${{price}} za sztukę. na pewno? nie, nie odpowiadaj. deal"
+                ],
+                "rushed": [
+                    "${{price}}? zrobione, to okazja, nieważne, jestem spóźniony",
+                    "tak. natychmiast tak",
+                    "deal. nawet się nie targuję, to darmowy hajs"
+                ],
+                "regular": [
+                    "${{price}}? stary okradasz sam siebie. deal",
+                    "zrobione. szczerze mogłeś liczyć dwa razy tyle",
+                    "ok to za tanio ale nie będę się kłócić",
+                    "deal. ale naucz się cen, serio"
+                ],
+                "rich": [
+                    "${{price}}? Zapłaciłbym trzy razy tyle. Umowa.",
+                    "Zrobione. Boleśnie zrobione.",
+                    "To było prawie zbyt łatwe. Umowa.",
+                    "Mocno się pan zaniżył. I tak biorę."
+                ]
+            },
+            "counter_refused": {
+                "broke": [
+                    "nie mogę. nie targuję się, naprawdę tyle nie mam",
+                    "to pieniądze których nie mam. chciałbym mieć",
+                    "nie. to poza tym co mam w kieszeni",
+                    "dosłownie nie mogę. to nie taktyka",
+                    "bez szans. te pieniądze dla mnie nie istnieją",
+                    "nie dam rady. jestem już na dnie"
+                ],
+                "cheap": [
+                    "nie. tyle nie płacę",
+                    "za dużo, nie wchodzę w to",
+                    "pas. dużo powyżej tego co planowałem",
+                    "nie. nie za tyle",
+                    "nie. wiem lepiej",
+                    "nie, spróbuj jeszcze raz"
+                ],
+                "rushed": [
+                    "nie. za dużo a mi się kończy czas",
+                    "nie. następna",
+                    "tyle nie zapłacę. przestań przeciągać",
+                    "nie. marnujesz mój czas",
+                    "nie, za dużo. pospiesz się",
+                    "nie. następna liczba albo znikam"
+                ],
+                "regular": [
+                    "to powyżej moich możliwości stary",
+                    "nie, tam nie dojdę. sorry",
+                    "za stromo. nie wyjdzie",
+                    "nie dam tej ceny stary",
+                    "nie, to trochę za dużo dla mnie",
+                    "sorry, to ponad mój budżet"
+                ],
+                "rich": [
+                    "Nie. Płacę dobrze. Nie daję się wykorzystywać.",
+                    "To ponad to, co jestem skłonny wydać.",
+                    "Mam pieniądze. To nie znaczy, że je marnuję.",
+                    "Nie. Wiem, ile to jest warte.",
+                    "To nie jest poważna liczba.",
+                    "Nie. Spróbuj jeszcze raz albo kończymy."
+                ]
+            },
+            "ask": {
+                "broke": [
+                    "potrzebuję {{qty}}. ile liczysz? tylko delikatnie, jestem spłukany",
+                    "{{qty}} sztuk. ile chcesz?",
+                    "ile za {{qty}}? powiedz że tanio",
+                    "{{qty}}. ile mnie to wyniesie? bądź miły",
+                    "ile za {{qty}}, i szczerze, jestem biedny",
+                    "{{qty}} sztuk. daj liczbę którą przeżyję"
+                ],
+                "cheap": [
+                    "{{qty}}. jaka cena? nie próbuj mnie naciągnąć",
+                    "ile chcesz za {{qty}}?",
+                    "daj liczbę za {{qty}}. rozsądną",
+                    "{{qty}}. cena? i nie obrażaj mnie",
+                    "ile mnie kosztuje {{qty}}",
+                    "daj liczbę za {{qty}}. prawdziwą"
+                ],
+                "rushed": [
+                    "{{qty}}. cena. teraz",
+                    "ile za {{qty}}? szybko",
+                    "podaj cenę za {{qty}}, nie robię obchodu po sklepach",
+                    "{{qty}}. ile. szybko",
+                    "cena za {{qty}}, ruszam się",
+                    "{{qty}}. liczba. dawaj"
+                ],
+                "regular": [
+                    "wezmę {{qty}}. ile liczysz?",
+                    "{{qty}} sztuk. jaka twoja cena?",
+                    "ile chcesz za {{qty}}?",
+                    "{{qty}}. co myślisz cenowo?",
+                    "ile by mnie wyniosło {{qty}}?",
+                    "{{qty}} sztuk. podaj cenę"
+                ],
+                "rich": [
+                    "{{qty}} sztuk. Podaj cenę.",
+                    "Chcę {{qty}}. Ile pan liczy za sztukę?",
+                    "Wycena za {{qty}}. Mogę być hojny, jeśli będzie uczciwie.",
+                    "{{qty}}. Jaka jest pana cena?",
+                    "Proszę o wycenę {{qty}}. Rzadko się targuję.",
+                    "{{qty}} sztuk. Pana liczba, proszę."
+                ]
+            },
+            "drop_missing": {
+                "broke": [
+                    "poszedłem do {{location}} i NIC tam nie ma. w ogóle to zostawiłeś",
+                    "nic przy {{location}}. ja na to oszczędzałem stary",
+                    "nic tu nie ma. wykiwałeś mnie",
+                    "nic tu nie ma stary. potrzebowałem tego",
+                    "{{location}} jest puste. w ogóle to zostawiłeś"
+                ],
+                "cheap": [
+                    "nic przy {{location}}. no jasne",
+                    "sprawdziłem {{location}} dwa razy. pusto. dzięki za nic",
+                    "nie ma paczki. wiedziałem że to za piękne",
+                    "pusto. wykiwałeś mnie",
+                    "nic przy {{location}}. to poleci z twojej oceny"
+                ],
+                "rushed": [
+                    "jestem przy {{location}} i jest PUSTO. zmarnowany czas",
+                    "nic tu nie ma. jechałem taki kawał po to",
+                    "pusto. niewiarygodne",
+                    "nic tu nie ma. zmarnowany kurs",
+                    "{{location}}, pusto. dzięki za nic"
+                ],
+                "regular": [
+                    "elo nic nie ma przy {{location}}. ktoś był pierwszy?",
+                    "sprawdziłem {{location}}, żadnej paczki. co się stało",
+                    "nic w miejscówce stary. to na ciebie",
+                    "miejscówka pusta. ktoś mnie ubiegł?",
+                    "nic przy {{location}}. co się stało"
+                ],
+                "rich": [
+                    "Pojechałem do {{location}}. Nic tam nie było. Nie podoba mi się to.",
+                    "Skrytka była pusta. Lepiej pilnuj swoich interesów.",
+                    "Nic przy {{location}}. To źle o panu świadczy.",
+                    "Przyjechałem na puste miejsce. Proszę o wyjaśnienie.",
+                    "{{location}} było puste. Oczekuję więcej."
+                ]
+            },
+            "paid": [
+                "wysłałem hajs",
+                "opłacone, szanuję",
+                "hajs wysłany. dobry interes",
+                "przelane",
+                "zapłacone. nie wydaj wszystkiego naraz"
+            ],
+            "contact_opener": {
+                "broke": [
+                    "elo to znowu ja. masz {{drug}}? jak zwykle krucho z hajsem",
+                    "hej. znowu ja. jest jakiś {{drug}}? tylko delikatnie ze mną",
+                    "twój ulubiony spłukany klient. {{drug}}?",
+                    "elo. znowu potrzebuję {{drug}}. portfel płacze ale muszę"
+                ],
+                "cheap": [
+                    "znowu ja. {{drug}}. tak jak ostatnio, bez śmiesznych cen",
+                    "elo. masz trochę {{drug}}? tym razem uczciwa cena",
+                    "to ja. potrzebuję {{drug}}. nie bądź chciwy dla stałego klienta",
+                    "znowu po {{drug}}. stali klienci mają zniżki nie?"
+                ],
+                "rushed": [
+                    "to ja. {{drug}}. teraz?",
+                    "elo. znowu {{drug}}. szybka akcja",
+                    "ja. potrzebuję {{drug}} asap",
+                    "działasz? {{drug}}. jak zwykle w biegu"
+                ],
+                "regular": [
+                    "elo to ja. masz {{drug}} na teraz?",
+                    "hej stary, znowu ja. jest {{drug}}?",
+                    "co tam. znowu potrzebuję {{drug}}",
+                    "elo. to co zwykle? {{drug}}",
+                    "co robisz, masz {{drug}}?"
+                ],
+                "rich": [
+                    "Witam ponownie. Znajdzie się {{drug}}?",
+                    "To ja. Uzupełniam zapasy {{drug}}.",
+                    "Dobry wieczór. To samo co poprzednio - {{drug}}.",
+                    "Znowu ja. {{drug}}, jeśli pan sprzedaje."
+                ]
+            },
+            "referral_opener": [
+                "elo. {{referrer}} dał mi twój numer, mówił że jesteś dostawcą od {{drug}}. prawda to?",
+                "hej. znajomy {{referrer}}. mówili że nie robisz cyrków. szukam {{drug}}",
+                "{{referrer}} za ciebie ręczył. mówił że załatwisz mi {{drug}}",
+                "siema. {{referrer}} mnie przysłał. potrzebuję {{drug}}, mówili że jesteś solidny",
+                "nie znasz mnie ale {{referrer}} zna. mówił że masz dobry {{drug}}. jeden deal i jak będzie czysto to zachowuję twój numer"
+            ],
+            "contact_request": {
+                "broke": [
+                    "elo to było solidne. btw jestem {{name}}. mogę zapisać twój numer? przysięgam następnym razem też zapłacę",
+                    "jesteś w porządku stary. mam na imię {{name}}. mogę zachować twój kontakt? odezwę się jak będę mniej spłukany",
+                    "btw jestem {{name}}. mogę cię zapisać? tani i solidny to rzadkość"
+                ],
+                "cheap": [
+                    "przyzwoity deal jak na tutejsze standardy. jestem {{name}}. mogę zapisać twój numer?",
+                    "dobra, jesteś fair. mam na imię {{name}}. mogę zachować kontakt na następny raz?",
+                    "będę szczery, to najlepsza cena jaką miałem. jestem {{name}}. mogę cię zapisać?"
+                ],
+                "rushed": [
+                    "szybko. lubię szybko. jestem {{name}}. zapisuję twój numer, spoko?",
+                    "nie marnujesz czasu. mam na imię {{name}}. mogę zachować kontakt?",
+                    "szybko i czysto. btw jestem {{name}}. zapiszę cię na następny raz?"
+                ],
+                "regular": [
+                    "dobrze się handlowało. btw jestem {{name}}. mogę zapisać twój numer na następny raz?",
+                    "jesteś solidny. mam na imię {{name}}. mogę zachować kontakt?",
+                    "gładki deal. jestem {{name}}. zapiszę cię, następnym razem idę prosto do ciebie",
+                    "mówią na mnie {{name}}. mogę cię dodać do kontaktów? wolę kupować od kogoś kogo znam"
+                ],
+                "rich": [
+                    "Jakościowa obsługa. Nazywam się {{name}}. Chciałbym zachować pana kontakt, jeśli nie ma pan nic przeciwko.",
+                    "Wolę pewnego dostawcę niż szukanie po mieście. Mów mi {{name}}. Mogę zapisać pana numer?",
+                    "Poszło dobrze. Jestem {{name}}. Zachowam kontakt na przyszłe zamówienia, zgoda?"
+                ]
+            },
+            "contact_added": {
+                "broke": [
+                    "zapisane. jesteś teraz moim człowiekiem",
+                    "zrobione. odezwę się jak wpadnie hajs",
+                    "sztos. do usłyszenia"
+                ],
+                "cheap": [
+                    "zapisane. trzymaj uczciwe ceny a będę wracać",
+                    "zrobione. do zobaczenia",
+                    "git. odezwę się"
+                ],
+                "rushed": [
+                    "zapisane. nara",
+                    "zrobione. muszę lecieć",
+                    "git. napiszę"
+                ],
+                "regular": [
+                    "zapisane. odezwę się",
+                    "git. do usłyszenia",
+                    "zrobione. dobrze znać solidnego dostawcę",
+                    "zapisałem numer. do zobaczenia"
+                ],
+                "rich": [
+                    "Zapisane. Proszę oczekiwać moich zamówień.",
+                    "Zrobione. Odezwę się.",
+                    "Znakomicie. Do następnego razu."
+                ]
+            },
+            "contact_accept": [
+                "dobra wchodzę. wezmę {{qty}}x po ${{price}}. ${{total}} razem",
+                "no chcę to. {{qty}} sztuk, ${{price}} za każdą. ${{total}}",
+                "dobry timing. dawaj {{qty}}x. ${{total}} po twojej cenie",
+                "nic nie mów. {{qty}} po ${{price}} za sztukę. ${{total}} razem",
+                "deal. {{qty}}x {{drug}}, ${{total}} razem"
+            ],
+            "contact_decline": [
+                "nie, na razie dziękuję",
+                "nie tym razem. z hajsem krucho",
+                "na razie pas. odezwij się innego dnia",
+                "nie. nie za taką cenę dzisiaj",
+                "tę rundę odpuszczam",
+                "nie teraz stary"
+            ],
+            "contact_later": [
+                "teraz nie dam rady. zły moment",
+                "nie dzisiaj. jest gorąco",
+                "innym razem. teraz się nie da",
+                "nie mogę się teraz ruszać. później"
+            ],
+            "contact_neverbuys": [
+                "to JA piszę jak czegoś potrzebuję. nie dzwoń do mnie",
+                "nie. to tak nie działa. ja piszę pierwszy",
+                "nie wciskaj mi towaru. zapytam jak będę chciał",
+                "pomyliły ci się role. to ja składam zamówienia"
+            ],
+            "contact_nag": [
+                "wyluzuj. mówiłem że się odezwę",
+                "dopiero co pytałeś. spokojnie",
+                "przestań mi bombardować telefon stary",
+                "znowu? daj już spokój",
+                "trochę nachalnie nie? zapytam jak będę chciał"
+            ],
+            "contact_block": [
+                "mam cię dość. zapomnij o tym numerze",
+                "to tyle. nie kontaktuj się ze mną więcej",
+                "skończyliśmy. usuwam cię",
+                "jesteś złym interesem. nie pisz do mnie więcej"
+            ],
+            "contact_farewell": [
+                "kończę z tym wszystkim. idę na czysto, tym razem serio. nie pisz na ten numer",
+                "dorwali mnie. psy wszędzie, czyszczę ten telefon. nigdy mnie nie znałeś",
+                "wyjeżdżam z miasta dziś w nocy. nie pytaj czemu. ten numer umiera za godzinę",
+                "moja dziewczyna dowiedziała się o wszystkim. wypadam. kasuję wszystko, trzymaj się",
+                "prawnik mówi że muszę usunąć wszystkie kontakty. nic osobistego. nara",
+                "jutro melduję się na odwyku. nie mogę mieć tego numeru aktywnego. uważaj na siebie",
+                "za dużo gorąca ostatnio. palę ten telefon. jak mnie zobaczysz, to mnie nie znasz"
+            ]
+        },
+        "player_confirm": [
+            "no mam. ile potrzebujesz?",
+            "no jest. ile sztuk?",
+            "jeszcze trochę mam. czego szukasz?",
+            "no żyje temat. ile chcesz?",
+            "na stanie. podaj liczbę"
+        ],
+        "buyer_name_tags": [
+            "Big",
+            "Lil",
+            "Gruby",
+            "Chudy",
+            "Malutki",
+            "Wysoki",
+            "Śmierdzący",
+            "Spocony",
+            "Brudny",
+            "Zafajdany",
+            "Puszysty",
+            "Wkurzony",
+            "Wściekły",
+            "Świrnięty",
+            "Pijany",
+            "Loco",
+            "Dziki",
+            "Zrzędliwy",
+            "Cichy",
+            "Milczący",
+            "Trzęsący",
+            "Poharatany",
+            "Spalony",
+            "Stary",
+            "Słodki",
+            "Farciarz",
+            "Spłukany",
+            "Tandetny",
+            "Bogaty",
+            "Szybki",
+            "Wolny",
+            "Śpiący",
+            "Głodny",
+            "Podejrzany",
+            "Głośny",
+            "Zjechany",
+            "Napakowany",
+            "Czarny",
+            "Biały",
+            "Niebieski",
+            "Gładki",
+            "Niezdarny",
+            "Nie",
+            "Prawdziwy",
+            "Łysy",
+            "Brzydki",
+            "Śliczny"
+        ],
+        "buyer_name_names": [
+            "Tim",
+            "Boy",
+            "Diddler",
+            "Bozo",
+            "Gangsta",
+            "Tyrone",
+            "Tommy",
+            "Lucia",
+            "Cholo",
+            "Alien",
+            "Jason",
+            "Xing",
+            "Marco",
+            "Rico",
+            "Pablo",
+            "Diesel",
+            "Nacho",
+            "Gas",
+            "Chico",
+            "Vladimir",
+            "Omar",
+            "Kev",
+            "Ricky",
+            "Dwayne",
+            "Barbie",
+            "Princess",
+            "Moe",
+            "Ray",
+            "Snake",
+            "Tank",
+            "Bones",
+            "Pizza",
+            "Mechanic",
+            "Fingers",
+            "Pockets",
+            "Slice",
+            "Domino",
+            "Toe",
+            "Crackhead",
+            "Mouse",
+            "Dealer",
+            "Addict",
+            "Killer",
+            "Smoke",
+            "Rat",
+            "Kuz",
+            "Bobby",
+            "Officer",
+            "Dumbass",
+            "Officer",
+            "Nickel",
+            "Dime",
+            "Chains",
+            "Tooth",
+            "Trevor",
+            "Sanchez",
+            "Duke",
+            "Mike",
+            "Wolf"
+        ],
+        "payment_received": "Otrzymano płatność: ${{total}}"
+    },
+    "street": {
+        "offer_prompt": "Zaoferuj towar"
+    },
+    "corner": {
+        "blip": "Róg",
+        "post_prompt": "Zajmij róg",
+        "posted": "Stoisz na rogu. Kupujący będą do ciebie podchodzić",
+        "error": {
+            "invalid": "Ten róg jest teraz niedostępny",
+            "too_far": "Jesteś za daleko",
+            "laying_low": "Na dzielni jest teraz za gorąco, nikt nie kupuje",
+            "full": "Ktoś już pracuje na tym rogu",
+            "no_drugs": "Nie masz tu już nic do sprzedania"
+        }
+    },
+    "drugs": {
+        "unknown_label": "Nieposortowane"
+    },
+    "delivery": {
+        "handover_prompt": "Przekaż towar",
+        "dropoff_prompt": "Zostaw paczkę",
+        "blip": "Miejsce transakcji",
+        "error": {
+            "no_items": "Nie masz przy sobie towaru do tej transakcji",
+            "too_far": "Jesteś za daleko",
+            "invalid": "Ta transakcja jest już nieaktualna",
+            "cannot_carry": "Nie możesz tego unieść"
+        },
+        "pickup_prompt": "Weź paczkę",
+        "queued_payout": "Hajs ze skrytki doszedł, gdy cię nie było: ${{total}}"
+    },
+    "org": {
+        "contact_prompt": "Porozmawiaj",
+        "favour": {
+            "blip": "Cel przysługi",
+            "blip_package": "Miejsce zrzutu paczki",
+            "requested": "{{org}} ma dla ciebie zadanie, szczegóły wyślą wkrótce mailem",
+            "requested_app": "{{org}} ma dla ciebie zadanie, odezwą się wkrótce przez aplikację PLUG",
+            "drop_prompt": "Zostaw paczkę",
+            "error": {
+                "invalid": "Nie ma tu nic do zostawienia",
+                "too_far": "Jesteś za daleko",
+                "no_items": "Nie masz paczki"
+            }
+        },
+        "error": {
+            "laying_low": "{{name}} przyczaił się na razie i nie będzie rozmawiać",
+            "laying_low_fallback": "Organizacja",
+            "limit_reached": "Ta organizacja nie przyjmuje teraz więcej towaru"
+        }
+    },
+    "fixer": {
+        "prompt": "Porozmawiaj",
+        "unlocked": "Odblokowano {{org}}. Ich lokalizacja jest teraz widoczna i możesz z nimi handlować",
+        "error": {
+            "no_items": "Nie masz wystarczająco przedmiotów, by zapłacić"
+        }
+    },
+    "police": {
+        "blip": "Zrzut operacyjny",
+        "no_access": "Nie masz dostępu do tego urządzenia"
+    },
+    "dispatch": {
+        "titles": [
+            "Podejrzana aktywność",
+            "Zgłoszono handel narkotykami"
+        ],
+        "messages": [
+            "Ktoś oferuje narkotyki na ulicy",
+            "Ktoś handluje narkotykami w okolicy",
+            "Zgłoszono dilera narkotyków"
+        ]
+    },
+    "editor": {
+        "no_permission": "Nie masz do tego uprawnień",
+        "save_failed": "Zapis nie powiódł się"
+    },
+    "nui": {
+        "currency": "$",
+        "setup": {
+            "title": "Konfiguracja i importy",
+            "subtitle": "Uruchom import danych, by zasilić zasób",
+            "explain_1": "Importy to gotowe paczki danych, które wypełniają tabele zasobu za ciebie: narkotyki, punkty dostaw, rogi, organizacje i więcej. Nie musisz stawiać każdego ręcznie w edytorze",
+            "explain_2": "Zaznacz paczki, które chcesz, i naciśnij Importuj",
+            "open": "Konfiguracja i importy",
+            "import": "Importuj",
+            "selected_count": "Wybrano: {{count}}",
+            "done": "Import wykonany",
+            "done_rows": "Import wykonany, zmienionych wierszy: {{rows}}",
+            "failed": "Import nie powiódł się: {{error}}",
+            "close": "Zamknij",
+            "empty": "Brak skonfigurowanych importów",
+            "empty_hint": "Dodaj je w server/editable/setup.lua"
+        },
+        "handover": {
+            "title": "Wybierz rodzaj towaru",
+            "hint": "{{count}}x {{drug}}",
+            "confirm": "Potwierdź",
+            "cancel": "Anuluj"
+        },
+        "quality": {
+            "1": "Zła",
+            "2": "Słaba",
+            "3": "Neutralna",
+            "4": "Dobra",
+            "5": "Świetna"
+        },
+        "app": {
+            "title": "PLUG",
+            "loading": "Łączenie...",
+            "nav_contacts": "Kontakty",
+            "section_orgs": "Organizacje",
+            "section_people": "Kontakty",
+            "contact_buys_nothing": "Aktualnie niczego nie kupuje",
+            "no_contacts": "Brak organizacji",
+            "no_people": "Brak zapisanych kontaktów",
+            "person": {
+                "deleted_name": "Użytkownik usunięty",
+                "status_blocked": "Zablokowany",
+                "status_deleted": "Usunięty",
+                "note_blocked": "Zostałeś zablokowany",
+                "note_deleted": "Ten profil już nie istnieje",
+                "buys": "Interesuje się",
+                "message": "Zobacz rozmowę",
+                "start_offer": "Utwórz ofertę",
+                "remove": "Usuń kontakt",
+                "remove_confirm": "Kliknij ponownie, by potwierdzić",
+                "offer_pick": "Co oferujesz",
+                "offer_price": "Twoja cena",
+                "offer_send": "Wyślij ofertę"
+            },
+            "contact_card": {
+                "title": "{{name}} chce dołączyć do twoich kontaktów",
+                "add": "Dodaj",
+                "ignore": "Ignoruj"
+            },
+            "inbox": "Wiadomości",
+            "market": "Wartość uliczna",
+            "no_listings": "Brak dostępnych rodzajów towaru",
+            "no_threads": "Brak aktywnych rozmów",
+            "accept": "Akceptuj ${{price}}",
+            "counter": "Kontroferta",
+            "decline": "Odrzuć",
+            "accept_delivery": "Akceptuj",
+            "mark_route": "Wyznacz trasę",
+            "route_set": "Trasa ustawiona",
+            "state": {
+                "inquiry": "Nowa",
+                "open": "Aktywna",
+                "waiting": "Aktywna",
+                "agreed": "Aktywna",
+                "delivery": "Aktywna",
+                "complete": "Zakończona",
+                "declined": "Odrzucona",
+                "walked": "Odrzucona",
+                "expired": "Wygasła",
+                "failed": "Wygasła",
+                "notice": "Odrzucona"
+            },
+            "accept_plain": "Akceptuj",
+            "per_unit": "Za sztukę",
+            "send_quote": "Wyślij",
+            "nav_prices": "Ceny",
+            "prices_hint": "Aktualne stawki rynkowe",
+            "no_prices": "Nic na rynku",
+            "sort_alpha": "A-Z",
+            "sort_price": "Cena",
+            "sort_demand": "Popyt",
+            "section_active": "Aktywne rozmowy",
+            "section_history": "Zarchiwizowane rozmowy",
+            "standing_label": "Reputacja",
+            "standing": {
+                "1": "Zła",
+                "2": "Słaba",
+                "3": "Neutralna",
+                "4": "Dobra",
+                "5": "Świetna"
+            },
+            "contact_prices": "Ceny",
+            "contact_batch": "{{size}} / partia",
+            "mail_title": "Poczta",
+            "payment_title": "Otrzymano płatność",
+            "peek_new": "Nowa wiadomość!",
+            "no_mail": "Skrzynka pusta",
+            "no_threads_waiting": "Brak aktywnych rozmów",
+            "nav_profile": "Profil",
+            "profile": {
+                "name_prefix": "Dealer",
+                "deals": "Ukończone transakcje: {{count}}",
+                "name": "Wyświetlana nazwa",
+                "picture": "Zdjęcie profilowe",
+                "save": "Zapisz profil",
+                "name_blocked": "Wybierz inną nazwę"
+            },
+            "listing": {
+                "none": "Brak aktywnego ogłoszenia",
+                "active": "Aktywne ogłoszenie",
+                "posting": "Publikowanie...",
+                "create": "Utwórz ogłoszenie",
+                "edit": "Edytuj",
+                "delete": "Usuń",
+                "pick": "Co sprzedajesz",
+                "rating_needed": "Wymagane {{stars}}",
+                "publish": "Opublikuj ogłoszenie",
+                "save": "Zapisz zmiany",
+                "just_now": "przed chwilą",
+                "minutes": "{{count}}min temu",
+                "hours": "{{count}}h temu",
+                "and": "i",
+                "intros": [
+                    "Towar wrócił i schodzi szybko. Wszystko poniżej mam na ręce, nic na zamówienie.",
+                    "Świeża dostawa przyszła dziś rano, nic nie leży i się nie starzeje. Oto co jest na stole.",
+                    "Uzupełnione i posortowane na tydzień. Jakość mówi sama za siebie, nie muszę jej zachwalać.",
+                    "Otwarte jak zawsze. Jak coś jest na tej liście, to mam to przy sobie tu i teraz.",
+                    "Nowa partia dotarła i jest dobra. Zdobycie jej trochę trwało, więc długo nie poleży.",
+                    "Tym razem trafił mi się porządny ładunek. Więcej niż zwykle noszę, więc korzystaj póki jest.",
+                    "Wszystko poniżej gotowe do wydania, bez czekania. Prosta wymiana, przychodzisz i po sprawie.",
+                    "Półki znowu pełne po paru słabszych dniach. Uzupełniłem to, o co ludzie ciągle pytają.",
+                    "Dopiero co dostałem dostawę, ilości ograniczone. Piszcie!",
+                    "Pracuję dziś w nocy i mam sporo w zanadrzu. Oto co jest, ceny takie, ile to warte.",
+                    "Zaopatrzony na tydzień, więc rozejrzyj się. Ta sama jakość co ostatnio i co przedostatnio.",
+                    "Prosto z łodzi, wszystko. Nie leżało miesiąc u kogoś w mieszkaniu jak reszta tego, co krąży."
+                ],
+                "outros": [
+                    "Pisz. Jestem w okolicy przez większość nocy i nie robię ludzi w konia.",
+                    "Pisz, ale nie obsługuję marnujących czas. Jak nie jesteś gotowy na spotkanie, nie pisz.",
+                    "Napisz, a cię ogarnę. Szybko i cicho, wchodzisz i wychodzisz, bez kręcenia się.",
+                    "Tylko poważni kupcy. Jak wiesz czego chcesz, powiedz, a załatwimy to.",
+                    "Kto pierwszy, ten lepszy. Nikomu nic nie odkładam, więc nie proś.",
+                    "Powiedz słowo i jest twoje. Podjadę, jeśli nie siedzisz za daleko.",
+                    "Tylko szybkie spotkania, nie stoję i nie czekam. Pisz, jak będziesz naprawdę wolny.",
+                    "Wiesz, gdzie mnie znaleźć. Robię to na tyle długo, że nie muszę się reklamować dwa razy.",
+                    "Ceny są uczciwe, więc mnie nie obrażaj.",
+                    "Pisz zanim zniknie, bo zniknie. Wszyscy chcą tego samego w tym tygodniu.",
+                    "Wchodzisz i wychodzisz, bez pogaduszek. Przyjdź na czas, a będziesz handlować ze mną znowu.",
+                    "Napisz. Nowi klienci mile widziani, o ile nie robisz głupot."
+                ]
+            },
+            "nav_mail": "Poczta"
+        },
+        "street": {
+            "title": "Zaproponuj cenę za sztukę",
+            "offer": "Zaproponuj",
+            "cancel": "Anuluj",
+            "variants": "Rodzaje: {{count}}"
+        },
+        "corner": {
+            "wants": "Masz jakiś {{drug}}?",
+            "accept": "Akceptuj",
+            "other": "Zaproponuj inny towar",
+            "decline": "Odmów",
+            "no_requested": "Nie masz przy sobie {{drug}}",
+            "no_other": "Nie masz nic innego do zaoferowania"
+        },
+        "classic": {
+            "brand": "PLUG",
+            "menu_inbox": "Odebrane",
+            "menu_listings": "Ogłoszenia",
+            "menu_prices": "Ceny",
+            "menu_orgs": "Kontakty",
+            "menu_mail": "Poczta",
+            "standing": "Reputacja",
+            "no_mail": "Brak poczty",
+            "archived": "Archiwum",
+            "each": "Za sztukę",
+            "no_orgs": "Brak organizacji",
+            "section_orgs": "Organizacje",
+            "section_people": "Kontakty",
+            "no_people": "Brak zapisanych kontaktów",
+            "person_deleted": "Użytkownik usunięty",
+            "person_blocked": "Zablokowany",
+            "person_buys": "Kupuje",
+            "person_deals": "Transakcje",
+            "person_message": "Wiadomość",
+            "person_remove": "Usuń",
+            "person_remove_confirm": "Na pewno?",
+            "offer_pick": "Zaoferuj towar",
+            "offer_send": "Wyślij ofertę",
+            "empty_inbox": "Brak wiadomości",
+            "no_listings": "Brak dostępnych rodzajów towaru",
+            "accept": "Akceptuj",
+            "decline": "Odrzuć",
+            "counter": "Kontroferta",
+            "quote": "Wyceń",
+            "send": "Wyślij",
+            "back": "Wstecz",
+            "route": "Wyznacz trasę",
+            "route_set": "Trasa ustawiona",
+            "me": "JA",
+            "them": "KUPIEC",
+            "select": "Wybierz",
+            "listed": "WYSTAWIONE",
+            "unlisted": "BRAK OGŁOSZENIA",
+            "no_listing": "Brak ogłoszeń",
+            "create_listing": "Utwórz",
+            "edit_listing": "Edytuj",
+            "delete_listing": "Usuń",
+            "pick_drugs": "Wybierz towar",
+            "publish_listing": "Opublikuj",
+            "save_listing": "Zapisz zmiany",
+            "rating_needed": "{{stars}}*+",
+            "just_now": "przed chwilą",
+            "minutes": "{{count}}min temu",
+            "hours": "{{count}}h temu"
+        },
+        "phone": {
+            "carrier": "KQTEL",
+            "notes": "Notatki",
+            "settings": "Ustawienia",
+            "done": "Gotowe",
+            "note_placeholder": "Napisz coś...",
+            "note_empty": "Pusta notatka",
+            "no_notes": "Brak notatek",
+            "wallpaper": "Tapeta",
+            "brightness": "Jasność",
+            "notifications": "Powiadomienia",
+            "sounds": "Dźwięki"
+        },
+        "police": {
+            "app_name": "Sting",
+            "heatmap_app_name": "Hotspots",
+            "tab_operation": "Sting",
+            "tab_hotspots": "Hotspots",
+            "heatmap_title": "Punkty handlu",
+            "heatmap_subtitle": "Ostatnio zgłaszana aktywność",
+            "heatmap_legend_low": "Niska",
+            "heatmap_legend_high": "Wysoka",
+            "unit": "LSPD",
+            "division": "Wydział narkotykowy",
+            "status_label": "Status",
+            "site_index": "Miejsce {{index}}",
+            "last_attempt": "Ostatnia próba",
+            "clearance": "Uprawnienia",
+            "clearance_control": "Pełna kontrola",
+            "clearance_view": "Tylko podgląd",
+            "booting": "Łączenie...",
+            "denied_title": "Odmowa dostępu",
+            "denied_body": "Tylko upoważniony personel LSPD",
+            "no_operation": "Brak aktywnej operacji",
+            "no_operation_hint": "Podszyj się pod kupca i złap sprzedawcę na zrzucie",
+            "view_only": "Tylko podgląd. Twoja ranga nie może prowadzić operacji",
+            "start_operation": "Rozpocznij operację",
+            "choose_site": "Wybierz miejsce zrzutu",
+            "select": "Wybierz",
+            "cancel": "Anuluj",
+            "site": "Miejsce zrzutu",
+            "initiated_by": "Rozpoczęta przez",
+            "initiated_at": "Rozpoczęta o",
+            "choose_drug": "Wybierz towar-przynętę",
+            "retry": {
+                "declined": "Cel odmówił. Wybierz nowy cel",
+                "expired": "Brak odpowiedzi od celu. Wybierz nowy cel",
+                "dark": "Cel zniknął z sieci. Wybierz nowy cel",
+                "noshow": "Cel nigdy nie dostarczył. Wybierz nowy cel"
+            },
+            "targets": "Potencjalne cele",
+            "no_targets": "Brak aktywnych dilerów",
+            "rating": "Ocena PLUG",
+            "busy": "W trakcie operacji",
+            "start_failed": "Nie udało się tego skonfigurować. Spróbuj ponownie",
+            "target": "Cel",
+            "goods": "Towar",
+            "agreed_price": "Uzgodniono",
+            "log": "Rozmowa",
+            "log_empty": "Nic jeszcze nie zarejestrowano",
+            "back": "Wstecz",
+            "cooldown_label": "Odnowienie",
+            "cooldown_notice": "Następna operacja dostępna za {{minutes}} min",
+            "understaffed_label": "Stan sił",
+            "understaffed_notice": "Za mało funkcjonariuszy na służbie",
+            "sender_target": "Cel",
+            "sender_cover": "Tajniak",
+            "sender_system": "System",
+            "mark_route": "Wyznacz trasę",
+            "route_set": "Trasa ustawiona",
+            "terminate": "Przerwij",
+            "confirm_terminate": "Przerwać operację?",
+            "clear": "Zamknij akta",
+            "state": {
+                "setup": "Oczekiwanie na cel",
+                "pending": "Negocjacje z celem",
+                "agreed": "Umowa zawarta",
+                "closed": "Operacja zamknięta"
+            },
+            "outcome": {
+                "cancelled": "Operacja anulowana"
+            }
+        },
+        "org": {
+            "selling": "Sprzedaż",
+            "batch_sub": "partie po {{size}}",
+            "batch_count": "Partie: {{batches}}",
+            "batch_count_one": "1 partia",
+            "batch_units": "({{units}} szt.)",
+            "per_batch": "${{price}}/partia",
+            "all": "Maks",
+            "estimate": "Wypłata",
+            "sell": "Sprzedaj",
+            "cancel": "Odejdź",
+            "favour": "Przysługa",
+            "favour_hint": "Zapytaj, czy mają dla ciebie robotę. Przysługi poprawiają twoją reputację",
+            "limit_reached": "Ta organizacja nie przyjmuje teraz więcej towaru",
+            "favour_busy": "Masz już robotę w toku",
+            "favour_cooldown": "Teraz nic dla ciebie nie ma, wróć później",
+            "favour_inventory": "Najpierw opróżnij kieszenie",
+            "favour_no_phone": "Organizacja nie ma jak wysłać ci szczegółów",
+            "favour_none": "Teraz nic dla ciebie nie ma"
+        },
+        "fixer": {
+            "title": "Pośrednik",
+            "cost": "Koszt",
+            "explainer": "Zapłać wpisowe raz, a {{name}} będzie handlować z tobą hurtowo. Ich punkt sprzedaży pojawi się na mapie, a kontakt w twoim telefonie",
+            "buy": "Zapłać",
+            "buying": "...",
+            "no_offers": "Nie ma teraz nic do zaoferowania",
+            "leave": "Odejdź"
+        },
+        "placement": {
+            "key": {
+                "fly": "Lot",
+                "heading": "Kierunek",
+                "radius": "Promień",
+                "boost": "Szybszy lot",
+                "confirm": "Zapisz",
+                "cancel": "Anuluj",
+                "point": "Dodaj punkt",
+                "remove_point": "Usuń punkt",
+                "wipe": "Wyczyść obszar",
+                "grab_point": "Przesuń / wstaw punkt"
+            }
+        },
+        "editor": {
+            "resource": "Handel narkotykami",
+            "title": "Panel administratora",
+            "credit": "Powered by",
+            "sort": {
+                "label": "Sortuj",
+                "updated": "Ostatnio zaktualizowane",
+                "created": "Ostatnio utworzone",
+                "name": "Nazwa"
+            },
+            "tabs": {
+                "drugs": "Narkotyki",
+                "hotspots": "Hotspoty",
+                "corners": "Rogi",
+                "organizations": "Organizacje",
+                "deliveries": "Lokacje",
+                "vehicles": "Pojazdy do przysług"
+            },
+            "create": {
+                "drugs": "Nowy narkotyk",
+                "hotspots": "Nowy hotspot",
+                "corners": "Nowy róg",
+                "organizations": "Nowa organizacja",
+                "deliveries": "Nowy punkt dostaw",
+                "vehicles": "Nowy punkt pojazdu"
+            },
+            "list": {
+                "inactive": "Nieaktywne",
+                "activate": "Aktywuj",
+                "deactivate": "Dezaktywuj",
+                "goto": "Przenieś się",
+                "empty": "Jeszcze nic tu nie ma"
+            },
+            "form": {
+                "save": "Zapisz",
+                "cancel": "Wstecz",
+                "delete": "Usuń",
+                "delete_confirm": "Kliknij ponownie, by potwierdzić usunięcie"
+            },
+            "coords": {
+                "not_set": "Brak ustawionej pozycji",
+                "place": "Umieść kamerą swobodną"
+            },
+            "drug": {
+                "tab_general": "Ogólne",
+                "tab_pricing": "Wycena",
+                "label": "Nazwa",
+                "label_placeholder": "Woreczek kokainy",
+                "item": "Nazwa przedmiotu",
+                "item_hint": "Musi dokładnie odpowiadać przedmiotowi w ekwipunku",
+                "item_placeholder": "coke_baggy",
+                "street_section": "Handel uliczny",
+                "street_section_hint": "Przypadkowi NPC zaczepiani pieszo lub z auta",
+                "app_section": "Aplikacja",
+                "app_section_hint": "Kupujący piszący do gracza przez aplikację Plug",
+                "channel_street": "Sprzedaż na ulicy",
+                "channel_app": "Sprzedaż przez aplikację",
+                "app_rating_toggle": "Wymagaj oceny PLUG",
+                "app_rating_desc": "Tylko dilerzy z odpowiednią liczbą gwiazdek mogą wystawić ten narkotyk",
+                "app_rating": "Minimalna ocena (gwiazdki)",
+                "app_rating_hint": "Dilerzy poniżej tej oceny nie mogą dodać narkotyku do ogłoszenia",
+                "quantity": "Sztuk na transakcję",
+                "quantity_to": "do",
+                "street_chance": "Szansa sprzedaży po cenie rynkowej",
+                "street_chance_hint": "Szansa na sprzedaż przy żądaniu dokładnie ceny rynkowej",
+                "prop": "Rekwizyt przekazania",
+                "pricing_hint": "Wartość rynkowa dla każdego kanału. Organizacje płacą swój mnożnik tej wartości",
+                "base_price": "Cena za sztukę ($)",
+                "use_meta": "Wycena po metadanych",
+                "use_meta_desc": "Cena zależna od progu metadanych (czystość, odmiana, ...)",
+                "meta_key": "Klucz metadanych",
+                "meta_kind": "Typ progu",
+                "meta_steps_hint": "Przedmioty bez metadanych liczą się jako próg klasy \"Neutralna\"",
+                "satisfaction_note": "Kupujący z telefonu nigdy nie proszą o klasę. Wszyscy płacą cenę progu Neutralnego, a potem oceniają to, co gracz faktycznie przekaże: powyżej Neutralnej zdobywa ocenę i reputację u kontaktów oraz pochwały, poniżej traci jedno i drugie i zbiera skargi. Zostaw klasę na Neutralnej, a kupujący przyjmą ją bez komentarza",
+                "kind_range": "Zakres",
+                "kind_value": "Wartość",
+                "step_label": "Etykieta",
+                "step_value": "Wartość metadanych",
+                "step_min": "Min",
+                "step_max": "Maks",
+                "step_price": "Cena",
+                "step_satisfaction": "Satysfakcja",
+                "add_step": "Dodaj próg",
+                "tab_channels": "Sprzedaż"
+            },
+            "hotspot": {
+                "name": "Nazwa",
+                "name_placeholder": "Grove Street",
+                "area": "Obszar",
+                "place_title": "Narysuj obszar hotspotu",
+                "approach_toggle": "Nadpisz chęć do rozmowy",
+                "approach_label": "Szansa na rozmowę",
+                "approach_hint": "Nadpisuje, jak często NPC w tej strefie w ogóle rozmawiają. Inne modyfikatory nadal działają",
+                "draw": "Narysuj obszar",
+                "redraw": "Narysuj ponownie",
+                "drugs": "Narkotyki",
+                "no_drugs": "Brak skonfigurowanych narkotyków",
+                "price_multiplier": "Mnożnik wartości narkotyku",
+                "price_multiplier_hint": "Mnoży wartość narkotyku w oczach tutejszych kupców",
+                "price_effective": "Kupujący wyceniają go tu na ~${{price}}",
+                "chance_multiplier": "Skuteczność sprzedaży",
+                "chance_multiplier_hint": "Dodatkowe rzuty szansą sprzedaży",
+                "chance_effective": "~{{percent}}% przy cenie rynkowej",
+                "row_summary": "Narkotyki: {{drugs}}"
+            },
+            "org": {
+                "name": "Nazwa",
+                "name_placeholder": "Vagos, Kartel, Firma...",
+                "details": "Organizacja",
+                "place_title": "Umieść punkt sprzedaży",
+                "sell_spots": "Punkty sprzedaży",
+                "sell_spots_hint": "Jeden losowany przy każdym starcie serwera",
+                "add_sell_spot": "Dodaj punkt sprzedaży",
+                "min_quantity": "Rozmiar partii",
+                "buyin_cash": "Gotówka ($, 0 = brak)",
+                "buyin_no_drug": "Bez przekazania towaru",
+                "buyin_drug": "Przekazanie towaru",
+                "buyin_drug_amount": "Sztuk",
+                "fixer_spots": "Miejsca pośrednika",
+                "fixer_spots_hint": "Jedno losowane przy każdym starcie serwera",
+                "fixer_place_title": "Umieść miejsce pośrednika",
+                "add_fixer_spot": "Dodaj miejsce pośrednika",
+                "no_fixer_warning": "Ustawiono wpisowe, ale brak miejsc pośrednika. Nikt nigdy nie odblokuje tej organizacji",
+                "buys_hint": "Mnożnik wartości rynkowej, zależny od reputacji gracza",
+                "limits": "Limity sprzedaży",
+                "limits_enabled": "Ogranicz ile kupują",
+                "limits_enabled_desc": "Ogranicza, ile partii organizacja przyjmie, zanim na jakiś czas przestanie kupować",
+                "limits_per_player": "Na gracza",
+                "limits_per_player_desc": "Każdy gracz ma własny przydział zamiast jednej wspólnej puli",
+                "limits_max_batches": "Maks. partii",
+                "limits_max_batches_hint": "Przyjęte partie, zanim zacznie się odnowienie",
+                "limits_cooldown": "Odnowienie (minuty)",
+                "limits_cooldown_hint": "Jak długo przestają kupować po osiągnięciu limitu",
+                "multiplier_min": "Zła",
+                "multiplier_mid": "Neutralna",
+                "multiplier_max": "Świetna",
+                "description": "Opis",
+                "description_placeholder": "Kim są, czego chcą...",
+                "enemies_hint": "Sprzedaż lub przysługi dla wrogów obniżają reputację u {{name}}",
+                "no_enemies": "Brak innych organizacji",
+                "no_drugs": "Najpierw utwórz narkotyki",
+                "jobs": "Ograniczenie do prac / gangów",
+                "jobs_desc": "Wył. = każdy może wchodzić w interakcje z tą organizacją",
+                "jobs_hint": "Tylko gracze z wymienioną pracą lub gangiem widzą organizację, jej blip, kontakt i pośrednika",
+                "jobs_empty_warning": "Brak wymienionych prac lub gangów. Nikt nie dotrze do tej organizacji, gdy ograniczenie jest włączone",
+                "jobs_name": "Nazwa pracy / gangu",
+                "jobs_placeholder": "cartel",
+                "jobs_grade": "Min. stopień",
+                "add_job": "Dodaj pracę / gang",
+                "reset_unlocks": "Zresetuj odblokowania wszystkim",
+                "reset_unlocks_confirm": "Kliknij ponownie, by potwierdzić",
+                "reset_unlocks_hint": "Ponownie blokuje tę organizację każdemu graczowi, który zapłacił wpisowe",
+                "tab_general": "Ogólne",
+                "tab_access": "Odblokowanie",
+                "tab_trading": "Narkotyki",
+                "tab_limits": "Limity",
+                "tab_relations": "Relacje",
+                "peds": "Modele postaci",
+                "boss_ped": "Szef (kontakt w punkcie sprzedaży)",
+                "member_peds": "Członkowie",
+                "member_peds_hint": "Pośrednik i cele przysług dla wrogów",
+                "ped_choose": "Wybierz model...",
+                "ped_members_choose": "Wybierz członków...",
+                "ped_custom": "Własny model",
+                "ped_custom_placeholder": "s_m_y_dealer_01...",
+                "ped_no_match": "Brak pasujących modeli",
+                "ped_modal_search": "Szukaj modeli...",
+                "ped_custom_apply": "Użyj modelu",
+                "ped_select": "Wybierz",
+                "unlock_public": "Publiczna",
+                "unlock_public_desc": "Na mapie i w aplikacji od samego początku",
+                "unlock_hidden": "Ukryta",
+                "unlock_hidden_desc": "Każdy może handlować, ujawniana po pierwszej sprzedaży",
+                "unlock_buyin": "Wpisowe",
+                "unlock_buyin_desc": "Płatny wstęp u pośrednika tej organizacji",
+                "unlock_closed": "Zamknięta",
+                "unlock_closed_desc": "Odblokowywana wyłącznie przez eksporty skryptowe",
+                "closed_hint": "Inny skrypt musi odblokować tę organizację per gracz. Eksporty opisane w DOCS.md",
+                "enemies_hint_fallback": "tej organizacji",
+                "ped_invalid": "Model jest nieprawidłowy lub niedostępny w tej wersji gry",
+                "ped_checking": "Sprawdzanie..."
+            },
+            "deliveryloc": {
+                "name": "Nazwa",
+                "name_placeholder": "Róg Legion Square",
+                "type": "Do czego służy to miejsce",
+                "type_npc": "Przekazanie kupującemu",
+                "type_npc_desc": "Sprzedaż z aplikacji do NPC",
+                "type_deaddrop": "Skrytka sprzedaży",
+                "type_deaddrop_desc": "Miejsca skrytek dla sprzedaży z aplikacji",
+                "position": "Pozycja",
+                "place_title": "Umieść punkt dostawy",
+                "type_favour": "Miejsce przysługi",
+                "type_favour_desc": "Tutaj odbywają się przysługi organizacji. Zrzuty i cele"
+            },
+            "vehicleloc": {
+                "name": "Nazwa",
+                "name_placeholder": "Dok Elysian Island",
+                "hint": "Przysługi z niszczeniem pojazdu spawnują tu pojazd docelowy",
+                "position": "Pozycja",
+                "place_title": "Umieść punkt pojazdu"
+            },
+            "corner": {
+                "police_warning": "Twoja praca to policja. Rogi są ukryte przed policją, nie zobaczysz ich blipów ani podpowiedzi i nie przetestujesz ich z tą pracą",
+                "tab_general": "Ogólne",
+                "tab_drugs": "Narkotyki",
+                "tab_access": "Dostęp",
+                "hint": "Gracze zajmują pozycję w obszarze, a kupujący do nich podchodzą. Róg jest widoczny i działa tylko dla graczy z co najmniej jednym narkotykiem sprzedawalnym na ulicy",
+                "name": "Nazwa",
+                "name_placeholder": "Róg Grove Street",
+                "position": "Obszar",
+                "place_title": "Umieść róg",
+                "buyers": "Kupujący",
+                "max_players": "Miejsca dla dilerów",
+                "max_players_hint": "Ilu graczy może pracować na tym rogu naraz",
+                "interval": "Odstęp między kupującymi (sekundy)",
+                "interval_hint": "Przybliżony czas między kupującymi, na gracza. (Traktuj jako średnią, zależy od ruchu i dostępności okolicy dla NPC)",
+                "allow_vehicle": "Pozwól stać w pojeździe",
+                "allow_vehicle_desc": "Kierowcy mogą pracować na rogu z auta. Kupujący podchodzą do szyby po transakcję",
+                "drugs": "Narkotyki, o które tu pytają",
+                "drugs_hint": "Kupujący pytają tylko o zaznaczone narkotyki. Gracze wciąż mogą oferować dowolny narkotyk sprzedawalny na ulicy. Wymagany co najmniej jeden",
+                "no_drugs": "Brak aktywnych narkotyków do wyboru",
+                "check_all": "Zaznacz wszystkie",
+                "uncheck_all": "Odznacz wszystkie",
+                "different_chance": "Szansa sprzedaży innego narkotyku",
+                "different_chance_hint": "Szansa, że kupujący weźmie inny narkotyk niż ten, o który pytał, po cenie rynkowej. Zawyżanie ceny dodatkowo ją obniża jak każdą ofertę",
+                "jobs": "Ogranicz do prac / gangów",
+                "jobs_desc": "Tylko gracze z wymienioną pracą lub gangiem widzą i obsługują ten róg",
+                "jobs_hint": "Tylko gracze z wymienioną pracą lub gangiem widzą róg, jego blip i podpowiedź",
+                "jobs_empty_warning": "Brak wymienionych prac lub gangów. Nikt nie dotrze do tego rogu, gdy ograniczenie jest włączone"
+            },
+            "market": {
+                "reset": "Zresetuj tę cenę do bazowej"
+            },
+            "validation": {
+                "incomplete": "Wypełnij wymagane pola",
+                "name": "Nazwa jest wymagana",
+                "coords": "Najpierw umieść to na mapie",
+                "drug_label": "Wyświetlana nazwa jest wymagana",
+                "drug_item": "Nazwa przedmiotu z ekwipunku jest wymagana",
+                "drug_item_duplicate": "Przedmiot używany już przez \"{{name}}\". Dwa narkotyki na jednym przedmiocie dzielą zapas",
+                "quantity_missing": "Ustaw oba końce zakresu ilości",
+                "quantity_order": "Najniższa ilość nie może być wyższa od najwyższej",
+                "quantity_range": "Ilości muszą mieścić się między {{min}} a {{max}}",
+                "base_price": "Wymagana cena bazowa powyżej 0",
+                "base_price_range": "Cena bazowa musi mieścić się między {{min}} a {{max}}",
+                "meta_key": "Klucz metadanych jest wymagany",
+                "meta_steps_empty": "Wycena po metadanych wymaga co najmniej jednej klasy",
+                "meta_steps_too_many": "Nie więcej niż {{max}} klas",
+                "step_label": "Klasa {{step}} wymaga etykiety",
+                "step_price": "Klasa \"{{step}}\" wymaga ceny powyżej 0",
+                "step_price_range": "Cena dla \"{{step}}\" musi mieścić się między {{min}} a {{max}}",
+                "step_value": "Klasa \"{{step}}\" wymaga wartości metadanych do dopasowania",
+                "step_value_duplicate": "Dwie klasy pasują do \"{{value}}\". Wyceniałaby tylko pierwsza",
+                "step_range": "Klasa \"{{step}}\" wymaga wartości od i do",
+                "step_range_order": "Klasa \"{{step}}\" ma wartość od powyżej do",
+                "step_range_limits": "Klasa \"{{step}}\" musi mieścić się między {{min}} a {{max}}",
+                "step_range_overlap": "Klasy \"{{first}}\" i \"{{second}}\" nachodzą na siebie. Wyceniałaby tylko niższa",
+                "org_sell_spots": "Dodaj i umieść co najmniej jeden punkt sprzedaży",
+                "org_sell_too_many": "Nie więcej niż {{max}} punktów sprzedaży",
+                "org_buyin_cash": "Gotówka wpisowego nie może być ujemna",
+                "org_buyin_amount": "Ustaw, ile sztuk narkotyku kosztuje wpisowe",
+                "org_fixer_unplaced": "Każde miejsce pośrednika musi być umieszczone na mapie",
+                "org_fixer_too_many": "Nie więcej niż {{max}} miejsc pośrednika",
+                "org_multiplier": "Stawka dla \"{{name}}\" musi mieścić się między {{min}}x a {{max}}x",
+                "org_drug_duplicate": "\"{{name}}\" jest na liście dwa razy. Wyceniałby tylko pierwszy wpis",
+                "org_limit_batches": "Maks. partii musi być między {{min}} a {{max}}",
+                "org_limit_cooldown": "Odnowienie musi być między {{min}} a {{max}} minut",
+                "delivery_no_use": "Wybierz co najmniej jedno zastosowanie tego miejsca",
+                "hotspot_polygon": "Narysuj obszar z co najmniej {{min}} punktami",
+                "org_buyin_cost": "Ustaw koszt wpisowego w gotówce lub towarze",
+                "corner_max_players": "Miejsca dla dilerów muszą wynosić co najmniej {{min}}",
+                "corner_interval": "Odstęp między kupującymi musi mieścić się między {{min}} a {{max}} sekund",
+                "corner_drugs": "Zaznacz co najmniej jeden narkotyk"
+            }
+        },
+        "options": {
+            "max_reached": "Osiągnięto limit"
+        }
+    }
+}

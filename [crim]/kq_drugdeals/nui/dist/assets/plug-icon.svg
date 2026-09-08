@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="128" height="128">
+    <defs>
+        <linearGradient id="plug-base" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="rgb(61,66,73)"/>
+            <stop offset="100%" stop-color="rgb(45,49,55)"/>
+        </linearGradient>
+        <linearGradient id="plug-holo" x1="0.2622" y1="0.5773" x2="0.7378" y2="0.4227" spreadMethod="repeat">
+            <stop offset="0%" stop-color="rgb(255,255,255)" stop-opacity="0.000"/>
+            <stop offset="22%" stop-color="rgb(255,255,255)" stop-opacity="0.072"/>
+            <stop offset="40%" stop-color="rgb(140,205,255)" stop-opacity="0.101"/>
+            <stop offset="56%" stop-color="rgb(190,170,255)" stop-opacity="0.086"/>
+            <stop offset="72%" stop-color="rgb(255,175,230)" stop-opacity="0.086"/>
+            <stop offset="100%" stop-color="rgb(255,255,255)" stop-opacity="0.000"/>
+        </linearGradient>
+        <radialGradient id="plug-vignette" cx="0.5" cy="0.5" r="0.74">
+            <stop offset="62%" stop-color="#000000" stop-opacity="0"/>
+            <stop offset="100%" stop-color="#000000" stop-opacity="0.34"/>
+        </radialGradient>
+    </defs>
+    <rect width="512" height="512" fill="url(#plug-base)"/>
+    <rect width="512" height="512" fill="url(#plug-holo)"/>
+    <rect width="512" height="512" fill="url(#plug-vignette)"/>
+    <path transform="translate(160.00,128.00) scale(0.5000)" fill="#ffffff" d="M320 32a32 32 0 00-64 0v96h64zm48 128H16a16 16 0 00-16 16v32a16 16 0 0016 16h16v32a160.07 160.07 0 00128 156.8V512h64v-99.2A160.07 160.07 0 00352 256v-32h16a16 16 0 0016-16v-32a16 16 0 00-16-16zM128 32a32 32 0 00-64 0v96h64z"/>
+</svg>

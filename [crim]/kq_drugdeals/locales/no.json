@@ -1,0 +1,1970 @@
+{
+    "app": {
+        "name": "Plug",
+        "description": "Selg varene dine på PLUG-markedet. Raskt, enkelt og trygt",
+        "tags": "Business • Ulovlig",
+        "police_name": "LSPD: Narcotics",
+        "police_description": "Saksterminal for narkotikaavdelingen. Kun autorisert personell",
+        "police_tags": "Politi • Begrenset",
+        "notification": {
+            "buyer_title": "Ny melding",
+            "buyer_content": "{{name}} sendte deg en melding",
+            "mail_title": "Ny e-post",
+            "mail_content": "{{name}} sendte deg e-post"
+        },
+        "player_dropped": [
+            "der ligger den",
+            "droppa, den er din nå",
+            "ferdig, pakka ligger klar",
+            "la den akkurat der du sa",
+            "pakka er ute",
+            "den venter på deg der"
+        ],
+        "player_accepted": [
+            "deal. ${{price}} stykket",
+            "${{price}} stykket, kjører på det",
+            "jepp ${{price}} funker. {{qty}}x, ${{total}}",
+            "ok, ${{price}} stykket",
+            "det blir en deal på ${{price}}"
+        ],
+        "player_accepted_delivery": [
+            "på vei",
+            "kjører nå",
+            "på vei dit",
+            "si ikke mer, jeg drar",
+            "er på vei"
+        ],
+        "player_declined": [
+            "ikke aktuelt",
+            "nei, jeg dropper det",
+            "ikke til den prisen, sorry",
+            "jeg står over",
+            "nah, ikke verdt det for meg"
+        ],
+        "player_countered": [
+            "${{price}} stykket",
+            "jeg kan gå til ${{price}} stykket",
+            "${{price}} stykket, så er den din",
+            "${{price}} stykket. {{qty}}x blir ${{total}}",
+            "møt meg på ${{price}} stykket",
+            "${{price}} stykket. det er meg som er grei nå"
+        ],
+        "contact_offer_sent": [
+            "yo, har {{drug}} nå. ${{price}} stykket om du er interessert",
+            "har {{drug}} liggende. ${{price}} stykket, henger du på?",
+            "fersk {{drug}} inn. ${{price}} stykket. kjøper du?",
+            "{{drug}} på lager. ${{price}} stykket. si fra",
+            "sitter på {{drug}}. ${{price}} stykket, bare gi lyd"
+        ],
+        "orgmail": {
+            "enemy": {
+                "subject": [
+                    "Rykter går fort",
+                    "Vi har hørt ting",
+                    "Om dine siste forretninger",
+                    "Hvem sin side er du på",
+                    "Vi fører liste",
+                    "Du gjorde en feil"
+                ],
+                "body": [
+                    "Ryktet nådde oss. Du har flyttet varer for {{enemy}}.\n\nVi glemmer ikke hvem som mater fiendene våre. Tenk på det.\n\n- {{org}}",
+                    "Noen så deg sammen med {{enemy}}. Det er ikke selskap vi holder.\n\nIkke gjør det til en vane.\n\n- {{org}}",
+                    "Du gjorde forretninger med {{enemy}}. Vi vet det.\n\nHver kasse du gir dem koster deg hos oss.\n\n- {{org}}",
+                    "Hørte du har vært vennlig med {{enemy}} i det siste.\n\nDeres venner får ikke våre priser. Ditt valg.\n\n- {{org}}"
+                ]
+            },
+            "levelup": {
+                "2": {
+                    "subject": [
+                        "Små steg",
+                        "Vi følger med",
+                        "Litt slakk",
+                        "Notert",
+                        "Mindre av et problem"
+                    ],
+                    "body": [
+                        "Du har gjort deg nyttig i det siste. Vi husker fortsatt, men sjefene gikk med på å slutte å presse deg fullt så hardt.\n\nFortsett sånn.\n\n- {{org}}",
+                        "Varene fortsetter å komme og ingen har måttet jage deg.\n\nDet gir deg litt slakk. Litt.\n\n- {{org}}",
+                        "Du er mindre av et problem enn du var. Det er en oppdatering, ikke et kompliment.\n\nSjekk prisene.\n\n- {{org}}",
+                        "Sjefene la merke til at du stiller opp. Prisene flyttet seg et hakk i din favør.\n\nIkke sløs det bort.\n\n- {{org}}"
+                    ]
+                },
+                "3": {
+                    "subject": [
+                        "Vi er skuls",
+                        "Blanke ark",
+                        "Gjort opp",
+                        "Ingen nag",
+                        "Tilbake til normalen"
+                    ],
+                    "body": [
+                        "Det som var mellom oss, regner vi som gjort opp.\n\nDu leverer varer, vi betaler rettferdig. Ikke gjør det komplisert.\n\n- {{org}}",
+                        "Sjefene har snakket. Du er skuls med oss. Normale priser, ingen nag.\n\nHva du bygger herfra er opp til deg.\n\n- {{org}}",
+                        "Blanke ark fra og med i dag.\n\nDu får samme avtale som alle andre. Gjør deg fortjent til bedre om du vil.\n\n- {{org}}",
+                        "Ingen holder noe mot deg lenger.\n\nDet er verdt mer enn prisendringen. Bruk det.\n\n- {{org}}"
+                    ]
+                },
+                "4": {
+                    "subject": [
+                        "Du har gjort deg fortjent til noe",
+                        "God business",
+                        "Sjefene la merke til det",
+                        "Verdt å ha i nærheten",
+                        "På vei opp"
+                    ],
+                    "body": [
+                        "Du har vært stabil, og stabil er sjelden vare i denne bransjen.\n\nSjefene vil ha deg nær. Du ser det i tallene.\n\n- {{org}}",
+                        "Vi liker måten du beveger deg på. Stille, pålitelig, uten drama.\n\nSånne folk får bedre betalt her. Sjekk prisene.\n\n- {{org}}",
+                        "Navnet ditt kom opp på en god måte for en gangs skyld.\n\nPrisene gikk opp sammen med det.\n\n- {{org}}",
+                        "Du fortsetter å stille opp, og varene fortsetter å være det du sa de var.\n\nDet er verdt penger. Det ligger i prisene dine nå.\n\n- {{org}}"
+                    ]
+                },
+                "5": {
+                    "subject": [
+                        "Familie",
+                        "Øverst på lista",
+                        "Urørlig",
+                        "Best betalt av alle",
+                        "Du er en av våre"
+                    ],
+                    "body": [
+                        "Det er ikke mange vi vil kalle urørlige. Fra og med i dag er du en av dem.\n\nBeste priser vi gir noen. Ikke få oss til å angre.\n\n- {{org}}",
+                        "Navnet ditt kom opp ved bordet i går kveld. Ingen hadde et vondt ord.\n\nUansett hva du selger, kjøper vi det først, til den beste prisen du finner.\n\n- {{org}}",
+                        "Du er en av våre nå. Toppris, ingen spørsmål.\n\nDet betyr også at vi forventer at du oppfører deg deretter.\n\n- {{org}}",
+                        "Kort liste. Du står på den.\n\nIngen får bedre tall ut av oss enn deg.\n\n- {{org}}"
+                    ]
+                }
+            },
+            "leveldown": {
+                "1": {
+                    "subject": [
+                        "Du er ferdig",
+                        "Siste varsel",
+                        "Skrappriser",
+                        "Da var det gjort",
+                        "Ikke forvent mye"
+                    ],
+                    "body": [
+                        "Den tilliten som fantes, er borte nå.\n\nVi tar fortsatt varene dine. Til skrappriser. Ikke forvent noen velkomst.\n\n- {{org}}",
+                        "Sjefene er ferdige med deg.\n\nBunnpris til du gjør opp for deg, om det i det hele tatt er mulig.\n\n- {{org}}",
+                        "Du brant det. Alt sammen.\n\nKom innom om du vil, men du får det vi gir folk vi ikke stoler på.\n\n- {{org}}",
+                        "Du vet hvordan du havnet her.\n\nPrisene ligger på bunn. Det samme gjør tålmodigheten vår.\n\n- {{org}}"
+                    ]
+                },
+                "2": {
+                    "subject": [
+                        "Tynn is",
+                        "Pass deg",
+                        "Prisene flyttet seg",
+                        "Ikke imponert",
+                        "Anse dette som en advarsel"
+                    ],
+                    "body": [
+                        "Du er på tynn is.\n\nPrisene ble akkurat verre. De fortsetter å bli verre om dette fortsetter.\n\n- {{org}}",
+                        "Valg har priser. Dine kostet deg akkurat våre.\n\nSjekk prisene og tenk på hvor dette er på vei.\n\n- {{org}}",
+                        "Sjefene stiller spørsmål om deg. Det er aldri bra.\n\nDu får mindre av oss til de slutter.\n\n- {{org}}",
+                        "Vi tok et steg tilbake fra deg i dag.\n\nEtt til og du er ingen for oss.\n\n- {{org}}"
+                    ]
+                },
+                "3": {
+                    "subject": [
+                        "Ikke bli komfortabel",
+                        "Notert",
+                        "Tilbake til standard",
+                        "Tjenestene stopper her",
+                        "Ikke noe spesielt"
+                    ],
+                    "body": [
+                        "Den velviljen du hadde bygget opp, har du brukt en del av nå.\n\nTilbake til å behandle deg som hvem som helst fra gata.\n\n- {{org}}",
+                        "Særbehandlingen er over.\n\nStandardpriser herfra. Gjør deg fortjent til bedre om du bryr deg.\n\n- {{org}}",
+                        "Du er gjennomsnittlig for oss nå. Det er et fall, ikke en fornærmelse.\n\n- {{org}}",
+                        "Vi sluttet å gjøre deg tjenester fra og med i dag.\n\nIkke noe personlig. Du sluttet bare å gjøre deg fortjent til dem.\n\n- {{org}}"
+                    ]
+                },
+                "4": {
+                    "subject": [
+                        "Du glipper",
+                        "Et ord",
+                        "Du gjorde det bedre før",
+                        "Sjefene la merke til det",
+                        "Fiks det"
+                    ],
+                    "body": [
+                        "Du var øverst på lista vår. Var.\n\nSjefene så ting de ikke likte og prisene flyttet seg deretter.\n\n- {{org}}",
+                        "Anse dette som en vennlig advarsel, siden du har gjort deg fortjent til såpass.\n\nDu glipper. Ikke glipp mer.\n\n- {{org}}",
+                        "Noe endret seg med deg, og det var ikke til det bedre.\n\nTallene dine endret seg med det.\n\n- {{org}}",
+                        "Vi hadde deg høyt. Ikke fullt så høyt lenger.\n\nKom deg tilbake til slik du var.\n\n- {{org}}"
+                    ]
+                }
+            },
+            "favour_package": {
+                "subject": [
+                    "Et lite ærend",
+                    "Noe må flyttes",
+                    "Leveringsjobb",
+                    "Ta med dette et sted",
+                    "Lettjente penger"
+                ],
+                "body": [
+                    "Mannen vår ga deg en pakke. Den skal til {{location}}, du har {{minutes}} minutter.\n\nIkke åpne den. Ikke kom for sent. Ikke bli fulgt.\n\n- {{org}}",
+                    "Du har pakka. {{location}}, {{minutes}} minutter.\n\nLegg den fra deg og gå som om du aldri var der.\n\n- {{org}}",
+                    "Enkel jobb. Pakka skal til {{location}}.\n\nDu har {{minutes}} minutter før vi begynner å anta det verste.\n\n- {{org}}",
+                    "Pakke til {{location}}. {{minutes}} minutter på klokka.\n\nKartet er nedenfor. Ikke få oss til å sende noen etter den.\n\n- {{org}}"
+                ]
+            },
+            "favour_hit": {
+                "subject": [
+                    "Et problem som må løses",
+                    "Noen har snakket",
+                    "Oppryddingsjobb",
+                    "Et navn kom opp",
+                    "Han må stoppes"
+                ],
+                "body": [
+                    "Noen har vært et problem for oss. Han er rundt {{location}} akkurat nå.\n\nFå ham til å slutte å være et problem innen {{minutes}} minutter. Ikke bli sett.\n\n- {{org}}",
+                    "Det står en fyr ved {{location}} som ingen kommer til å savne.\n\n{{minutes}} minutter før han drar videre. Denne husker vi.\n\n- {{org}}",
+                    "En rotte sitter ved {{location}}.\n\nHåndter ham som du vil. Bare gjør det innen {{minutes}} minutter.\n\n- {{org}}",
+                    "{{location}}. Problemet vårt står akkurat der.\n\n{{minutes}} minutter. Kartet er nedenfor.\n\n- {{org}}"
+                ]
+            },
+            "favour_vehicle": {
+                "subject": [
+                    "Bil full av varer må vekk",
+                    "En bil må forsvinne",
+                    "Brenneordre",
+                    "Løs tråd på hjul",
+                    "Vrak den"
+                ],
+                "body": [
+                    "Det står en bil ved {{location}} som må slutte å eksistere.\n\nBrenn den, vrak den, kjør den utfor et stup. {{minutes}} minutter.\n\n- {{org}}",
+                    "En bil ved {{location}} er en løs tråd.\n\nGjør den til skrap innen {{minutes}} minutter så er vi skuls.\n\n- {{org}}",
+                    "Noen la igjen bilen sin ved {{location}}.\n\nHadde vært synd om noe skjedde med den i løpet av de neste {{minutes}} minuttene.\n\n- {{org}}",
+                    "{{location}}. Ett kjøretøy. {{minutes}} minutter.\n\nVi bryr oss ikke om hvordan. Kartet er nedenfor.\n\n- {{org}}"
+                ]
+            },
+            "favour_done": {
+                "subject": [
+                    "Godt arbeid",
+                    "Da er det gjort",
+                    "Notert og verdsatt",
+                    "Ren jobb",
+                    "Vi skylder deg en"
+                ],
+                "body": [
+                    "Hørte det gikk rent for seg.\n\nSjefene la merke til det. Du kommer til å se det i hvordan vi behandler deg.\n\n- {{org}}",
+                    "Jobben er gjort og ingen stiller spørsmål.\n\nAkkurat slik vi liker det. Vi skylder deg en.\n\n- {{org}}",
+                    "Ordet kom tilbake. Godt arbeid.\n\nFortsett sånn så begynner dører å åpne seg.\n\n- {{org}}",
+                    "Det er håndtert. Ikke noe rot, ingen navn.\n\nDu er verdt mer for oss i dag enn du var i går.\n\n- {{org}}"
+                ]
+            },
+            "favour_enemy": {
+                "subject": [
+                    "Du valgte side",
+                    "Det der var vårt",
+                    "Vi vet det var deg",
+                    "Feil folk, feil jobb",
+                    "Vi fører regnskapet"
+                ],
+                "body": [
+                    "Det var vår eiendom du rørte, mens du gjorde drittarbeidet til {{rival}}.\n\nVi glemmer ikke ansikter. Pass deg.\n\n- {{org}}",
+                    "Du gjorde en jobb mot oss for {{rival}} og regnet med at ingen ville koble det.\n\nVi gjorde det. Alle våre dører ble akkurat tyngre.\n\n- {{org}}",
+                    "Du skadet oss for å glede {{rival}}. Greit.\n\nSånne valg har en pris, og vi fører regnskapet.\n\n- {{org}}",
+                    "{{rival}} pekte og du hoppet. Mot oss.\n\nHusk det neste gang du trenger noe fra oss.\n\n- {{org}}"
+                ]
+            },
+            "favour_fail": {
+                "subject": [
+                    "Skuffende",
+                    "Det skjedde ikke",
+                    "Vi la merke til det",
+                    "Du sa ja",
+                    "Bortkastet tid"
+                ],
+                "body": [
+                    "Jobben ble ikke gjort.\n\nVi deler ikke ut sjanser som det to ganger på rad. Husk hvem sin tid du kastet bort.\n\n- {{org}}",
+                    "Vi ba om én ting. Den er fortsatt ikke gjort, og nå er det for sent.\n\nSjefene kommer til å huske det.\n\n- {{org}}",
+                    "Du sa ja og så skjedde ingenting.\n\nDet koster deg hos oss.\n\n- {{org}}",
+                    "Fristen kom og gikk.\n\nNeste gang gir vi jobben til noen som fullfører den.\n\n- {{org}}"
+                ]
+            }
+        },
+        "thread_failed": {
+            "no_location": "Kjøperen hadde ingen trygge steder å møtes. Avtalen røk.",
+            "stolen": "Pakka var borte da kjøperen kom fram."
+        },
+        "templates": {
+            "opener": {
+                "broke": [
+                    "yo, er {{drug}}-annonsen fortsatt oppe? spør for jeg er lens",
+                    "så posten din om {{drug}}. har du noe igjen? kan ikke love mye betalt",
+                    "driver du fortsatt med {{drug}}? bare så du vet det, jeg er skrapt",
+                    "{{drug}}, går det ennå? kan ikke svinge stort ass",
+                    "yo. {{drug}}. har lite å rutte med men kaster ikke bort tida di",
+                    "er du på? trenger {{drug}} men lomma er nesten tom",
+                    "hei, {{drug}} fortsatt en greie? må si det med en gang, jeg er blakk denne uka"
+                ],
+                "cheap": [
+                    "yo, så {{drug}}-annonsen. har du noe?",
+                    "{{drug}} fortsatt tilgjengelig eller er siden død",
+                    "posten din sier {{drug}}. stemmer det ennå?",
+                    "har du {{drug}} eller ikke",
+                    "{{drug}}. har du? og hva vil det koste",
+                    "så {{drug}}-posten din. live eller ikke",
+                    "er det deg som selger {{drug}}? noe på lager?"
+                ],
+                "rushed": [
+                    "{{drug}}. har du det nå",
+                    "så annonsen. {{drug}} på lager? trenger svar fort",
+                    "har du {{drug}} eller skal jeg lete videre",
+                    "siden din sier {{drug}}. stemmer fortsatt?",
+                    "{{drug}}. nå. ja eller nei",
+                    "trenger {{drug}} i kveld. er du klar",
+                    "hørte du selger {{drug}}. sant?"
+                ],
+                "regular": [
+                    "hei, så {{drug}}-annonsen din. fortsatt tilgjengelig?",
+                    "yo, siden din kom opp da jeg søkte {{drug}}. har du noe?",
+                    "skjer'a. leter etter {{drug}}, så du selger",
+                    "hei, har du {{drug}} på gang fortsatt?",
+                    "yo, flytter du fortsatt {{drug}}?",
+                    "hei, en kompis tipsa meg om siden din for {{drug}}. fortsatt på?",
+                    "skjer'a, har du {{drug}} på deg nå?"
+                ],
+                "rich": [
+                    "God kveld. Er annonsen for {{drug}} fortsatt aktuell?",
+                    "Annonsen din dukket opp da jeg søkte etter {{drug}}. Fortsatt på lager?",
+                    "God dag. Jeg er interessert i {{drug}}, dersom du fortsatt har det.",
+                    "Så annonsen din. Er {{drug}} fremdeles tilgjengelig?",
+                    "God kveld. Jeg har forstått det slik at du selger {{drug}}.",
+                    "Annonsen for {{drug}} vakte min interesse. Selger du fortsatt?",
+                    "God dag. Jeg ønsker meg litt {{drug}}, kan du ordne det?"
+                ]
+            },
+            "offer": {
+                "broke": [
+                    "{{qty}}x da. ${{price}} stykket, ${{total}} totalt. det er alt jeg har",
+                    "ok, {{qty}}. ${{price}} stykket er taket mitt, ${{total}}. går det?",
+                    "vil ha {{qty}}. ${{price}} stykket er alt jeg klarer å skrape sammen",
+                    "{{qty}} er det jeg trenger. ${{price}} stykket, ${{total}}. det er hele lommeboka",
+                    "hør her, {{qty}}x for ${{price}}. ${{total}} og jeg er blakk etterpå",
+                    "kan ta {{qty}} til ${{price}} stykket. ${{total}}. det er alt som er igjen på konto"
+                ],
+                "cheap": [
+                    "{{qty}}x. ${{price}} stykket, ${{total}} totalt. det er det du får",
+                    "jeg tar {{qty}} for ${{price}} stykket. ${{total}}. ikke press meg mer",
+                    "{{qty}} stk, ${{price}} stykket. blir ${{total}}. greit?",
+                    "{{qty}}x, ${{price}} stykket. ${{total}}. ta det eller jeg finner noen andre",
+                    "${{price}} stykket for {{qty}}. ${{total}}. det er markedspris, det vet du",
+                    "{{qty}} for ${{price}}. ${{total}} totalt. ingen tull"
+                ],
+                "rushed": [
+                    "{{qty}}x, ${{price}} stykket, ${{total}}. kjapt svar takk",
+                    "jeg tar {{qty}} for ${{price}}. ${{total}} totalt. har dårlig tid",
+                    "{{qty}}. ${{price}} stykket, ${{total}}. blir det noe eller ikke",
+                    "{{qty}} for ${{price}}. ${{total}}. svar nå",
+                    "${{price}} stykket, {{qty}} stk, ${{total}}. klokka tikker",
+                    "{{qty}}x ${{price}}. ${{total}}. ja eller jeg stikker"
+                ],
+                "regular": [
+                    "kult, {{qty}}x for ${{price}} stykket, ${{total}} totalt. fair?",
+                    "jeg tar {{qty}}. byr ${{price}} stykket, ${{total}} totalt",
+                    "{{qty}} stk for ${{price}} stykket. ${{total}}. funker det?",
+                    "{{qty}} for ${{price}} stykket funker for meg. ${{total}} totalt",
+                    "hva med {{qty}}x, ${{price}} stykket. ${{total}}",
+                    "jeg tar {{qty}} for ${{price}}. blir ${{total}}, stemmer det?"
+                ],
+                "rich": [
+                    "{{qty}} enheter til ${{price}} stykket. ${{total}} totalt. Jeg betaler godt for kvalitet.",
+                    "Jeg tar {{qty}}. ${{price}} per enhet, ${{total}}. Kvaliteten bør holde det annonsen lover.",
+                    "{{qty}}x til ${{price}} stykket. ${{total}}. Jeg kan være raus hvis dette går smertefritt.",
+                    "{{qty}} for ${{price}}. ${{total}}. Jeg bruker ikke tid på småbestillinger.",
+                    "Jeg tar {{qty}} enheter, ${{price}} stykket. ${{total}} ved levering.",
+                    "{{qty}}x til ${{price}} per enhet. ${{total}}. Uten dramatikk, håper jeg."
+                ]
+            },
+            "counter": {
+                "broke": [
+                    "jeg klarer ${{price}}. det var penger til andre ting",
+                    "${{price}} stykket. presser du mer så er jeg ute",
+                    "ok ${{price}}. det er bunnskraping",
+                    "${{price}}. sjekka to ganger, det er alt jeg har",
+                    "${{price}} stykket går. det er lånte penger allerede",
+                    "${{price}} stykket og jeg spiser knekkebrød resten av uka"
+                ],
+                "cheap": [
+                    "${{price}} stykket. det er meg som er raus nå",
+                    "jeg går til ${{price}}. ikke press mer",
+                    "greit, ${{price}} stykket. det er en strekk",
+                    "${{price}}. det er tallet mitt",
+                    "${{price}} stykket. jeg vet hva dette koster",
+                    "jeg betaler ${{price}}. ikke en krone mer"
+                ],
+                "rushed": [
+                    "${{price}} stykket. kan vi kjøre nå",
+                    "ok ${{price}}. jeg står og venter her",
+                    "${{price}} stykket. ferdig snakka. kom igjen",
+                    "${{price}}. deal eller ikke?",
+                    "${{price}} stykket, jeg kjører allerede",
+                    "greit. ${{price}}. si ja da"
+                ],
+                "regular": [
+                    "jeg kan strekke meg til ${{price}} stykket",
+                    "${{price}} stykket. møtes der",
+                    "greit, ${{price}} stykket. det er meg som kommer deg i møte",
+                    "${{price}} stykket så er jeg fornøyd",
+                    "møter deg på ${{price}} stykket",
+                    "hva med ${{price}} stykket, så sier vi det"
+                ],
+                "rich": [
+                    "${{price}} per enhet. Et rimelig steg.",
+                    "Jeg kan gå til ${{price}} stykket. Jeg pruter ikke for moro skyld.",
+                    "${{price}} per enhet. La oss ikke dra dette ut.",
+                    "${{price}} per enhet. Det er et rettferdig steg.",
+                    "Jeg går til ${{price}}. Tiden min er verdt mer enn differansen.",
+                    "${{price}} stykket. La oss avslutte dette."
+                ]
+            },
+            "agreed": {
+                "broke": [
+                    "ja. ok. takk seriøst",
+                    "deal. du aner ikke hvor mye jeg trengte dette",
+                    "ok kult. jeg er med",
+                    "ja. takk bro, oppriktig",
+                    "deal. du redda uka mi",
+                    "ok. ferdig. setter pris på deg"
+                ],
+                "cheap": [
+                    "ait, deal",
+                    "kult. da er det avgjort",
+                    "ja greit. ferdig",
+                    "greit. deal",
+                    "ferdig. det er fair nok",
+                    "ja greit, det er en deal"
+                ],
+                "rushed": [
+                    "bra. ferdig",
+                    "ja. endelig",
+                    "deal. beveger meg nå",
+                    "ja. kom igjen",
+                    "ferdig. på vei",
+                    "deal. nå"
+                ],
+                "regular": [
+                    "bet. deal",
+                    "ait, det er en deal",
+                    "kult, låst inne",
+                    "ja det er en deal",
+                    "nice, ferdig",
+                    "funker for meg. deal"
+                ],
+                "rich": [
+                    "Vi har en avtale",
+                    "Ja",
+                    "Utmerket",
+                    "Avgjort.",
+                    "Bra. Vi er enige",
+                    "Ferdig. Jeg setter pris på en ren forhandling"
+                ]
+            },
+            "counter_accepted": {
+                "broke": [
+                    "${{price}} da. det tømmer meg men ok",
+                    "greit, ${{price}}. deal",
+                    "ok ${{price}} stykket. ferdig",
+                    "${{price}}, ok. det går",
+                    "deal på ${{price}}. takk for at du møtte meg",
+                    "${{price}} stykket. takk"
+                ],
+                "cheap": [
+                    "æsj. greit, ${{price}}. deal",
+                    "${{price}} stykket da. ferdig",
+                    "ait, ${{price}}. du er hard å forhandle med",
+                    "${{price}}. greit",
+                    "greit, ${{price}}. det er bedre"
+                ],
+                "rushed": [
+                    "${{price}}, greit da!",
+                    "ja ${{price}}, det går",
+                    "${{price}} stykket. kom igjen",
+                    "ok ${{price}} blir det",
+                    "ferdig! ${{price}}, vær rask",
+                    "${{price}} stykket, greit, skynd deg"
+                ],
+                "regular": [
+                    "ait ${{price}} stykket, deal",
+                    "${{price}} funker, ferdig",
+                    "kult, ${{price}} stykket",
+                    "${{price}} stykket, det er greit for meg",
+                    "ja ok, ${{price}}",
+                    "${{price}} er greit. vi kjører"
+                ],
+                "rich": [
+                    "${{price}} per enhet. Enig",
+                    "Greit. ${{price}} stykket. Vi har en avtale",
+                    "${{price}}. Ferdig",
+                    "${{price}}. La oss gjøre dette",
+                    "Meget bra. ${{price}} stykket",
+                    "${{price}} stykket. Vi er enige"
+                ]
+            },
+            "declined": {
+                "broke": [
+                    "typisk. verdt et forsøk",
+                    "ja ok. hadde ikke råd til deg uansett",
+                    "ait. kanskje når prisene dine er bedre",
+                    "ja jeg skjønte det",
+                    "verdt et forsøk"
+                ],
+                "cheap": [
+                    "samma det. ditt tap",
+                    "greit. noen andre gjør det billigere",
+                    "ait da",
+                    "ditt tap",
+                    "samma det, din svindler"
+                ],
+                "rushed": [
+                    "er du seriøs. kasta bort tida mi",
+                    "dra til helvete",
+                    "supert. takk for ingenting",
+                    "bortkasta tid",
+                    "jeg fant noen andre uansett"
+                ],
+                "regular": [
+                    "helt greit. hit meg opp en annen gang",
+                    "null stress. snakkes",
+                    "ait, jeg ser andre steder",
+                    "helt greit, en annen gang",
+                    "helt greit ass, ha det bra"
+                ],
+                "rich": [
+                    "Skuffende...",
+                    "Uheldig. Jeg finner noen andre",
+                    "Synd",
+                    "Det var synd.",
+                    "En annen gang da"
+                ]
+            },
+            "walked": {
+                "broke": [
+                    "jeg er ferdig. jeg når ikke opp til prisene dine",
+                    "glem det. dette kom aldri til å funke",
+                    "nei ass",
+                    "nei jeg tuller meg selv, jeg er lut blakk lol, har ikke råd til driten din",
+                    "orker ikke gå fram og tilbake om penger jeg ikke har"
+                ],
+                "cheap": [
+                    "nei du raner folk. jeg er ute",
+                    "glem det, du er grådig",
+                    "ferdig med å kaste bort tida mi",
+                    "nei, senk prisene dine fam",
+                    "betaler ikke turistpriser, hvem tror du jeg er"
+                ],
+                "rushed": [
+                    "det var det, jeg er ferdig",
+                    "nei, finner noen som er raskere OG billigere",
+                    "glem det",
+                    "har ikke tid til dette",
+                    "ferdigsnakka. ha det"
+                ],
+                "regular": [
+                    "nei ass, du tripper på prisen. jeg er ute",
+                    "glem det, for dyrt for meg",
+                    "kan ikke drive business sånn her",
+                    "dette går ingen vei. snakkes",
+                    "neeeei, jeg er ferdig"
+                ],
+                "rich": [
+                    "Jeg lar meg ikke svindle, ha det.",
+                    "Dette sluttet å være verdt tiden min",
+                    "Nei, jeg blir ikke lurt på denne måten igjen.",
+                    "Jeg nekter å bli prutet på. Adjø.",
+                    "Vi kaster bort hverandres tid."
+                ]
+            },
+            "expired": [
+                "du er vel opptatt. fant en annen plug",
+                "ikke noe svar. jeg ordner meg et annet sted",
+                "du lot meg henge. avtalen røk",
+                "tok for lang tid. gått videre",
+                "du ble stille. fikset det et annet sted",
+                "har venta lenge nok. ferdig",
+                "ingenting tilbake fra deg. går videre",
+                "fant noen andre."
+            ],
+            "buyer_cancel": [
+                "noe kom opp. glem avtalen",
+                "kan ikke i dag. jeg er ute",
+                "planene endret seg. avtalen røk",
+                "jeg må stikke. kanskje en annen gang",
+                "føler ikke denne. glem det",
+                "ombestemte meg. ikke kom",
+                "sorry. får det ikke til i dag"
+            ],
+            "complete": {
+                "broke": [
+                    "har den. du aner ikke hva dette betyr, takk",
+                    "mottatt. setter pris på at du var grei med meg",
+                    "alt bra. dette husker jeg",
+                    "har den. takk ass",
+                    "alt her. takk for dealen",
+                    "henta. takk for at du ikke svindla meg"
+                ],
+                "cheap": [
+                    "har den",
+                    "nice, takk",
+                    "alt bra på min side",
+                    "takk",
+                    "alt der, takk for dealen",
+                    "takk for dealen"
+                ],
+                "rushed": [
+                    "har den",
+                    "mottatt, takk",
+                    "henta. takk",
+                    "har den. ha det",
+                    "har den, jeg er ute",
+                    "henta. bra"
+                ],
+                "regular": [
+                    "har den, en fornøyelse å gjøre business",
+                    "mottatt, skal teste den snart",
+                    "alt bra. hold deg trygg der ute",
+                    "har den, setter pris på deg",
+                    "alt bra, hyggelig å gjøre dette",
+                    "henta, takk bro"
+                ],
+                "rich": [
+                    "Mottatt. Jeg tar kontakt",
+                    "Utmerket. Takk for handelen",
+                    "Har den. Takk igjen!",
+                    "Hentet. Ser bra ut så langt, gleder meg til å prøve.",
+                    "Har den. Dette gjør vi igjen.",
+                    "Mottatt. God business."
+                ]
+            },
+            "proposal": {
+                "npc": [
+                    "jeg er på {{location}} med cashen. du har {{minutes}} minutter på å få den til meg",
+                    "ta den med til {{location}}. jeg venter, jeg må dra om {{minutes}} minutter så vær rask",
+                    "{{location}}. gi den til meg så betaler jeg på stedet. {{minutes}} minutter er alt du får",
+                    "møt meg på {{location}}. du har {{minutes}} minutter, jeg er ikke der om du er sen",
+                    "kom med den, du har {{minutes}} minutter.",
+                    "jeg venter på {{location}} i {{minutes}} minutter. ikke la meg stå der"
+                ],
+                "deaddrop": [
+                    "legg den på {{location}} og gå. du har {{minutes}} minutter på å få den dit",
+                    "dropp den på {{location}} innen {{minutes}} minutter. pengene kommer i appen når jeg henter",
+                    "du har {{minutes}} minutter på å gjemme den her",
+                    "legg den fra deg på {{location}}. kan ikke ta mer enn {{minutes}} minutter, jeg trenger den innen da",
+                    "du har {{minutes}} minutter på å få den til {{location}}. legg den og gå, ikke heng rundt",
+                    "dropp den på {{location}}. jeg trenger den innen maks {{minutes}} minutter, ikke vær treg"
+                ]
+            },
+            "delivery_go": {
+                "npc": [
+                    "jeg er der nå. ikke la meg stå og vente",
+                    "gå, vær rask",
+                    "jeg venter, gjør det kjapt",
+                    "jeg er der ute nå",
+                    "skynd deg. jeg venter på deg"
+                ],
+                "deaddrop": [
+                    "dropp den og gå. pengene kommer når jeg har den",
+                    "legg den pent fra deg. ingen ser på",
+                    "få den dit og dra. jeg tar resten",
+                    "dropp den og kom deg unna",
+                    "legg den pent, jeg gjør resten"
+                ]
+            },
+            "running_low": [
+                "klokka tikker på denne. er du nærme?",
+                "hvor lenge? jeg kan ikke sitte på {{location}} hele natta",
+                "gi meg et tegn på at du beveger deg. jeg venter ikke evig",
+                "begynner å tro du ikke kommer. {{location}}, ikke sant?",
+                "beveger du deg eller ikke? jeg har ikke lang tid",
+                "jeg må dra snart",
+                "{{location}}. fortsatt her, ikke så mye lenger",
+                "hvordan ser det ut? klokka er nesten ute"
+            ],
+            "late_cancel": [
+                "ferdig med å vente. avtalen røk, og ratingen din kommer til å vise det",
+                "kasta bort hele dagen min. avlyst. én stjerne",
+                "upålitelig. jeg er ute, og folk kommer til å høre om det",
+                "nei. avtalen røk. burde gått til en ekte plug",
+                "jeg er borte. ikke gidd nå",
+                "det var det, avtalen er død. takk for ingenting",
+                "dro. ratingen din kommer til å si hvorfor"
+            ],
+            "filler": [
+                "vent litt",
+                "et sekund",
+                "la meg tenke",
+                "hmm",
+                "gi meg et sekund",
+                "vent",
+                "regner på det",
+                "sjekker lommeboka",
+                "hold an",
+                "et øyeblikk",
+                "vent nå"
+            ],
+            "counter_hardball": [
+                "feil trekk. det er ${{price}} stykket nå",
+                "pruter du igjen faller den igjen. ${{price}}",
+                "nei. ${{price}} stykket nå. burde tatt det første tallet",
+                "hvert press koster deg. ${{price}} stykket",
+                "fortsett å presse så fortsetter den å synke. ${{price}}",
+                "du klemte for hardt, nå er det ${{price}} stykket",
+                "${{price}} nå. det er hva grådighet koster"
+            ],
+            "low_rating": [
+                "ratingen din er søppel forresten. ingen betaler full pris til et navn som det",
+                "folk snakker sammen. stjernene dine er lave, så ikke forvent markedspris fra noen",
+                "fiks ratingen din. med så lave stjerner betaler ingen det den faktisk er verdt",
+                "ryktet ditt er problemet. lave stjerner betyr lave bud, sånn er det bare",
+                "hadde gått høyere om du var bedre ratet. akkurat nå gjør ingen det",
+                "det er stjernene dine som gjør at jeg byr lavt, ikke varen",
+                "fiks ratingen så betaler jeg ordentlig"
+            ],
+            "good_quality": {
+                "regular": [
+                    "denne {{drug}}-en er skikkelig vare. mye bedre enn jeg forventa",
+                    "kvaliteten på denne er øverste hylle, setter pris på det",
+                    "du tok vare på meg på denne, det er den gode {{drug}}-en",
+                    "denne er verdt mer enn jeg betalte, sinnssykt bra kvalitet",
+                    "beste {{drug}} jeg har fått av noen, kommer garantert tilbake",
+                    "du trengte ikke gi meg det gode stoffet. respekt",
+                    "det der er den høye graden ass"
+                ]
+            },
+            "poor_quality": {
+                "regular": [
+                    "kvaliteten på denne {{drug}}-en er svak ass, det vet du",
+                    "dette er lavgrade og du tok full pris",
+                    "betalte gode penger og fikk nederste hylle {{drug}}",
+                    "denne {{drug}}-en er utblanda til helvete. ikke verdt det jeg ga deg",
+                    "det der er knapt verdt halvparten av det jeg betalte deg",
+                    "du solgte meg det billige stoffet til ekte pris",
+                    "bestemora mi har sterkere greier og hun har vært død i seks år",
+                    "jeg tror du solgte meg det utgåtte lageret ditt",
+                    "bro denne {{drug}}-en er søppel",
+                    "denne smaker dritt, ikke engang den lokale crackheaden min vil ha den",
+                    "denne ligger i pose og lukter fortsatt dritt",
+                    "denne ligner ikke engang på {{drug}}",
+                    "jeg har fått bedre ut av en søppelkasse bak apoteket",
+                    "kvaliteten på denne er søppel bror, gidder ikke engang ha den",
+                    "du tok designerpriser for denne driten",
+                    "vurderer seriøst å ramme inn denne som en advarsel til andre, kvaliteten er ræva"
+                ]
+            },
+            "drop_ack": {
+                "broke": [
+                    "ok bra. gi meg litt, jeg går",
+                    "setter pris på det. henter den så fort jeg kan",
+                    "skjønner. litt av en gåtur for meg men jeg kommer",
+                    "ait. henter den snart",
+                    "ok. pengene kommer når jeg har den i hånda"
+                ],
+                "cheap": [
+                    "ait. jeg svinger innom om litt",
+                    "kult. henter den snart",
+                    "ok. ikke stress, jeg henter",
+                    "notert. kommer innom snart",
+                    "bra. henter den når jeg er den veien"
+                ],
+                "rushed": [
+                    "endelig. på vei nå",
+                    "bra. jeg er nærme, henter den",
+                    "ok jeg beveger meg. burde gå kjapt",
+                    "greit. har den om et minutt",
+                    "på saken. ikke heng rundt der"
+                ],
+                "regular": [
+                    "bet. henter den snart",
+                    "ait. drar dit nå",
+                    "perfekt. henter den om litt",
+                    "setter pris på det. henter den snart",
+                    "nice. på vei over"
+                ],
+                "rich": [
+                    "Notert. Noen henter den snart.",
+                    "Bra. Den blir hentet snart.",
+                    "Forstått. Jeg er på vei.",
+                    "Utmerket. Jeg får den hentet.",
+                    "Veldig bra. Tar ikke lang tid."
+                ]
+            },
+            "counter_greedy": {
+                "broke": [
+                    "${{price}}?? jeg er blakk, ikke dum",
+                    "jeg er fattig, ikke en idiot. ${{price}} haha",
+                    "prøver du å rane en mann uten penger?",
+                    "${{price}} stykket. jeg har ikke det på hele kontoen",
+                    "for {{drug}}? kom deg vekk ass"
+                ],
+                "cheap": [
+                    "${{price}}? dra til helvete haha",
+                    "${{price}} stykket?? ser jeg ut som en minibank",
+                    "haha nei. det der er ren tyveri med et smil på",
+                    "røyker du ditt eget stoff eller?",
+                    "${{price}}. for {{drug}}. det er da helt sirkus",
+                    "det der er ikke en pris, det er et ran"
+                ],
+                "rushed": [
+                    "${{price}}?? dra til helvete, jeg betaler ikke turistpriser",
+                    "slutt å kaste bort tida mi med sånne tall",
+                    "er du seriøs nå. ${{price}}.",
+                    "nei. og nå irriterer du meg",
+                    "jeg sa skynd deg, ikke ran meg"
+                ],
+                "regular": [
+                    "${{price}}? kom igjen ass, vær seriøs",
+                    "det er dobbelt av hva det er verdt og det vet du",
+                    "nei. du må tro jeg er ny her",
+                    "${{price}} haha. later som jeg ikke så det",
+                    "ikke fornærm meg, jeg vet hva {{drug}} koster"
+                ],
+                "rich": [
+                    "Jeg har penger. Det gjør meg ikke til et lett bytte.",
+                    "${{price}}? Jeg betaler godt. Jeg betaler ikke dumt.",
+                    "Søtt forsøk. Nei.",
+                    "Jeg har råd. Jeg er bare ikke naiv.",
+                    "Du så penger og ble ivrig, ikke sant."
+                ]
+            },
+            "counter_bargain": {
+                "broke": [
+                    "${{price}}?? ja. ja før du rekker å tenke deg om",
+                    "deal deal deal. takk, seriøst",
+                    "${{price}} stykket?! du redda meg akkurat nå",
+                    "tar det før du ombestemmer deg"
+                ],
+                "cheap": [
+                    "${{price}}? haha ferdig. enkleste ja noensinne",
+                    "solgt. du er elendig til å forhandle btw",
+                    "ferdig. og jeg sier ikke hvorfor jeg smiler",
+                    "${{price}} stykket. sikker? nei, ikke svar. deal"
+                ],
+                "rushed": [
+                    "${{price}}? ferdig, det er et røverkjøp, samma, jeg er sen",
+                    "ja. umiddelbart ja",
+                    "deal. pruter ikke engang, det er gratis penger"
+                ],
+                "regular": [
+                    "${{price}}? du raner deg selv ass. deal",
+                    "ferdig. burde bedt om det dobbelte ærlig talt",
+                    "ok det er for billig men jeg klager ikke",
+                    "deal. men lær deg prisene dine, seriøst"
+                ],
+                "rich": [
+                    "${{price}}? Jeg hadde betalt det tredobbelte. Avtale.",
+                    "Ferdig. Smertefullt ferdig.",
+                    "Det var nesten for lett. Avtale.",
+                    "Du solgte deg selv altfor billig. Jeg tar det uansett."
+                ]
+            },
+            "counter_refused": {
+                "broke": [
+                    "kan ikke. jeg pruter ikke, jeg har genuint ikke det",
+                    "det er penger jeg ikke har. skulle ønske jeg hadde",
+                    "nei. det er utenfor det som er i lomma mi",
+                    "jeg kan bokstavelig talt ikke. det er ikke en taktikk",
+                    "ingen sjanse. de pengene finnes ikke for meg",
+                    "kan ikke. jeg er allerede på bunnen"
+                ],
+                "cheap": [
+                    "nei. betaler ikke det",
+                    "det er for mye, jeg gjør det ikke",
+                    "pass. langt over det jeg hadde tenkt",
+                    "nei. ikke på det",
+                    "nei. jeg vet bedre enn som så",
+                    "det er et nei. prøv igjen"
+                ],
+                "rushed": [
+                    "nei. for mye og jeg har ikke tid",
+                    "nei. neste",
+                    "betaler ikke det. slutt å hale ut tida",
+                    "nei. kaster bort tida mi",
+                    "nei for mye. skynd deg",
+                    "nei. nytt tall eller så er jeg ute"
+                ],
+                "regular": [
+                    "det er over det jeg klarer ass",
+                    "nei, kan ikke gå dit. sorry",
+                    "for bratt. kommer ikke til å gå",
+                    "kan ikke ta den prisen ass",
+                    "nei det er litt mye for meg",
+                    "sorry, det er over hodet mitt"
+                ],
+                "rich": [
+                    "Nei. Jeg betaler godt. Jeg lar meg ikke utnytte.",
+                    "Det er utover hva jeg er villig til å bruke.",
+                    "Jeg har penger. Det betyr ikke at jeg sløser dem.",
+                    "Nei. Jeg vet hva dette er verdt.",
+                    "Det er ikke et seriøst tall.",
+                    "Nei. Prøv igjen, ellers er vi ferdige."
+                ]
+            },
+            "ask": {
+                "broke": [
+                    "jeg trenger {{qty}}. hva tar du? vær grei, jeg er blakk",
+                    "{{qty}} stykker. hva ber du om?",
+                    "hvor mye for {{qty}}? si at det er billig",
+                    "{{qty}}. hva koster det meg? vær snill",
+                    "hvor mye for {{qty}}, og vær ærlig, jeg er blakk",
+                    "{{qty}} stykker. gi meg et tall jeg overlever"
+                ],
+                "cheap": [
+                    "{{qty}}. hva er prisen din? ikke prøv deg",
+                    "hvor mye vil du ha for {{qty}}?",
+                    "gi meg et tall for {{qty}}. et fornuftig et",
+                    "{{qty}}. pris? og ikke forulemp meg",
+                    "hva koster {{qty}} meg",
+                    "gi meg et tall for {{qty}}. et ekte et"
+                ],
+                "rushed": [
+                    "{{qty}}. pris. nå",
+                    "hvor mye for {{qty}}? kjapt",
+                    "si prisen din for {{qty}}, jeg shopper ikke rundt",
+                    "{{qty}}. hvor mye. kjapt",
+                    "pris for {{qty}}, jeg er på farten",
+                    "{{qty}}. tall. kjør"
+                ],
+                "regular": [
+                    "jeg tar {{qty}}. hva tar du?",
+                    "{{qty}} stykker. hva er prisen din?",
+                    "hvor mye ber du om for {{qty}}?",
+                    "{{qty}}. hva tenker du prismessig?",
+                    "hvor mye vil {{qty}} koste meg?",
+                    "{{qty}} stykker. si en pris"
+                ],
+                "rich": [
+                    "{{qty}} enheter. Si prisen din.",
+                    "Jeg vil ha {{qty}}. Hva ber du om per enhet?",
+                    "Gi meg et tilbud på {{qty}}. Jeg kan være raus om det er rettferdig.",
+                    "{{qty}}. Hva er prisantydningen din?",
+                    "Gi meg pris på {{qty}}. Jeg pruter ikke mye.",
+                    "{{qty}} enheter. Ditt tall, takk."
+                ]
+            },
+            "drop_missing": {
+                "broke": [
+                    "jeg dro til {{location}} og det er INGENTING der. droppa du den i det hele tatt",
+                    "ingenting på {{location}}. jeg sparte til dette ass",
+                    "det er ingenting her. du lurte meg",
+                    "det er ingenting her ass. jeg trengte det",
+                    "{{location}} er tom. droppa du den i det hele tatt"
+                ],
+                "cheap": [
+                    "ingenting på {{location}}. typisk",
+                    "jeg sjekket {{location}} to ganger. tomt. takk for ingenting",
+                    "ingen pakke. visste dette var for godt",
+                    "tomt. du lurte meg",
+                    "ingenting på {{location}}. det går utover ratingen din"
+                ],
+                "rushed": [
+                    "jeg er på {{location}} og det er TOMT. kasta bort tida mi",
+                    "ingenting her. jeg kjørte helt ut hit for dette",
+                    "tomt. utrolig",
+                    "ingenting her. bomtur",
+                    "{{location}}, tomt. takk for ingenting"
+                ],
+                "regular": [
+                    "yo det er ingenting på {{location}}. kom noen først?",
+                    "jeg sjekket {{location}}, ingen pakke. hva skjedde",
+                    "ingenting på spotten ass. det er på deg",
+                    "spotten er tom. slo noen meg til det?",
+                    "ingenting på {{location}}. hva skjedde"
+                ],
+                "rich": [
+                    "Jeg dro til {{location}}. Det var ingenting der. Det setter jeg ikke pris på.",
+                    "Droppen var tom. Håndter forretningene dine bedre.",
+                    "Ingenting på {{location}}. Dette stiller deg i dårlig lys.",
+                    "Jeg kjørte ut til en tom spot. Forklar.",
+                    "{{location}} var tom. Jeg forventer bedre."
+                ]
+            },
+            "paid": [
+                "sendte pengene dine",
+                "det er betalt, setter pris på deg",
+                "penger sendt. god business",
+                "sendte det over",
+                "betalt. ikke bruk alt på en gang"
+            ],
+            "contact_opener": {
+                "broke": [
+                    "yo det er meg igjen. har du {{drug}}? jeg er blakk som vanlig",
+                    "hei. meg igjen. noe {{drug}} på gang? vær grei med meg",
+                    "det er din blakkeste favorittkunde. {{drug}}?",
+                    "yo. trenger {{drug}} igjen. lommeboka gråter men jeg trenger det"
+                ],
+                "cheap": [
+                    "meg igjen. {{drug}}. samme som sist, ingen rare priser",
+                    "yo. har du noe {{drug}}? fair pris denne gangen",
+                    "det er meg. trenger {{drug}}. ikke bli grådig mot en stamkunde",
+                    "tilbake igjen for {{drug}}. stamkunder får rabatt sant?"
+                ],
+                "rushed": [
+                    "det er meg. {{drug}}. nå?",
+                    "yo. {{drug}} igjen. kjapp en",
+                    "meg. trenger {{drug}} asap",
+                    "er du våken? {{drug}}. har det travelt som vanlig"
+                ],
+                "regular": [
+                    "yo det er meg. har du {{drug}} nå?",
+                    "hei, meg igjen. har du {{drug}}?",
+                    "skjer'a. trenger litt {{drug}} igjen",
+                    "yo. samme som vanlig? {{drug}}",
+                    "skjer, har du {{drug}}?"
+                ],
+                "rich": [
+                    "Hallo igjen. Er det {{drug}} å oppdrive?",
+                    "Det er meg. Jeg fyller opp lageret med {{drug}}.",
+                    "God kveld. Samme bestilling som sist - {{drug}}.",
+                    "Meg igjen. {{drug}}, om du selger."
+                ]
+            },
+            "referral_opener": [
+                "yo. {{referrer}} ga meg nummeret ditt, sa du er pluggen for {{drug}}. stemmer det?",
+                "hei. venn av {{referrer}}. de sa du ikke tuller. ser etter {{drug}}",
+                "{{referrer}} gikk god for deg. sa du kunne ordne meg med {{drug}}",
+                "skjer. {{referrer}} sendte meg. trenger {{drug}} og de sa du er solid",
+                "du kjenner meg ikke men {{referrer}} gjør det. sa du er god for {{drug}}. én deal og er den ren så beholder jeg nummeret ditt"
+            ],
+            "contact_request": {
+                "broke": [
+                    "yo det der var solid. jeg er {{name}} btw. kan jeg lagre nummeret ditt? sverger jeg faktisk betaler neste gang også",
+                    "du er grei ass. navnet er {{name}}. kan jeg beholde kontakten din? hiter deg opp når jeg er mindre blakk",
+                    "jeg er {{name}} forresten. kan jeg lagre deg? billig OG pålitelig er sjeldent"
+                ],
+                "cheap": [
+                    "grei deal for en gangs skyld. jeg er {{name}}. greit om jeg lagrer nummeret ditt?",
+                    "ait du er fair. navnet er {{name}}. kan jeg beholde kontakten din til neste gang?",
+                    "skal være ærlig, det er den beste prisen jeg har fått. jeg er {{name}}. kan jeg lagre deg?"
+                ],
+                "rushed": [
+                    "raskt. jeg liker raskt. jeg er {{name}}. lagrer nummeret ditt, kult?",
+                    "du kaster ikke bort tid. navnet er {{name}}. kan jeg beholde kontakten din?",
+                    "kjapt og rent. jeg er {{name}} btw. kan jeg lagre deg til neste gang?"
+                ],
+                "regular": [
+                    "god business. jeg er {{name}} btw. greit om jeg lagrer nummeret ditt til neste gang?",
+                    "du er solid. navnet er {{name}}. kan jeg beholde kontakten din?",
+                    "smooth deal. jeg er {{name}}. la meg lagre deg, jeg går rett til deg neste gang",
+                    "de kaller meg {{name}}. kan jeg legge deg til i kontaktene? kjøper heller av noen jeg kjenner"
+                ],
+                "rich": [
+                    "Kvalitetsservice. Navnet er {{name}}. Jeg vil gjerne beholde kontakten din, om du ikke har noe imot det.",
+                    "Jeg foretrekker en pålitelig leverandør fremfor å shoppe rundt. Kall meg {{name}}. Får jeg lagre nummeret ditt?",
+                    "Det gikk bra. Jeg er {{name}}. Jeg beholder kontakten din til fremtidige bestillinger, avtale?"
+                ]
+            },
+            "contact_added": {
+                "broke": [
+                    "lagra. du er fyren min nå",
+                    "ferdig. hiter deg opp når pengene kommer inn",
+                    "nice. snakkes"
+                ],
+                "cheap": [
+                    "lagra. hold prisene fair så fortsetter jeg å komme",
+                    "ferdig. sees rundt",
+                    "bra. jeg tar kontakt"
+                ],
+                "rushed": [
+                    "lagra. snakkes",
+                    "ferdig. må løpe",
+                    "bra. jeg melder deg"
+                ],
+                "regular": [
+                    "lagra. jeg hiter deg opp",
+                    "bet. snakkes snart",
+                    "ferdig. godt å kjenne en solid plug",
+                    "lagra nummeret ditt. sees senere"
+                ],
+                "rich": [
+                    "Lagret. Forvent min business.",
+                    "Ferdig. Jeg tar kontakt.",
+                    "Utmerket. Til neste gang."
+                ]
+            },
+            "contact_accept": [
+                "ait jeg er med. tar {{qty}}x til ${{price}}. ${{total}} totalt",
+                "ja det vil jeg ha. {{qty}} stykker, ${{price}} per stk. ${{total}}",
+                "god timing. gi meg {{qty}}x. ${{total}} til din pris",
+                "si ikke mer. {{qty}} til ${{price}} per stk. ${{total}} totalt",
+                "deal. {{qty}}x {{drug}}, ${{total}} totalt"
+            ],
+            "contact_decline": [
+                "nei jeg er good nå",
+                "ikke denne gangen. økonomien er ikke der",
+                "står over nå. hit meg en annen dag",
+                "nei. ikke til den prisen i dag",
+                "jeg sitter denne ut",
+                "ikke akkurat nå ass"
+            ],
+            "contact_later": [
+                "kan ikke akkurat nå. dårlig timing",
+                "ikke i dag. det er hett ute",
+                "en annen gang. akkurat nå går det ikke",
+                "kan ikke bevege meg nå. senere"
+            ],
+            "contact_neverbuys": [
+                "det er JEG som hiter deg opp når jeg trenger noe. ikke ring meg",
+                "nei. sånn funker ikke dette. jeg melder først",
+                "ikke push varer på meg. jeg spør når jeg vil ha",
+                "du har nummeret mitt baklengs. det er JEG som bestiller"
+            ],
+            "contact_nag": [
+                "slapp av. jeg sa jeg hiter deg opp",
+                "du spurte akkurat. ro deg ned",
+                "slutt å spamme telefonen min ass",
+                "igjen? gi deg litt",
+                "masete eller? jeg spør når jeg vil ha"
+            ],
+            "contact_block": [
+                "jeg er ferdig med deg. mist dette nummeret",
+                "det var det. ikke kontakt meg igjen",
+                "vi er ferdige. sletter deg",
+                "du er dårlig business. ikke meld meg igjen"
+            ],
+            "contact_farewell": [
+                "jeg er ferdig med alt dette. blir lovlydig, på ekte denne gangen. ikke meld dette nummeret",
+                "de tok meg. purk overalt, jeg sletter denne telefonen. du kjente meg aldri",
+                "forlater byen i natt. ikke spør hvorfor. dette nummeret er dødt om en time",
+                "dama mi fant ut om alt. jeg er ute. sletter alt, ta vare på deg",
+                "advokaten sier jeg må droppe alle kontaktene mine. ikke noe personlig. ha det",
+                "sjekker inn på rehab i morgen. kan ikke ha dette nummeret aktivt. hold deg trygg",
+                "for mye heat i det siste. brenner denne telefonen. ser du meg rundt, så kjenner du meg ikke"
+            ]
+        },
+        "player_confirm": [
+            "ja jeg har deg. hvor mye trenger du?",
+            "ja jeg har det. hvor mange?",
+            "har fortsatt noe. hva er du ute etter?",
+            "ja det er live. hvor mye vil du ha?",
+            "på lager. si tallet"
+        ],
+        "buyer_name_tags": [
+            "Big",
+            "Lil",
+            "Feit",
+            "Tynn",
+            "Liten",
+            "Høy",
+            "Stinkete",
+            "Svett",
+            "Skitten",
+            "Fettete",
+            "Thicc",
+            "Sinna",
+            "Gæren",
+            "Crazy",
+            "Full",
+            "Loco",
+            "Vill",
+            "Sur",
+            "Stille",
+            "Taus",
+            "Skjelven",
+            "Fæl",
+            "Kokt",
+            "Gammel",
+            "Søt",
+            "Heldig",
+            "Blakk",
+            "Gjerrig",
+            "Rik",
+            "Rask",
+            "Treg",
+            "Søvnig",
+            "Sulten",
+            "Sketchy",
+            "Høylytt",
+            "Ferdig",
+            "Tjukk",
+            "Svart",
+            "Hvit",
+            "Blå",
+            "Glatt",
+            "Klossete",
+            "Ikke",
+            "Ekte",
+            "Skallet",
+            "Stygg",
+            "Pen"
+        ],
+        "buyer_name_names": [
+            "Tim",
+            "Boy",
+            "Diddler",
+            "Bozo",
+            "Gangsta",
+            "Tyrone",
+            "Tommy",
+            "Lucia",
+            "Cholo",
+            "Alien",
+            "Jason",
+            "Xing",
+            "Marco",
+            "Rico",
+            "Pablo",
+            "Diesel",
+            "Nacho",
+            "Gas",
+            "Chico",
+            "Vladimir",
+            "Omar",
+            "Kev",
+            "Ricky",
+            "Dwayne",
+            "Barbie",
+            "Princess",
+            "Moe",
+            "Ray",
+            "Snake",
+            "Tank",
+            "Bones",
+            "Pizza",
+            "Mechanic",
+            "Fingers",
+            "Pockets",
+            "Slice",
+            "Domino",
+            "Toe",
+            "Crackhead",
+            "Mouse",
+            "Dealer",
+            "Addict",
+            "Killer",
+            "Smoke",
+            "Rat",
+            "Kuz",
+            "Bobby",
+            "Officer",
+            "Dumbass",
+            "Officer",
+            "Nickel",
+            "Dime",
+            "Chains",
+            "Tooth",
+            "Trevor",
+            "Sanchez",
+            "Duke",
+            "Mike",
+            "Wolf"
+        ],
+        "payment_received": "Betaling mottatt: ${{total}}"
+    },
+    "street": {
+        "offer_prompt": "Tilby varer"
+    },
+    "corner": {
+        "blip": "Hjørne",
+        "post_prompt": "Still deg opp",
+        "posted": "Du står på hjørnet. Kjøpere kommer bort til deg",
+        "error": {
+            "invalid": "Dette hjørnet er ikke tilgjengelig akkurat nå",
+            "too_far": "Du er for langt unna",
+            "laying_low": "Blokka er for het akkurat nå, ingen kjøper",
+            "full": "Noen jobber allerede dette hjørnet",
+            "no_drugs": "Du har ingenting igjen å selge her"
+        }
+    },
+    "drugs": {
+        "unknown_label": "Usortert"
+    },
+    "delivery": {
+        "handover_prompt": "Lever varene",
+        "dropoff_prompt": "Legg fra deg pakken",
+        "blip": "Avtalested",
+        "error": {
+            "no_items": "Du bærer ikke varene for denne avtalen",
+            "too_far": "Du er for langt unna",
+            "invalid": "Den avtalen er ikke gyldig lenger",
+            "cannot_carry": "Du kan ikke bære det"
+        },
+        "pickup_prompt": "Ta pakken",
+        "queued_payout": "Dead drop-penger kom inn mens du var borte: ${{total}}"
+    },
+    "org": {
+        "contact_prompt": "Snakk",
+        "favour": {
+            "blip": "Tjeneste-mål",
+            "blip_package": "Pakkelevering",
+            "requested": "{{org}} har en oppgave til deg, de sender detaljene på e-post straks",
+            "requested_app": "{{org}} har en oppgave til deg, de kontakter deg straks via PLUG-appen",
+            "drop_prompt": "Legg fra deg pakken",
+            "error": {
+                "invalid": "Ingenting å legge fra seg her",
+                "too_far": "Du er for langt unna",
+                "no_items": "Du har ikke pakken"
+            }
+        },
+        "error": {
+            "laying_low": "{{name}} ligger lavt akkurat nå og vil ikke snakke",
+            "laying_low_fallback": "Organisasjonen",
+            "limit_reached": "Denne organisasjonen tar ikke imot mer vare akkurat nå"
+        }
+    },
+    "fixer": {
+        "prompt": "Snakk",
+        "unlocked": "Du har låst opp {{org}}. Plasseringen deres vises nå og du kan handle med dem",
+        "error": {
+            "no_items": "Du har ikke nok gjenstander til å betale"
+        }
+    },
+    "police": {
+        "blip": "Sting-dropp",
+        "no_access": "Du har ikke tilgang til denne enheten"
+    },
+    "dispatch": {
+        "titles": [
+            "Mistenkelig aktivitet",
+            "Narkotikasalg rapportert"
+        ],
+        "messages": [
+            "Noen tilbyr narkotika på gata",
+            "Noen selger narkotika i området",
+            "Narkolanger rapportert"
+        ]
+    },
+    "editor": {
+        "no_permission": "Du har ikke tillatelse til det",
+        "save_failed": "Lagring feilet"
+    },
+    "nui": {
+        "currency": "$",
+        "setup": {
+            "title": "Oppsett og importer",
+            "subtitle": "Kjør en dataimport for å fylle ressursen",
+            "explain_1": "Importer er ferdiglagde datapakker som fyller ressursens egne tabeller for deg: drugs, leveringssteder, hjørner, organisasjoner og mer. Så du slipper å plassere alt for hånd i editoren",
+            "explain_2": "Huk av pakkene du vil ha og trykk Importer",
+            "open": "Oppsett og importer",
+            "import": "Importer",
+            "selected_count": "{{count}} valgt",
+            "done": "Import kjørt",
+            "done_rows": "Import kjørt, {{rows}} rader påvirket",
+            "failed": "Import feilet: {{error}}",
+            "close": "Lukk",
+            "empty": "Ingen importer konfigurert",
+            "empty_hint": "Legg dem til i server/editable/setup.lua"
+        },
+        "handover": {
+            "title": "Velg produkttype",
+            "hint": "{{count}}x {{drug}}",
+            "confirm": "Bekreft",
+            "cancel": "Avbryt"
+        },
+        "quality": {
+            "1": "Dårlig",
+            "2": "Svak",
+            "3": "Nøytral",
+            "4": "God",
+            "5": "Ypperlig"
+        },
+        "app": {
+            "title": "PLUG",
+            "loading": "Kobler til...",
+            "nav_contacts": "Kontakter",
+            "section_orgs": "Organisasjoner",
+            "section_people": "Kontakter",
+            "contact_buys_nothing": "Kjøper ingenting akkurat nå",
+            "no_contacts": "Ingen organisasjoner ennå",
+            "no_people": "Ingen lagrede kontakter ennå",
+            "person": {
+                "deleted_name": "Bruker slettet",
+                "status_blocked": "Blokkert",
+                "status_deleted": "Slettet",
+                "note_blocked": "Du har blitt blokkert",
+                "note_deleted": "Denne profilen finnes ikke lenger",
+                "buys": "Interessert i",
+                "message": "Se samtale",
+                "start_offer": "Lag tilbud",
+                "remove": "Slett kontakt",
+                "remove_confirm": "Trykk igjen for å bekrefte",
+                "offer_pick": "Hva tilbyr du",
+                "offer_price": "Din pris",
+                "offer_send": "Send tilbud"
+            },
+            "contact_card": {
+                "title": "{{name}} vil bli lagt til i kontaktene dine",
+                "add": "Legg til",
+                "ignore": "Ignorer"
+            },
+            "inbox": "Meldinger",
+            "market": "Gateverdi",
+            "no_listings": "Ingen produkttyper tilgjengelig",
+            "no_threads": "Ingen aktive samtaler",
+            "accept": "Godta ${{price}}",
+            "counter": "Motbud",
+            "decline": "Avslå",
+            "accept_delivery": "Godta",
+            "mark_route": "Marker rute",
+            "route_set": "Rute satt",
+            "state": {
+                "inquiry": "Ny",
+                "open": "Aktiv",
+                "waiting": "Aktiv",
+                "agreed": "Aktiv",
+                "delivery": "Aktiv",
+                "complete": "Fullført",
+                "declined": "Avslått",
+                "walked": "Avslått",
+                "expired": "Utløpt",
+                "failed": "Utløpt",
+                "notice": "Avslått"
+            },
+            "accept_plain": "Godta",
+            "per_unit": "Per enhet",
+            "send_quote": "Send",
+            "nav_prices": "Priser",
+            "prices_hint": "Gjeldende markedspriser",
+            "no_prices": "Ingenting på markedet",
+            "sort_alpha": "A-Å",
+            "sort_price": "Pris",
+            "sort_demand": "Etterspørsel",
+            "section_active": "Aktive samtaler",
+            "section_history": "Arkiverte samtaler",
+            "standing_label": "Omdømme",
+            "standing": {
+                "1": "Dårlig",
+                "2": "Svakt",
+                "3": "Nøytralt",
+                "4": "Godt",
+                "5": "Ypperlig"
+            },
+            "contact_prices": "Priser",
+            "contact_batch": "{{size}} / parti",
+            "mail_title": "E-post",
+            "payment_title": "Betaling mottatt",
+            "peek_new": "Ny melding!",
+            "no_mail": "Innboksen er tom",
+            "no_threads_waiting": "Ingen aktive samtaler",
+            "nav_profile": "Profil",
+            "profile": {
+                "name_prefix": "Dealer",
+                "deals": "{{count}} fullførte avtaler",
+                "name": "Visningsnavn",
+                "picture": "Profilbilde",
+                "save": "Lagre profil",
+                "name_blocked": "Velg et annet navn"
+            },
+            "listing": {
+                "none": "Ingen aktiv annonse",
+                "active": "Aktiv annonse",
+                "posting": "Publiserer...",
+                "create": "Lag annonse",
+                "edit": "Rediger",
+                "delete": "Slett",
+                "pick": "Hva selger du",
+                "rating_needed": "{{stars}} kreves",
+                "publish": "Publiser annonse",
+                "save": "Lagre endringer",
+                "just_now": "akkurat nå",
+                "minutes": "{{count}}m siden",
+                "hours": "{{count}}t siden",
+                "and": "og",
+                "intros": [
+                    "Tilbake på lager og det går unna. Alt nedenfor har jeg for hånden akkurat nå, ingenting i bestilling.",
+                    "Fersk leveranse kom inn i morges, ingenting som ligger og blir gammelt. Her er det som er på bordet.",
+                    "Fylt opp og sortert for uka. Kvaliteten taler for seg selv, jeg trenger ikke overselge den.",
+                    "Åpent for business, som alltid. Står det på denne lista har jeg det på meg akkurat nå.",
+                    "Nytt parti landet og det er et godt et. Tok meg lang nok tid å få tak i, så det blir ikke liggende lenge.",
+                    "Fikk tak i et skikkelig lass denne gangen. Mer enn jeg vanligvis bærer, så benytt sjansen mens det varer.",
+                    "Alt nedenfor er klart til å gå, ingen venting. Rett bytte, du dukker opp og vi er ferdige.",
+                    "Hyllene er fulle igjen etter et par rolige dager. Fylt opp med det folk stadig spør etter.",
+                    "Akkurat fått påfyll, begrensede mengder av hver vare. Ta kontakt!",
+                    "Jobber i kveld og jeg har en del gjemt unna. Her er det jeg har, prisene er det de er verdt.",
+                    "Sortert for uka, så ta en titt. Samme kvalitet som sist, samme som gangen før det.",
+                    "Rett fra båten, alt sammen. Ikke ligget i noens leilighet i en måned som de andre greiene som går rundt."
+                ],
+                "outros": [
+                    "Hit meg opp. Jeg er rundt mesteparten av natta og jeg tuller ikke med folk.",
+                    "Hit meg opp, men jeg gidder ikke tidssløsere. Er du ikke klar for å møtes, ikke meld meg.",
+                    "Meld meg så ordner jeg deg. Kjapt og stille, inn og ut, ingen henging.",
+                    "Kun seriøse kjøpere. Vet du hva du vil ha, si det så får vi det gjort.",
+                    "Førstemann til mølla. Jeg holder ikke av noe til noen, så ikke be meg om det.",
+                    "Si ordet så er det ditt. Jeg kommer til deg om du ikke er for langt unna.",
+                    "Kun kjappe møter, jeg står ikke og venter. Meld meg når du faktisk er ledig.",
+                    "Du vet hvor du finner meg. Har gjort dette lenge nok til at jeg ikke trenger å reklamere to ganger.",
+                    "Prisene er fair så ikke forulemp meg.",
+                    "Hit meg opp før det er borte, for det blir det. Alle vil ha det samme denne uka.",
+                    "Inn og ut, ingen småprat. Møt opp i tide så handler du med meg igjen.",
+                    "Meld meg. Førstegangskjøpere er velkomne så lenge du ikke er dum med det."
+                ]
+            },
+            "nav_mail": "E-post"
+        },
+        "street": {
+            "title": "Tilby pris per enhet",
+            "offer": "Tilby",
+            "cancel": "Avbryt",
+            "variants": "{{count}} kvaliteter"
+        },
+        "corner": {
+            "wants": "Har du noe {{drug}}?",
+            "accept": "Godta",
+            "other": "Tilby en annen vare",
+            "decline": "Avslå",
+            "no_requested": "Du bærer ikke noe {{drug}}",
+            "no_other": "Du bærer ikke noe annet å tilby"
+        },
+        "classic": {
+            "brand": "PLUG",
+            "menu_inbox": "Innboks",
+            "menu_listings": "Annonser",
+            "menu_prices": "Priser",
+            "menu_orgs": "Kontakter",
+            "menu_mail": "E-post",
+            "standing": "Omdømme",
+            "no_mail": "Ingen e-post",
+            "archived": "Arkivert",
+            "each": "Per enhet",
+            "no_orgs": "Ingen organisasjoner",
+            "section_orgs": "Organisasjoner",
+            "section_people": "Kontakter",
+            "no_people": "Ingen lagrede kontakter",
+            "person_deleted": "Bruker slettet",
+            "person_blocked": "Blokkert",
+            "person_buys": "Kjøper",
+            "person_deals": "Avtaler",
+            "person_message": "Melding",
+            "person_remove": "Slett",
+            "person_remove_confirm": "Sikker?",
+            "offer_pick": "Tilby vare",
+            "offer_send": "Send tilbud",
+            "empty_inbox": "Ingen meldinger",
+            "no_listings": "Ingen produkttyper tilgjengelig",
+            "accept": "Godta",
+            "decline": "Avslå",
+            "counter": "Motbud",
+            "quote": "Pristilbud",
+            "send": "Send",
+            "back": "Tilbake",
+            "route": "Marker rute",
+            "route_set": "Rute satt",
+            "me": "MEG",
+            "them": "KJØPER",
+            "select": "Velg",
+            "listed": "ANNONSERT",
+            "unlisted": "INGEN ANNONSE",
+            "no_listing": "Ingen annonser",
+            "create_listing": "Lag",
+            "edit_listing": "Rediger",
+            "delete_listing": "Slett",
+            "pick_drugs": "Velg vare",
+            "publish_listing": "Publiser annonse",
+            "save_listing": "Lagre endringer",
+            "rating_needed": "{{stars}}*+",
+            "just_now": "akkurat nå",
+            "minutes": "{{count}}m siden",
+            "hours": "{{count}}t siden"
+        },
+        "phone": {
+            "carrier": "KQTEL",
+            "notes": "Notater",
+            "settings": "Innstillinger",
+            "done": "Ferdig",
+            "note_placeholder": "Skriv noe...",
+            "note_empty": "Tomt notat",
+            "no_notes": "Ingen notater ennå",
+            "wallpaper": "Bakgrunn",
+            "brightness": "Lysstyrke",
+            "notifications": "Varsler",
+            "sounds": "Lyder"
+        },
+        "police": {
+            "app_name": "Sting",
+            "heatmap_app_name": "Hotspots",
+            "tab_operation": "Sting",
+            "tab_hotspots": "Hotspots",
+            "heatmap_title": "Salgshotspots",
+            "heatmap_subtitle": "Nylig rapportert aktivitet",
+            "heatmap_legend_low": "Lav",
+            "heatmap_legend_high": "Høy",
+            "unit": "LSPD",
+            "division": "Narkotikaavdelingen",
+            "status_label": "Status",
+            "site_index": "Sted {{index}}",
+            "last_attempt": "Siste forsøk",
+            "clearance": "Klarering",
+            "clearance_control": "Full kontroll",
+            "clearance_view": "Kun innsyn",
+            "booting": "Kobler til...",
+            "denied_title": "Ingen tilgang",
+            "denied_body": "Kun autorisert LSPD-personell",
+            "no_operation": "Ingen aktiv operasjon",
+            "no_operation_hint": "Utgi deg for å være kjøper og ta selgeren på droppen",
+            "view_only": "Kun innsyn. Din grad kan ikke kjøre operasjoner",
+            "start_operation": "Start operasjon",
+            "choose_site": "Velg et droppsted",
+            "select": "Velg",
+            "cancel": "Avbryt",
+            "site": "Droppsted",
+            "initiated_by": "Startet av",
+            "initiated_at": "Startet kl",
+            "choose_drug": "Velg lokkevare",
+            "retry": {
+                "declined": "Målet avslo. Velg et nytt mål",
+                "expired": "Ingen respons fra målet. Velg et nytt mål",
+                "dark": "Målet gikk offline. Velg et nytt mål",
+                "noshow": "Målet leverte aldri. Velg et nytt mål"
+            },
+            "targets": "Potensielle mål",
+            "no_targets": "Ingen aktive dealere akkurat nå",
+            "rating": "PLUG-rating",
+            "busy": "I en operasjon",
+            "start_failed": "Kunne ikke sette det opp. Prøv igjen",
+            "target": "Mål",
+            "goods": "Varer",
+            "agreed_price": "Avtalt",
+            "log": "Samtale",
+            "log_empty": "Ingenting registrert ennå",
+            "back": "Tilbake",
+            "cooldown_label": "Nedkjøling",
+            "cooldown_notice": "Neste operasjon tilgjengelig om {{minutes}} min",
+            "understaffed_label": "Styrkestatus",
+            "understaffed_notice": "Ikke nok politistyrke på vakt",
+            "sender_target": "Mål",
+            "sender_cover": "Undercover",
+            "sender_system": "System",
+            "mark_route": "Marker rute",
+            "route_set": "Rute satt",
+            "terminate": "Avslutt",
+            "confirm_terminate": "Avslutte operasjonen?",
+            "clear": "Lukk saken",
+            "state": {
+                "setup": "Venter på mål",
+                "pending": "Forhandler med målet",
+                "agreed": "Avtale inngått",
+                "closed": "Operasjon avsluttet"
+            },
+            "outcome": {
+                "cancelled": "Operasjon avlyst"
+            }
+        },
+        "org": {
+            "selling": "Selger",
+            "batch_sub": "partier på {{size}}",
+            "batch_count": "{{batches}} partier",
+            "batch_count_one": "1 parti",
+            "batch_units": "({{units}} enheter)",
+            "per_batch": "${{price}}/parti",
+            "all": "Maks",
+            "estimate": "Utbetaling",
+            "sell": "Selg",
+            "cancel": "Forlat",
+            "favour": "Tjeneste",
+            "favour_hint": "Spør om de har noe arbeid til deg. Å gjøre tjenester bedrer omdømmet ditt",
+            "limit_reached": "Denne organisasjonen tar ikke imot mer vare akkurat nå",
+            "favour_busy": "Du har allerede en jobb gående",
+            "favour_cooldown": "Ingenting til deg akkurat nå, kom tilbake senere",
+            "favour_inventory": "Frigjør plass i lommene først",
+            "favour_no_phone": "Organisasjonen har ingen måte å sende deg detaljene på",
+            "favour_none": "Ingenting til deg akkurat nå"
+        },
+        "fixer": {
+            "title": "Fixeren",
+            "cost": "Pris",
+            "explainer": "Betal inngangsprisen én gang så handler {{name}} med deg i bulk. Salgsstedet deres vises på kartet ditt og kontakten deres dukker opp i telefonen din",
+            "buy": "Betal",
+            "buying": "...",
+            "no_offers": "Ingenting å tilby deg akkurat nå",
+            "leave": "Forlat"
+        },
+        "placement": {
+            "key": {
+                "fly": "Fly",
+                "heading": "Retning",
+                "radius": "Radius",
+                "boost": "Fly raskere",
+                "confirm": "Lagre",
+                "cancel": "Avbryt",
+                "point": "Legg til punkt",
+                "remove_point": "Slett punkt",
+                "wipe": "Tøm område",
+                "grab_point": "Flytt / sett inn punkt"
+            }
+        },
+        "editor": {
+            "resource": "Drug deals",
+            "title": "Adminpanel",
+            "credit": "Drevet av",
+            "sort": {
+                "label": "Sorter",
+                "updated": "Sist oppdatert",
+                "created": "Sist opprettet",
+                "name": "Navn"
+            },
+            "tabs": {
+                "drugs": "Drugs",
+                "hotspots": "Hotspots",
+                "corners": "Hjørner",
+                "organizations": "Organisasjoner",
+                "deliveries": "Steder",
+                "vehicles": "Tjeneste-kjøretøy"
+            },
+            "create": {
+                "drugs": "Ny drug",
+                "hotspots": "Ny hotspot",
+                "corners": "Nytt hjørne",
+                "organizations": "Ny organisasjon",
+                "deliveries": "Nytt leveringssted",
+                "vehicles": "Nytt kjøretøysted"
+            },
+            "list": {
+                "inactive": "Inaktiv",
+                "activate": "Aktiver",
+                "deactivate": "Deaktiver",
+                "goto": "Gå til",
+                "empty": "Ingenting her ennå"
+            },
+            "form": {
+                "save": "Lagre",
+                "cancel": "Tilbake",
+                "delete": "Slett",
+                "delete_confirm": "Klikk igjen for å bekrefte sletting"
+            },
+            "coords": {
+                "not_set": "Ingen posisjon satt",
+                "place": "Plasser med freecam"
+            },
+            "drug": {
+                "tab_general": "Generelt",
+                "tab_pricing": "Prising",
+                "label": "Navn",
+                "label_placeholder": "Kokainpose",
+                "item": "Item-navn",
+                "item_hint": "Må matche inventory-itemet nøyaktig",
+                "item_placeholder": "coke_baggy",
+                "street_section": "Gatesalg",
+                "street_section_hint": "Tilfeldige NPC-er du snakker med til fots eller fra bil",
+                "app_section": "Telefonapp",
+                "app_section_hint": "Kjøpere som melder spilleren gjennom Plug-appen",
+                "channel_street": "Selg på gata",
+                "channel_app": "Selg gjennom appen",
+                "app_rating_toggle": "Krev en PLUG-rating",
+                "app_rating_desc": "Bare dealere på eller over en stjernerating kan annonsere denne drugen",
+                "app_rating": "Minimumsrating (stjerner)",
+                "app_rating_hint": "Dealere under denne ratingen kan ikke legge drugen i annonsen sin",
+                "quantity": "Enheter per avtale",
+                "quantity_to": "til",
+                "street_chance": "Salgssjanse til markedspris",
+                "street_chance_hint": "Odds for salg når man ber om nøyaktig markedspris",
+                "prop": "Overleverings-prop",
+                "pricing_hint": "Markedsverdien bak alle kanaler. Organisasjoner betaler sin multiplikator av den",
+                "base_price": "Pris per enhet ($)",
+                "use_meta": "Metadata-basert prising",
+                "use_meta_desc": "Pris per metadata-trinn (renhet, sort, ...)",
+                "meta_key": "Metadata-nøkkel",
+                "meta_kind": "Trinntype",
+                "meta_steps_hint": "Items med manglende metadata teller som \"Nøytral\"-trinnet",
+                "satisfaction_note": "Telefonkjøpere ber aldri om en kvalitet. Alle betaler prisen for Nøytral-trinnet, og dømmer så det spilleren faktisk leverer: over Nøytral gir rating og kontaktomdømme og skryt, under mister begge og gir klager. La en kvalitet stå på Nøytral så tar kjøperne den uten kommentar",
+                "kind_range": "Intervall",
+                "kind_value": "Verdi",
+                "step_label": "Etikett",
+                "step_value": "Metadata-verdi",
+                "step_min": "Min",
+                "step_max": "Maks",
+                "step_price": "Pris",
+                "step_satisfaction": "Tilfredshet",
+                "add_step": "Legg til trinn",
+                "tab_channels": "Salg"
+            },
+            "hotspot": {
+                "name": "Navn",
+                "name_placeholder": "Grove Street",
+                "area": "Område",
+                "place_title": "Tegn hotspot-område",
+                "approach_toggle": "Overstyr vilje til å snakke",
+                "approach_label": "Sjanse for å snakke",
+                "approach_hint": "Overstyrer hvor ofte NPC-er i denne sonen snakker i det hele tatt. Andre modifikatorer gjelder fortsatt",
+                "draw": "Tegn område",
+                "redraw": "Tegn område på nytt",
+                "drugs": "Drugs",
+                "no_drugs": "Ingen drugs konfigurert ennå",
+                "price_multiplier": "Verdimultiplikator",
+                "price_multiplier_hint": "Multipliserer hva drugen er verdt for kjøpere her",
+                "price_effective": "Kjøpere her verdsetter den til ~${{price}}",
+                "chance_multiplier": "Vellykket salgsrate",
+                "chance_multiplier_hint": "Ekstra kast av salgssjansen",
+                "chance_effective": "~{{percent}}% til markedspris",
+                "row_summary": "{{drugs}} drug(s)"
+            },
+            "org": {
+                "name": "Navn",
+                "name_placeholder": "Vagos, Cartel, The Firm...",
+                "details": "Organisasjon",
+                "place_title": "Plasser salgspunkt",
+                "sell_spots": "Salgspunkter",
+                "sell_spots_hint": "Ett velges tilfeldig ved hver serverstart",
+                "add_sell_spot": "Legg til salgspunkt",
+                "min_quantity": "Partistørrelse",
+                "buyin_cash": "Kontanter ($, 0 = ingen)",
+                "buyin_no_drug": "Ingen vareoverlevering",
+                "buyin_drug": "Vareoverlevering",
+                "buyin_drug_amount": "Enheter",
+                "fixer_spots": "Fixer-punkter",
+                "fixer_spots_hint": "Ett velges tilfeldig ved hver serverstart",
+                "fixer_place_title": "Plasser fixer-punkt",
+                "add_fixer_spot": "Legg til fixer-punkt",
+                "no_fixer_warning": "Inngangspris satt men ingen fixer-punkter. Ingen kan noensinne låse opp denne organisasjonen",
+                "buys_hint": "Multiplikator av markedsverdi, basert på spillerens omdømme",
+                "limits": "Salgsgrenser",
+                "limits_enabled": "Begrens hvor mye de kjøper",
+                "limits_enabled_desc": "Begrenser hvor mange partier organisasjonen tar imot før den slutter å kjøpe en stund",
+                "limits_per_player": "Per spiller",
+                "limits_per_player_desc": "Hver spiller får sin egen kvote i stedet for én delt pott",
+                "limits_max_batches": "Maks partier",
+                "limits_max_batches_hint": "Partier som tas imot før nedkjølingen starter",
+                "limits_cooldown": "Nedkjøling (minutter)",
+                "limits_cooldown_hint": "Hvor lenge de slutter å kjøpe når grensen er nådd",
+                "multiplier_min": "Dårlig",
+                "multiplier_mid": "Nøytralt",
+                "multiplier_max": "Ypperlig",
+                "description": "Beskrivelse",
+                "description_placeholder": "Hvem de er, hva de vil...",
+                "enemies_hint": "Salg eller tjenester for fiender senker omdømmet hos {{name}}",
+                "no_enemies": "Ingen andre organisasjoner ennå",
+                "no_drugs": "Lag drugs først",
+                "jobs": "Jobb- / gjengbegrensning",
+                "jobs_desc": "Av = alle kan samhandle med denne organisasjonen",
+                "jobs_hint": "Bare spillere med jobb eller gjeng på lista ser organisasjonen, blipen, kontakten og fixeren",
+                "jobs_empty_warning": "Ingen jobber eller gjenger på lista. Ingen når denne organisasjonen mens begrensningen er på",
+                "jobs_name": "Jobb- / gjengnavn",
+                "jobs_placeholder": "cartel",
+                "jobs_grade": "Min. grad",
+                "add_job": "Legg til jobb / gjeng",
+                "reset_unlocks": "Nullstill opplåsinger for alle",
+                "reset_unlocks_confirm": "Klikk igjen for å bekrefte",
+                "reset_unlocks_hint": "Låser denne organisasjonen igjen for alle spillere som betalte inngangsprisen",
+                "tab_general": "Generelt",
+                "tab_access": "Opplåsing",
+                "tab_trading": "Drugs",
+                "tab_limits": "Grenser",
+                "tab_relations": "Relasjoner",
+                "peds": "Ped-modeller",
+                "boss_ped": "Boss (salgspunkt-kontakt)",
+                "member_peds": "Medlemmer",
+                "member_peds_hint": "Fixeren og fiendtlige tjeneste-mål",
+                "ped_choose": "Velg modell...",
+                "ped_members_choose": "Velg medlemmer...",
+                "ped_custom": "Egendefinert modell",
+                "ped_custom_placeholder": "s_m_y_dealer_01...",
+                "ped_no_match": "Ingen peds matcher",
+                "ped_modal_search": "Søk modeller...",
+                "ped_custom_apply": "Bruk modell",
+                "ped_select": "Velg",
+                "unlock_public": "Offentlig",
+                "unlock_public_desc": "På kartet og i appen fra start",
+                "unlock_hidden": "Skjult",
+                "unlock_hidden_desc": "Alle kan handle, avsløres etter første salg",
+                "unlock_buyin": "Inngangspris",
+                "unlock_buyin_desc": "Betalt inngang hos denne organisasjonens fixer",
+                "unlock_closed": "Lukket",
+                "unlock_closed_desc": "Låses kun opp gjennom script-exports",
+                "closed_hint": "Et annet script må låse opp denne organisasjonen per spiller. Se DOCS.md for exports",
+                "enemies_hint_fallback": "denne organisasjonen",
+                "ped_invalid": "Modellen er ugyldig eller ikke tilgjengelig på denne spillversjonen",
+                "ped_checking": "Sjekker..."
+            },
+            "deliveryloc": {
+                "name": "Navn",
+                "name_placeholder": "Legion Square-hjørnet",
+                "type": "Hva dette stedet brukes til",
+                "type_npc": "Kjøperoverlevering",
+                "type_npc_desc": "App-salg til NPC-er",
+                "type_deaddrop": "Dead drop for salg",
+                "type_deaddrop_desc": "Deaddrop-steder for app-salg",
+                "position": "Posisjon",
+                "place_title": "Plasser leveringssted",
+                "type_favour": "Tjenestested",
+                "type_favour_desc": "Organisasjonstjenester skjer her. Leveringer og mål"
+            },
+            "vehicleloc": {
+                "name": "Navn",
+                "name_placeholder": "Elysian Island-dokken",
+                "hint": "Kjøretøydestruksjons-tjenester spawner målkjøretøyet her",
+                "position": "Posisjon",
+                "place_title": "Plasser kjøretøysted"
+            },
+            "corner": {
+                "police_warning": "Jobben din er politi. Hjørner er skjult for politi, du ser ikke blips eller prompts og kan ikke teste med denne jobben aktiv",
+                "tab_general": "Generelt",
+                "tab_drugs": "Drugs",
+                "tab_access": "Tilgang",
+                "hint": "Spillere stiller seg opp i området og kjøpere kommer bort til dem. Hjørnet er kun synlig og funksjonelt for spillere som bærer minst én gateselgbar drug",
+                "name": "Navn",
+                "name_placeholder": "Grove Street-hjørnet",
+                "position": "Område",
+                "place_title": "Plasser hjørne",
+                "buyers": "Kjøpere",
+                "max_players": "Dealerplasser",
+                "max_players_hint": "Hvor mange spillere som kan jobbe dette hjørnet samtidig",
+                "interval": "Kjøperintervall (sekunder)",
+                "interval_hint": "Omtrentlig tid mellom kjøpere, per spiller. (Se på dette som et gjennomsnitt, avhenger av hvor travelt og gangbart området er for NPC-er)",
+                "allow_vehicle": "Tillat å stille seg opp i kjøretøy",
+                "allow_vehicle_desc": "Sjåfører kan jobbe hjørnet fra bilen. Kjøpere går bort til vinduet for avtalen",
+                "drugs": "Drugs det spørres etter her",
+                "drugs_hint": "Kjøpere spør bare etter de avhukede drugsene. Spillere kan fortsatt tilby enhver gateselgbar drug. Minst én kreves",
+                "no_drugs": "Ingen aktive drugs å velge blant",
+                "check_all": "Velg alle",
+                "uncheck_all": "Fjern alle",
+                "different_chance": "Salgssjanse for annen drug",
+                "different_chance_hint": "Odds for at en kjøper tar en annen drug enn den de spurte etter, til markedspris. Overprising senker den ytterligere som ethvert tilbud",
+                "jobs": "Begrens til jobber / gjenger",
+                "jobs_desc": "Bare spillere med jobb eller gjeng på lista kan se og jobbe dette hjørnet",
+                "jobs_hint": "Bare spillere med jobb eller gjeng på lista ser hjørnet, blipen og prompten",
+                "jobs_empty_warning": "Ingen jobber eller gjenger på lista. Ingen når dette hjørnet mens begrensningen er på"
+            },
+            "market": {
+                "reset": "Nullstill denne prisen tilbake til basis"
+            },
+            "validation": {
+                "incomplete": "Fyll ut de påkrevde feltene",
+                "name": "Et navn er påkrevd",
+                "coords": "Plasser det på kartet først",
+                "drug_label": "Et visningsnavn er påkrevd",
+                "drug_item": "Et inventory-item-navn er påkrevd",
+                "drug_item_duplicate": "Item allerede brukt av \"{{name}}\". To drugs på ett item deler lagerbeholdning",
+                "quantity_missing": "Sett begge ender av antallsintervallet",
+                "quantity_order": "Laveste antall kan ikke være over høyeste",
+                "quantity_range": "Antall må være mellom {{min}} og {{max}}",
+                "base_price": "En basispris over 0 er påkrevd",
+                "base_price_range": "Basispris må være mellom {{min}} og {{max}}",
+                "meta_key": "En metadata-nøkkel er påkrevd",
+                "meta_steps_empty": "Metadata-prising trenger minst én kvalitet",
+                "meta_steps_too_many": "Ikke mer enn {{max}} kvaliteter",
+                "step_label": "Kvalitet {{step}} trenger en etikett",
+                "step_price": "Kvalitet \"{{step}}\" trenger en pris over 0",
+                "step_price_range": "Pris for \"{{step}}\" må være mellom {{min}} og {{max}}",
+                "step_value": "Kvalitet \"{{step}}\" trenger en metadata-verdi å matche",
+                "step_value_duplicate": "To kvaliteter matcher begge \"{{value}}\". Bare den første ville noensinne prise",
+                "step_range": "Kvalitet \"{{step}}\" trenger både en fra- og en til-verdi",
+                "step_range_order": "Kvalitet \"{{step}}\" har fra-verdien over til-verdien",
+                "step_range_limits": "Kvalitet \"{{step}}\" må holde seg mellom {{min}} og {{max}}",
+                "step_range_overlap": "Kvalitetene \"{{first}}\" og \"{{second}}\" overlapper. Bare den laveste ville prise",
+                "org_sell_spots": "Legg til og plasser minst ett salgspunkt",
+                "org_sell_too_many": "Ikke mer enn {{max}} salgspunkter",
+                "org_buyin_cash": "Inngangsprisen i kontanter kan ikke være negativ",
+                "org_buyin_amount": "Sett hvor mange enheter inngangsdrugen koster",
+                "org_fixer_unplaced": "Hvert fixer-punkt må plasseres på kartet",
+                "org_fixer_too_many": "Ikke mer enn {{max}} fixer-punkter",
+                "org_multiplier": "Rate for \"{{name}}\" må være mellom {{min}}x og {{max}}x",
+                "org_drug_duplicate": "\"{{name}}\" er oppført to ganger. Bare den første oppføringen ville prise",
+                "org_limit_batches": "Maks partier må være mellom {{min}} og {{max}}",
+                "org_limit_cooldown": "Nedkjøling må være mellom {{min}} og {{max}} minutter",
+                "delivery_no_use": "Velg minst ett bruksområde for dette stedet",
+                "hotspot_polygon": "Tegn et område med minst {{min}} punkter",
+                "org_buyin_cost": "Sett en kontant- eller varekostnad for inngangsprisen",
+                "corner_max_players": "Dealerplasser må være minst {{min}}",
+                "corner_interval": "Kjøperintervall må være mellom {{min}} og {{max}} sekunder",
+                "corner_drugs": "Huk av minst én drug"
+            }
+        },
+        "options": {
+            "max_reached": "Grense nådd"
+        }
+    }
+}
