@@ -104,8 +104,7 @@ end)
 RegisterNUICallback('enableClicks', function(data, cb)
     Radio.userData[Radio.identifier].enableClicks = data
     SetResourceKvp('radioSettings2', json.encode(Radio.userData))
-    -- Keep pma-voice's stock clicks disabled; this setting now controls the custom radio PTT sounds.
-    exports['pma-voice']:setVoiceProperty('micClicks', false)
+    exports['pma-voice']:setVoiceProperty('micClicks', data)
     cb("ok")
 end)
 
@@ -117,14 +116,14 @@ RegisterNUICallback('updateRadioSize', function(data, cb)
 end)
 
 RegisterNUICallback('saveData', function(data, cb)
-    local player = QBX.PlayerData
+    local player = Framework.core.getPlayerData()
     local identifier = player.cid
     if not identifier then return Radio:Notify(locale('unsuccess_name', channel)) end
     Radio.userData[Radio.identifier].name = data.name
     Radio:update()
     TriggerServerEvent('mm_radio:server:addToRadioChannel', Radio.RadioChannel, data.name)
     SetResourceKvp('radioSettings2', json.encode(Radio.userData))
-    cb("ok")
+    cb(retreval)
 end)
 
 RegisterNUICallback('getMutedList', function(_, cb)

@@ -30,7 +30,7 @@ RegisterNetEvent('mm_radio:client:removedata', function()
 	DeleteResourceKvp('radioSettings2')
 	Radio.userData = {}
 	SetResourceKvp('radioSettings2', json.encode(Radio.userData))
-	if LocalPlayer.state.isLoggedIn then
+	if Framework.core.playerLoaded() then
 		Radio:Init()
 	end
 end)
