@@ -206,7 +206,7 @@ Config.LootItems = { -- Items that you can find inside
 
 Config.Shops = {
     {
-        name = 'Weapon Plug',
+        name = 'The Plug',
         coords = vec4(1223.81, -490.47, 66.4, 345.33),
         ped = 's_m_y_robber_01',
         moneyType = 'money',
@@ -224,6 +224,11 @@ Config.Shops = {
             {
                 name = 'WEAPON_SWITCHBLADE',
                 price = 10000,
+                amount = 1,
+            },
+             {
+                name = 'kq_plugphone',
+                price = 1000,
                 amount = 1,
             },
         }
