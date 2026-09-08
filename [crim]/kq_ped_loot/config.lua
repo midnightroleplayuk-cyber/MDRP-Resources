@@ -6,9 +6,9 @@ Config.debug = false
 --- FRAMEWORK SETTINGS
 -------------------------------------------------
 Config.esxSettings = {
-    enabled = true,
+    enabled = false,
     -- Whether or not to use the new ESX export method
-    useNewESXExport = true,
+    useNewESXExport = false,
 
     -- Enable this if you're using a very old version of ESX
     oldEsx = false,
@@ -17,13 +17,13 @@ Config.esxSettings = {
 }
 
 Config.qbSettings = {
-    enabled = false,
+    enabled = true,
 
     moneyAccount = 'cash',
 }
 
 Config.target = {
-    enabled = false,
+    enabled = true,
     system = 'ox_target' -- 'qtarget' or 'qb-target' or 'ox_target'  (Other systems might work as well)
 }
 
@@ -51,7 +51,7 @@ Config.dropOnRagdoll = {
     enabled = false,
 
     -- Chance of dropping loot when ragdolling (instead of death) (0 - 100)
-    chance = 100,
+    chance = 50,
 }
 
 
@@ -65,8 +65,8 @@ Config.pickupDistance = 1.4
 -- Keybinds. Only when not using targeting
 Config.keybinds = {
     pickup = {
-        label = 'E',
-        input = 38,
+        label = '',
+        input = 3,
     }
 }
 
@@ -277,26 +277,6 @@ Config.lootPerModel = {
                     'prop_ld_purse_01',
                 },
             }
-        },
-    },
-    ['zombie'] = {
-        models = {
-            'u_m_y_zombie_01',
-        },
-        loot = {
-            ['meat'] = {
-                chance = 100,
-                amount = {
-                    min = 2,
-                    max = 5,
-                },
-                item = {
-                    name = 'steak',
-                },
-                props = {
-                    'prop_cs_steak',
-                },
-            },
         },
     },
 }
