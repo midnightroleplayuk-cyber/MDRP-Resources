@@ -106,7 +106,7 @@ Config.bagDespawning = {
 -- Whether to save outfits using an external system (this will make players keep their outfit upon relog when using a specialized outfit resource)
 Config.clothingSystemSaving = {
     enabled = true,
-    system = 'illenium-appearance',
+    system = 'qb-clothing',
     -- Available systems:
     -- illenium-appearance
     -- fivem-appearance
