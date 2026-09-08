@@ -268,6 +268,7 @@ return {
 				{ name = "lockpick", label = "Lockpick", category = "all", price = 100 },
 				{ name = "cutter", label = "Cutter", category = "all", price = 500 },
 				{ name = "kq_outfitbag", label = "Outfit Bag", category = "all", price = 100 },
+				{ name = "weapon_crowbar", label = "Crowbar", category = "all", price = 100 },
 			
 			},
 
