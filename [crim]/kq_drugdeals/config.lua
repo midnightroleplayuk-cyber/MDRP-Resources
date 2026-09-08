@@ -267,7 +267,6 @@ Config.corner = {
 -- Used by the witness dispatch and the minimum police requirements
 Config.policeJobs = {
     'police',
-    'sheriff',
 }
 
 -- NPCs witnessing a completed street sale may call the police
@@ -661,7 +660,6 @@ Config.police = {
     -- control = minimum grade to run it (pick sites, targets, terminate)
     jobs = {
         ['police'] = { view = 0, control = 1 },
-        ['sheriff'] = { view = 0, control = 1 },
     },
 
     -- Usable item that opens the sting phone. Only works for the jobs above
