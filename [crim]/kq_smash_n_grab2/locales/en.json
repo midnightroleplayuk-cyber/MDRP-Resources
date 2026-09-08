@@ -1,0 +1,35 @@
+{
+  "interaction": {
+    "loot": {
+      "3d_text": "~p~[~w~E~p~]~w~ Loot",
+      "target": "Loot"
+    },
+    "window": {
+      "3d_text": "~p~[~w~E~p~]~w~ Break Window",
+      "target": "Break Window"
+    }
+  },
+  "looting": {
+    "minigame": {
+      "label": "Looting...",
+      "info": "Hold keys in the correct order"
+    },
+    "not_allowed": "You are not allowed to perform this action",
+    "cant_carry": "You are unable to carry the loot",
+    "got_money": "You found ${{ amount }}",
+    "already_looted": "[Error] This vehicle is already looted",
+    "empty": "You found nothing of value"
+  },
+  "smashing": {
+    "minigame": {
+      "label": "Smashing window...",
+      "info": "Remember and press keys in the correct order"
+    }
+  },
+  "dispatch": {
+    "code": "10-68"
+  },
+  "items": {
+    "invalid_item": "This can not be looted"
+  }
+}

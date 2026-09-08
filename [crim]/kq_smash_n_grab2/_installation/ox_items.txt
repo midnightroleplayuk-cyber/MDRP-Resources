@@ -1,0 +1,58 @@
+
+    ["cement"] = {
+        label = "Cement",
+        weight = 5000,
+        stack = true,
+        close = true,
+        consume = 0,
+    },
+
+    ["expensive_sneakers"] = {
+        label = "Designer sneakers",
+        weight = 1000,
+        stack = true,
+        close = true,
+    },
+
+    ["expensive_bag"] = {
+        label = "Designer bag",
+        weight = 1000,
+        stack = true,
+        close = true,
+    },
+
+    ["laptop"] = {
+        label = "Laptop",
+        weight = 1000,
+        stack = true,
+        close = true,
+    },
+
+    ["copper"] = {
+        label = "Copper ingot",
+        weight = 1000,
+        stack = true,
+        close = true,
+    },
+
+    ["stolen_weapon_case"] = {
+        label = "Stolen weapon case",
+        weight = 2000,
+        stack = true,
+        close = true,
+        consume = 0,
+        server = {
+            export = 'kq_smash_n_grab2.LootItem',
+        },
+    },
+
+    ["stolen_bag"] = {
+        label = "Stolen bag",
+        weight = 2000,
+        stack = true,
+        close = true,
+        consume = 0,
+        server = {
+            export = 'kq_smash_n_grab2.LootItem',
+        },
+    },
