@@ -334,9 +334,9 @@ lib.addKeybind({
     onPressed = function()
         if isDisabled then return end
 
-        if isOpen then
-            return lib.hideRadial()
-        end
+        -- Hold-to-open: ignore repeated presses while the radial is already open.
+        -- The menu is closed by onReleased below instead of toggling on a second press.
+        if isOpen then return end
 
         if #menuItems == 0 or IsNuiFocused() or IsPauseMenuActive() then return end
 
@@ -362,7 +362,11 @@ lib.addKeybind({
             Wait(0)
         end
     end,
-    -- onReleased = lib.hideRadial,
+    onReleased = function()
+        if isOpen then
+            lib.hideRadial()
+        end
+    end,
 })
 
 AddEventHandler('onClientResourceStop', function(resource)
