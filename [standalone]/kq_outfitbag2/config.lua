@@ -8,9 +8,9 @@ Config.debug = false
 --- If using a standalone solution, keep both frameworks disabled.
 
 Config.esxSettings = {
-    enabled = true,
+    enabled = false,
     -- Whether or not to use the new ESX export method
-    useNewESXExport = true
+    useNewESXExport = false
 }
 
 Config.qbSettings = {
@@ -22,7 +22,7 @@ Config.qbSettings = {
 ----------------------------------
 -- Outfitbag command settings
 Config.command = {
-    enabled = true,
+    enabled = false,
     command = 'outfitbag',
     shortCommand = 'ob'
 }
@@ -37,7 +37,7 @@ Config.sql = {
 }
 
 Config.target = {
-    enabled = false,
+    enabled = true,
     system = 'ox_target' -- 'qtarget' or 'qb-target' or 'ox_target' (Other systems might work as well)
 }
 
@@ -105,7 +105,7 @@ Config.bagDespawning = {
 
 -- Whether to save outfits using an external system (this will make players keep their outfit upon relog when using a specialized outfit resource)
 Config.clothingSystemSaving = {
-    enabled = false,
+    enabled = true,
     system = 'illenium-appearance',
     -- Available systems:
     -- illenium-appearance
@@ -182,7 +182,7 @@ Config.keybinds = {
 -- into the outfit-outputs directory. You can open the newly created text file. Copy and paste the outfit here into the
 -- bag you wish to add the outfit to.
 Config.fixedBags = {
-    ['gang'] = {
+    --[[ ['gang'] = {
         bags = {
             locations = {
                 vector4(87.44, -1963.54, 20.74, 50.0),
@@ -351,5 +351,5 @@ Config.fixedBags = {
                 },
             },
         }
-    }
+    } ]]
 }

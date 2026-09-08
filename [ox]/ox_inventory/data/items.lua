@@ -2677,7 +2677,17 @@ return {
 
 
 
-
+-- KQ OutfitBag V2
+    ["kq_outfitbag"] = {
+        label = "Outfit bag",
+        weight = 4,
+        stack = true,
+        close = true,
+        consume = 0,
+        server = {
+            export = 'kq_outfitbag2.UseBag',
+        },
+    },
 
 
 
