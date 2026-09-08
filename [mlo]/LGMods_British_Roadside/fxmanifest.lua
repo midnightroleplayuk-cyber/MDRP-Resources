@@ -8,7 +8,7 @@ files {
     'stream/ytyp/**.ytyp',
 }
 
---data_file 'DLC_ITYP_REQUEST' 'stream/ytyp/**.ytyp'
+data_file 'DLC_ITYP_REQUEST' 'stream/ytyp/**.ytyp'
 
 escrow_ignore { 'stream/ytyp/**.ytyp' }
 
