@@ -46,7 +46,7 @@ Config.ConfigVersion = '1.4.0' -- Config schema version; this is separate from t
 Config.Debug = false -- Enables debug visuals/logging. Admin commands remain available to authorized admins.
 
 Config.Framework = 'auto' -- auto, qb, qbox, esx, nd/nd_framework, nd_core, standalone
-Config.RequireJob = true -- Set false to allow players without the configured framework job to use LS Trucking.
+Config.RequireJob = false -- Set false to allow players without the configured framework job to use LS Trucking.
 Config.JobName = 'trucker' -- Exact internal job name used by the selected framework.
 Config.RequireDuty = true -- Only applies when RequireJob is true. Uses framework duty when available, otherwise the LSFC session duty.
 
