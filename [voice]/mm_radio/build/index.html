@@ -15,8 +15,9 @@
     <script>
       // Custom push-to-talk sounds sent by client/event.lua.
       // Both files live in the mm_radio resource root.
-      const radioSpeak = new Audio('../radio_speak.ogg');
-      const radioEnd = new Audio('../radio_end.ogg');
+      const resourceName = typeof GetParentResourceName === 'function' ? GetParentResourceName() : 'mm_radio';
+      const radioSpeak = new Audio(`https://cfx-nui-${resourceName}/radio_speak.ogg`);
+      const radioEnd = new Audio(`https://cfx-nui-${resourceName}/radio_end.ogg`);
       radioSpeak.preload = 'auto';
       radioEnd.preload = 'auto';
 

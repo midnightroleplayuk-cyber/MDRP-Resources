@@ -1,16 +1,9 @@
-CUSTOM RADIO PTT SOUNDS
-=======================
+CUSTOM PTT SOUNDS
+=================
+Place these files directly in the mm_radio resource root, beside fxmanifest.lua:
 
-Place these two files directly inside the mm_radio folder:
+radio_speak.ogg  -> plays when PTT is pressed
+radio_end.ogg    -> plays when PTT is released
 
-    mm_radio/radio_speak.ogg
-    mm_radio/radio_end.ogg
-
-Behaviour:
-- radio_speak.ogg plays when you PRESS the push-to-talk button / start transmitting.
-- radio_end.ogg plays when you RELEASE the push-to-talk button / stop transmitting.
-
-The pma-voice stock mic click is disabled so it does not overlap these sounds.
-The existing Enable Clicks setting in mm_radio controls these custom sounds.
-
-After adding both OGG files, restart mm_radio.
+The NUI loads them through FiveM's cfx-nui resource URL.
+The stock pma-voice mic click is disabled by this resource.
