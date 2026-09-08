@@ -183,8 +183,8 @@ return {
             },
             [4] = {
                 type = 'input',
-                label = 'Question #4',
-                description = 'What does CTRL + A do?',
+                label = '#4',
+                description = 'Enter Character 8',
                 icon = 'fas fa-keyboard',
                 required = false,
             },
