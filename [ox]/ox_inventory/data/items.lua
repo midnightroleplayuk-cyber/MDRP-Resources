@@ -2785,6 +2785,8 @@ return {
             export = 'kq_smash_n_grab2.LootItem',
         },
     },    
-    
+
+-- LS TRUCKING    
+
 
 }
