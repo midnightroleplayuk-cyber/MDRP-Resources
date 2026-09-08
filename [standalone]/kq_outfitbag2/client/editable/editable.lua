@@ -55,7 +55,13 @@ function OnPlayerApplyOutfit(oData, name)
     --
     if Config.clothingSystemSaving and Config.clothingSystemSaving.enabled then
         local system = Config.clothingSystemSaving.system
-        if system == 'illenium-appearance' then
+        if system == 'op-clothing' then
+            -- KQ Outfitbag has already applied the outfit at this point.
+            -- Give the ped a moment to finish updating, then persist the
+            -- current appearance through OP Clothing.
+            Wait(250)
+            exports['op-clothing']:SaveAppearance()
+        elseif system == 'illenium-appearance' then
             local appearance = exports['illenium-appearance']:getPedAppearance(PlayerPedId())
 
             TriggerServerEvent("illenium-appearance:server:saveAppearance", appearance)
