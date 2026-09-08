@@ -1,0 +1,1111 @@
+# Los Santos Freight Co. Trucking
+
+**Resource:** `ls_trucking`  
+**Version:** `1.4.0`  
+**Author:** DrSnyder  
+**Game:** FiveM 
+**Dispatch command:** `/trucking`  
+**Receiver command:** `/truckreceiver`  
+**Dock command:** `/truckui`  
+**Service bay command:** `/lsservice`  
+**Default receiver key:** `F2`  
+**Default dispatch key:** `F3`
+
+Los Santos Freight Co. is a full delivery career resource for FiveM offering package delivery, crate delivery and trailer deliveries. It aims to fit the needs of both the casual player and long term players with the use of rank progression and reputation. Originally designed to be a moderate improvement over qb/qbx type trucker jobs to remove the old style route system while still maintaining playability and semi-realistic job flow. Work your way up the ladder to unlock vehicles, contract types, higher payouts and contractor access. Features include company contracts, private contractor licensing/progression, garage vehicles, owned contractor fleets, active route mini ui, handheld receiver, route history, random delivery events, leaderboards, optional streamed LSFC vehicle/trailer liveries, and an LSFC service bay for repairs, upgrades, appearance work, and staged turbo tuning. Your casual players can jump right in and start a delivery route with a standard provided company vehicle while career players may want to use a vehicle from the company garage that may be upgraded and saved.
+
+The script is built around a dispatch tablet for selecting work, a handheld receiver for active route operations, a compact dock UI for quick route status, and a service bay UI for maintaining LSFC garage and private fleet vehicles.
+
+---
+
+## Screenshots
+### Dispatch UI (1.3.0 Screenshots - Need Updated)
+
+<p align="center">
+  <img src="https://r2.fivemanage.com/image/MjSADCAoSkti.png" width="32%" alt="Freight Dispatch UI" />
+  <img src="https://r2.fivemanage.com/image/T4DTiQnvJkHq.png" width="32%" alt="Company stats" />
+  <img src="https://r2.fivemanage.com/image/GPA5TCuUt2K9.png" width="32%" alt="Company Garage" />   
+</p>
+<p align="center">
+  <img src="https://r2.fivemanage.com/image/PjImpifso7HQ.png" width="32%" alt="Contractor Tab" />
+  <img src="https://r2.fivemanage.com/image/8C7Ncxxk2AMm.png" width="32%" alt="Contracts" />
+  <img src="https://r2.fivemanage.com/image/Pki1Ts3kP8Gy.png" width="32%" alt="History" />   
+</p>
+
+### Receiver UI 
+<p align="center">
+  <img src="https://r2.fivemanage.com/image/AQXF7S1qTZPv.png" width="19%" alt="Mini UI" />
+  <img src="https://r2.fivemanage.com/image/5H9p7Jk7ENbt.png" width="19%" alt="Mini UI" />
+  <img src="https://r2.fivemanage.com/image/JMaNGVPUBG16.png" width="19%" alt="Mini UI" />
+  <img src="https://r2.fivemanage.com/image/pcp69CvC6UsK.png" width="19%" alt="Mini UI" />
+  <img src="https://r2.fivemanage.com/image/5Gd7YCwrZ9sV.png" width="19%" alt="Mini UI" />
+</p>
+<p align="center">
+  <img src="https://r2.fivemanage.com/image/EILDeJYrhYuV.png" width="32%" alt="Cancel UI" />
+  <img src="https://r2.fivemanage.com/image/it9spcvBTLBj.png" width="32%" alt="Drop Authorization" />
+  <img src="https://r2.fivemanage.com/image/MbtD6Pzii8al.jpg" width="32%" alt="Icons" />
+</p>
+
+### Pier 400 YMAP's
+<p align="center">
+  <img src="https://r2.fivemanage.com/image/ccZDudCK2O33.jpg" width="40%" alt="Terminal" />
+  <img src="https://r2.fivemanage.com/image/lBDvnLXxJHHZ.jpg" width="40%" alt="Weigh Station" />
+</p>
+
+### LSF Trailer Texture Dictionaries
+<p align="center">
+  <img src="https://r2.fivemanage.com/image/c4rmfmqhmNt8.png" width="32%" alt="Trailer" />  
+  <img src="https://r2.fivemanage.com/image/0HBrvRAeAfEv.png" width="32%" alt="Trailer" />
+  <img src="https://r2.fivemanage.com/image/MRUy6TR5jy1V.png" width="32%" alt="Trailer" />
+</p>
+<p align="center">
+  <img src="https://r2.fivemanage.com/image/GDujeRCNPjRA.png" width="32%" alt="Trailer" />
+  <img src="https://r2.fivemanage.com/image/B3Dlc6gTgeXB.png" width="32%" alt="Trailer" />
+  <img src="https://r2.fivemanage.com/image/fhLE76oWpkYI.png" width="32%" alt="Trailer" />
+</p>
+<p align="center">
+  <img src="https://r2.fivemanage.com/image/hxf2uJfRhxXg.jpg" width="32%" alt="Trailer" />
+  <img src="https://r2.fivemanage.com/image/Wl9PMqOg7mgV.jpg" width="32%" alt="Trailer" />
+  <img src="https://r2.fivemanage.com/image/3CzeTQg2EUew.png" width="32%" alt="Trailer" />
+</p>
+
+### LSF Vehicle Liveries
+<p align="center">
+  <img src="https://r2.fivemanage.com/image/M7vd2DqJFuRt.png" width="32%" alt="Vehicle" />
+  <img src="https://r2.fivemanage.com/image/ECRr59FU9Gal.jpg" width="32%" alt="Vehicle" />
+  <img src="https://r2.fivemanage.com/image/ILTiRcVnNnxE.png" width="32%" alt="Vehicle" />
+
+  <img src="https://r2.fivemanage.com/image/VHiMlolEBYBP.png" width="32%" alt="Vehicle" />
+  <img src="https://r2.fivemanage.com/image/nwD05R77qvag.png" width="32%" alt="Vehicle" />
+  <img src="https://r2.fivemanage.com/image/Hdk5Z86iV8Qq.png" width="32%" alt="Vehicle" />
+
+  <img src="https://r2.fivemanage.com/image/2F5x14YXlCBW.jpg" width="32%" alt="Vehicle" />
+  <img src="https://r2.fivemanage.com/image/U888j6Zcn5hY.png" width="32%" alt="Vehicle" />
+</p>
+
+## Main Features
+
+- Dispatch tablet with operations home, contracts, current job, garage, contractor, company, and route history views.
+- Interactive dispatch home map with company locations, button zoom, and mouse-wheel zoom.
+- Rank progression with 10 default ranks.
+- Company contracts for Van (Go Postal packages), Box Truck (Post Ops Crates) , and Trailer (LSF Co) deliveries.
+- Curated short and reverse-order commercial route variants built from planned delivery-stop sequences.
+- Private contractor license system with owned vehicles, selectable pickup terminals, higher-risk private payouts, and rank-gated government and military board offers.
+- Dedicated daily contractor route assignment and bonus rewards.
+- Company garage and private fleet support with persisted unit records and in-tablet checkout progress.
+- LSFC Service Bay for garaged and private fleet vehicles with discounts based on reputation.
+- Payout multipliers for early deliveries, clean trailer bonus, and mileage.
+- Handheld receiver UI with route, manifest, load, vehicle, dispatch log, and settings pages.
+- Request a route from dispatch at any time through the receiver Load page.
+- Remote vehicle control panel inside the receiver ui for doors, locks, engine, interior/hazard lights and location.
+- Realistic trailer connect/disconnect sounds and service bay impact gun sounds.
+- Compact dock UI for always-available active route status.
+- Cargo release signatures, assisted dock loading, manifest verification, cargo condition, and route completion tracking.
+- Freight trolley workflow for box-truck crates, including configurable trolley/crate offsets and admin testing commands.
+- Proximity delivery guides with compact package/crate icons, ox_lib E-key drop prompts, and elevated trailer destination markers.
+- Trailer lines hookup, load checklist, secure/load verification, receiver signoff, drop validation, and disconnect flow.
+- Flatbed cargo prop system with an in-game admin editor and test spawner.
+- In-game admin route editor for commercial, government, and military delivery routes.
+- Random delivery events such as rush orders, audits, reroutes, dock delays, customer call-aheads, and schedule changes can affect timing, payout and reputation.
+- Framework adapters for QB-Core, Qbox, ESX, ND_Framework, legacy ND_Core, and standalone fallback.
+- Inventory, fuel, key, and target compatibility bridges.
+
+---
+
+## Requirements
+
+Required:
+
+- `ox_lib`
+- `oxmysql`
+- `ox_target`, `qb-target`, or the built-in ox_lib TextUI interaction provider
+- A supported framework or standalone mode
+- A supported inventory system
+- A database connection configured for `oxmysql`
+- Database permissions to create and alter the resource tables
+
+Recommended:
+
+- A supported fuel script
+- A supported vehicle key script
+- Admin permissions through your framework or ACE permissions
+
+---
+
+## Supported Frameworks
+
+Set this in `config/config.lua`:
+
+```lua
+Config.Framework = 'auto' -- auto, qb, qbox, esx, nd/nd_framework, nd_core, standalone
+```
+
+Supported modes:
+
+- `auto` - detects the running framework.
+- `qb` - QB-Core.
+- `qbox` - Qbox / qbx_core.
+- `esx` - ESX / es_extended.
+- `nd` / `nd_framework` - ND_Framework.
+- `nd_core` - legacy ND_Core.
+- `standalone` - no framework economy integration. Useful for testing or custom integrations.
+
+Notes:
+
+- ND_Framework integration uses its character, department, rank, duty, money, and permission exports directly.
+- Legacy ND_Core remains available for existing installations.
+- Standalone mode can run the job flow, but money, jobs, and permissions may need custom integration on a live economy server.
+
+---
+
+## Supported Scripts
+
+### Target
+
+```lua
+Config.TargetSystem = 'auto' -- auto, ox, qb, textui
+```
+
+Supported:
+
+- `ox_target`
+- `qb-target`
+- Built-in ox_lib TextUI interactions (`textui`)
+
+`auto` prefers a running target resource and falls back to TextUI. TextUI executes a single available action with `E` and opens a compact action list when several actions are available.
+
+### Inventory
+
+```lua
+Config.Inventory = {
+    System = 'auto',
+    Debug = false,
+    UseInternalTrunkFallback = true,
+    TrunkPrefix = 'trunk'
+}
+```
+
+Supported:
+
+- `ox_inventory`
+- `ND_Inventory`
+- `qb-inventory`
+- `lj-inventory`
+- `ps-inventory`
+- `qs-inventory`
+- `custom`
+
+Notes:
+
+- `ox_inventory` has the best metadata and trunk support.
+- ND Inventory cargo and manifest definitions are registered automatically at runtime.
+- ND Inventory uses the internal route trunk because it does not currently expose external stash item mutation exports.
+- Other inventories use player item handling plus the internal route trunk fallback when needed.
+- Item templates are included in the `install` folder.
+
+### Fuel
+
+```lua
+Config.Fuel = {
+    System = 'auto',
+    DefaultFuel = 100.0
+}
+```
+
+Supported:
+
+- `ox_fuel`
+- `ND_Fuel`
+- `lc_fuel` (`lc-fuel` is also accepted)
+- `LegacyFuel`
+- `ps-fuel`
+- `cdn-fuel`
+- `lj-fuel`
+- `qb-fuel`
+- `BigDaddy-Fuel`
+- `none`
+
+### Vehicle Keys
+
+```lua
+Config.Keys = {
+    System = 'auto',
+    GiveOnSpawn = true,
+    RemoveOnReturn = false,
+    OwnerOnly = true
+}
+```
+
+`OwnerOnly` keeps LSFC vehicle keys assigned to the driver who checked out the vehicle. When a company or contractor vehicle is assigned, other online clients are asked to remove keys for that plate through the configured key script.
+
+Supported:
+
+- `qb-vehiclekeys`
+- `qbx_vehiclekeys`
+- `Renewed-Vehiclekeys`
+- `MrNewbVehicleKeys`
+- `wasabi_carlock`
+- `cd_garage`
+- `none`
+
+---
+
+## Installation
+
+1. Place the resource folder in your server resources.
+2. Add inventory items from the matching file in the `install` folder. ND Inventory registers them automatically.
+3. Configure `config/config.lua`.
+4. Configure routes, vehicles, trailers, items, contracts, service bay options, and random events if desired.
+5. Ensure dependencies before `ls_trucking`.
+6. Start the server and check the startup summary and database status in the console.
+
+Example ensure order:
+
+```cfg
+ensure ox_lib
+ensure oxmysql
+ensure ox_target
+ensure qb-core
+ensure ox_inventory
+ensure ls_trucking
+```
+
+Use your actual framework, inventory, target, fuel, and key resources.
+
+For an ND installation, ensure `ND_Framework`, `ND_Inventory`, and `ND_Fuel` before `ls_trucking`. A target resource is not required when the built-in TextUI provider is used.
+
+---
+
+## Database Tables
+
+Database installation is automatic. On resource startup, `ls_trucking` creates missing tables, applies supported column migrations, and restores checked-out vehicle records to a stored state after a restart. Existing data is preserved.
+
+The database user configured for `oxmysql` must have permission to create and alter tables. A successful startup prints:
+
+```text
+[ls_trucking] Database schema ready. Automatic setup and migrations completed.
+```
+
+The automatic setup creates:
+
+- `player_trucking` - rank, XP, reputation, jobs completed, earnings, cancellations.
+- `trucking_history` - completed route history.
+- `trucking_garage` - per-character company fleet assignments, stable vehicle IDs, plates, checkout state, and saved props.
+- `trucking_contractor_profiles` - contractor license, rep, dedicated route assignment, daily completion, weekly route-change timestamp.
+- `trucking_contractor_vehicles` - owned contractor vehicles, stored state, fuel, engine health, body health.
+
+The included `sql/ls_trucking.sql` file remains available as an optional backup or manual recovery reference. A normal installation does not require importing it.
+
+---
+
+## Main Config Files
+
+- `config/config.lua` - organized main setup for providers, locations, commands, workflow, economy, timing, risk, navigation, UI, security, and version checks.
+- `config/service_bay.lua` - service bay location, prices, discounts, install timing, staged turbo data, and service/upgrade descriptions.
+- `config/contracts.lua` - route pools, contract data, stops, businesses, route layouts.
+- `config/vehicles.lua` - company vehicles and contractor vehicles.
+- `config/route_trailers.lua` - route trailer definitions, trailer cargo prop layouts, liveries, extras, trailer photos, and trailer instructions.
+- `config/items.lua` - cargo item definitions, carry settings, freight trolley settings, and per-crate trolley offsets.
+- `config/random_events.lua` - random delivery events.
+- `locales/*.lua` - Lua-side player-facing text in all included languages.
+- `html/locales/*.js` - NUI-side player-facing text in all included languages.
+
+Trailer pickup/drop area circles are controlled from `Config.AreaBlips` in `config/config.lua`. Set `Enabled = false` to disable the extra minimap circles, or adjust radius/color/alpha per trailer pickup and drop stage.
+
+---
+
+## Local Images And Icons
+
+Local photo folders:
+
+- `images/photos/locations` - dispatch home and depot photos.
+- `images/photos/vehicles` - company and contractor vehicle photos.
+- `images/photos/trailers` - route trailer photos.
+
+Included counts:
+
+- 10 location photos.
+- 64 vehicle photos.
+- 64 trailer photos.
+
+Vehicle and trailer photo names are intended to match config table/model names where possible. To replace an image, keep the filename and path the same, or update the matching `photo` value in the config.
+
+### Inventory Item Images
+
+The `inventory_images` folder includes four complete visual options for the cargo and manifest items:
+
+- `Regular` - clean default item artwork.
+- `Arcade` - brighter artwork with a more game-styled finish.
+- `Brass Noir` - dark artwork with muted brass accents.
+- `Neon` - higher-contrast artwork with brighter accent colors.
+
+Each option contains the same 12 PNG filenames used by the included inventory item definitions. Choose one complete set and copy the PNG files from inside that theme folder into your inventory resource's item-image directory. Copy the files themselves rather than the theme folder.
+
+Keep the original filenames unchanged. The item definitions in `install/ox_inventory_items.lua` and `install/qb_inventory_items.lua` reference those names directly. Only one image option is needed, and choosing a different option does not require changing the LS Trucking config or item definitions.
+
+Font Awesome is vendored locally:
+
+- CSS: `html/vendor/fontawesome/css`
+- Webfonts: `html/vendor/fontawesome/webfonts`
+
+This keeps icons working in-game without a remote CDN.
+
+---
+
+## Language And Locales
+
+The resource includes matching Lua and NUI translations for English, Czech, German, Spanish, French, Dutch, Brazilian Portuguese, Russian, and Turkish.
+
+Lua-side text:
+
+```text
+locales/{locale}.lua
+```
+
+NUI-side text:
+
+```text
+html/locales/{locale}.js
+```
+
+Set the active locale in `config/config.lua`:
+
+```lua
+Config.Locale = 'en'
+```
+
+Supported locale codes are `en`, `cs`, `de`, `es`, `fr`, `nl`, `pt-br`, `ru`, and `tr`. Locale values are case-insensitive, underscores are accepted, and regional variants fall back to their base language when available. For example, `pt_BR` resolves to `pt-br` and `ru-RU` resolves to `ru`.
+
+Recommended approach:
+
+- Put reusable UI labels, buttons, alerts, errors, and status messages in locale files.
+- Keep detailed config content in the config files unless it needs translation to be understood.
+- To add another language, copy both `en.lua` and `en.js`, rename them to the target locale code, translate the values, and update `Config.Locale`.
+
+---
+
+## Player Commands
+
+- `/trucking` - opens the Los Santos Freight Co. dispatch tablet.
+- `/truckreceiver` - toggles the full handheld receiver.
+- `/truckui` - toggles the compact route dock.
+- `/lsservice` - opens the LSFC Service Bay when inside the service bay area.
+- `/canceltrucking` - cancels the active route with confirmation.
+
+Default keybinds:
+
+- `F2` - toggles the full receiver.
+- `F3` - opens the dispatch tablet.
+
+If `Config.RequireJob` is enabled, dispatch and receiver access respect the configured job requirement. Service bay access has its own `Config.ServiceBay.RequireJob` setting.
+
+---
+
+## Admin Commands
+
+Admin commands are available to admins even when debug mode is disabled. Debug mode still controls extra debug visuals and logs.
+
+Permission checks use framework admin/god permissions first, then common admin ACE checks, then the optional ACE entries in:
+
+```lua
+Config.Security.AdminAces = { 'ls_trucking.admin', 'ls_trucking.debug' }
+```
+
+Commands:
+
+- `/lstruck_resetjob` - force reset your active trucking job.
+- `/lstruck_clearpeds` - clear active contract worker peds.
+- `/lstruck_giveitems` - give cargo items for the current active route.
+- `/lstruck_summary` - open an admin route state summary.
+- `/lstruck_rank <playerId> <rank>` - set a player's trucking rank XP.
+- `/lstruck_rep <playerId> <amount>` - adjust a player's trucking reputation.
+- `/lstruck_resetstats <playerId>` - reset trucking stats.
+- `/lstraileredit <trailerKey>` - open the trailer cargo prop editor.
+- `/lsrouteeditor [type] [pool] [routeIndex]` - create a route or inspect an existing route (`van`, `boxtruck`, or `trailer`).
+- `/lstrailertest <trailerKey>` - spawn a configured trailer and cargo props without starting a contract.
+- `/lstrailerclear` - remove the current trailer test unit.
+- `/lstrolleytest <cargoType>` - attach a freight trolley with the selected configured crate for offset testing.
+- `/lstrolleyclear` - remove the trolley test unit.
+
+### Contract Route Editor
+
+The route editor builds config-ready route records in game without modifying configuration files while the resource is running. It supports commercial routes from `Config.Contracts`, plus the available government and military route pools from `Config.PriorityLoads`.
+
+Use `/lsrouteeditor` to reopen the current draft, or pass a route type, pool, and optional existing route number:
+
+```text
+/lsrouteeditor boxtruck commercial
+/lsrouteeditor trailer government 1
+```
+
+- Capture ordered van and box-truck delivery points at the player's position.
+- Set the unload quantity and exact coordinates for each delivery point.
+- Assign trailer depots and trailer configurations, then capture the trailer drop and receiver ped positions.
+- Load or duplicate configured routes while preserving readable receiver ped model names in the generated Lua.
+- Estimate route mileage, preview numbered map blips and nearby world markers, and set GPS to the selected point.
+- Validate required fields and cargo totals before copying or printing the Lua record.
+- Minimize the editor while traveling between points; the draft and optional route preview remain active until discarded.
+
+The generated Lua is copied from the preview or printed to the F8 console, then placed at the config path shown in the editor header.
+
+---
+
+## Dispatch Tablet
+
+The dispatch tablet is the main job hub.
+
+### Operations Home
+
+- Shows LSFC operating locations.
+- Uses local location photos.
+- Supports a configurable map image through `Config.DispatchHome.MapImage`.
+- Allows GPS routing to major LSFC points.
+
+### Contracts
+
+- Select van, box truck, or trailer contract types.
+- Select company vehicle and load priority.
+- View route preview, stops, payout, cargo, distance, and estimated time.
+- Start company contracts from the right-side context panel.
+
+### Current Job
+
+- Shows the current route state, route details, cargo progress, stops, vehicle, trailer status, manifest, and current objectives.
+
+### Garage
+
+- View the company fleet assigned to the current character. The configured catalog is shared, but each character receives separate plates and saved modifications.
+- Filter assigned units by van, box truck, or tractor class.
+- Preview vehicle data and local vehicle photos.
+- Spawn vehicles from the selected vehicle panel.
+- Return the current company vehicle to save modifications.
+- Company fuel and mechanical condition are refreshed by the depot; approved appearance and performance modifications remain in the character's saved vehicle profile.
+- Spawn checks prevent vehicles from spawning into occupied spots.
+
+### Contractor
+
+- Purchase a contractor license once the required rank is reached.
+- Use separate contract board, dedicated route, and private fleet workspaces in the contractor dispatch page.
+- Buy approved vans, box trucks, and tractors through a confirmation showing the unit, price, rank requirement, and fleet capacity.
+- Store and spawn owned contractor vehicles.
+- Save fuel, engine health, body health, vehicle props, upgrades, tires, and turbo stage state.
+- Only one contractor vehicle can be out at a time.
+- Choose an optional dedicated daily route assignment by delivery type.
+- Dedicated daily routes stay assigned after selection and can be changed after the configured cooldown.
+- Complete the dedicated daily route once per server day for bonus payout and contractor rep.
+- Available private contracts are separate from the dedicated daily route and only show route choices for the private vehicle type currently spawned. Each offer shows its pickup terminal, ordered drop locations, route length, and payout before acceptance.
+- Select a pickup terminal before accepting a private contract. Trailer boards only list routes configured for that exact trailer depot.
+- Van and box truck contractors can originate routes from either configured cargo terminal; route mileage, ETA, and mileage pay adjust for the selected origin without changing stop order.
+- Eligible contractor boards reserve at least one government and one military offer when those priority pools exist for the active vehicle type.
+- Government and military offers use their configured rank requirements, payout multipliers, cargo, and specialized route pools.
+- Contractor routes require minimum fuel and condition.
+- Contractor jobs pay more but have higher penalties and cancellation costs.
+
+### Company
+
+- View player career stats, rank progress, reputation, earnings, completed jobs, and rank information.
+
+### Route History
+
+- View completed route summaries.
+- Expand recent job tiles to review route, payout, XP, reputation, vehicle, contract type, and completion data.
+
+---
+
+## LSFC Service Bay
+
+The service bay is configured in:
+
+```text
+config/service_bay.lua
+```
+
+Default service bay command:
+
+```text
+/lsservice
+```
+
+Default location:
+
+```lua
+coords = vector3(-169.13, -2462.35, 6.4)
+```
+
+The service bay works on LSFC company garage vehicles and private contractor fleet vehicles. It does not service random civilian vehicles.
+
+### Service Tab
+
+Default service work:
+
+- Drivetrain Repair - repairs engine and petrol tank health and clears undriveable state.
+- Body Repair - repairs visible body damage, deformation, panels, windows, doors, dirt, and body health while preserving drivetrain/fuel state.
+- Full Service - repairs drivetrain and body, then updates the service mileage log.
+
+### Upgrades Tab
+
+Supported upgrade categories:
+
+- Engine.
+- Transmission.
+- Brakes.
+- Suspension.
+- Armor.
+- Turbo.
+- Commercial tires.
+
+Most mod categories use available GTA vehicle mod stages. Turbo uses LSFC staged turbo data from `Config.ServiceBay.TurboStages`.
+
+### Staged Turbo
+
+Turbo stages are configurable:
+
+```lua
+Config.ServiceBay.TurboStages = {
+    {
+        level = 1,
+        label = 'Stage 1 Turbo',
+        price = 16000,
+        power = 0.0,
+        torque = 1.0,
+        description = 'Turbo kit with ECU/TCU tuning.'
+    }
+}
+```
+
+Notes:
+
+- Stage 1 enables normal turbo behavior.
+- Higher stages can add power and torque multipliers.
+- Torque and power are separate so heavy freight vehicles can gain pulling force without needing extreme top-end power.
+- Installed turbo stage is saved with vehicle state.
+
+### Appearance Tab
+
+Supported appearance work:
+
+- Liveries.
+- Vehicle extras.
+- Preview before checkout.
+
+### Discounts And Progress
+
+Service bay supports:
+
+- Reputation discount.
+- Optional contractor reputation discount.
+- Install progress timing per service, upgrade, and appearance item.
+- Work order cart with cash/bank payment.
+- Service bay UI progress state while work is being applied.
+
+---
+
+## Receiver UI
+
+The receiver is a rugged handheld device with a compact phone-style app launcher and a shared black-and-gold LSFC wallpaper across its pages. It can be opened during or outside an active route.
+
+Receiver pages:
+
+- Current Route - active objective, notice, destination, local expected-by time, alerts, cargo, payout, and route progress presented as individual live information blocks.
+- Manifest - contract data, stop/package data, and a duplicate cargo-manifest verification action when verification is available.
+- Load - cargo verification, cargo state, load priority/request tools, and active-route cancellation.
+- Vehicle - assigned vehicle data, fuel, condition, GPS, locks, engine, lights, doors, hood, trunk, hazards, locate.
+- Dispatch Log - the five most recent radio messages and collapsed route completion summaries that expand when selected.
+- Settings - receiver and dock model details, firmware, movement and dock controls, UI sizing, and receiver wallpaper selection.
+
+Receiver details:
+
+- Model label: `BDG-LSFC-R-1.4`.
+- Dock model label: `BDG-LSFC-D-1.4`.
+- Firmware label: `BDG-FW 1.4.0`.
+- TX/RX indicators react to updates and route messages.
+- GPS lock and signal bars update based on route/dispatch state.
+- The home screen provides compact Route, Manifest, Load, Vehicle, Radio, and Settings shortcuts with live status lamps integrated into the app icons.
+- The bundled LSFC emblem wallpaper can be replaced from Settings with a player-local image or restored to the default.
+- Receiver movement can be toggled from settings.
+- The player uses a phone-style prop and animation while the receiver is open.
+- The receiver allows walking and driving while open.
+- The Badger logo closes the receiver.
+
+---
+
+## Compact Dock UI
+
+The compact dock is designed as a smaller route receiver fixed near the screen edge.
+
+It shows:
+
+- Channel.
+- Freight logo.
+- RX/TX/GPS/signal block.
+- Current radio chatter.
+- Destination name and street area.
+- Route name.
+- Cargo and stop icon progress.
+- Last update time.
+- Thin route progress bar.
+- Dock model watermark.
+
+The dock can be toggled with `/truckui` and can be moved when movement mode is enabled.
+
+---
+
+## Route Flow
+
+### Van Routes
+
+- Talk to the pickup worker and sign the cargo release.
+- Return to the assigned vehicle and open the rear cargo doors.
+- Start assisted dock loading from the pickup area and wait for the combined load progress to finish.
+- Verify the loaded manifest from the receiver.
+- Drive to delivery stop.
+- Stand directly behind the open cargo doors and grab the next package from the vehicle.
+- Deliver the package using the E-key prompt at the marked drop point.
+- Continue through all stops.
+
+The script accounts for missing trunk/cargo doors so players are not blocked if a door is damaged or detached.
+
+### Box Truck Routes
+
+- Sign the cargo release, open the rear cargo doors, and complete assisted dock loading.
+- Verify the loaded manifest from the receiver.
+- At each stop, stand directly behind the open cargo doors to take the freight trolley and load one crate onto it.
+- Push the trolley to the marked drop point and unload the crate with the E-key prompt.
+- Return to the truck for additional crates, then store the empty trolley when finished.
+- Complete all assigned stops.
+
+### Trailer Routes
+
+- Spawn or use assigned tractor.
+- Travel to trailer depot.
+- Hook assigned trailer.
+- Use **Inspect Trailer** on the tractor or trailer, through target or the TextUI interaction provider.
+- Select **Begin Inspection** once to check the coupling/connections and cargo security in sequence. Completed checks remain recorded if an inspection is interrupted; disconnecting invalidates the connection check.
+- Submit the completed checklist from the receiver Load page. With `Config.LoadVerificationMode = 'target'`, request dispatch clearance directly from the inspection panel.
+- Drive to receiving yard.
+- Follow the elevated trailer guide and the ground placement marker near the destination.
+- Detach trailer in drop zone.
+- Confirm trailer dropped.
+- Complete receiver signoff.
+
+Trailer depots can have multiple spawn spots, and the script tries available spots when one is occupied.
+
+Reconnecting an already-cleared trailer requires only another connection check, not a full cargo inspection.
+
+Contract workers remain available while their loading or receiving duties are needed. After loading or contract closeout, their interaction targets are removed and they resume their configured activity or wander nearby. Workers are cleaned up once distant and out of view, and nearby workers can be reused for another contract. The main dispatcher stays at the depot. Admin ped cleanup and resource shutdown still remove workers immediately.
+
+---
+
+## Trailer Cargo Prop System
+
+Flatbed-style route trailers can spawn with configured cargo props already attached. This is useful for flatbeds, military trailers, freight trailers, and custom cargo variations.
+
+Configured trailers live in:
+
+```text
+config/route_trailers.lua
+```
+
+Each trailer variation can use the same trailer model with different cargo props. For example, one `trflat` entry can be empty, another can carry crates, and another can carry containers.
+
+### Trailer Prop Editor
+
+Use:
+
+```text
+/lstraileredit <trailerKey>
+```
+
+The editor lets admins:
+
+- Select a configured trailer by `Config.RouteTrailers` key.
+- Add, duplicate, delete, and edit cargo props.
+- Adjust model names.
+- Enter offset and rotation values directly or nudge them by axis with selectable step sizes.
+- Switch between front, rear, left, right, and overhead camera presets.
+- Rotate the camera with left-click drag and zoom with the mouse wheel.
+- Print ready-to-paste `cargoProps` data to f8 console.
+
+### Trailer Test Spawner
+
+Use:
+
+```text
+/lstrailertest <trailerKey>
+/lstrailerclear
+```
+
+Recommended workflow:
+
+1. Copy or create a trailer entry in `Config.RouteTrailers`.
+2. Run `/lstraileredit trailer_key`.
+3. Tune the props in-game.
+4. Print the config.
+5. Paste the printed `cargoProps` into `config/route_trailers.lua`.
+6. Run `/lstrailertest trailer_key`.
+7. Assign the trailer key to routes once it looks right.
+
+---
+
+## Random Delivery Events
+
+Random delivery events live in:
+
+```text
+config/random_events.lua
+```
+
+Events can affect:
+
+- Route time.
+- Payout.
+- XP.
+- Reputation.
+- Alert text.
+- Radio chatter.
+- Route urgency.
+
+Examples include:
+
+- Rush order bonus.
+- Dock delay.
+- Traffic reroute.
+- Receiver audit.
+- Customer call-ahead.
+- Dispatch schedule changes.
+
+---
+
+## Progression
+
+Ranks are configured in `config/config.lua`.
+
+Default rank list:
+
+- Rank 1 - Probationary Driver.
+- Rank 2 - City Courier.
+- Rank 3 - Route Driver.
+- Rank 4 - Trailer Certified Driver.
+- Rank 5 - Freight Operator.
+- Rank 6 - Long Haul Driver.
+- Rank 7 - Heavy Freight Specialist.
+- Rank 8 - Fleet Lead.
+- Rank 9 - Logistics Supervisor.
+- Rank 10 - LSFC Master Hauler.
+
+Rank 10 requires 500,000 XP by default.
+
+---
+
+## Vehicle Plates
+
+Trucking vehicle plates use the configured prefix plus a random five-character number/letter combo.
+
+Example format:
+
+```text
+LSV1A2B3
+```
+
+Adjust the prefix and vehicle data in the vehicle config files.
+
+---
+
+## Optional Streamed Liveries And Map Assets
+
+The `stream` folder includes optional custom Los Santos Freight Co. texture dictionaries (`.ytd`) for supported vanilla vehicles and route trailers. These are included to make company and contractor equipment feel more like a real freight fleet without requiring separate livery downloads. The streamed vehicle and trailer ytd's are not required and may be deleted if unwanted or if servers use improved models.
+
+Included vehicle livery folders:
+
+- `stream/[burrito2]` - DECLASSE Burrito.
+- `stream/[rumpo]` - BRAVADO Rumpo.
+- `stream/[mule]` - MAIBATSU Mule.
+- `stream/[mule2]` - MAIBATSU Mule.
+- `stream/[benson]` - VAPID Benson.
+- `stream/[benson2]` - VAPID Benson Priority.
+- `stream/[pounder]` - MTL Pounder.
+
+Included trailer livery folders:
+
+- `stream/[trailers2]` - LSF Reefer Trailer variants.
+- `stream/[trailers3]` - LSF Cargo Trailer.
+- `stream/[tanker]` - LSF Fuel Tanker.
+- `stream/[tanker2]` - LSF Chemical Tanker.
+- `stream/[tvtrailer2]` - LSF Support Trailer.
+
+The `stream/FreightMap` folder contains the included Pier 400 YMAP files. If you do not want the custom LSFC liveries, delete the optional `.ytd` livery folders or remove the `.ytd` files from `stream`. Keep `stream/FreightMap` if you still want the included map edits.
+
+Install helper files:
+
+- `install/ox_inventory_items.lua`
+- `install/qb_inventory_items.lua`
+- `install/qs_inventory_items.lua`
+- `install/qb_radial_items.lua`
+- `install/qbx_radial_items.lua`
+- `install/ADD-ON-Trailers.meta`
+
+---
+
+## Required vehicle.meta trailer support
+
+The `data` folder includes vehicle.meta files for vanilla tractor trucks with edited trailer tables. LSF Co uses additional available vanilla trailer assets not available in the original game and therefore not enabled and attachable by default. This enables all current vanilla gta tractor trucks used in this script to attach and haul all trailer types. If you added and are using your own custom vehicles, the vehicle.meta files must have support for the trailers listed below. Trailer models listed under `<trailers>` will appear in traffic if your vehicle is listed in the popgroups while models listed under `<additionalTrailers>` will not appear in traffic however will still attach.
+
+Trailers used in this script:
+
+- docktrailer
+- trailers
+- trailers2
+- trailers3
+- trailers4
+- tanker
+- tanker2
+- trailerlogs
+- tr2
+- tr3
+- tr4
+- trflat
+- freighttrailer
+- armytanker
+- armytrailer
+- tvtrailer
+- tvtrailer2
+- trailerlarge
+
+vehicles.meta trailer snippet:
+
+<trailers>
+<Item>docktrailer</Item>
+<Item>trailers</Item>
+<Item>trailers2</Item>
+<Item>trailers3</Item>
+<Item>tanker</Item>
+<Item>tanker2</Item>
+<Item>trailerlogs</Item>
+<Item>tr2</Item>
+<Item>trflat</Item>
+</trailers>
+<additionalTrailers>
+<Item>freighttrailer</Item>
+<Item>armytanker</Item>
+<Item>armytrailer</Item>
+<Item>tr4</Item>
+<Item>tvtrailer</Item>
+<Item>tvtrailer2</Item>
+<Item>trailerlarge</Item>
+<Item>trailers4</Item> 
+</additionalTrailers>
+
+---
+
+## Sounds
+
+Receiver and job sounds are stored in:
+
+```text
+html/sounds
+```
+
+Sound design uses older radio clicks, short beeps, squelch, dispatch updates, and realistic trailer line handling. Trailer hookup uses air-line and electrical connection sounds, while target-based trailer disconnect uses a matching disconnect sound after the disconnect animation.
+
+---
+
+## Security And Performance
+
+The script includes:
+
+- Server distance checks for route actions.
+- Action cooldowns.
+- Spawn occupancy checks.
+- Config validation.
+- Startup summary.
+- Automatic database table creation and column migrations with retry and console status reporting.
+- Admin permission checks.
+- Passive receiver/signal refresh interval.
+- Cleanup paths for receiver, dispatch tablet, peds, vehicles, props, cameras, and NUI state.
+- Service bay checkout and save validation.
+
+Key settings:
+
+```lua
+Config.ReceiverRefreshInterval = 15000
+Config.SpawnOccupancy = {
+    Enabled = true,
+    VehicleRadius = 4.0,
+    TrailerRadius = 6.0
+}
+```
+
+Service bay security settings are defined by `config/service_bay.lua`:
+
+```lua
+Config.Security.Cooldowns.ServiceBay = 1500
+Config.Security.DistanceChecks.ServiceBay = 16.0
+```
+
+---
+
+## Customization Notes
+
+Good places to start:
+
+- Add routes in `config/contracts.lua`.
+- Configure shared package and crate pickup terminals with `Config.CargoDepots` in `config/contracts.lua`.
+- Add company or contractor vehicles in `config/vehicles.lua`. Give each enabled company vehicle a unique, permanent `garageId`; do not change that ID when reordering the list or editing its label.
+- Add route trailers and trailer prop layouts in `config/route_trailers.lua`.
+- Add cargo items in `config/items.lua`.
+- Add route events in `config/random_events.lua`.
+- Adjust service bay prices, turbo stages, discounts, descriptions, and location in `config/service_bay.lua`.
+- Replace the receiver wallpaper or receiver/dock logos in the `images` folder.
+- Replace location, vehicle, or trailer photos in `images/photos`.
+- Replace sounds in `html/sounds`.
+- Adjust ranks, payouts, penalties, route timing, contractor rules, and contractor terminal availability in `config/config.lua`.
+- Add translations in `locales` and `html/locales`.
+
+---
+
+## Troubleshooting
+
+### Dispatch tablet opens but jobs do not start
+
+- Check server console for startup validation messages.
+- Confirm `oxmysql` is running and the console reports that the database schema is ready.
+- Confirm the configured database user has permission to create and alter tables.
+- Confirm your framework adapter is detecting the expected framework.
+- Confirm target and inventory resources are started before `ls_trucking`.
+
+### Vehicle will not spawn
+
+- Make sure the spawn area is not occupied.
+- Confirm you are within the configured depot request range.
+- Check `Config.SpawnOccupancy`.
+- Check company/contractor vehicle stored state in the database if needed.
+
+### Trailer will not attach
+- Ensure your vehicle has the required trailer tables in vehicles.meta.
+
+### Cargo cannot be loaded or delivered
+
+- Confirm the cargo item exists in your inventory resource.
+- Confirm the matching install item file was imported.
+- If not using `ox_inventory`, keep `UseInternalTrunkFallback = true`.
+
+### Contractor route says active after restart
+
+- Confirm the startup console reports that the database schema and migrations are ready.
+- Confirm the resource has write access to update contractor route state.
+- Check `trucking_contractor_profiles` and `trucking_contractor_vehicles`.
+
+### Receiver or dock access with job requirement
+
+- If `Config.RequireJob = true`, confirm the player's framework job matches `Config.JobName`.
+- Admin commands are separate from player receiver access.
+
+### Service bay does not open
+
+- Confirm `Config.ServiceBay.Enabled = true`.
+- Confirm you are inside the configured service bay radius.
+- Confirm the vehicle is an active LSFC garage vehicle or active private contractor vehicle.
+- If `Config.ServiceBay.RequireJob = true`, confirm the player has the configured job and duty state.
+
+### Service bay upgrade does not appear
+
+- Confirm the vehicle supports that GTA mod category.
+- Some vehicles do not expose all engine, transmission, brakes, suspension, armor, livery, or extra slots.
+- Turbo stages use LSFC service bay config and can appear even when normal mod slots are limited.
+
+### Local photos do not appear
+
+- Confirm the config `photo` path points to a file included under `images`.
+- Confirm the file extension matches exactly.
+- Confirm the file path uses a NUI-style relative path such as `../images/photos/vehicles/pounder.webp`.
+
+### Trailer props do not appear
+
+- Confirm the prop model name exists and can be loaded.
+- Test with `/lstrailertest <trailerKey>`.
+- Make sure the trailer entry has `cargoProps`.
+- Check console for model loading errors.
+
+---
+
+## Development Notes
+
+The script has been split into focused client and server modules where possible:
+
+- Framework and compatibility bridges.
+- Route state and route helpers.
+- Cargo handling.
+- Depot vehicle handling.
+- Contractor handling.
+- Service bay handling.
+- Dispatch data.
+- Route summaries/history.
+- Job blips.
+- Trailer cargo props, editor, and tester.
+
+`client/main.lua` and `server/main.lua` still coordinate the larger flow, but most heavy feature areas now live in separate modules.
+
+NUI files are split into smaller JavaScript and CSS modules under:
+
+- `html/js`
+- `html/css`
+- `html/service_bay.js`
+- `html/locales`
+
+---
+
+## Recommended Vehicle Links
+
+### FREE
+- Improved Trailers - https://www.gta5-mods.com/vehicles/improved-trailer-pack-add-on-replace-liveries-legacy
+- Linerunner        - https://www.gta5-mods.com/vehicles/mtl-linerunner-replace-lore-friendly
+- Tanker            - https://www.gta5-mods.com/vehicles/vapid-tanker-addon-replace
+- Longpath          - https://www.gta5-mods.com/vehicles/jobuilt-longpath-t1000-add-on
+- Juggernaut        - https://www.gta5-mods.com/vehicles/jobuilt-juggernaut-add-on
+- Pounder Liveries  - https://www.gta5-mods.com/vehicles/pounder-lore-friendly-liveries
+- Hauler 270        - https://www.gta5-mods.com/vehicles/jobuilt-hauler-270-add-on-replace-liveries-template-sounds
+- Cerberus 200/300  - https://www.gta5-mods.com/vehicles/mtl-cerberus-200-300-add-on-liveries-template
+- Speedo            - https://www.gta5-mods.com/vehicles/improved-vapid-speedo-replace-add-on-liveries
+- Speedo Express    - https://fenton.tebex.io/package/7280833
+- Steed 1500        - https://www.gta5-mods.com/vehicles/vapid-steed-1500-add-on-liveries
+- Jogger            - https://marketplace.cfx.re/packages/7227454-benefactor-jogger-12-van-set-free
+- Mule 4x4          - https://www.gta5-mods.com/vehicles/maibatsu-mule-4x4-addon
+- Yankee            - https://www.gta5-mods.com/vehicles/vapid-new-yankee-add-on-replace
+- Steed and Yankee  - https://www.gta5-mods.com/vehicles/vapid-steed-and-yankee-improvements-add-on-liveries
+- Esperta           - https://fivem.gabzv.com/package/6500332
+- Biff              - https://www.gta5-mods.com/vehicles/hvy-biff-semi-add-on
+- Roadkiller        - https://www.gta5-mods.com/vehicles/brute-roadkiller-add-on
+- Benson            - https://www.gta5-mods.com/vehicles/vapid-benson-mapped-add-on-replace
+
+### PAID
+- Gabz Vehicles     - https://fivem.gabzv.com/package/6500369
+- Onx Vehicles      - https://store.onx.gg/package/7364987
+
+---
+
+## AI Assistance Disclosure
+
+Parts of the LSFC UI were created and refined with AI assistance. I used OpenAI Codex as a coding assistant to review the existing resource, suggest cleanup, edit HTML/CSS/JavaScript/Lua, build the service bay UI, add locale support, convert config photo links to local assets, and update documentation. Final direction, testing, feature choices, and approval were handled by me.
+
+Tools used included FiveM/GTA V for in-game testing, Microsoft Edge for UI preview, ShareX for photos and screenshots, Windows PowerShell, CodeWalker, OpenIV, XnResize, Adobe Photoshop, Paint.net, VS Code, Notepad++, nv_debug for target coordinates, Node.js/npm, Prettier, ESLint, Stylelint, html-validate, Lua/luac, Scoop, and locally bundled Font Awesome assets.
+
+Roughly, this UI and cleanup pass took about 40-50 user instructions/prompts and around 120-160 AI-assisted workspace actions, including file reviews, code edits, validation checks, syntax checks, and UI polish passes. These numbers are estimates, since many AI actions were inspection or verification steps rather than direct code changes.
+
+---
+
+## Credits
+
+ls_trucking also includes functionality from the cool dragcam resource by Jorn: https://github.com/Jorn08/dragcam
+
+Some vehicle images provided by: https://images.sky-systems.net/
+
+---
+
+## License
+
+For license details, check the `License` file. That file will always overrule anything mentioned in this README.
+
+ls_trucking - DrSnyder
+
+Copyright (c) 2026 DrSnyder. All rights reserved.
+
+You can use and edit this code to your liking as long as you do not claim it to be your own code and always provide proper credit. You are not allowed to sell `ls_trucking` or any code you take from it. If you want to release your own version of `ls_trucking`, link the original GitHub repo or release it through a forked repo.

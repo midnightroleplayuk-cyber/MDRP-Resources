@@ -1,0 +1,1194 @@
+function renderMiniDock(contract = {}) {
+    if (!miniDock) return;
+
+    const dockSignature = [
+        contract.stage,
+        contract.notice,
+        contract.destination,
+        contract.destinationAddress,
+        contract.radioChatter,
+        contract.currentStop,
+        contract.totalStops,
+        contract.loadedCargo,
+        contract.requiredCargo,
+        contract.type,
+        contract.loaded,
+        contract.cargoReady,
+        contract.verifiedCargo,
+        contract.autoLoadActive,
+        contract.autoLoadPaused,
+        contract.autoLoadLoaded,
+        contract.autoLoadTotal,
+        contract.autoLoadLabel,
+        contract.trailerAttached,
+        contract.trailerHooked,
+        contract.cargoConditionLevel,
+        contract.cargoConditionLabel,
+        contract.loadChecklist?.truckSecure,
+        contract.loadChecklist?.trailerSecure
+    ].join('|');
+    const dockWasHidden = miniDock.classList.contains('hidden');
+
+    const miniDockChannel = document.getElementById('miniDockChannel');
+    if (miniDockChannel) miniDockChannel.innerText = formatMiniFrequency(contract.radioFrequency || dispatchData?.radioFrequency || dispatchData?.config?.radioFrequency || '68.9');
+
+    updateReceiverLogo(document.getElementById('miniDockMakerLogo'), contract.logo);
+    updateReceiverSignal(document.getElementById('miniDockSignalMeter'), contract);
+    updateReceiverRadioLine(document.getElementById('miniDockRadioLine'), contract.radioChatter || uiText('receiver.status.dispatchStandingBy', {}, 'Dispatch standing by.'));
+    updateReceiverRouteProgress(document.getElementById('miniDockRouteProgressBar'), contract);
+
+    const miniDockTitle = document.getElementById('miniDockTitle');
+    if (miniDockTitle) miniDockTitle.innerText = contract.label || titleFromType(contract.type) || uiText('label.activeContract', {}, 'Active Contract');
+
+    const cargoTotal = Math.max(0, Number(contract.requiredCargo) || 0);
+    const cargoDelivered = Math.max(0, Math.min(cargoTotal, Number(contract.currentStop) || 0));
+    const assistedLoading = contract.autoLoadActive === true || contract.autoLoadPaused === true;
+    const cargoLoadedCount = assistedLoading ? Number(contract.autoLoadLoaded ?? contract.loadedCargo) : Number(contract.loadedCargo);
+    const cargoLoaded = Math.max(0, Math.min(cargoTotal - cargoDelivered, cargoLoadedCount || 0));
+    const stopsTotal = Math.max(0, Number(contract.totalStops) || 0);
+    const stopsComplete = Math.max(0, Math.min(stopsTotal, Number(contract.currentStop) || 0));
+
+    renderDockProgressIcons(
+        document.getElementById('miniDockCargoLoaded'),
+        cargoTotal,
+        'fas fa-box',
+        uiText('label.cargo', {}, 'Cargo'),
+        index => {
+            if (index < cargoDelivered) return 'is-delivered';
+            if (index < cargoDelivered + cargoLoaded) return 'is-loaded';
+            return 'is-pending';
+        },
+        uiText('receiver.aria.cargoProgress', { delivered: cargoDelivered, loaded: cargoLoaded, total: cargoTotal }, `Cargo: ${cargoDelivered} delivered, ${cargoLoaded} loaded of ${cargoTotal}`)
+    );
+
+    renderDockLoadStatus(document.getElementById('miniDockLoadStatus'), contract);
+
+    renderDockProgressIcons(
+        document.getElementById('miniDockStops'),
+        stopsTotal,
+        'fas fa-location-dot',
+        uiText('receiver.detail.stops', {}, 'Stops'),
+        index => index < stopsComplete ? 'is-complete' : 'is-upcoming',
+        uiText('receiver.aria.stopProgress', { complete: stopsComplete, total: stopsTotal }, `Stops: ${stopsComplete} complete of ${stopsTotal}`)
+    );
+
+    const miniDockDestinationName = document.getElementById('miniDockDestinationName');
+    if (miniDockDestinationName) {
+        miniDockDestinationName.innerText = contract.destination || uiText('common.destinationPending', {}, 'Destination pending');
+    }
+
+    const miniDockDestinationStreet = document.getElementById('miniDockDestinationStreet');
+    if (miniDockDestinationStreet) {
+        if (contract.destinationAddress) {
+            miniDockDestinationStreet.innerText = contract.destinationAddress;
+            miniDockDestinationStreet.classList.remove('hidden');
+        } else {
+            miniDockDestinationStreet.innerText = '';
+            miniDockDestinationStreet.classList.add('hidden');
+        }
+    }
+
+    const miniDockLastUpdate = document.getElementById('miniDockLastUpdate');
+    if (miniDockLastUpdate) miniDockLastUpdate.innerText = uiText('receiver.status.lastUpdate', { time: contract.lastUpdate || formatMiniClock() }, `LAST UPDATE ${contract.lastUpdate || formatMiniClock()}`);
+
+    updateGpsIndicator(document.getElementById('miniDockGpsStatus'), contract.gpsLocked);
+
+    showMiniDockWithAnimation(dockWasHidden);
+    if (dockWasHidden || (miniDockLastSignature && miniDockLastSignature !== dockSignature)) flashMiniRadio(contract.radioDirection);
+    miniDockLastSignature = dockSignature;
+}
+
+vehicleSelect.addEventListener('change', () => {
+    playUISound('click');
+    selectedVehicleIndex = Number(vehicleSelect.value || 1);
+    updateVehiclePreview();
+});
+
+prioritySelect.addEventListener('change', () => {
+    playUISound('click');
+    selectedPriority[selectedContract] = prioritySelect.value || 'standard';
+    clearPreviewRoute(selectedContract);
+    renderContracts(dispatchData);
+    renderSelected(dispatchData.contracts[selectedContract], selectedContract);
+});
+
+reuseVehicleCheck.addEventListener('change', () => { playUISound('click'); updateVehiclePreview(); });
+
+startBtn.addEventListener('click', () => {
+    if (startBtn.disabled) return;
+    playUISound('confirm');
+    startBtn.disabled = true;
+    setTimeout(() => { startBtn.disabled = false; }, 8000);
+
+    // Ensure the preview route exists before starting, then send its pool index
+    // to the server. This keeps random route preview behavior while preventing
+    // a different random route from being assigned on start.
+    const contract = dispatchData?.contracts?.[selectedContract];
+    if (contract) getPreviewRoute(contract, selectedContract);
+
+    const reuseVehicle = reuseVehicleCheck.checked && canReuseCurrentVehicle(selectedContract);
+    post('startContract', {
+        contractType: selectedContract,
+        vehicleIndex: selectedVehicleIndex,
+        priorityKey: selectedPriority[selectedContract] || 'standard',
+        routeIndex: getPreviewRouteIndex(selectedContract),
+        reuseVehicle
+    });
+});
+
+cancelJobBtn.addEventListener('click', () => { playUISound('error'); post('cancelCurrentJob'); });
+manifestJobBtn.addEventListener('click', () => { playUISound('confirm'); post('openActiveManifest'); });
+returnGarageBtn.addEventListener('click', () => { playUISound('confirm'); post('returnGarageVehicle'); });
+if (dispatchCloseBtn) {
+    dispatchCloseBtn.addEventListener('click', () => {
+        playUISound('click');
+        clearQueuedDispatchRefresh();
+        closeUI();
+        post('close');
+    });
+}
+
+function hideMiniReceiverSurface() {
+    clearQueuedMiniRefresh();
+    hideReceiverWithAnimation(() => {
+        mini.classList.remove('dispatch-flash', 'radio-rx-flash');
+        miniLastSignature = '';
+        miniLastContract = {};
+        miniDispatchOpenHistoryKeys.clear();
+        setMiniPage('home', { instant: true });
+        clearTimeout(miniPulseTimer);
+        miniPulseTimer = null;
+    });
+}
+
+function hideMiniDockSurface() {
+    hideMiniDockWithAnimation(() => {
+        miniDock.classList.remove('dispatch-flash', 'radio-rx-flash');
+        miniDockLastSignature = '';
+    });
+}
+
+let pendingDispatchRefreshData = null;
+let dispatchRefreshFrame = null;
+let dispatchRefreshTimer = null;
+let lastDispatchRefreshAt = 0;
+let pendingMiniRefreshContract = null;
+let miniRefreshFrame = null;
+const DISPATCH_REFRESH_MIN_MS = 90;
+
+function scheduleUIFrame(callback) {
+    return typeof requestAnimationFrame === 'function'
+        ? requestAnimationFrame(callback)
+        : setTimeout(callback, 0);
+}
+
+function uiNow() {
+    return typeof performance !== 'undefined' && typeof performance.now === 'function'
+        ? performance.now()
+        : Date.now();
+}
+
+function flushDispatchRefresh() {
+    dispatchRefreshFrame = null;
+    const refreshData = pendingDispatchRefreshData;
+    pendingDispatchRefreshData = null;
+    if (!refreshData || !app || app.classList.contains('hidden') || app.classList.contains('dispatch-closing')) return;
+
+    lastDispatchRefreshAt = uiNow();
+    refreshDispatchData(refreshData);
+}
+
+function clearQueuedDispatchRefresh() {
+    pendingDispatchRefreshData = null;
+    if (dispatchRefreshFrame) {
+        if (typeof cancelAnimationFrame === 'function') cancelAnimationFrame(dispatchRefreshFrame);
+        else clearTimeout(dispatchRefreshFrame);
+        dispatchRefreshFrame = null;
+    }
+    if (dispatchRefreshTimer) {
+        clearTimeout(dispatchRefreshTimer);
+        dispatchRefreshTimer = null;
+    }
+    lastDispatchRefreshAt = 0;
+}
+
+function clearQueuedMiniRefresh() {
+    pendingMiniRefreshContract = null;
+    if (!miniRefreshFrame) return;
+
+    if (typeof cancelAnimationFrame === 'function') cancelAnimationFrame(miniRefreshFrame);
+    else clearTimeout(miniRefreshFrame);
+    miniRefreshFrame = null;
+}
+
+function queueDispatchRefresh(data) {
+    pendingDispatchRefreshData = data || {};
+    if (dispatchRefreshFrame || dispatchRefreshTimer) return;
+
+    const elapsed = uiNow() - lastDispatchRefreshAt;
+    const delay = lastDispatchRefreshAt > 0 ? Math.max(0, DISPATCH_REFRESH_MIN_MS - elapsed) : 0;
+
+    if (delay > 0) {
+        dispatchRefreshTimer = setTimeout(() => {
+            dispatchRefreshTimer = null;
+            dispatchRefreshFrame = scheduleUIFrame(flushDispatchRefresh);
+        }, delay);
+        return;
+    }
+
+    dispatchRefreshFrame = scheduleUIFrame(flushDispatchRefresh);
+}
+
+function queueMiniRefresh(contract = {}) {
+    pendingMiniRefreshContract = { ...(pendingMiniRefreshContract || {}), ...contract };
+    if (miniRefreshFrame) return;
+
+    miniRefreshFrame = scheduleUIFrame(() => {
+        miniRefreshFrame = null;
+        const refreshContract = pendingMiniRefreshContract || {};
+        pendingMiniRefreshContract = null;
+        if (!mini || mini.classList.contains('hidden') || mini.classList.contains('receiver-closing')) return;
+
+        const contract = { ...miniLastContract, ...refreshContract };
+        miniLastContract = contract;
+        updateMiniLiveFields(contract);
+        if (miniCurrentPage === 'vehicle') renderMiniVehiclePage(contract);
+        if (miniCurrentPage === 'dispatch') renderMiniDispatchPage(contract);
+        if (miniCurrentPage === 'settings') renderMiniSettingsPage(contract);
+    });
+}
+
+function renderRouteHistoryPreservingScroll(history) {
+    const scrollState = getDispatchScrollState();
+    renderRouteHistory(history);
+    restoreDispatchScrollState(scrollState);
+}
+
+function confirmContractorVehiclePurchase(button) {
+    if (!button || button.disabled) {
+        playUISound('error');
+        return;
+    }
+
+    const vehicleType = button.dataset.previewContractorBuyType || button.dataset.contractorBuyType || '';
+    const vehicleIndex = Number(button.dataset.previewContractorBuyIndex || button.dataset.contractorBuyIndex || 1);
+    if (!vehicleType || vehicleIndex <= 0) {
+        playUISound('error');
+        return;
+    }
+
+    const fleetCount = Math.max(0, Number(button.dataset.fleetCount || 0));
+    const fleetMax = Math.max(fleetCount, Number(button.dataset.fleetMax || fleetCount));
+    const purchase = {
+        vehicleType,
+        vehicleIndex,
+        vehicleLabel: button.dataset.vehicleLabel || 'Contractor Vehicle',
+        vehicleTypeLabel: button.dataset.vehicleTypeLabel || contractorTypeLabel(vehicleType),
+        price: Math.max(0, Number(button.dataset.vehiclePrice || 0)),
+        minRank: Math.max(1, Number(button.dataset.minRank || 1)),
+        fleetCount,
+        fleetMax
+    };
+    const purchaseDetails = [
+        `${uiText('label.vehicle', {}, 'Vehicle')}: ${purchase.vehicleLabel}`,
+        `${uiText('contractor.purchaseVehicleType', {}, 'Vehicle class')}: ${purchase.vehicleTypeLabel}`,
+        `${uiText('contractor.purchasePrice', {}, 'Purchase price')}: ${formatMoney(purchase.price)}`,
+        `${uiText('contractor.purchaseRequiredRank', {}, 'Required rank')}: ${uiText('common.rank', {}, 'Rank')} ${purchase.minRank}`,
+        `${uiText('contractor.purchaseFleetCapacity', {}, 'Fleet capacity')}: ${purchase.fleetCount} / ${purchase.fleetMax}`,
+        '',
+        uiText('contractor.purchaseImmediate', {}, 'The purchase price will be charged immediately and this unit will be added to your private fleet.')
+    ].join('\n');
+
+    showLocalFreightConfirm({
+        header: uiText('contractor.purchaseConfirmTitle', {}, 'Purchase Contractor Vehicle'),
+        content: purchaseDetails,
+        variant: 'confirm',
+        confirmLabel: uiText('action.purchaseVehicle', {}, 'Purchase Vehicle'),
+        cancelLabel: uiText('action.cancel', {}, 'Cancel'),
+        confirmIcon: 'fa-key',
+        openSound: 'confirm',
+        confirmSound: 'confirm'
+    }, result => {
+        if (!result?.confirmed) return;
+        button.disabled = true;
+        setTimeout(() => { button.disabled = false; }, 8000);
+        post('purchaseContractorVehicle', { ...purchase, confirmed: true });
+    });
+}
+
+let vehicleCheckoutPending = false;
+
+function requestVehicleCheckout(button, endpoint, payload) {
+    if (!button || button.disabled || vehicleCheckoutPending) {
+        playUISound('error');
+        return;
+    }
+
+    const processingLabel = uiText('garage.preparingUnit', {}, 'Preparing Unit');
+    const configuredDuration = Number(dispatchData?.config?.vehicleCheckoutDuration);
+    const progressDuration = Number.isFinite(configuredDuration) ? Math.max(500, configuredDuration) : 2500;
+    const originalHTML = button.innerHTML;
+    const originalAriaLabel = button.getAttribute('aria-label');
+
+    vehicleCheckoutPending = true;
+    button.disabled = true;
+    button.classList.add('vehicle-checkout-pending');
+    button.style.setProperty('--vehicle-checkout-duration', `${progressDuration}ms`);
+    button.setAttribute('aria-busy', 'true');
+    button.setAttribute('aria-label', processingLabel);
+    button.innerHTML = `<span class="vehicle-checkout-label"><i class="fas fa-gear fa-spin" aria-hidden="true"></i><span>${escapeHTML(processingLabel)}</span></span>`;
+    playUISound('confirm');
+
+    const finish = () => {
+        vehicleCheckoutPending = false;
+        if (!button.isConnected) return;
+
+        button.disabled = false;
+        button.classList.remove('vehicle-checkout-pending');
+        button.style.removeProperty('--vehicle-checkout-duration');
+        button.removeAttribute('aria-busy');
+        if (originalAriaLabel === null) button.removeAttribute('aria-label');
+        else button.setAttribute('aria-label', originalAriaLabel);
+        button.innerHTML = originalHTML;
+    };
+
+    Promise.resolve(post(endpoint, payload)).finally(finish);
+}
+
+if (previewContext) {
+    previewContext.addEventListener('click', event => {
+        const gpsButton = event.target.closest('[data-dispatch-set-gps]');
+        if (gpsButton) {
+            const point = getDispatchMapPointById(gpsButton.dataset.dispatchSetGps);
+            if (!point || !point.coords) {
+                playUISound('error');
+                return;
+            }
+
+            playUISound('confirm');
+            post('dispatchSetGps', {
+                id: point.id || '',
+                label: point.label || 'Dispatch location',
+                x: Number(point.coords.x || 0),
+                y: Number(point.coords.y || 0)
+            });
+            return;
+        }
+
+        const tabButton = event.target.closest('[data-preview-tab]');
+        if (tabButton) {
+            playUISound('click');
+            setTab(tabButton.dataset.previewTab || 'dispatch');
+            return;
+        }
+
+        const actionButton = event.target.closest('[data-preview-action]');
+        if (actionButton) {
+            const action = actionButton.dataset.previewAction || '';
+            if (action === 'manifest') {
+                playUISound('confirm');
+                post('openActiveManifest');
+                return;
+            }
+            if (action === 'cancel') {
+                playUISound('error');
+                post('cancelCurrentJob');
+                return;
+            }
+        }
+
+        const garageSpawn = event.target.closest('[data-preview-spawn-garage]');
+        if (garageSpawn) {
+            requestVehicleCheckout(garageSpawn, 'spawnGarageVehicle', {
+                vehicleType: garageSpawn.dataset.type || '',
+                vehicleIndex: Number(garageSpawn.dataset.index || 1)
+            });
+            return;
+        }
+
+        const license = event.target.closest('[data-contractor-license]');
+        if (license) {
+            playUISound('confirm');
+            post('purchaseContractorLicense');
+            return;
+        }
+
+        const previewSpawnContractor = event.target.closest('[data-preview-contractor-spawn-vehicle]');
+        if (previewSpawnContractor) {
+            requestVehicleCheckout(previewSpawnContractor, 'spawnContractorVehicle', {
+                vehicleId: Number(previewSpawnContractor.dataset.previewContractorSpawnVehicle || 0)
+            });
+            return;
+        }
+
+        const previewStoreContractor = event.target.closest('[data-preview-contractor-store-vehicle]');
+        if (previewStoreContractor) {
+            if (previewStoreContractor.disabled) {
+                playUISound('error');
+                return;
+            }
+            playUISound('confirm');
+            post('storeContractorVehicle');
+            return;
+        }
+
+        const previewSellContractor = event.target.closest('[data-preview-contractor-sell-vehicle]');
+        if (previewSellContractor) {
+            if (previewSellContractor.disabled) {
+                playUISound('error');
+                return;
+            }
+            const sale = {
+                vehicleId: Number(previewSellContractor.dataset.previewContractorSellVehicle || 0),
+                vehicleLabel: previewSellContractor.dataset.vehicleLabel || 'Contractor Vehicle',
+                plate: previewSellContractor.dataset.vehiclePlate || 'NO PLATE',
+                resalePrice: Number(previewSellContractor.dataset.resalePrice || 0),
+                originalPrice: Number(previewSellContractor.dataset.originalPrice || 0),
+                mileage: Number(previewSellContractor.dataset.mileage || 0)
+            };
+            const saleDetails = [
+                `${uiText('label.vehicle', {}, 'Vehicle')}: ${sale.vehicleLabel} (${sale.plate})`,
+                `${uiText('contractor.saleOriginalPrice', {}, 'Original price')}: ${formatMoney(sale.originalPrice)}`,
+                `${uiText('contractor.saleMileage', {}, 'Recorded mileage')}: ${sale.mileage.toFixed(1)} mi`,
+                `${uiText('contractor.saleResaleValue', {}, 'Estimated resale value')}: ${formatMoney(sale.resalePrice)}`,
+                '',
+                uiText('contractor.salePermanent', {}, 'This sale is permanent and cannot be reversed.')
+            ].join('\n');
+
+            showLocalFreightConfirm({
+                header: uiText('contractor.saleConfirmTitle', {}, 'Sell Contractor Vehicle'),
+                content: saleDetails,
+                variant: 'cancel',
+                confirmLabel: uiText('action.sellVehicle', {}, 'Sell Vehicle'),
+                cancelLabel: uiText('action.keepVehicle', {}, 'Keep Vehicle'),
+                confirmClass: 'danger',
+                confirmIcon: 'fa-dollar-sign',
+                openSound: 'alert',
+                confirmSound: 'alert'
+            }, result => {
+                if (!result?.confirmed) return;
+                previewSellContractor.disabled = true;
+                setTimeout(() => { previewSellContractor.disabled = false; }, 8000);
+                post('sellContractorVehicle', { ...sale, confirmed: true });
+            });
+            return;
+        }
+
+        const previewStartContractor = event.target.closest('[data-preview-contractor-start]');
+        if (previewStartContractor) {
+            if (previewStartContractor.disabled) {
+                playUISound('error');
+                return;
+            }
+            playUISound('confirm');
+            previewStartContractor.disabled = true;
+            setTimeout(() => { previewStartContractor.disabled = false; }, 8000);
+            post('startContractorContract', {
+                vehicleId: Number(previewStartContractor.dataset.previewContractorStart || 0),
+                priorityKey: previewStartContractor.dataset.priority || 'standard',
+                routeIndex: Number(previewStartContractor.dataset.routeIndex || 0) || null,
+                dailyRouteKey: previewStartContractor.dataset.dailyRouteKey || null,
+                pickupDepotKey: previewStartContractor.dataset.pickupDepotKey || null
+            });
+            return;
+        }
+
+        const previewBuyContractor = event.target.closest('[data-preview-contractor-buy-type]');
+        if (previewBuyContractor) {
+            confirmContractorVehiclePurchase(previewBuyContractor);
+            return;
+        }
+
+        const previewDailyRoute = event.target.closest('[data-preview-contractor-daily-route]');
+        if (previewDailyRoute) {
+            if (previewDailyRoute.disabled) {
+                playUISound('error');
+                return;
+            }
+            playUISound('confirm');
+            post('selectContractorDailyRoute', { routeKey: previewDailyRoute.dataset.previewContractorDailyRoute });
+            return;
+        }
+
+        const marketToggle = event.target.closest('[data-contractor-market-toggle]');
+        if (marketToggle) {
+            event.preventDefault();
+            event.stopPropagation();
+            playUISound('click');
+            selectedContractorView = 'fleet';
+            contractorMarketVisible = !contractorMarketVisible;
+            if (contractorMarketVisible) selectedContractorPanel = 'market';
+            renderContractor(dispatchData || {});
+            renderPreviewContextPanel();
+        }
+    });
+}
+
+if (contractorContent) {
+    contractorContent.addEventListener('click', event => {
+        const marketToggle = event.target.closest('[data-contractor-market-toggle]');
+        if (marketToggle) {
+            playUISound('click');
+            selectedContractorView = 'fleet';
+            contractorMarketVisible = !contractorMarketVisible;
+            selectedContractorPanel = contractorMarketVisible ? 'market' : 'vehicle';
+            renderContractor(dispatchData || {});
+            renderPreviewContextPanel();
+            return;
+        }
+
+        const contractorView = event.target.closest('[data-contractor-view]');
+        if (contractorView) {
+            const nextView = contractorView.dataset.contractorView || 'contracts';
+            if (!['contracts', 'dedicated', 'fleet'].includes(nextView)) return;
+
+            const scrollPanel = contractorContent.closest('.left-panel');
+            contractorViewScrollTop[selectedContractorView] = scrollPanel?.scrollTop || 0;
+            selectedContractorView = nextView;
+            contractorMarketVisible = false;
+            selectedContractorPanel = nextView === 'dedicated' ? 'daily' : nextView === 'fleet' ? 'vehicle' : 'contract';
+            playUISound('click');
+            renderContractor(dispatchData || {});
+            renderPreviewContextPanel();
+
+            const savedTop = contractorViewScrollTop[nextView] || 0;
+            requestAnimationFrame(() => {
+                const nextPanel = contractorContent.closest('.left-panel');
+                if (nextPanel) nextPanel.scrollTop = savedTop;
+            });
+            return;
+        }
+
+        const selectedVehicle = event.target.closest('[data-contractor-select-vehicle]');
+        if (selectedVehicle) {
+            playUISound('click');
+            selectedContractorPanel = 'vehicle';
+            selectedContractorVehicleId = selectedVehicle.dataset.contractorSelectVehicle || null;
+            renderContractor(dispatchData || {});
+            renderPreviewContextPanel();
+            return;
+        }
+
+        const selectedDailyRoute = event.target.closest('[data-contractor-select-daily-route]');
+        if (selectedDailyRoute) {
+            const routeKey = selectedDailyRoute.getAttribute('data-contractor-select-daily-route') || null;
+            const routeType = selectedDailyRoute.getAttribute('data-contractor-daily-route-type') || selectedContractorDailyType;
+            playUISound('click');
+            selectedContractorPanel = 'daily';
+            selectedContractorDailyRouteKey = routeKey;
+            selectedContractorDailyType = routeType;
+            contractorContent.querySelectorAll('[data-contractor-select-daily-route]').forEach(card => {
+                card.classList.toggle('is-selected', card === selectedDailyRoute);
+            });
+            renderPreviewContextPanel();
+            return;
+        }
+
+        const selectedDailyType = event.target.closest('button[data-contractor-daily-type]');
+        if (selectedDailyType) {
+            playUISound('click');
+            selectedContractorDailyType = selectedDailyType.dataset.contractorDailyType || null;
+            selectedContractorPanel = 'daily';
+            selectedContractorDailyRouteKey = null;
+            renderContractor(dispatchData || {});
+            renderPreviewContextPanel();
+            return;
+        }
+
+        const selectedContract = event.target.closest('[data-contractor-select-contract]');
+        if (selectedContract) {
+            playUISound('click');
+            selectedContractorPanel = 'contract';
+            selectedContractorContractKey = selectedContract.dataset.contractorSelectContract || null;
+            renderContractor(dispatchData || {});
+            renderPreviewContextPanel();
+            return;
+        }
+
+        const selectedPickupDepot = event.target.closest('[data-contractor-pickup-depot]');
+        if (selectedPickupDepot) {
+            const pickupType = selectedPickupDepot.dataset.contractorPickupType || dispatchData?.contractor?.pickupDepotVehicleType;
+            const pickupDepotKey = selectedPickupDepot.dataset.contractorPickupDepot || null;
+            if (pickupType && pickupDepotKey) selectedContractorPickupDepotByType[pickupType] = pickupDepotKey;
+            selectedContractorPanel = 'contract';
+            selectedContractorContractKey = null;
+            playUISound('click');
+            renderContractor(dispatchData || {});
+            renderPreviewContextPanel();
+            return;
+        }
+
+        const selectedMarket = event.target.closest('[data-contractor-select-market]');
+        if (selectedMarket) {
+            playUISound('click');
+            selectedContractorPanel = 'market';
+            selectedContractorMarketKey = selectedMarket.dataset.contractorSelectMarket || null;
+            renderContractor(dispatchData || {});
+            renderPreviewContextPanel();
+            return;
+        }
+
+        const license = event.target.closest('[data-contractor-license]');
+        if (license) {
+            playUISound('confirm');
+            post('purchaseContractorLicense');
+            return;
+        }
+
+        const buyVehicle = event.target.closest('[data-contractor-buy-type]');
+        if (buyVehicle) {
+            confirmContractorVehiclePurchase(buyVehicle);
+            return;
+        }
+
+        const spawnVehicle = event.target.closest('[data-contractor-spawn-vehicle]');
+        if (spawnVehicle) {
+            requestVehicleCheckout(spawnVehicle, 'spawnContractorVehicle', {
+                vehicleId: Number(spawnVehicle.dataset.contractorSpawnVehicle || 0)
+            });
+            return;
+        }
+
+        const storeVehicle = event.target.closest('[data-contractor-store-vehicle]');
+        if (storeVehicle && !storeVehicle.disabled) {
+            playUISound('confirm');
+            post('storeContractorVehicle');
+            return;
+        }
+
+        const startContract = event.target.closest('[data-contractor-start]');
+        if (startContract && !startContract.disabled) {
+            playUISound('confirm');
+            startContract.disabled = true;
+            setTimeout(() => { startContract.disabled = false; }, 8000);
+            post('startContractorContract', {
+                vehicleId: Number(startContract.dataset.contractorStart || 0),
+                priorityKey: startContract.dataset.priority || 'standard',
+                routeIndex: Number(startContract.dataset.routeIndex || 0) || null,
+                dailyRouteKey: startContract.dataset.dailyRouteKey || null,
+                pickupDepotKey: startContract.dataset.pickupDepotKey || null
+            });
+        }
+    });
+}
+
+document.addEventListener('click', event => {
+    const loadAction = event.target.closest('[data-mini-load-action]');
+    if (loadAction && mini && mini.contains(loadAction)) {
+        if (loadAction.disabled || loadAction.classList.contains('is-pending')) return;
+
+        playUISound('confirm');
+        loadAction.disabled = true;
+        loadAction.classList.add('is-pending');
+        setTimeout(() => {
+            loadAction.disabled = false;
+            loadAction.classList.remove('is-pending');
+        }, 7000);
+        post('receiverLoadAction', { action: loadAction.dataset.miniLoadAction || '' });
+        return;
+    }
+
+    const movementToggle = event.target.closest('[data-mini-movement-toggle]');
+    if (movementToggle && mini && mini.contains(movementToggle)) {
+        playUISound('click');
+        setMiniMovementUnlocked(!miniMovementUnlocked, true);
+        return;
+    }
+
+    const scaleOption = event.target.closest('[data-mini-scale-target][data-mini-scale]');
+    if (scaleOption && mini && mini.contains(scaleOption)) {
+        playUISound('click');
+        setMiniUIScale(scaleOption.dataset.miniScaleTarget, scaleOption.dataset.miniScale, true);
+        return;
+    }
+
+    const wallpaperSelect = event.target.closest('[data-mini-wallpaper-select]');
+    if (wallpaperSelect && mini && mini.contains(wallpaperSelect)) {
+        const input = mini.querySelector('.mini-wallpaper-input');
+        if (!input) return;
+        playUISound('click');
+        input.value = '';
+        input.click();
+        return;
+    }
+
+    const wallpaperReset = event.target.closest('[data-mini-wallpaper-reset]');
+    if (wallpaperReset && mini && mini.contains(wallpaperReset)) {
+        playUISound('confirm');
+        resetMiniCustomWallpaper(true);
+        return;
+    }
+
+    const dockToggle = event.target.closest('[data-mini-dock-toggle]');
+    if (dockToggle && mini && mini.contains(dockToggle)) {
+        if (dockToggle.disabled) {
+            playUISound('error');
+            return;
+        }
+
+        playUISound('click');
+        dockToggle.disabled = true;
+        if (dockToggle.classList.contains('is-enabled') && miniDock && !miniDock.classList.contains('hidden')) {
+            hideMiniDockSurface();
+        }
+        post('receiverToggleDock');
+        setTimeout(() => { dockToggle.disabled = false; }, 700);
+        return;
+    }
+
+    const vehicleAction = event.target.closest('[data-mini-vehicle-action]');
+    if (vehicleAction && mini && mini.contains(vehicleAction)) {
+        if (vehicleAction.disabled || vehicleAction.classList.contains('is-pending')) return;
+
+        playUISound('click');
+        vehicleAction.disabled = true;
+        vehicleAction.classList.add('is-pending');
+        setTimeout(() => {
+            vehicleAction.disabled = false;
+            vehicleAction.classList.remove('is-pending');
+        }, 1000);
+        post('receiverVehicleControl', { action: vehicleAction.dataset.miniVehicleAction || '' });
+        return;
+    }
+
+    const priorityButton = event.target.closest('[data-mini-priority]');
+    if (priorityButton && mini && mini.contains(priorityButton)) {
+        playUISound('click');
+        const type = getReceiverVehicleType(miniLastContract);
+        if (type) selectedPriority[type] = priorityButton.dataset.miniPriority || 'standard';
+        renderMiniLoadPage(miniLastContract);
+        return;
+    }
+
+    const startCurrentJob = event.target.closest('[data-mini-start-current-job]');
+    if (startCurrentJob && mini && mini.contains(startCurrentJob)) {
+        if (startCurrentJob.disabled || startCurrentJob.classList.contains('is-pending')) return;
+        playUISound('confirm');
+        startCurrentJob.disabled = true;
+        startCurrentJob.classList.add('is-pending');
+        setTimeout(() => {
+            startCurrentJob.disabled = false;
+            startCurrentJob.classList.remove('is-pending');
+        }, 8000);
+        const reuse = miniLastContract?.reuseVehicle || {};
+        const privateUnit = reuse.contractor || reuse.source === 'contractor';
+        post('receiverStartCurrentJob', {
+            priorityKey: privateUnit ? 'standard' : getSelectedReceiverPriority(miniLastContract)
+        });
+        return;
+    }
+
+    const cancelRoute = event.target.closest('[data-mini-cancel-route]');
+    if (cancelRoute && mini && mini.contains(cancelRoute)) {
+        playUISound('alert');
+        post('receiverCancelRoute');
+        return;
+    }
+
+    const closeReceiverLogo = event.target.closest('[data-mini-close-receiver]');
+    if (closeReceiverLogo && mini && mini.contains(closeReceiverLogo)) {
+        playUISound('click');
+        hideMiniReceiverSurface();
+        post('closeReceiver');
+        return;
+    }
+
+    const openDispatchLog = event.target.closest('[data-mini-open-dispatch]');
+    if (openDispatchLog && mini && mini.contains(openDispatchLog)) {
+        playUISound('click');
+        setMiniPage('dispatch');
+        return;
+    }
+
+    const pageButton = event.target.closest('[data-mini-page]');
+    if (pageButton && mini && mini.contains(pageButton)) {
+        playUISound('click');
+        setMiniPage(pageButton.dataset.miniPage || 'home');
+        return;
+    }
+
+    const homeButton = event.target.closest('[data-mini-home]');
+    if (homeButton && mini && mini.contains(homeButton)) {
+        playUISound('click');
+        setMiniPage('home');
+    }
+});
+
+document.addEventListener('change', async event => {
+    const input = event.target.closest('.mini-wallpaper-input');
+    if (!input || !mini || !mini.contains(input)) return;
+
+    const file = input.files?.[0];
+    if (!file) return;
+
+    const imported = await importMiniWallpaper(file);
+    input.value = '';
+    if (imported) {
+        playUISound('confirm');
+    } else {
+        playUISound('error');
+        setMiniWallpaperError();
+    }
+});
+
+document.addEventListener('keydown', event => {
+    if (event.key !== 'Escape') return;
+
+    if (closeOpenDispatchSelect()) {
+        event.preventDefault();
+        event.stopPropagation();
+        return;
+    }
+
+    // If a Freight Dispatch dialog is open, close the dialog first.
+    // This prevents ESC from removing NUI focus while leaving the dialog visible.
+    if (freightDialog && !freightDialog.classList.contains('hidden')) {
+        event.preventDefault();
+        event.stopPropagation();
+        closeFreightDialog();
+        return;
+    }
+
+    if (mini && !mini.classList.contains('hidden') && !mini.classList.contains('receiver-closing')) {
+        event.preventDefault();
+        event.stopPropagation();
+        hideMiniReceiverSurface();
+        post('closeReceiver');
+        return;
+    }
+
+    if (app && app.classList.contains('hidden')) return;
+
+    event.preventDefault();
+    event.stopPropagation();
+    clearQueuedDispatchRefresh();
+    closeUI();
+    post('close');
+});
+
+window.addEventListener('message', event => {
+    const data = event.data;
+
+    if (data.action === 'open') {
+        clearQueuedDispatchRefresh();
+        openUI(data.data);
+    }
+    if (data.action === 'refreshDispatch') queueDispatchRefresh(data.data);
+    if (data.action === 'close') {
+        clearQueuedDispatchRefresh();
+        closeUI();
+    }
+    if (data.action === 'showFreightDialog') showFreightDialog(data);
+    if (data.action === 'showTrailerInspection') window.showTrailerInspection(data);
+    if (data.action === 'showFreightCancelDialog') showFreightCancelDialog(data);
+    if (data.action === 'showFreightHandoff') showFreightHandoff(data);
+    if (data.action === 'hideFreightDialog') hideFreightDialog();
+    if (data.action === 'showTrailerCargoEditor') showTrailerCargoEditor(data.state || {});
+    if (data.action === 'updateTrailerCargoEditor') renderTrailerCargoEditor(data.state || {});
+    if (data.action === 'hideTrailerCargoEditor') hideTrailerCargoEditor();
+
+    if (data.action === 'playSound') {
+        playUISound(data.sound || data.type || 'click');
+    }
+
+    if (data.action === 'showMiniDock') {
+        configureUILocale(data.contract || data);
+        renderMiniDock(data.contract || {});
+    }
+
+    if (data.action === 'hideMiniDock' && miniDock) {
+        hideMiniDockSurface();
+    }
+
+    if (data.action === 'showMini') {
+        const contract = data.contract || {};
+        configureUILocale(contract);
+        miniLastContract = contract;
+        const miniSignature = miniStructuralSignature(contract);
+
+        const miniWasHidden = mini.classList.contains('hidden');
+        const miniStructureChanged = miniWasHidden || miniLastSignature !== miniSignature;
+        if (miniWasHidden || (miniLastSignature && miniLastSignature !== miniSignature)) flashMiniRadio(contract.radioDirection);
+
+        if (miniWasHidden) setMiniPage('home', { instant: true });
+        updateMiniLiveFields(contract);
+
+        if (miniStructureChanged) {
+            renderMiniAppPages(contract);
+        }
+
+        miniLastSignature = miniSignature;
+        setMiniPage(miniCurrentPage || 'home', { instant: miniWasHidden });
+        showReceiverWithAnimation(miniWasHidden);
+    }
+
+    if (data.action === 'refreshMini' && mini && !mini.classList.contains('hidden')) {
+        configureUILocale(data.contract || data);
+        queueMiniRefresh(data.contract || {});
+    }
+
+    if (data.action === 'hideMini') {
+        hideMiniReceiverSurface();
+    }
+
+    if (data.action === 'updateLastRouteSummary') {
+        renderRouteHistoryPreservingScroll(data.summary);
+    }
+
+    if (data.action === 'updateRouteHistory') {
+        const history = normalizeRouteHistory(data.history || data.summary);
+        dispatchData = {
+            ...(dispatchData || {}),
+            lastRouteSummary: data.summary || (history[0] || null),
+            routeHistory: history
+        };
+        renderRouteHistoryPreservingScroll(history);
+        if (activeDispatchTab === 'history') buildHistoryPreviewPanel();
+        if (miniLastContract) {
+            miniLastContract = { ...miniLastContract, routeHistory: history };
+            if (miniCurrentPage === 'dispatch') renderMiniDispatchPage(miniLastContract);
+        }
+    }
+});
+
+// Shared transform-based dragging for the receiver and compact dock.
+// Transform positioning avoids FiveM CEF cases where top/height only move horizontally.
+function setupMovablePanel(options) {
+    const box = document.getElementById(options.elementId);
+    if (!box) return;
+
+    const storageKey = options.storageKey;
+    const oldStorageKey = options.oldStorageKey;
+
+    function viewport() {
+        return {
+            width: Math.max(window.innerWidth || 0, document.documentElement.clientWidth || 0, 1280),
+            height: Math.max(window.innerHeight || 0, document.documentElement.clientHeight || 0, 720)
+        };
+    }
+
+    function clamp(value, min, max) {
+        return Math.min(Math.max(value, min), max);
+    }
+
+    function boxSize() {
+        const rect = box.getBoundingClientRect();
+        const style = window.getComputedStyle(box);
+        const scale = Math.max(0.1, Number.parseFloat(style.getPropertyValue(options.scaleProperty)) || 1);
+        return {
+            width: rect.width || (box.offsetWidth || options.fallbackWidth) * scale,
+            height: rect.height || (box.offsetHeight || options.fallbackHeight) * scale
+        };
+    }
+
+    function readPoint(event) {
+        const touch = event.touches?.[0] || event.changedTouches?.[0];
+        const source = touch || event;
+
+        return {
+            clientX: Number(source.clientX ?? 0),
+            clientY: Number(source.clientY ?? 0),
+            pageX: Number(source.pageX ?? source.clientX ?? 0),
+            pageY: Number(source.pageY ?? source.clientY ?? 0),
+            screenX: Number(source.screenX ?? source.clientX ?? 0),
+            screenY: Number(source.screenY ?? source.clientY ?? 0)
+        };
+    }
+
+    let pos = { x: 0, y: 0 };
+    let dragging = false;
+    let last = null;
+    let activeTouchId = null;
+    let activePointerId = null;
+
+    function defaultPosition() {
+        const vp = viewport();
+        const size = boxSize();
+        return options.defaultPosition(vp, size);
+    }
+
+    function applyPosition(save = false) {
+        const vp = viewport();
+        const size = boxSize();
+        const maxX = Math.max(0, vp.width - size.width);
+        const maxY = Math.max(0, vp.height - size.height);
+
+        pos.x = clamp(pos.x, 0, maxX);
+        pos.y = clamp(pos.y, 0, maxY);
+
+        box.style.setProperty(options.xProperty, `${Math.round(pos.x)}px`);
+        box.style.setProperty(options.yProperty, `${Math.round(pos.y)}px`);
+
+        if (save) {
+            localStorage.setItem(storageKey, JSON.stringify({
+                x: Math.round(pos.x),
+                y: Math.round(pos.y)
+            }));
+        }
+    }
+
+    function loadPosition() {
+        let raw = localStorage.getItem(storageKey);
+
+        // Import the older left/top save one time if present.
+        if (!raw && oldStorageKey) {
+            const oldRaw = localStorage.getItem(oldStorageKey);
+            if (oldRaw) {
+                try {
+                    const old = JSON.parse(oldRaw);
+                    if (Number.isFinite(old.left) && Number.isFinite(old.top)) {
+                        raw = JSON.stringify({ x: old.left, y: old.top });
+                    }
+                    } catch {}
+            }
+        }
+
+        if (raw) {
+            try {
+                const saved = JSON.parse(raw);
+                if (Number.isFinite(saved.x) && Number.isFinite(saved.y)) {
+                    pos = { x: saved.x, y: saved.y };
+                    applyPosition(false);
+                    return;
+                }
+            } catch {}
+        }
+
+        requestAnimationFrame(() => {
+            pos = defaultPosition();
+            applyPosition(false);
+        });
+    }
+
+    function startDrag(event) {
+        if (!isMiniMovementUnlocked()) return;
+        if ((event.type === 'mousedown' || event.type === 'pointerdown') && event.button !== 0) return;
+        if (options.blockedSelector && event.target?.closest?.(options.blockedSelector)) return;
+
+        const point = readPoint(event);
+        dragging = true;
+        last = point;
+        activeTouchId = event.touches?.[0]?.identifier ?? null;
+        activePointerId = Number.isFinite(event.pointerId) ? event.pointerId : null;
+        box.classList.add('dragging');
+
+        if (activePointerId !== null && box.setPointerCapture) {
+            try { box.setPointerCapture(activePointerId); } catch {}
+        }
+
+        event.preventDefault();
+        event.stopPropagation();
+    }
+
+    function moveDrag(event) {
+        if (!dragging || !last) return;
+        if (activePointerId !== null && Number.isFinite(event.pointerId) && event.pointerId !== activePointerId) return;
+
+        // When touching, keep the same finger if possible.
+        let point;
+        if (event.touches && activeTouchId !== null) {
+            const touch = Array.from(event.touches).find((t) => t.identifier === activeTouchId) || event.touches[0];
+            point = readPoint({ touches: [touch] });
+        } else {
+            point = readPoint(event);
+        }
+
+        let dx = 0;
+        let dy = 0;
+
+        // Prefer browser movement values when available.
+        if (typeof event.movementX === 'number' && event.movementX !== 0) dx = event.movementX;
+        if (typeof event.movementY === 'number' && event.movementY !== 0) dy = event.movementY;
+
+        // Fallback to several coordinate systems. Some FiveM CEF builds freeze clientY,
+        // but screenY/pageY usually still update.
+        if (dx === 0) {
+            dx = (point.clientX - last.clientX) || (point.pageX - last.pageX) || (point.screenX - last.screenX);
+        }
+
+        if (dy === 0) {
+            dy = (point.clientY - last.clientY) || (point.pageY - last.pageY) || (point.screenY - last.screenY);
+        }
+
+        pos.x += dx;
+        pos.y += dy;
+
+        last = point;
+        applyPosition(false);
+
+        event.preventDefault();
+        event.stopPropagation();
+    }
+
+    function stopDrag(event) {
+        if (!dragging) return;
+
+        dragging = false;
+        last = null;
+        activeTouchId = null;
+        if (activePointerId !== null && box.releasePointerCapture) {
+            try { box.releasePointerCapture(activePointerId); } catch {}
+        }
+        activePointerId = null;
+        box.classList.remove('dragging');
+        applyPosition(true);
+
+        if (event) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
+    }
+
+    loadPosition();
+
+    if (window.PointerEvent) {
+        box.addEventListener('pointerdown', startDrag);
+        document.addEventListener('pointermove', moveDrag, true);
+        document.addEventListener('pointerup', stopDrag, true);
+        document.addEventListener('pointercancel', stopDrag, true);
+    } else {
+        box.addEventListener('mousedown', startDrag);
+        box.addEventListener('touchstart', startDrag, { passive: false });
+
+        document.addEventListener('mousemove', moveDrag, true);
+        document.addEventListener('mouseup', stopDrag, true);
+        document.addEventListener('touchmove', moveDrag, { passive: false, capture: true });
+        document.addEventListener('touchend', stopDrag, true);
+        document.addEventListener('touchcancel', stopDrag, true);
+    }
+
+    window.addEventListener('blur', stopDrag);
+
+    window.addEventListener('resize', () => applyPosition(true));
+    window.addEventListener('lsfc:ui-scale-change', () => applyPosition(true));
+}
+
+setupMovablePanel({
+    elementId: 'mini',
+    storageKey: 'ls_trucking_mini_pos_v3',
+    oldStorageKey: 'ls_trucking_mini_pos',
+    xProperty: '--mini-x',
+    yProperty: '--mini-y',
+    scaleProperty: '--receiver-scale',
+    fallbackWidth: 330,
+    fallbackHeight: 704,
+    blockedSelector: '.mini-screen, button, input, select, textarea, a',
+    defaultPosition: (viewport, size) => ({
+        x: Math.max(20, viewport.width - size.width - Math.round(viewport.width * 0.02)),
+        y: Math.max(20, Math.round(viewport.height * 0.18))
+    })
+});
+
+setupMovablePanel({
+    elementId: 'miniDock',
+    storageKey: 'ls_trucking_mini_dock_pos_v1',
+    xProperty: '--dock-x',
+    yProperty: '--dock-y',
+    scaleProperty: '--dock-scale',
+    fallbackWidth: 330,
+    fallbackHeight: 190,
+    defaultPosition: (viewport, size) => ({
+        x: Math.max(16, viewport.width - size.width - 22),
+        y: Math.max(16, viewport.height - size.height - 34)
+    })
+});
