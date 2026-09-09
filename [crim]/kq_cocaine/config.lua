@@ -1,7 +1,7 @@
 Config = {}
 
 -- Enabling this will add additional prints and display of the resource within the pot
-Config.debug = true,
+Config.debug = false
 
 --
 Config.locale = 'en'
