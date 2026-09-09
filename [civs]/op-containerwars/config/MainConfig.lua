@@ -96,7 +96,7 @@ Config.StartWarCommand = "startwar" -- Allow administarator to start selected wa
 
 Config.AdminCommandPlayers = {
     ['steam:110000118d2c0db'] = true,
-    ['discord:571105311251890186'] = true,
+    ['discord:1395771077094801428'] = true,
 }
 
 ----------------------------------------------------------------------------
