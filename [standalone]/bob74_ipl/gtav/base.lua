@@ -103,8 +103,8 @@ CreateThread(function()
     RequestIpl("ld_rail_02_track")
 
     -- Docks cranes: 887.7344, -2922.285, 34.000
-    RequestIpl("dockcrane1")
-    RequestIpl("pcranecont")
+   -- RequestIpl("dockcrane1")
+   -- RequestIpl("pcranecont")
 
     -- Construction lift: -180.5771, -1016.9276, 28.2893
     RequestIpl("dt1_21_prop_lift_on")
