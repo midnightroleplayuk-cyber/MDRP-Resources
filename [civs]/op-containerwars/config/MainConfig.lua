@@ -70,7 +70,7 @@ Config.PlannedWars = {
         startDate = {
             -- War will start everyday at 18:00:
             weekDay = "all", -- all/monday/tuesday/wednesday/thursday/friday/saturday/sunday
-            hour = "18:50", -- Hour of day in 24 format.
+            hour = "22:45", -- Hour of day in 24 format.
         },
         dropConfig = "drop_car_war",
         containerStartPrice = 100000,
