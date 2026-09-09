@@ -58,7 +58,7 @@ Config.basic = {
         enableCustomMovementClipset = true,
 
         -- Whether to enable target options to the pit. Alongside the usable items (will only work if kq_link has target enabled)
-        enableTargetOptions = false,
+        enableTargetOptions = true,
     },
     barrel = {
         -- Duration of the processing process in seconds
