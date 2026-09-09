@@ -294,7 +294,7 @@ Config.RanksPermissions = {
 -- (Information) ► Controls how crime tablet is accessed and how missions are handled.
 -- ──────────────────────────────────────────────────────────────────────────────
 Config.Tablet = {                     
-    tabletASItem = false,             -- true = tablet is usable item, false = command-based.
+    tabletASItem = true,             -- true = tablet is usable item, false = command-based.
     commandName = "crimetablet",      -- Command used when tabletASItem is false.
     item = {
         name = "crime_tablet"         -- Required item name if tabletASItem is true.

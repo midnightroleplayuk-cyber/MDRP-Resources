@@ -10,7 +10,7 @@
 -- ⚙️ GENERAL MARKET SETTINGS
 Config.MarketMisc = {
     enable = true, -- Enable / Disable the Market tab
-    requiredGangLevel = 1, -- Minimum gang level required to access the Market
+    requiredGangLevel = 0, -- Minimum gang level required to access the Market
     useDirtyMoney = false, -- If true, transactions use dirty money instead of regular cash
     advertiseFee = 5000, -- Cost to create a new market listing
 
