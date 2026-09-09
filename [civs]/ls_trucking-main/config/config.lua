@@ -74,7 +74,7 @@ Config.Fuel = {
 }
 
 Config.Keys = {
-    System = 'qb-vehiclekeys', -- auto, qb-vehiclekeys, qbx_vehiclekeys, Renewed-Vehiclekeys, MrNewbVehicleKeys, wasabi_carlock, cd_garage, or none
+    System = 'qbx_vehiclekeys', -- auto, qb-vehiclekeys, qbx_vehiclekeys, Renewed-Vehiclekeys, MrNewbVehicleKeys, wasabi_carlock, cd_garage, or none
     GiveOnSpawn = true, -- Gives the requesting player keys after a job vehicle is created.
     RemoveOnReturn = true, -- Attempts to revoke keys when a company or contractor vehicle is stored.
     OwnerOnly = true -- Removes synchronized job-vehicle keys from players other than the current checkout owner.
