@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:900|Work+Sans:300" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel='stylesheet' href='https://site-assets.fontawesome.com/releases/v6.1.1/css/all.css'>
+    <title>Car Info</title>
+    <script src="https://cdn.jsdelivr.net/npm/luxon@3/build/global/luxon.min.js"></script>
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Montserrat;
+            line-height: 0.15;
+            color: white;
+            background-color: transparent;
+            font-size: 14px;
+        }
+
+        #info-box {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgb(17, 17, 17);
+            border: 2px solid rgb(58, 58, 58);
+            border-radius: 5px;
+            padding: 14px 25px;
+        }
+
+        h1 {
+            color: rgb(204, 204, 204);
+            font-family: 'Work Sans';
+            font-weight: 700;
+            font-size: 18px;
+            line-height: 0.7;
+        }
+
+        span {
+            color: #fff;
+            font-family: 'Montserrat';
+            font-weight: 900;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="info-box">
+
+    </div>
+
+    <script>
+        let endTime = null;
+        let timerInterval = null;
+        let recent = "--:--";
+
+        const DateTime = luxon.DateTime;
+
+        function updateTimer() {
+            if (!endTime || !document.getElementById("time-left")) return;
+
+            const now = Date.now();
+            const distance = endTime - now;
+
+            if (distance <= 0) {
+                document.getElementById("time-left").textContent = "00:00";
+                recent = "00:00"
+                clearInterval(timerInterval);
+                return;
+            }
+
+            const totalSeconds = Math.floor(distance / 1000);
+            const minutes = Math.floor(totalSeconds / 60);
+            const seconds = totalSeconds % 60;
+
+            recent = String(minutes).padStart(2, '0') + ":" +
+                String(seconds).padStart(2, '0');
+
+            document.getElementById("time-left").textContent = recent;
+        }
+
+        window.addEventListener('message', function (event) {
+            if (event.data.action === "addInfo") {
+                document.getElementById('info-box').innerHTML = "";
+
+                if (event.data.startDate && event.data.warTime) {
+                    const startDate = DateTime.fromISO(event.data.startDate).toMillis();
+                    const warTime = parseInt(event.data.warTime);
+
+                    if (!isNaN(startDate) && !isNaN(warTime)) {
+                        endTime = startDate + warTime;
+
+                        if (timerInterval) clearInterval(timerInterval);
+                        timerInterval = setInterval(updateTimer, 1000);
+                        updateTimer();
+                    }
+                }
+
+                let optionsHtml = event.data.options;
+                if (optionsHtml.includes("--:--")) {
+                    optionsHtml = optionsHtml.replace("--:--", recent);
+                }
+
+                $('#info-box').append(optionsHtml);
+            }
+        });
+    </script>
+
+</body>
+
+</html>
