@@ -1,13 +1,12 @@
 Config = {}
 Config.Locale = "en" -- Supported: EN / PL / HU / SK / CZ / DE / TR / FR / SL / TW / AR / PT / HR / IT / ES
-
-Config.FuelDependency = "none" -- Options: none, cdn-fuel, ox-fuel, LegacyFuel, qs-fuel, rcore-fuel, codem-xfuel, lc_fuel
-Config.KeysDependency = "none" -- Options: none, brutal_keys, qs-keys, qb-keys, wasabi_carlock, sna-vehiclekeys, dusa_vehiclekeys, Renewed-Vehiclekeys, tgiann-keys, ak47_vehiclekeys, ak47_qb_vehiclekeys, MrNewbVehicleKeys, p_carkeys, mVehicle, sy_carkeys
+Config.FuelDependency = "lc_fuel" -- Options: none, cdn-fuel, ox-fuel, LegacyFuel, qs-fuel, rcore-fuel, codem-xfuel, lc_fuel
+Config.KeysDependency = "qb-keys" -- Options: none, brutal_keys, qs-keys, qb-keys, wasabi_carlock, sna-vehiclekeys, dusa_vehiclekeys, Renewed-Vehiclekeys, tgiann-keys, ak47_vehiclekeys, ak47_qb_vehiclekeys, MrNewbVehicleKeys, p_carkeys, mVehicle, sy_carkeys
 Config.TextUI = "none" -- Options: none, ox_lib, jg-textui, qs-textui, okokTextUI, brutal_textui, 0r-textui
 
 Config.Misc = {
     Notify = "ox_lib", -- Supported: op_hud / okokNotify / vms_notify / brutal_notify / ox_lib / ESX / QBCORE / QBOX
-    Target = "none",  -- none / ox-target / qb-target
+    Target = "ox-target",  -- none / ox-target / qb-target
     zoneSize = 2.9, -- Marker radius.
     zoneColor = { -- Marker color.
         r = 52,
@@ -23,9 +22,9 @@ Config.Misc = {
 
 Config.CurrencySettings = {
     -- https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/NumberFormat
-    currency = "USD",
+    currency = "GBP",
     style = "currency",
-    format = "en-US"
+    format = "en-GB"
 }
 
 ----------------------------------------------------------------------------
@@ -33,7 +32,7 @@ Config.CurrencySettings = {
 ----------------------------------------------------------------------------
 
 -- List of available TimeZones you can find in config/AvailableTimeZones.json
-Config.TimeZone = "Europe/Warsaw" -- Script use our own api.
+Config.TimeZone = "GMT" -- Script use our own api.
 
 ----------------------------------------------------------------------------
 -- ⚒️ PED ON DOCS WITH INFORMATIONS ABOUT WARS. ⚒️
