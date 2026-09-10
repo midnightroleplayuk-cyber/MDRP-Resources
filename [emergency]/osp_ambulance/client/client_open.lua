@@ -3614,9 +3614,13 @@ function RestorePlayer(player, skipSave)
     ResetPedMovementClipset(player, 0.0)
     if HasWounds() then
         TriggerServerEvent('hud:server:RelieveStress', 100)
-        TriggerServerEvent("hospital:server:resetHungerThirst")
     end
-    if GetActiveFramework() == 'qb' then
+
+    -- Always restore needs after an admin revive. Qbox metadata is updated
+    -- server-side by hospital:server:resetHungerThirst, which tuff-hud reads.
+    TriggerServerEvent("hospital:server:resetHungerThirst")
+
+    if GetActiveFramework() == 'qb' or GetActiveFramework() == 'qbox' then
         TriggerServerEvent("hospital:server:SetDeathStatus", false)
         TriggerServerEvent("hospital:server:SetLaststandStatus", false)
     end
