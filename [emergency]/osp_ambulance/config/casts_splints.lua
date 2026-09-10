@@ -1,7 +1,7 @@
 Config = Config or {}
 
 Config.UseCustomProps = false -- If enabled, the script will apply the pedvariations from the config below (The default config is intended to be used with Sinner Mod Shop medical props pack)
-Config.EnableCosmeticCasts = false -- Access casts and splints with additional menu buttons, intended for expanded roleplay options. These do not require fractures to be applied.
+Config.EnableCosmeticCasts = true -- Access casts and splints with additional menu buttons, intended for expanded roleplay options. These do not require fractures to be applied.
 Config.Casts = {
     {
         type = 'splint',

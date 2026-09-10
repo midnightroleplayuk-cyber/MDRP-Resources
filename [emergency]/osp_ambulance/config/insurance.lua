@@ -6,7 +6,7 @@ Config.CheckInNPCScenario = 'WORLD_HUMAN_CLIPBOARD'
 -- Built-in plans sold at hospital check-in. Set to false to use an external insurance resource instead.
 -- Client hook: HandleExternalInsuranceMenu in client_open.lua
 -- Server hook: GetExternalInsurance in server_open.lua
-Config.UseBuiltInInsurance = true
+Config.UseBuiltInInsurance = false
 
 -- Insurance plans purchased at the hospital check-in NPC.
 -- checkInDiscount: 0.0-1.0 fraction removed from check-in / hospital bill cost

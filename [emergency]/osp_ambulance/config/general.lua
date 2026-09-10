@@ -5,7 +5,7 @@ Config.Framework = 'qb' -- don't touch this! (Framework setter)
 Config.startDamageTimer = 1000 -- Time in ms before the player damages gets applied when loading the chracters
 Config.UseRadialProgressBar = false -- Use the radial progress bar instead of the default one
 Config.UseOxNotif = true -- Set this to false if you want to use the default framework notificatins
-Config.UsedInventory = '' -- empty is framework inventory
+Config.UsedInventory = 'ox_inventory' -- empty is framework inventory
 
 -- !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 -- To change the localization, go into server.cfg and paste the following code: setr ox:locale en
@@ -15,9 +15,9 @@ Config.UsedInventory = '' -- empty is framework inventory
 Config.UseTarget = true -- Set to false if you don't want to use targetting at all and instead use drawtext
 Config.UseOxTarget = true
 Config.TargetName = false -- The name of the target resource (only needed if you use qb-target or qtarget)
-Config.Dispatch = "default" -- 'default', 'ps-dispatch', 'cd_dispatch', 'lb-phone', 'lb-tablet', 'piotreq_gmt' (aliases: ps, cd, cd_dispatch3d, gmt)
-Config.Banking = "default" -- 'default', 'okokBanking' (aliases: okok), 'wasabi_banking' (alias: wasabi), 'osp-banking' (aliases: osp, osp_banking)
-Config.DispatchNotifyButton = "G" -- Avoid G if cd_dispatch uses G for Respond; change this or the cd_dispatch respond key
+Config.Dispatch = "lb-phone" -- 'default', 'ps-dispatch', 'cd_dispatch', 'lb-phone', 'lb-tablet', 'piotreq_gmt' (aliases: ps, cd, cd_dispatch3d, gmt)
+Config.Banking = "LG_Banking" -- 'default', 'okokBanking' (aliases: okok), 'wasabi_banking' (alias: wasabi), 'osp-banking' (aliases: osp, osp_banking)
+Config.DispatchNotifyButton = "H" -- Avoid G if cd_dispatch uses G for Respond; change this or the cd_dispatch respond key
 Config.UseXsound = false -- If set to false you'll use native audio, which is to be recommended to everyone who's got it working. 
 
 Config.OpenKey = "O" -- The default key to open the medical menu
@@ -32,9 +32,9 @@ Config.Debug = false -- Enable or disable debug mode to investigate issues with 
 Config.UseRoomLoad = false -- let us know if toggling this breaks/fixes screens
 
 Config.MedicalMenuStyle = "console" -- 'default', 'console', 'legacy'
-Config.AutoTriage = true -- When true, triage is computed automatically (blood, pain, LOC, severity). When false, medical staff must set triage manually.
+Config.AutoTriage = false -- When true, triage is computed automatically (blood, pain, LOC, severity). When false, medical staff must set triage manually.
 Config.CustomDeathScreen = false -- Enable of disable a customised death timer screen, keep at false if you don't know what you are doing
-Config.PopUpSkelly = true
+Config.PopUpSkelly = false
 Config.EnableWoundEditor = true -- Self-edit wounds/fractures for RP/scenes (command: woundeditor)
 Config.WoundEditorAddOnly = true -- When true, players can only add new injuries (cannot remove existing wounds or turn off fractures)
 Config.WoundEditorKey = '' -- Optional keybind; empty = command only
@@ -47,10 +47,10 @@ Config.AmbulanceJobs = {}
 Config.InteractionDict = "anim@heists@narcotics@funding@gang_idle"
 Config.InteractionAnim = "gang_chatting_idle01"
 
-Config.JobBlips = true -- Whether or not ambulance personel can see eachother on the map.
-Config.MinimalDoctors = 3 -- How many players with the ambulance job to prevent the hospital check-in system from being used
+Config.JobBlips = false -- Whether or not ambulance personel can see eachother on the map.
+Config.MinimalDoctors = 2 -- How many players with the ambulance job to prevent the hospital check-in system from being used
 Config.DocCooldown = 1 -- Cooldown between doctor calls allowed, in minutes
-Config.AIHealTimer = 10 -- How long it will take to be healed after checking in, in seconds
+Config.AIHealTimer = 60 -- How long it will take to be healed after checking in, in seconds
 Config.WipeInventoryOnRespawn = true -- Enable or disable removing all the players items when they respawn at the hospital
 Config.ExcludeItems = {'iphone', 'anotheritem'}
 Config.Helicopter = "polmav" -- Helicopter model that players with the ambulance job can use
@@ -63,7 +63,7 @@ Config.RespawnLocations = {
     -- vector4(x, y, z, heading),
     -- vector4(311.0, -583.0, 43.3, 340.0), -- Example: Pillbox front
 }
-Config.Crawl = true -- Enable to make the player crawl whilst in laststand
+Config.Crawl = false -- Enable to make the player crawl whilst in laststand
 Config.PropDespawnTimer = 360000 -- How long before the ecg prop despawns after being placed in ms
 Config.SavePlayerDataTimer = 60000 -- How often the player data should be saved in ms (the lower the more accurate the data is saved but the more performance impact) (The data is sent to the server so that the player data is saved when the player quits)
 Config.AntiCombatLogLoop = 200 -- How often the anti combat log loop should run in ms (lower is better but has a higher performance impact)
@@ -139,11 +139,11 @@ Config.BleedTime = 5000 -- The interval for how often the bleed effect (only vis
 Config.PainThreshold = 10 -- The pain threshold for when the screen should start to flash
 Config.PainFlashIntensity = 100 -- Default pain flash intensity (0-100). Players can still change this in personal settings
 
-Config.BlackoutEffect = true -- Blackouts caused by very high or low bp, not to be confused with head injuries that can cause short blackouts.
+Config.BlackoutEffect = false -- Blackouts caused by very high or low bp, not to be confused with head injuries that can cause short blackouts.
 Config.HeadInjuryChance = 25 -- Chance, in percent, that a head injury side-effect gets applied (MINI BLACKOUTS)
 
-Config.PainEffect = true
-Config.BleedEffect = true
+Config.PainEffect = false
+Config.BleedEffect = false
 
 -- Wheelchair and Crutch
 Config.MaxWheelChairTime = 60 -- The maximum time a player can be set in a wheelchair in minutes
@@ -152,7 +152,7 @@ Config.MaxCrutchTime = 60 -- The maximum time a player can be set in a wheelchai
 
 Config.AmbulanceBypassItems = false -- Set to true if you want to enable all buttons in ui for medics and disable item requierment
 
-Config.UseGarageSystem = true -- left it true if you want use the integrated garage system
+Config.UseGarageSystem = false -- left it true if you want use the integrated garage system
 
 -- ELEVATOR CONFIGURATION
 Config.ElevatorSound = "CONFIRM_BEEP" -- Sound played when the elevator is used (native frontend sound name)

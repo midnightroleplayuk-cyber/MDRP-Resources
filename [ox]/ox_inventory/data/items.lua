@@ -2896,5 +2896,273 @@ return {
 },
     
 
+-- OSP AMBULANCE ITEMS
+['pager'] = {
+    label = 'Pager',
+    weight = 10,
+    stack = true,
+},
+
+['tourniquet'] = {
+    label = 'Tourniquet',
+    weight = 10,
+    stack = true,
+},
+
+['field_dressing'] = {
+    label = 'Field Dressing',
+    weight = 10,
+    stack = true,
+},
+
+['elastic_bandage'] = {
+    label = 'Elastic Bandage',
+    weight = 10,
+    stack = true,
+},
+
+['quick_clot'] = {
+    label = 'Quick Clot',
+    weight = 10,
+    stack = true,
+},
+
+['packing_bandage'] = {
+    label = 'Packing Bandage',
+    weight = 10,
+    stack = true,
+},
+
+['sewing_kit'] = {
+    label = 'Sewing Kit',
+    weight = 10,
+    stack = true,
+},
+
+['epinephrine'] = {
+    label = 'Epinephrine',
+    weight = 10,
+    stack = true,
+},
+
+['morphine'] = {
+    label = 'Morphine',
+    weight = 10,
+    stack = true,
+},
+
+['propofol'] = {
+    label = 'Propofol',
+    weight = 10,
+    stack = true,
+},
+
+['saline250ml'] = {
+    label = 'Saline 250ml',
+    weight = 10,
+    stack = true,
+},
+
+['saline500ml'] = {
+    label = 'Saline 500ml',
+    weight = 10,
+    stack = true,
+},
+
+['revivekit'] = {
+    label = 'Emergency Revive Kit',
+    weight = 10,
+    stack = true,
+},
+
+['stretcher'] = {
+    label = 'Stretcher',
+    weight = 1000,
+    stack = true,
+},
+
+['wheelchair'] = {
+    label = 'wheelchair',
+    weight = 1000,
+    stack = true,
+},
+
+['crutch'] = {
+    label = 'Crutch',
+    weight = 1000,
+    stack = true,
+},
+
+['bodybag'] = {
+    label = 'Bodybag',
+    weight = 1000,
+    stack = true,
+},
+
+['ecg'] = {
+    label = 'ECG',
+    weight = 200,
+    stack = true,
+},
+
+['neckbrace'] = {
+    label = 'Neck Brace',
+    weight = 200,
+    stack = true,
+},
+
+['neckcast'] = {
+    label = 'Neck Cast',
+    weight = 200,
+    stack = true,
+},
+
+['legsplint'] = {
+    label = 'Leg Splint',
+    weight = 200,
+    stack = true,
+},
+
+['legcast'] = {
+    label = 'Leg Cast',
+    weight = 200,
+    stack = true,
+},
+
+['armsplint'] = {
+    label = 'Arm Splint',
+    weight = 200,
+    stack = true,
+},
+
+['armcast'] = {
+    label = 'Arm Cast',
+    weight = 200,
+    stack = true,
+},
+
+['castsaw'] = {
+    label = 'Cast Saw',
+    weight = 200,
+    stack = true,
+},
+
+['bloodsample'] = {
+    label = 'Blood Sample',
+    weight = 200,
+    stack = true,
+},
+
+['blood500ml_ominus'] = {
+    label = 'Blood Pack 500ml O-',
+    weight = 200,
+    stack = true,
+},
+
+['blood500ml_oplus'] = {
+    label = 'Blood Pack 500ml O+',
+    weight = 200,
+    stack = true,
+},
+
+['blood500ml_bminus'] = {
+    label = 'Blood Pack 500ml B-',
+    weight = 200,
+    stack = true,
+},
+
+['blood500ml_bplus'] = {
+    label = 'Blood Pack 500ml B+',
+    weight = 200,
+    stack = true,
+},
+
+['blood500ml_aminus'] = {
+    label = 'Blood Pack 500ml A-',
+    weight = 200,
+    stack = true,
+},
+
+['blood500ml_aplus'] = {
+    label = 'Blood Pack 500ml A+',
+    weight = 200,
+    stack = true,
+},
+
+['blood500ml_abminus'] = {
+    label = 'Blood Pack 500ml AB-',
+    weight = 200,
+    stack = true,
+},
+
+['blood500ml_abplus'] = {
+    label = 'Blood Pack 500ml AB+',
+    weight = 200,
+    stack = true,
+},
+
+['expiredblood'] = {
+    label = 'Expired Blood',
+    weight = 200,
+    stack = true,
+},
+
+['prescription'] = {
+    label = 'Prescription',
+    weight = 10,
+    stack = false,
+},
+
+['cough_syrup'] = {
+    label = 'Cough Syrup',
+    weight = 100,
+    stack = true,
+},
+
+['paracetamol'] = {
+    label = 'Paracetamol',
+    weight = 100,
+    stack = true,
+},
+
+['tramadol'] = {
+    label = 'Tramadol',
+    weight = 100,
+    stack = true,
+},
+
+['vicodin'] = {
+    label = 'Vicodin',
+    weight = 100,
+    stack = true,
+},
+
+['xanax'] = {
+    label = 'Xanax',
+    weight = 100,
+    stack = true,
+},
+
+['melatonin'] = {
+    label = 'Melatonin',
+    weight = 100,
+    stack = true,
+},
+
+['narcan'] = {
+    label = 'Narcan',
+    weight = 100,
+    stack = true,
+},
+
+['medical_bag'] = {
+    label = 'Medical Bag',
+    weight = 2000,
+    stack = false,
+},
+
+
+
+
 
 }
