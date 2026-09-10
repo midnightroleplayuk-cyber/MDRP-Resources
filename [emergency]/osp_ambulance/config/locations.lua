@@ -12,7 +12,7 @@ Config.StationaryECGProp = 'v_med_cor_ceilingmonitor' -- The prop used for the s
 
 Config.Hospitals = {
     {
-        label = "Pillbox Hospital",
+        label = "MHS Pillbox",
         blip = {
             enable = true,
             icon = 61,

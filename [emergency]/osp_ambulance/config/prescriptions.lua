@@ -1,14 +1,14 @@
 Config = Config or {}
 
 Config.PrescriptionBranding = {
-    hospitalName = 'Los Santos Medical Center',
-    hospitalAddress = '124 Capital Boulevard, Los Santos',
-    hospitalPhone = 'Tel: (555) 123-4567',
-    hospitalCertId = 'LSMB-54289',
+    hospitalName = 'MHS Hospital',
+    hospitalAddress = 'MHS Central & Pillbox',
+    hospitalPhone = 'Tel: 111',
+    hospitalCertId = 'GMC:08451',
 }
 
 Config.PrescriptionExpiryDays = 2
-Config.PrescriptionIdPrefix = 'RX'
+Config.PrescriptionIdPrefix = 'PoM'
 
 Config.PharmacyNPCModel = 's_m_m_doctor_01'
 Config.PharmacyNPCScenario = 'WORLD_HUMAN_CLIPBOARD'
@@ -37,14 +37,14 @@ Config.PharmacyOTCItems = {
 }
 
 Config.DiseaseSpread = {
-    enabled = true,                     -- Master toggle for random infection and player-to-player spread
+    enabled = false,                     -- Master toggle for random infection and player-to-player spread
     randomCheckInterval = 20*60*1000,       -- How often (ms) the server rolls for random disease acquisition per player
     randomAcquireChance = 0.02,         -- Default chance (0.0-1.0) per check when a condition has no randomAcquireChance set
     spreadCheckInterval = 30*1000,        -- How often (ms) contagious players are checked for nearby targets
     spreadRadius = 4.0,                 -- Distance (meters) required to spread a contagious disease
     spreadChance = 0.3,                -- Default spread chance (0.0-1.0) per check when near an infected player
-    notifyOnInfection = true,           -- Notify players when they contract a disease
-    notifyOnRecovery = true,            -- Notify players when a disease naturally expires
+    notifyOnInfection = false,           -- Notify players when they contract a disease
+    notifyOnRecovery = false,            -- Notify players when a disease naturally expires
     immunityAfterRecovery = 3600,       -- Seconds of immunity after recovering (0 = disabled)
 
     -- Clothing that stops the wearer from spreading contagious diseases, and from catching them from others.
@@ -65,7 +65,7 @@ Config.PrescriptionConditions = {
     -- Contagious cough/cold-style illness. Spreads to nearby players and can be
     -- cured completely by cough syrup (curesCondition = true on that medication).
     {
-        enabled = true,                 -- Set to false to disable this condition entirely
+        enabled = false,                 -- Set to false to disable this condition entirely
         id = 'respiratory_infection',
         label = 'Respiratory Infection',
         symptomInterval = 45*1000,        -- Cough symptom every 45 seconds
@@ -83,7 +83,7 @@ Config.PrescriptionConditions = {
     -- Non-contagious pain flares. Medications typically suppress symptoms rather
     -- than permanently cure (see curesCondition on each medication).
     {
-        enabled = true,
+        enabled = false,
         id = 'acute_pain',
         label = 'Acute Pain',
         symptomInterval = 60*1000,        -- Pain flare every 60 seconds
@@ -100,7 +100,7 @@ Config.PrescriptionConditions = {
 
     -- Non-contagious anxiety. Causes camera shake and optional stress HUD gain.
     {
-        enabled = true,
+        enabled = false,
         id = 'anxiety',
         label = 'Anxiety',
         symptomInterval = 50000,        -- Anxiety symptom every 50 seconds
@@ -117,7 +117,7 @@ Config.PrescriptionConditions = {
 
     -- Non-contagious insomnia / fatigue. Reduces sprint ability and drains stamina.
     {
-        enabled = true,
+        enabled = false,
         id = 'insomnia',
         label = 'Insomnia',
         symptomInterval = 90*1000,        -- Fatigue symptom every 90 seconds

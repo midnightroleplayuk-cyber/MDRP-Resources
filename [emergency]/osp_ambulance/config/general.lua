@@ -16,7 +16,7 @@ Config.UseTarget = true -- Set to false if you don't want to use targetting at a
 Config.UseOxTarget = true
 Config.TargetName = false -- The name of the target resource (only needed if you use qb-target or qtarget)
 Config.Dispatch = "lb-phone" -- 'default', 'ps-dispatch', 'cd_dispatch', 'lb-phone', 'lb-tablet', 'piotreq_gmt' (aliases: ps, cd, cd_dispatch3d, gmt)
-Config.Banking = "LG_Banking" -- 'default', 'okokBanking' (aliases: okok), 'wasabi_banking' (alias: wasabi), 'osp-banking' (aliases: osp, osp_banking)
+Config.Banking = "default" -- 'default', 'okokBanking' (aliases: okok), 'wasabi_banking' (alias: wasabi), 'osp-banking' (aliases: osp, osp_banking)
 Config.DispatchNotifyButton = "H" -- Avoid G if cd_dispatch uses G for Respond; change this or the cd_dispatch respond key
 Config.UseXsound = false -- If set to false you'll use native audio, which is to be recommended to everyone who's got it working. 
 
