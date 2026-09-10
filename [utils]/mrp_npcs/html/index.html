@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="utf-8">
+    <meta id="viewport" name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <link rel="stylesheet" type="text/css" href="style.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="script.js" type="text/javascript" defer></script>
+    <title>NPC Spawner</title>
+</head>
+<body>
+    <!-- Main Container -->
+    <div id="groups-container" style="display: none;">
+        <div class="container">
+            <div class="header">
+                <h1>NPC SPAWNER</h1>
+                <i id="close-btn" class="fas fa-times"></i>
+            </div>
+            
+            <div class="form-container">
+                <!-- Name Input -->
+                <div class="form-group">
+                    <label for="name">NPC Name</label>
+                    <input type="text" id="name" name="name">
+                </div>
+                
+                <div class="form-grid">
+                    <!-- Ped Type -->
+                    <div class="form-group">
+                        <label>Ped Type</label>
+                        <button class="select-btn" id="ped-type-btn">
+                            <span>Select</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                    </div>
+                    
+                    <!-- Gender -->
+                    <div class="form-group">
+                        <label>Gender</label>
+                        <button class="select-btn" id="gender-btn">
+                            <span>Select</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                    </div>
+                    
+                    <!-- Ped Model -->
+                    <div class="form-group">
+                        <label>Ped Model</label>
+                        <button class="select-btn" id="ped-model-btn">
+                            <span>Select</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                    </div>
+                    
+                    <!-- Animation -->
+                    <div class="form-group">
+                        <label>Animation</label>
+                        <button class="select-btn" id="animation-type-btn">
+                            <span>Select</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Blip Settings -->
+                <div class="blip-settings">
+                    <div class="toggle-group">
+                        <label>Enable Map Blip</label>
+                        <label class="switch">
+                            <input type="checkbox" id="enable-blip">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="blip-icon">Blip Icon ID (1-700)</label>
+                        <input type="number" id="blip-icon" name="blip-icon" min="1" max="700" value="1">
+                    </div>
+                </div>
+                
+                <!-- Submit Button -->
+                <button class="submit-btn" id="submit-btn" onclick="submitPed()">
+                    SPAWN NPC
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <!-- Ped Type Modal -->
+    <div id="ped-type-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Select Ped Type</h2>
+                <i class="fas fa-times close-modal"></i>
+            </div>
+            <div class="modal-options">
+                <button class="option-btn" data-option="true" data-btn="ped-type-btn" data-modal="ped-type-modal">MP PED</button>
+                <button class="option-btn" data-option="false" data-btn="ped-type-btn" data-modal="ped-type-modal">SP PED</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Ped Model Modal -->
+    <div id="ped-model-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Select Ped Model</h2>
+                <i class="fas fa-times close-modal"></i>
+            </div>
+            <div class="ped-model-container">
+                <div class="ped-list-container">
+                    <div class="ped-list" id="ped-model-list">
+                    </div>
+                </div>
+                <div class="ped-preview-container">
+                    <div id="ped-preview">
+                        <div id="no-ped-selected">Select a ped from the list</div>
+                        <img id="ped-preview-image" src="" alt="Ped Preview" style="display: none;">
+                        <p id="ped-preview-name" style="display: none;"></p>
+                        <button id="ped-model-select-btn" class="option-btn" style="display: none;">Select</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Gender Modal -->
+    <div id="gender-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Select Gender</h2>
+                <i class="fas fa-times close-modal"></i>
+            </div>
+            <div class="modal-options">
+                <button class="option-btn" data-option="None" data-btn="gender-btn" data-modal="gender-modal">None</button>
+                <button class="option-btn" data-option="Male" data-btn="gender-btn" data-modal="gender-modal">Male</button>
+                <button class="option-btn" data-option="Female" data-btn="gender-btn" data-modal="gender-modal">Female</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Animation Type Modal -->
+    <div id="animation-type-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Select Animation</h2>
+                <i class="fas fa-times close-modal"></i>
+            </div>
+            <div class="animation-container">
+                <div class="animation-list-container">
+                    <div class="animation-list" id="animation-list">
+                    </div>
+                </div>
+                <div class="animation-preview-container">
+                    <div id="animation-preview">
+                        <div id="no-animation-selected">Select an animation from the list</div>
+                        <div id="animation-preview-info" style="display: none;">
+                            <p id="preview-animation-name"></p>
+                            <p id="preview-animation-dict"></p>
+                        </div>
+                        <button id="animation-select-btn" class="option-btn" style="display: none;">Select</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
