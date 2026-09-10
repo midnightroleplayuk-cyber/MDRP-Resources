@@ -76,7 +76,7 @@ Config.PlannedWars = {
         containerStartPrice = 100000,
         minimumEntry = 10000,
         extendTime = 30, -- Time in seconds of which war will be extended when player will bid in last 60 seconds. 
-        warTime = 20, -- Time in Minutes of Total time war!
+        warTime = 10, -- Time in Minutes of Total time war!
         showRewards = true, -- Show or Hide possible rewards in containers!
     }
 }
