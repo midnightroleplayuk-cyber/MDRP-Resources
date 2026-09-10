@@ -16,16 +16,16 @@ Client.Framework.Notify = function(description, notifyType)
     EndTextCommandThefeedPostTicker(false, false)
 end
 
+-- Tuff HUD integration disabled here because calling the HUD Hide()/Show()
+-- exports when opening/closing the pause menu resets the seatbelt state.
+-- The pause menu will continue to work normally; Tuff HUD will simply remain
+-- in its existing state while the pause menu is open.
 Client.Framework.HideHUD = function()
-    if GetResourceState("tuff-hud") == "started" then
-        exports["tuff-hud"]:Hide()
-    end
+    return
 end
 
 Client.Framework.ShowHUD = function()
-    if GetResourceState("tuff-hud") == "started" then
-        exports["tuff-hud"]:Show()
-    end
+    return
 end
 
 Client.Framework.GetPlayerData = function()
