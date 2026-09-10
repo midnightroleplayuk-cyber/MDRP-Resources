@@ -74,7 +74,7 @@ Config.Fuel = {
 }
 
 Config.Keys = {
-    System = 'qb-vehiclekeys', -- auto, qb-vehiclekeys, qbx_vehiclekeys, Renewed-Vehiclekeys, MrNewbVehicleKeys, wasabi_carlock, cd_garage, or none
+    System = 'qbx_vehiclekeys', -- auto, qb-vehiclekeys, qbx_vehiclekeys, Renewed-Vehiclekeys, MrNewbVehicleKeys, wasabi_carlock, cd_garage, or none
     GiveOnSpawn = true, -- Gives the requesting player keys after a job vehicle is created.
     RemoveOnReturn = true, -- Attempts to revoke keys when a company or contractor vehicle is stored.
     OwnerOnly = true -- Removes synchronized job-vehicle keys from players other than the current checkout owner.
@@ -443,7 +443,7 @@ Config.CancelPenalty = {
 -- 10. NAVIGATION AND WORLD MARKERS
 -- ============================================================================
 
-Config.UseBlip = true -- Shows the permanent dispatch terminal blip; active route blips use Config.Blips.
+Config.UseBlip = false -- Shows the permanent dispatch terminal blip; active route blips use Config.Blips.
 Config.UseMissionGPSWaypoints = true -- Draws a mission-style GPS route to contract pickup and drop-off blips.
 
 -- GTA blip sprite/color IDs are used throughout this section.
@@ -452,7 +452,7 @@ Config.DispatchBlip = {
     sprite = 477,
     color = 5,
     scale = 0.55,
-    label = 'Los Santos Freight Co.'
+    label = 'Midnight Freight Co.'
 }
 
 -- On-duty LSFC unit tracking blips.
@@ -463,7 +463,7 @@ Config.JobBlips = {
     showSelf = true, -- Includes the local player's LSFC unit blip.
     requireDuty = true, -- Hides players who are not on duty.
     shortRange = true, -- Uses GTA short-range behavior for shared unit blips.
-    label = 'LSFC Unit',
+    label = 'MTRUCK Unit',
     scale = 0.72,
 
     sprites = {
