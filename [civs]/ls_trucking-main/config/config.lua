@@ -457,10 +457,10 @@ Config.DispatchBlip = {
 
 -- On-duty LSFC unit tracking blips.
 Config.JobBlips = {
-    enabled = true,
+    enabled = false,
     updateInterval = 7500, -- Maximum time between shared unit position updates.
     minMoveDistance = 25.0, -- Movement required to send an earlier position update.
-    showSelf = true, -- Includes the local player's LSFC unit blip.
+    showSelf = false, -- Includes the local player's LSFC unit blip.
     requireDuty = true, -- Hides players who are not on duty.
     shortRange = true, -- Uses GTA short-range behavior for shared unit blips.
     label = 'MTRUCK Unit',
