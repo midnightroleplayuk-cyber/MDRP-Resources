@@ -13,7 +13,7 @@ Config = {}
 
 --- Framework: player data & money
 ---@type 'esx'|'qb'|'qbox'
-Config.Framework = 'esx'
+Config.Framework = 'qb'
 
 --- Third-eye / target on rental NPC
 ---@type 'ox_target'|'qb-target'
@@ -35,7 +35,7 @@ Config.Debug = false
 Config.Locale = 'en'
 
 --- Shown in rental UI for prices
-Config.CurrencySymbol = '$'
+Config.CurrencySymbol = '£'
 
 --============================================================================--
 -- 3. RENTAL PRICING & LIMITS                                               --
@@ -87,7 +87,7 @@ Config.GiveKeys = true
 ---| 'F_RealCarKeysSystem'| server give key event                      |
 ---| 'none'               | No keys given                              |
 ---@type string
-Config.KeysScript = 'wasabi_carlock'
+Config.KeysScript = 'qb-vehiclekeys'
 
 --============================================================================--
 -- 6. RENTAL PAPERS (ITEM)                                                  --
