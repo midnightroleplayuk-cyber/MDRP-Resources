@@ -1,0 +1,250 @@
+<!doctype html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Car Rental</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <main id="app" class="app hidden">
+        <section class="rental-console">
+            <header class="console-top">
+                <div class="brand-badge">
+                    <div>
+                        <strong id="brandLogo"></strong>
+                        <span id="brandSubtitle"></span>
+                    </div>
+                </div>
+                <div class="station-pill">
+                    <span data-i18n="stationLabel"></span>
+                    <strong id="stationLabel"></strong>
+                </div>
+                <button id="closeBtn" class="icon-btn" type="button">x</button>
+            </header>
+
+            <section class="console-body">
+                <section class="fleet-panel">
+                    <div class="fleet-hero">
+                        <div class="fleet-hero-bg">
+                            <div class="road-line"></div>
+                            <div class="road-line"></div>
+                            <div class="road-line"></div>
+                        </div>
+                        <div class="fleet-hero-content">
+                            <span class="fleet-kicker" data-i18n="availableNow"></span>
+                            <h2 class="fleet-headline" data-i18n="heroHeadline"></h2>
+                            <p class="fleet-sub" data-i18n="heroSub"></p>
+                        </div>
+                        <div class="fleet-brand-display">
+                            <img id="heroBrandImage" class="hero-brand-img hidden" alt="">
+                            <div id="heroBrandText" class="hero-brand-text">
+                                <strong id="heroBrandLogo"></strong>
+                                <span id="heroBrandSub"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="vehicleList" class="vehicle-list">
+                        <div id="emptyState" class="fleet-empty hidden">
+                            <div class="fleet-empty-icon">&#x1F697;</div>
+                            <strong data-i18n="noVehicles"></strong>
+                            <span data-i18n="noVehiclesSub"></span>
+                        </div>
+                    </div>
+                </section>
+            </section>
+        </section>
+
+        <section id="bookingModal" class="booking-modal hidden" aria-modal="true">
+            <div class="booking-window">
+                <div class="booking-titlebar">
+                    <div>
+                        <strong id="bookingBrand"></strong>
+                        <span data-i18n="rentalSelection"></span>
+                    </div>
+                    <button id="bookingCloseBtn" class="icon-btn" type="button">x</button>
+                </div>
+
+                <div class="booking-content">
+                    <div class="selected-preview">
+                        <div class="selected-image" id="selectedImageWrap">
+                            <img id="selectedImage" alt="">
+                            <div id="selectedFallback" class="vehicle-fallback"></div>
+                        </div>
+                        <div>
+                            <span class="kicker" data-i18n="selectedVehicle"></span>
+                            <h2 id="summaryVehicle"></h2>
+                            <p id="summaryDuration"></p>
+                        </div>
+                    </div>
+
+                    <div class="duration-block">
+                        <div class="panel-head compact">
+                            <div>
+                                <span class="kicker" data-i18n="rentalDuration"></span>
+                                <h3 data-i18n="chooseTime"></h3>
+                            </div>
+                        </div>
+                        <div id="durationList" class="duration-list"></div>
+                    </div>
+
+                    <div class="deal-total">
+                        <span data-i18n="total"></span>
+                        <strong id="pricePreview">0$</strong>
+                    </div>
+
+                    <div class="payment-block">
+                        <span class="kicker" data-i18n="payment"></span>
+                        <div class="payment-options">
+                            <button class="payment-option active" data-payment="cash" type="button" data-i18n="cash"></button>
+                            <button class="payment-option" data-payment="card" type="button" data-i18n="card"></button>
+                        </div>
+                    </div>
+
+                    <button id="openContractBtn" class="primary-btn" type="button" data-i18n="prepareContract"></button>
+                </div>
+            </div>
+        </section>
+
+        <section id="contractModal" class="contract-modal hidden" aria-modal="true">
+            <div class="document">
+                <div class="document-toolbar">
+                    <span data-i18n="rentalPaper"></span>
+                    <button id="contractCloseBtn" class="icon-btn dark" type="button">x</button>
+                </div>
+
+                <div id="paper" class="paper">
+                    <div id="signAnimation" class="sign-animation hidden">
+                        <svg class="paper-hand" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                            <rect x="13" y="2" width="7" height="20" rx="2" fill="#2a2a2a"/>
+                            <rect x="15.5" y="3" width="2" height="16" rx="1" fill="#555"/>
+                            <rect x="13" y="18" width="7" height="4" rx="1" fill="#1a6ab0"/>
+                            <path d="M13 22 L16.5 30 L20 22 Z" fill="#c8a040"/>
+                            <path d="M15.5 28 L16.5 31 L17.5 28 Z" fill="#888"/>
+                        </svg>
+                        <div class="ink-line"></div>
+                        <div id="animatedSignature" class="animated-signature"></div>
+                        <span data-i18n="signingAnim"></span>
+                    </div>
+
+                    <header class="paper-head">
+                        <div>
+                            <p id="docBrand"></p>
+                            <h2 data-i18n="contractTitle"></h2>
+                        </div>
+                        <div class="paper-stamp" data-i18n="stampText"></div>
+                    </header>
+
+                    <div class="paper-meta">
+                        <div>
+                            <span data-i18n="metaStation"></span>
+                            <strong id="docStation">-</strong>
+                        </div>
+                        <div>
+                            <span data-i18n="metaDate"></span>
+                            <strong id="docDate">-</strong>
+                        </div>
+                        <div>
+                            <span data-i18n="metaStatus"></span>
+                            <strong id="docStatus">-</strong>
+                        </div>
+                    </div>
+
+                    <table class="doc-table">
+                        <tbody>
+                            <tr><th data-i18n="fieldVehicle"></th><td id="docVehicle">-</td></tr>
+                            <tr><th data-i18n="fieldCategory"></th><td id="docCategory">-</td></tr>
+                            <tr><th data-i18n="fieldDuration"></th><td id="docDuration">-</td></tr>
+                            <tr><th data-i18n="fieldRate"></th><td id="docRate">-</td></tr>
+                            <tr><th data-i18n="fieldDeposit"></th><td id="docDeposit">-</td></tr>
+                            <tr><th data-i18n="fieldPayment"></th><td id="docPayment">-</td></tr>
+                            <tr><th data-i18n="fieldTotal"></th><td id="docTotal">-</td></tr>
+                        </tbody>
+                    </table>
+
+                    <p class="doc-copy" id="docCopyText"></p>
+
+                    <div class="signature-row">
+                        <label for="signatureInput" data-i18n="signatureLabel"></label>
+                        <input id="signatureInput" maxlength="48" autocomplete="off" data-i18n-placeholder="signaturePlaceholder">
+                    </div>
+
+                    <div class="paper-actions">
+                        <button id="cancelContractBtn" class="secondary-btn" type="button" data-i18n="btnBack"></button>
+                        <button id="rentBtn" class="primary-btn" type="button" data-i18n="btnSign"></button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <aside id="timer" class="rental-hud hidden">
+        <span id="timerValue">00:00</span>
+    </aside>
+
+    <aside id="outTimer" class="rental-hud out-timer hidden">
+        <span id="outTimerLabel">Outside Vehicle</span>
+        <span id="outTimerValue">00:00</span>
+    </aside>
+
+    <!-- Rental Paper Viewer (item use) — inside app so it's visible when app opens -->
+    <div id="paperViewer" class="paper-viewer-overlay hidden">
+        <div class="paper-viewer-wrap">
+            <div class="document-toolbar">
+                <span data-i18n="paperViewerTitle"></span>
+                <button id="paperViewerCloseBtn" class="icon-btn dark" type="button">x</button>
+            </div>
+            <div id="viewerPaper" class="paper paper-readonly">
+                <header class="paper-head">
+                    <div>
+                        <p id="viewerDocBrand"></p>
+                        <h2 data-i18n="paperViewerTitle"></h2>
+                    </div>
+                    <div class="paper-stamp paper-stamp-signed" data-i18n="paperSigned"></div>
+                </header>
+
+                <div class="paper-meta">
+                    <div>
+                        <span data-i18n="metaStation"></span>
+                        <strong id="viewerStation">-</strong>
+                    </div>
+                    <div>
+                        <span data-i18n="metaDate"></span>
+                        <strong id="viewerDate">-</strong>
+                    </div>
+                    <div>
+                        <span data-i18n="paperValidUntil"></span>
+                        <strong id="viewerValidUntil">-</strong>
+                    </div>
+                </div>
+
+                <table class="doc-table">
+                    <tbody>
+                        <tr><th data-i18n="fieldVehicle"></th><td id="viewerVehicle">-</td></tr>
+                        <tr><th data-i18n="fieldCategory"></th><td id="viewerCategory">-</td></tr>
+                        <tr><th data-i18n="fieldDuration"></th><td id="viewerDuration">-</td></tr>
+                        <tr><th data-i18n="fieldDeposit"></th><td id="viewerDeposit">-</td></tr>
+                        <tr><th data-i18n="fieldPayment"></th><td id="viewerPayment">-</td></tr>
+                        <tr><th data-i18n="fieldTotal"></th><td id="viewerTotal">-</td></tr>
+                        <tr><th data-i18n="paperPlate"></th><td id="viewerPlate">-</td></tr>
+                        <tr><th data-i18n="paperRenter"></th><td id="viewerRenter">-</td></tr>
+                    </tbody>
+                </table>
+
+                <p class="doc-copy" id="viewerDocCopy"></p>
+
+                <div class="signature-row signature-row-readonly">
+                    <label data-i18n="paperSignedBy"></label>
+                    <div class="signed-name" id="viewerSignature"></div>
+                </div>
+
+                <div class="paper-actions">
+                    <button id="paperViewerCloseBtn2" class="primary-btn full-width-btn" type="button" data-i18n="paperViewerClose"></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
