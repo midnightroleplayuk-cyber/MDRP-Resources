@@ -3162,16 +3162,14 @@ return {
 },
 
 -- CAR RENTAL 
-['rental_papers'] = {
-        label = 'Rental Papers',
-        weight = 10,
-        stack = false,
-        close = true,
-        description = 'Vehicle rental agreement papers',
-        client = {
-            export = 'cDev_CarRental.useRentalPapers',
-        },
-    },
+['rental_paper'] = {
+    label = 'Rental Paper',
+    weight = 10,
+    stack = false,
+    close = true,
+    description = 'A Rental Paper for your vehicle'
+},
+
 
 
 
