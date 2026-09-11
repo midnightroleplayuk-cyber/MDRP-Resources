@@ -1,0 +1,42 @@
+--[[ cDev Car Rental — Français ]]
+Locale = Locale or {}
+if Config.Locale == 'fr' then
+    Locale['ui_title'] = 'Location de véhicules'
+    Locale['ui_hours'] = 'Heures'
+    Locale['ui_rent'] = 'Louer maintenant'
+    Locale['ui_testdrive'] = 'Essai routier'
+    Locale['ui_close'] = 'Fermer'
+    Locale['ui_duration'] = 'Durée'
+    Locale['ui_hour_short'] = 'h'
+    Locale['ui_hour_one'] = '1 heure'
+    Locale['ui_hours_fmt'] = '%s heures'
+    Locale['ui_deposit_fmt'] = '%s caution'
+    Locale['ui_hourly_fmt'] = '+%s/h'
+    Locale['ui_per_hr_fmt'] = '%s/h'
+    Locale['ui_sign_modal_title'] = 'Contrat de location'
+    Locale['ui_sign_modal_sub'] = 'Signez ci-dessous puis confirmez pour payer.'
+    Locale['ui_sign_here'] = 'Signez ici à la souris ou au doigt'
+    Locale['ui_clear_signature'] = 'Effacer'
+    Locale['ui_confirm_rental'] = 'Confirmer et payer'
+    Locale['ui_cancel'] = 'Annuler'
+    Locale['ui_plate_pending'] = 'Attribuée au retrait'
+    Locale['notify_rented'] = 'Vous avez loué un %s !'
+    Locale['notify_notenough'] = "Vous n'avez pas assez d'argent !"
+    Locale['notify_returned'] = 'Véhicule rendu. Merci !'
+    Locale['notify_testdrive'] = 'Essai : %s — %d secondes.'
+    Locale['notify_testdrive_end'] = 'Essai terminé.'
+    Locale['notify_testdrive_time'] = "Le temps d'essai est écoulé."
+    Locale['notify_testdrive_exit'] = "Essai terminé : vous avez quitté le véhicule."
+    Locale['notify_already_renting'] = 'Vous avez déjà une location !'
+    Locale['notify_already_testdriving'] = 'Vous êtes déjà en essai !'
+    Locale['notify_spawn_failed'] = 'Impossible de faire apparaître le véhicule.'
+    Locale['notify_limit'] = 'Limite de locations atteinte !'
+    Locale['notify_no_rental'] = "Vous n'avez pas de véhicule loué."
+    Locale['notify_wrong_location'] = "Retour à l'agence d'origine uniquement."
+    Locale['notify_sign_before_rent'] = 'Vous devez signer avant que je vous loue ce véhicule !'
+    Locale['notify_signature_required'] = 'Veuillez signer le contrat de location.'
+    Locale['target_label'] = 'Location auto'
+    Locale['target_return'] = 'Rendre le véhicule'
+    Locale['debug_vehicle_spawned'] = 'Véhicule créé : %s'
+    Locale['debug_vehicle_deleted'] = 'Véhicule supprimé : %s'
+end
