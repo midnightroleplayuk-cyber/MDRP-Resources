@@ -43,7 +43,7 @@ Config.CurrencySymbol = '£'
 
 Config.MinRentalHours = 0.15
 Config.MaxRentalHours = 24
-Config.DefaultRentalHours = 1
+Config.DefaultRentalHours = 0.15
 
 --- Max concurrent rentals per player (server-side)
 Config.EnableRentalLimit = true
