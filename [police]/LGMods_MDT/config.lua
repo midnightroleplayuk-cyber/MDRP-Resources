@@ -4,7 +4,7 @@ Config.Debug = false -- set to true to enable debug messages in console and serv
 
 Config.UseLGModsANPR = true  -- if you use LGMods_ANPR and want the mdt to work with it, set to true, if not, set to false
 
-Config.UseLGModsDispatch = true -- if you use LGMods_Dispatch and want to display officer callsigns instead of random IDs, set to true (of course the dispatch system hasn't released yet, so keep this as false or your script may not work.)
+Config.UseLGModsDispatch = false -- if you use LGMods_Dispatch and want to display officer callsigns instead of random IDs, set to true (of course the dispatch system hasn't released yet, so keep this as false or your script may not work.)
 
 Config.UseLGModsBanking = true -- if you use LGMods Banking system, set to true to deposit fines into LGMods business accounts if false the fines won't be deposited into the business accounts.
 

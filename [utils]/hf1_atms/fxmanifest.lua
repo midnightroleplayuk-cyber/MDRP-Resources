@@ -2,7 +2,7 @@ fx_version 'cerulean'
 game 'gta5'
 
 name 'hf1_atms'
-description 'ATM Targeting for LGMNods Banking.'
+description 'ATM Targeting for LGMods Banking.'
 version '1.0.0'
 
 client_script 'client.lua'
