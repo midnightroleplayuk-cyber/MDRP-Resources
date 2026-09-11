@@ -7,7 +7,7 @@ Config.Target      = 'auto'      -- auto | ox_target | qb-target | qtarget | non
 Config.VehicleKeys = 'auto'      -- auto | none | qb-vehiclekeys | qbx_vehiclekeys | qs-vehiclekeys | cd_garage | wasabi_carlock | Renewed-Vehiclekeys | t1ger_keys | mk_vehiclekeys | xd_locksystem | VehicleKeyChain
 
 Config.Locale            = 'en'            -- Locale file to load: de or en
-Config.Currency          = '$'             -- Currency symbol shown in the UI
+Config.Currency          = '£'             -- Currency symbol shown in the UI
 Config.RentalPaperItem   = 'rental_paper'  -- Inventory item name for the rental paper
 
 -- Fraction of the deposit that is refunded on vehicle return.
@@ -60,7 +60,7 @@ Config.UIStyles = {
     escalera = {
         label      = 'Escalera',
         subtitle   = 'Rent-A-Car',
-        accent     = '#ffd91f',
+        accent     = '#400350',
         accentText = '#111111',
         logo       = 'Escalera',
         logoImage  = 'img/logos/escaleralogo.png',
