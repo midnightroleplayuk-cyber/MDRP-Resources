@@ -41,7 +41,7 @@ Config.CurrencySymbol = '£'
 -- 3. RENTAL PRICING & LIMITS                                               --
 --============================================================================--
 
-Config.MinRentalHours = 1
+Config.MinRentalHours = 0.15
 Config.MaxRentalHours = 24
 Config.DefaultRentalHours = 1
 
