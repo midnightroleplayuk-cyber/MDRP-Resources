@@ -8,7 +8,7 @@ Config.LicenseWhitelist = {
 }
 
 Config.CommandName = "mhsadmin"
-Config.Permission = "ambulance" -- who can use the command
+Config.Permission = "admin" -- who can use the command
 Config.AdminBypass = false -- if true, admins bypass all rankings, duty, etc. (mainly for config/testing)
 Config.ShowNotifications = true -- false = disable all internal notifications
 Config.EnableBlurEffect = true 
