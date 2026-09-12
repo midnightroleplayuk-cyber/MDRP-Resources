@@ -30,6 +30,10 @@
   const panel = document.createElement('div');
   panel.id = 'mm-secondary-panel';
   panel.innerHTML = `
+    <div class="sec-overlay-row">
+      <div><span class="sec-overlay-title">RADIO OVERLAY</span><span class="sec-overlay-sub">Show Primary / Secondary member list</span></div>
+      <label class="sec-switch"><input class="sec-overlay-toggle" type="checkbox"><span></span></label>
+    </div>
     <div class="sec-title"><span>SECONDARY</span><span class="sec-current">OFF</span></div>
     <div class="sec-row">
       <input class="sec-input" type="number" min="1" step="0.01" placeholder="Frequency" />
@@ -52,6 +56,7 @@
   document.body.appendChild(roster);
 
   const current = panel.querySelector('.sec-current');
+  const overlayToggle = panel.querySelector('.sec-overlay-toggle');
   const input = panel.querySelector('.sec-input');
   const join = panel.querySelector('.sec-join');
   const leave = panel.querySelector('.sec-leave');
@@ -111,6 +116,7 @@
   function render() {
     const on = Number(state.channel) > 0;
     current.textContent = on ? `${state.channel} MHz` : 'OFF';
+    overlayToggle.checked = !!state.overlayEnabled;
     panel.classList.toggle('show', !!state.visible && panel.dataset.docked === '1');
     leave.disabled = !on;
     renderRoster();
@@ -126,6 +132,11 @@
   join.addEventListener('click', joinSecondary);
   input.addEventListener('keydown', e => { if (e.key === 'Enter') joinSecondary(); });
   leave.addEventListener('click', () => post('leaveSecondary'));
+  overlayToggle.addEventListener('change', () => {
+    state.overlayEnabled = overlayToggle.checked === true;
+    post('showPlayerList', state.overlayEnabled);
+    renderRoster();
+  });
 
   // Drag the persistent roster only while the handheld radio UI is open. Position is
   // stored through mm_radio's existing player-list position callback.
