@@ -31,14 +31,21 @@ function Radio:SetSecondaryRadio(channel, silent)
         return false
     end
 
+    -- Set the local channel before awaiting the server. The server immediately sends
+    -- the membership snapshot on a successful join; setting this first ensures the
+    -- secondaryListUpdate handler accepts that initial snapshot instead of dropping it
+    -- until somebody transmits. Roll back if the server rejects the join.
+    local previousChannel = self.SecondaryRadioChannel
+    self.SecondaryRadioChannel = channel
+    self.SecondaryRadioMembers = {}
+
     local allowed, reason = lib.callback.await('mm_radio:server:setSecondaryRadio', false, channel)
     if not allowed then
+        self.SecondaryRadioChannel = previousChannel or 0
         if not silent then self:Notify(reason or 'Unable to join secondary channel') end
         return false
     end
 
-    self.SecondaryRadioChannel = channel
-    self.SecondaryRadioMembers = {}
     self:SendSvelteMessage('secondaryChannelChanged', { channel = channel, talking = false })
     self.userData[self.identifier].secondaryChannel = channel
     SetResourceKvp('radioSettings2', json.encode(self.userData))

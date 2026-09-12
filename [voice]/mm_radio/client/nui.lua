@@ -83,6 +83,8 @@ end)
 RegisterNUICallback('showPlayerList', function(data, cb)
     Radio.userData[Radio.identifier].playerlist.show = data
     SetResourceKvp('radioSettings2', json.encode(Radio.userData))
+    -- Keep the custom dual-channel roster tied to the stock overlay setting.
+    Radio:SendSvelteMessage('overlayVisibilityChanged', { show = data == true })
     cb("ok")
 end)
 

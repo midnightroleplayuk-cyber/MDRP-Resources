@@ -1,19 +1,23 @@
 (() => {
   const RESOURCE = typeof GetParentResourceName === 'function' ? GetParentResourceName() : 'mm_radio';
   let state = {
-    visible: false, channel: 0, primary: 0, talking: false, maxChannel: 1000,
-    primaryMembers: {}, secondaryMembers: {}
+    visible: false,
+    overlayEnabled: true,
+    channel: 0,
+    primary: 0,
+    talking: false,
+    maxChannel: 1000,
+    primaryMembers: {},
+    secondaryMembers: {},
+    rosterCoords: null
   };
 
   const post = (name, data = {}) => fetch(`https://${RESOURCE}/${name}`, {
     method: 'POST', headers: {'Content-Type':'application/json; charset=UTF-8'}, body: JSON.stringify(data)
   }).catch(() => {});
 
-  const hud = document.createElement('div');
-  hud.id = 'mm-secondary-hud';
-  hud.innerHTML = '<span class="tag">SEC</span><span class="freq">OFF</span>';
-  document.body.appendChild(hud);
-
+  // Secondary tuning controls. The duplicate frequency HUD was intentionally removed;
+  // pma-voice already shows the active secondary frequency in its bottom-right voice HUD.
   const panel = document.createElement('div');
   panel.id = 'mm-secondary-panel';
   panel.innerHTML = `
@@ -25,7 +29,6 @@
     <button class="sec-leave">DISCONNECT SECONDARY</button>`;
   document.body.appendChild(panel);
 
-  // Persistent dual-channel roster. This intentionally does not depend on anyone talking.
   const roster = document.createElement('div');
   roster.id = 'mm-dual-radio-roster';
   roster.innerHTML = `
@@ -39,7 +42,6 @@
     </section>`;
   document.body.appendChild(roster);
 
-  const freq = hud.querySelector('.freq');
   const current = panel.querySelector('.sec-current');
   const input = panel.querySelector('.sec-input');
   const join = panel.querySelector('.sec-join');
@@ -74,24 +76,29 @@
     }
   }
 
+  function applyRosterPosition() {
+    if (state.rosterCoords && Number.isFinite(Number(state.rosterCoords.x)) && Number.isFinite(Number(state.rosterCoords.y))) {
+      roster.style.right = `${Math.max(0, Number(state.rosterCoords.x))}px`;
+      roster.style.top = `${Math.max(0, Number(state.rosterCoords.y))}px`;
+    }
+  }
+
   function renderRoster() {
     const hasPrimary = Number(state.primary) > 0;
     const hasSecondary = Number(state.channel) > 0;
-    // Stay visible whenever the player is tuned to either channel; never gate it on PTT/talking.
-    roster.classList.toggle('show', hasPrimary || hasSecondary);
+    roster.classList.toggle('show', !!state.overlayEnabled && (hasPrimary || hasSecondary));
+    roster.classList.toggle('editable', !!state.visible && !!state.overlayEnabled);
     primaryFreq.textContent = hasPrimary ? `${state.primary} MHz` : 'OFF';
     secondaryFreq.textContent = hasSecondary ? `${state.channel} MHz` : 'OFF';
     renderMembers(primaryMembers, hasPrimary ? state.primaryMembers : {});
     renderMembers(secondaryMembers, hasSecondary ? state.secondaryMembers : {});
+    applyRosterPosition();
   }
 
   function render() {
     const on = Number(state.channel) > 0;
-    freq.textContent = on ? `${state.channel} MHz` : 'OFF';
     current.textContent = on ? `${state.channel} MHz` : 'OFF';
-    hud.classList.toggle('active', on);
-    hud.classList.toggle('talking', !!state.talking);
-    panel.classList.toggle('show', !!state.visible);
+    panel.classList.toggle('show', !!state.visible && panel.dataset.docked === '1');
     leave.disabled = !on;
     renderRoster();
   }
@@ -107,30 +114,65 @@
   input.addEventListener('keydown', e => { if (e.key === 'Enter') joinSecondary(); });
   leave.addEventListener('click', () => post('leaveSecondary'));
 
-  function positionPanel() {
-    if (!state.visible) return;
-    const bg = [...document.querySelectorAll('img')].find(i => i.alt === 'bg');
-    const shell = bg && bg.parentElement;
-    if (!shell) return;
-    const r = shell.getBoundingClientRect();
-    const scale = Math.max(0.5, Math.min(2.5, r.width / 326));
-    // Keep the secondary controls outside the handheld radio so they never
-    // cover the built-in Disconnect / Radio / Members / Settings controls.
-    const panelWidth = 176;
-    const scaledWidth = panelWidth * scale;
-    let left = r.right + (10 * scale);
-    // If the radio is already tight against the right edge, dock the panel
-    // to the left of the radio instead of covering it.
-    if (left + scaledWidth > window.innerWidth - 8) {
-      left = r.left - scaledWidth - (10 * scale);
+  // Drag the persistent roster only while the handheld radio UI is open. Position is
+  // stored through mm_radio's existing player-list position callback.
+  let dragging = false, startX = 0, startY = 0, startRight = 0, startTop = 0;
+  roster.addEventListener('mousedown', e => {
+    if (!state.visible || !state.overlayEnabled || e.button !== 0) return;
+    dragging = true;
+    startX = e.clientX;
+    startY = e.clientY;
+    const r = roster.getBoundingClientRect();
+    startRight = window.innerWidth - r.right;
+    startTop = r.top;
+    e.preventDefault();
+  });
+  window.addEventListener('mousemove', e => {
+    if (!dragging) return;
+    const nextRight = Math.max(0, Math.min(window.innerWidth - roster.offsetWidth, startRight - (e.clientX - startX)));
+    const nextTop = Math.max(0, Math.min(window.innerHeight - roster.offsetHeight, startTop + (e.clientY - startY)));
+    state.rosterCoords = { x: nextRight, y: nextTop };
+    applyRosterPosition();
+  });
+  window.addEventListener('mouseup', () => {
+    if (!dragging) return;
+    dragging = false;
+    if (state.rosterCoords) post('updatePlayerListPosition', state.rosterCoords);
+  });
+
+  function findSettingsBody() {
+    const checkboxes = [...document.querySelectorAll('input[type="checkbox"]')];
+    for (const box of checkboxes) {
+      let node = box.parentElement;
+      for (let depth = 0; node && depth < 8; depth++, node = node.parentElement) {
+        const cbCount = node.querySelectorAll('input[type="checkbox"]').length;
+        const rangeCount = node.querySelectorAll('input[type="range"]').length;
+        if (cbCount >= 3 && rangeCount >= 1) {
+          return node.parentElement || node;
+        }
+      }
     }
-    panel.style.left = `${Math.max(8, left)}px`;
-    panel.style.top = `${r.top + 330 * scale}px`;
-    panel.style.width = `${panelWidth}px`;
-    panel.style.transformOrigin = 'top left';
-    panel.style.transform = `scale(${scale})`;
+    return null;
   }
-  setInterval(positionPanel, 100);
+
+  function dockPanelIntoSettings() {
+    if (!state.visible) {
+      panel.dataset.docked = '0';
+      render();
+      return;
+    }
+    const settingsBody = findSettingsBody();
+    if (!settingsBody) {
+      panel.dataset.docked = '0';
+      render();
+      return;
+    }
+    if (panel.parentElement !== settingsBody) settingsBody.appendChild(panel);
+    panel.dataset.docked = '1';
+    render();
+  }
+
+  setInterval(dockPanelIntoSettings, 200);
 
   window.addEventListener('message', (e) => {
     const msg = e.data || {};
@@ -141,12 +183,23 @@
       state.primary = Number(data.channel) || 0;
       state.channel = Number(data.secondaryChannel) || 0;
       state.maxChannel = Number(data.maxChannel) || state.maxChannel;
-      render(); setTimeout(positionPanel, 50);
+      if (data.userData?.playerlist) {
+        state.overlayEnabled = data.userData.playerlist.show === true;
+        state.rosterCoords = data.userData.playerlist.coords || state.rosterCoords;
+      }
+      render(); setTimeout(dockPanelIntoSettings, 50);
     } else if (action === 'setRadioHide') {
       state.visible = false; render();
     } else if (action === 'updateRadio') {
       state.primary = Number(data.channel) || 0;
       if (data.secondaryChannel !== undefined) state.channel = Number(data.secondaryChannel) || 0;
+      if (data.userData?.playerlist) {
+        state.overlayEnabled = data.userData.playerlist.show === true;
+        state.rosterCoords = data.userData.playerlist.coords || state.rosterCoords;
+      }
+      render();
+    } else if (action === 'overlayVisibilityChanged') {
+      state.overlayEnabled = data.show === true;
       render();
     } else if (action === 'secondaryChannelChanged') {
       state.channel = Number(data.channel) || 0;
