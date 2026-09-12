@@ -114,9 +114,19 @@
     if (!shell) return;
     const r = shell.getBoundingClientRect();
     const scale = Math.max(0.5, Math.min(2.5, r.width / 326));
-    panel.style.left = `${r.left + 75 * scale}px`;
-    panel.style.top = `${r.top + 515 * scale}px`;
-    panel.style.width = `${176 * scale}px`;
+    // Keep the secondary controls outside the handheld radio so they never
+    // cover the built-in Disconnect / Radio / Members / Settings controls.
+    const panelWidth = 176;
+    const scaledWidth = panelWidth * scale;
+    let left = r.right + (10 * scale);
+    // If the radio is already tight against the right edge, dock the panel
+    // to the left of the radio instead of covering it.
+    if (left + scaledWidth > window.innerWidth - 8) {
+      left = r.left - scaledWidth - (10 * scale);
+    }
+    panel.style.left = `${Math.max(8, left)}px`;
+    panel.style.top = `${r.top + 330 * scale}px`;
+    panel.style.width = `${panelWidth}px`;
     panel.style.transformOrigin = 'top left';
     panel.style.transform = `scale(${scale})`;
   }
