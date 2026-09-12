@@ -1,0 +1,1387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PLT Departments Manager</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="boss_menu.css">
+    <style>
+        /* Keep boss-menu text and surfaces crisp; only the dock retains backdrop blur. */
+        #boss-menu-container *,
+        #boss-menu-container *::before,
+        #boss-menu-container *::after {
+            backdrop-filter: none !important;
+            -webkit-backdrop-filter: none !important;
+        }
+
+        #boss-menu-container .mac-dock {
+            backdrop-filter: blur(15px) saturate(1.5) !important;
+            -webkit-backdrop-filter: blur(15px) saturate(1.5) !important;
+        }
+    </style>
+    <link rel="stylesheet" href="inventory.css">
+    <link rel="stylesheet" href="bag_inventory.css">
+    <link rel="stylesheet" href="diagnosis.css">
+    <link rel="stylesheet" href="dispatch.css">
+    <link rel="stylesheet" href="deathscreen.css">
+    <link rel="stylesheet" href="pharmacy.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@300;400;500;600;700&family=VT323&family=Oswald:wght@400;700&family=Inter:wght@300;400;500;600;700;800&family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div id="app" class="hidden">
+        <div class="top-bar">
+            <div class="header-left">
+                <span class="title">EMS & FIRE <span class="highlight">MANAGER</span></span>
+            </div>
+            <div class="header-right">
+                <button id="import-btn"><i class="fas fa-file-import"></i> Import</button>
+                <button id="export-btn"><i class="fas fa-file-export"></i> Export</button>
+                <button id="save-btn" class="primary"><i class="fas fa-save"></i> Save and reload</button>
+                <button id="close-btn"><i class="fas fa-times"></i></button>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div id="departments-tab" class="tab-view active">
+                <div class="sidebar">
+                    <div class="sidebar-header">
+                        <div class="sidebar-title">
+                            <span class="dept-text">EMERGENCY</span> <span class="library-text">LIBRARY</span>
+                            <i class="fas fa-book-open title-icon"></i>
+                        </div>
+                        <div class="sidebar-description">Manage and deploy pre-configured departments</div>
+                    </div>
+                    <div class="search-container">
+                        <input type="text" placeholder="Search here...">
+                        <i class="fas fa-search"></i>
+                    </div>
+                    
+                    <div class="node-categories">
+                        <div class="category active">
+                            <div class="category-header">DEPARTMENTS <i class="fas fa-chevron-up"></i></div>
+                            <div class="category-content">
+                                <div class="node-list">
+                                    <div class="node-item" data-type="department" data-id="ambulance" data-label="Ambulance"><i class="fas fa-ambulance"></i> Ambulance</div>
+                                    <div class="node-item" data-type="department" data-id="fire" data-label="Fire Dept"><i class="fas fa-fire-extinguisher"></i> Fire Dept</div>
+                                    <div class="node-item" data-type="department" data-id="hospital" data-label="Hospital"><i class="fas fa-hospital"></i> Hospital</div>
+                                    <div class="node-item" data-type="department" data-id="rescue" data-label="Rescue"><i class="fas fa-life-ring"></i> Rescue</div>
+                                    <div class="node-item" data-type="department" data-label="Custom Service"><i class="fas fa-plus-circle"></i> Custom Service</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="category">
+                            <div class="category-header">RANKS & PERMS <i class="fas fa-chevron-down"></i></div>
+                            <div class="category-content hidden">
+                                <div class="node-list">
+                                    <div class="node-item" data-type="rank"><i class="fas fa-id-badge"></i> Rank Node</div>
+                                    <div class="node-item" data-type="permission"><i class="fas fa-key"></i> Permission Node</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="category">
+                            <div class="category-header">LOCATIONS <i class="fas fa-chevron-down"></i></div>
+                            <div class="category-content hidden">
+                                <div class="node-list">
+                                    <div class="node-item" data-type="location"><i class="fas fa-map-marker-alt"></i> Location Node</div>
+                                    <div class="node-item" data-type="wardrobe"><i class="fas fa-tshirt"></i> Wardrobe Node</div>
+                                    <div class="node-item" data-type="inventory"><i class="fas fa-box-open"></i> Inventory Node</div>
+                                    <div class="node-item" data-type="boss_menu"><i class="fas fa-briefcase"></i> Boss Menu</div>
+                                    <div class="node-item" data-type="vehicle"><i class="fas fa-car-side"></i> Vehicle Node</div>
+                                    <div class="node-item" data-type="helipad"><i class="fas fa-helicopter"></i> Helipad Node</div>
+                                    <div class="node-item" data-type="pharmacy"><i class="fas fa-prescription-bottle-medical"></i> Pharmacy Node</div>
+                                    <div class="node-item" data-type="xray"><i class="fas fa-x-ray"></i> X-Ray Node</div>
+                                    <div class="node-item" data-type="check_in"><i class="fas fa-user-md"></i> Check-in Node</div>
+                                    <div class="node-item" data-type="ceiling_monitor"><i class="fas fa-tv"></i> Vitals Monitor</div>
+                                    <div class="node-item" data-type="eta_arrival"><i class="fas fa-desktop"></i> ETA Arrival</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="category">
+                            <div class="category-header">OTHER <i class="fas fa-chevron-down"></i></div>
+                            <div class="category-content hidden">
+                                <div class="node-list">
+                                    <div class="node-item" data-type="door"><i class="fas fa-door-open"></i> Door Node</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="category">
+                            <div class="category-header">DEPT PRE-SET <i class="fas fa-chevron-down"></i></div>
+                            <div class="category-content hidden">
+                                <div class="node-list">
+                                    <div class="node-item" data-type="preset" data-id="ems_full"><i class="fas fa-building-circle-check"></i> EMS Full Setup</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="canvas-container">
+                    <div id="grid-layer"></div>
+                    <div id="canvas" class="canvas">
+                        <div id="canvas-content">
+                    <svg id="connections-svg"></svg>
+                </div>
+                    </div>
+                </div>
+
+                <div class="inspector">
+                    <div class="inspector-header">
+                        <span id="inspector-title">NODE SETTINGS</span>
+                        <i class="fas fa-times" id="close-inspector"></i>
+                    </div>
+                    <div id="inspector-content"></div>
+                    <div class="inspector-footer">
+                        <button id="delete-node-btn" class="danger"><i class="fas fa-trash"></i> Delete Node</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="members-tab" class="tab-view hidden">
+                <div id="members-view">
+                    <div class="members-header">
+                        <h2>Member Management</h2>
+                        <p>Assign players to created departments and manage their ranks.</p>
+                    </div>
+                    <div class="members-container">
+                        <div class="players-list-section">
+                            <div class="section-header">
+                                <input type="text" id="player-search" placeholder="Search players by name or ID...">
+                                <button id="refresh-players-btn"><i class="fas fa-sync-alt"></i></button>
+                            </div>
+                            <div id="players-list"></div>
+                        </div>
+                        <div class="member-details-section">
+                            <div id="selected-player-info" class="empty-selection">
+                                <i class="fas fa-user-plus"></i>
+                                <p>Select a player to manage their department</p>
+                            </div>
+                            <div id="member-editor" class="hidden" style="display: none;">
+                                <div class="editor-header">
+                                    <div class="player-avatar"><i class="fas fa-user"></i></div>
+                                    <div class="player-meta">
+                                        <h3 id="edit-player-name">Player Name</h3>
+                                        <span id="edit-player-id">ID: 1</span>
+                                    </div>
+                                </div>
+                                <div class="editor-content">
+                                    <div class="field">
+                                        <label>Department</label>
+                                        <select id="hire-dept-select"></select>
+                                    </div>
+                                    <div class="field">
+                                        <label>Rank / Grade</label>
+                                        <select id="hire-rank-select"></select>
+                                    </div>
+                                    <div class="editor-actions">
+                                        <button id="confirm-hire-btn" class="primary-btn">Update Member</button>
+                                        <button id="fire-member-btn" class="danger-btn">Fire from Department</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="global-footer">
+            <div class="tabs-container">
+                <div class="tab active" data-tab="departments">DEPARTMENTS</div>
+                <div class="tab" data-tab="members">MEMBERS</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- THE PC: Integrated 2025 iMac Boss Menu -->
+    <div id="boss-menu-container" style="display: none;">
+        <div class="macintosh-chassis">
+            <div class="screen-area">
+                <div class="crt-screen">
+                    <!-- MacOS Environment -->
+                    <div class="macos-desktop">
+                        <div class="finder-bar">
+                            <div class="pear-logo-small"></div>
+                            <div class="finder-items">
+                                <span class="active" id="active-app-name">Desktop</span>
+                                <span>File</span>
+                                <span>Edit</span>
+                                <span>View</span>
+                                <span>Window</span>
+                                <span>Help</span>
+                            </div>
+                            <div class="system-stats" style="margin-left: auto; font-weight: 500; font-size: 12px; display: flex; gap: 15px; align-items: center;">
+                                <i class="fas fa-wifi"></i>
+                                <i class="fas fa-battery-full"></i>
+                                <span id="mac-clock">Fri Jan 2  12:00 PM</span>
+                            </div>
+                        </div>
+
+                        <!-- Modern Dock -->
+                        <div class="mac-dock-container">
+                            <div class="mac-dock">
+                                <div class="dock-item" id="dock-dept" onclick="window.openMacApp('dept_manager')" title="Departments">
+                                    <div class="dock-icon" style="background: none; box-shadow: none;">
+                                        <img src="img/departments.png" style="width: 100%; height: 100%; object-fit: contain;">
+                                    </div>
+                                    <div class="dock-label">Departments</div>
+                                </div>
+                                <div class="dock-item" id="dock-members" onclick="window.openMacApp('member_db')" title="Members">
+                                    <div class="dock-icon" style="background: none; box-shadow: none;">
+                                        <img src="img/members.png" style="width: 100%; height: 100%; object-fit: contain;">
+                                    </div>
+                                    <div class="dock-label">Members</div>
+                                </div>
+                                <div class="dock-item" id="dock-finances" onclick="window.openMacApp('finances')" title="Finances">
+                                    <div class="dock-icon" style="background: none; box-shadow: none;">
+                                        <img src="img/finances.png" style="width: 100%; height: 100%; object-fit: contain;">
+                                    </div>
+                                    <div class="dock-label">Finances</div>
+                                </div>
+                                <div class="dock-item" id="dock-safari" onclick="window.openMacApp('safari')" title="Safari">
+                                    <div class="dock-icon" style="background: #ffffff; border-radius: 12px; padding: 4px;">
+                                        <img src="img/safari.png" style="width: 100%; height: 100%; object-fit: contain;">
+                                    </div>
+                                    <div class="dock-label">Safari</div>
+                                </div>
+                                <div class="dock-item" id="dock-calculator" onclick="window.openMacApp('calculator')" title="Calculator">
+                                    <div class="dock-icon" style="background: none; box-shadow: none;">
+                                        <img src="img/calculator.png" style="width: 100%; height: 100%; object-fit: contain;">
+                                    </div>
+                                    <div class="dock-label">Calculator</div>
+                                </div>
+                                <div class="dock-item" id="dock-mail" onclick="window.openMacApp('mail')" title="Mail">
+                                    <div class="dock-icon" style="background: none; box-shadow: none;">
+                                        <img src="img/mail.png" style="width: 100%; height: 100%; object-fit: contain;">
+                                    </div>
+                                    <div class="dock-label">Mail</div>
+                                </div>
+                                <div class="dock-item" id="dock-clock" onclick="window.openMacApp('clock')" title="Clock">
+                                    <div class="dock-icon" style="background: #000000; border-radius: 12px; position: relative;">
+                                        <div class="clock-face-dock">
+                                            <div class="clock-hand-dock hour"></div>
+                                            <div class="clock-hand-dock minute"></div>
+                                            <div class="clock-hand-dock second"></div>
+                                        </div>
+                                    </div>
+                                    <div class="dock-label">Clock</div>
+                                </div>
+                                <div class="dock-item" id="dock-settings" onclick="window.openMacApp('settings')" title="Settings">
+                                    <div class="dock-icon" style="background: linear-gradient(135deg, #cacad3, #a9a9b1); border-radius: 12px; padding: 2px;">
+                                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="width: 100%; height: 100%;"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M12 18C15.3137 18 18 15.3137 18 12C18 8.68629 15.3137 6 12 6C8.68629 6 6 8.68629 6 12C6 15.3137 8.68629 18 12 18Z" stroke="#6c6c72" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path> <path d="M18 12H12M9 6.80273L12 12M12 12L9 17.1973" stroke="#6c6c72" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path> <path d="M12 19C15.866 19 19 15.866 19 12C19 8.13401 15.866 5 12 5C8.13401 5 5 8.13401 5 12C5 15.866 8.13401 19 12 19Z" stroke="#6c6c72" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="1 3"></path> <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="#6c6c72" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path> <path d="M12 15C13.6569 15 15 13.6569 15 12C15 10.3431 13.6569 9 12 9C10.3431 9 9 10.3431 9 12C9 13.6569 10.3431 15 12 15Z" stroke="#6c6c72" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>
+                                    </div>
+                                    <div class="dock-label">Settings</div>
+                                </div>
+                                <div class="dock-separator"></div>
+                                <div class="dock-item trash" title="Bin">
+                                    <div class="dock-icon" style="background: none; box-shadow: none;">
+                                        <img src="img/bin.png" style="width: 100%; height: 100%; object-fit: contain;">
+                                    </div>
+                                    <div class="dock-label">Bin</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- OS Window Layer -->
+                        <div id="mac-window-dept" class="mac-window hidden" data-app="Departments" style="left: 50px; top: 50px;">
+                            <div class="win-header">
+                                <div class="win-close" onclick="window.closeMacApp('dept')"></div>
+                                <div class="win-title" id="win-title-dept">Department Roster</div>
+                            </div>
+                            <div class="win-content">
+                                <div id="mac-app-container-dept"></div>
+                            </div>
+                        </div>
+
+                        <div id="mac-window-members" class="mac-window hidden" data-app="Records" style="left: 100px; top: 100px;">
+                            <div class="win-header">
+                                <div class="win-close" onclick="window.closeMacApp('members')"></div>
+                                <div class="win-title" id="win-title-members">Personnel Records</div>
+                            </div>
+                            <div class="win-content">
+                                <div id="mac-app-container-members"></div>
+                            </div>
+                        </div>
+
+                        <div id="mac-window-finances" class="mac-window hidden" data-app="Finances" style="left: 150px; top: 150px;">
+                            <div class="win-header">
+                                <div class="win-close" onclick="window.closeMacApp('finances')"></div>
+                                <div class="win-title" id="win-title-finances">Department Finances</div>
+                            </div>
+                            <div class="win-content">
+                                <div id="mac-app-container-finances"></div>
+                            </div>
+                        </div>
+
+                        <div id="mac-window-safari" class="mac-window hidden" data-app="Safari">
+                            <div class="win-header safari-header">
+                                <div class="win-close" onclick="window.closeMacApp('safari')"></div>
+                                <div class="safari-toolbar">
+                                    <div class="safari-nav-btns">
+                                        <i class="fas fa-chevron-left"></i>
+                                        <i class="fas fa-chevron-right"></i>
+                                    </div>
+                                    <div class="safari-search-bar">
+                                        <i class="fas fa-lock"></i>
+                                        <span id="safari-url-text">dept.pear.os/portal</span>
+                                        <i class="fas fa-rotate-right"></i>
+                                    </div>
+                                    <div class="safari-actions">
+                                        <i class="fas fa-share-nodes"></i>
+                                        <i class="fas fa-plus"></i>
+                                        <i class="fas fa-copy"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="safari-tab-bar" id="safari-tabs">
+                                <!-- Tabs will be rendered here by JS -->
+                            </div>
+                            <div class="win-content">
+                                <div id="mac-app-container-safari"></div>
+                            </div>
+                        </div>
+
+                        <div id="mac-window-calculator" class="mac-window hidden" data-app="Calculator" style="left: 200px; top: 100px; width: 232px; height: 320px;">
+                            <div class="win-header">
+                                <div class="win-close" onclick="window.closeMacApp('calculator')"></div>
+                                <div class="win-title">Calculator</div>
+                            </div>
+                            <div class="win-content">
+                                <div id="mac-app-container-calculator" class="calculator-app">
+                                    <div class="calc-display" id="calc-display">0</div>
+                                    <div class="calc-buttons">
+                                        <button class="calc-btn gray" onclick="window.calcInput('AC')">AC</button>
+                                        <button class="calc-btn gray" onclick="window.calcInput('+/-')">+/-</button>
+                                        <button class="calc-btn gray" onclick="window.calcInput('%')">%</button>
+                                        <button class="calc-btn orange" onclick="window.calcInput('/')">÷</button>
+                                        
+                                        <button class="calc-btn dark-gray" onclick="window.calcInput('7')">7</button>
+                                        <button class="calc-btn dark-gray" onclick="window.calcInput('8')">8</button>
+                                        <button class="calc-btn dark-gray" onclick="window.calcInput('9')">9</button>
+                                        <button class="calc-btn orange" onclick="window.calcInput('*')">×</button>
+                                        
+                                        <button class="calc-btn dark-gray" onclick="window.calcInput('4')">4</button>
+                                        <button class="calc-btn dark-gray" onclick="window.calcInput('5')">5</button>
+                                        <button class="calc-btn dark-gray" onclick="window.calcInput('6')">6</button>
+                                        <button class="calc-btn orange" onclick="window.calcInput('-')">−</button>
+                                        
+                                        <button class="calc-btn dark-gray" onclick="window.calcInput('1')">1</button>
+                                        <button class="calc-btn dark-gray" onclick="window.calcInput('2')">2</button>
+                                        <button class="calc-btn dark-gray" onclick="window.calcInput('3')">3</button>
+                                        <button class="calc-btn orange" onclick="window.calcInput('+')">+</button>
+                                        
+                                        <button class="calc-btn dark-gray zero" onclick="window.calcInput('0')">0</button>
+                                        <button class="calc-btn dark-gray" onclick="window.calcInput('.')">.</button>
+                                        <button class="calc-btn orange" onclick="window.calcInput('=')">=</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="mac-window-clock" class="mac-window hidden" data-app="Clock" style="left: 300px; top: 150px; width: 300px; height: 350px;">
+                            <div class="win-header">
+                                <div class="win-close" onclick="window.closeMacApp('clock')"></div>
+                                <div class="win-title">Clock</div>
+                            </div>
+                            <div class="win-content">
+                                <div id="mac-app-container-clock"></div>
+                            </div>
+                        </div>
+
+                        <div id="mac-window-mail" class="mac-window hidden" data-app="Mail" style="left: 100px; top: 50px; width: 850px; height: 550px;">
+                            <div class="win-header">
+                                <div class="win-close" onclick="window.closeMacApp('mail')"></div>
+                                <div class="win-title">Mail</div>
+                            </div>
+                            <div class="win-content">
+                                <div id="mac-app-container-mail"></div>
+                            </div>
+                        </div>
+
+                        <div id="mac-window-settings" class="mac-window hidden" data-app="Settings" style="left: 400px; top: 100px; width: 600px; height: 450px;">
+                            <div class="win-header">
+                                <div class="win-close" onclick="window.closeMacApp('settings')"></div>
+                                <div class="win-title">Settings</div>
+                            </div>
+                            <div class="win-content">
+                                <div id="mac-app-container-settings"></div>
+                            </div>
+                        </div>
+
+                        <!-- Modern Boot Sequence -->
+                        <div id="boot-screen" class="boot-screen">
+                            <div class="pear-logo-large"></div>
+                            <div class="progress-bar"><div class="progress-fill"></div></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Modern Chin -->
+            <div class="chassis-front">
+                <div class="pear-logo-chin"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Garage Overlay -->
+    <div id="garage-view" class="hidden" style="display: none;">
+        <div class="garage-minimal-wrapper">
+            <div class="garage-minimal-header">
+                <div class="header-main">
+                    <div class="blue-accent-bar"></div>
+                    <div class="header-text-group">
+                        <h1 id="garage-dept-name">DEPT GARAGE</h1>
+                        <p>Authorized Personnel Only • Secure Access</p>
+                    </div>
+                </div>
+                <div class="header-actions">
+                    <div class="vehicle-count-badge" id="vehicle-count-stat">0 UNITS</div>
+                    <button id="close-garage-btn-minimal" onclick="window.closeGarage()"><i class="fas fa-times"></i></button>
+                </div>
+            </div>
+
+            <div class="garage-minimal-content">
+                <div class="garage-search-minimal">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="garage-search-input" placeholder="SEARCH FLEET...">
+                </div>
+
+                <div class="minimal-vehicle-grid" id="garage-vehicles">
+                    <!-- Minimalistic cards will be injected here -->
+                </div>
+            </div>
+            
+            <div class="garage-minimal-footer">
+                <div class="footer-line"></div>
+                <div class="footer-content">
+                    <span>SYSTEM STATUS: <span class="status-online">ONLINE</span></span>
+                    <span class="branding-mini">PLUTO OS // SECURE_FLEET_v2</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- DISPATCH SYSTEM -->
+    <div id="dispatch-container" style="display: none;">
+        <div class="dispatch-header" id="dispatch-drag-handle">
+            <div class="header-left">
+                <i class="fas fa-signal"></i>
+                <span class="dispatch-title">Live Dispatch</span>
+            </div>
+            <div class="header-right">
+                <span id="dispatch-counter">0/0</span>
+                <div class="header-icon-btn" onclick="window.lockDispatch()" title="Lock Position">
+                    <i class="fas fa-unlock-alt"></i>
+                </div>
+                <div class="header-icon-btn" onclick="window.clearAllDispatch()" title="Clear All">
+                    <i class="fas fa-trash-sweep"></i>
+                </div>
+                <div class="header-icon-btn close" onclick="window.toggleDispatch(false)" title="Hide Dispatch">
+                    <i class="fas fa-times"></i>
+                </div>
+            </div>
+        </div>
+        <div class="dispatch-calls-list" id="dispatch-calls-list">
+            <div class="dispatch-empty">
+                <i class="fas fa-satellite-dish"></i>
+                <p>STATION CLEAR</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- MEDICAL BILL SYSTEM -->
+    <div id="citation-container">
+        <div class="citation-paper">
+            <div class="citation-header">
+                <div class="citation-logo">
+                    <i class="fas fa-heart-pulse"></i>
+                </div>
+                <div class="citation-title-block">
+                    <h1>LOS SANTOS MEDICAL SERVICES</h1>
+                    <h2>MEDICAL BILL / CARE SUMMARY</h2>
+                </div>
+                <div class="citation-serial">
+                    <span>RECORD NO.</span>
+                    <span id="citation-serial-num">MS-882941</span>
+                </div>
+            </div>
+
+            <div class="citation-body">
+                <div class="citation-row main-info">
+                    <div class="cit-box flex-3">
+                        <label>NAME (LAST, FIRST, MIDDLE)</label>
+                        <span id="cit-name">DOE, JOHN</span>
+                    </div>
+                    <div class="cit-box flex-1">
+                        <label>DATE</label>
+                        <span id="cit-date">01/02/2025</span>
+                    </div>
+                </div>
+
+                <div class="citation-row">
+                    <div class="cit-box flex-2">
+                        <label>ADDRESS OF VIOLATION</label>
+                        <span id="cit-location">Vespucci Blvd / Power St</span>
+                    </div>
+                    <div class="cit-box flex-1">
+                        <label>TIME</label>
+                        <span id="cit-time">14:30</span>
+                    </div>
+                </div>
+
+                <div class="citation-row violation-section">
+                    <div class="cit-box full">
+                        <label>TREATMENT / SERVICES</label>
+                        <div class="violation-text" id="cit-reason">EMERGENCY CARE / RESUSCITATION</div>
+                    </div>
+                </div>
+
+                <div class="citation-row amount-section">
+                    <div class="cit-box flex-2">
+                        <label>ATTENDING MEDIC</label>
+                        <span id="cit-officer">MEDIC PLUTO #882</span>
+                    </div>
+                    <div class="cit-box flex-1 highlight-box">
+                        <label>TOTAL COST</label>
+                        <span class="fine-amount">$ <span id="cit-amount">500</span></span>
+                    </div>
+                </div>
+
+                <div class="citation-footer">
+                    <div class="signature-box" id="citation-signature-area">
+                        <label>I ACKNOWLEDGE RECEIPT OF CARE AND AGREE TO PAYMENT TERMS</label>
+                        <div class="signature-line">
+                            <span class="sign-placeholder">X</span>
+                            <span id="cit-signature"></span>
+                        </div>
+                        <p class="sign-notice">ELECTRONIC SIGNATURE REQUIRED</p>
+                    </div>
+                    
+                    <div class="citation-actions" id="cit-actions">
+                        <button class="cit-btn sign" onclick="window.signCitation()">SIGN & PAY</button>
+                        <button class="cit-btn decline" onclick="window.declineCitation()">DECLINE</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="citation-watermark">MEDICAL SERVICES</div>
+        </div>
+    </div>
+
+    <!-- MEDICAL BILL INPUT UI -->
+    <div id="fine-input-container">
+        <div class="fine-input-modal">
+            <div class="fine-input-header">
+                <i class="fas fa-file-invoice-dollar"></i>
+                <span>ISSUE MEDICAL BILL</span>
+            </div>
+            <div class="fine-input-body">
+                <div class="fine-field">
+                    <label>TREATMENT REASON</label>
+                    <input type="text" id="fine-reason-input" placeholder="e.g. Emergency Care">
+                </div>
+                <div class="fine-field">
+                    <label>BILL AMOUNT ($)</label>
+                    <input type="number" id="fine-amount-input" placeholder="0">
+                </div>
+            </div>
+            <div class="fine-input-footer">
+                <button class="fine-confirm-btn" onclick="window.submitFine()">SEND BILL</button>
+                <button class="fine-cancel-btn" onclick="window.closeFineInput()">CANCEL</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- PLACEMENT HELP UI -->
+    <div id="placement-help-container" style="display: none;">
+        <div class="placement-help-card">
+            <div class="help-header">
+                <i class="fas fa-hammer"></i>
+                <span>OBJECT PLACEMENT</span>
+            </div>
+            <div class="help-body">
+                <div class="key-row">
+                    <div class="key">E</div>
+                    <span class="action">PLACE OBJECT</span>
+                </div>
+                <div class="key-row">
+                    <div class="key">
+                        <i class="fas fa-arrow-left"></i>
+                        <i class="fas fa-arrow-right"></i>
+                    </div>
+                    <span class="action">ROTATE OBJECT</span>
+                </div>
+                <div class="key-row" id="placement-height-row" style="display: none;">
+                    <div class="key">
+                        <i class="fas fa-arrow-up"></i>
+                        <i class="fas fa-arrow-down"></i>
+                    </div>
+                    <span class="action">ADJUST HEIGHT</span>
+                </div>
+                <div class="key-row">
+                    <div class="key">G</div>
+                    <span class="action">CANCEL</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- NEW: Notification Container -->
+    <div id="notification-container"></div>
+
+    <!-- Duty Swipe Minigame -->
+    <div id="duty-swipe-container" class="hidden">
+        <div class="duty-reader-stage" id="duty-reader-stage">
+            <img id="duty-card-reader" src="img/card-reader.png" alt="Card Reader">
+            <img id="duty-card" src="img/card.png" alt="Access Card">
+            <div class="duty-swipe-success" id="duty-swipe-success">ACCEPT</div>
+        </div>
+    </div>
+
+    <!-- PATIENT EMS INVOICE -->
+    <div id="ems-invoice-container" class="hidden">
+        <div class="ems-invoice-backdrop"></div>
+        <div class="ems-invoice-shell">
+            <div class="ems-invoice-top-strip">
+                <span><i class="fas fa-shield-heart"></i> Los Santos Health Services</span>
+                <span id="ems-invoice-status">PAYMENT REQUIRED</span>
+            </div>
+
+            <div class="ems-invoice-paper">
+                <div class="ems-invoice-watermark">EMS</div>
+                <div class="ems-invoice-header">
+                    <div class="ems-invoice-brand">
+                        <div class="ems-invoice-logo">
+                            <i class="fas fa-star-of-life"></i>
+                        </div>
+                        <div>
+                            <h1>Emergency Medical Services</h1>
+                            <p id="ems-invoice-department">Department Billing Office</p>
+                            <small>San Andreas Emergency Care Network</small>
+                        </div>
+                    </div>
+                    <div class="ems-invoice-id-block">
+                        <span>INVOICE</span>
+                        <strong id="ems-invoice-number">#0000</strong>
+                        <small id="ems-invoice-date">--/--/----</small>
+                    </div>
+                </div>
+
+                <div class="ems-invoice-alert">
+                    <i class="fas fa-circle-info"></i>
+                    <span>This is an official EMS treatment invoice. Payment is transferred directly to the issuing department finance account.</span>
+                </div>
+
+                <div class="ems-invoice-parties">
+                    <div class="ems-invoice-party-card">
+                        <label>Issued To</label>
+                        <strong id="ems-invoice-patient">Patient</strong>
+                        <span>Patient account holder</span>
+                    </div>
+                    <div class="ems-invoice-party-card">
+                        <label>Provider</label>
+                        <strong id="ems-invoice-medic">Medical Staff</strong>
+                        <span id="ems-invoice-provider-dept">Emergency Medical Services</span>
+                    </div>
+                    <div class="ems-invoice-party-card">
+                        <label>Terms</label>
+                        <strong>Due On Receipt</strong>
+                        <span id="ems-invoice-expiry">Expires in 10 minutes</span>
+                    </div>
+                </div>
+
+                <div class="ems-invoice-table">
+                    <div class="ems-invoice-row ems-invoice-head">
+                        <span>Service Description</span>
+                        <span>Code</span>
+                        <span>Amount</span>
+                    </div>
+                    <div class="ems-invoice-row">
+                        <span id="ems-invoice-reason">Emergency medical care</span>
+                        <span id="ems-invoice-code">EMS-CALL</span>
+                        <span id="ems-invoice-line-amount">$0</span>
+                    </div>
+                </div>
+
+                <div class="ems-invoice-summary">
+                    <div class="ems-invoice-notes">
+                        <label>Billing Notes</label>
+                        <p>Payment may be collected from bank balance first, then cash if configured. Declining the invoice notifies the EMS provider.</p>
+                    </div>
+                    <div class="ems-invoice-total-card">
+                        <span>Total Due</span>
+                        <strong id="ems-invoice-total">$0</strong>
+                        <small>USD / San Andreas</small>
+                    </div>
+                </div>
+
+                <div class="ems-invoice-signatures">
+                    <div>
+                        <span id="ems-invoice-signature">Authorized EMS Provider</span>
+                        <label>Provider Authorization</label>
+                    </div>
+                    <div class="ems-invoice-stamp">
+                        <span>OFFICIAL</span>
+                        <small>EMS BILLING</small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="ems-invoice-actions">
+                <button class="ems-invoice-pay-btn" onclick="window.payEMSInvoiceUI()">
+                    <i class="fas fa-credit-card"></i> Pay Invoice
+                </button>
+                <button class="ems-invoice-decline-btn" onclick="window.declineEMSInvoiceUI()">
+                    <i class="fas fa-ban"></i> Decline
+                </button>
+                <button class="ems-invoice-close-btn" onclick="window.closeEMSInvoiceUI()">
+                    Review Later
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- NEW: Import Modal -->
+    <div id="import-modal-container">
+        <div class="fine-input-modal import-modal">
+            <div class="fine-input-header">
+                <i class="fas fa-file-import"></i>
+                <span>IMPORT CONFIGURATION</span>
+            </div>
+            <div class="fine-input-body">
+                <div class="fine-field">
+                    <label>PASTE JSON DATA HERE</label>
+                    <textarea id="import-textarea" placeholder='{"nodes": [...], "links": [...]}'></textarea>
+                </div>
+            </div>
+            <div class="fine-input-footer">
+                <button class="fine-confirm-btn" onclick="window.confirmImport()">CONFIRM IMPORT</button>
+                <button class="fine-cancel-btn" onclick="window.closeImportModal()">CANCEL</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- NEW: EMS Inventory System -->
+    <div id="ems-inventory-container" class="hidden">
+        <div class="ems-inventory-modal">
+            <div class="ems-inventory-header">
+                <div class="ems-inventory-title">EMS SUPPLIES</div>
+                <button class="ems-inventory-close-btn" onclick="closeEMSInventory()"><i class="fas fa-times"></i></button>
+    </div>
+            <div class="ems-inventory-content">
+                <div id="ems-inventory-list">
+                    <!-- Categories and Items injected here -->
+            </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- NEW: Bag Inventory System -->
+    <div id="bag-inventory-container" class="hidden">
+        <!-- Top Part: Bag Storage -->
+        <div class="bag-inventory-panel bag-storage-panel">
+            <div class="bag-section-header">
+                <div class="bag-header-info">
+                    <h2>Medical Bag</h2>
+                    <p>UNIT STORAGE</p>
+                </div>
+                <button class="bag-close-btn" onclick="closeBagInventory()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="bag-slots-container" id="bag-slots-container">
+                <!-- Bag Slots injected here -->
+            </div>
+            <div class="bag-footer">
+                <div class="bag-weight-bar">
+                    <div class="bag-weight-fill" id="bag-weight-fill"></div>
+                </div>
+                <div class="bag-weight-text" id="bag-weight-text">0.0kg / 50.0kg</div>
+            </div>
+        </div>
+
+        <!-- Transfer Controls -->
+        <div class="transfer-controls-panel">
+            <div class="quantity-input-wrapper">
+                <div class="qty-label">AMOUNT</div>
+                <input type="number" id="transfer-quantity" value="1" min="1" onfocus="this.select()">
+            </div>
+            <div class="qty-presets">
+                <button onclick="$('#transfer-quantity').val(1)">1</button>
+                <button onclick="$('#transfer-quantity').val(5)">5</button>
+                <button onclick="$('#transfer-quantity').val(10)">10</button>
+                <button onclick="$('#transfer-quantity').val(0)">ALL</button>
+            </div>
+        </div>
+
+        <!-- Bottom Part: Player Inventory -->
+        <div class="bag-inventory-panel player-inventory-panel">
+            <div class="bag-section-header player-header">
+                <div class="bag-header-info">
+                    <h2>Personnel</h2>
+                    <p>EQUIPMENT & POCKETS</p>
+                </div>
+            </div>
+            <div class="bag-slots-container" id="player-slots-container">
+                <!-- Player Slots injected here -->
+            </div>
+            <div class="bag-footer">
+                <div class="bag-weight-bar">
+                    <div class="bag-weight-fill" id="player-weight-fill" style="background: #3498db;"></div>
+                </div>
+                <div class="bag-weight-text" id="player-weight-text">0.0kg / 30.0kg</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- NEW: Diagnosis UI -->
+    <div id="diagnosis-container">
+        <div id="diagnosis-dots"></div>
+        <div id="diagnosis-info-panel">
+            <h2 id="diag-part-name">BODY PART</h2>
+            <span class="injury-severity-label">Infection & Trauma Level</span>
+            <div class="injury-level-bar">
+                <div class="injury-level-fill"></div>
+            </div>
+            <div id="diag-part-info-container">
+                <p id="diag-part-info">Select a red zone to view detailed injury metrics.</p>
+            </div>
+            <div id="diag-prescription-btn-container" class="hidden">
+                <button id="write-prescription-btn" class="diag-action-btn presc">ISSUE PRESCRIPTION</button>
+            </div>
+        </div>
+        <button id="close-diagnosis">EXIT DIAGNOSIS</button>
+    </div>
+
+    <!-- Minigames (Moved outside diagnosis-container to stay visible when dots hide) -->
+    <!-- Suture Minigame (Ultra Realistic Treatment) -->
+    <div id="suture-minigame-container" class="minigame-overlay">
+        <div class="minigame-window suture-window">
+            <div class="minigame-header">
+                <span>SURGICAL SUTURING</span>
+                <div class="minigame-hint">CLOSE THE WOUND BY CONNECTING THE POINTS</div>
+            </div>
+            <div id="suture-canvas-area">
+                <canvas id="suture-canvas"></canvas>
+                <div id="suture-needle"></div>
+            </div>
+            <div class="suture-progress-bar">
+                <div id="suture-fill"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- NEW: Bleeding Clamp Minigame -->
+    <div id="clamp-minigame-container" class="minigame-overlay">
+        <div class="minigame-window clamp-window">
+            <div class="minigame-header">
+                <span>HEMOSTASIS CONTROL</span>
+                <div id="clamp-hint" class="minigame-hint">GRAB SEVERED VESSEL ENDS AND JOIN THEM</div>
+            </div>
+            <div id="clamp-canvas-area">
+                <canvas id="clamp-canvas"></canvas>
+                <div id="vessel-suture-needle" class="suture-needle"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- NEW: Bullet Extraction Minigame (Path Dragging) -->
+    <div id="bullet-minigame-container" class="minigame-overlay">
+        <div class="extraction-game">
+            <div class="minigame-header">
+                <span>ARTERIAL EXTRACTION</span>
+                <div class="minigame-hint">GUIDE THE PROJECTILE THROUGH THE ARTERY</div>
+            </div>
+            <div id="extraction-canvas-area">
+                <canvas id="extraction-canvas"></canvas>
+                <div id="extraction-bullet" class="minigame-bullet-item">
+                    <img src="img/bullet.png" style="width: 100%; height: 100%; object-fit: contain;">
+                </div>
+                <div id="extraction-target" class="minigame-target-zone">EXIT</div>
+            </div>
+            <div class="minigame-footer-hint">Press [ESC] to abort surgery</div>
+        </div>
+    </div>
+
+    <!-- NEW: Blood Pressure Minigame -->
+    <div id="bp-minigame-container" class="minigame-overlay">
+        <div class="bp-game">
+            <img id="bp-arm-image" src="img/arm.png">
+            <div id="bp-game-area">
+                <!-- Tube layer -->
+                <svg id="bp-tube-svg">
+                    <path id="bp-tube-base" d="" fill="none" />
+                    <path id="bp-tube-main" d="" fill="none" />
+                    <path id="bp-tube-highlight" d="" fill="none" />
+                </svg>
+
+                <div id="bp-target-zone">PLACE CUFF HERE</div>
+
+                <div id="bp-cuff-item">
+                    <img src="img/bp-cuff.png" style="width: 100%; height: 100%; object-fit: contain;">
+                </div>
+
+                <div id="bp-machine-display">
+                    <img id="bp-machine-img" src="img/bp.png">
+                    <div id="bp-values">
+                        <div id="systolic">--</div>
+                        <div id="diastolic">--</div>
+                        <div id="pulse-rate">--</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- NEW: Realistic Medical Dressing Minigame -->
+    <div id="bandage-minigame-container" class="minigame-overlay">
+        <div class="dressing-window">
+            <div class="dressing-header">
+                <div class="dressing-title">
+                    <span>TRAUMA DRESSING PROCEDURE</span>
+                </div>
+                <div class="dressing-steps">
+                    <div class="step-indicator active" id="step-clean">1. CLEAN</div>
+                    <div class="step-indicator" id="step-apply">2. APPLY</div>
+                    <div class="step-indicator" id="step-secure">3. SECURE</div>
+                </div>
+            </div>
+
+            <div class="dressing-body">
+                <div class="tool-tray">
+                    <div class="tool-item" id="tool-swab" data-step="1">
+                        <img src="img/cotton.png" style="width: 40px; height: 40px; object-fit: contain;">
+                        <span>ANTISEPTIC</span>
+                    </div>
+                    <div class="tool-item disabled" id="tool-gauze" data-step="2">
+                        <i class="fas fa-layer-group"></i>
+                        <span>GAUZE PAD</span>
+                    </div>
+                    <div class="tool-item disabled" id="tool-tape" data-step="3">
+                        <i class="fas fa-tape"></i>
+                        <span>SURGICAL TAPE</span>
+                    </div>
+                </div>
+
+                <div id="dressing-canvas-area">
+                    <div id="limb-visual-container">
+                        <canvas id="dressing-base-canvas"></canvas>
+                        <div id="gauze-target" class="target-zone hidden">PLACE HERE</div>
+                        <div id="placed-gauze" class="hidden"></div>
+                        <div id="tape-container"></div>
+                    </div>
+                    <div id="active-tool-cursor" class="hidden"></div>
+                </div>
+            </div>
+
+            <div class="dressing-footer">
+                <div class="dressing-instruction" id="dressing-instruction">Select the ANTISEPTIC to clean the wound area.</div>
+                <button id="bandage-finish-btn" class="hidden" onclick="finishDressingProcedure()">COMPLETE DRESSING</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chest Auscultation Minigame -->
+    <div id="chest-minigame-container" class="minigame-overlay">
+        <div class="chest-game-window">
+            <div class="minigame-header">
+                <i class="fas fa-stethoscope"></i>
+                <span>CHEST AUSCULTATION</span>
+                <div class="minigame-hint">HOVER THE STETHOSCOPE OVER KEY LUNG ZONES</div>
+            </div>
+            <div id="chest-minigame-area">
+                <img id="chest-patient-image" src="img/chest-male.png" alt="Chest Exam">
+                <svg id="chest-stethoscope-tube-svg" viewBox="0 0 1920 1080" preserveAspectRatio="none">
+                    <defs>
+                        <linearGradient id="chestTubeGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                            <stop offset="0%" stop-color="#0a0f16"></stop>
+                            <stop offset="55%" stop-color="#273749"></stop>
+                            <stop offset="100%" stop-color="#0f1620"></stop>
+                        </linearGradient>
+                    </defs>
+                    <path id="chest-stethoscope-tube-shadow" d="" fill="none"></path>
+                    <path id="chest-stethoscope-tube-main" d="" fill="none"></path>
+                </svg>
+                <div id="stethoscope-tool">
+                    <div class="stethoscope-head"></div>
+                </div>
+                <div id="chest-hotspot-left" class="chest-hotspot"></div>
+                <div id="chest-hotspot-right" class="chest-hotspot"></div>
+                <div id="chest-hotspot-center" class="chest-hotspot"></div>
+                <div id="chest-zone-tracker">
+                    <div class="chest-zone-chip" data-zone="left">
+                        <span>LEFT LUNG</span>
+                        <div class="zone-mini-bar"><div class="zone-mini-fill"></div></div>
+                    </div>
+                    <div class="chest-zone-chip" data-zone="right">
+                        <span>RIGHT LUNG</span>
+                        <div class="zone-mini-bar"><div class="zone-mini-fill"></div></div>
+                    </div>
+                    <div class="chest-zone-chip" data-zone="center">
+                        <span>CENTER CHEST</span>
+                        <div class="zone-mini-bar"><div class="zone-mini-fill"></div></div>
+                    </div>
+                </div>
+                <div id="chest-progress-wrap">
+                    <div id="chest-progress-fill"></div>
+                </div>
+                <div id="chest-status-text">Move your stethoscope over the chest to listen...</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- DEATH SCREEN SYSTEM -->
+    <div id="death-screen-container">
+        <!-- vignette edges -->
+        <div class="ds-vignette"></div>
+
+        <!-- top center: timer -->
+        <div class="ds-timer-block">
+            <div class="ds-timer-label" id="ds-timer-label">CRITICAL</div>
+            <div class="ds-timer" id="death-timer">05:00</div>
+        </div>
+
+        <!-- center: large status headline -->
+        <div class="ds-headline">
+            <div class="ds-headline-status" id="death-status-text">
+                <span class="ds-status-prefix">YOU ARE</span> <span class="ds-status-keyword">DEAD</span>
+            </div>
+            <div class="ds-headline-sub">Assess your condition below</div>
+            <div class="ds-actions">
+                <button class="ds-action-btn call" id="ds-btn-call-ems">
+                    <i class="fas fa-tower-broadcast"></i> CALL EMS [G]
+                </button>
+                <button class="ds-action-btn hospital" id="ds-btn-go-hospital">
+                    <i class="fas fa-truck-medical"></i> GO TO HOSPITAL [Y]
+                </button>
+            </div>
+        </div>
+
+        <!-- bottom-middle: questions (Hidden by user request) -->
+        <div class="ds-questions hidden" id="death-questions">
+            <div class="ds-q" data-question="breath">
+                <div class="ds-q-num">01</div>
+                <div class="ds-q-label">Does your character breathe?</div>
+                <div class="ds-q-actions">
+                    <button class="ds-choice" data-question="breath" data-answer="yes">YES</button>
+                    <button class="ds-choice" data-question="breath" data-answer="no">NO</button>
+                </div>
+            </div>
+            <div class="ds-q" data-question="pulse">
+                <div class="ds-q-num">02</div>
+                <div class="ds-q-label">Does your character have pulse?</div>
+                <div class="ds-q-actions">
+                    <button class="ds-choice" data-question="pulse" data-answer="yes">YES</button>
+                    <button class="ds-choice" data-question="pulse" data-answer="no">NO</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- middle-top: ECG monitor -->
+        <div class="ds-ecg" id="death-ecg-panel">
+            <div class="ds-ecg-header">
+                <span class="ds-ecg-tag">ECG LIVE</span>
+                <span class="ds-ecg-mode" id="ecg-mode-label">—</span>
+            </div>
+            <!-- viewBox = 340×80, two identical cycles side-by-side for seamless scroll -->
+            <svg viewBox="0 0 340 80" class="ds-ecg-svg">
+                <g id="ecg-scroll">
+                    <polyline class="ecg-wave" id="ecg-line"  points="0,55 340,55"></polyline>
+                    <polyline class="ecg-wave" id="ecg-line2" points="340,55 680,55"></polyline>
+                </g>
+            </svg>
+        </div>
+    </div>
+
+    <!-- REDESIGNED: PHARMACY SHOP (INSPIRED BY REFERENCE) -->
+    <div id="pharmacy-container" class="hidden">
+        <div class="pharmacy-shop-wrapper">
+            <div class="ph-bg-topo"></div>
+            
+            <div class="ph-sidebar">
+                <div class="ph-sidebar-header">
+                    <span class="ph-shop-title">Pharmacy <span class="script-font">Store</span></span>
+                </div>
+                <div class="ph-nav-items">
+                    <div class="ph-nav-item active" data-tab="general">
+                        <i class="fas fa-globe"></i> <span>All items</span>
+                    </div>
+                    <div class="ph-nav-item" data-tab="prescription">
+                        <i class="fas fa-file-prescription"></i> <span>Prescriptions</span>
+                    </div>
+                    <div class="ph-nav-item professional-tab hidden" data-tab="professional">
+                        <i class="fas fa-user-shield"></i> <span>EMS Only</span>
+                    </div>
+                    <div class="ph-nav-item" data-tab="insurance">
+                        <i class="fas fa-id-card-clip"></i> <span>Benefits</span>
+                    </div>
+                </div>
+                <div class="ph-sidebar-footer">
+                    <div class="ph-user-cash">
+                        <span class="label">Balance</span>
+                        <span id="ph-cash-val">$0</span>
+                    </div>
+                    <button class="ph-exit-btn" onclick="closePharmacy()">
+                        Exit <span class="key-hint">Escape</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="ph-main-content">
+                <div id="ph-items-view" class="ph-view active">
+                    <div class="ph-items-grid" id="ph-items-grid">
+                        <!-- Items injected here -->
+                    </div>
+                </div>
+
+                <div id="ph-prescription-view" class="ph-view">
+                    <div class="ph-items-grid" id="ph-prescription-grid">
+                        <!-- Prescription items injected here -->
+                    </div>
+                    <div id="ph-prescription-empty" class="ph-empty-state hidden">
+                        <i class="fas fa-file-medical"></i>
+                        <p>No prescriptions detected.</p>
+                    </div>
+                </div>
+
+                <div id="ph-insurance-view" class="ph-view">
+                    <div class="ph-insurance-card">
+                        <div class="ph-ins-top">
+                            <span class="ph-ins-label">PREMIUM COVERAGE</span>
+                            <h2>PLUTO HEALTH+</h2>
+                        </div>
+                        <ul class="ph-ins-benefits">
+                            <li><i class="fas fa-check-circle"></i> 50% PHARMACY DISCOUNT</li>
+                            <li><i class="fas fa-check-circle"></i> PRIORITY EMS RESPONSE</li>
+                        </ul>
+                        <div class="ph-ins-footer">
+                            <div class="ph-ins-price">
+                                <span class="label">ACTIVATION</span>
+                                <span id="ph-ins-cost">$5,000</span>
+                            </div>
+                            <button id="ph-buy-insurance" class="ph-pay-btn primary" onclick="sendBuyInsuranceRequest()">ACTIVATE</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="ph-cart-sidebar">
+                <div class="ph-cart-header">
+                    <span class="ph-cart-title">Shopping <span class="script-font">Cart</span></span>
+                </div>
+                <div class="ph-cart-items" id="ph-cart-list">
+                    <!-- Cart items injected here -->
+                </div>
+                <div class="ph-cart-footer">
+                    <div class="ph-cart-total">
+                        <span class="label">Total Price</span>
+                        <span class="value" id="ph-cart-total-val">$0</span>
+                    </div>
+                    <div class="ph-cart-actions">
+                        <button class="ph-pay-btn bank" onclick="checkout('bank')">Pay via Bank</button>
+                        <button class="ph-pay-btn cash" onclick="checkout('cash')">Pay via Cash</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PRESCRIPTION WRITER MODAL (FOR EMS) -->
+    <div id="prescription-writer-container" class="hidden">
+        <div class="prescription-writer">
+            <div class="writer-header">
+                <i class="fas fa-pen-nib"></i>
+                <span>PRESCRIPTION PAD</span>
+            </div>
+            <div class="writer-body">
+                <div class="writer-field">
+                    <label>PATIENT NAME</label>
+                    <input type="text" id="presc-target-name" readonly>
+                </div>
+                <div class="writer-field">
+                    <label>MEDICATION TYPE</label>
+                    <select id="presc-item-select">
+                        <option value="plt_painkillers_adv">Advanced Painkillers</option>
+                        <option value="plt_antibiotics">Antibiotics</option>
+                        <option value="plt_medkit">Advanced First Aid Kit</option>
+                        <option value="iak_wheelchair">Wheelchair</option>
+                    </select>
+                </div>
+                <div class="writer-field">
+                    <label>QUANTITY</label>
+                    <input type="number" id="presc-quantity" value="1" min="1" max="10">
+                </div>
+                <div class="writer-field">
+                    <label>DIAGNOSIS NOTES</label>
+                    <textarea id="presc-notes" placeholder="Reason for prescription..."></textarea>
+                </div>
+                <div class="writer-field hidden" id="presc-duration-field">
+                    <label>WHEELCHAIR DURATION (MINUTES)</label>
+                    <input type="number" id="presc-duration" value="10" min="1" max="1440">
+                </div>
+            </div>
+            <div class="writer-footer">
+                <button id="sign-prescription-btn">SIGN & ISSUE</button>
+                <button onclick="closePrescriptionWriter()">CANCEL</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- VIEW PRESCRIPTION MODAL (FOR PATIENT) -->
+    <div id="prescription-viewer-container" class="hidden">
+        <div class="prescription-paper-view">
+            <div class="paper-header">
+                <div class="hospital-logo">
+                    <span>LOS SANTOS<br>HEALTH SERVICES</span>
+                </div>
+                <div class="rx-symbol">Rx</div>
+            </div>
+            
+            <div class="paper-content">
+                <div class="paper-row">
+                    <div class="paper-field flex-2">
+                        <label>PATIENT NAME</label>
+                        <span id="view-presc-patient">-</span>
+                    </div>
+                    <div class="paper-field flex-1">
+                        <label>DATE issued</label>
+                        <span id="view-presc-date">-</span>
+                    </div>
+                </div>
+
+                <div class="paper-medication-section">
+                    <div class="med-label">MEDICATION AUTHORIZED:</div>
+                    <div class="med-name" id="view-presc-item">-</div>
+                    <div class="med-qty">QTY: <span id="view-presc-qty">-</span></div>
+                </div>
+
+                <div class="paper-notes">
+                    <label>CLINICAL NOTES / INSTRUCTIONS:</label>
+                    <p id="view-presc-notes">Take as directed by medical staff. Seek emergency care if symptoms persist or worsen.</p>
+                </div>
+            </div>
+
+            <div class="paper-footer">
+                <div class="footer-left">
+                    <div class="doctor-signature-area">
+                        <div class="signature-line" id="view-presc-signature">-</div>
+                        <label>AUTHORIZED PHYSICIAN SIGNATURE</label>
+                    </div>
+                </div>
+                <div class="footer-right">
+                    <div class="dept-stamp">
+                        <div class="stamp-circle">
+                            <span id="view-presc-dept">DEPT</span>
+                            <small>OFFICIAL SEAL</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="paper-exit-hint">Press [ESC] to stow document</div>
+        </div>
+    </div>
+
+    <!-- EMS CERTIFICATE (LIVE EDIT + VIEW) -->
+    <div id="certificate-viewer-container" class="hidden">
+        <div class="certificate-paper-view">
+            <div class="cert-paper-header">
+                <div class="hospital-logo">
+                    <span>LOS SANTOS<br>HEALTH SERVICES</span>
+                </div>
+                <div class="cert-doc-type">CERTIFICATE</div>
+            </div>
+
+            <div class="paper-content">
+                <div class="paper-row">
+                    <div class="paper-field flex-2">
+                        <label>PATIENT NAME</label>
+                        <span id="view-cert-patient">-</span>
+                    </div>
+                    <div class="paper-field flex-1">
+                        <label>DATE ISSUED</label>
+                        <span id="view-cert-date">-</span>
+                    </div>
+                </div>
+
+                <div class="paper-medication-section cert-title-box">
+                    <div class="med-label">CERTIFICATE TITLE:</div>
+                    <div class="med-name cert-editable" id="view-cert-title">-</div>
+                </div>
+
+                <div class="paper-notes">
+                    <label>CERTIFICATE DETAILS:</label>
+                    <p id="view-cert-details" class="cert-editable">-</p>
+                </div>
+            </div>
+
+            <div class="paper-footer">
+                <div class="footer-left">
+                    <div class="doctor-signature-area">
+                        <div class="signature-line cert-signature-line">
+                            <canvas id="view-cert-signature-canvas" class="hidden" width="260" height="70"></canvas>
+                            <img id="view-cert-signature-image" class="hidden" alt="Certificate Signature">
+                            <span id="view-cert-signature-fallback">-</span>
+                        </div>
+                        <button id="cert-clear-signature" class="hidden" type="button">CLEAR SIGNATURE</button>
+                        <label>AUTHORIZED EMS SIGNATURE</label>
+                    </div>
+                    <div class="cert-doctor-name">Issued by: <span id="view-cert-doctor">-</span></div>
+                </div>
+                <div class="footer-right">
+                    <div class="dept-stamp">
+                        <div class="stamp-circle">
+                            <span id="view-cert-dept">EMS</span>
+                            <small>OFFICIAL SEAL</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="cert-editor-actions" class="cert-actions hidden">
+                <button id="cert-submit-btn" type="button">SIGN & ISSUE</button>
+                <button id="cert-cancel-btn" type="button">CANCEL</button>
+            </div>
+            <div id="cert-view-actions" class="cert-actions hidden">
+                <button id="cert-close-view-btn" type="button">CLOSE</button>
+            </div>
+
+            <div class="paper-exit-hint">Press [ESC] to stow document</div>
+        </div>
+    </div>
+
+    <!-- Core Scripts -->
+    <script src="script.js"></script>
+    <script src="boss_menu.js"></script>
+    <script src="inventory.js"></script>
+    <script src="bag_inventory.js"></script>
+    <script src="diagnosis.js"></script>
+    <script src="dispatch.js"></script>
+    <script src="deathscreen.js"></script>
+    <script src="pharmacy.js"></script>
+    <script src="duty_swipe.js"></script>
+    <script>
+        window.addEventListener('message', (event) => {
+            if (event.data.action === 'amb_togglePlacementHelp') {
+                const heightRow = document.getElementById('placement-height-row');
+                if (heightRow) heightRow.style.display = event.data.heightEnabled ? 'flex' : 'none';
+                return;
+            }
+
+            if (event.data.action !== 'amb_toggleDeathScreen') return;
+            const knockout = event.data.show && event.data.mode === 'unconscious';
+            const actions = document.querySelector('.ds-actions');
+            const subtitle = document.querySelector('.ds-headline-sub');
+            const ecg = document.getElementById('death-ecg-panel');
+            if (actions) actions.style.display = knockout ? 'none' : '';
+            if (subtitle) subtitle.style.display = knockout ? 'none' : '';
+            if (ecg) ecg.style.display = knockout ? 'none' : '';
+        });
+    </script>
+</body>
+</html>

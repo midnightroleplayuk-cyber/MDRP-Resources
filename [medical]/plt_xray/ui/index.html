@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>X-Ray Analysis System v3.1</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Main X-Ray Interface (Desktop Style) -->
+    <div id="app">
+        <!-- Title Bar -->
+        <div class="title-bar">
+            <div class="title-text">X-Ray Image Processor - [Analysis_Module.exe]</div>
+            <div class="title-controls">
+                <div class="win-btn">_</div>
+                <div class="win-btn">□</div>
+                <div class="win-btn" style="padding-bottom: 2px;">x</div>
+            </div>
+        </div>
+
+        <!-- Menu Bar -->
+        <div class="menu-bar">
+            <div class="menu-item"><u>F</u>ile</div>
+            <div class="menu-item"><u>E</u>dit</div>
+            <div class="menu-item"><u>V</u>iew</div>
+            <div class="menu-item"><u>I</u>mage</div>
+            <div class="menu-item"><u>H</u>elp</div>
+        </div>
+
+        <div class="main-content">
+            <!-- Left Control Panel -->
+            <div class="left-pane">
+                <div class="group-box">
+                    <span class="group-title">Patient Records</span>
+                    <div class="patient-info">
+                        <div class="data-row">
+                            <span class="data-label">NAME:</span>
+                            <span id="patient-name" class="data-value">UNIDENTIFIED</span>
+                        </div>
+                        <div class="data-row">
+                            <span class="data-label">ID:</span>
+                            <span id="patient-id" class="data-value">N/A</span>
+                        </div>
+                        <div class="data-row">
+                            <span class="data-label">TYPE:</span>
+                            <span class="data-value">EMERGENCY</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="group-box">
+                    <span class="group-title">Bone Selection</span>
+                    <div class="bone-grid">
+                        <button class="win-button bone-btn" data-bone="head">Head</button>
+                        <button class="win-button bone-btn" data-bone="chest">Chest</button>
+                        <button class="win-button bone-btn" data-bone="left_arm">L-Arm</button>
+                        <button class="win-button bone-btn" data-bone="right_arm">R-Arm</button>
+                        <button class="win-button bone-btn" data-bone="left_leg">L-Leg</button>
+                        <button class="win-button bone-btn" data-bone="right_leg">R-Leg</button>
+                    </div>
+                </div>
+
+                <div class="group-box" style="flex: 1;">
+                    <span class="group-title">Diagnosis Report</span>
+                    <div id="bone-results" style="font-size: 11px; max-height: 150px; overflow-y: auto;">
+                        <p class="status-text">System standby. Select bone and initialize scan...</p>
+                    </div>
+                </div>
+
+                <div class="xray-actions">
+                    <button id="scan-btn" class="win-button primary">INITIALIZE SCAN</button>
+                    <button id="print-btn" class="win-button">PRINT FRACTURE</button>
+                </div>
+            </div>
+
+            <!-- Right Display Area -->
+            <div class="right-pane">
+                <div class="xray-container">
+                    <div class="crt-effect"></div>
+                    <div id="scanning-bar" class="scanning-bar"></div>
+                    
+                    <!-- Medical Overlay -->
+                    <div id="medical-overlay" class="medical-overlay">
+                        <div class="overlay-tl">
+                            SCAN_RES: 1024x768<br>
+                            MODE: RADIOLOGY_3A<br>
+                            GAIN: 45.2dB
+                        </div>
+                        <div class="overlay-tr">
+                            <span id="overlay-date">--/--/----</span><br>
+                            <span id="overlay-time">00:00:00</span><br>
+                            FR_RATE: 24fps
+                        </div>
+                        <div class="overlay-bl">
+                            LAT: -34.221<br>
+                            LON: 112.445<br>
+                            ALT: 12.5m
+                        </div>
+                        <div class="overlay-br">
+                            HOSPITAL: PILLBOX_MEDICAL<br>
+                            DEPT: TRAUMA_RECOVERY<br>
+                            STATION: 04
+                        </div>
+                    </div>
+
+                    <img id="xray-image" src="" alt="" style="display: none;">
+                    
+                    <div id="no-data-msg" style="color: #333; font-size: 30px; font-weight: bold;">NO SIGNAL</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mouse Cursor (for 3D NUI interaction) -->
+        <div id="cursor" style="display: none;">
+            <img src="../assets/cursor.png" alt="cursor">
+        </div>
+    </div>
+
+    <!-- Vitals Monitor View (Dedicated layout for ceiling monitors) -->
+    <div id="vitals-app" style="display: none;">
+        <div class="vitals-topbar">
+            <div class="vitals-clock" id="vitals-timestamp">00:00:00</div>
+            <div class="vitals-patient-inline">
+                <span id="vitals-name">NO PATIENT</span>
+                <span id="vitals-id">SID: N/A</span>
+            </div>
+        </div>
+
+        <div class="monitor-layout">
+            <div class="monitor-sidebar">
+                <div class="side-block hr-block">
+                    <div class="side-label">HR</div>
+                    <div class="side-value-wrap"><span id="pulse-val" class="side-value">0</span></div>
+                </div>
+                <div class="side-block spo2-block">
+                    <div class="side-label">SpO2</div>
+                    <div class="side-value-wrap">
+                        <span id="o2-val" class="side-value">0</span><span class="side-unit">%</span>
+                    </div>
+                </div>
+                <div class="side-block bp-block">
+                    <div class="side-label">NIBP</div>
+                    <div class="side-value-wrap"><span id="bp-val" class="side-value">0/0</span></div>
+                    <div class="side-unit">mmHg</div>
+                </div>
+            </div>
+
+            <div class="wave-stack">
+                <div class="wave-row">
+                    <div class="wave-label wave-hr">ECG</div>
+                    <canvas id="wave-hr" class="wave-canvas"></canvas>
+                </div>
+                <div class="wave-row">
+                    <div class="wave-label wave-spo2">SpO2</div>
+                    <canvas id="wave-spo2" class="wave-canvas"></canvas>
+                </div>
+                <div class="wave-row">
+                    <div class="wave-label wave-bp">NIBP</div>
+                    <canvas id="wave-bp" class="wave-canvas"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="vitals-footer">
+            <div id="vitals-status-msg">STANDBY - MONITOR OFF</div>
+            <div id="vitals-timestamp">00:00:00</div>
+        </div>
+    </div>
+
+    <!-- ETA Arrival View (Dedicated layout for ETA monitors) -->
+    <div id="eta-app" style="display: none;">
+        <div class="eta-header">
+            <div class="eta-title">ETA ARRIVAL</div>
+            <div class="eta-clock" id="eta-timestamp">00:00:00</div>
+        </div>
+        
+        <div class="eta-main-layout">
+            <div class="eta-left-col">
+                <div class="eta-content">
+                    <div class="eta-item">
+                        <div class="eta-label">PATIENT</div>
+                        <div class="eta-value" id="eta-patient-name">N/A</div>
+                    </div>
+                    <div class="eta-item">
+                        <div class="eta-label">EMERGENCY TYPE</div>
+                        <div class="eta-value" id="eta-type">N/A</div>
+                    </div>
+                    <div class="eta-item">
+                        <div class="eta-label">ETA</div>
+                        <div class="eta-value" id="eta-minutes">-- MIN</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="eta-right-col">
+                <div id="eta-dispatch-section" style="display: none;">
+                    <div class="dispatch-call-box">
+                        <div class="dispatch-call-header">
+                            <span class="dispatch-call-code" id="eta-dispatch-code">10-52</span>
+                            <span class="dispatch-call-title" id="eta-dispatch-title">MEDICAL ALERT</span>
+                        </div>
+                        <div class="dispatch-call-info" id="eta-dispatch-info">No active dispatch calls.</div>
+                        <div class="dispatch-call-location">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span id="eta-dispatch-location">UNKNOWN</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="eta-footer">
+            <div id="eta-status-msg">WAITING FOR DISPATCH</div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

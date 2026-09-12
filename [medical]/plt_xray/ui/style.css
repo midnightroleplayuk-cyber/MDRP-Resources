@@ -1,0 +1,645 @@
+body, html {
+    margin: 0;
+    padding: 0;
+    background: transparent !important;
+    overflow: hidden;
+    user-select: none;
+}
+
+body {
+    font-family: 'Tahoma', 'MS Sans Serif', sans-serif;
+    color: #000;
+}
+
+/* Classic Windows 95/98 UI Theme */
+:root {
+    --win-gray: #c0c0c0;
+    --win-white: #ffffff;
+    --win-dark-gray: #808080;
+    --win-black: #000000;
+    --win-blue: #000080;
+    --win-blue-light: #1084d0;
+}
+
+#app {
+    width: 900px;
+    height: 530px;
+    display: none;
+    flex-direction: column;
+    background-color: var(--win-gray);
+    border-top: 2px solid var(--win-white);
+    border-left: 2px solid var(--win-white);
+    border-right: 2px solid var(--win-dark-gray);
+    border-bottom: 2px solid var(--win-dark-gray);
+    box-shadow: 1px 1px 0px var(--win-black);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 3px;
+}
+
+/* Window Title Bar */
+.title-bar {
+    background: linear-gradient(90deg, var(--win-blue), var(--win-blue-light));
+    height: 22px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 4px;
+    margin-bottom: 2px;
+}
+
+.title-text {
+    color: white;
+    font-weight: bold;
+    font-size: 11px;
+    letter-spacing: 0.5px;
+}
+
+.title-controls {
+    display: flex;
+    gap: 2px;
+}
+
+.win-btn {
+    width: 16px;
+    height: 14px;
+    background: var(--win-gray);
+    border-top: 1px solid var(--win-white);
+    border-left: 1px solid var(--win-white);
+    border-right: 1px solid var(--win-dark-gray);
+    border-bottom: 1px solid var(--win-dark-gray);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 10px;
+    font-weight: bold;
+    cursor: default;
+}
+
+/* Menu Bar */
+.menu-bar {
+    display: flex;
+    gap: 10px;
+    padding: 2px 10px;
+    font-size: 11px;
+    border-bottom: 1px solid var(--win-dark-gray);
+    margin-bottom: 5px;
+}
+
+.menu-item::first-letter {
+    text-decoration: underline;
+}
+
+/* Main Content Layout */
+.main-content {
+    flex: 1;
+    display: flex;
+    gap: 5px;
+    padding: 5px;
+    overflow: hidden;
+}
+
+/* Panes with Inset Border */
+.left-pane, .right-pane {
+    background: var(--win-gray);
+    border-top: 1px solid var(--win-dark-gray);
+    border-left: 1px solid var(--win-dark-gray);
+    border-right: 1px solid var(--win-white);
+    border-bottom: 1px solid var(--win-white);
+    display: flex;
+    flex-direction: column;
+}
+
+.left-pane {
+    width: 250px;
+    padding: 10px;
+    gap: 15px;
+}
+
+.right-pane {
+    flex: 1;
+    background-color: #000;
+    position: relative;
+    box-shadow: inset 2px 2px 5px rgba(0,0,0,0.8);
+}
+
+/* Classic Fieldsets */
+.group-box {
+    border: 1px solid var(--win-white);
+    border-right-color: var(--win-dark-gray);
+    border-bottom-color: var(--win-dark-gray);
+    padding: 10px;
+    position: relative;
+    margin-top: 10px;
+}
+
+.group-title {
+    position: absolute;
+    top: -8px;
+    left: 10px;
+    background: var(--win-gray);
+    padding: 0 5px;
+    font-size: 11px;
+}
+
+/* Medical Data Display */
+.patient-info {
+    font-size: 11px;
+    line-height: 1.6;
+}
+
+.data-row {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px dotted var(--win-dark-gray);
+}
+
+.data-label { font-weight: bold; color: #444; }
+.data-value { color: #000; }
+
+/* Control Buttons */
+.win-button {
+    background: var(--win-gray);
+    border-top: 1px solid var(--win-white);
+    border-left: 1px solid var(--win-white);
+    border-right: 1px solid var(--win-dark-gray);
+    border-bottom: 1px solid var(--win-dark-gray);
+    box-shadow: 1px 1px 0px var(--win-black);
+    padding: 5px 10px;
+    font-size: 11px;
+    cursor: pointer;
+    text-align: center;
+    min-width: 80px;
+}
+
+.win-button:active {
+    border: 1px solid var(--win-dark-gray);
+    border-right-color: var(--win-white);
+    border-bottom-color: var(--win-white);
+    box-shadow: none;
+    padding: 6px 9px 4px 11px;
+}
+
+.win-button.primary {
+    font-weight: bold;
+    color: var(--win-blue);
+    width: 100%;
+}
+
+.xray-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.bone-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 5px;
+    margin-top: 10px;
+}
+
+/* X-Ray Display Realism */
+.xray-container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    background: radial-gradient(circle, #1a1a1a 0%, #000 100%);
+}
+
+#xray-image {
+    max-width: 95%;
+    max-height: 95%;
+    filter: brightness(1.1) contrast(1.4) grayscale(1) opacity(0.85);
+    z-index: 1;
+}
+
+/* Medical Overlays */
+.medical-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 5;
+    color: rgba(0, 255, 0, 0.7);
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 10px;
+    padding: 10px;
+    display: none;
+}
+
+.overlay-tl { position: absolute; top: 10px; left: 10px; }
+.overlay-tr { position: absolute; top: 10px; right: 10px; text-align: right; }
+.overlay-bl { position: absolute; bottom: 10px; left: 10px; }
+.overlay-br { position: absolute; bottom: 10px; right: 10px; text-align: right; }
+
+/* CRT Scanline Effect */
+.crt-effect {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%), 
+                linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
+    background-size: 100% 3px, 3px 100%;
+    pointer-events: none;
+    z-index: 10;
+}
+
+/* Scanning Animation */
+.scanning-bar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: rgba(0, 255, 0, 0.5);
+    box-shadow: 0 0 10px rgba(0, 255, 0, 0.8);
+    z-index: 15;
+    animation: scan-move 4s linear infinite;
+    display: none;
+}
+
+@keyframes scan-move {
+    0% { top: 0; }
+    100% { top: 100%; }
+}
+
+#cursor {
+    position: absolute;
+    width: 24px;
+    height: 24px;
+    pointer-events: none;
+    z-index: 1000;
+}
+
+#cursor img {
+    width: 100%;
+}
+
+.status-text {
+    font-size: 10px;
+    color: #444;
+    font-style: italic;
+}
+
+/* Injury colors */
+.color-fracture { color: #d00; font-weight: bold; }
+.color-clear { color: #008000; }
+.color-bullet { color: #d00; text-decoration: underline; }
+
+/* Monitor specific views */
+.monitor-view {
+    width: 600px !important;
+    height: 400px !important;
+}
+
+.monitor-view .left-pane {
+    width: 180px !important;
+}
+
+.monitor-view .title-text {
+    font-size: 10px !important;
+}
+
+.monitor-view .data-label, .monitor-view .data-value {
+    font-size: 9px !important;
+}
+
+/* ==========================================================================
+   Vitals Monitor UI (Modern/Scientific Look)
+   ========================================================================== */
+#vitals-app {
+    width: 100%;
+    height: 100%;
+    background: #02060a;
+    color: #dffcff;
+    font-family: Tahoma, Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    padding: 4px;
+    box-sizing: border-box;
+    border: 1px solid #1f2f3e;
+    position: relative;
+    overflow: hidden;
+}
+
+.vitals-topbar {
+    height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 4px;
+    color: #9db2bf;
+    font-size: 10px;
+    border-bottom: 1px solid rgba(95, 165, 221, 0.22);
+}
+
+.vitals-patient-inline {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    font-size: 9px;
+}
+
+.monitor-layout {
+    flex: 1;
+    display: flex;
+    min-height: 0;
+}
+
+.monitor-sidebar {
+    width: 118px;
+    border-right: 1px solid rgba(95, 165, 221, 0.2);
+    display: flex;
+    flex-direction: column;
+}
+
+.side-block {
+    flex: 1;
+    padding: 6px 6px 5px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background: #061019;
+}
+
+.side-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.4px;
+}
+
+.side-value-wrap { display: flex; align-items: baseline; gap: 4px; }
+
+.side-value {
+    font-family: "Consolas", "Lucida Console", monospace;
+    font-size: 46px;
+    line-height: 0.95;
+    font-weight: 700;
+}
+
+.side-unit {
+    font-size: 11px;
+    font-weight: 700;
+    opacity: 0.9;
+}
+
+.hr-block .side-label, .hr-block .side-value { color: #58e19f; }
+.spo2-block .side-label, .spo2-block .side-value, .spo2-block .side-unit { color: #6ab7ff; }
+.bp-block .side-label, .bp-block .side-value, .bp-block .side-unit { color: #ffd27b; }
+.bp-block .side-value { font-size: 34px; }
+
+.wave-stack {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background: #000;
+}
+
+.wave-row {
+    flex: 1;
+    position: relative;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    /* Static Medical Grid Background */
+    background-image: 
+        linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    background-size: 25px 25px;
+}
+
+.wave-canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    background: transparent !important; /* Ensure canvas is see-through */
+}
+
+.wave-label {
+    position: absolute;
+    left: 8px;
+    top: 4px;
+    font-size: 10px;
+    font-weight: 700;
+    z-index: 2;
+}
+
+.wave-hr { color: #58e19f; }
+.wave-spo2 { color: #6ab7ff; }
+.wave-bp { color: #ffd27b; }
+
+.vitals-footer {
+    height: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid rgba(95, 165, 221, 0.2);
+    margin-top: 2px;
+    padding: 0 4px;
+    font-size: 9px;
+    color: #96aebf;
+}
+
+#vitals-status-msg { font-weight: 600; letter-spacing: 0.5px; }
+#vitals-timestamp { font-family: monospace; }
+
+.status-ok #vitals-status-msg { color: #58f7c9; }
+.status-watch #vitals-status-msg { color: #ffd166; }
+.status-alert #vitals-status-msg { color: #ff6b6b; }
+
+.status-alert .side-block {
+    box-shadow: inset 0 0 0 1px rgba(255, 107, 107, 0.28);
+}
+
+.vitals-active .hr-block .side-value {
+    animation: pulse-anim 0.85s infinite;
+}
+
+@keyframes pulse-anim {
+    0% { transform: scale(1.0); }
+    50% { transform: scale(1.03); }
+    100% { transform: scale(1.0); }
+}
+
+/* ETA Screen Styles */
+#eta-app {
+    width: 100%;
+    height: 100%;
+    background: #000;
+    color: #fff;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    display: flex;
+    flex-direction: column;
+    padding: 40px; /* Increased from 20px */
+    box-sizing: border-box;
+    border: 4px solid #333;
+}
+
+#eta-death-notif {
+    margin-bottom: 20px;
+}
+
+.death-alert-banner {
+    background: #7a0000;
+    color: #fff;
+    padding: 15px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    font-size: 24px;
+    font-weight: 900;
+    border: 2px solid #ff0000;
+    animation: flash-red 1.5s infinite;
+}
+
+@keyframes flash-red {
+    0% { background: #7a0000; }
+    50% { background: #ff0000; }
+    100% { background: #7a0000; }
+}
+
+.eta-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid #555;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+}
+
+.eta-title {
+    font-size: 32px;
+    font-weight: 900;
+    color: #ff3b3b;
+    letter-spacing: 2px;
+}
+
+.eta-clock {
+    font-size: 24px;
+    font-family: monospace;
+    color: #aaa;
+}
+
+.eta-content {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.eta-main-layout {
+    display: flex;
+    flex: 1;
+    gap: 40px;
+    min-height: 0;
+}
+
+.eta-left-col {
+    flex: 1.2;
+    display: flex;
+    flex-direction: column;
+}
+
+.eta-right-col {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    border-left: 2px solid rgba(255, 255, 255, 0.1);
+    padding-left: 40px;
+}
+
+.eta-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.eta-label {
+    font-size: 18px;
+    color: #888;
+    text-transform: uppercase;
+    margin-bottom: 5px;
+}
+
+.eta-value {
+    font-size: 48px;
+    font-weight: 700;
+    color: #fff;
+}
+
+#eta-minutes {
+    color: #ffd166;
+    font-size: 64px;
+}
+
+.eta-footer {
+    border-top: 2px solid #555;
+    padding-top: 10px;
+    margin-top: 20px;
+    font-size: 18px;
+    color: #666;
+    text-align: center;
+}
+
+/* ETA Dispatch Section */
+#eta-dispatch-section {
+    background: rgba(255, 0, 0, 0.1);
+    border: 2px solid rgba(255, 0, 0, 0.3);
+    border-radius: 8px;
+    padding: 20px;
+    animation: blink-border 2s infinite;
+    height: fit-content;
+}
+
+@keyframes blink-border {
+    0% { border-color: rgba(255, 0, 0, 0.3); }
+    50% { border-color: rgba(255, 0, 0, 0.8); }
+    100% { border-color: rgba(255, 0, 0, 0.3); }
+}
+
+.dispatch-call-header {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.dispatch-call-code {
+    background: #ff3b3b;
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-weight: 900;
+    font-size: 20px;
+}
+
+.dispatch-call-title {
+    font-size: 24px;
+    font-weight: 800;
+    color: #ff3b3b;
+    text-transform: uppercase;
+}
+
+.dispatch-call-info {
+    font-size: 20px;
+    color: #ddd;
+    margin-bottom: 10px;
+}
+
+.dispatch-call-location {
+    font-size: 18px;
+    color: #aaa;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
