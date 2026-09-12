@@ -136,6 +136,8 @@ RegisterNUICallback('saveData', function(data, cb)
     Radio.userData[Radio.identifier].name = data.name
     Radio:update()
     TriggerServerEvent('mm_radio:server:addToRadioChannel', Radio.RadioChannel, data.name)
+    -- Keep the secondary roster display name in sync with the primary roster.
+    TriggerServerEvent('mm_radio:server:updateSecondaryName', data.name)
     SetResourceKvp('radioSettings2', json.encode(Radio.userData))
     cb("ok")
 end)

@@ -12,6 +12,15 @@
     rosterCoords: null
   };
 
+  // Client-local fallback for roster position. mm_radio also saves the position in
+  // radioSettings2 per character, so the position survives logout/resource/server restarts.
+  try {
+    const saved = JSON.parse(localStorage.getItem('mm_radio_dual_roster_position') || 'null');
+    if (saved && Number.isFinite(Number(saved.x)) && Number.isFinite(Number(saved.y))) {
+      state.rosterCoords = { x: Number(saved.x), y: Number(saved.y) };
+    }
+  } catch (_) {}
+
   const post = (name, data = {}) => fetch(`https://${RESOURCE}/${name}`, {
     method: 'POST', headers: {'Content-Type':'application/json; charset=UTF-8'}, body: JSON.stringify(data)
   }).catch(() => {});
@@ -50,6 +59,7 @@
   const secondaryFreq = roster.querySelector('.mm-secondary-frequency');
   const primaryMembers = roster.querySelector('.mm-primary-members');
   const secondaryMembers = roster.querySelector('.mm-secondary-members');
+  const secondarySection = roster.querySelector('.mm-secondary-section');
 
   function safeText(value) { return String(value ?? 'Unknown'); }
 
@@ -88,6 +98,9 @@
     const hasSecondary = Number(state.channel) > 0;
     roster.classList.toggle('show', !!state.overlayEnabled && (hasPrimary || hasSecondary));
     roster.classList.toggle('editable', !!state.visible && !!state.overlayEnabled);
+    // Do not leave an empty SECONDARY block behind after disconnecting. It comes
+    // back automatically as soon as a secondary channel is joined again.
+    secondarySection.classList.toggle('mm-channel-hidden', !hasSecondary);
     primaryFreq.textContent = hasPrimary ? `${state.primary} MHz` : 'OFF';
     secondaryFreq.textContent = hasSecondary ? `${state.channel} MHz` : 'OFF';
     renderMembers(primaryMembers, hasPrimary ? state.primaryMembers : {});
@@ -137,7 +150,10 @@
   window.addEventListener('mouseup', () => {
     if (!dragging) return;
     dragging = false;
-    if (state.rosterCoords) post('updatePlayerListPosition', state.rosterCoords);
+    if (state.rosterCoords) {
+      try { localStorage.setItem('mm_radio_dual_roster_position', JSON.stringify(state.rosterCoords)); } catch (_) {}
+      post('updatePlayerListPosition', state.rosterCoords);
+    }
   });
 
   function findSettingsBody() {
@@ -185,7 +201,7 @@
       state.maxChannel = Number(data.maxChannel) || state.maxChannel;
       if (data.userData?.playerlist) {
         state.overlayEnabled = data.userData.playerlist.show === true;
-        state.rosterCoords = data.userData.playerlist.coords || state.rosterCoords;
+        if (data.userData.playerlist.coords) state.rosterCoords = data.userData.playerlist.coords;
       }
       render(); setTimeout(dockPanelIntoSettings, 50);
     } else if (action === 'setRadioHide') {
@@ -195,7 +211,7 @@
       if (data.secondaryChannel !== undefined) state.channel = Number(data.secondaryChannel) || 0;
       if (data.userData?.playerlist) {
         state.overlayEnabled = data.userData.playerlist.show === true;
-        state.rosterCoords = data.userData.playerlist.coords || state.rosterCoords;
+        if (data.userData.playerlist.coords) state.rosterCoords = data.userData.playerlist.coords;
       }
       render();
     } else if (action === 'overlayVisibilityChanged') {

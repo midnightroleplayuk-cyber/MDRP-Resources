@@ -357,6 +357,19 @@ RegisterNetEvent('mm_radio:server:leaveSecondaryRadio', function()
     leaveSecondary(source)
 end)
 
+RegisterNetEvent('mm_radio:server:updateSecondaryName', function(name)
+    local src = source
+    local channel = playerSecondaryChannel[src]
+    if not channel then return end
+    local members = secondaryChannels[channel]
+    if not members or not members[src] then return end
+
+    name = tostring(name or ''):gsub('^%s*(.-)%s*$', '%1')
+    if name == '' then return end
+    members[src].name = name
+    syncSecondary(channel)
+end)
+
 RegisterNetEvent('mm_radio:server:setSecondaryTalking', function(talking)
     local src = source
     local channel = playerSecondaryChannel[src]
