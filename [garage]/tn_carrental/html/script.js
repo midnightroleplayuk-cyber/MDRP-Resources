@@ -105,7 +105,7 @@ function setImage(imgEl, wrapper, src) {
     imgEl.src = src;
 }
 function money(value) {
-    return Math.floor(value).toLocaleString('de-DE') + state.currency;
+    return state.currency + Math.floor(value).toLocaleString('en-GB');
 }
 function ratePrice() {
     if (!state.selectedVehicle || !state.selectedDuration) return 0;
@@ -370,7 +370,7 @@ function openPaperViewer(data) {
     if (locale && typeof locale === 'object') applyLocale(locale);
 
     var currency = data.currency || '$';
-    function fmt(v) { return v !== undefined && v !== null ? Math.floor(Number(v) || 0).toLocaleString('de-DE') + currency : '-'; }
+    function fmt(v) { return v !== undefined && v !== null ? currency + Math.floor(Number(v) || 0).toLocaleString('en-GB') : '-'; }
 
     var docBrand = document.getElementById('viewerDocBrand');
     if (docBrand) docBrand.textContent = data.stationLabel || '';
