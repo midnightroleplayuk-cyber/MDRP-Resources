@@ -252,3 +252,106 @@ lib.addCommand('remradiodata', {
 end)
 
 lib.versionCheck('Qbox-project/mm_radio')
+-- ============================================================
+-- Dual radio: secondary channel membership
+-- ============================================================
+local secondaryChannels = {}
+local playerSecondaryChannel = {}
+
+local function secondaryAllowed(src, channel)
+    channel = tonumber(channel)
+    if not channel or channel <= 0 or channel > Shared.MaxFrequency then
+        return false, ('Invalid secondary channel (1-%s)'):format(Shared.MaxFrequency)
+    end
+
+    local restriction = Shared.RestrictedChannels[channel] or Shared.RestrictedChannels[math.floor(channel)]
+    if not restriction then return true end
+
+    local player = exports.qbx_core:GetPlayer(src)
+    if not player then return false, 'Player data unavailable' end
+
+    if restriction.type == 'job' then
+        local job = player.PlayerData.job and player.PlayerData.job.name
+        if job and lib.table.contains(restriction.name, job) then return true end
+    elseif restriction.type == 'gang' then
+        local gang = player.PlayerData.gang and player.PlayerData.gang.name
+        if gang and lib.table.contains(restriction.name, gang) then return true end
+    end
+
+    return false, 'You do not have access to that secondary channel'
+end
+
+local function secondaryMemberList(channel)
+    local result = {}
+    local members = secondaryChannels[channel]
+    if not members then return result end
+    for src in pairs(members) do
+        result[tonumber(src)] = true
+    end
+    return result
+end
+
+local function syncSecondary(channel)
+    local members = secondaryChannels[channel]
+    if not members then return end
+    local list = secondaryMemberList(channel)
+    for src in pairs(members) do
+        TriggerClientEvent('mm_radio:pma:syncSecondaryRadioData', tonumber(src), channel, list)
+    end
+end
+
+local function leaveSecondary(src)
+    local old = playerSecondaryChannel[src]
+    if not old then return end
+    local members = secondaryChannels[old]
+    if members then
+        members[src] = nil
+        if next(members) == nil then
+            secondaryChannels[old] = nil
+        else
+            syncSecondary(old)
+        end
+    end
+    playerSecondaryChannel[src] = nil
+    TriggerClientEvent('mm_radio:pma:syncSecondaryRadioData', src, 0, {})
+end
+
+lib.callback.register('mm_radio:server:setSecondaryRadio', function(source, channel)
+    channel = tonumber(channel)
+    if channel then channel = math.floor(channel * 100 + 0.5) / 100 end
+    local allowed, reason = secondaryAllowed(source, channel)
+    if not allowed then return false, reason end
+
+    leaveSecondary(source)
+    secondaryChannels[channel] = secondaryChannels[channel] or {}
+    secondaryChannels[channel][source] = true
+    playerSecondaryChannel[source] = channel
+    syncSecondary(channel)
+    return true
+end)
+
+RegisterNetEvent('mm_radio:server:leaveSecondaryRadio', function()
+    leaveSecondary(source)
+end)
+
+RegisterNetEvent('mm_radio:server:setSecondaryTalking', function(talking)
+    local src = source
+    local channel = playerSecondaryChannel[src]
+    if not channel then return end
+    local members = secondaryChannels[channel]
+    if not members then return end
+
+    for target in pairs(members) do
+        if target ~= src then
+            TriggerClientEvent('mm_radio:pma:setTalkingOnSecondaryRadio', target, src, talking == true)
+        end
+    end
+end)
+
+AddEventHandler('playerDropped', function()
+    leaveSecondary(source)
+end)
+
+exports('GetPlayerSecondaryRadio', function(source)
+    return playerSecondaryChannel[source] or 0
+end)

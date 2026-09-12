@@ -51,6 +51,7 @@ function Radio:SetDefaultData(cid)
         radioSizeMultiplier = 50,
         allowMovement = false,
         enableClicks = true,
+        secondaryChannel = 0,
         playerlist = {
             show = false,
             coords = {
@@ -78,6 +79,10 @@ function Radio:Init(data)
     self.userData[self.identifier].name = self.userData[self.identifier].name or player.charinfo.firstname .. " " .. player.charinfo.lastname
     if self.userData[self.identifier].enableClicks == nil then
         self.userData[self.identifier].enableClicks = true
+        SetResourceKvp('radioSettings2', json.encode(self.userData))
+    end
+    if self.userData[self.identifier].secondaryChannel == nil then
+        self.userData[self.identifier].secondaryChannel = 0
         SetResourceKvp('radioSettings2', json.encode(self.userData))
     end
     local rec = {}
@@ -136,12 +141,14 @@ function Radio:doRadioCheck(_)
             end
         end
     end
-    if not self.hasRadio and self.onRadio then
-        Radio:leaveradio()
+    if not self.hasRadio then
+        if self.onRadio then Radio:leaveradio() end
+        if self.SecondaryRadioChannel ~= 0 and self.LeaveSecondaryRadio then self:LeaveSecondaryRadio(true) end
     end
 end
 
 function Radio:leaveradio()
+    if self.SecondaryRadioChannel ~= 0 and self.LeaveSecondaryRadio then self:LeaveSecondaryRadio(true) end
     self:closeEvent()
     TriggerServerEvent('mm_radio:server:removeFromRadioChannel', self.RadioChannel)
     self.RadioChannel = 0

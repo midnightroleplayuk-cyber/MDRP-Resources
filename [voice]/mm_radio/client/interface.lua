@@ -10,6 +10,7 @@ Radio = {
 	onRadio = false,
 	usingRadio = false,
 	RadioChannel = 0,
+	SecondaryRadioChannel = 0,
 	radioProp = 0,
 	Volume = 30,
 	favourite = {},

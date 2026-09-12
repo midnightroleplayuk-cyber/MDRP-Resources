@@ -20,6 +20,7 @@ client_script {
     '@qbx_core/modules/playerdata.lua',
     'client/interface.lua',
     'client/function.lua',
+    'client/secondary.lua',
     'client/event.lua',
     'client/nui.lua'
 }
