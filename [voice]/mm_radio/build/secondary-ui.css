@@ -8,3 +8,24 @@
 #mm-dual-radio-roster,.mm-members,.mm-member,.mm-member-name{box-shadow:none!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
 .mm-members,.mm-member{background-color:transparent}
 .mm-member.talking{background:rgba(80,26,138,.14)}
+
+/* 2026-09-13 radio UI repair + purple theme.
+   The compiled Svelte markup uses Tailwind arbitrary-color class names. After the
+   accent was changed to #501A8A the generated utility did not exist, which left
+   parts of the screen/input unstyled. Define it explicitly and retheme the
+   remaining native blue/indigo panels to the requested purple family. */
+.bg-\[\#501A8A\]{--tw-bg-opacity:1!important;background-color:rgb(80 26 138 / var(--tw-bg-opacity))!important}
+.bg-\[\#18162F\]{--tw-bg-opacity:1!important;background-color:rgb(47 15 82 / var(--tw-bg-opacity))!important}
+.bg-\[\#18182b\]{--tw-bg-opacity:1!important;background-color:rgb(37 12 64 / var(--tw-bg-opacity))!important}
+.bg-\[\#212146\]{--tw-bg-opacity:1!important;background-color:rgb(59 20 102 / var(--tw-bg-opacity))!important}
+.bg-\[\#0e0d1a\]{--tw-bg-opacity:1!important;background-color:rgb(27 8 45 / var(--tw-bg-opacity))!important}
+.bg-accent{--tw-bg-opacity:1!important;background-color:rgb(80 26 138 / var(--tw-bg-opacity))!important}
+.shadow-\[\#18162F\]\/40{--tw-shadow-color:rgb(80 26 138 / .28)!important}
+
+/* Keep the radio-name field readable instead of falling back to a white browser input. */
+input.bg-\[\#501A8A\]{background:#501A8A!important;color:#fff!important;caret-color:#fff!important;border:1px solid rgba(220,190,247,.32)!important}
+input.bg-\[\#501A8A\]::placeholder{color:rgba(255,255,255,.62)!important}
+
+/* Purple treatment for the native settings toggles/focus state. */
+.peer:checked~.peer-checked\:bg-blue-600{background-color:#501A8A!important}
+.peer:focus~.peer-focus\:ring-blue-300{--tw-ring-color:rgba(180,130,224,.72)!important}

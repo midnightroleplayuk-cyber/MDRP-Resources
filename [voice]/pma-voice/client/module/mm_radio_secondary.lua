@@ -26,7 +26,11 @@ local function secondaryEnabled()
     if GetConvarInt('voice_enableRadios', 1) ~= 1 then return false end
     if secondaryRadioChannel <= 0 then return false end
     if isDead and isDead() then return false end
-    if isRadioEnabled and not isRadioEnabled() then return false end
+    -- Do NOT depend on pma-voice's primary-radio enabled/channel state here.
+    -- Disconnecting Primary sets pma's normal radio channel to 0, but Secondary
+    -- is a separate membership and must remain usable while it is still joined.
+    -- mm_radio itself enforces the actual radio-item requirement when joining and
+    -- removes Secondary membership when the radio item is lost.
     return true
 end
 
