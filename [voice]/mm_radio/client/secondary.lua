@@ -46,6 +46,13 @@ function Radio:SetSecondaryRadio(channel, silent)
         return false
     end
 
+    -- Keep pma's radio audio/UI infrastructure alive for Secondary-only operation.
+    -- pma's playMicClicks uses this same voice resource, so both key-down and
+    -- key-up clicks continue to behave exactly like normal radio PTT.
+    if (self.RadioChannel or 0) == 0 then
+        exports['pma-voice']:setVoiceProperty('radioEnabled', true)
+    end
+
     self:SendSvelteMessage('secondaryChannelChanged', { channel = channel, talking = false })
     self.userData[self.identifier].secondaryChannel = channel
     SetResourceKvp('radioSettings2', json.encode(self.userData))
@@ -70,6 +77,9 @@ function Radio:LeaveSecondaryRadio(silent)
         SetResourceKvp('radioSettings2', json.encode(self.userData))
     end
     TriggerEvent('mm_radio:client:secondaryChanged', 0)
+    if (self.RadioChannel or 0) == 0 then
+        exports['pma-voice']:setVoiceProperty('radioEnabled', false)
+    end
     if not silent then self:Notify('Left secondary radio channel') end
     return true
 end

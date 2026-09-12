@@ -76,6 +76,17 @@ function Radio:Init(data)
     self.PlayerDuty = player.job.onduty
     self.PlayerGang = player.gang.name
     if not self.userData[self.identifier] then self:SetDefaultData(self.identifier) end
+    -- Dedicated position backup: player-list coordinates are also stored separately
+    -- per character so a dragged overlay survives logout/reconnect/client restarts even
+    -- if another radio setting is rewritten later.
+    local overlayPosRaw = GetResourceKvpString(('mm_radio_overlay_pos_%s'):format(self.identifier))
+    if overlayPosRaw then
+        local ok, overlayPos = pcall(json.decode, overlayPosRaw)
+        if ok and type(overlayPos) == 'table' and tonumber(overlayPos.x) and tonumber(overlayPos.y) then
+            self.userData[self.identifier].playerlist = self.userData[self.identifier].playerlist or {}
+            self.userData[self.identifier].playerlist.coords = { x = tonumber(overlayPos.x), y = tonumber(overlayPos.y) }
+        end
+    end
     self.userData[self.identifier].name = self.userData[self.identifier].name or player.charinfo.firstname .. " " .. player.charinfo.lastname
     if self.userData[self.identifier].enableClicks == nil then
         self.userData[self.identifier].enableClicks = true
@@ -161,7 +172,10 @@ function Radio:leaveradio()
     })
     self.onRadio = false
     exports["pma-voice"]:setRadioChannel(0)
-    exports["pma-voice"]:setVoiceProperty("radioEnabled", false)
+    -- Keep pma-voice's radio infrastructure enabled while Secondary is still joined.
+    -- This preserves the native mic click on/off sounds and radio audio/submix behavior
+    -- even when the player deliberately disconnects Primary.
+    exports["pma-voice"]:setVoiceProperty("radioEnabled", (self.SecondaryRadioChannel or 0) > 0)
     self:update()
 end
 

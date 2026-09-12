@@ -89,11 +89,15 @@ RegisterNUICallback('showPlayerList', function(data, cb)
 end)
 
 RegisterNUICallback('updatePlayerListPosition', function(data, cb)
-    Radio.userData[Radio.identifier].playerlist.coords = {
-        x = data.x,
-        y = data.y
+    local coords = {
+        x = tonumber(data.x) or 0,
+        y = tonumber(data.y) or 0
     }
+    Radio.userData[Radio.identifier].playerlist.coords = coords
     SetResourceKvp('radioSettings2', json.encode(Radio.userData))
+    -- Separate per-character backup makes the dragged position durable across
+    -- /logout, reconnects, client restarts and later sessions.
+    SetResourceKvp(('mm_radio_overlay_pos_%s'):format(Radio.identifier), json.encode(coords))
     cb("ok")
 end)
 
