@@ -1,0 +1,51 @@
+-- qb-core/shared/items.lua 
+
+["devhub_car_checker"] = {
+    ["name"] = "devhub_car_checker",
+    ["label"] = "Car Checker",
+    ["weight"] = 120,
+    ["type"] = "item",
+    ["image"] = "devhub_car_checker.png",
+    ["unique"] = false,
+    ["useable"] = true,
+    ["shouldClose"] = true,
+    ["combinable"] = nil,
+    ["description"] = "Device used to scan vehicle information"
+},
+
+["devhub_key_cloner"] = {
+    ["name"] = "devhub_key_cloner",
+    ["label"] = "Key Cloner",
+    ["weight"] = 180,
+    ["type"] = "item",
+    ["image"] = "devhub_key_cloner.png",
+    ["unique"] = false,
+    ["useable"] = true,
+    ["shouldClose"] = true,
+    ["combinable"] = nil,
+    ["description"] = "Device used to clone vehicle keys"
+},
+
+-- ox_inventory/data/items.lua
+
+['devhub_car_checker'] = {
+    label = 'Car Checker',
+    weight = 120,
+    stack = true,
+    close = true,
+    description = "Device used to scan vehicle information"
+},
+
+['devhub_key_cloner'] = {
+    label = 'Key Cloner',
+    weight = 180,
+    stack = true,
+    close = true,
+    description = "Device used to clone vehicle keys"
+},
+
+-- SQL
+
+INSERT INTO `items` (`name`, `label`, `weight`, `rare`, `can_remove`) VALUES
+('devhub_car_checker', 'Car Checker', 120, 0, 1),
+('devhub_key_cloner', 'Key Cloner', 180, 0, 1);
