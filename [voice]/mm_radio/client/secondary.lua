@@ -21,6 +21,11 @@ function Radio:SetSecondaryRadio(channel, silent)
         return self:LeaveSecondaryRadio(silent)
     end
 
+    if self.insideJammer and not IsJammerAllowed(self.insideJammerZone, channel) then
+        if not silent then self:Notify(('Secondary channel %s is jammed'):format(channel)) end
+        return false
+    end
+
     if not self.hasRadio then
         if not silent then self:Notify('You need a radio to use a secondary channel') end
         return false
@@ -33,6 +38,8 @@ function Radio:SetSecondaryRadio(channel, silent)
     end
 
     self.SecondaryRadioChannel = channel
+    self.SecondaryRadioMembers = {}
+    self:SendSvelteMessage('secondaryChannelChanged', { channel = channel, talking = false })
     self.userData[self.identifier].secondaryChannel = channel
     SetResourceKvp('radioSettings2', json.encode(self.userData))
     TriggerEvent('mm_radio:client:secondaryChanged', channel)
@@ -48,6 +55,9 @@ function Radio:LeaveSecondaryRadio(silent)
     if self.SecondaryRadioChannel == 0 then return true end
     TriggerServerEvent('mm_radio:server:leaveSecondaryRadio')
     self.SecondaryRadioChannel = 0
+    self.SecondaryRadioMembers = {}
+    self:SendSvelteMessage('secondaryChannelChanged', { channel = 0, talking = false })
+    self:SendSvelteMessage('dualRadioListUpdate', { primary = self.PrimaryRadioMembers or {}, secondary = {}, primaryChannel = self.RadioChannel or 0, secondaryChannel = 0 })
     if self.identifier and self.userData[self.identifier] then
         self.userData[self.identifier].secondaryChannel = 0
         SetResourceKvp('radioSettings2', json.encode(self.userData))
@@ -59,6 +69,7 @@ end
 
 RegisterNetEvent('mm_radio:client:secondaryRejected', function(reason)
     Radio.SecondaryRadioChannel = 0
+    Radio:SendSvelteMessage('secondaryChannelChanged', { channel = 0, talking = false })
     if Radio.identifier and Radio.userData[Radio.identifier] then
         Radio.userData[Radio.identifier].secondaryChannel = 0
         SetResourceKvp('radioSettings2', json.encode(Radio.userData))
@@ -106,4 +117,41 @@ AddEventHandler('onResourceStart', function(resource)
             Radio:SetSecondaryRadio(saved, true)
         end
     end)
+end)
+
+
+RegisterNetEvent('mm_radio:client:secondaryListUpdate', function(players, channel)
+    if tonumber(channel) == tonumber(Radio.SecondaryRadioChannel) or tonumber(channel) == 0 then
+        Radio.SecondaryRadioMembers = players or {}
+        Radio:SendSvelteMessage('dualRadioListUpdate', {
+            primary = Radio.PrimaryRadioMembers or {},
+            secondary = Radio.SecondaryRadioMembers or {},
+            primaryChannel = Radio.RadioChannel or 0,
+            secondaryChannel = Radio.SecondaryRadioChannel or 0
+        })
+    end
+end)
+
+AddEventHandler('mm_radio:client:secondaryRadioActive', function(active)
+    local id = tostring(Radio.playerServerID)
+    if Radio.SecondaryRadioMembers and Radio.SecondaryRadioMembers[id] then
+        Radio.SecondaryRadioMembers[id].isTalking = active == true
+    end
+    Radio:SendSvelteMessage('secondaryTalkingChanged', {
+        channel = Radio.SecondaryRadioChannel,
+        talking = active == true
+    })
+    Radio:SendSvelteMessage('dualRadioListUpdate', {
+        primary = Radio.PrimaryRadioMembers or {},
+        secondary = Radio.SecondaryRadioMembers or {},
+        primaryChannel = Radio.RadioChannel or 0,
+        secondaryChannel = Radio.SecondaryRadioChannel or 0
+    })
+end)
+
+AddEventHandler('onResourceStop', function(resource)
+    if resource ~= GetCurrentResourceName() then return end
+    if Radio.SecondaryRadioChannel ~= 0 then
+        TriggerServerEvent('mm_radio:server:leaveSecondaryRadio')
+    end
 end)

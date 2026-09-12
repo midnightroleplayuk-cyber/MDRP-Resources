@@ -281,7 +281,7 @@ local function secondaryAllowed(src, channel)
     return false, 'You do not have access to that secondary channel'
 end
 
-local function secondaryMemberList(channel)
+local function secondaryVoiceTargets(channel)
     local result = {}
     local members = secondaryChannels[channel]
     if not members then return result end
@@ -291,12 +291,27 @@ local function secondaryMemberList(channel)
     return result
 end
 
+local function secondaryDisplayList(channel)
+    local result = {}
+    local members = secondaryChannels[channel]
+    if not members then return result end
+    for src, member in pairs(members) do
+        result[tostring(src)] = {
+            name = member.name or ('Player %s'):format(src),
+            isTalking = member.isTalking == true
+        }
+    end
+    return result
+end
+
 local function syncSecondary(channel)
     local members = secondaryChannels[channel]
     if not members then return end
-    local list = secondaryMemberList(channel)
+    local targets = secondaryVoiceTargets(channel)
+    local display = secondaryDisplayList(channel)
     for src in pairs(members) do
-        TriggerClientEvent('mm_radio:pma:syncSecondaryRadioData', tonumber(src), channel, list)
+        TriggerClientEvent('mm_radio:pma:syncSecondaryRadioData', tonumber(src), channel, targets)
+        TriggerClientEvent('mm_radio:client:secondaryListUpdate', tonumber(src), display, channel)
     end
 end
 
@@ -314,6 +329,7 @@ local function leaveSecondary(src)
     end
     playerSecondaryChannel[src] = nil
     TriggerClientEvent('mm_radio:pma:syncSecondaryRadioData', src, 0, {})
+    TriggerClientEvent('mm_radio:client:secondaryListUpdate', src, {}, 0)
 end
 
 lib.callback.register('mm_radio:server:setSecondaryRadio', function(source, channel)
@@ -324,7 +340,14 @@ lib.callback.register('mm_radio:server:setSecondaryRadio', function(source, chan
 
     leaveSecondary(source)
     secondaryChannels[channel] = secondaryChannels[channel] or {}
-    secondaryChannels[channel][source] = true
+    local player = exports.qbx_core:GetPlayer(source)
+    local name = ('Player %s'):format(source)
+    if player and player.PlayerData then
+        local charinfo = player.PlayerData.charinfo or {}
+        local fullName = ((charinfo.firstname or '') .. ' ' .. (charinfo.lastname or '')):gsub('^%s*(.-)%s*$', '%1')
+        if fullName ~= '' then name = fullName end
+    end
+    secondaryChannels[channel][source] = { name = name, isTalking = false }
     playerSecondaryChannel[source] = channel
     syncSecondary(channel)
     return true
@@ -341,11 +364,16 @@ RegisterNetEvent('mm_radio:server:setSecondaryTalking', function(talking)
     local members = secondaryChannels[channel]
     if not members then return end
 
+    if members[src] then
+        members[src].isTalking = talking == true
+    end
+
     for target in pairs(members) do
         if target ~= src then
             TriggerClientEvent('mm_radio:pma:setTalkingOnSecondaryRadio', target, src, talking == true)
         end
     end
+    syncSecondary(channel)
 end)
 
 AddEventHandler('playerDropped', function()

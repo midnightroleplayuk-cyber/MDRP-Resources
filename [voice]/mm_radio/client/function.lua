@@ -111,6 +111,7 @@ function Radio:connecttoradio(channel)
     if self.RadioChannel ~= 0 then
         TriggerServerEvent('mm_radio:server:removeFromRadioChannel', self.RadioChannel)
     end
+    self.PrimaryRadioMembers = {}
     self.RadioChannel = channel
     if not Radio.onRadio then
         Radio.onRadio = true
@@ -148,10 +149,16 @@ function Radio:doRadioCheck(_)
 end
 
 function Radio:leaveradio()
-    if self.SecondaryRadioChannel ~= 0 and self.LeaveSecondaryRadio then self:LeaveSecondaryRadio(true) end
     self:closeEvent()
     TriggerServerEvent('mm_radio:server:removeFromRadioChannel', self.RadioChannel)
+    self.PrimaryRadioMembers = {}
     self.RadioChannel = 0
+    self:SendSvelteMessage('dualRadioListUpdate', {
+        primary = {},
+        secondary = self.SecondaryRadioMembers or {},
+        primaryChannel = 0,
+        secondaryChannel = self.SecondaryRadioChannel or 0
+    })
     self.onRadio = false
     exports["pma-voice"]:setRadioChannel(0)
     exports["pma-voice"]:setVoiceProperty("radioEnabled", false)
@@ -164,6 +171,7 @@ function Radio:update()
         radioId = radioId,
         onRadio = Radio.onRadio,
         channel = Radio.RadioChannel,
+        secondaryChannel = Radio.SecondaryRadioChannel,
         volume = Radio.Volume,
         favourite = Radio.favourite,
         recomended = Radio.recomended,

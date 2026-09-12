@@ -29,6 +29,7 @@ RegisterNetEvent('mm_radio:client:use', function(slot)
         radioId = radioId,
         onRadio = Radio.onRadio,
         channel = Radio.RadioChannel,
+        secondaryChannel = Radio.SecondaryRadioChannel,
         volume = Radio.Volume,
         favourite = Radio.favourite,
         recomended = Radio.recomended,
@@ -196,7 +197,13 @@ end)
 
 RegisterNetEvent('mm_radio:client:radioListUpdate', function(players, channel)
     if Radio.RadioChannel == channel then
-        Radio:SendSvelteMessage("updateRadioList", players)
+        Radio.PrimaryRadioMembers = players or {}
+        Radio:SendSvelteMessage("dualRadioListUpdate", {
+            primary = Radio.PrimaryRadioMembers or {},
+            secondary = Radio.SecondaryRadioMembers or {},
+            primaryChannel = Radio.RadioChannel or 0,
+            secondaryChannel = Radio.SecondaryRadioChannel or 0
+        })
     end
 end)
 
@@ -209,16 +216,28 @@ RegisterNetEvent("mm_radio:client:recharge", function()
 end)
 
 RegisterNetEvent("pma-voice:radioActive", function(talkingState)
-    Radio:SendSvelteMessage("updateRadioTalking", {
-        radioId = tostring(Radio.playerServerID),
-        radioTalking = talkingState
+    local id = tostring(Radio.playerServerID)
+    if Radio.PrimaryRadioMembers and Radio.PrimaryRadioMembers[id] then
+        Radio.PrimaryRadioMembers[id].isTalking = talkingState == true
+    end
+    Radio:SendSvelteMessage("dualRadioListUpdate", {
+        primary = Radio.PrimaryRadioMembers or {},
+        secondary = Radio.SecondaryRadioMembers or {},
+        primaryChannel = Radio.RadioChannel or 0,
+        secondaryChannel = Radio.SecondaryRadioChannel or 0
     })
 end)
 
 RegisterNetEvent("pma-voice:setTalkingOnRadio", function(source, talkingState)
-    Radio:SendSvelteMessage("updateRadioTalking", {
-        radioId = tostring(source),
-        radioTalking = talkingState
+    local id = tostring(source)
+    if Radio.PrimaryRadioMembers and Radio.PrimaryRadioMembers[id] then
+        Radio.PrimaryRadioMembers[id].isTalking = talkingState == true
+    end
+    Radio:SendSvelteMessage("dualRadioListUpdate", {
+        primary = Radio.PrimaryRadioMembers or {},
+        secondary = Radio.SecondaryRadioMembers or {},
+        primaryChannel = Radio.RadioChannel or 0,
+        secondaryChannel = Radio.SecondaryRadioChannel or 0
     })
 end)
 

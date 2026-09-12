@@ -12,6 +12,18 @@ RegisterNUICallback('join', function(data, cb)
     cb("ok")
 end)
 
+
+RegisterNUICallback('joinSecondary', function(data, cb)
+    local channel = tonumber(type(data) == 'table' and data.channel or data)
+    local ok = channel and Radio:SetSecondaryRadio(channel) or false
+    cb(ok and 'ok' or 'error')
+end)
+
+RegisterNUICallback('leaveSecondary', function(_, cb)
+    Radio:LeaveSecondaryRadio(false)
+    cb('ok')
+end)
+
 RegisterNUICallback('leave', function(_, cb)
     if Radio.RadioChannel ~= 0 then
         Radio:leaveradio()
