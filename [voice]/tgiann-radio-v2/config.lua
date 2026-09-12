@@ -12,6 +12,9 @@
 tgiCoreExports = exports["tgiann-core"]
 config = tgiCoreExports:getConfig()
 
+config.lang = "en"              -- Language settings
+
+
 config.showAvailableFreq = true -- When this setting is true, the frequencies that other players are connected to will be shown on the main page.
 config.showPlayerAmount = true  -- When this setting is true, the number of connected players will be displayed on the main page and in the radio (channels with a password will show a dash). If false, the player count will not be displayed
 config.disableShowUsersInRadio = {
