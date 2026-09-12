@@ -85,14 +85,14 @@ config.items = {
             distance = nil,
         },
         {
-            name = "Midnight Police MHz",
+            name = "pd_radio",
             jobs = { ["police"] = true },
             defaultChannels = {
                 "PD1", "PD2", "PD3", "PD4", "PD5", "EMS5", "a", "b", "c", "d", "e", "f", "g", "h", "j", "k", "l"
             }
         },
         {
-            name = "Midnight Health Service MHz",
+            name = "mhs_radio",
             jobs = { ["ambulance"] = { 2, 3, 5 }, ["ambulance2"] = true }, -- Example with grade
             defaultChannels = {
                 "EMS1", "EMS2", "EMS3", "EMS4", "EMS5", "PD5"
