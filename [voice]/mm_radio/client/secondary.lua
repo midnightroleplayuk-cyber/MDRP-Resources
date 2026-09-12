@@ -84,14 +84,6 @@ RegisterNetEvent('mm_radio:client:secondaryRejected', function(reason)
     Radio:Notify(reason or 'Secondary radio channel rejected')
 end)
 
-RegisterCommand('secondaryradio', function(_, args)
-    local channel = args[1]
-    if not channel then
-        Radio:Notify(('Secondary channel: %s'):format(Radio.SecondaryRadioChannel ~= 0 and Radio.SecondaryRadioChannel or 'OFF'))
-        return
-    end
-    Radio:SetSecondaryRadio(channel)
-end, false)
 
 RegisterCommand('secondaryoff', function()
     Radio:LeaveSecondaryRadio(false)
