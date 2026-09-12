@@ -192,11 +192,20 @@ return {
         weight = 1000,
         allowArmed = true,
         consume = 0,
-        client = {
-            event = 'mm_radio:client:use'
-        }
+    },
+    ['pd_radio'] = {
+        label = 'MPD Radio',
+        weight = 1000,
+        allowArmed = true,
+        consume = 0,
     },
 
+        ['mhs_radio'] = {
+        label = 'MHS Radio',
+        weight = 1000,
+        allowArmed = true,
+        consume = 0,
+    },
     ['jammer'] = {
         label = 'Radio Jammer',
         weight = 10000,
