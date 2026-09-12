@@ -3190,4 +3190,229 @@ return {
 
 
 
+-- PLUTO AMBO JOB
+	['plt_medkit'] = {
+		label = 'Medkit',
+		weight = 500,
+		stack = true,
+		close = true,
+		consume = 0,
+		client = { export = 'plt_ambulance_job.plt_use_medication' },
+		description = 'Standard Med Kit for treatment.',
+	},
+
+	['plt_bandage'] = {
+		label = 'Bandage',
+		weight = 100,
+		stack = true,
+		close = true,
+		consume = 0,
+		client = { export = 'plt_ambulance_job.plt_use_medication' },
+		description = 'A Bandage',
+	},
+
+	['plt_painkillers'] = {
+		label = 'Painkillers',
+		weight = 50,
+		stack = true,
+		close = true,
+		consume = 0,
+		client = { export = 'plt_ambulance_job.plt_use_medication' },
+		description = 'Painkillers',
+	},
+
+	['plt_painkillers_adv'] = {
+		label = 'Advanced Painkillers',
+		weight = 50,
+		stack = true,
+		close = true,
+		consume = 0,
+		client = { export = 'plt_ambulance_job.plt_use_medication' },
+		description = 'Opioids can be addictive.',
+	},
+
+	['plt_antibiotics'] = {
+		label = 'Antibiotics',
+		weight = 50,
+		stack = true,
+		close = true,
+		consume = 0,
+		client = { export = 'plt_ambulance_job.plt_use_medication' },
+		description = 'Use as directed.',
+	},
+
+	['plt_surgical_kit'] = {
+		label = 'Surgical Kit',
+		weight = 1000,
+		stack = true,
+		close = true,
+		description = 'Surgical Tools',
+	},
+
+	['plt_stretcher'] = {
+		label = 'Stretcher',
+		weight = 5000,
+		stack = false,
+		close = true,
+		description = 'Used to transport patients safely.',
+	},
+
+	['plt_oxygen_mask'] = {
+		label = 'Oxygen Mask',
+		weight = 300,
+		stack = true,
+		close = true,
+		description = 'Helps patients breathe',
+	},
+
+	['plt_surgical_scissors'] = {
+		label = 'Surgical Scissors',
+		weight = 200,
+		stack = true,
+		close = true,
+		description = 'Careful, They\'re sharp!',
+	},
+
+	['plt_radio'] = {
+		label = 'Radio',
+		weight = 200,
+		stack = false,
+		close = true,
+		description = 'Radio for EMS',
+	},
+
+	['plt_medical_bag'] = {
+		label = 'Medical Bag',
+		weight = 2000,
+		stack = false,
+		close = true,
+		consume = 0,
+		client = { export = 'plt_ambulance_job.plt_medical_bag' },
+		description = 'A Medical Bag for Paramedics',
+	},
+
+	['plt_bp_monitor'] = {
+		label = 'BP Monitor',
+		weight = 500,
+		stack = true,
+		close = true,
+		description = 'Takes an accurate Blood Pressure Reading',
+	},
+
+	['plt_flashlight'] = {
+		label = 'Flashlight',
+		weight = 500,
+		stack = false,
+		close = true,
+		description = 'DAMN! That\'s Bright',
+	},
+
+	['plt_fireextinguisher'] = {
+		label = 'Fire Extinguisher',
+		weight = 2000,
+		stack = false,
+		close = true,
+		description = 'Used to put out small fires.',
+	},
+
+	['plt_prescription'] = {
+		label = 'Medical Prescription',
+		weight = 50,
+		stack = true,
+		close = true,
+		description = 'Prescription - MHS Use ONLY',
+	},
+
+	['iak_wheelchair'] = {
+		label = 'Wheelchair',
+		weight = 5000,
+		stack = false,
+		close = true,
+		consume = 0,
+		client = { export = 'plt_ambulance_job.plt_use_medication' },
+		description = 'It\'s Wheely-Fun!',
+	},
+
+	['plt_walking_stick'] = {
+		label = 'Walking Stick',
+		weight = 800,
+		stack = false,
+		close = true,
+		consume = 0,
+		client = { export = 'plt_ambulance_job.plt_use_medication' },
+		description = 'Mobility Aid',
+	},
+
+	['plt_cane'] = {
+		label = 'Cane',
+		weight = 800,
+		stack = false,
+		close = true,
+		consume = 0,
+		client = { export = 'plt_ambulance_job.plt_use_medication' },
+		description = 'A Simple Cane',
+	},
+
+	['plt_crutches'] = {
+		label = 'Crutches',
+		weight = 1200,
+		stack = false,
+		close = true,
+		consume = 0,
+		client = { export = 'plt_ambulance_job.plt_use_medication' },
+		description = 'Crutches',
+	},
+
+	['plt_ems_certificate'] = {
+		label = 'EMS Certificate',
+		weight = 50,
+		stack = false,
+		close = true,
+		description = 'Official MHD medical certificate signed by staff.',
+        client = {
+            image = 'prescription.png',
+        }
+	},
+
+	['as_xray_clipboard_01'] = {
+		label = 'X-Ray Clipboard #01',
+		weight = 200,
+		stack = false,
+		close = true,
+		consume = 0,
+		client = { export = 'plt_ambulance_job.plt_use_xray_clipboard' },
+		description = 'View X-Ray Images',
+	},
+
+	['as_xray_clipboard_02'] = {
+		label = 'X-Ray Clipboard #02',
+		weight = 200,
+		stack = false,
+		close = true,
+		consume = 0,
+		client = { export = 'plt_ambulance_job.plt_use_xray_clipboard' },
+		description = 'View X-Ray Images',
+	},
+
+	['as_xray_clipboard_03'] = {
+		label = 'X-Ray Clipboard #03',
+		weight = 200,
+		stack = false,
+		close = true,
+		consume = 0,
+		client = { export = 'plt_ambulance_job.plt_use_xray_clipboard' },
+		description = 'View X-Ray Images',
+	},
+
+	['as_xray_clipboard_04'] = {
+		label = 'X-Ray Clipboard #04',
+		weight = 200,
+		stack = false,
+		close = true,
+		consume = 0,
+		client = { export = 'plt_ambulance_job.plt_use_xray_clipboard' },
+		description = 'View X-Ray Images',
+	},
+
+
 }
