@@ -16,7 +16,7 @@ Config.EnableBlurEffect = true
     -- false = no blur effects
 
 Config.MDT = {
-    enabled = false, -- Medical usually doesn't link to police MDT BOLOs
+    enabled = true, -- Medical usually doesn't link to police MDT BOLOs
     type = 'export', 
 }
 
