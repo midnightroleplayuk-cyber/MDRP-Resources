@@ -13,7 +13,7 @@
         installProgress: null
     };
 
-    const money = value => `$${Math.max(0, Math.floor(Number(value) || 0)).toLocaleString()}`;
+    const money = value => `£${Math.max(0, Math.floor(Number(value) || 0)).toLocaleString('en-GB')}`;
     const pct = value => `${Math.max(0, Math.floor(Number(value) || 0))}%`;
     const safe = value => String(value ?? '').replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[char]));
     const t = (key, params = {}, fallback = '') => (typeof uiText === 'function' ? uiText(key, params, fallback) : fallback || key);
