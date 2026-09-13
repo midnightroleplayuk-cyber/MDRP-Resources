@@ -27,7 +27,6 @@ return {
 
     searchPercent = 0.03, -- 3% chance of getting a item from searching a vehicle
     rewards = {
-        { name = 'money', amount = 20, },
         { name = 'key' } -- we don't need to specify amount here as it will just give u 1 or if not using items give u the key
     },
 
