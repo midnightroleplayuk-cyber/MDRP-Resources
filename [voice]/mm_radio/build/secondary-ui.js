@@ -251,3 +251,28 @@
 
   render();
 })();
+
+
+/* mm_radio: after saving settings, return directly to the normal radio menu. */
+;(function(){
+ if(window.__mmSaveMenuFix)return; window.__mmSaveMenuFix=true;
+ document.addEventListener("click",function(ev){
+   var btn=ev.target&&ev.target.closest&&ev.target.closest("button");
+   if(!btn || (btn.textContent||"").trim().toUpperCase()!=="SAVE") return;
+   setTimeout(function(){
+     /* Prefer the visible Settings/cog toggle, since that is the radio's native
+        route out of the Settings page. */
+     var all=Array.prototype.slice.call(document.querySelectorAll("button"));
+     var settings=all.find(function(b){
+       if(b.offsetParent===null)return false;
+       var label=((b.getAttribute("aria-label")||"")+" "+(b.getAttribute("title")||"")+" "+(b.textContent||"")).toLowerCase();
+       return label.indexOf("settings")!==-1;
+     });
+     if(settings){ settings.click(); return; }
+     /* Fallback for icon-only cog buttons in compiled builds. */
+     var visible=all.filter(function(b){return b.offsetParent!==null});
+     var cog=visible.find(function(b){return b.querySelector("svg") && (b.textContent||"").trim()===""});
+     if(cog)cog.click();
+   },50);
+ },true);
+})();
