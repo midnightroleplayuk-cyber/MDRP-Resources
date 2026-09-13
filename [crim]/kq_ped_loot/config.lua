@@ -256,8 +256,8 @@ Config.lootPerModel = {
             ['money_briefcase'] = {
                 chance = 1500000,
                 money = {
-                    min = 300,
-                    max = 1500,
+                    min = 100,
+                    max = 500,
                 },
                 props = {
                     'prop_ld_case_01',
