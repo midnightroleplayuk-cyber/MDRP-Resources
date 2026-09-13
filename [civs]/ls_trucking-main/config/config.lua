@@ -225,16 +225,16 @@ Config.TrailerDespawnAfterDelivery = 10000 -- Cleanup delay after receiver signo
 
 -- When false, route completion skips the built-in payout, stats, XP/rep, and history write.
 Config.PayWhenRouteComplete = true
-Config.PayToBank = false -- False uses cash; true uses bank for route payouts and service bay charges.
+Config.PayToBank = true -- False uses cash; true uses bank for route payouts and service bay charges.
 Config.ReturnVehicleBonusEnabled = true
 Config.ReturnVehicleBonus = 250 -- Paid once for returning the correct company vehicle after a completed route.
 
 -- min/max define the randomized base payout before mileage, contractor, timing, and damage adjustments.
 -- xp and rep are awarded after a successful paid route.
 Config.Payouts = {
-    van = { min = 1200, max = 1500, xp = 120, rep = 2 },
-    boxtruck = { min = 2200, max = 2500, xp = 250, rep = 4 },
-    trailer = { min = 4200, max = 4500, xp = 500, rep = 7 }
+    van = { min = 500, max = 900, xp = 1000, rep = 2 },
+    boxtruck = { min = 1000, max = 1900, xp = 1000, rep = 4 },
+    trailer = { min = 2000, max = 2500, xp = 1000, rep = 7 }
 }
 
 -- Added to the randomized base payout using each route's configured routeLength.
@@ -246,15 +246,15 @@ Config.MileagePayout = {
 -- xp is the cumulative minimum required for a rank. Keep entries in ascending threshold order.
 Config.Ranks = {
     { rank = 1, label = 'Probationary Driver', xp = 0 },
-    { rank = 2, label = 'City Courier', xp = 5000 },
-    { rank = 3, label = 'Route Driver', xp = 15000 },
-    { rank = 4, label = 'Trailer Certified Driver', xp = 35000 },
-    { rank = 5, label = 'Freight Operator', xp = 65000 },
-    { rank = 6, label = 'Long Haul Driver', xp = 110000 },
-    { rank = 7, label = 'Heavy Freight Specialist', xp = 175000 },
-    { rank = 8, label = 'Fleet Lead', xp = 260000 },
-    { rank = 9, label = 'Logistics Supervisor', xp = 375000 },
-    { rank = 10, label = 'LSFC Master Hauler', xp = 500000 }
+    { rank = 2, label = 'City Courier', xp = 1500 },
+    { rank = 3, label = 'Route Driver', xp = 5000 },
+    { rank = 4, label = 'Trailer Certified Driver', xp = 10000 },
+    { rank = 5, label = 'Freight Operator', xp = 20000 },
+    { rank = 6, label = 'Long Haul Driver', xp = 250000 },
+    { rank = 7, label = 'Heavy Freight Specialist', xp = 35000 },
+    { rank = 8, label = 'Fleet Lead', xp = 45000 },
+    { rank = 9, label = 'Logistics Supervisor', xp = 55000 },
+    { rank = 10, label = 'LSFC Master Hauler', xp = 650000 }
 }
 
 Config.PrivateContractor = {
@@ -598,7 +598,7 @@ Config.UI = {
 
 Config.Notifications = {
     Enabled = true, -- Controls visual ox_lib notifications; receiver/dock radio messages are unaffected.
-    Title = 'Los Santos Freight Co.',
+    Title = 'Midnight Freight Co.',
     Duration = 8500, -- milliseconds
     Sounds = false, -- Notification-specific sounds; independent from Config.UI.Sounds.
     -- Maps notification types to logical Config.UI sound names such as alert or confirm.
