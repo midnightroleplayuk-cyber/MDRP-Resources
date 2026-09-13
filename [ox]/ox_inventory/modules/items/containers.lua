@@ -58,5 +58,9 @@ setContainerProperties('pizzabox', {
 	maxWeight = 1000,
 	whitelist = { 'pizza' }
 })
-
+setContainerProperties('keyring', {
+	slots = 10,
+	maxWeight = 100,
+	whitelist = { 'vehiclekey'}
+})
 return containers

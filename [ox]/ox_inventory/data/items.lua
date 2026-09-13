@@ -111,10 +111,13 @@ return {
         }
     },
 
-    ['lockpick'] = {
-        label = 'Lockpick',
-        weight = 160,
-    },
+['lockpick'] = {
+	label = 'Lockpick',
+	weight = 160,
+	client = {
+		event = 'lockpick:use'
+	}
+},
 -- LB PHONE
 ["phone"] = {
     label = "Phone",
@@ -219,7 +222,23 @@ return {
     ['advancedlockpick'] = {
         label = 'Advanced Lockpick',
         weight = 500,
+        client = {
+            event = 'lockpick:useAdvanced'
+        }
     },
+
+    -- RENEWED KEYS
+    ['vehiclekey'] = {
+	label = 'Vehicle Key'
+},
+    ['keyring'] = {
+	label = 'Key Ring',
+	weight = 1,
+	stack = false,
+	close = false,
+	consume = 0
+},
+
 
     ['screwdriverset'] = {
         label = 'Screwdriver Set',
