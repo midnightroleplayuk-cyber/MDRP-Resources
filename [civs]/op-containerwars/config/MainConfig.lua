@@ -1,7 +1,7 @@
 Config = {}
 Config.Locale = "en" -- Supported: EN / PL / HU / SK / CZ / DE / TR / FR / SL / TW / AR / PT / HR / IT / ES
 Config.FuelDependency = "lc_fuel" -- Options: none, cdn-fuel, ox-fuel, LegacyFuel, qs-fuel, rcore-fuel, codem-xfuel, lc_fuel
-Config.KeysDependency = "qb-keys" -- Options: none, brutal_keys, qs-keys, qb-keys, wasabi_carlock, sna-vehiclekeys, dusa_vehiclekeys, Renewed-Vehiclekeys, tgiann-keys, ak47_vehiclekeys, ak47_qb_vehiclekeys, MrNewbVehicleKeys, p_carkeys, mVehicle, sy_carkeys
+Config.KeysDependency = "Renewed-Vehiclekeys" -- Options: none, brutal_keys, qs-keys, qb-keys, wasabi_carlock, sna-vehiclekeys, dusa_vehiclekeys, Renewed-Vehiclekeys, tgiann-keys, ak47_vehiclekeys, ak47_qb_vehiclekeys, MrNewbVehicleKeys, p_carkeys, mVehicle, sy_carkeys
 Config.TextUI = "ox_lib" -- Options: none, ox_lib, jg-textui, qs-textui, okokTextUI, brutal_textui, 0r-textui
 
 Config.Misc = {

@@ -4,7 +4,7 @@ Config = {}
 Config.Framework   = 'auto'      -- auto | esx | qb | qbox | standalone
 Config.Inventory   = 'auto'      -- auto | ox_inventory | qb | none
 Config.Target      = 'auto'      -- auto | ox_target | qb-target | qtarget | none
-Config.VehicleKeys = 'auto'      -- auto | none | qb-vehiclekeys | qbx_vehiclekeys | qs-vehiclekeys | cd_garage | wasabi_carlock | Renewed-Vehiclekeys | t1ger_keys | mk_vehiclekeys | xd_locksystem | VehicleKeyChain
+Config.VehicleKeys = 'Renewed-Vehiclekeys'      -- auto | none | qb-vehiclekeys | qbx_vehiclekeys | qs-vehiclekeys | cd_garage | wasabi_carlock | Renewed-Vehiclekeys | t1ger_keys | mk_vehiclekeys | xd_locksystem | VehicleKeyChain
 
 Config.Locale            = 'en'            -- Locale file to load: de or en
 Config.Currency          = '£'             -- Currency symbol shown in the UI
