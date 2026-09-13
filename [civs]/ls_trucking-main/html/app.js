@@ -698,7 +698,7 @@ window.addEventListener('keydown', event => {
 
 function formatMoney(value) {
     const number = Number(value || 0);
-    return `£${number.toLocaleString()}`;
+    return `${number.toLocaleString()}`;
 }
 
 function formatInteger(value, fallback = '0') {
