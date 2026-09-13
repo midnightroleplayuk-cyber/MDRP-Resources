@@ -9,6 +9,7 @@
     maxChannel: 1000,
     primaryMembers: {},
     secondaryMembers: {},
+    channelNames: {},
     rosterCoords: null,
     rosterScale: 100
   };
@@ -69,6 +70,35 @@
 
   function safeText(value) { return String(value ?? 'Unknown'); }
 
+  function formatFrequency(channel) {
+    const n = Number(channel);
+    if (!Number.isFinite(n) || n <= 0) return 'OFF';
+    const text = Number.isInteger(n) ? String(n) : n.toFixed(2).replace(/0+$/, '').replace(/\.$/, '');
+    return `${text} MHz`;
+  }
+
+  function channelNameFor(channel) {
+    const n = Number(channel);
+    if (!Number.isFinite(n) || n <= 0) return '';
+    const names = state.channelNames || {};
+    const raw = Number.isInteger(n) ? String(n) : n.toFixed(2).replace(/0+$/, '').replace(/\.$/, '');
+
+    if (names[raw]) return String(names[raw]);
+
+    for (const [key, value] of Object.entries(names)) {
+      if (!key.endsWith('.%')) continue;
+      const prefix = key.slice(0, -2);
+      if (raw.startsWith(prefix + '.')) return String(value);
+    }
+    return '';
+  }
+
+  function rosterChannelText(channel) {
+    const frequency = formatFrequency(channel);
+    const name = channelNameFor(channel);
+    return name ? `${name} | ${frequency}` : frequency;
+  }
+
   function renderMembers(container, members) {
     container.replaceChildren();
     const entries = Object.entries(members || {}).sort((a, b) => safeText(a[1]?.name).localeCompare(safeText(b[1]?.name)));
@@ -110,8 +140,10 @@
     // Do not leave an empty SECONDARY block behind after disconnecting. It comes
     // back automatically as soon as a secondary channel is joined again.
     secondarySection.classList.toggle('mm-channel-hidden', !hasSecondary);
-    primaryFreq.textContent = hasPrimary ? `${state.primary} MHz` : 'OFF';
-    secondaryFreq.textContent = hasSecondary ? `${state.channel} MHz` : 'OFF';
+    primaryFreq.textContent = hasPrimary ? rosterChannelText(state.primary) : 'OFF';
+    secondaryFreq.textContent = hasSecondary ? rosterChannelText(state.channel) : 'OFF';
+    primaryFreq.title = hasPrimary ? primaryFreq.textContent : '';
+    secondaryFreq.title = hasSecondary ? secondaryFreq.textContent : '';
     renderMembers(primaryMembers, hasPrimary ? state.primaryMembers : {});
     renderMembers(secondaryMembers, hasSecondary ? state.secondaryMembers : {});
     applyRosterPosition();
@@ -229,6 +261,7 @@
       state.primary = Number(data.channel) || 0;
       state.channel = Number(data.secondaryChannel) || 0;
       state.maxChannel = Number(data.maxChannel) || state.maxChannel;
+      if (data.channelName && typeof data.channelName === 'object') state.channelNames = data.channelName;
       if (data.userData?.playerlist) {
         state.overlayEnabled = data.userData.playerlist.show === true;
         if (data.userData.playerlist.coords) state.rosterCoords = data.userData.playerlist.coords;
@@ -240,6 +273,7 @@
     } else if (action === 'updateRadio') {
       state.primary = Number(data.channel) || 0;
       if (data.secondaryChannel !== undefined) state.channel = Number(data.secondaryChannel) || 0;
+      if (data.channelName && typeof data.channelName === 'object') state.channelNames = data.channelName;
       if (data.userData?.playerlist) {
         state.overlayEnabled = data.userData.playerlist.show === true;
         if (data.userData.playerlist.coords) state.rosterCoords = data.userData.playerlist.coords;

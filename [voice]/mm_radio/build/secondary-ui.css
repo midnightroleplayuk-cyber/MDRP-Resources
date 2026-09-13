@@ -58,3 +58,17 @@ button[title*="Recommended" i] svg,
     stroke: #fff !important;
     opacity: 1 !important;
 }
+
+/* Named channel labels in the persistent Primary/Secondary roster.
+   Configured channels use Shared.RadioNames -> NAME | Frequency.
+   Unnamed channels remain frequency-only. */
+.mm-roster-heading span:last-child{
+  max-width:118px;
+  min-width:0;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+  text-align:right;
+  font-size:7.5px!important;
+  color:#f0e4ff!important;
+}
