@@ -5,7 +5,7 @@ const MINI_WALLPAPER_IMPORT_LIMIT = 12 * 1024 * 1024;
 
 function formatMoney(value) {
     const number = Number(value || 0);
-    return `$${number.toLocaleString()}`;
+    return `£${number.toLocaleString('en-GB')}`;
 }
 
 function formatInteger(value, fallback = '0') {

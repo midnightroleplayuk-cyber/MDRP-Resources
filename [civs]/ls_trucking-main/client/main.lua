@@ -4015,9 +4015,9 @@ RegisterNetEvent('ls_trucking:client:routePaid', function(data)
     RouteHistory.Save(data)
 
     local routeName = data and (data.routeLabel or data.contractLabel) or 'route'
-    DispatchChatter(('Route %s closed. Payment of $%s processed and summary logged.'):format(routeName, data and data.payout or 0), 'success', 'confirm')
+    DispatchChatter(('Route %s closed. Payment of £%s processed and summary logged.'):format(routeName, data and data.payout or 0), 'success', 'confirm')
 end)
-RegisterNetEvent('ls_trucking:client:returnBonusPaid', function(amount) Notify(('Company vehicle returned and saved. Bonus paid: $%s.'):format(amount), 'success') end)
+RegisterNetEvent('ls_trucking:client:returnBonusPaid', function(amount) Notify(('Company vehicle returned and saved. Bonus paid: £%s.'):format(amount), 'success') end)
 
 RegisterNetEvent('ls_trucking:client:contractCancelled', function(data)
     data = data or {}
@@ -4026,7 +4026,7 @@ RegisterNetEvent('ls_trucking:client:contractCancelled', function(data)
     local reason = data.reason or 'Not specified'
 
     if fee > 0 then
-        Notify(('Route cancelled. Reason: %s. Reputation lost: %s. Contractor fee: $%s.'):format(reason, repLoss, fee), 'error')
+        Notify(('Route cancelled. Reason: %s. Reputation lost: %s. Contractor fee: £%s.'):format(reason, repLoss, fee), 'error')
         return
     end
 
