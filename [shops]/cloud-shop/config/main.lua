@@ -166,7 +166,7 @@ return {
 			Items = {
 				-- Phones
 				{ name = "phone", label = "LB Phone", category = "Phones", price = 600 },
-			
+			    { name = "radio", label = "Radio", category = "all", price = 600 },
 			},
 
 			Requirement = {
