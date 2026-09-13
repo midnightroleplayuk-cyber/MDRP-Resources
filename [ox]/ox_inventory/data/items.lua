@@ -3414,5 +3414,36 @@ return {
 		description = 'View X-Ray Images',
 	},
 
+ -- CRIME SCENE
+ ['devhub_bodybag'] = {
+    label = 'Body Bag',
+    weight = 300,
+    stack = true,
+    close = true,
+    description = "Bag used for transporting bodies"
+},
 
+['devhub_binbag'] = {
+    label = 'Bin Bag',
+    weight = 100,
+    stack = true,
+    close = true,
+    description = "Plastic garbage bag"
+},
+
+['devhub_cleaningkit'] = {
+    label = 'Cleaning Kit',
+    weight = 150,
+    stack = true,
+    close = true,
+    description = "Kit for cleaning traces"
+},
+
+['devhub_antiquevase'] = {
+    label = 'Antique Vase',
+    weight = 250,
+    stack = true,
+    close = true,
+    description = "Valuable antique vase"
+},
 }
