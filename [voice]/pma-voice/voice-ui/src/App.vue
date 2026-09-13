@@ -3,6 +3,7 @@
 		<audio id="audio_on" src="radio_speak.ogg"></audio>
 		<audio id="audio_off" src="radio_end.ogg"></audio>
 		<div v-if="voice.uiEnabled" class="voiceInfo">
+			<!-- Secondary radio is injected by ui/js/mm_radio_secondary.js and kept above Primary/Range. -->
 			<p v-if="voice.callInfo !== 0" :class="{ talking: voice.talking }">
 				[Call]
 			</p>

@@ -9,7 +9,8 @@
     maxChannel: 1000,
     primaryMembers: {},
     secondaryMembers: {},
-    rosterCoords: null
+    rosterCoords: null,
+    rosterScale: 100
   };
 
   // Client-local fallback for roster position. mm_radio also saves the position in
@@ -96,6 +97,9 @@
       roster.style.right = `${Math.max(0, Number(state.rosterCoords.x))}px`;
       roster.style.top = `${Math.max(0, Number(state.rosterCoords.y))}px`;
     }
+    const scale = Math.max(75, Math.min(150, Number(state.rosterScale) || 100));
+    roster.style.transformOrigin = 'top right';
+    roster.style.transform = `scale(${scale / 100})`;
   }
 
   function renderRoster() {
@@ -153,8 +157,9 @@
   });
   window.addEventListener('mousemove', e => {
     if (!dragging) return;
-    const nextRight = Math.max(0, Math.min(window.innerWidth - roster.offsetWidth, startRight - (e.clientX - startX)));
-    const nextTop = Math.max(0, Math.min(window.innerHeight - roster.offsetHeight, startTop + (e.clientY - startY)));
+    const bounds = roster.getBoundingClientRect();
+    const nextRight = Math.max(0, Math.min(window.innerWidth - bounds.width, startRight - (e.clientX - startX)));
+    const nextTop = Math.max(0, Math.min(window.innerHeight - bounds.height, startTop + (e.clientY - startY)));
     state.rosterCoords = { x: nextRight, y: nextTop };
     applyRosterPosition();
   });
@@ -182,6 +187,17 @@
     return null;
   }
 
+  function wireOverlayScaleSlider() {
+    const slider = document.querySelector('input[type="range"][min="75"][max="150"]');
+    if (!slider || slider.dataset.mmRosterScaleWired === '1') return;
+    slider.dataset.mmRosterScaleWired = '1';
+    slider.addEventListener('input', () => {
+      const value = Math.max(75, Math.min(150, Number(slider.value) || 100));
+      state.rosterScale = value;
+      applyRosterPosition();
+    });
+  }
+
   function dockPanelIntoSettings() {
     if (!state.visible) {
       panel.dataset.docked = '0';
@@ -196,6 +212,7 @@
     }
     if (panel.parentElement !== settingsBody) settingsBody.appendChild(panel);
     panel.dataset.docked = '1';
+    wireOverlayScaleSlider();
     render();
   }
 
@@ -215,6 +232,7 @@
       if (data.userData?.playerlist) {
         state.overlayEnabled = data.userData.playerlist.show === true;
         if (data.userData.playerlist.coords) state.rosterCoords = data.userData.playerlist.coords;
+        state.rosterScale = Math.max(75, Math.min(150, Number(data.userData.overlaySizeMultiplier) || 100));
       }
       render(); setTimeout(dockPanelIntoSettings, 50);
     } else if (action === 'setRadioHide') {
@@ -225,6 +243,7 @@
       if (data.userData?.playerlist) {
         state.overlayEnabled = data.userData.playerlist.show === true;
         if (data.userData.playerlist.coords) state.rosterCoords = data.userData.playerlist.coords;
+        state.rosterScale = Math.max(75, Math.min(150, Number(data.userData.overlaySizeMultiplier) || 100));
       }
       render();
     } else if (action === 'overlayVisibilityChanged') {

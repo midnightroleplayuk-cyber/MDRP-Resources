@@ -127,8 +127,9 @@ RegisterNUICallback('enableClicks', function(data, cb)
 end)
 
 RegisterNUICallback('updateRadioSize', function(data, cb)
-    Radio.userData[Radio.identifier].radioSizeMultiplier = data.radio
-    Radio.userData[Radio.identifier].overlaySizeMultiplier = data.overlay
+    Radio.userData[Radio.identifier].radioSizeMultiplier = tonumber(data.radio) or Radio.userData[Radio.identifier].radioSizeMultiplier
+    local overlay = tonumber(data.overlay) or Radio.userData[Radio.identifier].overlaySizeMultiplier or 100
+    Radio.userData[Radio.identifier].overlaySizeMultiplier = math.max(75, math.min(150, overlay))
     SetResourceKvp('radioSettings2', json.encode(Radio.userData))
     cb("ok")
 end)

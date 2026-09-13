@@ -47,7 +47,7 @@ function Radio:SetDefaultData(cid)
     self.userData[cid] = {
         favourite = {},
         name = nil,
-        overlaySizeMultiplier = 50,
+        overlaySizeMultiplier = 100,
         radioSizeMultiplier = 50,
         allowMovement = false,
         enableClicks = true,
@@ -88,6 +88,19 @@ function Radio:Init(data)
         end
     end
     self.userData[self.identifier].name = self.userData[self.identifier].name or player.charinfo.firstname .. " " .. player.charinfo.lastname
+    -- Overlay scale now uses direct percentages (75-150). Older builds stored 25-75
+    -- with a x2 multiplier, so migrate those values once while preserving appearance.
+    local overlayScale = tonumber(self.userData[self.identifier].overlaySizeMultiplier)
+    if not overlayScale then
+        overlayScale = 100
+    elseif overlayScale < 75 then
+        overlayScale = overlayScale * 2
+    end
+    overlayScale = math.max(75, math.min(150, overlayScale))
+    if tonumber(self.userData[self.identifier].overlaySizeMultiplier) ~= overlayScale then
+        self.userData[self.identifier].overlaySizeMultiplier = overlayScale
+        SetResourceKvp('radioSettings2', json.encode(self.userData))
+    end
     if self.userData[self.identifier].enableClicks == nil then
         self.userData[self.identifier].enableClicks = true
         SetResourceKvp('radioSettings2', json.encode(self.userData))
