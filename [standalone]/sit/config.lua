@@ -9,7 +9,7 @@ Config.Framework = false
 
 -- Just like Config.Framework; What framework/libary you use for the notifications. Supported values: "QBCore", "TMC", "OX" or false (false = standalone)
 -- IMPORTANT NOTE: If you use OX you NEED to add '@ox_lib/init.lua', under client_scripts in fxmanifest.lua!
-Config.Notifications = false
+Config.Notifications = OX
 
 -- The targeting solution (3rd eye) to use.
 -- false       = don't use any targeting solution. ('false'/"false" will NOT work, false NEEDS to be a boolean.)

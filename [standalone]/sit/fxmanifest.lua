@@ -7,7 +7,7 @@ description 'Sit Anywhere!'
 version '1.2.0'
 
 client_scripts {
-    -- '@ox_lib/init.lua', -- Uncomment this if you want to use ox lib notifications etc.!
+    '@ox_lib/init.lua', -- Uncomment this if you want to use ox lib notifications etc.!
     'config.lua',
     'list.lua',
     'client.lua'
