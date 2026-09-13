@@ -242,7 +242,7 @@ Config.lootPerModel = {
             ['nothing'] = {
                 chance = 50,
             },
-            ['briefcase'] = {
+            ['advancedlockpick'] = {
                 chance = 10,
                 item = {
                     name = 'secret_documents',
