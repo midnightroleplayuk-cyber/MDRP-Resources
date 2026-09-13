@@ -60,16 +60,16 @@ Config.UIStyles = {
     escalera = {
         label      = 'Escalera',
         subtitle   = 'Rent-A-Car',
-        accent     = '#400350',
+        accent     = '#a842c2',
         accentText = '#111111',
         logo       = 'Escalera',
         logoImage  = 'img/logos/escaleralogo.png',
         watermark  = 'E'
     },
     touchdown = {
-        label      = 'Touchdown',
+        label      = 'Midnight Rentals',
         subtitle   = 'Car Rentals',
-        accent     = '#148f43',
+        accent     = '#b134e2',
         accentText = '#ffffff',
         logo       = 'Touchdown',
         logoImage  = 'img/logos/touchdownlogo.png',
@@ -132,12 +132,12 @@ Config.ReturnStations = {
     {
         id     = 'airport_return',
         label  = 'Airport Return',
-        coords = vec3(-826.74, -2333.42, 14.57)
+        coords = vec3(-826.74, -2333.42, 14.57), vec3(-296.57, -885.98, 31.08)
     },
     {
         id     = 'city_return',
         label  = 'City Return',
-        coords = vec3(-296.57, -885.98, 31.08)
+        coords = vec3(-296.57, -885.98, 31.08), vec3(-826.74, -2333.42, 14.57)
     }
 }
 
