@@ -201,6 +201,30 @@
 
   setInterval(dockPanelIntoSettings, 200);
 
+  // The original member-list screen has a Show/Hide Overlay button next to the cog.
+  // Overlay visibility is now managed inside Settings, so hide that duplicate control
+  // and let the Settings cog use the full footer width. This is text-based so it works
+  // with either SHOW OVERLAY or HIDE OVERLAY state without changing the compiled app.
+  function hideLegacyOverlayButton() {
+    const buttons = [...document.querySelectorAll('button')];
+    for (const button of buttons) {
+      const text = (button.textContent || '').trim().toLowerCase();
+      if ((text.includes('show') || text.includes('hide')) && text.includes('overlay')) {
+        button.style.display = 'none';
+        const footer = button.parentElement;
+        if (footer) {
+          const gear = [...footer.querySelectorAll('button')].find(b => b !== button && b.querySelector('.fa-gear'));
+          if (gear) {
+            gear.style.width = '100%';
+            gear.style.flex = '1 1 100%';
+          }
+        }
+      }
+    }
+  }
+
+  setInterval(hideLegacyOverlayButton, 250);
+
   window.addEventListener('message', (e) => {
     const msg = e.data || {};
     const action = msg.action;

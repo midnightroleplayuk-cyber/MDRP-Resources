@@ -12,6 +12,31 @@ local secondaryRadioAnim = {
     anim = "generic_radio_enter"
 }
 
+-- Play the same pma-voice mic clicks for Secondary even when Primary is disconnected.
+-- pma-voice's stock UI can stop handling its normal click path after radioEnabled is
+-- disabled, so when there is no Primary channel we send a tiny fallback message to
+-- the companion UI script. This avoids duplicate clicks while Primary is connected.
+local function secondaryMicClick(clickType)
+    local primaryChannel = tonumber(LocalPlayer.state.radioChannel) or 0
+
+    if primaryChannel > 0 and playMicClicks then
+        playMicClicks(clickType == true)
+        return
+    end
+
+    -- Respect pma-voice's saved mic-click preference. The default is enabled.
+    local saved = GetResourceKvpString('pma-voice_enableMicClicks')
+    if saved == 'false' then return end
+
+    local volume = clickType and (GetConvarInt('voice_onClickVolume', 10) / 100)
+        or (GetConvarInt('voice_offClickVolume', 3) / 100)
+
+    SendNUIMessage({
+        mmSecondaryMicClick = clickType and 'audio_on' or 'audio_off',
+        mmSecondaryMicClickVolume = volume
+    })
+end
+
 local function secondaryRadioAnimEnabled()
     if GetConvarInt('voice_enableRadioAnim', 1) ~= 1 then return false end
     if GetConvarInt('voice_disableVehicleRadioAnim', 0) == 1 and IsPedInAnyVehicle(PlayerPedId(), false) then return false end
@@ -67,7 +92,7 @@ local function stopSecondaryTalk()
     LocalPlayer.state:set('secondaryRadioActive', false, true)
     SendNUIMessage({ secondaryRadioChannel = secondaryRadioChannel, usingSecondaryRadio = false })
     StopAnimTask(PlayerPedId(), secondaryRadioAnim.dict, secondaryRadioAnim.anim, -4.0)
-    if playMicClicks then playMicClicks(false) end
+    secondaryMicClick(false)
 end
 
 RegisterCommand('+secondaryradiotalk', function()
@@ -87,7 +112,7 @@ RegisterCommand('+secondaryradiotalk', function()
     TriggerEvent('mm_radio:client:secondaryRadioActive', true)
     LocalPlayer.state:set('secondaryRadioActive', true, true)
     SendNUIMessage({ secondaryRadioChannel = secondaryRadioChannel, usingSecondaryRadio = true })
-    if playMicClicks then playMicClicks(true) end
+    secondaryMicClick(true)
 
     local shouldPlayAnimation = secondaryRadioAnimEnabled()
     if shouldPlayAnimation then

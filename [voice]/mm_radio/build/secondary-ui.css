@@ -34,3 +34,27 @@ input.bg-\[\#501A8A\]::placeholder{color:rgba(255,255,255,.62)!important}
    in the favourites/recommended selector is the favourites control. */
 #app button:has(.fa-star), main button:has(.fa-star){color:#f7f0ff!important}
 #app button:has(.fa-star) i, main button:has(.fa-star) i{color:#fff!important;filter:drop-shadow(0 0 2px rgba(255,255,255,.25))}
+
+
+/* mm_radio dual-channel: improve Recommended control contrast on purple theme */
+button[aria-label*="Recommended" i],
+button[title*="Recommended" i],
+[aria-label*="Recommended" i],
+[title*="Recommended" i],
+.recommended,
+.recommended-button,
+.recommendedButton {
+    color: rgba(255,255,255,0.96) !important;
+}
+button[aria-label*="Recommended" i] svg,
+button[title*="Recommended" i] svg,
+[aria-label*="Recommended" i] svg,
+[title*="Recommended" i] svg,
+.recommended svg,
+.recommended-button svg,
+.recommendedButton svg {
+    color: #fff !important;
+    fill: #fff !important;
+    stroke: #fff !important;
+    opacity: 1 !important;
+}
