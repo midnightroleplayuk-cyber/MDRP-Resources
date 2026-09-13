@@ -3,8 +3,8 @@ Config = {} -- Do not touch
 
 Config.SkillsCategory = "laptop" -- If you don't have devhub_skillTree that doesn't work.
 
-Config.MaxTaskTime = 5 -- Time in minutes between processing the next person in the queue
-Config.PersonalCooldownTime = 15 -- Personal cooldown time in minutes after completing a task
+Config.MaxTaskTime = 0 -- Time in minutes between processing the next person in the queue
+Config.PersonalCooldownTime = 0 -- Personal cooldown time in minutes after completing a task
 
 Config.Vehicle = {
     locations = { -- At the beginning of the task, the script will select a random location where the car is located.
