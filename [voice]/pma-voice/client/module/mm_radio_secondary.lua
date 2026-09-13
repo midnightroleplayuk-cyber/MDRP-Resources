@@ -12,29 +12,26 @@ local secondaryRadioAnim = {
     anim = "generic_radio_enter"
 }
 
--- Play the same pma-voice mic clicks for Secondary even when Primary is disconnected.
--- pma-voice's stock UI can stop handling its normal click path after radioEnabled is
--- disabled, so when there is no Primary channel we send a tiny fallback message to
--- the companion UI script. This avoids duplicate clicks while Primary is connected.
+-- Play Secondary PTT clicks through the exact same stock pma-voice path as Primary.
 local function secondaryMicClick(clickType)
-    local primaryChannel = tonumber(LocalPlayer.state.radioChannel) or 0
-
-    if primaryChannel > 0 and playMicClicks then
+    -- Use pma-voice's stock mic-click function for Secondary as well.
+    -- playMicClicks already respects the player's mic-click preference and the
+    -- configured on/off volumes; it does not require a Primary radio channel.
+    if playMicClicks then
         playMicClicks(clickType == true)
         return
     end
 
-    -- Respect pma-voice's saved mic-click preference. The default is enabled.
-    local saved = GetResourceKvpString('pma-voice_enableMicClicks')
-    if saved == 'false' then return end
-
-    local volume = clickType and (GetConvarInt('voice_onClickVolume', 10) / 100)
-        or (GetConvarInt('voice_offClickVolume', 3) / 100)
-
-    SendNUIMessage({
-        mmSecondaryMicClick = clickType and 'audio_on' or 'audio_off',
-        mmSecondaryMicClickVolume = volume
-    })
+    -- Compatibility fallback for builds where playMicClicks is not in scope.
+    -- Keep the same message format used by stock pma-voice.
+    if sendUIMessage then
+        local volume = clickType and (GetConvarInt('voice_onClickVolume', 10) / 100)
+            or (GetConvarInt('voice_offClickVolume', 3) / 100)
+        sendUIMessage({
+            sound = clickType and 'audio_on' or 'audio_off',
+            volume = volume
+        })
+    end
 end
 
 local function secondaryRadioAnimEnabled()
