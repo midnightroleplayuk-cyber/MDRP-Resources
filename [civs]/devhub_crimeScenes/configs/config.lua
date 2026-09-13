@@ -61,7 +61,7 @@ Config.Vehicle = {
             }
         },
     },
-    lockedByDefault = false, -- if true, the task vehicle spawns with locked doors (status 2). Set to false to leave it unlocked on spawn.
+    lockedByDefault = true, -- if true, the task vehicle spawns with locked doors (status 2). Set to false to leave it unlocked on spawn.
     blip = { -- blip config for the vehicle
         sprite = 326, -- blip sprite (https://docs.fivem.net/docs/game-references/blips/)
         color = 5, -- blip color (https://docs.fivem.net/docs/game-references/blips/)
