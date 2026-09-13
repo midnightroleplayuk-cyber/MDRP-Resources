@@ -52,7 +52,12 @@ function setTalkingOnRadio(plySource, enabled)
 	-- If we're on a call we don't want to toggle their voice disabled this will break calls.
 	local enabled = enabled or callData[plySource]
 	toggleVoice(plySource, enabled, 'radio')
-	playMicClicks(enabled)
+	-- The local PTT handler already plays our own on/off click. The server also
+	-- echoes setTalkingOnRadio back to us, so playing it again here overlaps the
+	-- custom OGG and can sound crackly. Remote members still produce their click.
+	if plySource ~= playerServerId then
+		playMicClicks(enabled)
+	end
 end
 RegisterNetEvent('pma-voice:setTalkingOnRadio', setTalkingOnRadio)
 

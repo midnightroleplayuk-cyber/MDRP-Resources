@@ -1,0 +1,4 @@
+Final dual-radio sound fixes based on this exact pma-voice copy:
+- NUI mic-click sounds are no longer blocked when primary radioChannel is 0.
+- Primary local mic clicks are not replayed by the echoed server talking event, preventing overlap/crackle.
+- Secondary PTT continues using pma-voice playMicClicks and therefore the supplied radio_speak.ogg/radio_end.ogg files.
