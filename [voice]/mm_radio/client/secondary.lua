@@ -21,6 +21,12 @@ function Radio:SetSecondaryRadio(channel, silent)
         return self:LeaveSecondaryRadio(silent)
     end
 
+    -- Do not allow Primary and Secondary to point at the same frequency.
+    if SameRadioChannel(channel, self.RadioChannel) then
+        if not silent then self:DuplicateChannelNotify('Primary') end
+        return false
+    end
+
     if self.insideJammer and not IsJammerAllowed(self.insideJammerZone, channel) then
         if not silent then self:Notify(('Secondary channel %s is jammed'):format(channel)) end
         return false

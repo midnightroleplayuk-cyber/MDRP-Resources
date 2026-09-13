@@ -335,6 +335,12 @@ end
 lib.callback.register('mm_radio:server:setSecondaryRadio', function(source, channel)
     channel = tonumber(channel)
     if channel then channel = math.floor(channel * 100 + 0.5) / 100 end
+
+    -- Server-side guard as well as the client check.
+    if channel and channels[channel] and channels[channel][tostring(source)] then
+        return false, 'You are already in that channel on Primary!'
+    end
+
     local allowed, reason = secondaryAllowed(source, channel)
     if not allowed then return false, reason end
 

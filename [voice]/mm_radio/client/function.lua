@@ -1,5 +1,21 @@
 local insideJammer = false
 
+-- Treat radio frequencies as equal at mm_radio's supported two-decimal precision.
+function SameRadioChannel(a, b)
+    a, b = tonumber(a), tonumber(b)
+    if not a or not b or a <= 0 or b <= 0 then return false end
+    return math.floor(a * 100 + 0.5) == math.floor(b * 100 + 0.5)
+end
+
+function Radio:DuplicateChannelNotify(side)
+    lib.notify({
+        title = 'Radio',
+        description = ('You are already in that channel on %s!'):format(side),
+        type = 'error',
+        duration = 5000
+    })
+end
+
 function IsJammerAllowed(id, channel)
     for i=1, #Radio.jammer do
         local entity = Radio.jammer[i]
@@ -475,6 +491,11 @@ function JoinRadio(channel)
     end
     if channel == Radio.RadioChannel then
         return Radio:Notify(locale('already_notify_description', channel), 10000)
+    end
+    -- A frequency can only be assigned to one side of the dual radio at a time.
+    if SameRadioChannel(channel, Radio.SecondaryRadioChannel) then
+        Radio:DuplicateChannelNotify('Secondary')
+        return
     end
     local connectChannel = math.floor(channel)
     if Shared.RestrictedChannels[connectChannel] then
