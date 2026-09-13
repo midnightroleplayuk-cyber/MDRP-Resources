@@ -147,6 +147,33 @@ function QboxBridge:RegisterEvents(isHudInitialized, refreshPlayerData, onPlayer
             visible = false
         })
     end)
+
+    -- Compatibility for medical resources (including Pluto Ambulance Job V2)
+    -- that push the traditional QB/Qbox needs events after a revive.
+    RegisterNetEvent('hud:client:UpdateNeeds', function(hunger, thirst)
+        hunger = tonumber(hunger) or 100
+        thirst = tonumber(thirst) or 100
+
+        Client.PlayerData.Hunger = math.max(0, math.min(100, math.floor(hunger)))
+        Client.PlayerData.Thrist = math.max(0, math.min(100, math.floor(thirst)))
+
+        SendNUIMessage({
+            type = "updatePlayerData",
+            data = Client.PlayerData
+        })
+    end)
+
+    RegisterNetEvent('hud:client:UpdateStress', function(stress)
+        if Settings and Settings.DisableStress then return end
+
+        stress = tonumber(stress) or 0
+        Client.PlayerData.Stress = math.max(0, math.min(100, math.floor(stress)))
+
+        SendNUIMessage({
+            type = "updatePlayerData",
+            data = Client.PlayerData
+        })
+    end)
 end
 
 function QboxBridge:StartStatusListener(Client, Settings, refreshPlayerData)
