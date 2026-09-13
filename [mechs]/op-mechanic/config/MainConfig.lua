@@ -65,7 +65,7 @@ local bankingScripts = {
     ['tgg-banking'] = 'tgg-banking',
     ['p_banking'] = 'p_banking',
 }
-Config.Banking = 'LGMods_Banking'
+Config.Banking = 'none'
 
 -- ──────────────────────────────────────────────────────────────────────────────
 -- Garage Script Detection
