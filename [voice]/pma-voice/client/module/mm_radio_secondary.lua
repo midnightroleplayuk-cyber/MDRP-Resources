@@ -14,30 +14,29 @@ local secondaryRadioAnim = {
 
 -- Play Secondary PTT clicks through the exact same stock pma-voice path as Primary.
 local function secondaryMicClick(clickType)
-    -- Secondary uses pma-voice's own audio_on.ogg/audio_off.ogg files, but sends
-    -- them through our tiny UI helper so Primary can be fully disconnected.
-    -- This avoids pma's radioEnabled/UI state suppressing clicks in Secondary-only mode.
-    if micClicks == false then return end
-
-    local volume
-    local ok, result = pcall(function()
-        if clickType then
-            return exports['pma-voice']:getMicClickOnVolume() / 100
-        end
-        return exports['pma-voice']:getMicClickOffVolume() / 100
-    end)
-
-    if ok and type(result) == 'number' then
-        volume = result
-    else
-        volume = clickType and (GetConvarInt('voice_onClickVolume', 10) / 100)
-            or (GetConvarInt('voice_offClickVolume', 3) / 100)
+    -- Use pma-voice's exact stock mic-click function. This is the same function
+    -- Primary radio PTT calls, and it does not require a primary radio channel.
+    if type(playMicClicks) == 'function' then
+        playMicClicks(clickType == true)
+        return
     end
 
-    SendNUIMessage({
-        mmSecondaryClick = clickType and 'audio_on' or 'audio_off',
-        mmSecondaryClickVolume = volume
-    })
+    -- Fallback for unusual pma builds: send the exact stock UI message shape.
+    -- The bundled pma UI already listens for { sound = ..., volume = ... }.
+    local volume = clickType and (GetConvarInt('voice_onClickVolume', 10) / 100)
+        or (GetConvarInt('voice_offClickVolume', 3) / 100)
+
+    if type(sendUIMessage) == 'function' then
+        sendUIMessage({
+            sound = clickType and 'audio_on' or 'audio_off',
+            volume = volume
+        })
+    else
+        SendNUIMessage({
+            sound = clickType and 'audio_on' or 'audio_off',
+            volume = volume
+        })
+    end
 end
 
 local function secondaryRadioAnimEnabled()
