@@ -4,6 +4,7 @@
 
 local secondaryRadioChannel = 0
 local secondaryRadioData = {}
+local secondaryTalkingData = {}
 local secondaryRadioPressed = false
 
 -- Match pma-voice's stock primary PTT shoulder-radio animation.
@@ -64,19 +65,37 @@ end
 RegisterNetEvent('mm_radio:pma:syncSecondaryRadioData', function(channel, data)
     secondaryRadioChannel = tonumber(channel) or 0
     secondaryRadioData = data or {}
+
+    -- Drop stale talking-state entries when somebody leaves the secondary channel.
+    for serverId in pairs(secondaryTalkingData) do
+        if not secondaryRadioData[serverId] and not secondaryRadioData[tostring(serverId)] then
+            secondaryTalkingData[serverId] = nil
+        end
+    end
+
     SendNUIMessage({ secondaryRadioChannel = secondaryRadioChannel, usingSecondaryRadio = secondaryRadioPressed })
 end)
 
 RegisterNetEvent('mm_radio:pma:setTalkingOnSecondaryRadio', function(plySource, enabled)
     plySource = tonumber(plySource)
     if not plySource then return end
+
+    enabled = enabled == true
+    if enabled then
+        secondaryTalkingData[plySource] = true
+    else
+        secondaryTalkingData[plySource] = nil
+    end
+
+    -- Secondary uses the exact same 'radio' module type as Primary, so both
+    -- channels share one pma-voice radio-volume setting.
     if toggleVoice then
-        toggleVoice(plySource, enabled == true, 'radio')
+        toggleVoice(plySource, enabled, 'radio')
     end
     if playMicClicks then
-        playMicClicks(enabled == true)
+        playMicClicks(enabled)
     end
-    TriggerEvent('pma-voice:setTalkingOnSecondaryRadio', plySource, enabled == true)
+    TriggerEvent('pma-voice:setTalkingOnSecondaryRadio', plySource, enabled)
 end)
 
 local function stopSecondaryTalk()
@@ -163,4 +182,15 @@ end)
 
 exports('getSecondaryRadioChannel', function()
     return secondaryRadioChannel
+end)
+
+
+-- Re-apply pma-voice's current shared radio volume to anyone who is already
+-- talking on Secondary. This is called after the mm_radio volume slider changes
+-- so Primary + Secondary react immediately to the same slider.
+exports('resyncSecondaryRadioVolume', function()
+    if type(toggleVoice) ~= 'function' then return end
+    for serverId in pairs(secondaryTalkingData) do
+        toggleVoice(tonumber(serverId), true, 'radio')
+    end
 end)

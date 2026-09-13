@@ -35,6 +35,8 @@ RegisterNUICallback('toggleMute', function(volume, cb)
     volume = tonumber(volume)
     Radio:Notify(locale(volume == 0 and 'toggle_defean' or 'toggle_undeafen'))
 	exports["pma-voice"]:setRadioVolume(volume)
+    -- One shared slider controls both Primary and Secondary radio voice volume.
+    pcall(function() exports["pma-voice"]:resyncSecondaryRadioVolume() end)
     Radio.Volume = volume
     cb('ok')
 end)
@@ -43,6 +45,8 @@ RegisterNUICallback("volumeChange", function(data, cb)
     data = tonumber(data)
     Radio:Notify(locale('volume_notify_description', data))
 	exports["pma-voice"]:setRadioVolume(data)
+    -- Re-apply the new shared radio volume to anyone already talking on Secondary.
+    pcall(function() exports["pma-voice"]:resyncSecondaryRadioVolume() end)
     Radio.Volume = data
     cb('ok')
 end)
