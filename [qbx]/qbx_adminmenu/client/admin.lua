@@ -184,9 +184,42 @@ local function toggleNoClipMode(forceMode)
     end
 end
 
+RegisterNetEvent('qbx_admin:client:plutoFullRevive', function()
+    if GetResourceState('plt_ambulance_job') ~= 'started' then
+        TriggerEvent('qbx_medical:client:playerRevived')
+        return
+    end
+
+    -- The server has already asked Pluto to revive this player. Give Pluto a
+    -- moment to rebuild its state, then perform the same full injury reset
+    -- needed for fractures/bleeding and restore ped health to maximum.
+    Wait(250)
+    exports['plt_ambulance_job']:clearPlayerInjury(true)
+
+    local ped = cache.ped or PlayerPedId()
+    SetEntityHealth(ped, GetEntityMaxHealth(ped))
+    ClearPedBloodDamage(ped)
+    ResetPedVisibleDamage(ped)
+    ClearPedLastDamageBone(ped)
+end)
+
 local options = {
     function() toggleNoClipMode() end,
-    function() TriggerServerEvent('qbx_admin:server:fullReviveSelf') end,
+    function()
+        if GetResourceState('plt_ambulance_job') == 'started' then
+            exports['plt_ambulance_job']:RevivePlayer()
+            Wait(250)
+            exports['plt_ambulance_job']:clearPlayerInjury(true)
+
+            local ped = cache.ped or PlayerPedId()
+            SetEntityHealth(ped, GetEntityMaxHealth(ped))
+            ClearPedBloodDamage(ped)
+            ResetPedVisibleDamage(ped)
+            ClearPedLastDamageBone(ped)
+        else
+            TriggerEvent('qbx_medical:client:playerRevived')
+        end
+    end,
     function()
         optionInvisible = not optionInvisible
         if not optionInvisible then return end
