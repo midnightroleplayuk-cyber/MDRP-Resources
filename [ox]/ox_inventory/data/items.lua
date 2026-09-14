@@ -3503,7 +3503,7 @@ return {
     weight = 0,
     stack = true,
     close = true,
-    description = ""
+    description = "Running DevhubOS"
 },
 
 
