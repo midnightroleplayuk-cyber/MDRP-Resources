@@ -1,3 +1,9 @@
+
+RegisterNetEvent('qbx_admin:client:plutoHealSelf', function()
+    if GetResourceState('plt_ambulance_job') ~= 'started' then return end
+    ExecuteCommand('heal')
+end)
+
 local VEHICLES_HASH = exports.qbx_core:GetVehiclesByHash()
 local optionInvisible = false
 local godmode = false
@@ -187,14 +193,9 @@ end
 local options = {
     function() toggleNoClipMode() end,
     function()
-        -- Keep self-revive inside Pluto as well. The client RevivePlayer export
-        -- takes no target and revives the local player.
-        if GetResourceState('plt_ambulance_job') == 'started' then
-            exports['plt_ambulance_job']:RevivePlayer()
-            return
-        end
-
         TriggerEvent('qbx_medical:client:playerRevived')
+        Wait(750)
+        ExecuteCommand('heal')
     end,
     function()
         optionInvisible = not optionInvisible

@@ -89,14 +89,10 @@ end)
 local generalOptions = {
     function(selectedPlayer) TriggerClientEvent('qbx_admin:client:killPlayer', selectedPlayer.id) end,
     function(selectedPlayer)
-        -- Pluto Ambulance Creator owns the player's injury/death state, so use
-        -- Pluto's server-side revive path instead of bypassing it with qbx_medical.
-        if GetResourceState('plt_ambulance_job') == 'started' then
-            exports['plt_ambulance_job']:InternalRevive(selectedPlayer.id)
-            return
-        end
-
         TriggerClientEvent('qbx_medical:client:playerRevived', selectedPlayer.id)
+        SetTimeout(750, function()
+            TriggerClientEvent('qbx_admin:client:plutoHealSelf', selectedPlayer.id)
+        end)
     end,
     function(selectedPlayer)
         if isFrozen[selectedPlayer.id] then
