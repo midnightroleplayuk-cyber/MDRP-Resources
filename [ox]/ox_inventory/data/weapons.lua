@@ -1876,5 +1876,12 @@ return {
 			label = 'EMP round',
 			weight = 400,
 		},
+
+		['WEAPON_POCKETLIGHT'] = {
+    label = 'Pocket Flashlight',
+    weight = 125,
+    durability = 0.1,
+         },
+
 	}
 }
