@@ -2,7 +2,7 @@ if not Config then Config = {} end
 
 Config.Debug = false
 
-Config.Command = 'laptop' -- set to false to disable
+Config.Command = false -- set to false to disable
 Config.Item = 'devhub_laptop' -- set to false to disable
 
 Config.DefaultWallpapers = { -- first one is active by default, cannot be removed by user
