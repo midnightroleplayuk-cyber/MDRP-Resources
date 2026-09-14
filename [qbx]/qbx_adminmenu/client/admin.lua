@@ -1,9 +1,3 @@
-
-RegisterNetEvent('qbx_admin:client:plutoHealSelf', function()
-    if GetResourceState('plt_ambulance_job') ~= 'started' then return end
-    ExecuteCommand('heal')
-end)
-
 local VEHICLES_HASH = exports.qbx_core:GetVehiclesByHash()
 local optionInvisible = false
 local godmode = false
@@ -192,11 +186,7 @@ end
 
 local options = {
     function() toggleNoClipMode() end,
-    function()
-        TriggerEvent('qbx_medical:client:playerRevived')
-        Wait(750)
-        ExecuteCommand('heal')
-    end,
+    function() TriggerEvent('qbx_medical:client:playerRevived') end,
     function()
         optionInvisible = not optionInvisible
         if not optionInvisible then return end
