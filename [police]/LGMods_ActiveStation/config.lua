@@ -69,7 +69,7 @@ Config.MugshotSystem = {
 Config.ClothingStations = {
     {
         id = "sinner_street_station",
-        location = vector3(456.0962, -988.3626, 30.6898),
+        location = ,
         heading = 5.0585,
         range = 2.0,
         menuTitle = "Sinner Street Station - Clothing",
@@ -78,7 +78,7 @@ Config.ClothingStations = {
                 name = "Police Uniform",
                 description = "Standard police officer uniform",
                 components = {
-                    ["torso"] = { drawableId = 614, textureId = 8, paletteId = 0 },
+                    ["torso"] = { drawableId = 610, textureId = 3, paletteId = 0 },
                     ["undershirt"] = { drawableId = 243, textureId = 0, paletteId = 0 },
                     ["legs"] = { drawableId = 233, textureId = 0, paletteId = 0 },
                     ["shoes"] = { drawableId = 160, textureId = 0, paletteId = 0 },
