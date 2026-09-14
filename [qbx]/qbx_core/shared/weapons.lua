@@ -146,7 +146,7 @@ return {
     [`weapon_heli_crash`]			= {name = 'weapon_heli_crash',			label = 'Heli Crash',				weapontype = 'Miscellaneous',	ammotype = nil,						damagereason = 'Helicopter Crash'},
     [`weapon_fire`]					= {name = 'weapon_fire',				label = 'Fire',						weapontype = 'Miscellaneous',	ammotype = nil,						damagereason = 'Torched / Flambeed / Barbecued'},
     [`weapon_metaldetector`] 		= {name = 'weapon_metaldetector', 	    label = 'Metal Dectector', 	        weapontype = 'Miscellaneous',	ammotype = 'nil',	                damagereason = 'Died'},
-    [`WEAPON_POCKETLIGHT`] =  { name = 'weapon_pocketlight', label = 'UV Light', weapontype = 'Melee', ammotype = nil, damagereason = 'Melee killed / Whacked / Executed / Beat down / Murdered / Battered' },
+    [`WEAPON_POCKETLIGHT`]          = {name = 'weapon_pocketlight',         label = 'UV Light',                 weapontype = 'Melee',           ammotype = nil,                     damagereason = 'Melee killed / Whacked / Executed / Beat down / Murdered / Battered' },
 
     -- Animals
     [`weapon_animal`]               = {name = 'weapon_animal',	label = 'Animal',	weapontype = 'Animals',	ammotype = nil,	damagereason = 'Mauled'},
