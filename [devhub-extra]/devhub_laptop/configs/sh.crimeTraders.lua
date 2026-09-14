@@ -11,16 +11,16 @@ Config.CrimeTradersTraders = {
         shopItems = {
             ['1'] = { -- level
                 {
-                    name = 'weapon_pistol',
-                    price = 150,
-                    amount = 1
+                    name = 'bandage',
+                    price = 200,
+                    amount = 5
                 },
             },
             ['5'] = { -- level
                 {
-                    name = 'weapon_assaultrifle',
+                    name = 'kq_weed_seed_og_kush',
                     price = 300,
-                    amount = 1
+                    amount = 5
                 },
             },
             ['10'] = { -- level
