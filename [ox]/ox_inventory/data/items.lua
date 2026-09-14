@@ -3413,5 +3413,82 @@ return {
 		description = 'View X-Ray Images',
 	},
 
-
+   -- POLICE JOB
+   ['radar_camera'] = {
+    label = 'Radar Camera',
+    weight = 500,
+    stack = true,
+    close = true,
+    usable = true,
+    description = 'Portable speed radar for traffic enforcement.',
+    client = {
+        image = 'radar_camera.png',
+    }
+},
+    ['breathalyzer'] = {
+    label = 'Breathalyzer',
+    weight = 500,
+    stack = true,
+    close = true,
+    usable = true,
+    description = 'Standard issue department breathalyzer.',
+    client = {
+        image = 'breathalyzer.png',
+    }
+},
+    ['megaphone'] = {
+    label = 'Megaphone',
+    weight = 500,
+    stack = true,
+    close = true,
+    usable = true,
+    description = 'Handheld megaphone for public address.',
+    client = {
+        image = 'megaphone.png',
+    }
+},
+    ['evidence_bag'] = {
+    label = 'Evidence Bag',
+    weight = 100,
+    stack = true,
+    close = true,
+    usable = true,
+    description = 'Sealable bag for collecting forensic evidence.',
+    client = {
+        image = 'evidence_bag.png',
+    }
+},
+['filled_evidence_bag'] = {
+    label = 'Collected Evidence',
+    weight = 200,
+    stack = false,
+    close = true,
+    usable = true,
+    description = 'A bag containing forensic evidence for analysis.',
+    client = {
+        image = 'filled_evidence_bag.png',
+    }
+},
+['forensic_report'] = {
+    label = 'Forensic Lab Report',
+    weight = 50,
+    stack = false,
+    close = true,
+    usable = true,
+    description = 'A certified forensic report from the ballistics lab.',
+    client = {
+        image = 'forensic_report.png',
+    }
+},
+['gps_tracker'] = {
+    label = 'GPS Tracker',
+    weight = 500,
+    stack = false,
+    close = true,
+    usable = true,
+    description = 'A hidden GPS tracking device.',
+    client = {
+        image = 'gps_tracker.png',
+    }
+},    
 }
