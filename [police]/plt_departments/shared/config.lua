@@ -52,9 +52,9 @@ Config.Target = "ox_target"
 
 Config.DefaultNodes = {
     departments = {
-        { id = 'police', label = 'LSPD', type = 'department' },
-        { id = 'bcso', label = 'Sheriff', type = 'department' },
-        { id = 'sasp', label = 'State Police', type = 'department' },
+        { id = 'police', label = 'MNPD', type = 'department' },
+        { id = 'bcso', label = 'MNPD', type = 'department' },
+        { id = 'sasp', label = 'MNPD', type = 'department' },
         { id = 'ambulance', label = 'EMS', type = 'department' },
     },
     permissions = {
@@ -126,7 +126,7 @@ Config.AIDispatcher = {
     RequireDetectedVoice = true,
     VoiceDetectThreshold = 0.012,
     MinVoiceMs = 140,
-    Language = "en-US",
+    Language = "en-GB",
     ShowTranscript = false,
     ServerAnalyze = true,
     ApiKeyConvar = "plt_departments_k9_stt_api_key", -- Reuses your existing Gemini key unless you change this.
