@@ -1,0 +1,126 @@
+/* RADAR SETUP MODAL */
+#radar-setup-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 20000;
+}
+
+.radar-setup-modal {
+    width: 450px;
+    background: #0a0a0c;
+    border: 1px solid rgba(0, 255, 204, 0.2);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 30px rgba(0, 255, 204, 0.05);
+    animation: modalPop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    transform: scale(var(--ui-scale, 1));
+    transform-origin: center center;
+}
+
+@keyframes modalPop {
+    from { transform: scale(calc(var(--ui-scale, 1) * 0.8)); opacity: 0; }
+    to { transform: scale(var(--ui-scale, 1)); opacity: 1; }
+}
+
+.radar-setup-header {
+    background: linear-gradient(90deg, rgba(0, 255, 204, 0.15) 0%, transparent 100%);
+    padding: 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    color: #00ffcc;
+    font-weight: 800;
+    letter-spacing: 2px;
+}
+
+.radar-setup-body {
+    padding: 25px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.radar-field {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.radar-field label {
+    font-size: 10px;
+    color: #888;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+.radar-field input {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 6px;
+    padding: 12px 15px;
+    color: #fff;
+    font-family: inherit;
+    font-size: 14px;
+    transition: all 0.2s ease;
+}
+
+.radar-field input:focus {
+    outline: none;
+    border-color: #00ffcc;
+    background: rgba(0, 255, 204, 0.05);
+    box-shadow: 0 0 15px rgba(0, 255, 204, 0.1);
+}
+
+.radar-setup-footer {
+    padding: 20px 25px 25px;
+    display: flex;
+    gap: 15px;
+}
+
+.radar-confirm-btn {
+    flex: 2;
+    background: #00ffcc;
+    color: #000;
+    border: none;
+    padding: 14px;
+    border-radius: 6px;
+    font-weight: 800;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.radar-confirm-btn:hover {
+    background: #00e6b8;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 255, 204, 0.3);
+}
+
+.radar-cancel-btn {
+    flex: 1;
+    background: rgba(255, 255, 255, 0.05);
+    color: rgba(255, 255, 255, 0.6);
+    border: none;
+    padding: 14px;
+    border-radius: 6px;
+    font-weight: 700;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.radar-cancel-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+}
+

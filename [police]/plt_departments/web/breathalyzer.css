@@ -1,0 +1,135 @@
+#breathalyzer-view {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: flex-end; /* Align to right */
+    align-items: flex-end;    /* Align to bottom */
+    background: transparent;   /* Removed dark overlay so world is visible */
+    z-index: 10000;
+    pointer-events: none;      /* Allow clicking through the overlay */
+}
+
+.breathalyzer-container {
+    position: relative;
+    width: 450px; /* User increased width */
+    height: 700px;
+    margin-right: 20px;
+    margin-bottom: -260px; /* Moved further down (was -50px) */
+    pointer-events: auto; /* Re-enable clicks for the device itself */
+}
+
+.breathalyzer-device {
+    width: 100%;
+    height: auto;
+    filter: drop-shadow(0 0 20px rgba(0, 0, 0, 0.5));
+}
+
+.breathalyzer-mouthpiece-click {
+    position: absolute;
+    top: 0%;
+    left: 40%;
+    width: 20%;
+    height: 15%;
+    cursor: pointer;
+    /* background: rgba(255, 0, 0, 0.3); /* For debugging */
+}
+
+.breathalyzer-screen {
+    position: absolute;
+    top: 25%;
+    left: 32.3%; /* Moved right slightly from 13.5% */
+    width: 36%;
+    height: 26%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    overflow: hidden;
+}
+
+.breath-status {
+    font-size: 0.8rem;
+    font-weight: bold;
+    margin-bottom: -10px;
+    text-shadow: 0 2px 4px rgb(0 0 0 / 30%);
+}
+
+.breath-value {
+    font-size: 2.5rem;
+    font-weight: 900;
+    text-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+}
+
+.breath-minigame {
+    width: 80%;
+    text-align: center;
+}
+
+.breath-bar-bg {
+    position: relative;
+    width: 100%;
+    height: 15px;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 10px;
+    margin-bottom: 10px;
+    overflow: hidden;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+.breath-safe-zone {
+    position: absolute;
+    left: 40%;
+    width: 20%;
+    height: 100%;
+    background: rgba(0, 255, 0, 0.4);
+    box-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+}
+
+.breath-indicator {
+    position: absolute;
+    left: 0%;
+    width: 10px;
+    height: 100%;
+    background: white;
+    box-shadow: 0 0 10px white;
+    transition: left 0.05s linear;
+}
+
+.breath-instruction {
+    font-size: 0.9rem;
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+
+.breath-key-hint {
+    font-size: 0.7rem;
+    opacity: 0.8;
+    margin-top: 5px;
+}
+
+/* Animations */
+@keyframes flash-error {
+    0% { opacity: 1; }
+    50% { opacity: 0.5; }
+    100% { opacity: 1; }
+}
+
+.screen-error {
+    color: #ff4444; /* Just change text color instead of background */
+}
+
+@keyframes flash-success {
+    0% { opacity: 1; }
+    50% { opacity: 0.5; }
+    100% { opacity: 1; }
+}
+
+.screen-success {
+    color: #44ff44; /* Just change text color instead of background */
+}
+

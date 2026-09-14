@@ -1,0 +1,606 @@
+/* 
+    System 7 Vintage Macintosh Theme
+    Robust Overrides for modern iMac components
+*/
+
+:root {
+    --mac-beige: #d6d6d6;
+    --mac-dark-beige: #b2b2b2;
+    --mac-border-bright: #ffffff;
+    --mac-border-dark: #000000;
+    --mac-title-bg: #9c9c9c;
+    --mac-desktop-bg: #55aaaa;
+    --vintage-font: 'Geneva', 'Chicago', 'MS Sans Serif', sans-serif;
+}
+
+#vintage-boss-menu-container {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    display: none;
+    justify-content: center !important;
+    align-items: center !important;
+    background: rgba(0, 0, 0, 0.9) !important;
+    z-index: 2000000 !important;
+    font-family: var(--vintage-font) !important;
+}
+
+#vintage-boss-menu-container.visible {
+    display: flex !important;
+}
+
+.vintage-monitor {
+    background: var(--mac-beige) !important;
+    padding: 30px !important;
+    border-radius: 40px !important;
+    box-shadow: 
+        inset 5px 5px 0 #fff,
+        inset -5px -5px 0 #888,
+        0 60px 120px rgba(0,0,0,0.9) !important;
+    position: relative !important;
+    border: 3px solid #000 !important;
+    width: 1280px !important;
+    height: 960px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    transform-origin: center center !important;
+    image-rendering: pixelated !important;
+}
+
+.monitor-bezel {
+    flex: 1;
+    background: #151515;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: inset 0 0 25px #000;
+    display: flex;
+    border: 2px solid #333;
+}
+
+.screen-surface {
+    flex: 1;
+    background: var(--mac-desktop-bg);
+    position: relative;
+    overflow: hidden;
+    border: 2px solid #000;
+    /* Improved stable dithered desktop pattern */
+    background-color: #55aaaa;
+    background-image: 
+        linear-gradient(45deg, rgba(0,0,0,0.15) 25%, transparent 25%), 
+        linear-gradient(-45deg, rgba(0,0,0,0.15) 25%, transparent 25%), 
+        linear-gradient(45deg, transparent 75%, rgba(0,0,0,0.15) 75%), 
+        linear-gradient(-45deg, transparent 75%, rgba(0,0,0,0.15) 75%);
+    background-size: 4px 4px;
+    background-position: 0 0, 0 2px, 2px -2px, -2px 0px;
+}
+
+/* Force vintage styles when theme-vintage class is on body */
+body.theme-vintage * {
+    border-radius: 0 !important;
+    font-family: var(--vintage-font) !important;
+}
+
+body.theme-vintage #vintage-boss-menu-container {
+    display: flex !important;
+}
+
+body.theme-vintage #boss-menu-container {
+    display: none !important;
+}
+
+/* Hide vintage when modern theme is active */
+body.theme-modern #vintage-boss-menu-container {
+    display: none !important;
+}
+
+/* System 7 Topbar Overrides */
+.vintage-topbar {
+    height: 24px;
+    background: #fff;
+    border-bottom: 2px solid #000;
+    display: flex;
+    align-items: center;
+    padding: 0 15px;
+    font-size: 13px;
+    font-weight: 900;
+    z-index: 10000;
+    color: #000 !important; /* Force black text */
+}
+
+.apple-menu {
+    margin-right: 15px;
+    display: flex;
+    align-items: center;
+}
+
+.vintage-topbar-logo {
+    height: 18px;
+    width: auto;
+    object-fit: contain;
+    filter: drop-shadow(0 1px 0 #fff);
+    image-rendering: auto;
+}
+
+.menu-items span {
+    padding: 0 10px;
+    cursor: default;
+    color: #000 !important;
+}
+
+.topbar-right {
+    margin-left: auto;
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    color: #000 !important;
+}
+
+#vintage-clock {
+    color: #000 !important;
+    font-weight: 900;
+}
+
+/* App Window Styling */
+.vintage-window {
+    position: absolute;
+    background: #fff;
+    border: 2px solid #000;
+    box-shadow: 3px 3px 0 #000;
+    display: flex;
+    flex-direction: column;
+    min-width: 500px;
+    min-height: 400px;
+}
+
+.vintage-win-header {
+    height: 22px;
+    background: #fff;
+    border-bottom: 2px solid #000;
+    display: flex;
+    align-items: center;
+    padding: 0 5px;
+    cursor: move;
+    background-image: repeating-linear-gradient(0deg, #000, #000 1px, transparent 1px, transparent 3px);
+}
+
+.vintage-win-title {
+    flex: 1;
+    text-align: center;
+    font-weight: 900;
+    background: #fff;
+    padding: 0 20px;
+    margin: 0 15px;
+    font-size: 12px;
+    text-transform: uppercase;
+    color: #000 !important; /* Force window titles to black */
+}
+
+.vintage-win-info {
+    height: 18px;
+    background: #fff;
+    border-bottom: 2px solid #000;
+    display: flex;
+    gap: 20px;
+    padding: 0 10px;
+    font-size: 10px;
+    color: #000 !important;
+    align-items: center;
+}
+
+.vintage-win-close,
+.vintage-win-zoom {
+    width: 16px;
+    height: 16px;
+    border: 2px solid #000;
+    background: #fff;
+    box-shadow: inset 1px 1px 0 #eee;
+    cursor: pointer;
+}
+
+/* App Content Area */
+.vintage-win-content {
+    flex: 1;
+    background: #fff !important;
+    padding: 0 !important;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Aggressive Inner App Overrides */
+body.theme-vintage .mac-scroll-area {
+    flex: 1 !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    padding: 10px !important;
+}
+
+body.theme-vintage .mac-app-container-glass,
+body.theme-vintage .comms-app-container {
+    background: #fff !important;
+    color: #000 !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    height: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+}
+
+body.theme-vintage .mac-app-header {
+    background: #fff !important;
+    border-bottom: 2px solid #000 !important;
+    padding: 10px 15px !important;
+    color: #000 !important;
+    min-height: 85px !important;
+    height: 85px !important;
+}
+
+body.theme-vintage .mac-app-titles h2 {
+    font-size: 16px !important;
+    margin: 0 !important;
+    color: #000 !important;
+}
+
+body.theme-vintage .mac-app-titles p {
+    font-size: 10px !important;
+    margin: 2px 0 0 0 !important;
+    color: #000 !important;
+    height: 12px !important;
+    overflow: hidden !important;
+}
+
+body.theme-vintage .mac-app-tabs {
+    margin-top: 5px !important;
+    gap: 10px !important;
+}
+
+body.theme-vintage .mac-tab {
+    font-size: 11px !important;
+    padding: 2px 5px !important;
+    border: 1px solid #000 !important;
+    background: #fff !important;
+    color: #000 !important;
+    border-bottom: 2px solid #000 !important;
+}
+
+body.theme-vintage .mac-tab.active {
+    background: #000 !important;
+    color: #fff !important;
+}
+
+body.theme-vintage .hiring-tab-content {
+    background: #fff !important;
+}
+
+body.theme-vintage .hiring-search-box {
+    border: 2px solid #000 !important;
+    border-radius: 0 !important;
+    background: #fff !important;
+    box-shadow: none !important;
+}
+
+body.theme-vintage .hiring-search-box input {
+    font-family: 'Geneva', sans-serif !important;
+    color: #000 !important;
+}
+
+body.theme-vintage .hiring-player-info {
+    border: 2px solid #000 !important;
+    border-radius: 0 !important;
+    background: #fff !important;
+    box-shadow: none !important;
+}
+
+body.theme-vintage .info-avatar {
+    border-radius: 0 !important;
+    border: 2px solid #000 !important;
+    background: #fff !important;
+}
+
+body.theme-vintage .hiring-search-btn,
+body.theme-vintage .confirm-hire-btn {
+    border: 2px solid #000 !important;
+    border-radius: 0 !important;
+    background: #fff !important;
+    color: #000 !important;
+    font-family: 'Geneva', sans-serif !important;
+    text-transform: uppercase !important;
+    font-weight: bold !important;
+}
+
+body.theme-vintage .hiring-search-btn:hover,
+body.theme-vintage .confirm-hire-btn:hover {
+    background: #000 !important;
+    color: #fff !important;
+}
+
+body.theme-vintage .comms-sidebar-header,
+body.theme-vintage .chat-header {
+    background: #fff !important;
+    border-bottom: 2px solid #000 !important;
+    padding: 10px !important;
+    color: #000 !important;
+}
+
+body.theme-vintage .chat-messages {
+    background: #fff !important;
+    flex: 1 !important;
+    overflow-y: auto !important;
+    padding: 10px !important;
+}
+
+body.theme-vintage .message-bubble {
+    padding: 8px !important;
+    font-size: 11px !important;
+}
+
+body.theme-vintage .chat-input-area {
+    background: #fff !important;
+    border-top: 2px solid #000 !important;
+    padding: 10px !important;
+}
+
+body.theme-vintage .input-wrapper {
+    background: #fff !important;
+    border: 2px solid #000 !important;
+    border-radius: 0 !important;
+    padding: 2px 10px !important;
+}
+
+body.theme-vintage .input-wrapper input {
+    background: #fff !important;
+    color: #000 !important;
+    font-size: 11px !important;
+}
+
+body.theme-vintage .mac-app-icon-large {
+    width: 32px !important;
+    height: 32px !important;
+}
+
+/* Ensure the flex container fills the window content */
+body.theme-vintage .vintage-win-content > div {
+    display: flex !important;
+    flex-direction: column !important;
+    height: 100% !important;
+}
+
+body.theme-vintage .comms-sidebar {
+    width: 200px !important;
+    border-right: 2px solid #000 !important;
+    background: #fff !important;
+}
+
+body.theme-vintage .comms-chat-area {
+    flex: 1 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    background: #fff !important;
+}
+
+body.theme-vintage .dept-card,
+body.theme-vintage .mac-member-card,
+body.theme-vintage .comms-dept-item,
+body.theme-vintage .message-bubble,
+body.theme-vintage .stat-card,
+body.theme-vintage .transaction-item {
+    background: #fff !important;
+    border: 2px solid #000 !important;
+    box-shadow: 2px 2px 0 #000 !important;
+    color: #000 !important;
+    margin: 8px !important;
+    padding: 12px !important;
+}
+
+body.theme-vintage .message-wrapper.sent .message-bubble {
+    background: #ddd !important;
+}
+
+/* Buttons */
+body.theme-vintage button,
+body.theme-vintage .primary-btn,
+body.theme-vintage .mac-tab-btn,
+body.theme-vintage .safari-tab,
+body.theme-vintage .comms-dept-item.active {
+    background: #fff !important;
+    border: 2px solid #000 !important;
+    color: #000 !important;
+    box-shadow: 2px 2px 0 #000 !important;
+    font-weight: 900 !important;
+    text-transform: uppercase !important;
+    padding: 6px 12px !important;
+}
+
+body.theme-vintage button:active,
+body.theme-vintage .primary-btn:active {
+    background: #000 !important;
+    color: #fff !important;
+    transform: translate(1px, 1px) !important;
+    box-shadow: none !important;
+}
+
+/* Scrollbars */
+body.theme-vintage ::-webkit-scrollbar {
+    width: 18px !important;
+    height: 18px !important;
+}
+
+body.theme-vintage ::-webkit-scrollbar-track {
+    background: #fff !important;
+    border-left: 2px solid #000 !important;
+    background-image: radial-gradient(#888 0.5px, transparent 0.5px), radial-gradient(#888 0.5px, #fff 0.5px) !important;
+    background-size: 3px 3px !important;
+}
+
+body.theme-vintage ::-webkit-scrollbar-thumb {
+    background: #fff !important;
+    border: 2px solid #000 !important;
+    box-shadow: inset 2px 2px 0 #fff !important;
+}
+
+.vintage-desktop {
+    width: 100% !important;
+    height: 100% !important;
+    position: relative !important;
+}
+
+.vintage-desktop-icons {
+    position: absolute;
+    top: 80px; /* Increased margin from top */
+    left: 60px; /* Increased margin from left */
+    display: flex;
+    flex-direction: column;
+    gap: 35px;
+    align-items: center;
+    z-index: 10;
+}
+
+.desktop-icon {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    width: 70px;
+}
+
+.desktop-icon img {
+    width: 45px; /* 32px * 1.4 = ~45px */
+    height: 45px;
+    image-rendering: pixelated;
+}
+
+.desktop-icon span {
+    background: #fff;
+    padding: 2px 6px;
+    border: 1px solid #000;
+    font-size: 11px;
+    font-weight: bold;
+    color: #000 !important; /* Force app names to black */
+}
+
+.trash-icon {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    cursor: pointer;
+}
+
+.trash-icon img {
+    width: 45px; /* 32px * 1.4 = ~45px */
+    height: 45px;
+    image-rendering: pixelated;
+}
+
+.trash-icon span {
+    background: #fff;
+    padding: 2px 6px;
+    border: 1px solid #000;
+    font-size: 11px;
+    font-weight: bold;
+    color: #000 !important;
+}
+
+/* Netscape / Safari Vintage Styles */
+.safari-nav {
+    display: flex;
+    gap: 15px;
+    border-bottom: 2px solid #000;
+    padding: 5px 15px;
+    background: #fff;
+    font-size: 11px;
+    font-weight: bold;
+    color: #000 !important;
+}
+
+.safari-url {
+    margin-left: auto;
+    border: 2px solid #000;
+    padding: 2px 10px;
+    background: #fff;
+    font-family: 'Courier New', Courier, monospace;
+    min-width: 300px;
+    color: #000 !important;
+}
+
+/* Netscape Tab Bar */
+.vintage-netscape-tabs {
+    display: flex;
+    background: #fff;
+    border-bottom: 2px solid #000;
+    padding: 0 5px;
+    gap: 2px;
+}
+
+.vintage-netscape-tab {
+    padding: 4px 12px;
+    border: 2px solid #000;
+    border-bottom: none;
+    background: #eee;
+    font-size: 10px;
+    font-weight: 900;
+    cursor: pointer;
+    text-transform: uppercase;
+    color: #000;
+}
+
+.vintage-netscape-tab.active {
+    background: #fff;
+    padding-top: 6px;
+    margin-top: -2px;
+}
+
+/* Hide modern-only elements */
+body.theme-vintage .pear-logo-small,
+body.theme-vintage .system-stats,
+body.theme-vintage .safari-toolbar,
+body.theme-vintage .safari-tab-bar,
+body.theme-vintage .mac-boot-screen,
+body.theme-vintage .modern-only {
+    display: none !important;
+}
+
+.monitor-chin {
+    height: 50px;
+    background: var(--mac-beige);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    border-top: 1px solid #999;
+}
+
+.vintage-apple-logo {
+    width: 42px; /* Increased from 24px to fill more of the 50px chin */
+    height: 42px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0.9;
+}
+
+.vintage-apple-logo img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    filter: grayscale(1) contrast(1.2); /* Classic badge look */
+}
+
+.monitor-power-led {
+    position: absolute;
+    right: 40px;
+    width: 6px;
+    height: 6px;
+    background: #0f0;
+    border-radius: 50%;
+    box-shadow: 0 0 5px #0f0;
+}
+
+.hidden { display: none !important; }
