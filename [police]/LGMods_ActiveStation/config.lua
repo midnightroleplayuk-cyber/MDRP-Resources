@@ -78,12 +78,12 @@ Config.ClothingStations = {
                 name = "Police Uniform",
                 description = "Standard police officer uniform",
                 components = {
-                    ["torso"] = { drawableId = 11, textureId = 0, paletteId = 0 },
-                    ["undershirt"] = { drawableId = 15, textureId = 0, paletteId = 0 },
-                    ["legs"] = { drawableId = 4, textureId = 0, paletteId = 0 },
-                    ["shoes"] = { drawableId = 10, textureId = 0, paletteId = 0 },
-                    ["accessory"] = { drawableId = 0, textureId = 0, paletteId = 0 },
-                    ["kevlar"] = { drawableId = 0, textureId = 0, paletteId = 0 }
+                    ["torso"] = { drawableId = 614, textureId = 8, paletteId = 0 },
+                    ["undershirt"] = { drawableId = 243, textureId = 0, paletteId = 0 },
+                    ["legs"] = { drawableId = 233, textureId = 0, paletteId = 0 },
+                    ["shoes"] = { drawableId = 160, textureId = 0, paletteId = 0 },
+                    ["accessory"] = { drawableId = 217, textureId = 1, paletteId = 0 },
+                    ["hat"] = { drawableId = 243, textureId = 2, paletteId = 0 }
                 }
             },
             {
