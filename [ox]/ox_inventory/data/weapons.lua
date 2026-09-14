@@ -716,6 +716,11 @@ return {
 			weight = 600,
 			throwable = true,
 		},
+		['WEAPON_POCKETLIGHT'] = {
+    		label = 'Pocket Flashlight',
+   			weight = 125,
+    		durability = 0.1,
+},
 	},
 
 	Components = {
