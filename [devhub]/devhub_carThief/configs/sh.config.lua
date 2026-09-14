@@ -860,8 +860,8 @@ Config.LaptopConfig = {
         items = {
             -- { name = 'money', quantity = 2000 },
         },
-        money = 2000,
-        crimePoints = 600,
+        money = 500,
+        crimePoints = 50,   
         xp = 300,
     },
     tasks = {
