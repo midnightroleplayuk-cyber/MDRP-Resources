@@ -10,7 +10,7 @@ Shared.Debug = {
     }
 }
 
-Shared.MinPolice = 0 -- Minimum police required to start a crime scene mission
+Shared.MinPolice = 1 -- Minimum police required to start a crime scene mission
 
 Shared.PedSettings = {
     enabled = true,
