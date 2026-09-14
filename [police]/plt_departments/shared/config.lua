@@ -84,7 +84,7 @@ Config.K9 = {
         PmaReleaseGraceMs = 120,
         TalkingPollMs = 20,
         PreferBrowserRecognition = false,
-        Language = "en-US",
+        Language = "en-GB",
         ShowTranscript = true,
         ServerTranscribe = true,
         ApiKeyConvar = "plt_departments_k9_stt_api_key",
@@ -171,7 +171,7 @@ Config.AIDispatcher = {
     Debug = false,
 
     EMSFire = {
-        EMSCode = "EMS",
+        EMSCode = "FIRE",
         FireCode = "FIRE",
         Forward = {
             Enabled = false,
@@ -283,7 +283,7 @@ Config.AlcoholicItems = {
 Config.Inventory = "ox" -- Options: "qb", "ox", "qs", "codem", "core", "tgiann"
 -- You can add more inventories in shared/inventory.lua
 
-Config.SpeedUnit = "kmh" -- Options: "kmh", "mph"
+Config.SpeedUnit = "mph" -- Options: "kmh", "mph"
 
 Config.RadioCodes = {
     { label = "CODE-4", code = "CODE-4" },
