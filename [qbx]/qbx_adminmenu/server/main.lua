@@ -86,21 +86,59 @@ RegisterNetEvent('qbx_admin:server:deleteReport', function(report)
     end
 end)
 
+-- Pluto Ambulance compatibility: use Pluto's own /heal path after reviving.
+-- This is intentionally done in addition to RevivePlayer because Pluto's /heal
+-- clears medical state (fractures/injuries) that a plain QBX revive does not.
+local function plutoFullRevive(targetSrc, adminSrc)
+    targetSrc = tonumber(targetSrc)
+    if not targetSrc or not GetPlayerName(targetSrc) then return end
+
+    if GetResourceState('plt_ambulance_job') == 'started' then
+        local ok, err = pcall(function()
+            exports['plt_ambulance_job']:RevivePlayer(targetSrc)
+        end)
+
+        if not ok then
+            print(('[qbx_adminmenu] Pluto RevivePlayer failed for %s: %s'):format(targetSrc, err))
+            TriggerClientEvent('qbx_medical:client:playerRevived', targetSrc)
+        end
+
+        -- Give Pluto a moment to finish its revive state transition, then invoke
+        -- the SAME /heal command that works manually. Execute it server-side
+        -- (console context) and also on the administering client's command path
+        -- so this works whether Pluto registered /heal server- or client-side.
+        SetTimeout(750, function()
+            ExecuteCommand(('heal %s'):format(targetSrc))
+
+            if adminSrc and GetPlayerName(adminSrc) then
+                TriggerClientEvent('qbx_admin:client:runPlutoHealCommand', adminSrc, targetSrc)
+            end
+
+            TriggerClientEvent('qbx_admin:client:plutoReviveFinalise', targetSrc)
+        end)
+        return
+    end
+
+    TriggerClientEvent('qbx_medical:client:playerRevived', targetSrc)
+end
+
+RegisterNetEvent('qbx_admin:server:plutoFullReviveSelf', function()
+    local src = source
+    if not IsPlayerAceAllowed(src, config.eventPerms.playerOptionsGeneral) then
+        exports.qbx_core:Notify(src, locale('error.no_perms'), 'error')
+        return
+    end
+    if not exports.qbx_core:IsOptin(src) then
+        exports.qbx_core:Notify(src, locale('error.not_optin'), 'error')
+        return
+    end
+
+    plutoFullRevive(src, src)
+end)
+
 local generalOptions = {
     function(selectedPlayer) TriggerClientEvent('qbx_admin:client:killPlayer', selectedPlayer.id) end,
-    function(selectedPlayer)
-        local target = tonumber(selectedPlayer.id)
-        if not target then return end
-
-        if GetResourceState('plt_ambulance_job') == 'started' then
-            -- Let Pluto handle the actual revive, then clear its persistent
-            -- injury/vitals state on the target client (fractures, bleeding, etc.).
-            exports['plt_ambulance_job']:RevivePlayer(target)
-            TriggerClientEvent('qbx_admin:client:plutoFullRevive', target)
-        else
-            TriggerClientEvent('qbx_medical:client:playerRevived', target)
-        end
-    end,
+    function(selectedPlayer, source) plutoFullRevive(selectedPlayer.id, source) end,
     function(selectedPlayer)
         if isFrozen[selectedPlayer.id] then
             FreezeEntityPosition(GetPlayerPed(selectedPlayer.id), false)
