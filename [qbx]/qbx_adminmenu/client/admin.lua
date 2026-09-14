@@ -186,7 +186,16 @@ end
 
 local options = {
     function() toggleNoClipMode() end,
-    function() TriggerEvent('qbx_medical:client:playerRevived') end,
+    function()
+        -- Keep self-revive inside Pluto as well. The client RevivePlayer export
+        -- takes no target and revives the local player.
+        if GetResourceState('plt_ambulance_job') == 'started' then
+            exports['plt_ambulance_job']:RevivePlayer()
+            return
+        end
+
+        TriggerEvent('qbx_medical:client:playerRevived')
+    end,
     function()
         optionInvisible = not optionInvisible
         if not optionInvisible then return end
