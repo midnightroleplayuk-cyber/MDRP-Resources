@@ -59,7 +59,7 @@ Config.BankBlipColour = 1  -- red
 -- Invoice Menu Configuration
 Config.InvoiceMenu = {
     Command = "invoices",  -- Command to open invoice menu
-    --Key = "F3",           -- Key to open invoice menu
+    Key = "F5",           -- Key to open invoice menu
     KeyDescription = "Open Invoices Menu"
 }
 
