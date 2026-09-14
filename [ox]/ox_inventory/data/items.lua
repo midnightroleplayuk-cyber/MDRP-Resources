@@ -3491,4 +3491,21 @@ return {
         image = 'gps_tracker.png',
     }
 },    
+
+
+
+
+
+
+-- DEVHUB LAPTOP
+['devhub_laptop'] = {
+    label = 'Laptop',
+    weight = 0,
+    stack = true,
+    close = true,
+    description = ""
+},
+
+
+
 }
