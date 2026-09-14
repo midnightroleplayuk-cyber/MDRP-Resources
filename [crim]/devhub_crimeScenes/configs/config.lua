@@ -899,7 +899,7 @@ Config.CrimeScene.Objects = {
         defaultAlpha = 80, -- default alpha of the blood object
         minDistance = 10.0, -- Minimum distance at which the UV flashlight works
 
-        uvFlashlightWeapon = "WEAPON_POCKETLIGHT", -- weapon that will be used to see the blood
+        uvFlashlightWeapon = "WEAPON_FLASHLIGHT", -- weapon that will be used to see the blood
 
         cleaning = {
             animation = {
