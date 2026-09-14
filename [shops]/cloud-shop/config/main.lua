@@ -167,9 +167,6 @@ return {
 				-- Phones
 				{ name = "phone", label = "LB Phone", category = "Phones", price = 600 },
 			    { name = "radio", label = "Radio", category = "all", price = 600 },
-				{ name = "devhub_laptop", label = "laptop", category = "all", price = 1500 },
-			},
-
 			},
 
 			Requirement = {
