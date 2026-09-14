@@ -46,20 +46,21 @@ Config.Vehicle = {
                 }
             }
         },
-        {
-            model = GetHashKey("mule"), -- vehicle model
+         {
+            model = GetHashKey("benson"), -- vehicle model
             size = "large", -- vehicle size (small, medium, large)
             trunkDoors = { 2, 3 }, -- doors that will be detected as trunk
             gridConfig = { -- grid config for the vehicle
                 zoneType = 'vehicle',
                 vehicleOffsets = {
-                    { x = -1.3, y = -3.6, z = -0.1 },
-                    { x =  1.3, y = -3.6, z = -0.1 },
-                    { x =  1.3, y =  1.7, z = -0.1 },
-                    { x = -1.3, y =  1.7, z = -0.1 },
+                    { x = -1.1, y = -5.25, z = 0.1 },
+                    { x = 1.1, y = -5.25, z = 0.1 },
+                    { x = 1.1, y = 0.45, z = 0.1 },
+                    { x = -1.1, y = 0.45, z = 0.1 },
                 }
             }
         },
+       
     },
     lockedByDefault = false, -- if true, the task vehicle spawns with locked doors (status 2). Set to false to leave it unlocked on spawn.
     blip = { -- blip config for the vehicle
