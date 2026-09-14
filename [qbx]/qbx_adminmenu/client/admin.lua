@@ -186,7 +186,7 @@ end
 
 local options = {
     function() toggleNoClipMode() end,
-    function() TriggerServerEvent('qbx_admin:server:plutoFullReviveSelf') end,
+    function() TriggerEvent('qbx_medical:client:playerRevived') end,
     function()
         optionInvisible = not optionInvisible
         if not optionInvisible then return end
@@ -525,25 +525,4 @@ CreateThread(function()
             TriggerEvent('qbx_admin:client:Show')
         end
     end
-end)
-
--- Pluto Ambulance compatibility. The manual /heal command is known to clear
--- fractures correctly, so the server asks the administering client to run that
--- exact command against the selected player as well.
-RegisterNetEvent('qbx_admin:client:runPlutoHealCommand', function(targetSrc)
-    targetSrc = tonumber(targetSrc)
-    if not targetSrc then return end
-
-    ExecuteCommand(('heal %s'):format(targetSrc))
-end)
-
-RegisterNetEvent('qbx_admin:client:plutoReviveFinalise', function()
-    local ped = PlayerPedId()
-
-    -- Do not substitute this for Pluto /heal; this is only a final native cleanup.
-    local maxHealth = GetEntityMaxHealth(ped)
-    SetEntityHealth(ped, maxHealth)
-    ClearPedBloodDamage(ped)
-    ResetPedVisibleDamage(ped)
-    ClearPedLastDamageBone(ped)
 end)
