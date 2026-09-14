@@ -33,20 +33,6 @@ Config.Vehicle = {
             },
         },
         {
-            model = GetHashKey("benson"), -- vehicle model
-            size = "medium", -- vehicle size (small, medium, large)
-            trunkDoors = { 2, 3 }, -- doors that will be detected as trunk
-            gridConfig = { -- grid config for the vehicle
-                zoneType = 'vehicle',
-                vehicleOffsets = {
-                    { x = -1.1, y = -5.25, z = 0.1 },
-                    { x = 1.1, y = -5.25, z = 0.1 },
-                    { x = 1.1, y = 0.45, z = 0.1 },
-                    { x = -1.1, y = 0.45, z = 0.1 },
-                }
-            }
-        },
-        {
             model = GetHashKey("mule"), -- vehicle model
             size = "large", -- vehicle size (small, medium, large)
             trunkDoors = { 2, 3 }, -- doors that will be detected as trunk
