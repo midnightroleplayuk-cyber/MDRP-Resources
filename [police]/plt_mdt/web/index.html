@@ -1,0 +1,1421 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PLT MDT</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Chakra+Petch:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap"
+        rel="stylesheet">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Leaflet -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+</head>
+
+<body class="theme-police"> <!-- Default theme -->
+    <div id="mdt-container" style="display: none;">
+        <div class="mdt-tablet-wrapper">
+            <img src="img/mdt.png" class="mdt-frame-img">
+            <div class="tablet-screen">
+                <header class="mdt-header">
+                    <div class="header-left clickable" id="home-logo-btn">
+                        <div class="dept-logo">
+                            <svg width="42" height="42" viewBox="0 0 42 42" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <rect width="42" height="42" rx="13" fill="black" fill-opacity="0.01"/>
+                                <g filter="url(#filter1_d_41_237)">
+                                <path d="M22.875 21.4425L23.3475 23.49C23.4225 23.8125 23.07 24.0675 22.785 23.895L21 22.815L19.2075 23.895C19.1443 23.9333 19.0712 23.9522 18.9974 23.9493C18.9236 23.9464 18.8522 23.9218 18.7922 23.8786C18.7322 23.8355 18.6863 23.7756 18.6601 23.7065C18.6339 23.6374 18.6287 23.5621 18.645 23.49L19.125 21.45L17.55 20.0925C17.4934 20.0447 17.4523 19.9811 17.4318 19.9099C17.4112 19.8387 17.4123 19.763 17.4348 19.6924C17.4572 19.6218 17.5001 19.5594 17.558 19.5132C17.6159 19.4669 17.6862 19.4388 17.76 19.4325L19.845 19.2525L20.655 17.3325C20.7825 17.025 21.2175 17.025 21.345 17.3325L22.155 19.245L24.24 19.425C24.3138 19.4313 24.3841 19.4594 24.442 19.5057C24.4999 19.5519 24.5428 19.6143 24.5652 19.6849C24.5877 19.7555 24.5888 19.8312 24.5682 19.9024C24.5477 19.9736 24.5066 20.0372 24.45 20.085L22.875 21.4425ZM15.1425 15.3525C14.6025 15.5925 14.25 16.1325 14.25 16.725V20.25C14.25 24.4125 17.13 28.305 21 29.25C24.87 28.305 27.75 24.4125 27.75 20.25V16.725C27.75 16.1325 27.3975 15.5925 26.8575 15.3525L21.6075 13.02C21.2175 12.8475 20.775 12.8475 20.3925 13.02L15.1425 15.3525Z" fill="currentColor"/>
+                                </g>
+                                <defs>
+                                <filter id="filter1_d_41_237" x="0.1" y="0.1" width="41.8" height="41.8" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+                                <feFlood flood-opacity="0" result="BackgroundImageFix"/>
+                                <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+                                <feOffset/>
+                                <feGaussianBlur stdDeviation="5.95"/>
+                                <feComposite in2="hardAlpha" operator="out"/>
+                                <feColorMatrix type="matrix" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.54 0"/>
+                                <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_41_237"/>
+                                <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_41_237" result="shape"/>
+                                </filter>
+                                </defs>
+                            </svg>
+                        </div>
+                        <div class="dept-info">
+                            <h1 id="job-title-main">POLICE MDT</h1>
+                            <p class="tagline">Providing professional law enforcement services to the community.</p>
+                        </div>
+                    </div>
+                    <div class="header-right">
+                        <button id="close-mdt-btn" class="close-btn">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <div class="header-divider-container">
+                        <svg width="938" height="6" viewBox="0 0 938 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <g clip-path="url(#clip0_41_1116)">
+                                <path
+                                    d="M-167.618 -17.72L-180.878 26.65H-189.854L-176.594 -17.72H-167.618ZM-154.792 -17.72L-168.052 26.65H-177.028L-163.768 -17.72H-154.792ZM-141.966 -17.72L-155.226 26.65H-164.202L-150.942 -17.72H-141.966ZM-129.141 -17.72L-142.401 26.65H-151.377L-138.117 -17.72H-129.141ZM-116.315 -17.72L-129.575 26.65H-138.551L-125.291 -17.72H-116.315ZM-103.489 -17.72L-116.749 26.65H-125.725L-112.465 -17.72H-103.489ZM-90.6636 -17.72L-103.924 26.65H-112.9L-99.6396 -17.72H-90.6636ZM-77.8379 -17.72L-91.0979 26.65H-100.074L-86.8139 -17.72H-77.8379ZM-65.0122 -17.72L-78.2722 26.65H-87.2482L-73.9882 -17.72H-65.0122ZM-52.1865 -17.72L-65.4465 26.65H-74.4225L-61.1625 -17.72H-52.1865ZM-39.3608 -17.72L-52.6208 26.65H-61.5968L-48.3368 -17.72H-39.3608ZM-26.5351 -17.72L-39.7951 26.65H-48.7711L-35.5111 -17.72H-26.5351ZM-13.7094 -17.72L-26.9694 26.65H-35.9454L-22.6854 -17.72H-13.7094ZM-0.883718 -17.72L-14.1437 26.65H-23.1197L-9.85972 -17.72H-0.883718ZM11.942 -17.72L-1.318 26.65H-10.294L2.966 -17.72H11.942ZM24.7677 -17.72L11.5077 26.65H2.53169L15.7917 -17.72H24.7677ZM37.5934 -17.72L24.3334 26.65H15.3574L28.6174 -17.72H37.5934ZM50.4191 -17.72L37.1591 26.65H28.1831L41.4431 -17.72H50.4191ZM63.2448 -17.72L49.9848 26.65H41.0088L54.2688 -17.72H63.2448ZM76.0705 -17.72L62.8105 26.65H53.8345L67.0945 -17.72H76.0705ZM88.8962 -17.72L75.6362 26.65H66.6602L79.9202 -17.72H88.8962ZM101.722 -17.72L88.4619 26.65H79.4859L92.7459 -17.72H101.722ZM114.548 -17.72L101.288 26.65H92.3116L105.572 -17.72H114.548ZM127.373 -17.72L114.113 26.65H105.137L118.397 -17.72H127.373ZM140.199 -17.72L126.939 26.65H117.963L131.223 -17.72H140.199ZM153.025 -17.72L139.765 26.65H130.789L144.049 -17.72H153.025ZM165.85 -17.72L152.59 26.65H143.614L156.874 -17.72H165.85ZM178.676 -17.72L165.416 26.65H156.44L169.7 -17.72H178.676ZM191.502 -17.72L178.242 26.65H169.266L182.526 -17.72H191.502ZM204.328 -17.72L191.068 26.65H182.092L195.352 -17.72H204.328ZM217.153 -17.72L203.893 26.65H194.917L208.177 -17.72H217.153ZM229.979 -17.72L216.719 26.65H207.743L221.003 -17.72H229.979ZM242.805 -17.72L229.545 26.65H220.569L233.829 -17.72H242.805ZM255.63 -17.72L242.37 26.65H233.394L246.654 -17.72H255.63ZM268.456 -17.72L255.196 26.65H246.22L259.48 -17.72H268.456ZM281.282 -17.72L268.022 26.65H259.046L272.306 -17.72H281.282ZM294.107 -17.72L280.847 26.65H271.871L285.131 -17.72H294.107ZM306.933 -17.72L293.673 26.65H284.697L297.957 -17.72H306.933ZM319.759 -17.72L306.499 26.65H297.523L310.783 -17.72H319.759ZM332.585 -17.72L319.325 26.65H310.349L323.609 -17.72H332.585ZM345.41 -17.72L332.15 26.65H323.174L336.434 -17.72H345.41ZM358.236 -17.72L344.976 26.65H336L349.26 -17.72H358.236ZM371.062 -17.72L357.802 26.65H348.826L362.086 -17.72H371.062ZM383.887 -17.72L370.627 26.65H361.651L374.911 -17.72H383.887ZM396.713 -17.72L383.453 26.65H374.477L387.737 -17.72H396.713ZM409.539 -17.72L396.279 26.65H387.303L400.563 -17.72H409.539ZM422.364 -17.72L409.104 26.65H400.128L413.388 -17.72H422.364ZM435.19 -17.72L421.93 26.65H412.954L426.214 -17.72H435.19ZM448.016 -17.72L434.756 26.65H425.78L439.04 -17.72H448.016ZM460.842 -17.72L447.582 26.65H438.606L451.866 -17.72H460.842ZM473.667 -17.72L460.407 26.65H451.431L464.691 -17.72H473.667ZM486.493 -17.72L473.233 26.65H464.257L477.517 -17.72H486.493ZM499.319 -17.72L486.059 26.65H477.083L490.343 -17.72H499.319ZM512.144 -17.72L498.884 26.65H489.908L503.168 -17.72H512.144ZM524.97 -17.72L511.71 26.65H502.734L515.994 -17.72H524.97ZM537.796 -17.72L524.536 26.65H515.56L528.82 -17.72H537.796ZM550.622 -17.72L537.362 26.65H528.386L541.646 -17.72H550.622ZM563.447 -17.72L550.187 26.65H541.211L554.471 -17.72H563.447ZM576.273 -17.72L563.013 26.65H554.037L567.297 -17.72H576.273ZM589.099 -17.72L575.839 26.65H566.863L580.123 -17.72H589.099ZM601.924 -17.72L588.664 26.65H579.688L592.948 -17.72H601.924ZM614.75 -17.72L601.49 26.65H592.514L605.774 -17.72H614.75ZM627.576 -17.72L614.316 26.65H605.34L618.6 -17.72H627.576ZM640.401 -17.72L627.141 26.65H618.165L631.425 -17.72H640.401ZM653.227 -17.72L639.967 26.65H630.991L644.251 -17.72H653.227ZM666.053 -17.72L652.793 26.65H643.817L657.077 -17.72H666.053ZM678.879 -17.72L665.619 26.65H656.643L669.903 -17.72H678.879ZM691.704 -17.72L678.444 26.65H669.468L682.728 -17.72H691.704ZM704.53 -17.72L691.27 26.65H682.294L695.554 -17.72H704.53ZM717.356 -17.72L704.096 26.65H695.12L708.38 -17.72H717.356ZM730.181 -17.72L716.921 26.65H707.945L721.205 -17.72H730.181ZM743.007 -17.72L729.747 26.65H720.771L734.031 -17.72H743.007ZM755.833 -17.72L742.573 26.65H733.597L746.857 -17.72H755.833ZM768.658 -17.72L755.398 26.65H746.422L759.682 -17.72H768.658ZM781.484 -17.72L768.224 26.65H759.248L772.508 -17.72H781.484ZM794.31 -17.72L781.05 26.65H772.074L785.334 -17.72H794.31ZM807.136 -17.72L793.876 26.65H784.9L798.16 -17.72H807.136ZM819.961 -17.72L806.701 26.65H797.725L810.985 -17.72H819.961ZM832.787 -17.72L819.527 26.65H810.551L823.811 -17.72H832.787ZM845.613 -17.72L832.353 26.65H823.377L836.637 -17.72H845.613ZM858.438 -17.72L845.178 26.65H836.202L849.462 -17.72H858.438ZM871.264 -17.72L858.004 26.65H849.028L862.288 -17.72H871.264ZM884.09 -17.72L870.83 26.65H861.854L875.114 -17.72H884.09ZM896.915 -17.72L883.655 26.65H874.679L887.939 -17.72H896.915ZM909.741 -17.72L896.481 26.65H887.505L900.765 -17.72H909.741ZM922.567 -17.72L909.307 26.65H900.331L913.591 -17.72H922.567ZM935.393 -17.72L922.133 26.65H913.157L926.417 -17.72H935.393ZM948.218 -17.72L934.958 26.65H925.982L939.242 -17.72H948.218ZM961.044 -17.72L947.784 26.65H938.808L952.068 -17.72H961.044ZM973.87 -17.72L960.61 26.65H951.634L964.894 -17.72H973.87ZM986.695 -17.72L973.435 26.65H964.459L977.719 -17.72H986.695ZM999.521 -17.72L986.261 26.65H977.285L990.545 -17.72H999.521ZM1012.35 -17.72L999.087 26.65H990.111L1003.37 -17.72H1012.35ZM1025.17 -17.72L1011.91 26.65H1002.94L1016.2 -17.72H1025.17ZM1038 -17.72L1024.74 26.65H1015.76L1029.02 -17.72H1038ZM1050.82 -17.72L1037.56 26.65H1028.59L1041.85 -17.72H1050.82ZM1063.65 -17.72L1050.39 26.65H1041.41L1054.67 -17.72H1063.65ZM1076.48 -17.72L1063.22 26.65H1054.24L1067.5 -17.72H1076.48ZM1089.3 -17.72L1076.04 26.65H1067.06L1080.32 -17.72H1089.3ZM1102.13 -17.72L1088.87 26.65H1079.89L1093.15 -17.72H1102.13ZM1114.95 -17.72L1101.69 26.65H1092.72L1105.98 -17.72H1114.95ZM1127.78 -17.72L1114.52 26.65H1105.54L1118.8 -17.72H1127.78Z"
+                                    fill="url(#paint0_linear_41_1116)" fill-opacity="0.13" />
+                            </g>
+                            <defs>
+                                <linearGradient id="paint0_linear_41_1116" x1="-192" y1="3.5" x2="1130" y2="3.5"
+                                    gradientUnits="userSpaceOnUse">
+                                    <stop offset="0.144231" stop-color="var(--primary-blue)" stop-opacity="0" />
+                                    <stop offset="0.5" stop-color="var(--primary-blue)" />
+                                    <stop offset="0.855769" stop-color="var(--primary-blue)" stop-opacity="0" />
+                                </linearGradient>
+                                <clipPath id="clip0_41_1116">
+                                    <rect width="938" height="6" fill="currentColor" />
+                                </clipPath>
+                            </defs>
+                        </svg>
+                    </div>
+                </header>
+
+                <nav class="stats-bar hidden">
+                    <div class="stat-item clickable" onclick="switchPage('dispatch')">
+                        <span class="stat-label">ONLINE OFFICERS</span>
+                        <span class="stat-value highlight" id="stat-online-officers">00 On Duty</span>
+                    </div>
+                    <div class="stat-item clickable" onclick="switchPage('warrants')">
+                        <span class="stat-label">ACTIVE WARRANTS</span>
+                        <span class="stat-value highlight" id="stat-active-warrants">00</span>
+                    </div>
+                    <div class="stat-item clickable" onclick="switchPage('incidents')">
+                        <span class="stat-label">REPORTS TODAY</span>
+                        <span class="stat-value highlight" id="stat-reports-today">00</span>
+                    </div>
+                    <div class="stat-item clickable" onclick="switchPage('dispatch')">
+                        <span class="stat-label">RECENT CALLS</span>
+                        <span class="stat-value highlight" id="stat-recent-calls">00 Waiting</span>
+                    </div>
+                    <div class="stat-item clickable" onclick="switchPage('dispatch')">
+                        <span class="stat-label">ACTIVE CALLS</span>
+                        <span class="stat-value highlight" id="stat-active-calls">00 Ongoing</span>
+                    </div>
+                </nav>
+
+                <main class="mdt-content">
+                    <!-- Home Page -->
+                    <div id="home" class="page active">
+                        <div class="home-grid">
+                            <div class="nav-tile" data-page="dashboard">
+                                <div class="tile-icon"><i class="fas fa-th-large"></i></div>
+                                <h3>Dashboard</h3>
+                                <p>View active units, BOLOs, and recent incident reports.</p>
+                            </div>
+                            <div class="nav-tile" data-page="profiles">
+                                <div class="tile-icon"><i class="fas fa-users"></i></div>
+                                <h3>Citizens</h3>
+                                <p>Search the citizen database for profiles and records.</p>
+                            </div>
+                            <div class="nav-tile" data-page="vehicles">
+                                <div class="tile-icon"><i class="fas fa-car"></i></div>
+                                <h3>Vehicles</h3>
+                                <p>Lookup vehicle registrations and plate information.</p>
+                            </div>
+                            <div class="nav-tile" data-page="warrants">
+                                <div class="tile-icon"><i class="fas fa-file-invoice"></i></div>
+                                <h3>Warrants</h3>
+                                <p>Manage and track active law enforcement warrants.</p>
+                            </div>
+                            <div class="nav-tile" data-page="dispatch">
+                                <div class="tile-icon"><i class="fas fa-map-location-dot"></i></div>
+                                <h3>Dispatch</h3>
+                                <p>Real-time map and emergency call management.</p>
+                            </div>
+                            <div class="nav-tile" data-page="charges">
+                                <div class="tile-icon"><i class="fas fa-gavel"></i></div>
+                                <h3>Criminal Code</h3>
+                                <p>Review laws, fines, and jail sentences for all offenses.</p>
+                            </div>
+                            <div class="nav-tile" data-page="incidents">
+                                <div class="tile-icon"><i class="fas fa-folder-open"></i></div>
+                                <h3>Case Files</h3>
+                                <p>Access detailed incident reports and ongoing investigations.</p>
+                            </div>
+                            <div class="nav-tile" data-page="officers">
+                                <div class="tile-icon"><i class="fas fa-user-shield"></i></div>
+                                <h3>Officers</h3>
+                                <p>Manage your officer profile, callsign, and departmental settings.</p>
+                            </div>
+                        </div>
+
+                        <div class="quick-actions">
+                            <div class="actions-info">
+                                <h3>Interface Theme</h3>
+                                <p>Select your preferred highlight color for the MDT interface. Saved locally.</p>
+                            </div>
+                            <div class="actions-btns" id="theme-selector">
+                                <button class="action-btn" id="theme-picker-btn">CHOOSE COLOR</button>
+                                <input type="color" id="theme-color-input" style="display: none;">
+                                <button class="action-btn" id="reset-theme">Reset</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Dashboard Layout -->
+                    <div id="dashboard" class="page">
+                        <div class="layout-grid">
+                            <!-- Left Column -->
+                            <div class="column col-left">
+                                <section class="bolos-section">
+                                    <h2 class="section-title clickable" onclick="switchPage('vehicles')">BOLOS</h2>
+                                    <p class="section-desc">Active Be-On-The-Lookout alerts.</p>
+                                    <div class="bolos-container" id="bolos-list-new">
+                                        <!-- BOLO Cards -->
+                                        <div class="empty-state">No active BOLOs</div>
+                                    </div>
+                                </section>
+
+                                <section class="warrants-list-section">
+                                    <div class="section-header">
+                                        <h2 class="section-title clickable" onclick="switchPage('warrants')"><i class="fas fa-list-ul"></i> Active Warrants List
+                                        </h2>
+                                        <button class="add-btn" id="open-create-warrant-new">+</button>
+                                    </div>
+                                    <div class="warrants-mini-list" id="warrants-mini-list">
+                                        <!-- Simplified Warrant Rows -->
+                                        <div class="empty-state">No active warrants</div>
+                                    </div>
+                                </section>
+                            </div>
+
+                            <!-- Dashboard Divider 1 -->
+                            <div class="dashboard-divider">
+                                <svg width="6" height="320" viewBox="0 0 6 320" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M3 1V319" stroke="white" stroke-opacity="0.12"/>
+                                    <rect x="2" y="318" width="2" height="2" fill="white"/>
+                                    <rect x="2" width="2" height="2" fill="white"/>
+                                    <path d="M6 287.536L0 291V288.464L6 285V287.536Z" fill="white"/>
+                                    <path d="M6 283.536L0 287V284.464L6 281V283.536Z" fill="white"/>
+                                    <path d="M6 279.536L0 283V280.464L6 277V279.536Z" fill="white"/>
+                                </svg>
+                            </div>
+
+                            <!-- Middle Column -->
+                            <div class="column col-middle">
+                                <section class="recent-reports-section">
+                                    <h2 class="section-title clickable" onclick="switchPage('incidents')">RECENT REPORTS</h2>
+                                    <p class="section-desc">Latest incident reports filed.</p>
+                                    <div class="reports-list" id="recent-reports-list">
+                                        <!-- Report Rows -->
+                                        <div class="empty-state">No recent reports</div>
+                                    </div>
+                                </section>
+
+                                <section class="dispatch-feed-section">
+                                    <h2 class="section-title clickable" onclick="switchPage('dispatch')">DISPATCH NOTIFICATION FEED</h2>
+                                    <p class="section-desc">Real-time status updates.</p>
+                                    <div class="notification-feed" id="dispatch-notification-feed">
+                                        <!-- Notification Items -->
+                                        <div class="empty-state">No notifications</div>
+                                    </div>
+                                </section>
+                            </div>
+
+                            <!-- Dashboard Divider 2 -->
+                            <div class="dashboard-divider">
+                                <svg width="6" height="320" viewBox="0 0 6 320" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M3.00003 319L3 1" stroke="white" stroke-opacity="0.12"/>
+                                    <rect x="4.00003" y="2" width="2" height="2" transform="rotate(180 4.00003 2)" fill="white"/>
+                                    <rect x="4.00003" y="320" width="2" height="2" transform="rotate(180 4.00003 320)" fill="white"/>
+                                    <path d="M2.77536e-05 32.4641L6.00003 29L6.00003 31.5359L2.79753e-05 35L2.77536e-05 32.4641Z" fill="white"/>
+                                    <path d="M2.77536e-05 36.4641L6.00003 33L6.00003 35.5359L2.79753e-05 39L2.77536e-05 36.4641Z" fill="white"/>
+                                    <path d="M2.77536e-05 40.4641L6.00003 37L6.00003 39.5359L2.79753e-05 43L2.77536e-05 40.4641Z" fill="white"/>
+                                </svg>
+                            </div>
+
+                            <!-- Right Column (Sidebar Units) -->
+                            <div class="column col-right sidebar-units">
+                                <div class="units-header">
+                                    <h3 class="clickable" onclick="switchPage('dispatch')" style="font-size: 1.3vh; font-weight: 700; letter-spacing: 0.09vh; margin-bottom: 0.46vh;">Online Units</h3>
+                                    <p>Currently active personnel and units.</p>
+                                </div>
+                                <div class="units-list" id="online-units-list">
+                                    <!-- Online Unit Rows -->
+                                    <div class="empty-state">No units online</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Profiles Page (Redesigned) -->
+                    <div id="profiles" class="page">
+                        <div class="profile-header-area">
+                            <div class="search-box-large">
+                                <input type="text" id="profile-search-input" placeholder="Search...">
+                                <i class="fas fa-search"></i>
+                                <!-- Search Suggestions Dropdown -->
+                                <div id="profile-search-results" class="search-suggestions hidden"></div>
+                            </div>
+                            <div class="tactical-divider">
+                                <div class="divider-line"></div>
+                                <div class="divider-accents">///</div>
+                            </div>
+                        </div>
+
+                        <div id="profile-content-area" class="profile-layout-container hidden">
+                            <!-- Main Profile View Sub-Page -->
+                            <div id="profile-view" class="sub-page active">
+                                <h2 class="category-label"><span class="dot"></span> Citizen Profile</h2>
+                                
+                                <div class="profile-main-card">
+                                    <div class="profile-card-left">
+                                        <div class="profile-avatar-wrapper" id="p-avatar-click">
+                                            <div class="avatar-bg"></div>
+                                            <img src="img/placeholder_avatar.png" id="p-avatar">
+                                            <div class="avatar-hover-overlay">
+                                                <i class="fas fa-camera"></i>
+                                            </div>
+                                        </div>
+                                        <div class="profile-primary-details">
+                                            <div class="p-info-row"><span class="p-label">NAME</span> <span class="p-value highlight-text" id="p-name">Ernesto Valverde</span></div>
+                                            <div class="p-info-row"><span class="p-label">CID:</span> <span class="p-value" id="p-cid">102512</span></div>
+                                            <div class="p-info-row"><span class="p-label">PHONE:</span> <span class="p-value" id="p-phone">(421) - 421-1020</span></div>
+                                            <div class="p-info-row"><span class="p-label">ADDRESS:</span> <span class="p-value" id="p-address">123 Industrial St, Liberty City</span></div>
+                                            
+                                            <div class="p-skills-container">
+                                                <div class="p-skill-item clickable" id="license-driving-toggle">
+                                                    <i class="fas fa-id-card"></i>
+                                                    <div class="p-skill-bar"><div class="fill" id="skill-driving-license"></div></div>
+                                                    <div class="license-info-wrapper">
+                                                        <span class="p-skill-text">Driving License</span>
+                                                        <div class="license-points-display" id="driving-points-container">
+                                                            <span class="points-label">POINTS:</span>
+                                                            <span class="points-value" id="driving-points-val">0</span>
+                                                            <div class="points-actions">
+                                                                <button class="point-btn plus" id="add-driving-point">+</button>
+                                                                <button class="point-btn minus" id="sub-driving-point">-</button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="p-skill-item clickable" id="license-weapon-toggle">
+                                                    <i class="fas fa-gun"></i>
+                                                    <div class="p-skill-bar"><div class="fill" id="skill-weapon-license"></div></div>
+                                                    <div class="license-info-wrapper">
+                                                        <span class="p-skill-text">Gun Permit</span>
+                                                        <div class="license-points-display" id="weapon-points-container">
+                                                            <span class="points-label">POINTS:</span>
+                                                            <span class="points-value" id="weapon-points-val">0</span>
+                                                            <div class="points-actions">
+                                                                <button class="point-btn plus" id="add-weapon-point">+</button>
+                                                                <button class="point-btn minus" id="sub-weapon-point">-</button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="profile-card-right">
+                                        <div class="threat-badge" id="p-threat">Threat Level: LOW</div>
+                                        <div class="p-warrant-toggle-card">
+                                            <label>ACTIVE WARRANT</label>
+                                            <div class="tactical-toggle-group" style="width: 11.11vh; margin-top: 0.46vh;">
+                                                <button type="button" class="toggle-btn active" data-value="no" id="p-card-warrant-no">NO</button>
+                                                <button type="button" class="toggle-btn" data-value="yes" id="p-card-warrant-yes">YES</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="profile-bottom-grid">
+                                    <div class="p-section assets-section">
+                                        <h3 class="p-section-title">ASSETS</h3>
+                                        <p class="p-section-subtitle">Registered vehicles and property.</p>
+                                        <div class="p-assets-box" id="p-assets-container">
+                                            <!-- Dynamic Vehicle Items -->
+                                        </div>
+                                    </div>
+
+                                    <div class="p-section records-section">
+                                        <div class="p-section-header">
+                                            <div class="p-header-text">
+                                                <h3 class="p-section-title">Criminal History & Fines</h3>
+                                                <p class="p-section-subtitle">Browse records and active warrants.</p>
+                                            </div>
+                                            <button class="p-add-record-btn" id="p-add-record-trigger">
+                                                <i class="fas fa-plus"></i>
+                                            </button>
+                                        </div>
+                                        <div id="records-list-container">
+                                            <div class="p-records-scroller" id="p-records-list">
+                                                <!-- Record Cards -->
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Create Record Sub-Page -->
+                            <div id="profile-create-record" class="sub-page">
+                                <div class="page-header">
+                                    <h2>CREATE NEW CRIMINAL RECORD</h2>
+                                    <button class="btn-back return-btn" data-target="profile-view">
+                                        <i class="fas fa-arrow-left"></i> RETURN
+                                    </button>
+                                </div>
+                                
+                                <div class="p-record-form-large">
+                                    <div class="p-form-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.85vh;">
+                                        <div class="p-form-left-col">
+                                            <div class="p-form-group">
+                                                <label>INCIDENT TITLE</label>
+                                                <input type="text" id="p-new-record-title" placeholder="e.g. Armed Robbery at Fleeca Bank">
+                                            </div>
+                                            <div class="p-form-group">
+                                                <label>OCCURRENCE TIME</label>
+                                                <input type="datetime-local" id="p-new-record-time">
+                                            </div>
+                                            <div class="p-form-group">
+                                                <label>LOCATION</label>
+                                                <input type="text" id="p-new-record-location" placeholder="e.g. Legion Square">
+                                            </div>
+                                            <div class="p-form-group">
+                                                <label>IMAGE URL (OPTIONAL)</label>
+                                                <input type="text" id="p-new-record-image" placeholder="https://imgur.com/...">
+                                            </div>
+                                            <div class="p-form-group">
+                                                <label>ISSUE WARRANT?</label>
+                                                <div class="tactical-toggle-group">
+                                                    <button type="button" class="toggle-btn active" data-value="no" id="warrant-no">NO</button>
+                                                    <button type="button" class="toggle-btn" data-value="yes" id="warrant-yes">YES</button>
+                                                    <input type="hidden" id="p-new-record-warrant" value="no">
+                                                </div>
+                                            </div>
+                                            <div class="p-form-group full-width">
+                                                <label>EVIDENCE & INCIDENT NOTES</label>
+                                                <textarea id="p-new-record-desc" placeholder="Detailed description of the incident, evidence found, etc..." style="height: 11.11vh;"></textarea>
+                                            </div>
+                                        </div>
+
+                                        <div class="p-form-right-col" style="display: flex; flex-direction: column; gap: 1.85vh;">
+                                            <div class="p-form-group">
+                                                <label>SELECT CHARGES</label>
+                                                <div class="charge-search-container" style="position: relative;">
+                                                    <input type="text" id="p-charge-search" placeholder="Search charges..." style="width: 100%; padding-right: 2.78vh;">
+                                                    <i class="fas fa-search" style="position: absolute; right: 0.93vh; top: 50%; transform: translateY(-50%); opacity: 0.5;"></i>
+                                                    <div id="p-charge-results" class="charge-selection-list hidden" style="position: absolute; top: 100%; left: 0; width: 100%; z-index: 100; max-height: 23.15vh; overflow-y: auto; background: var(--primary-dark-solid); border: 0.09vh solid var(--primary-blue-alpha-06); border-radius: 0 0 0.37vh 0.37vh; box-shadow: 0 0.93vh 1.85vh rgba(0,0,0,0.5); padding: 0.46vh;">
+                                                        <!-- Charge items -->
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="p-form-group">
+                                                <label>SELECTED CHARGES</label>
+                                                <div id="p-selected-charges" class="selected-charges-list" style="min-height: 5.56vh; max-height: 11.11vh; overflow-y: auto; background: rgba(99, 166, 192, 0.05); border: 0.09vh solid var(--primary-blue-alpha-03); border-radius: 0.37vh; padding: 0.46vh; display: flex; flex-wrap: wrap; gap: 0.46vh;">
+                                                    <!-- Selected charge pills -->
+                                                    <div class="empty-state" style="font-size: 0.93vh; opacity: 0.5; width: 100%; text-align: center; padding: 0.46vh;">No charges selected</div>
+                                                </div>
+                                            </div>
+
+                                            <div class="sentencing-panel" style="background: rgba(0,0,0,0.2); border: 0.09vh solid rgba(255,255,255,0.05); border-radius: 0.37vh; padding: 1.39vh;">
+                                                <div style="display: flex; justify-content: space-between; margin-bottom: 0.93vh; border-bottom: 0.09vh solid rgba(255,255,255,0.1); padding-bottom: 0.46vh;">
+                                                    <span style="font-size: 1.02vh; font-weight: 700; color: var(--primary-blue);">SENTENCING SUMMARY</span>
+                                                    <span id="sentence-recommended" style="font-size: 0.83vh; opacity: 0.6;">REC: $0 / 0 Months</span>
+                                                </div>
+                                                
+                                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.93vh; margin-bottom: 1.39vh;">
+                                                    <div class="p-form-group" style="margin-bottom: 0;">
+                                                        <label style="font-size: 0.83vh;">FINAL FINE ($)</label>
+                                                        <input type="number" id="p-new-record-fines" value="0" style="height: 2.78vh; font-size: 1.11vh;">
+                                                    </div>
+                                                    <div class="p-form-group" style="margin-bottom: 0;">
+                                                        <label style="font-size: 0.83vh;">FINAL JAIL (MONTHS)</label>
+                                                        <input type="number" id="p-new-record-jail" value="0" style="height: 2.78vh; font-size: 1.11vh;">
+                                                    </div>
+                                                </div>
+
+                                                <div class="reduction-slider-container">
+                                                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.46vh;">
+                                                        <label style="font-size: 0.83vh;">SENTENCE REDUCTION</label>
+                                                        <span id="reduction-value" style="font-size: 1.02vh; font-weight: 700; color: var(--primary-blue);">0%</span>
+                                                    </div>
+                                                    <input type="range" id="p-reduction-slider" min="0" max="100" value="0" style="width: 100%; height: 0.37vh; background: rgba(255,255,255,0.1); border-radius: 0.18vh; outline: none; -webkit-appearance: none;">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div style="display: flex; gap: 0.93vh; margin-top: 1.85vh;">
+                                        <button class="p-submit-btn-large" id="p-submit-record" style="flex: 2; margin-top: 0;">
+                                            <i class="fas fa-save"></i> SUBMIT TO PERMANENT RECORD
+                                        </button>
+                                        <button class="p-submit-btn-large" id="p-process-sentence" style="flex: 1; margin-top: 0; background: #27ae60;">
+                                            <i class="fas fa-gavel"></i> APPLY SENTENCE
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Record Details Sub-Page -->
+                            <div id="profile-record-details" class="sub-page">
+                                <div class="page-header">
+                                    <h2 id="p-detail-title">INCIDENT DETAILS</h2>
+                                    <button class="btn-back return-btn" data-target="profile-view">
+                                        <i class="fas fa-arrow-left"></i> RETURN
+                                    </button>
+                                </div>
+                                
+                                <div class="p-detail-container">
+                                    <div class="p-detail-grid">
+                                        <div class="p-detail-item">
+                                            <span class="label">DATE/TIME</span>
+                                            <span class="value" id="p-detail-time">10/25/2024</span>
+                                        </div>
+                                        <div class="p-detail-item">
+                                            <span class="label">LOCATION</span>
+                                            <span class="value" id="p-detail-location">Legion Square</span>
+                                        </div>
+                                        <div class="p-detail-item">
+                                            <span class="label">OFFICER</span>
+                                            <span class="value" id="p-detail-officer">Officer Name</span>
+                                        </div>
+                                        <div class="p-detail-item">
+                                            <span class="label">FINE AMOUNT</span>
+                                            <span class="value highlight-text" id="p-detail-fines">$0</span>
+                                        </div>
+                                        <div class="p-detail-item">
+                                            <span class="label">JAIL TIME</span>
+                                            <span class="value highlight-text" id="p-detail-jail">0 MONTHS</span>
+                                        </div>
+                                        <div class="p-detail-item">
+                                            <span class="label">WARRANT</span>
+                                            <span class="value" id="p-detail-warrant">NO</span>
+                                        </div>
+                                        <div class="p-detail-item full-width">
+                                            <span class="label">CHARGES</span>
+                                            <span class="value highlight" id="p-detail-charges">Assault, Speeding</span>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="p-detail-desc-box">
+                                        <span class="label">EVIDENCE & NOTES</span>
+                                        <div class="p-detail-desc-content" id="p-detail-desc">
+                                            Detailed notes about the incident go here...
+                                        </div>
+                                    </div>
+
+                                    <div id="p-detail-image-box" class="p-detail-image-box hidden">
+                                        <span class="label">ATTACHED EVIDENCE IMAGE</span>
+                                        <img src="" id="p-detail-image">
+                                    </div>
+
+                                    <div class="p-detail-actions" style="margin-top: 1.85vh; display: flex; gap: 0.92vh;">
+                                        <button id="p-delete-record-btn" class="p-submit-btn-large" style="background: #ff3e3e; margin: 0; flex: 1; display: none;">
+                                            <i class="fas fa-trash"></i> DELETE RECORD
+                                        </button>
+                                        <button id="p-complete-warrant-btn" class="p-submit-btn-large" style="background: #2ecc71; margin: 0; flex: 1; display: none;">
+                                            <i class="fas fa-check"></i> MARK WARRANT COMPLETED
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Initial Search State -->
+                        <div id="profile-empty-state" class="profile-empty">
+                            <i class="fas fa-search"></i>
+                            <p>ENTER CITIZEN NAME OR CID TO VIEW PROFILE</p>
+                        </div>
+                    </div>
+
+                    <!-- Vehicles Page (Redesigned) -->
+                    <div id="vehicles" class="page">
+                        <div class="profile-header-area">
+                            <div class="search-box-large">
+                                <input type="text" id="vehicle-search-input" placeholder="Enter Plate or Model...">
+                                <i class="fas fa-search"></i>
+                                <!-- Search Suggestions Dropdown -->
+                                <div id="vehicle-search-results" class="search-suggestions hidden"></div>
+                            </div>
+                            <div class="tactical-divider">
+                                <div class="divider-line"></div>
+                                <div class="divider-accents">///</div>
+                            </div>
+                        </div>
+
+                        <div id="vehicle-content-area" class="profile-layout-container hidden">
+                            <!-- Main Vehicle View Sub-Page -->
+                            <div id="vehicle-view" class="sub-page active">
+                                <h2 class="category-label"><span class="dot"></span> Vehicle Registration</h2>
+                                
+                                <div class="profile-main-card">
+                                    <div class="profile-card-left">
+                                        <div class="profile-avatar-wrapper">
+                                            <div class="avatar-bg"></div>
+                                            <i class="fas fa-car" style="font-size: 3.7vh; color: var(--primary-blue); position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);"></i>
+                                        </div>
+                                        <div class="profile-primary-details">
+                                            <div class="p-info-row"><span class="p-label">PLATE</span> <span class="p-value highlight-text" id="v-plate">ABC-123</span></div>
+                                            <div class="p-info-row"><span class="p-label">MODEL:</span> <span class="p-value" id="v-model">UNKNOWN</span></div>
+                                            <div class="p-info-row"><span class="p-label">CLASS:</span> <span class="p-value" id="v-class">Personal</span></div>
+                                            <div class="p-info-row"><span class="p-label">COLOR:</span> <span class="p-value" id="v-color">N/A</span></div>
+                                            
+                                            <div class="p-skills-container">
+                                                <div class="p-skill-item">
+                                                    <i class="fas fa-microchip"></i>
+                                                    <div class="p-skill-bar"><div class="fill" id="v-engine" style="width: 100%;"></div></div>
+                                                    <span class="p-skill-text">Engine Health</span>
+                                                </div>
+                                                <div class="p-skill-item">
+                                                    <i class="fas fa-shield"></i>
+                                                    <div class="p-skill-bar"><div class="fill" id="v-body" style="width: 100%;"></div></div>
+                                                    <span class="p-skill-text">Body Condition</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="profile-card-right">
+                                        <div class="threat-badge" id="v-status">Status: REGISTERED</div>
+                                        <div class="vehicle-plate-preview" id="v-plate-preview-card">
+                                            <div class="plate-top-row">
+                                                <div class="plate-tag-may">MAY</div>
+                                                <div class="plate-san-andreas">San Andreas</div>
+                                                <div class="plate-sticker"></div>
+                                            </div>
+                                            <div class="vehicle-plate-number" id="v-plate-preview-text">ABC123</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="profile-bottom-grid">
+                                    <div class="p-section assets-section">
+                                        <h3 class="p-section-title">OWNERSHIP</h3>
+                                        <p class="p-section-subtitle">Primary registration holder.</p>
+                                        <div class="p-assets-box" id="v-owner-card">
+                                            <!-- Dynamic Owner Details -->
+                                        </div>
+                                    </div>
+
+                                    <div class="p-section records-section">
+                                        <div class="p-section-header">
+                                            <div class="p-header-text">
+                                                <h3 class="p-section-title">Vehicle Markers</h3>
+                                                <p class="p-section-subtitle">Active BOLOs and flags.</p>
+                                            </div>
+                                            <button class="p-add-record-btn" id="v-add-marker-trigger">
+                                                <i class="fas fa-plus"></i>
+                                            </button>
+                                        </div>
+                                        <div id="v-markers-container">
+                                            <div class="p-records-scroller" id="v-markers-list">
+                                                <!-- Marker Cards -->
+                                                <div class="empty-state">No active markers found.</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Create Vehicle Marker Sub-Page -->
+                            <div id="vehicle-create-marker" class="sub-page">
+                                <div class="page-header">
+                                    <h2>CREATE NEW VEHICLE MARKER / BOLO</h2>
+                                    <button class="btn-back return-btn" data-target="vehicle-view">
+                                        <i class="fas fa-arrow-left"></i> RETURN
+                                    </button>
+                                </div>
+                                
+                                <div class="p-record-form-large">
+                                    <div class="p-form-grid">
+                                        <div class="p-form-group full-width">
+                                            <label>MARKER REASON / BOLO TITLE</label>
+                                            <input type="text" id="v-new-marker-title" placeholder="e.g. Stolen Vehicle, Involved in 10-80">
+                                        </div>
+                                        <div class="p-form-group full-width">
+                                            <label>IMAGE URL (OPTIONAL)</label>
+                                            <div style="display: flex; gap: 0.74vh; width: 100%;">
+                                                <input type="text" id="v-new-marker-image" placeholder="https://imgur.com/..." style="flex: 1;">
+                                                <button id="v-camera-btn" style="width: 4.17vh; height: 3.24vh; background: rgba(255, 255, 255, 0.05); border: 0.09vh solid rgba(255, 255, 255, 0.1); border-radius: 0.37vh; color: white; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s;">
+                                                    <i class="fas fa-camera"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="p-form-group full-width">
+                                        <label>DESCRIPTION & DETAILS</label>
+                                        <textarea id="v-new-marker-desc" placeholder="Provide detailed information about the flag or BOLO alert..."></textarea>
+                                    </div>
+
+                                    <button class="p-submit-btn-large" id="v-submit-marker">
+                                        <i class="fas fa-save"></i> SUBMIT VEHICLE MARKER
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Vehicle Marker Details Sub-Page -->
+                            <div id="vehicle-marker-details" class="sub-page">
+                                <div class="page-header">
+                                    <h2 id="v-detail-title">BOLO DETAILS</h2>
+                                    <button class="btn-back return-btn" data-target="vehicle-view">
+                                        <i class="fas fa-arrow-left"></i> RETURN
+                                    </button>
+                                </div>
+                                
+                                <div class="p-detail-container">
+                                    <div class="p-detail-grid">
+                                        <div class="p-detail-item">
+                                            <span class="label">DATE/TIME</span>
+                                            <span class="value" id="v-detail-time">N/A</span>
+                                        </div>
+                                        <div class="p-detail-item">
+                                            <span class="label">PLATE</span>
+                                            <span class="value highlight-text" id="v-detail-plate">N/A</span>
+                                        </div>
+                                        <div class="p-detail-item">
+                                            <span class="label">TYPE</span>
+                                            <span class="value" style="color: #ff3e3e">ACTIVE BOLO</span>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="p-detail-desc-box">
+                                        <span class="label">BOLO DESCRIPTION & NOTES</span>
+                                        <div class="p-detail-desc-content" id="v-detail-desc">
+                                            Detailed notes about the vehicle BOLO go here...
+                                        </div>
+                                    </div>
+
+                                    <div id="v-detail-image-box" class="p-detail-image-box hidden">
+                                        <span class="label">ATTACHED BOLO IMAGE</span>
+                                        <img src="" id="v-detail-image" style="width: 100%; border-radius: 0.37vh; margin-top: 0.93vh;">
+                                    </div>
+
+                                    <div class="p-detail-actions" style="margin-top: 1.85vh; display: flex; gap: 0.92vh;">
+                                        <button id="v-delete-marker-btn" class="p-submit-btn-large" style="background: #ff3e3e; margin: 0; flex: 1;">
+                                            <i class="fas fa-trash"></i> DELETE BOLO
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Initial Search State -->
+                        <div id="vehicle-empty-state" class="profile-empty">
+                            <i class="fas fa-car"></i>
+                            <p>ENTER PLATE OR MODEL TO LOOKUP VEHICLE</p>
+                        </div>
+                    </div>
+
+                    <!-- Dispatch Page (Redesigned from Image) -->
+                    <div id="dispatch" class="page full-page">
+                        <div class="dispatch-layout-new">
+                            <!-- Left Sidebar: Dispatch Queue -->
+                            <div class="dispatch-side-col">
+                                <div class="side-col-header">
+                                        <div class="side-col-title-row dispatch-blue-shadow">
+                                            <svg width="20" height="20" viewBox="0 0 297 297" xmlns="http://www.w3.org/2000/svg">
+                                                <g>
+                                                    <path d="M213.731,65.231h-87.631c3.043-1.686,5.104-4.925,5.104-8.648c0-5.458-4.426-9.884-9.883-9.884h-6.426V9.884 c0-5.458-4.424-9.884-9.883-9.884c-5.457,0-9.883,4.426-9.883,9.884v36.815h-6.424c-5.459,0-9.885,4.426-9.885,9.884 c0,3.724,2.061,6.963,5.104,8.648h-0.656c-5.457,0-9.883,4.425-9.883,9.884v81.539c0,5.458,4.426,9.883,9.883,9.883h6.426v120.579 c0,5.458,4.424,9.884,9.883,9.884h97.848c5.457,0,9.883-4.426,9.883-9.884V166.537h6.424c5.459,0,9.883-4.425,9.883-9.883V75.115 C223.614,69.656,219.19,65.231,213.731,65.231z M203.849,146.77H93.153V84.998h110.695V146.77z M187.54,277.233h-78.08V166.537 h78.08V277.233z" fill="currentColor"></path>
+                                                    <path d="M115.886,112.919h65.23c4.367,0,7.906-3.54,7.906-7.906c0-4.366-3.539-7.907-7.906-7.907h-65.23 c-4.367,0-7.908,3.541-7.908,7.907C107.978,109.379,111.519,112.919,115.886,112.919z" fill="currentColor"></path>
+                                                    <path d="M115.886,135.157h65.23c4.367,0,7.906-3.54,7.906-7.907c0-4.366-3.539-7.906-7.906-7.906h-65.23 c-4.367,0-7.908,3.54-7.908,7.906C107.978,131.617,111.519,135.157,115.886,135.157z" fill="currentColor"></path>
+                                                    <path d="M132.192,262.407h32.615c4.367,0,7.908-3.54,7.908-7.906c0-4.366-3.541-7.907-7.908-7.907h-32.615 c-4.367,0-7.906,3.541-7.906,7.907C124.286,258.867,127.825,262.407,132.192,262.407z" fill="currentColor"></path>
+                                                </g>
+                                            </svg>
+                                            <h3>Dispatch Alerts</h3>
+                                        </div>
+                                    <p class="side-col-desc">Incoming calls. Assign units directly from each alert.</p>
+                                </div>
+                                <div class="dispatch-scroll-area" id="dispatch-alerts-assign-list">
+                                    <!-- Alert assignment cards -->
+                                    <div class="empty-state">No active alerts</div>
+                                </div>
+                            </div>
+
+                            <!-- SVG Separator 1 -->
+                            <div class="dispatch-separator">
+                                <svg width="42" height="461" viewBox="0 0 42 461" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M20.8999 20.8999V439.9" stroke="currentColor" stroke-opacity="0.14"/>
+                                    <path d="M17.9001 77.8058L23.9001 81.8999L23.9001 79.9938L17.9001 75.8999L17.9001 77.8058Z" fill="currentColor"/>
+                                    <path d="M17.9001 74.8058L23.9001 78.8999L23.9001 76.9938L17.9001 72.8999L17.9001 74.8058Z" fill="currentColor"/>
+                                    <path d="M17.9001 71.8058L23.9001 75.8999L23.9001 73.9938L17.9001 69.8999L17.9001 71.8058Z" fill="currentColor"/>
+                                    <g filter="url(#filter0_d_41_473)">
+                                    <rect x="19.8999" y="19.8999" width="2" height="2" fill="currentColor"/>
+                                    </g>
+                                    <g filter="url(#filter1_d_41_473)">
+                                    <rect x="19.8999" y="438.9" width="2" height="2" fill="currentColor"/>
+                                    </g>
+                                    <defs>
+                                    <filter id="filter0_d_41_473" x="-9.72748e-05" y="-9.72748e-05" width="41.8" height="41.8" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+                                    <feFlood flood-opacity="0" result="BackgroundImageFix"/>
+                                    <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+                                    <feMorphology radius="2" operator="dilate" in="SourceAlpha" result="effect1_dropShadow_41_473"/>
+                                    <feOffset/>
+                                    <feGaussianBlur stdDeviation="8.95"/>
+                                    <feComposite in2="hardAlpha" operator="out"/>
+                                    <feColorMatrix type="matrix" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.58 0"/>
+                                    <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_41_473"/>
+                                    <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_41_473" result="shape"/>
+                                    </filter>
+                                    <filter id="filter1_d_41_473" x="-9.72748e-05" y="419" width="41.8" height="41.8" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+                                    <feFlood flood-opacity="0" result="BackgroundImageFix"/>
+                                    <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+                                    <feMorphology radius="2" operator="dilate" in="SourceAlpha" result="effect1_dropShadow_41_473"/>
+                                    <feOffset/>
+                                    <feGaussianBlur stdDeviation="8.95"/>
+                                    <feComposite in2="hardAlpha" operator="out"/>
+                                    <feColorMatrix type="matrix" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.58 0"/>
+                                    <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_41_473"/>
+                                    <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_41_473" result="shape"/>
+                                    </filter>
+                                    </defs>
+                                </svg>
+                            </div>
+
+                            <!-- Center: Map -->
+                            <div class="dispatch-center-col">
+                                <div class="map-top-bar">
+                                    <div class="location-indicator">
+                                        <i class="fas fa-location-dot" style="filter: drop-shadow(0 0 0.18vh var(--primary-blue-alpha-06));"></i>
+                                        <span id="current-location-text">Hasselhoff Street, <span class="city-name">San Fierro</span></span>
+                                    </div>
+                                    <button class="you-btn">YOU</button>
+                                </div>
+                                <div class="map-frame-wrapper">
+                                    <div class="map-controls-overlay">
+                                        <button id="mdt-panic-btn" title="PANIC BUTTON"><i class="fas fa-triangle-exclamation"></i></button>
+                                        <div style="height: 0.93vh;"></div>
+                                        <button id="dispatch-add-camera-btn" title="ADD CAMERA"><i class="fas fa-video"></i></button>
+                                        <button id="map-zoom-in"><i class="fas fa-plus"></i></button>
+                                        <button id="map-zoom-out"><i class="fas fa-minus"></i></button>
+                                    </div>
+                                    <div id="dispatch-map"></div>
+                                    <div id="dispatch-camera-feed" class="dispatch-camera-feed hidden">
+                                        <div class="dispatch-camera-feed-top">
+                                            <div id="dispatch-camera-feed-label">CAMERA FEED</div>
+                                            <button id="dispatch-camera-feed-close" type="button">EXIT</button>
+                                        </div>
+                                        <div class="dispatch-camera-feed-body">
+                                            <div class="dispatch-camera-feed-live">LIVE CCTV</div>
+                                            <div id="dispatch-camera-feed-subtitle">Connected to selected city camera</div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Map Context Menu -->
+                                    <div id="map-context-menu" class="map-context-menu hidden">
+                                        <div class="context-item" data-action="search-zone">
+                                            <i class="fas fa-bullseye"></i>
+                                            <span>Create a search zone</span>
+                                        </div>
+                                        <div class="context-item" data-action="create-call">
+                                            <i class="fas fa-phone-alt"></i>
+                                            <span>Create a call</span>
+                                        </div>
+                                        <div class="context-separator"></div>
+                                        <div class="context-item" data-action="set-waypoint">
+                                            <i class="fas fa-map-marker-alt"></i>
+                                            <span>Set waypoint</span>
+                                        </div>
+                                        <div class="context-item" data-action="mark-location">
+                                            <i class="fas fa-thumbtack"></i>
+                                            <span>Mark Location</span>
+                                        </div>
+                                        <div class="context-separator"></div>
+                                        <div class="context-item" data-action="request-backup">
+                                            <i class="fas fa-shield-alt"></i>
+                                            <span>Request backup</span>
+                                        </div>
+                                    </div>
+
+                                    <!-- Quick Call Selector -->
+                                    <div id="panic-modal" class="panic-selector-box hidden">
+                                        <div class="panic-selector-header">
+                                            <h3>QUICK CALL <span>UNIT STATUS</span></h3>
+                                            <button id="close-panic-modal" type="button"><i class="fas fa-times"></i></button>
+                                        </div>
+                                        <div class="panic-selector-body">
+                                            <div id="panic-alerts-list" class="panic-grid">
+                                                <!-- Dynamic panic alert types -->
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- SVG Separator 2 -->
+                            <div class="dispatch-separator">
+                                <svg width="42" height="461" viewBox="0 0 42 461" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M23.8999 363.994L17.8999 359.9L17.8999 361.806L23.8999 365.9L23.8999 363.994Z" fill="currentColor"/>
+                                    <path d="M23.8999 366.994L17.8999 362.9L17.8999 364.806L23.8999 368.9L23.8999 366.994Z" fill="currentColor"/>
+                                    <path d="M23.8999 369.994L17.8999 365.9L17.8999 367.806L23.8999 371.9L23.8999 369.994Z" fill="currentColor"/>
+                                    <path d="M20.8999 20.8999V439.9" stroke="currentColor" stroke-opacity="0.14"/>
+                                    <g filter="url(#filter0_d_41_481)">
+                                    <rect x="19.8999" y="438.9" width="2" height="2" fill="currentColor"/>
+                                    </g>
+                                    <g filter="url(#filter1_d_41_481)">
+                                    <rect x="19.8999" y="19.8999" width="2" height="2" fill="currentColor"/>
+                                    </g>
+                                    <defs>
+                                    <filter id="filter0_d_41_481" x="-9.72748e-05" y="419" width="41.8" height="41.8" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+                                    <feFlood flood-opacity="0" result="BackgroundImageFix"/>
+                                    <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+                                    <feMorphology radius="2" operator="dilate" in="SourceAlpha" result="effect1_dropShadow_41_481"/>
+                                    <feOffset/>
+                                    <feGaussianBlur stdDeviation="8.95"/>
+                                    <feComposite in2="hardAlpha" operator="out"/>
+                                    <feColorMatrix type="matrix" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.58 0"/>
+                                    <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_41_481"/>
+                                    <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_41_481" result="shape"/>
+                                    </filter>
+                                    <filter id="filter1_d_41_481" x="-9.72748e-05" y="-9.72748e-05" width="41.8" height="41.8" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+                                    <feFlood flood-opacity="0" result="BackgroundImageFix"/>
+                                    <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+                                    <feMorphology radius="2" operator="dilate" in="SourceAlpha" result="effect1_dropShadow_41_481"/>
+                                    <feOffset/>
+                                    <feGaussianBlur stdDeviation="8.95"/>
+                                    <feComposite in2="hardAlpha" operator="out"/>
+                                    <feColorMatrix type="matrix" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.58 0"/>
+                                    <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_41_481"/>
+                                    <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_41_481" result="shape"/>
+                                    </filter>
+                                    </defs>
+                                </svg>
+                            </div>
+
+                            <!-- Right Sidebar: Unit Board -->
+                            <div class="dispatch-side-col">
+                                <!-- Top: Created Units -->
+                                <div class="alerts-section">
+                                    <div class="side-col-header">
+                                        <div class="side-col-title-row dispatch-blue-shadow">
+                                            <svg viewBox="0 0 512 512" version="1.1" xmlns="http://www.w3.org/2000/svg" width="20" height="20">
+                                                <g id="SVGRepo_iconCarrier"> 
+                                                    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"> 
+                                                        <g id="add" fill="currentColor" transform="translate(32.000000, 42.666667)"> 
+                                                            <path d="M246.312928,5.62892705 C252.927596,9.40873724 258.409564,14.8907053 262.189374,21.5053731 L444.667042,340.84129 C456.358134,361.300701 449.250007,387.363834 428.790595,399.054926 C422.34376,402.738832 415.04715,404.676552 407.622001,404.676552 L42.6666667,404.676552 C19.1025173,404.676552 7.10542736e-15,385.574034 7.10542736e-15,362.009885 C7.10542736e-15,354.584736 1.93772021,347.288125 5.62162594,340.84129 L188.099293,21.5053731 C199.790385,1.04596203 225.853517,-6.06216498 246.312928,5.62892705 Z M224,272 C208.761905,272 197.333333,283.264 197.333333,298.282667 C197.333333,313.984 208.415584,325.248 224,325.248 C239.238095,325.248 250.666667,313.984 250.666667,298.624 C250.666667,283.264 239.238095,272 224,272 Z M245.333333,106.666667 L202.666667,106.666667 L202.666667,234.666667 L245.333333,234.666667 L245.333333,106.666667 Z" id="Combined-Shape"> </path> 
+                                                        </g> 
+                                                    </g> 
+                                                </g>
+                                            </svg>
+                                            <h3>Unit Board</h3>
+                                        </div>
+                                        <p class="side-col-desc">Units available for assignment.</p>
+                                    </div>
+                                    <div class="alerts-list" id="dispatch-units-board-list">
+                                        <!-- Created units -->
+                                    </div>
+                                </div>
+
+                                <!-- Bottom: Personnel Activity -->
+                                <div class="personnel-activity-section">
+                                    <div class="side-col-header dispatch-builder-header">
+                                        <div class="side-col-title-row">
+                                            <i class="fas fa-users"></i>
+                                            <h3>Create Unit</h3>
+                                        </div>
+                                    </div>
+                                    <div class="dispatch-unit-builder" id="dispatch-unit-builder">
+                                        <input type="text" id="dispatch-unit-name" placeholder="Unit name (e.g. Adam-21)">
+                                        <select id="dispatch-unit-officer">
+                                            <option value="">Select officer...</option>
+                                        </select>
+                                        <button id="dispatch-create-unit-btn" type="button">Create Unit</button>
+                                    </div>
+                                    <div class="personnel-list" id="dispatch-personnel-list">
+                                        <!-- Officer pool and unit members -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Criminal Code (Charges) Page -->
+                    <div id="charges" class="page">
+                        <div class="profile-header-area">
+                            <div class="search-box-large">
+                                <input type="text" id="charge-search-input" placeholder="Search the Penal Code...">
+                                <i class="fas fa-search"></i>
+                            </div>
+                            <div class="tactical-divider">
+                                <div class="divider-line"></div>
+                                <div class="divider-accents">///</div>
+                            </div>
+                        </div>
+
+                        <div class="criminal-code-layout">
+                            <aside class="code-sidebar">
+                                <h4 class="sidebar-label">CATEGORIES</h4>
+                                <div class="code-category-list" id="charge-categories">
+                                    <!-- Dynamic categories -->
+                                </div>
+                            </aside>
+
+                            <div class="code-main-content">
+                                <div class="code-header">
+                                    <div class="code-header-info">
+                                        <h2 id="current-category-title">ALL OFFENSES</h2>
+                                        <p id="current-category-desc">Reviewing all documented laws and regulations.</p>
+                                    </div>
+                                    <div class="code-stats-summary">
+                                        <div class="code-count-pill"><span id="charge-count">0</span> LAWS</div>
+                                    </div>
+                                </div>
+
+                                <div class="code-scroll-area">
+                                    <div class="code-table-header">
+                                        <div class="col-offense">OFFENSE</div>
+                                        <div class="col-fine">FINE</div>
+                                        <div class="col-jail">JAIL</div>
+                                        <div class="col-actions"></div>
+                                    </div>
+                                    <div class="code-list-container" id="charges-list-grid">
+                                        <!-- Charge rows -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Officers Management Page -->
+                    <div id="officers" class="page">
+                        <div class="officer-profile-container">
+                            <div class="officer-card-main">
+                                <div class="officer-avatar-section">
+                                    <div class="officer-avatar-wrapper">
+                                        <img id="officer-avatar-img" src="img/default_avatar.png" alt="Officer Avatar">
+                                        <div class="avatar-hover-overlay" id="officer-photo-btn">
+                                            <i class="fas fa-camera"></i>
+                                        </div>
+                                    </div>
+                                    <div class="officer-badge">
+                                        <span id="officer-rank-display">OFFICER</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="officer-details-section">
+                                    <div class="detail-group">
+                                        <label>FULL NAME</label>
+                                        <div class="detail-value" id="officer-name-display">JOHN DOE</div>
+                                    </div>
+                                    <div class="detail-group">
+                                        <label>DEPARTMENT</label>
+                                        <div class="detail-value" id="officer-dept-display">LSPD</div>
+                                    </div>
+                                    <div class="detail-group">
+                                        <label>CALLSIGN</label>
+                                        <input type="text" id="officer-callsign-input" class="officer-input" placeholder="e.g. 1A-01">
+                                    </div>
+                                    <div class="detail-group">
+                                        <label>DUTY STATUS</label>
+                                        <select id="officer-duty-status" class="officer-input">
+                                            <option value="1">ON DUTY</option>
+                                            <option value="0">OFF DUTY</option>
+                                        </select>
+                                    </div>
+                                    <button class="save-officer-btn" id="save-officer-settings">SAVE PROFILE</button>
+                                </div>
+                            </div>
+                            
+                            <div class="officer-settings-grid">
+                                <div class="settings-card">
+                                    <h3><i class="fas fa-cog"></i> Interface Settings</h3>
+                                    <div class="setting-item">
+                                        <span>Dark Mode</span>
+                                        <label class="switch">
+                                            <input type="checkbox" id="setting-dark-mode" checked>
+                                            <span class="slider round"></span>
+                                        </label>
+                                    </div>
+                                    <div class="setting-item">
+                                        <span>Show Notifications</span>
+                                        <label class="switch">
+                                            <input type="checkbox" id="setting-notifications" checked>
+                                            <span class="slider round"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="settings-card">
+                                    <h3><i class="fas fa-shield-alt"></i> Duty Preferences</h3>
+                                    <div class="setting-item">
+                                        <span>Automatic Dispatch</span>
+                                        <label class="switch">
+                                            <input type="checkbox" id="setting-auto-dispatch">
+                                            <span class="slider round"></span>
+                                        </label>
+                                    </div>
+                                    <div class="setting-item">
+                                        <span>Panic Button Shortcut</span>
+                                        <span class="setting-value">LEFT ALT + G</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Warrants Management Page -->
+                    <div id="warrants" class="page">
+                        <div id="warrant-list-view" class="sub-page active">
+                            <div class="warrants-container-new">
+                                <!-- Header -->
+                                <div class="warrants-header-new">
+                                    <h1 class="warrants-title-new">Active Warrants List</h1>
+                                    <div class="warrants-search-container-new">
+                                        <input type="text" id="warrant-search-input" placeholder="Type Here">
+                                        <i class="fas fa-search"></i>
+                                    </div>
+                                </div>
+
+                                <div class="warrants-content-layout-new">
+                                    <!-- Left: Table -->
+                                    <div class="warrants-list-section-new">
+                                        <div class="warrants-table-scroll">
+                                            <table class="warrants-table-new">
+                                                <thead>
+                                                    <tr>
+                                                        <th>NR</th>
+                                                        <th>Suspect Name</th>
+                                                        <th>Warrant ID</th>
+                                                        <th>Case Number</th>
+                                                        <th>Officer Date</th>
+                                                        <th>Status</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="warrants-list-body-new">
+                                                    <!-- Warrant Rows populated by script.js -->
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+
+                                    <!-- Middle: Details -->
+                                    <div class="warrants-details-section-new">
+                                        <div class="warrants-character-details-new">
+                                            <div class="character-portrait-wrapper-new">
+                                                <img id="w-detail-suspect-img" src="img/default_avatar.png" alt="Suspect">
+                                            </div>
+                                            <h2 class="character-name-new" id="w-detail-suspect-name">Character Details</h2>
+                                            <p class="character-bio-new" id="w-detail-suspect-bio">Select a warrant from the list to view the suspect's background and incident details.</p>
+                                            
+                                            <div class="details-divider-new"></div>
+                                            
+                                            <div class="warrant-extra-details-new">
+                                                <p class="details-label-new">Details Here</p>
+                                                <div id="w-detail-extra-info" class="details-content-new">
+                                                    <!-- Details like description or charges -->
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Right: Actions -->
+                                    <div class="warrants-actions-section-new">
+                                        <button class="warrant-action-btn-new" id="w-header-create-btn">
+                                            <div class="btn-content-new">
+                                                <span class="btn-title-new">Create Warrant</span>
+                                                <span class="btn-subtitle-new">Issue a new legal mandate for the immediate arrest of a suspect.</span>
+                                            </div>
+                                        </button>
+                                        <button class="warrant-action-btn-new action-active" id="w-btn-view-details">
+                                            <div class="btn-content-new">
+                                                <span class="btn-title-new">View Details</span>
+                                                <span class="btn-subtitle-new">Access comprehensive case files, evidence, and suspect background.</span>
+                                            </div>
+                                        </button>
+                                        <button class="warrant-action-btn-new" id="w-btn-mark-read">
+                                            <div class="btn-content-new">
+                                                <span class="btn-title-new">Mark As Read</span>
+                                                <span class="btn-subtitle-new">Archive alert notifications and acknowledge current warrant status.</span>
+                                            </div>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Create Warrant Form -->
+                        <div id="warrant-create-view" class="sub-page">
+                            <div class="page-header" style="padding: 1.85vh 2.78vh; border-bottom: 0.09vh solid rgba(255,255,255,0.05); margin-bottom: 1.85vh;">
+                                <h2 style="font-size: 1.67vh; font-weight: 700; color: white; margin: 0;">ISSUE NEW WARRANT</h2>
+                                <button class="btn-back return-btn" data-target="warrant-list-view">
+                                    <i class="fas fa-arrow-left"></i> RETURN
+                                </button>
+                            </div>
+                            
+                            <div class="p-record-form-large" style="padding: 0 2.78vh;">
+                                <div class="p-form-grid">
+                                    <div class="p-form-group">
+                                        <label>SUSPECT CID</label>
+                                        <input type="text" id="w-new-citizenid" placeholder="e.g. CID12345">
+                                    </div>
+                                    <div class="p-form-group">
+                                        <label>WARRANT TITLE</label>
+                                        <input type="text" id="w-new-title" placeholder="e.g. Armed Robbery - Fleeca Bank">
+                                    </div>
+                                    <div class="p-form-group" style="grid-column: span 2;">
+                                        <label>WARRANT IMAGE URL (OPTIONAL)</label>
+                                        <input type="text" id="w-new-image" placeholder="https://imgur.com/...">
+                                    </div>
+                                    <div class="p-form-group" style="grid-column: span 2;">
+                                        <label>CHARGES & DESCRIPTION</label>
+                                        <textarea id="w-new-desc" placeholder="List all charges and incident details here..." style="height: 13.89vh;"></textarea>
+                                    </div>
+                                </div>
+                                <div class="p-form-footer" style="margin-top: 1.85vh;">
+                                    <button class="p-submit-btn-large" id="w-submit-create-btn">
+                                        <i class="fas fa-gavel"></i> ISSUE WARRANT
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Case Files (Incidents) Page -->
+                    <div id="incidents" class="page">
+                        <div class="profile-header-area">
+                            <div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
+                                <div class="search-box-large" style="margin-bottom: 0;">
+                                    <input type="text" id="incident-search-input" placeholder="Search Incident ID or Title...">
+                                    <i class="fas fa-search"></i>
+                                    <!-- Search Suggestions Dropdown -->
+                                    <div id="incident-search-results" class="search-suggestions hidden"></div>
+                                </div>
+                                <button class="p-submit-btn-large" id="i-header-create-btn" style="width: auto; padding: 0 1.85vh; height: 3.7vh; margin: 0; font-size: 1.02vh;">
+                                    <i class="fas fa-plus"></i> CREATE NEW CASE FILE
+                                </button>
+                            </div>
+                            <div class="tactical-divider" style="margin-top: 0.46vh;">
+                                <div class="divider-line"></div>
+                                <div class="divider-accents">///</div>
+                            </div>
+                        </div>
+
+                        <div id="incident-content-area" class="profile-layout-container hidden">
+                            <!-- Main Incident View Sub-Page -->
+                            <div id="incident-view" class="sub-page active">
+                                <h2 class="category-label"><span class="dot"></span> Case File Details</h2>
+                                
+                                <div class="profile-main-card">
+                                    <div class="profile-card-left">
+                                        <div class="profile-avatar-wrapper">
+                                            <div class="avatar-bg"></div>
+                                            <i class="fas fa-folder-open" style="font-size: 3.7vh; color: var(--primary-blue); position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);"></i>
+                                        </div>
+                                        <div class="profile-primary-details">
+                                            <div class="p-info-row"><span class="p-label">CASE ID</span> <span class="p-value highlight-text" id="i-id">#0000</span></div>
+                                            <div class="p-info-row"><span class="p-label">TITLE:</span> <span class="p-value" id="i-title">UNKNOWN INCIDENT</span></div>
+                                            <div class="p-info-row"><span class="p-label">LOCATION:</span> <span class="p-value" id="i-location">N/A</span></div>
+                                            <div class="p-info-row"><span class="p-label">DATE:</span> <span class="p-value" id="i-date">N/A</span></div>
+                                            
+                                            <div class="p-skills-container">
+                                                <div class="p-skill-item">
+                                                    <i class="fas fa-user-shield"></i>
+                                                    <span class="p-skill-text">Reporting Officer: <span id="i-officer" style="color: white; font-weight: 700;">N/A</span></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="profile-card-right">
+                                        <div class="threat-badge" id="i-status-badge" style="border-color: var(--primary-blue); color: var(--primary-blue); background: var(--primary-blue-alpha);">STATUS: FILED</div>
+                                    </div>
+                                </div>
+
+                                <div class="profile-bottom-grid">
+                                    <div class="p-section assets-section">
+                                        <h3 class="p-section-title">INVOLVED PARTIES</h3>
+                                        <p class="p-section-subtitle">Linked citizen profiles.</p>
+                                        <div class="p-assets-box" id="i-involved-list">
+                                            <!-- Dynamic Involved Citizens -->
+                                        </div>
+                                        
+                                        <div style="margin-top: 1.85vh;">
+                                            <h3 class="p-section-title">EXECUTIVE SUMMARY</h3>
+                                            <div id="i-summary" class="p-detail-desc-content" style="font-size: 1.02vh; opacity: 0.8; margin-top: 0.46vh;">No summary provided.</div>
+                                        </div>
+                                    </div>
+
+                                    <div class="p-section records-section">
+                                        <div class="p-section-header">
+                                            <div class="p-header-text">
+                                                <h3 class="p-section-title">Case Narrative</h3>
+                                                <p class="p-section-subtitle">Full incident report and evidence.</p>
+                                            </div>
+                                            <button class="p-add-record-btn" id="i-edit-incident-trigger" title="EDIT CASE FILE">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                        </div>
+                                        <div class="p-detail-container" style="background: rgba(255,255,255,0.01); border: 0.09vh solid rgba(255,255,255,0.03); border-radius: 0.37vh; padding: 1.39vh; margin-top: 0.93vh; max-height: 32.41vh; overflow-y: auto;">
+                                            <div class="p-detail-desc-box">
+                                                <span class="label">CHARGES FILED</span>
+                                                <div id="i-charges" class="value highlight" style="margin-bottom: 1.39vh; font-weight: 700;">None</div>
+                                                
+                                                <span class="label">INCIDENT DESCRIPTION</span>
+                                                <div id="i-description" class="p-detail-desc-content">No details available.</div>
+                                            </div>
+                                            <div id="i-image-box" class="p-detail-image-box hidden" style="margin-top: 1.85vh;">
+                                                <span class="label">ATTACHED EVIDENCE</span>
+                                                <img src="" id="i-image" style="width: 100%; border-radius: 0.37vh; margin-top: 0.93vh;">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Create Case File Sub-Page -->
+                            <div id="incident-create" class="sub-page">
+                                <div class="page-header">
+                                    <h2 id="incident-form-title">CREATE NEW CASE FILE</h2>
+                                    <button class="btn-back return-btn" data-target="incident-view">
+                                        <i class="fas fa-arrow-left"></i> RETURN
+                                    </button>
+                                </div>
+                                
+                                <div class="p-record-form-large">
+                                    <input type="hidden" id="i-form-id" value="">
+                                    <div class="p-form-grid">
+                                        <div class="p-form-group">
+                                            <label>CASE TITLE</label>
+                                            <input type="text" id="i-new-title" placeholder="e.g. Major Narcotics Distribution">
+                                        </div>
+                                        <div class="p-form-group">
+                                            <label>CURRENT STATUS</label>
+                                            <select id="i-new-status" class="mdt-select">
+                                                <option value="Active Investigation">Active Investigation</option>
+                                                <option value="Pending Review">Pending Review</option>
+                                                <option value="Closed">Closed</option>
+                                            </select>
+                                        </div>
+                                        <div class="p-form-group">
+                                            <label>INVOLVED CITIZEN ID (OPTIONAL)</label>
+                                            <input type="text" id="i-new-citizenid" placeholder="e.g. CID12345">
+                                        </div>
+                                        <div class="p-form-group">
+                                            <label>EVIDENCE IMAGE URL (OPTIONAL)</label>
+                                            <div style="display: flex; gap: 0.74vh;">
+                                                <input type="text" id="i-new-image" placeholder="https://imgur.com/..." style="flex: 1;">
+                                                <button id="i-camera-btn" class="p-record-btn" style="width: 4.17vh; height: 3.24vh; margin: 0; background: rgba(255, 255, 255, 0.05);">
+                                                    <i class="fas fa-camera"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="p-form-group full-width">
+                                        <label>EXECUTIVE SUMMARY (SHORT)</label>
+                                        <input type="text" id="i-new-summary" placeholder="Brief overview of the investigation...">
+                                    </div>
+
+                                    <div class="p-form-group full-width">
+                                        <label>FULL CASE DETAILS & EVIDENCE LOG</label>
+                                        <textarea id="i-new-description" placeholder="Provide every detail, suspect statements, and evidence found..."></textarea>
+                                    </div>
+
+                                    <button class="p-submit-btn-large" id="i-submit-incident">
+                                        <i class="fas fa-save"></i> FINALIZE CASE FILE
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Case Files List (Default View) -->
+                        <div id="incident-list-area" class="case-files-layout">
+                            <div class="code-header">
+                                <div class="code-header-info">
+                                    <h2>RECENT CASE FILES</h2>
+                                    <p>Showing latest investigations and incident reports.</p>
+                                </div>
+                            </div>
+                            <div class="case-list-scroll">
+                                <div id="incident-list-grid" class="case-list-grid">
+                                    <!-- Dynamic incident cards -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </main>
+            </div>
+        </div>
+    </div>
+
+    <!-- Avatar Update Modal -->
+    <div id="avatar-modal" class="mdt-modal hidden">
+        <div class="modal-content" style="width: 37.04vh;">
+            <div class="modal-header">
+                <h3>UPDATE PROFILE IMAGE</h3>
+                <button class="modal-close" id="close-avatar-modal"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <div class="p-form-group">
+                    <label>IMAGE URL</label>
+                    <input type="text" id="p-avatar-url-input" placeholder="https://i.imgur.com/...">
+                </div>
+                <div style="display: flex; gap: 0.93vh; margin-top: 1.85vh;">
+                    <button class="p-submit-btn-large" id="p-avatar-camera-btn" style="flex: 1; background: #444;">
+                        <i class="fas fa-camera"></i> LIVE CAMERA
+                    </button>
+                    <button class="p-submit-btn-large" id="p-avatar-save-btn" style="flex: 1;">
+                        <i class="fas fa-save"></i> SAVE IMAGE
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="dispatch-live-toast" class="dispatch-live-toast hidden">
+        <div class="dispatch-live-toast-layer">
+            <div class="dispatch-live-toast-layer-left">
+                <i class="fas fa-broadcast-tower"></i>
+                <span class="dispatch-live-toast-title">LIVE DISPATCH</span>
+            </div>
+            <span id="dispatch-live-toast-counter" class="dispatch-live-toast-counter">0 / 0</span>
+        </div>
+        <div class="dispatch-live-toast-body">
+            <div class="dispatch-live-toast-main-row">
+                <div class="dispatch-live-toast-main-left">
+                    <div id="dispatch-live-toast-code" class="dispatch-live-toast-code">---</div>
+                    <div id="dispatch-live-toast-message" class="dispatch-live-toast-message">No active notifications</div>
+                </div>
+                <div class="dispatch-live-toast-main-right">
+                    <div class="dispatch-live-toast-info-item">
+                        <svg viewBox="0 0 24 24" width="12" height="12" aria-hidden="true">
+                            <path d="M12 2a8 8 0 0 0-8 8c0 5.4 6.6 11.5 7.2 12a1.2 1.2 0 0 0 1.6 0c.6-.5 7.2-6.6 7.2-12a8 8 0 0 0-8-8zm0 10.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5z" fill="currentColor"/>
+                        </svg>
+                        <span id="dispatch-live-toast-location" class="dispatch-live-toast-location">-</span>
+                    </div>
+                    <div class="dispatch-live-toast-info-item">
+                        <svg viewBox="0 0 24 24" width="12" height="12" aria-hidden="true">
+                            <path d="M12 1.8A10.2 10.2 0 1 0 22.2 12 10.21 10.21 0 0 0 12 1.8zm0 18.6A8.4 8.4 0 1 1 20.4 12 8.41 8.41 0 0 1 12 20.4zm.9-13.2h-1.8V12l4.2 2.52.9-1.48-3.3-1.96z" fill="currentColor"/>
+                        </svg>
+                        <span id="dispatch-live-toast-time" class="dispatch-live-toast-time">--:--</span>
+                    </div>
+                </div>
+            </div>
+            <div class="dispatch-live-toast-actions">
+                <button id="dispatch-live-direction-btn" class="dispatch-live-action-btn direction" type="button">E Direction</button>
+                <button id="dispatch-live-dismiss-btn" class="dispatch-live-action-btn dismiss" type="button">Y Dismiss</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Camera View Overlay -->
+    <div id="camera-overlay" class="camera-view-overlay hidden">
+        <div class="camera-noise"></div>
+        <div class="camera-scanlines"></div>
+        <div class="camera-vignette"></div>
+        <div class="camera-info-top">
+            <div class="camera-rec">REC</div>
+            <div class="camera-label" id="camera-overlay-label">CCTV-01</div>
+            <div class="camera-time" id="camera-overlay-time">00:00:00</div>
+        </div>
+        <div class="camera-corners">
+            <div class="corner top-left"></div>
+            <div class="corner top-right"></div>
+            <div class="corner bottom-left"></div>
+            <div class="corner bottom-right"></div>
+        </div>
+        <div class="camera-instructions">
+            SYSTEM STATUS: OPERATIONAL  |  SIGNAL: STABLE  |  BANDWIDTH: 4.2 MBPS  |  ENCRYPTION: AES-256  |  [ESC] TERMINATE
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
+
+</html>
