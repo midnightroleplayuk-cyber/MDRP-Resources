@@ -1878,9 +1878,9 @@ return {
 		},
 
 		['WEAPON_POCKETLIGHT'] = {
-    label = 'Pocket Flashlight',
-    weight = 125,
-    durability = 0.1,
+             label = 'Pocket Flashlight',
+             weight = 125,
+            durability = 0.1,
          },
 
 	}
