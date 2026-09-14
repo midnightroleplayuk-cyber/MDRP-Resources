@@ -60,7 +60,7 @@ Shared.LaptopConfig = {
     link = "https://store.devhub.gg",
     rewards = {
         items = {},
-        money = 2000,
+        money = 500, 
         crimePoints = 50,
         xp = 500,
     },
