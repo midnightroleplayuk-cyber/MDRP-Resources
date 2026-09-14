@@ -4,7 +4,7 @@ Config = {} -- Do not touch
 Config.SkillsCategory = "laptop" -- If you don't have devhub_skillTree that doesn't work.
 
 Config.MaxTaskTime = 0 -- Time in minutes between processing the next person in the queue
-Config.PersonalCooldownTime = 15 -- Personal cooldown time in minutes after completing a task
+Config.PersonalCooldownTime = 0 -- Personal cooldown time in minutes after completing a task
 
 Config.Vehicle = {
     locations = { -- At the beginning of the task, the script will select a random location where the car is located.
@@ -33,6 +33,20 @@ Config.Vehicle = {
             },
         },
         {
+            model = GetHashKey("benson"), -- vehicle model
+            size = "medium", -- vehicle size (small, medium, large)
+            trunkDoors = { 2, 3 }, -- doors that will be detected as trunk
+            gridConfig = { -- grid config for the vehicle
+                zoneType = 'vehicle',
+                vehicleOffsets = {
+                    { x = -1.1, y = -5.25, z = 0.1 },
+                    { x = 1.1, y = -5.25, z = 0.1 },
+                    { x = 1.1, y = 0.45, z = 0.1 },
+                    { x = -1.1, y = 0.45, z = 0.1 },
+                }
+            }
+        },
+        {
             model = GetHashKey("mule"), -- vehicle model
             size = "large", -- vehicle size (small, medium, large)
             trunkDoors = { 2, 3 }, -- doors that will be detected as trunk
@@ -47,7 +61,7 @@ Config.Vehicle = {
             }
         },
     },
-    lockedByDefault = false, -- if true, the task vehicle spawns with locked doors (status 2). Set to false to leave it unlocked on spawn.
+    lockedByDefault = true, -- if true, the task vehicle spawns with locked doors (status 2). Set to false to leave it unlocked on spawn.
     blip = { -- blip config for the vehicle
         sprite = 326, -- blip sprite (https://docs.fivem.net/docs/game-references/blips/)
         color = 5, -- blip color (https://docs.fivem.net/docs/game-references/blips/)
