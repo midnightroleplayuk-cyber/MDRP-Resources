@@ -2,7 +2,7 @@ Shared = {}
 
 -- Debug configuration
 Shared.Debug = {
-    Enabled = false, -- Set to false to disable all Debug() prints
+    Enabled = true, -- Set to false to disable all Debug() prints
     Levels = {
         Info = true,    -- General information (blue)
         Success = true, -- Success operations (green)
