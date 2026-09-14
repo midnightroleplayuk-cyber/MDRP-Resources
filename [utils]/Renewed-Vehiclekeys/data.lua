@@ -1,5 +1,5 @@
 return {
-    lockChance = 0.0, -- (0%) Chance of local vehicles to be locked around the world
+    lockChance = 0.3, -- (30%) Chance of local vehicles to be locked around the world
     lockChanceAI = 0.0, -- (0%) Chance of AI vehicles to be locked around the world
 
     useWeaponRobbery = false, -- Be able to rob driving peds for their vehicle keys
