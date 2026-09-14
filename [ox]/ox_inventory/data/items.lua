@@ -3535,6 +3535,21 @@ return {
     description = "Valuable antique vase"
 },
 
+-- DEVHUB CAR THIEF
+['devhub_car_checker'] = {
+    label = 'Car Checker',
+    weight = 120,
+    stack = true,
+    close = true,
+    description = "Device used to scan vehicle information"
+},
 
+['devhub_key_cloner'] = {
+    label = 'Key Cloner',
+    weight = 180,
+    stack = true,
+    close = true,
+    description = "Device used to clone vehicle keys"
+},
 
 }

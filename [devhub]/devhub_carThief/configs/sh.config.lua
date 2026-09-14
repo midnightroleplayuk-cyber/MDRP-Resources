@@ -772,7 +772,7 @@ Config.Informant = { -- The contact the player must meet before the car meet loc
 
 Config.LocationResetTime = 600000 -- Time in milliseconds after which a location will be reset (10 minutes)
 
-Config.MinPolice = 0 -- Minimum amount of police online required to join the queue
+Config.MinPolice = 1 -- Minimum amount of police online required to join the queue
 
 Config.MaxTaskTime = 20 -- Maximum time (in minutes) before the next queued player is processed
 Config.PersonalCooldownTime = 10 -- Personal cooldown (in minutes) before a player can join the queue again
