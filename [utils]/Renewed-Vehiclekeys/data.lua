@@ -1,15 +1,15 @@
 return {
-    lockChance = 0.5, -- (50%) Chance of local vehicles to be locked around the world
-    lockChanceAI = 0.5, -- (50%) Chance of AI vehicles to be locked around the world
+    lockChance = 0.0, -- (0%) Chance of local vehicles to be locked around the world
+    lockChanceAI = 0.0, -- (0%) Chance of AI vehicles to be locked around the world
 
-    useWeaponRobbery = true, -- Be able to rob driving peds for their vehicle keys
+    useWeaponRobbery = false, -- Be able to rob driving peds for their vehicle keys
 
     useKeybindKey = true, -- Weather or not to use the build in keybind system
     useHotwireSystem = true, -- Weather or not to use the hotwire system
 
     vehicleAutoStart = false, -- if a player have the keys to a car should it auto start when they enter the vehicles
 
-    useKeyItem = false, -- set to true if you want to use a item based key system
+    useKeyItem = true, -- set to true if you want to use a item based key system
 
     engineKey = 'G', -- Key to toggle the engine on and off
     lockKey = 'L', -- Key to toggle the lock on and off
