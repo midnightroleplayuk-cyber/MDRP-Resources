@@ -1,7 +1,7 @@
 (function () {
     const state = {
         deptId: null,
-        deptLabel: 'Los Santos Police Department',
+        deptLabel: 'Midnight Police Constabulary',
         deptPalette: null,
         playerName: '',
         page: 'home'
