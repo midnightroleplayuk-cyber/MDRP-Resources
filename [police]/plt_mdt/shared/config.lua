@@ -7,18 +7,6 @@ Config.Departments = {
         icon = 'fa-shield-halved',
         color = '#63A6C0' -- Tactical Blue
     },
-    ['sheriff'] = {
-        label = 'BCSO',
-        theme = 'theme-sheriff',
-        icon = 'fa-star',
-        color = '#ff9800' -- Sheriff Orange/Gold
-    },
-    ['fib'] = {
-        label = 'FIB',
-        theme = 'theme-fib',
-        icon = 'fa-user-secret',
-        color = '#ff3e3e' -- FIB Red
-    },
     ['ambulance'] = {
         label = 'EMS',
         theme = 'theme-ems',
