@@ -812,7 +812,7 @@ Config.PedSettings = {
 }
 
 Config.SkillTree = { -- devhub_skillTree integration (https://store.devhub.gg/product/6438994)
-    enabled = false, -- Enable skill tree XP rewards + the skill perks below
+    enabled = true, -- Enable skill tree XP rewards + the skill perks below
     category = "laptop", -- Skill tree category UID the skills + XP belong to
 
     xpPerJob = 30, -- XP awarded to the player on completing a car meet job
