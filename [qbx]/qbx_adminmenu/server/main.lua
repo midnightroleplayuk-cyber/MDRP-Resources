@@ -86,9 +86,32 @@ RegisterNetEvent('qbx_admin:server:deleteReport', function(report)
     end
 end)
 
+local function fullRevivePlayer(targetId)
+    targetId = tonumber(targetId)
+    if not targetId or not GetPlayerName(targetId) then return end
+
+    -- Pluto Ambulance Creator owns the injury/fracture state.
+    -- Route admin revives through Pluto's /revive command so its own
+    -- cleanup pipeline clears fractures, bleeding and medical state.
+    if GetResourceState('plt_ambulance_job') == 'started' then
+        ExecuteCommand(('revive %d'):format(targetId))
+        return
+    end
+
+    -- Fallback for servers where Pluto is stopped/unavailable.
+    TriggerClientEvent('qbx_medical:client:playerRevived', targetId)
+end
+
+RegisterNetEvent('qbx_admin:server:fullReviveSelf', function()
+    local src = source
+    if not IsPlayerAceAllowed(src, config.eventPerms.playerOptionsGeneral) then return end
+    if not exports.qbx_core:IsOptin(src) then return end
+    fullRevivePlayer(src)
+end)
+
 local generalOptions = {
     function(selectedPlayer) TriggerClientEvent('qbx_admin:client:killPlayer', selectedPlayer.id) end,
-    function(selectedPlayer) TriggerClientEvent('qbx_medical:client:playerRevived', selectedPlayer.id) end,
+    function(selectedPlayer) fullRevivePlayer(selectedPlayer.id) end,
     function(selectedPlayer)
         if isFrozen[selectedPlayer.id] then
             FreezeEntityPosition(GetPlayerPed(selectedPlayer.id), false)

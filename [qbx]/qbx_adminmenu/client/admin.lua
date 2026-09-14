@@ -186,7 +186,7 @@ end
 
 local options = {
     function() toggleNoClipMode() end,
-    function() TriggerEvent('qbx_medical:client:playerRevived') end,
+    function() TriggerServerEvent('qbx_admin:server:fullReviveSelf') end,
     function()
         optionInvisible = not optionInvisible
         if not optionInvisible then return end
