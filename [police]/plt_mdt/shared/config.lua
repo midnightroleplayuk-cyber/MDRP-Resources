@@ -253,7 +253,7 @@ Config.MDTCharges = {
 }
 
 -- Debugging & Mock Data
-Config.Debug = true -- Set to true to show mock officers below
+Config.Debug = false -- Set to true to show mock officers below
 Config.MockOfficers = {
     {
         id = 9901,
