@@ -170,7 +170,7 @@ Config.EnableDispatchLiveNotifications = false -- True: show top-right live disp
 -- It does NOT block opening/reading the Dispatch page.
 Config.DispatchAccess = {
     enabled = true,
-    defaultAllow = false,
+    defaultAllow = true,
     byJob = {
         police = { minGrade = 3 },
         sheriff = { minGrade = 3 },
