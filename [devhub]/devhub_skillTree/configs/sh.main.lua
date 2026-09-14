@@ -1,11 +1,11 @@
 if not Config then Config = {} end
 
-Config.MenuCommand = "skill" -- string or false
+Config.MenuCommand = false -- string or false
 Config.Keybind = "F7" -- string or false
 Config.Item = false -- string or false | update 1.0.6
 -- client event | devhub_skillTree:client:openSkillTree
 
-Config.Theme = "legacy" -- string | "legacy", "modern", "zombie", "fantasy"
+Config.Theme = "modern" -- string | "legacy", "modern", "zombie", "fantasy"
 
 Config.XpBoost = 1.0 -- float
 
