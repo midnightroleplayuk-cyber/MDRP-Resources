@@ -61,7 +61,7 @@ Shared.LaptopConfig = {
     rewards = {
         items = {},
         money = 2000,
-        crimePoints = 750,
+        crimePoints = 50,
         xp = 500,
     },
     tasks = {
