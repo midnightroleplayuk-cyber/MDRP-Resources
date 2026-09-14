@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Police CAD</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="app">
+        <!-- Top Icon Navigation with Header Info -->
+        <div class="top-nav">
+            <div id="header-left">---</div>
+            
+            <div class="nav-group">
+                <div id="nav-dashboard" class="nav-item active" onclick="changePage('dashboard')">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="2" y1="20" x2="22" y2="20"/></svg>
+                    <span>CAD</span>
+                </div>
+                <div id="nav-vehicle-search" class="nav-item" onclick="searchVehicle()">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                    <span>Search</span>
+                </div>
+                <div id="nav-call-history" class="nav-item" onclick="changePage('call-history')">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                    <span>History</span>
+                </div>
+                <div id="nav-forms" class="nav-item" onclick="changePage('forms')">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+                    <span>Forms</span>
+                </div>
+                <div id="nav-records" class="nav-item" onclick="changePage('records')">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+                    <span>Records</span>
+                </div>
+                <div id="nav-notepad" class="nav-item" onclick="changePage('notepad')">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+                    <span>Notepad</span>
+                </div>
+            </div>
+
+            <div id="header-right">---</div>
+        </div>
+
+        <!-- Status Sub-bar -->
+        <div class="status-bar-sub">
+            <span onclick="setStatus('AVAILABLE')" class="status-available"><span class="status-dot dot-green"></span>AVAILABLE</span>
+            <span onclick="setStatus('BUSY')" class="status-busy"><span class="status-dot dot-yellow"></span>BUSY</span>
+            <span onclick="setStatus('UNAVAILABLE')" class="status-unavailable"><span class="status-dot dot-red"></span>UNAVAILABLE</span>
+            <span onclick="setStatus('TRAINING')" class="status-training"><span class="status-dot dot-blue"></span>TRAINING</span>
+            <span style="margin-left: auto; display: flex; align-items: center; gap: 5px; color: #9abedb;">SUPERVISOR <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span>
+        </div>
+
+        <main id="content">
+            <!-- DASHBOARD / MAIN CAD VIEW -->
+            <div id="dashboard" class="page">
+                <div class="table-container" style="flex: 1;">
+                    <div class="table-header">ACTIVE CALLS FOR SERVICE</div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width: 120px;">CALL#</th>
+                                <th style="width: 200px;">NATURE</th>
+                                <th>LOCATION</th>
+                                <th style="width: 100px;">STATUS</th>
+                                <th style="width: 120px;">ASSIGNED</th>
+                            </tr>
+                        </thead>
+                        <tbody id="calls-table-body">
+                            <!-- Dynamic calls here -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="table-container" style="flex: 0.8;">
+                    <div class="table-header">UNIT STATUS / ACTIVE PERSONNEL</div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>OFFICER</th>
+                                <th>UNIT</th>
+                                <th>STATUS</th>
+                                <th>AGENCY</th>
+                                <th>DESCRIPTION</th>
+                            </tr>
+                        </thead>
+                        <tbody id="unit-table-body">
+                            <!-- Dynamic officers here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- CALL HISTORY PAGE -->
+            <div id="call-history" class="page" style="display:none;">
+                <div class="table-container" style="flex: 1;">
+                    <div class="table-header">PREVIOUS DISPATCH CALLS</div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width: 120px;">CALL#</th>
+                                <th style="width: 200px;">NATURE</th>
+                                <th>LOCATION</th>
+                                <th style="width: 100px;">STATUS</th>
+                                <th style="width: 120px;">ASSIGNED</th>
+                            </tr>
+                        </thead>
+                        <tbody id="history-table-body">
+                            <!-- Populated via script -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- CALL DETAILS PAGE -->
+            <div id="call-details" class="page" style="display:none;">
+                <div class="details-container">
+                    <div class="details-header">
+                        <h2 id="det-title" style="border:none; margin:0;">CALL DETAILS #---</h2>
+                        <div style="float:right; margin-top:-30px; display:flex; gap:10px;">
+                            <button class="action-btn" id="resolve-btn" style="background:#f39c12;">RESOLVE CALL</button>
+                            <button class="action-btn" id="assign-btn" style="background:#27ae60;">ASSIGN UNIT</button>
+                            <button class="action-btn" onclick="changePage('call-history')">BACK</button>
+                        </div>
+                    </div>
+                    <div class="details-row">
+                        <span class="details-label">NATURE:</span>
+                        <span class="details-value" id="det-nature">---</span>
+                    </div>
+                    <div class="details-row">
+                        <span class="details-label">LOCATION:</span>
+                        <span class="details-value" id="det-location">---</span>
+                    </div>
+                    <div class="details-row">
+                        <span class="details-label">STATUS:</span>
+                        <span class="details-value" id="det-status">---</span>
+                    </div>
+                    <div class="details-row">
+                        <span class="details-label">COORDINATES:</span>
+                        <span class="details-value" id="det-coords">---</span>
+                    </div>
+                    <div class="details-label" style="margin-top:15px;">ADDITIONAL INFORMATION:</div>
+                    <div class="info-box" id="det-info">
+                        ---
+                    </div>
+                </div>
+            </div>
+
+            <!-- SEARCH PAGE -->
+            <div id="search" class="page" style="display:none;">
+                <div class="table-container" style="padding: 20px;">
+                    <div class="table-header">CRIMINAL DATABASE INQUIRY</div>
+                    <div style="margin-top: 15px; display: flex; gap: 10px;">
+                        <input type="text" id="citizen-query" placeholder="ENTER NAME OR CID..." style="flex: 1;">
+                        <button class="action-btn" onclick="searchCitizen()">SEARCH</button>
+                    </div>
+                    <div id="search-results" style="margin-top: 20px;">
+                        <!-- Results go here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- VEHICLE SEARCH PAGE -->
+            <div id="vehicle-search" class="page" style="display:none;">
+                <div class="table-container" style="padding: 10px;">
+                    <div class="table-header">VEHICLE DATABASE INQUIRY</div>
+                    <div id="vehicle-content" style="margin-top: 10px;">
+                        <button class="action-btn" id="scan-btn" onclick="startScan()" style="width: 100%; padding: 12px; font-size: 13px;">BEGIN SYSTEM SCAN</button>
+                        <div id="loading-indicator" style="display:none; text-align: center; margin-top: 15px;">
+                            <p style="color: #3498db; letter-spacing: 2px; font-size: 14px;">SCANNING FREQUENCIES...</p>
+                            <p style="font-size: 9px;">[ PLEASE WAIT 5.0s ]</p>
+                        </div>
+                        <div id="vehicle-results" style="display:none; margin-top: 10px; border-top: 1px solid #1a2a3a; padding-top: 10px;">
+                            <p style="margin-bottom: 8px;">SCANNED PLATE: <span id="scanned-plate" style="color: #f1c40f; font-weight: bold;">NONE</span></p>
+                            <div id="owner-info">
+                                <!-- Owner info here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FORMS PAGE -->
+            <div id="forms" class="page" style="display:none;">
+                <div class="table-container" style="flex: 1; padding: 15px; display: flex; flex-direction: column;">
+                    <div class="table-header">DEPARTMENTAL FORMS & REPORTS</div>
+                    <div style="display: flex; gap: 15px; margin-top: 15px; flex: 1; overflow: hidden;">
+                        <div style="flex: 0.3; display: flex; flex-direction: column; gap: 10px;">
+                            <button class="action-btn" onclick="openForm('arrest')">ARREST REPORT</button>
+                            <button class="action-btn" onclick="openForm('traffic')">TRAFFIC CITATION</button>
+                            <button class="action-btn" onclick="openForm('incident')">INCIDENT REPORT</button>
+                        </div>
+                        <div id="form-content" style="flex: 0.7; border: 1px solid #1a2a3a; background: #050a10; padding: 15px; border-radius: 4px; overflow-y: auto; overflow-x: hidden;">
+                            <div style="text-align: center; color: #5d7a8c; margin-top: 50px;">
+                                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" style="opacity: 0.3;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+                                <p style="margin-top: 10px;">SELECT A FORM FROM THE LEFT TO BEGIN</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- RECORDS PAGE -->
+            <div id="records" class="page" style="display:none;">
+                <div class="table-container" style="flex: 1;">
+                    <div class="table-header">LSPD CASE FILES & RECORDS</div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width: 15%;">DATE</th>
+                                <th style="width: 15%;">TYPE</th>
+                                <th style="width: 25%;">OFFICER</th>
+                                <th style="width: 30%;">TITLE / SUBJECT</th>
+                                <th style="width: 15%; text-align: center;">ACTION</th>
+                            </tr>
+                        </thead>
+                        <tbody id="records-table-body">
+                            <!-- Dynamic records here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- NOTEPAD PAGE -->
+            <div id="notepad" class="page" style="display:none;">
+                <div class="table-container" style="flex: 1; padding: 15px; display: flex; flex-direction: column;">
+                    <div class="table-header">FIELD NOTEPAD (AUTO-SAVING)</div>
+                    <textarea id="notepad-area" style="flex: 1; margin-top: 15px; background: #0a1b2d; border: 1px solid #1a2a3a; color: #fff; padding: 15px; font-family: inherit; resize: none; border-radius: 4px;" placeholder="ENTER FIELD NOTES HERE..."></textarea>
+                    <div style="margin-top: 10px; display: flex; justify-content: space-between; align-items: center;">
+                        <span style="color: #5d7a8c; font-size: 11px;">NOTE: DATA IS PERSISTENT TO THIS TERMINAL ONLY</span>
+                        <button class="action-btn" onclick="clearNotepad()" style="background: #c0392b;">CLEAR ALL</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Bottom Status Bar -->
+        <div class="bottom-bar">
+            <div>STATUS: <span id="current-status" style="color: #4caf50;">AVAILABLE</span></div>
+            <div>NO ACTIVE CALL</div>
+            <div id="time">15:49:01</div>
+            <div>STATE RETURNS: 26</div>
+            <input type="hidden" id="my-name-store" value="UNKNOWN">
+        </div>
+
+        <!-- Virtual Cursor -->
+        <div id="cursor"></div>
+    </div>
+    <script src="app.js"></script>
+</body>
+</html>
+
