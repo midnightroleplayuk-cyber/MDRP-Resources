@@ -242,15 +242,19 @@ Config.ChargeSync = {
 }
 
 Config.MDTCharges = {
-    { title = "Aggravated Battery", description = "Physical assault causing serious injury", category = "Violent Crimes", fine = 2500, jail = 40 },
-    { title = "Evading", description = "Fleeing from law enforcement in a vehicle or on foot", category = "Traffic", fine = 500, jail = 15 },
-    { title = "Grand Theft Auto", description = "Theft of a motor vehicle", category = "Theft", fine = 500, jail = 10 },
-    { title = "First Degree Murder", description = "Premeditated killing of another person", category = "Violent Crimes", fine = 10000, jail = 120 },
-    { title = "Possession of Narcotics", description = "Carrying illegal controlled substances", category = "Drug Crimes", fine = 1500, jail = 20 },
-    { title = "Armed Robbery", description = "Theft using a deadly weapon", category = "Theft", fine = 3500, jail = 45 },
-    { title = "Public Intoxication", description = "Being under the influence in a public space", category = "Misc", fine = 200, jail = 0 },
-    { title = "Reckless Driving", description = "Driving with willful disregard for safety", category = "Traffic", fine = 450, jail = 5 },
-}
+   charges = {
+             -- TRAFFIC
+            {name = "Dangerous Driving", category = "Traffic", prison_time = 20, fine = 700},
+            {name = "Drink Driving", category = "Traffic", prison_time = 15, fine = 700},
+            {name = "Drug Driving", category = "Traffic", prison_time = 15, fine = 700},
+            {name = "Driving Without Insurance", category = "Traffic", prison_time = 10, fine = 500},
+            {name = "Driving Without License", category = "Traffic", prison_time = 10, fine = 500},
+            {name = "Speeding", category = "Traffic", prison_time = 5, fine = 500},
+            {name = "Using Mobile Phone While Driving", category = "Traffic", prison_time = 5, fine = 250},
+            {name = "Failing to Stop After Accident", category = "Traffic", prison_time = 15, fine = 2000},
+            {name = "Careless Driving", category = "Traffic", prison_time = 10, fine = 500}
+        }
+    }
 
 -- Debugging & Mock Data
 Config.Debug = false -- Set to true to show mock officers below
