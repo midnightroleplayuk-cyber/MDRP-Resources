@@ -3466,6 +3466,14 @@ return {
     description = "Valuable antique vase"
 },
 
+['WEAPON_POCKETLIGHT'] = {
+    label = 'UV Light',
+    weight = 50,
+    stack = true,
+    close = true,
+    description = "UV Torch"
+},
+
 -- DEV HUB ROBBERY
 
 -- qb-core/shared/items.lua 
