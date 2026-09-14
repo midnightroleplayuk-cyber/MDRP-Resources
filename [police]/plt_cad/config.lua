@@ -30,7 +30,7 @@ Config.WebhookName = "LSPD Records"
 Config.WebhookIcon = "https://i.imgur.com/83uA5fG.png"
 
 -- UI Features
-Config.AddFakeOfficers = true -- Add 2 fake officers to the unit status for testing
+Config.AddFakeOfficers = false -- Add 2 fake officers to the unit status for testing
 
 -- Access Configuration
 Config.Jobs = { "police", "sheriff", "fib" } -- The jobs required to use/spawn the CAD
