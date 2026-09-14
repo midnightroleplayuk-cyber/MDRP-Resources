@@ -1,0 +1,22 @@
+-- qb-core/shared/items.lua 
+["devhub_laptop"] = {
+    ["name"] = "devhub_laptop",                                                        
+    ["label"] = "Laptop",
+    ["weight"] = 0,
+    ["type"] = "item",
+    ["image"] = "devhub_laptop.webp",
+    ["unique"] = false,
+    ["useable"] = true,
+    ["shouldClose"] = true,
+    ["combinable"] = nil,
+    ["description"] = ""
+},
+
+-- ox_inventory/data/items.lua
+['devhub_laptop'] = {
+    label = 'Laptop',
+    weight = 0,
+    stack = true,
+    close = true,
+    description = ""
+},

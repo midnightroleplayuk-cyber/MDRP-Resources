@@ -1,0 +1,1 @@
+You can find the documentation for the script here https://docs.devhub.gg/
