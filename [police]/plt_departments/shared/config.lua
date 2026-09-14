@@ -471,7 +471,7 @@ Config.TargetActions = {
 Config.DefaultDeptBalance = 250000
 
 Config.Handcuffs = {
-    RequireItem = false, -- If true, officers must have the 'handcuffs' item to cuff/uncuff
+    RequireItem = true, -- If true, officers must have the 'handcuffs' item to cuff/uncuff
     ItemName = "handcuffs",
     RequireKey = false,  -- If true, officers must also have the 'handcuff_key' item to UNCUFF
     KeyItemName = "handcuff_key",
