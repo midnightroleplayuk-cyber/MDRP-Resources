@@ -12,7 +12,7 @@ Shared.Framework = "AUTO DETECT"
 Shared.Target = "AUTO DETECT"
 
 -- Vehicle keys system being used. Possible vehicle keys: "AUTO DETECT", "qb-vehiclekeys", "qs-vehiclekeys", "ak47_vehiclekeys", "t1ger_keys", "Renewed-Vehiclekeys", "cd_garage", "custom"
-Shared.VehicleKeys = "AUTO DETECT" 
+Shared.VehicleKeys = "custom" 
 
 -- Fuel system being used. Possible fuel systems: "AUTO DETECT", "LegacyFuel", "ps-fuel", "ox_fuel", "cd_fuel", "rcore_fuel", "custom"
 Shared.VehicleFuel = "AUTO DETECT"
