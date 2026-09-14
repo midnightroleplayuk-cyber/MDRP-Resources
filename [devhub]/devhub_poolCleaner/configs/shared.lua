@@ -13,7 +13,7 @@ Shared.Economy = {
 -- Do you want to enable the skill tree?
 -- This script must be ensured after devhub_skillTree
 -- If you want to buy our skill tree, you can find it https://store.devhub.gg/product/6440792-1
-Shared.SkillTreeEnabled = false
+Shared.SkillTreeEnabled = true
 
 Shared.JobRequired = false -- If you want to require a job to access the job menu, set it to job name
 
