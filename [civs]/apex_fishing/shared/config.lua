@@ -81,9 +81,9 @@ Config.textUIDistance = 2.2
 -- are also player-overridable from the in-panel Settings (presets
 -- + a custom colour picker) and persist per character.
 Config.theme = {
-    brand     = '#1F5EFF',   -- accent colour (buttons, highlights, links)
-    brandDark = '#0048F0',
-    accent    = '#5C7AFF',
+    brand     = '#111111',   -- accent colour (buttons, highlights, links)
+    brandDark = '#3a063b',
+    accent    = '#ff5cce',
     bg        = '#080B12',   -- master background — deep ocean ink (premium default)
     bgCard    = '#1A1A1B',   -- (legacy; surfaces are now derived from `bg`)
     bgRaised  = '#232325',
@@ -124,7 +124,7 @@ Config.avatar = {
 }
 
 -- ─── Currency ─────────────────────────────────────────────
-Config.currency = { symbol = '$', position = 'before' }
+Config.currency = { symbol = '£', position = 'before' }
 
 -- ─── Item image source (NUI) ─────────────────────────────
 -- Browser-side prefix used to render real item PNGs in the UI
