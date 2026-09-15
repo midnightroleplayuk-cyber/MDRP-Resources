@@ -59,7 +59,7 @@ const fmtMoney = (n) => {
     n = Math.floor(Number(n) || 0);
     const neg = n < 0; n = Math.abs(n);
     const s = n.toLocaleString('en-US');
-    const cur = Runtime.currency || { symbol: '$', position: 'before' };
+    const cur = Runtime.currency || { symbol: '£', position: 'before' };
     return (neg ? '-' : '') + (cur.position === 'after' ? `${s} ${cur.symbol}` : `${cur.symbol}${s}`);
 };
 const fmtInt = (n) => (Math.floor(Number(n) || 0)).toLocaleString('en-US');
