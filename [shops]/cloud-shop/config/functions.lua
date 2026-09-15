@@ -78,7 +78,8 @@ local function addTarget(shopKey, shopData, shopCoords, openFunction)
 			label = locales.interaction.target.label,
 			distance = shopData.Interaction.Target.distance,
 			canInteract = function()
-				return not IsPedInAnyVehicle(cache.ped, false)
+				local Robbery = require("client.modules.fa-shoprobbery")
+				return not IsPedInAnyVehicle(cache.ped, false) and Robbery.CanUse(shopCoords)
 			end,
 			onSelect = function()
 				openFunction(shopKey, shopData)
