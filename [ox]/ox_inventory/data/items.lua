@@ -4299,4 +4299,15 @@ return {
 ['gang_supplies'] = { label = 'Gang Supplies', weight = 1000, stack = true, close = false },
 ['weapon_parts']  = { label = 'Weapon Parts',  weight = 800,  stack = true, close = false },
 
-}
+ -- MONEY WASH
+ ['cleaning_kit'] = {
+    label = 'Cleaning Kit',
+    weight = 200,
+    stack = true,
+    close = true,
+    description = 'Industrial detergent and solvents for a laundromat machine.',
+},
+
+},
+
+
