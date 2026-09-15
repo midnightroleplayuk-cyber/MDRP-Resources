@@ -928,7 +928,7 @@ Config.CrimeScene.Objects = {
 
 Config.VehicleDisposal = {
     ["burn"] = {
-        enable = false,
+        enable = true,
         locations = { -- locations of the burn vehicle disposal
             {
                 petrolCanCoords = vec4(2102.017578, 4626.474609, 34.402222, 201.259842),
@@ -996,7 +996,7 @@ Config.VehicleDisposal = {
         timeBeforeExplosion = 10000, -- duration of the time before explosion in ms
     },
     ["push_off_cliff"] = {
-        enable = true,
+        enable = false,
         locations = { -- locations of the push off cliff vehicle disposal
             {
                 vehicleCoords = vec4(-3103.898926, 1743.125244, 35.008789, 73.700790),
