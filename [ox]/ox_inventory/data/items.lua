@@ -3747,6 +3747,33 @@ return {
     description = "A set of tools for disabling car radios."
 },
 
+-- ADVANCED STORE ROBBERY
+['thermite'] = {
+    label = 'Thermite',
+    weight = 1000,
+    stack = true,
+    close = true,
+    description = 'An incendiary compound.'
+},
+['scratch_ticket'] = {
+    label = 'Scratch Ticket',
+    weight = 10,
+    stack = true,
+    close = true
+},
+['drill'] = {
+    label = 'Drill',
+    weight = 3500,
+    stack = false,
+    close = true,
+    description = 'A heavy-duty drill.'
+},    
+['beer'] = {
+    label = 'Beer',
+    weight = 500,
+    stack = true,
+    close = true
+},
 
 
 }
