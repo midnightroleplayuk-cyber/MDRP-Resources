@@ -1,0 +1,270 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Apex Laundry</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- ─── Notification fallback ──────────────────────────── -->
+<div id="notify-container" class="notify-container pos-top-right" aria-live="polite"></div>
+
+<!-- ─── 3D Marker (apex_bossmenu-style floating icon) ─── -->
+<div id="world-3d-icon" hidden>
+    <div class="w3d-bubble">
+        <div class="w3d-icon"><i id="w3d-icon" class="fa-solid fa-soap"></i></div>
+        <div class="w3d-label">
+            <span class="w3d-key">E</span>
+            <span class="w3d-text" id="w3d-label" data-i18n="ld_world_label">Use the machine</span>
+        </div>
+    </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     LAUNDROMAT PANEL
+     ═══════════════════════════════════════════════════════ -->
+<div id="panel" class="panel" hidden>
+    <div class="panel-sheen" aria-hidden="true"></div>
+
+    <!-- ── Header ── -->
+    <header class="ph">
+        <div class="ph-brand">
+            <div class="ph-logo"><i class="fa-solid fa-soap"></i></div>
+            <div class="ph-titles">
+                <div class="ph-wm">
+                    <span id="wm-first">APEX</span> <span class="wm-accent" id="wm-second">LAUNDRY</span>
+                </div>
+                <div class="ph-sub" id="machine-label" data-i18n="ui_subtitle">Money laundering terminal</div>
+            </div>
+        </div>
+        <div class="ph-right">
+            <div class="status-pill is-idle" id="status-pill">
+                <span class="status-dot"></span>
+                <span id="status-text" data-i18n="ui_status_idle">Idle</span>
+            </div>
+            <button class="icon-btn" id="btn-settings" data-i18n-aria="ui_settings" aria-label="Settings">
+                <i class="fa-solid fa-sliders"></i>
+            </button>
+            <button class="icon-btn" id="btn-close" data-i18n-aria="ui_close" aria-label="Close">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- ── Body ── -->
+    <div class="panel-body">
+
+        <!-- Cleaners card -->
+        <section class="card">
+            <div class="card-head">
+                <div class="card-ic ic-blue"><i class="fa-solid fa-bottle-droplet"></i></div>
+                <div class="card-head-tx">
+                    <div class="card-title" data-i18n="ui_cleaners">Cleaning supplies</div>
+                    <div class="card-sub" data-i18n="ui_cleaners_sub">Fuel the machine to run a wash</div>
+                </div>
+                <div class="card-badge"><span id="cleaners-count" class="mono">0</span></div>
+            </div>
+
+            <div class="meter">
+                <div class="meter-fill" id="cleaners-fill"></div>
+            </div>
+            <div class="meter-legend">
+                <span data-i18n="ui_in_stock">In machine</span>
+                <span class="mono" id="cleaners-max">/ 500</span>
+            </div>
+
+            <div class="deposit-row">
+                <div class="stepper">
+                    <button class="step" data-step="-10" type="button">&minus;</button>
+                    <input id="cleaner-input" class="inp mono" type="number" min="1" value="10" inputmode="numeric">
+                    <button class="step" data-step="10" type="button">+</button>
+                </div>
+                <button class="btn btn-soft" id="btn-deposit" type="button">
+                    <i class="fa-solid fa-circle-down"></i>
+                    <span data-i18n="ui_deposit">Deposit</span>
+                </button>
+            </div>
+
+            <div class="hint">
+                <i class="fa-solid fa-box-open"></i>
+                <span data-i18n="ui_on_hand">On hand</span>:
+                <b class="mono" id="player-cleaners">0</b>
+                <span class="hint-unit" data-i18n="ui_units">units</span>
+            </div>
+        </section>
+
+        <!-- Wash card (content rendered by JS: idle ⇄ active) -->
+        <section class="card wash-card" id="wash-card"></section>
+
+        <!-- Upgrades -->
+        <section class="upg-wrap" id="upg-wrap">
+            <div class="section-label">
+                <i class="fa-solid fa-arrow-up-right-dots"></i>
+                <span data-i18n="ui_upgrades">Upgrades</span>
+            </div>
+            <div class="upg-grid" id="upg-grid"></div>
+        </section>
+    </div>
+
+    <!-- ── Footer meta ── -->
+    <footer class="pf">
+        <div class="pf-item">
+            <span data-i18n="ui_tax_rate">Tax</span>
+            <b class="mono" id="meta-tax">—</b>
+        </div>
+        <div class="pf-sep"></div>
+        <div class="pf-item">
+            <span data-i18n="ui_wash_rate">Base speed</span>
+            <b class="mono" id="meta-speed">—</b>
+        </div>
+        <div class="pf-sep"></div>
+        <div class="pf-item">
+            <span data-i18n="ui_capacity">Capacity</span>
+            <b class="mono" id="meta-cap">—</b>
+        </div>
+    </footer>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     SETTINGS (per-player UI prefs — saved via KVP)
+     ═══════════════════════════════════════════════════════ -->
+<div id="settings" class="settings-scrim" hidden>
+    <div class="settings-card">
+        <div class="settings-head">
+            <div class="settings-title">
+                <i class="fa-solid fa-sliders"></i>
+                <span data-i18n="ui_settings">Settings</span>
+            </div>
+            <button class="icon-btn" id="settings-close" aria-label="Close"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="settings-body">
+            <div class="set-row">
+                <div class="set-label" data-i18n="ui_brand_color">Brand colour</div>
+                <div class="swatches" id="set-brand"></div>
+            </div>
+            <div class="set-row">
+                <div class="set-label" data-i18n="ui_background">Background</div>
+                <div class="swatches" id="set-bg"></div>
+            </div>
+            <div class="set-row">
+                <div class="set-label" data-i18n="ui_position">Position</div>
+                <div class="seg-btns" id="set-pos">
+                    <button data-pos="left" data-i18n="ui_pos_left">Left</button>
+                    <button data-pos="center" data-i18n="ui_pos_center">Centre</button>
+                    <button data-pos="right" data-i18n="ui_pos_right">Right</button>
+                </div>
+            </div>
+            <div class="set-row">
+                <div class="set-label">
+                    <span data-i18n="ui_opacity">Opacity</span>
+                    <span id="set-opacity-val" class="mono">100%</span>
+                </div>
+                <input type="range" id="set-opacity" class="slider" min="40" max="100" step="1" value="100">
+            </div>
+            <div class="set-row">
+                <div class="set-label" data-i18n="ui_size">Size</div>
+                <div class="seg-btns" id="set-size">
+                    <button data-size="0.85" data-i18n="ui_size_s">Small</button>
+                    <button data-size="1"    data-i18n="ui_size_m">Medium</button>
+                    <button data-size="1.15" data-i18n="ui_size_l">Large</button>
+                </div>
+            </div>
+        </div>
+        <div class="settings-foot">
+            <button class="btn btn-ghost btn-block" id="settings-reset" data-i18n="ui_reset_default">Reset to default</button>
+        </div>
+    </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     CREATOR — creation menu (admin places a machine)
+     ═══════════════════════════════════════════════════════ -->
+<div id="creator-menu" class="cm-scrim" hidden>
+    <div class="cm-card">
+        <div class="cm-head">
+            <div class="cm-title">
+                <i class="fa-solid fa-screwdriver-wrench"></i>
+                <span data-i18n="cr_title">New Laundromat</span>
+            </div>
+            <button class="icon-btn" id="cm-close" aria-label="Close"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="cm-body">
+            <!-- Machine model -->
+            <div class="cm-section">
+                <div class="cm-label" data-i18n="cr_machine">Machine</div>
+                <div class="cm-models" id="cm-models"></div>
+            </div>
+
+            <!-- Access -->
+            <div class="cm-section">
+                <div class="cm-row-between">
+                    <div class="cm-label" data-i18n="cr_access">Access</div>
+                    <label class="cm-toggle">
+                        <input type="checkbox" id="cm-public">
+                        <span class="cm-switch"></span>
+                        <span data-i18n="cr_public">Public</span>
+                    </label>
+                </div>
+                <div id="cm-jobs-wrap">
+                    <div class="dd" id="cm-job-dd"></div>
+                    <div class="cm-joblist" id="cm-joblist"></div>
+                    <div class="cm-hint" id="cm-jobs-empty" data-i18n="cr_jobs_hint">Add the jobs that may use this machine (with a minimum grade).</div>
+                </div>
+            </div>
+
+            <!-- Invisible -->
+            <div class="cm-section">
+                <label class="cm-toggle">
+                    <input type="checkbox" id="cm-invisible">
+                    <span class="cm-switch"></span>
+                    <span data-i18n="cr_invisible">Invisible prop</span>
+                </label>
+            </div>
+        </div>
+        <div class="cm-foot">
+            <button class="btn btn-ghost" id="cm-cancel" data-i18n="md_dismiss">Cancel</button>
+            <button class="btn btn-primary is-disabled" id="cm-place" data-i18n="cr_place">Place</button>
+        </div>
+    </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     CREATOR — in-world placement controls HUD
+     ═══════════════════════════════════════════════════════ -->
+<div id="creator-hud" class="cr-hud" hidden>
+    <div class="cr-hud-title">
+        <i class="fa-solid fa-arrows-up-down-left-right"></i>
+        <span data-i18n="cr_controls">Placement controls</span>
+    </div>
+    <div class="cr-hud-row"><span class="cr-key">Scroll</span><span data-i18n="cr_rotate">Rotate</span></div>
+    <div class="cr-hud-row"><span class="cr-key">Shift+Scroll</span><span data-i18n="cr_depth">Push / Pull</span></div>
+    <div class="cr-hud-row"><span class="cr-key">&uarr; &darr;</span><span data-i18n="cr_height">Height</span></div>
+    <div class="cr-hud-row"><span class="cr-key">G</span><span data-i18n="cr_invisible">Invisible</span><b id="cr-hud-invis" class="cr-hud-state is-off">OFF</b></div>
+    <div class="cr-hud-row"><span class="cr-key cr-key-go">E</span><span data-i18n="cr_place">Place</span></div>
+    <div class="cr-hud-row"><span class="cr-key cr-key-no">X</span><span data-i18n="md_dismiss">Cancel</span></div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     CONFIRM MODAL
+     ═══════════════════════════════════════════════════════ -->
+<div id="modal" class="modal-scrim" hidden>
+    <div class="modal" id="modal-box">
+        <div class="modal-ic" id="modal-ic"><i class="fa-solid fa-triangle-exclamation"></i></div>
+        <div class="modal-title" id="modal-title">Confirm</div>
+        <div class="modal-text" id="modal-text"></div>
+        <div class="modal-actions">
+            <button class="btn btn-ghost" id="modal-cancel" type="button" data-i18n="md_dismiss">Dismiss</button>
+            <button class="btn btn-primary" id="modal-confirm" type="button" data-i18n="md_confirm">Confirm</button>
+        </div>
+    </div>
+</div>
+
+<script src="js/app.js"></script>
+</body>
+</html>
