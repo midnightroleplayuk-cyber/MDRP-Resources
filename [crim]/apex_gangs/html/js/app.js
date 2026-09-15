@@ -75,7 +75,7 @@ function escapeAttr(s) { return String(s == null ? '' : s).replace(/'/g, '&#39;'
 function round2(n) { return Math.round((Number(n) || 0) * 100) / 100; }
 function fmtMoney(n) {
     n = Number(n) || 0;
-    const sym = state.config?.currency?.symbol ?? '$';
+    const sym = state.config?.currency?.symbol ?? '£';
     const sign = n < 0 ? '-' : '';
     const a = Math.abs(Math.floor(n)).toLocaleString('en-US');
     return state.config?.currency?.position === 'after'
