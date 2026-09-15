@@ -71,8 +71,8 @@ Config.features = {
 }
 
 -- ─── Interaction ──────────────────────────────────────────
-Config.textUIKey      = 38       -- E
-Config.textUIDistance = 2.2
+Config.textUIKey      = 33       -- E
+Config.textUIDistance = 0
 
 -- ─── UI Theme ────────────────────────────────────────────
 -- `brand` and `bg` are the two master colours. Everything else in
