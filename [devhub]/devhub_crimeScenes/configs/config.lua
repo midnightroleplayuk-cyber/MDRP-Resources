@@ -928,7 +928,7 @@ Config.CrimeScene.Objects = {
 
 Config.VehicleDisposal = {
     ["burn"] = {
-        enable = false,
+        enable = true,
         locations = { -- locations of the burn vehicle disposal
             {
                 petrolCanCoords = vec4(2102.017578, 4626.474609, 34.402222, 201.259842),
