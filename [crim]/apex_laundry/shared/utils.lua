@@ -59,7 +59,7 @@ end
 
 -- ─── Money formatter (uses Config.currency) ──────────────
 function Utils.money(n)
-    local cur = (Config and Config.currency) or { symbol = '$', position = 'before' }
+    local cur = (Config and Config.currency) or { symbol = '£', position = 'before' }
     n = math.floor(tonumber(n) or 0)
     local neg = n < 0; n = math.abs(n)
     local s = tostring(n)
