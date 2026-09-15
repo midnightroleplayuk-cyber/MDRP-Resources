@@ -4286,5 +4286,17 @@ return {
         close = true,
     },
 
+ -- APEX GANGS    
+ ['spraycan'] = {
+    label = 'Spray Can', weight = 400, stack = true, close = true,
+    description = 'Tag walls with your gang colours.',
+    client = { export = 'apex_gangs.useSprayItem' },
+},
+['spray_remover'] = {
+    label = 'Spray Remover', weight = 500, stack = true, close = true,
+    description = 'Scrub rival tags off the wall.',
+},
+['gang_supplies'] = { label = 'Gang Supplies', weight = 1000, stack = true, close = false },
+['weapon_parts']  = { label = 'Weapon Parts',  weight = 800,  stack = true, close = false },
 
 }
