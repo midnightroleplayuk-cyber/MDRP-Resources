@@ -118,7 +118,7 @@
             form: 'services/online-report',
             gunLicense: 'permits/firearm-license'
         }[page] || 'home';
-        return `https://midnightpolice.police.uk/${path}`;
+        return `https://midnight.police.uk/${path}`;
     }
 
     function renderHeader(activePage) {
@@ -136,15 +136,15 @@
         return `
             <div class="lapd-site-top">
                 <div class="lapd-official-strip">
-                    <span>${esc(state.deptLabel)} Official Portal</span>
+                    <span>Midnight Police Constabulary Official Portal</span>
                     <span>999 In an Emergency | 111 In an Non-Emergency</span>
                 </div>
                 <div class="lapd-brand-row">
                     <div class="lapd-brand">
                         <div class="lapd-badge-mark"><i class="fas fa-shield-halved"></i></div>
                         <div>
-                            <h1>${esc(state.deptLabel)}</h1>
-                            <p>To Protect and to Serve | ${esc(state.deptLabel)} Public Service Portal</p>
+                            <h1>Midnight Police Constabulary</h1>
+                            <p>Protecting the Public | Midnight Police Constabulary - Public Service Portal</p>
                         </div>
                     </div>
                     <nav class="lapd-nav">${nav}</nav>
@@ -156,7 +156,7 @@
     function renderHomePage() {
         return `
             <section class="lapd-hero lapd-hero-home">
-                <h2>${esc(state.deptLabel)} Intranet</h2>
+                <h2>Midnight Police Constabulary Intranet</h2>
                 <p>Access department services, public safety information, records guidance, community resources, and secure online police service forms from this station terminal.</p>
                 <div class="lapd-hero-actions">
                     <button type="button" data-page="form">Submit a Service Form</button>
@@ -320,7 +320,7 @@
         return `
             <section class="lapd-subhero">
                 <h2>Firearm License Application</h2>
-                <p>Submit a civilian firearm license request for ${esc(state.deptLabel)} command review. Applications may require interview, records review, and firearms training verification.</p>
+                <p>Submit a civilian firearm license request for Midnight Police Constabulary command review. Applications may require interview, records review, and firearms training verification.</p>
             </section>
             <main class="lapd-page">
                 <div class="lapd-grid">
