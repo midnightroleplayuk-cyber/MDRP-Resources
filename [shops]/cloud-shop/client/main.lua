@@ -10,6 +10,7 @@ local locales = lib.loadJson(("locales.%s"):format(Config.Locale))
 -- Modules
 local Interaction = require("client.modules.interaction")
 local ShopPeds = require("client.modules.shop-ped")
+local Robbery = require("client.modules.fa-shoprobbery")
 local handleTransaction = require("client.modules.transaction")
 
 --[[ Initialization ]]
@@ -34,14 +35,18 @@ local function createPoints(shopKey, shopData, shopCoords)
 	})
 
 	function shopPoint:onEnter()
-		if shopData.Indicator.Ped.enabled then self.ped = ShopPeds.Spawn(shopData, shopCoords) end
+		if shopData.Indicator.Ped.enabled and not Robbery.FindStore(shopCoords) then self.ped = ShopPeds.Spawn(shopData, shopCoords) end
 	end
 
 	function shopPoint:onExit()
-		if shopData.Indicator.Ped.enabled then ShopPeds.Delete(self.ped) end
+		if self.ped then ShopPeds.Delete(self.ped) self.ped = nil end
 	end
 
 	function shopPoint:nearby()
+		if Robbery.FindStore(shopCoords) then
+			if self.ped then ShopPeds.Delete(self.ped) self.ped = nil end
+		end
+		if not Robbery.CanUse(shopCoords) then return end
 		if not LocalPlayer.state["currentShop"] then
 			if shopData.Indicator.Marker.enabled then
 				local markerConfig = shopData.Indicator.Marker
@@ -56,10 +61,10 @@ local function createPoints(shopKey, shopData, shopCoords)
 
 				if not LocalPlayer.state["currentShop"] then
 					if shopData.Interaction.HelpText.enabled then Functions.Interact.HelpText(locales.interaction.help_text) end
-					if shopData.Interaction.FloatingText.enabled then Functions.Interact.FloatingHelpText(locales.interaction.floating_text, self.ped, self.coords) end
+					if shopData.Interaction.FloatingText.enabled then Functions.Interact.FloatingHelpText(locales.interaction.floating_text, Robbery.GetEntity(shopCoords) or self.ped, self.coords) end
 				end
 
-				if IsControlJustReleased(0, shopData.Interaction.OpenKey) then Interaction.Open(shopKey, shopData) end
+				if IsControlJustReleased(0, shopData.Interaction.OpenKey) then Interaction.Open(shopKey, shopData, shopCoords) end
 			end
 		end
 	end
@@ -72,7 +77,22 @@ CreateThread(function()
 
 			if shopData.Blip.enabled then createBlip(shopCoords, shopData.Blip) end
 			createPoints(shopKey, shopData, shopCoords)
-			if shopData.Interaction.Target.enabled then Functions.Interact.AddTarget(shopKey, shopData, shopCoords, Interaction.Open) end
+			if shopData.Interaction.Target.enabled then
+				local function openLocation(key, data)
+					Interaction.Open(key, data, shopCoords)
+				end
+				Functions.Interact.AddTarget(shopKey, shopData, shopCoords, openLocation)
+			end
+		end
+	end
+end)
+
+-- Covers state changes, replaced clerks and resource restarts while UI is open.
+CreateThread(function()
+	while true do
+		Wait(200)
+		if LocalPlayer.state["currentShop"] and not Robbery.CanUseActive() then
+			Interaction.CloseUI()
 		end
 	end
 end)
@@ -84,6 +104,7 @@ RegisterNUICallback("shop:callback", function(data, cb)
 	if type(actionName) ~= "string" then return end
 
 	local shopData = Config.Shops[LocalPlayer.state["currentShop"]]
+	if not shopData and actionName ~= "closeShop" then cb(false) return end
 
 	local handlers = {
 		closeShop = function()
