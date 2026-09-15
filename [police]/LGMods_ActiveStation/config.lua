@@ -69,7 +69,7 @@ Config.MugshotSystem = {
 Config.ClothingStations = {
     {
         id = "sinner_street_station",
-        location = ,
+        location = false,
         heading = 5.0585,
         range = 2.0,
         menuTitle = "Sinner Street Station - Clothing",
