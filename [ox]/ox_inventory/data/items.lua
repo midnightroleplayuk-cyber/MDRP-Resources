@@ -3811,4 +3811,15 @@ return {
 ['money_briefcase'] = { label = 'Sunken Briefcase', stack = false, weight = 3500 },
 ['rolex_watch']     = { label = 'Antique Watch',    stack = true, weight =  100 },
 
+
+-- DEVHUB MINING
+['dh_drill'] = {
+    label = 'Drill',
+    weight = 0,
+    stack = true,
+    close = true,
+    description = ""
+},
+
+
 }
