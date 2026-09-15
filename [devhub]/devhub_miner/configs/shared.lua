@@ -27,7 +27,7 @@ Shared.QuestsEnabled = true
 -- This script must be ensured after devhub_skillTree
 -- If you want to buy our skill tree, you can find it https://store.devhub.gg/product/6440792-1
 -- Shared.SkillTreeEnabled = false
-Shared.SkillTreeEnabled = false
+Shared.SkillTreeEnabled = true
  
 -- It will give the player extra rewards during mining and smelting
 -- If you want to enable the extra rewards, set it to true otherwise set it to false
