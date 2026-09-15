@@ -9,7 +9,7 @@ const RES = (() => {
 const post = (name, data = {}) =>
     fetch(`https://${RES}/${name}`, { method: 'POST', body: JSON.stringify(data) }).catch(() => {});
 
-const fmt = (n) => '$' + Number(n || 0).toLocaleString('en-US');
+const fmt = (n) => '£' + Number(n || 0).toLocaleString('en-US');
 // Compact money for tight spots (sidebar): exact under 1M, abbreviated
 // above (e.g. $1.2M) so the value never gets clipped in a narrow chip.
 const fmtCash = (n) => {
