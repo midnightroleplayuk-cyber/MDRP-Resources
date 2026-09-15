@@ -477,7 +477,7 @@
     window.addEventListener('message', (event) => {
         if (!event.data || event.data.action !== 'openDepartmentFormComputer') return;
         state.deptId = event.data.deptId;
-        state.deptLabel = event.data.deptLabel || 'Los Santos Police Department';
+        state.deptLabel = event.data.deptLabel || 'Midnight Police Constabulary';
         state.deptPalette = event.data.deptPalette || null;
         state.playerName = event.data.playerName || '';
         state.page = 'home';
