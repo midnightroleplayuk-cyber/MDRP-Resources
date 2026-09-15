@@ -41,7 +41,7 @@ Locales.en = {
     ld_loader_foot    = 'Encrypted · Apex laundering grid',
 
     -- ─── Wordmark (split into two coloured halves) ───────
-    wm_first          = 'APEX',
+    wm_first          = 'Midnight',
     wm_second         = 'LAUNDRY',
 
     -- ─── Panel header ───────────────────────────────────
