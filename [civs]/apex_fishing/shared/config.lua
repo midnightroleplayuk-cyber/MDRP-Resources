@@ -149,10 +149,10 @@ Config.baitCostAtShop = 12         -- $ per bait at the shop
 -- maxRarity     = the highest rarity tier the rod can ever hook.
 -- catchBonus    = additive bonus to the success roll (0..1).
 Config.rods = {
-    { id = 'fishing_rod_basic',   label = 'Basic Rod',     price =   2500, requiredLevel = 0,  maxRarity = 'rare',     catchBonus = 0.00, prop = 'prop_fishing_rod_01' },
-    { id = 'fishing_rod_pro',     label = 'Pro Rod',       price =   9500, requiredLevel = 8,  maxRarity = 'epic',     catchBonus = 0.06, prop = 'prop_fishing_rod_01' },
-    { id = 'fishing_rod_carbon',  label = 'Carbon Rod',    price =  28000, requiredLevel = 18, maxRarity = 'legendary',catchBonus = 0.12, prop = 'prop_fishing_rod_01' },
-    { id = 'fishing_rod_master',  label = 'Master Rod',    price =  85000, requiredLevel = 30, maxRarity = 'mythic',   catchBonus = 0.20, prop = 'prop_fishing_rod_01' },
+    { id = 'fishing_rod_basic',   label = 'Basic Rod',     price =   500, requiredLevel = 0,  maxRarity = 'rare',     catchBonus = 0.00, prop = 'prop_fishing_rod_01' },
+    { id = 'fishing_rod_pro',     label = 'Pro Rod',       price =   2500, requiredLevel = 8,  maxRarity = 'epic',     catchBonus = 0.06, prop = 'prop_fishing_rod_01' },
+    { id = 'fishing_rod_carbon',  label = 'Carbon Rod',    price =  8000, requiredLevel = 18, maxRarity = 'legendary',catchBonus = 0.12, prop = 'prop_fishing_rod_01' },
+    { id = 'fishing_rod_master',  label = 'Master Rod',    price =  15000, requiredLevel = 30, maxRarity = 'mythic',   catchBonus = 0.20, prop = 'prop_fishing_rod_01' },
 }
 
 -- Default rod given to new players (set to nil to disable)
