@@ -1,0 +1,625 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Apex Fishing</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- ─── Notify fallback ────────────────────────────────── -->
+<div id="notify-container" class="notify-container" aria-live="polite"></div>
+
+<!-- ─── In-world 3D marker ────────────────────────────── -->
+<div id="world-icon" hidden>
+    <div class="world-icon-circle">
+        <i id="world-icon-i" class="fa-solid fa-fish"></i>
+    </div>
+    <div class="world-icon-helper">
+        <span class="world-icon-key" id="world-icon-key">E</span>
+        <span id="world-icon-label">Interact</span>
+    </div>
+    <div class="world-icon-actions" id="world-icon-actions" hidden></div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     CATCH MODAL — bottom-centered banner: text + buttons on the
+     LEFT, fish orb on the RIGHT. No dark background.
+     ═══════════════════════════════════════════════════════ -->
+<div id="catch-modal" class="catch-modal" hidden>
+    <div class="catch-vignette" id="catch-vignette" aria-hidden="true"></div>
+    <div class="catch-card">
+        <div class="catch-meta">
+            <div class="catch-rarity-row">
+                <span class="catch-rarity-strip" id="catch-rarity-strip"></span>
+                <div class="catch-rarity" id="catch-rarity">Common</div>
+                <span class="catch-record" id="catch-record" hidden>
+                    <i class="fa-solid fa-trophy"></i> New record
+                </span>
+            </div>
+            <h1 class="catch-name"   id="catch-name">Sardine</h1>
+            <p  class="catch-desc"   id="catch-desc">
+                Congratulations! You caught a fish.
+            </p>
+            <div class="catch-stats">
+                <div class="catch-stat" id="catch-stat-weight-wrap" hidden>
+                    <i class="fa-solid fa-weight-hanging"></i>
+                    <span><b id="catch-stat-weight">—</b></span>
+                </div>
+                <div class="catch-stat">
+                    <i class="fa-solid fa-fish-fins"></i>
+                    <span><b id="catch-stat-count">1×</b> Caught</span>
+                </div>
+                <div class="catch-stat">
+                    <i class="fa-solid fa-percent"></i>
+                    <span><b id="catch-stat-chance">35%</b> Chance</span>
+                </div>
+                <div class="catch-stat">
+                    <i class="fa-solid fa-bolt"></i>
+                    <span><b id="catch-stat-xp">+0</b> XP</span>
+                </div>
+            </div>
+            <div class="catch-actions">
+                <button class="catch-keep" id="catch-keep">
+                    <i class="fa-solid fa-hand-holding"></i> Keep
+                </button>
+                <button class="catch-release" id="catch-release">Release</button>
+            </div>
+        </div>
+
+        <div class="catch-orb" id="catch-orb">
+            <div class="catch-rays" aria-hidden="true"></div>
+            <div class="catch-glow" aria-hidden="true"></div>
+            <div class="catch-sparkles" id="catch-sparkles" aria-hidden="true"></div>
+            <svg class="catch-arc" viewBox="0 0 120 120">
+                <circle cx="60" cy="60" r="54" class="catch-arc-bg" />
+                <circle cx="60" cy="60" r="54" class="catch-arc-fg" id="catch-arc-fg" />
+            </svg>
+            <div class="catch-fish"><i class="fa-solid fa-fish" id="catch-fish-i"></i></div>
+        </div>
+    </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     BITE ALERT — flashes when the fish strikes (before minigame)
+     ═══════════════════════════════════════════════════════ -->
+<div id="bite-alert" class="bite-alert" hidden>
+    <div class="bite-alert-card">
+        <span class="bite-alert-ring"></span>
+        <span class="bite-alert-ring r2"></span>
+        <i class="fa-solid fa-fish-fins bite-alert-icon"></i>
+        <div class="bite-alert-tx">
+            <div class="bite-alert-title" id="bite-alert-title">FISH ON!</div>
+            <div class="bite-alert-sub"   id="bite-alert-sub">Get ready to reel!</div>
+        </div>
+    </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     MINIGAME — Q / E to move cursor toward the fish,
+                 SPACE to catch when aligned
+     ═══════════════════════════════════════════════════════ -->
+<div id="minigame" class="minigame" hidden>
+    <div class="mg-frame">
+        <div class="mg-track">
+            <div class="mg-key mg-key-left">Q</div>
+            <div class="mg-zone" id="mg-zone"></div>
+            <div class="mg-fish" id="mg-fish"><i class="fa-solid fa-fish"></i></div>
+            <div class="mg-meter" id="mg-meter"></div>
+            <div class="mg-key mg-key-right">E</div>
+        </div>
+
+        <div class="mg-hint">
+            Tap <kbd>Q</kbd> or <kbd>E</kbd> to move ·
+            <kbd>space</kbd> to catch
+        </div>
+    </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     FISHING PANEL — main dashboard
+     ═══════════════════════════════════════════════════════ -->
+<div id="panel" class="panel-overlay" hidden>
+    <div class="panel">
+        <!-- ── Sidebar ──────────────────────────────────── -->
+        <aside class="side">
+            <div class="brand">
+                <div class="brand-mark"><i class="fa-solid fa-fish"></i></div>
+                <div>
+                    <strong>APEX</strong>
+                    <span>FISHING</span>
+                </div>
+            </div>
+
+            <!-- ── Player profile card ──────────────────────── -->
+            <div class="side-profile" id="side-profile">
+                <div class="sp-top">
+                    <div class="sp-avatar" id="sp-avatar">
+                        <img id="sp-avatar-img" alt="" hidden>
+                        <span class="sp-initials" id="sp-initials">A</span>
+                        <span class="sp-level-badge" id="sp-level-badge">0</span>
+                    </div>
+                    <div class="sp-id">
+                        <strong class="sp-name" id="sp-name">Angler</strong>
+                        <span class="sp-title" id="sp-title">Marina Member</span>
+                    </div>
+                </div>
+                <div class="sp-stats">
+                    <div class="sp-stat">
+                        <div class="sp-stat-ic"><i class="fa-solid fa-wallet"></i></div>
+                        <div class="sp-stat-tx">
+                            <span>Cash</span>
+                            <strong id="sp-cash">$0</strong>
+                        </div>
+                    </div>
+                    <div class="sp-stat">
+                        <div class="sp-stat-ic"><i class="fa-solid fa-fish"></i></div>
+                        <div class="sp-stat-tx">
+                            <span>Level</span>
+                            <strong id="sp-fishlevel">0</strong>
+                        </div>
+                    </div>
+                </div>
+                <div class="sp-xp">
+                    <div class="sp-xp-bar"><div class="sp-xp-fill" id="sp-xp-fill"></div></div>
+                    <div class="sp-xp-text">
+                        <span><span id="sp-xp-cur">0</span> / <span id="sp-xp-need">0</span> XP</span>
+                        <span id="sp-xp-next">Lv 1</span>
+                    </div>
+                </div>
+            </div>
+
+            <nav class="nav">
+                <button class="nav-btn active" data-tab="overview">
+                    <i class="fa-solid fa-house"></i><span>Overview</span>
+                </button>
+                <button class="nav-btn" data-tab="guide">
+                    <i class="fa-solid fa-book-open"></i><span>Guide</span>
+                </button>
+                <button class="nav-btn" data-tab="shop">
+                    <i class="fa-solid fa-shop"></i><span>Rod Shop</span>
+                </button>
+                <button class="nav-btn" data-tab="sell">
+                    <i class="fa-solid fa-sack-dollar"></i><span>Sell Fish</span>
+                </button>
+                <button class="nav-btn" data-tab="boats">
+                    <i class="fa-solid fa-anchor"></i><span>Rent Boat</span>
+                </button>
+                <button class="nav-btn" data-tab="ranking">
+                    <i class="fa-solid fa-medal"></i><span>Ranking</span>
+                </button>
+                <button class="nav-btn" data-tab="upgrades">
+                    <i class="fa-solid fa-bolt"></i><span>Upgrades</span>
+                </button>
+            </nav>
+
+            <button class="side-settings" id="panel-settings-btn">
+                <i class="fa-solid fa-gear"></i>
+                <span>Settings</span>
+                <i class="fa-solid fa-chevron-right"></i>
+            </button>
+        </aside>
+
+        <!-- ── Main area ───────────────────────────────── -->
+        <main class="main">
+            <header class="topbar">
+                <div>
+                    <div class="eyebrow">Apex Marina · Paleto Cove</div>
+                    <h1 id="page-title">Overview</h1>
+                </div>
+                <button class="icon-close" id="panel-close-btn" title="Close"><i class="fa-solid fa-xmark"></i></button>
+            </header>
+
+            <!-- OVERVIEW ────────────────────────────────── -->
+            <section class="tab active" data-pane="overview">
+                <!-- Wallet banner at the very top -->
+                <div class="overview-wallet">
+                    <div class="ow-icon"><i class="fa-solid fa-wallet"></i></div>
+                    <div class="ow-text">
+                        <span class="ow-label">Wallet Balance</span>
+                        <strong id="ow-cash">$0</strong>
+                    </div>
+                    <div class="ow-aside">
+                        <span>Bait left</span>
+                        <strong id="ow-bait">0</strong>
+                    </div>
+                </div>
+
+                <!-- Hero card with level + 3 stats + XP bar -->
+                <div class="card hero">
+                    <div class="hero-row">
+                        <div class="hero-rank">
+                            <span>LEVEL</span>
+                            <strong id="hero-level">0</strong>
+                        </div>
+                        <div class="hero-stats">
+                            <div><span>Total catches</span><strong id="hero-total">0</strong></div>
+                            <div><span>Best rarity</span><strong id="hero-best">—</strong></div>
+                            <div><span>Bait left</span><strong id="hero-bait">0</strong></div>
+                        </div>
+                    </div>
+                    <div class="xp">
+                        <div class="xp-bar"><div class="xp-fill" id="xp-fill"></div></div>
+                        <div class="xp-text"><span id="xp-cur">0</span> / <span id="xp-need">0</span> XP</div>
+                    </div>
+                </div>
+
+                <!-- Body: 2-col grid that fills remaining height -->
+                <div class="overview-body">
+                    <!-- Left: Rod inventory + capability panel -->
+                    <div class="card rod-card">
+                        <div class="card-h">
+                            <h3>Rod Inventory</h3>
+                            <i class="fa-solid fa-fishing-rod"></i>
+                        </div>
+                        <div id="rod-list" class="rod-list"></div>
+                        <div class="rod-capability">
+                            <div class="capability-header">
+                                <i class="fa-solid fa-bullseye"></i>
+                                <span>Current Capability</span>
+                                <span class="capability-sub" id="capability-sub">— rod equipped</span>
+                            </div>
+                            <div class="capability-bars" id="capability-bars"></div>
+                        </div>
+                    </div>
+
+                    <!-- Right column: Zone + How-to stacked -->
+                    <div class="overview-right">
+                        <div class="card cond-card">
+                            <div class="card-h">
+                                <h3>Live Zone</h3>
+                                <span class="muted">Where you stand.</span>
+                            </div>
+                            <div class="cond-row">
+                                <div class="cond-tile" id="cond-zone">
+                                    <i class="fa-solid fa-water"></i>
+                                    <div>
+                                        <span>Zone</span>
+                                        <strong id="cond-zone-lbl">—</strong>
+                                    </div>
+                                </div>
+                                <div class="cond-tile" id="cond-depth">
+                                    <i class="fa-solid fa-arrow-down"></i>
+                                    <div>
+                                        <span>Depth</span>
+                                        <strong id="cond-depth-lbl">0.0 m</strong>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="cond-hint" id="cond-hint">Cast from the shore for coastal species. Take a boat for the big game.</div>
+                        </div>
+
+                        <div class="card howto-card">
+                            <div class="card-h">
+                                <h3>How to fish</h3>
+                                <i class="fa-solid fa-info-circle"></i>
+                            </div>
+                            <div class="howto">
+                                <div class="howto-step"><span>1</span><p>Buy a rod and bait from the <b>Rod Shop</b>.</p></div>
+                                <div class="howto-step"><span>2</span><p><b>Use the rod</b> from your inventory while facing water.</p></div>
+                                <div class="howto-step"><span>3</span><p>Tap <b>Q / E</b> to track the fish, hit <b>SPACE</b> when aligned.</p></div>
+                                <div class="howto-step"><span>4</span><p>Choose <b>Keep</b> or <b>Release</b> when the catch reveals.</p></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- GUIDE ──────────────────────────────────── -->
+            <section class="tab" data-pane="guide">
+                <div class="card guide-filters-card">
+                    <div class="filter-group">
+                        <span class="filter-label">Type</span>
+                        <div class="chips" id="chips-type">
+                            <button class="chip active" data-type="all">All</button>
+                            <button class="chip" data-type="coast">Coastal</button>
+                            <button class="chip" data-type="deep">Deep Sea</button>
+                            <button class="chip" data-type="junk">Junk</button>
+                        </div>
+                    </div>
+                    <div class="filter-group">
+                        <span class="filter-label">Rarity</span>
+                        <div class="chips" id="chips-rarity">
+                            <button class="chip active" data-rarity="all">All</button>
+                            <button class="chip" data-rarity="common"    style="--_c:#94A3B8">Common</button>
+                            <button class="chip" data-rarity="uncommon"  style="--_c:#22C55E">Uncommon</button>
+                            <button class="chip" data-rarity="rare"      style="--_c:#5C7AFF">Rare</button>
+                            <button class="chip" data-rarity="epic"      style="--_c:#A78BFA">Epic</button>
+                            <button class="chip" data-rarity="legendary" style="--_c:#F59E0B">Legendary</button>
+                            <button class="chip" data-rarity="mythic"    style="--_c:#EC4899">Mythic</button>
+                            <button class="chip" data-rarity="junk"      style="--_c:#7C7C82">Junk</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="card guide-results-card">
+                    <div class="card-h">
+                        <h3 id="guide-title">All Species</h3>
+                        <div class="guide-head-right">
+                            <span class="guide-collection" id="guide-collection" hidden>
+                                <i class="fa-solid fa-book-bookmark"></i>
+                                <b id="guide-collection-n">0</b>/<span id="guide-collection-t">0</span> discovered
+                            </span>
+                            <span class="muted" id="guide-count">— entries</span>
+                        </div>
+                    </div>
+                    <div class="guide-grid" id="guide-grid"></div>
+                    <div class="empty" id="guide-empty" hidden>
+                        <div class="empty-icon"><i class="fa-solid fa-magnifying-glass"></i></div>
+                        <div class="empty-title">No matches</div>
+                        <div class="empty-sub">Try a different combination of filters.</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SHOP ──────────────────────────────────── -->
+            <section class="tab" data-pane="shop">
+                <div class="card bait-card">
+                    <div class="bait-row">
+                        <div class="bait-thumb" id="bait-thumb">
+                            <img class="item-img" alt="" onerror="this.style.display='none'">
+                            <i class="fa-solid fa-worm"></i>
+                        </div>
+                        <div class="bait-info">
+                            <div class="bait-name">Fishing Bait</div>
+                            <div class="bait-sub">Required to cast a line — consumed every throw.</div>
+                            <div class="bait-meta">
+                                <span class="bait-price"><span id="bait-price">$12</span><span class="muted"> / piece</span></span>
+                                <span class="bait-own muted">You own <strong id="bait-own">0</strong></span>
+                            </div>
+                        </div>
+                        <div class="bait-buy">
+                            <div class="qty-row">
+                                <button class="qty-btn" data-q="-1"><i class="fa-solid fa-minus"></i></button>
+                                <input id="bait-qty" type="number" value="10" min="1" max="100">
+                                <button class="qty-btn" data-q="1"><i class="fa-solid fa-plus"></i></button>
+                            </div>
+                            <button class="btn btn-primary" id="bait-buy">
+                                <i class="fa-solid fa-bag-shopping"></i> Buy bait
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-h">
+                        <h3>Fishing Rods</h3>
+                        <span class="muted">Better rods unlock rarer catches.</span>
+                    </div>
+                    <div class="shop-grid" id="shop-grid"></div>
+                </div>
+            </section>
+
+            <!-- SELL ──────────────────────────────────── -->
+            <section class="tab" data-pane="sell">
+                <div class="card sell-card">
+                    <div class="card-h">
+                        <h3>Sell your catch</h3>
+                        <button class="btn btn-primary" id="sell-all">
+                            <i class="fa-solid fa-sack-dollar"></i> Sell everything
+                        </button>
+                    </div>
+                    <div id="sell-list" class="sell-list two-col">
+                        <div class="empty" id="sell-empty">Your bucket is empty.</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- BOATS ─────────────────────────────────── -->
+            <section class="tab" data-pane="boats">
+                <div class="card">
+                    <div class="card-h">
+                        <h3>Boat Rental</h3>
+                        <span class="muted">Price + refundable deposit. Return the boat at the dock.</span>
+                    </div>
+                    <div class="boat-grid" id="boat-grid"></div>
+                </div>
+                <div class="card boat-return-card">
+                    <div class="return-icon"><i class="fa-solid fa-life-ring"></i></div>
+                    <div class="return-text">
+                        <strong>Lost your boat?</strong>
+                        <p class="muted">Return it at the dock normally. If it sank, got stuck or despawned, recover it here to refund your deposit and rent again.</p>
+                    </div>
+                    <button class="btn btn-ghost" id="recover-boat">
+                        <i class="fa-solid fa-life-ring"></i> Recover boat
+                    </button>
+                </div>
+            </section>
+
+            <!-- RANKING ──────────────────────────────── -->
+            <section class="tab" data-pane="ranking">
+                <div class="card lb-card">
+                    <div class="card-h">
+                        <h3><i class="fa-solid fa-trophy"></i> Top 3 Anglers</h3>
+                        <span class="muted">Server-wide leaderboard.</span>
+                    </div>
+                    <div class="leaderboard" id="leaderboard">
+                        <div class="empty">
+                            <div class="empty-icon"><i class="fa-solid fa-trophy"></i></div>
+                            <div class="empty-title">No one on the board yet</div>
+                            <div class="empty-sub">Be the first to catch a fish and you'll appear here.</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card tourney-card" id="tourney-card">
+                    <div class="card-h">
+                        <h3><i class="fa-solid fa-stopwatch"></i> Weekly Tournament</h3>
+                        <span class="tourney-countdown" id="tourney-countdown">—</span>
+                    </div>
+                    <div class="tourney-list" id="tourney-list">
+                        <div class="empty">
+                            <div class="empty-icon"><i class="fa-solid fa-stopwatch"></i></div>
+                            <div class="empty-title">No entries this week yet</div>
+                            <div class="empty-sub">Catch a fish to put your name on the weekly board.</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-h">
+                        <h3>Your standing</h3>
+                        <span class="muted">Climb the ladder by catching rarer fish.</span>
+                    </div>
+                    <div class="rank-tiers" id="rank-tiers"></div>
+                </div>
+                <div class="ranking-bottom">
+                    <div class="card">
+                        <div class="card-h">
+                            <h3>Your Statistics</h3>
+                            <span class="muted">Personal record.</span>
+                        </div>
+                        <div class="stats-tiles">
+                            <div class="stat-tile">
+                                <div class="stat-icon"><i class="fa-solid fa-fish"></i></div>
+                                <div class="stat-content">
+                                    <span>Total Catches</span>
+                                    <strong id="stats-catches">0</strong>
+                                </div>
+                            </div>
+                            <div class="stat-tile">
+                                <div class="stat-icon"><i class="fa-solid fa-medal"></i></div>
+                                <div class="stat-content">
+                                    <span>Best Rarity</span>
+                                    <strong id="stats-best">—</strong>
+                                </div>
+                            </div>
+                            <div class="stat-tile">
+                                <div class="stat-icon"><i class="fa-solid fa-bolt"></i></div>
+                                <div class="stat-content">
+                                    <span>Total XP</span>
+                                    <strong id="stats-xp">0</strong>
+                                </div>
+                            </div>
+                            <div class="stat-tile">
+                                <div class="stat-icon"><i class="fa-solid fa-trophy"></i></div>
+                                <div class="stat-content">
+                                    <span>Level</span>
+                                    <strong id="stats-level">0</strong>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-h">
+                            <h3>Rarity ladder</h3>
+                            <span class="muted">XP awarded per catch.</span>
+                        </div>
+                        <div class="rarity-list" id="rarity-grid"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- UPGRADES ──────────────────────────────── -->
+            <section class="tab" data-pane="upgrades">
+                <div class="card upgrades-header">
+                    <div class="upgrades-head-info">
+                        <h3>Spendable XP</h3>
+                        <p class="muted">Spend XP for permanent passive boosts. Your level and leaderboard XP are unaffected.</p>
+                    </div>
+                    <div class="upgrades-pool">
+                        <strong id="upgrades-xp">0</strong>
+                        <span>AVAILABLE XP</span>
+                    </div>
+                </div>
+                <div class="upgrades-grid" id="upgrades-grid"></div>
+            </section>
+        </main>
+    </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     SETTINGS MODAL — brand color, opacity, UI size
+     ═══════════════════════════════════════════════════════ -->
+<div id="settings-modal" class="settings-modal" hidden>
+    <div class="settings-card">
+        <div class="settings-head">
+            <div>
+                <div class="eyebrow">Preferences</div>
+                <h2>UI Settings</h2>
+            </div>
+            <button class="icon-close" id="settings-close-btn"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+
+        <div class="settings-body">
+            <!-- Brand color -->
+            <section class="settings-section">
+                <div class="settings-label">
+                    <span>Brand Color</span>
+                    <small>Accent colour used across the UI.</small>
+                </div>
+                <div class="color-swatches" id="settings-colors">
+                    <button class="swatch active" data-color="#1F5EFF" style="--c:#1F5EFF" title="Banking Blue"></button>
+                    <button class="swatch" data-color="#06B6D4" style="--c:#06B6D4" title="Ocean Cyan"></button>
+                    <button class="swatch" data-color="#14B8A6" style="--c:#14B8A6" title="Teal"></button>
+                    <button class="swatch" data-color="#22C55E" style="--c:#22C55E" title="Emerald"></button>
+                    <button class="swatch" data-color="#A855F7" style="--c:#A855F7" title="Royal Purple"></button>
+                    <button class="swatch" data-color="#EC4899" style="--c:#EC4899" title="Pink"></button>
+                    <button class="swatch" data-color="#F97316" style="--c:#F97316" title="Sunset"></button>
+                    <span class="swatch swatch-custom" id="brand-custom" title="Custom colour">
+                        <i class="fa-solid fa-eye-dropper"></i>
+                        <input type="color" id="brand-custom-input" value="#1F5EFF" aria-label="Custom brand colour">
+                    </span>
+                </div>
+            </section>
+
+            <!-- Background color -->
+            <section class="settings-section">
+                <div class="settings-label">
+                    <span>Background Color</span>
+                    <small>Master tone for every fishing panel surface.</small>
+                </div>
+                <div class="color-swatches" id="settings-bg">
+                    <button class="swatch active" data-bg="#080B12" style="--c:#080B12" title="Abyssal"></button>
+                    <button class="swatch" data-bg="#0A0A0B" style="--c:#0A0A0B" title="Charcoal"></button>
+                    <button class="swatch" data-bg="#0B1418" style="--c:#0B1418" title="Deep Ocean"></button>
+                    <button class="swatch" data-bg="#101019" style="--c:#101019" title="Midnight"></button>
+                    <button class="swatch" data-bg="#141318" style="--c:#141318" title="Slate"></button>
+                    <button class="swatch" data-bg="#15100F" style="--c:#15100F" title="Espresso"></button>
+                    <button class="swatch" data-bg="#0E1410" style="--c:#0E1410" title="Forest"></button>
+                    <span class="swatch swatch-custom" id="bg-custom" title="Custom colour">
+                        <i class="fa-solid fa-eye-dropper"></i>
+                        <input type="color" id="bg-custom-input" value="#080B12" aria-label="Custom background colour">
+                    </span>
+                </div>
+            </section>
+
+            <!-- Opacity -->
+            <section class="settings-section">
+                <div class="settings-label">
+                    <span>Background Opacity</span>
+                    <small>How opaque the panels are. Higher = more visible game behind.</small>
+                </div>
+                <div class="settings-slider">
+                    <input type="range" id="settings-opacity" min="0.6" max="1.0" step="0.02" value="1.0">
+                    <output id="settings-opacity-val">100%</output>
+                </div>
+            </section>
+
+            <!-- UI Scale -->
+            <section class="settings-section">
+                <div class="settings-label">
+                    <span>UI Scale</span>
+                    <small>Adjusts the overall panel size.</small>
+                </div>
+                <div class="settings-slider">
+                    <input type="range" id="settings-scale" min="0.85" max="1.15" step="0.01" value="1.0">
+                    <output id="settings-scale-val">100%</output>
+                </div>
+            </section>
+
+            <!-- Reset -->
+            <section class="settings-section">
+                <button class="btn btn-ghost btn-block" id="settings-reset">
+                    <i class="fa-solid fa-rotate-left"></i> Reset to defaults
+                </button>
+            </section>
+        </div>
+    </div>
+</div>
+
+<script src="js/app.js"></script>
+</body>
+</html>
