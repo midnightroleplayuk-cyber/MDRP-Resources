@@ -1,0 +1,1265 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Apex Gangs</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="anonymous">
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- ─── Notification fallback ──────────────────────────── -->
+<div id="notify-container" class="notify-container pos-top-right" aria-live="polite"></div>
+
+<!-- ─── In-world prompt ─────────────────────────────────── -->
+<div id="world-prompt" hidden>
+    <div class="world-prompt-card">
+        <span class="world-key">E</span>
+        <span id="world-prompt-label">Open Gang Menu</span>
+    </div>
+</div>
+
+<!-- ─── 3D Marker (apex_restaurant-style floating icon) ─── -->
+<div id="world-3d-icon" hidden>
+    <div class="w3d-bubble">
+        <div class="w3d-icon"><i id="w3d-icon" class="fa-solid fa-skull"></i></div>
+        <div class="w3d-label">
+            <span class="w3d-key">E</span>
+            <span class="w3d-text" id="w3d-label">Open</span>
+        </div>
+    </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     CREATOR — in-world node-graph editor (/gangcreator)
+     Sidebar (gang list + node palette) · SVG canvas · inspector.
+     ═══════════════════════════════════════════════════════ -->
+<div id="creator-overlay" class="ge-root" hidden>
+  <div class="ge-shell">
+
+    <!-- ─── Sidebar ─────────────────────────────────────── -->
+    <aside class="ge-sidebar">
+        <div class="ge-brand">
+            <div class="ge-brand-icon"><i class="fa-solid fa-skull"></i></div>
+            <div class="ge-brand-text">
+                <span class="ge-brand-name">APEX GANGS</span>
+                <span class="ge-brand-sub">Creator</span>
+            </div>
+        </div>
+
+        <div class="ge-nav">
+            <button class="ge-nav-item" id="ge-overview-btn" title="Overview — all zones on the map">
+                <span class="ge-nav-ic"><i class="fa-solid fa-map"></i></span>
+                <span class="ge-nav-label">Overview</span>
+            </button>
+            <button class="ge-nav-item" id="ge-manager-btn" title="Manager — every gang: stats, REP, graffiti">
+                <span class="ge-nav-ic"><i class="fa-solid fa-chart-line"></i></span>
+                <span class="ge-nav-label">Manager</span>
+            </button>
+        </div>
+
+        <div class="ge-sec">
+            <span class="ge-sec-title">Gangs / Owners</span>
+            <button class="ge-icon-btn" id="ge-new-gang" title="New gang"><i class="fa-solid fa-plus"></i></button>
+        </div>
+        <div class="ge-gang-list" id="ge-gang-list"></div>
+
+        <div class="ge-divider"></div>
+
+        <div class="ge-sec"><span class="ge-sec-title">Add Node</span></div>
+        <div class="ge-tools">
+            <div class="ge-palette" id="ge-palette"></div>
+        </div>
+    </aside>
+
+    <!-- ─── Main grid (top / canvas + inspector / status) ── -->
+    <div class="ge-main" id="ge-main" data-view="overview">
+
+        <!-- Topbar -->
+        <header class="ge-topbar">
+            <div class="ge-topbar-left">
+                <span class="ge-owner-name" id="ge-owner-name">No gang selected</span>
+                <span class="ge-owner-chip" id="ge-owner-chip" hidden>—</span>
+            </div>
+            <div class="ge-topbar-actions">
+                <button class="btn btn-ghost btn-sm" id="ge-mgr-rep" title="Give / remove reputation" hidden><i class="fa-solid fa-fire-flame-curved"></i> <span>REP</span></button>
+                <button class="btn btn-ghost btn-sm" id="ge-mgr-graffiti" title="View this gang's graffiti" hidden><i class="fa-solid fa-spray-can"></i> <span>Graffiti</span></button>
+                <div class="ge-topbar-divider" id="ge-mgr-divider" hidden></div>
+                <button class="btn btn-ghost btn-sm" id="ge-refresh" title="Refresh from server"><i class="fa-solid fa-rotate"></i> <span>Refresh</span></button>
+                <button class="btn btn-primary btn-sm ge-save-btn" id="ge-save" title="Save all nodes (Ctrl+S)"><i class="fa-solid fa-floppy-disk"></i> <span id="ge-save-label">Save</span><span class="ge-save-dot" aria-hidden="true"></span></button>
+                <div class="ge-topbar-divider"></div>
+                <button class="close-btn" id="ge-close" title="Close (Esc)"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+        </header>
+
+        <!-- ═══ OVERVIEW VIEW — Leaflet map of marked zones ═══ -->
+        <section class="ge-overview" id="ge-overview">
+            <div class="ge-ov-stats" id="ge-ov-stats">
+                <div class="ge-ov-stat"><span class="ge-ov-stat-ic" style="--_c:var(--brand-500)"><i class="fa-solid fa-skull"></i></span><div><strong id="ge-ov-gangs">0</strong><span>Gangs</span></div></div>
+                <div class="ge-ov-stat"><span class="ge-ov-stat-ic" style="--_c:var(--green)"><i class="fa-solid fa-location-dot"></i></span><div><strong id="ge-ov-points">0</strong><span>HQ / points</span></div></div>
+                <div class="ge-ov-stat"><span class="ge-ov-stat-ic" style="--_c:#A66DF0"><i class="fa-solid fa-draw-polygon"></i></span><div><strong id="ge-ov-terr">0</strong><span>Territories</span></div></div>
+            </div>
+            <div class="ge-ov-maparea">
+                <div id="ge-ov-map" class="ge-ov-map"></div>
+            </div>
+        </section>
+
+        <!-- ═══ MANAGER VIEW — every gang: stats · REP · graffiti ═══ -->
+        <section class="ge-manager" id="ge-manager">
+            <div class="ge-mgr-head">
+                <div>
+                    <h3>Gangs manager</h3>
+                    <span class="muted" id="ge-mgr-stats">Reputation, members, territory &amp; money across every gang.</span>
+                </div>
+            </div>
+            <div class="ge-mgr-board" id="ge-mgr-board"></div>
+        </section>
+
+        <!-- Canvas -->
+        <div class="ge-canvas-wrap" id="ge-canvas-wrap">
+            <div class="ge-grid-bg"></div>
+
+            <svg id="ge-canvas-svg" class="ge-canvas-svg">
+                <g id="ge-canvas-layer">
+                    <g id="ge-connections"></g>
+                    <g id="ge-conn-temp"></g>
+                </g>
+            </svg>
+            <div id="ge-nodes-layer" class="ge-nodes-layer"></div>
+
+            <!-- Floating toolbar -->
+            <div class="ge-toolbar">
+                <button class="ge-icon-btn" id="ge-zoom-out" title="Zoom out"><i class="fa-solid fa-minus"></i></button>
+                <span class="ge-zoom-display" id="ge-zoom">100%</span>
+                <button class="ge-icon-btn" id="ge-zoom-in" title="Zoom in"><i class="fa-solid fa-plus"></i></button>
+                <div class="ge-toolbar-divider"></div>
+                <button class="ge-icon-btn" id="ge-zoom-fit" title="Fit all"><i class="fa-solid fa-expand"></i></button>
+                <button class="ge-icon-btn" id="ge-zoom-reset" title="Reset view"><i class="fa-solid fa-crosshairs"></i></button>
+            </div>
+
+            <!-- Shortcuts hint -->
+            <div class="ge-shortcuts">
+                <span><kbd>drag</kbd> move</span>
+                <span><kbd>scroll</kbd> zoom</span>
+                <span><kbd>space</kbd>+drag pan</span>
+                <span><kbd>del</kbd> remove</span>
+            </div>
+        </div>
+
+        <!-- Inspector -->
+        <aside class="ge-inspector">
+            <div class="ge-insp-head">
+                <span class="ge-type-pill" id="ge-insp-pill" hidden><i class="fa-solid fa-sliders"></i><span id="ge-insp-type">—</span></span>
+                <span class="ge-insp-title" id="ge-insp-title">Inspector</span>
+            </div>
+            <div class="ge-insp-body" id="ge-insp-body">
+                <div class="ge-insp-empty">
+                    <i class="fa-regular fa-hand-pointer"></i>
+                    <span>Select a node to edit its properties</span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Status bar -->
+        <footer class="ge-statusbar">
+            <div class="ge-status-left">
+                <span class="ge-status-chip"><span class="ge-status-dot"></span> Ready</span>
+                <span class="ge-status-chip" id="ge-status-gangs">0 gangs</span>
+                <span class="ge-status-chip" id="ge-status-nodes"><i class="fa-solid fa-circle-nodes"></i> 0 nodes</span>
+            </div>
+            <div class="ge-status-right">
+                <span class="ge-status-chip" id="ge-status-selected">No selection</span>
+                <span class="ge-status-chip"><i class="fa-solid fa-keyboard"></i> Ctrl+S to save</span>
+            </div>
+        </footer>
+    </div><!-- /ge-main -->
+  </div><!-- /ge-shell -->
+
+  <!-- ═══════════ TERRITORY DRAW MAP (modal — circle / polygon) ═══════════ -->
+  <div id="ge-draw" class="ge-draw-overlay" data-mode="circle" hidden>
+    <div class="draw-shell">
+        <header class="ge-draw-head">
+            <div class="ge-draw-title"><i class="fa-solid fa-draw-polygon"></i> <span id="ge-draw-name">Territory</span></div>
+            <div class="ge-draw-modeseg">
+                <button type="button" class="ge-draw-mode active" id="ge-draw-circle" data-mode="circle"><i class="fa-solid fa-circle-dot"></i> Circle</button>
+                <button type="button" class="ge-draw-mode" id="ge-draw-poly" data-mode="poly"><i class="fa-solid fa-draw-polygon"></i> Polygon</button>
+            </div>
+            <button class="close-btn" id="ge-draw-x" title="Cancel"><i class="fa-solid fa-xmark"></i></button>
+        </header>
+        <div class="ge-draw-hint"><span id="ge-draw-hint"><i class="fa-solid fa-circle-dot"></i> Drag the circle to move it · use the slider for the radius</span></div>
+        <div id="ge-draw-host" class="ge-draw-host"></div>
+        <div class="ge-draw-bar">
+            <div class="ge-draw-poly-ctrls"><span class="muted"><b id="ge-draw-count">0</b> points</span>
+                <button type="button" class="btn btn-ghost btn-sm" id="ge-draw-undo"><i class="fa-solid fa-rotate-left"></i> Undo</button></div>
+            <div class="ge-draw-circle-ctrls"><span class="muted">Radius</span>
+                <input type="range" id="ge-draw-radius" min="10" max="400" step="5" value="80">
+                <input type="number" id="ge-draw-radius-num" class="ge-draw-radius-num apex-input" min="10" step="5" value="80"><span class="muted">m</span></div>
+            <div class="ge-draw-spacer"></div>
+            <button type="button" class="btn btn-ghost btn-sm" id="ge-draw-cancel">Cancel</button>
+            <button type="button" class="btn btn-primary btn-sm" id="ge-draw-save"><i class="fa-solid fa-floppy-disk"></i> Save territory</button>
+        </div>
+    </div>
+  </div><!-- /ge-draw -->
+
+  <!-- ═══════════ NEW GANG / JOB DIALOG (two modes) ═══════════ -->
+  <div id="ge-newgang" class="ge-modal-overlay" hidden>
+    <div class="ge-modal" id="ge-newgang-panel">
+        <header class="ge-modal-head">
+            <div class="ge-modal-title"><i class="fa-solid fa-plus"></i> <span>New gang</span></div>
+            <button class="close-btn" id="ge-ng-x" title="Cancel"><i class="fa-solid fa-xmark"></i></button>
+        </header>
+
+        <div class="ge-modal-body">
+            <!-- mode toggle -->
+            <div class="ge-seg" id="ge-ng-seg" role="tablist">
+                <button type="button" class="ge-seg-btn active" data-ngmode="existing"><i class="fa-solid fa-briefcase"></i> Use existing job</button>
+                <button type="button" class="ge-seg-btn" data-ngmode="new"><i class="fa-solid fa-wand-magic-sparkles"></i> Create new job</button>
+            </div>
+
+            <!-- ── MODE A: use an existing framework job/gang ── -->
+            <div class="ge-ng-pane" data-ngpane="existing">
+                <div class="ge-field">
+                    <label class="ge-field-label">Job / gang</label>
+                    <select class="apex-input" id="ge-ng-select"></select>
+                </div>
+                <div class="ge-field">
+                    <label class="ge-field-label">Label (optional)</label>
+                    <input class="apex-input" type="text" id="ge-ng-elabel" placeholder="Display label">
+                </div>
+                <div class="ge-field">
+                    <label class="ge-field-label">Colour</label>
+                    <div class="color-pick">
+                        <label class="color-swatch-big"><input type="color" id="ge-ng-ecolor" value="#1F5EFF"></label>
+                        <code class="iban-chip" id="ge-ng-ecolor-hex">#1F5EFF</code>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ── MODE B: create a brand-new job LIVE ── -->
+            <div class="ge-ng-pane" data-ngpane="new" hidden>
+                <div class="ge-ng-grid2">
+                    <div class="ge-field">
+                        <label class="ge-field-label">Job name (slug)</label>
+                        <input class="apex-input mono" type="text" id="ge-ng-name" placeholder="vagos" autocomplete="off" spellcheck="false">
+                        <span class="ge-field-hint">lowercase · no spaces · a-z 0-9 _</span>
+                    </div>
+                    <div class="ge-field">
+                        <label class="ge-field-label">Label</label>
+                        <input class="apex-input" type="text" id="ge-ng-label" placeholder="Los Santos Vagos">
+                    </div>
+                </div>
+                <div class="ge-field">
+                    <label class="ge-field-label">Colour</label>
+                    <div class="color-pick">
+                        <label class="color-swatch-big"><input type="color" id="ge-ng-color" value="#1F5EFF"></label>
+                        <code class="iban-chip" id="ge-ng-color-hex">#1F5EFF</code>
+                    </div>
+                </div>
+                <div class="ge-ng-ranks">
+                    <div class="ge-ng-ranks-head">
+                        <span class="ge-field-label" style="margin:0">Ranks</span>
+                        <button type="button" class="ge-ng-addrank" id="ge-ng-addrank"><i class="fa-solid fa-plus"></i> Add rank</button>
+                    </div>
+                    <div class="ge-ng-ranks-cols">
+                        <span>Grade</span><span>Name</span><span>Label</span><span></span>
+                    </div>
+                    <div class="ge-ng-ranks-list" id="ge-ng-ranks-list"></div>
+                </div>
+            </div>
+        </div>
+
+        <footer class="ge-modal-foot">
+            <button type="button" class="btn btn-ghost btn-sm" id="ge-ng-cancel">Cancel</button>
+            <button type="button" class="btn btn-primary btn-sm" id="ge-ng-create"><i class="fa-solid fa-check"></i> <span id="ge-ng-create-label">Register gang</span></button>
+        </footer>
+    </div>
+  </div><!-- /ge-newgang -->
+
+  <!-- ═══════════ UNSAVED-CHANGES CONFIRM ═══════════ -->
+  <div id="ge-confirm" class="ge-modal-overlay" hidden>
+    <div class="ge-modal ge-modal-sm" id="ge-confirm-panel">
+        <header class="ge-modal-head">
+            <div class="ge-modal-title"><i class="fa-solid fa-triangle-exclamation" style="color:var(--yellow)"></i> <span id="ge-confirm-title">Unsaved changes</span></div>
+        </header>
+        <div class="ge-modal-body">
+            <p class="ge-confirm-text" id="ge-confirm-text">You have unsaved changes. Save them before leaving?</p>
+        </div>
+        <footer class="ge-modal-foot">
+            <button type="button" class="btn btn-ghost btn-sm" id="ge-confirm-cancel">Cancel</button>
+            <button type="button" class="btn btn-danger btn-sm" id="ge-confirm-discard"><i class="fa-solid fa-trash-can"></i> Discard</button>
+            <button type="button" class="btn btn-primary btn-sm" id="ge-confirm-save"><i class="fa-solid fa-floppy-disk"></i> Save</button>
+        </footer>
+    </div>
+  </div><!-- /ge-confirm -->
+</div><!-- /creator-overlay -->
+
+<!-- ═══════════════════════════════════════════════════════
+     PLACEMENT HUD — shown while picking coords in the world
+     (the editor is minimized at that time).
+     ═══════════════════════════════════════════════════════ -->
+<div id="placement-hud" class="placement-hud" hidden>
+    <div class="placement-head">
+        <span class="placement-head-icon"><i class="fa-solid fa-bullseye"></i></span>
+        <div>
+            <div class="placement-eyebrow" id="placement-eyebrow">Placement</div>
+            <div class="placement-title" id="placement-title">Pick a spot in the world</div>
+        </div>
+    </div>
+    <div class="placement-keys" id="placement-keys"></div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     GANG COMMAND CENTER — main shell
+     ═══════════════════════════════════════════════════════ -->
+<div id="gang-overlay" class="solid-overlay" hidden>
+    <div class="cc-shell">
+
+        <!-- ─── Sidebar ─── -->
+        <aside class="cc-rail">
+            <div class="cc-rail-mark">
+                <i class="fa-solid fa-skull"></i>
+                <span class="cc-rail-mark-text">APEX <em>GANGS</em></span>
+            </div>
+
+            <nav class="cc-rail-nav" id="gang-nav">
+                <button class="rail-btn" data-tab="admin" data-feature="admin" hidden>
+                    <i class="fa-solid fa-user-shield"></i><span class="rail-label">Admin</span>
+                </button>
+                <button class="rail-btn active" data-tab="overview">
+                    <i class="fa-solid fa-gauge-high"></i><span class="rail-label">Overview</span>
+                </button>
+                <button class="rail-btn" data-tab="members" data-feature="members">
+                    <i class="fa-solid fa-users"></i><span class="rail-label">Members</span>
+                    <span class="rail-badge" id="rail-members">0</span>
+                </button>
+                <button class="rail-btn" data-tab="ranks" data-feature="ranks">
+                    <i class="fa-solid fa-layer-group"></i><span class="rail-label">Ranks</span>
+                </button>
+                <button class="rail-btn" data-tab="turf" data-feature="turf">
+                    <i class="fa-solid fa-map-location-dot"></i><span class="rail-label">Turf</span>
+                </button>
+                <button class="rail-btn" data-tab="vault" data-feature="vault">
+                    <i class="fa-solid fa-vault"></i><span class="rail-label">Vault</span>
+                </button>
+                <button class="rail-btn" data-tab="garage" data-feature="garage">
+                    <i class="fa-solid fa-warehouse"></i><span class="rail-label">Garage</span>
+                </button>
+                <button class="rail-btn" data-tab="operations" data-feature="operations">
+                    <i class="fa-solid fa-crosshairs"></i><span class="rail-label">Operations</span>
+                </button>
+                <button class="rail-btn" data-tab="tasks" data-feature="tasks">
+                    <i class="fa-solid fa-list-check"></i><span class="rail-label">Tasks</span>
+                </button>
+                <button class="rail-btn" data-tab="analytics">
+                    <i class="fa-solid fa-chart-line"></i><span class="rail-label">Analytics</span>
+                </button>
+                <button class="rail-btn" data-tab="upgrades" data-feature="upgrades">
+                    <i class="fa-solid fa-arrow-up-right-dots"></i><span class="rail-label">Upgrades</span>
+                </button>
+                <button class="rail-btn" data-tab="medic" data-feature="medic">
+                    <i class="fa-solid fa-kit-medical"></i><span class="rail-label">Medic</span>
+                </button>
+                <button class="rail-btn" data-tab="logs" data-feature="logs">
+                    <i class="fa-solid fa-clock-rotate-left"></i><span class="rail-label">Logs</span>
+                </button>
+                <button class="rail-btn" data-tab="settings" data-feature="settings">
+                    <i class="fa-solid fa-sliders"></i><span class="rail-label">Settings</span>
+                </button>
+            </nav>
+
+            <div class="cc-rail-foot">
+                <div class="cc-me">
+                    <span class="cc-me-avatar player-av" id="cc-me-avatar"></span>
+                    <div class="cc-me-text">
+                        <strong id="cc-me-name">Member</strong>
+                        <span id="cc-me-grade">Loading…</span>
+                    </div>
+                </div>
+                <div class="cc-rail-foot-actions">
+                    <button class="cc-side-collapse" id="rail-collapse" title="Collapse sidebar">
+                        <i class="fa-solid fa-angles-left"></i><span>Collapse</span>
+                    </button>
+                    <button class="cc-signout-btn" id="gang-close" title="Close"><i class="fa-solid fa-power-off"></i></button>
+                </div>
+            </div>
+        </aside>
+
+        <!-- ─── Main area ─── -->
+        <main class="cc-main">
+
+            <header class="cc-header">
+                <div class="cc-brand">
+                    <div class="cc-brand-text">
+                        <span class="cc-brand-name"><span id="wm-first">APEX</span> <span class="wm-accent">GANGS</span></span>
+                        <span class="cc-brand-sub" id="gang-label">Command Center</span>
+                    </div>
+                </div>
+
+                <div class="cc-status">
+                    <div class="cc-status-pill">
+                        <span class="csp-eyebrow">Gang</span>
+                        <span class="csp-value" id="bid-gang"><span class="gang-dot" id="bid-gang-dot"></span><span id="bid-gang-name"></span></span>
+                    </div>
+                    <div class="cc-status-pill">
+                        <span class="csp-eyebrow">Rank</span>
+                        <span class="csp-value" id="bid-rank"></span>
+                    </div>
+                    <div class="cc-status-pill">
+                        <span class="csp-eyebrow">Members</span>
+                        <span class="csp-value mono"><span id="bid-online">0</span>/<span id="bid-max">0</span></span>
+                    </div>
+                    <div class="cc-status-pill highlight">
+                        <span class="csp-eyebrow">Level</span>
+                        <span class="csp-value mono" id="bid-level">1</span>
+                    </div>
+                    <div class="cc-status-pill money">
+                        <span class="csp-eyebrow">Society</span>
+                        <span class="csp-value mono" id="bid-treasury">$0</span>
+                    </div>
+                    <div class="cc-status-pill rep">
+                        <span class="csp-eyebrow">Reputation</span>
+                        <span class="csp-value mono" id="bid-rep"><i class="fa-solid fa-fire-flame-curved"></i> 0</span>
+                    </div>
+                    <div class="cc-status-pill airdrop" id="bid-airdrop-pill" hidden>
+                        <span class="csp-eyebrow">Next Airdrop</span>
+                        <span class="csp-value mono"><i class="fa-solid fa-parachute-box"></i> <span id="bid-airdrop">--:--</span></span>
+                    </div>
+                </div>
+
+                <div class="cc-header-tools">
+                    <button class="icon-btn" id="gang-refresh" title="Refresh"><i class="fa-solid fa-rotate"></i></button>
+                </div>
+            </header>
+
+            <div class="cc-tabbar">
+                <div class="cc-tab-left">
+                    <div class="cc-tab-icon"><i id="gang-tab-icon" class="fa-solid fa-gauge-high"></i></div>
+                    <div>
+                        <div class="cc-tab-eyebrow" id="gang-tab-eyebrow">Gang · Live</div>
+                        <div class="cc-tab-title" id="gang-tab-title">Command Center</div>
+                    </div>
+                </div>
+                <div class="cc-clock" id="cc-clock">--:--:--</div>
+            </div>
+
+            <section class="cc-body" id="gang-body">
+
+                <!-- ═══════════════ ADMIN ═══════════════ -->
+                <div class="pane" data-pane="admin" hidden>
+                    <div class="cc-toolbar">
+                        <div>
+                            <h3>Gang administration</h3>
+                            <span class="muted" id="admin-stats">Manage every gang on the server.</span>
+                        </div>
+                        <div class="cc-toolbar-tools">
+                            <input class="apex-input apex-input-sm" id="admin-search" placeholder="Search gangs…">
+                            <button class="btn btn-ghost" id="admin-open-creator"><i class="fa-solid fa-map-pin"></i> Creator</button>
+                            <button class="btn btn-primary" id="admin-create"><i class="fa-solid fa-plus"></i> Create gang</button>
+                        </div>
+                    </div>
+                    <div class="admin-grid" id="admin-list"></div>
+                    <div class="admin-hint">
+                        <i class="fa-solid fa-circle-info"></i>
+                        Open the in-world creator/manager with <code class="iban-chip">/gangmanager</code> to place HQ / safe / garage / medic points, capturable territory, and manage each gang's REP &amp; graffiti.
+                    </div>
+                </div>
+
+                <!-- ═══════════════ OVERVIEW ═══════════════ -->
+                <div class="pane" data-pane="overview" hidden>
+                    <div class="ov-grid">
+                        <div class="ov-col-center">
+                            <div class="map-pane">
+                                <div class="map-pane-head">
+                                    <div class="map-pane-title">
+                                        <i class="fa-solid fa-satellite-dish"></i>
+                                        <span>Live gang map</span>
+                                    </div>
+                                    <div class="map-pane-tools">
+                                        <span class="map-count mono" id="ov-map-results">0</span>
+                                        <button class="icon-btn ghost" id="ov-map-airdrop" title="Toggle airdrop zones" hidden>
+                                            <i class="fa-solid fa-parachute-box"></i>
+                                        </button>
+                                        <button class="icon-btn ghost" id="ov-map-recenter" title="Recenter on me">
+                                            <i class="fa-solid fa-crosshairs"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="map-canvas-wrap">
+                                    <div id="gang-map" class="boss-map"></div>
+                                    <div class="map-legend">
+                                        <span><i class="dot" id="ov-legend-dot" style="background:#1F5EFF"></i> My gang</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="ov-col-right">
+                            <div class="online-feed">
+                                <div class="online-feed-head">
+                                    <strong>Members online</strong>
+                                    <span class="muted" id="online-feed-count">0</span>
+                                </div>
+                                <div class="online-feed-list" id="online-feed-list"></div>
+                            </div>
+                            <div class="action-strip">
+                                <button class="action-btn" data-quick="invite"><i class="fa-solid fa-user-plus"></i><span>Invite</span></button>
+                                <button class="action-btn" data-quick="vault"><i class="fa-solid fa-vault"></i><span>Vault</span></button>
+                                <button class="action-btn" data-quick="turf"><i class="fa-solid fa-map-location-dot"></i><span>Turf</span></button>
+                                <button class="action-btn" data-quick="ops"><i class="fa-solid fa-crosshairs"></i><span>Ops</span></button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- identity / xp card -->
+                    <div class="gang-identity" id="gang-identity">
+                        <div class="gi-left">
+                            <div class="gi-logo" id="gi-logo"><i class="fa-solid fa-skull"></i></div>
+                            <div class="gi-meta">
+                                <div class="gi-name-row">
+                                    <span class="gi-name" id="gi-name">Gang</span>
+                                    <span class="gi-level mono" id="gi-level">Lv 1</span>
+                                </div>
+                                <div class="gi-sub">
+                                    <span><i class="fa-solid fa-user-tie"></i> <span id="gi-leader">—</span></span>
+                                    <span><i class="fa-solid fa-users"></i> <span id="gi-members">0/0</span></span>
+                                </div>
+                                <div class="gi-xp">
+                                    <div class="gi-xp-bar"><span class="gi-xp-fill" id="gi-xp-fill"></span></div>
+                                    <span class="gi-xp-text mono" id="gi-xp-text">0 / 0 XP</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="ov-stats-strip">
+                        <div class="stat-tile">
+                            <div class="stat-tile-icon"><i class="fa-solid fa-chart-line"></i></div>
+                            <div class="stat-tile-body">
+                                <span class="stat-tile-label">Level</span>
+                                <strong class="stat-tile-value mono" id="ov-level">1</strong>
+                                <small class="stat-tile-delta" id="ov-level-meta">Next: 0 XP</small>
+                            </div>
+                        </div>
+                        <div class="stat-tile">
+                            <div class="stat-tile-icon"><i class="fa-solid fa-users-line"></i></div>
+                            <div class="stat-tile-body">
+                                <span class="stat-tile-label">Online · Total</span>
+                                <strong class="stat-tile-value mono"><span id="ov-online">0</span>/<span id="ov-members">0</span></strong>
+                                <small class="stat-tile-delta">of <span id="ov-max">0</span> max</small>
+                            </div>
+                        </div>
+                        <div class="stat-tile">
+                            <div class="stat-tile-icon"><i class="fa-solid fa-map-location-dot"></i></div>
+                            <div class="stat-tile-body">
+                                <span class="stat-tile-label">Territory</span>
+                                <strong class="stat-tile-value mono" id="ov-turf">0</strong>
+                                <small class="stat-tile-delta" id="ov-turf-meta">owned zones</small>
+                            </div>
+                        </div>
+                        <div class="stat-tile">
+                            <div class="stat-tile-icon"><i class="fa-solid fa-vault"></i></div>
+                            <div class="stat-tile-body">
+                                <span class="stat-tile-label">Treasury</span>
+                                <strong class="stat-tile-value mono" id="ov-treasury">$0</strong>
+                                <small class="stat-tile-delta">gang safe balance</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="ov-ticker-card">
+                        <div class="ov-ticker-head">
+                            <strong><i class="fa-solid fa-clock-rotate-left"></i> Recent activity</strong>
+                            <span class="muted" id="ov-activity-count">0</span>
+                        </div>
+                        <div class="ticker-list" id="ov-activity"></div>
+                    </div>
+                </div>
+
+                <!-- ═══════════════ MEMBERS ═══════════════ -->
+                <div class="pane" data-pane="members" hidden>
+                    <div class="cc-toolbar">
+                        <div>
+                            <h3>Roster</h3>
+                            <span class="muted" id="mem-stats"></span>
+                        </div>
+                        <div class="cc-toolbar-tools">
+                            <input class="apex-input apex-input-sm" id="mem-search" placeholder="Search by name…">
+                            <select class="apex-input apex-input-sm" id="mem-filter">
+                                <option value="all">All</option>
+                                <option value="online">Online</option>
+                                <option value="offline">Offline</option>
+                            </select>
+                            <button class="btn btn-primary" id="mem-invite-btn" data-perm="invite_members">
+                                <i class="fa-solid fa-user-plus"></i> Invite
+                            </button>
+                        </div>
+                    </div>
+                    <div class="emp-grid" id="mem-list"></div>
+                </div>
+
+                <!-- ═══════════════ RANKS ═══════════════ -->
+                <div class="pane" data-pane="ranks" hidden>
+                    <div class="cc-toolbar">
+                        <div>
+                            <h3>Ranks &amp; permissions</h3>
+                            <span class="muted">Edit each rank's label, salary, leader flag and permission set.</span>
+                        </div>
+                        <div class="cc-toolbar-tools">
+                            <button class="btn btn-primary" id="rank-add-btn"><i class="fa-solid fa-plus"></i> Add rank</button>
+                        </div>
+                    </div>
+                    <div class="ranks-list" id="ranks-list"></div>
+                </div>
+
+                <!-- ═══════════════ TURF ═══════════════ -->
+                <div class="pane" data-pane="turf" hidden>
+                    <div class="cc-toolbar">
+                        <div>
+                            <h3>Territory</h3>
+                            <span class="muted" id="turf-stats">Capturing is done in-world. This is a readout.</span>
+                        </div>
+                    </div>
+                    <div class="turf-grid" id="turf-list"></div>
+                </div>
+
+                <!-- ═══════════════ VAULT ═══════════════ -->
+                <div class="pane" data-pane="vault" hidden>
+                    <div class="treasury-banner">
+                        <span class="tb-eyebrow">Gang treasury</span>
+                        <div class="tb-amount mono" id="vault-balance">$0</div>
+                        <span class="tb-sub" id="vault-sync">Shared safe balance.</span>
+                    </div>
+                    <div class="treasury-kpis">
+                        <div class="treasury-kpi"><span>Your cash</span><strong class="mono" id="vault-cash">$0</strong></div>
+                        <div class="treasury-kpi in"><span>Deposits · 7d</span><strong class="mono" id="vault-in-7d">$0</strong></div>
+                        <div class="treasury-kpi out"><span>Withdrawals · 7d</span><strong class="mono" id="vault-out-7d">$0</strong></div>
+                    </div>
+                    <div class="op-grid">
+                        <div class="op-card">
+                            <div class="op-card-head">
+                                <div class="op-card-icon"><i class="fa-solid fa-arrow-down"></i></div>
+                                <div><strong>Deposit</strong><small>Cash → Safe</small></div>
+                            </div>
+                            <div class="form-row">
+                                <label>Amount</label>
+                                <div class="amount-input">
+                                    <span class="amount-symbol" id="dep-symbol">$</span>
+                                    <input type="number" min="1" class="apex-input mono" id="dep-amount" placeholder="0">
+                                </div>
+                                <div class="amount-presets">
+                                    <button data-dep-add="100">+100</button>
+                                    <button data-dep-add="500">+500</button>
+                                    <button data-dep-add="1000">+1k</button>
+                                    <button data-dep-add="5000">+5k</button>
+                                </div>
+                            </div>
+                            <button class="btn btn-primary btn-block" id="dep-go" data-perm="deposit_money">
+                                <i class="fa-solid fa-arrow-down"></i> Deposit
+                            </button>
+                        </div>
+                        <div class="op-card">
+                            <div class="op-card-head">
+                                <div class="op-card-icon out"><i class="fa-solid fa-arrow-up"></i></div>
+                                <div><strong>Withdraw</strong><small>Safe → Cash</small></div>
+                            </div>
+                            <div class="form-row">
+                                <label>Amount</label>
+                                <div class="amount-input">
+                                    <span class="amount-symbol" id="wd-symbol">$</span>
+                                    <input type="number" min="1" class="apex-input mono" id="wd-amount" placeholder="0">
+                                </div>
+                                <div class="amount-presets">
+                                    <button data-wd-add="100">+100</button>
+                                    <button data-wd-add="500">+500</button>
+                                    <button data-wd-add="1000">+1k</button>
+                                    <button data-wd-add="5000">+5k</button>
+                                </div>
+                            </div>
+                            <button class="btn btn-ghost btn-block" id="wd-go" data-perm="withdraw_money">
+                                <i class="fa-solid fa-arrow-up"></i> Withdraw
+                            </button>
+                        </div>
+                    </div>
+                    <section class="treasury-panel treasury-recent">
+                        <div class="section-head">
+                            <div>
+                                <h3>Transaction history</h3>
+                                <span class="muted" id="vault-history-count">0 transactions</span>
+                            </div>
+                        </div>
+                        <div class="tx-list dense" id="vault-history"></div>
+                    </section>
+                </div>
+
+                <!-- ═══════════════ GARAGE ═══════════════ -->
+                <div class="pane" data-pane="garage" hidden>
+                    <div class="cc-toolbar">
+                        <div>
+                            <h3>Gang garage</h3>
+                            <span class="muted" id="hq-garage-count">0 / 0</span>
+                        </div>
+                        <div class="cc-toolbar-tools">
+                            <button class="btn btn-ghost" id="hq-garage-store" data-perm="store_vehicle"><i class="fa-solid fa-warehouse"></i> Store current vehicle</button>
+                        </div>
+                    </div>
+                    <div class="garage-grid" id="hq-garage-body"></div>
+                </div>
+
+                <!-- ═══════════════ OPERATIONS ═══════════════ -->
+                <div class="pane" data-pane="operations" hidden>
+                    <div class="ops-banner" id="ops-raid-banner" hidden>
+                        <div class="ops-banner-left">
+                            <span class="ops-banner-eyebrow" id="ops-raid-eyebrow">Raid in progress</span>
+                            <div class="ops-banner-title" id="ops-raid-title">Raiding…</div>
+                        </div>
+                        <div class="ops-banner-timer mono" id="ops-raid-timer">--:--</div>
+                    </div>
+                    <div class="cc-toolbar">
+                        <div>
+                            <h3>Operations</h3>
+                            <span class="muted">Scout and raid rival gangs.</span>
+                        </div>
+                        <div class="ops-cooldowns">
+                            <span class="ops-cd" id="ops-scout-cd"><i class="fa-solid fa-binoculars"></i> Scout ready</span>
+                            <span class="ops-cd" id="ops-raid-cd"><i class="fa-solid fa-fire"></i> Raid ready</span>
+                        </div>
+                    </div>
+                    <div class="ops-grid" id="ops-list"></div>
+                </div>
+
+                <!-- ═══════════════ TASKS ═══════════════ -->
+                <div class="pane" data-pane="tasks" hidden>
+                    <div class="cc-toolbar">
+                        <div>
+                            <h3>Tasks &amp; contracts</h3>
+                            <span class="muted" id="tasks-stats"></span>
+                        </div>
+                        <div class="cc-toolbar-tools">
+                            <button class="btn btn-ghost" id="tasks-reroll" data-perm="manage_tasks">
+                                <i class="fa-solid fa-dice"></i> Reroll
+                            </button>
+                        </div>
+                    </div>
+                    <div class="tasks-grid" id="tasks-list"></div>
+                </div>
+
+                <!-- ═══════════════ ANALYTICS ═══════════════ -->
+                <div class="pane" data-pane="analytics" hidden>
+                    <div class="cc-toolbar">
+                        <div>
+                            <h3>Street standing</h3>
+                            <span class="muted" id="analytics-stats">Reputation, members &amp; territory across every gang.</span>
+                        </div>
+                        <div class="cc-toolbar-tools">
+                            <button class="btn btn-ghost" id="analytics-refresh"><i class="fa-solid fa-rotate"></i> Refresh</button>
+                        </div>
+                    </div>
+                    <div class="analytics-board" id="analytics-list"></div>
+                </div>
+
+                <!-- ═══════════════ UPGRADES ═══════════════ -->
+                <div class="pane" data-pane="upgrades" hidden>
+                    <div class="cc-toolbar">
+                        <div>
+                            <h3>Upgrades</h3>
+                            <span class="muted" id="upg-stats">Spend treasury money to upgrade your gang.</span>
+                        </div>
+                    </div>
+                    <div class="upg-grid" id="upg-list"></div>
+                </div>
+
+                <!-- ═══════════════ MEDIC ═══════════════ -->
+                <div class="pane" data-pane="medic" hidden>
+                    <div class="medic-wrap" id="medic-wrap"></div>
+                </div>
+
+                <!-- ═══════════════ LOGS ═══════════════ -->
+                <div class="pane" data-pane="logs" hidden>
+                    <div class="cc-toolbar">
+                        <div>
+                            <h3>Audit log</h3>
+                            <span class="muted" id="logs-count">0 entries</span>
+                        </div>
+                        <div class="logs-filter" id="logs-filter">
+                            <button class="hf-pill active" data-kind="">All</button>
+                            <button class="hf-pill" data-kind="members">Members</button>
+                            <button class="hf-pill" data-kind="ranks">Ranks</button>
+                            <button class="hf-pill" data-kind="vault">Vault</button>
+                            <button class="hf-pill" data-kind="turf">Turf</button>
+                            <button class="hf-pill" data-kind="graffiti">Graffiti</button>
+                            <button class="hf-pill" data-kind="scout">Scout</button>
+                            <button class="hf-pill" data-kind="raid">Raid</button>
+                            <button class="hf-pill" data-kind="upgrades">Upgrades</button>
+                            <button class="hf-pill" data-kind="garage">Garage</button>
+                            <button class="hf-pill" data-kind="medic">Medic</button>
+                        </div>
+                    </div>
+                    <div class="logs-list" id="logs-list"></div>
+                </div>
+
+                <!-- ═══════════════ SETTINGS ═══════════════ -->
+                <div class="pane" data-pane="settings" hidden>
+                    <div class="setting-grid">
+                        <div class="setting-card">
+                            <h3>Profile</h3>
+                            <div class="setting-row">
+                                <div><strong id="set-name"></strong><span class="muted" id="set-gang"></span></div>
+                                <code class="iban-chip" id="set-rank"></code>
+                            </div>
+                            <div class="setting-row">
+                                <div><strong>Identifier</strong><span class="muted">Your character ID.</span></div>
+                                <code class="iban-chip" id="set-id"></code>
+                            </div>
+                        </div>
+
+                        <div class="setting-card">
+                            <h3>Quick links</h3>
+                            <div class="setting-row">
+                                <div><strong>Refresh</strong><span class="muted">Pull the latest gang data.</span></div>
+                                <button class="btn btn-ghost btn-sm" id="settings-refresh"><i class="fa-solid fa-rotate"></i> Refresh</button>
+                            </div>
+                        </div>
+
+                        <div class="setting-card wide">
+                            <div class="section-head">
+                                <h3>Appearance</h3>
+                                <button class="btn btn-ghost btn-sm" id="theme-reset-personal"><i class="fa-solid fa-rotate-left"></i> Reset</button>
+                            </div>
+                            <div class="setting-row">
+                                <div><strong>Accent colour</strong><span class="muted">Affects buttons, badges and the live map.</span></div>
+                                <div class="color-pick">
+                                    <label class="color-swatch-big"><input type="color" id="theme-color-input" value="#1F5EFF"></label>
+                                    <code class="iban-chip" id="theme-color-hex">#1F5EFF</code>
+                                </div>
+                            </div>
+                            <div class="color-presets" id="theme-presets"></div>
+                            <div class="setting-row">
+                                <div><strong>Background colour</strong><span class="muted">Re-tints the panel surfaces, kept dark and readable.</span></div>
+                                <div class="color-pick">
+                                    <label class="color-swatch-big"><input type="color" id="theme-bg-input" value="#131314"></label>
+                                    <code class="iban-chip" id="theme-bg-hex">#131314</code>
+                                </div>
+                            </div>
+                            <div class="color-presets" id="bg-presets"></div>
+                            <div class="setting-row">
+                                <div><strong>Window size</strong><span class="muted">Scale the whole panel.</span></div>
+                                <div class="size-grid" id="size-grid">
+                                    <button data-size="s" class="size-btn"><i class="fa-regular fa-window-minimize"></i><span>Small</span></button>
+                                    <button data-size="m" class="size-btn active"><i class="fa-regular fa-window-restore"></i><span>Medium</span></button>
+                                    <button data-size="l" class="size-btn"><i class="fa-regular fa-window-maximize"></i><span>Large</span></button>
+                                    <button data-size="full" class="size-btn"><i class="fa-solid fa-expand"></i><span>Full</span></button>
+                                </div>
+                            </div>
+                            <div class="setting-row">
+                                <div><strong>UI opacity</strong><span class="muted">Transparency of every gang panel.</span></div>
+                                <div class="opacity-control">
+                                    <input type="range" id="theme-opacity" class="apex-range" min="55" max="100" step="5" value="100">
+                                    <code class="iban-chip" id="theme-opacity-val">100%</code>
+                                </div>
+                            </div>
+                            <div class="setting-row" id="theme-save-row" hidden>
+                                <div><strong>Server default</strong><span class="muted">Save this accent + background for everyone (admin).</span></div>
+                                <button class="btn btn-primary btn-sm" id="theme-save-server"><i class="fa-solid fa-floppy-disk"></i> Save as default</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     GANG GARAGE — dedicated overlay (separate from the main menu)
+     Controlled ONLY by openGarage / garageSync messages.
+     ═══════════════════════════════════════════════════════ -->
+<div id="garage-overlay" hidden>
+    <!-- click-outside / right-click veil (radial-gradient, no backdrop-filter) -->
+    <div class="garage-veil" id="garage-veil"></div>
+
+    <div class="garage-panel" id="garage-panel">
+        <header class="garage-head">
+            <div class="garage-head-left">
+                <span class="garage-head-ic"><i class="fa-solid fa-warehouse"></i></span>
+                <div class="garage-head-titles">
+                    <span class="garage-head-eyebrow">Gang</span>
+                    <span class="garage-head-title">Gang Garage</span>
+                </div>
+            </div>
+            <div class="garage-head-right">
+                <span class="garage-count mono" id="garage-count">0 / 0</span>
+                <button class="close-btn" id="garage-close" title="Close (Esc)"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+        </header>
+
+        <div class="garage-body" id="garage-body"></div>
+
+        <footer class="garage-foot">
+            <button class="btn btn-primary btn-block" id="garage-store" data-perm="store_vehicle">
+                <i class="fa-solid fa-square-parking"></i> Store current vehicle
+            </button>
+        </footer>
+    </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     GRAFFITI SELECTOR — dedicated overlay (spray-can item)
+     Controlled ONLY by graffitiOpen / graffitiClose messages.
+     ═══════════════════════════════════════════════════════ -->
+<div id="graffiti-overlay" hidden>
+    <!-- click-outside / right-click veil (radial-gradient, no backdrop-filter) -->
+    <div class="gf-veil" id="gf-veil"></div>
+
+    <!-- ═══ LAYERED GRAFFITI EDITOR (mini graffiti-maker, Apex blue) ═══ -->
+    <div class="gfe-panel" id="gfe-panel">
+        <header class="gfe-head">
+            <div class="gfe-head-left">
+                <span class="gfe-head-ic"><i class="fa-solid fa-spray-can"></i></span>
+                <div class="gfe-head-titles">
+                    <span class="gfe-head-eyebrow">Editor</span>
+                    <span class="gfe-head-title">Graffiti Studio</span>
+                </div>
+            </div>
+            <button class="close-btn" id="gfe-close" title="Close (Esc)"><i class="fa-solid fa-xmark"></i></button>
+        </header>
+
+        <div class="gfe-main">
+            <!-- ── LEFT: LAYERS ── -->
+            <aside class="gfe-col gfe-layers">
+                <div class="gfe-col-head">
+                    <span class="gfe-col-title"><i class="fa-solid fa-layer-group"></i> Layers</span>
+                    <button type="button" class="gfe-mini-btn" id="gfe-deselect" title="Deselect">Deselect</button>
+                </div>
+                <div class="gfe-layer-list" id="gfe-layer-list"></div>
+            </aside>
+
+            <!-- ── CENTER: STAGE ── -->
+            <section class="gfe-col gfe-stage-col">
+                <div class="gfe-toolbar" id="gfe-toolbar">
+                    <button type="button" class="gfe-tool is-active" id="gfe-tool-select" data-tool="select" title="Select / Move"><i class="fa-solid fa-arrow-pointer"></i></button>
+                    <button type="button" class="gfe-tool" id="gfe-tool-del" title="Delete selected"><i class="fa-solid fa-trash-can"></i></button>
+                    <span class="gfe-tool-sep"></span>
+                    <button type="button" class="gfe-tool" id="gfe-undo" title="Undo"><i class="fa-solid fa-rotate-left"></i></button>
+                    <button type="button" class="gfe-tool" id="gfe-redo" title="Redo"><i class="fa-solid fa-rotate-right"></i></button>
+                </div>
+                <div class="gfe-stage-wrap" id="gfe-stage-wrap">
+                    <canvas id="gfe-canvas" width="640" height="480"></canvas>
+                    <div class="gfe-overlay" id="gfe-handles"></div>
+                </div>
+                <div class="gfe-swatch-row" id="gfe-stage-swatches"></div>
+            </section>
+
+            <!-- ── RIGHT: DRAW / TEXT / IMG ── -->
+            <aside class="gfe-col gfe-tools-col">
+                <!-- DRAW -->
+                <div class="gfe-card">
+                    <div class="gfe-card-head"><i class="fa-solid fa-paintbrush"></i> Draw</div>
+                    <label class="gfe-slider-row">
+                        <span class="gfe-slider-label">Size <b id="gfe-size-val">12</b></span>
+                        <input type="range" id="gfe-size" min="1" max="60" value="12" class="gfe-range">
+                    </label>
+                    <div class="gfe-sub">Tools</div>
+                    <div class="gfe-seg" id="gfe-draw-tools">
+                        <button type="button" class="gfe-seg-btn is-active" data-pen="pen" title="Pen"><i class="fa-solid fa-pen"></i> Pen</button>
+                        <button type="button" class="gfe-seg-btn" data-pen="eraser" title="Eraser"><i class="fa-solid fa-eraser"></i> Eraser</button>
+                    </div>
+                    <div class="gfe-sub">Patterns</div>
+                    <div class="gfe-seg gfe-seg-wrap" id="gfe-patterns">
+                        <button type="button" class="gfe-seg-btn is-active" data-pat="round">Round</button>
+                        <button type="button" class="gfe-seg-btn" data-pat="marker">Marker</button>
+                        <button type="button" class="gfe-seg-btn" data-pat="spray">Spray</button>
+                        <button type="button" class="gfe-seg-btn" data-pat="chalk">Chalk</button>
+                    </div>
+                    <label class="gfe-slider-row">
+                        <span class="gfe-slider-label">Opacity <b id="gfe-opacity-val">100</b>%</span>
+                        <input type="range" id="gfe-opacity" min="5" max="100" value="100" class="gfe-range">
+                    </label>
+                </div>
+
+                <!-- TEXT -->
+                <div class="gfe-card">
+                    <div class="gfe-card-head"><i class="fa-solid fa-font"></i> Text</div>
+                    <input class="apex-input gfe-input" type="text" id="gfe-text" maxlength="40" placeholder="Your ideas" autocomplete="off">
+                    <select class="apex-input gfe-input" id="gfe-font"></select>
+                    <div class="gfe-swatch-row gfe-swatch-row--sm" id="gfe-text-swatches"></div>
+                    <button type="button" class="btn btn-primary btn-block gfe-add" id="gfe-text-add"><i class="fa-solid fa-plus"></i> Add text</button>
+                </div>
+
+                <!-- IMG -->
+                <div class="gfe-card">
+                    <div class="gfe-card-head"><i class="fa-solid fa-image"></i> Image</div>
+                    <div class="gfe-url-row" id="gfe-url-row" hidden>
+                        <input class="apex-input gfe-input" type="url" id="gfe-url" placeholder="https://...png" spellcheck="false">
+                        <button type="button" class="btn btn-ghost gfe-add" id="gfe-url-add" title="Add image from URL"><i class="fa-solid fa-plus"></i></button>
+                    </div>
+                    <div class="gfe-gallery" id="gfe-gallery"></div>
+                </div>
+            </aside>
+        </div>
+
+        <footer class="gfe-foot">
+            <input class="apex-input gfe-name" type="text" id="gfe-name" maxlength="40" placeholder="Graffiti name" autocomplete="off">
+            <div class="gfe-foot-actions">
+                <button type="button" class="btn btn-ghost" id="gfe-exit"><i class="fa-solid fa-arrow-right-from-bracket"></i> Exit</button>
+                <button type="button" class="btn btn-danger" id="gfe-clear"><i class="fa-solid fa-broom"></i> Clear</button>
+                <button type="button" class="btn btn-primary" id="gfe-save"><i class="fa-solid fa-spray-can"></i> Save</button>
+            </div>
+        </footer>
+    </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     GRAFFITI SPRAY PROGRESS (no focus — visual only, in-world)
+     ═══════════════════════════════════════════════════════ -->
+<div id="graffiti-progress" hidden>
+    <div class="gfp-card">
+        <div class="gfp-row">
+            <span class="gfp-ic"><i class="fa-solid fa-spray-can-sparkles"></i></span>
+            <div class="gfp-meta">
+                <div class="gfp-title" id="gfp-title">Spraying graffiti…</div>
+                <div class="gfp-sub" id="gfp-sub">Hold still while you tag the wall</div>
+            </div>
+            <div class="gfp-pct" id="gfp-pct">0%</div>
+        </div>
+        <div class="gfp-track"><div class="gfp-fill" id="gfp-fill"></div></div>
+        <div class="gfp-hint"><span class="gfp-key">E</span><span id="gfp-cancel">Cancel</span></div>
+    </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     OPERATION HUD (no focus — in-world) — SCOUT + GANG WAR.
+     ═══════════════════════════════════════════════════════ -->
+<div id="op-hud" hidden>
+    <div class="ophud-card">
+        <div class="ophud-top">
+            <div class="ophud-time">
+                <span class="ophud-time-val" id="ophud-time">0:00</span>
+                <span class="ophud-time-lbl">TIME LEFT</span>
+            </div>
+            <div class="ophud-title" id="ophud-title">SCOUT</div>
+        </div>
+
+        <!-- SCOUT mode: single progress bar -->
+        <div class="ophud-single" id="ophud-single">
+            <div class="ophud-single-row">
+                <span class="ophud-players"><i class="fa-solid fa-user"></i> PLAYERS: <strong id="ophud-players">1</strong></span>
+                <span class="ophud-pct" id="ophud-pct">0%</span>
+            </div>
+            <div class="ophud-track"><div class="ophud-fill" id="ophud-fill"></div></div>
+        </div>
+
+        <!-- GANG WAR mode: two-sided meter -->
+        <div class="ophud-war" id="ophud-war" hidden>
+            <div class="ophud-war-labels">
+                <span class="ophud-side ophud-side-a"><strong id="ophud-a-pct">0%</strong> <span id="ophud-a-name">Attacker</span></span>
+                <span class="ophud-side ophud-side-b"><span id="ophud-b-name">Defender</span> <strong id="ophud-b-pct">0%</strong></span>
+            </div>
+            <div class="ophud-war-track">
+                <div class="ophud-war-a" id="ophud-war-a"></div>
+                <div class="ophud-war-b" id="ophud-war-b"></div>
+            </div>
+        </div>
+
+        <!-- STASH RAID mode: directional arrow to the loser's stash -->
+        <div class="ophud-stash" id="ophud-stash" hidden>
+            <div class="ophud-arrow-wrap"><span class="ophud-arrow" id="ophud-arrow"><i class="fa-solid fa-arrow-up"></i></span></div>
+            <div class="ophud-stash-info">
+                <span class="ophud-stash-dist" id="ophud-stash-dist">0 m</span>
+                <span class="ophud-stash-sub" id="ophud-stash-sub">to enemy stash</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     MISSION OBJECTIVES (no focus — in-world step-by-step guide)
+     ═══════════════════════════════════════════════════════ -->
+<div id="mission-hud" hidden>
+    <div class="mhud-card">
+        <div class="mhud-head">
+            <span class="mhud-eyebrow"><i class="fa-solid fa-list-check"></i> Objectives</span>
+            <span class="mhud-title" id="mhud-title">Mission</span>
+        </div>
+        <ul class="mhud-steps" id="mhud-steps"></ul>
+    </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     GRAFFITI PLACEMENT CONTROLS (focus-less, in-world)
+     ═══════════════════════════════════════════════════════ -->
+<div id="graffiti-controls" hidden>
+    <div class="gfc-card">
+        <div class="gfc-stats">
+            <div class="gfc-stat">
+                <span class="gfc-stat-ic"><i class="fa-solid fa-up-right-and-down-left-from-center"></i></span>
+                <span class="gfc-stat-l" id="gfc-size-l">Size</span>
+                <span class="gfc-stat-v" id="gfc-size">100%</span>
+            </div>
+            <div class="gfc-stat">
+                <span class="gfc-stat-ic"><i class="fa-solid fa-rotate"></i></span>
+                <span class="gfc-stat-l" id="gfc-rot-l">Rotation</span>
+                <span class="gfc-stat-v" id="gfc-rot">0°</span>
+            </div>
+        </div>
+        <div class="gfc-keys">
+            <div class="gfc-key"><span class="gfc-chip"><i class="fa-solid fa-computer-mouse"></i></span><span id="gfc-k-rotate">Rotate</span></div>
+            <div class="gfc-key"><span class="gfc-chip"><i class="fa-solid fa-up-down"></i></span><span id="gfc-k-size">Size</span></div>
+            <div class="gfc-key"><span class="gfc-chip">E</span><span id="gfc-k-place">Place</span></div>
+            <div class="gfc-key"><span class="gfc-chip">G</span><span id="gfc-k-cancel">Cancel</span></div>
+        </div>
+    </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     CONFIRM / PROMPT MODALS
+     ═══════════════════════════════════════════════════════ -->
+<div id="alert-overlay" class="solid-overlay" hidden>
+    <div class="alert-panel">
+        <div id="alert-title" class="alert-title">Confirm</div>
+        <div id="alert-content" class="alert-content"></div>
+        <div class="alert-actions">
+            <button class="btn btn-ghost"   data-action="alert-no">Cancel</button>
+            <button class="btn btn-primary" data-action="alert-yes">Confirm</button>
+        </div>
+    </div>
+</div>
+
+<div id="input-overlay" class="solid-overlay" hidden>
+    <div class="input-panel">
+        <div class="menu-head">
+            <div id="input-title" class="menu-title">Input</div>
+            <button class="close-btn" data-action="input-cancel"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div id="input-fields" class="input-fields"></div>
+        <div class="input-actions">
+            <button class="btn btn-ghost"   data-action="input-cancel">Cancel</button>
+            <button class="btn btn-primary" data-action="input-submit">Confirm</button>
+        </div>
+    </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     RAID — pre-launch confirmation (cost + capture-base toggle)
+     ═══════════════════════════════════════════════════════ -->
+<div id="raid-overlay" class="solid-overlay" hidden>
+    <div class="raid-dlg">
+        <div class="raid-dlg-glow"></div>
+        <div class="raid-dlg-ic"><i class="fa-solid fa-fire"></i></div>
+        <div class="raid-dlg-title" id="raid-dlg-title">Start raiding this gang?</div>
+        <div class="raid-dlg-sub" id="raid-dlg-sub">Your crew will be alerted to mobilise.</div>
+        <div class="raid-cost-row">
+            <span class="raid-cost cash"><i class="fa-solid fa-sack-dollar"></i> <span id="raid-cost-cash">$0</span></span>
+            <span class="raid-cost rep"><i class="fa-solid fa-fire-flame-curved"></i> <span id="raid-cost-rep">0 REP</span></span>
+        </div>
+        <label class="raid-toggle" id="raid-cap-wrap">
+            <span class="raid-toggle-label">Capture their base</span>
+            <span class="raid-switch"><input type="checkbox" id="raid-cap"><span class="raid-knob"></span></span>
+        </label>
+        <div class="raid-dlg-actions">
+            <button class="btn btn-ghost"  data-action="raid-no">NO</button>
+            <button class="btn btn-danger" data-action="raid-yes">YES</button>
+        </div>
+    </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     COMMAND WHEEL — gang field actions (cuff / bag / carry …)
+     Bespoke segmented SVG command wheel. Mouse-angle selection,
+     glass center hub, staggered assembly. Controlled ONLY by the
+     radial_* messages (transport contract unchanged).
+     ═══════════════════════════════════════════════════════ -->
+<div id="cw-overlay" class="cw-overlay" hidden>
+    <!-- dark radial-gradient vignette / click-to-dismiss veil (NO backdrop-filter) -->
+    <div class="cw-vignette" id="cw-vignette"></div>
+
+    <!-- expanding aura ring that fires on open -->
+    <div class="cw-aura" id="cw-aura" aria-hidden="true"></div>
+
+    <div class="cw-stage" id="cw-stage">
+
+        <!-- ░░ THE WHEEL ░░ — segmented annular SVG -->
+        <div class="cw-wheel" id="cw-wheel">
+            <!-- slowly rotating conic accent ring behind the donut -->
+            <div class="cw-conic" id="cw-conic" aria-hidden="true"></div>
+            <div class="cw-glow" aria-hidden="true"></div>
+
+            <svg class="cw-svg" id="cw-svg" viewBox="0 0 460 460" aria-hidden="true">
+                <defs>
+                    <linearGradient id="cw-grad-active" x1="0" y1="0" x2="0" y2="1">
+                        <stop class="cw-stop-0" offset="0"></stop>
+                        <stop class="cw-stop-1" offset="1"></stop>
+                    </linearGradient>
+                    <filter id="cw-seg-glow" x="-60%" y="-60%" width="220%" height="220%">
+                        <feDropShadow class="cw-seg-glow-drop" dx="0" dy="0" stdDeviation="7" flood-opacity="0.9"></feDropShadow>
+                    </filter>
+                </defs>
+                <!-- wedge segments + outer rim ticks injected here -->
+                <g id="cw-ticks" class="cw-ticks"></g>
+                <g id="cw-segs"  class="cw-segs"></g>
+            </svg>
+
+            <!-- HTML icon overlays sit on top of the wedges (filled by JS) -->
+            <div class="cw-icons" id="cw-icons"></div>
+
+            <!-- ── center hub (inside the donut hole) ── -->
+            <div class="cw-hub" id="cw-hub">
+                <div class="cw-hub-icon" id="cw-hub-icon"><i class="fa-solid fa-skull"></i></div>
+                <div class="cw-hub-label" id="cw-hub-label">Gang Actions</div>
+                <div class="cw-hub-desc"  id="cw-hub-desc">hover an action</div>
+            </div>
+
+            <!-- corner controls — subtle, top-left (back) / top-right (close) -->
+            <button class="cw-corner cw-back" id="cw-back" hidden title="Back (Esc / right-click)"><i class="fa-solid fa-arrow-left"></i></button>
+            <button class="cw-corner cw-close" id="cw-close" title="Close (Esc)"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+
+        <!-- ░░ KEYBINDS / SETTINGS PANEL ░░ — replaces the wheel -->
+        <div class="cw-keys" id="cw-keys" hidden>
+            <div class="cw-keys-head">
+                <button class="cw-keys-back" id="cw-keys-back" title="Back to wheel"><i class="fa-solid fa-arrow-left"></i></button>
+                <div class="cw-keys-titles">
+                    <span class="cw-keys-eyebrow">Command Wheel</span>
+                    <span class="cw-keys-title">Keybinds</span>
+                </div>
+                <span class="cw-keys-ic"><i class="fa-solid fa-keyboard"></i></span>
+            </div>
+            <div class="cw-keys-list" id="cw-keys-list"></div>
+            <div class="cw-keys-hint"><i class="fa-solid fa-circle-info"></i> Changes apply instantly. The open key works anywhere.</div>
+        </div>
+
+        <!-- shared key-picker popover -->
+        <div class="cw-picker" id="cw-picker" hidden>
+            <div class="cw-picker-head">
+                <span id="cw-picker-title">Pick a key</span>
+                <button class="cw-picker-x" id="cw-picker-x"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="cw-picker-grid" id="cw-picker-grid"></div>
+        </div>
+    </div>
+</div>
+
+<!-- ═══ HOSTAGE HUD — independent of the wheel's open state ═══ -->
+<div id="cw-hostage" class="cw-hostage" hidden>
+    <div class="cw-hostage-card">
+        <span class="cw-hostage-ic"><i class="fa-solid fa-user-lock"></i></span>
+        <div class="cw-hostage-titles">
+            <span class="cw-hostage-eyebrow">Hostage</span>
+            <span class="cw-hostage-name">Captive secured</span>
+        </div>
+        <div class="cw-hostage-keys">
+            <span class="cwh-key cwh-key-rel"><kbd>E</kbd><span>Release</span></span>
+            <span class="cwh-sep"></span>
+            <span class="cwh-key cwh-key-kill"><kbd>G</kbd><span>Kill</span></span>
+        </div>
+    </div>
+</div>
+
+<script src="js/app.js"></script>
+</body>
+</html>
