@@ -23,7 +23,7 @@ Shared.Lang = {
 -- Integration with DevHub Skill Tree
 -- Set to true only if you're using our skill tree system
 -- Purchase at: https://store.devhub.gg/product/6440792-1
-Shared.DEVHUB_SKILLTREE_ENABLED = false
+Shared.DEVHUB_SKILLTREE_ENABLED = true
 --  "devhub_3dCraftingTable:useTable:client"
 
 Shared.MultipleRecipes = {
