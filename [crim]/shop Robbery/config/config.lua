@@ -73,8 +73,8 @@ Config.MinimumPolice = 0
 
 -- Controls the intended robbery order.
 Config.Flow = {
-    RequireClerkBeforeLoot = false, -- Requires the clerk to be intimidated/killed before the player can loot the store.
-    RequireRegisterBeforeSafe = false -- Requires at least one register to be looted before the player can loot the safe.
+    RequireClerkBeforeLoot = true, -- Requires the clerk to be intimidated/killed before the player can loot the store.
+    RequireRegisterBeforeSafe = true -- Requires at least one register to be looted before the player can loot the safe.
 }
 
 -- Optional robbery session settings. TimeLimit can be false or seconds.
@@ -192,12 +192,11 @@ Config.SafeDrill = {
 
 -- Required items for each stage. Safe key is matched with store.safe.method.
 Config.RequiredItems = {
-    Register = nil,
+    Register = 'lockpick',
     Shelf = nil,
     Safe = {
         lockpick = { item = 'lockpick', removeOnFailChance = 35 },
         drill = { item = 'drill', removeOnFailChance = 10 },
-        thermite = { item = 'thermite', removeOnFailChance = 100 },
         keypad = nil
     }
 }
