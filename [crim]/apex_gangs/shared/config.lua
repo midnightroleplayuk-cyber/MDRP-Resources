@@ -206,7 +206,7 @@ Config.theme = {
 }
 
 -- ─── Currency ─────────────────────────────────────────────
-Config.currency = { symbol = '$', position = 'before' }
+Config.currency = { symbol = '£', position = 'before' }
 
 -- ─── Notifications ────────────────────────────────────────
 Config.notify = {
