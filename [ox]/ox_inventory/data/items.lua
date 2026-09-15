@@ -3552,4 +3552,201 @@ return {
     description = "Device used to clone vehicle keys"
 },
 
+
+-- DEVHUB PETTY CRIMES
+-- ── Postal box theft ──
+['devhub_pc_stolen_letter'] = {
+    label = 'Stolen Letter',
+    weight = 20,
+    stack = true,
+    close = true,
+    description = "A sealed envelope lifted from a postal box."
+},
+['devhub_pc_mail_parcel'] = {
+    label = 'Mail Parcel',
+    weight = 800,
+    stack = true,
+    close = true,
+    description = "A small parcel snatched before it reached its owner."
+},
+['devhub_pc_sheet_of_stamps'] = {
+    label = 'Sheet of Stamps',
+    weight = 10,
+    stack = true,
+    close = true,
+    description = "A sheet of collectible postage stamps. Worth something to the right buyer."
+},
+
+-- ── Phone booth theft ──
+['devhub_pc_phone_coin_box'] = {
+    label = 'Payphone Coin Box',
+    weight = 1200,
+    stack = true,
+    close = true,
+    description = "The coin tray pried out of a payphone, still rattling with change."
+},
+
+-- ── Parking meter theft ──
+['devhub_pc_meter_coin_vault'] = {
+    label = 'Meter Coin Vault',
+    weight = 1500,
+    stack = true,
+    close = true,
+    description = "The locked coin canister from a parking meter, packed with change."
+},
+['devhub_pc_parking_tokens'] = {
+    label = 'Parking Tokens',
+    weight = 80,
+    stack = true,
+    close = true,
+    description = "A mix of coins and parking tokens."
+},
+
+-- ── Car radio theft ──
+['devhub_pc_car_radio'] = {
+    label = 'Car Radio',
+    weight = 1500,
+    stack = true,
+    close = true,
+    description = "A head unit ripped straight out of a dashboard."
+},
+
+-- ── Smash & grab ──
+['devhub_pc_stolen_laptop'] = {
+    label = 'Stolen Laptop',
+    weight = 2200,
+    stack = true,
+    close = true,
+    description = "A laptop grabbed off a car seat."
+},
+['devhub_pc_handbag'] = {
+    label = 'Handbag',
+    weight = 700,
+    stack = true,
+    close = true,
+    description = "A designer handbag - no telling what's inside."
+},
+['devhub_pc_duffel_bag'] = {
+    label = 'Duffel Bag',
+    weight = 2500,
+    stack = true,
+    close = true,
+    description = "A heavy duffel bag snatched from the back seat."
+},
+['devhub_pc_designer_sunglasses'] = {
+    label = 'Designer Sunglasses',
+    weight = 90,
+    stack = true,
+    close = true,
+    description = "A pair of pricey shades. Easy to flip."
+},
+['devhub_pc_satnav_unit'] = {
+    label = 'Sat-Nav Unit',
+    weight = 400,
+    stack = true,
+    close = true,
+    description = "A portable GPS yanked off the windshield."
+},
+
+-- ── NPC pickpocket ──
+['devhub_pc_worn_wallet'] = {
+    label = 'Worn Wallet',
+    weight = 120,
+    stack = true,
+    close = true,
+    description = "A worn-out wallet with a few notes left in it."
+},
+['devhub_pc_pocket_change'] = {
+    label = 'Pocket Change',
+    weight = 50,
+    stack = true,
+    close = true,
+    description = "A small handful of coins."
+},
+['devhub_pc_cigarette_pack'] = {
+    label = 'Pack of Cigarettes',
+    weight = 30,
+    stack = true,
+    close = true,
+    description = "A half-empty pack of smokes."
+},
+['devhub_pc_chewing_gum'] = {
+    label = 'Chewing Gum',
+    weight = 10,
+    stack = true,
+    close = true,
+    description = "A strip of chewing gum. Hardly worth the effort."
+},
+['devhub_pc_spare_keys'] = {
+    label = 'Spare Keys',
+    weight = 40,
+    stack = true,
+    close = true,
+    description = "Someone's keys. Useless to you - a fence might still bite."
+},
+
+-- ── NPC mugging ──
+['devhub_pc_fat_wallet'] = {
+    label = 'Fat Wallet',
+    weight = 150,
+    stack = true,
+    close = true,
+    description = "A wallet stuffed with cash and cards."
+},
+['devhub_pc_gold_chain'] = {
+    label = 'Gold Chain',
+    weight = 200,
+    stack = true,
+    close = true,
+    description = "A heavy gold chain. A fence will love this."
+},
+['devhub_pc_luxury_watch'] = {
+    label = 'Luxury Watch',
+    weight = 180,
+    stack = true,
+    close = true,
+    description = "A high-end wristwatch worth a small fortune."
+},
+['devhub_pc_smartphone'] = {
+    label = 'Smartphone',
+    weight = 190,
+    stack = true,
+    close = true,
+    description = "A late-model smartphone, still unlocked."
+},
+['devhub_pc_diamond_ring'] = {
+    label = 'Diamond Ring',
+    weight = 60,
+    stack = true,
+    close = true,
+    description = "A sparkling ring pulled off someone's finger."
+},
+
+-- ── Porch theft ──
+['devhub_pc_porch_package'] = {
+    label = 'Delivery Package',
+    weight = 1500,
+    stack = true,
+    close = true,
+    description = "A delivery box swiped off a porch. Could be anything inside."
+},
+['devhub_pc_cardboard_parcel'] = {
+    label = 'Cardboard Parcel',
+    weight = 1000,
+    stack = true,
+    close = true,
+    description = "A taped-up cardboard parcel left at the door."
+},
+
+-- ── Tools ──
+['devhub_pc_car_radio_tools'] = {
+    label = 'Car Radio Tools',
+    weight = 500,
+    stack = true,
+    close = true,
+    description = "A set of tools for disabling car radios."
+},
+
+
+
 }
