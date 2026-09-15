@@ -996,7 +996,7 @@ Config.VehicleDisposal = {
         timeBeforeExplosion = 10000, -- duration of the time before explosion in ms
     },
     ["push_off_cliff"] = {
-        enable = true,
+        enable = false,
         locations = { -- locations of the push off cliff vehicle disposal
             {
                 vehicleCoords = vec4(-3103.898926, 1743.125244, 35.008789, 73.700790),
