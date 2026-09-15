@@ -4,16 +4,16 @@ Config = {}
 Config.Debug = false
 
 -- Locale loaded from locales/*.json.
-Config.Locale = 'pl'
+Config.Locale = 'en'
 
 -- Framework bridge. auto checks qbx_core, qb-core, es_extended, then standalone.
-Config.Framework = 'auto' -- auto, qbox, qb, esx, standalone
+Config.Framework = 'qbox' -- auto, qbox, qb, esx, standalone
 
 -- Inventory bridge used for item and money handling.
-Config.Inventory = 'auto' -- auto, ox_inventory, qb-inventory, qs-inventory, jaksam_inventory, tgiann-inventory, esx, custom
+Config.Inventory = 'ox_inventory' -- auto, ox_inventory, qb-inventory, qs-inventory, jaksam_inventory, tgiann-inventory, esx, custom
 
 -- Interaction system. none uses ox_lib TextUI + E fallback.
-Config.Target = 'auto' -- auto, ox_target, qb-target, qtarget, none
+Config.Target = 'ox_target' -- auto, ox_target, qb-target, qtarget, none
 
 -- Dispatch integration used when robbery alerts are sent.
 Config.Dispatch = 'auto' -- auto, ps-dispatch, cd_dispatch, qs-dispatch, rcore_dispatch, tk_dispatch, p_mdt, qb, none, custom
