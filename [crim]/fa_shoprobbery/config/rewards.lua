@@ -5,10 +5,10 @@ Rewards = {}
 
 Rewards.Register = {
     [1] = {
-        { type = 'money', account = 'dirty', min = 250, max = 850, chance = 100 }
+        { type = 'dirty', account = 'dirty', min = 250, max = 850, chance = 100 }
     },
     [2] = {
-        { type = 'money', account = 'dirty', min = 450, max = 1200, chance = 100 }
+        { type = 'dirty', account = 'dirty', min = 450, max = 1200, chance = 100 }
     }
 }
 
