@@ -73,8 +73,8 @@ Config.MinimumPolice = 0
 
 -- Controls the intended robbery order.
 Config.Flow = {
-    RequireClerkBeforeLoot = false, -- Requires the clerk to be intimidated/killed before the player can loot the store.
-    RequireRegisterBeforeSafe = false -- Requires at least one register to be looted before the player can loot the safe.
+    RequireClerkBeforeLoot = true, -- Requires the clerk to be intimidated/killed before the player can loot the store.
+    RequireRegisterBeforeSafe = true -- Requires at least one register to be looted before the player can loot the safe.
 }
 
 -- Optional robbery session settings. TimeLimit can be false or seconds.
@@ -192,7 +192,7 @@ Config.SafeDrill = {
 
 -- Required items for each stage. Safe key is matched with store.safe.method.
 Config.RequiredItems = {
-    Register = nil,
+    Register = 'lockpick',
     Shelf = nil,
     Safe = {
         lockpick = { item = 'lockpick', removeOnFailChance = 35 },
@@ -250,7 +250,7 @@ Config.Stores = {
         safe = {
             coords = vector3(-43.43, -1748.30, 28.42),
             heading = 230,
-            methods = { 'keypad', 'drill' },
+            methods = { 'drill' },
             prop = true
         },
         -- Uses Rewards.Register[1], Rewards.Shelf[1] and Rewards.Safe[1]. You can also use rewardTier = 1.
@@ -279,7 +279,7 @@ Config.Stores = {
         safe = {
             coords = vector3(-709.74, -904.15, 19.22),
             heading = 229.5,
-            methods = { 'keypad' },
+            methods = { 'drill' },
             prop = false
         },
         -- Optional minigame override for this store.
