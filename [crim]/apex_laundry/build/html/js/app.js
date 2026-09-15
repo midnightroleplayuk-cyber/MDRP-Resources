@@ -23,7 +23,7 @@ const Sound = (alias) => { if (Runtime.features && Runtime.features.sounds) post
 // ─── Runtime (filled by the Lua "bootstrap" message) ────
 const Runtime = {
     theme: {},
-    currency: { symbol: '$', position: 'before' },
+    currency: { symbol: '£', position: 'before' },
     economy: { baseValue: 1000, washTime: 5, cleanerCost: 1, taxPercent: 5, maxCleaners: 500, upgradePayment: 'cash' },
     upgrades: {},
     items: {},
