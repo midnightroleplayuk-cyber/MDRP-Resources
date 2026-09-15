@@ -71,7 +71,7 @@ Config.features = {
 }
 
 -- ─── Interaction ──────────────────────────────────────────
-Config.textUIKey      = 33       -- E
+Config.textUIKey      = 3       -- E
 Config.textUIDistance = 0
 
 -- ─── UI Theme ────────────────────────────────────────────
