@@ -847,7 +847,7 @@ window.renderSafariApp = function(page, subPage = 'dashboard', targetId = null) 
                     <div class="portal-logo">
                         <i class="fas fa-shield-halved"></i>
                         <div class="logo-text">
-                            <span class="dept-name">LOS SANTOS POLICE DEPARTMENT</span>
+                            <span class="dept-name">MIDNIGHT POLICE CONSTABULARY</span>
                             <span class="dept-tag">INTERNAL SERVICES PORTAL</span>
                         </div>
                     </div>

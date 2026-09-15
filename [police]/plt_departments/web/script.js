@@ -2991,7 +2991,7 @@ document.addEventListener('click', (e) => {
                             y: 696.0044201786451,
                             type: "department",
                             label: "LSPD",
-                            displayName: "Los Santos Police Department",
+                            displayName: "MIDNIGHT POLICE CONSTABULARY",
                             frameworkJob: "police",
                             blipId: 60,
                             blipColor: 3,

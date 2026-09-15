@@ -444,7 +444,7 @@ Config.Locations = { -- Locations that'll appear in the maps app.
     {
         position = vector2(428.9, -984.5),
         name = "LSPD",
-        description = "Los Santos Police Department",
+        description = "MIDNIGHT POLICE CONSTABULARY",
         icon = "https://cdn-icons-png.flaticon.com/512/7211/7211100.png",
     },
     {
