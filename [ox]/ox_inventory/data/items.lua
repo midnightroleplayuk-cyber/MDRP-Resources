@@ -4300,7 +4300,7 @@ return {
 ['weapon_parts']  = { label = 'Weapon Parts',  weight = 800,  stack = true, close = false },
 
  -- MONEY WASH
- ['cleaning_kit'] = {
+['cleaning_kit'] = {
     label = 'Cleaning Kit',
     weight = 200,
     stack = true,
