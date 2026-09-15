@@ -200,12 +200,12 @@ Config.IgnoredShotWeapons = {
 
 -- Panic / Quick Dispatch Settings
 Config.PanicAlerts = {
-    { code = "10-99", title = "OFFICER DISTRESS", color = "#ff3e3e", icon = "fa-triangle-exclamation" },
-    { code = "10-71", title = "SHOTS FIRED", color = "#ff9800", icon = "fa-gun" },
-    { code = "10-13", title = "OFFICER DOWN", color = "#ff3e3e", icon = "fa-user-injured" },
-    { code = "10-80", title = "PURSUIT IN PROGRESS", color = "#3498db", icon = "fa-car-side" },
-    { code = "10-90", title = "ROBBERY IN PROGRESS", color = "#9b59b6", icon = "fa-mask" },
-    { code = "10-31", title = "CRIME IN PROGRESS", color = "#e67e22", icon = "fa-person-running" },
+    { code = "Code 0", title = "OFFICER DISTRESS", color = "#ff3e3e", icon = "fa-triangle-exclamation" },
+    { code = "Grade 1", title = "SHOTS FIRED", color = "#ff9800", icon = "fa-gun" },
+    { code = "Code 0", title = "OFFICER DOWN", color = "#ff3e3e", icon = "fa-user-injured" },
+    { code = "Grade 1", title = "PURSUIT IN PROGRESS", color = "#3498db", icon = "fa-car-side" },
+    { code = "Grade 1", title = "ROBBERY IN PROGRESS", color = "#9b59b6", icon = "fa-mask" },
+    { code = "Grade 2", title = "CRIME IN PROGRESS", color = "#e67e22", icon = "fa-person-running" },
 }
 
 -- Dispatch CCTV Cameras
