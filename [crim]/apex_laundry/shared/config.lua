@@ -172,7 +172,7 @@ Config.colorPresets = {
 
 -- ─── Currency ─────────────────────────────────────────────
 Config.currency = {
-    symbol   = '$',
+    symbol   = '£',
     position = 'before',   -- 'before' = $100   'after' = 100 €
 }
 
