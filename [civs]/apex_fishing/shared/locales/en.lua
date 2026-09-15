@@ -2,8 +2,8 @@ Locales = Locales or {}
 
 Locales.en = {
     -- ── Brand / UI shell ────────────────────────────────
-    brand_name        = 'APEX',
-    brand_subtitle    = 'FISHING',
+    brand_name        = 'Midnight',
+    brand_subtitle    = 'FISHERY',
     eyebrow           = 'Apex Marina · Del Perro Pier',
 
     -- ── Tab titles ──────────────────────────────────────
