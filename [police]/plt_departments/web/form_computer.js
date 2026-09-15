@@ -45,7 +45,7 @@
     }
 
     function hexToRgb(hex) {
-        const clean = normalizeHexColor(hex, '#003366').slice(1);
+        const clean = normalizeHexColor(hex, '#000266').slice(1);
         return {
             r: parseInt(clean.slice(0, 2), 16),
             g: parseInt(clean.slice(2, 4), 16),
@@ -78,9 +78,9 @@
         const container = document.getElementById('department-form-computer');
         if (!container) return;
 
-        const primary = '#003366';
-        const primaryMid = '#002b5c';
-        const primaryDark = '#001f45';
+        const primary = '#000f66';
+        const primaryMid = '#00115c';
+        const primaryDark = '#070045';
         const primarySoft = '#e8f0fa';
         const accent = '#f2b705';
         const accentDark = '#b98700';
@@ -100,12 +100,12 @@
     }
 
     function slugifyDepartmentName(value) {
-        return String(value || 'LSPD')
+        return String(value || 'MPC')
             .trim()
             .toLowerCase()
             .replace(/&/g, ' and ')
             .replace(/[^a-z0-9]+/g, '-')
-            .replace(/^-+|-+$/g, '') || 'lspd';
+            .replace(/^-+|-+$/g, '') || 'mpc';
     }
 
     function pagePath(page) {
@@ -118,7 +118,7 @@
             form: 'services/online-report',
             gunLicense: 'permits/firearm-license'
         }[page] || 'home';
-        return `intranet.${deptSlug}.local/${path}`;
+        return `https://midnightpolice.police.uk/${path}`;
     }
 
     function renderHeader(activePage) {
@@ -136,8 +136,8 @@
         return `
             <div class="lapd-site-top">
                 <div class="lapd-official-strip">
-                    <span>${esc(state.deptLabel)} Official Intranet</span>
-                    <span>Emergency: 911 | Non-Emergency Services</span>
+                    <span>${esc(state.deptLabel)} Official Portal</span>
+                    <span>999 In an Emergency | 111 In an Non-Emergency</span>
                 </div>
                 <div class="lapd-brand-row">
                     <div class="lapd-brand">
