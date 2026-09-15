@@ -9,15 +9,15 @@ BenchOptions = {
     enablePortableBenches = true,          -- Enable portable benches. This will allow the player to place the bench themselves with items. (this needs to be setted up, check out the documentation)
     enableBlueprintItems = true,           -- Enable the blueprint items. The player will need to have the blueprint item in their inventory to craft the item. (this needs to be setted up, check out the documentation)
     colors = {
-        primary = '#00d9ff',               -- The primary color of the bench
+        primary = '#45005a',               -- The primary color of the bench
         neutral = 'hsl(20, 14.3%, 4.1%)'   -- The neutral color of the bench
     },
-    hideUnavailableRecipes = false,        -- Hide the recipes that the player can't craft
+    hideUnavailableRecipes = true,        -- Hide the recipes that the player can't craft
     filterMissingBlueprintRecipes = false, -- Filter out the recipes that the player doesn't have the blueprint for
     allowViewLockedRecipes = false,        -- Allow players to view locked recipes (preview only, crafting disabled)
     blueprintDurability = {                -- Only works if enableBlueprintItems and removeBlueprintOnCraft is enabled
-        isEnabled = false,                 -- Enable or disable blueprint durability
-        defaultUses = 5                    -- The default uses of the blueprint
+        isEnabled = true,                 -- Enable or disable blueprint durability
+        defaultUses = 3                    -- The default uses of the blueprint
     },
     adminBenchAccess = true,               -- Allow admins to use all benches
     kickPlayerOnDamage = true,             -- Kick the player from the bench if they take damage
@@ -26,8 +26,8 @@ BenchOptions = {
     pauseCraftingOnDisconnect = true,      -- Pause the crafting process when the player disconnects from the server
     cancelCraftingOnExit = false,          -- Cancel all in-progress crafts and refund ingredients when the player exits the bench (takes precedence over pauseCraftingOnExit)
     disableLevelSystem = false,            -- Disable the levels for the bench
-    queueLimit = 0,                        -- Maximum number of crafts a player can have in queue at the same bench (0 = unlimited)
-    globalQueueLimit = 0,                  -- Maximum number of crafts a player can have in queue across ALL benches (0 = unlimited)
+    queueLimit = 3,                        -- Maximum number of crafts a player can have in queue at the same bench (0 = unlimited)
+    globalQueueLimit = 3,                  -- Maximum number of crafts a player can have in queue across ALL benches (0 = unlimited)
     maxCraftAmount = 0,                    -- Maximum number of items that can be crafted in a single craft operation (0 = unlimited)
     giveXPOnFailure = false,               -- Give XP even when crafting fails
 }
