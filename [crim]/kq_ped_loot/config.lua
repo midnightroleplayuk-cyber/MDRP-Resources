@@ -107,9 +107,9 @@ Config.globalLoot = {
         },
         props = {
             'prop_ld_wallet_pickup',
-            'prop_ld_wallet_01',
-            'prop_ld_wallet_02',
-            'prop_ld_purse_01',
+           -- 'prop_ld_wallet_01',
+           -- 'prop_ld_wallet_02',
+            --'prop_ld_purse_01',
         },
     },
     ['phone'] = {
@@ -157,7 +157,7 @@ Config.lootPerType = {
                     max = 500,
                 },
                 props = {
-                    'bkr_prop_moneypack_01a',
+                    --'bkr_prop_moneypack_01a',
                     'bkr_prop_money_unsorted_01',
                     'bkr_prop_money_wrapped_01',
                 },
@@ -249,8 +249,8 @@ Config.lootPerModel = {
                     -- When no min and max values are specified. It will always be just one item
                 },
                 props = {
-                    'prop_ld_case_01',
-                    --'prop_ld_suitcase_01',
+                    'w_am_brfcase',
+                    --'w_am_brfcase',
                 },
             },
             ['money_briefcase'] = {
@@ -260,8 +260,8 @@ Config.lootPerModel = {
                     max = 500,
                 },
                 props = {
-                    'prop_ld_case_01',
-                    'prop_ld_suitcase_01',
+                    'w_am_brfcase',
+                    'w_am_brfcase',
                 },
             },
             ['rich wallet'] = {
@@ -274,7 +274,7 @@ Config.lootPerModel = {
                     'prop_ld_wallet_pickup',
                     'prop_ld_wallet_01',
                     'prop_ld_wallet_02',
-                    'prop_ld_purse_01',
+                    --'prop_ld_purse_01',
                 },
             }
         },
