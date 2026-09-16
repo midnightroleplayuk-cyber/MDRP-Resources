@@ -109,7 +109,7 @@ Config.globalLoot = {
             'prop_ld_wallet_pickup',
             'prop_ld_wallet_01',
             'prop_ld_wallet_02',
-            'prop_ld_purse_01',
+            --'prop_ld_purse_01',
         },
     },
     ['phone'] = {
@@ -157,7 +157,7 @@ Config.lootPerType = {
                     max = 500,
                 },
                 props = {
-                    'bkr_prop_moneypack_01a',
+                    --'bkr_prop_moneypack_01a',
                     'bkr_prop_money_unsorted_01',
                     'bkr_prop_money_wrapped_01',
                 },
@@ -274,7 +274,7 @@ Config.lootPerModel = {
                     'prop_ld_wallet_pickup',
                     'prop_ld_wallet_01',
                     'prop_ld_wallet_02',
-                    'prop_ld_purse_01',
+                    --'prop_ld_purse_01',
                 },
             }
         },
