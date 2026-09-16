@@ -310,7 +310,7 @@ Config.vendors = {
     },
     ["tools_store"] = {
         coords = vector3(2546.52, 385.65, 107.62),
-        heading = 120.0,
+        heading = 115.0,
         model = "g_m_y_famfor_01",
         idleAnim = {
             dict = "amb@world_human_leaning@male@wall@back@foot_up@idle_a",
