@@ -309,7 +309,7 @@ Config.vendors = {
         },
     },
     ["tools_store"] = {
-        coords = vector3(2545.31, 360.05, 107.61),
+        coords = vector3(2546.47, 385.67, 107.62),
         heading = 124.0,
         model = "g_m_y_famfor_01",
         idleAnim = {
