@@ -271,6 +271,7 @@ return {
 				{ name = "kq_outfitbag", label = "Outfit Bag", category = "all", price = 100 },
 				{ name = "weapon_crowbar", label = "Crowbar", category = "all", price = 100 },
 			    { name = "cleaning_kit", label = "Cleaning Kit", category = "all", price = 100 },
+				{ name = "Drill", label = "Drill", category = "all", price = 500 },
 			},
 
 			Requirement = {
