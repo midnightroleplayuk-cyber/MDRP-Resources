@@ -1,6 +1,6 @@
 Locale = Locale or {}
 
-Locale.openRental         = 'Open rental station'
+Locale.openRental         = 'Rent-A-Vehicle'
 Locale.returnVehicle      = 'Return vehicle'
 Locale.rentalStarted      = 'Enjoy your ride! Vehicle has been provided.'
 Locale.rentalReturned     = 'Vehicle returned successfully. Deposit will be refunded.'
