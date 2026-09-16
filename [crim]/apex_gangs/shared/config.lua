@@ -7,7 +7,7 @@
     this file only holds global behaviour + defaults. Edit + restart
     (or run `apex_gangs_reload`) to broadcast new settings to clients.
 
-    Palette note: brand is Apex blue #1F5EFF on a hue-free dark
+    Palette note: brand is Apex blue #b81fff on a hue-free dark
     surface stack, exactly like apex_banking. The NUI derives its
     whole colour ramp from Config.theme at runtime.
 ]]

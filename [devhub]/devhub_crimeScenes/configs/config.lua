@@ -931,8 +931,8 @@ Config.VehicleDisposal = {
         enable = true,
         locations = { -- locations of the burn vehicle disposal
             {
-                petrolCanCoords = vec4(1260.304, -2569.930, 42.718, 103.661),
-                vehicleCoords = vec4(2094.514404, 4626.290039, 35.143555, 136.062988),
+                petrolCanCoords = vec4(1259.169, -2572.669, 42.802, 149.305),
+                vehicleCoords = vec4(1260.902, -2565.313, 42.802, 149.305),
             },
             {
                 petrolCanCoords = vec4(-738.474731, 5753.485840, 11.941406, 229.606293),
