@@ -65,7 +65,7 @@ function applyStyle(style) {
     var s         = style || {};
     var accent    = s.accent     || '#ffe033';
     var accentTxt = s.accentText || '#111111';
-    var label     = s.label      || '';
+    var label     = s.label      || 'TEST';
     var subtitle  = s.subtitle   || '';
     var logo      = s.logo       || label;
     var logoImage = s.logoImage  || '';
