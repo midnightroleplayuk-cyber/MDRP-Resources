@@ -275,7 +275,7 @@ Config.vendors = {
             
         },
         blip = {
-            enabled = true,
+            enabled = false,
 
             label = 'Fertilizer dealer',
             sprite = 622,
@@ -299,7 +299,7 @@ Config.vendors = {
             ['kq_weed_bag_empty'] = { label = "Empty baggie", price = 30, amount = 5 },
         },
         blip = {
-            enabled = true,
+            enabled = false,
 
             label = 'Weed seed dealer',
             sprite = 140,
@@ -325,7 +325,7 @@ Config.vendors = {
             ['kq_weed_watering_system'] = { label = "Automatic watering system", price = 7000 },
         },
         blip = {
-            enabled = true,
+            enabled = false,
 
             label = 'Weed Paraphernalia dealer',
             sprite = 784,
