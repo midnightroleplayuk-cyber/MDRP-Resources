@@ -107,8 +107,8 @@ Config.globalLoot = {
         },
         props = {
             'prop_ld_wallet_pickup',
-            'prop_ld_wallet_01',
-            'prop_ld_wallet_02',
+           -- 'prop_ld_wallet_01',
+           -- 'prop_ld_wallet_02',
             --'prop_ld_purse_01',
         },
     },
