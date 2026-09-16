@@ -285,7 +285,7 @@ Config.vendors = {
         },
     },
     ["seed_store"] = {
-        coords = vector3(858.98, 2877.44, 56.98),
+        coords = vector3(890.82, 2854.86, 56.0),
         heading = 055.061,
         model = "g_m_y_famdnf_01",
         idleAnim = {
