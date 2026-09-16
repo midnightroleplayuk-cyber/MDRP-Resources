@@ -725,9 +725,9 @@ Config.itemCollection = {
         -- All locations of where the loot should spawn at
         locations = {
             {
-                coords = vec3(720.53, -970.37, 29.39),
+                coords = vec3(817.3, -3187.88, 4.9),
                 rotation = vec3(0, 0, 40),
-                blip = true,
+                blip = false,
             },
         },
     },
@@ -768,24 +768,24 @@ Config.itemCollection = {
         -- All locations of where the loot should spawn at
         locations = {
             {
-                coords = vec3(1694.35, 4920.79, 41.23),
+                coords = vec3(-415.47, -1687.55, 18.03),
                 rotation = vec3(0, 0, 329),
-                blip = true,
+                blip = false,
             },
             {
-                coords = vec3(273.68, -1262.5, 28.29),
+                coords = vec3(-2068.55, -312.53, 12.28),
                 rotation = vec3(0, 0, 270),
-                blip = true,
+                blip = false,
             },
             {
-                coords = vec3(-534.37, -1219.77, 17.45),
+                coords = vec3(-2532.6, 2317.12, 32.22),
                 rotation = vec3(0, 0, 154),
-                blip = true,
+                blip = false,
             },
             {
-                coords = vec3(-2073.88, -333.81, 12.31),
+                coords = vec3(638.87, 2785.94, 41.0),
                 rotation = vec3(0, 0, 355),
-                blip = true,
+                blip = false,
             },
         },
     },
