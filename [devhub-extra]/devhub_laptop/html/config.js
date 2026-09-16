@@ -15,6 +15,6 @@ window.config = {
         // Use at the beginning: [/^(\d)/, '€$1'] for €100
         // Use at the end: [/(\d)$/, '$1€'] for 100€
         currencyPattern: /^(\d)/,
-        currencyFormat: "$$$1", // Adds $ at the start (e.g., $100)
+        currencyFormat: "£1", // Adds $ at the start (e.g., $100)
     },
 };
