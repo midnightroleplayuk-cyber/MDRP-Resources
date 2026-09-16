@@ -71,7 +71,7 @@ Config.UIStyles = {
         subtitle   = 'Car Rentals',
         accent     = '#9434e2',
         accentText = '#ffffff',
-        logo       = 'Touchdown',
+        logo       = 'Midnight',
         logoImage  = 'img/logos/touchdownlogo.png',
         watermark  = 'TD'
     },
