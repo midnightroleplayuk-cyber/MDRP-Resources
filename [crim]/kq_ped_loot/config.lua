@@ -249,8 +249,8 @@ Config.lootPerModel = {
                     -- When no min and max values are specified. It will always be just one item
                 },
                 props = {
-                    'prop_ld_case_01',
-                    --'prop_ld_suitcase_01',
+                    'w_am_brfcase',
+                    --'w_am_brfcase',
                 },
             },
             ['money_briefcase'] = {
@@ -260,8 +260,8 @@ Config.lootPerModel = {
                     max = 500,
                 },
                 props = {
-                    'prop_ld_case_01',
-                    'prop_ld_suitcase_01',
+                    'w_am_brfcase',
+                    'w_am_brfcase',
                 },
             },
             ['rich wallet'] = {
