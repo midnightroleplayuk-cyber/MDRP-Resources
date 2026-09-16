@@ -259,7 +259,7 @@ Config.prePlaced = {
 -- We highly recommend adding these items to your shops, heists, robberies etc. instead
 Config.vendors = {
     ["fertilizer_store"] = {
-        coords = vector3(2222.05, 5611.91, 54.06),
+        coords = vector3(2221.41, 5612.42, 53.68),
         heading = 80.0,
         model = "a_m_m_hillbilly_01",
         idleAnim = {
@@ -285,7 +285,7 @@ Config.vendors = {
         },
     },
     ["seed_store"] = {
-        coords = vector3(858.98, 2877.44, 56.98),
+        coords = vector3(890.82, 2854.86, 56.0),
         heading = 055.061,
         model = "g_m_y_famdnf_01",
         idleAnim = {
@@ -309,8 +309,8 @@ Config.vendors = {
         },
     },
     ["tools_store"] = {
-        coords = vector3(2545.31, 360.05, 107.61),
-        heading = 124.0,
+        coords = vector3(2546.52, 385.65, 107.62),
+        heading = 115.0,
         model = "g_m_y_famfor_01",
         idleAnim = {
             dict = "amb@world_human_leaning@male@wall@back@foot_up@idle_a",
