@@ -200,7 +200,7 @@ Config.DropsConfig = {
                 type = "car", -- item/car/money
                 quantity = 1,
                 price = 1600, -- resell price
-            }
+            },
             {
                 modelName = "hotknife",
                 label = "Hot Knife", 
