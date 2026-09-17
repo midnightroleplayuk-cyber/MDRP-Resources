@@ -1,0 +1,221 @@
+Config = Config or {}
+
+-- ──────────────────────────────────────────────────────────────────────────────
+-- Vehicle interaction points (bones first, offset fallback)
+-- ──────────────────────────────────────────────────────────────────────────────
+Config.InteractionPoints = {
+    engine = {
+        bones = { 'engine', 'bonnet' },
+        offset = vector3(0.0, 1.6, 0.45),
+        labelKey = 'wo.point.engine',
+    },
+    front = {
+        bones = { 'bumper_f', 'bonnet' },
+        offset = vector3(0.0, 2.4, 0.35),
+        labelKey = 'wo.point.front',
+    },
+    rear = {
+        bones = { 'bumper_r', 'boot', 'spoiler' },
+        offset = vector3(0.0, -2.4, 0.35),
+        labelKey = 'wo.point.rear',
+    },
+    front_left_wheel = {
+        bones = { 'wheel_lf' },
+        offset = vector3(-1.0, 1.25, 0.2),
+        labelKey = 'wo.point.wheelFl',
+    },
+    front_right_wheel = {
+        bones = { 'wheel_rf' },
+        offset = vector3(1.0, 1.25, 0.2),
+        labelKey = 'wo.point.wheelFr',
+    },
+    rear_left_wheel = {
+        bones = { 'wheel_lr' },
+        offset = vector3(-1.0, -1.25, 0.2),
+        labelKey = 'wo.point.wheelRl',
+    },
+    rear_right_wheel = {
+        bones = { 'wheel_rr' },
+        offset = vector3(1.0, -1.25, 0.2),
+        labelKey = 'wo.point.wheelRr',
+    },
+    left_side = {
+        bones = { 'door_dside_f', 'handle_dside_f' },
+        offset = vector3(-1.15, 0.1, 0.4),
+        labelKey = 'wo.point.left',
+    },
+    right_side = {
+        bones = { 'door_pside_f', 'handle_pside_f' },
+        offset = vector3(1.15, 0.1, 0.4),
+        labelKey = 'wo.point.right',
+    },
+    interior = {
+        bones = { 'seat_dside_f', 'door_dside_f', 'chassis' },
+        offset = vector3(-1.15, 0.2, 0.45),
+        labelKey = 'wo.point.interior',
+    },
+    under_vehicle = {
+        bones = { 'chassis_dummy', 'chassis' },
+        offset = vector3(0.0, 0.2, -0.55),
+        labelKey = 'wo.point.under',
+    },
+    roof = {
+        bones = { 'roof', 'roof2' },
+        offset = vector3(0.0, 0.0, 1.15),
+        labelKey = 'wo.point.roof',
+    },
+}
+
+-- ──────────────────────────────────────────────────────────────────────────────
+-- Task anim/prop presets
+-- ──────────────────────────────────────────────────────────────────────────────
+Config.TaskPresets = {
+    install_wheel = {
+        dict = 'anim@amb@clubhouse@tutorial@bkr_tut_ig3@',
+        clip = 'machinic_loop_mechandplayer',
+        flag = 1,
+        prop = nil,
+        durationMs = 5500,
+    },
+    spray_paint = {
+        dict = 'anim@amb@business@weed@weed_inspecting_lo_med_hi@',
+        clip = 'weed_spraybottle_stand_spraying_01_inspector',
+        flag = 49,
+        prop = `prop_cs_spray_can`,
+        propBone = 57005,
+        propOffset = vector3(0.119, -0.072, -0.05),
+        propRot = vector3(-90.0, 120.0, 12.0),
+        durationMs = 14000,
+        particles = {
+            {
+                dict = 'core',
+                name = 'ent_amb_steam',
+                attach = 'prop',
+                offset = vector3(0.0, 0.0, 0.06),
+                rot = vector3(90.0, 0.0, 0.0),
+                scale = 0.9,
+                alpha = 0.9,
+                tint = true,
+            },
+            {
+                dict = 'scr_paintnspray',
+                name = 'scr_respray_smoke',
+                attach = 'vehicle',
+                offset = vector3(0.0, 0.0, 0.35),
+                rot = vector3(0.0, 80.0, 0.0),
+                scale = 0.55,
+                alpha = 1.0,
+                tint = true,
+            },
+        },
+    },
+    install_body = {
+        dict = 'mini@repair',
+        clip = 'fixing_a_ped',
+        flag = 1,
+        prop = nil,
+        durationMs = 5000,
+    },
+    install_engine = {
+        dict = 'mini@repair',
+        clip = 'fixing_a_ped',
+        flag = 1,
+        prop = nil,
+        durationMs = 6500,
+        openHood = true,
+        useHoist = true,
+        hoistOpts = { cargoKind = 'engine' },
+    },
+    install_gearbox = {
+        dict = 'mini@repair',
+        clip = 'fixing_a_ped',
+        flag = 1,
+        prop = nil,
+        durationMs = 6500,
+        openHood = true,
+        useHoist = true,
+        hoistOpts = { cargoKind = 'gearbox' },
+    },
+    install_turbo = {
+        dict = 'mini@repair',
+        clip = 'fixing_a_ped',
+        flag = 1,
+        prop = nil,
+        durationMs = 5500,
+        openHood = true,
+        useHoist = false,
+    },
+    install_nitro = {
+        dict = 'mini@repair',
+        clip = 'fixing_a_ped',
+        flag = 1,
+        prop = nil,
+        durationMs = 5500,
+        openHood = true,
+    },
+    install_tuning = {
+        dict = 'mini@repair',
+        clip = 'fixing_a_ped',
+        flag = 1,
+        prop = nil,
+        durationMs = 7000,
+        openHood = true,
+    },
+    install_engine_swap = {
+        dict = 'mini@repair',
+        clip = 'fixing_a_ped',
+        flag = 1,
+        prop = nil,
+        durationMs = 8000,
+        openHood = true,
+        useHoist = true,
+        hoistOpts = { cargoKind = 'engine' },
+    },
+    install_lights = {
+        dict = 'anim@amb@clubhouse@tutorial@bkr_tut_ig3@',
+        clip = 'machinic_loop_mechandplayer',
+        flag = 1,
+        prop = nil,
+        durationMs = 5500,
+    },
+    install_brakes = {
+        dict = 'anim@amb@clubhouse@tutorial@bkr_tut_ig3@',
+        clip = 'machinic_loop_mechandplayer',
+        flag = 1,
+        prop = nil,
+        durationMs = 5500,
+    },
+    install_generic = {
+        dict = 'mini@repair',
+        clip = 'fixing_a_ped',
+        flag = 1,
+        prop = nil,
+        durationMs = 4500,
+    },
+    repair_engine = {
+        dict = 'mini@repair',
+        clip = 'fixing_a_ped',
+        flag = 1,
+        prop = nil,
+        durationMs = 6500,
+        openHood = true,
+        useHoist = false,
+    },
+    repair_body = {
+        dict = 'mini@repair',
+        clip = 'fixing_a_ped',
+        flag = 1,
+        prop = nil,
+        durationMs = 5500,
+    },
+    wash_car = {
+        dict = 'amb@world_human_maid_clean@',
+        clip = 'base',
+        flag = 49,
+        prop = `prop_sponge_01`,
+        propBone = 28422,
+        propOffset = vector3(0.0, 0.0, -0.01),
+        propRot = vector3(90.0, 0.0, 0.0),
+        durationMs = 6000,
+    },
+}
