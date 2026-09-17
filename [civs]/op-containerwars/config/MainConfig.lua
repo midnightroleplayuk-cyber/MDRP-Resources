@@ -236,7 +236,7 @@ Config.DropsConfig = {
                 quantity = 1,
                 price = 0, -- resell price
             },
-        }
+        },
         [3] = {    
             {
                 modelName = "cryptomainer",
