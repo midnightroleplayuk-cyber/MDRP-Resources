@@ -842,7 +842,7 @@ Config.itemCollection = {
         locations = {
             {
                 coords = vec3(-440.67, -956.02, 28.39),
-                rotation = vec3(0, 0, 75),
+                rotation = vec3(0, 0, 140),
                 blip = true,
             },
                 {
