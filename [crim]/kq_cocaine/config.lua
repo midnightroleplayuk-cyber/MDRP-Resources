@@ -841,7 +841,7 @@ Config.itemCollection = {
         -- All locations of where the loot should spawn at
         locations = {
             {
-                coords = vec3(-440.55, -952.07, 28.39),
+                coords = vec3(-440.67, -956.02, 28.39),
                 rotation = vec3(0, 0, 75),
                 blip = true,
             },
