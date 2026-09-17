@@ -23,7 +23,7 @@ data_file 'AUDIO_WAVEPACK'  'audiodirectory'
 data_file 'AUDIO_SOUNDDATA' 'data/audioexample_sounds.dat'
 
 shared_scripts {
-    --'@ox_lib/init.lua',
+    '@ox_lib/init.lua',
     'shared/*.lua',
 	'locales/*.lua',
 	'config.lua',
