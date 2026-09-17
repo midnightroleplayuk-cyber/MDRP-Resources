@@ -20,7 +20,7 @@ Config = Config or {}
 -- Locale & Debug
 -- ──────────────────────────────────────────────────────────────────────────────
 Config.Locale = 'en' -- See available languages in locales/*.json
-Config.Debug = true
+Config.Debug = false
 
 -- ──────────────────────────────────────────────────────────────────────────────
 -- Framework Detection
@@ -65,7 +65,7 @@ local bankingScripts = {
     ['tgg-banking'] = 'tgg-banking',
     ['p_banking'] = 'p_banking',
 }
-Config.Banking = 'none'
+Config.Banking = scriptCheck(bankingScripts) or 'none'
 
 -- ──────────────────────────────────────────────────────────────────────────────
 -- Garage Script Detection
@@ -133,7 +133,7 @@ Config.RanksPermissions = {
 -- Currency Formatting
 -- ──────────────────────────────────────────────────────────────────────────────
 Config.Currency = {
-    symbol = '£',
+    symbol = '$',
     position = 'before', -- before | after
     decimals = 0,
 }

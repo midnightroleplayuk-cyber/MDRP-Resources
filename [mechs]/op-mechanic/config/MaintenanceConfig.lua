@@ -176,9 +176,9 @@ Config.Maintenance = {
             service = {
                 points = {
                     'front_left_wheel',
-                    'front_right_wheel',
                     'rear_left_wheel',
                     'rear_right_wheel',
+                    'front_right_wheel',
                 },
                 openHood = false,
                 durationMs = 6500,
@@ -201,9 +201,9 @@ Config.Maintenance = {
             service = {
                 points = {
                     'front_left_wheel',
-                    'front_right_wheel',
                     'rear_left_wheel',
                     'rear_right_wheel',
+                    'front_right_wheel',
                 },
                 openHood = false,
                 durationMs = 7000,
@@ -226,9 +226,9 @@ Config.Maintenance = {
             service = {
                 points = {
                     'front_left_wheel',
-                    'front_right_wheel',
                     'rear_left_wheel',
                     'rear_right_wheel',
+                    'front_right_wheel',
                 },
                 openHood = false,
                 durationMs = 6500,

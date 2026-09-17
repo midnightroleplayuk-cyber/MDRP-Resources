@@ -137,10 +137,11 @@ Config.Pricing = {
     },
 
     -- ──────────────────────────────────────────────────────────────────────────
-    -- Per model (spawn / display name, lowercase)
+    -- Per model (spawn/archetype name preferred, display name also works; lowercase)
     -- mode = 'advanced'     → deep-merge overrides below onto global prices
     -- mode = 'vehicleValue' → scale all prices by vehiclePrice / scaleReferencePrice
     -- optional: labor (fixed labor), multiplier (manual scale instead of vehiclePrice)
+    -- Example: hvmustang matches GetEntityArchetypeName; police2 matches both.
     -- ──────────────────────────────────────────────────────────────────────────
     byModel = {
         -- adder = {

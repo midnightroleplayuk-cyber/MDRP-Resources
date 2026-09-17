@@ -18,9 +18,48 @@ Config.Parts = {
         item = 'body_parts',
     },
 
+    -- Optional: one dedicated item per performance tier (UI level 1 = GTA mod 0).
+    -- When enabled, installing Engine 2 consumes engine_upgrade_2 (not N x engine_parts).
+    -- Stock / remove (value -1) still costs nothing. Unmapped levels fall back to rules below.
+    performanceLevelItems = {
+        enabled = false,
+        amount = 1,
+        items = {
+            ['performance.engine'] = {
+                [1] = 'engine_upgrade_1',
+                [2] = 'engine_upgrade_2',
+                [3] = 'engine_upgrade_3',
+                [4] = 'engine_upgrade_4',
+            },
+            ['performance.brakes'] = {
+                [1] = 'brake_upgrade_1',
+                [2] = 'brake_upgrade_2',
+                [3] = 'brake_upgrade_3',
+            },
+            ['performance.transmission'] = {
+                [1] = 'transmission_upgrade_1',
+                [2] = 'transmission_upgrade_2',
+                [3] = 'transmission_upgrade_3',
+            },
+            ['performance.suspension'] = {
+                [1] = 'suspension_upgrade_1',
+                [2] = 'suspension_upgrade_2',
+                [3] = 'suspension_upgrade_3',
+                [4] = 'suspension_upgrade_4',
+            },
+            ['performance.armor'] = {
+                [1] = 'armor_upgrade_1',
+                [2] = 'armor_upgrade_2',
+                [3] = 'armor_upgrade_3',
+                [4] = 'armor_upgrade_4',
+                [5] = 'armor_upgrade_5',
+            },
+        },
+    },
+
     rules = {
         ['wheels.model'] = { item = 'wheel_parts', strategy = 'flat', amount = 1 },
-        ['wheels.color'] = { item = 'wheel_parts', strategy = 'flat', amount = 1 },
+        ['wheels.color'] = { item = 'paint_supplies', strategy = 'flat', amount = 1 },
         ['wheels.tireSmoke'] = { item = 'tire_parts', strategy = 'flat', amount = 1 },
         ['wheels.customTires'] = { item = 'tire_parts', strategy = 'flat', amount = 1 },
         ['wheels.bulletproof'] = { item = 'tire_parts', strategy = 'flat', amount = 1 },
@@ -98,5 +137,26 @@ Config.Parts = {
         { id = 'ev_motor', item = 'ev_motor', price = 2200, max = 4 },
         { id = 'ev_battery', item = 'ev_battery', price = 1800, max = 4 },
         { id = 'ev_coolant', item = 'ev_coolant', price = 220, max = 16 },
+
+        -- Enable performanceLevelItems above, register these in your inventory, then uncomment:
+        -- { id = 'engine_upgrade_1', item = 'engine_upgrade_1', price = 2500, max = 10 },
+        -- { id = 'engine_upgrade_2', item = 'engine_upgrade_2', price = 5000, max = 10 },
+        -- { id = 'engine_upgrade_3', item = 'engine_upgrade_3', price = 8500, max = 8 },
+        -- { id = 'engine_upgrade_4', item = 'engine_upgrade_4', price = 12000, max = 6 },
+        -- { id = 'brake_upgrade_1', item = 'brake_upgrade_1', price = 1500, max = 10 },
+        -- { id = 'brake_upgrade_2', item = 'brake_upgrade_2', price = 3000, max = 10 },
+        -- { id = 'brake_upgrade_3', item = 'brake_upgrade_3', price = 4500, max = 8 },
+        -- { id = 'transmission_upgrade_1', item = 'transmission_upgrade_1', price = 2000, max = 10 },
+        -- { id = 'transmission_upgrade_2', item = 'transmission_upgrade_2', price = 4000, max = 10 },
+        -- { id = 'transmission_upgrade_3', item = 'transmission_upgrade_3', price = 6500, max = 8 },
+        -- { id = 'suspension_upgrade_1', item = 'suspension_upgrade_1', price = 1200, max = 10 },
+        -- { id = 'suspension_upgrade_2', item = 'suspension_upgrade_2', price = 2400, max = 10 },
+        -- { id = 'suspension_upgrade_3', item = 'suspension_upgrade_3', price = 3800, max = 8 },
+        -- { id = 'suspension_upgrade_4', item = 'suspension_upgrade_4', price = 5200, max = 6 },
+        -- { id = 'armor_upgrade_1', item = 'armor_upgrade_1', price = 2000, max = 10 },
+        -- { id = 'armor_upgrade_2', item = 'armor_upgrade_2', price = 4000, max = 10 },
+        -- { id = 'armor_upgrade_3', item = 'armor_upgrade_3', price = 6500, max = 8 },
+        -- { id = 'armor_upgrade_4', item = 'armor_upgrade_4', price = 9000, max = 6 },
+        -- { id = 'armor_upgrade_5', item = 'armor_upgrade_5', price = 12000, max = 4 },
     },
 }
