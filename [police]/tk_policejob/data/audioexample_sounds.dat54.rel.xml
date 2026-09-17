@@ -1,0 +1,61 @@
+<Dat54>
+  <Version value="7314721" />
+  <ContainerPaths>
+    <Item>audiodirectory\policejob_sounds</Item>
+  </ContainerPaths>
+  <Items>
+    <Item type="SimpleSound">
+      <Name>flash_sp</Name>
+      <Header>
+        <Flags value="0x00008004" />
+        <Volume value="400" />
+        <Category>scripted</Category>
+      </Header>
+      <ContainerName>audiodirectory/policejob_sounds</ContainerName>
+      <FileName>flash</FileName>
+      <WaveSlotNum value="0" />
+    </Item>
+    <Item type="SimpleSound">
+      <Name>handcuff_sp</Name>
+      <Header>
+        <Flags value="0x00008004" />
+        <Volume value="400" />
+        <Category>scripted</Category>
+      </Header>
+      <ContainerName>audiodirectory/policejob_sounds</ContainerName>
+      <FileName>handcuff</FileName>
+      <WaveSlotNum value="0" />
+    </Item>
+    <Item type="SimpleSound">
+      <Name>uncuff_sp</Name>
+      <Header>
+        <Flags value="0x00008004" />
+        <Volume value="400" />
+        <Category>scripted</Category>
+      </Header>
+      <ContainerName>audiodirectory/policejob_sounds</ContainerName>
+      <FileName>uncuff</FileName>
+      <WaveSlotNum value="0" />
+    </Item>
+    <Item type="SoundSet">
+      <Name>policejob_soundset</Name>
+      <Header>
+        <Flags value="0xAAAAAAAA" />
+      </Header>
+      <SoundSets>
+        <Item>
+          <ScriptName>flash</ScriptName>
+          <ChildSound>flash_sp</ChildSound>
+        </Item>
+        <Item>
+          <ScriptName>handcuff</ScriptName>
+          <ChildSound>handcuff_sp</ChildSound>
+        </Item>
+        <Item>
+          <ScriptName>uncuff</ScriptName>
+          <ChildSound>uncuff_sp</ChildSound>
+        </Item>
+      </SoundSets>
+    </Item>
+  </Items>
+</Dat54>
