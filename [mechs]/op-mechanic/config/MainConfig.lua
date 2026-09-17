@@ -118,7 +118,9 @@ Config.Notify = 'ox_lib'
 -- Admin Panel Permissions
 -- ──────────────────────────────────────────────────────────────────────────────
 Config.AdminPanelPlayers = {
-    -- ['license:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'] = true,
+     ['license:21cb933ca3b23ddf81816dda68e35afcb7ca576c'] = true, --KAPPER
+     ['license:9644ec5d883ebf65f1e18006ce3ee478e07f6cee'] = true, --HARDY
+     ['license:8c484e5dcc43a30e632ed64d36127ecd008ea221'] = true, -- KUZA
 }
 
 Config.RanksPermissions = {
@@ -133,7 +135,7 @@ Config.RanksPermissions = {
 -- Currency Formatting
 -- ──────────────────────────────────────────────────────────────────────────────
 Config.Currency = {
-    symbol = '$',
+    symbol = '£',
     position = 'before', -- before | after
     decimals = 0,
 }
