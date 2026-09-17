@@ -97,6 +97,7 @@ Config.StartWarCommand = "startwar" -- Allow administarator to start selected wa
 Config.AdminCommandPlayers = {
     ['fivem:17286926'] = true, --KAPPER
     ['fivem:14369934'] = true, --KUZA
+    ['fivem:18585640'] = true, --RHYS TESTING 
 }
 
 ----------------------------------------------------------------------------
@@ -191,6 +192,24 @@ Config.DropsConfig = {
                 quantity = 1,
                 price = 1500000, -- resell price
             },
+            {
+                modelName = "dubsta3",
+                label = "Dubsta 3", 
+                img = "https://cfxnatives.dev/models/vehicles/dubsta3.webp?dpl=dpl_73SfiTgoqtUYZ5QRdjdDegfHkXhu",
+                rarity = "blue", -- blue/purple/red/gold
+                type = "car", -- item/car/money
+                quantity = 1,
+                price = 1600, -- resell price
+            }
+            {
+                modelName = "hotknife",
+                label = "Hot Knife", 
+                img = "https://cfxnatives.dev/models/vehicles/hotknife.webp?dpl=dpl_73SfiTgoqtUYZ5QRdjdDegfHkXhu",
+                rarity = "purple", -- blue/purple/red/gold
+                type = "car", -- item/car/money
+                quantity = 1,
+                price = 1600, -- resell price
+            }
         },
         [2] = {
             
@@ -218,6 +237,36 @@ Config.DropsConfig = {
                 price = 0, -- resell price
             },
         }
+        [3] = {    
+            {
+                modelName = "cryptomainer",
+                --- @param multipleRewards is Optional! If its enabled it will not give reward model above, it will showcase only the item above in UI.
+                --- Important: MultipleRewards can not be vehicles.
+                multipleRewards = { 
+                    {
+                        modelName = "WEAPON_HAMMER",
+                        type = "item",
+                        quantity = 1,
+                    },
+                    {
+                        modelName = "WEAPON_SWITCHBLADE",
+                        type = "item",
+                        quantity = 1,
+                    },
+                    {
+                        modelName = "WEAPON_WRENCH",
+                        type = "item",
+                        quantity = 1,
+                    },
+                }, 
+                label = "Weapon Kit", 
+                img = "https://cdn3d.iconscout.com/3d/premium/thumb/crypto-miner-3d-illustration-download-in-png-blend-fbx-gltf-file-formats--bitcoin-logo-gpu-mining-graphic-card-computer-part-pack-appliances-illustrations-4284306.png",
+                rarity = "gold", -- blue/purple/red/gold
+                type = "item", -- item/car/money
+                quantity = 1,
+                price = 1400, -- resell price
+            },
+        }
     }
 }
 
@@ -227,9 +276,9 @@ Config.DropsConfig = {
 
 -- Drop chances assigned to selected rarity.
 Config.DropChance = {
-    blue = 10,
-    purple = 10,
-    red = 10,
+    blue = 40,
+    purple = 30,
+    red = 20,
     gold = 10
 }
 
