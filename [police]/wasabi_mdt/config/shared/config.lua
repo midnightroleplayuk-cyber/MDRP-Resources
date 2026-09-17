@@ -11,7 +11,7 @@ Config.Departments = {}
 -- ============================================================================
 
 -- default accent; depts can override with their own color
-Config.UIColor = '#29b181'
+Config.UIColor = '#2b29b1'
 
 -- locales/*.json — 'en' ships by default
 Config.Locale = 'en'
@@ -144,7 +144,7 @@ Config.Alerts = {
 
 -- Radio / Patrol
 Config.Radio = {
-    enabled = true,
+    enabled = false,
     provider = 'pma-voice', -- pma-voice | saltychat | custom adapter name
     channels = {
         -- `channel` remains the MDT/PMA numeric value. `saltyChat` is the
@@ -170,7 +170,7 @@ Config.Radio = {
 -- bodycam via Medal.tv — players need Medal installed
 -- set Instant Replay buffer >= maxClipDuration
 Config.BodyCam = {
-    enabled = true,
+    enabled = false,
     stopKey = 'F10',
     maxClipDuration = 300,   -- seconds per SaveClip (~15–600)
     -- auto-save while recording longer than maxClipDuration (ms). 0 = only on stop

@@ -4308,4 +4308,15 @@ return {
     description = 'Industrial detergent and solvents for a laundromat machine.',
 },
 
+
+-- WASABI MDT
+    ["mdt_tablet"] = { 
+        label = 'MDT Tablet',
+        description = 'A law enforcement MDT device.',
+        weight = 50,
+        stack = false,
+        close = true
+    },
+
+
 }
