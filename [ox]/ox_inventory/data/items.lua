@@ -4318,5 +4318,107 @@ return {
         close = true
     },
 
-
+-- POLARS REALISTIC GANG SHIT
+["lgbtqandbandana"] = {
+    label = "Lgbtq Bandana",
+    weight = 1,
+    stack = true,
+    close = true,
+},
+["greygandbandana"] = {
+    label = "Grey Bandana",
+    weight = 1,
+    stack = true,
+    close = true,
+},
+["blackgandbandana"] = {
+    label = "Black Bandana",
+    weight = 1,
+    stack = true,
+    close = true,
+},
+["bluegandbandana"] = {
+    label = "Blue Bandana",
+    weight = 1,
+    stack = true,
+    close = true,
+},
+["browngandbandana"] = {
+    label = "Brown Bandana",
+    weight = 1,
+    stack = true,
+    close = true,
+},
+["greengandbandana"] = {
+    label = "Green Bandana",
+    weight = 1,
+    stack = true,
+    close = true,
+},
+["lightbluegandbandana"] = {
+    label = "Light Blue Bandana",
+    weight = 1,
+    stack = true,
+    close = true,
+},
+["olivegandbandana"] = {
+    label = "Olive Bandana",
+    weight = 1,
+    stack = true,
+    close = true,
+},
+["orangegandbandana"] = {
+    label = "Orange Bandana",
+    weight = 1,
+    stack = true,
+    close = true,
+},
+["pinkgandbandana"] = {
+    label = "Pink Bandana",
+    weight = 1,
+    stack = true,
+    close = true,
+},
+["purplegandbandana"] = {
+    label = "Purple Bandana",
+    weight = 1,
+    stack = true,
+    close = true,
+},
+["redgandbandana"] = {
+    label = "Red Bandana",
+    weight = 1,
+    stack = true,
+    close = true,
+},
+["whitegandbandana"] = {
+    label = "White Bandana",
+    weight = 1,
+    stack = true,
+    close = true,
+},
+["yellowgandbandana"] = {
+    label = "Yellow Bandana",
+    weight = 1,
+    stack = true,
+    close = true,
+},
+["batnails"] = {
+    label = "Nails",
+    weight = 1,
+    stack = true,
+    close = true,
+},
+["pobeerbottle"] = {
+    label = "Beer Bottle",
+    weight = 1,
+    stack = true,
+    close = true,
+},
+["popetrolbottle"] = {
+    label = "Petrol Bottle",
+    weight = 1,
+    stack = true,
+    close = true,
+},
 }

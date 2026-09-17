@@ -1,0 +1,15 @@
+---@alias PlayerId integer
+---@alias Character table
+---@alias CharacterIdentifier string
+---@alias Vector2Table {x: number, y: number}
+---@alias Vector3Table {x: number, y: number, z: number}
+---@alias Vector4Table {x: number, y: number, z: number, w: number}
+---@alias Vehicle integer
+---@alias Prop integer
+---@alias Ped integer
+---@alias Blip integer
+---@alias Distance number
+---@alias ScaleformHandle integer
+---@alias NetId integer
+---@alias Entity integer
+---@alias FailReason string @ Various fail reasons we can translate for better menu / notification messages
