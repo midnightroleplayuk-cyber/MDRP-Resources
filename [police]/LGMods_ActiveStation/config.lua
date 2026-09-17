@@ -8,7 +8,7 @@ Config.LawEnforcementJobs = {
     ['police'] = true
 }
 
-Config.useLGModsMDT = true -- only enable this if you have the LGModsMDT resource installed
+Config.useLGModsMDT = false -- only enable this if you have the LGModsMDT resource installed
 
 Config.StationName = "Sinner Street Station"
 
