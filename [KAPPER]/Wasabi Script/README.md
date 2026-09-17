@@ -1,0 +1,1 @@
+https://docs.wasabiscripts.com/advanced-series/wasabi-mdt/
