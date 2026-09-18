@@ -846,12 +846,12 @@ Config.itemCollection = {
                 blip = false,
             },
                 {
-                coords = vec3(-439.69, -954.3, 28.39),
+                coords = vec3(-439.79, -954.3, 28.39),
                 rotation = vec3(0, 0, 90),
                 blip = false,
             },
                 {
-                coords = vec3(-439.57, -952.74, 28.39),
+                coords = vec3(-439.79, -952.74, 28.39),
                 rotation = vec3(0, 0, 90),
                 blip = false,
             },
