@@ -3,7 +3,7 @@ ServerConfig = {}
 -- ──────────────────────────────────────────────────────────────────────────────
 -- Auto SQL
 -- ──────────────────────────────────────────────────────────────────────────────
-ServerConfig.DisableAutoSql = true
+ServerConfig.DisableAutoSql = false
 
 ServerConfig.LogsWebhook = '' -- Discord webhook (optional).
 

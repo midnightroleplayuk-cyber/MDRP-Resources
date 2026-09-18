@@ -165,7 +165,9 @@ Config.AntiLag = {
                     'warrener2_exhaust_pops',
                 },
             },
-            { id = 'bang', explosionType = 61 },
+            -- Type 61 sounds great outdoors but Rockstar mutes it in tunnels /
+            -- underpasses. tunnelExplosionType is used when enclosed (default 2).
+            { id = 'bang', explosionType = 61, tunnelExplosionType = 2 },
         },
         calmNpcs = true,
         calmRadius = 28.0,

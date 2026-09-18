@@ -5,7 +5,7 @@ lua54 'yes'
 name 'op-mechanic'
 author 'OTHERPLANET'
 description 'Most Advanced Mechanic System'
-version '2.0.3'
+version '2.0.4'
 
 shared_scripts {
     '@ox_lib/init.lua',
