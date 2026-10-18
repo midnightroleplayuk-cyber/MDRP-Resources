@@ -10,14 +10,14 @@ Config.wildWeed = {
 
     -- Optional map blips at each zone
     blip = {
-        enabled = true,
+        enabled = false,
         sprite = 496,
         color = 25,
         alpha = 255,
         scale = 0.8,
         label = 'Wild Weed',
         radius = {
-            enabled = true,
+            enabled = false,
             color = 25,
             alpha = 70,
         },
@@ -25,16 +25,16 @@ Config.wildWeed = {
 
     -- Areas where the wild weed will spawn.
     zones = {
-        ['grapeseed'] = {
+        ['zancudo_river'] = {
             -- Item given to the player after collection
-            yieldItem = 'kq_weed_bud_og_kush',
+            yieldItem = 'kq_weed_bud_white_widow',
             -- Optional. When defined one of the seeds will always be given on collection
-            seedItem = 'kq_weed_seed_og_kush',
+            seedItem = 'kq_weed_seed_white_widow',
 
             -- Amount of the yieldItem gained from a single wild plant
             yield = {
-                min = 1,
-                max = 4,
+                min = 2,
+                max = 3,
 
                 -- Quality of the collected buds (only used when quality metadata is enabled)
                 quality = 30,
@@ -46,16 +46,16 @@ Config.wildWeed = {
             tint = 0,
 
             -- Center of the zone
-            center = vec3(1851.57, 4892.66, 43.73),
+            center = vec3(-2624.32, 2483.32, 1.99),
             -- Zone radius
-            radius = 40.0,
+            radius = 35.0,
             -- Amount of plants spawned in this zone
-            count = 16,
+            count = 15,
 
             -- Seconds before a collected plant respawns somewhere else in this zone.
-            respawnDelay = 300,
+            respawnDelay = 14400,
         },
-        ['mount_gordo'] = {
+        ['gordo_trail'] = {
             yieldItem = 'kq_weed_bud_purple_haze',
             seedItem = 'kq_weed_seed_purple_haze',
 
@@ -70,11 +70,11 @@ Config.wildWeed = {
             model = 'kq_weed_plant_03',
             tint = 1,
 
-            center = vec3(3110.79, 6111.24, 200.0),
-            radius = 60.0,
-            count = 14,
+            center = vec3(3345.19, 5646.38, 17.65),
+            radius = 40.0,
+            count = 15,
 
-            respawnDelay = 300,
+            respawnDelay = 14400,
         },
     },
 }

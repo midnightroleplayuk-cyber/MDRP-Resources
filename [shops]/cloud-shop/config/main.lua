@@ -35,6 +35,8 @@ return {
 				vector4(549.2471, 2669.6699, 42.1565, 96.9846), -- Route 68
 				vector4(1392.0671, 3606.1155, 34.9809, 203.5101), -- Algonquin Blvd
 				vector4(1984.2482, 3054.3589, 47.2151, 240.0611), -- Panorama Dr
+				vector4(209.35, -867.63, 31.30, 74.26), --New Legion Square
+				vector4(1481.7, 3572.17, 36.77, 287.85), -- Sandy Shores Estate
 			},
 
 			--? For icons, use Iconify: https://icon-sets.iconify.design
@@ -167,7 +169,8 @@ return {
 				-- Phones
 				{ name = "phone", label = "LB Phone", category = "Phones", price = 600 },
 			    { name = "radio", label = "Radio", category = "all", price = 600 },
-				{ name = "devhub_laptop", label = "Laptop", category = "all", price = 1500 },
+				{ name = "darknet_tablet", label = "Laptop", category = "all", price = 1500 },
+				{ name = "darknet_vpn", label = "USB Stick", category = "all", price = 250 },
 			},
 
 			Requirement = {

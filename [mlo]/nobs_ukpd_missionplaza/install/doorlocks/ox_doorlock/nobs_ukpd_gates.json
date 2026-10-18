@@ -1,0 +1,77 @@
+[
+ {
+  "name": "nobs_mp_gate_entrance",
+  "label": "Public entrance vehicle gate",
+  "data": {
+   "maxDistance": 10.0,
+   "state": 0,
+   "groups": {
+    "police": 0
+   },
+   "hideUi": false,
+   "coords": {
+    "x": 421.40557,
+    "y": -358.65017,
+    "z": 46.20468
+   },
+   "doors": [
+    {
+     "coords": {
+      "x": 418.96422,
+      "y": -361.47023,
+      "z": 46.17608
+     },
+     "model": 1895768305,
+     "heading": 229.12
+    },
+    {
+     "coords": {
+      "x": 423.84692,
+      "y": -355.83011,
+      "z": 46.23329
+     },
+     "model": 1895768305,
+     "heading": 49.12
+    }
+   ]
+  }
+ },
+ {
+  "name": "nobs_mp_gate_exit",
+  "label": "Police yard vehicle exit gate",
+  "data": {
+   "maxDistance": 10.0,
+   "state": 1,
+   "groups": {
+    "police": 0
+   },
+   "hideUi": false,
+   "coords": {
+    "x": 374.95019,
+    "y": -381.44708,
+    "z": 45.74862
+   },
+   "doors": [
+    {
+     "coords": {
+      "x": 371.23333,
+      "y": -381.13431,
+      "z": 45.73028
+     },
+     "model": 1895768305,
+     "heading": 175.19
+    },
+    {
+     "coords": {
+      "x": 378.66706,
+      "y": -381.75984,
+      "z": 45.76696
+     },
+     "model": 1895768305,
+     "heading": 355.19
+    }
+   ],
+   "autolock": 15
+  }
+ }
+]

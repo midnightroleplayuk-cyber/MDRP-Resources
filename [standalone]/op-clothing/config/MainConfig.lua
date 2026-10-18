@@ -53,12 +53,12 @@ Config.Compat = {
 -- Locations: /clothingadmin -> Lockers
 -- ------------------------------------------------------------------------------
 Config.JobLockers = {
-    Enabled             = true,
+    Enabled             = false,
     AllowPrivateOutfits = true,  -- show personal outfits in locker
     DefaultManageGrade  = 3,     -- min grade to edit locker outfits
     BlipPresets = {
-        { label = 'Midnight Police',   sprite = 60,  color = 29 },
-        { label = 'MHS',      sprite = 61,  color = 1 },
+        { label = 'Police',   sprite = 60,  color = 29 },
+        { label = 'EMS',      sprite = 61,  color = 1 },
         { label = 'Mechanic', sprite = 446, color = 5 },
     },
 }
@@ -283,6 +283,13 @@ Config.Thumbnails = {
 }
 
 -- ------------------------------------------------------------------------------
+-- Tattoo system
+-- ------------------------------------------------------------------------------
+Config.TattooSystem = {
+    Enabled = true,
+}
+
+-- ------------------------------------------------------------------------------
 -- Character Creator
 -- ------------------------------------------------------------------------------
 Config.CharacterCreator = {
@@ -290,13 +297,15 @@ Config.CharacterCreator = {
     AllowModelChange = true,
     AllowCancel      = true,
     IncludeClothing  = true,
-    IncludeTattoos   = true,
+    IncludeTattoos   = true, -- ignored when Config.TattooSystem.Enabled = false
     Command          = 'charmenu', -- admin only; nil = disabled
     ResetOnOpen      = false,  -- wipe to default when OpenCharacterCreator has no opts.reset (first creation / multichar)
     CharmenuKeepAppearance = true, -- /charmenu keeps the player's current look instead of wiping to default
-    -- Max mother/father / skin parent index (slider 0..ParentMax). Vanilla freemode = 45.
-    -- Raise for custom face packs
+    -- Max head-blend parent index on every heritage slider (0..ParentMax). Vanilla = 45.
+    -- Raise for custom face packs (ONX etc.).
     ParentMax        = 45,
+    ParentMaxMale    = 22,   -- father / skin-father cap (0..22 vanilla)
+    ParentFemaleMin  = 23,   -- mother / skin-mother start (23..ParentMax)
 }
 
 -- ------------------------------------------------------------------------------

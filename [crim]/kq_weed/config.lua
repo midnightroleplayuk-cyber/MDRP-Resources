@@ -258,7 +258,7 @@ Config.prePlaced = {
 -- Simple item shop system
 -- We highly recommend adding these items to your shops, heists, robberies etc. instead
 Config.vendors = {
-    ["fertilizer_store"] = {
+    ["seed_store"] = {
         coords = vector3(2221.41, 5612.42, 53.68),
         heading = 80.0,
         model = "a_m_m_hillbilly_01",
@@ -267,24 +267,21 @@ Config.vendors = {
             anim = "base"
         },
         items = {
-            ['kq_weed_fertilizer_speed'] = { label = "Fertilizer [Growth speed]", price = 200 },
-            ['kq_weed_fertilizer_yield'] = { label = "Fertilizer [Yield amount]", price = 200 },
-            ['kq_weed_fertilizer_resistance'] = { label = "Fertilizer [Resistance booster]", price = 200 },
-            ['kq_weed_fertilizer_blackmarket'] = { label = "Fertilizer [Blackmarket]", price = 400 },
+            ['kq_weed_seed_og_kush'] = { label = "Weed seed [OG Kush]", price = 100 },
             ['watering_can'] = { label = "Watering Can", price = 50 },
             
         },
         blip = {
             enabled = false,
 
-            label = 'Fertilizer dealer',
+            label = 'Seed dealer',
             sprite = 622,
             color = 62,
             alpha = 255,
             scale = 0.7,
         },
     },
-    ["seed_store"] = {
+    ["fertilizer_store"] = {
         coords = vector3(890.82, 2854.86, 56.0),
         heading = 055.061,
         model = "g_m_y_famdnf_01",
@@ -293,9 +290,10 @@ Config.vendors = {
             anim = "idle_a"
         },
         items = {
-            ['kq_weed_seed_og_kush'] = { label = "Weed seed [OG Kush]", price = 100 },
-            ['kq_weed_seed_purple_haze'] = { label = "Weed seed [Purple Haze]", price = 250 },
-            ['kq_weed_seed_white_widow'] = { label = "Weed seed [White Widow]", price = 750 },
+            ['kq_weed_fertilizer_speed'] = { label = "Fertilizer [Growth speed]", price = 200 },
+            ['kq_weed_fertilizer_yield'] = { label = "Fertilizer [Yield amount]", price = 200 },
+            ['kq_weed_fertilizer_resistance'] = { label = "Fertilizer [Resistance booster]", price = 200 },
+            ['kq_weed_fertilizer_blackmarket'] = { label = "Fertilizer [Blackmarket]", price = 400 },
             ['kq_weed_bag_empty'] = { label = "Empty baggie", price = 30, amount = 5 },
         },
         blip = {

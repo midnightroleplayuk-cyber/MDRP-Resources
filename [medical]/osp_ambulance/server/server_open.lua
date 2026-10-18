@@ -7,22 +7,22 @@ end
 -- Override this to integrate a custom dispatch system (server-side path).
 -- Built-in adapters live in integrations/dispatch/* and are selected via Config.Dispatch.
 -- src (optional): the server id of the player who triggered the alert.
-function TriggerDispatchAlert(coords, message, src)
+--function TriggerDispatchAlert(coords, message, src)
     local tool = GetEnsuredDispatchTool()
     local dispatch = Dispatch[tool]
 
-    if dispatch and dispatch.alert then
-        dispatch.alert(coords, message, src)
-        return true
-    end
+ --   if dispatch and dispatch.alert then
+ --       dispatch.alert(coords, message, src)
+ --       return true
+ --   end
 
-    if tool ~= 'default' and Dispatch['default'] and Dispatch['default'].alert then
-        Dispatch['default'].alert(coords, message, src)
-        return true
-    end
+ --   if tool ~= 'default' and Dispatch['default'] and Dispatch['default'].alert then
+ --       Dispatch['default'].alert(coords, message, src)
+ --       return true
+   -- end
 
-    return false
-end
+   -- return false
+--end
 
 function IsValidBloodType(bloodType)
     return type(bloodType) == 'string' and bloodType ~= '' and Config.bloodTypes and Config.bloodTypes[bloodType] ~= nil

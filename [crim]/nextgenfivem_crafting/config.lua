@@ -6,7 +6,7 @@ BenchOptions = {
     enableSpotlight = true,                -- Enable the spotlight for the bench
     blackoutRenderFix = true,             -- Keep the bench screen readable during a server-wide blackout WITHOUT switching the blackout off. Prefer this over disableBlackoutAtBench: the world around the bench stays completely dark, hidden benches stay hidden, and your own blackout/time script keeps control.
     disableBlackoutAtBench = false,        -- Older, blunter version of the above: force-disables the global blackout on the local client while the player is at a bench. This relights the whole map for that player and cannot hand the blackout state back to an external time script, so use blackoutRenderFix instead unless you have a reason not to.
-    enablePortableBenches = true,          -- Enable portable benches. This will allow the player to place the bench themselves with items. (this needs to be setted up, check out the documentation)
+    enablePortableBenches = false,          -- Enable portable benches. This will allow the player to place the bench themselves with items. (this needs to be setted up, check out the documentation)
     enableBlueprintItems = true,           -- Enable the blueprint items. The player will need to have the blueprint item in their inventory to craft the item. (this needs to be setted up, check out the documentation)
     colors = {
         primary = '#45005a',               -- The primary color of the bench
@@ -106,8 +106,8 @@ PlacementOptions = {
     This will log the crafting actions to a discord webhook.
 ]]
 DiscordLogs = {
-    enabled = false,                                                                       -- Enable or disable the discord logs
-    webhookUrl = 'https://discord.com/api/webhooks/1234567890/abcdefghijklmnopqrstuvwxyz', -- The webhook for the discord logs
+    enabled = true,                                                                       -- Enable or disable the discord logs
+    webhookUrl = 'https://discord.com/api/webhooks/1552090316280954914/pEgaHatrc5kCGpuE0KU8o49T5d6FrJOAktAU_u7KpLNidyYlVRlEjDP_zR8ZtqCvlUAA', -- The webhook for the discord logs
 }
 
 --[[

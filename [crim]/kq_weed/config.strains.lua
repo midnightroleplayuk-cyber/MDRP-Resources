@@ -10,7 +10,7 @@ Config.weedTypes = {
 
         -- Base growth time in minutes (Excluding any multipliers, think optimal conditions, fertilizer etc.)
         -- Recommended minimum of 4 minutes
-        baseGrowTime = 13,
+        baseGrowTime = 25,
 
         -- The yield of the plant
         yield = {

@@ -221,6 +221,168 @@ Config.Hospitals = {
         boss = {},
         cloakroom = {},
     },
+    {
+        label = "MHS Central",
+        blip = {
+            enable = true,
+            icon = 61,
+            color = 25,
+            scale = 0.79999999999996,
+            coords = vector3(294.21739999996, -1452.5699999998, 29.328200000004),
+        },
+        checking = {
+            vector4(293.76580000006, -1456.7785999998, 29.971599999998, 333.72699999996),
+        },
+
+        duty = {
+            vector3(308.14520000002, -1457.6003999998, 30.208599999998),
+        },
+
+        vehicle = {
+            vector4(324.50419999996, -1474.5702, 28.924, 68.877399999998),
+        },
+
+        helicopter = {
+            vector4(291.56980000006, -1446.5688, 47.935400000002, 160.5),
+        },
+
+        shop = {
+            vector3(306.89540000004, -1469.298, 30.207799999996),
+        },
+
+        elevator = {
+            {
+                label = "Main Elevator",
+                floors = {
+                    {
+                        label = "Main",
+                        coords = vector4(335.4192, -1431.9024, 46.608600000006, 245.5),
+                    },
+                    {
+                        label = "Roof",
+                        coords = vector4(314.45959999994, -1466.4692000002, 30.097199999996, 245.5),
+                    },
+                },
+            },
+        },
+
+        stash = {
+            vector3(310.11060000002, -1472.0980000002, 30.2108),
+        },
+
+        bloodstorage = {},
+
+        donation = {},
+
+        bloodanalysis = {},
+
+        pharmacy = {
+            vector4(291.25320000004, -1455.2166, 29.971599999998, 0.0),
+        },
+
+        beds = {
+            {
+                coords = vector4(297.37899999996, -1461.2166, 29.870000000002, 318.14520000002),
+                getOutOffset = 1.3000000000002,
+                model = "v_med_bed1",
+            },
+            {
+                coords = vector4(300.90839999996, -1463.9978, 29.869400000004, 307.38260000002),
+                getOutOffset = 1.3000000000002,
+                model = "v_med_bed1",
+            },
+            {
+                coords = vector4(304.80260000006, -1467.2999999998, 29.871200000002, 308.75399999996),
+                getOutOffset = 1.3000000000002,
+                model = "v_med_bed1",
+            },
+            {
+                coords = vector4(315.18799999996, -1455.9240000002, 29.873800000002, 135.8898),
+                getOutOffset = 1.3000000000002,
+                model = "v_med_bed1",
+            },
+            {
+                coords = vector4(0.0, 0.0, 0.0, 0.0),
+                getOutOffset = 1.3000000000002,
+                model = "v_med_bed1",
+            },
+            {
+                coords = vector4(322.9264, -1462.1042, 29.880599999996, 132.98599999998),
+                getOutOffset = 1.3000000000002,
+                model = "v_med_bed1",
+            },
+        },
+
+        Xray = {},
+
+        IncomingScreenPos = {
+            {
+                coords = vector3(307.93539999996, -1467.0132, 31.940999999998),
+                rotation = vector3(0.0, -0.0, -124.1108),
+            },
+        },
+
+        IncomingScreenSoundPos = {
+            vector3(307.79579999996, -1467.2258000002, 31.860800000002),
+        },
+
+        StationaryECG = {
+            {
+                name = "ICU 1",
+                bed = {
+                    coords = vector3(297.5098, -1461.0759999998, 29.8698),
+                },
+                screen = {
+                    coords = vector3(296.50060000002, -1462.2522, 31.951800000002),
+                    rotation = vector3(0.0, -0.0, 141.00520000002),
+                },
+            },
+            {
+                name = "ICU 2",
+                bed = {
+                    coords = vector3(300.98739999998, -1464.074, 29.869599999998),
+                },
+                screen = {
+                    coords = vector3(299.96259999996, -1465.1660000002, 31.928399999998),
+                    rotation = vector3(0.0, -0.0, 139.17320000002),
+                },
+            },
+            {
+                name = "ICU 3",
+                bed = {
+                    coords = vector3(304.69660000002, -1467.1513999998, 29.869599999998),
+                },
+                screen = {
+                    coords = vector3(303.83420000004, -1468.4468, 31.940999999998),
+                    rotation = vector3(0.0, -0.0, 130.04840000002),
+                },
+            },
+            {
+                name = "ICU 4",
+                bed = {
+                    coords = vector3(314.89300000004, -1456.0622, 29.8744),
+                },
+                screen = {
+                    coords = vector3(316.08779999998, -1454.8234000002, 31.940999999998),
+                    rotation = vector3(-0.0, -0.0, -31.727599999998),
+                },
+            },
+            {
+                name = "ICU 5",
+                bed = {
+                    coords = vector3(322.77480000002, -1462.1606, 29.875),
+                },
+                screen = {
+                    coords = vector3(323.80220000004, -1461.3325999998, 31.940999999998),
+                    rotation = vector3(-0.0, -0.0, -40.165200000004),
+                },
+            },
+        },
+
+        -- Following actions only support integration for default esx
+        boss = {},
+        cloakroom = {},
+    },
 }
 
 Config.JailBeds = {

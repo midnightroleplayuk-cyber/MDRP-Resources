@@ -11,6 +11,6 @@
 Config.Departments.police = {
     label = 'Midnight Police Constabulary',
     color = '#2b29b1',
-    logo = '', -- Image URL/path; leave blank to use the default shield icon
+    logo = 'https://iili.io/nlEz16l.png', -- Image URL/path; leave blank to use the default shield icon
     permissions = Config.BuildDepartmentPermissions(),
 }

@@ -1,0 +1,30 @@
+name,tag,label,double,leaf,model,hash_u32,hash_i32,world_x,world_y,world_z,world_heading,local_x,local_y,local_z,local_heading,locked,max_distance,interlock_with,group,provisional
+nobs_ukpd_d11_g1,G1,Custody garage entry (G1),True,pair_r,nobs_ukpd_d22_securepair_r_p_glass,1076797679,1076797679,365.6558,-322.63531,45.94298,158.3818,47.5,23.0375,0,0.0,True,2.0,,perimeter,False
+nobs_ukpd_d11_g1,G1,Custody garage entry (G1),True,pair_l,nobs_ukpd_d22_securepair_l_n_glass,572411978,572411978,367.51512,-323.37215,45.94298,338.3818,45.5,23.0375,0,180.0,True,2.0,,perimeter,False
+nobs_ukpd_d11_s1,S1,Custody staff entry (S1),True,pair_r,nobs_ukpd_d22_securepair_r_p_glass,1076797679,1076797679,389.00889,-315.9299,45.94298,68.3818,28.26,8.2,0.0,-90.0,True,2.0,E1,perimeter,False
+nobs_ukpd_d11_s1,S1,Custody staff entry (S1),True,pair_l,nobs_ukpd_d22_securepair_l_n_glass,572411978,572411978,388.27205,-317.78922,45.94298,248.3818,28.26,10.2,0.0,90.0,True,2.0,E1,perimeter,False
+nobs_ukpd_d11_e1,E1,Cell hall response door (E1),False,single,nobs_ukpd_d36_secure_door_single,815283508,815283508,387.1203,-314.7512,45.94298,338.3818,30.45,7.8,0.0,180.0,True,1.5,S1,staff,False
+nobs_ukpd_d11_s2,S2,Custody staff side (S2),False,single,nobs_ukpd_d36_secure_door_single_lh,3325359877,-969607419,386.27982,-319.04347,45.94298,338.3818,29.65,12.1,0.0,180.0,True,1.5,,staff,False
+nobs_ukpd_d11_s3,S3,Custody walk-in (S3),True,pair_r,nobs_ukpd_d36_secure_door_pair_r,27380258,27380258,383.72326,-318.03031,45.94298,338.3818,32.4,12.1,0.0,180.0,True,2.0,,perimeter,False
+nobs_ukpd_d11_s3,S3,Custody walk-in (S3),True,pair_l,nobs_ukpd_d36_secure_door_pair_l,3693969198,-600998098,381.86394,-317.29347,45.94298,158.3818,34.4,12.1,0.0,0.0,True,2.0,,perimeter,False
+nobs_ukpd_d11_s4,S4,Custody desk staff gate (S4),False,single,nobs_ukpd_d36_glazed_staff_gate,1536659265,1536659265,372.04949,-320.07315,45.94298,68.3818,42.5,18.3,0.0,-90.0,True,1.5,,staff,False
+nobs_ukpd_d11_a1,A1,Airlock outer (A1),True,pair_r,nobs_ukpd_d36_secure_door_pair_r,27380258,27380258,378.33123,-315.89348,45.94298,158.3818,38.2,12.1,0.0,0.0,True,2.0,A2,airlock,False
+nobs_ukpd_d11_a1,A1,Airlock outer (A1),True,pair_l,nobs_ukpd_d36_secure_door_pair_l,3693969198,-600998098,380.19055,-316.63032,45.94298,338.3818,36.2,12.1,0.0,180.0,True,2.0,A2,airlock,False
+nobs_ukpd_d11_a2,A2,Airlock cage gate (A2),True,pair_r,nobs_ukpd_d11_cage_gate_leaf_r,2128965228,2128965228,381.77476,-312.63278,45.94298,338.3818,36.2,7.8,0.0,180.0,True,2.0,A1,airlock,False
+nobs_ukpd_d11_a2,A2,Airlock cage gate (A2),True,pair_l,nobs_ukpd_d11_cage_gate_leaf_l,3437955726,-857011570,379.91544,-311.89594,45.94298,158.3818,38.2,7.8,0.0,0.0,True,2.0,A1,airlock,False
+nobs_ukpd_d11_r1,R1,ID suite (R1),False,single,nobs_ukpd_d36_secure_lh_n_hinge,3050117900,-1244849396,375.07743,-314.604,45.94298,158.3818,41.7,12.1,0.0,0.0,True,1.5,,rooms,False
+nobs_ukpd_d11_r2,R2,Medical / FME (R2),False,single,nobs_ukpd_d36_secure_r_p_hinge,2199448904,-2095518392,372.19548,-313.4619,45.94298,338.3818,44.8,12.1,0.0,180.0,True,1.5,,rooms,False
+nobs_ukpd_d11_r3,R3,Interview 1 (R3),False,single,nobs_ukpd_d36_secure_lh_n_hinge,3050117900,-1244849396,367.08236,-311.43559,45.94298,158.3818,50.3,12.1,0.0,0.0,True,1.5,,rooms,False
+nobs_ukpd_d11_r4,R4,Interview 2 / consult (R4),False,single,nobs_ukpd_d36_secure_lh_n_hinge,3050117900,-1244849396,363.36372,-309.96191,45.94298,158.3818,54.3,12.1,0.0,0.0,True,1.5,,rooms,False
+nobs_ukpd_d11_h1,H1,Holding 1 (H1),False,single,nobs_ukpd_d36_holding_door,1582013696,1582013696,364.02567,-313.72014,45.94298,68.3818,52.3,15.35,0.0,-90.0,True,1.5,,rooms,False
+nobs_ukpd_d11_h2,H2,Holding 2 (H2),False,single,nobs_ukpd_d36_holding_door,1582013696,1582013696,362.36778,-317.90361,45.94298,248.3818,52.3,19.85,0.0,90.0,True,1.5,,rooms,False
+nobs_ukpd_d11_x1,X1,Strip search (X1),False,single,nobs_ukpd_d11_secure_door_single_solid_lh,2122133934,2122133934,364.36465,-321.00763,45.94298,248.3818,49.3,22.0,0.0,90.0,True,1.5,,rooms,False
+nobs_ukpd_d11_w1,W1,Detainee shower / WC (W1),False,single,nobs_ukpd_d14_w1_door_solid,4143529808,-151437488,390.28665,-311.91849,45.94298,338.3818,28.55,4.0,0.0,180.0,True,1.5,,cells,False
+nobs_ukpd_d11_c1,C1,Cell 1 (C1),False,single,nobs_ukpd_d36_cell_door,2208128389,-2086838907,387.21878,-310.70271,45.94298,338.3818,31.85,4.0,0.0,180.0,True,1.5,,cells,False
+nobs_ukpd_d11_c2,C2,Cell 2 (C2),False,single,nobs_ukpd_d36_cell_door_obs,262603456,262603456,384.33683,-309.5606,45.94298,338.3818,34.95,4.0,0.0,180.0,True,1.5,,cells,False
+nobs_ukpd_d11_c3,C3,Cell 3 (C3),False,single,nobs_ukpd_d36_cell_door_obs_lh,1404447167,1404447167,380.10688,-307.88429,45.94298,158.3818,39.5,4.0,0.0,0.0,True,1.5,,cells,False
+nobs_ukpd_d11_c4,C4,Cell 4 (C4),False,single,nobs_ukpd_d36_cell_door_lh,2278749344,-2016217952,377.22494,-306.74219,45.94298,158.3818,42.6,4.0,0.0,0.0,True,1.5,,cells,False
+nobs_ukpd_d11_c5,C5,Cell 5 (C5),False,single,nobs_ukpd_d36_cell_door_lh,2278749344,-2016217952,374.343,-305.60008,45.94298,158.3818,45.7,4.0,0.0,0.0,True,1.5,,cells,False
+nobs_ukpd_d11_c6,C6,Cell 6 (C6),False,single,nobs_ukpd_d36_cell_door_lh,2278749344,-2016217952,371.46105,-304.45798,45.94298,158.3818,48.8,4.0,0.0,0.0,True,1.5,,cells,False
+nobs_ukpd_d11_c7,C7,Cell 7 (C7),False,single,nobs_ukpd_d36_cell_door_lh,2278749344,-2016217952,368.57911,-303.31587,45.94298,158.3818,51.9,4.0,0.0,0.0,True,1.5,,cells,False
+nobs_ukpd_d11_c8,C8,Cell 8 (C8),False,single,nobs_ukpd_d36_cell_door_lh,2278749344,-2016217952,365.69717,-302.17377,45.94298,158.3818,55.0,4.0,0.0,0.0,True,1.5,,cells,False

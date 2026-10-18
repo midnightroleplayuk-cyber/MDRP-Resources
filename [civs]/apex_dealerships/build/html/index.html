@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Apex Dealerships</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="anonymous">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- ============ 3D world marker (apex_bossmenu-style) ============ -->
+<div id="world-3d-icon" hidden>
+    <div class="w3d-bubble">
+        <div class="w3d-icon"><i id="w3d-icon" class="fa-solid fa-car"></i></div>
+        <div class="w3d-label">
+            <span class="w3d-key">E</span>
+            <span class="w3d-text" id="w3d-label">Open</span>
+        </div>
+    </div>
+</div>
+
+<!-- ============ test drive HUD ============ -->
+<div id="td-hud" hidden>
+    <div class="td-eyebrow" id="td-eyebrow">TEST DRIVE</div>
+    <div class="td-timer mono" id="td-timer">0:00</div>
+    <div class="td-hint" id="td-hint"></div>
+</div>
+
+<!-- ============ showcase placer help (no focus — walk freely) ============ -->
+<div id="placer" hidden>
+    <div class="placer-panel">
+        <div class="placer-title" id="placer-title"></div>
+        <div class="placer-keys">
+            <span><b class="pk">Scroll</b><span id="pk-rot">Rotate</span></span>
+            <span><b class="pk">E</b><span id="pk-place">Place</span></span>
+            <span><b class="pk">X</b><span id="pk-cancel">Cancel</span></span>
+            <span><b class="pk">H</b><span id="pk-hide">Hide</span></span>
+        </div>
+    </div>
+</div>
+
+<!-- ============ global tooltip (fixed: never clipped by scroll panes) ============ -->
+<div id="tooltip" hidden></div>
+
+<!-- ============ toasts ============ -->
+<div id="toasts"></div>
+
+<!-- ============ SHOWROOM ============ -->
+<div id="showroom" hidden>
+    <div id="orbit-layer"></div>
+
+    <header class="sr-top">
+        <div class="sr-brand">
+            <div class="sr-mark"><i class="fa-solid fa-car"></i></div>
+            <div class="sr-brand-text">
+                <div class="wordmark">APEX <span class="wm-accent">DEALERSHIPS</span></div>
+                <div class="sr-dealer" id="sr-dealer-name"></div>
+            </div>
+        </div>
+        <div class="sr-top-right">
+            <button class="btn btn-ghost sr-leave" id="sr-close" title="ESC">
+                <i class="fa-solid fa-arrow-right-from-bracket fa-flip-horizontal"></i>
+                <span id="sr-leave-label">Leave Showroom</span>
+            </button>
+        </div>
+    </header>
+
+    <aside class="sr-left panel">
+        <div class="money-row">
+            <div class="money-chip">
+                <span class="csp-eyebrow"><i class="fa-solid fa-money-bill-wave"></i><span id="sr-cash-label">Cash</span></span>
+                <span class="csp-value mono" id="sr-cash">$0</span>
+            </div>
+            <div class="money-chip">
+                <span class="csp-eyebrow"><i class="fa-solid fa-building-columns"></i><span id="sr-bank-label">Bank</span></span>
+                <span class="csp-value mono" id="sr-bank">$0</span>
+            </div>
+        </div>
+        <div class="search-wrap">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" id="sr-search" data-t-ph="ui_search" placeholder="Search vehicles…">
+        </div>
+        <div class="filter-row">
+            <div class="dd" id="dd-cat">
+                <button class="dd-btn"><i class="fa-solid fa-car dd-ico"></i><span class="dd-label"></span><i class="fa-solid fa-chevron-down dd-caret"></i></button>
+                <div class="dd-menu" hidden></div>
+            </div>
+            <div class="dd" id="dd-sort">
+                <button class="dd-btn"><i class="fa-solid fa-filter dd-ico"></i><span class="dd-label"></span><i class="fa-solid fa-chevron-down dd-caret"></i></button>
+                <div class="dd-menu" hidden></div>
+            </div>
+        </div>
+        <div class="veh-list" id="sr-list"></div>
+    </aside>
+
+    <aside class="sr-right panel" id="sr-detail" hidden>
+        <div class="det-head">
+            <div class="det-brand" id="det-brand"></div>
+            <div class="det-name" id="det-name"></div>
+            <div class="det-price mono" id="det-price"></div>
+            <div class="det-stock" id="det-stock"></div>
+        </div>
+
+        <div class="det-stats" id="det-stats"></div>
+
+        <div class="det-section" id="det-paint">
+            <div class="sec-title" id="sec-colors">Paint</div>
+            <div class="paint-tabs">
+                <button class="paint-tab active" data-slot="primary" id="tab-primary">Primary</button>
+                <button class="paint-tab" data-slot="secondary" id="tab-secondary">Secondary</button>
+            </div>
+            <div class="swatches" id="sr-swatches"></div>
+            <div class="custom-paint">
+                <input type="color" id="sr-custom" value="#1F5EFF">
+                <span id="sr-custom-label">Custom</span>
+                <span class="mono" id="sr-custom-hex">#1F5EFF</span>
+            </div>
+        </div>
+
+        <div class="det-actions">
+            <div class="sr-notice" id="sr-notice" hidden>
+                <i class="fa-solid fa-circle-info"></i>
+                <span id="sr-notice-text"></span>
+            </div>
+            <button class="btn btn-ghost" id="btn-testdrive"><i class="fa-solid fa-stopwatch"></i><span id="btn-testdrive-label">Test Drive</span></button>
+            <button class="btn btn-primary btn-lg" id="btn-buy"><i class="fa-solid fa-cart-shopping"></i><span id="btn-buy-label">Buy Vehicle</span></button>
+            <button class="btn btn-ghost" id="btn-directsale" hidden><i class="fa-solid fa-handshake"></i><span id="btn-directsale-label">Sell to Customer</span></button>
+        </div>
+    </aside>
+
+    <div class="sr-controls">
+        <button class="ctl-btn" id="ctl-rot-left" title="Rotate left"><i class="fa-solid fa-rotate-left"></i></button>
+        <button class="ctl-btn active" id="ctl-auto" title="Auto-rotate"><i class="fa-solid fa-arrows-rotate"></i></button>
+        <button class="ctl-btn" id="ctl-rot-right" title="Rotate right"><i class="fa-solid fa-rotate-right"></i></button>
+        <span class="ctl-sep"></span>
+        <button class="ctl-btn" id="ctl-zoom-out" title="Zoom out"><i class="fa-solid fa-magnifying-glass-minus"></i></button>
+        <button class="ctl-btn" id="ctl-zoom-in" title="Zoom in"><i class="fa-solid fa-magnifying-glass-plus"></i></button>
+        <span class="ctl-sep"></span>
+        <button class="ctl-btn" id="ctl-reset" title="Reset camera"><i class="fa-solid fa-crosshairs"></i></button>
+    </div>
+</div>
+
+<!-- ============ CHECKOUT MODAL ============ -->
+<div class="overlay" id="checkout-overlay" hidden>
+    <div class="modal">
+        <div class="modal-head">
+            <div>
+                <div class="eyebrow" id="co-eyebrow">Checkout</div>
+                <div class="modal-title" id="co-title"></div>
+            </div>
+            <button class="icon-btn" id="co-close"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+
+        <div class="modal-body">
+            <div class="co-price-row">
+                <span id="co-price-label">Price</span>
+                <span class="mono co-price" id="co-price"></span>
+            </div>
+            <div class="co-price-row co-discount-row" id="co-discount-row" hidden>
+                <span id="co-discount-label">Discount</span>
+                <span class="mono co-discount" id="co-discount"></span>
+            </div>
+
+            <div class="sec-title" id="co-payment-label">Payment</div>
+            <div class="seg" id="co-methods"></div>
+
+            <div id="co-finance" hidden>
+                <div class="fin-row">
+                    <label id="co-down-label">Down payment</label>
+                    <span class="mono" id="co-down-val">10%</span>
+                </div>
+                <input type="range" id="co-down" min="10" max="60" step="5" value="10">
+                <div class="fin-row">
+                    <label id="co-term-label">Installments</label>
+                </div>
+                <div class="seg seg-sm" id="co-terms"></div>
+                <div class="fin-summary">
+                    <div class="fin-line"><span id="co-fs-today">Due today</span><span class="mono" id="co-fs-today-v"></span></div>
+                    <div class="fin-line"><span id="co-fs-inst">per installment</span><span class="mono" id="co-fs-inst-v"></span></div>
+                    <div class="fin-line dim"><span id="co-fs-interest">Interest</span><span class="mono" id="co-fs-interest-v"></span></div>
+                    <div class="fin-line dim"><span id="co-fs-total">Total cost</span><span class="mono" id="co-fs-total-v"></span></div>
+                </div>
+            </div>
+
+            <div class="sec-title" id="co-coupon-label">Coupon code</div>
+            <div class="coupon-row">
+                <input type="text" id="co-coupon" maxlength="40" spellcheck="false">
+                <button class="btn btn-ghost btn-sm" id="co-coupon-apply">Apply</button>
+            </div>
+
+            <div id="co-customer-block" hidden>
+                <div class="sec-title" id="co-customer-label">Customer</div>
+                <div class="cust-list" id="co-customers"></div>
+                <button class="btn btn-ghost btn-block" id="co-direct-td" style="margin-top:8px" disabled>
+                    <i class="fa-solid fa-stopwatch"></i> <span id="co-direct-td-label">Test Drive</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="modal-foot">
+            <button class="btn btn-ghost" id="co-cancel">Cancel</button>
+            <button class="btn btn-primary btn-lg" id="co-confirm">Confirm Purchase</button>
+        </div>
+    </div>
+</div>
+
+<!-- ============ GENERIC DIALOG (consent / sell offer / finance) ============ -->
+<div class="overlay" id="dialog-overlay" hidden>
+    <div class="modal modal-sm">
+        <div class="modal-head">
+            <div>
+                <div class="eyebrow" id="dlg-eyebrow"></div>
+                <div class="modal-title" id="dlg-title"></div>
+            </div>
+        </div>
+        <div class="modal-body" id="dlg-body"></div>
+        <div class="modal-foot" id="dlg-foot"></div>
+    </div>
+</div>
+
+<!-- ============ MANAGEMENT — bossmenu-style shell (rail + main) ============ -->
+<div id="mgmt" hidden>
+    <div class="mg-shell">
+        <aside class="mg-rail">
+            <div class="mg-mark">
+                <i class="fa-solid fa-car"></i>
+                <span class="mg-mark-text">APEX <em>DEALER</em></span>
+            </div>
+            <div class="mg-dealer">
+                <div class="mg-dealer-name" id="mg-dealer-name"></div>
+                <div class="mg-dealer-role" id="mg-dealer-role"></div>
+            </div>
+            <nav class="mg-nav" id="mg-nav"></nav>
+            <div class="mg-rail-foot">
+                <div class="mg-me">
+                    <span class="player-av" id="mg-me-avatar"></span>
+                    <div class="mg-me-text">
+                        <strong id="mg-me-name"></strong>
+                        <span id="mg-me-role"></span>
+                    </div>
+                </div>
+                <div class="mg-rail-foot-actions">
+                    <button class="mg-side-collapse" id="mg-collapse" title="Collapse sidebar">
+                        <i class="fa-solid fa-angles-left"></i>
+                        <span id="mg-collapse-label">Collapse</span>
+                    </button>
+                    <button class="mg-signout-btn" id="mg-close-2" title="Leave">
+                        <i class="fa-solid fa-power-off"></i>
+                    </button>
+                </div>
+            </div>
+        </aside>
+        <main class="mg-main">
+            <header class="mg-topbar">
+                <div class="mg-tab-left">
+                    <div class="mg-tab-icon"><i class="fa-solid fa-gauge-high" id="mg-tab-ico"></i></div>
+                    <div>
+                        <div class="eyebrow" id="mg-eyebrow"></div>
+                        <div class="mg-title" id="mg-title"></div>
+                    </div>
+                </div>
+                <button class="icon-btn" id="mg-close"><i class="fa-solid fa-xmark"></i></button>
+            </header>
+            <section class="mg-pane" id="mg-pane"></section>
+        </main>
+    </div>
+</div>
+
+<!-- ============ ADMIN PANEL — stands / listings / catalog / import ============ -->
+<div id="admin" hidden>
+    <div class="mg-shell adm-shell">
+        <aside class="mg-rail">
+            <div class="mg-mark">
+                <i class="fa-solid fa-screwdriver-wrench"></i>
+                <span class="mg-mark-text">APEX <em>ADMIN</em></span>
+            </div>
+            <div class="mg-dealer">
+                <div class="mg-dealer-name" id="adm-count"></div>
+                <div class="mg-dealer-role" id="adm-fw"></div>
+            </div>
+            <nav class="mg-nav" id="adm-nav"></nav>
+            <div class="mg-rail-foot">
+                <div class="mg-rail-foot-actions">
+                    <button class="mg-side-collapse" id="adm-collapse" title="Collapse sidebar">
+                        <i class="fa-solid fa-angles-left"></i>
+                        <span id="adm-collapse-label">Collapse</span>
+                    </button>
+                    <button class="mg-signout-btn" id="adm-close-2" title="Leave">
+                        <i class="fa-solid fa-power-off"></i>
+                    </button>
+                </div>
+            </div>
+        </aside>
+        <main class="mg-main">
+            <header class="mg-topbar">
+                <div class="mg-tab-left">
+                    <div class="mg-tab-icon"><i class="fa-solid fa-shop" id="adm-tab-ico"></i></div>
+                    <div>
+                        <div class="eyebrow" id="adm-eyebrow">APEX DEALERSHIPS</div>
+                        <div class="mg-title" id="adm-title"></div>
+                    </div>
+                </div>
+                <button class="icon-btn" id="adm-close"><i class="fa-solid fa-xmark"></i></button>
+            </header>
+            <section class="mg-pane" id="adm-pane"></section>
+        </main>
+    </div>
+</div>
+
+<!-- ============ STAND / LISTING EDITOR (wide modal over the admin panel) ============ -->
+<div class="overlay" id="editor-overlay" hidden>
+    <div class="modal modal-xl">
+        <div class="modal-head">
+            <div>
+                <div class="eyebrow" id="ed-eyebrow"></div>
+                <div class="modal-title" id="ed-title"></div>
+            </div>
+            <button class="icon-btn" id="ed-close"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="modal-body" id="ed-body"></div>
+        <div class="modal-foot" id="ed-foot"></div>
+    </div>
+</div>
+
+<!-- ============ MY FINANCE ============ -->
+<div class="overlay" id="finance-overlay" hidden>
+    <div class="modal">
+        <div class="modal-head">
+            <div>
+                <div class="eyebrow">APEX DEALERSHIPS</div>
+                <div class="modal-title" id="fin-title"></div>
+            </div>
+            <button class="icon-btn" id="fin-close"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="modal-body" id="fin-body"></div>
+    </div>
+</div>
+
+<script src="js/app.js"></script>
+</body>
+</html>

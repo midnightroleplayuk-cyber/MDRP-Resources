@@ -1,0 +1,607 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Apex Minimap Studio</title>
+    <!-- The UI typeface (Geist / Geist Mono) is SELF-HOSTED in html/fonts —
+         CEF ships neither Inter nor JetBrains, so a CDN-only stack fell
+         through to Segoe UI + Consolas in game. The Google request below is
+         only for the DISPLAY faces the player can paint onto the map. -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Outfit:wght@400;600;700;800&family=Oswald:wght@500;700&family=Bebas+Neue&family=Anton&family=Montserrat:wght@600;800&family=Roboto+Condensed:wght@700&family=Permanent+Marker&family=Righteous&family=Archivo+Black&family=Teko:wght@600&display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous">
+    <link rel="stylesheet" href="css/style.css?v=27">
+</head>
+<body>
+
+<!-- Loading overlay: solid surface, NEVER backdrop-filter — over a
+     transparent NUI page CEF composites the blur box as opaque black. -->
+<div id="loading-overlay" hidden>
+    <div class="spinner-ring"></div>
+    <div class="loading-wm">Apex Minimap Studio</div>
+</div>
+
+<!-- ───────── APP SHELL — grid: topbar 56px / workspace / statusbar 28px ───────── -->
+<div id="app" hidden>
+
+    <!-- —──────— TOPBAR —─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────— -->
+    <header id="topbar">
+        <div class="brand">
+            <div class="brand-mark"><i class="fa-solid fa-map-location-dot"></i></div>
+            <div class="brand-wm">
+                <span data-i18n="brand_apex">APEX</span>
+                <span class="wm-accent" data-i18n="brand_studio">MINIMAP</span>
+            </div>
+        </div>
+
+        <span class="topbar-sep"></span>
+
+        <button id="project-pill" data-tip="Projects" data-i18n-tip="dock_projects" data-tip-pos="right">
+            <i class="fa-regular fa-folder-open"></i>
+            <span id="project-name" data-i18n="project_untitled">Untitled map</span>
+            <span id="project-dirty" hidden></span>
+        </button>
+
+        <div class="topbar-spacer"></div>
+
+        <!-- Controls / shortcuts lives at the FOOT of the rail, above the
+             action buttons — it is reference, not something you click often. -->
+        <button id="btn-settings" data-tip="Appearance &amp; theme" data-i18n-tip="tip_settings" data-tip-pos="right">
+            <i class="fa-solid fa-sliders"></i>
+        </button>
+
+        <button id="btn-help" data-tip="Controls &amp; shortcuts" data-i18n-tip="tip_help" data-tip-pos="right">
+            <i class="fa-regular fa-keyboard"></i>
+        </button>
+
+        <button id="btn-save" class="btn btn-ghost" data-tip="Save" data-i18n-tip="topbar_save" data-tip-pos="right">
+            <i class="fa-solid fa-floppy-disk"></i>
+            <span class="btn-label" data-i18n="topbar_save">Save</span>
+        </button>
+        <button id="btn-live" data-tip="Live on server" data-i18n-tip="live_tip" data-tip-pos="right">
+            <i class="fa-solid fa-tower-broadcast"></i>
+        </button>
+        <button id="btn-export" class="btn btn-primary" data-tip="Export" data-i18n-tip="topbar_export" data-tip-pos="right">
+            <i class="fa-solid fa-file-export"></i>
+            <span class="btn-label" data-i18n="topbar_export">Export</span>
+        </button>
+        <button id="btn-reset-all" class="side-reset" data-tip="Reset everything" data-i18n-tip="reset_all_tip" data-tip-pos="right">
+            <i class="fa-solid fa-arrow-rotate-left"></i>
+        </button>
+        <button id="btn-close" data-tip="Close" data-i18n-tip="tip_close" data-tip-pos="right">
+            <i class="fa-solid fa-xmark"></i>
+        </button>
+    </header>
+
+    <!-- —──────— WORKSPACE —────────────────────────────────────────────────────────────────────────────────────────────────────────────— -->
+    <!-- rail-collapsed by default: the tool rail starts as icons only -->
+    <div class="workspace rail-collapsed">
+
+        <!-- —──────— MAPS RAIL (base map browser — studio parity) —───— -->
+        <aside id="maps-rail">
+            <div class="pane-head">
+                <span class="micro-label" data-i18n="maps_title">Base map</span>
+                <span id="maps-count" class="tab-count mono"></span>
+            </div>
+            <div class="maps-toggle seg-group" role="group">
+                <button class="seg-btn active" data-mapfilter="ls"><i class="fa-solid fa-city"></i><span data-i18n="maps_los_santos">Los Santos</span></button>
+                <button class="seg-btn" data-mapfilter="cayo"><i class="fa-solid fa-umbrella-beach"></i><span data-i18n="maps_cayo">Cayo Perico</span></button>
+            </div>
+            <div class="tpl-search">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input id="maps-search" class="tpl-search-input" type="text"
+                       placeholder="Search maps…" data-i18n-ph="maps_search_ph"
+                       spellcheck="false" autocomplete="off">
+            </div>
+            <div class="pane-scroll">
+                <div id="maps-grid" class="maps-grid">
+                    <div class="empty-state small">
+                        <i class="fa-solid fa-map-location-dot"></i>
+                        <span data-i18n="maps_loading">Loading maps…</span>
+                    </div>
+                </div>
+            </div>
+            <!-- Bring in a minimap the owner already has. The conversion runs
+                 outside the game (tools/import_map), so all this pane does is
+                 tell them the three steps and reload the list afterwards. -->
+            <div class="pane-foot maps-foot">
+                <div id="maps-help" class="maps-help" hidden>
+                    <p class="maps-help-h" data-i18n="maps_import_h">Any minimap you already have:</p>
+                    <ol class="maps-help-steps">
+                        <li>
+                            <span data-i18n="maps_import_s1">Drop it in</span>
+                            <code>apex_minimap/tools/map_in/</code>
+                            <em data-i18n="maps_import_s1b">— the whole resource folder, the minimap_*.ytd tiles, a .zip, or one big PNG of the map</em>
+                        </li>
+                        <li>
+                            <span data-i18n="maps_import_s2">Run</span>
+                            <code>tools/import_map.bat</code>
+                            <em data-i18n="maps_import_s2b">— on Linux: bash tools/import_map.sh</em>
+                        </li>
+                        <li><code>restart apex_minimap</code></li>
+                    </ol>
+                    <button id="maps-reload" class="btn btn-ghost btn-mini" type="button">
+                        <i class="fa-solid fa-rotate"></i><span data-i18n="maps_reload">Reload the list</span>
+                    </button>
+                </div>
+                <button id="maps-import" class="btn btn-ghost btn-block" type="button">
+                    <i class="fa-solid fa-file-import"></i>
+                    <span class="btn-label" data-i18n="maps_import">Use my own map</span>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Tool rail — labelled buttons, collapsible to icons-only -->
+        <nav id="tool-rail">
+            <div class="rail-group">
+                <button class="tool-btn active" data-tool="pan" data-tip="Pan / Move (V)" data-i18n-tip="tool_pan" data-tip-pos="right"><i class="fa-solid fa-arrow-pointer"></i><span class="rail-label">Move</span></button>
+                <button class="tool-btn" data-tool="brush" data-tip="Brush (B)" data-i18n-tip="tool_brush" data-tip-pos="right"><i class="fa-solid fa-paintbrush"></i><span class="rail-label">Brush</span></button>
+                <button class="tool-btn" data-tool="eraser" data-tip="Eraser (E)" data-i18n-tip="tool_eraser" data-tip-pos="right"><i class="fa-solid fa-eraser"></i><span class="rail-label">Eraser</span></button>
+                <button class="tool-btn" data-tool="fill" data-tip="Fill (F)" data-i18n-tip="tool_fill" data-tip-pos="right"><i class="fa-solid fa-fill-drip"></i><span class="rail-label">Fill</span></button>
+                <button class="tool-btn" data-tool="picker" data-tip="Eyedropper (I)" data-i18n-tip="tool_picker" data-tip-pos="right"><i class="fa-solid fa-eye-dropper"></i><span class="rail-label">Picker</span></button>
+            </div>
+            <div class="rail-group">
+                <button class="tool-btn" data-tool="zone" data-tip="Zone highlight (Z)" data-i18n-tip="tool_zone" data-tip-pos="right"><i class="fa-solid fa-vector-square"></i><span class="rail-label">Zone</span></button>
+                <button class="tool-btn" data-tool="text" data-tip="Text (T)" data-i18n-tip="tool_text" data-tip-pos="right"><i class="fa-solid fa-font"></i><span class="rail-label">Text</span></button>
+                <button class="tool-btn" data-tool="shape" data-tip="Shape (S)" data-i18n-tip="tool_shape" data-tip-pos="right"><i class="fa-solid fa-shapes"></i><span class="rail-label">Shape</span></button>
+                <button class="tool-btn" data-tool="image" data-tip="Image / Logo" data-i18n-tip="tool_image" data-tip-pos="right"><i class="fa-solid fa-image"></i><span class="rail-label">Image</span></button>
+                <button class="tool-btn" data-tool="blip" data-tip="Blip creator (P)" data-i18n-tip="tool_blip" data-tip-pos="right"><i class="fa-solid fa-location-dot"></i><span class="rail-label">Blip</span></button>
+            </div>
+            <div class="rail-group">
+                <button id="btn-undo" class="tool-btn" data-tip="Undo (Ctrl+Z)" data-i18n-tip="tool_undo" data-tip-pos="right"><i class="fa-solid fa-rotate-left"></i><span class="rail-label" data-i18n="tool_undo">Undo</span></button>
+                <button id="btn-redo" class="tool-btn" data-tip="Redo (Ctrl+Y)" data-i18n-tip="tool_redo" data-tip-pos="right"><i class="fa-solid fa-rotate-right"></i><span class="rail-label" data-i18n="tool_redo">Redo</span></button>
+                <button id="rail-collapse" class="tool-btn" data-tip="Collapse" data-i18n-tip="rail_collapse" data-tip-pos="right"><i class="fa-solid fa-angles-left"></i><span class="rail-label" data-i18n="rail_collapse_lbl">Collapse</span></button>
+            </div>
+        </nav>
+
+        <!-- —──────— ATLAS CANVAS —───────────────────────────────────────────────────────────────────────────────────────— -->
+        <section id="canvas-panel">
+            <div class="canvas-head">
+                <div class="canvas-head-left">
+                    <i class="fa-solid fa-map"></i>
+                    <span id="canvas-title" class="mono">Los Santos — 4096×6144</span>
+                    <span id="preview-chip" class="chip mono live">
+                        <span id="preview-dot"></span>
+                        <span id="preview-label" data-i18n="preview_live">Live preview</span>
+                    </span>
+                </div>
+                <div class="canvas-head-right">
+                    <!-- coordinate readout (moved here from the old statusbar) -->
+                    <span class="head-readout">
+                        <span id="status-tile" class="chip mono" hidden></span>
+                        <span id="status-px" class="mono">—</span>
+                        <span class="status-sep"></span>
+                        <span id="status-world" class="mono">—</span>
+                    </span>
+                    <span class="status-sep"></span>
+                    <button id="btn-download-png" class="btn-icon" data-tip="Download atlas PNG" data-i18n-tip="tip_download_png"><i class="fa-solid fa-download"></i></button>
+                    <div class="zoom-group">
+                        <button id="zoom-out" class="btn-icon sm" data-tip="Zoom out" data-i18n-tip="tip_zoom_out"><i class="fa-solid fa-minus"></i></button>
+                        <span id="zoom-value" class="mono">100%</span>
+                        <button id="zoom-in" class="btn-icon sm" data-tip="Zoom in" data-i18n-tip="tip_zoom_in"><i class="fa-solid fa-plus"></i></button>
+                        <button id="btn-zoom-fit" class="btn-icon sm" data-tip="Fit to view" data-i18n-tip="tip_zoom_fit"><i class="fa-solid fa-compress"></i></button>
+                    </div>
+                    <label class="toggle-chip" data-tip="Tile boundaries">
+                        <input type="checkbox" id="tiles-toggle" checked>
+                        <span data-i18n="canvas_tiles">Tiles</span>
+                    </label>
+                    <label class="toggle-chip" data-tip="Pixel grid">
+                        <input type="checkbox" id="grid-toggle">
+                        <span data-i18n="canvas_grid">Grid</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Contextual tool options — filled by panels.js -->
+            <div id="tool-options"></div>
+
+            <div id="canvas-wrap">
+                <canvas id="view-canvas"></canvas>
+                <canvas id="overlay-canvas"></canvas>
+                <div id="drop-hint" class="drop-hint" hidden>
+                    <i class="fa-solid fa-cloud-arrow-up"></i>
+                    <span>Drop image to add a layer</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- —──────— RIGHT DOCK —─────────────────────────────────────────────────────────────────────────────────────────────— -->
+        <aside id="dock">
+            <div class="dock-tabs">
+                <button class="dock-tab active" data-tab="layers"
+                        data-tip="Layers — everything you have drawn, stacked" data-i18n-tip="tip_dock_layers" data-tip-pos="left">
+                    <i class="fa-solid fa-layer-group"></i>
+                    <span data-i18n="dock_layers">Layers</span>
+                    <span class="tab-count mono" aria-hidden="true"></span>
+                </button>
+                <button class="dock-tab" data-tab="themes"
+                        data-tip="Themes — restyle the whole map in one click" data-i18n-tip="tip_dock_themes" data-tip-pos="left">
+                    <i class="fa-solid fa-swatchbook"></i>
+                    <span data-i18n="dock_themes">Themes</span>
+                </button>
+                <button class="dock-tab" data-tab="projects"
+                        data-tip="Projects — save, open and rename your designs" data-i18n-tip="tip_dock_projects" data-tip-pos="left">
+                    <i class="fa-regular fa-folder-open"></i>
+                    <span data-i18n="dock_projects">Projects</span>
+                </button>
+                <button class="dock-tab" data-tab="postals"
+                        data-tip="Postals — draw postal codes and bundle a /gps script" data-i18n-tip="tip_dock_postals" data-tip-pos="left">
+                    <i class="fa-solid fa-signs-post"></i>
+                    <span data-i18n="dock_postals">Postals</span>
+                </button>
+                <button class="dock-tab" data-tab="extensions"
+                        data-tip="Map extensions — reach add-on maps like Roxwood" data-i18n-tip="tip_dock_ext" data-tip-pos="left">
+                    <i class="fa-solid fa-maximize"></i>
+                    <span data-i18n="dock_extensions">Extensions</span>
+                </button>
+                <button class="dock-tab" data-tab="ask"
+                        data-tip="Assistant — ask how to do something" data-i18n-tip="tip_dock_ask" data-tip-pos="left">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i>
+                    <span data-i18n="dock_ask">Assistant</span>
+                </button>
+                <button class="dock-tab" data-tab="export"
+                        data-tip="Export — build a ready-to-drop minimap resource" data-i18n-tip="tip_dock_export" data-tip-pos="left">
+                    <i class="fa-solid fa-file-export"></i>
+                    <span data-i18n="dock_export">Export</span>
+                </button>
+            </div>
+
+            <div class="dock-panes">
+
+                <!-- LAYERS -->
+                <div class="dock-pane active" data-pane="layers">
+                    <div id="inspector">
+                        <div class="empty-state small">
+                            <i class="fa-solid fa-crosshairs"></i>
+                            <span data-i18n="inspector_empty">Select a layer to edit its properties</span>
+                        </div>
+                    </div>
+                    <div class="pane-head">
+                        <span class="micro-label" data-i18n="layers_title">Layers</span>
+                        <button id="btn-add-layer" class="btn-icon sm" data-tip="New paint layer" data-i18n-tip="tip_add_layer"><i class="fa-solid fa-plus"></i></button>
+                    </div>
+                    <div id="layer-ops" hidden>
+                        <button id="lop-up" class="btn-icon sm" data-tip="Move up" data-i18n-tip="tip_layer_up"><i class="fa-solid fa-chevron-up"></i></button>
+                        <button id="lop-down" class="btn-icon sm" data-tip="Move down" data-i18n-tip="tip_layer_down"><i class="fa-solid fa-chevron-down"></i></button>
+                        <button id="lop-dup" class="btn-icon sm" data-tip="Duplicate" data-i18n-tip="tip_duplicate"><i class="fa-regular fa-clone"></i></button>
+                        <button id="lop-del" class="btn-icon sm danger" data-tip="Delete" data-i18n-tip="tip_delete"><i class="fa-solid fa-trash"></i></button>
+                    </div>
+                    <div id="layer-list">
+                        <div class="empty-state">
+                            <i class="fa-solid fa-layer-group"></i>
+                            <span data-i18n="layers_empty">No layers yet — pick a tool to start designing</span>
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- THEMES -->
+                <div class="dock-pane" data-pane="themes">
+                    <div class="pane-scroll">
+                        <span class="micro-label section" data-i18n="themes_title">Restyle themes</span>
+                        <p class="pane-hint" data-i18n="themes_hint">One-click looks applied to the whole map as an adjustable layer.</p>
+                        <div id="theme-grid" class="theme-grid"><!-- .theme-card by panels.js --></div>
+
+                        <span class="micro-label section">Fine-tune</span>
+                        <div class="opt-slider">
+                            <div class="opt-slider-head">
+                                <span class="micro-label">Hue</span>
+                                <span id="adj-hue-val" class="mono opt-val">0°</span>
+                            </div>
+                            <input type="range" id="adj-hue" min="-180" max="180" value="0">
+                        </div>
+                        <div class="opt-slider">
+                            <div class="opt-slider-head">
+                                <span class="micro-label">Saturation</span>
+                                <span id="adj-sat-val" class="mono opt-val">100%</span>
+                            </div>
+                            <input type="range" id="adj-sat" min="0" max="200" value="100">
+                        </div>
+                        <div class="opt-slider">
+                            <div class="opt-slider-head">
+                                <span class="micro-label">Brightness</span>
+                                <span id="adj-bri-val" class="mono opt-val">100%</span>
+                            </div>
+                            <input type="range" id="adj-bri" min="20" max="180" value="100">
+                        </div>
+                        <div class="opt-slider">
+                            <div class="opt-slider-head">
+                                <span class="micro-label">Contrast</span>
+                                <span id="adj-con-val" class="mono opt-val">100%</span>
+                            </div>
+                            <input type="range" id="adj-con" min="20" max="180" value="100">
+                        </div>
+                        <div class="opt-slider">
+                            <div class="opt-slider-head">
+                                <span class="micro-label">Tint</span>
+                                <span id="adj-tint-val" class="mono opt-val">0%</span>
+                            </div>
+                            <input type="range" id="adj-tint-amt" min="0" max="100" value="0">
+                        </div>
+                        <div class="field">
+                            <span class="micro-label" data-i18n="theme_tint_color">Tint color</span>
+                            <input type="color" id="adj-tint" value="#1F5EFF">
+                        </div>
+                        <button id="btn-theme-reset" class="btn btn-ghost btn-block">
+                            <i class="fa-solid fa-arrow-rotate-left"></i>
+                            <span data-i18n="theme_none">Original</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- PROJECTS -->
+                <div class="dock-pane" data-pane="projects">
+                    <div class="pane-scroll">
+                        <span class="micro-label section proj-mine-label" data-i18n="projects_mine">My Projects</span>
+                        <div id="projects-mine" class="project-grid">
+                            <div class="empty-state small">
+                                <i class="fa-regular fa-folder-open"></i>
+                                <span data-i18n="projects_empty">No projects saved yet</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="pane-foot">
+                        <input id="project-name-input" class="input" type="text" maxlength="60"
+                               placeholder="Map name…" data-i18n-ph="project_name_ph"
+                               spellcheck="false" autocomplete="off">
+                        <button id="btn-save-project" class="btn btn-primary btn-block">
+                            <i class="fa-solid fa-floppy-disk"></i>
+                            <span data-i18n="projects_save">Save Project</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- POSTALS -->
+                <div class="dock-pane" data-pane="postals">
+                    <div class="pane-scroll">
+                        <label class="check-row big-check">
+                            <input type="checkbox" id="postal-enabled">
+                            <span data-i18n="postal_show">Show postal codes on the map</span>
+                        </label>
+                        <label class="check-row">
+                            <input type="checkbox" id="postal-ingame" checked>
+                            <span data-i18n="postal_ingame">Bundle an in-game /gps script in the export</span>
+                        </label>
+                        <p class="pane-hint" data-i18n="postal_ingame_hint">The exported resource shows the nearest postal on the HUD and adds a /gps command.</p>
+
+                        <div class="postal-set">
+                            <div class="postal-set-head">
+                                <span class="micro-label section" data-i18n="postal_set">Postal set</span>
+                                <span id="postal-count" class="chip mono">0</span>
+                            </div>
+                            <div id="postal-set-name" class="postal-set-name mono">New</div>
+                            <div class="postal-set-btns">
+                                <button id="postal-import" class="btn btn-ghost"><i class="fa-solid fa-file-import"></i><span data-i18n="postal_import">Import</span></button>
+                                <button id="postal-grid" class="btn btn-ghost"><i class="fa-solid fa-border-all"></i><span data-i18n="postal_grid">Grid</span></button>
+                                <button id="postal-clear" class="btn btn-ghost"><i class="fa-solid fa-eraser"></i><span data-i18n="postal_clear">Clear</span></button>
+                            </div>
+
+                            <span class="micro-label section" data-i18n="postal_presets">Ready-made sets</span>
+                            <div class="postal-set-btns postal-set-presets">
+                                <button class="btn btn-ghost" data-postal-preset="ocrp"><i class="fa-solid fa-signs-post"></i><span>OCRP</span></button>
+                                <button class="btn btn-ghost" data-postal-preset="new"><i class="fa-solid fa-signs-post"></i><span>New</span></button>
+                                <button class="btn btn-ghost" data-postal-preset="oulsen"><i class="fa-solid fa-signs-post"></i><span>Oulsen</span></button>
+                            </div>
+                            <p class="pane-hint" data-i18n="postal_presets_hint">Load one of the three bundled postal sets in one click.</p>
+                        </div>
+
+                        <div class="postal-style-head">
+                            <span class="micro-label section" data-i18n="postal_move">Position of the whole set</span>
+                            <button id="postal-offset-reset" class="btn btn-ghost btn-mini" data-tip="Back to the original coordinates"><i class="fa-solid fa-rotate-left"></i><span data-i18n="postal_reset">Reset</span></button>
+                        </div>
+                        <p class="pane-hint" data-i18n="postal_move_hint">Ready-made sets were drawn for other maps and usually land a few metres off. Shift the whole set at once — it is saved with the project and applied to the exported /gps script too.</p>
+                        <button id="postal-drag" class="btn btn-soft btn-block">
+                            <i class="fa-solid fa-up-down-left-right"></i>
+                            <span data-i18n="postal_drag">Drag the set on the map</span>
+                        </button>
+                        <div class="insp-grid2">
+                            <label class="ext-field"><span class="micro-label" data-i18n="postal_off_x">Offset X</span><input id="postal-off-x" class="input mono" type="number" step="1" value="0"></label>
+                            <label class="ext-field"><span class="micro-label" data-i18n="postal_off_y">Offset Y</span><input id="postal-off-y" class="input mono" type="number" step="1" value="0"></label>
+                        </div>
+                        <div class="postal-nudge">
+                            <button class="btn btn-ghost btn-mini" data-nudge="0,10"><i class="fa-solid fa-arrow-up"></i></button>
+                            <button class="btn btn-ghost btn-mini" data-nudge="0,-10"><i class="fa-solid fa-arrow-down"></i></button>
+                            <button class="btn btn-ghost btn-mini" data-nudge="-10,0"><i class="fa-solid fa-arrow-left"></i></button>
+                            <button class="btn btn-ghost btn-mini" data-nudge="10,0"><i class="fa-solid fa-arrow-right"></i></button>
+                            <span id="postal-off-read" class="mono postal-off-read">0, 0</span>
+                        </div>
+
+                        <div class="postal-style-head">
+                            <span class="micro-label section" data-i18n="postal_style">Style</span>
+                            <button id="postal-style-reset" class="btn btn-ghost btn-mini" data-tip="Reset the postal style to its defaults"><i class="fa-solid fa-rotate-left"></i><span data-i18n="postal_reset">Reset</span></button>
+                        </div>
+                        <div class="insp-grid2">
+                            <div class="field"><span class="micro-label">Color</span><input type="color" id="ps-color" value="#FFFFFF"></div>
+                            <div class="field"><span class="micro-label">Font</span>
+                                <select id="ps-font" class="input mono" style="height:30px"></select>
+                            </div>
+                        </div>
+                        <div class="opt-slider">
+                            <div class="opt-slider-head"><span class="micro-label" data-i18n="postal_size">Size</span><span id="ps-size-val" class="mono opt-val">22</span></div>
+                            <input type="range" id="ps-size" min="8" max="80" value="22">
+                        </div>
+                        <div class="opt-slider">
+                            <div class="opt-slider-head"><span class="micro-label" data-i18n="postal_opacity">Opacity</span><span id="ps-opacity-val" class="mono opt-val">100%</span></div>
+                            <input type="range" id="ps-opacity" min="10" max="100" value="100">
+                        </div>
+
+                        <label class="check-row"><input type="checkbox" id="ps-outline" checked><span data-i18n="postal_outline">Outline</span></label>
+                        <div class="insp-grid2">
+                            <div class="field"><span class="micro-label">Color</span><input type="color" id="ps-outline-color" value="#0A0A0B"></div>
+                            <div class="opt-slider">
+                                <div class="opt-slider-head"><span class="micro-label" data-i18n="postal_outline_w">Width</span><span id="ps-outline-w-val" class="mono opt-val">2</span></div>
+                                <input type="range" id="ps-outline-w" min="0" max="8" value="2">
+                            </div>
+                        </div>
+
+                        <label class="check-row"><input type="checkbox" id="ps-shadow" checked><span data-i18n="postal_shadow">Shadow</span></label>
+                        <div class="insp-grid2">
+                            <div class="field"><span class="micro-label">Color</span><input type="color" id="ps-shadow-color" value="#000000"></div>
+                            <div class="opt-slider">
+                                <div class="opt-slider-head"><span class="micro-label" data-i18n="postal_shadow_blur">Blur</span><span id="ps-shadow-blur-val" class="mono opt-val">3</span></div>
+                                <input type="range" id="ps-shadow-blur" min="0" max="12" value="3">
+                            </div>
+                        </div>
+                        <div class="opt-slider">
+                            <div class="opt-slider-head"><span class="micro-label" data-i18n="postal_shadow_off">Shadow offset</span><span id="ps-shadow-off-val" class="mono opt-val">1</span></div>
+                            <input type="range" id="ps-shadow-off" min="0" max="8" value="1">
+                        </div>
+
+                        <div class="postal-ov-head">
+                            <span class="micro-label section" data-i18n="postal_overrides">Per-code overrides</span>
+                        </div>
+                        <p class="pane-hint" data-i18n="postal_overrides_hint">Override the look of a single postal by its code.</p>
+                        <div class="code-row">
+                            <input id="postal-ov-code" class="input mono" type="text" maxlength="10"
+                                   placeholder="Postal code (e.g. 100)" data-i18n-ph="postal_code_ph"
+                                   spellcheck="false" autocomplete="off">
+                            <button id="postal-ov-add" class="btn btn-ghost"><i class="fa-solid fa-plus"></i><span data-i18n="postal_add">Add</span></button>
+                        </div>
+                        <div id="postal-ov-list"></div>
+                    </div>
+                </div>
+
+                <!-- MAP EXTENSIONS -->
+                <div class="dock-pane" data-pane="extensions">
+                    <div class="pane-scroll">
+                        <span class="micro-label section" data-i18n="ext_title">Map extensions</span>
+                        <p class="pane-hint" data-i18n="ext_hint">Add-on maps (Roxwood, Liberty City…) sit outside the area GTA lets a player walk into. Mark that area here and the exported resource extends the world boundary so players can actually reach it.</p>
+
+                        <button id="ext-draw" class="btn btn-soft btn-block">
+                            <i class="fa-solid fa-vector-square"></i>
+                            <span data-i18n="ext_draw">Draw the area on the map</span>
+                        </button>
+                        <button id="ext-add" class="btn btn-ghost btn-block">
+                            <i class="fa-solid fa-plus"></i>
+                            <span data-i18n="ext_add">Add by coordinates</span>
+                        </button>
+
+                        <span class="micro-label section" data-i18n="ext_list">Areas</span>
+                        <div id="ext-list" class="ext-list">
+                            <div class="empty-state small">
+                                <i class="fa-solid fa-maximize"></i>
+                                <span data-i18n="ext_empty">No extensions yet — draw the area your add-on map covers</span>
+                            </div>
+                        </div>
+
+                        <div class="export-note" data-i18n="ext_note">Shipped as extensions.lua inside the exported resource. "Live on Server" only swaps the map tiles, so it cannot extend the world.</div>
+                    </div>
+                </div>
+
+                <!-- ASSISTANT -->
+                <div class="dock-pane" data-pane="ask">
+                    <div id="ask-log" class="ask-log">
+                        <div class="ask-intro">
+                            <div class="ask-intro-icon"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
+                            <div class="ask-intro-title" data-i18n="ask_title">Ask the studio</div>
+                            <p class="pane-hint" data-i18n="ask_hint">Questions about this minimap editor — how to place text, why live preview looks off, how the export works. It knows what you have open right now.</p>
+                            <div class="ask-chips">
+                                <button class="ask-chip" data-ask="How do I put a text label on the map?">How do I add text?</button>
+                                <button class="ask-chip" data-ask="What is the difference between the export modes?">Export modes?</button>
+                                <button class="ask-chip" data-ask="My postal codes look wrong, what should I check?">Postals look wrong</button>
+                                <button class="ask-chip" data-ask="How do I make the exported resource smaller?">Make it lighter</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="pane-foot">
+                        <div class="ask-row">
+                            <input id="ask-input" class="input" type="text" maxlength="600"
+                                   placeholder="Ask about the studio…" data-i18n-ph="ask_ph"
+                                   spellcheck="false" autocomplete="off">
+                            <button id="ask-send" class="btn btn-primary"><i class="fa-solid fa-paper-plane"></i></button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- EXPORT -->
+                <div class="dock-pane" data-pane="export">
+                    <div class="pane-scroll">
+                        <span class="micro-label section" data-i18n="export_mode">Export Mode</span>
+                        <div class="mode-cards">
+                            <label class="mode-card">
+                                <input type="radio" name="export-mode" value="package" checked>
+                                <span class="mode-card-body">
+                                    <i class="fa-solid fa-box-archive"></i>
+                                    <span class="mode-card-text">
+                                        <span class="mode-name" data-i18n="export_package">Ready-to-use resource</span>
+                                        <span class="mode-desc" data-i18n="export_package_desc">Stages the tiles; tools/make_ytd.bat then builds a complete minimap resource</span>
+                                    </span>
+                                    <i class="fa-solid fa-circle-check mode-check"></i>
+                                </span>
+                            </label>
+                            <label class="mode-card">
+                                <input type="radio" name="export-mode" value="live">
+                                <span class="mode-card-body">
+                                    <i class="fa-solid fa-tower-broadcast"></i>
+                                    <span class="mode-card-text">
+                                        <span class="mode-name" data-i18n="export_live">Live on Server</span>
+                                        <span class="mode-desc" data-i18n="export_live_desc">Applies instantly for everyone — no restart, and it persists</span>
+                                    </span>
+                                    <i class="fa-solid fa-circle-check mode-check"></i>
+                                </span>
+                            </label>
+                        </div>
+                        <div id="export-mode-note" class="export-note"></div>
+
+                        <span class="micro-label section" data-i18n="export_quality">Quality</span>
+                        <div class="seg-group quality-seg" role="group">
+                            <button class="seg-btn active" data-quality="native"><span data-i18n="export_q_native">Full</span></button>
+                            <button class="seg-btn" data-quality="light"><span data-i18n="export_q_light">Light</span></button>
+                        </div>
+                        <p id="quality-note" class="pane-hint"></p>
+
+                        <span class="micro-label section" data-i18n="export_name_label">Resource Name</span>
+                        <input id="export-name" class="input mono" type="text" maxlength="40"
+                               placeholder="my_minimap" spellcheck="false" autocomplete="off">
+
+                        <span class="micro-label section" data-i18n="export_extras">Extras</span>
+                        <label class="check-row">
+                            <input type="checkbox" id="export-cayo" checked>
+                            <span data-i18n="export_cayo">Include Cayo Perico island</span>
+                        </label>
+                        <div id="cayo-style-row" class="field" style="margin-left:24px">
+                            <span class="micro-label" data-i18n="export_cayo_style">Cayo Perico style</span>
+                            <select id="export-cayo-style" class="input mono" style="height:30px"></select>
+                        </div>
+                        <label class="check-row">
+                            <input type="checkbox" id="export-hideroads" checked>
+                            <span data-i18n="export_hideroads">Hide the vanilla vector road overlay</span>
+                        </label>
+
+                        <div id="export-result" class="result-box mono" hidden></div>
+                    </div>
+                    <div class="pane-foot">
+                        <div id="export-progress" class="task-progress" hidden>
+                            <div class="task-progress-bar"><span></span></div>
+                            <span id="export-progress-label" class="mono">Uploading…</span>
+                        </div>
+                        <button id="btn-export-run" class="btn btn-primary btn-block">
+                            <i class="fa-solid fa-file-export"></i>
+                            <span data-i18n="export_run">Run Export</span>
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </aside>
+    </div>
+</div>
+
+<!-- —──────— OVERLAY ROOTS —────────────────────────────────────────────────────────────────────────────────────────────────────────────— -->
+<div id="modal-root"></div>
+<div id="toast-root" aria-live="polite"></div>
+
+<!-- Hidden file picker (image layer upload) -->
+<input type="file" id="file-image" accept="image/*" hidden>
+
+<!-- ?v= busts FiveM's CEF cache — bump it whenever these files change -->
+<script src="js/blipdata.js?v=27"></script>
+<script src="js/app.js?v=27"></script>
+<script src="js/theme.js?v=27"></script>
+<script src="js/editor.js?v=27"></script>
+<script src="js/panels.js?v=27"></script>
+</body>
+</html>
+

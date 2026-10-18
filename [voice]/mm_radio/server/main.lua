@@ -3,6 +3,12 @@ local jammer = {}
 local batteryData = {}
 local spawnedDefaultJammer = false
 
+local function getPlayerJobName(src)
+    local player = exports.qbx_core:GetPlayer(tonumber(src))
+    if not player or not player.PlayerData or not player.PlayerData.job then return 'unemployed' end
+    return string.lower(tostring(player.PlayerData.job.name or 'unemployed'))
+end
+
 RegisterNetEvent('mm_radio:server:consumeBattery', function(data)
     for i=1, #data do
         local id = data[i]
@@ -129,7 +135,7 @@ RegisterNetEvent('mm_radio:server:addToRadioChannel', function(channel, username
     if not channels[channel] then
         channels[channel] = {}
     end
-    channels[channel][tostring(src)] = {name = username, isTalking = false}
+    channels[channel][tostring(src)] = {name = username, isTalking = false, job = getPlayerJobName(src)}
     TriggerClientEvent('mm_radio:client:radioListUpdate', -1, channels[channel], channel)
 end)
 
@@ -298,7 +304,8 @@ local function secondaryDisplayList(channel)
     for src, member in pairs(members) do
         result[tostring(src)] = {
             name = member.name or ('Player %s'):format(src),
-            isTalking = member.isTalking == true
+            isTalking = member.isTalking == true,
+            job = member.job or getPlayerJobName(src)
         }
     end
     return result
@@ -353,7 +360,7 @@ lib.callback.register('mm_radio:server:setSecondaryRadio', function(source, chan
         local fullName = ((charinfo.firstname or '') .. ' ' .. (charinfo.lastname or '')):gsub('^%s*(.-)%s*$', '%1')
         if fullName ~= '' then name = fullName end
     end
-    secondaryChannels[channel][source] = { name = name, isTalking = false }
+    secondaryChannels[channel][source] = { name = name, isTalking = false, job = getPlayerJobName(source) }
     playerSecondaryChannel[source] = channel
     syncSecondary(channel)
     return true

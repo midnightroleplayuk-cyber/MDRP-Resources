@@ -2,9 +2,9 @@ fx_version 'cerulean'
 game 'gta5'
 lua54 'yes'
 
-name 'qbox-coffee-machine'
-author 'OpenAI'
-description 'Immersive prop_vend_coffe_01 coffee machine for Qbox + ox_target + ox_inventory'
+name 'HF1-coffee-machine'
+author 'HF1'
+description 'Coffee Machines for QBox'
 version '1.0.0'
 
 shared_scripts {

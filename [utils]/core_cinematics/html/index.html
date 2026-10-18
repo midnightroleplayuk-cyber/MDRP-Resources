@@ -1,0 +1,2618 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title data-i18n="html.panels.page_title">Core Cinematics</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&display=swap" />
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<div id="app" class="hidden">
+
+  <!-- ── PLACEMENT GUIDE SYSTEM (camera, text, scene) ───────────────────── -->
+  <div id="placement-guide" class="hidden">
+
+    <!-- Center camera guide -->
+    <div id="pg-viewfinder">
+      <!-- Rule-of-thirds grid -->
+      <svg id="pg-grid" viewBox="0 0 400 225" preserveAspectRatio="none">
+        <line x1="133.3" y1="0" x2="133.3" y2="225" />
+        <line x1="266.6" y1="0" x2="266.6" y2="225" />
+        <line x1="0" y1="75" x2="400" y2="75" />
+        <line x1="0" y1="150" x2="400" y2="150" />
+        <!-- Center crosshair -->
+        <line x1="192" y1="112.5" x2="208" y2="112.5" class="pg-cross" />
+        <line x1="200" y1="104.5" x2="200" y2="120.5" class="pg-cross" />
+        <!-- Safe area frame -->
+        <rect x="40" y="22" width="320" height="181" rx="1" class="pg-safe" />
+      </svg>
+
+      <!-- Corner brackets -->
+      <div class="pg-bracket pg-tl"></div>
+      <div class="pg-bracket pg-tr"></div>
+      <div class="pg-bracket pg-bl"></div>
+      <div class="pg-bracket pg-br"></div>
+
+      <!-- Rotation ring -->
+      <div id="pg-ring-wrap">
+        <svg id="pg-ring" viewBox="0 0 200 200">
+          <circle cx="100" cy="100" r="92" class="pg-ring-track" />
+          <!-- Degree ticks rendered by JS -->
+          <g id="pg-ring-ticks"></g>
+          <!-- Rotation needle -->
+          <line id="pg-ring-needle" x1="100" y1="100" x2="100" y2="16" />
+          <!-- Cardinal labels -->
+          <text x="100" y="14" class="pg-cardinal">N</text>
+          <text x="188" y="104" class="pg-cardinal">E</text>
+          <text x="100" y="196" class="pg-cardinal">S</text>
+          <text x="12" y="104" class="pg-cardinal">W</text>
+        </svg>
+        <div id="pg-ring-deg">0.0°</div>
+      </div>
+
+      <!-- FOV arc indicator -->
+      <div id="pg-fov-wrap">
+        <svg id="pg-fov-arc" viewBox="0 0 120 60">
+          <path id="pg-fov-path" d="" />
+          <text id="pg-fov-label" x="60" y="54" class="pg-fov-text">50.0</text>
+        </svg>
+      </div>
+
+      <!-- Pitch indicator (left side) -->
+      <div id="pg-pitch-wrap">
+        <div id="pg-pitch-bar"></div>
+        <div id="pg-pitch-label">0.0°</div>
+      </div>
+
+      <!-- Mode label -->
+      <div id="pg-mode-label" data-i18n="html.labels.pg_mode_camera">CAMERA</div>
+    </div>
+
+    <!-- Pick target readout — seat mode only. Sits directly above the controls
+         bar so the answer to "which car" is next to the keys that act on it. -->
+    <div id="pg-target" class="hidden" data-i18n="html.labels.pick_vehicle_prompt">Look at a vehicle</div>
+
+    <!-- Bottom controls bar -->
+    <div id="pg-controls-bar">
+      <span class="pg-ctrl-icon"><i class="fa-solid fa-video"></i></span>
+      <span id="pg-mode-title" data-i18n="html.labels.pg_mode_title">POSITION CAMERA</span>
+      <div class="pg-ctrl-sep pg-ctrl-sep-thick"></div>
+      <div class="pg-ctrl-item"><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd><span data-i18n="html.labels.pg_move">Move</span></div>
+      <div class="pg-ctrl-sep"></div>
+      <div class="pg-ctrl-item"><kbd>Mouse</kbd><span data-i18n="html.labels.pg_look">Look</span></div>
+      <div class="pg-ctrl-sep" id="pg-ctrl-sep-scroll"></div>
+      <div class="pg-ctrl-item" id="pg-ctrl-scroll"><kbd>Scroll</kbd><span data-i18n="html.labels.pg_fov">FOV</span></div>
+      <div class="pg-ctrl-sep" id="pg-ctrl-sep-qe"></div>
+      <div class="pg-ctrl-item hidden" id="pg-ctrl-qe"><kbd>Q</kbd><kbd>E</kbd><span data-i18n="html.labels.pg_rotate">Rotate</span></div>
+      <div class="pg-ctrl-sep hidden" id="pg-ctrl-sep-rf"></div>
+      <div class="pg-ctrl-item hidden" id="pg-ctrl-rf"><kbd>R</kbd><kbd>F</kbd><span data-i18n="html.labels.pg_tilt">Tilt</span></div>
+      <div class="pg-ctrl-sep hidden" id="pg-ctrl-sep-vert"></div>
+      <div class="pg-ctrl-item hidden" id="pg-ctrl-vert"><kbd>Space</kbd><kbd>Ctrl</kbd><span data-i18n="html.labels.pg_up_down">Up/Down</span></div>
+      <div class="pg-ctrl-sep"></div>
+      <div class="pg-ctrl-item"><kbd>Shift</kbd><span data-i18n="html.labels.pg_fast">Fast</span></div>
+      <div class="pg-ctrl-sep"></div>
+      <div class="pg-ctrl-item"><kbd>Alt</kbd><span data-i18n="html.labels.pg_precise">Precise</span></div>
+      <div class="pg-ctrl-sep pg-ctrl-sep-thick"></div>
+      <div class="pg-ctrl-item pg-ctrl-action" id="pg-ctrl-confirm"><kbd id="pg-confirm-key">Backspace</kbd><span data-i18n="html.buttons.save">Save</span></div>
+      <div class="pg-ctrl-sep"></div>
+      <div class="pg-ctrl-item pg-ctrl-cancel"><kbd>Esc</kbd><span data-i18n="html.buttons.cancel">Cancel</span></div>
+    </div>
+
+    <!-- Live data bar (top center, always visible during placement) -->
+    <div id="pg-data-bar">
+      <div class="pg-data-cell">
+        <span class="pg-data-label">X</span><span class="pg-data-val" id="pg-dx">0.00</span>
+      </div>
+      <div class="pg-data-cell">
+        <span class="pg-data-label">Y</span><span class="pg-data-val" id="pg-dy">0.00</span>
+      </div>
+      <div class="pg-data-cell">
+        <span class="pg-data-label">Z</span><span class="pg-data-val" id="pg-dz">0.00</span>
+      </div>
+      <div class="pg-data-divider"></div>
+      <div class="pg-data-cell">
+        <span class="pg-data-label">P</span><span class="pg-data-val" id="pg-dp">0.0</span>
+      </div>
+      <div class="pg-data-cell">
+        <span class="pg-data-label">R</span><span class="pg-data-val" id="pg-dr">0.0</span>
+      </div>
+      <div class="pg-data-cell">
+        <span class="pg-data-label">Y</span><span class="pg-data-val" id="pg-dyaw">0.0</span>
+      </div>
+      <div class="pg-data-divider"></div>
+      <div class="pg-data-cell">
+        <span class="pg-data-label">FOV</span><span class="pg-data-val" id="pg-dfov">50.0</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ── VIEWPORT CLICK ZONE (detects clicks on replay entities) ─────── -->
+  <div id="viewport-click-zone"></div>
+
+  <!-- ── VEHICLE PICK BANNER (shown while choosing a car for a ped) ──── -->
+  <!-- ── COORDS HUD (top center) ────────────────────────────────────────── -->
+  <div id="coords-hud">
+    <span id="hud-pos">X: 0.0 · Y: 0.0 · Z: 0.0</span>
+    <span class="hud-sep">|</span>
+    <span id="hud-rot">P: 0.0 · R: 0.0 · Y: 0.0</span>
+    <span class="hud-sep">|</span>
+    <span id="hud-fov">FOV: 50.0</span>
+  </div>
+
+  <!-- ── LEFT SIDE PANEL (keyframe properties / world settings) ─────────── -->
+  <div id="side-panel">
+
+    <div id="sp-header">
+      <span id="sp-title" data-i18n="html.panels.no_keyframe_selected">No Keyframe Selected</span>
+      <button id="sp-pos-btn" class="hidden" onclick="CC.positionCamera()" data-i18n-attr="title:html.tooltips.position_camera" title="Enter free-fly to position this camera">
+        <i class="fa-solid fa-video"></i> <span data-i18n="html.buttons.position_camera">Position Camera</span>
+      </button>
+    </div>
+
+    <div id="sp-body">
+
+      <!-- ── MENU VIEW (shown when no keyframe selected) ──────────────────── -->
+      <div id="sp-menu-view">
+        <div class="sp-menu-item" onclick="CC.openWorldSettings()">
+          <div class="sp-menu-item-icon blue"><i class="fa-solid fa-globe"></i></div>
+          <div class="sp-menu-item-info">
+            <span class="sp-menu-item-title" data-i18n="html.panels.world_scenery_title">World & Scenery</span>
+            <span class="sp-menu-item-desc" data-i18n="html.labels.world_scenery_desc">Time, weather, wind, lighting</span>
+          </div>
+          <i class="fa-solid fa-chevron-right sp-menu-item-arrow"></i>
+        </div>
+        <div class="sp-menu-item" data-tut="interp-menu" onclick="CC.openInterpSettings()">
+          <div class="sp-menu-item-icon red"><i class="fa-solid fa-sliders"></i></div>
+          <div class="sp-menu-item-info">
+            <span class="sp-menu-item-title" data-i18n="html.panels.interpolation_title">Interpolation</span>
+            <span class="sp-menu-item-desc" data-i18n="html.labels.interpolation_desc">Playback engine & motion curves</span>
+          </div>
+          <i class="fa-solid fa-chevron-right sp-menu-item-arrow"></i>
+        </div>
+        <div class="sp-menu-item" data-tut="recordings-menu" onclick="CC.openRecordingSettings()">
+          <div class="sp-menu-item-icon red"><i class="fa-solid fa-circle-dot"></i></div>
+          <div class="sp-menu-item-info">
+            <span class="sp-menu-item-title" data-i18n="html.panels.recording_title">Recording</span>
+            <span class="sp-menu-item-desc" data-i18n="html.labels.recording_desc">Configure targets &amp; start recording</span>
+          </div>
+          <i class="fa-solid fa-chevron-right sp-menu-item-arrow"></i>
+        </div>
+        <div class="sp-menu-item" onclick="CC.open3DTextPanel()">
+          <div class="sp-menu-item-icon orange"><i class="fa-solid fa-font"></i></div>
+          <div class="sp-menu-item-info">
+            <span class="sp-menu-item-title" data-i18n="html.panels.text_3d_title">3D Text / Image</span>
+            <span class="sp-menu-item-desc" data-i18n="html.labels.text_3d_desc">Place animated text or an image in the world</span>
+          </div>
+          <i class="fa-solid fa-chevron-right sp-menu-item-arrow"></i>
+        </div>
+        <div class="sp-menu-item" onclick="CC.openSceneEditor()">
+          <div class="sp-menu-item-icon green"><i class="fa-solid fa-users"></i></div>
+          <div class="sp-menu-item-info">
+            <span class="sp-menu-item-title" data-i18n="html.panels.scene_editor_title">Scene Editor</span>
+            <span class="sp-menu-item-desc" data-i18n="html.labels.scene_editor_desc">Spawn peds, vehicles, animations, weapons</span>
+          </div>
+          <i class="fa-solid fa-chevron-right sp-menu-item-arrow"></i>
+        </div>
+        <div class="sp-menu-item" onclick="CC.openPlaybackTuning()">
+          <div class="sp-menu-item-icon" style="background:rgba(160,160,160,0.15);color:#bbb"><i class="fa-solid fa-screwdriver-wrench"></i></div>
+          <div class="sp-menu-item-info">
+            <span class="sp-menu-item-title" data-i18n="html.panels.playback_tuning_title">Playback Tuning</span>
+            <span class="sp-menu-item-desc" data-i18n="html.labels.playback_tuning_desc">Live-tweak ped + vehicle playback knobs</span>
+          </div>
+          <i class="fa-solid fa-chevron-right sp-menu-item-arrow"></i>
+        </div>
+        <div class="sp-menu-item" onclick="CC.openExport()">
+          <div class="sp-menu-item-icon" style="background:rgba(74,144,217,0.15);color:#4a90d9"><i class="fa-solid fa-film"></i></div>
+          <div class="sp-menu-item-info">
+            <span class="sp-menu-item-title" data-i18n="html.panels.export_title">Export Video</span>
+            <span class="sp-menu-item-desc" data-i18n="html.labels.export_desc">Render the timeline to MP4</span>
+          </div>
+          <i class="fa-solid fa-chevron-right sp-menu-item-arrow"></i>
+        </div>
+      </div>
+
+      <!-- ── WORLD SETTINGS VIEW (shown when World button clicked) ──────── -->
+      <div id="sp-world-view" class="hidden">
+
+        <div id="ws-conflict-warn" class="sp-warn hidden">
+          <i class="fa-solid fa-triangle-exclamation"></i>
+          <div>
+            <div class="sp-warn-title" data-i18n="html.labels.ws_conflict_title">Weather/time sync resource detected</div>
+            <div class="sp-warn-body"><span id="ws-conflict-names"></span><span data-i18n="html.labels.ws_conflict_body"> is running. It may overwrite your time/weather changes every tick. Stop it before recording, or your world settings will fight back.</span></div>
+          </div>
+        </div>
+
+        <div class="sp-section">
+          <div class="sp-section-title" data-i18n="html.panels.time_of_day">TIME OF DAY</div>
+          <div class="sp-row">
+            <label class="sp-label" data-i18n="html.labels.freeze">Freeze</label>
+            <input type="checkbox" id="ws-freeze" onchange="CC.applyWorldSettings()" />
+            <span class="sp-hint" data-i18n="html.labels.hold_constant">Hold constant</span>
+          </div>
+          <div class="sp-row-range">
+            <input class="sp-range" type="range" id="ws-time-slider" min="0" max="23.9" step="0.1" value="12"
+              oninput="document.getElementById('ws-time-num').value=parseFloat(this.value).toFixed(1);CC.applyWorldSettings()" />
+            <input class="sp-input sp-input-sm" type="number" id="ws-time-num" min="0" max="23.9" step="0.1" value="12"
+              oninput="document.getElementById('ws-time-slider').value=this.value;CC.applyWorldSettings()" />
+          </div>
+        </div>
+
+        <div class="sp-section">
+          <div class="sp-section-title" data-i18n="html.panels.weather">WEATHER</div>
+          <div class="sp-row">
+            <label class="sp-label" data-i18n="html.labels.freeze">Freeze</label>
+            <input type="checkbox" id="ws-weather-override" checked onchange="CC.applyWorldSettings()" />
+            <span class="sp-hint" data-i18n="html.labels.override_server_weather">Override server weather</span>
+          </div>
+          <div class="sp-row">
+            <label class="sp-label" data-i18n="html.labels.type">Type</label>
+            <select class="sp-select" id="ws-weather" onchange="CC.applyWorldSettings()">
+              <option value="EXTRASUNNY" data-i18n="html.labels.weather_extra_sunny">Extra Sunny</option>
+              <option value="CLEAR" selected data-i18n="html.labels.weather_clear">Clear</option>
+              <option value="CLOUDS" data-i18n="html.labels.weather_clouds">Clouds</option>
+              <option value="SMOG" data-i18n="html.labels.weather_smog">Smog</option>
+              <option value="FOGGY" data-i18n="html.labels.weather_foggy">Foggy</option>
+              <option value="OVERCAST" data-i18n="html.labels.weather_overcast">Overcast</option>
+              <option value="RAIN" data-i18n="html.labels.weather_rain">Rain</option>
+              <option value="THUNDER" data-i18n="html.labels.weather_thunder">Thunder</option>
+              <option value="CLEARING" data-i18n="html.labels.weather_clearing">Clearing</option>
+              <option value="NEUTRAL" data-i18n="html.labels.weather_neutral">Neutral</option>
+              <option value="SNOW" data-i18n="html.labels.weather_snow">Snow</option>
+              <option value="BLIZZARD" data-i18n="html.labels.weather_blizzard">Blizzard</option>
+              <option value="SNOWLIGHT" data-i18n="html.labels.weather_snow_light">Snow Light</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="sp-section">
+          <div class="sp-section-title" data-i18n="html.panels.rain_level">RAIN LEVEL</div>
+          <div class="sp-row">
+            <label class="sp-label" data-i18n="html.labels.enable">Enable</label>
+            <input type="checkbox" id="ws-rain-enabled" onchange="CC.applyWorldSettings()" />
+            <span class="sp-hint" data-i18n="html.labels.override_rain_intensity">Override rain intensity</span>
+          </div>
+          <div class="sp-row-range">
+            <input class="sp-range" type="range" id="ws-rain-slider" min="0" max="1" step="0.01" value="0"
+              oninput="document.getElementById('ws-rain-num').value=parseFloat(this.value).toFixed(2);CC.applyWorldSettings()" />
+            <input class="sp-input sp-input-sm" type="number" id="ws-rain-num" min="0" max="1" step="0.01" value="0"
+              oninput="document.getElementById('ws-rain-slider').value=this.value;CC.applyWorldSettings()" />
+          </div>
+        </div>
+
+        <div class="sp-section">
+          <div class="sp-section-title" data-i18n="html.panels.lighting">LIGHTING</div>
+          <div class="sp-row">
+            <label class="sp-label" data-i18n="html.labels.city_lights">City Lights</label>
+            <input type="checkbox" id="ws-citylights" onchange="CC.applyWorldSettings()" />
+            <span class="sp-hint" data-i18n="html.labels.force_artificial_lights">Force artificial lights on</span>
+          </div>
+        </div>
+
+      </div><!-- /sp-world-view -->
+
+      <!-- ── INTERPOLATION SETTINGS VIEW ──────────────────────────────────── -->
+      <div id="sp-interp-view" class="hidden">
+
+        <div class="sp-section">
+          <div class="sp-section-title" data-i18n="html.panels.playback_engine">PLAYBACK ENGINE</div>
+          <div class="sp-row">
+            <label class="sp-label" data-i18n="html.labels.mode">Mode</label>
+            <select class="sp-select" id="is-mode" onchange="CC.applyInterpSettings()">
+              <option value="native" data-i18n="html.labels.mode_gta_native">GTA Native</option>
+              <option value="eased" data-i18n="html.labels.mode_eased">Eased</option>
+              <option value="spline" data-i18n="html.labels.mode_cinematic">Cinematic</option>
+            </select>
+          </div>
+          <div id="is-mode-hint" class="sp-hint" style="margin-top:8px;font-size:10px;line-height:1.5;color:var(--text-dim)" data-i18n="html.labels.mode_hint_native">
+            GTA Native: Engine-smooth blending. Easing per keyframe applies. Shadows may lag.
+          </div>
+        </div>
+
+        <div class="sp-section" id="is-tension-section">
+          <div class="sp-section-title"><span data-i18n="html.panels.tension">TENSION</span>  <span style="font-weight:400;font-size:9px;color:var(--text-dim)" data-i18n="html.labels.cinematic_only">(Cinematic only)</span></div>
+          <div class="sp-row-range">
+            <input class="sp-range" type="range" id="is-tension" min="0" max="1" step="0.01" value="0"
+              oninput="document.getElementById('is-tension-num').value=parseFloat(this.value).toFixed(2);CC.applyInterpSettings()" />
+            <input class="sp-input sp-input-sm" type="number" id="is-tension-num" min="0" max="1" step="0.01" value="0"
+              oninput="document.getElementById('is-tension').value=this.value;CC.applyInterpSettings()" />
+          </div>
+          <div class="sp-hint" style="margin-top:6px;font-size:10px;line-height:1.5;color:var(--text-dim)" data-i18n="html.labels.tension_hint">
+            0 = natural Catmull-Rom speed · 1 = eases in &amp; out of every keyframe
+          </div>
+        </div>
+
+        <div class="sp-section" id="is-spring-section">
+          <div class="sp-section-title"><span data-i18n="html.panels.spring">SPRING</span>  <span style="font-weight:400;font-size:9px;color:var(--text-dim)" data-i18n="html.labels.cinematic_only">(Cinematic only)</span></div>
+          <div class="sp-row-range">
+            <input class="sp-range" type="range" id="is-spring" min="0" max="1" step="0.01" value="0"
+              oninput="document.getElementById('is-spring-num').value=parseFloat(this.value).toFixed(2);CC.applyInterpSettings()" />
+            <input class="sp-input sp-input-sm" type="number" id="is-spring-num" min="0" max="1" step="0.01" value="0"
+              oninput="document.getElementById('is-spring').value=this.value;CC.applyInterpSettings()" />
+          </div>
+          <div class="sp-hint" style="margin-top:6px;font-size:10px;line-height:1.5;color:var(--text-dim)" data-i18n="html.labels.spring_hint">
+            0 = safe, no overshoot · 1 = full spring (may go underground on steep paths)
+          </div>
+        </div>
+
+      </div><!-- /sp-interp-view -->
+
+      <!-- ── RECORDING SETTINGS VIEW ──────────────────────────────────────── -->
+      <div id="sp-record-view" class="hidden">
+
+        <div id="rp-emotes-warn" class="sp-warn hidden">
+          <i class="fa-solid fa-triangle-exclamation"></i>
+          <div>
+            <div class="sp-warn-title" data-i18n="html.labels.rpemotes_warn_title">Ped animations won't replay</div>
+            <div class="sp-warn-body" data-i18n="html.labels.rpemotes_warn_body" data-i18n-html>The Core Cinematics fork of <b>rpemotes-reborn</b> is not installed. Without it, peds doing emotes during a recording will replay as plain idle/walk poses. Get the fork at <b>docs.c8re.store</b> to enable emote capture &amp; playback.</div>
+          </div>
+        </div>
+
+        <div class="sp-section">
+          <div class="sp-section-title" data-i18n="html.panels.recording_targets">RECORDING TARGETS</div>
+          <div class="sp-row">
+            <label class="sp-label" data-i18n="html.labels.vehicles">Vehicles</label>
+            <input type="checkbox" id="rec-vehicles" checked />
+            <span class="sp-hint" data-i18n="html.labels.record_nearby_vehicles">Record nearby vehicles</span>
+          </div>
+          <div class="sp-row">
+            <label class="sp-label" data-i18n="html.labels.peds">Peds</label>
+            <input type="checkbox" id="rec-peds" checked />
+            <span class="sp-hint" data-i18n="html.labels.record_nearby_peds">Record nearby peds &amp; player</span>
+          </div>
+        </div>
+
+        <div class="sp-section">
+          <div class="sp-section-title" data-i18n="html.panels.start">START</div>
+          <div class="sp-hint" style="margin-bottom:10px;font-size:10px;line-height:1.5;color:var(--text-dim)" data-i18n="html.labels.start_recording_hint" data-i18n-html>
+            Closes this menu and starts recording within the configured radius.
+            Use <strong>/cinematics stop</strong> in chat when done.
+          </div>
+          <button class="tb-btn" data-tut="start-record" style="width:100%;justify-content:center;background:rgba(220,60,60,0.25);border-color:rgba(220,60,60,0.5);color:#e05050"
+            onclick="CC.startVehicleRecord()">
+            <i class="fa-solid fa-circle-dot"></i>&nbsp;<span data-i18n="html.buttons.start_recording"> Start Recording</span>
+          </button>
+        </div>
+
+        <div class="sp-section">
+          <div class="sp-section-title">OVERLAY LAYERS</div>
+          <div class="sp-hint" style="margin-bottom:10px;font-size:10px;line-height:1.5;color:var(--text-dim)">
+            Record your current vehicle as a separate layer. Position it on the timeline to composite multiple vehicles into one scene. <strong>Must be in a vehicle.</strong>
+          </div>
+          <button class="tb-btn" style="width:100%;justify-content:center;background:rgba(100,80,200,0.25);border-color:rgba(100,80,200,0.5);color:#a090e0"
+            onclick="CC.startSoloRecord()">
+            <i class="fa-solid fa-layer-group"></i>&nbsp; Record Solo Layer
+          </button>
+        </div>
+
+        <div class="sp-section">
+          <div class="sp-section-title" data-i18n="html.panels.replay_options">REPLAY OPTIONS</div>
+          <div class="sp-row">
+            <label class="sp-label" data-i18n="html.labels.motion_blur">Motion Blur</label>
+            <input type="checkbox" id="rec-motionblur" onchange="CC.setVehicleMotionBlur(this.checked)" />
+            <span class="sp-hint" data-i18n="html.labels.motion_blur_hint">Motion blur on replay entities</span>
+          </div>
+        </div>
+
+      </div><!-- /sp-record-view -->
+
+      <!-- ── RECORDING PROPERTIES VIEW (shown when recording block selected) ── -->
+      <div id="sp-rec-props-view" class="hidden">
+
+        <div class="sp-section">
+          <div class="sp-section-title" data-i18n="html.panels.recording_info">RECORDING INFO</div>
+          <div class="sp-row">
+            <label class="sp-label" data-i18n="html.labels.duration">Duration</label>
+            <span id="rp-duration" class="sp-hint" style="color:var(--text-bright);font-style:normal">0.0s</span>
+          </div>
+          <div class="sp-row">
+            <label class="sp-label" data-i18n="html.labels.vehicles">Vehicles</label>
+            <span id="rp-veh-count" class="sp-hint" style="color:var(--text-bright);font-style:normal">0</span>
+          </div>
+          <div class="sp-row">
+            <label class="sp-label" data-i18n="html.labels.peds">Peds</label>
+            <span id="rp-ped-count" class="sp-hint" style="color:var(--text-bright);font-style:normal">0</span>
+          </div>
+        </div>
+
+        <div class="sp-section">
+          <div class="sp-section-title"><span data-i18n="html.panels.recorded_entities">RECORDED ENTITIES</span> <span style="font-weight:400;font-size:9px;color:var(--text-dim)" data-i18n="html.labels.double_click_swap">(double-click to swap model)</span></div>
+          <div id="rp-entity-list" class="se-entity-list"></div>
+        </div>
+
+        <div class="sp-section">
+          <div class="sp-section-title" data-i18n="html.panels.replay_options">REPLAY OPTIONS</div>
+          <div class="sp-row">
+            <label class="sp-label" data-i18n="html.labels.motion_blur">Motion Blur</label>
+            <input type="checkbox" id="rp-motionblur" onchange="CC.setVehicleMotionBlur(this.checked)" />
+            <span class="sp-hint" data-i18n="html.labels.motion_blur_hint">Motion blur on replay entities</span>
+          </div>
+        </div>
+
+        <div class="sp-section">
+          <button class="tb-btn danger" style="width:100%;justify-content:center" onclick="CC.deleteRecording()">
+            <i class="fa-solid fa-trash"></i>&nbsp;<span data-i18n="html.buttons.delete_recording"> Delete Recording</span>
+          </button>
+        </div>
+
+      </div><!-- /sp-rec-props-view -->
+
+      <!-- ── OVERLAY LAYER PROPERTIES (shown when overlay layer block selected) ── -->
+      <div id="sp-overlay-props-view" class="hidden">
+
+        <div class="sp-section">
+          <div class="sp-section-title" data-i18n="html.panels.overlay_info">OVERLAY LAYER INFO</div>
+          <div class="sp-row">
+            <label class="sp-label" data-i18n="html.labels.name">Name</label>
+            <span id="op-name" class="sp-hint" style="color:var(--text-bright);font-style:normal">Layer 1</span>
+          </div>
+          <div class="sp-row">
+            <label class="sp-label" data-i18n="html.labels.vehicle">Vehicle</label>
+            <span id="op-model" class="sp-hint" style="color:var(--text-bright);font-style:normal">—</span>
+          </div>
+          <div class="sp-row">
+            <label class="sp-label" data-i18n="html.labels.duration">Duration</label>
+            <span id="op-duration" class="sp-hint" style="color:var(--text-bright);font-style:normal">0.0s</span>
+          </div>
+          <div class="sp-row">
+            <label class="sp-label" data-i18n="html.labels.active_range">Active range</label>
+            <span id="op-range" class="sp-hint" style="color:var(--text-bright);font-style:normal">0.0s</span>
+          </div>
+          <div class="sp-row">
+            <label class="sp-label" data-i18n="html.labels.timeline_start">Timeline start</label>
+            <span id="op-start" class="sp-hint" style="color:var(--text-bright);font-style:normal">0.0s</span>
+          </div>
+        </div>
+
+        <div class="sp-section">
+          <button class="tb-btn danger" style="width:100%;justify-content:center" onclick="CC.deleteSelectedOverlay()">
+            <i class="fa-solid fa-trash"></i>&nbsp;<span data-i18n="html.buttons.delete_overlay_layer"> Delete Layer</span>
+          </button>
+        </div>
+
+      </div><!-- /sp-overlay-props-view -->
+
+      <!-- ── PLAYBACK TUNING (debug) ───────────────────────────────────── -->
+      <div id="sp-playback-tuning-view" class="hidden">
+
+        <div class="sp-section">
+          <div class="sp-hint" style="font-size:10px;line-height:1.4;color:var(--text-dim);margin-bottom:6px" data-i18n="html.labels.playback_tuning_intro">
+            Live knobs for the ped + vehicle playback engine. Changes apply on the next playback tick — no need to stop/restart playback.
+          </div>
+        </div>
+
+        <div class="sp-section">
+          <div class="sp-section-title" data-i18n="html.panels.ped_locomotion">PED LOCOMOTION</div>
+          <div class="sp-hint" style="font-size:10px;color:var(--text-dim);margin-bottom:4px" data-i18n="html.labels.ped_locomotion_intro">
+            How walking/running peds are played back. The recorded gait (walk / run / sprint) is preserved automatically — these knobs only fine-tune timing and approach.
+          </div>
+          <div class="sp-row">
+            <label class="sp-label" data-i18n="html.labels.lookahead_frames" data-i18n-attr="title:html.tooltips.tune_lookahead" title="How many frames ahead the puppet aims while walking. Higher = smoother motion, may cut corners. Lower = tighter path-following.">Lookahead (fr)</label>
+            <input class="sp-input" type="number" min="1" max="60" step="1" id="pt-pedLookahead" oninput="CC.applyPlaybackTuning()" />
+          </div>
+          <div class="sp-row">
+            <label class="sp-label" data-i18n="html.labels.speed_ceiling" data-i18n-attr="title:html.tooltips.tune_speed_ceiling" title="Maximum speed (m/s) the puppet is allowed to move. Set well above sprint so the puppet never has to break into a faster gait to catch up to the recorded path.">Speed ceiling (m/s)</label>
+            <input class="sp-input" type="number" min="2" max="30" step="0.5" id="pt-pedTaskSpeedCeiling" oninput="CC.applyPlaybackTuning()" />
+          </div>
+          <div class="sp-row">
+            <label class="sp-label" data-i18n="html.labels.stop_dist" data-i18n-attr="title:html.tooltips.tune_stop_dist" title="How close (m) the puppet has to get to a target point before it's considered reached.">Stop dist (m)</label>
+            <input class="sp-input" type="number" min="0" max="3" step="0.05" id="pt-pedStoppingDistance" oninput="CC.applyPlaybackTuning()" />
+          </div>
+          <div class="sp-row">
+            <label class="sp-label" data-i18n="html.labels.moving_threshold" data-i18n-attr="title:html.tooltips.tune_moving_threshold" title="Below this movement intensity the puppet is treated as standing still (idle anim, no walking).">Moving threshold</label>
+            <input class="sp-input" type="number" min="0" max="1" step="0.05" id="pt-pedMovingThreshold" oninput="CC.applyPlaybackTuning()" />
+          </div>
+          <div class="sp-row">
+            <label class="sp-label" data-i18n="html.labels.jump_trigger_dist" data-i18n-attr="title:html.tooltips.tune_jump_trigger" title="How close (m) the puppet has to be to the recorded jump/vault takeoff spot before the jump fires. Below this, jump fires; above, the puppet keeps walking toward the takeoff first so the launch goes from the right spot.">Jump trigger dist</label>
+            <input class="sp-input" type="number" min="0.1" max="5" step="0.1" id="pt-pedJumpTriggerDist" oninput="CC.applyPlaybackTuning()" />
+          </div>
+        </div>
+
+        <div class="sp-section">
+          <div class="sp-section-title" data-i18n="html.panels.ped_vehicle_transitions">PED ↔ VEHICLE TRANSITIONS</div>
+          <div class="sp-hint" style="font-size:10px;color:var(--text-dim);margin-bottom:4px" data-i18n="html.labels.ped_vehicle_intro">
+            How the ped puppet enters/exits cars during playback.
+          </div>
+          <div class="sp-row">
+            <label class="sp-label" data-i18n="html.labels.enter_car_lookahead" data-i18n-attr="title:html.tooltips.tune_enter_car_lookahead" title="How many frames ahead we look in the recording for an upcoming car-entry. The puppet starts breaking toward the car this many frames early so the approach looks natural instead of snapping into the car at the last second.">Enter-car lookahead</label>
+            <input class="sp-input" type="number" min="0" max="60" step="1" id="pt-pedEnterCarLookahead" oninput="CC.applyPlaybackTuning()" />
+          </div>
+          <div class="sp-row">
+            <label class="sp-label" data-i18n="html.labels.exit_car_grace" data-i18n-attr="title:html.tooltips.tune_exit_car_grace" title="How long (in ticks, ~33ms each) we pause issuing on-foot tasks after the puppet exits a car, so the exit animation's walk-away motion can finish cleanly.">Exit-car grace</label>
+            <input class="sp-input" type="number" min="0" max="60" step="1" id="pt-pedExitCarGrace" oninput="CC.applyPlaybackTuning()" />
+          </div>
+        </div>
+
+        <div class="sp-section">
+          <div class="sp-section-title" data-i18n="html.panels.vehicle_section">VEHICLE</div>
+          <div class="sp-hint" style="font-size:10px;color:var(--text-dim);margin-bottom:4px" data-i18n="html.labels.vehicle_intro">
+            Settings that affect the vehicle puppet itself.
+          </div>
+          <div class="sp-row">
+            <label class="sp-label" data-i18n="html.labels.correction_strength" data-i18n-attr="title:html.tooltips.tune_correction_strength" title="Spring strength pulling vehicle puppet to recorded position each tick. Higher = tighter, jittery; lower = smoother, drifty">Correction strength</label>
+            <input class="sp-input" type="number" min="0" max="50" step="1" id="pt-vehicleCorrectionStrength" oninput="CC.applyPlaybackTuning()" />
+          </div>
+        </div>
+
+        <div class="sp-section">
+          <div class="sp-section-title" data-i18n="html.panels.playback_section">PLAYBACK</div>
+          <div class="sp-row">
+            <label class="sp-label" data-i18n="html.labels.warmup_seconds" data-i18n-attr="title:html.tooltips.tune_warmup" title="Cam + vehicle freeze at start so the ped locomotion can spin up its walk anim before the cam moves">Warmup (s)</label>
+            <input class="sp-input" type="number" min="0" max="2" step="0.05" id="pt-warmupSec" oninput="CC.applyPlaybackTuning()" />
+          </div>
+        </div>
+
+        <div class="sp-section">
+          <button class="tb-btn" style="width:100%;justify-content:center" onclick="CC.resetPlaybackTuning()">
+            <i class="fa-solid fa-rotate-left"></i>&nbsp;<span data-i18n="html.buttons.reset_to_defaults">Reset to defaults</span>
+          </button>
+        </div>
+
+      </div><!-- /sp-playback-tuning-view -->
+
+      <!-- ── EXPORT VIEW (talks to core-cinematics-recorder via Lua HTTP) ── -->
+      <div id="sp-export-view" class="hidden">
+
+        <div id="export-status-banner" class="sp-warn hidden">
+          <i class="fa-solid fa-circle-exclamation"></i>
+          <div>
+            <div class="sp-warn-title" data-i18n="html.labels.export_recorder_missing_title">Recorder not detected</div>
+            <div class="sp-warn-body" data-i18n="html.labels.export_recorder_missing_text">Run coreRecorder.exe to enable in-game export. Download from docs.c8re.store</div>
+          </div>
+        </div>
+        <div id="export-status-ok" class="sp-info hidden" style="display:flex;gap:8px;align-items:center;padding:10px 12px;margin:10px 12px 4px;background:rgba(80,180,80,0.1);border:1px solid rgba(80,180,80,0.3);border-radius:6px;color:#5cb85c;font-size:11px">
+          <i class="fa-solid fa-circle-check"></i>
+          <span data-i18n="html.labels.export_recorder_ready">Recorder ready</span>
+          <span id="export-recorder-version" style="opacity:0.6;margin-left:auto;font-size:10px"></span>
+        </div>
+
+        <div class="sp-section">
+          <div class="sp-section-title" data-i18n="html.panels.export_output">OUTPUT</div>
+          <div class="sp-row">
+            <label class="sp-label" data-i18n="html.labels.export_folder">Folder</label>
+            <input class="sp-input" type="text" id="export-folder" placeholder="C:\Users\You\Videos\Core Cinematics" style="flex:1" onchange="CC.saveExportFolder()" />
+          </div>
+          <div class="sp-row">
+            <label class="sp-label" data-i18n="html.labels.export_name">Name</label>
+            <input class="sp-input" type="text" id="export-name" data-i18n-attr="placeholder:html.placeholders.export_name" placeholder="leave blank for timestamp" style="flex:1" />
+          </div>
+          <div class="sp-row">
+            <label class="sp-label" data-i18n="html.labels.export_fps">FPS</label>
+            <select class="sp-select" id="export-fps">
+              <option value="60">60</option>
+              <option value="30">30</option>
+              <option value="24" data-i18n="html.labels.export_fps_24">24 (cinema)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="sp-section">
+          <div class="sp-section-title" data-i18n="html.panels.export_motion_blur">QUALITY</div>
+          <div class="sp-row">
+            <label class="sp-label" data-i18n="html.labels.export_intensity">Level</label>
+            <select class="sp-select" id="export-blur">
+              <option value="off"    data-i18n="html.labels.export_blur_off">Realtime</option>
+              <option value="light"  data-i18n="html.labels.export_blur_light">Smooth</option>
+              <option value="medium" data-i18n="html.labels.export_blur_medium">High</option>
+              <option value="heavy"  data-i18n="html.labels.export_blur_heavy">Exceptional</option>
+            </select>
+          </div>
+          <div class="sp-row">
+            <span class="sp-hint" style="font-size:9px;opacity:0.7;line-height:1.4" data-i18n="html.labels.export_blur_hint">Higher quality slows the game during capture for smoother sub-frame motion. Realtime captures at game speed; Exceptional is cinematic-grade but takes longer.</span>
+          </div>
+          <!-- Only shown on sub-4K screens (hidden via JS on the `show`
+               boot message) — at native 4K the upscale is a no-op. -->
+          <div class="sp-row" id="export-upscale-row">
+            <label class="sp-label" data-i18n="html.labels.export_upscale">4K Upscale</label>
+            <input type="checkbox" id="export-upscale" />
+          </div>
+          <div class="sp-row" id="export-upscale-hint-row">
+            <span class="sp-hint" style="font-size:9px;opacity:0.7;line-height:1.4" data-i18n="html.labels.export_upscale_hint">Renders the final video at 4K from your native resolution — noticeably crisper, and platforms like YouTube/Discord treat 4K uploads better. Bigger file and slower processing.</span>
+          </div>
+        </div>
+
+        <div class="sp-section">
+          <button id="export-start-btn" class="tb-btn"
+            style="width:100%;justify-content:center;background:rgba(80,180,80,0.2);border-color:rgba(80,180,80,0.5);color:#5cb85c"
+            onclick="CC.startExport()">
+            <i class="fa-solid fa-circle-dot"></i>&nbsp;<span data-i18n="html.buttons.export_start">Start Export</span>
+          </button>
+          <button id="export-stop-btn" class="tb-btn hidden"
+            style="width:100%;justify-content:center;background:rgba(204,51,51,0.2);border-color:rgba(204,51,51,0.5);color:#cc5555;margin-top:6px"
+            onclick="CC.stopExport()">
+            <i class="fa-solid fa-stop"></i>&nbsp;<span data-i18n="html.buttons.export_stop">Stop</span>
+          </button>
+          <div id="export-progress" class="hidden" style="margin-top:10px;font-size:11px;color:#aaa;text-align:center;font-family:Consolas,monospace">
+            <span data-i18n="html.labels.export_capturing">Capturing…</span>
+            <span id="export-elapsed" style="margin-left:6px;color:#ccc">00:00</span>
+          </div>
+        </div>
+
+      </div><!-- /sp-export-view -->
+
+      <!-- ── 3D TEXT VIEW (create + edit) ──────────────────────────────── -->
+      <div id="sp-text-view" class="hidden">
+
+        <!-- CHOOSER: pick what to add. Shown when entering from the menu;
+             picking a kind opens the matching form. Video is reserved for a
+             future release (disabled for now). -->
+        <div id="tv-chooser" class="sp-section hidden">
+          <div class="sp-section-title">ADD 3D OBJECT</div>
+          <div class="tv-kind-list">
+            <div class="sp-menu-item tv-kind-card" onclick="CC.chooseTextKind('text')">
+              <div class="sp-menu-item-icon orange"><i class="fa-solid fa-font"></i></div>
+              <div class="sp-menu-item-info">
+                <span class="sp-menu-item-title">3D Text</span>
+                <span class="sp-menu-item-desc">Place animated text in the world</span>
+              </div>
+              <i class="fa-solid fa-chevron-right sp-menu-item-arrow"></i>
+            </div>
+            <div class="sp-menu-item tv-kind-card" onclick="CC.chooseTextKind('image')">
+              <div class="sp-menu-item-icon orange"><i class="fa-solid fa-image"></i></div>
+              <div class="sp-menu-item-info">
+                <span class="sp-menu-item-title">3D Image</span>
+                <span class="sp-menu-item-desc">Place an image billboard in the world</span>
+              </div>
+              <i class="fa-solid fa-chevron-right sp-menu-item-arrow"></i>
+            </div>
+            <div class="sp-menu-item tv-kind-card tv-kind-disabled" title="Coming soon">
+              <div class="sp-menu-item-icon"><i class="fa-solid fa-film"></i></div>
+              <div class="sp-menu-item-info">
+                <span class="sp-menu-item-title">3D Video</span>
+                <span class="sp-menu-item-desc">Coming soon</span>
+              </div>
+              <i class="fa-solid fa-chevron-right sp-menu-item-arrow"></i>
+            </div>
+          </div>
+        </div>
+
+        <!-- FIELDS: create/edit form sections (hidden until a kind is chosen) -->
+        <div id="tv-fields">
+
+        <div class="sp-section tv-only-text">
+          <div class="sp-section-title" data-i18n="html.panels.text_content">TEXT CONTENT</div>
+          <div class="sp-row">
+            <textarea class="sp-textarea" id="tv-text" rows="3" data-i18n-attr="placeholder:html.placeholders.enter_text_here" placeholder="Enter text here..."></textarea>
+          </div>
+        </div>
+
+        <!-- 3D IMAGE: paste a direct image URL to render a picture billboard
+             instead of text. Aspect ratio is auto-detected; the Size field
+             below scales it. Leave blank for a normal text object. -->
+        <div class="sp-section tv-only-image">
+          <div class="sp-section-title">IMAGE</div>
+          <div class="sp-row">
+            <input class="sp-input" type="text" id="tv-image-url" style="flex:1"
+              placeholder="Image URL (https://...)"
+              oninput="CC.onImageUrlInput()" />
+          </div>
+          <div class="sp-row">
+            <span class="sp-hint" id="tv-image-status" style="font-size:9px;opacity:0.7">Paste a direct image link — size auto-detected. Use the Size field below to scale.</span>
+          </div>
+        </div>
+
+        <div class="sp-section">
+          <div class="sp-section-title" data-i18n="html.panels.appearance">APPEARANCE</div>
+          <div class="sp-row tv-only-text">
+            <label class="sp-label" data-i18n="html.labels.font">Font</label>
+            <select class="sp-select" id="tv-font">
+              <!-- populated from Config.Fonts on show -->
+            </select>
+          </div>
+          <div class="sp-row tv-only-text">
+            <label class="sp-label" data-i18n="html.labels.color">Color</label>
+            <input type="color" id="tv-color" value="#ffffff" class="sp-color-input" />
+          </div>
+          <div class="sp-row">
+            <label class="sp-label" data-i18n="html.labels.size">Size</label>
+            <input class="sp-input sp-input-sm" type="number" id="tv-size" min="0.5" max="20" step="0.5" value="4" />
+            <span class="sp-hint" data-i18n="html.labels.scale">scale</span>
+          </div>
+          <div class="sp-row">
+            <label class="sp-label" data-i18n="html.labels.shadow">Shadow</label>
+            <button id="tv-shadow-btn" class="tv-toggle-btn" onclick="CC.toggleShadow()" data-i18n="html.buttons.off">OFF</button>
+            <label class="sp-label" style="margin-left:8px" data-i18n="html.labels.glow">Glow</label>
+            <button id="tv-glow-btn" class="tv-toggle-btn" onclick="CC.toggleGlow()" data-i18n="html.buttons.off">OFF</button>
+          </div>
+          <div class="sp-row tv-only-text">
+            <label class="sp-label" data-i18n="html.labels.outline">Outline</label>
+            <button id="tv-outline-btn" class="tv-toggle-btn" onclick="CC.toggleOutline()" data-i18n="html.buttons.off">OFF</button>
+            <input type="color" id="tv-outline-color" value="#000000" class="sp-color-input" style="margin-left:8px" />
+            <input class="sp-input sp-input-sm" type="number" id="tv-outline-width" min="1" max="12" step="1" value="2" style="width:48px;margin-left:4px" />
+            <span class="sp-hint">px</span>
+          </div>
+        </div>
+
+        <div class="sp-section">
+          <div class="sp-section-title" id="tv-colorshift-title" data-i18n="html.panels.color_shift">COLOR SHIFT</div>
+          <div class="sp-row">
+            <label class="sp-label" data-i18n="html.labels.enable">Enable</label>
+            <button id="tv-chroma-btn" class="tv-toggle-btn" onclick="CC.toggleColorShift()" data-i18n="html.buttons.off">OFF</button>
+          </div>
+          <div class="sp-row">
+            <label class="sp-label" data-i18n="html.labels.cycle">Cycle</label>
+            <input class="sp-input sp-input-sm" type="number" id="tv-chroma-speed" min="1" max="600" step="1" value="60" />
+            <span class="sp-hint" data-i18n="html.labels.frames">frames</span>
+          </div>
+          <div class="sp-row tv-only-text">
+            <label class="sp-label" data-i18n="html.labels.advanced">Advanced</label>
+            <button id="tv-chroma-adv-btn" class="tv-toggle-btn" onclick="CC.toggleColorShiftAdvanced()" data-i18n="html.buttons.off">OFF</button>
+            <span class="sp-hint" style="font-size:9px;opacity:0.7;margin-left:8px" data-i18n="html.labels.color_shift_advanced_hint">main color ↔ transparent sweep when off</span>
+          </div>
+          <div class="sp-row hidden tv-only-text" id="tv-chroma-adv-row">
+            <label class="sp-label" data-i18n="html.labels.colors">Colors</label>
+            <input class="sp-input" type="text" id="tv-chroma-colors" value="" style="flex:1" placeholder="#ff0000,#00ff00,transparent,#0000ff" />
+          </div>
+        </div>
+
+        <div class="sp-section">
+          <div class="sp-section-title" id="tv-gradient-title" data-i18n="html.panels.gradient_fill">GRADIENT FILL</div>
+          <div class="sp-row">
+            <label class="sp-label" data-i18n="html.labels.enable">Enable</label>
+            <button id="tv-gradient-btn" class="tv-toggle-btn" onclick="CC.toggleGradient()" data-i18n="html.buttons.off">OFF</button>
+            <span class="sp-hint" style="font-size:9px;opacity:0.7;margin-left:8px" data-i18n="html.labels.gradient_hint">replaces flat color with a top→bottom gradient</span>
+          </div>
+          <div class="sp-row">
+            <label class="sp-label" data-i18n="html.labels.gradient_top">Top</label>
+            <input type="color" id="tv-gradient-from" value="#ffd966" class="sp-color-input" />
+            <label class="sp-label" style="margin-left:8px" data-i18n="html.labels.gradient_bottom">Bottom</label>
+            <input type="color" id="tv-gradient-to" value="#c08a1f" class="sp-color-input" />
+          </div>
+        </div>
+
+        <div class="sp-section">
+          <div class="sp-section-title" data-i18n="html.panels.pulse">PULSE</div>
+          <div class="sp-row">
+            <label class="sp-label" data-i18n="html.labels.enable">Enable</label>
+            <button id="tv-pulse-btn" class="tv-toggle-btn" onclick="CC.togglePulse()" data-i18n="html.buttons.off">OFF</button>
+            <span class="sp-hint" style="font-size:9px;opacity:0.7;margin-left:8px" data-i18n="html.labels.pulse_hint">subtle breathing scale during the hold</span>
+          </div>
+          <div class="sp-row">
+            <label class="sp-label" data-i18n="html.labels.cycle">Cycle</label>
+            <input class="sp-input sp-input-sm" type="number" id="tv-pulse-speed" min="10" max="300" step="2" value="60" />
+            <span class="sp-hint" data-i18n="html.labels.frames">frames</span>
+          </div>
+        </div>
+
+        <div class="sp-section">
+          <div class="sp-section-title" data-i18n="html.panels.animation">ANIMATION</div>
+          <div class="sp-row">
+            <label class="sp-label" data-i18n="html.labels.type">Type</label>
+            <select class="sp-select" id="tv-anim">
+              <option value="fadeSlide" data-i18n="html.labels.anim_fade_slide">Fade Slide</option>
+              <option value="scaleUp" data-i18n="html.labels.anim_scale_up">Scale Up</option>
+              <option value="scaleDown" data-i18n="html.labels.anim_scale_down">Scale Down</option>
+              <option value="rise" data-i18n="html.labels.anim_rise">Rise</option>
+              <option value="pop" class="anim-image-only">Pop</option>
+              <option value="spin" class="anim-image-only">Spin</option>
+              <option value="letterPop" class="anim-text-only" data-i18n="html.labels.anim_letter_pop">Letter Pop</option>
+              <option value="typewriter" class="anim-text-only" data-i18n="html.labels.anim_typewriter">Typewriter</option>
+              <option value="wave" class="anim-text-only" data-i18n="html.labels.anim_wave">Wave</option>
+              <option value="scatter" class="anim-text-only" data-i18n="html.labels.anim_scatter">Scatter</option>
+            </select>
+          </div>
+          <div class="sp-row">
+            <label class="sp-label" data-i18n="html.labels.anim_in">Anim In</label>
+            <input class="sp-input sp-input-sm" type="number" id="tv-anim-in" min="1" max="120" value="15" />
+            <span class="sp-hint" data-i18n="html.labels.frames">frames</span>
+          </div>
+          <div class="sp-row">
+            <label class="sp-label" data-i18n="html.labels.anim_out">Anim Out</label>
+            <input class="sp-input sp-input-sm" type="number" id="tv-anim-out" min="1" max="120" value="15" />
+            <span class="sp-hint" data-i18n="html.labels.frames">frames</span>
+          </div>
+        </div>
+
+        </div><!-- /tv-fields -->
+
+        <!-- Create mode: shown when adding a new text -->
+        <div id="tv-create-mode" class="sp-section">
+          <button class="tb-btn" style="width:100%;justify-content:center;background:rgba(224,108,58,0.2);border-color:rgba(224,108,58,0.5);color:#e06c3a"
+            onclick="CC.startTextPlacement()">
+            <i class="fa-solid fa-crosshairs"></i>&nbsp;<span data-i18n="html.buttons.place_in_world"> Place in World</span>
+          </button>
+        </div>
+
+        <!-- Locking: its own box (shown when a clip is selected), like keyframe locking -->
+        <div id="tv-lock-section" class="sp-section hidden">
+          <div class="sp-section-title" data-i18n="html.panels.locking">LOCKING</div>
+          <div class="sp-row">
+            <label class="sp-label" data-i18n="html.labels.lock_text_to_entity" title="Lock this to a recorded vehicle or ped. Its position becomes an offset from the target, so it rides along as the entity moves.">Lock to vehicle / ped</label>
+            <select class="sp-select" id="tv-lock-entity" onchange="CC.applyTextLock()">
+              <option value="" data-i18n="html.labels.lock_none">— None (world)</option>
+            </select>
+          </div>
+          <div class="sp-row" id="tv-lock-orient-row">
+            <label class="sp-label" data-i18n="html.labels.lock_orient" title="On: rotates with the entity (e.g. a decal on a car door). Off: keeps a fixed facing and only tracks position (e.g. a floating title).">Rotate with entity</label>
+            <input type="checkbox" id="tv-lock-orient" checked onchange="CC.toggleTextOrient()" />
+          </div>
+        </div>
+
+        <!-- Edit mode: shown when a clip is selected -->
+        <div id="tv-edit-mode" class="sp-section hidden">
+          <div class="sp-section-title" data-i18n="html.panels.timing">TIMING</div>
+          <div class="sp-row">
+            <label class="sp-label" data-i18n="html.labels.start">Start</label>
+            <input class="sp-input" type="number" id="tc-start" min="0" onchange="CC.updateClipTiming()" />
+            <span class="sp-hint" data-i18n="html.labels.frame">frame</span>
+          </div>
+          <div class="sp-row">
+            <label class="sp-label" data-i18n="html.labels.end">End</label>
+            <input class="sp-input" type="number" id="tc-end" min="1" onchange="CC.updateClipTiming()" />
+            <span class="sp-hint" data-i18n="html.labels.frame">frame</span>
+          </div>
+
+          <div style="display:flex;gap:6px;margin-top:6px">
+            <button class="tb-btn" style="flex:1;justify-content:center;background:rgba(224,108,58,0.2);border-color:rgba(224,108,58,0.5);color:#e06c3a"
+              onclick="CC.startTextPlacement()">
+              <i class="fa-solid fa-crosshairs"></i>&nbsp;<span data-i18n="html.buttons.replace"> Re-place</span>
+            </button>
+            <button class="tb-btn" style="flex:1;justify-content:center;background:rgba(80,180,80,0.15);border-color:rgba(80,180,80,0.4);color:#5cb85c"
+              onclick="CC.saveClipEdit()">
+              <i class="fa-solid fa-floppy-disk"></i>&nbsp;<span data-i18n="html.buttons.save"> Save</span>
+            </button>
+          </div>
+        </div>
+
+      </div><!-- /sp-text-view -->
+
+      <!-- ── SCENE EDITOR VIEW (list + spawn) ─────────────────────────── -->
+      <div id="sp-scene-view" class="hidden">
+
+        <!-- SPAWN PED -->
+        <div class="sp-section">
+          <div class="sp-section-title" data-i18n="html.panels.spawn_ped">SPAWN PED</div>
+          <div class="sp-row">
+            <input class="sp-input" type="text" id="se-ped-model" placeholder="a_m_y_hipster_01" />
+            <button class="tb-btn se-spawn-btn" onclick="CC.openModelBrowser('ped')" data-i18n-attr="title:html.tooltips.browse" title="Browse"><i class="fa-solid fa-images"></i></button>
+            <button class="tb-btn se-spawn-btn" onclick="CC.spawnScenePed()"><i class="fa-solid fa-plus"></i></button>
+          </div>
+        </div>
+
+        <!-- SAVED (reusable presets — global, any project, peds + vehicles) -->
+        <div class="sp-section">
+          <div class="sp-section-title"><span data-i18n="html.panels.saved">SAVED</span> <span style="font-weight:400;font-size:9px;color:var(--text-dim)" data-i18n="html.labels.click_to_spawn">(click to spawn)</span></div>
+          <div class="se-btn-row" style="margin-bottom:6px">
+            <button id="se-preset-tab-ped" class="tb-btn se-sm-btn active" onclick="CC.setPresetTab('ped')"><i class="fa-solid fa-person"></i>&nbsp;<span data-i18n="html.buttons.preset_tab_peds">Peds</span></button>
+            <button id="se-preset-tab-vehicle" class="tb-btn se-sm-btn" onclick="CC.setPresetTab('vehicle')"><i class="fa-solid fa-car"></i>&nbsp;<span data-i18n="html.buttons.preset_tab_vehicles">Vehicles</span></button>
+          </div>
+          <div id="se-preset-list" class="se-entity-list"></div>
+        </div>
+
+        <!-- SPAWN VEHICLE -->
+        <div class="sp-section">
+          <div class="sp-section-title" data-i18n="html.panels.spawn_vehicle">SPAWN VEHICLE</div>
+          <div class="sp-row">
+            <input class="sp-input" type="text" id="se-veh-model" placeholder="adder" />
+            <button class="tb-btn se-spawn-btn" onclick="CC.openModelBrowser('vehicle')" data-i18n-attr="title:html.tooltips.browse" title="Browse"><i class="fa-solid fa-images"></i></button>
+            <button class="tb-btn se-spawn-btn" onclick="CC.spawnSceneVehicle()"><i class="fa-solid fa-plus"></i></button>
+          </div>
+        </div>
+
+        <!-- SPAWN PROP -->
+        <div class="sp-section">
+          <div class="sp-section-title" data-i18n="html.panels.spawn_prop">SPAWN PROP</div>
+          <div class="sp-row">
+            <input class="sp-input" type="text" id="se-prop-model" placeholder="prop_roadcone02a" />
+            <button class="tb-btn se-spawn-btn" onclick="CC.spawnSceneProp()">
+              <i class="fa-solid fa-plus"></i> <span data-i18n="html.buttons.spawn">Spawn</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- ENTITY LIST -->
+        <div class="sp-section">
+          <div class="sp-section-title"><span data-i18n="html.panels.entities">ENTITIES</span> <span style="font-weight:400;font-size:9px;color:var(--text-dim)" data-i18n="html.labels.click_to_edit">(click to edit)</span></div>
+          <div id="se-entity-list" class="se-entity-list">
+            <div class="sp-hint" style="padding:4px 0" data-i18n="html.labels.no_entities_spawned">No entities spawned yet</div>
+          </div>
+        </div>
+
+        <!-- RELATIONSHIP GROUPS -->
+        <div class="sp-section">
+          <div class="sp-section-title" data-i18n="html.panels.relationship_groups">RELATIONSHIP GROUPS</div>
+          <div class="sp-row">
+            <input class="sp-input" type="text" id="se-group-name" data-i18n-attr="placeholder:html.placeholders.group_name" placeholder="Group name..." />
+            <button class="tb-btn se-spawn-btn" onclick="CC.createRelGroup()"><i class="fa-solid fa-plus"></i></button>
+          </div>
+          <div id="se-group-list" class="se-entity-list" style="margin-top:6px"></div>
+          <div class="sp-hint" style="margin-top:6px" data-i18n="html.labels.director_group_hint">"Director" group exists by default (you)</div>
+        </div>
+
+        <!-- SCENE ACTIONS -->
+        <div class="sp-section">
+          <div class="sp-section-title" data-i18n="html.panels.scene_actions">SCENE ACTIONS</div>
+          <button id="se-combat-toggle" class="tb-btn" style="width:100%;justify-content:center" onclick="CC.toggleSceneCombat()">
+            <i class="fa-solid fa-play"></i>&nbsp;<span data-i18n="html.buttons.combat_start">Start combat</span>
+          </button>
+          <button class="tb-btn" style="width:100%;justify-content:center;margin-top:4px" onclick="CC.resetScene()">
+            <i class="fa-solid fa-arrow-rotate-left"></i>&nbsp;<span data-i18n="html.buttons.reset_scene">Reset scene</span>
+          </button>
+          <button class="tb-btn danger" style="width:100%;justify-content:center;margin-top:4px" onclick="CC.clearScene()">
+            <i class="fa-solid fa-trash"></i>&nbsp;<span data-i18n="html.buttons.clear_scene">Clear scene</span>
+          </button>
+        </div>
+
+      </div><!-- /sp-scene-view -->
+
+      <!-- ── SCENE ENTITY PROPERTIES VIEW (shown when entity clicked) ──── -->
+      <div id="sp-scene-props-view" class="hidden">
+
+        <!-- ═══ PED PROPERTIES ═══ -->
+        <div id="se-ped-props" class="hidden">
+
+          <!-- APPEARANCE (freemode only) -->
+          <div id="se-ped-appearance-section" class="sp-section hidden">
+            <div class="sp-section-title" data-i18n="html.panels.appearance">APPEARANCE</div>
+            <button class="tb-btn" style="width:100%;justify-content:center" onclick="CC.openPedAppearanceEditor()"><i class="fa-solid fa-user-pen"></i>&nbsp;<span data-i18n="html.buttons.edit_appearance">Edit Appearance</span></button>
+          </div>
+
+          <!-- SAVE AS PRESET (model + current clothing → reusable library) -->
+          <div class="sp-section">
+            <div class="sp-section-title" data-i18n="html.panels.save_as_preset">SAVE AS PRESET</div>
+            <div class="sp-row">
+              <input class="sp-input" type="text" id="se-preset-name" data-i18n-attr="placeholder:html.placeholders.preset_name" placeholder="Preset name..." />
+              <button class="tb-btn se-spawn-btn" onclick="CC.saveEntityAsPreset('ped')" data-i18n-attr="title:html.tooltips.save_preset" title="Save this ped to your reusable library"><i class="fa-solid fa-floppy-disk"></i></button>
+            </div>
+            <div class="sp-hint" style="margin-top:4px" data-i18n="html.labels.save_ped_preset_hint">Saves this ped's model + current clothing so you can reuse it in any project.</div>
+          </div>
+
+          <!-- Native (dict/name) animation section — shown when rpemotes is NOT installed. -->
+          <div class="sp-section" id="se-anim-section-native">
+            <div class="sp-section-title" data-i18n="html.panels.animation">ANIMATION</div>
+            <div class="sp-row">
+              <label class="sp-label" data-i18n="html.labels.preset">Preset</label>
+              <select class="sp-select" id="se-anim-preset"><option value="" data-i18n="html.labels.select_placeholder">-- Select --</option></select>
+            </div>
+            <div style="margin-bottom:6px">
+              <button class="tb-btn" style="width:100%;justify-content:center" onclick="CC.playPresetAnim()"><i class="fa-solid fa-play"></i>&nbsp;<span data-i18n="html.buttons.play_preset"> Play Preset</span></button>
+            </div>
+            <div class="sp-row">
+              <label class="sp-label" data-i18n="html.labels.dict">Dict</label>
+              <input class="sp-input" type="text" id="se-anim-dict" placeholder="anim@dict" />
+            </div>
+            <div class="sp-row">
+              <label class="sp-label" data-i18n="html.labels.name">Name</label>
+              <input class="sp-input" type="text" id="se-anim-name" placeholder="anim_name" />
+            </div>
+            <div class="sp-row">
+              <label class="sp-label" data-i18n="html.labels.loop">Loop</label>
+              <input type="checkbox" id="se-anim-loop" checked />
+            </div>
+            <button class="tb-btn" style="width:100%;justify-content:center" onclick="CC.playCustomAnim()"><i class="fa-solid fa-play"></i>&nbsp;<span data-i18n="html.buttons.play_custom_anim"> Play Custom Anim</span></button>
+          </div>
+
+          <!-- rpemotes-routed emote section — shown when the fork is detected. -->
+          <div class="sp-section hidden" id="se-anim-section-rpemotes">
+            <div class="sp-section-title" data-i18n="html.panels.emote_rpemotes">EMOTE (RPEMOTES)</div>
+            <div class="sp-hint" style="font-size:10px;line-height:1.4;color:var(--text-dim);margin-bottom:6px" data-i18n="html.labels.rpemotes_desc_intro" data-i18n-html>Library + props powered by your rpemotes-reborn fork. Pick from the list or type a code (e.g. <b>wave</b>, <b>dance1</b>).</div>
+            <div class="sp-row">
+              <label class="sp-label" data-i18n="html.labels.library">Library</label>
+              <select class="sp-select" id="se-emote-library"><option value="" data-i18n="html.labels.select_placeholder">-- Select --</option></select>
+            </div>
+            <div style="margin-bottom:6px">
+              <button class="tb-btn" style="width:100%;justify-content:center" onclick="CC.playSceneEmoteFromLibrary()"><i class="fa-solid fa-play"></i>&nbsp;<span data-i18n="html.buttons.play_emote"> Play Emote</span></button>
+            </div>
+            <div class="sp-row">
+              <label class="sp-label" data-i18n="html.labels.code">Code</label>
+              <input class="sp-input" type="text" id="se-emote-code" placeholder="wave" />
+            </div>
+            <div style="display:flex;gap:6px;margin-top:4px">
+              <button class="tb-btn" style="flex:1;justify-content:center" onclick="CC.playSceneEmoteFromCode()"><i class="fa-solid fa-play"></i>&nbsp;<span data-i18n="html.buttons.play_custom_emote"> Play Code</span></button>
+              <button class="tb-btn" style="flex:1;justify-content:center" onclick="CC.stopSceneEmote()"><i class="fa-solid fa-stop"></i>&nbsp;<span data-i18n="html.buttons.stop_emote"> Stop</span></button>
+            </div>
+          </div>
+
+          <div class="sp-section">
+            <div class="sp-section-title" data-i18n="html.panels.weapon">WEAPON</div>
+            <div class="sp-row">
+              <label class="sp-label" data-i18n="html.labels.preset">Preset</label>
+              <select class="sp-select" id="se-weapon-preset"><option value="" data-i18n="html.labels.select_placeholder">-- Select --</option></select>
+            </div>
+            <button class="tb-btn" style="width:100%;justify-content:center;margin-top:4px" onclick="CC.giveSceneWeapon()"><i class="fa-solid fa-gun"></i>&nbsp;<span data-i18n="html.buttons.give_weapon"> Give Weapon</span></button>
+          </div>
+
+          <!-- VEHICLE SEAT — pick a scene car in the viewport, choose a seat -->
+          <div class="sp-section">
+            <div class="sp-section-title" data-i18n="html.panels.vehicle_seat">VEHICLE</div>
+
+            <!-- Shown when this ped isn't riding in anything -->
+            <div id="se-seat-empty">
+              <button class="tb-btn" style="width:100%;justify-content:center" onclick="CC.startVehiclePick()">
+                <i class="fa-solid fa-car-side"></i>&nbsp;<span data-i18n="html.buttons.put_in_vehicle">Put in vehicle</span>
+              </button>
+              <div class="sp-hint" style="margin-top:4px" data-i18n="html.labels.put_in_vehicle_hint">Double-click a scene vehicle in the viewport. It outlines as you hover.</div>
+            </div>
+
+            <!-- Shown when it is -->
+            <div id="se-seat-filled" class="hidden">
+              <div class="sp-row">
+                <label class="sp-label" data-i18n="html.labels.riding_in">Riding in</label>
+                <span class="sp-input" id="se-seat-vehicle" style="pointer-events:none;overflow:hidden;text-overflow:ellipsis">–</span>
+              </div>
+              <div class="sp-row">
+                <label class="sp-label" data-i18n="html.labels.seat">Seat</label>
+                <select class="sp-select" id="se-seat-index" onchange="CC.setPedSeatIndex()"></select>
+              </div>
+              <div style="display:flex;gap:5px;margin-top:4px">
+                <button class="tb-btn" style="flex:1;justify-content:center" onclick="CC.startVehiclePick()">
+                  <i class="fa-solid fa-crosshairs"></i>&nbsp;<span data-i18n="html.buttons.change_vehicle">Change car</span>
+                </button>
+                <button class="tb-btn" style="flex:1;justify-content:center" onclick="CC.removePedFromVehicle()">
+                  <i class="fa-solid fa-person-walking-arrow-right"></i>&nbsp;<span data-i18n="html.buttons.get_out">Get out</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="sp-section">
+            <div class="sp-section-title" data-i18n="html.panels.ped_follow">PED FOLLOW</div>
+            <div class="sp-row">
+              <label class="sp-label" data-i18n="html.labels.follow">Follow</label>
+              <button id="se-ped-follow-btn" class="tv-toggle-btn" onclick="CC.togglePedFollow()" data-i18n="html.buttons.off">OFF</button>
+            </div>
+            <div class="sp-row">
+              <label class="sp-label" data-i18n="html.labels.distance">Distance</label>
+              <input class="sp-input sp-input-sm" type="number" id="se-follow-dist" min="1" max="30" step="1" value="5" onchange="CC.syncPedFollowSettings()" />
+              <span class="sp-hint" data-i18n="html.labels.meters">meters</span>
+            </div>
+            <div class="sp-row">
+              <label class="sp-label" data-i18n="html.labels.speed">Speed</label>
+              <select class="sp-select" id="se-follow-speed" onchange="CC.syncPedFollowSettings()">
+                <option value="1.0" data-i18n="html.labels.speed_walk">Walk</option><option value="2.0" data-i18n="html.labels.speed_run">Run</option><option value="3.0" data-i18n="html.labels.speed_sprint">Sprint</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="sp-section">
+            <div class="sp-section-title" data-i18n="html.panels.combat_behavior">COMBAT & BEHAVIOR</div>
+            <div class="sp-row">
+              <label class="sp-label" data-i18n="html.labels.group">Group</label>
+              <select class="sp-select" id="se-ped-group">
+                <option value="" data-i18n="html.labels.none_placeholder">-- None --</option>
+              </select>
+            </div>
+            <div class="sp-row">
+              <label class="sp-label" data-i18n="html.labels.ability">Ability</label>
+              <select class="sp-select" id="se-ped-combat-ability">
+                <option value="0" data-i18n="html.labels.ability_poor">Poor</option><option value="1" selected data-i18n="html.labels.ability_average">Average</option><option value="2" data-i18n="html.labels.ability_professional">Professional</option>
+              </select>
+            </div>
+            <div class="sp-row">
+              <label class="sp-label" data-i18n="html.labels.movement">Movement</label>
+              <select class="sp-select" id="se-ped-combat-movement">
+                <option value="0" data-i18n="html.labels.movement_stationary">Stationary</option><option value="1" data-i18n="html.labels.movement_defensive">Defensive</option><option value="2" selected data-i18n="html.labels.movement_offensive">Offensive</option><option value="3" data-i18n="html.labels.movement_suicidal">Suicidal</option>
+              </select>
+            </div>
+            <div class="sp-row">
+              <label class="sp-label" data-i18n="html.labels.range">Range</label>
+              <select class="sp-select" id="se-ped-combat-range">
+                <option value="0" data-i18n="html.labels.range_near">Near</option><option value="1" selected data-i18n="html.labels.range_medium">Medium</option><option value="2" data-i18n="html.labels.range_far">Far</option>
+              </select>
+            </div>
+            <div class="sp-row">
+              <label class="sp-label" data-i18n="html.labels.accuracy">Accuracy</label>
+              <input class="sp-range" type="range" id="se-ped-accuracy" min="0" max="100" step="5" value="50" oninput="document.getElementById('se-ped-accuracy-val').textContent=this.value" />
+              <span class="sp-input sp-input-sm" id="se-ped-accuracy-val" style="pointer-events:none;text-align:center">50</span>
+            </div>
+            <button class="tb-btn" style="width:100%;justify-content:center;margin-top:4px" onclick="CC.applyPedCombat()"><i class="fa-solid fa-crosshairs"></i>&nbsp;<span data-i18n="html.buttons.apply_combat"> Apply Combat</span></button>
+          </div>
+
+          <div class="sp-section">
+            <div class="sp-section-title" data-i18n="html.panels.health_state">HEALTH & STATE</div>
+            <div class="sp-row">
+              <label class="sp-label" data-i18n="html.labels.health">Health</label>
+              <input class="sp-range" type="range" id="se-ped-health" min="1" max="1000" step="10" value="200" oninput="document.getElementById('se-ped-health-val').value=this.value" />
+              <input class="sp-input sp-input-sm" type="number" id="se-ped-health-val" min="1" max="1000" value="200" oninput="document.getElementById('se-ped-health').value=this.value" />
+            </div>
+            <div class="sp-row">
+              <label class="sp-label" data-i18n="html.labels.armor">Armor</label>
+              <input class="sp-range" type="range" id="se-ped-armor" min="0" max="100" step="10" value="0" oninput="document.getElementById('se-ped-armor-val').value=this.value" />
+              <input class="sp-input sp-input-sm" type="number" id="se-ped-armor-val" min="0" max="100" value="0" oninput="document.getElementById('se-ped-armor').value=this.value" />
+            </div>
+            <div class="sp-row">
+              <label class="sp-label" data-i18n="html.labels.invincible">Invincible</label>
+              <button id="se-ped-invincible-btn" class="tv-toggle-btn active" onclick="CC.togglePedState('invincible')" data-i18n="html.buttons.on">ON</button>
+              <label class="sp-label" data-i18n="html.labels.ragdoll">Ragdoll</label>
+              <button id="se-ped-ragdoll-btn" class="tv-toggle-btn active" onclick="CC.togglePedState('ragdoll')" data-i18n="html.buttons.on">ON</button>
+            </div>
+            <div class="sp-row">
+              <label class="sp-label" data-i18n="html.labels.flee">Flee</label>
+              <button id="se-ped-flee-btn" class="tv-toggle-btn" onclick="CC.togglePedState('flee')" data-i18n="html.buttons.off">OFF</button>
+            </div>
+            <button class="tb-btn" style="width:100%;justify-content:center;margin-top:4px" onclick="CC.applyPedHealth()"><i class="fa-solid fa-heart-pulse"></i>&nbsp;<span data-i18n="html.buttons.apply"> Apply</span></button>
+          </div>
+
+          <div class="sp-section">
+            <div class="sp-section-title" data-i18n="html.panels.scenario">SCENARIO</div>
+            <div class="sp-row">
+              <label class="sp-label" data-i18n="html.labels.preset">Preset</label>
+              <select class="sp-select" id="se-ped-scenario">
+                <option value="" data-i18n="html.labels.none_placeholder">-- None --</option>
+                <option value="WORLD_HUMAN_STAND_MOBILE" data-i18n="html.labels.scenario_phone">Phone</option>
+                <option value="WORLD_HUMAN_SMOKING" data-i18n="html.labels.scenario_smoking">Smoking</option>
+                <option value="WORLD_HUMAN_DRINKING" data-i18n="html.labels.scenario_drinking">Drinking</option>
+                <option value="WORLD_HUMAN_AA_COFFEE" data-i18n="html.labels.scenario_coffee">Coffee</option>
+                <option value="WORLD_HUMAN_CLIPBOARD" data-i18n="html.labels.scenario_clipboard">Clipboard</option>
+                <option value="WORLD_HUMAN_GUARD_STAND" data-i18n="html.labels.scenario_guard">Guard</option>
+                <option value="WORLD_HUMAN_COP_IDLES" data-i18n="html.labels.scenario_cop_idle">Cop Idle</option>
+                <option value="WORLD_HUMAN_HANG_OUT_STREET" data-i18n="html.labels.scenario_hang_out">Hang Out</option>
+                <option value="WORLD_HUMAN_LEAN_BACK_WALL" data-i18n="html.labels.scenario_lean_wall">Lean Wall</option>
+                <option value="WORLD_HUMAN_CHEERING" data-i18n="html.labels.scenario_cheering">Cheering</option>
+                <option value="WORLD_HUMAN_JANITOR" data-i18n="html.labels.scenario_janitor">Janitor</option>
+                <option value="WORLD_HUMAN_WELDING" data-i18n="html.labels.scenario_welding">Welding</option>
+                <option value="WORLD_HUMAN_YOGA" data-i18n="html.labels.scenario_yoga">Yoga</option>
+              </select>
+            </div>
+            <div style="display:flex;gap:4px;margin-top:4px">
+              <button class="tb-btn" style="flex:1;justify-content:center" onclick="CC.playPedScenario()"><i class="fa-solid fa-play"></i>&nbsp;<span data-i18n="html.buttons.play"> Play</span></button>
+              <button class="tb-btn" style="flex:1;justify-content:center" onclick="CC.stopPedScenario()"><i class="fa-solid fa-stop"></i>&nbsp;<span data-i18n="html.buttons.stop"> Stop</span></button>
+            </div>
+          </div>
+
+        </div><!-- /se-ped-props -->
+
+        <!-- ═══ VEHICLE PROPERTIES ═══ -->
+        <div id="se-veh-props" class="hidden">
+
+          <div class="sp-section">
+            <div class="sp-section-title" data-i18n="html.panels.engine_lights">ENGINE & LIGHTS</div>
+            <div class="sp-row">
+              <label class="sp-label" data-i18n="html.labels.engine">Engine</label>
+              <button id="se-veh-engine-btn" class="tv-toggle-btn" onclick="CC.toggleVehEngine()" data-i18n="html.buttons.off">OFF</button>
+              <label class="sp-label" data-i18n="html.labels.siren">Siren</label>
+              <button id="se-veh-siren-btn" class="tv-toggle-btn" onclick="CC.toggleVehSiren()" data-i18n="html.buttons.off">OFF</button>
+            </div>
+            <div class="sp-row">
+              <label class="sp-label" data-i18n="html.labels.lights">Lights</label>
+              <div class="se-btn-row">
+                <button class="tb-btn se-sm-btn active" onclick="CC.setVehLights(0)" data-i18n="html.buttons.lights_off">OFF</button>
+                <button class="tb-btn se-sm-btn" onclick="CC.setVehLights(1)" data-i18n="html.buttons.lights_low">LOW</button>
+                <button class="tb-btn se-sm-btn" onclick="CC.setVehLights(2)" data-i18n="html.buttons.lights_high">HIGH</button>
+                <button class="tb-btn se-sm-btn" onclick="CC.setVehLights(3)" data-i18n="html.buttons.lights_int">INT</button>
+              </div>
+            </div>
+            <div class="sp-row">
+              <label class="sp-label" title="Xenon headlights (visual mod). Pick a color to enable automatically.">Xenon</label>
+              <button id="se-veh-xenon-btn" class="tv-toggle-btn" onclick="CC.toggleVehXenon()">OFF</button>
+              <select class="sp-select" id="se-veh-xenon-color" onchange="CC.setVehXenonColor()">
+                <option value="-1">Stock</option><option value="0">White</option><option value="1">Blue</option>
+                <option value="2">Electric Blue</option><option value="3">Mint Green</option><option value="4">Lime Green</option>
+                <option value="5">Yellow</option><option value="6">Gold</option><option value="7">Orange</option>
+                <option value="8">Red</option><option value="9">Pink</option><option value="10">Hot Pink</option>
+                <option value="11">Purple</option><option value="12">Blacklight</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="sp-section">
+            <div class="sp-section-title" data-i18n="html.panels.doors">DOORS</div>
+            <div class="se-grid-6">
+              <button class="tb-btn se-grid-btn" onclick="CC.toggleVehDoor(0)" data-i18n="html.buttons.door_fl">FL</button>
+              <button class="tb-btn se-grid-btn" onclick="CC.toggleVehDoor(1)" data-i18n="html.buttons.door_fr">FR</button>
+              <button class="tb-btn se-grid-btn" onclick="CC.toggleVehDoor(2)" data-i18n="html.buttons.door_rl">RL</button>
+              <button class="tb-btn se-grid-btn" onclick="CC.toggleVehDoor(3)" data-i18n="html.buttons.door_rr">RR</button>
+              <button class="tb-btn se-grid-btn" onclick="CC.toggleVehDoor(4)" data-i18n="html.buttons.door_hood">HOOD</button>
+              <button class="tb-btn se-grid-btn" onclick="CC.toggleVehDoor(5)" data-i18n="html.buttons.door_trunk">TRUNK</button>
+            </div>
+          </div>
+
+          <div class="sp-section">
+            <div class="sp-section-title" data-i18n="html.panels.windows">WINDOWS</div>
+            <div class="se-grid-6">
+              <button class="tb-btn se-grid-btn" onclick="CC.smashVehWindow(0)" data-i18n="html.buttons.door_fl">FL</button>
+              <button class="tb-btn se-grid-btn" onclick="CC.smashVehWindow(1)" data-i18n="html.buttons.door_fr">FR</button>
+              <button class="tb-btn se-grid-btn" onclick="CC.smashVehWindow(2)" data-i18n="html.buttons.door_rl">RL</button>
+              <button class="tb-btn se-grid-btn" onclick="CC.smashVehWindow(3)" data-i18n="html.buttons.door_rr">RR</button>
+            </div>
+          </div>
+
+          <div class="sp-section">
+            <div class="sp-section-title" data-i18n="html.panels.indicators">INDICATORS</div>
+            <div class="se-btn-row">
+              <button id="se-veh-ind-left" class="tb-btn se-sm-btn" onclick="CC.toggleVehIndicator('left')" data-i18n="html.buttons.indicator_left">LEFT</button>
+              <button id="se-veh-ind-right" class="tb-btn se-sm-btn" onclick="CC.toggleVehIndicator('right')" data-i18n="html.buttons.indicator_right">RIGHT</button>
+              <button id="se-veh-ind-hazard" class="tb-btn se-sm-btn" onclick="CC.toggleVehIndicator('hazard')" data-i18n="html.buttons.indicator_hazard">HAZARD</button>
+            </div>
+          </div>
+
+          <div class="sp-section">
+            <div class="sp-section-title" data-i18n="html.panels.appearance">APPEARANCE</div>
+            <div class="sp-row">
+              <label class="sp-label" data-i18n="html.labels.primary">Primary</label>
+              <input type="color" id="se-veh-color1" value="#333333" class="sp-color-input" onchange="CC.setVehColor()" />
+              <label class="sp-label" data-i18n="html.labels.secondary">Secondary</label>
+              <input type="color" id="se-veh-color2" value="#333333" class="sp-color-input" onchange="CC.setVehColor()" />
+            </div>
+            <div class="sp-row">
+              <label class="sp-label" data-i18n="html.labels.dirt">Dirt</label>
+              <input class="sp-range" type="range" id="se-veh-dirt" min="0" max="15" step="1" value="0" oninput="document.getElementById('se-veh-dirt-val').textContent=this.value;CC.setVehDirt()" />
+              <span class="sp-input sp-input-sm" id="se-veh-dirt-val" style="pointer-events:none;text-align:center">0</span>
+            </div>
+            <div class="sp-row">
+              <label class="sp-label" data-i18n="html.labels.plate">Plate</label>
+              <input class="sp-input" type="text" id="se-veh-plate" maxlength="8" placeholder="CINE" onchange="CC.setVehPlate()" />
+            </div>
+            <div class="sp-row">
+              <label class="sp-label" title="Pearlescent top-coat color (GTA paint palette)">Pearl</label>
+              <select class="sp-select" id="se-veh-pearl" onchange="CC.setVehExtraColours()"></select>
+            </div>
+            <div class="sp-row">
+              <label class="sp-label" title="Wheel / rim color (GTA paint palette)">Wheel color</label>
+              <select class="sp-select" id="se-veh-wheelcolor" onchange="CC.setVehExtraColours()"></select>
+            </div>
+            <div class="sp-row">
+              <label class="sp-label" title="Window tint level">Tint</label>
+              <select class="sp-select" id="se-veh-tint" onchange="CC.setVehWindowTint()">
+                <option value="0">None</option><option value="1">Pure Black</option><option value="2">Dark Smoke</option>
+                <option value="3">Light Smoke</option><option value="4">Stock</option><option value="5">Limo</option>
+                <option value="6">Green</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="sp-section">
+            <div class="sp-section-title" data-i18n="html.panels.neon">NEON</div>
+            <div class="sp-row">
+              <label class="sp-label" data-i18n="html.labels.neon">Neon</label>
+              <button id="se-veh-neon-btn" class="tv-toggle-btn" onclick="CC.toggleVehNeon()" data-i18n="html.buttons.off">OFF</button>
+              <label class="sp-label" data-i18n="html.labels.color">Color</label>
+              <input type="color" id="se-veh-neon-color" value="#0000ff" class="sp-color-input" onchange="CC.setVehNeonColor()" />
+            </div>
+          </div>
+
+          <!-- LIVERY (hidden unless the model actually has liveries) -->
+          <div class="sp-section hidden" id="se-veh-livery-section">
+            <div class="sp-section-title">LIVERY</div>
+            <div class="sp-row">
+              <label class="sp-label">Livery</label>
+              <div class="se-btn-row">
+                <button class="tb-btn se-sm-btn" onclick="CC.stepVehLivery(-1)"><i class="fa-solid fa-chevron-left"></i></button>
+                <span class="sp-input sp-input-sm" id="se-veh-livery-val" style="pointer-events:none;text-align:center;flex:1">–</span>
+                <button class="tb-btn se-sm-btn" onclick="CC.stepVehLivery(1)"><i class="fa-solid fa-chevron-right"></i></button>
+              </div>
+            </div>
+          </div>
+
+          <!-- EXTRAS (hidden unless the model has toggleable extras) -->
+          <div class="sp-section hidden" id="se-veh-extras-section">
+            <div class="sp-section-title">EXTRAS <span style="font-weight:400;font-size:9px;color:var(--text-dim)">(click to toggle)</span></div>
+            <div id="se-veh-extras-grid" class="se-grid-6"></div>
+          </div>
+
+          <!-- CUSTOMIZATION (wheel type + visual mod steppers, filled per-model by JS) -->
+          <div class="sp-section">
+            <div class="sp-section-title">CUSTOMIZATION</div>
+            <div class="sp-row">
+              <label class="sp-label" title="Wheel category — changing it resets the wheel design">Wheel type</label>
+              <select class="sp-select" id="se-veh-wheeltype" onchange="CC.setVehWheelType()">
+                <option value="0">Sport</option><option value="1">Muscle</option><option value="2">Lowrider</option>
+                <option value="3">SUV</option><option value="4">Offroad</option><option value="5">Tuner</option>
+                <option value="6">Bike</option><option value="7">High End</option>
+              </select>
+            </div>
+            <div id="se-veh-mods-list"></div>
+          </div>
+
+          <!-- QUICK ACTIONS -->
+          <div class="sp-section">
+            <div class="sp-section-title">QUICK ACTIONS</div>
+            <button class="tb-btn" style="width:100%;justify-content:center" onclick="CC.fixVehicle()">
+              <i class="fa-solid fa-wrench"></i>&nbsp;<span>Fix &amp; Wash</span>
+            </button>
+            <button class="tb-btn" style="width:100%;justify-content:center;margin-top:4px" onclick="CC.maxTuneVehicle()">
+              <i class="fa-solid fa-gauge-high"></i>&nbsp;<span>Max Performance</span>
+            </button>
+          </div>
+
+          <div class="sp-section">
+            <div class="sp-section-title" data-i18n="html.panels.vehicle_chase">VEHICLE CHASE</div>
+            <div class="sp-row">
+              <span class="sp-hint" data-i18n="html.hints.chase_requires_vehicle">Player must be in a vehicle for chase to engage.</span>
+            </div>
+            <div class="sp-row">
+              <label class="sp-label" data-i18n="html.labels.chase">Chase</label>
+              <button id="se-veh-follow-btn" class="tv-toggle-btn" onclick="CC.toggleVehicleSceneFollow()" data-i18n="html.buttons.off">OFF</button>
+            </div>
+            <div class="sp-row">
+              <label class="sp-label" data-i18n="html.labels.distance">Distance</label>
+              <input class="sp-input sp-input-sm" type="number" id="se-veh-follow-dist" min="3" max="50" step="1" value="10" onchange="CC.syncVehicleFollowSettings()" />
+              <span class="sp-hint" data-i18n="html.labels.meters">meters</span>
+            </div>
+            <div class="sp-row">
+              <label class="sp-label" data-i18n="html.labels.speed">Speed</label>
+              <select class="sp-select" id="se-veh-follow-speed" onchange="CC.syncVehicleFollowSettings()">
+                <option value="15" data-i18n="html.labels.veh_speed_slow">Slow</option><option value="25" selected data-i18n="html.labels.veh_speed_normal">Normal</option><option value="40" data-i18n="html.labels.veh_speed_fast">Fast</option><option value="60" data-i18n="html.labels.veh_speed_very_fast">Very Fast</option><option value="100" data-i18n="html.labels.veh_speed_max">Max</option>
+              </select>
+            </div>
+            <div class="sp-row">
+              <label class="sp-label" data-i18n="html.labels.drive">Drive</label>
+              <select class="sp-select" id="se-veh-drive-style" onchange="CC.syncVehicleFollowSettings()">
+                <option value="786603" data-i18n="html.labels.drive_normal">Normal</option><option value="786468" data-i18n="html.labels.drive_rushed">Rushed</option><option value="6" data-i18n="html.labels.drive_ignore_lights">Ignore Lights</option><option value="786988" data-i18n="html.labels.drive_careful">Careful</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="sp-section">
+            <div class="sp-section-title" data-i18n="html.panels.vehicle_follow">VEHICLE FOLLOW</div>
+            <div class="sp-row">
+              <span class="sp-hint" data-i18n="html.hints.follow_gentle">Gentle follow — drives behind you like a teammate's car.</span>
+            </div>
+            <div class="sp-row">
+              <label class="sp-label" data-i18n="html.labels.follow">Follow</label>
+              <button id="se-veh-escort-btn" class="tv-toggle-btn" onclick="CC.toggleVehicleSceneEscort()" data-i18n="html.buttons.off">OFF</button>
+            </div>
+            <div class="sp-row">
+              <label class="sp-label" data-i18n="html.labels.distance">Distance</label>
+              <input class="sp-input sp-input-sm" type="number" id="se-veh-escort-dist" min="3" max="50" step="1" value="8" onchange="CC.syncVehicleEscortSettings()" />
+              <span class="sp-hint" data-i18n="html.labels.meters">meters</span>
+            </div>
+            <div class="sp-row">
+              <label class="sp-label" data-i18n="html.labels.speed">Speed</label>
+              <select class="sp-select" id="se-veh-escort-speed" onchange="CC.syncVehicleEscortSettings()">
+                <option value="10" data-i18n="html.labels.veh_speed_slow">Slow</option><option value="15" selected data-i18n="html.labels.veh_speed_normal">Normal</option><option value="25" data-i18n="html.labels.veh_speed_fast">Fast</option><option value="40" data-i18n="html.labels.veh_speed_very_fast">Very Fast</option>
+              </select>
+            </div>
+            <div class="sp-row">
+              <label class="sp-label" data-i18n="html.labels.drive">Drive</label>
+              <select class="sp-select" id="se-veh-escort-style" onchange="CC.syncVehicleEscortSettings()">
+                <option value="786603" data-i18n="html.labels.drive_normal">Normal</option><option value="786988" data-i18n="html.labels.drive_careful">Careful</option><option value="786468" data-i18n="html.labels.drive_rushed">Rushed</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- SAVE AS PRESET (model + full visual build → reusable library) -->
+          <div class="sp-section">
+            <div class="sp-section-title" data-i18n="html.panels.save_as_preset">SAVE AS PRESET</div>
+            <div class="sp-row">
+              <input class="sp-input" type="text" id="se-veh-preset-name" data-i18n-attr="placeholder:html.placeholders.preset_name" placeholder="Preset name..." />
+              <button class="tb-btn se-spawn-btn" onclick="CC.saveEntityAsPreset('vehicle')" data-i18n-attr="title:html.tooltips.save_preset" title="Save this vehicle to your reusable library"><i class="fa-solid fa-floppy-disk"></i></button>
+            </div>
+            <div class="sp-hint" style="margin-top:4px" data-i18n="html.labels.save_veh_preset_hint">Saves this car's colours, mods, extras, livery, wheels and plate so you can respawn it exactly in any project.</div>
+          </div>
+
+        </div><!-- /se-veh-props -->
+
+        <!-- ═══ PROP PROPERTIES ═══ -->
+        <div id="se-prop-props" class="hidden">
+
+          <div class="sp-section">
+            <div class="sp-section-title" data-i18n="html.panels.prop_options">PROP OPTIONS</div>
+            <div class="sp-row">
+              <label class="sp-label" data-i18n="html.labels.freeze">Freeze</label>
+              <button id="se-prop-freeze-btn" class="tv-toggle-btn active" onclick="CC.togglePropSetting('frozen')" data-i18n="html.buttons.on">ON</button>
+              <label class="sp-label" data-i18n="html.labels.visible">Visible</label>
+              <button id="se-prop-visible-btn" class="tv-toggle-btn active" onclick="CC.togglePropSetting('visible')" data-i18n="html.buttons.on">ON</button>
+            </div>
+            <div class="sp-row">
+              <label class="sp-label" data-i18n="html.labels.on_fire">On Fire</label>
+              <button id="se-prop-fire-btn" class="tv-toggle-btn" onclick="CC.togglePropSetting('onFire')" data-i18n="html.buttons.off">OFF</button>
+            </div>
+          </div>
+
+        </div><!-- /se-prop-props -->
+
+        <!-- ═══ SHARED: POSITION + DELETE ═══ -->
+        <div class="sp-section">
+          <div class="sp-section-title" data-i18n="html.panels.position">POSITION</div>
+          <div class="sp-row">
+            <label class="sp-label">X</label>
+            <input class="sp-input" type="number" id="se-pos-x" step="0.1" onchange="CC.updateSceneEntityPos()" />
+          </div>
+          <div class="sp-row">
+            <label class="sp-label">Y</label>
+            <input class="sp-input" type="number" id="se-pos-y" step="0.1" onchange="CC.updateSceneEntityPos()" />
+          </div>
+          <div class="sp-row">
+            <label class="sp-label">Z</label>
+            <input class="sp-input" type="number" id="se-pos-z" step="0.1" onchange="CC.updateSceneEntityPos()" />
+          </div>
+          <div class="sp-row">
+            <label class="sp-label" data-i18n="html.labels.heading">Heading</label>
+            <input class="sp-input" type="number" id="se-heading" min="0" max="360" step="1" value="0" onchange="CC.updateSceneEntityPos()" />
+          </div>
+          <button class="tb-btn" style="width:100%;justify-content:center;margin-top:6px;background:rgba(80,180,80,0.1);color:#5cb85c" onclick="CC.startScenePlacement()">
+            <i class="fa-solid fa-crosshairs"></i>&nbsp;<span data-i18n="html.buttons.replace_in_world"> Re-place in World</span>
+          </button>
+        </div>
+
+        <div class="sp-section">
+          <button class="tb-btn danger" style="width:100%;justify-content:center" onclick="CC.deleteSceneEntity()">
+            <i class="fa-solid fa-trash"></i>&nbsp;<span data-i18n="html.buttons.delete_entity"> Delete Entity</span>
+          </button>
+        </div>
+
+      </div><!-- /sp-scene-props-view -->
+
+      <!-- ── PED APPEARANCE EDITOR VIEW ────────────────────────────────────── -->
+      <div id="ped-appearance-panel" class="hidden">
+
+        <!-- QUICK ACTIONS -->
+        <div class="sp-section">
+          <div class="sp-section-title" data-i18n="html.panels.quick_actions">QUICK ACTIONS</div>
+          <div style="display:flex;gap:6px">
+            <button class="tb-btn" style="flex:1;justify-content:center" onclick="CC.copyPlayerAppearanceToScenePed()"><i class="fa-solid fa-clone"></i>&nbsp;<span data-i18n="html.buttons.copy_from_me">Copy From Me</span></button>
+            <button class="tb-btn" style="flex:1;justify-content:center" onclick="CC.resetPedAppearance()"><i class="fa-solid fa-rotate-left"></i>&nbsp;<span data-i18n="html.buttons.reset">Reset</span></button>
+          </div>
+        </div>
+
+        <!-- HERITAGE -->
+        <div class="sp-section" id="app-heritage-section">
+          <div class="sp-section-title" data-i18n="html.panels.heritage">HERITAGE</div>
+          <div class="sp-row">
+            <label class="sp-label" data-i18n="html.labels.app_mom">Mom</label>
+            <div class="app-stepper">
+              <button class="tb-btn" id="app-mom-dec">-</button>
+              <input class="app-stepper-val" id="app-mom-val" type="text" value="0" inputmode="numeric" />
+              <button class="tb-btn" id="app-mom-inc">+</button>
+            </div>
+          </div>
+          <div class="sp-row">
+            <label class="sp-label" data-i18n="html.labels.app_dad">Dad</label>
+            <div class="app-stepper">
+              <button class="tb-btn" id="app-dad-dec">-</button>
+              <input class="app-stepper-val" id="app-dad-val" type="text" value="0" inputmode="numeric" />
+              <button class="tb-btn" id="app-dad-inc">+</button>
+            </div>
+          </div>
+          <div class="sp-row">
+            <label class="sp-label" data-i18n="html.labels.app_resemblance">Resemblance</label>
+            <input class="sp-range" type="range" id="app-resemblance" min="0" max="1" step="0.05" value="0.5" />
+            <span class="sp-input sp-input-sm" id="app-resemblance-val" style="pointer-events:none;text-align:center">0.50</span>
+          </div>
+          <div class="sp-row">
+            <label class="sp-label" data-i18n="html.labels.app_skin_tone">Skin Tone</label>
+            <input class="sp-range" type="range" id="app-skin-tone" min="0" max="1" step="0.05" value="0.5" />
+            <span class="sp-input sp-input-sm" id="app-skin-tone-val" style="pointer-events:none;text-align:center">0.50</span>
+          </div>
+        </div>
+
+        <!-- HAIR -->
+        <div class="sp-section">
+          <div class="app-section-collapsible-header" id="app-hair-header">
+            <div class="sp-section-title" data-i18n="html.panels.hair">HAIR</div>
+            <i class="fa-solid fa-chevron-right app-chevron"></i>
+          </div>
+          <div class="app-collapsible-body" id="app-hair-body">
+            <div class="sp-row">
+              <label class="sp-label" data-i18n="html.labels.app_style">Style</label>
+              <div class="app-stepper">
+                <button class="tb-btn" id="app-hair-style-dec">-</button>
+                <input class="app-stepper-val" id="app-hair-style-val" type="text" value="0" inputmode="numeric" />
+                <button class="tb-btn" id="app-hair-style-inc">+</button>
+              </div>
+            </div>
+            <div class="sp-row">
+              <label class="sp-label" data-i18n="html.labels.app_color">Color</label>
+            </div>
+            <div class="app-palette" id="app-hair-color-palette"></div>
+            <div class="sp-row" style="margin-top:8px">
+              <label class="sp-label" data-i18n="html.labels.app_highlight">Highlight</label>
+            </div>
+            <div class="app-palette" id="app-hair-highlight-palette"></div>
+          </div>
+        </div>
+
+        <!-- FACE -->
+        <div class="sp-section" id="app-face-section">
+          <div class="app-section-collapsible-header" id="app-face-header">
+            <div class="sp-section-title" data-i18n="html.panels.face">FACE</div>
+            <i class="fa-solid fa-chevron-right app-chevron"></i>
+          </div>
+          <div class="app-collapsible-body" id="app-face-body">
+          <div class="sp-row">
+            <label class="sp-label" data-i18n="html.labels.app_eye_color">Eye Color</label>
+          </div>
+          <div class="app-palette" id="app-eye-color-palette"></div>
+
+          <div class="sp-row" style="margin-top:8px">
+            <label class="sp-label" data-i18n="html.labels.app_eyebrows">Eyebrows</label>
+            <div class="app-stepper">
+              <button class="tb-btn" id="app-eyebrows-dec">-</button>
+              <input class="app-stepper-val" id="app-eyebrows-val" type="text" value="0" inputmode="numeric" />
+              <button class="tb-btn" id="app-eyebrows-inc">+</button>
+            </div>
+          </div>
+          <div class="sp-row">
+            <label class="sp-label" data-i18n="html.labels.app_opacity">Opacity</label>
+            <input class="sp-range" type="range" id="app-eyebrows-opacity" min="0" max="1" step="0.05" value="1" />
+            <span class="sp-input sp-input-sm" id="app-eyebrows-opacity-val" style="pointer-events:none;text-align:center">1.00</span>
+          </div>
+          <div class="sp-row">
+            <label class="sp-label" data-i18n="html.labels.app_color">Color</label>
+          </div>
+          <div class="app-palette" id="app-eyebrows-color-palette"></div>
+
+          <div class="sp-row" style="margin-top:8px">
+            <label class="sp-label" data-i18n="html.labels.app_beard">Beard</label>
+            <div class="app-stepper">
+              <button class="tb-btn" id="app-beard-dec">-</button>
+              <input class="app-stepper-val" id="app-beard-val" type="text" value="0" inputmode="numeric" />
+              <button class="tb-btn" id="app-beard-inc">+</button>
+            </div>
+          </div>
+          <div class="sp-row">
+            <label class="sp-label" data-i18n="html.labels.app_opacity">Opacity</label>
+            <input class="sp-range" type="range" id="app-beard-opacity" min="0" max="1" step="0.05" value="1" />
+            <span class="sp-input sp-input-sm" id="app-beard-opacity-val" style="pointer-events:none;text-align:center">1.00</span>
+          </div>
+          <div class="sp-row">
+            <label class="sp-label" data-i18n="html.labels.app_color">Color</label>
+          </div>
+          <div class="app-palette" id="app-beard-color-palette"></div>
+
+          <div class="sp-row" style="margin-top:8px">
+            <label class="sp-label" data-i18n="html.labels.app_makeup">Makeup</label>
+            <div class="app-stepper">
+              <button class="tb-btn" id="app-makeup-dec">-</button>
+              <input class="app-stepper-val" id="app-makeup-val" type="text" value="255" inputmode="numeric" />
+              <button class="tb-btn" id="app-makeup-inc">+</button>
+            </div>
+          </div>
+          <div class="sp-row">
+            <label class="sp-label" data-i18n="html.labels.app_opacity">Opacity</label>
+            <input class="sp-range" type="range" id="app-makeup-opacity" min="0" max="1" step="0.05" value="1" />
+            <span class="sp-input sp-input-sm" id="app-makeup-opacity-val" style="pointer-events:none;text-align:center">1.00</span>
+          </div>
+          <div class="sp-row">
+            <label class="sp-label" data-i18n="html.labels.app_color">Color</label>
+          </div>
+          <div class="app-palette" id="app-makeup-color-palette"></div>
+
+          <div class="sp-row" style="margin-top:8px">
+            <label class="sp-label" data-i18n="html.labels.app_lipstick">Lipstick</label>
+            <div class="app-stepper">
+              <button class="tb-btn" id="app-lipstick-dec">-</button>
+              <input class="app-stepper-val" id="app-lipstick-val" type="text" value="255" inputmode="numeric" />
+              <button class="tb-btn" id="app-lipstick-inc">+</button>
+            </div>
+          </div>
+          <div class="sp-row">
+            <label class="sp-label" data-i18n="html.labels.app_opacity">Opacity</label>
+            <input class="sp-range" type="range" id="app-lipstick-opacity" min="0" max="1" step="0.05" value="1" />
+            <span class="sp-input sp-input-sm" id="app-lipstick-opacity-val" style="pointer-events:none;text-align:center">1.00</span>
+          </div>
+          <div class="sp-row">
+            <label class="sp-label" data-i18n="html.labels.app_color">Color</label>
+          </div>
+          <div class="app-palette" id="app-lipstick-color-palette"></div>
+
+          <div class="sp-row" style="margin-top:8px">
+            <label class="sp-label" data-i18n="html.labels.app_blemishes">Blemishes</label>
+            <div class="app-stepper">
+              <button class="tb-btn" id="app-blemishes-dec">-</button>
+              <input class="app-stepper-val" id="app-blemishes-val" type="text" value="255" inputmode="numeric" />
+              <button class="tb-btn" id="app-blemishes-inc">+</button>
+            </div>
+          </div>
+          </div><!-- /app-face-body -->
+        </div>
+
+        <!-- FACE FEATURES (collapsible) -->
+        <div class="sp-section">
+          <div class="app-section-collapsible-header" id="app-ff-header">
+            <div class="sp-section-title" data-i18n="html.panels.face_features">FACE FEATURES</div>
+            <i class="fa-solid fa-chevron-right app-chevron"></i>
+          </div>
+          <div class="app-collapsible-body" id="app-ff-body">
+            <!-- Populated by JS -->
+          </div>
+        </div>
+
+        <!-- CLOTHING -->
+        <div class="sp-section">
+          <div class="app-section-collapsible-header" id="app-clothing-header">
+            <div class="sp-section-title" data-i18n="html.panels.clothing">CLOTHING</div>
+            <i class="fa-solid fa-chevron-right app-chevron"></i>
+          </div>
+          <div class="app-collapsible-body" id="app-clothing-body">
+          <div class="sp-row">
+            <label class="sp-label" data-i18n="html.labels.app_top">Top</label>
+            <div class="app-stepper">
+              <button class="tb-btn" id="app-comp11-drw-dec">-</button>
+              <input class="app-stepper-val" id="app-comp11-drw-val" type="text" value="0" inputmode="numeric" />
+              <button class="tb-btn" id="app-comp11-drw-inc">+</button>
+            </div>
+            <div class="app-stepper" style="margin-left:4px">
+              <button class="tb-btn" id="app-comp11-tex-dec">-</button>
+              <input class="app-stepper-val" id="app-comp11-tex-val" type="text" value="0" inputmode="numeric" />
+              <button class="tb-btn" id="app-comp11-tex-inc">+</button>
+            </div>
+          </div>
+          <div class="sp-row">
+            <label class="sp-label" data-i18n="html.labels.app_undershirt">Undershirt</label>
+            <div class="app-stepper">
+              <button class="tb-btn" id="app-comp8-drw-dec">-</button>
+              <input class="app-stepper-val" id="app-comp8-drw-val" type="text" value="0" inputmode="numeric" />
+              <button class="tb-btn" id="app-comp8-drw-inc">+</button>
+            </div>
+            <div class="app-stepper" style="margin-left:4px">
+              <button class="tb-btn" id="app-comp8-tex-dec">-</button>
+              <input class="app-stepper-val" id="app-comp8-tex-val" type="text" value="0" inputmode="numeric" />
+              <button class="tb-btn" id="app-comp8-tex-inc">+</button>
+            </div>
+          </div>
+          <div class="sp-row">
+            <label class="sp-label" data-i18n="html.labels.app_armor">Armor</label>
+            <div class="app-stepper">
+              <button class="tb-btn" id="app-comp9-drw-dec">-</button>
+              <input class="app-stepper-val" id="app-comp9-drw-val" type="text" value="0" inputmode="numeric" />
+              <button class="tb-btn" id="app-comp9-drw-inc">+</button>
+            </div>
+            <div class="app-stepper" style="margin-left:4px">
+              <button class="tb-btn" id="app-comp9-tex-dec">-</button>
+              <input class="app-stepper-val" id="app-comp9-tex-val" type="text" value="0" inputmode="numeric" />
+              <button class="tb-btn" id="app-comp9-tex-inc">+</button>
+            </div>
+          </div>
+          <div class="sp-row">
+            <label class="sp-label" data-i18n="html.labels.app_pants">Pants</label>
+            <div class="app-stepper">
+              <button class="tb-btn" id="app-comp4-drw-dec">-</button>
+              <input class="app-stepper-val" id="app-comp4-drw-val" type="text" value="0" inputmode="numeric" />
+              <button class="tb-btn" id="app-comp4-drw-inc">+</button>
+            </div>
+            <div class="app-stepper" style="margin-left:4px">
+              <button class="tb-btn" id="app-comp4-tex-dec">-</button>
+              <input class="app-stepper-val" id="app-comp4-tex-val" type="text" value="0" inputmode="numeric" />
+              <button class="tb-btn" id="app-comp4-tex-inc">+</button>
+            </div>
+          </div>
+          <div class="sp-row">
+            <label class="sp-label" data-i18n="html.labels.app_shoes">Shoes</label>
+            <div class="app-stepper">
+              <button class="tb-btn" id="app-comp6-drw-dec">-</button>
+              <input class="app-stepper-val" id="app-comp6-drw-val" type="text" value="0" inputmode="numeric" />
+              <button class="tb-btn" id="app-comp6-drw-inc">+</button>
+            </div>
+            <div class="app-stepper" style="margin-left:4px">
+              <button class="tb-btn" id="app-comp6-tex-dec">-</button>
+              <input class="app-stepper-val" id="app-comp6-tex-val" type="text" value="0" inputmode="numeric" />
+              <button class="tb-btn" id="app-comp6-tex-inc">+</button>
+            </div>
+          </div>
+          <div class="sp-row">
+            <label class="sp-label" data-i18n="html.labels.app_accessory">Accessory</label>
+            <div class="app-stepper">
+              <button class="tb-btn" id="app-comp7-drw-dec">-</button>
+              <input class="app-stepper-val" id="app-comp7-drw-val" type="text" value="0" inputmode="numeric" />
+              <button class="tb-btn" id="app-comp7-drw-inc">+</button>
+            </div>
+            <div class="app-stepper" style="margin-left:4px">
+              <button class="tb-btn" id="app-comp7-tex-dec">-</button>
+              <input class="app-stepper-val" id="app-comp7-tex-val" type="text" value="0" inputmode="numeric" />
+              <button class="tb-btn" id="app-comp7-tex-inc">+</button>
+            </div>
+          </div>
+          <div class="sp-row">
+            <label class="sp-label" data-i18n="html.labels.app_mask">Mask</label>
+            <div class="app-stepper">
+              <button class="tb-btn" id="app-comp1-drw-dec">-</button>
+              <input class="app-stepper-val" id="app-comp1-drw-val" type="text" value="0" inputmode="numeric" />
+              <button class="tb-btn" id="app-comp1-drw-inc">+</button>
+            </div>
+            <div class="app-stepper" style="margin-left:4px">
+              <button class="tb-btn" id="app-comp1-tex-dec">-</button>
+              <input class="app-stepper-val" id="app-comp1-tex-val" type="text" value="0" inputmode="numeric" />
+              <button class="tb-btn" id="app-comp1-tex-inc">+</button>
+            </div>
+          </div>
+          <div class="sp-row">
+            <label class="sp-label" data-i18n="html.labels.app_decal">Decal</label>
+            <div class="app-stepper">
+              <button class="tb-btn" id="app-comp10-drw-dec">-</button>
+              <input class="app-stepper-val" id="app-comp10-drw-val" type="text" value="0" inputmode="numeric" />
+              <button class="tb-btn" id="app-comp10-drw-inc">+</button>
+            </div>
+            <div class="app-stepper" style="margin-left:4px">
+              <button class="tb-btn" id="app-comp10-tex-dec">-</button>
+              <input class="app-stepper-val" id="app-comp10-tex-val" type="text" value="0" inputmode="numeric" />
+              <button class="tb-btn" id="app-comp10-tex-inc">+</button>
+            </div>
+          </div>
+          <div class="sp-row">
+            <label class="sp-label" data-i18n="html.labels.app_bag">Bag</label>
+            <div class="app-stepper">
+              <button class="tb-btn" id="app-comp5-drw-dec">-</button>
+              <input class="app-stepper-val" id="app-comp5-drw-val" type="text" value="0" inputmode="numeric" />
+              <button class="tb-btn" id="app-comp5-drw-inc">+</button>
+            </div>
+            <div class="app-stepper" style="margin-left:4px">
+              <button class="tb-btn" id="app-comp5-tex-dec">-</button>
+              <input class="app-stepper-val" id="app-comp5-tex-val" type="text" value="0" inputmode="numeric" />
+              <button class="tb-btn" id="app-comp5-tex-inc">+</button>
+            </div>
+          </div>
+          </div><!-- /app-clothing-body -->
+        </div>
+
+        <!-- PROPS -->
+        <div class="sp-section">
+          <div class="app-section-collapsible-header" id="app-props-header">
+            <div class="sp-section-title" data-i18n="html.panels.props">PROPS</div>
+            <i class="fa-solid fa-chevron-right app-chevron"></i>
+          </div>
+          <div class="app-collapsible-body" id="app-props-body">
+          <div class="sp-row">
+            <label class="sp-label" data-i18n="html.labels.app_hat">Hat</label>
+            <div class="app-stepper">
+              <button class="tb-btn" id="app-prop0-drw-dec">-</button>
+              <input class="app-stepper-val" id="app-prop0-drw-val" type="text" value="-1" inputmode="numeric" />
+              <button class="tb-btn" id="app-prop0-drw-inc">+</button>
+            </div>
+            <div class="app-stepper" style="margin-left:4px">
+              <button class="tb-btn" id="app-prop0-tex-dec">-</button>
+              <input class="app-stepper-val" id="app-prop0-tex-val" type="text" value="0" inputmode="numeric" />
+              <button class="tb-btn" id="app-prop0-tex-inc">+</button>
+            </div>
+          </div>
+          <div class="sp-row">
+            <label class="sp-label" data-i18n="html.labels.app_glasses">Glasses</label>
+            <div class="app-stepper">
+              <button class="tb-btn" id="app-prop1-drw-dec">-</button>
+              <input class="app-stepper-val" id="app-prop1-drw-val" type="text" value="-1" inputmode="numeric" />
+              <button class="tb-btn" id="app-prop1-drw-inc">+</button>
+            </div>
+            <div class="app-stepper" style="margin-left:4px">
+              <button class="tb-btn" id="app-prop1-tex-dec">-</button>
+              <input class="app-stepper-val" id="app-prop1-tex-val" type="text" value="0" inputmode="numeric" />
+              <button class="tb-btn" id="app-prop1-tex-inc">+</button>
+            </div>
+          </div>
+          <div class="sp-row">
+            <label class="sp-label" data-i18n="html.labels.app_earwear">Earwear</label>
+            <div class="app-stepper">
+              <button class="tb-btn" id="app-prop2-drw-dec">-</button>
+              <input class="app-stepper-val" id="app-prop2-drw-val" type="text" value="-1" inputmode="numeric" />
+              <button class="tb-btn" id="app-prop2-drw-inc">+</button>
+            </div>
+            <div class="app-stepper" style="margin-left:4px">
+              <button class="tb-btn" id="app-prop2-tex-dec">-</button>
+              <input class="app-stepper-val" id="app-prop2-tex-val" type="text" value="0" inputmode="numeric" />
+              <button class="tb-btn" id="app-prop2-tex-inc">+</button>
+            </div>
+          </div>
+          <div class="sp-row">
+            <label class="sp-label" data-i18n="html.labels.app_watch">Watch</label>
+            <div class="app-stepper">
+              <button class="tb-btn" id="app-prop6-drw-dec">-</button>
+              <input class="app-stepper-val" id="app-prop6-drw-val" type="text" value="-1" inputmode="numeric" />
+              <button class="tb-btn" id="app-prop6-drw-inc">+</button>
+            </div>
+            <div class="app-stepper" style="margin-left:4px">
+              <button class="tb-btn" id="app-prop6-tex-dec">-</button>
+              <input class="app-stepper-val" id="app-prop6-tex-val" type="text" value="0" inputmode="numeric" />
+              <button class="tb-btn" id="app-prop6-tex-inc">+</button>
+            </div>
+          </div>
+          <div class="sp-row">
+            <label class="sp-label" data-i18n="html.labels.app_bracelet">Bracelet</label>
+            <div class="app-stepper">
+              <button class="tb-btn" id="app-prop7-drw-dec">-</button>
+              <input class="app-stepper-val" id="app-prop7-drw-val" type="text" value="-1" inputmode="numeric" />
+              <button class="tb-btn" id="app-prop7-drw-inc">+</button>
+            </div>
+            <div class="app-stepper" style="margin-left:4px">
+              <button class="tb-btn" id="app-prop7-tex-dec">-</button>
+              <input class="app-stepper-val" id="app-prop7-tex-val" type="text" value="0" inputmode="numeric" />
+              <button class="tb-btn" id="app-prop7-tex-inc">+</button>
+            </div>
+          </div>
+          </div><!-- /app-props-body -->
+        </div>
+
+      </div><!-- /ped-appearance-panel -->
+
+      <!-- ── KEYFRAME PROPERTIES (hidden until keyframe selected) ─────────── -->
+      <div id="sp-props" class="hidden">
+
+        <div class="sp-section">
+          <div class="sp-section-title" data-i18n="html.panels.keyframe">KEYFRAME</div>
+          <div class="sp-row">
+            <label class="sp-label" data-i18n="html.labels.frame_label">Frame</label>
+            <input class="sp-input" type="number" id="sp-frame" min="0" />
+          </div>
+          <div class="sp-row" id="sp-row-easing">
+            <label class="sp-label" data-i18n="html.labels.easing">Easing</label>
+            <select class="sp-select" id="sp-easing">
+              <option value="linear" data-i18n="html.labels.easing_linear">Linear</option>
+              <option value="easein" data-i18n="html.labels.easing_ease_in">Ease In</option>
+              <option value="easeout" data-i18n="html.labels.easing_ease_out">Ease Out</option>
+              <option value="ease" data-i18n="html.labels.easing_ease_in_out">Ease In-Out</option>
+            </select>
+          </div>
+          <!-- Cut to here: the camera jumps straight to this keyframe when the
+               playhead reaches it (the previous shot holds, then hard-cuts).
+               No need for a second keyframe placed right next to it. -->
+          <div class="sp-row" id="sp-row-cut">
+            <label class="sp-label" for="sp-cut">Cut to here</label>
+            <input type="checkbox" id="sp-cut" />
+            <span class="sp-hint" style="font-size:9px;opacity:0.7;margin-left:8px">instant jump to this keyframe (no ease-in)</span>
+          </div>
+        </div>
+
+        <!-- Shown only on a marker keyframe (scene battle control / external
+             trigger): what fires when the playhead reaches this frame. All
+             camera sections are hidden via #sp-props.marker-mode. -->
+        <div class="sp-section hidden" id="sp-marker-section">
+          <div class="sp-section-title" id="sp-marker-title">MARKER</div>
+          <div class="sp-row">
+            <span id="sp-marker-desc" class="sp-hint"></span>
+          </div>
+        </div>
+
+        <!-- Shown only on a "resume from project" keyframe: which project this
+             pose came from, and the transition that carries the camera off it. -->
+        <div class="sp-section hidden" id="sp-resume-section">
+          <div class="sp-section-title" data-i18n="html.panels.resume_from">RESUMED FROM</div>
+          <div class="sp-row">
+            <span id="sp-resume-source" class="sp-hint"></span>
+          </div>
+          <div class="sp-row">
+            <button class="tb-btn" style="width:100%;justify-content:center"
+                    onclick="CC.openTransitionModal()"
+                    title="Change the move that carries the camera from this pose to the next keyframe">
+              <i class="fa-solid fa-wand-magic-sparkles"></i>&nbsp;<span data-i18n="html.buttons.change_transition">Change transition</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="sp-section">
+          <div class="sp-section-title" data-i18n="html.panels.locking">LOCKING</div>
+          <div class="sp-row">
+            <label class="sp-label" data-i18n="html.labels.lock_to_vehicle" title="Lock this keyframe to a recorded vehicle or ped. Position and rotation become yaw-only offsets from the target, so the camera follows it as it moves.">Lock to vehicle / ped</label>
+            <select class="sp-select" id="sp-lock-vehicle" onchange="CC.applyKeyframeLock()">
+              <option value="" data-i18n="html.labels.lock_none">— None (world)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="sp-section">
+          <div class="sp-section-title" data-i18n="html.panels.position">POSITION</div>
+          <div class="sp-row">
+            <label class="sp-label">X</label>
+            <input class="sp-input" type="number" id="sp-pos-x" step="0.01" />
+          </div>
+          <div class="sp-row">
+            <label class="sp-label">Y</label>
+            <input class="sp-input" type="number" id="sp-pos-y" step="0.01" />
+          </div>
+          <div class="sp-row">
+            <label class="sp-label">Z</label>
+            <input class="sp-input" type="number" id="sp-pos-z" step="0.01" />
+          </div>
+        </div>
+
+        <div class="sp-section">
+          <div class="sp-section-title" data-i18n="html.panels.rotation">ROTATION</div>
+          <div class="sp-row">
+            <label class="sp-label" data-i18n="html.labels.pitch">Pitch</label>
+            <input class="sp-input" type="number" id="sp-rot-x" step="0.1" />
+          </div>
+          <div class="sp-row">
+            <label class="sp-label" data-i18n="html.labels.roll">Roll</label>
+            <input class="sp-input" type="number" id="sp-rot-y" step="0.1" />
+          </div>
+          <div class="sp-row">
+            <label class="sp-label" data-i18n="html.labels.yaw">Yaw</label>
+            <input class="sp-input" type="number" id="sp-rot-z" step="0.1" />
+          </div>
+        </div>
+
+        <div class="sp-section">
+          <div class="sp-section-title" data-i18n="html.panels.fov">FOV</div>
+          <div class="sp-row-range">
+            <input class="sp-range" type="range" id="sp-fov-slider" min="5" max="120" step="0.5"
+              oninput="document.getElementById('sp-fov-num').value=this.value" />
+            <input class="sp-input sp-input-sm" type="number" id="sp-fov-num" min="5" max="120" step="0.5"
+              oninput="document.getElementById('sp-fov-slider').value=this.value" />
+          </div>
+        </div>
+
+        <div class="sp-section">
+          <div class="sp-section-title" data-i18n="html.panels.time_override">TIME OVERRIDE</div>
+          <div class="sp-row">
+            <label class="sp-label" data-i18n="html.labels.enable">Enable</label>
+            <input type="checkbox" id="sp-time-enabled" />
+            <span class="sp-hint" data-i18n="html.labels.interpolate_time">Interpolate time</span>
+          </div>
+          <div class="sp-row-range">
+            <input class="sp-range" type="range" id="sp-time-slider" min="0" max="23.9" step="0.1" value="12"
+              oninput="document.getElementById('sp-time-num').value=parseFloat(this.value).toFixed(1)" />
+            <input class="sp-input sp-input-sm" type="number" id="sp-time-num" min="0" max="23.9" step="0.1" value="12"
+              oninput="document.getElementById('sp-time-slider').value=this.value" />
+          </div>
+        </div>
+
+        <div class="sp-section">
+          <div class="sp-section-title" data-i18n="html.panels.camera_shake">CAMERA SHAKE</div>
+          <div class="sp-row">
+            <label class="sp-label" data-i18n="html.labels.type">Type</label>
+            <select class="sp-select" id="sp-shake-type">
+              <option value="none" data-i18n="html.labels.none">None</option>
+            </select>
+          </div>
+          <div class="sp-row">
+            <label class="sp-label" data-i18n="html.labels.amplitude">Amplitude</label>
+            <input class="sp-range" type="range" id="sp-shake-amp" min="0" max="1" step="0.01"
+              oninput="document.getElementById('sp-shake-amp-num').value=parseFloat(this.value).toFixed(2)" />
+            <input class="sp-input sp-input-sm" type="number" id="sp-shake-amp-num" min="0" max="1" step="0.01"
+              oninput="document.getElementById('sp-shake-amp').value=this.value" />
+          </div>
+        </div>
+
+        <div class="sp-section">
+          <div class="sp-section-title" data-i18n="html.panels.depth_of_field">DEPTH OF FIELD</div>
+          <div class="sp-row">
+            <label class="sp-label" data-i18n="html.labels.enable">Enable</label>
+            <input type="checkbox" id="sp-dof-enabled" />
+          </div>
+          <div class="sp-row">
+            <label class="sp-label" data-i18n="html.labels.near_focus">Near Focus</label>
+            <input class="sp-input" type="number" id="sp-dof-near" min="0" max="500" step="0.5" value="3" />
+          </div>
+          <div class="sp-row">
+            <label class="sp-label" data-i18n="html.labels.far_focus">Far Focus</label>
+            <input class="sp-input" type="number" id="sp-dof-far" min="0" max="2000" step="1" value="50" />
+          </div>
+          <div class="sp-row">
+            <label class="sp-label" data-i18n="html.labels.f_number">F-Number</label>
+            <input class="sp-range" type="range" id="sp-dof-fnum" min="1.2" max="22" step="0.1" value="1.2"
+              oninput="document.getElementById('sp-dof-fnum-num').value=parseFloat(this.value).toFixed(1)" />
+            <input class="sp-input sp-input-sm" type="number" id="sp-dof-fnum-num" min="1.2" max="22" step="0.1" value="1.2"
+              oninput="document.getElementById('sp-dof-fnum').value=this.value" />
+          </div>
+          <div class="sp-row">
+            <label class="sp-label" data-i18n="html.labels.strength">Strength</label>
+            <input class="sp-range" type="range" id="sp-dof-str" min="0" max="1" step="0.01" value="1"
+              oninput="document.getElementById('sp-dof-str-num').value=parseFloat(this.value).toFixed(2)" />
+            <input class="sp-input sp-input-sm" type="number" id="sp-dof-str-num" min="0" max="1" step="0.01" value="1"
+              oninput="document.getElementById('sp-dof-str').value=this.value" />
+          </div>
+        </div>
+
+        <div class="sp-section">
+          <div class="sp-section-title" data-i18n="html.panels.motion_blur">MOTION BLUR</div>
+          <div class="sp-row-range">
+            <input class="sp-range" type="range" id="sp-blur" min="0" max="1" step="0.01" value="0"
+              oninput="document.getElementById('sp-blur-num').value=parseFloat(this.value).toFixed(2)" />
+            <input class="sp-input sp-input-sm" type="number" id="sp-blur-num" min="0" max="1" step="0.01" value="0"
+              oninput="document.getElementById('sp-blur').value=this.value" />
+          </div>
+        </div>
+
+        <div class="sp-section">
+          <div class="sp-section-title" data-i18n="html.panels.time_scale">TIME SCALE</div>
+          <div class="sp-row-range">
+            <input class="sp-range" type="range" id="sp-timescale" min="0.1" max="2.0" step="0.05" value="1.0"
+              oninput="document.getElementById('sp-timescale-num').value=parseFloat(this.value).toFixed(2)" />
+            <input class="sp-input sp-input-sm" type="number" id="sp-timescale-num" min="0.1" max="2.0" step="0.05" value="1.0"
+              oninput="document.getElementById('sp-timescale').value=this.value" />
+          </div>
+          <div class="sp-hint" style="margin-top:4px;font-size:9px;color:#555" data-i18n="html.labels.time_scale_hint">
+            0.1 = extreme slow-mo &nbsp;·&nbsp; 1.0 = normal &nbsp;·&nbsp; 2.0 = fast
+          </div>
+        </div>
+
+        <div class="sp-section">
+          <div class="sp-section-title" data-i18n="html.panels.color_filter">COLOR FILTER</div>
+          <div class="sp-row">
+            <label class="sp-label" data-i18n="html.labels.filter">Filter</label>
+            <select class="sp-select" id="sp-filter-id">
+              <option value="none" data-i18n="html.labels.none">None</option>
+            </select>
+          </div>
+          <div class="sp-row">
+            <label class="sp-label" data-i18n="html.labels.strength">Strength</label>
+            <input class="sp-range" type="range" id="sp-filter-str" min="0" max="1" step="0.01" value="1"
+              oninput="document.getElementById('sp-filter-str-num').value=parseFloat(this.value).toFixed(2)" />
+            <input class="sp-input sp-input-sm" type="number" id="sp-filter-str-num" min="0" max="1" step="0.01" value="1"
+              oninput="document.getElementById('sp-filter-str').value=this.value" />
+          </div>
+        </div>
+
+        <div class="sp-section">
+          <div class="sp-section-title" data-i18n="html.panels.fade">FADE</div>
+          <div class="sp-row">
+            <label class="sp-label" data-i18n="html.labels.type">Type</label>
+            <select class="sp-select" id="sp-fade-type">
+              <option value="none" data-i18n="html.labels.none">None</option>
+              <option value="black" data-i18n="html.labels.fade_black">Black</option>
+              <option value="white" data-i18n="html.labels.fade_white">White</option>
+            </select>
+          </div>
+          <div class="sp-row-range">
+            <input class="sp-range" type="range" id="sp-fade-amount" min="0" max="1" step="0.01" value="0"
+              oninput="document.getElementById('sp-fade-amount-num').value=parseFloat(this.value).toFixed(2)" />
+            <input class="sp-input sp-input-sm" type="number" id="sp-fade-amount-num" min="0" max="1" step="0.01" value="0"
+              oninput="document.getElementById('sp-fade-amount').value=this.value" />
+          </div>
+        </div>
+
+        <div class="sp-section">
+          <div class="sp-section-title" data-i18n="html.panels.letterbox">LETTERBOX</div>
+          <div class="sp-row">
+            <label class="sp-label" data-i18n="html.labels.ratio">Ratio</label>
+            <select class="sp-select" id="sp-letterbox-ratio">
+              <option value="0" data-i18n="html.labels.letterbox_off">Off</option>
+              <option value="2.39" data-i18n="html.labels.letterbox_anamorphic">2.39:1 (Anamorphic)</option>
+              <option value="2.76" data-i18n="html.labels.letterbox_ultra_wide">2.76:1 (Ultra Wide)</option>
+              <option value="1.85" data-i18n="html.labels.letterbox_theatrical">1.85:1 (Theatrical)</option>
+              <option value="1.33" data-i18n="html.labels.letterbox_classic">4:3 (Classic)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="sp-section">
+          <div class="sp-section-title" data-i18n="html.panels.screen_effects">SCREEN EFFECTS</div>
+          <div class="sp-row">
+            <label class="sp-label" data-i18n="html.labels.vignette">Vignette</label>
+            <input class="sp-range" type="range" id="sp-vignette" min="0" max="1" step="0.01" value="0"
+              oninput="document.getElementById('sp-vignette-num').value=parseFloat(this.value).toFixed(2)" />
+            <input class="sp-input sp-input-sm" type="number" id="sp-vignette-num" min="0" max="1" step="0.01" value="0"
+              oninput="document.getElementById('sp-vignette').value=this.value" />
+          </div>
+          <div class="sp-row">
+            <label class="sp-label" data-i18n="html.labels.grain">Grain</label>
+            <input class="sp-range" type="range" id="sp-grain" min="0" max="1" step="0.01" value="0"
+              oninput="document.getElementById('sp-grain-num').value=parseFloat(this.value).toFixed(2)" />
+            <input class="sp-input sp-input-sm" type="number" id="sp-grain-num" min="0" max="1" step="0.01" value="0"
+              oninput="document.getElementById('sp-grain').value=this.value" />
+          </div>
+        </div>
+
+      </div><!-- /sp-props -->
+    </div><!-- /sp-body -->
+
+    <div id="sp-footer" class="hidden">
+      <button id="sp-back-btn" class="tb-btn hidden" onclick="CC.backToMenu()">
+        <i class="fa-solid fa-arrow-left"></i> <span data-i18n="html.buttons.back">Back</span>
+      </button>
+      <button id="sp-delete-btn" class="tb-btn danger hidden" onclick="CC.deleteSelectedKeyframe()">
+        <i class="fa-solid fa-trash"></i> <span data-i18n="html.buttons.delete">Delete</span>
+      </button>
+      <button id="sp-delete-clip-btn" class="tb-btn danger hidden" onclick="CC.deleteSelectedClip()">
+        <i class="fa-solid fa-trash"></i> <span data-i18n="html.buttons.delete_clip">Delete Clip</span>
+      </button>
+    </div>
+
+  </div><!-- /side-panel -->
+
+  <!-- ── TIMELINE PANEL (bottom, full width) ────────────────────────────── -->
+  <div id="timeline-panel">
+
+    <!-- TOP BAR -->
+    <div id="top-bar">
+      <div id="top-bar-left">
+        <img src="c8recinematics.png" id="logo">
+        <!-- Shown when NO project active -->
+        <span id="tb-no-project" class="tb-project-name" style="color:#555" data-i18n="html.labels.no_project_open">No project open</span>
+        <!-- Shown when project IS active -->
+        <div id="tb-project-controls" style="display:none;align-items:center;gap:6px">
+          <span id="tb-project-name" class="tb-project-name" data-i18n="html.labels.untitled">Untitled</span>
+          <span id="tb-autosave-status" class="tb-autosave"></span>
+          <button class="tb-btn" onclick="CC.saveProject()" data-i18n-attr="title:html.tooltips.save_now" title="Save now"><i class="fa-solid fa-floppy-disk"></i> <span data-i18n="html.buttons.save">Save</span></button>
+          <button class="tb-btn" onclick="CC.openCurrentProjectSettings()" data-i18n-attr="title:project.settings_title" title="Project settings"><i class="fa-solid fa-gear"></i> <span data-i18n="project.settings">Settings</span></button>
+          <button class="tb-btn" onclick="CC.exportTimeline()" data-i18n-attr="title:html.tooltips.export_json" title="Export JSON"><i class="fa-solid fa-file-export"></i> <span data-i18n="html.buttons.export">Export</span></button>
+          <button class="tb-btn" onclick="CC.closeProject()" data-i18n-attr="title:html.tooltips.close_project" title="Close project"><i class="fa-solid fa-arrow-right-from-bracket"></i> <span data-i18n="html.buttons.exit">Exit</span></button>
+        </div>
+        <input type="file" id="import-file-input" accept=".json" style="display:none" />
+      </div>
+
+      <div id="top-bar-center">
+        <button class="transport-btn" data-i18n-attr="title:html.tooltips.goto_start" title="Go to start"    onclick="CC.gotoStart()"><i class="fa-solid fa-backward-step"></i></button>
+        <button class="transport-btn" data-i18n-attr="title:html.tooltips.step_back" title="Step back"      onclick="CC.stepBack()"><i class="fa-solid fa-chevron-left"></i></button>
+        <button class="transport-btn primary" id="play-btn"  onclick="CC.togglePlay()"><i class="fa-solid fa-play"></i></button>
+        <button class="transport-btn" data-i18n-attr="title:html.tooltips.stop" title="Stop"           onclick="CC.stopPlayback()"><i class="fa-solid fa-stop"></i></button>
+        <button class="transport-btn" data-i18n-attr="title:html.tooltips.step_forward" title="Step forward"   onclick="CC.stepForward()"><i class="fa-solid fa-chevron-right"></i></button>
+        <button class="transport-btn" data-i18n-attr="title:html.tooltips.goto_end" title="Go to end"      onclick="CC.gotoEnd()"><i class="fa-solid fa-forward-step"></i></button>
+        <div id="timecode">
+          <input id="frame-input" type="number" min="0" value="0"
+            onchange="CC.jumpToFrame(parseInt(this.value))" />
+          <span id="timecode-display">00:00:00:00</span>
+        </div>
+        <div id="duration-control">
+          <label data-i18n="html.labels.duration_seconds">Duration (s)</label>
+          <input id="duration-input" type="number" min="1" max="600" value="30"
+            onchange="CC.setDuration(parseInt(this.value))" />
+        </div>
+      </div>
+
+      <div id="top-bar-right">
+        <button class="tb-btn" id="tb-share-btn" onclick="CC.togglePathSharing()" data-i18n-attr="title:html.tooltips.share_camera_path" title="Share camera path with other players"><i class="fa-solid fa-tower-broadcast"></i></button>
+        <!-- Pins your ped to the camera so the world (and its collision) streams
+             wherever you fly. Off by default — you might be acting in the shot.
+             Forced on once the project has a recording. -->
+        <button class="tb-btn" id="tb-anchor-btn" onclick="CC.toggleCameraAnchor()" data-i18n-attr="title:html.tooltips.camera_anchor" title="Stick player to camera — loads the world where you fly"><i class="fa-solid fa-person"></i></button>
+        <!-- Add Keyframe opens a type menu. Every type lands on the SAME camera
+             timeline — the kind only changes what the keyframe does when the
+             playhead reaches it, and what colour it is in the track. -->
+        <div id="add-kf-wrap">
+          <button class="tb-btn" data-tut="add-keyframe" onclick="CC.toggleAddKeyframeMenu(event)"><i class="fa-solid fa-plus"></i> <span data-i18n="html.buttons.add_keyframe">Add Keyframe</span> <i class="fa-solid fa-caret-down" style="opacity:0.6"></i></button>
+          <div id="add-kf-menu" class="hidden">
+            <div class="akf-item" data-kind="camera" onclick="CC.addKeyframeOfKind('camera')">
+              <span class="akf-dot kind-camera"></span>
+              <div class="akf-text">
+                <div class="akf-name" data-i18n="html.labels.kf_camera">Camera</div>
+                <div class="akf-sub" data-i18n="html.labels.kf_camera_sub">A shot from where the camera is now</div>
+              </div>
+            </div>
+            <div class="akf-item" data-kind="resume" onclick="CC.addKeyframeOfKind('resume')">
+              <span class="akf-dot kind-resume"></span>
+              <div class="akf-text">
+                <div class="akf-name" data-i18n="html.labels.kf_resume">Resume from project</div>
+                <div class="akf-sub" data-i18n="html.labels.kf_resume_sub">Start on the pose another project ended on</div>
+              </div>
+            </div>
+            <div class="akf-item" data-kind="scene" onclick="CC.openMarkerSubmenu(event, 'scene')">
+              <span class="akf-dot kind-scene"></span>
+              <div class="akf-text">
+                <div class="akf-name" data-i18n="html.labels.kf_scene">Scene control</div>
+                <div class="akf-sub" data-i18n="html.labels.kf_scene_sub">Start or stop the Scene Editor battle</div>
+              </div>
+            </div>
+            <div class="akf-item" data-kind="external" onclick="CC.openMarkerSubmenu(event, 'external')">
+              <span class="akf-dot kind-external"></span>
+              <div class="akf-text">
+                <div class="akf-name" data-i18n="html.labels.kf_external">External</div>
+                <div class="akf-sub" data-i18n="html.labels.kf_external_sub">Trigger an event from the config</div>
+              </div>
+            </div>
+          </div>
+          <!-- Second-level menus. Scene control is static (two actions);
+               External is rebuilt from Config.ExternalKeyframes on open. -->
+          <div id="add-kf-scene-menu" class="akf-submenu hidden">
+            <div class="akf-item" onclick="CC.addSceneMarker('battle_start')">
+              <span class="akf-dot kind-scene"></span>
+              <div class="akf-text">
+                <div class="akf-name" data-i18n="html.labels.kf_battle_start">Start battle</div>
+                <div class="akf-sub" data-i18n="html.labels.kf_battle_start_sub">Scene peds open fire when the playhead lands here</div>
+              </div>
+            </div>
+            <div class="akf-item" onclick="CC.addSceneMarker('battle_stop')">
+              <span class="akf-dot kind-scene" style="background:#2a8f49"></span>
+              <div class="akf-text">
+                <div class="akf-name" data-i18n="html.labels.kf_battle_stop">Stop battle</div>
+                <div class="akf-sub" data-i18n="html.labels.kf_battle_stop_sub">Scene peds freeze back to their placed poses</div>
+              </div>
+            </div>
+          </div>
+          <div id="add-kf-external-menu" class="akf-submenu hidden"></div>
+        </div>
+        <button class="tb-btn" id="tb-cut-btn" onclick="CC.toggleCutMode()" title="Cut tool (C) — split a recording or overlay clip at the cursor"><i class="fa-solid fa-scissors"></i></button>
+        <button class="tb-btn danger" onclick="CC.clearAll()"><i class="fa-solid fa-trash"></i> <span data-i18n="html.buttons.clear_all">Clear All</span></button>
+        <button class="tb-btn close-btn" onclick="CC.close()"><i class="fa-solid fa-xmark"></i> <span data-i18n="html.buttons.close">Close</span></button>
+      </div>
+    </div><!-- /top-bar -->
+
+    <!-- PROJECT OVERLAY (covers timeline when no project is loaded) -->
+    <div id="project-overlay">
+      <div id="po-left">
+        <div id="po-title" data-i18n="html.panels.projects">Projects</div>
+        <div id="po-actions">
+          <button class="po-btn" onclick="CC.createProject()"><i class="fa-solid fa-plus"></i> <span data-i18n="html.buttons.new_project">New Project</span></button>
+          <button class="po-btn" onclick="CC.importTimeline()"><i class="fa-solid fa-file-import"></i> <span data-i18n="html.buttons.import_json">Import JSON</span></button>
+        </div>
+      </div>
+      <div id="po-divider"></div>
+      <div id="po-list"></div>
+    </div>
+
+    <!-- TIMELINE AREA -->
+    <div id="timeline-area">
+      <div id="track-labels">
+        <div class="track-label" data-i18n="html.labels.track_camera">CAMERA</div>
+        <div class="track-label track-label-text" data-i18n="html.labels.track_3d_text">3D TEXT</div>
+        <div class="track-label track-label-vehicle" data-i18n="html.labels.track_recording">RECORDING</div>
+        <div class="track-label track-label-overlay" data-i18n="html.labels.track_overlay">OVERLAY</div>
+      </div>
+
+      <div id="timeline-scroll-wrap">
+        <canvas id="ruler-canvas" height="22"></canvas>
+        <div id="playhead"></div>
+        <div id="tracks-container">
+          <div id="cut-line"></div>
+          <div class="track" id="track-camera"></div>
+          <div class="track track-text" id="track-text"></div>
+          <div class="track track-vehicle" id="track-vehicle"></div>
+          <div class="track track-overlay" id="track-overlay"></div>
+        </div>
+      </div>
+    </div><!-- /timeline-area -->
+
+    <!-- PREMIERE-STYLE ZOOM / SCROLL BAR -->
+    <div id="timeline-zoom-bar">
+      <div id="tzb-thumb">
+        <div id="tzb-handle-l"></div>
+        <div id="tzb-handle-r"></div>
+      </div>
+    </div>
+
+  </div><!-- /timeline-panel -->
+
+  <!-- ── MODEL SWAP MODAL ───────────────────────────────────────────────── -->
+  <div id="model-swap-modal" class="hidden">
+    <div id="msm-backdrop"></div>
+    <div id="msm-dialog">
+      <div id="msm-header">
+        <span id="msm-title" data-i18n="html.panels.swap_model">Swap Model</span>
+        <button id="msm-close" onclick="CC.closeModelSwap()"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div id="msm-body">
+        <div class="msm-info">
+          <span class="msm-info-label" data-i18n="html.labels.type">Type</span>
+          <span id="msm-type" class="msm-info-value">Vehicle</span>
+        </div>
+        <div class="msm-info">
+          <span class="msm-info-label" data-i18n="html.labels.current">Current</span>
+          <span id="msm-current" class="msm-info-value">adder</span>
+        </div>
+        <div class="msm-divider"></div>
+        <label class="msm-input-label" data-i18n="html.labels.new_model">New Model</label>
+        <input type="text" id="msm-new-model" class="msm-input" data-i18n-attr="placeholder:html.placeholders.enter_model_name" placeholder="Enter model name..." autofocus />
+      </div>
+      <div id="msm-footer">
+        <button class="msm-btn msm-btn-cancel" onclick="CC.closeModelSwap()" data-i18n="html.buttons.cancel">Cancel</button>
+        <button class="msm-btn msm-btn-delete" onclick="CC.deleteFromRecording()">
+          <i class="fa-solid fa-trash"></i> <span data-i18n="html.buttons.delete">Delete</span>
+        </button>
+        <button class="msm-btn msm-btn-apply" onclick="CC.applyModelSwap()">
+          <i class="fa-solid fa-arrows-rotate"></i> <span data-i18n="html.buttons.swap">Swap</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /app -->
+
+<!-- ── MODEL BROWSER ───────────────────────────────────────────────────── -->
+<div id="model-browser" class="hidden">
+  <div id="mb-inner">
+    <div id="mb-header">
+      <span id="mb-title" data-i18n="html.panels.select_model">Select Model</span>
+      <input type="text" id="mb-search" class="msm-input" data-i18n-attr="placeholder:html.placeholders.search_models" placeholder="Search models..." style="flex:1;margin:0 16px" />
+      <button onclick="CC.closeModelBrowser()" style="background:none;border:none;color:#666;font-size:16px;cursor:pointer;padding:4px 6px;border-radius:6px"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div id="mb-body">
+      <div id="mb-categories"></div>
+      <div id="mb-grid-wrap">
+        <div id="mb-grid"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── RELATIONSHIP MATRIX MODAL ────────────────────────────────────────── -->
+<div id="rel-matrix-modal" class="hidden">
+  <div id="rmm-backdrop" onclick="CC.closeRelMatrix()"></div>
+  <div id="rmm-dialog">
+    <div id="rmm-header">
+      <span data-i18n="html.panels.relationship_matrix">Relationship Matrix</span>
+      <button onclick="CC.closeRelMatrix()" style="background:none;border:none;color:#888;font-size:14px;cursor:pointer"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div id="rmm-body">
+      <div id="rmm-grid"></div>
+      <div class="sp-hint" style="margin-top:8px;text-align:center" data-i18n="html.labels.rel_matrix_hint">Click cells to cycle: Neutral → Friendly → Hostile</div>
+    </div>
+  </div>
+</div>
+
+<!-- ── GENERIC PROMPT MODAL (used for project name, confirmations) ──────── -->
+<div id="prompt-modal" class="hidden">
+  <div id="pm-backdrop"></div>
+  <div id="pm-dialog">
+    <div id="pm-header">
+      <span id="pm-title" data-i18n="html.panels.prompt">Prompt</span>
+    </div>
+    <div id="pm-body">
+      <span id="pm-message"></span>
+      <input type="text" id="pm-input" class="msm-input" />
+      <label id="pm-tut-row" class="hidden">
+        <input type="checkbox" id="pm-tut-checkbox" checked />
+        <span data-i18n="html.labels.enable_tutorial">Enable interactive tutorial for this project</span>
+      </label>
+    </div>
+    <div id="pm-footer">
+      <button class="msm-btn msm-btn-cancel" id="pm-cancel" data-i18n="html.buttons.cancel">Cancel</button>
+      <button class="msm-btn msm-btn-apply" id="pm-confirm" data-i18n="html.buttons.ok">OK</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── RESUME FROM PROJECT MODAL ───────────────────────────────────────────
+     Pick the project this shot continues from. Only its FINAL keyframe is
+     read — the project you're editing is never touched. -->
+<div id="resume-modal" class="hidden">
+  <div id="resume-backdrop"></div>
+  <div id="resume-dialog">
+    <div id="resume-header">
+      <i class="fa-solid fa-link"></i>
+      <span data-i18n="html.panels.resume_from_project">Resume from project</span>
+    </div>
+    <div id="resume-body">
+      <div id="resume-hint" data-i18n="html.hints.resume_pick">
+        Pick the project this shot continues from. Its last camera pose becomes this keyframe, so the two shots join without a jump.
+      </div>
+      <div id="resume-search-wrap">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input type="text" id="resume-search" autocomplete="off" spellcheck="false"
+               oninput="CC.onResumeSearch(this.value)"
+               data-i18n-attr="placeholder:html.placeholders.resume_search"
+               placeholder="Search projects…" />
+      </div>
+      <div id="resume-list"></div>
+      <div id="resume-error" class="hidden"></div>
+    </div>
+    <div id="resume-footer">
+      <button class="msm-btn msm-btn-cancel" onclick="CC.closeResumeModal()" data-i18n="html.buttons.cancel">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── TRANSITION MODAL ────────────────────────────────────────────────────
+     Fills the gap between the selected keyframe and the next one with a
+     generated move. Everything it produces is ordinary keyframes, so the
+     result stays editable afterwards. -->
+<div id="trans-modal" class="hidden">
+  <div id="trans-backdrop"></div>
+  <div id="trans-dialog">
+    <div id="trans-header">
+      <i class="fa-solid fa-wand-magic-sparkles"></i>
+      <span data-i18n="html.panels.transition">Transition</span>
+      <span id="trans-gap"></span>
+    </div>
+
+    <div id="trans-body">
+      <div id="trans-list"></div>
+
+      <div id="trans-blurb"></div>
+
+      <!-- Per-transition options. Only the rows relevant to the selected
+           transition are shown; the rest are hidden by CC.onTransitionPick. -->
+      <div id="trans-opts">
+        <!-- Always shown. Sets how long the move takes; if that's longer than
+             the gap you have, the landing keyframe and everything after it are
+             pushed out to make room. -->
+        <div class="trans-opt-row" data-opt="always">
+          <label class="sp-label" data-i18n="html.labels.trans_duration">Duration</label>
+          <input class="sp-range" type="range" id="trans-duration" min="0.5" max="12" step="0.1" value="4"
+            oninput="CC.onTransitionDuration(this.value)" />
+          <input class="sp-input sp-input-sm" type="number" id="trans-duration-num" min="0.5" max="12" step="0.1" value="4"
+            oninput="CC.onTransitionDuration(this.value)" />
+          <span class="sp-hint" style="font-size:9px;opacity:0.7">s</span>
+        </div>
+        <div class="trans-opt-row" data-opt="always">
+          <span id="trans-duration-note" class="sp-hint" style="font-size:9px;opacity:0.7"></span>
+        </div>
+
+        <div class="trans-opt-row" data-opt="degrees">
+          <label class="sp-label" data-i18n="html.labels.whip_degrees">Whip angle</label>
+          <input class="sp-range" type="range" id="trans-degrees" min="20" max="140" step="5" value="60"
+            oninput="document.getElementById('trans-degrees-num').value=this.value" />
+          <input class="sp-input sp-input-sm" type="number" id="trans-degrees-num" min="20" max="140" step="5" value="60"
+            oninput="document.getElementById('trans-degrees').value=this.value" />
+        </div>
+
+        <div class="trans-opt-row" data-opt="height">
+          <label class="sp-label" data-i18n="html.labels.rise_height">Climb height</label>
+          <input class="sp-range" type="range" id="trans-height" min="40" max="600" step="10" value="160"
+            oninput="document.getElementById('trans-height-num').value=this.value" />
+          <input class="sp-input sp-input-sm" type="number" id="trans-height-num" min="40" max="600" step="10" value="160"
+            oninput="document.getElementById('trans-height').value=this.value" />
+        </div>
+        <div class="trans-opt-row" data-opt="height">
+          <label class="sp-label" data-i18n="html.labels.rise_auto">Auto height from distance</label>
+          <input type="checkbox" id="trans-height-auto" checked />
+        </div>
+
+        <div class="trans-opt-row" data-opt="punch">
+          <label class="sp-label" data-i18n="html.labels.zoom_punch">Punch strength</label>
+          <input class="sp-range" type="range" id="trans-punch" min="0.2" max="0.9" step="0.05" value="0.45"
+            oninput="document.getElementById('trans-punch-num').value=parseFloat(this.value).toFixed(2)" />
+          <input class="sp-input sp-input-sm" type="number" id="trans-punch-num" min="0.2" max="0.9" step="0.05" value="0.45"
+            oninput="document.getElementById('trans-punch').value=this.value" />
+        </div>
+
+        <div class="trans-opt-row" data-opt="wipe">
+          <label class="sp-label" data-i18n="html.labels.wipe_angle">Wipe angle</label>
+          <input class="sp-range" type="range" id="trans-angle" min="-45" max="45" step="1" value="15"
+            oninput="document.getElementById('trans-angle-num').value=this.value" />
+          <input class="sp-input sp-input-sm" type="number" id="trans-angle-num" min="-45" max="45" step="1" value="15"
+            oninput="document.getElementById('trans-angle').value=this.value" />
+        </div>
+        <div class="trans-opt-row" data-opt="wipe">
+          <label class="sp-label" data-i18n="html.labels.wipe_color">Wipe colour</label>
+          <input type="color" id="trans-color" value="#000000" />
+        </div>
+        <div class="trans-opt-row" data-opt="wipe">
+          <label class="sp-label" data-i18n="html.labels.wipe_softness">Edge softness</label>
+          <input class="sp-range" type="range" id="trans-softness" min="0" max="0.4" step="0.01" value="0.06"
+            oninput="document.getElementById('trans-softness-num').value=parseFloat(this.value).toFixed(2)" />
+          <input class="sp-input sp-input-sm" type="number" id="trans-softness-num" min="0" max="0.4" step="0.01" value="0.06"
+            oninput="document.getElementById('trans-softness').value=this.value" />
+        </div>
+      </div>
+
+      <div id="trans-warning" class="hidden"></div>
+    </div>
+
+    <div id="trans-footer">
+      <button class="msm-btn msm-btn-cancel" onclick="CC.closeTransitionModal()" data-i18n="html.buttons.cancel">Cancel</button>
+      <button class="msm-btn msm-btn-apply" id="trans-apply" onclick="CC.applyTransition()" data-i18n="html.buttons.apply">Apply</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── NEW PROJECT MODAL ───────────────────────────────────────────────── -->
+<div id="new-project-modal" class="hidden">
+  <div class="np-backdrop"></div>
+  <div class="np-dialog">
+    <div class="np-header">
+      <i class="fa-solid fa-film"></i>
+      <span data-i18n="project.new_project_title">New Project</span>
+      <button class="np-close" onclick="CC.cancelNewProject()"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+
+    <div class="np-body">
+      <!-- Project Name -->
+      <div class="np-field">
+        <label class="np-label" data-i18n="project.field_name">Project name</label>
+        <input type="text" id="np-name" class="np-input" data-i18n-attr="placeholder:project.field_name_placeholder" placeholder="My cinematic" autocomplete="off" />
+      </div>
+
+      <!-- Project State -->
+      <div class="np-field">
+        <label class="np-label" data-i18n="project.field_state">Visibility</label>
+        <div class="np-state-grid">
+          <button type="button" class="np-state-tile state-shared selected" data-state="shared" onclick="CC.selectNewProjectState('shared')">
+            <i class="fa-solid fa-globe"></i>
+            <span class="np-state-name" data-i18n="project.state_shared">Shared</span>
+            <span class="np-state-desc" data-i18n="project.state_shared_desc">Anyone with editor access</span>
+          </button>
+          <button type="button" class="np-state-tile state-locked" data-state="locked" onclick="CC.selectNewProjectState('locked')">
+            <i class="fa-solid fa-lock"></i>
+            <span class="np-state-name" data-i18n="project.state_locked">Locked</span>
+            <span class="np-state-desc" data-i18n="project.state_locked_desc">Only you can see &amp; edit</span>
+          </button>
+          <button type="button" class="np-state-tile state-admin" data-state="admin" id="np-state-admin" onclick="CC.selectNewProjectState('admin')">
+            <i class="fa-solid fa-shield-halved"></i>
+            <span class="np-state-name" data-i18n="project.state_admin">Admin</span>
+            <span class="np-state-desc" data-i18n="project.state_admin_desc">Visible to admins only</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Duration + Tutorial side-by-side -->
+      <div class="np-row-split">
+        <div class="np-field np-field-half">
+          <label class="np-label" data-i18n="project.field_duration">Timeline length</label>
+          <div class="np-duration-row">
+            <input type="number" id="np-duration" class="np-input np-input-num" min="1" max="3600" step="1" value="30" />
+            <span class="np-suffix" data-i18n="project.field_duration_unit">seconds</span>
+          </div>
+        </div>
+        <div class="np-field np-field-half">
+          <label class="np-label" data-i18n="project.field_tutorial">Interactive tutorial</label>
+          <label class="np-toggle-row np-toggle-row-compact">
+            <input type="checkbox" id="np-tutorial" checked />
+            <span class="np-toggle-track"><span class="np-toggle-thumb"></span></span>
+            <span class="np-toggle-sub" data-i18n="project.field_tutorial_sub">Step-by-step hints</span>
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <div class="np-footer">
+      <button class="np-btn np-btn-secondary" onclick="CC.cancelNewProject()" data-i18n="html.buttons.cancel">Cancel</button>
+      <button class="np-btn np-btn-primary" onclick="CC.confirmNewProject()">
+        <i class="fa-solid fa-plus"></i>&nbsp;<span data-i18n="project.create_project">Create project</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ── PROJECT SETTINGS MODAL (edit existing) ──────────────────────────── -->
+<div id="project-settings-modal" class="hidden">
+  <div class="np-backdrop"></div>
+  <div class="np-dialog">
+    <div class="np-header">
+      <i class="fa-solid fa-gear"></i>
+      <span data-i18n="project.settings_title">Project settings</span>
+      <button class="np-close" onclick="CC.closeProjectSettings()"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+
+    <div class="np-body">
+      <div class="np-field">
+        <label class="np-label" data-i18n="project.field_name">Project name</label>
+        <input type="text" id="ps-name" class="np-input" autocomplete="off" />
+      </div>
+
+      <div class="np-field">
+        <label class="np-label" data-i18n="project.field_state">Visibility</label>
+        <div class="np-state-grid">
+          <button type="button" class="np-state-tile state-shared" data-state="shared" onclick="CC.selectSettingsState('shared')">
+            <i class="fa-solid fa-globe"></i>
+            <span class="np-state-name" data-i18n="project.state_shared">Shared</span>
+            <span class="np-state-desc" data-i18n="project.state_shared_desc">Anyone with editor access</span>
+          </button>
+          <button type="button" class="np-state-tile state-locked" data-state="locked" onclick="CC.selectSettingsState('locked')">
+            <i class="fa-solid fa-lock"></i>
+            <span class="np-state-name" data-i18n="project.state_locked">Locked</span>
+            <span class="np-state-desc" data-i18n="project.state_locked_desc">Only you can see &amp; edit</span>
+          </button>
+          <button type="button" class="np-state-tile state-admin" data-state="admin" id="ps-state-admin" onclick="CC.selectSettingsState('admin')">
+            <i class="fa-solid fa-shield-halved"></i>
+            <span class="np-state-name" data-i18n="project.state_admin">Admin</span>
+            <span class="np-state-desc" data-i18n="project.state_admin_desc">Visible to admins only</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="np-field">
+        <label class="np-label" data-i18n="project.field_duration">Timeline length</label>
+        <div class="np-duration-row">
+          <input type="number" id="ps-duration" class="np-input np-input-num" min="1" max="3600" step="1" />
+          <span class="np-suffix" data-i18n="project.field_duration_unit">seconds</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="np-footer">
+      <button class="np-btn np-btn-secondary" onclick="CC.closeProjectSettings()" data-i18n="html.buttons.cancel">Cancel</button>
+      <button class="np-btn np-btn-primary" onclick="CC.applyProjectSettings()">
+        <i class="fa-solid fa-check"></i>&nbsp;<span data-i18n="html.buttons.save">Save</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ── TUTORIAL OVERLAY ─────────────────────────────────────────────────── -->
+<div id="tut-root" class="hidden">
+  <div id="tut-highlight"></div>
+  <div id="tut-tooltip">
+    <div id="tut-tip-step"></div>
+    <div id="tut-tip-title"></div>
+    <div id="tut-tip-body"></div>
+    <div id="tut-tip-footer">
+      <button id="tut-skip" onclick="CC.tutorialSkip()" data-i18n="html.buttons.skip_tutorial">Skip tutorial</button>
+      <span id="tut-tip-hint"></span>
+    </div>
+  </div>
+</div>
+
+<!-- ── CINEMATIC EFFECTS OVERLAY (rendered during playback) ──────────────── -->
+<div id="fx-overlay">
+  <div id="fx-fade"></div>
+  <div id="fx-vignette"></div>
+  <div id="fx-letterbox-top"></div>
+  <div id="fx-letterbox-bottom"></div>
+  <div id="fx-grain"></div>
+  <!-- Wipe bar. Oversized and rotated so a diagonal sweep still covers the
+       corners; the cut is buried at the midpoint of its travel. -->
+  <div id="fx-wipe"></div>
+  <!-- Last child on purpose: it has to stay legible through the fade layer
+       above it. Shown only while the editor preview is holding an effect below
+       its authored strength (FX_EDIT_CAP in script.js) — never on playback. -->
+  <div id="fx-badge" class="hidden"></div>
+</div>
+
+<!-- ── RECORDING COUNTDOWN + INDICATOR (outside #app so it stays visible) ── -->
+<div id="rec-overlay" class="hidden">
+  <div id="rec-vignette"></div>
+  <div id="rec-countdown"></div>
+  <div id="rec-indicator" class="hidden">
+    <div id="rec-dot"></div>
+    <span data-i18n="html.labels.rec">REC</span>
+    <span id="rec-timer">00:00</span>
+  </div>
+  <div id="rec-stop-hint" class="hidden" data-i18n="html.labels.rec_stop_hint" data-i18n-html>
+    Press <strong>BACKSPACE</strong> to stop recording
+  </div>
+</div>
+
+<script src="transitions.js"></script>
+<script src="script.js"></script>
+</body>
+</html>

@@ -175,6 +175,60 @@ return {
             },
         },
     },
+    ['fire'] = {
+        label = 'Midnight Fire & Rescue',
+        type = 'fire',
+        defaultDuty = false,
+        offDutyPay = false,
+        grades = {
+            -- Firefighter Team
+            [0] = {
+                name = 'Trainee Firefighter',
+                payment = 300
+            },
+            [1] = {
+                name = 'Firefighter',
+                payment = 450
+            },
+            -- Bronze Command
+            [2] = {
+                name = 'Crew Manager',
+                payment = 600
+            },
+            [3] = {
+                name = 'Watch Manager',
+                payment = 630
+            },
+            -- Silver Command
+            [4] = {
+                name = 'Station Manager',
+                payment = 660
+            },
+            [5] = {
+                name = 'Group Manager',
+                payment = 690
+            },
+            -- Gold Command
+            [7] = {
+                name = 'Assistant Chief Fire Officer',
+                isboss = true,
+                bankAuth = true,
+                payment = 700
+            },
+            [8] = {
+                name = 'Deputy Chief Fire Officer',
+                isboss = true,
+                bankAuth = true,
+                payment = 710
+            },
+            [9] = {
+                name = 'Chief Fire Officer',
+                isboss = true,
+                bankAuth = true,
+                payment = 720
+            },
+        },
+    },
     ['realestate'] = {
         label = 'Real Estate',
         type = 'realestate',

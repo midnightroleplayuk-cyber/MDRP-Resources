@@ -34,10 +34,10 @@ Config.growops = {
                 rotation = vec3(0, 0, 57),
 
                 -- Limit players of specific jobs to be able to access the grow ops
-                jobs = { 'mafia', 'police' },
+                jobs = { 'unemployed'},
 
                 -- Set a required item which player will need to have in their inventory to open the grow op
-                --requiredItem = 'access_card',
+                requiredItem = 'access_card',
 
                 color = 12,
             },

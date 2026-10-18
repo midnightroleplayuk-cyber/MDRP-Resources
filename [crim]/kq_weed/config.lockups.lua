@@ -29,10 +29,10 @@ Config.lockups = {
                 color = 9,
 
                 -- Limit players of specific jobs to be able to access the lockups
-                jobs = { 'mafia', 'police' },
+                jobs = { 'unemployed' },
 
                 -- Set a required item which player will need to have in their inventory to open the grow op
-                --requiredItem = 'access_card',
+                requiredItem = 'access_card',
             },
             {
                 coords = vec3(933.55, -2983.15, 4.90),

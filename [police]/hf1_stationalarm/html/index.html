@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>HF1 Station Alarm</title></head><body>
+<script>
+const alarms = new Map();
+let player = {x:0,y:0,z:0};
+function update() {
+  for (const alarm of alarms.values()) {
+    const d = Math.hypot(player.x-alarm.origin.x,player.y-alarm.origin.y,player.z-alarm.origin.z);
+    const factor = Math.max(0, 1 - d / Math.max(1,alarm.distance));
+    alarm.audio.volume = Math.min(1,Math.max(0,alarm.volume * factor * factor));
+  }
+}
+window.addEventListener('message', ({data}) => {
+  if (data.action === 'position') { player = data; update(); return; }
+  if (data.action === 'stop') {
+    const alarm = alarms.get(data.id);
+    if (alarm) { alarm.audio.pause(); alarm.audio.src = ''; alarms.delete(data.id); }
+    return;
+  }
+  if (data.action === 'play') {
+    if (alarms.has(data.id)) return;
+    // File name is configured by server resource owner, not user input.
+    const audio = new Audio('../sounds/' + encodeURIComponent(data.file));
+    audio.loop = true;
+    alarms.set(data.id,{audio,origin:data.origin,volume:data.volume,distance:data.distance});
+    update();
+    audio.play().catch(() => {});
+  }
+});
+</script></body></html>

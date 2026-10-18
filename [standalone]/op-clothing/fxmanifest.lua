@@ -34,7 +34,7 @@ shared_scripts {
 
 client_scripts {
     'framework/client/shared.lua',
-   -- 'framework/client/esx.lua',
+    'framework/client/esx.lua',
     'framework/client/qb.lua',
     'framework/client/qbox.lua',
 
@@ -67,7 +67,7 @@ server_scripts {
     '@oxmysql/lib/MySQL.lua',
 
     'framework/server/shared.lua',
-  --  'framework/server/esx.lua',
+    'framework/server/esx.lua',
     'framework/server/qb.lua',
     'framework/server/qbox.lua',
 
@@ -111,7 +111,7 @@ provides {
     'illenium-appearance',
     'fivem-appearance',
     'skinchanger',
-  -- 'esx_skin',
+    'esx_skin',
     'qb-clothing',
     'rcore_clothing',
 }

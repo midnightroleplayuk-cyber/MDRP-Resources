@@ -17,7 +17,7 @@ Config.AlarmTestDuration = 10
 -- alarm config for sinner street station
 Config.AlarmSound = {
     enabled = true,
-    volume = 60,
+    volume = 30,
     file = "sounds/alarm.mp3",
     distance = 100.0
 }
@@ -34,7 +34,7 @@ Config.Inventory = {
 -- alarm config for sandy station
 Config.FireAlarmSound = {
     enabled = true,
-    volume = 50,
+    volume = 30,
     file = "sounds/fire_alarm.MP3",
     distance = 150.0
 }

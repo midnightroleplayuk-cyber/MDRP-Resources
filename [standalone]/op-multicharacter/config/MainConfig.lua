@@ -137,7 +137,7 @@ Config.CutSceneData = {
 -- ─────────────────────────────────────────────────────────────────────────
 Config.SwitchPlayer = {
     enable = false, -- This will work only if spawn selector is disabled!
-    startCoords = vec4(-1037.6252, -2737.7544, 19.1693, 326.5721), -- This will work only if spawn selector is disabled!
+    startCoords = vec4(1615.82, 3540.4, 35.96, 34.57), -- This will work only if spawn selector is disabled!
     disableSwitchOnNewCharacter = true, -- Disables switch on new character
 }
 

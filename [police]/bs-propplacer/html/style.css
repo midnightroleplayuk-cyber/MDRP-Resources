@@ -1,0 +1,165 @@
+/* ===========================================================================
+   BS PROP PLACER — style.css
+   Theme: British light blue, SQUARE & SOLID (no glass / blur / rounded corners).
+   A flat "traffic control panel" look.
+   =========================================================================== */
+
+:root {
+    --blue-50:  #eef6fb;
+    --blue-100: #dcebf6;
+    --blue-200: #b9d7ec;
+    --blue-300: #7ec8e3;
+    --blue-400: #2f8fd0;
+    --blue-500: #1d77b8;
+    --blue-700: #134a73;
+    --navy:     #0e2d44;
+    --ink:      #142c3d;
+    --muted:    #5b7891;
+    --accent:   #cf2b3a;   /* Union red, used as hard accents */
+    --line:     #c4d6e4;   /* default border colour */
+    --font:     'Segoe UI', 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html, body {
+    width: 100%; height: 100%;
+    font-family: var(--font);
+    overflow: hidden;
+    user-select: none;
+    background: transparent;   /* keep transparent so the game shows through */
+}
+
+/* full-screen layer — transparent, no dim/frame */
+#app {
+    position: fixed; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    background: transparent;
+}
+#app.hidden { display: none; }
+
+/* ---------- panel (solid, square) ---------- */
+.panel {
+    width: min(920px, 92vw);
+    max-height: 84vh;
+    display: flex; flex-direction: column;
+    background: #ffffff;
+    border: 2px solid var(--navy);
+    border-radius: 0;
+    box-shadow: 0 14px 0 0 rgba(14, 45, 68, 0.18);  /* flat offset, not a soft glow */
+}
+
+/* ---------- header ---------- */
+.panel__header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 16px 20px;
+    background: var(--navy);
+    color: #fff;
+    border-bottom: 3px solid var(--blue-400);
+}
+.brand { display: flex; align-items: center; gap: 14px; }
+.brand__mark {
+    width: 46px; height: 46px; border-radius: 0;
+    display: grid; place-items: center;
+    background: var(--blue-400);
+    border: 2px solid #fff;
+    font-weight: 800; font-size: 18px; letter-spacing: 1px;
+}
+.brand__text h1 { font-size: 18px; font-weight: 700; line-height: 1.1; text-transform: uppercase; letter-spacing: 0.5px; }
+.brand__text span { font-size: 11px; opacity: 0.8; letter-spacing: 2px; text-transform: uppercase; }
+
+.close-btn {
+    width: 38px; height: 38px; border: 2px solid rgba(255,255,255,0.5); cursor: pointer;
+    border-radius: 0; font-size: 22px; line-height: 1; color: #fff;
+    background: transparent;
+    transition: background 0.12s, border-color 0.12s;
+}
+.close-btn:hover { background: var(--accent); border-color: var(--accent); }
+
+/* ---------- toolbar ---------- */
+.toolbar {
+    display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+    padding: 14px 20px;
+    background: var(--blue-50);
+    border-bottom: 2px solid var(--line);
+}
+.search { flex: 1 1 200px; }
+.search input {
+    width: 100%; padding: 10px 14px;
+    border: 2px solid var(--line); border-radius: 0;
+    background: #fff; color: var(--ink); font-size: 14px; font-family: var(--font);
+    outline: none; transition: border-color 0.12s;
+}
+.search input:focus { border-color: var(--blue-400); }
+.search input::placeholder { color: var(--muted); }
+
+.tabs { display: flex; gap: 6px; flex-wrap: wrap; }
+.tab {
+    padding: 8px 14px; border-radius: 0; cursor: pointer;
+    font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.4px;
+    color: var(--blue-700); background: #fff; border: 2px solid var(--line);
+    transition: background 0.12s, color 0.12s, border-color 0.12s;
+}
+.tab:hover { border-color: var(--blue-400); }
+.tab.active {
+    background: var(--blue-400); color: #fff; border-color: var(--blue-400);
+}
+
+/* ---------- grid ---------- */
+.grid {
+    flex: 1; min-height: 0; overflow-y: auto;   /* min-height:0 lets the grid scroll inside the flex panel */
+    display: grid; gap: 12px; align-content: start;
+    grid-template-columns: repeat(auto-fill, minmax(132px, 1fr));
+    padding: 18px 20px;
+    background: #fff;
+}
+.card {
+    position: relative;
+    background: #fff; border: 2px solid var(--line);
+    border-radius: 0; overflow: hidden; cursor: pointer;
+    display: flex; flex-direction: column;
+    transition: border-color 0.12s, box-shadow 0.12s;
+}
+.card:hover {
+    border-color: var(--blue-400);
+    box-shadow: 4px 4px 0 0 var(--blue-200);   /* hard offset shadow on hover */
+}
+.card:active { box-shadow: 2px 2px 0 0 var(--blue-300); }
+.card__thumb {
+    aspect-ratio: 1 / 1; padding: 10px;
+    display: grid; place-items: center;
+    background: var(--blue-50);
+    border-bottom: 2px solid var(--line);
+}
+.card__thumb img { max-width: 100%; max-height: 100%; object-fit: contain; }
+.card__label {
+    padding: 9px 10px; font-size: 12.5px; font-weight: 600; color: var(--ink);
+    text-align: center; line-height: 1.25;
+}
+
+/* "closes road" / zone badge — square, hard */
+.badge {
+    position: absolute; top: 0; right: 0;
+    background: var(--accent); color: #fff;
+    font-size: 9px; font-weight: 800; letter-spacing: 0.4px;
+    padding: 4px 7px; border-radius: 0; text-transform: uppercase;
+}
+
+.empty {
+    grid-column: 1 / -1; text-align: center; color: var(--muted);
+    padding: 50px 0; font-size: 14px;
+}
+
+/* ---------- footer ---------- */
+.panel__footer {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 11px 20px; font-size: 12px; color: var(--muted);
+    background: var(--blue-50); border-top: 2px solid var(--line);
+}
+.panel__footer .credit strong { color: var(--blue-700); }
+
+/* ---------- scrollbar (square) ---------- */
+.grid::-webkit-scrollbar { width: 12px; }
+.grid::-webkit-scrollbar-track { background: var(--blue-50); border-left: 2px solid var(--line); }
+.grid::-webkit-scrollbar-thumb { background: var(--blue-300); border: 3px solid var(--blue-50); }
+.grid::-webkit-scrollbar-thumb:hover { background: var(--blue-400); }

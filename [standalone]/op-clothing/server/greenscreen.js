@@ -719,15 +719,28 @@ function processFile(rawPath, outPathBase) {
     return processBuffer(fs.readFileSync(rawPath), outPathBase);
 }
 
-// Push a freshly written thumbnail inline to the capturing client so open NUI
-// panels update instantly (without waiting for a resource remount / nui:// URL).
+// Push a freshly written thumbnail to the capturing client so open NUI panels
+// update instantly. Include a data-URL for single/admin re-shoots — nui:// cannot
+// see files written at runtime until the store resource remounts (and when
+// StoreResource == op-clothing it never remounts).
 function pushInlineThumb(src, key, dir, ext, bucket) {
     if (!src || src <= 0) return;
-    // Never ship the PNG as a data-URL net event: after ~30 shots that clogs
-    // CEF (the same process screenshot-basic / screencapture use) and the batch
-    // hangs waiting for a callback that never comes. Cache-bust is enough.
+    let dataUrl = '';
     try {
-        emitNet('opc:client:thumbReady', src, key, Date.now(), '', bucket);
+        const file = `${dir}/${key}.${ext}`;
+        if (fs.existsSync(file)) {
+            const buf = fs.readFileSync(file);
+            // Cap ~250KB raw → avoid clogging CEF during long batch runs.
+            if (buf.length > 0 && buf.length <= 250000) {
+                const mime = ext === 'png' ? 'image/png' : `image/${ext}`;
+                dataUrl = `data:${mime};base64,${buf.toString('base64')}`;
+            }
+        }
+    } catch (readErr) {
+        console.log(`^3 thumb inline read failed for '${key}': ${readErr.message}^0`);
+    }
+    try {
+        emitNet('opc:client:thumbReady', src, key, Date.now(), dataUrl, bucket);
     } catch (pushErr) {
         console.log(`^3 thumb ready push failed for '${key}': ${pushErr.message}^0`);
     }

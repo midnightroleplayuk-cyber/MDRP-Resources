@@ -5,7 +5,7 @@ Config.Debug = false
 -- ─── FRAMEWORK ───────────────────────────────────────────────────────────────
 
 Config.Framework = {
-    name        = "standalone",              -- standalone | qbcore | qbox | esx | tmc
+    name        = "qbox",              -- standalone | qbcore | qbox | esx | tmc
     jobLock     = true,                     -- true = only allowedJobs can open gates
     allowedJobs = { "police", "ambulance" },
 }
@@ -13,13 +13,13 @@ Config.Framework = {
 -- ─── ACCESS ──────────────────────────────────────────────────────────────────
 
 Config.Access = {
-    usePinCodes  = true,   -- true = keypad gates ask for a PIN before opening
+    usePinCodes  = false,   -- true = keypad gates ask for a PIN before opening
     requiredItem = nil,     -- "warrant_card" = player must carry this item to interact
     stationCodes = {        -- PIN code per station (shared by all gates in that station)
         ["Alta"]            = "1234",
         ["Sinners"]         = "1326",
         ["Sinners_CarPark"] = "1326",
-	["ChadwellHeath"] = "1234",
+	    ["ChadwellHeath"]   = "1234",
     },
 }
 

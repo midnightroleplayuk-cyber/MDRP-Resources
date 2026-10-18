@@ -27,7 +27,7 @@ Config.OpenMDT = {
     command = {
         enabled = true,
         cmd = 'mdt',
-        keybind = false, -- 'F4' or false
+        keybind = 'F11', -- 'F4' or false
     },
 }
 

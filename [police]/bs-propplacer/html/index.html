@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BS Prop Placer</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+    <!-- #app is hidden until the Lua side sends an "open" message -->
+    <div id="app" class="hidden">
+        <div class="panel">
+
+            <!-- Header -->
+            <header class="panel__header">
+                <div class="brand">
+                    <div class="brand__mark">UK</div>
+                    <div class="brand__text">
+                        <h1>Road Sign Placer</h1>
+                        <span>British Scripts</span>
+                    </div>
+                </div>
+                <button id="close" class="close-btn" title="Close (Esc)">&times;</button>
+            </header>
+
+            <!-- Toolbar: search + category tabs -->
+            <div class="toolbar">
+                <div class="search">
+                    <input id="search" type="text" placeholder="Search signs…" autocomplete="off" />
+                </div>
+                <nav id="tabs" class="tabs"></nav>
+            </div>
+
+            <!-- Grid of signs (populated by script.js) -->
+            <main id="grid" class="grid"></main>
+
+            <!-- Footer -->
+            <footer class="panel__footer">
+                <span id="count">0 signs</span>
+                <span class="credit">Made by <strong>British Scripts</strong> · Bradadorez &amp; SwiftlyChillin</span>
+            </footer>
+
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

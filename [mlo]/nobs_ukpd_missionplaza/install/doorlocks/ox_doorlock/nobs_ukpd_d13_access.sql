@@ -1,0 +1,23 @@
+-- Mission Plaza access-controlled doors (secure rooms, public boundary, external doors, roof) for ox_doorlock.
+-- World pivots of the MLO door entities.
+-- groups are role placeholders (police = {"police": 0}, firearms = {"firearms": 0}): "firearms" stands for your firearms-unit job - rename it, or use your
+-- police job with the firearms grade. state 1 = locked (CID / intel start unlocked). autolock = seconds.
+-- nobs_ukpd_d13_firearms_cage = the weapons-cage gate pair inside the firearms armoury (same role as its door).
+-- Re-running this file replaces only these doors (names starting nobs_ukpd_d12_ / nobs_ukpd_d13_).
+DELETE FROM `ox_doorlock` WHERE `name` LIKE 'nobs\_ukpd\_d12\_%' OR `name` LIKE 'nobs\_ukpd\_d13\_%';
+INSERT INTO `ox_doorlock` (`name`, `data`) VALUES
+	('nobs_ukpd_d13_armoury', '{"maxDistance":1.5,"state":1,"groups":{"firearms":0},"hideUi":false,"coords":{"x":394.772,"y":-317.24571,"z":45.94298},"model":-341769884,"heading":158.38,"autolock":15}'),
+	('nobs_ukpd_d13_armoury_2', '{"maxDistance":1.5,"state":1,"groups":{"firearms":0},"hideUi":false,"coords":{"x":362.84587,"y":-345.46869,"z":45.94298},"model":-2022445435,"heading":338.38,"autolock":15}'),
+	('nobs_ukpd_d13_firearms_armoury', '{"maxDistance":1.5,"state":1,"groups":{"firearms":0},"hideUi":false,"coords":{"x":365.05363,"y":-334.67268,"z":50.14298},"model":-341769884,"heading":68.38,"autolock":15}'),
+	('nobs_ukpd_d13_evidence', '{"maxDistance":1.5,"state":1,"groups":{"police":0},"hideUi":false,"coords":{"x":414.5505,"y":-325.08386,"z":45.94298},"model":-341769884,"heading":158.38,"autolock":15}'),
+	('nobs_ukpd_d13_control_room', '{"maxDistance":1.5,"state":1,"groups":{"police":0},"hideUi":false,"coords":{"x":399.42667,"y":-322.53246,"z":45.94298},"model":-341769884,"heading":338.38}'),
+	('nobs_ukpd_d13_forensics', '{"maxDistance":1.5,"state":1,"groups":{"police":0},"hideUi":false,"coords":{"x":406.53219,"y":-321.90623,"z":45.94298},"model":-341769884,"heading":158.38}'),
+	('nobs_ukpd_d12_roof', '{"maxDistance":1.5,"state":1,"groups":{"police":0},"hideUi":false,"coords":{"x":398.66521,"y":-318.86925,"z":54.09298},"model":356396583,"heading":338.38}'),
+	('nobs_ukpd_d13_public_pass', '{"maxDistance":2.0,"state":1,"groups":{"police":0},"hideUi":false,"coords":{"x":415.54694,"y":-327.0277,"z":45.94298},"doors":[{"coords":{"x":415.91536,"y":-326.09804,"z":45.94298},"model":2105631369,"heading":68.38},{"coords":{"x":415.17852,"y":-327.95735,"z":45.94298},"model":1155242119,"heading":248.38}]}'),
+	('nobs_ukpd_d13_stair_2_public', '{"maxDistance":1.5,"state":1,"groups":{"police":0},"hideUi":false,"coords":{"x":424.92085,"y":-329.19359,"z":45.94298},"model":-303735737,"heading":158.38}'),
+	('nobs_ukpd_d13_garage_yard', '{"maxDistance":1.5,"state":1,"groups":{"police":0},"hideUi":false,"coords":{"x":375.28651,"y":-335.71607,"z":45.94298},"model":763213436,"heading":68.38}'),
+	('nobs_ukpd_d13_stair_3_exit', '{"maxDistance":1.5,"state":1,"groups":{"police":0},"hideUi":false,"coords":{"x":365.8563,"y":-350.93479,"z":45.94298},"model":763213436,"heading":338.38}'),
+	('nobs_ukpd_d13_cid', '{"maxDistance":1.5,"state":0,"groups":{"police":0},"hideUi":false,"coords":{"x":369.59506,"y":-310.7103,"z":50.14298},"model":-1065156223,"heading":158.38}'),
+	('nobs_ukpd_d13_intel', '{"maxDistance":1.5,"state":0,"groups":{"police":0},"hideUi":false,"coords":{"x":360.12076,"y":-339.65582,"z":50.14298},"model":-1065156223,"heading":68.38}'),
+	('nobs_ukpd_d13_firearms_cage', '{"maxDistance":2.0,"state":1,"groups":{"firearms":0},"hideUi":false,"coords":{"x":363.49052,"y":-341.63664,"z":50.14298},"doors":[{"coords":{"x":362.56086,"y":-341.26822,"z":50.14298},"model":2128965228,"heading":158.38},{"coords":{"x":364.42017,"y":-342.00506,"z":50.14298},"model":-857011570,"heading":338.38}]}');
+-- nobs_ukpd_d13_armoury = Armoury / CED kit store (ARM), nobs_ukpd_d13_armoury_2 = Armoury 2 / ARV kit and seized firearms (ARM2), nobs_ukpd_d13_firearms_armoury = Firearms unit armoury / ready room (FAU), nobs_ukpd_d13_evidence = Evidence / property store (EVI), nobs_ukpd_d13_control_room = Control room / CCTV (CTL), nobs_ukpd_d13_forensics = Forensics lab (FOR), nobs_ukpd_d12_roof = Roof access (stair 1) (ROOF), nobs_ukpd_d13_public_pass = Public / staff pass door (PUB), nobs_ukpd_d13_stair_2_public = Stair 2 from the public corridor (ST2), nobs_ukpd_d13_garage_yard = Garage yard door (GAR), nobs_ukpd_d13_stair_3_exit = Stair 3 external door (ST3), nobs_ukpd_d13_cid = CID office (CID), nobs_ukpd_d13_intel = Intel office (INT), nobs_ukpd_d13_firearms_cage = Firearms armoury weapons cage gate (FAUC)

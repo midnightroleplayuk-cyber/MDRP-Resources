@@ -1,0 +1,2010 @@
+{
+ "mlo": "nobs_ukpd_mp",
+ "placement": {
+  "origin_world": [
+   418.3021065013641,
+   -318.71826321490465,
+   45.94298158055308
+  ],
+  "heading_deg": 158.38175948368664
+ },
+ "transform": "world = origin + R(heading) * local; world heading = heading + local heading",
+ "pivot": "door entity origin = hinge axis at floor level on the leaf plane; leaf runs along model -X",
+ "states": "locked = default state; interlock_with = never both unlocked",
+ "jobs": "placeholder police grade 0",
+ "doors": [
+  {
+   "tag": "G1",
+   "doorlock_id": "d11_g1",
+   "name": "nobs_ukpd_d11_g1",
+   "label": "Custody garage entry (G1)",
+   "type": "secure_double",
+   "double": true,
+   "group": "perimeter",
+   "opening_id": "door_g_d11_garage",
+   "between": [
+    "g_custody_desk_zone",
+    "g_fleet_garage"
+   ],
+   "axis": "x",
+   "at_local": [
+    46.5,
+    23.3
+   ],
+   "width": 2.0,
+   "band": [
+    22.7,
+    23.375
+   ],
+   "hinge": null,
+   "swing": "+y",
+   "approach": [
+    0,
+    -1
+   ],
+   "leaves": [
+    {
+     "leaf": "pair_r",
+     "hand": "r",
+     "model": "nobs_ukpd_d22_securepair_r_p_glass",
+     "hash": 1076797679,
+     "hash_signed": 1076797679,
+     "local": [
+      47.5,
+      23.0375,
+      0.0
+     ],
+     "local_heading": 0.0,
+     "world": [
+      365.6558,
+      -322.63531,
+      45.94298
+     ],
+     "heading": 158.3818,
+     "leaf_len": 1.0
+    },
+    {
+     "leaf": "pair_l",
+     "hand": "l",
+     "model": "nobs_ukpd_d22_securepair_l_n_glass",
+     "hash": 572411978,
+     "hash_signed": 572411978,
+     "local": [
+      45.5,
+      23.0375,
+      0.0
+     ],
+     "local_heading": 180.0,
+     "world": [
+      367.51512,
+      -323.37215,
+      45.94298
+     ],
+     "heading": 338.3818,
+     "leaf_len": 1.0
+    }
+   ],
+   "centre_local": [
+    46.5,
+    23.3,
+    0.0
+   ],
+   "centre_world": [
+    366.48875,
+    -323.24777,
+    45.94298
+   ],
+   "text_world": [
+    366.48875,
+    -323.24777,
+    47.14298
+   ],
+   "default_state": "locked",
+   "locked": true,
+   "maxDistance": 2.0,
+   "jobs": {
+    "police": 0
+   },
+   "auth_note": "police job (custody / sergeant grade for A1-A2, G1, S1)",
+   "interlock_with": null,
+   "autolock_s": null,
+   "boundary_into_custody": true,
+   "adjusted": null,
+   "provisional": false
+  },
+  {
+   "tag": "S1",
+   "doorlock_id": "d11_s1",
+   "name": "nobs_ukpd_d11_s1",
+   "label": "Custody staff entry (S1)",
+   "type": "secure_double",
+   "double": true,
+   "group": "perimeter",
+   "opening_id": "door_g_12",
+   "between": [
+    "g_staff_corridor",
+    "g_custody_staff_lobby"
+   ],
+   "axis": "y",
+   "at_local": [
+    28.26,
+    9.2
+   ],
+   "width": 2.0,
+   "band": [
+    28.175,
+    28.35
+   ],
+   "hinge": null,
+   "swing": "+x",
+   "approach": [
+    -1,
+    0
+   ],
+   "leaves": [
+    {
+     "leaf": "pair_r",
+     "hand": "r",
+     "model": "nobs_ukpd_d22_securepair_r_p_glass",
+     "hash": 1076797679,
+     "hash_signed": 1076797679,
+     "local": [
+      28.26,
+      8.2,
+      0.0
+     ],
+     "local_heading": -90.0,
+     "world": [
+      389.00889,
+      -315.9299,
+      45.94298
+     ],
+     "heading": 68.3818,
+     "leaf_len": 1.0
+    },
+    {
+     "leaf": "pair_l",
+     "hand": "l",
+     "model": "nobs_ukpd_d22_securepair_l_n_glass",
+     "hash": 572411978,
+     "hash_signed": 572411978,
+     "local": [
+      28.26,
+      10.2,
+      0.0
+     ],
+     "local_heading": 90.0,
+     "world": [
+      388.27205,
+      -317.78922,
+      45.94298
+     ],
+     "heading": 248.3818,
+     "leaf_len": 1.0
+    }
+   ],
+   "centre_local": [
+    28.26,
+    9.2,
+    0.0
+   ],
+   "centre_world": [
+    388.64047,
+    -316.85956,
+    45.94298
+   ],
+   "text_world": [
+    388.64047,
+    -316.85956,
+    47.14298
+   ],
+   "default_state": "locked",
+   "locked": true,
+   "maxDistance": 2.0,
+   "jobs": {
+    "police": 0
+   },
+   "auth_note": "police job (custody / sergeant grade for A1-A2, G1, S1)",
+   "interlock_with": "E1",
+   "autolock_s": 10,
+   "boundary_into_custody": true,
+   "adjusted": null,
+   "provisional": false
+  },
+  {
+   "tag": "E1",
+   "doorlock_id": "d11_e1",
+   "name": "nobs_ukpd_d11_e1",
+   "label": "Cell hall response door (E1)",
+   "type": "response_door",
+   "double": false,
+   "group": "staff",
+   "opening_id": "door_g_d11_hall_response",
+   "between": [
+    "g_cell_hall",
+    "g_custody_staff_lobby"
+   ],
+   "axis": "x",
+   "at_local": [
+    31.0,
+    7.8
+   ],
+   "width": 1.1,
+   "band": [
+    7.7,
+    7.9
+   ],
+   "hinge": "x-",
+   "swing": "+y",
+   "approach": [
+    0,
+    1
+   ],
+   "leaves": [
+    {
+     "leaf": "single",
+     "hand": "rh",
+     "model": "nobs_ukpd_d36_secure_door_single",
+     "hash": 815283508,
+     "hash_signed": 815283508,
+     "local": [
+      30.45,
+      7.8,
+      0.0
+     ],
+     "local_heading": 180.0,
+     "world": [
+      387.1203,
+      -314.7512,
+      45.94298
+     ],
+     "heading": 338.3818,
+     "leaf_len": 1.1
+    }
+   ],
+   "centre_local": [
+    31.0,
+    7.8,
+    0.0
+   ],
+   "centre_world": [
+    386.60899,
+    -314.54857,
+    45.94298
+   ],
+   "text_world": [
+    386.60899,
+    -314.54857,
+    47.14298
+   ],
+   "default_state": "locked",
+   "locked": true,
+   "maxDistance": 1.5,
+   "jobs": {
+    "police": 0
+   },
+   "auth_note": "police job",
+   "interlock_with": "S1",
+   "autolock_s": 10,
+   "boundary_into_custody": false,
+   "adjusted": null,
+   "provisional": false
+  },
+  {
+   "tag": "S2",
+   "doorlock_id": "d11_s2",
+   "name": "nobs_ukpd_d11_s2",
+   "label": "Custody staff side (S2)",
+   "type": "secure_single",
+   "double": false,
+   "group": "staff",
+   "opening_id": "door_g_d11_staff_side",
+   "between": [
+    "g_custody_staff_lobby",
+    "g_custody_staff_bay"
+   ],
+   "axis": "x",
+   "at_local": [
+    30.2,
+    12.1
+   ],
+   "width": 1.1,
+   "band": [
+    12.0,
+    12.2
+   ],
+   "hinge": "x-",
+   "swing": "+y",
+   "approach": [
+    0,
+    -1
+   ],
+   "leaves": [
+    {
+     "leaf": "single",
+     "hand": "lh",
+     "model": "nobs_ukpd_d36_secure_door_single_lh",
+     "hash": 3325359877,
+     "hash_signed": -969607419,
+     "local": [
+      29.65,
+      12.1,
+      0.0
+     ],
+     "local_heading": 180.0,
+     "world": [
+      386.27982,
+      -319.04347,
+      45.94298
+     ],
+     "heading": 338.3818,
+     "leaf_len": 1.1
+    }
+   ],
+   "centre_local": [
+    30.2,
+    12.1,
+    0.0
+   ],
+   "centre_world": [
+    385.76851,
+    -318.84084,
+    45.94298
+   ],
+   "text_world": [
+    385.76851,
+    -318.84084,
+    47.14298
+   ],
+   "default_state": "locked",
+   "locked": true,
+   "maxDistance": 1.5,
+   "jobs": {
+    "police": 0
+   },
+   "auth_note": "police job (custody / sergeant grade for A1-A2, G1, S1)",
+   "interlock_with": null,
+   "autolock_s": null,
+   "boundary_into_custody": true,
+   "adjusted": null,
+   "provisional": false
+  },
+  {
+   "tag": "S3",
+   "doorlock_id": "d11_s3",
+   "name": "nobs_ukpd_d11_s3",
+   "label": "Custody walk-in (S3)",
+   "type": "secure_double",
+   "double": true,
+   "group": "perimeter",
+   "opening_id": "door_g_d11_walkin",
+   "between": [
+    "g_custody_staff_lobby",
+    "g_custody_room"
+   ],
+   "axis": "x",
+   "at_local": [
+    33.4,
+    12.1
+   ],
+   "width": 2.0,
+   "band": [
+    12.0,
+    12.2
+   ],
+   "hinge": null,
+   "swing": "-y",
+   "approach": [
+    0,
+    1
+   ],
+   "leaves": [
+    {
+     "leaf": "pair_r",
+     "hand": "r",
+     "model": "nobs_ukpd_d36_secure_door_pair_r",
+     "hash": 27380258,
+     "hash_signed": 27380258,
+     "local": [
+      32.4,
+      12.1,
+      0.0
+     ],
+     "local_heading": 180.0,
+     "world": [
+      383.72326,
+      -318.03031,
+      45.94298
+     ],
+     "heading": 338.3818,
+     "leaf_len": 1.0
+    },
+    {
+     "leaf": "pair_l",
+     "hand": "l",
+     "model": "nobs_ukpd_d36_secure_door_pair_l",
+     "hash": 3693969198,
+     "hash_signed": -600998098,
+     "local": [
+      34.4,
+      12.1,
+      0.0
+     ],
+     "local_heading": 0.0,
+     "world": [
+      381.86394,
+      -317.29347,
+      45.94298
+     ],
+     "heading": 158.3818,
+     "leaf_len": 1.0
+    }
+   ],
+   "centre_local": [
+    33.4,
+    12.1,
+    0.0
+   ],
+   "centre_world": [
+    382.7936,
+    -317.66189,
+    45.94298
+   ],
+   "text_world": [
+    382.7936,
+    -317.66189,
+    47.14298
+   ],
+   "default_state": "locked",
+   "locked": true,
+   "maxDistance": 2.0,
+   "jobs": {
+    "police": 0
+   },
+   "auth_note": "police job (custody / sergeant grade for A1-A2, G1, S1)",
+   "interlock_with": null,
+   "autolock_s": null,
+   "boundary_into_custody": true,
+   "adjusted": null,
+   "provisional": false
+  },
+  {
+   "tag": "S4",
+   "doorlock_id": "d11_s4",
+   "name": "nobs_ukpd_d11_s4",
+   "label": "Custody desk staff gate (S4)",
+   "type": "staff_gate",
+   "double": false,
+   "group": "staff",
+   "opening_id": null,
+   "between": [
+    "g_custody_desk_zone",
+    "g_custody_desk_zone"
+   ],
+   "axis": "y",
+   "at_local": [
+    42.5,
+    18.85
+   ],
+   "width": 1.1,
+   "band": [
+    42.4,
+    42.6
+   ],
+   "hinge": "y-",
+   "swing": "+x",
+   "approach": null,
+   "leaves": [
+    {
+     "leaf": "single",
+     "hand": "sym",
+     "model": "nobs_ukpd_d36_glazed_staff_gate",
+     "hash": 1536659265,
+     "hash_signed": 1536659265,
+     "local": [
+      42.5,
+      18.3,
+      0.0
+     ],
+     "local_heading": -90.0,
+     "world": [
+      372.04949,
+      -320.07315,
+      45.94298
+     ],
+     "heading": 68.3818,
+     "leaf_len": 1.084
+    }
+   ],
+   "centre_local": [
+    42.5,
+    18.85,
+    0.0
+   ],
+   "centre_world": [
+    371.84686,
+    -320.58447,
+    45.94298
+   ],
+   "text_world": [
+    371.84686,
+    -320.58447,
+    47.14298
+   ],
+   "default_state": "locked",
+   "locked": true,
+   "maxDistance": 1.5,
+   "jobs": {
+    "police": 0
+   },
+   "auth_note": "police job",
+   "interlock_with": null,
+   "autolock_s": null,
+   "boundary_into_custody": false,
+   "adjusted": null,
+   "provisional": false
+  },
+  {
+   "tag": "A1",
+   "doorlock_id": "d11_a1",
+   "name": "nobs_ukpd_d11_a1",
+   "label": "Airlock outer (A1)",
+   "type": "secure_double",
+   "double": true,
+   "group": "airlock",
+   "opening_id": "door_g_d11_airlock_outer",
+   "between": [
+    "g_airlock",
+    "g_custody_room"
+   ],
+   "axis": "x",
+   "at_local": [
+    37.2,
+    12.1
+   ],
+   "width": 2.0,
+   "band": [
+    12.0,
+    12.2
+   ],
+   "hinge": null,
+   "swing": "+y",
+   "approach": [
+    0,
+    -1
+   ],
+   "leaves": [
+    {
+     "leaf": "pair_r",
+     "hand": "r",
+     "model": "nobs_ukpd_d36_secure_door_pair_r",
+     "hash": 27380258,
+     "hash_signed": 27380258,
+     "local": [
+      38.2,
+      12.1,
+      0.0
+     ],
+     "local_heading": 0.0,
+     "world": [
+      378.33123,
+      -315.89348,
+      45.94298
+     ],
+     "heading": 158.3818,
+     "leaf_len": 1.0
+    },
+    {
+     "leaf": "pair_l",
+     "hand": "l",
+     "model": "nobs_ukpd_d36_secure_door_pair_l",
+     "hash": 3693969198,
+     "hash_signed": -600998098,
+     "local": [
+      36.2,
+      12.1,
+      0.0
+     ],
+     "local_heading": 180.0,
+     "world": [
+      380.19055,
+      -316.63032,
+      45.94298
+     ],
+     "heading": 338.3818,
+     "leaf_len": 1.0
+    }
+   ],
+   "centre_local": [
+    37.2,
+    12.1,
+    0.0
+   ],
+   "centre_world": [
+    379.26089,
+    -316.2619,
+    45.94298
+   ],
+   "text_world": [
+    379.26089,
+    -316.2619,
+    47.14298
+   ],
+   "default_state": "locked",
+   "locked": true,
+   "maxDistance": 2.0,
+   "jobs": {
+    "police": 0
+   },
+   "auth_note": "police job (custody / sergeant grade for A1-A2, G1, S1)",
+   "interlock_with": "A2",
+   "autolock_s": 10,
+   "boundary_into_custody": true,
+   "adjusted": null,
+   "provisional": false
+  },
+  {
+   "tag": "A2",
+   "doorlock_id": "d11_a2",
+   "name": "nobs_ukpd_d11_a2",
+   "label": "Airlock cage gate (A2)",
+   "type": "caged_double",
+   "double": true,
+   "group": "airlock",
+   "opening_id": "open_d11_airlock_cage",
+   "between": [
+    "g_cell_hall",
+    "g_airlock"
+   ],
+   "axis": "x",
+   "at_local": [
+    37.2,
+    7.8
+   ],
+   "width": 2.0,
+   "band": [
+    7.7,
+    7.9
+   ],
+   "hinge": null,
+   "swing": "-y",
+   "approach": [
+    0,
+    1
+   ],
+   "leaves": [
+    {
+     "leaf": "pair_r",
+     "hand": "r",
+     "model": "nobs_ukpd_d11_cage_gate_leaf_r",
+     "hash": 2128965228,
+     "hash_signed": 2128965228,
+     "local": [
+      36.2,
+      7.8,
+      0.0
+     ],
+     "local_heading": 180.0,
+     "world": [
+      381.77476,
+      -312.63278,
+      45.94298
+     ],
+     "heading": 338.3818,
+     "leaf_len": 0.996
+    },
+    {
+     "leaf": "pair_l",
+     "hand": "l",
+     "model": "nobs_ukpd_d11_cage_gate_leaf_l",
+     "hash": 3437955726,
+     "hash_signed": -857011570,
+     "local": [
+      38.2,
+      7.8,
+      0.0
+     ],
+     "local_heading": 0.0,
+     "world": [
+      379.91544,
+      -311.89594,
+      45.94298
+     ],
+     "heading": 158.3818,
+     "leaf_len": 0.996
+    }
+   ],
+   "centre_local": [
+    37.2,
+    7.8,
+    0.0
+   ],
+   "centre_world": [
+    380.8451,
+    -312.26436,
+    45.94298
+   ],
+   "text_world": [
+    380.8451,
+    -312.26436,
+    47.14298
+   ],
+   "default_state": "locked",
+   "locked": true,
+   "maxDistance": 2.0,
+   "jobs": {
+    "police": 0
+   },
+   "auth_note": "police job (custody / sergeant grade for A1-A2, G1, S1)",
+   "interlock_with": "A1",
+   "autolock_s": 10,
+   "boundary_into_custody": false,
+   "adjusted": null,
+   "provisional": false
+  },
+  {
+   "tag": "R1",
+   "doorlock_id": "d11_r1",
+   "name": "nobs_ukpd_d11_r1",
+   "label": "ID suite (R1)",
+   "type": "secure_single",
+   "double": false,
+   "group": "rooms",
+   "opening_id": "door_g_d11_id_suite",
+   "between": [
+    "g_id_suite",
+    "g_custody_room"
+   ],
+   "axis": "x",
+   "at_local": [
+    41.15,
+    12.1
+   ],
+   "width": 1.1,
+   "band": [
+    12.0,
+    12.2
+   ],
+   "hinge": "x+",
+   "swing": "-y",
+   "approach": [
+    0,
+    1
+   ],
+   "leaves": [
+    {
+     "leaf": "single",
+     "hand": "lh",
+     "model": "nobs_ukpd_d36_secure_lh_n_hinge",
+     "hash": 3050117900,
+     "hash_signed": -1244849396,
+     "local": [
+      41.7,
+      12.1,
+      0.0
+     ],
+     "local_heading": 0.0,
+     "world": [
+      375.07743,
+      -314.604,
+      45.94298
+     ],
+     "heading": 158.3818,
+     "leaf_len": 1.1
+    }
+   ],
+   "centre_local": [
+    41.15,
+    12.1,
+    0.0
+   ],
+   "centre_world": [
+    375.58874,
+    -314.80664,
+    45.94298
+   ],
+   "text_world": [
+    375.58874,
+    -314.80664,
+    47.14298
+   ],
+   "default_state": "locked",
+   "locked": true,
+   "maxDistance": 1.5,
+   "jobs": {
+    "police": 0
+   },
+   "auth_note": "police job",
+   "interlock_with": null,
+   "autolock_s": null,
+   "boundary_into_custody": false,
+   "adjusted": null,
+   "provisional": false
+  },
+  {
+   "tag": "R2",
+   "doorlock_id": "d11_r2",
+   "name": "nobs_ukpd_d11_r2",
+   "label": "Medical / FME (R2)",
+   "type": "secure_single",
+   "double": false,
+   "group": "rooms",
+   "opening_id": "door_g_d11_medical",
+   "between": [
+    "g_medical_fme",
+    "g_custody_room"
+   ],
+   "axis": "x",
+   "at_local": [
+    45.35,
+    12.1
+   ],
+   "width": 1.1,
+   "band": [
+    12.0,
+    12.2
+   ],
+   "hinge": "x-",
+   "swing": "-y",
+   "approach": [
+    0,
+    1
+   ],
+   "leaves": [
+    {
+     "leaf": "single",
+     "hand": "rh",
+     "model": "nobs_ukpd_d36_secure_r_p_hinge",
+     "hash": 2199448904,
+     "hash_signed": -2095518392,
+     "local": [
+      44.8,
+      12.1,
+      0.0
+     ],
+     "local_heading": 180.0,
+     "world": [
+      372.19548,
+      -313.4619,
+      45.94298
+     ],
+     "heading": 338.3818,
+     "leaf_len": 1.1
+    }
+   ],
+   "centre_local": [
+    45.35,
+    12.1,
+    0.0
+   ],
+   "centre_world": [
+    371.68417,
+    -313.25927,
+    45.94298
+   ],
+   "text_world": [
+    371.68417,
+    -313.25927,
+    47.14298
+   ],
+   "default_state": "locked",
+   "locked": true,
+   "maxDistance": 1.5,
+   "jobs": {
+    "police": 0
+   },
+   "auth_note": "police job",
+   "interlock_with": null,
+   "autolock_s": null,
+   "boundary_into_custody": false,
+   "adjusted": null,
+   "provisional": false
+  },
+  {
+   "tag": "R3",
+   "doorlock_id": "d11_r3",
+   "name": "nobs_ukpd_d11_r3",
+   "label": "Interview 1 (R3)",
+   "type": "secure_single",
+   "double": false,
+   "group": "rooms",
+   "opening_id": "door_g_d11_interview_1",
+   "between": [
+    "g_interview_1",
+    "g_custody_room_east"
+   ],
+   "axis": "x",
+   "at_local": [
+    49.75,
+    12.1
+   ],
+   "width": 1.1,
+   "band": [
+    12.0,
+    12.2
+   ],
+   "hinge": "x+",
+   "swing": "+y",
+   "approach": [
+    0,
+    1
+   ],
+   "leaves": [
+    {
+     "leaf": "single",
+     "hand": "lh",
+     "model": "nobs_ukpd_d36_secure_lh_n_hinge",
+     "hash": 3050117900,
+     "hash_signed": -1244849396,
+     "local": [
+      50.3,
+      12.1,
+      0.0
+     ],
+     "local_heading": 0.0,
+     "world": [
+      367.08236,
+      -311.43559,
+      45.94298
+     ],
+     "heading": 158.3818,
+     "leaf_len": 1.1
+    }
+   ],
+   "centre_local": [
+    49.75,
+    12.1,
+    0.0
+   ],
+   "centre_world": [
+    367.59367,
+    -311.63822,
+    45.94298
+   ],
+   "text_world": [
+    367.59367,
+    -311.63822,
+    47.14298
+   ],
+   "default_state": "locked",
+   "locked": true,
+   "maxDistance": 1.5,
+   "jobs": {
+    "police": 0
+   },
+   "auth_note": "police job",
+   "interlock_with": null,
+   "autolock_s": null,
+   "boundary_into_custody": false,
+   "adjusted": {
+    "at": [
+     49.75,
+     12.1
+    ],
+    "why": "layout R3 (x 49.05-50.15) straddles the x 49.2 seam of the stepped custody room (rect B starts at 49.2); moved +0.15 m so it lies on g_custody_room_east and still inside interview 1 (47.6-51.6); hinge x+ moves 50.15 -> 50.30; swing sweep 49.2-50.3 x 12.2-13.3 stays clear"
+   },
+   "provisional": false
+  },
+  {
+   "tag": "R4",
+   "doorlock_id": "d11_r4",
+   "name": "nobs_ukpd_d11_r4",
+   "label": "Interview 2 / consult (R4)",
+   "type": "secure_single",
+   "double": false,
+   "group": "rooms",
+   "opening_id": "door_g_d11_interview_2",
+   "between": [
+    "g_interview_2_consult",
+    "g_custody_room_se"
+   ],
+   "axis": "x",
+   "at_local": [
+    53.75,
+    12.1
+   ],
+   "width": 1.1,
+   "band": [
+    12.0,
+    12.2
+   ],
+   "hinge": "x+",
+   "swing": "+y",
+   "approach": [
+    0,
+    1
+   ],
+   "leaves": [
+    {
+     "leaf": "single",
+     "hand": "lh",
+     "model": "nobs_ukpd_d36_secure_lh_n_hinge",
+     "hash": 3050117900,
+     "hash_signed": -1244849396,
+     "local": [
+      54.3,
+      12.1,
+      0.0
+     ],
+     "local_heading": 0.0,
+     "world": [
+      363.36372,
+      -309.96191,
+      45.94298
+     ],
+     "heading": 158.3818,
+     "leaf_len": 1.1
+    }
+   ],
+   "centre_local": [
+    53.75,
+    12.1,
+    0.0
+   ],
+   "centre_world": [
+    363.87503,
+    -310.16454,
+    45.94298
+   ],
+   "text_world": [
+    363.87503,
+    -310.16454,
+    47.14298
+   ],
+   "default_state": "locked",
+   "locked": true,
+   "maxDistance": 1.5,
+   "jobs": {
+    "police": 0
+   },
+   "auth_note": "police job",
+   "interlock_with": null,
+   "autolock_s": null,
+   "boundary_into_custody": false,
+   "adjusted": null,
+   "provisional": false
+  },
+  {
+   "tag": "H1",
+   "doorlock_id": "d11_h1",
+   "name": "nobs_ukpd_d11_h1",
+   "label": "Holding 1 (H1)",
+   "type": "secure_single",
+   "double": false,
+   "group": "rooms",
+   "opening_id": "open_d11_holding_1",
+   "between": [
+    "g_custody_room_east",
+    "g_holding_1"
+   ],
+   "axis": "y",
+   "at_local": [
+    52.3,
+    15.9
+   ],
+   "width": 1.1,
+   "band": [
+    52.2,
+    52.4
+   ],
+   "hinge": "y-",
+   "swing": "-x",
+   "approach": null,
+   "leaves": [
+    {
+     "leaf": "single",
+     "hand": "sym",
+     "model": "nobs_ukpd_d36_holding_door",
+     "hash": 1582013696,
+     "hash_signed": 1582013696,
+     "local": [
+      52.3,
+      15.35,
+      0.0
+     ],
+     "local_heading": -90.0,
+     "world": [
+      364.02567,
+      -313.72014,
+      45.94298
+     ],
+     "heading": 68.3818,
+     "leaf_len": 1.08
+    }
+   ],
+   "centre_local": [
+    52.3,
+    15.9,
+    0.0
+   ],
+   "centre_world": [
+    363.82304,
+    -314.23145,
+    45.94298
+   ],
+   "text_world": [
+    363.82304,
+    -314.23145,
+    47.14298
+   ],
+   "default_state": "locked",
+   "locked": true,
+   "maxDistance": 1.5,
+   "jobs": {
+    "police": 0
+   },
+   "auth_note": "police job",
+   "interlock_with": null,
+   "autolock_s": null,
+   "boundary_into_custody": false,
+   "adjusted": null,
+   "provisional": false
+  },
+  {
+   "tag": "H2",
+   "doorlock_id": "d11_h2",
+   "name": "nobs_ukpd_d11_h2",
+   "label": "Holding 2 (H2)",
+   "type": "secure_single",
+   "double": false,
+   "group": "rooms",
+   "opening_id": "open_d11_holding_2",
+   "between": [
+    "g_custody_room_east",
+    "g_holding_2"
+   ],
+   "axis": "y",
+   "at_local": [
+    52.3,
+    19.3
+   ],
+   "width": 1.1,
+   "band": [
+    52.2,
+    52.4
+   ],
+   "hinge": "y+",
+   "swing": "-x",
+   "approach": null,
+   "leaves": [
+    {
+     "leaf": "single",
+     "hand": "sym",
+     "model": "nobs_ukpd_d36_holding_door",
+     "hash": 1582013696,
+     "hash_signed": 1582013696,
+     "local": [
+      52.3,
+      19.85,
+      0.0
+     ],
+     "local_heading": 90.0,
+     "world": [
+      362.36778,
+      -317.90361,
+      45.94298
+     ],
+     "heading": 248.3818,
+     "leaf_len": 1.08
+    }
+   ],
+   "centre_local": [
+    52.3,
+    19.3,
+    0.0
+   ],
+   "centre_world": [
+    362.57041,
+    -317.39229,
+    45.94298
+   ],
+   "text_world": [
+    362.57041,
+    -317.39229,
+    47.14298
+   ],
+   "default_state": "locked",
+   "locked": true,
+   "maxDistance": 1.5,
+   "jobs": {
+    "police": 0
+   },
+   "auth_note": "police job",
+   "interlock_with": null,
+   "autolock_s": null,
+   "boundary_into_custody": false,
+   "adjusted": null,
+   "provisional": false
+  },
+  {
+   "tag": "X1",
+   "doorlock_id": "d11_x1",
+   "name": "nobs_ukpd_d11_x1",
+   "label": "Strip search (X1)",
+   "type": "secure_single",
+   "double": false,
+   "group": "rooms",
+   "opening_id": "door_g_d11_strip_search",
+   "between": [
+    "g_custody_desk_zone",
+    "g_strip_search"
+   ],
+   "axis": "y",
+   "at_local": [
+    49.3,
+    21.45
+   ],
+   "width": 1.1,
+   "band": [
+    49.2,
+    49.4
+   ],
+   "hinge": "y+",
+   "swing": "-x",
+   "approach": [
+    -1,
+    0
+   ],
+   "leaves": [
+    {
+     "leaf": "single",
+     "hand": "lh",
+     "model": "nobs_ukpd_d11_secure_door_single_solid_lh",
+     "hash": 2122133934,
+     "hash_signed": 2122133934,
+     "local": [
+      49.3,
+      22.0,
+      0.0
+     ],
+     "local_heading": 90.0,
+     "world": [
+      364.36465,
+      -321.00763,
+      45.94298
+     ],
+     "heading": 248.3818,
+     "leaf_len": 1.1
+    }
+   ],
+   "centre_local": [
+    49.3,
+    21.45,
+    0.0
+   ],
+   "centre_world": [
+    364.56729,
+    -320.49632,
+    45.94298
+   ],
+   "text_world": [
+    364.56729,
+    -320.49632,
+    47.14298
+   ],
+   "default_state": "locked",
+   "locked": true,
+   "maxDistance": 1.5,
+   "jobs": {
+    "police": 0
+   },
+   "auth_note": "police job",
+   "interlock_with": null,
+   "autolock_s": null,
+   "boundary_into_custody": false,
+   "adjusted": null,
+   "provisional": false
+  },
+  {
+   "tag": "W1",
+   "doorlock_id": "d11_w1",
+   "name": "nobs_ukpd_d11_w1",
+   "label": "Detainee shower / WC (W1)",
+   "type": "cell_door",
+   "double": false,
+   "group": "cells",
+   "opening_id": "door_g_d11_shower",
+   "between": [
+    "g_detainee_shower_wc",
+    "g_cell_hall"
+   ],
+   "axis": "x",
+   "at_local": [
+    29.1,
+    4.0
+   ],
+   "width": 1.1,
+   "band": [
+    3.9,
+    4.1
+   ],
+   "hinge": "x-",
+   "swing": "+y",
+   "approach": [
+    0,
+    1
+   ],
+   "leaves": [
+    {
+     "leaf": "single",
+     "hand": "rh",
+     "model": "nobs_ukpd_d14_w1_door_solid",
+     "hash": 4143529808,
+     "hash_signed": -151437488,
+     "local": [
+      28.55,
+      4.0,
+      0.0
+     ],
+     "local_heading": 180.0,
+     "world": [
+      390.28665,
+      -311.91849,
+      45.94298
+     ],
+     "heading": 338.3818,
+     "leaf_len": 1.1
+    }
+   ],
+   "centre_local": [
+    29.1,
+    4.0,
+    0.0
+   ],
+   "centre_world": [
+    389.77534,
+    -311.71586,
+    45.94298
+   ],
+   "text_world": [
+    389.77534,
+    -311.71586,
+    47.14298
+   ],
+   "default_state": "locked",
+   "locked": true,
+   "maxDistance": 1.5,
+   "jobs": {
+    "police": 0
+   },
+   "auth_note": "police job",
+   "interlock_with": null,
+   "autolock_s": null,
+   "boundary_into_custody": false,
+   "adjusted": null,
+   "provisional": false
+  },
+  {
+   "tag": "C1",
+   "doorlock_id": "d11_c1",
+   "name": "nobs_ukpd_d11_c1",
+   "label": "Cell 1 (C1)",
+   "type": "cell_door",
+   "double": false,
+   "group": "cells",
+   "opening_id": "door_g_d11_cell_1",
+   "between": [
+    "g_cell_1",
+    "g_cell_hall"
+   ],
+   "axis": "x",
+   "at_local": [
+    32.4,
+    4.0
+   ],
+   "width": 1.1,
+   "band": [
+    3.9,
+    4.1
+   ],
+   "hinge": "x-",
+   "swing": "+y",
+   "approach": [
+    0,
+    1
+   ],
+   "leaves": [
+    {
+     "leaf": "single",
+     "hand": "rh",
+     "model": "nobs_ukpd_d36_cell_door",
+     "hash": 2208128389,
+     "hash_signed": -2086838907,
+     "local": [
+      31.85,
+      4.0,
+      0.0
+     ],
+     "local_heading": 180.0,
+     "world": [
+      387.21878,
+      -310.70271,
+      45.94298
+     ],
+     "heading": 338.3818,
+     "leaf_len": 1.1
+    }
+   ],
+   "centre_local": [
+    32.4,
+    4.0,
+    0.0
+   ],
+   "centre_world": [
+    386.70746,
+    -310.50007,
+    45.94298
+   ],
+   "text_world": [
+    386.70746,
+    -310.50007,
+    47.14298
+   ],
+   "default_state": "locked",
+   "locked": true,
+   "maxDistance": 1.5,
+   "jobs": {
+    "police": 0
+   },
+   "auth_note": "police job",
+   "interlock_with": null,
+   "autolock_s": null,
+   "boundary_into_custody": false,
+   "adjusted": null,
+   "provisional": false
+  },
+  {
+   "tag": "C2",
+   "doorlock_id": "d11_c2",
+   "name": "nobs_ukpd_d11_c2",
+   "label": "Cell 2 (C2)",
+   "type": "cell_door_obs",
+   "double": false,
+   "group": "cells",
+   "opening_id": "door_g_d11_cell_2_dry_obs",
+   "between": [
+    "g_cell_2_dry_obs",
+    "g_cell_hall"
+   ],
+   "axis": "x",
+   "at_local": [
+    35.5,
+    4.0
+   ],
+   "width": 1.1,
+   "band": [
+    3.9,
+    4.1
+   ],
+   "hinge": "x-",
+   "swing": "+y",
+   "approach": [
+    0,
+    1
+   ],
+   "leaves": [
+    {
+     "leaf": "single",
+     "hand": "rh",
+     "model": "nobs_ukpd_d36_cell_door_obs",
+     "hash": 262603456,
+     "hash_signed": 262603456,
+     "local": [
+      34.95,
+      4.0,
+      0.0
+     ],
+     "local_heading": 180.0,
+     "world": [
+      384.33683,
+      -309.5606,
+      45.94298
+     ],
+     "heading": 338.3818,
+     "leaf_len": 1.1
+    }
+   ],
+   "centre_local": [
+    35.5,
+    4.0,
+    0.0
+   ],
+   "centre_world": [
+    383.82552,
+    -309.35797,
+    45.94298
+   ],
+   "text_world": [
+    383.82552,
+    -309.35797,
+    47.14298
+   ],
+   "default_state": "locked",
+   "locked": true,
+   "maxDistance": 1.5,
+   "jobs": {
+    "police": 0
+   },
+   "auth_note": "police job",
+   "interlock_with": null,
+   "autolock_s": null,
+   "boundary_into_custody": false,
+   "adjusted": null,
+   "provisional": false
+  },
+  {
+   "tag": "C3",
+   "doorlock_id": "d11_c3",
+   "name": "nobs_ukpd_d11_c3",
+   "label": "Cell 3 (C3)",
+   "type": "cell_door_obs",
+   "double": false,
+   "group": "cells",
+   "opening_id": "door_g_d11_cell_3_obs",
+   "between": [
+    "g_cell_3_obs",
+    "g_cell_hall"
+   ],
+   "axis": "x",
+   "at_local": [
+    38.95,
+    4.0
+   ],
+   "width": 1.1,
+   "band": [
+    3.9,
+    4.1
+   ],
+   "hinge": "x+",
+   "swing": "+y",
+   "approach": [
+    0,
+    1
+   ],
+   "leaves": [
+    {
+     "leaf": "single",
+     "hand": "lh",
+     "model": "nobs_ukpd_d36_cell_door_obs_lh",
+     "hash": 1404447167,
+     "hash_signed": 1404447167,
+     "local": [
+      39.5,
+      4.0,
+      0.0
+     ],
+     "local_heading": 0.0,
+     "world": [
+      380.10688,
+      -307.88429,
+      45.94298
+     ],
+     "heading": 158.3818,
+     "leaf_len": 1.1
+    }
+   ],
+   "centre_local": [
+    38.95,
+    4.0,
+    0.0
+   ],
+   "centre_world": [
+    380.6182,
+    -308.08692,
+    45.94298
+   ],
+   "text_world": [
+    380.6182,
+    -308.08692,
+    47.14298
+   ],
+   "default_state": "locked",
+   "locked": true,
+   "maxDistance": 1.5,
+   "jobs": {
+    "police": 0
+   },
+   "auth_note": "police job",
+   "interlock_with": null,
+   "autolock_s": null,
+   "boundary_into_custody": false,
+   "adjusted": null,
+   "provisional": false
+  },
+  {
+   "tag": "C4",
+   "doorlock_id": "d11_c4",
+   "name": "nobs_ukpd_d11_c4",
+   "label": "Cell 4 (C4)",
+   "type": "cell_door",
+   "double": false,
+   "group": "cells",
+   "opening_id": "door_g_d11_cell_4",
+   "between": [
+    "g_cell_4",
+    "g_cell_hall"
+   ],
+   "axis": "x",
+   "at_local": [
+    42.05,
+    4.0
+   ],
+   "width": 1.1,
+   "band": [
+    3.9,
+    4.1
+   ],
+   "hinge": "x+",
+   "swing": "+y",
+   "approach": [
+    0,
+    1
+   ],
+   "leaves": [
+    {
+     "leaf": "single",
+     "hand": "lh",
+     "model": "nobs_ukpd_d36_cell_door_lh",
+     "hash": 2278749344,
+     "hash_signed": -2016217952,
+     "local": [
+      42.6,
+      4.0,
+      0.0
+     ],
+     "local_heading": 0.0,
+     "world": [
+      377.22494,
+      -306.74219,
+      45.94298
+     ],
+     "heading": 158.3818,
+     "leaf_len": 1.1
+    }
+   ],
+   "centre_local": [
+    42.05,
+    4.0,
+    0.0
+   ],
+   "centre_world": [
+    377.73625,
+    -306.94482,
+    45.94298
+   ],
+   "text_world": [
+    377.73625,
+    -306.94482,
+    47.14298
+   ],
+   "default_state": "locked",
+   "locked": true,
+   "maxDistance": 1.5,
+   "jobs": {
+    "police": 0
+   },
+   "auth_note": "police job",
+   "interlock_with": null,
+   "autolock_s": null,
+   "boundary_into_custody": false,
+   "adjusted": null,
+   "provisional": false
+  },
+  {
+   "tag": "C5",
+   "doorlock_id": "d11_c5",
+   "name": "nobs_ukpd_d11_c5",
+   "label": "Cell 5 (C5)",
+   "type": "cell_door",
+   "double": false,
+   "group": "cells",
+   "opening_id": "door_g_d11_cell_5",
+   "between": [
+    "g_cell_5",
+    "g_cell_hall"
+   ],
+   "axis": "x",
+   "at_local": [
+    45.15,
+    4.0
+   ],
+   "width": 1.1,
+   "band": [
+    3.9,
+    4.1
+   ],
+   "hinge": "x+",
+   "swing": "+y",
+   "approach": [
+    0,
+    1
+   ],
+   "leaves": [
+    {
+     "leaf": "single",
+     "hand": "lh",
+     "model": "nobs_ukpd_d36_cell_door_lh",
+     "hash": 2278749344,
+     "hash_signed": -2016217952,
+     "local": [
+      45.7,
+      4.0,
+      0.0
+     ],
+     "local_heading": 0.0,
+     "world": [
+      374.343,
+      -305.60008,
+      45.94298
+     ],
+     "heading": 158.3818,
+     "leaf_len": 1.1
+    }
+   ],
+   "centre_local": [
+    45.15,
+    4.0,
+    0.0
+   ],
+   "centre_world": [
+    374.85431,
+    -305.80271,
+    45.94298
+   ],
+   "text_world": [
+    374.85431,
+    -305.80271,
+    47.14298
+   ],
+   "default_state": "locked",
+   "locked": true,
+   "maxDistance": 1.5,
+   "jobs": {
+    "police": 0
+   },
+   "auth_note": "police job",
+   "interlock_with": null,
+   "autolock_s": null,
+   "boundary_into_custody": false,
+   "adjusted": null,
+   "provisional": false
+  },
+  {
+   "tag": "C6",
+   "doorlock_id": "d11_c6",
+   "name": "nobs_ukpd_d11_c6",
+   "label": "Cell 6 (C6)",
+   "type": "cell_door",
+   "double": false,
+   "group": "cells",
+   "opening_id": "door_g_d11_cell_6",
+   "between": [
+    "g_cell_6",
+    "g_cell_hall"
+   ],
+   "axis": "x",
+   "at_local": [
+    48.25,
+    4.0
+   ],
+   "width": 1.1,
+   "band": [
+    3.9,
+    4.1
+   ],
+   "hinge": "x+",
+   "swing": "+y",
+   "approach": [
+    0,
+    1
+   ],
+   "leaves": [
+    {
+     "leaf": "single",
+     "hand": "lh",
+     "model": "nobs_ukpd_d36_cell_door_lh",
+     "hash": 2278749344,
+     "hash_signed": -2016217952,
+     "local": [
+      48.8,
+      4.0,
+      0.0
+     ],
+     "local_heading": 0.0,
+     "world": [
+      371.46105,
+      -304.45798,
+      45.94298
+     ],
+     "heading": 158.3818,
+     "leaf_len": 1.1
+    }
+   ],
+   "centre_local": [
+    48.25,
+    4.0,
+    0.0
+   ],
+   "centre_world": [
+    371.97237,
+    -304.66061,
+    45.94298
+   ],
+   "text_world": [
+    371.97237,
+    -304.66061,
+    47.14298
+   ],
+   "default_state": "locked",
+   "locked": true,
+   "maxDistance": 1.5,
+   "jobs": {
+    "police": 0
+   },
+   "auth_note": "police job",
+   "interlock_with": null,
+   "autolock_s": null,
+   "boundary_into_custody": false,
+   "adjusted": null,
+   "provisional": false
+  },
+  {
+   "tag": "C7",
+   "doorlock_id": "d11_c7",
+   "name": "nobs_ukpd_d11_c7",
+   "label": "Cell 7 (C7)",
+   "type": "cell_door",
+   "double": false,
+   "group": "cells",
+   "opening_id": "door_g_d11_cell_7",
+   "between": [
+    "g_cell_7",
+    "g_cell_hall"
+   ],
+   "axis": "x",
+   "at_local": [
+    51.35,
+    4.0
+   ],
+   "width": 1.1,
+   "band": [
+    3.9,
+    4.1
+   ],
+   "hinge": "x+",
+   "swing": "+y",
+   "approach": [
+    0,
+    1
+   ],
+   "leaves": [
+    {
+     "leaf": "single",
+     "hand": "lh",
+     "model": "nobs_ukpd_d36_cell_door_lh",
+     "hash": 2278749344,
+     "hash_signed": -2016217952,
+     "local": [
+      51.9,
+      4.0,
+      0.0
+     ],
+     "local_heading": 0.0,
+     "world": [
+      368.57911,
+      -303.31587,
+      45.94298
+     ],
+     "heading": 158.3818,
+     "leaf_len": 1.1
+    }
+   ],
+   "centre_local": [
+    51.35,
+    4.0,
+    0.0
+   ],
+   "centre_world": [
+    369.09042,
+    -303.51851,
+    45.94298
+   ],
+   "text_world": [
+    369.09042,
+    -303.51851,
+    47.14298
+   ],
+   "default_state": "locked",
+   "locked": true,
+   "maxDistance": 1.5,
+   "jobs": {
+    "police": 0
+   },
+   "auth_note": "police job",
+   "interlock_with": null,
+   "autolock_s": null,
+   "boundary_into_custody": false,
+   "adjusted": null,
+   "provisional": false
+  },
+  {
+   "tag": "C8",
+   "doorlock_id": "d11_c8",
+   "name": "nobs_ukpd_d11_c8",
+   "label": "Cell 8 (C8)",
+   "type": "cell_door",
+   "double": false,
+   "group": "cells",
+   "opening_id": "door_g_d11_cell_8",
+   "between": [
+    "g_cell_8",
+    "g_cell_hall"
+   ],
+   "axis": "x",
+   "at_local": [
+    54.45,
+    4.0
+   ],
+   "width": 1.1,
+   "band": [
+    3.9,
+    4.1
+   ],
+   "hinge": "x+",
+   "swing": "+y",
+   "approach": [
+    0,
+    1
+   ],
+   "leaves": [
+    {
+     "leaf": "single",
+     "hand": "lh",
+     "model": "nobs_ukpd_d36_cell_door_lh",
+     "hash": 2278749344,
+     "hash_signed": -2016217952,
+     "local": [
+      55.0,
+      4.0,
+      0.0
+     ],
+     "local_heading": 0.0,
+     "world": [
+      365.69717,
+      -302.17377,
+      45.94298
+     ],
+     "heading": 158.3818,
+     "leaf_len": 1.1
+    }
+   ],
+   "centre_local": [
+    54.45,
+    4.0,
+    0.0
+   ],
+   "centre_world": [
+    366.20848,
+    -302.3764,
+    45.94298
+   ],
+   "text_world": [
+    366.20848,
+    -302.3764,
+    47.14298
+   ],
+   "default_state": "locked",
+   "locked": true,
+   "maxDistance": 1.5,
+   "jobs": {
+    "police": 0
+   },
+   "auth_note": "police job",
+   "interlock_with": null,
+   "autolock_s": null,
+   "boundary_into_custody": false,
+   "adjusted": null,
+   "provisional": false
+  }
+ ]
+}

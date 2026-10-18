@@ -32287,6 +32287,7 @@ async function createServer(uploadStore2) {
     }
     try {
       const uploadData = uploadStore2.getUpload(token);
+      uploadStore2.removeUpload(token);
       await processUpload(uploadData, file.buffer);
       ctx.status = 200;
       ctx.body = { status: "success" };
@@ -33025,6 +33026,9 @@ var UploadStore = class {
     if (!data) throw new Error("Could not find upload data");
     return data;
   }
+  removeUpload(uploadToken) {
+    this.#uploadMap.delete(uploadToken);
+  }
   getStream(token) {
     const captureId = this.#tokenToCaptureId.get(token) ?? token;
     const data = this.#streamUploadMap.get(captureId);
@@ -33275,6 +33279,7 @@ function registerImageHandlers() {
   onNet("screencapture:capture-screen", async (token, base64Data) => {
     try {
       const uploadData = uploadStore.getUpload(token);
+      uploadStore.removeUpload(token);
       await processUpload(uploadData, base64Data);
     } catch (err) {
       console.error("[screencapture] capture-screen error:", err);
@@ -33283,6 +33288,7 @@ function registerImageHandlers() {
   onNet("screencapture:PerformUploadProxy", async (token, base64Data) => {
     const uploadData = uploadStore.getUpload(token);
     if (!uploadData) return;
+    uploadStore.removeUpload(token);
     const { callback, url, remoteConfig, dataType, screenshotBasicCompatibility, playerSource, correlationId } = uploadData;
     try {
       const rawBuffer = base64ToBuffer(base64Data);

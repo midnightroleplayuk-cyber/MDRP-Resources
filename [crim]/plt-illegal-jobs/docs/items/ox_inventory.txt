@@ -1,0 +1,534 @@
+--[[
+  Illegal-Jobs — ox_inventory items
+  Copy into ox_inventory/data/items.lua (merge with existing entries).
+  Images: add matching .png files to your inventory images folder.
+
+  Mission-required / produced items are listed by job below the entries.
+]]
+
+-- ─── Tablet / VPN ─────────────────────────────────────────────────────────────
+['darknet_tablet'] = {
+    label = 'Darknet Tablet',
+    weight = 1200,
+    stack = false,
+    close = true,
+    consume = 0,
+    description = 'Encrypted tablet with access to the darknet OS',
+    client = {
+        export = 'plt-illegal-jobs.useTablet',
+    },
+},
+
+['darknet_vpn'] = {
+    label = 'Darknet VPN',
+    weight = 200,
+    stack = false,
+    close = false,
+    consume = 0,
+    description = 'USB dongle required to connect the Shadowline VPN relay',
+},
+
+-- ─── Fraud job ────────────────────────────────────────────────────────────────
+['atm_hack_device'] = {
+    label = 'ATM Hack Device',
+    weight = 500,
+    stack = false,
+    close = true,
+    consume = 0,
+    description = 'A skimmer for capturing ATM card data',
+    client = {
+        export = 'plt-illegal-jobs.useAtmHackDevice',
+    },
+},
+
+['blank_card'] = {
+    label = 'Blank Card',
+    weight = 10,
+    stack = true,
+    close = false,
+    consume = 0,
+    description = 'A blank magnetic card for cloning',
+},
+
+['fake_credit_card'] = {
+    label = 'Fake Credit Card',
+    weight = 10,
+    stack = true,
+    close = false,
+    consume = 1,
+    description = 'A cloned credit card',
+},
+
+-- ─── Car theft / Gun smuggling / Cargo jobs ───────────────────────────────────
+['lockpick'] = {
+    label = 'Lockpick',
+    weight = 100,
+    stack = true,
+    close = false,
+    consume = 0,
+    description = 'Used to lockpick vehicles and cargo locks',
+},
+
+['digiscanner'] = {
+    label = 'Digi Scanner',
+    weight = 250,
+    stack = false,
+    close = true,
+    consume = 0,
+    description = 'Tracks vehicle key fob signals (optional / legacy)',
+},
+
+-- ─── Illegal delivery products ────────────────────────────────────────────────
+['meth'] = {
+    label = 'Meth Brick',
+    weight = 500,
+    stack = true,
+    close = true,
+    consume = 0,
+    description = 'Sealed brick of methamphetamine',
+},
+
+['oxy'] = {
+    label = 'Oxy Pills',
+    weight = 50,
+    stack = true,
+    close = true,
+    consume = 0,
+    description = 'Bottle of prescription pills',
+},
+
+['weed'] = {
+    label = 'Weed Bags',
+    weight = 100,
+    stack = true,
+    close = true,
+    consume = 0,
+    description = 'Vacuum-sealed bags of cannabis',
+},
+
+['coke'] = {
+    label = 'Cocaine Package',
+    weight = 200,
+    stack = true,
+    close = true,
+    consume = 0,
+    description = 'Sealed cocaine package for delivery runs',
+},
+
+-- ─── Corner deal products ─────────────────────────────────────────────────────
+['packed_meth'] = {
+    label = 'Packed Meth',
+    weight = 100,
+    stack = true,
+    close = true,
+    consume = 0,
+    description = 'Street-ready meth bags',
+},
+
+['packed_weed'] = {
+    label = 'Packed Weed',
+    weight = 50,
+    stack = true,
+    close = true,
+    consume = 0,
+    description = 'Street-ready weed bags',
+},
+
+['packed_coke'] = {
+    label = 'Packed Coke',
+    weight = 100,
+    stack = true,
+    close = true,
+    consume = 0,
+    description = 'Street-ready coke bags',
+},
+
+-- ─── Diving job ───────────────────────────────────────────────────────────────
+['anchor'] = {
+    label = 'Boat Anchor',
+    weight = 1500,
+    stack = false,
+    close = true,
+    consume = 0,
+    description = 'Anchor a boat in place while diving',
+    client = {
+        export = 'plt-illegal-jobs.useAnchor',
+    },
+},
+
+['scrapmetal'] = {
+    label = 'Scrap Metal',
+    weight = 300,
+    stack = true,
+    close = false,
+    consume = 0,
+    description = 'Salvaged metal from underwater wrecks',
+},
+
+-- ─── Bootlegging / Moonshine ──────────────────────────────────────────────────
+['moonshine_pack'] = {
+    label = 'Moonshine Pack',
+    weight = 2000,
+    stack = false,
+    close = true,
+    consume = 0,
+    description = 'A packed case of moonshine bottles',
+    client = {
+        export = 'plt-illegal-jobs.useMoonshinePack',
+    },
+},
+
+['moonshine_still'] = {
+    label = 'Moonshine Still',
+    weight = 5000,
+    stack = false,
+    close = true,
+    consume = 0,
+    description = 'Portable still for distilling moonshine',
+    client = {
+        export = 'plt-illegal-jobs.useMoonshineStill',
+    },
+},
+
+['old_corn'] = {
+    label = 'Old Corn',
+    weight = 200,
+    stack = true,
+    close = false,
+    consume = 0,
+    description = 'Fermentation ingredient',
+},
+
+['old_fruit'] = {
+    label = 'Old Fruit',
+    weight = 200,
+    stack = true,
+    close = false,
+    consume = 0,
+    description = 'Fermentation ingredient',
+},
+
+['tap_water'] = {
+    label = 'Tap Water',
+    weight = 300,
+    stack = true,
+    close = false,
+    consume = 0,
+    description = 'Distillation ingredient',
+},
+
+['crushed_ingredients'] = {
+    label = 'Crushed Ingredients',
+    weight = 400,
+    stack = true,
+    close = false,
+    consume = 0,
+    description = 'Crushed and ready for blending',
+},
+
+['blended_ingredients'] = {
+    label = 'Blended Ingredients',
+    weight = 400,
+    stack = true,
+    close = false,
+    consume = 0,
+    description = 'Ready for distillation',
+},
+
+['moonshine'] = {
+    label = 'Moonshine',
+    weight = 500,
+    stack = true,
+    close = false,
+    consume = 0,
+    description = 'Illegally distilled alcohol',
+},
+
+-- ─── Dam sabotage / Market tools ──────────────────────────────────────────────
+['drill'] = {
+    label = 'Drill',
+    weight = 2500,
+    stack = false,
+    close = true,
+    consume = 0,
+    description = 'Heavy drill (Black Market / ATM kit)',
+},
+
+['thermite'] = {
+    label = 'Thermite',
+    weight = 500,
+    stack = true,
+    close = true,
+    consume = 0,
+    description = 'High-temperature charge for structural sabotage',
+},
+
+['c4'] = {
+    label = 'C4',
+    weight = 750,
+    stack = true,
+    close = true,
+    consume = 0,
+    description = 'Plastic explosive brick — plant on structural weak points',
+},
+
+['grinder'] = {
+    label = 'Angle Grinder',
+    weight = 2000,
+    stack = false,
+    close = true,
+    consume = 0,
+    description = 'Cuts freight container locks during train heists',
+},
+
+['gold_ingot'] = {
+    label = 'Gold Ingot',
+    weight = 200,
+    stack = true,
+    close = false,
+    consume = 0,
+    description = 'Stolen freight gold — fence it to a buyer',
+},
+
+-- ─── Counterfeit money ────────────────────────────────────────────────────────
+['money_sheet'] = {
+    label = 'Money Sheet',
+    weight = 50,
+    stack = true,
+    close = false,
+    consume = 0,
+    description = 'Blank paper stock for counterfeit presses',
+},
+
+['uncutted_money'] = {
+    label = 'Uncutted Money',
+    weight = 50,
+    stack = true,
+    close = false,
+    consume = 0,
+    description = 'Printed sheets awaiting cutting',
+},
+
+['cutted_money'] = {
+    label = 'Cutted Money',
+    weight = 50,
+    stack = true,
+    close = false,
+    consume = 0,
+    description = 'Cut bills ready to pack',
+},
+
+-- ─── Document forgery ─────────────────────────────────────────────────────────
+['paper'] = {
+    label = 'Blank Paper',
+    weight = 50,
+    stack = true,
+    close = false,
+    consume = 0,
+    description = 'Blank stock for forged documents',
+},
+
+['id_card'] = {
+    label = 'ID Card',
+    weight = 10,
+    stack = true,
+    close = false,
+    consume = 0,
+    description = 'Forged identification document',
+},
+
+-- ─── Currency / Reward items ──────────────────────────────────────────────────
+['black_money'] = {
+    label = 'Black Money',
+    weight = 0,
+    stack = true,
+    close = false,
+    consume = 0,
+    description = 'Dirty money from illegal activities',
+},
+
+-- Skip if your framework already defines cash as money/account
+['cash'] = {
+    label = 'Cash',
+    weight = 0,
+    stack = true,
+    close = false,
+    consume = 0,
+    description = 'Clean cash (laundry output / clean payouts)',
+},
+
+-- ─── Black Market extras (skip if already defined on your server) ─────────────
+['fake_id'] = {
+    label = 'Fake ID',
+    weight = 10,
+    stack = true,
+    close = false,
+    consume = 0,
+    description = 'Forged personal ID',
+},
+
+['blank_passport'] = {
+    label = 'Blank Passport',
+    weight = 50,
+    stack = true,
+    close = false,
+    consume = 0,
+    description = 'Blank passport booklet',
+},
+
+['gloves'] = {
+    label = 'Ghost Gloves',
+    weight = 50,
+    stack = true,
+    close = false,
+    consume = 0,
+    description = 'Gloves that leave no prints',
+},
+
+['armor'] = {
+    label = 'Armor Vest',
+    weight = 3000,
+    stack = false,
+    close = true,
+    consume = 0,
+    description = 'Ballistic vest',
+},
+
+['phone'] = {
+    label = 'Burner Phone',
+    weight = 190,
+    stack = false,
+    close = true,
+    consume = 0,
+    description = 'Disposable phone',
+},
+
+['radio'] = {
+    label = 'Signal Scanner',
+    weight = 500,
+    stack = false,
+    close = true,
+    consume = 0,
+    description = 'Handheld radio / signal scanner',
+},
+
+-- ─── Money laundering lab equipment ───────────────────────────────────────────
+['washer_basic'] = {
+    label = 'Basic Washer',
+    weight = 5000,
+    stack = false,
+    close = true,
+    description = 'Placeable money washing unit',
+    client = { export = 'plt-illegal-jobs.usePlaceable' },
+},
+['washer_industrial'] = {
+    label = 'Industrial Washer',
+    weight = 7500,
+    stack = false,
+    close = true,
+    description = 'Mid-tier washing unit',
+    client = { export = 'plt-illegal-jobs.usePlaceable' },
+},
+['washer_heavy'] = {
+    label = 'Heavy Washer',
+    weight = 10000,
+    stack = false,
+    close = true,
+    description = 'Heavy-duty washing unit',
+    client = { export = 'plt-illegal-jobs.usePlaceable' },
+},
+['generator_small'] = {
+    label = 'Small Generator',
+    weight = 8000,
+    stack = false,
+    close = true,
+    description = 'Powers lab equipment',
+    client = { export = 'plt-illegal-jobs.usePlaceable' },
+},
+['generator_large'] = {
+    label = 'Large Generator',
+    weight = 12000,
+    stack = false,
+    close = true,
+    description = 'Industrial generator',
+    client = { export = 'plt-illegal-jobs.usePlaceable' },
+},
+['cooling_fan'] = {
+    label = 'Cooling Fan',
+    weight = 3000,
+    stack = false,
+    close = true,
+    description = 'Cools nearby washers',
+    client = { export = 'plt-illegal-jobs.usePlaceable' },
+},
+['cash_press'] = {
+    label = 'Money Printing Press',
+    weight = 6000,
+    stack = false,
+    close = true,
+    description = 'Placeable money printing press / clean cash vault',
+    client = { export = 'plt-illegal-jobs.usePlaceable' },
+},
+['launder_chem_basic'] = {
+    label = 'Basic Solvent',
+    weight = 200,
+    stack = true,
+    close = true,
+    description = '80% wash efficiency',
+},
+['launder_chem_premium'] = {
+    label = 'Premium Solvent',
+    weight = 200,
+    stack = true,
+    close = true,
+    description = '95% wash efficiency',
+},
+['fuel_can'] = {
+    label = 'Fuel Can',
+    weight = 1000,
+    stack = true,
+    close = true,
+    description = 'Refuels generators',
+},
+['repair_kit'] = {
+    label = 'Repair Kit',
+    weight = 500,
+    stack = true,
+    close = true,
+    description = 'Repairs lab equipment',
+},
+
+--[[
+  Mission item map (what each job needs / produces)
+
+  OS:
+    darknet_tablet — use to open tablet (Config.Item.RequireItem)
+    darknet_vpn    — required for VPN app connect (Config.Vpn)
+
+  fraud:            atm_hack_device, blank_card → fake_credit_card
+  car_theft:        lockpick
+  gun_smuggling:    lockpick
+  marina_smuggling: lockpick → WEAPON_RPG (rare ship crate haul)
+  heli_cargo:       lockpick
+  crypto_distribution: lockpick
+  delivery_container: lockpick (+ loot)
+  diving:           anchor → scrapmetal loot
+  moonshine:        moonshine_still, old_corn, old_fruit, tap_water,
+                    crushed/blended_ingredients, moonshine, moonshine_pack
+  dam_sabotage:     c4 x3
+  train_heist:      grinder → gold_ingot (fence for cash)
+  counterfeit:      money_sheet (required at start) → uncutted_money → cutted_money → black_money
+  document_forgery: paper → id_card
+  delivery_weed:    weed
+  delivery_meth:    meth
+  delivery_coke:    coke
+  illegal_delivery: oxy / weed / meth
+  corner_*:         packed_weed / packed_meth / packed_coke / oxy
+  drug_lab_raid:    weed (yield)
+  weapons_airdrop:  weapon_pistol (weapon item — usually already defined)
+  money_laundering: washer_*, generator_*, cooling_fan, cash_press,
+                    launder_chem_*, fuel_can, repair_kit, black_money → cash
+  market catalog:   lockpick, fake_id, phone, armor, radio, gloves,
+                    blank_passport, drill, thermite, c4, moonshine_still,
+                    moonshine_pack, laundry gear
+]]

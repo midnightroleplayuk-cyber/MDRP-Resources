@@ -877,7 +877,15 @@ RegisterNetEvent('qb-radialmenu:ToggleClothing', ToggleClothing)
 
 function ToggleProps(id)
 	if Cooldown then return end
-	local Prop = Props[id] or Props[id[1]]
+
+	-- Commands pass props as a new table each time (for example {"Hat"}).
+	-- Lua tables are keyed by identity, so using that table directly in
+	-- LastEquipped means the next /hat call can never find the saved prop.
+	-- Normalize it to the prop name so remove/restore uses a stable key.
+	local propKey = type(id) == "table" and (id.id or id[1]) or id
+	local Prop = Props[propKey]
+	if not Prop then return false end
+
 	local Cur = { -- Lets get out currently equipped prop.
 		Id = Prop.Prop,
 		Ped = cache.ped,
@@ -886,11 +894,11 @@ function ToggleProps(id)
 	}
 	if not Prop.Variants then
 		if Cur.Prop ~= -1 then -- If we currently are wearing this prop, remove it and save the one we were wearing into the LastEquipped table.
-			PlayToggleEmote(Prop.Emote.Off, function() LastEquipped[id] = Cur ClearPedProp(cache.ped, Prop.Prop) end) return true
+			PlayToggleEmote(Prop.Emote.Off, function() LastEquipped[propKey] = Cur ClearPedProp(cache.ped, Prop.Prop) end) return true
 		else
-			local Last = LastEquipped[id] -- Detect that we have already taken our prop off, lets put it back on.
+			local Last = LastEquipped[propKey] -- Detect that we have already taken our prop off, lets put it back on.
 			if Last then
-				PlayToggleEmote(Prop.Emote.On, function() SetPedPropIndex(cache.ped, Prop.Prop, Last.Prop, Last.Texture, true) end) LastEquipped[id] = false return true
+				PlayToggleEmote(Prop.Emote.On, function() SetPedPropIndex(cache.ped, Prop.Prop, Last.Prop, Last.Texture, true) end) LastEquipped[propKey] = false return true
 			end
 		end
 		Notify(locale("info.nothing_to_remove")) return false

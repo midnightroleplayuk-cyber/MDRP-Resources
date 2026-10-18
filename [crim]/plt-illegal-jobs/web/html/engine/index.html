@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Minigames</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+    <div id="root" class="hidden">
+        <div id="stage">
+            <!-- Top status bar -->
+            <header id="hud">
+                <div id="hud-title">
+                    <span id="hud-tag"></span>
+                    <span id="hud-name"></span>
+                </div>
+                <div id="hud-timer">
+                    <div id="timer-bar"><div id="timer-fill"></div></div>
+                    <span id="timer-text">0.0</span>
+                </div>
+            </header>
+
+            <!-- Each game injects its own markup here -->
+            <main id="board"></main>
+
+            <!-- Progress dots for multi-round games -->
+            <footer id="footer">
+                <div id="dots"></div>
+                <div id="hint"></div>
+            </footer>
+        </div>
+
+        <!-- End-state flash overlay -->
+        <div id="flash" class="hidden"><span id="flash-text"></span></div>
+    </div>
+
+    <!-- engine first, then all games register themselves -->
+    <script src="sfx.js"></script>
+    <script src="engine.js"></script>
+    <script src="games/livewire.js"></script>
+    <script src="games/flatline.js"></script>
+    <script src="games/deadcalm.js"></script>
+    <script src="games/ghostsignal.js"></script>
+    <script src="games/steadydose.js"></script>
+    <script src="games/cuttheright.js"></script>
+    <script src="games/vaultspin.js"></script>
+    <script src="games/bluff.js"></script>
+    <script src="games/decrypt.js"></script>
+    <script src="games/gaslight.js"></script>
+    <script src="games/overflow.js"></script>
+    <script src="games/breachmatrix.js"></script>
+    <script src="games/daemonrun.js"></script>
+    <script src="games/pulse.js"></script>
+    <script src="games/hottrace.js"></script>
+    <script src="games/cascade.js"></script>
+    <script src="games/resonance.js"></script>
+    <script src="games/intrusion.js"></script>
+    <script src="games/override.js"></script>
+    <script src="games/animus.js"></script>
+    <script src="games/eaglevision.js"></script>
+    <script src="games/skillcheck.js"></script>
+    <script src="games/lockpick.js"></script>
+    <script src="games/keypad.js"></script>
+    <script src="games/quicktime.js"></script>
+    <script src="games/mash.js"></script>
+    <script src="games/reaction.js"></script>
+    <script src="games/stacker.js"></script>
+    <script src="games/targets.js"></script>
+    <script src="games/fishing.js"></script>
+    <script src="games/mining.js"></script>
+    <script src="games/cooking.js"></script>
+    <script src="games/welding.js"></script>
+    <script src="games/harvest.js"></script>
+    <script src="games/drilling.js"></script>
+    <script src="games/locksmith.js"></script>
+    <script src="games/hotwire.js"></script>
+    <script src="games/crafting.js"></script>
+    <script src="games/tripwire.js"></script>
+    <script src="games/pickpocket.js"></script>
+    <script src="games/getaway.js"></script>
+    <script src="games/lugnuts.js"></script>
+    <script src="games/paintspray.js"></script>
+    <script src="games/crane.js"></script>
+    <script src="games/suture.js"></script>
+    <script src="games/bonepin.js"></script>
+    <script src="games/vitals.js"></script>
+    <script src="games/thermite.js"></script>
+    <script src="games/lasergrid.js"></script>
+    <script src="games/vaultdrill.js"></script>
+    <script src="games/jammer.js"></script>
+    <script src="games/dataheist.js"></script>
+    <script src="games/partsort.js"></script>
+    <script src="games/toolbox.js"></script>
+    <script src="games/packing.js"></script>
+    <script src="games/beltsort.js"></script>
+    <script src="games/fingerprint.js"></script>
+    <script src="games/breathalyzer.js"></script>
+    <script src="games/titration.js"></script>
+    <script src="games/pillpress.js"></script>
+    <script src="games/lightsout.js"></script>
+    <script src="games/slidepuzzle.js"></script>
+    <script src="games/parry.js"></script>
+    <script src="games/constellation.js"></script>
+    <script src="games/archery.js"></script>
+    <script src="games/forge.js"></script>
+    <script src="games/diving.js"></script>
+    <script src="games/cashcount.js"></script>
+    <script src="games/counterfeit.js"></script>
+    <script src="games/chopshop.js"></script>
+    <script src="boot.js"></script>
+</body>
+</html>

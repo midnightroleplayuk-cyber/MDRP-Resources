@@ -114,6 +114,9 @@
       row.className = 'mm-member' + (member?.isTalking ? ' talking' : '');
       const dot = document.createElement('span');
       dot.className = 'mm-talk-dot';
+      const job = safeText(member?.job).toLowerCase();
+      if (job === 'police' || job === 'ambulance' || job === 'fire') dot.classList.add(`job-${job}`);
+      else dot.classList.add('job-default');
       const name = document.createElement('span');
       name.className = 'mm-member-name';
       name.textContent = safeText(member?.name);

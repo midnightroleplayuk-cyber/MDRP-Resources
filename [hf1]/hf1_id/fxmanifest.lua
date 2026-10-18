@@ -3,7 +3,7 @@ game 'gta5'
 
 name 'HF1 Player IDS'
 description 'Shows player ID above head on keypress'
-author 'HardyF1'
+author 'HF1'
 version '1.0.0'
 
 fx_version 'cerulean'

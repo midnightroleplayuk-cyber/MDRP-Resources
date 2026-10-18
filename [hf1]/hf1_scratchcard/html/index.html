@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="style.css" />
+  <title>Scratchcard</title>
+</head>
+<body>
+  <main id="app" class="hidden">
+    <section class="card">
+      <header>
+        <div class="brand"><img src="fingers-crossed.png" alt="Crossed fingers" /></div>
+        <div class="headline">TOP PRIZES OF <span>£10,000</span></div>
+        <div class="price" id="price">£100</div>
+      </header>
+      <div class="strap">MATCH THREE IDENTICAL AMOUNTS TO WIN — PLUS FIND THE CROWN FOR £2,000 EXTRA</div>
+
+      <section class="game">
+        <div class="grid" id="grid"></div>
+        <div class="instructions">GAME 1: Scratch all nine panels. Match three to win.</div>
+      </section>
+
+      <section class="bonus-wrap">
+        <div class="bonus-title">BONUS GAME</div>
+        <div class="scratch bonus" id="bonus"><span class="value"></span><canvas></canvas></div>
+        <div class="bonus-copy">Find a <b>crown</b> to win an extra <b>£2,000</b>.</div>
+      </section>
+
+      <footer>
+        <div id="status">Scratch every panel to check your card.</div>
+        <button id="close">Close</button>
+      </footer>
+    </section>
+  </main>
+  <script src="app.js"></script>
+</body>
+</html>

@@ -108,16 +108,17 @@ Config.Security = {
     AlertPoliceOnSafeFail = true,
     AlertPoliceOnClerkFight = true,
     RequireWeaponForClerk = true,
-    AllowedWeapons = true,
-    -- AllowedWeapons = {
+    AllowedWeapons = false,
+        AllowedWeapons = {
+           ['WEAPON_SWITCHBLADE'] = true 
     --     [`WEAPON_PISTOL`] = true,
     --     [`WEAPON_COMBATPISTOL`] = true,
     --     [`WEAPON_APPISTOL`] = true,
     --     [`WEAPON_SNSPISTOL`] = true,
     --     [`WEAPON_MICROSMG`] = true,
     --     [`WEAPON_SMG`] = true,
-    --     [`WEAPON_PUMPSHOTGUN`] = true
-    -- }
+    --     [`WEAPON_PUMPSHOTGUN`] = true,
+    },
 }
 
 -- Progress durations in milliseconds.
@@ -245,7 +246,6 @@ Config.Stores = {
         },
         shelves = {
             vector3(-50.6, -1754.6, 29.42),
-            vector3(-54.5, -1753.2, 29.42)
         },
         safe = {
             coords = vector3(-43.43, -1748.30, 28.42),

@@ -26,7 +26,12 @@ Config.PayCheckInterval = 10           -- Interval in minutes for paychecks to b
 Config.sortcode = '27-08-44'
 
 Config.Banks = {
-    { name = "Legion Bank", coords = vector3(149.9084, -1040.7687, 29.3741) },
+    { name = "Bank", coords = vector3(103.3853, -1096.5811, 30.00) }, --Legion Square
+    { name = "Bank", coords = vector3(-1212.2336, -332.1272, 38.00) }, --Rockford Hills
+    { name = "Bank", coords = vector3(313.6749, -280.4376, 54.50) }, --Hawick Ave
+    { name = "Bank", coords = vector3(-351.4637, -51.1904, 49.50) }, --Burton
+    { name = "Bank", coords = vector3(-2961.1489, 482.8400, 16.20) }, --Chumash
+    { name = "Bank", coords = vector3(1175.0855, 2708.2260, 38.35) }, --Route 66
     -- Add more banks here…
 }
 
@@ -59,7 +64,7 @@ Config.BankBlipColour = 1  -- red
 -- Invoice Menu Configuration
 Config.InvoiceMenu = {
     Command = "invoices",  -- Command to open invoice menu
-    Key = "F5",           -- Key to open invoice menu
+    Key = "F7",           -- Key to open invoice menu
     KeyDescription = "Open Invoices Menu"
 }
 

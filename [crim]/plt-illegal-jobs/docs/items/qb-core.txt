@@ -1,0 +1,106 @@
+--[[
+    QBCore — copy into qb-core/shared/items.lua
+    Images: add matching .png files to your inventory images folder.
+    Illegal-Jobs auto-registers CreateUseableItem for darknet_tablet on start.
+]]
+
+-- ─── Tablet / VPN ─────────────────────────────────────────────────────────────
+['darknet_tablet'] = {
+    name = 'darknet_tablet',
+    label = 'Darknet Tablet',
+    weight = 1200,
+    type = 'item',
+    image = 'darknet_tablet.png',
+    unique = true,
+    useable = true,
+    shouldClose = true,
+    combinable = nil,
+    description = 'Encrypted tablet with access to the darknet OS',
+},
+
+['darknet_vpn'] = {
+    name = 'darknet_vpn',
+    label = 'Darknet VPN',
+    weight = 200,
+    type = 'item',
+    image = 'darknet_vpn.png',
+    unique = true,
+    useable = false,
+    shouldClose = false,
+    combinable = nil,
+    description = 'USB dongle required to connect the Shadowline VPN relay',
+},
+
+-- ─── Fraud ────────────────────────────────────────────────────────────────────
+['atm_hack_device'] = { name = 'atm_hack_device', label = 'ATM Hack Device', weight = 500, type = 'item', image = 'atm_hack_device.png', unique = true, useable = true, shouldClose = true, description = 'A skimmer for capturing ATM card data' },
+['blank_card'] = { name = 'blank_card', label = 'Blank Card', weight = 10, type = 'item', image = 'blank_card.png', unique = false, useable = false, shouldClose = false, description = 'A blank magnetic card for cloning' },
+['fake_credit_card'] = { name = 'fake_credit_card', label = 'Fake Credit Card', weight = 10, type = 'item', image = 'fake_credit_card.png', unique = false, useable = false, shouldClose = false, description = 'A cloned credit card' },
+
+-- ─── Shared tools / deliveries ─────────────────────────────────────────────────
+['lockpick'] = { name = 'lockpick', label = 'Lockpick', weight = 100, type = 'item', image = 'lockpick.png', unique = false, useable = false, shouldClose = false, description = 'Used to lockpick vehicles and cargo locks' },
+['digiscanner'] = { name = 'digiscanner', label = 'Digi Scanner', weight = 250, type = 'item', image = 'digiscanner.png', unique = true, useable = false, shouldClose = true, description = 'Tracks vehicle key fob signals (optional / legacy)' },
+['drill'] = { name = 'drill', label = 'Drill', weight = 2500, type = 'item', image = 'drill.png', unique = true, useable = false, shouldClose = true, description = 'Heavy drill (Black Market / ATM kit)' },
+['thermite'] = { name = 'thermite', label = 'Thermite', weight = 500, type = 'item', image = 'thermite.png', unique = false, useable = false, shouldClose = true, description = 'High-temperature charge for structural sabotage' },
+['c4'] = { name = 'c4', label = 'C4', weight = 750, type = 'item', image = 'c4.png', unique = false, useable = false, shouldClose = true, description = 'Plastic explosive brick — plant on structural weak points' },
+['grinder'] = { name = 'grinder', label = 'Angle Grinder', weight = 2000, type = 'item', image = 'grinder.png', unique = true, useable = false, shouldClose = true, description = 'Cuts freight container locks during train heists' },
+['gold_ingot'] = { name = 'gold_ingot', label = 'Gold Ingot', weight = 200, type = 'item', image = 'gold_ingot.png', unique = false, useable = false, shouldClose = false, description = 'Stolen freight gold — fence it to a buyer' },
+
+-- ─── Drugs / delivery / corner ────────────────────────────────────────────────
+['meth'] = { name = 'meth', label = 'Meth Brick', weight = 500, type = 'item', image = 'meth.png', unique = false, useable = false, shouldClose = true, description = 'Sealed brick of methamphetamine' },
+['oxy'] = { name = 'oxy', label = 'Oxy Pills', weight = 50, type = 'item', image = 'oxy.png', unique = false, useable = false, shouldClose = true, description = 'Bottle of prescription pills' },
+['weed'] = { name = 'weed', label = 'Weed Bags', weight = 100, type = 'item', image = 'weed.png', unique = false, useable = false, shouldClose = true, description = 'Vacuum-sealed bags of cannabis' },
+['coke'] = { name = 'coke', label = 'Cocaine Package', weight = 200, type = 'item', image = 'coke.png', unique = false, useable = false, shouldClose = true, description = 'Sealed cocaine package for delivery runs' },
+['packed_meth'] = { name = 'packed_meth', label = 'Packed Meth', weight = 100, type = 'item', image = 'packed_meth.png', unique = false, useable = false, shouldClose = true, description = 'Street-ready meth bags' },
+['packed_weed'] = { name = 'packed_weed', label = 'Packed Weed', weight = 50, type = 'item', image = 'packed_weed.png', unique = false, useable = false, shouldClose = true, description = 'Street-ready weed bags' },
+['packed_coke'] = { name = 'packed_coke', label = 'Packed Coke', weight = 100, type = 'item', image = 'packed_coke.png', unique = false, useable = false, shouldClose = true, description = 'Street-ready coke bags' },
+
+-- ─── Diving ───────────────────────────────────────────────────────────────────
+['anchor'] = { name = 'anchor', label = 'Boat Anchor', weight = 1500, type = 'item', image = 'anchor.png', unique = true, useable = true, shouldClose = true, description = 'Anchor a boat in place while diving' },
+['scrapmetal'] = { name = 'scrapmetal', label = 'Scrap Metal', weight = 300, type = 'item', image = 'scrapmetal.png', unique = false, useable = false, shouldClose = false, description = 'Salvaged metal from underwater wrecks' },
+
+-- ─── Moonshine / bootlegging ──────────────────────────────────────────────────
+['moonshine_pack'] = { name = 'moonshine_pack', label = 'Moonshine Pack', weight = 2000, type = 'item', image = 'moonshine_pack.png', unique = true, useable = false, shouldClose = true, description = 'A packed case of moonshine bottles' },
+['moonshine_still'] = { name = 'moonshine_still', label = 'Moonshine Still', weight = 5000, type = 'item', image = 'moonshine_still.png', unique = true, useable = true, shouldClose = true, description = 'Portable still for distilling moonshine' },
+['old_corn'] = { name = 'old_corn', label = 'Old Corn', weight = 200, type = 'item', image = 'old_corn.png', unique = false, useable = false, shouldClose = false, description = 'Fermentation ingredient' },
+['old_fruit'] = { name = 'old_fruit', label = 'Old Fruit', weight = 200, type = 'item', image = 'old_fruit.png', unique = false, useable = false, shouldClose = false, description = 'Fermentation ingredient' },
+['tap_water'] = { name = 'tap_water', label = 'Tap Water', weight = 300, type = 'item', image = 'tap_water.png', unique = false, useable = false, shouldClose = false, description = 'Distillation ingredient' },
+['crushed_ingredients'] = { name = 'crushed_ingredients', label = 'Crushed Ingredients', weight = 400, type = 'item', image = 'crushed_ingredients.png', unique = false, useable = false, shouldClose = false, description = 'Crushed and ready for blending' },
+['blended_ingredients'] = { name = 'blended_ingredients', label = 'Blended Ingredients', weight = 400, type = 'item', image = 'blended_ingredients.png', unique = false, useable = false, shouldClose = false, description = 'Ready for distillation' },
+['moonshine'] = { name = 'moonshine', label = 'Moonshine', weight = 500, type = 'item', image = 'moonshine.png', unique = false, useable = false, shouldClose = false, description = 'Illegally distilled alcohol' },
+
+-- ─── Counterfeit / forgery ────────────────────────────────────────────────────
+['money_sheet'] = { name = 'money_sheet', label = 'Money Sheet', weight = 50, type = 'item', image = 'money_sheet.png', unique = false, useable = false, shouldClose = false, description = 'Blank paper stock for counterfeit presses' },
+['uncutted_money'] = { name = 'uncutted_money', label = 'Uncutted Money', weight = 50, type = 'item', image = 'uncutted_money.png', unique = false, useable = false, shouldClose = false, description = 'Printed sheets awaiting cutting' },
+['cutted_money'] = { name = 'cutted_money', label = 'Cutted Money', weight = 50, type = 'item', image = 'cutted_money.png', unique = false, useable = false, shouldClose = false, description = 'Cut bills ready to pack' },
+['paper'] = { name = 'paper', label = 'Blank Paper', weight = 50, type = 'item', image = 'paper.png', unique = false, useable = false, shouldClose = false, description = 'Blank stock for forged documents' },
+['id_card'] = { name = 'id_card', label = 'ID Card', weight = 10, type = 'item', image = 'id_card.png', unique = false, useable = false, shouldClose = false, description = 'Forged identification document' },
+
+-- ─── Currency (skip cash/black_money if already defined) ──────────────────────
+['black_money'] = { name = 'black_money', label = 'Black Money', weight = 0, type = 'item', image = 'black_money.png', unique = false, useable = false, shouldClose = false, description = 'Dirty money from illegal activities' },
+['cash'] = { name = 'cash', label = 'Cash', weight = 0, type = 'item', image = 'cash.png', unique = false, useable = false, shouldClose = false, description = 'Clean cash (laundry output / clean payouts)' },
+
+-- ─── Black Market extras (skip if already defined) ────────────────────────────
+['fake_id'] = { name = 'fake_id', label = 'Fake ID', weight = 10, type = 'item', image = 'fake_id.png', unique = false, useable = false, shouldClose = false, description = 'Forged personal ID' },
+['blank_passport'] = { name = 'blank_passport', label = 'Blank Passport', weight = 50, type = 'item', image = 'blank_passport.png', unique = false, useable = false, shouldClose = false, description = 'Blank passport booklet' },
+['gloves'] = { name = 'gloves', label = 'Ghost Gloves', weight = 50, type = 'item', image = 'gloves.png', unique = false, useable = false, shouldClose = false, description = 'Gloves that leave no prints' },
+['armor'] = { name = 'armor', label = 'Armor Vest', weight = 3000, type = 'item', image = 'armor.png', unique = false, useable = true, shouldClose = true, description = 'Ballistic vest' },
+['phone'] = { name = 'phone', label = 'Burner Phone', weight = 190, type = 'item', image = 'phone.png', unique = true, useable = false, shouldClose = true, description = 'Disposable phone' },
+['radio'] = { name = 'radio', label = 'Signal Scanner', weight = 500, type = 'item', image = 'radio.png', unique = true, useable = true, shouldClose = true, description = 'Handheld radio / signal scanner' },
+
+-- ─── Money laundering lab ─────────────────────────────────────────────────────
+washer_basic = { name = 'washer_basic', label = 'Basic Washer', weight = 5000, type = 'item', image = 'washer_basic.png', unique = true, useable = true, shouldClose = true, description = 'Placeable money washing unit' },
+washer_industrial = { name = 'washer_industrial', label = 'Industrial Washer', weight = 7500, type = 'item', image = 'washer_industrial.png', unique = true, useable = true, shouldClose = true, description = 'Mid-tier washing unit' },
+washer_heavy = { name = 'washer_heavy', label = 'Heavy Washer', weight = 10000, type = 'item', image = 'washer_heavy.png', unique = true, useable = true, shouldClose = true, description = 'Heavy-duty washing unit' },
+generator_small = { name = 'generator_small', label = 'Small Generator', weight = 8000, type = 'item', image = 'generator_small.png', unique = true, useable = true, shouldClose = true, description = 'Powers lab equipment' },
+generator_large = { name = 'generator_large', label = 'Large Generator', weight = 12000, type = 'item', image = 'generator_large.png', unique = true, useable = true, shouldClose = true, description = 'Industrial generator' },
+cooling_fan = { name = 'cooling_fan', label = 'Cooling Fan', weight = 3000, type = 'item', image = 'cooling_fan.png', unique = true, useable = true, shouldClose = true, description = 'Cools nearby washers' },
+cash_press = { name = 'cash_press', label = 'Money Printing Press', weight = 6000, type = 'item', image = 'cash_press.png', unique = true, useable = true, shouldClose = true, description = 'Placeable money printing press' },
+launder_chem_basic = { name = 'launder_chem_basic', label = 'Basic Solvent', weight = 200, type = 'item', image = 'launder_chem_basic.png', unique = false, useable = false, shouldClose = true, description = '80% wash efficiency' },
+launder_chem_premium = { name = 'launder_chem_premium', label = 'Premium Solvent', weight = 200, type = 'item', image = 'launder_chem_premium.png', unique = false, useable = false, shouldClose = true, description = '95% wash efficiency' },
+fuel_can = { name = 'fuel_can', label = 'Fuel Can', weight = 1000, type = 'item', image = 'fuel_can.png', unique = false, useable = false, shouldClose = true, description = 'Refuels generators' },
+repair_kit = { name = 'repair_kit', label = 'Repair Kit', weight = 500, type = 'item', image = 'repair_kit.png', unique = false, useable = false, shouldClose = true, description = 'Repairs lab equipment' },
+
+--[[
+  Mission item map — see docs/items/ox_inventory.txt footer for full job → item list.
+  darknet_tablet opens OS · darknet_vpn required for VPN app.
+]]

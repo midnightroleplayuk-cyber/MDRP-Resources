@@ -1,0 +1,1038 @@
+{
+    "notify": {
+        "title": "Chop Shop",
+        "cant-carry": "You can not carry that much",
+        "cant-chop-here": "You can't do this here",
+        "owned-vehicle": "You cannot chop owned vehicles",
+        "start-chop": "You can now start chopping",
+        "use-car-jack": "Use your car jack near the vehicle to place axle stands",
+        "stands-not-returned": "You can't remove the stands right now",
+        "missing-tool": "You are missing the tool to do this",
+        "use-impact-drill": "Use your impact drill to begin removing parts",
+        "tool-broke": "Damn it! I broke the tool..",
+        "no-police": "There are not enough police on duty",
+        "blacklisted-job": "Your current job is not allowed to use the chop shop",
+        "not-enough-money": "You don't have enough money",
+        "not-enough-level": "You are not experienced enough",
+        "not-enough-parts": "You don't have enough of that to swap",
+        "part-xp": "+%s XP",
+        "level-up": "Level up! You reached level %s",
+        "already-prepped": "Vehicle is already raised, remove the wheels",
+        "strip-complete": "All parts removed from the vehicle",
+        "no-chop-vehicle": "No active chop vehicle nearby",
+        "contract-issued": "You received a new chop contract",
+        "contract-active": "You already have an active contract",
+        "chop-in-progress": "You already have a chop in progress on another vehicle",
+        "contract-cooldown": "You must wait %s minutes before requesting another contract",
+        "no-contract-tier": "No contracts are available for your level",
+        "contract-bonus": "Contract completed on time, bonus payout £%s",
+        "contract-bonus-item": "Contract completed on time, bonus payout x%s %s",
+        "contract-bonus-missed": "Contract finished late, parts only, no bonus",
+        "wrong-vehicle-class": "This vehicle does not match your contract class",
+        "nothing-to-strip": "There is nothing left to strip off this vehicle",
+        "contract-reissued": "The broker handed you a replacement copy of your contract",
+        "part-rejected": "That part was not credited, take it off again",
+        "part-already-removed": "That part has already been taken off"
+    },
+    "target": {
+        "talk": "Talk",
+        "start-chop": "Start chopping",
+        "remove-stands": "Remove jack stands",
+        "search-engine-bay": "Dismantle engine"
+    },
+    "wheelMinigame": {
+        "instruction": "Hold each lug nut to drill it off",
+        "realigning": "Move back to the wheel to continue",
+        "cancel-hint": "Esc to cancel",
+        "fastener": "Lug nut {index}",
+        "positions": {
+            "fl": "Dismantle front left wheel",
+            "fr": "Dismantle front right wheel",
+            "rl": "Dismantle rear left wheel",
+            "rr": "Dismantle rear right wheel"
+        }
+    },
+    "doorMinigame": {
+        "instruction": "Hold each hinge bolt to drill it out",
+        "realigning": "Move back to the door to continue",
+        "cancel-hint": "Esc to cancel",
+        "fastener": "Hinge bolt {index}",
+        "positions": {
+            "fl": "Dismantle front left door",
+            "fr": "Dismantle front right door",
+            "rl": "Dismantle rear left door",
+            "rr": "Dismantle rear right door"
+        }
+    },
+    "enginebay": {
+        "parts": {
+            "battery": "Battery",
+            "radiator": "Radiator",
+            "alternator": "Alternator",
+            "ecu": "ECU",
+            "turbo": "Turbocharger"
+        },
+        "steps": {
+            "battery": {
+                "unclip-terminals": "Unclip the battery terminals",
+                "unbolt-bracket": "Spin off the hold-down bracket"
+            },
+            "radiator": {
+                "release-inlet": "Release the inlet hose clamp",
+                "release-outlet": "Release the outlet hose clamp",
+                "unbolt-mounts": "Spin off the mounting bolts"
+            },
+            "alternator": {
+                "release-tensioner": "Spin the belt tensioner loose",
+                "unplug-wiring": "Unplug the wiring connector",
+                "remove-bolts": "Spin off the mounting bolts"
+            },
+            "ecu": {
+                "unclip-harness": "Unclip the wiring harness",
+                "remove-screws": "Spin off the mounting screws"
+            },
+            "turbo": {
+                "disconnect-oil-line": "Release the oil line clamp",
+                "remove-flange-bolts": "Spin off the flange bolts"
+            }
+        },
+        "mechanics": {
+            "torque": {
+                "instruction": "Click, hold & spin fast in a circle"
+            },
+            "connector": {
+                "instruction": "Watch the clip order, then click them back to match it"
+            },
+            "tap": {
+                "instruction": "Rapidly click here to fill the bar",
+                "label": "Tap"
+            }
+        },
+        "node": {
+            "cancel-hint": "Esc or click away to cancel"
+        }
+    },
+    "inputs": {
+        "shops": {
+            "label": "Quantity",
+            "desc": "How many?"
+        },
+        "swap": {
+            "label": "Quantity",
+            "desc": "How many to swap?"
+        }
+    },
+    "player-data": {
+        "level-title": "Chopping | Level %s/%s",
+        "level-desc": "You currently have %sXP",
+        "stats-title": "Statistics",
+        "stats-desc": "View your lifetime chop statistics",
+        "meta-next-level": "Next Level",
+        "meta-remainder": "Remainder",
+        "meta-maxed-level": "Maxed Level Reached"
+    },
+    "stats-menu": {
+        "main-title": "Statistics",
+        "vehicles-title": "Vehicles",
+        "vehicles-desc": "You've chopped a total of %s vehicles",
+        "parts-title": "Parts",
+        "parts-desc": "You've received a total of %s parts"
+    },
+    "chop-menu": {
+        "main-title": "Chop Shop",
+        "leaderboards-title": "The Leaderboards",
+        "leaderboards-desc": "View the top 10 choppers",
+        "tool-shop-title": "Tool Shop",
+        "tool-shop-desc": "Purchase tools for chopping",
+        "swap-shop-title": "Swap Shop",
+        "swap-shop-desc": "Sell your salvaged parts for cash or items",
+        "request-contract-title": "Request Contract",
+        "request-contract-desc": "Get a timed chop contract from the broker",
+        "view-contract-title": "View Contract",
+        "view-contract-desc": "Look over your current chop contract or get a replacement copy"
+    },
+    "tool-menu": {
+        "main-title": "Tool Shop",
+        "item-desc": "Purchase %s for £%s"
+    },
+    "swap-menu": {
+        "main-title": "Swap Shop",
+        "item-desc": "Turn in %sx %s for %s"
+    },
+    "leaderboard-menu": {
+        "main-title": "Leaderboards",
+        "player-desc": "Level: %s | XP: %s | Total Chops: %s"
+    },
+    "logs": {
+        "part-chopped-title": "Part Chopped",
+        "part-chopped-desc": "%s (identifier: %s) has chopped a part (bone: %s) from a vehicle and received x%s %s",
+        "item-purchased-title": "Item Purchased",
+        "item-purchased-desc": "%s (identifier: %s) has purchased x%s %s for £%s",
+        "item-purchased-desc-item": "%s (identifier: %s) has purchased x%s %s for x%s %s",
+        "item-sold-title": "Parts Swapped",
+        "item-sold-desc": "%s (identifier: %s) swapped x%s %s for £%s",
+        "item-sold-desc-item": "%s (identifier: %s) swapped x%s %s for x%s %s",
+        "tool-broke-title": "Tool Broke",
+        "tool-broke-desc": "%s (identifier: %s) has broken their %s",
+        "contract-issued-title": "Contract Issued",
+        "contract-issued-desc": "%s (identifier: %s) received a %s contract for a %s",
+        "contract-completed-title": "Contract Completed",
+        "contract-completed-desc": "%s (identifier: %s) completed their contract and earned a £%s bonus",
+        "contract-completed-desc-item": "%s (identifier: %s) completed their contract and earned a x%s %s bonus",
+        "contract-dismissed-title": "Contract Dismissed",
+        "contract-dismissed-desc": "%s (identifier: %s) discarded their chop contract",
+        "chop-started-title": "Chop Started",
+        "chop-started-desc": "%s (identifier: %s) started chopping a %s",
+        "vehicle-prepped-title": "Vehicle Prepped",
+        "vehicle-prepped-desc": "%s (identifier: %s) raised a vehicle on %s jack stands",
+        "strip-completed-title": "Strip Completed",
+        "strip-completed-desc": "%s (identifier: %s) fully stripped a vehicle (%s)",
+        "level-up-title": "Level Up",
+        "level-up-desc": "%s (identifier: %s) reached chopping level %s",
+        "owned-deleted-title": "Owned Vehicle Deleted",
+        "owned-deleted-desc": "%s (identifier: %s) chopped an owned vehicle (plate: %s) and it was removed from the database"
+    },
+    "admin": {
+        "nav": {
+            "overview": "Overview",
+            "setup": "Setup",
+            "start": "Start",
+            "locations": "Locations",
+            "items": "Items",
+            "experience": "Experience",
+            "minigame": "Minigame",
+            "shops": "Shops",
+            "logs": "Logs",
+            "contracts": "Contracts"
+        },
+        "common": {
+            "actions": {
+                "cancel": "Cancel",
+                "delete": "Delete"
+            },
+            "confirm": {
+                "title": "Are you sure?",
+                "delete-location": "Delete this chop location? This can't be undone.",
+                "delete-level": "Delete this level? Players may not progress past a gap in the level list.",
+                "delete-shop-item": "Delete this shop item?",
+                "import-title": "Overwrite all settings?",
+                "import-description": "This replaces every configuration section with the imported values. This can't be undone.",
+                "delete-start-ped": "Delete this start location? Players will no longer find a ped here.",
+                "delete-tier": "Delete this contract tier? Players can no longer be assigned it."
+            },
+            "units": {
+                "minutes": "min"
+            },
+            "restart-required": {
+                "label": "Restart required",
+                "tooltip": "Restart required after changes. This setting is only loaded once at startup."
+            },
+            "account": {
+                "bank": "Bank",
+                "cash": "Cash",
+                "custom": "Custom item",
+                "item-placeholder": "item_name",
+                "item-required": "Enter an inventory item name (letters, numbers, _ or -)."
+            },
+            "none": "None",
+            "range-separator": "to",
+            "optional": "Optional"
+        },
+        "header": {
+            "save": {
+                "saved": "Saved",
+                "saving": "Saving…",
+                "unsaved": "Unsaved",
+                "error": "Save failed"
+            },
+            "actions": {
+                "export": "Export config",
+                "exporting": "Exporting config",
+                "import": "Import config",
+                "importing": "Importing config",
+                "close": "Close admin",
+                "closing": "Closing after save"
+            }
+        },
+        "overview": {
+            "title": "Chop Shop",
+            "subtitle": "Config editor",
+            "stats": {
+                "total": {
+                    "label": "Registered Players",
+                    "description": "Players with chop shop progression data stored"
+                },
+                "active": {
+                    "label": "Vehicles Chopped",
+                    "description": "Total vehicles chopped across all players"
+                },
+                "pending": {
+                    "label": "Parts Received",
+                    "description": "Total parts received from chopping"
+                }
+            },
+            "chart": {
+                "title": "Activity history",
+                "description": "Parts chopped per day. Click a part in the legend to show or hide it",
+                "series": {
+                    "wheel": "Wheels",
+                    "battery": "Battery",
+                    "radiator": "Radiator",
+                    "alternator": "Alternator",
+                    "ecu": "ECU",
+                    "turbo": "Turbo",
+                    "door": "Doors"
+                }
+            }
+        },
+        "setup": {
+            "sections": {
+                "general": "General",
+                "police-jobs": "Police Jobs",
+                "blacklisted-jobs": "Blacklisted Jobs",
+                "integrations": "Integrations"
+            },
+            "general": {
+                "version": {
+                    "label": "Version notifications",
+                    "description": "Print update availability notices to the server console on start"
+                }
+            },
+            "police": {
+                "help": "Job names that count as police for online-duty checks.",
+                "empty": "No police jobs configured.",
+                "add": "Add job",
+                "add-description": "Enter the exact job name as defined in your framework.",
+                "job-label": "Job name",
+                "placeholder": "police"
+            },
+            "blacklisted": {
+                "help": "Jobs that cannot use any chop shop features.",
+                "empty": "No blacklisted jobs.",
+                "add": "Add job",
+                "add-description": "Players with this job cannot open menus, request jobs, or chop.",
+                "job-label": "Job name",
+                "placeholder": "examplejob"
+            },
+            "integrations": {
+                "help": "Third-party scripts used for UI, targeting, and interactions. Changes apply live.",
+                "interaction": {
+                    "label": "Interaction",
+                    "help": "Auto picks lation_interact, then ox_target, then qb-target. Use custom only if you added support in lua/client/utils/interact.lua."
+                },
+                "notifications": {
+                    "label": "Notifications",
+                    "help": "Must match a supported notify resource on your server."
+                },
+                "progress-bar": {
+                    "label": "Progress bar",
+                    "help": "Custom progress bars must support animations."
+                },
+                "context-menu": {
+                    "label": "Context menu",
+                    "help": "Used for the main menu and shops."
+                },
+                "dialogs": {
+                    "label": "Dialogs",
+                    "help": "Used by shop purchase flows."
+                }
+            },
+            "menu": {
+                "stats-vehicles": {
+                    "label": "Show vehicles chopped",
+                    "description": "Display the lifetime vehicle count in the chop menu"
+                },
+                "stats-parts": {
+                    "label": "Show parts chopped",
+                    "description": "Display the lifetime part count in the chop menu"
+                },
+                "leaderboard": {
+                    "label": "Show leaderboard",
+                    "description": "Display the top 10 choppers in the chop menu"
+                }
+            }
+        },
+        "start": {
+            "sections": {
+                "peds": "Start Locations",
+                "blip": "Map Blip",
+                "availability": "Availability",
+                "ownership": "Vehicle Ownership"
+            },
+            "model": {
+                "label": "Ped model",
+                "description": "GTA ped model spawn name for the start NPC"
+            },
+            "scenario": {
+                "label": "Ped scenario",
+                "description": "Ambient scenario animation for the ped, or disabled for none"
+            },
+            "police": {
+                "label": "Police required",
+                "description": "Minimum police on duty required to request a chop job"
+            },
+            "allow-owned": {
+                "label": "Allow owned vehicles",
+                "description": "Let players chop player-owned vehicles"
+            },
+            "delete-owned": {
+                "label": "Delete owned vehicles",
+                "description": "Permanently delete owned vehicles when chopped (destructive)",
+                "warning": "This permanently removes vehicles from the database. Use with extreme caution."
+            },
+            "ped": {
+                "title": "Location {index}",
+                "add": "Add location",
+                "remove": "Delete location"
+            },
+            "availability": {
+                "help": "When the start ped is active and how many police must be online."
+            },
+            "ownership": {
+                "help": "Rules for chopping player-owned vehicles.",
+                "warn": "Deleting owned vehicles is permanent and cannot be undone."
+            },
+            "hours": {
+                "from": {
+                    "label": "From",
+                    "description": "Earliest hour (24h) the start ped is available"
+                },
+                "until": {
+                    "label": "Until",
+                    "description": "Latest hour (24h) the start ped is available"
+                }
+            },
+            "peds": {
+                "help": "Where players find the chop shop broker. Add as many locations as you like. Each one spawns its own ped and blip.",
+                "empty": "No start locations yet. Add one so players can find the shop."
+            },
+            "random-ped": {
+                "label": "Rotate locations",
+                "description": "Use a single random location each server session instead of all of them",
+                "help": "With this on the server picks one location when it starts and every player sees the same one, so the shop moves between restarts."
+            },
+            "blip": {
+                "help": "Map blip shown at each active start location."
+            },
+            "blip-enable": {
+                "label": "Enable blip",
+                "description": "Show a map blip at each start location"
+            },
+            "blip-sprite": {
+                "label": "Blip sprite",
+                "description": "Blip icon id",
+                "help": "See the FiveM blip list for sprite ids."
+            },
+            "blip-color": {
+                "label": "Blip color",
+                "description": "Blip color id",
+                "help": "See the FiveM blip list for color ids."
+            },
+            "blip-scale": {
+                "label": "Blip scale",
+                "description": "Blip size"
+            },
+            "blip-label": {
+                "label": "Blip label",
+                "description": "Name shown on the map"
+            }
+        },
+        "locations": {
+            "sections": {
+                "restrictions": "Restrictions",
+                "blips": "Location Blips",
+                "coords": "Chop Locations"
+            },
+            "restrictions": {
+                "help": "When disabled, players can chop anywhere. When enabled, they must be within radius of a configured coordinate."
+            },
+            "enabled": {
+                "label": "Restrict chop locations",
+                "description": "Require players to chop within configured areas"
+            },
+            "radius": {
+                "label": "Chop radius",
+                "description": "Meters from a configured coordinate where chopping is allowed"
+            },
+            "blips": {
+                "help": "Map blips for configured chop locations. Only shown while chop locations are restricted. Blips refresh live."
+            },
+            "coords": {
+                "help": "World coordinates where chopping is allowed when restrictions are enabled.",
+                "empty": "No chop locations configured.",
+                "delete": "Remove location",
+                "add": "Add location",
+                "add-description": "Add a chop location coordinate",
+                "coord-label": "Coordinates",
+                "coord-placeholder": "x, y, z",
+                "capture-current": "Use current position",
+                "help-input": "Paste vec3 or capture your position"
+            },
+            "blip-enable": {
+                "label": "Enable blip",
+                "description": "Show a map blip at each chop location"
+            },
+            "blip-sprite": {
+                "label": "Blip sprite",
+                "description": "Blip icon id",
+                "help": "See the FiveM blip list for sprite ids."
+            },
+            "blip-color": {
+                "label": "Blip color",
+                "description": "Blip color id",
+                "help": "See the FiveM blip list for color ids."
+            },
+            "blip-scale": {
+                "label": "Blip scale",
+                "description": "Blip size"
+            },
+            "blip-label": {
+                "label": "Blip label",
+                "description": "Name shown on the map"
+            },
+            "blip-zone": {
+                "label": "Show chop zone",
+                "description": "Draw the chop radius on the map as a filled circle, not just a pin"
+            },
+            "blip-contract-only": {
+                "label": "Contract holders only",
+                "description": "Only show chop location blips to players carrying a contract"
+            }
+        },
+        "items": {
+            "sections": {
+                "impact-drill": "Impact Drill",
+                "car-jack": "Car Jack",
+                "wheel-parts": "Wheel Parts",
+                "door-parts": "Door Parts",
+                "engine-parts": "Engine Bay Parts",
+                "prep": "Prep Props"
+            },
+            "impact-drill": {
+                "item": {
+                    "label": "Impact drill item",
+                    "description": "Inventory item required to remove parts in focus mode"
+                },
+                "require": {
+                    "label": "Require impact drill",
+                    "description": "Players must carry an impact drill to remove parts"
+                },
+                "break-chance": {
+                    "label": "Break chance (%)",
+                    "description": "Chance to break after successfully removing a part",
+                    "help": "0 disables break chance."
+                },
+                "help": "The tool required to remove parts."
+            },
+            "car-jack": {
+                "item": {
+                    "label": "Car jack item",
+                    "description": "Inventory item used to place axle stands"
+                },
+                "require": {
+                    "label": "Require car jack",
+                    "description": "Players must carry a car jack to place stands"
+                },
+                "help": "Used to place the jack stands that raise the vehicle."
+            },
+            "wheel-parts": {
+                "help": "Item granted for each wheel removed. All four wheels share this item."
+            },
+            "door-parts": {
+                "help": "Item granted for each door removed. All four doors share this item."
+            },
+            "engine-parts": {
+                "help": "Item granted for each engine bay component removed."
+            },
+            "prep": {
+                "help": "Props and placement used while jacking the vehicle up."
+            },
+            "parts": {
+                "wheel": {
+                    "label": "Salvaged wheel",
+                    "description": "Granted for each wheel removed"
+                },
+                "door": {
+                    "label": "Salvaged door",
+                    "description": "Granted for each door removed"
+                },
+                "battery": {
+                    "label": "Salvaged battery",
+                    "description": "Granted when the battery is removed"
+                },
+                "radiator": {
+                    "label": "Salvaged radiator",
+                    "description": "Granted when the radiator is removed"
+                },
+                "alternator": {
+                    "label": "Salvaged alternator",
+                    "description": "Granted when the alternator is removed"
+                },
+                "ecu": {
+                    "label": "Salvaged ECU",
+                    "description": "Granted when the ECU is removed"
+                },
+                "turbo": {
+                    "label": "Salvaged turbocharger",
+                    "description": "Granted when the turbocharger is removed"
+                }
+            }
+        },
+        "experience": {
+            "sections": {
+                "levels": "Level Thresholds",
+                "rewards": "XP Rewards"
+            },
+            "help": "Total XP required to reach each level. Level 1 should be 0.",
+            "add-level": "Add level",
+            "level": {
+                "label": "Level {level}",
+                "remove": "Delete level"
+            },
+            "columns": {
+                "level": "Level",
+                "total-xp": "Total XP",
+                "xp-needed": "XP needed"
+            },
+            "rewards": {
+                "help": "XP granted per part removed, by the level the player is currently at.",
+                "level": {
+                    "label": "Level {level}",
+                    "description": "XP range granted per part at this level"
+                }
+            }
+        },
+        "prep": {
+            "stand-model": {
+                "label": "Stand prop model",
+                "description": "GTA prop spawn name for axle stands"
+            },
+            "corners-required": {
+                "label": "Corners required",
+                "description": "Number of stands that must be placed before drilling"
+            },
+            "stand-inboard-offset": {
+                "label": "Stand inboard offset",
+                "description": "Lateral offset from wheel toward vehicle center"
+            },
+            "stand-longitudinal-offset": {
+                "label": "Stand longitudinal offset",
+                "description": "Forward/back offset along the vehicle axis"
+            },
+            "drill-prop": {
+                "label": "Drill prop model",
+                "description": "GTA prop spawn name for the impact drill"
+            }
+        },
+        "minigame": {
+            "sections": {
+                "wheel": "Wheel: Lug Nuts",
+                "door": "Door: Hinge Bolts",
+                "torque": "Engine Bay: Torque",
+                "connector": "Engine Bay: Connector",
+                "tap": "Engine Bay: Tap"
+            },
+            "wheel": {
+                "help": "The lug-nut minigame used to remove each wheel."
+            },
+            "lug-hold-ms": {
+                "label": "Lug hold duration (ms)",
+                "description": "How long the player must hold each lug nut in the NUI minigame",
+                "help": "Lower values make the minigame faster."
+            },
+            "wheel-drill-audio": {
+                "label": "Impact drill audio",
+                "description": "Play the impact drill sound on the drill prop while holding a lug nut or hinge bolt"
+            },
+            "door": {
+                "help": "The hinge-bolt minigame used to drop each door. Doors reuse the impact drill and the wheel hold interaction."
+            },
+            "door-bolt-count": {
+                "label": "Hinge bolts per door",
+                "description": "How many hinge bolts the player drills out before the door drops"
+            },
+            "door-bolt-hold-ms": {
+                "label": "Hinge bolt hold duration (ms)",
+                "description": "How long the player must hold each hinge bolt in the NUI minigame",
+                "help": "Shorter than lug nuts by default. The hold is raised automatically if bolts x hold would finish under the server's 1.5 second reward floor."
+            },
+            "torque-rotations": {
+                "label": "Torque spin rotations",
+                "description": "Full drag-rotations required to spin a bolt/tensioner loose"
+            },
+            "torque-decay": {
+                "label": "Torque spin decay (per second)",
+                "description": "How many rotations of progress bleed back per second while not actively spinning"
+            },
+            "torque-min-speed": {
+                "label": "Torque min spin speed",
+                "description": "Minimum mouse spin speed before the bolt bites. Below this, the bolt slips and progress barely moves"
+            },
+            "torque-full-speed": {
+                "label": "Torque full traction speed",
+                "description": "Spin speed where progress applies at full strength. Higher values require faster flicks to loosen quickly"
+            },
+            "connector-flash-ms": {
+                "label": "Connector flash duration (ms)",
+                "description": "How long each clip lights up during the memorize phase"
+            },
+            "tap-progress": {
+                "label": "Tap fill amount",
+                "description": "How much progress the bar needs before the clamp or line releases"
+            },
+            "tap-decay": {
+                "label": "Tap decay (per second)",
+                "description": "How much bar progress drains per second while not clicking fast enough"
+            },
+            "tap-min-cps": {
+                "label": "Tap min click rate",
+                "description": "Minimum clicks per second before progress registers. Below this, taps slip"
+            },
+            "tap-full-cps": {
+                "label": "Tap full traction rate",
+                "description": "Click rate where each tap adds progress at full strength. Higher values need faster clicking"
+            },
+            "torque": {
+                "help": "Spin-the-wrench step used to undo bolts in the engine bay."
+            },
+            "connector": {
+                "help": "Memory step where the player re-clips a wiring harness in order."
+            },
+            "tap": {
+                "help": "Rapid-click step used to work hoses and lines free."
+            }
+        },
+        "shops": {
+            "enable": {
+                "label": "Enable shop",
+                "description": "Show this shop in the chop shop menu"
+            },
+            "account": {
+                "label": "Payment account",
+                "description": "Currency or item used for transactions",
+                "tool-help": "Tool shop uses cash, bank, or an item name.",
+                "swap-help": "Cash paid out uses this account (cash, bank, or an item name)."
+            },
+            "tool": {
+                "title": "Tool Shop",
+                "description": "Buy chopping tools"
+            },
+            "swap": {
+                "title": "Swap Shop",
+                "description": "Let players turn salvaged parts into cash or items",
+                "enable-description": "Show the swap shop in the chop shop menu",
+                "add": "Add swap",
+                "add-description": "Add a part players can turn in for cash and/or a reward item.",
+                "item": "Turn in",
+                "item-description": "Inventory spawn name of the part the player turns in.",
+                "amount": "Qty",
+                "payout": "Payout £",
+                "payout-description": "Cash paid per swap. Set to 0 for an item-only trade.",
+                "reward-item": "Reward item",
+                "reward-item-description": "Optional item given in return (leave blank for a cash-only sale).",
+                "reward-amount": "Reward qty",
+                "empty": "No swaps configured yet."
+            },
+            "inventory": {
+                "add": "Add item",
+                "add-description": "Add a new product to this shop.",
+                "key": "Key",
+                "item": "Item",
+                "item-description": "Inventory spawn name.",
+                "price": "Price",
+                "price-description": "Cost in the shop currency.",
+                "icon": "Icon",
+                "icon-description": "Font Awesome icon for the menu.",
+                "level": "Level",
+                "level-description": "Minimum player level required to purchase (0 = no requirement).",
+                "empty": "No items in this shop."
+            },
+            "item": {
+                "remove": "Delete item"
+            },
+            "promo": {
+                "title": "Shops Creator",
+                "lead": "These built-in shops cover the basics.",
+                "body": "Create unlimited buy & sell shops with a modern UI, drag-and-drop setup, job locks and stock control, all from one in-game creator. No config files. No code.",
+                "dismiss": "Dismiss banner"
+            }
+        },
+        "logs": {
+            "sections": {
+                "service": "Service",
+                "events-contracts": "Contract Events",
+                "events-chopping": "Chopping Events",
+                "events-economy": "Economy Events",
+                "discord": "Discord Webhook"
+            },
+            "service": {
+                "label": "Logging service",
+                "description": "Where chop shop events are sent",
+                "help": "Fivemanage supports screenshots. Discord posts embeds to a webhook.",
+                "options": {
+                    "none": "None",
+                    "fivemanage": "Fivemanage",
+                    "discord": "Discord"
+                }
+            },
+            "screenshots": {
+                "label": "Screenshots",
+                "description": "Attach screenshots to supported log services",
+                "help": "Only works with Fivemanage."
+            },
+            "warn": {
+                "screenshots-no-service": "Screenshots require Fivemanage."
+            },
+            "events": {
+                "contract_issued": {
+                    "label": "Contract issued",
+                    "description": "A player took a new chop contract"
+                },
+                "contract_completed": {
+                    "label": "Contract completed",
+                    "description": "A player finished a contract and was paid the bonus"
+                },
+                "contract_dismissed": {
+                    "label": "Contract dismissed",
+                    "description": "A player discarded their contract"
+                },
+                "chop_started": {
+                    "label": "Chop started",
+                    "description": "A player began chopping a vehicle"
+                },
+                "vehicle_prepped": {
+                    "label": "Vehicle prepped",
+                    "description": "A vehicle was raised on jack stands"
+                },
+                "part_chopped": {
+                    "label": "Part chopped",
+                    "description": "A part was removed from a vehicle"
+                },
+                "strip_completed": {
+                    "label": "Strip completed",
+                    "description": "Every part was removed from a vehicle"
+                },
+                "tool_broke": {
+                    "label": "Tool broke",
+                    "description": "A player's impact drill broke"
+                },
+                "item_purchased": {
+                    "label": "Item purchased",
+                    "description": "A player bought from the tool shop"
+                },
+                "parts_swapped": {
+                    "label": "Parts swapped",
+                    "description": "A player sold salvaged parts at the swap shop"
+                },
+                "level_up": {
+                    "label": "Level up",
+                    "description": "A player reached a new chopping level"
+                },
+                "owned_vehicle_deleted": {
+                    "label": "Owned vehicle deleted",
+                    "description": "A chopped vehicle was removed from the owned-vehicle table"
+                }
+            },
+            "discord": {
+                "name": {
+                    "label": "Webhook name",
+                    "description": "Display name for Discord webhook posts",
+                    "placeholder": "Chop Shop"
+                },
+                "link": {
+                    "label": "Webhook URL",
+                    "description": "Full Discord webhook URL"
+                },
+                "image": {
+                    "label": "Avatar image",
+                    "description": "Profile image URL for webhook posts"
+                },
+                "footer": {
+                    "label": "Footer image",
+                    "description": "Footer icon URL for webhook posts"
+                }
+            }
+        },
+        "coords": {
+            "capture": "Use current position",
+            "capturing": "Capturing...",
+            "copy": "Copy coordinates",
+            "copied": "Copied",
+            "teleport": "Teleport here"
+        },
+        "search": {
+            "title": "Search settings",
+            "description": "Jump to any configuration field in the admin panel",
+            "placeholder": "Search settings…",
+            "empty": "No matching settings found",
+            "idle": "Type to search settings across all sections",
+            "shortcut-hint": "Search settings (Ctrl+K)"
+        },
+        "config-transfer": {
+            "export-title": "Export configuration",
+            "import-title": "Import configuration",
+            "export-description": "Copy this JSON to back up or move settings between servers",
+            "import-description": "Paste an exported configuration or upload a JSON file",
+            "default-filename": "chopshop-config.json",
+            "char-count": "{n} characters",
+            "export-readonly": "Read-only export",
+            "copied": "Copied",
+            "copy": "Copy to clipboard",
+            "paste-placeholder": "Paste exported JSON here…",
+            "import-source": "Import source",
+            "import-help": "Invalid JSON or missing sections will be rejected",
+            "upload": "Upload file",
+            "applying": "Applying…",
+            "apply": "Apply import",
+            "import-success": "Import applied successfully.",
+            "errors": {
+                "import-failed": "Import failed: {reason}",
+                "file-read": "Could not read file. Try again or paste JSON directly.",
+                "empty": "Paste a config JSON payload first.",
+                "invalid-json": "payload is not valid JSON",
+                "unknown": "unknown error",
+                "unexpected": "unexpected error",
+                "invalid-file": "invalid import file",
+                "missing-version": "missing export format version",
+                "unsupported-version": "unsupported export format version",
+                "missing-payload": "missing config payload",
+                "missing-section": "missing config section: {section}"
+            }
+        },
+        "errors": {
+            "save-on-close-failed": "Failed to save changes before closing. Please try again.",
+            "export-save-failed": "Save your pending changes before exporting.",
+            "export-failed": "Export failed: {error}",
+            "export-unexpected": "An unexpected error occurred while exporting.",
+            "copy-failed": "Failed to copy to clipboard.",
+            "autosave-failed": "Couldn't save your changes. Retrying...",
+            "autosave-failed-final": "Couldn't save your changes. Check your database connection and try again."
+        },
+        "contracts": {
+            "sections": {
+                "general": "General",
+                "vehicle": "Chopped Vehicle",
+                "tiers": "Contract Tiers",
+                "allowed": "Allowed Vehicle Classes"
+            },
+            "general": {
+                "help": "Contract item and payout settings for timed chop jobs."
+            },
+            "vehicle": {
+                "help": "What happens to the shell once it has been stripped. Removal always waits until the player has taken their own jacks back off it."
+            },
+            "item": {
+                "label": "Contract item",
+                "description": "Inventory item given when a player receives a contract"
+            },
+            "account": {
+                "label": "Bonus payout account",
+                "description": "Where on-time completion cash bonuses are deposited"
+            },
+            "completion-cooldown": {
+                "label": "Completion cooldown",
+                "description": "Minutes a player must wait before receiving another contract after finishing one (0 = off)"
+            },
+            "despawn-vehicle": {
+                "label": "Remove vehicle when finished",
+                "description": "Delete the stripped shell a few seconds after its jacks are taken back off, instead of leaving it behind"
+            },
+            "tiers": {
+                "help": "Each tier can ask for one or more allowed vehicle classes, with its own minimum level, timer and cash bonus.",
+                "empty": "No tiers yet. Add one so contracts can be issued."
+            },
+            "tier": {
+                "label": {
+                    "label": "Display label",
+                    "description": "Name shown on the contract case file",
+                    "placeholder": "Street"
+                },
+                "minLevel": {
+                    "label": "Minimum level",
+                    "description": "Player level required to be offered this tier"
+                },
+                "duration": {
+                    "label": "Time limit",
+                    "description": "Minutes to complete the full chop for the cash bonus"
+                },
+                "cashBonus": {
+                    "label": "Cash bonus",
+                    "description": "Payout to the contract holder when finished on time"
+                },
+                "vehicleClasses": {
+                    "label": "Vehicle classes",
+                    "description": "Classes this tier can ask for. One is picked at random per contract"
+                },
+                "add": "Add tier",
+                "add-description": "Create a contract tier. You can set its level, timer, payout and vehicle classes after adding it.",
+                "remove": "Delete tier",
+                "no-classes-available": "No vehicle classes are allowed. Allow at least one class above before assigning it here.",
+                "unusable": "This tier has no usable classes, so it will never be issued.",
+                "summary": {
+                    "line": "Level {level}+ · {classes} · {minutes} min · {bonus}",
+                    "no-classes": "No classes",
+                    "bonus-cash": "£{amount}",
+                    "bonus-item": "x{amount} {item}"
+                },
+                "key-label": "Config key"
+            },
+            "allowed": {
+                "help": "Only these classes can be issued as contracts or chopped. Tiers pick their vehicle classes from this list."
+            }
+        }
+    },
+    "contract": {
+        "title": "Contract",
+        "close": "Close",
+        "labels": {
+            "class": "Class",
+            "bonus": "Bonus"
+        },
+        "cashBonusValue": "£{amount}",
+        "itemBonusValue": "{amount}x {item}",
+        "description": {
+            "active": "Find and chop any vehicle matching the assigned class before the time runs out to earn the bonus.",
+            "inProgress": "You have already started a chop on this contract."
+        },
+        "expired": {
+            "title": "Contract Expired",
+            "message": "This contract has expired. The bonus is no longer available. Return to the broker when you are ready for a new job."
+        },
+        "invalid": {
+            "title": "Invalid Contract",
+            "message": "This contract is no longer active. Return to the broker to request a new one."
+        }
+    },
+    "vehicleClass": {
+        "compacts": "Compacts",
+        "sedans": "Sedans",
+        "suvs": "SUVs",
+        "coupes": "Coupes",
+        "muscle": "Muscle",
+        "sportsClassics": "Sports Classics",
+        "sports": "Sports",
+        "super": "Super",
+        "motorcycles": "Motorcycles",
+        "offRoad": "Off-Road",
+        "industrial": "Industrial",
+        "utility": "Utility",
+        "vans": "Vans",
+        "cycles": "Cycles",
+        "boats": "Boats",
+        "helicopters": "Helicopters",
+        "planes": "Planes",
+        "service": "Service",
+        "emergency": "Emergency",
+        "military": "Military",
+        "commercial": "Commercial",
+        "trains": "Trains",
+        "openWheel": "Open Wheel",
+        "unknown": "Unknown"
+    },
+    "shops": {
+        "unknown-item": "Unknown item"
+    },
+    "contract-item": {
+        "description": "%s contract · %s"
+    }
+}

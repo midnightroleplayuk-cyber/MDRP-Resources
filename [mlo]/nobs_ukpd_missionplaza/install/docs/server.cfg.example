@@ -1,0 +1,12 @@
+# Mission Plaza UK Police Station 1.2.0 - NO BS SCRIPTS. Add these lines to your own server.cfg.
+# Game build 3258 or newer. Keep exactly one sv_enforceGameBuild line in your server.cfg.
+sv_enforceGameBuild 3258
+
+# Armoury weapon display (local weapon objects on the armoury racks). 1 = on (the default), 0 = off for everyone.
+setr nobs_ukpd_armoury_display 1
+
+# Door closer steps in the F8 console: only while reporting a door that does not close.
+# setr nobs_mp_door_debug 1
+
+# The whole station is ONE resource (every setting is in its config.lua):
+ensure nobs_ukpd_missionplaza

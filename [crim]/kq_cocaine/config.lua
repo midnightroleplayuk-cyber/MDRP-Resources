@@ -725,7 +725,7 @@ Config.itemCollection = {
         -- All locations of where the loot should spawn at
         locations = {
             {
-                coords = vec3(816.27, -3186.96, 4.9),
+                coords = vec3(815.19, -3186.24, 4.9),
                 rotation = vec3(0, 0, 40),
                 blip = false,
             },
@@ -740,7 +740,7 @@ Config.itemCollection = {
                 blip = false,
             },
             {
-                coords = vec3(106.02, 6627.5, 30.79),
+                coords = vec3(105.45, 6627.3, 30.79),
                 rotation = vec3(0, 0, 40),
                 blip = false,
             },
@@ -783,22 +783,22 @@ Config.itemCollection = {
         -- All locations of where the loot should spawn at
         locations = {
             {
-                coords = vec3(-2551.39, 2315.58, 32.22),
-                rotation = vec3(0, 0, 329),
+                coords = vec3(-2559.54, 2315.18, 32.22),
+                rotation = vec3(0, 0, 150),
                 blip = false,
             },
             {
-                coords = vec3(-2073.11, -325.95, 12.32),
+                coords = vec3(-2073.02, -325.92, 12.32),
                 rotation = vec3(0, 0, 270),
                 blip = false,
             },
             {
-                coords = vec3(1166.96, -322.19, 68.27),
-                rotation = vec3(0, 0, 154),
+                coords = vec3(1165.76, -315.33, 68.33),
+                rotation = vec3(0, 0, 100),
                 blip = false,
             },
             {
-                coords = vec3(170.34, -1722.41, 28.39),
+                coords = vec3(-535.31, -1219.16, 17.46),
                 rotation = vec3(0, 0, 355),
                 blip = false,
             },
@@ -841,7 +841,7 @@ Config.itemCollection = {
         -- All locations of where the loot should spawn at
         locations = {
             {
-                coords = vec3(-439.79, -954.31, 28.39),
+                coords = vec3(-439.79, -952.31, 28.39),
                 rotation = vec3(0, 0, 90),
                 blip = false,
             },
@@ -851,46 +851,120 @@ Config.itemCollection = {
                 blip = false,
             },
                 {
-                coords = vec3(-439.79, -953.90, 28.39),
+                coords = vec3(-447.06, -940.61, 28.39),
                 rotation = vec3(0, 0, 90),
                 blip = false,
             },
                 {
-                coords = vec3(-470.37, -955.57, 29.41),
-                rotation = vec3(0, 0, 125),
-                blip = true,
+                coords = vec3(-448.62, -940.61, 28.39),
+                rotation = vec3(0, 0, 90),
+                blip = false,
             },
                 {
-                coords = vec3(261.19, 2874.64, 42.61),
-                rotation = vec3(0, 0, 125),
-                blip = true,
+                coords = vec3(-454.59, -938.38, 28.39),
+                rotation = vec3(0, 0, 90),
+                blip = false,
             },
                 {
-                coords = vec3(261.19, 2874.64, 42.61),
-                rotation = vec3(0, 0, 125),
-                blip = true,
+                coords = vec3(-448.81, -896.06, 28.39),
+                rotation = vec3(0, 0, 90),
+                blip = false,
             },
                 {
-                coords = vec3(261.19, 2874.64, 42.61),
-                rotation = vec3(0, 0, 125),
-                blip = true,
+                coords = vec3(-446.94, -896.15, 28.39),
+                rotation = vec3(0, 0, 90),
+                blip = false,
             },
                 {
-                coords = vec3(261.19, 2874.64, 42.61),
-                rotation = vec3(0, 0, 125),
-                blip = true,
+                coords = vec3(-448.20, -895.9, 37.68), 
+                rotation = vec3(0, 0, 180),
+                blip = false,
             },
                 {
-                coords = vec3(261.19, 2874.64, 42.61),
-                rotation = vec3(0, 0, 125),
-                blip = true,
+                coords = vec3(-446.8, -895.9, 37.68),
+                rotation = vec3(0, 0, 90),
+                blip = false,
             },
                 {
-                coords = vec3(261.19, 2874.64, 42.61),
-                rotation = vec3(0, 0, 125),
-                blip = true,
+                coords = vec3(-441.78, -943.6, 37.68),
+                rotation = vec3(0, 0, 90),
+                blip = false,
             },
-
+                {
+                coords = vec3(-441.78, -945.3, 37.68),
+                rotation = vec3(0, 0, 90),
+                blip = false,
+            },
+                {
+                coords = vec3(-448.86, -947.31, 46.98),
+                rotation = vec3(0, 0, 90),
+                blip = false,
+            },
+                {
+                coords = vec3(-447.17, -947.33, 46.98),
+                rotation = vec3(0, 0, 90),
+                blip = false,
+            },
+                {
+                coords = vec3(-447.0, -889.49, 46.98),
+                rotation = vec3(0, 0, 90),
+                blip = false,
+            },
+                {
+                coords = vec3(-448.65, -889.42, 46.98),
+                rotation = vec3(0, 0, 90),
+                blip = false, 
+            },
+                {
+                coords = vec3(-497.12, -1013.17, 51.48),
+                rotation = vec3(0, 0, 90),
+                blip = false,
+            },
+                {
+                coords = vec3(-498.97, -1013.11, 51.48),
+                rotation = vec3(0, 0, 140),
+                blip = false,
+            },
+                {
+                coords = vec3(-460.41, -1049.16, 51.48), 
+                rotation = vec3(0, 0, 140),
+                blip = false,
+            },
+                {
+                coords = vec3(-477.2, -1050.98, 39.81),
+                rotation = vec3(0, 0, 150),
+                blip = false,
+            },
+                {
+                coords = vec3(-496.14, -1017.41, 39.81),
+                rotation = vec3(0, 0, 90),
+                blip = false,
+            },
+                {
+                coords = vec3(-441.78, -945.3, 37.68),
+                rotation = vec3(0, 0, 90),
+                blip = false,
+            },
+                {
+                coords = vec3(272.3, -2494.14, 5.44),
+                rotation = vec3(0, 0, 90),
+                blip = false,
+            },
+                {
+                coords = vec3(232.83, -2500.74, 5.55),
+                rotation = vec3(0, 0, 90),
+                blip = false,
+            },
+                {
+                coords = vec3(-447.0, -889.49, 46.98),
+                rotation = vec3(0, 0, 90),
+                blip = false,
+            },
+                {
+                coords = vec3(-448.65, -889.42, 46.98),
+                rotation = vec3(0, 0, 90),
+                blip = false, --
+            },
         },
     },
 }

@@ -1,0 +1,35 @@
+OX_INVENTORY USABLE RADIO SETUP (QBox) - EVENT VERSION
+=======================================================
+
+The radio UI already has a working client event:
+    mm_radio:client:use
+
+Use that event directly from ox_inventory. In ox_inventory/data/items.lua,
+find your EXISTING ['radio'] item and make its client section contain:
+
+['radio'] = {
+    label = 'Radio',
+    weight = 1000,
+    allowArmed = true,
+    consume = 0,
+    client = {
+        event = 'mm_radio:client:use'
+    }
+},
+
+IMPORTANT:
+- Keep your existing label, weight, image and description if they differ.
+- The important line is: event = 'mm_radio:client:use'
+- Keep consume = 0 so using the radio does not consume it.
+- REMOVE any old `export = 'mm_radio.useRadio'` line from this item.
+- Do not configure both `event` and `export` for the radio item.
+- Make sure the actual inventory item name is ['radio']; mm_radio's Shared.RadioItem
+  in this build is also 'radio'.
+
+After editing items.lua, do a FULL SERVER RESTART. ox_inventory item definitions
+must be reloaded; restarting only mm_radio is not enough.
+
+EXPECTED RESULT:
+- '=' continues to quick-open the radio.
+- Hotbar slot use opens the radio.
+- Right-click > Use opens the radio.

@@ -72,3 +72,9 @@ button[title*="Recommended" i] svg,
   font-size:7.5px!important;
   color:#f0e4ff!important;
 }
+
+/* Job-coloured radio speaking indicators (QBox) */
+.mm-member.talking .mm-talk-dot.job-police{background:#2f80ff;box-shadow:0 0 6px rgba(47,128,255,.90)}
+.mm-member.talking .mm-talk-dot.job-ambulance{background:#39e75f;box-shadow:0 0 6px rgba(57,231,95,.90)}
+.mm-member.talking .mm-talk-dot.job-fire{background:#ff3b30;box-shadow:0 0 6px rgba(255,59,48,.90)}
+.mm-member.talking .mm-talk-dot.job-default{background:#FFD700;box-shadow:0 0 6px rgba(255,215,0,.90)}

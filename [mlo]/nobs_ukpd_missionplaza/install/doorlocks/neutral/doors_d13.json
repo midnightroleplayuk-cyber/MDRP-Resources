@@ -1,0 +1,1577 @@
+{
+ "mlo": "nobs_ukpd_mp",
+ "placement": {
+  "origin_world": [
+   418.3021065013641,
+   -318.71826321490465,
+   45.94298158055308
+  ],
+  "heading_deg": 158.38175948368664
+ },
+ "transform": "world = origin + R(heading) * local; world heading = heading + local heading",
+ "pivot": "door entity origin = hinge axis at floor level on the leaf plane; leaf runs along model -X",
+ "states": "locked = default state; interlock_with = never both unlocked",
+ "jobs": "role placeholders: {\"police\": {\"police\": 0}, \"firearms\": {\"firearms\": 0}}",
+ "doors": [
+  {
+   "tag": "ARM",
+   "doorlock_id": "d13_armoury",
+   "name": "nobs_ukpd_d13_armoury",
+   "label": "Armoury / CED kit store (ARM)",
+   "type": "d13_secure_single",
+   "double": false,
+   "group": "secure",
+   "opening_id": "door_g_11",
+   "between": [
+    "g_armoury_taser",
+    "g_staff_corridor"
+   ],
+   "axis": "x",
+   "at_local": [
+    21.8675,
+    7.3
+   ],
+   "width": 1.1,
+   "band": [
+    7.2,
+    7.4
+   ],
+   "hinge": "x+",
+   "swing": "g_armoury_taser",
+   "approach": [
+    0.0,
+    1.0
+   ],
+   "leaves": [
+    {
+     "leaf": "single",
+     "hand": "lh",
+     "model": "nobs_ukpd_d22_secure_solid_n_hinge",
+     "hash": 3953197412,
+     "hash_signed": -341769884,
+     "local": [
+      22.4175,
+      7.3,
+      0.0
+     ],
+     "local_heading": 0.0,
+     "world": [
+      394.772,
+      -317.24571,
+      45.94298
+     ],
+     "heading": 158.3818,
+     "leaf_len": 1.1
+    }
+   ],
+   "centre_local": [
+    21.8675,
+    7.3,
+    0.0
+   ],
+   "centre_world": [
+    395.28331,
+    -317.44834,
+    45.94298
+   ],
+   "text_world": [
+    395.28331,
+    -317.44834,
+    47.14298
+   ],
+   "default_state": "locked",
+   "locked": true,
+   "maxDistance": 1.5,
+   "jobs": {
+    "firearms": 0
+   },
+   "role": "firearms",
+   "auth_note": "role firearms (placeholder)",
+   "interlock_with": null,
+   "autolock_s": 15,
+   "boundary_into_custody": false,
+   "adjusted": null,
+   "provisional": false,
+   "category": "secure",
+   "approach_room": "g_staff_corridor",
+   "secure_room": "g_armoury_taser",
+   "lock_group": "armoury",
+   "leaf_family": "d11_solid",
+   "hardware": [
+    {
+     "kind": "reader",
+     "archetype": "nobs_ukpd_d11_card_reader",
+     "room": "g_staff_corridor",
+     "face": "approach",
+     "pos": [
+      21.0975,
+      7.403,
+      0.95
+     ],
+     "heading": 180.0
+    },
+    {
+     "kind": "keypad",
+     "archetype": "nobs_ukpd_keypad",
+     "room": "g_staff_corridor",
+     "face": "approach",
+     "pos": [
+      21.0975,
+      7.403,
+      1.13
+     ],
+     "heading": 180.0
+    },
+    {
+     "kind": "exit",
+     "archetype": "nobs_ukpd_dooreleasebtn",
+     "room": "g_armoury_taser",
+     "face": "secure",
+     "pos": [
+      21.0975,
+      7.197,
+      1.05
+     ],
+     "heading": 0.0
+    }
+   ],
+   "lock_jamb": [
+    21.3175,
+    7.3
+   ]
+  },
+  {
+   "tag": "ARM2",
+   "doorlock_id": "d13_armoury_2",
+   "name": "nobs_ukpd_d13_armoury_2",
+   "label": "Armoury 2 / ARV kit and seized firearms (ARM2)",
+   "type": "d13_secure_single",
+   "double": false,
+   "group": "secure",
+   "opening_id": "door_g_24",
+   "between": [
+    "g_fleet_garage",
+    "g_armoury_2_evidence_store"
+   ],
+   "axis": "x",
+   "at_local": [
+    42.25,
+    45.3
+   ],
+   "width": 1.1,
+   "band": [
+    45.2,
+    45.4
+   ],
+   "hinge": "x-",
+   "swing": "g_armoury_2_evidence_store",
+   "approach": [
+    -0.0,
+    -1.0
+   ],
+   "leaves": [
+    {
+     "leaf": "single",
+     "hand": "lh",
+     "model": "nobs_ukpd_d22_secure_solid_p_hinge",
+     "hash": 2272521861,
+     "hash_signed": -2022445435,
+     "local": [
+      41.7,
+      45.3,
+      0.0
+     ],
+     "local_heading": 180.0,
+     "world": [
+      362.84587,
+      -345.46869,
+      45.94298
+     ],
+     "heading": 338.3818,
+     "leaf_len": 1.1
+    }
+   ],
+   "centre_local": [
+    42.25,
+    45.3,
+    0.0
+   ],
+   "centre_world": [
+    362.33455,
+    -345.26606,
+    45.94298
+   ],
+   "text_world": [
+    362.33455,
+    -345.26606,
+    47.14298
+   ],
+   "default_state": "locked",
+   "locked": true,
+   "maxDistance": 1.5,
+   "jobs": {
+    "firearms": 0
+   },
+   "role": "firearms",
+   "auth_note": "role firearms (placeholder)",
+   "interlock_with": null,
+   "autolock_s": 15,
+   "boundary_into_custody": false,
+   "adjusted": null,
+   "provisional": false,
+   "category": "secure",
+   "approach_room": "g_fleet_garage",
+   "secure_room": "g_armoury_2_evidence_store",
+   "lock_group": "armoury_2",
+   "leaf_family": "d11_solid",
+   "hardware": [
+    {
+     "kind": "reader",
+     "archetype": "nobs_ukpd_d11_card_reader",
+     "room": "g_fleet_garage",
+     "face": "approach",
+     "pos": [
+      43.02,
+      45.197,
+      0.95
+     ],
+     "heading": 0.0
+    },
+    {
+     "kind": "keypad",
+     "archetype": "nobs_ukpd_keypad",
+     "room": "g_fleet_garage",
+     "face": "approach",
+     "pos": [
+      43.02,
+      45.197,
+      1.13
+     ],
+     "heading": 0.0
+    },
+    {
+     "kind": "exit",
+     "archetype": "nobs_ukpd_dooreleasebtn",
+     "room": "g_armoury_2_evidence_store",
+     "face": "secure",
+     "pos": [
+      43.02,
+      45.403,
+      1.05
+     ],
+     "heading": 180.0
+    }
+   ],
+   "lock_jamb": [
+    42.8,
+    45.3
+   ]
+  },
+  {
+   "tag": "FAU",
+   "doorlock_id": "d13_firearms_armoury",
+   "name": "nobs_ukpd_d13_firearms_armoury",
+   "label": "Firearms unit armoury / ready room (FAU)",
+   "type": "d13_secure_single",
+   "double": false,
+   "group": "secure",
+   "opening_id": "door_f_17",
+   "between": [
+    "f_sco_19_armoury_kit_taser_ready_room",
+    "f_link_corridor_to_sco_19_wing"
+   ],
+   "axis": "y",
+   "at_local": [
+    43.625,
+    35.0
+   ],
+   "width": 1.1,
+   "band": [
+    43.525,
+    43.725
+   ],
+   "hinge": "y-",
+   "swing": "f_sco_19_armoury_kit_taser_ready_room",
+   "approach": [
+    1.0,
+    0.0
+   ],
+   "leaves": [
+    {
+     "leaf": "single",
+     "hand": "lh",
+     "model": "nobs_ukpd_d22_secure_solid_n_hinge",
+     "hash": 3953197412,
+     "hash_signed": -341769884,
+     "local": [
+      43.625,
+      34.45,
+      4.2
+     ],
+     "local_heading": -90.0,
+     "world": [
+      365.05363,
+      -334.67268,
+      50.14298
+     ],
+     "heading": 68.3818,
+     "leaf_len": 1.1
+    }
+   ],
+   "centre_local": [
+    43.625,
+    35.0,
+    4.2
+   ],
+   "centre_world": [
+    364.851,
+    -335.18399,
+    50.14298
+   ],
+   "text_world": [
+    364.851,
+    -335.18399,
+    51.34298
+   ],
+   "default_state": "locked",
+   "locked": true,
+   "maxDistance": 1.5,
+   "jobs": {
+    "firearms": 0
+   },
+   "role": "firearms",
+   "auth_note": "role firearms (placeholder)",
+   "interlock_with": null,
+   "autolock_s": 15,
+   "boundary_into_custody": false,
+   "adjusted": null,
+   "provisional": false,
+   "category": "secure",
+   "approach_room": "f_link_corridor_to_sco_19_wing",
+   "secure_room": "f_sco_19_armoury_kit_taser_ready_room",
+   "lock_group": "firearms_armoury",
+   "leaf_family": "d11_solid",
+   "hardware": [
+    {
+     "kind": "reader",
+     "archetype": "nobs_ukpd_d11_card_reader",
+     "room": "f_link_corridor_to_sco_19_wing",
+     "face": "approach",
+     "pos": [
+      43.728,
+      35.77,
+      5.15
+     ],
+     "heading": 90.0
+    },
+    {
+     "kind": "keypad",
+     "archetype": "nobs_ukpd_keypad",
+     "room": "f_link_corridor_to_sco_19_wing",
+     "face": "approach",
+     "pos": [
+      43.728,
+      35.77,
+      5.33
+     ],
+     "heading": 90.0
+    },
+    {
+     "kind": "exit",
+     "archetype": "nobs_ukpd_dooreleasebtn",
+     "room": "f_sco_19_armoury_kit_taser_ready_room",
+     "face": "secure",
+     "pos": [
+      43.522,
+      35.77,
+      5.25
+     ],
+     "heading": -90.0
+    }
+   ],
+   "lock_jamb": [
+    43.625,
+    35.55
+   ]
+  },
+  {
+   "tag": "EVI",
+   "doorlock_id": "d13_evidence",
+   "name": "nobs_ukpd_d13_evidence",
+   "label": "Evidence / property store (EVI)",
+   "type": "d13_secure_single",
+   "double": false,
+   "group": "secure",
+   "opening_id": "door_g_08",
+   "between": [
+    "g_evidence_store_caged",
+    "g_staff_corridor"
+   ],
+   "axis": "x",
+   "at_local": [
+    0.5925,
+    7.3
+   ],
+   "width": 1.1,
+   "band": [
+    7.2,
+    7.4
+   ],
+   "hinge": "x+",
+   "swing": "g_evidence_store_caged",
+   "approach": [
+    0.0,
+    1.0
+   ],
+   "leaves": [
+    {
+     "leaf": "single",
+     "hand": "lh",
+     "model": "nobs_ukpd_d22_secure_solid_n_hinge",
+     "hash": 3953197412,
+     "hash_signed": -341769884,
+     "local": [
+      1.1425,
+      7.3,
+      0.0
+     ],
+     "local_heading": 0.0,
+     "world": [
+      414.5505,
+      -325.08386,
+      45.94298
+     ],
+     "heading": 158.3818,
+     "leaf_len": 1.1
+    }
+   ],
+   "centre_local": [
+    0.5925,
+    7.3,
+    0.0
+   ],
+   "centre_world": [
+    415.06181,
+    -325.28649,
+    45.94298
+   ],
+   "text_world": [
+    415.06181,
+    -325.28649,
+    47.14298
+   ],
+   "default_state": "locked",
+   "locked": true,
+   "maxDistance": 1.5,
+   "jobs": {
+    "police": 0
+   },
+   "role": "police",
+   "auth_note": "role police (placeholder)",
+   "interlock_with": null,
+   "autolock_s": 15,
+   "boundary_into_custody": false,
+   "adjusted": null,
+   "provisional": false,
+   "category": "secure",
+   "approach_room": "g_staff_corridor",
+   "secure_room": "g_evidence_store_caged",
+   "lock_group": "evidence",
+   "leaf_family": "d11_solid",
+   "hardware": [
+    {
+     "kind": "reader",
+     "archetype": "nobs_ukpd_d11_card_reader",
+     "room": "g_staff_corridor",
+     "face": "approach",
+     "pos": [
+      -0.1775,
+      7.403,
+      0.95
+     ],
+     "heading": 180.0
+    },
+    {
+     "kind": "keypad",
+     "archetype": "nobs_ukpd_keypad",
+     "room": "g_staff_corridor",
+     "face": "approach",
+     "pos": [
+      -0.1775,
+      7.403,
+      1.13
+     ],
+     "heading": 180.0
+    },
+    {
+     "kind": "exit",
+     "archetype": "nobs_ukpd_dooreleasebtn",
+     "room": "g_evidence_store_caged",
+     "face": "secure",
+     "pos": [
+      -0.1775,
+      7.197,
+      1.05
+     ],
+     "heading": 0.0
+    }
+   ],
+   "lock_jamb": [
+    0.0425,
+    7.3
+   ]
+  },
+  {
+   "tag": "CTL",
+   "doorlock_id": "d13_control_room",
+   "name": "nobs_ukpd_d13_control_room",
+   "label": "Control room / CCTV (CTL)",
+   "type": "d13_secure_single",
+   "double": false,
+   "group": "secure",
+   "opening_id": "door_g_06",
+   "between": [
+    "g_staff_corridor",
+    "g_control_room_cctv_ops"
+   ],
+   "axis": "x",
+   "at_local": [
+    16.6925,
+    10.5
+   ],
+   "width": 1.1,
+   "band": [
+    10.425,
+    10.575
+   ],
+   "hinge": "x-",
+   "swing": "g_control_room_cctv_ops",
+   "approach": [
+    -0.0,
+    -1.0
+   ],
+   "leaves": [
+    {
+     "leaf": "single",
+     "hand": "lh",
+     "model": "nobs_ukpd_d22_secure_solid_n_hinge",
+     "hash": 3953197412,
+     "hash_signed": -341769884,
+     "local": [
+      16.1425,
+      10.5,
+      0.0
+     ],
+     "local_heading": 180.0,
+     "world": [
+      399.42667,
+      -322.53246,
+      45.94298
+     ],
+     "heading": 338.3818,
+     "leaf_len": 1.1
+    }
+   ],
+   "centre_local": [
+    16.6925,
+    10.5,
+    0.0
+   ],
+   "centre_world": [
+    398.91535,
+    -322.32983,
+    45.94298
+   ],
+   "text_world": [
+    398.91535,
+    -322.32983,
+    47.14298
+   ],
+   "default_state": "locked",
+   "locked": true,
+   "maxDistance": 1.5,
+   "jobs": {
+    "police": 0
+   },
+   "role": "police",
+   "auth_note": "role police (placeholder)",
+   "interlock_with": null,
+   "autolock_s": null,
+   "boundary_into_custody": false,
+   "adjusted": null,
+   "provisional": false,
+   "category": "secure",
+   "approach_room": "g_staff_corridor",
+   "secure_room": "g_control_room_cctv_ops",
+   "lock_group": "control_room",
+   "leaf_family": "d11_solid",
+   "hardware": [
+    {
+     "kind": "reader",
+     "archetype": "nobs_ukpd_d11_card_reader",
+     "room": "g_staff_corridor",
+     "face": "approach",
+     "pos": [
+      17.4625,
+      10.422,
+      0.95
+     ],
+     "heading": 0.0
+    },
+    {
+     "kind": "keypad",
+     "archetype": "nobs_ukpd_keypad",
+     "room": "g_staff_corridor",
+     "face": "approach",
+     "pos": [
+      17.4625,
+      10.422,
+      1.13
+     ],
+     "heading": 0.0
+    },
+    {
+     "kind": "exit",
+     "archetype": "nobs_ukpd_dooreleasebtn",
+     "room": "g_control_room_cctv_ops",
+     "face": "secure",
+     "pos": [
+      17.4625,
+      10.578,
+      1.05
+     ],
+     "heading": 180.0
+    }
+   ],
+   "lock_jamb": [
+    17.2425,
+    10.5
+   ]
+  },
+  {
+   "tag": "FOR",
+   "doorlock_id": "d13_forensics",
+   "name": "nobs_ukpd_d13_forensics",
+   "label": "Forensics lab (FOR)",
+   "type": "d13_secure_single",
+   "double": false,
+   "group": "secure",
+   "opening_id": "door_g_09",
+   "between": [
+    "g_forensics_lab",
+    "g_staff_corridor"
+   ],
+   "axis": "x",
+   "at_local": [
+    9.2175,
+    7.3125
+   ],
+   "width": 1.1,
+   "band": [
+    7.225,
+    7.4
+   ],
+   "hinge": "x+",
+   "swing": "g_forensics_lab",
+   "approach": [
+    0.0,
+    1.0
+   ],
+   "leaves": [
+    {
+     "leaf": "single",
+     "hand": "lh",
+     "model": "nobs_ukpd_d22_secure_solid_n_hinge",
+     "hash": 3953197412,
+     "hash_signed": -341769884,
+     "local": [
+      9.7675,
+      7.3,
+      0.0
+     ],
+     "local_heading": 0.0,
+     "world": [
+      406.53219,
+      -321.90623,
+      45.94298
+     ],
+     "heading": 158.3818,
+     "leaf_len": 1.1
+    }
+   ],
+   "centre_local": [
+    9.2175,
+    7.3125,
+    0.0
+   ],
+   "centre_world": [
+    407.0389,
+    -322.12048,
+    45.94298
+   ],
+   "text_world": [
+    407.0389,
+    -322.12048,
+    47.14298
+   ],
+   "default_state": "locked",
+   "locked": true,
+   "maxDistance": 1.5,
+   "jobs": {
+    "police": 0
+   },
+   "role": "police",
+   "auth_note": "role police (placeholder)",
+   "interlock_with": null,
+   "autolock_s": null,
+   "boundary_into_custody": false,
+   "adjusted": null,
+   "provisional": false,
+   "category": "secure",
+   "approach_room": "g_staff_corridor",
+   "secure_room": "g_forensics_lab",
+   "lock_group": "forensics",
+   "leaf_family": "d11_solid",
+   "hardware": [
+    {
+     "kind": "reader",
+     "archetype": "nobs_ukpd_d11_card_reader",
+     "room": "g_staff_corridor",
+     "face": "approach",
+     "pos": [
+      8.4475,
+      7.403,
+      0.95
+     ],
+     "heading": 180.0
+    },
+    {
+     "kind": "exit",
+     "archetype": "nobs_ukpd_dooreleasebtn",
+     "room": "g_forensics_lab",
+     "face": "secure",
+     "pos": [
+      8.4475,
+      7.222,
+      1.05
+     ],
+     "heading": 0.0
+    }
+   ],
+   "lock_jamb": [
+    8.6675,
+    7.3125
+   ]
+  },
+  {
+   "tag": "ROOF",
+   "doorlock_id": "d12_roof",
+   "name": "nobs_ukpd_d12_roof",
+   "label": "Roof access (stair 1) (ROOF)",
+   "type": "d13_roof_steel",
+   "double": false,
+   "group": "external",
+   "opening_id": "door_r_00",
+   "between": [
+    "g_stair_1",
+    "exterior"
+   ],
+   "axis": "x",
+   "at_local": [
+    18.75,
+    7.375
+   ],
+   "width": 1.1,
+   "band": [
+    7.225,
+    7.525
+   ],
+   "hinge": "x-",
+   "swing": "exterior",
+   "approach": [
+    0.0,
+    1.0
+   ],
+   "leaves": [
+    {
+     "leaf": "single",
+     "hand": "rh",
+     "model": "nobs_ukpd_d14_roof_door_ref2",
+     "hash": 356396583,
+     "hash_signed": 356396583,
+     "local": [
+      18.2,
+      7.375,
+      8.15
+     ],
+     "local_heading": 180.0,
+     "world": [
+      398.66521,
+      -318.86925,
+      54.09298
+     ],
+     "heading": 338.3818,
+     "leaf_len": 1.1
+    }
+   ],
+   "centre_local": [
+    18.75,
+    7.375,
+    8.15
+   ],
+   "centre_world": [
+    398.15389,
+    -318.66662,
+    54.09298
+   ],
+   "text_world": [
+    398.15389,
+    -318.66662,
+    55.29298
+   ],
+   "default_state": "locked",
+   "locked": true,
+   "maxDistance": 1.5,
+   "jobs": {
+    "police": 0
+   },
+   "role": "police",
+   "auth_note": "role police (placeholder)",
+   "interlock_with": null,
+   "autolock_s": null,
+   "boundary_into_custody": false,
+   "adjusted": null,
+   "provisional": false,
+   "category": "external",
+   "approach_room": "exterior",
+   "secure_room": "g_stair_1",
+   "lock_group": "roof",
+   "leaf_family": "roof",
+   "hardware": [],
+   "lock_jamb": [
+    19.3,
+    7.375
+   ]
+  },
+  {
+   "tag": "PUB",
+   "doorlock_id": "d13_public_pass",
+   "name": "nobs_ukpd_d13_public_pass",
+   "label": "Public / staff pass door (PUB)",
+   "type": "kept_pair",
+   "double": true,
+   "group": "boundary",
+   "opening_id": "door_g_00",
+   "between": [
+    "g_public_corridor",
+    "g_staff_corridor"
+   ],
+   "axis": "y",
+   "at_local": [
+    -0.5,
+    8.74
+   ],
+   "width": 2.0,
+   "band": [
+    -0.575,
+    -0.425
+   ],
+   "hinge": null,
+   "swing": null,
+   "approach": [
+    -1.0,
+    -0.0
+   ],
+   "leaves": [
+    {
+     "leaf": "pair_r",
+     "hand": "pair",
+     "model": "nobs_ukpd_d36_fire100_p_glass",
+     "hash": 2105631369,
+     "hash_signed": 2105631369,
+     "local": [
+      -0.5,
+      7.74,
+      0.0
+     ],
+     "local_heading": -90.0,
+     "world": [
+      415.91536,
+      -326.09804,
+      45.94298
+     ],
+     "heading": 68.3818,
+     "leaf_len": 1.0
+    },
+    {
+     "leaf": "pair_l",
+     "hand": "pair",
+     "model": "nobs_ukpd_d36_fire100_n_glass",
+     "hash": 1155242119,
+     "hash_signed": 1155242119,
+     "local": [
+      -0.5,
+      9.74,
+      0.0
+     ],
+     "local_heading": 90.0,
+     "world": [
+      415.17852,
+      -327.95735,
+      45.94298
+     ],
+     "heading": 248.3818,
+     "leaf_len": 1.0
+    }
+   ],
+   "centre_local": [
+    -0.5,
+    8.74,
+    0.0
+   ],
+   "centre_world": [
+    415.54694,
+    -327.0277,
+    45.94298
+   ],
+   "text_world": [
+    415.54694,
+    -327.0277,
+    47.14298
+   ],
+   "default_state": "locked",
+   "locked": true,
+   "maxDistance": 2.0,
+   "jobs": {
+    "police": 0
+   },
+   "role": "police",
+   "auth_note": "role police (placeholder)",
+   "interlock_with": null,
+   "autolock_s": null,
+   "boundary_into_custody": false,
+   "adjusted": null,
+   "provisional": false,
+   "category": "boundary",
+   "approach_room": "g_public_corridor",
+   "secure_room": "g_staff_corridor",
+   "lock_group": "public_pass",
+   "tol_plane": 0.05,
+   "tol_jamb": 0.03,
+   "leaf_family": "keep"
+  },
+  {
+   "tag": "ST2",
+   "doorlock_id": "d13_stair_2_public",
+   "name": "nobs_ukpd_d13_stair_2_public",
+   "label": "Stair 2 from the public corridor (ST2)",
+   "type": "kept_single",
+   "double": false,
+   "group": "boundary",
+   "opening_id": "door_g_01",
+   "between": [
+    "g_stair_2",
+    "g_public_corridor"
+   ],
+   "axis": "x",
+   "at_local": [
+    -10.5625,
+    7.3
+   ],
+   "width": 1.1,
+   "band": [
+    7.225,
+    7.375
+   ],
+   "hinge": "x+",
+   "swing": null,
+   "approach": [
+    0.0,
+    1.0
+   ],
+   "leaves": [
+    {
+     "leaf": "single",
+     "hand": "kit",
+     "model": "nobs_ukpd_d36_fire110_n_hinge",
+     "hash": 3991231559,
+     "hash_signed": -303735737,
+     "local": [
+      -10.0125,
+      7.3,
+      0.0
+     ],
+     "local_heading": 0.0,
+     "world": [
+      424.92085,
+      -329.19359,
+      45.94298
+     ],
+     "heading": 158.3818,
+     "leaf_len": 1.1
+    }
+   ],
+   "centre_local": [
+    -10.5625,
+    7.3,
+    0.0
+   ],
+   "centre_world": [
+    425.43216,
+    -329.39622,
+    45.94298
+   ],
+   "text_world": [
+    425.43216,
+    -329.39622,
+    47.14298
+   ],
+   "default_state": "locked",
+   "locked": true,
+   "maxDistance": 1.5,
+   "jobs": {
+    "police": 0
+   },
+   "role": "police",
+   "auth_note": "role police (placeholder)",
+   "interlock_with": null,
+   "autolock_s": null,
+   "boundary_into_custody": false,
+   "adjusted": null,
+   "provisional": false,
+   "category": "boundary",
+   "approach_room": "g_public_corridor",
+   "secure_room": "g_stair_2",
+   "lock_group": "stair_2_public",
+   "tol_plane": 0.05,
+   "tol_jamb": 0.03,
+   "leaf_family": "keep"
+  },
+  {
+   "tag": "GAR",
+   "doorlock_id": "d13_garage_yard",
+   "name": "nobs_ukpd_d13_garage_yard",
+   "label": "Garage yard door (GAR)",
+   "type": "kept_single",
+   "double": false,
+   "group": "external",
+   "opening_id": "door_g_22",
+   "between": [
+    "exterior",
+    "g_fleet_garage"
+   ],
+   "axis": "y",
+   "at_local": [
+    33.7275,
+    32.2
+   ],
+   "width": 1.1,
+   "band": [
+    33.7,
+    34.3
+   ],
+   "hinge": "y-",
+   "swing": null,
+   "approach": [
+    -1.0,
+    -0.0
+   ],
+   "leaves": [
+    {
+     "leaf": "single",
+     "hand": "kit",
+     "model": "nobs_ukpd_d14_exit_steel_110_ref2",
+     "hash": 763213436,
+     "hash_signed": 763213436,
+     "local": [
+      33.7275,
+      31.65,
+      0.0
+     ],
+     "local_heading": -90.0,
+     "world": [
+      375.28651,
+      -335.71607,
+      45.94298
+     ],
+     "heading": 68.3818,
+     "leaf_len": 1.1
+    }
+   ],
+   "centre_local": [
+    33.7275,
+    32.2,
+    0.0
+   ],
+   "centre_world": [
+    375.08388,
+    -336.22739,
+    45.94298
+   ],
+   "text_world": [
+    375.08388,
+    -336.22739,
+    47.14298
+   ],
+   "default_state": "locked",
+   "locked": true,
+   "maxDistance": 1.5,
+   "jobs": {
+    "police": 0
+   },
+   "role": "police",
+   "auth_note": "role police (placeholder)",
+   "interlock_with": null,
+   "autolock_s": null,
+   "boundary_into_custody": false,
+   "adjusted": null,
+   "provisional": false,
+   "category": "external",
+   "approach_room": "exterior",
+   "secure_room": "g_fleet_garage",
+   "lock_group": "garage_yard",
+   "tol_plane": 0.05,
+   "tol_jamb": 0.03,
+   "leaf_family": "keep"
+  },
+  {
+   "tag": "ST3",
+   "doorlock_id": "d13_stair_3_exit",
+   "name": "nobs_ukpd_d13_stair_3_exit",
+   "label": "Stair 3 external door (ST3)",
+   "type": "kept_single",
+   "double": false,
+   "group": "external",
+   "opening_id": "door_g_25",
+   "between": [
+    "g_stair_3",
+    "exterior"
+   ],
+   "axis": "x",
+   "at_local": [
+    37.4375,
+    49.2725
+   ],
+   "width": 1.1,
+   "band": [
+    48.7,
+    49.3
+   ],
+   "hinge": "x-",
+   "swing": null,
+   "approach": [
+    0.0,
+    1.0
+   ],
+   "leaves": [
+    {
+     "leaf": "single",
+     "hand": "kit",
+     "model": "nobs_ukpd_d14_exit_steel_110_ref2",
+     "hash": 763213436,
+     "hash_signed": 763213436,
+     "local": [
+      36.8875,
+      49.2725,
+      0.0
+     ],
+     "local_heading": 180.0,
+     "world": [
+      365.8563,
+      -350.93479,
+      45.94298
+     ],
+     "heading": 338.3818,
+     "leaf_len": 1.1
+    }
+   ],
+   "centre_local": [
+    37.4375,
+    49.2725,
+    0.0
+   ],
+   "centre_world": [
+    365.34499,
+    -350.73215,
+    45.94298
+   ],
+   "text_world": [
+    365.34499,
+    -350.73215,
+    47.14298
+   ],
+   "default_state": "locked",
+   "locked": true,
+   "maxDistance": 1.5,
+   "jobs": {
+    "police": 0
+   },
+   "role": "police",
+   "auth_note": "role police (placeholder)",
+   "interlock_with": null,
+   "autolock_s": null,
+   "boundary_into_custody": false,
+   "adjusted": null,
+   "provisional": false,
+   "category": "external",
+   "approach_room": "exterior",
+   "secure_room": "g_stair_3",
+   "lock_group": "stair_3_exit",
+   "tol_plane": 0.05,
+   "tol_jamb": 0.03,
+   "leaf_family": "keep"
+  },
+  {
+   "tag": "CID",
+   "doorlock_id": "d13_cid",
+   "name": "nobs_ukpd_d13_cid",
+   "label": "CID office (CID)",
+   "type": "kept_single",
+   "double": false,
+   "group": "optional",
+   "opening_id": "door_f_14",
+   "between": [
+    "f_corridor",
+    "f_cid_office_case_room"
+   ],
+   "axis": "x",
+   "at_local": [
+    47.6812,
+    10.5
+   ],
+   "width": 1.1,
+   "band": [
+    10.425,
+    10.575
+   ],
+   "hinge": "x+",
+   "swing": null,
+   "approach": [
+    -0.0,
+    -1.0
+   ],
+   "leaves": [
+    {
+     "leaf": "single",
+     "hand": "kit",
+     "model": "nobs_ukpd_d36_fire110_p_hinge",
+     "hash": 3229811073,
+     "hash_signed": -1065156223,
+     "local": [
+      48.2313,
+      10.5,
+      4.2
+     ],
+     "local_heading": 0.0,
+     "world": [
+      369.59506,
+      -310.7103,
+      50.14298
+     ],
+     "heading": 158.3818,
+     "leaf_len": 1.1
+    }
+   ],
+   "centre_local": [
+    47.6812,
+    10.5,
+    4.2
+   ],
+   "centre_world": [
+    370.10638,
+    -310.91293,
+    50.14298
+   ],
+   "text_world": [
+    370.10638,
+    -310.91293,
+    51.34298
+   ],
+   "default_state": "unlocked",
+   "locked": false,
+   "maxDistance": 1.5,
+   "jobs": {
+    "police": 0
+   },
+   "role": "police",
+   "auth_note": "role police (placeholder)",
+   "interlock_with": null,
+   "autolock_s": null,
+   "boundary_into_custody": false,
+   "adjusted": null,
+   "provisional": false,
+   "category": "optional",
+   "approach_room": "f_corridor",
+   "secure_room": "f_cid_office_case_room",
+   "lock_group": "cid",
+   "tol_plane": 0.05,
+   "tol_jamb": 0.03,
+   "leaf_family": "keep"
+  },
+  {
+   "tag": "INT",
+   "doorlock_id": "d13_intel",
+   "name": "nobs_ukpd_d13_intel",
+   "label": "Intel office (INT)",
+   "type": "kept_single",
+   "double": false,
+   "group": "optional",
+   "opening_id": "door_f_21",
+   "between": [
+    "f_link_corridor_to_sco_19_wing",
+    "f_intel_office"
+   ],
+   "axis": "y",
+   "at_local": [
+    46.375,
+    41.45
+   ],
+   "width": 1.1,
+   "band": [
+    46.3,
+    46.45
+   ],
+   "hinge": "y-",
+   "swing": null,
+   "approach": [
+    -1.0,
+    -0.0
+   ],
+   "leaves": [
+    {
+     "leaf": "single",
+     "hand": "kit",
+     "model": "nobs_ukpd_d36_fire110_p_hinge",
+     "hash": 3229811073,
+     "hash_signed": -1065156223,
+     "local": [
+      46.375,
+      40.9,
+      4.2
+     ],
+     "local_heading": -90.0,
+     "world": [
+      360.12076,
+      -339.65582,
+      50.14298
+     ],
+     "heading": 68.3818,
+     "leaf_len": 1.1
+    }
+   ],
+   "centre_local": [
+    46.375,
+    41.45,
+    4.2
+   ],
+   "centre_world": [
+    359.91813,
+    -340.16714,
+    50.14298
+   ],
+   "text_world": [
+    359.91813,
+    -340.16714,
+    51.34298
+   ],
+   "default_state": "unlocked",
+   "locked": false,
+   "maxDistance": 1.5,
+   "jobs": {
+    "police": 0
+   },
+   "role": "police",
+   "auth_note": "role police (placeholder)",
+   "interlock_with": null,
+   "autolock_s": null,
+   "boundary_into_custody": false,
+   "adjusted": null,
+   "provisional": false,
+   "category": "optional",
+   "approach_room": "f_link_corridor_to_sco_19_wing",
+   "secure_room": "f_intel_office",
+   "lock_group": "intel",
+   "tol_plane": 0.05,
+   "tol_jamb": 0.03,
+   "leaf_family": "keep"
+  },
+  {
+   "tag": "FAUC",
+   "doorlock_id": "d13_firearms_cage",
+   "name": "nobs_ukpd_d13_firearms_cage",
+   "label": "Firearms armoury weapons cage gate (FAUC)",
+   "type": "d13_cage_pair",
+   "double": true,
+   "group": "cage",
+   "opening_id": null,
+   "between": [
+    "f_sco_19_armoury_kit_taser_ready_room",
+    "f_sco_19_armoury_kit_taser_ready_room"
+   ],
+   "axis": "x",
+   "at_local": [
+    42.5125,
+    41.5
+   ],
+   "width": 2.0,
+   "band": [
+    41.475,
+    41.525
+   ],
+   "hinge": "both posts",
+   "swing": "either (GTA leaves swing both ways; far side = inside the cage)",
+   "approach": [
+    0.0,
+    -1.0
+   ],
+   "leaves": [
+    {
+     "leaf": "pair_r",
+     "hand": "r",
+     "model": "nobs_ukpd_d11_cage_gate_leaf_r",
+     "hash": 2128965228,
+     "hash_signed": 2128965228,
+     "local": [
+      43.5125,
+      41.5,
+      4.2
+     ],
+     "local_heading": 0.0,
+     "world": [
+      362.56086,
+      -341.26822,
+      50.14298
+     ],
+     "heading": 158.3818,
+     "leaf_len": 0.996
+    },
+    {
+     "leaf": "pair_l",
+     "hand": "l",
+     "model": "nobs_ukpd_d11_cage_gate_leaf_l",
+     "hash": 3437955726,
+     "hash_signed": -857011570,
+     "local": [
+      41.5125,
+      41.5,
+      4.2
+     ],
+     "local_heading": 180.0,
+     "world": [
+      364.42017,
+      -342.00506,
+      50.14298
+     ],
+     "heading": 338.3818,
+     "leaf_len": 0.996
+    }
+   ],
+   "centre_local": [
+    42.5125,
+    41.5,
+    4.2
+   ],
+   "centre_world": [
+    363.49052,
+    -341.63664,
+    50.14298
+   ],
+   "text_world": [
+    363.49052,
+    -341.63664,
+    51.34298
+   ],
+   "default_state": "locked",
+   "locked": true,
+   "maxDistance": 2.0,
+   "jobs": {
+    "firearms": 0
+   },
+   "role": "firearms",
+   "auth_note": "role firearms (placeholder)",
+   "interlock_with": null,
+   "autolock_s": null,
+   "boundary_into_custody": false,
+   "adjusted": null,
+   "provisional": false,
+   "category": "cage",
+   "approach_room": "f_sco_19_armoury_kit_taser_ready_room",
+   "secure_room": "f_sco_19_armoury_kit_taser_ready_room",
+   "lock_group": "firearms_armoury",
+   "leaf_family": "cage",
+   "with_opening": "door_f_17",
+   "gap_span": [
+    41.5,
+    43.525
+   ],
+   "sweeps": {
+    "approach_side": [
+     [
+      42.5165,
+      40.504,
+      43.5125,
+      41.5
+     ],
+     [
+      41.5125,
+      40.504,
+      42.5085,
+      41.5
+     ]
+    ],
+    "far_side": [
+     [
+      42.5165,
+      41.5,
+      43.5125,
+      42.496
+     ],
+     [
+      41.5125,
+      41.5,
+      42.5085,
+      42.496
+     ]
+    ]
+   },
+   "design_check": {
+    "layout": "station design layout",
+    "generated": "2026-09-30 16:20:09",
+    "panels_on_line": [
+     {
+      "id": "cage1",
+      "lo": 34.3,
+      "hi": 36.7
+     },
+     {
+      "id": "cage2",
+      "lo": 36.7,
+      "hi": 39.1
+     },
+     {
+      "id": "cage3",
+      "lo": 39.1,
+      "hi": 41.5
+     }
+    ],
+    "panel_end_at_gap": true,
+    "panel_in_gap": [],
+    "design_items_in_gap": [],
+    "sweep_touches": {
+     "approach_side": [],
+     "far_side": [
+      {
+       "id": "cupboard",
+       "archetype": "v_serv_cupboard_01",
+       "overlap_m": [
+        0.754,
+        0.084
+       ]
+      }
+     ]
+    },
+    "note": "GTA door leaves swing either way once unlocked; far_side = beyond the lock-box face (inside the cage)"
+   }
+  }
+ ]
+}

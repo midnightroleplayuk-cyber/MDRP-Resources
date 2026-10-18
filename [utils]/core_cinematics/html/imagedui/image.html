@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 100%; height: 100%; background: transparent; overflow: hidden; }
+  #container {
+    position: relative;
+    width: 100%; height: 100%;
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0;
+    will-change: transform, opacity;
+  }
+  /* The DUI canvas is created at the image's own aspect ratio (see
+     createImageDUI in main.lua), so filling it 1:1 keeps the picture
+     undistorted while DrawSpritePoly maps the full texture onto the
+     aspect-matched world quad. */
+  #img {
+    display: block;
+    width: 100%; height: 100%;
+    object-fit: fill;
+    will-change: transform, opacity, filter;
+  }
+  /* Gradient tint overlay — masked to the image's own alpha so the tint only
+     lands on opaque pixels (transparent PNG regions stay clear). multiply
+     keeps it a tint rather than a flat fill. */
+  #tint {
+    position: absolute; inset: 0;
+    pointer-events: none;
+    opacity: 0;
+    mix-blend-mode: multiply;
+    -webkit-mask-size: 100% 100%; mask-size: 100% 100%;
+    -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;
+  }
+</style>
+</head>
+<body>
+<div id="container">
+  <img id="img" src="" />
+  <div id="tint"></div>
+</div>
+<script>
+'use strict';
+
+const container = document.getElementById('container');
+const img       = document.getElementById('img');
+const tint      = document.getElementById('tint');
+
+let currentUrl  = '';
+let currentAnim = 'fadeSlide';
+
+// ── Easing (shared shapes with the text DUI) ────────────────────────────────
+const easeInOut = t => t * t * (3 - 2 * t);
+const easeOut   = t => 1 - (1 - t) * (1 - t);
+const clamp     = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
+function easeOutElastic(t) {
+    if (t <= 0) return 0; if (t >= 1) return 1;
+    return Math.pow(2, -10 * t) * Math.sin((t * 10 - 0.75) * (2 * Math.PI / 3)) + 1;
+}
+
+function setUrl(url) {
+    if (url === currentUrl) return;
+    currentUrl = url || '';
+    img.src    = currentUrl;
+    // Mask the tint with the same picture so the gradient only tints opaque pixels.
+    const m = currentUrl ? `url("${currentUrl}")` : 'none';
+    tint.style.webkitMaskImage = m;
+    tint.style.maskImage       = m;
+}
+
+// ── Container-level animations ──────────────────────────────────────────────
+// Each returns a transform descriptor {op, tx, ty, sc, rot} so pulse + filters
+// compose on top without fighting. Images have no letters, so the per-letter
+// text anims collapse to a fade; two image-only anims (pop, spin) are added.
+function animFadeSlide(rf, total, ai, ao) {
+    let op, tx;
+    if      (rf < ai)         { const t = easeInOut(rf / ai);                          op = t; tx = (1 - t) * -40; }
+    else if (rf > total - ao) { const t = easeInOut(clamp((total - rf) / ao, 0, 1));   op = t; tx = (1 - t) * 40; }
+    else                      { op = 1; tx = 0; }
+    return { op, tx, ty: 0, sc: 1, rot: 0 };
+}
+function animScaleUp(rf, total, ai, ao) {
+    let op, sc;
+    if      (rf < ai)         { const t = easeOut(rf / ai);                            op = t; sc = 0.3 + t * 0.7; }
+    else if (rf > total - ao) { const t = easeInOut(clamp((total - rf) / ao, 0, 1));   op = t; sc = 1 + (1 - t) * 0.5; }
+    else                      { op = 1; sc = 1; }
+    return { op, tx: 0, ty: 0, sc, rot: 0 };
+}
+function animScaleDown(rf, total, ai, ao) {
+    let op, sc;
+    if      (rf < ai)         { const t = easeOut(rf / ai);                            op = t; sc = 2 - t; }
+    else if (rf > total - ao) { const t = easeInOut(clamp((total - rf) / ao, 0, 1));   op = t; sc = t; }
+    else                      { op = 1; sc = 1; }
+    return { op, tx: 0, ty: 0, sc, rot: 0 };
+}
+function animRise(rf, total, ai, ao) {
+    let op, ty;
+    if      (rf < ai)         { const t = easeOutElastic(rf / ai); op = clamp(rf / ai * 2, 0, 1); ty = (1 - t) * 60; }
+    else if (rf > total - ao) { const t = easeInOut(clamp((total - rf) / ao, 0, 1));   op = t; ty = (1 - t) * -30; }
+    else                      { op = 1; ty = 0; }
+    return { op, tx: 0, ty, sc: 1, rot: 0 };
+}
+// Image-only: elastic pop-in.
+function animPop(rf, total, ai, ao) {
+    let op, sc;
+    if      (rf < ai)         { const t = rf / ai;                                     op = clamp(t * 2, 0, 1); sc = 0.2 + easeOutElastic(t) * 0.8; }
+    else if (rf > total - ao) { const t = easeInOut(clamp((total - rf) / ao, 0, 1));   op = t; sc = 0.4 + t * 0.6; }
+    else                      { op = 1; sc = 1; }
+    return { op, tx: 0, ty: 0, sc, rot: 0 };
+}
+// Image-only: spin-in.
+function animSpin(rf, total, ai, ao) {
+    let op, sc, rot;
+    if      (rf < ai)         { const t = easeOut(rf / ai);                            op = t; sc = 0.5 + t * 0.5; rot = (1 - t) * -180; }
+    else if (rf > total - ao) { const t = easeInOut(clamp((total - rf) / ao, 0, 1));   op = t; sc = 0.5 + t * 0.5; rot = (1 - t) * 180; }
+    else                      { op = 1; sc = 1; rot = 0; }
+    return { op, tx: 0, ty: 0, sc, rot };
+}
+
+const ANIMS = {
+    fadeSlide:  animFadeSlide,
+    scaleUp:    animScaleUp,
+    scaleDown:  animScaleDown,
+    rise:       animRise,
+    pop:        animPop,
+    spin:       animSpin,
+    // Text-only per-letter anims have no image equivalent — fall back to fade.
+    letterPop:  animFadeSlide,
+    typewriter: animFadeSlide,
+    wave:       animFadeSlide,
+    scatter:    animFadeSlide,
+};
+
+function processImage(data) {
+    if (data.imageUrl !== undefined) setUrl(data.imageUrl);
+    if (data.animation !== undefined) currentAnim = data.animation;
+
+    const rf    = data.relFrame    || 0;
+    const total = data.totalFrames || 1;
+    const ai    = Math.max(0.5, data.animIn  || 15);
+    const ao    = Math.max(0.5, data.animOut || 15);
+
+    const a = (ANIMS[currentAnim] || animFadeSlide)(rf, total, ai, ao);
+
+    // Pulse — gentle breathing scale during the hold. Deterministic on relFrame
+    // so it matches across scrub / playback / export.
+    let sc = a.sc;
+    if (data.pulse) {
+        const spd = Math.max(2, data.pulseSpeed || 60);
+        sc *= 1 + Math.sin((rf / spd) * Math.PI * 2) * 0.05;
+    }
+
+    container.style.opacity   = a.op;
+    container.style.transform = `translate(${a.tx}px, ${a.ty}px) scale(${sc}) rotate(${a.rot}deg)`;
+
+    // Filters: hue-cycle (color shift) + glow + drop shadow.
+    const f = [];
+    if (data.colorShift) {
+        const spd = Math.max(2, data.colorShiftSpeed || 60);
+        f.push(`hue-rotate(${(rf / spd) * 360}deg)`);
+    }
+    if (data.glow)   f.push('drop-shadow(0 0 6px rgba(255,255,255,0.85)) drop-shadow(0 0 14px rgba(255,255,255,0.5))');
+    if (data.shadow) f.push('drop-shadow(3px 4px 5px rgba(0,0,0,0.7))');
+    img.style.filter = f.join(' ');
+
+    // Gradient tint overlay (masked to the image alpha; fades with the image).
+    if (data.gradient) {
+        tint.style.background = `linear-gradient(to bottom, ${data.gradientFrom || '#ffd966'}, ${data.gradientTo || '#c08a1f'})`;
+        tint.style.opacity    = 0.85 * a.op;
+    } else {
+        tint.style.opacity = 0;
+    }
+}
+
+function hide() {
+    container.style.opacity   = '0';
+    container.style.transform = '';
+    img.style.filter          = '';
+    tint.style.opacity        = 0;
+}
+
+window.addEventListener('message', (e) => {
+    const d = e.data;
+    if (!d || !d.action) return;
+    if      (d.action === 'processImage') processImage(d);
+    else if (d.action === 'hide')         hide();
+    else if (d.action === 'init') {
+        if (d.imageUrl !== undefined) setUrl(d.imageUrl);
+        if (d.animation !== undefined) currentAnim = d.animation;
+        hide();
+    }
+});
+</script>
+</body>
+</html>

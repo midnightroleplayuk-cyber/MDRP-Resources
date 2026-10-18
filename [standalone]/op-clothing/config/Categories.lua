@@ -10,7 +10,7 @@ Config.Categories = {
     -- -- Clothing (components) --------------------------------------------------
     { id = 'jacket',     module = 'clothing', kind = 'component', index = 11, texture = true, icon = 'shirt',              labelKey = 'category.jacket',     order = 10 },
     { id = 'undershirt', module = 'clothing', kind = 'component', index = 8,  texture = true, noneDrawable = 15, icon = 'shirt', labelKey = 'category.undershirt', order = 20 },
-    { id = 'torso',      module = 'clothing', kind = 'component', index = 3,  texture = true, icon = 'shirt',              labelKey = 'category.torso',      order = 30 },
+    { id = 'torso',      module = 'clothing', kind = 'component', index = 3,  texture = true, icon = 'shirt',              labelKey = 'category.torso',      order = 30 }, -- arms / gloves
     { id = 'pants',      module = 'clothing', kind = 'component', index = 4,  texture = true, icon = 'rectangle-vertical', labelKey = 'category.pants',      order = 40 },
     { id = 'shoes',      module = 'clothing', kind = 'component', index = 6,  texture = true, icon = 'footprints',         labelKey = 'category.shoes',      order = 50 },
     { id = 'bag',        module = 'clothing', kind = 'component', index = 5,  texture = true, noneDrawable = 0, icon = 'backpack', labelKey = 'category.bag', order = 60 },

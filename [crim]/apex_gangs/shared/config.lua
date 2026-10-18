@@ -438,7 +438,7 @@ Config.occupation = {
 -- GRAFFITI — standalone tagging (ported from sa_spray scaleform).
 -- ═══════════════════════════════════════════════════════════
 Config.graffiti = {
-    enabled         = true,
+    enabled         = false,
     item            = 'spraycan',   -- required item to spray (false = none)
     removerItem     = 'spray_remover',
     consumeItem     = false,        -- consume one item per spray

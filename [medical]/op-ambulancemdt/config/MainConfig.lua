@@ -39,9 +39,9 @@ Config.Debug  = false                 -- true = verbose debug output in console.
 
 Config.CurrencySettings = {
     -- https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/NumberFormat
-    currency = "USD",
+    currency = "GBP",
     style = "currency",
-    format = "en-US"
+    format = "en-GB"
 }
 
 -- ──────────────────────────────────────────────────────────────────────────────

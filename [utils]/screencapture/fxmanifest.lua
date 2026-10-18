@@ -1,6 +1,6 @@
 fx_version 'bodacious'
 
-version '0.17.0'
+version '0.17.2'
 
 game "gta5"
 
@@ -18,7 +18,7 @@ files {
 provide 'screenshot-basic'
 
 -- use 'nui' if you're having trouble with uploads
-protocol 'http'
+protocol 'nui'
 
 -- bytes per second for nui protocol
 -- change this as you like
