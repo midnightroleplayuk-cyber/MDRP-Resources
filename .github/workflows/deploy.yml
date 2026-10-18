@@ -28,4 +28,5 @@ jobs:
           ssh -i ~/.ssh/id_ed25519 -p "$VPS_PORT" \
             -o IdentitiesOnly=yes \
             -o BatchMode=yes \
-            "$VPS_USER@$VPS_HOST" "Write-Output 'SSH connection successful'"
+            "$VPS_USER@$VPS_HOST" "echo SSH connection successful"
+
