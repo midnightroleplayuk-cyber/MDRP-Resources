@@ -7,10 +7,10 @@ on:
   workflow_dispatch:
 
 jobs:
-  test-connection:
+  deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Test SSH connection
+      - name: Configure SSH
         env:
           VPS_HOST: ${{ secrets.VPS_HOST }}
           VPS_USER: ${{ secrets.VPS_USER }}
@@ -25,8 +25,18 @@ jobs:
           chmod 600 ~/.ssh/id_ed25519
           printf '%s\n' "$VPS_KNOWN_HOSTS" > ~/.ssh/known_hosts
           chmod 600 ~/.ssh/known_hosts
-          ssh -i ~/.ssh/id_ed25519 -p "$VPS_PORT" \
+
+      - name: Run deployment script on VPS
+        env:
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+          VPS_USER: ${{ secrets.VPS_USER }}
+          VPS_PORT: ${{ secrets.VPS_PORT }}
+        run: |
+          set -eu
+          ssh -i ~/.ssh/id_ed25519 \
+            -p "$VPS_PORT" \
             -o IdentitiesOnly=yes \
             -o BatchMode=yes \
-            "$VPS_USER@$VPS_HOST" "echo SSH connection successful"
+            "$VPS_USER@$VPS_HOST" \
+            "powershell.exe -NoProfile -NonInteractive -ExecutionPolicy Bypass -File 'C:\Users\Administrator\Desktop\devserver\resources\scripts\deploy.ps1'"
 
