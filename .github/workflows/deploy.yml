@@ -12,9 +12,6 @@ jobs:
     steps:
       - name: Configure SSH
         env:
-          VPS_HOST: ${{ secrets.VPS_HOST }}
-          VPS_USER: ${{ secrets.VPS_USER }}
-          VPS_PORT: ${{ secrets.VPS_PORT }}
           VPS_SSH_KEY: ${{ secrets.VPS_SSH_KEY }}
           VPS_KNOWN_HOSTS: ${{ secrets.VPS_KNOWN_HOSTS }}
         run: |
@@ -38,5 +35,4 @@ jobs:
             -o IdentitiesOnly=yes \
             -o BatchMode=yes \
             "$VPS_USER@$VPS_HOST" \
-            "powershell.exe -NoProfile -NonInteractive -ExecutionPolicy Bypass -File 'C:\Users\Administrator\Desktop\devserver\resources\scripts\deploy.ps1'"
-
+            "powershell.exe -NoProfile -NonInteractive -ExecutionPolicy Bypass -File C:/Users/Administrator/Desktop/devserver/resources/scripts/deploy.ps1"
