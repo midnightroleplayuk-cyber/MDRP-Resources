@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Menu</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- ?v= is the resource version: CEF caches NUI files by URL, and without
+         it an updated panel could keep running the previous build's script
+         until the client's cache dropped it. Bumped with every release. -->
+    <link rel="stylesheet" href="styles.css?v=2.2.15">
+</head>
+<body>
+
+    <!-- ==========================================================
+         SIDE PANEL — single right-aligned menu
+         ========================================================== -->
+    <!-- tabindex="-1" so script can focus it (see claimKeyboardFocus) without
+         putting it in the tab order. Without a focused element CEF sends no
+         keydown to the document and the Alt toggle needs a click first. -->
+    <div id="side-panel" class="side-panel hidden" tabindex="-1">
+
+        <header class="panel-header" id="panel-header" title="Drag to move">
+            <!-- Centred grab handle. Replaces the grip dots that used to sit
+                 cramped against the brand mark; a bar at the top edge is the
+                 affordance people already know from sheets and panels. -->
+            <span class="panel-handle" aria-hidden="true"></span>
+            <div class="panel-brand">
+                <div class="brand-mark">
+                    <i class="fa-solid fa-shield-halved"></i>
+                </div>
+                <div class="brand-text">
+                    <span class="brand-eyebrow">Administration</span>
+                    <span class="brand-title" id="panel-title">Admin Menu</span>
+                </div>
+            </div>
+            <button class="panel-icon-btn" id="panel-reset" title="Reset position">
+                <i class="fa-solid fa-arrow-rotate-left"></i>
+            </button>
+            <button class="panel-close" id="close-panel" title="Close (Esc)">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </header>
+
+        <div class="panel-breadcrumb" id="panel-breadcrumb"></div>
+
+        <section class="panel-subhead" id="panel-subhead" hidden>
+            <span class="subhead-label" id="panel-description"></span>
+        </section>
+
+        <div class="panel-body">
+            <div class="option-list" id="panel-content"></div>
+        </div>
+
+        <footer class="panel-footer">
+            <span class="footer-hint">
+                <kbd>ESC</kbd> Close
+            </span>
+            <span class="footer-hint footer-drag">
+                <i class="fa-solid fa-up-down-left-right"></i> Drag the top bar to move
+            </span>
+            <span class="footer-brand">Apex</span>
+        </footer>
+    </div>
+
+    <!-- ==========================================================
+         REPORTS CENTER — wide overlay (admins) / compact (players)
+         ========================================================== -->
+    <div id="reports-overlay" class="reports-overlay hidden">
+        <div class="reports-shell">
+
+            <aside class="reports-side">
+                <div class="reports-side-head">
+                    <div class="brand-mark">
+                        <i class="fa-solid fa-headset"></i>
+                    </div>
+                    <div>
+                        <div class="brand-eyebrow">Support</div>
+                        <div class="brand-title">Reports Center</div>
+                    </div>
+                </div>
+
+                <nav class="reports-nav" id="reports-nav">
+                    <button class="rep-nav-item active" data-view="inbox">
+                        <i class="fa-solid fa-inbox"></i>
+                        <span>Active reports</span>
+                        <span class="rep-nav-count" id="rep-nav-count">0</span>
+                    </button>
+                    <button class="rep-nav-item" data-view="resolved">
+                        <i class="fa-solid fa-check-double"></i>
+                        <span>Resolved</span>
+                    </button>
+                    <button class="rep-nav-item" data-view="new" id="rep-nav-new">
+                        <i class="fa-solid fa-pen-to-square"></i>
+                        <span>New report</span>
+                    </button>
+                </nav>
+
+                <div class="reports-side-foot">
+                    <label class="apex-switch-row hidden" id="staff-mode-row">
+                        <div>
+                            <strong>Reports mode</strong>
+                            <small>Receive live alerts</small>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="staff-mode-toggle">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </label>
+                    <button class="rep-side-action hidden" id="hud-position-btn">
+                        <i class="fa-solid fa-up-down-left-right"></i>
+                        <span>Position HUD</span>
+                    </button>
+                    <button class="rep-side-close" id="reports-close">
+                        <i class="fa-solid fa-xmark"></i> Close
+                    </button>
+                </div>
+            </aside>
+
+            <main class="reports-main">
+
+                <!-- ── INBOX (admin: list of open reports) ───────── -->
+                <section class="reports-view" data-view="inbox">
+                    <header class="reports-view-head">
+                        <div>
+                            <h2>Active reports</h2>
+                            <span class="muted" id="inbox-subtitle">Pending support requests</span>
+                        </div>
+                        <div class="reports-filter">
+                            <button class="hf-pill active" data-filter="all">All</button>
+                            <button class="hf-pill" data-filter="player_report">Player</button>
+                            <button class="hf-pill" data-filter="question">Question</button>
+                            <button class="hf-pill" data-filter="bug">Bug</button>
+                        </div>
+                    </header>
+                    <div class="reports-list" id="reports-list"></div>
+                </section>
+
+                <!-- ── RESOLVED ────────────────────────────────── -->
+                <section class="reports-view" data-view="resolved" hidden>
+                    <header class="reports-view-head">
+                        <div>
+                            <h2>Resolved reports</h2>
+                            <span class="muted">History of closed cases</span>
+                        </div>
+                    </header>
+                    <div class="reports-list" id="resolved-list"></div>
+                </section>
+
+                <!-- ── NEW REPORT (player form) ──────────────────── -->
+                <section class="reports-view" data-view="new" hidden>
+                    <header class="reports-view-head">
+                        <div>
+                            <h2>Submit a report</h2>
+                            <span class="muted">We will reach you in-game once a staff member picks it up</span>
+                        </div>
+                    </header>
+                    <div class="reports-form">
+                        <div class="form-group">
+                            <label>Category</label>
+                            <div class="cat-grid">
+                                <label class="cat-tile">
+                                    <input type="radio" name="rep-cat" value="player_report" checked>
+                                    <i class="fa-solid fa-flag"></i>
+                                    <span>Player report</span>
+                                </label>
+                                <label class="cat-tile">
+                                    <input type="radio" name="rep-cat" value="question">
+                                    <i class="fa-solid fa-circle-question"></i>
+                                    <span>Question</span>
+                                </label>
+                                <label class="cat-tile">
+                                    <input type="radio" name="rep-cat" value="bug">
+                                    <i class="fa-solid fa-bug"></i>
+                                    <span>Bug report</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Subject</label>
+                            <input type="text" id="rep-subject" placeholder="Short summary…" maxlength="100">
+                        </div>
+                        <div class="form-group">
+                            <label>Details</label>
+                            <textarea id="rep-details" rows="6" placeholder="Describe the issue with as much detail as possible…" maxlength="800"></textarea>
+                        </div>
+                        <div class="form-actions">
+                            <button class="modal-btn ghost" id="rep-form-cancel">Cancel</button>
+                            <button class="modal-btn primary" id="rep-form-submit" disabled>
+                                <i class="fa-solid fa-paper-plane"></i> Submit report
+                            </button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ── DETAIL / CHAT ─────────────────────────────── -->
+                <section class="reports-view" data-view="detail" hidden>
+                    <header class="reports-view-head reports-detail-head">
+                        <button class="icon-btn ghost" id="rep-detail-back" title="Back">
+                            <i class="fa-solid fa-arrow-left"></i>
+                        </button>
+                        <div class="rep-detail-meta">
+                            <div class="rep-detail-titlerow">
+                                <h2 id="rep-detail-title">Report #—</h2>
+                                <span class="rep-cat-badge" id="rep-detail-cat">Player</span>
+                                <span class="rep-status" id="rep-detail-status">Waiting</span>
+                            </div>
+                            <span class="muted" id="rep-detail-sub"></span>
+                        </div>
+                        <div class="rep-detail-actions" id="rep-detail-actions">
+                            <button class="modal-btn ghost" id="rep-detail-tp">
+                                <i class="fa-solid fa-location-arrow"></i> TP
+                            </button>
+                            <button class="modal-btn ghost" id="rep-detail-bring">
+                                <i class="fa-solid fa-person-arrow-down-to-line"></i> Bring
+                            </button>
+                            <button class="modal-btn primary" id="rep-detail-assist">
+                                <i class="fa-solid fa-headset"></i> Assist
+                            </button>
+                            <button class="modal-btn danger" id="rep-detail-resolve">
+                                <i class="fa-solid fa-check"></i> Resolve
+                            </button>
+                        </div>
+                    </header>
+
+                    <div class="chat-shell">
+                        <div class="chat-stream" id="chat-stream"></div>
+
+                        <div class="chat-attach-preview hidden" id="chat-attach-preview">
+                            <i class="fa-solid fa-image"></i>
+                            <span id="chat-attach-name">screenshot.png</span>
+                            <button class="icon-btn ghost" id="chat-attach-clear" title="Remove">
+                                <i class="fa-solid fa-xmark"></i>
+                            </button>
+                        </div>
+
+                        <div class="chat-input-row">
+                            <button class="icon-btn ghost" id="chat-screenshot" title="Capture & send screenshot">
+                                <i class="fa-solid fa-camera"></i>
+                            </button>
+                            <input type="text" id="chat-input" placeholder="Type a message and press Enter…" maxlength="500">
+                            <button class="modal-btn primary" id="chat-send">
+                                <i class="fa-solid fa-paper-plane"></i>
+                            </button>
+                        </div>
+                    </div>
+                </section>
+
+            </main>
+        </div>
+    </div>
+
+    <!-- ==========================================================
+         HUD POSITIONING MODE — banner shown while admin drags HUD
+         ========================================================== -->
+    <div id="hud-position-bar" class="hud-position-bar hidden">
+        <div class="hud-position-card">
+            <i class="fa-solid fa-up-down-left-right"></i>
+            <div class="hud-position-text">
+                <strong>Positioning Reports HUD</strong>
+                <small>Drag the HUD to where you want it · click Done to save</small>
+            </div>
+            <button class="modal-btn ghost" id="hud-position-reset">
+                <i class="fa-solid fa-arrow-rotate-left"></i> Reset
+            </button>
+            <button class="modal-btn primary" id="hud-position-done">
+                <i class="fa-solid fa-check"></i> Done
+            </button>
+        </div>
+    </div>
+
+    <!-- ==========================================================
+         REPORTS MODE HUD — draggable overlay (position persisted)
+         ========================================================== -->
+    <div id="staff-hud" class="staff-hud hidden">
+        <div class="staff-hud-head" id="staff-hud-handle" title="Drag to move">
+            <i class="fa-solid fa-grip-vertical staff-hud-grip"></i>
+            <i class="fa-solid fa-headset"></i>
+            <span>REPORTS MODE</span>
+            <span class="staff-hud-count" id="staff-hud-count">0</span>
+            <button class="staff-hud-reset" id="staff-hud-reset" title="Reset position">
+                <i class="fa-solid fa-arrow-rotate-left"></i>
+            </button>
+        </div>
+        <div class="staff-hud-list" id="staff-hud-list"></div>
+        <div class="staff-hud-foot">
+            <span><kbd>F9</kbd> Open</span>
+            <span><kbd>F10</kbd> Resolve</span>
+        </div>
+    </div>
+
+    <!-- ==========================================================
+         SCREENSHOT COMPOSER — instructions overlay
+         The player aims their normal gameplay camera and decides
+         when to capture. No detached/free cam.
+         ========================================================== -->
+    <div id="freecam-hud" class="freecam-hud hidden">
+        <div class="freecam-card">
+            <div class="freecam-title">
+                <i class="fa-solid fa-camera-retro"></i>
+                <span>Compose your screenshot</span>
+            </div>
+            <p class="freecam-hint">
+                Look around with the mouse, then capture when you're framed.
+            </p>
+            <div class="freecam-actions">
+                <span class="freecam-action ok">
+                    <kbd>Enter</kbd> Capture &amp; send
+                </span>
+                <span class="freecam-action danger">
+                    <kbd>Esc</kbd> Cancel
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==========================================================
+         DIALOG MODAL
+         ========================================================== -->
+    <div id="dialog-modal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="dialog-title">Dialog Title</h3>
+                <button class="close-modal" id="close-dialog">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <div class="modal-body" id="dialog-content"></div>
+            <div class="modal-buttons">
+                <button class="modal-btn ghost" id="dialog-cancel">Cancel</button>
+                <button class="modal-btn primary" id="dialog-confirm">Confirm</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==========================================================
+         TEXT UI
+         ========================================================== -->
+    <div id="text-ui" class="text-ui hidden">
+        <i id="text-ui-icon" class="fas fa-info-circle"></i>
+        <span id="text-ui-text">Notification text here</span>
+    </div>
+
+    <!-- Lazy-mounted admin panel iframe. Hidden until panel:open fires.
+         Using an iframe keeps the admin panel's CSS/Leaflet completely
+         isolated from the quick menu's styles. -->
+    <iframe id="admin-panel-frame" class="hidden"
+            src="admin/index.html?v=2.2.15"
+            style="position:fixed;inset:0;width:100%;height:100%;border:0;background:transparent;z-index:1000"
+            allow="clipboard-read; clipboard-write"></iframe>
+
+    <!-- Announce slide overlay. The client triggers `announce:show`
+         which mounts a slide-in card here at the chosen 3x3 screen
+         zone (top-left, top-center, …, bottom-right). -->
+    <div id="ann-root" class="ann-root" aria-live="polite"></div>
+
+    <script src="nui://game/ui/jquery.js"></script>
+    <script src="script.js?v=2.2.15"></script>
+    <script>
+        // Bridge: when client triggers panel:open we show the iframe and
+        // forward the message into it. panel:close hides the iframe.
+        (function () {
+            const frame = document.getElementById('admin-panel-frame');
+            window.addEventListener('message', (e) => {
+                const d = e.data || {};
+                if (d.action === 'panel:open') {
+                    frame.classList.remove('hidden');
+                    // The iframe loads its own listener; relay the message
+                    // once the document is ready.
+                    const send = () => {
+                        frame.contentWindow.postMessage(d, '*');
+                        // Keyboard focus goes to no document until a click;
+                        // hand it to the panel so typing works at once.
+                        requestAnimationFrame(() => {
+                            try { frame.contentWindow.focus(); } catch (_) {}
+                        });
+                    };
+                    if (frame.contentDocument && frame.contentDocument.readyState === 'complete') send();
+                    else frame.addEventListener('load', send, { once: true });
+                } else if (d.action === 'panel:close') {
+                    frame.classList.add('hidden');
+                    if (frame.contentWindow) frame.contentWindow.postMessage(d, '*');
+                } else if (d.action && d.action.indexOf('panel:') === 0 && frame.contentWindow) {
+                    // Forward every panel:* message into the iframe.
+                    frame.contentWindow.postMessage(d, '*');
+                }
+            });
+        })();
+    </script>
+    <script>
+        // Monitoring — frames of THIS client's screen for an admin watching
+        // it (client/adminpanel.lua asks, spec:frame gets the answer).
+        //
+        // spec:grab renders the live game view straight into a stream-sized
+        // canvas, so only a ~480p image is read back and encoded. It is the
+        // same game-view hook screenshot-basic uses, minus its full-screen
+        // readback and encode, which hitched the watched player every frame.
+        // spec:shrink scales down a frame that came from screenshot-basic,
+        // the fallback when spec:grab cannot work on this client.
+        (function () {
+            const RES = typeof GetParentResourceName === 'function' ? GetParentResourceName() : 'apex_adminmenu';
+            const reply = (seq, uri, error) => fetch(`https://${RES}/spec:frame`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ seq, uri: uri || '', error: error || null })
+            }).catch(() => {});
+
+            function frameSize(width) {
+                const w = Math.max(1, Math.min(width || 854, window.innerWidth || 854));
+                const h = Math.max(1, Math.round(w * (window.innerHeight || 480) / (window.innerWidth || 854)));
+                return [Math.round(w), h];
+            }
+
+            const NO_HOOK = 'game view hook unavailable';
+            let view = null;
+            function gameView() {
+                if (view) return view;
+                const canvas = document.createElement('canvas');
+                const gl = canvas.getContext('webgl', { preserveDrawingBuffer: true, antialias: false, alpha: false, depth: false });
+                if (!gl) throw new Error('WebGL unavailable');
+                canvas.addEventListener('webglcontextlost', () => { view = null; });
+
+                const shader = (type, src) => {
+                    const s = gl.createShader(type);
+                    gl.shaderSource(s, src);
+                    gl.compileShader(s);
+                    return s;
+                };
+                const prog = gl.createProgram();
+                gl.attachShader(prog, shader(gl.VERTEX_SHADER,
+                    'attribute vec2 p; varying vec2 uv;' +
+                    'void main() { uv = p * 0.5 + 0.5; gl_Position = vec4(p, 0.0, 1.0); }'));
+                gl.attachShader(prog, shader(gl.FRAGMENT_SHADER,
+                    'precision mediump float; varying vec2 uv; uniform sampler2D t;' +
+                    'void main() { gl_FragColor = vec4(texture2D(t, uv).rgb, 1.0); }'));
+                gl.linkProgram(prog);
+                if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) throw new Error('shader link failed');
+                gl.useProgram(prog);
+
+                gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer());
+                gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]), gl.STATIC_DRAW);
+                const loc = gl.getAttribLocation(prog, 'p');
+                gl.enableVertexAttribArray(loc);
+                gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
+
+                // A 1x1 pure-blue texture. The three WRAP_T writes in a row are
+                // the knock that makes FiveM back it with the live game frame.
+                // If the knock doesn't take, every pixel stays pure blue, which
+                // grab() checks for rather than streaming blue squares.
+                gl.bindTexture(gl.TEXTURE_2D, gl.createTexture());
+                gl.pixelStorei(gl.UNPACK_ALIGNMENT, 1);
+                gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, new Uint8Array([0, 0, 255, 255]));
+                gl.texParameterf(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+                gl.texParameterf(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+                gl.texParameterf(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+                gl.texParameterf(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+                gl.texParameterf(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.MIRRORED_REPEAT);
+                gl.texParameterf(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.REPEAT);
+                gl.texParameterf(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+
+                view = { canvas, gl, verified: false };
+                return view;
+            }
+
+            function grab(d) {
+                const v = gameView();
+                const gl = v.gl;
+                const [w, h] = frameSize(d.width);
+                if (v.canvas.width !== w || v.canvas.height !== h) {
+                    v.canvas.width = w;
+                    v.canvas.height = h;
+                }
+                gl.viewport(0, 0, w, h);
+                gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+
+                if (!v.verified) {
+                    const px = new Uint8Array(4);
+                    const onlyBlue = [[0.5, 0.5], [0.2, 0.2], [0.8, 0.8], [0.2, 0.8], [0.8, 0.2]].every(([fx, fy]) => {
+                        gl.readPixels(Math.floor(w * fx), Math.floor(h * fy), 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, px);
+                        return px[0] === 0 && px[1] === 0 && px[2] === 255;
+                    });
+                    if (onlyBlue) throw new Error(NO_HOOK);
+                    v.verified = true;
+                }
+                return v.canvas.toDataURL('image/jpeg', d.quality || 0.5);
+            }
+
+            const shrinkCanvas = document.createElement('canvas');
+            function shrink(d) {
+                const img = new Image();
+                img.onload = () => {
+                    try {
+                        const scale = Math.min(1, (d.width || 854) / img.naturalWidth);
+                        shrinkCanvas.width  = Math.max(1, Math.round(img.naturalWidth * scale));
+                        shrinkCanvas.height = Math.max(1, Math.round(img.naturalHeight * scale));
+                        shrinkCanvas.getContext('2d').drawImage(img, 0, 0, shrinkCanvas.width, shrinkCanvas.height);
+                        reply(d.seq, shrinkCanvas.toDataURL('image/jpeg', d.quality || 0.5));
+                    } catch (_) {
+                        reply(d.seq, d.uri);
+                    }
+                };
+                // Could not decode it: the full frame still beats no frame.
+                img.onerror = () => reply(d.seq, d.uri);
+                img.src = d.uri;
+            }
+
+            // The game frame may only be bound to the texture a frame or two
+            // after the knock, so a brand-new view gets a few tries before
+            // this client is written off as unable to capture.
+            function attempt(d, triesLeft) {
+                let uri = null, error = null;
+                try { uri = grab(d); } catch (ex) { error = String((ex && ex.message) || ex); }
+                if (error === NO_HOOK && triesLeft > 0) {
+                    setTimeout(() => attempt(d, triesLeft - 1), 100);
+                    return;
+                }
+                reply(d.seq, uri, error);
+            }
+
+            window.addEventListener('message', (e) => {
+                const d = e.data || {};
+                if (d.action === 'spec:grab') {
+                    attempt(d, 3);
+                } else if (d.action === 'spec:shrink') {
+                    shrink(d);
+                }
+            });
+        })();
+    </script>
+</body>
+</html>

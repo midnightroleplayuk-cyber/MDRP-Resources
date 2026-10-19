@@ -1,0 +1,1096 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apex Admin Panel</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin>
+    <link rel="stylesheet" href="styles.css?v=2.2.15">
+</head>
+<body>
+
+<div id="ap-root" class="ap-root hidden">
+  <div class="ap-shell">
+
+    <!-- ============ SIDEBAR ============ -->
+    <aside class="ap-side">
+        <div class="ap-brand">
+            <div class="ap-brand-mark"><i class="fa-solid fa-shield-halved"></i></div>
+            <div class="ap-brand-text">
+                <span class="ap-eyebrow">Apex</span>
+                <span class="ap-title">Admin Panel</span>
+            </div>
+        </div>
+
+        <nav class="ap-nav" id="ap-nav">
+            <button class="ap-nav-item active" data-page="home">    <i class="fa-solid fa-house"></i>          <span>Home</span></button>
+            <button class="ap-nav-item"        data-page="players"> <i class="fa-solid fa-users"></i>          <span>Players</span></button>
+            <button class="ap-nav-item"        data-page="monitoring"><i class="fa-solid fa-eye"></i>          <span>Monitoring</span></button>
+            <button class="ap-nav-item"        data-page="moderation"><i class="fa-solid fa-gavel"></i>        <span>Moderation</span></button>
+            <button class="ap-nav-item"        data-page="chats">   <i class="fa-solid fa-comments"></i>       <span>Chats</span></button>
+            <button class="ap-nav-item"        data-page="items">   <i class="fa-solid fa-boxes-stacked"></i>  <span>Items</span></button>
+            <button class="ap-nav-item"        data-page="vehicles"><i class="fa-solid fa-car"></i>            <span>Vehicles</span></button>
+            <button class="ap-nav-item"        data-page="console"> <i class="fa-solid fa-terminal"></i>       <span>Console</span></button>
+            <button class="ap-nav-item"        data-page="events">  <i class="fa-solid fa-bolt"></i>           <span>Event Logs</span></button>
+            <button class="ap-nav-item"        data-page="staff">   <i class="fa-solid fa-id-card-clip"></i>   <span>Staff</span></button>
+            <button class="ap-nav-item"        data-page="jobs">    <i class="fa-solid fa-briefcase"></i>      <span>Jobs</span></button>
+            <button class="ap-nav-item"        data-page="blips">   <i class="fa-solid fa-location-dot"></i>   <span>Blips</span></button>
+            <button class="ap-nav-item"        data-page="logs">    <i class="fa-solid fa-clock-rotate-left"></i><span>Logs</span></button>
+            <button class="ap-nav-item"        data-page="settings"><i class="fa-solid fa-sliders"></i>        <span>Settings</span></button>
+        </nav>
+
+        <div class="ap-side-foot">
+            <div class="ap-me">
+                <div class="ap-me-avatar" id="ap-me-avatar"></div>
+                <div class="ap-me-text">
+                    <strong id="ap-me-name">—</strong>
+                    <span id="ap-me-group">—</span>
+                    <small id="ap-version" class="ap-version" title="apex_adminmenu build running on this server"></small>
+                </div>
+            </div>
+            <div class="ap-side-foot-actions">
+                <button class="ap-side-collapse" id="ap-side-collapse" title="Collapse sidebar">
+                    <i class="fa-solid fa-angles-left"></i>
+                    <span>Collapse</span>
+                </button>
+                <button class="ap-close-btn" id="ap-close" title="Close">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+        </div>
+    </aside>
+
+    <!-- ============ MAIN ============ -->
+    <main class="ap-main" id="ap-main">
+
+        <!-- ============ GLOBAL TOPBAR (visible on every page) ============ -->
+        <header class="ap-topbar">
+            <div class="ap-topbar-left">
+                <span class="ap-tb-stat">
+                    <i class="fa-solid fa-users"></i>
+                    <strong>Players:</strong>
+                    <span id="tb-players">0/0</span>
+                </span>
+                <div class="ap-tb-search" id="tb-search-wrap">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input id="tb-search" placeholder="Search players, pages, jobs…" autocomplete="off">
+                    <span class="ap-tb-kbd">Ctrl + K</span>
+                    <!-- Results dropdown — populated by the search runtime. -->
+                    <div class="ap-tb-search-results" id="tb-search-results" hidden></div>
+                </div>
+                <button class="ap-btn primary ap-btn-sm" id="tb-announce">
+                    <i class="fa-solid fa-bullhorn"></i> Announce
+                </button>
+            </div>
+            <div class="ap-topbar-right">
+                <span class="ap-tb-uptime">
+                    <span class="ap-tb-dot"></span>
+                    <strong>Uptime:</strong>
+                    <span id="tb-uptime">—</span>
+                </span>
+                <div class="ap-tb-me">
+                    <span id="tb-me-name">—</span>
+                    <div class="ap-av" id="tb-me-av"></div>
+                </div>
+            </div>
+        </header>
+
+
+        <!-- ── HOME ─────────────────────────────────────────── -->
+        <section class="ap-page" data-page="home">
+            <header class="ap-page-head">
+                <div>
+                    <h2>Home</h2>
+                    <span class="ap-muted">Live map & server snapshot</span>
+                </div>
+                <div class="ap-quick-actions">
+                    <button class="ap-btn ghost" id="home-tp-id-btn"><i class="fa-solid fa-location-arrow"></i> Teleport to ID</button>
+                    <input type="number" id="home-tp-id" placeholder="Player ID" class="ap-input ap-input-sm">
+                    <button class="ap-btn primary" id="home-revive-circle"><i class="fa-solid fa-bed-pulse"></i> Revive in Circle</button>
+                </div>
+            </header>
+
+            <!-- KPI strip — kept minimal: just the metrics the user
+                 asked for. New today + memory join the always-useful
+                 players/staff counts. -->
+            <div class="ap-home-kpis" id="home-kpis">
+                <div class="ap-kpi-tile" data-kpi="players">
+                    <div class="ap-kpi-icon"><i class="fa-solid fa-users"></i></div>
+                    <div class="ap-kpi-meta">
+                        <span class="ap-kpi-label">Players online</span>
+                        <span class="ap-kpi-value" id="kpi-players">0 / 0</span>
+                    </div>
+                </div>
+                <div class="ap-kpi-tile" data-kpi="staff">
+                    <div class="ap-kpi-icon"><i class="fa-solid fa-shield-halved"></i></div>
+                    <div class="ap-kpi-meta">
+                        <span class="ap-kpi-label">Staff online</span>
+                        <span class="ap-kpi-value" id="kpi-staff">0</span>
+                    </div>
+                </div>
+                <div class="ap-kpi-tile" data-kpi="newtoday">
+                    <div class="ap-kpi-icon"><i class="fa-solid fa-user-plus"></i></div>
+                    <div class="ap-kpi-meta">
+                        <span class="ap-kpi-label">New players today</span>
+                        <span class="ap-kpi-value" id="kpi-new-today">0</span>
+                    </div>
+                </div>
+                <div class="ap-kpi-tile" data-kpi="mem">
+                    <div class="ap-kpi-icon"><i class="fa-solid fa-microchip"></i></div>
+                    <div class="ap-kpi-meta">
+                        <span class="ap-kpi-label">Memory</span>
+                        <span class="ap-kpi-value" id="kpi-mem">—</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="ap-home-grid">
+                <div class="ap-map-card">
+                    <div class="ap-map-tabs">
+                        <div class="ap-map-tabs-group">
+                            <button class="ap-tab active" data-map-tab="players">Players</button>
+                            <button class="ap-tab" data-map-tab="heatmap">Heatmap</button>
+                            <button class="ap-tab" data-map-tab="zones">Zones</button>
+                        </div>
+                        <div class="ap-map-filters">
+                            <select class="ap-input ap-input-sm" id="map-filter-mode">
+                                <option value="all">All players</option>
+                                <option value="staff">Only staff</option>
+                                <option value="job">By job…</option>
+                                <option value="vehicles">Vehicles only</option>
+                                <option value="players_vehicles">Players + Vehicles</option>
+                            </select>
+                            <select class="ap-input ap-input-sm" id="map-filter-job" style="display:none">
+                                <option value="">Pick a job…</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="ap-map-wrap">
+                        <div id="ap-map" class="ap-map"></div>
+                    </div>
+                </div>
+
+                <aside class="ap-home-side">
+                    <div class="ap-card ap-card-compact">
+                        <div class="ap-card-head">
+                            <i class="fa-solid fa-trash"></i>
+                            <div>
+                                <strong>Vehicle Delete</strong>
+                                <small>Auto-purges unused vehicles</small>
+                            </div>
+                        </div>
+                        <div class="ap-card-body">
+                            <span class="ap-kpi" id="vd-countdown">—</span>
+                            <small class="ap-muted">Next deletion</small>
+                            <button class="ap-btn ghost btn-block" id="vd-update"><i class="fa-solid fa-rotate"></i> Update</button>
+                        </div>
+                    </div>
+                    <div class="ap-card ap-card-compact">
+                        <div class="ap-card-head">
+                            <i class="fa-solid fa-clock"></i>
+                            <div>
+                                <strong>Server Time</strong>
+                                <small>In-game clock</small>
+                            </div>
+                        </div>
+                        <div class="ap-card-body">
+                            <span class="ap-kpi" id="st-clock">—</span>
+                            <button class="ap-btn ghost btn-block" id="st-update"><i class="fa-solid fa-rotate"></i> Update</button>
+                        </div>
+                    </div>
+                    <div class="ap-card ap-weather-card">
+                        <div class="ap-card-head">
+                            <i class="fa-solid fa-cloud-sun" id="wx-head-icon"></i>
+                            <div>
+                                <strong>Weather</strong>
+                                <small id="wx-state">—</small>
+                            </div>
+                        </div>
+                        <div class="ap-card-body">
+                            <div class="ap-wx-presets" id="wx-presets">
+                                <button class="ap-wx-chip" data-wx="EXTRASUNNY" title="Extra Sunny"><i class="fa-solid fa-sun"></i></button>
+                                <button class="ap-wx-chip" data-wx="CLEAR" title="Clear"><i class="fa-solid fa-cloud-sun"></i></button>
+                                <button class="ap-wx-chip" data-wx="CLOUDS" title="Clouds"><i class="fa-solid fa-cloud"></i></button>
+                                <button class="ap-wx-chip" data-wx="OVERCAST" title="Overcast"><i class="fa-solid fa-cloud-meatball"></i></button>
+                                <button class="ap-wx-chip" data-wx="RAIN" title="Rain"><i class="fa-solid fa-cloud-showers-heavy"></i></button>
+                                <button class="ap-wx-chip" data-wx="THUNDER" title="Thunder"><i class="fa-solid fa-cloud-bolt"></i></button>
+                                <button class="ap-wx-chip" data-wx="FOGGY" title="Foggy"><i class="fa-solid fa-smog"></i></button>
+                                <button class="ap-wx-chip" data-wx="SNOW" title="Snow"><i class="fa-solid fa-snowflake"></i></button>
+                                <button class="ap-wx-chip" data-wx="BLIZZARD" title="Blizzard"><i class="fa-solid fa-icicles"></i></button>
+                            </div>
+                            <!-- Hidden input — kept so the existing JS that reads
+                                 #wx-select keeps working even though the dropdown
+                                 was removed in favour of the chip grid above. -->
+                            <input type="hidden" id="wx-select" value="CLEAR">
+                        </div>
+                    </div>
+                    <div class="ap-card ap-latest-card">
+                        <div class="ap-card-head">
+                            <i class="fa-solid fa-clock-rotate-left"></i>
+                            <div>
+                                <strong>Latest Players</strong>
+                                <small>Most recent joins</small>
+                            </div>
+                        </div>
+                        <div class="ap-latest" id="home-latest"></div>
+                    </div>
+                </aside>
+            </div>
+        </section>
+
+        <!-- ── PLAYERS ──────────────────────────────────────── -->
+        <section class="ap-page" data-page="players" hidden>
+            <header class="ap-page-head">
+                <div><h2>Players</h2><span class="ap-muted">Online players</span></div>
+                <input type="search" class="ap-input" id="players-search" placeholder="Search by name, license:…">
+            </header>
+            <div class="ap-players-shell">
+                <div class="ap-players-list" id="players-list"></div>
+                <div class="ap-players-detail" id="players-detail">
+                    <div class="ap-empty"><i class="fa-regular fa-user"></i><br>Select a player</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ── MONITORING ───────────────────────────────────── -->
+        <section class="ap-page" data-page="monitoring" hidden>
+            <header class="ap-page-head">
+                <div>
+                    <h2>Monitoring</h2>
+                    <span class="ap-muted">Watch multiple players at once · <span id="mon-counter">0 active</span></span>
+                </div>
+                <div class="ap-quick-actions">
+                    <button class="ap-btn ghost" id="mon-stop-all"><i class="fa-solid fa-xmark"></i> Stop all</button>
+                </div>
+            </header>
+            <div class="ap-mon-shell">
+                <div class="ap-streams" id="mon-streams"></div>
+                <aside class="ap-mon-side">
+                    <div class="ap-mon-side-head">
+                        <input type="search" class="ap-input" id="mon-search" placeholder="Search players…">
+                    </div>
+                    <div class="ap-mon-side-list" id="mon-list"></div>
+                </aside>
+            </div>
+
+            <!-- Bottom action bar — context-aware actions on the currently
+                 selected stream. When no stream is selected, buttons stay
+                 disabled. The "selected" tile = last clicked stream. -->
+            <footer class="ap-mon-bottom">
+                <div class="ap-mon-bottom-target" id="mon-bottom-target">
+                    <div class="ap-av" id="mon-bottom-av"></div>
+                    <div class="ap-mon-bottom-info">
+                        <strong id="mon-bottom-name">No stream selected</strong>
+                        <small id="mon-bottom-sub">Pick one of the active streams above</small>
+                    </div>
+                </div>
+                <div class="ap-mon-bottom-group">
+                    <span class="ap-mon-bottom-label">Quick</span>
+                    <button class="ap-mon-bottom-btn" data-mon-act="spectate"><i class="fa-solid fa-eye"></i> Spectate</button>
+                    <button class="ap-mon-bottom-btn" data-mon-act="teleport"><i class="fa-solid fa-location-arrow"></i> TP to</button>
+                    <button class="ap-mon-bottom-btn" data-mon-act="bring"   ><i class="fa-solid fa-person-arrow-down-to-line"></i> Bring</button>
+                    <button class="ap-mon-bottom-btn" data-mon-act="revive"  ><i class="fa-solid fa-bed-pulse"></i> Revive</button>
+                    <button class="ap-mon-bottom-btn" data-mon-act="heal"    ><i class="fa-solid fa-heart"></i> Heal</button>
+                    <button class="ap-mon-bottom-btn" data-mon-act="freeze"  ><i class="fa-solid fa-snowflake"></i> Freeze</button>
+                </div>
+                <div class="ap-mon-bottom-group">
+                    <span class="ap-mon-bottom-label">Admin</span>
+                    <button class="ap-mon-bottom-btn warn"    data-mon-act="warn"><i class="fa-solid fa-triangle-exclamation"></i> Warn</button>
+                    <button class="ap-mon-bottom-btn warn"    data-mon-act="jail"><i class="fa-solid fa-handcuffs"></i> Jail</button>
+                    <button class="ap-mon-bottom-btn warn"    data-mon-act="kick"><i class="fa-solid fa-door-open"></i> Kick</button>
+                    <button class="ap-mon-bottom-btn danger"  data-mon-act="ban" ><i class="fa-solid fa-gavel"></i> Ban</button>
+                    <button class="ap-mon-bottom-btn"         data-mon-act="open"><i class="fa-solid fa-arrow-up-right-from-square"></i> Open profile</button>
+                </div>
+            </footer>
+        </section>
+
+        <!-- ── MODERATION ───────────────────────────────────── -->
+        <section class="ap-page" data-page="moderation" hidden>
+            <header class="ap-page-head">
+                <div><h2>Moderation</h2><span class="ap-muted">View and manage player bans, warnings, and jail sentences</span></div>
+                <div class="ap-quick-actions">
+                    <input type="search" class="ap-input" id="mod-search" placeholder="Search…">
+                    <button class="ap-btn primary" id="mod-create"><i class="fa-solid fa-plus"></i> Create Ban</button>
+                </div>
+            </header>
+            <div class="ap-tabs">
+                <button class="ap-tab active" data-mod-tab="bans">Bans</button>
+                <button class="ap-tab" data-mod-tab="warnings">Warnings</button>
+                <button class="ap-tab" data-mod-tab="jails">Jail Sentences</button>
+            </div>
+            <div class="ap-tablewrap"><table class="ap-table" id="mod-table"><thead></thead><tbody></tbody></table></div>
+        </section>
+
+        <!-- ── CHATS ────────────────────────────────────────── -->
+        <section class="ap-page" data-page="chats" hidden>
+            <header class="ap-page-head">
+                <div><h2>Chats</h2><span class="ap-muted">Staff chat &amp; reports</span></div>
+            </header>
+            <div class="ap-chat-shell">
+                <!-- Channels rail -->
+                <aside class="ap-chat-rail">
+                    <div class="ap-chat-section">Channels</div>
+                    <div id="chat-rail-channels"></div>
+                    <div class="ap-chat-section" style="display:flex;justify-content:space-between;align-items:center">
+                        <span>Direct Messages</span>
+                        <button class="ap-icon-btn" id="chat-newdm-btn" title="New DM"><i class="fa-solid fa-plus"></i></button>
+                    </div>
+                    <div class="ap-chat-newdm" id="chat-newdm">
+                        <input class="ap-input" id="chat-newdm-q" placeholder="Search a player…">
+                        <div class="ap-chat-newdm-list" id="chat-newdm-list"></div>
+                    </div>
+                    <div id="chat-rail-dms"></div>
+                </aside>
+
+                <!-- Conversation -->
+                <div class="ap-chat-main">
+                    <header class="ap-chat-head">
+                        <div class="ap-chat-head-left">
+                            <div class="ap-chat-head-icon"><i id="chat-head-icon" class="fa-solid fa-shield-halved"></i></div>
+                            <div>
+                                <strong id="chat-head-title">Staff</strong>
+                                <small id="chat-head-sub">Live admin chat</small>
+                            </div>
+                        </div>
+                        <span class="ap-chat-head-count" id="chat-head-count">0 messages</span>
+                    </header>
+                    <div class="ap-chat-msgs" id="chat-msgs">
+                        <div class="ap-empty ap-chat-empty">
+                            <i class="fa-regular fa-comments"></i>
+                            <div>No messages yet. Say hi!</div>
+                        </div>
+                    </div>
+                    <div class="ap-chat-input">
+                        <input type="text" class="ap-input" id="chat-input" placeholder="Type a message…" autocomplete="off">
+                        <button class="ap-btn primary" id="chat-send">
+                            <i class="fa-solid fa-paper-plane"></i> Send
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ── ITEMS ────────────────────────────────────────── -->
+        <section class="ap-page" data-page="items" hidden>
+            <header class="ap-page-head">
+                <div><h2>Items Database</h2><span class="ap-muted">All registered items and who has them</span></div>
+                <input type="search" class="ap-input" id="items-search" placeholder="Search items…">
+            </header>
+            <div class="ap-split">
+                <div class="ap-grid" id="items-grid"></div>
+                <div class="ap-detail ap-detail-center" id="items-detail">
+                    <div class="ap-empty">
+                        <i class="fa-solid fa-boxes-stacked"></i>
+                        <div>Select an item to view players with it</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ── VEHICLES ─────────────────────────────────────── -->
+        <section class="ap-page" data-page="vehicles" hidden>
+            <header class="ap-page-head">
+                <div><h2>Vehicles Database</h2><span class="ap-muted">All registered vehicles and who has them</span></div>
+                <input type="search" class="ap-input" id="vehs-search" placeholder="Search vehicles…">
+            </header>
+            <div class="ap-split">
+                <div class="ap-grid" id="vehs-grid"></div>
+                <div class="ap-detail ap-detail-center" id="vehs-detail">
+                    <div class="ap-empty">
+                        <i class="fa-solid fa-car"></i>
+                        <div>Select a vehicle to view owners</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ── CONSOLE ──────────────────────────────────────── -->
+        <section class="ap-page" data-page="console" hidden>
+            <div class="ap-con-page">
+                <!-- LEFT column: log + command bar -->
+                <div class="ap-con-main">
+                    <header class="ap-con-head">
+                        <h2 class="ap-con-title">Server Console</h2>
+                    </header>
+                    <div class="ap-con-log" id="con-log"></div>
+                    <div class="ap-con-input">
+                        <i class="fa-solid fa-terminal ap-con-input-icon"></i>
+                        <input type="text" id="con-cmd" placeholder="Type a command"
+                               autocomplete="off" spellcheck="false">
+                        <button class="ap-btn primary" id="con-send">Send</button>
+                    </div>
+                    <div class="ap-con-foot">
+                        <span class="ap-con-foot-hint" id="con-foot-hint">Command history will appear here.</span>
+                        <button class="ap-btn danger ap-btn-sm" id="con-clear">Clear History</button>
+                    </div>
+                </div>
+
+                <!-- RIGHT column: resources -->
+                <aside class="ap-con-side">
+                    <header class="ap-con-side-top">
+                        <h2 class="ap-con-title">Resources</h2>
+                        <div class="ap-con-side-tabs">
+                            <button class="ap-pill-tab active" data-res-tab="started">Started</button>
+                            <button class="ap-pill-tab" data-res-tab="stopped">Stopped</button>
+                        </div>
+                    </header>
+                    <div class="ap-con-side-list" id="res-list"></div>
+                    <div class="ap-con-side-foot">
+                        <div class="ap-con-side-search">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                            <input type="search" id="res-search" placeholder="Search Resources">
+                        </div>
+                        <div class="ap-con-side-actions">
+                            <button class="ap-btn ap-btn-sm" id="res-bulk-start"
+                                    style="background:var(--success);border-color:var(--success);color:#fff">
+                                Start
+                            </button>
+                            <button class="ap-btn danger ap-btn-sm" id="res-bulk-stop">Stop</button>
+                        </div>
+                    </div>
+                </aside>
+            </div>
+        </section>
+
+        <!-- ── EVENT LOGS ──────────────────────────────────── -->
+        <section class="ap-page" data-page="events" hidden>
+            <header class="ap-page-head">
+                <div>
+                    <h2>Event Logs</h2>
+                    <span class="ap-muted">Live capture of server / client events · block, hide or forward to Discord</span>
+                </div>
+                <div class="ap-quick-actions">
+                    <label class="ap-tb-stat ap-ev-live-toggle">
+                        <input type="checkbox" id="ev-live" checked>
+                        <span><i class="fa-solid fa-circle"></i> Live</span>
+                    </label>
+                    <input type="search" class="ap-input ap-input-sm" id="ev-search" placeholder="Search events…">
+                    <button class="ap-btn ghost ap-btn-sm" id="ev-refresh"><i class="fa-solid fa-rotate"></i></button>
+                    <button class="ap-btn ghost ap-btn-sm" id="ev-clear"><i class="fa-solid fa-broom"></i> Clear feed</button>
+                </div>
+            </header>
+
+            <div class="ap-events-shell">
+                <!-- Left: live capture feed -->
+                <div class="ap-card ap-events-feed-card">
+                    <div class="ap-card-head">
+                        <div><i class="fa-solid fa-bolt"></i><strong>Event feed</strong></div>
+                        <div class="ap-ev-tabs" id="ev-tabs">
+                            <button class="ap-ev-tab active" data-ev-tab="all">All <span class="ap-ev-tab-count" id="ev-count-all">0</span></button>
+                            <button class="ap-ev-tab" data-ev-tab="blocked">Blocked <span class="ap-ev-tab-count" id="ev-count-blocked">0</span></button>
+                            <button class="ap-ev-tab" data-ev-tab="hidden">Hidden <span class="ap-ev-tab-count" id="ev-count-hidden">0</span></button>
+                            <button class="ap-ev-tab" data-ev-tab="webhook">Webhook <span class="ap-ev-tab-count" id="ev-count-webhook">0</span></button>
+                        </div>
+                    </div>
+                    <div class="ap-events-feed" id="ev-feed"></div>
+                </div>
+
+                <!-- Right: rules + custom logs editor -->
+                <aside class="ap-events-rules">
+                    <div class="ap-card">
+                        <div class="ap-card-head">
+                            <div><i class="fa-solid fa-filter"></i><strong>Rules</strong></div>
+                            <button class="ap-btn primary ap-btn-sm" id="ev-rule-new"><i class="fa-solid fa-plus"></i> New</button>
+                        </div>
+                        <div class="ap-card-body">
+                            <div class="ap-events-rules-list" id="ev-rules-list"></div>
+                            <small class="ap-muted">Rules apply by name or with a trailing wildcard (e.g. <code>esx:*</code>). Click an event row in the feed to apply a rule instantly.</small>
+                        </div>
+                    </div>
+                </aside>
+            </div>
+        </section>
+
+        <!-- ── STAFF ────────────────────────────────────────── -->
+        <section class="ap-page" data-page="staff" hidden>
+            <header class="ap-page-head">
+                <div><h2>Staff</h2><span class="ap-muted">Members and groups</span></div>
+            </header>
+            <div class="ap-staff-me" id="st-me"></div>
+            <div class="ap-staff-shell">
+                <div class="ap-card ap-staff-section">
+                    <div class="ap-card-head">
+                        <div><i class="fa-solid fa-users"></i><strong>Staff Members</strong></div>
+                        <button class="ap-btn primary ap-icon-only" id="st-member-add" title="Add staff"><i class="fa-solid fa-plus"></i></button>
+                    </div>
+                    <div class="ap-staff-cards-grid" id="st-members-grid"></div>
+                </div>
+                <div class="ap-card ap-staff-section">
+                    <div class="ap-card-head">
+                        <div><i class="fa-solid fa-layer-group"></i><strong>Staff Groups</strong></div>
+                        <button class="ap-btn primary ap-icon-only" id="st-group-add" title="New group"><i class="fa-solid fa-plus"></i></button>
+                    </div>
+                    <div class="ap-staff-groups-grid" id="st-groups-grid"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ── JOBS ─────────────────────────────────────────── -->
+        <section class="ap-page" data-page="jobs" hidden>
+            <header class="ap-page-head">
+                <div>
+                    <h2>Jobs</h2>
+                    <span class="ap-muted">Create, edit and remove framework jobs &amp; grades</span>
+                </div>
+                <div class="ap-quick-actions">
+                    <input type="search" class="ap-input ap-input-sm" id="jobs-search" placeholder="Search jobs…">
+                    <button class="ap-btn primary" id="jobs-new"><i class="fa-solid fa-plus"></i> New Job</button>
+                </div>
+            </header>
+            <div class="ap-jobs-shell">
+                <aside class="ap-jobs-side">
+                    <div class="ap-jobs-side-head">
+                        <h3><i class="fa-solid fa-briefcase"></i> All Jobs</h3>
+                        <span class="ap-jobs-count" id="jobs-count">0</span>
+                    </div>
+                    <div class="ap-jobs-list" id="jobs-list"></div>
+                </aside>
+
+                <div class="ap-jobs-main" id="jobs-main">
+                    <div class="ap-empty">
+                        <i class="fa-solid fa-briefcase"></i>
+                        <div style="margin-top:6px">Select a job to edit, or create a new one</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ── BLIPS ────────────────────────────────────────── -->
+        <section class="ap-page" data-page="blips" hidden>
+            <header class="ap-page-head ap-blips-head">
+                <div>
+                    <h2 style="text-align:center">Blips</h2>
+                    <span class="ap-muted">Create and manage blips</span>
+                </div>
+            </header>
+
+            <div class="ap-blips-shell">
+                <!-- LEFT: blips list with category filter -->
+                <aside class="ap-blips-side">
+                    <div class="ap-blips-side-head">
+                        <h3>Blips List</h3>
+                        <button class="ap-btn primary ap-icon-only" id="blip-new" title="New blip">
+                            <i class="fa-solid fa-plus"></i>
+                        </button>
+                    </div>
+                    <select class="ap-input" id="blip-cat-filter">
+                        <option value="">All categories</option>
+                    </select>
+                    <div class="ap-blips-list" id="blips-list"></div>
+                </aside>
+
+                <!-- RIGHT: editor -->
+                <div class="ap-blips-main">
+                    <header class="ap-blips-main-head">
+                        <h3>Options</h3>
+                        <button class="ap-btn primary" id="be-save">Save</button>
+                    </header>
+
+                    <div class="ap-blips-fields">
+                        <label class="ap-form-row"><span>Label</span>
+                            <input class="ap-input" id="be-label" placeholder="Search"></label>
+                        <label class="ap-form-row"><span>Category</span>
+                            <input class="ap-input" id="be-cat" placeholder="Uncategorized" value="Uncategorized"></label>
+                        <label class="ap-form-row"><span>Coords</span>
+                            <input class="ap-input" id="be-coords" placeholder="Search" readonly></label>
+                        <div class="ap-form-row">
+                            <span style="opacity:0">.</span>
+                            <button class="ap-btn ghost" id="be-coords-btn">Use Current Coords</button>
+                        </div>
+                        <label class="ap-form-row">
+                            <span>Display <i class="fa-regular fa-circle-question" title="2=Map only · 3=Always · 4=Visible on minimap"></i></span>
+                            <input class="ap-input" id="be-display" type="number" value="4"></label>
+                        <label class="ap-form-row"><span>Scale</span>
+                            <input class="ap-input" id="be-scale" type="number" step="0.1" value="1"></label>
+                        <label class="ap-switch-row" style="grid-column:span 2">
+                            <span>Short Range</span>
+                            <input type="checkbox" id="be-short">
+                        </label>
+                    </div>
+
+                    <div class="ap-pickers">
+                        <!-- Color picker card -->
+                        <div class="ap-picker-card">
+                            <div class="ap-picker-head">
+                                <strong>Color Picker</strong>
+                            </div>
+                            <input class="ap-input ap-input-sm" id="be-color-search" placeholder="Search">
+                            <div class="ap-color-grid" id="be-color-grid"></div>
+                        </div>
+                        <!-- Sprite picker card -->
+                        <div class="ap-picker-card ap-picker-card-wide">
+                            <div class="ap-picker-head">
+                                <strong>Sprite Picker</strong>
+                            </div>
+                            <input class="ap-input ap-input-sm" id="be-sprite-search" placeholder="Search">
+                            <div class="ap-sprite-grid" id="be-sprite-grid"></div>
+                        </div>
+                    </div>
+
+                    <!-- Hidden inputs (kept for compatibility with existing save logic) -->
+                    <input type="hidden" id="be-x">
+                    <input type="hidden" id="be-y">
+                    <input type="hidden" id="be-z">
+                    <input type="hidden" id="be-color"  value="1">
+                    <input type="hidden" id="be-sprite" value="1">
+                    <input type="hidden" id="be-id">
+                </div>
+            </div>
+        </section>
+
+        <!-- ── LOGS ─────────────────────────────────────────── -->
+        <section class="ap-page" data-page="logs" hidden>
+            <header class="ap-page-head">
+                <div><h2>Staff Logs</h2><span class="ap-muted">Audit trail of every staff action</span></div>
+                <div class="ap-quick-actions">
+                    <select class="ap-input ap-input-sm" id="logs-cat">
+                        <option value="">All categories</option>
+                        <option>player</option><option>vehicle</option><option>money</option>
+                        <option>utility</option><option>moderation</option><option>quickmenu</option>
+                        <option>panel</option><option>staff</option><option>report</option>
+                    </select>
+                    <input class="ap-input" id="logs-admin" placeholder="Admin license filter…">
+                    <input class="ap-input" id="logs-q" placeholder="Search…">
+                    <button class="ap-btn primary" id="logs-refresh"><i class="fa-solid fa-rotate"></i> Refresh</button>
+                </div>
+            </header>
+            <div class="ap-tablewrap"><table class="ap-table" id="logs-table"><thead></thead><tbody></tbody></table></div>
+        </section>
+
+        <!-- ── SETTINGS ─────────────────────────────────────── -->
+        <section class="ap-page" data-page="settings" hidden>
+            <header class="ap-page-head">
+                <div><h2>Settings</h2><span class="ap-muted">Configure panel, staff tag, keybinds and Discord logging</span></div>
+                <button class="ap-btn primary" id="set-save"><i class="fa-solid fa-floppy-disk"></i> Save changes</button>
+            </header>
+
+            <!-- Tab bar -->
+            <div class="ap-set-tabs" id="set-tabs">
+                <button class="ap-set-tab active" data-set-tab="appearance"><i class="fa-solid fa-palette"></i> Appearance</button>
+                <button class="ap-set-tab" data-set-tab="behaviour"><i class="fa-solid fa-sliders"></i> Behaviour</button>
+                <button class="ap-set-tab" data-set-tab="notifications"><i class="fa-solid fa-bell"></i> Notifications</button>
+                <button class="ap-set-tab" data-set-tab="stafftag"><i class="fa-solid fa-id-badge"></i> Staff Tag</button>
+                <button class="ap-set-tab" data-set-tab="keybinds"><i class="fa-solid fa-keyboard"></i> Keybinds</button>
+                <button class="ap-set-tab" data-set-tab="discord"><i class="fa-brands fa-discord"></i> Discord Logs</button>
+            </div>
+
+            <div class="ap-set-grid" id="set-grid">
+                <!-- ── Appearance tab ──────────────────────────── -->
+                <div class="ap-set-tab-content" data-set-pane="appearance">
+                    <div class="ap-card">
+                        <div class="ap-card-head">
+                            <div><i class="fa-solid fa-palette"></i><strong>Theme &amp; Brand</strong></div>
+                        </div>
+                        <div class="ap-card-body">
+                            <small class="ap-muted">Pick a preset or set a custom colour. Applies instantly.</small>
+                            <div class="ap-theme-presets" id="set-theme-presets">
+                                <button data-theme="#1F5EFF" style="background:#1F5EFF" title="Apex Blue (default)"></button>
+                                <button data-theme="#3B82F6" style="background:#3B82F6" title="Cobalt"></button>
+                                <button data-theme="#A66DF0" style="background:#A66DF0" title="Violet"></button>
+                                <button data-theme="#E5564B" style="background:#E5564B" title="Crimson"></button>
+                                <button data-theme="#E5A93C" style="background:#E5A93C" title="Amber"></button>
+                                <button data-theme="#34C77B" style="background:#34C77B" title="Mint"></button>
+                                <button data-theme="#F26DA7" style="background:#F26DA7" title="Pink"></button>
+                                <button data-theme="#5BD7F0" style="background:#5BD7F0" title="Cyan"></button>
+                            </div>
+                            <label class="ap-form-row">
+                                <span>Custom colour</span>
+                                <div class="ap-theme-custom-row">
+                                    <input type="color" id="set-theme-custom" value="#1F5EFF">
+                                    <input type="text" class="ap-input mono" id="set-theme-hex" value="#1F5EFF" maxlength="7">
+                                </div>
+                            </label>
+                            <button class="ap-btn ghost btn-block" id="set-theme-reset">
+                                <i class="fa-solid fa-arrow-rotate-left"></i> Reset to Apex default
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="ap-card">
+                        <div class="ap-card-head">
+                            <div><i class="fa-solid fa-fill-drip"></i><strong>Background</strong></div>
+                        </div>
+                        <div class="ap-card-body">
+                            <small class="ap-muted">Base surface colour of the panel. The card, raised and border tones are derived from it automatically.</small>
+                            <small class="ap-muted ap-bg-note" id="set-bg-note" hidden>
+                                <i class="fa-solid fa-circle-info"></i>
+                                Custom backgrounds apply to dark mode only. Light mode uses its own designed surface set.
+                            </small>
+                            <div class="ap-theme-presets" id="set-bg-presets">
+                                <button data-bg="#0A0A0B" style="background:#0A0A0B" title="Apex Black (default)"></button>
+                                <button data-bg="#101216" style="background:#101216" title="Graphite"></button>
+                                <button data-bg="#0C1017" style="background:#0C1017" title="Midnight"></button>
+                                <button data-bg="#0E1412" style="background:#0E1412" title="Deep Forest"></button>
+                                <button data-bg="#14100E" style="background:#14100E" title="Espresso"></button>
+                                <button data-bg="#12101A" style="background:#12101A" title="Plum"></button>
+                                <button data-bg="#1A1A1B" style="background:#1A1A1B" title="Slate (lighter)"></button>
+                                <button data-bg="#000000" style="background:#000000" title="Pure Black (OLED)"></button>
+                            </div>
+                            <label class="ap-form-row">
+                                <span>Custom colour</span>
+                                <div class="ap-theme-custom-row">
+                                    <input type="color" id="set-bg-custom" value="#0A0A0B">
+                                    <input type="text" class="ap-input mono" id="set-bg-hex" value="#0A0A0B" maxlength="7">
+                                </div>
+                            </label>
+                            <button class="ap-btn ghost btn-block" id="set-bg-reset">
+                                <i class="fa-solid fa-arrow-rotate-left"></i> Reset to Apex default
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="ap-card">
+                        <div class="ap-card-head">
+                            <div><i class="fa-solid fa-up-right-and-down-left-from-center"></i><strong>UI Size</strong></div>
+                        </div>
+                        <div class="ap-card-body">
+                            <small class="ap-muted">Applies instantly. Saved across sessions.</small>
+                            <div class="ap-size-picker" id="set-size-picker">
+                                <button data-size="l" class="active">Large</button>
+                                <button data-size="xl">Extra Large</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="ap-card">
+                        <div class="ap-card-head">
+                            <div><i class="fa-solid fa-moon"></i><strong>Display mode</strong></div>
+                        </div>
+                        <div class="ap-card-body">
+                            <small class="ap-muted">Switches the whole panel and the F9 menu between dark and light themes.</small>
+                            <div class="ap-mode-picker" id="set-mode-picker">
+                                <button data-mode="dark" class="active">
+                                    <i class="fa-solid fa-moon"></i>
+                                    <strong>Dark</strong>
+                                    <small>Default</small>
+                                </button>
+                                <button data-mode="light">
+                                    <i class="fa-solid fa-sun"></i>
+                                    <strong>Light</strong>
+                                    <small>Brighter UI</small>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="ap-card">
+                        <div class="ap-card-head">
+                            <div><i class="fa-solid fa-circle-half-stroke"></i><strong>Panel opacity</strong></div>
+                            <span class="ap-tb-chip" id="set-opacity-readout">100%</span>
+                        </div>
+                        <div class="ap-card-body">
+                            <small class="ap-muted">Lower values let the game show through behind the panel.</small>
+                            <input type="range" id="set-opacity" min="60" max="100" value="100" step="1">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ── Behaviour tab ─────────────────────────── -->
+                <div class="ap-set-tab-content" data-set-pane="behaviour" hidden>
+
+                    <div class="ap-card">
+                        <div class="ap-card-head">
+                            <div><i class="fa-solid fa-door-open"></i><strong>On open</strong></div>
+                        </div>
+                        <div class="ap-card-body">
+                            <small class="ap-muted">Which page the panel lands on when you press the open key.</small>
+                            <label class="ap-form-row">
+                                <span>Default page</span>
+                                <select class="ap-input" id="set-default-page">
+                                    <option value="home">Home</option>
+                                    <option value="players">Players</option>
+                                    <option value="monitoring">Monitoring</option>
+                                    <option value="moderation">Moderation</option>
+                                    <option value="chats">Chats</option>
+                                    <option value="items">Items</option>
+                                    <option value="vehicles">Vehicles</option>
+                                    <option value="console">Console</option>
+                                    <option value="events">Event Logs</option>
+                                    <option value="staff">Staff</option>
+                                    <option value="jobs">Jobs</option>
+                                    <option value="blips">Blips</option>
+                                    <option value="logs">Logs</option>
+                                </select>
+                            </label>
+                            <label class="ap-switch-row">
+                                <span>Reopen on the last page I used</span>
+                                <input type="checkbox" id="set-remember-page">
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="ap-card">
+                        <div class="ap-card-head">
+                            <div><i class="fa-solid fa-shield-halved"></i><strong>Safety</strong></div>
+                        </div>
+                        <div class="ap-card-body">
+                            <small class="ap-muted">Guardrails for actions that cannot be undone.</small>
+                            <label class="ap-switch-row">
+                                <span>Confirm bans, kicks and deletions</span>
+                                <input type="checkbox" id="set-confirm-destructive" checked>
+                            </label>
+                            <label class="ap-switch-row">
+                                <span>Streamer mode (hide licenses and Steam IDs)</span>
+                                <input type="checkbox" id="set-streamer">
+                            </label>
+                            <small class="ap-muted ap-bg-note">
+                                <i class="fa-solid fa-circle-info"></i>
+                                Streamer mode only blurs identifiers on screen. Reveal one by hovering it.
+                            </small>
+                        </div>
+                    </div>
+
+                    <div class="ap-card">
+                        <div class="ap-card-head">
+                            <div><i class="fa-solid fa-gauge-high"></i><strong>Performance &amp; density</strong></div>
+                        </div>
+                        <div class="ap-card-body">
+                            <small class="ap-muted">The panel runs inside the game, so these trade polish for frames.</small>
+                            <label class="ap-form-row">
+                                <span>Live refresh interval</span>
+                                <select class="ap-input" id="set-auto-refresh">
+                                    <option value="5">Every 5 seconds</option>
+                                    <option value="10">Every 10 seconds</option>
+                                    <option value="15">Every 15 seconds</option>
+                                    <option value="30">Every 30 seconds</option>
+                                    <option value="60">Every minute</option>
+                                    <option value="0">Off (manual only)</option>
+                                </select>
+                            </label>
+                            <label class="ap-switch-row">
+                                <span>Compact rows</span>
+                                <input type="checkbox" id="set-compact">
+                            </label>
+                            <label class="ap-switch-row">
+                                <span>Reduce motion</span>
+                                <input type="checkbox" id="set-reduce-motion">
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="ap-card">
+                        <div class="ap-card-head">
+                            <div><i class="fa-solid fa-clock"></i><strong>Formatting</strong></div>
+                        </div>
+                        <div class="ap-card-body">
+                            <small class="ap-muted">How times are written across chat, logs and the event feed.</small>
+                            <label class="ap-switch-row">
+                                <span>24-hour clock</span>
+                                <input type="checkbox" id="set-clock-24" checked>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ── Notifications tab ──────────────────────── -->
+                <div class="ap-set-tab-content" data-set-pane="notifications" hidden>
+                    <div class="ap-card">
+                        <div class="ap-card-head">
+                            <div><i class="fa-solid fa-bell"></i><strong>Notifications</strong></div>
+                        </div>
+                        <div class="ap-card-body">
+                            <label class="ap-switch-row"><span>Staff Chat</span><input type="checkbox" id="set-notif-staff" checked></label>
+                            <label class="ap-switch-row"><span>Reports</span><input type="checkbox" id="set-notif-reports" checked></label>
+                            <label class="ap-switch-row"><span>Reports created off-duty</span><input type="checkbox" id="set-notif-off"></label>
+                            <label class="ap-switch-row"><span>Play notification sound</span><input type="checkbox" id="set-notif-sound" checked></label>
+                            <label class="ap-form-row"><span>Notification position</span>
+                                <select class="ap-input" id="set-notif-pos">
+                                    <option value="top-right">Top right</option>
+                                    <option value="top-left">Top left</option>
+                                    <option value="bottom-right">Bottom right</option>
+                                    <option value="bottom-left">Bottom left</option>
+                                </select>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ── Staff Tag tab ──────────────────────────── -->
+                <div class="ap-set-tab-content" data-set-pane="stafftag" hidden>
+                    <div class="ap-card ap-staff-tag-card">
+                        <div class="ap-card-head">
+                            <div><i class="fa-solid fa-id-badge"></i><strong>Staff Tag</strong></div>
+                            <label class="ap-switch-mini-wrap">
+                                <span>Enable</span>
+                                <input type="checkbox" id="set-tag-enable" class="ap-switch-mini">
+                            </label>
+                        </div>
+                        <div class="ap-card-body">
+                            <label class="ap-form-row"><span>Tag format</span>
+                                <input class="ap-input mono" id="set-tag-format" placeholder="[{group}] {name}" value="[{group}] {name}">
+                            </label>
+                            <small class="ap-muted">Placeholders: <code>{group}</code> <code>{svid}</code> <code>{name}</code> <code>{char_name}</code> <code>{charId}</code></small>
+                            <div class="ap-tag-preview">
+                                <span class="ap-tag-preview-label">Preview</span>
+                                <span class="ap-tag-preview-text" id="set-tag-preview">[Admin] Player</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ── Keybinds tab ───────────────────────────── -->
+                <div class="ap-set-tab-content" data-set-pane="keybinds" hidden>
+                    <div class="ap-card ap-keybinds-card">
+                        <div class="ap-card-head">
+                            <div><i class="fa-solid fa-keyboard"></i><strong>Keybinds</strong></div>
+                            <button class="ap-btn primary ap-btn-sm" id="set-keybind-new">
+                                <i class="fa-solid fa-plus"></i> New keybind
+                            </button>
+                        </div>
+                        <div class="ap-card-body">
+                            <div class="ap-keybinds-list" id="set-keybinds-list"></div>
+                            <small class="ap-muted">Click a key to rebind. Changes apply instantly and are saved per staff member.</small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ── Discord Logs tab ───────────────────────── -->
+                <div class="ap-set-tab-content" data-set-pane="discord" hidden>
+                    <!-- HERO header that doubles as the master switch + bot identity -->
+                    <div class="ap-discord-hero">
+                        <div class="ap-discord-hero-left">
+                            <div class="ap-discord-hero-icon"><i class="fa-brands fa-discord"></i></div>
+                            <div class="ap-discord-hero-text">
+                                <strong>Discord Logs</strong>
+                                <small>Mirror every staff action into Discord using webhooks. Configure the bot identity below, then drop a webhook URL into each category you want to track.</small>
+                            </div>
+                        </div>
+                        <label class="ap-discord-hero-toggle">
+                            <input type="checkbox" id="set-discord-enabled" class="ap-switch-mini">
+                            <span>Enable</span>
+                        </label>
+                    </div>
+
+                    <!-- Bot identity card -->
+                    <div class="ap-card ap-discord-identity">
+                        <div class="ap-card-head">
+                            <div><i class="fa-solid fa-robot"></i><strong>Bot identity</strong></div>
+                        </div>
+                        <div class="ap-card-body">
+                            <div class="ap-discord-identity-row">
+                                <div class="ap-discord-identity-preview">
+                                    <div class="ap-discord-identity-av" id="set-discord-av-preview">
+                                        <i class="fa-brands fa-discord"></i>
+                                    </div>
+                                    <span class="ap-discord-identity-name-preview" id="set-discord-name-preview">Apex Admin</span>
+                                </div>
+                                <div class="ap-discord-identity-inputs">
+                                    <label class="ap-form-row">
+                                        <span>Bot username</span>
+                                        <input class="ap-input" id="set-discord-username" placeholder="Apex Admin">
+                                    </label>
+                                    <label class="ap-form-row">
+                                        <span>Bot avatar URL</span>
+                                        <input class="ap-input mono" id="set-discord-avatar" placeholder="https://...">
+                                    </label>
+                                </div>
+                            </div>
+                            <button class="ap-btn ghost ap-discord-test" id="set-test-webhook">
+                                <i class="fa-solid fa-paper-plane"></i> Send test message to all configured webhooks
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Webhook URLs — one card per category -->
+                    <div class="ap-card ap-discord-channels">
+                        <div class="ap-card-head">
+                            <div><i class="fa-solid fa-link"></i><strong>Webhook routes</strong></div>
+                        </div>
+                        <div class="ap-card-body">
+                            <div class="ap-webhook-grid" id="set-webhook-grid"></div>
+                        </div>
+                    </div>
+
+                    <!-- Event groups -->
+                    <div class="ap-card ap-discord-events">
+                        <div class="ap-card-head">
+                            <div><i class="fa-solid fa-bolt"></i><strong>Event groups</strong></div>
+                            <small class="ap-muted ap-discord-events-hint">Choose which categories of staff actions get pushed to Discord.</small>
+                        </div>
+                        <div class="ap-card-body">
+                            <div class="ap-discord-events-grid">
+                                <label class="ap-discord-event-row" data-tone="error">
+                                    <i class="fa-solid fa-gavel"></i>
+                                    <div>
+                                        <strong>Moderation</strong>
+                                        <small>Bans · Kicks · Warns · Jails</small>
+                                    </div>
+                                    <input type="checkbox" id="set-evt-moderation" class="ap-switch-mini" checked>
+                                </label>
+                                <label class="ap-discord-event-row" data-tone="warning">
+                                    <i class="fa-solid fa-coins"></i>
+                                    <div>
+                                        <strong>Economy</strong>
+                                        <small>Money · Items · Weapons</small>
+                                    </div>
+                                    <input type="checkbox" id="set-evt-economy" class="ap-switch-mini" checked>
+                                </label>
+                                <label class="ap-discord-event-row" data-tone="brand">
+                                    <i class="fa-solid fa-user-large"></i>
+                                    <div>
+                                        <strong>Player</strong>
+                                        <small>Heal · Revive · Freeze · TP</small>
+                                    </div>
+                                    <input type="checkbox" id="set-evt-player" class="ap-switch-mini" checked>
+                                </label>
+                                <label class="ap-discord-event-row" data-tone="info">
+                                    <i class="fa-solid fa-car"></i>
+                                    <div>
+                                        <strong>Vehicle</strong>
+                                        <small>Spawn · Fix · Clean · Delete</small>
+                                    </div>
+                                    <input type="checkbox" id="set-evt-vehicle" class="ap-switch-mini" checked>
+                                </label>
+                                <label class="ap-discord-event-row" data-tone="violet">
+                                    <i class="fa-solid fa-id-card-clip"></i>
+                                    <div>
+                                        <strong>Staff</strong>
+                                        <small>Logins · Off-duty · Config</small>
+                                    </div>
+                                    <input type="checkbox" id="set-evt-staff" class="ap-switch-mini" checked>
+                                </label>
+                                <label class="ap-discord-event-row" data-tone="grey">
+                                    <i class="fa-solid fa-terminal"></i>
+                                    <div>
+                                        <strong>Console</strong>
+                                        <small>Server-side commands</small>
+                                    </div>
+                                    <input type="checkbox" id="set-evt-console" class="ap-switch-mini" checked>
+                                </label>
+                                <label class="ap-discord-event-row" data-tone="amber">
+                                    <i class="fa-solid fa-flag"></i>
+                                    <div>
+                                        <strong>Reports</strong>
+                                        <small>Created · Accepted · Resolved</small>
+                                    </div>
+                                    <input type="checkbox" id="set-evt-reports" class="ap-switch-mini" checked>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+  </div>
+</div>
+
+<!-- Modal generic -->
+<div id="ap-modal" class="ap-modal hidden">
+    <div class="ap-modal-card">
+        <header><h3 id="ap-modal-title">Modal</h3>
+            <button class="ap-icon-btn" id="ap-modal-close"><i class="fa-solid fa-xmark"></i></button></header>
+        <div class="ap-modal-body" id="ap-modal-body"></div>
+        <footer class="ap-modal-foot">
+            <button class="ap-btn ghost" id="ap-modal-cancel">Cancel</button>
+            <button class="ap-btn primary" id="ap-modal-ok">OK</button>
+        </footer>
+    </div>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin></script>
+<script src="app.js?v=2.2.15"></script>
+</body>
+</html>
