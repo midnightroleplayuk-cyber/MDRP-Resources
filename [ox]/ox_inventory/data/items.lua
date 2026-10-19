@@ -5052,7 +5052,15 @@ return {
     }
 },
 
-
+-- MDT APEX
+['mdt_tablet'] = {
+    label = 'MDT Tablet',
+    weight = 1000,
+    stack = false,
+    close = true,
+    description = 'Police / EMS Mobile Data Terminal',
+    client = { export = 'apex_mdt.useTablet' }, -- optional; the usable item is also registered server-side
+},
 
 
 }

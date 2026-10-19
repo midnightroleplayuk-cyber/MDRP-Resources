@@ -6,7 +6,7 @@ item (`Config.openItem`, default `tablet`). Registering the item is **optional**
 ## ox_inventory (`data/items.lua`)
 
 ```lua
-['tablet'] = {
+['mdt_tablet'] = {
     label = 'MDT Tablet',
     weight = 1000,
     stack = false,
