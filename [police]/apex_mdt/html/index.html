@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Apex MDT</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous">
+    <!-- Font Awesome fallback (covers a blocked cdnjs) -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.1/css/all.min.css">
+    <!-- Leaflet (same method as apex_bossmenu) -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="anonymous">
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- ─── Notify fallback toasts ─────────────────────────── -->
+<div id="notify-container" class="notify-container" aria-live="polite"></div>
+
+<!-- ═══════════════════════════════════════════════════════
+     THE DEVICE - a physical tablet, hidden until opened
+     ═══════════════════════════════════════════════════════ -->
+<div id="device" class="device" hidden>
+    <div class="bezel" id="bezel">
+        <div class="cam"></div>
+
+        <!-- ── BOOT SPLASH ───────────────────────────────── -->
+        <div id="boot" class="screen boot">
+            <div class="boot-logo">
+                <div class="boot-badge"><i class="fa-solid fa-shield-halved"></i></div>
+                <div class="boot-wordmark"><strong id="boot-title">APEX MDT</strong><span id="boot-sub">Mobile Data Terminal</span></div>
+            </div>
+            <div class="boot-bar"><i id="boot-fill"></i></div>
+            <div class="boot-status" id="boot-status">Establishing secure connection…</div>
+            <div class="boot-foot">APEX SCRIPTZ · SECURE TACTICAL OS</div>
+        </div>
+
+        <!-- ── LOCK / AUTH - character photo only ────────── -->
+        <div id="lock" class="screen lock" hidden>
+            <div class="lock-bg" id="lock-bg"></div>
+            <div class="lock-scrim"></div>
+            <div class="lock-statusbar">
+                <span class="lsb-dept" id="lock-dept">DEPT</span>
+                <span class="lsb-icons"><i class="fa-solid fa-signal"></i><i class="fa-solid fa-wifi"></i><i class="fa-solid fa-battery-full"></i></span>
+            </div>
+            <div class="lock-lockicon"><i class="fa-solid fa-lock"></i></div>
+            <div class="lock-clock" id="lock-clock">00:00</div>
+            <div class="lock-date" id="lock-date">-</div>
+            <button class="lock-photo" id="lock-btn" title="Unlock">
+                <span class="lock-photo-ring"></span>
+                <span id="lock-initials">A</span>
+                <img id="lock-avatar-img" alt="" hidden>
+                <span class="lock-photo-fp"><i class="fa-solid fa-fingerprint"></i></span>
+            </button>
+            <div class="lock-notes" id="lock-notes"></div>
+            <div class="lock-unlock-hint"><i class="fa-solid fa-chevron-up"></i><span id="lock-btn-tx">Swipe up to unlock</span></div>
+            <div class="lock-home" id="lock-home"></div>
+        </div>
+
+        <!-- ── FIRST-RUN ACCOUNT SETUP ───────────────────── -->
+        <div id="setup" class="screen setup" hidden></div>
+
+        <!-- ── OPERATING SYSTEM ──────────────────────────── -->
+        <div id="os" class="screen os" hidden>
+            <!-- status bar -->
+            <div class="statusbar" id="statusbar">
+                <div class="sb-left">
+                    <span class="sb-dept" id="sb-dept">LSPD</span>
+                    <span class="sb-sep">·</span>
+                    <span class="sb-callsign mono" id="sb-callsign">1-ADAM-12</span>
+                </div>
+                <div class="sb-center mono" id="sb-clock">00:00</div>
+                <div class="sb-right">
+                    <span class="sb-status-chip" id="sb-status-chip"><i class="fa-solid fa-circle"></i> <span id="sb-status">10-8</span></span>
+                    <button class="sb-cluster" id="sb-cluster" title="Control Center">
+                        <i class="fa-solid fa-signal"></i>
+                        <i class="fa-solid fa-wifi"></i>
+                        <span class="sb-batt" id="sb-batt"><b id="sb-batt-pct">100%</b><i class="fa-solid fa-battery-full"></i></span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- iOS-style control center -->
+            <div id="control-center" class="cc" hidden>
+                <div class="cc-tiles">
+                    <button class="cc-tile" id="cc-duty"><i class="fa-solid fa-power-off"></i><span data-i18n="cc_duty">Duty</span></button>
+                    <button class="cc-tile" id="cc-lock"><i class="fa-solid fa-lock"></i><span data-i18n="cc_lock">Lock</span></button>
+                    <button class="cc-tile" id="cc-settings"><i class="fa-solid fa-gear"></i><span data-i18n="app_settings">Settings</span></button>
+                </div>
+                <div class="cc-slider"><i class="fa-solid fa-sun"></i><input type="range" id="cc-bright" min="0.5" max="1" step="0.02" value="1"><i class="fa-solid fa-sun" style="font-size:15px"></i></div>
+                <button class="cc-toggle" id="cc-notif"><span><i class="fa-solid fa-bell"></i> <span data-i18n="cc_notifications">Notifications</span></span><span class="switch on"></span></button>
+                <button class="cc-toggle" id="cc-dispatch"><span><i class="fa-solid fa-tower-broadcast"></i> <span data-i18n="cc_dispatch_alerts">Dispatch Alerts</span></span><span class="switch on"></span></button>
+                <button class="cc-toggle" id="cc-sounds"><span><i class="fa-solid fa-volume-high"></i> <span data-i18n="cc_sounds">Sounds</span></span><span class="switch on"></span></button>
+            </div>
+
+            <!-- incoming dispatch banner (on-screen tablet alert) -->
+            <div id="dispatch-banner" class="dispatch-banner" hidden>
+                <div class="db-ic"><i class="fa-solid fa-tower-broadcast"></i></div>
+                <div class="db-tx"><div class="db-title" id="db-title" data-i18n="db_incoming">Incoming Call</div><div class="db-sub" id="db-sub">-</div></div>
+                <button class="btn btn-primary btn-sm" id="db-respond"><i class="fa-solid fa-location-arrow"></i> <span data-i18n="ui_respond">Respond</span></button>
+                <button class="db-close" id="db-dismiss"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+
+            <div class="workspace">
+                <!-- app sidebar -->
+                <aside class="rail">
+                    <div class="rail-brand">
+                        <div class="rail-mark" id="rail-mark"><i class="fa-solid fa-shield-halved"></i></div>
+                        <div class="rail-brand-tx">
+                            <strong id="rail-brand-name">APEX MDT</strong>
+                            <span id="rail-brand-dept">DEPT</span>
+                        </div>
+                    </div>
+                    <nav class="rail-nav" id="rail-nav"></nav>
+                    <div class="rail-foot">
+                        <button class="rail-officer" id="rail-officer" title="Profile">
+                            <span class="ro-avatar" id="ro-avatar"><span id="ro-initials">A</span><img id="ro-avatar-img" alt="" hidden></span>
+                            <span class="roc-tx"><strong id="roc-name">Officer</strong><span id="roc-rank">-</span></span>
+                            <i class="fa-solid fa-chevron-right roc-arrow"></i>
+                        </button>
+                        <div class="rail-actions">
+                            <button class="rail-icon-btn" id="duty-btn" title="Toggle duty"><i class="fa-solid fa-power-off"></i></button>
+                            <button class="rail-icon-btn" id="panic-btn" title="Panic"><i class="fa-solid fa-triangle-exclamation"></i></button>
+                            <button class="rail-icon-btn" id="settings-btn" title="Settings"><i class="fa-solid fa-gear"></i></button>
+                            <button class="rail-icon-btn" id="power-btn" title="Close"><i class="fa-solid fa-xmark"></i></button>
+                        </div>
+                    </div>
+                </aside>
+
+                <!-- content -->
+                <main class="content">
+                    <div class="os-wall" id="os-wall"></div>
+                    <header class="appbar">
+                        <div class="appbar-title">
+                            <div>
+                                <div class="eyebrow" id="app-eyebrow">APEX MDT</div>
+                                <h1 id="app-title">Dashboard</h1>
+                            </div>
+                        </div>
+                        <div class="appbar-tools" id="app-tools"></div>
+                    </header>
+                    <div class="app-view" id="app-view"></div>
+                </main>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ─── Photo-booth viewfinder (shown over the game while framing) ─── -->
+<div id="camera-ui" class="cam-ui" hidden>
+    <div class="cam-top"><i class="fa-solid fa-camera"></i> <span data-i18n="cam_position">Position your photo</span></div>
+    <div class="cam-frame"><i></i><i></i><i></i><i></i></div>
+    <div class="cam-hint">
+        <span><kbd>Mouse</kbd> <span data-i18n="cam_rotate">Rotate</span></span>
+        <span><kbd>Scroll</kbd> <span data-i18n="cam_zoom">Zoom</span></span>
+        <span><kbd>↑ ↓</kbd> <span data-i18n="cam_height">Height</span></span>
+        <span class="cam-cap"><kbd>Space</kbd> <span data-i18n="cam_capture">Capture</span></span>
+        <span><kbd>Esc</kbd> <span data-i18n="ui_cancel">Cancel</span></span>
+    </div>
+</div>
+
+<!-- ─── CCTV live overlay (game cam renders behind this frame) ─── -->
+<div id="cctv-overlay" class="cctv-ov" hidden>
+    <div class="cctv-scan"></div>
+    <div class="cctv-grain"></div>
+    <div class="cctv-frame"><i></i><i></i><i></i><i></i></div>
+    <div class="cctv-top">
+        <div class="cctv-rec"><span class="rec-dot"></span> REC</div>
+        <div class="cctv-name" id="cctv-name">CAMERA</div>
+        <div class="cctv-time mono" id="cctv-time">00:00:00</div>
+    </div>
+    <div class="cctv-bl"><span data-i18n="cctv_cam">CAM</span> <span id="cctv-idx">1</span>/<span id="cctv-total">1</span> · <span class="mono" data-i18n="cctv_secure">SECURE FEED</span></div>
+    <div class="cctv-hint">
+        <span><kbd>← →</kbd> <span data-i18n="cctv_pan">Pan</span></span><span><kbd>↑ ↓</kbd> <span data-i18n="cctv_tilt">Tilt</span></span><span><kbd>Scroll</kbd> <span data-i18n="cam_zoom">Zoom</span></span><span><kbd>Q / E</kbd> <span data-i18n="cctv_switch">Switch</span></span><span class="cctv-exit"><kbd>Esc</kbd> <span data-i18n="cctv_exit">Exit</span></span>
+    </div>
+</div>
+
+<!-- ─── Bodycam HUD overlay (stays on screen even with the tablet closed) ─── -->
+<div id="bodycam-overlay" class="bodycam-ov" hidden>
+    <div class="bc-rec"><span class="rec-dot"></span> REC</div>
+</div>
+
+<!-- ─── Modal + confirm root ───────────────────────────── -->
+<div id="modal-root"></div>
+
+<script src="js/app.js"></script>
+</body>
+</html>
