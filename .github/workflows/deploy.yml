@@ -36,3 +36,21 @@ jobs:
             -o BatchMode=yes \
             "$VPS_USER@$VPS_HOST" \
             "powershell.exe -NoProfile -NonInteractive -ExecutionPolicy Bypass -File C:/Users/Administrator/Desktop/devserver/resources/scripts/deploy.ps1"
+
+      - name: Notify Discord
+        if: always()
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          JOB_STATUS: ${{ job.status }}
+          REPOSITORY: ${{ github.repository }}
+          COMMIT_SHA: ${{ github.sha }}
+        run: |
+          set -eu
+          if [ -z "$DISCORD_WEBHOOK_URL" ]; then
+            echo "Discord webhook secret is missing."
+            exit 1
+          fi
+          MESSAGE="MDRP deployment: ${JOB_STATUS} | ${REPOSITORY} | commit ${COMMIT_SHA}"
+          PAYLOAD=$(jq -n --arg content "$MESSAGE" '{content: $content}')
+          curl -fsS -H "Content-Type: application/json" \
+            -d "$PAYLOAD" "$DISCORD_WEBHOOK_URL"
