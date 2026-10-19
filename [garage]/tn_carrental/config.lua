@@ -126,7 +126,7 @@ Config.RentalStations = {
     },
     {
         id       = 'Sandy Rental',
-        label    = 'City Rental',
+        label    = 'Sandy Rental',
         uiStyle  = 'touchdown',
         coords   = vec4(1604.61, 3526.2, 37.24, 109.63),
         spawn    = vec4(1599.38, 3521.23, 35.98, 32.23),
