@@ -25,7 +25,7 @@ Config.locale       = 'en'   -- 'en' | 'pt' | 'es' | 'fr' | 'de'
 Config.resourceName = GetCurrentResourceName()
 
 -- ─── Framework (auto-detected: ESX, QB, QBox) ─────────────
-Config.framework = 'auto'    -- 'auto' | 'esx' | 'qb' | 'qbx'
+Config.framework = 'qbx'    -- 'auto' | 'esx' | 'qb' | 'qbx'
 
 -- ═══════════════════════════════════════════════════════════
 -- FEATURE TOGGLES  (turn anything on/off)
@@ -36,8 +36,8 @@ Config.features = {
     enableLockScreen      = true,   -- badge/PIN unlock step after boot
     enableStatusBar       = true,   -- iOS-style status bar (clock, battery, signal)
     enableSounds          = true,   -- UI clicks, dispatch chime, boot sound · RESERVED: not wired yet
-    enableBattery         = true,   -- simulated battery drain while open
-    enableInactivityLogout= true,   -- auto-close after Config.inactivityTimeout
+    enableBattery         = false,   -- simulated battery drain while open
+    enableInactivityLogout= false,   -- auto-close after Config.inactivityTimeout
     enableThemePerDept    = true,   -- tint the UI with the department colour · always on (per-job theme is built-in)
     enableLightDarkToggle = true,   -- light/dark theme switch in Settings · RESERVED: not wired yet
     enableConfigurableWidgets = true, -- dashboard widgets can be reordered/hidden · RESERVED: not wired yet
@@ -100,7 +100,7 @@ Config.features = {
     enableShiftScheduling  = true,  -- shifts / rota board in the roster · RESERVED: not wired yet
 
     -- ── Permissions / behaviour ─────────────────────────────
-    requireDutyToOpen     = false,  -- must be on duty to open the tablet
+    requireDutyToOpen     = true,  -- must be on duty to open the tablet
     restrictByJob         = true,   -- only Config.jobs may open the tablet
     warrantsNeedApproval  = true,   -- a warrant needs a supervisor to go active
     reportsNeedApproval   = true,   -- reports flow draft→submitted→approved
@@ -121,12 +121,12 @@ Config.features = {
 Config.command   = 'mdt'              -- /mdt
 Config.dutyCmd   = 'duty'             -- /duty toggle
 Config.panicCmd  = 'panic'            -- /panic broadcast
-Config.openItem  = 'tablet'           -- usable inventory item that opens the tablet
+Config.openItem  = 'mdt_tablet'           -- usable inventory item that opens the tablet
 Config.requireItem = false            -- TRUE = the player MUST carry Config.openItem to open the
                                       -- MDT at all (the /mdt command AND the keybind are gated too).
 Config.keybind   = {
     enable  = true,
-    key     = 'F6',                   -- predefined key to open the tablet (rebindable in-game
+    key     = 'F11',                   -- predefined key to open the tablet (rebindable in-game
                                       -- via FiveM → Settings → Key Bindings → "Open MDT Tablet")
     label   = 'Open MDT Tablet',
 }
@@ -138,7 +138,7 @@ Config.inactivityTimeout = 180        -- seconds of no input before auto-logout
 -- told. Up to 1.2.2 only an on-duty officer's OWN shots counted, so civilian
 -- gunfire never reached the MDT.
 Config.weaponsCall = {
-    shooters        = 'anyone',     -- 'anyone'    = every player
+    shooters        = 'civilians',     -- 'anyone'    = every player
                                     -- 'civilians' = everyone except on-duty police units
                                     -- 'units'     = only on-duty MDT units (the old behaviour)
     ignoreSilenced  = true,         -- a suppressed weapon does not raise a call
@@ -708,9 +708,9 @@ Config.photo = {
 }
 
 -- ─── Currency / formatting ────────────────────────────────
-Config.currency   = { symbol = '$', position = 'before' }
-Config.dateFormat = 'MM/DD/YYYY'       -- 'MM/DD/YYYY' | 'DD/MM/YYYY'
-Config.use24h     = false              -- status-bar clock format
+Config.currency   = { symbol = '£', position = 'before' }
+Config.dateFormat = 'DD/MM/YYYY'       -- 'MM/DD/YYYY' | 'DD/MM/YYYY'
+Config.use24h     = true              -- status-bar clock format
 
 -- ─── Item image source (NUI) ──────────────────────────────
 Config.itemImageBase = 'nui://ox_inventory/web/images/'
