@@ -482,6 +482,21 @@ Apex.Compat.Inventory = {
 
 Apex.Compat.Medical = {
     {
+        id = 'osp',
+        resources = { 'osp_ambulance' },
+        revive = function()
+            -- OSP's own handler clears death/laststand, wounds, UI and saved status.
+            TriggerEvent('hospital:client:Revive', true)
+            return true
+        end,
+        heal = function()
+            -- OSP uses RestorePlayer internally for its full medical reset.
+            -- Its revive handler also safely heals an already-conscious player.
+            TriggerEvent('hospital:client:Revive', true)
+            return true
+        end
+    },
+    {
         -- Wasabi Ambulance V1 and V2 revive in completely different ways:
         --   V1 (wasabi_ambulance)    → client event wasabi_ambulance:revive
         --   V2 (wasabi_ambulance_v2) → SERVER exports RevivePlayer(id) /

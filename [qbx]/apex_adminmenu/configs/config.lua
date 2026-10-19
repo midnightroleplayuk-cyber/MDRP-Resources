@@ -49,8 +49,8 @@ Config.Inventory = 'ox'
 -- revive looks like it did nothing. Routing through the provider clears it.
 --
 -- Set to false to force the built-in standalone revive instead.
--- 'auto' | false | 'qbx' | 'qb' | 'wasabi' | 'codem' | 'ars' | 'esx' | 'custom'
-Config.Medical = 'auto'
+-- 'auto' | false | 'osp' | 'qbx' | 'qb' | 'wasabi' | 'codem' | 'ars' | 'esx' | 'custom'
+Config.Medical = 'osp'
 
 -- ============================================================
 -- VEHICLE IMAGES  (same method and shape as apex_garage)
