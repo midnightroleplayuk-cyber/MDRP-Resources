@@ -144,12 +144,17 @@ Config.ReturnStations = {
     {
         id     = 'airport_return',
         label  = 'Airport Return',
-        coords = vec3(-826.74, -2333.42, 14.57), vec3(-296.57, -885.98, 31.08)
+        coords = vec3(-826.74, -2333.42, 14.57), vec3(-296.57, -885.98, 31.08), vec3(1598.13, 3522.5, 35.46)
     },
     {
         id     = 'city_return',
         label  = 'City Return',
-        coords = vec3(-296.57, -885.98, 31.08), vec3(-826.74, -2333.42, 14.57)
+        coords = vec3(-296.57, -885.98, 31.08), vec3(-826.74, -2333.42, 14.57), vec3(1598.13, 3522.5, 35.46)
+    },
+    {
+        id     = 'sandy_return',
+        label  = 'Sandy Return',
+        coords = vec3(-296.57, -885.98, 31.08), vec3(-826.74, -2333.42, 14.57), vec3(1598.13, 3522.5, 35.46)
     }
 }
 
