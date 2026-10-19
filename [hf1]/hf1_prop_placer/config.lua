@@ -13,6 +13,7 @@ Config.AllowedIdentifiers = {
     -- ['license:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'] = true,
     ['fivem:1059188'] = true, -- HARDY
     ['fivem:17286926'] = true, -- KAPPER
+    ['fivem:14369934'] = true, -- KUZA
 }
 
 Config.Streaming = {
