@@ -28,7 +28,7 @@ Config.OpenKey = 'F9'
 
 -- 'auto' | false (disable) | 'qbx' | 'qb' | 'wasabi' | 'renewed' | 'mrnewb'
 -- | 'quasar' | 'jaksam' | 'cd' | 't1ger' | 'okok' | 'mono' | 'apex' | 'custom'
-Config.UsingVehicleKeys = 'auto'
+Config.UsingVehicleKeys = 'renewed'
 
 -- 'auto' | false | 'illenium' | 'fivem-appearance' | 'bl' | 'rcore' | 'codem'
 -- | 'tgiann' | 'qb' | 'esx_skin' | 'custom'
@@ -38,7 +38,7 @@ Config.FuelSystem = false -- Supported options: 'ox' - ox_fuel/ 'legacyfuel' - L
 
 -- 'auto' | false | 'ox' | 'qb' | 'qs' | 'ps' | 'codem' | 'origen' | 'tgiann'
 -- | 'core' | 'mf' | 'cheeza' | 'esx'
-Config.Inventory = 'auto'
+Config.Inventory = 'ox'
 
 -- Ambulance / medical resource used by Revive and Heal.
 --
