@@ -127,7 +127,7 @@ Config.RentalStations = {
     {
         id       = 'Sandy Rental',
         label    = 'City Rental',
-        uiStyle  = 'escalera',
+        uiStyle  = 'touchdown',
         coords   = vec4(1604.61, 3526.2, 37.24, 109.63),
         spawn    = vec4(-285.46, -887.41, 31.08, 167.33),
         vehicles = { 'blista', 'sultan', 'baller2', 'faggio', 'faggio2', 'asea' },
