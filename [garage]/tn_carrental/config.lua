@@ -123,6 +123,18 @@ Config.RentalStations = {
             model    = 's_f_y_airhostess_01',
             scenario = 'WORLD_HUMAN_CLIPBOARD'
         }
+    },
+    {
+        id       = 'Sandy Rental',
+        label    = 'City Rental',
+        uiStyle  = 'escalera',
+        coords   = vec4(1604.61, 3526.2, 36.24, 109.63),
+        spawn    = vec4(-285.46, -887.41, 31.08, 167.33),
+        vehicles = { 'blista', 'sultan', 'asea' },
+        ped = {
+            model    = 's_f_y_airhostess_01',
+            scenario = 'WORLD_HUMAN_CLIPBOARD'
+        }
     }
 }
 
