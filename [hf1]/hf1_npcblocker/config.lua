@@ -5,7 +5,7 @@ Config = {}
 -- Put corners in perimeter order, clockwise or counterclockwise.
 Config.Zones = {
     {
-        name = 'Location 1',
+        name = 'Courts',
         corners = {
             vec4(-451.52, -399.60, 32.36, 271.35),
             vec4(-360.96, -411.09, 29.62, 260.43),

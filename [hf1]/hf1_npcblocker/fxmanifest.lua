@@ -2,7 +2,7 @@ fx_version 'cerulean'
 game 'gta5'
 
 name 'hf1_npcblocker'
-author 'OpenAI'
+author 'HF1'
 description 'Configurable zones to suppress ambient traffic and pedestrians around custom MLOs'
 version '1.0.0'
 
