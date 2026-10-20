@@ -91,7 +91,7 @@ Config.misc = {
             scale = 0.9,
         },
         lockup = {
-            enabled = true,
+            enabled = false,
 
             label = 'Weed Lockup',
             sprite = 496,
