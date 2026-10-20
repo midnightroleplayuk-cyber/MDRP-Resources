@@ -40,9 +40,9 @@ Config.DefaultKeybinds.Controller = {
 
 Config.Soundpacks = {
     -- Uncomment the 3 lines below for the LGMods British Server Sided Sirens (https://docs.lgmods.co.uk/misc/british-sirens)
-    -- "DLC_LGMODS\\sirenpack_one",
-    -- "DLC_LGMODS\\sirenpack_two",
-    -- "DLC_LGMODS\\sirenpack_three"
+     "DLC_LGMODS\\sirenpack_one",
+     "DLC_LGMODS\\sirenpack_two",
+     "DLC_LGMODS\\sirenpack_three"
     -- Uncomment the 3 lines below for the LGMods London Server Sided Sirens (https://docs.lgmods.co.uk/misc/london-sirens)
     -- "DLC_LGMODS_LONDONSIRENS\\sirenpack_one",
     -- "DLC_LGMODS_LONDONSIRENS\\sirenpack_two",
@@ -50,7 +50,7 @@ Config.Soundpacks = {
 }
 
 Config.Optilink = {
-    Enabled = true,
+    Enabled = false,
     Use999Sound = {
         -- `Vehicle Spawn Code` (ENSURE YOU ARE USING `` AROUND THE SPAWN CODE AND NOT "")
     }
