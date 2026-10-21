@@ -10,7 +10,7 @@ Config.weedTypes = {
 
         -- Base growth time in minutes (Excluding any multipliers, think optimal conditions, fertilizer etc.)
         -- Recommended minimum of 4 minutes
-        baseGrowTime = 25,
+        baseGrowTime = 25, -- 1440 change to 
 
         -- The yield of the plant
         yield = {
@@ -44,7 +44,7 @@ Config.weedTypes = {
         -- (Players are able to add water as soon as the level drops below 50%)
         -- After this time, the plant will immediately start losing health. Treat this as the max time between watering
         -- Recommended minimum of 3 minutes
-        wateringTime = 9,
+        wateringTime = 9, -- 720 change to
 
         -- The amount of health plants will lose per second when the soil fully dries out (max health = 100)
         -- Plants will also halt growing without any water
@@ -53,7 +53,7 @@ Config.weedTypes = {
         -- Full growth lifespan in minutes
         -- The time players have between the plant fully growing and it dying after not being picked
         -- Recommended minimum of 4 minutes
-        collectionLifespan = 25,
+        collectionLifespan = 45,
 
         -- Requires "optimal conditions" to grow
         -- Optimal conditions are defined in the config where pots are created, or by a player placed pot with a grow tent
