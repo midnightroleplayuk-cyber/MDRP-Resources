@@ -607,7 +607,7 @@ items = {
         },
 {
             {
-                coords = vec4(372.35, -340.89, 50.14, 68.7), --ARMED ARMORY
+                coords = vec4(372.35, -340.89, 51.14, 68.7), --ARMED ARMORY
                 distance = 2.0,
                 ped = `mp_m_freemode_01`,
                 scenario = 'WORLD_HUMAN_COP_IDLES',
