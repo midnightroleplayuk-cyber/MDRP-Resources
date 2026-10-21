@@ -310,7 +310,7 @@ Config.weedTypes = {
 
         -- Chance of insect infestation to occur throughout the plants growth process
         insectInfestationChance = 0,
-        insectDamagePerMinute = 0 -- Damage per minute. Plants will die after ~15 minutes with insects
+        insectDamagePerMinute = 0,-- Damage per minute. Plants will die after ~15 minutes with insects
 
         -- Color of the leaves
         -- 0 = Green (classic) -- 1 = Light purple -- 2 = Red -- 3 = Blue -- 4 = Yellow -- 5 = Bright pink -- 6 = White -- 7 = Black/dark
