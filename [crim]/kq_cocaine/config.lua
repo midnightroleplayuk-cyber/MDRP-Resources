@@ -20,7 +20,7 @@ Config.items = {
 -- Controls the game map and mini-map display
 -- When changing the map style, you will have to rejoin the server to see the effects
 Config.map = {
-    displayIslandOnGameMap = true,
+    displayIslandOnGameMap = false,
 
     -- 0 = default base game (Grayscale) style
     -- 1 = Color map style (Created by @MarDarVin)
@@ -744,6 +744,26 @@ Config.itemCollection = {
                 rotation = vec3(0, 0, 40),
                 blip = false,
             },
+            {
+                coords = vec3(2760.63, 1503.38, 23.5),
+                rotation = vec3(0, 0, 40),
+                blip = false,
+            },
+            {
+                coords = vec3(2716.31, 1558.58, 19.82),
+                rotation = vec3(0, 0, 40),
+                blip = false,
+            },
+            {
+                coords = vec3(3606.58, 3745.48, 27.69),
+                rotation = vec3(0, 0, 40),
+                blip = false,
+            },
+            {
+                coords = vec3(3539.58, 3660.98, 27.12),
+                rotation = vec3(0, 0, 40),
+                blip = false,
+            },
         },
     },
     {
@@ -841,128 +861,153 @@ Config.itemCollection = {
         -- All locations of where the loot should spawn at
         locations = {
             {
-                coords = vec3(-439.79, -952.31, 28.39),
+                coords = vec3(-439.79, -952.31, 28.39), -- Postal 733
                 rotation = vec3(0, 0, 90),
                 blip = false,
             },
                 {
-                coords = vec3(-439.79, -954.3, 28.39),
+                coords = vec3(-439.79, -954.3, 28.39), -- Postal 733
                 rotation = vec3(0, 0, 90),
                 blip = false,
             },
                 {
-                coords = vec3(-447.06, -940.61, 28.39),
+                coords = vec3(-447.06, -940.61, 28.39), -- Postal 733
                 rotation = vec3(0, 0, 90),
                 blip = false,
             },
                 {
-                coords = vec3(-448.62, -940.61, 28.39),
+                coords = vec3(-448.62, -940.61, 28.39), -- Postal 733
                 rotation = vec3(0, 0, 90),
                 blip = false,
             },
                 {
-                coords = vec3(-454.59, -938.38, 28.39),
+                coords = vec3(-454.59, -938.38, 28.39), -- Postal 733
                 rotation = vec3(0, 0, 90),
                 blip = false,
             },
                 {
-                coords = vec3(-448.81, -896.06, 28.39),
+                coords = vec3(-448.81, -896.06, 28.39), -- Postal 733
                 rotation = vec3(0, 0, 90),
                 blip = false,
             },
                 {
-                coords = vec3(-446.94, -896.15, 28.39),
+                coords = vec3(-446.94, -896.15, 28.39), -- Postal 733
                 rotation = vec3(0, 0, 90),
                 blip = false,
             },
                 {
-                coords = vec3(-448.20, -895.9, 37.68), 
+                coords = vec3(-448.20, -895.9, 37.68), -- Postal 733
                 rotation = vec3(0, 0, 180),
                 blip = false,
             },
                 {
-                coords = vec3(-446.8, -895.9, 37.68),
+                coords = vec3(-446.8, -895.9, 37.68), -- Postal 733
                 rotation = vec3(0, 0, 90),
                 blip = false,
             },
                 {
-                coords = vec3(-441.78, -943.6, 37.68),
+                coords = vec3(-441.78, -943.6, 37.68), -- Postal 733
                 rotation = vec3(0, 0, 90),
                 blip = false,
             },
                 {
-                coords = vec3(-441.78, -945.3, 37.68),
+                coords = vec3(-441.78, -945.3, 37.68), -- Postal 733
                 rotation = vec3(0, 0, 90),
                 blip = false,
             },
                 {
-                coords = vec3(-448.86, -947.31, 46.98),
+                coords = vec3(-448.86, -947.31, 46.98), -- Postal 733
                 rotation = vec3(0, 0, 90),
                 blip = false,
             },
                 {
-                coords = vec3(-447.17, -947.33, 46.98),
+                coords = vec3(-447.17, -947.33, 46.98), -- Postal 733
                 rotation = vec3(0, 0, 90),
                 blip = false,
             },
                 {
-                coords = vec3(-447.0, -889.49, 46.98),
+                coords = vec3(-447.0, -889.49, 46.98), -- Postal 733
                 rotation = vec3(0, 0, 90),
                 blip = false,
             },
                 {
-                coords = vec3(-448.65, -889.42, 46.98),
+                coords = vec3(-448.65, -889.42, 46.98), -- Postal 733
                 rotation = vec3(0, 0, 90),
                 blip = false, 
             },
                 {
-                coords = vec3(-497.12, -1013.17, 51.48),
+                coords = vec3(-497.12, -1013.17, 51.48), -- Postal 733
                 rotation = vec3(0, 0, 90),
                 blip = false,
             },
                 {
-                coords = vec3(-498.97, -1013.11, 51.48),
+                coords = vec3(-498.97, -1013.11, 51.48), -- Postal 733
                 rotation = vec3(0, 0, 140),
                 blip = false,
             },
                 {
-                coords = vec3(-460.41, -1049.16, 51.48), 
+                coords = vec3(-460.41, -1049.16, 51.48), -- Postal 733
                 rotation = vec3(0, 0, 140),
                 blip = false,
             },
                 {
-                coords = vec3(-477.2, -1050.98, 39.81),
+                coords = vec3(-477.2, -1050.98, 39.81), -- Postal 733
                 rotation = vec3(0, 0, 150),
                 blip = false,
             },
                 {
-                coords = vec3(-496.14, -1017.41, 39.81),
+                coords = vec3(-496.14, -1017.41, 39.81), -- Postal 733
                 rotation = vec3(0, 0, 90),
                 blip = false,
             },
                 {
-                coords = vec3(-441.78, -945.3, 37.68),
+                coords = vec3(-441.78, -945.3, 37.68), -- Postal 733
                 rotation = vec3(0, 0, 90),
                 blip = false,
             },
                 {
-                coords = vec3(272.3, -2494.14, 5.44),
+                coords = vec3(272.3, -2494.14, 5.44), -- Postal 923
                 rotation = vec3(0, 0, 90),
                 blip = false,
             },
                 {
-                coords = vec3(232.83, -2500.74, 5.55),
+                coords = vec3(232.83, -2500.74, 5.55), -- Postal 922
                 rotation = vec3(0, 0, 90),
                 blip = false,
             },
                 {
-                coords = vec3(-447.0, -889.49, 46.98),
+                coords = vec3(-447.0, -889.49, 46.98), -- Postal 733
                 rotation = vec3(0, 0, 90),
                 blip = false,
             },
                 {
-                coords = vec3(-448.65, -889.42, 46.98),
+                coords = vec3(-448.65, -889.42, 46.98), -- Postal 733
                 rotation = vec3(0, 0, 90),
+                blip = false, --
+            },
+                {
+                coords = vec3(-170.16, -1055.9, 17.69), -- Postal 744
+                rotation = vec3(0, 0, 90),
+                blip = false,
+            },
+                {
+                coords = vec3(-141.75, -1097.95, 17.69), -- Postal 744
+                rotation = vec3(0, 0, 90),
+                blip = false,
+            },
+                {
+                coords = vec3(-140.91, -1095.78, 17.69), -- Postal 744
+                rotation = vec3(0, 0, 90),
+                blip = false,
+            },
+                {
+                coords = vec3(-165.79, -1065.7, 29.14), -- Postal 744
+                rotation = vec3(0, 0, 90),
+                blip = false,
+            },
+                {
+                coords = vec3(-157.2, -1061.96, 29.14), -- Postal 744
+                rotation = vec3(0, 0, 200),
                 blip = false, --
             },
         },

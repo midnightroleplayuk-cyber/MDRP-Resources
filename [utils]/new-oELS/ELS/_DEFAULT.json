@@ -1,0 +1,199 @@
+{
+    "extraControls": {
+        "extra1": {
+            "colour": "blue",
+            "enabled": true,
+            "allowEnvLight": true,
+            "directions": [
+                "back",
+                "backLeft"
+            ],
+            "offset": {
+                "offSetX": "-0.70",
+                "offSetY": "-0.20",
+                "offSetZ": "0.50"
+            }
+        },
+        "extra2": {
+            "colour": "blue",
+            "enabled": true,
+            "allowEnvLight": true,
+            "directions": [
+                "front",
+                "frontLeft"
+            ],
+            "offset": {
+                "offSetX": "-0.25",
+                "offSetY": "-0.20",
+                "offSetZ": "0.50"
+            }
+        },
+        "extra3": {
+            "colour": "blue",
+            "enabled": true,
+            "allowEnvLight": true,
+            "directions": [
+                "front",
+                "frontRight"
+            ],
+            "offset": {
+                "offSetX": "0.25",
+                "offSetY": "-0.20",
+                "offSetZ": "0.50"
+            }
+        },
+        "extra4": {
+            "colour": "blue",
+            "enabled": true,
+            "allowEnvLight": true,
+            "directions": [
+                "back",
+                "backRight"
+            ],
+            "offset": {
+                "offSetX": "0.70",
+                "offSetY": "-0.20",
+                "offSetZ": "0.50"
+            }
+        },
+        "extra5": {
+            "colour": "white",
+            "enabled": true,
+            "allowEnvLight": false,
+            "directions": [
+                "front"
+            ],
+            "offset": {
+                "offSetX": "-0.70",
+                "offSetY": "-0.20",
+                "offSetZ": "0.50"
+            }
+        },
+        "extra6": {
+            "colour": "white",
+            "enabled": true,
+            "allowEnvLight": false,
+            "directions": [
+                "front"
+            ],
+            "offset": {
+                "offSetX": "0.70",
+                "offSetY": "-0.20",
+                "offSetZ": "0.50"
+            }
+        },
+        "extra7": {
+            "colour": "red",
+            "enabled": true,
+            "allowEnvLight": true,
+            "directions": [
+                "backLeft"
+            ],
+            "offset": {
+                "offSetX": "-0.40",
+                "offSetY": "-0.80",
+                "offSetZ": "0.40"
+            }
+        },
+        "extra8": {
+            "colour": "red",
+            "enabled": true,
+            "allowEnvLight": true,
+            "directions": [
+                "backRight"
+            ],
+            "offset": {
+                "offSetX": "0.00",
+                "offSetY": "-0.80",
+                "offSetZ": "0.40"
+            }
+        },
+        "extra9": {
+            "colour": "red",
+            "enabled": true,
+            "allowEnvLight": false,
+            "directions": [
+                "backLeft"
+            ],
+            "offset": {}
+        },
+        "extra10": {
+            "colour": "blue",
+            "enabled": false,
+            "allowEnvLight": false,
+            "directions": [],
+            "offset": {}
+        },
+        "extra11": {
+            "colour": "blue",
+            "enabled": false,
+            "allowEnvLight": false,
+            "directions": [],
+            "offset": {}
+        },
+        "extra12": {
+            "colour": "blue",
+            "enabled": false,
+            "allowEnvLight": false,
+            "directions": [],
+            "offset": {}
+        }
+    },
+    "lightSetup": {
+        "lightPattern": "leds",
+        "seconaryWithPrimary": false,
+        "warningWithPrimary": false
+    },
+    "sirens": {
+        "enabled": true,
+        "bullHorn": {
+            "enabled": true,
+            "soundFile": "SIRENS_AIRHORN",
+            "soundPack": 0
+        },
+        "sounds": [
+            {
+                "soundFile": "RESIDENT_VEHICLES_SIREN_WAIL_01",
+                "soundPack": 0
+            },
+            {
+                "soundFile": "VEHICLES_HORNS_SIREN_2",
+                "soundPack": 0
+            },
+            {
+                "soundFile": "VEHICLES_HORNS_SIREN_1",
+                "soundPack": 0
+            }
+        ]
+    },
+    "dualSirens": {
+        "enabled": false,
+        "sounds": [
+            {
+                "soundFile": "VEHICLES_HORNS_SIREN_1",
+                "soundPack": 0
+            }
+        ]
+    },
+    "misc": {
+        "steadyBurns": {
+            "enabled": false,
+            "extras": [
+                6
+            ]
+        },
+        "spotLight": {
+            "enabled": false,
+            "extra": "1"
+        },
+        "alleyLight": {
+            "enabled": false,
+            "leftExtra": "",
+            "rightExtra": ""
+        },
+        "seatsCanControl": [
+            "-1",
+            "0"
+        ]
+    }
+}

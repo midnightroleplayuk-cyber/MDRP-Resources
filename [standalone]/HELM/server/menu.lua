@@ -257,3 +257,4 @@ RegisterNetEvent('helm:server:selfTool', function(tool)
     exports[GetCurrentResourceName()]:Log(src, 'custom', 'staff_' .. tool, t.label)
     TriggerClientEvent('helm:client:selfTool', src, tool)
 end)
+

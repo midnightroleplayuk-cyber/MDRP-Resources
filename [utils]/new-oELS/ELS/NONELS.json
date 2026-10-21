@@ -1,0 +1,49 @@
+{
+    "lightSetup": {
+        "lightPattern": "leds",
+        "seconaryWithPrimary": false,
+        "warningWithPrimary": false
+    },
+    "sirens": {
+        "enabled": true,
+        "bullHorn": {
+            "enabled": true,
+            "soundFile": "SIRENS_AIRHORN",
+            "soundPack": 0
+        },
+        "sounds": [
+            {
+                "soundFile": "RESIDENT_VEHICLES_SIREN_WAIL_01",
+                "soundPack": 0
+            },
+            {
+                "soundFile": "VEHICLES_HORNS_SIREN_2",
+                "soundPack": 0
+            },
+            {
+                "soundFile": "VEHICLES_HORNS_SIREN_1",
+                "soundPack": 0
+            }
+        ]
+    },
+    "dualSirens": {
+        "enabled": false,
+        "sounds": [
+            {
+                "soundFile": "VEHICLES_HORNS_SIREN_1",
+                "soundPack": 0
+            }
+        ]
+    },
+    "misc": {
+        "wigWags": false,
+        "optiLink": {
+            "enabled": false,
+            "999Mode": false
+        },
+        "seatsCanControl": [
+            "-1",
+            "0"
+        ]
+    }
+}

@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Elevator Panel</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --steel-1: #d7d7d4;
+    --steel-2: #a9aaa8;
+    --steel-3: #777875;
+    --steel-dark: #4e4f4d;
+    --black: #111214;
+    --black-2: #1a1b1d;
+    --button: #202123;
+    --button-edge: #5e605e;
+    --button-text: #d9dad7;
+    --white: #f2f2ef;
+    --amber: #d7a52c;
+    --red: #b43a32;
+    --green: #71956d;
+    --panel-w: 355px;
+  }
+
+  html, body {
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    overflow: hidden;
+    user-select: none;
+    font-family: Arial, Helvetica, sans-serif;
+  }
+
+  #overlay {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding-right: 58px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .22s ease;
+  }
+
+  #overlay.visible {
+    opacity: 1;
+    pointer-events: all;
+  }
+
+  /* Physical elevator faceplate */
+  #panel {
+    width: var(--panel-w);
+    position: relative;
+    overflow: hidden;
+    border: 1px solid #666764;
+    border-radius: 3px;
+    background:
+      repeating-linear-gradient(
+        90deg,
+        rgba(255,255,255,.055) 0px,
+        rgba(255,255,255,.055) 1px,
+        rgba(0,0,0,.025) 1px,
+        rgba(0,0,0,.025) 3px
+      ),
+      linear-gradient(180deg, #c8c9c6 0%, #aeb0ad 45%, #929491 100%);
+    box-shadow:
+      0 14px 40px rgba(0,0,0,.58),
+      inset 0 1px 0 rgba(255,255,255,.72),
+      inset 0 -1px 0 rgba(0,0,0,.3);
+    transform: translateX(22px);
+    transition: transform .25s ease;
+  }
+
+  #overlay.visible #panel { transform: translateX(0); }
+
+  #panel::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    box-shadow:
+      inset 0 0 0 1px rgba(255,255,255,.2),
+      inset 0 0 18px rgba(0,0,0,.12);
+  }
+
+  /* Header / floor indicator */
+  #header {
+    margin: 14px 14px 12px;
+    padding: 10px 12px 11px;
+    background: #111214;
+    border: 1px solid #353638;
+    border-radius: 2px;
+    box-shadow:
+      inset 0 2px 5px rgba(0,0,0,.85),
+      0 1px 0 rgba(255,255,255,.28);
+    position: relative;
+    z-index: 1;
+  }
+
+  #building-name {
+    color: #888b88;
+    font-size: 8px;
+    font-weight: 700;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+
+  #floor-display {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 48px;
+  }
+
+  #floor-number {
+    min-width: 72px;
+    color: #e2a92f;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 43px;
+    line-height: 1;
+    font-weight: 500;
+    letter-spacing: -.045em;
+    text-shadow: 0 0 7px rgba(226,169,47,.2);
+    transition: color .15s ease;
+  }
+
+  #floor-label {
+    color: #777a77;
+    text-align: right;
+    font-size: 8px;
+    line-height: 1.45;
+    font-weight: 700;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    max-width: 150px;
+  }
+
+  #status-row {
+    height: 16px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 3px;
+    color: #70736f;
+  }
+
+  #direction-arrow {
+    font-size: 12px;
+    line-height: 1;
+    opacity: 0;
+    transition: opacity .15s;
+  }
+
+  #direction-arrow.up,
+  #direction-arrow.down {
+    opacity: 1;
+    color: #d7a52c;
+  }
+
+  #status-text {
+    font-size: 7px;
+    font-weight: 700;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+  }
+
+  /* Subtle service plate */
+  #face-label {
+    margin: 0 18px 5px;
+    color: rgba(38,39,38,.7);
+    font-size: 7px;
+    font-weight: 700;
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    text-align: center;
+    position: relative;
+    z-index: 1;
+  }
+
+  #btn-area {
+    padding: 7px 22px 12px;
+    position: relative;
+    z-index: 1;
+  }
+
+  #btn-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px 15px;
+  }
+
+  /*
+    Physical-looking elevator buttons:
+    - square/rounded metal bezels
+    - dark recessed button surface
+    - very restrained illumination
+  */
+  .floor-btn {
+    appearance: none;
+    width: 100%;
+    aspect-ratio: 1;
+    border-radius: 3px;
+    border: 1px solid #666866;
+    background: linear-gradient(145deg, #bfc0bd, #8f918e);
+    padding: 3px;
+    cursor: pointer;
+    position: relative;
+    box-shadow:
+      0 2px 2px rgba(0,0,0,.3),
+      inset 0 1px 0 rgba(255,255,255,.65);
+    transition: transform .08s ease, filter .08s ease;
+  }
+
+  .floor-btn::before {
+    content: "";
+    position: absolute;
+    inset: 3px;
+    border-radius: 2px;
+    background:
+      linear-gradient(145deg, #2b2c2e 0%, #17181a 58%, #0f1011 100%);
+    border: 1px solid #090a0b;
+    box-shadow:
+      inset 0 2px 5px rgba(0,0,0,.85),
+      inset 0 -1px 0 rgba(255,255,255,.09);
+  }
+
+  .floor-btn .btn-num,
+  .floor-btn .btn-sub {
+    position: relative;
+    z-index: 2;
+    display: block;
+  }
+
+  .floor-btn .btn-num {
+    color: #c7c9c6;
+    font-size: 17px;
+    line-height: 1;
+    font-weight: 400;
+    text-shadow: 0 1px 1px #000;
+  }
+
+  .floor-btn .btn-sub {
+    margin-top: 5px;
+    color: #686b68;
+    font-size: 5px;
+    line-height: 1;
+    font-weight: 700;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+  }
+
+  .floor-btn:hover {
+    filter: brightness(1.08);
+  }
+
+  .floor-btn:active {
+    transform: translateY(1px);
+  }
+
+  .floor-btn.current {
+    pointer-events: none;
+  }
+
+  .floor-btn.current::after,
+  .floor-btn.selected::after {
+    content: "";
+    position: absolute;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    left: 50%;
+    bottom: 8px;
+    transform: translateX(-50%);
+    background: #d7a52c;
+    box-shadow: 0 0 4px rgba(215,165,44,.55);
+    z-index: 3;
+  }
+
+  .floor-btn.current .btn-num,
+  .floor-btn.selected .btn-num {
+    color: #e0ad39;
+  }
+
+  .floor-btn.current::before {
+    box-shadow:
+      inset 0 2px 5px rgba(0,0,0,.85),
+      inset 0 0 8px rgba(215,165,44,.07);
+  }
+
+  .floor-btn.selected::before {
+    box-shadow:
+      inset 0 2px 5px rgba(0,0,0,.85),
+      inset 0 0 9px rgba(215,165,44,.12);
+  }
+
+  .floor-btn.lobby {
+    grid-column: span 2;
+    aspect-ratio: auto;
+    height: 51px;
+  }
+
+  .floor-btn.lobby .btn-num {
+    font-size: 15px;
+  }
+
+  .divider {
+    height: 1px;
+    margin: 2px 19px 10px;
+    background: rgba(54,55,53,.48);
+    box-shadow: 0 1px 0 rgba(255,255,255,.25);
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Real-world style door controls */
+  #controls {
+    display: grid;
+    grid-template-columns: 1fr 1fr 54px;
+    gap: 10px;
+    padding: 0 22px 14px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .ctrl-btn {
+    height: 42px;
+    border: 1px solid #686a67;
+    border-radius: 3px;
+    background: linear-gradient(145deg, #bfc0bd, #929491);
+    color: #242524;
+    cursor: pointer;
+    box-shadow:
+      0 2px 2px rgba(0,0,0,.28),
+      inset 0 1px 0 rgba(255,255,255,.6);
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 8px;
+    font-weight: 700;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    transition: transform .08s ease, filter .08s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+  }
+
+  .ctrl-btn::first-letter {
+    font-size: 14px;
+  }
+
+  .ctrl-btn:hover { filter: brightness(1.08); }
+  .ctrl-btn:active { transform: translateY(1px); }
+
+  .ctrl-btn.open-btn:hover { color: #42613f; }
+  .ctrl-btn.close-btn:hover { color: #7b302b; }
+
+  .alarm-btn {
+    color: #262725;
+    font-size: 8px;
+  }
+
+  .alarm-btn:hover {
+    color: #8d2e28;
+  }
+
+  #footer {
+    min-height: 27px;
+    padding: 0 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(70,71,69,.25);
+    border-top: 1px solid rgba(255,255,255,.22);
+    position: relative;
+    z-index: 1;
+  }
+
+  #footer-label {
+    color: rgba(35,36,35,.62);
+    font-size: 6px;
+    font-weight: 700;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+  }
+
+  #close-panel {
+    color: rgba(35,36,35,.68);
+    cursor: pointer;
+    font-size: 7px;
+    font-weight: 700;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+  }
+
+  #close-panel:hover { color: #202120; }
+
+  /* Travel state: keep it looking like the actual indicator is changing,
+     rather than covering the panel with a game HUD. */
+  #travelling {
+    position: absolute;
+    top: 14px;
+    left: 14px;
+    right: 14px;
+    height: 89px;
+    z-index: 20;
+    background: #111214;
+    border: 1px solid #353638;
+    border-radius: 2px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    grid-template-rows: 1fr 14px;
+    align-items: center;
+    padding: 8px 12px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .12s;
+    box-shadow: inset 0 2px 5px rgba(0,0,0,.85);
+  }
+
+  #travelling.active {
+    opacity: 1;
+    pointer-events: all;
+  }
+
+  #travel-floor {
+    color: #e2a92f;
+    font-size: 40px;
+    font-weight: 500;
+    line-height: 1;
+    text-shadow: 0 0 7px rgba(226,169,47,.2);
+  }
+
+  #travel-label {
+    color: #777a77;
+    font-size: 7px;
+    font-weight: 700;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    align-self: center;
+  }
+
+  #travel-bar-wrap {
+    grid-column: 1 / -1;
+    width: 100%;
+    height: 2px;
+    background: #28292a;
+    overflow: hidden;
+  }
+
+  #travel-bar {
+    height: 100%;
+    width: 0%;
+    background: #d7a52c;
+    box-shadow: 0 0 4px rgba(215,165,44,.45);
+    transition: width linear;
+  }
+
+  @media (max-height: 700px) {
+    #panel { transform: scale(.88) translateX(22px); transform-origin: right center; }
+    #overlay.visible #panel { transform: scale(.88) translateX(0); }
+  }
+
+  ::-webkit-scrollbar { display: none; }
+</style>
+</head>
+<body>
+
+<div id="overlay">
+  <div id="panel">
+
+    <div id="travelling">
+      <div id="travel-floor">--</div>
+      <div id="travel-label">Arriving</div>
+      <div id="travel-bar-wrap"><div id="travel-bar"></div></div>
+    </div>
+
+    <div id="header">
+      <div id="building-name">Bridstow Courts</div>
+      <div id="floor-display">
+        <div id="floor-number">--</div>
+        <div id="floor-label">Select<br>destination</div>
+      </div>
+      <div id="status-row">
+        <span id="direction-arrow">▲</span>
+        <span id="status-text">Ready</span>
+      </div>
+    </div>
+
+    <div id="face-label">Floor selection</div>
+
+    <div id="btn-area">
+      <div id="btn-grid"></div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div id="controls">
+      <button class="ctrl-btn open-btn" onclick="nuiPost('elevatorOpen', {})">◀ ▶ &nbsp; Open</button>
+      <button class="ctrl-btn close-btn" onclick="nuiPost('elevatorCloseDoors', {})">▶ ◀ &nbsp; Close</button>
+      <button class="ctrl-btn alarm-btn" onclick="nuiPost('elevatorAlarm', {})">ALARM</button>
+    </div>
+
+    <div id="footer">
+      <span id="footer-label">PASSENGER ELEVATOR</span>
+      <span id="close-panel" onclick="closePanel()">✕ Close</span>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  let currentFloor = 0;
+  let totalFloors = 20;
+  let travelling = false;
+
+  const floorLabels = {
+    0: 'Ground Floor',
+    19: 'Penthouse'
+  };
+
+  function getResourceName() {
+    return (typeof GetParentResourceName === 'function')
+      ? GetParentResourceName()
+      : 'bridstow_courts';
+  }
+
+  function nuiPost(endpoint, data) {
+    fetch('https://' + getResourceName() + '/' + endpoint, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data || {})
+    }).catch(() => {});
+  }
+
+  function buildGrid(floors, current) {
+    const grid = document.getElementById('btn-grid');
+    grid.innerHTML = '';
+    totalFloors = floors;
+
+    for (let i = floors - 1; i >= 1; i--) {
+      const btn = document.createElement('button');
+      btn.className = 'floor-btn' + (i === current ? ' current' : '');
+      btn.dataset.floor = i;
+      btn.innerHTML = `
+        <span class="btn-num">${i}</span>
+        <span class="btn-sub">${floorLabels[i] || 'Floor'}</span>
+      `;
+      btn.addEventListener('click', () => selectFloor(i));
+      grid.appendChild(btn);
+    }
+
+    const lobby = document.createElement('button');
+    lobby.className = 'floor-btn lobby' + (current === 0 ? ' current' : '');
+    lobby.dataset.floor = 0;
+    lobby.innerHTML = `
+      <span class="btn-num">G</span>
+      <span class="btn-sub">Lobby</span>
+    `;
+    lobby.addEventListener('click', () => selectFloor(0));
+    grid.appendChild(lobby);
+  }
+
+  function selectFloor(floor) {
+    if (travelling || floor === currentFloor) return;
+
+    nuiPost('elevatorSelect', { floor });
+
+    document.querySelectorAll('.floor-btn').forEach(btn => {
+      btn.classList.toggle('selected', parseInt(btn.dataset.floor, 10) === floor);
+    });
+
+    const arrow = document.getElementById('direction-arrow');
+    arrow.className = floor > currentFloor ? 'up' : 'down';
+    arrow.textContent = floor > currentFloor ? '▲' : '▼';
+
+    document.getElementById('status-text').textContent = 'Called';
+  }
+
+  function startTravel(target, travelMs) {
+    travelling = true;
+
+    const tv = document.getElementById('travelling');
+    const tf = document.getElementById('travel-floor');
+    const tb = document.getElementById('travel-bar');
+
+    tf.textContent = target === 0 ? 'G' : String(target);
+    tb.style.transition = 'none';
+    tb.style.width = '0%';
+    tv.classList.add('active');
+
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      tb.style.transition = `width ${travelMs}ms linear`;
+      tb.style.width = '100%';
+    }));
+  }
+
+  function arriveAtFloor(floor) {
+    travelling = false;
+    currentFloor = floor;
+
+    document.getElementById('travelling').classList.remove('active');
+    document.getElementById('floor-number').textContent = floor === 0 ? 'G' : floor;
+    document.getElementById('floor-label').textContent =
+      floorLabels[floor] || `Floor ${floor}`;
+    document.getElementById('direction-arrow').className = '';
+    document.getElementById('status-text').textContent = 'Ready';
+
+    buildGrid(totalFloors, floor);
+  }
+
+  function openPanel(data) {
+    currentFloor = data.currentFloor ?? 0;
+    buildGrid(data.totalFloors ?? 20, currentFloor);
+
+    document.getElementById('floor-number').textContent =
+      currentFloor === 0 ? 'G' : currentFloor;
+
+    document.getElementById('floor-label').textContent =
+      floorLabels[currentFloor] || `Floor ${currentFloor}`;
+
+    document.getElementById('status-text').textContent = 'Ready';
+    document.getElementById('overlay').classList.add('visible');
+  }
+
+  function closePanel() {
+    document.getElementById('overlay').classList.remove('visible');
+    nuiPost('elevatorClose', {});
+  }
+
+  window.addEventListener('message', (e) => {
+    const d = e.data;
+    if (!d || !d.action) return;
+
+    if (d.action === 'openPanel') openPanel(d);
+    if (d.action === 'closePanel') document.getElementById('overlay').classList.remove('visible');
+    if (d.action === 'startTravel') startTravel(d.floor, d.travelMs);
+    if (d.action === 'arrived') arriveAtFloor(d.floor);
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closePanel();
+  });
+</script>
+</body>
+</html>

@@ -46,7 +46,7 @@ Config.wildWeed = {
             tint = 0,
 
             -- Center of the zone
-            center = vec3(-2624.32, 2483.32, 1.99),
+            center = vec3(302.37, 4324.85, 46.96), -- 241
             -- Zone radius
             radius = 35.0,
             -- Amount of plants spawned in this zone
@@ -70,7 +70,7 @@ Config.wildWeed = {
             model = 'kq_weed_plant_03',
             tint = 1,
 
-            center = vec3(3345.19, 5646.38, 17.65),
+            center = vec3(2996.97, 6249.26, 78.68), -- 470
             radius = 40.0,
             count = 15,
 
