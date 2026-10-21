@@ -284,6 +284,17 @@ local function useClosestDoor()
     end
 end
 
+-- FiveM Settings > Key Bindings > FiveM: players can change this individually.
+-- RegisterKeyMapping keeps E as the default without hard-coding control 38.
+RegisterCommand('+ox_doorlock_toggle', function()
+    if not PickingLock and ClosestDoor and ClosestDoor.distance < ClosestDoor.maxDistance then
+        useClosestDoor()
+    end
+end, false)
+
+RegisterCommand('-ox_doorlock_toggle', function() end, false)
+RegisterKeyMapping('+ox_doorlock_toggle', 'Door Lock - Lock / Unlock', 'keyboard', 'E')
+
 CreateThread(function()
     local lockDoor = locale('lock_door')
     local unlockDoor = locale('unlock_door')
@@ -342,9 +353,6 @@ CreateThread(function()
                 showUI = ClosestDoor.state
             end
 
-            if not PickingLock and IsDisabledControlJustReleased(0, 38) then
-                useClosestDoor()
-            end
         elseif showUI then
             lib.hideTextUI()
             showUI = nil
