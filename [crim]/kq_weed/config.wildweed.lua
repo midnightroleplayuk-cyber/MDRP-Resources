@@ -46,7 +46,7 @@ Config.wildWeed = {
             tint = 0,
 
             -- Center of the zone
-            center = vec3(302.37, 4324.85, 46.96), 241
+            center = vec3(302.37, 4324.85, 46.96), -- 241
             -- Zone radius
             radius = 35.0,
             -- Amount of plants spawned in this zone
