@@ -739,12 +739,8 @@ items = {
         },
 
         storages = {
-            {coords = vector3(456.25, -993.33, 30.69), distance = 2.0, type = 'personal', weight = 1000000, slots = 100},
-          --  {coords = vector3(2806.0933, 4710.9009, 50.0986), distance = 2.0, type = 'personal', weight = 1000000, slots = 100},
-            {coords = vector3(478.73, -981.91, 24.92), distance = 2.0, type = 'locker', weight = 1000000, slots = 100},
-          --  {coords = vector3(2811.6104, 4753.4893, 50.2594), distance = 2.0, type = 'locker', weight = 1000000, slots = 100},
-            {coords = vector3(429.56, -1007.09, 28.84), distance = 2.0, type = 'public', weight = 1000000, slots = 100}, -- Senora Maintenance Room 1
-           -- {coords = vector3(2811.7148, 4752.7520, 49.9266), distance = 2.0, type = 'public', weight = 1000000, slots = 100}, -- Senora Maintenance Room 2
+            {coords = vector3(423.2, -326.34, 51.08), distance = 2.0, type = 'personal', weight = 1000000, slots = 100}, --FEMALE VINEWOOD
+            {coords = vector3(414.68, -318.25, 51.21), distance = 2.0, type = 'personal', weight = 1000000, slots = 100}, --MALE VINEWOOD
         },
         wardrobes = {
             {coords = vector3(449.75, -991.61, 30.69), distance = 2.0},
