@@ -542,7 +542,7 @@ Config.PoliceStations = {
                         shoes = {item = 25, texture = 0},
                         accessory = {item = 225, texture = 0},
                         t_shirt = {item = 238, texture = 0},
-                        vest = {item = 80, texture = 15},
+                        vest = {item = 80, texture = 14},
                         decals = {item = 0, texture = 0},
                         torso = {item = 625, texture = 0},
                         hat = {item = 240, texture = 3},
