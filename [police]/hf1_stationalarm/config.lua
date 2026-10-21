@@ -1,6 +1,8 @@
 Config = {}
 
 -- Add as many alarm and reset points as you like. Each station ID has independent alarm state.
+-- Use vec4(x, y, z, heading) to only allow use from one side: heading = the way a player faces when using it.
+-- Plain vec3 points can be used from any direction.
 Config.Stations = {
     vinewood = {
         label = 'Vinewood Station',
@@ -30,3 +32,10 @@ Config.SoundVolume = 0.45 -- 0.0 to 1.0
 Config.SoundDistance = 30.0 -- 3D audio falloff radius (metres)
 Config.InteractDistance = 2.0
 Config.ServerInteractDistance = 4.0 -- Server validation tolerance
+
+-- True when pos is on the side a vec4 point faces; vec3 points have no restriction.
+function Config.InFront(point, pos)
+    if type(point) ~= 'vector4' then return true end
+    local h = math.rad(point.w)
+    return (point.x - pos.x) * -math.sin(h) + (point.y - pos.y) * math.cos(h) > 0
+end
