@@ -1007,7 +1007,7 @@ Config.itemCollection = {
             },
                 {
                 coords = vec3(-157.2, -1061.96, 29.14), -- Postal 744
-                rotation = vec3(0, 0, 90),
+                rotation = vec3(0, 0, 180),
                 blip = false, --
             },
         },
