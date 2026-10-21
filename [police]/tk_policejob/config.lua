@@ -536,7 +536,7 @@ Config.PoliceStations = {
                     },
                     clothing = {
                         mask = {item = 121, texture = 0},
-                        arms = {item = -1, texture = 0},
+                        arms = {item = 1, texture = 0},
                         pants = {item = 242, texture = 0},
                         bag = {item = 0, texture = 0},
                         shoes = {item = 25, texture = 0},
