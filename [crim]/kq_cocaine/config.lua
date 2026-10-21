@@ -744,7 +744,7 @@ Config.itemCollection = {
                 rotation = vec3(0, 0, 40),
                 blip = false,
             },
-             {
+            {
                 coords = vec3(2771.12, 1520.65, 29.79)
                 rotation = vec3(0, 0, 40),
                 blip = false,
