@@ -3,7 +3,7 @@
 Config = {}
 
 ---Trigger a notification on the client when the door state is successfully updated.
-Config.Notify = false
+Config.Notify = true
 
 ---Create a persistent notification while in-range of a door, prompting to lock/unlock.
 Config.DrawTextUI = false
