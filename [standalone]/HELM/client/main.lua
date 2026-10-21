@@ -525,14 +525,11 @@ AddEventHandler('onResourceStop', function(res)
 end)
 
 
-CreateThread(function()
-    local last = IsNuiFocused()
-    while true do
-        local now = IsNuiFocused()
-        if now ~= last then
-            print(('NUI focus changed: %s -> %s at %d'):format(tostring(last), tostring(now), GetGameTimer()))
-            last = now
-        end
-        Wait(100)
+RegisterCommand('lookcoords', function()
+    local coords = GetCamLookCoords(100.0)
+    if coords then
+        print(('vector3(%.2f, %.2f, %.2f)'):format(coords.x, coords.y, coords.z))
+    else
+        print('Nothing hit')
     end
 end)
