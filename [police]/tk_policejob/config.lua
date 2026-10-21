@@ -740,7 +740,7 @@ items = {
 
         storages = {
             {coords = vector3(423.2, -326.34, 51.08), distance = 2.0, type = 'personal', weight = 1000000, slots = 100}, --FEMALE VINEWOOD
-            {coords = vector3(414.68, -318.25, 51.21), distance = 2.0, type = 'personal', weight = 1000000, slots = 100}, --MALE VINEWOOD
+            {coords = vector3(414.85, -318.22, 51.04), distance = 2.0, type = 'personal', weight = 1000000, slots = 100}, --MALE VINEWOOD
         },
         wardrobes = {
             {coords = vector3(449.75, -991.61, 30.69), distance = 2.0},
