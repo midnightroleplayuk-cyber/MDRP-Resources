@@ -606,7 +606,7 @@ items = {
             },
             -- SECOND VINEWOOD SHOP: change these coords to your preferred location.
             {
-                coords = vec4(372.21, -341.11, 50.14, 64.59),
+                coords = vec4(372.21, -341.11, 51.14, 64.59), -- ARMED ARMORY
                 distance = 2.0,
                 ped = `mp_m_freemode_01`,
                 scenario = 'WORLD_HUMAN_COP_IDLES',
@@ -676,7 +676,7 @@ items = {
                         t_shirt = {item = 228, texture = 0},
                         vest = {item = 78, texture = 0},
                         decals = {item = 0, texture = 0},
-                        torso = {item = 605, texture = 2},
+                        torso = {item = 605, texture = 1},
                         hat = {item = 249, texture = 0},
                         glass = {item = -1, texture = 0},
                         ear = {item = -1, texture = 0},
