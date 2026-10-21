@@ -258,15 +258,3 @@ RegisterNetEvent('helm:server:selfTool', function(tool)
     TriggerClientEvent('helm:client:selfTool', src, tool)
 end)
 
-
-CreateThread(function()
-    local last = IsNuiFocused()
-    while true do
-        local now = IsNuiFocused()
-        if now ~= last then
-            print(('NUI focus changed: %s -> %s at %d'):format(tostring(last), tostring(now), GetGameTimer()))
-            last = now
-        end
-        Wait(100)
-    end
-end)

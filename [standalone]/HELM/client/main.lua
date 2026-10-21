@@ -523,3 +523,16 @@ AddEventHandler('onResourceStop', function(res)
         FreezeEntityPosition(PlayerPedId(), false)
     end
 end)
+
+
+CreateThread(function()
+    local last = IsNuiFocused()
+    while true do
+        local now = IsNuiFocused()
+        if now ~= last then
+            print(('NUI focus changed: %s -> %s at %d'):format(tostring(last), tostring(now), GetGameTimer()))
+            last = now
+        end
+        Wait(100)
+    end
+end)
