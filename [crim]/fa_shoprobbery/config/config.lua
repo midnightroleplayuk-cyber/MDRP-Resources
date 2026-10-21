@@ -24,7 +24,7 @@ Config.Dispatch = 'auto' -- auto, ps-dispatch, cd_dispatch, qs-dispatch, rcore_d
 -- Both - you can use either method to intimidate the clerk.
 Config.Clerk = {
     Enabled = true,
-    IntimidationMode = 'both',
+    IntimidationMode = 'aim_weapon',
     AimCheckInterval = 500,
     AimCooldown = 5000,
     ---@type number or table<number, number> or true -- Number = one type, table = multiple types, true = any type
@@ -107,7 +107,7 @@ Config.Security = {
     AlertPoliceOnStart = true,
     AlertPoliceOnSafeFail = true,
     AlertPoliceOnClerkFight = true,
-    RequireWeaponForClerk = false,
+    RequireWeaponForClerk = true,
     AllowedWeapons = true,
     AllowedWeapons = {
            ['WEAPON_SWITCHBLADE'] = true, 
