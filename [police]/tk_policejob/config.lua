@@ -14,7 +14,7 @@ Config.Jail = 'tk' -- 'tk'
 Config.Billing = 'qb' -- 'esx' | 'qb' | 'okok'
 Config.UseOxLib = true -- false | true, remember to add " shared_script '@ox_lib/init.lua' " to fxmanifest.lua if set to true
 
-Config.InteractionType = 'menu' --  'menu' | 'target' | 'both'
+Config.InteractionType = 'target' --  'menu' | 'target' | 'both'
 Config.UseMouseForMenu = false -- true | false, if true you use mouse to navigate menu, if false you use arrow keys. Only used if Config.InteractionType is set to 'menu' and Config.UseOxLib is set to false
 
 Config.UISettings = {
@@ -118,7 +118,7 @@ Config.Items = {
     lockpick = 'lockpick',
 }
 Config.HandcuffsOnlyForPolice = true
-Config.GiveKeyOnCuff = true -- false | true, should you get they handcuffs key item when cuffing someone
+Config.GiveKeyOnCuff = false -- false | true, should you get they handcuffs key item when cuffing someone
 Config.RequireFaceTargetWhenCuffing = true -- false | true, should you need to face target when cuffing/uncuffing
 Config.CuffControlsToDisable = {
     soft = {140, 69, 92, 114, 56, 21, 24, 25, 263, 45, 22, 44, 37, 23, 288, 289, 170, 167, 0, 26, 73, 199, 59, 71, 72, 36, 47, 264, 257, 141, 142, 143, 75, 80, 250, 310},
@@ -129,7 +129,7 @@ Config.Actions = {
     {
         name = 'player',
         actions = {
-            --'search',
+            'search',
             --'softCuff',
             --'hardCuff',
             --'unCuff',
@@ -264,7 +264,7 @@ Config.SpeedCameras = {
         distance = 20.0,
     }
 }
-Config.SpeedCameraFlash = true -- Enable/disable the flash effect when caught speeding
+Config.SpeedCameraFlash = false -- Enable/disable the flash effect when caught speeding
 
 Config.RiotShields = {
     {
@@ -459,8 +459,8 @@ Config.ImpoundLots = {
 Config.PoliceStations = {
     {
         blip = {
-            label = 'Police HQ',
-            coords = vector3(437.93, -981.71, 30.69),
+            label = 'Vinewood Station',
+            coords = vector3(417.21, -335.11, 45.94),
             sprite = 137,
             color = 3,
             scale = 0.8,
@@ -474,7 +474,7 @@ Config.PoliceStations = {
         },
         shops = {
             {
-                coords = vec4(457.10, -979.03, 30.69, 167.01),
+                coords = vec4(396.92, -311.0, 45.94, 157.02),
                 distance = 2.0,
                 ped = `mp_m_freemode_01`,
                 scenario = 'WORLD_HUMAN_COP_IDLES',
