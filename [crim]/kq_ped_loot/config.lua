@@ -48,7 +48,7 @@ Config.lootLifespan = 90
 Config.dropOnRagdoll = {
     -- When true, peds will drop their loot when ragdoll
     -- When false, peds will only drop their loot when dead
-    enabled = false,
+    enabled = true,
 
     -- Chance of dropping loot when ragdolling (instead of death) (0 - 100)
     chance = 50,
