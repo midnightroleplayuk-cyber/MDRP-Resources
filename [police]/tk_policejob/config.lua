@@ -474,7 +474,7 @@ Config.PoliceStations = {
         },
         shops = {
             {
-                coords = vec4(396.92, -311.0, 45.94, 157.02),
+                coords = vec4(396.92, -311.0, 47.00, 157.02),
                 distance = 2.0,
                 ped = `mp_m_freemode_01`,
                 scenario = 'WORLD_HUMAN_COP_IDLES',
