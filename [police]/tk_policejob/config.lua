@@ -603,6 +603,9 @@ items = {
     -- {name = 'barrier', price = 0, amount = 1},
     -- {name = 'worklight', price = 0, amount = 1},
 },
+            },
+        },
+{
             {
                 coords = vec4(372.35, -340.89, 50.14, 68.7), --ARMED ARMORY
                 distance = 2.0,
