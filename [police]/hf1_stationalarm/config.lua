@@ -7,7 +7,7 @@ Config.Stations = {
     vinewood = {
         label = 'Vinewood Station',
         alarmPoints = {
-            vec3(385.02, -312.72, 45.94), -- Cell 1
+            vec4(385.87, -310.55, 46.94, 339.11), -- Cell 1
             vec3(382.11, -311.47, 45.94), -- Cell 2
             vec3(380.3, -310.95, 45.94), -- Cell 3
             vec3(378.36, -307.36, 46.9), -- Cell 4
