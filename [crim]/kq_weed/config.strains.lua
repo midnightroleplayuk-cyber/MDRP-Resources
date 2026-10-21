@@ -66,8 +66,8 @@ Config.weedTypes = {
         },
 
         -- Chance of insect infestation to occur throughout the plants growth process
-        insectInfestationChance = 20,
-        insectDamagePerMinute = 20, -- Damage per minute. Plants will die after 5 minutes with insects
+        insectInfestationChance = 0,
+        insectDamagePerMinute = 0, -- Damage per minute. Plants will die after 5 minutes with insects
 
         -- Color of the leaves
         -- 0 = Green (classic) -- 1 = Light purple -- 2 = Red -- 3 = Blue -- 4 = Yellow -- 5 = Bright pink -- 6 = White -- 7 = Black/dark
@@ -153,8 +153,8 @@ Config.weedTypes = {
         },
 
         -- Chance of insect infestation to occur throughout the plants growth process
-        insectInfestationChance = 30,
-        insectDamagePerMinute = 20, -- Damage per minute. Plants will die after 5 minutes with insects
+        insectInfestationChance = 0,
+        insectDamagePerMinute = 0, -- Damage per minute. Plants will die after 5 minutes with insects
 
         -- Color of the leaves
         -- 0 = Green (classic) -- 1 = Light purple -- 2 = Red -- 3 = Blue -- 4 = Yellow -- 5 = Bright pink -- 6 = White -- 7 = Black/dark
@@ -230,8 +230,8 @@ Config.weedTypes = {
         },
 
         -- Chance of insect infestation to occur throughout the plants growth process
-        insectInfestationChance = 25,
-        insectDamagePerMinute = 10, -- Damage per minute. Plants will die after 10 minutes with insects
+        insectInfestationChance = 0,
+        insectDamagePerMinute = 0, -- Damage per minute. Plants will die after 10 minutes with insects
 
         -- Color of the leaves
         -- 0 = Green (classic) -- 1 = Light purple -- 2 = Red -- 3 = Blue -- 4 = Yellow -- 5 = Bright pink -- 6 = White -- 7 = Black/dark
@@ -277,7 +277,7 @@ Config.weedTypes = {
                 -- Chances of receiving a different seed after plant collection
                 mutations = {
                     {
-                        item = 'kq_weed_seed_purple_haze',
+                        item = 'kq_weed_seed_white_widow',
                         chance = 15,
                     }
                 }
@@ -309,8 +309,8 @@ Config.weedTypes = {
         },
 
         -- Chance of insect infestation to occur throughout the plants growth process
-        insectInfestationChance = 30,
-        insectDamagePerMinute = 6.7, -- Damage per minute. Plants will die after ~15 minutes with insects
+        insectInfestationChance = 0,
+        insectDamagePerMinute = 0 -- Damage per minute. Plants will die after ~15 minutes with insects
 
         -- Color of the leaves
         -- 0 = Green (classic) -- 1 = Light purple -- 2 = Red -- 3 = Blue -- 4 = Yellow -- 5 = Bright pink -- 6 = White -- 7 = Black/dark
