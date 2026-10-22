@@ -10,7 +10,7 @@ Config.Locale = 'en'
 Config.Framework = 'qbox' -- auto, qbox, qb, esx, standalone
 
 -- Inventory bridge used for item and money handling.
-Config.Inventory = 'ox_inventory' -- auto, ox_inventory, qb-inventory, qs-inventory, jaksam_inventory, tgiann-inventory, esx, custom
+Config.Inventory = 'auto' -- auto, ox_inventory, qb-inventory, qs-inventory, jaksam_inventory, tgiann-inventory, esx, custom
 
 -- Interaction system. none uses ox_lib TextUI + E fallback.
 Config.Target = 'ox_target' -- auto, ox_target, qb-target, qtarget, none
@@ -65,7 +65,7 @@ Config.Clerk = {
 Config.AdminGroups = { 'admin', 'god', 'superadmin' }
 
 -- Jobs counted as police for robbery requirements and dispatch recipients.
-Config.PoliceJobs = { 'police', 'sheriff' }
+Config.PoliceJobs = { 'police', }
 
 -- Required online police count before a robbery action can begin.
 Config.MinimumPolice = 0
@@ -74,7 +74,7 @@ Config.MinimumPolice = 0
 -- Controls the intended robbery order.
 Config.Flow = {
     RequireClerkBeforeLoot = true, -- Requires the clerk to be intimidated/killed before the player can loot the store.
-    RequireRegisterBeforeSafe = true -- Requires at least one register to be looted before the player can loot the safe.
+    RequireRegisterBeforeSafe = true, -- Requires at least one register to be looted before the player can loot the safe.
 }
 
 -- Optional robbery session settings. TimeLimit can be false or seconds.
@@ -107,10 +107,10 @@ Config.Security = {
     AlertPoliceOnStart = true,
     AlertPoliceOnSafeFail = true,
     AlertPoliceOnClerkFight = true,
-    RequireWeaponForClerk = true,
+    RequireWeaponForClerk = false,
     AllowedWeapons = true,
-        AllowedWeapons = {
-           ['WEAPON_SWITCHBLADE'] = true 
+    AllowedWeapons = {
+           ['WEAPON_SWITCHBLADE'] = true, 
     --     [`WEAPON_PISTOL`] = true,
     --     [`WEAPON_COMBATPISTOL`] = true,
     --     [`WEAPON_APPISTOL`] = true,
@@ -228,7 +228,7 @@ Config.Stores = {
             Fight = {
                 Enabled = true,
                 Chance = 15,
-                Weapon = `WEAPON_PISTOL`,
+                Weapon = `WEAPON_PBAT`,
                 Ammo = 60,
                 Accuracy = 35,
                 Armor = 0,
@@ -274,7 +274,7 @@ Config.Stores = {
         },
         shelves = {
             vector3(-711.7, -912.1, 19.22),
-            vector3(-713.5, -915.7, 19.22)
+            
         },
         safe = {
             coords = vector3(-709.74, -904.15, 19.22),
@@ -308,7 +308,7 @@ Config.Stores = {
         },
         shelves = {
             vector3(1964.7, 3744.4, 32.34),
-            vector3(1962.5, 3747.9, 32.34)
+            
         },
         safe = {
             coords = vector3(1959.26, 3748.92, 32.34),
@@ -322,5 +322,46 @@ Config.Stores = {
         },
         -- Uses Rewards.Register[2], Rewards.Shelf[2] and Rewards.Safe[2]. You can also use rewardTier = 2.
         tier = 2
-    }
+    },
+    {
+        id = '247_innocence',
+        label = '247 convenient store - Innocence Boulevard',
+        profile = 'standard',
+        coords = vector3(24.47, -1345.59, 29.76),
+        clerk = {
+            model = 'mp_m_shopkeep_01',
+            coords = vector4(24.5, -1345.6, 29.82, 281.25),
+            -- Optional per-shop override. Remove this table to use Config.Clerk.Fight.Chance.
+            Fight = {
+                Enabled = true,
+                Chance = 15,
+                Weapon = WEAPON_BAT,
+                Accuracy = 35,
+                Armor = 0,
+                CanDie = true,
+                RemoveDroppedWeapon = true,
+                ResetAfterTargetDeath = 10000,
+                CombatAbility = 1,
+                CombatMovement = 2,
+                CombatRange = 2
+            }
+        },
+        registers = {
+            vector3(24.96, -1347.3, 29.69),
+            vector3(25.01, -1344.98, 29.62)
+        },
+        shelves = {
+            vector3(30.96, -1346.47, 29.69),
+        },
+        safe = {
+            coords = vector3(28.23, -1338.49, 29.24),
+            heading = 230,
+            methods = { 'drill' },
+            prop = false
+        },
+        -- Uses Rewards.Register[1], Rewards.Shelf[1] and Rewards.Safe[1]. You can also use rewardTier = 1.
+        tier = 1
+    },
+    
+
 }

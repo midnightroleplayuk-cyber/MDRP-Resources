@@ -14,7 +14,7 @@ Config.Jail = 'tk' -- 'tk'
 Config.Billing = 'qb' -- 'esx' | 'qb' | 'okok'
 Config.UseOxLib = true -- false | true, remember to add " shared_script '@ox_lib/init.lua' " to fxmanifest.lua if set to true
 
-Config.InteractionType = 'menu' --  'menu' | 'target' | 'both'
+Config.InteractionType = 'target' --  'menu' | 'target' | 'both'
 Config.UseMouseForMenu = false -- true | false, if true you use mouse to navigate menu, if false you use arrow keys. Only used if Config.InteractionType is set to 'menu' and Config.UseOxLib is set to false
 
 Config.UISettings = {
@@ -118,7 +118,7 @@ Config.Items = {
     lockpick = 'lockpick',
 }
 Config.HandcuffsOnlyForPolice = true
-Config.GiveKeyOnCuff = true -- false | true, should you get they handcuffs key item when cuffing someone
+Config.GiveKeyOnCuff = false -- false | true, should you get they handcuffs key item when cuffing someone
 Config.RequireFaceTargetWhenCuffing = true -- false | true, should you need to face target when cuffing/uncuffing
 Config.CuffControlsToDisable = {
     soft = {140, 69, 92, 114, 56, 21, 24, 25, 263, 45, 22, 44, 37, 23, 288, 289, 170, 167, 0, 26, 73, 199, 59, 71, 72, 36, 47, 264, 257, 141, 142, 143, 75, 80, 250, 310},
@@ -129,7 +129,7 @@ Config.Actions = {
     {
         name = 'player',
         actions = {
-            --'search',
+            'search',
             --'softCuff',
             --'hardCuff',
             --'unCuff',
@@ -264,7 +264,7 @@ Config.SpeedCameras = {
         distance = 20.0,
     }
 }
-Config.SpeedCameraFlash = true -- Enable/disable the flash effect when caught speeding
+Config.SpeedCameraFlash = false -- Enable/disable the flash effect when caught speeding
 
 Config.RiotShields = {
     {
@@ -459,8 +459,8 @@ Config.ImpoundLots = {
 Config.PoliceStations = {
     {
         blip = {
-            label = 'Police HQ',
-            coords = vector3(437.93, -981.71, 30.69),
+            label = 'Vinewood Station',
+            coords = vector3(417.21, -335.11, 45.94),
             sprite = 137,
             color = 3,
             scale = 0.8,
@@ -474,7 +474,7 @@ Config.PoliceStations = {
         },
         shops = {
             {
-                coords = vec4(457.10, -979.03, 30.69, 167.01),
+                coords = vec4(396.92, -311.0, 47.00, 157.02),
                 distance = 2.0,
                 ped = `mp_m_freemode_01`,
                 scenario = 'WORLD_HUMAN_COP_IDLES',
@@ -536,16 +536,148 @@ Config.PoliceStations = {
                     },
                     clothing = {
                         mask = {item = 121, texture = 0},
-                        arms = {item = 11, texture = 0},
-                        pants = {item = 226, texture = 0},
+                        arms = {item = 1, texture = 0},
+                        pants = {item = 242, texture = 0},
                         bag = {item = 0, texture = 0},
                         shoes = {item = 25, texture = 0},
-                        accessory = {item = 0, texture = 0},
-                        t_shirt = {item = 233, texture = 0},
-                        vest = {item = 0, texture = 0},
+                        accessory = {item = 225, texture = 0},
+                        t_shirt = {item = 238, texture = 0},
+                        vest = {item = 80, texture = 14},
                         decals = {item = 0, texture = 0},
-                        torso = {item = 605, texture = 0},
-                        hat = {item = 251, texture = 0},
+                        torso = {item = 625, texture = 0},
+                        hat = {item = 244, texture = 0},
+                        glass = {item = -1, texture = 0},
+                        ear = {item = -1, texture = 0},
+                        watch = {item = -1, texture = 0},
+                        bracelet = {item = -1, texture = 0},
+                    }
+                },
+                --[[ marker = { -- you can add marker for any location like this (so also works for storages, wardrobes, etc)
+                    type = 1,
+                    scale = vec3(1.0, 1.0, 1.0),
+                    color = {r = 0, g = 255, b = 0, a = 100},
+                    bob = false,
+                    faceCamera = true,
+                }, ]]
+items = {
+    {name = 'ammo-9', price = 0, amount = 12, grade = 4},
+    {name = 'ammo-rifle', price = 0, amount = 30, grade = 4},
+    {name = 'ammo-shotgun', price = 0, amount = 8, grade = 5},
+    {name = 'blood_sample_kit', price = 0, amount = 1},
+   -- {name = 'bodycam', price = 0, amount = 1},
+    {name = 'breath_alcohol_tester', price = 0, amount = 1},
+    {name = 'dash_cam', price = 0, amount = 1},
+   -- {name = 'dnatest', price = 0, amount = 1},
+    {name = 'fibre_swab', price = 0, amount = 1},
+    {name = 'fingerprint_lift', price = 0, amount = 1},
+    {name = 'fingerprint_scanner', price = 0, amount = 1},
+    {name = 'gsr_swab', price = 0, amount = 1},
+    {name = 'handcuffs', price = 0, amount = 1},
+    {name = 'gh_pdnotebook', price = 0, amount = 1},
+    {name = 'WEAPON_PEPPERSPRAY', price = 0, amount = 1},
+    {name = 'WEAPON_ANTIDOTE', price = 0, amount = 1},
+    {name = 'empty_ticket', price = 0, amount = 10, grade = 0},
+    {name = 'emergency_tape', price = 0, amount = 1, grade = 0},
+    {name = 'radio', price = 0, amount = 1},
+    {name = 'clothes_bag', price = 0, amount = 1},
+    {name = 'gps', price = 0, amount = 1},
+    {name = 'digital_camera', price = 0, amount = 1},
+    {name = 'sd_card', price = 0, amount = 1},
+    {name = 'stinger', price = 0, amount = 1, grade = 3},
+    {name = 'taser_cartridge', price = 0, amount = 1, grade = 2},
+    {name = 'WEAPON_CARBINERIFLE', price = 0, amount = 1, grade = 13},
+    {name = 'WEAPON_COMBATPISTOL', price = 0, amount = 1, grade = 13},
+    {name = 'WEAPON_FLASHLIGHT', price = 0, amount = 1},
+    {name = 'WEAPON_NIGHTSTICK', price = 0, amount = 1},
+    {name = 'WEAPON_P226', price = 0, amount = 1, grade = 13},
+    -- {name = 'WEAPON_PUMPSHOTGUN', price = 0, amount = 1, grade = 13},
+    {name = 'WEAPON_SIG716', price = 0, amount = 1, grade = 13},
+    {name = 'WEAPON_SIGMCX', price = 0, amount = 1, grade = 13},
+   -- {name = 'WEAPON_STUNGUN', price = 0, amount = 1, grade = 8},
+    {name = 'police_drone', price = 0, amount = 1, grade = 8},
+    -- {name = 'metal_riot_shield', price = 0, amount = 1, grade = 2},
+    -- {name = 'glass_riot_shield', price = 0, amount = 1, grade = 2},
+    -- {name = 'night_vision_goggles', price = 0, amount = 1, grade = 2},
+    -- {name = 'thermal_vision_goggles', price = 0, amount = 1, grade = 2},
+    -- {name = 'cone', price = 0, amount = 1},
+    -- {name = 'barrier', price = 0, amount = 1},
+    -- {name = 'worklight', price = 0, amount = 1},
+},
+            },
+            -- SECOND VINEWOOD SHOP: change these coords to your preferred location.
+            {
+                coords = vec4(372.21, -341.11, 51.14, 64.59), -- ARMED ARMORY
+                distance = 2.0,
+                ped = `mp_m_freemode_01`,
+                scenario = 'WORLD_HUMAN_COP_IDLES',
+                pedSkin = { -- Only works with mp_m_freemode_01 or mp_f_freemode_01
+                    appearance = {
+                        mom = {item = 0},
+                        dad = {item = 0},
+                        face = {item = 50},
+                        skin_tone = {item = 50},
+
+                        hair = {item = 0, texture = 0},
+                        hair_color_1 = {item = 0},
+                        hair_color_2 = {item = 0},
+
+                        eyes = {item = 0},
+
+                        blemishes = {item = -1},
+                        blemishes_opacity = {item = 100},
+
+                        beard = {item = -1},
+                        beard_opacity = {item = 100},
+                        beard_color = {item = 0},
+
+                        eyebrows = {item = -1},
+                        eyebrows_opacity = {item = 100},
+                        eyebrows_color = {item = 0},
+
+                        ageing = {item = -1},
+                        ageing_opacity = {item = 100},
+
+                        makeup = {item = -1},
+                        makeup_opacity = {item = 100},
+                        makeup_color_1 = {item = 0},
+                        makeup_color_2 = {item = 0},
+
+                        blush = {item = -1},
+                        blush_opacity = {item = 100},
+                        blush_color = {item = 0},
+
+                        complexion = {item = -1},
+                        complexion_opacity = {item = 100},
+
+                        sun_damage = {item = -1},
+                        sun_damage_opacity = {item = 100},
+
+                        lipstick = {item = -1},
+                        lipstick_opacity = {item = 100},
+                        lipstick_color = {item = 0},
+
+                        moles_freckles = {item = -1},
+                        moles_freckles_opacity = {item = 100},
+
+                        chest_hair = {item = -1},
+                        chest_hair_opacity = {item = 100},
+                        chest_hair_color = {item = 0},
+
+                        body_blemishes = {item = -1},
+                        body_blemishes_opacity = {item = 100},
+                    },
+                    clothing = {
+                        mask = {item = 263, texture = 0},
+                        arms = {item = 0, texture = 0},
+                        pants = {item = 232, texture = 0},
+                        bag = {item = 122, texture = 0},
+                        shoes = {item = 61, texture = 0},
+                        accessory = {item = -1, texture = 0},
+                        t_shirt = {item = 228, texture = 0},
+                        vest = {item = 78, texture = 0},
+                        decals = {item = 0, texture = 0},
+                        torso = {item = 605, texture = 1},
+                        hat = {item = 249, texture = 0},
                         glass = {item = -1, texture = 0},
                         ear = {item = -1, texture = 0},
                         watch = {item = -1, texture = 0},
@@ -605,27 +737,24 @@ items = {
 },
             },
         },
+
         storages = {
-            {coords = vector3(456.25, -993.33, 30.69), distance = 2.0, type = 'personal', weight = 1000000, slots = 100},
-          --  {coords = vector3(2806.0933, 4710.9009, 50.0986), distance = 2.0, type = 'personal', weight = 1000000, slots = 100},
-            {coords = vector3(478.73, -981.91, 24.92), distance = 2.0, type = 'locker', weight = 1000000, slots = 100},
-          --  {coords = vector3(2811.6104, 4753.4893, 50.2594), distance = 2.0, type = 'locker', weight = 1000000, slots = 100},
-            {coords = vector3(429.56, -1007.09, 28.84), distance = 2.0, type = 'public', weight = 1000000, slots = 100}, -- Senora Maintenance Room 1
-           -- {coords = vector3(2811.7148, 4752.7520, 49.9266), distance = 2.0, type = 'public', weight = 1000000, slots = 100}, -- Senora Maintenance Room 2
+            {coords = vector3(423.2, -326.34, 51.08), distance = 2.0, type = 'personal', weight = 1000000, slots = 100}, --FEMALE VINEWOOD
+            {coords = vector3(414.85, -318.22, 51.04), distance = 2.0, type = 'personal', weight = 1000000, slots = 100}, --MALE VINEWOOD
         },
-        wardrobes = {
-            {coords = vector3(449.75, -991.61, 30.69), distance = 2.0},
-        },
+       -- wardrobes = {
+        --    {coords = vector3(449.75, -991.61, 30.69), distance = 2.0},
+       -- },
         --[[bossmenus = {
             {coords = vector3(2788.34, 4739.92, 48.63), distance = 2.0},
         },]]
         toggleDuty = {
-            {coords = vector3(454.15, -979.48, 30.69), distance = 2.0},
+            {coords = vector3(411.89, -327.67, 47.33), distance = 2.0},
         },
-        bodycamStation = {
-            {coords = vector3(2783.149, 4742.051, 48.627), distance = 2.0},
-        },
-        mechanics = {
+      --  bodycamStation = {
+      --       {coords = vector3(2783.149, 4742.051, 48.627), distance = 2.0},
+      --  },
+       --[[  mechanics = {
             {
                 coords = vector3(2812.77, 4846.35, 46.68),
                 distance = 4.0,
@@ -648,7 +777,7 @@ items = {
                     }
                 }
             }                        
-        },
+        }, ]]
         vehicleMenus = {
             --[[{ -- heli
                 locations = {

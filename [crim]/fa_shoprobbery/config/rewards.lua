@@ -16,20 +16,20 @@ Rewards.Shelf = {
     [1] = {
         { type = 'item', name = 'cigarettes', min = 1, max = 3, chance = 60 },
         { type = 'item', name = 'lighter', min = 1, max = 2, chance = 35 },
-        { type = 'item', name = 'scratch_ticket', min = 1, max = 4, chance = 45 },
+        { type = 'item', name = 'scratchcard', min = 1, max = 4, chance = 45 },
         { type = 'item', name = 'beer', min = 1, max = 3, chance = 40 }
     },
     [2] = {
         { type = 'item', name = 'cigarettes', min = 2, max = 4, chance = 65 },
         { type = 'item', name = 'lighter', min = 1, max = 2, chance = 40 },
-        { type = 'item', name = 'scratch_ticket', min = 2, max = 5, chance = 50 },
+        { type = 'item', name = 'scratchcard', min = 2, max = 5, chance = 50 },
         { type = 'item', name = 'beer', min = 2, max = 4, chance = 45 }
     }
 }
 
 Rewards.Safe = {
     [1] = {
-        { type = 'money', account = 'dirty', min = 2500, max = 8500, chance = 100 },
+        { type = 'black_money', account = 'dirty', min = 2500, max = 8500, chance = 100 },
         { type = 'item', name = 'rolex', min = 1, max = 4, chance = 18 },
         { type = 'item', name = 'goldbar', min = 1, max = 1, chance = 4 }
     },

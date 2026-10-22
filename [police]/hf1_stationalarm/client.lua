@@ -22,17 +22,19 @@ CreateThread(function()
     for stationId, station in pairs(Config.Stations) do
         for index, coords in ipairs(station.alarmPoints) do
             exports.ox_target:addSphereZone({
-                coords = coords, radius = 0.55, debug = false,
+                coords = coords.xyz, radius = 0.55, debug = false,
                 options = {{ name = ('hf1_alarm_%s_%s'):format(stationId, index), icon = 'fa-solid fa-triangle-exclamation',
                     label = 'Emergency Alarm', groups = { police = 0 }, distance = Config.InteractDistance,
+                    canInteract = function() return Config.InFront(coords, GetEntityCoords(PlayerPedId())) end,
                     onSelect = function() TriggerServerEvent('hf1_stationalarm:server:set', stationId, true) end }}
             })
         end
         for index, coords in ipairs(station.resetPoints) do
             exports.ox_target:addSphereZone({
-                coords = coords, radius = 0.55, debug = false,
+                coords = coords.xyz, radius = 0.55, debug = false,
                 options = {{ name = ('hf1_reset_%s_%s'):format(stationId, index), icon = 'fa-solid fa-rotate-left',
                     label = 'Reset Alarm', groups = { police = 0 }, distance = Config.InteractDistance,
+                    canInteract = function() return Config.InFront(coords, GetEntityCoords(PlayerPedId())) end,
                     onSelect = function() TriggerServerEvent('hf1_stationalarm:server:set', stationId, false) end }}
             })
         end

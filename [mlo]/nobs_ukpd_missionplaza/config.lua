@@ -32,7 +32,7 @@ MPGateConfig = {
     --   'qb-doorlock' this resource never touches the gates; copy install/doorlocks/qb-doorlock/nobs_ukpd_gates.lua
     --                 into qb-doorlock/configs.
     --   'none'        nothing moves them (they stay closed unless another script drives them).
-    controller = 'builtin',
+    controller = 'ox_doorlock',
 
     -- POLICE GATE POLICY. true (default): the police (exit) gate and barrier open for ANY nearby player, on foot or
     -- in any vehicle. false: they open only for a player in an emergency-class vehicle. Job check: canOpen below.

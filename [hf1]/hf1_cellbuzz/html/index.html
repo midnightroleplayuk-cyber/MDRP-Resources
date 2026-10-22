@@ -1,0 +1,12 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>HF1 Cell Buzzer</title></head><body>
+<audio id="buzzer" preload="auto" src="buzzer.ogg"></audio>
+<script>
+window.addEventListener('message', function(event) {
+  if (event.data.action !== 'play') return;
+  const audio = document.getElementById('buzzer');
+  audio.volume = Math.max(0, Math.min(1, Number(event.data.volume) || 0.35));
+  audio.currentTime = 0;
+  audio.play().catch(() => {});
+});
+</script></body></html>

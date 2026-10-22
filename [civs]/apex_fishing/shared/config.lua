@@ -389,7 +389,7 @@ Config.junk = {
     { item = 'seaweed',          label = 'Tangled Seaweed',  sell =   15, weight = 25 },
     -- Special rare drops in the junk pool
     { item = 'money_briefcase',  label = 'Sunken Briefcase', money = { min = 2500, max = 9000 }, weight = 6  },
-    { item = 'weapon_pistol',    label = 'Rusty Pistol',     weapon = true,  weight = 2  },
+   -- { item = 'weapon_pistol',    label = 'Rusty Pistol',     weapon = true,  weight = 2  },
     { item = 'rolex_watch',      label = 'Antique Watch',    sell = 5500, weight = 3  },
 }
 
@@ -437,7 +437,7 @@ Config.boats = {
 -- Paleto Cove — boat-reachable from the pier in ~45 seconds.
 Config.deepSeaSpots = {
     {
-        coords = vec3(-2688.290039, -1952.650513, 2.994141),
+        coords = vec3(590.83, 3958.5, 28.85),
         radius = 220.0,
         blip   = {
             sprite      = 68,    -- fish sprite
@@ -456,12 +456,12 @@ Config.deepSeaSpots = {
 -- Coords are at the Source dock pier (Paleto Cove). Override
 -- if you want it elsewhere.
 Config.npc = {
-    model    = 'a_m_m_salton_01',
-    coords   = vec4(-1862.795654, -1234.536255, 8.605103, 53.858269),  -- Paleto Cove pier
-    marker   = vec3(-1862.795654, -1234.536255, 8.605103),
+    model    = 'a_m_m_hillbilly_01',
+    coords   = vec4(1313.25, 4272.37, 33.91, 266.79),  -- Paleto Cove pier
+    marker   = vec4(1313.25, 4272.37, 32.91, 266.79),
     blip     = { sprite = 68, color = 75, scale = 0.85, label = 'Fisherman' },
-    boatSpawn  = vec4(-1795.054932, -1233.389038, 0.887939, 200.0),
-    boatReturn = vec3(-1795.054932, -1233.389038, 0.887939),
+    boatSpawn  = vec4(1334.46, 4266.79, 29.13, 81.94),
+    boatReturn = vec4(1332.68, 4268.34, 28.6, 96.68),
 }
 
 -- ─── Notification strings ────────────────────────────────

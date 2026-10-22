@@ -12,7 +12,7 @@ local function nearPoint(source, station, enabled)
     local playerCoords = GetEntityCoords(ped)
     local points = enabled and station.alarmPoints or station.resetPoints
     for _, coords in ipairs(points) do
-        if #(playerCoords - coords) <= Config.ServerInteractDistance then return true end
+        if #(playerCoords - coords.xyz) <= Config.ServerInteractDistance and Config.InFront(coords, playerCoords) then return true end
     end
     return false
 end
