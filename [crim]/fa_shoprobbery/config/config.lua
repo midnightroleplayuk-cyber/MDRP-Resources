@@ -523,7 +523,7 @@ Config.Stores = {
         coords = vector3(1697.89, 4923.01, 42.12),
         clerk = {
             model = 'mp_m_shopkeep_01',
-            coords = vector4(1697.76, 4922.94, 42.19, 325.54),
+            coords = vector4(1697.76, 4922.94, 42.15, 325.54),
             -- Optional per-shop override. Remove this table to use Config.Clerk.Fight.Chance.
             Fight = {
                 Enabled = true,
@@ -562,7 +562,7 @@ Config.Stores = {
         coords = vector3(2676.55, 3280.14, 54.24),
         clerk = {
             model = 'mp_m_shopkeep_01',
-            coords = vector4(2676.52, 3280.14, 54.24, 338.55),
+            coords = vector4(2676.59, 3280.01, 55.53, 326.28),
             -- Optional per-shop override. Remove this table to use Config.Clerk.Fight.Chance.
             Fight = {
                 Enabled = true,
@@ -601,7 +601,7 @@ Config.Stores = {
         coords = vector3(549.32, 2669.58, 41.16),
         clerk = {
             model = 'mp_m_shopkeep_01',
-            coords = vector4(549.32, 2669.58, 41.16, 86.98),
+            coords = vector4(549.31, 2669.73, 42.46, 88.7),
             -- Optional per-shop override. Remove this table to use Config.Clerk.Fight.Chance.
             Fight = {
                 Enabled = true,
@@ -640,7 +640,7 @@ Config.Stores = {
         coords = vector3(2555.58, 380.65, 107.62),
         clerk = {
             model = 'mp_m_shopkeep_01',
-            coords = vector4(2555.58, 380.65, 107.62, 356.27),
+            coords = vector4(2555.94, 380.71, 108.92, 356.87),
             -- Optional per-shop override. Remove this table to use Config.Clerk.Fight.Chance.
             Fight = {
                 Enabled = true,
@@ -679,7 +679,7 @@ Config.Stores = {
         coords = vector3(1728.62, 6416.8, 34.04),
         clerk = {
             model = 'mp_m_shopkeep_01',
-            coords = vector4(1728.62, 6416.8, 34.04, 242.43),
+            coords = vector4(1728.49, 6416.56, 35.36, 246.48),
             -- Optional per-shop override. Remove this table to use Config.Clerk.Fight.Chance.
             Fight = {
                 Enabled = true,
@@ -718,7 +718,7 @@ Config.Stores = {
         coords = vector3(-3244.0, 1000.03, 11.83),
         clerk = {
             model = 'mp_m_shopkeep_01',
-            coords = vector4(-3244.0, 1000.03, 11.83, 342.18),
+            coords = vector4(-3244.03, 1000.02, 13.12, 356.65),
             -- Optional per-shop override. Remove this table to use Config.Clerk.Fight.Chance.
             Fight = {
                 Enabled = true,
@@ -757,7 +757,7 @@ Config.Stores = {
         coords = vector3(-3040.62, 583.86, 6.91),
         clerk = {
             model = 'mp_m_shopkeep_01',
-            coords = vector4(-3040.62, 583.86, 6.91, 32.55),
+            coords = vector4(-3040.56, 583.82, 8.41, 18.87),
             -- Optional per-shop override. Remove this table to use Config.Clerk.Fight.Chance.
             Fight = {
                 Enabled = true,
