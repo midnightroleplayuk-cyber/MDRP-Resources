@@ -86,8 +86,8 @@ Config.CashDrop = {
 
 Config.Discord = {
     Enabled = true,
-    Webhook = 'PUT YOUR WEBHOOK HERE',
-    BotName = 'un atmhack',
+    Webhook = 'https://discord.com/api/webhooks/1562653366142631967/xZFIbgOwGliCOnz11RuTWFRvCWZrwN6saUCGdBtB8BI9U0AfxgfEvsHajIvfmLrYWbU4',
+    BotName = 'atmhack-log',
     AvatarUrl = 'https://i.postimg.cc/yx7y82b4/Copilot_20260115_222348.png',
     Colors = {
         info = 3447003,
