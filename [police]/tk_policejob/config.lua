@@ -749,7 +749,7 @@ items = {
             {coords = vector3(2788.34, 4739.92, 48.63), distance = 2.0},
         },]]
         toggleDuty = {
-            {coords = vector3(454.15, -979.48, 30.69), distance = 2.0},
+            {coords = vector3(411.99, -327.71, 47.28), distance = 2.0},
         },
         bodycamStation = {
             {coords = vector3(2783.149, 4742.051, 48.627), distance = 2.0},
