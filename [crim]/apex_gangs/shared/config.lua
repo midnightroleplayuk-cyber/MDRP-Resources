@@ -93,7 +93,7 @@ Config.menuCommand    = 'gangmenu'       -- /gangmenu   → a member's own gang 
 Config.menuHotkey     = false            -- e.g. 'F8' (false to disable)
 
 -- ═══════════════════════════════════════════════════════════
--- GANG INTERACTIONS RADIAL (F6) — member-only quick actions
+-- GANG INTERACTIONS RADIAL (F10) — member-only quick actions
 -- (cuff, bag, trunk, carry, flat tire, hostage, search…). Ported
 -- standalone from atomic_ganginteractions. Only members of a
 -- registered gang can open it. Binds are rebindable in-menu (KVP).
@@ -101,13 +101,13 @@ Config.menuHotkey     = false            -- e.g. 'F8' (false to disable)
 Config.interactions = {
     enabled   = true,
     gangOnly  = true,                  -- only gang members can open the radial
-    openKey   = 'F6',                  -- default open bind (rebindable in radial Settings)
+    openKey   = 'F10',                  -- default open bind (rebindable in radial Settings)
     command   = 'ganginteract',        -- /ganginteract also opens it
     distance        = 3.0,             -- player target range (metres)
     vehicleDistance = 5.0,             -- nearest-vehicle range (trunk / tire)
     playerVisibleInTrunk = false,
     requireItems    = false,           -- false → no item/weapon needed for any action
-    targetNpcs      = true,            -- F6 actions also work on NPCs (peds), not just players
+    targetNpcs      = true,            -- F10 actions also work on NPCs (peds), not just players
     inventory = 'auto',                -- rob/search inventory: 'auto'|'ox'|'qb'|'qs'|'mf'|'codem'
 
     -- per-action master toggles (hidden from the radial when false)
