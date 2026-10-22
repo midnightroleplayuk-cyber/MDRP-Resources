@@ -357,7 +357,7 @@ Config.Stores = {
             coords = vector3(28.23, -1338.49, 29.24),
             heading = 230,
             methods = { 'drill' },
-            prop = true
+            prop = false
         },
         -- Uses Rewards.Register[1], Rewards.Shelf[1] and Rewards.Safe[1]. You can also use rewardTier = 1.
         tier = 1
