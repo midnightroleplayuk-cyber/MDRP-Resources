@@ -29,7 +29,7 @@ Rewards.Shelf = {
 
 Rewards.Safe = {
     [1] = {
-        { type = 'money', account = 'dirty', min = 2500, max = 8500, chance = 100 },
+        { type = 'black_money', account = 'dirty', min = 2500, max = 8500, chance = 100 },
         { type = 'item', name = 'rolex', min = 1, max = 4, chance = 18 },
         { type = 'item', name = 'goldbar', min = 1, max = 1, chance = 4 }
     },
