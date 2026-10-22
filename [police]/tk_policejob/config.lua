@@ -562,12 +562,12 @@ Config.PoliceStations = {
 items = {
     {name = 'ammo-9', price = 0, amount = 12, grade = 4},
     {name = 'ammo-rifle', price = 0, amount = 30, grade = 4},
-    {name = 'ammo-shotgun', price = 0, amount = 8, grade = 5},
+   -- {name = 'ammo-shotgun', price = 0, amount = 8, grade = 5},
     {name = 'blood_sample_kit', price = 0, amount = 1},
-   -- {name = 'bodycam', price = 0, amount = 1},
+    {name = 'bodycam', price = 0, amount = 1},
     {name = 'breath_alcohol_tester', price = 0, amount = 1},
     {name = 'dash_cam', price = 0, amount = 1},
-   -- {name = 'dnatest', price = 0, amount = 1},
+    {name = 'dnatest', price = 0, amount = 1},
     {name = 'fibre_swab', price = 0, amount = 1},
     {name = 'fingerprint_lift', price = 0, amount = 1},
     {name = 'fingerprint_scanner', price = 0, amount = 1},
@@ -694,12 +694,12 @@ items = {
 items = {
     {name = 'ammo-9', price = 0, amount = 12, grade = 4},
     {name = 'ammo-rifle', price = 0, amount = 30, grade = 4},
-    {name = 'ammo-shotgun', price = 0, amount = 8, grade = 5},
+   -- {name = 'ammo-shotgun', price = 0, amount = 8, grade = 5},
     {name = 'blood_sample_kit', price = 0, amount = 1},
-   -- {name = 'bodycam', price = 0, amount = 1},
+    {name = 'bodycam', price = 0, amount = 1},
     {name = 'breath_alcohol_tester', price = 0, amount = 1},
     {name = 'dash_cam', price = 0, amount = 1},
-   -- {name = 'dnatest', price = 0, amount = 1},
+    {name = 'dnatest', price = 0, amount = 1},
     {name = 'fibre_swab', price = 0, amount = 1},
     {name = 'fingerprint_lift', price = 0, amount = 1},
     {name = 'fingerprint_scanner', price = 0, amount = 1},
@@ -743,7 +743,9 @@ items = {
             {coords = vector3(414.85, -318.22, 51.04), distance = 2.0, type = 'personal', weight = 1000000, slots = 100}, --MALE VINEWOOD
         },
        -- wardrobes = {
-        --    {coords = vector3(449.75, -991.61, 30.69), distance = 2.0},
+          --  {coords = vector3(411.29, -323.38, 51.14), distance = 2.0}, --FEMALE VINEWOOD
+          --  {coords = vector3(419.11, -326.33, 51.3), distance = 2.0}, -- MALE VINEWOOD
+
        -- },
         --[[bossmenus = {
             {coords = vector3(2788.34, 4739.92, 48.63), distance = 2.0},
