@@ -14,7 +14,7 @@ Config.items = {
     gasoline = 'gasoline',
     hydrochloricAcid = 'hydrochloric_acid',
     cement = 'cement',
-    cocaine = 'coke',
+    cocaine = 'coke_brick',
 }
 
 -- Controls the game map and mini-map display
