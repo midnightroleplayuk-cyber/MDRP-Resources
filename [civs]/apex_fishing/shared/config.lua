@@ -456,7 +456,7 @@ Config.deepSeaSpots = {
 -- Coords are at the Source dock pier (Paleto Cove). Override
 -- if you want it elsewhere.
 Config.npc = {
-    model    = 'a_m_m_salton_01',
+    model    = 'a_m_m_hillbilly_01',
     coords   = vec4(1332.77, 4325.0, 37.25, 350.98),  -- Paleto Cove pier
     marker   = vec4(1332.77, 4325.0, 37.25, 350.98),
     blip     = { sprite = 68, color = 75, scale = 0.85, label = 'Fisherman' },
