@@ -389,7 +389,7 @@ Config.junk = {
     { item = 'seaweed',          label = 'Tangled Seaweed',  sell =   15, weight = 25 },
     -- Special rare drops in the junk pool
     { item = 'money_briefcase',  label = 'Sunken Briefcase', money = { min = 2500, max = 9000 }, weight = 6  },
-    { item = 'weapon_pistol',    label = 'Rusty Pistol',     weapon = true,  weight = 2  },
+   -- { item = 'weapon_pistol',    label = 'Rusty Pistol',     weapon = true,  weight = 2  },
     { item = 'rolex_watch',      label = 'Antique Watch',    sell = 5500, weight = 3  },
 }
 
