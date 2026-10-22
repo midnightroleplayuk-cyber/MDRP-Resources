@@ -457,8 +457,8 @@ Config.deepSeaSpots = {
 -- if you want it elsewhere.
 Config.npc = {
     model    = 'a_m_m_hillbilly_01',
-    coords   = vec4(1332.77, 4325.0, 38.25, 350.98),  -- Paleto Cove pier
-    marker   = vec4(1332.77, 4325.0, 37.25, 350.98),
+    coords   = vec4(1313.25, 4272.37, 32.91, 266.79),  -- Paleto Cove pier
+    marker   = vec4(1313.25, 4272.37, 32.91, 266.79),
     blip     = { sprite = 68, color = 75, scale = 0.85, label = 'Fisherman' },
     boatSpawn  = vec4(1332.68, 4268.34, 28.6, 96.68),
     boatReturn = vec4(1332.68, 4268.34, 28.6, 96.68),
