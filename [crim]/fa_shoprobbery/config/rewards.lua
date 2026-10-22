@@ -38,7 +38,7 @@ Rewards.Safe = {
 --        { type = 'money', account = 'dirty', min = 4500, max = 11500, chance = 100 },
         { type = 'item', name = 'rolex', min = 2, max = 5, chance = 22 },
         { type = 'item', name = 'goldbar', min = 1, max = 2, chance = 6 }
-    }
+    },
 }
 
 Rewards.PoliceMultiplier = {
