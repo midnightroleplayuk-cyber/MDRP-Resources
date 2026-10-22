@@ -6,8 +6,12 @@ end
 RegisterNetEvent('hf1_cellbuzz:client:policeAlert', function(stationId, buzzerName)
     if not policeJob() then return end
     lib.notify({ title = Config.Stations[stationId] and Config.Stations[stationId].label or 'Police Buzzer', description = ('Police Buzzer: %s requesting assistance.'):format(buzzerName), type = 'warning', duration = 7000 })
-    if Config.SoundEnabled then
-        SendNUIMessage({ action = 'play', volume = Config.SoundVolume })
+    local station = Config.Stations[stationId]
+    if Config.SoundEnabled and station and station.soundCenter and station.soundRadius then
+        local ped = PlayerPedId()
+        if ped ~= 0 and #(GetEntityCoords(ped) - station.soundCenter) <= station.soundRadius then
+            SendNUIMessage({ action = 'play', volume = Config.SoundVolume })
+        end
     end
 end)
 

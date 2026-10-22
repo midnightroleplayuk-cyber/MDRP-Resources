@@ -1,7 +1,7 @@
 Config = {}
 Config.PoliceJob = 'police'
 Config.CooldownSeconds = 60
-Config.BuzzerInteractDistance = 1.0 -- Very close to the wall-mounted buzzer
+Config.BuzzerInteractDistance = 0.5 -- Very close to the wall-mounted buzzer
 Config.BuzzerServerDistance = 0.85 -- Small allowance for network position differences
 Config.ControlInteractDistance = 1.5
 Config.ControlServerDistance = 2.0
@@ -11,6 +11,8 @@ Config.Stations = {
     vinewood = {
         label = 'VINEWOOD POLICE STATION',
         control = vec3(385.62, -322.14, 46.81),
+        soundCenter = vec3(374.34, -318.14, 45.94),
+        soundRadius = 30.0, -- Sound is audible to on-duty police inside this radius only
         buzzers = {
             { name = 'Cell 1', coords = vec3(388.1, -310.15, 47.15) },
             { name = 'Cell 2', coords = vec3(385.26, -309.0, 47.15) },
