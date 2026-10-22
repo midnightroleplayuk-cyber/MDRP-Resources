@@ -725,12 +725,12 @@ Config.itemCollection = {
         -- All locations of where the loot should spawn at
         locations = {
             {
-                coords = vec3(815.19, -3186.24, 4.9),
+                coords = vec3(815.19, -3186.24, 4.9), -- Postal 449
                 rotation = vec3(0, 0, 40),
                 blip = false,
             },
             {
-                coords = vec3(1738.19, -1610.4, 111.46),
+                coords = vec3(1738.19, -1610.4, 111.46), -- Postal
                 rotation = vec3(0, 0, 40),
                 blip = false,
             },
