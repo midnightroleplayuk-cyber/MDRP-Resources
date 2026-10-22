@@ -322,5 +322,46 @@ Config.Stores = {
         },
         -- Uses Rewards.Register[2], Rewards.Shelf[2] and Rewards.Safe[2]. You can also use rewardTier = 2.
         tier = 2
-    }
+    },
+    {
+        id = '247_innocence',
+        label = '247 convenient store - Innocence Boulevard',
+        profile = 'standard',
+        coords = vector3(24.47, -1345.59, 29.76),
+        clerk = {
+            model = 'mp_m_shopkeep_01',
+            coords = vector4(24.5, -1345.6, 29.82, 281.25),
+            -- Optional per-shop override. Remove this table to use Config.Clerk.Fight.Chance.
+            Fight = {
+                Enabled = true,
+                Chance = 15,
+                Weapon = WEAPON_BAT,
+                Accuracy = 35,
+                Armor = 0,
+                CanDie = true,
+                RemoveDroppedWeapon = true,
+                ResetAfterTargetDeath = 10000,
+                CombatAbility = 1,
+                CombatMovement = 2,
+                CombatRange = 2
+            }
+        },
+        registers = {
+            vector3(24.96, -1347.3, 29.69),
+            vector3(25.01, -1344.98, 29.62)
+        },
+        shelves = {
+            vector3(30.96, -1346.47, 29.69),
+        },
+        safe = {
+            coords = vector3(28.23, -1338.49, 29.24),
+            heading = 230,
+            methods = { 'drill' },
+            prop = true
+        },
+        -- Uses Rewards.Register[1], Rewards.Shelf[1] and Rewards.Safe[1]. You can also use rewardTier = 1.
+        tier = 1
+    },
+    
+
 }
