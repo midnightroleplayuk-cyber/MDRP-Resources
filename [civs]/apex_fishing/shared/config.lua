@@ -460,7 +460,7 @@ Config.npc = {
     coords   = vec4(1313.25, 4272.37, 33.91, 266.79),  -- Paleto Cove pier
     marker   = vec4(1313.25, 4272.37, 32.91, 266.79),
     blip     = { sprite = 68, color = 75, scale = 0.85, label = 'Fisherman' },
-    boatSpawn  = vec4(1332.68, 4268.34, 28.6, 96.68),
+    boatSpawn  = vec4(1334.46, 4266.79, 29.13, 81.94),
     boatReturn = vec4(1332.68, 4268.34, 28.6, 96.68),
 }
 
