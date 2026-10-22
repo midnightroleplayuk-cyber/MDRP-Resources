@@ -40,3 +40,11 @@ Every station has its own control panel and buzzer states.
 ## Wall-mounted buzzer interaction distances
 
 Buzzers use `Config.BuzzerInteractDistance = 0.5` metres in ox_target and `Config.BuzzerServerDistance = 0.85` metres for server-side validation. The police control uses separate distances (1.5 m client, 2.0 m server). Adjust in config.lua. **Distance alone does not detect walls**: if two sides of a wall are within range, players may still target the zone. For guaranteed side-specific access, use side-specific positions or a wall/line-of-sight check tailored to your MLO.
+
+## Station-local sound and restart behaviour
+
+Each station can define `soundCenter = vec3(x, y, z)` and `soundRadius = 30.0` in `config.lua`. The `.ogg` sound plays **only for on-duty police officers within that station-specific 3D radius** when a buzzer is pressed. Police still receive the ox_lib alert regardless of their location. Sound is not audible to inmates or off-duty officers.
+
+All buzzer state is held in server memory, not persisted. Every server or resource restart resets **all buzzers to enabled**, clears assistance requests and resets cooldowns.
+
+For additional stations, configure a unique `soundCenter` and `soundRadius` alongside the station's `control` and `buzzers`.
