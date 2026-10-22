@@ -1,7 +1,7 @@
 Config = {}
 Config.PoliceJob = 'police'
 Config.CooldownSeconds = 60
-Config.BuzzerInteractDistance = 0.5 -- Very close to the wall-mounted buzzer
+Config.BuzzerInteractDistance = 1.0 -- Very close to the wall-mounted buzzer
 Config.BuzzerServerDistance = 0.85 -- Small allowance for network position differences
 Config.ControlInteractDistance = 1.5
 Config.ControlServerDistance = 2.0
