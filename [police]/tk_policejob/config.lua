@@ -751,10 +751,10 @@ items = {
         toggleDuty = {
             {coords = vector3(411.89, -327.67, 47.33), distance = 2.0},
         },
-        bodycamStation = {
-            {coords = vector3(2783.149, 4742.051, 48.627), distance = 2.0},
-        },
-        mechanics = {
+      --  bodycamStation = {
+      --       {coords = vector3(2783.149, 4742.051, 48.627), distance = 2.0},
+      --  },
+       --[[  mechanics = {
             {
                 coords = vector3(2812.77, 4846.35, 46.68),
                 distance = 4.0,
@@ -777,7 +777,7 @@ items = {
                     }
                 }
             }                        
-        },
+        }, ]]
         vehicleMenus = {
             --[[{ -- heli
                 locations = {
