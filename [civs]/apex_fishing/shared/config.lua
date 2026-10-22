@@ -437,7 +437,7 @@ Config.boats = {
 -- Paleto Cove — boat-reachable from the pier in ~45 seconds.
 Config.deepSeaSpots = {
     {
-        coords = vec3(169.92, 4063.32, 38.78),
+        coords = vec3(590.83, 3958.5, 28.85),
         radius = 220.0,
         blip   = {
             sprite      = 68,    -- fish sprite
