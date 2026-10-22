@@ -437,7 +437,7 @@ Config.boats = {
 -- Paleto Cove — boat-reachable from the pier in ~45 seconds.
 Config.deepSeaSpots = {
     {
-        coords = vec3(-2688.290039, -1952.650513, 2.994141),
+        coords = vec3(169.92, 4063.32, 38.78),
         radius = 220.0,
         blip   = {
             sprite      = 68,    -- fish sprite
@@ -457,11 +457,11 @@ Config.deepSeaSpots = {
 -- if you want it elsewhere.
 Config.npc = {
     model    = 'a_m_m_salton_01',
-    coords   = vec4(-1862.795654, -1234.536255, 8.605103, 53.858269),  -- Paleto Cove pier
-    marker   = vec3(-1862.795654, -1234.536255, 8.605103),
+    coords   = vec4(1332.77, 4325.0, 37.25, 350.98),  -- Paleto Cove pier
+    marker   = vec4(1332.77, 4325.0, 37.25, 350.98),
     blip     = { sprite = 68, color = 75, scale = 0.85, label = 'Fisherman' },
-    boatSpawn  = vec4(-1795.054932, -1233.389038, 0.887939, 200.0),
-    boatReturn = vec3(-1795.054932, -1233.389038, 0.887939),
+    boatSpawn  = vec4(1332.68, 4268.34, 28.6, 96.68),
+    boatReturn = vec4(1332.68, 4268.34, 28.6, 96.68),
 }
 
 -- ─── Notification strings ────────────────────────────────
