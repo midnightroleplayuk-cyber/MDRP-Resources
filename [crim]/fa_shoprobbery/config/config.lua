@@ -65,7 +65,7 @@ Config.Clerk = {
 Config.AdminGroups = { 'admin', 'god', 'superadmin' }
 
 -- Jobs counted as police for robbery requirements and dispatch recipients.
-Config.PoliceJobs = { 'police', 'sheriff' }
+Config.PoliceJobs = { 'police', }
 
 -- Required online police count before a robbery action can begin.
 Config.MinimumPolice = 0
@@ -74,7 +74,7 @@ Config.MinimumPolice = 0
 -- Controls the intended robbery order.
 Config.Flow = {
     RequireClerkBeforeLoot = true, -- Requires the clerk to be intimidated/killed before the player can loot the store.
-    RequireRegisterBeforeSafe = true -- Requires at least one register to be looted before the player can loot the safe.
+    RequireRegisterBeforeSafe = true, -- Requires at least one register to be looted before the player can loot the safe.
 }
 
 -- Optional robbery session settings. TimeLimit can be false or seconds.
@@ -228,7 +228,7 @@ Config.Stores = {
             Fight = {
                 Enabled = true,
                 Chance = 15,
-                Weapon = `WEAPON_PISTOL`,
+                Weapon = `WEAPON_PBAT`,
                 Ammo = 60,
                 Accuracy = 35,
                 Armor = 0,
@@ -274,7 +274,7 @@ Config.Stores = {
         },
         shelves = {
             vector3(-711.7, -912.1, 19.22),
-            vector3(-713.5, -915.7, 19.22)
+            
         },
         safe = {
             coords = vector3(-709.74, -904.15, 19.22),
@@ -308,7 +308,7 @@ Config.Stores = {
         },
         shelves = {
             vector3(1964.7, 3744.4, 32.34),
-            vector3(1962.5, 3747.9, 32.34)
+            
         },
         safe = {
             coords = vector3(1959.26, 3748.92, 32.34),
