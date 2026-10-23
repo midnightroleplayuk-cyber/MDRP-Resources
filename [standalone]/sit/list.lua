@@ -377,7 +377,7 @@ local Models = {
         lay = { type = 'layside', seats = {[1] = vector4(0.0, -0.05, 0.5, 180.0)} }
     },
     [`prop_bench_11`] = {
-        sit = { type = 'chair2', seats = {[1] = vector4(-0.8, 0.0, 0.42, 180.0), [2] = vector4(0.0, 0.0, 0.42, 180.0), [3] = vector4(0.8, 0.0, 0.42, 180.0)} },
+        sit = { type = 'chair2', seats = {[1] = vector4(-0.8, 0.0, 0.42, 180.0), [2] = vector4(0.0, 0.0, 0.42, 180.0), [3] = vector4(0.8, 0.0, 0.42, 180.0), [4] = vector4(417.19, -338.27, 46.42, 333.24)} },
         lay = { type = 'layside', seats = {[1] = vector4(0.0, 0.0, 0.42, 180.0)} }
     },
     [2142033519] = { sit = { type = 'chair2', seats = {[1] = vector4(0.0, 0.3, 0.5, 180.0), [2] = vector4(0.75, 0.3, 0.5, 180.0), [3] = vector4(1.5, 0.3, 0.5, 180.0)} } }, -- prop_busstop_02
