@@ -45,6 +45,29 @@ Config.Zones = {
         -- How far from the zone to begin applying local density suppression.
         activationDistance = 110.0
     },
+            {
+        name = 'Burton Hospital',
+        corners = {
+            vec3(-360.18, -181.45, 36.54),
+            vec3(-415.39, -84.22, 40.89),
+            vec3(-410.39, -79.67, 41.39),
+            vec3(-394.51, -104.68, 37.68),
+            vec3(-384.29, -98.19, 37.7),
+            vec3(-346.94, -111.26, 37.7),
+            vec3(-352.15, -147.93, 37.26)
+        },
+        minZ = 35.5,
+        maxZ = 44.0,
+        -- Disable AI vehicle road paths inside this zone.
+        disableRoads = true,
+        -- Disable ambient population spawns near players inside this zone.
+        suppressPopulation = true,
+        -- Periodically remove only ambient non-mission, non-player NPCs/vehicles.
+        cleanupAmbient = true,
+        cleanupIntervalMs = 3000,
+        -- How far from the zone to begin applying local density suppression.
+        activationDistance = 110.0
+    },
 }
 
 Config.Debug = false
