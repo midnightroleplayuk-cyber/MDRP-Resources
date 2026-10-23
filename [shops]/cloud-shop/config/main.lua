@@ -37,6 +37,7 @@ return {
 				vector4(1984.2482, 3054.3589, 47.2151, 240.0611), -- Panorama Dr
 				vector4(209.35, -867.63, 31.30, 74.26), --New Legion Square
 				vector4(1481.7, 3572.17, 36.77, 287.85), -- Sandy Shores Estate
+				vector4(311.2435, -2041.4139, 20.2700, 241.0878) -- Jamestown street
 			},
 
 			--? For icons, use Iconify: https://icon-sets.iconify.design
