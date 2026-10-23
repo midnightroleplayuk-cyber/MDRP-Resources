@@ -751,8 +751,8 @@ Config.Stores = {
         tier = 1
     },
     {
-        id = 'twentyfour_greatocean',
-        label = 'twentyfour - great ocean',
+        id = 'twentyfour_InsenoRoad',
+        label = 'twentyfour - inseno road',
         profile = 'standard',
         coords = vector3(-3041.42, 584.37, 8.06),
         clerk = {
@@ -982,7 +982,7 @@ Config.Stores = {
         tier = 1
     },
     {
-        id = 'liquorstore_greatocean',
+        id = 'liquorstore_GreatOceanHwy',
         label = 'liquor store - great ocean',
         profile = 'standard',
         coords = vector3(-2966.14, 391.67, 14.04),
@@ -1020,8 +1020,8 @@ Config.Stores = {
         tier = 1
     },
     {
-        id = 'liquorstore_greatocean',
-        label = 'liquor store - great ocean',
+        id = 'liquorstore_ElRanchoBlvd',
+        label = 'liquor store - el rancho blvd',
         profile = 'standard',
         coords = vector3(1134.25, -983.07, 45.41),
         clerk = {
