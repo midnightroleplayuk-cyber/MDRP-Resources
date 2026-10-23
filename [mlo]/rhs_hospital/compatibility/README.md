@@ -76,14 +76,18 @@ The Burton block and its neighbours: cut, cleaned and re-textured so the hospita
 - `ss1_rd1_15.ydr`
 - `ss1_rd1_26.ydr`
 
-## Distant lod models (ydd)
+## Distant lod models (ydd, ydr)
 
-The distant versions of the same buildings.
+The distant versions of the same buildings. The last three are the district-wide models of the whole
+area (Burton, Rockford Hills and their neighbours), edited only around the hospital.
 
 - `bt1_02_emissive_slod_children.ydd`
 - `bt1_02_slod1_children.ydd`
 - `ss1_lod_bt_01_02_03_children.ydd`
 - `ss1_lod_emissive_bt_01_02_03_children.ydd`
+- `ss1_lod_emissive_slod3_children.ydd`
+- `ss1_lod_slod3.ydr`
+- `ss1_lod_slod3_children.ydd`
 
 ## Collision (ybn)
 

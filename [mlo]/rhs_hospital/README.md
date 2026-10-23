@@ -2,9 +2,9 @@
 
 A British district general hospital for FiveM, built on the Burton plot where the Los Santos Customs used to be.
 Walk-in, ambulance and rear entrances, A&E, imaging, theatres, wards, offices and a roof helipad, with a four-stop
-lift, native sliding doors and ambient peds kept out of the clinical rooms.
+lift, British fire doors, automatic sliding entrances and ambient peds kept out of the clinical rooms.
 
-Version 1.0.0-rc.2. Standalone: no framework, no database, no other resource needed.
+Version 1.0.0-rc.11. Standalone: no framework, no database, no other resource needed.
 
 ## What is inside
 
@@ -16,9 +16,13 @@ Version 1.0.0-rc.2. Standalone: no framework, no database, no other resource nee
   and lockers, boss office, on-call room, two offices, meeting room, toilets.
 - **Getting around:** stairs, a link ramp, and a four-stop lift (A&E, reception, first floor, roof).
 - **145 custom props and fixtures** (scanners, desks, signage totems, cubicles, wall fittings) plus stock GTA
-  medical props placed room by room: 1,486 placed pieces in the interior alone.
+  medical props placed room by room: 1,496 placed pieces in the interior alone.
 - **Exterior:** new facade, canopies, car park with hedges and palms, helipad roof, night lighting and uplights.
-- **Optional scripts** (all switchable in `config.lua`): native door controller, lift, NPC blocker, and the
+- **Doors:** oak British fire doors throughout (vision panels, lever handles, kick plates and closers; solid doors for
+  X-ray, MRI and the theatres), white doors into the toilets, a green steel fire exit door from the garage, and
+  automatic glass sliding doors at the A&E, ambulance, main and rear entrances (telescopic at the A&E, ambulance and
+  rear).
+- **Optional scripts** (all switchable in `config.lua`): door controller, automatic entrances, lift, NPC blocker, and the
   retirement of the old Burton Customs interior.
 
 ## Requirements
@@ -45,11 +49,13 @@ Version 1.0.0-rc.2. Standalone: no framework, no database, no other resource nee
 
 | Setting | Default | What it does |
 | --- | --- | --- |
-| `Config.Doors.Enabled` | `true` | Registers the hospital's doors: automatic entrance sliders, garage shutter, unlocked push doors. Set it to `false` if a doorlock resource controls these doors. |
+| `Config.Doors.Enabled` | `true` | Registers the hinged fire doors and the garage shutter as unlocked GTA doors. Set it to `false` if a doorlock resource controls these doors. |
+| `Config.AutoDoors.Enabled` | `true` | The automatic sliding entrances (A&E, ambulance, main, rear). They are not GTA doors, so keep this on even with a doorlock resource. `/rhsdoors` in F8 lists their state for support. |
 | `Config.Lift.Enabled` | `true` | Four-stop lift. Stand at a lift front: **E** up, **G** down. |
 | `Config.NpcBlock.Enabled` | `true` | Stops ambient peds spawning or walking inside the hospital. Mission peds and players are never touched. |
 | `Config.RetireOldCustoms` | `true` | Switches off the old Burton Los Santos Customs interior. Leave it on unless another resource does it. |
-| `RHSDoors` | all doors | The door list. Delete a line to leave that door to another resource. Coordinates are world positions. |
+| `RHSDoors` | all doors | The hinged door list (model + world position of the hinge at floor level). Delete a line to leave that door to another resource. |
+| `RHSAutoDoors` | 14 leaves | The automatic sliding leaves: four at the telescopic A&E, ambulance and rear entrances, two at the main entrance. Delete an entrance's lines (same `group`) to remove it. |
 
 The door controller is unlocked-only: it does not implement job locks. Use a doorlock resource for that and turn
 `Config.Doors.Enabled` off.
@@ -80,10 +86,11 @@ When you update the hospital, keep your edited `.ytd` files and copy them over t
 
 ## Other maps and Vertex Hub
 
-This map overrides a small set of GTA files for its tile (the Burton block, its lod lights, occluders, roads and
-collision). They are in `stream/vanilla/` and are **not encrypted**, so Vertex Hub can merge them with other maps.
+This map overrides a small set of GTA files for its tile (the Burton block and its distance models, its lod lights,
+occluders, roads and collision). They are in `stream/vanilla/` and are **not encrypted**, so Vertex Hub can merge them with other maps.
 `compatibility/README.md` lists every overridden file by name. If another map on your server edits the same files
-(any map near the Burton Los Santos Customs), merge them with Vertex Hub instead of letting one overwrite the other.
+(any map near the Burton Los Santos Customs, or one that edits the district distance models `ss1_lod_slod3*`), merge
+them with Vertex Hub instead of letting one overwrite the other.
 
 ## Licence
 
