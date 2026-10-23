@@ -21,7 +21,7 @@ Config.Zones = {
         suppressPopulation = true,
         -- Periodically remove only ambient non-mission, non-player NPCs/vehicles.
         cleanupAmbient = true,
-        cleanupIntervalMs = 3000,
+        cleanupIntervalMs = 2000,
         -- How far from the zone to begin applying local density suppression.
         activationDistance = 110.0
     },
