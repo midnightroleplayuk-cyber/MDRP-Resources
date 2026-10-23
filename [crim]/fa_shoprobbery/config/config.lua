@@ -34,9 +34,9 @@ Config.Clerk = {
         Enabled = true,
         Interval = 18000,
         Scenarios = {
-            'WORLD_HUMAN_STAND_IMPATIENT',
+            --'WORLD_HUMAN_STAND_IMPATIENT',
             'WORLD_HUMAN_STAND_MOBILE',
-            'WORLD_HUMAN_AA_COFFEE'
+            --'WORLD_HUMAN_AA_COFFEE'
         }
     },
     SilentAlarm = {
