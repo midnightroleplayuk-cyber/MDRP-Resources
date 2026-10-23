@@ -223,7 +223,7 @@ Config.Stores = {
         coords = vector3(-47.35, -1758.67, 29.42),
         clerk = {
             model = 'mp_m_shopkeep_01',
-            coords = vector4(-46.75, -1758.05, 29.42, 48.0),
+            coords = vector4(-47.2886, -1758.5280, 29.4210, 45.3676),
             -- Optional per-shop override. Remove this table to use Config.Clerk.Fight.Chance.
             Fight = {
                 Enabled = true,
@@ -263,7 +263,7 @@ Config.Stores = {
         coords = vector3(-707.40, -914.50, 19.22),
         clerk = {
             model = 'mp_m_shopkeep_01',
-            coords = vector4(-706.16, -914.55, 19.22, 88.0),
+            coords = vector4(-706.0665, -914.6005, 19.2156, 82.3892),
             Fight = {
                 Chance = 15
             }
@@ -297,7 +297,7 @@ Config.Stores = {
         coords = vector3(1961.16, 3740.74, 32.34),
         clerk = {
             model = 'mp_m_shopkeep_01',
-            coords = vector4(1959.30, 3741.48, 32.34, 302.0),
+            coords = vector4(1959.1536, 3741.4165, 32.3437, 298.7749),
             Fight = {
                 Chance = 15
             }
@@ -327,10 +327,10 @@ Config.Stores = {
         id = 'twentyfour_vinewood',
         label = 'twentyfour - Vinewood',
         profile = 'standard',
-        coords = vector3(372.82, 328.12, 103.58),
+        coords = vector3(372.64, 328.11, 102.57),
         clerk = {
             model = 'mp_m_shopkeep_01',
-            coords = vector4(372.82, 328.12, 103.58, 245.7),
+            coords = vector4(372.8008, 328.1116, 103.5665, 262.1354),
             -- Optional per-shop override. Remove this table to use Config.Clerk.Fight.Chance.
             Fight = {
                 Enabled = true,
@@ -369,7 +369,7 @@ Config.Stores = {
         coords = vector3(24.96, -1347.3, 29.69),
         clerk = {
             model = 'mp_m_shopkeep_01',
-            coords = vector4(24.27, -1345.6, 30.05, 273.71),
+            coords = vector4(24.5062, -1345.5989, 29.4970, 263.3659),
             -- Optional per-shop override. Remove this table to use Config.Clerk.Fight.Chance.
             Fight = {
                 Enabled = true,
@@ -408,7 +408,7 @@ Config.Stores = {
         coords = vector3(208.09, -868.99, 31.47),
         clerk = {
             model = 'mp_m_shopkeep_01',
-            coords = vector4(209.5, -867.63, 31.28, 85.55),
+            coords = vector4(209.35, -867.63, 31.30, 74.26),
             -- Optional per-shop override. Remove this table to use Config.Clerk.Fight.Chance.
             Fight = {
                 Enabled = true,
@@ -447,7 +447,7 @@ Config.Stores = {
         coords = vector3(-1486.74, -378.54, 40.3),
         clerk = {
             model = 'mp_m_shopkeep_01',
-            coords = vector4(-1486.74, -377.52, 40.22, 163.37),
+            coords = vector4(-1486.69, -377.17, 40.41, 136.85),
             -- Optional per-shop override. Remove this table to use Config.Clerk.Fight.Chance.
             Fight = {
                 Enabled = true,
@@ -556,13 +556,13 @@ Config.Stores = {
         tier = 1 
     },
     {
-        id = 'twentyfour_lossantosfreeway',
-        label = 'twentyfour - los santos freeway',
+        id = 'twentyfour_senorafreeway',
+        label = 'twentyfour - senora freeway',
         profile = 'standard',
         coords = vector3(2676.31, 3280.95, 55.39),
         clerk = {
             model = 'mp_m_shopkeep_01',
-            coords = vector4(2676.59, 3280.01, 55.53, 326.28),
+            coords = vector4(2676.5083, 3280.1863, 55.2411, 335.5104),
             -- Optional per-shop override. Remove this table to use Config.Clerk.Fight.Chance.
             Fight = {
                 Enabled = true,
@@ -601,7 +601,7 @@ Config.Stores = {
         coords = vector3(548.77, 2668.93, 42.34),
         clerk = {
             model = 'mp_m_shopkeep_01',
-            coords = vector4(549.31, 2669.73, 42.46, 88.7),
+            coords = vector4(549.2471, 2669.6699, 42.1565, 96.9846),
             -- Optional per-shop override. Remove this table to use Config.Clerk.Fight.Chance.
             Fight = {
                 Enabled = true,
@@ -640,7 +640,7 @@ Config.Stores = {
         coords = vector3(2554.85, 381.53, 108.79),
         clerk = {
             model = 'mp_m_shopkeep_01',
-            coords = vector4(2555.94, 380.71, 108.92, 356.87),
+            coords = vector4(2555.5110, 380.7313, 108.6229, 0.9597),
             -- Optional per-shop override. Remove this table to use Config.Clerk.Fight.Chance.
             Fight = {
                 Enabled = true,
@@ -679,7 +679,7 @@ Config.Stores = {
         coords = vector3(1729.3, 6417.09, 35.18),
         clerk = {
             model = 'mp_m_shopkeep_01',
-            coords = vector4(1728.53, 6416.81, 35.49, 244.75),
+            coords = vector4(1728.5699, 6416.7671, 35.0372, 243.3380),
             -- Optional per-shop override. Remove this table to use Config.Clerk.Fight.Chance.
             Fight = {
                 Enabled = true,
@@ -718,7 +718,7 @@ Config.Stores = {
         coords = vector3(-3244.6, 1000.69, 12.94),
         clerk = {
             model = 'mp_m_shopkeep_01',
-            coords = vector4(-3243.93, 999.92, 13.35, 358.76),
+            coords = vector4(-3243.9229, 1000.0519, 12.8307, 0.7583),
             -- Optional per-shop override. Remove this table to use Config.Clerk.Fight.Chance.
             Fight = {
                 Enabled = true,
@@ -757,7 +757,7 @@ Config.Stores = {
         coords = vector3(-3041.42, 584.37, 8.06),
         clerk = {
             model = 'mp_m_shopkeep_01',
-            coords = vector4(-3040.73, 583.94, 8.4, 18.57),
+            coords = vector4(-3040.5376, 583.9359, 7.9089, 17.7445),
             -- Optional per-shop override. Remove this table to use Config.Clerk.Fight.Chance.
             Fight = {
                 Enabled = true,
@@ -783,6 +783,83 @@ Config.Stores = {
         safe = {
             coords = vector3(-3048.39, 585.46, 7.43),
             heading = 161.92,
+            methods = { 'drill' },
+            prop = false
+        },
+        -- Uses Rewards.Register[1], Rewards.Shelf[1] and Rewards.Safe[1]. You can also use rewardTier = 1.
+        tier = 1
+    },
+    {
+        id = 'ranjeets_sandyshores',
+        label = 'ranjeets - sandy shores',
+        profile = 'standard',
+        coords = vector3(1481.7, 3572.17, 36.77),
+        clerk = {
+            model = 'mp_m_shopkeep_01',
+            coords = vector4(1481.7, 3572.17, 36.77, 287.85),
+            -- Optional per-shop override. Remove this table to use Config.Clerk.Fight.Chance.
+            Fight = {
+                Enabled = true,
+                Chance = 15,
+                Weapon = WEAPON_BAT,
+                Accuracy = 35,
+                Armor = 0,
+                CanDie = true,
+                RemoveDroppedWeapon = true,
+                ResetAfterTargetDeath = 10000,
+                CombatAbility = 1,
+                CombatMovement = 2,
+                CombatRange = 2
+            }
+        },
+        registers = {
+            vector3(1482.5, 3572.71, 36.94)
+        },
+        shelves = {
+            vector3(1481.6, 3575.67, 36.97),
+        },
+        safe = {
+            coords = vector3(1481.11, 3570.09, 36.82),
+            heading = 199.96,
+            methods = { 'drill' },
+            prop = true
+        },
+        -- Uses Rewards.Register[1], Rewards.Shelf[1] and Rewards.Safe[1]. You can also use rewardTier = 1.
+        tier = 1
+    },
+    {
+        id = 'ltd_mirrorpark',
+        label = 'ltd - mirror park',
+        profile = 'standard',
+        coords = vector3(1164.2, -322.93, 69.37),
+        clerk = {
+            model = 'mp_m_shopkeep_01',
+            coords = vector4(1165.0068, -323.6485, 69.2051, 101.2836),
+            -- Optional per-shop override. Remove this table to use Config.Clerk.Fight.Chance.
+            Fight = {
+                Enabled = true,
+                Chance = 15,
+                Weapon = WEAPON_BAT,
+                Accuracy = 35,
+                Armor = 0,
+                CanDie = true,
+                RemoveDroppedWeapon = true,
+                ResetAfterTargetDeath = 10000,
+                CombatAbility = 1,
+                CombatMovement = 2,
+                CombatRange = 2
+            }
+        },
+        registers = {
+            vector3(1164.8, -322.5, 69.37),
+            vector3(1164.4, -324.99, 69.38)
+        },
+        shelves = {
+            vector3(1160.17, -323.12, 69.45),
+        },
+        safe = {
+            coords = vector3(1158.81, -314.17, 68.81),
+            heading = 199.96,
             methods = { 'drill' },
             prop = false
         },
