@@ -408,7 +408,7 @@ Config.Stores = {
         coords = vector3(208.09, -868.99, 31.47),
         clerk = {
             model = 'mp_m_shopkeep_01',
-            coords = vector4(209.35, -867.63, 31.30, 74.26),
+            coords = vector4(209.49, -867.82, 30.29, 69.37),
             -- Optional per-shop override. Remove this table to use Config.Clerk.Fight.Chance.
             Fight = {
                 Enabled = true,
