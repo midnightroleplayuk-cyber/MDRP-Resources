@@ -246,7 +246,7 @@ Config.corner = {
     -- Blip on a corner, only shown while carrying one of its drugs and within
     -- viewDistance (meters) of the corner
     blip = {
-        enabled = true,
+        enabled = false,
         sprite = 465,
         color = 66,
         scale = 0.7,
