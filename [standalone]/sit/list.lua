@@ -275,6 +275,28 @@ local Models = {
     [`v_corp_facebeanbagd`] = { sit = { type = 'deck', seats = {[1] = vector4(0.0, -0.4, 0.40, 180.0)} } },
     [`v_res_fh_pouf`] = { sit = { type = 'chair', seats = {[1] = vector4(0.0, 0.1, 0.35, 180.0)} } },
 
+    
+    -- Mission Plaza UK Police Station chairs
+
+    [2668900977] = { sit = { type = 'chair2', seats = {[1] = vector4(0.0, 0.05, 0.46, 180.0)} } }, -- ex_prop_offchair_exec_01
+    [-1198343923] = { sit = { type = 'chair2', seats = {[1] = vector4(0.0, 0.05, 0.46, 180.0)} } }, -- hei_prop_heist_off_chair
+    [-1941377959] = { sit = { type = 'chair2', seats = {[1] = vector4(0.0, 0.05, 0.44, 180.0)} } }, -- prop_chair_04b
+    [536071214] = { sit = { type = 'chair2', seats = {[1] = vector4(0.0, 0.05, 0.46, 180.0)} } }, -- prop_off_chair_01
+    [1268458364] = { sit = { type = 'chair2', seats = {[1] = vector4(0.0, 0.05, 0.44, 180.0)} } }, -- prop_off_chair_04
+    [475561894] = { sit = { type = 'chair2', seats = {[1] = vector4(0.0, 0.05, 0.48, 180.0)} } }, -- prop_off_chair_04_s
+    [1037469683] = { sit = { type = 'chair2', seats = {[1] = vector4(0.0, 0.05, 0.42, 180.0)} } }, -- prop_off_chair_05 (already in your list)
+    [1355718178] = { sit = { type = 'chair2', seats = {[1] = vector4(0.0, 0.05, 0.40, 180.0)} } }, -- prop_waiting_seat_01
+    [589738836] = { sit = { type = 'chair2', seats = {[1] = vector4(0.0, 0.05, 0.36, 180.0)} } }, -- v_corp_bk_chair3
+    [-109356459] = { sit = { type = 'chair2', seats = {[1] = vector4(0.0, 0.05, 0.44, 180.0)} } }, -- v_corp_offchair (already in your list)
+    [-171943901] = { sit = { type = 'chair2', seats = {[1] = vector4(0.0, 0.05, 0.42, 180.0)} } }, -- v_serv_ct_chair02 (already in your list)
+
+    -- Additional benches and seating
+    [-1867871609] = { sit = { type = 'chair2', seats = {[1] = vector4(0.0, 0.05, 0.45, 180.0)} } }, -- hei_heist_stn_benchshort
+    [1007470258] = { sit = { type = 'chair2', seats = {[1] = vector4(0.0, 0.05, 0.45, 180.0)} } }, -- nobs_ukpd_slatbench_atlas
+    [1427480666] = { sit = { type = 'chair2', seats = {[1] = vector4(0.0, 0.05, 0.45, 180.0)} } }, -- v_res_fh_benchlong
+    [4123023395] = { sit = { type = 'chair2', seats = {[1] = vector4(0.0, 0.05, 0.42, 180.0)} } }, -- v_serv_ct_chair02
+
+
     -- Stools --
     [-1829764702] = { sit = { type = 'barstool', seats = {[1] = vector4(0.0, 0.15, 0.825, 180.0)} } }, -- prop_bar_stool_01
     [-1971298567] = { sit = { type = 'stool', seats = {[1] = vector4(0.0, 0.1, 0.39, 180.0)} } }, -- v_ret_gc_chair01
