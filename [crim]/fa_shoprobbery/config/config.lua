@@ -34,9 +34,9 @@ Config.Clerk = {
         Enabled = true,
         Interval = 18000,
         Scenarios = {
-            'WORLD_HUMAN_STAND_IMPATIENT',
+            --'WORLD_HUMAN_STAND_IMPATIENT',
             'WORLD_HUMAN_STAND_MOBILE',
-            'WORLD_HUMAN_AA_COFFEE'
+            --'WORLD_HUMAN_AA_COFFEE'
         }
     },
     SilentAlarm = {
@@ -220,7 +220,7 @@ Config.Stores = {
         id = 'ltd_grove',
         label = 'LTD Gasoline - Grove Street',
         profile = 'standard',
-        coords = vector3(-47.35, -1758.67, 29.42),
+        coords = vector3(-47.28, -1758.52, 28.42),
         clerk = {
             model = 'mp_m_shopkeep_01',
             coords = vector4(-47.2886, -1758.5280, 29.4210, 45.3676),
@@ -294,7 +294,7 @@ Config.Stores = {
         id = 'twentyfour_sandy',
         label = '24/7 - Sandy Shores',
         profile = 'standard',
-        coords = vector3(1961.16, 3740.74, 32.34),
+        coords = vector3(1959.16, 3741.41, 31.34),
         clerk = {
             model = 'mp_m_shopkeep_01',
             coords = vector4(1959.1536, 3741.4165, 32.3437, 298.7749),
@@ -366,7 +366,7 @@ Config.Stores = {
         id = 'twentyfour_innocence',
         label = '247 convenient store - Innocence Boulevard',
         profile = 'standard',
-        coords = vector3(24.96, -1347.3, 29.69),
+        coords = vector3(24.49, -1345.6, 28.49),
         clerk = {
             model = 'mp_m_shopkeep_01',
             coords = vector4(24.5062, -1345.5989, 29.4970, 263.3659),
@@ -405,7 +405,7 @@ Config.Stores = {
         id = 'twentyfour_legionsquare',
         label = 'twentyfour - Legion Square',
         profile = 'standard',
-        coords = vector3(208.09, -868.99, 31.47),
+        coords = vector3(209.48, -867.82, 30.28), 
         clerk = {
             model = 'mp_m_shopkeep_01',
             coords = vector4(209.49, -867.82, 31.29, 69.37),
@@ -444,10 +444,10 @@ Config.Stores = {
         id = 'liquorstore_delperro',
         label = 'liquor store - Del Perro',
         profile = 'standard',
-        coords = vector3(-1486.74, -378.54, 40.3),
+        coords = vector3(-1486.73, -377.59, 39.16),
         clerk = {
             model = 'mp_m_shopkeep_01',
-            coords = vector4(-1486.69, -377.17, 40.41, 136.85),
+            coords = vector4(-1486.7350, -377.5593, 40.1634, 132.9464),
             -- Optional per-shop override. Remove this table to use Config.Clerk.Fight.Chance.
             Fight = {
                 Enabled = true,
@@ -715,7 +715,7 @@ Config.Stores = {
         id = 'twentyfour_chumash',
         label = 'twentyfour - chumash',
         profile = 'standard',
-        coords = vector3(-3244.6, 1000.69, 12.94),
+        coords = vector3(-3243.92, 1000.06, 11.83),
         clerk = {
             model = 'mp_m_shopkeep_01',
             coords = vector4(-3243.9229, 1000.0519, 12.8307, 0.7583),
@@ -751,8 +751,8 @@ Config.Stores = {
         tier = 1
     },
     {
-        id = 'twentyfour_greatocean',
-        label = 'twentyfour - great ocean',
+        id = 'twentyfour_InsenoRoad',
+        label = 'twentyfour - inseno road',
         profile = 'standard',
         coords = vector3(-3041.42, 584.37, 8.06),
         clerk = {
@@ -859,6 +859,197 @@ Config.Stores = {
         },
         safe = {
             coords = vector3(1158.81, -314.17, 68.81),
+            heading = 199.96,
+            methods = { 'drill' },
+            prop = false
+        },
+        -- Uses Rewards.Register[1], Rewards.Shelf[1] and Rewards.Safe[1]. You can also use rewardTier = 1.
+        tier = 1
+    },
+    {
+        id = 'bossmans_jamestown',
+        label = 'bossmans - jamestown',
+        profile = 'standard',
+        coords = vector3(311.25, -2041.41, 19.27),
+        clerk = {
+            model = 'mp_m_shopkeep_01',
+            coords = vector4(311.2435, -2041.4139, 20.2700, 241.0878),
+            -- Optional per-shop override. Remove this table to use Config.Clerk.Fight.Chance.
+            Fight = {
+                Enabled = true,
+                Chance = 15,
+                Weapon = WEAPON_BAT,
+                Accuracy = 35,
+                Armor = 0,
+                CanDie = true,
+                RemoveDroppedWeapon = true,
+                ResetAfterTargetDeath = 10000,
+                CombatAbility = 1,
+                CombatMovement = 2,
+                CombatRange = 2
+            }
+        },
+        registers = {
+            vector3(311.67, -2041.99, 20.41)
+        },
+        shelves = {
+            vector3(313.27, -2044.81, 20.32),
+        },
+        safe = {
+            coords = vector3(305.35, -2046.82, 19.98),
+            heading = 199.96,
+            methods = { 'drill' },
+            prop = false
+        },
+        -- Uses Rewards.Register[1], Rewards.Shelf[1] and Rewards.Safe[1]. You can also use rewardTier = 1.
+        tier = 1
+    },
+    {
+        id = 'aceliquor_sandy',
+        label = 'aceliquor - sandy shores',
+        profile = 'standard',
+        coords = vector3(1392.07, 3606.13, 33.98),
+        clerk = {
+            model = 'mp_m_shopkeep_01',
+            coords = vector4(1392.0671, 3606.1155, 34.9809, 203.5101),
+            -- Optional per-shop override. Remove this table to use Config.Clerk.Fight.Chance.
+            Fight = {
+                Enabled = true,
+                Chance = 15,
+                Weapon = WEAPON_BAT,
+                Accuracy = 35,
+                Armor = 0,
+                CanDie = true,
+                RemoveDroppedWeapon = true,
+                ResetAfterTargetDeath = 10000,
+                CombatAbility = 1,
+                CombatMovement = 2,
+                CombatRange = 2
+            }
+        },
+        registers = {
+            vector3(1393.11, 3605.88, 35.12)
+        },
+        shelves = {
+            vector3(1396.97, 3608.04, 35.27),
+        },
+        safe = {
+            coords = vector3(1387.28, 3606.77, 34.94),
+            heading = 289.0,
+            methods = { 'drill' },
+            prop = true
+        },
+        -- Uses Rewards.Register[1], Rewards.Shelf[1] and Rewards.Safe[1]. You can also use rewardTier = 1.
+        tier = 1
+    },
+    {
+        id = 'twentyfour_banhamcanyondr',
+        label = 'twentyfour - banham canyon dr',
+        profile = 'standard',
+        coords = vector3(-1819.5, 793.6, 137.08),
+        clerk = {
+            model = 'mp_m_shopkeep_01',
+            coords = vector4(-1819.4907, 793.5951, 138.0846, 132.5959),
+            -- Optional per-shop override. Remove this table to use Config.Clerk.Fight.Chance.
+            Fight = {
+                Enabled = true,
+                Chance = 15,
+                Weapon = WEAPON_BAT,
+                Accuracy = 35,
+                Armor = 0,
+                CanDie = true,
+                RemoveDroppedWeapon = true,
+                ResetAfterTargetDeath = 10000,
+                CombatAbility = 1,
+                CombatMovement = 2,
+                CombatRange = 2
+            }
+        },
+        registers = {
+            vector3(-1820.58, 793.7, 138.28),
+            vector3(-1819.15, 792.23, 138.24)
+        },
+        shelves = {
+            vector3(-1823.84, 791.45, 138.36),
+        },
+        safe = {
+            coords = vector3(-1829.66, 798.34, 137.81),
+            heading = 199.96,
+            methods = { 'drill' },
+            prop = false
+        },
+        -- Uses Rewards.Register[1], Rewards.Shelf[1] and Rewards.Safe[1]. You can also use rewardTier = 1.
+        tier = 1
+    },
+    {
+        id = 'liquorstore_GreatOceanHwy',
+        label = 'liquor store - great ocean',
+        profile = 'standard',
+        coords = vector3(-2966.14, 391.67, 14.04),
+        clerk = {
+            model = 'mp_m_shopkeep_01',
+            coords = vector4(-2966.3162, 391.5883, 15.0433, 86.4455),
+            -- Optional per-shop override. Remove this table to use Config.Clerk.Fight.Chance.
+            Fight = {
+                Enabled = true,
+                Chance = 15,
+                Weapon = WEAPON_BAT,
+                Accuracy = 35,
+                Armor = 0,
+                CanDie = true,
+                RemoveDroppedWeapon = true,
+                ResetAfterTargetDeath = 10000,
+                CombatAbility = 1,
+                CombatMovement = 2,
+                CombatRange = 2
+            }
+        },
+        registers = {
+            vector3(-2967.25, 390.91, 15.15)
+        },
+        shelves = {
+            vector3(-2970.19, 391.82, 15.02),
+        },
+        safe = {
+            coords = vector3(-2959.66, 386.56, 14.09),
+            heading = 199.96,
+            methods = { 'drill' },
+            prop = false
+        },
+        -- Uses Rewards.Register[1], Rewards.Shelf[1] and Rewards.Safe[1]. You can also use rewardTier = 1.
+        tier = 1
+    },
+    {
+        id = 'liquorstore_ElRanchoBlvd',
+        label = 'liquor store - el rancho blvd',
+        profile = 'standard',
+        coords = vector3(1134.25, -983.07, 45.41),
+        clerk = {
+            model = 'mp_m_shopkeep_01',
+            coords = vector4(1134.2589, -983.0569, 46.4158, 278.9547),
+            -- Optional per-shop override. Remove this table to use Config.Clerk.Fight.Chance.
+            Fight = {
+                Enabled = true,
+                Chance = 15,
+                Weapon = WEAPON_BAT,
+                Accuracy = 35,
+                Armor = 0,
+                CanDie = true,
+                RemoveDroppedWeapon = true,
+                ResetAfterTargetDeath = 10000,
+                CombatAbility = 1,
+                CombatMovement = 2,
+                CombatRange = 2
+            }
+        },
+        registers = {
+            vector3(1134.93, -982.34, 46.55)
+        },
+        shelves = {
+            vector3(1138.01, -982.55, 46.36),
+        },
+        safe = {
+            coords = vector3(1126.67, -979.49, 45.38),
             heading = 199.96,
             methods = { 'drill' },
             prop = false

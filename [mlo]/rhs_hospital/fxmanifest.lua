@@ -7,17 +7,19 @@ this_is_a_map 'yes'
 name 'rhs_hospital'
 author 'NO BS SCRIPTS'
 description 'RHS Burton Hospital - a British district general hospital MLO on the Burton plot (replaces the Burton Los Santos Customs)'
-version '1.0.0-rc.2'
+version '1.0.0-rc.11'
 
 files {
     'stream/interior/rhs_hospital.ytyp',
     'stream/interior/rhs_night_lights.ytyp',
+    'stream/interior/rhs_doors.ytyp',
     'data/rhs_timecycle.xml',
     'meta/gtxd.meta',
 }
 
 data_file 'DLC_ITYP_REQUEST' 'stream/interior/rhs_hospital.ytyp'
 data_file 'DLC_ITYP_REQUEST' 'stream/interior/rhs_night_lights.ytyp'
+data_file 'DLC_ITYP_REQUEST' 'stream/interior/rhs_doors.ytyp'
 data_file 'GTXD_PARENTING_DATA' 'meta/gtxd.meta'
 data_file 'TIMECYCLEMOD_FILE' 'data/rhs_timecycle.xml'
 

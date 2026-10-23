@@ -55,7 +55,7 @@ Config.Compat = {
 Config.JobLockers = {
     Enabled             = true,
     AllowPrivateOutfits = true,  -- show personal outfits in locker
-    DefaultManageGrade  = 3,     -- min grade to edit locker outfits
+    DefaultManageGrade  = 8,     -- min grade to edit locker outfits
     BlipPresets = {
         { label = 'Police',   sprite = 60,  color = 29 },
         { label = 'EMS',      sprite = 61,  color = 1 },
@@ -110,7 +110,7 @@ local targets = {
 
 Config.Target = {
     AccessMethod      = scriptCheck(targets) or 'auto', -- 'auto' | 'ox-target' | 'qb-target' | 'none'
-    InteractionRadius = 2.0,   -- default open radius
+    InteractionRadius = 1.0,   -- default open radius
     ZoneHeight        = 3.5,   -- ox_target box height
     OptionDistance    = 3.0,   -- max target distance
     DrawSprite        = false, -- ox_target zone sprite

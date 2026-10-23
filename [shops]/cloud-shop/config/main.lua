@@ -18,7 +18,7 @@ return {
 				vector4(2555.5110, 380.7313, 108.6229, 0.9597), -- Palomino Ave
 				vector4(-3040.5376, 583.9359, 7.9089, 17.7445), -- Inseno Road
 				vector4(-3243.9229, 1000.0519, 12.8307, 0.7583), -- Barbareno Rd
-				vector4(-2193.4412, 4290.1064, 49.1743, 63.6331), -- Great Ocean Hwy
+				--vector4(-2193.4412, 4290.1064, 49.1743, 63.6331), -- Great Ocean Hwy
 				vector4(1959.1536, 3741.4165, 32.3437, 298.7749), -- Niland Ave
 				vector4(2676.5083, 3280.1863, 55.2411, 335.5104), -- Senora Fwy
 				vector4(1728.5699, 6416.7671, 35.0372, 243.3380), -- Senora Fwy 2
@@ -27,16 +27,17 @@ return {
 				vector4(-1486.7350, -377.5593, 40.1634, 132.9464), -- Prosperity St
 				vector4(-2966.3162, 391.5883, 15.0433, 86.4455), -- Great Ocean Hwy
 				vector4(24.5062, -1345.5989, 29.4970, 263.3659), -- Inoccence Blvd
-				vector4(-561.7218, 286.8480, 82.1765, 266.4413), -- Milton Rd
+				--vector4(-561.7218, 286.8480, 82.1765, 266.4413), -- Milton Rd
 				vector4(-47.2886, -1758.5280, 29.4210, 45.3676), -- Davis Ave
 				vector4(1165.0068, -323.6485, 69.2051, 101.2836), -- West Mirrow Drive
 				vector4(-706.0665, -914.6005, 19.2156, 82.3892), -- Palomino Ave
 				vector4(-1819.4907, 793.5951, 138.0846, 132.5959), -- Banham Canyon Dr
 				vector4(549.2471, 2669.6699, 42.1565, 96.9846), -- Route 68
 				vector4(1392.0671, 3606.1155, 34.9809, 203.5101), -- Algonquin Blvd
-				vector4(1984.2482, 3054.3589, 47.2151, 240.0611), -- Panorama Dr
+				--vector4(1984.2482, 3054.3589, 47.2151, 240.0611), -- Panorama Dr
 				vector4(209.35, -867.63, 31.30, 74.26), --New Legion Square
 				vector4(1481.7, 3572.17, 36.77, 287.85), -- Sandy Shores Estate
+				vector4(311.2435, -2041.4139, 20.2700, 241.0878) -- Jamestown street
 			},
 
 			--? For icons, use Iconify: https://icon-sets.iconify.design

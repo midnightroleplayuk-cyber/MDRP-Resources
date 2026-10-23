@@ -1784,6 +1784,7 @@ return {
         label = 'Water Bottle',
         weight = 100,
         stack = true,
+        close = true,
     },
 
     ['default_lamp'] = {
