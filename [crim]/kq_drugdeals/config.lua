@@ -10,7 +10,7 @@ Config.locale = 'en'
 -- The money accounts used for payouts. Use the names your framework uses
 -- (kq_link will try to automatically translate them, only change these if you encounter issues)
 Config.accounts = {
-    cash = 'money',
+    cash = 'black_money',
     addCashAsItem = false, -- Use this option when using dirty_money, markedbills etc. (This is commonly the case on qbox and qbcore servers) (Item name defined above)
 
     bank = 'bank',
