@@ -53,7 +53,7 @@ Config.Compat = {
 -- Locations: /clothingadmin -> Lockers
 -- ------------------------------------------------------------------------------
 Config.JobLockers = {
-    Enabled             = false,
+    Enabled             = true,
     AllowPrivateOutfits = true,  -- show personal outfits in locker
     DefaultManageGrade  = 3,     -- min grade to edit locker outfits
     BlipPresets = {
