@@ -70,4 +70,4 @@ Config.Zones = {
     },
 }
 
-Config.Debug = true
+Config.Debug = false
