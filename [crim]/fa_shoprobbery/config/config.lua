@@ -93,7 +93,7 @@ Config.Distance = {
 
 -- Cooldown configuration in seconds. Global can be false, true (uses StoreSeconds), or a number of seconds.
 Config.Cooldown = {
-    Global = false,
+    Global = true,
     StoreSeconds = 600,
     PlayerSeconds = 900,
     FailedAttemptLimit = 3,
