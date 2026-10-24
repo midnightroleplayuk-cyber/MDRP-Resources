@@ -713,15 +713,15 @@ Config.uiPopup = {
 
 -- Full UI customization via RGB color values
 Config.uiStyling = {
-    ['color-background'] = '18, 20, 19',
-    ['color-background-light'] = '30, 32, 31',
-    ['color-primary-dark'] = '120, 170, 0',
-    ['color-primary'] = '178, 243, 0',
-    ['color-primary-light'] = '211, 252, 98',
-    ['color-secondary'] = '193, 207, 176',
-    ['color-secondary-light'] = '226, 245, 203',
-    ['color-secondary-dark'] = '111, 117, 103',
-    ['color-white'] = '251, 251, 251',
+    ['color-background'] = '18, 20, 19', -- black
+    ['color-background-light'] = '30, 32, 31', -- black
+    ['color-primary-dark'] = '68, 41, 81', -- deep purple
+    ['color-primary'] = '255, 255, 255', -- light purple/white
+    ['color-primary-light'] = '171, 88, 212', -- purple
+    ['color-secondary'] = '184, 156, 198', -- grey/purple
+    ['color-secondary-light'] = '214, 188, 228', -- white/purple
+    ['color-secondary-dark'] = '84, 73, 90', -- violet/grey
+    ['color-white'] = '251, 251, 251', 
     ['color-black'] = '10, 10, 10',
     ['border-radius-sm'] = '0.25rem',
     ['border-radius-md'] = '0.5rem',
