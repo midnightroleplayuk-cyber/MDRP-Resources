@@ -252,7 +252,7 @@ return {
 				Target = {
 					enabled = true,
 					boxZoneSize = vec3(4, 4, 4),
-					drawSprite = true,
+					drawSprite = false,
 					distance = 2.5,
 				},
 
@@ -356,7 +356,7 @@ return {
 				Target = {
 					enabled = true,
 					boxZoneSize = vec3(4, 4, 4),
-					drawSprite = true,
+					drawSprite = false,
 					distance = 2.5,
 				},
 
