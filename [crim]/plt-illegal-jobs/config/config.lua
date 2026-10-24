@@ -124,7 +124,7 @@ Config.Apps = {
     deliveryweed = true,
     deliverymeth = true,
     deliverycoke = true,
-    cornerweed = true,
+    cornerweed = false,
     cornermeth = true,
     cornercoke = true,
     corneroxy = true,
@@ -141,7 +141,7 @@ Config.Apps = {
     kidnapping = true,
     cryptodistro = true,
     deliverycontainer = true,
-    helicargo = true,
+    helicargo = false,
     carbreakin = true,
 
     -- Wave 2 mission apps
