@@ -1,5 +1,5 @@
 return {
-	{
+	--[[ {
         name = 'debug_crafting',
 		items = {
 			{
@@ -31,5 +31,5 @@ return {
 			},
 		},
 		blip = { id = 566, colour = 31, scale = 0.8 },
-	},
+	}, ]]
 }
