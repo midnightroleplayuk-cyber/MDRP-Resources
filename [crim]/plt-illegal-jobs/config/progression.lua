@@ -60,7 +60,7 @@ Config.Progression.Tiers = {
         },
         require = {
             fromApps = {
-                'cornerweed', 'cornermeth', 'cornercoke', 'corneroxy',
+                 'cornermeth', 'cornercoke', 'corneroxy',
                 'carbreakin',
             },
             minCompletions = 12,
@@ -76,7 +76,7 @@ Config.Progression.Tiers = {
             fromApps = {
                 'boosting', 'chopshop',
                 'deliveryweed', 'deliverymeth', 'deliverycoke', 'deliverycontainer',
-                'cornerweed', 'cornermeth', 'cornercoke', 'corneroxy',
+                 'cornermeth', 'cornercoke', 'corneroxy',
                 'carbreakin',
             },
             minCompletions = 28,
