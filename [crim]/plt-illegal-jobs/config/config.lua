@@ -116,7 +116,7 @@ Config.Apps = {
     skills = true,
     crew = true,
     crypto = true,
-    robnpc = false,
+    robnpc = true,
 
     -- Job apps
     boosting = true,           -- Vehicle Delivery / car theft

@@ -49,7 +49,7 @@ Config.Progression.Tiers = {
         label = 'Street',
         apps = {
             'cornerweed', 'cornermeth', 'cornercoke', 'corneroxy',
-            'carbreakin', 
+            'carbreakin', 'robnpc',
         },
     },
     [1] = {
