@@ -5064,4 +5064,16 @@ return {
 },
 
 
+
+-- SMART TASER LONDON STUDIOS
+['taser_cartridge'] = {
+        label = 'Taser cartridge',
+        weight = 220,
+        allowArmed = true,
+        server = {
+            export = 'SmartTaser.OxUseTaserCart',
+        },
+},
+
+
 }
