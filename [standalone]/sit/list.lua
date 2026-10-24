@@ -4,7 +4,6 @@ local Models = {
     ------------------
 
     -- Chairs --
-    [`rhs6_xray_table_v12`] = { lay = { type = 'bed', teleportIn = true, seats = {[1] = vector4(-0.05, 0.0, 0.3, 180.0)} },
     [-1159885154] = { sit = { type = 'chair2', seats = {[1] = vector4(0.0, 0.0, 0.5, 180.0)} } }, -- LGModsWoodenChair
     [826023884] = { sit = { type = 'chair2', seats = {[1] = vector4(0.0, 0.0, 0.5, 180.0)} } }, -- prop_chair_06
     [1037469683] = { sit = { type = 'chair2', seats = {[1] = vector4(0.0, 0.05, 0.4, 180.0)} } }, -- prop_off_chair_05
@@ -694,6 +693,9 @@ local Models = {
     },
 
     -- Beds --
+    [`rhs6_xray_table_v12`] = {
+        lay = { type = 'bed', teleportIn = true, seats = {[1] = vector4(-0.05, 0.0, 0.3, 180.0)} }
+    }, -- v_med_bed1
     [1631638868] = {
         sit = { type = 'chair2', teleportIn = true, seats = {[1] = vector4(-0.3, 0.0, 0.4, 90.0), [2] = vector4(0.20, 0.0, 0.4, 270.0)} },
         lay = { type = 'bed', teleportIn = true, seats = {[1] = vector4(-0.05, 0.0, 0.3, 180.0)} }
