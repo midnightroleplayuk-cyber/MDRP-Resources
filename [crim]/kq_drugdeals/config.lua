@@ -11,7 +11,7 @@ Config.locale = 'en'
 -- (kq_link will try to automatically translate them, only change these if you encounter issues)
 Config.accounts = {
     cash = 'black_money',
-    addCashAsItem = false, -- Use this option when using dirty_money, markedbills etc. (This is commonly the case on qbox and qbcore servers) (Item name defined above)
+    addCashAsItem = true, -- Use this option when using dirty_money, markedbills etc. (This is commonly the case on qbox and qbcore servers) (Item name defined above)
 
     bank = 'bank',
 }
@@ -246,7 +246,7 @@ Config.corner = {
     -- Blip on a corner, only shown while carrying one of its drugs and within
     -- viewDistance (meters) of the corner
     blip = {
-        enabled = true,
+        enabled = false,
         sprite = 465,
         color = 66,
         scale = 0.7,
@@ -417,7 +417,7 @@ Config.contacts = {
     enabled = true,
 
     -- Chance (0-100) a buyer asks to be saved after a completed deal
-    addChance = 100,
+    addChance = 50,
 
     -- Guarantees the first contact. Once the player has completed this many app deals and still has no active contacts
     -- 0 = disabled

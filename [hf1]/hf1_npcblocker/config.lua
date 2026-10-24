@@ -4,27 +4,6 @@ Config = {}
 -- Corners can be vec3 or vec4 (vec4 heading is ignored).
 -- Put corners in perimeter order, clockwise or counterclockwise.
 Config.Zones = {
-    {
-        name = 'Courts',
-        corners = {
-        vec3(-453.87, -393.63, 32.57),
-        vec3(-360.4, -405.55, 29.67),
-        vec3(-365.99, -466.29, 29.14),
-        vec3(-412.58, -467.23, 30.5),
-        vec3(-458.52, -459.19, 32.06)
-        },
-        minZ = 28.0,
-        maxZ = 50.0,
-        -- Disable AI vehicle road paths inside this zone.
-        disableRoads = true,
-        -- Disable ambient population spawns near players inside this zone.
-        suppressPopulation = true,
-        -- Periodically remove only ambient non-mission, non-player NPCs/vehicles.
-        cleanupAmbient = true,
-        cleanupIntervalMs = 2000,
-        -- How far from the zone to begin applying local density suppression.
-        activationDistance = 110.0
-    },
         {
         name = 'Sandy Estates',
         corners = {
