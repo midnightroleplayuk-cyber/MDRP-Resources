@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="app" class="hidden">
+        <div class="panel">
+            <header class="header">
+                <img class="logo" src="logo.png" alt="Department badge">
+                <div class="heading">
+                    <h1 id="title">Midnight Police Department</h1>
+                    <p id="subtitle" class="sub"></p>
+                </div>
+                <button id="close" class="icon-btn" aria-label="Close">&times;</button>
+            </header>
+
+            <div class="body">
+                <nav class="side">
+                    <div class="officer">
+                        <div class="avatar" id="avatar">?</div>
+                        <div>
+                            <div class="o-name" id="o-name">Officer</div>
+                            <div class="o-role" id="o-role">Signed in</div>
+                        </div>
+                    </div>
+                    <div class="nav" id="tabs"></div>
+                    <div class="side-foot">Weapons remain your responsibility until returned and logged.</div>
+                </nav>
+
+                <main class="main">
+                    <div class="section-head">
+                        <h2 id="sec-title"></h2>
+                        <p id="sec-sub"></p>
+                    </div>
+                    <div class="list" id="view"></div>
+                </main>
+            </div>
+        </div>
+
+        <div id="sign" class="modal hidden">
+            <div class="sign-box">
+                <header class="header">
+                    <img class="logo small" src="logo.png" alt="">
+                    <div class="heading"><h1>Weapon Sign-Out</h1></div>
+                    <button id="sign-close" class="icon-btn" aria-label="Close">&times;</button>
+                </header>
+                <div class="sign-body">
+                    <div class="sign-weapon">
+                        <div id="sign-img" class="w-img"></div>
+                        <div>
+                            <div id="sign-label" class="w-name"></div>
+                            <div class="muted">Select the serial number you are taking</div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="field-label" for="sign-serial">Serial number</label>
+                        <select id="sign-serial"></select>
+                    </div>
+
+                    <div id="reason-wrap">
+                        <label class="field-label" for="sign-reason">Reason for issue (required)</label>
+                        <input id="sign-reason" type="text" maxlength="200" autocomplete="off" placeholder="e.g. High-risk warrant at 14 Elm Street">
+                    </div>
+
+                    <p id="sign-notes" class="sign-notes"></p>
+
+                    <p class="sign-text">
+                        By signing, I accept responsibility for this weapon until it is returned.
+                        Loss, damage or misuse will be reported to command staff.
+                    </p>
+                    <label class="field-label" for="sign-input">Sign with your full name: <b id="sign-name"></b></label>
+                    <input id="sign-input" class="signature" type="text" autocomplete="off" spellcheck="false" placeholder="Type your full name">
+                    <button id="sign-confirm" class="btn gold" disabled>Sign &amp; Retrieve</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="confirm" class="modal hidden">
+            <div class="sign-box narrow">
+                <header class="header">
+                    <div class="heading"><h1 id="confirm-title"></h1></div>
+                </header>
+                <div class="sign-body">
+                    <p id="confirm-text" class="confirm-text"></p>
+                    <div class="confirm-actions">
+                        <button id="confirm-no" class="btn">Cancel</button>
+                        <button id="confirm-yes" class="btn red">Confirm</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="toast" class="toast hidden"></div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
