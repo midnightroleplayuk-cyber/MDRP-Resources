@@ -693,7 +693,7 @@ local Models = {
     },
 
     -- Beds --
-    [`rhs6_xray_table_v12`] = {
+    [`rhs7_sg_xray`] = {
         lay = { type = 'bed', teleportIn = true, seats = {[1] = vector4(-0.05, 0.0, 0.3, 180.0)} }
     }, -- v_med_bed1
     [1631638868] = {
