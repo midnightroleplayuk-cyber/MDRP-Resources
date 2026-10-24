@@ -9,7 +9,7 @@ main = {
             eventToTrigger = ""
         },
         vRP = false, -- This is for vRP Inventory
-        oxInv = false, -- This is for OX Inventory
+        oxInv = true, -- This is for OX Inventory
         quasarInv = false, -- Also enable ESX/QB above
         coreInv = false, -- Also enable ESX/QB above
         tgiannInventory = {
