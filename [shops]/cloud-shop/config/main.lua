@@ -110,7 +110,7 @@ return {
 			},
 
 			Blip = {
-				enabled = true, -- If true, displays a map blip for the shop locations
+				enabled = false, -- If true, displays a map blip for the shop locations
 				name = "Shop [24/7]", -- Name displayed on the map
 				sprite = 59, -- Blip icon type --? Reference: https://docs.fivem.net/docs/game-references/blips
 				color = 0, -- Blip color --? Reference: https://docs.fivem.net/docs/game-references/blips/#blip-colors
@@ -148,7 +148,7 @@ return {
 				Target = { -- Uses ox_target by default --? (modifiable in config/functions.lua)
 					enabled = true, -- If true, enables targeting system
 					boxZoneSize = vec3(4, 4, 4), -- Size of the target zone
-					drawSprite = true, -- If true, displays a sprite for the target zone
+					drawSprite = false, -- If true, displays a sprite for the target zone
 					distance = 2.5, -- Interaction distance
 				},
 			},
