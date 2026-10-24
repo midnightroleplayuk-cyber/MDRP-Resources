@@ -191,7 +191,7 @@ Config.street = {
     -- NPCs refuse to deal when too many other people stand around them
     crowd = {
         enabled = true,
-        radius = 10.0,
+        radius = 2.0,
 
         -- The buyer refuses once more than this many peds are nearby
         maxPeds = 4,
@@ -276,7 +276,7 @@ Config.dispatch = {
         -- Chance per nearby NPC (0-100), the first successful roll becomes the witness
         chancePerPed = 5,
         -- Radius at which npcs will have a chance to call the dispatch
-        radius = 10.0,
+        radius = 2.0,
 
         -- Seconds between two dispatch calls (per player)
         cooldown = 180,
