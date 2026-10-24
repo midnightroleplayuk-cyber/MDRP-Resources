@@ -159,7 +159,7 @@ return {
 
 			Locations = {
 				vector4(85.427, -225.704, 54.628, 75.238),
-				vector4(299.11, -2035.22, 19.27, 315.54),
+				vector4(299.11, -2035.22, 20.94, 315.54),
 			},
 
 			Categories = {
@@ -223,9 +223,9 @@ return {
 
 			Indicator = {
 				Ped = {
-					enabled = false,
-					model = `mp_m_weapexp_01`,
-					scenario = "WORLD_HUMAN_GUARD_STAND",
+					enabled = true,
+					model = `mp_m_shopkeep_01`,
+					scenario = "WORLD_HUMAN_STAND_MOBILE",
 				},
 				Marker = {
 					enabled = false,
@@ -242,7 +242,7 @@ return {
 				OpenKey = 3,
 
 				HelpText = {
-					enabled = true,
+					enabled = false,
 					distance = 2.5,
 				},
 				FloatingText = {
@@ -346,7 +346,7 @@ return {
 				OpenKey = 3,
 
 				HelpText = {
-					enabled = true,
+					enabled = false,
 					distance = 2.5,
 				},
 				FloatingText = {
