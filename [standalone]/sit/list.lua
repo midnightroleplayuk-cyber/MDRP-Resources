@@ -20,7 +20,7 @@ local Models = {
         type = 'layside',
         teleportIn = true,
         seats = {
-            [1] = vector4(0.0, 0.0, 0.20, 180.0)
+            [1] = vector4(0.0, 0.0, 0.40, 180.0)
         }
     }
 }, -- RHS PD VINEWOOD PRISON CELL
