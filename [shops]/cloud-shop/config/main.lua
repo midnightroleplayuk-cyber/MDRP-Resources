@@ -110,7 +110,7 @@ return {
 			},
 
 			Blip = {
-				enabled = false, -- If true, displays a map blip for the shop locations
+				enabled = true, -- If true, displays a map blip for the shop locations
 				name = "Shop [24/7]", -- Name displayed on the map
 				sprite = 59, -- Blip icon type --? Reference: https://docs.fivem.net/docs/game-references/blips
 				color = 0, -- Blip color --? Reference: https://docs.fivem.net/docs/game-references/blips/#blip-colors
