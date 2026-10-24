@@ -50,9 +50,10 @@ Config.Soundpacks = {
 }
 
 Config.Optilink = {
-    Enabled = false,
+    Enabled = true,
     Use999Sound = {
         -- `Vehicle Spawn Code` (ENSURE YOU ARE USING `` AROUND THE SPAWN CODE AND NOT "")
+        'sr6pd'
     }
 }
 
