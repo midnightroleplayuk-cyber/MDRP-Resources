@@ -159,7 +159,7 @@ return {
 
 			Locations = {
 				vector4(85.427, -225.704, 54.628, 75.238),
-				vector4(299.11, -2035.22, 19.27, 315.54),
+				vector4(299.11, -2035.22, 20.94, 315.54),
 			},
 
 			Categories = {
@@ -346,7 +346,7 @@ return {
 				OpenKey = 3,
 
 				HelpText = {
-					enabled = true,
+					enabled = false,
 					distance = 2.5,
 				},
 				FloatingText = {
