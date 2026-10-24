@@ -116,7 +116,7 @@ Config.Apps = {
     skills = true,
     crew = true,
     crypto = true,
-    robnpc = true,
+    robnpc = false,
 
     -- Job apps
     boosting = true,           -- Vehicle Delivery / car theft
@@ -141,7 +141,7 @@ Config.Apps = {
     kidnapping = true,
     cryptodistro = true,
     deliverycontainer = true,
-    helicargo = true,
+    helicargo = false,
     carbreakin = true,
 
     -- Wave 2 mission apps

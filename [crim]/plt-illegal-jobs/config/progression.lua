@@ -49,7 +49,7 @@ Config.Progression.Tiers = {
         label = 'Street',
         apps = {
             'cornerweed', 'cornermeth', 'cornercoke', 'corneroxy',
-            'carbreakin', 'robnpc',
+            'carbreakin', 
         },
     },
     [1] = {
@@ -61,7 +61,7 @@ Config.Progression.Tiers = {
         require = {
             fromApps = {
                 'cornerweed', 'cornermeth', 'cornercoke', 'corneroxy',
-                'carbreakin', 'robnpc',
+                'carbreakin',
             },
             minCompletions = 12,
             anyNodes = { 'cor_pitch' },
@@ -77,7 +77,7 @@ Config.Progression.Tiers = {
                 'boosting', 'chopshop',
                 'deliveryweed', 'deliverymeth', 'deliverycoke', 'deliverycontainer',
                 'cornerweed', 'cornermeth', 'cornercoke', 'corneroxy',
-                'carbreakin', 'robnpc',
+                'carbreakin',
             },
             minCompletions = 28,
             anyNodes = { 'chop_strip', 'del_route', 'cor_read' },
@@ -87,7 +87,7 @@ Config.Progression.Tiers = {
         label = 'Operator',
         apps = {
             'gunsmuggling', 'marinasmuggle', 'illegaldiving',
-            'helicargo', 'weaponsairdrop', 'cryptodistro',
+            'weaponsairdrop', 'cryptodistro',
         },
         require = {
             fromApps = {
