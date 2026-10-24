@@ -1002,6 +1002,7 @@ return {
 		weight = 50,
 		stack = true,
 		close = true,
+        consume = 1,
 	},
 
 	['ifak'] = {
