@@ -191,7 +191,7 @@ Config.street = {
     -- NPCs refuse to deal when too many other people stand around them
     crowd = {
         enabled = true,
-        radius = 15.0,
+        radius = 10.0,
 
         -- The buyer refuses once more than this many peds are nearby
         maxPeds = 4,
@@ -230,7 +230,7 @@ Config.street = {
 
     cooldowns = {
         -- Seconds between street deals for each player
-        global = 2,
+        global = 5,
     },
 }
 
@@ -276,7 +276,7 @@ Config.dispatch = {
         -- Chance per nearby NPC (0-100), the first successful roll becomes the witness
         chancePerPed = 5,
         -- Radius at which npcs will have a chance to call the dispatch
-        radius = 25.0,
+        radius = 10.0,
 
         -- Seconds between two dispatch calls (per player)
         cooldown = 180,
@@ -299,7 +299,7 @@ Config.app = {
         item = 'kq_plugphone',
     },
     classicPhoneItem = {
-        enabled = true,
+        enabled = false,
         item = 'kq_trapphone',
     },
 
@@ -544,7 +544,7 @@ Config.org = {
 
     -- Blip on an organizations active sell location, only shown once the player has unlocked the org
     blip = {
-        enabled = true,
+        enabled = false,
         sprite = 84,
         color = 5,
         scale = 0.7,
