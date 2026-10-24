@@ -298,16 +298,12 @@ function KeyPressController.ToggleWarning()
 end
 
 function KeyPressController.ToggleSirens()
-    if not CurrentVehicleEnabled then
-        return MainController.DebugPrint("Player is not in an ELS enabled vehicle.")
-    end
+    if not CurrentVehicleEnabled then return MainController.DebugPrint("Player is not in an ELS enabled vehicle.") end
 
     local vehicleData = MainController.GetVehicleDataUsingEntity(CurrentVehicleEnabled)
     local configData = StoredConfigs[GetEntityModel(CurrentVehicleEnabled)]
 
-    if not configData then
-        return MainController.DebugPrint("Unable to find the ELS config for current vehicle")
-    end
+    if not configData then return MainController.DebugPrint("Unable to find the ELS config for current vehicle") end
 
     if not configData.sirens or not configData.sirens.enabled or #configData.sirens.sounds == 0 then
         return MainController.DebugPrint("Vehicle has no sirens")
@@ -317,15 +313,25 @@ function KeyPressController.ToggleSirens()
         return MainController.DebugPrint("Primary Lights not Enabled")
     end
 
-    local newState = 1
+    SendNUIMessage({
+        PayloadType	= "SirenSwitch"
+    })
 
     if vehicleData.sirens.State > 0 then
-        newState = 0
+        Citizen.Wait(200)
+
+        SendNUIMessage({
+            PayloadType	= "SirenSwitch"
+        })
+
+        TriggerServerEvent("oELS:toggleSirens", 0)
+
+        return MainController.DebugPrint("Sent request to disable Sirens.")
+    else
+        TriggerServerEvent("oELS:toggleSirens", 1)
+
+        return MainController.DebugPrint("Sent request to enable Sirens.")
     end
-
-    TriggerServerEvent("oELS:toggleSirens", newState)
-
-    MainController.DebugPrint("Requested siren state: " .. tostring(newState))
 end
 
 function KeyPressController.ChangeSirens()
