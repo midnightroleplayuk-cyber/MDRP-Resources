@@ -47,7 +47,7 @@ Config.Clerk = {
     },
     Fight = {
         Enabled = true,
-        Chance = 15,
+        Chance = 10,
         Weapon = `WEAPON_BAT`,
         Ammo = 60,
         Accuracy = 35,
@@ -114,7 +114,7 @@ Config.Security = {
     --     [`WEAPON_REDZK`] = true,
     --     [`WEAPON_PINKZK`] = true,
     --     [`WEAPON_BLUEZK`] = true,
-         [`WEAPON_ZK`] = true,
+    --     [`WEAPON_ZK`] = true,
          [`WEAPON_CROWBAR`] = true,
     --     [`WEAPON_SMG`] = true,
     --     [`WEAPON_PUMPSHOTGUN`] = true,
