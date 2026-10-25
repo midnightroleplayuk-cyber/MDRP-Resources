@@ -4,7 +4,7 @@ Config.Debug = false
 
 -- 'auto' | 'qbx' | 'qb' | 'esx' | 'standalone'
 -- Standalone uses ace permissions: add_ace group.police vinewood.dispatch.police allow
-Config.Framework = 'auto'
+Config.Framework = 'qbx'
 
 -- 'mi' or 'km'
 Config.Units = 'mi'
@@ -37,19 +37,19 @@ Config.CallsignExports = {
 ---------------------------------------------------------------------
 Config.Services = {
     police = {
-        label = 'Police',
+        label = 'Midnight Police Constabulary',
         colour = '#1b3f9a',           -- Battenburg colour on alert cards
         jobs = { 'police', 'sheriff', 'bcso', 'sasp' },
         requireDuty = true,
     },
     ambulance = {
-        label = 'Ambulance',
+        label = 'Midnight Health Service',
         colour = '#0b7a3e',
         jobs = { 'ambulance', 'ems', 'nbhs' },
         requireDuty = true,
     },
     fire = {
-        label = 'Fire',
+        label = 'Midnight Fire & Rescue',
         colour = '#b8141b',
         jobs = { 'fire', 'firefighter' },
         requireDuty = true,
@@ -83,8 +83,8 @@ Config.AlertExpiry = 30      -- minutes alerts stay in the server log / history
 Config.HistoryLimit = 50     -- alerts kept in the dispatch log
 
 Config.Keys = {
-    respond = 'Y',           -- attach / detach from the latest alert (sets waypoint)
-    history = 'F9',          -- open the dispatch log
+    respond = 'G',           -- attach / detach from the latest alert (sets waypoint)
+    history = 'F5',          -- open the dispatch log
     dismiss = 'DELETE',      -- clear the newest alert from the screen (it stays in the log)
     panic = '',              -- panic button, unbound by default
 }
@@ -116,7 +116,7 @@ Config.Calls = {
     emergencyCommand = '999',   -- /999 [police|ambulance|fire] message
     nonEmergencyCommand = '101',-- /101 message (police)
     cooldown = 30,              -- seconds
-    showCallerName = true,
+    showCallerName = false,
     showCallerNumber = true,    -- QB/Qbox charinfo.phone where available
     requireItem = false,        -- e.g. 'phone' (checked through ox_inventory)
 }
@@ -180,12 +180,12 @@ Config.LiveBlips = {
 -- /callupdate 12 text   adds to call #12
 ---------------------------------------------------------------------
 Config.CallUpdates = {
-    enabled = true,
+    enabled = false,
     commands = { 'callupdate', 'cu' },
     maxNotes = 20,
     maxLength = 200,
     cooldown = 3,             -- seconds between updates per unit
-    notifyAttached = true,    -- attached units get a notification for each update
+    notifyAttached = false,    -- attached units get a notification for each update
 }
 
 ---------------------------------------------------------------------

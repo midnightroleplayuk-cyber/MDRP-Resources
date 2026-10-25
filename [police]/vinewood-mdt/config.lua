@@ -1,29 +1,28 @@
 Config = {}
 
 -- 'auto', 'qbx', 'qb' or 'esx'
-Config.Framework = 'auto'
+Config.Framework = 'qbx'
 
 -- Force name shown on the MDT header and bail notices.
-Config.ForceName = 'Los Santos Police'
-Config.ForceShort = 'LSP'
+Config.ForceName = 'Midnight Police Constabulary'
+Config.ForceShort = 'MPC'
 -- Crest shown top left. A URL or nui:// path to a PNG/SVG, or false for the built-in star.
 Config.ForceCrest = false
 
 -- Jobs that can use the MDT. job = minimum grade.
 Config.Jobs = {
     police = 0,
-    sheriff = 0,
 }
 Config.RequireOnDuty = true
 
 -- Ways to open it. Set any to false to disable.
 Config.Command = 'mdt'
 Config.Keybind = 'F6'
-Config.Item = false            -- e.g. 'mdt_tablet' (ox_inventory / framework usable item)
+Config.Item = 'mdt'            -- e.g. 'mdt_tablet' (ox_inventory / framework usable item)
 Config.UseTabletProp = true
 
 -- Minimum grade for destructive actions (deleting records, removing markers).
-Config.SupervisorGrade = 3
+Config.SupervisorGrade = 10
 
 ---------------------------------------------------------------------------
 -- Licence sources. Every enabled source that is running is checked and shown.
@@ -56,7 +55,7 @@ Config.Licences = {
 
     -- Qbox / QBCore character metadata licences (metadata.licences)
     framework = {
-        enabled = true,
+        enabled = false,
         labels = {
             driver = 'Driving licence',
             weapon = 'Firearm certificate',
@@ -68,7 +67,7 @@ Config.Licences = {
 
     -- esx_license (user_licenses table)
     esx_license = {
-        enabled = true,
+        enabled = false,
         labels = {
             dmv = 'Theory test pass',
             drive = 'Driving licence (B)',
@@ -104,7 +103,7 @@ Config.Interviews = {
     enabled = true,
     resource = 'vinewood-interviews',
     -- Jobs that can listen to interviews from the MDT. job = minimum grade.
-    jobs = { police = 0, sheriff = 0, cps = 0 },
+    jobs = { police = 1, sheriff = 0, cps = 0 },
 }
 
 ---------------------------------------------------------------------------
@@ -138,10 +137,7 @@ Config.CPS = {
 -- Custody and bail
 ---------------------------------------------------------------------------
 Config.Stations = {
-    'Mission Row Police Station',
-    'Vespucci Police Station',
-    'Davis Police Station',
-    'Sandy Shores Police Station',
+    'Vinewood Police Station',
     'Paleto Bay Police Station',
 }
 
@@ -166,7 +162,7 @@ Config.BailConditions = {
 }
 
 -- Give the released person a bail notice item (ox_inventory). false to disable.
-Config.BailNoticeItem = false   -- e.g. 'bail_notice'
+Config.BailNoticeItem = 'bail_document'   -- e.g. 'bail_notice'
 
 -- Called after a bail record is saved. target is the server id (nil if offline).
 -- Use it to free someone from your custody script.
@@ -277,7 +273,7 @@ Config.ANPR = {
     -- In-game setup: fit vehicles with ANPR and place roadside cameras.
     -- Allowed for police at ManageGrade or above, or anyone with the ace 'vinewood-mdt.anpradmin'.
     AdminCommand = 'anpradmin',
-    ManageGrade = 3,
+    ManageGrade = 10,
     CameraProp = 'prop_cctv_pole_02',   -- pole spawned at cameras placed in game. false = no prop -- drag the ANPR strip and alert to where you want them (saved per player)
 
     Range = 30.0,                 -- metres in front of and behind the car
@@ -365,7 +361,7 @@ Config.Custody = {
 Config.Mugshot = {
     enabled = true,
     MaxDistance = 4.0,
-    Encoding = 'jpg',
+    Encoding = 'png',
     Quality = 0.75,              -- lower = smaller upload
     Camera = { Distance = 0.75, HeightOffset = 0.02, Fov = 28.0 },
 }

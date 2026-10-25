@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Driving Test Centre</title>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <link rel="stylesheet" href="css/style.css?v=4">
+</head>
+<body>
+    <div id="app">
+
+        <div id="menu-screen" class="screen">
+            <div class="screen-header">
+                <div class="screen-title" id="menu-title" data-locale="menu_title">DRIVING EXAM CENTRE</div>
+                <div class="screen-subtitle" id="menu-subtitle" data-locale="menu_subtitle">Select a licence category to begin</div>
+            </div>
+            <div id="category-list" class="category-grid"></div>
+            <div class="footer-actions">
+                <button id="btn-provisional" class="btn btn-success" style="display:none;"></button>
+                <button id="btn-replacement" class="btn" style="display:none;"></button>
+                <button id="btn-photo" class="btn" style="display:none;"></button>
+                <button id="btn-close-menu" class="btn btn-secondary" data-locale="menu_close">Close</button>
+            </div>
+            <div class="small-text" id="provisional-hint"></div>
+            <div class="small-text" id="category-hint"></div>
+        </div>
+
+        <div id="theory-screen" class="screen">
+            <div class="screen-header">
+                <div class="screen-title" data-locale="theory_title">THEORY EXAM</div>
+                <div class="screen-subtitle" id="theory-subtitle">Answer all questions</div>
+            </div>
+            <div class="theory-progress">
+                <div class="progress-bar">
+                    <div id="progress-fill" class="progress-fill" style="width: 0%"></div>
+                </div>
+                <div class="progress-meta">
+                    <span id="progress-text" data-locale-params="theory_question">Question 1 of 10</span>
+                    <span id="progress-mistakes">Errors: 0</span>
+                </div>
+            </div>
+            <div class="theory-question">
+                <div class="question-number" id="question-number">QUESTION 1</div>
+                <div id="question-image-wrap" style="display:none;margin-bottom:1.1rem;">
+                    <img id="question-image" alt="" style="width:100%;max-height:280px;object-fit:contain;border-radius:12px;border:1px solid var(--border);background:var(--background-alt);">
+                </div>
+                <div class="question-text" id="question-text">Loading question...</div>
+                <div id="question-options" class="question-options"></div>
+            </div>
+            <div class="btn-row">
+                <button id="btn-theory-prev" class="btn btn-secondary" data-locale="theory_prev">Previous</button>
+                <button id="btn-theory-submit" class="btn disabled" data-locale="theory_submit">Submit Answers</button>
+                <button id="btn-theory-next" class="btn" data-locale="theory_next">Next</button>
+            </div>
+        </div>
+
+        <div id="result-screen" class="screen result-screen pass">
+            <div class="result-icon pass" id="result-icon">&#10003;</div>
+            <div class="result-title pass" id="result-title" data-locale="result_pass_title">PASSED!</div>
+            <div class="result-subtitle" id="result-subtitle" data-locale="result_pass_subtitle">Excellent — you have passed this exam</div>
+            <div class="result-stats">
+                <div class="stat-card">
+                    <div class="stat-label" data-locale="result_score">Score</div>
+                    <div class="stat-value success" id="result-score">100%</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label" data-locale="result_mistakes">Mistakes</div>
+                    <div class="stat-value info" id="result-mistakes">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label" data-locale="result_time">Time Taken</div>
+                    <div class="stat-value" id="result-time">0s</div>
+                </div>
+            </div>
+            <div id="result-message" class="small-text"></div>
+            <div class="result-buttons">
+                <button id="btn-result-practical" class="btn btn-success" data-locale="result_continue_practical">Continue to Practical</button>
+                <button id="btn-result-close" class="btn btn-secondary" data-locale="result_close">Close</button>
+            </div>
+        </div>
+
+        <div id="fail-screen" class="screen result-screen fail">
+            <div class="result-icon fail">&#10007;</div>
+            <div class="result-title fail" data-locale="result_fail_title">FAILED</div>
+            <div class="result-subtitle" id="fail-subtitle" data-locale="result_fail_subtitle">Unfortunately you did not meet the standard</div>
+            <div class="result-stats">
+                <div class="stat-card">
+                    <div class="stat-label" data-locale="result_score">Score</div>
+                    <div class="stat-value danger" id="fail-score">45%</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label" data-locale="result_mistakes">Mistakes</div>
+                    <div class="stat-value danger" id="fail-mistakes">8</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label" data-locale="result_time">Time Taken</div>
+                    <div class="stat-value" id="fail-time">0s</div>
+                </div>
+            </div>
+            <div id="fail-reason" class="small-text" data-locale="result_fail_mistakes_msg">Too many mistakes made</div>
+            <div class="result-buttons">
+                <button id="btn-retry-exam" class="btn" data-locale="result_retry_btn">Repeat Exam</button>
+                <button id="btn-fail-menu" class="btn btn-secondary" data-locale="result_back_menu">Back to Menu</button>
+            </div>
+        </div>
+
+    </div>
+
+    <div id="licence-screen" class="dl-wrap" style="display:none;">
+        <div class="dl-card">
+            <div class="dl-guilloche"></div>
+            <div class="dl-provisional-band" id="licence-provisional-band">PROVISIONAL</div>
+            <div class="dl-sheen"></div>
+
+            <header class="dl-head">
+                <div class="dl-uk">UK</div>
+                <div class="dl-title" id="licence-title">DRIVING LICENCE</div>
+                <div class="dl-flag" aria-hidden="true">
+                    <svg viewBox="0 0 60 30"><clipPath id="dlc"><path d="M30,15 h30 v15 z v15 h-30 z h-30 v-15 z v-15 h30 z"/></clipPath><path d="M0,0 v30 h60 v-30 z" fill="#012169"/><path d="M0,0 L60,30 M60,0 L0,30" stroke="#fff" stroke-width="6"/><path d="M0,0 L60,30 M60,0 L0,30" clip-path="url(#dlc)" stroke="#C8102E" stroke-width="4"/><path d="M30,0 v30 M0,15 h60" stroke="#fff" stroke-width="10"/><path d="M30,0 v30 M0,15 h60" stroke="#C8102E" stroke-width="6"/></svg>
+                </div>
+            </header>
+
+            <div class="dl-body">
+                <div class="dl-photo">
+                    <img id="licence-photo" alt="" />
+                </div>
+
+                <dl class="dl-fields">
+                    <div class="dl-row"><dt>1.</dt><dd id="licence-f1" class="dl-strong">SURNAME</dd></div>
+                    <div class="dl-row"><dt>2.</dt><dd id="licence-f2" class="dl-strong">FIRST NAMES</dd></div>
+                    <div class="dl-row"><dt>3.</dt><dd><span id="licence-f3a">01.01.1990</span> <span id="licence-f3b">UNITED KINGDOM</span></dd></div>
+                    <div class="dl-row dl-split">
+                        <div><dt>4a.</dt><dd id="licence-f4a">01.01.2024</dd></div>
+                        <div><dt>4c.</dt><dd id="licence-f4c">DVLA</dd></div>
+                    </div>
+                    <div class="dl-row"><dt>4b.</dt><dd id="licence-f4b">01.01.2034</dd></div>
+                    <div class="dl-row"><dt>5.</dt><dd id="licence-f5" class="dl-number">ZZZZZ000000ZZ9ZZ 00</dd></div>
+                    <div class="dl-row dl-sign"><dt>7.</dt><dd><img id="licence-signature" alt="" /></dd></div>
+                    <div class="dl-row dl-addr"><dt>8.</dt><dd id="licence-f8">NO ADDRESS ON FILE</dd></div>
+                    <div class="dl-row"><dt>9.</dt><dd id="licence-f9" class="dl-cats">B</dd></div>
+                </dl>
+
+                <div class="dl-ghost"><img id="licence-ghost" alt="" /></div>
+            </div>
+
+            <footer class="dl-foot">
+                <span id="licence-issued-foot"></span>
+                <span id="licence-mrz"></span>
+            </footer>
+        </div>
+
+        <div class="dl-hint">
+            <span id="licence-owner"></span>
+            <span>Press <kbd>Backspace</kbd> to close</span>
+        </div>
+        <button id="btn-licence-close" style="display:none;"></button>
+    </div>
+
+    <div id="practical-hud">
+        <div class="hud-header">
+            <span class="hud-title" data-locale="hud_title">PRACTICAL EXAM</span>
+            <span class="hud-category" id="hud-category">Car B</span>
+        </div>
+
+        <div class="hud-item hud-checkpoints">
+            <div>
+                <span class="hud-label" data-locale="hud_checkpoints">Checkpoints</span>
+                <div class="hud-value" id="hud-checkpoints-value">0 / 10</div>
+            </div>
+            <div style="width: 60%">
+                <div class="hud-progress-bar">
+                    <div class="hud-progress-fill" id="hud-checkpoints-progress" style="width: 0%"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="hud-item">
+            <span class="hud-label" data-locale="hud_time">Time</span>
+            <span class="hud-value info" id="hud-time-value">00:00</span>
+        </div>
+
+        <div class="hud-item">
+            <span class="hud-label" data-locale="hud_speed">Speed</span>
+            <span class="hud-speed-box">
+                <span class="hud-value" id="hud-speed-value">0</span>
+                <span class="hud-label">/ <span id="hud-max-speed-value">80</span> km/h</span>
+            </span>
+        </div>
+
+        <div class="hud-item">
+            <span class="hud-label" data-locale="hud_mistakes">Mistakes</span>
+            <span class="hud-value" id="hud-mistakes-value">0 / 5</span>
+        </div>
+
+        <div id="hud-notification" class="hud-notification" style="display:none"></div>
+    </div>
+
+    <script src="js/app.js?v=3"></script>
+</body>
+</html>
