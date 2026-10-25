@@ -114,7 +114,7 @@ Config.Provisional = {
         Output = {
             Width = 420,
             Height = 540,
-            Quality = 0.85
+            Quality = 0.92
         },
         Camera = {
             Distance = 0.95,     -- how far in front of the face (higher = further back)
