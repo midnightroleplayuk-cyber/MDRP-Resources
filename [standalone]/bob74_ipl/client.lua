@@ -31,7 +31,7 @@ CreateThread(function()
     ZancudoGates.LoadDefault()
 
     -- Other
-    Ammunations.LoadDefault()
+    Ammunations.LoadDefault(false)
     LesterFactory.LoadDefault()
     StripClub.LoadDefault()
     CargoShip.LoadDefault()
