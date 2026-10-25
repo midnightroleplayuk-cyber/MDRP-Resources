@@ -263,7 +263,7 @@ Config.ANPR = {
     -- Who can run in-car ANPR. job = minimum grade.
     Jobs = { police = 0, sheriff = 0 },
     -- Vehicles fitted with ANPR (spawn names). Empty table = every emergency-class vehicle.
-    Vehicles = { 'police', 'police2', 'police3', 'police4', 'policeb', 'fbi2' },
+    Vehicles = { 'sr6pd', 'sr3pd', 'sen5tourpd', 'strcoupepd', 'rhinea19xpd', 'tailstmk', 'taurionpd', 'clubrpd' },
     -- Turn on automatically when an officer gets into a fitted vehicle. /anpr toggles it.
     AutoStart = true,
     Command = 'anpr',
