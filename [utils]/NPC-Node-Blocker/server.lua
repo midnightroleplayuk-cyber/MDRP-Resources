@@ -2,26 +2,50 @@ local RES = GetCurrentResourceName()
 local FILE = 'zones.json'
 
 local zones = {}
-local nextId = 1
+local ready = false
 
-local function persist()
-    SaveResourceFile(RES, FILE, json.encode(zones), -1)
+local function valid(z)
+    return type(z) == 'table' and type(z.points) == 'table' and #z.points >= 3
+end
+
+local function encode(z)
+    local id = z.id
+    z.id = nil
+    local s = json.encode(z)
+    z.id = id
+    return s
 end
 
 local function load()
-    local raw = LoadResourceFile(RES, FILE)
-    if raw and raw ~= '' then
-        local ok, data = pcall(json.decode, raw)
-        if ok and type(data) == 'table' then zones = data end
+    local existed = (tonumber(MySQL.scalar.await(
+        "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = DATABASE() AND table_name = 'npc_blocker_zones'"
+    )) or 0) > 0
+
+    MySQL.query.await('CREATE TABLE IF NOT EXISTS npc_blocker_zones (id INT AUTO_INCREMENT PRIMARY KEY, data LONGTEXT NOT NULL)')
+
+    if not existed then
+        local raw = LoadResourceFile(RES, FILE)
+        if raw and raw ~= '' then
+            local ok, list = pcall(json.decode, raw)
+            if ok and type(list) == 'table' then
+                for _, z in ipairs(list) do
+                    if valid(z) then
+                        z.id = nil
+                        MySQL.insert.await('INSERT INTO npc_blocker_zones (data) VALUES (?)', { json.encode(z) })
+                    end
+                end
+            end
+        end
     end
-    local kept = {}
-    for _, z in ipairs(zones) do
-        if type(z.points) == 'table' and #z.points >= 3 then kept[#kept + 1] = z end
+
+    for _, r in ipairs(MySQL.query.await('SELECT id, data FROM npc_blocker_zones ORDER BY id')) do
+        local ok, z = pcall(json.decode, r.data)
+        if ok and valid(z) then
+            z.id = r.id
+            zones[#zones + 1] = z
+        end
     end
-    zones = kept
-    for _, z in ipairs(zones) do
-        if z.id and z.id >= nextId then nextId = z.id + 1 end
-    end
+    ready = true
 end
 
 local function clamp(v, lo, hi, default)
@@ -67,7 +91,9 @@ end
 CreateThread(load)
 
 RegisterNetEvent('npcblocker:requestZones', function()
-    TriggerClientEvent('npcblocker:setZones', source, zones)
+    local src = source
+    while not ready do Wait(100) end
+    TriggerClientEvent('npcblocker:setZones', src, zones)
 end)
 
 RegisterNetEvent('npcblocker:requestOpen', function()
@@ -81,7 +107,7 @@ end)
 
 RegisterNetEvent('npcblocker:saveZone', function(data)
     local src = source
-    if not allowed(src) then return end
+    if not ready or not allowed(src) then return end
     local z = sanitize(data)
     if not z then
         TriggerClientEvent('npcblocker:notify', src, '~r~A zone needs at least 3 pins.')
@@ -92,6 +118,7 @@ RegisterNetEvent('npcblocker:saveZone', function(data)
     if z.id then
         for i, existing in ipairs(zones) do
             if existing.id == z.id then
+                MySQL.update.await('UPDATE npc_blocker_zones SET data = ? WHERE id = ?', { encode(z), z.id })
                 zones[i] = z
                 found = true
                 break
@@ -99,24 +126,22 @@ RegisterNetEvent('npcblocker:saveZone', function(data)
         end
     end
     if not found then
-        z.id = nextId
-        nextId = nextId + 1
+        z.id = MySQL.insert.await('INSERT INTO npc_blocker_zones (data) VALUES (?)', { encode(z) })
         zones[#zones + 1] = z
     end
 
-    persist()
     broadcast()
     TriggerClientEvent('npcblocker:notify', src, ('~g~Saved zone "%s"'):format(z.name))
 end)
 
 RegisterNetEvent('npcblocker:deleteZone', function(id)
     local src = source
-    if not allowed(src) then return end
+    if not ready or not allowed(src) then return end
     id = tonumber(id)
     for i, z in ipairs(zones) do
         if z.id == id then
+            MySQL.update.await('DELETE FROM npc_blocker_zones WHERE id = ?', { id })
             table.remove(zones, i)
-            persist()
             broadcast()
             TriggerClientEvent('npcblocker:notify', src, '~y~Zone deleted')
             return
