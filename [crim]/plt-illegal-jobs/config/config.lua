@@ -119,7 +119,7 @@ Config.Apps = {
     robnpc = true,
 
     -- Job apps
-    boosting = true,           -- Vehicle Delivery / car theft
+    boosting = false,           -- Vehicle Delivery / car theft
     chopshop = true,
     deliveryweed = true,
     deliverymeth = true,
