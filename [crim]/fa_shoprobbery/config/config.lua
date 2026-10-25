@@ -401,6 +401,25 @@ Config.Stores = {
         -- Uses Rewards.Register[1], Rewards.Shelf[1] and Rewards.Safe[1]. You can also use rewardTier = 1.
         tier = 1
     },
+    Interaction = {
+				OpenKey = 3, -- Default: 38 (E key) --? Reference: https://docs.fivem.net/docs/game-references/controls
+
+				HelpText = {
+					enabled = false, -- If true, displays floating help text near the interaction point
+					distance = 2.5, -- Distance within which help text appears and is interactable
+				},
+				FloatingText = {
+					enabled = false, -- If true, displays floating text above the shop NPC
+					distance = 2.5, -- Distance within which floating text is visible and interactable
+				},
+				Target = { -- Uses ox_target by default --? (modifiable in config/functions.lua)
+					enabled = true, -- If true, enables targeting system
+					boxZoneSize = vec3(4, 4, 4), -- Size of the target zone
+					drawSprite = false, -- If true, displays a sprite for the target zone
+					distance = 2.5, -- Interaction distance
+				},
+			},
+		},
     {
         id = 'twentyfour_legionsquare',
         label = 'twentyfour - Legion Square',
