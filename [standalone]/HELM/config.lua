@@ -41,7 +41,7 @@ Config.EnforceAllowlist = true
 -- (Discord roles you give points on the panel's Servers page, e.g. subscriber tiers), then whoever waited longest.
 -- Turn off any other queue resource (connectqueue, etc.) before enabling this.
 Config.Queue = {
-    Enabled = false,
+    Enabled = true,
     RejoinMinutes = 15,
 }
 
