@@ -2,4 +2,4 @@
 --
 -- Token shown once when you create the server in the panel (Servers -> Add a server).
 -- Alternatively leave this as is and set it in server.cfg:  set helm_token "hs_..."
-Config.ServerToken = 'hs_2b3463a6a1024ec823a9810f1bf16a27a6b909db4867498d'
+Config.ServerToken = 'hs_205789def5fcde452191b9aa47fff57cec802d88dda4ad35'
