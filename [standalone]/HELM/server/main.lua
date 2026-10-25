@@ -13,12 +13,22 @@ if SERVER_TOKEN == '' or SERVER_TOKEN == 'hs_replace_me' then
     print('^1[helm] No server token set. Put it in server_config.lua or add  set helm_token "hs_..."  to server.cfg.^7')
 end
 
+-- Without a limit, a panel that never answers would leave callers waiting forever (players stuck on
+-- "Checking access..."). Timed-out calls answer status 0, which every caller already treats as a failure.
+local API_TIMEOUT_MS = 20000 -- long enough for screenshot uploads and syncs
+
 local function api(method, path, body)
     local p = promise.new()
+    local settled = false
+    local function settle(r)
+        if settled then return end
+        settled = true
+        p:resolve(r)
+    end
+    SetTimeout(API_TIMEOUT_MS, function() settle({ status = 0 }) end)
     PerformHttpRequest((Config.PanelUrl:gsub('/+$', '')) .. path, function(status, text)
-        local data = nil
-        if text and text ~= '' then data = json.decode(text) end
-        p:resolve({ status = status, data = data })
+        local ok, data = pcall(json.decode, text or '')
+        settle({ status = status, data = (ok and type(data) == 'table') and data or nil })
     end, method, body and json.encode(body) or '', {
         ['Content-Type'] = 'application/json',
         ['Authorization'] = 'Bearer ' .. SERVER_TOKEN,
