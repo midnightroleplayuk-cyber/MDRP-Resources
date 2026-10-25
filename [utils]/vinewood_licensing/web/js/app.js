@@ -448,7 +448,7 @@
                 const info = `
                     <div class="category-info">
                         <span>${this.t('menu_theory_btn')}: ${this.t('result_mistakes')} &le; ${cat.maxMistakesTheory}</span>
-                        <span>${this.t('menu_practical_btn')}: ${this.t('hud_max_speed')} ${cat.maxSpeed} km/h</span>
+                        <span>${this.t('menu_practical_btn')}: ${this.t('hud_max_speed')} ${cat.maxSpeed} mph</span>
                     </div>
                 `;
 
