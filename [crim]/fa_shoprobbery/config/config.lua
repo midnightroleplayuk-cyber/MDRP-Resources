@@ -10,7 +10,7 @@ Config.Locale = 'en'
 Config.Framework = 'qbox' -- auto, qbox, qb, esx, standalone
 
 -- Inventory bridge used for item and money handling.
-Config.Inventory = 'auto' -- auto, ox_inventory, qb-inventory, qs-inventory, jaksam_inventory, tgiann-inventory, esx, custom
+Config.Inventory = 'ox_inventory' -- auto, ox_inventory, qb-inventory, qs-inventory, jaksam_inventory, tgiann-inventory, esx, custom
 
 -- Interaction system. none uses ox_lib TextUI + E fallback.
 Config.Target = 'ox_target' -- auto, ox_target, qb-target, qtarget, none
@@ -47,7 +47,7 @@ Config.Clerk = {
     },
     Fight = {
         Enabled = true,
-        Chance = 15,
+        Chance = 10,
         Weapon = `WEAPON_BAT`,
         Ammo = 60,
         Accuracy = 35,
@@ -114,7 +114,7 @@ Config.Security = {
     --     [`WEAPON_REDZK`] = true,
     --     [`WEAPON_PINKZK`] = true,
     --     [`WEAPON_BLUEZK`] = true,
-         [`WEAPON_ZK`] = true,
+    --     [`WEAPON_ZK`] = true,
          [`WEAPON_CROWBAR`] = true,
     --     [`WEAPON_SMG`] = true,
     --     [`WEAPON_PUMPSHOTGUN`] = true,
