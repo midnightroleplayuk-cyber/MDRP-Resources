@@ -523,13 +523,3 @@ AddEventHandler('onResourceStop', function(res)
         FreezeEntityPosition(PlayerPedId(), false)
     end
 end)
-
-
-RegisterCommand('lookcoords', function()
-    local coords = GetCamLookCoords(100.0)
-    if coords then
-        print(('vector3(%.2f, %.2f, %.2f)'):format(coords.x, coords.y, coords.z))
-    else
-        print('Nothing hit')
-    end
-end)

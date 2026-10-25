@@ -36,6 +36,15 @@ Config.SyncSeconds = 120
 -- set up on the panel (Servers page), players who lose the role while playing are kicked with "Whitelist revoked".
 Config.EnforceAllowlist = false
 
+-- Connect queue. When the server is full (sv_maxclients), players wait in a queue instead of being refused.
+-- Order: anyone reconnecting within RejoinMinutes of leaving goes to the front, then players with priority points
+-- (Discord roles you give points on the panel's Servers page, e.g. subscriber tiers), then whoever waited longest.
+-- Turn off any other queue resource (connectqueue, etc.) before enabling this.
+Config.Queue = {
+    Enabled = false,
+    RejoinMinutes = 15,
+}
+
 -- Let the panel's Schedules page restart this server: players are dropped with a message, then the server quits.
 -- Only turn this on if txAdmin (or your host) starts the server again automatically after it stops.
 Config.ScheduledRestarts = false

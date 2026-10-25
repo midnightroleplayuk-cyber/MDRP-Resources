@@ -4,7 +4,7 @@ lua54 'yes'
 
 name 'helm'
 description 'Helm panel connector for QBCore / QBox'
-version '0.6.0'
+version '0.7.0'
 
 shared_script 'config.lua'
 
@@ -13,6 +13,7 @@ server_scripts {
     'server_config.lua', -- secrets: server-only, editable
     'bridge.lua',        -- framework / inventory adapter, editable
     'server/main.lua',
+    'server/queue.lua',
     'server/menu.lua',
     'server/logs.lua',
     'server/anticheat.lua',

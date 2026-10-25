@@ -239,10 +239,9 @@ local function checkAccess(src, deferrals)
                 { title = 'Reason', value = ban.reason or 'No reason given' },
                 { title = 'Expires', value = expires or 'Never (permanent)' },
             }, 'If you think this is a mistake, contact the server staff.', plain)
-        else
-            deferrals.done()
+            return false
         end
-        return
+        return true, 0
     end
 
     if res.data.banned then
@@ -277,10 +276,10 @@ local function checkAccess(src, deferrals)
         -- The panel says what to do when the allowlist is by Discord role (join the server, get the role, link Discord).
         local help = res.data.allowlistHelp or 'This server is allowlist only. Ask the server staff to add you, then connect again.'
         rejectWithCard(deferrals, 'You are not allowlisted', nil, help, 'You are not allowlisted on this server. ' .. help)
-        return
+        return false
     end
 
-    deferrals.done()
+    return true, tonumber(res.data.priority) or 0
 end
 
 AddEventHandler('playerConnecting', function(name, _, deferrals)
@@ -290,11 +289,13 @@ AddEventHandler('playerConnecting', function(name, _, deferrals)
     Wait(0)
     -- An unexpected error must never leave the player stuck on "Checking access...". Like a panel outage,
     -- it fails open and is printed to the server console.
-    local ok, err = pcall(checkAccess, src, deferrals)
+    -- checkAccess answers (true, queue priority) when the player may join; otherwise it has already rejected them.
+    local ok, allowed, priority = pcall(checkAccess, src, deferrals)
     if not ok then
-        print(('^1[helm]^7 connect check failed for %s: %s'):format(tostring(name), tostring(err)))
-        deferrals.done()
+        print(('^1[helm]^7 connect check failed for %s: %s'):format(tostring(name), tostring(allowed)))
+        allowed, priority = true, 0
     end
+    if allowed then HelmQueueJoin(src, licenseFor(src), priority, deferrals) end
 end)
 
 -- ---------------------------------------------------------------------------
