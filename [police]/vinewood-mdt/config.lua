@@ -7,7 +7,7 @@ Config.Framework = 'qbx'
 Config.ForceName = 'Midnight Police Constabulary'
 Config.ForceShort = 'MPC'
 -- Crest shown top left. A URL or nui:// path to a PNG/SVG, or false for the built-in star.
-Config.ForceCrest = false
+Config.ForceCrest = 'https://cfx-nui-vinewood-mdt/web/pdlogo.png'
 
 -- Jobs that can use the MDT. job = minimum grade.
 Config.Jobs = {
