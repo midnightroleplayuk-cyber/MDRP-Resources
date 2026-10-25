@@ -48,7 +48,7 @@ Items.catalogue = {
     coffee_beans = { label = 'Coffee Beans', image = 'coffee_beans.png', price = 20, calories =   5, category = 'drink' },
     empty_cup    = { label = 'Empty Cup',    image = 'empty_cup.png',    price =  1, calories =   0, category = 'drink' },
     cola         = { label = 'Cola',         image = 'cola.png',         price =  5, calories = 140, category = 'drink' },
-    water        = { label = 'Water',        image = 'water.png',        price =  5, calories =   0, category = 'drink' },
+    water        = { label = 'Water',        image = 'water.png',        price =  5, calories =   100, category = 'drink' },
     coffe        = { label = 'Coffee',       image = 'coffe.png',        price =  8, calories =   5, category = 'drink' },
     milkshake    = { label = 'Milkshake',    image = 'milkshake.png',    price = 12, calories = 350, category = 'drink' },
     orange_juice = { label = 'Orange Juice', image = 'orange_juice.png', price = 10, calories = 110, category = 'drink' },
