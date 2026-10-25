@@ -11371,7 +11371,7 @@ RP.PropEmotes = {
             },
             PtfxInfo = Translate('cut'),
             PtfxWait = 0.8,
-            PtfxCanHold = true
+            PtfxCanHold = false -- we set this to false, but yet it allows us to hold
         }
     },
 	["carryextinguisher"] = {
