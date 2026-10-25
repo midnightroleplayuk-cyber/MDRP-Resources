@@ -2,7 +2,7 @@ Config = {}
 
 Config.Department = 'Midnight Police Department'
 
-Config.PoliceJobs = { 'police', 'sheriff' }
+Config.PoliceJobs = { 'police' }
 
 Config.CommandGrade = 4
 
@@ -27,7 +27,6 @@ Config.ServiceBelow = 20
 
 Config.AutoReturn = {
     offDuty = true,
-    disconnect = true,
     grace = 60,
     interval = 15,
 }

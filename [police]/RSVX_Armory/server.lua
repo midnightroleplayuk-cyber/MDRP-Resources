@@ -1080,9 +1080,8 @@ local function sweep()
                     if done then notify(d.source, 'inform', ('%s was returned to the armory.'):format(r.label)) end
                 end
             end
-        elseif ar.disconnect then
+        else
             offSince[r.holder_id] = nil
-            forceReturnSerial(r.serial, 'AUTO-RETURN (disconnected)', 'in')
         end
     end
 
