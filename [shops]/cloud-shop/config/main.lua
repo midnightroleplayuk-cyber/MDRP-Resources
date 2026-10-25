@@ -148,7 +148,7 @@ return {
 				Target = { -- Uses ox_target by default --? (modifiable in config/functions.lua)
 					enabled = true, -- If true, enables targeting system
 					boxZoneSize = vec3(4, 4, 4), -- Size of the target zone
-					drawSprite = true, -- If true, displays a sprite for the target zone
+					drawSprite = false, -- If true, displays a sprite for the target zone
 					distance = 2.5, -- Interaction distance
 				},
 			},
@@ -252,7 +252,7 @@ return {
 				Target = {
 					enabled = true,
 					boxZoneSize = vec3(4, 4, 4),
-					drawSprite = true,
+					drawSprite = false,
 					distance = 2.5,
 				},
 
@@ -356,7 +356,7 @@ return {
 				Target = {
 					enabled = true,
 					boxZoneSize = vec3(4, 4, 4),
-					drawSprite = true,
+					drawSprite = false,
 					distance = 2.5,
 				},
 

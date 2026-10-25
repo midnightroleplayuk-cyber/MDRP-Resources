@@ -1,5 +1,5 @@
 return {
-    enabled = true,
+    enabled = false,
     menu = {
         copyToClipboard = true,
     },
@@ -1430,7 +1430,7 @@ return {
                 }
             },
             ['v_gun'] = {
-                disable = false,
+                disable = true,
                 emitters = {
                     ['hash_21937e47_irlhoqd_collision'] = {
                         disable = false,
@@ -1451,7 +1451,7 @@ return {
                 }
             },
             ['v_gun2'] = {
-                disable = false,
+                disable = true,
                 emitters = {
                     ['hash_486225ed_erxjglra_collision'] = {
                         disable = false,

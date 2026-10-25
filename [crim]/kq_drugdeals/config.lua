@@ -191,7 +191,7 @@ Config.street = {
     -- NPCs refuse to deal when too many other people stand around them
     crowd = {
         enabled = true,
-        radius = 15.0,
+        radius = 2.0,
 
         -- The buyer refuses once more than this many peds are nearby
         maxPeds = 4,
@@ -230,7 +230,7 @@ Config.street = {
 
     cooldowns = {
         -- Seconds between street deals for each player
-        global = 2,
+        global = 5,
     },
 }
 
@@ -276,7 +276,7 @@ Config.dispatch = {
         -- Chance per nearby NPC (0-100), the first successful roll becomes the witness
         chancePerPed = 5,
         -- Radius at which npcs will have a chance to call the dispatch
-        radius = 25.0,
+        radius = 2.0,
 
         -- Seconds between two dispatch calls (per player)
         cooldown = 180,
@@ -299,7 +299,7 @@ Config.app = {
         item = 'kq_plugphone',
     },
     classicPhoneItem = {
-        enabled = true,
+        enabled = false,
         item = 'kq_trapphone',
     },
 
@@ -544,7 +544,7 @@ Config.org = {
 
     -- Blip on an organizations active sell location, only shown once the player has unlocked the org
     blip = {
-        enabled = true,
+        enabled = false,
         sprite = 84,
         color = 5,
         scale = 0.7,
@@ -713,15 +713,15 @@ Config.uiPopup = {
 
 -- Full UI customization via RGB color values
 Config.uiStyling = {
-    ['color-background'] = '18, 20, 19',
-    ['color-background-light'] = '30, 32, 31',
-    ['color-primary-dark'] = '120, 170, 0',
-    ['color-primary'] = '178, 243, 0',
-    ['color-primary-light'] = '211, 252, 98',
-    ['color-secondary'] = '193, 207, 176',
-    ['color-secondary-light'] = '226, 245, 203',
-    ['color-secondary-dark'] = '111, 117, 103',
-    ['color-white'] = '251, 251, 251',
+    ['color-background'] = '18, 20, 19', -- black
+    ['color-background-light'] = '30, 32, 31', -- black
+    ['color-primary-dark'] = '68, 41, 81', -- deep purple
+    ['color-primary'] = '255, 255, 255', -- light purple/white
+    ['color-primary-light'] = '171, 88, 212', -- purple
+    ['color-secondary'] = '184, 156, 198', -- grey/purple
+    ['color-secondary-light'] = '214, 188, 228', -- white/purple
+    ['color-secondary-dark'] = '84, 73, 90', -- violet/grey
+    ['color-white'] = '251, 251, 251', 
     ['color-black'] = '10, 10, 10',
     ['border-radius-sm'] = '0.25rem',
     ['border-radius-md'] = '0.5rem',

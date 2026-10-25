@@ -23,7 +23,7 @@ return {
         --     },
         -- Default GTA 5 Customs and Benny's Locations
         {
-            hideBlip = false,
+            hideBlip = true,
             blip = {
                 sprite = 72,
                 color = 3,
@@ -38,7 +38,7 @@ return {
             }
         },
         {
-            hideBlip = false,
+            hideBlip = true,
             blip = {
                 sprite = 72,
                 color = 3,
@@ -54,7 +54,7 @@ return {
             }
         },
         {
-            hideBlip = false,
+            hideBlip = true,
             blip = {
                 sprite = 72,
                 color = 3,
@@ -69,7 +69,7 @@ return {
             }
         },
         {
-            hideBlip = false,
+            hideBlip = true,
             blip = {
                 sprite = 72,
                 color = 3,
@@ -84,7 +84,7 @@ return {
             }
         },
         {
-            hideBlip = false,
+            hideBlip = true,
             blip = {
                 sprite = 72,
                 color = 3,
@@ -99,7 +99,7 @@ return {
             }
         },
         {
-            hideBlip = false,
+            hideBlip = true,
             blip = {
                 sprite = 72,
                 color = 3,
