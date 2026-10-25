@@ -254,7 +254,7 @@ SoccerFields = {
             maxZ = 23.22
         }),
         ManagerNPC = {
-            coords = vector4(363.04, -2086.6, 17.43, 316.84),
+            coords = vector3(363.04, -2086.6, 17.43),
             heading = 272.44,
             model = "ig_djsolrobt"
         },
