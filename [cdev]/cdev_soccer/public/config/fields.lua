@@ -251,12 +251,12 @@ SoccerFields = {
                 minZ = 64.11,
                 maxZ = 68.11
             }),
-        ManagerNPC = { -- NPC that manages the field
+        ManagerNPC = { -- NPC that manages the field - DONE HF1
             coords = vector3(365.54, -2088.71, 17.48),
             heading = 307.93,
             model = "ig_djsolrobt"
         },
-        Positions = { -- Positions for all player spots, generated with /setupfield
+        Positions = { -- DONE - HF1
 { index = SoccerFieldPosition.GOALEE, team = RED_TEAM, position = vector3(365.67156982422, -2100.5415039062, 18.419994354248), heading = 44.765830993652 },
 { index = SoccerFieldPosition.RIGHT_PULLBACK, team = RED_TEAM, position = vector3(364.69607543945, -2097.001953125, 18.419994354248), heading = 44.765830993652 },
 { index = SoccerFieldPosition.LEFT_PULLBACK, team = RED_TEAM, position = vector3(362.14010620117, -2099.537109375, 18.419994354248), heading = 44.765830993652 },
