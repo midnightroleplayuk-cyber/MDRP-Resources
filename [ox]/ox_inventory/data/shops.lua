@@ -1,4 +1,4 @@
-return {
+--[[ return {
 	General = {
 		name = 'Shop',
 		blip = {
@@ -167,3 +167,4 @@ return {
 		}
 	}
 }
+ ]]
