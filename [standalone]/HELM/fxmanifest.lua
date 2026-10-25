@@ -4,7 +4,7 @@ lua54 'yes'
 
 name 'helm'
 description 'Helm panel connector for QBCore / QBox'
-version '0.7.0'
+version '0.7.2'
 
 shared_script 'config.lua'
 
