@@ -329,7 +329,7 @@ return {
         },
     },
     ['mannys'] = {
-        label = 'Vehicle Dealer',
+        label = 'Mannys',
         defaultDuty = true,
         offDutyPay = false,
         grades = {
