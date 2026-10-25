@@ -269,14 +269,14 @@ Config.Progression.SkillTrees = {
     {
         id = 'corner',
         nodes = {
-        --    { id = 'cor_pitch', requires = {}, tasks = { { job = 'cornerweed', count = 2 }, { job = 'cornermeth', count = 1 } } },
-            { id = 'cor_read', requires = { 'cor_pitch' }, tasks = { { job = 'cornerweed', count = 2 }, { job = 'cornercoke', count = 1 }, { job = 'corneroxy', count = 1 } } },
+            { id = 'cor_pitch', requires = {}, tasks = { { job = 'cornerweed', count = 0 }, { job = 'cornermeth', count = 1 } } },
+            { id = 'cor_read', requires = { 'cor_pitch' }, tasks = { { job = 'cornerweed', count = 0 }, { job = 'cornercoke', count = 1 }, { job = 'corneroxy', count = 1 } } },
             { id = 'cor_turf', requires = { 'cor_read' }, tasks = { { job = 'cornermeth', count = 2 }, { job = 'cornercoke', count = 2 }, { job = 'cornerweed', count = 2 } } },
             { id = 'cor_bulk', requires = { 'cor_turf' }, tasks = { { job = 'corneroxy', count = 3 }, { job = 'cornermeth', count = 2 }, { job = 'cornercoke', count = 2 } },
               grants = { { item = 'moonshine_still', count = 1 } } },
-            { id = 'cor_lookout', requires = { 'cor_bulk' }, tasks = { { job = 'cornerweed', count = 3 }, { job = 'cornermeth', count = 3 }, { job = 'cornercoke', count = 2 } },
+            { id = 'cor_lookout', requires = { 'cor_bulk' }, tasks = { { job = 'cornerweed', count = 0 }, { job = 'cornermeth', count = 3 }, { job = 'cornercoke', count = 2 } },
               grants = { { item = 'moonshine_pack', count = 2 } } },
-            { id = 'cor_boss', requires = { 'cor_lookout' }, tasks = { { job = 'cornerweed', count = 4 }, { job = 'cornermeth', count = 4 }, { job = 'cornercoke', count = 3 }, { job = 'corneroxy', count = 3 } },
+            { id = 'cor_boss', requires = { 'cor_lookout' }, tasks = { { job = 'cornerweed', count = 0 }, { job = 'cornermeth', count = 4 }, { job = 'cornercoke', count = 3 }, { job = 'corneroxy', count = 3 } },
               grants = { { item = 'money_sheet', count = 3 } } },
         },
     },
