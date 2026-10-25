@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<title>PNC / MDT</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Barlow+Semi+Condensed:wght@600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="tablet" class="hidden" role="application" aria-label="Police national computer">
+    <header class="topbar">
+        <div class="brand">
+            <span class="crest" id="crest" aria-hidden="true"></span>
+            <span class="force" id="forceName">Police</span>
+            <span class="system">PNC / MDT</span>
+        </div>
+        <div class="officer">
+            <span id="officerName"></span>
+            <span class="duty" id="duty"><i></i>On duty</span>
+        </div>
+        <div class="clock"><b id="clockTime"></b><span id="clockDate"></span></div>
+        <button class="icon-btn" id="closeBtn" aria-label="Close MDT">&times;</button>
+    </header>
+    <div class="body">
+        <nav class="side" id="nav"></nav>
+        <main id="main"></main>
+    </div>
+</div>
+
+<div id="modal" class="modal hidden" role="dialog" aria-modal="true">
+    <div class="modal-card"><div id="modalBody"></div></div>
+</div>
+
+<div id="toast" class="toast hidden" role="status"></div>
+
+<div id="bailNotice" class="bail-notice hidden" role="status"></div>
+
+<div id="signOverlay" class="modal hidden" role="dialog" aria-modal="true"><div class="modal-card mg11" id="signCard"></div></div>
+
+<div id="anprHud" class="anpr-hud hidden" aria-live="off">
+    <span class="dot"></span><b>ANPR</b>
+    <span class="cam">F <span id="anprFront">-</span></span>
+    <span class="cam">R <span id="anprRear">-</span></span>
+</div>
+<div id="anprAlert" class="anpr-alert hidden" role="alert"></div>
+<div id="layoutBar" class="layout-bar hidden">
+    <b>Move ANPR</b><span>Drag the plate strip and the alert to where you want them.</span>
+    <button class="btn" id="layoutReset">Reset</button><button class="btn" id="layoutCancel">Cancel</button><button class="btn primary" id="layoutSave">Save</button>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>

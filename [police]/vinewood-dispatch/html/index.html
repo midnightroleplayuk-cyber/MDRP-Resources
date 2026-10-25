@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+    <meta charset="utf-8">
+    <title>Vinewood Dispatch</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="feed" class="pos-top-right" aria-live="polite"></div>
+
+    <div id="history" class="hidden" role="dialog" aria-modal="true" aria-labelledby="history-title">
+        <div class="panel">
+            <header class="panel-head">
+                <h1 id="history-title">Dispatch log</h1>
+                <button type="button" id="callsign" class="callsign-btn hidden"></button>
+                <label class="mute"><input type="checkbox" id="mute"> Mute pop-ups</label>
+                <button type="button" id="close" class="btn">Close</button>
+            </header>
+            <ul id="log"></ul>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
