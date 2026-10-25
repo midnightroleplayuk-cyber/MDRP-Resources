@@ -254,7 +254,7 @@ SoccerFields = {
         ManagerNPC = { -- NPC that manages the field - DONE HF1
             coords = vector3(365.54, -2088.71, 17.48),
             heading = 307.93,
-            model = "ig_djsolrobt"
+            model = "a_m_m_tennis_01"
         },
         Positions = { -- DONE - HF1
 { index = SoccerFieldPosition.GOALEE, team = RED_TEAM, position = vector3(365.67156982422, -2100.5415039062, 18.419994354248), heading = 44.765830993652 },
