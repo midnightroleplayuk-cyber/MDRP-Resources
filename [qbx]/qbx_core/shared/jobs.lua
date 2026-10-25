@@ -357,6 +357,35 @@ return {
             },
         },
     },
+    ['burgershot'] = {
+        label = 'Burgershot',
+        defaultDuty = true,
+        offDutyPay = false,
+        grades = {
+            [0] = {
+                name = 'New Hire',
+                payment = 50
+            },
+            [1] = {
+                name = 'Staff Member',
+                payment = 75
+            },
+            [2] = {
+                name = 'Senior Staff',
+                payment = 100
+            },
+            [3] = {
+                name = 'Manager',
+                payment = 125
+            },
+            [4] = {
+                name = 'Burgershot Owner',
+                isboss = true,
+                bankAuth = true,
+                payment = 150
+            },
+        },
+    },
     ['mechanic'] = {
         label = 'Mechanic',
         type = 'mechanic',
