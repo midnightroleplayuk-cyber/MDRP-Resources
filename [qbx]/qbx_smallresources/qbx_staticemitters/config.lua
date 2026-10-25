@@ -1,5 +1,5 @@
 return {
-    enabled = true,
+    enabled = false,
     menu = {
         copyToClipboard = true,
     },
