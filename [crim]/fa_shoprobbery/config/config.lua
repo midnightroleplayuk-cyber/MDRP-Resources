@@ -79,8 +79,8 @@ Config.Flow = {
 
 -- Optional robbery session settings. TimeLimit can be false or seconds.
 Config.Robbery = {
-    TimeLimit = false, -- After this time limit, the robbery will fail and reset. Set to false to disable.
-    ResetOnTimeout = false -- If true, the robbery will reset after the time limit is reached. If false, the robbery will continue until the player leaves the store or fails the robbery.
+    TimeLimit = true, -- After this time limit, the robbery will fail and reset. Set to false to disable.
+    ResetOnTimeout = true -- If true, the robbery will reset after the time limit is reached. If false, the robbery will continue until the player leaves the store or fails the robbery.
 }
 
 -- Distance checks used by client interactions and server reward validation.
