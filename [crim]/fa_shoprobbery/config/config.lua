@@ -10,7 +10,7 @@ Config.Locale = 'en'
 Config.Framework = 'qbox' -- auto, qbox, qb, esx, standalone
 
 -- Inventory bridge used for item and money handling.
-Config.Inventory = 'auto' -- auto, ox_inventory, qb-inventory, qs-inventory, jaksam_inventory, tgiann-inventory, esx, custom
+Config.Inventory = 'ox_inventory' -- auto, ox_inventory, qb-inventory, qs-inventory, jaksam_inventory, tgiann-inventory, esx, custom
 
 -- Interaction system. none uses ox_lib TextUI + E fallback.
 Config.Target = 'ox_target' -- auto, ox_target, qb-target, qtarget, none
@@ -47,8 +47,8 @@ Config.Clerk = {
     },
     Fight = {
         Enabled = true,
-        Chance = 15,
-        Weapon = `WEAPON_PISTOL`,
+        Chance = 10,
+        Weapon = `WEAPON_BAT`,
         Ammo = 60,
         Accuracy = 35,
         Armor = 0,
@@ -79,8 +79,8 @@ Config.Flow = {
 
 -- Optional robbery session settings. TimeLimit can be false or seconds.
 Config.Robbery = {
-    TimeLimit = false, -- After this time limit, the robbery will fail and reset. Set to false to disable.
-    ResetOnTimeout = false -- If true, the robbery will reset after the time limit is reached. If false, the robbery will continue until the player leaves the store or fails the robbery.
+    TimeLimit = true, -- After this time limit, the robbery will fail and reset. Set to false to disable.
+    ResetOnTimeout = true -- If true, the robbery will reset after the time limit is reached. If false, the robbery will continue until the player leaves the store or fails the robbery.
 }
 
 -- Distance checks used by client interactions and server reward validation.
@@ -111,11 +111,11 @@ Config.Security = {
     AllowedWeapons = true,
     AllowedWeapons = {
            ['WEAPON_SWITCHBLADE'] = true, 
-    --     [`WEAPON_PISTOL`] = true,
-    --     [`WEAPON_COMBATPISTOL`] = true,
-    --     [`WEAPON_APPISTOL`] = true,
-    --     [`WEAPON_SNSPISTOL`] = true,
-    --     [`WEAPON_MICROSMG`] = true,
+    --     [`WEAPON_REDZK`] = true,
+    --     [`WEAPON_PINKZK`] = true,
+    --     [`WEAPON_BLUEZK`] = true,
+    --     [`WEAPON_ZK`] = true,
+         [`WEAPON_CROWBAR`] = true,
     --     [`WEAPON_SMG`] = true,
     --     [`WEAPON_PUMPSHOTGUN`] = true,
     },
