@@ -677,7 +677,7 @@ return {
         consume = 0,          -- REQUIRED: a licence is not used up when shown
         description = 'Provisional entitlement - must be accompanied',
         client = {
-            image = 'prov_driving_licence.png',
+            image = 'provisional_licence.png',
             export = 'vinewood_licensing.useLicence'
         }
     },
