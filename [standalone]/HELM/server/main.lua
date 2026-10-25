@@ -241,6 +241,12 @@ local function checkAccess(src, deferrals)
             }, 'If you think this is a mistake, contact the server staff.', plain)
             return false
         end
+        -- The allowlist can't be checked without the panel, so an allowlisted server stays closed rather than open.
+        if Config.EnforceAllowlist then
+            print(('^1[helm]^7 refused %s: the panel did not answer (status %s), so the allowlist could not be checked'):format(GetPlayerName(src) or license, tostring(res.status)))
+            deferrals.done('This server could not check the allowlist right now. Try again in a minute.')
+            return false
+        end
         return true, 0
     end
 
@@ -288,12 +294,13 @@ AddEventHandler('playerConnecting', function(name, _, deferrals)
     -- FiveM requires at least one tick between defer() and any update / presentCard / done.
     Wait(0)
     -- An unexpected error must never leave the player stuck on "Checking access...". Like a panel outage,
-    -- it fails open and is printed to the server console.
+    -- it fails open (closed when the allowlist is enforced) and is printed to the server console.
     -- checkAccess answers (true, queue priority) when the player may join; otherwise it has already rejected them.
     local ok, allowed, priority = pcall(checkAccess, src, deferrals)
     if not ok then
         print(('^1[helm]^7 connect check failed for %s: %s'):format(tostring(name), tostring(allowed)))
-        allowed, priority = true, 0
+        allowed, priority = not Config.EnforceAllowlist, 0
+        if not allowed then deferrals.done('This server could not check the allowlist right now. Try again in a minute.') end
     end
     if allowed then HelmQueueJoin(src, licenseFor(src), priority, deferrals) end
 end)
