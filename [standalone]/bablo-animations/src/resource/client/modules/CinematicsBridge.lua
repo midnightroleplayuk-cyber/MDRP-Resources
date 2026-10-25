@@ -1,15 +1,7 @@
 local STATE_BAG_KEY = 'cinematics:animProvider'
 
-local providerState = nil
-local providerSeeded = false
-
 local function updateField(field, value)
-    if not providerSeeded then
-        providerSeeded = true
-        providerState = LocalPlayer.state[STATE_BAG_KEY]
-    end
-
-    local current = providerState
+    local current = LocalPlayer.state[STATE_BAG_KEY]
     local nextBag = {
         providerId = GetCurrentResourceName(),
         anim       = current and current.anim or nil,
@@ -17,11 +9,9 @@ local function updateField(field, value)
     }
     nextBag[field] = value
     if nextBag.anim == nil and nextBag.walk == nil then
-        providerState = nil
-        SetSharedStateBag(STATE_BAG_KEY, nil)
+        LocalPlayer.state:set(STATE_BAG_KEY, nil, true)
     else
-        providerState = nextBag
-        SetSharedStateBag(STATE_BAG_KEY, nextBag)
+        LocalPlayer.state:set(STATE_BAG_KEY, nextBag, true)
     end
 end
 
@@ -72,14 +62,11 @@ local function getAnimData(name)
     return nil
 end
 
-local lastAnimState = nil
-
 AddStateBagChangeHandler(
     'isInAnimation',
     ('player:%s'):format(GetPlayerServerId(PlayerId())),
     function(bagName, key, value, _reserved, replicated)
-        if value == lastAnimState then return end
-        lastAnimState = value
+        if replicated then return end
 
         if value and value ~= false then
             local data = getAnimData(value)
@@ -134,13 +121,6 @@ end)
 
 exports('GetAnimData', getAnimData)
 
--- ── Cinematic prop replay ────────────────────────────────────────────────────
--- Core Cinematics records an emote by name and replays it onto a puppet ped via
--- PlayAnimOnPed. TaskPlayAnim alone recreates the body motion but NOT any prop
--- the emote attaches, so recorded props were missing from playback. Mirror the
--- internal Main:playSharedOnPeds prop logic: resolve the emote's prop data and
--- attach it to the replay ped. Props are tracked in Main.pedProps[ped] so
--- Main:destroyProps(ped) (from CancelAnimOnPed) removes them again.
 local function spawnPropsOnPed(ped, name)
     if not ped or not name then return end
     if not Main or not Main.getAnimation or not Main.addProp then return end
