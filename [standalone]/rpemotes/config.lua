@@ -50,7 +50,7 @@ Config = {
     AllowOnBikes = true, -- Allow emotes when on a vehicle with handlebars
 
     -- Ragdoll
-    RagdollEnabled = false,
+    RagdollEnabled = true,
     RagdollKeybind = 'U',
     RagdollAsToggle = true,
 
@@ -115,8 +115,7 @@ Config = {
     RecoverEmotesAfterRagdoll = true, -- If true, the resource will attempt to recover emotes after being bumped / ragdolled. Doesn't work for all.
 
     -- NUI Menu
-    UseNUIMenu = true, -- If true, it will use the NUI menu, instead of the Scaleform one. NativeUI is still driving the emote data in the background.
-    CursorAsToggle = false, -- If true, tapping LEFT ALT toggles the mouse cursor in the NUI menu on/off, instead of only showing it while the key is held down.
+    UseNUIMenu = false, -- If true, it will use the NUI menu, instead of the Scaleform one. NativeUI is still driving the emote data in the background.
 }
 
 -- Custom Categories: Define custom categories to organize emotes in the menu

@@ -9,11 +9,11 @@ function PtfxThis(asset)
 end
 
 function PtfxStart()
-    TriggerServerEvent('rpemotes:server:setState', 'ptfx', true)
+    LocalPlayer.state:set('ptfx', true, true)
 end
 
 function PtfxStop()
-    TriggerServerEvent('rpemotes:server:setState', 'ptfx', nil)
+    LocalPlayer.state:set('ptfx', nil, true)
 end
 
 AddStateBagChangeHandler('ptfx', '', function(bagName, key, value, _unused, replicated)
@@ -39,10 +39,9 @@ AddStateBagChangeHandler('ptfx', '', function(bagName, key, value, _unused, repl
             end
         end
 
-        local assetLoaded = HasNamedPtfxAssetLoaded(stateBag.ptfxAsset)
         PtfxThis(stateBag.ptfxAsset)
 
-        if not assetLoaded and not stateBag.ptfx then
+        if not stateBag.ptfx then
             RemoveNamedPtfxAsset(stateBag.ptfxAsset)
             PlayerParticles[plyId] = nil
             return

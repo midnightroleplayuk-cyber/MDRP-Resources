@@ -26,7 +26,7 @@ local function CleanupNewscam()
     if Config.UseOldPropSpawning then
         ClearEmoteProps()
     else
-        TriggerServerEvent('rpemotes:server:setState', 'rpemotes:props', {})
+        LocalPlayer.state:set("rpemotes:props", {}, true)
     end
 end
 

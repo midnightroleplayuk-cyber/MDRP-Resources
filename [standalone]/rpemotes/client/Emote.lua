@@ -27,7 +27,6 @@ local InExitEmote = false
 local ExitAndPlay = false
 local EmoteCancelPlaying = false
 local currentEmote = {}
-local sentCurrentEmote = false
 local attachedProp
 local previewPropVersion = 0
 local scenarioObjects = {
@@ -80,6 +79,9 @@ end
 CachedPlayerModel = nil
 
 CreateThread(function()
+    LocalPlayer.state:set('canEmote', true, true)
+    LocalPlayer.state:set('canCancel', true, true)
+
     -- Initialize cached model on startup
     CachedPlayerModel = GetEntityModel(PlayerPedId())
 end)
@@ -209,16 +211,10 @@ local function exitScenario()
     end
 end
 
-function SetCurrentEmoteState(name)
-    if sentCurrentEmote == name then return end
-    sentCurrentEmote = name
-    TriggerServerEvent('rpemotes:server:setState', 'currentEmote', name)
-end
-
 function EmoteCancel(force)
     if (not LocalPlayer.state.canCancel and oneSyncEnabled) and not force then return end
 
-    SetCurrentEmoteState(nil)
+    LocalPlayer.state:set('currentEmote', nil, true)
     EmoteCancelPlaying = true
 
     if InExitEmote then return end
@@ -234,7 +230,9 @@ function EmoteCancel(force)
 
     if IsInAnimation then
         local ped = PlayerPedId()
-        PtfxStop()
+        if LocalPlayer.state.ptfx then
+            PtfxStop()
+        end
         DetachEntity(ped, true, false)
         CancelSharedEmote()
 
@@ -597,9 +595,9 @@ function DestroyAllProps(isNonPlayer)
         if Config.UseOldPropSpawning then
             ClearEmoteProps()
         else
-            TriggerServerEvent('rpemotes:server:setState', 'rpemotes:props', {})
+            LocalPlayer.state:set("rpemotes:props", {}, true)
         end
-        TriggerServerEvent('rpemotes:server:setState', 'ptfxPropId', nil)
+        LocalPlayer.state:set("ptfxPropId", nil, true)
     end
     DebugPrint("Destroyed Props for " .. (isNonPlayer and "non-player" or "player"))
 end
@@ -621,7 +619,9 @@ local function playExitAndEnterEmote(name, textureVariation, emoteType)
     PtfxPrompt = false
     Pointing = false
 
-    PtfxStop()
+    if LocalPlayer.state.ptfx then
+        PtfxStop()
+    end
     DetachEntity(ped, true, false)
     CancelSharedEmote()
     DestroyAllProps()
@@ -782,7 +782,7 @@ function OnEmotePlay(name, textureVariation, emoteType)
 
     ChosenScenarioType = emoteData.scenarioType
     CurrentAnimationName = name
-    SetCurrentEmoteState(name)
+    LocalPlayer.state:set('currentEmote', name, true)
     CurrentTextureVariation = textureVariation
     CurrentAnimOptions = animOption
 
@@ -881,11 +881,11 @@ function OnEmotePlay(name, textureVariation, emoteType)
         if Config.UseOldPropSpawning then
             addProps(animOption, textureVariation, PlayerPedId(), PlayerId(), false)
         else
-            TriggerServerEvent('rpemotes:server:setState', 'rpemotes:props', {Emote = name, TextureVariation = textureVariation, emoteType = emoteType})
+            LocalPlayer.state:set("rpemotes:props", {Emote = name, TextureVariation = textureVariation, emoteType = emoteType}, true)
         end
             -- Ptfx is on the prop, then we need to sync it
         if animOption.PtfxAsset and not animOption.PtfxNoProp then
-            TriggerServerEvent('rpemotes:server:setState', 'ptfxPropId', animOption.SecondProp and 2 or 1) -- TODO: prop ptfx should be related to a prop.
+            LocalPlayer.state:set("ptfxPropId", animOption.SecondProp and 2 or 1, true) -- TODO: prop ptfx should be related to a prop.
         end
     end
 end
@@ -902,19 +902,13 @@ CreateExport("EmoteCommandStart", function(emoteName, textureVariation)
 end)
 CreateExport("EmoteCancel", EmoteCancel)
 CreateExport("CanCancelEmote", function(State)
-    error("CanCancelEmote is deprecated, use Player(source).state:set('canCancel', State, true) on the server instead")
+    error("CanCancelEmote is deprecated, use LocalPlayer.state:set('canCancel', State, true) instead")
 end)
 CreateExport('IsPlayerInAnim', function()
-    if sentCurrentEmote == false then
-        return LocalPlayer.state.currentEmote
-    end
-    return sentCurrentEmote
+    return LocalPlayer.state.currentEmote
 end)
 CreateExport('getCurrentEmote', function()
     return currentEmote
-end)
-CreateExport('IsAnimalEmoteCompatible', function(model, emoteName)
-    return IsModelCompatible(model, emoteName)
 end)
 
 -- Door stuff
