@@ -86,7 +86,7 @@ PublicSharedSoccerConfig = {
     BallLodDistance = 40000.0,
 
     -- For development and support feedback only, do not use.
-    Debug = false,
+    Debug = true,
 
     -- Default scoreboard name + logo per side when no player has set custom branding.
     -- Keys must match RED_TEAM (0) and BLUE_TEAM (1) from public/config/fields.lua.
