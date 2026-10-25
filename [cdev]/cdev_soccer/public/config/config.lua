@@ -8,7 +8,7 @@ PublicSharedSoccerConfig = {
         ShootBall = { "mouse_button", "mouse_right" },
         SecondaryAction = { "mouse_button", "mouse_left" },
         GoaleeStance = { "keyboard", "lcontrol" },
-        Scoreboard = { "keyboard", "tab" },
+        Scoreboard = { "keyboard", "q" },
         Instructions = { "keyboard", "f9" },
     },
 
