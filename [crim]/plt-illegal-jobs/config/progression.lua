@@ -49,7 +49,7 @@ Config.Progression.Tiers = {
         label = 'Street',
         apps = {
              'cornermeth', 'cornercoke', 'corneroxy',
-            'carbreakin', 'robnpc',
+            'carbreakin', 'cornerweed',
         },
     },
     [1] = {
@@ -269,7 +269,7 @@ Config.Progression.SkillTrees = {
     {
         id = 'corner',
         nodes = {
-            { id = 'cor_pitch', requires = {}, tasks = { { job = 'cornerweed', count = 2 }, { job = 'cornermeth', count = 1 } } },
+            { id = 'cor_pitch', requires = {}, tasks = { { job = 'cornermeth', count = 1 } } },
             { id = 'cor_read', requires = { 'cor_pitch' }, tasks = { { job = 'cornerweed', count = 2 }, { job = 'cornercoke', count = 1 }, { job = 'corneroxy', count = 1 } } },
             { id = 'cor_turf', requires = { 'cor_read' }, tasks = { { job = 'cornermeth', count = 2 }, { job = 'cornercoke', count = 2 }, { job = 'cornerweed', count = 2 } } },
             { id = 'cor_bulk', requires = { 'cor_turf' }, tasks = { { job = 'corneroxy', count = 3 }, { job = 'cornermeth', count = 2 }, { job = 'cornercoke', count = 2 } },
