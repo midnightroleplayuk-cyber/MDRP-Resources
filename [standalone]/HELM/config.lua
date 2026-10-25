@@ -34,7 +34,7 @@ Config.SyncSeconds = 120
 
 -- If true, players who are not allowlisted in the panel are refused at connect. With Discord role allowlisting
 -- set up on the panel (Servers page), players who lose the role while playing are kicked with "Whitelist revoked".
-Config.EnforceAllowlist = false
+Config.EnforceAllowlist = true
 
 -- Connect queue. When the server is full (sv_maxclients), players wait in a queue instead of being refused.
 -- Order: anyone reconnecting within RejoinMinutes of leaving goes to the front, then players with priority points
