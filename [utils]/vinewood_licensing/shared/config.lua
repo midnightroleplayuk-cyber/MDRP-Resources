@@ -34,7 +34,7 @@ Config.Locations = {
     },
     ExamCentre = {
         Enabled = true,
-        Coords = vector3(206.55, -1391.05, 30.56),   -- CHANGE ME: where tests are booked
+        Coords = vec3(208.69, -1382.76, 30.93),   -- CHANGE ME: where tests are booked
         Heading = 273.0,
         Size = vec3(4.0, 4.0, 3.0),
         Distance = 8.0,
