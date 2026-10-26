@@ -2637,5 +2637,10 @@ return {
 			weight = 1,
 		},	
 
+	['WEAPON_ACIDPACKAGE'] = {
+    label = 'Newspaper',
+    weight = 0,
+    throwable = true
+        },	
 	}
 }
