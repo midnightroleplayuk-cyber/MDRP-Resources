@@ -5088,5 +5088,14 @@ return {
         },
 },
 
+-- LATION LAUNDERING
+['warehouse_key'] = {
+	label = 'Warehouse Key',
+	weight = 25,
+},
+
+['uncounted_money'] = {
+	label = 'Uncounted Money',
+},
 
 }
