@@ -24,6 +24,7 @@ Config.Branding = {
 ---------------------------------------------------------------------
 Config.Jobs = {             -- job names allowed to use the MDT
     ambulance = true,
+    ems = true,
 }
 Config.RequireOnDuty = true
 Config.Command       = 'mhs_mdt'
