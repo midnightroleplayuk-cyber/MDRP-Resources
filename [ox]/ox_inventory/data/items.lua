@@ -1820,6 +1820,7 @@ return {
         weight = 100,
         stack = true,
         close = true,
+        description = '350 kcal',
     },
 
     ['default_lamp'] = {
@@ -5041,13 +5042,13 @@ return {
 
     -- ─── DRINKS ───
     ['apple_juice'] = { label = 'Apple Juice', weight = 350, stack = true, close = true, description = '115 kcal', client = { image = 'apple_juice.png' } },
-    ['coffe'] = { label = 'Coffee', weight = 350, stack = true, close = true, description = '5 kcal', client = { image = 'coffe.png' } },
+    ['coffe'] = { label = 'Coffee', weight = 350, stack = true, close = true, description = '200 kcal', client = { image = 'coffe.png' } },
     ['coffee_beans'] = { label = 'Coffee Beans', weight = 100, stack = true, close = true, description = '5 kcal', client = { image = 'coffee_beans.png' } },
     ['cola'] = { label = 'Cola', weight = 350, stack = true, close = true, description = '140 kcal', client = { image = 'cola.png' } },
     ['empty_cup'] = { label = 'Empty Cup', weight = 50, stack = true, close = true, description = '0 kcal', client = { image = 'empty_cup.png' } },
     ['milkshake'] = { label = 'Milkshake', weight = 350, stack = true, close = true, description = '350 kcal', client = { image = 'milkshake.png' } },
     ['orange_juice'] = { label = 'Orange Juice', weight = 350, stack = true, close = true, description = '110 kcal', client = { image = 'orange_juice.png' } },
-    ['water'] = { label = 'Water', weight = 350, stack = true, close = true, description = '100 kcal', client = { image = 'water.png' } },
+    ['water'] = { label = 'Water', weight = 350, stack = true, close = true, description = '350 kcal', client = { image = 'water.png' } },
 
     -- ─── COOKED DISHES ───
     ['cheeseburger'] = { label = 'Cheeseburger', weight = 400, stack = true, close = true, description = '500 kcal', client = { image = 'cheeseburger.png' } },
