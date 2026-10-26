@@ -223,17 +223,17 @@ Config.Warehouse = {
     account = 'cash',
     -- When a player unlocks use of the warehouse, do you want to create a
     -- Blip showing the location to enter the warehouse?
-    showBlip = true,
+    showBlip = false,
     -- Below is the location at which the players are able to enter the warehouse
     -- This is also the same location the blip will be displayed if enabled
     enterAt = vec4(1142.6859, -986.6674, 45.9059, 96.6889),
     -- exitAt is the coords the player will be teleported too upon entering
     -- It will also be the same point at which the player will exit the warehouse
     -- And they will then be teleported back to enterAt
-    --exitAt = vec4(1138.0872, -3199.1570, -39.6657, 181.2139),
+    exitAt = vec4(1138.0872, -3199.1570, -39.6657, 181.2139),
     -- Rotate is the amount of degrees to turn the player upon exit and entry
     -- To ensure the player is facing the correct direction when teleported
-    --rotate = 180,
+    rotate = 180,
     -- If you are using a custom location and it is an MLO, be sure to set
     -- isMLO to true, which will disable the usage of enter/exit points, etc
     isMLO = false,
