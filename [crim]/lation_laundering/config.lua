@@ -38,7 +38,7 @@ Config.InteractKey = 38 -- E
 -- Options: 'qb-phone', 'npwd', 'qs-smartphone', 'qs-smartphonepro', 'lb-phone', 'gksphone', 'yseries', 'custom' or 'none'
 -- If 'custom' you will have to configure your event(s) via client & server functions.lua
 -- If 'none' then it will use a default alert dialog from ox_lib
-Config.Phone = 'none'
+Config.Phone = 'lb-phone'
 
 -- Customize how you want players to begin money laundering
 Config.Start = {
@@ -77,7 +77,7 @@ Config.Start = {
 -- Customize your police related settings below
 Config.Police = {
     -- List your police jobs below
-    jobs = { 'police', 'sheriff' },
+    jobs = { 'police' },
     -- Do you want to require police be online to start laundering?
     -- If true, this only applies to ped contracts, not the warehouse
     require = false,
