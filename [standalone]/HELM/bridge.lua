@@ -189,7 +189,7 @@ end
 AddEventHandler('playerDropped', function() lgBalance[source] = nil end)
 
 --- Loaded character for a player, or nil when they are on the character screen (or standalone).
---- Returns { citizenid, firstname, lastname, job, jobGrade, cash, bank }
+--- Returns { citizenid, firstname, lastname, job, jobGrade, cash, bank, down }
 function Bridge.Character(src)
     Bridge.Ready()
     if not (isQb or isEsx) then return nil end
@@ -222,6 +222,8 @@ function Bridge.Character(src)
         jobGrade = d.job and d.job.grade and d.job.grade.level or nil,
         cash = math.floor((d.money and d.money.cash) or 0),
         bank = BANK == 'lgmods' and lgPersonalBalance(src) or math.floor((d.money and d.money.bank) or 0),
+        -- Dead or in last stand (qb-ambulancejob, qbx_medical and most forks keep this in metadata).
+        down = d.metadata and (d.metadata.isdead or d.metadata.inlaststand) or false,
     }
 end
 

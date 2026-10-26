@@ -31,6 +31,7 @@ end
 --- Queue one event. src may be nil for server-wide events.
 local function log(src, category, type_, message, data)
     if #queue >= MAX_QUEUE then return end
+    src = tonumber(src) -- other resources (and some events) pass the player id as a string
     local e = {
         category = category,
         type = type_,

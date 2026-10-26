@@ -35,15 +35,32 @@ Config.SyncSeconds = 120
 -- If true, players who are not allowlisted in the panel are refused at connect. With Discord role allowlisting
 -- set up on the panel (Servers page), players who lose the role while playing are kicked with "Whitelist revoked".
 -- While on, nobody can join if the panel can't be reached, because the allowlist can't be checked.
-Config.EnforceAllowlist = true
+Config.EnforceAllowlist = false
 
 -- Connect queue. When the server is full (sv_maxclients), players wait in a queue instead of being refused.
 -- Order: anyone reconnecting within RejoinMinutes of leaving goes to the front, then players with priority points
 -- (Discord roles you give points on the panel's Servers page, e.g. subscriber tiers), then whoever waited longest.
 -- Turn off any other queue resource (connectqueue, etc.) before enabling this.
 Config.Queue = {
-    Enabled = true,
+    Enabled = false,
     RejoinMinutes = 15,
+
+    -- The screen players see while waiting (styled by Config.ConnectCards). false = FiveM's plain text line.
+    Card = {
+        Message = 'Subscribers skip ahead of the queue.', -- status shown to players with no priority
+    },
+}
+
+-- Look of the cards in the connecting screen: the queue, bans and "not allowlisted".
+Config.ConnectCards = {
+    Logo = nil,        -- image URL; nil = the Helm logo. A wide PNG around 400x120 looks best.
+    ServerName = nil,  -- shown under the logo, e.g. 'Midnight RP'
+    -- Buttons on every card, opened in the player's browser. Up to 3 fit (ban cards add a Close button).
+    Links = {
+        -- { label = 'Discord', url = 'https://discord.gg/yourserver' },
+        -- { label = 'Store', url = 'https://yourserver.tebex.io' },
+        -- Ban cards already get an Appeal button to the panel's appeal page, with the ban ID filled in.
+    },
 }
 
 -- Let the panel's Schedules page restart this server: players are dropped with a message, then the server quits.
@@ -79,7 +96,7 @@ Config.ReportCommand = 'report'
 -- are always refused.
 Config.BlockBanEvasion = false
 
--- Banned or non-allowlisted players see a card with the Helm logo and the details while connecting.
+-- Banned or non-allowlisted players see a card (styled by Config.ConnectCards) with the details while connecting.
 -- Set to false for FiveM's plain text message only.
 Config.BrandedRejections = true
 

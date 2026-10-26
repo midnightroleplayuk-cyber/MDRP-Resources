@@ -33,6 +33,7 @@ local function freeSlots(now)
     return GetConvarInt('sv_maxclients', 48) - #GetPlayers() - holding
 end
 
+
 local function step()
     local now = os.time()
     -- Players who closed FiveM while waiting have no name any more.
@@ -50,12 +51,22 @@ local function step()
         free = free - 1
     end
 
+    local card = Config.Queue.Card
     for i, e in ipairs(queue) do
         local why = hasGrace(e.license, now) and 'Reconnect priority: you are at the front.'
             or (e.priority > 0 and ('Priority: %d points.'):format(e.priority))
-            or 'Subscribers skip ahead of the queue.'
+            or (card and card.Message) or 'Subscribers skip ahead of the queue.'
         local waited = math.floor((now - e.joinedAt) / 60)
-        e.deferrals.update(('Server full. You are %d of %d in the queue (waiting %d min). %s'):format(i, #queue, waited, why))
+        local plain = ('Server full. You are %d of %d in the queue (waiting %d min). %s'):format(i, #queue, waited, why)
+        if not (card and pcall(function()
+            e.deferrals.presentCard(HelmConnectCard({
+                title = 'Server full', headline = ('#%d'):format(i), color = 'accent', size = 'extraLarge',
+                sub = ('of %d in the queue'):format(#queue),
+                facts = { { title = 'Waiting', value = ('%d min'):format(waited) }, { title = 'Status', value = why } },
+            }), function() end)
+        end)) then
+            e.deferrals.update(plain)
+        end
     end
 end
 
