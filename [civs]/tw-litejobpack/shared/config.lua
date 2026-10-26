@@ -13,8 +13,8 @@ Config.CurrencySymbol =
 
 Config.Clothes                   = {
     enabled   = true,  -- false = fully disable clothing system (no cabin props spawn, no clothes change, no interaction) | true = use autoEquip/required below
-    autoEquip = false, -- true = auto equip work clothes on job start (no cabin) | false = player changes at cabin manually
-    required  = false, -- true = player must wear work clothes before doing tasks | false = clothes are optional (only applies when autoEquip = false)
+    autoEquip = true, -- true = auto equip work clothes on job start (no cabin) | false = player changes at cabin manually
+    required  = true, -- true = player must wear work clothes before doing tasks | false = clothes are optional (only applies when autoEquip = false)
 }
 
 Config.BlipCategory              = {
