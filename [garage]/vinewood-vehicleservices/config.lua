@@ -1,7 +1,7 @@
 Config = {}
 
 -- 'auto', 'qbx', 'qb' or 'esx'
-Config.Framework = 'qbx'
+Config.Framework = 'auto'
 
 Config.Debug = false   -- extra console logging (new vehicle cover etc.)
 
@@ -88,7 +88,7 @@ Config.MOT = {
     --  'config'      only the garages and jobs below. Use this for qb-mechanicjob,
     --                qbx_mechanicjob, esx_mechanicjob, wasabi_mechanic and other
     --                scripts that use framework jobs.
-    provider = 'config',
+    provider = 'auto',
 
     jgMechanic = {
         enabled = true,
@@ -117,7 +117,8 @@ Config.MOT = {
     -- Used when provider = 'config' (or no jg-mechanic). A garage can have its own
     -- jobs = { bennys = 0 } to override the list above.
     garages = {
-        { label = "Redline", coords = vec3(1131.71, -785.14, 56.6), radius = 25.0 },
+        { label = "Benny's Original Motorworks", coords = vec3(-211.55, -1324.55, 30.89), radius = 25.0 },
+        { label = 'LS Customs Burton',          coords = vec3(-337.39, -136.92, 39.01),  radius = 20.0 },
     },
 
     validDays = 30,

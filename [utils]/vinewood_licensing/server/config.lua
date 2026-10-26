@@ -7,7 +7,7 @@ Config = Config or {}
 
 Config.Fivemanage = {
     -- Paste your Fivemanage API token between the quotes.
-    ApiKey = 'SwMM3lrxnKw7NLKKc6nuqFudyV1jmr8L',
+    ApiKey = '',
 
     -- Leave these alone unless Fivemanage change their API.
     Endpoint = 'https://api.fivemanage.com/api/v3/file/base64'

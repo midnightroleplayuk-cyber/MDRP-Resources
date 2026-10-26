@@ -107,6 +107,7 @@
             this.el.hudTimeValue = document.getElementById('hud-time-value');
             this.el.hudSpeedValue = document.getElementById('hud-speed-value');
             this.el.hudMaxSpeedValue = document.getElementById('hud-max-speed-value');
+            this.el.hudSpeedUnit = document.getElementById('hud-speed-unit');
             this.el.hudMistakesValue = document.getElementById('hud-mistakes-value');
             this.el.hudNotification = document.getElementById('hud-notification');
         },
@@ -321,6 +322,7 @@
             this.state.practicalPassed = data.practicalPassed || {};
             this.state.provisional = data.provisional || { enabled: false, held: false, entitled: false, required: false, price: 0 };
             this.state.mode = data.mode === 'desk' ? 'desk' : 'exam';
+            this.state.speedUnit = data.speedUnit === 'kmh' ? 'km/h' : 'mph';
             this.state.replacement = data.replacement || { enabled: false, eligible: false, price: 0 };
             this.state.photoUpdate = data.photoUpdate || { enabled: false, eligible: false, price: 0 };
             this.applyLocaleToDOM();
@@ -448,7 +450,7 @@
                 const info = `
                     <div class="category-info">
                         <span>${this.t('menu_theory_btn')}: ${this.t('result_mistakes')} &le; ${cat.maxMistakesTheory}</span>
-                        <span>${this.t('menu_practical_btn')}: ${this.t('hud_max_speed')} ${cat.maxSpeed} mph</span>
+                        <span>${this.t('menu_practical_btn')}: ${this.t('hud_max_speed')} ${cat.maxSpeed} ${this.state.speedUnit || 'mph'}</span>
                     </div>
                 `;
 
@@ -717,6 +719,9 @@
             this.showHud(true);
             this.el.hudCategory.textContent = data.categoryLabel || '';
             this.el.hudMaxSpeedValue.textContent = String(data.maxSpeed || '—');
+            if (this.el.hudSpeedUnit) {
+                this.el.hudSpeedUnit.textContent = this.state.speedUnit || 'mph';
+            }
             this.el.hudCheckpointsValue.textContent = `0 / ${data.totalCheckpoints || 0}`;
             this.el.hudCheckpointsProgress.style.width = '0%';
             this.el.hudTimeValue.textContent = '00:00';
@@ -826,6 +831,7 @@
                     this.onTheoryResult(msg.data || {});
                     break;
                 case 'startPractical':
+                    if (msg.speedUnit) this.state.speedUnit = msg.speedUnit === 'kmh' ? 'km/h' : 'mph';
                     this.onPracticalStarted(msg.data || {});
                     break;
                 case 'updateHud':

@@ -34,7 +34,7 @@ Config.Locations = {
     },
     ExamCentre = {
         Enabled = true,
-        Coords = vec3(208.69, -1382.76, 30.93),   -- CHANGE ME: where tests are booked
+        Coords = vector3(206.55, -1391.05, 30.56),   -- CHANGE ME: where tests are booked
         Heading = 273.0,
         Size = vec3(4.0, 4.0, 3.0),
         Distance = 8.0,
@@ -61,13 +61,17 @@ Config.RetryCooldownSeconds = 0
 
 Config.QuestionCountPerExam = 10
 
+-- Speed unit used everywhere: the test HUD, the menu and the MaxSpeed values
+-- in Config.VehicleCategories below. 'mph' or 'kmh'.
+Config.SpeedUnit = 'mph'
+
 Config.VehicleCategories = {
     car = {
         Label = 'Car (B)',
         Enabled = true,
         VehicleModel = 'sultanrs',
         VehicleSpawn = vector4(219.05, -1375.71, 30.56, 209.76),
-        MaxSpeed = 80,
+        MaxSpeed = 50,   -- in Config.SpeedUnit
         TimeLimitSeconds = 300,
         MaxMistakesTheory = 3,
         MaxMistakesPractical = 5
@@ -77,7 +81,7 @@ Config.VehicleCategories = {
         Enabled = true,
         VehicleModel = 'bati',
         VehicleSpawn = vector4(219.05, -1375.71, 30.56, 209.76),
-        MaxSpeed = 90,
+        MaxSpeed = 55,   -- in Config.SpeedUnit
         TimeLimitSeconds = 300,
         MaxMistakesTheory = 3,
         MaxMistakesPractical = 5
@@ -87,7 +91,7 @@ Config.VehicleCategories = {
         Enabled = false,
         VehicleModel = 'packer',
         VehicleSpawn = vector4(219.05, -1375.71, 30.56, 209.76),
-        MaxSpeed = 70,
+        MaxSpeed = 45,   -- in Config.SpeedUnit
         TimeLimitSeconds = 420,
         MaxMistakesTheory = 4,
         MaxMistakesPractical = 6
@@ -107,14 +111,14 @@ Config.Provisional = {
     Photo = {
         Enabled = true,
         -- API key lives in server/config.lua (server-only, never sent to clients)
-        Encoding = 'png',       -- png | jpg | webp
+        Encoding = 'jpg',       -- png | jpg | webp
         Quality = 0.92,
         CountdownSeconds = 3,
         -- the picture is cropped and shrunk before leaving the client
         Output = {
             Width = 420,
             Height = 540,
-            Quality = 0.92
+            Quality = 0.85
         },
         Camera = {
             Distance = 0.95,     -- how far in front of the face (higher = further back)
