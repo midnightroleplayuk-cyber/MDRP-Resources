@@ -1,0 +1,3604 @@
+{
+  "blips": {
+    "category": "Meslekler",
+    "jobCenter": "İş Merkezi",
+    "miner": "Madencilik",
+    "lumberjack": "Odunculuk",
+    "scrapyard": "Hurdacı",
+    "hunting": "Avcılık",
+    "farmer": "Sebze Çiftliği",
+    "fruitpicker": "Meyve Bahçesi",
+    "cleaner": "Şehir Temizliği",
+    "powerwash": "Basınçlı Yıkama",
+    "windowscleaner": "Cam Temizliği",
+    "cardetailer": "Araç Detaylama",
+    "newspaper": "Gazete Dağıtımı",
+    "cleanup": "Çöp Toplama",
+    "trucker": "Kamyon Parkı",
+    "taxi": "Taksi Durağı",
+    "dogwalking": "Köpek Gezdirme",
+    "powerlines": "Elektrikçi",
+    "delivery": "Paket Teslimatı",
+    "warehouse": "Depo",
+    "landscaping": "Bahçıvanlık",
+    "fishing": "Balıkçılık",
+    "diving": "Dalgıçlık",
+    "forklift": "Forklift",
+    "tiretechnician": "Lastik Tamircisi",
+    "treasurehunter": "Hazine Avcısı",
+    "mechanic": "Tamirci"
+  },
+  "_meta": {
+    "name": "Türkçe",
+    "flag": "🇹🇷"
+  },
+  "ui": {
+    "blipCategoryName": "Meslekler",
+    "jobDetails": "İş Detayları",
+    "owner": "Lider",
+    "member": "Üye",
+    "jobStart": "İşe Başla",
+    "leaderboard": "Sıralama",
+    "teamProgress": "Takım İlerlemesi",
+    "top20": "İlk 20",
+    "playerList": "Oyuncu Listesi",
+    "clickToInvite": "Davet Et",
+    "emptySlot": "Boş Slot",
+    "level": "Seviye",
+    "lv": "Sv.",
+    "hours": "Saat",
+    "minRequiredHours": "Minimum gereken",
+    "achievements": "Başarımlar",
+    "settings": "Ayarlar",
+    "close": "Kapat",
+    "cancel": "İptal",
+    "confirm": "Onayla",
+    "search": "Ara",
+    "selected": "Seçili",
+    "locationMarked": "Konum haritada işaretlendi",
+    "jobAreaMarked": "Görev bölgesi haritada işaretlendi",
+    "noLocationAvailable": "Bu iş için konum mevcut değil",
+    "routeLevelRequired": "Bu rota için Level {level} gerekli!",
+    "spawnBlocked": "Araç spawn alanı engelli! Alanı temizleyip tekrar deneyin.",
+    "vehicleSpawnFailed": "Araç oluşturulamadı!",
+    "viewStatistics": "İstatistikleri Görüntüle",
+    "history": "Geçmiş",
+    "earnings": "Kazançlar",
+    "totalEarn": "Toplam Kazanç",
+    "totalExp": "Toplam EXP",
+    "markJob": "İşi İşaretle",
+    "registerJob": "İşe Kayıt Ol",
+    "usedItems": "Kullanılan Eşyalar",
+    "online": "Çevrimiçi",
+    "offline": "Çevrimdışı",
+    "loading": "Yükleniyor...",
+    "back": "Geri",
+    "set": "Ayarla",
+    "reset": "Sıfırla",
+    "approve": "Onayla",
+    "leave": "Ayrıl",
+    "done": "Tamam",
+    "prev": "Önceki",
+    "next": "Sonraki",
+    "xp": "XP",
+    "step": "Adım",
+    "on": "Açık",
+    "off": "Kapalı",
+    "save": "Kaydet",
+    "vehicle": "Araç",
+    "coordinates": "Koordinatlar",
+    "active": "Aktif",
+    "disabled": "Devre Dışı",
+    "place": "Yerleştir",
+    "add": "Ekle"
+  },
+  "settings": {
+    "title": "İş Ayarları",
+    "subtitle": "Ayarları Seç",
+    "jobSound": "İş Sesi",
+    "language": "Dil",
+    "uiPosition": "Arayüz Taşı",
+    "uiMoveActive": "Panelleri sürükleyerek konumlandır",
+    "uiMoveSave": "Kaydet",
+    "uiMoveCancel": "İptal",
+    "uiMoveApplyDefault": "Varsayılan Yap",
+    "uiMoveResetDefault": "Sıfırla",
+    "progressPanel": "İlerleme"
+  },
+  "progress": {
+    "title": "İlerleme",
+    "subtitle": "Yetenekler, Görevler & Yükseltmeler",
+    "skillPoints": "YP",
+    "skills": "Yetenekler",
+    "quests": "Görevler",
+    "upgrades": "Yükseltmeler",
+    "max": "MAKS",
+    "upgrade": "Yükselt",
+    "upgradeItems": "Yükseltme Eşyaları",
+    "searchJobs": "İş ara...",
+    "noResults": "Sonuç bulunamadı",
+    "noQuests": "Görev bulunamadı",
+    "all": "Hepsi",
+    "daily": "Günlük",
+    "weekly": "Haftalık"
+  },
+  "upgradeModal": {
+    "title": "Eşya Yükselt",
+    "subtitle": "Yükseltmeyi onayla",
+    "currentLevel": "Mevcut Seviye",
+    "nextLevel": "Sonraki Seviye",
+    "requirements": "Gereksinimler",
+    "requiredLevel": "Gereken Seviye",
+    "money": "Para",
+    "upgrade": "Yükselt"
+  },
+  "downgradeModal": {
+    "title": "Seviye Değiştir",
+    "subtitle": "Seviye değişikliğini onayla",
+    "returnToPrevious": "Önceki seviyeye dön",
+    "noLevelLoss": "Mevcut seviye ilerlemenizi kaybetmezsiniz"
+  },
+  "finishJob": {
+    "jobComplete": "İş Tamamlandı!",
+    "summary": "İşte özet",
+    "continueQuestion": "Devam et?",
+    "ownerWantsContinue": "{name} devam etmek istiyor",
+    "finishQuestion": "İşi bitir?",
+    "finishSubtitle": "Sonraki adımı seçin",
+    "itemsCompleted": "Tamamlanan Öğeler",
+    "totalEarnings": "Toplam Kazanç",
+    "progressSaved": "İlerlemeniz kaydedilecek",
+    "waitingFor": "Bekleniyor: {players}",
+    "waitingOwner": "{name} karar veriyor...",
+    "autoApprove": "{time}sn içinde otomatik onay...",
+    "completed": "İş tamamlandı!",
+    "continue": "Devam Et",
+    "endJob": "İşi Bitir",
+    "leaveJob": "Ayrıl"
+  },
+  "activeJob": {
+    "endJobTitle": "İşi Bitir?",
+    "endJobDesc": "Bu işlem sizin için işi bitirir. Diğer oyunculara devam etmek isteyip istemedikleri sorulur.",
+    "leaveJobTitle": "İşten Ayrıl?",
+    "leaveJobDesc": "Mevcut işten ayrılacaksınız.",
+    "remainingCanContinue": "Kalan oyuncular sizin olmadan devam edebilir",
+    "progressSaved": "İlerlemeniz kaydedilecek",
+    "ownerDisconnected": "Lider Bağlantısı Kesildi",
+    "ownerLeft": "Lider Ayrıldı",
+    "ownerHasDisconnected": "{name} bağlantısı kesildi",
+    "ownerHasLeft": "{name} işten ayrıldı",
+    "continueJobQuestion": "İşe devam etmek istiyor musunuz?",
+    "autoContinue": "{time}sn içinde otomatik devam..."
+  },
+  "illegal": {
+    "stolenCargo": "Çalıntı Kargo Bulundu!",
+    "highRisk": "Yüksek Riskli Teslimat",
+    "teamVote": "Takım Oylaması",
+    "description": "Çalıntı mal keşfettiniz. İki kat ödeme için teslim edin, ancak polis haberdar edilebilir.",
+    "reward": "Ödül",
+    "risk": "Risk",
+    "x2Money": "x2 Para",
+    "policeAlertStatic": "%90 Polis Alarmı",
+    "policeAlert": "%{chance} Polis Alarmı",
+    "suspiciousPassenger": "Şüpheli Yolcu",
+    "suspiciousPassengerDesc": "Bu yolcu resmi olmayan bir yere gitmek istiyor. Daha yüksek ödeme, ama polis riski var.",
+    "stolenCargoDesc": "Römorkta çalıntı mal keşfettiniz. İki katı ödeme için karaborsaya teslim edin, ama dikkat - polis takibi riski yüksek!",
+    "teamVotes": "Takım oyları:",
+    "accept": "Kabul",
+    "reject": "Red",
+    "policeWarning": "Kabul ederseniz polis gönderilebilir",
+    "leaderDecision": "Lider son kararı verecek",
+    "waitingLeader": "Liderin kararı bekleniyor...",
+    "stayLegal": "Yasal Kal",
+    "acceptRisk": "Riski Kabul Et",
+    "voteStayLegal": "Oy: Yasal Kal",
+    "voteAcceptRisk": "Oy: Riski Kabul Et",
+    "voteSubmitted": "Oy Gönderildi"
+  },
+  "lobby": {
+    "noLongerExists": "Lobi artık mevcut değil.",
+    "playerReconnected": "{name} lobiye yeniden bağlandı.",
+    "playerDisconnected": "{name} lobiden ayrıldı.",
+    "ownerDisconnectedNewOwner": "Lider bağlantısı kesildi. {name} yeni lider.",
+    "closedNoReplacement": "Lobi kapatıldı - uygun lider bulunamadı.",
+    "full": "Lobi dolu (maks {count} oyuncu)",
+    "notOwner": "Bunu sadece lobi lideri yapabilir",
+    "kicked": "Lobiden atıldınız",
+    "alreadyInLobby": "Zaten bir lobidesiniz",
+    "noLobbyFound": "Lobi bulunamadı",
+    "playerLeft": "{name} lobiden ayrıldı"
+  },
+  "invite": {
+    "sent": "{name} adlı oyuncuya davet gönderildi",
+    "received": "{name} seni lobisine davet etti - [Y] Kabul | [N] Reddet",
+    "accepted": "{name} lobiye katıldı",
+    "declined": "{name} daveti reddetti",
+    "expired": "Davetin süresi doldu",
+    "targetAlreadyInLobby": "Bu oyuncu zaten bir lobide!",
+    "tooFar": "Oyuncu çok uzakta!"
+  },
+  "job": {
+    "started": "İş başladı!",
+    "completed": "İş tamamlandı!",
+    "failed": "İş başarısız!",
+    "resetInProgress": "İş sıfırlanıyor, lütfen bekleyin...",
+    "cantEnterVehicle": "Bir şey taşırken araca binemezsiniz!"
+  },
+  "xp": {
+    "gained": "+{amount} XP",
+    "levelUp": "Seviye atladınız! Artık seviye {level}",
+    "maxLevel": "Maksimum seviyeye ulaştınız!"
+  },
+  "contract": {
+    "reward": "Ödül",
+    "risk": "Risk",
+    "teamVotes": "Takım oyları:",
+    "waitingLeader": "Liderin kararı bekleniyor...",
+    "voteStayLegal": "Oy: Yasal Kal",
+    "voteAcceptRisk": "Oy: Riski Kabul Et",
+    "done": "BİTTİ"
+  },
+  "hud": {
+    "truckFill": "Kamyon Doluluk",
+    "taximeter": "TAKSİMETRE",
+    "fare": "ÜCRET",
+    "bonus": "BONUS",
+    "distance": "MESAFE",
+    "trailerHealth": "Römork Sağlığı",
+    "pressure": "BASINÇ",
+    "coopLeaderboard": "Sıralama",
+    "illegalRide": "YASADIŞI YOLCU",
+    "normalRide": "NORMAL YOLCU",
+    "goodCondition": "İyi Durumda",
+    "needsRepair": "Onarım Gerekli",
+    "criticalDamage": "Kritik Hasar",
+    "hold": "Basılı tut",
+    "toClose": "kapatmak için",
+    "forDetails": "detaylar için"
+  },
+  "preview": {
+    "step": "Adım {current}/{total}"
+  },
+  "minigame": {
+    "junctionBox": "BAĞLANTI KUTUSU",
+    "lsPower": "LS-ENERJİ",
+    "circuitHint": "DÖNDÜRMEK İÇİN TIKLA — KAYNAĞI YÜKE BAĞLA",
+    "fish": "Balık",
+    "catch": "Yakala",
+    "space": "BOŞLUK"
+  },
+  "admin": {
+    "title": "Yönetici Paneli",
+    "subtitle": "İş Paketi Analitik",
+    "dashboard": "Gösterge Paneli",
+    "players": "Oyuncular",
+    "market": "Pazar",
+    "activeLobbies": "Aktif Lobiler",
+    "economy": "Ekonomi",
+    "todaysPayouts": "Bugünün Ödemeleri",
+    "thisWeek": "Bu Hafta",
+    "allTime": "Tüm Zamanlar",
+    "jobsToday": "Bugünkü İşler",
+    "onlinePlayers": "Çevrimiçi Oyuncular",
+    "perJobEarnings": "İş Başına Kazanç (Son 7 Gün)",
+    "job": "İş",
+    "totalPayout": "Toplam Ödeme",
+    "completions": "Tamamlama",
+    "uniquePlayers": "Benzersiz Oyuncular",
+    "name": "İsim",
+    "identifier": "Tanımlayıcı",
+    "status": "Durum",
+    "perkPoints": "Yetenek Puanı:",
+    "jobLevels": "İş Seviyeleri",
+    "recentHistory": "Son Geçmiş",
+    "region": "Bölge",
+    "earned": "Kazanılan",
+    "date": "Tarih",
+    "dynamicMarket": "Dinamik Pazar Fiyatları",
+    "resetAllToBase": "Hepsini Sıfırla",
+    "current": "Mevcut",
+    "base": "Taban",
+    "minMax": "Min / Maks",
+    "health": "Sağlık",
+    "setPrice": "Fiyat Ayarla",
+    "action": "İşlem",
+    "paymentRates": "Ödeme Oranları",
+    "qualityTiers": "Kalite Kademeleri",
+    "chance": "Şans %",
+    "multiplier": "Çarpan",
+    "levelBonuses": "Seviye Bonusları",
+    "payBonusPerLevel": "Seviye Başına Ödeme Bonusu",
+    "qualityChancePerLevel": "Seviye Başına Kalite Şansı",
+    "estimatedEarnings": "Tahmini Kazanç (10 öğe)",
+    "selectJobToEdit": "Düzenlemek için bir iş seçin",
+    "noJobsFound": "İş bulunamadı",
+    "noJobData": "İş verisi bulunamadı",
+    "noHistory": "Geçmiş yok",
+    "noMarketData": "Pazar verisi yok (dinamik pazar devre dışı olabilir)",
+    "noActiveLobbies": "Aktif lobi yok",
+    "searchPlaceholder": "İsim veya tanımlayıcı ile ara...",
+    "searchPlayer": "Yukarıdan oyuncu arayın",
+    "xp": "XP",
+    "owner": "Lider",
+    "state": "Durum",
+    "count": "Sayı",
+    "loading": "Yükleniyor..."
+  },
+  "editor": {
+    "title": "Job Editör",
+    "npc": "NPC",
+    "npcModel": "NPC Modeli",
+    "scenarioAnimation": "Senaryo / Animasyon",
+    "npcPosition": "NPC Pozisyonu",
+    "npcInteraction": "NPC Etkileşimi",
+    "blip": "Blip",
+    "vehicleModel": "Araç Modeli",
+    "plate": "Plaka",
+    "primaryColor": "Ana Renk",
+    "secondaryColor": "İkincil Renk",
+    "spawnLocations": "Doğma Noktaları",
+    "clickToChange": "Değiştirmek için tıkla",
+    "clickToBrowse": "Senaryolara göz at",
+    "typeManually": "Veya manuel yaz...",
+    "sprite": "Sprite",
+    "color": "Renk",
+    "scale": "Ölçek",
+    "label": "Etiket",
+    "enabled": "Aktif",
+    "distance": "Mesafe",
+    "keyCode": "Tuş Kodu",
+    "interactionText": "Etkileşim Metni",
+    "searchBlip": "Blip ara...",
+    "searchCoords": "Koordinat ara...",
+    "noCoordFields": "Bu iş için koordinat alanı bulunamadı.",
+    "noVehicleConfig": "Bu işin araç yapılandırması yok.",
+    "selectJob": "Düzenlemek için bir iş seçin",
+    "spawnNum": "Nokta",
+    "unsavedChanges": "Kaydedilmemiş değişiklikler",
+    "goTo": "Git",
+    "setFromCamera": "Kameradan Ayarla",
+    "copy": "Kopyala",
+    "go": "Git",
+    "cam": "Kam",
+    "preview": "Önizle",
+    "dup": "Çoğalt",
+    "selectPedModel": "Ped Modeli Seç",
+    "selectVehicleModel": "Araç Modeli Seç",
+    "selectScenario": "Senaryo Seç",
+    "searchPed": "Ped modeli ara...",
+    "searchVehicle": "Araç modeli ara...",
+    "searchScenario": "Senaryo ara...",
+    "noAnimations": "Animasyon bulunamadı",
+    "camera": "Kamera",
+    "browse": "Göz At",
+    "devModeRequired": "Job Editor için DevMode'un açık olması gerekiyor.",
+    "devModeHint": "shared/config_settings.lua dosyasında Config.DevMode = true yapın ve resource'u yeniden başlatın."
+  },
+  "tutorial": {
+    "title": "Rehber",
+    "skip": "Atla",
+    "next": "İleri",
+    "miner": {
+      "step1": {
+        "title": "Aracını Al",
+        "desc": "İşaretli alana yürüyerek maden aracını al."
+      },
+      "step2": {
+        "title": "Aletini Al",
+        "desc": "Araç bagajını aç ve bir kazma al."
+      },
+      "step3": {
+        "title": "Madencilik Yap",
+        "desc": "Maden bölgesine git ve cevher toplamak için kayaları kır."
+      },
+      "step4": {
+        "title": "Cevherleri İşle",
+        "desc": "Topladığın cevherleri tartıya getirerek ödeme al."
+      }
+    },
+    "lumberjack": {
+      "step1": {
+        "title": "Aracını Al",
+        "desc": "İşaretli alana yürüyerek odunculuk aracını al."
+      },
+      "step2": {
+        "title": "Baltanı Al",
+        "desc": "Araç bagajını aç ve bir balta al."
+      },
+      "step3": {
+        "title": "Ağaç Kes",
+        "desc": "Orman bölgesine git ve ağaçları kesmeye başla."
+      },
+      "step4": {
+        "title": "Odunları İşle",
+        "desc": "Topladığın odunları tartıya getirerek ödeme al."
+      }
+    },
+    "farmer": {
+      "step1": {
+        "title": "Aracını Al",
+        "desc": "İşaretli alana yürüyerek çiftçilik aracını al."
+      },
+      "step2": {
+        "title": "Aletini Al",
+        "desc": "Araç bagajını aç ve bir kürek al."
+      },
+      "step3": {
+        "title": "Hasat Yap",
+        "desc": "Tarla bölgesine git ve ürünleri topla."
+      },
+      "step4": {
+        "title": "Ürünleri İşle",
+        "desc": "Topladığın ürünleri tartıya getirerek ödeme al."
+      }
+    },
+    "fishing": {
+      "step1": {
+        "title": "Balık Noktası Bul",
+        "desc": "Su kenarındaki balıkçılık noktasına yürü."
+      },
+      "step2": {
+        "title": "Oltanı At",
+        "desc": "Olta ile balık tutmaya başla."
+      },
+      "step3": {
+        "title": "Balıkları Sat",
+        "desc": "Tuttuğun balıkları satış noktasına getir."
+      }
+    },
+    "generic": {
+      "step1": {
+        "title": "Hazırlan",
+        "desc": "Aracını al ve çalışma alanına git."
+      },
+      "step2": {
+        "title": "Çalış",
+        "desc": "Belirlenen alanda görevleri tamamla."
+      },
+      "step3": {
+        "title": "Bitir",
+        "desc": "NPC'ye veya işlem noktasına dönerek işi tamamla."
+      }
+    }
+  },
+  "stats": {
+    "title": "İstatistikler",
+    "subtitle": "Kariyer özeti",
+    "overview": "Genel Bakış",
+    "perJob": "İş Bazında",
+    "history": "Geçmiş",
+    "totalEarnings": "Toplam Kazanç",
+    "totalXP": "Toplam XP",
+    "totalSessions": "Toplam Oturum",
+    "totalTime": "Toplam Süre",
+    "bestDay": "En İyi Gün",
+    "favoriteJob": "Favori İş",
+    "avgEarnings": "Ort. Kazanç",
+    "perSession": "oturum başına",
+    "sessions": "oturum",
+    "last7Days": "Son 7 Gün",
+    "job": "İş",
+    "level": "Seviye",
+    "earnings": "Kazanç",
+    "time": "Süre",
+    "noData": "Veri bulunamadı"
+  },
+  "drawtext": {
+    "jobCenter": "İş Merkezi"
+  },
+  "notify": {
+    "jobAtCapacity": "Bu görev şu an dolu ({current}/{max} takım aktif). Başka bir görev dene veya bekle.",
+    "cannotStartJob": "Bu görev başlatılamıyor",
+    "failedStartJob": "Görev başlatılamadı",
+    "unknownError": "Bilinmeyen hata",
+    "toolEquipped": "Alet kuşanıldı: {tool}",
+    "toolReturnedToTruck": "{tool} araca iade edildi.",
+    "deliveringStatus": "Teslim ediliyor...",
+    "jobRestarting": "İş sistemi yeniden başlatılıyor...",
+    "failedOpenMenu": "İş menüsü açılamadı",
+    "noPermission": "Yönetici izniniz yok",
+    "mustSelectJob": "Önce İş Merkezinden bir iş seçmelisiniz",
+    "achievementUnlocked": "Başarım Açıldı: {label}",
+    "globalEventStarted": "Yeni Küresel Etkinlik Başladı: {title}",
+    "alreadyCarrying": "Zaten bir şey taşıyorsunuz!",
+    "notCarrying": "Bir şey taşımıyorsunuz!",
+    "needToolFirst": "Önce alet alın!",
+    "anotherPlayerBreaking": "Başka bir oyuncu bunu zaten kırıyor!",
+    "putToolOnBelt": "Önce aleti kemere koyun!",
+    "processingWait": "İşleniyor, lütfen bekleyin!",
+    "noBoxAvailable": "Kutu yok!",
+    "alreadyHaveBox": "Zaten bir kutunuz var!",
+    "failedTakeBox": "Kutu alınamadı!",
+    "noLoadedBoxes": "Dolu kutu yok!",
+    "notCarryingBox": "Kutu taşımıyorsunuz!",
+    "failedLoadBox": "Kutu yüklenemedi!",
+    "noRoomInTrunk": "Bagajda yer yok, kutu atıldı.",
+    "emptyBoxReturned": "Boş kutu iade edildi.",
+    "workClothesEquipped": "İş kıyafeti giyildi!",
+    "normalClothes": "Normal kıyafetlere dönüldü",
+    "clothesRequired": "Önce iş kıyafetini giymelisiniz!",
+    "failedPlaceBox": "Kutu yerleştirilemedi!",
+    "takeBoxFirst": "Önce bir kutu alın!",
+    "boxFull": "Kutu dolu! Kamyona yükleyin.",
+    "placeBoxFirst": "Önce kutuyu yere koyun!",
+    "objectBroken": "Nesne kırıldı! Eşyayı alın.",
+    "noItemsToSell": "Satılacak eşya yok!",
+    "cantRepairPanel": "Bu panel onarılamaz",
+    "cantRepairPole": "Bu direk onarılamaz",
+    "nothingInTrunk": "Bagajda bir şey yok!",
+    "alreadyCarryingSomething": "Zaten bir şey taşıyorsunuz!",
+    "trunkInUse": "Başka biri bagajı kullanıyor!",
+    "failedTakeItem": "Eşya alınamadı!",
+    "itemTaken": "Eşya alındı! Teraziye veya kamyona koyun.",
+    "failedPickupItem": "Eşya alınamadı!",
+    "notCarryingAnything": "Bir şey taşımıyorsunuz!",
+    "failedLoadItem": "Eşya yüklenemedi!",
+    "vehicleSpawnBlocked": "Araç oluşturma noktası engellenmiş!",
+    "failedStartCleaning": "Temizlik başlatılamadı!",
+    "cleanItemsFirst": "Önce birkaç eşya temizleyin!",
+    "allDoneReturn": "Hepsi tamam! Bitirmek için geri dönün.",
+    "newRouteAssigned": "Yeni rota atandı! Temizlemeye devam!",
+    "failedTakeLoadedBox": "Dolu kutu alınamadı!",
+    "jobCompletedByTeam": "İş takımınız tarafından tamamlandı!",
+    "jobFinishedSummary": "İş tamamlandı! Eşya: {items} • Kazanç: {currency}{amount}",
+    "continuePayout": "Bu turun ödemesi yapıldı: {currency}{amount}. Yeni tur başlıyor!",
+    "roundLimitReached": "Tur limitine ulaşıldı — iş bekleme süresi başladı.",
+    "cooldownWaitAny": "{name} herhangi bir işe başlamadan önce {time} beklemeli.",
+    "cooldownWaitJob": "{name} bu işe tekrar başlamadan önce {time} beklemeli.",
+    "cantRunWithDog": "Köpek gezdirirken koşamazsınız!",
+    "cantJumpWithDog": "Köpek gezdirirken zıplayamazsınız!",
+    "cantEnterVehicleWithDog": "Köpek gezdirirken araca binemezsiniz!",
+    "policeAlert": "POLİS ALARMI! Fark edildiniz!",
+    "tooFarFromVan": "Minibüsten çok uzak! Hortum yetişmiyor.",
+    "tooFarFromTask": "Çok uzak! Yaklaşın ve tekrar deneyin.",
+    "itemCleanedPay": "Temizlendi! +{amount}",
+    "itemsCleaned": "Temizlenen Öğeler",
+    "alreadyTaken": "Zaten alındı!",
+    "alreadyInJob": "Zaten bir iştesiniz!",
+    "actionFailed": "İşlem başarısız!",
+    "saleFailed": "Satış başarısız!",
+    "failedSelectZone": "Bölge seçilemedi!",
+    "purchaseFailed": "Satın alma başarısız!",
+    "couldNotSell": "Satılamadı!",
+    "couldNotCastRod": "Olta atılamadı!",
+    "cannotTakeTool": "Alet alınamıyor",
+    "cannotTrimBush": "Bu çalı budanamıyor",
+    "cannotDigLawn": "Bu çim kazılamıyor",
+    "couldNotPickUpBox": "Kutu alınamadı",
+    "couldNotPickUpPallet": "Palet alınamadı",
+    "trunkIsFull": "Bagaj dolu!",
+    "scaleFull": "Kantar dolu!",
+    "palletSlotsFull": "Palet slotları dolu",
+    "truckIsFull": "Kamyon dolu",
+    "toolTaken": "Alet alındı: {tool}",
+    "toolReturned": "Alet iade edildi: {tool}",
+    "alreadyHaveTool": "Zaten bir {tool} var!",
+    "noToolAvailable": "{tool} mevcut değil!",
+    "notHoldingTool": "{tool} tutmuyorsunuz!",
+    "failedReturnTool": "{tool} iade edilemedi!",
+    "takeToolFirst": "Önce bir {tool} alın!",
+    "itemLoaded": "Eşya yüklendi! (slot {slot}/{max})",
+    "itemLoadedDrive": "Eşya yüklendi! (slot {slot}/{max}) — İşleme terazisine gidebilir veya yüklemeye devam edebilirsiniz.",
+    "spotCleaned": "{spot} temizlendi! {count} nokta kaldı.",
+    "collected": "{item} toplandı!",
+    "truckHeadingTo": "Kamyon {dest} yolunda...",
+    "todaysBonusJobs": "Bugünün bonus işleri: {jobs}",
+    "toolUnlocked": "Açıldı: {tool}",
+    "toolUpgraded": "{job}: {tool} açıldı!",
+    "toolSwitched": "{job}: {tool} seçildi!",
+    "qualityBonus": "{quality} kalite! x{multiplier} bonus",
+    "notAuthenticated": "Kimlik doğrulanamadı",
+    "noToolsForJob": "Bu iş için alet yok",
+    "toolNotFound": "Alet bulunamadı",
+    "notEnoughMoney": "Yeterli para yok",
+    "failedUnlockTool": "Alet açılamadı",
+    "toolNotUnlocked": "Alet açılmamış",
+    "failedSelectTool": "Alet seçilemedi",
+    "toolNotFoundForLevel": "Bu seviye için alet bulunamadı",
+    "failedSaveUpgrade": "Yükseltme kaydedilemedi",
+    "failedSwitchTool": "Alet değiştirilemedi",
+    "minimumPlayersRequired": "Bu iş başlamak için en az {count} oyuncu gerektirir.",
+    "insufficientHours": "Bu işi başlatmak için en az {required} saat gerekiyor. Mevcut saatiniz: {current}.",
+    "exceededMaxHours": "Bu iş yalnızca {max} saatten az oynayan oyuncular için geçerlidir. Mevcut saatiniz: {current}.",
+    "insufficientHoursPlayer": "{name} bu işi başlatmak için en az {required} saate ihtiyaç duyuyor. Mevcut: {current} saat.",
+    "exceededMaxHoursPlayer": "{name} bu iş için çok fazla saate sahip ({current}/{max} maks).",
+    "requiresJobLevel": "İş seviyesi {level} gerekli",
+    "playerNotFound": "Oyuncu bulunamadı veya çevrimiçi değil",
+    "failedSetLevel": "Seviye ayarlanamadı",
+    "pickingUp": "Alınıyor...",
+    "pickingUpBox": "Kutu alınıyor...",
+    "placingBox": "Kutu yerleştiriliyor...",
+    "loadingBox": "Kutu yükleniyor...",
+    "placingOnScale": "Teraziye konuyor...",
+    "returningBox": "Kutu iade ediliyor...",
+    "loading": "Yükleniyor...",
+    "takingItem": "Eşya alınıyor...",
+    "placingItem": "Eşya yerleştiriliyor...",
+    "takingTool": "Alet alınıyor...",
+    "storingTool": "Alet kaldırılıyor...",
+    "equippingTool": "Alet kuşanılıyor...",
+    "toolActionInProgress": "Alet işlemi zaten devam ediyor",
+    "toolCooldownActive": "Aleti tekrar kullanmadan önce bekleyin",
+    "cannotTakeToolInVehicle": "Araçtayken alet alamazsınız",
+    "alreadyHoldingTool": "Zaten bir aletiniz var",
+    "noToolInTrunk": "Bagajda alet yok",
+    "toolNotAssigned": "Size atanmış alet yok",
+    "toolNotYours": "Bu sizin aletiniz değil",
+    "toolNotInTrunk": "Alet bagajda değil",
+    "toolActionCancelled": "İşlem iptal edildi",
+    "toolAttachFailed": "Alet takılamadı",
+    "noJobCallbacks": "İş callback'leri yapılandırılmamış",
+    "serverDeniedTool": "Sunucu işlemi reddetti",
+    "noToolInHand": "Elinizde alet yok",
+    "noToolOnBelt": "Kemerinizde alet yok",
+    "toolEntityNotFound": "Alet varlığı bulunamadı",
+    "noActiveTool": "Aktif alet yok",
+    "noToolToReturn": "İade edilecek alet yok",
+    "questProgress": "Görev: {label} ({progress}/{target})",
+    "questCompleted": "Görev Tamamlandı: {label}!{rewards}",
+    "boxTaken": "Kutu alındı! Hasat yapmaya gidin.",
+    "loadedBoxTaken": "Dolu kutu alındı! {count} {label} — Teraziye taşıyın.",
+    "boxEmpty": "Kutu boş! Önce ürün hasat edin.",
+    "boxEmptyError": "Kutu boş",
+    "decalCleaned": "Temizlendi! ({count} kalan)",
+    "allDeliveriesComplete": "Tüm teslimatlar tamamlandı! Bisikleti iade edin.",
+    "allDeliveriesCompletePayment": "Tüm teslimatlar tamamlandı! +{symbol}{payment} | Bisikleti iade edin.",
+    "farmerJobStarted": "Çiftçilik işi başladı! İş kıyafetlerinizi alın ve bir kutu alın.",
+    "farmerBoxTaken": "Kutu alındı! Hasat yapmak için bitkilere gidin.",
+    "farmerBoxEmpty": "Kutu boş! Önce ürün hasat edin.",
+    "fruitpickerJobStarted": "Portakal toplama işi başladı! İş kıyafetlerinizi alın ve bir kutu alın.",
+    "fruitpickerBoxTaken": "Kutu alındı! Portakal toplamak için ağaçlara gidin.",
+    "fruitpickerBoxEmpty": "Kutu boş! Önce portakal toplayın.",
+    "oreBroken": "{ore} cevheri bulundu! Yerden al.",
+    "alreadyProcessing": "İstek zaten işleniyor, lütfen bekleyin."
+  },
+  "prompt": {
+    "pickUpBox": "[E] Kutu Al",
+    "loadBox": "[E] Kutu Yükle",
+    "openTrunk": "[E] Bagajı Aç",
+    "closeTrunk": "[E] Bagajı Kapat",
+    "returnVehicle": "[E] Aracı İade Et",
+    "deliver": "[E] Teslim Et",
+    "returnBoxToTrunk": "[E] Kutuyu Bagaja İade Et",
+    "dropAnchor": "[E] Çapa At",
+    "raiseAnchor": "[E] Çapa Kaldır",
+    "returnBoat": "[E] Tekneyi İade Et",
+    "boardBoat": "[E] Tekneye Bin",
+    "sellItems": "[E] Eşya Sat",
+    "catchDog": "[E] Köpeği Yakala",
+    "cleanPoop": "[E] Pisliği Temizle",
+    "deliverDog": "[E] Köpeği Teslim Et",
+    "getInBucket": "[E] Sepete Bin",
+    "bucketInUse": "Sepet kullanımda",
+    "parkVehicle": "[E] Aracı Park Et",
+    "reelIn": "[E] Oltayı Çek!",
+    "sellFish": "[E] Balık Sat",
+    "changeClothes": "[E] Kıyafet Değiştir",
+    "changeToWorkClothes": "[E] İş kıyafetini giy",
+    "changeToNormalClothes": "[E] Normal kıyafete dön",
+    "collectTreasure": "[E] Hazineyi Kaz",
+    "takeShovel": "[G] Kürek Al",
+    "loadCargo": "[E] Tekneye Yükle",
+    "digTreasure": "[E] Kaz",
+    "openChest": "[E] Sandığı Aç",
+    "pickupLoot": "[E] Ganimeti Al",
+    "stealCargo": "[E] Kargo Çal",
+    "finishJob": "[E] İşi Bitir",
+    "cancelJob": "[E] İşi İptal Et",
+    "exitWarehouse": "[E] Depodan çık",
+    "completeJob": "[E] İşi Tamamla",
+    "activateBelt": "[E] Bandı Aktifleştir",
+    "throwCleanup": "[E] Çöp At",
+    "collectCleanup": "[E] Çöp Topla",
+    "deliverTruck": "[E] Kamyonu Teslim Et",
+    "takeTrimmer": "[E] Budama Aleti Al",
+    "trimBush": "[E] Çalı Buda",
+    "digLawn": "[E] Çim Kaz",
+    "returnWand": "[E] Tabancayı İade Et",
+    "takeWand": "[E] Basınç Tabancası Al",
+    "takeWandOrCloth": "[E] Tabanca Al | [G] Bez Al",
+    "takeTrimmerOrShovel": "[E] Budama Aleti Al | [G] Kürek Al",
+    "cleanToilet": "[E] Tuvaleti Temizle",
+    "fixPipe": "[E] Boruyu Tamir Et",
+    "returnWrench": "[E] Anahtarı İade Et",
+    "takeWrench": "[E] Anahtar Al",
+    "attachTrailer": "[E] Römork Bağla",
+    "deliverTrailer": "[E] Römorkü Teslim Et",
+    "reattachTrailer": "[E] Römorkü Tekrar Bağla",
+    "pickUpPallet": "[E] Palet Al",
+    "loadPallet": "[E] Palet Yükle",
+    "putDownBox": "[E] Kutuyu Bırak",
+    "pickUpBoxForklift": "[E] Forklift ile Kutu Al",
+    "fishingShop": "[E] Balık Dükkanı",
+    "lowerFork": "Çatalı indirmek için [CTRL] basın",
+    "raiseFork": "Çatalı kaldırmak için [SHIFT] basın",
+    "useForklift": "Paletleri taşımak için forklift kullanın",
+    "trunkFull": "Bagaj dolu! Yola çık.",
+    "completeDeliveriesFirst": "Önce tüm teslimatları tamamlayın!",
+    "forkliftControls": "Forklift: CTRL = Çatal İndir | SHIFT = Çatal Kaldır",
+    "processingInProgress": "İşleniyor...",
+    "boxFullLoad": "Kutu dolu! Kamyona veya teraziye yükleyin.",
+    "trunkEmptyGoNpc": "Bagaj boş! NPC'ye gidin.",
+    "takeWrenchFromTrunk": "Minibüs bagajından anahtar alın",
+    "reattachTrailerPrompt": "[E] Römorkü Tekrar Bağla",
+    "finishJobCount": "[E] İşi Bitir ({count} temizlendi)",
+    "returnTool": "[E] {tool} İade Et",
+    "takeTool": "[E] {tool} Al",
+    "finishProcessing": "[E] İşlemeyi Bitir ({boxes} kutu, {currency}{value})",
+    "placeBoxOnScale": "[E] Kutuyu teraziye koy",
+    "loadBoxToTruck": "[E] Kutuyu kamyona yükle ({count} {produce})",
+    "loadBoxToTruckTarget": "{produce} kutusunu kamyona yükle",
+    "returnEmptyBox": "[E] Boş kutuyu iade et",
+    "takeLoadedBox": "[E] Dolu kutu al ({count} kamyonda)",
+    "takeHarvestBox": "[E] Hasat kutusu al ({count}/{cap})",
+    "takeHarvestBoxEmpty": "[E] Hasat kutusu al",
+    "polishSurface": "[E] {surface} Cilala",
+    "continuePolish": "[E] {surface} Cilalamaya Devam Et",
+    "returnAndTake": "[E] {current} İade Et | [G] {other} Al",
+    "deliverCount": "[E] Teslim Et ({current}/{total})",
+    "selectHuntingArea": "[E] Av Bölgesi Seç",
+    "returnBicycle": "[E] Bisikleti İade Et",
+    "takeJack": "[E] Krikoyu al",
+    "swapTire": "[E] Eski lastiği bırak & yedek al",
+    "closeValve": "[E] Vanayı Kapat - Su akışını durdur",
+    "openValve": "[E] Vanayı Aç - Su akışını geri başlat",
+    "wearHuntingClothes": "[E] Av kıyafetini giy",
+    "placeBoxAndHarvest": "[E] Kutuyu koy ve {produce} hasat et",
+    "harvestProduce": "[E] {produce} hasat et",
+    "castRod": "[E] Olta At ({zone})",
+    "returnToSeat": "[E] Koltuğa Dön",
+    "clickTargetsToClean": "Hedeflere tıklayarak temizleyin!"
+  },
+  "hunting": {
+    "started": "Avcılık işi başladı! İş kıyafetlerinizi giyin ve bir bölge seçin.",
+    "newAnimals": "Yeni hayvanlar geldi! Devam edin.",
+    "continueHunting": "Avlanmaya devam edebilirsiniz.",
+    "weaponsGiven": "Av silahları verildi!",
+    "goToArea": "Av bölgesine gidin, hayvanlar orada belirecek!",
+    "cantPickUp": "Bu hayvanı alamazsınız!",
+    "alreadyCarrying": "Zaten bir şey taşıyorsunuz!",
+    "failedPickUp": "Hayvan alınamadı!",
+    "noAnimalsInTrunk": "Bagajda hayvan yok!",
+    "trunkInUse": "Başka biri bagajı kullanıyor!",
+    "orePickedUp": "Hayvan alındı! Teraziye koyun.",
+    "failedPickUpAnimal": "Hayvan alınamadı!",
+    "invalidArea": "Geçersiz bölge!",
+    "areaLocked": "Bu bölge kilitli!",
+    "animalsSpawned": "{count} hayvan ortaya çıktı!",
+    "animalHunted": "{animal} avlandı! ({weight} kg)",
+    "wildAnimalFound": "Vahşi {animal} bulundu! ({weight} kg)",
+    "animalPickedUp": "{animal} alındı! ({weight} kg) Araca yükleyin.",
+    "levelRequired": "Bu bölge için seviye {level} gerekli!",
+    "areaSelected": "{area} seçildi! Haritadaki işareti takip edin.",
+    "processingComplete": "İşleme tamamlandı! {weight} kg, {currency}{amount} kazanıldı",
+    "tooFarWarning": "Av bölgesinden çok uzaklaştın! 15 saniye içinde geri dön yoksa iş iptal edilecek!",
+    "abandonedTooFar": "Av bölgesinden çok uzaklaştığın için iş iptal edildi.",
+    "huntingAreaFallback": "Avlanma Alanı",
+    "animalFallback": "Hayvan",
+    "areaFallback": "Bölge {index}",
+    "selectArea": "Bölgeyi Seç: {name}",
+    "selectHuntingArea": "Avlanma Bölgesi Seç",
+    "pickUpAnimal": "[E] {label} al ({weight} kg)",
+    "loadAnimalToVehicle": "[E] Hayvanı araca yükle",
+    "takeAnimalFromTrunk": "[E] Hayvanı bagajdan al",
+    "takeAnimalFromTrunkCount": "[E] Hayvanı bagajdan al ({count})",
+    "loadAnimalWeight": "[E] Hayvanı yükle ({weight} kg | Kamyon: {current}/{max} kg)",
+    "finishProcessingWeight": "[E] İşlemi Bitir ({weight} kg)",
+    "vehicleOverweight": "~r~Araç aşırı yüklü! ({current}/{max} kg)",
+    "continueHint": "Av bölgesindeki bir sonraki hayvanı takip et",
+    "vehicleOverweightDrop": "~r~Araç aşırı yüklü! ({current}/{max} kg) ~w~[G] Hayvanı bırak",
+    "trunkFullDrop": "~r~Bagaj dolu! ~w~[G] Hayvanı bırak veya mevcut yükü işle.",
+    "carcassDropped": "Hayvan bırakıldı.",
+    "dropHint": "[G] Hayvanı bırak",
+    "progressTitle": "Avcılık",
+    "progressDetail": "Bir av bölgesi seç, hayvanları avla, hayvanları kamyonuna taşı, sonra teraziye sür.",
+    "stepSelectArea": "Haritadan bir av bölgesi seç",
+    "stepHuntAnimal": "Bölgede bir hayvan avla",
+    "stepPickingUp": "Hayvan alınıyor",
+    "stepPickupCarcass": "Ölü hayvanı al",
+    "stepLoadTrunk": "Hayvanı kamyona yükle",
+    "stepGoToScale": "Hayvanları teraziye sür",
+    "stepPlacingOnScale": "Hayvan teraziye konuyor",
+    "stepPlaceOnScale": "Hayvanı teraziye koy",
+    "stepProcessAnimal": "Hayvanları işlemek için NPC ile konuş",
+    "stepNewArea": "Yeni bir av bölgesi seç"
+  },
+  "tiretechnician": {
+    "goGetJack": "Kamyonuna git ve krikoyu al!",
+    "takingJack": "Kriko alınıyor...",
+    "jackTaken": "Kriko hazır! Arabanın altına yerleştir.",
+    "placingJack": "Kriko yerleştiriliyor...",
+    "jackPlaced": "Araba kaldırıldı! Patlak lastiği sök.",
+    "removingTire": "Patlak lastik sökülüyor...",
+    "tireRemoved": "Lastik söküldü! Kamyona götür ve yedek al.",
+    "swappingTires": "Lastikler değiştiriliyor...",
+    "spareTaken": "Yedek lastik hazır! Arabaya tak.",
+    "installingTire": "Yedek lastik takılıyor...",
+    "tireInstalled": "Lastik takıldı! Aracı indirmek için krikoyu sök.",
+    "loweringVehicle": "Araç indiriliyor...",
+    "tireChanged": "Lastik başarıyla değiştirildi!",
+    "repairCancelled": "Tamir iptal edildi",
+    "cantRepair": "Bu aracı tamir edemezsiniz",
+    "finishCurrentFirst": "Önce mevcut tamiri bitir!",
+    "goToTruck": "Servis kamyonuna git!",
+    "returningJack": "Kriko geri koyuluyor...",
+    "takingSpare": "Yedek lastik alınıyor...",
+    "needSpare": "Yedek lastik gerekli! Önce kamyondan al.",
+    "returnVehicle": "Servis kamyonunu depoya geri götür!",
+    "interactPlaceJack": "[E] Krikoyu yerleştir",
+    "interactRemoveTire": "[E] Patlak lastiği sök",
+    "interactInstallTire": "[E] Yedek lastiği tak",
+    "interactLowerVehicle": "[E] Aracı indir",
+    "interactPickupJack": "[E] Krikoyu al",
+    "interactChangeTire": "[E] Lastik değiştir",
+    "interactReturnJack": "[E] Krikoyu geri koy",
+    "interactReturnTire": "[E] Lastiği geri koy",
+    "interactTakeJack": "[E] Krikoyu al",
+    "interactTakeSpare": "[G] Yedek lastiği al",
+    "interactTakeSpareE": "[E] Yedek lastiği al",
+    "progressTitle": "Lastik Tamircisi",
+    "progressDetail": "Yol kenarındaki araçlara git ve patlak lastiklerini değiştir.",
+    "progressTires": "Lastik ({done}/{total})",
+    "serviceTruck": "Lastik Servis Kamyonu",
+    "continueHint": "Haritandaki bir sonraki yolda kalmış araca sür",
+    "stepTakeJack": "Krikoyu kamyondan al",
+    "stepJackUp": "Arabayı kaldır",
+    "stepRemoveFlat": "Patlak lastiği sök",
+    "stepFitSpare": "Yedek lastiği tak",
+    "stepLowerCar": "Arabayı indir",
+    "stepReturnJack": "Krikoyu kamyona geri koy"
+  },
+  "powerlines": {
+    "bucketInstructions": "Ok tuşlarıyla sepeti kaldırın/indirin. Menzile girince [E] ile tamir edin.",
+    "parkNearPoles": "Direklerin yanına park edin ve kablolamaya ulaşmak için sepeti kullanın.",
+    "cantDriveWithBucket": "Sepet kullanımdayken süremezsiniz",
+    "panelRepaired": "Panel başarıyla tamir edildi!",
+    "panelCancelled": "Panel tamiri iptal edildi",
+    "poleRepaired": "Telefon direği başarıyla tamir edildi!",
+    "poleRepairFailed": "Direk tamiri başarısız! Elektriğe dikkat edin.",
+    "progressTitle": "Elektrikçi",
+    "bucketControls": "Sepet Kontrolleri | Yukarı Aşağı Sol Sağ",
+    "blipPanel": "Elektrik Panosu",
+    "blipPole": "Telefon Direği",
+    "blipVehicle": "Sepetli Kamyon",
+    "continueHint": "Haritandaki bir sonraki hasarlı direği bul"
+  },
+  "diving": {
+    "oxygenCritical": "OKSİJEN KRİTİK! Hemen yüzeye çıkın!",
+    "oxygenLow": "Oksijen azalıyor! Yüzeye çıkmalısınız.",
+    "refillingTank": "Hava tüpü doluyor...",
+    "tankRefilled": "Hava tüpü dolduruldu.",
+    "coralEmpty": "Mercan kırıldı ama içi boş.",
+    "trashCleaned": "Çöp temizlendi!",
+    "failedSyncBoat": "Tekne senkronize edilemedi. Tekrar deneyin.",
+    "allTasksComplete": "Tüm görevler tamamlandı! Tekneye dönün ve çapayı kaldırın.",
+    "anchorDropped": "Çapa atıldı! Tekneden inin ve dalın.",
+    "anchorRaised": "Çapa kaldırıldı! Teslimat noktasına gidin.",
+    "anchorRaisedEarly": "Çapa kaldırıldı! Erken dönüş — ödeme yapılmayacak.",
+    "anchorRaisedContinue": "Çapa kaldırıldı! Dalış bölgesinde tekrar çapa atabilirsiniz.",
+    "gearEquipped": "{gear} kuşanıldı! ({seconds}sn oksijen)",
+    "itemsSold": "{count} eşya satıldı! {currency}{amount} kazanıldı!",
+    "zoneSelected": "Dalış bölgesi seçildi: {zone}. Yola çıkın!",
+    "zoneInfo": "Dalış bölgesi: {zone}",
+    "reconnected": "Dalış işine yeniden bağlandı!",
+    "started": "Dalış işi başladı! Bir bölge seçin ve dalış noktasına gidin.",
+    "progressTitle": "Dalış",
+    "progressDetail": "Dalış bölgesinde su altı eşyalarını toplayın. Dalın ve deniz tabanından nesneleri toplayın.",
+    "divingStarted": "Dalış bölgesindesiniz! Deniz tabanından eşyaları toplayın.",
+    "collectingCoral": "Mercan toplanıyor...",
+    "cleaningTrash": "Çöp temizleniyor...",
+    "unknownZone": "Bilinmiyor",
+    "sellAtNpcReminder": "Ödemeni almak için topladığın eşyaları satıcı NPC'ye sat.",
+    "continueHint": "Haritandaki bir sonraki dalış noktasını bul"
+  },
+  "treasurehunter": {
+    "started": "Hazine avcılığı işi başladı! Hazine bölgesine gidin.",
+    "reconnected": "Hazine avcılığı işine yeniden bağlandı!",
+    "newTarget": "Bir ekip hazineyi buldu! Yeni konum atandı.",
+    "treasureFound": "{tier} buldunuz! {currency}{value} kazanıldı!",
+    "someoneNearby": "Yakınında biri var! Toplamak için uzaklaş.",
+    "anchorDropped": "Çapa atıldı! Dal ve hazineyi bul!",
+    "anchorRaised": "Çapa kaldırıldı! İskeleye geri dön.",
+    "oxygenCritical": "OKSİJEN KRİTİK! Hemen yüzeye çıkın!",
+    "oxygenLow": "Oksijen azalıyor! Yüzeye çıkmalısınız.",
+    "refillingTank": "Hava tüpü doluyor...",
+    "tankRefilled": "Hava tüpü dolduruldu.",
+    "depthWarning": "Tehlikeli derinlik! Oksijen daha hızlı azalıyor!",
+    "fakeLocation": "Sahte sinyal... Yeni koordinatlar hesaplanıyor.",
+    "penalty": "Ceza: {currency}{amount} — İskelede şirket teknesi yok.",
+    "digging": "Hazine kazılıyor...",
+    "alreadyCollected": "Bu hazineyi biri zaten topladı!",
+    "alreadySurfaced": "Sandık zaten yüzeyde!",
+    "notSurfaced": "Sandık henüz yüzeye çıkmadı! Kazmaya devam et.",
+    "someoneOpening": "Başka biri sandığı açıyor!",
+    "needShovel": "Küreğe ihtiyacın var! Tekneden al.",
+    "cargoLoaded": "Ganimet tekneye yüklendi!",
+    "cargoFull": "Tekne kargosu dolu! Teslim etmek için iskeleye dön.",
+    "stolenItem": "Başka tekneden ganimet çaldın!",
+    "cargoStolenFromYou": "Birisi teknenden ganimet çaldı!",
+    "someoneOpened": "Birisi {tier} açtı!",
+    "stealDisabled": "Çalma özelliği aktif değil.",
+    "noCargoHere": "Burada çalınacak kargo yok.",
+    "shovelTaken": "Kürek alındı!",
+    "canFinishHint": "Daha fazla hazine topla veya işi bitirmek için iskeleye dön.",
+    "anchorRaisedContinue": "Çapa kaldırıldı! Sonraki hazineye git veya iskeleye dönüp işi bitir.",
+    "progressTitle": "Hazine Avcısı",
+    "progressDetail": "Su altına dalın ve hazine sandıklarını toplayın. Bip seslerini takip edin.",
+    "cargoProgress": "Kargo: {current}/{max}",
+    "blipDock": "İskele - Teslim",
+    "blipTreasure": "Hazine Konumu",
+    "continueHint": "Bir sonraki sandığa ulaşmak için izleyiciyi takip et"
+  },
+  "metaldetector": {
+    "continueHint": "Dedektör seslerini takip et ve sıradaki bölgeyi tara",
+    "started": "Metal dedektörü mesaisi başladı! Kamyonetten bir dedektör al ve arama bölgesine git.",
+    "newRound": "Yeni tur başladı. Tarayıcı yeniden kalibre edildi.",
+    "newZone": "Yeni arama bölgesi: {zone}",
+    "teammateFound": "Takım arkadaşın bir eşya çıkardı.",
+    "pressDig": "[E] Burayı kaz",
+    "digging": "Kazılıyor...",
+    "digCancelled": "Kazı iptal edildi.",
+    "digTooFast": "Çok hızlı kazıyorsun. Biraz yavaşla.",
+    "exitVehicleFirst": "Dedektörü kullanmak için araçtan in.",
+    "outsideZone": "İşaretli sahil bölgesinin içinde kalmalısın.",
+    "lootFound": "{item} çıkardın! +{currency}{amount}",
+    "lootFoundItem": "{item} çıkardın! Envanterine eklendi.",
+    "unknownItem": "Bilinmeyen Eşya",
+    "roundFinished": "Tur tamamlandı! Bu bölgedeki tüm noktalar kazıldı.",
+    "canFinishHint": "Bitirmek veya devam etmek için NPC'deki iş seçeneklerini aç.",
+    "spotAlreadyDug": "Bu nokta zaten kazılmış.",
+    "spotBusy": "Bir takım arkadaşın bu noktayı zaten kazıyor.",
+    "takeDetectorFirst": "Önce kamyonetten bir metal dedektörü al.",
+    "detectorReturned": "Dedektör kamyonete geri kondu.",
+    "blipSearchArea": "Arama Alanı",
+    "unknownZone": "Bilinmeyen Sahil",
+    "progressTitle": "Metal Dedektörü",
+    "progressDetail": "Sahil bölgelerindeki gizli metal buluntuları dedektörünle bul ve kaz.",
+    "progressSpots": "Kazılan noktalar: {current}/{max}",
+    "progressValue": "Biriken Değer: {currency}{amount}",
+    "labelTakeTool": "[E] Metal dedektörünü al",
+    "labelReturnTool": "[E] Dedektörü geri koy",
+    "labelPutOnBelt": "[G] Dedektörü kemere tak",
+    "labelTakeFromBelt": "[G] Dedektörü kemerden al",
+    "labelTakeFromTrunk": "[E] Kasadan al (%d)",
+    "labelNoMoreItems": "~y~Kasada bir şey kalmadı.",
+    "labelLoadToTruck": "[E] Kamyonete yükle",
+    "labelPickup": "[E] Al",
+    "labelDig": "[E] Kaz",
+    "labelClothesWork": "[E] İş kıyafetini giy",
+    "labelClothesNormal": "[E] Normal kıyafetini giy",
+    "labelFailNotify": "Şu anda burayı kazamazsın",
+    "returnVehicleHint": "Vardiya bitiyor — minibüsü teslim etmek için üsse geri sür.",
+    "returnVehiclePrompt": "[E] Minibüsü teslim et",
+    "returnVehicleBlip": "Minibüsü teslim et",
+    "jobFinished": "Vardiya bitti! {symbol}{earned} kazandın.",
+    "vehicleNotAtDepot": "Minibüs üste geri getirilmeli!",
+    "tooFarFromDepot": "Üsten çok uzaktasın!"
+  },
+  "delivery": {
+    "reconnected": "Teslimat işine yeniden bağlandı!",
+    "started": "Kargo teslimat işi başladı!",
+    "leaderPreparing": "Lider aracı hazırlıyor, lütfen bekleyin...",
+    "spawnFailed": "Araç oluşturulamadı! Oluşturma noktası dolu. İş iptal edildi.",
+    "alreadyCarryingBox": "Zaten bir kutu taşıyorsunuz!",
+    "boxPickedUp": "Kutu alındı! Araca yükleyin.",
+    "notCarryingBox": "Kutu taşımıyorsunuz!",
+    "firstDelivery": "İlk teslimat noktası atandı! Hazır olunca yola çıkın.",
+    "trunkFull": "Bagaj dolu! Teslimat zamanı.",
+    "boxDeliverPickup": "Kutu alındı! Müşteriye teslim edin.",
+    "newRound": "Yeni tur! Depodan kutu yükleyin.",
+    "pickUpToContinue": "Devam etmek için NPC'den kutu alın. Bitirmek için işaretli noktaya gidin ve aracı iade edin.",
+    "returnVehicleToFinish": "Tüm teslimatlar tamam! Görevi bitirmek için aracı işaretli noktaya götürüp teslim et.",
+    "deliveriesStarting": "Teslimatlar başlıyor!",
+    "teammateTookBox": "Takım arkadaşı kutu aldı",
+    "teammateReturnedBox": "Takım arkadaşı kutuyu bagaja iade etti",
+    "teammatePartialDelivery": "Takım arkadaşı kısmi teslimat yaptı!",
+    "allComplete": "Tüm teslimatlar tamamlandı! Depoya dönün.",
+    "progressTitle": "Teslimat",
+    "progressDetail": "Şehir genelinde müşterilere paket teslim edin. Kutuları yükleyin ve her adrese teslim edin.",
+    "loadCapacity": "Depodan kutuları yükleyin! Kapasite: {capacity} kutu",
+    "vehicleReadyLoad": "Araç hazır! Depodan kutuları yükleyin. Kapasite: {capacity} kutu",
+    "subtaskDeliver": "Paketleri teslim et ({current}/{total})",
+    "subtaskLoad": "Depoda kutuları yükle ({current}/{total})",
+    "boxLoaded": "Kutu yüklendi! ({current}/{total})",
+    "boxReturned": "Kutu iade edildi! (Kasada {count} kutu)",
+    "partialDelivery": "Kısmi teslimat! ({current}/{total}) +{amount} | Başka bir kutu getirin.",
+    "deliveryDone": "Teslimat tamamlandı! +{amount} | Tüm teslimatlar bitti! Depoya dönün.",
+    "deliveryDoneRemaining": "Teslimat tamamlandı! +{amount} | Kalan: {remaining}",
+    "deliveryFailed": "Teslimat başarısız!",
+    "couldNotContinue": "Devam edilemedi!",
+    "couldNotPickUp": "Kutu alınamadı!",
+    "couldNotLoad": "Kutu yüklenemedi!",
+    "couldNotReturn": "Kutu iade edilemedi!",
+    "teammateLoaded": "Takım arkadaşı kutu yükledi ({current}/{total})",
+    "teammateDelivered": "Takım arkadaşı teslimat yaptı! Kalan: {remaining}",
+    "itemLabel": "Teslimatlar",
+    "continueHint": "Bir sonraki paketi al ve teslim et"
+  },
+  "cardetailer": {
+    "started": "Araba detay işi başladı! Ekipmanınızı alın ve müşteri arabalarına gidin.",
+    "newCars": "Yeni arabalar atandı! Detaylamaya devam edin.",
+    "wandEquipped": "Basınç Tabancası alındı!",
+    "wandReturned": "Basınç Tabancası minibüse iade edildi.",
+    "clothEquipped": "Cila Bezi alındı!",
+    "clothReturned": "Cila Bezi minibüse iade edildi.",
+    "takeWandFirst": "Önce basınç tabancasını alın!",
+    "needCloth": "Cila bezine ihtiyacınız var! Minibüsten alın.",
+    "failedStartPolish": "Cilalama başlatılamadı!",
+    "tooFar": "Çok uzak! Yaklaşın ve tekrar deneyin.",
+    "carDetailed": "Araba detaylandı!",
+    "carWashed": "Araba yıkandı! Bonus ödeme için cilalayın.",
+    "hoseLimit": "Hortum limiti! Minibüse daha yakın durun.",
+    "carDetailedTeammate": "Takım arkadaşı arabayı detayladı!",
+    "carWashedTeammate": "Takım arkadaşı arabayı yıkadı!",
+    "carPolished": "Araba cilalandı! Harika iş!",
+    "carPolishedTeammate": "Takım arkadaşı arabayı cilaladı!",
+    "returnToDepot": "İşi tamamlamak için depoya dönün.",
+    "spotRightFrontDoor": "Sağ Ön Kapı",
+    "spotLeftFrontDoor": "Sol Ön Kapı",
+    "spotHood": "Kaput",
+    "spotTrunk": "Bagaj",
+    "spotRightRearDoor": "Sağ Arka Kapı",
+    "spotLeftRearDoor": "Sol Arka Kapı",
+    "spotHoodRight": "Kaput Sağ",
+    "spotHoodLeft": "Kaput Sol",
+    "toolWand": "Tabanca",
+    "toolCloth": "Bez",
+    "carsDetailed": "Detaylanan Arabalar",
+    "progressTitle": "Araç Detay",
+    "progressDetail": "Müşteri arabalarını yıkayın ve cilalayın. Yıkama için basınç tabancasını, ardından cilalama için bezi kullanın.",
+    "carLabel": "Araba #{index}",
+    "subtaskWashed": "{car} yıkandı",
+    "subtaskPolished": "{car} cilalandı",
+    "subtaskDetailed": "{car} detaylandı",
+    "spotFallback": "Nokta",
+    "continueHint": "Bir sonraki arabaya sür ve detaylamaya başla",
+    "spotHoodCenter": "Kaput Orta",
+    "spotRoof": "Tavan",
+    "spotRoofLeft": "Tavan Sol",
+    "spotTrunkRight": "Bagaj Sağ",
+    "spotTrunkLeft": "Bagaj Sol",
+    "spotFrontFenderRight": "Ön Çamurluk Sağ",
+    "spotFrontFenderLeft": "Ön Çamurluk Sol",
+    "spotDoorRight": "Kapı Sağ",
+    "spotDoorRightFront": "Sağ Ön Kapı",
+    "spotDoorLeft": "Kapı Sol",
+    "spotDoorLeftFront": "Sol Ön Kapı",
+    "spotRearFenderRight": "Arka Çamurluk Sağ",
+    "spotRearFenderLeft": "Arka Çamurluk Sol"
+  },
+  "cleaner": {
+    "started": "Temizlik işi başladı! İş kıyafetlerinizi giyin ve paspası alın.",
+    "toolMop": "Paspas",
+    "progressTitle": "Temizlikçi",
+    "progressDetail": "Haritada işaretli kir lekelerini paspasınızla temizleyin. Her lekenin yanına gidin ve temizlemeye başlamak için [E] basın.",
+    "itemLabel": "Kir Lekesi",
+    "blipLabel": "Kir Lekesi",
+    "finishItemLabel": "Temizlenen Lekeler",
+    "cleanPrompt": "[E] Leke temizle ({current}/{total})",
+    "subtaskClean": "Tüm lekeleri temizle ({current}/{total})",
+    "continueHint": "Haritandaki bir sonraki lekeye git"
+  },
+  "windowscleaner": {
+    "started": "Cam temizleme işi başladı! İş kıyafetlerinizi giyin ve süngeri alın.",
+    "toolSponge": "Sünger",
+    "progressTitle": "Cam Temizleyici",
+    "progressDetail": "Her konumdaki kirli camları temizleyin. Süngerinizle işaretli noktaları ovun.",
+    "dirtyWindow": "Kirli Pencere",
+    "dirtyWindowBlip": "Kirli Pencere #%d",
+    "windowsCleaned": "Temizlenen Pencereler",
+    "cleanWindowProgress": "[E] Pencereyi temizle ({hits}/{required})",
+    "continueHint": "Haritandaki bir sonraki kirli pencereyi bul"
+  },
+  "powerwash": {
+    "started": "Basınçlı yıkama işi başladı! İş kıyafetlerinizi giyin ve tabancayı alın.",
+    "takeWandFirst": "Önce basınç tabancasını alın!",
+    "tooFarFromSpot": "Noktadan çok uzak!",
+    "toolWand": "Basınç Tabancası",
+    "progressTitle": "Basınçlı Yıkama",
+    "progressDetail": "Haritada işaretli kirli noktaları basınç tabancasıyla temizleyin. Lekenin üzerine nişan alın ve [Sol Tık] basılı tutarak püskürtün.",
+    "dirtySpot": "Kirli Nokta",
+    "dirtySpotBlip": "Kirli Nokta #%d",
+    "spotsCleaned": "Temizlenen Noktalar",
+    "continueHint": "Bir sonraki kirli noktaya geç"
+  },
+  "forklift": {
+    "newCrates": "Yeni kasalar geliyor...",
+    "preparingForklifts": "Forkliftler hazırlanıyor...",
+    "failedSpawnForklifts": "Forkliftler oluşturulamadı!",
+    "beltFull": "Bant dolu! Önce konveyörü aktifleştirin.",
+    "earnedReward": "+{symbol}{money}, +{xp} XP",
+    "modeBeltToShelf": "Banttan al, raflara yerleştir!",
+    "modeCratesToBelt": "Kasaları banda taşı!",
+    "newRoundBeltToShelf": "Yeni tur: Banttan al, raflara yerleştir!",
+    "newRoundStarting": "Yeni tur başlıyor!",
+    "progressTitle": "Forklift",
+    "progressDetailToShelf": "Forklift ile kasaları taşıyın. Kasaları alın ve raflara yerleştirin.",
+    "progressDetailToBelt": "Forklift ile kasaları taşıyın. Kasaları alın ve konveyör bandına teslim edin.",
+    "onlyLeaderCanCancel": "Sadece lider görevi iptal edebilir",
+    "deliveredCrates": "Teslim Edilen Kasalar",
+    "continueHint": "Forklift ile bir sonraki kasayı al"
+  },
+  "warehouse": {
+    "newTrucks": "Yeni kamyonlar geliyor...",
+    "failedInitSession": "Oturum başlatılamadı!",
+    "preparingVehicles": "Araçlar hazırlanıyor...",
+    "failedSpawnForklift": "Forklift oluşturulamadı!",
+    "truckOnTheWay": "Kamyon yolda...",
+    "truckReady": "Kamyon yüklemeye hazır!",
+    "truckReadyWithOrder": "Kamyon hazır! Yük: {boxes} kutu, {pallets} palet",
+    "boxesProgress": "Kutular: {current}/{total}",
+    "palletsProgress": "Paletler: {current}/{total}",
+    "orderInfo": "Sipariş: {boxes} kutu, {pallets} palet",
+    "deliveryCompleteReward": "Teslimat tamamlandı! +${money}, +{xp} XP",
+    "newOrder": "Yeni sipariş: {boxes} kutu, {pallets} palet",
+    "newOrderWithRemaining": "Yeni sipariş: {boxes} kutu, {pallets} palet ({remaining} kamyon kaldı)",
+    "deliveryComplete": "Teslimat tamamlandı!",
+    "takeBoxToTruck": "Kutuyu kamyona götürün!",
+    "truckNotReady": "Kamyon hazır değil",
+    "truckNotFound": "Kamyon bulunamadı",
+    "getInForklift": "Forklifte binin",
+    "alreadyCarrying": "Zaten bir şey taşıyorsunuz",
+    "boxDropped": "Kutu düşürüldü",
+    "progressTitle": "Depo",
+    "progressDetail": "Teslimat kamyonuna kargo yükleyin. Forklift kullanın veya elle taşıyın.",
+    "completedTrucks": "Tamamlanan Kamyonlar",
+    "continueHint": "Bir sonraki paleti kamyona yükle"
+  },
+  "landscaping": {
+    "failedInit": "İş başlatılamadı!",
+    "toolNotAvailable": "Alet mevcut değil!",
+    "needTrimmer": "Çalı budamak için budama aletine ihtiyacınız var!",
+    "trimmingCancelled": "Çalı budama iptal edildi",
+    "needShovel": "Çim kazmak için küreğe ihtiyacınız var!",
+    "diggingCancelled": "Çim kazma iptal edildi",
+    "newTasks": "Yeni bahçıvanlık görevleri atandı!",
+    "allComplete": "Tüm görevler tamam! Ödeme için depoya dönün.",
+    "onlyLeaderFinish": "Sadece lider işi bitirebilir!",
+    "notAllBushes": "Tüm çalılar budanmadı!",
+    "notAllLawns": "Tüm çimler kazılmadı!",
+    "jobStarted": "Bahçıvanlık işi başladı! {bushes} çalı buda ve {lawns} çim kaz. Aletleri kamyondan alın.",
+    "bushTrimmed": "Çalı budandı! {bushes} çalı, {lawns} çim kaldı",
+    "lawnDug": "Çim kazıldı! {bushes} çalı, {lawns} çim kaldı",
+    "toolTrimmer": "Budama Aleti",
+    "toolShovel": "Kürek",
+    "progressTitle": "Bahçıvan",
+    "progressDetail": "Alanları bakımını yapın. Her mülkte çalıları budayın ve çimleri kazın.",
+    "toolFallback": "Alet",
+    "continueHint": "Bakımı yapılacak bir sonraki mülke git"
+  },
+  "farmer": {
+    "alreadyHarvested": "Bitki zaten hasat edildi!",
+    "failedStartHarvest": "Hasat başlatılamadı",
+    "plantsRespawned": "Bitkiler yeniden çıktı! {count} tanesi hasat için hazır.",
+    "progressTitle": "Çiftçi",
+    "progressDetail": "Tarlalardan ürün hasat edin. Bitkileri toplayın ve araca yükleyin.",
+    "jobLabel": "Çiftçi",
+    "produceLabel": "ürün",
+    "vehicleBlip": "Çiftlik Aracı",
+    "subtaskHarvest": "Bitkileri hasat et ({current}/{total})",
+    "continueHint": "Bir sonraki bitkiye git ve hasat et",
+    "stepTakeBox": "Kamyondan bir kutu al",
+    "stepHarvesting": "Bitkiyi hasat etmeye devam et",
+    "stepHarvestPlant": "Bir bitkiye yürü ve hasat et",
+    "stepLoadBoxToTruck": "Dolu kutuyu kamyona yükle",
+    "stepGoToScale": "Kutuları teraziye sür",
+    "stepPlaceOnScale": "Kutuyu teraziye koy",
+    "stepProcessProduce": "Ürünleri işlemek için NPC ile konuş",
+    "stepNewRound": "Bir kutu al ve yeni tura başla"
+  },
+  "fishing": {
+    "failedSpawnBoat": "Balıkçı teknesi oluşturulamadı!",
+    "started": "Balıkçılık işi başladı! Tekneye binin ve balık avlama bölgesine gidin.",
+    "failedSyncBoat": "Balıkçı teknesi senkronize edilemedi!",
+    "noFishToSell": "Satılacak balık yok!",
+    "noWater": "Su bulunamadı! Suya yakın durun.",
+    "fishOnLine": "Oltada balık var! Çekmek için [E] basın!",
+    "fishGotAway": "Balık kaçtı! Çok yavaştınız.",
+    "fishEscaped": "Balık kaçtı!",
+    "castCancelled": "Balık tutma iptal edildi.",
+    "outfitEquipped": "Balıkçı kıyafeti giyildi!",
+    "cantUseInventoryRod": "İş modunda envanter oltası kullanılamaz!",
+    "alreadyCast": "Zaten oltanızı attınız!",
+    "mustBeNearWater": "Suyun yakınında olmalısınız!",
+    "completed": "Balıkçılık işi başarıyla tamamlandı!",
+    "freeModeDisabled": "Serbest mod devre dışı!",
+    "noBait": "Yem yok! Balık dükkanından yem alın.",
+    "itemPurchased": "{amount}x {item} satın alındı! ({currency}{price})",
+    "fishSold": "{count} balık satıldı! {currency}{amount} kazanıldı!",
+    "progressTitle": "Balıkçılık",
+    "progressDetail": "Balık avlama noktasında balık tutun. Oltanızı atın ve çekin.",
+    "subtaskFishCaught": "Yakalanan balık: {count}",
+    "shopTitle": "Balık Dükkanı",
+    "selectRod": "Olta Seçin",
+    "selectBait": "Yem Seçin",
+    "sellTitle": "Balık Sat",
+    "baitStats": "{price} | Şans: +{chance}%",
+    "fishPriceRange": "{min} - {max} aralığı",
+    "continueHint": "Bir sonraki balık noktasına geç ve oltanı at"
+  },
+  "cleanup": {
+    "started": "Çöp toplama işi başladı! Önce iş kıyafetlerini giyin, sonra [E] ile çöp bidonlarından çöp toplayın ve kamyona yükleyin.",
+    "alreadyCarrying": "Zaten bir şey taşıyorsunuz!",
+    "binEmpty": "Bu çöp bidonu boş!",
+    "noCleanupInBin": "Bu bidonda çöp yok!",
+    "animFailed": "Animasyon yüklenemedi!",
+    "bagPickedUp": "Çöp torbası alındı! Kamyonun arkasına gidin ve [E] ile atın.",
+    "notHoldingBag": "Çöp torbası tutmuyorsunuz!",
+    "thrownIn": "Çöp atıldı!",
+    "noCleanupInTruck": "Kamyonda çöp yok!",
+    "truckReady": "Çöp kamyonu hazır!",
+    "keepWorking": "Çalışmaya devam! Yeni çöp bidonları arayın.",
+    "truckTooFar": "Kamyon çok uzakta veya mevcut değil. Kamyona yaklaşın.",
+    "truckFullBagDropped": "Kamyon dolu! Çöp torbası düşürüldü. Kamyonu teslimat noktasına sürün.",
+    "jobEnded": "Çöp toplama işi bitti.",
+    "truckFullDrive": "Kamyon dolu! ({count}/{max}) Kamyonu haritadaki teslimat noktasına sürün.",
+    "spawnBlocked": "Araç alanı engelli! Aracı taşıyın ve tekrar deneyin.",
+    "vehicleSpawnFailed": "Araç oluşturulamadı!",
+    "areaSelected": "{area} bölgesi seçildi. Haritadaki bölgeye gidin ve [E] ile çöp bidonlarından çöp toplayın.",
+    "progressTitle": "Çöp Toplama",
+    "progressDetail": "Güzergah boyunca çöp bidonlarını toplayın. Her bidonu alın ve kamyona yükleyin.",
+    "deliveryBlip": "Çöp Teslim Noktası",
+    "collectBinsProgress": "Bidon topla ({current}/{max})",
+    "dumpDeliveries": "Teslimatlar: {count}",
+    "hintCollectBins": "Yakındaki çöp bidonlarını bulun ve [E] ile çöp torbası toplayın.",
+    "hintCollectBinsTarget": "Yakındaki çöp bidonlarını bulun ve üçüncü göz ile çöp torbası toplayın.",
+    "bagPickedUpTarget": "Çöp torbası alındı! Kamyonun arkasına gidin ve üçüncü göz ile içine atın.",
+    "areaSelectedTarget": "{area} bölgesi seçildi. Haritadaki bölgeye gidin ve üçüncü göz ile bidonlardan çöp toplayın.",
+    "continueHint": "Rotandaki bir sonraki çöp bidonuna sür"
+  },
+  "dogwalking": {
+    "anotherWalk": "Yeni yürüyüş başlıyor!",
+    "dogGotAway": "Köpeğiniz kaçtı! İş başarısız.",
+    "dogDied": "Köpeğiniz öldü! İş iptal edildi.",
+    "dogNeedsToGo": "Köpeğinizin ihtiyacı var! Bekleyin...",
+    "dogBrokeFree": "Eyvah! Köpeğiniz kaçtı! Hemen yakalayın!",
+    "dogPickedUp": "Köpeğinizi aldınız! Herkesi bekleyin.",
+    "returnDog": "Harika yürüyüş! Şimdi köpeği sahibine geri götürün.",
+    "caughtDog": "Neyse ki köpeği yakaladınız.",
+    "noDogAssigned": "Size atanmış köpek yok!",
+    "alreadyClaimed": "Köpeğinizi zaten aldınız!",
+    "poopAlreadyCleaned": "Pislik zaten temizlendi!",
+    "notYourDogPoop": "Bu sizin köpeğinizin pisliği değil!",
+    "walkNotComplete": "Yürüyüş henüz tamamlanmadı!",
+    "reconnected": "Köpek gezdirme işine yeniden bağlandı!",
+    "started": "Köpek gezdirme işi başladı! Müşterinin evine gidin.",
+    "walkYourDog": "Köpeğinizi {distance}m gezdirin! Yürüyüşün tadını çıkarın.",
+    "dogDelivered": "Köpek teslim edildi! {symbol}{payment} ve {xp} XP kazandınız",
+    "progressTitle": "Köpek Gezdirme",
+    "progressDetail": "Köpekleri rotaları boyunca gezdirin. Onları mutlu tutun ve arkalarını temizleyin.",
+    "dogDiedNoPayment": "Bir köpek öldü! İş iptal edildi — ödeme yok.",
+    "blipHome": "Müşteri Evi",
+    "clientHomeFallback": "Müşteri Evi",
+    "continueHint": "Bir sonraki köpeğini al ve gezdirmeye başla",
+    "pickupTaskLabel": "Bir sonraki köpeğini al",
+    "pickupDescription": "Haritadaki işaretli konumdaki köpeğe git ve gezdirmeye başlamak için [E] bas.",
+    "tooFarFromHome": "Sahibin evinden çok uzaktasınız!"
+  },
+  "harvest": {
+    "processingInProgress": "İşleniyor, lütfen bekleyin!",
+    "noBoxesOnScale": "Terazide kutu yok!",
+    "processingComplete": "İşlem tamamlandı! {count} kutu, {currency}{amount} kazanıldı",
+    "boxLoadedScale": "Kutu yüklendi! {count} {produce}, değer: {currency}{value} — İşleme istasyonuna gidin!",
+    "boxLoaded": "Kutu yüklendi! {count} {produce}, değer: {currency}{value}",
+    "boxPlaced": "Kasa yerleştirildi! {count} {produce}, değer: {currency}{value}",
+    "produceHarvested": "{produce} hasat edildi! ({current}/{total})",
+    "produceAddFailed": "{produce} kasaya eklenemedi!"
+  },
+  "miner": {
+    "started": "Madencilik işi başladı! İş kıyafetlerinizi giyin ve ekipmanı alın.",
+    "newRocks": "Yeni kayalar belirdi! Madenciliğe devam edin.",
+    "orePickedUp": "Cevher alındı! Kamyona yükleyin.",
+    "rocksRemaining": "Kırılacak {count} kaya kaldı.",
+    "processingInProgress": "İşleniyor, lütfen bekleyin!",
+    "noRocksOnScale": "Terazide kaya yok!",
+    "processingComplete": "İşlem tamamlandı! {count} kaya, {currency}{amount} kazanıldı",
+    "pickaxeReturned": "Kazma bagaja iade edildi",
+    "returnVehicleBlip": "Kamyonu Teslim Et",
+    "returnVehicleHint": "Mesai bitiyor — kamyonu ocaktaki depoya geri götürüp teslim et.",
+    "returnVehiclePrompt": "[E] Kamyonu teslim et",
+    "vehicleNotAtDepot": "Kamyon depoya geri getirilmeli!",
+    "tooFarFromDepot": "Depoya çok uzaksın!",
+    "labelProcessing": "~y~İşleniyor...",
+    "labelFinish": "[E] İşlemeyi Bitir (%d kaya)",
+    "labelPlaceOnScale": "[E] Kayayı teraziye koy",
+    "labelLoadToTruck": "[E] Cevheri kamyona yükle",
+    "labelReturnTool": "[E] Kazmayı iade et",
+    "labelTakeTool": "[E] Kazma al",
+    "labelTakeFromTrunk": "[E] Bagajdan kaya al (%d)",
+    "labelNoMoreItems": "~y~Kaya kalmadı! Bitirmek için NPC'ye gidin.",
+    "labelPickup": "[E] Cevheri al",
+    "labelBreakAction": "[E] Kaya kır",
+    "labelPutOnBelt": "[G] Kazmayı kemere koy",
+    "labelTakeFromBelt": "[G] Kazmayı kemerden al",
+    "labelClothesWork": "[E] İş kıyafetini giy",
+    "labelClothesNormal": "[E] Normal kıyafete dön",
+    "labelFailNotify": "Madencilik başlatılamadı",
+    "continueHint": "Bir sonraki cevher yatağını bul ve kaz",
+    "progressTitle": "Madenci",
+    "progressDetail": "Cevher için kayaları kır, cevheri kamyonuna taşı, sonra teraziye sürüp işle.",
+    "stepTakeTool": "Bagajdan kazmayı al",
+    "stepBreaking": "Kayayı kırmaya devam et",
+    "stepBreakRock": "Cevher çıkarmak için bir kaya kır",
+    "stepPickupOre": "Yerdeki cevheri al",
+    "stepLoadTrunk": "Cevheri kamyona yükle",
+    "stepGoToScale": "Cevheri teraziye sür",
+    "stepPlaceOnScale": "Cevheri teraziye koy",
+    "stepProcessOre": "Cevheri işlemek için NPC ile konuş",
+    "stepNewRound": "Kazmayı al ve yeni tura başla"
+  },
+  "lumberjack": {
+    "started": "Odunculuk işi başladı!",
+    "newTrees": "Yeni ağaçlar belirdi! Kesmeye devam edebilirsiniz.",
+    "takeHatchetFirst": "Önce baltanızı alın!",
+    "anotherPlayerCutting": "Başka bir oyuncu bu ağacı zaten kesiyor!",
+    "alreadyCarryingLog": "Zaten bir kütük taşıyorsunuz!",
+    "alreadyPickedUp": "Bunu başka biri zaten aldı!",
+    "logPickedUp": "Kütük alındı! Kamyona yükleyin.",
+    "hatchetTaken": "Balta alındı!",
+    "treesRemaining": "Kesilecek {count} ağaç kaldı.",
+    "axeDropBonus": "{name} | Düşürme Bonusu: +{bonus}%",
+    "treeCutDown": "{name} ağacı kesildi! Kütükleri toplayın.",
+    "levelRequired": "Bu ağaç için seviye {required} gerekli! (Mevcut: {current})",
+    "processingComplete": "İşlem tamamlandı! {count} kütük, {currency}{amount} kazanıldı",
+    "labelProcessing": "~y~İşleniyor...",
+    "labelFinish": "[E] İşlemeyi Bitir (%d kütük)",
+    "labelPlaceOnScale": "[E] Kütüğü teraziye koy",
+    "labelLoadToTruck": "[E] Kütüğü kamyona yükle",
+    "labelReturnTool": "[E] Baltayı iade et",
+    "labelTakeTool": "[E] Balta al",
+    "labelTakeFromTrunk": "[E] Bagajdan kütük al (%d)",
+    "labelNoMoreItems": "~y~Kütük kalmadı! Bitirmek için NPC'ye gidin.",
+    "labelPickup": "[E] Kütüğü al",
+    "labelBreakAction": "[E] Ağaç Kes",
+    "labelPutOnBelt": "[G] Baltayı kemere koy",
+    "labelTakeFromBelt": "[G] Baltayı kemerden al",
+    "labelClothesWork": "[E] İş kıyafetini giy",
+    "labelClothesNormal": "[E] Normal kıyafete dön",
+    "labelFailNotify": "Ağaç kesme başlatılamadı",
+    "processingInProgress": "İşleniyor, lütfen bekleyin!",
+    "noLogsOnScale": "İşleme alanında kütük yok!",
+    "hatchetReturned": "Balta iade edildi!",
+    "treeFallback": "Ağaç",
+    "serverDenied": "Sunucu reddetti",
+    "continueHint": "Bir sonraki ağacı bul ve kesmeye başla",
+    "progressTitle": "Oduncu",
+    "progressDetail": "Kütük için ağaçları kes, kamyonuna taşı, sonra işleme terazisine sür.",
+    "stepTakeAxe": "Bagajdan baltayı al",
+    "stepCutting": "Ağacı kesmeye devam et",
+    "stepCutTree": "Kütük düşürmek için bir ağaç kes",
+    "stepPickupLog": "Yerdeki kütüğü al",
+    "stepLoadTrunk": "Kütüğü kamyona yükle",
+    "stepGoToScale": "Kütükleri işleme terazisine sür",
+    "stepPlaceOnScale": "Kütüğü teraziye koy",
+    "stepProcessLog": "Kütükleri işlemek için NPC ile konuş",
+    "stepNewRound": "Baltayı al ve yeni tura başla"
+  },
+  "scrapyard": {
+    "started": "Hurdalık işi başladı! İş kıyafetlerini giyin ve ekipmanı alın.",
+    "newScraps": "Yeni hurdalar geldi! Devam edin.",
+    "putCrowbarOnBelt": "Önce levyeyi kemere koyun!",
+    "scrapPickedUp": "Hurda alındı! Araca yükleyin.",
+    "scrapsRemaining": "{count} hurda kaldı.",
+    "processingInProgress": "İşleniyor, lütfen bekleyin!",
+    "noScrapsOnScale": "Terazide hurda yok!",
+    "processingComplete": "İşlem tamamlandı! {count} hurda, {currency}{amount} kazanıldı",
+    "crowbarReturned": "Levye araca iade edildi",
+    "workClothesEquipped": "İş kıyafeti giyildi!",
+    "normalClothes": "Normal kıyafetlere dönüldü",
+    "scrapBlip": "Hurda #{index}",
+    "labelProcessing": "~y~İşleniyor...",
+    "labelFinish": "[E] İşlemeyi Bitir (%d hurda)",
+    "labelPlaceOnScale": "[E] Hurdayı teraziye koy",
+    "labelLoadToTruck": "[E] Hurdayı araca yükle",
+    "labelReturnTool": "[E] Levyeyi iade et",
+    "labelTakeTool": "[E] Levye al",
+    "labelTakeFromTrunk": "[E] Bagajdan hurda al (%d)",
+    "labelNoMoreItems": "~y~Hurda kalmadı! NPC'ye gidin.",
+    "labelPickup": "[E] Hurdayı al",
+    "labelBreakAction": "[E] Hurdayı sök",
+    "labelPutOnBelt": "[G] Levyeyi kemere koy",
+    "labelTakeFromBelt": "[G] Levyeyi kemerden al",
+    "labelClothesWork": "[E] İş kıyafetini giy",
+    "labelClothesNormal": "[E] Normal kıyafete dön",
+    "labelFailNotify": "Sökme başlatılamadı",
+    "continueHint": "Haritandaki bir sonraki hurda yığınına sür",
+    "progressTitle": "Hurdalık",
+    "progressDetail": "Hurda yığınlarını sök, parçaları kamyonuna taşı, sonra teraziye sürüp işle.",
+    "stepTakeTool": "Bagajdan levyeyi al",
+    "stepBreaking": "Hurdayı sökmeye devam et",
+    "stepBreakScrap": "Bir hurda yığınını sök",
+    "stepPickupScrap": "Yerdeki hurda parçalarını al",
+    "stepLoadTrunk": "Hurdayı kamyona yükle",
+    "stepGoToScale": "Hurdayı teraziye sür",
+    "stepPlaceOnScale": "Hurdayı teraziye koy",
+    "stepProcessScrap": "Hurdayı işlemek için NPC ile konuş",
+    "stepNewRound": "Levyeyi al ve yeni tura başla"
+  },
+  "fruitpicker": {
+    "treesReset": "Tüm ağaçlar sıfırlandı! Meyve toplamaya devam edin.",
+    "noMoreFruit": "Bu ağaçta meyve kalmadı!",
+    "treeOnCooldown": "Bu ağaçta olgun meyve yok. ~%{minutes} dk içinde yenilenecek — başka bir ağaç dene.",
+    "jobLabel": "Meyve Toplayıcı",
+    "produceLabel": "meyve",
+    "vehicleBlip": "Meyve Kamyonu",
+    "placeBoxAndPick": "[E] Kutuyu koy ve {fruit} topla ({remaining} kaldı)",
+    "pickFruit": "[E] {fruit} topla ({remaining} kaldı)",
+    "orangeTreeBlip": "Portakal Ağacı",
+    "appleTreeBlip": "Elma Ağacı",
+    "progressTitle": "Meyve Toplayıcı",
+    "fruitFallback": "Meyve",
+    "continueHint": "Bir sonraki ağaca geç ve toplamaya başla",
+    "progressDetail": "Bir kutu al, ağaçlardan doldur, dolu kutuları kamyona yükle, sonra teraziye sür.",
+    "stepTakeBox": "Kamyondan bir kutu al",
+    "stepPicking": "Meyve toplamaya devam et",
+    "stepPickFruit": "Bir ağaca yürü ve meyve topla",
+    "stepLoadBoxToTruck": "Dolu kutuyu kamyona yükle",
+    "stepGoToScale": "Kutuları teraziye sür",
+    "stepPlaceOnScale": "Kutuyu teraziye koy",
+    "stepProcessFruit": "Meyveyi işlemek için NPC ile konuş",
+    "stepNewRound": "Bir kutu al ve yeni tura başla"
+  },
+  "newspaper": {
+    "settingsNotFound": "Gazete dağıtım ayarları bulunamadı!",
+    "started": "Gazete dağıtımı başladı!",
+    "noAvailableRoutes": "Uygun rota yok!",
+    "leaderSelecting": "Lider bisiklet ve bölge seçiyor, lütfen bekleyin...",
+    "progressTitle": "Gazete",
+    "progressDetail": "Güzergah boyunca evlere gazete dağıtın. Her kapı önüne gazete atın.",
+    "outsideTimeWindow": "Gazete teslimatı yalnızca {startHour}:00 - {endHour}:00 arasında yapılabilir (şu an: {current}:00)",
+    "continueHint": "Bir sonraki dağıtım sokağına geç",
+    "getOnCycle": "Teslimata başlamak için bisiklete bin"
+  },
+  "taxi": {
+    "lookingForCustomer": "Sonraki müşteri aranıyor...",
+    "taxiReady": "Taksi hazır! Müşteri çağrısı bekleniyor...",
+    "taxiModelFailed": "Taksi modeli yüklenemedi!",
+    "passengerWokeUp": "Yolcu uyandı!",
+    "passengerBoarded": "Yolcu bindi! Varış noktası bekleniyor...",
+    "newCustomer": "Yeni müşteri! Alma noktasına gidin.",
+    "passengerDied": "Müşterin öldü! Yolculuk iptal edildi.",
+    "returnTaxiToDepot": "Vardiyayı bitirmek için taksiyi depoya geri götürün.",
+    "destinationSet": "Varış noktası belirlendi! Mesafe: {distance}m, Bonus süre: {bonus}sn",
+    "vehicleDamaged": "Araç hasar aldı! Bonus süre -{penalty}sn",
+    "jobEnded": "Taksi işi bitti! Seferler: {rides}, Toplam kazanç: {symbol}{earned}",
+    "hornPassengerSleeping": "[KORNA] Yolcu uyuyor!",
+    "pickUpPassenger": "[E] Yolcuyu al",
+    "dropOffPassenger": "[E] Yolcuyu bırak",
+    "returnTaxiEndShift": "[E] Taksiyi iade et ve vardiyayı bitir",
+    "getBackInTaxi": "[F] Taksiye geri binin!",
+    "tooFarFromDepot": "Depodan çok uzaktasınız",
+    "tooFarFromDropoff": "Bırakma noktasından çok uzaktasınız",
+    "progressTitle": "Taksi",
+    "progressDetail": "Yolcuları al ve varış noktalarına götür. Zaman bonusunu kazanmak için dikkatli sür.",
+    "stagePickup": "Yolcuyu al",
+    "stageDropoff": "Yolcuyu indir",
+    "stageDepot": "Taksiyi depoya geri götür",
+    "ridesCompleted": "{count} yolculuk tamamlandı",
+    "meterBonusTime": "bonus {seconds}sn",
+    "statCustomers": "Taşınan müşteri",
+    "statEarnings": "Toplam kazanç"
+  },
+  "trucker": {
+    "illegalAccepted": "Yasadışı rota kabul edildi! Dikkatli olun...",
+    "trailerLost": "Römork kayboldu! Bu teslimat başarısız.",
+    "failedReconnect": "Kamyonculuk işine yeniden bağlanılamadı!",
+    "reconnected": "Kamyonculuk işine yeniden bağlandı!",
+    "failedGetData": "İş verisi alınamadı!",
+    "started": "Kamyonculuk işi başladı! Römork alma noktasına gidin.",
+    "truckReady": "Kamyon hazır! Kamyona binin.",
+    "truckModelFailed": "Kamyon modeli yüklenemedi!",
+    "trailerModelFailed": "Römork modeli yüklenemedi!",
+    "trailerSpawnBlocked": "Römork oluşturma noktası engellenmiş! 5 saniye sonra tekrar deneniyor...",
+    "trailerSpawnStillBlocked": "Römork noktası hala engellenmiş! Yine de oluşturuluyor.",
+    "trailerAttachedWaiting": "Römork bağlandı! Diğer oyuncular bekleniyor...",
+    "trailerAttachedWaitRoute": "Römork bağlandı! Rota ataması bekleniyor...",
+    "trailerDetached": "Römork çözüldü! Geri dönüp tekrar bağlayın!",
+    "needToBeInTruck": "Kamyonda olmalısınız!",
+    "trailerGone": "Römork kayboldu! İş başarısız.",
+    "trailerReattached": "Römork tekrar bağlandı! Teslimatınıza devam edin.",
+    "failedReattach": "Römork bağlanamadı. Tekrar deneyin.",
+    "noTrailerNearby": "Yakında römork yok!",
+    "failedAttach": "Römork bağlanamadı. Tekrar deneyin.",
+    "noTrailerAttached": "Bağlı römork yok!",
+    "tooFarToDeliver": "Römork teslimat bölgesinde değil!",
+    "perfectDelivery": "Römork mükemmel durumda teslim edildi! Kamyonu depoya geri götürün.",
+    "mustBeInTruck": "Kamyonda olmalısınız!",
+    "notJobTruck": "Bu iş kamyonu değil!",
+    "truckReturned": "Kamyon iade edildi! Özet bekleniyor...",
+    "waitingForTrailers": "Diğer oyuncuların römorklerini bağlaması bekleniyor...",
+    "leaderAcceptedIllegal": "Lider yasadışı rotayı kabul etti! Dikkatli olun...",
+    "leaderChoseNormal": "Lider normal rotayı seçti.",
+    "returnTruckToDepot": "Kamyonu depoya geri götürün.",
+    "newDeliveryRoute": "Yeni teslimat rotası atandı!",
+    "truckReturnedWaiting": "Kamyon iade edildi! Diğer oyuncuların kamyonlarını iade etmesi bekleniyor...",
+    "youLeftJob": "İşten ayrıldınız.",
+    "headToTrailer": "Römorkü almak için işaretli konuma gidin!",
+    "trailerDestroyed": "Römork yok oldu! Teslimat başarısız.",
+    "trailerDeliveredCondition": "Römork %{condition} durumda teslim edildi. Kamyonu depoya geri götürün.",
+    "routeAssigned": "Rota atandı ({route})! Mesafe: {distance}m",
+    "progressTitle": "Kamyoncu",
+    "progressDetail": "Eyalet genelinde varış noktalarına kargo teslim edin. Hasardan kaçınmak için dikkatli sürün.",
+    "stagePickup": "Treyleri Al",
+    "stageDelivery": "Yükü Teslim Et",
+    "stageReturn": "Kamyonu Geri Getir",
+    "stageWaiting": "Bekleniyor...",
+    "deliveriesCompleted": "Tamamlanan teslimatlar: {count}",
+    "blipPickupTrailer": "Treyler Al",
+    "blipDeliverCargo": "Yük Teslimi",
+    "blipIllegalDelivery": "Yasadışı Teslimat",
+    "blipReturnTruck": "Kamyonu Geri Getir",
+    "aPlayerFallback": "Bir oyuncu",
+    "teammateFallback": "Takım arkadaşı",
+    "playerReturnedTruck": "{name} kamyonunu geri getirdi.",
+    "teammateTruck": "{name}'in Kamyonu",
+    "continueHint": "Depodan bir sonraki kargoyu al"
+  },
+  "repair": {
+    "failedInit": "İş başlatılamadı!",
+    "newTasks": "Yeni tamir görevleri atandı!",
+    "allComplete": "Tüm tamirler tamamlandı! İşi bitirmek için geri dönün.",
+    "jobStarted": "{label} işi başladı! {tasks} tamir edin.",
+    "taskRepaired": "{task} tamir edildi! {remaining} kaldı"
+  },
+  "blip": {
+    "returnToFinish": "Bitiş Noktasına Dön",
+    "nextTask": "Sonraki Görev",
+    "cargoDepot": "Kargo Deposu",
+    "deliveryPoint": "Teslimat Noktası",
+    "buyer": "Alıcı",
+    "tree": "Ağaç",
+    "animal": "Hayvan",
+    "ore": "Maden",
+    "divePoint": "Dalış Noktası",
+    "returnBoat": "Tekneye Dön",
+    "customerCar": "Müşteri Aracı",
+    "delivery": "Teslimat",
+    "returnVehicle": "Aracı Geri Getir",
+    "returnToDepot": "Depoya Dön"
+  },
+  "target": {
+    "interact": "Etkileşim",
+    "pickup": "Al",
+    "finishProcessing": "İşlemi Bitir",
+    "finishProcessingPrompt": "[E] İşlemi Bitir",
+    "processing": "İşleniyor...",
+    "placeOnScale": "Teraziye Koy",
+    "loadToTruck": "Kamyona Yükle",
+    "returnTool": "Aleti İade Et",
+    "takeTool": "Alet Al",
+    "takeFromTrunk": "Bagajdan Al",
+    "changeClothes": "Kıyafet Değiştir",
+    "changeClothesPrompt": "[E] Kıyafet değiştir",
+    "changeClothesNormal": "[E] Normal kıyafete geç",
+    "changeClothesWork": "[E] İş kıyafetine geç",
+    "cleanItemPrompt": "[E] Eşyayı temizle",
+    "finishJobPrompt": "[E] İşi Bitir",
+    "pickFruit": "Meyve Topla",
+    "pickUpLog": "Kütüğü Al",
+    "returnItem": "Eşyayı İade Et",
+    "cutTree": "{name} Kes",
+    "pickUpCarcass": "{label} al ({weight} kg)"
+  },
+  "server": {
+    "cannotInviteJobActive": "İş aktifken oyuncu davet edemezsiniz!",
+    "cannotInviteSoloJob": "Bu iş tek kişilik — oyuncu davet edemezsiniz!",
+    "playerAlreadyInvited": "Bu oyuncunun zaten bekleyen bir daveti var!",
+    "inviteCooldown": "Bu oyuncuyu tekrar davet etmek için {seconds} saniye bekleyin.",
+    "identifierNotReady": "Oyuncu verin henüz yüklenmedi, lütfen tekrar dene.",
+    "targetIdentifierNotReady": "Hedef oyuncunun verisi henüz yüklenmedi, lütfen tekrar dene.",
+    "cannotKickJobActive": "İş aktifken oyuncu atamazsınız!",
+    "lobbyClosed": "Lobi kapatıldı: Lider ayrıldı",
+    "lobbyClosedDisconnect": "Lobi kapatıldı: Lider bağlantısı kesildi",
+    "jobCompletedLobbyDisbanded": "İş tamamlandı! Lobi dağıtıldı.",
+    "qualityBonus": "{quality} kalite! x{multiplier} bonus",
+    "poopPenalty": "Köpeğinizin ardını temizlemediniz! -{symbol}{amount}",
+    "poopCleanBonus": "Dışkı temizlendi! +{symbol}{amount}",
+    "lawnRaked": "Çim tırmıklandı! +{symbol}{money} +{xp} XP",
+    "truckReturnFailed": "Kamyonu iade etmek için çok uzun süre bekldiniz! Başarısız olarak işaretlendi.",
+    "repairComplete": "{item} tamir edildi! +{symbol}{money} +{xp} XP",
+    "referralLimitReached": "Günlük referans bonusu limitine ulaştınız",
+    "referralBonus": "Referans Bonusu! Birlikte oynamak için +{xp} XP!",
+    "lobbyNoLongerExists": "Bu lobi artık mevcut değil.",
+    "lobbyPlayerReconnected": "{name} lobiye yeniden bağlandı.",
+    "lobbyPlayerDisconnected": "{name} bağlantısı kesildi.",
+    "lobbyOwnerDisconnectedNewOwner": "Lider bağlantısı kesildi. {name} yeni lider.",
+    "lobbyClosedNoReplacement": "Lobi kapatıldı: Yedek lider bulunamadı.",
+    "jobEndedOwnerLeft": "İş sona erdi: İş lideri ayrıldı.",
+    "toolEfficiencyUpgrade": "Alet verimliliği yükseltmesi",
+    "jobCancelled": "İş iptal edildi! Lobi dağıtıldı.",
+    "jobCancelledByAdmin": "İşiniz bir yönetici tarafından iptal edildi.",
+    "noActiveJob": "Aktif bir işiniz yok.",
+    "jobCancelledAdmin": "Oyuncu {playerId} için '{jobId}' işi iptal edildi.",
+    "cancelJobUsage": "Kullanım: /canceljob [oyuncuId] - Kendi veya bir oyuncunun aktif işini iptal et",
+    "routeLevelInsufficient": "Bu rota için gerekli seviyeye sahip değilsiniz. (Seviye {current}/{required})",
+    "routeLevelInsufficientMember": "{name} bu rota için gerekli seviyeye sahip değil. (Seviye {current}/{required})",
+    "globalEventCompleted": "Global etkinlik tamamlandı: {title}!"
+  },
+  "shifts": {
+    "morning": "Sabah Vardiyası",
+    "afternoon": "Öğleden Sonra Vardiyası",
+    "evening": "Akşam Vardiyası",
+    "night": "Gece Vardiyası"
+  },
+  "perks": {
+    "trunk_capacity": {
+      "name": "Ağır Taşıyıcı",
+      "desc": "Araç bagaj kapasitesini artırır."
+    },
+    "strong_muscles": {
+      "name": "Güçlü Kaslar",
+      "desc": "Ağır yük taşırken hareket hızını artırır."
+    },
+    "negotiator": {
+      "name": "Pazarlıkçı",
+      "desc": "İş ödemelerinden daha fazla para kazanın."
+    },
+    "xp_boost": {
+      "name": "Hızlı Öğrenen",
+      "desc": "Tüm iş eylemlerinden daha fazla XP kazanın."
+    },
+    "speed_demon": {
+      "name": "Hız Canavarı",
+      "desc": "İş aracı motor performansını artırır."
+    },
+    "store_discount": {
+      "name": "Tatlı Dilli",
+      "desc": "Mesai dışı mağaza indirimleri alın. (Pasif)"
+    },
+    "breath_capacity": {
+      "name": "Derin Nefes",
+      "desc": "Su altı nefes kapasitesini artırır. (Pasif)"
+    },
+    "repair_speed": {
+      "name": "Tamirci Usta",
+      "desc": "Araçları daha hızlı tamir edin. (Pasif)"
+    },
+    "notEnoughPoints": "Yeterli yetenek puanı yok!"
+  },
+  "serverError": {
+    "notInJob": "İşte değilsin",
+    "noLobby": "Lobi yok",
+    "noSession": "Oturum yok",
+    "configError": "Yapılandırma hatası",
+    "invalidIndex": "Geçersiz index",
+    "levelRequired": "Seviye {level} gerekli!",
+    "rateLimited": "Lütfen tekrar denemeden önce bekleyin.",
+    "tooFarFromNpc": "Bu işlemi yapmak için NPC'ye yakın olmalısınız.",
+    "notEnoughMoney": "Yeterli para yok!",
+    "invalidAmount": "Geçersiz miktar!",
+    "invalidProduct": "Geçersiz ürün!",
+    "purchaseFailed": "Satın alma sırasında bir hata oluştu.",
+    "sellFailed": "Satış sırasında bir hata oluştu.",
+    "alreadyBroken": "Zaten kırılmış",
+    "anotherPlayerBreaking": "Başka bir oyuncu bunu kırıyor",
+    "alreadyPickedUp": "Zaten alındı",
+    "alreadyUnlocked": "Zaten açılmış",
+    "invalidZone": "Geçersiz bölge!",
+    "alreadyCollected": "Bu nesne zaten toplandı",
+    "someoneElseWorking": "Başka bir oyuncu bunun üzerinde çalışıyor!",
+    "someoneElseDelivering": "Başka bir oyuncu teslim ediyor",
+    "invalidAction": "Geçersiz işlem",
+    "invalidType": "Geçersiz tür",
+    "alreadySold": "Zaten satıldı!",
+    "noItemsToSell": "Satılacak eşya yok!",
+    "alreadyCarrying": "Zaten taşıyorsun",
+    "notCarrying": "Taşımıyorsun",
+    "trunkFull": "Bagaj dolu",
+    "trunkCapacityFull": "Bagaj kapasitesi dolu",
+    "noItemsInTrunk": "Bagajda eşya yok",
+    "alreadyDelivered": "Zaten teslim edildi",
+    "invalidDeliveryPoint": "Geçersiz teslimat noktası",
+    "invalidLocation": "Geçersiz konum",
+    "objectNotFound": "Nesne bulunamadı",
+    "vehicleAlreadySpawned": "Araç zaten oluşturuldu",
+    "failedCreateVehicle": "Araç oluşturulamadı",
+    "vehicleEntityNotFound": "Araç varlığı bulunamadı",
+    "missingParameters": "Eksik parametreler",
+    "invalidSpawnData": "Geçersiz oluşturma verisi",
+    "jobConfigNotFound": "İş yapılandırması bulunamadı",
+    "noToolAssigned": "Size atanmış alet yok",
+    "notYourTool": "Bu sizin aletiniz değil",
+    "toolAlreadyTaken": "Alet zaten alındı",
+    "toolBeingTaken": "Alet başka bir oyuncu tarafından alınıyor",
+    "positionBeingTaken": "Pozisyon başka bir oyuncu tarafından alınıyor",
+    "noPositionAvailable": "Uygun pozisyon yok",
+    "noActiveTruck": "Aktif kamyon yok",
+    "truckNotLoading": "Kamyon yükleme yapmıyor",
+    "boxesFull": "Kutular dolu",
+    "palletsFull": "Paletler dolu",
+    "invalidJob": "Geçersiz iş",
+    "jobEnding": "İş bitiyor",
+    "fishingNoFishFound": "Balık bulunamadı!",
+    "fishingInvalidRod": "Geçersiz olta!",
+    "fishingNoRod": "Oltanız yok!",
+    "fishingFishCaughtSingle": "{label} yakalandı!",
+    "fishingFishCaughtMultiple": "{count}x {label} yakalandı!",
+    "fishingNoFishToSell": "Satılacak balık yok!",
+    "divingZoneAlreadySelected": "Bölge zaten seçildi!",
+    "deliveryNotInLoadingPhase": "Yükleme aşamasında değil",
+    "deliveryNotInDeliveryPhase": "Teslimat aşamasında değil",
+    "deliveryAlreadyCarryingBox": "Zaten bir kutu taşıyorsun",
+    "deliveryNotCarryingBox": "Kutu taşımıyorsun",
+    "deliveryNoBoxesInTrunk": "Bagajda kutu yok",
+    "deliveryCompleteFirst": "Önce tüm teslimatları tamamla!",
+    "deliverySpawnFailed": "Araç oluşturulamadı, iş iptal edildi.",
+    "huntingSomeoneElsePickingUp": "Başka biri bunu alıyor!",
+    "huntingAnimalNotFound": "Hayvan bulunamadı",
+    "huntingAnimalStillAlive": "Hayvan hala yaşıyor",
+    "huntingAnimalAlreadyPickedUp": "Bu hayvan zaten alındı",
+    "cleanupTruckFullDeliverFirst": "Kamyon dolu! Önce teslim et.",
+    "cleanupBinAlreadyEmpty": "Çöp kutusu zaten boş",
+    "cleanupNoBagsLeft": "Çöp torbası kalmadı",
+    "warehouseBoxAlreadyTaken": "Kutu zaten alındı",
+    "warehousePalletAlreadyTaken": "Palet zaten alındı",
+    "warehouseTruckNotReady": "Kamyon hazır değil",
+    "forkliftWrongMode": "Yanlış mod",
+    "forkliftInvalidCrate": "Geçersiz kasa",
+    "forkliftCrateAlreadyTaken": "Kasa zaten alındı",
+    "forkliftConveyorBusy": "Konveyör meşgul",
+    "forkliftInvalidSlot": "Geçersiz slot",
+    "forkliftSlotOccupied": "Slot dolu",
+    "forkliftNotCarrying": "Taşımıyorsun",
+    "forkliftInvalidCrateData": "Geçersiz kasa verisi",
+    "forkliftNoCratesOnBelt": "Bantta kasa yok",
+    "forkliftNeed3Crates": "Banta 3 kasa gerekli",
+    "forkliftEmptySlot": "Boş slot",
+    "forkliftAlreadyCarrying": "Zaten taşıyorsun",
+    "forkliftInvalidTarget": "Geçersiz hedef",
+    "forkliftInvalidShelfTarget": "Geçersiz raf hedefi",
+    "forkliftShelfOccupied": "Raf dolu",
+    "newspaperLevelRequiredArea": "Bu bölge için seviye {level} gerekli!",
+    "newspaperDailyCompleted": "Günlük görev zaten tamamlandı! Sıfırlanma: {hours}sa {minutes}dk",
+    "adminSetLevelUsage": "Kullanım: /setjoblevel [oyuncuID] [işID] [seviye]",
+    "adminLevelRange": "Seviye 1 ile 10 arasında olmalı",
+    "adminLevelSet": "Oyuncu {playerId} için {jobId} seviyesi {level} olarak ayarlandı",
+    "adminYourLevelSet": "{jobId} seviyeniz {level} olarak ayarlandı",
+    "adminXpManagerNotAvailable": "XPManager kullanılamıyor",
+    "adminGetLevelUsage": "Kullanım: /getjoblevel [oyuncuID] [işID]",
+    "adminPlayerJobLevel": "Oyuncu {playerId} - {jobId}: Seviye {level} (XP: {xp}/{maxXp})",
+    "adminToolSelected": "Seçildi: {tool}",
+    "adminToolUnlocked": "Alet açıldı!",
+    "alreadyHarvested": "Zaten hasat edildi",
+    "noLootAvailable": "Mevcut ganimet yok",
+    "tooFar": "Çok uzaktasınız",
+    "tooFarFromDeliveryPoint": "Teslimat noktasından çok uzaktasınız"
+  },
+  "jobs": {
+    "miner": {
+      "name": "Madenci",
+      "subtitle": "Yeraltı Madencilik Operasyonları",
+      "interactionText": "Madencilik İşini Başlat",
+      "blipLabel": "Madencilik",
+      "locationLabel": "Taş Ocağı Madeni",
+      "description": [
+        "Yeraltı yataklarından değerli cevherler çıkarın",
+        "Kayaları kırmak için madencilik ekipmanı kullanın",
+        "Malzemeleri işleme tesisine taşıyın",
+        "Bonus ödüller için ekip olarak çalışın"
+      ],
+      "items": {
+        "pickaxe": "Kazma",
+        "miningHelmet": "Maden Kaskı",
+        "oreCart": "Cevher Arabası"
+      },
+      "oreTypes": {
+        "coal": "Kömür",
+        "iron": "Demir",
+        "gold": "Altın",
+        "emerald": "Zümrüt",
+        "diamond": "Elmas"
+      },
+      "preview": {
+        "step1Title": "İşe Başla",
+        "step1Desc": [
+          "Taş ocağındaki NPC'ye yürüyün",
+          "E tuşuna basarak iş menüsünü açın",
+          "Bölgenizi seçin ve Başlat'a basın"
+        ],
+        "step2Title": "Kıyafetlerini Değiştir",
+        "step2Desc": [
+          "Yakındaki portatif kabine gidin",
+          "İçeri girip iş kıyafetinize geçin",
+          "İş bittiğinde orijinal kıyafetleriniz geri yüklenir"
+        ],
+        "step3Title": "Aletlerini Topla",
+        "step3Desc": [
+          "İş aracının açık bagajına gidin",
+          "Bir kazma alın — her oyuncu kendi kazmasını alır",
+          "Coop oyun için 4 alet mevcut"
+        ],
+        "step4Title": "Kayaları Kaz",
+        "step4Desc": [
+          "Kazmanızla madencilik alanına yürüyün",
+          "Bir kayaya nişan alın ve kırmak için sallayın",
+          "Kayalar toplanabilir cevher parçalarına ayrılır"
+        ],
+        "step5Title": "Cevheri Topla",
+        "step5Desc": [
+          "Kayayı kırdıktan sonra cevher parçalarını alın",
+          "Cevheri kollarınızda taşırsınız",
+          "Araç bagajına geri götürün"
+        ],
+        "step6Title": "Araca Yükle",
+        "step6Desc": [
+          "Cevherinizi araç bagajına taşıyın",
+          "Cevher otomatik olarak kamyona yüklenir",
+          "Bagajı doldurup işleme alanına sürün"
+        ],
+        "step7Title": "Terazide İşle",
+        "step7Desc": [
+          "İşleme noktasına sürün",
+          "Cevherinizi tartı terazisine koyun",
+          "Her parça tartılır ve ödeme alırsınız"
+        ],
+        "step8Title": "NPC Toplama",
+        "step8Desc": [
+          "İşlemden sonra bir taşıyıcı NPC eşyaları toplar",
+          "NPC gelip işlenmiş cevheri alır",
+          "Her tamamlanan parti için para ve XP kazanırsınız"
+        ]
+      }
+    },
+    "lumberjack": {
+      "name": "Oduncu",
+      "subtitle": "Orman Kesim Operasyonları",
+      "interactionText": "Odunculuk İşini Başlat",
+      "blipLabel": "Odunculuk",
+      "locationLabel": "Paleto Ormanı",
+      "description": [
+        "Belirlenen ağaç kesim alanlarında ağaç kesin",
+        "Kütükleri toplayın ve kamyona yükleyin",
+        "Kütükleri kereste fabrikasına teslim edin",
+        "Bonus ödüller için ekip olarak çalışın"
+      ],
+      "items": {
+        "hatchet": "Balta",
+        "safetyVest": "Güvenlik Yeleği",
+        "pickupTruck": "Pikap Kamyonet"
+      },
+      "treeTypes": {
+        "pine": "Çam",
+        "oak": "Meşe",
+        "maple": "Akçaağaç"
+      },
+      "drops": {
+        "wood": "Odun",
+        "pineResin": "Çam Reçinesi",
+        "woodShavings": "Talaş",
+        "oakWood": "Meşe Odunu",
+        "oakBark": "Meşe Kabuğu",
+        "mapleWood": "Akçaağaç Odunu",
+        "mapleSap": "Akçaağaç Özsuyu"
+      },
+      "preview": {
+        "step1Title": "İşe Başla",
+        "step1Desc": [
+          "Ormandaki NPC'ye yürüyün",
+          "E tuşuna basarak iş menüsünü açın",
+          "Bölgenizi seçin ve Başlat'a basın"
+        ],
+        "step2Title": "Kıyafetlerini Değiştir",
+        "step2Desc": [
+          "Yakındaki portatif kabine gidin",
+          "İçeri girip iş kıyafetinize geçin",
+          "İş bittiğinde orijinal kıyafetleriniz geri yüklenir"
+        ],
+        "step3Title": "Aletlerini Topla",
+        "step3Desc": [
+          "İş aracının açık bagajına gidin",
+          "Bir balta alın — her oyuncu kendi baltasını alır",
+          "Coop oyun için 4 alet mevcut"
+        ],
+        "step4Title": "Ağaçları Kes",
+        "step4Desc": [
+          "Baltanızla orman alanına yürüyün",
+          "Bir ağaca nişan alın ve kesmek için sallayın",
+          "Ağaçlar tamamen kesildiğinde kütük düşürür"
+        ],
+        "step5Title": "Kütüğü Topla",
+        "step5Desc": [
+          "Ağacı kestikten sonra kütüğü alın",
+          "Kütüğü kollarınızda taşırsınız",
+          "Araç bagajına geri götürün"
+        ],
+        "step6Title": "Araca Yükle",
+        "step6Desc": [
+          "Kütüğünüzü araç bagajına taşıyın",
+          "Kütük otomatik olarak kamyona yüklenir",
+          "Bagajı doldurup işleme alanına sürün"
+        ],
+        "step7Title": "Terazide İşle",
+        "step7Desc": [
+          "İşleme noktasına sürün",
+          "Kütüklerinizi tartı terazisine koyun",
+          "Her parça tartılır ve ödeme alırsınız"
+        ],
+        "step8Title": "NPC Toplama",
+        "step8Desc": [
+          "İşlemden sonra bir taşıyıcı NPC eşyaları toplar",
+          "NPC gelip işlenmiş kütükleri alır",
+          "Her tamamlanan parti için para ve XP kazanırsınız"
+        ]
+      }
+    },
+    "scrapyard": {
+      "name": "Hurdacı",
+      "subtitle": "Hurda Metal Geri Dönüşümü",
+      "interactionText": "Hurdacılık İşini Başlat",
+      "blipLabel": "Hurdacı",
+      "locationLabel": "Hurdacı",
+      "description": [
+        "Hurda araçları sökün ve değerli parçaları kurtarın",
+        "Metal bileşenleri ayırmak için levye kullanın",
+        "Toplanan hurdayı kamyona yükleyin",
+        "İşleme istasyonunda tartın ve satın"
+      ],
+      "items": {
+        "crowbar": "Levye",
+        "workGloves": "İş Eldiveni",
+        "scrapMetal": "Hurda Metal"
+      },
+      "preview": {
+        "step1Title": "İşe Başla",
+        "step1Desc": [
+          "Hurdalıktaki NPC'ye yürüyün",
+          "E tuşuna basarak iş menüsünü açın",
+          "Bölgenizi seçin ve Başlat'a basın"
+        ],
+        "step2Title": "Kıyafetlerini Değiştir",
+        "step2Desc": [
+          "Yakındaki portatif kabine gidin",
+          "İçeri girip iş kıyafetinize geçin",
+          "İş bittiğinde orijinal kıyafetleriniz geri yüklenir"
+        ],
+        "step3Title": "Aletlerini Topla",
+        "step3Desc": [
+          "İş aracının açık bagajına gidin",
+          "Bir levye alın — her oyuncu kendi levyesini alır",
+          "Coop oyun için 4 alet mevcut"
+        ],
+        "step4Title": "Hurdaları Sök",
+        "step4Desc": [
+          "Avludaki hurda araçlara yürüyün",
+          "Parçaları sökmek için levyenizi kullanın",
+          "Araç enkazları toplanabilir hurdaya dönüşür"
+        ],
+        "step5Title": "Hurdayı Topla",
+        "step5Desc": [
+          "Söktükten sonra hurda parçalarını alın",
+          "Parçaları araca taşırsınız",
+          "Araç bagajına geri götürün"
+        ],
+        "step6Title": "Araca Yükle",
+        "step6Desc": [
+          "Hurdanızı araç bagajına taşıyın",
+          "Hurda otomatik olarak kamyona yüklenir",
+          "Bagajı doldurup işleme alanına sürün"
+        ],
+        "step7Title": "Terazide İşle",
+        "step7Desc": [
+          "İşleme noktasına sürün",
+          "Hurdanızı tartı terazisine koyun",
+          "Her parça tartılır ve ödeme alırsınız"
+        ],
+        "step8Title": "NPC Toplama",
+        "step8Desc": [
+          "İşlemden sonra bir taşıyıcı NPC eşyaları toplar",
+          "NPC gelip işlenmiş hurdayı alır",
+          "Her tamamlanan parti için para ve XP kazanırsınız"
+        ]
+      }
+    },
+    "hunting": {
+      "name": "Avcı",
+      "subtitle": "Profesyonel Avcılık",
+      "interactionText": "Avcılık İşini Başlat",
+      "blipLabel": "Avcılık",
+      "locationLabel": "Avcılık",
+      "description": [
+        "Silahlarınızı alın ve ava çıkın",
+        "Geyik, domuz ve tavşan avlayın",
+        "Avlanan hayvanları araca yükleyin",
+        "Teraziye götürün ve satın"
+      ],
+      "items": {
+        "huntingRifle": "Av Tüfeği",
+        "binoculars": "Dürbün",
+        "huntingBag": "Av Çantası"
+      },
+      "weapons": {
+        "tier1": "Av Tüfeği",
+        "tier2": "Sürgülü Tüfek",
+        "tier3": "Ağır Keskin Nişancı"
+      },
+      "animals": {
+        "wildBoar": "Yaban Domuzu",
+        "rabbit": "Tavşan",
+        "coyote": "Çakal",
+        "mountainLion": "Dağ Aslanı",
+        "hawk": "Şahin",
+        "crow": "Karga"
+      },
+      "areas": {
+        "forest": "Paleto Ormanı",
+        "desert": "Sandy Shores Çölü",
+        "swamp": "Bataklık"
+      },
+      "blips": {
+        "forestArea": "Orman Alanı",
+        "desertArea": "Çöl Alanı",
+        "swampArea": "Bataklık Alanı"
+      },
+      "preview": {
+        "step1Title": "İşe Başla",
+        "step1Desc": [
+          "Av kulübesindeki NPC'ye yürüyün",
+          "E tuşuna basarak iş menüsünü açın",
+          "Bölgenizi seçin ve Başlat'a basın"
+        ],
+        "step2Title": "Kıyafetlerini Değiştir",
+        "step2Desc": [
+          "Yakındaki portatif kabine gidin",
+          "İçeri girip av kıyafetinize geçin",
+          "İş bittiğinde orijinal kıyafetleriniz geri yüklenir"
+        ],
+        "step3Title": "Aracını Al",
+        "step3Desc": [
+          "Yakındaki av kamyonuna gidin",
+          "Otomatik olarak silah alırsınız",
+          "Av alanına sürün"
+        ],
+        "step4Title": "Hayvan Avla",
+        "step4Desc": [
+          "Av alanını keşfedin ve hayvanları bulun",
+          "Domuz, tavşan ve daha fazlasını avlamak için tüfeğinizi kullanın",
+          "Her hayvanın farklı ağırlığı ve değeri vardır"
+        ],
+        "step5Title": "Hayvanı Taşı",
+        "step5Desc": [
+          "Öldürülen hayvana yürüyüp almak için yaklaşın",
+          "Omuzlarınızda kamyona geri taşıyın",
+          "Her hayvanın farklı ağırlığı vardır"
+        ],
+        "step6Title": "Araca Yükle",
+        "step6Desc": [
+          "Avınızı kamyona taşıyın",
+          "Hayvanları kamyon kasasına yükleyin",
+          "Kamyonu doldurup işleme alanına sürün"
+        ],
+        "step7Title": "İşle & Sat",
+        "step7Desc": [
+          "İşleme istasyonuna sürün",
+          "Avınızı tartılmak üzere teraziye koyun",
+          "Bir taşıyıcı NPC işlenmiş ürünleri toplar"
+        ]
+      }
+    },
+    "farmer": {
+      "name": "Çiftçi",
+      "subtitle": "Meyve & Sebze Hasadı",
+      "interactionText": "Çiftçilik İşini Başlat",
+      "blipLabel": "Sebze Çiftliği",
+      "locationLabel": "Grapeseed Çiftliği",
+      "description": [
+        "Araçtan bir kasa alın",
+        "Bitkilerden sebze hasat edin",
+        "Kasanızı doldurun ve kamyona yükleyin",
+        "Dolu kasaları işleme istasyonuna teslim edin"
+      ],
+      "items": {
+        "harvestCrate": "Hasat Kasası",
+        "freshProduce": "Taze Ürün",
+        "deliveryTruck": "Teslimat Kamyonu"
+      },
+      "produceTypes": {
+        "lettuce": "Marul",
+        "pumpkin": "Balkabağı",
+        "melon": "Kavun",
+        "watermelon": "Karpuz"
+      },
+      "preview": {
+        "step1Title": "İşe Başla",
+        "step1Desc": [
+          "Çiftlikteki NPC'ye yürüyün",
+          "E tuşuna basarak iş menüsünü açın",
+          "Bölgenizi seçin ve Başlat'a basın"
+        ],
+        "step2Title": "Kıyafetlerini Değiştir",
+        "step2Desc": [
+          "Yakındaki portatif kabine gidin",
+          "İçeri girip iş kıyafetinize geçin",
+          "İş bittiğinde orijinal kıyafetleriniz geri yüklenir"
+        ],
+        "step3Title": "Aracını Al",
+        "step3Desc": [
+          "Yakındaki iş aracına gidin",
+          "Kamyondan boş bir kasa alın",
+          "Hasat başlatmak için tarlaya sürün"
+        ],
+        "step4Title": "Bitkileri Hasat Et",
+        "step4Desc": [
+          "Bir bitkiye yürüyüp hasat etmek için etkileşime geçin",
+          "Her bitki taze ürün verir",
+          "Geri dönmeden önce kasanızı doldurun"
+        ],
+        "step5Title": "Ürünü Taşı",
+        "step5Desc": [
+          "Dolu kasanızı alın",
+          "Araca geri taşıyın",
+          "Kamyon kasasına yükleyin"
+        ],
+        "step6Title": "Araca Yükle",
+        "step6Desc": [
+          "Dolu kasanızı kamyona taşıyın",
+          "Araç kasasına yükleyin",
+          "Kamyonu doldurup işleme alanına sürün"
+        ],
+        "step7Title": "İşle & Sat",
+        "step7Desc": [
+          "İşleme istasyonuna sürün",
+          "Kasalarınızı teraziye koyun",
+          "Bir taşıyıcı NPC işlenmiş ürünleri toplar"
+        ]
+      }
+    },
+    "fruitpicker": {
+      "name": "Meyve Toplayıcı",
+      "subtitle": "Meyve Hasadı",
+      "interactionText": "Meyve Toplama İşini Başlat",
+      "blipLabel": "Meyve Bahçesi",
+      "locationLabel": "Meyve Bahçesi",
+      "description": [
+        "Araçtan bir kasa alın",
+        "Ağaçlardan portakal ve elma toplayın",
+        "Kasanızı doldurun ve kamyona yükleyin",
+        "Dolu kasaları işleme istasyonuna teslim edin"
+      ],
+      "items": {
+        "harvestCrate": "Hasat Kasası",
+        "freshOranges": "Taze Portakallar",
+        "deliveryTruck": "Teslimat Kamyonu"
+      },
+      "produceTypes": {
+        "orange": "Portakal",
+        "apple": "Elma"
+      },
+      "qualityTiers": {
+        "common": "Normal",
+        "fresh": "Taze",
+        "premium": "Premium",
+        "organic": "Organik"
+      },
+      "preview": {
+        "step1Title": "İşe Başla",
+        "step1Desc": [
+          "Portakal bahçesindeki NPC'ye yürüyün",
+          "E tuşuna basarak iş menüsünü açın",
+          "Bölgenizi seçin ve Başlat'a basın"
+        ],
+        "step2Title": "Kıyafetlerini Değiştir",
+        "step2Desc": [
+          "Yakındaki portatif kabine gidin",
+          "İçeri girip iş kıyafetinize geçin",
+          "İş bittiğinde orijinal kıyafetleriniz geri yüklenir"
+        ],
+        "step3Title": "Aracını Al",
+        "step3Desc": [
+          "Yakındaki iş aracına gidin",
+          "Kamyondan boş bir kasa alın",
+          "Toplama başlatmak için portakal ağaçlarına sürün"
+        ],
+        "step4Title": "Portakal Topla",
+        "step4Desc": [
+          "Bir portakal ağacına yürüyün",
+          "Uzanıp portakal toplamak için etkileşime geçin",
+          "Geri dönmeden önce kasanızı doldurun"
+        ],
+        "step5Title": "Kutuyu Taşı",
+        "step5Desc": [
+          "Dolu kasanızı alın",
+          "Araca geri taşıyın",
+          "Kamyon kasasına yükleyin"
+        ],
+        "step6Title": "Araca Yükle",
+        "step6Desc": [
+          "Dolu kasanızı kamyona taşıyın",
+          "Araç kasasına yükleyin",
+          "Kamyonu doldurup işleme alanına sürün"
+        ],
+        "step7Title": "İşle & Sat",
+        "step7Desc": [
+          "İşleme istasyonuna sürün",
+          "Kasalarınızı teraziye koyun",
+          "Bir taşıyıcı NPC işlenmiş ürünleri toplar"
+        ]
+      }
+    },
+    "cleaner": {
+      "name": "Sokak Temizlikçisi",
+      "subtitle": "Şehir Temizlik Hizmeti",
+      "interactionText": "Temizlik İşini Başlat",
+      "blipLabel": "Şehir Temizliği",
+      "locationLabel": "Şehir Temizlik Deposu",
+      "description": [
+        "Araç bagajından paspası alın",
+        "Haritada işaretli kir noktalarına gidin",
+        "Paspasınızı kullanarak lekeleri temizleyin",
+        "Bitirdiğinizde geri dönüp ödemenizi alın"
+      ],
+      "items": {
+        "mop": "Paspas",
+        "dirtStain": "Kir Lekesi",
+        "serviceVan": "Servis Minibüsü"
+      },
+      "areas": {
+        "downtown": "Şehir Merkezi"
+      },
+      "preview": {
+        "step1Title": "İşe Başla",
+        "step1Desc": [
+          "Temizlik deposundaki NPC'ye yürüyün",
+          "E tuşuna basarak iş menüsünü açın",
+          "Rotanızı seçin ve Başlat'a basın"
+        ],
+        "step2Title": "Kıyafetlerini Değiştir",
+        "step2Desc": [
+          "Yakındaki portatif kabine gidin",
+          "İçeri girip iş kıyafetinize geçin",
+          "İş bittiğinde orijinal kıyafetleriniz geri yüklenir"
+        ],
+        "step3Title": "Aletlerini Topla",
+        "step3Desc": [
+          "İş aracının bagajına gidin",
+          "Bir paspas alın — her oyuncu kendi paspasını alır",
+          "Coop oyun için 4 alet mevcut"
+        ],
+        "step4Title": "Çalışma Alanına Sür",
+        "step4Desc": [
+          "Araca binin ve GPS'i takip edin",
+          "İşaretli leke noktalarına sürün",
+          "Her rotada temizlenecek birden fazla kir noktası var"
+        ],
+        "step5Title": "Lekeleri Temizle",
+        "step5Desc": [
+          "Paspasınızla bir kir lekesine yürüyün",
+          "Lekeyi silmek için çıkan hedeflere tıklayın",
+          "Her leke tamamen temizlenmesi için birden fazla vuruş gerektirir"
+        ],
+        "step6Title": "İşi Tamamla",
+        "step6Desc": [
+          "Tüm lekeleri temizledikten sonra depoya dönün",
+          "Ödemenizi almak için NPC ile konuşun",
+          "Tam rotayı tamamladığınız için bonus kazanın"
+        ]
+      }
+    },
+    "powerwash": {
+      "name": "Basınçlı Yıkamacı",
+      "subtitle": "Basınçlı Yıkama Hizmeti",
+      "interactionText": "Basınçlı Yıkama İşini Başlat",
+      "blipLabel": "Basınçlı Yıkama",
+      "locationLabel": "Basınçlı Yıkama Deposu",
+      "description": [
+        "Araçtan basınçlı yıkama tabancasını alın",
+        "Haritada işaretli kirli noktalara gidin",
+        "Yüzeyleri temizlemek için LMB basılı tutun",
+        "Bitirdiğinizde geri dönüp ödemenizi alın"
+      ],
+      "items": {
+        "pressureWand": "Basınçlı Yıkama Tabancası",
+        "dirtyStain": "Kirli Leke",
+        "washVan": "Yıkama Minibüsü"
+      },
+      "preview": {
+        "step1Title": "İşe Başla",
+        "step1Desc": [
+          "Yıkama deposundaki NPC'ye yürüyün",
+          "E tuşuna basarak iş menüsünü açın",
+          "Rotanızı seçin ve Başlat'a basın"
+        ],
+        "step2Title": "Kıyafetlerini Değiştir",
+        "step2Desc": [
+          "Yakındaki portatif kabine gidin",
+          "İçeri girip iş kıyafetinize geçin",
+          "İş bittiğinde orijinal kıyafetleriniz geri yüklenir"
+        ],
+        "step3Title": "Aletlerini Topla",
+        "step3Desc": [
+          "İş aracına gidin",
+          "Basınçlı tabanca alın — her oyuncu kendi tabancasını alır",
+          "Coop oyun için 4 alet mevcut"
+        ],
+        "step4Title": "Çalışma Alanına Sür",
+        "step4Desc": [
+          "Araca binin ve GPS'i takip edin",
+          "İşaretli leke noktalarına sürün",
+          "Her rotada temizlenecek birden fazla kirli nokta var"
+        ],
+        "step5Title": "Lekeleri Püskürt",
+        "step5Desc": [
+          "Basınçlı tabancayı kirli yüzeye nişanlayın",
+          "Su püskürtmek için sol fare düğmesini basılı tutun",
+          "Leke tamamen temizlenene kadar püskürtmeye devam edin"
+        ],
+        "step6Title": "İşi Tamamla",
+        "step6Desc": [
+          "Tüm lekeleri temizledikten sonra depoya dönün",
+          "Ödemenizi almak için işaretçiye girin",
+          "Tam rotayı tamamladığınız için bonus kazanın"
+        ]
+      }
+    },
+    "windowscleaner": {
+      "name": "Cam Temizlikçisi",
+      "subtitle": "Şehir Cam Temizlik Hizmeti",
+      "interactionText": "Cam Temizlik İşini Başlat",
+      "blipLabel": "Cam Temizliği",
+      "locationLabel": "Cam Temizlik Deposu",
+      "description": [
+        "Araçtan süngeri alın",
+        "Haritada işaretli pencerelere gidin",
+        "Pencerelerdeki kirli noktaları temizleyin",
+        "Bitirdiğinizde geri dönüp ödemenizi alın"
+      ],
+      "items": {
+        "sponge": "Sünger",
+        "windowDirt": "Cam Kiri",
+        "cleaningVan": "Temizlik Minibüsü"
+      },
+      "preview": {
+        "step1Title": "İşe Başla",
+        "step1Desc": [
+          "Temizlik deposundaki NPC'ye yürüyün",
+          "E tuşuna basarak iş menüsünü açın",
+          "Rotanızı seçin ve Başlat'a basın"
+        ],
+        "step2Title": "Kıyafetlerini Değiştir",
+        "step2Desc": [
+          "Yakındaki portatif kabine gidin",
+          "İçeri girip iş kıyafetinize geçin",
+          "İş bittiğinde orijinal kıyafetleriniz geri yüklenir"
+        ],
+        "step3Title": "Aletlerini Topla",
+        "step3Desc": [
+          "İş aracına gidin",
+          "Bir sünger alın — her oyuncu kendi süngerini alır",
+          "Coop oyun için 4 alet mevcut"
+        ],
+        "step4Title": "Çalışma Alanına Sür",
+        "step4Desc": [
+          "Araca binin ve GPS'i takip edin",
+          "İşaretli pencere noktalarına sürün",
+          "Her rotada temizlenecek birden fazla kirli pencere var"
+        ],
+        "step5Title": "Pencereleri Temizle",
+        "step5Desc": [
+          "Süngerinizle kirli bir pencereye yürüyün",
+          "Pencereyi silmek için çıkan hedeflere tıklayın",
+          "Her pencere tamamen temizlenmesi için birden fazla vuruş gerektirir"
+        ],
+        "step6Title": "İşi Tamamla",
+        "step6Desc": [
+          "Tüm pencereleri temizledikten sonra depoya dönün",
+          "Ödemenizi almak için NPC ile konuşun",
+          "Tam rotayı tamamladığınız için bonus kazanın"
+        ]
+      }
+    },
+    "cardetailer": {
+      "name": "Araç Detaycısı",
+      "subtitle": "Mobil Araç Detaylama Hizmeti",
+      "interactionText": "Araç Detaylama İşini Başlat",
+      "blipLabel": "Araç Detaylama",
+      "locationLabel": "Araç Detaylama Deposu",
+      "description": [
+        "Araçtan basınçlı yıkama tabancasını alın",
+        "Haritada işaretli müşteri araçlarına gidin",
+        "Her aracı basınçlı yıkama tabancasıyla yıkayın",
+        "Bonus ödeme için cilalayın ve parlatın"
+      ],
+      "items": {
+        "pressureWand": "Basınçlı Yıkama Tabancası",
+        "waxCloth": "Cila Bezi",
+        "serviceVan": "Servis Minibüsü"
+      },
+      "preview": {
+        "step1Title": "İşe Başla",
+        "step1Desc": [
+          "Detaylama deposundaki NPC'ye yürüyün",
+          "E tuşuna basarak iş menüsünü açın",
+          "İşi kabul edip başlayın"
+        ],
+        "step2Title": "Kıyafetlerini Değiştir",
+        "step2Desc": [
+          "Yakındaki portatif kabine gidin",
+          "İçeri girip iş kıyafetinize geçin",
+          "İş bittiğinde orijinal kıyafetleriniz geri yüklenir"
+        ],
+        "step3Title": "Aletlerini Topla",
+        "step3Desc": [
+          "İş aracına gidin",
+          "Arkadan basınçlı tabancayı alın",
+          "Bir hortum tabancayı su tankına bağlar"
+        ],
+        "step4Title": "Müşteri Araçlarına Sür",
+        "step4Desc": [
+          "Araca binin ve GPS'i takip edin",
+          "İşaretli müşteri araç noktalarına sürün",
+          "Yakın park edin — hortumun menzili sınırlı"
+        ],
+        "step5Title": "Aracı Yıka",
+        "step5Desc": [
+          "Basınçlı tabancayı kirli noktalara nişanlayın",
+          "Su püskürtmek için sol fare düğmesini basılı tutun",
+          "Her noktayı yıkadıkça araç temizlenir"
+        ],
+        "step6Title": "İşi Tamamla",
+        "step6Desc": [
+          "Tüm araçları detayladıktan sonra depoya dönün",
+          "Aletlerinizi iade edip işi bitirin",
+          "Yüksek seviyeler bonus ödeme için cila açar"
+        ]
+      }
+    },
+    "newspaper": {
+      "name": "Gazete Dağıtımcısı",
+      "subtitle": "Gazete Dağıtım Hizmeti",
+      "interactionText": "Gazete Dağıtımını Başlat",
+      "blipLabel": "Gazete Dağıtımı",
+      "locationLabel": "Gazete Dağıtımı",
+      "description": [
+        "Teslimat bisikletini alın",
+        "İşaretli teslimat noktalarına gazete atın",
+        "Daha fazla teslimat daha fazla ödeme demek",
+        "Daha hızlı tamamlamak için ekip olarak çalışın"
+      ],
+      "items": {
+        "newspaperBundle": "Gazete Destesi",
+        "deliveryList": "Teslimat Listesi",
+        "bikeKey": "Bisiklet Anahtarı"
+      },
+      "routes": {
+        "restoran": "Restoran Rotası",
+        "easy": "Kolay Rota",
+        "headline": "Manşet Devresi",
+        "express": "Ekspres Rota",
+        "morning": "Sabah Gazetesi",
+        "editorial": "Editör Turu"
+      },
+      "blips": {
+        "newspaperDelivery": "Gazete Dağıtımı",
+        "returnBike": "Bisikleti İade Et"
+      }
+    },
+    "cleanup": {
+      "name": "Çöpçü",
+      "subtitle": "Şehir Çevre Temizlik Hizmetleri",
+      "interactionText": "Çöp Toplamayı Başlat",
+      "blipLabel": "Çöp Toplama",
+      "locationLabel": "Çöp Merkezi",
+      "description": [
+        "Şehirdeki çöp kutularından çöp toplayın",
+        "Çöp torbalarını kamyona yükleyin",
+        "Kamyon dolunca teslim edin",
+        "Ekiple çalışın ve daha fazla kazanın"
+      ],
+      "items": {
+        "cleanupBag": "Çöp Torbası",
+        "gloves": "Eldiven",
+        "cleanupTruck": "Çöp Kamyonu"
+      },
+      "areas": {
+        "downtown": "Şehir Merkezi",
+        "industrial": "Sanayi Bölgesi",
+        "residential": "Yerleşim Alanı"
+      },
+      "blips": {
+        "cleanupDelivery": "Çöp Teslim Noktası"
+      }
+    },
+    "trucker": {
+      "name": "Kamyoncu",
+      "subtitle": "Uzun Yol Nakliyeciliği",
+      "interactionText": "Nakliye İşini Başlat",
+      "blipLabel": "Kamyon Parkı",
+      "locationLabel": "Kamyon Deposu",
+      "description": [
+        "Römorklari alın ve kargo teslim edin",
+        "Kat edilen mesafeye göre para kazanın",
+        "Yüksek ödüllü yasadışı rota şansı",
+        "Bonus ödüller için ekip olarak çalışın"
+      ],
+      "items": {
+        "truck": "Kamyon",
+        "trailer": "Römork",
+        "cargo": "Kargo"
+      },
+      "blips": {
+        "pickupTrailer": "Römork Al",
+        "deliverCargo": "Kargo Teslim Et",
+        "illegalDelivery": "Yasadışı Teslimat",
+        "returnTruck": "Kamyonu İade Et"
+      }
+    },
+    "taxi": {
+      "name": "Taksici",
+      "subtitle": "Şehir İçi Ulaşım",
+      "interactionText": "Taksi İşini Başlat",
+      "blipLabel": "Taksi Durağı",
+      "locationLabel": "Taksi Durağı",
+      "description": [
+        "Şehirdeki yolcuları alın",
+        "Gidecekleri yere bırakın",
+        "Mesafeye göre para kazanın",
+        "Hızlı teslimat için bonus"
+      ],
+      "items": {
+        "taxi": "Taksi",
+        "passenger": "Yolcu"
+      },
+      "blips": {
+        "pickupPassenger": "Yolcu Al",
+        "dropOff": "Bırakma Noktası",
+        "returnTaxi": "Taksiyi İade Et"
+      }
+    },
+    "dogwalking": {
+      "name": "Köpek Gezdirici",
+      "subtitle": "Evcil Hayvan Bakım Hizmetleri",
+      "interactionText": "Köpek Gezdirmeyi Başlat",
+      "blipLabel": "Köpek Gezdirme",
+      "locationLabel": "Evcil Hayvan Hizmetleri",
+      "description": [
+        "Zengin müşteriler için köpek gezdirin",
+        "Müşteri evlerinden köpekleri alın",
+        "Köpeğinizle gerekli mesafeyi yürüyün",
+        "Bonus ödeme için köpeğinizin ardını temizleyin",
+        "Coop bonusu için arkadaşlarınızla çalışın!"
+      ],
+      "items": {
+        "leash": "Tasma",
+        "poopBag": "Dışkı Torbası",
+        "treats": "Ödül Maması"
+      },
+      "blips": {
+        "clientHome": "Müşteri Evi"
+      },
+      "preview": {
+        "step1Title": "İşe Başla",
+        "step1Desc": [
+          "Evcil hayvan dükkanı yakınındaki NPC'yi bulun",
+          "E tuşuna basarak iş menüsünü açın",
+          "Bölgenizi seçin ve Başlat'a basın"
+        ],
+        "step2Title": "Kıyafetlerini Değiştir",
+        "step2Desc": [
+          "Evcil hayvan dükkanı yakınındaki soyunma alanına gidin",
+          "İçeri girip iş kıyafetinize geçin",
+          "İş bittiğinde orijinal kıyafetleriniz geri yüklenir"
+        ],
+        "step3Title": "Köpeği Al",
+        "step3Desc": [
+          "Vinewood Hills'teki müşteri evine sürün",
+          "Dışarıda bekleyen köpek sahibiyle buluşun",
+          "Köpeği tasmayla almak için E'ye basın"
+        ],
+        "step4Title": "Köpeği Gezdir",
+        "step4Desc": [
+          "Tasmalı köpeğinizle yürüyün",
+          "HUD'da gösterilen gerekli mesafeyi tamamlayın",
+          "Bonus ödeme için köpeğinizin ardını temizleyin"
+        ],
+        "step5Title": "Köpeği Geri Götür",
+        "step5Desc": [
+          "Köpeği müşteri evine geri yürütün",
+          "Köpek otomatik olarak sahibine döner",
+          "Yürünen mesafe ve temizliklere göre ödeme alın"
+        ]
+      }
+    },
+    "powerlines": {
+      "name": "Elektrikçi",
+      "subtitle": "Şehir Enerji & İletişim",
+      "interactionText": "Elektrikçi İşini Başlat",
+      "blipLabel": "Elektrikçi",
+      "locationLabel": "Enerji Şirketi",
+      "description": [
+        "Evlerdeki elektrik panolarını tamir edin",
+        "Sepetli kamyon ile telefon direği kablolarını onarın",
+        "Bonus ödüller için ekibinizle çalışın",
+        "Tamirleri tamamlamak için mini oyunları kullanın"
+      ],
+      "items": {
+        "multimeter": "Multimetre",
+        "wireKit": "Kablo Kiti",
+        "safetyGear": "Güvenlik Ekipmanı"
+      },
+      "blips": {
+        "electricalPanel": "Elektrik Panosu",
+        "phonePole": "Telefon Direği",
+        "bucketTruck": "Sepetli Kamyon"
+      },
+      "routes": {
+        "rockfordHills": "Rockford Hills",
+        "davis": "Davis",
+        "vespucci": "Vespucci",
+        "strawberry": "Strawberry",
+        "centralLS": "Central LS",
+        "southLS": "South LS"
+      }
+    },
+    "delivery": {
+      "name": "Kargo Teslimatçısı",
+      "subtitle": "Paket Teslimat Hizmeti",
+      "interactionText": "Paket Teslimat İşini Başlat",
+      "blipLabel": "Paket Teslimatı",
+      "locationLabel": "Paket Teslimatı",
+      "description": [
+        "Minibüsü alın ve depodan kutuları yükleyin",
+        "Kutuları belirlenen müşterilere teslim edin",
+        "Ne kadar çok teslimat yaparsanız o kadar çok kazanırsınız",
+        "Daha hızlı bitirmek için ekip olarak çalışın"
+      ],
+      "items": {
+        "cargoBox": "Kargo Kutusu",
+        "deliveryList": "Teslimat Listesi",
+        "vanKey": "Minibüs Anahtarı"
+      },
+      "blips": {
+        "deliveryPoint": "Teslimat Noktası"
+      },
+      "preview": {
+        "step1Title": "İşe Başla",
+        "step1Desc": [
+          "Teslimat deposundaki NPC'ye yürüyün",
+          "E tuşuna basarak iş menüsünü açın",
+          "Bölgenizi seçin ve Başlat'a basın"
+        ],
+        "step2Title": "Kıyafetlerini Değiştir",
+        "step2Desc": [
+          "Yakındaki portatif kabine gidin",
+          "İçeri girip iş kıyafetinize geçin",
+          "İş bittiğinde orijinal kıyafetleriniz geri yüklenir"
+        ],
+        "step3Title": "Aracını Al",
+        "step3Desc": [
+          "Park halindeki teslimat minibüsüne gidin",
+          "Arka kapılar yükleme için açık",
+          "Her lobi kendi aracını alır"
+        ],
+        "step4Title": "Paketleri Al",
+        "step4Desc": [
+          "Depo yakınındaki görevliye yürüyün",
+          "Bir kargo kutusu almak için E'ye basın",
+          "Aynı anda bir kutu taşıyabilirsiniz"
+        ],
+        "step5Title": "Minibüse Yükle",
+        "step5Desc": [
+          "Paketleri minibüsün açık arka kapılarına taşıyın",
+          "Kutular otomatik olarak içeri istiflenır",
+          "Yola çıkmadan önce minibüsü doldurun"
+        ],
+        "step6Title": "Paketleri Teslim Et",
+        "step6Desc": [
+          "İşaretli teslimat noktasına sürün",
+          "Bagajdan bir kutu alıp taşıyın",
+          "Müşteriye yürüyün ve teslim etmek için E'ye basın"
+        ],
+        "step7Title": "Depoya Dön",
+        "step7Desc": [
+          "Tüm teslimatlardan sonra depoya geri sürün",
+          "Minibüsü işaretli noktaya park edin",
+          "Kazancınız otomatik olarak ödenir"
+        ]
+      }
+    },
+    "warehouse": {
+      "name": "Depo İşçisi",
+      "subtitle": "Yük & Lojistik",
+      "interactionText": "Depo İşini Başlat",
+      "blipLabel": "Depo",
+      "locationLabel": "Depo",
+      "description": [
+        "Kutuları ve paletleri teslimat kamyonlarına yükleyin",
+        "Ağır paletler için forklift kullanın",
+        "Küçük kutuları elle kamyona taşıyın",
+        "Ödeme için kamyon siparişlerini tamamlayın"
+      ],
+      "items": {
+        "forklift": "Forklift",
+        "boxes": "Kutular",
+        "pallets": "Paletler"
+      },
+      "blips": {
+        "truck": "Kamyon",
+        "deliveryPoint": "Teslimat Noktası",
+        "forklift": "Forklift"
+      },
+      "deliveryRoutes": {
+        "vinewood": "Vinewood Marketi",
+        "davis": "Davis Süpermarketi",
+        "strawberry": "Strawberry Marketi"
+      }
+    },
+    "landscaping": {
+      "name": "Bahçıvan",
+      "subtitle": "Bahçe Bakımı",
+      "interactionText": "Bahçıvanlık İşini Başlat",
+      "blipLabel": "Bahçıvanlık",
+      "locationLabel": "Şehir Bakımı",
+      "description": [
+        "Budama makasıyla aşırı büyümüş çalıları budayın",
+        "Kürekle yabani otları kazıyın",
+        "İş kamyonundan aletleri alın",
+        "Bonus ödüller için ekip olarak çalışın"
+      ],
+      "items": {
+        "trimmer": "Budama Makası",
+        "shovel": "Kürek",
+        "workTruck": "İş Kamyonu"
+      },
+      "routes": {
+        "vespucci": "Vespucci",
+        "pillboxHill": "Pillbox Hill",
+        "littleSeoul": "Little Seoul",
+        "burton": "Burton",
+        "vinewoodHills": "Vinewood Hills"
+      }
+    },
+    "fishing": {
+      "name": "Balıkçılık",
+      "subtitle": "Profesyonel Balıkçılık",
+      "interactionText": "Balıkçılık İşini Başlat",
+      "blipLabel": "Balıkçılık",
+      "locationLabel": "Balıkçılık",
+      "description": [
+        "Olta ve yem alın",
+        "Oltanızı suya atın",
+        "Mini oyunla balık yakalayın",
+        "Yakalanan balıklar envantere eklenir",
+        "Balık alıcısına satın"
+      ],
+      "items": {
+        "fishingRod": "Olta",
+        "bait": "Yem"
+      },
+      "rods": {
+        "standartrod": "Standart Olta",
+        "carbonrod": "Karbon Olta",
+        "prorod": "Profesyonel Olta"
+      },
+      "baits": {
+        "basicbait": "Solucan Yemi",
+        "spoonlure": "Kaşık Yem",
+        "threesided": "Üç Taraflı Yem",
+        "tailfish": "Kuyruklu Balık Yemi",
+        "doublehook": "Çift Kancalı Yem",
+        "triplehook": "Üçlü Kancalı Yem"
+      },
+      "zones": {
+        "southCoast": "Güney Kıyısı",
+        "westCoast": "Batı Kıyısı",
+        "deepSea": "Açık Deniz"
+      },
+      "fishTypes": {
+        "anchovy": "Hamsi",
+        "trout": "Alabalık",
+        "mackerel": "Uskumru",
+        "salmon": "Somon",
+        "snapper": "Mercan",
+        "tuna": "Ton Balığı",
+        "grouper": "Orfoz",
+        "swordfish": "Kılıç Balığı",
+        "shark": "Köpek Balığı"
+      },
+      "blips": {
+        "fishingShop": "Balıkçı Dükkanı",
+        "fishBuyer": "Balık Alıcısı"
+      }
+    },
+    "diving": {
+      "name": "Dalgıçlık",
+      "subtitle": "Profesyonel Dalgıçlık",
+      "interactionText": "Dalgıçlık İşini Başlat",
+      "blipLabel": "Dalgıçlık",
+      "locationLabel": "Dalgıçlık",
+      "description": [
+        "Tekneye binin ve dalış bölgesine gidin",
+        "Tekne durduğunda çapayı atın ve suya girin",
+        "Su altına dalın ve görevleri tamamlayın",
+        "Tekneye dönün ve çapayı kaldırın",
+        "İskeleye geri dönün ve eşyalarınızı satın"
+      ],
+      "items": {
+        "scubaTank": "Tüp",
+        "divingSuit": "Dalış Giysisi",
+        "flippers": "Palet"
+      },
+      "zones": {
+        "shallowBay": "Sığ Koy",
+        "openSea": "Açık Deniz",
+        "shipwreck": "Batık Gemi",
+        "deepTrench": "Derin Çukur"
+      },
+      "sellItems": {
+        "dendrogyraCoral": "Dendrogyra Mercanı",
+        "antipathariaCoral": "Antipatharia Mercanı"
+      },
+      "taskTypes": {
+        "coral": "Mercan",
+        "trash": "Çöp"
+      },
+      "gear": {
+        "basic": "Temel Dalış Ekipmanı",
+        "standard": "Standart Dalış Ekipmanı",
+        "pro": "Profesyonel Dalış Ekipmanı"
+      },
+      "blips": {
+        "boatDelivery": "Tekne Teslimi"
+      },
+      "preview": {
+        "step1Title": "İşe Başla",
+        "step1Desc": [
+          "Paleto Bay iskelesindeki dalış eğitmenine gidin",
+          "E tuşuna basarak iş menüsünü açın",
+          "Dalış bölgesi seçin ve Başlat'a basın"
+        ],
+        "step2Title": "Tekneye Bin",
+        "step2Desc": [
+          "İskeleye yürüyün ve teknenize binin",
+          "Her dalış bölgesinin bir kalkış noktası var",
+          "İşaretli dalış bölgesine seyir edin"
+        ],
+        "step3Title": "Çapa At & Dal",
+        "step3Desc": [
+          "Dalış bölgesi işaretçisinde tekneyi durdurun",
+          "Çapayı atmak için E'ye basın",
+          "Suya atlayın ve dalın"
+        ],
+        "step4Title": "Eşyaları Topla",
+        "step4Desc": [
+          "Deniz dibinde mercan ve çöp bulun",
+          "Satmak için mercan toplamak üzere E'ye basın",
+          "Bonus XP için çöpleri temizleyin"
+        ],
+        "step5Title": "Avını Sat",
+        "step5Desc": [
+          "Tekneyi iskeleye geri götürün",
+          "Yakındaki alıcı NPC'ye yürüyün",
+          "Topladığınız mercanları satmak için E'ye basın"
+        ]
+      }
+    },
+    "forklift": {
+      "name": "Forklift Operatörü",
+      "subtitle": "Yeraltı Lojistiği",
+      "interactionText": "Forklift İşini Başlat",
+      "blipLabel": "Forklift",
+      "locationLabel": "Forklift Deposu",
+      "description": [
+        "Yeraltı deposunda forklift kullanın",
+        "Kasaları konveyör bandına taşıyın",
+        "Kasaları belirlenen raflara yerleştirin",
+        "Bonus ödüller için ekip olarak çalışın"
+      ],
+      "items": {
+        "forklift": "Forklift",
+        "crate": "Kasa",
+        "conveyorBelt": "Konveyör Bandı"
+      },
+      "crateTypes": {
+        "jewellery": "Mücevher",
+        "antiques": "Antika",
+        "tobacco": "Tütün",
+        "hazard": "Tehlikeli Madde",
+        "fake": "Sahte"
+      },
+      "blips": {
+        "forklift": "Forklift",
+        "conveyor": "Konveyör Bandı"
+      }
+    },
+    "tiretechnician": {
+      "name": "Lastik Tamircisi",
+      "subtitle": "Yol Kenarı Lastik Servisi",
+      "interactionText": "Lastik Tamircisi İşini Başlat",
+      "blipLabel": "Lastik Tamircisi",
+      "locationLabel": "Lastik Servisi Deposu",
+      "description": [
+        "Yol kenarında kalan araçların patlak lastiklerini değiştirin",
+        "Lastik değişimi için kriko ve aletleri kullanın",
+        "Çok aşamalı gerçekçi lastik değişim süreci",
+        "Daha hızlı tamamlamak için ekibinizle çalışın"
+      ],
+      "items": {
+        "wrenchSet": "Anahtar Takımı",
+        "carJack": "Kriko",
+        "spareParts": "Yedek Parçalar"
+      },
+      "blips": {
+        "vehicleRepair": "Araç Tamiri",
+        "serviceTruck": "Servis Kamyonu"
+      }
+    },
+    "treasurehunter": {
+      "name": "Hazine Avcısı",
+      "subtitle": "Su Altı Hazine Avcılığı",
+      "interactionText": "Hazine Avı İşini Başlat",
+      "blipLabel": "Hazine Avcısı",
+      "locationLabel": "Hazine Avcısı İskelesi",
+      "description": [
+        "Tekneye binin ve hazine bölgesine gidin",
+        "İzleyici sinyallerini takip ederek hazineyi bulun",
+        "Su altına dalıp hazine sandığını toplayın",
+        "Ödemenizi almak için iskeleye dönün"
+      ],
+      "items": {
+        "scubaGear": "Dalış Ekipmanı",
+        "treasureChest": "Hazine Sandığı"
+      },
+      "lootTypes": {
+        "common": "Hazine Torbası",
+        "legendary": "Altın Sandık"
+      },
+      "gear": {
+        "basic": "Temel Dalış Ekipmanı",
+        "standard": "Standart Dalış Ekipmanı",
+        "pro": "Profesyonel Dalış Ekipmanı"
+      },
+      "preview": {
+        "step1Title": "İşe Başla",
+        "step1Desc": [
+          "İskeleye gidin ve eğitmenle konuşun",
+          "E tuşuna basarak iş menüsünü açıp başlayın"
+        ],
+        "step2Title": "Tekneye Bin",
+        "step2Desc": [
+          "İskeleye yürüyün ve teknenize binin",
+          "Hazine alanı işaretçisine doğru seyir edin"
+        ],
+        "step3Title": "Çapa At & Dal",
+        "step3Desc": [
+          "Hazineyi bulmak için izleyici sinyallerini takip edin",
+          "Arama alanı yakınında çapa atın",
+          "Dalış ekipmanınızla su altına dalın"
+        ],
+        "step4Title": "Hazineyi Topla",
+        "step4Desc": [
+          "Deniz dibindeki hazine sandığını bulun",
+          "Köpek balıkları ve okyanus akıntılarına dikkat edin!",
+          "Hazineyi toplamak için E'ye basın"
+        ],
+        "step5Title": "İskeleye Dön",
+        "step5Desc": [
+          "Yüzeye çıkın ve iskeleye dönün",
+          "Bitirmek için işaretçiye sürün",
+          "Ödemenizi alın!"
+        ]
+      }
+    },
+    "metaldetector": {
+      "name": "Metal Dedektörü",
+      "subtitle": "Gelişmiş Kurtarma Operasyonları",
+      "interactionText": "Metal Dedektörü İşini Başlat",
+      "blipLabel": "Metal Dedektörü",
+      "locationLabel": "Metal Dedektörü İstasyonu",
+      "description": [
+        "Kamyonetin kasasından bir metal dedektörü al",
+        "Gizli metali bulmak için bip hızını takip et",
+        "Gömülü noktaları küreğinle kaz",
+        "Çıkardığın buluntuları istasyonda paraya çevir"
+      ],
+      "items": {
+        "detector": "Metal Dedektörü",
+        "findings": "Çıkarılan Buluntular"
+      },
+      "lootTypes": {
+        "scrap": "Hurda Metal",
+        "coin": "Eski Para",
+        "silver": "Gümüş Parça",
+        "gold": "Altın Külçesi",
+        "relic": "Nadir Kalıntı"
+      }
+    },
+    "mechanic": {
+      "name": "Tamirci",
+      "subtitle": "Araç Tamir Hizmeti",
+      "interactionText": "Tamirci İşini Başlat",
+      "blipLabel": "Tamirci",
+      "locationLabel": "Tamirci Dükkanı"
+    },
+    "gruppe6": {
+      "name": "Gruppe 6",
+      "subtitle": "Zırhlı Para Taşıma",
+      "interactionText": "Depo müdürüyle konuş",
+      "blipLabel": "Gruppe 6 Deposu",
+      "description": [
+        "Fleeca bankaları arasında zırhlı kamyon kullan",
+        "Kasada para çantalarını doldurup kamyona yükle",
+        "Kamyonu depoya teslim et, paranı al"
+      ]
+    }
+  },
+  "quests": {
+    "daily_miner_collect": {
+      "label": "Günlük Madencilik",
+      "description": "Madende 5 kaya kır"
+    },
+    "weekly_miner_process": {
+      "label": "Usta İşlemci",
+      "description": "Terazide 30 cevher işle"
+    },
+    "monthly_miner_earn": {
+      "label": "Maden Kralı",
+      "description": "Madencilikten $10.000 kazan"
+    },
+    "daily_lumber_collect": {
+      "label": "Günlük Odunculuk",
+      "description": "5 ağaç kes"
+    },
+    "weekly_lumber_process": {
+      "label": "Kereste Ustası",
+      "description": "Terazide 25 kütük işle"
+    },
+    "monthly_lumber_earn": {
+      "label": "Kereste Kralı",
+      "description": "Odunculuktan $10.000 kazan"
+    },
+    "daily_scrap_collect": {
+      "label": "Hurda Toplayıcı",
+      "description": "5 hurda parçası topla"
+    },
+    "weekly_scrap_process": {
+      "label": "Geri Dönüşüm Uzmanı",
+      "description": "Terazide 20 hurda işle"
+    },
+    "monthly_scrap_earn": {
+      "label": "Hurda Patronu",
+      "description": "Hurdacılıktan $8.000 kazan"
+    },
+    "daily_hunting_collect": {
+      "label": "Günlük Av",
+      "description": "3 hayvan avla"
+    },
+    "weekly_hunting_process": {
+      "label": "Kupa Avcısı",
+      "description": "Terazide 15 hayvan işle"
+    },
+    "monthly_hunting_earn": {
+      "label": "Usta Avcı",
+      "description": "Avcılıktan $12.000 kazan"
+    },
+    "daily_farmer_complete": {
+      "label": "Çiftçi",
+      "description": "2 çiftçilik turu tamamla"
+    },
+    "weekly_farmer_earn": {
+      "label": "Hasat Kralı",
+      "description": "Çiftçilikten $5.000 kazan"
+    },
+    "monthly_farmer_earn": {
+      "label": "Tarım Baronu",
+      "description": "Çiftçilikten $15.000 kazan"
+    },
+    "daily_fruitpicker_complete": {
+      "label": "Portakal Toplayıcı",
+      "description": "2 toplama turu tamamla"
+    },
+    "weekly_fruitpicker_earn": {
+      "label": "Narenciye Baronu",
+      "description": "Portakaldan $5.000 kazan"
+    },
+    "monthly_fruitpicker_earn": {
+      "label": "Bahçe Mogulu",
+      "description": "Portakaldan $15.000 kazan"
+    },
+    "daily_cleaner_complete": {
+      "label": "Sokak Süpürücü",
+      "description": "2 temizlik turu tamamla"
+    },
+    "weekly_cleaner_earn": {
+      "label": "Temizlik Uzmanı",
+      "description": "Temizlikten $4.000 kazan"
+    },
+    "monthly_cleaner_earn": {
+      "label": "Temizlik Şefi",
+      "description": "Temizlikten $12.000 kazan"
+    },
+    "daily_powerwash_complete": {
+      "label": "Basınç Uzmanı",
+      "description": "2 yıkama turu tamamla"
+    },
+    "weekly_powerwash_earn": {
+      "label": "Yıkama Ustası",
+      "description": "Basınçlı yıkamadan $5.000 kazan"
+    },
+    "monthly_powerwash_earn": {
+      "label": "Yıkama Sihirbazı",
+      "description": "Basınçlı yıkamadan $15.000 kazan"
+    },
+    "daily_windowcleaner_complete": {
+      "label": "Cam Silici",
+      "description": "2 cam temizleme turu tamamla"
+    },
+    "weekly_windowcleaner_earn": {
+      "label": "Cam Uzmanı",
+      "description": "Cam temizliğinden $4.000 kazan"
+    },
+    "monthly_windowcleaner_earn": {
+      "label": "Tertemiz Cam Ltd.",
+      "description": "Cam temizliğinden $12.000 kazan"
+    },
+    "daily_cardetailer_complete": {
+      "label": "Parlatma Zamanı",
+      "description": "2 detaylı yıkama turu tamamla"
+    },
+    "weekly_cardetailer_earn": {
+      "label": "Detay Uzmanı",
+      "description": "Araç detaylandırmadan $5.000 kazan"
+    },
+    "monthly_cardetailer_earn": {
+      "label": "Usta Detaycı",
+      "description": "Araç detaylandırmadan $15.000 kazan"
+    },
+    "daily_newspaper_complete": {
+      "label": "Gazeteci",
+      "description": "2 dağıtım turu tamamla"
+    },
+    "weekly_newspaper_earn": {
+      "label": "Basın Mogulu",
+      "description": "Dağıtımdan $3.000 kazan"
+    },
+    "monthly_newspaper_earn": {
+      "label": "Medya Baronu",
+      "description": "Dağıtımdan $8.000 kazan"
+    },
+    "daily_cleanup_complete": {
+      "label": "Çöp Toplayıcı",
+      "description": "2 çöp toplama turu tamamla"
+    },
+    "weekly_cleanup_earn": {
+      "label": "Atık Yöneticisi",
+      "description": "Çöp toplamadan $4.000 kazan"
+    },
+    "monthly_cleanup_earn": {
+      "label": "Atık Mogulu",
+      "description": "Çöp toplamadan $12.000 kazan"
+    },
+    "daily_trucker_complete": {
+      "label": "Günlük Nakliye",
+      "description": "2 nakliye turu tamamla"
+    },
+    "weekly_trucker_earn": {
+      "label": "Yol Savaşçısı",
+      "description": "Nakliyeden $8.000 kazan"
+    },
+    "monthly_trucker_earn": {
+      "label": "Konvoy Kralı",
+      "description": "Nakliyeden $25.000 kazan"
+    },
+    "daily_taxi_complete": {
+      "label": "Taksici",
+      "description": "3 taksi yolculuğu tamamla"
+    },
+    "weekly_taxi_earn": {
+      "label": "Taksi Kralı",
+      "description": "Taksi ücretlerinden $6.000 kazan"
+    },
+    "monthly_taxi_earn": {
+      "label": "Filo Sahibi",
+      "description": "Taksi ücretlerinden $18.000 kazan"
+    },
+    "daily_dogwalking_complete": {
+      "label": "Köpek Gezdirici",
+      "description": "2 gezdirme turu tamamla"
+    },
+    "weekly_dogwalking_earn": {
+      "label": "Sürü Lideri",
+      "description": "Köpek gezdirmeden $3.000 kazan"
+    },
+    "monthly_dogwalking_earn": {
+      "label": "Köpek Fısıldayan",
+      "description": "Köpek gezdirmeden $8.000 kazan"
+    },
+    "daily_powerlines_complete": {
+      "label": "Elektrikçi",
+      "description": "2 tamir işi tamamla"
+    },
+    "weekly_powerlines_earn": {
+      "label": "Usta Elektrikçi",
+      "description": "Tamirden $6.000 kazan"
+    },
+    "monthly_powerlines_earn": {
+      "label": "Enerji Şebekesi Patronu",
+      "description": "Tamirden $18.000 kazan"
+    },
+    "daily_delivery_complete": {
+      "label": "Kurye",
+      "description": "2 teslimat tamamla"
+    },
+    "weekly_delivery_earn": {
+      "label": "Ekspres Kurye",
+      "description": "Teslimatlardan $5.000 kazan"
+    },
+    "monthly_delivery_earn": {
+      "label": "Teslimat Kralı",
+      "description": "Teslimatlardan $15.000 kazan"
+    },
+    "daily_warehouse_complete": {
+      "label": "Depo İşçisi",
+      "description": "2 depo vardiyası tamamla"
+    },
+    "weekly_warehouse_earn": {
+      "label": "Lojistik Uzmanı",
+      "description": "Depo işinden $5.000 kazan"
+    },
+    "monthly_warehouse_earn": {
+      "label": "Depo Müdürü",
+      "description": "Depo işinden $15.000 kazan"
+    },
+    "daily_landscaping_complete": {
+      "label": "Yeşil Parmak",
+      "description": "2 bahçıvanlık işi tamamla"
+    },
+    "weekly_landscaping_earn": {
+      "label": "Usta Bahçıvan",
+      "description": "Bahçıvanlıktan $4.000 kazan"
+    },
+    "monthly_landscaping_earn": {
+      "label": "Peyzaj Mimarı",
+      "description": "Bahçıvanlıktan $12.000 kazan"
+    },
+    "daily_fishing_complete": {
+      "label": "Balıkçı",
+      "description": "2 balık avı turu tamamla"
+    },
+    "weekly_fishing_earn": {
+      "label": "Açık Deniz Balıkçısı",
+      "description": "Balıkçılıktan $5.000 kazan"
+    },
+    "monthly_fishing_earn": {
+      "label": "Balıkçılık Efsanesi",
+      "description": "Balıkçılıktan $15.000 kazan"
+    },
+    "daily_diving_complete": {
+      "label": "Derin Dalgıç",
+      "description": "2 dalış turu tamamla"
+    },
+    "weekly_diving_earn": {
+      "label": "Okyanus Kaşifi",
+      "description": "Dalıştan $6.000 kazan"
+    },
+    "monthly_diving_earn": {
+      "label": "Hazine Dalgıcı",
+      "description": "Dalıştan $18.000 kazan"
+    },
+    "daily_forklift_complete": {
+      "label": "Forklift Operatörü",
+      "description": "2 depo vardiyası tamamla"
+    },
+    "weekly_forklift_earn": {
+      "label": "Ağır Yük Taşıyıcı",
+      "description": "Forklift işinden $5.000 kazan"
+    },
+    "monthly_forklift_earn": {
+      "label": "Lojistik Titanı",
+      "description": "Forklift işinden $15.000 kazan"
+    }
+  },
+  "shop": {
+    "buyRod": "Olta Al",
+    "buyRodDesc": "Bir olta satın alın",
+    "buyBait": "Yem Al",
+    "buyBaitDesc": "Balık yemi satın alın",
+    "sellAll": "Hepsini Sat",
+    "sellAllFish": "Tüm balıkları sat",
+    "sellAllItems": "Tüm eşyaları sat",
+    "levelRequired": "Seviye {level} gerekli | {price}",
+    "howMany": "Kaç tane?"
+  },
+  "vehicle": {
+    "powerlines": "Elektrikçi",
+    "huntingVehicle": "Av Aracı",
+    "workTruck": "İş Kamyonu",
+    "divingBoat": "Dalış Teknesi",
+    "fishingBoat": "Balıkçı Teknesi",
+    "cleanupTruck": "Çöp Kamyonu",
+    "lumberVehicle": "Kereste Aracı",
+    "miningVehicle": "Maden Aracı",
+    "metaldetectorVehicle": "Metal Dedektörü Aracı",
+    "washVan": "Yıkama Minibüsü",
+    "windowCleanerVan": "Cam Temizlik Minibüsü",
+    "cleaningVan": "Temizlik Minibüsü",
+    "serviceVehicle": "Servis Aracı",
+    "scrapyardTruck": "Hurda Kamyonu",
+    "detailingVan": "Detaylama Minibüsü",
+    "tiretechnician": "Lastik Tamircisi",
+    "pickupPassenger": "Yolcu Al",
+    "returnTaxi": "Taksiyi İade Et",
+    "dropOff": "Bırakma Noktası",
+    "bucketTruck": "Sepetli Kamyon",
+    "deliveryVan": "Teslimat Minibüsü",
+    "newspaperBike": "Gazete Bisikleti",
+    "detachedTrailer": "Ayrılmış Römork",
+    "deliveryTruck": "Teslimat Kamyonu",
+    "taxi": "Taksi",
+    "treasureBoat": "Hazine Avcısı Teknesi"
+  },
+  "task": {
+    "panels": "Panolar",
+    "poles": "Direkler",
+    "repairPanels": "Panoları tamir et ({done}/{total})",
+    "fixPoles": "Elektrik direklerini onar ({done}/{total})",
+    "repairDescription": "Bölgedeki elektrik altyapısını onarın. Panoları ve elektrik direklerini tamir edin.",
+    "plants": "Bitkiler",
+    "cropPlant": "Ekin Bitkisi",
+    "nearestCrop": "En Yakın Ekin",
+    "bushes": "Çalılar",
+    "lawns": "Çimler",
+    "bushToTrim": "Budanacak Çalı",
+    "lawnToDig": "Kazılacak Çim",
+    "toilets": "Tuvaletler",
+    "pipes": "Borular",
+    "fishCaught": "Yakalanan Balık",
+    "treasures": "Hazineler",
+    "spotsDug": "Kazılan noktalar",
+    "tasks": "Görevler",
+    "loadBoxes": "Depodan kutuları yükleyin",
+    "deliveries": "Teslimatlar",
+    "deliverPackages": "Paketleri teslim edin",
+    "boxesLoaded": "Yüklenen Kutular",
+    "pickUpTrailer": "Römorku al",
+    "deliverCargo": "Kargoyu teslim et",
+    "returnTruck": "Kamyonu iade et",
+    "stage": "Aşama",
+    "truckFill": "Kamyon Doluluk",
+    "shelved": "Raflanan",
+    "activateConveyor": "Konveyör bandını etkinleştir [E]",
+    "deliverCratesToBelt": "Sandıkları banda teslim et ({current}/{total})",
+    "placeCratesOnShelves": "Sandıkları raflara yerleştir ({current}/{total})",
+    "delivered": "Teslim Edilen",
+    "takeWandFromTrunk": "Araç bagajından tabancayı alın",
+    "spotsCleaned": "Temizlenen Noktalar",
+    "takeSpongeFromTrunk": "Araç bagajından süngeri alın",
+    "windows": "Pencereler",
+    "takeMopFromTrunk": "Araç bagajından paspası alın",
+    "stains": "Lekeler",
+    "equipWandOrCloth": "Tabanca (yıkama) veya bez (cilalama) kuşanın",
+    "carsWashed": "Yıkanan Arabalar",
+    "carsPolished": "Cilalanan Arabalar",
+    "distance": "Mesafe",
+    "cargo": "Kargo",
+    "regularAnimals": "Normal hayvanlar",
+    "predators": "Yırtıcılar",
+    "birds": "Kuşlar",
+    "mixed": "Karışık",
+    "nextDelivery": "Sonraki Teslimat",
+    "returnVehicle": "Aracı İade Et",
+    "returnToDepot": "Depoya Dön",
+    "returnToBase": "Üsse Dön",
+    "loadingArea": "Yükleme Alanı",
+    "fruitpickerTree": "Portakal Ağacı",
+    "next": "Sonraki",
+    "walkDistance": "Yürüme mesafesi",
+    "dogsDelivered": "Teslim edilen köpekler",
+    "distanceWalked": "Yürünen Mesafe (m)",
+    "oreProcessed": "İşlenen Cevher",
+    "trunkLoaded": "Bagaj Doluluk",
+    "logsProcessed": "İşlenen Kütükler",
+    "scrapsProcessed": "İşlenen Hurdalar",
+    "boxesProcessed": "İşlenen Kutular",
+    "animalsProcessed": "İşlenen Hayvanlar",
+    "toolShovel": "Kürek",
+    "toolTrimmer": "Çalı Makası",
+    "trucksCompleted": "Tamamlanan kamyonlar ({current}/{total})",
+    "loadBoxesCount": "Kutuları yükle ({current}/{total})",
+    "loadPallets": "Paletleri yükle ({current}/{total})",
+    "deliverPapers": "Gazeteleri dağıt ({current}/{total})",
+    "trimBushes": "Çalıları buda ({current}/{total})",
+    "rakeLawns": "Çimleri tırmıkla ({current}/{total})",
+    "itemsCollected": "Toplanan eşyalar ({current}/{total})",
+    "cleanAllWindows": "Tüm camları temizle ({current}/{total})",
+    "cleanAllSpots": "Tüm noktaları temizle ({current}/{total})"
+  },
+  "drawText": {
+    "repairPanel": "[E] Elektrik panosunu tamir et",
+    "repairPole": "[E] Telefon direği kablosunu onar",
+    "collect": "[E] Topla",
+    "collectCoral": "[E] Mercan Topla",
+    "cleanTrash": "[E] Çöp Temizle"
+  },
+  "achievements": {
+    "miner_lv5": {
+      "label": "Usta Madenci",
+      "desc": "Madencilikte seviye 5'e ulaş"
+    },
+    "miner_lv10": {
+      "label": "Madencilik Efsanesi",
+      "desc": "Madencilikte seviye 10'a ulaş"
+    },
+    "lumberjack_lv5": {
+      "label": "Usta Oduncu",
+      "desc": "Odunculukta seviye 5'e ulaş"
+    },
+    "fishing_lv5": {
+      "label": "Uzman Balıkçı",
+      "desc": "Balıkçılıkta seviye 5'e ulaş"
+    },
+    "cleanup_lv5": {
+      "label": "Atık Savaşçısı",
+      "desc": "Temizlikte seviye 5'e ulaş"
+    },
+    "delivery_lv5": {
+      "label": "Ekspres Kurye",
+      "desc": "Teslimatta seviye 5'e ulaş"
+    },
+    "trucker_lv5": {
+      "label": "Yol Kralı",
+      "desc": "Tırcılıkta seviye 5'e ulaş"
+    },
+    "hunting_lv5": {
+      "label": "Uzman Avcı",
+      "desc": "Avcılıkta seviye 5'e ulaş"
+    },
+    "taxi_lv5": {
+      "label": "As Şoför",
+      "desc": "Taksicilikte seviye 5'e ulaş"
+    },
+    "powerlines_lv5": {
+      "label": "Usta Elektrikçi",
+      "desc": "Elektrik hattında seviye 5'e ulaş"
+    },
+    "diving_lv5": {
+      "label": "Derin Deniz Dalgıcı",
+      "desc": "Dalışta seviye 5'e ulaş"
+    },
+    "cleaner_lv5": {
+      "label": "Temizlik Makinesi",
+      "desc": "Temizlikçilikte seviye 5'e ulaş"
+    },
+    "powerwash_lv5": {
+      "label": "Basınç Uzmanı",
+      "desc": "Basınçlı yıkamada seviye 5'e ulaş"
+    },
+    "windowscleaner_lv5": {
+      "label": "Kristal Berraklık",
+      "desc": "Cam temizliğinde seviye 5'e ulaş"
+    },
+    "cardetailer_lv5": {
+      "label": "Detay Ustası",
+      "desc": "Araç detaylandırmada seviye 5'e ulaş"
+    },
+    "farmer_lv5": {
+      "label": "Yeşil Parmak",
+      "desc": "Çiftçilikte seviye 5'e ulaş"
+    },
+    "fruitpicker_lv5": {
+      "label": "Narenciye Kralı",
+      "desc": "Portakal toplamada seviye 5'e ulaş"
+    },
+    "landscaping_lv5": {
+      "label": "Bahçe Ustası",
+      "desc": "Bahçıvanlıkta seviye 5'e ulaş"
+    },
+    "dogwalking_lv5": {
+      "label": "Köpek Fısıldayan",
+      "desc": "Köpek gezdirmede seviye 5'e ulaş"
+    },
+    "newspaper_lv5": {
+      "label": "Basın Koşucusu",
+      "desc": "Gazete dağıtımında seviye 5'e ulaş"
+    },
+    "scrapyard_lv5": {
+      "label": "Hurda Lordu",
+      "desc": "Hurdacılıkta seviye 5'e ulaş"
+    },
+    "warehouse_lv5": {
+      "label": "Depo Ustası",
+      "desc": "Depoculukta seviye 5'e ulaş"
+    },
+    "forklift_lv5": {
+      "label": "Forklift Operatörü",
+      "desc": "Forklift kullanımında seviye 5'e ulaş"
+    },
+    "collect_100": {
+      "label": "Toplayıcı",
+      "desc": "Toplamda 100 eşya topla"
+    },
+    "collect_500": {
+      "label": "Koleksiyoncu",
+      "desc": "Toplamda 500 eşya topla"
+    },
+    "collect_1000": {
+      "label": "İstifçi",
+      "desc": "Toplamda 1.000 eşya topla"
+    },
+    "miner_collect_500": {
+      "label": "Kaya Kırıcı",
+      "desc": "500 kaya kır"
+    },
+    "lumber_collect_500": {
+      "label": "Ağaç Deviren",
+      "desc": "500 ağaç kes"
+    },
+    "earn_10000": {
+      "label": "Ekmek Parası",
+      "desc": "İşlerden toplamda $10.000 kazan"
+    },
+    "earn_50000": {
+      "label": "Yüksek Bahisçi",
+      "desc": "İşlerden toplamda $50.000 kazan"
+    },
+    "earn_100000": {
+      "label": "Milyoner Yolu",
+      "desc": "İşlerden toplamda $100.000 kazan"
+    },
+    "complete_10": {
+      "label": "Çalışkan",
+      "desc": "10 iş tamamla"
+    },
+    "complete_50": {
+      "label": "Adanmış İşçi",
+      "desc": "50 iş tamamla"
+    },
+    "complete_100": {
+      "label": "Kıdemli İşçi",
+      "desc": "100 iş tamamla"
+    },
+    "process_100": {
+      "label": "İşlemci",
+      "desc": "Tartıda 100 ürün işle"
+    },
+    "process_500": {
+      "label": "Fabrika İşçisi",
+      "desc": "Tartıda 500 ürün işle"
+    }
+  },
+  "common": {
+    "continueHintGeneric": "Haritandaki bir sonraki göreve git",
+    "pickupTaskGeneric": "Bir sonraki görev konumunu bul",
+    "pickupDescriptionGeneric": "Haritadaki işaretli konuma git ve bir sonraki görevi başlat."
+  },
+  "gruppe6": {
+    "truck": "Zırhlı Kamyon",
+    "takeBagPrompt": "[E] Boş çanta al",
+    "returnBagPrompt": "[E] Çantayı geri koy",
+    "loadBagPrompt": "[E] Çantayı yükle",
+    "signPrompt": "[E] Evrakları imzalat",
+    "fillBagPrompt": "[E] Çantayı doldur",
+    "stationBusy": "Bu istasyonu başka bir ekip üyesi kullanıyor!",
+    "newRound": "Yeni tur — haritada yeni bankalar var!",
+    "continueBusy": "Devam etmeden önce herkes toplamayı bitirip çantalarını teslim etmeli!",
+    "returnTruckPrompt": "[E] Kamyonu teslim et",
+    "emptyBagTaken": "Boş çanta alındı. Banka kasasında doldur.",
+    "signingPapers": "Evraklar imzalanıyor...",
+    "vaultOpening": "Kasa açılıyor... ({seconds}sn)",
+    "vaultOpened": "Kasa açıldı!",
+    "fillingBag": "Çanta dolduruluyor...",
+    "bagFilled": "Çanta doldu! (+{symbol}{amount})",
+    "allStopsDone": "Tüm duraklar toplandı! Kamyonu depoya teslim et.",
+    "returnTruckHint": "Vardiyayı bitirmek için kamyonu depoya teslim et.",
+    "returnTruckBlip": "Kamyonu Teslim Et",
+    "onlyLeaderCanFinish": "Kamyonu sadece ekip lideri teslim edebilir!",
+    "tooFarFromDepot": "Depoya çok uzaksın!",
+    "tooFarFromManager": "Banka müdürüne çok uzaksın!",
+    "tooFarFromVault": "Kasaya çok uzaksın!",
+    "vaultNotOpen": "Kasa henüz açık değil!",
+    "vaultAlreadyOpen": "Kasa zaten açılıyor!",
+    "vaultEmpty": "Bu kasa boşaltıldı!",
+    "alreadyCarrying": "Zaten bir şey taşıyorsun!",
+    "needEmptyBag": "Önce boş bir çanta alman gerek!",
+    "statBags": "Yüklenen çanta",
+    "statEarnings": "Toplam kazanç",
+    "objSign": "Evrakları imzalat",
+    "objCollect": "Çantaları doldurup yükle",
+    "objReturn": "Kamyonu depoya teslim et",
+    "objWaiting": "Rota bekleniyor...",
+    "progressTitle": "Gruppe 6",
+    "progressDetail": "Bankalardan para çantalarını topla, zırhlı kamyonu depoya teslim edip paranı al.",
+    "jobEnded": "{bags} çanta teslim edildi, {symbol}{earned} kazandın!",
+    "noEmptyBags": "Kamyonda boş çanta kalmadı!",
+    "truckNotAtDepot": "Zırhlı kamyon depoda olmalı!"
+  }
+}

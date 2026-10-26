@@ -222,7 +222,7 @@ Config.weedTypes = {
         -- Requires "optimal conditions" to grow
         -- Optimal conditions are defined in the config where pots are created, or by a player placed pot with a grow tent
         -- The plant will die if its not grown in optimal conditions (Lockups, Grow Ops or a grow tent)
-        needsConditions = true,
+        needsConditions = false,
 
         growthMultipliers = {
             -- The growth speed multiplier of the plant when planted in a pot with optimal conditions

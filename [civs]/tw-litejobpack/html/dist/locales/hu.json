@@ -1,0 +1,3604 @@
+{
+  "blips": {
+    "category": "Munkák",
+    "jobCenter": "Munkaügyi központ",
+    "miner": "Bányász munka",
+    "lumberjack": "Favágó munka",
+    "scrapyard": "Roncstelep",
+    "hunting": "Vadászat",
+    "farmer": "Zöldségfarm",
+    "fruitpicker": "Gyümölcsös",
+    "cleaner": "Városi takarítás",
+    "powerwash": "Nagynyomású mosás",
+    "windowscleaner": "Ablaktisztítás",
+    "cardetailer": "Autódetailing",
+    "newspaper": "Újságkihordás",
+    "cleanup": "Szemétgyűjtés",
+    "trucker": "Teherautó telep",
+    "taxi": "Taxi depó",
+    "dogwalking": "Kutyasétáltatás",
+    "powerlines": "Villanyvezetékek munka",
+    "delivery": "Csomagszállítás",
+    "warehouse": "Raktár",
+    "landscaping": "Kertészet munka",
+    "fishing": "Horgászás",
+    "diving": "Búvárkodás",
+    "forklift": "Targonca",
+    "tiretechnician": "Gumiszerelő munka",
+    "treasurehunter": "Kincskereső",
+    "mechanic": "Szerelő"
+  },
+  "_meta": {
+    "name": "Magyar",
+    "flag": "🇭🇺"
+  },
+  "ui": {
+    "blipCategoryName": "Munkák",
+    "jobDetails": "Munka részletei",
+    "owner": "Tulajdonos",
+    "member": "Tag",
+    "jobStart": "Munka indítása",
+    "leaderboard": "Ranglista",
+    "teamProgress": "Csapat haladása",
+    "top20": "Top 20",
+    "playerList": "Játékoslista",
+    "clickToInvite": "Kattints a meghíváshoz",
+    "emptySlot": "Üres hely",
+    "level": "Szint",
+    "lv": "Szt.",
+    "hours": "óra",
+    "minRequiredHours": "Minimum szükséges",
+    "achievements": "Teljesítmények",
+    "settings": "Beállítások",
+    "close": "Bezárás",
+    "cancel": "Mégse",
+    "confirm": "Megerősítés",
+    "search": "Keresés",
+    "selected": "Kiválasztva",
+    "locationMarked": "Helyszín megjelölve a térképen",
+    "jobAreaMarked": "Munka területe megjelölve a térképen",
+    "noLocationAvailable": "Nincs elérhető helyszín ehhez a munkához",
+    "routeLevelRequired": "Ehhez az útvonalhoz {level}. szint szükséges!",
+    "spawnBlocked": "A jármű spawn területe blokkolva van! Tedd szabaddá és próbáld újra.",
+    "vehicleSpawnFailed": "A járművet nem sikerült létrehozni!",
+    "viewStatistics": "Statisztikák megtekintése",
+    "history": "Előzmények",
+    "earnings": "Kereset",
+    "totalEarn": "Összes kereset",
+    "totalExp": "Összes XP",
+    "markJob": "Munka megjelölése",
+    "registerJob": "Regisztráció a munkára",
+    "usedItems": "Használt tárgyak",
+    "online": "Online",
+    "offline": "Offline",
+    "loading": "Betöltés...",
+    "back": "Vissza",
+    "set": "Beállít",
+    "reset": "Visszaállít",
+    "approve": "Jóváhagy",
+    "leave": "Elhagy",
+    "done": "Kész",
+    "prev": "Előző",
+    "next": "Következő",
+    "xp": "XP",
+    "step": "Lépés",
+    "on": "Be",
+    "off": "Ki",
+    "save": "Mentés",
+    "vehicle": "Jármű",
+    "coordinates": "Koordináták",
+    "active": "Aktív",
+    "disabled": "Letiltva",
+    "place": "Hely",
+    "add": "Hozzáad"
+  },
+  "settings": {
+    "title": "Munka beállítások",
+    "subtitle": "Válassz beállításokat",
+    "jobSound": "Munka hangja",
+    "language": "Nyelv",
+    "uiPosition": "UI mozgatása",
+    "uiMoveActive": "Húzd a paneleket az áthelyezéshez",
+    "uiMoveSave": "Mentés",
+    "uiMoveCancel": "Mégse",
+    "uiMoveApplyDefault": "Alapértelmezett",
+    "uiMoveResetDefault": "Visszaállítás",
+    "progressPanel": "Haladás"
+  },
+  "progress": {
+    "title": "Haladás",
+    "subtitle": "Képességek, küldetések és fejlesztések",
+    "skillPoints": "KP",
+    "skills": "Képességek",
+    "quests": "Küldetések",
+    "upgrades": "Fejlesztések",
+    "max": "MAX",
+    "upgrade": "Fejlesztés",
+    "upgradeItems": "Tárgyak fejlesztése",
+    "searchJobs": "Munkák keresése...",
+    "noResults": "Nincs találat",
+    "noQuests": "Nincsenek elérhető küldetések",
+    "all": "Összes",
+    "daily": "Napi",
+    "weekly": "Heti"
+  },
+  "upgradeModal": {
+    "title": "Tárgy fejlesztése",
+    "subtitle": "Erősítsd meg a fejlesztést",
+    "currentLevel": "Jelenlegi szint",
+    "nextLevel": "Következő szint",
+    "requirements": "Követelmények",
+    "requiredLevel": "Szükséges szint",
+    "money": "Pénz",
+    "upgrade": "Fejlesztés"
+  },
+  "downgradeModal": {
+    "title": "Szintváltás",
+    "subtitle": "Erősítsd meg a szintváltást",
+    "returnToPrevious": "Visszatérés az előző szintre",
+    "noLevelLoss": "Nem fogod elveszíteni a jelenlegi szinted haladását"
+  },
+  "finishJob": {
+    "jobComplete": "Munka teljesítve!",
+    "summary": "Itt az összegzésed",
+    "continueQuestion": "Folytatod?",
+    "ownerWantsContinue": "{name} folytatni szeretné",
+    "finishQuestion": "Befejezed a munkát?",
+    "finishSubtitle": "Válaszd ki, mi legyen a következő lépés",
+    "itemsCompleted": "Teljesített tárgyak",
+    "totalEarnings": "Összes kereset",
+    "progressSaved": "A haladásod mentésre kerül",
+    "waitingFor": "Várakozás: {players}",
+    "waitingOwner": "Várakozás {name} döntésére...",
+    "autoApprove": "Automatikus jóváhagyás {time} másodperc múlva...",
+    "completed": "Munka teljesítve!",
+    "continue": "Folytatás",
+    "endJob": "Munka befejezése",
+    "leaveJob": "Munka elhagyása"
+  },
+  "activeJob": {
+    "endJobTitle": "Befejezed a munkát?",
+    "endJobDesc": "Ezzel befejezed a munkát magadnak. A többi játékost megkérdezzük, hogy folytatják-e.",
+    "leaveJobTitle": "Elhagyod a munkát?",
+    "leaveJobDesc": "Elhagyod a jelenlegi munkát.",
+    "remainingCanContinue": "A többi játékos folytathatja nélküled",
+    "progressSaved": "A haladásod mentésre kerül",
+    "ownerDisconnected": "A tulajdonos lecsatlakozott",
+    "ownerLeft": "A tulajdonos távozott",
+    "ownerHasDisconnected": "{name} lecsatlakozott",
+    "ownerHasLeft": "{name} elhagyta a munkát",
+    "continueJobQuestion": "Szeretnéd folytatni a munkát?",
+    "autoContinue": "Automatikus folytatás {time} másodperc múlva..."
+  },
+  "illegal": {
+    "stolenCargo": "Lopott rakomány találva!",
+    "highRisk": "Magas kockázatú szállítás",
+    "teamVote": "Csapat szavazás",
+    "description": "Lopott árut találtál. Szállítsd el dupla fizetségért, de a rendőrség riadóztatva lehet.",
+    "reward": "Jutalom",
+    "risk": "Kockázat",
+    "x2Money": "x2 Pénz",
+    "policeAlertStatic": "90% rendőrségi riasztás",
+    "policeAlert": "{chance}% rendőrségi riasztás",
+    "suspiciousPassenger": "Gyanús utas",
+    "suspiciousPassengerDesc": "Ez az utas... nem hivatalos helyre akar menni. Magasabb fizetség, de rendőri figyelem kockázatával.",
+    "stolenCargoDesc": "Lopott árut találtál a pótkocsiban. Szállítsd el egy feketepiaci vevőnek dupla fizetségért, de vigyázz – nagy eséllyel rendőri üldözés vár rád!",
+    "teamVotes": "Csapat szavazatai:",
+    "accept": "Elfogadás",
+    "reject": "Elutasítás",
+    "policeWarning": "A rendőrséget kivezényelhetik, ha elfogadod",
+    "leaderDecision": "A végső döntést a vezető hozza meg",
+    "waitingLeader": "Várakozás a vezető döntésére...",
+    "stayLegal": "Maradj legális",
+    "acceptRisk": "Kockázat vállalása",
+    "voteStayLegal": "Szavazat: Maradj legális",
+    "voteAcceptRisk": "Szavazat: Kockázat vállalása",
+    "voteSubmitted": "Szavazat leadva"
+  },
+  "lobby": {
+    "noLongerExists": "A lobby már nem létezik.",
+    "playerReconnected": "{name} újra csatlakozott a lobbyhoz.",
+    "playerDisconnected": "{name} lecsatlakozott a lobbyról.",
+    "ownerDisconnectedNewOwner": "A tulajdonos lecsatlakozott. {name} lett az új tulajdonos.",
+    "closedNoReplacement": "Lobby bezárva – nem található megfelelő új tulajdonos.",
+    "full": "A lobby megtelt (max {count} játékos)",
+    "notOwner": "Ezt csak a lobby tulajdonosa teheti meg",
+    "kicked": "Kirúgtak a lobbyból",
+    "alreadyInLobby": "Már vagy egy lobbyban",
+    "noLobbyFound": "Nem található lobby",
+    "playerLeft": "{name} elhagyta a lobbyt"
+  },
+  "invite": {
+    "sent": "Meghívó elküldve {name} részére",
+    "received": "{name} meghívott a lobbyjába - [Y] Elfogadás | [N] Elutasítás",
+    "accepted": "{name} csatlakozott a lobbyhoz",
+    "declined": "{name} elutasította a meghívót",
+    "expired": "A meghívó lejárt",
+    "targetAlreadyInLobby": "Ez a játékos már egy lobbyban van!",
+    "tooFar": "A játékos túl messze van!"
+  },
+  "job": {
+    "started": "Munka elindítva!",
+    "completed": "Munka teljesítve!",
+    "failed": "Munka sikertelen!",
+    "resetInProgress": "Munka visszaállítása folyamatban, kérlek várj...",
+    "cantEnterVehicle": "Nem szállhatsz be járműbe, amíg viszel valamit!"
+  },
+  "xp": {
+    "gained": "+{amount} XP",
+    "levelUp": "Szintlépés! Most már {level}. szintű vagy",
+    "maxLevel": "Elérted a maximális szintet!"
+  },
+  "contract": {
+    "reward": "Jutalom",
+    "risk": "Kockázat",
+    "teamVotes": "Csapat szavazatai:",
+    "waitingLeader": "Várakozás a vezető döntésére...",
+    "voteStayLegal": "Szavazat: Maradj legális",
+    "voteAcceptRisk": "Szavazat: Kockázat vállalása",
+    "done": "KÉSZ"
+  },
+  "hud": {
+    "truckFill": "Teherautó töltöttsége",
+    "taximeter": "TAXIÓRA",
+    "fare": "DÍJ",
+    "bonus": "BÓNUSZ",
+    "distance": "TÁV",
+    "trailerHealth": "Pótkocsi állapota",
+    "pressure": "NYOMÁS",
+    "coopLeaderboard": "Ranglista",
+    "illegalRide": "ILLEGÁLIS FUVAR",
+    "normalRide": "NORMÁL FUVAR",
+    "goodCondition": "Jó állapot",
+    "needsRepair": "Javítás szükséges",
+    "criticalDamage": "Kritikus sérülés",
+    "hold": "Tartsd",
+    "toClose": "a bezáráshoz",
+    "forDetails": "a részletekért"
+  },
+  "preview": {
+    "step": "{current}/{total}. lépés"
+  },
+  "minigame": {
+    "junctionBox": "ELOSZTÓDOBOZ",
+    "lsPower": "LS-POWER",
+    "circuitHint": "KATTINTS A FORGATÁSHOZ — KÖSD ÖSSZE A FORRÁST A TERHELÉSSEL",
+    "fish": "Hal",
+    "catch": "Kapás",
+    "space": "SPACE"
+  },
+  "admin": {
+    "title": "Admin panel",
+    "subtitle": "JobPack analitika",
+    "dashboard": "Irányítópult",
+    "players": "Játékosok",
+    "market": "Piac",
+    "activeLobbies": "Aktív lobbyk",
+    "economy": "Gazdaság",
+    "todaysPayouts": "Mai kifizetések",
+    "thisWeek": "Ezen a héten",
+    "allTime": "Összesen",
+    "jobsToday": "Mai munkák",
+    "onlinePlayers": "Online játékosok",
+    "perJobEarnings": "Munkánkénti kereset (utolsó 7 nap)",
+    "job": "Munka",
+    "totalPayout": "Összes kifizetés",
+    "completions": "Teljesítések",
+    "uniquePlayers": "Egyedi játékosok",
+    "name": "Név",
+    "identifier": "Azonosító",
+    "status": "Állapot",
+    "perkPoints": "Perk pontok:",
+    "jobLevels": "Munka szintek",
+    "recentHistory": "Legutóbbi előzmények",
+    "region": "Régió",
+    "earned": "Keresett",
+    "date": "Dátum",
+    "dynamicMarket": "Dinamikus piaci árak",
+    "resetAllToBase": "Összes visszaállítása alapra",
+    "current": "Jelenlegi",
+    "base": "Alap",
+    "minMax": "Min / Max",
+    "health": "Állapot",
+    "setPrice": "Ár beállítása",
+    "action": "Művelet",
+    "paymentRates": "Fizetési arányok",
+    "qualityTiers": "Minőségi szintek",
+    "chance": "Esély %",
+    "multiplier": "Szorzó",
+    "levelBonuses": "Szint bónuszok",
+    "payBonusPerLevel": "Fizetési bónusz szintenként",
+    "qualityChancePerLevel": "Minőségi esély szintenként",
+    "estimatedEarnings": "Becsült kereset (10 tárgy)",
+    "selectJobToEdit": "Válassz egy munkát a szerkesztéshez",
+    "noJobsFound": "Nincsenek munkák",
+    "noJobData": "Nincs elérhető munka adat",
+    "noHistory": "Nincs előzmény",
+    "noMarketData": "Nincs piaci adat (a dinamikus piac le lehet tiltva)",
+    "noActiveLobbies": "Nincsenek aktív lobbyk",
+    "searchPlaceholder": "Keresés név vagy azonosító alapján...",
+    "searchPlayer": "Keress egy játékost fent",
+    "xp": "XP",
+    "owner": "Tulajdonos",
+    "state": "Állapot",
+    "count": "Darab",
+    "loading": "Betöltés..."
+  },
+  "editor": {
+    "title": "Munka szerkesztő",
+    "npc": "NPC",
+    "npcModel": "NPC modell",
+    "scenarioAnimation": "Szcenárió / Animáció",
+    "npcPosition": "NPC pozíció",
+    "npcInteraction": "NPC interakció",
+    "blip": "Blip",
+    "vehicleModel": "Jármű modell",
+    "plate": "Rendszám",
+    "primaryColor": "Elsődleges szín",
+    "secondaryColor": "Másodlagos szín",
+    "spawnLocations": "Spawn helyek",
+    "clickToChange": "Kattints a módosításhoz",
+    "clickToBrowse": "Kattints a szcenáriók tallózásához",
+    "typeManually": "Vagy írd be kézzel...",
+    "sprite": "Sprite",
+    "color": "Szín",
+    "scale": "Méret",
+    "label": "Címke",
+    "enabled": "Engedélyezve",
+    "distance": "Távolság",
+    "keyCode": "Billentyűkód",
+    "interactionText": "Interakciós szöveg",
+    "searchBlip": "Blip keresése...",
+    "searchCoords": "Koordináták keresése...",
+    "noCoordFields": "Nem találhatók koordináta mezők ehhez a munkához.",
+    "noVehicleConfig": "Ennek a munkának nincs jármű konfigurációja.",
+    "selectJob": "Válassz egy munkát a szerkesztéshez",
+    "spawnNum": "Spawn",
+    "unsavedChanges": "Mentetlen változások",
+    "goTo": "Menj oda",
+    "setFromCamera": "Beállítás a kamerából",
+    "copy": "Másolás",
+    "go": "Menj",
+    "cam": "Kamera",
+    "preview": "Előnézet",
+    "dup": "Másolat",
+    "selectPedModel": "Ped modell kiválasztása",
+    "selectVehicleModel": "Jármű modell kiválasztása",
+    "selectScenario": "Szcenárió kiválasztása",
+    "searchPed": "Ped modell keresése...",
+    "searchVehicle": "Jármű modell keresése...",
+    "searchScenario": "Szcenárió keresése...",
+    "noAnimations": "Nem található animáció",
+    "camera": "Kamera",
+    "browse": "Tallózás",
+    "devModeRequired": "A Job Editor használatához a DevMode engedélyezése szükséges.",
+    "devModeHint": "Állítsd be a Config.DevMode = true értéket a shared/config_settings.lua fájlban, majd indítsd újra a resource-t."
+  },
+  "tutorial": {
+    "title": "Oktatóanyag",
+    "skip": "Kihagyás",
+    "next": "Következő",
+    "miner": {
+      "step1": {
+        "title": "Szerezd meg a járműved",
+        "desc": "Menj a megjelölt területre és vedd fel a bányász járművet."
+      },
+      "step2": {
+        "title": "Vedd fel a szerszámot",
+        "desc": "Nyisd ki a csomagtartót és vegyél ki egy csákányt."
+      },
+      "step3": {
+        "title": "Kezdd el a bányászatot",
+        "desc": "Menj a bányaterületre és törd fel a sziklákat az ércért."
+      },
+      "step4": {
+        "title": "Dolgozd fel az ércet",
+        "desc": "Vidd az összegyűjtött ércet a feldolgozómérlegre a fizetésért."
+      }
+    },
+    "lumberjack": {
+      "step1": {
+        "title": "Szerezd meg a járműved",
+        "desc": "Menj a megjelölt területre és vedd fel a fakitermelő járművet."
+      },
+      "step2": {
+        "title": "Vedd fel a fejszét",
+        "desc": "Nyisd ki a csomagtartót és vegyél ki egy fejszét."
+      },
+      "step3": {
+        "title": "Vágj fát",
+        "desc": "Menj az erdőbe és kezdj el fát vágni."
+      },
+      "step4": {
+        "title": "Dolgozd fel a rönköket",
+        "desc": "Vidd az összegyűjtött rönköket a feldolgozómérlegre a fizetésért."
+      }
+    },
+    "farmer": {
+      "step1": {
+        "title": "Szerezd meg a járműved",
+        "desc": "Menj a megjelölt területre és vedd fel a farmer járművet."
+      },
+      "step2": {
+        "title": "Vedd fel a szerszámot",
+        "desc": "Nyisd ki a csomagtartót és vegyél ki egy kapát."
+      },
+      "step3": {
+        "title": "Arasd le a termést",
+        "desc": "Menj a farmra és arasd le a terményt."
+      },
+      "step4": {
+        "title": "Dolgozd fel a termést",
+        "desc": "Vidd az összegyűjtött terményt a feldolgozómérlegre a fizetésért."
+      }
+    },
+    "fishing": {
+      "step1": {
+        "title": "Találj egy helyet",
+        "desc": "Menj egy horgászhelyre a víz közelében."
+      },
+      "step2": {
+        "title": "Vesd be a botot",
+        "desc": "Használd a horgászbotodat a horgászathoz."
+      },
+      "step3": {
+        "title": "Add el a fogást",
+        "desc": "Vidd a halakat a feldolgozópontra eladásra."
+      }
+    },
+    "generic": {
+      "step1": {
+        "title": "Készülj fel",
+        "desc": "Vedd fel a járműved és menj a munkaterületre."
+      },
+      "step2": {
+        "title": "Végezd a munkát",
+        "desc": "Teljesítsd a feladatokat a kijelölt területen."
+      },
+      "step3": {
+        "title": "Fejezd be",
+        "desc": "Térj vissza az NPC-hez vagy a feldolgozópontra a munka befejezéséhez."
+      }
+    }
+  },
+  "stats": {
+    "title": "Statisztika",
+    "subtitle": "Karriered áttekintése",
+    "overview": "Áttekintés",
+    "perJob": "Munkánként",
+    "history": "Előzmények",
+    "totalEarnings": "Összes kereset",
+    "totalXP": "Összes XP",
+    "totalSessions": "Összes munkamenet",
+    "totalTime": "Összes idő",
+    "bestDay": "Legjobb nap",
+    "favoriteJob": "Kedvenc munka",
+    "avgEarnings": "Átl. kereset",
+    "perSession": "munkamenetenként",
+    "sessions": "munkamenet",
+    "last7Days": "Utolsó 7 nap",
+    "job": "Munka",
+    "level": "Szint",
+    "earnings": "Kereset",
+    "time": "Idő",
+    "noData": "Nincs elérhető adat"
+  },
+  "drawtext": {
+    "jobCenter": "Munkaügyi központ"
+  },
+  "notify": {
+    "jobAtCapacity": "Ez a munka jelenleg megtelt ({current}/{max} csapat aktív). Próbálj másik munkát, vagy várj.",
+    "cannotStartJob": "Ez a munka nem indítható",
+    "failedStartJob": "Nem sikerült elindítani a munkát",
+    "unknownError": "Ismeretlen hiba",
+    "toolEquipped": "Szerszám felszerelve: {tool}",
+    "toolReturnedToTruck": "{tool} visszavéve a teherautóba.",
+    "deliveringStatus": "Szállítás folyamatban...",
+    "jobRestarting": "Munkarendszer újraindul...",
+    "failedOpenMenu": "Nem sikerült megnyitni a munka menüt",
+    "noPermission": "Nincs admin jogosultság",
+    "mustSelectJob": "Előbb válassz egy munkát a Munkaügyi központban",
+    "achievementUnlocked": "Teljesítmény feloldva: {label}",
+    "globalEventStarted": "Új globális esemény indult: {title}",
+    "alreadyCarrying": "Már viszel valamit!",
+    "notCarrying": "Nem viszel semmit!",
+    "needToolFirst": "Előbb szerszám kell!",
+    "anotherPlayerBreaking": "Egy másik játékos már ezt töri!",
+    "putToolOnBelt": "Tedd előbb a szerszámot az övre!",
+    "processingWait": "Feldolgozás folyamatban, kérlek várj!",
+    "noBoxAvailable": "Nincs elérhető láda!",
+    "alreadyHaveBox": "Már van egy ládád!",
+    "failedTakeBox": "Nem sikerült ládát venni!",
+    "noLoadedBoxes": "Nincsenek berakott ládák!",
+    "notCarryingBox": "Nem viszel ládát!",
+    "failedLoadBox": "Nem sikerült betölteni a ládát!",
+    "noRoomInTrunk": "Nincs hely a csomagtartóban, láda elvetve.",
+    "emptyBoxReturned": "Üres láda visszaadva.",
+    "workClothesEquipped": "Munkaruha felvéve!",
+    "normalClothes": "Visszaváltoztál normál ruhára",
+    "clothesRequired": "Előbb vedd fel a munkaruhát!",
+    "failedPlaceBox": "Nem sikerült letenni a ládát!",
+    "takeBoxFirst": "Előbb vegyél egy ládát!",
+    "boxFull": "A láda megtelt! Töltsd a teherautóra.",
+    "placeBoxFirst": "Előbb tedd le a ládát a földre!",
+    "objectBroken": "Tárgy feltörve! Vedd fel a tárgyat.",
+    "oreBroken": "{ore} érc találva! Vedd fel.",
+    "noItemsToSell": "Nincs eladható tárgy!",
+    "cantRepairPanel": "Ez a panel nem javítható",
+    "cantRepairPole": "Ez az oszlop nem javítható",
+    "nothingInTrunk": "A csomagtartó üres!",
+    "alreadyCarryingSomething": "Már viszel valamit!",
+    "trunkInUse": "Valaki más használja a csomagtartót!",
+    "failedTakeItem": "Nem sikerült felvenni a tárgyat!",
+    "itemTaken": "Tárgy felvéve! Tedd a mérlegre vagy vissza a teherautóba.",
+    "failedPickupItem": "Nem sikerült felvenni a tárgyat!",
+    "notCarryingAnything": "Nem viszel semmit!",
+    "failedLoadItem": "Nem sikerült betölteni a tárgyat!",
+    "vehicleSpawnBlocked": "A jármű spawn pontja blokkolva van!",
+    "failedStartCleaning": "Nem sikerült elkezdeni a takarítást!",
+    "cleanItemsFirst": "Előbb takaríts meg néhány tárgyat!",
+    "allDoneReturn": "Minden kész! Térj vissza a befejezéshez.",
+    "newRouteAssigned": "Új útvonal kijelölve! Folytasd a takarítást!",
+    "failedTakeLoadedBox": "Nem sikerült felvenni a tele ládát!",
+    "jobCompletedByTeam": "A munkát teljesítette a csapatod!",
+    "jobFinishedSummary": "Munka befejezve! Tárgyak: {items} • Kereset: {currency}{amount}",
+    "continuePayout": "Kör kifizetve: {currency}{amount}. Új kör indul!",
+    "roundLimitReached": "Körlimit elérve — a munka várakozási ideje elindult.",
+    "cooldownWaitAny": "{name} várnia kell {time} ideig, mielőtt bármilyen munkát elkezdene.",
+    "cooldownWaitJob": "{name} várnia kell {time} ideig, mielőtt újrakezdené ezt a munkát.",
+    "cantRunWithDog": "Nem futhatsz, miközben a kutyát sétáltatod!",
+    "cantJumpWithDog": "Nem ugorhatsz, miközben a kutyát sétáltatod!",
+    "cantEnterVehicleWithDog": "Nem szállhatsz járműbe, miközben a kutyát sétáltatod!",
+    "policeAlert": "RENDŐRSÉGI RIASZTÁS! Észrevettek!",
+    "tooFarFromVan": "Túl messze vagy a furgontól! A tömlő nem ér odáig.",
+    "tooFarFromTask": "Túl messze! Menj közelebb és próbáld újra.",
+    "itemCleanedPay": "Kitakarítva! +{amount}",
+    "itemsCleaned": "Kitakarított tárgyak",
+    "alreadyTaken": "Már elvitték!",
+    "actionFailed": "Művelet sikertelen!",
+    "saleFailed": "Eladás sikertelen!",
+    "failedSelectZone": "Nem sikerült kiválasztani a zónát!",
+    "purchaseFailed": "Vásárlás sikertelen!",
+    "couldNotSell": "Nem sikerült eladni!",
+    "couldNotCastRod": "Nem sikerült bevetni a botot!",
+    "cannotTakeTool": "Nem lehet felvenni a szerszámot",
+    "cannotTrimBush": "Ezt a bokrot nem lehet nyírni",
+    "cannotDigLawn": "Ezt a gyepet nem lehet ásni",
+    "couldNotPickUpBox": "Nem sikerült felvenni a ládát",
+    "couldNotPickUpPallet": "Nem sikerült felvenni a raklapot",
+    "trunkIsFull": "A csomagtartó megtelt!",
+    "scaleFull": "A mérleg megtelt!",
+    "palletSlotsFull": "A raklap helyek megteltek",
+    "truckIsFull": "A teherautó megtelt",
+    "toolTaken": "Szerszám elvéve: {tool}",
+    "toolReturned": "Szerszám visszaadva: {tool}",
+    "alreadyHaveTool": "Már van egy {tool} nálad!",
+    "noToolAvailable": "Nincs elérhető {tool}!",
+    "notHoldingTool": "Nem fogsz {tool}!",
+    "failedReturnTool": "Nem sikerült visszaadni a szerszámot: {tool}!",
+    "takeToolFirst": "Előbb vegyél egy {tool}!",
+    "itemLoaded": "Tárgy betöltve! ({slot}/{max}. hely)",
+    "itemLoadedDrive": "Tárgy betöltve! ({slot}/{max}. hely) — Vezess a feldolgozómérleghez!",
+    "spotCleaned": "{spot} kitakarítva! {count} hely van hátra.",
+    "collected": "Összegyűjtve: {item}!",
+    "truckHeadingTo": "A teherautó ide tart: {dest}...",
+    "todaysBonusJobs": "Mai bónusz munkák: {jobs}",
+    "toolUnlocked": "Feloldva: {tool}",
+    "toolUpgraded": "{job}: {tool} feloldva!",
+    "toolSwitched": "{job}: átváltva erre: {tool}!",
+    "qualityBonus": "{quality} minőség! x{multiplier} bónusz",
+    "notAuthenticated": "Nincs hitelesítve",
+    "noToolsForJob": "Nincsenek szerszámok ehhez a munkához",
+    "toolNotFound": "Szerszám nem található",
+    "notEnoughMoney": "Nincs elég pénz",
+    "failedUnlockTool": "Nem sikerült feloldani a szerszámot",
+    "toolNotUnlocked": "A szerszám nincs feloldva",
+    "failedSelectTool": "Nem sikerült kiválasztani a szerszámot",
+    "toolNotFoundForLevel": "Ehhez a szinthez nem található szerszám",
+    "failedSaveUpgrade": "Nem sikerült menteni a fejlesztést",
+    "alreadyProcessing": "Kérés már folyamatban, kérlek várj.",
+    "alreadyInJob": "Már dolgozol egy munkán!",
+    "minimumPlayersRequired": "Ehhez a munkához legalább {count} játékos szükséges az indításhoz.",
+    "insufficientHours": "Legalább {required} óra szükséges ehhez a munkához. Neked {current} órád van.",
+    "exceededMaxHours": "Ez a munka csak {max} óránál kevesebbel rendelkező játékosok számára elérhető. Neked {current} órád van.",
+    "insufficientHoursPlayer": "{name} számára legalább {required} óra szükséges ehhez a munkához. Jelenleg: {current} óra.",
+    "exceededMaxHoursPlayer": "{name} túl sok órával rendelkezik ehhez a munkához ({current}/{max} max).",
+    "requiresJobLevel": "{level}. munka szint szükséges",
+    "failedSwitchTool": "Nem sikerült szerszámot váltani",
+    "playerNotFound": "A játékos nem található vagy nincs online",
+    "failedSetLevel": "Nem sikerült beállítani a szintet",
+    "pickingUp": "Felvétel...",
+    "pickingUpBox": "Láda felvétele...",
+    "placingBox": "Láda letétele...",
+    "loadingBox": "Láda betöltése...",
+    "placingOnScale": "Mérlegre helyezés...",
+    "returningBox": "Láda visszaadása...",
+    "loading": "Betöltés...",
+    "takingItem": "Tárgy felvétele...",
+    "placingItem": "Tárgy letétele...",
+    "takingTool": "Szerszám felvétele...",
+    "storingTool": "Szerszám eltétele...",
+    "equippingTool": "Szerszám felszerelése...",
+    "toolActionInProgress": "Szerszámművelet már folyamatban",
+    "toolCooldownActive": "Várj, mielőtt újra használnád a szerszámot",
+    "cannotTakeToolInVehicle": "Járműben nem vehetsz fel szerszámot",
+    "alreadyHoldingTool": "Már van nálad egy szerszám",
+    "noToolInTrunk": "Nincs szerszám a csomagtartóban",
+    "toolNotAssigned": "Nincs hozzád rendelt szerszám",
+    "toolNotYours": "Ez nem a te szerszámod",
+    "toolNotInTrunk": "A szerszám nincs a csomagtartóban",
+    "toolActionCancelled": "Művelet megszakítva",
+    "toolAttachFailed": "A szerszám csatlakoztatása sikertelen",
+    "noJobCallbacks": "Munka callback-ek nincsenek beállítva",
+    "serverDeniedTool": "A szerver elutasította a műveletet",
+    "noToolInHand": "Nincs szerszám a kezedben",
+    "noToolOnBelt": "Nincs szerszám az övedben",
+    "toolEntityNotFound": "Szerszám entitás nem található",
+    "noActiveTool": "Nincs aktív szerszám",
+    "noToolToReturn": "Nincs visszaadandó szerszám",
+    "questProgress": "Küldetés: {label} ({progress}/{target})",
+    "questCompleted": "Küldetés teljesítve: {label}!{rewards}",
+    "boxTaken": "Láda felvéve! Menj aratni.",
+    "loadedBoxTaken": "Tele láda felvéve! {count} {label} — Vidd a mérleghez.",
+    "boxEmpty": "A láda üres! Először arass le valamit.",
+    "boxEmptyError": "A láda üres",
+    "decalCleaned": "Kitakarítva! ({count} van hátra)",
+    "allDeliveriesComplete": "Minden szállítás teljesítve! Add vissza a biciklit.",
+    "allDeliveriesCompletePayment": "Minden szállítás teljesítve! +{symbol}{payment} | Add vissza a biciklit.",
+    "farmerJobStarted": "Farm munka elindítva! Vedd fel a munkaruhát és vegyél egy ládát.",
+    "farmerBoxTaken": "Láda felvéve! Menj a növényekhez aratni.",
+    "farmerBoxEmpty": "A láda üres! Először arass le valamit.",
+    "fruitpickerJobStarted": "Narancsszedés munka elindítva! Vedd fel a munkaruhát és vegyél egy ládát.",
+    "fruitpickerBoxTaken": "Láda felvéve! Menj a narancsfákhoz szedni.",
+    "fruitpickerBoxEmpty": "A láda üres! Először szedj le néhány narancsot."
+  },
+  "prompt": {
+    "pickUpBox": "[E] Láda felvétele",
+    "loadBox": "[E] Láda betöltése",
+    "openTrunk": "[E] Csomagtartó nyitása",
+    "closeTrunk": "[E] Csomagtartó zárása",
+    "returnVehicle": "[E] Jármű visszaadása",
+    "deliver": "[E] Kiszállítás",
+    "returnBoxToTrunk": "[E] Láda visszatétele a csomagtartóba",
+    "dropAnchor": "[E] Horgony leeresztése",
+    "raiseAnchor": "[E] Horgony felhúzása",
+    "returnBoat": "[E] Csónak visszaadása",
+    "boardBoat": "[E] Csónakra szállás",
+    "sellItems": "[E] Tárgyak eladása",
+    "catchDog": "[E] Kutya elkapása",
+    "cleanPoop": "[E] Kaka feltakarítása",
+    "deliverDog": "[E] Kutya átadása",
+    "getInBucket": "[E] Szállj be a kosárba",
+    "bucketInUse": "A kosár használatban",
+    "parkVehicle": "[E] Jármű leparkolása",
+    "reelIn": "[E] Orsózz be!",
+    "sellFish": "[E] Hal eladása",
+    "changeClothes": "[E] Ruhaváltás",
+    "changeToWorkClothes": "[E] Átöltözés munkaruhába",
+    "changeToNormalClothes": "[E] Átöltözés normál ruhába",
+    "collectTreasure": "[E] Kincs kiásása",
+    "takeShovel": "[G] Ásó elvétele",
+    "loadCargo": "[E] Csónakra rakodás",
+    "digTreasure": "[E] Ásás",
+    "openChest": "[E] Láda kinyitása",
+    "pickupLoot": "[E] Zsákmány felvétele",
+    "stealCargo": "[E] Rakomány ellopása",
+    "finishJob": "[E] Munka befejezése",
+    "cancelJob": "[E] Munka megszakítása",
+    "exitWarehouse": "[E] Kilépés a raktárból",
+    "completeJob": "[E] Munka teljesítése",
+    "activateBelt": "[E] Szalag bekapcsolása",
+    "throwCleanup": "[E] Szemét bedobása",
+    "collectCleanup": "[E] Szemét begyűjtése",
+    "deliverTruck": "[E] Teherautó kiszállítása",
+    "takeTrimmer": "[E] Sövénynyíró elvétele",
+    "trimBush": "[E] Bokor nyírása",
+    "digLawn": "[E] Gyep ásása",
+    "returnWand": "[E] Pálca visszaadása",
+    "takeWand": "[E] Nyomósugár pálca elvétele",
+    "takeWandOrCloth": "[E] Pálca | [G] Törlőkendő",
+    "takeTrimmerOrShovel": "[E] Sövénynyíró | [G] Ásó",
+    "cleanToilet": "[E] Vécé takarítása",
+    "fixPipe": "[E] Cső javítása",
+    "returnWrench": "[E] Kulcs visszaadása",
+    "takeWrench": "[E] Kulcs elvétele",
+    "attachTrailer": "[E] Pótkocsi csatolása",
+    "deliverTrailer": "[E] Pótkocsi kiszállítása",
+    "reattachTrailer": "[E] Pótkocsi újracsatolása",
+    "pickUpPallet": "[E] Raklap felvétele",
+    "loadPallet": "[E] Raklap betöltése",
+    "putDownBox": "[E] Láda letétele",
+    "pickUpBoxForklift": "[E] Láda felvétele targoncával",
+    "fishingShop": "[E] Horgászbolt",
+    "lowerFork": "Nyomja meg a [CTRL] gombot a villa leengedéséhez",
+    "raiseFork": "Nyomja meg a [SHIFT] gombot a villa felemeléséhez",
+    "useForklift": "Használj targoncát a raklapok mozgatásához",
+    "trunkFull": "A csomagtartó megtelt! Indulj útnak.",
+    "completeDeliveriesFirst": "Előbb teljesítsd az összes szállítást!",
+    "forkliftControls": "Targonca: CTRL = Villa le | SHIFT = Villa fel",
+    "processingInProgress": "Feldolgozás folyamatban...",
+    "boxFullLoad": "Láda megtelt! Töltsd a teherautóra vagy a mérlegre.",
+    "trunkEmptyGoNpc": "A csomagtartó üres! Menj az NPC-hez.",
+    "takeWrenchFromTrunk": "Vedd ki a kulcsot a furgon csomagtartójából",
+    "reattachTrailerPrompt": "[E] Pótkocsi újracsatolása",
+    "finishJobCount": "[E] Munka befejezése ({count} kitakarítva)",
+    "returnTool": "[E] {tool} visszaadása",
+    "takeTool": "[E] {tool} elvétele",
+    "finishProcessing": "[E] Feldolgozás befejezése ({boxes} láda, {currency}{value})",
+    "placeBoxOnScale": "[E] Láda letétele a mérlegre",
+    "loadBoxToTruck": "[E] Láda betöltése a teherautóba ({count} {produce})",
+    "loadBoxToTruckTarget": "{produce} láda betöltése",
+    "returnEmptyBox": "[E] Üres láda visszaadása",
+    "takeLoadedBox": "[E] Tele láda elvétele ({count} a teherautóban)",
+    "takeHarvestBox": "[E] Arató láda elvétele ({count}/{cap})",
+    "takeHarvestBoxEmpty": "[E] Arató láda elvétele",
+    "polishSurface": "[E] {surface} polírozása",
+    "continuePolish": "[E] {surface} polírozásának folytatása",
+    "returnAndTake": "[E] {current} visszaadása | [G] {other} elvétele",
+    "deliverCount": "[E] Kiszállítás ({current}/{total})",
+    "selectHuntingArea": "[E] Vadászterület kiválasztása",
+    "returnBicycle": "[E] Bicikli visszaadása",
+    "takeJack": "[E] Autóemelő elvétele",
+    "swapTire": "[E] Régi gumi visszaadása és pót elvétele",
+    "closeValve": "[E] Szelep zárása - Vízfolyás leállítása",
+    "openValve": "[E] Szelep nyitása - Vízfolyás helyreállítása",
+    "wearHuntingClothes": "[E] Vadászruha felvétele",
+    "placeBoxAndHarvest": "[E] Láda letétele és {produce} aratása",
+    "harvestProduce": "[E] {produce} aratása",
+    "castRod": "[E] Bot bevetése ({zone})",
+    "returnToSeat": "[E] Visszaülés",
+    "clickTargetsToClean": "Kattints a célokra a takarításhoz!"
+  },
+  "hunting": {
+    "started": "Vadászat elindítva! Vedd fel a munkaruhát és válassz területet.",
+    "newAnimals": "Új állatok érkeztek! Folytasd.",
+    "continueHunting": "Folytathatod a vadászatot.",
+    "weaponsGiven": "Vadászfegyverek átadva!",
+    "goToArea": "Menj a vadászterületre, ott fognak megjelenni az állatok!",
+    "cantPickUp": "Ezt az állatot nem tudod felvenni!",
+    "alreadyCarrying": "Már viszel valamit!",
+    "failedPickUp": "Nem sikerült felvenni az állatot!",
+    "noAnimalsInTrunk": "Nincsenek állatok a csomagtartóban!",
+    "trunkInUse": "Valaki más használja a csomagtartót!",
+    "orePickedUp": "Állat felvéve! Tedd a mérlegre.",
+    "failedPickUpAnimal": "Nem sikerült felvenni az állatot!",
+    "invalidArea": "Érvénytelen terület!",
+    "areaLocked": "Ez a terület zárolva van!",
+    "animalsSpawned": "{count} állat megjelent!",
+    "animalHunted": "{animal} elejtve! ({weight} kg)",
+    "wildAnimalFound": "Vad {animal} találva! ({weight} kg)",
+    "animalPickedUp": "{animal} felvéve! ({weight} kg) Töltsd be a járműbe.",
+    "levelRequired": "Ehhez a területhez {level}. szint szükséges!",
+    "areaSelected": "{area} kiválasztva! Kövesd a jelet a térképen.",
+    "processingComplete": "Feldolgozás befejezve! {weight} kg, {currency}{amount} kereset",
+    "tooFarWarning": "Túl messze kerültél a vadászterülettől! Térj vissza 15 másodpercen belül, különben a munka megszakad!",
+    "abandonedTooFar": "Túl messze kerültél a vadászterülettől. A munka megszakítva.",
+    "huntingAreaFallback": "Vadászterület",
+    "animalFallback": "Állat",
+    "areaFallback": "Terület {index}",
+    "selectArea": "Terület kiválasztása: {name}",
+    "selectHuntingArea": "Vadászterület kiválasztása",
+    "pickUpAnimal": "[E] {label} felvétele ({weight} kg)",
+    "loadAnimalToVehicle": "[E] Állat berakása a járműbe",
+    "takeAnimalFromTrunk": "[E] Állat kivétele a csomagtartóból",
+    "takeAnimalFromTrunkCount": "[E] Állat kivétele a csomagtartóból ({count})",
+    "loadAnimalWeight": "[E] Állat berakása ({weight} kg | Teherautó: {current}/{max} kg)",
+    "finishProcessingWeight": "[E] Feldolgozás befejezése ({weight} kg)",
+    "vehicleOverweight": "~r~Jármű túlterhelt! ({current}/{max} kg)",
+    "continueHint": "Kövesd a következő állatot a vadászterületen",
+    "vehicleOverweightDrop": "~r~Jármű túlterhelt! ({current}/{max} kg) ~w~[G] Állat ledobása",
+    "trunkFullDrop": "~r~A csomagtartó megtelt! ~w~[G] Állat ledobása, vagy dolgozd fel a jelenlegi rakományt.",
+    "carcassDropped": "Állat ledobva.",
+    "dropHint": "[G] Állat ledobása",
+    "progressTitle": "Vadászat",
+    "progressDetail": "Válassz vadászterületet, ejtsd el az állatokat, vidd a tetemeket a teherautódhoz, majd vezess a mérleghez.",
+    "stepSelectArea": "Válassz vadászterületet a térképen",
+    "stepHuntAnimal": "Ejts el egy állatot a területen",
+    "stepPickingUp": "Állat felvétele",
+    "stepPickupCarcass": "Vedd fel az elejtett állatot",
+    "stepLoadTrunk": "Rakd be az állatot a teherautóba",
+    "stepGoToScale": "Vidd az állatokat a mérleghez",
+    "stepPlacingOnScale": "Állat helyezése a mérlegre",
+    "stepPlaceOnScale": "Tedd az állatot a mérlegre",
+    "stepProcessAnimal": "Beszélj az NPC-vel az állatok feldolgozásához",
+    "stepNewArea": "Válassz új vadászterületet"
+  },
+  "tiretechnician": {
+    "goGetJack": "Menj a teherautódhoz és vedd el az autóemelőt!",
+    "takingJack": "Autóemelő elvétele...",
+    "jackTaken": "Autóemelő kész! Tedd az autó alá.",
+    "placingJack": "Autóemelő elhelyezése...",
+    "jackPlaced": "Az autót felemelted! Most vedd le a defektes gumit.",
+    "removingTire": "Defektes gumi leszerelése...",
+    "tireRemoved": "Gumi levéve! Vidd vissza a teherautóhoz és vegyél egy pótot.",
+    "swappingTires": "Gumicsere...",
+    "spareTaken": "Pótkerék kész! Szereld fel az autóra.",
+    "installingTire": "Pótkerék felszerelése...",
+    "tireInstalled": "Gumi felszerelve! Engedd le a járművet a befejezéshez.",
+    "loweringVehicle": "Jármű leengedése...",
+    "tireChanged": "Gumicsere sikeres!",
+    "repairCancelled": "Javítás megszakítva",
+    "cantRepair": "Ez a jármű nem javítható",
+    "finishCurrentFirst": "Előbb fejezd be a jelenlegi javítást!",
+    "goToTruck": "Menj a szerviz teherautódhoz!",
+    "returningJack": "Autóemelő visszaadása...",
+    "takingSpare": "Pótkerék elvétele...",
+    "needSpare": "Pótkerékre van szükséged! Vegyél egyet a teherautóból.",
+    "returnVehicle": "Vidd vissza a szerviz teherautót a depóba!",
+    "interactPlaceJack": "[E] Autóemelő elhelyezése",
+    "interactRemoveTire": "[E] Defektes gumi eltávolítása",
+    "interactInstallTire": "[E] Pótkerék felszerelése",
+    "interactLowerVehicle": "[E] Jármű leengedése",
+    "interactPickupJack": "[E] Autóemelő felvétele",
+    "interactChangeTire": "[E] Defektes gumi cseréje",
+    "interactReturnJack": "[E] Autóemelő visszaadása",
+    "interactReturnTire": "[E] Gumi visszaadása",
+    "interactTakeJack": "[E] Autóemelő elvétele",
+    "interactTakeSpare": "[G] Pótkerék elvétele",
+    "interactTakeSpareE": "[E] Pótkerék elvétele",
+    "progressTitle": "Gumiszerelő",
+    "progressDetail": "Menj a megrekedt járművekhez és cseréld ki a defektes gumijaikat.",
+    "progressTires": "Gumik ({done}/{total})",
+    "serviceTruck": "Gumiszerviz Teherautó",
+    "continueHint": "Vezess a következő megrekedt járműhöz a térképen",
+    "stepTakeJack": "Vedd ki az emelőt a teherautóból",
+    "stepJackUp": "Emeld fel az autót",
+    "stepRemoveFlat": "Vedd le a defektes kereket",
+    "stepFitSpare": "Szereld fel a pótkereket",
+    "stepLowerCar": "Engedd le az autót",
+    "stepReturnJack": "Tedd vissza az emelőt a teherautóba"
+  },
+  "powerlines": {
+    "bucketInstructions": "Használd a nyílbillentyűket a kosár emeléséhez/süllyesztéséhez. [E] a javításhoz, ha elérhető.",
+    "parkNearPoles": "Parkolj az oszlopok közelében, és használd a kosarat a vezeték eléréséhez.",
+    "cantDriveWithBucket": "Nem vezethetsz, amíg a kosár használatban van",
+    "panelRepaired": "Panel sikeresen megjavítva!",
+    "panelCancelled": "Panel javítása megszakítva",
+    "poleRepaired": "Telefonoszlop sikeresen megjavítva!",
+    "poleRepairFailed": "Oszlop javítása sikertelen! Vigyázz az árammal.",
+    "progressTitle": "Villanyvezetékek",
+    "bucketControls": "Kosár vezérlés | Fel Le Balra Jobbra",
+    "blipPanel": "Elektromos panel",
+    "blipPole": "Telefonoszlop",
+    "blipVehicle": "Kosaras teherautó",
+    "continueHint": "Keresd meg a következő sérült oszlopot a térképen"
+  },
+  "diving": {
+    "oxygenCritical": "KRITIKUS OXIGÉN! Azonnal bukkanj fel!",
+    "oxygenLow": "Fogy az oxigén! Bukkanj fel!",
+    "refillingTank": "Levegőpalack feltöltése...",
+    "tankRefilled": "Levegőpalack feltöltve.",
+    "coralEmpty": "Korall feltörve, de nincs benne semmi.",
+    "trashCleaned": "Szemét feltakarítva!",
+    "failedSyncBoat": "Nem sikerült szinkronizálni a csónakot. Próbáld újra.",
+    "allTasksComplete": "Minden feladat teljesítve! Térj vissza a csónakhoz és húzd fel a horgonyt.",
+    "anchorDropped": "Horgony leengedve! Szállj le a csónakról és merülj.",
+    "anchorRaised": "Horgony felhúzva! Indulj a kiszállítási ponthoz.",
+    "anchorRaisedEarly": "Horgony felhúzva! Korán visszatérsz — nem jár fizetés.",
+    "anchorRaisedContinue": "Horgony felhúzva! Újra lehorgonyozhatsz a merülőhelyen a folytatáshoz.",
+    "gearEquipped": "{gear} felszerelve! ({seconds}mp oxigén)",
+    "itemsSold": "{count} tárgy eladva! {currency}{amount} kereset!",
+    "zoneSelected": "Merülőzóna kiválasztva: {zone}. Indulj!",
+    "zoneInfo": "Merülőzóna: {zone}",
+    "reconnected": "Újracsatlakoztál a búvár munkához!",
+    "started": "Búvár munka elindítva! Válassz zónát és indulj a merülőhelyre.",
+    "progressTitle": "Búvárkodás",
+    "progressDetail": "Gyűjts víz alatti tárgyakat a merülőhelyen. Merülj le és gyűjts tárgyakat a tengerfenékről.",
+    "divingStarted": "A merülőzónában vagy! Gyűjts tárgyakat a tengerfenékről.",
+    "collectingCoral": "Korall gyűjtése...",
+    "cleaningTrash": "Szemét takarítása...",
+    "unknownZone": "Ismeretlen",
+    "sellAtNpcReminder": "Add el a begyűjtött tárgyakat a felvásárló NPC-nél a fizetésért.",
+    "continueHint": "Keresd meg a következő merülőhelyet a térképen"
+  },
+  "treasurehunter": {
+    "started": "Kincskeresés elindítva! Indulj a kincs területre.",
+    "reconnected": "Újracsatlakoztál a kincskereső munkához!",
+    "newTarget": "Egy csapat megtalálta a kincset! Új helyszín kijelölve.",
+    "treasureFound": "Találtál egy {tier}-t! {currency}{value} kereset!",
+    "someoneNearby": "Valaki túl közel van! Menj távolabb a gyűjtéshez.",
+    "anchorDropped": "Horgony leengedve! Merülj le és keresd meg a kincset!",
+    "anchorRaised": "Horgony felhúzva! Térj vissza a kikötőbe.",
+    "oxygenCritical": "KRITIKUS OXIGÉN! Azonnal bukkanj fel!",
+    "oxygenLow": "Fogy az oxigén! Bukkanj fel!",
+    "refillingTank": "Levegőpalack feltöltése...",
+    "tankRefilled": "Levegőpalack feltöltve.",
+    "depthWarning": "Veszélyes mélység! Az oxigén gyorsabban fogy!",
+    "fakeLocation": "Hamis jel... Új koordináták számítása.",
+    "penalty": "Büntetés: {currency}{amount} — Nincs céges csónak a kikötőben.",
+    "digging": "Kincs kiásása...",
+    "alreadyCollected": "Valaki már összegyűjtötte ezt a kincset!",
+    "alreadySurfaced": "A láda már a felszínen van!",
+    "notSurfaced": "A láda még nem ért fel! Folytasd az ásást.",
+    "someoneOpening": "Valaki más már nyitja ezt a ládát!",
+    "needShovel": "Ásóra van szükséged! Vegyél egyet a csónakról.",
+    "cargoLoaded": "Zsákmány berakva a csónakba!",
+    "cargoFull": "A csónak rakománya megtelt! Térj vissza a kikötőbe a leadáshoz.",
+    "stolenItem": "Zsákmányt loptál egy másik csónakról!",
+    "cargoStolenFromYou": "Valaki zsákmányt lopott a csónakodról!",
+    "someoneOpened": "Valaki kinyitott egy {tier}-t!",
+    "stealDisabled": "A lopás nincs engedélyezve.",
+    "noCargoHere": "Itt nincs rakomány, amit ellopj.",
+    "shovelTaken": "Ásó elvéve!",
+    "canFinishHint": "Gyűjts több kincset, vagy térj vissza a kikötőbe a munka befejezéséhez.",
+    "anchorRaisedContinue": "Horgony felhúzva! Menj a következő kincshez, vagy térj vissza a kikötőbe a befejezéshez.",
+    "progressTitle": "Kincskereső",
+    "progressDetail": "Merülj a víz alá és gyűjts kincsesládákat. Kövesd a követőjel pittyegéseit a megtaláláshoz.",
+    "cargoProgress": "Rakomány: {current}/{max}",
+    "blipDock": "Kikötő - Átadás",
+    "blipTreasure": "Kincs helyszíne",
+    "continueHint": "Kövesd a követőjelet a következő ládához"
+  },
+  "metaldetector": {
+    "continueHint": "Kövesd a detektor hangjelzéseit, és fésüld át a következő zónát",
+    "started": "Fémdetektoros műszak elkezdődött! Vegyél ki egy detektort a teherautóból, és menj a keresési zónába.",
+    "newRound": "Új kör kezdődött. A szkenner újrakalibrálva.",
+    "newZone": "Új keresési zóna: {zone}",
+    "teammateFound": "A csapattársad kiásott egy tárgyat.",
+    "pressDig": "[E] Áss itt",
+    "digging": "Ásás...",
+    "digCancelled": "Ásás megszakítva.",
+    "digTooFast": "Túl gyorsan ásol. Lassíts egy kicsit.",
+    "exitVehicleFirst": "Szállj ki a járműből a detektor használatához.",
+    "outsideZone": "A kijelölt parti zónán belül kell maradnod.",
+    "lootFound": "{item} kiásva! +{currency}{amount}",
+    "lootFoundItem": "{item} kiásva! Bekerült a leltáradba.",
+    "unknownItem": "Ismeretlen tárgy",
+    "roundFinished": "Kör teljesítve! Ebben a zónában minden pont ki lett ásva.",
+    "canFinishHint": "Nyisd meg a munka opciókat az NPC-nél a befejezéshez vagy folytatáshoz.",
+    "spotAlreadyDug": "Ezt a pontot már kiásták.",
+    "spotBusy": "Egy csapattársad már ássa ezt a pontot.",
+    "takeDetectorFirst": "Előbb vegyél ki egy fémdetektort a teherautóból.",
+    "detectorReturned": "Detektor visszatéve a teherautóba.",
+    "blipSearchArea": "Keresési terület",
+    "unknownZone": "Ismeretlen part",
+    "progressTitle": "Fémdetektor",
+    "progressDetail": "Használd a detektorodat, hogy megtaláld és kiásd a parti zónákban rejtőző fémleleteket.",
+    "progressSpots": "Kiásott pontok: {current}/{max}",
+    "progressValue": "Felhalmozott érték: {currency}{amount}",
+    "labelTakeTool": "[E] Fémdetektor kivétele",
+    "labelReturnTool": "[E] Detektor visszatétele",
+    "labelPutOnBelt": "[G] Detektor övre akasztása",
+    "labelTakeFromBelt": "[G] Detektor levétele az övről",
+    "labelTakeFromTrunk": "[E] Kivétel a csomagtartóból (%d)",
+    "labelNoMoreItems": "~y~Nem maradt semmi a csomagtartóban.",
+    "labelLoadToTruck": "[E] Bepakolás a teherautóba",
+    "labelPickup": "[E] Felvétel",
+    "labelDig": "[E] Ásás",
+    "labelClothesWork": "[E] Munkaruha felvétele",
+    "labelClothesNormal": "[E] Civil ruha felvétele",
+    "labelFailNotify": "Itt most nem áshatsz",
+    "returnVehicleHint": "Műszak vége — vidd vissza a furgont a depóba a leadáshoz.",
+    "returnVehiclePrompt": "[E] Furgon leadása",
+    "returnVehicleBlip": "Furgon visszaadása",
+    "jobFinished": "Műszak vége! {symbol}{earned} a kereseted.",
+    "vehicleNotAtDepot": "A furgonnak a depóban kell lennie!",
+    "tooFarFromDepot": "Túl messze vagy a depótól!"
+  },
+  "delivery": {
+    "reconnected": "Újracsatlakoztál a szállítási munkához!",
+    "started": "Áruszállítás elindítva!",
+    "leaderPreparing": "A vezető készíti a járművet, kérlek várj...",
+    "spawnFailed": "A járművet nem sikerült létrehozni! A spawn pont foglalt. Munka törölve.",
+    "alreadyCarryingBox": "Már viszel egy ládát!",
+    "boxPickedUp": "Láda felvéve! Töltsd be a járműbe.",
+    "notCarryingBox": "Nem viszel ládát!",
+    "firstDelivery": "Első szállítási pont kijelölve! Indulj, ha kész vagy.",
+    "trunkFull": "Csomagtartó megtelt! Ideje kiszállítani.",
+    "boxDeliverPickup": "Láda felvéve! Szállítsd az ügyfélnek.",
+    "newRound": "Új kör! Töltsd fel a ládákat a depóból.",
+    "pickUpToContinue": "Vegyél fel ládákat az NPC-től a folytatáshoz. A befejezéshez menj a megjelölt helyre és add vissza a járművet.",
+    "returnVehicleToFinish": "Minden kézbesítés kész! Add vissza a járművet a megjelölt helyen a munka befejezéséhez.",
+    "deliveriesStarting": "Szállítások kezdődnek!",
+    "teammateTookBox": "Csapattárs felvett egy ládát",
+    "teammateReturnedBox": "Csapattárs visszatett egy ládát a csomagtartóba",
+    "teammatePartialDelivery": "Csapattárs részleges szállítást hajtott végre!",
+    "allComplete": "Minden szállítás teljesítve! Térj vissza a depóba.",
+    "progressTitle": "Szállítás",
+    "progressDetail": "Szállíts csomagokat az ügyfeleknek a városban. Tölts be ládákat és szállítsd minden címre.",
+    "loadCapacity": "Tölts be ládákat a depóból! Kapacitás: {capacity} láda",
+    "vehicleReadyLoad": "Jármű kész! Tölts be ládákat a depóból. Kapacitás: {capacity} láda",
+    "subtaskDeliver": "Csomagok szállítása ({current}/{total})",
+    "subtaskLoad": "Ládák betöltése a depóban ({current}/{total})",
+    "boxLoaded": "Láda betöltve! ({current}/{total})",
+    "boxReturned": "Láda visszaadva! ({count} a csomagtartóban)",
+    "partialDelivery": "Részleges szállítás! ({current}/{total}) +{amount} | Hozz még egy ládát.",
+    "deliveryDone": "Szállítás teljesítve! +{amount} | Minden szállítás kész! Térj vissza a depóba.",
+    "deliveryDoneRemaining": "Szállítás teljesítve! +{amount} | Hátralévő: {remaining}",
+    "deliveryFailed": "Szállítás sikertelen!",
+    "couldNotContinue": "Nem sikerült folytatni!",
+    "couldNotPickUp": "Nem sikerült felvenni a ládát!",
+    "couldNotLoad": "Nem sikerült betölteni a ládát!",
+    "couldNotReturn": "Nem sikerült visszaadni a ládát!",
+    "teammateLoaded": "Csapattárs betöltött egy ládát ({current}/{total})",
+    "teammateDelivered": "Csapattárs teljesített egy szállítást! Hátralévő: {remaining}",
+    "itemLabel": "Szállítások",
+    "continueHint": "Vedd fel a következő csomagot és szállítsd ki"
+  },
+  "cardetailer": {
+    "started": "Autódetailing munka elindítva! Szereld fel magad és menj az ügyfelek autóihoz.",
+    "newCars": "Új autók kijelölve! Folytasd a detailingot.",
+    "wandEquipped": "Nyomósugár pálca felszerelve!",
+    "wandReturned": "Nyomósugár pálca visszaadva a furgonba.",
+    "clothEquipped": "Polírozó kendő felszerelve!",
+    "clothReturned": "Polírozó kendő visszaadva a furgonba.",
+    "takeWandFirst": "Előbb vedd el a nyomósugár pálcát!",
+    "needCloth": "Polírozó kendőre van szükséged! Vedd el a furgonból.",
+    "failedStartPolish": "Nem sikerült elkezdeni a polírozást!",
+    "tooFar": "Túl messze! Menj közelebb és próbáld újra.",
+    "carDetailed": "Autó detailing kész!",
+    "carWashed": "Autó megmosva! Políroz meg bónusz fizetségért.",
+    "hoseLimit": "Tömlő hosszhatára elérve! Maradj közelebb a furgonhoz.",
+    "carDetailedTeammate": "Az autót a csapattárs detailelte!",
+    "carWashedTeammate": "Az autót a csapattárs mosta meg!",
+    "carPolished": "Autó kipolírozva! Remek munka!",
+    "carPolishedTeammate": "Az autót a csapattárs polírozta ki!",
+    "returnToDepot": "Térj vissza a depóba a munka befejezéséhez.",
+    "spotRightFrontDoor": "Jobb első ajtó",
+    "spotLeftFrontDoor": "Bal első ajtó",
+    "spotHood": "Motorháztető",
+    "spotTrunk": "Csomagtartó",
+    "spotRightRearDoor": "Jobb hátsó ajtó",
+    "spotLeftRearDoor": "Bal hátsó ajtó",
+    "spotHoodRight": "Motorháztető jobb",
+    "spotHoodLeft": "Motorháztető bal",
+    "toolWand": "Pálca",
+    "toolCloth": "Kendő",
+    "carsDetailed": "Detailelt autók",
+    "progressTitle": "Autódetailer",
+    "progressDetail": "Moss és polírozz ügyfél autókat. Használd a nyomósugár pálcát a mosáshoz, majd a kendőt a polírozáshoz.",
+    "carLabel": "#{index} autó",
+    "subtaskWashed": "{car} megmosva",
+    "subtaskPolished": "{car} kipolírozva",
+    "subtaskDetailed": "{car} detailelve",
+    "spotFallback": "Pont",
+    "continueHint": "Vezess a következő autóhoz és kezdd el a detailinget",
+    "spotHoodCenter": "Motorháztető közepe",
+    "spotRoof": "Tető",
+    "spotRoofLeft": "Tető bal",
+    "spotTrunkRight": "Csomagtartó jobb",
+    "spotTrunkLeft": "Csomagtartó bal",
+    "spotFrontFenderRight": "Jobb első sárvédő",
+    "spotFrontFenderLeft": "Bal első sárvédő",
+    "spotDoorRight": "Jobb ajtó",
+    "spotDoorRightFront": "Jobb első ajtó",
+    "spotDoorLeft": "Bal ajtó",
+    "spotDoorLeftFront": "Bal első ajtó",
+    "spotRearFenderRight": "Jobb hátsó sárvédő",
+    "spotRearFenderLeft": "Bal hátsó sárvédő"
+  },
+  "cleaner": {
+    "started": "Takarítás elindítva! Vedd fel a munkaruhát és a felmosót.",
+    "toolMop": "Felmosó",
+    "progressTitle": "Takarító",
+    "progressDetail": "Takarítsd meg a térképen megjelölt foltokat a felmosóddal. Menj minden folthoz és nyomj [E]-t a takarítás megkezdéséhez.",
+    "itemLabel": "Piszok folt",
+    "blipLabel": "Piszok folt",
+    "finishItemLabel": "Kitakarított foltok",
+    "cleanPrompt": "[E] Folt takarítása ({current}/{total})",
+    "subtaskClean": "Összes folt takarítása ({current}/{total})",
+    "continueHint": "Indulj a következő folthoz a térképen"
+  },
+  "windowscleaner": {
+    "started": "Ablaktisztítás elindítva! Vedd fel a munkaruhát és a szivacsot.",
+    "toolSponge": "Szivacs",
+    "progressTitle": "Ablaktisztító",
+    "progressDetail": "Takarítsd meg a piszkos ablakokat minden helyszínen. Használd a szivacsot a megjelölt helyek súrolásához.",
+    "dirtyWindow": "Piszkos Ablak",
+    "dirtyWindowBlip": "Piszkos Ablak #%d",
+    "windowsCleaned": "Megtisztított Ablakok",
+    "cleanWindowProgress": "[E] Ablak tisztítása ({hits}/{required})",
+    "continueHint": "Keresd meg a következő piszkos ablakot a térképen"
+  },
+  "powerwash": {
+    "started": "Nagynyomású mosás elindítva! Vedd fel a munkaruhát és a pálcát.",
+    "takeWandFirst": "Előbb vedd el a nyomósugár pálcát!",
+    "tooFarFromSpot": "Túl messze vagy a folttól!",
+    "toolWand": "Nyomósugár pálca",
+    "progressTitle": "Nagynyomású mosás",
+    "progressDetail": "Permetezd le a térképen megjelölt piszkos foltokat a nyomósugár pálcával. Célozd a foltra és tartsd az [LMB]-t a permetezéshez.",
+    "dirtySpot": "Piszkos Folt",
+    "dirtySpotBlip": "Piszkos Folt #%d",
+    "spotsCleaned": "Megtisztított Foltok",
+    "continueHint": "Menj a következő piszkos folthoz a térképen"
+  },
+  "forklift": {
+    "newCrates": "Új ládák érkeznek...",
+    "preparingForklifts": "Targoncák előkészítése...",
+    "failedSpawnForklifts": "Nem sikerült létrehozni a targoncákat!",
+    "beltFull": "A szalag megtelt! Előbb aktiváld a futószalagot.",
+    "earnedReward": "+{symbol}{money}, +{xp} XP",
+    "modeBeltToShelf": "Vedd fel a szalagról, helyezd a polcokra!",
+    "modeCratesToBelt": "Vidd a ládákat a szalagra!",
+    "newRoundBeltToShelf": "Új kör: Vedd fel a szalagról, helyezd a polcokra!",
+    "newRoundStarting": "Új kör kezdődik!",
+    "progressTitle": "Targonca",
+    "progressDetailToShelf": "Mozgasd a ládákat targoncával. Vegyél fel ládákat és helyezd őket a polcokra.",
+    "progressDetailToBelt": "Mozgasd a ládákat targoncával. Vegyél fel ládákat és vidd őket a futószalagra.",
+    "onlyLeaderCanCancel": "Csak a vezető szakíthatja meg a munkát",
+    "deliveredCrates": "Kézbesített Ládák",
+    "continueHint": "Vedd fel a következő ládát a targoncával"
+  },
+  "warehouse": {
+    "newTrucks": "Új teherautók érkeznek...",
+    "failedInitSession": "Nem sikerült inicializálni a munkamenetet!",
+    "preparingVehicles": "Járművek előkészítése...",
+    "failedSpawnForklift": "Nem sikerült létrehozni a targoncát!",
+    "truckOnTheWay": "A teherautó úton van...",
+    "truckReady": "A teherautó készen áll a rakodásra!",
+    "truckReadyWithOrder": "Teherautó kész! Töltsd: {boxes} láda, {pallets} raklap",
+    "boxesProgress": "Ládák: {current}/{total}",
+    "palletsProgress": "Raklapok: {current}/{total}",
+    "orderInfo": "Rendelés: {boxes} láda, {pallets} raklap",
+    "deliveryCompleteReward": "Szállítás teljesítve! +${money}, +{xp} XP",
+    "newOrder": "Új rendelés: {boxes} láda, {pallets} raklap",
+    "newOrderWithRemaining": "Új rendelés: {boxes} láda, {pallets} raklap ({remaining} teherautó van hátra)",
+    "deliveryComplete": "Szállítás teljesítve!",
+    "takeBoxToTruck": "Vidd a ládát a teherautóhoz!",
+    "truckNotReady": "A teherautó nincs készen",
+    "truckNotFound": "Teherautó nem található",
+    "getInForklift": "Szállj be a targoncába",
+    "alreadyCarrying": "Már viszel valamit",
+    "boxDropped": "Láda leejtve",
+    "progressTitle": "Raktár",
+    "progressDetail": "Rakj fel rakományt a szállító teherautóra. Használj targoncákat vagy hordd kézzel a tárgyakat.",
+    "completedTrucks": "Befejezett Teherautók",
+    "continueHint": "Rakd fel a következő raklapot a teherautóra"
+  },
+  "landscaping": {
+    "failedInit": "Nem sikerült inicializálni a munkát!",
+    "toolNotAvailable": "Szerszám nem elérhető!",
+    "needTrimmer": "Sövénynyíróra van szükséged a bokrok nyírásához!",
+    "trimmingCancelled": "Bokornyírás megszakítva",
+    "needShovel": "Ásóra van szükséged a gyep ásásához!",
+    "diggingCancelled": "Gyepásás megszakítva",
+    "newTasks": "Új kertészeti feladatok kijelölve!",
+    "allComplete": "Minden feladat teljesítve! Térj vissza a depóba a befejezéshez.",
+    "onlyLeaderFinish": "Csak a vezető fejezheti be a munkát!",
+    "notAllBushes": "Nem minden bokor van megnyírva!",
+    "notAllLawns": "Nem minden gyep van felgereblyézve!",
+    "jobStarted": "Kertészet elindítva! Nyírj {bushes} bokrot és áss {lawns} gyepet. Vedd fel a szerszámokat a teherautóból.",
+    "bushTrimmed": "Bokor megnyírva! {bushes} bokor, {lawns} gyep van hátra",
+    "lawnDug": "Gyep kiásva! {bushes} bokor, {lawns} gyep van hátra",
+    "toolTrimmer": "Sövénynyíró",
+    "toolShovel": "Ásó",
+    "progressTitle": "Kertészet",
+    "progressDetail": "Tartsd karban a kertet. Nyírj bokrokat és gereblyézz gyepet minden ingatlanon.",
+    "toolFallback": "Szerszám",
+    "continueHint": "Indulj a következő ingatlanhoz karbantartásra"
+  },
+  "farmer": {
+    "alreadyHarvested": "A növényt már learatták!",
+    "failedStartHarvest": "Nem sikerült elkezdeni az aratást",
+    "plantsRespawned": "A növények újra megjelentek! {count} kész az aratásra.",
+    "progressTitle": "Farmer",
+    "progressDetail": "Arass terményt a földeken. Szedj növényeket és tölts terményt a járműbe.",
+    "jobLabel": "Farmer",
+    "produceLabel": "darab",
+    "vehicleBlip": "Farm jármű",
+    "subtaskHarvest": "Növények aratása ({current}/{total})",
+    "continueHint": "Menj a következő növényhez és arasd le",
+    "stepTakeBox": "Vegyél egy ládát a teherautóból",
+    "stepHarvesting": "Folytasd a növény aratását",
+    "stepHarvestPlant": "Menj egy növényhez és arasd le",
+    "stepLoadBoxToTruck": "Rakd be a tele ládát a teherautóba",
+    "stepGoToScale": "Vidd a ládákat a mérleghez",
+    "stepPlaceOnScale": "Tedd a ládát a mérlegre",
+    "stepProcessProduce": "Beszélj az NPC-vel a termény feldolgozásához",
+    "stepNewRound": "Vegyél egy ládát és kezdj új kört"
+  },
+  "fishing": {
+    "failedSpawnBoat": "Nem sikerült létrehozni a horgászcsónakot!",
+    "started": "Horgászás elindítva! Szállj be a csónakba és indulj a horgászzónába.",
+    "failedSyncBoat": "Nem sikerült szinkronizálni a horgászcsónakot!",
+    "noFishToSell": "Nincs eladható hal!",
+    "noWater": "Nincs víz a közelben! Maradj a víz közelében.",
+    "fishOnLine": "Hal van a horgon! Nyomj [E]-t az orsózáshoz!",
+    "fishGotAway": "A hal elszökött! Túl lassú voltál.",
+    "fishEscaped": "A hal elszökött!",
+    "castCancelled": "Horgászás megszakítva.",
+    "outfitEquipped": "Horgászruha felvéve!",
+    "cantUseInventoryRod": "Nem használhatsz leltár botot munka módban!",
+    "alreadyCast": "Már bevetetted a horgot!",
+    "mustBeNearWater": "A víz közelében kell lenned!",
+    "completed": "Horgászás sikeresen befejezve!",
+    "freeModeDisabled": "A szabad mód le van tiltva!",
+    "noBait": "Nincs csali! Vegyél csalit a horgászboltban.",
+    "itemPurchased": "{amount}x {item} megvéve! ({currency}{price})",
+    "fishSold": "{count} hal eladva! {currency}{amount} kereset!",
+    "progressTitle": "Horgászás",
+    "progressDetail": "Fogj halat a horgászhelyen. Vesd be a horgot és orsózd be a halakat.",
+    "subtaskFishCaught": "Fogott hal: {count}",
+    "shopTitle": "Horgászbolt",
+    "selectRod": "Bot kiválasztása",
+    "selectBait": "Csali kiválasztása",
+    "sellTitle": "Hal eladása",
+    "baitStats": "{price} | Esély: +{chance}%",
+    "fishPriceRange": "{min} - {max} tartomány",
+    "continueHint": "Menj a következő horgászhelyhez és vesd be a horgot"
+  },
+  "cleanup": {
+    "started": "Szemétgyűjtés elindítva! Előbb vedd fel a munkaruhát, majd gyűjts szemetet a kukákból [E] billentyűvel és töltsd fel a teherautóra.",
+    "alreadyCarrying": "Már viszel valamit!",
+    "binEmpty": "Ez a szeméttároló üres!",
+    "noCleanupInBin": "Nincs szemét ebben a kukában!",
+    "animFailed": "Animáció nem tölthető be!",
+    "bagPickedUp": "Szemeteszsák felvéve! Menj a teherautó hátuljához és nyomj [E]-t a bedobáshoz.",
+    "notHoldingBag": "Nem fogsz szemeteszsákot!",
+    "thrownIn": "Szemét bedobva!",
+    "noCleanupInTruck": "Nincs szemét a teherautóban!",
+    "truckReady": "Szemétszállító teherautó kész!",
+    "keepWorking": "Folytasd a munkát! Kezdj új szemeteskukákat keresni.",
+    "truckTooFar": "A teherautó túl messze van vagy nem elérhető. Menjen közelebb a teherautóhoz.",
+    "truckFullBagDropped": "Teherautó megtelt! Szemeteszsák leejtve. Vezesd a teherautót a leadási ponthoz.",
+    "jobEnded": "A szemétgyűjtés befejeződött.",
+    "truckFullDrive": "A teherautó megtelt! ({count}/{max}) Vezesd a teherautót a térképen megjelölt leadási ponthoz.",
+    "spawnBlocked": "A spawn terület blokkolva van! Mozdítsd el a járművet és próbáld újra.",
+    "vehicleSpawnFailed": "A járművet nem sikerült létrehozni!",
+    "areaSelected": "{area} terület kiválasztva. Menj a térképen a területre és gyűjts szemetet a kukákból [E] billentyűvel.",
+    "progressTitle": "Szemétgyűjtés",
+    "progressDetail": "Gyűjts szemetes kukákat az útvonal mentén. Vedd fel mindegyiket és tedd a teherautóba.",
+    "deliveryBlip": "Szemét leadás",
+    "collectBinsProgress": "Kukák gyűjtése ({current}/{max})",
+    "dumpDeliveries": "Szemétlerakó szállítások: {count}",
+    "hintCollectBins": "Keress szeméttárolókat a közelben és nyomj [E]-t egy zsák felvételéhez.",
+    "hintCollectBinsTarget": "Keress szeméttárolókat a közelben és használd a harmadik szemet egy zsák felvételéhez.",
+    "bagPickedUpTarget": "Zsák felvéve! Menj a teherautó hátuljához és használd a harmadik szemet, hogy bedobd.",
+    "areaSelectedTarget": "{area} terület kiválasztva. Menj a területre a térképen és gyűjtsd a szemetet a kukákból a harmadik szemmel.",
+    "continueHint": "Vezess a következő kukához az útvonaladon"
+  },
+  "dogwalking": {
+    "anotherWalk": "Új séta kezdődik!",
+    "dogGotAway": "A kutyád elszaladt! Munka sikertelen.",
+    "dogDied": "A kutyád elpusztult! A munka megszakítva.",
+    "dogNeedsToGo": "A kutyádnak dolga van! Várj rá...",
+    "dogBrokeFree": "Ó, ne! A kutyád elszabadult! Kapd el gyorsan!",
+    "dogPickedUp": "Felvetted a kutyádat! Várj mindenkire.",
+    "returnDog": "Szuper séta! Most vidd vissza a kutyát a gazdájához.",
+    "caughtDog": "Juhh! Elkaptad a kutyát.",
+    "noDogAssigned": "Nincs kutya hozzád rendelve!",
+    "alreadyClaimed": "Már felvetted a kutyádat!",
+    "poopAlreadyCleaned": "A kaka már fel van takarítva!",
+    "notYourDogPoop": "Ez nem a te kutyád kakája!",
+    "walkNotComplete": "A séta még nem teljes!",
+    "reconnected": "Újracsatlakoztál a kutyasétáltatás munkához!",
+    "started": "Kutyasétáltatás elindítva! Menj az ügyfél otthonához.",
+    "walkYourDog": "Sétáltasd a kutyádat {distance}m-t! Élvezd a sétát.",
+    "dogDelivered": "Kutya átadva! Keresett: {symbol}{payment} és {xp} XP",
+    "progressTitle": "Kutyasétáltatás",
+    "progressDetail": "Sétáltasd a kutyákat az útvonalaikon. Tartsd őket boldogan és takaríts utánuk.",
+    "dogDiedNoPayment": "Egy kutya elpusztult! Munka megszakítva — nincs fizetség.",
+    "blipHome": "Ügyfél otthona",
+    "clientHomeFallback": "Ügyfél Otthona",
+    "continueHint": "Vedd fel a következő kutyádat és kezdd el a sétát",
+    "pickupTaskLabel": "Vedd fel a következő kutyádat",
+    "pickupDescription": "Menj a kutyához a térképen megjelölt helyszínre és nyomj [E]-t a séta megkezdéséhez.",
+    "tooFarFromHome": "Túl messze vagy a gazda otthonától!"
+  },
+  "harvest": {
+    "processingInProgress": "Feldolgozás folyamatban, kérlek várj!",
+    "noBoxesOnScale": "Nincsenek ládák a mérlegen a feldolgozáshoz!",
+    "processingComplete": "Feldolgozás befejezve! {count} láda, kereset: {currency}{amount}",
+    "boxLoadedScale": "Láda betöltve! {count} {produce}, érték: {currency}{value} — Vezess a feldolgozómérleghez!",
+    "boxLoaded": "Láda betöltve! {count} {produce}, érték: {currency}{value}",
+    "boxPlaced": "Láda lehelyezve! {count} {produce}, érték: {currency}{value}",
+    "produceHarvested": "{produce} learatva! ({current}/{total})",
+    "produceAddFailed": "Nem sikerült hozzáadni a {produce}-t a ládához!"
+  },
+  "miner": {
+    "started": "Bányászás elindítva! Vedd fel a munkaruhát és a felszerelést.",
+    "newRocks": "Új sziklák jelentek meg! Folytasd a bányászást.",
+    "orePickedUp": "{ore} érc felvéve! Töltsd be a teherautóba.",
+    "rocksRemaining": "Még {count} szikla van hátra a bányászáshoz.",
+    "processingInProgress": "Feldolgozás folyamatban, kérlek várj!",
+    "noRocksOnScale": "Nincs érc a mérlegen a feldolgozáshoz!",
+    "processingComplete": "Feldolgozás befejezve! {count} érc, kereset: {currency}{amount}",
+    "pickaxeReturned": "Csákány visszaadva a csomagtartóba",
+    "returnVehicleBlip": "Teherautó leadása",
+    "returnVehicleHint": "Vége a műszaknak — vidd vissza a teherautót a depóba.",
+    "returnVehiclePrompt": "[E] Teherautó leadása",
+    "vehicleNotAtDepot": "A teherautónak vissza kell kerülnie a depóba!",
+    "tooFarFromDepot": "Túl messze vagy a depótól!",
+    "labelProcessing": "~y~Feldolgozás folyamatban...",
+    "labelFinish": "[E] Feldolgozás befejezése (%d érc)",
+    "labelPlaceOnScale": "[E] Érc letétele a mérlegre",
+    "labelLoadToTruck": "[E] Érc betöltése a teherautóba",
+    "labelReturnTool": "[E] Csákány visszaadása",
+    "labelTakeTool": "[E] Csákány elvétele",
+    "labelTakeFromTrunk": "[E] Érc elvétele a csomagtartóból (%d)",
+    "labelNoMoreItems": "~y~Nincs több érc! Menj az NPC-hez a befejezéshez.",
+    "labelPickup": "[E] Érc felvétele",
+    "labelBreakAction": "[E] Szikla bányászása",
+    "labelPutOnBelt": "[G] Csákány az övre",
+    "labelTakeFromBelt": "[G] Csákány elvétele az övről",
+    "labelClothesWork": "[E] Átöltözés munkaruhába",
+    "labelClothesNormal": "[E] Átöltözés normál ruhába",
+    "labelFailNotify": "Nem sikerült elkezdeni a bányászást",
+    "continueHint": "Keresd meg a következő érclelőhelyet és bányászd ki",
+    "progressTitle": "Bányász",
+    "progressDetail": "Törj fel sziklákat az ércért, vidd az ércet a teherautódhoz, majd vezess a mérleghez és dolgozd fel.",
+    "stepTakeTool": "Vedd ki a csákányt a csomagtartóból",
+    "stepBreaking": "Folytasd a szikla bányászását",
+    "stepBreakRock": "Törj fel egy sziklát az érc kinyeréséhez",
+    "stepPickupOre": "Vedd fel a földön lévő ércet",
+    "stepLoadTrunk": "Rakd be az ércet a teherautóba",
+    "stepGoToScale": "Vidd az ércet a mérleghez",
+    "stepPlaceOnScale": "Tedd az ércet a mérlegre",
+    "stepProcessOre": "Beszélj az NPC-vel az érc feldolgozásához",
+    "stepNewRound": "Vedd ki a csákányt és kezdj új kört"
+  },
+  "lumberjack": {
+    "started": "Favágás elindítva!",
+    "newTrees": "Új fák jelentek meg! Folytathatod a vágást.",
+    "takeHatchetFirst": "Előbb vedd el a fejszédet!",
+    "anotherPlayerCutting": "Egy másik játékos már vágja ezt a fát!",
+    "alreadyCarryingLog": "Már viszel egy rönköt!",
+    "alreadyPickedUp": "Valaki más már felvette ezt!",
+    "logPickedUp": "Rönk felvéve! Töltsd be a teherautóba.",
+    "hatchetTaken": "Fejsze elvéve!",
+    "treesRemaining": "{count} fa van hátra a kivágáshoz.",
+    "axeDropBonus": "{name} | Dobás bónusz: +{bonus}%",
+    "treeCutDown": "{name} fa kivágva! Gyűjtsd össze a rönköket.",
+    "levelRequired": "Ehhez a fához {required}. szint szükséges! (Jelenlegi: {current})",
+    "processingComplete": "Feldolgozás befejezve! {count} rönk, kereset: {currency}{amount}",
+    "labelProcessing": "~y~Feldolgozás folyamatban...",
+    "labelFinish": "[E] Feldolgozás befejezése (%d rönk)",
+    "labelPlaceOnScale": "[E] Rönk letétele a feldolgozáshoz",
+    "labelLoadToTruck": "[E] Rönk betöltése a teherautóba",
+    "labelReturnTool": "[E] Fejsze visszaadása",
+    "labelTakeTool": "[E] Fejsze elvétele",
+    "labelTakeFromTrunk": "[E] Rönk elvétele a csomagtartóból (%d)",
+    "labelNoMoreItems": "~y~Nincs több rönk! Menj az NPC-hez a befejezéshez.",
+    "labelPickup": "[E] Rönk felvétele",
+    "labelBreakAction": "[E] Fa vágása",
+    "labelPutOnBelt": "[G] Fejsze az övre",
+    "labelTakeFromBelt": "[G] Fejsze elvétele az övről",
+    "labelClothesWork": "[E] Átöltözés munkaruhába",
+    "labelClothesNormal": "[E] Átöltözés normál ruhába",
+    "labelFailNotify": "Nem sikerült elkezdeni a favágást",
+    "processingInProgress": "Feldolgozás folyamatban, kérlek várj!",
+    "noLogsOnScale": "Nincsenek rönkök a feldolgozóterületen!",
+    "hatchetReturned": "Fejsze visszaadva!",
+    "treeFallback": "Fa",
+    "serverDenied": "Szerver elutasította",
+    "continueHint": "Keresd meg a következő fát és kezdd el a vágást",
+    "progressTitle": "Favágó",
+    "progressDetail": "Vágj ki fákat a rönkökért, vidd őket a teherautódhoz, majd vezess a feldolgozómérleghez.",
+    "stepTakeAxe": "Vedd ki a fejszét a csomagtartóból",
+    "stepCutting": "Folytasd a fa vágását",
+    "stepCutTree": "Vágj ki egy fát a rönkök ledöntéséhez",
+    "stepPickupLog": "Vedd fel a földön lévő rönköt",
+    "stepLoadTrunk": "Rakd be a rönköt a teherautóba",
+    "stepGoToScale": "Vidd a rönköket a feldolgozómérleghez",
+    "stepPlaceOnScale": "Tedd a rönköt a mérlegre",
+    "stepProcessLog": "Beszélj az NPC-vel a rönkök feldolgozásához",
+    "stepNewRound": "Vedd ki a fejszét és kezdj új kört"
+  },
+  "scrapyard": {
+    "started": "Roncstelep munka elindítva! Vedd fel a munkaruhát és a felszerelést.",
+    "newScraps": "Új roncsok érkeztek! Folytasd.",
+    "putCrowbarOnBelt": "Előbb tedd a feszítővasat az övre!",
+    "scrapPickedUp": "Roncs felvéve! Töltsd be a járműbe.",
+    "scrapsRemaining": "{count} roncs van hátra.",
+    "processingInProgress": "Feldolgozás folyamatban, kérlek várj!",
+    "noScrapsOnScale": "Nincsenek roncsok a mérlegen!",
+    "processingComplete": "Feldolgozás befejezve! {count} roncs, {currency}{amount} kereset",
+    "crowbarReturned": "Feszítővas visszaadva a járműbe",
+    "workClothesEquipped": "Munkaruha felvéve!",
+    "normalClothes": "Átöltözés normál ruhába",
+    "scrapBlip": "#{index} roncs",
+    "labelProcessing": "~y~Feldolgozás folyamatban...",
+    "labelFinish": "[E] Feldolgozás befejezése (%d roncs)",
+    "labelPlaceOnScale": "[E] Roncs letétele a mérlegre",
+    "labelLoadToTruck": "[E] Roncs betöltése a járműbe",
+    "labelReturnTool": "[E] Feszítővas visszaadása",
+    "labelTakeTool": "[E] Feszítővas elvétele",
+    "labelTakeFromTrunk": "[E] Roncs elvétele a csomagtartóból (%d)",
+    "labelNoMoreItems": "~y~Nincs több roncs! Menj az NPC-hez.",
+    "labelPickup": "[E] Roncs felvétele",
+    "labelBreakAction": "[E] Roncs szétszedése",
+    "labelPutOnBelt": "[G] Feszítővas az övre",
+    "labelTakeFromBelt": "[G] Feszítővas elvétele az övről",
+    "labelClothesWork": "[E] Munkaruha felvétele",
+    "labelClothesNormal": "[E] Átöltözés normál ruhába",
+    "labelFailNotify": "Nem sikerült elkezdeni a szétszerelést",
+    "continueHint": "Vezess a következő roncshalomhoz a térképen",
+    "progressTitle": "Roncstelep",
+    "progressDetail": "Szedd szét a roncshalmokat, vidd az alkatrészeket a teherautódhoz, majd vezess a mérleghez és dolgozd fel.",
+    "stepTakeTool": "Vedd ki a feszítővasat a csomagtartóból",
+    "stepBreaking": "Folytasd a roncs szétszedését",
+    "stepBreakScrap": "Szedj szét egy roncshalmot",
+    "stepPickupScrap": "Vedd fel a földön lévő roncs alkatrészeket",
+    "stepLoadTrunk": "Rakd be a roncsot a teherautóba",
+    "stepGoToScale": "Vidd a roncsot a mérleghez",
+    "stepPlaceOnScale": "Tedd a roncsot a mérlegre",
+    "stepProcessScrap": "Beszélj az NPC-vel a roncs feldolgozásához",
+    "stepNewRound": "Vedd ki a feszítővasat és kezdj új kört"
+  },
+  "fruitpicker": {
+    "treesReset": "Minden fa visszaállítva! Folytasd a gyümölcsszedést.",
+    "noMoreFruit": "Nincs több gyümölcs ezen a fán!",
+    "treeOnCooldown": "Nincs érett gyümölcs. ~%{minutes} perc múlva frissül — próbálj másik fát.",
+    "jobLabel": "Gyümölcsszedő",
+    "produceLabel": "gyümölcs",
+    "vehicleBlip": "Gyümölcsös teherautó",
+    "placeBoxAndPick": "[E] Láda letétele és {fruit} szedése ({remaining} van hátra)",
+    "pickFruit": "[E] {fruit} szedése ({remaining} van hátra)",
+    "orangeTreeBlip": "Narancsfa",
+    "appleTreeBlip": "Almafa",
+    "progressTitle": "Gyümölcsszedő",
+    "fruitFallback": "Gyümölcs",
+    "continueHint": "Menj a következő fához és kezdd el a szedést",
+    "progressDetail": "Vegyél egy ládát, töltsd meg a fákról, rakd a tele ládákat a teherautóba, majd vezess a mérleghez.",
+    "stepTakeBox": "Vegyél egy ládát a teherautóból",
+    "stepPicking": "Folytasd a gyümölcs szedését",
+    "stepPickFruit": "Menj egy fához és szedj gyümölcsöt",
+    "stepLoadBoxToTruck": "Rakd be a tele ládát a teherautóba",
+    "stepGoToScale": "Vidd a ládákat a mérleghez",
+    "stepPlaceOnScale": "Tedd a ládát a mérlegre",
+    "stepProcessFruit": "Beszélj az NPC-vel a gyümölcs feldolgozásához",
+    "stepNewRound": "Vegyél egy ládát és kezdj új kört"
+  },
+  "newspaper": {
+    "settingsNotFound": "Újságkihordás beállítások nem találhatók!",
+    "started": "Újságkihordás elindítva!",
+    "noAvailableRoutes": "Nincs elérhető útvonal!",
+    "leaderSelecting": "A vezető biciklit és területet választ, kérlek várj...",
+    "progressTitle": "Újságkihordás",
+    "progressDetail": "Kézbesíts újságokat a házakhoz az útvonalon. Dobd az újságot minden küszöbre.",
+    "outsideTimeWindow": "Újságkézbesítés csak {startHour}:00 - {endHour}:00 között érhető el (jelenleg: {current}:00)",
+    "continueHint": "Menj a következő kézbesítési utcához",
+    "getOnCycle": "Ülj fel a biciklire a kézbesítés megkezdéséhez"
+  },
+  "taxi": {
+    "lookingForCustomer": "Új ügyfél keresése...",
+    "taxiReady": "Taxi kész! Várj az ügyfél hívására...",
+    "taxiModelFailed": "Taxi modell nem tölthető be!",
+    "passengerWokeUp": "Az utas felébredt!",
+    "passengerBoarded": "Utas beszállt! Várakozás a célpontra...",
+    "newCustomer": "Új ügyfél! Menj a felvételi helyszínre.",
+    "passengerDied": "Az ügyfeled meghalt! A fuvar törölve.",
+    "returnTaxiToDepot": "Add vissza a taxit a depóba a műszakod befejezéséhez.",
+    "destinationSet": "Célpont beállítva! Távolság: {distance}m, Bónusz idő: {bonus}mp",
+    "vehicleDamaged": "Jármű megsérült! Bónusz idő -{penalty}mp",
+    "jobEnded": "Taxi műszak befejezve! Fuvarok: {rides}, Összes kereset: {symbol}{earned}",
+    "hornPassengerSleeping": "[DUDA] Az utas alszik!",
+    "pickUpPassenger": "[E] Utas felvétele",
+    "dropOffPassenger": "[E] Utas kitevése",
+    "returnTaxiEndShift": "[E] Taxi visszaadása és műszak zárása",
+    "getBackInTaxi": "[F] Szállj vissza a taxiba!",
+    "tooFarFromDepot": "Túl messze vagy a depótól",
+    "tooFarFromDropoff": "Túl messze vagy a célponttól",
+    "progressTitle": "Taxi",
+    "progressDetail": "Vedd fel az utasokat és vidd el őket az úti céljukhoz. Vezess óvatosan az időbónuszért.",
+    "stagePickup": "Vedd fel az utast",
+    "stageDropoff": "Tedd ki az utast",
+    "stageDepot": "Vidd vissza a taxit a telephelyre",
+    "ridesCompleted": "{count} fuvar teljesítve",
+    "meterBonusTime": "bónusz {seconds}mp",
+    "statCustomers": "Szállított utasok",
+    "statEarnings": "Összes kereset"
+  },
+  "trucker": {
+    "illegalAccepted": "Illegális útvonal elfogadva! Légy óvatos...",
+    "trailerLost": "Pótkocsi elveszett! Ez a szállítás sikertelen.",
+    "failedReconnect": "Nem sikerült újracsatlakozni a kamionos munkához!",
+    "reconnected": "Újracsatlakoztál a kamionos munkához!",
+    "failedGetData": "Nem sikerült lekérni a munka adatait!",
+    "started": "Kamionos munka elindítva! Menj a pótkocsi felvételi helyszínre.",
+    "truckReady": "Teherautó kész! Szállj be.",
+    "truckModelFailed": "Teherautó modell nem tölthető be!",
+    "trailerModelFailed": "Pótkocsi modell nem tölthető be!",
+    "trailerSpawnBlocked": "Pótkocsi spawn pont blokkolva! Újrapróbálkozás 5 másodperc múlva...",
+    "trailerSpawnStillBlocked": "Pótkocsi spawn pont még mindig blokkolva! Spawn mindenképp.",
+    "trailerAttachedWaiting": "Pótkocsi csatolva! Várakozás a többi játékosra...",
+    "trailerAttachedWaitRoute": "Pótkocsi csatolva! Várj az útvonal kijelölésére...",
+    "trailerDetached": "Pótkocsi lecsatolódott! Menj vissza és csatold újra!",
+    "needToBeInTruck": "A teherautóban kell lenned!",
+    "trailerGone": "Pótkocsi eltűnt! Munka sikertelen.",
+    "trailerReattached": "Pótkocsi újracsatolva! Folytasd a szállítást.",
+    "failedReattach": "Nem sikerült újracsatolni a pótkocsit. Próbáld újra.",
+    "noTrailerNearby": "Nincs pótkocsi a közelben!",
+    "failedAttach": "Nem sikerült csatolni a pótkocsit. Próbáld újra.",
+    "noTrailerAttached": "Nincs csatolt pótkocsi!",
+    "tooFarToDeliver": "A pótkocsi nincs a leadási zónában!",
+    "perfectDelivery": "Pótkocsi tökéletes állapotban kiszállítva! Add vissza a teherautót a depóba.",
+    "mustBeInTruck": "A teherautóban kell lenned!",
+    "notJobTruck": "Ez nem a munka teherautója!",
+    "truckReturned": "Teherautó visszaadva! Várakozás az összegzésre...",
+    "waitingForTrailers": "Várakozás a többi játékos pótkocsi csatolására...",
+    "leaderAcceptedIllegal": "A vezető elfogadta az illegális útvonalat! Légy óvatos...",
+    "leaderChoseNormal": "A vezető a normál útvonalat választotta.",
+    "returnTruckToDepot": "Add vissza a teherautót a depóba.",
+    "newDeliveryRoute": "Új szállítási útvonal kijelölve!",
+    "truckReturnedWaiting": "Teherautó visszaadva! Várakozás a többi játékos teherautó visszaadására...",
+    "youLeftJob": "Elhagytad a munkát.",
+    "headToTrailer": "Menj a megjelölt helyszínre a pótkocsi felvételéhez!",
+    "trailerDestroyed": "Pótkocsi megsemmisült! Szállítás sikertelen.",
+    "trailerDeliveredCondition": "Pótkocsi {condition}% állapotban kiszállítva. Add vissza a teherautót a depóba.",
+    "routeAssigned": "Útvonal kijelölve ({route})! Távolság: {distance}m",
+    "progressTitle": "Kamionos",
+    "progressDetail": "Szállíts rakományt célpontokra az államban. Vezess óvatosan a károk elkerülése érdekében.",
+    "stagePickup": "Pótkocsi Felvétele",
+    "stageDelivery": "Rakomány Kézbesítése",
+    "stageReturn": "Teherautó Visszaadása",
+    "stageWaiting": "Várakozás...",
+    "deliveriesCompleted": "Befejezett kézbesítések: {count}",
+    "blipPickupTrailer": "Pótkocsi Felvétele",
+    "blipDeliverCargo": "Rakomány Kézbesítése",
+    "blipIllegalDelivery": "Illegális Kézbesítés",
+    "blipReturnTruck": "Teherautó Visszaadása",
+    "aPlayerFallback": "Egy játékos",
+    "teammateFallback": "Csapattárs",
+    "playerReturnedTruck": "{name} visszaadta a teherautóját.",
+    "teammateTruck": "{name} Teherautója",
+    "continueHint": "Vedd fel a következő rakományt a depóból"
+  },
+  "repair": {
+    "failedInit": "Nem sikerült inicializálni a munkát!",
+    "newTasks": "Új javítási feladatok kijelölve!",
+    "allComplete": "Minden javítás kész! Térj vissza a munka befejezéséhez.",
+    "jobStarted": "{label} munka elindítva! Javítás: {tasks}.",
+    "taskRepaired": "{task} megjavítva! {remaining} van hátra"
+  },
+  "target": {
+    "interact": "Interakció",
+    "pickup": "Felvétel",
+    "finishProcessing": "Feldolgozás befejezése",
+    "finishProcessingPrompt": "[E] Feldolgozás Befejezése",
+    "processing": "Feldolgozás...",
+    "placeOnScale": "Mérlegre tétel",
+    "loadToTruck": "Teherautóra rakodás",
+    "returnTool": "Szerszám visszavitele",
+    "takeTool": "Szerszám felvétele",
+    "takeFromTrunk": "Vétel a csomagtartóból",
+    "changeClothes": "Ruhaváltás",
+    "changeClothesPrompt": "[E] Ruha cseréje",
+    "changeClothesNormal": "[E] Normál ruha felvétele",
+    "changeClothesWork": "[E] Munkaruha felvétele",
+    "cleanItemPrompt": "[E] Tárgy tisztítása",
+    "finishJobPrompt": "[E] Munka Befejezése",
+    "pickFruit": "Gyümölcs Szedése",
+    "pickUpLog": "Rönk Felvétele",
+    "returnItem": "Tárgy Visszaadása",
+    "cutTree": "{name} kivágása",
+    "pickUpCarcass": "{label} felvétele ({weight} kg)"
+  },
+  "blip": {
+    "buyer": "Vásárló",
+    "tree": "Fa",
+    "animal": "Állat",
+    "ore": "Érc",
+    "divePoint": "Merülési pont",
+    "returnBoat": "Hajó visszavitele",
+    "customerCar": "Ügyfél autó",
+    "delivery": "Kiszállítás",
+    "returnVehicle": "Jármű Visszaadása",
+    "returnToFinish": "Visszatérés a befejezéshez",
+    "nextTask": "Következő feladat",
+    "cargoDepot": "Rakománydepó",
+    "deliveryPoint": "Kiszállítási pont",
+    "returnToDepot": "Vissza a depóhoz"
+  },
+  "server": {
+    "cannotInviteJobActive": "Nem hívhatsz meg játékosokat, amíg egy munka aktív!",
+    "cannotInviteSoloJob": "Ez a munka csak egyszemélyes — nem hívhatsz meg játékosokat!",
+    "playerAlreadyInvited": "Ennek a játékosnak már van függőben lévő meghívója!",
+    "inviteCooldown": "Kérlek várj {seconds} másodpercet, mielőtt újra meghívod ezt a játékost.",
+    "identifierNotReady": "A játékosadataid még nincsenek betöltve, próbáld újra.",
+    "targetIdentifierNotReady": "A célpont játékos adatai még nincsenek betöltve, próbáld újra.",
+    "cannotKickJobActive": "Nem rúghatsz ki játékosokat egy aktív munka során!",
+    "lobbyClosed": "Lobby bezárva: A tulajdonos távozott",
+    "lobbyClosedDisconnect": "Lobby bezárva: A tulajdonos lecsatlakozott",
+    "jobCompletedLobbyDisbanded": "Munka teljesítve! Lobby feloszlatva.",
+    "qualityBonus": "{quality} minőség! x{multiplier} bónusz",
+    "poopPenalty": "Nem takarítottál a kutyád után! -{symbol}{amount}",
+    "poopCleanBonus": "Kaka feltakarítva! +{symbol}{amount}",
+    "lawnRaked": "Gyep felgereblyézve! +{symbol}{money} +{xp} XP",
+    "truckReturnFailed": "Túl sokáig tartott visszahozni a teherautót! Sikertelenként jelölve.",
+    "repairComplete": "{item} megjavítva! +{symbol}{money} +{xp} XP",
+    "referralLimitReached": "Elérted a napi ajánlási bónusz limitet",
+    "referralBonus": "Ajánlási bónusz! +{xp} XP a közös játékért!",
+    "lobbyNoLongerExists": "Ez a lobby már nem létezik.",
+    "lobbyPlayerReconnected": "{name} újra csatlakozott a lobbyhoz.",
+    "lobbyPlayerDisconnected": "{name} lecsatlakozott.",
+    "lobbyOwnerDisconnectedNewOwner": "A tulajdonos lecsatlakozott. {name} az új tulajdonos.",
+    "lobbyClosedNoReplacement": "Lobby bezárva: Nem található új tulajdonos.",
+    "jobEndedOwnerLeft": "Munka befejezve: A munka vezetője távozott.",
+    "toolEfficiencyUpgrade": "Szerszám hatékonyság fejlesztés",
+    "jobCancelled": "Munka megszakítva! Lobby feloszlatva.",
+    "jobCancelledByAdmin": "Az admin megszakította a munkádat.",
+    "noActiveJob": "Nincs aktív munkád.",
+    "jobCancelledAdmin": "'{jobId}' munka megszakítva {playerId} játékos számára.",
+    "cancelJobUsage": "Használat: /canceljob [playerId] - Saját vagy játékos aktív munkájának megszakítása",
+    "routeLevelInsufficient": "Nem éred el az útvonalhoz szükséges szintet. (Szint {current}/{required})",
+    "routeLevelInsufficientMember": "{name} nem éri el az útvonalhoz szükséges szintet. (Szint {current}/{required})",
+    "globalEventCompleted": "Globális esemény teljesítve: {title}!"
+  },
+  "shifts": {
+    "morning": "Reggeli műszak",
+    "afternoon": "Délutáni műszak",
+    "evening": "Esti műszak",
+    "night": "Éjszakai műszak"
+  },
+  "perks": {
+    "trunk_capacity": {
+      "name": "Súlyemelő",
+      "desc": "Növeli a jármű csomagtartó kapacitását."
+    },
+    "strong_muscles": {
+      "name": "Erős izmok",
+      "desc": "Növeli a mozgási sebességet nehéz teher cipelése közben."
+    },
+    "negotiator": {
+      "name": "Tárgyaló",
+      "desc": "Több pénzt keress a munka kifizetésekből."
+    },
+    "xp_boost": {
+      "name": "Gyors tanuló",
+      "desc": "Több XP-t kapsz minden munka tevékenységből."
+    },
+    "speed_demon": {
+      "name": "Sebesség démon",
+      "desc": "Javítja a munka jármű motor teljesítményét."
+    },
+    "store_discount": {
+      "name": "Ezüst nyelv",
+      "desc": "Műszakon kívüli bolt kedvezményeket kapsz. (Passzív)"
+    },
+    "breath_capacity": {
+      "name": "Mély lélegzet",
+      "desc": "Növeli a víz alatti lélegzetvisszatartást. (Passzív)"
+    },
+    "repair_speed": {
+      "name": "Szerelő mester",
+      "desc": "Gyorsabban javítsd a járműveket. (Passzív)"
+    },
+    "notEnoughPoints": "Nincs elég perk pontod!"
+  },
+  "serverError": {
+    "notInJob": "Nincs munkában",
+    "noLobby": "Nincs lobby",
+    "noSession": "Nincs munkamenet",
+    "configError": "Konfigurációs hiba",
+    "invalidIndex": "Érvénytelen index",
+    "levelRequired": "{level}. szint szükséges!",
+    "rateLimited": "Kérlek várj, mielőtt újra próbálkozol.",
+    "tooFarFromNpc": "Az NPC közelében kell lenned ehhez.",
+    "notEnoughMoney": "Nincs elég pénz!",
+    "invalidAmount": "Érvénytelen összeg!",
+    "invalidProduct": "Érvénytelen termék!",
+    "purchaseFailed": "Hiba történt a vásárlás során.",
+    "sellFailed": "Hiba történt az eladás során.",
+    "alreadyBroken": "Már feltörve",
+    "anotherPlayerBreaking": "Másik játékos töri ezt",
+    "alreadyPickedUp": "Már felvéve",
+    "alreadyUnlocked": "Már feloldva",
+    "invalidZone": "Érvénytelen zóna!",
+    "alreadyCollected": "Ezt a tárgyat már összegyűjtötték",
+    "someoneElseWorking": "Valaki más dolgozik ezen!",
+    "someoneElseDelivering": "Valaki más szállítja",
+    "invalidAction": "Érvénytelen művelet",
+    "invalidType": "Érvénytelen típus",
+    "alreadySold": "Már eladva!",
+    "noItemsToSell": "Nincs eladható tárgy!",
+    "alreadyCarrying": "Már viszel valamit",
+    "notCarrying": "Nem viszel semmit",
+    "trunkFull": "A csomagtartó tele van",
+    "trunkCapacityFull": "Csomagtartó kapacitás tele",
+    "noItemsInTrunk": "Nincsenek tárgyak a csomagtartóban",
+    "alreadyDelivered": "Már kiszállítva",
+    "invalidDeliveryPoint": "Érvénytelen szállítási pont",
+    "invalidLocation": "Érvénytelen helyszín",
+    "objectNotFound": "Tárgy nem található",
+    "vehicleAlreadySpawned": "Jármű már létrehozva",
+    "failedCreateVehicle": "Nem sikerült létrehozni a járművet",
+    "vehicleEntityNotFound": "Jármű entitás nem található",
+    "missingParameters": "Hiányzó paraméterek",
+    "invalidSpawnData": "Érvénytelen spawn adatok",
+    "jobConfigNotFound": "Munka konfiguráció nem található",
+    "noToolAssigned": "Nincs hozzád rendelt szerszám",
+    "notYourTool": "Ez nem a te szerszámod",
+    "toolAlreadyTaken": "A szerszám már elvéve",
+    "toolBeingTaken": "A szerszámot egy másik játékos veszi el",
+    "positionBeingTaken": "A pozíciót egy másik játékos foglalja el",
+    "noPositionAvailable": "Nincs elérhető pozíció",
+    "noActiveTruck": "Nincs aktív teherautó",
+    "truckNotLoading": "A teherautó nem rakodik",
+    "boxesFull": "Ládák megteltek",
+    "palletsFull": "Raklapok megteltek",
+    "invalidJob": "Érvénytelen munka",
+    "jobEnding": "Munka befejeződik",
+    "fishingNoFishFound": "Nincs hal!",
+    "fishingInvalidRod": "Érvénytelen bot!",
+    "fishingNoRod": "Nincs botod!",
+    "fishingFishCaughtSingle": "{label} fogva!",
+    "fishingFishCaughtMultiple": "{count}x {label} fogva!",
+    "fishingNoFishToSell": "Nincs eladható hal!",
+    "divingZoneAlreadySelected": "Zóna már kiválasztva!",
+    "deliveryNotInLoadingPhase": "Nincs rakodási fázisban",
+    "deliveryNotInDeliveryPhase": "Nincs szállítási fázisban",
+    "deliveryAlreadyCarryingBox": "Már viszel egy ládát",
+    "deliveryNotCarryingBox": "Nem viszel ládát",
+    "deliveryNoBoxesInTrunk": "Nincsenek ládák a csomagtartóban",
+    "deliveryCompleteFirst": "Előbb teljesítsd az összes szállítást!",
+    "deliverySpawnFailed": "Jármű spawn sikertelen, munka megszakítva.",
+    "huntingSomeoneElsePickingUp": "Valaki más veszi ezt fel!",
+    "huntingAnimalNotFound": "Állat nem található",
+    "huntingAnimalStillAlive": "Az állat még él",
+    "huntingAnimalAlreadyPickedUp": "Ezt az állatot már felvették",
+    "cleanupTruckFullDeliverFirst": "A teherautó megtelt! Előbb szállítsd le.",
+    "cleanupBinAlreadyEmpty": "A kuka már üres",
+    "cleanupNoBagsLeft": "Nincs több zsák",
+    "warehouseBoxAlreadyTaken": "A ládát már elvették",
+    "warehousePalletAlreadyTaken": "A raklapot már elvették",
+    "warehouseTruckNotReady": "A teherautó nincs készen",
+    "forkliftWrongMode": "Rossz mód",
+    "forkliftInvalidCrate": "Érvénytelen láda",
+    "forkliftCrateAlreadyTaken": "A ládát már elvették",
+    "forkliftConveyorBusy": "A szalag foglalt",
+    "forkliftInvalidSlot": "Érvénytelen hely",
+    "forkliftSlotOccupied": "A hely foglalt",
+    "forkliftNotCarrying": "Nem viszel semmit",
+    "forkliftInvalidCrateData": "Érvénytelen láda adat",
+    "forkliftNoCratesOnBelt": "Nincsenek ládák a szalagon",
+    "forkliftNeed3Crates": "3 láda szükséges a szalagon",
+    "forkliftEmptySlot": "Üres hely",
+    "forkliftAlreadyCarrying": "Már viszel valamit",
+    "forkliftInvalidTarget": "Érvénytelen cél",
+    "forkliftInvalidShelfTarget": "Érvénytelen polc cél",
+    "forkliftShelfOccupied": "A polc foglalt",
+    "newspaperLevelRequiredArea": "Ehhez a területhez {level}. szint szükséges!",
+    "newspaperDailyCompleted": "A napi küldetés már teljesítve! Visszaállítás: {hours}ó {minutes}p",
+    "adminSetLevelUsage": "Használat: /setjoblevel [playerID] [jobId] [level]",
+    "adminLevelRange": "A szintnek 1 és 10 között kell lennie",
+    "adminLevelSet": "{jobId} szint beállítva {level}-re {playerId} játékos számára",
+    "adminYourLevelSet": "A {jobId} szinted beállítva erre: {level}",
+    "adminXpManagerNotAvailable": "XPManager nem elérhető",
+    "adminGetLevelUsage": "Használat: /getjoblevel [playerID] [jobId]",
+    "adminPlayerJobLevel": "{playerId} játékos - {jobId}: Szint {level} (XP: {xp}/{maxXp})",
+    "adminToolSelected": "Kiválasztva: {tool}",
+    "adminToolUnlocked": "Szerszám feloldva!",
+    "alreadyHarvested": "Már betakarítva",
+    "noLootAvailable": "Nincs elérhető zsákmány",
+    "tooFar": "Túl messze vagy",
+    "tooFarFromDeliveryPoint": "Túl messze vagy a kiszállítási ponttól"
+  },
+  "jobs": {
+    "miner": {
+      "name": "Bányász",
+      "subtitle": "Föld alatti bányászati tevékenység",
+      "interactionText": "Bányász munka indítása",
+      "blipLabel": "Bányász munka",
+      "locationLabel": "Kőfejtő bánya",
+      "description": [
+        "Értékes érceket fejts ki a föld alatti lelőhelyekről",
+        "Használj bányászfelszerelést a sziklák feltöréséhez",
+        "Szállítsd az anyagokat a feldolgozó létesítménybe",
+        "Dolgozz csapatban bónusz jutalmakért"
+      ],
+      "items": {
+        "pickaxe": "Csákány",
+        "miningHelmet": "Bányász sisak",
+        "oreCart": "Érces kocsi"
+      },
+      "oreTypes": {
+        "coal": "Szén",
+        "iron": "Vas",
+        "gold": "Arany",
+        "emerald": "Smaragd",
+        "diamond": "Gyémánt"
+      },
+      "preview": {
+        "step1Title": "Munka indítása",
+        "step1Desc": [
+          "Menj oda az NPC-hez a kőfejtőben",
+          "Nyomj E-t a munka menü megnyitásához",
+          "Válaszd ki a területet és nyomj Start-ot"
+        ],
+        "step2Title": "Öltözz át",
+        "step2Desc": [
+          "Menj a közeli öltözőhelyiséghez",
+          "Lépj be, hogy átöltözz munkaruhába",
+          "Az eredeti ruháid visszakerülnek a munka végén"
+        ],
+        "step3Title": "Szerszámok gyűjtése",
+        "step3Desc": [
+          "Menj a munka jármű nyitott csomagtartójához",
+          "Vegyél fel egy csákányt — mindenki a sajátját",
+          "Max 4 szerszám elérhető kooperatív játékhoz"
+        ],
+        "step4Title": "Sziklák bányászása",
+        "step4Desc": [
+          "Menj a bányászterületre a csákányoddal",
+          "Célozz egy sziklára és csapj rá a feltöréshez",
+          "A sziklák ércdarabokra törnek"
+        ],
+        "step5Title": "Érc gyűjtése",
+        "step5Desc": [
+          "Vedd fel az ércdarabokat egy szikla feltörése után",
+          "Az ércet a karodban viszed",
+          "Vidd vissza a jármű csomagtartójához"
+        ],
+        "step6Title": "Jármű megrakása",
+        "step6Desc": [
+          "Vidd az ércet a jármű csomagtartójához",
+          "Az érc automatikusan betöltődik a teherautóba",
+          "Töltsd meg a csomagtartót, majd vezess a feldolgozó területre"
+        ],
+        "step7Title": "Feldolgozás a mérlegen",
+        "step7Desc": [
+          "Vezess a feldolgozási ponthoz",
+          "Tedd az ércet a mérlegre",
+          "Minden tárgyat lemérnek és fizetést kapsz"
+        ],
+        "step8Title": "NPC begyűjtés",
+        "step8Desc": [
+          "Feldolgozás után egy szállító NPC gyűjti be a tárgyakat",
+          "Az NPC odajön és felveszi a feldolgozott ércet",
+          "Pénzt és XP-t kapsz minden teljesített tételért"
+        ]
+      }
+    },
+    "lumberjack": {
+      "name": "Favágó",
+      "subtitle": "Erdei fakitermelési tevékenység",
+      "interactionText": "Favágó munka indítása",
+      "blipLabel": "Favágó munka",
+      "locationLabel": "Paleto erdő",
+      "description": [
+        "Vágj ki fákat a kijelölt fakitermelési területeken",
+        "Gyűjtsd össze és tedd a teherautóra a rönköket",
+        "Szállítsd a rönköket a fűrészmalomba feldolgozásra",
+        "Dolgozz csapatban bónusz jutalmakért"
+      ],
+      "items": {
+        "hatchet": "Fejsze",
+        "safetyVest": "Védőmellény",
+        "pickupTruck": "Pickup"
+      },
+      "treeTypes": {
+        "pine": "Fenyő",
+        "oak": "Tölgy",
+        "maple": "Juhar"
+      },
+      "drops": {
+        "wood": "Fa",
+        "pineResin": "Fenyőgyanta",
+        "woodShavings": "Faforgács",
+        "oakWood": "Tölgyfa",
+        "oakBark": "Tölgyfakéreg",
+        "mapleWood": "Juharfa",
+        "mapleSap": "Juhar nedv"
+      },
+      "preview": {
+        "step1Title": "Munka indítása",
+        "step1Desc": [
+          "Menj oda az NPC-hez az erdőnél",
+          "Nyomj E-t a munka menü megnyitásához",
+          "Válaszd ki a területet és nyomj Start-ot"
+        ],
+        "step2Title": "Öltözz át",
+        "step2Desc": [
+          "Menj a közeli öltözőhelyiséghez",
+          "Lépj be, hogy átöltözz munkaruhába",
+          "Az eredeti ruháid visszakerülnek a munka végén"
+        ],
+        "step3Title": "Szerszámok gyűjtése",
+        "step3Desc": [
+          "Menj a munka jármű nyitott csomagtartójához",
+          "Vegyél fel egy fejszét — mindenki a sajátját",
+          "Max 4 szerszám elérhető kooperatív játékhoz"
+        ],
+        "step4Title": "Fák kivágása",
+        "step4Desc": [
+          "Menj az erdőbe a fejszéddel",
+          "Célozz egy fára és csapj rá a vágáshoz",
+          "A fák rönköket ejtenek, ha teljesen kivágod őket"
+        ],
+        "step5Title": "Rönk gyűjtése",
+        "step5Desc": [
+          "Vedd fel a rönköt egy fa kivágása után",
+          "A rönköt a karodban viszed",
+          "Vidd vissza a jármű csomagtartójához"
+        ],
+        "step6Title": "Jármű megrakása",
+        "step6Desc": [
+          "Vidd a rönköt a jármű csomagtartójához",
+          "A rönk automatikusan betöltődik a teherautóba",
+          "Töltsd meg a csomagtartót, majd vezess a feldolgozó területre"
+        ],
+        "step7Title": "Feldolgozás a mérlegen",
+        "step7Desc": [
+          "Vezess a feldolgozási ponthoz",
+          "Tedd a rönköket a mérlegre",
+          "Minden tárgyat lemérnek és fizetést kapsz"
+        ],
+        "step8Title": "NPC begyűjtés",
+        "step8Desc": [
+          "Feldolgozás után egy szállító NPC gyűjti be a tárgyakat",
+          "Az NPC odajön és felveszi a feldolgozott rönköket",
+          "Pénzt és XP-t kapsz minden teljesített tételért"
+        ]
+      }
+    },
+    "scrapyard": {
+      "name": "Roncstelepi dolgozó",
+      "subtitle": "Fémhulladék újrahasznosítás",
+      "interactionText": "Roncstelepi munka indítása",
+      "blipLabel": "Roncstelep",
+      "locationLabel": "Roncstelep",
+      "description": [
+        "Szerelj szét ócska járműveket és ments meg értékes alkatrészeket",
+        "Használj feszítővasat a fém alkatrészek szétválasztásához",
+        "Tedd a gyűjtött roncsot a teherautóra",
+        "Mérd és add el a feldolgozó állomáson"
+      ],
+      "items": {
+        "crowbar": "Feszítővas",
+        "workGloves": "Munkakesztyű",
+        "scrapMetal": "Fémhulladék"
+      },
+      "preview": {
+        "step1Title": "Munka indítása",
+        "step1Desc": [
+          "Menj oda az NPC-hez a roncstelepen",
+          "Nyomj E-t a munka menü megnyitásához",
+          "Válaszd ki a területet és nyomj Start-ot"
+        ],
+        "step2Title": "Öltözz át",
+        "step2Desc": [
+          "Menj a közeli öltözőhelyiséghez",
+          "Lépj be, hogy átöltözz munkaruhába",
+          "Az eredeti ruháid visszakerülnek a munka végén"
+        ],
+        "step3Title": "Szerszámok gyűjtése",
+        "step3Desc": [
+          "Menj a munka jármű nyitott csomagtartójához",
+          "Vegyél fel egy feszítővasat — mindenki a sajátját",
+          "Max 4 szerszám elérhető kooperatív játékhoz"
+        ],
+        "step4Title": "Roncsok szétszerelése",
+        "step4Desc": [
+          "Menj a telepen lévő roncsautókhoz",
+          "Használd a feszítővasat az alkatrészek szétszereléséhez",
+          "A roncsok szétesnek gyűjthető darabokra"
+        ],
+        "step5Title": "Roncs gyűjtése",
+        "step5Desc": [
+          "Vedd fel a roncsdarabokat a szétszerelés után",
+          "A darabokat viszed a járműhöz",
+          "Vidd vissza a jármű csomagtartójához"
+        ],
+        "step6Title": "Jármű megrakása",
+        "step6Desc": [
+          "Vidd a roncsot a jármű csomagtartójához",
+          "A roncs automatikusan betöltődik a teherautóba",
+          "Töltsd meg a csomagtartót, majd vezess a feldolgozó területre"
+        ],
+        "step7Title": "Feldolgozás a mérlegen",
+        "step7Desc": [
+          "Vezess a feldolgozási ponthoz",
+          "Tedd a roncsot a mérlegre",
+          "Minden tárgyat lemérnek és fizetést kapsz"
+        ],
+        "step8Title": "NPC begyűjtés",
+        "step8Desc": [
+          "Feldolgozás után egy szállító NPC gyűjti be a tárgyakat",
+          "Az NPC odajön és felveszi a feldolgozott roncsot",
+          "Pénzt és XP-t kapsz minden teljesített tételért"
+        ]
+      }
+    },
+    "hunting": {
+      "name": "Vadász",
+      "subtitle": "Professzionális vadászat",
+      "interactionText": "Vadász munka indítása",
+      "blipLabel": "Vadászat",
+      "locationLabel": "Vadászat",
+      "description": [
+        "Vedd a fegyvereid és menj vadászni",
+        "Ejts szarvast, vaddisznót és nyulat",
+        "Töltsd a vadászott állatokat a járműbe",
+        "Vidd őket a mérlegre és add el"
+      ],
+      "items": {
+        "huntingRifle": "Vadászpuska",
+        "binoculars": "Távcső",
+        "huntingBag": "Vadásztáska"
+      },
+      "weapons": {
+        "tier1": "Vadászpuska",
+        "tier2": "Forgó-zárú puska",
+        "tier3": "Nehéz mesterlövész"
+      },
+      "animals": {
+        "wildBoar": "Vaddisznó",
+        "rabbit": "Nyúl",
+        "coyote": "Prérifarkas",
+        "mountainLion": "Puma",
+        "hawk": "Sólyom",
+        "crow": "Varjú"
+      },
+      "areas": {
+        "forest": "Paleto erdő",
+        "desert": "Sandy Shores sivatag",
+        "swamp": "Mocsár"
+      },
+      "blips": {
+        "forestArea": "Erdő terület",
+        "desertArea": "Sivatag terület",
+        "swampArea": "Mocsár terület"
+      },
+      "preview": {
+        "step1Title": "Munka indítása",
+        "step1Desc": [
+          "Menj oda az NPC-hez a vadászházhoz",
+          "Nyomj E-t a munka menü megnyitásához",
+          "Válaszd ki a területet és nyomj Start-ot"
+        ],
+        "step2Title": "Öltözz át",
+        "step2Desc": [
+          "Menj a közeli öltözőhelyiséghez",
+          "Lépj be, hogy átöltözz vadászruhába",
+          "Az eredeti ruháid visszakerülnek a munka végén"
+        ],
+        "step3Title": "Szerezd meg a járműved",
+        "step3Desc": [
+          "Menj a közeli vadász teherautóhoz",
+          "Automatikusan kapsz fegyvert",
+          "Vezess a vadászterületre"
+        ],
+        "step4Title": "Állatok vadászása",
+        "step4Desc": [
+          "Fedezd fel a vadászterületet és találj állatokat",
+          "Használd a puskádat vaddisznó, nyúl és egyéb vadászathoz",
+          "Minden állatnak különböző súlya és értéke van"
+        ],
+        "step5Title": "Állat cipelése",
+        "step5Desc": [
+          "Menj oda egy elejtett állathoz és vedd fel",
+          "A válladon viszed vissza a teherautóhoz",
+          "Minden állatnak különböző súlya van"
+        ],
+        "step6Title": "Jármű megrakása",
+        "step6Desc": [
+          "Vidd a zsákmányt a teherautóhoz",
+          "Töltsd az állatokat a teherautó platójára",
+          "Töltsd meg a teherautót, majd vezess a feldolgozáshoz"
+        ],
+        "step7Title": "Feldolgozás és eladás",
+        "step7Desc": [
+          "Vezess a feldolgozó állomáshoz",
+          "Tedd a zsákmányt a mérlegre",
+          "Egy szállító NPC összegyűjti a feldolgozott árut"
+        ]
+      }
+    },
+    "farmer": {
+      "name": "Farmer",
+      "subtitle": "Gyümölcs és zöldség betakarítás",
+      "interactionText": "Farm munka indítása",
+      "blipLabel": "Zöldségfarm",
+      "locationLabel": "Grapeseed farm",
+      "description": [
+        "Vegyél fel egy ládát a járműből",
+        "Arass zöldségeket a növényekről",
+        "Töltsd meg a ládád és tedd a teherautóra",
+        "Szállítsd a tele ládákat a feldolgozó állomáshoz"
+      ],
+      "items": {
+        "harvestCrate": "Arató láda",
+        "freshProduce": "Friss termény",
+        "deliveryTruck": "Szállító teherautó"
+      },
+      "produceTypes": {
+        "lettuce": "Saláta",
+        "pumpkin": "Sütőtök",
+        "melon": "Sárgadinnye",
+        "watermelon": "Görögdinnye"
+      },
+      "preview": {
+        "step1Title": "Munka indítása",
+        "step1Desc": [
+          "Menj oda az NPC-hez a farmon",
+          "Nyomj E-t a munka menü megnyitásához",
+          "Válaszd ki a területet és nyomj Start-ot"
+        ],
+        "step2Title": "Öltözz át",
+        "step2Desc": [
+          "Menj a közeli öltözőhelyiséghez",
+          "Lépj be, hogy átöltözz munkaruhába",
+          "Az eredeti ruháid visszakerülnek a munka végén"
+        ],
+        "step3Title": "Szerezd meg a járműved",
+        "step3Desc": [
+          "Menj a közeli munka járműhöz",
+          "Vegyél egy üres ládát a teherautóból",
+          "Vezess a mezőre az arátás megkezdéséhez"
+        ],
+        "step4Title": "Növények aratása",
+        "step4Desc": [
+          "Menj egy növényhez és interaktálj az aratáshoz",
+          "Minden növény friss terményt ad",
+          "Töltsd meg a ládád, mielőtt visszamész"
+        ],
+        "step5Title": "Termény cipelése",
+        "step5Desc": [
+          "Vedd fel a tele ládát",
+          "Vidd vissza a járműhöz",
+          "Tedd a teherautó platójára"
+        ],
+        "step6Title": "Jármű megrakása",
+        "step6Desc": [
+          "Vidd a tele ládát a teherautóhoz",
+          "Tedd a jármű platójára",
+          "Töltsd meg a teherautót, majd vezess a feldolgozó területre"
+        ],
+        "step7Title": "Feldolgozás és eladás",
+        "step7Desc": [
+          "Vezess a feldolgozó állomáshoz",
+          "Tedd a ládákat a mérlegre",
+          "Egy szállító NPC összegyűjti a feldolgozott árut"
+        ]
+      }
+    },
+    "fruitpicker": {
+      "name": "Gyümölcsszedő",
+      "subtitle": "Gyümölcs betakarítás",
+      "interactionText": "Gyümölcsszedés indítása",
+      "blipLabel": "Gyümölcsös",
+      "locationLabel": "Gyümölcsös",
+      "description": [
+        "Vegyél fel egy ládát a járműből",
+        "Menj a gyümölcsfákhoz és szedj narancsot és almát",
+        "Töltsd meg a ládád és tedd a teherautóra",
+        "Szállítsd a tele ládákat a feldolgozó állomáshoz"
+      ],
+      "items": {
+        "harvestCrate": "Arató láda",
+        "freshOranges": "Friss narancsok",
+        "deliveryTruck": "Szállító teherautó"
+      },
+      "produceTypes": {
+        "orange": "Narancs",
+        "apple": "Alma"
+      },
+      "qualityTiers": {
+        "common": "Átlagos",
+        "fresh": "Friss",
+        "premium": "Prémium",
+        "organic": "Bio"
+      },
+      "preview": {
+        "step1Title": "Munka indítása",
+        "step1Desc": [
+          "Menj oda az NPC-hez a narancsligetnél",
+          "Nyomj E-t a munka menü megnyitásához",
+          "Válaszd ki a területet és nyomj Start-ot"
+        ],
+        "step2Title": "Öltözz át",
+        "step2Desc": [
+          "Menj a közeli öltözőhelyiséghez",
+          "Lépj be, hogy átöltözz munkaruhába",
+          "Az eredeti ruháid visszakerülnek a munka végén"
+        ],
+        "step3Title": "Szerezd meg a járműved",
+        "step3Desc": [
+          "Menj a közeli munka járműhöz",
+          "Vegyél egy üres ládát a teherautóból",
+          "Vezess a narancsfákhoz a szedés megkezdéséhez"
+        ],
+        "step4Title": "Narancs szedése",
+        "step4Desc": [
+          "Menj egy narancsfához",
+          "Interaktálj, hogy felnyúlj és narancsot szedj",
+          "Töltsd meg a ládád, mielőtt visszamész"
+        ],
+        "step5Title": "Láda cipelése",
+        "step5Desc": [
+          "Vedd fel a tele ládát",
+          "Vidd vissza a járműhöz",
+          "Tedd a teherautó platójára"
+        ],
+        "step6Title": "Jármű megrakása",
+        "step6Desc": [
+          "Vidd a tele ládát a teherautóhoz",
+          "Tedd a jármű platójára",
+          "Töltsd meg a teherautót, majd vezess a feldolgozáshoz"
+        ],
+        "step7Title": "Feldolgozás és eladás",
+        "step7Desc": [
+          "Vezess a feldolgozó állomáshoz",
+          "Tedd a ládákat a mérlegre",
+          "Egy szállító NPC összegyűjti a feldolgozott árut"
+        ]
+      }
+    },
+    "cleaner": {
+      "name": "Utcaseprő",
+      "subtitle": "Városi takarító szolgálat",
+      "interactionText": "Takarítás indítása",
+      "blipLabel": "Városi takarítás",
+      "locationLabel": "Városi takarító depó",
+      "description": [
+        "Vedd el a felmosót a jármű csomagtartójából",
+        "Menj a térképen megjelölt piszkos helyekhez",
+        "Tisztítsd meg a foltokat a felmosóval",
+        "Térj vissza a fizetésért, ha végeztél"
+      ],
+      "items": {
+        "mop": "Felmosó",
+        "dirtStain": "Piszok folt",
+        "serviceVan": "Szerviz furgon"
+      },
+      "areas": {
+        "downtown": "Belváros"
+      },
+      "preview": {
+        "step1Title": "Munka indítása",
+        "step1Desc": [
+          "Menj oda az NPC-hez a takarító depóhoz",
+          "Nyomj E-t a munka menü megnyitásához",
+          "Válaszd ki az útvonalat és nyomj Start-ot"
+        ],
+        "step2Title": "Öltözz át",
+        "step2Desc": [
+          "Menj a közeli öltözőhelyiséghez",
+          "Lépj be, hogy átöltözz munkaruhába",
+          "Az eredeti ruháid visszakerülnek a munka végén"
+        ],
+        "step3Title": "Szerszámok gyűjtése",
+        "step3Desc": [
+          "Menj a munka jármű csomagtartójához",
+          "Vegyél fel egy felmosót — mindenki a sajátját",
+          "Max 4 szerszám elérhető kooperatív játékhoz"
+        ],
+        "step4Title": "Menj a munkaterületre",
+        "step4Desc": [
+          "Szállj be a járműbe és kövesd a GPS-t",
+          "Vezess a megjelölt folt helyszínekhez",
+          "Minden útvonalon több piszkos folt van"
+        ],
+        "step5Title": "Foltok takarítása",
+        "step5Desc": [
+          "Menj egy piszkos folthoz a felmosóddal",
+          "Kattints a megjelenő célokra a folt súrolásához",
+          "Minden folthoz több találat szükséges a teljes tisztításhoz"
+        ],
+        "step6Title": "Munka befejezése",
+        "step6Desc": [
+          "Az összes folt takarítása után térj vissza a depóba",
+          "Beszélj az NPC-vel a fizetés felvételéhez",
+          "Bónusz pénzt kapsz a teljes útvonal befejezéséért"
+        ]
+      }
+    },
+    "powerwash": {
+      "name": "Nagynyomású mosó",
+      "subtitle": "Nyomásmosó szolgálat",
+      "interactionText": "Nagynyomású mosás indítása",
+      "blipLabel": "Nagynyomású mosás",
+      "locationLabel": "Nagynyomású mosó depó",
+      "description": [
+        "Vedd el a nyomósugár pálcát a járműből",
+        "Menj a térképen megjelölt piszkos helyekhez",
+        "Tartsd az LMB-t a felületek lemosásához",
+        "Térj vissza a fizetésért, ha végeztél"
+      ],
+      "items": {
+        "pressureWand": "Nyomósugár pálca",
+        "dirtyStain": "Piszkos folt",
+        "washVan": "Mosó furgon"
+      },
+      "preview": {
+        "step1Title": "Munka indítása",
+        "step1Desc": [
+          "Menj oda az NPC-hez a mosó depóhoz",
+          "Nyomj E-t a munka menü megnyitásához",
+          "Válaszd ki az útvonalat és nyomj Start-ot"
+        ],
+        "step2Title": "Öltözz át",
+        "step2Desc": [
+          "Menj a közeli öltözőhelyiséghez",
+          "Lépj be, hogy átöltözz munkaruhába",
+          "Az eredeti ruháid visszakerülnek a munka végén"
+        ],
+        "step3Title": "Szerszámok gyűjtése",
+        "step3Desc": [
+          "Menj a munka járműhöz",
+          "Vegyél fel egy nyomósugár pálcát — mindenki a sajátját",
+          "Max 4 szerszám elérhető kooperatív játékhoz"
+        ],
+        "step4Title": "Menj a munkaterületre",
+        "step4Desc": [
+          "Szállj be a járműbe és kövesd a GPS-t",
+          "Vezess a megjelölt folt helyszínekhez",
+          "Minden útvonalon több piszkos folt van"
+        ],
+        "step5Title": "Foltok permetezése",
+        "step5Desc": [
+          "Célozd a nyomósugár pálcát a piszkos felületre",
+          "Tartsd a bal egérgombot a vízpermethez",
+          "Permetezz, amíg a folt teljesen tiszta nem lesz"
+        ],
+        "step6Title": "Munka befejezése",
+        "step6Desc": [
+          "Az összes folt takarítása után térj vissza a depóba",
+          "Lépj a jelölőbe a fizetés felvételéhez",
+          "Bónusz pénzt kapsz a teljes útvonal befejezéséért"
+        ]
+      }
+    },
+    "windowscleaner": {
+      "name": "Ablaktisztító",
+      "subtitle": "Városi ablaktisztító szolgálat",
+      "interactionText": "Ablaktisztítás indítása",
+      "blipLabel": "Ablaktisztítás",
+      "locationLabel": "Ablaktisztító depó",
+      "description": [
+        "Vedd el a szivacsot a járműből",
+        "Menj a térképen megjelölt ablakokhoz",
+        "Tisztítsd meg a piszkos helyeket az ablakokon",
+        "Térj vissza a fizetésért, ha végeztél"
+      ],
+      "items": {
+        "sponge": "Szivacs",
+        "windowDirt": "Ablak piszok",
+        "cleaningVan": "Takarító furgon"
+      },
+      "preview": {
+        "step1Title": "Munka indítása",
+        "step1Desc": [
+          "Menj oda az NPC-hez a takarító depóhoz",
+          "Nyomj E-t a munka menü megnyitásához",
+          "Válaszd ki az útvonalat és nyomj Start-ot"
+        ],
+        "step2Title": "Öltözz át",
+        "step2Desc": [
+          "Menj a közeli öltözőhelyiséghez",
+          "Lépj be, hogy átöltözz munkaruhába",
+          "Az eredeti ruháid visszakerülnek a munka végén"
+        ],
+        "step3Title": "Szerszámok gyűjtése",
+        "step3Desc": [
+          "Menj a munka járműhöz",
+          "Vegyél fel egy szivacsot — mindenki a sajátját",
+          "Max 4 szerszám elérhető kooperatív játékhoz"
+        ],
+        "step4Title": "Menj a munkaterületre",
+        "step4Desc": [
+          "Szállj be a járműbe és kövesd a GPS-t",
+          "Vezess a megjelölt ablak helyszínekhez",
+          "Minden útvonalon több piszkos ablak van"
+        ],
+        "step5Title": "Ablakok tisztítása",
+        "step5Desc": [
+          "Menj egy piszkos ablakhoz a szivacsoddal",
+          "Kattints a megjelenő célokra az ablak súrolásához",
+          "Minden ablakhoz több találat szükséges a teljes tisztításhoz"
+        ],
+        "step6Title": "Munka befejezése",
+        "step6Desc": [
+          "Az összes ablak takarítása után térj vissza a depóba",
+          "Beszélj az NPC-vel a fizetés felvételéhez",
+          "Bónusz pénzt kapsz a teljes útvonal befejezéséért"
+        ]
+      }
+    },
+    "cardetailer": {
+      "name": "Autódetailer",
+      "subtitle": "Mobil autódetailing szolgálat",
+      "interactionText": "Autódetailing indítása",
+      "blipLabel": "Autódetailing",
+      "locationLabel": "Autódetailing depó",
+      "description": [
+        "Vedd el a nyomósugár pálcát a járműből",
+        "Vezess a térképen megjelölt ügyfél autókhoz",
+        "Mosd le minden autót a nyomósugár pálcával",
+        "Políroz és viaszolj bónusz fizetségért"
+      ],
+      "items": {
+        "pressureWand": "Nyomósugár pálca",
+        "waxCloth": "Viaszkendő",
+        "serviceVan": "Szerviz furgon"
+      },
+      "preview": {
+        "step1Title": "Munka indítása",
+        "step1Desc": [
+          "Menj oda az NPC-hez a detailing depóhoz",
+          "Nyomj E-t a munka menü megnyitásához",
+          "Fogadd el a munkát a kezdéshez"
+        ],
+        "step2Title": "Öltözz át",
+        "step2Desc": [
+          "Menj a közeli öltözőhelyiséghez",
+          "Lépj be, hogy átöltözz munkaruhába",
+          "Az eredeti ruháid visszakerülnek a munka végén"
+        ],
+        "step3Title": "Szerszámok gyűjtése",
+        "step3Desc": [
+          "Menj a munka járműhöz",
+          "Vedd el a nyomósugár pálcát a hátuljáról",
+          "Egy tömlő köti össze a pálcát a víztartállyal"
+        ],
+        "step4Title": "Vezess az ügyfél autókhoz",
+        "step4Desc": [
+          "Szállj be a járműbe és kövesd a GPS-t",
+          "Vezess a megjelölt ügyfél autó helyszínekhez",
+          "Parkolj közel — a tömlő hatótávolsága korlátozott"
+        ],
+        "step5Title": "Autó mosása",
+        "step5Desc": [
+          "Célozd a nyomósugár pálcát a piszkos helyekre",
+          "Tartsd a bal egérgombot a vízpermethez",
+          "Az autó tisztább lesz, ahogy mossa minden helyet"
+        ],
+        "step6Title": "Munka befejezése",
+        "step6Desc": [
+          "Az összes autó detailing-je után térj vissza a depóba",
+          "Add vissza a szerszámaidat és fejezd be a munkát",
+          "Magasabb szinteken feloldódik a viaszpolírozás bónusz fizetségért"
+        ]
+      }
+    },
+    "newspaper": {
+      "name": "Újságkihordás",
+      "subtitle": "Újságkihordó szolgálat",
+      "interactionText": "Újságkihordás indítása",
+      "blipLabel": "Újságkihordás",
+      "locationLabel": "Újságkihordás",
+      "description": [
+        "Vedd fel a kihordó biciklit",
+        "Dobj újságokat a megjelölt szállítási pontokra",
+        "Több szállítás, több fizetség",
+        "Dolgozz csapatban a gyorsabb befejezésért"
+      ],
+      "items": {
+        "newspaperBundle": "Újságcsomag",
+        "deliveryList": "Szállítási lista",
+        "bikeKey": "Bicikli kulcs"
+      },
+      "routes": {
+        "restoran": "Éttermi útvonal",
+        "easy": "Könnyű útvonal",
+        "headline": "Címlap körút",
+        "express": "Expressz útvonal",
+        "morning": "Reggeli közlöny",
+        "editorial": "Szerkesztőségi kör"
+      },
+      "blips": {
+        "newspaperDelivery": "Újságkihordás",
+        "returnBike": "Bicikli visszaadása"
+      }
+    },
+    "cleanup": {
+      "name": "Szemétgyűjtő",
+      "subtitle": "Városi köztisztasági szolgálat",
+      "interactionText": "Szemétgyűjtés indítása",
+      "blipLabel": "Szemétgyűjtés",
+      "locationLabel": "Szemétgyűjtő központ",
+      "description": [
+        "Gyűjts szemetet a város kukáiból",
+        "Tölts szemeteszsákokat a teherautóra",
+        "Szállítsd le a teherautót, ha megtelt",
+        "Dolgozz csapattal és keress többet"
+      ],
+      "items": {
+        "cleanupBag": "Szemeteszsák",
+        "gloves": "Kesztyű",
+        "cleanupTruck": "Szemétszállító teherautó"
+      },
+      "areas": {
+        "downtown": "Belváros",
+        "industrial": "Ipari terület",
+        "residential": "Lakóövezet"
+      },
+      "blips": {
+        "cleanupDelivery": "Szemét leadás"
+      }
+    },
+    "trucker": {
+      "name": "Kamionsofőr",
+      "subtitle": "Távolsági fuvarozás",
+      "interactionText": "Kamionos munka indítása",
+      "blipLabel": "Teherautó telep",
+      "locationLabel": "Teherautó depó",
+      "description": [
+        "Vedd fel a pótkocsikat és szállíts rakományt",
+        "Pénzt keress a megtett távolság alapján",
+        "Esély illegális, magasan fizető útvonalakra",
+        "Dolgozz csapatban bónusz jutalmakért"
+      ],
+      "items": {
+        "truck": "Teherautó",
+        "trailer": "Pótkocsi",
+        "cargo": "Rakomány"
+      },
+      "blips": {
+        "pickupTrailer": "Pótkocsi felvétele",
+        "deliverCargo": "Rakomány szállítása",
+        "illegalDelivery": "Illegális szállítás",
+        "returnTruck": "Teherautó visszaadása"
+      }
+    },
+    "taxi": {
+      "name": "Taxisofőr",
+      "subtitle": "Városi személyszállítás",
+      "interactionText": "Taxi munka indítása",
+      "blipLabel": "Taxi depó",
+      "locationLabel": "Taxi depó",
+      "description": [
+        "Vegyél fel utasokat a városban",
+        "Szállítsd őket a célpontjukra",
+        "Keress pénzt a távolság alapján",
+        "Bónusz gyors szállításért"
+      ],
+      "items": {
+        "taxi": "Taxi",
+        "passenger": "Utas"
+      },
+      "blips": {
+        "pickupPassenger": "Utas felvétele",
+        "dropOff": "Kitevés",
+        "returnTaxi": "Taxi visszaadása"
+      }
+    },
+    "dogwalking": {
+      "name": "Kutyasétáltató",
+      "subtitle": "Kisállat gondozás",
+      "interactionText": "Kutyasétáltatás indítása",
+      "blipLabel": "Kutyasétáltatás",
+      "locationLabel": "Kisállat szolgálat",
+      "description": [
+        "Sétáltass kutyákat gazdag ügyfeleknek",
+        "Vedd fel a kutyákat az ügyfelek otthonából",
+        "Sétálj a szükséges távolságot a kutyáddal",
+        "Takaríts a kutyád után bónusz fizetségért",
+        "Dolgozz barátokkal kooperatív bónuszért!"
+      ],
+      "items": {
+        "leash": "Póráz",
+        "poopBag": "Kakazacskó",
+        "treats": "Jutalomfalatok"
+      },
+      "blips": {
+        "clientHome": "Ügyfél otthona"
+      },
+      "preview": {
+        "step1Title": "Munka indítása",
+        "step1Desc": [
+          "Keresd meg a kutyasétáltató NPC-t a kisállatbolt közelében",
+          "Nyomj E-t a munka menü megnyitásához",
+          "Válaszd ki a területet és nyomj Start-ot"
+        ],
+        "step2Title": "Öltözz át",
+        "step2Desc": [
+          "Menj az öltözőhöz a kisállatbolt közelében",
+          "Lépj be, hogy átöltözz munkaruhába",
+          "Az eredeti ruháid visszakerülnek a munka végén"
+        ],
+        "step3Title": "Kutya felvétele",
+        "step3Desc": [
+          "Vezess az ügyfél otthonához Vinewood Hillsben",
+          "Találkozz a kutyatulajdonossal kint",
+          "Nyomj E-t a kutya felvételéhez a pórázra"
+        ],
+        "step4Title": "Kutya sétáltatása",
+        "step4Desc": [
+          "Sétálj a kutyáddal pórázon",
+          "Teljesítsd a HUD-on látható távolságot",
+          "Takaríts a kutyád után bónusz fizetségért"
+        ],
+        "step5Title": "Kutya visszaadása",
+        "step5Desc": [
+          "Sétálj vissza a kutyát az ügyfél otthonához",
+          "A kutya automatikusan visszatér a gazdájához",
+          "Fizetést kapsz a séta hossza és a takarítások alapján"
+        ]
+      }
+    },
+    "powerlines": {
+      "name": "Villanyvezetékek",
+      "subtitle": "Városi energiaszolgáltatás és kommunikáció",
+      "interactionText": "Villanyvezetékes munka indítása",
+      "blipLabel": "Villanyvezetékek munka",
+      "locationLabel": "Áramszolgáltató",
+      "description": [
+        "Javíts elektromos paneleket otthonokban",
+        "Javítsd a telefonoszlop vezetékeket kosaras teherautóval",
+        "Dolgozz csapatban bónusz jutalmakért",
+        "Használj minijátékokat a javítások befejezéséhez"
+      ],
+      "items": {
+        "multimeter": "Multiméter",
+        "wireKit": "Vezetékkészlet",
+        "safetyGear": "Védőfelszerelés"
+      },
+      "blips": {
+        "electricalPanel": "Elektromos panel",
+        "phonePole": "Telefonoszlop",
+        "bucketTruck": "Kosaras teherautó"
+      },
+      "routes": {
+        "rockfordHills": "Rockford Hills",
+        "davis": "Davis",
+        "vespucci": "Vespucci",
+        "strawberry": "Strawberry",
+        "centralLS": "Central LS",
+        "southLS": "South LS"
+      }
+    },
+    "delivery": {
+      "name": "Csomagszállítás",
+      "subtitle": "Csomagszállító szolgálat",
+      "interactionText": "Csomagszállítás indítása",
+      "blipLabel": "Csomagszállítás",
+      "locationLabel": "Csomagszállítás",
+      "description": [
+        "Vedd fel a furgont és tölts be ládákat a depóból",
+        "Szállítsd a ládákat a kijelölt ügyfeleknek",
+        "Minél több szállítást végzel, annál többet keresel",
+        "Dolgozz csapatban a gyorsabb befejezésért"
+      ],
+      "items": {
+        "cargoBox": "Rakomány láda",
+        "deliveryList": "Szállítási lista",
+        "vanKey": "Furgon kulcs"
+      },
+      "blips": {
+        "deliveryPoint": "Szállítási pont"
+      },
+      "preview": {
+        "step1Title": "Munka indítása",
+        "step1Desc": [
+          "Menj oda az NPC-hez a szállítási depóhoz",
+          "Nyomj E-t a munka menü megnyitásához",
+          "Válaszd ki a területet és nyomj Start-ot"
+        ],
+        "step2Title": "Öltözz át",
+        "step2Desc": [
+          "Menj a közeli öltözőhelyiséghez",
+          "Lépj be, hogy átöltözz munkaruhába",
+          "Az eredeti ruháid visszakerülnek a munka végén"
+        ],
+        "step3Title": "Szerezd meg a járműved",
+        "step3Desc": [
+          "Menj a leparkolt szállító furgonhoz",
+          "A hátsó ajtók nyitva vannak a rakodáshoz",
+          "Minden lobby saját járművet kap"
+        ],
+        "step4Title": "Csomagok felvétele",
+        "step4Desc": [
+          "Menj a depó dolgozóhoz a raktár közelében",
+          "Nyomj E-t egy rakomány láda felvételéhez",
+          "Egyszerre egy ládát vihetsz"
+        ],
+        "step5Title": "Furgon megrakása",
+        "step5Desc": [
+          "Vidd a csomagokat a furgon nyitott hátsó ajtóihoz",
+          "A ládák automatikusan felhalmozódnak belül",
+          "Töltsd tele a furgont, mielőtt elindulsz"
+        ],
+        "step6Title": "Csomagok szállítása",
+        "step6Desc": [
+          "Vezess a megjelölt szállítási helyszínhez",
+          "Vedd ki a ládát a csomagtartóból és vidd",
+          "Menj az ügyfélhez és nyomj E-t a szállításhoz"
+        ],
+        "step7Title": "Visszatérés a depóba",
+        "step7Desc": [
+          "Minden szállítás után vezess vissza a depóba",
+          "Parkold le a furgont a megjelölt helyen",
+          "A kereseted automatikusan kifizetésre kerül"
+        ]
+      }
+    },
+    "warehouse": {
+      "name": "Raktáros",
+      "subtitle": "Fuvarozás és logisztika",
+      "interactionText": "Raktáros munka indítása",
+      "blipLabel": "Raktár",
+      "locationLabel": "Raktár",
+      "description": [
+        "Rakj ládákat és raklapokat szállító teherautókra",
+        "Használj targoncát nehéz raklapokhoz",
+        "Kézzel vidd a kisebb ládákat a teherautóhoz",
+        "Teljesíts teherautó rendeléseket a fizetésért"
+      ],
+      "items": {
+        "forklift": "Targonca",
+        "boxes": "Ládák",
+        "pallets": "Raklapok"
+      },
+      "blips": {
+        "truck": "Teherautó",
+        "deliveryPoint": "Szállítási pont",
+        "forklift": "Targonca"
+      },
+      "deliveryRoutes": {
+        "vinewood": "Vinewood piac",
+        "davis": "Davis szupermarket",
+        "strawberry": "Strawberry piac"
+      }
+    },
+    "landscaping": {
+      "name": "Kertészet",
+      "subtitle": "Kert karbantartás",
+      "interactionText": "Kertészet indítása",
+      "blipLabel": "Kertészet munka",
+      "locationLabel": "Városi karbantartás",
+      "description": [
+        "Nyírj túlnőtt bokrokat sövénynyíróval",
+        "Áss ki gyomokat ásóval",
+        "Vedd fel a szerszámokat a munka teherautóból",
+        "Dolgozz csapatban bónusz jutalmakért"
+      ],
+      "items": {
+        "trimmer": "Sövénynyíró",
+        "shovel": "Ásó",
+        "workTruck": "Munka teherautó"
+      },
+      "routes": {
+        "vespucci": "Vespucci",
+        "pillboxHill": "Pillbox Hill",
+        "littleSeoul": "Little Seoul",
+        "burton": "Burton",
+        "vinewoodHills": "Vinewood Hills"
+      }
+    },
+    "fishing": {
+      "name": "Horgászás",
+      "subtitle": "Professzionális horgászás",
+      "interactionText": "Horgászás indítása",
+      "blipLabel": "Horgászás",
+      "locationLabel": "Horgászás",
+      "description": [
+        "Szerezz botot és csalit",
+        "Vesd be a horgot víz közelében",
+        "Fogj halat a minijátékkal",
+        "A fogott halak az inventarba kerülnek",
+        "Add el a halvevőnek"
+      ],
+      "items": {
+        "fishingRod": "Horgászbot",
+        "bait": "Csali"
+      },
+      "rods": {
+        "standartrod": "Standard bot",
+        "carbonrod": "Karbon bot",
+        "prorod": "Profi bot"
+      },
+      "baits": {
+        "basicbait": "Kukac csali",
+        "spoonlure": "Kanál csali",
+        "threesided": "Három oldalú csali",
+        "tailfish": "Halfarok csali",
+        "doublehook": "Kettős horog csali",
+        "triplehook": "Hármas horog csali"
+      },
+      "zones": {
+        "southCoast": "Déli part",
+        "westCoast": "Nyugati part",
+        "deepSea": "Mélytenger"
+      },
+      "fishTypes": {
+        "anchovy": "Szardella",
+        "trout": "Pisztráng",
+        "mackerel": "Makréla",
+        "salmon": "Lazac",
+        "snapper": "Snapper",
+        "tuna": "Tonhal",
+        "grouper": "Fűrészes sügér",
+        "swordfish": "Kardhal",
+        "shark": "Cápa"
+      },
+      "blips": {
+        "fishingShop": "Horgászbolt",
+        "fishBuyer": "Halvevő"
+      }
+    },
+    "diving": {
+      "name": "Búvárkodás",
+      "subtitle": "Professzionális búvárkodás",
+      "interactionText": "Búvár munka indítása",
+      "blipLabel": "Búvárkodás",
+      "locationLabel": "Búvárkodás",
+      "description": [
+        "Szállj a csónakra és indulj a merülőzónába",
+        "Amikor a csónak megáll, engedd le a horgonyt és menj a vízbe",
+        "Merülj le és teljesítsd a feladatokat",
+        "Térj vissza a csónakhoz és húzd fel a horgonyt",
+        "Vezess vissza a kikötőbe és add el a tárgyaidat"
+      ],
+      "items": {
+        "scubaTank": "Oxigénpalack",
+        "divingSuit": "Búvárruha",
+        "flippers": "Uszonyok"
+      },
+      "zones": {
+        "shallowBay": "Sekély öböl",
+        "openSea": "Nyílt tenger",
+        "shipwreck": "Hajóroncs",
+        "deepTrench": "Mélyárok"
+      },
+      "sellItems": {
+        "dendrogyraCoral": "Dendrogyra korall",
+        "antipathariaCoral": "Antipatharia korall"
+      },
+      "taskTypes": {
+        "coral": "Korall",
+        "trash": "Szemét"
+      },
+      "gear": {
+        "basic": "Alap búvárfelszerelés",
+        "standard": "Standard búvárfelszerelés",
+        "pro": "Profi búvárfelszerelés"
+      },
+      "blips": {
+        "boatDelivery": "Csónak átadás"
+      },
+      "preview": {
+        "step1Title": "Munka indítása",
+        "step1Desc": [
+          "Menj a búvároktatóhoz a Paleto Bay kikötőnél",
+          "Nyomj E-t a munka menü megnyitásához",
+          "Válassz merülőzónát és nyomj Start-ot"
+        ],
+        "step2Title": "Csónakra szállás",
+        "step2Desc": [
+          "Menj a kikötőhöz és szállj fel a csónakodra",
+          "Minden merülőzónának van indulási pontja",
+          "Navigálj a megjelölt merülőzónához"
+        ],
+        "step3Title": "Horgony és merülés",
+        "step3Desc": [
+          "Állítsd meg a csónakot a merülőzóna jelölőjénél",
+          "Nyomj E-t a horgony leengedéséhez",
+          "Ugorj a vízbe és merülj le"
+        ],
+        "step4Title": "Tárgyak gyűjtése",
+        "step4Desc": [
+          "Találj korallt és szemetet a tengerfenéken",
+          "Nyomj E-t a korall gyűjtéséhez eladásra",
+          "Takaríts fel szemetet bónusz XP-ért"
+        ],
+        "step5Title": "Fogás eladása",
+        "step5Desc": [
+          "Vidd vissza a csónakot a kikötőbe",
+          "Menj a közeli vevő NPC-hez",
+          "Nyomj E-t a begyűjtött korallok eladásához"
+        ]
+      }
+    },
+    "forklift": {
+      "name": "Targoncavezető",
+      "subtitle": "Föld alatti logisztika",
+      "interactionText": "Targonca munka indítása",
+      "blipLabel": "Targonca",
+      "locationLabel": "Targonca depó",
+      "description": [
+        "Működtess targoncát egy föld alatti depóban",
+        "Szállíts ládákat a futószalagra",
+        "Válogasd és helyezd a ládákat a kijelölt polcokra",
+        "Dolgozz csapatban bónusz jutalmakért"
+      ],
+      "items": {
+        "forklift": "Targonca",
+        "crate": "Láda",
+        "conveyorBelt": "Futószalag"
+      },
+      "crateTypes": {
+        "jewellery": "Ékszer",
+        "antiques": "Antik tárgyak",
+        "tobacco": "Dohány",
+        "hazard": "Veszélyes",
+        "fake": "Hamis"
+      },
+      "blips": {
+        "forklift": "Targonca",
+        "conveyor": "Futószalag"
+      }
+    },
+    "tiretechnician": {
+      "name": "Gumiszerelő",
+      "subtitle": "Útszéli gumiszerviz",
+      "interactionText": "Gumiszerelő munka indítása",
+      "blipLabel": "Gumiszerelő munka",
+      "locationLabel": "Gumiszerviz depó",
+      "description": [
+        "Cserélj defektes gumikat megrekedt járműveken",
+        "Használj autóemelőt és szerszámokat a gumicseréhez",
+        "Többlépcsős, realisztikus gumijavítási folyamat",
+        "Dolgozz csapatoddal a gyorsabb befejezésért"
+      ],
+      "items": {
+        "wrenchSet": "Kulcskészlet",
+        "carJack": "Autóemelő",
+        "spareParts": "Tartalék alkatrészek"
+      },
+      "blips": {
+        "vehicleRepair": "Jármű javítás",
+        "serviceTruck": "Szerviz teherautó"
+      }
+    },
+    "treasurehunter": {
+      "name": "Kincskereső",
+      "subtitle": "Víz alatti kincsvadászat",
+      "interactionText": "Kincskereső munka indítása",
+      "blipLabel": "Kincskereső",
+      "locationLabel": "Kincskereső kikötő",
+      "description": [
+        "Szállj a csónakra és indulj a kincs területre",
+        "Kövesd a követőjel pittyegéseit a kincs megtalálásához",
+        "Merülj le és gyűjtsd be a kincsesládát",
+        "Térj vissza a kikötőbe a fizetésért"
+      ],
+      "items": {
+        "scubaGear": "Búvárfelszerelés",
+        "treasureChest": "Kincsesláda"
+      },
+      "lootTypes": {
+        "common": "Kincses zsák",
+        "legendary": "Arany láda"
+      },
+      "gear": {
+        "basic": "Alap búvárfelszerelés",
+        "standard": "Standard búvárfelszerelés",
+        "pro": "Profi búvárfelszerelés"
+      },
+      "preview": {
+        "step1Title": "Munka indítása",
+        "step1Desc": [
+          "Menj a kikötőbe és beszélj az oktatóval",
+          "Nyomj E-t a munka menü megnyitásához és indításhoz"
+        ],
+        "step2Title": "Csónakra szállás",
+        "step2Desc": [
+          "Menj a kikötőhöz és szállj fel a csónakodra",
+          "Navigálj a kincs terület blip felé"
+        ],
+        "step3Title": "Horgony és merülés",
+        "step3Desc": [
+          "Kövesd a követőjel pittyegéseit a kincs megtalálásához",
+          "Engedd le a horgonyt a keresési terület közelében",
+          "Merülj le a búvárfelszereléseddel"
+        ],
+        "step4Title": "Kincs gyűjtése",
+        "step4Desc": [
+          "Találd meg a kincsesládát a tengerfenéken",
+          "Vigyázz a cápákra és az óceáni áramlatokra!",
+          "Nyomj E-t a kincs begyűjtéséhez"
+        ],
+        "step5Title": "Visszatérés a kikötőbe",
+        "step5Desc": [
+          "Bukkanj fel és térj vissza a kikötőbe",
+          "Vezess a jelölőbe a befejezéshez",
+          "Vedd fel a fizetésedet!"
+        ]
+      }
+    },
+    "metaldetector": {
+      "name": "Fémdetektor",
+      "subtitle": "Haladó leletmentési műveletek",
+      "interactionText": "Fémdetektoros munka indítása",
+      "blipLabel": "Fémdetektor",
+      "locationLabel": "Fémdetektor állomás",
+      "description": [
+        "Vegyél ki egy fémdetektort a teherautó csomagtartójából",
+        "Kövesd a sípolás gyorsaságát a rejtett fém bemérésére",
+        "Ásd ki az elásott pontokat az ásóddal",
+        "Váltsd pénzre a leleteidet az állomáson"
+      ],
+      "items": {
+        "detector": "Fémdetektor",
+        "findings": "Kiásott leletek"
+      },
+      "lootTypes": {
+        "scrap": "Fémhulladék",
+        "coin": "Régi érme",
+        "silver": "Ezüstdarab",
+        "gold": "Aranyrög",
+        "relic": "Ritka ereklye"
+      }
+    },
+    "mechanic": {
+      "name": "Szerelő",
+      "subtitle": "Járműjavító szolgálat",
+      "interactionText": "Szerelő munka indítása",
+      "blipLabel": "Szerelő",
+      "locationLabel": "Szerelőműhely"
+    },
+    "gruppe6": {
+      "name": "Gruppe 6",
+      "subtitle": "Páncélozott Szállítás",
+      "interactionText": "Beszélj a depóvezetővel",
+      "blipLabel": "Gruppe 6 Telephely",
+      "description": [
+        "Vezess páncélozott teherautót a Fleeca bankok között",
+        "Töltsd meg a pénzeszsákokat a széfnél és rakodd be",
+        "Vidd vissza a teherautót a telephelyre a fizetségért"
+      ]
+    }
+  },
+  "quests": {
+    "daily_miner_collect": {
+      "label": "Napi bányászás",
+      "description": "Törj fel 5 sziklát a bányában"
+    },
+    "weekly_miner_process": {
+      "label": "Mester feldolgozó",
+      "description": "Dolgozz fel 30 ércet a mérlegen"
+    },
+    "monthly_miner_earn": {
+      "label": "Bányászati mogul",
+      "description": "Keress $10,000-t a bányászásból"
+    },
+    "daily_lumber_collect": {
+      "label": "Napi favágás",
+      "description": "Vágj ki 5 fát"
+    },
+    "weekly_lumber_process": {
+      "label": "Fa mester",
+      "description": "Dolgozz fel 25 rönköt a mérlegen"
+    },
+    "monthly_lumber_earn": {
+      "label": "Fa mogul",
+      "description": "Keress $10,000-t a favágásból"
+    },
+    "daily_scrap_collect": {
+      "label": "Roncsgyűjtő",
+      "description": "Gyűjts 5 roncsdarabot"
+    },
+    "weekly_scrap_process": {
+      "label": "Újrahasznosító profi",
+      "description": "Dolgozz fel 20 roncsot a mérlegen"
+    },
+    "monthly_scrap_earn": {
+      "label": "Roncs mágnás",
+      "description": "Keress $8,000-t a roncstelepen"
+    },
+    "daily_hunting_collect": {
+      "label": "Napi vadászat",
+      "description": "Vadassz 3 állatot"
+    },
+    "weekly_hunting_process": {
+      "label": "Trófea vadász",
+      "description": "Dolgozz fel 15 állatot a mérlegen"
+    },
+    "monthly_hunting_earn": {
+      "label": "Mester vadász",
+      "description": "Keress $12,000-t a vadászatból"
+    },
+    "daily_farmer_complete": {
+      "label": "Farm munkás",
+      "description": "Teljesíts 2 farm kört"
+    },
+    "weekly_farmer_earn": {
+      "label": "Arató király",
+      "description": "Keress $5,000-t a farmolásból"
+    },
+    "monthly_farmer_earn": {
+      "label": "Mezőgazdasági báró",
+      "description": "Keress $15,000-t a farmolásból"
+    },
+    "daily_fruitpicker_complete": {
+      "label": "Narancsszedő",
+      "description": "Teljesíts 2 szedési kört"
+    },
+    "weekly_fruitpicker_earn": {
+      "label": "Citrusbáró",
+      "description": "Keress $5,000-t a narancsokból"
+    },
+    "monthly_fruitpicker_earn": {
+      "label": "Gyümölcsös mogul",
+      "description": "Keress $15,000-t a narancsokból"
+    },
+    "daily_cleaner_complete": {
+      "label": "Utcaseprő",
+      "description": "Teljesíts 2 takarítási kört"
+    },
+    "weekly_cleaner_earn": {
+      "label": "Mr. Tiszta",
+      "description": "Keress $4,000-t a takarításból"
+    },
+    "monthly_cleaner_earn": {
+      "label": "Köztisztasági főnök",
+      "description": "Keress $12,000-t a takarításból"
+    },
+    "daily_powerwash_complete": {
+      "label": "Nyomás profi",
+      "description": "Teljesíts 2 nagynyomású mosási kört"
+    },
+    "weekly_powerwash_earn": {
+      "label": "Nyomás mester",
+      "description": "Keress $5,000-t a nagynyomású mosásból"
+    },
+    "monthly_powerwash_earn": {
+      "label": "Mosás varázsló",
+      "description": "Keress $15,000-t a nagynyomású mosásból"
+    },
+    "daily_windowcleaner_complete": {
+      "label": "Ablaktörlő",
+      "description": "Teljesíts 2 ablaktisztítási kört"
+    },
+    "weekly_windowcleaner_earn": {
+      "label": "Üveg szakértő",
+      "description": "Keress $4,000-t az ablaktisztításból"
+    },
+    "monthly_windowcleaner_earn": {
+      "label": "Kristálytiszta cég",
+      "description": "Keress $12,000-t az ablaktisztításból"
+    },
+    "daily_cardetailer_complete": {
+      "label": "Ragyogás idő",
+      "description": "Teljesíts 2 detailing kört"
+    },
+    "weekly_cardetailer_earn": {
+      "label": "Detail profi",
+      "description": "Keress $5,000-t az autódetailingból"
+    },
+    "monthly_cardetailer_earn": {
+      "label": "Mester detailer",
+      "description": "Keress $15,000-t az autódetailingból"
+    },
+    "daily_newspaper_complete": {
+      "label": "Újságos fiú",
+      "description": "Teljesíts 2 kiszállítási kört"
+    },
+    "weekly_newspaper_earn": {
+      "label": "Sajtó mogul",
+      "description": "Keress $3,000-t a kiszállításokból"
+    },
+    "monthly_newspaper_earn": {
+      "label": "Média báró",
+      "description": "Keress $8,000-t a kiszállításokból"
+    },
+    "daily_cleanup_complete": {
+      "label": "Szemét gyűjtő",
+      "description": "Teljesíts 2 szemétgyűjtési kört"
+    },
+    "weekly_cleanup_earn": {
+      "label": "Hulladék menedzser",
+      "description": "Keress $4,000-t a szemétgyűjtésből"
+    },
+    "monthly_cleanup_earn": {
+      "label": "Hulladék mogul",
+      "description": "Keress $12,000-t a szemétgyűjtésből"
+    },
+    "daily_trucker_complete": {
+      "label": "Napi fuvar",
+      "description": "Teljesíts 2 kamionos kört"
+    },
+    "weekly_trucker_earn": {
+      "label": "Úti harcos",
+      "description": "Keress $8,000-t a kamionozásból"
+    },
+    "monthly_trucker_earn": {
+      "label": "Konvoj király",
+      "description": "Keress $25,000-t a kamionozásból"
+    },
+    "daily_taxi_complete": {
+      "label": "Taxisofőr",
+      "description": "Teljesíts 3 taxi fuvart"
+    },
+    "weekly_taxi_earn": {
+      "label": "Taxi király",
+      "description": "Keress $6,000-t a fuvarokból"
+    },
+    "monthly_taxi_earn": {
+      "label": "Flotta tulajdonos",
+      "description": "Keress $18,000-t a fuvarokból"
+    },
+    "daily_dogwalking_complete": {
+      "label": "Kutyasétáltató",
+      "description": "Teljesíts 2 sétát"
+    },
+    "weekly_dogwalking_earn": {
+      "label": "Falkavezér",
+      "description": "Keress $3,000-t a kutyasétáltatásból"
+    },
+    "monthly_dogwalking_earn": {
+      "label": "Kutyasuttogó",
+      "description": "Keress $8,000-t a kutyasétáltatásból"
+    },
+    "daily_powerlines_complete": {
+      "label": "Villanyszerelő",
+      "description": "Teljesíts 2 javítási munkát"
+    },
+    "weekly_powerlines_earn": {
+      "label": "Villanyvezeték mester",
+      "description": "Keress $6,000-t a javításokból"
+    },
+    "monthly_powerlines_earn": {
+      "label": "Áramhálózat főnöke",
+      "description": "Keress $18,000-t a javításokból"
+    },
+    "daily_delivery_complete": {
+      "label": "Csomag futár",
+      "description": "Teljesíts 2 szállítást"
+    },
+    "weekly_delivery_earn": {
+      "label": "Expressz futár",
+      "description": "Keress $5,000-t a szállításokból"
+    },
+    "monthly_delivery_earn": {
+      "label": "Szállítási főnök",
+      "description": "Keress $15,000-t a szállításokból"
+    },
+    "daily_warehouse_complete": {
+      "label": "Raktári munkás",
+      "description": "Teljesíts 2 raktári műszakot"
+    },
+    "weekly_warehouse_earn": {
+      "label": "Logisztikai szakértő",
+      "description": "Keress $5,000-t a raktári munkából"
+    },
+    "monthly_warehouse_earn": {
+      "label": "Raktár igazgató",
+      "description": "Keress $15,000-t a raktári munkából"
+    },
+    "daily_landscaping_complete": {
+      "label": "Zöld kéz",
+      "description": "Teljesíts 2 kertészeti munkát"
+    },
+    "weekly_landscaping_earn": {
+      "label": "Kertészet mester",
+      "description": "Keress $4,000-t a kertészetből"
+    },
+    "monthly_landscaping_earn": {
+      "label": "Kertépítő",
+      "description": "Keress $12,000-t a kertészetből"
+    },
+    "daily_fishing_complete": {
+      "label": "Horgász",
+      "description": "Teljesíts 2 horgász túrát"
+    },
+    "weekly_fishing_earn": {
+      "label": "Mélytengeri halász",
+      "description": "Keress $5,000-t a horgászatból"
+    },
+    "monthly_fishing_earn": {
+      "label": "Horgász legenda",
+      "description": "Keress $15,000-t a horgászatból"
+    },
+    "daily_diving_complete": {
+      "label": "Mélybúvár",
+      "description": "Teljesíts 2 búvár túrát"
+    },
+    "weekly_diving_earn": {
+      "label": "Óceán felfedező",
+      "description": "Keress $6,000-t a búvárkodásból"
+    },
+    "monthly_diving_earn": {
+      "label": "Kincsbúvár",
+      "description": "Keress $18,000-t a búvárkodásból"
+    },
+    "daily_forklift_complete": {
+      "label": "Targoncavezető",
+      "description": "Teljesíts 2 raktári műszakot"
+    },
+    "weekly_forklift_earn": {
+      "label": "Súlyemelő",
+      "description": "Keress $5,000-t a targoncás munkából"
+    },
+    "monthly_forklift_earn": {
+      "label": "Logisztikai titán",
+      "description": "Keress $15,000-t a targoncás munkából"
+    }
+  },
+  "shop": {
+    "buyRod": "Bot vásárlása",
+    "buyRodDesc": "Horgászbot vásárlása",
+    "buyBait": "Csali vásárlása",
+    "buyBaitDesc": "Horgászcsali vásárlása",
+    "sellAll": "Összes eladása",
+    "sellAllFish": "Összes hal eladása",
+    "sellAllItems": "Összes tárgy eladása",
+    "levelRequired": "{level}. szint szükséges | {price}",
+    "howMany": "Mennyit?"
+  },
+  "vehicle": {
+    "powerlines": "Villanyvezetékek",
+    "huntingVehicle": "Vadász jármű",
+    "workTruck": "Munka teherautó",
+    "divingBoat": "Búvárcsónak",
+    "fishingBoat": "Horgászcsónak",
+    "cleanupTruck": "Szemétszállító teherautó",
+    "lumberVehicle": "Favágó jármű",
+    "miningVehicle": "Bányász jármű",
+    "metaldetectorVehicle": "Fémdetektoros jármű",
+    "washVan": "Mosó furgon",
+    "windowCleanerVan": "Ablaktisztító furgon",
+    "cleaningVan": "Takarító furgon",
+    "serviceVehicle": "Szerviz jármű",
+    "scrapyardTruck": "Roncstelepi teherautó",
+    "detailingVan": "Detailing furgon",
+    "tiretechnician": "Gumiszerelő",
+    "pickupPassenger": "Utas felvétele",
+    "returnTaxi": "Taxi visszaadása",
+    "dropOff": "Kitevés",
+    "bucketTruck": "Kosaras teherautó",
+    "deliveryVan": "Szállító furgon",
+    "newspaperBike": "Újságos bicikli",
+    "detachedTrailer": "Lecsatolt pótkocsi",
+    "deliveryTruck": "Szállító teherautó",
+    "taxi": "Taxi",
+    "treasureBoat": "Kincskereső csónak"
+  },
+  "task": {
+    "panels": "Panelek",
+    "poles": "Oszlopok",
+    "repairPanels": "Panelek javítása ({done}/{total})",
+    "fixPoles": "Közmű oszlopok javítása ({done}/{total})",
+    "repairDescription": "Javítsd meg az elektromos infrastruktúrát a területen. Javíts paneleket és közmű oszlopokat.",
+    "plants": "Növények",
+    "cropPlant": "Termény növény",
+    "nearestCrop": "Legközelebbi termény",
+    "bushes": "Bokrok",
+    "lawns": "Gyepek",
+    "bushToTrim": "Nyírandó bokor",
+    "lawnToDig": "Ásandó gyep",
+    "toilets": "Vécék",
+    "pipes": "Csövek",
+    "fishCaught": "Fogott hal",
+    "treasures": "Kincsek",
+    "spotsDug": "Kiásott pontok",
+    "tasks": "Feladatok",
+    "loadBoxes": "Ládák betöltése a depóban",
+    "deliveries": "Szállítások",
+    "deliverPackages": "Csomagok szállítása",
+    "boxesLoaded": "Betöltött ládák",
+    "pickUpTrailer": "Pótkocsi felvétele",
+    "deliverCargo": "Rakomány szállítása",
+    "returnTruck": "Teherautó visszaadása",
+    "stage": "Szakasz",
+    "truckFill": "Teherautó töltöttsége",
+    "shelved": "Polcra téve",
+    "activateConveyor": "Aktiváld a futószalagot [E]",
+    "deliverCratesToBelt": "Ládák szállítása a szalagra ({current}/{total})",
+    "placeCratesOnShelves": "Ládák polcra helyezése ({current}/{total})",
+    "delivered": "Kiszállítva",
+    "takeWandFromTrunk": "Vedd el a pálcát a jármű csomagtartójából",
+    "spotsCleaned": "Kitakarított helyek",
+    "takeSpongeFromTrunk": "Vedd el a szivacsot a jármű csomagtartójából",
+    "windows": "Ablakok",
+    "takeMopFromTrunk": "Vedd el a felmosót a jármű csomagtartójából",
+    "stains": "Foltok",
+    "equipWandOrCloth": "Szerelj fel pálcát (mosás) vagy kendőt (polírozás)",
+    "carsWashed": "Megmosott autók",
+    "carsPolished": "Kipolírozott autók",
+    "distance": "Távolság",
+    "cargo": "Rakomány",
+    "regularAnimals": "Átlagos állatok",
+    "predators": "Ragadozók",
+    "birds": "Madarak",
+    "mixed": "Vegyes",
+    "nextDelivery": "Következő szállítás",
+    "returnVehicle": "Jármű visszaadása",
+    "returnToDepot": "Vissza a depóba",
+    "returnToBase": "Vissza a bázisra",
+    "loadingArea": "Rakodási terület",
+    "fruitpickerTree": "Narancsfa",
+    "next": "Következő",
+    "walkDistance": "Séta távolság",
+    "dogsDelivered": "Átadott kutyák",
+    "distanceWalked": "Sétált távolság (m)",
+    "oreProcessed": "Feldolgozott érc",
+    "trunkLoaded": "Csomagtartó megtelt",
+    "logsProcessed": "Feldolgozott rönkök",
+    "scrapsProcessed": "Feldolgozott roncsok",
+    "boxesProcessed": "Feldolgozott ládák",
+    "animalsProcessed": "Feldolgozott állatok",
+    "toolShovel": "Lapát",
+    "toolTrimmer": "Sövénynyíró",
+    "trucksCompleted": "Befejezett kamionok ({current}/{total})",
+    "loadBoxesCount": "Dobozok berakodása ({current}/{total})",
+    "loadPallets": "Raklapok berakodása ({current}/{total})",
+    "deliverPapers": "Újságok kézbesítése ({current}/{total})",
+    "trimBushes": "Bokrok nyírása ({current}/{total})",
+    "rakeLawns": "Gyepek gereblyézése ({current}/{total})",
+    "itemsCollected": "Összegyűjtött tárgyak ({current}/{total})",
+    "cleanAllWindows": "Összes ablak megtisztítása ({current}/{total})",
+    "cleanAllSpots": "Összes folt megtisztítása ({current}/{total})"
+  },
+  "drawText": {
+    "repairPanel": "[E] Elektromos panel javítása",
+    "repairPole": "[E] Telefonoszlop vezeték javítása",
+    "collect": "[E] Gyűjtés",
+    "collectCoral": "[E] Korall gyűjtése",
+    "cleanTrash": "[E] Szemét takarítása"
+  },
+  "achievements": {
+    "miner_lv5": {
+      "label": "Mester bányász",
+      "desc": "Érd el az 5. szintet bányászatban"
+    },
+    "miner_lv10": {
+      "label": "Bányász legenda",
+      "desc": "Érd el a 10. szintet bányászatban"
+    },
+    "lumberjack_lv5": {
+      "label": "Mester favágó",
+      "desc": "Érd el az 5. szintet favágásban"
+    },
+    "fishing_lv5": {
+      "label": "Szakértő horgász",
+      "desc": "Érd el az 5. szintet horgászatban"
+    },
+    "cleanup_lv5": {
+      "label": "Hulladék harcos",
+      "desc": "Érd el az 5. szintet szemétgyűjtésben"
+    },
+    "delivery_lv5": {
+      "label": "Expressz futár",
+      "desc": "Érd el az 5. szintet szállításban"
+    },
+    "trucker_lv5": {
+      "label": "Úti király",
+      "desc": "Érd el az 5. szintet kamionozásban"
+    },
+    "hunting_lv5": {
+      "label": "Szakértő vadász",
+      "desc": "Érd el az 5. szintet vadászatban"
+    },
+    "taxi_lv5": {
+      "label": "Ász sofőr",
+      "desc": "Érd el az 5. szintet taxizásban"
+    },
+    "powerlines_lv5": {
+      "label": "Villanyvezeték mester",
+      "desc": "Érd el az 5. szintet villanyvezetékekben"
+    },
+    "diving_lv5": {
+      "label": "Mélytengeri búvár",
+      "desc": "Érd el az 5. szintet búvárkodásban"
+    },
+    "cleaner_lv5": {
+      "label": "Tisztító gép",
+      "desc": "Érd el az 5. szintet takarításban"
+    },
+    "powerwash_lv5": {
+      "label": "Nyomás profi",
+      "desc": "Érd el az 5. szintet nagynyomású mosásban"
+    },
+    "windowscleaner_lv5": {
+      "label": "Kristálytiszta",
+      "desc": "Érd el az 5. szintet ablaktisztításban"
+    },
+    "cardetailer_lv5": {
+      "label": "Detail mester",
+      "desc": "Érd el az 5. szintet autódetailingban"
+    },
+    "farmer_lv5": {
+      "label": "Zöld kéz",
+      "desc": "Érd el az 5. szintet farmolásban"
+    },
+    "fruitpicker_lv5": {
+      "label": "Citrus király",
+      "desc": "Érd el az 5. szintet narancsszedésben"
+    },
+    "landscaping_lv5": {
+      "label": "Kert mester",
+      "desc": "Érd el az 5. szintet kertészetben"
+    },
+    "dogwalking_lv5": {
+      "label": "Kutyasuttogó",
+      "desc": "Érd el az 5. szintet kutyasétáltatásban"
+    },
+    "newspaper_lv5": {
+      "label": "Sajtó futár",
+      "desc": "Érd el az 5. szintet újságkihordásban"
+    },
+    "scrapyard_lv5": {
+      "label": "Roncs úr",
+      "desc": "Érd el az 5. szintet roncstelepen"
+    },
+    "warehouse_lv5": {
+      "label": "Készlet mester",
+      "desc": "Érd el az 5. szintet raktárban"
+    },
+    "forklift_lv5": {
+      "label": "Targonca kezelő",
+      "desc": "Érd el az 5. szintet targoncában"
+    },
+    "collect_100": {
+      "label": "Gyűjtő",
+      "desc": "Gyűjts össze 100 tárgyat összesen"
+    },
+    "collect_500": {
+      "label": "Begyűjtő",
+      "desc": "Gyűjts össze 500 tárgyat összesen"
+    },
+    "collect_1000": {
+      "label": "Halmozó",
+      "desc": "Gyűjts össze 1,000 tárgyat összesen"
+    },
+    "miner_collect_500": {
+      "label": "Sziklatörő",
+      "desc": "Bányássz 500 sziklát"
+    },
+    "lumber_collect_500": {
+      "label": "Fadöntő",
+      "desc": "Vágj ki 500 fát"
+    },
+    "earn_10000": {
+      "label": "Kenyérkereső",
+      "desc": "Keress $10,000-t összesen a munkákból"
+    },
+    "earn_50000": {
+      "label": "Magas játékos",
+      "desc": "Keress $50,000-t összesen a munkákból"
+    },
+    "earn_100000": {
+      "label": "Milliomos útja",
+      "desc": "Keress $100,000-t összesen a munkákból"
+    },
+    "complete_10": {
+      "label": "Kemény munkás",
+      "desc": "Teljesíts 10 munkát"
+    },
+    "complete_50": {
+      "label": "Odaadó munkás",
+      "desc": "Teljesíts 50 munkát"
+    },
+    "complete_100": {
+      "label": "Veterán munkás",
+      "desc": "Teljesíts 100 munkát"
+    },
+    "process_100": {
+      "label": "Feldolgozó",
+      "desc": "Dolgozz fel 100 tárgyat a mérlegen"
+    },
+    "process_500": {
+      "label": "Gyári munkás",
+      "desc": "Dolgozz fel 500 tárgyat a mérlegen"
+    }
+  },
+  "common": {
+    "continueHintGeneric": "Indulj a következő feladathoz a térképen",
+    "pickupTaskGeneric": "Keresd meg a következő feladatod helyszínét",
+    "pickupDescriptionGeneric": "Menj a térképen megjelölt helyszínre és kezdd el a következő feladatot."
+  },
+  "gruppe6": {
+    "truck": "Páncélozott Teherautó",
+    "takeBagPrompt": "[E] Üres zsák felvétele",
+    "returnBagPrompt": "[E] Zsák visszatétele",
+    "loadBagPrompt": "[E] Zsák berakodása",
+    "signPrompt": "[E] Papírok aláíratása",
+    "fillBagPrompt": "[E] Zsák megtöltése",
+    "stationBusy": "Egy másik csapattag ezt az állomást használja!",
+    "newRound": "Új rablókör — friss bankok a térképen!",
+    "continueBusy": "Mindenkinek be kell fejeznie a pakolást és le kell adnia a táskáit a folytatás előtt!",
+    "returnTruckPrompt": "[E] Teherautó leadása",
+    "emptyBagTaken": "Üres zsák felvéve. Töltsd meg a bank széfjénél.",
+    "signingPapers": "Papírok aláírása...",
+    "vaultOpening": "A széf nyílik... ({seconds}mp)",
+    "vaultOpened": "A széf kinyílt!",
+    "fillingBag": "Zsák megtöltése...",
+    "bagFilled": "Zsák megtöltve! (+{symbol}{amount})",
+    "allStopsDone": "Minden megálló begyűjtve! Vidd vissza a teherautót a telephelyre.",
+    "returnTruckHint": "Vidd vissza a teherautót a telephelyre a műszak befejezéséhez.",
+    "returnTruckBlip": "Teherautó Leadása",
+    "onlyLeaderCanFinish": "Csak a csapatvezető adhatja le a teherautót!",
+    "tooFarFromDepot": "Túl messze vagy a telephelytől!",
+    "tooFarFromManager": "Túl messze vagy a bankigazgatótól!",
+    "tooFarFromVault": "Túl messze vagy a széftől!",
+    "vaultNotOpen": "A széf még nincs nyitva!",
+    "vaultAlreadyOpen": "A széf már nyitás alatt áll!",
+    "vaultEmpty": "Ezt a széfet kiürítették!",
+    "alreadyCarrying": "Már viszel valamit!",
+    "needEmptyBag": "Előbb egy üres zsák kell!",
+    "statBags": "Berakodott zsákok",
+    "statEarnings": "Összes kereset",
+    "objSign": "Írasd alá a papírokat",
+    "objCollect": "Töltsd meg és rakodd be a zsákokat",
+    "objReturn": "Vidd vissza a teherautót a telephelyre",
+    "objWaiting": "Útvonalra várakozás...",
+    "progressTitle": "Gruppe 6",
+    "progressDetail": "Gyűjts pénzeszsákokat a bankokból, majd vidd vissza a páncélozott teherautót a telephelyre.",
+    "jobEnded": "{bags} zsák leszállítva, {symbol}{earned} a keresményed!",
+    "noEmptyBags": "Nincs több üres zsák a teherautóban!",
+    "truckNotAtDepot": "A páncélozott teherautónak a telephelyen kell lennie!"
+  }
+}

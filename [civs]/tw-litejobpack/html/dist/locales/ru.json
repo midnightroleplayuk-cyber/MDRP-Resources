@@ -1,0 +1,3604 @@
+{
+  "blips": {
+    "category": "Работы",
+    "jobCenter": "Центр занятости",
+    "miner": "Работа шахтёра",
+    "lumberjack": "Работа лесоруба",
+    "scrapyard": "Свалка",
+    "hunting": "Охота",
+    "farmer": "Овощная ферма",
+    "fruitpicker": "Фруктовая роща",
+    "cleaner": "Городская уборка",
+    "powerwash": "Мойка под давлением",
+    "windowscleaner": "Мойка окон",
+    "cardetailer": "Детейлинг авто",
+    "newspaper": "Доставка газет",
+    "cleanup": "Сбор мусора",
+    "trucker": "Грузовой двор",
+    "taxi": "Таксопарк",
+    "dogwalking": "Выгул собак",
+    "powerlines": "Работа на электролиниях",
+    "delivery": "Доставка посылок",
+    "warehouse": "Склад",
+    "landscaping": "Ландшафтные работы",
+    "fishing": "Рыбалка",
+    "diving": "Дайвинг",
+    "forklift": "Погрузчик",
+    "tiretechnician": "Работа шиномонтажника",
+    "treasurehunter": "Охотник за сокровищами",
+    "mechanic": "Механик"
+  },
+  "_meta": {
+    "name": "Русский",
+    "flag": "🇷🇺"
+  },
+  "ui": {
+    "blipCategoryName": "Работы",
+    "jobDetails": "Детали работы",
+    "owner": "Владелец",
+    "member": "Участник",
+    "jobStart": "Начать работу",
+    "leaderboard": "Таблица лидеров",
+    "teamProgress": "Прогресс команды",
+    "top20": "Топ 20",
+    "playerList": "Список игроков",
+    "clickToInvite": "Нажмите, чтобы пригласить",
+    "emptySlot": "Свободное место",
+    "level": "Уровень",
+    "lv": "Ур.",
+    "hours": "ч.",
+    "minRequiredHours": "Минимум требуется",
+    "achievements": "Достижения",
+    "settings": "Настройки",
+    "close": "Закрыть",
+    "cancel": "Отмена",
+    "confirm": "Подтвердить",
+    "search": "Поиск",
+    "selected": "Выбрано",
+    "locationMarked": "Местоположение отмечено на карте",
+    "jobAreaMarked": "Рабочая зона отмечена на карте",
+    "noLocationAvailable": "Местоположение для этой работы недоступно",
+    "routeLevelRequired": "Требуется уровень {level} для этого маршрута!",
+    "spawnBlocked": "Зона появления транспорта заблокирована! Освободите территорию и попробуйте снова.",
+    "vehicleSpawnFailed": "Не удалось создать транспорт!",
+    "viewStatistics": "Посмотреть статистику",
+    "history": "История",
+    "earnings": "Заработок",
+    "totalEarn": "Общий заработок",
+    "totalExp": "Всего EXP",
+    "markJob": "Отметить работу",
+    "registerJob": "Записаться на работу",
+    "usedItems": "Использованные предметы",
+    "online": "В сети",
+    "offline": "Не в сети",
+    "loading": "Загрузка...",
+    "back": "Назад",
+    "set": "Установить",
+    "reset": "Сбросить",
+    "approve": "Одобрить",
+    "leave": "Покинуть",
+    "done": "Готово",
+    "prev": "Назад",
+    "next": "Далее",
+    "xp": "XP",
+    "step": "Шаг",
+    "on": "Вкл",
+    "off": "Выкл",
+    "save": "Сохранить",
+    "vehicle": "Транспорт",
+    "coordinates": "Координаты",
+    "active": "Активно",
+    "disabled": "Отключено",
+    "place": "Разместить",
+    "add": "Добавить"
+  },
+  "settings": {
+    "title": "Настройки работы",
+    "subtitle": "Выберите настройки",
+    "jobSound": "Звук работы",
+    "language": "Язык",
+    "uiPosition": "Перемещение UI",
+    "uiMoveActive": "Перетащите панели для изменения положения",
+    "uiMoveSave": "Сохранить",
+    "uiMoveCancel": "Отмена",
+    "uiMoveApplyDefault": "По умолчанию",
+    "uiMoveResetDefault": "Сбросить",
+    "progressPanel": "Прогресс"
+  },
+  "progress": {
+    "title": "Прогресс",
+    "subtitle": "Навыки, задания и улучшения",
+    "skillPoints": "SP",
+    "skills": "Навыки",
+    "quests": "Задания",
+    "upgrades": "Улучшения",
+    "max": "МАКС",
+    "upgrade": "Улучшить",
+    "upgradeItems": "Предметы улучшения",
+    "searchJobs": "Поиск работ...",
+    "noResults": "Ничего не найдено",
+    "noQuests": "Нет доступных заданий",
+    "all": "Все",
+    "daily": "Ежедневные",
+    "weekly": "Еженедельные"
+  },
+  "upgradeModal": {
+    "title": "Улучшить предмет",
+    "subtitle": "Подтвердите улучшение",
+    "currentLevel": "Текущий уровень",
+    "nextLevel": "Следующий уровень",
+    "requirements": "Требования",
+    "requiredLevel": "Требуемый уровень",
+    "money": "Деньги",
+    "upgrade": "Улучшить"
+  },
+  "downgradeModal": {
+    "title": "Изменить уровень",
+    "subtitle": "Подтвердите изменение уровня",
+    "returnToPrevious": "Вернуться к предыдущему уровню",
+    "noLevelLoss": "Вы не потеряете текущий прогресс уровня"
+  },
+  "finishJob": {
+    "jobComplete": "Работа завершена!",
+    "summary": "Вот ваш отчёт",
+    "continueQuestion": "Продолжить?",
+    "ownerWantsContinue": "{name} хочет продолжить",
+    "finishQuestion": "Завершить работу?",
+    "finishSubtitle": "Выберите, что делать дальше",
+    "itemsCompleted": "Выполнено предметов",
+    "totalEarnings": "Общий заработок",
+    "progressSaved": "Ваш прогресс будет сохранён",
+    "waitingFor": "Ожидание: {players}",
+    "waitingOwner": "Ожидание решения {name}...",
+    "autoApprove": "Автоподтверждение через {time}с...",
+    "completed": "Работа выполнена!",
+    "continue": "Продолжить",
+    "endJob": "Завершить работу",
+    "leaveJob": "Покинуть работу"
+  },
+  "activeJob": {
+    "endJobTitle": "Завершить работу?",
+    "endJobDesc": "Это завершит работу для вас. Остальным игрокам будет предложено продолжить.",
+    "leaveJobTitle": "Покинуть работу?",
+    "leaveJobDesc": "Вы покинете текущую работу.",
+    "remainingCanContinue": "Оставшиеся игроки могут продолжить без вас",
+    "progressSaved": "Ваш прогресс будет сохранён",
+    "ownerDisconnected": "Владелец отключился",
+    "ownerLeft": "Владелец ушёл",
+    "ownerHasDisconnected": "{name} отключился",
+    "ownerHasLeft": "{name} покинул работу",
+    "continueJobQuestion": "Хотите продолжить работу?",
+    "autoContinue": "Автопродолжение через {time}с..."
+  },
+  "illegal": {
+    "stolenCargo": "Обнаружен краденый груз!",
+    "highRisk": "Доставка с высоким риском",
+    "teamVote": "Голосование команды",
+    "description": "Вы обнаружили краденый товар. Доставьте его за двойную оплату, но полиция может быть оповещена.",
+    "reward": "Награда",
+    "risk": "Риск",
+    "x2Money": "x2 Деньги",
+    "policeAlertStatic": "90% вызов полиции",
+    "policeAlert": "{chance}% вызов полиции",
+    "suspiciousPassenger": "Подозрительный пассажир",
+    "suspiciousPassengerDesc": "Этот пассажир хочет поехать куда-то... неофициально. Оплата выше, но есть риск привлечь внимание полиции.",
+    "stolenCargoDesc": "Вы обнаружили краденый товар в прицепе. Доставьте его на чёрный рынок за двойную оплату, но будьте осторожны — велика вероятность полицейской погони!",
+    "teamVotes": "Голоса команды:",
+    "accept": "Принять",
+    "reject": "Отклонить",
+    "policeWarning": "Полиция может быть вызвана, если вы согласитесь",
+    "leaderDecision": "Лидер примет окончательное решение",
+    "waitingLeader": "Ожидание решения лидера...",
+    "stayLegal": "Остаться в рамках закона",
+    "acceptRisk": "Принять риск",
+    "voteStayLegal": "Голос: Остаться в рамках закона",
+    "voteAcceptRisk": "Голос: Принять риск",
+    "voteSubmitted": "Голос принят"
+  },
+  "lobby": {
+    "noLongerExists": "Лобби больше не существует.",
+    "playerReconnected": "{name} переподключился к лобби.",
+    "playerDisconnected": "{name} отключился от лобби.",
+    "ownerDisconnectedNewOwner": "Владелец отключился. {name} теперь новый владелец.",
+    "closedNoReplacement": "Лобби закрыто — не найден подходящий новый владелец.",
+    "full": "Лобби заполнено (макс. {count} игроков)",
+    "notOwner": "Только владелец лобби может это делать",
+    "kicked": "Вас выгнали из лобби",
+    "alreadyInLobby": "Вы уже находитесь в лобби",
+    "noLobbyFound": "Лобби не найдено",
+    "playerLeft": "{name} покинул лобби"
+  },
+  "invite": {
+    "sent": "Приглашение отправлено {name}",
+    "received": "{name} пригласил вас в лобби - [Y] Принять | [N] Отклонить",
+    "accepted": "{name} присоединился к лобби",
+    "declined": "{name} отклонил приглашение",
+    "expired": "Приглашение истекло",
+    "targetAlreadyInLobby": "Этот игрок уже в лобби!",
+    "tooFar": "Игрок слишком далеко!"
+  },
+  "job": {
+    "started": "Работа началась!",
+    "completed": "Работа завершена!",
+    "failed": "Работа провалена!",
+    "resetInProgress": "Идёт сброс работы, пожалуйста подождите...",
+    "cantEnterVehicle": "Нельзя сесть в транспорт, пока вы что-то несёте!"
+  },
+  "xp": {
+    "gained": "+{amount} XP",
+    "levelUp": "Повышение уровня! Теперь вы {level} уровня",
+    "maxLevel": "Вы достигли максимального уровня!"
+  },
+  "contract": {
+    "reward": "Награда",
+    "risk": "Риск",
+    "teamVotes": "Голоса команды:",
+    "waitingLeader": "Ожидание решения лидера...",
+    "voteStayLegal": "Голос: Остаться в рамках закона",
+    "voteAcceptRisk": "Голос: Принять риск",
+    "done": "ГОТОВО"
+  },
+  "hud": {
+    "truckFill": "Загрузка грузовика",
+    "taximeter": "ТАКСОМЕТР",
+    "fare": "ТАРИФ",
+    "bonus": "БОНУС",
+    "distance": "РАССТ",
+    "trailerHealth": "Состояние прицепа",
+    "pressure": "ДАВЛЕНИЕ",
+    "coopLeaderboard": "Таблица лидеров",
+    "illegalRide": "НЕЛЕГАЛЬНАЯ ПОЕЗДКА",
+    "normalRide": "ОБЫЧНАЯ ПОЕЗДКА",
+    "goodCondition": "Хорошее состояние",
+    "needsRepair": "Требуется ремонт",
+    "criticalDamage": "Критические повреждения",
+    "hold": "Удерживайте",
+    "toClose": "чтобы закрыть",
+    "forDetails": "для подробностей"
+  },
+  "preview": {
+    "step": "Шаг {current}/{total}"
+  },
+  "minigame": {
+    "junctionBox": "РАСПРЕД. КОРОБКА",
+    "lsPower": "LS-POWER",
+    "circuitHint": "НАЖМИТЕ ДЛЯ ПОВОРОТА — СОЕДИНИТЕ ИСТОЧНИК С НАГРУЗКОЙ",
+    "fish": "Рыба",
+    "catch": "Поймать",
+    "space": "SPACE"
+  },
+  "admin": {
+    "title": "Панель администратора",
+    "subtitle": "Аналитика JobPack",
+    "dashboard": "Панель управления",
+    "players": "Игроки",
+    "market": "Рынок",
+    "activeLobbies": "Активные лобби",
+    "economy": "Экономика",
+    "todaysPayouts": "Выплаты за сегодня",
+    "thisWeek": "За эту неделю",
+    "allTime": "За всё время",
+    "jobsToday": "Работ за сегодня",
+    "onlinePlayers": "Игроков онлайн",
+    "perJobEarnings": "Заработок по работам (за 7 дней)",
+    "job": "Работа",
+    "totalPayout": "Общая выплата",
+    "completions": "Выполнений",
+    "uniquePlayers": "Уникальных игроков",
+    "name": "Имя",
+    "identifier": "Идентификатор",
+    "status": "Статус",
+    "perkPoints": "Очки перков:",
+    "jobLevels": "Уровни работ",
+    "recentHistory": "Недавняя история",
+    "region": "Регион",
+    "earned": "Заработано",
+    "date": "Дата",
+    "dynamicMarket": "Динамические цены рынка",
+    "resetAllToBase": "Сбросить всё до базовых",
+    "current": "Текущая",
+    "base": "Базовая",
+    "minMax": "Мин / Макс",
+    "health": "Здоровье",
+    "setPrice": "Установить цену",
+    "action": "Действие",
+    "paymentRates": "Ставки оплаты",
+    "qualityTiers": "Уровни качества",
+    "chance": "Шанс %",
+    "multiplier": "Множитель",
+    "levelBonuses": "Бонусы за уровень",
+    "payBonusPerLevel": "Бонус оплаты за уровень",
+    "qualityChancePerLevel": "Шанс качества за уровень",
+    "estimatedEarnings": "Расчётный заработок (10 предметов)",
+    "selectJobToEdit": "Выберите работу для редактирования",
+    "noJobsFound": "Работы не найдены",
+    "noJobData": "Нет данных о работе",
+    "noHistory": "Нет истории",
+    "noMarketData": "Нет данных рынка (динамический рынок может быть отключён)",
+    "noActiveLobbies": "Нет активных лобби",
+    "searchPlaceholder": "Поиск по имени или идентификатору...",
+    "searchPlayer": "Найдите игрока выше",
+    "xp": "XP",
+    "owner": "Владелец",
+    "state": "Состояние",
+    "count": "Количество",
+    "loading": "Загрузка..."
+  },
+  "editor": {
+    "title": "Редактор работ",
+    "npc": "NPC",
+    "npcModel": "Модель NPC",
+    "scenarioAnimation": "Сценарий / Анимация",
+    "npcPosition": "Позиция NPC",
+    "npcInteraction": "Взаимодействие с NPC",
+    "blip": "Метка",
+    "vehicleModel": "Модель транспорта",
+    "plate": "Номер",
+    "primaryColor": "Основной цвет",
+    "secondaryColor": "Дополнительный цвет",
+    "spawnLocations": "Точки появления",
+    "clickToChange": "Нажмите для изменения",
+    "clickToBrowse": "Нажмите для просмотра сценариев",
+    "typeManually": "Или введите вручную...",
+    "sprite": "Спрайт",
+    "color": "Цвет",
+    "scale": "Масштаб",
+    "label": "Название",
+    "enabled": "Включено",
+    "distance": "Расстояние",
+    "keyCode": "Код клавиши",
+    "interactionText": "Текст взаимодействия",
+    "searchBlip": "Поиск метки...",
+    "searchCoords": "Поиск координат...",
+    "noCoordFields": "Поля координат для этой работы не найдены.",
+    "noVehicleConfig": "У этой работы нет настроек транспорта.",
+    "selectJob": "Выберите работу для редактирования",
+    "spawnNum": "Точка",
+    "unsavedChanges": "Несохранённые изменения",
+    "goTo": "Перейти",
+    "setFromCamera": "Установить из камеры",
+    "copy": "Копировать",
+    "go": "Перейти",
+    "cam": "Камера",
+    "preview": "Предпросмотр",
+    "dup": "Дубл.",
+    "selectPedModel": "Выберите модель персонажа",
+    "selectVehicleModel": "Выберите модель транспорта",
+    "selectScenario": "Выберите сценарий",
+    "searchPed": "Поиск модели персонажа...",
+    "searchVehicle": "Поиск модели транспорта...",
+    "searchScenario": "Поиск сценария...",
+    "noAnimations": "Анимации не найдены",
+    "camera": "Камера",
+    "browse": "Обзор",
+    "devModeRequired": "Для редактора заданий требуется включить DevMode.",
+    "devModeHint": "Установите Config.DevMode = true в shared/config_settings.lua и перезапустите ресурс."
+  },
+  "tutorial": {
+    "title": "Обучение",
+    "skip": "Пропустить",
+    "next": "Далее",
+    "miner": {
+      "step1": {
+        "title": "Получите транспорт",
+        "desc": "Подойдите к отмеченной зоне, чтобы забрать горнодобывающий транспорт."
+      },
+      "step2": {
+        "title": "Возьмите инструмент",
+        "desc": "Откройте багажник транспорта и возьмите кирку."
+      },
+      "step3": {
+        "title": "Начните добычу",
+        "desc": "Отправляйтесь в зону добычи и разбивайте камни, чтобы собирать руду."
+      },
+      "step4": {
+        "title": "Обработка руды",
+        "desc": "Отвезите собранную руду на весы для обработки и получите оплату."
+      }
+    },
+    "lumberjack": {
+      "step1": {
+        "title": "Получите транспорт",
+        "desc": "Подойдите к отмеченной зоне, чтобы забрать лесозаготовительный транспорт."
+      },
+      "step2": {
+        "title": "Возьмите топор",
+        "desc": "Откройте багажник транспорта и возьмите топор."
+      },
+      "step3": {
+        "title": "Рубите деревья",
+        "desc": "Отправляйтесь в лесную зону и начните рубить деревья."
+      },
+      "step4": {
+        "title": "Обработка брёвен",
+        "desc": "Отвезите собранные брёвна на весы для обработки и получите оплату."
+      }
+    },
+    "farmer": {
+      "step1": {
+        "title": "Получите транспорт",
+        "desc": "Подойдите к отмеченной зоне, чтобы забрать фермерский транспорт."
+      },
+      "step2": {
+        "title": "Возьмите инструмент",
+        "desc": "Откройте багажник транспорта и возьмите совок."
+      },
+      "step3": {
+        "title": "Собирайте урожай",
+        "desc": "Отправляйтесь на ферму и собирайте урожай."
+      },
+      "step4": {
+        "title": "Обработка урожая",
+        "desc": "Отвезите собранный урожай на весы для обработки и получите оплату."
+      }
+    },
+    "fishing": {
+      "step1": {
+        "title": "Найдите место",
+        "desc": "Подойдите к рыболовному месту у воды."
+      },
+      "step2": {
+        "title": "Забросьте удочку",
+        "desc": "Используйте удочку, чтобы начать рыбалку."
+      },
+      "step3": {
+        "title": "Продайте улов",
+        "desc": "Отнесите рыбу в пункт обработки для продажи."
+      }
+    },
+    "generic": {
+      "step1": {
+        "title": "Подготовьтесь",
+        "desc": "Заберите транспорт и отправляйтесь в рабочую зону."
+      },
+      "step2": {
+        "title": "Выполняйте работу",
+        "desc": "Выполняйте задания в назначенной зоне."
+      },
+      "step3": {
+        "title": "Завершите",
+        "desc": "Вернитесь к NPC или пункту обработки для завершения работы."
+      }
+    }
+  },
+  "stats": {
+    "title": "Статистика",
+    "subtitle": "Обзор вашей карьеры",
+    "overview": "Обзор",
+    "perJob": "По работам",
+    "history": "История",
+    "totalEarnings": "Общий заработок",
+    "totalXP": "Всего XP",
+    "totalSessions": "Всего сессий",
+    "totalTime": "Общее время",
+    "bestDay": "Лучший день",
+    "favoriteJob": "Любимая работа",
+    "avgEarnings": "Сред. заработок",
+    "perSession": "за сессию",
+    "sessions": "сессий",
+    "last7Days": "Последние 7 дней",
+    "job": "Работа",
+    "level": "Уровень",
+    "earnings": "Заработок",
+    "time": "Время",
+    "noData": "Нет данных"
+  },
+  "drawtext": {
+    "jobCenter": "Центр занятости"
+  },
+  "notify": {
+    "jobAtCapacity": "Эта работа сейчас занята ({current}/{max} команд активно). Попробуйте другую работу или подождите.",
+    "cannotStartJob": "Невозможно начать эту работу",
+    "failedStartJob": "Не удалось начать работу",
+    "unknownError": "Неизвестная ошибка",
+    "toolEquipped": "Инструмент экипирован: {tool}",
+    "toolReturnedToTruck": "{tool} возвращён в грузовик.",
+    "deliveringStatus": "Доставка...",
+    "jobRestarting": "Перезапуск системы работ...",
+    "failedOpenMenu": "Не удалось открыть меню работ",
+    "noPermission": "Нет прав администратора",
+    "mustSelectJob": "Сначала выберите работу в Центре занятости",
+    "achievementUnlocked": "Достижение разблокировано: {label}",
+    "globalEventStarted": "Начато новое глобальное событие: {title}",
+    "alreadyCarrying": "Вы уже что-то несёте!",
+    "notCarrying": "Вы ничего не несёте!",
+    "needToolFirst": "Сначала возьмите инструмент!",
+    "anotherPlayerBreaking": "Другой игрок уже разбивает это!",
+    "putToolOnBelt": "Сначала повесьте инструмент на пояс!",
+    "processingWait": "Идёт обработка, пожалуйста подождите!",
+    "noBoxAvailable": "Нет доступных ящиков!",
+    "alreadyHaveBox": "У вас уже есть ящик!",
+    "failedTakeBox": "Не удалось взять ящик!",
+    "noLoadedBoxes": "Нет загруженных ящиков!",
+    "notCarryingBox": "Вы не несёте ящик!",
+    "failedLoadBox": "Не удалось загрузить ящик!",
+    "noRoomInTrunk": "В багажнике нет места, ящик выброшен.",
+    "emptyBoxReturned": "Пустой ящик возвращён.",
+    "workClothesEquipped": "Рабочая одежда надета!",
+    "normalClothes": "Переоделись в обычную одежду",
+    "clothesRequired": "Сначала наденьте рабочую одежду!",
+    "failedPlaceBox": "Не удалось поставить ящик!",
+    "takeBoxFirst": "Сначала возьмите ящик!",
+    "boxFull": "Ящик полон! Загрузите его в грузовик.",
+    "placeBoxFirst": "Сначала поставьте ящик на землю!",
+    "objectBroken": "Объект разрушен! Подберите предмет.",
+    "oreBroken": "Найдена руда: {ore}! Подберите её.",
+    "noItemsToSell": "Нечего продавать!",
+    "cantRepairPanel": "Нельзя починить эту панель",
+    "cantRepairPole": "Нельзя починить этот столб",
+    "nothingInTrunk": "В багажнике пусто!",
+    "alreadyCarryingSomething": "Вы уже что-то несёте!",
+    "trunkInUse": "Кто-то другой использует багажник!",
+    "failedTakeItem": "Не удалось взять предмет!",
+    "itemTaken": "Предмет взят! Положите на весы или обратно в грузовик.",
+    "failedPickupItem": "Не удалось подобрать предмет!",
+    "notCarryingAnything": "Вы ничего не несёте!",
+    "failedLoadItem": "Не удалось загрузить предмет!",
+    "vehicleSpawnBlocked": "Точка появления транспорта заблокирована!",
+    "failedStartCleaning": "Не удалось начать уборку!",
+    "cleanItemsFirst": "Сначала очистите несколько предметов!",
+    "allDoneReturn": "Всё готово! Возвращайтесь для завершения.",
+    "newRouteAssigned": "Назначен новый маршрут! Продолжайте уборку!",
+    "failedTakeLoadedBox": "Не удалось взять загруженный ящик!",
+    "jobCompletedByTeam": "Работа выполнена вашей командой!",
+    "jobFinishedSummary": "Работа завершена! Предметов: {items} • Заработано: {currency}{amount}",
+    "continuePayout": "Раунд оплачен: {currency}{amount}. Начинаем новый!",
+    "roundLimitReached": "Достигнут лимит раундов — начато время восстановления работы.",
+    "cooldownWaitAny": "{name} должен подождать {time}, прежде чем начать любую работу.",
+    "cooldownWaitJob": "{name} должен подождать {time}, прежде чем снова начать эту работу.",
+    "cantRunWithDog": "Нельзя бегать, пока вы выгуливаете собаку!",
+    "cantJumpWithDog": "Нельзя прыгать, пока вы выгуливаете собаку!",
+    "cantEnterVehicleWithDog": "Нельзя сесть в транспорт, пока вы выгуливаете собаку!",
+    "policeAlert": "ТРЕВОГА! Вас заметила полиция!",
+    "tooFarFromVan": "Слишком далеко от фургона! Шланг не достаёт.",
+    "tooFarFromTask": "Слишком далеко! Подойдите ближе и попробуйте снова.",
+    "itemCleanedPay": "Очищено! +{amount}",
+    "itemsCleaned": "Предметов очищено",
+    "alreadyTaken": "Уже занято!",
+    "actionFailed": "Действие не удалось!",
+    "saleFailed": "Продажа не удалась!",
+    "failedSelectZone": "Не удалось выбрать зону!",
+    "purchaseFailed": "Покупка не удалась!",
+    "couldNotSell": "Не удалось продать!",
+    "couldNotCastRod": "Не удалось забросить удочку!",
+    "cannotTakeTool": "Нельзя взять инструмент",
+    "cannotTrimBush": "Нельзя подстричь этот куст",
+    "cannotDigLawn": "Нельзя копать этот газон",
+    "couldNotPickUpBox": "Не удалось поднять ящик",
+    "couldNotPickUpPallet": "Не удалось поднять паллету",
+    "trunkIsFull": "Багажник полон!",
+    "scaleFull": "Весы переполнены!",
+    "palletSlotsFull": "Места для паллет заполнены",
+    "truckIsFull": "Грузовик полон",
+    "toolTaken": "Инструмент взят: {tool}",
+    "toolReturned": "Инструмент возвращён: {tool}",
+    "alreadyHaveTool": "У вас уже есть {tool}!",
+    "noToolAvailable": "Нет доступных {tool}!",
+    "notHoldingTool": "Вы не держите {tool}!",
+    "failedReturnTool": "Не удалось вернуть {tool}!",
+    "takeToolFirst": "Сначала возьмите {tool}!",
+    "itemLoaded": "Предмет загружен! (слот {slot}/{max})",
+    "itemLoadedDrive": "Предмет загружен! (слот {slot}/{max}) — Езжайте к весам для обработки!",
+    "spotCleaned": "{spot} очищено! Осталось {count} мест(а).",
+    "collected": "Собрано: {item}!",
+    "truckHeadingTo": "Грузовик направляется в {dest}...",
+    "todaysBonusJobs": "Бонусные работы на сегодня: {jobs}",
+    "toolUnlocked": "Разблокировано: {tool}",
+    "toolUpgraded": "{job}: {tool} разблокирован!",
+    "toolSwitched": "{job}: переключено на {tool}!",
+    "qualityBonus": "Качество: {quality}! x{multiplier} бонус",
+    "notAuthenticated": "Не авторизован",
+    "noToolsForJob": "Нет инструментов для этой работы",
+    "toolNotFound": "Инструмент не найден",
+    "notEnoughMoney": "Недостаточно денег",
+    "failedUnlockTool": "Не удалось разблокировать инструмент",
+    "toolNotUnlocked": "Инструмент не разблокирован",
+    "failedSelectTool": "Не удалось выбрать инструмент",
+    "toolNotFoundForLevel": "Инструмент не найден для этого уровня",
+    "failedSaveUpgrade": "Не удалось сохранить улучшение",
+    "alreadyProcessing": "Запрос уже обрабатывается, пожалуйста подождите.",
+    "alreadyInJob": "Вы уже на работе!",
+    "minimumPlayersRequired": "Для этой работы нужно минимум {count} игроков.",
+    "insufficientHours": "Для этой работы нужно минимум {required} часов. У вас {current} часов.",
+    "exceededMaxHours": "Эта работа доступна только игрокам с менее чем {max} часами. У вас {current} часов.",
+    "insufficientHoursPlayer": "{name} нужно минимум {required} часов для этой работы. Сейчас: {current} часов.",
+    "exceededMaxHoursPlayer": "У {name} слишком много часов для этой работы ({current}/{max} макс).",
+    "requiresJobLevel": "Требуется уровень работы {level}",
+    "failedSwitchTool": "Не удалось сменить инструмент",
+    "playerNotFound": "Игрок не найден или не в сети",
+    "failedSetLevel": "Не удалось установить уровень",
+    "pickingUp": "Поднимаем...",
+    "pickingUpBox": "Поднимаем ящик...",
+    "placingBox": "Ставим ящик...",
+    "loadingBox": "Загружаем ящик...",
+    "placingOnScale": "Ставим на весы...",
+    "returningBox": "Возвращаем ящик...",
+    "loading": "Загрузка...",
+    "takingItem": "Берём предмет...",
+    "placingItem": "Размещаем предмет...",
+    "takingTool": "Берём инструмент...",
+    "storingTool": "Убираем инструмент...",
+    "equippingTool": "Экипируем инструмент...",
+    "toolActionInProgress": "Действие инструмента уже выполняется",
+    "toolCooldownActive": "Подождите перед следующим использованием инструмента",
+    "cannotTakeToolInVehicle": "Нельзя брать инструменты в транспорте",
+    "alreadyHoldingTool": "У вас уже есть инструмент",
+    "noToolInTrunk": "В багажнике нет инструмента",
+    "toolNotAssigned": "Инструмент не назначен",
+    "toolNotYours": "Это не ваш инструмент",
+    "toolNotInTrunk": "Инструмент не в багажнике",
+    "toolActionCancelled": "Действие отменено",
+    "toolAttachFailed": "Не удалось прикрепить инструмент",
+    "noJobCallbacks": "Callback'и работы не настроены",
+    "serverDeniedTool": "Сервер отклонил действие",
+    "noToolInHand": "Нет инструмента в руке",
+    "noToolOnBelt": "Нет инструмента на поясе",
+    "toolEntityNotFound": "Сущность инструмента не найдена",
+    "noActiveTool": "Нет активного инструмента",
+    "noToolToReturn": "Нет инструмента для возврата",
+    "questProgress": "Задание: {label} ({progress}/{target})",
+    "questCompleted": "Задание выполнено: {label}!{rewards}",
+    "boxTaken": "Ящик взят! Идите собирать урожай.",
+    "loadedBoxTaken": "Загруженный ящик взят! {count} {label} — Отнесите к весам.",
+    "boxEmpty": "Ящик пуст! Сначала соберите урожай.",
+    "boxEmptyError": "Ящик пуст",
+    "decalCleaned": "Очищено! (осталось {count})",
+    "allDeliveriesComplete": "Все доставки выполнены! Верните велосипед.",
+    "allDeliveriesCompletePayment": "Все доставки выполнены! +{symbol}{payment} | Верните велосипед.",
+    "farmerJobStarted": "Фермерская работа началась! Наденьте рабочую одежду и возьмите ящик.",
+    "farmerBoxTaken": "Ящик взят! Идите к растениям для сбора урожая.",
+    "farmerBoxEmpty": "Ящик пуст! Сначала соберите урожай.",
+    "fruitpickerJobStarted": "Работа по сбору апельсинов началась! Наденьте рабочую одежду и возьмите ящик.",
+    "fruitpickerBoxTaken": "Ящик взят! Идите к апельсиновым деревьям для сбора.",
+    "fruitpickerBoxEmpty": "Ящик пуст! Сначала соберите апельсины."
+  },
+  "prompt": {
+    "pickUpBox": "[E] Поднять ящик",
+    "loadBox": "[E] Загрузить ящик",
+    "openTrunk": "[E] Открыть багажник",
+    "closeTrunk": "[E] Закрыть багажник",
+    "returnVehicle": "[E] Вернуть транспорт",
+    "deliver": "[E] Доставить",
+    "returnBoxToTrunk": "[E] Вернуть ящик в багажник",
+    "dropAnchor": "[E] Бросить якорь",
+    "raiseAnchor": "[E] Поднять якорь",
+    "returnBoat": "[E] Вернуть лодку",
+    "boardBoat": "[E] Сесть в лодку",
+    "sellItems": "[E] Продать предметы",
+    "catchDog": "[E] Поймать собаку",
+    "cleanPoop": "[E] Убрать за собакой",
+    "deliverDog": "[E] Доставить собаку",
+    "getInBucket": "[E] Сесть в люльку",
+    "bucketInUse": "Люлька занята",
+    "parkVehicle": "[E] Припарковать транспорт",
+    "reelIn": "[E] Подсечь!",
+    "sellFish": "[E] Продать рыбу",
+    "changeClothes": "[E] Переодеться",
+    "changeToWorkClothes": "[E] Надеть рабочую одежду",
+    "changeToNormalClothes": "[E] Надеть обычную одежду",
+    "collectTreasure": "[E] Выкопать сокровище",
+    "takeShovel": "[G] Взять лопату",
+    "loadCargo": "[E] Загрузить на лодку",
+    "digTreasure": "[E] Копать",
+    "openChest": "[E] Открыть сундук",
+    "pickupLoot": "[E] Подобрать добычу",
+    "stealCargo": "[E] Украсть груз",
+    "finishJob": "[E] Завершить работу",
+    "cancelJob": "[E] Отменить работу",
+    "exitWarehouse": "[E] Выйти со склада",
+    "completeJob": "[E] Завершить работу",
+    "activateBelt": "[E] Включить конвейер",
+    "throwCleanup": "[E] Выбросить мусор",
+    "collectCleanup": "[E] Собрать мусор",
+    "deliverTruck": "[E] Сдать грузовик",
+    "takeTrimmer": "[E] Взять триммер",
+    "trimBush": "[E] Подстричь куст",
+    "digLawn": "[E] Копать газон",
+    "returnWand": "[E] Вернуть насадку",
+    "takeWand": "[E] Взять моечную насадку",
+    "takeWandOrCloth": "[E] Взять насадку | [G] Взять тряпку",
+    "takeTrimmerOrShovel": "[E] Взять триммер | [G] Взять лопату",
+    "cleanToilet": "[E] Чистить унитаз",
+    "fixPipe": "[E] Починить трубу",
+    "returnWrench": "[E] Вернуть ключ",
+    "takeWrench": "[E] Взять ключ",
+    "attachTrailer": "[E] Прицепить прицеп",
+    "deliverTrailer": "[E] Доставить прицеп",
+    "reattachTrailer": "[E] Снова прицепить прицеп",
+    "pickUpPallet": "[E] Поднять паллету",
+    "loadPallet": "[E] Загрузить паллету",
+    "putDownBox": "[E] Поставить ящик",
+    "pickUpBoxForklift": "[E] Поднять ящик погрузчиком",
+    "fishingShop": "[E] Рыболовный магазин",
+    "lowerFork": "Нажмите [CTRL] чтобы опустить вилы",
+    "raiseFork": "Нажмите [SHIFT] чтобы поднять вилы",
+    "useForklift": "Используйте погрузчик для перемещения паллет",
+    "trunkFull": "Багажник полон! Пора в путь.",
+    "completeDeliveriesFirst": "Сначала завершите все доставки!",
+    "forkliftControls": "Погрузчик: CTRL = Опустить вилы | SHIFT = Поднять вилы",
+    "processingInProgress": "Идёт обработка...",
+    "boxFullLoad": "Ящик полон! Загрузите в грузовик или на весы.",
+    "trunkEmptyGoNpc": "Багажник пуст! Идите к NPC.",
+    "takeWrenchFromTrunk": "Возьмите ключ из багажника фургона",
+    "reattachTrailerPrompt": "[E] Снова прицепить прицеп",
+    "finishJobCount": "[E] Завершить работу ({count} очищено)",
+    "returnTool": "[E] Вернуть {tool}",
+    "takeTool": "[E] Взять {tool}",
+    "finishProcessing": "[E] Завершить обработку ({boxes} ящиков, {currency}{value})",
+    "placeBoxOnScale": "[E] Поставить ящик на весы",
+    "loadBoxToTruck": "[E] Загрузить ящик в грузовик ({count} {produce})",
+    "loadBoxToTruckTarget": "Загрузить ящик ({produce})",
+    "returnEmptyBox": "[E] Вернуть пустой ящик",
+    "takeLoadedBox": "[E] Взять загруженный ящик ({count} в грузовике)",
+    "takeHarvestBox": "[E] Взять ящик для сбора ({count}/{cap})",
+    "takeHarvestBoxEmpty": "[E] Взять ящик для сбора",
+    "polishSurface": "[E] Полировать {surface}",
+    "continuePolish": "[E] Продолжить полировку {surface}",
+    "returnAndTake": "[E] Вернуть {current} | [G] Взять {other}",
+    "deliverCount": "[E] Доставить ({current}/{total})",
+    "selectHuntingArea": "[E] Выбрать зону охоты",
+    "returnBicycle": "[E] Вернуть велосипед",
+    "takeJack": "[E] Взять домкрат",
+    "swapTire": "[E] Вернуть старое колесо и взять запаску",
+    "closeValve": "[E] Закрыть вентиль - Остановить поток воды",
+    "openValve": "[E] Открыть вентиль - Восстановить поток воды",
+    "wearHuntingClothes": "[E] Надеть охотничью одежду",
+    "placeBoxAndHarvest": "[E] Поставить ящик и собрать {produce}",
+    "harvestProduce": "[E] Собрать {produce}",
+    "castRod": "[E] Забросить удочку ({zone})",
+    "returnToSeat": "[E] Вернуться на место",
+    "clickTargetsToClean": "Нажимайте на цели для очистки!"
+  },
+  "hunting": {
+    "started": "Охота началась! Наденьте рабочую одежду и выберите зону.",
+    "newAnimals": "Появились новые животные! Продолжайте.",
+    "continueHunting": "Вы можете продолжить охоту.",
+    "weaponsGiven": "Охотничье оружие выдано!",
+    "goToArea": "Отправляйтесь в зону охоты, там появятся животные!",
+    "cantPickUp": "Вы не можете поднять это животное!",
+    "alreadyCarrying": "Вы уже что-то несёте!",
+    "failedPickUp": "Не удалось поднять животное!",
+    "noAnimalsInTrunk": "В багажнике нет животных!",
+    "trunkInUse": "Кто-то другой использует багажник!",
+    "orePickedUp": "Животное подобрано! Положите его на весы.",
+    "failedPickUpAnimal": "Не удалось поднять животное!",
+    "invalidArea": "Недопустимая зона!",
+    "areaLocked": "Эта зона заблокирована!",
+    "animalsSpawned": "Появилось {count} животных!",
+    "animalHunted": "{animal} добыт! ({weight} кг)",
+    "wildAnimalFound": "Найден дикий {animal}! ({weight} кг)",
+    "animalPickedUp": "{animal} подобран! ({weight} кг) Загрузите в транспорт.",
+    "levelRequired": "Для этой зоны нужен уровень {level}!",
+    "areaSelected": "{area} выбрана! Следуйте за маркером на карте.",
+    "processingComplete": "Обработка завершена! {weight} кг, заработано {currency}{amount}",
+    "tooFarWarning": "Вы слишком далеко от зоны охоты! Вернитесь в течение 15 секунд, иначе работа будет отменена!",
+    "abandonedTooFar": "Вы слишком далеко от зоны охоты. Работа отменена.",
+    "huntingAreaFallback": "Охотничья зона",
+    "animalFallback": "Животное",
+    "areaFallback": "Зона {index}",
+    "selectArea": "Выбрать зону: {name}",
+    "selectHuntingArea": "Выбрать охотничью зону",
+    "pickUpAnimal": "[E] Подобрать {label} ({weight} кг)",
+    "loadAnimalToVehicle": "[E] Загрузить животное в транспорт",
+    "takeAnimalFromTrunk": "[E] Достать животное из багажника",
+    "takeAnimalFromTrunkCount": "[E] Достать животное из багажника ({count})",
+    "loadAnimalWeight": "[E] Загрузить животное ({weight} кг | Грузовик: {current}/{max} кг)",
+    "finishProcessingWeight": "[E] Завершить обработку ({weight} кг)",
+    "vehicleOverweight": "~r~Транспорт перегружен! ({current}/{max} кг)",
+    "continueHint": "Выследите следующее животное в зоне охоты",
+    "vehicleOverweightDrop": "~r~Транспорт перегружен! ({current}/{max} кг) ~w~[G] Бросить тушу",
+    "trunkFullDrop": "~r~Багажник полон! ~w~[G] Бросить тушу или обработать текущий груз.",
+    "carcassDropped": "Туша брошена.",
+    "dropHint": "[G] Бросить тушу",
+    "progressTitle": "Охота",
+    "progressDetail": "Выберите зону охоты, добывайте животных, переносите туши в грузовик, затем везите их к весам.",
+    "stepSelectArea": "Выберите зону охоты на карте",
+    "stepHuntAnimal": "Добудьте животное в зоне",
+    "stepPickingUp": "Подбираем тушу",
+    "stepPickupCarcass": "Подберите мёртвое животное",
+    "stepLoadTrunk": "Загрузите тушу в грузовик",
+    "stepGoToScale": "Везите туши к весам",
+    "stepPlacingOnScale": "Кладём животное на весы",
+    "stepPlaceOnScale": "Положите животное на весы",
+    "stepProcessAnimal": "Поговорите с NPC, чтобы обработать животных",
+    "stepNewArea": "Выберите новую зону охоты"
+  },
+  "tiretechnician": {
+    "goGetJack": "Идите к грузовику и возьмите домкрат!",
+    "takingJack": "Берём домкрат...",
+    "jackTaken": "Домкрат готов! Установите его под машину.",
+    "placingJack": "Устанавливаем домкрат...",
+    "jackPlaced": "Машина поднята! Теперь снимите пробитое колесо.",
+    "removingTire": "Снимаем пробитое колесо...",
+    "tireRemoved": "Колесо снято! Верните его в грузовик и возьмите запаску.",
+    "swappingTires": "Меняем колёса...",
+    "spareTaken": "Запасное колесо готово! Установите его на машину.",
+    "installingTire": "Устанавливаем запасное колесо...",
+    "tireInstalled": "Колесо установлено! Опустите машину для завершения.",
+    "loweringVehicle": "Опускаем машину...",
+    "tireChanged": "Колесо успешно заменено!",
+    "repairCancelled": "Ремонт отменён",
+    "cantRepair": "Невозможно отремонтировать этот транспорт",
+    "finishCurrentFirst": "Сначала завершите текущий ремонт!",
+    "goToTruck": "Идите к сервисному грузовику!",
+    "returningJack": "Возвращаем домкрат...",
+    "takingSpare": "Берём запасное колесо...",
+    "needSpare": "Вам нужно запасное колесо! Сначала возьмите его из грузовика.",
+    "returnVehicle": "Верните сервисный грузовик на базу!",
+    "interactPlaceJack": "[E] Установить домкрат",
+    "interactRemoveTire": "[E] Снять пробитое колесо",
+    "interactInstallTire": "[E] Установить запасное колесо",
+    "interactLowerVehicle": "[E] Опустить машину",
+    "interactPickupJack": "[E] Поднять домкрат",
+    "interactChangeTire": "[E] Заменить пробитое колесо",
+    "interactReturnJack": "[E] Вернуть домкрат",
+    "interactReturnTire": "[E] Вернуть колесо",
+    "interactTakeJack": "[E] Взять домкрат",
+    "interactTakeSpare": "[G] Взять запасное колесо",
+    "interactTakeSpareE": "[E] Взять запасное колесо",
+    "progressTitle": "Шиномонтажник",
+    "progressDetail": "Подъезжайте к застрявшим автомобилям и меняйте им пробитые колёса.",
+    "progressTires": "Колёса ({done}/{total})",
+    "serviceTruck": "Шиномонтажный грузовик",
+    "continueHint": "Подъезжайте к следующему застрявшему автомобилю на карте",
+    "stepTakeJack": "Возьмите домкрат из грузовика",
+    "stepJackUp": "Поднимите машину на домкрате",
+    "stepRemoveFlat": "Снимите спущенное колесо",
+    "stepFitSpare": "Установите запаску",
+    "stepLowerCar": "Опустите машину",
+    "stepReturnJack": "Верните домкрат в грузовик"
+  },
+  "powerlines": {
+    "bucketInstructions": "Используйте стрелки для подъёма/опускания люльки. [E] для ремонта в зоне досягаемости.",
+    "parkNearPoles": "Припаркуйтесь у столбов и используйте люльку для доступа к проводке.",
+    "cantDriveWithBucket": "Нельзя ехать, пока люлька используется",
+    "panelRepaired": "Панель успешно отремонтирована!",
+    "panelCancelled": "Ремонт панели отменён",
+    "poleRepaired": "Телефонный столб успешно отремонтирован!",
+    "poleRepairFailed": "Ремонт столба не удался! Будьте осторожны с электричеством.",
+    "progressTitle": "Линии электропередач",
+    "bucketControls": "Управление люлькой | Вверх Вниз Влево Вправо",
+    "blipPanel": "Электрическая панель",
+    "blipPole": "Телефонный столб",
+    "blipVehicle": "Автовышка",
+    "continueHint": "Найдите следующий повреждённый столб на карте"
+  },
+  "diving": {
+    "oxygenCritical": "КРИТИЧЕСКИЙ УРОВЕНЬ КИСЛОРОДА! Немедленно всплывайте!",
+    "oxygenLow": "Кислород заканчивается! Вам стоит всплыть.",
+    "refillingTank": "Перезаправка баллона...",
+    "tankRefilled": "Баллон заправлен.",
+    "coralEmpty": "Коралл разбит, но внутри ничего нет.",
+    "trashCleaned": "Мусор убран!",
+    "failedSyncBoat": "Не удалось синхронизировать лодку. Попробуйте ещё раз.",
+    "allTasksComplete": "Все задания выполнены! Вернитесь на лодку и поднимите якорь.",
+    "anchorDropped": "Якорь брошен! Спрыгните с лодки и ныряйте.",
+    "anchorRaised": "Якорь поднят! Направляйтесь к точке доставки.",
+    "anchorRaisedEarly": "Якорь поднят! Возвращаемся раньше — оплата не будет выдана.",
+    "anchorRaisedContinue": "Якорь поднят! Вы можете снова встать на якорь в зоне погружения.",
+    "gearEquipped": "Экипировано: {gear}! ({seconds}с кислорода)",
+    "itemsSold": "{count} предметов продано! Заработано {currency}{amount}!",
+    "zoneSelected": "Выбрана зона погружения: {zone}. Отправляйтесь!",
+    "zoneInfo": "Зона погружения: {zone}",
+    "reconnected": "Переподключение к работе дайвера!",
+    "started": "Работа дайвера началась! Выберите зону и отправляйтесь к месту погружения.",
+    "progressTitle": "Дайвинг",
+    "progressDetail": "Собирайте подводные предметы на месте погружения. Ныряйте и подбирайте объекты со дна.",
+    "divingStarted": "Вы в зоне погружения! Собирайте предметы со дна.",
+    "collectingCoral": "Собираем коралл...",
+    "cleaningTrash": "Убираем мусор...",
+    "unknownZone": "Неизвестно",
+    "sellAtNpcReminder": "Продайте собранные предметы NPC-скупщику, чтобы получить оплату.",
+    "continueHint": "Найдите следующее место погружения на карте"
+  },
+  "treasurehunter": {
+    "started": "Работа охотника за сокровищами началась! Отправляйтесь к зоне поиска.",
+    "reconnected": "Переподключение к работе охотника за сокровищами!",
+    "newTarget": "Команда нашла сокровище! Назначена новая локация.",
+    "treasureFound": "Вы нашли {tier}! Заработано {currency}{value}!",
+    "someoneNearby": "Кто-то слишком близко! Отойдите подальше.",
+    "anchorDropped": "Якорь брошен! Ныряйте и ищите сокровище!",
+    "anchorRaised": "Якорь поднят! Возвращайтесь к причалу.",
+    "oxygenCritical": "КРИТИЧЕСКИЙ УРОВЕНЬ КИСЛОРОДА! Немедленно всплывайте!",
+    "oxygenLow": "Кислород заканчивается! Вам стоит всплыть.",
+    "refillingTank": "Перезаправка баллона...",
+    "tankRefilled": "Баллон заправлен.",
+    "depthWarning": "Опасная глубина! Кислород расходуется быстрее!",
+    "fakeLocation": "Ложный сигнал... Пересчитываем координаты.",
+    "penalty": "Штраф: {currency}{amount} — Лодка компании не на причале.",
+    "digging": "Раскапываем сокровище...",
+    "alreadyCollected": "Кто-то уже забрал это сокровище!",
+    "alreadySurfaced": "Сундук уже на поверхности!",
+    "notSurfaced": "Сундук ещё не на поверхности! Продолжайте копать.",
+    "someoneOpening": "Кто-то другой открывает этот сундук!",
+    "needShovel": "Вам нужна лопата! Возьмите её с лодки.",
+    "cargoLoaded": "Добыча загружена на лодку!",
+    "cargoFull": "Грузовой отсек лодки полон! Возвращайтесь к причалу для разгрузки.",
+    "stolenItem": "Вы украли добычу с другой лодки!",
+    "cargoStolenFromYou": "Кто-то украл добычу с вашей лодки!",
+    "someoneOpened": "Кто-то открыл {tier}!",
+    "stealDisabled": "Кража не включена.",
+    "noCargoHere": "Здесь нечего красть.",
+    "shovelTaken": "Лопата взята!",
+    "canFinishHint": "Собирайте ещё сокровища или вернитесь к причалу для завершения.",
+    "anchorRaisedContinue": "Якорь поднят! Отправляйтесь к следующему сокровищу или вернитесь к причалу.",
+    "progressTitle": "Охотник за сокровищами",
+    "progressDetail": "Ныряйте под воду и собирайте сундуки с сокровищами. Следуйте за сигналами трекера.",
+    "cargoProgress": "Груз: {current}/{max}",
+    "blipDock": "Причал - Разгрузка",
+    "blipTreasure": "Местоположение сокровища",
+    "continueHint": "Следуйте за трекером к следующему сундуку"
+  },
+  "metaldetector": {
+    "continueHint": "Следуй за сигналами детектора и обыщи следующую зону",
+    "started": "Смена с металлоискателем началась! Возьми детектор из грузовика и отправляйся в зону поиска.",
+    "newRound": "Новый раунд начался. Сканер откалиброван заново.",
+    "newZone": "Новая зона поиска: {zone}",
+    "teammateFound": "Твой напарник откопал предмет.",
+    "pressDig": "[E] Копать здесь",
+    "digging": "Копаем...",
+    "digCancelled": "Копание отменено.",
+    "digTooFast": "Ты копаешь слишком быстро. Сбавь темп.",
+    "exitVehicleFirst": "Выйди из транспорта, чтобы использовать детектор.",
+    "outsideZone": "Ты должен оставаться внутри отмеченной пляжной зоны.",
+    "lootFound": "Найдено: {item}! +{currency}{amount}",
+    "lootFoundItem": "Найдено: {item}! Добавлено в твой инвентарь.",
+    "unknownItem": "Неизвестный предмет",
+    "roundFinished": "Раунд завершён! Все точки в этой зоне выкопаны.",
+    "canFinishHint": "Открой опции работы у NPC, чтобы завершить или продолжить.",
+    "spotAlreadyDug": "Эта точка уже выкопана.",
+    "spotBusy": "Напарник уже копает эту точку.",
+    "takeDetectorFirst": "Сначала возьми металлоискатель из грузовика.",
+    "detectorReturned": "Детектор возвращён в грузовик.",
+    "blipSearchArea": "Зона поиска",
+    "unknownZone": "Неизвестный пляж",
+    "progressTitle": "Металлоискатель",
+    "progressDetail": "Используй детектор, чтобы находить и выкапывать скрытые металлические находки в пляжных зонах.",
+    "progressSpots": "Выкопано точек: {current}/{max}",
+    "progressValue": "Накопленная стоимость: {currency}{amount}",
+    "labelTakeTool": "[E] Взять металлоискатель",
+    "labelReturnTool": "[E] Вернуть детектор",
+    "labelPutOnBelt": "[G] Повесить детектор на пояс",
+    "labelTakeFromBelt": "[G] Взять детектор с пояса",
+    "labelTakeFromTrunk": "[E] Взять из багажника (%d)",
+    "labelNoMoreItems": "~y~В багажнике ничего не осталось.",
+    "labelLoadToTruck": "[E] Загрузить в грузовик",
+    "labelPickup": "[E] Подобрать",
+    "labelDig": "[E] Копать",
+    "labelClothesWork": "[E] Надеть рабочую одежду",
+    "labelClothesNormal": "[E] Надеть обычную одежду",
+    "labelFailNotify": "Сейчас здесь нельзя копать",
+    "returnVehicleHint": "Смена заканчивается — пригоните фургон обратно на базу, чтобы сдать его.",
+    "returnVehiclePrompt": "[E] Сдать фургон",
+    "returnVehicleBlip": "Вернуть фургон",
+    "jobFinished": "Смена окончена! Вы заработали {symbol}{earned}.",
+    "vehicleNotAtDepot": "Фургон должен быть на базе!",
+    "tooFarFromDepot": "Вы слишком далеко от базы!"
+  },
+  "delivery": {
+    "reconnected": "Переподключение к работе доставщика!",
+    "started": "Работа по доставке грузов началась!",
+    "leaderPreparing": "Лидер готовит транспорт, пожалуйста подождите...",
+    "spawnFailed": "Не удалось создать транспорт! Точка появления занята. Работа отменена.",
+    "alreadyCarryingBox": "Вы уже несёте ящик!",
+    "boxPickedUp": "Ящик взят! Загрузите его в транспорт.",
+    "notCarryingBox": "Вы не несёте ящик!",
+    "firstDelivery": "Первая точка доставки назначена! Выезжайте, когда будете готовы.",
+    "trunkFull": "Багажник полон! Пора доставлять.",
+    "boxDeliverPickup": "Ящик взят! Доставьте его клиенту.",
+    "newRound": "Новый раунд! Загрузите ящики со склада.",
+    "pickUpToContinue": "Заберите ящики у NPC для продолжения. Для завершения подъедьте к отмеченному месту и верните транспорт.",
+    "returnVehicleToFinish": "Все доставки выполнены! Верните транспорт в отмеченном месте, чтобы завершить работу.",
+    "deliveriesStarting": "Доставки начинаются!",
+    "teammateTookBox": "Напарник взял ящик",
+    "teammateReturnedBox": "Напарник вернул ящик в багажник",
+    "teammatePartialDelivery": "Напарник выполнил частичную доставку!",
+    "allComplete": "Все доставки выполнены! Возвращайтесь на базу.",
+    "progressTitle": "Доставка",
+    "progressDetail": "Доставляйте посылки клиентам по всему городу. Загружайте ящики и доставляйте по адресам.",
+    "loadCapacity": "Загрузите ящики со склада! Вместимость: {capacity} ящиков",
+    "vehicleReadyLoad": "Транспорт готов! Загрузите ящики со склада. Вместимость: {capacity} ящиков",
+    "subtaskDeliver": "Доставить посылки ({current}/{total})",
+    "subtaskLoad": "Загрузить ящики на складе ({current}/{total})",
+    "boxLoaded": "Ящик загружен! ({current}/{total})",
+    "boxReturned": "Ящик возвращён! ({count} в багажнике)",
+    "partialDelivery": "Частичная доставка! ({current}/{total}) +{amount} | Принесите ещё ящик.",
+    "deliveryDone": "Доставка выполнена! +{amount} | Все доставки завершены! Возвращайтесь на базу.",
+    "deliveryDoneRemaining": "Доставка выполнена! +{amount} | Осталось: {remaining}",
+    "deliveryFailed": "Доставка не удалась!",
+    "couldNotContinue": "Не удалось продолжить!",
+    "couldNotPickUp": "Не удалось взять ящик!",
+    "couldNotLoad": "Не удалось загрузить ящик!",
+    "couldNotReturn": "Не удалось вернуть ящик!",
+    "teammateLoaded": "Напарник загрузил ящик ({current}/{total})",
+    "teammateDelivered": "Напарник выполнил доставку! Осталось: {remaining}",
+    "itemLabel": "Доставки",
+    "continueHint": "Заберите следующую посылку и доставьте её"
+  },
+  "cardetailer": {
+    "started": "Работа автодетейлера началась! Экипируйтесь и поезжайте к машинам клиентов.",
+    "newCars": "Назначены новые машины! Продолжайте детейлинг.",
+    "wandEquipped": "Моечная насадка экипирована!",
+    "wandReturned": "Моечная насадка возвращена в фургон.",
+    "clothEquipped": "Полировочная тряпка экипирована!",
+    "clothReturned": "Полировочная тряпка возвращена в фургон.",
+    "takeWandFirst": "Сначала возьмите моечную насадку!",
+    "needCloth": "Вам нужна полировочная тряпка! Возьмите её из фургона.",
+    "failedStartPolish": "Не удалось начать полировку!",
+    "tooFar": "Слишком далеко! Подойдите ближе и попробуйте снова.",
+    "carDetailed": "Машина обработана!",
+    "carWashed": "Машина вымыта! Отполируйте её для бонусной оплаты.",
+    "hoseLimit": "Шланг не достаёт! Держитесь ближе к фургону.",
+    "carDetailedTeammate": "Машина обработана напарником!",
+    "carWashedTeammate": "Машина вымыта напарником!",
+    "carPolished": "Машина отполирована! Отличная работа!",
+    "carPolishedTeammate": "Машина отполирована напарником!",
+    "returnToDepot": "Вернитесь на базу для завершения работы.",
+    "spotRightFrontDoor": "Правая передняя дверь",
+    "spotLeftFrontDoor": "Левая передняя дверь",
+    "spotHood": "Капот",
+    "spotTrunk": "Багажник",
+    "spotRightRearDoor": "Правая задняя дверь",
+    "spotLeftRearDoor": "Левая задняя дверь",
+    "spotHoodRight": "Капот справа",
+    "spotHoodLeft": "Капот слева",
+    "toolWand": "Насадка",
+    "toolCloth": "Тряпка",
+    "carsDetailed": "Машин обработано",
+    "progressTitle": "Автодетейлер",
+    "progressDetail": "Мойте и полируйте машины клиентов. Используйте моечную насадку для мытья, затем полируйте тряпкой.",
+    "carLabel": "Машина #{index}",
+    "subtaskWashed": "{car} вымыта",
+    "subtaskPolished": "{car} отполирована",
+    "subtaskDetailed": "{car} обработана",
+    "spotFallback": "Место",
+    "continueHint": "Подъезжайте к следующей машине и начните детейлинг",
+    "spotHoodCenter": "Центр капота",
+    "spotRoof": "Крыша",
+    "spotRoofLeft": "Крыша слева",
+    "spotTrunkRight": "Багажник справа",
+    "spotTrunkLeft": "Багажник слева",
+    "spotFrontFenderRight": "Переднее крыло справа",
+    "spotFrontFenderLeft": "Переднее крыло слева",
+    "spotDoorRight": "Правая дверь",
+    "spotDoorRightFront": "Правая передняя дверь",
+    "spotDoorLeft": "Левая дверь",
+    "spotDoorLeftFront": "Левая передняя дверь",
+    "spotRearFenderRight": "Заднее крыло справа",
+    "spotRearFenderLeft": "Заднее крыло слева"
+  },
+  "cleaner": {
+    "started": "Работа уборщика началась! Наденьте рабочую одежду и возьмите швабру.",
+    "toolMop": "Швабра",
+    "progressTitle": "Уборщик",
+    "progressDetail": "Очищайте грязные пятна, отмеченные на карте, с помощью швабры. Подойдите к пятну и нажмите [E] для очистки.",
+    "itemLabel": "Грязное пятно",
+    "blipLabel": "Грязное пятно",
+    "finishItemLabel": "Пятен очищено",
+    "cleanPrompt": "[E] Очистить пятно ({current}/{total})",
+    "subtaskClean": "Очистить все пятна ({current}/{total})",
+    "continueHint": "Отправляйтесь к следующему пятну на карте"
+  },
+  "windowscleaner": {
+    "started": "Работа мойщика окон началась! Наденьте рабочую одежду и возьмите губку.",
+    "toolSponge": "Губка",
+    "progressTitle": "Мойщик окон",
+    "progressDetail": "Мойте грязные окна в каждой локации. Используйте губку для протирки отмеченных мест.",
+    "dirtyWindow": "Грязное окно",
+    "dirtyWindowBlip": "Грязное окно #%d",
+    "windowsCleaned": "Очищено окон",
+    "cleanWindowProgress": "[E] Очистить окно ({hits}/{required})",
+    "continueHint": "Найдите следующее грязное окно на карте"
+  },
+  "powerwash": {
+    "started": "Работа по мойке началась! Наденьте рабочую одежду и возьмите насадку.",
+    "takeWandFirst": "Сначала возьмите моечную насадку!",
+    "tooFarFromSpot": "Слишком далеко от места!",
+    "toolWand": "Моечная насадка",
+    "progressTitle": "Мойка под давлением",
+    "progressDetail": "Отмывайте грязные места, отмеченные на карте, с помощью моечной насадки. Наведите на пятно и удерживайте [LMB] для распыления.",
+    "dirtySpot": "Грязное пятно",
+    "dirtySpotBlip": "Грязное пятно #%d",
+    "spotsCleaned": "Очищено пятен",
+    "continueHint": "Перейдите к следующему грязному месту на карте"
+  },
+  "forklift": {
+    "newCrates": "Прибывают новые ящики...",
+    "preparingForklifts": "Подготовка погрузчиков...",
+    "failedSpawnForklifts": "Не удалось создать погрузчики!",
+    "beltFull": "Конвейер полон! Сначала активируйте его.",
+    "earnedReward": "+{symbol}{money}, +{xp} XP",
+    "modeBeltToShelf": "Берите с конвейера, ставьте на полки!",
+    "modeCratesToBelt": "Переместите ящики на конвейер!",
+    "newRoundBeltToShelf": "Новый раунд: Берите с конвейера, ставьте на полки!",
+    "newRoundStarting": "Начинается новый раунд!",
+    "progressTitle": "Погрузчик",
+    "progressDetailToShelf": "Перемещайте ящики с помощью погрузчика. Берите ящики и ставьте их на полки.",
+    "progressDetailToBelt": "Перемещайте ящики с помощью погрузчика. Берите ящики и доставляйте их на конвейер.",
+    "onlyLeaderCanCancel": "Только лидер может отменить работу",
+    "deliveredCrates": "Доставлено ящиков",
+    "continueHint": "Заберите следующий ящик погрузчиком"
+  },
+  "warehouse": {
+    "newTrucks": "Прибывают новые грузовики...",
+    "failedInitSession": "Не удалось инициализировать сессию!",
+    "preparingVehicles": "Подготовка транспорта...",
+    "failedSpawnForklift": "Не удалось создать погрузчик!",
+    "truckOnTheWay": "Грузовик в пути...",
+    "truckReady": "Грузовик готов к загрузке!",
+    "truckReadyWithOrder": "Грузовик готов! Загрузить: {boxes} ящиков, {pallets} паллет",
+    "boxesProgress": "Ящики: {current}/{total}",
+    "palletsProgress": "Паллеты: {current}/{total}",
+    "orderInfo": "Заказ: {boxes} ящиков, {pallets} паллет",
+    "deliveryCompleteReward": "Доставка выполнена! +${money}, +{xp} XP",
+    "newOrder": "Новый заказ: {boxes} ящиков, {pallets} паллет",
+    "newOrderWithRemaining": "Новый заказ: {boxes} ящиков, {pallets} паллет (осталось {remaining} грузовиков)",
+    "deliveryComplete": "Доставка выполнена!",
+    "takeBoxToTruck": "Отнесите ящик к грузовику!",
+    "truckNotReady": "Грузовик не готов",
+    "truckNotFound": "Грузовик не найден",
+    "getInForklift": "Сядьте в погрузчик",
+    "alreadyCarrying": "Вы уже что-то несёте",
+    "boxDropped": "Ящик брошен",
+    "progressTitle": "Склад",
+    "progressDetail": "Загружайте грузы на грузовик. Используйте погрузчик или переносите вручную.",
+    "completedTrucks": "Завершено грузовиков",
+    "continueHint": "Загрузите следующий паллет на грузовик"
+  },
+  "landscaping": {
+    "failedInit": "Не удалось инициализировать работу!",
+    "toolNotAvailable": "Инструмент недоступен!",
+    "needTrimmer": "Для стрижки кустов нужен триммер!",
+    "trimmingCancelled": "Стрижка куста отменена",
+    "needShovel": "Для копки газонов нужна лопата!",
+    "diggingCancelled": "Копка газона отменена",
+    "newTasks": "Назначены новые задания по садоводству!",
+    "allComplete": "Все задания выполнены! Возвращайтесь на базу.",
+    "onlyLeaderFinish": "Только лидер может завершить работу!",
+    "notAllBushes": "Не все кусты подстрижены!",
+    "notAllLawns": "Не все газоны обработаны!",
+    "jobStarted": "Работа ландшафтного дизайнера началась! Подстригите {bushes} кустов и обработайте {lawns} газонов. Возьмите инструменты из грузовика.",
+    "bushTrimmed": "Куст подстрижен! Кустов: {bushes}, газонов: {lawns} осталось",
+    "lawnDug": "Газон обработан! Кустов: {bushes}, газонов: {lawns} осталось",
+    "toolTrimmer": "Триммер",
+    "toolShovel": "Лопата",
+    "progressTitle": "Ландшафтные работы",
+    "progressDetail": "Ухаживайте за территорией. Стригите кусты и обрабатывайте газоны на каждом участке.",
+    "toolFallback": "Инструмент",
+    "continueHint": "Отправляйтесь к следующему участку для обслуживания"
+  },
+  "farmer": {
+    "alreadyHarvested": "Растение уже собрано!",
+    "failedStartHarvest": "Не удалось начать сбор урожая",
+    "plantsRespawned": "Растения снова выросли! {count} готовы к сбору.",
+    "progressTitle": "Фермер",
+    "progressDetail": "Собирайте урожай с полей. Срывайте растения и загружайте продукцию в транспорт.",
+    "jobLabel": "Фермер",
+    "produceLabel": "предметов",
+    "vehicleBlip": "Фермерский транспорт",
+    "subtaskHarvest": "Собрать растения ({current}/{total})",
+    "continueHint": "Подойдите к следующему растению и соберите урожай",
+    "stepTakeBox": "Возьмите ящик из грузовика",
+    "stepHarvesting": "Продолжайте собирать растение",
+    "stepHarvestPlant": "Подойдите к растению и соберите его",
+    "stepLoadBoxToTruck": "Загрузите полный ящик в грузовик",
+    "stepGoToScale": "Везите ящики к весам",
+    "stepPlaceOnScale": "Положите ящик на весы",
+    "stepProcessProduce": "Поговорите с NPC, чтобы обработать продукцию",
+    "stepNewRound": "Возьмите ящик и начните новый раунд"
+  },
+  "fishing": {
+    "failedSpawnBoat": "Не удалось создать рыболовную лодку!",
+    "started": "Рыбалка началась! Садитесь в лодку и отправляйтесь в зону ловли.",
+    "failedSyncBoat": "Не удалось синхронизировать рыболовную лодку!",
+    "noFishToSell": "Нечего продавать!",
+    "noWater": "Вода не найдена! Держитесь ближе к воде.",
+    "fishOnLine": "Рыба на крючке! Нажмите [E] чтобы подсечь!",
+    "fishGotAway": "Рыба сорвалась! Слишком медленно.",
+    "fishEscaped": "Рыба сорвалась!",
+    "castCancelled": "Рыбалка отменена.",
+    "outfitEquipped": "Рыболовная одежда надета!",
+    "cantUseInventoryRod": "Нельзя использовать удочку из инвентаря в режиме работы!",
+    "alreadyCast": "Вы уже забросили удочку!",
+    "mustBeNearWater": "Вы должны быть у воды!",
+    "completed": "Рыбалка успешно завершена!",
+    "freeModeDisabled": "Свободный режим отключён!",
+    "noBait": "Нет наживки! Купите наживку в рыболовном магазине.",
+    "itemPurchased": "{amount}x {item} куплено! ({currency}{price})",
+    "fishSold": "{count} рыб продано! Заработано {currency}{amount}!",
+    "progressTitle": "Рыбалка",
+    "progressDetail": "Ловите рыбу на рыболовном месте. Забрасывайте удочку и подсекайте.",
+    "subtaskFishCaught": "Рыбы поймано: {count}",
+    "shopTitle": "Рыболовный магазин",
+    "selectRod": "Выберите удочку",
+    "selectBait": "Выберите наживку",
+    "sellTitle": "Продать рыбу",
+    "baitStats": "{price} | Шанс: +{chance}%",
+    "fishPriceRange": "{min} - {max} диапазон",
+    "continueHint": "Перейдите к следующему месту ловли и забросьте удочку"
+  },
+  "cleanup": {
+    "started": "Работа по сбору мусора началась! Сначала наденьте рабочую одежду, затем собирайте мусор из контейнеров нажатием [E] и загружайте в грузовик.",
+    "alreadyCarrying": "Вы уже что-то несёте!",
+    "binEmpty": "Этот контейнер пуст!",
+    "noCleanupInBin": "В контейнере нет мусора!",
+    "animFailed": "Не удалось загрузить анимацию!",
+    "bagPickedUp": "Мешок с мусором подобран! Идите к задней части грузовика и нажмите [E] чтобы выбросить.",
+    "notHoldingBag": "У вас нет мешка с мусором!",
+    "thrownIn": "Мусор выброшен!",
+    "noCleanupInTruck": "В грузовике нет мусора!",
+    "truckReady": "Мусоровоз готов!",
+    "keepWorking": "Продолжайте работу! Ищите новые мусорные контейнеры.",
+    "truckTooFar": "Грузовик слишком далеко или недоступен. Подойдите ближе к грузовику.",
+    "truckFullBagDropped": "Грузовик полон! Мешок с мусором брошен. Отвезите грузовик к точке разгрузки.",
+    "jobEnded": "Работа по сбору мусора завершена.",
+    "truckFullDrive": "Грузовик полон! ({count}/{max}) Отвезите грузовик к точке разгрузки на карте.",
+    "spawnBlocked": "Зона появления заблокирована! Уберите транспорт и попробуйте снова.",
+    "vehicleSpawnFailed": "Не удалось создать транспорт!",
+    "areaSelected": "Выбрана зона: {area}. Отправляйтесь в зону на карте и собирайте мусор из контейнеров нажатием [E].",
+    "progressTitle": "Сбор мусора",
+    "progressDetail": "Собирайте мусорные контейнеры по маршруту. Подбирайте каждый контейнер и загружайте в грузовик.",
+    "deliveryBlip": "Разгрузка мусора",
+    "collectBinsProgress": "Собрать контейнеры ({current}/{max})",
+    "dumpDeliveries": "Разгрузок: {count}",
+    "hintCollectBins": "Ищите мусорные контейнеры поблизости и нажмите [E] чтобы собрать мешок.",
+    "hintCollectBinsTarget": "Ищите мусорные контейнеры поблизости и используйте третий глаз чтобы собрать мешок.",
+    "bagPickedUpTarget": "Мешок поднят! Идите к задней части грузовика и используйте третий глаз чтобы забросить его.",
+    "areaSelectedTarget": "Выбрана зона {area}. Идите в зону на карте и собирайте мусор из контейнеров третьим глазом.",
+    "continueHint": "Подъезжайте к следующему контейнеру на маршруте"
+  },
+  "dogwalking": {
+    "anotherWalk": "Начинается ещё одна прогулка!",
+    "dogGotAway": "Ваша собака убежала! Работа провалена.",
+    "dogDied": "Ваша собака погибла! Работа отменена.",
+    "dogNeedsToGo": "Вашей собаке нужно по делам! Подождите...",
+    "dogBrokeFree": "О нет! Ваша собака сорвалась с поводка! Скорее поймайте её!",
+    "dogPickedUp": "Вы подобрали собаку! Ждите остальных.",
+    "returnDog": "Отличная прогулка! Теперь верните собаку хозяину.",
+    "caughtDog": "Уф! Вы поймали собаку.",
+    "noDogAssigned": "Вам не назначена собака!",
+    "alreadyClaimed": "Вы уже забрали свою собаку!",
+    "poopAlreadyCleaned": "Уже убрано!",
+    "notYourDogPoop": "Это не от вашей собаки!",
+    "walkNotComplete": "Прогулка ещё не завершена!",
+    "reconnected": "Переподключение к работе выгула собак!",
+    "started": "Работа по выгулу собак началась! Отправляйтесь к дому клиента.",
+    "walkYourDog": "Выгуляйте собаку {distance}м! Приятной прогулки.",
+    "dogDelivered": "Собака доставлена! Заработано {symbol}{payment} и {xp} XP",
+    "progressTitle": "Выгул собак",
+    "progressDetail": "Выгуливайте собак по маршрутам. Следите за ними и убирайте за ними.",
+    "dogDiedNoPayment": "Собака погибла! Работа отменена — оплаты не будет.",
+    "blipHome": "Дом клиента",
+    "clientHomeFallback": "Дом клиента",
+    "continueHint": "Заберите следующую собаку и начните прогулку",
+    "pickupTaskLabel": "Заберите следующую собаку",
+    "pickupDescription": "Отправляйтесь к собаке в отмеченном месте на карте и нажмите [E], чтобы начать прогулку.",
+    "tooFarFromHome": "Вы слишком далеко от дома владельца!"
+  },
+  "harvest": {
+    "processingInProgress": "Идёт обработка, пожалуйста подождите!",
+    "noBoxesOnScale": "На весах нет ящиков для обработки!",
+    "processingComplete": "Обработка завершена! {count} ящиков, заработано {currency}{amount}",
+    "boxLoadedScale": "Ящик загружен! {count} {produce}, стоимость: {currency}{value} — Езжайте к весам для обработки!",
+    "boxLoaded": "Ящик загружен! {count} {produce}, стоимость: {currency}{value}",
+    "boxPlaced": "Ящик установлен! {count} {produce}, стоимость: {currency}{value}",
+    "produceHarvested": "{produce} собрано! ({current}/{total})",
+    "produceAddFailed": "Не удалось добавить {produce} в ящик!"
+  },
+  "miner": {
+    "started": "Работа шахтёра началась! Наденьте рабочую одежду и возьмите оборудование.",
+    "newRocks": "Появились новые камни! Продолжайте добычу.",
+    "orePickedUp": "Руда {ore} подобрана! Загрузите в грузовик.",
+    "rocksRemaining": "Осталось {count} камней для добычи.",
+    "processingInProgress": "Идёт обработка, пожалуйста подождите!",
+    "noRocksOnScale": "На весах нет руды для обработки!",
+    "processingComplete": "Обработка завершена! {count} руды, заработано {currency}{amount}",
+    "pickaxeReturned": "Кирка возвращена в багажник",
+    "returnVehicleBlip": "Вернуть грузовик",
+    "returnVehicleHint": "Смена заканчивается — верните грузовик на базу.",
+    "returnVehiclePrompt": "[E] Сдать грузовик",
+    "vehicleNotAtDepot": "Грузовик должен быть на базе!",
+    "tooFarFromDepot": "Вы слишком далеко от базы!",
+    "labelProcessing": "~y~Идёт обработка...",
+    "labelFinish": "[E] Завершить обработку (%d руды)",
+    "labelPlaceOnScale": "[E] Положить руду на весы",
+    "labelLoadToTruck": "[E] Загрузить руду в грузовик",
+    "labelReturnTool": "[E] Вернуть кирку",
+    "labelTakeTool": "[E] Взять кирку",
+    "labelTakeFromTrunk": "[E] Взять руду из багажника (%d)",
+    "labelNoMoreItems": "~y~Руды больше нет! Идите к NPC для завершения.",
+    "labelPickup": "[E] Подобрать руду",
+    "labelBreakAction": "[E] Добыть руду",
+    "labelPutOnBelt": "[G] Повесить кирку на пояс",
+    "labelTakeFromBelt": "[G] Взять кирку с пояса",
+    "labelClothesWork": "[E] Надеть рабочую одежду",
+    "labelClothesNormal": "[E] Надеть обычную одежду",
+    "labelFailNotify": "Не удалось начать добычу",
+    "continueHint": "Найдите следующее месторождение руды и добудьте его",
+    "progressTitle": "Шахтёр",
+    "progressDetail": "Разбивайте камни ради руды, переносите руду в грузовик, затем везите её к весам и обрабатывайте.",
+    "stepTakeTool": "Возьмите кирку из багажника",
+    "stepBreaking": "Продолжайте разбивать камень",
+    "stepBreakRock": "Разбейте камень, чтобы добыть руду",
+    "stepPickupOre": "Подберите руду с земли",
+    "stepLoadTrunk": "Загрузите руду в грузовик",
+    "stepGoToScale": "Везите руду к весам",
+    "stepPlaceOnScale": "Положите руду на весы",
+    "stepProcessOre": "Поговорите с NPC, чтобы обработать руду",
+    "stepNewRound": "Возьмите кирку и начните новый раунд"
+  },
+  "lumberjack": {
+    "started": "Работа лесоруба началась!",
+    "newTrees": "Появились новые деревья! Продолжайте рубку.",
+    "takeHatchetFirst": "Сначала возьмите топор!",
+    "anotherPlayerCutting": "Другой игрок уже рубит это дерево!",
+    "alreadyCarryingLog": "Вы уже несёте бревно!",
+    "alreadyPickedUp": "Кто-то другой уже подобрал это!",
+    "logPickedUp": "Бревно подобрано! Загрузите в грузовик.",
+    "hatchetTaken": "Топор взят!",
+    "treesRemaining": "Осталось {count} деревьев для рубки.",
+    "axeDropBonus": "{name} | Бонус выпадения: +{bonus}%",
+    "treeCutDown": "Дерево {name} срублено! Соберите брёвна.",
+    "levelRequired": "Для этого дерева нужен уровень {required}! (Текущий: {current})",
+    "processingComplete": "Обработка завершена! {count} брёвен, заработано {currency}{amount}",
+    "labelProcessing": "~y~Идёт обработка...",
+    "labelFinish": "[E] Завершить обработку (%d брёвен)",
+    "labelPlaceOnScale": "[E] Положить бревно на обработку",
+    "labelLoadToTruck": "[E] Загрузить бревно в грузовик",
+    "labelReturnTool": "[E] Вернуть топор",
+    "labelTakeTool": "[E] Взять топор",
+    "labelTakeFromTrunk": "[E] Взять бревно из багажника (%d)",
+    "labelNoMoreItems": "~y~Брёвен больше нет! Идите к NPC для завершения.",
+    "labelPickup": "[E] Подобрать бревно",
+    "labelBreakAction": "[E] Срубить дерево",
+    "labelPutOnBelt": "[G] Повесить топор на пояс",
+    "labelTakeFromBelt": "[G] Взять топор с пояса",
+    "labelClothesWork": "[E] Надеть рабочую одежду",
+    "labelClothesNormal": "[E] Надеть обычную одежду",
+    "labelFailNotify": "Не удалось начать рубку",
+    "processingInProgress": "Идёт обработка, пожалуйста подождите!",
+    "noLogsOnScale": "Нет брёвен на обработке!",
+    "hatchetReturned": "Топор возвращён!",
+    "treeFallback": "Дерево",
+    "serverDenied": "Сервер отклонил",
+    "continueHint": "Найдите следующее дерево и начните рубку",
+    "progressTitle": "Лесоруб",
+    "progressDetail": "Рубите деревья ради брёвен, переносите их в грузовик, затем везите к весам для обработки.",
+    "stepTakeAxe": "Возьмите топор из багажника",
+    "stepCutting": "Продолжайте рубить дерево",
+    "stepCutTree": "Срубите дерево, чтобы получить брёвна",
+    "stepPickupLog": "Подберите бревно с земли",
+    "stepLoadTrunk": "Загрузите бревно в грузовик",
+    "stepGoToScale": "Везите брёвна к весам для обработки",
+    "stepPlaceOnScale": "Положите бревно на весы",
+    "stepProcessLog": "Поговорите с NPC, чтобы обработать брёвна",
+    "stepNewRound": "Возьмите топор и начните новый раунд"
+  },
+  "scrapyard": {
+    "started": "Работа на свалке началась! Наденьте рабочую одежду и возьмите оборудование.",
+    "newScraps": "Прибыл новый металлолом! Продолжайте.",
+    "putCrowbarOnBelt": "Сначала повесьте монтировку на пояс!",
+    "scrapPickedUp": "Металлолом подобран! Загрузите в транспорт.",
+    "scrapsRemaining": "Осталось {count} металлолома.",
+    "processingInProgress": "Идёт обработка, пожалуйста подождите!",
+    "noScrapsOnScale": "На весах нет металлолома!",
+    "processingComplete": "Обработка завершена! {count} металлолома, заработано {currency}{amount}",
+    "crowbarReturned": "Монтировка возвращена в транспорт",
+    "workClothesEquipped": "Рабочая одежда надета!",
+    "normalClothes": "Переоделись в обычную одежду",
+    "scrapBlip": "Металлолом #{index}",
+    "labelProcessing": "~y~Идёт обработка...",
+    "labelFinish": "[E] Завершить обработку (%d металлолома)",
+    "labelPlaceOnScale": "[E] Положить металлолом на весы",
+    "labelLoadToTruck": "[E] Загрузить металлолом в транспорт",
+    "labelReturnTool": "[E] Вернуть монтировку",
+    "labelTakeTool": "[E] Взять монтировку",
+    "labelTakeFromTrunk": "[E] Взять металлолом из багажника (%d)",
+    "labelNoMoreItems": "~y~Металлолома не осталось! Идите к NPC.",
+    "labelPickup": "[E] Подобрать металлолом",
+    "labelBreakAction": "[E] Разобрать металлолом",
+    "labelPutOnBelt": "[G] Повесить монтировку на пояс",
+    "labelTakeFromBelt": "[G] Взять монтировку с пояса",
+    "labelClothesWork": "[E] Надеть рабочую одежду",
+    "labelClothesNormal": "[E] Надеть обычную одежду",
+    "labelFailNotify": "Не удалось начать разборку",
+    "continueHint": "Подъезжайте к следующей куче металлолома на карте",
+    "progressTitle": "Свалка",
+    "progressDetail": "Разбирайте кучи металлолома, переносите детали в грузовик, затем везите их к весам и обрабатывайте.",
+    "stepTakeTool": "Возьмите монтировку из багажника",
+    "stepBreaking": "Продолжайте разбирать металлолом",
+    "stepBreakScrap": "Разберите кучу металлолома",
+    "stepPickupScrap": "Подберите детали металлолома с земли",
+    "stepLoadTrunk": "Загрузите металлолом в грузовик",
+    "stepGoToScale": "Везите металлолом к весам",
+    "stepPlaceOnScale": "Положите металлолом на весы",
+    "stepProcessScrap": "Поговорите с NPC, чтобы обработать металлолом",
+    "stepNewRound": "Возьмите монтировку и начните новый раунд"
+  },
+  "fruitpicker": {
+    "treesReset": "Все деревья обновлены! Продолжайте сбор фруктов.",
+    "noMoreFruit": "На этом дереве больше нет фруктов!",
+    "treeOnCooldown": "Нет спелых фруктов. Обновится через ~%{minutes} мин — попробуй другое дерево.",
+    "jobLabel": "Сборщик фруктов",
+    "produceLabel": "фруктов",
+    "vehicleBlip": "Фруктовый грузовик",
+    "placeBoxAndPick": "[E] Поставить ящик и собрать {fruit} (осталось {remaining})",
+    "pickFruit": "[E] Собрать {fruit} (осталось {remaining})",
+    "orangeTreeBlip": "Апельсиновое дерево",
+    "appleTreeBlip": "Яблоня",
+    "progressTitle": "Сборщик фруктов",
+    "fruitFallback": "Фрукт",
+    "continueHint": "Перейдите к следующему дереву и начните сбор",
+    "progressDetail": "Возьмите ящик, наполните его с деревьев, загрузите полные ящики в грузовик, затем везите к весам.",
+    "stepTakeBox": "Возьмите ящик из грузовика",
+    "stepPicking": "Продолжайте собирать фрукты",
+    "stepPickFruit": "Подойдите к дереву и соберите фрукты",
+    "stepLoadBoxToTruck": "Загрузите полный ящик в грузовик",
+    "stepGoToScale": "Везите ящики к весам",
+    "stepPlaceOnScale": "Положите ящик на весы",
+    "stepProcessFruit": "Поговорите с NPC, чтобы обработать фрукты",
+    "stepNewRound": "Возьмите ящик и начните новый раунд"
+  },
+  "newspaper": {
+    "settingsNotFound": "Настройки доставки газет не найдены!",
+    "started": "Доставка газет началась!",
+    "noAvailableRoutes": "Нет доступных маршрутов!",
+    "leaderSelecting": "Лидер выбирает велосипеды и зону, пожалуйста подождите...",
+    "progressTitle": "Газеты",
+    "progressDetail": "Доставляйте газеты к домам по маршруту. Бросайте газеты к каждому порогу.",
+    "outsideTimeWindow": "Доставка газет доступна только с {startHour}:00 до {endHour}:00 (сейчас: {current}:00)",
+    "continueHint": "Перейдите к следующей улице доставки",
+    "getOnCycle": "Сядьте на велосипед, чтобы начать доставку"
+  },
+  "taxi": {
+    "lookingForCustomer": "Ищем следующего клиента...",
+    "taxiReady": "Такси готово! Ждите вызова клиента...",
+    "taxiModelFailed": "Не удалось загрузить модель такси!",
+    "passengerWokeUp": "Пассажир проснулся!",
+    "passengerBoarded": "Пассажир сел! Ожидание пункта назначения...",
+    "newCustomer": "Новый клиент! Отправляйтесь к месту посадки.",
+    "passengerDied": "Ваш клиент погиб! Поездка отменена.",
+    "returnTaxiToDepot": "Верните такси на базу для завершения смены.",
+    "destinationSet": "Пункт назначения установлен! Расстояние: {distance}м, Бонусное время: {bonus}с",
+    "vehicleDamaged": "Транспорт повреждён! Бонусное время -{penalty}с",
+    "jobEnded": "Работа таксиста завершена! Поездок: {rides}, Всего заработано: {symbol}{earned}",
+    "hornPassengerSleeping": "[СИГНАЛ] Пассажир спит!",
+    "pickUpPassenger": "[E] Посадить пассажира",
+    "dropOffPassenger": "[E] Высадить пассажира",
+    "returnTaxiEndShift": "[E] Вернуть такси и завершить смену",
+    "getBackInTaxi": "[F] Вернитесь в такси!",
+    "tooFarFromDepot": "Вы слишком далеко от депо",
+    "tooFarFromDropoff": "Вы слишком далеко от точки высадки",
+    "progressTitle": "Такси",
+    "progressDetail": "Забирайте пассажиров и доставляйте их к месту назначения. Ведите машину аккуратно, чтобы получить бонус за время.",
+    "stagePickup": "Заберите пассажира",
+    "stageDropoff": "Высадите пассажира",
+    "stageDepot": "Верните такси в депо",
+    "ridesCompleted": "Поездок завершено: {count}",
+    "meterBonusTime": "бонус {seconds}с",
+    "statCustomers": "Доставлено пассажиров",
+    "statEarnings": "Всего заработано"
+  },
+  "trucker": {
+    "illegalAccepted": "Нелегальный маршрут принят! Будьте осторожны...",
+    "trailerLost": "Прицеп потерян! Доставка провалена.",
+    "failedReconnect": "Не удалось переподключиться к работе дальнобойщика!",
+    "reconnected": "Переподключение к работе дальнобойщика!",
+    "failedGetData": "Не удалось получить данные работы!",
+    "started": "Работа дальнобойщика началась! Отправляйтесь к месту получения прицепа.",
+    "truckReady": "Грузовик готов! Садитесь.",
+    "truckModelFailed": "Не удалось загрузить модель грузовика!",
+    "trailerModelFailed": "Не удалось загрузить модель прицепа!",
+    "trailerSpawnBlocked": "Точка появления прицепа заблокирована! Повтор через 5 секунд...",
+    "trailerSpawnStillBlocked": "Точка появления прицепа всё ещё заблокирована! Создаём в любом случае.",
+    "trailerAttachedWaiting": "Прицеп прицеплен! Ожидание других игроков...",
+    "trailerAttachedWaitRoute": "Прицеп прицеплен! Ожидание назначения маршрута...",
+    "trailerDetached": "Прицеп отцепился! Вернитесь и прицепите его снова!",
+    "needToBeInTruck": "Вам нужно быть в грузовике!",
+    "trailerGone": "Прицеп исчез! Работа провалена.",
+    "trailerReattached": "Прицеп снова прицеплен! Продолжайте доставку.",
+    "failedReattach": "Не удалось прицепить прицеп. Попробуйте ещё раз.",
+    "noTrailerNearby": "Рядом нет прицепа!",
+    "failedAttach": "Не удалось прицепить прицеп. Попробуйте ещё раз.",
+    "noTrailerAttached": "Прицеп не прицеплен!",
+    "tooFarToDeliver": "Прицеп находится не в зоне доставки!",
+    "perfectDelivery": "Прицеп доставлен в идеальном состоянии! Верните грузовик на базу.",
+    "mustBeInTruck": "Вы должны быть в грузовике!",
+    "notJobTruck": "Это не рабочий грузовик!",
+    "truckReturned": "Грузовик возвращён! Ожидание итогов...",
+    "waitingForTrailers": "Ожидание прицепки прицепов другими игроками...",
+    "leaderAcceptedIllegal": "Лидер принял нелегальный маршрут! Будьте осторожны...",
+    "leaderChoseNormal": "Лидер выбрал обычный маршрут.",
+    "returnTruckToDepot": "Верните грузовик на базу.",
+    "newDeliveryRoute": "Назначен новый маршрут доставки!",
+    "truckReturnedWaiting": "Грузовик возвращён! Ожидание возврата грузовиков другими игроками...",
+    "youLeftJob": "Вы покинули работу.",
+    "headToTrailer": "Отправляйтесь к отмеченному месту для получения прицепа!",
+    "trailerDestroyed": "Прицеп уничтожен! Доставка провалена.",
+    "trailerDeliveredCondition": "Прицеп доставлен с {condition}% состоянием. Верните грузовик на базу.",
+    "routeAssigned": "Маршрут назначен ({route})! Расстояние: {distance}м",
+    "progressTitle": "Дальнобойщик",
+    "progressDetail": "Доставляйте грузы по штату. Ведите аккуратно, чтобы избежать повреждений.",
+    "stagePickup": "Забрать прицеп",
+    "stageDelivery": "Доставить груз",
+    "stageReturn": "Вернуть грузовик",
+    "stageWaiting": "Ожидание...",
+    "deliveriesCompleted": "Завершено доставок: {count}",
+    "blipPickupTrailer": "Забрать прицеп",
+    "blipDeliverCargo": "Доставить груз",
+    "blipIllegalDelivery": "Нелегальная доставка",
+    "blipReturnTruck": "Вернуть грузовик",
+    "aPlayerFallback": "Игрок",
+    "teammateFallback": "Напарник",
+    "playerReturnedTruck": "{name} вернул свой грузовик.",
+    "teammateTruck": "Грузовик игрока {name}",
+    "continueHint": "Заберите следующий груз со склада"
+  },
+  "repair": {
+    "failedInit": "Не удалось инициализировать работу!",
+    "newTasks": "Назначены новые задания по ремонту!",
+    "allComplete": "Все ремонты завершены! Возвращайтесь для завершения работы.",
+    "jobStarted": "Работа {label} началась! Почините {tasks}.",
+    "taskRepaired": "{task} отремонтирован! Осталось: {remaining}"
+  },
+  "target": {
+    "interact": "Взаимодействовать",
+    "pickup": "Поднять",
+    "finishProcessing": "Завершить обработку",
+    "finishProcessingPrompt": "[E] Завершить обработку",
+    "processing": "Обработка...",
+    "placeOnScale": "Поставить на весы",
+    "loadToTruck": "Погрузить в грузовик",
+    "returnTool": "Вернуть инструмент",
+    "takeTool": "Взять инструмент",
+    "takeFromTrunk": "Взять из багажника",
+    "changeClothes": "Сменить одежду",
+    "changeClothesPrompt": "[E] Сменить одежду",
+    "changeClothesNormal": "[E] Надеть обычную одежду",
+    "changeClothesWork": "[E] Надеть рабочую одежду",
+    "cleanItemPrompt": "[E] Очистить предмет",
+    "finishJobPrompt": "[E] Завершить работу",
+    "pickFruit": "Собрать фрукт",
+    "pickUpLog": "Поднять бревно",
+    "returnItem": "Вернуть предмет",
+    "cutTree": "Срубить {name}",
+    "pickUpCarcass": "Поднять {label} ({weight} кг)"
+  },
+  "blip": {
+    "buyer": "Покупатель",
+    "tree": "Дерево",
+    "animal": "Животное",
+    "ore": "Руда",
+    "divePoint": "Точка погружения",
+    "returnBoat": "Вернуть лодку",
+    "customerCar": "Машина клиента",
+    "delivery": "Доставка",
+    "returnVehicle": "Вернуть транспорт",
+    "returnToFinish": "Вернуться для завершения",
+    "nextTask": "Следующее задание",
+    "cargoDepot": "Грузовой склад",
+    "deliveryPoint": "Точка доставки",
+    "returnToDepot": "Вернуться на склад"
+  },
+  "server": {
+    "cannotInviteJobActive": "Нельзя приглашать игроков во время активной работы!",
+    "cannotInviteSoloJob": "Эта работа только для одного игрока — нельзя приглашать других!",
+    "playerAlreadyInvited": "Этому игроку уже отправлено приглашение!",
+    "inviteCooldown": "Подождите {seconds} секунд перед повторным приглашением этого игрока.",
+    "identifierNotReady": "Данные вашего игрока ещё не загружены, попробуйте снова.",
+    "targetIdentifierNotReady": "Данные целевого игрока ещё не загружены, попробуйте снова.",
+    "cannotKickJobActive": "Нельзя исключать игроков во время активной работы!",
+    "lobbyClosed": "Лобби закрыто: Владелец ушёл",
+    "lobbyClosedDisconnect": "Лобби закрыто: Владелец отключился",
+    "jobCompletedLobbyDisbanded": "Работа завершена! Лобби расформировано.",
+    "qualityBonus": "Качество: {quality}! x{multiplier} бонус",
+    "poopPenalty": "Вы не убрали за собакой! -{symbol}{amount}",
+    "poopCleanBonus": "Убрано за собакой! +{symbol}{amount}",
+    "lawnRaked": "Газон обработан! +{symbol}{money} +{xp} XP",
+    "truckReturnFailed": "Вы слишком долго возвращали грузовик! Отмечено как провал.",
+    "repairComplete": "{item} отремонтирован! +{symbol}{money} +{xp} XP",
+    "referralLimitReached": "Вы достигли дневного лимита реферального бонуса",
+    "referralBonus": "Реферальный бонус! +{xp} XP за совместную игру!",
+    "lobbyNoLongerExists": "Это лобби больше не существует.",
+    "lobbyPlayerReconnected": "{name} переподключился к лобби.",
+    "lobbyPlayerDisconnected": "{name} отключился.",
+    "lobbyOwnerDisconnectedNewOwner": "Владелец отключился. {name} — новый владелец.",
+    "lobbyClosedNoReplacement": "Лобби закрыто: не найден новый владелец.",
+    "jobEndedOwnerLeft": "Работа завершена: Лидер покинул работу.",
+    "toolEfficiencyUpgrade": "Улучшение эффективности инструмента",
+    "jobCancelled": "Работа отменена! Лобби расформировано.",
+    "jobCancelledByAdmin": "Ваша работа была отменена администратором.",
+    "noActiveJob": "У вас нет активной работы.",
+    "jobCancelledAdmin": "Отменена работа '{jobId}' для игрока {playerId}.",
+    "cancelJobUsage": "Использование: /canceljob [playerId] - Отменить свою или чужую активную работу",
+    "routeLevelInsufficient": "Ваш уровень недостаточен для этого маршрута. (Уровень {current}/{required})",
+    "routeLevelInsufficientMember": "{name} не соответствует требуемому уровню для этого маршрута. (Уровень {current}/{required})",
+    "globalEventCompleted": "Глобальное событие завершено: {title}!"
+  },
+  "shifts": {
+    "morning": "Утренняя смена",
+    "afternoon": "Дневная смена",
+    "evening": "Вечерняя смена",
+    "night": "Ночная смена"
+  },
+  "perks": {
+    "trunk_capacity": {
+      "name": "Тяжеловес",
+      "desc": "Увеличивает вместимость багажника транспорта."
+    },
+    "strong_muscles": {
+      "name": "Сильные мышцы",
+      "desc": "Увеличивает скорость движения при переноске тяжестей."
+    },
+    "negotiator": {
+      "name": "Переговорщик",
+      "desc": "Увеличивает заработок с работ."
+    },
+    "xp_boost": {
+      "name": "Быстрый ученик",
+      "desc": "Увеличивает получаемый XP за все действия на работе."
+    },
+    "speed_demon": {
+      "name": "Скоростной демон",
+      "desc": "Улучшает характеристики двигателя рабочего транспорта."
+    },
+    "store_discount": {
+      "name": "Серебряный язык",
+      "desc": "Скидки в магазинах вне работы. (Пассивное)"
+    },
+    "breath_capacity": {
+      "name": "Глубокий вдох",
+      "desc": "Увеличивает ёмкость дыхания под водой. (Пассивное)"
+    },
+    "repair_speed": {
+      "name": "Механик",
+      "desc": "Ремонт транспорта быстрее. (Пассивное)"
+    },
+    "notEnoughPoints": "Недостаточно очков перков!"
+  },
+  "serverError": {
+    "notInJob": "Не на работе",
+    "noLobby": "Нет лобби",
+    "noSession": "Нет сессии",
+    "configError": "Ошибка конфигурации",
+    "invalidIndex": "Неверный индекс",
+    "levelRequired": "Требуется уровень {level}!",
+    "rateLimited": "Подождите перед повторной попыткой.",
+    "tooFarFromNpc": "Вы должны быть рядом с NPC.",
+    "notEnoughMoney": "Недостаточно денег!",
+    "invalidAmount": "Неверное количество!",
+    "invalidProduct": "Неверный товар!",
+    "purchaseFailed": "Произошла ошибка при покупке.",
+    "sellFailed": "Произошла ошибка при продаже.",
+    "alreadyBroken": "Уже разрушено",
+    "anotherPlayerBreaking": "Другой игрок уже разрушает это",
+    "alreadyPickedUp": "Уже подобрано",
+    "alreadyUnlocked": "Уже разблокировано",
+    "invalidZone": "Неверная зона!",
+    "alreadyCollected": "Этот объект уже собран",
+    "someoneElseWorking": "Кто-то другой уже работает над этим!",
+    "someoneElseDelivering": "Кто-то другой уже доставляет",
+    "invalidAction": "Неверное действие",
+    "invalidType": "Неверный тип",
+    "alreadySold": "Уже продано!",
+    "noItemsToSell": "Нечего продавать!",
+    "alreadyCarrying": "Вы уже несёте",
+    "notCarrying": "Вы ничего не несёте",
+    "trunkFull": "Багажник полон",
+    "trunkCapacityFull": "Вместимость багажника исчерпана",
+    "noItemsInTrunk": "В багажнике нет предметов",
+    "alreadyDelivered": "Уже доставлено",
+    "invalidDeliveryPoint": "Неверная точка доставки",
+    "invalidLocation": "Неверное местоположение",
+    "objectNotFound": "Объект не найден",
+    "vehicleAlreadySpawned": "Транспорт уже создан",
+    "failedCreateVehicle": "Не удалось создать транспорт",
+    "vehicleEntityNotFound": "Объект транспорта не найден",
+    "missingParameters": "Отсутствуют параметры",
+    "invalidSpawnData": "Неверные данные появления",
+    "jobConfigNotFound": "Конфигурация работы не найдена",
+    "noToolAssigned": "Вам не назначен инструмент",
+    "notYourTool": "Это не ваш инструмент",
+    "toolAlreadyTaken": "Инструмент уже взят",
+    "toolBeingTaken": "Инструмент берёт другой игрок",
+    "positionBeingTaken": "Позицию занимает другой игрок",
+    "noPositionAvailable": "Нет доступной позиции",
+    "noActiveTruck": "Нет активного грузовика",
+    "truckNotLoading": "Грузовик не загружается",
+    "boxesFull": "Ящики заполнены",
+    "palletsFull": "Паллеты заполнены",
+    "invalidJob": "Неверная работа",
+    "jobEnding": "Работа завершается",
+    "fishingNoFishFound": "Рыба не найдена!",
+    "fishingInvalidRod": "Неверная удочка!",
+    "fishingNoRod": "У вас нет удочки!",
+    "fishingFishCaughtSingle": "{label} поймана!",
+    "fishingFishCaughtMultiple": "{count}x {label} поймано!",
+    "fishingNoFishToSell": "Нечего продавать!",
+    "divingZoneAlreadySelected": "Зона уже выбрана!",
+    "deliveryNotInLoadingPhase": "Не в фазе загрузки",
+    "deliveryNotInDeliveryPhase": "Не в фазе доставки",
+    "deliveryAlreadyCarryingBox": "Вы уже несёте ящик",
+    "deliveryNotCarryingBox": "Вы не несёте ящик",
+    "deliveryNoBoxesInTrunk": "В багажнике нет ящиков",
+    "deliveryCompleteFirst": "Сначала завершите все доставки!",
+    "deliverySpawnFailed": "Не удалось создать транспорт, работа отменена.",
+    "huntingSomeoneElsePickingUp": "Кто-то другой уже подбирает это!",
+    "huntingAnimalNotFound": "Животное не найдено",
+    "huntingAnimalStillAlive": "Животное ещё живо",
+    "huntingAnimalAlreadyPickedUp": "Это животное уже подобрано",
+    "cleanupTruckFullDeliverFirst": "Грузовик полон! Сначала разгрузите.",
+    "cleanupBinAlreadyEmpty": "Контейнер уже пуст",
+    "cleanupNoBagsLeft": "Мешков не осталось",
+    "warehouseBoxAlreadyTaken": "Ящик уже взят",
+    "warehousePalletAlreadyTaken": "Паллета уже взята",
+    "warehouseTruckNotReady": "Грузовик не готов",
+    "forkliftWrongMode": "Неверный режим",
+    "forkliftInvalidCrate": "Неверный ящик",
+    "forkliftCrateAlreadyTaken": "Ящик уже взят",
+    "forkliftConveyorBusy": "Конвейер занят",
+    "forkliftInvalidSlot": "Неверный слот",
+    "forkliftSlotOccupied": "Слот занят",
+    "forkliftNotCarrying": "Ничего не несёте",
+    "forkliftInvalidCrateData": "Неверные данные ящика",
+    "forkliftNoCratesOnBelt": "Нет ящиков на конвейере",
+    "forkliftNeed3Crates": "Нужно 3 ящика на конвейере",
+    "forkliftEmptySlot": "Пустой слот",
+    "forkliftAlreadyCarrying": "Уже несёте",
+    "forkliftInvalidTarget": "Неверная цель",
+    "forkliftInvalidShelfTarget": "Неверная полка",
+    "forkliftShelfOccupied": "Полка занята",
+    "newspaperLevelRequiredArea": "Для этой зоны требуется уровень {level}!",
+    "newspaperDailyCompleted": "Ежедневное задание уже выполнено! Сброс через: {hours}ч {minutes}м",
+    "adminSetLevelUsage": "Использование: /setjoblevel [playerID] [jobId] [level]",
+    "adminLevelRange": "Уровень должен быть от 1 до 10",
+    "adminLevelSet": "Установлен уровень {level} {jobId} для игрока {playerId}",
+    "adminYourLevelSet": "Ваш уровень {jobId} установлен на {level}",
+    "adminXpManagerNotAvailable": "XPManager недоступен",
+    "adminGetLevelUsage": "Использование: /getjoblevel [playerID] [jobId]",
+    "adminPlayerJobLevel": "Игрок {playerId} - {jobId}: Уровень {level} (XP: {xp}/{maxXp})",
+    "adminToolSelected": "Выбрано: {tool}",
+    "adminToolUnlocked": "Инструмент разблокирован!",
+    "alreadyHarvested": "Уже собрано",
+    "noLootAvailable": "Нет доступной добычи",
+    "tooFar": "Вы слишком далеко",
+    "tooFarFromDeliveryPoint": "Вы слишком далеко от точки доставки"
+  },
+  "jobs": {
+    "miner": {
+      "name": "Шахтёр",
+      "subtitle": "Подземные горные работы",
+      "interactionText": "Начать работу шахтёра",
+      "blipLabel": "Работа шахтёра",
+      "locationLabel": "Карьер",
+      "description": [
+        "Добывайте ценную руду из подземных залежей",
+        "Используйте горное оборудование для разрушения камней",
+        "Транспортируйте материалы на перерабатывающий завод",
+        "Работайте в команде для бонусных наград"
+      ],
+      "items": {
+        "pickaxe": "Кирка",
+        "miningHelmet": "Шахтёрский шлем",
+        "oreCart": "Вагонетка для руды"
+      },
+      "oreTypes": {
+        "coal": "Уголь",
+        "iron": "Железо",
+        "gold": "Золото",
+        "emerald": "Изумруд",
+        "diamond": "Алмаз"
+      },
+      "preview": {
+        "step1Title": "Начните работу",
+        "step1Desc": [
+          "Подойдите к NPC у карьера",
+          "Нажмите E чтобы открыть меню работы",
+          "Выберите зону и нажмите Начать"
+        ],
+        "step2Title": "Переоденьтесь",
+        "step2Desc": [
+          "Направляйтесь к бытовке рядом",
+          "Зайдите внутрь чтобы надеть рабочую одежду",
+          "Обычная одежда вернётся после завершения работы"
+        ],
+        "step3Title": "Возьмите инструменты",
+        "step3Desc": [
+          "Подойдите к открытому багажнику рабочего транспорта",
+          "Возьмите кирку — каждый игрок берёт свою",
+          "До 4 инструментов для совместной игры"
+        ],
+        "step4Title": "Добывайте руду",
+        "step4Desc": [
+          "Идите в зону добычи с киркой",
+          "Прицельтесь в камень и ударьте",
+          "Камни раскалываются на части руды"
+        ],
+        "step5Title": "Соберите руду",
+        "step5Desc": [
+          "Подберите руду после разрушения камня",
+          "Вы несёте руду в руках",
+          "Отнесите её к багажнику транспорта"
+        ],
+        "step6Title": "Загрузите транспорт",
+        "step6Desc": [
+          "Отнесите руду к багажнику транспорта",
+          "Руда автоматически загрузится в грузовик",
+          "Заполните багажник и езжайте к зоне обработки"
+        ],
+        "step7Title": "Обработка на весах",
+        "step7Desc": [
+          "Подъедьте к точке обработки",
+          "Положите руду на весы",
+          "Каждый предмет взвешивается и вы получаете оплату"
+        ],
+        "step8Title": "Сбор NPC",
+        "step8Desc": [
+          "После обработки NPC-грузчик забирает предметы",
+          "NPC подходит и забирает обработанную руду",
+          "Вы получаете деньги и XP за каждую партию"
+        ]
+      }
+    },
+    "lumberjack": {
+      "name": "Лесоруб",
+      "subtitle": "Лесозаготовительные работы",
+      "interactionText": "Начать работу лесоруба",
+      "blipLabel": "Работа лесоруба",
+      "locationLabel": "Paleto Forest",
+      "description": [
+        "Рубите деревья в отведённых зонах",
+        "Собирайте и загружайте брёвна в грузовик",
+        "Доставляйте брёвна на лесопилку для обработки",
+        "Работайте в команде для бонусных наград"
+      ],
+      "items": {
+        "hatchet": "Топор",
+        "safetyVest": "Защитный жилет",
+        "pickupTruck": "Пикап"
+      },
+      "treeTypes": {
+        "pine": "Сосна",
+        "oak": "Дуб",
+        "maple": "Клён"
+      },
+      "drops": {
+        "wood": "Древесина",
+        "pineResin": "Сосновая смола",
+        "woodShavings": "Стружка",
+        "oakWood": "Дубовая древесина",
+        "oakBark": "Дубовая кора",
+        "mapleWood": "Кленовая древесина",
+        "mapleSap": "Кленовый сок"
+      },
+      "preview": {
+        "step1Title": "Начните работу",
+        "step1Desc": [
+          "Подойдите к NPC у леса",
+          "Нажмите E чтобы открыть меню работы",
+          "Выберите зону и нажмите Начать"
+        ],
+        "step2Title": "Переоденьтесь",
+        "step2Desc": [
+          "Направляйтесь к бытовке рядом",
+          "Зайдите внутрь чтобы надеть рабочую одежду",
+          "Обычная одежда вернётся после завершения работы"
+        ],
+        "step3Title": "Возьмите инструменты",
+        "step3Desc": [
+          "Подойдите к открытому багажнику рабочего транспорта",
+          "Возьмите топор — каждый игрок берёт свой",
+          "До 4 инструментов для совместной игры"
+        ],
+        "step4Title": "Рубите деревья",
+        "step4Desc": [
+          "Идите в лесную зону с топором",
+          "Прицельтесь в дерево и рубите",
+          "Деревья падают и оставляют брёвна"
+        ],
+        "step5Title": "Соберите бревно",
+        "step5Desc": [
+          "Подберите бревно после рубки дерева",
+          "Вы несёте бревно в руках",
+          "Отнесите его к багажнику транспорта"
+        ],
+        "step6Title": "Загрузите транспорт",
+        "step6Desc": [
+          "Отнесите бревно к багажнику транспорта",
+          "Бревно автоматически загрузится в грузовик",
+          "Заполните багажник и езжайте к зоне обработки"
+        ],
+        "step7Title": "Обработка на весах",
+        "step7Desc": [
+          "Подъедьте к точке обработки",
+          "Положите брёвна на весы",
+          "Каждый предмет взвешивается и вы получаете оплату"
+        ],
+        "step8Title": "Сбор NPC",
+        "step8Desc": [
+          "После обработки NPC-грузчик забирает предметы",
+          "NPC подходит и забирает обработанные брёвна",
+          "Вы получаете деньги и XP за каждую партию"
+        ]
+      }
+    },
+    "scrapyard": {
+      "name": "Работник свалки",
+      "subtitle": "Переработка металлолома",
+      "interactionText": "Начать работу на свалке",
+      "blipLabel": "Свалка",
+      "locationLabel": "Свалка",
+      "description": [
+        "Разбирайте старые машины и спасайте ценные детали",
+        "Используйте монтировку для разделения металлических деталей",
+        "Загружайте собранный металлолом на грузовик",
+        "Взвешивайте и продавайте на перерабатывающей станции"
+      ],
+      "items": {
+        "crowbar": "Монтировка",
+        "workGloves": "Рабочие перчатки",
+        "scrapMetal": "Металлолом"
+      },
+      "preview": {
+        "step1Title": "Начните работу",
+        "step1Desc": [
+          "Подойдите к NPC на свалке",
+          "Нажмите E чтобы открыть меню работы",
+          "Выберите зону и нажмите Начать"
+        ],
+        "step2Title": "Переоденьтесь",
+        "step2Desc": [
+          "Направляйтесь к бытовке рядом",
+          "Зайдите внутрь чтобы надеть рабочую одежду",
+          "Обычная одежда вернётся после завершения работы"
+        ],
+        "step3Title": "Возьмите инструменты",
+        "step3Desc": [
+          "Подойдите к открытому багажнику рабочего транспорта",
+          "Возьмите монтировку — каждый игрок берёт свою",
+          "До 4 инструментов для совместной игры"
+        ],
+        "step4Title": "Разбирайте металлолом",
+        "step4Desc": [
+          "Идите к старым машинам на площадке",
+          "Используйте монтировку для разборки деталей",
+          "Автомобильные остовы разбираются на части"
+        ],
+        "step5Title": "Соберите металлолом",
+        "step5Desc": [
+          "Подберите детали после разборки",
+          "Отнесите их к транспорту",
+          "Загрузите в багажник"
+        ],
+        "step6Title": "Загрузите транспорт",
+        "step6Desc": [
+          "Отнесите металлолом к багажнику транспорта",
+          "Металлолом автоматически загрузится в грузовик",
+          "Заполните багажник и езжайте к зоне обработки"
+        ],
+        "step7Title": "Обработка на весах",
+        "step7Desc": [
+          "Подъедьте к точке обработки",
+          "Положите металлолом на весы",
+          "Каждый предмет взвешивается и вы получаете оплату"
+        ],
+        "step8Title": "Сбор NPC",
+        "step8Desc": [
+          "После обработки NPC-грузчик забирает предметы",
+          "NPC подходит и забирает обработанный металлолом",
+          "Вы получаете деньги и XP за каждую партию"
+        ]
+      }
+    },
+    "hunting": {
+      "name": "Охотник",
+      "subtitle": "Профессиональная охота",
+      "interactionText": "Начать работу охотника",
+      "blipLabel": "Охота",
+      "locationLabel": "Охота",
+      "description": [
+        "Возьмите оружие и отправляйтесь на охоту",
+        "Охотьтесь на оленей, кабанов и кроликов",
+        "Загружайте добычу в транспорт",
+        "Отвезите на весы и продайте"
+      ],
+      "items": {
+        "huntingRifle": "Охотничья винтовка",
+        "binoculars": "Бинокль",
+        "huntingBag": "Охотничья сумка"
+      },
+      "weapons": {
+        "tier1": "Охотничья винтовка",
+        "tier2": "Винтовка с затвором",
+        "tier3": "Тяжёлая снайперская винтовка"
+      },
+      "animals": {
+        "wildBoar": "Дикий кабан",
+        "rabbit": "Кролик",
+        "coyote": "Койот",
+        "mountainLion": "Горный лев",
+        "hawk": "Ястреб",
+        "crow": "Ворона"
+      },
+      "areas": {
+        "forest": "Paleto Forest",
+        "desert": "Sandy Shores Desert",
+        "swamp": "Болото"
+      },
+      "blips": {
+        "forestArea": "Лесная зона",
+        "desertArea": "Пустынная зона",
+        "swampArea": "Болотная зона"
+      },
+      "preview": {
+        "step1Title": "Начните работу",
+        "step1Desc": [
+          "Подойдите к NPC у охотничьего домика",
+          "Нажмите E чтобы открыть меню работы",
+          "Выберите зону и нажмите Начать"
+        ],
+        "step2Title": "Переоденьтесь",
+        "step2Desc": [
+          "Направляйтесь к бытовке рядом",
+          "Зайдите внутрь чтобы надеть охотничью одежду",
+          "Обычная одежда вернётся после завершения работы"
+        ],
+        "step3Title": "Получите транспорт",
+        "step3Desc": [
+          "Подойдите к охотничьему грузовику",
+          "Вы автоматически получите оружие",
+          "Езжайте к охотничьим угодьям"
+        ],
+        "step4Title": "Охотьтесь на животных",
+        "step4Desc": [
+          "Исследуйте зону охоты и найдите животных",
+          "Используйте винтовку для охоты на кабанов, кроликов и других",
+          "У каждого животного разный вес и стоимость"
+        ],
+        "step5Title": "Несите животное",
+        "step5Desc": [
+          "Подойдите к убитому животному чтобы поднять его",
+          "Несите его на плечах к грузовику",
+          "У каждого животного разный вес"
+        ],
+        "step6Title": "Загрузите транспорт",
+        "step6Desc": [
+          "Отнесите добычу к грузовику",
+          "Загрузите животных в кузов грузовика",
+          "Заполните грузовик и езжайте на обработку"
+        ],
+        "step7Title": "Обработка и продажа",
+        "step7Desc": [
+          "Подъедьте к перерабатывающей станции",
+          "Положите добычу на весы",
+          "NPC-грузчик заберёт обработанные товары"
+        ]
+      }
+    },
+    "farmer": {
+      "name": "Фермер",
+      "subtitle": "Сбор фруктов и овощей",
+      "interactionText": "Начать работу фермера",
+      "blipLabel": "Овощная ферма",
+      "locationLabel": "Ферма Grapeseed",
+      "description": [
+        "Возьмите ящик из транспорта",
+        "Собирайте овощи с грядок",
+        "Заполните ящик и загрузите в грузовик",
+        "Доставьте полные ящики на перерабатывающую станцию"
+      ],
+      "items": {
+        "harvestCrate": "Ящик для урожая",
+        "freshProduce": "Свежая продукция",
+        "deliveryTruck": "Грузовик для доставки"
+      },
+      "produceTypes": {
+        "lettuce": "Салат",
+        "pumpkin": "Тыква",
+        "melon": "Дыня",
+        "watermelon": "Арбуз"
+      },
+      "preview": {
+        "step1Title": "Начните работу",
+        "step1Desc": [
+          "Подойдите к NPC на ферме",
+          "Нажмите E чтобы открыть меню работы",
+          "Выберите зону и нажмите Начать"
+        ],
+        "step2Title": "Переоденьтесь",
+        "step2Desc": [
+          "Направляйтесь к бытовке рядом",
+          "Зайдите внутрь чтобы надеть рабочую одежду",
+          "Обычная одежда вернётся после завершения работы"
+        ],
+        "step3Title": "Получите транспорт",
+        "step3Desc": [
+          "Подойдите к рабочему транспорту рядом",
+          "Возьмите пустой ящик из грузовика",
+          "Езжайте на поле для начала сбора"
+        ],
+        "step4Title": "Собирайте растения",
+        "step4Desc": [
+          "Подойдите к растению и взаимодействуйте для сбора",
+          "С каждого растения можно собрать свежую продукцию",
+          "Заполните ящик перед возвращением"
+        ],
+        "step5Title": "Несите продукцию",
+        "step5Desc": [
+          "Поднимите заполненный ящик",
+          "Отнесите его к транспорту",
+          "Загрузите в кузов грузовика"
+        ],
+        "step6Title": "Загрузите транспорт",
+        "step6Desc": [
+          "Отнесите полный ящик к грузовику",
+          "Загрузите его в кузов",
+          "Заполните грузовик и езжайте к зоне обработки"
+        ],
+        "step7Title": "Обработка и продажа",
+        "step7Desc": [
+          "Подъедьте к перерабатывающей станции",
+          "Поставьте ящики на весы",
+          "NPC-грузчик заберёт обработанные товары"
+        ]
+      }
+    },
+    "fruitpicker": {
+      "name": "Сборщик фруктов",
+      "subtitle": "Сбор фруктов",
+      "interactionText": "Начать работу по сбору фруктов",
+      "blipLabel": "Фруктовая роща",
+      "locationLabel": "Фруктовая роща",
+      "description": [
+        "Возьмите ящик из транспорта",
+        "Идите к фруктовым деревьям и собирайте апельсины и яблоки",
+        "Заполните ящик и загрузите в грузовик",
+        "Доставьте полные ящики на перерабатывающую станцию"
+      ],
+      "items": {
+        "harvestCrate": "Ящик для урожая",
+        "freshOranges": "Свежие апельсины",
+        "deliveryTruck": "Грузовик для доставки"
+      },
+      "produceTypes": {
+        "orange": "Апельсин",
+        "apple": "Яблоко"
+      },
+      "qualityTiers": {
+        "common": "Обычное",
+        "fresh": "Свежее",
+        "premium": "Премиум",
+        "organic": "Органическое"
+      },
+      "preview": {
+        "step1Title": "Начните работу",
+        "step1Desc": [
+          "Подойдите к NPC у апельсиновой рощи",
+          "Нажмите E чтобы открыть меню работы",
+          "Выберите зону и нажмите Начать"
+        ],
+        "step2Title": "Переоденьтесь",
+        "step2Desc": [
+          "Направляйтесь к бытовке рядом",
+          "Зайдите внутрь чтобы надеть рабочую одежду",
+          "Обычная одежда вернётся после завершения работы"
+        ],
+        "step3Title": "Получите транспорт",
+        "step3Desc": [
+          "Подойдите к рабочему транспорту рядом",
+          "Возьмите пустой ящик из грузовика",
+          "Езжайте к апельсиновым деревьям для сбора"
+        ],
+        "step4Title": "Собирайте апельсины",
+        "step4Desc": [
+          "Подойдите к апельсиновому дереву",
+          "Потянитесь и соберите апельсины",
+          "Заполните ящик перед возвращением"
+        ],
+        "step5Title": "Несите ящик",
+        "step5Desc": [
+          "Поднимите заполненный ящик",
+          "Отнесите его к транспорту",
+          "Загрузите в кузов грузовика"
+        ],
+        "step6Title": "Загрузите транспорт",
+        "step6Desc": [
+          "Отнесите полный ящик к грузовику",
+          "Загрузите его в кузов",
+          "Заполните грузовик и езжайте на обработку"
+        ],
+        "step7Title": "Обработка и продажа",
+        "step7Desc": [
+          "Подъедьте к перерабатывающей станции",
+          "Поставьте ящики на весы",
+          "NPC-грузчик заберёт обработанные товары"
+        ]
+      }
+    },
+    "cleaner": {
+      "name": "Уборщик улиц",
+      "subtitle": "Служба городской уборки",
+      "interactionText": "Начать работу уборщика",
+      "blipLabel": "Городская уборка",
+      "locationLabel": "База городской уборки",
+      "description": [
+        "Возьмите швабру из багажника транспорта",
+        "Идите к грязным местам, отмеченным на карте",
+        "Очищайте пятна с помощью швабры",
+        "Вернитесь для получения оплаты"
+      ],
+      "items": {
+        "mop": "Швабра",
+        "dirtStain": "Грязное пятно",
+        "serviceVan": "Служебный фургон"
+      },
+      "areas": {
+        "downtown": "Центр города"
+      },
+      "preview": {
+        "step1Title": "Начните работу",
+        "step1Desc": [
+          "Подойдите к NPC на базе уборки",
+          "Нажмите E чтобы открыть меню работы",
+          "Выберите маршрут и нажмите Начать"
+        ],
+        "step2Title": "Переоденьтесь",
+        "step2Desc": [
+          "Направляйтесь к бытовке рядом",
+          "Зайдите внутрь чтобы надеть рабочую одежду",
+          "Обычная одежда вернётся после завершения работы"
+        ],
+        "step3Title": "Возьмите инструменты",
+        "step3Desc": [
+          "Подойдите к багажнику рабочего транспорта",
+          "Возьмите швабру — каждый игрок берёт свою",
+          "До 4 инструментов для совместной игры"
+        ],
+        "step4Title": "Езжайте к рабочей зоне",
+        "step4Desc": [
+          "Сядьте в транспорт и следуйте по GPS",
+          "Езжайте к отмеченным грязным местам",
+          "На каждом маршруте несколько пятен для очистки"
+        ],
+        "step5Title": "Очищайте пятна",
+        "step5Desc": [
+          "Подойдите к грязному пятну со шваброй",
+          "Нажимайте на появляющиеся цели для очистки",
+          "Каждое пятно требует нескольких нажатий"
+        ],
+        "step6Title": "Завершите работу",
+        "step6Desc": [
+          "После очистки всех пятен вернитесь на базу",
+          "Поговорите с NPC для получения оплаты",
+          "Бонус за полное прохождение маршрута"
+        ]
+      }
+    },
+    "powerwash": {
+      "name": "Мойщик под давлением",
+      "subtitle": "Служба мойки под давлением",
+      "interactionText": "Начать работу мойщика",
+      "blipLabel": "Мойка под давлением",
+      "locationLabel": "База мойки под давлением",
+      "description": [
+        "Возьмите моечную насадку из транспорта",
+        "Идите к грязным местам, отмеченным на карте",
+        "Удерживайте LMB для распыления и очистки поверхностей",
+        "Вернитесь для получения оплаты"
+      ],
+      "items": {
+        "pressureWand": "Моечная насадка",
+        "dirtyStain": "Грязное пятно",
+        "washVan": "Моечный фургон"
+      },
+      "preview": {
+        "step1Title": "Начните работу",
+        "step1Desc": [
+          "Подойдите к NPC на базе мойки",
+          "Нажмите E чтобы открыть меню работы",
+          "Выберите маршрут и нажмите Начать"
+        ],
+        "step2Title": "Переоденьтесь",
+        "step2Desc": [
+          "Направляйтесь к бытовке рядом",
+          "Зайдите внутрь чтобы надеть рабочую одежду",
+          "Обычная одежда вернётся после завершения работы"
+        ],
+        "step3Title": "Возьмите инструменты",
+        "step3Desc": [
+          "Подойдите к рабочему транспорту",
+          "Возьмите моечную насадку — каждый игрок берёт свою",
+          "До 4 инструментов для совместной игры"
+        ],
+        "step4Title": "Езжайте к рабочей зоне",
+        "step4Desc": [
+          "Сядьте в транспорт и следуйте по GPS",
+          "Езжайте к отмеченным грязным местам",
+          "На каждом маршруте несколько пятен для очистки"
+        ],
+        "step5Title": "Отмывайте пятна",
+        "step5Desc": [
+          "Наведите моечную насадку на грязную поверхность",
+          "Удерживайте левую кнопку мыши для распыления воды",
+          "Продолжайте распылять пока пятно полностью не исчезнет"
+        ],
+        "step6Title": "Завершите работу",
+        "step6Desc": [
+          "После очистки всех пятен вернитесь на базу",
+          "Зайдите в маркер для получения оплаты",
+          "Бонус за полное прохождение маршрута"
+        ]
+      }
+    },
+    "windowscleaner": {
+      "name": "Мойщик окон",
+      "subtitle": "Служба мойки окон",
+      "interactionText": "Начать работу мойщика окон",
+      "blipLabel": "Мойка окон",
+      "locationLabel": "База мойки окон",
+      "description": [
+        "Возьмите губку из транспорта",
+        "Идите к окнам, отмеченным на карте",
+        "Очищайте грязные места на окнах",
+        "Вернитесь для получения оплаты"
+      ],
+      "items": {
+        "sponge": "Губка",
+        "windowDirt": "Грязь на окне",
+        "cleaningVan": "Моечный фургон"
+      },
+      "preview": {
+        "step1Title": "Начните работу",
+        "step1Desc": [
+          "Подойдите к NPC на базе мойки",
+          "Нажмите E чтобы открыть меню работы",
+          "Выберите маршрут и нажмите Начать"
+        ],
+        "step2Title": "Переоденьтесь",
+        "step2Desc": [
+          "Направляйтесь к бытовке рядом",
+          "Зайдите внутрь чтобы надеть рабочую одежду",
+          "Обычная одежда вернётся после завершения работы"
+        ],
+        "step3Title": "Возьмите инструменты",
+        "step3Desc": [
+          "Подойдите к рабочему транспорту",
+          "Возьмите губку — каждый игрок берёт свою",
+          "До 4 инструментов для совместной игры"
+        ],
+        "step4Title": "Езжайте к рабочей зоне",
+        "step4Desc": [
+          "Сядьте в транспорт и следуйте по GPS",
+          "Езжайте к отмеченным окнам",
+          "На каждом маршруте несколько грязных окон"
+        ],
+        "step5Title": "Мойте окна",
+        "step5Desc": [
+          "Подойдите к грязному окну с губкой",
+          "Нажимайте на появляющиеся цели для протирки",
+          "Каждое окно требует нескольких нажатий"
+        ],
+        "step6Title": "Завершите работу",
+        "step6Desc": [
+          "После мойки всех окон вернитесь на базу",
+          "Поговорите с NPC для получения оплаты",
+          "Бонус за полное прохождение маршрута"
+        ]
+      }
+    },
+    "cardetailer": {
+      "name": "Автодетейлер",
+      "subtitle": "Мобильный детейлинг автомобилей",
+      "interactionText": "Начать работу автодетейлера",
+      "blipLabel": "Детейлинг авто",
+      "locationLabel": "База детейлинга",
+      "description": [
+        "Возьмите моечную насадку из транспорта",
+        "Езжайте к машинам клиентов, отмеченным на карте",
+        "Вымойте каждую машину моечной насадкой",
+        "Отполируйте и натрите воском для бонусной оплаты"
+      ],
+      "items": {
+        "pressureWand": "Моечная насадка",
+        "waxCloth": "Восковая тряпка",
+        "serviceVan": "Служебный фургон"
+      },
+      "preview": {
+        "step1Title": "Начните работу",
+        "step1Desc": [
+          "Подойдите к NPC на базе детейлинга",
+          "Нажмите E чтобы открыть меню работы",
+          "Примите работу для начала"
+        ],
+        "step2Title": "Переоденьтесь",
+        "step2Desc": [
+          "Направляйтесь к бытовке рядом",
+          "Зайдите внутрь чтобы надеть рабочую одежду",
+          "Обычная одежда вернётся после завершения работы"
+        ],
+        "step3Title": "Возьмите инструменты",
+        "step3Desc": [
+          "Подойдите к рабочему транспорту",
+          "Возьмите моечную насадку сзади",
+          "Шланг соединяет насадку с баком для воды"
+        ],
+        "step4Title": "Езжайте к машинам клиентов",
+        "step4Desc": [
+          "Сядьте в транспорт и следуйте по GPS",
+          "Езжайте к отмеченным машинам клиентов",
+          "Паркуйтесь рядом — шланг имеет ограниченный радиус"
+        ],
+        "step5Title": "Вымойте машину",
+        "step5Desc": [
+          "Наведите моечную насадку на грязные места",
+          "Удерживайте левую кнопку мыши для распыления воды",
+          "Машина становится чище по мере мытья каждого участка"
+        ],
+        "step6Title": "Завершите работу",
+        "step6Desc": [
+          "После обработки всех машин вернитесь на базу",
+          "Верните инструменты и завершите работу",
+          "На высоких уровнях доступна восковая полировка за бонусную оплату"
+        ]
+      }
+    },
+    "newspaper": {
+      "name": "Доставка газет",
+      "subtitle": "Служба доставки газет",
+      "interactionText": "Начать доставку газет",
+      "blipLabel": "Доставка газет",
+      "locationLabel": "Доставка газет",
+      "description": [
+        "Заберите велосипед для доставки",
+        "Бросайте газеты к отмеченным точкам доставки",
+        "Больше доставок — больше оплата",
+        "Работайте в команде для быстрого завершения"
+      ],
+      "items": {
+        "newspaperBundle": "Пачка газет",
+        "deliveryList": "Список доставки",
+        "bikeKey": "Ключ от велосипеда"
+      },
+      "routes": {
+        "restoran": "Ресторанный маршрут",
+        "easy": "Лёгкий маршрут",
+        "headline": "Маршрут заголовков",
+        "express": "Экспресс-маршрут",
+        "morning": "Утренняя газета",
+        "editorial": "Редакционный маршрут"
+      },
+      "blips": {
+        "newspaperDelivery": "Доставка газет",
+        "returnBike": "Вернуть велосипед"
+      }
+    },
+    "cleanup": {
+      "name": "Сборщик мусора",
+      "subtitle": "Городские санитарные службы",
+      "interactionText": "Начать сбор мусора",
+      "blipLabel": "Сбор мусора",
+      "locationLabel": "Мусорный центр",
+      "description": [
+        "Собирайте мусор из контейнеров по городу",
+        "Загружайте мешки с мусором в грузовик",
+        "Доставляйте грузовик, когда он полон",
+        "Работайте в команде и зарабатывайте больше"
+      ],
+      "items": {
+        "cleanupBag": "Мешок для мусора",
+        "gloves": "Перчатки",
+        "cleanupTruck": "Мусоровоз"
+      },
+      "areas": {
+        "downtown": "Центр города",
+        "industrial": "Промышленная зона",
+        "residential": "Жилой район"
+      },
+      "blips": {
+        "cleanupDelivery": "Разгрузка мусора"
+      }
+    },
+    "trucker": {
+      "name": "Дальнобойщик",
+      "subtitle": "Дальние перевозки",
+      "interactionText": "Начать работу дальнобойщика",
+      "blipLabel": "Грузовой двор",
+      "locationLabel": "Грузовая база",
+      "description": [
+        "Забирайте прицепы и доставляйте грузы",
+        "Заработок зависит от расстояния",
+        "Шанс на нелегальные высокооплачиваемые маршруты",
+        "Работайте в команде для бонусных наград"
+      ],
+      "items": {
+        "truck": "Грузовик",
+        "trailer": "Прицеп",
+        "cargo": "Груз"
+      },
+      "blips": {
+        "pickupTrailer": "Забрать прицеп",
+        "deliverCargo": "Доставить груз",
+        "illegalDelivery": "Нелегальная доставка",
+        "returnTruck": "Вернуть грузовик"
+      }
+    },
+    "taxi": {
+      "name": "Таксист",
+      "subtitle": "Городской транспорт",
+      "interactionText": "Начать работу таксиста",
+      "blipLabel": "Таксопарк",
+      "locationLabel": "Таксопарк",
+      "description": [
+        "Подбирайте пассажиров по городу",
+        "Доставляйте их к месту назначения",
+        "Заработок зависит от расстояния",
+        "Бонус за быструю доставку"
+      ],
+      "items": {
+        "taxi": "Такси",
+        "passenger": "Пассажир"
+      },
+      "blips": {
+        "pickupPassenger": "Посадка пассажира",
+        "dropOff": "Высадка",
+        "returnTaxi": "Вернуть такси"
+      }
+    },
+    "dogwalking": {
+      "name": "Выгульщик собак",
+      "subtitle": "Услуги по уходу за животными",
+      "interactionText": "Начать выгул собак",
+      "blipLabel": "Выгул собак",
+      "locationLabel": "Зоосервис",
+      "description": [
+        "Выгуливайте собак для богатых клиентов",
+        "Забирайте собак из домов клиентов",
+        "Пройдите необходимое расстояние с собакой",
+        "Убирайте за собакой для бонусной оплаты",
+        "Работайте с друзьями для кооп-бонуса!"
+      ],
+      "items": {
+        "leash": "Поводок",
+        "poopBag": "Пакет для уборки",
+        "treats": "Лакомства"
+      },
+      "blips": {
+        "clientHome": "Дом клиента"
+      },
+      "preview": {
+        "step1Title": "Начните работу",
+        "step1Desc": [
+          "Найдите NPC выгула собак у зоомагазина",
+          "Нажмите E чтобы открыть меню работы",
+          "Выберите зону и нажмите Начать"
+        ],
+        "step2Title": "Переоденьтесь",
+        "step2Desc": [
+          "Направляйтесь к раздевалке у зоомагазина",
+          "Зайдите внутрь чтобы надеть рабочую одежду",
+          "Обычная одежда вернётся после завершения работы"
+        ],
+        "step3Title": "Заберите собаку",
+        "step3Desc": [
+          "Езжайте к дому клиента в Vinewood Hills",
+          "Встретьте хозяина собаки снаружи",
+          "Нажмите E чтобы взять собаку на поводок"
+        ],
+        "step4Title": "Выгуляйте собаку",
+        "step4Desc": [
+          "Гуляйте с собакой на поводке",
+          "Пройдите расстояние, указанное на HUD",
+          "Убирайте за собакой для бонусной оплаты"
+        ],
+        "step5Title": "Верните собаку",
+        "step5Desc": [
+          "Приведите собаку обратно к дому клиента",
+          "Собака вернётся к хозяину автоматически",
+          "Оплата зависит от пройденного расстояния и уборки"
+        ]
+      }
+    },
+    "powerlines": {
+      "name": "Электролинии",
+      "subtitle": "Городское электро- и связь-обслуживание",
+      "interactionText": "Начать работу на электролиниях",
+      "blipLabel": "Работа на электролиниях",
+      "locationLabel": "Электрическая компания",
+      "description": [
+        "Ремонтируйте электрические панели в домах",
+        "Чините проводку телефонных столбов с автовышки",
+        "Работайте в команде для бонусных наград",
+        "Используйте мини-игры для завершения ремонта"
+      ],
+      "items": {
+        "multimeter": "Мультиметр",
+        "wireKit": "Набор проводов",
+        "safetyGear": "Защитное снаряжение"
+      },
+      "blips": {
+        "electricalPanel": "Электрическая панель",
+        "phonePole": "Телефонный столб",
+        "bucketTruck": "Автовышка"
+      },
+      "routes": {
+        "rockfordHills": "Rockford Hills",
+        "davis": "Davis",
+        "vespucci": "Vespucci",
+        "strawberry": "Strawberry",
+        "centralLS": "Central LS",
+        "southLS": "South LS"
+      }
+    },
+    "delivery": {
+      "name": "Доставка посылок",
+      "subtitle": "Служба доставки посылок",
+      "interactionText": "Начать работу по доставке посылок",
+      "blipLabel": "Доставка посылок",
+      "locationLabel": "Доставка посылок",
+      "description": [
+        "Заберите фургон и загрузите ящики со склада",
+        "Доставляйте ящики указанным клиентам",
+        "Чем больше доставок, тем больше заработок",
+        "Работайте в команде для быстрого завершения"
+      ],
+      "items": {
+        "cargoBox": "Грузовой ящик",
+        "deliveryList": "Список доставки",
+        "vanKey": "Ключ от фургона"
+      },
+      "blips": {
+        "deliveryPoint": "Точка доставки"
+      },
+      "preview": {
+        "step1Title": "Начните работу",
+        "step1Desc": [
+          "Подойдите к NPC на складе доставки",
+          "Нажмите E чтобы открыть меню работы",
+          "Выберите зону и нажмите Начать"
+        ],
+        "step2Title": "Переоденьтесь",
+        "step2Desc": [
+          "Направляйтесь к бытовке рядом",
+          "Зайдите внутрь чтобы надеть рабочую одежду",
+          "Обычная одежда вернётся после завершения работы"
+        ],
+        "step3Title": "Заберите транспорт",
+        "step3Desc": [
+          "Подойдите к припаркованному фургону для доставки",
+          "Задние двери открыты для загрузки",
+          "Каждое лобби получает свой транспорт"
+        ],
+        "step4Title": "Заберите посылки",
+        "step4Desc": [
+          "Подойдите к работнику склада у хранилища",
+          "Нажмите E чтобы взять грузовой ящик",
+          "Вы можете нести только один ящик за раз"
+        ],
+        "step5Title": "Загрузите фургон",
+        "step5Desc": [
+          "Отнесите посылки к открытым задним дверям фургона",
+          "Ящики автоматически укладываются внутри",
+          "Заполните фургон перед отправкой"
+        ],
+        "step6Title": "Доставьте посылки",
+        "step6Desc": [
+          "Езжайте к отмеченной точке доставки",
+          "Возьмите ящик из багажника и несите его",
+          "Подойдите к клиенту и нажмите E для доставки"
+        ],
+        "step7Title": "Вернитесь на базу",
+        "step7Desc": [
+          "После всех доставок возвращайтесь на базу",
+          "Припаркуйте фургон на отмеченном месте",
+          "Заработок выплачивается автоматически"
+        ]
+      }
+    },
+    "warehouse": {
+      "name": "Работник склада",
+      "subtitle": "Грузовая логистика",
+      "interactionText": "Начать работу на складе",
+      "blipLabel": "Склад",
+      "locationLabel": "Склад",
+      "description": [
+        "Загружайте ящики и паллеты на грузовики",
+        "Используйте погрузчик для тяжёлых паллет",
+        "Переносите мелкие ящики вручную",
+        "Выполняйте заказы для грузовиков за оплату"
+      ],
+      "items": {
+        "forklift": "Погрузчик",
+        "boxes": "Ящики",
+        "pallets": "Паллеты"
+      },
+      "blips": {
+        "truck": "Грузовик",
+        "deliveryPoint": "Точка доставки",
+        "forklift": "Погрузчик"
+      },
+      "deliveryRoutes": {
+        "vinewood": "Рынок Vinewood",
+        "davis": "Супермаркет Davis",
+        "strawberry": "Рынок Strawberry"
+      }
+    },
+    "landscaping": {
+      "name": "Ландшафтные работы",
+      "subtitle": "Обслуживание садов",
+      "interactionText": "Начать ландшафтные работы",
+      "blipLabel": "Ландшафтные работы",
+      "locationLabel": "Городское обслуживание",
+      "description": [
+        "Стригите заросшие кусты триммером",
+        "Копайте сорняки лопатой",
+        "Берите инструменты из рабочего грузовика",
+        "Работайте в команде для бонусных наград"
+      ],
+      "items": {
+        "trimmer": "Триммер",
+        "shovel": "Лопата",
+        "workTruck": "Рабочий грузовик"
+      },
+      "routes": {
+        "vespucci": "Vespucci",
+        "pillboxHill": "Pillbox Hill",
+        "littleSeoul": "Little Seoul",
+        "burton": "Burton",
+        "vinewoodHills": "Vinewood Hills"
+      }
+    },
+    "fishing": {
+      "name": "Рыбалка",
+      "subtitle": "Профессиональная рыбалка",
+      "interactionText": "Начать рыбалку",
+      "blipLabel": "Рыбалка",
+      "locationLabel": "Рыбалка",
+      "description": [
+        "Возьмите удочку и наживку",
+        "Забросьте удочку у воды",
+        "Ловите рыбу в мини-игре",
+        "Пойманная рыба добавляется в инвентарь",
+        "Продавайте скупщику рыбы"
+      ],
+      "items": {
+        "fishingRod": "Удочка",
+        "bait": "Наживка"
+      },
+      "rods": {
+        "standartrod": "Стандартная удочка",
+        "carbonrod": "Карбоновая удочка",
+        "prorod": "Профессиональная удочка"
+      },
+      "baits": {
+        "basicbait": "Червячная наживка",
+        "spoonlure": "Блесна",
+        "threesided": "Трёхсторонняя приманка",
+        "tailfish": "Приманка-рыбка",
+        "doublehook": "Двойной крючок",
+        "triplehook": "Тройной крючок"
+      },
+      "zones": {
+        "southCoast": "Южное побережье",
+        "westCoast": "Западное побережье",
+        "deepSea": "Глубокое море"
+      },
+      "fishTypes": {
+        "anchovy": "Анчоус",
+        "trout": "Форель",
+        "mackerel": "Скумбрия",
+        "salmon": "Лосось",
+        "snapper": "Луциан",
+        "tuna": "Тунец",
+        "grouper": "Групер",
+        "swordfish": "Рыба-меч",
+        "shark": "Акула"
+      },
+      "blips": {
+        "fishingShop": "Рыболовный магазин",
+        "fishBuyer": "Скупщик рыбы"
+      }
+    },
+    "diving": {
+      "name": "Дайвинг",
+      "subtitle": "Профессиональное погружение",
+      "interactionText": "Начать работу дайвера",
+      "blipLabel": "Дайвинг",
+      "locationLabel": "Дайвинг",
+      "description": [
+        "Сядьте в лодку и отправляйтесь к зоне погружения",
+        "Когда лодка остановится, бросьте якорь и прыгайте в воду",
+        "Ныряйте под воду и выполняйте задания",
+        "Вернитесь на лодку и поднимите якорь",
+        "Возвращайтесь к причалу и продайте предметы"
+      ],
+      "items": {
+        "scubaTank": "Акваланг",
+        "divingSuit": "Гидрокостюм",
+        "flippers": "Ласты"
+      },
+      "zones": {
+        "shallowBay": "Мелководная бухта",
+        "openSea": "Открытое море",
+        "shipwreck": "Кораблекрушение",
+        "deepTrench": "Глубокая впадина"
+      },
+      "sellItems": {
+        "dendrogyraCoral": "Коралл Дендрогира",
+        "antipathariaCoral": "Коралл Антипатария"
+      },
+      "taskTypes": {
+        "coral": "Коралл",
+        "trash": "Мусор"
+      },
+      "gear": {
+        "basic": "Базовый акваланг",
+        "standard": "Стандартный акваланг",
+        "pro": "Профессиональный акваланг"
+      },
+      "blips": {
+        "boatDelivery": "Доставка лодкой"
+      },
+      "preview": {
+        "step1Title": "Начните работу",
+        "step1Desc": [
+          "Направляйтесь к инструктору по дайвингу на причале Paleto Bay",
+          "Нажмите E чтобы открыть меню работы",
+          "Выберите зону погружения и нажмите Начать"
+        ],
+        "step2Title": "Сядьте в лодку",
+        "step2Desc": [
+          "Подойдите к причалу и сядьте в лодку",
+          "У каждой зоны погружения своя точка отправления",
+          "Плывите к отмеченной зоне погружения"
+        ],
+        "step3Title": "Бросьте якорь и ныряйте",
+        "step3Desc": [
+          "Остановите лодку у маркера зоны погружения",
+          "Нажмите E чтобы бросить якорь",
+          "Прыгайте в воду и ныряйте"
+        ],
+        "step4Title": "Собирайте предметы",
+        "step4Desc": [
+          "Найдите кораллы и мусор на морском дне",
+          "Нажмите E чтобы собрать кораллы для продажи",
+          "Убирайте мусор для бонусного XP"
+        ],
+        "step5Title": "Продайте улов",
+        "step5Desc": [
+          "Верните лодку к причалу",
+          "Подойдите к NPC-скупщику рядом",
+          "Нажмите E чтобы продать собранные кораллы"
+        ]
+      }
+    },
+    "forklift": {
+      "name": "Оператор погрузчика",
+      "subtitle": "Подземная логистика",
+      "interactionText": "Начать работу на погрузчике",
+      "blipLabel": "Погрузчик",
+      "locationLabel": "База погрузчиков",
+      "description": [
+        "Управляйте погрузчиком на подземном складе",
+        "Перевозите ящики на конвейер",
+        "Сортируйте и ставьте ящики на нужные полки",
+        "Работайте в команде для бонусных наград"
+      ],
+      "items": {
+        "forklift": "Погрузчик",
+        "crate": "Ящик",
+        "conveyorBelt": "Конвейер"
+      },
+      "crateTypes": {
+        "jewellery": "Ювелирные изделия",
+        "antiques": "Антиквариат",
+        "tobacco": "Табак",
+        "hazard": "Опасный груз",
+        "fake": "Подделка"
+      },
+      "blips": {
+        "forklift": "Погрузчик",
+        "conveyor": "Конвейер"
+      }
+    },
+    "tiretechnician": {
+      "name": "Шиномонтажник",
+      "subtitle": "Выездной шиномонтаж",
+      "interactionText": "Начать работу шиномонтажника",
+      "blipLabel": "Работа шиномонтажника",
+      "locationLabel": "База шиномонтажа",
+      "description": [
+        "Меняйте пробитые колёса на застрявших автомобилях",
+        "Используйте домкрат и инструменты для замены колёс",
+        "Многоэтапный реалистичный процесс замены",
+        "Работайте в команде для быстрого завершения"
+      ],
+      "items": {
+        "wrenchSet": "Набор ключей",
+        "carJack": "Домкрат",
+        "spareParts": "Запасные части"
+      },
+      "blips": {
+        "vehicleRepair": "Ремонт транспорта",
+        "serviceTruck": "Сервисный грузовик"
+      }
+    },
+    "treasurehunter": {
+      "name": "Охотник за сокровищами",
+      "subtitle": "Подводная охота за сокровищами",
+      "interactionText": "Начать охоту за сокровищами",
+      "blipLabel": "Охотник за сокровищами",
+      "locationLabel": "Причал охотников за сокровищами",
+      "description": [
+        "Сядьте в лодку и отправляйтесь к зоне сокровищ",
+        "Следуйте за сигналами трекера для поиска сокровищ",
+        "Ныряйте под воду и собирайте сундуки с сокровищами",
+        "Вернитесь к причалу для получения оплаты"
+      ],
+      "items": {
+        "scubaGear": "Снаряжение для подводного плавания",
+        "treasureChest": "Сундук с сокровищами"
+      },
+      "lootTypes": {
+        "common": "Мешок с сокровищами",
+        "legendary": "Золотой сундук"
+      },
+      "gear": {
+        "basic": "Базовый акваланг",
+        "standard": "Стандартный акваланг",
+        "pro": "Профессиональный акваланг"
+      },
+      "preview": {
+        "step1Title": "Начните работу",
+        "step1Desc": [
+          "Направляйтесь к причалу и поговорите с инструктором",
+          "Нажмите E чтобы открыть меню работы и начать"
+        ],
+        "step2Title": "Сядьте в лодку",
+        "step2Desc": [
+          "Подойдите к причалу и сядьте в лодку",
+          "Плывите к метке зоны сокровищ"
+        ],
+        "step3Title": "Бросьте якорь и ныряйте",
+        "step3Desc": [
+          "Следуйте за сигналами трекера для поиска сокровища",
+          "Бросьте якорь у зоны поиска",
+          "Ныряйте с аквалангом"
+        ],
+        "step4Title": "Соберите сокровища",
+        "step4Desc": [
+          "Найдите сундук с сокровищами на морском дне",
+          "Остерегайтесь акул и морских течений!",
+          "Нажмите E чтобы собрать сокровище"
+        ],
+        "step5Title": "Вернитесь к причалу",
+        "step5Desc": [
+          "Всплывите и вернитесь к причалу",
+          "Заезжайте в маркер для завершения",
+          "Получите оплату!"
+        ]
+      }
+    },
+    "metaldetector": {
+      "name": "Металлоискатель",
+      "subtitle": "Продвинутые поисковые операции",
+      "interactionText": "Начать работу с металлоискателем",
+      "blipLabel": "Металлоискатель",
+      "locationLabel": "Станция металлоискателя",
+      "description": [
+        "Возьми металлоискатель из багажника грузовика",
+        "Ориентируйся на частоту сигналов, чтобы найти скрытый металл",
+        "Выкапывай зарытые точки лопатой",
+        "Обменяй находки на деньги на станции"
+      ],
+      "items": {
+        "detector": "Металлоискатель",
+        "findings": "Найденные находки"
+      },
+      "lootTypes": {
+        "scrap": "Металлолом",
+        "coin": "Старинная монета",
+        "silver": "Кусок серебра",
+        "gold": "Золотой самородок",
+        "relic": "Редкая реликвия"
+      }
+    },
+    "mechanic": {
+      "name": "Механик",
+      "subtitle": "Ремонт транспорта",
+      "interactionText": "Начать работу механика",
+      "blipLabel": "Механик",
+      "locationLabel": "Автомастерская"
+    },
+    "gruppe6": {
+      "name": "Gruppe 6",
+      "subtitle": "Инкассация",
+      "interactionText": "Поговорите с управляющим депо",
+      "blipLabel": "Депо Gruppe 6",
+      "description": [
+        "Управляйте бронированным фургоном между банками Fleeca",
+        "Наполняйте сумки деньгами в хранилище и грузите их",
+        "Верните фургон в депо, чтобы получить оплату"
+      ]
+    }
+  },
+  "quests": {
+    "daily_miner_collect": {
+      "label": "Ежедневная добыча",
+      "description": "Разбейте 5 камней в шахте"
+    },
+    "weekly_miner_process": {
+      "label": "Мастер обработки",
+      "description": "Обработайте 30 руды на весах"
+    },
+    "monthly_miner_earn": {
+      "label": "Горный магнат",
+      "description": "Заработайте $10,000 на добыче"
+    },
+    "daily_lumber_collect": {
+      "label": "Ежедневная рубка",
+      "description": "Срубите 5 деревьев"
+    },
+    "weekly_lumber_process": {
+      "label": "Мастер лесозаготовки",
+      "description": "Обработайте 25 брёвен на весах"
+    },
+    "monthly_lumber_earn": {
+      "label": "Лесной магнат",
+      "description": "Заработайте $10,000 на лесозаготовке"
+    },
+    "daily_scrap_collect": {
+      "label": "Сборщик металлолома",
+      "description": "Соберите 5 единиц металлолома"
+    },
+    "weekly_scrap_process": {
+      "label": "Профи переработки",
+      "description": "Обработайте 20 металлолома на весах"
+    },
+    "monthly_scrap_earn": {
+      "label": "Магнат металлолома",
+      "description": "Заработайте $8,000 на переработке"
+    },
+    "daily_hunting_collect": {
+      "label": "Ежедневная охота",
+      "description": "Добудьте 3 животных"
+    },
+    "weekly_hunting_process": {
+      "label": "Охотник за трофеями",
+      "description": "Обработайте 15 животных на весах"
+    },
+    "monthly_hunting_earn": {
+      "label": "Мастер-охотник",
+      "description": "Заработайте $12,000 на охоте"
+    },
+    "daily_farmer_complete": {
+      "label": "Фермерский работник",
+      "description": "Завершите 2 фермерских рейса"
+    },
+    "weekly_farmer_earn": {
+      "label": "Король урожая",
+      "description": "Заработайте $5,000 на фермерстве"
+    },
+    "monthly_farmer_earn": {
+      "label": "Аграрный барон",
+      "description": "Заработайте $15,000 на фермерстве"
+    },
+    "daily_fruitpicker_complete": {
+      "label": "Сборщик апельсинов",
+      "description": "Завершите 2 рейса по сбору"
+    },
+    "weekly_fruitpicker_earn": {
+      "label": "Цитрусовый барон",
+      "description": "Заработайте $5,000 на апельсинах"
+    },
+    "monthly_fruitpicker_earn": {
+      "label": "Магнат фруктовых садов",
+      "description": "Заработайте $15,000 на апельсинах"
+    },
+    "daily_cleaner_complete": {
+      "label": "Дворник",
+      "description": "Завершите 2 рейса по уборке"
+    },
+    "weekly_cleaner_earn": {
+      "label": "Чистюля",
+      "description": "Заработайте $4,000 на уборке"
+    },
+    "monthly_cleaner_earn": {
+      "label": "Начальник санитарии",
+      "description": "Заработайте $12,000 на уборке"
+    },
+    "daily_powerwash_complete": {
+      "label": "Профи мойки",
+      "description": "Завершите 2 рейса мойки"
+    },
+    "weekly_powerwash_earn": {
+      "label": "Мастер струи",
+      "description": "Заработайте $5,000 на мойке под давлением"
+    },
+    "monthly_powerwash_earn": {
+      "label": "Волшебник мойки",
+      "description": "Заработайте $15,000 на мойке под давлением"
+    },
+    "daily_windowcleaner_complete": {
+      "label": "Мойщик окон",
+      "description": "Завершите 2 рейса мойки окон"
+    },
+    "weekly_windowcleaner_earn": {
+      "label": "Эксперт по стёклам",
+      "description": "Заработайте $4,000 на мойке окон"
+    },
+    "monthly_windowcleaner_earn": {
+      "label": "Кристальная чистота",
+      "description": "Заработайте $12,000 на мойке окон"
+    },
+    "daily_cardetailer_complete": {
+      "label": "Время блеска",
+      "description": "Завершите 2 рейса детейлинга"
+    },
+    "weekly_cardetailer_earn": {
+      "label": "Профи детейлинга",
+      "description": "Заработайте $5,000 на детейлинге авто"
+    },
+    "monthly_cardetailer_earn": {
+      "label": "Мастер детейлинга",
+      "description": "Заработайте $15,000 на детейлинге авто"
+    },
+    "daily_newspaper_complete": {
+      "label": "Разносчик газет",
+      "description": "Завершите 2 рейса доставки"
+    },
+    "weekly_newspaper_earn": {
+      "label": "Медиа-магнат",
+      "description": "Заработайте $3,000 на доставках"
+    },
+    "monthly_newspaper_earn": {
+      "label": "Медиа-барон",
+      "description": "Заработайте $8,000 на доставках"
+    },
+    "daily_cleanup_complete": {
+      "label": "Мусорщик",
+      "description": "Завершите 2 рейса сбора мусора"
+    },
+    "weekly_cleanup_earn": {
+      "label": "Управляющий отходами",
+      "description": "Заработайте $4,000 на сборе мусора"
+    },
+    "monthly_cleanup_earn": {
+      "label": "Магнат отходов",
+      "description": "Заработайте $12,000 на сборе мусора"
+    },
+    "daily_trucker_complete": {
+      "label": "Ежедневный рейс",
+      "description": "Завершите 2 рейса перевозки"
+    },
+    "weekly_trucker_earn": {
+      "label": "Дорожный воин",
+      "description": "Заработайте $8,000 на перевозках"
+    },
+    "monthly_trucker_earn": {
+      "label": "Король конвоя",
+      "description": "Заработайте $25,000 на перевозках"
+    },
+    "daily_taxi_complete": {
+      "label": "Водитель такси",
+      "description": "Завершите 3 поездки такси"
+    },
+    "weekly_taxi_earn": {
+      "label": "Король такси",
+      "description": "Заработайте $6,000 на поездках"
+    },
+    "monthly_taxi_earn": {
+      "label": "Владелец автопарка",
+      "description": "Заработайте $18,000 на поездках"
+    },
+    "daily_dogwalking_complete": {
+      "label": "Выгульщик собак",
+      "description": "Завершите 2 прогулки"
+    },
+    "weekly_dogwalking_earn": {
+      "label": "Вожак стаи",
+      "description": "Заработайте $3,000 на выгуле собак"
+    },
+    "monthly_dogwalking_earn": {
+      "label": "Заклинатель собак",
+      "description": "Заработайте $8,000 на выгуле собак"
+    },
+    "daily_powerlines_complete": {
+      "label": "Электрик",
+      "description": "Завершите 2 ремонтных задания"
+    },
+    "weekly_powerlines_earn": {
+      "label": "Мастер электролиний",
+      "description": "Заработайте $6,000 на ремонте"
+    },
+    "monthly_powerlines_earn": {
+      "label": "Начальник электросети",
+      "description": "Заработайте $18,000 на ремонте"
+    },
+    "daily_delivery_complete": {
+      "label": "Курьер",
+      "description": "Завершите 2 доставки"
+    },
+    "weekly_delivery_earn": {
+      "label": "Экспресс-курьер",
+      "description": "Заработайте $5,000 на доставках"
+    },
+    "monthly_delivery_earn": {
+      "label": "Король доставки",
+      "description": "Заработайте $15,000 на доставках"
+    },
+    "daily_warehouse_complete": {
+      "label": "Докер",
+      "description": "Завершите 2 смены на складе"
+    },
+    "weekly_warehouse_earn": {
+      "label": "Эксперт логистики",
+      "description": "Заработайте $5,000 на складской работе"
+    },
+    "monthly_warehouse_earn": {
+      "label": "Директор склада",
+      "description": "Заработайте $15,000 на складской работе"
+    },
+    "daily_landscaping_complete": {
+      "label": "Зелёные руки",
+      "description": "Завершите 2 задания по садоводству"
+    },
+    "weekly_landscaping_earn": {
+      "label": "Мастер ландшафта",
+      "description": "Заработайте $4,000 на садоводстве"
+    },
+    "monthly_landscaping_earn": {
+      "label": "Ландшафтный архитектор",
+      "description": "Заработайте $12,000 на садоводстве"
+    },
+    "daily_fishing_complete": {
+      "label": "Рыболов",
+      "description": "Завершите 2 рыбалки"
+    },
+    "weekly_fishing_earn": {
+      "label": "Глубоководный рыбак",
+      "description": "Заработайте $5,000 на рыбалке"
+    },
+    "monthly_fishing_earn": {
+      "label": "Легенда рыбалки",
+      "description": "Заработайте $15,000 на рыбалке"
+    },
+    "daily_diving_complete": {
+      "label": "Глубоководный дайвер",
+      "description": "Завершите 2 погружения"
+    },
+    "weekly_diving_earn": {
+      "label": "Исследователь океана",
+      "description": "Заработайте $6,000 на дайвинге"
+    },
+    "monthly_diving_earn": {
+      "label": "Дайвер за сокровищами",
+      "description": "Заработайте $18,000 на дайвинге"
+    },
+    "daily_forklift_complete": {
+      "label": "Оператор погрузчика",
+      "description": "Завершите 2 смены на складе"
+    },
+    "weekly_forklift_earn": {
+      "label": "Тяжеловес",
+      "description": "Заработайте $5,000 на работе погрузчиком"
+    },
+    "monthly_forklift_earn": {
+      "label": "Титан логистики",
+      "description": "Заработайте $15,000 на работе погрузчиком"
+    }
+  },
+  "shop": {
+    "buyRod": "Купить удочку",
+    "buyRodDesc": "Приобрести удочку",
+    "buyBait": "Купить наживку",
+    "buyBaitDesc": "Приобрести наживку",
+    "sellAll": "Продать всё",
+    "sellAllFish": "Продать всю рыбу",
+    "sellAllItems": "Продать все предметы",
+    "levelRequired": "Требуется уровень {level} | {price}",
+    "howMany": "Сколько?"
+  },
+  "vehicle": {
+    "powerlines": "Электролинии",
+    "huntingVehicle": "Охотничий транспорт",
+    "workTruck": "Рабочий грузовик",
+    "divingBoat": "Лодка для дайвинга",
+    "fishingBoat": "Рыболовная лодка",
+    "cleanupTruck": "Мусоровоз",
+    "lumberVehicle": "Лесовозный транспорт",
+    "miningVehicle": "Горнодобывающий транспорт",
+    "metaldetectorVehicle": "Транспорт металлоискателя",
+    "washVan": "Моечный фургон",
+    "windowCleanerVan": "Фургон мойщика окон",
+    "cleaningVan": "Уборочный фургон",
+    "serviceVehicle": "Служебный транспорт",
+    "scrapyardTruck": "Грузовик для металлолома",
+    "detailingVan": "Фургон для детейлинга",
+    "tiretechnician": "Шиномонтажник",
+    "pickupPassenger": "Посадка пассажира",
+    "returnTaxi": "Вернуть такси",
+    "dropOff": "Высадка",
+    "bucketTruck": "Автовышка",
+    "deliveryVan": "Фургон для доставки",
+    "newspaperBike": "Велосипед для газет",
+    "detachedTrailer": "Отцепленный прицеп",
+    "deliveryTruck": "Грузовик для доставки",
+    "taxi": "Такси",
+    "treasureBoat": "Лодка охотника за сокровищами"
+  },
+  "task": {
+    "panels": "Панели",
+    "poles": "Столбы",
+    "repairPanels": "Починить панели ({done}/{total})",
+    "fixPoles": "Починить столбы ({done}/{total})",
+    "repairDescription": "Ремонтируйте электрическую инфраструктуру в районе. Чините панели и столбы.",
+    "plants": "Растения",
+    "cropPlant": "Сельскохозяйственное растение",
+    "nearestCrop": "Ближайшее растение",
+    "bushes": "Кусты",
+    "lawns": "Газоны",
+    "bushToTrim": "Куст для стрижки",
+    "lawnToDig": "Газон для обработки",
+    "toilets": "Унитазы",
+    "pipes": "Трубы",
+    "fishCaught": "Рыбы поймано",
+    "treasures": "Сокровища",
+    "spotsDug": "Выкопанные точки",
+    "tasks": "Задания",
+    "loadBoxes": "Загрузите ящики на складе",
+    "deliveries": "Доставки",
+    "deliverPackages": "Доставить посылки",
+    "boxesLoaded": "Ящиков загружено",
+    "pickUpTrailer": "Забрать прицеп",
+    "deliverCargo": "Доставить груз",
+    "returnTruck": "Вернуть грузовик",
+    "stage": "Этап",
+    "truckFill": "Загрузка грузовика",
+    "shelved": "На полках",
+    "activateConveyor": "Активируйте конвейер [E]",
+    "deliverCratesToBelt": "Доставьте ящики на ленту ({current}/{total})",
+    "placeCratesOnShelves": "Разместите ящики на полках ({current}/{total})",
+    "delivered": "Доставлено",
+    "takeWandFromTrunk": "Возьмите насадку из багажника",
+    "spotsCleaned": "Мест очищено",
+    "takeSpongeFromTrunk": "Возьмите губку из багажника",
+    "windows": "Окна",
+    "takeMopFromTrunk": "Возьмите швабру из багажника",
+    "stains": "Пятна",
+    "equipWandOrCloth": "Возьмите насадку (мойка) или тряпку (полировка)",
+    "carsWashed": "Машин вымыто",
+    "carsPolished": "Машин отполировано",
+    "distance": "Расстояние",
+    "cargo": "Груз",
+    "regularAnimals": "Обычные животные",
+    "predators": "Хищники",
+    "birds": "Птицы",
+    "mixed": "Смешанные",
+    "nextDelivery": "Следующая доставка",
+    "returnVehicle": "Вернуть транспорт",
+    "returnToDepot": "Вернуться на базу",
+    "returnToBase": "Вернуться на базу",
+    "loadingArea": "Зона загрузки",
+    "fruitpickerTree": "Апельсиновое дерево",
+    "next": "Далее",
+    "walkDistance": "Расстояние прогулки",
+    "dogsDelivered": "Собак доставлено",
+    "distanceWalked": "Пройденное расстояние (м)",
+    "oreProcessed": "Руды переработано",
+    "trunkLoaded": "Багажник загружен",
+    "logsProcessed": "Брёвен переработано",
+    "scrapsProcessed": "Металлолома переработано",
+    "boxesProcessed": "Ящиков обработано",
+    "animalsProcessed": "Животных обработано",
+    "toolShovel": "Лопата",
+    "toolTrimmer": "Триммер",
+    "trucksCompleted": "Завершено грузовиков ({current}/{total})",
+    "loadBoxesCount": "Погрузите коробки ({current}/{total})",
+    "loadPallets": "Погрузите паллеты ({current}/{total})",
+    "deliverPapers": "Доставьте газеты ({current}/{total})",
+    "trimBushes": "Подстригите кусты ({current}/{total})",
+    "rakeLawns": "Сгребите листья ({current}/{total})",
+    "itemsCollected": "Собрано предметов ({current}/{total})",
+    "cleanAllWindows": "Вымойте все окна ({current}/{total})",
+    "cleanAllSpots": "Очистите все участки ({current}/{total})"
+  },
+  "drawText": {
+    "repairPanel": "[E] Починить электрическую панель",
+    "repairPole": "[E] Починить проводку телефонного столба",
+    "collect": "[E] Собрать",
+    "collectCoral": "[E] Собрать коралл",
+    "cleanTrash": "[E] Убрать мусор"
+  },
+  "achievements": {
+    "miner_lv5": {
+      "label": "Мастер-шахтёр",
+      "desc": "Достигните 5 уровня в Шахте"
+    },
+    "miner_lv10": {
+      "label": "Легенда шахты",
+      "desc": "Достигните 10 уровня в Шахте"
+    },
+    "lumberjack_lv5": {
+      "label": "Мастер-лесоруб",
+      "desc": "Достигните 5 уровня в Лесорубке"
+    },
+    "fishing_lv5": {
+      "label": "Опытный рыбак",
+      "desc": "Достигните 5 уровня в Рыбалке"
+    },
+    "cleanup_lv5": {
+      "label": "Борец с мусором",
+      "desc": "Достигните 5 уровня в Уборке"
+    },
+    "delivery_lv5": {
+      "label": "Экспресс-курьер",
+      "desc": "Достигните 5 уровня в Доставке"
+    },
+    "trucker_lv5": {
+      "label": "Король дорог",
+      "desc": "Достигните 5 уровня в Грузоперевозках"
+    },
+    "hunting_lv5": {
+      "label": "Опытный охотник",
+      "desc": "Достигните 5 уровня в Охоте"
+    },
+    "taxi_lv5": {
+      "label": "Ас руля",
+      "desc": "Достигните 5 уровня в Такси"
+    },
+    "powerlines_lv5": {
+      "label": "Мастер-электрик",
+      "desc": "Достигните 5 уровня в Электролиниях"
+    },
+    "diving_lv5": {
+      "label": "Глубоководный дайвер",
+      "desc": "Достигните 5 уровня в Дайвинге"
+    },
+    "cleaner_lv5": {
+      "label": "Машина чистоты",
+      "desc": "Достигните 5 уровня в Уборщике"
+    },
+    "powerwash_lv5": {
+      "label": "Профи мойки",
+      "desc": "Достигните 5 уровня в Мойке"
+    },
+    "windowscleaner_lv5": {
+      "label": "Кристальная чистота",
+      "desc": "Достигните 5 уровня в Мытье окон"
+    },
+    "cardetailer_lv5": {
+      "label": "Мастер детейлинга",
+      "desc": "Достигните 5 уровня в Детейлинге авто"
+    },
+    "farmer_lv5": {
+      "label": "Зелёные пальцы",
+      "desc": "Достигните 5 уровня в Фермерстве"
+    },
+    "fruitpicker_lv5": {
+      "label": "Цитрусовый король",
+      "desc": "Достигните 5 уровня в Сборе апельсинов"
+    },
+    "landscaping_lv5": {
+      "label": "Мастер-садовник",
+      "desc": "Достигните 5 уровня в Садоводстве"
+    },
+    "dogwalking_lv5": {
+      "label": "Заклинатель собак",
+      "desc": "Достигните 5 уровня в Выгуле собак"
+    },
+    "newspaper_lv5": {
+      "label": "Разносчик газет",
+      "desc": "Достигните 5 уровня в Газетах"
+    },
+    "scrapyard_lv5": {
+      "label": "Барон металлолома",
+      "desc": "Достигните 5 уровня на Свалке"
+    },
+    "warehouse_lv5": {
+      "label": "Мастер склада",
+      "desc": "Достигните 5 уровня на Складе"
+    },
+    "forklift_lv5": {
+      "label": "Погрузчик",
+      "desc": "Достигните 5 уровня на Погрузчике"
+    },
+    "collect_100": {
+      "label": "Собиратель",
+      "desc": "Соберите 100 предметов всего"
+    },
+    "collect_500": {
+      "label": "Сборщик",
+      "desc": "Соберите 500 предметов всего"
+    },
+    "collect_1000": {
+      "label": "Накопитель",
+      "desc": "Соберите 1 000 предметов всего"
+    },
+    "miner_collect_500": {
+      "label": "Скалолом",
+      "desc": "Добудьте 500 камней"
+    },
+    "lumber_collect_500": {
+      "label": "Лесоповал",
+      "desc": "Срубите 500 деревьев"
+    },
+    "earn_10000": {
+      "label": "Добытчик",
+      "desc": "Заработайте $10 000 на работах"
+    },
+    "earn_50000": {
+      "label": "Богач",
+      "desc": "Заработайте $50 000 на работах"
+    },
+    "earn_100000": {
+      "label": "Путь миллионера",
+      "desc": "Заработайте $100 000 на работах"
+    },
+    "complete_10": {
+      "label": "Трудяга",
+      "desc": "Завершите 10 работ"
+    },
+    "complete_50": {
+      "label": "Преданный работник",
+      "desc": "Завершите 50 работ"
+    },
+    "complete_100": {
+      "label": "Ветеран труда",
+      "desc": "Завершите 100 работ"
+    },
+    "process_100": {
+      "label": "Переработчик",
+      "desc": "Обработайте 100 предметов на весах"
+    },
+    "process_500": {
+      "label": "Фабричный рабочий",
+      "desc": "Обработайте 500 предметов на весах"
+    }
+  },
+  "common": {
+    "continueHintGeneric": "Отправляйтесь к следующему заданию на карте",
+    "pickupTaskGeneric": "Найдите место следующего задания",
+    "pickupDescriptionGeneric": "Отправляйтесь к отмеченному месту на карте и начните следующее задание."
+  },
+  "gruppe6": {
+    "truck": "Бронированный Фургон",
+    "takeBagPrompt": "[E] Взять пустую сумку",
+    "returnBagPrompt": "[E] Вернуть сумку",
+    "loadBagPrompt": "[E] Погрузить сумку",
+    "signPrompt": "[E] Подписать документы",
+    "fillBagPrompt": "[E] Наполнить сумку",
+    "stationBusy": "Этой станцией уже пользуется другой участник команды!",
+    "newRound": "Новый раунд — на карте появились новые банки!",
+    "continueBusy": "Прежде чем продолжить, все должны закончить сбор и сдать свои сумки!",
+    "returnTruckPrompt": "[E] Сдать фургон",
+    "emptyBagTaken": "Пустая сумка взята. Наполните её в хранилище банка.",
+    "signingPapers": "Подписание документов...",
+    "vaultOpening": "Хранилище открывается... ({seconds}с)",
+    "vaultOpened": "Хранилище открыто!",
+    "fillingBag": "Наполнение сумки...",
+    "bagFilled": "Сумка наполнена! (+{symbol}{amount})",
+    "allStopsDone": "Все точки собраны! Верните фургон в депо.",
+    "returnTruckHint": "Верните фургон в депо, чтобы завершить смену.",
+    "returnTruckBlip": "Вернуть Фургон",
+    "onlyLeaderCanFinish": "Только лидер команды может сдать фургон!",
+    "tooFarFromDepot": "Вы слишком далеко от депо!",
+    "tooFarFromManager": "Вы слишком далеко от управляющего банком!",
+    "tooFarFromVault": "Вы слишком далеко от хранилища!",
+    "vaultNotOpen": "Хранилище ещё не открыто!",
+    "vaultAlreadyOpen": "Хранилище уже открывается!",
+    "vaultEmpty": "Это хранилище опустошено!",
+    "alreadyCarrying": "Вы уже что-то несёте!",
+    "needEmptyBag": "Сначала нужна пустая сумка!",
+    "statBags": "Погружено сумок",
+    "statEarnings": "Всего заработано",
+    "objSign": "Подпишите документы",
+    "objCollect": "Наполните и погрузите сумки",
+    "objReturn": "Верните фургон в депо",
+    "objWaiting": "Ожидание маршрута...",
+    "progressTitle": "Gruppe 6",
+    "progressDetail": "Собирайте сумки с деньгами из банков, затем верните бронированный фургон в депо.",
+    "jobEnded": "Доставлено сумок: {bags}, вы заработали {symbol}{earned}!",
+    "noEmptyBags": "В фургоне не осталось пустых сумок!",
+    "truckNotAtDepot": "Бронированный фургон должен быть в депо!"
+  }
+}

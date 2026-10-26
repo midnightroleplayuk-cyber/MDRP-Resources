@@ -113,7 +113,7 @@ Config.QBCore = {
     -- If your dirty money item (markedbills or similar) uses metadata
     -- (metadata meaning a "worth" or "value" when you hover over the item)
     -- Then ensure you have metadata set to true! If false, it will count
-    -- Your dirty money item as 1:1, so 1 markedbills item will equal $1
+    -- Your dirty money item as 1:1, so 1 markedbills item will equal £1
     metadata = true,
     -- If you use metadata, do you want to count (add) up the total value
     -- Of all dirty money found in the inventory? If so, set to true
@@ -121,15 +121,15 @@ Config.QBCore = {
     -- In the inventory and work one bag at a time (not add up total)
     countTotal = true,
     -- If you use metadata, do you want to simply clean the entire items
-    -- Value? For example, if a player has a markedbills value of $100
-    -- Or $10,000, it don't matter, it'll clean whatever the total value is
+    -- Value? For example, if a player has a markedbills value of £100
+    -- Or £10,000, it don't matter, it'll clean whatever the total value is
     -- If countTotal = true then it'll clean everything found in inventory
     takeAll = false,
     -- If you don't use metadata, but want the laundering script to assign
     -- Values itself to your dirty money item (or items), you can do so here
     -- By setting hardValues = true and listing your items values below
     -- This option will completely ignore any worth or values already existing
-    -- For example, if you want markedbills to always be worth $500 each
+    -- For example, if you want markedbills to always be worth £500 each
     hardValues = false,
     -- List your items below you want to hard-assign values too
     -- Be sure to follow the format below
@@ -289,10 +289,10 @@ Config.Warehouse = {
             -- Set the maximum amount of money a player can count in one sitting
             max = 15000,
             -- Interval is how much money equals one full animation to play
-            -- For example, if a player is counting $5,000 uncounted_money
+            -- For example, if a player is counting £5,000 uncounted_money
             -- And the interval is set to 2500, that means it will play 2 times
-            -- If counting $10,000 then it will play 4 times, so on and so forth
-            -- Because it will play once for every $2,500 in money being counted
+            -- If counting £10,000 then it will play 4 times, so on and so forth
+            -- Because it will play once for every £2,500 in money being counted
             interval = 2500
         }
     },
@@ -317,8 +317,8 @@ Config.Levels = {
         -- The dirty money item used at level 1
         dirtyMoney = 'black_money',
         -- Tax rate is how much dirty money is lost during the cleaning process
-        -- For example, a 25% tax rate means the player will receive $750 clean
-        -- Cash for $1,000 dirty
+        -- For example, a 25% tax rate means the player will receive £750 clean
+        -- Cash for £1,000 dirty
         taxRate = 25,
         -- The clean options below are the minimum and maximum amounts each ped
         -- Will clean in one contract. The ped will randomly select an amount
@@ -332,14 +332,14 @@ Config.Levels = {
         negotiateChance = 60,
         -- If negotiations are enabled and the ped successfully accepts
         -- This is how much the cleaning amount offered is increased
-        -- This is a percentage, so 25 means 25% boost ($1000 offer becomes $1250)
+        -- This is a percentage, so 25 means 25% boost (£1000 offer becomes £1250)
         multiplier = 25,
         -- If Config.Reject.enable is true, RejectChance is the percentage
         -- chance a player gets rejected during cleaning contracts at this level
         rejectChance = 20
     },
     [2] = { -- Level 2
-        dirtyMoney = 'markedbills',
+        dirtyMoney = 'black_money',
         taxRate = 20,
         clean = { min = 750, max = 1500 },
         addXP = 500,
@@ -348,7 +348,7 @@ Config.Levels = {
         rejectChance = 15
     },
     [3] = { -- Level 3
-        dirtyMoney = 'markedbills',
+        dirtyMoney = 'black_money',
         taxRate = 15,
         clean = { min = 1000, max = 2000 },
         addXP = 250,
@@ -357,7 +357,7 @@ Config.Levels = {
         rejectChance = 10
     },
     [4] = { -- Level 4
-        dirtyMoney = 'markedbills',
+        dirtyMoney = 'black_money',
         taxRate = 10,
         clean = { min = 1500, max = 3000 },
         addXP = 125,
@@ -366,7 +366,7 @@ Config.Levels = {
         rejectChance = 5
     },
     [5] = { -- Level 5
-        dirtyMoney = 'markedbills',
+        dirtyMoney = 'black_money',
         taxRate = 5,
         -- (To change warehouse washing limits go to Config.Warehouse.limits.washing)
         clean = { min = 2000, max = 10000 },
@@ -407,12 +407,14 @@ Config.Blips = {
         label = 'Money Laundering' -- Blip name/label
     },
     contracts = { -- Blip used when washing money with various peds 
+        enabled = true,
         sprite = 500,
         color = 2,
         scale = 0.8,
         label = 'Money Contract'
     },
     warehouse = { -- Blip used for the warehouse location if enabled
+        enabled = true,
         sprite = 473,
         color = 17,
         scale = 0.8,

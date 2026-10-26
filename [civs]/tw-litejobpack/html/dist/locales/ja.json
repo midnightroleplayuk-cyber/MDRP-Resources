@@ -1,0 +1,3604 @@
+{
+  "blips": {
+    "category": "仕事",
+    "jobCenter": "ジョブセンター",
+    "miner": "採掘の仕事",
+    "lumberjack": "伐採の仕事",
+    "scrapyard": "スクラップヤード",
+    "hunting": "狩猟",
+    "farmer": "野菜農場",
+    "fruitpicker": "果樹園",
+    "cleaner": "市内清掃",
+    "powerwash": "高圧洗浄",
+    "windowscleaner": "窓清掃",
+    "cardetailer": "カーディテーリング",
+    "newspaper": "新聞配達",
+    "cleanup": "ゴミ収集",
+    "trucker": "トラックヤード",
+    "taxi": "タクシーデポ",
+    "dogwalking": "犬の散歩",
+    "powerlines": "電線工事の仕事",
+    "delivery": "パッケージ配達",
+    "warehouse": "倉庫",
+    "landscaping": "造園の仕事",
+    "fishing": "釣り",
+    "diving": "ダイビング",
+    "forklift": "フォークリフト",
+    "tiretechnician": "タイヤ整備士の仕事",
+    "treasurehunter": "トレジャーハンター",
+    "mechanic": "メカニック"
+  },
+  "_meta": {
+    "name": "日本語",
+    "flag": "🇯🇵"
+  },
+  "ui": {
+    "blipCategoryName": "仕事",
+    "jobDetails": "仕事の詳細",
+    "owner": "オーナー",
+    "member": "メンバー",
+    "jobStart": "仕事開始",
+    "leaderboard": "ランキング",
+    "teamProgress": "チーム進捗",
+    "top20": "トップ20",
+    "playerList": "プレイヤーリスト",
+    "clickToInvite": "クリックして招待",
+    "emptySlot": "空きスロット",
+    "level": "レベル",
+    "lv": "Lv.",
+    "hours": "時間",
+    "minRequiredHours": "最低必要時間",
+    "achievements": "実績",
+    "settings": "設定",
+    "close": "閉じる",
+    "cancel": "キャンセル",
+    "confirm": "確認",
+    "search": "検索",
+    "selected": "選択済み",
+    "locationMarked": "マップに位置をマークしました",
+    "jobAreaMarked": "仕事エリアをマップにマークしました",
+    "noLocationAvailable": "この仕事には利用可能な位置がありません",
+    "routeLevelRequired": "このルートにはレベル{level}が必要です！",
+    "spawnBlocked": "車両スポーンエリアがブロックされています！エリアを空けて再試行してください。",
+    "vehicleSpawnFailed": "車両をスポーンできませんでした！",
+    "viewStatistics": "統計を見る",
+    "history": "履歴",
+    "earnings": "収入",
+    "totalEarn": "総収入",
+    "totalExp": "総EXP",
+    "markJob": "仕事をマーク",
+    "registerJob": "仕事に登録",
+    "usedItems": "使用アイテム",
+    "online": "オンライン",
+    "offline": "オフライン",
+    "loading": "読み込み中...",
+    "back": "戻る",
+    "set": "設定",
+    "reset": "リセット",
+    "approve": "承認",
+    "leave": "退出",
+    "done": "完了",
+    "prev": "前へ",
+    "next": "次へ",
+    "xp": "XP",
+    "step": "ステップ",
+    "on": "オン",
+    "off": "オフ",
+    "save": "保存",
+    "vehicle": "車両",
+    "coordinates": "座標",
+    "active": "アクティブ",
+    "disabled": "無効",
+    "place": "配置",
+    "add": "追加"
+  },
+  "settings": {
+    "title": "仕事の設定",
+    "subtitle": "設定を選択",
+    "jobSound": "仕事のサウンド",
+    "language": "言語",
+    "uiPosition": "UI移動",
+    "uiMoveActive": "パネルをドラッグして位置を変更",
+    "uiMoveSave": "保存",
+    "uiMoveCancel": "キャンセル",
+    "uiMoveApplyDefault": "既定に設定",
+    "uiMoveResetDefault": "初期化",
+    "progressPanel": "進捗"
+  },
+  "progress": {
+    "title": "進捗",
+    "subtitle": "スキル、クエスト＆アップグレード",
+    "skillPoints": "SP",
+    "skills": "スキル",
+    "quests": "クエスト",
+    "upgrades": "アップグレード",
+    "max": "MAX",
+    "upgrade": "アップグレード",
+    "upgradeItems": "アップグレードアイテム",
+    "searchJobs": "仕事を検索...",
+    "noResults": "結果が見つかりません",
+    "noQuests": "利用可能なクエストがありません",
+    "all": "すべて",
+    "daily": "デイリー",
+    "weekly": "ウィークリー"
+  },
+  "upgradeModal": {
+    "title": "アイテムアップグレード",
+    "subtitle": "アップグレードを確認",
+    "currentLevel": "現在のレベル",
+    "nextLevel": "次のレベル",
+    "requirements": "必要条件",
+    "requiredLevel": "必要レベル",
+    "money": "お金",
+    "upgrade": "アップグレード"
+  },
+  "downgradeModal": {
+    "title": "レベル変更",
+    "subtitle": "レベル変更を確認",
+    "returnToPrevious": "前のレベルに戻る",
+    "noLevelLoss": "現在のレベル進捗は失われません"
+  },
+  "finishJob": {
+    "jobComplete": "仕事完了！",
+    "summary": "結果レポート",
+    "continueQuestion": "続けますか？",
+    "ownerWantsContinue": "{name}が続行を希望しています",
+    "finishQuestion": "仕事を終了しますか？",
+    "finishSubtitle": "次のアクションを選択",
+    "itemsCompleted": "完了アイテム数",
+    "totalEarnings": "総収入",
+    "progressSaved": "進捗は保存されます",
+    "waitingFor": "待機中: {players}",
+    "waitingOwner": "{name}の決定を待っています...",
+    "autoApprove": "{time}秒で自動承認...",
+    "completed": "仕事が完了しました！",
+    "continue": "続ける",
+    "endJob": "仕事を終了",
+    "leaveJob": "仕事を退出"
+  },
+  "activeJob": {
+    "endJobTitle": "仕事を終了しますか？",
+    "endJobDesc": "あなたの仕事を終了します。他のプレイヤーには続行するか聞かれます。",
+    "leaveJobTitle": "仕事を退出しますか？",
+    "leaveJobDesc": "現在の仕事から退出します。",
+    "remainingCanContinue": "残りのプレイヤーはあなたなしで続行できます",
+    "progressSaved": "進捗は保存されます",
+    "ownerDisconnected": "オーナーが切断しました",
+    "ownerLeft": "オーナーが退出しました",
+    "ownerHasDisconnected": "{name}が切断しました",
+    "ownerHasLeft": "{name}が仕事を退出しました",
+    "continueJobQuestion": "仕事を続けますか？",
+    "autoContinue": "{time}秒で自動続行..."
+  },
+  "illegal": {
+    "stolenCargo": "盗品貨物を発見！",
+    "highRisk": "高リスク配送",
+    "teamVote": "チーム投票",
+    "description": "盗品を発見しました。配送すれば報酬2倍ですが、警察に通報される可能性があります。",
+    "reward": "報酬",
+    "risk": "リスク",
+    "x2Money": "報酬2倍",
+    "policeAlertStatic": "90%の確率で警察に通報",
+    "policeAlert": "{chance}%の確率で警察に通報",
+    "suspiciousPassenger": "不審な乗客",
+    "suspiciousPassengerDesc": "この乗客は...非公式な場所に行きたがっています。報酬は高いですが、警察に注意される危険があります。",
+    "stolenCargoDesc": "トレーラーに盗品を発見しました。闇市場のバイヤーに配送すれば報酬2倍ですが、警察の追跡を受ける可能性が高いです！",
+    "teamVotes": "チーム投票:",
+    "accept": "承認",
+    "reject": "拒否",
+    "policeWarning": "承認すると警察が出動する可能性があります",
+    "leaderDecision": "リーダーが最終決定を行います",
+    "waitingLeader": "リーダーの決定を待っています...",
+    "stayLegal": "合法を維持",
+    "acceptRisk": "リスクを受け入れる",
+    "voteStayLegal": "投票: 合法を維持",
+    "voteAcceptRisk": "投票: リスクを受け入れる",
+    "voteSubmitted": "投票が送信されました"
+  },
+  "lobby": {
+    "noLongerExists": "ロビーは既に存在しません。",
+    "playerReconnected": "{name}がロビーに再接続しました。",
+    "playerDisconnected": "{name}がロビーから切断しました。",
+    "ownerDisconnectedNewOwner": "オーナーが切断しました。{name}が新しいオーナーです。",
+    "closedNoReplacement": "ロビー閉鎖 - 代わりのオーナーが見つかりませんでした。",
+    "full": "ロビーが満員です（最大{count}人）",
+    "notOwner": "ロビーオーナーのみが実行できます",
+    "kicked": "ロビーからキックされました",
+    "alreadyInLobby": "既にロビーに参加しています",
+    "noLobbyFound": "ロビーが見つかりません",
+    "playerLeft": "{name}がロビーから退出しました"
+  },
+  "invite": {
+    "sent": "{name}に招待を送信しました",
+    "received": "{name}からロビーへの招待を受けました",
+    "accepted": "{name}がロビーに参加しました",
+    "declined": "{name}が招待を断りました",
+    "expired": "招待の期限が切れました",
+    "targetAlreadyInLobby": "このプレイヤーは既にロビーに参加しています！",
+    "tooFar": "プレイヤーが遠すぎます！"
+  },
+  "job": {
+    "started": "仕事が始まりました！",
+    "completed": "仕事が完了しました！",
+    "failed": "仕事に失敗しました！",
+    "resetInProgress": "仕事をリセット中です。お待ちください...",
+    "cantEnterVehicle": "何かを持っている間は車両に乗れません！"
+  },
+  "xp": {
+    "gained": "+{amount} XP",
+    "levelUp": "レベルアップ！レベル{level}になりました",
+    "maxLevel": "最大レベルに到達しました！"
+  },
+  "contract": {
+    "reward": "報酬",
+    "risk": "リスク",
+    "teamVotes": "チーム投票:",
+    "waitingLeader": "リーダーの決定を待っています...",
+    "voteStayLegal": "投票: 合法を維持",
+    "voteAcceptRisk": "投票: リスクを受け入れる",
+    "done": "完了"
+  },
+  "hud": {
+    "truckFill": "トラック積載量",
+    "taximeter": "タクシーメーター",
+    "fare": "運賃",
+    "bonus": "ボーナス",
+    "distance": "距離",
+    "trailerHealth": "トレーラー耐久度",
+    "pressure": "圧力",
+    "coopLeaderboard": "ランキング",
+    "illegalRide": "違法ライド",
+    "normalRide": "通常ライド",
+    "goodCondition": "良好な状態",
+    "needsRepair": "修理が必要",
+    "criticalDamage": "致命的なダメージ",
+    "hold": "長押し",
+    "toClose": "で閉じる",
+    "forDetails": "で詳細表示"
+  },
+  "preview": {
+    "step": "ステップ {current}/{total}"
+  },
+  "minigame": {
+    "junctionBox": "接続ボックス",
+    "lsPower": "LS-POWER",
+    "circuitHint": "クリックして回転 — ソースをロードに接続",
+    "fish": "魚",
+    "catch": "釣る",
+    "space": "SPACE"
+  },
+  "admin": {
+    "title": "管理パネル",
+    "subtitle": "ジョブパック分析",
+    "dashboard": "ダッシュボード",
+    "players": "プレイヤー",
+    "market": "マーケット",
+    "activeLobbies": "アクティブロビー",
+    "economy": "経済",
+    "todaysPayouts": "今日の支払い",
+    "thisWeek": "今週",
+    "allTime": "全期間",
+    "jobsToday": "今日の仕事数",
+    "onlinePlayers": "オンラインプレイヤー",
+    "perJobEarnings": "仕事別収入（過去7日間）",
+    "job": "仕事",
+    "totalPayout": "総支払い",
+    "completions": "完了数",
+    "uniquePlayers": "ユニークプレイヤー",
+    "name": "名前",
+    "identifier": "識別子",
+    "status": "ステータス",
+    "perkPoints": "パークポイント:",
+    "jobLevels": "仕事レベル",
+    "recentHistory": "最近の履歴",
+    "region": "地域",
+    "earned": "獲得額",
+    "date": "日付",
+    "dynamicMarket": "ダイナミックマーケット価格",
+    "resetAllToBase": "全て基本価格にリセット",
+    "current": "現在",
+    "base": "基本",
+    "minMax": "最小 / 最大",
+    "health": "耐久度",
+    "setPrice": "価格設定",
+    "action": "アクション",
+    "paymentRates": "支払いレート",
+    "qualityTiers": "品質ティア",
+    "chance": "確率 %",
+    "multiplier": "倍率",
+    "levelBonuses": "レベルボーナス",
+    "payBonusPerLevel": "レベル毎の報酬ボーナス",
+    "qualityChancePerLevel": "レベル毎の品質確率",
+    "estimatedEarnings": "推定収入（10個）",
+    "selectJobToEdit": "編集する仕事を選択",
+    "noJobsFound": "仕事が見つかりません",
+    "noJobData": "仕事データがありません",
+    "noHistory": "履歴なし",
+    "noMarketData": "マーケットデータなし（ダイナミックマーケットが無効の可能性）",
+    "noActiveLobbies": "アクティブなロビーがありません",
+    "searchPlaceholder": "名前またはIDで検索...",
+    "searchPlayer": "上でプレイヤーを検索してください",
+    "xp": "XP",
+    "owner": "オーナー",
+    "state": "状態",
+    "count": "数",
+    "loading": "読み込み中..."
+  },
+  "editor": {
+    "title": "ジョブエディター",
+    "npc": "NPC",
+    "npcModel": "NPCモデル",
+    "scenarioAnimation": "シナリオ / アニメーション",
+    "npcPosition": "NPC位置",
+    "npcInteraction": "NPCインタラクション",
+    "blip": "ブリップ",
+    "vehicleModel": "車両モデル",
+    "plate": "ナンバープレート",
+    "primaryColor": "メインカラー",
+    "secondaryColor": "サブカラー",
+    "spawnLocations": "スポーン位置",
+    "clickToChange": "クリックして変更",
+    "clickToBrowse": "クリックしてシナリオを閲覧",
+    "typeManually": "または手動で入力...",
+    "sprite": "スプライト",
+    "color": "色",
+    "scale": "スケール",
+    "label": "ラベル",
+    "enabled": "有効",
+    "distance": "距離",
+    "keyCode": "キーコード",
+    "interactionText": "インタラクションテキスト",
+    "searchBlip": "ブリップを検索...",
+    "searchCoords": "座標を検索...",
+    "noCoordFields": "この仕事の座標フィールドが見つかりません。",
+    "noVehicleConfig": "この仕事には車両設定がありません。",
+    "selectJob": "編集する仕事を選択",
+    "spawnNum": "スポーン",
+    "unsavedChanges": "未保存の変更",
+    "goTo": "移動",
+    "setFromCamera": "カメラから設定",
+    "copy": "コピー",
+    "go": "移動",
+    "cam": "カメラ",
+    "preview": "プレビュー",
+    "dup": "複製",
+    "selectPedModel": "Pedモデルを選択",
+    "selectVehicleModel": "車両モデルを選択",
+    "selectScenario": "シナリオを選択",
+    "searchPed": "Pedモデルを検索...",
+    "searchVehicle": "車両モデルを検索...",
+    "searchScenario": "シナリオを検索...",
+    "noAnimations": "アニメーションが見つかりません",
+    "camera": "カメラ",
+    "browse": "閲覧",
+    "devModeRequired": "ジョブエディターにはDevModeの有効化が必要です。",
+    "devModeHint": "shared/config_settings.lua で Config.DevMode = true に設定し、リソースを再起動してください。"
+  },
+  "tutorial": {
+    "title": "チュートリアル",
+    "skip": "スキップ",
+    "next": "次へ",
+    "miner": {
+      "step1": {
+        "title": "車両を受け取る",
+        "desc": "マークされたエリアに行って採掘車両を受け取ってください。"
+      },
+      "step2": {
+        "title": "道具を取る",
+        "desc": "車両のトランクを開けてツルハシを取ってください。"
+      },
+      "step3": {
+        "title": "採掘を始める",
+        "desc": "採掘エリアに行って岩を壊して鉱石を集めてください。"
+      },
+      "step4": {
+        "title": "鉱石を加工",
+        "desc": "集めた鉱石を加工スケールに持って行って報酬を受け取ってください。"
+      }
+    },
+    "lumberjack": {
+      "step1": {
+        "title": "車両を受け取る",
+        "desc": "マークされたエリアに行って伐採車両を受け取ってください。"
+      },
+      "step2": {
+        "title": "斧を取る",
+        "desc": "車両のトランクを開けて斧を取ってください。"
+      },
+      "step3": {
+        "title": "木を切る",
+        "desc": "森林エリアに行って木を切り始めてください。"
+      },
+      "step4": {
+        "title": "丸太を加工",
+        "desc": "集めた丸太を加工スケールに持って行って報酬を受け取ってください。"
+      }
+    },
+    "farmer": {
+      "step1": {
+        "title": "車両を受け取る",
+        "desc": "マークされたエリアに行って農業車両を受け取ってください。"
+      },
+      "step2": {
+        "title": "道具を取る",
+        "desc": "車両のトランクを開けて移植ごてを取ってください。"
+      },
+      "step3": {
+        "title": "作物を収穫",
+        "desc": "農場エリアに行って作物を収穫してください。"
+      },
+      "step4": {
+        "title": "収穫物を加工",
+        "desc": "集めた作物を加工スケールに持って行って報酬を受け取ってください。"
+      }
+    },
+    "fishing": {
+      "step1": {
+        "title": "釣り場を見つける",
+        "desc": "水辺近くの釣りスポットに行ってください。"
+      },
+      "step2": {
+        "title": "竿を投げる",
+        "desc": "釣り竿を使って釣りを始めてください。"
+      },
+      "step3": {
+        "title": "魚を売る",
+        "desc": "釣った魚を加工ポイントに持って行って売ってください。"
+      }
+    },
+    "generic": {
+      "step1": {
+        "title": "準備する",
+        "desc": "車両を受け取って作業エリアに向かってください。"
+      },
+      "step2": {
+        "title": "作業する",
+        "desc": "指定エリアでタスクを完了してください。"
+      },
+      "step3": {
+        "title": "完了する",
+        "desc": "NPCまたは加工ポイントに戻って仕事を完了してください。"
+      }
+    }
+  },
+  "stats": {
+    "title": "統計",
+    "subtitle": "キャリア概要",
+    "overview": "概要",
+    "perJob": "仕事別",
+    "history": "履歴",
+    "totalEarnings": "総収入",
+    "totalXP": "総XP",
+    "totalSessions": "総セッション",
+    "totalTime": "総時間",
+    "bestDay": "最高日",
+    "favoriteJob": "お気に入りの仕事",
+    "avgEarnings": "平均収入",
+    "perSession": "セッション毎",
+    "sessions": "セッション",
+    "last7Days": "過去7日間",
+    "job": "仕事",
+    "level": "レベル",
+    "earnings": "収入",
+    "time": "時間",
+    "noData": "データがありません"
+  },
+  "drawtext": {
+    "jobCenter": "ジョブセンター"
+  },
+  "notify": {
+    "jobAtCapacity": "このジョブは現在満員です（{current}/{max} チームが稼働中）。別のジョブを試すか、お待ちください。",
+    "cannotStartJob": "このジョブを開始できません",
+    "failedStartJob": "ジョブの開始に失敗しました",
+    "unknownError": "不明なエラー",
+    "toolEquipped": "道具を装備しました: {tool}",
+    "toolReturnedToTruck": "{tool}をトラックに戻しました。",
+    "deliveringStatus": "配達中...",
+    "jobRestarting": "仕事システムを再起動中...",
+    "failedOpenMenu": "仕事メニューを開けませんでした",
+    "noPermission": "管理者権限がありません",
+    "mustSelectJob": "まずジョブセンターで仕事を選択してください",
+    "achievementUnlocked": "実績解除: {label}",
+    "globalEventStarted": "新しいグローバルイベント開始: {title}",
+    "alreadyCarrying": "既に何かを持っています！",
+    "notCarrying": "何も持っていません！",
+    "needToolFirst": "まず道具が必要です！",
+    "anotherPlayerBreaking": "別のプレイヤーが既に壊しています！",
+    "putToolOnBelt": "まず道具をベルトに付けてください！",
+    "processingWait": "加工中です、お待ちください！",
+    "noBoxAvailable": "箱がありません！",
+    "alreadyHaveBox": "既に箱を持っています！",
+    "failedTakeBox": "箱を取れませんでした！",
+    "noLoadedBoxes": "積み込まれた箱がありません！",
+    "notCarryingBox": "箱を持っていません！",
+    "failedLoadBox": "箱を積み込めませんでした！",
+    "noRoomInTrunk": "トランクに空きがありません、箱を破棄しました。",
+    "emptyBoxReturned": "空の箱を返却しました。",
+    "workClothesEquipped": "作業服を着用しました！",
+    "normalClothes": "普段着に着替えました",
+    "clothesRequired": "まず作業服を着てください！",
+    "failedPlaceBox": "箱を置けませんでした！",
+    "takeBoxFirst": "まず箱を取ってください！",
+    "boxFull": "箱がいっぱいです！トラックに積み込んでください。",
+    "placeBoxFirst": "まず箱を地面に置いてください！",
+    "objectBroken": "オブジェクトを壊しました！アイテムを拾ってください。",
+    "oreBroken": "{ore}鉱石を発見！拾ってください。",
+    "noItemsToSell": "売るアイテムがありません！",
+    "cantRepairPanel": "このパネルは修理できません",
+    "cantRepairPole": "このポールは修理できません",
+    "nothingInTrunk": "トランクに何もありません！",
+    "alreadyCarryingSomething": "既に何かを持っています！",
+    "trunkInUse": "他の人がトランクを使用中です！",
+    "failedTakeItem": "アイテムを取れませんでした！",
+    "itemTaken": "アイテムを取りました！計量台またはトラックに置いてください。",
+    "failedPickupItem": "アイテムを拾えませんでした！",
+    "notCarryingAnything": "何も持っていません！",
+    "failedLoadItem": "アイテムを積み込めませんでした！",
+    "vehicleSpawnBlocked": "車両スポーンポイントがブロックされています！",
+    "failedStartCleaning": "清掃を開始できませんでした！",
+    "cleanItemsFirst": "まず何かを掃除してください！",
+    "allDoneReturn": "全て完了！帰還してください。",
+    "newRouteAssigned": "新しいルートが割り当てられました！清掃を続けてください！",
+    "failedTakeLoadedBox": "積み込まれた箱を取れませんでした！",
+    "jobCompletedByTeam": "チームが仕事を完了しました！",
+    "jobFinishedSummary": "仕事完了！アイテム: {items} • 報酬: {currency}{amount}",
+    "continuePayout": "ラウンドの支払い完了: {currency}{amount}。新しいラウンド開始！",
+    "roundLimitReached": "ラウンド上限に達しました — ジョブのクールダウンが開始されました。",
+    "cooldownWaitAny": "{name} は他の仕事を始める前に {time} 待つ必要があります。",
+    "cooldownWaitJob": "{name} はこの仕事を再開する前に {time} 待つ必要があります。",
+    "cantRunWithDog": "犬の散歩中は走れません！",
+    "cantJumpWithDog": "犬の散歩中はジャンプできません！",
+    "cantEnterVehicleWithDog": "犬の散歩中は車に乗れません！",
+    "policeAlert": "警察に発見されました！",
+    "tooFarFromVan": "バンから離れすぎです！ホースが届きません。",
+    "tooFarFromTask": "遠すぎます！近づいて再試行してください。",
+    "itemCleanedPay": "清掃完了！+{amount}",
+    "itemsCleaned": "清掃済みアイテム",
+    "alreadyTaken": "既に取られています！",
+    "actionFailed": "アクションに失敗しました！",
+    "saleFailed": "売却に失敗しました！",
+    "failedSelectZone": "ゾーンの選択に失敗しました！",
+    "purchaseFailed": "購入に失敗しました！",
+    "couldNotSell": "売却できませんでした！",
+    "couldNotCastRod": "釣り竿を投げられませんでした！",
+    "cannotTakeTool": "道具を取れません",
+    "cannotTrimBush": "この茂みは刈れません",
+    "cannotDigLawn": "この芝生は掘れません",
+    "couldNotPickUpBox": "箱を持ち上げられませんでした",
+    "couldNotPickUpPallet": "パレットを持ち上げられませんでした",
+    "trunkIsFull": "トランクがいっぱいです！",
+    "palletSlotsFull": "パレットスロットがいっぱいです",
+    "truckIsFull": "トラックがいっぱいです",
+    "toolTaken": "道具を取りました: {tool}",
+    "toolReturned": "道具を返却しました: {tool}",
+    "alreadyHaveTool": "既に{tool}を持っています！",
+    "noToolAvailable": "{tool}がありません！",
+    "notHoldingTool": "{tool}を持っていません！",
+    "failedReturnTool": "{tool}の返却に失敗しました！",
+    "takeToolFirst": "まず{tool}を取ってください！",
+    "itemLoaded": "アイテムを積みました！（スロット {slot}/{max}）",
+    "itemLoadedDrive": "アイテムを積みました！（スロット {slot}/{max}）— 加工スケールまで運転してください！",
+    "spotCleaned": "{spot}を清掃しました！残り{count}箇所。",
+    "collected": "{item}を採取しました！",
+    "truckHeadingTo": "トラックが{dest}に向かっています...",
+    "todaysBonusJobs": "本日のボーナス仕事: {jobs}",
+    "toolUnlocked": "アンロック: {tool}",
+    "toolUpgraded": "{job}: {tool}をアンロックしました！",
+    "toolSwitched": "{job}: {tool}に切り替えました！",
+    "qualityBonus": "{quality}品質！x{multiplier}ボーナス",
+    "notAuthenticated": "認証されていません",
+    "noToolsForJob": "この仕事の道具がありません",
+    "toolNotFound": "道具が見つかりません",
+    "notEnoughMoney": "お金が足りません",
+    "failedUnlockTool": "道具のアンロックに失敗しました",
+    "toolNotUnlocked": "道具がアンロックされていません",
+    "failedSelectTool": "道具の選択に失敗しました",
+    "toolNotFoundForLevel": "このレベルの道具が見つかりません",
+    "failedSaveUpgrade": "アップグレードの保存に失敗しました",
+    "alreadyProcessing": "リクエスト処理中です、お待ちください。",
+    "alreadyInJob": "すでに仕事中です！",
+    "minimumPlayersRequired": "この仕事には最低{count}人のプレイヤーが必要です。",
+    "requiresJobLevel": "仕事レベル{level}が必要です",
+    "failedSwitchTool": "道具の切り替えに失敗しました",
+    "playerNotFound": "プレイヤーが見つからないか、オフラインです",
+    "failedSetLevel": "レベル設定に失敗しました",
+    "pickingUp": "拾っています...",
+    "pickingUpBox": "箱を拾っています...",
+    "placingBox": "箱を置いています...",
+    "loadingBox": "箱を積み込んでいます...",
+    "placingOnScale": "計量台に置いています...",
+    "returningBox": "箱を返却しています...",
+    "loading": "読み込み中...",
+    "takingItem": "アイテムを取っています...",
+    "placingItem": "アイテムを置いています...",
+    "takingTool": "道具を取っています...",
+    "storingTool": "道具を収納しています...",
+    "equippingTool": "道具を装備しています...",
+    "toolActionInProgress": "道具の動作が既に進行中です",
+    "toolCooldownActive": "道具を再度使用するまでお待ちください",
+    "cannotTakeToolInVehicle": "車内では道具を取れません",
+    "alreadyHoldingTool": "既に道具を持っています",
+    "noToolInTrunk": "トランクに道具がありません",
+    "toolNotAssigned": "道具が割り当てられていません",
+    "toolNotYours": "これはあなたの道具ではありません",
+    "toolNotInTrunk": "道具がトランクにありません",
+    "toolActionCancelled": "動作がキャンセルされました",
+    "toolAttachFailed": "道具の取り付けに失敗しました",
+    "noJobCallbacks": "ジョブコールバックが設定されていません",
+    "serverDeniedTool": "サーバーが動作を拒否しました",
+    "noToolInHand": "手に道具がありません",
+    "noToolOnBelt": "ベルトに道具がありません",
+    "toolEntityNotFound": "道具エンティティが見つかりません",
+    "noActiveTool": "アクティブな道具がありません",
+    "noToolToReturn": "返却する道具がありません",
+    "questProgress": "クエスト: {label} ({progress}/{target})",
+    "questCompleted": "クエスト完了: {label}！{rewards}",
+    "boxTaken": "箱を取りました！収穫に行きましょう。",
+    "loadedBoxTaken": "積み込み済みの箱を取りました！{count}個の{label} — 計量台まで運んでください。",
+    "boxEmpty": "箱が空です！まず収穫してください。",
+    "boxEmptyError": "箱が空です",
+    "decalCleaned": "清掃完了！（残り{count}個）",
+    "allDeliveriesComplete": "全ての配達が完了しました！自転車を返却してください。",
+    "allDeliveriesCompletePayment": "全ての配達が完了しました！+{symbol}{payment} | 自転車を返却してください。",
+    "farmerJobStarted": "農業の仕事が開始しました！作業服を着て箱を取ってください。",
+    "farmerBoxTaken": "箱を取りました！植物を収穫しに行きましょう。",
+    "farmerBoxEmpty": "箱が空です！まず収穫してください。",
+    "fruitpickerJobStarted": "果物摘みの仕事が開始しました！作業服を着て箱を取ってください。",
+    "fruitpickerBoxTaken": "箱を取りました！オレンジの木に向かいましょう。",
+    "fruitpickerBoxEmpty": "箱が空です！まずオレンジを摘んでください。",
+    "scaleFull": "計量台がいっぱいです！",
+    "insufficientHours": "この仕事を始めるには最低{required}時間が必要です。現在{current}時間です。",
+    "exceededMaxHours": "この仕事は{max}時間未満のプレイヤーのみ利用可能です。現在{current}時間です。",
+    "insufficientHoursPlayer": "{name}がこの仕事を始めるには最低{required}時間が必要です。現在：{current}時間。",
+    "exceededMaxHoursPlayer": "{name}はこの仕事には時間が多すぎます（{current}/{max}まで）。"
+  },
+  "prompt": {
+    "pickUpBox": "[E] 箱を拾う",
+    "loadBox": "[E] 箱を積み込む",
+    "openTrunk": "[E] トランクを開ける",
+    "closeTrunk": "[E] トランクを閉める",
+    "returnVehicle": "[E] 車両を返却",
+    "deliver": "[E] 配達する",
+    "returnBoxToTrunk": "[E] 箱をトランクに戻す",
+    "dropAnchor": "[E] 錨を降ろす",
+    "raiseAnchor": "[E] 錨を上げる",
+    "returnBoat": "[E] ボートを返却",
+    "boardBoat": "[E] ボートに乗る",
+    "sellItems": "[E] アイテムを売る",
+    "catchDog": "[E] 犬を捕まえる",
+    "cleanPoop": "[E] フンを掃除する",
+    "deliverDog": "[E] 犬を届ける",
+    "getInBucket": "[E] バケットに乗る",
+    "bucketInUse": "バケット使用中",
+    "parkVehicle": "[E] 車両を駐車",
+    "reelIn": "[E] リールを巻く！",
+    "sellFish": "[E] 魚を売る",
+    "changeClothes": "[E] 着替える",
+    "changeToWorkClothes": "[E] 作業服に着替える",
+    "changeToNormalClothes": "[E] 普段着に着替える",
+    "collectTreasure": "[E] 宝を掘り出す",
+    "takeShovel": "[G] シャベルを取る",
+    "loadCargo": "[E] ボートに積み込む",
+    "digTreasure": "[E] 掘る",
+    "openChest": "[E] 宝箱を開ける",
+    "pickupLoot": "[E] 戦利品を拾う",
+    "stealCargo": "[E] 貨物を盗む",
+    "finishJob": "[E] 仕事を完了",
+    "cancelJob": "[E] 仕事をキャンセル",
+    "exitWarehouse": "[E] 倉庫から出る",
+    "completeJob": "[E] 仕事を完了",
+    "activateBelt": "[E] ベルトを起動",
+    "throwCleanup": "[E] ゴミを投げ入れる",
+    "collectCleanup": "[E] ゴミを回収",
+    "deliverTruck": "[E] トラックを配達",
+    "takeTrimmer": "[E] トリマーを取る",
+    "trimBush": "[E] 茂みを刈る",
+    "digLawn": "[E] 芝生を掘る",
+    "returnWand": "[E] ワンドを返す",
+    "takeWand": "[E] 高圧ワンドを取る",
+    "takeWandOrCloth": "[E] ワンドを取る | [G] クロスを取る",
+    "takeTrimmerOrShovel": "[E] トリマーを取る | [G] シャベルを取る",
+    "cleanToilet": "[E] トイレを掃除",
+    "fixPipe": "[E] パイプを修理",
+    "returnWrench": "[E] レンチを返す",
+    "takeWrench": "[E] レンチを取る",
+    "attachTrailer": "[E] トレーラーを接続",
+    "deliverTrailer": "[E] トレーラーを配達",
+    "reattachTrailer": "[E] トレーラーを再接続",
+    "pickUpPallet": "[E] パレットを拾う",
+    "loadPallet": "[E] パレットを積む",
+    "putDownBox": "[E] 箱を下ろす",
+    "pickUpBoxForklift": "[E] フォークリフトで箱を拾う",
+    "fishingShop": "[E] 釣りショップ",
+    "lowerFork": "[CTRL]を押してフォークを下げる",
+    "raiseFork": "[SHIFT]を押してフォークを上げる",
+    "useForklift": "フォークリフトでパレットを運んでください",
+    "trunkFull": "トランクがいっぱいです！出発しましょう。",
+    "completeDeliveriesFirst": "まず全ての配達を完了してください！",
+    "forkliftControls": "フォークリフト: CTRL = フォーク下げ | SHIFT = フォーク上げ",
+    "processingInProgress": "加工中...",
+    "boxFullLoad": "箱がいっぱい！トラックか計量台に積み込んでください。",
+    "trunkEmptyGoNpc": "トランクが空です！NPCに向かってください。",
+    "takeWrenchFromTrunk": "バンのトランクからレンチを取る",
+    "reattachTrailerPrompt": "[E] トレーラーを再接続",
+    "finishJobCount": "[E] 仕事を完了（{count}箇所清掃済み）",
+    "returnTool": "[E] {tool}を返す",
+    "takeTool": "[E] {tool}を取る",
+    "finishProcessing": "[E] 加工完了（{boxes}箱、{currency}{value}）",
+    "placeBoxOnScale": "[E] 箱を計量台に置く",
+    "loadBoxToTruck": "[E] 箱をトラックに積む（{count}個の{produce}）",
+    "loadBoxToTruckTarget": "{produce}の箱を積む",
+    "returnEmptyBox": "[E] 空の箱を返す",
+    "takeLoadedBox": "[E] 積み込み済みの箱を取る（トラックに{count}個）",
+    "takeHarvestBox": "[E] 収穫箱を取る（{count}/{cap}）",
+    "takeHarvestBoxEmpty": "[E] 収穫箱を取る",
+    "polishSurface": "[E] {surface}を磨く",
+    "continuePolish": "[E] {surface}の磨きを続ける",
+    "returnAndTake": "[E] {current}を返す | [G] {other}を取る",
+    "deliverCount": "[E] 配達（{current}/{total}）",
+    "selectHuntingArea": "[E] 狩猟エリアを選択",
+    "returnBicycle": "[E] 自転車を返却",
+    "takeJack": "[E] ジャッキを取る",
+    "swapTire": "[E] 古いタイヤを返してスペアを取る",
+    "closeValve": "[E] バルブを閉める - 水を止める",
+    "openValve": "[E] バルブを開ける - 水を流す",
+    "wearHuntingClothes": "[E] 狩猟服を着る",
+    "placeBoxAndHarvest": "[E] 箱を置いて{produce}を収穫",
+    "harvestProduce": "[E] {produce}を収穫",
+    "castRod": "[E] 釣り竿を投げる（{zone}）",
+    "returnToSeat": "[E] 席に戻る",
+    "clickTargetsToClean": "ターゲットをクリックして掃除してください！"
+  },
+  "hunting": {
+    "started": "狩猟の仕事が開始しました！作業服を着てエリアを選択してください。",
+    "newAnimals": "新しい動物が現れました！続けてください。",
+    "continueHunting": "狩猟を続けられます。",
+    "weaponsGiven": "狩猟用武器を受け取りました！",
+    "goToArea": "狩猟エリアに向かってください。動物がスポーンします！",
+    "cantPickUp": "この動物は拾えません！",
+    "alreadyCarrying": "既に何かを持っています！",
+    "failedPickUp": "動物を拾えませんでした！",
+    "noAnimalsInTrunk": "トランクに動物がいません！",
+    "trunkInUse": "他の人がトランクを使用中です！",
+    "orePickedUp": "動物を拾いました！計量台に置いてください。",
+    "failedPickUpAnimal": "動物を拾えませんでした！",
+    "invalidArea": "無効なエリアです！",
+    "areaLocked": "このエリアはロックされています！",
+    "animalsSpawned": "{count}匹の動物がスポーンしました！",
+    "animalHunted": "{animal}を狩りました！（{weight} kg）",
+    "wildAnimalFound": "野生の{animal}を発見！（{weight} kg）",
+    "animalPickedUp": "{animal}を拾いました！（{weight} kg）車両に積み込んでください。",
+    "levelRequired": "このエリアにはレベル{level}が必要です！",
+    "areaSelected": "{area}を選択しました！マップのマーカーに従ってください。",
+    "processingComplete": "加工完了！{weight} kg、{currency}{amount}を獲得",
+    "tooFarWarning": "狩猟エリアから離れすぎています！15秒以内に戻らないと仕事がキャンセルされます！",
+    "abandonedTooFar": "狩猟エリアから離れすぎたため、仕事がキャンセルされました。",
+    "huntingAreaFallback": "狩猟エリア",
+    "animalFallback": "動物",
+    "areaFallback": "エリア {index}",
+    "selectArea": "エリアを選択: {name}",
+    "selectHuntingArea": "狩猟エリアを選択",
+    "pickUpAnimal": "[E] {label} を拾う ({weight} kg)",
+    "loadAnimalToVehicle": "[E] 動物を車両に積む",
+    "takeAnimalFromTrunk": "[E] トランクから動物を取る",
+    "takeAnimalFromTrunkCount": "[E] トランクから動物を取る ({count})",
+    "loadAnimalWeight": "[E] 動物を積む ({weight} kg | トラック: {current}/{max} kg)",
+    "finishProcessingWeight": "[E] 処理を完了 ({weight} kg)",
+    "vehicleOverweight": "~r~車両重量超過! ({current}/{max} kg)",
+    "continueHint": "狩猟エリアで次の動物を追ってください",
+    "vehicleOverweightDrop": "~r~車両重量超過！（{current}/{max} kg）~w~[G] 獲物を捨てる",
+    "trunkFullDrop": "~r~トランクがいっぱいです！~w~[G] 獲物を捨てるか、現在の貨物を加工してください。",
+    "carcassDropped": "獲物を捨てました。",
+    "dropHint": "[G] 獲物を捨てる",
+    "progressTitle": "狩猟",
+    "progressDetail": "狩猟エリアを選び、動物を仕留め、獲物をトラックまで運んでから計量台まで運転してください。",
+    "stepSelectArea": "マップで狩猟エリアを選択",
+    "stepHuntAnimal": "エリア内の動物を狩る",
+    "stepPickingUp": "獲物を拾っています",
+    "stepPickupCarcass": "倒した動物を拾う",
+    "stepLoadTrunk": "獲物をトラックに積む",
+    "stepGoToScale": "獲物を計量台まで運転する",
+    "stepPlacingOnScale": "動物を計量台に置いています",
+    "stepPlaceOnScale": "動物を計量台に置く",
+    "stepProcessAnimal": "NPCに話しかけて動物を加工する",
+    "stepNewArea": "新しい狩猟エリアを選択"
+  },
+  "tiretechnician": {
+    "goGetJack": "トラックに行ってジャッキを取ってください！",
+    "takingJack": "ジャッキを取っています...",
+    "jackTaken": "ジャッキ準備完了！車の下に置いてください。",
+    "placingJack": "ジャッキを設置中...",
+    "jackPlaced": "車をジャッキアップしました！フラットタイヤを外してください。",
+    "removingTire": "タイヤを外しています...",
+    "tireRemoved": "タイヤを外しました！トラックに戻してスペアを取ってください。",
+    "swappingTires": "タイヤを交換中...",
+    "spareTaken": "スペアタイヤ準備完了！車に取り付けてください。",
+    "installingTire": "スペアタイヤを取り付けています...",
+    "tireInstalled": "タイヤを取り付けました！車を降ろして完了してください。",
+    "loweringVehicle": "車を降ろしています...",
+    "tireChanged": "タイヤ交換完了！",
+    "repairCancelled": "修理がキャンセルされました",
+    "cantRepair": "この車両は修理できません",
+    "finishCurrentFirst": "現在の修理を先に完了してください！",
+    "goToTruck": "サービストラックに向かってください！",
+    "returningJack": "ジャッキを返却中...",
+    "takingSpare": "スペアタイヤを取っています...",
+    "needSpare": "スペアタイヤが必要です！まずトラックから取ってください。",
+    "returnVehicle": "サービストラックをデポに返却してください！",
+    "interactPlaceJack": "[E] ジャッキを設置",
+    "interactRemoveTire": "[E] フラットタイヤを外す",
+    "interactInstallTire": "[E] スペアタイヤを取り付ける",
+    "interactLowerVehicle": "[E] 車を降ろす",
+    "interactPickupJack": "[E] ジャッキを拾う",
+    "interactChangeTire": "[E] フラットタイヤを交換",
+    "interactReturnJack": "[E] ジャッキを返す",
+    "interactReturnTire": "[E] タイヤを返す",
+    "interactTakeJack": "[E] ジャッキを取る",
+    "interactTakeSpare": "[G] スペアタイヤを取る",
+    "interactTakeSpareE": "[E] スペアタイヤを取る",
+    "progressTitle": "タイヤ整備士",
+    "progressDetail": "立ち往生した車両に向かい、フラットタイヤを交換してください。",
+    "progressTires": "タイヤ（{done}/{total}）",
+    "serviceTruck": "タイヤサービストラック",
+    "continueHint": "マップ上の次の立ち往生した車両まで運転してください",
+    "stepTakeJack": "トラックからジャッキを取る",
+    "stepJackUp": "車をジャッキアップする",
+    "stepRemoveFlat": "パンクしたタイヤを外す",
+    "stepFitSpare": "スペアタイヤを取り付ける",
+    "stepLowerCar": "車を下ろす",
+    "stepReturnJack": "ジャッキをトラックに戻す"
+  },
+  "powerlines": {
+    "bucketInstructions": "矢印キーでバケットの上下を操作。[E]で修理。",
+    "parkNearPoles": "ポールの近くに駐車してバケットで配線に到達してください。",
+    "cantDriveWithBucket": "バケット使用中は運転できません",
+    "panelRepaired": "パネルの修理が完了しました！",
+    "panelCancelled": "パネル修理がキャンセルされました",
+    "poleRepaired": "電話ポールの修理が完了しました！",
+    "poleRepairFailed": "ポールの修理に失敗しました！電気に注意してください。",
+    "progressTitle": "電線工事",
+    "bucketControls": "バケット操作 | 上下左右",
+    "blipPanel": "電気パネル",
+    "blipPole": "電話ポール",
+    "blipVehicle": "バケットトラック",
+    "continueHint": "マップ上の次の損傷したポールを見つけてください"
+  },
+  "diving": {
+    "oxygenCritical": "酸素が危険水域です！すぐに浮上してください！",
+    "oxygenLow": "酸素が少なくなっています！浮上をお勧めします。",
+    "refillingTank": "エアタンクを補充中...",
+    "tankRefilled": "エアタンクの補充が完了しました。",
+    "coralEmpty": "サンゴを壊しましたが中は空でした。",
+    "trashCleaned": "ゴミを掃除しました！",
+    "failedSyncBoat": "ボートの同期に失敗しました。再試行してください。",
+    "allTasksComplete": "全タスク完了！ボートに戻って錨を上げてください。",
+    "anchorDropped": "錨を降ろしました！ボートから降りて潜ってください。",
+    "anchorRaised": "錨を上げました！配達ポイントに向かってください。",
+    "anchorRaisedEarly": "錨を上げました！早期帰還 — 報酬はありません。",
+    "anchorRaisedContinue": "錨を上げました！ダイブゾーンで再び錨を降ろして続けられます。",
+    "gearEquipped": "{gear}を装備しました！（{seconds}秒の酸素）",
+    "itemsSold": "{count}個のアイテムを売却！{currency}{amount}を獲得！",
+    "zoneSelected": "ダイブゾーンを選択: {zone}。出発！",
+    "zoneInfo": "ダイブゾーン: {zone}",
+    "reconnected": "ダイビングジョブに再接続しました！",
+    "started": "ダイビングの仕事が開始しました！ゾーンを選んでダイブスポットに向かってください。",
+    "progressTitle": "ダイビング",
+    "progressDetail": "ダイブサイトで水中アイテムを収集してください。潜って海底からオブジェクトを集めましょう。",
+    "divingStarted": "ダイブゾーンに到着しました！海底からアイテムを集めてください。",
+    "collectingCoral": "サンゴを採取中...",
+    "cleaningTrash": "ゴミを掃除中...",
+    "unknownZone": "不明",
+    "sellAtNpcReminder": "報酬を受け取るには、回収したアイテムを買取NPCに売却してください。",
+    "continueHint": "マップ上の次のダイブスポットを見つけてください"
+  },
+  "treasurehunter": {
+    "started": "宝探しの仕事が開始しました！宝のエリアに向かってください。",
+    "reconnected": "宝探しジョブに再接続しました！",
+    "newTarget": "チームが宝を発見しました！新しい場所が割り当てられました。",
+    "treasureFound": "{tier}を発見しました！{currency}{value}を獲得！",
+    "someoneNearby": "誰かが近くにいます！離れてから回収してください。",
+    "anchorDropped": "錨を降ろしました！潜って宝を見つけてください！",
+    "anchorRaised": "錨を上げました！ドックに戻りましょう。",
+    "oxygenCritical": "酸素が危険水域です！すぐに浮上してください！",
+    "oxygenLow": "酸素が少なくなっています！浮上をお勧めします。",
+    "refillingTank": "エアタンクを補充中...",
+    "tankRefilled": "エアタンクの補充が完了しました。",
+    "depthWarning": "危険な深度です！酸素の消費が速くなっています！",
+    "fakeLocation": "偽の信号でした...新しい座標を計算中。",
+    "penalty": "ペナルティ: {currency}{amount} — ドックに会社のボートがありません。",
+    "digging": "宝を掘り出しています...",
+    "alreadyCollected": "誰かが既にこの宝を回収しました！",
+    "alreadySurfaced": "宝箱は既に浮上しています！",
+    "notSurfaced": "宝箱がまだ浮上していません！掘り続けてください。",
+    "someoneOpening": "他の人がこの宝箱を開けています！",
+    "needShovel": "シャベルが必要です！ボートから取ってください。",
+    "cargoLoaded": "戦利品をボートに積みました！",
+    "cargoFull": "ボートの貨物がいっぱいです！ドックに戻って配達してください。",
+    "stolenItem": "他のボートから戦利品を盗みました！",
+    "cargoStolenFromYou": "誰かがあなたのボートから戦利品を盗みました！",
+    "someoneOpened": "誰かが{tier}を開けました！",
+    "stealDisabled": "窃盗は無効になっています。",
+    "noCargoHere": "ここには盗む貨物がありません。",
+    "shovelTaken": "シャベルを取りました！",
+    "canFinishHint": "さらに宝を集めるか、ドックに戻って仕事を終了してください。",
+    "anchorRaisedContinue": "錨を上げました！次の宝に向かうか、ドックに戻って終了してください。",
+    "progressTitle": "トレジャーハンター",
+    "progressDetail": "水中に潜って宝箱を集めてください。トラッカーのビープ音に従って見つけましょう。",
+    "cargoProgress": "貨物: {current}/{max}",
+    "blipDock": "ドック - 配達",
+    "blipTreasure": "宝の場所",
+    "continueHint": "トラッカーに従って次の宝箱に向かってください"
+  },
+  "metaldetector": {
+    "continueHint": "探知機のビープ音を頼りに次のゾーンを探索しよう",
+    "started": "金属探知シフト開始！トラックから探知機を取り、捜索ゾーンへ向かおう。",
+    "newRound": "新しいラウンド開始。スキャナーを再調整しました。",
+    "newZone": "新しい捜索ゾーン: {zone}",
+    "teammateFound": "チームメイトがアイテムを掘り出しました。",
+    "pressDig": "[E] ここを掘る",
+    "digging": "掘っています...",
+    "digCancelled": "掘削をキャンセルしました。",
+    "digTooFast": "掘るのが速すぎます。少しペースを落としてください。",
+    "exitVehicleFirst": "探知機を使うには車から降りてください。",
+    "outsideZone": "マークされたビーチゾーン内に留まってください。",
+    "lootFound": "{item}を発見！+{currency}{amount}",
+    "lootFoundItem": "{item}を発見！インベントリに追加されました。",
+    "unknownItem": "不明なアイテム",
+    "roundFinished": "ラウンド完了！このゾーンのすべての地点を掘り終えました。",
+    "canFinishHint": "終了または続行するにはNPCでジョブオプションを開いてください。",
+    "spotAlreadyDug": "この地点はすでに掘られています。",
+    "spotBusy": "チームメイトがすでにこの地点を掘っています。",
+    "takeDetectorFirst": "まずトラックから金属探知機を取ってください。",
+    "detectorReturned": "探知機をトラックに戻しました。",
+    "blipSearchArea": "捜索エリア",
+    "unknownZone": "不明なビーチ",
+    "progressTitle": "金属探知機",
+    "progressDetail": "探知機を使ってビーチゾーンに隠された金属を見つけて掘り出そう。",
+    "progressSpots": "掘った地点: {current}/{max}",
+    "progressValue": "蓄積価値: {currency}{amount}",
+    "labelTakeTool": "[E] 金属探知機を取る",
+    "labelReturnTool": "[E] 探知機を返す",
+    "labelPutOnBelt": "[G] 探知機をベルトに掛ける",
+    "labelTakeFromBelt": "[G] 探知機をベルトから取る",
+    "labelTakeFromTrunk": "[E] トランクから取る (%d)",
+    "labelNoMoreItems": "~y~トランクには何も残っていません。",
+    "labelLoadToTruck": "[E] トラックに積む",
+    "labelPickup": "[E] 拾う",
+    "labelDig": "[E] 掘る",
+    "labelClothesWork": "[E] 作業服に着替える",
+    "labelClothesNormal": "[E] 普段着に着替える",
+    "labelFailNotify": "今はここを掘れません",
+    "returnVehicleHint": "シフト終了 — バンを車庫まで運んで返却してください。",
+    "returnVehiclePrompt": "[E] バンを返却",
+    "returnVehicleBlip": "バン返却",
+    "jobFinished": "シフト終了！{symbol}{earned} を獲得しました。",
+    "vehicleNotAtDepot": "バンを車庫に戻す必要があります！",
+    "tooFarFromDepot": "車庫から遠すぎます！"
+  },
+  "delivery": {
+    "reconnected": "配達ジョブに再接続しました！",
+    "started": "貨物配達の仕事が開始しました！",
+    "leaderPreparing": "リーダーが車両を準備中です、お待ちください...",
+    "spawnFailed": "車両をスポーンできませんでした！スポーンポイントが占有されています。仕事はキャンセルされました。",
+    "alreadyCarryingBox": "既に箱を持っています！",
+    "boxPickedUp": "箱を拾いました！車両に積み込んでください。",
+    "notCarryingBox": "箱を持っていません！",
+    "firstDelivery": "最初の配達先が割り当てられました！準備ができたら出発してください。",
+    "trunkFull": "トランクがいっぱいです！配達に出発してください。",
+    "boxDeliverPickup": "箱を拾いました！お客様に届けてください。",
+    "newRound": "新しいラウンド！デポから箱を積み込んでください。",
+    "pickUpToContinue": "続けるにはNPCから箱を取ってください。終了するにはマークされた場所に行って車両を返却してください。",
+    "returnVehicleToFinish": "すべての配達が完了しました！仕事を終えるには、マークされた場所で車両を返却してください。",
+    "deliveriesStarting": "配達開始！",
+    "teammateTookBox": "チームメイトが箱を取りました",
+    "teammateReturnedBox": "チームメイトが箱をトランクに戻しました",
+    "teammatePartialDelivery": "チームメイトが一部配達を完了しました！",
+    "allComplete": "全ての配達が完了しました！デポに戻ってください。",
+    "progressTitle": "配達",
+    "progressDetail": "市内のお客様にパッケージを配達してください。箱を積んで各住所に届けましょう。",
+    "loadCapacity": "デポから箱を積み込んでください！容量: {capacity}箱",
+    "vehicleReadyLoad": "車両準備完了！デポから箱を積み込んでください。容量: {capacity}箱",
+    "subtaskDeliver": "パッケージを配達（{current}/{total}）",
+    "subtaskLoad": "デポで箱を積み込む（{current}/{total}）",
+    "boxLoaded": "箱を積みました！（{current}/{total}）",
+    "boxReturned": "箱を返却しました！（トランクに{count}個）",
+    "partialDelivery": "一部配達完了！（{current}/{total}）+{amount} | 別の箱を持ってきてください。",
+    "deliveryDone": "配達完了！+{amount} | 全配達完了！デポに戻ってください。",
+    "deliveryDoneRemaining": "配達完了！+{amount} | 残り: {remaining}",
+    "deliveryFailed": "配達失敗！",
+    "couldNotContinue": "続行できませんでした！",
+    "couldNotPickUp": "箱を拾えませんでした！",
+    "couldNotLoad": "箱を積めませんでした！",
+    "couldNotReturn": "箱を返せませんでした！",
+    "teammateLoaded": "チームメイトが箱を積みました（{current}/{total}）",
+    "teammateDelivered": "チームメイトが配達を完了しました！残り: {remaining}",
+    "itemLabel": "配達",
+    "continueHint": "次のパッケージを拾って配達してください"
+  },
+  "cardetailer": {
+    "started": "カーディテーリングの仕事が開始しました！装備してお客様の車に向かってください。",
+    "newCars": "新しい車が割り当てられました！ディテーリングを続けてください。",
+    "wandEquipped": "高圧ワンドを装備しました！",
+    "wandReturned": "高圧ワンドをバンに返しました。",
+    "clothEquipped": "ポリッシュクロスを装備しました！",
+    "clothReturned": "ポリッシュクロスをバンに返しました。",
+    "takeWandFirst": "まず高圧ワンドを取ってください！",
+    "needCloth": "ポリッシュクロスが必要です！バンから取ってください。",
+    "failedStartPolish": "磨きを開始できませんでした！",
+    "tooFar": "遠すぎます！近づいて再試行してください。",
+    "carDetailed": "車のディテーリング完了！",
+    "carWashed": "車を洗車しました！ボーナス報酬のために磨いてください。",
+    "hoseLimit": "ホースの限界です！バンに近づいてください。",
+    "carDetailedTeammate": "チームメイトが車をディテーリングしました！",
+    "carWashedTeammate": "チームメイトが車を洗車しました！",
+    "carPolished": "車を磨きました！素晴らしい仕事です！",
+    "carPolishedTeammate": "チームメイトが車を磨きました！",
+    "returnToDepot": "デポに戻って仕事を完了してください。",
+    "spotRightFrontDoor": "右フロントドア",
+    "spotLeftFrontDoor": "左フロントドア",
+    "spotHood": "ボンネット",
+    "spotTrunk": "トランク",
+    "spotRightRearDoor": "右リアドア",
+    "spotLeftRearDoor": "左リアドア",
+    "spotHoodRight": "ボンネット右",
+    "spotHoodLeft": "ボンネット左",
+    "toolWand": "ワンド",
+    "toolCloth": "クロス",
+    "carsDetailed": "ディテーリング済み車両",
+    "progressTitle": "カーディテーラー",
+    "progressDetail": "お客様の車を洗車・磨きしてください。高圧ワンドで洗車後、クロスで磨きましょう。",
+    "carLabel": "車 #{index}",
+    "subtaskWashed": "{car} 洗車済み",
+    "subtaskPolished": "{car} 磨き済み",
+    "subtaskDetailed": "{car} ディテーリング済み",
+    "spotFallback": "場所",
+    "continueHint": "次の車まで運転してディテーリングを始めてください",
+    "spotHoodCenter": "ボンネット中央",
+    "spotRoof": "ルーフ",
+    "spotRoofLeft": "ルーフ左",
+    "spotTrunkRight": "トランク右",
+    "spotTrunkLeft": "トランク左",
+    "spotFrontFenderRight": "フロントフェンダー右",
+    "spotFrontFenderLeft": "フロントフェンダー左",
+    "spotDoorRight": "右ドア",
+    "spotDoorRightFront": "右フロントドア",
+    "spotDoorLeft": "左ドア",
+    "spotDoorLeftFront": "左フロントドア",
+    "spotRearFenderRight": "リアフェンダー右",
+    "spotRearFenderLeft": "リアフェンダー左"
+  },
+  "cleaner": {
+    "started": "清掃の仕事が開始しました！作業服とモップを取ってください。",
+    "toolMop": "モップ",
+    "progressTitle": "清掃員",
+    "progressDetail": "マップにマークされた汚れをモップで掃除してください。各汚れまで歩いて[E]で清掃を開始してください。",
+    "itemLabel": "汚れ",
+    "blipLabel": "汚れ",
+    "finishItemLabel": "清掃済み",
+    "cleanPrompt": "[E] 汚れを掃除（{current}/{total}）",
+    "subtaskClean": "全ての汚れを掃除（{current}/{total}）",
+    "continueHint": "マップ上の次の汚れに向かってください"
+  },
+  "windowscleaner": {
+    "started": "窓清掃の仕事が開始しました！作業服とスポンジを取ってください。",
+    "toolSponge": "スポンジ",
+    "progressTitle": "窓清掃員",
+    "progressDetail": "各場所の汚れた窓を掃除してください。スポンジでマークされた箇所を磨きましょう。",
+    "dirtyWindow": "汚れた窓",
+    "dirtyWindowBlip": "汚れた窓 #%d",
+    "windowsCleaned": "清掃した窓",
+    "cleanWindowProgress": "[E] 窓を清掃 ({hits}/{required})",
+    "continueHint": "マップ上の次の汚れた窓を見つけてください"
+  },
+  "powerwash": {
+    "started": "高圧洗浄の仕事が開始しました！作業服とワンドを取ってください。",
+    "takeWandFirst": "まず高圧ワンドを取ってください！",
+    "tooFarFromSpot": "スポットから離れすぎです！",
+    "toolWand": "高圧ワンド",
+    "progressTitle": "高圧洗浄",
+    "progressDetail": "マップにマークされた汚れを高圧ワンドでスプレーしてください。汚れに向けて[LMB]を長押ししてスプレーしましょう。",
+    "dirtySpot": "汚れた場所",
+    "dirtySpotBlip": "汚れた場所 #%d",
+    "spotsCleaned": "清掃した場所",
+    "continueHint": "次の汚れた場所に移動してください"
+  },
+  "forklift": {
+    "newCrates": "新しいクレートが到着中...",
+    "preparingForklifts": "フォークリフトを準備中...",
+    "failedSpawnForklifts": "フォークリフトのスポーンに失敗しました！",
+    "beltFull": "ベルトがいっぱいです！先にコンベアを起動してください。",
+    "earnedReward": "+{symbol}{money}、+{xp} XP",
+    "modeBeltToShelf": "ベルトから取って棚に置いてください！",
+    "modeCratesToBelt": "クレートをベルトに運んでください！",
+    "newRoundBeltToShelf": "新ラウンド: ベルトから取って棚に置いてください！",
+    "newRoundStarting": "新ラウンド開始！",
+    "progressTitle": "フォークリフト",
+    "progressDetailToShelf": "フォークリフトでクレートを運んでください。クレートを拾って棚に置きましょう。",
+    "progressDetailToBelt": "フォークリフトでクレートを運んでください。クレートを拾ってコンベアベルトに届けましょう。",
+    "onlyLeaderCanCancel": "リーダーのみが仕事をキャンセルできます",
+    "deliveredCrates": "配送済みクレート",
+    "continueHint": "フォークリフトで次のクレートを拾ってください"
+  },
+  "warehouse": {
+    "newTrucks": "新しいトラックが到着中...",
+    "failedInitSession": "セッションの初期化に失敗しました！",
+    "preparingVehicles": "車両を準備中...",
+    "failedSpawnForklift": "フォークリフトのスポーンに失敗しました！",
+    "truckOnTheWay": "トラックが向かっています...",
+    "truckReady": "トラックの積み込み準備完了！",
+    "truckReadyWithOrder": "トラック準備完了！積み込み: {boxes}箱、{pallets}パレット",
+    "boxesProgress": "箱: {current}/{total}",
+    "palletsProgress": "パレット: {current}/{total}",
+    "orderInfo": "注文: {boxes}箱、{pallets}パレット",
+    "deliveryCompleteReward": "配達完了！+${money}、+{xp} XP",
+    "newOrder": "新注文: {boxes}箱、{pallets}パレット",
+    "newOrderWithRemaining": "新注文: {boxes}箱、{pallets}パレット（残り{remaining}台のトラック）",
+    "deliveryComplete": "配達完了！",
+    "takeBoxToTruck": "箱をトラックに運んでください！",
+    "truckNotReady": "トラックの準備ができていません",
+    "truckNotFound": "トラックが見つかりません",
+    "getInForklift": "フォークリフトに乗ってください",
+    "alreadyCarrying": "既に何かを持っています",
+    "boxDropped": "箱を落としました",
+    "progressTitle": "倉庫作業",
+    "progressDetail": "配達トラックに貨物を積み込んでください。フォークリフトか手作業でアイテムを運びましょう。",
+    "completedTrucks": "完了したトラック",
+    "continueHint": "次のパレットをトラックに積んでください"
+  },
+  "landscaping": {
+    "failedInit": "仕事の初期化に失敗しました！",
+    "toolNotAvailable": "道具がありません！",
+    "needTrimmer": "茂みを刈るにはトリマーが必要です！",
+    "trimmingCancelled": "茂み刈りがキャンセルされました",
+    "needShovel": "芝を掘るにはシャベルが必要です！",
+    "diggingCancelled": "芝掘りがキャンセルされました",
+    "newTasks": "新しい庭仕事が割り当てられました！",
+    "allComplete": "全タスク完了！デポに戻って仕事を終了してください。",
+    "onlyLeaderFinish": "リーダーのみが仕事を完了できます！",
+    "notAllBushes": "まだ全ての茂みを刈っていません！",
+    "notAllLawns": "まだ全ての芝を整えていません！",
+    "jobStarted": "造園の仕事が開始しました！{bushes}個の茂みを刈り、{lawns}個の芝を掘ってください。トラックから道具を取ってください。",
+    "bushTrimmed": "茂みを刈りました！残り{bushes}個の茂みと{lawns}個の芝",
+    "lawnDug": "芝を掘りました！残り{bushes}個の茂みと{lawns}個の芝",
+    "toolTrimmer": "トリマー",
+    "toolShovel": "シャベル",
+    "progressTitle": "造園",
+    "progressDetail": "庭のメンテナンスをしてください。各物件で茂みを刈り、芝を整えましょう。",
+    "toolFallback": "ツール",
+    "continueHint": "次のメンテナンスする物件に向かってください"
+  },
+  "farmer": {
+    "alreadyHarvested": "この植物は既に収穫済みです！",
+    "failedStartHarvest": "収穫の開始に失敗しました",
+    "plantsRespawned": "植物がリスポーンしました！{count}本が収穫可能です。",
+    "progressTitle": "農家",
+    "progressDetail": "畑の作物を収穫してください。植物を摘んで車両に積み込みましょう。",
+    "jobLabel": "農家",
+    "produceLabel": "アイテム",
+    "vehicleBlip": "農業車両",
+    "subtaskHarvest": "植物を収穫（{current}/{total}）",
+    "continueHint": "次の植物に向かって収穫してください",
+    "stepTakeBox": "トラックから箱を取る",
+    "stepHarvesting": "植物の収穫を続ける",
+    "stepHarvestPlant": "植物まで歩いて収穫する",
+    "stepLoadBoxToTruck": "満タンの箱をトラックに積む",
+    "stepGoToScale": "箱を計量台まで運転する",
+    "stepPlaceOnScale": "箱を計量台に置く",
+    "stepProcessProduce": "NPCに話しかけて農作物を加工する",
+    "stepNewRound": "箱を取って新しいラウンドを始める"
+  },
+  "fishing": {
+    "failedSpawnBoat": "釣りボートのスポーンに失敗しました！",
+    "started": "釣りの仕事が開始しました！ボートに乗って釣りゾーンに向かってください。",
+    "failedSyncBoat": "釣りボートの同期に失敗しました！",
+    "noFishToSell": "売る魚がありません！",
+    "noWater": "水が見つかりません！水辺に近づいてください。",
+    "fishOnLine": "魚がかかりました！[E]を押してリールを巻いてください！",
+    "fishGotAway": "魚が逃げました！遅すぎました。",
+    "fishEscaped": "魚が逃げました！",
+    "castCancelled": "釣りがキャンセルされました。",
+    "outfitEquipped": "釣り装備を着用しました！",
+    "cantUseInventoryRod": "ジョブモードではインベントリの竿は使えません！",
+    "alreadyCast": "既に竿を投げています！",
+    "mustBeNearWater": "水辺にいる必要があります！",
+    "completed": "釣りの仕事が完了しました！",
+    "freeModeDisabled": "フリーモードは無効です！",
+    "noBait": "エサがありません！釣りショップでエサを購入してください。",
+    "itemPurchased": "{amount}x {item}を購入しました！（{currency}{price}）",
+    "fishSold": "{count}匹の魚を売却！{currency}{amount}を獲得！",
+    "progressTitle": "釣り",
+    "progressDetail": "釣りスポットで魚を釣ってください。竿を投げてリールを巻きましょう。",
+    "subtaskFishCaught": "釣った魚: {count}",
+    "shopTitle": "釣りショップ",
+    "selectRod": "竿を選択",
+    "selectBait": "エサを選択",
+    "sellTitle": "魚を売る",
+    "baitStats": "{price} | 確率: +{chance}%",
+    "fishPriceRange": "{min} - {max} の範囲",
+    "continueHint": "次の釣りスポットに移動して竿を投げてください"
+  },
+  "cleanup": {
+    "started": "ゴミ収集の仕事が開始しました！まず作業服を着て、[E]でゴミ箱からゴミを回収してトラックに積んでください。",
+    "alreadyCarrying": "既に何かを持っています！",
+    "binEmpty": "このゴミ箱は空です！",
+    "noCleanupInBin": "このゴミ箱にゴミがありません！",
+    "animFailed": "アニメーションを読み込めませんでした！",
+    "bagPickedUp": "ゴミ袋を拾いました！トラックの後ろに行って[E]で投げ入れてください。",
+    "notHoldingBag": "ゴミ袋を持っていません！",
+    "thrownIn": "ゴミを投げ入れました！",
+    "noCleanupInTruck": "トラックにゴミがありません！",
+    "truckReady": "ゴミ収集トラック準備完了！",
+    "keepWorking": "続けてください！新しいゴミ箱を探してください。",
+    "truckTooFar": "トラックが遠すぎるか、利用できません。トラックに近づいてください。",
+    "truckFullBagDropped": "トラックがいっぱいです！ゴミ袋を落としました。トラックを配達ポイントまで運転してください。",
+    "jobEnded": "ゴミ収集の仕事が終了しました。",
+    "truckFullDrive": "トラックがいっぱいです！（{count}/{max}）マップの配達ポイントまでトラックを運転してください。",
+    "spawnBlocked": "スポーンエリアがブロックされています！車両を移動して再試行してください。",
+    "vehicleSpawnFailed": "車両をスポーンできませんでした！",
+    "areaSelected": "{area}エリアを選択しました。マップのエリアに行って[E]でゴミ箱からゴミを回収してください。",
+    "progressTitle": "ゴミ収集",
+    "progressDetail": "ルート沿いのゴミ箱を回収してください。各ゴミ箱を拾ってトラックに積みましょう。",
+    "deliveryBlip": "ゴミ配達",
+    "collectBinsProgress": "ゴミ箱を回収（{current}/{max}）",
+    "dumpDeliveries": "廃棄配達: {count}",
+    "hintCollectBins": "近くのゴミ箱を探して[E]で袋を回収してください。",
+    "hintCollectBinsTarget": "近くのゴミ箱を探してサードアイで袋を回収してください。",
+    "bagPickedUpTarget": "袋を拾いました！トラックの後ろに行き、サードアイで投げ入れてください。",
+    "areaSelectedTarget": "{area}エリアを選択しました。マップ上のエリアに行き、サードアイでゴミ箱から回収してください。",
+    "continueHint": "ルート上の次のゴミ箱まで運転してください"
+  },
+  "dogwalking": {
+    "anotherWalk": "次の散歩を開始します！",
+    "dogGotAway": "犬が逃げました！仕事失敗です。",
+    "dogDied": "犬が亡くなりました！仕事はキャンセルされました。",
+    "dogNeedsToGo": "犬がトイレに行きたがっています！待ってあげてください...",
+    "dogBrokeFree": "大変！犬が逃げ出しました！すぐ捕まえてください！",
+    "dogPickedUp": "犬を抱き上げました！みんなを待ちましょう。",
+    "returnDog": "良い散歩でした！犬を飼い主に返してください。",
+    "caughtDog": "ふう！犬を捕まえました。",
+    "noDogAssigned": "あなたに割り当てられた犬がいません！",
+    "alreadyClaimed": "既に犬を受け取っています！",
+    "poopAlreadyCleaned": "フンは既に掃除済みです！",
+    "notYourDogPoop": "これはあなたの犬のフンではありません！",
+    "walkNotComplete": "散歩がまだ完了していません！",
+    "reconnected": "犬の散歩ジョブに再接続しました！",
+    "started": "犬の散歩の仕事が開始しました！お客様の家に向かってください。",
+    "walkYourDog": "犬を{distance}m散歩させてください！楽しんでください。",
+    "dogDelivered": "犬を届けました！{symbol}{payment}と{xp} XPを獲得",
+    "progressTitle": "犬の散歩",
+    "progressDetail": "犬をルートに沿って散歩させてください。犬を幸せにして、後始末をしましょう。",
+    "dogDiedNoPayment": "犬が亡くなりました！仕事キャンセル — 報酬なし。",
+    "blipHome": "お客様の家",
+    "clientHomeFallback": "顧客の家",
+    "continueHint": "次の犬を受け取って散歩を始めてください",
+    "pickupTaskLabel": "次の犬を受け取る",
+    "pickupDescription": "マップにマークされた場所の犬に向かい、[E]を押して散歩を始めてください。",
+    "tooFarFromHome": "飼い主の家から遠すぎます！"
+  },
+  "harvest": {
+    "processingInProgress": "加工中です、お待ちください！",
+    "noBoxesOnScale": "計量台に箱がありません！",
+    "processingComplete": "加工完了！{count}箱、{currency}{amount}を獲得",
+    "boxLoadedScale": "箱を積みました！{count}個の{produce}、価値: {currency}{value} — 加工スケールまで運転してください！",
+    "boxLoaded": "箱を積みました！{count}個の{produce}、価値: {currency}{value}",
+    "boxPlaced": "箱を置きました！{count} {produce}、価値: {currency}{value}",
+    "produceHarvested": "{produce}を収穫しました！（{current}/{total}）",
+    "produceAddFailed": "{produce}をクレートに追加できませんでした！"
+  },
+  "miner": {
+    "started": "採掘の仕事が開始しました！作業服と装備を取ってください。",
+    "newRocks": "新しい岩がスポーンしました！採掘を続けてください。",
+    "orePickedUp": "{ore}鉱石を拾いました！トラックに積んでください。",
+    "rocksRemaining": "残り{count}個の岩があります。",
+    "processingInProgress": "加工中です、お待ちください！",
+    "noRocksOnScale": "計量台に鉱石がありません！",
+    "processingComplete": "加工完了！{count}個の鉱石、{currency}{amount}を獲得",
+    "pickaxeReturned": "ツルハシをトランクに返しました",
+    "returnVehicleBlip": "トラックを返却",
+    "returnVehicleHint": "勤務終了 — トラックをデポに戻して返却してください。",
+    "returnVehiclePrompt": "[E] トラックを返却する",
+    "vehicleNotAtDepot": "トラックをデポに戻してください！",
+    "tooFarFromDepot": "デポから離れすぎています！",
+    "labelProcessing": "~y~加工中...",
+    "labelFinish": "[E] 加工を完了（%d個の鉱石）",
+    "labelPlaceOnScale": "[E] 鉱石を計量台に置く",
+    "labelLoadToTruck": "[E] 鉱石をトラックに積む",
+    "labelReturnTool": "[E] ツルハシを返す",
+    "labelTakeTool": "[E] ツルハシを取る",
+    "labelTakeFromTrunk": "[E] トランクから鉱石を取る（%d）",
+    "labelNoMoreItems": "~y~鉱石がもうありません！NPCに行って完了してください。",
+    "labelPickup": "[E] 鉱石を拾う",
+    "labelBreakAction": "[E] 岩を採掘",
+    "labelPutOnBelt": "[G] ツルハシをベルトに付ける",
+    "labelTakeFromBelt": "[G] ツルハシをベルトから取る",
+    "labelClothesWork": "[E] 作業服に着替える",
+    "labelClothesNormal": "[E] 普段着に着替える",
+    "labelFailNotify": "採掘を開始できませんでした",
+    "continueHint": "次の鉱床を見つけて採掘してください",
+    "progressTitle": "採掘師",
+    "progressDetail": "岩を壊して鉱石を採り、鉱石をトラックまで運んでから計量台まで運転して加工してください。",
+    "stepTakeTool": "トランクからツルハシを取る",
+    "stepBreaking": "岩を壊し続ける",
+    "stepBreakRock": "岩を壊して鉱石を採取する",
+    "stepPickupOre": "地面の鉱石を拾う",
+    "stepLoadTrunk": "鉱石をトラックに積む",
+    "stepGoToScale": "鉱石を計量台まで運転する",
+    "stepPlaceOnScale": "鉱石を計量台に置く",
+    "stepProcessOre": "NPCに話しかけて鉱石を加工する",
+    "stepNewRound": "ツルハシを取って新しいラウンドを始める"
+  },
+  "lumberjack": {
+    "started": "伐採の仕事が開始しました！",
+    "newTrees": "新しい木がスポーンしました！切り続けてください。",
+    "takeHatchetFirst": "まず斧を取ってください！",
+    "anotherPlayerCutting": "別のプレイヤーがこの木を切っています！",
+    "alreadyCarryingLog": "既に丸太を持っています！",
+    "alreadyPickedUp": "他の人が既に拾いました！",
+    "logPickedUp": "丸太を拾いました！トラックに積んでください。",
+    "hatchetTaken": "斧を取りました！",
+    "treesRemaining": "残り{count}本の木があります。",
+    "axeDropBonus": "{name} | ドロップボーナス: +{bonus}%",
+    "treeCutDown": "{name}の木を伐採しました！丸太を集めてください。",
+    "levelRequired": "この木にはレベル{required}が必要です！（現在: {current}）",
+    "processingComplete": "加工完了！{count}本の丸太、{currency}{amount}を獲得",
+    "labelProcessing": "~y~加工中...",
+    "labelFinish": "[E] 加工を完了（%d本の丸太）",
+    "labelPlaceOnScale": "[E] 丸太を加工台に置く",
+    "labelLoadToTruck": "[E] 丸太をトラックに積む",
+    "labelReturnTool": "[E] 斧を返す",
+    "labelTakeTool": "[E] 斧を取る",
+    "labelTakeFromTrunk": "[E] トランクから丸太を取る（%d）",
+    "labelNoMoreItems": "~y~丸太がもうありません！NPCに行って完了してください。",
+    "labelPickup": "[E] 丸太を拾う",
+    "labelBreakAction": "[E] 木を伐採",
+    "labelPutOnBelt": "[G] 斧をベルトに付ける",
+    "labelTakeFromBelt": "[G] 斧をベルトから取る",
+    "labelClothesWork": "[E] 作業服に着替える",
+    "labelClothesNormal": "[E] 普段着に着替える",
+    "labelFailNotify": "伐採を開始できませんでした",
+    "processingInProgress": "加工中です、お待ちください！",
+    "noLogsOnScale": "加工エリアに丸太がありません！",
+    "hatchetReturned": "斧を返しました！",
+    "treeFallback": "木",
+    "serverDenied": "サーバーが拒否しました",
+    "continueHint": "次の木を見つけて伐採を始めてください",
+    "progressTitle": "伐採師",
+    "progressDetail": "木を切って丸太を採り、トラックまで運んでから加工計量台まで運転してください。",
+    "stepTakeAxe": "トランクから斧を取る",
+    "stepCutting": "木を切り続ける",
+    "stepCutTree": "木を切って丸太を落とす",
+    "stepPickupLog": "地面の丸太を拾う",
+    "stepLoadTrunk": "丸太をトラックに積む",
+    "stepGoToScale": "丸太を加工計量台まで運転する",
+    "stepPlaceOnScale": "丸太を計量台に置く",
+    "stepProcessLog": "NPCに話しかけて丸太を加工する",
+    "stepNewRound": "斧を取って新しいラウンドを始める"
+  },
+  "scrapyard": {
+    "started": "スクラップヤードの仕事が開始しました！作業服を着て装備を取ってください。",
+    "newScraps": "新しいスクラップが到着しました！続けてください。",
+    "putCrowbarOnBelt": "まずバールをベルトに付けてください！",
+    "scrapPickedUp": "スクラップを拾いました！車両に積んでください。",
+    "scrapsRemaining": "残り{count}個のスクラップ。",
+    "processingInProgress": "加工中です、お待ちください！",
+    "noScrapsOnScale": "計量台にスクラップがありません！",
+    "processingComplete": "加工完了！{count}個のスクラップ、{currency}{amount}を獲得",
+    "crowbarReturned": "バールを車両に返しました",
+    "workClothesEquipped": "作業服を着用しました！",
+    "normalClothes": "普段着に着替えました",
+    "scrapBlip": "スクラップ #{index}",
+    "labelProcessing": "~y~加工中...",
+    "labelFinish": "[E] 加工を完了（%d個のスクラップ）",
+    "labelPlaceOnScale": "[E] スクラップを計量台に置く",
+    "labelLoadToTruck": "[E] スクラップを車両に積む",
+    "labelReturnTool": "[E] バールを返す",
+    "labelTakeTool": "[E] バールを取る",
+    "labelTakeFromTrunk": "[E] トランクからスクラップを取る（%d）",
+    "labelNoMoreItems": "~y~スクラップが残っていません！NPCに行ってください。",
+    "labelPickup": "[E] スクラップを拾う",
+    "labelBreakAction": "[E] スクラップを解体",
+    "labelPutOnBelt": "[G] バールをベルトに付ける",
+    "labelTakeFromBelt": "[G] バールをベルトから取る",
+    "labelClothesWork": "[E] 作業服を着る",
+    "labelClothesNormal": "[E] 普段着に着替える",
+    "labelFailNotify": "解体を開始できませんでした",
+    "continueHint": "マップ上の次のスクラップの山まで運転してください",
+    "progressTitle": "スクラップヤード",
+    "progressDetail": "スクラップの山を解体し、部品をトラックまで運んでから計量台まで運転して加工してください。",
+    "stepTakeTool": "トランクからバールを取る",
+    "stepBreaking": "スクラップを解体し続ける",
+    "stepBreakScrap": "スクラップの山を解体する",
+    "stepPickupScrap": "地面のスクラップ部品を拾う",
+    "stepLoadTrunk": "スクラップをトラックに積む",
+    "stepGoToScale": "スクラップを計量台まで運転する",
+    "stepPlaceOnScale": "スクラップを計量台に置く",
+    "stepProcessScrap": "NPCに話しかけてスクラップを加工する",
+    "stepNewRound": "バールを取って新しいラウンドを始める"
+  },
+  "fruitpicker": {
+    "treesReset": "全ての木がリセットされました！果物摘みを続けてください。",
+    "noMoreFruit": "この木にはもう果物がありません！",
+    "treeOnCooldown": "熟した果物がありません。約%{minutes}分で復活します — 別の木を試してください。",
+    "jobLabel": "果物摘み",
+    "produceLabel": "果物",
+    "vehicleBlip": "果物トラック",
+    "placeBoxAndPick": "[E] 箱を置いて{fruit}を摘む（残り{remaining}個）",
+    "pickFruit": "[E] {fruit}を摘む（残り{remaining}個）",
+    "orangeTreeBlip": "オレンジの木",
+    "appleTreeBlip": "リンゴの木",
+    "progressTitle": "果物摘み",
+    "fruitFallback": "果物",
+    "continueHint": "次の木に移動して摘み始めてください",
+    "progressDetail": "箱を取り、木から果物を詰め、満タンの箱をトラックに積んでから計量台まで運転してください。",
+    "stepTakeBox": "トラックから箱を取る",
+    "stepPicking": "果物を摘み続ける",
+    "stepPickFruit": "木まで歩いて果物を摘む",
+    "stepLoadBoxToTruck": "満タンの箱をトラックに積む",
+    "stepGoToScale": "箱を計量台まで運転する",
+    "stepPlaceOnScale": "箱を計量台に置く",
+    "stepProcessFruit": "NPCに話しかけて果物を加工する",
+    "stepNewRound": "箱を取って新しいラウンドを始める"
+  },
+  "newspaper": {
+    "settingsNotFound": "新聞配達の設定が見つかりません！",
+    "started": "新聞配達が開始しました！",
+    "noAvailableRoutes": "利用可能なルートがありません！",
+    "leaderSelecting": "リーダーが自転車とエリアを選んでいます、お待ちください...",
+    "progressTitle": "新聞配達",
+    "progressDetail": "ルートに沿って家に新聞を配達してください。各玄関先に新聞を投げましょう。",
+    "outsideTimeWindow": "新聞配達は{startHour}:00 - {endHour}:00の間のみ利用可能です（現在：{current}:00）",
+    "continueHint": "次の配達通りに移動してください",
+    "getOnCycle": "配達を始めるには自転車に乗ろう"
+  },
+  "taxi": {
+    "lookingForCustomer": "次のお客様を探しています...",
+    "taxiReady": "タクシー準備完了！お客様の呼び出しを待っています...",
+    "taxiModelFailed": "タクシーモデルを読み込めませんでした！",
+    "passengerWokeUp": "乗客が目を覚ましました！",
+    "passengerBoarded": "乗客が乗車しました！目的地を待っています...",
+    "newCustomer": "新しいお客様！ピックアップ場所に向かってください。",
+    "passengerDied": "お客様が死亡しました！乗車をキャンセルしました。",
+    "returnTaxiToDepot": "タクシーをデポに返却してシフトを終了してください。",
+    "destinationSet": "目的地設定！距離: {distance}m、ボーナス時間: {bonus}秒",
+    "vehicleDamaged": "車両が損傷しました！ボーナス時間 -{penalty}秒",
+    "jobEnded": "タクシーの仕事終了！乗車回数: {rides}、総収入: {symbol}{earned}",
+    "hornPassengerSleeping": "[クラクション] 乗客が寝ています！",
+    "pickUpPassenger": "[E] 乗客をピックアップ",
+    "dropOffPassenger": "[E] 乗客を降ろす",
+    "returnTaxiEndShift": "[E] タクシーを返してシフト終了",
+    "getBackInTaxi": "[F] タクシーに戻ってください！",
+    "tooFarFromDepot": "デポから遠すぎます",
+    "tooFarFromDropoff": "目的地から遠すぎます",
+    "progressTitle": "タクシー",
+    "progressDetail": "乗客を乗せて目的地まで送り届けよう。タイムボーナスを得るには慎重に運転しよう。",
+    "stagePickup": "乗客を乗せる",
+    "stageDropoff": "乗客を降ろす",
+    "stageDepot": "タクシーを車庫に戻す",
+    "ridesCompleted": "{count}回の乗車を完了",
+    "meterBonusTime": "ボーナス{seconds}秒",
+    "statCustomers": "送り届けた乗客",
+    "statEarnings": "合計収入"
+  },
+  "trucker": {
+    "illegalAccepted": "違法ルートを承認しました！気をつけてください...",
+    "trailerLost": "トレーラーを失いました！配達失敗です。",
+    "failedReconnect": "トラック運送ジョブへの再接続に失敗しました！",
+    "reconnected": "トラック運送ジョブに再接続しました！",
+    "failedGetData": "仕事データの取得に失敗しました！",
+    "started": "トラック運送の仕事が開始しました！トレーラーのピックアップ場所に向かってください。",
+    "truckReady": "トラック準備完了！トラックに乗ってください。",
+    "truckModelFailed": "トラックモデルを読み込めませんでした！",
+    "trailerModelFailed": "トレーラーモデルを読み込めませんでした！",
+    "trailerSpawnBlocked": "トレーラーのスポーンポイントがブロックされています！5秒後に再試行...",
+    "trailerSpawnStillBlocked": "トレーラーのスポーンポイントがまだブロックされています！そのままスポーンします。",
+    "trailerAttachedWaiting": "トレーラーを接続しました！他のプレイヤーを待っています...",
+    "trailerAttachedWaitRoute": "トレーラーを接続しました！ルートの割り当てを待っています...",
+    "trailerDetached": "トレーラーが外れました！戻って再接続してください！",
+    "needToBeInTruck": "トラックに乗っている必要があります！",
+    "trailerGone": "トレーラーがなくなりました！仕事失敗。",
+    "trailerReattached": "トレーラーを再接続しました！配達を続けてください。",
+    "failedReattach": "トレーラーの再接続に失敗しました。再試行してください。",
+    "noTrailerNearby": "近くにトレーラーがありません！",
+    "failedAttach": "トレーラーの接続に失敗しました。再試行してください。",
+    "noTrailerAttached": "トレーラーが接続されていません！",
+    "tooFarToDeliver": "トレーラーが配達エリアにありません！",
+    "perfectDelivery": "トレーラーを完璧な状態で配達しました！デポにトラックを返却してください。",
+    "mustBeInTruck": "トラックに乗っている必要があります！",
+    "notJobTruck": "これは仕事のトラックではありません！",
+    "truckReturned": "トラックを返却しました！サマリーを待っています...",
+    "waitingForTrailers": "他のプレイヤーがトレーラーを接続するのを待っています...",
+    "leaderAcceptedIllegal": "リーダーが違法ルートを承認しました！気をつけてください...",
+    "leaderChoseNormal": "リーダーが通常ルートを選択しました。",
+    "returnTruckToDepot": "トラックをデポに返却してください。",
+    "newDeliveryRoute": "新しい配達ルートが割り当てられました！",
+    "truckReturnedWaiting": "トラックを返却しました！他のプレイヤーの返却を待っています...",
+    "youLeftJob": "仕事を退出しました。",
+    "headToTrailer": "マークされた場所に行ってトレーラーをピックアップしてください！",
+    "trailerDestroyed": "トレーラーが破壊されました！配達失敗。",
+    "trailerDeliveredCondition": "トレーラーを{condition}%の状態で配達しました。デポにトラックを返却してください。",
+    "routeAssigned": "ルートが割り当てられました（{route}）！距離: {distance}m",
+    "progressTitle": "トラック運転手",
+    "progressDetail": "州全体の目的地に貨物を配達してください。損傷を避けるために注意して運転しましょう。",
+    "stagePickup": "トレーラーを取りに行く",
+    "stageDelivery": "貨物を配送",
+    "stageReturn": "トラックを返す",
+    "stageWaiting": "待機中...",
+    "deliveriesCompleted": "完了した配送: {count}",
+    "blipPickupTrailer": "トレーラーを取得",
+    "blipDeliverCargo": "貨物を配送",
+    "blipIllegalDelivery": "違法配送",
+    "blipReturnTruck": "トラックを返す",
+    "aPlayerFallback": "プレイヤー",
+    "teammateFallback": "チームメイト",
+    "playerReturnedTruck": "{name} がトラックを返しました。",
+    "teammateTruck": "{name} のトラック",
+    "continueHint": "デポから次の貨物を取りに行ってください"
+  },
+  "repair": {
+    "failedInit": "仕事の初期化に失敗しました！",
+    "newTasks": "新しい修理タスクが割り当てられました！",
+    "allComplete": "全ての修理が完了！帰還して仕事を終了してください。",
+    "jobStarted": "{label}の仕事が開始しました！{tasks}を修理してください。",
+    "taskRepaired": "{task}を修理しました！残り{remaining}件"
+  },
+  "target": {
+    "interact": "操作",
+    "pickup": "拾う",
+    "finishProcessing": "処理を終了",
+    "finishProcessingPrompt": "[E] 処理を完了",
+    "processing": "処理中...",
+    "placeOnScale": "秤に置く",
+    "loadToTruck": "トラックに積む",
+    "returnTool": "道具を戻す",
+    "takeTool": "道具を取る",
+    "takeFromTrunk": "トランクから取り出す",
+    "changeClothes": "服を着替える",
+    "changeClothesPrompt": "[E] 服を着替える",
+    "changeClothesNormal": "[E] 普段着に着替える",
+    "changeClothesWork": "[E] 作業着に着替える",
+    "cleanItemPrompt": "[E] アイテムを清掃",
+    "finishJobPrompt": "[E] 仕事を終了",
+    "pickFruit": "果物を摘む",
+    "pickUpLog": "丸太を拾う",
+    "returnItem": "アイテムを返す",
+    "cutTree": "{name}を伐採",
+    "pickUpCarcass": "{label}を拾う ({weight} kg)"
+  },
+  "blip": {
+    "buyer": "買い手",
+    "tree": "木",
+    "animal": "動物",
+    "ore": "鉱石",
+    "divePoint": "ダイブポイント",
+    "returnBoat": "ボート返却",
+    "customerCar": "顧客の車",
+    "delivery": "配達",
+    "returnVehicle": "車両を返す",
+    "returnToFinish": "帰還して完了",
+    "nextTask": "次のタスク",
+    "cargoDepot": "貨物デポ",
+    "deliveryPoint": "配送ポイント",
+    "returnToDepot": "デポに戻る"
+  },
+  "server": {
+    "cannotInviteJobActive": "仕事中はプレイヤーを招待できません！",
+    "cannotInviteSoloJob": "この仕事はソロ専用です — プレイヤーを招待できません！",
+    "playerAlreadyInvited": "このプレイヤーには既に保留中の招待があります！",
+    "inviteCooldown": "このプレイヤーへの再招待まで{seconds}秒お待ちください。",
+    "identifierNotReady": "あなたのプレイヤーデータがまだ読み込まれていません。もう一度お試しください。",
+    "targetIdentifierNotReady": "対象プレイヤーのデータがまだ読み込まれていません。もう一度お試しください。",
+    "cannotKickJobActive": "仕事中はプレイヤーをキックできません！",
+    "lobbyClosed": "ロビー閉鎖: オーナーが退出しました",
+    "lobbyClosedDisconnect": "ロビー閉鎖: オーナーが切断しました",
+    "jobCompletedLobbyDisbanded": "仕事完了！ロビーが解散しました。",
+    "qualityBonus": "{quality}品質！x{multiplier}ボーナス",
+    "poopPenalty": "犬のフンを掃除しませんでした！-{symbol}{amount}",
+    "poopCleanBonus": "フンを掃除しました！+{symbol}{amount}",
+    "lawnRaked": "芝を整えました！+{symbol}{money} +{xp} XP",
+    "truckReturnFailed": "トラックの返却が遅すぎました！失敗として記録されました。",
+    "repairComplete": "{item}を修理しました！+{symbol}{money} +{xp} XP",
+    "referralLimitReached": "本日の紹介ボーナス上限に達しました",
+    "referralBonus": "紹介ボーナス！一緒にプレイして+{xp} XP！",
+    "lobbyNoLongerExists": "このロビーは既に存在しません。",
+    "lobbyPlayerReconnected": "{name}がロビーに再接続しました。",
+    "lobbyPlayerDisconnected": "{name}が切断しました。",
+    "lobbyOwnerDisconnectedNewOwner": "オーナーが切断しました。{name}が新しいオーナーです。",
+    "lobbyClosedNoReplacement": "ロビー閉鎖: 代わりのオーナーが見つかりませんでした。",
+    "jobEndedOwnerLeft": "仕事終了: ジョブリーダーが退出しました。",
+    "toolEfficiencyUpgrade": "道具効率アップグレード",
+    "jobCancelled": "仕事がキャンセルされました！ロビーが解散しました。",
+    "jobCancelledByAdmin": "あなたの仕事が管理者によってキャンセルされました。",
+    "noActiveJob": "アクティブな仕事がありません。",
+    "jobCancelledAdmin": "プレイヤー{playerId}の仕事'{jobId}'をキャンセルしました。",
+    "cancelJobUsage": "使用方法: /canceljob [プレイヤーID] - 自分またはプレイヤーの仕事をキャンセル",
+    "routeLevelInsufficient": "このルートに必要なレベルに達していません。（レベル{current}/{required}）",
+    "routeLevelInsufficientMember": "{name}はこのルートに必要なレベルに達していません。（レベル{current}/{required}）",
+    "globalEventCompleted": "グローバルイベント完了：{title}！"
+  },
+  "shifts": {
+    "morning": "朝シフト",
+    "afternoon": "午後シフト",
+    "evening": "夕方シフト",
+    "night": "夜シフト"
+  },
+  "perks": {
+    "trunk_capacity": {
+      "name": "ヘビーリフター",
+      "desc": "車両のトランク容量を増加させます。"
+    },
+    "strong_muscles": {
+      "name": "強靭な筋肉",
+      "desc": "重い荷物を運んでいる時の移動速度を上げます。"
+    },
+    "negotiator": {
+      "name": "交渉人",
+      "desc": "仕事の報酬が増加します。"
+    },
+    "xp_boost": {
+      "name": "早熟の才",
+      "desc": "全ての仕事アクションからより多くのXPを獲得します。"
+    },
+    "speed_demon": {
+      "name": "スピードデーモン",
+      "desc": "仕事車両のエンジン性能を向上させます。"
+    },
+    "store_discount": {
+      "name": "話術",
+      "desc": "仕事外でのストア割引を受けられます。（パッシブ）"
+    },
+    "breath_capacity": {
+      "name": "深呼吸",
+      "desc": "水中での息止め時間を増加させます。（パッシブ）"
+    },
+    "repair_speed": {
+      "name": "メカニック",
+      "desc": "車両の修理が速くなります。（パッシブ）"
+    },
+    "notEnoughPoints": "パークポイントが足りません！"
+  },
+  "serverError": {
+    "notInJob": "仕事中ではありません",
+    "noLobby": "ロビーがありません",
+    "noSession": "セッションがありません",
+    "configError": "設定エラー",
+    "invalidIndex": "無効なインデックス",
+    "levelRequired": "レベル{level}が必要です！",
+    "rateLimited": "再試行まで少々お待ちください。",
+    "tooFarFromNpc": "NPCの近くにいる必要があります。",
+    "notEnoughMoney": "お金が足りません！",
+    "invalidAmount": "無効な数量です！",
+    "invalidProduct": "無効な商品です！",
+    "purchaseFailed": "購入中にエラーが発生しました。",
+    "sellFailed": "売却中にエラーが発生しました。",
+    "alreadyBroken": "既に壊れています",
+    "anotherPlayerBreaking": "別のプレイヤーがこれを壊しています",
+    "alreadyPickedUp": "既に拾われました",
+    "alreadyUnlocked": "既にアンロック済みです",
+    "invalidZone": "無効なゾーンです！",
+    "alreadyCollected": "このオブジェクトは既に回収されました",
+    "someoneElseWorking": "他の人がこれに取り組んでいます！",
+    "someoneElseDelivering": "他の人が配達しています",
+    "invalidAction": "無効なアクション",
+    "invalidType": "無効なタイプ",
+    "alreadySold": "既に売却済みです！",
+    "noItemsToSell": "売るアイテムがありません！",
+    "alreadyCarrying": "既に持っています",
+    "notCarrying": "持っていません",
+    "trunkFull": "トランクがいっぱいです",
+    "trunkCapacityFull": "トランク容量がいっぱいです",
+    "noItemsInTrunk": "トランクにアイテムがありません",
+    "alreadyDelivered": "既に配達済みです",
+    "invalidDeliveryPoint": "無効な配達ポイント",
+    "invalidLocation": "無効な場所",
+    "objectNotFound": "オブジェクトが見つかりません",
+    "vehicleAlreadySpawned": "車両は既にスポーン済みです",
+    "failedCreateVehicle": "車両の作成に失敗しました",
+    "vehicleEntityNotFound": "車両エンティティが見つかりません",
+    "missingParameters": "パラメータが不足しています",
+    "invalidSpawnData": "無効なスポーンデータ",
+    "jobConfigNotFound": "仕事の設定が見つかりません",
+    "noToolAssigned": "道具が割り当てられていません",
+    "notYourTool": "これはあなたの道具ではありません",
+    "toolAlreadyTaken": "道具は既に取られています",
+    "toolBeingTaken": "別のプレイヤーが道具を取っています",
+    "positionBeingTaken": "別のプレイヤーがポジションを取っています",
+    "noPositionAvailable": "空きポジションがありません",
+    "noActiveTruck": "アクティブなトラックがありません",
+    "truckNotLoading": "トラックは積み込み中ではありません",
+    "boxesFull": "箱がいっぱいです",
+    "palletsFull": "パレットがいっぱいです",
+    "invalidJob": "無効な仕事",
+    "jobEnding": "仕事が終了中です",
+    "fishingNoFishFound": "魚が見つかりません！",
+    "fishingInvalidRod": "無効な釣り竿です！",
+    "fishingNoRod": "釣り竿を持っていません！",
+    "fishingFishCaughtSingle": "{label}を釣りました！",
+    "fishingFishCaughtMultiple": "{count}x {label}を釣りました！",
+    "fishingNoFishToSell": "売る魚がありません！",
+    "divingZoneAlreadySelected": "ゾーンは既に選択済みです！",
+    "deliveryNotInLoadingPhase": "積み込みフェーズではありません",
+    "deliveryNotInDeliveryPhase": "配達フェーズではありません",
+    "deliveryAlreadyCarryingBox": "既に箱を持っています",
+    "deliveryNotCarryingBox": "箱を持っていません",
+    "deliveryNoBoxesInTrunk": "トランクに箱がありません",
+    "deliveryCompleteFirst": "まず全ての配達を完了してください！",
+    "deliverySpawnFailed": "車両のスポーンに失敗、仕事キャンセル。",
+    "huntingSomeoneElsePickingUp": "他の人がこれを拾っています！",
+    "huntingAnimalNotFound": "動物が見つかりません",
+    "huntingAnimalStillAlive": "動物はまだ生きています",
+    "huntingAnimalAlreadyPickedUp": "この動物は既に拾われました",
+    "cleanupTruckFullDeliverFirst": "トラックがいっぱいです！先に配達してください。",
+    "cleanupBinAlreadyEmpty": "ゴミ箱は既に空です",
+    "cleanupNoBagsLeft": "袋が残っていません",
+    "warehouseBoxAlreadyTaken": "箱は既に取られています",
+    "warehousePalletAlreadyTaken": "パレットは既に取られています",
+    "warehouseTruckNotReady": "トラックの準備ができていません",
+    "forkliftWrongMode": "間違ったモード",
+    "forkliftInvalidCrate": "無効なクレート",
+    "forkliftCrateAlreadyTaken": "クレートは既に取られています",
+    "forkliftConveyorBusy": "コンベアが使用中",
+    "forkliftInvalidSlot": "無効なスロット",
+    "forkliftSlotOccupied": "スロットが占有されています",
+    "forkliftNotCarrying": "持っていません",
+    "forkliftInvalidCrateData": "無効なクレートデータ",
+    "forkliftNoCratesOnBelt": "ベルトにクレートがありません",
+    "forkliftNeed3Crates": "ベルトに3つのクレートが必要です",
+    "forkliftEmptySlot": "空きスロット",
+    "forkliftAlreadyCarrying": "既に持っています",
+    "forkliftInvalidTarget": "無効なターゲット",
+    "forkliftInvalidShelfTarget": "無効な棚ターゲット",
+    "forkliftShelfOccupied": "棚が占有されています",
+    "newspaperLevelRequiredArea": "このエリアにはレベル{level}が必要です！",
+    "newspaperDailyCompleted": "デイリークエストは既に完了！リセットまで: {hours}時間{minutes}分",
+    "adminSetLevelUsage": "使用方法: /setjoblevel [プレイヤーID] [仕事ID] [レベル]",
+    "adminLevelRange": "レベルは1から10の間でなければなりません",
+    "adminLevelSet": "プレイヤー{playerId}の{jobId}レベルを{level}に設定しました",
+    "adminYourLevelSet": "あなたの{jobId}レベルが{level}に設定されました",
+    "adminXpManagerNotAvailable": "XPManagerが利用できません",
+    "adminGetLevelUsage": "使用方法: /getjoblevel [プレイヤーID] [仕事ID]",
+    "adminPlayerJobLevel": "プレイヤー{playerId} - {jobId}: レベル{level}（XP: {xp}/{maxXp}）",
+    "adminToolSelected": "選択済み: {tool}",
+    "adminToolUnlocked": "道具がアンロックされました！",
+    "alreadyHarvested": "既に収穫済み",
+    "noLootAvailable": "入手できる戦利品がありません",
+    "tooFar": "距離が遠すぎます",
+    "tooFarFromDeliveryPoint": "配送ポイントから遠すぎます"
+  },
+  "jobs": {
+    "miner": {
+      "name": "採掘師",
+      "subtitle": "地下採掘作業",
+      "interactionText": "採掘の仕事を始める",
+      "blipLabel": "採掘の仕事",
+      "locationLabel": "採石場",
+      "description": [
+        "地下鉱床から貴重な鉱石を採掘する",
+        "採掘装備で岩を壊す",
+        "素材を加工施設に輸送する",
+        "チームで作業してボーナス報酬を獲得"
+      ],
+      "items": {
+        "pickaxe": "ツルハシ",
+        "miningHelmet": "採掘ヘルメット",
+        "oreCart": "鉱石カート"
+      },
+      "oreTypes": {
+        "coal": "石炭",
+        "iron": "鉄",
+        "gold": "金",
+        "emerald": "エメラルド",
+        "diamond": "ダイヤモンド"
+      },
+      "preview": {
+        "step1Title": "仕事を開始",
+        "step1Desc": [
+          "採石場のNPCに話しかける",
+          "Eを押して仕事メニューを開く",
+          "エリアを選んでスタートを押す"
+        ],
+        "step2Title": "着替える",
+        "step2Desc": [
+          "近くのプレハブ小屋に行く",
+          "中に入って作業服に着替える",
+          "仕事終了時に元の服に戻ります"
+        ],
+        "step3Title": "道具を受け取る",
+        "step3Desc": [
+          "仕事車両のトランクに行く",
+          "ツルハシを取る — 各プレイヤーが自分のものを取る",
+          "最大4つの道具が協力プレイ用に利用可能"
+        ],
+        "step4Title": "岩を採掘",
+        "step4Desc": [
+          "ツルハシを持って採掘エリアに行く",
+          "岩に向かって振る",
+          "岩が砕けて回収可能な鉱石になる"
+        ],
+        "step5Title": "鉱石を回収",
+        "step5Desc": [
+          "岩を壊した後に鉱石を拾う",
+          "鉱石を腕に抱えて運ぶ",
+          "車両のトランクまで持ち帰る"
+        ],
+        "step6Title": "車両に積む",
+        "step6Desc": [
+          "鉱石を車両のトランクまで運ぶ",
+          "鉱石は自動的にトラックに積まれる",
+          "トランクを満たしたら加工エリアまで運転する"
+        ],
+        "step7Title": "計量台で加工",
+        "step7Desc": [
+          "加工ポイントまで運転する",
+          "鉱石を計量台に置く",
+          "各アイテムが計量されて報酬を受け取る"
+        ],
+        "step8Title": "NPC回収",
+        "step8Desc": [
+          "加工後、運搬NPCがアイテムを回収する",
+          "NPCが歩いてきて加工済み鉱石を拾う",
+          "完了バッチ毎にお金とXPを獲得"
+        ]
+      }
+    },
+    "lumberjack": {
+      "name": "伐採師",
+      "subtitle": "森林伐採作業",
+      "interactionText": "伐採の仕事を始める",
+      "blipLabel": "伐採の仕事",
+      "locationLabel": "パレト森林",
+      "description": [
+        "指定された伐採エリアで木を切る",
+        "丸太を集めてトラックに積む",
+        "丸太を製材所に届けて加工する",
+        "チームで作業してボーナス報酬を獲得"
+      ],
+      "items": {
+        "hatchet": "斧",
+        "safetyVest": "安全ベスト",
+        "pickupTruck": "ピックアップトラック"
+      },
+      "treeTypes": {
+        "pine": "松",
+        "oak": "オーク",
+        "maple": "メープル"
+      },
+      "drops": {
+        "wood": "木材",
+        "pineResin": "松脂",
+        "woodShavings": "木くず",
+        "oakWood": "オーク材",
+        "oakBark": "オーク樹皮",
+        "mapleWood": "メープル材",
+        "mapleSap": "メープル樹液"
+      },
+      "preview": {
+        "step1Title": "仕事を開始",
+        "step1Desc": [
+          "森林のNPCに話しかける",
+          "Eを押して仕事メニューを開く",
+          "エリアを選んでスタートを押す"
+        ],
+        "step2Title": "着替える",
+        "step2Desc": [
+          "近くのプレハブ小屋に行く",
+          "中に入って作業服に着替える",
+          "仕事終了時に元の服に戻ります"
+        ],
+        "step3Title": "道具を受け取る",
+        "step3Desc": [
+          "仕事車両のトランクに行く",
+          "斧を取る — 各プレイヤーが自分のものを取る",
+          "最大4つの道具が協力プレイ用に利用可能"
+        ],
+        "step4Title": "木を伐採",
+        "step4Desc": [
+          "斧を持って森林エリアに行く",
+          "木に向かって斧を振る",
+          "完全に切ると丸太が落ちる"
+        ],
+        "step5Title": "丸太を回収",
+        "step5Desc": [
+          "木を切った後に丸太を拾う",
+          "丸太を腕に抱えて運ぶ",
+          "車両のトランクまで持ち帰る"
+        ],
+        "step6Title": "車両に積む",
+        "step6Desc": [
+          "丸太を車両のトランクまで運ぶ",
+          "丸太は自動的にトラックに積まれる",
+          "トランクを満たしたら加工エリアまで運転する"
+        ],
+        "step7Title": "計量台で加工",
+        "step7Desc": [
+          "加工ポイントまで運転する",
+          "丸太を計量台に置く",
+          "各アイテムが計量されて報酬を受け取る"
+        ],
+        "step8Title": "NPC回収",
+        "step8Desc": [
+          "加工後、運搬NPCがアイテムを回収する",
+          "NPCが歩いてきて加工済み丸太を拾う",
+          "完了バッチ毎にお金とXPを獲得"
+        ]
+      }
+    },
+    "scrapyard": {
+      "name": "スクラップ作業員",
+      "subtitle": "金属リサイクル",
+      "interactionText": "スクラップの仕事を始める",
+      "blipLabel": "スクラップヤード",
+      "locationLabel": "スクラップヤード",
+      "description": [
+        "廃車を解体して貴重な部品を回収する",
+        "バールで金属部品を分離する",
+        "回収したスクラップをトラックに積む",
+        "加工ステーションで計量・売却する"
+      ],
+      "items": {
+        "crowbar": "バール",
+        "workGloves": "作業手袋",
+        "scrapMetal": "スクラップ金属"
+      },
+      "preview": {
+        "step1Title": "仕事を開始",
+        "step1Desc": [
+          "スクラップヤードのNPCに話しかける",
+          "Eを押して仕事メニューを開く",
+          "エリアを選んでスタートを押す"
+        ],
+        "step2Title": "着替える",
+        "step2Desc": [
+          "近くのプレハブ小屋に行く",
+          "中に入って作業服に着替える",
+          "仕事終了時に元の服に戻ります"
+        ],
+        "step3Title": "道具を受け取る",
+        "step3Desc": [
+          "仕事車両のトランクに行く",
+          "バールを取る — 各プレイヤーが自分のものを取る",
+          "最大4つの道具が協力プレイ用に利用可能"
+        ],
+        "step4Title": "スクラップを解体",
+        "step4Desc": [
+          "ヤードの廃車に行く",
+          "バールで部品を解体する",
+          "廃車が回収可能なスクラップに分解される"
+        ],
+        "step5Title": "スクラップを回収",
+        "step5Desc": [
+          "解体後にスクラップ部品を拾う",
+          "部品を車両まで運ぶ",
+          "車両のトランクまで持ち帰る"
+        ],
+        "step6Title": "車両に積む",
+        "step6Desc": [
+          "スクラップを車両のトランクまで運ぶ",
+          "スクラップは自動的にトラックに積まれる",
+          "トランクを満たしたら加工エリアまで運転する"
+        ],
+        "step7Title": "計量台で加工",
+        "step7Desc": [
+          "加工ポイントまで運転する",
+          "スクラップを計量台に置く",
+          "各アイテムが計量されて報酬を受け取る"
+        ],
+        "step8Title": "NPC回収",
+        "step8Desc": [
+          "加工後、運搬NPCがアイテムを回収する",
+          "NPCが歩いてきて加工済みスクラップを拾う",
+          "完了バッチ毎にお金とXPを獲得"
+        ]
+      }
+    },
+    "hunting": {
+      "name": "ハンター",
+      "subtitle": "プロの狩猟",
+      "interactionText": "狩猟の仕事を始める",
+      "blipLabel": "狩猟",
+      "locationLabel": "狩猟",
+      "description": [
+        "武器を持って狩猟に出かける",
+        "鹿、イノシシ、ウサギを狩る",
+        "狩った動物を車両に積む",
+        "計量台に持って行って売る"
+      ],
+      "items": {
+        "huntingRifle": "狩猟ライフル",
+        "binoculars": "双眼鏡",
+        "huntingBag": "狩猟バッグ"
+      },
+      "weapons": {
+        "tier1": "狩猟ライフル",
+        "tier2": "ボルトアクションライフル",
+        "tier3": "ヘビースナイパー"
+      },
+      "animals": {
+        "wildBoar": "イノシシ",
+        "rabbit": "ウサギ",
+        "coyote": "コヨーテ",
+        "mountainLion": "マウンテンライオン",
+        "hawk": "タカ",
+        "crow": "カラス"
+      },
+      "areas": {
+        "forest": "パレト森林",
+        "desert": "サンディショアーズ砂漠",
+        "swamp": "沼地"
+      },
+      "blips": {
+        "forestArea": "森林エリア",
+        "desertArea": "砂漠エリア",
+        "swampArea": "沼地エリア"
+      },
+      "preview": {
+        "step1Title": "仕事を開始",
+        "step1Desc": [
+          "狩猟ロッジのNPCに話しかける",
+          "Eを押して仕事メニューを開く",
+          "エリアを選んでスタートを押す"
+        ],
+        "step2Title": "着替える",
+        "step2Desc": [
+          "近くのプレハブ小屋に行く",
+          "中に入って狩猟服に着替える",
+          "仕事終了時に元の服に戻ります"
+        ],
+        "step3Title": "車両を受け取る",
+        "step3Desc": [
+          "近くの狩猟トラックに行く",
+          "武器は自動的に受け取る",
+          "猟場まで運転する"
+        ],
+        "step4Title": "動物を狩る",
+        "step4Desc": [
+          "猟場を探索して動物を見つける",
+          "ライフルでイノシシ、ウサギなどを狩る",
+          "各動物には異なる重さと価値がある"
+        ],
+        "step5Title": "動物を運ぶ",
+        "step5Desc": [
+          "倒した動物に近づいて拾う",
+          "肩に担いでトラックまで運ぶ",
+          "各動物には異なる重さがある"
+        ],
+        "step6Title": "車両に積む",
+        "step6Desc": [
+          "獲物をトラックまで運ぶ",
+          "動物をトラックの荷台に積む",
+          "トラックを満たしたら加工場まで運転する"
+        ],
+        "step7Title": "加工・売却",
+        "step7Desc": [
+          "加工ステーションまで運転する",
+          "獲物を計量台に置く",
+          "運搬NPCが加工済み品を回収する"
+        ]
+      }
+    },
+    "farmer": {
+      "name": "農家",
+      "subtitle": "果物・野菜の収穫",
+      "interactionText": "農業の仕事を始める",
+      "blipLabel": "野菜農場",
+      "locationLabel": "グレープシード農場",
+      "description": [
+        "車両からクレートを取る",
+        "植物から野菜を収穫する",
+        "クレートを満たしてトラックに積む",
+        "満タンのクレートを加工ステーションに届ける"
+      ],
+      "items": {
+        "harvestCrate": "収穫クレート",
+        "freshProduce": "新鮮な農作物",
+        "deliveryTruck": "配達トラック"
+      },
+      "produceTypes": {
+        "lettuce": "レタス",
+        "pumpkin": "かぼちゃ",
+        "melon": "メロン",
+        "watermelon": "スイカ"
+      },
+      "preview": {
+        "step1Title": "仕事を開始",
+        "step1Desc": [
+          "農場のNPCに話しかける",
+          "Eを押して仕事メニューを開く",
+          "エリアを選んでスタートを押す"
+        ],
+        "step2Title": "着替える",
+        "step2Desc": [
+          "近くのプレハブ小屋に行く",
+          "中に入って作業服に着替える",
+          "仕事終了時に元の服に戻ります"
+        ],
+        "step3Title": "車両を受け取る",
+        "step3Desc": [
+          "近くの仕事車両に行く",
+          "トラックから空のクレートを取る",
+          "畑に運転して収穫を始める"
+        ],
+        "step4Title": "植物を収穫",
+        "step4Desc": [
+          "植物に近づいてインタラクトして収穫する",
+          "各植物から新鮮な農作物が取れる",
+          "クレートを満たしてから戻る"
+        ],
+        "step5Title": "農作物を運ぶ",
+        "step5Desc": [
+          "満タンのクレートを拾う",
+          "車両まで運ぶ",
+          "トラックの荷台に積む"
+        ],
+        "step6Title": "車両に積む",
+        "step6Desc": [
+          "満タンのクレートをトラックまで運ぶ",
+          "車両の荷台に積む",
+          "トラックを満たしたら加工エリアまで運転する"
+        ],
+        "step7Title": "加工・売却",
+        "step7Desc": [
+          "加工ステーションまで運転する",
+          "クレートを計量台に置く",
+          "運搬NPCが加工済み品を回収する"
+        ]
+      }
+    },
+    "fruitpicker": {
+      "name": "果物摘み",
+      "subtitle": "果物の収穫",
+      "interactionText": "果物摘みの仕事を始める",
+      "blipLabel": "果樹園",
+      "locationLabel": "果樹園",
+      "description": [
+        "車両からクレートを取る",
+        "果物の木に行ってオレンジ＆リンゴを摘む",
+        "クレートを満たしてトラックに積む",
+        "満タンのクレートを加工ステーションに届ける"
+      ],
+      "items": {
+        "harvestCrate": "収穫クレート",
+        "freshOranges": "新鮮なオレンジ",
+        "deliveryTruck": "配達トラック"
+      },
+      "produceTypes": {
+        "orange": "オレンジ",
+        "apple": "リンゴ"
+      },
+      "qualityTiers": {
+        "common": "コモン",
+        "fresh": "フレッシュ",
+        "premium": "プレミアム",
+        "organic": "オーガニック"
+      },
+      "preview": {
+        "step1Title": "仕事を開始",
+        "step1Desc": [
+          "果樹園のNPCに話しかける",
+          "Eを押して仕事メニューを開く",
+          "エリアを選んでスタートを押す"
+        ],
+        "step2Title": "着替える",
+        "step2Desc": [
+          "近くのプレハブ小屋に行く",
+          "中に入って作業服に着替える",
+          "仕事終了時に元の服に戻ります"
+        ],
+        "step3Title": "車両を受け取る",
+        "step3Desc": [
+          "近くの仕事車両に行く",
+          "トラックから空のクレートを取る",
+          "オレンジの木に運転して摘み始める"
+        ],
+        "step4Title": "オレンジを摘む",
+        "step4Desc": [
+          "オレンジの木に近づく",
+          "インタラクトして手を伸ばしてオレンジを摘む",
+          "クレートを満たしてから戻る"
+        ],
+        "step5Title": "箱を運ぶ",
+        "step5Desc": [
+          "満タンのクレートを拾う",
+          "車両まで運ぶ",
+          "トラックの荷台に積む"
+        ],
+        "step6Title": "車両に積む",
+        "step6Desc": [
+          "満タンのクレートをトラックまで運ぶ",
+          "車両の荷台に積む",
+          "トラックを満たしたら加工場まで運転する"
+        ],
+        "step7Title": "加工・売却",
+        "step7Desc": [
+          "加工ステーションまで運転する",
+          "クレートを計量台に置く",
+          "運搬NPCが加工済み品を回収する"
+        ]
+      }
+    },
+    "cleaner": {
+      "name": "清掃員",
+      "subtitle": "市内清掃サービス",
+      "interactionText": "清掃の仕事を始める",
+      "blipLabel": "市内清掃",
+      "locationLabel": "市内清掃デポ",
+      "description": [
+        "車両トランクからモップを取る",
+        "マップ上の汚れに行く",
+        "モップで汚れを掃除する",
+        "完了したら帰還して報酬を受け取る"
+      ],
+      "items": {
+        "mop": "モップ",
+        "dirtStain": "汚れ",
+        "serviceVan": "サービスバン"
+      },
+      "areas": {
+        "downtown": "ダウンタウン"
+      },
+      "preview": {
+        "step1Title": "仕事を開始",
+        "step1Desc": [
+          "清掃デポのNPCに話しかける",
+          "Eを押して仕事メニューを開く",
+          "ルートを選んでスタートを押す"
+        ],
+        "step2Title": "着替える",
+        "step2Desc": [
+          "近くのプレハブ小屋に行く",
+          "中に入って作業服に着替える",
+          "仕事終了時に元の服に戻ります"
+        ],
+        "step3Title": "道具を受け取る",
+        "step3Desc": [
+          "仕事車両のトランクに行く",
+          "モップを取る — 各プレイヤーが自分のものを取る",
+          "最大4つの道具が協力プレイ用に利用可能"
+        ],
+        "step4Title": "作業エリアに移動",
+        "step4Desc": [
+          "車両に乗ってGPSに従う",
+          "マークされた汚れの場所まで運転する",
+          "各ルートには複数の汚れスポットがある"
+        ],
+        "step5Title": "汚れを掃除",
+        "step5Desc": [
+          "モップを持って汚れに近づく",
+          "表示されるターゲットをクリックして磨く",
+          "各汚れは完全に掃除するのに複数回のヒットが必要"
+        ],
+        "step6Title": "仕事を完了",
+        "step6Desc": [
+          "全ての汚れを掃除したらデポに戻る",
+          "NPCに話しかけて報酬を受け取る",
+          "フルルート完了でボーナスを獲得"
+        ]
+      }
+    },
+    "powerwash": {
+      "name": "高圧洗浄",
+      "subtitle": "高圧洗浄サービス",
+      "interactionText": "高圧洗浄の仕事を始める",
+      "blipLabel": "高圧洗浄",
+      "locationLabel": "高圧洗浄デポ",
+      "description": [
+        "車両から高圧ワンドを取る",
+        "マップ上の汚れに行く",
+        "LMBを長押ししてスプレーで表面を洗う",
+        "完了したら帰還して報酬を受け取る"
+      ],
+      "items": {
+        "pressureWand": "高圧ワンド",
+        "dirtyStain": "汚れ",
+        "washVan": "洗浄バン"
+      },
+      "preview": {
+        "step1Title": "仕事を開始",
+        "step1Desc": [
+          "洗浄デポのNPCに話しかける",
+          "Eを押して仕事メニューを開く",
+          "ルートを選んでスタートを押す"
+        ],
+        "step2Title": "着替える",
+        "step2Desc": [
+          "近くのプレハブ小屋に行く",
+          "中に入って作業服に着替える",
+          "仕事終了時に元の服に戻ります"
+        ],
+        "step3Title": "道具を受け取る",
+        "step3Desc": [
+          "仕事車両に行く",
+          "高圧ワンドを取る — 各プレイヤーが自分のものを取る",
+          "最大4つの道具が協力プレイ用に利用可能"
+        ],
+        "step4Title": "作業エリアに移動",
+        "step4Desc": [
+          "車両に乗ってGPSに従う",
+          "マークされた汚れの場所まで運転する",
+          "各ルートには複数の汚れスポットがある"
+        ],
+        "step5Title": "汚れをスプレー",
+        "step5Desc": [
+          "高圧ワンドを汚れた表面に向ける",
+          "左マウスボタンを長押ししてスプレーする",
+          "汚れが完全にきれいになるまでスプレーを続ける"
+        ],
+        "step6Title": "仕事を完了",
+        "step6Desc": [
+          "全ての汚れを掃除したらデポに戻る",
+          "マーカーに入って報酬を受け取る",
+          "フルルート完了でボーナスを獲得"
+        ]
+      }
+    },
+    "windowscleaner": {
+      "name": "窓清掃員",
+      "subtitle": "市内窓清掃サービス",
+      "interactionText": "窓清掃の仕事を始める",
+      "blipLabel": "窓清掃",
+      "locationLabel": "窓清掃デポ",
+      "description": [
+        "車両からスポンジを取る",
+        "マップ上の窓に行く",
+        "窓の汚れを掃除する",
+        "完了したら帰還して報酬を受け取る"
+      ],
+      "items": {
+        "sponge": "スポンジ",
+        "windowDirt": "窓の汚れ",
+        "cleaningVan": "清掃バン"
+      },
+      "preview": {
+        "step1Title": "仕事を開始",
+        "step1Desc": [
+          "清掃デポのNPCに話しかける",
+          "Eを押して仕事メニューを開く",
+          "ルートを選んでスタートを押す"
+        ],
+        "step2Title": "着替える",
+        "step2Desc": [
+          "近くのプレハブ小屋に行く",
+          "中に入って作業服に着替える",
+          "仕事終了時に元の服に戻ります"
+        ],
+        "step3Title": "道具を受け取る",
+        "step3Desc": [
+          "仕事車両に行く",
+          "スポンジを取る — 各プレイヤーが自分のものを取る",
+          "最大4つの道具が協力プレイ用に利用可能"
+        ],
+        "step4Title": "作業エリアに移動",
+        "step4Desc": [
+          "車両に乗ってGPSに従う",
+          "マークされた窓の場所まで運転する",
+          "各ルートには複数の汚れた窓がある"
+        ],
+        "step5Title": "窓を掃除",
+        "step5Desc": [
+          "スポンジを持って汚れた窓に近づく",
+          "表示されるターゲットをクリックして磨く",
+          "各窓は完全に掃除するのに複数回のヒットが必要"
+        ],
+        "step6Title": "仕事を完了",
+        "step6Desc": [
+          "全ての窓を掃除したらデポに戻る",
+          "NPCに話しかけて報酬を受け取る",
+          "フルルート完了でボーナスを獲得"
+        ]
+      }
+    },
+    "cardetailer": {
+      "name": "カーディテーラー",
+      "subtitle": "モバイルカーディテーリングサービス",
+      "interactionText": "カーディテーリングの仕事を始める",
+      "blipLabel": "カーディテーリング",
+      "locationLabel": "カーディテーリングデポ",
+      "description": [
+        "車両から高圧ワンドを取る",
+        "マップ上のお客様の車に行く",
+        "高圧ワンドで各車を洗車する",
+        "磨いてワックスしてボーナス報酬を獲得"
+      ],
+      "items": {
+        "pressureWand": "高圧ワンド",
+        "waxCloth": "ワックスクロス",
+        "serviceVan": "サービスバン"
+      },
+      "preview": {
+        "step1Title": "仕事を開始",
+        "step1Desc": [
+          "ディテーリングデポのNPCに話しかける",
+          "Eを押して仕事メニューを開く",
+          "仕事を受けて開始する"
+        ],
+        "step2Title": "着替える",
+        "step2Desc": [
+          "近くのプレハブ小屋に行く",
+          "中に入って作業服に着替える",
+          "仕事終了時に元の服に戻ります"
+        ],
+        "step3Title": "道具を受け取る",
+        "step3Desc": [
+          "仕事車両に行く",
+          "後ろから高圧ワンドを取る",
+          "ホースがワンドをタンクに接続する"
+        ],
+        "step4Title": "お客様の車に移動",
+        "step4Desc": [
+          "車両に乗ってGPSに従う",
+          "マークされたお客様の車の場所まで運転する",
+          "近くに駐車する — ホースには距離制限がある"
+        ],
+        "step5Title": "車を洗車",
+        "step5Desc": [
+          "高圧ワンドを汚れた箇所に向ける",
+          "左マウスボタンを長押ししてスプレーする",
+          "各箇所を洗うと車がきれいになる"
+        ],
+        "step6Title": "仕事を完了",
+        "step6Desc": [
+          "全ての車のディテーリング後、デポに戻る",
+          "道具を返して仕事を完了する",
+          "高レベルでワックス磨きが解放されボーナス報酬を獲得"
+        ]
+      }
+    },
+    "newspaper": {
+      "name": "新聞配達",
+      "subtitle": "新聞配達サービス",
+      "interactionText": "新聞配達を始める",
+      "blipLabel": "新聞配達",
+      "locationLabel": "新聞配達",
+      "description": [
+        "配達用自転車を受け取る",
+        "マークされた配達ポイントに新聞を投げる",
+        "配達が多いほど報酬が増える",
+        "チームで作業して早く完了する"
+      ],
+      "items": {
+        "newspaperBundle": "新聞の束",
+        "deliveryList": "配達リスト",
+        "bikeKey": "自転車の鍵"
+      },
+      "routes": {
+        "restoran": "レストランルート",
+        "easy": "簡単ルート",
+        "headline": "ヘッドラインサーキット",
+        "express": "エクスプレスルート",
+        "morning": "朝刊ルート",
+        "editorial": "社説ルート"
+      },
+      "blips": {
+        "newspaperDelivery": "新聞配達",
+        "returnBike": "自転車返却"
+      }
+    },
+    "cleanup": {
+      "name": "ゴミ収集員",
+      "subtitle": "市内衛生サービス",
+      "interactionText": "ゴミ収集を始める",
+      "blipLabel": "ゴミ収集",
+      "locationLabel": "ゴミ収集センター",
+      "description": [
+        "市内のゴミ箱からゴミを収集する",
+        "ゴミ袋をトラックに積む",
+        "トラックがいっぱいになったら配達する",
+        "チームで作業してより多く稼ぐ"
+      ],
+      "items": {
+        "cleanupBag": "ゴミ袋",
+        "gloves": "手袋",
+        "cleanupTruck": "ゴミ収集トラック"
+      },
+      "areas": {
+        "downtown": "ダウンタウン",
+        "industrial": "工業地帯",
+        "residential": "住宅地"
+      },
+      "blips": {
+        "cleanupDelivery": "ゴミ配達"
+      }
+    },
+    "trucker": {
+      "name": "トラック運転手",
+      "subtitle": "長距離輸送",
+      "interactionText": "トラック運送の仕事を始める",
+      "blipLabel": "トラックヤード",
+      "locationLabel": "トラックデポ",
+      "description": [
+        "トレーラーを受け取って貨物を配達する",
+        "走行距離に応じて報酬を獲得",
+        "高報酬の違法ルートのチャンスあり",
+        "チームで作業してボーナス報酬を獲得"
+      ],
+      "items": {
+        "truck": "トラック",
+        "trailer": "トレーラー",
+        "cargo": "貨物"
+      },
+      "blips": {
+        "pickupTrailer": "トレーラーピックアップ",
+        "deliverCargo": "貨物配達",
+        "illegalDelivery": "違法配達",
+        "returnTruck": "トラック返却"
+      }
+    },
+    "taxi": {
+      "name": "タクシー運転手",
+      "subtitle": "市内交通",
+      "interactionText": "タクシーの仕事を始める",
+      "blipLabel": "タクシーデポ",
+      "locationLabel": "タクシーデポ",
+      "description": [
+        "市内で乗客を拾う",
+        "目的地に届ける",
+        "距離に応じて報酬を獲得",
+        "素早い配達でボーナス"
+      ],
+      "items": {
+        "taxi": "タクシー",
+        "passenger": "乗客"
+      },
+      "blips": {
+        "pickupPassenger": "乗客ピックアップ",
+        "dropOff": "降車",
+        "returnTaxi": "タクシー返却"
+      }
+    },
+    "dogwalking": {
+      "name": "犬の散歩",
+      "subtitle": "ペットケアサービス",
+      "interactionText": "犬の散歩を始める",
+      "blipLabel": "犬の散歩",
+      "locationLabel": "ペットサービス",
+      "description": [
+        "裕福なお客様の犬を散歩させる",
+        "お客様の家から犬を受け取る",
+        "犬と必要な距離を歩く",
+        "犬の後始末でボーナス報酬",
+        "友達と一緒に作業して協力ボーナス！"
+      ],
+      "items": {
+        "leash": "リード",
+        "poopBag": "フン袋",
+        "treats": "おやつ"
+      },
+      "blips": {
+        "clientHome": "お客様の家"
+      },
+      "preview": {
+        "step1Title": "仕事を開始",
+        "step1Desc": [
+          "ペットショップ近くの犬の散歩NPCを見つける",
+          "Eを押して仕事メニューを開く",
+          "エリアを選んでスタートを押す"
+        ],
+        "step2Title": "着替える",
+        "step2Desc": [
+          "ペットショップ近くの着替えエリアに行く",
+          "中に入って作業服に着替える",
+          "仕事終了時に元の服に戻ります"
+        ],
+        "step3Title": "犬を受け取る",
+        "step3Desc": [
+          "ヴァインウッドヒルズのお客様の家に車で行く",
+          "外で待っている犬の飼い主に会う",
+          "Eを押して犬をリードにつなぐ"
+        ],
+        "step4Title": "犬を散歩させる",
+        "step4Desc": [
+          "リードにつないだ犬と歩く",
+          "HUDに表示される必要距離をカバーする",
+          "犬の後始末でボーナス報酬"
+        ],
+        "step5Title": "犬を返す",
+        "step5Desc": [
+          "犬をお客様の家に戻す",
+          "犬は自動的に飼い主に戻る",
+          "歩いた距離と掃除回数に応じて報酬を受け取る"
+        ]
+      }
+    },
+    "powerlines": {
+      "name": "電線工事",
+      "subtitle": "市内電力・通信",
+      "interactionText": "電線工事の仕事を始める",
+      "blipLabel": "電線工事の仕事",
+      "locationLabel": "電力会社",
+      "description": [
+        "家庭の電気パネルを修理する",
+        "バケットトラックで電話ポールの配線を修理する",
+        "チームで作業してボーナス報酬を獲得",
+        "ミニゲームで修理を完了する"
+      ],
+      "items": {
+        "multimeter": "マルチメーター",
+        "wireKit": "配線キット",
+        "safetyGear": "安全装備"
+      },
+      "blips": {
+        "electricalPanel": "電気パネル",
+        "phonePole": "電話ポール",
+        "bucketTruck": "バケットトラック"
+      },
+      "routes": {
+        "rockfordHills": "ロックフォードヒルズ",
+        "davis": "デイビス",
+        "vespucci": "ベスプッチ",
+        "strawberry": "ストロベリー",
+        "centralLS": "セントラルLS",
+        "southLS": "サウスLS"
+      }
+    },
+    "delivery": {
+      "name": "パッケージ配達",
+      "subtitle": "パッケージ配達サービス",
+      "interactionText": "パッケージ配達の仕事を始める",
+      "blipLabel": "パッケージ配達",
+      "locationLabel": "パッケージ配達",
+      "description": [
+        "バンを受け取ってデポから箱を積む",
+        "指定のお客様に箱を配達する",
+        "配達が多いほど報酬が増える",
+        "チームで作業して早く完了する"
+      ],
+      "items": {
+        "cargoBox": "貨物箱",
+        "deliveryList": "配達リスト",
+        "vanKey": "バンの鍵"
+      },
+      "blips": {
+        "deliveryPoint": "配達ポイント"
+      },
+      "preview": {
+        "step1Title": "仕事を開始",
+        "step1Desc": [
+          "配達デポのNPCに話しかける",
+          "Eを押して仕事メニューを開く",
+          "エリアを選んでスタートを押す"
+        ],
+        "step2Title": "着替える",
+        "step2Desc": [
+          "近くのプレハブ小屋に行く",
+          "中に入って作業服に着替える",
+          "仕事終了時に元の服に戻ります"
+        ],
+        "step3Title": "車両を受け取る",
+        "step3Desc": [
+          "駐車された配達バンに行く",
+          "後部ドアが開いて積み込み可能",
+          "各ロビーが専用車両を受け取る"
+        ],
+        "step4Title": "パッケージを取る",
+        "step4Desc": [
+          "倉庫近くのデポ作業員に行く",
+          "Eを押して貨物箱を取る",
+          "一度に1箱運べる"
+        ],
+        "step5Title": "バンに積む",
+        "step5Desc": [
+          "バンの開いた後部ドアまでパッケージを運ぶ",
+          "箱は自動的に中に積まれる",
+          "出発前にバンを満たす"
+        ],
+        "step6Title": "パッケージを配達",
+        "step6Desc": [
+          "マークされた配達場所まで運転する",
+          "トランクから箱を取って運ぶ",
+          "お客様のところまで歩いてEを押して配達する"
+        ],
+        "step7Title": "デポに戻る",
+        "step7Desc": [
+          "全配達後、デポに車で戻る",
+          "マークされた場所にバンを駐車する",
+          "報酬は自動的に支払われる"
+        ]
+      }
+    },
+    "warehouse": {
+      "name": "倉庫作業員",
+      "subtitle": "貨物・物流",
+      "interactionText": "倉庫の仕事を始める",
+      "blipLabel": "倉庫",
+      "locationLabel": "倉庫",
+      "description": [
+        "箱とパレットを配達トラックに積む",
+        "重いパレットにはフォークリフトを使う",
+        "小さい箱は手で運ぶ",
+        "トラック注文を完了して報酬を受け取る"
+      ],
+      "items": {
+        "forklift": "フォークリフト",
+        "boxes": "箱",
+        "pallets": "パレット"
+      },
+      "blips": {
+        "truck": "トラック",
+        "deliveryPoint": "配達ポイント",
+        "forklift": "フォークリフト"
+      },
+      "deliveryRoutes": {
+        "vinewood": "ヴァインウッドマーケット",
+        "davis": "デイビススーパー",
+        "strawberry": "ストロベリーマーケット"
+      }
+    },
+    "landscaping": {
+      "name": "造園",
+      "subtitle": "庭園メンテナンス",
+      "interactionText": "造園の仕事を始める",
+      "blipLabel": "造園の仕事",
+      "locationLabel": "市内メンテナンス",
+      "description": [
+        "トリマーで茂った茂みを刈る",
+        "シャベルで雑草を掘る",
+        "作業トラックから道具を取る",
+        "チームで作業してボーナス報酬を獲得"
+      ],
+      "items": {
+        "trimmer": "トリマー",
+        "shovel": "シャベル",
+        "workTruck": "作業トラック"
+      },
+      "routes": {
+        "vespucci": "ベスプッチ",
+        "pillboxHill": "ピルボックスヒル",
+        "littleSeoul": "リトルソウル",
+        "burton": "バートン",
+        "vinewoodHills": "ヴァインウッドヒルズ"
+      }
+    },
+    "fishing": {
+      "name": "釣り",
+      "subtitle": "プロの釣り",
+      "interactionText": "釣りの仕事を始める",
+      "blipLabel": "釣り",
+      "locationLabel": "釣り",
+      "description": [
+        "竿とエサを取る",
+        "水辺に竿を投げる",
+        "ミニゲームで魚を釣る",
+        "釣った魚はインベントリに追加される",
+        "魚買取人に売る"
+      ],
+      "items": {
+        "fishingRod": "釣り竿",
+        "bait": "エサ"
+      },
+      "rods": {
+        "standartrod": "スタンダードロッド",
+        "carbonrod": "カーボンロッド",
+        "prorod": "プロロッド"
+      },
+      "baits": {
+        "basicbait": "ミミズエサ",
+        "spoonlure": "スプーンルアー",
+        "threesided": "三角ルアー",
+        "tailfish": "テールフィッシュルアー",
+        "doublehook": "ダブルフックルアー",
+        "triplehook": "トリプルフックルアー"
+      },
+      "zones": {
+        "southCoast": "南海岸",
+        "westCoast": "西海岸",
+        "deepSea": "深海"
+      },
+      "fishTypes": {
+        "anchovy": "アンチョビ",
+        "trout": "マス",
+        "mackerel": "サバ",
+        "salmon": "サーモン",
+        "snapper": "スナッパー",
+        "tuna": "マグロ",
+        "grouper": "ハタ",
+        "swordfish": "メカジキ",
+        "shark": "サメ"
+      },
+      "blips": {
+        "fishingShop": "釣りショップ",
+        "fishBuyer": "魚買取人"
+      }
+    },
+    "diving": {
+      "name": "ダイビング",
+      "subtitle": "プロのダイビング",
+      "interactionText": "ダイビングの仕事を始める",
+      "blipLabel": "ダイビング",
+      "locationLabel": "ダイビング",
+      "description": [
+        "ボートに乗ってダイブゾーンに向かう",
+        "ボートが止まったら錨を降ろして水に入る",
+        "水中に潜ってタスクを完了する",
+        "ボートに戻って錨を上げる",
+        "ドックに戻ってアイテムを売る"
+      ],
+      "items": {
+        "scubaTank": "スキューバタンク",
+        "divingSuit": "ダイビングスーツ",
+        "flippers": "フィン"
+      },
+      "zones": {
+        "shallowBay": "浅瀬",
+        "openSea": "外洋",
+        "shipwreck": "沈没船",
+        "deepTrench": "深海溝"
+      },
+      "sellItems": {
+        "dendrogyraCoral": "デンドロジラサンゴ",
+        "antipathariaCoral": "アンティパタリアサンゴ"
+      },
+      "taskTypes": {
+        "coral": "サンゴ",
+        "trash": "ゴミ"
+      },
+      "gear": {
+        "basic": "ベーシックスキューバ",
+        "standard": "スタンダードスキューバ",
+        "pro": "プロスキューバ"
+      },
+      "blips": {
+        "boatDelivery": "ボート配達"
+      },
+      "preview": {
+        "step1Title": "仕事を開始",
+        "step1Desc": [
+          "パレトベイドックのダイビングインストラクターに行く",
+          "Eを押して仕事メニューを開く",
+          "ダイブゾーンを選んでスタートを押す"
+        ],
+        "step2Title": "ボートに乗る",
+        "step2Desc": [
+          "ドックに行ってボートに乗る",
+          "各ダイブゾーンには出発ポイントがある",
+          "マークされたダイブゾーンに向かう"
+        ],
+        "step3Title": "錨を降ろして潜る",
+        "step3Desc": [
+          "ダイブゾーンマーカーでボートを止める",
+          "Eを押して錨を降ろす",
+          "水に飛び込んで潜る"
+        ],
+        "step4Title": "アイテムを集める",
+        "step4Desc": [
+          "海底でサンゴとゴミを見つける",
+          "Eを押してサンゴを採取して売る",
+          "ゴミを掃除してボーナスXPを獲得"
+        ],
+        "step5Title": "釣果を売る",
+        "step5Desc": [
+          "ボートをドックに戻す",
+          "近くの買取人NPCに行く",
+          "Eを押して採取したサンゴを売る"
+        ]
+      }
+    },
+    "forklift": {
+      "name": "フォークリフト操作員",
+      "subtitle": "地下物流",
+      "interactionText": "フォークリフトの仕事を始める",
+      "blipLabel": "フォークリフト",
+      "locationLabel": "フォークリフトデポ",
+      "description": [
+        "地下デポでフォークリフトを操作する",
+        "クレートをコンベアベルトに輸送する",
+        "クレートを指定の棚に配置する",
+        "チームで作業してボーナス報酬を獲得"
+      ],
+      "items": {
+        "forklift": "フォークリフト",
+        "crate": "クレート",
+        "conveyorBelt": "コンベアベルト"
+      },
+      "crateTypes": {
+        "jewellery": "宝石",
+        "antiques": "骨董品",
+        "tobacco": "タバコ",
+        "hazard": "危険物",
+        "fake": "偽物"
+      },
+      "blips": {
+        "forklift": "フォークリフト",
+        "conveyor": "コンベアベルト"
+      }
+    },
+    "tiretechnician": {
+      "name": "タイヤ整備士",
+      "subtitle": "路上タイヤサービス",
+      "interactionText": "タイヤ整備士の仕事を始める",
+      "blipLabel": "タイヤ整備士の仕事",
+      "locationLabel": "タイヤサービスデポ",
+      "description": [
+        "立ち往生した車両のフラットタイヤを交換する",
+        "ジャッキと道具でタイヤ交換する",
+        "マルチステップのリアルなタイヤ修理プロセス",
+        "チームで作業して早く完了する"
+      ],
+      "items": {
+        "wrenchSet": "レンチセット",
+        "carJack": "ジャッキ",
+        "spareParts": "スペアパーツ"
+      },
+      "blips": {
+        "vehicleRepair": "車両修理",
+        "serviceTruck": "サービストラック"
+      }
+    },
+    "treasurehunter": {
+      "name": "トレジャーハンター",
+      "subtitle": "水中宝探し",
+      "interactionText": "宝探しの仕事を始める",
+      "blipLabel": "トレジャーハンター",
+      "locationLabel": "トレジャーハンタードック",
+      "description": [
+        "ボートに乗って宝のエリアに向かう",
+        "トラッカーのビープ音で宝を探す",
+        "水中に潜って宝箱を回収する",
+        "ドックに戻って報酬を受け取る"
+      ],
+      "items": {
+        "scubaGear": "スキューバギア",
+        "treasureChest": "宝箱"
+      },
+      "lootTypes": {
+        "common": "宝袋",
+        "legendary": "金の宝箱"
+      },
+      "gear": {
+        "basic": "ベーシックスキューバ",
+        "standard": "スタンダードスキューバ",
+        "pro": "プロスキューバ"
+      },
+      "preview": {
+        "step1Title": "仕事を開始",
+        "step1Desc": [
+          "ドックに行ってインストラクターに話しかける",
+          "Eを押して仕事メニューを開いて開始する"
+        ],
+        "step2Title": "ボートに乗る",
+        "step2Desc": [
+          "ドックに行ってボートに乗る",
+          "宝エリアのブリップに向かう"
+        ],
+        "step3Title": "錨を降ろして潜る",
+        "step3Desc": [
+          "トラッカーのビープ音で宝を見つける",
+          "探索エリア近くに錨を降ろす",
+          "スキューバギアで水中に潜る"
+        ],
+        "step4Title": "宝を回収",
+        "step4Desc": [
+          "海底の宝箱を見つける",
+          "サメや海流に注意！",
+          "Eを押して宝を回収する"
+        ],
+        "step5Title": "ドックに戻る",
+        "step5Desc": [
+          "浮上してドックに戻る",
+          "マーカーに入って完了する",
+          "報酬を受け取る！"
+        ]
+      }
+    },
+    "metaldetector": {
+      "name": "金属探知機",
+      "subtitle": "高度な回収オペレーション",
+      "interactionText": "金属探知ジョブを開始",
+      "blipLabel": "金属探知機",
+      "locationLabel": "金属探知ステーション",
+      "description": [
+        "トラックのトランクから金属探知機を取る",
+        "ビープ音の速さを頼りに隠された金属を特定する",
+        "シャベルで埋まった地点を掘り出す",
+        "掘り出した発見物をステーションで換金する"
+      ],
+      "items": {
+        "detector": "金属探知機",
+        "findings": "回収した発見物"
+      },
+      "lootTypes": {
+        "scrap": "スクラップメタル",
+        "coin": "古いコイン",
+        "silver": "銀のかけら",
+        "gold": "金塊",
+        "relic": "希少な遺物"
+      }
+    },
+    "mechanic": {
+      "name": "メカニック",
+      "subtitle": "車両修理サービス",
+      "interactionText": "メカニックの仕事を始める",
+      "blipLabel": "メカニック",
+      "locationLabel": "メカニックショップ"
+    },
+    "gruppe6": {
+      "name": "Gruppe 6",
+      "subtitle": "現金輸送",
+      "interactionText": "車庫責任者と話す",
+      "blipLabel": "Gruppe 6 車庫",
+      "description": [
+        "装甲トラックでフリーカ銀行を巡回しよう",
+        "金庫で現金バッグを詰めてトラックに積み込もう",
+        "トラックを車庫に返却して報酬を受け取ろう"
+      ]
+    }
+  },
+  "quests": {
+    "daily_miner_collect": {
+      "label": "デイリー採掘",
+      "description": "鉱山で5個の岩を壊す"
+    },
+    "weekly_miner_process": {
+      "label": "加工マスター",
+      "description": "計量台で30個の鉱石を加工する"
+    },
+    "monthly_miner_earn": {
+      "label": "採掘の大物",
+      "description": "採掘で$10,000を稼ぐ"
+    },
+    "daily_lumber_collect": {
+      "label": "デイリー伐採",
+      "description": "5本の木を切る"
+    },
+    "weekly_lumber_process": {
+      "label": "伐採マスター",
+      "description": "計量台で25本の丸太を加工する"
+    },
+    "monthly_lumber_earn": {
+      "label": "木材の大物",
+      "description": "伐採で$10,000を稼ぐ"
+    },
+    "daily_scrap_collect": {
+      "label": "スクラップ収集",
+      "description": "5個のスクラップを収集する"
+    },
+    "weekly_scrap_process": {
+      "label": "リサイクルのプロ",
+      "description": "計量台で20個のスクラップを加工する"
+    },
+    "monthly_scrap_earn": {
+      "label": "スクラップ王",
+      "description": "スクラップで$8,000を稼ぐ"
+    },
+    "daily_hunting_collect": {
+      "label": "デイリーハント",
+      "description": "3匹の動物を狩る"
+    },
+    "weekly_hunting_process": {
+      "label": "トロフィーハンター",
+      "description": "計量台で15匹の動物を加工する"
+    },
+    "monthly_hunting_earn": {
+      "label": "マスターハンター",
+      "description": "狩猟で$12,000を稼ぐ"
+    },
+    "daily_farmer_complete": {
+      "label": "農場の助手",
+      "description": "2回の農業を完了する"
+    },
+    "weekly_farmer_earn": {
+      "label": "収穫キング",
+      "description": "農業で$5,000を稼ぐ"
+    },
+    "monthly_farmer_earn": {
+      "label": "農業男爵",
+      "description": "農業で$15,000を稼ぐ"
+    },
+    "daily_fruitpicker_complete": {
+      "label": "オレンジ摘み",
+      "description": "2回の果物摘みを完了する"
+    },
+    "weekly_fruitpicker_earn": {
+      "label": "柑橘王",
+      "description": "オレンジで$5,000を稼ぐ"
+    },
+    "monthly_fruitpicker_earn": {
+      "label": "果樹園の大物",
+      "description": "オレンジで$15,000を稼ぐ"
+    },
+    "daily_cleaner_complete": {
+      "label": "道路清掃員",
+      "description": "2回の清掃を完了する"
+    },
+    "weekly_cleaner_earn": {
+      "label": "ミスタークリーン",
+      "description": "清掃で$4,000を稼ぐ"
+    },
+    "monthly_cleaner_earn": {
+      "label": "衛生局長",
+      "description": "清掃で$12,000を稼ぐ"
+    },
+    "daily_powerwash_complete": {
+      "label": "高圧プロ",
+      "description": "2回の高圧洗浄を完了する"
+    },
+    "weekly_powerwash_earn": {
+      "label": "ブラストマスター",
+      "description": "高圧洗浄で$5,000を稼ぐ"
+    },
+    "monthly_powerwash_earn": {
+      "label": "洗浄の達人",
+      "description": "高圧洗浄で$15,000を稼ぐ"
+    },
+    "daily_windowcleaner_complete": {
+      "label": "窓拭き",
+      "description": "2回の窓清掃を完了する"
+    },
+    "weekly_windowcleaner_earn": {
+      "label": "ガラスの達人",
+      "description": "窓清掃で$4,000を稼ぐ"
+    },
+    "monthly_windowcleaner_earn": {
+      "label": "クリスタルクリア社",
+      "description": "窓清掃で$12,000を稼ぐ"
+    },
+    "daily_cardetailer_complete": {
+      "label": "シャインタイム",
+      "description": "2回のディテーリングを完了する"
+    },
+    "weekly_cardetailer_earn": {
+      "label": "ディテールプロ",
+      "description": "カーディテーリングで$5,000を稼ぐ"
+    },
+    "monthly_cardetailer_earn": {
+      "label": "マスターディテーラー",
+      "description": "カーディテーリングで$15,000を稼ぐ"
+    },
+    "daily_newspaper_complete": {
+      "label": "新聞配達",
+      "description": "2回の配達を完了する"
+    },
+    "weekly_newspaper_earn": {
+      "label": "プレス王",
+      "description": "配達で$3,000を稼ぐ"
+    },
+    "monthly_newspaper_earn": {
+      "label": "メディア王",
+      "description": "配達で$8,000を稼ぐ"
+    },
+    "daily_cleanup_complete": {
+      "label": "ゴミ回収員",
+      "description": "2回の回収を完了する"
+    },
+    "weekly_cleanup_earn": {
+      "label": "廃棄物マネージャー",
+      "description": "ゴミ回収で$4,000を稼ぐ"
+    },
+    "monthly_cleanup_earn": {
+      "label": "廃棄物の大物",
+      "description": "ゴミ回収で$12,000を稼ぐ"
+    },
+    "daily_trucker_complete": {
+      "label": "デイリー運送",
+      "description": "2回のトラック運送を完了する"
+    },
+    "weekly_trucker_earn": {
+      "label": "ロードウォリアー",
+      "description": "トラック運送で$8,000を稼ぐ"
+    },
+    "monthly_trucker_earn": {
+      "label": "コンボイキング",
+      "description": "トラック運送で$25,000を稼ぐ"
+    },
+    "daily_taxi_complete": {
+      "label": "タクシー運転手",
+      "description": "3回のタクシー乗車を完了する"
+    },
+    "weekly_taxi_earn": {
+      "label": "タクシーキング",
+      "description": "運賃で$6,000を稼ぐ"
+    },
+    "monthly_taxi_earn": {
+      "label": "フリートオーナー",
+      "description": "運賃で$18,000を稼ぐ"
+    },
+    "daily_dogwalking_complete": {
+      "label": "犬の散歩",
+      "description": "2回の散歩を完了する"
+    },
+    "weekly_dogwalking_earn": {
+      "label": "パックリーダー",
+      "description": "犬の散歩で$3,000を稼ぐ"
+    },
+    "monthly_dogwalking_earn": {
+      "label": "ドッグウィスパラー",
+      "description": "犬の散歩で$8,000を稼ぐ"
+    },
+    "daily_powerlines_complete": {
+      "label": "スパーキー",
+      "description": "2回の修理を完了する"
+    },
+    "weekly_powerlines_earn": {
+      "label": "マスター電気工",
+      "description": "修理で$6,000を稼ぐ"
+    },
+    "monthly_powerlines_earn": {
+      "label": "電力グリッドの長",
+      "description": "修理で$18,000を稼ぐ"
+    },
+    "daily_delivery_complete": {
+      "label": "パッケージランナー",
+      "description": "2回の配達を完了する"
+    },
+    "weekly_delivery_earn": {
+      "label": "エクスプレス配達員",
+      "description": "配達で$5,000を稼ぐ"
+    },
+    "monthly_delivery_earn": {
+      "label": "配達キングピン",
+      "description": "配達で$15,000を稼ぐ"
+    },
+    "daily_warehouse_complete": {
+      "label": "港湾作業員",
+      "description": "2回の倉庫シフトを完了する"
+    },
+    "weekly_warehouse_earn": {
+      "label": "物流エキスパート",
+      "description": "倉庫作業で$5,000を稼ぐ"
+    },
+    "monthly_warehouse_earn": {
+      "label": "倉庫ディレクター",
+      "description": "倉庫作業で$15,000を稼ぐ"
+    },
+    "daily_landscaping_complete": {
+      "label": "グリーンサム",
+      "description": "2回の造園を完了する"
+    },
+    "weekly_landscaping_earn": {
+      "label": "造園マスター",
+      "description": "造園で$4,000を稼ぐ"
+    },
+    "monthly_landscaping_earn": {
+      "label": "ランドスケープアーキテクト",
+      "description": "造園で$12,000を稼ぐ"
+    },
+    "daily_fishing_complete": {
+      "label": "釣り人",
+      "description": "2回の釣りを完了する"
+    },
+    "weekly_fishing_earn": {
+      "label": "深海釣り師",
+      "description": "釣りで$5,000を稼ぐ"
+    },
+    "monthly_fishing_earn": {
+      "label": "釣りの伝説",
+      "description": "釣りで$15,000を稼ぐ"
+    },
+    "daily_diving_complete": {
+      "label": "深海ダイバー",
+      "description": "2回のダイビングを完了する"
+    },
+    "weekly_diving_earn": {
+      "label": "海の探検家",
+      "description": "ダイビングで$6,000を稼ぐ"
+    },
+    "monthly_diving_earn": {
+      "label": "トレジャーダイバー",
+      "description": "ダイビングで$18,000を稼ぐ"
+    },
+    "daily_forklift_complete": {
+      "label": "フォークリフト操作員",
+      "description": "2回の倉庫シフトを完了する"
+    },
+    "weekly_forklift_earn": {
+      "label": "ヘビーリフター",
+      "description": "フォークリフト作業で$5,000を稼ぐ"
+    },
+    "monthly_forklift_earn": {
+      "label": "物流の巨人",
+      "description": "フォークリフト作業で$15,000を稼ぐ"
+    }
+  },
+  "shop": {
+    "buyRod": "釣り竿を購入",
+    "buyRodDesc": "釣り竿を購入する",
+    "buyBait": "エサを購入",
+    "buyBaitDesc": "釣りエサを購入する",
+    "sellAll": "全て売却",
+    "sellAllFish": "魚を全て売る",
+    "sellAllItems": "アイテムを全て売る",
+    "levelRequired": "レベル{level}が必要 | {price}",
+    "howMany": "いくつ？"
+  },
+  "vehicle": {
+    "powerlines": "電線工事",
+    "huntingVehicle": "狩猟車両",
+    "workTruck": "作業トラック",
+    "divingBoat": "ダイビングボート",
+    "fishingBoat": "釣りボート",
+    "cleanupTruck": "ゴミ収集トラック",
+    "lumberVehicle": "伐採車両",
+    "miningVehicle": "採掘車両",
+    "metaldetectorVehicle": "金属探知車両",
+    "washVan": "洗浄バン",
+    "windowCleanerVan": "窓清掃バン",
+    "cleaningVan": "清掃バン",
+    "serviceVehicle": "サービス車両",
+    "scrapyardTruck": "スクラップヤードトラック",
+    "detailingVan": "ディテーリングバン",
+    "tiretechnician": "タイヤ整備士",
+    "pickupPassenger": "乗客ピックアップ",
+    "returnTaxi": "タクシー返却",
+    "dropOff": "降車",
+    "bucketTruck": "バケットトラック",
+    "deliveryVan": "配達バン",
+    "newspaperBike": "新聞配達自転車",
+    "detachedTrailer": "外れたトレーラー",
+    "deliveryTruck": "配達トラック",
+    "taxi": "タクシー",
+    "treasureBoat": "宝探しボート"
+  },
+  "task": {
+    "panels": "パネル",
+    "poles": "ポール",
+    "repairPanels": "パネルを修理（{done}/{total}）",
+    "fixPoles": "ユーティリティポールを修理（{done}/{total}）",
+    "repairDescription": "エリア全体の電気インフラを修理してください。パネルとユーティリティポールを修理しましょう。",
+    "plants": "植物",
+    "cropPlant": "作物",
+    "nearestCrop": "最寄りの作物",
+    "bushes": "茂み",
+    "lawns": "芝生",
+    "bushToTrim": "刈る茂み",
+    "lawnToDig": "掘る芝生",
+    "toilets": "トイレ",
+    "pipes": "パイプ",
+    "fishCaught": "釣った魚",
+    "treasures": "宝",
+    "spotsDug": "掘った地点",
+    "tasks": "タスク",
+    "loadBoxes": "デポで箱を積み込む",
+    "deliveries": "配達",
+    "deliverPackages": "パッケージを配達",
+    "boxesLoaded": "積み込み済み箱",
+    "pickUpTrailer": "トレーラーを取る",
+    "deliverCargo": "貨物を配達",
+    "returnTruck": "トラックを返却",
+    "stage": "ステージ",
+    "truckFill": "トラック積載量",
+    "shelved": "棚に配置済み",
+    "activateConveyor": "コンベアベルトを起動 [E]",
+    "deliverCratesToBelt": "木箱をベルトに運ぶ ({current}/{total})",
+    "placeCratesOnShelves": "木箱を棚に配置する ({current}/{total})",
+    "delivered": "配達済み",
+    "takeWandFromTrunk": "車両トランクからワンドを取る",
+    "spotsCleaned": "清掃済みスポット",
+    "takeSpongeFromTrunk": "車両トランクからスポンジを取る",
+    "windows": "窓",
+    "takeMopFromTrunk": "車両トランクからモップを取る",
+    "stains": "汚れ",
+    "equipWandOrCloth": "ワンド（洗浄）またはクロス（磨き）を装備",
+    "carsWashed": "洗車済み",
+    "carsPolished": "磨き済み",
+    "distance": "距離",
+    "cargo": "貨物",
+    "regularAnimals": "通常の動物",
+    "predators": "捕食者",
+    "birds": "鳥",
+    "mixed": "混合",
+    "nextDelivery": "次の配達",
+    "returnVehicle": "車両を返却",
+    "returnToDepot": "デポに帰還",
+    "returnToBase": "基地に帰還",
+    "loadingArea": "積み込みエリア",
+    "fruitpickerTree": "オレンジの木",
+    "next": "次へ",
+    "walkDistance": "散歩距離",
+    "dogsDelivered": "犬を届けた数",
+    "distanceWalked": "歩いた距離 (m)",
+    "oreProcessed": "加工済み鉱石",
+    "trunkLoaded": "トランク積載",
+    "logsProcessed": "加工済み丸太",
+    "scrapsProcessed": "加工済みスクラップ",
+    "boxesProcessed": "加工済み箱",
+    "animalsProcessed": "加工済み動物",
+    "toolShovel": "シャベル",
+    "toolTrimmer": "トリマー",
+    "trucksCompleted": "完了したトラック ({current}/{total})",
+    "loadBoxesCount": "箱を積み込む ({current}/{total})",
+    "loadPallets": "パレットを積み込む ({current}/{total})",
+    "deliverPapers": "新聞を配達 ({current}/{total})",
+    "trimBushes": "茂みを刈り込む ({current}/{total})",
+    "rakeLawns": "芝生を掃く ({current}/{total})",
+    "itemsCollected": "回収したアイテム ({current}/{total})",
+    "cleanAllWindows": "すべての窓を清掃 ({current}/{total})",
+    "cleanAllSpots": "すべての箇所を清掃 ({current}/{total})"
+  },
+  "drawText": {
+    "repairPanel": "[E] 電気パネルを修理",
+    "repairPole": "[E] 電話ポールの配線を修理",
+    "collect": "[E] 採取",
+    "collectCoral": "[E] サンゴを採取",
+    "cleanTrash": "[E] ゴミを掃除"
+  },
+  "achievements": {
+    "miner_lv5": {
+      "label": "マスターマイナー",
+      "desc": "採掘でレベル5に到達"
+    },
+    "miner_lv10": {
+      "label": "採掘の伝説",
+      "desc": "採掘でレベル10に到達"
+    },
+    "lumberjack_lv5": {
+      "label": "マスター伐採人",
+      "desc": "伐採でレベル5に到達"
+    },
+    "fishing_lv5": {
+      "label": "エキスパート釣り師",
+      "desc": "釣りでレベル5に到達"
+    },
+    "cleanup_lv5": {
+      "label": "ゴミ戦士",
+      "desc": "ゴミ収集でレベル5に到達"
+    },
+    "delivery_lv5": {
+      "label": "エクスプレス配達員",
+      "desc": "配達でレベル5に到達"
+    },
+    "trucker_lv5": {
+      "label": "ロードキング",
+      "desc": "トラック運送でレベル5に到達"
+    },
+    "hunting_lv5": {
+      "label": "エキスパートハンター",
+      "desc": "狩猟でレベル5に到達"
+    },
+    "taxi_lv5": {
+      "label": "エースドライバー",
+      "desc": "タクシーでレベル5に到達"
+    },
+    "powerlines_lv5": {
+      "label": "マスター電気工",
+      "desc": "電線工事でレベル5に到達"
+    },
+    "diving_lv5": {
+      "label": "深海ダイバー",
+      "desc": "ダイビングでレベル5に到達"
+    },
+    "cleaner_lv5": {
+      "label": "掃除マシン",
+      "desc": "清掃でレベル5に到達"
+    },
+    "powerwash_lv5": {
+      "label": "高圧プロ",
+      "desc": "高圧洗浄でレベル5に到達"
+    },
+    "windowscleaner_lv5": {
+      "label": "クリスタルクリア",
+      "desc": "窓清掃でレベル5に到達"
+    },
+    "cardetailer_lv5": {
+      "label": "ディテールマスター",
+      "desc": "カーディテーリングでレベル5に到達"
+    },
+    "farmer_lv5": {
+      "label": "グリーンサム",
+      "desc": "農業でレベル5に到達"
+    },
+    "fruitpicker_lv5": {
+      "label": "シトラスキング",
+      "desc": "果物摘みでレベル5に到達"
+    },
+    "landscaping_lv5": {
+      "label": "ガーデンマスター",
+      "desc": "造園でレベル5に到達"
+    },
+    "dogwalking_lv5": {
+      "label": "ドッグウィスパラー",
+      "desc": "犬の散歩でレベル5に到達"
+    },
+    "newspaper_lv5": {
+      "label": "プレスランナー",
+      "desc": "新聞配達でレベル5に到達"
+    },
+    "scrapyard_lv5": {
+      "label": "スクラップロード",
+      "desc": "スクラップヤードでレベル5に到達"
+    },
+    "warehouse_lv5": {
+      "label": "ストックマスター",
+      "desc": "倉庫でレベル5に到達"
+    },
+    "forklift_lv5": {
+      "label": "リフトオペレーター",
+      "desc": "フォークリフトでレベル5に到達"
+    },
+    "collect_100": {
+      "label": "コレクター",
+      "desc": "合計100個のアイテムを収集"
+    },
+    "collect_500": {
+      "label": "ギャザラー",
+      "desc": "合計500個のアイテムを収集"
+    },
+    "collect_1000": {
+      "label": "ホーダー",
+      "desc": "合計1,000個のアイテムを収集"
+    },
+    "miner_collect_500": {
+      "label": "ロックブレイカー",
+      "desc": "500個の岩を採掘"
+    },
+    "lumber_collect_500": {
+      "label": "ツリーフェラー",
+      "desc": "500本の木を伐採"
+    },
+    "earn_10000": {
+      "label": "稼ぎ頭",
+      "desc": "仕事で合計$10,000を獲得"
+    },
+    "earn_50000": {
+      "label": "ハイローラー",
+      "desc": "仕事で合計$50,000を獲得"
+    },
+    "earn_100000": {
+      "label": "億万長者への道",
+      "desc": "仕事で合計$100,000を獲得"
+    },
+    "complete_10": {
+      "label": "勤勉な労働者",
+      "desc": "10件の仕事を完了"
+    },
+    "complete_50": {
+      "label": "献身的な労働者",
+      "desc": "50件の仕事を完了"
+    },
+    "complete_100": {
+      "label": "ベテラン労働者",
+      "desc": "100件の仕事を完了"
+    },
+    "process_100": {
+      "label": "プロセッサー",
+      "desc": "計量台で100個のアイテムを加工"
+    },
+    "process_500": {
+      "label": "工場労働者",
+      "desc": "計量台で500個のアイテムを加工"
+    }
+  },
+  "common": {
+    "continueHintGeneric": "マップ上の次のタスクに向かってください",
+    "pickupTaskGeneric": "次のタスクの場所を見つけてください",
+    "pickupDescriptionGeneric": "マップにマークされた場所に向かい、次のタスクを開始してください。"
+  },
+  "gruppe6": {
+    "truck": "装甲トラック",
+    "takeBagPrompt": "[E] 空のバッグを取る",
+    "returnBagPrompt": "[E] バッグを戻す",
+    "loadBagPrompt": "[E] バッグを積み込む",
+    "signPrompt": "[E] 書類にサインをもらう",
+    "fillBagPrompt": "[E] バッグに詰める",
+    "stationBusy": "他のクルーがこのステーションを使用中です！",
+    "newRound": "新しい強盗ラウンド — 新たな銀行がマップに表示されました！",
+    "continueBusy": "続行する前に全員が回収を終えてバッグを引き渡す必要があります！",
+    "returnTruckPrompt": "[E] トラックを返却する",
+    "emptyBagTaken": "空のバッグを取った。銀行の金庫で詰めよう。",
+    "signingPapers": "書類にサイン中...",
+    "vaultOpening": "金庫が開いています... ({seconds}秒)",
+    "vaultOpened": "金庫が開いた！",
+    "fillingBag": "バッグに詰めています...",
+    "bagFilled": "バッグがいっぱい！（+{symbol}{amount}）",
+    "allStopsDone": "全ての停留所を回収！トラックを車庫に返却しよう。",
+    "returnTruckHint": "シフトを終えるにはトラックを車庫に返却しよう。",
+    "returnTruckBlip": "トラック返却",
+    "onlyLeaderCanFinish": "トラックを返却できるのはリーダーだけです！",
+    "tooFarFromDepot": "車庫から遠すぎます！",
+    "tooFarFromManager": "銀行支店長から遠すぎます！",
+    "tooFarFromVault": "金庫から遠すぎます！",
+    "vaultNotOpen": "金庫はまだ開いていません！",
+    "vaultAlreadyOpen": "金庫はすでに開けられています！",
+    "vaultEmpty": "この金庫は空になりました！",
+    "alreadyCarrying": "すでに何かを運んでいます！",
+    "needEmptyBag": "まず空のバッグが必要です！",
+    "statBags": "積んだバッグ",
+    "statEarnings": "合計収入",
+    "objSign": "書類にサインをもらう",
+    "objCollect": "バッグを詰めて積み込む",
+    "objReturn": "トラックを車庫に返却する",
+    "objWaiting": "ルート待機中...",
+    "progressTitle": "Gruppe 6",
+    "progressDetail": "銀行から現金バッグを回収し、装甲トラックを車庫に返却して報酬を受け取ろう。",
+    "jobEnded": "{bags}個のバッグを配送、{symbol}{earned}を獲得！",
+    "noEmptyBags": "トラックに空のバッグが残っていません！",
+    "truckNotAtDepot": "装甲トラックが車庫にある必要があります！"
+  }
+}

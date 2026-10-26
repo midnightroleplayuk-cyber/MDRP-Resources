@@ -5093,4 +5093,177 @@ return {
 	label = 'Uncounted Money',
 },
 
+-- TWORST CIV JOBS
+['dendrogyra_coral'] = {
+    label = 'Dendrogyra Coral',
+    weight = 1000,
+    stack = true,
+    close = true,
+    description = 'Also known as pillar coral',
+},
+['antipatharia_coral'] = {
+    label = 'Antipatharia Coral',
+    weight = 1000,
+    stack = true,
+    close = true,
+    description = 'Also known as black coral or thorn coral',
+},
+
+-- Fishing — Fish
+['fish_anchovy'] = {
+    label = 'Anchovy',
+    weight = 100,
+    stack = true,
+    description = 'Fresh anchovy',
+},
+['fish_trout'] = {
+    label = 'Trout',
+    weight = 200,
+    stack = true,
+    description = 'Fresh trout',
+},
+['fish_mackerel'] = {
+    label = 'Mackerel',
+    weight = 150,
+    stack = true,
+    description = 'Fresh mackerel',
+},
+['fish_salmon'] = {
+    label = 'Salmon',
+    weight = 300,
+    stack = true,
+    description = 'Fresh salmon',
+},
+['fish_snapper'] = {
+    label = 'Snapper',
+    weight = 250,
+    stack = true,
+    description = 'Fresh snapper',
+},
+['fish_tuna'] = {
+    label = 'Tuna',
+    weight = 500,
+    stack = true,
+    description = 'Fresh tuna',
+},
+['fish_grouper'] = {
+    label = 'Grouper',
+    weight = 400,
+    stack = true,
+    description = 'Fresh grouper',
+},
+['fish_swordfish'] = {
+    label = 'Swordfish',
+    weight = 600,
+    stack = true,
+    description = 'Fresh swordfish',
+},
+['fish_shark'] = {
+    label = 'Shark',
+    weight = 1000,
+    stack = true,
+    description = 'Shark meat',
+},
+
+-- Fishing — Rods
+-- consume = 0 keeps the rod in the inventory after use (rods are reusable tools).
+-- Do NOT add server.export / client.export — tw-litejobpack listens to
+-- `ox_inventory:usedItem` globally and runs the guarded fishing callback
+-- (free-cast lock, active-job check, bait check) automatically.
+['standartrod'] = {
+    label = 'Standard Rod',
+    weight = 100,
+    stack = false,
+    close = true,
+    consume = 0,
+    description = 'A basic fishing rod',
+},
+['carbonrod'] = {
+    label = 'Carbon Rod',
+    weight = 200,
+    stack = false,
+    close = true,
+    consume = 0,
+    description = 'A carbon fiber fishing rod',
+},
+['prorod'] = {
+    label = 'Pro Rod',
+    weight = 300,
+    stack = false,
+    close = true,
+    consume = 0,
+    description = 'A professional fishing rod',
+},
+
+-- Fishing — Baits
+['basicbait'] = {
+    label = 'Worm Bait',
+    weight = 50,
+    stack = true,
+    description = 'Basic fishing bait',
+},
+['spoonlure'] = {
+    label = 'Spoon Lure',
+    weight = 100,
+    stack = true,
+    description = 'A spoon-shaped fishing lure',
+},
+['threesided'] = {
+    label = 'Three-Sided Lure',
+    weight = 100,
+    stack = true,
+    description = 'A three-sided fishing lure',
+},
+['tailfish'] = {
+    label = 'Tail Fish Lure',
+    weight = 100,
+    stack = true,
+    description = 'A tail fish fishing lure',
+},
+['doublehook'] = {
+    label = 'Double Hook Lure',
+    weight = 100,
+    stack = true,
+    description = 'A double hook fishing lure',
+},
+['triplehook'] = {
+    label = 'Triple Hook Lure',
+    weight = 100,
+    stack = true,
+    description = 'A triple hook fishing lure',
+},
+
+-- Metal Detector — OPTIONAL, only when lootAsItem.enabled = true in shared/jobs/metaldetector.lua
+['md_scrap'] = {
+    label = 'Scrap Metal',
+    weight = 500,
+    stack = true,
+    description = 'A chunk of rusty scrap metal dug from the sand',
+},
+['md_coin'] = {
+    label = 'Old Coin',
+    weight = 50,
+    stack = true,
+    description = 'A weathered old coin',
+},
+['md_silver'] = {
+    label = 'Silver Piece',
+    weight = 100,
+    stack = true,
+    description = 'A tarnished piece of silver',
+},
+['md_gold'] = {
+    label = 'Gold Nugget',
+    weight = 200,
+    stack = true,
+    description = 'A small gold nugget',
+},
+['md_relic'] = {
+    label = 'Rare Relic',
+    weight = 300,
+    stack = true,
+    description = 'A rare relic of unknown origin',
+},
+
+
 }
