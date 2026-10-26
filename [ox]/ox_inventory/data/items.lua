@@ -1346,16 +1346,8 @@ return {
 		close = true,
 	},
 
-    -- TK MDT
-    	["pol_mdt"] = {
-		label = "Police PNC",
-		weight = 200,
-		stack = true,
-		close = true,
-	},
-
-	["ems_mdt"] = {
-		label = "NHS MDT",
+	["mhs_mdt"] = {
+		label = "MHS MDT",
 		weight = 200,
 		stack = true,
 		close = true,

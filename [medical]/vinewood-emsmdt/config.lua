@@ -9,10 +9,10 @@ Config.Framework = 'auto'
 -- Branding (all shown in the MDT; change freely per server)
 ---------------------------------------------------------------------
 Config.Branding = {
-    name      = 'Ambulance Service',
-    short     = 'EMS',
+    name      = 'Midnight Health Service',
+    short     = 'MHS',
     -- Logo: a file in web/img/ (e.g. 'img/logo.svg') or a full https:// URL. '' shows the short name instead.
-    logo      = 'img/logo.svg',
+    logo      = 'img/mhs.svg',
     -- Battenburg pair + accents
     primary   = '#00843D',  -- service green
     secondary = '#FFD200',  -- hi-vis yellow
@@ -28,7 +28,7 @@ Config.Jobs = {             -- job names allowed to use the MDT
 Config.RequireOnDuty = true
 Config.Command       = 'emsmdt'
 Config.Keybind       = 'F7'   -- false to disable
-Config.Item          = false  -- e.g. 'ems_tablet' to require an item (ox_inventory / framework usable item)
+Config.Item          = 'mhs_mdt'  -- e.g. 'ems_tablet' to require an item (ox_inventory / framework usable item)
 Config.TabletProp    = true
 
 ---------------------------------------------------------------------
@@ -166,9 +166,8 @@ Config.UnitStatuses = {
 }
 
 Config.Hospitals = {
-    { id = 'pillbox', label = 'Pillbox Hill Medical Centre', coords = vec3(298.6, -584.5, 43.3) },
-    { id = 'sandy',   label = 'Sandy Shores Medical Centre',  coords = vec3(1839.3, 3672.9, 34.3) },
-    { id = 'paleto',  label = 'Paleto Bay Medical Centre',    coords = vec3(-247.8, 6331.2, 32.4) },
+    { id = 'burton', label = 'MHS Burton Hospital', coords = vec3(-357.06, -104.78, 37.74) },
+    { id = 'paleto',  label = 'MHS Paleto Bay Medical Centre',    coords = vec3(-258.3, 6320.84, 31.45) },
 }
 
 Config.AuditReasons = {
