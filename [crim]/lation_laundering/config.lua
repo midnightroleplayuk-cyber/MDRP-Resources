@@ -85,7 +85,7 @@ Config.Police = {
     count = 3,
     -- Do you want to allow players with the police job access to the 
     -- Warehouse, ignoring all requirements such as level, key, etc?
-    warehouseAccess = false,
+    warehouseAccess = true,
     -- Do you want to enable police dispatch alerts? Police will only be
     -- Notified upon a player being rejected - so Config.Reject.enable must
     -- Be true to use this feature
@@ -199,7 +199,7 @@ Config.Reject = {
 -- Customize all warehouse related options below
 Config.Warehouse = {
     -- Below is the level the player unlocks the use of the warehouse
-    unlockAt = 5,
+    unlockAt = 0,
     -- By default, when a player reaches the level to unlock use of the
     -- Warehouse then they are no longer able to run contracts like previous
     -- Levels. However, if you wish to allow them the option of both, you
@@ -230,10 +230,10 @@ Config.Warehouse = {
     -- exitAt is the coords the player will be teleported too upon entering
     -- It will also be the same point at which the player will exit the warehouse
     -- And they will then be teleported back to enterAt
-    exitAt = vec4(1138.0872, -3199.1570, -39.6657, 181.2139),
+    --exitAt = vec4(1138.0872, -3199.1570, -39.6657, 181.2139),
     -- Rotate is the amount of degrees to turn the player upon exit and entry
     -- To ensure the player is facing the correct direction when teleported
-    rotate = 180,
+    --rotate = 180,
     -- If you are using a custom location and it is an MLO, be sure to set
     -- isMLO to true, which will disable the usage of enter/exit points, etc
     isMLO = false,
