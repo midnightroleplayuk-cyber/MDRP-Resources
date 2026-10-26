@@ -646,6 +646,16 @@ return {
         image = 'mdt.png',
     }
 },
+['mhs_mdt'] = {
+    label = 'MHS MDT',
+    weight = 400,
+    stack = false,
+    close = true,
+    description = 'Medical Tablet for MHS Staff',
+    client = {
+        image = 'mhs_mdt.png',
+    }
+},
 ['bail_document'] = {
     label = 'Bail Document',
     weight = 200,
@@ -1345,14 +1355,6 @@ return {
 		stack = true,
 		close = true,
 	},
-
-	["mhs_mdt"] = {
-		label = "MHS MDT",
-		weight = 200,
-		stack = true,
-		close = true,
-	},
-
 
     --LG Banking
         ['debitcard'] = {
