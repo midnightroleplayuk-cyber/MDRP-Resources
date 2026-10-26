@@ -26,7 +26,7 @@ Config.Jobs = {             -- job names allowed to use the MDT
     ambulance = true,
 }
 Config.RequireOnDuty = true
-Config.Command       = 'mhsmdt'
+Config.Command       = 'emsmdt'
 Config.Keybind       = 'F7'   -- false to disable
 Config.Item          = 'mhs_mdt'  -- e.g. 'ems_tablet' to require an item (ox_inventory / framework usable item)
 Config.TabletProp    = true
