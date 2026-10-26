@@ -1,0 +1,15 @@
+<!doctype html><html><head><meta charset="utf-8"><style>html,body{margin:0;overflow:hidden;background:#fafafa}canvas{display:block;width:100vw;height:100vh}</style></head><body><canvas id="tape" width="2048" height="128"></canvas><script>
+const canvas=document.getElementById('tape'),ctx=canvas.getContext('2d');
+function draw(data){
+ const valid=v=>typeof v==='string'&&/^#[0-9a-f]{6}$/i.test(v);
+ ctx.fillStyle=valid(data.background)?data.background:'#fafafa';ctx.fillRect(0,0,2048,128);
+ ctx.fillStyle=valid(data.foreground)?data.foreground:'#164c9a';
+ const text=typeof data.text==='string'?data.text.slice(0,256):'';
+ ctx.font='bold 76px Arial, sans-serif';
+ const width=ctx.measureText(text).width;
+ if(width>1660)ctx.font=`bold ${Math.max(20,76*1660/width)}px Arial, sans-serif`;
+ ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(text,1024,67,1660);
+ for(const x of [25,1875]){ctx.beginPath();ctx.moveTo(x,12);ctx.lineTo(x+100,12);ctx.lineTo(x+145,116);ctx.lineTo(x+45,116);ctx.closePath();ctx.fill()}
+}
+window.addEventListener('message',e=>{if(e.data&&typeof e.data==='object')draw(e.data)});draw({text:''});
+</script></body></html>
