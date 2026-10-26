@@ -199,7 +199,7 @@ Config.Reject = {
 -- Customize all warehouse related options below
 Config.Warehouse = {
     -- Below is the level the player unlocks the use of the warehouse
-    unlockAt = 0,
+    unlockAt = 5,
     -- By default, when a player reaches the level to unlock use of the
     -- Warehouse then they are no longer able to run contracts like previous
     -- Levels. However, if you wish to allow them the option of both, you
@@ -223,7 +223,7 @@ Config.Warehouse = {
     account = 'cash',
     -- When a player unlocks use of the warehouse, do you want to create a
     -- Blip showing the location to enter the warehouse?
-    showBlip = false,
+    showBlip = true,
     -- Below is the location at which the players are able to enter the warehouse
     -- This is also the same location the blip will be displayed if enabled
     enterAt = vec4(1142.6859, -986.6674, 45.9059, 96.6889),
@@ -411,13 +411,13 @@ Config.Blips = {
         color = 2,
         scale = 0.8,
         label = 'Money Contract'
-    },
-    warehouse = { -- Blip used for the warehouse location if enabled
-        sprite = 473,
-        color = 17,
-        scale = 0.8,
-        label = 'Warehouse'
     }
+    --warehouse = { -- Blip used for the warehouse location if enabled
+        --sprite = 473,
+        --color = 17,
+        --scale = 0.8,
+        --label = 'Warehouse'
+    --}
 }
 
 -- Manage all animations used here
