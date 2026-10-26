@@ -110,21 +110,21 @@ Strings.Alert = {
     notEnough = { header = '**Sorry**', content = 'You don\'t have enough money on you, please don\'t waste my time.', centered = true, cancel = false },
     rejected = { header = '**No Thanks**', content = 'I\'m not interested in doing business with you.. good luck.', centered = true, cancel = false },
     denyNegotiate = { header = '**Goodbye**', content = 'No thanks, I\'m not interested in your offer..', centered = true, cancel = false },
-    buyKey = { header = '**Confirm**', content = 'Are you sure you want to purchase a warehouse key for $', centered = true, cancel = true }
+    buyKey = { header = '**Confirm**', content = 'Are you sure you want to purchase a warehouse key for £', centered = true, cancel = true }
 }
 
 Strings.Inputs = {
     wash = {
         header = 'Wash Money',
         label = 'Quantity',
-        desc = 'You have: $',
+        desc = 'You have: £',
         desc2 = '. How much are you cleaning?',
         icon = 'hashtag'
     },
     count = {
         header = 'Count Money',
         label = 'Quantity',
-        desc = 'You have: $',
+        desc = 'You have: £',
         desc2 = '. How much are you counting?',
         icon = 'hashtag'
     }
@@ -156,7 +156,7 @@ Strings.Menu = {
         },
         money = {
             title = 'Money Cleaned',
-            desc = 'Total amount of money cleaned: $',
+            desc = 'Total amount of money cleaned: £',
             icon = 'fas fa-money-bill-wave',
             iconColor = ''
         },
@@ -189,8 +189,8 @@ Strings.Menu = {
         title = 'Negotiate',
         accept = {
             title = 'Accept Offer',
-            desc = 'Current offer is $',
-            desc2 = ' *clean* for $',
+            desc = 'Current offer is £',
+            desc2 = ' *clean* for £',
             desc3 = ' *dirty*.',
             icon = 'fas fa-check',
             iconColor = ''
@@ -206,8 +206,8 @@ Strings.Menu = {
         title = 'Final Offer',
         accept = {
             title = 'Accept Offer',
-            desc = 'Final offer is $',
-            desc2 = ' *clean* for $',
+            desc = 'Final offer is £',
+            desc2 = ' *clean* for £',
             desc3 = ' *dirty*.',
             icon = 'fas fa-check',
             iconColor = ''
@@ -255,19 +255,19 @@ Strings.Logs = {
         playerIdent = '\n **Identifier**: ',
         message = '\n **Message**: ',
         levelUp = 'User has just leveled up to level ',
-        contract = 'User has just laundered $',
-        contract2 = ' worth of dirty money into $',
+        contract = 'User has just laundered £',
+        contract2 = ' worth of dirty money into £',
         contract3 = ' clean cash',
-        warehouse = 'User has just laundered $',
-        warehouse2 = ' worth of dirty money into $',
+        warehouse = 'User has just laundered £',
+        warehouse2 = ' worth of dirty money into £',
         warehouse3 = ' uncounted cash',
-        counting = 'User has finished counting money and received $',
-        negotiate = 'User negotiated a contract offer from $',
-        negotiate2 = ' to $',
+        counting = 'User has finished counting money and received £',
+        negotiate = 'User negotiated a contract offer from £',
+        negotiate2 = ' to £',
         negotiate3 = ' dirty money',
         negotiateAccepted = ' - Accepted ✅',
         negotiateDenied = ' - Denied ❌',
         rejected = 'User was rejected during a contract attempt',
-        warehouseKey = 'User purchased a warehouse key for $',
+        warehouseKey = 'User purchased a warehouse key for £',
     }
 }
