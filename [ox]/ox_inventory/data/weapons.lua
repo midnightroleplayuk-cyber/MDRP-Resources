@@ -6,7 +6,12 @@ return {
 			durability = 0.03,
 			ammoname = 'ammo-rifle2',
 		},
-
+        
+		['WEAPON_PRESSURE1'] = {
+    label = 'Pressure Washer',
+    weight = 0,
+        },
+		
 		['WEAPON_ACIDPACKAGE'] = {
             label = 'Newspaper',
             weight = 0,
