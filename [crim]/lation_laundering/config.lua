@@ -16,7 +16,7 @@ Config.Menu = 'ox_lib'
 -- Target system - options are: 'ox_target', 'qb-target', 'qtarget', 'custom' & 'none'
 -- 'custom' needs to be added to client/functions.lua
 -- If 'none' then TextUI is used instead of targeting
-Config.Target = 'none'
+Config.Target = 'ox_target'
 
 -- Set your progress bar system below
 -- Available options are: 'lation_ui', 'ox_lib', 'qbcore' & 'custom'
