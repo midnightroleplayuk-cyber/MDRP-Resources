@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<title>Ambulance MDT</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="tablet" class="hidden">
+  <div class="screen">
+    <div class="battenburg" aria-hidden="true"></div>
+    <aside class="rail">
+      <div class="brand" id="brand"></div>
+      <nav id="nav"></nav>
+      <div class="rail-foot" id="footer"></div>
+    </aside>
+    <header class="top">
+      <h1 id="pageTitle">Dashboard</h1>
+      <div class="unit">
+        <label class="callsign">Callsign <input id="callsign" maxlength="12" spellcheck="false"></label>
+        <select id="status" aria-label="Unit status"></select>
+        <div class="who"><strong id="meName"></strong><span id="meRank"></span></div>
+        <button class="icon-btn" id="closeBtn" aria-label="Close MDT">✕</button>
+      </div>
+    </header>
+    <main id="page"></main>
+  </div>
+</div>
+<div id="modal" class="modal hidden" role="dialog" aria-modal="true"><div class="modal-card" id="modalCard"></div></div>
+<div id="toasts"></div>
+<script src="app.js"></script>
+</body>
+</html>
