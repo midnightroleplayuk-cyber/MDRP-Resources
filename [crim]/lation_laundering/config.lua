@@ -412,6 +412,12 @@ Config.Blips = {
         scale = 0.8,
         label = 'Money Contract'
     },
+    warehouse = { -- Blip used for the warehouse location if enabled
+        sprite = 473,
+        color = 17,
+        scale = 0.8,
+        label = 'Warehouse'
+    },
 }
 
 -- Manage all animations used here
