@@ -25,7 +25,7 @@ return {
     money_type = 'clean_money',
     drugKey = 'weed',
     drugs = {
-        weed = { label = 'Weed', itemName = 'packed_weed', minPrice = 25, maxPrice = 400, exp = 10 },
+        weed = { label = 'Weed', itemName = 'kq_weed_bag_og_kush', minPrice = 25, maxPrice = 400, exp = 10 },
     },
     game = {
         -- After this many successful sales, assign a different corner
