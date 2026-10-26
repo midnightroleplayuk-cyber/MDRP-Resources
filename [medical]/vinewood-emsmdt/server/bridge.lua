@@ -24,12 +24,14 @@ function Bridge.GetMe(src)
         local p = qbPlayer(src); if not p then return nil end
         local pd = p.PlayerData
         local ci = pd.charinfo or {}
-        local grade = pd.job.grade
-        if type(grade) == 'table' then grade = grade.level end
+        local g = pd.job.grade
+        local level = type(g) == 'table' and g.level or g
+        local gname = type(g) == 'table' and g.name or nil
         return {
             cid = pd.citizenid,
             name = ('%s %s'):format(ci.firstname or '', ci.lastname or ''),
-            job = pd.job.name, grade = tonumber(grade) or 0,
+            job = pd.job.name, grade = tonumber(level) or 0,
+            gradeLabel = gname, gradeName = gname,
             onduty = pd.job.onduty ~= false,
         }
     elseif fw == 'esx' then
@@ -37,6 +39,7 @@ function Bridge.GetMe(src)
         return {
             cid = x.identifier, name = x.getName(),
             job = x.job.name, grade = tonumber(x.job.grade) or 0, onduty = true,
+            gradeLabel = x.job.grade_label, gradeName = x.job.grade_name,
         }
     end
     return nil
@@ -152,4 +155,57 @@ function Bridge.MissingItems(names)
     local out = {}
     for _, n in ipairs(names) do if not known[n] then out[#out + 1] = n end end
     return out
+end
+
+---------------------------------------------------------------------
+-- Jobs and grades
+---------------------------------------------------------------------
+local function jobDef(name)
+    if fw == 'qbx' then
+        local ok, j = pcall(function() return exports.qbx_core:GetJob(name) end)
+        return ok and j or nil
+    elseif fw == 'qb' then
+        return QBCore.Shared.Jobs and QBCore.Shared.Jobs[name]
+    end
+end
+
+-- Is this job marked as EMS by the framework (QBCore / Qbox type = 'ems')?
+function Bridge.IsEmsJob(name)
+    local j = name and jobDef(name)
+    return j and j.type == 'ems' or false
+end
+
+-- All EMS-type job names known to the framework
+function Bridge.EmsJobs()
+    local out = {}
+    local all
+    if fw == 'qbx' then
+        local ok, jobs = pcall(function() return exports.qbx_core:GetJobs() end)
+        all = ok and jobs or nil
+    elseif fw == 'qb' then
+        all = QBCore.Shared.Jobs
+    end
+    for name, j in pairs(all or {}) do if j.type == 'ems' then out[#out + 1] = name end end
+    table.sort(out)
+    return out
+end
+
+-- { { level, name, label } ... } sorted by level
+function Bridge.GetJobGrades(name)
+    local out = {}
+    if fw == 'qbx' or fw == 'qb' then
+        local j = jobDef(name)
+        for lvl, g in pairs(j and j.grades or {}) do
+            out[#out + 1] = { level = tonumber(lvl) or 0, name = g.name, label = g.name }
+        end
+    elseif fw == 'esx' then
+        local rows = MySQL.query.await('SELECT grade, name, label FROM job_grades WHERE job_name = ? ORDER BY grade', { name }) or {}
+        for _, r in ipairs(rows) do out[#out + 1] = { level = tonumber(r.grade) or 0, name = r.name, label = r.label } end
+    end
+    table.sort(out, function(a, b) return a.level < b.level end)
+    return out
+end
+
+function Bridge.GradeLabel(job, level)
+    for _, g in ipairs(Bridge.GetJobGrades(job)) do if g.level == tonumber(level) then return g.label end end
 end
