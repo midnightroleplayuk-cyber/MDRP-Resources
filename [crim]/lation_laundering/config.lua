@@ -339,7 +339,7 @@ Config.Levels = {
         rejectChance = 20
     },
     [2] = { -- Level 2
-        dirtyMoney = 'markedbills',
+        dirtyMoney = 'black_money',
         taxRate = 20,
         clean = { min = 750, max = 1500 },
         addXP = 500,
@@ -348,7 +348,7 @@ Config.Levels = {
         rejectChance = 15
     },
     [3] = { -- Level 3
-        dirtyMoney = 'markedbills',
+        dirtyMoney = 'black_money',
         taxRate = 15,
         clean = { min = 1000, max = 2000 },
         addXP = 250,
@@ -357,7 +357,7 @@ Config.Levels = {
         rejectChance = 10
     },
     [4] = { -- Level 4
-        dirtyMoney = 'markedbills',
+        dirtyMoney = 'black_money',
         taxRate = 10,
         clean = { min = 1500, max = 3000 },
         addXP = 125,
@@ -366,7 +366,7 @@ Config.Levels = {
         rejectChance = 5
     },
     [5] = { -- Level 5
-        dirtyMoney = 'markedbills',
+        dirtyMoney = 'black_money',
         taxRate = 5,
         -- (To change warehouse washing limits go to Config.Warehouse.limits.washing)
         clean = { min = 2000, max = 10000 },
