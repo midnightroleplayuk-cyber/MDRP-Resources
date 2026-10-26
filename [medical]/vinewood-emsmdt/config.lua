@@ -55,12 +55,12 @@ Config.Ranks = {
     [12] = { label = 'HEMS Team Lead',                 formulary = 'full',  prescribe = true,  transfuse = true,  hems = true,  supervisor = true,  trainer = true },
     [13] = { label = 'Ambulance Team Lead',            formulary = 'full',  prescribe = true,  transfuse = true,  hems = false, supervisor = true,  trainer = true },
     [14] = { label = 'Training & Development',         formulary = 'full',  prescribe = true,  transfuse = true,  hems = true,  supervisor = true,  trainer = true },
-    [15] = { label = 'Hospital Operations Manager',   formulary = 'full',  prescribe = true,  transfuse = true,  hems = false, supervisor = true,  trainer = true },
-    [16] = { label = 'Ambulance Operations Manager',  formulary = 'full',  prescribe = true,  transfuse = true,  hems = true,  supervisor = true,  trainer = true },
-    [17] = { label = 'Human Resources',                formulary = 'basic', prescribe = false, transfuse = false, hems = false, supervisor = true },
+    [15] = { label = 'Hospital Operations Manager',    formulary = 'full',  prescribe = true,  transfuse = true,  hems = false, supervisor = true,  trainer = true },
+    [16] = { label = 'Ambulance Operations Manager',   formulary = 'full',  prescribe = true,  transfuse = true,  hems = true,  supervisor = true,  trainer = true },
+    [17] = { label = 'Human Resources',                formulary = 'basic', prescribe = false, transfuse = false, hems = false, supervisor = true,  trainer = true },
     [18] = { label = 'Director of Operations',         formulary = 'full',  prescribe = true,  transfuse = true,  hems = true,  supervisor = true,  trainer = true },
-    [19] = { label = 'Deputy Chief Medicial Officer', formulary = 'full',  prescribe = true,  transfuse = true,  hems = true,  supervisor = true,  trainer = true },
-    [20] = { label = 'Chief Medical Officer',         formulary = 'full',  prescribe = true,  transfuse = true,  hems = true,  supervisor = true,  trainer = true },
+    [19] = { label = 'Deputy Chief Medicial Officer',  formulary = 'full',  prescribe = true,  transfuse = true,  hems = true,  supervisor = true,  trainer = true },
+    [20] = { label = 'Chief Medical Officer',          formulary = 'full',  prescribe = true,  transfuse = true,  hems = true,  supervisor = true,  trainer = true },
 }
 
 -- trainer = can sign off competencies and record courses (supervisors can too)
