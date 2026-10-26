@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scale - Weight</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            width: 512px;
+            height: 512px;
+            background: #1a1a1a;
+            font-family: 'Arial Black', Arial, sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .display {
+            width: 90%;
+            height: 85%;
+            background: #111;
+            border: 3px solid #333;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .label {
+            font-size: 32px;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            margin-bottom: 30px;
+        }
+
+        .value-container {
+            display: flex;
+            align-items: baseline;
+            justify-content: center;
+        }
+
+        .value {
+            font-size: 140px;
+            font-weight: bold;
+            color: #ff3333;
+            line-height: 1;
+        }
+
+        .unit {
+            font-size: 50px;
+            color: #ff3333;
+            margin-left: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="display">
+        <div class="label">WEIGHT</div>
+        <div class="value-container">
+            <div id="weight" class="value">0</div>
+            <div class="unit">KG</div>
+        </div>
+    </div>
+
+    <script>
+        let currentWeight = 0;
+        let targetWeight = 0;
+        let animationId = null;
+        let useDecimals = false;
+        const kgPerRock = 25;
+
+        function formatWeight(val) {
+            if (useDecimals) {
+                return (Math.round(val * 10) / 10).toFixed(1);
+            }
+            return Math.round(val).toString();
+        }
+
+        // Spring/bounce easing — overshoots target then settles (like a real scale)
+        // damping: how quickly it settles (higher = less bounce)
+        // frequency: oscillation speed
+        function springEase(t, damping, frequency) {
+            if (t >= 1) return 1;
+            return 1 - Math.exp(-damping * t) * Math.cos(frequency * t * Math.PI);
+        }
+
+        function animateValue(start, end, duration) {
+            if (animationId) {
+                cancelAnimationFrame(animationId);
+            }
+
+            const startTime = performance.now();
+            const diff = end - start;
+            const isIncrease = diff > 0;
+
+            // Smooth settle without overshoot — high damping kills the bounce
+            const damping = isIncrease ? 8.0 : 9.0;
+            const frequency = isIncrease ? 1.0 : 1.0;
+
+            function update(currentTime) {
+                const elapsed = currentTime - startTime;
+                const t = Math.min(elapsed / duration, 1);
+
+                const eased = springEase(t, damping, frequency);
+                currentWeight = start + diff * eased;
+
+                // Clamp: never show negative weight
+                if (currentWeight < 0) currentWeight = 0;
+
+                document.getElementById('weight').textContent = formatWeight(currentWeight);
+
+                if (t < 1) {
+                    animationId = requestAnimationFrame(update);
+                } else {
+                    currentWeight = end;
+                    document.getElementById('weight').textContent = formatWeight(end);
+                    animationId = null;
+                }
+            }
+
+            animationId = requestAnimationFrame(update);
+        }
+
+        window.addEventListener('message', function(event) {
+            const data = event.data;
+            if (data.type === 'updateScale') {
+                useDecimals = !!data.directWeight;
+
+                const newWeight = data.directWeight
+                    ? data.rockCount
+                    : data.rockCount * (data.kgPerRock || kgPerRock);
+
+                if (newWeight !== targetWeight) {
+                    const diff = Math.abs(newWeight - targetWeight);
+                    targetWeight = newWeight;
+
+                    // Duration scales with weight change: small change = quick, big = slower
+                    // Min 800ms, max 2500ms
+                    const baseDuration = 1200;
+                    const scaleFactor = Math.min(diff / 100, 1);
+                    const duration = baseDuration + scaleFactor * 1300;
+
+                    animateValue(currentWeight, targetWeight, duration);
+                }
+            }
+        });
+    </script>
+</body>
+</html>

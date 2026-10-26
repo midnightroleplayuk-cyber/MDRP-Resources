@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scale - Payment</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            width: 512px;
+            height: 512px;
+            background: #1a1a1a;
+            font-family: 'Arial Black', Arial, sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .display {
+            width: 90%;
+            height: 85%;
+            background: #111;
+            border: 3px solid #333;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .label {
+            font-size: 32px;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            margin-bottom: 30px;
+        }
+
+        .value-container {
+            display: flex;
+            align-items: baseline;
+            justify-content: center;
+        }
+
+        .currency {
+            font-size: 80px;
+            color: #33cc33;
+            margin-right: 5px;
+        }
+
+        .value {
+            font-size: 140px;
+            font-weight: bold;
+            color: #33cc33;
+            line-height: 1;
+        }
+    </style>
+</head>
+<body>
+    <div class="display">
+        <div class="label">PAYMENT</div>
+        <div class="value-container">
+            <div class="currency">$</div>
+            <div id="payment" class="value">0</div>
+        </div>
+    </div>
+
+    <script>
+        let currentPayment = 0;
+        let targetPayment = 0;
+        let animationId = null;
+        const kgPerRock = 25;
+
+        // Spring/bounce easing — overshoots target then settles (like a real scale)
+        // Sub-unit produce prices (a $0.40 fruit) must not collapse to 0.
+        // Whole totals stay clean integers; fractional ones show to the cent.
+        let moneyDecimals = false;
+        function formatMoney(val) {
+            return moneyDecimals ? val.toFixed(2) : Math.round(val).toString();
+        }
+
+        function springEase(t, damping, frequency) {
+            if (t >= 1) return 1;
+            return 1 - Math.exp(-damping * t) * Math.cos(frequency * t * Math.PI);
+        }
+
+        function animateValue(start, end, duration) {
+            if (animationId) {
+                cancelAnimationFrame(animationId);
+            }
+
+            const startTime = performance.now();
+            const diff = end - start;
+            const isIncrease = diff > 0;
+
+            // Smooth settle without overshoot — high damping kills the bounce
+            const damping = isIncrease ? 8.0 : 9.0;
+            const frequency = isIncrease ? 1.0 : 1.0;
+
+            function update(currentTime) {
+                const elapsed = currentTime - startTime;
+                const t = Math.min(elapsed / duration, 1);
+
+                const eased = springEase(t, damping, frequency);
+                currentPayment = start + diff * eased;
+
+                // Clamp: never show negative payment
+                if (currentPayment < 0) currentPayment = 0;
+
+                document.getElementById('payment').textContent = formatMoney(currentPayment);
+
+                if (t < 1) {
+                    animationId = requestAnimationFrame(update);
+                } else {
+                    currentPayment = end;
+                    document.getElementById('payment').textContent = formatMoney(end);
+                    animationId = null;
+                }
+            }
+
+            animationId = requestAnimationFrame(update);
+        }
+
+        window.addEventListener('message', function(event) {
+            const data = event.data;
+            if (data.type === 'updateScale') {
+                const weight = data.directWeight
+                    ? data.rockCount
+                    : data.rockCount * (data.kgPerRock || kgPerRock);
+
+                const pricePerKg = data.directWeight
+                    ? (data.payPerRock || 15)
+                    : (data.payPerRock || 100) / (data.kgPerRock || kgPerRock);
+
+                // Keep the fraction: rounding here made any total under $0.50
+                // display as $0. Round to the cent instead and let formatMoney
+                // decide how to render it.
+                const rawPayment = weight * pricePerKg;
+                const newPayment = Math.round(rawPayment * 100) / 100;
+                moneyDecimals = Math.round(newPayment) !== newPayment;
+
+                if (newPayment !== targetPayment) {
+                    const diff = Math.abs(newPayment - targetPayment);
+                    targetPayment = newPayment;
+
+                    // Duration scales with payment change, synced with weight display
+                    const baseDuration = 1200;
+                    const scaleFactor = Math.min(diff / 500, 1);
+                    const duration = baseDuration + scaleFactor * 1300;
+
+                    animateValue(currentPayment, targetPayment, duration);
+                }
+            }
+        });
+    </script>
+</body>
+</html>

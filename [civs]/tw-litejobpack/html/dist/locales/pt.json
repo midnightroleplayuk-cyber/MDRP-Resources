@@ -1,0 +1,3604 @@
+{
+  "blips": {
+    "category": "Empregos",
+    "jobCenter": "Central de Trabalhos",
+    "miner": "Trabalho de Mineração",
+    "lumberjack": "Trabalho de Lenhador",
+    "scrapyard": "Ferro-Velho",
+    "hunting": "Caça",
+    "farmer": "Fazenda de Vegetais",
+    "fruitpicker": "Pomar",
+    "cleaner": "Limpeza Urbana",
+    "powerwash": "Lavagem a Pressão",
+    "windowscleaner": "Limpeza de Janelas",
+    "cardetailer": "Estética Automotiva",
+    "newspaper": "Entrega de Jornais",
+    "cleanup": "Coleta de Lixo",
+    "trucker": "Pátio de Caminhões",
+    "taxi": "Depósito de Táxi",
+    "dogwalking": "Passeio de Cachorro",
+    "powerlines": "Trabalho na Rede Elétrica",
+    "delivery": "Entrega de Pacotes",
+    "warehouse": "Armazém",
+    "landscaping": "Trabalho de Jardinagem",
+    "fishing": "Pesca",
+    "diving": "Mergulho",
+    "forklift": "Empilhadeira",
+    "tiretechnician": "Trabalho de Borracheiro",
+    "treasurehunter": "Caçador de Tesouros",
+    "mechanic": "Mecânico"
+  },
+  "_meta": {
+    "name": "Português",
+    "flag": "🇧🇷"
+  },
+  "ui": {
+    "blipCategoryName": "Empregos",
+    "jobDetails": "Detalhes do Trabalho",
+    "owner": "Líder",
+    "member": "Membro",
+    "jobStart": "Iniciar Trabalho",
+    "leaderboard": "Ranking",
+    "teamProgress": "Progresso da Equipe",
+    "top20": "Top 20",
+    "playerList": "Lista de Jogadores",
+    "clickToInvite": "Clique para Convidar",
+    "emptySlot": "Vaga Livre",
+    "level": "Nível",
+    "lv": "Nv.",
+    "hours": "Horas",
+    "minRequiredHours": "Mínimo necessário",
+    "achievements": "Conquistas",
+    "settings": "Configurações",
+    "close": "Fechar",
+    "cancel": "Cancelar",
+    "confirm": "Confirmar",
+    "search": "Buscar",
+    "selected": "Selecionado",
+    "locationMarked": "Local marcado no mapa",
+    "jobAreaMarked": "Área do trabalho marcada no mapa",
+    "noLocationAvailable": "Nenhum local disponível para este trabalho",
+    "routeLevelRequired": "Nível {level} necessário para esta rota!",
+    "spawnBlocked": "A área de spawn do veículo está bloqueada! Libere a área e tente novamente.",
+    "vehicleSpawnFailed": "Não foi possível gerar o veículo!",
+    "viewStatistics": "Ver Estatísticas",
+    "history": "Histórico",
+    "earnings": "Ganhos",
+    "totalEarn": "Total Ganho",
+    "totalExp": "Total de EXP",
+    "markJob": "Marcar o Trabalho",
+    "registerJob": "Registrar-se no Trabalho",
+    "usedItems": "Itens Usados",
+    "online": "Online",
+    "offline": "Offline",
+    "loading": "Carregando...",
+    "back": "Voltar",
+    "set": "Definir",
+    "reset": "Resetar",
+    "approve": "Aprovar",
+    "leave": "Sair",
+    "done": "Pronto",
+    "prev": "Anterior",
+    "next": "Próximo",
+    "xp": "XP",
+    "step": "Etapa",
+    "on": "Ligado",
+    "off": "Desligado",
+    "save": "Salvar",
+    "vehicle": "Veículo",
+    "coordinates": "Coordenadas",
+    "active": "Ativo",
+    "disabled": "Desativado",
+    "place": "Local",
+    "add": "Adicionar"
+  },
+  "settings": {
+    "title": "Configurações do Trabalho",
+    "subtitle": "Escolher Configurações",
+    "jobSound": "Som do Trabalho",
+    "language": "Idioma",
+    "uiPosition": "Mover Interface",
+    "uiMoveActive": "Arraste os painéis para reposicionar",
+    "uiMoveSave": "Salvar",
+    "uiMoveCancel": "Cancelar",
+    "uiMoveApplyDefault": "Definir padrão",
+    "uiMoveResetDefault": "Redefinir",
+    "progressPanel": "Progresso"
+  },
+  "progress": {
+    "title": "Progresso",
+    "subtitle": "Habilidades, Missões e Melhorias",
+    "skillPoints": "SP",
+    "skills": "Habilidades",
+    "quests": "Missões",
+    "upgrades": "Melhorias",
+    "max": "MÁX",
+    "upgrade": "Melhorar",
+    "upgradeItems": "Itens de Melhoria",
+    "searchJobs": "Buscar trabalhos...",
+    "noResults": "Nenhum resultado encontrado",
+    "noQuests": "Nenhuma missão disponível",
+    "all": "Todos",
+    "daily": "Diária",
+    "weekly": "Semanal"
+  },
+  "upgradeModal": {
+    "title": "Melhorar Item",
+    "subtitle": "Confirme sua melhoria",
+    "currentLevel": "Nível Atual",
+    "nextLevel": "Próximo Nível",
+    "requirements": "Requisitos",
+    "requiredLevel": "Nível Necessário",
+    "money": "Dinheiro",
+    "upgrade": "Melhorar"
+  },
+  "downgradeModal": {
+    "title": "Alterar Nível",
+    "subtitle": "Confirmar alteração de nível",
+    "returnToPrevious": "Voltar ao nível anterior",
+    "noLevelLoss": "Você não perderá o progresso do nível atual"
+  },
+  "finishJob": {
+    "jobComplete": "Trabalho Concluído!",
+    "summary": "Aqui está o seu resumo",
+    "continueQuestion": "Continuar?",
+    "ownerWantsContinue": "{name} quer continuar",
+    "finishQuestion": "Finalizar Trabalho?",
+    "finishSubtitle": "Escolha o que fazer a seguir",
+    "itemsCompleted": "Itens Concluídos",
+    "totalEarnings": "Ganhos Totais",
+    "progressSaved": "Seu progresso será salvo",
+    "waitingFor": "Aguardando: {players}",
+    "waitingOwner": "Aguardando {name} decidir...",
+    "autoApprove": "Aprovação automática em {time}s...",
+    "completed": "Trabalho concluído!",
+    "continue": "Continuar",
+    "endJob": "Encerrar Trabalho",
+    "leaveJob": "Sair do Trabalho"
+  },
+  "activeJob": {
+    "endJobTitle": "Encerrar Trabalho?",
+    "endJobDesc": "Isso encerrará o trabalho para você. Os outros jogadores poderão continuar.",
+    "leaveJobTitle": "Sair do Trabalho?",
+    "leaveJobDesc": "Você sairá do trabalho atual.",
+    "remainingCanContinue": "Os jogadores restantes podem continuar sem você",
+    "progressSaved": "Seu progresso será salvo",
+    "ownerDisconnected": "Líder Desconectou",
+    "ownerLeft": "Líder Saiu",
+    "ownerHasDisconnected": "{name} desconectou",
+    "ownerHasLeft": "{name} saiu do trabalho",
+    "continueJobQuestion": "Deseja continuar o trabalho?",
+    "autoContinue": "Continuação automática em {time}s..."
+  },
+  "illegal": {
+    "stolenCargo": "Carga Roubada Encontrada!",
+    "highRisk": "Entrega de Alto Risco",
+    "teamVote": "Votação da Equipe",
+    "description": "Você descobriu mercadoria roubada. Entregue para receber o dobro, mas a polícia pode ser alertada.",
+    "reward": "Recompensa",
+    "risk": "Risco",
+    "x2Money": "x2 Dinheiro",
+    "policeAlertStatic": "90% Alerta Policial",
+    "policeAlert": "{chance}% Alerta Policial",
+    "suspiciousPassenger": "Passageiro Suspeito",
+    "suspiciousPassengerDesc": "Este passageiro quer ir a um lugar... não oficial. Pagamento maior, mas há risco de atenção policial.",
+    "stolenCargoDesc": "Você descobriu mercadoria roubada no trailer. Entregue a um comprador do mercado negro pelo dobro do pagamento, mas cuidado — há grande chance de perseguição policial!",
+    "teamVotes": "Votos da equipe:",
+    "accept": "Aceitar",
+    "reject": "Recusar",
+    "policeWarning": "A polícia pode ser acionada se você aceitar",
+    "leaderDecision": "O líder tomará a decisão final",
+    "waitingLeader": "Aguardando decisão do líder...",
+    "stayLegal": "Ficar na Legalidade",
+    "acceptRisk": "Aceitar o Risco",
+    "voteStayLegal": "Voto: Ficar na Legalidade",
+    "voteAcceptRisk": "Voto: Aceitar o Risco",
+    "voteSubmitted": "Voto Enviado"
+  },
+  "lobby": {
+    "noLongerExists": "O lobby não existe mais.",
+    "playerReconnected": "{name} reconectou ao lobby.",
+    "playerDisconnected": "{name} desconectou do lobby.",
+    "ownerDisconnectedNewOwner": "Líder desconectou. {name} é o novo líder.",
+    "closedNoReplacement": "Lobby fechado — nenhum substituto elegível encontrado.",
+    "full": "Lobby cheio (máx. {count} jogadores)",
+    "notOwner": "Apenas o líder do lobby pode fazer isso",
+    "kicked": "Você foi expulso do lobby",
+    "alreadyInLobby": "Você já está em um lobby",
+    "noLobbyFound": "Nenhum lobby encontrado",
+    "playerLeft": "{name} saiu do lobby"
+  },
+  "invite": {
+    "sent": "Convite enviado para {name}",
+    "received": "{name} convidou você para o lobby - [Y] Aceitar | [N] Recusar",
+    "accepted": "{name} entrou no lobby",
+    "declined": "{name} recusou o convite",
+    "expired": "Convite expirado",
+    "targetAlreadyInLobby": "Este jogador já está em um lobby!",
+    "tooFar": "Jogador muito longe!"
+  },
+  "job": {
+    "started": "Trabalho iniciado!",
+    "completed": "Trabalho concluído!",
+    "failed": "Trabalho falhou!",
+    "resetInProgress": "Reinício do trabalho em andamento, aguarde...",
+    "cantEnterVehicle": "Você não pode entrar em um veículo enquanto carrega algo!"
+  },
+  "xp": {
+    "gained": "+{amount} XP",
+    "levelUp": "Subiu de Nível! Agora você é nível {level}",
+    "maxLevel": "Você atingiu o nível máximo!"
+  },
+  "contract": {
+    "reward": "Recompensa",
+    "risk": "Risco",
+    "teamVotes": "Votos da equipe:",
+    "waitingLeader": "Aguardando decisão do líder...",
+    "voteStayLegal": "Voto: Ficar na Legalidade",
+    "voteAcceptRisk": "Voto: Aceitar o Risco",
+    "done": "FEITO"
+  },
+  "hud": {
+    "truckFill": "Carga do Caminhão",
+    "taximeter": "TAXÍMETRO",
+    "fare": "TARIFA",
+    "bonus": "BÔNUS",
+    "distance": "DIST",
+    "trailerHealth": "Estado do Trailer",
+    "pressure": "PRESSÃO",
+    "coopLeaderboard": "Ranking",
+    "illegalRide": "CORRIDA ILEGAL",
+    "normalRide": "CORRIDA NORMAL",
+    "goodCondition": "Bom Estado",
+    "needsRepair": "Precisa de Reparo",
+    "criticalDamage": "Dano Crítico",
+    "hold": "Segure",
+    "toClose": "para fechar",
+    "forDetails": "para detalhes"
+  },
+  "preview": {
+    "step": "Etapa {current}/{total}"
+  },
+  "minigame": {
+    "junctionBox": "CAIXA DE JUNÇÃO",
+    "lsPower": "LS-POWER",
+    "circuitHint": "CLIQUE PARA GIRAR — CONECTE A FONTE À CARGA",
+    "fish": "Peixe",
+    "catch": "Pescar",
+    "space": "SPACE"
+  },
+  "admin": {
+    "title": "Painel Admin",
+    "subtitle": "Análises do JobPack",
+    "dashboard": "Painel",
+    "players": "Jogadores",
+    "market": "Mercado",
+    "activeLobbies": "Lobbies Ativos",
+    "economy": "Economia",
+    "todaysPayouts": "Pagamentos de Hoje",
+    "thisWeek": "Esta Semana",
+    "allTime": "Todos os Tempos",
+    "jobsToday": "Trabalhos Hoje",
+    "onlinePlayers": "Jogadores Online",
+    "perJobEarnings": "Ganhos por Trabalho (Últimos 7 Dias)",
+    "job": "Trabalho",
+    "totalPayout": "Pagamento Total",
+    "completions": "Conclusões",
+    "uniquePlayers": "Jogadores Únicos",
+    "name": "Nome",
+    "identifier": "Identificador",
+    "status": "Status",
+    "perkPoints": "Pontos de Habilidade:",
+    "jobLevels": "Níveis de Trabalho",
+    "recentHistory": "Histórico Recente",
+    "region": "Região",
+    "earned": "Ganho",
+    "date": "Data",
+    "dynamicMarket": "Preços Dinâmicos do Mercado",
+    "resetAllToBase": "Resetar Tudo para Base",
+    "current": "Atual",
+    "base": "Base",
+    "minMax": "Mín / Máx",
+    "health": "Saúde",
+    "setPrice": "Definir Preço",
+    "action": "Ação",
+    "paymentRates": "Taxas de Pagamento",
+    "qualityTiers": "Níveis de Qualidade",
+    "chance": "Chance %",
+    "multiplier": "Multiplicador",
+    "levelBonuses": "Bônus por Nível",
+    "payBonusPerLevel": "Bônus de Pagamento por Nível",
+    "qualityChancePerLevel": "Chance de Qualidade por Nível",
+    "estimatedEarnings": "Ganhos Estimados (10 itens)",
+    "selectJobToEdit": "Selecione um trabalho para editar",
+    "noJobsFound": "Nenhum trabalho encontrado",
+    "noJobData": "Sem dados de trabalho disponíveis",
+    "noHistory": "Sem histórico",
+    "noMarketData": "Sem dados de mercado (mercado dinâmico pode estar desativado)",
+    "noActiveLobbies": "Nenhum lobby ativo",
+    "searchPlaceholder": "Buscar por nome ou identificador...",
+    "searchPlayer": "Pesquise um jogador acima",
+    "xp": "XP",
+    "owner": "Líder",
+    "state": "Estado",
+    "count": "Quantidade",
+    "loading": "Carregando..."
+  },
+  "editor": {
+    "title": "Editor de Trabalho",
+    "npc": "NPC",
+    "npcModel": "Modelo do NPC",
+    "scenarioAnimation": "Cenário / Animação",
+    "npcPosition": "Posição do NPC",
+    "npcInteraction": "Interação do NPC",
+    "blip": "Blip",
+    "vehicleModel": "Modelo do Veículo",
+    "plate": "Placa",
+    "primaryColor": "Cor Primária",
+    "secondaryColor": "Cor Secundária",
+    "spawnLocations": "Locais de Spawn",
+    "clickToChange": "Clique para alterar",
+    "clickToBrowse": "Clique para ver cenários",
+    "typeManually": "Ou digite manualmente...",
+    "sprite": "Sprite",
+    "color": "Cor",
+    "scale": "Escala",
+    "label": "Rótulo",
+    "enabled": "Ativado",
+    "distance": "Distância",
+    "keyCode": "Tecla",
+    "interactionText": "Texto de Interação",
+    "searchBlip": "Buscar blip...",
+    "searchCoords": "Buscar coordenadas...",
+    "noCoordFields": "Nenhum campo de coordenadas encontrado para este trabalho.",
+    "noVehicleConfig": "Este trabalho não tem configuração de veículo.",
+    "selectJob": "Selecione um trabalho para editar",
+    "spawnNum": "Spawn",
+    "unsavedChanges": "Alterações não salvas",
+    "goTo": "Ir Para",
+    "setFromCamera": "Definir pela Câmera",
+    "copy": "Copiar",
+    "go": "Ir",
+    "cam": "Câm",
+    "preview": "Prévia",
+    "dup": "Dup",
+    "selectPedModel": "Selecionar Modelo de Ped",
+    "selectVehicleModel": "Selecionar Modelo de Veículo",
+    "selectScenario": "Selecionar Cenário",
+    "searchPed": "Buscar modelo de ped...",
+    "searchVehicle": "Buscar modelo de veículo...",
+    "searchScenario": "Buscar cenário...",
+    "noAnimations": "Nenhuma animação encontrada",
+    "camera": "Câmera",
+    "browse": "Navegar",
+    "devModeRequired": "O Editor de Trabalhos requer que o DevMode esteja ativado.",
+    "devModeHint": "Defina Config.DevMode = true em shared/config_settings.lua e reinicie o recurso."
+  },
+  "tutorial": {
+    "title": "Tutorial",
+    "skip": "Pular",
+    "next": "Próximo",
+    "miner": {
+      "step1": {
+        "title": "Pegue Seu Veículo",
+        "desc": "Vá até a área marcada para pegar seu veículo de mineração."
+      },
+      "step2": {
+        "title": "Pegue Sua Ferramenta",
+        "desc": "Abra o porta-malas do veículo e pegue uma picareta."
+      },
+      "step3": {
+        "title": "Comece a Minerar",
+        "desc": "Vá até a área de mineração e quebre pedras para coletar minérios."
+      },
+      "step4": {
+        "title": "Processe os Minérios",
+        "desc": "Leve os minérios coletados à balança de processamento para receber o pagamento."
+      }
+    },
+    "lumberjack": {
+      "step1": {
+        "title": "Pegue Seu Veículo",
+        "desc": "Vá até a área marcada para pegar seu veículo de madeira."
+      },
+      "step2": {
+        "title": "Pegue Seu Machado",
+        "desc": "Abra o porta-malas do veículo e pegue um machado."
+      },
+      "step3": {
+        "title": "Corte Árvores",
+        "desc": "Vá até a área florestal e comece a cortar árvores."
+      },
+      "step4": {
+        "title": "Processe as Toras",
+        "desc": "Leve as toras coletadas à balança de processamento para receber o pagamento."
+      }
+    },
+    "farmer": {
+      "step1": {
+        "title": "Pegue Seu Veículo",
+        "desc": "Vá até a área marcada para pegar seu veículo agrícola."
+      },
+      "step2": {
+        "title": "Pegue Sua Ferramenta",
+        "desc": "Abra o porta-malas do veículo e pegue uma espátula."
+      },
+      "step3": {
+        "title": "Colha as Plantações",
+        "desc": "Vá até a área da fazenda e colha as plantações."
+      },
+      "step4": {
+        "title": "Processe a Colheita",
+        "desc": "Leve as colheitas à balança de processamento para receber o pagamento."
+      }
+    },
+    "fishing": {
+      "step1": {
+        "title": "Encontre um Local",
+        "desc": "Vá até um ponto de pesca perto da água."
+      },
+      "step2": {
+        "title": "Lance Sua Vara",
+        "desc": "Use sua vara de pescar para começar a pescar."
+      },
+      "step3": {
+        "title": "Venda Sua Pesca",
+        "desc": "Leve seus peixes ao ponto de processamento para vender."
+      }
+    },
+    "generic": {
+      "step1": {
+        "title": "Prepare-se",
+        "desc": "Pegue seu veículo e vá até a área de trabalho."
+      },
+      "step2": {
+        "title": "Faça o Trabalho",
+        "desc": "Complete as tarefas na área designada."
+      },
+      "step3": {
+        "title": "Finalize",
+        "desc": "Volte ao NPC ou ponto de processamento para concluir o trabalho."
+      }
+    }
+  },
+  "stats": {
+    "title": "Estatísticas",
+    "subtitle": "Visão geral da sua carreira",
+    "overview": "Visão Geral",
+    "perJob": "Por Trabalho",
+    "history": "Histórico",
+    "totalEarnings": "Ganhos Totais",
+    "totalXP": "XP Total",
+    "totalSessions": "Total de Sessões",
+    "totalTime": "Tempo Total",
+    "bestDay": "Melhor Dia",
+    "favoriteJob": "Trabalho Favorito",
+    "avgEarnings": "Ganho Médio",
+    "perSession": "por sessão",
+    "sessions": "sessões",
+    "last7Days": "Últimos 7 Dias",
+    "job": "Trabalho",
+    "level": "Nível",
+    "earnings": "Ganhos",
+    "time": "Tempo",
+    "noData": "Sem dados disponíveis"
+  },
+  "drawtext": {
+    "jobCenter": "Central de Trabalhos"
+  },
+  "notify": {
+    "jobAtCapacity": "Este trabalho está cheio no momento ({current}/{max} equipes ativas). Tente outro trabalho ou aguarde.",
+    "cannotStartJob": "Não é possível iniciar este trabalho",
+    "failedStartJob": "Falha ao iniciar o trabalho",
+    "unknownError": "Erro desconhecido",
+    "toolEquipped": "Ferramenta equipada: {tool}",
+    "toolReturnedToTruck": "{tool} devolvida ao caminhão.",
+    "deliveringStatus": "Entregando...",
+    "jobRestarting": "Sistema de trabalho reiniciando...",
+    "failedOpenMenu": "Falha ao abrir o menu de trabalho",
+    "noPermission": "Sem permissão de administrador",
+    "mustSelectJob": "Você deve selecionar um trabalho na Central de Trabalhos primeiro",
+    "achievementUnlocked": "Conquista Desbloqueada: {label}",
+    "globalEventStarted": "Novo Evento Global Iniciado: {title}",
+    "alreadyCarrying": "Você já está carregando algo!",
+    "notCarrying": "Você não está carregando nada!",
+    "needToolFirst": "Pegue a ferramenta primeiro!",
+    "anotherPlayerBreaking": "Outro jogador já está quebrando isso!",
+    "putToolOnBelt": "Coloque a ferramenta no cinto primeiro!",
+    "processingWait": "Processamento em andamento, aguarde!",
+    "noBoxAvailable": "Nenhuma caixa disponível!",
+    "alreadyHaveBox": "Já tem uma caixa!",
+    "failedTakeBox": "Falha ao pegar a caixa!",
+    "noLoadedBoxes": "Nenhuma caixa carregada!",
+    "notCarryingBox": "Não está carregando uma caixa!",
+    "failedLoadBox": "Falha ao carregar a caixa!",
+    "noRoomInTrunk": "Sem espaço no porta-malas, caixa descartada.",
+    "emptyBoxReturned": "Caixa vazia devolvida.",
+    "workClothesEquipped": "Roupa de trabalho equipada!",
+    "normalClothes": "Voltou para as roupas normais",
+    "clothesRequired": "Você deve vestir a roupa de trabalho primeiro!",
+    "failedPlaceBox": "Falha ao colocar a caixa!",
+    "takeBoxFirst": "Pegue uma caixa primeiro!",
+    "boxFull": "Caixa cheia! Carregue no caminhão.",
+    "placeBoxFirst": "Coloque a caixa no chão primeiro!",
+    "objectBroken": "Objeto quebrado! Pegue o item.",
+    "oreBroken": "Minério de {ore} encontrado! Pegue-o.",
+    "noItemsToSell": "Sem itens para vender!",
+    "cantRepairPanel": "Não é possível reparar este painel",
+    "cantRepairPole": "Não é possível reparar este poste",
+    "nothingInTrunk": "Nada no porta-malas!",
+    "alreadyCarryingSomething": "Já está carregando algo!",
+    "trunkInUse": "Outra pessoa está usando o porta-malas!",
+    "failedTakeItem": "Falha ao pegar o item!",
+    "itemTaken": "Item pego! Coloque na balança ou de volta no caminhão.",
+    "failedPickupItem": "Falha ao pegar o item!",
+    "notCarryingAnything": "Não está carregando nada!",
+    "failedLoadItem": "Falha ao carregar o item!",
+    "vehicleSpawnBlocked": "Ponto de spawn do veículo bloqueado!",
+    "failedStartCleaning": "Falha ao iniciar a limpeza!",
+    "cleanItemsFirst": "Limpe alguns itens primeiro!",
+    "allDoneReturn": "Tudo pronto! Volte para finalizar.",
+    "newRouteAssigned": "Nova rota atribuída! Continue limpando!",
+    "failedTakeLoadedBox": "Falha ao pegar a caixa carregada!",
+    "jobCompletedByTeam": "O trabalho foi concluído pela sua equipe!",
+    "jobFinishedSummary": "Trabalho concluído! Itens: {items} • Ganho: {currency}{amount}",
+    "continuePayout": "Rodada paga: {currency}{amount}. Iniciando nova rodada!",
+    "roundLimitReached": "Limite de rodadas atingido — tempo de espera do trabalho iniciado.",
+    "cooldownWaitAny": "{name} precisa esperar {time} antes de começar qualquer trabalho.",
+    "cooldownWaitJob": "{name} precisa esperar {time} antes de começar este trabalho novamente.",
+    "cantRunWithDog": "Você não pode correr enquanto passeia com o cachorro!",
+    "cantJumpWithDog": "Você não pode pular enquanto passeia com o cachorro!",
+    "cantEnterVehicleWithDog": "Você não pode entrar em um veículo enquanto passeia com o cachorro!",
+    "policeAlert": "ALERTA POLICIAL! Você foi avistado!",
+    "tooFarFromVan": "Muito longe da van! A mangueira não alcança.",
+    "tooFarFromTask": "Muito longe! Chegue mais perto e tente novamente.",
+    "itemCleanedPay": "Limpo! +{amount}",
+    "itemsCleaned": "Itens Limpos",
+    "alreadyTaken": "Já foi pego!",
+    "actionFailed": "Ação falhou!",
+    "saleFailed": "Venda falhou!",
+    "failedSelectZone": "Falha ao selecionar zona!",
+    "purchaseFailed": "Compra falhou!",
+    "couldNotSell": "Não foi possível vender!",
+    "couldNotCastRod": "Não foi possível lançar a vara!",
+    "cannotTakeTool": "Não é possível pegar a ferramenta",
+    "cannotTrimBush": "Não é possível podar este arbusto",
+    "cannotDigLawn": "Não é possível cavar este gramado",
+    "couldNotPickUpBox": "Não foi possível pegar a caixa",
+    "couldNotPickUpPallet": "Não foi possível pegar o pallet",
+    "trunkIsFull": "Porta-malas cheio!",
+    "scaleFull": "Balança cheia!",
+    "palletSlotsFull": "Vagas de pallet cheias",
+    "truckIsFull": "Caminhão cheio",
+    "toolTaken": "Ferramenta pega: {tool}",
+    "toolReturned": "Ferramenta devolvida: {tool}",
+    "alreadyHaveTool": "Já tem um(a) {tool}!",
+    "noToolAvailable": "Nenhum(a) {tool} disponível!",
+    "notHoldingTool": "Não está segurando um(a) {tool}!",
+    "failedReturnTool": "Falha ao devolver {tool}!",
+    "takeToolFirst": "Pegue um(a) {tool} primeiro!",
+    "itemLoaded": "Item carregado! (vaga {slot}/{max})",
+    "itemLoadedDrive": "Item carregado! (vaga {slot}/{max}) — Dirija até a balança de processamento!",
+    "spotCleaned": "{spot} limpo! {count} ponto(s) restante(s).",
+    "collected": "{item} coletado!",
+    "truckHeadingTo": "Caminhão indo para {dest}...",
+    "todaysBonusJobs": "Trabalhos bônus de hoje: {jobs}",
+    "toolUnlocked": "Desbloqueado: {tool}",
+    "toolUpgraded": "{job}: {tool} desbloqueado!",
+    "toolSwitched": "{job}: trocou para {tool}!",
+    "qualityBonus": "Qualidade {quality}! x{multiplier} bônus",
+    "notAuthenticated": "Não autenticado",
+    "noToolsForJob": "Sem ferramentas para este trabalho",
+    "toolNotFound": "Ferramenta não encontrada",
+    "notEnoughMoney": "Dinheiro insuficiente",
+    "failedUnlockTool": "Falha ao desbloquear ferramenta",
+    "toolNotUnlocked": "Ferramenta não desbloqueada",
+    "failedSelectTool": "Falha ao selecionar ferramenta",
+    "toolNotFoundForLevel": "Ferramenta não encontrada para este nível",
+    "failedSaveUpgrade": "Falha ao salvar melhoria",
+    "alreadyProcessing": "Solicitação já em andamento, aguarde.",
+    "alreadyInJob": "Você já está em um trabalho!",
+    "minimumPlayersRequired": "Este trabalho requer no mínimo {count} jogadores para iniciar.",
+    "insufficientHours": "Você precisa de pelo menos {required} horas para iniciar este trabalho. Você tem {current} horas.",
+    "exceededMaxHours": "Este trabalho está disponível apenas para jogadores com menos de {max} horas. Você tem {current} horas.",
+    "insufficientHoursPlayer": "{name} precisa de pelo menos {required} horas para iniciar este trabalho. Atualmente: {current} horas.",
+    "exceededMaxHoursPlayer": "{name} tem horas demais para este trabalho ({current}/{max} máx).",
+    "requiresJobLevel": "Requer nível de trabalho {level}",
+    "failedSwitchTool": "Falha ao trocar ferramenta",
+    "playerNotFound": "Jogador não encontrado ou não está online",
+    "failedSetLevel": "Falha ao definir nível",
+    "pickingUp": "Pegando...",
+    "pickingUpBox": "Pegando caixa...",
+    "placingBox": "Colocando caixa...",
+    "loadingBox": "Carregando caixa...",
+    "placingOnScale": "Colocando na balança...",
+    "returningBox": "Devolvendo caixa...",
+    "loading": "Carregando...",
+    "takingItem": "Pegando item...",
+    "placingItem": "Colocando item...",
+    "takingTool": "Pegando ferramenta...",
+    "storingTool": "Guardando ferramenta...",
+    "equippingTool": "Equipando ferramenta...",
+    "toolActionInProgress": "Ação da ferramenta já em andamento",
+    "toolCooldownActive": "Aguarde antes de usar a ferramenta novamente",
+    "cannotTakeToolInVehicle": "Não é possível pegar ferramentas dentro do veículo",
+    "alreadyHoldingTool": "Você já tem uma ferramenta",
+    "noToolInTrunk": "Não há ferramenta no porta-malas",
+    "toolNotAssigned": "Nenhuma ferramenta atribuída a você",
+    "toolNotYours": "Esta não é a sua ferramenta",
+    "toolNotInTrunk": "A ferramenta não está no porta-malas",
+    "toolActionCancelled": "Ação cancelada",
+    "toolAttachFailed": "Falha ao anexar a ferramenta",
+    "noJobCallbacks": "Callbacks do trabalho não configurados",
+    "serverDeniedTool": "O servidor negou a ação",
+    "noToolInHand": "Nenhuma ferramenta na mão",
+    "noToolOnBelt": "Nenhuma ferramenta no cinto",
+    "toolEntityNotFound": "Entidade da ferramenta não encontrada",
+    "noActiveTool": "Nenhuma ferramenta ativa",
+    "noToolToReturn": "Nenhuma ferramenta para devolver",
+    "questProgress": "Missão: {label} ({progress}/{target})",
+    "questCompleted": "Missão Completa: {label}!{rewards}",
+    "boxTaken": "Caixa pega! Vá colher.",
+    "loadedBoxTaken": "Caixa carregada pega! {count} {label} — Leve até a balança.",
+    "boxEmpty": "Caixa vazia! Colha algo primeiro.",
+    "boxEmptyError": "Caixa vazia",
+    "decalCleaned": "Limpo! ({count} restante(s))",
+    "allDeliveriesComplete": "Todas as entregas concluídas! Devolva a bicicleta.",
+    "allDeliveriesCompletePayment": "Todas as entregas concluídas! +{symbol}{payment} | Devolva a bicicleta.",
+    "farmerJobStarted": "Trabalho na fazenda iniciado! Pegue sua roupa de trabalho e uma caixa.",
+    "farmerBoxTaken": "Caixa pega! Vá até as plantas para colher.",
+    "farmerBoxEmpty": "Caixa vazia! Colha algo primeiro.",
+    "fruitpickerJobStarted": "Trabalho de colheita de laranja iniciado! Pegue sua roupa de trabalho e uma caixa.",
+    "fruitpickerBoxTaken": "Caixa pega! Vá até as laranjeiras para colher.",
+    "fruitpickerBoxEmpty": "Caixa vazia! Colha algumas laranjas primeiro."
+  },
+  "prompt": {
+    "pickUpBox": "[E] Pegar Caixa",
+    "loadBox": "[E] Carregar Caixa",
+    "openTrunk": "[E] Abrir Porta-malas",
+    "closeTrunk": "[E] Fechar Porta-malas",
+    "returnVehicle": "[E] Devolver Veículo",
+    "deliver": "[E] Entregar",
+    "returnBoxToTrunk": "[E] Devolver Caixa ao Porta-malas",
+    "dropAnchor": "[E] Lançar Âncora",
+    "raiseAnchor": "[E] Levantar Âncora",
+    "returnBoat": "[E] Devolver Barco",
+    "boardBoat": "[E] Embarcar no Barco",
+    "sellItems": "[E] Vender Itens",
+    "catchDog": "[E] Pegar Cachorro",
+    "cleanPoop": "[E] Limpar cocô",
+    "deliverDog": "[E] Entregar cachorro",
+    "getInBucket": "[E] Entrar na cesta",
+    "bucketInUse": "Cesta em uso",
+    "parkVehicle": "[E] Estacionar Veículo",
+    "reelIn": "[E] Puxar a Linha!",
+    "sellFish": "[E] Vender Peixe",
+    "changeClothes": "[E] Trocar Roupa",
+    "changeToWorkClothes": "[E] Vestir roupa de trabalho",
+    "changeToNormalClothes": "[E] Vestir roupa normal",
+    "collectTreasure": "[E] Desenterrar Tesouro",
+    "takeShovel": "[G] Pegar Pá",
+    "loadCargo": "[E] Carregar no Barco",
+    "digTreasure": "[E] Cavar",
+    "openChest": "[E] Abrir Baú",
+    "pickupLoot": "[E] Pegar Saque",
+    "stealCargo": "[E] Roubar Carga",
+    "finishJob": "[E] Finalizar Trabalho",
+    "cancelJob": "[E] Cancelar Trabalho",
+    "exitWarehouse": "[E] Sair do armazém",
+    "completeJob": "[E] Concluir Trabalho",
+    "activateBelt": "[E] Ativar Esteira",
+    "throwCleanup": "[E] Jogar Lixo",
+    "collectCleanup": "[E] Coletar Lixo",
+    "deliverTruck": "[E] Entregar Caminhão",
+    "takeTrimmer": "[E] Pegar Cortador",
+    "trimBush": "[E] Podar Arbusto",
+    "digLawn": "[E] Cavar Gramado",
+    "returnWand": "[E] Devolver pistola",
+    "takeWand": "[E] Pegar pistola de pressão",
+    "takeWandOrCloth": "[E] Pegar Pistola | [G] Pegar Pano",
+    "takeTrimmerOrShovel": "[E] Pegar Cortador | [G] Pegar Pá",
+    "cleanToilet": "[E] Limpar Vaso",
+    "fixPipe": "[E] Consertar Cano",
+    "returnWrench": "[E] Devolver Chave",
+    "takeWrench": "[E] Pegar Chave",
+    "attachTrailer": "[E] Acoplar Trailer",
+    "deliverTrailer": "[E] Entregar Trailer",
+    "reattachTrailer": "[E] Reacoplar Trailer",
+    "pickUpPallet": "[E] Pegar Pallet",
+    "loadPallet": "[E] Carregar Pallet",
+    "putDownBox": "[E] Largar Caixa",
+    "pickUpBoxForklift": "[E] Pegar Caixa com Empilhadeira",
+    "fishingShop": "[E] Loja de Pesca",
+    "lowerFork": "Pressione [CTRL] para abaixar o garfo",
+    "raiseFork": "Pressione [SHIFT] para levantar o garfo",
+    "useForklift": "Use a empilhadeira para mover pallets",
+    "trunkFull": "Porta-malas cheio! Vá para a estrada.",
+    "completeDeliveriesFirst": "Complete todas as entregas primeiro!",
+    "forkliftControls": "Empilhadeira: CTRL = Abaixar Garfo | SHIFT = Levantar Garfo",
+    "processingInProgress": "Processamento em andamento...",
+    "boxFullLoad": "Caixa cheia! Carregue no caminhão ou balança.",
+    "trunkEmptyGoNpc": "Porta-malas vazio! Vá até o NPC.",
+    "takeWrenchFromTrunk": "Pegue a chave do porta-malas da van",
+    "reattachTrailerPrompt": "[E] Reacoplar Trailer",
+    "finishJobCount": "[E] Finalizar Trabalho ({count} limpos)",
+    "returnTool": "[E] Devolver {tool}",
+    "takeTool": "[E] Pegar {tool}",
+    "finishProcessing": "[E] Finalizar Processamento ({boxes} caixas, {currency}{value})",
+    "placeBoxOnScale": "[E] Colocar caixa na balança",
+    "loadBoxToTruck": "[E] Carregar caixa no caminhão ({count} {produce})",
+    "loadBoxToTruckTarget": "Carregar caixa de {produce}",
+    "returnEmptyBox": "[E] Devolver caixa vazia",
+    "takeLoadedBox": "[E] Pegar caixa carregada ({count} no caminhão)",
+    "takeHarvestBox": "[E] Pegar caixa de colheita ({count}/{cap})",
+    "takeHarvestBoxEmpty": "[E] Pegar caixa de colheita",
+    "polishSurface": "[E] Polir {surface}",
+    "continuePolish": "[E] Continuar polindo {surface}",
+    "returnAndTake": "[E] Devolver {current} | [G] Pegar {other}",
+    "deliverCount": "[E] Entregar ({current}/{total})",
+    "selectHuntingArea": "[E] Selecionar Área de Caça",
+    "returnBicycle": "[E] Devolver Bicicleta",
+    "takeJack": "[E] Pegar macaco hidráulico",
+    "swapTire": "[E] Devolver pneu velho e pegar estepe",
+    "closeValve": "[E] Fechar Válvula - Parar o fluxo de água",
+    "openValve": "[E] Abrir Válvula - Restaurar fluxo de água",
+    "wearHuntingClothes": "[E] Vestir roupa de caça",
+    "placeBoxAndHarvest": "[E] Colocar caixa e colher {produce}",
+    "harvestProduce": "[E] Colher {produce}",
+    "castRod": "[E] Lançar Vara ({zone})",
+    "returnToSeat": "[E] Voltar ao Assento",
+    "clickTargetsToClean": "Clique nos alvos para limpar!"
+  },
+  "hunting": {
+    "started": "Trabalho de caça iniciado! Vista a roupa de trabalho e selecione uma área.",
+    "newAnimals": "Novos animais chegaram! Continue.",
+    "continueHunting": "Você pode continuar caçando.",
+    "weaponsGiven": "Armas de caça recebidas!",
+    "goToArea": "Vá até a área de caça, os animais aparecerão lá!",
+    "cantPickUp": "Você não pode pegar este animal!",
+    "alreadyCarrying": "Você já está carregando algo!",
+    "failedPickUp": "Falha ao pegar o animal!",
+    "noAnimalsInTrunk": "Nenhum animal no porta-malas!",
+    "trunkInUse": "Outra pessoa está usando o porta-malas!",
+    "orePickedUp": "Animal pego! Coloque na balança.",
+    "failedPickUpAnimal": "Falha ao pegar o animal!",
+    "invalidArea": "Área inválida!",
+    "areaLocked": "Esta área está bloqueada!",
+    "animalsSpawned": "{count} animais apareceram!",
+    "animalHunted": "{animal} caçado! ({weight} kg)",
+    "wildAnimalFound": "{animal} selvagem encontrado! ({weight} kg)",
+    "animalPickedUp": "{animal} pego! ({weight} kg) Carregue no veículo.",
+    "levelRequired": "Nível {level} necessário para esta área!",
+    "areaSelected": "{area} selecionada! Siga o marcador no mapa.",
+    "processingComplete": "Processamento completo! {weight} kg, {currency}{amount} ganhos",
+    "tooFarWarning": "Você se afastou demais da área de caça! Volte em 15 segundos ou o trabalho será cancelado!",
+    "abandonedTooFar": "Você se afastou demais da área de caça. Trabalho cancelado.",
+    "huntingAreaFallback": "Área de Caça",
+    "animalFallback": "Animal",
+    "areaFallback": "Área {index}",
+    "selectArea": "Selecionar Área: {name}",
+    "selectHuntingArea": "Selecionar Área de Caça",
+    "pickUpAnimal": "[E] Apanhar {label} ({weight} kg)",
+    "loadAnimalToVehicle": "[E] Carregar animal no veículo",
+    "takeAnimalFromTrunk": "[E] Tirar animal do porta-bagagens",
+    "takeAnimalFromTrunkCount": "[E] Tirar animal do porta-bagagens ({count})",
+    "loadAnimalWeight": "[E] Carregar animal ({weight} kg | Camião: {current}/{max} kg)",
+    "finishProcessingWeight": "[E] Concluir Processamento ({weight} kg)",
+    "vehicleOverweight": "~r~Veículo sobrecarregado! ({current}/{max} kg)",
+    "continueHint": "Rastreie o próximo animal na área de caça",
+    "vehicleOverweightDrop": "~r~Veículo sobrecarregado! ({current}/{max} kg) ~w~[G] Largar animal",
+    "trunkFullDrop": "~r~Porta-malas cheio! ~w~[G] Largar animal, ou processe a carga atual.",
+    "carcassDropped": "Animal largado.",
+    "dropHint": "[G] Largar animal",
+    "progressTitle": "Caça",
+    "progressDetail": "Selecione uma área de caça, abata os animais, leve-os até o caminhão e depois dirija até a balança.",
+    "stepSelectArea": "Selecione uma área de caça no mapa",
+    "stepHuntAnimal": "Cace um animal na área",
+    "stepPickingUp": "Pegando o animal",
+    "stepPickupCarcass": "Pegue o animal abatido",
+    "stepLoadTrunk": "Carregue o animal no caminhão",
+    "stepGoToScale": "Leve os animais até a balança",
+    "stepPlacingOnScale": "Colocando o animal na balança",
+    "stepPlaceOnScale": "Coloque o animal na balança",
+    "stepProcessAnimal": "Fale com o NPC para processar os animais",
+    "stepNewArea": "Selecione uma nova área de caça"
+  },
+  "tiretechnician": {
+    "goGetJack": "Vá até seu caminhão e pegue o macaco hidráulico!",
+    "takingJack": "Pegando macaco hidráulico...",
+    "jackTaken": "Macaco pronto! Coloque embaixo do carro.",
+    "placingJack": "Colocando macaco hidráulico...",
+    "jackPlaced": "Carro levantado! Agora remova o pneu furado.",
+    "removingTire": "Removendo pneu furado...",
+    "tireRemoved": "Pneu removido! Devolva ao caminhão e pegue um estepe.",
+    "swappingTires": "Trocando pneus...",
+    "spareTaken": "Estepe pronto! Instale no carro.",
+    "installingTire": "Instalando estepe...",
+    "tireInstalled": "Pneu instalado! Abaixe o veículo para finalizar.",
+    "loweringVehicle": "Abaixando veículo...",
+    "tireChanged": "Pneu trocado com sucesso!",
+    "repairCancelled": "Reparo cancelado",
+    "cantRepair": "Não é possível reparar este veículo",
+    "finishCurrentFirst": "Termine o reparo atual primeiro!",
+    "goToTruck": "Vá até seu caminhão de serviço!",
+    "returningJack": "Devolvendo macaco hidráulico...",
+    "takingSpare": "Pegando estepe...",
+    "needSpare": "Você precisa de um estepe! Pegue um do caminhão primeiro.",
+    "returnVehicle": "Devolva o caminhão de serviço ao depósito!",
+    "interactPlaceJack": "[E] Colocar macaco hidráulico",
+    "interactRemoveTire": "[E] Remover pneu furado",
+    "interactInstallTire": "[E] Instalar estepe",
+    "interactLowerVehicle": "[E] Abaixar veículo",
+    "interactPickupJack": "[E] Pegar macaco hidráulico",
+    "interactChangeTire": "[E] Trocar pneu furado",
+    "interactReturnJack": "[E] Devolver macaco hidráulico",
+    "interactReturnTire": "[E] Devolver pneu",
+    "interactTakeJack": "[E] Pegar macaco hidráulico",
+    "interactTakeSpare": "[G] Pegar estepe",
+    "interactTakeSpareE": "[E] Pegar estepe",
+    "progressTitle": "Borracheiro",
+    "progressDetail": "Dirija até veículos parados e troque seus pneus furados.",
+    "progressTires": "Pneus ({done}/{total})",
+    "serviceTruck": "Camião de Serviço de Pneus",
+    "continueHint": "Dirija até o próximo veículo parado no seu mapa",
+    "stepTakeJack": "Pegue o macaco do caminhão",
+    "stepJackUp": "Levante o carro",
+    "stepRemoveFlat": "Remova o pneu furado",
+    "stepFitSpare": "Coloque o pneu reserva",
+    "stepLowerCar": "Abaixe o carro",
+    "stepReturnJack": "Devolva o macaco ao caminhão"
+  },
+  "powerlines": {
+    "bucketInstructions": "Use as setas para subir/descer a cesta. [E] para reparar quando estiver no alcance.",
+    "parkNearPoles": "Estacione perto dos postes e use a cesta para alcançar a fiação.",
+    "cantDriveWithBucket": "Não é possível dirigir com a cesta em uso",
+    "panelRepaired": "Painel reparado com sucesso!",
+    "panelCancelled": "Reparo do painel cancelado",
+    "poleRepaired": "Poste telefônico reparado com sucesso!",
+    "poleRepairFailed": "Reparo do poste falhou! Cuidado com a eletricidade.",
+    "progressTitle": "Rede Elétrica",
+    "bucketControls": "Controles da Cesta | Cima Baixo Esquerda Direita",
+    "blipPanel": "Painel Elétrico",
+    "blipPole": "Poste Telefônico",
+    "blipVehicle": "Caminhão com Cesta",
+    "continueHint": "Encontre o próximo poste danificado no seu mapa"
+  },
+  "diving": {
+    "oxygenCritical": "OXIGÊNIO CRÍTICO! Suba à superfície imediatamente!",
+    "oxygenLow": "Oxigênio baixo! Você deveria subir.",
+    "refillingTank": "Reabastecendo tanque de ar...",
+    "tankRefilled": "Tanque de ar reabastecido.",
+    "coralEmpty": "Coral quebrado mas nada dentro.",
+    "trashCleaned": "Lixo limpo!",
+    "failedSyncBoat": "Falha ao sincronizar o barco. Tente novamente.",
+    "allTasksComplete": "Todas as tarefas concluídas! Volte ao barco e levante a âncora.",
+    "anchorDropped": "Âncora lançada! Saia do barco e mergulhe.",
+    "anchorRaised": "Âncora levantada! Vá até o ponto de entrega.",
+    "anchorRaisedEarly": "Âncora levantada! Retornando mais cedo — nenhum pagamento será dado.",
+    "anchorRaisedContinue": "Âncora levantada! Você pode reancorar na zona de mergulho para continuar.",
+    "gearEquipped": "{gear} equipado! ({seconds}s de oxigênio)",
+    "itemsSold": "{count} itens vendidos! {currency}{amount} ganhos!",
+    "zoneSelected": "Zona de mergulho selecionada: {zone}. Vá em frente!",
+    "zoneInfo": "Zona de mergulho: {zone}",
+    "reconnected": "Reconectado ao trabalho de mergulho!",
+    "started": "Trabalho de mergulho iniciado! Selecione uma zona e vá até o local de mergulho.",
+    "progressTitle": "Mergulho",
+    "progressDetail": "Colete itens subaquáticos no local de mergulho. Nade para baixo e recolha objetos do fundo do mar.",
+    "divingStarted": "Você está na zona de mergulho! Colete itens do fundo do mar.",
+    "collectingCoral": "Coletando coral...",
+    "cleaningTrash": "Limpando lixo...",
+    "unknownZone": "Desconhecido",
+    "sellAtNpcReminder": "Venda os itens coletados ao NPC comprador para receber o pagamento.",
+    "continueHint": "Encontre o próximo ponto de mergulho no seu mapa"
+  },
+  "treasurehunter": {
+    "started": "Trabalho de caça ao tesouro iniciado! Vá até a área do tesouro.",
+    "reconnected": "Reconectado ao trabalho de caça ao tesouro!",
+    "newTarget": "Uma equipe encontrou o tesouro! Nova localização atribuída.",
+    "treasureFound": "Você encontrou um {tier}! {currency}{value} ganhos!",
+    "someoneNearby": "Alguém está muito perto! Afaste-se para coletar.",
+    "anchorDropped": "Âncora lançada! Mergulhe e encontre o tesouro!",
+    "anchorRaised": "Âncora levantada! Volte para o cais.",
+    "oxygenCritical": "OXIGÊNIO CRÍTICO! Suba à superfície imediatamente!",
+    "oxygenLow": "Oxigênio baixo! Você deveria subir.",
+    "refillingTank": "Reabastecendo tanque de ar...",
+    "tankRefilled": "Tanque de ar reabastecido.",
+    "depthWarning": "Profundidade perigosa! Oxigênio se esgotando mais rápido!",
+    "fakeLocation": "Sinal falso... Recalculando novas coordenadas.",
+    "penalty": "Penalidade: {currency}{amount} — Barco da empresa não estava no cais.",
+    "digging": "Desenterrando tesouro...",
+    "alreadyCollected": "Alguém já coletou este tesouro!",
+    "alreadySurfaced": "O baú já está na superfície!",
+    "notSurfaced": "O baú ainda não subiu! Continue cavando.",
+    "someoneOpening": "Outra pessoa está abrindo este baú!",
+    "needShovel": "Você precisa de uma pá! Pegue uma do barco.",
+    "cargoLoaded": "Saque carregado no barco!",
+    "cargoFull": "Carga do barco cheia! Volte ao cais para entregar.",
+    "stolenItem": "Você roubou saque de outro barco!",
+    "cargoStolenFromYou": "Alguém roubou saque do seu barco!",
+    "someoneOpened": "Alguém abriu um {tier}!",
+    "stealDisabled": "Roubo não está habilitado.",
+    "noCargoHere": "Sem carga para roubar aqui.",
+    "shovelTaken": "Pá pega!",
+    "canFinishHint": "Colete mais tesouros ou volte ao cais para finalizar o trabalho.",
+    "anchorRaisedContinue": "Âncora levantada! Vá ao próximo tesouro ou volte ao cais para finalizar.",
+    "progressTitle": "Caçador de Tesouros",
+    "progressDetail": "Mergulhe e colete baús de tesouro. Siga os bipes do rastreador para encontrá-los.",
+    "cargoProgress": "Carga: {current}/{max}",
+    "blipDock": "Cais - Entregar",
+    "blipTreasure": "Local do Tesouro",
+    "continueHint": "Siga o rastreador até o próximo baú"
+  },
+  "metaldetector": {
+    "continueHint": "Siga os bipes do detector e vasculhe a próxima zona",
+    "started": "Turno de detector de metais iniciado! Pegue um detector na caminhonete e vá para a zona de busca.",
+    "newRound": "Nova rodada iniciada. Scanner recalibrado.",
+    "newZone": "Nova zona de busca: {zone}",
+    "teammateFound": "Seu companheiro de equipe recuperou um item.",
+    "pressDig": "[E] Cavar aqui",
+    "digging": "Cavando...",
+    "digCancelled": "Escavação cancelada.",
+    "digTooFast": "Você está cavando rápido demais. Diminua o ritmo.",
+    "exitVehicleFirst": "Saia do veículo para usar o detector.",
+    "outsideZone": "Você deve permanecer dentro da zona de praia marcada.",
+    "lootFound": "Você recuperou {item}! +{currency}{amount}",
+    "lootFoundItem": "Você recuperou {item}! Foi adicionado ao seu inventário.",
+    "unknownItem": "Item desconhecido",
+    "roundFinished": "Rodada concluída! Todos os pontos desta zona foram escavados.",
+    "canFinishHint": "Abra as opções de trabalho no NPC para finalizar ou continuar.",
+    "spotAlreadyDug": "Este ponto já foi escavado.",
+    "spotBusy": "Um companheiro já está cavando neste ponto.",
+    "takeDetectorFirst": "Primeiro pegue um detector de metais na caminhonete.",
+    "detectorReturned": "Detector devolvido à caminhonete.",
+    "blipSearchArea": "Área de busca",
+    "unknownZone": "Praia desconhecida",
+    "progressTitle": "Detector de metais",
+    "progressDetail": "Use seu detector para localizar e desenterrar achados metálicos escondidos nas zonas de praia.",
+    "progressSpots": "Pontos escavados: {current}/{max}",
+    "progressValue": "Valor acumulado: {currency}{amount}",
+    "labelTakeTool": "[E] Pegar detector de metais",
+    "labelReturnTool": "[E] Devolver detector",
+    "labelPutOnBelt": "[G] Colocar detector no cinto",
+    "labelTakeFromBelt": "[G] Pegar detector do cinto",
+    "labelTakeFromTrunk": "[E] Pegar do porta-malas (%d)",
+    "labelNoMoreItems": "~y~Não sobrou nada no porta-malas.",
+    "labelLoadToTruck": "[E] Carregar na caminhonete",
+    "labelPickup": "[E] Pegar",
+    "labelDig": "[E] Cavar",
+    "labelClothesWork": "[E] Vestir roupa de trabalho",
+    "labelClothesNormal": "[E] Vestir roupa normal",
+    "labelFailNotify": "Não é possível cavar aqui agora",
+    "returnVehicleHint": "Fim do turno — leve a van de volta ao depósito para entregá-la.",
+    "returnVehiclePrompt": "[E] Entregar a van",
+    "returnVehicleBlip": "Devolver van",
+    "jobFinished": "Turno encerrado! Você ganhou {symbol}{earned}.",
+    "vehicleNotAtDepot": "A van precisa estar de volta no depósito!",
+    "tooFarFromDepot": "Você está muito longe do depósito!"
+  },
+  "delivery": {
+    "reconnected": "Reconectado ao trabalho de entrega!",
+    "started": "Trabalho de entrega de carga iniciado!",
+    "leaderPreparing": "O líder está preparando o veículo, aguarde...",
+    "spawnFailed": "Não foi possível gerar o veículo! Ponto de spawn ocupado. Trabalho cancelado.",
+    "alreadyCarryingBox": "Você já está carregando uma caixa!",
+    "boxPickedUp": "Caixa pega! Carregue no veículo.",
+    "notCarryingBox": "Você não está carregando uma caixa!",
+    "firstDelivery": "Primeiro ponto de entrega atribuído! Vá quando estiver pronto.",
+    "trunkFull": "Porta-malas cheio! Hora de entregar.",
+    "boxDeliverPickup": "Caixa pega! Entregue ao cliente.",
+    "newRound": "Nova rodada! Carregue caixas do depósito.",
+    "pickUpToContinue": "Pegue caixas do NPC para continuar. Para finalizar, vá ao local marcado e devolva o veículo.",
+    "returnVehicleToFinish": "Todas as entregas concluídas! Devolva o veículo no local marcado para finalizar o trabalho.",
+    "deliveriesStarting": "Entregas começando!",
+    "teammateTookBox": "Colega pegou uma caixa",
+    "teammateReturnedBox": "Colega devolveu uma caixa ao porta-malas",
+    "teammatePartialDelivery": "Colega fez uma entrega parcial!",
+    "allComplete": "Todas as entregas concluídas! Volte ao depósito.",
+    "progressTitle": "Entrega",
+    "progressDetail": "Entregue pacotes para clientes pela cidade. Carregue caixas e entregue em cada endereço.",
+    "loadCapacity": "Carregue caixas do depósito! Capacidade: {capacity} caixas",
+    "vehicleReadyLoad": "Veículo pronto! Carregue caixas do depósito. Capacidade: {capacity} caixas",
+    "subtaskDeliver": "Entregar pacotes ({current}/{total})",
+    "subtaskLoad": "Carregar caixas no depósito ({current}/{total})",
+    "boxLoaded": "Caixa carregada! ({current}/{total})",
+    "boxReturned": "Caixa devolvida! ({count} no porta-malas)",
+    "partialDelivery": "Entrega parcial! ({current}/{total}) +{amount} | Traga outra caixa.",
+    "deliveryDone": "Entrega concluída! +{amount} | Todas as entregas feitas! Volte ao depósito.",
+    "deliveryDoneRemaining": "Entrega concluída! +{amount} | Restantes: {remaining}",
+    "deliveryFailed": "Entrega falhou!",
+    "couldNotContinue": "Não foi possível continuar!",
+    "couldNotPickUp": "Não foi possível pegar a caixa!",
+    "couldNotLoad": "Não foi possível carregar a caixa!",
+    "couldNotReturn": "Não foi possível devolver a caixa!",
+    "teammateLoaded": "Colega carregou uma caixa ({current}/{total})",
+    "teammateDelivered": "Colega completou uma entrega! Restantes: {remaining}",
+    "itemLabel": "Entregas",
+    "continueHint": "Pegue o próximo pacote e entregue-o"
+  },
+  "cardetailer": {
+    "started": "Trabalho de estética automotiva iniciado! Equipe-se e dirija até os carros dos clientes.",
+    "newCars": "Novos carros atribuídos! Continue o detalhamento.",
+    "wandEquipped": "Pistola de Pressão equipada!",
+    "wandReturned": "Pistola de Pressão devolvida à van.",
+    "clothEquipped": "Pano de Polimento equipado!",
+    "clothReturned": "Pano de Polimento devolvido à van.",
+    "takeWandFirst": "Pegue a pistola de pressão primeiro!",
+    "needCloth": "Você precisa do pano de polimento! Pegue na van.",
+    "failedStartPolish": "Falha ao iniciar o polimento!",
+    "tooFar": "Muito longe! Chegue mais perto e tente novamente.",
+    "carDetailed": "Carro detalhado!",
+    "carWashed": "Carro lavado! Pola para pagamento extra.",
+    "hoseLimit": "Limite da mangueira atingido! Fique mais perto da van.",
+    "carDetailedTeammate": "Carro detalhado por colega!",
+    "carWashedTeammate": "Carro lavado por colega!",
+    "carPolished": "Carro polido! Ótimo trabalho!",
+    "carPolishedTeammate": "Carro polido por colega!",
+    "returnToDepot": "Volte ao depósito para concluir o trabalho.",
+    "spotRightFrontDoor": "Porta Dianteira Direita",
+    "spotLeftFrontDoor": "Porta Dianteira Esquerda",
+    "spotHood": "Capô",
+    "spotTrunk": "Porta-malas",
+    "spotRightRearDoor": "Porta Traseira Direita",
+    "spotLeftRearDoor": "Porta Traseira Esquerda",
+    "spotHoodRight": "Capô Direito",
+    "spotHoodLeft": "Capô Esquerdo",
+    "toolWand": "Pistola",
+    "toolCloth": "Pano",
+    "carsDetailed": "Carros Detalhados",
+    "progressTitle": "Estética Automotiva",
+    "progressDetail": "Lave e pola carros dos clientes. Use a pistola de pressão para lavar, depois pola com um pano.",
+    "carLabel": "Carro #{index}",
+    "subtaskWashed": "{car} lavado",
+    "subtaskPolished": "{car} polido",
+    "subtaskDetailed": "{car} detalhado",
+    "spotFallback": "Local",
+    "continueHint": "Dirija até o próximo carro e comece a detalhar",
+    "spotHoodCenter": "Centro do Capô",
+    "spotRoof": "Teto",
+    "spotRoofLeft": "Teto Esquerdo",
+    "spotTrunkRight": "Porta-malas Direito",
+    "spotTrunkLeft": "Porta-malas Esquerdo",
+    "spotFrontFenderRight": "Paralama Dianteiro Direito",
+    "spotFrontFenderLeft": "Paralama Dianteiro Esquerdo",
+    "spotDoorRight": "Porta Direita",
+    "spotDoorRightFront": "Porta Dianteira Direita",
+    "spotDoorLeft": "Porta Esquerda",
+    "spotDoorLeftFront": "Porta Dianteira Esquerda",
+    "spotRearFenderRight": "Paralama Traseiro Direito",
+    "spotRearFenderLeft": "Paralama Traseiro Esquerdo"
+  },
+  "cleaner": {
+    "started": "Trabalho de limpeza iniciado! Pegue sua roupa de trabalho e o esfregão.",
+    "toolMop": "Esfregão",
+    "progressTitle": "Faxineiro",
+    "progressDetail": "Limpe as manchas de sujeira marcadas no mapa usando seu esfregão. Vá até cada mancha e pressione [E] para começar a limpar.",
+    "itemLabel": "Mancha de Sujeira",
+    "blipLabel": "Mancha de Sujeira",
+    "finishItemLabel": "Manchas Limpas",
+    "cleanPrompt": "[E] Limpar mancha ({current}/{total})",
+    "subtaskClean": "Limpar todas as manchas ({current}/{total})",
+    "continueHint": "Vá até a próxima mancha no seu mapa"
+  },
+  "windowscleaner": {
+    "started": "Trabalho de limpeza de janelas iniciado! Pegue sua roupa de trabalho e a esponja.",
+    "toolSponge": "Esponja",
+    "progressTitle": "Limpador de Janelas",
+    "progressDetail": "Limpe as janelas sujas em cada local. Use sua esponja para esfregar os pontos marcados.",
+    "dirtyWindow": "Janela Suja",
+    "dirtyWindowBlip": "Janela Suja #%d",
+    "windowsCleaned": "Janelas Limpas",
+    "cleanWindowProgress": "[E] Limpar janela ({hits}/{required})",
+    "continueHint": "Encontre a próxima janela suja no seu mapa"
+  },
+  "powerwash": {
+    "started": "Trabalho de lavagem a pressão iniciado! Pegue sua roupa de trabalho e a pistola.",
+    "takeWandFirst": "Pegue a pistola de pressão primeiro!",
+    "tooFarFromSpot": "Muito longe do ponto!",
+    "toolWand": "Pistola de Pressão",
+    "progressTitle": "Lavagem a Pressão",
+    "progressDetail": "Borrife os pontos sujos marcados no mapa usando sua pistola de pressão. Mire na mancha e segure [LMB] para borrifar.",
+    "dirtySpot": "Mancha Suja",
+    "dirtySpotBlip": "Mancha Suja #%d",
+    "spotsCleaned": "Manchas Limpas",
+    "continueHint": "Vá até o próximo ponto sujo no seu mapa"
+  },
+  "forklift": {
+    "newCrates": "Novos caixotes chegando...",
+    "preparingForklifts": "Preparando empilhadeiras...",
+    "failedSpawnForklifts": "Falha ao gerar empilhadeiras!",
+    "beltFull": "Esteira cheia! Ative a esteira primeiro.",
+    "earnedReward": "+{symbol}{money}, +{xp} XP",
+    "modeBeltToShelf": "Pegue da esteira, coloque nas prateleiras!",
+    "modeCratesToBelt": "Mova os caixotes para a esteira!",
+    "newRoundBeltToShelf": "Nova rodada: Pegue da esteira, coloque nas prateleiras!",
+    "newRoundStarting": "Nova rodada começando!",
+    "progressTitle": "Empilhadeira",
+    "progressDetailToShelf": "Mova caixotes usando a empilhadeira. Pegue os caixotes e coloque nas prateleiras.",
+    "progressDetailToBelt": "Mova caixotes usando a empilhadeira. Pegue os caixotes e entregue na esteira.",
+    "onlyLeaderCanCancel": "Apenas o líder pode cancelar o trabalho",
+    "deliveredCrates": "Caixotes Entregues",
+    "continueHint": "Pegue o próximo caixote com a empilhadeira"
+  },
+  "warehouse": {
+    "newTrucks": "Novos caminhões chegando...",
+    "failedInitSession": "Falha ao inicializar a sessão!",
+    "preparingVehicles": "Preparando veículos...",
+    "failedSpawnForklift": "Falha ao gerar empilhadeira!",
+    "truckOnTheWay": "Caminhão a caminho...",
+    "truckReady": "Caminhão pronto para carregamento!",
+    "truckReadyWithOrder": "Caminhão pronto! Carregar: {boxes} caixas, {pallets} pallets",
+    "boxesProgress": "Caixas: {current}/{total}",
+    "palletsProgress": "Pallets: {current}/{total}",
+    "orderInfo": "Pedido: {boxes} caixas, {pallets} pallets",
+    "deliveryCompleteReward": "Entrega completa! +${money}, +{xp} XP",
+    "newOrder": "Novo pedido: {boxes} caixas, {pallets} pallets",
+    "newOrderWithRemaining": "Novo pedido: {boxes} caixas, {pallets} pallets ({remaining} caminhões restantes)",
+    "deliveryComplete": "Entrega completa!",
+    "takeBoxToTruck": "Leve a caixa até o caminhão!",
+    "truckNotReady": "Caminhão não está pronto",
+    "truckNotFound": "Caminhão não encontrado",
+    "getInForklift": "Entre na empilhadeira",
+    "alreadyCarrying": "Você já está carregando algo",
+    "boxDropped": "Caixa derrubada",
+    "progressTitle": "Armazém",
+    "progressDetail": "Carregue mercadorias no caminhão de entrega. Use empilhadeiras ou carregue na mão.",
+    "completedTrucks": "Camiões Concluídos",
+    "continueHint": "Carregue o próximo pallet no caminhão"
+  },
+  "landscaping": {
+    "failedInit": "Falha ao inicializar o trabalho!",
+    "toolNotAvailable": "Ferramenta não disponível!",
+    "needTrimmer": "Você precisa de um cortador para podar arbustos!",
+    "trimmingCancelled": "Poda do arbusto cancelada",
+    "needShovel": "Você precisa de uma pá para cavar gramados!",
+    "diggingCancelled": "Escavação do gramado cancelada",
+    "newTasks": "Novas tarefas de jardinagem atribuídas!",
+    "allComplete": "Todas as tarefas completas! Volte ao depósito para finalizar.",
+    "onlyLeaderFinish": "Apenas o líder pode finalizar o trabalho!",
+    "notAllBushes": "Nem todos os arbustos foram podados!",
+    "notAllLawns": "Nem todos os gramados foram capinados!",
+    "jobStarted": "Trabalho de jardinagem iniciado! Pode {bushes} arbustos e cave {lawns} gramados. Pegue as ferramentas do caminhão.",
+    "bushTrimmed": "Arbusto podado! {bushes} arbustos, {lawns} gramados restantes",
+    "lawnDug": "Gramado cavado! {bushes} arbustos, {lawns} gramados restantes",
+    "toolTrimmer": "Cortador",
+    "toolShovel": "Pá",
+    "progressTitle": "Jardinagem",
+    "progressDetail": "Cuide dos terrenos. Pode arbustos e capine gramados em cada propriedade.",
+    "toolFallback": "Ferramenta",
+    "continueHint": "Vá até a próxima propriedade para cuidar"
+  },
+  "farmer": {
+    "alreadyHarvested": "A planta já foi colhida!",
+    "failedStartHarvest": "Falha ao iniciar a colheita",
+    "plantsRespawned": "Plantas renasceram! {count} prontas para colher.",
+    "progressTitle": "Agricultor",
+    "progressDetail": "Colha plantações dos campos. Apanhe plantas e carregue os produtos no veículo.",
+    "jobLabel": "Agricultor",
+    "produceLabel": "itens",
+    "vehicleBlip": "Veículo Agrícola",
+    "subtaskHarvest": "Colher plantas ({current}/{total})",
+    "continueHint": "Vá até a próxima planta e colha-a",
+    "stepTakeBox": "Pegue uma caixa do caminhão",
+    "stepHarvesting": "Continue colhendo a planta",
+    "stepHarvestPlant": "Vá até uma planta e colha-a",
+    "stepLoadBoxToTruck": "Carregue a caixa cheia no caminhão",
+    "stepGoToScale": "Leve as caixas até a balança",
+    "stepPlaceOnScale": "Coloque a caixa na balança",
+    "stepProcessProduce": "Fale com o NPC para processar a colheita",
+    "stepNewRound": "Pegue uma caixa e comece uma nova rodada"
+  },
+  "fishing": {
+    "failedSpawnBoat": "Falha ao gerar o barco de pesca!",
+    "started": "Trabalho de pesca iniciado! Embarque no barco e vá até uma zona de pesca.",
+    "failedSyncBoat": "Falha ao sincronizar o barco de pesca!",
+    "noFishToSell": "Sem peixes para vender!",
+    "noWater": "Sem água encontrada! Fique perto da água.",
+    "fishOnLine": "Peixe na linha! Pressione [E] para puxar!",
+    "fishGotAway": "O peixe escapou! Muito lento.",
+    "fishEscaped": "O peixe escapou!",
+    "castCancelled": "Pesca cancelada.",
+    "outfitEquipped": "Roupa de pesca equipada!",
+    "cantUseInventoryRod": "Não é possível usar vara do inventário no modo trabalho!",
+    "alreadyCast": "Você já lançou sua linha!",
+    "mustBeNearWater": "Você precisa estar perto da água!",
+    "completed": "Trabalho de pesca concluído com sucesso!",
+    "freeModeDisabled": "Modo livre desativado!",
+    "noBait": "Sem isca! Compre isca na loja de pesca.",
+    "itemPurchased": "{amount}x {item} comprado! ({currency}{price})",
+    "fishSold": "{count} peixes vendidos! {currency}{amount} ganhos!",
+    "progressTitle": "Pesca",
+    "progressDetail": "Pesque no ponto de pesca. Lance sua linha e puxe os peixes.",
+    "subtaskFishCaught": "Peixes pescados: {count}",
+    "shopTitle": "Loja de Pesca",
+    "selectRod": "Selecionar Vara",
+    "selectBait": "Selecionar Isca",
+    "sellTitle": "Vender Peixes",
+    "baitStats": "{price} | Chance: +{chance}%",
+    "fishPriceRange": "faixa de {min} - {max}",
+    "continueHint": "Vá até o próximo ponto de pesca e lance sua linha"
+  },
+  "cleanup": {
+    "started": "Trabalho de coleta de lixo iniciado! Vista a roupa de trabalho primeiro, depois colete lixo das lixeiras com [E] e carregue no caminhão.",
+    "alreadyCarrying": "Você já está carregando algo!",
+    "binEmpty": "Esta lixeira está vazia!",
+    "noCleanupInBin": "Sem lixo nesta lixeira!",
+    "animFailed": "Não foi possível carregar a animação!",
+    "bagPickedUp": "Saco de lixo pego! Vá até a traseira do caminhão e pressione [E] para jogar.",
+    "notHoldingBag": "Você não está segurando um saco de lixo!",
+    "thrownIn": "Lixo jogado!",
+    "noCleanupInTruck": "Sem lixo no caminhão!",
+    "truckReady": "Caminhão de lixo pronto!",
+    "keepWorking": "Continue trabalhando! Procure novas lixeiras.",
+    "truckTooFar": "O caminhão está muito longe ou não está disponível. Aproxime-se do caminhão.",
+    "truckFullBagDropped": "Caminhão cheio! Saco de lixo descartado. Dirija o caminhão até o ponto de entrega.",
+    "jobEnded": "O trabalho de coleta de lixo terminou.",
+    "truckFullDrive": "Caminhão cheio! ({count}/{max}) Dirija o caminhão até o ponto de entrega no mapa.",
+    "spawnBlocked": "Área de spawn bloqueada! Mova o veículo e tente novamente.",
+    "vehicleSpawnFailed": "Não foi possível gerar o veículo!",
+    "areaSelected": "Área {area} selecionada. Vá até a área no mapa e colete lixo das lixeiras com [E].",
+    "progressTitle": "Coleta de Lixo",
+    "progressDetail": "Colete lixeiras ao longo da rota. Pegue cada lixeira e carregue no caminhão.",
+    "deliveryBlip": "Entrega de Lixo",
+    "collectBinsProgress": "Coletar lixeiras ({current}/{max})",
+    "dumpDeliveries": "Entregas no aterro: {count}",
+    "hintCollectBins": "Procure lixeiras por perto e pressione [E] para coletar um saco.",
+    "hintCollectBinsTarget": "Procure lixeiras por perto e use o terceiro olho para coletar um saco.",
+    "bagPickedUpTarget": "Saco recolhido! Vá até a traseira do caminhão e use o terceiro olho para jogá-lo dentro.",
+    "areaSelectedTarget": "Área {area} selecionada. Vá até a área no mapa e colete lixo das lixeiras com o terceiro olho.",
+    "continueHint": "Dirija até a próxima lixeira na sua rota"
+  },
+  "dogwalking": {
+    "anotherWalk": "Começando outro passeio!",
+    "dogGotAway": "Seu cachorro fugiu! Trabalho falhou.",
+    "dogDied": "Seu cachorro morreu! O trabalho foi cancelado.",
+    "dogNeedsToGo": "Seu cachorro precisa fazer necessidades! Espere...",
+    "dogBrokeFree": "Eita! Seu cachorro se soltou! Pegue-o rápido!",
+    "dogPickedUp": "Você pegou seu cachorro! Espere pelos outros.",
+    "returnDog": "Ótimo passeio! Agora devolva o cachorro ao dono.",
+    "caughtDog": "Ufa! Você pegou o cachorro.",
+    "noDogAssigned": "Nenhum cachorro atribuído a você!",
+    "alreadyClaimed": "Você já pegou seu cachorro!",
+    "poopAlreadyCleaned": "Cocô já foi limpo!",
+    "notYourDogPoop": "Esse não é o cocô do seu cachorro!",
+    "walkNotComplete": "Passeio ainda não completo!",
+    "reconnected": "Reconectado ao trabalho de passeio de cachorro!",
+    "started": "Trabalho de Passeio de Cachorro iniciado! Vá até a casa do cliente.",
+    "walkYourDog": "Passeie com seu cachorro {distance}m! Aproveite o passeio.",
+    "dogDelivered": "Cachorro entregue! Ganhou {symbol}{payment} e {xp} XP",
+    "progressTitle": "Passeio de Cachorro",
+    "progressDetail": "Passeie com os cachorros nas suas rotas. Mantenha-os felizes e limpe depois deles.",
+    "dogDiedNoPayment": "Um cachorro morreu! Trabalho cancelado — sem pagamento.",
+    "blipHome": "Casa do Cliente",
+    "clientHomeFallback": "Casa do Cliente",
+    "continueHint": "Pegue seu próximo cachorro e comece o passeio",
+    "pickupTaskLabel": "Pegue seu próximo cachorro",
+    "pickupDescription": "Vá até o cachorro no local marcado no seu mapa e pressione [E] para começar o passeio.",
+    "tooFarFromHome": "Você está muito longe da casa do dono!"
+  },
+  "harvest": {
+    "processingInProgress": "Processamento em andamento, aguarde!",
+    "noBoxesOnScale": "Nenhuma caixa na balança para processar!",
+    "processingComplete": "Processamento completo! {count} caixas, ganhou {currency}{amount}",
+    "boxLoadedScale": "Caixa carregada! {count} {produce}, valor: {currency}{value} — Dirija até a balança de processamento!",
+    "boxLoaded": "Caixa carregada! {count} {produce}, valor: {currency}{value}",
+    "boxPlaced": "Caixa colocada! {count} {produce}, valor: {currency}{value}",
+    "produceHarvested": "{produce} colhido! ({current}/{total})",
+    "produceAddFailed": "Falha ao adicionar {produce} à caixa!"
+  },
+  "miner": {
+    "started": "Trabalho de mineração iniciado! Pegue sua roupa de trabalho e equipamentos.",
+    "newRocks": "Novas pedras apareceram! Continue minerando.",
+    "orePickedUp": "Minério de {ore} pego! Carregue no caminhão.",
+    "rocksRemaining": "Restam {count} pedras para minerar.",
+    "processingInProgress": "Processamento em andamento, aguarde!",
+    "noRocksOnScale": "Sem minérios na balança para processar!",
+    "processingComplete": "Processamento completo! {count} minérios, ganhou {currency}{amount}",
+    "pickaxeReturned": "Picareta devolvida ao porta-malas",
+    "returnVehicleBlip": "Devolver camião",
+    "returnVehicleHint": "Fim do turno — leve o camião de volta ao depósito.",
+    "returnVehiclePrompt": "[E] Entregar o camião",
+    "vehicleNotAtDepot": "O camião deve estar de volta ao depósito!",
+    "tooFarFromDepot": "Está demasiado longe do depósito!",
+    "labelProcessing": "~y~Processamento em andamento...",
+    "labelFinish": "[E] Finalizar Processamento (%d minérios)",
+    "labelPlaceOnScale": "[E] Colocar minério na balança",
+    "labelLoadToTruck": "[E] Carregar minério no caminhão",
+    "labelReturnTool": "[E] Devolver picareta",
+    "labelTakeTool": "[E] Pegar picareta",
+    "labelTakeFromTrunk": "[E] Pegar minério do porta-malas (%d)",
+    "labelNoMoreItems": "~y~Sem mais minérios! Vá ao NPC para finalizar.",
+    "labelPickup": "[E] Pegar minério",
+    "labelBreakAction": "[E] Minerar pedra",
+    "labelPutOnBelt": "[G] Colocar picareta no cinto",
+    "labelTakeFromBelt": "[G] Pegar picareta do cinto",
+    "labelClothesWork": "[E] Vestir roupa de trabalho",
+    "labelClothesNormal": "[E] Vestir roupa normal",
+    "labelFailNotify": "Falha ao iniciar a mineração",
+    "continueHint": "Encontre o próximo depósito de minério e minere-o",
+    "progressTitle": "Minerador",
+    "progressDetail": "Quebre pedras para extrair minério, leve o minério até o caminhão e depois dirija até a balança para processá-lo.",
+    "stepTakeTool": "Pegue a picareta do porta-malas",
+    "stepBreaking": "Continue quebrando a pedra",
+    "stepBreakRock": "Quebre uma pedra para extrair minério",
+    "stepPickupOre": "Pegue o minério do chão",
+    "stepLoadTrunk": "Carregue o minério no caminhão",
+    "stepGoToScale": "Leve o minério até a balança",
+    "stepPlaceOnScale": "Coloque o minério na balança",
+    "stepProcessOre": "Fale com o NPC para processar o minério",
+    "stepNewRound": "Pegue a picareta e comece uma nova rodada"
+  },
+  "lumberjack": {
+    "started": "Trabalho de lenhador iniciado!",
+    "newTrees": "Novas árvores apareceram! Pode continuar cortando.",
+    "takeHatchetFirst": "Pegue seu machado primeiro!",
+    "anotherPlayerCutting": "Outro jogador já está cortando esta árvore!",
+    "alreadyCarryingLog": "Já está carregando uma tora!",
+    "alreadyPickedUp": "Outra pessoa já pegou isso!",
+    "logPickedUp": "Tora pega! Carregue no caminhão.",
+    "hatchetTaken": "Machado pego!",
+    "treesRemaining": "{count} árvores restantes para cortar.",
+    "axeDropBonus": "{name} | Bônus de Drop: +{bonus}%",
+    "treeCutDown": "Árvore de {name} cortada! Colete as toras.",
+    "levelRequired": "Nível {required} necessário para esta árvore! (Atual: {current})",
+    "processingComplete": "Processamento completo! {count} toras, ganhou {currency}{amount}",
+    "labelProcessing": "~y~Processamento em andamento...",
+    "labelFinish": "[E] Finalizar Processamento (%d toras)",
+    "labelPlaceOnScale": "[E] Colocar tora no processamento",
+    "labelLoadToTruck": "[E] Carregar tora no caminhão",
+    "labelReturnTool": "[E] Devolver machado",
+    "labelTakeTool": "[E] Pegar machado",
+    "labelTakeFromTrunk": "[E] Pegar tora do porta-malas (%d)",
+    "labelNoMoreItems": "~y~Sem mais toras! Vá ao NPC para finalizar.",
+    "labelPickup": "[E] Pegar tora",
+    "labelBreakAction": "[E] Cortar Árvore",
+    "labelPutOnBelt": "[G] Colocar machado no cinto",
+    "labelTakeFromBelt": "[G] Pegar machado do cinto",
+    "labelClothesWork": "[E] Vestir roupa de trabalho",
+    "labelClothesNormal": "[E] Vestir roupa normal",
+    "labelFailNotify": "Falha ao iniciar o corte",
+    "processingInProgress": "Processamento em andamento, aguarde!",
+    "noLogsOnScale": "Sem toras na área de processamento!",
+    "hatchetReturned": "Machado devolvido!",
+    "treeFallback": "Árvore",
+    "serverDenied": "Servidor recusou",
+    "continueHint": "Encontre a próxima árvore e comece a cortar",
+    "progressTitle": "Lenhador",
+    "progressDetail": "Corte árvores para obter toras, leve-as até o caminhão e depois dirija até a balança de processamento.",
+    "stepTakeAxe": "Pegue o machado do porta-malas",
+    "stepCutting": "Continue cortando a árvore",
+    "stepCutTree": "Corte uma árvore para derrubar toras",
+    "stepPickupLog": "Pegue a tora do chão",
+    "stepLoadTrunk": "Carregue a tora no caminhão",
+    "stepGoToScale": "Leve as toras até a balança de processamento",
+    "stepPlaceOnScale": "Coloque a tora na balança",
+    "stepProcessLog": "Fale com o NPC para processar as toras",
+    "stepNewRound": "Pegue o machado e comece uma nova rodada"
+  },
+  "scrapyard": {
+    "started": "Trabalho no ferro-velho iniciado! Vista a roupa de trabalho e pegue o equipamento.",
+    "newScraps": "Novas sucatas chegaram! Continue.",
+    "putCrowbarOnBelt": "Coloque o pé de cabra no cinto primeiro!",
+    "scrapPickedUp": "Sucata pega! Carregue no veículo.",
+    "scrapsRemaining": "{count} sucatas restantes.",
+    "processingInProgress": "Processamento em andamento, aguarde!",
+    "noScrapsOnScale": "Sem sucatas na balança!",
+    "processingComplete": "Processamento completo! {count} sucatas, {currency}{amount} ganhos",
+    "crowbarReturned": "Pé de cabra devolvido ao veículo",
+    "workClothesEquipped": "Roupa de trabalho equipada!",
+    "normalClothes": "Voltou para roupa normal",
+    "scrapBlip": "Sucata #{index}",
+    "labelProcessing": "~y~Processamento em andamento...",
+    "labelFinish": "[E] Finalizar Processamento (%d sucatas)",
+    "labelPlaceOnScale": "[E] Colocar sucata na balança",
+    "labelLoadToTruck": "[E] Carregar sucata no veículo",
+    "labelReturnTool": "[E] Devolver pé de cabra",
+    "labelTakeTool": "[E] Pegar pé de cabra",
+    "labelTakeFromTrunk": "[E] Pegar sucata do porta-malas (%d)",
+    "labelNoMoreItems": "~y~Sem mais sucatas! Vá ao NPC.",
+    "labelPickup": "[E] Pegar sucata",
+    "labelBreakAction": "[E] Desmontar sucata",
+    "labelPutOnBelt": "[G] Colocar pé de cabra no cinto",
+    "labelTakeFromBelt": "[G] Pegar pé de cabra do cinto",
+    "labelClothesWork": "[E] Vestir roupa de trabalho",
+    "labelClothesNormal": "[E] Vestir roupa normal",
+    "labelFailNotify": "Não foi possível iniciar a desmontagem",
+    "continueHint": "Dirija até a próxima pilha de sucata no seu mapa",
+    "progressTitle": "Ferro-velho",
+    "progressDetail": "Desmonte as pilhas de sucata, leve as peças até o caminhão e depois dirija até a balança para processá-las.",
+    "stepTakeTool": "Pegue o pé de cabra do porta-malas",
+    "stepBreaking": "Continue desmontando a sucata",
+    "stepBreakScrap": "Desmonte uma pilha de sucata",
+    "stepPickupScrap": "Pegue as peças de sucata do chão",
+    "stepLoadTrunk": "Carregue a sucata no caminhão",
+    "stepGoToScale": "Leve a sucata até a balança",
+    "stepPlaceOnScale": "Coloque a sucata na balança",
+    "stepProcessScrap": "Fale com o NPC para processar a sucata",
+    "stepNewRound": "Pegue o pé de cabra e comece uma nova rodada"
+  },
+  "fruitpicker": {
+    "treesReset": "Todas as árvores foram resetadas! Continue colhendo frutas.",
+    "noMoreFruit": "Sem mais frutas nesta árvore!",
+    "treeOnCooldown": "Sem frutas maduras disponíveis. Renova em ~%{minutes} min — tente outra árvore.",
+    "jobLabel": "Colhedor de Frutas",
+    "produceLabel": "frutas",
+    "vehicleBlip": "Caminhão de Frutas",
+    "placeBoxAndPick": "[E] Colocar caixa e colher {fruit} ({remaining} restantes)",
+    "pickFruit": "[E] Colher {fruit} ({remaining} restantes)",
+    "orangeTreeBlip": "Laranjeira",
+    "appleTreeBlip": "Macieira",
+    "progressTitle": "Colhedor de Frutas",
+    "fruitFallback": "Fruta",
+    "continueHint": "Vá até a próxima árvore e comece a colher",
+    "progressDetail": "Pegue uma caixa, encha-a com frutas das árvores, carregue as caixas cheias no caminhão e depois dirija até a balança.",
+    "stepTakeBox": "Pegue uma caixa do caminhão",
+    "stepPicking": "Continue colhendo as frutas",
+    "stepPickFruit": "Vá até uma árvore e colha frutas",
+    "stepLoadBoxToTruck": "Carregue a caixa cheia no caminhão",
+    "stepGoToScale": "Leve as caixas até a balança",
+    "stepPlaceOnScale": "Coloque a caixa na balança",
+    "stepProcessFruit": "Fale com o NPC para processar as frutas",
+    "stepNewRound": "Pegue uma caixa e comece uma nova rodada"
+  },
+  "newspaper": {
+    "settingsNotFound": "Configurações de entrega de jornal não encontradas!",
+    "started": "Entrega de jornal iniciada!",
+    "noAvailableRoutes": "Nenhuma rota disponível!",
+    "leaderSelecting": "O líder está selecionando bicicletas e área, aguarde...",
+    "progressTitle": "Jornal",
+    "progressDetail": "Entregue jornais nas casas ao longo da rota. Jogue os jornais em cada porta.",
+    "outsideTimeWindow": "Entrega de jornais disponível apenas {startHour}:00 - {endHour}:00 (atual: {current}:00)",
+    "continueHint": "Vá até a próxima rua de entrega",
+    "getOnCycle": "Suba na bicicleta para começar a entregar"
+  },
+  "taxi": {
+    "lookingForCustomer": "Procurando próximo cliente...",
+    "taxiReady": "Táxi pronto! Aguarde a chamada do cliente...",
+    "taxiModelFailed": "Não foi possível carregar o modelo do táxi!",
+    "passengerWokeUp": "O passageiro acordou!",
+    "passengerBoarded": "Passageiro embarcou! Aguardando destino...",
+    "newCustomer": "Novo cliente! Vá até o local de embarque.",
+    "passengerDied": "Seu cliente morreu! Corrida cancelada.",
+    "returnTaxiToDepot": "Devolva o táxi ao depósito para encerrar seu turno.",
+    "destinationSet": "Destino definido! Distância: {distance}m, Tempo bônus: {bonus}s",
+    "vehicleDamaged": "Veículo danificado! Tempo bônus -{penalty}s",
+    "jobEnded": "Trabalho de táxi encerrado! Corridas: {rides}, Total ganho: {symbol}{earned}",
+    "hornPassengerSleeping": "[BUZINA] Passageiro está dormindo!",
+    "pickUpPassenger": "[E] Embarcar passageiro",
+    "dropOffPassenger": "[E] Desembarcar passageiro",
+    "returnTaxiEndShift": "[E] Devolver táxi e encerrar turno",
+    "getBackInTaxi": "[F] Volte para o táxi!",
+    "tooFarFromDepot": "Você está muito longe do depósito",
+    "tooFarFromDropoff": "Você está muito longe do ponto de destino",
+    "progressTitle": "Táxi",
+    "progressDetail": "Pegue passageiros e leve-os ao destino. Dirija com cuidado para ganhar o bônus de tempo.",
+    "stagePickup": "Pegue o passageiro",
+    "stageDropoff": "Deixe o passageiro",
+    "stageDepot": "Devolva o táxi ao depósito",
+    "ridesCompleted": "{count} corridas concluídas",
+    "meterBonusTime": "bônus {seconds}s",
+    "statCustomers": "Passageiros levados",
+    "statEarnings": "Ganho total"
+  },
+  "trucker": {
+    "illegalAccepted": "Rota ilegal aceita! Tenha cuidado...",
+    "trailerLost": "Trailer perdido! Você falhou nesta entrega.",
+    "failedReconnect": "Falha ao reconectar ao trabalho de caminhoneiro!",
+    "reconnected": "Reconectado ao trabalho de caminhoneiro!",
+    "failedGetData": "Falha ao obter dados do trabalho!",
+    "started": "Trabalho de caminhoneiro iniciado! Vá até o local de retirada do trailer.",
+    "truckReady": "Caminhão pronto! Entre no caminhão.",
+    "truckModelFailed": "Não foi possível carregar o modelo do caminhão!",
+    "trailerModelFailed": "Não foi possível carregar o modelo do trailer!",
+    "trailerSpawnBlocked": "Ponto de spawn do trailer bloqueado! Tentando novamente em 5 segundos...",
+    "trailerSpawnStillBlocked": "Ponto de spawn do trailer ainda bloqueado! Gerando mesmo assim.",
+    "trailerAttachedWaiting": "Trailer acoplado! Aguardando outros jogadores...",
+    "trailerAttachedWaitRoute": "Trailer acoplado! Aguarde a atribuição da rota...",
+    "trailerDetached": "Trailer desacoplado! Volte e reacople!",
+    "needToBeInTruck": "Você precisa estar no caminhão!",
+    "trailerGone": "O trailer sumiu! Trabalho falhou.",
+    "trailerReattached": "Trailer reacoplado! Continue sua entrega.",
+    "failedReattach": "Falha ao reacoplar trailer. Tente novamente.",
+    "noTrailerNearby": "Nenhum trailer por perto!",
+    "failedAttach": "Falha ao acoplar trailer. Tente novamente.",
+    "noTrailerAttached": "Nenhum trailer acoplado!",
+    "tooFarToDeliver": "O trailer não está na zona de entrega!",
+    "perfectDelivery": "Trailer entregue em perfeitas condições! Devolva o caminhão ao depósito.",
+    "mustBeInTruck": "Você precisa estar no caminhão!",
+    "notJobTruck": "Este não é o caminhão do trabalho!",
+    "truckReturned": "Caminhão devolvido! Aguardando resumo...",
+    "waitingForTrailers": "Aguardando outros jogadores acoplarem seus trailers...",
+    "leaderAcceptedIllegal": "Líder aceitou rota ilegal! Tenha cuidado...",
+    "leaderChoseNormal": "Líder escolheu rota normal.",
+    "returnTruckToDepot": "Devolva o caminhão ao depósito.",
+    "newDeliveryRoute": "Nova rota de entrega atribuída!",
+    "truckReturnedWaiting": "Caminhão devolvido! Aguardando outros jogadores devolverem seus caminhões...",
+    "youLeftJob": "Você saiu do trabalho.",
+    "headToTrailer": "Vá até o local marcado para pegar o trailer!",
+    "trailerDestroyed": "Trailer destruído! Entrega falhou.",
+    "trailerDeliveredCondition": "Trailer entregue com {condition}% de condição. Devolva o caminhão ao depósito.",
+    "routeAssigned": "Rota atribuída ({route})! Distância: {distance}m",
+    "progressTitle": "Caminhoneiro",
+    "progressDetail": "Entregue cargas para destinos por todo o estado. Dirija com cuidado para evitar danos.",
+    "stagePickup": "Apanhar Reboque",
+    "stageDelivery": "Entregar Carga",
+    "stageReturn": "Devolver Camião",
+    "stageWaiting": "A aguardar...",
+    "deliveriesCompleted": "Entregas concluídas: {count}",
+    "blipPickupTrailer": "Apanhar Reboque",
+    "blipDeliverCargo": "Entregar Carga",
+    "blipIllegalDelivery": "Entrega Ilegal",
+    "blipReturnTruck": "Devolver Camião",
+    "aPlayerFallback": "Um jogador",
+    "teammateFallback": "Companheiro",
+    "playerReturnedTruck": "{name} devolveu o camião.",
+    "teammateTruck": "Camião de {name}",
+    "continueHint": "Pegue a próxima carga no depósito"
+  },
+  "repair": {
+    "failedInit": "Falha ao inicializar o trabalho!",
+    "newTasks": "Novas tarefas de reparo atribuídas!",
+    "allComplete": "Todos os reparos concluídos! Volte para finalizar o trabalho.",
+    "jobStarted": "Trabalho de {label} iniciado! Repare {tasks}.",
+    "taskRepaired": "{task} reparado! {remaining} restantes"
+  },
+  "target": {
+    "interact": "Interagir",
+    "pickup": "Pegar",
+    "finishProcessing": "Finalizar processamento",
+    "finishProcessingPrompt": "[E] Concluir Processamento",
+    "processing": "Processando...",
+    "placeOnScale": "Colocar na balança",
+    "loadToTruck": "Carregar no caminhão",
+    "returnTool": "Devolver ferramenta",
+    "takeTool": "Pegar ferramenta",
+    "takeFromTrunk": "Pegar do porta-malas",
+    "changeClothes": "Trocar roupa",
+    "changeClothesPrompt": "[E] Trocar de roupa",
+    "changeClothesNormal": "[E] Vestir roupa normal",
+    "changeClothesWork": "[E] Vestir roupa de trabalho",
+    "cleanItemPrompt": "[E] Limpar item",
+    "finishJobPrompt": "[E] Concluir Trabalho",
+    "pickFruit": "Apanhar Fruta",
+    "pickUpLog": "Apanhar Tronco",
+    "returnItem": "Devolver Item",
+    "cutTree": "Cortar {name}",
+    "pickUpCarcass": "Pegar {label} ({weight} kg)"
+  },
+  "blip": {
+    "buyer": "Comprador",
+    "tree": "Árvore",
+    "animal": "Animal",
+    "ore": "Minério",
+    "divePoint": "Ponto de Mergulho",
+    "returnBoat": "Devolver Barco",
+    "customerCar": "Carro do Cliente",
+    "delivery": "Entrega",
+    "returnVehicle": "Devolver Veículo",
+    "returnToFinish": "Voltar para Finalizar",
+    "nextTask": "Próxima Tarefa",
+    "cargoDepot": "Depósito de Cargas",
+    "deliveryPoint": "Ponto de Entrega",
+    "returnToDepot": "Voltar ao Depósito"
+  },
+  "server": {
+    "cannotInviteJobActive": "Não é possível convidar jogadores durante um trabalho ativo!",
+    "cannotInviteSoloJob": "Este trabalho é apenas individual — não é possível convidar jogadores!",
+    "playerAlreadyInvited": "Este jogador já tem um convite pendente!",
+    "inviteCooldown": "Aguarde {seconds} segundos antes de convidar este jogador novamente.",
+    "identifierNotReady": "Os dados do teu jogador ainda não foram carregados, tenta novamente.",
+    "targetIdentifierNotReady": "Os dados do jogador alvo ainda não foram carregados, tenta novamente.",
+    "cannotKickJobActive": "Não é possível expulsar jogadores durante um trabalho ativo!",
+    "lobbyClosed": "Lobby fechado: Líder saiu",
+    "lobbyClosedDisconnect": "Lobby fechado: Líder desconectou",
+    "jobCompletedLobbyDisbanded": "Trabalho concluído! Lobby encerrado.",
+    "qualityBonus": "Qualidade {quality}! x{multiplier} bônus",
+    "poopPenalty": "Você não limpou o cocô do seu cachorro! -{symbol}{amount}",
+    "poopCleanBonus": "Cocô limpo! +{symbol}{amount}",
+    "lawnRaked": "Gramado capinado! +{symbol}{money} +{xp} XP",
+    "truckReturnFailed": "Você demorou demais para devolver o caminhão! Marcado como falha.",
+    "repairComplete": "{item} reparado! +{symbol}{money} +{xp} XP",
+    "referralLimitReached": "Você atingiu o limite diário de bônus por indicação",
+    "referralBonus": "Bônus de Indicação! +{xp} XP por jogar juntos!",
+    "lobbyNoLongerExists": "Este lobby não existe mais.",
+    "lobbyPlayerReconnected": "{name} reconectou ao lobby.",
+    "lobbyPlayerDisconnected": "{name} desconectou.",
+    "lobbyOwnerDisconnectedNewOwner": "Líder desconectou. {name} é o novo líder.",
+    "lobbyClosedNoReplacement": "Lobby fechado: Nenhum líder substituto encontrado.",
+    "jobEndedOwnerLeft": "Trabalho encerrado: O líder saiu.",
+    "toolEfficiencyUpgrade": "Melhoria de eficiência da ferramenta",
+    "jobCancelled": "Trabalho cancelado! Lobby encerrado.",
+    "jobCancelledByAdmin": "Seu trabalho foi cancelado por um administrador.",
+    "noActiveJob": "Você não tem um trabalho ativo.",
+    "jobCancelledAdmin": "Trabalho '{jobId}' cancelado para o jogador {playerId}.",
+    "cancelJobUsage": "Uso: /canceljob [playerId] - Cancele seu próprio trabalho ou o de um jogador",
+    "routeLevelInsufficient": "Você não atende ao nível necessário para esta rota. (Nível {current}/{required})",
+    "routeLevelInsufficientMember": "{name} não atende ao nível necessário para esta rota. (Nível {current}/{required})",
+    "globalEventCompleted": "Evento global concluído: {title}!"
+  },
+  "shifts": {
+    "morning": "Turno da Manhã",
+    "afternoon": "Turno da Tarde",
+    "evening": "Turno da Noite",
+    "night": "Turno da Madrugada"
+  },
+  "perks": {
+    "trunk_capacity": {
+      "name": "Carregador Pesado",
+      "desc": "Aumenta a capacidade do porta-malas do veículo."
+    },
+    "strong_muscles": {
+      "name": "Músculos Fortes",
+      "desc": "Aumenta a velocidade de movimento ao carregar cargas pesadas."
+    },
+    "negotiator": {
+      "name": "Negociador",
+      "desc": "Ganhe mais dinheiro nos pagamentos de trabalho."
+    },
+    "xp_boost": {
+      "name": "Aprendiz Rápido",
+      "desc": "Ganhe mais XP em todas as ações de trabalho."
+    },
+    "speed_demon": {
+      "name": "Demônio da Velocidade",
+      "desc": "Melhora o desempenho do motor dos veículos de trabalho."
+    },
+    "store_discount": {
+      "name": "Língua de Prata",
+      "desc": "Obtenha descontos em lojas fora de serviço. (Passivo)"
+    },
+    "breath_capacity": {
+      "name": "Mergulhador",
+      "desc": "Aumenta a capacidade de respiração subaquática. (Passivo)"
+    },
+    "repair_speed": {
+      "name": "Mecânico",
+      "desc": "Conserte veículos mais rápido. (Passivo)"
+    },
+    "notEnoughPoints": "Pontos de habilidade insuficientes!"
+  },
+  "serverError": {
+    "notInJob": "Não está no trabalho",
+    "noLobby": "Sem lobby",
+    "noSession": "Sem sessão",
+    "configError": "Erro de configuração",
+    "invalidIndex": "Índice inválido",
+    "levelRequired": "Nível {level} necessário!",
+    "rateLimited": "Aguarde antes de tentar novamente.",
+    "tooFarFromNpc": "Você precisa estar perto do NPC para fazer isso.",
+    "notEnoughMoney": "Dinheiro insuficiente!",
+    "invalidAmount": "Quantidade inválida!",
+    "invalidProduct": "Produto inválido!",
+    "purchaseFailed": "Ocorreu um erro durante a compra.",
+    "sellFailed": "Ocorreu um erro durante a venda.",
+    "alreadyBroken": "Já quebrado",
+    "anotherPlayerBreaking": "Outro jogador está quebrando isso",
+    "alreadyPickedUp": "Já foi pego",
+    "alreadyUnlocked": "Já desbloqueado",
+    "invalidZone": "Zona inválida!",
+    "alreadyCollected": "Este objeto já foi coletado",
+    "someoneElseWorking": "Outra pessoa está trabalhando nisso!",
+    "someoneElseDelivering": "Outra pessoa está entregando",
+    "invalidAction": "Ação inválida",
+    "invalidType": "Tipo inválido",
+    "alreadySold": "Já vendido!",
+    "noItemsToSell": "Sem itens para vender!",
+    "alreadyCarrying": "Você já está carregando",
+    "notCarrying": "Você não está carregando",
+    "trunkFull": "Porta-malas cheio",
+    "trunkCapacityFull": "Capacidade do porta-malas cheia",
+    "noItemsInTrunk": "Sem itens no porta-malas",
+    "alreadyDelivered": "Já entregue",
+    "invalidDeliveryPoint": "Ponto de entrega inválido",
+    "invalidLocation": "Local inválido",
+    "objectNotFound": "Objeto não encontrado",
+    "vehicleAlreadySpawned": "Veículo já gerado",
+    "failedCreateVehicle": "Falha ao criar veículo",
+    "vehicleEntityNotFound": "Entidade do veículo não encontrada",
+    "missingParameters": "Parâmetros ausentes",
+    "invalidSpawnData": "Dados de spawn inválidos",
+    "jobConfigNotFound": "Configuração do trabalho não encontrada",
+    "noToolAssigned": "Nenhuma ferramenta atribuída a você",
+    "notYourTool": "Esta não é sua ferramenta",
+    "toolAlreadyTaken": "Ferramenta já foi pega",
+    "toolBeingTaken": "Ferramenta sendo pega por outro jogador",
+    "positionBeingTaken": "Posição sendo ocupada por outro jogador",
+    "noPositionAvailable": "Nenhuma posição disponível",
+    "noActiveTruck": "Nenhum caminhão ativo",
+    "truckNotLoading": "Caminhão não está carregando",
+    "boxesFull": "Caixas cheias",
+    "palletsFull": "Pallets cheios",
+    "invalidJob": "Trabalho inválido",
+    "jobEnding": "Trabalho encerrando",
+    "fishingNoFishFound": "Nenhum peixe encontrado!",
+    "fishingInvalidRod": "Vara inválida!",
+    "fishingNoRod": "Você não tem uma vara!",
+    "fishingFishCaughtSingle": "{label} pescado!",
+    "fishingFishCaughtMultiple": "{count}x {label} pescados!",
+    "fishingNoFishToSell": "Sem peixes para vender!",
+    "divingZoneAlreadySelected": "Zona já selecionada!",
+    "deliveryNotInLoadingPhase": "Não está na fase de carregamento",
+    "deliveryNotInDeliveryPhase": "Não está na fase de entrega",
+    "deliveryAlreadyCarryingBox": "Você já está carregando uma caixa",
+    "deliveryNotCarryingBox": "Você não está carregando uma caixa",
+    "deliveryNoBoxesInTrunk": "Sem caixas no porta-malas",
+    "deliveryCompleteFirst": "Complete todas as entregas primeiro!",
+    "deliverySpawnFailed": "Falha no spawn do veículo, trabalho cancelado.",
+    "huntingSomeoneElsePickingUp": "Outra pessoa está pegando isso!",
+    "huntingAnimalNotFound": "Animal não encontrado",
+    "huntingAnimalStillAlive": "O animal ainda está vivo",
+    "huntingAnimalAlreadyPickedUp": "Este animal já foi pego",
+    "cleanupTruckFullDeliverFirst": "Caminhão cheio! Entregue primeiro.",
+    "cleanupBinAlreadyEmpty": "Lixeira já está vazia",
+    "cleanupNoBagsLeft": "Sem sacos restantes",
+    "warehouseBoxAlreadyTaken": "Caixa já foi pega",
+    "warehousePalletAlreadyTaken": "Pallet já foi pego",
+    "warehouseTruckNotReady": "Caminhão não está pronto",
+    "forkliftWrongMode": "Modo errado",
+    "forkliftInvalidCrate": "Caixote inválido",
+    "forkliftCrateAlreadyTaken": "Caixote já foi pego",
+    "forkliftConveyorBusy": "Esteira ocupada",
+    "forkliftInvalidSlot": "Vaga inválida",
+    "forkliftSlotOccupied": "Vaga ocupada",
+    "forkliftNotCarrying": "Não está carregando",
+    "forkliftInvalidCrateData": "Dados do caixote inválidos",
+    "forkliftNoCratesOnBelt": "Sem caixotes na esteira",
+    "forkliftNeed3Crates": "Precisa de 3 caixotes na esteira",
+    "forkliftEmptySlot": "Vaga vazia",
+    "forkliftAlreadyCarrying": "Já está carregando",
+    "forkliftInvalidTarget": "Alvo inválido",
+    "forkliftInvalidShelfTarget": "Prateleira alvo inválida",
+    "forkliftShelfOccupied": "Prateleira ocupada",
+    "newspaperLevelRequiredArea": "Nível {level} necessário para esta área!",
+    "newspaperDailyCompleted": "Missão diária já concluída! Reseta em: {hours}h {minutes}m",
+    "adminSetLevelUsage": "Uso: /setjoblevel [playerID] [jobId] [level]",
+    "adminLevelRange": "O nível deve estar entre 1 e 10",
+    "adminLevelSet": "Nível {level} de {jobId} definido para o jogador {playerId}",
+    "adminYourLevelSet": "Seu nível de {jobId} foi definido para {level}",
+    "adminXpManagerNotAvailable": "XPManager não disponível",
+    "adminGetLevelUsage": "Uso: /getjoblevel [playerID] [jobId]",
+    "adminPlayerJobLevel": "Jogador {playerId} - {jobId}: Nível {level} (XP: {xp}/{maxXp})",
+    "adminToolSelected": "Selecionado: {tool}",
+    "adminToolUnlocked": "Ferramenta desbloqueada!",
+    "alreadyHarvested": "Já colhido",
+    "noLootAvailable": "Nenhum saque disponível",
+    "tooFar": "Você está muito longe",
+    "tooFarFromDeliveryPoint": "Você está muito longe do ponto de entrega"
+  },
+  "jobs": {
+    "miner": {
+      "name": "Minerador",
+      "subtitle": "Operações de Mineração Subterrânea",
+      "interactionText": "Iniciar Trabalho de Mineração",
+      "blipLabel": "Trabalho de Mineração",
+      "locationLabel": "Mina da Pedreira",
+      "description": [
+        "Extraia minérios valiosos de depósitos subterrâneos",
+        "Use equipamentos de mineração para quebrar pedras",
+        "Transporte materiais para a instalação de processamento",
+        "Trabalhe em equipe para recompensas bônus"
+      ],
+      "items": {
+        "pickaxe": "Picareta",
+        "miningHelmet": "Capacete de Mineração",
+        "oreCart": "Carrinho de Minério"
+      },
+      "oreTypes": {
+        "coal": "Carvão",
+        "iron": "Ferro",
+        "gold": "Ouro",
+        "emerald": "Esmeralda",
+        "diamond": "Diamante"
+      },
+      "preview": {
+        "step1Title": "Iniciar o Trabalho",
+        "step1Desc": [
+          "Vá até o NPC na pedreira",
+          "Pressione E para abrir o menu de trabalho",
+          "Selecione sua área e pressione Iniciar"
+        ],
+        "step2Title": "Troque de Roupa",
+        "step2Desc": [
+          "Vá até a cabine portátil próxima",
+          "Entre para vestir sua roupa de trabalho",
+          "Suas roupas originais serão restauradas quando o trabalho terminar"
+        ],
+        "step3Title": "Colete Suas Ferramentas",
+        "step3Desc": [
+          "Vá até o porta-malas aberto do veículo",
+          "Pegue uma picareta — cada jogador pega a sua",
+          "Até 4 ferramentas disponíveis para jogo cooperativo"
+        ],
+        "step4Title": "Minere as Pedras",
+        "step4Desc": [
+          "Vá até a área de mineração com sua picareta",
+          "Mire em uma pedra e balance para quebrá-la",
+          "As pedras se quebram em pedaços de minério coletáveis"
+        ],
+        "step5Title": "Colete o Minério",
+        "step5Desc": [
+          "Pegue os pedaços de minério após quebrar uma pedra",
+          "Você carrega o minério nos braços",
+          "Leve de volta ao porta-malas do veículo"
+        ],
+        "step6Title": "Carregue o Veículo",
+        "step6Desc": [
+          "Leve seu minério até o porta-malas do veículo",
+          "O minério é carregado automaticamente no caminhão",
+          "Encha o porta-malas e dirija até a área de processamento"
+        ],
+        "step7Title": "Processe na Balança",
+        "step7Desc": [
+          "Dirija até o ponto de processamento",
+          "Coloque seu minério na balança",
+          "Cada item é pesado e você recebe o pagamento"
+        ],
+        "step8Title": "Coleta pelo NPC",
+        "step8Desc": [
+          "Após o processamento, um NPC carregador coleta os itens",
+          "O NPC vai até lá e pega o minério processado",
+          "Você ganha dinheiro e XP por cada lote concluído"
+        ]
+      }
+    },
+    "lumberjack": {
+      "name": "Lenhador",
+      "subtitle": "Operações de Extração Florestal",
+      "interactionText": "Iniciar Trabalho de Lenhador",
+      "blipLabel": "Trabalho de Lenhador",
+      "locationLabel": "Paleto Forest",
+      "description": [
+        "Corte árvores em áreas de extração designadas",
+        "Colete e carregue toras no seu caminhão",
+        "Entregue toras na serraria para processamento",
+        "Trabalhe em equipe para recompensas bônus"
+      ],
+      "items": {
+        "hatchet": "Machado",
+        "safetyVest": "Colete de Segurança",
+        "pickupTruck": "Caminhonete"
+      },
+      "treeTypes": {
+        "pine": "Pinheiro",
+        "oak": "Carvalho",
+        "maple": "Bordo"
+      },
+      "drops": {
+        "wood": "Madeira",
+        "pineResin": "Resina de Pinheiro",
+        "woodShavings": "Aparas de Madeira",
+        "oakWood": "Madeira de Carvalho",
+        "oakBark": "Casca de Carvalho",
+        "mapleWood": "Madeira de Bordo",
+        "mapleSap": "Seiva de Bordo"
+      },
+      "preview": {
+        "step1Title": "Iniciar o Trabalho",
+        "step1Desc": [
+          "Vá até o NPC na floresta",
+          "Pressione E para abrir o menu de trabalho",
+          "Selecione sua área e pressione Iniciar"
+        ],
+        "step2Title": "Troque de Roupa",
+        "step2Desc": [
+          "Vá até a cabine portátil próxima",
+          "Entre para vestir sua roupa de trabalho",
+          "Suas roupas originais serão restauradas quando o trabalho terminar"
+        ],
+        "step3Title": "Colete Suas Ferramentas",
+        "step3Desc": [
+          "Vá até o porta-malas aberto do veículo",
+          "Pegue um machado — cada jogador pega o seu",
+          "Até 4 ferramentas disponíveis para jogo cooperativo"
+        ],
+        "step4Title": "Corte as Árvores",
+        "step4Desc": [
+          "Vá até a área florestal com seu machado",
+          "Mire em uma árvore e balance para cortá-la",
+          "As árvores derrubam toras quando totalmente cortadas"
+        ],
+        "step5Title": "Colete a Tora",
+        "step5Desc": [
+          "Pegue a tora após cortar uma árvore",
+          "Você carrega a tora nos braços",
+          "Leve de volta ao porta-malas do veículo"
+        ],
+        "step6Title": "Carregue o Veículo",
+        "step6Desc": [
+          "Leve sua tora até o porta-malas do veículo",
+          "A tora é carregada automaticamente no caminhão",
+          "Encha o porta-malas e dirija até a área de processamento"
+        ],
+        "step7Title": "Processe na Balança",
+        "step7Desc": [
+          "Dirija até o ponto de processamento",
+          "Coloque suas toras na balança",
+          "Cada item é pesado e você recebe o pagamento"
+        ],
+        "step8Title": "Coleta pelo NPC",
+        "step8Desc": [
+          "Após o processamento, um NPC carregador coleta os itens",
+          "O NPC vai até lá e pega as toras processadas",
+          "Você ganha dinheiro e XP por cada lote concluído"
+        ]
+      }
+    },
+    "scrapyard": {
+      "name": "Trabalhador do Ferro-Velho",
+      "subtitle": "Reciclagem de Sucata",
+      "interactionText": "Iniciar Trabalho no Ferro-Velho",
+      "blipLabel": "Ferro-Velho",
+      "locationLabel": "Ferro-Velho",
+      "description": [
+        "Desmonte veículos sucateados e recupere peças valiosas",
+        "Use um pé de cabra para separar componentes metálicos",
+        "Carregue sucatas coletadas no caminhão",
+        "Pese e venda na estação de processamento"
+      ],
+      "items": {
+        "crowbar": "Pé de Cabra",
+        "workGloves": "Luvas de Trabalho",
+        "scrapMetal": "Sucata"
+      },
+      "preview": {
+        "step1Title": "Iniciar o Trabalho",
+        "step1Desc": [
+          "Vá até o NPC no ferro-velho",
+          "Pressione E para abrir o menu de trabalho",
+          "Selecione sua área e pressione Iniciar"
+        ],
+        "step2Title": "Troque de Roupa",
+        "step2Desc": [
+          "Vá até a cabine portátil próxima",
+          "Entre para vestir sua roupa de trabalho",
+          "Suas roupas originais serão restauradas quando o trabalho terminar"
+        ],
+        "step3Title": "Colete Suas Ferramentas",
+        "step3Desc": [
+          "Vá até o porta-malas aberto do veículo",
+          "Pegue um pé de cabra — cada jogador pega o seu",
+          "Até 4 ferramentas disponíveis para jogo cooperativo"
+        ],
+        "step4Title": "Desmonte as Sucatas",
+        "step4Desc": [
+          "Vá até os carros velhos no pátio",
+          "Use seu pé de cabra para desmontar peças",
+          "As carcaças se desmontam em sucata coletável"
+        ],
+        "step5Title": "Colete a Sucata",
+        "step5Desc": [
+          "Pegue as peças após a desmontagem",
+          "Leve as peças até o veículo",
+          "Coloque de volta no porta-malas do veículo"
+        ],
+        "step6Title": "Carregue o Veículo",
+        "step6Desc": [
+          "Leve sua sucata até o porta-malas do veículo",
+          "A sucata é carregada automaticamente no caminhão",
+          "Encha o porta-malas e dirija até a área de processamento"
+        ],
+        "step7Title": "Processe na Balança",
+        "step7Desc": [
+          "Dirija até o ponto de processamento",
+          "Coloque sua sucata na balança",
+          "Cada item é pesado e você recebe o pagamento"
+        ],
+        "step8Title": "Coleta pelo NPC",
+        "step8Desc": [
+          "Após o processamento, um NPC carregador coleta os itens",
+          "O NPC vai até lá e pega a sucata processada",
+          "Você ganha dinheiro e XP por cada lote concluído"
+        ]
+      }
+    },
+    "hunting": {
+      "name": "Caçador",
+      "subtitle": "Caça Profissional",
+      "interactionText": "Iniciar Trabalho de Caça",
+      "blipLabel": "Caça",
+      "locationLabel": "Caça",
+      "description": [
+        "Pegue suas armas e vá caçar",
+        "Cace cervos, javalis e coelhos",
+        "Carregue os animais caçados no veículo",
+        "Leve até a balança e venda"
+      ],
+      "items": {
+        "huntingRifle": "Rifle de Caça",
+        "binoculars": "Binóculos",
+        "huntingBag": "Bolsa de Caça"
+      },
+      "weapons": {
+        "tier1": "Rifle de Caça",
+        "tier2": "Rifle de Ferrolho",
+        "tier3": "Sniper Pesada"
+      },
+      "animals": {
+        "wildBoar": "Javali",
+        "rabbit": "Coelho",
+        "coyote": "Coiote",
+        "mountainLion": "Puma",
+        "hawk": "Falcão",
+        "crow": "Corvo"
+      },
+      "areas": {
+        "forest": "Paleto Forest",
+        "desert": "Sandy Shores Desert",
+        "swamp": "Pântano"
+      },
+      "blips": {
+        "forestArea": "Área Florestal",
+        "desertArea": "Área do Deserto",
+        "swampArea": "Área do Pântano"
+      },
+      "preview": {
+        "step1Title": "Iniciar o Trabalho",
+        "step1Desc": [
+          "Vá até o NPC no alojamento de caça",
+          "Pressione E para abrir o menu de trabalho",
+          "Selecione sua área e pressione Iniciar"
+        ],
+        "step2Title": "Troque de Roupa",
+        "step2Desc": [
+          "Vá até a cabine portátil próxima",
+          "Entre para vestir seu equipamento de caça",
+          "Suas roupas originais serão restauradas quando o trabalho terminar"
+        ],
+        "step3Title": "Pegue Seu Veículo",
+        "step3Desc": [
+          "Vá até o caminhão de caça próximo",
+          "Você recebe uma arma automaticamente",
+          "Dirija até a área de caça"
+        ],
+        "step4Title": "Cace os Animais",
+        "step4Desc": [
+          "Explore a área de caça e encontre animais",
+          "Use seu rifle para caçar javalis, coelhos e mais",
+          "Cada animal tem peso e valor diferentes"
+        ],
+        "step5Title": "Carregue o Animal",
+        "step5Desc": [
+          "Vá até um animal abatido para pegá-lo",
+          "Carregue-o nos ombros até o caminhão",
+          "Cada animal tem peso diferente"
+        ],
+        "step6Title": "Carregue o Veículo",
+        "step6Desc": [
+          "Leve sua caça até o caminhão",
+          "Carregue os animais na caçamba do caminhão",
+          "Encha o caminhão e dirija até o processamento"
+        ],
+        "step7Title": "Processe e Venda",
+        "step7Desc": [
+          "Dirija até a estação de processamento",
+          "Coloque sua caça na balança para pesagem",
+          "Um NPC carregador coleta os produtos processados"
+        ]
+      }
+    },
+    "farmer": {
+      "name": "Agricultor",
+      "subtitle": "Colheita de Frutas e Vegetais",
+      "interactionText": "Iniciar Trabalho na Fazenda",
+      "blipLabel": "Fazenda de Vegetais",
+      "locationLabel": "Grapeseed Farm",
+      "description": [
+        "Pegue um caixote do veículo",
+        "Colha vegetais das plantações",
+        "Encha seu caixote e carregue no caminhão",
+        "Entregue caixotes cheios na estação de processamento"
+      ],
+      "items": {
+        "harvestCrate": "Caixote de Colheita",
+        "freshProduce": "Produtos Frescos",
+        "deliveryTruck": "Caminhão de Entrega"
+      },
+      "produceTypes": {
+        "lettuce": "Alface",
+        "pumpkin": "Abóbora",
+        "melon": "Melão",
+        "watermelon": "Melancia"
+      },
+      "preview": {
+        "step1Title": "Iniciar o Trabalho",
+        "step1Desc": [
+          "Vá até o NPC na fazenda",
+          "Pressione E para abrir o menu de trabalho",
+          "Selecione sua área e pressione Iniciar"
+        ],
+        "step2Title": "Troque de Roupa",
+        "step2Desc": [
+          "Vá até a cabine portátil próxima",
+          "Entre para vestir sua roupa de trabalho",
+          "Suas roupas originais serão restauradas quando o trabalho terminar"
+        ],
+        "step3Title": "Pegue Seu Veículo",
+        "step3Desc": [
+          "Vá até o veículo de trabalho próximo",
+          "Pegue um caixote vazio do caminhão",
+          "Dirija até o campo para começar a colher"
+        ],
+        "step4Title": "Colha as Plantas",
+        "step4Desc": [
+          "Vá até uma planta e interaja para colher",
+          "Cada planta produz produtos frescos",
+          "Encha seu caixote antes de voltar"
+        ],
+        "step5Title": "Carregue os Produtos",
+        "step5Desc": [
+          "Pegue seu caixote cheio",
+          "Leve de volta ao veículo",
+          "Carregue na caçamba do caminhão"
+        ],
+        "step6Title": "Carregue o Veículo",
+        "step6Desc": [
+          "Leve seu caixote cheio até o caminhão",
+          "Carregue na caçamba do veículo",
+          "Encha o caminhão e dirija até a área de processamento"
+        ],
+        "step7Title": "Processe e Venda",
+        "step7Desc": [
+          "Dirija até a estação de processamento",
+          "Coloque seus caixotes na balança",
+          "Um NPC carregador coleta os produtos processados"
+        ]
+      }
+    },
+    "fruitpicker": {
+      "name": "Colhedor de Frutas",
+      "subtitle": "Colheita de Frutas",
+      "interactionText": "Iniciar Trabalho de Colheita de Frutas",
+      "blipLabel": "Pomar",
+      "locationLabel": "Pomar",
+      "description": [
+        "Pegue um caixote do veículo",
+        "Vá até as árvores frutíferas e colha laranjas e maçãs",
+        "Encha seu caixote e carregue no caminhão",
+        "Entregue caixotes cheios na estação de processamento"
+      ],
+      "items": {
+        "harvestCrate": "Caixote de Colheita",
+        "freshOranges": "Laranjas Frescas",
+        "deliveryTruck": "Caminhão de Entrega"
+      },
+      "produceTypes": {
+        "orange": "Laranja",
+        "apple": "Maçã"
+      },
+      "qualityTiers": {
+        "common": "Comum",
+        "fresh": "Fresca",
+        "premium": "Premium",
+        "organic": "Orgânica"
+      },
+      "preview": {
+        "step1Title": "Iniciar o Trabalho",
+        "step1Desc": [
+          "Vá até o NPC no pomar de laranjas",
+          "Pressione E para abrir o menu de trabalho",
+          "Selecione sua área e pressione Iniciar"
+        ],
+        "step2Title": "Troque de Roupa",
+        "step2Desc": [
+          "Vá até a cabine portátil próxima",
+          "Entre para vestir sua roupa de trabalho",
+          "Suas roupas originais serão restauradas quando o trabalho terminar"
+        ],
+        "step3Title": "Pegue Seu Veículo",
+        "step3Desc": [
+          "Vá até o veículo de trabalho próximo",
+          "Pegue um caixote vazio do caminhão",
+          "Dirija até as laranjeiras para começar a colher"
+        ],
+        "step4Title": "Colha Laranjas",
+        "step4Desc": [
+          "Vá até uma laranjeira",
+          "Interaja para colher laranjas",
+          "Encha seu caixote antes de voltar"
+        ],
+        "step5Title": "Carregue a Caixa",
+        "step5Desc": [
+          "Pegue seu caixote cheio",
+          "Leve de volta ao veículo",
+          "Carregue na caçamba do caminhão"
+        ],
+        "step6Title": "Carregue o Veículo",
+        "step6Desc": [
+          "Leve seu caixote cheio até o caminhão",
+          "Carregue na caçamba do veículo",
+          "Encha o caminhão e dirija até o processamento"
+        ],
+        "step7Title": "Processe e Venda",
+        "step7Desc": [
+          "Dirija até a estação de processamento",
+          "Coloque seus caixotes na balança",
+          "Um NPC carregador coleta os produtos processados"
+        ]
+      }
+    },
+    "cleaner": {
+      "name": "Faxineiro de Rua",
+      "subtitle": "Serviço de Limpeza Urbana",
+      "interactionText": "Iniciar Trabalho de Limpeza",
+      "blipLabel": "Limpeza Urbana",
+      "locationLabel": "Depósito de Limpeza Urbana",
+      "description": [
+        "Pegue o esfregão do porta-malas do veículo",
+        "Vá até as manchas de sujeira marcadas no mapa",
+        "Limpe as manchas usando seu esfregão",
+        "Volte para receber o pagamento ao terminar"
+      ],
+      "items": {
+        "mop": "Esfregão",
+        "dirtStain": "Mancha de Sujeira",
+        "serviceVan": "Van de Serviço"
+      },
+      "areas": {
+        "downtown": "Centro"
+      },
+      "preview": {
+        "step1Title": "Iniciar o Trabalho",
+        "step1Desc": [
+          "Vá até o NPC no depósito de limpeza",
+          "Pressione E para abrir o menu de trabalho",
+          "Selecione sua rota e pressione Iniciar"
+        ],
+        "step2Title": "Troque de Roupa",
+        "step2Desc": [
+          "Vá até a cabine portátil próxima",
+          "Entre para vestir sua roupa de trabalho",
+          "Suas roupas originais serão restauradas quando o trabalho terminar"
+        ],
+        "step3Title": "Colete Suas Ferramentas",
+        "step3Desc": [
+          "Vá até o porta-malas do veículo",
+          "Pegue um esfregão — cada jogador pega o seu",
+          "Até 4 ferramentas disponíveis para jogo cooperativo"
+        ],
+        "step4Title": "Dirija até a Área de Trabalho",
+        "step4Desc": [
+          "Entre no veículo e siga o GPS",
+          "Dirija até os locais de manchas marcados",
+          "Cada rota tem várias manchas de sujeira para limpar"
+        ],
+        "step5Title": "Limpe as Manchas",
+        "step5Desc": [
+          "Vá até uma mancha de sujeira com seu esfregão",
+          "Clique nos alvos que aparecem para esfregar a mancha",
+          "Cada mancha requer vários cliques para limpar completamente"
+        ],
+        "step6Title": "Conclua o Trabalho",
+        "step6Desc": [
+          "Após limpar todas as manchas, volte ao depósito",
+          "Fale com o NPC para receber seu pagamento",
+          "Ganhe bônus por completar a rota inteira"
+        ]
+      }
+    },
+    "powerwash": {
+      "name": "Lavador a Pressão",
+      "subtitle": "Serviço de Lavagem a Pressão",
+      "interactionText": "Iniciar Trabalho de Lavagem a Pressão",
+      "blipLabel": "Lavagem a Pressão",
+      "locationLabel": "Depósito de Lavagem a Pressão",
+      "description": [
+        "Pegue a pistola de pressão do veículo",
+        "Vá até os pontos sujos marcados no mapa",
+        "Segure LMB para borrifar e limpar as superfícies",
+        "Volte para receber o pagamento ao terminar"
+      ],
+      "items": {
+        "pressureWand": "Pistola de Pressão",
+        "dirtyStain": "Mancha Suja",
+        "washVan": "Van de Lavagem"
+      },
+      "preview": {
+        "step1Title": "Iniciar o Trabalho",
+        "step1Desc": [
+          "Vá até o NPC no depósito de lavagem",
+          "Pressione E para abrir o menu de trabalho",
+          "Selecione sua rota e pressione Iniciar"
+        ],
+        "step2Title": "Troque de Roupa",
+        "step2Desc": [
+          "Vá até a cabine portátil próxima",
+          "Entre para vestir sua roupa de trabalho",
+          "Suas roupas originais serão restauradas quando o trabalho terminar"
+        ],
+        "step3Title": "Colete Suas Ferramentas",
+        "step3Desc": [
+          "Vá até o veículo de trabalho",
+          "Pegue uma pistola de pressão — cada jogador pega a sua",
+          "Até 4 ferramentas disponíveis para jogo cooperativo"
+        ],
+        "step4Title": "Dirija até a Área de Trabalho",
+        "step4Desc": [
+          "Entre no veículo e siga o GPS",
+          "Dirija até os locais de manchas marcados",
+          "Cada rota tem vários pontos sujos para limpar"
+        ],
+        "step5Title": "Borrife as Manchas",
+        "step5Desc": [
+          "Mire a pistola de pressão na superfície suja",
+          "Segure o botão esquerdo do mouse para borrifar água",
+          "Continue borrifando até a mancha estar totalmente limpa"
+        ],
+        "step6Title": "Conclua o Trabalho",
+        "step6Desc": [
+          "Após limpar todas as manchas, volte ao depósito",
+          "Entre no marcador para receber seu pagamento",
+          "Ganhe bônus por completar a rota inteira"
+        ]
+      }
+    },
+    "windowscleaner": {
+      "name": "Limpador de Janelas",
+      "subtitle": "Serviço de Limpeza de Janelas",
+      "interactionText": "Iniciar Trabalho de Limpeza de Janelas",
+      "blipLabel": "Limpeza de Janelas",
+      "locationLabel": "Depósito de Limpeza de Janelas",
+      "description": [
+        "Pegue a esponja do veículo",
+        "Vá até as janelas marcadas no mapa",
+        "Limpe os pontos sujos nas janelas",
+        "Volte para receber o pagamento ao terminar"
+      ],
+      "items": {
+        "sponge": "Esponja",
+        "windowDirt": "Sujeira de Janela",
+        "cleaningVan": "Van de Limpeza"
+      },
+      "preview": {
+        "step1Title": "Iniciar o Trabalho",
+        "step1Desc": [
+          "Vá até o NPC no depósito de limpeza",
+          "Pressione E para abrir o menu de trabalho",
+          "Selecione sua rota e pressione Iniciar"
+        ],
+        "step2Title": "Troque de Roupa",
+        "step2Desc": [
+          "Vá até a cabine portátil próxima",
+          "Entre para vestir sua roupa de trabalho",
+          "Suas roupas originais serão restauradas quando o trabalho terminar"
+        ],
+        "step3Title": "Colete Suas Ferramentas",
+        "step3Desc": [
+          "Vá até o veículo de trabalho",
+          "Pegue uma esponja — cada jogador pega a sua",
+          "Até 4 ferramentas disponíveis para jogo cooperativo"
+        ],
+        "step4Title": "Dirija até a Área de Trabalho",
+        "step4Desc": [
+          "Entre no veículo e siga o GPS",
+          "Dirija até os locais de janelas marcados",
+          "Cada rota tem várias janelas sujas para limpar"
+        ],
+        "step5Title": "Limpe as Janelas",
+        "step5Desc": [
+          "Vá até uma janela suja com sua esponja",
+          "Clique nos alvos que aparecem para esfregar a janela",
+          "Cada janela requer vários cliques para limpar completamente"
+        ],
+        "step6Title": "Conclua o Trabalho",
+        "step6Desc": [
+          "Após limpar todas as janelas, volte ao depósito",
+          "Fale com o NPC para receber seu pagamento",
+          "Ganhe bônus por completar a rota inteira"
+        ]
+      }
+    },
+    "cardetailer": {
+      "name": "Estética Automotiva",
+      "subtitle": "Serviço Móvel de Estética Automotiva",
+      "interactionText": "Iniciar Trabalho de Estética Automotiva",
+      "blipLabel": "Estética Automotiva",
+      "locationLabel": "Depósito de Estética Automotiva",
+      "description": [
+        "Pegue a pistola de pressão do veículo",
+        "Dirija até os carros dos clientes marcados no mapa",
+        "Lave cada carro com a pistola de pressão",
+        "Pola e encere o carro para pagamento extra"
+      ],
+      "items": {
+        "pressureWand": "Pistola de Pressão",
+        "waxCloth": "Pano de Cera",
+        "serviceVan": "Van de Serviço"
+      },
+      "preview": {
+        "step1Title": "Iniciar o Trabalho",
+        "step1Desc": [
+          "Vá até o NPC no depósito de estética",
+          "Pressione E para abrir o menu de trabalho",
+          "Aceite o trabalho para começar"
+        ],
+        "step2Title": "Troque de Roupa",
+        "step2Desc": [
+          "Vá até a cabine portátil próxima",
+          "Entre para vestir sua roupa de trabalho",
+          "Suas roupas originais serão restauradas quando o trabalho terminar"
+        ],
+        "step3Title": "Colete Suas Ferramentas",
+        "step3Desc": [
+          "Vá até o veículo de trabalho",
+          "Pegue a pistola de pressão da traseira",
+          "Uma mangueira conecta a pistola ao tanque de água"
+        ],
+        "step4Title": "Dirija até os Carros dos Clientes",
+        "step4Desc": [
+          "Entre no veículo e siga o GPS",
+          "Dirija até os locais dos carros dos clientes",
+          "Estacione perto — a mangueira tem alcance limitado"
+        ],
+        "step5Title": "Lave o Carro",
+        "step5Desc": [
+          "Mire a pistola de pressão nos pontos sujos",
+          "Segure o botão esquerdo do mouse para borrifar água",
+          "O carro fica mais limpo conforme você lava cada ponto"
+        ],
+        "step6Title": "Conclua o Trabalho",
+        "step6Desc": [
+          "Após detalhar todos os carros, volte ao depósito",
+          "Devolva suas ferramentas e finalize o trabalho",
+          "Níveis mais altos desbloqueiam polimento com cera para pagamento extra"
+        ]
+      }
+    },
+    "newspaper": {
+      "name": "Entrega de Jornais",
+      "subtitle": "Serviço de Entrega de Jornais",
+      "interactionText": "Iniciar Entrega de Jornais",
+      "blipLabel": "Entrega de Jornais",
+      "locationLabel": "Entrega de Jornais",
+      "description": [
+        "Pegue a bicicleta de entrega",
+        "Jogue jornais nos pontos de entrega marcados",
+        "Mais entregas significam mais pagamento",
+        "Trabalhe em equipe para completar mais rápido"
+      ],
+      "items": {
+        "newspaperBundle": "Pacote de Jornais",
+        "deliveryList": "Lista de Entregas",
+        "bikeKey": "Chave da Bicicleta"
+      },
+      "routes": {
+        "restoran": "Rota do Restaurante",
+        "easy": "Rota Fácil",
+        "headline": "Circuito de Manchetes",
+        "express": "Rota Expressa",
+        "morning": "Gazeta da Manhã",
+        "editorial": "Rota Editorial"
+      },
+      "blips": {
+        "newspaperDelivery": "Entrega de Jornais",
+        "returnBike": "Devolver Bicicleta"
+      }
+    },
+    "cleanup": {
+      "name": "Coletor de Lixo",
+      "subtitle": "Serviços de Saneamento Urbano",
+      "interactionText": "Iniciar Coleta de Lixo",
+      "blipLabel": "Coleta de Lixo",
+      "locationLabel": "Central de Lixo",
+      "description": [
+        "Colete lixo das lixeiras pela cidade",
+        "Carregue os sacos de lixo no caminhão",
+        "Entregue o caminhão quando estiver cheio",
+        "Trabalhe em equipe e ganhe mais"
+      ],
+      "items": {
+        "cleanupBag": "Saco de Lixo",
+        "gloves": "Luvas",
+        "cleanupTruck": "Caminhão de Lixo"
+      },
+      "areas": {
+        "downtown": "Centro",
+        "industrial": "Área Industrial",
+        "residential": "Área Residencial"
+      },
+      "blips": {
+        "cleanupDelivery": "Entrega de Lixo"
+      }
+    },
+    "trucker": {
+      "name": "Caminhoneiro",
+      "subtitle": "Transporte de Longa Distância",
+      "interactionText": "Iniciar Trabalho de Caminhoneiro",
+      "blipLabel": "Pátio de Caminhões",
+      "locationLabel": "Depósito de Caminhões",
+      "description": [
+        "Pegue trailers e entregue cargas",
+        "Ganhe dinheiro baseado na distância percorrida",
+        "Chance de rotas ilegais com pagamento alto",
+        "Trabalhe em equipe para recompensas bônus"
+      ],
+      "items": {
+        "truck": "Caminhão",
+        "trailer": "Trailer",
+        "cargo": "Carga"
+      },
+      "blips": {
+        "pickupTrailer": "Pegar Trailer",
+        "deliverCargo": "Entregar Carga",
+        "illegalDelivery": "Entrega Ilegal",
+        "returnTruck": "Devolver Caminhão"
+      }
+    },
+    "taxi": {
+      "name": "Taxista",
+      "subtitle": "Transporte Urbano",
+      "interactionText": "Iniciar Trabalho de Táxi",
+      "blipLabel": "Depósito de Táxi",
+      "locationLabel": "Depósito de Táxi",
+      "description": [
+        "Embarque passageiros pela cidade",
+        "Leve-os até seu destino",
+        "Ganhe dinheiro baseado na distância",
+        "Bônus por entrega rápida"
+      ],
+      "items": {
+        "taxi": "Táxi",
+        "passenger": "Passageiro"
+      },
+      "blips": {
+        "pickupPassenger": "Embarcar Passageiro",
+        "dropOff": "Desembarque",
+        "returnTaxi": "Devolver Táxi"
+      }
+    },
+    "dogwalking": {
+      "name": "Passeador de Cachorros",
+      "subtitle": "Serviços de Pet Care",
+      "interactionText": "Iniciar Passeio de Cachorro",
+      "blipLabel": "Passeio de Cachorro",
+      "locationLabel": "Serviços para Pets",
+      "description": [
+        "Passeie com cachorros de clientes ricos",
+        "Busque os cachorros nas casas dos clientes",
+        "Caminhe a distância necessária com seu cachorro",
+        "Limpe depois do seu cachorro para pagamento extra",
+        "Jogue com amigos para bônus cooperativo!"
+      ],
+      "items": {
+        "leash": "Coleira",
+        "poopBag": "Saco de Cocô",
+        "treats": "Petiscos"
+      },
+      "blips": {
+        "clientHome": "Casa do Cliente"
+      },
+      "preview": {
+        "step1Title": "Iniciar o Trabalho",
+        "step1Desc": [
+          "Encontre o NPC de Passeio de Cachorro perto do pet shop",
+          "Pressione E para abrir o menu de trabalho",
+          "Selecione sua área e pressione Iniciar"
+        ],
+        "step2Title": "Troque de Roupa",
+        "step2Desc": [
+          "Vá até a área de troca perto do pet shop",
+          "Entre para vestir sua roupa de trabalho",
+          "Suas roupas originais serão restauradas quando o trabalho terminar"
+        ],
+        "step3Title": "Busque o Cachorro",
+        "step3Desc": [
+          "Dirija até a casa do cliente em Vinewood Hills",
+          "Encontre o dono do cachorro esperando do lado de fora",
+          "Pressione E para pegar o cachorro na coleira"
+        ],
+        "step4Title": "Passeie com o Cachorro",
+        "step4Desc": [
+          "Caminhe com seu cachorro na coleira",
+          "Cubra a distância necessária mostrada no seu HUD",
+          "Limpe depois do seu cachorro para pagamento extra"
+        ],
+        "step5Title": "Devolva o Cachorro",
+        "step5Desc": [
+          "Leve o cachorro de volta à casa do cliente",
+          "O cachorro retorna ao dono automaticamente",
+          "Receba pagamento baseado na distância e limpezas"
+        ]
+      }
+    },
+    "powerlines": {
+      "name": "Rede Elétrica",
+      "subtitle": "Energia e Comunicações Urbanas",
+      "interactionText": "Iniciar Trabalho na Rede Elétrica",
+      "blipLabel": "Trabalho na Rede Elétrica",
+      "locationLabel": "Companhia de Energia",
+      "description": [
+        "Repare painéis elétricos nas casas",
+        "Conserte fiação de postes usando caminhão com cesta",
+        "Trabalhe com sua equipe para recompensas bônus",
+        "Use minigames para completar os reparos"
+      ],
+      "items": {
+        "multimeter": "Multímetro",
+        "wireKit": "Kit de Fios",
+        "safetyGear": "Equipamento de Segurança"
+      },
+      "blips": {
+        "electricalPanel": "Painel Elétrico",
+        "phonePole": "Poste Telefônico",
+        "bucketTruck": "Caminhão com Cesta"
+      },
+      "routes": {
+        "rockfordHills": "Rockford Hills",
+        "davis": "Davis",
+        "vespucci": "Vespucci",
+        "strawberry": "Strawberry",
+        "centralLS": "Central LS",
+        "southLS": "South LS"
+      }
+    },
+    "delivery": {
+      "name": "Entrega de Pacotes",
+      "subtitle": "Serviço de Entrega de Pacotes",
+      "interactionText": "Iniciar Trabalho de Entrega de Pacotes",
+      "blipLabel": "Entrega de Pacotes",
+      "locationLabel": "Entrega de Pacotes",
+      "description": [
+        "Pegue a van e carregue caixas do depósito",
+        "Entregue caixas aos clientes designados",
+        "Quanto mais entregas você fizer, mais ganha",
+        "Trabalhe em equipe para terminar mais rápido"
+      ],
+      "items": {
+        "cargoBox": "Caixa de Carga",
+        "deliveryList": "Lista de Entregas",
+        "vanKey": "Chave da Van"
+      },
+      "blips": {
+        "deliveryPoint": "Ponto de Entrega"
+      },
+      "preview": {
+        "step1Title": "Iniciar o Trabalho",
+        "step1Desc": [
+          "Vá até o NPC no depósito de entregas",
+          "Pressione E para abrir o menu de trabalho",
+          "Selecione sua área e pressione Iniciar"
+        ],
+        "step2Title": "Troque de Roupa",
+        "step2Desc": [
+          "Vá até a cabine portátil próxima",
+          "Entre para vestir sua roupa de trabalho",
+          "Suas roupas originais serão restauradas quando o trabalho terminar"
+        ],
+        "step3Title": "Colete Seu Veículo",
+        "step3Desc": [
+          "Vá até a van de entrega estacionada",
+          "As portas traseiras estão abertas para carregamento",
+          "Cada lobby recebe seu próprio veículo"
+        ],
+        "step4Title": "Pegue os Pacotes",
+        "step4Desc": [
+          "Vá até o trabalhador do depósito perto do armazém",
+          "Pressione E para pegar uma caixa de carga",
+          "Você pode carregar uma caixa por vez"
+        ],
+        "step5Title": "Carregue a Van",
+        "step5Desc": [
+          "Leve os pacotes até as portas traseiras abertas da van",
+          "As caixas são empilhadas automaticamente",
+          "Encha a van antes de sair"
+        ],
+        "step6Title": "Entregue os Pacotes",
+        "step6Desc": [
+          "Dirija até o local de entrega marcado",
+          "Pegue uma caixa do porta-malas e carregue",
+          "Vá até o cliente e pressione E para entregar"
+        ],
+        "step7Title": "Retorne ao Depósito",
+        "step7Desc": [
+          "Após todas as entregas, volte ao depósito",
+          "Estacione a van no local marcado",
+          "Seus ganhos são pagos automaticamente"
+        ]
+      }
+    },
+    "warehouse": {
+      "name": "Trabalhador de Armazém",
+      "subtitle": "Frete e Logística",
+      "interactionText": "Iniciar Trabalho no Armazém",
+      "blipLabel": "Armazém",
+      "locationLabel": "Armazém",
+      "description": [
+        "Carregue caixas e pallets nos caminhões de entrega",
+        "Use empilhadeira para pallets pesados",
+        "Carregue caixas menores na mão até o caminhão",
+        "Complete pedidos de caminhão para receber pagamento"
+      ],
+      "items": {
+        "forklift": "Empilhadeira",
+        "boxes": "Caixas",
+        "pallets": "Pallets"
+      },
+      "blips": {
+        "truck": "Caminhão",
+        "deliveryPoint": "Ponto de Entrega",
+        "forklift": "Empilhadeira"
+      },
+      "deliveryRoutes": {
+        "vinewood": "Vinewood Market",
+        "davis": "Davis Supermarket",
+        "strawberry": "Strawberry Market"
+      }
+    },
+    "landscaping": {
+      "name": "Jardinagem",
+      "subtitle": "Manutenção de Jardins",
+      "interactionText": "Iniciar Trabalho de Jardinagem",
+      "blipLabel": "Trabalho de Jardinagem",
+      "locationLabel": "Manutenção Urbana",
+      "description": [
+        "Pode arbustos crescidos com um cortador",
+        "Cave ervas daninhas com uma pá",
+        "Pegue ferramentas do caminhão de trabalho",
+        "Trabalhe em equipe para recompensas bônus"
+      ],
+      "items": {
+        "trimmer": "Cortador",
+        "shovel": "Pá",
+        "workTruck": "Caminhão de Trabalho"
+      },
+      "routes": {
+        "vespucci": "Vespucci",
+        "pillboxHill": "Pillbox Hill",
+        "littleSeoul": "Little Seoul",
+        "burton": "Burton",
+        "vinewoodHills": "Vinewood Hills"
+      }
+    },
+    "fishing": {
+      "name": "Pesca",
+      "subtitle": "Pesca Profissional",
+      "interactionText": "Iniciar Trabalho de Pesca",
+      "blipLabel": "Pesca",
+      "locationLabel": "Pesca",
+      "description": [
+        "Pegue uma vara e isca",
+        "Lance sua linha perto da água",
+        "Pesque com o minigame",
+        "Os peixes pescados vão para o inventário",
+        "Venda para o comprador de peixes"
+      ],
+      "items": {
+        "fishingRod": "Vara de Pescar",
+        "bait": "Isca"
+      },
+      "rods": {
+        "standartrod": "Vara Padrão",
+        "carbonrod": "Vara de Carbono",
+        "prorod": "Vara Profissional"
+      },
+      "baits": {
+        "basicbait": "Isca de Minhoca",
+        "spoonlure": "Isca Colher",
+        "threesided": "Isca de Três Lados",
+        "tailfish": "Isca Rabo de Peixe",
+        "doublehook": "Isca de Anzol Duplo",
+        "triplehook": "Isca de Anzol Triplo"
+      },
+      "zones": {
+        "southCoast": "Costa Sul",
+        "westCoast": "Costa Oeste",
+        "deepSea": "Mar Profundo"
+      },
+      "fishTypes": {
+        "anchovy": "Anchova",
+        "trout": "Truta",
+        "mackerel": "Cavala",
+        "salmon": "Salmão",
+        "snapper": "Vermelho",
+        "tuna": "Atum",
+        "grouper": "Garoupa",
+        "swordfish": "Peixe-espada",
+        "shark": "Tubarão"
+      },
+      "blips": {
+        "fishingShop": "Loja de Pesca",
+        "fishBuyer": "Comprador de Peixes"
+      }
+    },
+    "diving": {
+      "name": "Mergulho",
+      "subtitle": "Mergulho Profissional",
+      "interactionText": "Iniciar Trabalho de Mergulho",
+      "blipLabel": "Mergulho",
+      "locationLabel": "Mergulho",
+      "description": [
+        "Embarque no barco e vá até a zona de mergulho",
+        "Quando o barco parar, lance a âncora e entre na água",
+        "Mergulhe e complete as tarefas subaquáticas",
+        "Volte ao barco e levante a âncora",
+        "Retorne ao cais e venda seus itens"
+      ],
+      "items": {
+        "scubaTank": "Tanque de Mergulho",
+        "divingSuit": "Roupa de Mergulho",
+        "flippers": "Nadadeiras"
+      },
+      "zones": {
+        "shallowBay": "Baía Rasa",
+        "openSea": "Mar Aberto",
+        "shipwreck": "Naufrágio",
+        "deepTrench": "Fossa Profunda"
+      },
+      "sellItems": {
+        "dendrogyraCoral": "Coral Dendrogyra",
+        "antipathariaCoral": "Coral Antipatharia"
+      },
+      "taskTypes": {
+        "coral": "Coral",
+        "trash": "Lixo"
+      },
+      "gear": {
+        "basic": "Mergulho Básico",
+        "standard": "Mergulho Padrão",
+        "pro": "Mergulho Profissional"
+      },
+      "blips": {
+        "boatDelivery": "Entrega de Barco"
+      },
+      "preview": {
+        "step1Title": "Iniciar o Trabalho",
+        "step1Desc": [
+          "Vá até o instrutor de mergulho no cais de Paleto Bay",
+          "Pressione E para abrir o menu de trabalho",
+          "Selecione uma zona de mergulho e pressione Iniciar"
+        ],
+        "step2Title": "Embarque no Barco",
+        "step2Desc": [
+          "Vá até o cais e embarque no seu barco",
+          "Cada zona de mergulho tem um ponto de partida",
+          "Navegue até a zona de mergulho marcada"
+        ],
+        "step3Title": "Lance a Âncora e Mergulhe",
+        "step3Desc": [
+          "Pare o barco no marcador da zona de mergulho",
+          "Pressione E para lançar a âncora",
+          "Pule na água e mergulhe"
+        ],
+        "step4Title": "Colete Itens",
+        "step4Desc": [
+          "Encontre corais e lixo no fundo do mar",
+          "Pressione E para coletar corais para vender",
+          "Limpe lixo para XP bônus"
+        ],
+        "step5Title": "Venda Sua Coleta",
+        "step5Desc": [
+          "Retorne com o barco ao cais",
+          "Vá até o NPC comprador próximo",
+          "Pressione E para vender seus corais coletados"
+        ]
+      }
+    },
+    "forklift": {
+      "name": "Operador de Empilhadeira",
+      "subtitle": "Logística Subterrânea",
+      "interactionText": "Iniciar Trabalho de Empilhadeira",
+      "blipLabel": "Empilhadeira",
+      "locationLabel": "Depósito de Empilhadeiras",
+      "description": [
+        "Opere uma empilhadeira em um depósito subterrâneo",
+        "Transporte caixotes para a esteira",
+        "Organize e coloque caixotes nas prateleiras designadas",
+        "Trabalhe em equipe para recompensas bônus"
+      ],
+      "items": {
+        "forklift": "Empilhadeira",
+        "crate": "Caixote",
+        "conveyorBelt": "Esteira"
+      },
+      "crateTypes": {
+        "jewellery": "Joias",
+        "antiques": "Antiguidades",
+        "tobacco": "Tabaco",
+        "hazard": "Material Perigoso",
+        "fake": "Falsificação"
+      },
+      "blips": {
+        "forklift": "Empilhadeira",
+        "conveyor": "Esteira"
+      }
+    },
+    "tiretechnician": {
+      "name": "Borracheiro",
+      "subtitle": "Serviço de Pneus na Estrada",
+      "interactionText": "Iniciar Trabalho de Borracheiro",
+      "blipLabel": "Trabalho de Borracheiro",
+      "locationLabel": "Depósito de Serviço de Pneus",
+      "description": [
+        "Troque pneus furados de veículos parados",
+        "Use macaco hidráulico e ferramentas para trocar pneus",
+        "Processo realista de troca de pneus em múltiplas etapas",
+        "Trabalhe com sua equipe para completar mais rápido"
+      ],
+      "items": {
+        "wrenchSet": "Kit de Chaves",
+        "carJack": "Macaco Hidráulico",
+        "spareParts": "Peças de Reposição"
+      },
+      "blips": {
+        "vehicleRepair": "Reparo de Veículo",
+        "serviceTruck": "Caminhão de Serviço"
+      }
+    },
+    "treasurehunter": {
+      "name": "Caçador de Tesouros",
+      "subtitle": "Caça ao Tesouro Subaquático",
+      "interactionText": "Iniciar Trabalho de Caça ao Tesouro",
+      "blipLabel": "Caçador de Tesouros",
+      "locationLabel": "Cais do Caçador de Tesouros",
+      "description": [
+        "Embarque no barco e vá até a área do tesouro",
+        "Siga os bipes do rastreador para localizar o tesouro",
+        "Mergulhe e colete o baú de tesouro",
+        "Retorne ao cais para receber o pagamento"
+      ],
+      "items": {
+        "scubaGear": "Equipamento de Mergulho",
+        "treasureChest": "Baú de Tesouro"
+      },
+      "lootTypes": {
+        "common": "Bolsa de Tesouro",
+        "legendary": "Baú de Ouro"
+      },
+      "gear": {
+        "basic": "Mergulho Básico",
+        "standard": "Mergulho Padrão",
+        "pro": "Mergulho Profissional"
+      },
+      "preview": {
+        "step1Title": "Iniciar o Trabalho",
+        "step1Desc": [
+          "Vá até o cais e fale com o instrutor",
+          "Pressione E para abrir o menu de trabalho e iniciar"
+        ],
+        "step2Title": "Embarque no Barco",
+        "step2Desc": [
+          "Vá até o cais e embarque no seu barco",
+          "Navegue em direção ao blip da área do tesouro"
+        ],
+        "step3Title": "Lance a Âncora e Mergulhe",
+        "step3Desc": [
+          "Siga os bipes do rastreador para encontrar o tesouro",
+          "Lance a âncora perto da área de busca",
+          "Mergulhe com seu equipamento de mergulho"
+        ],
+        "step4Title": "Colete o Tesouro",
+        "step4Desc": [
+          "Encontre o baú de tesouro no fundo do mar",
+          "Cuidado com tubarões e correntes marítimas!",
+          "Pressione E para coletar o tesouro"
+        ],
+        "step5Title": "Retorne ao Cais",
+        "step5Desc": [
+          "Suba à superfície e retorne ao cais",
+          "Entre no marcador para finalizar",
+          "Receba seu pagamento!"
+        ]
+      }
+    },
+    "metaldetector": {
+      "name": "Detector de Metais",
+      "subtitle": "Operações avançadas de recuperação",
+      "interactionText": "Iniciar trabalho de detector de metais",
+      "blipLabel": "Detector de Metais",
+      "locationLabel": "Estação do Detector de Metais",
+      "description": [
+        "Pegue um detector de metais no porta-malas da caminhonete",
+        "Siga a velocidade dos bipes para localizar o metal escondido",
+        "Desenterre os pontos enterrados com sua pá",
+        "Troque seus achados por dinheiro na estação"
+      ],
+      "items": {
+        "detector": "Detector de Metais",
+        "findings": "Achados recuperados"
+      },
+      "lootTypes": {
+        "scrap": "Sucata de metal",
+        "coin": "Moeda antiga",
+        "silver": "Peça de prata",
+        "gold": "Pepita de ouro",
+        "relic": "Relíquia rara"
+      }
+    },
+    "mechanic": {
+      "name": "Mecânico",
+      "subtitle": "Serviço de Reparo de Veículos",
+      "interactionText": "Iniciar Trabalho de Mecânico",
+      "blipLabel": "Mecânico",
+      "locationLabel": "Oficina Mecânica"
+    },
+    "gruppe6": {
+      "name": "Gruppe 6",
+      "subtitle": "Transporte Blindado",
+      "interactionText": "Fale com o gerente do depósito",
+      "blipLabel": "Depósito Gruppe 6",
+      "description": [
+        "Dirija um caminhão blindado entre bancos Fleeca",
+        "Encha sacos de dinheiro no cofre e carregue-os",
+        "Devolva o caminhão ao depósito para receber"
+      ]
+    }
+  },
+  "quests": {
+    "daily_miner_collect": {
+      "label": "Mineração Diária",
+      "description": "Quebre 5 pedras na mina"
+    },
+    "weekly_miner_process": {
+      "label": "Mestre Processador",
+      "description": "Processe 30 minérios na balança"
+    },
+    "monthly_miner_earn": {
+      "label": "Magnata da Mineração",
+      "description": "Ganhe $10.000 com mineração"
+    },
+    "daily_lumber_collect": {
+      "label": "Corte Diário",
+      "description": "Corte 5 árvores"
+    },
+    "weekly_lumber_process": {
+      "label": "Mestre Lenhador",
+      "description": "Processe 25 toras na balança"
+    },
+    "monthly_lumber_earn": {
+      "label": "Magnata da Madeira",
+      "description": "Ganhe $10.000 com extração de madeira"
+    },
+    "daily_scrap_collect": {
+      "label": "Coletor de Sucata",
+      "description": "Colete 5 peças de sucata"
+    },
+    "weekly_scrap_process": {
+      "label": "Profissional da Reciclagem",
+      "description": "Processe 20 sucatas na balança"
+    },
+    "monthly_scrap_earn": {
+      "label": "Magnata da Sucata",
+      "description": "Ganhe $8.000 com sucata"
+    },
+    "daily_hunting_collect": {
+      "label": "Caça Diária",
+      "description": "Cace 3 animais"
+    },
+    "weekly_hunting_process": {
+      "label": "Caçador de Troféus",
+      "description": "Processe 15 animais na balança"
+    },
+    "monthly_hunting_earn": {
+      "label": "Mestre Caçador",
+      "description": "Ganhe $12.000 com caça"
+    },
+    "daily_farmer_complete": {
+      "label": "Ajudante de Fazenda",
+      "description": "Complete 2 rodadas de agricultura"
+    },
+    "weekly_farmer_earn": {
+      "label": "Rei da Colheita",
+      "description": "Ganhe $5.000 com agricultura"
+    },
+    "monthly_farmer_earn": {
+      "label": "Barão da Agricultura",
+      "description": "Ganhe $15.000 com agricultura"
+    },
+    "daily_fruitpicker_complete": {
+      "label": "Colhedor de Laranjas",
+      "description": "Complete 2 rodadas de colheita"
+    },
+    "weekly_fruitpicker_earn": {
+      "label": "Barão Cítrico",
+      "description": "Ganhe $5.000 com laranjas"
+    },
+    "monthly_fruitpicker_earn": {
+      "label": "Mogul do Pomar",
+      "description": "Ganhe $15.000 com laranjas"
+    },
+    "daily_cleaner_complete": {
+      "label": "Varredor de Rua",
+      "description": "Complete 2 rodadas de limpeza"
+    },
+    "weekly_cleaner_earn": {
+      "label": "Sr. Limpeza",
+      "description": "Ganhe $4.000 com limpeza"
+    },
+    "monthly_cleaner_earn": {
+      "label": "Chefe de Saneamento",
+      "description": "Ganhe $12.000 com limpeza"
+    },
+    "daily_powerwash_complete": {
+      "label": "Profissional da Pressão",
+      "description": "Complete 2 rodadas de lavagem a pressão"
+    },
+    "weekly_powerwash_earn": {
+      "label": "Mestre do Jato",
+      "description": "Ganhe $5.000 com lavagem a pressão"
+    },
+    "monthly_powerwash_earn": {
+      "label": "Mago da Lavagem",
+      "description": "Ganhe $15.000 com lavagem a pressão"
+    },
+    "daily_windowcleaner_complete": {
+      "label": "Limpador de Vidros",
+      "description": "Complete 2 rodadas de limpeza de janelas"
+    },
+    "weekly_windowcleaner_earn": {
+      "label": "Especialista em Vidros",
+      "description": "Ganhe $4.000 com limpeza de janelas"
+    },
+    "monthly_windowcleaner_earn": {
+      "label": "Cristal Transparente Ltda.",
+      "description": "Ganhe $12.000 com limpeza de janelas"
+    },
+    "daily_cardetailer_complete": {
+      "label": "Hora do Brilho",
+      "description": "Complete 2 rodadas de estética automotiva"
+    },
+    "weekly_cardetailer_earn": {
+      "label": "Profissional de Estética",
+      "description": "Ganhe $5.000 com estética automotiva"
+    },
+    "monthly_cardetailer_earn": {
+      "label": "Mestre da Estética",
+      "description": "Ganhe $15.000 com estética automotiva"
+    },
+    "daily_newspaper_complete": {
+      "label": "Jornaleiro",
+      "description": "Complete 2 rodadas de entrega"
+    },
+    "weekly_newspaper_earn": {
+      "label": "Mogul da Imprensa",
+      "description": "Ganhe $3.000 com entregas"
+    },
+    "monthly_newspaper_earn": {
+      "label": "Barão da Mídia",
+      "description": "Ganhe $8.000 com entregas"
+    },
+    "daily_cleanup_complete": {
+      "label": "Catador de Lixo",
+      "description": "Complete 2 rodadas de coleta"
+    },
+    "weekly_cleanup_earn": {
+      "label": "Gerente de Resíduos",
+      "description": "Ganhe $4.000 com coleta de lixo"
+    },
+    "monthly_cleanup_earn": {
+      "label": "Mogul do Lixo",
+      "description": "Ganhe $12.000 com coleta de lixo"
+    },
+    "daily_trucker_complete": {
+      "label": "Frete Diário",
+      "description": "Complete 2 rodadas de caminhão"
+    },
+    "weekly_trucker_earn": {
+      "label": "Guerreiro da Estrada",
+      "description": "Ganhe $8.000 com caminhão"
+    },
+    "monthly_trucker_earn": {
+      "label": "Rei do Comboio",
+      "description": "Ganhe $25.000 com caminhão"
+    },
+    "daily_taxi_complete": {
+      "label": "Motorista de Táxi",
+      "description": "Complete 3 corridas de táxi"
+    },
+    "weekly_taxi_earn": {
+      "label": "Rei do Táxi",
+      "description": "Ganhe $6.000 com corridas"
+    },
+    "monthly_taxi_earn": {
+      "label": "Dono da Frota",
+      "description": "Ganhe $18.000 com corridas"
+    },
+    "daily_dogwalking_complete": {
+      "label": "Passeador de Cães",
+      "description": "Complete 2 passeios"
+    },
+    "weekly_dogwalking_earn": {
+      "label": "Líder da Matilha",
+      "description": "Ganhe $3.000 com passeio de cachorros"
+    },
+    "monthly_dogwalking_earn": {
+      "label": "Encantador de Cães",
+      "description": "Ganhe $8.000 com passeio de cachorros"
+    },
+    "daily_powerlines_complete": {
+      "label": "Eletricista",
+      "description": "Complete 2 trabalhos de reparo"
+    },
+    "weekly_powerlines_earn": {
+      "label": "Mestre Eletricista",
+      "description": "Ganhe $6.000 com reparos"
+    },
+    "monthly_powerlines_earn": {
+      "label": "Chefe da Rede Elétrica",
+      "description": "Ganhe $18.000 com reparos"
+    },
+    "daily_delivery_complete": {
+      "label": "Entregador",
+      "description": "Complete 2 entregas"
+    },
+    "weekly_delivery_earn": {
+      "label": "Courier Expresso",
+      "description": "Ganhe $5.000 com entregas"
+    },
+    "monthly_delivery_earn": {
+      "label": "Rei das Entregas",
+      "description": "Ganhe $15.000 com entregas"
+    },
+    "daily_warehouse_complete": {
+      "label": "Estivador",
+      "description": "Complete 2 turnos no armazém"
+    },
+    "weekly_warehouse_earn": {
+      "label": "Especialista em Logística",
+      "description": "Ganhe $5.000 com trabalho no armazém"
+    },
+    "monthly_warehouse_earn": {
+      "label": "Diretor de Armazém",
+      "description": "Ganhe $15.000 com trabalho no armazém"
+    },
+    "daily_landscaping_complete": {
+      "label": "Mão Verde",
+      "description": "Complete 2 trabalhos de jardinagem"
+    },
+    "weekly_landscaping_earn": {
+      "label": "Mestre Jardineiro",
+      "description": "Ganhe $4.000 com jardinagem"
+    },
+    "monthly_landscaping_earn": {
+      "label": "Arquiteto Paisagista",
+      "description": "Ganhe $12.000 com jardinagem"
+    },
+    "daily_fishing_complete": {
+      "label": "Pescador",
+      "description": "Complete 2 viagens de pesca"
+    },
+    "weekly_fishing_earn": {
+      "label": "Pescador de Alto Mar",
+      "description": "Ganhe $5.000 com pesca"
+    },
+    "monthly_fishing_earn": {
+      "label": "Lenda da Pesca",
+      "description": "Ganhe $15.000 com pesca"
+    },
+    "daily_diving_complete": {
+      "label": "Mergulhador Profundo",
+      "description": "Complete 2 viagens de mergulho"
+    },
+    "weekly_diving_earn": {
+      "label": "Explorador Oceânico",
+      "description": "Ganhe $6.000 com mergulho"
+    },
+    "monthly_diving_earn": {
+      "label": "Mergulhador de Tesouros",
+      "description": "Ganhe $18.000 com mergulho"
+    },
+    "daily_forklift_complete": {
+      "label": "Operador de Empilhadeira",
+      "description": "Complete 2 turnos no armazém"
+    },
+    "weekly_forklift_earn": {
+      "label": "Carregador Pesado",
+      "description": "Ganhe $5.000 com trabalho de empilhadeira"
+    },
+    "monthly_forklift_earn": {
+      "label": "Titã da Logística",
+      "description": "Ganhe $15.000 com trabalho de empilhadeira"
+    }
+  },
+  "shop": {
+    "buyRod": "Comprar Vara",
+    "buyRodDesc": "Compre uma vara de pescar",
+    "buyBait": "Comprar Isca",
+    "buyBaitDesc": "Compre isca de pesca",
+    "sellAll": "Vender Tudo",
+    "sellAllFish": "Vender todos os peixes",
+    "sellAllItems": "Vender todos os itens",
+    "levelRequired": "Nível {level} necessário | {price}",
+    "howMany": "Quantos?"
+  },
+  "vehicle": {
+    "powerlines": "Rede Elétrica",
+    "huntingVehicle": "Veículo de Caça",
+    "workTruck": "Caminhão de Trabalho",
+    "divingBoat": "Barco de Mergulho",
+    "fishingBoat": "Barco de Pesca",
+    "cleanupTruck": "Caminhão de Lixo",
+    "lumberVehicle": "Veículo de Madeira",
+    "miningVehicle": "Veículo de Mineração",
+    "metaldetectorVehicle": "Veículo do detector de metais",
+    "washVan": "Van de Lavagem",
+    "windowCleanerVan": "Van de Limpeza de Janelas",
+    "cleaningVan": "Van de Limpeza",
+    "serviceVehicle": "Veículo de Serviço",
+    "scrapyardTruck": "Caminhão do Ferro-Velho",
+    "detailingVan": "Van de Estética",
+    "tiretechnician": "Borracheiro",
+    "pickupPassenger": "Embarcar Passageiro",
+    "returnTaxi": "Devolver Táxi",
+    "dropOff": "Desembarque",
+    "bucketTruck": "Caminhão com Cesta",
+    "deliveryVan": "Van de Entrega",
+    "newspaperBike": "Bicicleta de Jornal",
+    "detachedTrailer": "Trailer Desacoplado",
+    "deliveryTruck": "Caminhão de Entrega",
+    "taxi": "Táxi",
+    "treasureBoat": "Barco de Caça ao Tesouro"
+  },
+  "task": {
+    "panels": "Painéis",
+    "poles": "Postes",
+    "repairPanels": "Reparar painéis ({done}/{total})",
+    "fixPoles": "Consertar postes ({done}/{total})",
+    "repairDescription": "Repare a infraestrutura elétrica da área. Conserte painéis e postes.",
+    "plants": "Plantas",
+    "cropPlant": "Plantação",
+    "nearestCrop": "Plantação Mais Próxima",
+    "bushes": "Arbustos",
+    "lawns": "Gramados",
+    "bushToTrim": "Arbusto para Podar",
+    "lawnToDig": "Gramado para Cavar",
+    "toilets": "Vasos Sanitários",
+    "pipes": "Canos",
+    "fishCaught": "Peixes Pescados",
+    "treasures": "Tesouros",
+    "spotsDug": "Pontos escavados",
+    "tasks": "Tarefas",
+    "loadBoxes": "Carregar caixas no depósito",
+    "deliveries": "Entregas",
+    "deliverPackages": "Entregar pacotes",
+    "boxesLoaded": "Caixas Carregadas",
+    "pickUpTrailer": "Pegar trailer",
+    "deliverCargo": "Entregar carga",
+    "returnTruck": "Devolver caminhão",
+    "stage": "Etapa",
+    "truckFill": "Carga do Caminhão",
+    "shelved": "Armazenado",
+    "activateConveyor": "Ativar a esteira [E]",
+    "deliverCratesToBelt": "Entregar caixas na esteira ({current}/{total})",
+    "placeCratesOnShelves": "Coloque as caixas nas prateleiras ({current}/{total})",
+    "delivered": "Entregue",
+    "takeWandFromTrunk": "Pegue a pistola do porta-malas do veículo",
+    "spotsCleaned": "Pontos Limpos",
+    "takeSpongeFromTrunk": "Pegue a esponja do porta-malas do veículo",
+    "windows": "Janelas",
+    "takeMopFromTrunk": "Pegue o esfregão do porta-malas do veículo",
+    "stains": "Manchas",
+    "equipWandOrCloth": "Equipe a pistola (lavar) ou o pano (polir)",
+    "carsWashed": "Carros Lavados",
+    "carsPolished": "Carros Polidos",
+    "distance": "Distância",
+    "cargo": "Carga",
+    "regularAnimals": "Animais comuns",
+    "predators": "Predadores",
+    "birds": "Aves",
+    "mixed": "Misto",
+    "nextDelivery": "Próxima Entrega",
+    "returnVehicle": "Devolver Veículo",
+    "returnToDepot": "Voltar ao Depósito",
+    "returnToBase": "Voltar à Base",
+    "loadingArea": "Área de Carregamento",
+    "fruitpickerTree": "Laranjeira",
+    "next": "Próximo",
+    "walkDistance": "Distância a pé",
+    "dogsDelivered": "Cachorros entregues",
+    "distanceWalked": "Distância Percorrida (m)",
+    "oreProcessed": "Minério Processado",
+    "trunkLoaded": "Porta-malas carregado",
+    "logsProcessed": "Toras Processadas",
+    "scrapsProcessed": "Sucatas Processadas",
+    "boxesProcessed": "Caixas Processadas",
+    "animalsProcessed": "Animais Processados",
+    "toolShovel": "Pá",
+    "toolTrimmer": "Aparador",
+    "trucksCompleted": "Caminhões concluídos ({current}/{total})",
+    "loadBoxesCount": "Carregar caixas ({current}/{total})",
+    "loadPallets": "Carregar paletes ({current}/{total})",
+    "deliverPapers": "Entregar jornais ({current}/{total})",
+    "trimBushes": "Aparar arbustos ({current}/{total})",
+    "rakeLawns": "Juntar as folhas ({current}/{total})",
+    "itemsCollected": "Itens coletados ({current}/{total})",
+    "cleanAllWindows": "Limpar todas as janelas ({current}/{total})",
+    "cleanAllSpots": "Limpar todos os pontos ({current}/{total})"
+  },
+  "drawText": {
+    "repairPanel": "[E] Reparar painel elétrico",
+    "repairPole": "[E] Reparar fiação do poste",
+    "collect": "[E] Coletar",
+    "collectCoral": "[E] Coletar Coral",
+    "cleanTrash": "[E] Limpar Lixo"
+  },
+  "achievements": {
+    "miner_lv5": {
+      "label": "Minerador Mestre",
+      "desc": "Alcance nível 5 em Mineração"
+    },
+    "miner_lv10": {
+      "label": "Lenda da Mineração",
+      "desc": "Alcance nível 10 em Mineração"
+    },
+    "lumberjack_lv5": {
+      "label": "Lenhador Mestre",
+      "desc": "Alcance nível 5 em Lenhador"
+    },
+    "fishing_lv5": {
+      "label": "Pescador Experiente",
+      "desc": "Alcance nível 5 em Pesca"
+    },
+    "cleanup_lv5": {
+      "label": "Guerreiro do Lixo",
+      "desc": "Alcance nível 5 em Limpeza"
+    },
+    "delivery_lv5": {
+      "label": "Entregador Expresso",
+      "desc": "Alcance nível 5 em Entregas"
+    },
+    "trucker_lv5": {
+      "label": "Rei da Estrada",
+      "desc": "Alcance nível 5 em Caminhoneiro"
+    },
+    "hunting_lv5": {
+      "label": "Caçador Experiente",
+      "desc": "Alcance nível 5 em Caça"
+    },
+    "taxi_lv5": {
+      "label": "Ás do Volante",
+      "desc": "Alcance nível 5 em Táxi"
+    },
+    "powerlines_lv5": {
+      "label": "Eletricista Mestre",
+      "desc": "Alcance nível 5 em Linhas de Energia"
+    },
+    "diving_lv5": {
+      "label": "Mergulhador Profundo",
+      "desc": "Alcance nível 5 em Mergulho"
+    },
+    "cleaner_lv5": {
+      "label": "Máquina de Limpeza",
+      "desc": "Alcance nível 5 em Faxineiro"
+    },
+    "powerwash_lv5": {
+      "label": "Profissional de Pressão",
+      "desc": "Alcance nível 5 em Lavagem a Pressão"
+    },
+    "windowscleaner_lv5": {
+      "label": "Cristal Límpido",
+      "desc": "Alcance nível 5 em Limpeza de Janelas"
+    },
+    "cardetailer_lv5": {
+      "label": "Mestre do Detalhe",
+      "desc": "Alcance nível 5 em Detalhamento de Carros"
+    },
+    "farmer_lv5": {
+      "label": "Mão Verde",
+      "desc": "Alcance nível 5 em Agricultura"
+    },
+    "fruitpicker_lv5": {
+      "label": "Rei Cítrico",
+      "desc": "Alcance nível 5 em Colheita de Laranjas"
+    },
+    "landscaping_lv5": {
+      "label": "Mestre Jardineiro",
+      "desc": "Alcance nível 5 em Jardinagem"
+    },
+    "dogwalking_lv5": {
+      "label": "Encantador de Cães",
+      "desc": "Alcance nível 5 em Passeio de Cães"
+    },
+    "newspaper_lv5": {
+      "label": "Entregador de Jornal",
+      "desc": "Alcance nível 5 em Jornal"
+    },
+    "scrapyard_lv5": {
+      "label": "Senhor da Sucata",
+      "desc": "Alcance nível 5 em Ferro-velho"
+    },
+    "warehouse_lv5": {
+      "label": "Mestre de Armazém",
+      "desc": "Alcance nível 5 em Armazém"
+    },
+    "forklift_lv5": {
+      "label": "Operador de Empilhadeira",
+      "desc": "Alcance nível 5 em Empilhadeira"
+    },
+    "collect_100": {
+      "label": "Colecionador",
+      "desc": "Colete 100 itens no total"
+    },
+    "collect_500": {
+      "label": "Catador",
+      "desc": "Colete 500 itens no total"
+    },
+    "collect_1000": {
+      "label": "Acumulador",
+      "desc": "Colete 1.000 itens no total"
+    },
+    "miner_collect_500": {
+      "label": "Quebra-Pedras",
+      "desc": "Minere 500 rochas"
+    },
+    "lumber_collect_500": {
+      "label": "Derrubador de Árvores",
+      "desc": "Corte 500 árvores"
+    },
+    "earn_10000": {
+      "label": "Ganha-Pão",
+      "desc": "Ganhe $10.000 no total de trabalhos"
+    },
+    "earn_50000": {
+      "label": "Grande Apostador",
+      "desc": "Ganhe $50.000 no total de trabalhos"
+    },
+    "earn_100000": {
+      "label": "Caminho do Milionário",
+      "desc": "Ganhe $100.000 no total de trabalhos"
+    },
+    "complete_10": {
+      "label": "Trabalhador Esforçado",
+      "desc": "Complete 10 trabalhos"
+    },
+    "complete_50": {
+      "label": "Trabalhador Dedicado",
+      "desc": "Complete 50 trabalhos"
+    },
+    "complete_100": {
+      "label": "Trabalhador Veterano",
+      "desc": "Complete 100 trabalhos"
+    },
+    "process_100": {
+      "label": "Processador",
+      "desc": "Processe 100 itens na balança"
+    },
+    "process_500": {
+      "label": "Operário de Fábrica",
+      "desc": "Processe 500 itens na balança"
+    }
+  },
+  "common": {
+    "continueHintGeneric": "Vá até a próxima tarefa no seu mapa",
+    "pickupTaskGeneric": "Encontre o local da sua próxima tarefa",
+    "pickupDescriptionGeneric": "Vá até o local marcado no seu mapa e inicie a próxima tarefa."
+  },
+  "gruppe6": {
+    "truck": "Caminhão Blindado",
+    "takeBagPrompt": "[E] Pegar bolsa vazia",
+    "returnBagPrompt": "[E] Devolver a bolsa",
+    "loadBagPrompt": "[E] Carregar a bolsa",
+    "signPrompt": "[E] Assinar os papéis",
+    "fillBagPrompt": "[E] Encher a bolsa",
+    "stationBusy": "Outro membro da equipe está usando esta estação!",
+    "newRound": "Nova rodada — novos bancos estão no mapa!",
+    "continueBusy": "Todos precisam terminar de recolher e entregar as bolsas antes de continuar!",
+    "returnTruckPrompt": "[E] Entregar o caminhão",
+    "emptyBagTaken": "Bolsa vazia pega. Encha-a no cofre do banco.",
+    "signingPapers": "Assinando papéis...",
+    "vaultOpening": "O cofre está abrindo... ({seconds}s)",
+    "vaultOpened": "O cofre está aberto!",
+    "fillingBag": "Enchendo a bolsa...",
+    "bagFilled": "Bolsa cheia! (+{symbol}{amount})",
+    "allStopsDone": "Todas as paradas coletadas! Devolva o caminhão ao depósito.",
+    "returnTruckHint": "Devolva o caminhão ao depósito para encerrar o turno.",
+    "returnTruckBlip": "Devolver Caminhão",
+    "onlyLeaderCanFinish": "Apenas o líder da equipe pode entregar o caminhão!",
+    "tooFarFromDepot": "Você está muito longe do depósito!",
+    "tooFarFromManager": "Você está muito longe do gerente do banco!",
+    "tooFarFromVault": "Você está muito longe do cofre!",
+    "vaultNotOpen": "O cofre ainda não está aberto!",
+    "vaultAlreadyOpen": "O cofre já está sendo aberto!",
+    "vaultEmpty": "Este cofre foi esvaziado!",
+    "alreadyCarrying": "Você já está carregando algo!",
+    "needEmptyBag": "Você precisa de uma bolsa vazia primeiro!",
+    "statBags": "Bolsas carregadas",
+    "statEarnings": "Ganho total",
+    "objSign": "Assine os papéis",
+    "objCollect": "Encha e carregue as bolsas",
+    "objReturn": "Devolva o caminhão ao depósito",
+    "objWaiting": "Aguardando rota...",
+    "progressTitle": "Gruppe 6",
+    "progressDetail": "Colete sacos de dinheiro dos bancos, depois devolva o caminhão blindado ao depósito.",
+    "jobEnded": "{bags} bolsas entregues, você ganhou {symbol}{earned}!",
+    "noEmptyBags": "Não há mais bolsas vazias no caminhão!",
+    "truckNotAtDepot": "O caminhão blindado deve estar no depósito!"
+  }
+}

@@ -1,0 +1,3612 @@
+{
+  "blips": {
+    "category": "Jobs",
+    "jobCenter": "Job Center",
+    "miner": "Mining Job",
+    "lumberjack": "Lumberjack Job",
+    "scrapyard": "Scrapyard",
+    "hunting": "Hunting",
+    "farmer": "Vegetable Farm",
+    "fruitpicker": "Fruit Grove",
+    "cleaner": "City Cleaning",
+    "powerwash": "Pressure Washing",
+    "windowscleaner": "Window Cleaning",
+    "cardetailer": "Car Detailing",
+    "newspaper": "Newspaper Delivery",
+    "cleanup": "Cleanup Collection",
+    "trucker": "Truck Yard",
+    "taxi": "Taxi Depot",
+    "dogwalking": "Dog Walking",
+    "powerlines": "Powerlines Job",
+    "delivery": "Package Delivery",
+    "warehouse": "Warehouse",
+    "landscaping": "Landscaping Job",
+    "fishing": "Fishing",
+    "diving": "Diving",
+    "forklift": "Forklift",
+    "tiretechnician": "Tire Technician Job",
+    "treasurehunter": "Treasure Hunter",
+    "metaldetector": "Metal Detector",
+    "mechanic": "Mechanic"
+  },
+  "_meta": {
+    "name": "English (US)",
+    "flag": "🇺🇸"
+  },
+  "common": {
+    "continueHintGeneric": "Head to the next task on your map",
+    "pickupTaskGeneric": "Find your next task location",
+    "pickupDescriptionGeneric": "Head to the marked location on your map and start the next task."
+  },
+  "ui": {
+    "blipCategoryName": "Jobs",
+    "jobDetails": "Job Details",
+    "owner": "Owner",
+    "member": "Member",
+    "jobStart": "Job Start",
+    "leaderboard": "Leaderboard",
+    "teamProgress": "Team Progress",
+    "top20": "Top 20",
+    "playerList": "Player List",
+    "clickToInvite": "Click to Invite",
+    "emptySlot": "Empty Slot",
+    "level": "Level",
+    "lv": "Lv.",
+    "hours": "Hours",
+    "minRequiredHours": "Minimum required",
+    "achievements": "Achievements",
+    "settings": "Settings",
+    "close": "Close",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "search": "Search",
+    "selected": "Selected",
+    "locationMarked": "Location marked on map",
+    "jobAreaMarked": "Job area marked on map",
+    "noLocationAvailable": "No location available for this job",
+    "routeLevelRequired": "Level {level} required for this route!",
+    "spawnBlocked": "Vehicle spawn area is blocked! Clear the area and try again.",
+    "vehicleSpawnFailed": "Vehicle could not be spawned!",
+    "viewStatistics": "View Statistics",
+    "history": "History",
+    "earnings": "Earnings",
+    "totalEarn": "Total Earn",
+    "totalExp": "Total EXP",
+    "markJob": "Mark the Job",
+    "registerJob": "Register for Job",
+    "usedItems": "Used Items",
+    "online": "Online",
+    "offline": "Offline",
+    "loading": "Loading...",
+    "back": "Back",
+    "set": "Set",
+    "reset": "Reset",
+    "approve": "Approve",
+    "leave": "Leave",
+    "done": "Done",
+    "prev": "Prev",
+    "next": "Next",
+    "xp": "XP",
+    "step": "Step",
+    "on": "On",
+    "off": "Off",
+    "save": "Save",
+    "vehicle": "Vehicle",
+    "coordinates": "Coordinates",
+    "active": "Active",
+    "disabled": "Disabled",
+    "place": "Place",
+    "add": "Add"
+  },
+  "settings": {
+    "title": "Job Settings",
+    "subtitle": "Choose Settings",
+    "jobSound": "Job Sound",
+    "language": "Language",
+    "uiPosition": "UI Move",
+    "uiMoveActive": "Drag panels to reposition",
+    "uiMoveSave": "Save",
+    "uiMoveCancel": "Cancel",
+    "uiMoveApplyDefault": "Apply as Default",
+    "uiMoveResetDefault": "Reset to Original",
+    "progressPanel": "Progress"
+  },
+  "progress": {
+    "title": "Progress",
+    "subtitle": "Skills, Quests & Upgrades",
+    "skillPoints": "SP",
+    "skills": "Skills",
+    "quests": "Quests",
+    "upgrades": "Upgrades",
+    "max": "MAX",
+    "upgrade": "Upgrade",
+    "upgradeItems": "Upgrade Items",
+    "searchJobs": "Search jobs...",
+    "noResults": "No results found",
+    "noQuests": "No quests available",
+    "all": "All",
+    "daily": "Daily",
+    "weekly": "Weekly"
+  },
+  "upgradeModal": {
+    "title": "Upgrade Item",
+    "subtitle": "Confirm your upgrade",
+    "currentLevel": "Current Level",
+    "nextLevel": "Next Level",
+    "requirements": "Requirements",
+    "requiredLevel": "Required Level",
+    "money": "Money",
+    "upgrade": "Upgrade"
+  },
+  "downgradeModal": {
+    "title": "Change Level",
+    "subtitle": "Confirm level change",
+    "returnToPrevious": "Return to previous level",
+    "noLevelLoss": "You will not lose your current level progress"
+  },
+  "finishJob": {
+    "jobComplete": "Job Complete!",
+    "summary": "Here is your summary",
+    "continueQuestion": "Continue?",
+    "ownerWantsContinue": "{name} wants to continue",
+    "finishQuestion": "Finish Job?",
+    "finishSubtitle": "Choose what to do next",
+    "itemsCompleted": "Items Completed",
+    "totalEarnings": "Total Earnings",
+    "progressSaved": "Your progress will be saved",
+    "waitingFor": "Waiting for: {players}",
+    "waitingOwner": "Waiting for {name} to decide...",
+    "autoApprove": "Auto-approve in {time}s...",
+    "completed": "Job completed!",
+    "continue": "Continue",
+    "endJob": "End Job",
+    "leaveJob": "Leave Job"
+  },
+  "activeJob": {
+    "endJobTitle": "End Job?",
+    "endJobDesc": "This will end the job for you. Other players will be asked to continue.",
+    "leaveJobTitle": "Leave Job?",
+    "leaveJobDesc": "You will leave the current job.",
+    "remainingCanContinue": "Remaining players can continue without you",
+    "progressSaved": "Your progress will be saved",
+    "ownerDisconnected": "Owner Disconnected",
+    "ownerLeft": "Owner Left",
+    "ownerHasDisconnected": "{name} has disconnected",
+    "ownerHasLeft": "{name} has left the job",
+    "continueJobQuestion": "Do you want to continue the job?",
+    "autoContinue": "Auto-continue in {time}s..."
+  },
+  "illegal": {
+    "stolenCargo": "Stolen Cargo Found!",
+    "highRisk": "High Risk Delivery",
+    "teamVote": "Team Vote",
+    "description": "You discovered stolen merchandise. Deliver it for double pay, but police may be alerted.",
+    "reward": "Reward",
+    "risk": "Risk",
+    "x2Money": "x2 Money",
+    "policeAlertStatic": "90% Police Alert",
+    "policeAlert": "{chance}% Police Alert",
+    "suspiciousPassenger": "Suspicious Passenger",
+    "suspiciousPassengerDesc": "This passenger wants to go somewhere... unofficial. Higher pay, but there's a risk of police attention.",
+    "stolenCargoDesc": "You've discovered stolen merchandise in the trailer. Deliver it to a black market buyer for double the pay, but be warned - there's a high chance of police pursuit!",
+    "teamVotes": "Team votes:",
+    "accept": "Accept",
+    "reject": "Reject",
+    "policeWarning": "Police may be dispatched if you accept",
+    "leaderDecision": "The leader will make the final decision",
+    "waitingLeader": "Waiting for leader's decision...",
+    "stayLegal": "Stay Legal",
+    "acceptRisk": "Accept Risk",
+    "voteStayLegal": "Vote: Stay Legal",
+    "voteAcceptRisk": "Vote: Accept Risk",
+    "voteSubmitted": "Vote Submitted"
+  },
+  "lobby": {
+    "noLongerExists": "The lobby no longer exists.",
+    "playerReconnected": "{name} has reconnected to the lobby.",
+    "playerDisconnected": "{name} has disconnected from the lobby.",
+    "ownerDisconnectedNewOwner": "Owner disconnected. {name} is now the new owner.",
+    "closedNoReplacement": "Lobby closed - no eligible replacement owner found.",
+    "full": "Lobby is full (max {count} players)",
+    "notOwner": "Only the lobby owner can do this",
+    "kicked": "You have been kicked from the lobby",
+    "alreadyInLobby": "You are already in a lobby",
+    "noLobbyFound": "No lobby found",
+    "playerLeft": "{name} left the lobby"
+  },
+  "invite": {
+    "sent": "Invite sent to {name}",
+    "received": "{name} invited you to their lobby - [Y] Accept | [N] Decline",
+    "accepted": "{name} joined the lobby",
+    "declined": "{name} declined the invite",
+    "expired": "Invite expired",
+    "targetAlreadyInLobby": "This player is already in a lobby!",
+    "tooFar": "Player is too far away!"
+  },
+  "job": {
+    "started": "Job started!",
+    "completed": "Job completed!",
+    "failed": "Job failed!",
+    "resetInProgress": "Job reset in progress, please wait...",
+    "cantEnterVehicle": "You can't enter a vehicle while carrying something!"
+  },
+  "xp": {
+    "gained": "+{amount} XP",
+    "levelUp": "Level Up! You are now level {level}",
+    "maxLevel": "You have reached the maximum level!"
+  },
+  "contract": {
+    "reward": "Reward",
+    "risk": "Risk",
+    "teamVotes": "Team votes:",
+    "waitingLeader": "Waiting for leader's decision...",
+    "voteStayLegal": "Vote: Stay Legal",
+    "voteAcceptRisk": "Vote: Accept Risk",
+    "done": "DONE"
+  },
+  "hud": {
+    "truckFill": "Truck Fill",
+    "taximeter": "TAXIMETER",
+    "fare": "FARE",
+    "bonus": "BONUS",
+    "distance": "DIST",
+    "trailerHealth": "Trailer Health",
+    "pressure": "PRESSURE",
+    "coopLeaderboard": "Leaderboard",
+    "illegalRide": "ILLEGAL RIDE",
+    "normalRide": "NORMAL RIDE",
+    "goodCondition": "Good Condition",
+    "needsRepair": "Needs Repair",
+    "criticalDamage": "Critical Damage",
+    "hold": "Hold",
+    "toClose": "to close",
+    "forDetails": "for details"
+  },
+  "preview": {
+    "step": "Step {current}/{total}"
+  },
+  "minigame": {
+    "junctionBox": "JUNCTION BOX",
+    "lsPower": "LS-POWER",
+    "circuitHint": "CLICK TO ROTATE — CONNECT SOURCE TO LOAD",
+    "fish": "Fish",
+    "catch": "Catch",
+    "space": "SPACE"
+  },
+  "admin": {
+    "title": "Admin Panel",
+    "subtitle": "JobPack Analytics",
+    "dashboard": "Dashboard",
+    "players": "Players",
+    "market": "Market",
+    "activeLobbies": "Active Lobbies",
+    "economy": "Economy",
+    "todaysPayouts": "Today's Payouts",
+    "thisWeek": "This Week",
+    "allTime": "All Time",
+    "jobsToday": "Jobs Today",
+    "onlinePlayers": "Online Players",
+    "perJobEarnings": "Per-Job Earnings (Last 7 Days)",
+    "job": "Job",
+    "totalPayout": "Total Payout",
+    "completions": "Completions",
+    "uniquePlayers": "Unique Players",
+    "name": "Name",
+    "identifier": "Identifier",
+    "status": "Status",
+    "perkPoints": "Perk Points:",
+    "jobLevels": "Job Levels",
+    "recentHistory": "Recent History",
+    "region": "Region",
+    "earned": "Earned",
+    "date": "Date",
+    "dynamicMarket": "Dynamic Market Prices",
+    "resetAllToBase": "Reset All to Base",
+    "current": "Current",
+    "base": "Base",
+    "minMax": "Min / Max",
+    "health": "Health",
+    "setPrice": "Set Price",
+    "action": "Action",
+    "paymentRates": "Payment Rates",
+    "qualityTiers": "Quality Tiers",
+    "chance": "Chance %",
+    "multiplier": "Multiplier",
+    "levelBonuses": "Level Bonuses",
+    "payBonusPerLevel": "Pay Bonus Per Level",
+    "qualityChancePerLevel": "Quality Chance Per Level",
+    "estimatedEarnings": "Estimated Earnings (10 items)",
+    "selectJobToEdit": "Select a job to edit",
+    "noJobsFound": "No jobs found",
+    "noJobData": "No job data available",
+    "noHistory": "No history",
+    "noMarketData": "No market data (dynamic market may be disabled)",
+    "noActiveLobbies": "No active lobbies",
+    "searchPlaceholder": "Search by name or identifier...",
+    "searchPlayer": "Search for a player above",
+    "xp": "XP",
+    "owner": "Owner",
+    "state": "State",
+    "count": "Count",
+    "loading": "Loading..."
+  },
+  "editor": {
+    "title": "Job Editor",
+    "npc": "NPC",
+    "npcModel": "NPC Model",
+    "scenarioAnimation": "Scenario / Animation",
+    "npcPosition": "NPC Position",
+    "npcInteraction": "NPC Interaction",
+    "blip": "Blip",
+    "vehicleModel": "Vehicle Model",
+    "plate": "Plate",
+    "primaryColor": "Primary Color",
+    "secondaryColor": "Secondary Color",
+    "spawnLocations": "Spawn Locations",
+    "clickToChange": "Click to change",
+    "clickToBrowse": "Click to browse scenarios",
+    "typeManually": "Or type manually...",
+    "sprite": "Sprite",
+    "color": "Color",
+    "scale": "Scale",
+    "label": "Label",
+    "enabled": "Enabled",
+    "distance": "Distance",
+    "keyCode": "Key Code",
+    "interactionText": "Interaction Text",
+    "searchBlip": "Search blip...",
+    "searchCoords": "Search coordinates...",
+    "noCoordFields": "No coordinate fields found for this job.",
+    "noVehicleConfig": "This job has no vehicle configuration.",
+    "selectJob": "Select a job to edit",
+    "spawnNum": "Spawn",
+    "unsavedChanges": "Unsaved changes",
+    "goTo": "Go To",
+    "setFromCamera": "Set from Camera",
+    "copy": "Copy",
+    "go": "Go",
+    "cam": "Cam",
+    "preview": "Preview",
+    "dup": "Dup",
+    "selectPedModel": "Select Ped Model",
+    "selectVehicleModel": "Select Vehicle Model",
+    "selectScenario": "Select Scenario",
+    "searchPed": "Search ped model...",
+    "searchVehicle": "Search vehicle model...",
+    "searchScenario": "Search scenario...",
+    "noAnimations": "No animations found",
+    "camera": "Camera",
+    "browse": "Browse",
+    "devModeRequired": "Job Editor requires DevMode to be enabled.",
+    "devModeHint": "Set Config.DevMode = true in shared/config_settings.lua and restart the resource."
+  },
+  "tutorial": {
+    "title": "Tutorial",
+    "skip": "Skip",
+    "next": "Next",
+    "miner": {
+      "step1": {
+        "title": "Get Your Vehicle",
+        "desc": "Walk to the marked area to pick up your mining vehicle."
+      },
+      "step2": {
+        "title": "Grab Your Tool",
+        "desc": "Open the vehicle trunk and take a pickaxe."
+      },
+      "step3": {
+        "title": "Start Mining",
+        "desc": "Head to the mining area and break rocks to collect ores."
+      },
+      "step4": {
+        "title": "Process Ores",
+        "desc": "Bring collected ores to the processing scale to get paid."
+      }
+    },
+    "lumberjack": {
+      "step1": {
+        "title": "Get Your Vehicle",
+        "desc": "Walk to the marked area to pick up your logging vehicle."
+      },
+      "step2": {
+        "title": "Grab Your Axe",
+        "desc": "Open the vehicle trunk and take an axe."
+      },
+      "step3": {
+        "title": "Chop Trees",
+        "desc": "Head to the forest area and start chopping trees."
+      },
+      "step4": {
+        "title": "Process Logs",
+        "desc": "Bring collected logs to the processing scale to get paid."
+      }
+    },
+    "farmer": {
+      "step1": {
+        "title": "Get Your Vehicle",
+        "desc": "Walk to the marked area to pick up your farming vehicle."
+      },
+      "step2": {
+        "title": "Grab Your Tool",
+        "desc": "Open the vehicle trunk and take a trowel."
+      },
+      "step3": {
+        "title": "Harvest Crops",
+        "desc": "Head to the farm area and harvest the crops."
+      },
+      "step4": {
+        "title": "Process Harvest",
+        "desc": "Bring collected crops to the processing scale to get paid."
+      }
+    },
+    "fishing": {
+      "step1": {
+        "title": "Find a Spot",
+        "desc": "Walk to a fishing spot near the water."
+      },
+      "step2": {
+        "title": "Cast Your Rod",
+        "desc": "Use your fishing rod to start fishing."
+      },
+      "step3": {
+        "title": "Sell Your Catch",
+        "desc": "Bring your fish to the processing point to sell."
+      }
+    },
+    "generic": {
+      "step1": {
+        "title": "Get Ready",
+        "desc": "Pick up your vehicle and head to the work area."
+      },
+      "step2": {
+        "title": "Do the Work",
+        "desc": "Complete tasks in the designated area."
+      },
+      "step3": {
+        "title": "Finish Up",
+        "desc": "Return to the NPC or processing point to complete the job."
+      }
+    }
+  },
+  "stats": {
+    "title": "Statistics",
+    "subtitle": "Your career overview",
+    "overview": "Overview",
+    "perJob": "Per Job",
+    "history": "History",
+    "totalEarnings": "Total Earnings",
+    "totalXP": "Total XP",
+    "totalSessions": "Total Sessions",
+    "totalTime": "Total Time",
+    "bestDay": "Best Day",
+    "favoriteJob": "Favorite Job",
+    "avgEarnings": "Avg. Earnings",
+    "perSession": "per session",
+    "sessions": "sessions",
+    "last7Days": "Last 7 Days",
+    "job": "Job",
+    "level": "Level",
+    "earnings": "Earnings",
+    "time": "Time",
+    "noData": "No data available"
+  },
+  "drawtext": {
+    "jobCenter": "Job Center"
+  },
+  "notify": {
+    "jobAtCapacity": "This job is currently full ({current}/{max} teams active). Try another job or wait.",
+    "cannotStartJob": "Cannot start this job",
+    "failedStartJob": "Failed to start job",
+    "unknownError": "Unknown error",
+    "toolEquipped": "Tool equipped: {tool}",
+    "toolReturnedToTruck": "{tool} returned to truck.",
+    "deliveringStatus": "Delivering...",
+    "jobRestarting": "Job system restarting...",
+    "failedOpenMenu": "Failed to open job menu",
+    "noPermission": "No admin permission",
+    "mustSelectJob": "You must select a job at the Job Center first",
+    "achievementUnlocked": "Achievement Unlocked: {label}",
+    "globalEventStarted": "New Global Event Started: {title}",
+    "alreadyCarrying": "You are already carrying something!",
+    "notCarrying": "You are not carrying something!",
+    "needToolFirst": "Need tool first!",
+    "anotherPlayerBreaking": "Another player is already breaking this!",
+    "putToolOnBelt": "Put tool on belt first!",
+    "processingWait": "Processing in progress, please wait!",
+    "noBoxAvailable": "No boxes available!",
+    "alreadyHaveBox": "Already have a box!",
+    "failedTakeBox": "Failed to take box!",
+    "noLoadedBoxes": "No loaded boxes!",
+    "notCarryingBox": "Not carrying a box!",
+    "failedLoadBox": "Failed to load box!",
+    "noRoomInTrunk": "No room in trunk, box discarded.",
+    "emptyBoxReturned": "Empty box returned.",
+    "workClothesEquipped": "Work clothes equipped!",
+    "normalClothes": "Changed back to normal clothes",
+    "clothesRequired": "You must wear work clothes first!",
+    "failedPlaceBox": "Failed to place box!",
+    "takeBoxFirst": "Take a box first!",
+    "boxFull": "Box is full! Load it to the truck.",
+    "placeBoxFirst": "Place box on ground first!",
+    "objectBroken": "Object broken! Pick up the item.",
+    "oreBroken": "{ore} Ore found! Pick it up.",
+    "noItemsToSell": "No items to sell!",
+    "cantRepairPanel": "Cannot repair this panel",
+    "cantRepairPole": "Cannot repair this pole",
+    "nothingInTrunk": "Nothing in trunk!",
+    "alreadyCarryingSomething": "Already carrying something!",
+    "trunkInUse": "Someone else is using the trunk!",
+    "failedTakeItem": "Failed to take item!",
+    "itemTaken": "Item taken! Place on scale or back in truck.",
+    "failedPickupItem": "Failed to pickup item!",
+    "notCarryingAnything": "Not carrying anything!",
+    "failedLoadItem": "Failed to load item!",
+    "vehicleSpawnBlocked": "Vehicle spawn point is blocked!",
+    "failedStartCleaning": "Failed to start cleaning!",
+    "cleanItemsFirst": "Clean some items first!",
+    "allDoneReturn": "All done! Return to finish.",
+    "newRouteAssigned": "New route assigned! Keep cleaning!",
+    "failedTakeLoadedBox": "Failed to take loaded box!",
+    "jobCompletedByTeam": "Job has been completed by your team!",
+    "jobFinishedSummary": "Job finished! Items: {items} • Earned: {currency}{amount}",
+    "continuePayout": "Round paid out: {currency}{amount}. Starting fresh!",
+    "roundLimitReached": "Round limit reached — job cooldown started.",
+    "cooldownWaitAny": "{name} must wait {time} before starting any job.",
+    "cooldownWaitJob": "{name} must wait {time} before starting this job again.",
+    "cantRunWithDog": "You can't run while walking the dog!",
+    "cantJumpWithDog": "You can't jump while walking the dog!",
+    "cantEnterVehicleWithDog": "You can't enter a vehicle while walking the dog!",
+    "policeAlert": "POLICE ALERT! You've been spotted!",
+    "tooFarFromVan": "Too far from the van! The hose won't reach.",
+    "tooFarFromTask": "Too far! Get closer and try again.",
+    "itemCleanedPay": "Cleaned! +{amount}",
+    "itemsCleaned": "Items Cleaned",
+    "alreadyTaken": "Already taken!",
+    "actionFailed": "Action failed!",
+    "saleFailed": "Sale failed!",
+    "failedSelectZone": "Failed to select zone!",
+    "purchaseFailed": "Purchase failed!",
+    "couldNotSell": "Could not sell!",
+    "couldNotCastRod": "Could not cast rod!",
+    "cannotTakeTool": "Cannot take tool",
+    "cannotTrimBush": "Cannot trim this bush",
+    "cannotDigLawn": "Cannot dig this lawn",
+    "couldNotPickUpBox": "Could not pick up box",
+    "couldNotPickUpPallet": "Could not pick up pallet",
+    "trunkIsFull": "Trunk is full!",
+    "scaleFull": "Scale is full!",
+    "palletSlotsFull": "Pallet slots full",
+    "truckIsFull": "Truck is full",
+    "toolTaken": "Tool taken: {tool}",
+    "toolReturned": "Tool returned: {tool}",
+    "alreadyHaveTool": "Already have a {tool}!",
+    "noToolAvailable": "No {tool}s available!",
+    "notHoldingTool": "Not holding a {tool}!",
+    "failedReturnTool": "Failed to return {tool}!",
+    "takeToolFirst": "Take a {tool} first!",
+    "itemLoaded": "Item loaded! (slot {slot}/{max})",
+    "itemLoadedDrive": "Item loaded! (slot {slot}/{max}) — You can drive to the processing scale or continue loading.",
+    "spotCleaned": "{spot} cleaned! {count} spot(s) remaining.",
+    "collected": "Collected {item}!",
+    "truckHeadingTo": "Truck heading to {dest}...",
+    "todaysBonusJobs": "Today's bonus jobs: {jobs}",
+    "toolUnlocked": "Unlocked: {tool}",
+    "toolUpgraded": "{job}: {tool} unlocked!",
+    "toolSwitched": "{job}: switched to {tool}!",
+    "qualityBonus": "{quality} quality! x{multiplier} bonus",
+    "notAuthenticated": "Not authenticated",
+    "noToolsForJob": "No tools for this job",
+    "toolNotFound": "Tool not found",
+    "notEnoughMoney": "Not enough money",
+    "failedUnlockTool": "Failed to unlock tool",
+    "toolNotUnlocked": "Tool not unlocked",
+    "failedSelectTool": "Failed to select tool",
+    "toolNotFoundForLevel": "Tool not found for this level",
+    "failedSaveUpgrade": "Failed to save upgrade",
+    "alreadyProcessing": "Request already in progress, please wait.",
+    "alreadyInJob": "You are already in a job!",
+    "minimumPlayersRequired": "This job requires at least {count} players to start.",
+    "insufficientHours": "You need at least {required} hours to start this job. You have {current} hours.",
+    "exceededMaxHours": "This job is only available for players with less than {max} hours. You have {current} hours.",
+    "insufficientHoursPlayer": "{name} needs at least {required} hours to start this job. Currently: {current} hours.",
+    "exceededMaxHoursPlayer": "{name} has too many hours for this job ({current}/{max} max).",
+    "requiresJobLevel": "Requires job level {level}",
+    "failedSwitchTool": "Failed to switch tool",
+    "playerNotFound": "Player not found or not online",
+    "failedSetLevel": "Failed to set level",
+    "pickingUp": "Picking up...",
+    "pickingUpBox": "Picking up box...",
+    "placingBox": "Placing box...",
+    "loadingBox": "Loading box...",
+    "placingOnScale": "Placing on scale...",
+    "returningBox": "Returning box...",
+    "loading": "Loading...",
+    "takingItem": "Taking item...",
+    "placingItem": "Placing item...",
+    "takingTool": "Taking tool...",
+    "storingTool": "Storing tool...",
+    "equippingTool": "Equipping tool...",
+    "toolActionInProgress": "Tool action already in progress",
+    "toolCooldownActive": "Please wait before using the tool again",
+    "cannotTakeToolInVehicle": "Cannot take tools while in a vehicle",
+    "alreadyHoldingTool": "You already have a tool",
+    "noToolInTrunk": "No tool in trunk",
+    "toolNotAssigned": "No tool assigned to you",
+    "toolNotYours": "This is not your tool",
+    "toolNotInTrunk": "Tool is not in the trunk",
+    "toolActionCancelled": "Action cancelled",
+    "toolAttachFailed": "Failed to attach tool",
+    "noJobCallbacks": "Job callbacks not configured",
+    "serverDeniedTool": "Server denied the action",
+    "noToolInHand": "No tool in hand",
+    "noToolOnBelt": "No tool on belt",
+    "toolEntityNotFound": "Tool entity not found",
+    "noActiveTool": "No active tool",
+    "noToolToReturn": "No tool to return",
+    "questProgress": "Quest: {label} ({progress}/{target})",
+    "questCompleted": "Quest Complete: {label}!{rewards}",
+    "boxTaken": "Box taken! Go harvest.",
+    "loadedBoxTaken": "Loaded box taken! {count} {label} — Carry to the scale.",
+    "boxEmpty": "Box is empty! Harvest some produce first.",
+    "boxEmptyError": "Box is empty",
+    "decalCleaned": "Cleaned! ({count} remaining)",
+    "allDeliveriesComplete": "All deliveries completed! Return the bicycle.",
+    "allDeliveriesCompletePayment": "All deliveries completed! +{symbol}{payment} | Return the bicycle.",
+    "farmerJobStarted": "Farming job started! Get your work clothes and pick up a box.",
+    "farmerBoxTaken": "Box taken! Go to plants to harvest.",
+    "farmerBoxEmpty": "Box is empty! Harvest some produce first.",
+    "fruitpickerJobStarted": "Orange picking job started! Get your work clothes and pick up a box.",
+    "fruitpickerBoxTaken": "Box taken! Go to orange trees to pick.",
+    "fruitpickerBoxEmpty": "Box is empty! Pick some oranges first."
+  },
+  "prompt": {
+    "pickUpBox": "[E] Pick Up Box",
+    "loadBox": "[E] Load Box",
+    "openTrunk": "[E] Open Trunk",
+    "closeTrunk": "[E] Close Trunk",
+    "returnVehicle": "[E] Return Vehicle",
+    "deliver": "[E] Deliver",
+    "returnBoxToTrunk": "[E] Return Box to Trunk",
+    "dropAnchor": "[E] Drop Anchor",
+    "raiseAnchor": "[E] Raise Anchor",
+    "returnBoat": "[E] Return Boat",
+    "boardBoat": "[E] Board Boat",
+    "sellItems": "[E] Sell Items",
+    "catchDog": "[E] Catch Dog",
+    "cleanPoop": "[E] Clean up poop",
+    "deliverDog": "[E] Deliver dog",
+    "getInBucket": "[E] Get in bucket",
+    "bucketInUse": "Bucket in use",
+    "parkVehicle": "[E] Park Vehicle",
+    "reelIn": "[E] Reel In!",
+    "sellFish": "[E] Sell Fish",
+    "changeClothes": "[E] Change Clothes",
+    "changeToWorkClothes": "[E] Change to work clothes",
+    "changeToNormalClothes": "[E] Change to normal clothes",
+    "collectTreasure": "[E] Dig Up Treasure",
+    "takeShovel": "[G] Take Shovel",
+    "loadCargo": "[E] Load onto Boat",
+    "digTreasure": "[E] Dig",
+    "openChest": "[E] Open Chest",
+    "pickupLoot": "[E] Pick Up Loot",
+    "stealCargo": "[E] Steal Cargo",
+    "finishJob": "[E] Finish Job",
+    "cancelJob": "[E] Cancel Job",
+    "exitWarehouse": "[E] Exit the warehouse",
+    "completeJob": "[E] Complete Job",
+    "activateBelt": "[E] Activate Belt",
+    "throwCleanup": "[E] Throw Cleanup",
+    "collectCleanup": "[E] Collect Cleanup",
+    "deliverTruck": "[E] Deliver Truck",
+    "takeTrimmer": "[E] Take Trimmer",
+    "trimBush": "[E] Trim Bush",
+    "digLawn": "[E] Dig Lawn",
+    "returnWand": "[E] Return wand",
+    "takeWand": "[E] Take pressure wand",
+    "takeWandOrCloth": "[E] Take Wand | [G] Take Cloth",
+    "takeTrimmerOrShovel": "[E] Take Trimmer | [G] Take Shovel",
+    "cleanToilet": "[E] Clean Toilet",
+    "fixPipe": "[E] Fix Pipe",
+    "returnWrench": "[E] Return Wrench",
+    "takeWrench": "[E] Take Wrench",
+    "attachTrailer": "[E] Attach Trailer",
+    "deliverTrailer": "[E] Deliver Trailer",
+    "reattachTrailer": "[E] Reattach Trailer",
+    "pickUpPallet": "[E] Pick Up Pallet",
+    "loadPallet": "[E] Load Pallet",
+    "putDownBox": "[E] Put Down Box",
+    "pickUpBoxForklift": "[E] Pick Up Box with Forklift",
+    "fishingShop": "[E] Fishing Shop",
+    "lowerFork": "Press [CTRL] to lower the fork",
+    "raiseFork": "Press [SHIFT] to raise the fork",
+    "useForklift": "Use a forklift to move pallets",
+    "trunkFull": "Trunk is full! Hit the road.",
+    "completeDeliveriesFirst": "Complete all deliveries first!",
+    "forkliftControls": "Forklift: CTRL = Lower Fork | SHIFT = Raise Fork",
+    "processingInProgress": "Processing in progress...",
+    "boxFullLoad": "Box full! Load to truck or scale.",
+    "trunkEmptyGoNpc": "Trunk empty! Go to the NPC.",
+    "takeWrenchFromTrunk": "Take wrench from van trunk",
+    "reattachTrailerPrompt": "[E] Reattach Trailer",
+    "finishJobCount": "[E] Finish Job ({count} cleaned)",
+    "returnTool": "[E] Return {tool}",
+    "takeTool": "[E] Take {tool}",
+    "finishProcessing": "[E] Finish Processing ({boxes} boxes, {currency}{value})",
+    "placeBoxOnScale": "[E] Place box on scale",
+    "loadBoxToTruck": "[E] Load box to truck ({count} {produce})",
+    "loadBoxToTruckTarget": "Load harvested {produce} box",
+    "returnEmptyBox": "[E] Return empty box",
+    "takeLoadedBox": "[E] Take loaded box ({count} in truck)",
+    "takeHarvestBox": "[E] Take harvest box ({count}/{cap})",
+    "takeHarvestBoxEmpty": "[E] Take harvest box",
+    "polishSurface": "[E] Polish {surface}",
+    "continuePolish": "[E] Continue polishing {surface}",
+    "returnAndTake": "[E] Return {current} | [G] Take {other}",
+    "deliverCount": "[E] Deliver ({current}/{total})",
+    "selectHuntingArea": "[E] Select Hunting Area",
+    "returnBicycle": "[E] Return Bicycle",
+    "takeJack": "[E] Take car jack",
+    "swapTire": "[E] Return old tire & take spare",
+    "closeValve": "[E] Close Valve - Stop the water flow",
+    "openValve": "[E] Open Valve - Restore water flow",
+    "wearHuntingClothes": "[E] Wear hunting clothes",
+    "placeBoxAndHarvest": "[E] Place box and harvest {produce}",
+    "harvestProduce": "[E] Harvest {produce}",
+    "castRod": "[E] Cast Rod ({zone})",
+    "returnToSeat": "[E] Return to Seat",
+    "clickTargetsToClean": "Click on the targets to clean!"
+  },
+  "hunting": {
+    "continueHint": "Track the next animal in the hunting area",
+    "started": "Hunting job started! Put on work clothes and select an area.",
+    "newAnimals": "New animals have arrived! Continue.",
+    "continueHunting": "You can continue hunting.",
+    "weaponsGiven": "Hunting weapons given!",
+    "goToArea": "Go to the hunting area, animals will spawn there!",
+    "cantPickUp": "You can't pick up this animal!",
+    "alreadyCarrying": "You are already carrying something!",
+    "failedPickUp": "Failed to pick up animal!",
+    "noAnimalsInTrunk": "No animals in the trunk!",
+    "trunkInUse": "Someone else is using the trunk!",
+    "orePickedUp": "Animal picked up! Place it on the scale.",
+    "failedPickUpAnimal": "Failed to pick up animal!",
+    "invalidArea": "Invalid area!",
+    "areaLocked": "This area is locked!",
+    "animalsSpawned": "{count} animals spawned!",
+    "animalHunted": "{animal} hunted! ({weight} kg)",
+    "wildAnimalFound": "Wild {animal} found! ({weight} kg)",
+    "animalPickedUp": "{animal} picked up! ({weight} kg) Load it into the vehicle.",
+    "levelRequired": "Level {level} required for this area!",
+    "areaSelected": "{area} selected! Follow the marker on the map.",
+    "processingComplete": "Processing complete! {weight} kg, {currency}{amount} earned",
+    "tooFarWarning": "You went too far from the hunting area! Return within 15 seconds or the job will be cancelled!",
+    "abandonedTooFar": "You went too far from the hunting area. Job cancelled.",
+    "huntingAreaFallback": "Hunting Area",
+    "animalFallback": "Animal",
+    "areaFallback": "Area {index}",
+    "selectArea": "Select Area: {name}",
+    "selectHuntingArea": "Select Hunting Area",
+    "pickUpAnimal": "[E] Pick up {label} ({weight} kg)",
+    "loadAnimalToVehicle": "[E] Load animal to vehicle",
+    "takeAnimalFromTrunk": "[E] Take animal from trunk",
+    "takeAnimalFromTrunkCount": "[E] Take animal from trunk ({count})",
+    "loadAnimalWeight": "[E] Load animal ({weight} kg | Truck: {current}/{max} kg)",
+    "finishProcessingWeight": "[E] Finish Processing ({weight} kg)",
+    "vehicleOverweight": "~r~Vehicle overweight! ({current}/{max} kg)",
+    "vehicleOverweightDrop": "~r~Vehicle overweight! ({current}/{max} kg) ~w~[G] Drop carcass",
+    "trunkFullDrop": "~r~Trunk is full! ~w~[G] Drop carcass, or process current cargo.",
+    "carcassDropped": "Carcass dropped.",
+    "dropHint": "[G] Drop carcass",
+    "progressTitle": "Hunting",
+    "progressDetail": "Select a hunting area, take down animals, carry the carcasses to your truck, then drive to the scale.",
+    "stepSelectArea": "Select a hunting area on the map",
+    "stepHuntAnimal": "Hunt an animal in the area",
+    "stepPickingUp": "Picking up the carcass",
+    "stepPickupCarcass": "Pick up the dead animal",
+    "stepLoadTrunk": "Load the carcass into the truck",
+    "stepGoToScale": "Drive the carcasses to the scale",
+    "stepPlacingOnScale": "Placing animal on the scale",
+    "stepPlaceOnScale": "Place the animal on the scale",
+    "stepProcessAnimal": "Talk to the NPC to process the animals",
+    "stepNewArea": "Select a new hunting area"
+  },
+  "tiretechnician": {
+    "continueHint": "Drive to the next stranded vehicle on your map",
+    "goGetJack": "Go to your truck and take the car jack!",
+    "takingJack": "Taking car jack...",
+    "jackTaken": "Car jack ready! Place it under the car.",
+    "placingJack": "Placing car jack...",
+    "jackPlaced": "Car jacked up! Now remove the flat tire.",
+    "removingTire": "Removing flat tire...",
+    "tireRemoved": "Tire removed! Return it to truck and get a spare.",
+    "swappingTires": "Swapping tires...",
+    "spareTaken": "Spare tire ready! Install it on the car.",
+    "installingTire": "Installing spare tire...",
+    "tireInstalled": "Tire installed! Lower the vehicle to finish.",
+    "loweringVehicle": "Lowering vehicle...",
+    "tireChanged": "Tire changed successfully!",
+    "repairCancelled": "Repair cancelled",
+    "cantRepair": "Cannot repair this vehicle",
+    "finishCurrentFirst": "Finish current repair first!",
+    "goToTruck": "Go to your service truck!",
+    "returningJack": "Returning car jack...",
+    "takingSpare": "Taking spare tire...",
+    "needSpare": "You need a spare tire! Take one from the truck first.",
+    "returnVehicle": "Return the service truck to the depot!",
+    "interactPlaceJack": "[E] Place car jack",
+    "interactRemoveTire": "[E] Remove flat tire",
+    "interactInstallTire": "[E] Install spare tire",
+    "interactLowerVehicle": "[E] Lower vehicle",
+    "interactPickupJack": "[E] Pick up car jack",
+    "interactChangeTire": "[E] Change flat tire",
+    "interactReturnJack": "[E] Return car jack",
+    "interactReturnTire": "[E] Return tire",
+    "interactTakeJack": "[E] Take car jack",
+    "interactTakeSpare": "[G] Take spare tire",
+    "interactTakeSpareE": "[E] Take spare tire",
+    "progressTitle": "Tire Technician",
+    "progressDetail": "Drive to stranded vehicles and change their flat tires.",
+    "progressTires": "Tires ({done}/{total})",
+    "serviceTruck": "Tire Service Truck",
+    "stepTakeJack": "Take the car jack from the truck",
+    "stepJackUp": "Jack up the car",
+    "stepRemoveFlat": "Remove the flat tire",
+    "stepFitSpare": "Fit the spare tire",
+    "stepLowerCar": "Lower the car",
+    "stepReturnJack": "Return the jack to the truck"
+  },
+  "powerlines": {
+    "continueHint": "Find the next damaged pole on your map",
+    "bucketInstructions": "Use arrow keys to raise/lower bucket. [E] to repair when in range.",
+    "parkNearPoles": "Park near poles and use the bucket to reach wiring.",
+    "cantDriveWithBucket": "Cannot drive while bucket is in use",
+    "panelRepaired": "Panel repaired successfully!",
+    "panelCancelled": "Panel repair cancelled",
+    "poleRepaired": "Phone pole repaired successfully!",
+    "poleRepairFailed": "Pole repair failed! Be careful with electricity.",
+    "progressTitle": "Powerlines",
+    "bucketControls": "Bucket Controls | Up Down Left Right",
+    "blipPanel": "Electrical Panel",
+    "blipPole": "Phone Pole",
+    "blipVehicle": "Bucket Truck"
+  },
+  "diving": {
+    "continueHint": "Find the next dive spot on your map",
+    "oxygenCritical": "OXYGEN CRITICAL! Surface immediately!",
+    "oxygenLow": "Oxygen running low! You should surface.",
+    "refillingTank": "Refilling air tank...",
+    "tankRefilled": "Air tank refilled.",
+    "coralEmpty": "Coral broken but nothing inside.",
+    "trashCleaned": "Trash cleaned up!",
+    "failedSyncBoat": "Failed to sync boat. Try again.",
+    "allTasksComplete": "All tasks completed! Return to the boat and raise the anchor.",
+    "anchorDropped": "Anchor dropped! Get off the boat and dive in.",
+    "anchorRaised": "Anchor raised! Head to the delivery point.",
+    "anchorRaisedEarly": "Anchor raised! Returning early — no payment will be given.",
+    "anchorRaisedContinue": "Anchor raised! You can re-anchor at the dive zone to continue.",
+    "gearEquipped": "Equipped {gear}! ({seconds}s oxygen)",
+    "itemsSold": "{count} items sold! {currency}{amount} earned!",
+    "zoneSelected": "Dive zone selected: {zone}. Head out!",
+    "zoneInfo": "Dive zone: {zone}",
+    "reconnected": "Reconnected to diving job!",
+    "started": "Diving job started! Select a zone and head to the dive spot.",
+    "progressTitle": "Diving",
+    "progressDetail": "Collect underwater items at the dive site. Swim down and gather objects from the seabed.",
+    "divingStarted": "You're in the dive zone! Collect items from the seabed.",
+    "collectingCoral": "Collecting coral...",
+    "cleaningTrash": "Cleaning trash...",
+    "unknownZone": "Unknown",
+    "sellAtNpcReminder": "Sell your collected items at the buyer NPC to receive payment."
+  },
+  "treasurehunter": {
+    "continueHint": "Follow the tracker to the next chest",
+    "started": "Treasure hunting job started! Head to the treasure area.",
+    "reconnected": "Reconnected to treasure hunting job!",
+    "newTarget": "A team found the treasure! New location assigned.",
+    "treasureFound": "You found a {tier}! {currency}{value} earned!",
+    "someoneNearby": "Someone is too close! Move away to collect.",
+    "anchorDropped": "Anchor dropped! Dive in and find the treasure!",
+    "anchorRaised": "Anchor raised! Head back to the dock.",
+    "oxygenCritical": "OXYGEN CRITICAL! Surface immediately!",
+    "oxygenLow": "Oxygen running low! You should surface.",
+    "refillingTank": "Refilling air tank...",
+    "tankRefilled": "Air tank refilled.",
+    "depthWarning": "Dangerous depth! Oxygen draining faster!",
+    "fakeLocation": "False signal... Recalculating new coordinates.",
+    "penalty": "Penalty: {currency}{amount} — No company boat at dock.",
+    "digging": "Digging up treasure...",
+    "alreadyCollected": "Someone already collected this treasure!",
+    "alreadySurfaced": "Chest is already on the surface!",
+    "notSurfaced": "Chest hasn't surfaced yet! Keep digging.",
+    "someoneOpening": "Someone else is opening this chest!",
+    "needShovel": "You need a shovel! Take one from the boat.",
+    "cargoLoaded": "Loot loaded onto the boat!",
+    "cargoFull": "Boat cargo is full! Return to dock to deliver.",
+    "stolenItem": "You stole loot from another boat!",
+    "cargoStolenFromYou": "Someone stole loot from your boat!",
+    "someoneOpened": "Someone opened a {tier}!",
+    "stealDisabled": "Stealing is not enabled.",
+    "noCargoHere": "No cargo to steal here.",
+    "shovelTaken": "Shovel taken!",
+    "canFinishHint": "Collect more treasures or return to the dock to finish the job.",
+    "anchorRaisedContinue": "Anchor raised! Head to the next treasure or return to dock to finish.",
+    "progressTitle": "Treasure Hunter",
+    "progressDetail": "Dive underwater and collect treasure chests. Follow the tracker beeps to find them.",
+    "cargoProgress": "Cargo: {current}/{max}",
+    "blipDock": "Dock - Deliver",
+    "blipTreasure": "Treasure Location"
+  },
+  "metaldetector": {
+    "continueHint": "Follow detector beeps and scan the next zone",
+    "started": "Metal detector shift started! Grab a detector from the truck and head to the search zone.",
+    "newRound": "New round started. Scanner recalibrated.",
+    "newZone": "New search zone: {zone}",
+    "teammateFound": "Your teammate recovered an item.",
+    "pressDig": "[E] Dig here",
+    "digging": "Digging...",
+    "digCancelled": "Dig cancelled.",
+    "digTooFast": "You are digging too fast. Slow down a bit.",
+    "exitVehicleFirst": "Get out of the vehicle to use the detector.",
+    "outsideZone": "You must stay inside the marked beach zone.",
+    "lootFound": "Recovered {item}! +{currency}{amount}",
+    "lootFoundItem": "Recovered {item}! It has been added to your inventory.",
+    "unknownItem": "Unknown Item",
+    "roundFinished": "Round complete! Every spot in this zone has been dug.",
+    "canFinishHint": "Open job options at NPC to finish or continue.",
+    "spotAlreadyDug": "This spot has already been dug up.",
+    "spotBusy": "A teammate is already digging this spot.",
+    "continueBlockedDigging": "A teammate is still digging — wait for them to finish before starting a new round.",
+    "digDelayed": "Connection hiccup — if the dig went through, your reward has already been paid.",
+    "scanHint": "Head into the search zone — the detector will locate dig sites once you arrive.",
+    "scanningArea": "Scanning the area for signals...",
+    "spotsFound": "Scan complete — {count} signals located!",
+    "moreSignals": "The detector picked up {count} new signal(s) nearby!",
+    "takeDetectorFirst": "Take a metal detector from the truck first.",
+    "detectorReturned": "Detector returned to the truck.",
+    "blipSearchArea": "Search Area",
+    "unknownZone": "Unknown Beach",
+    "progressTitle": "Metal Detector",
+    "progressDetail": "Use your detector to locate and dig hidden metallic finds in beach zones.",
+    "progressSpots": "Dug spots: {current}/{max}",
+    "progressValue": "Stashed Value: {currency}{amount}",
+    "labelTakeTool": "[E] Take metal detector",
+    "labelReturnTool": "[E] Return detector",
+    "labelPutOnBelt": "[G] Put detector on belt",
+    "labelTakeFromBelt": "[G] Take detector from belt",
+    "labelTakeFromTrunk": "[E] Take from trunk (%d)",
+    "labelNoMoreItems": "~y~Nothing left in the trunk.",
+    "labelLoadToTruck": "[E] Load to truck",
+    "labelPickup": "[E] Pick up",
+    "labelDig": "[E] Dig",
+    "labelClothesWork": "[E] Change to work clothes",
+    "labelClothesNormal": "[E] Change to normal clothes",
+    "labelFailNotify": "Cannot dig here right now",
+    "returnVehicleHint": "Shift ending — drive the van back to the depot to hand it in.",
+    "returnVehiclePrompt": "[E] Hand in the van",
+    "returnVehicleBlip": "Return Van",
+    "jobFinished": "Shift over! You earned {symbol}{earned}.",
+    "vehicleNotAtDepot": "The van must be back at the depot!",
+    "tooFarFromDepot": "You are too far from the depot!"
+  },
+  "delivery": {
+    "continueHint": "Pick up the next package and deliver it",
+    "reconnected": "Reconnected to delivery job!",
+    "started": "Cargo delivery job started!",
+    "leaderPreparing": "Leader is preparing the vehicle, please wait...",
+    "spawnFailed": "Vehicle could not be spawned! Spawn point is occupied. Job cancelled.",
+    "alreadyCarryingBox": "You are already carrying a box!",
+    "boxPickedUp": "Box picked up! Load it into the vehicle.",
+    "notCarryingBox": "You are not carrying a box!",
+    "firstDelivery": "First delivery point assigned! Head out when ready.",
+    "trunkFull": "Trunk is full! Time to deliver.",
+    "boxDeliverPickup": "Box picked up! Deliver it to the customer.",
+    "newRound": "New round! Load boxes from the depot.",
+    "pickUpToContinue": "Pick up boxes from the NPC to continue. To finish, go to the marked spot and return the vehicle.",
+    "returnVehicleToFinish": "All deliveries done! Return the vehicle at the marked spot to finish the job.",
+    "deliveriesStarting": "Deliveries starting!",
+    "teammateTookBox": "Teammate took a box",
+    "teammateReturnedBox": "Teammate returned a box to the trunk",
+    "teammatePartialDelivery": "Teammate made a partial delivery!",
+    "allComplete": "All deliveries completed! Return to depot.",
+    "progressTitle": "Delivery",
+    "progressDetail": "Deliver packages to customers across the city. Load boxes and deliver to each address.",
+    "loadCapacity": "Load boxes from the depot! Capacity: {capacity} boxes",
+    "vehicleReadyLoad": "Vehicle ready! Load boxes from depot. Capacity: {capacity} boxes",
+    "subtaskDeliver": "Deliver packages ({current}/{total})",
+    "subtaskLoad": "Load boxes at the depot ({current}/{total})",
+    "boxLoaded": "Box loaded! ({current}/{total})",
+    "boxReturned": "Box returned! ({count} in trunk)",
+    "partialDelivery": "Partial delivery! ({current}/{total}) +{amount} | Bring another box.",
+    "deliveryDone": "Delivery complete! +{amount} | All deliveries done! Return to depot.",
+    "deliveryDoneRemaining": "Delivery complete! +{amount} | Remaining: {remaining}",
+    "deliveryFailed": "Delivery failed!",
+    "couldNotContinue": "Could not continue!",
+    "couldNotPickUp": "Could not pick up box!",
+    "couldNotLoad": "Could not load box!",
+    "couldNotReturn": "Could not return box!",
+    "teammateLoaded": "Teammate loaded a box ({current}/{total})",
+    "teammateDelivered": "Teammate completed a delivery! Remaining: {remaining}",
+    "itemLabel": "Deliveries"
+  },
+  "cardetailer": {
+    "continueHint": "Drive to the next car and start detailing",
+    "started": "Car detailing job started! Get equipped and drive to the customer cars.",
+    "newCars": "New cars assigned! Continue detailing.",
+    "wandEquipped": "Pressure Wand equipped!",
+    "wandReturned": "Pressure Wand returned to van.",
+    "clothEquipped": "Polish Cloth equipped!",
+    "clothReturned": "Polish Cloth returned to van.",
+    "takeWandFirst": "Take the pressure wand first!",
+    "needCloth": "You need the polish cloth! Take it from the van.",
+    "failedStartPolish": "Failed to start polishing!",
+    "tooFar": "Too far! Get closer and try again.",
+    "carDetailed": "Car detailed!",
+    "carWashed": "Car washed! Polish it for bonus pay.",
+    "hoseLimit": "Hose limit reached! Stay closer to the van.",
+    "carDetailedTeammate": "Car detailed by teammate!",
+    "carWashedTeammate": "Car washed by teammate!",
+    "carPolished": "Car polished! Great work!",
+    "carPolishedTeammate": "Car polished by teammate!",
+    "returnToDepot": "Return to the depot to complete the job.",
+    "spotRightFrontDoor": "Right Front Door",
+    "spotLeftFrontDoor": "Left Front Door",
+    "spotHood": "Hood",
+    "spotTrunk": "Trunk",
+    "spotRightRearDoor": "Right Rear Door",
+    "spotLeftRearDoor": "Left Rear Door",
+    "spotHoodRight": "Hood Right",
+    "spotHoodLeft": "Hood Left",
+    "spotHoodCenter": "Hood Center",
+    "spotRoof": "Roof",
+    "spotRoofLeft": "Roof Left",
+    "spotTrunkRight": "Trunk Right",
+    "spotTrunkLeft": "Trunk Left",
+    "spotFrontFenderRight": "Front Fender Right",
+    "spotFrontFenderLeft": "Front Fender Left",
+    "spotDoorRight": "Door Right",
+    "spotDoorRightFront": "Door Right Front",
+    "spotDoorLeft": "Door Left",
+    "spotDoorLeftFront": "Door Left Front",
+    "spotRearFenderRight": "Rear Fender Right",
+    "spotRearFenderLeft": "Rear Fender Left",
+    "toolWand": "Wand",
+    "toolCloth": "Cloth",
+    "carsDetailed": "Cars Detailed",
+    "progressTitle": "Car Detailer",
+    "progressDetail": "Wash and polish customer cars. Use the pressure wand for washing, then polish with a cloth.",
+    "carLabel": "Car #{index}",
+    "subtaskWashed": "{car} washed",
+    "subtaskPolished": "{car} polished",
+    "subtaskDetailed": "{car} detailed",
+    "spotFallback": "Spot"
+  },
+  "cleaner": {
+    "continueHint": "Head to the next stain on your map",
+    "started": "Cleaning job started! Get your work clothes and mop.",
+    "toolMop": "Mop",
+    "progressTitle": "Cleaner",
+    "progressDetail": "Clean the dirt stains marked on the map using your mop. Walk to each stain and press [E] to start cleaning.",
+    "itemLabel": "Dirt Stain",
+    "blipLabel": "Dirt Stain",
+    "finishItemLabel": "Stains Cleaned",
+    "cleanPrompt": "[E] Clean stain ({current}/{total})",
+    "subtaskClean": "Clean all stains ({current}/{total})"
+  },
+  "windowscleaner": {
+    "continueHint": "Find the next dirty window on your map",
+    "started": "Window cleaning job started! Get your work clothes and sponge.",
+    "toolSponge": "Sponge",
+    "progressTitle": "Window Cleaner",
+    "progressDetail": "Clean the dirty windows at each location. Use your sponge to scrub the marked spots.",
+    "dirtyWindow": "Dirty Window",
+    "dirtyWindowBlip": "Dirty Window #%d",
+    "windowsCleaned": "Windows Cleaned",
+    "cleanWindowProgress": "[E] Clean window ({hits}/{required})"
+  },
+  "powerwash": {
+    "continueHint": "Move to the next dirty spot on your map",
+    "started": "Powerwash job started! Get your work clothes and wand.",
+    "takeWandFirst": "Take the pressure wand first!",
+    "tooFarFromSpot": "Too far from spot!",
+    "toolWand": "Pressure Wand",
+    "progressTitle": "Powerwash",
+    "progressDetail": "Spray the dirty spots marked on the map using your pressure wand. Aim at the stain and hold [LMB] to spray.",
+    "dirtySpot": "Dirty Spot",
+    "dirtySpotBlip": "Dirty Spot #%d",
+    "spotsCleaned": "Spots Cleaned"
+  },
+  "forklift": {
+    "continueHint": "Pick up the next crate with the forklift",
+    "newCrates": "New crates arriving...",
+    "preparingForklifts": "Preparing forklifts...",
+    "failedSpawnForklifts": "Failed to spawn forklifts!",
+    "beltFull": "Belt is full! Activate the conveyor first.",
+    "earnedReward": "+{symbol}{money}, +{xp} XP",
+    "modeBeltToShelf": "Pick up from belt, place on shelves!",
+    "modeCratesToBelt": "Move crates to the belt!",
+    "newRoundBeltToShelf": "New round: Pick up from belt, place on shelves!",
+    "newRoundStarting": "New round starting!",
+    "progressTitle": "Forklift",
+    "progressDetailToShelf": "Move crates using the forklift. Pick up crates and place them on the shelves.",
+    "progressDetailToBelt": "Move crates using the forklift. Pick up crates and deliver them to the conveyor belt.",
+    "onlyLeaderCanCancel": "Only the leader can cancel the job",
+    "deliveredCrates": "Delivered Crates"
+  },
+  "warehouse": {
+    "continueHint": "Load the next pallet onto the truck",
+    "newTrucks": "New trucks arriving...",
+    "failedInitSession": "Failed to initialize session!",
+    "preparingVehicles": "Preparing vehicles...",
+    "failedSpawnForklift": "Failed to spawn forklift!",
+    "truckOnTheWay": "Truck is on the way...",
+    "truckReady": "Truck is ready for loading!",
+    "truckReadyWithOrder": "Truck ready! Load: {boxes} boxes, {pallets} pallets",
+    "boxesProgress": "Boxes: {current}/{total}",
+    "palletsProgress": "Pallets: {current}/{total}",
+    "orderInfo": "Order: {boxes} boxes, {pallets} pallets",
+    "deliveryCompleteReward": "Delivery complete! +${money}, +{xp} XP",
+    "newOrder": "New order: {boxes} boxes, {pallets} pallets",
+    "newOrderWithRemaining": "New order: {boxes} boxes, {pallets} pallets ({remaining} trucks remaining)",
+    "deliveryComplete": "Delivery complete!",
+    "takeBoxToTruck": "Take the box to the truck!",
+    "truckNotReady": "Truck is not ready",
+    "truckNotFound": "Truck not found",
+    "getInForklift": "Get in the forklift",
+    "alreadyCarrying": "You are already carrying something",
+    "boxDropped": "Box dropped",
+    "progressTitle": "Warehouse",
+    "progressDetail": "Load cargo onto the delivery truck. Use forklifts or carry items by hand.",
+    "completedTrucks": "Completed Trucks"
+  },
+  "landscaping": {
+    "continueHint": "Head to the next property to maintain",
+    "failedInit": "Failed to initialize job!",
+    "toolNotAvailable": "Tool not available!",
+    "needTrimmer": "You need a trimmer to cut bushes!",
+    "trimmingCancelled": "Bush trimming cancelled",
+    "needShovel": "You need a shovel to dig lawns!",
+    "diggingCancelled": "Lawn digging cancelled",
+    "newTasks": "New gardening tasks assigned!",
+    "allComplete": "All tasks complete! Return to depot to finish.",
+    "onlyLeaderFinish": "Only the leader can finish the job!",
+    "notAllBushes": "Not all bushes trimmed!",
+    "notAllLawns": "Not all lawns raked!",
+    "jobStarted": "Landscaping job started! Trim {bushes} bushes and dig {lawns} lawns. Pick up tools from the truck.",
+    "bushTrimmed": "Bush trimmed! {bushes} bushes, {lawns} lawns remaining",
+    "lawnDug": "Lawn dug! {bushes} bushes, {lawns} lawns remaining",
+    "toolTrimmer": "Trimmer",
+    "toolShovel": "Shovel",
+    "progressTitle": "Landscaping",
+    "progressDetail": "Maintain the grounds. Trim bushes and rake lawns at each property.",
+    "toolFallback": "Tool"
+  },
+  "farmer": {
+    "continueHint": "Head to the next plant and harvest it",
+    "alreadyHarvested": "Plant was already harvested!",
+    "failedStartHarvest": "Failed to start harvesting",
+    "plantsRespawned": "Plants respawned! {count} ready to harvest.",
+    "progressTitle": "Farmer",
+    "progressDetail": "Take a box, harvest plants to fill it, load full boxes into the truck, then drive to the scale.",
+    "stepTakeBox": "Take a box from the truck",
+    "stepHarvesting": "Keep harvesting the plant",
+    "stepHarvestPlant": "Walk to a plant and harvest it",
+    "stepLoadBoxToTruck": "Load the full box into the truck",
+    "stepGoToScale": "Drive the boxes to the scale",
+    "stepPlaceOnScale": "Place box on the scale",
+    "stepProcessProduce": "Talk to the NPC to process the produce",
+    "stepNewRound": "Take a box and start a new round",
+    "jobLabel": "Farmer",
+    "produceLabel": "items",
+    "vehicleBlip": "Farm Vehicle",
+    "subtaskHarvest": "Harvest plants ({current}/{total})"
+  },
+  "fishing": {
+    "continueHint": "Move to the next fishing spot and cast your line",
+    "failedSpawnBoat": "Failed to spawn fishing boat!",
+    "started": "Fishing job started! Get on the boat and head to a fishing zone.",
+    "failedSyncBoat": "Failed to sync fishing boat!",
+    "noFishToSell": "No fish to sell!",
+    "noWater": "No water found! Stay close to water.",
+    "fishOnLine": "Fish on the line! Press [E] to reel in!",
+    "fishGotAway": "Fish got away! Too slow.",
+    "fishEscaped": "Fish got away!",
+    "castCancelled": "Fishing cancelled.",
+    "outfitEquipped": "Fishing outfit equipped!",
+    "cantUseInventoryRod": "Cannot use inventory rod in job mode!",
+    "alreadyCast": "You already cast your line!",
+    "mustBeNearWater": "You must be near water!",
+    "completed": "Fishing job completed successfully!",
+    "freeModeDisabled": "Free mode is disabled!",
+    "noBait": "No bait! Buy bait from the fishing shop.",
+    "itemPurchased": "{amount}x {item} purchased! ({currency}{price})",
+    "fishSold": "{count} fish sold! {currency}{amount} earned!",
+    "progressTitle": "Fishing",
+    "progressDetail": "Catch fish at the fishing spot. Cast your line and reel them in.",
+    "subtaskFishCaught": "Fish caught: {count}",
+    "shopTitle": "Fishing Shop",
+    "selectRod": "Select Rod",
+    "selectBait": "Select Bait",
+    "sellTitle": "Sell Fish",
+    "baitStats": "{price} | Chance: +{chance}%",
+    "fishPriceRange": "{min} - {max} range"
+  },
+  "cleanup": {
+    "continueHint": "Drive to the next cleanup bin on your route",
+    "started": "Cleanup collection job started! Put on work clothes first, then collect cleanup from bins with [E] and load it onto the truck.",
+    "alreadyCarrying": "You are already carrying something!",
+    "binEmpty": "This cleanup bin is empty!",
+    "noCleanupInBin": "No cleanup in this bin!",
+    "animFailed": "Animation could not be loaded!",
+    "bagPickedUp": "Cleanup bag picked up! Go to the back of the truck and press [E] to throw it in.",
+    "notHoldingBag": "You are not holding a cleanup bag!",
+    "thrownIn": "Cleanup thrown in!",
+    "noCleanupInTruck": "No cleanup in the truck!",
+    "truckReady": "Cleanup truck is ready!",
+    "keepWorking": "Keep working! Start searching for new cleanup bins.",
+    "truckTooFar": "Truck is too far away or not available. Get closer to the truck.",
+    "truckFullBagDropped": "Truck is full! Cleanup bag dropped. Drive the truck to the delivery point.",
+    "jobEnded": "The cleanup collection job has ended.",
+    "truckFullDrive": "Truck is full! ({count}/{max}) Drive the truck to the delivery point on the map.",
+    "spawnBlocked": "Spawn area is blocked! Move the vehicle and try again.",
+    "vehicleSpawnFailed": "Vehicle could not be spawned!",
+    "areaSelected": "{area} area selected. Go to the area on the map and collect cleanup from bins with [E].",
+    "progressTitle": "Cleanup",
+    "progressDetail": "Collect cleanup bins along the route. Pick up each bin and load it into the truck.",
+    "deliveryBlip": "Cleanup Delivery",
+    "collectBinsProgress": "Collect bins ({current}/{max})",
+    "dumpDeliveries": "Dump deliveries: {count}",
+    "hintCollectBins": "Look for cleanup bins nearby and press [E] to collect a bag.",
+    "hintCollectBinsTarget": "Look for cleanup bins nearby and use the third eye to collect a bag.",
+    "bagPickedUpTarget": "Cleanup bag picked up! Go to the back of the truck and use the third eye to throw it in.",
+    "areaSelectedTarget": "{area} area selected. Go to the area on the map and collect cleanup from bins with the third eye."
+  },
+  "dogwalking": {
+    "anotherWalk": "Starting another walk!",
+    "continueHint": "Pick up your next dog and start walking",
+    "pickupTaskLabel": "Pick up your next dog",
+    "pickupDescription": "Head to the dog at the marked location on your map and press [E] to start walking.",
+    "dogGotAway": "Your dog got away! Job failed.",
+    "dogDied": "Your dog has died! The job is cancelled.",
+    "dogNeedsToGo": "Your dog needs to go! Wait for it...",
+    "dogBrokeFree": "Oh no! Your dog broke loose! Catch it quickly!",
+    "dogPickedUp": "You picked up your dog! Wait for everyone.",
+    "returnDog": "Great walk! Now return the dog to the owner.",
+    "caughtDog": "Phew! You caught the dog.",
+    "noDogAssigned": "No dog assigned to you!",
+    "alreadyClaimed": "You already claimed your dog!",
+    "poopAlreadyCleaned": "Poop already cleaned!",
+    "notYourDogPoop": "This is not your dog's poop!",
+    "walkNotComplete": "Walk not complete yet!",
+    "reconnected": "Reconnected to dog walking job!",
+    "started": "Dog Walking job started! Head to the client's home.",
+    "walkYourDog": "Walk your dog {distance}m! Enjoy the walk.",
+    "dogDelivered": "Dog delivered! Earned {symbol}{payment} and {xp} XP",
+    "progressTitle": "Dog Walking",
+    "progressDetail": "Walk the dogs along their routes. Keep them happy and clean up after them.",
+    "dogDiedNoPayment": "A dog has died! Job cancelled — no payment.",
+    "blipHome": "Client Home",
+    "clientHomeFallback": "Client Home",
+    "tooFarFromHome": "You're too far from the owner's home!"
+  },
+  "harvest": {
+    "processingInProgress": "Processing in progress, please wait!",
+    "noBoxesOnScale": "No boxes on scale to process!",
+    "processingComplete": "Processing complete! {count} boxes, earned {currency}{amount}",
+    "boxLoadedScale": "Box loaded! {count} {produce}, value: {currency}{value} — Drive to the processing scale!",
+    "boxLoaded": "Box loaded! {count} {produce}, value: {currency}{value}",
+    "boxPlaced": "Box placed! {count} {produce}, value: {currency}{value}",
+    "produceHarvested": "{produce} harvested! ({current}/{total})",
+    "produceAddFailed": "Failed to add {produce} to the crate!"
+  },
+  "miner": {
+    "continueHint": "Find the next ore deposit and mine it",
+    "started": "Mining job started! Get your work clothes and equipment.",
+    "newRocks": "New rocks have spawned! Continue mining.",
+    "orePickedUp": "{ore} Ore picked up! Load it to the truck.",
+    "rocksRemaining": "There are {count} rocks remaining to mine.",
+    "processingInProgress": "Processing in progress, please wait!",
+    "noRocksOnScale": "No ores on scale to process!",
+    "processingComplete": "Processing complete! {count} ores, earned {currency}{amount}",
+    "pickaxeReturned": "Pickaxe returned to trunk",
+    "returnVehicleBlip": "Return Truck",
+    "returnVehicleHint": "Shift ending — drive the truck back to the quarry depot to hand it in.",
+    "returnVehiclePrompt": "[E] Hand in the truck",
+    "vehicleNotAtDepot": "The truck must be back at the depot!",
+    "tooFarFromDepot": "You are too far from the depot!",
+    "labelProcessing": "~y~Processing in progress...",
+    "labelFinish": "[E] Finish Processing (%d ores)",
+    "labelPlaceOnScale": "[E] Place ore on scale",
+    "labelLoadToTruck": "[E] Load ore to truck",
+    "labelReturnTool": "[E] Return pickaxe",
+    "labelTakeTool": "[E] Take pickaxe",
+    "labelTakeFromTrunk": "[E] Take ore from trunk (%d)",
+    "labelNoMoreItems": "~y~No more ores! Go to NPC to finish.",
+    "labelPickup": "[E] Pick up ore",
+    "labelBreakAction": "[E] Mine rock",
+    "labelPutOnBelt": "[G] Put pickaxe on belt",
+    "labelTakeFromBelt": "[G] Take pickaxe from belt",
+    "labelClothesWork": "[E] Change to work clothes",
+    "labelClothesNormal": "[E] Change to normal clothes",
+    "labelFailNotify": "Failed to start mining",
+    "progressTitle": "Miner",
+    "progressDetail": "Break rocks for ore, carry the ore to your truck, then drive to the scale and process it.",
+    "stepTakeTool": "Take the pickaxe from the trunk",
+    "stepBreaking": "Keep breaking the rock",
+    "stepBreakRock": "Break a rock to extract ore",
+    "stepPickupOre": "Pick up the ore on the ground",
+    "stepLoadTrunk": "Load the ore into the truck",
+    "stepGoToScale": "Drive the ore to the scale",
+    "stepPlaceOnScale": "Place ore on the scale",
+    "stepProcessOre": "Talk to the NPC to process the ore",
+    "stepNewRound": "Take the pickaxe and start a new round"
+  },
+  "lumberjack": {
+    "continueHint": "Find the next tree and start chopping",
+    "started": "Lumberjack job started!",
+    "newTrees": "New trees spawned! You can continue cutting.",
+    "takeHatchetFirst": "Take your hatchet first!",
+    "anotherPlayerCutting": "Another player is already cutting this tree!",
+    "alreadyCarryingLog": "Already carrying a log!",
+    "alreadyPickedUp": "Someone else already picked this up!",
+    "logPickedUp": "Log picked up! Load it to the truck.",
+    "hatchetTaken": "Hatchet taken!",
+    "treesRemaining": "{count} trees remaining to cut.",
+    "axeDropBonus": "{name} | Drop Bonus: +{bonus}%",
+    "treeCutDown": "{name} tree cut down! Collect the logs.",
+    "levelRequired": "Level {required} required for this tree! (Current: {current})",
+    "processingComplete": "Processing complete! {count} logs, earned {currency}{amount}",
+    "labelProcessing": "~y~Processing in progress...",
+    "labelFinish": "[E] Finish Processing (%d logs)",
+    "labelPlaceOnScale": "[E] Place log on processing",
+    "labelLoadToTruck": "[E] Load log to truck",
+    "labelReturnTool": "[E] Return hatchet",
+    "labelTakeTool": "[E] Take hatchet",
+    "labelTakeFromTrunk": "[E] Take log from trunk (%d)",
+    "labelNoMoreItems": "~y~No more logs! Go to NPC to finish.",
+    "labelPickup": "[E] Pick up log",
+    "labelBreakAction": "[E] Chop Tree",
+    "labelPutOnBelt": "[G] Put hatchet on belt",
+    "labelTakeFromBelt": "[G] Take hatchet from belt",
+    "labelClothesWork": "[E] Change to work clothes",
+    "labelClothesNormal": "[E] Change to normal clothes",
+    "labelFailNotify": "Failed to start chopping",
+    "processingInProgress": "Processing in progress, please wait!",
+    "noLogsOnScale": "No logs on processing area!",
+    "hatchetReturned": "Hatchet returned!",
+    "treeFallback": "Tree",
+    "serverDenied": "Server denied",
+    "progressTitle": "Lumberjack",
+    "progressDetail": "Chop trees for logs, carry them to your truck, then drive to the processing scale.",
+    "stepTakeAxe": "Take the hatchet from the trunk",
+    "stepCutting": "Keep chopping the tree",
+    "stepCutTree": "Chop a tree to drop logs",
+    "stepPickupLog": "Pick up the log on the ground",
+    "stepLoadTrunk": "Load the log into the truck",
+    "stepGoToScale": "Drive the logs to the processing scale",
+    "stepPlaceOnScale": "Place log on the scale",
+    "stepProcessLog": "Talk to the NPC to process the logs",
+    "stepNewRound": "Take the hatchet and start a new round"
+  },
+  "scrapyard": {
+    "continueHint": "Drive to the next scrap pile on your map",
+    "started": "Scrapyard job started! Put on work clothes and grab the equipment.",
+    "newScraps": "New scraps have arrived! Continue.",
+    "putCrowbarOnBelt": "Put crowbar on belt first!",
+    "scrapPickedUp": "Scrap picked up! Load it to the vehicle.",
+    "scrapsRemaining": "{count} scraps remaining.",
+    "processingInProgress": "Processing in progress, please wait!",
+    "noScrapsOnScale": "No scraps on the scale!",
+    "processingComplete": "Processing complete! {count} scraps, {currency}{amount} earned",
+    "crowbarReturned": "Crowbar returned to vehicle",
+    "workClothesEquipped": "Work clothes equipped!",
+    "normalClothes": "Changed to normal clothes",
+    "scrapBlip": "Scrap #{index}",
+    "labelProcessing": "~y~Processing in progress...",
+    "labelFinish": "[E] Finish Processing (%d scraps)",
+    "labelPlaceOnScale": "[E] Place scrap on scale",
+    "labelLoadToTruck": "[E] Load scrap into vehicle",
+    "labelReturnTool": "[E] Return crowbar",
+    "labelTakeTool": "[E] Take crowbar",
+    "labelTakeFromTrunk": "[E] Take scrap from trunk (%d)",
+    "labelNoMoreItems": "~y~No scraps left! Go to the NPC.",
+    "labelPickup": "[E] Pick up scrap",
+    "labelBreakAction": "[E] Dismantle scrap",
+    "labelPutOnBelt": "[G] Put crowbar on belt",
+    "labelTakeFromBelt": "[G] Take crowbar from belt",
+    "labelClothesWork": "[E] Wear work clothes",
+    "labelClothesNormal": "[E] Change to normal clothes",
+    "labelFailNotify": "Could not start dismantling",
+    "progressTitle": "Scrapyard",
+    "progressDetail": "Dismantle scrap piles, carry the parts to your truck, then drive to the scale and process them.",
+    "stepTakeTool": "Take the crowbar from the trunk",
+    "stepBreaking": "Keep dismantling the scrap",
+    "stepBreakScrap": "Dismantle a scrap pile",
+    "stepPickupScrap": "Pick up the scrap parts on the ground",
+    "stepLoadTrunk": "Load the scrap into the truck",
+    "stepGoToScale": "Drive the scrap to the scale",
+    "stepPlaceOnScale": "Place scrap on the scale",
+    "stepProcessScrap": "Talk to the NPC to process the scrap",
+    "stepNewRound": "Take the crowbar and start a new round"
+  },
+  "fruitpicker": {
+    "continueHint": "Move to the next tree and start picking",
+    "treesReset": "All trees have been reset! Continue picking fruit.",
+    "noMoreFruit": "No more fruit on this tree!",
+    "treeOnCooldown": "No ripe fruits available. Refreshes in ~%{minutes} min — try another tree.",
+    "jobLabel": "Fruit Picker",
+    "produceLabel": "fruits",
+    "vehicleBlip": "Fruit Truck",
+    "placeBoxAndPick": "[E] Place box and pick {fruit} ({remaining} left)",
+    "pickFruit": "[E] Pick {fruit} ({remaining} left)",
+    "orangeTreeBlip": "Orange Tree",
+    "appleTreeBlip": "Apple Tree",
+    "progressTitle": "Fruit Picker",
+    "progressDetail": "Take a box, fill it from the trees, load full boxes into the truck, then drive to the scale.",
+    "stepTakeBox": "Take a box from the truck",
+    "stepPicking": "Keep picking the fruit",
+    "stepPickFruit": "Walk to a tree and pick fruit",
+    "stepLoadBoxToTruck": "Load the full box into the truck",
+    "stepGoToScale": "Drive the boxes to the scale",
+    "stepPlaceOnScale": "Place box on the scale",
+    "stepProcessFruit": "Talk to the NPC to process the fruit",
+    "stepNewRound": "Take a box and start a new round",
+    "fruitFallback": "Fruit"
+  },
+  "newspaper": {
+    "continueHint": "Move to the next delivery street",
+    "settingsNotFound": "Newspaper delivery settings not found!",
+    "started": "Newspaper delivery started!",
+    "noAvailableRoutes": "No available routes!",
+    "leaderSelecting": "Leader is selecting bicycles and area, please wait...",
+    "progressTitle": "Newspaper",
+    "progressDetail": "Deliver newspapers to houses along the route. Throw papers at each doorstep.",
+    "outsideTimeWindow": "Newspaper delivery only available {startHour}:00 - {endHour}:00 (current: {current}:00)",
+    "getOnCycle": "Get on the cycle to start delivering"
+  },
+  "taxi": {
+    "lookingForCustomer": "Looking for next customer...",
+    "taxiReady": "Taxi ready! Wait for customer call...",
+    "taxiModelFailed": "Taxi model could not be loaded!",
+    "passengerWokeUp": "Passenger woke up!",
+    "passengerBoarded": "Passenger boarded! Waiting for destination...",
+    "newCustomer": "New customer! Go to the pickup location.",
+    "passengerDied": "Your customer died! Ride cancelled.",
+    "returnTaxiToDepot": "Return the taxi to the depot to finish your shift.",
+    "destinationSet": "Destination set! Distance: {distance}m, Bonus time: {bonus}s",
+    "vehicleDamaged": "Vehicle damaged! Bonus time -{penalty}s",
+    "jobEnded": "Taxi job ended! Rides: {rides}, Total earned: {symbol}{earned}",
+    "hornPassengerSleeping": "[HORN] Passenger is sleeping!",
+    "pickUpPassenger": "[E] Pick up passenger",
+    "dropOffPassenger": "[E] Drop off passenger",
+    "returnTaxiEndShift": "[E] Return taxi and end shift",
+    "getBackInTaxi": "[F] Get back in the taxi!",
+    "tooFarFromDepot": "You are too far from the depot",
+    "tooFarFromDropoff": "You are too far from the drop-off point",
+    "progressTitle": "Taxi",
+    "progressDetail": "Pick up passengers and drive them to their destinations. Drive carefully to earn the time bonus.",
+    "stagePickup": "Pick up the passenger",
+    "stageDropoff": "Drop off the passenger",
+    "stageDepot": "Return the taxi to the depot",
+    "ridesCompleted": "{count} rides completed",
+    "meterBonusTime": "bonus {seconds}s",
+    "statCustomers": "Customers dropped off",
+    "statEarnings": "Total earned"
+  },
+  "trucker": {
+    "continueHint": "Pick up the next cargo from the depot",
+    "illegalAccepted": "Illegal route accepted! Be careful...",
+    "trailerLost": "Trailer lost! You failed this delivery.",
+    "failedReconnect": "Failed to reconnect to trucking job!",
+    "reconnected": "Reconnected to trucking job!",
+    "failedGetData": "Failed to get job data!",
+    "started": "Trucking job started! Go to the trailer pickup location.",
+    "truckReady": "Truck ready! Get in the truck.",
+    "truckModelFailed": "Truck model could not be loaded!",
+    "trailerModelFailed": "Trailer model could not be loaded!",
+    "trailerSpawnBlocked": "Trailer spawn point is blocked! Retrying in 5 seconds...",
+    "trailerSpawnStillBlocked": "Trailer spawn point is still blocked! Spawning anyway.",
+    "trailerAttachedWaiting": "Trailer attached! Waiting for other players...",
+    "trailerAttachedWaitRoute": "Trailer attached! Wait for route assignment...",
+    "trailerDetached": "Trailer detached! Go back and reattach it!",
+    "needToBeInTruck": "You need to be in the truck!",
+    "trailerGone": "Trailer is gone! Job failed.",
+    "trailerReattached": "Trailer reattached! Continue your delivery.",
+    "failedReattach": "Failed to reattach trailer. Try again.",
+    "noTrailerNearby": "No trailer nearby!",
+    "failedAttach": "Failed to attach trailer. Try again.",
+    "noTrailerAttached": "No trailer attached!",
+    "tooFarToDeliver": "The trailer is not in the delivery zone!",
+    "perfectDelivery": "Trailer delivered in perfect condition! Return the truck to the depot.",
+    "mustBeInTruck": "You must be in the truck!",
+    "notJobTruck": "This is not the job truck!",
+    "truckReturned": "Truck returned! Waiting for summary...",
+    "waitingForTrailers": "Waiting for other players to attach their trailers...",
+    "leaderAcceptedIllegal": "Leader accepted illegal route! Be careful...",
+    "leaderChoseNormal": "Leader chose normal route.",
+    "returnTruckToDepot": "Return the truck to the depot.",
+    "newDeliveryRoute": "New delivery route assigned!",
+    "truckReturnedWaiting": "Truck returned! Waiting for other players to return their trucks...",
+    "youLeftJob": "You left the job.",
+    "headToTrailer": "Head to the marked location to pick up the trailer!",
+    "trailerDestroyed": "Trailer destroyed! Delivery failed.",
+    "trailerDeliveredCondition": "Trailer delivered with {condition}% condition. Return the truck to the depot.",
+    "routeAssigned": "Route assigned ({route})! Distance: {distance}m",
+    "progressTitle": "Trucker",
+    "progressDetail": "Deliver cargo to destinations across the state. Drive carefully to avoid damage.",
+    "stagePickup": "Pick Up Trailer",
+    "stageDelivery": "Deliver Cargo",
+    "stageReturn": "Return Truck",
+    "stageWaiting": "Waiting...",
+    "deliveriesCompleted": "Deliveries completed: {count}",
+    "blipPickupTrailer": "Pickup Trailer",
+    "blipDeliverCargo": "Deliver Cargo",
+    "blipIllegalDelivery": "Illegal Delivery",
+    "blipReturnTruck": "Return Truck",
+    "aPlayerFallback": "A player",
+    "teammateFallback": "Teammate",
+    "playerReturnedTruck": "{name} returned their truck.",
+    "teammateTruck": "{name}'s Truck"
+  },
+  "repair": {
+    "failedInit": "Failed to initialize job!",
+    "newTasks": "New repair tasks assigned!",
+    "allComplete": "All repairs complete! Return to finish the job.",
+    "jobStarted": "{label} job started! Repair {tasks}.",
+    "taskRepaired": "{task} repaired! {remaining} remaining"
+  },
+  "blip": {
+    "returnToFinish": "Return to Finish",
+    "nextTask": "Next Task",
+    "cargoDepot": "Cargo Depot",
+    "deliveryPoint": "Delivery Point",
+    "buyer": "Buyer",
+    "tree": "Tree",
+    "animal": "Animal",
+    "ore": "Ore",
+    "divePoint": "Dive Point",
+    "returnBoat": "Return Boat",
+    "customerCar": "Customer Car",
+    "delivery": "Delivery",
+    "returnVehicle": "Return Vehicle",
+    "returnToDepot": "Return to Depot"
+  },
+  "target": {
+    "interact": "Interact",
+    "pickup": "Pick Up",
+    "finishProcessing": "Finish Processing",
+    "finishProcessingPrompt": "[E] Finish Processing",
+    "processing": "Processing...",
+    "placeOnScale": "Place on Scale",
+    "loadToTruck": "Load to Truck",
+    "returnTool": "Return Tool",
+    "takeTool": "Take Tool",
+    "takeFromTrunk": "Take from Trunk",
+    "changeClothes": "Change Clothes",
+    "changeClothesPrompt": "[E] Change clothes",
+    "changeClothesNormal": "[E] Change to normal clothes",
+    "changeClothesWork": "[E] Change to work clothes",
+    "cleanItemPrompt": "[E] Clean item",
+    "finishJobPrompt": "[E] Finish Job",
+    "pickFruit": "Pick Fruit",
+    "pickUpLog": "Pick up Log",
+    "returnItem": "Return Item",
+    "cutTree": "Cut {name}",
+    "pickUpCarcass": "Pick up {label} ({weight} kg)"
+  },
+  "server": {
+    "cannotInviteJobActive": "Cannot invite players while a job is active!",
+    "cannotInviteSoloJob": "This job is solo only — you can't invite players!",
+    "playerAlreadyInvited": "This player already has a pending invite!",
+    "inviteCooldown": "Please wait {seconds} seconds before inviting this player again.",
+    "identifierNotReady": "Your player data isn't loaded yet, please try again.",
+    "targetIdentifierNotReady": "Target player data isn't loaded yet, please try again.",
+    "cannotKickJobActive": "Cannot kick players during an active job!",
+    "lobbyClosed": "Lobby closed: Owner left",
+    "lobbyClosedDisconnect": "Lobby closed: Owner disconnected",
+    "jobCompletedLobbyDisbanded": "Job completed! Lobby disbanded.",
+    "qualityBonus": "{quality} quality! x{multiplier} bonus",
+    "poopPenalty": "You didn't clean up after your dog! -{symbol}{amount}",
+    "poopCleanBonus": "Poop cleaned! +{symbol}{amount}",
+    "lawnRaked": "Lawn raked! +{symbol}{money} +{xp} XP",
+    "truckReturnFailed": "You took too long to return the truck! Marked as failed.",
+    "repairComplete": "{item} repaired! +{symbol}{money} +{xp} XP",
+    "referralLimitReached": "You've reached the daily referral bonus limit",
+    "referralBonus": "Referral Bonus! +{xp} XP for playing together!",
+    "lobbyNoLongerExists": "This lobby no longer exists.",
+    "lobbyPlayerReconnected": "{name} has reconnected to the lobby.",
+    "lobbyPlayerDisconnected": "{name} has disconnected.",
+    "lobbyOwnerDisconnectedNewOwner": "Owner disconnected. {name} is the new owner.",
+    "lobbyClosedNoReplacement": "Lobby closed: No replacement owner found.",
+    "jobEndedOwnerLeft": "Job ended: The job leader has left.",
+    "toolEfficiencyUpgrade": "Tool efficiency upgrade",
+    "jobCancelled": "Job cancelled! Lobby disbanded.",
+    "jobCancelledByAdmin": "Your job has been cancelled by an admin.",
+    "noActiveJob": "You don't have an active job.",
+    "jobCancelledAdmin": "Cancelled job '{jobId}' for player {playerId}.",
+    "cancelJobUsage": "Usage: /canceljob [playerId] - Cancel your own or a player's active job",
+    "routeLevelInsufficient": "You do not meet the required level for this route. (Level {current}/{required})",
+    "routeLevelInsufficientMember": "{name} does not meet the required level for this route. (Level {current}/{required})",
+    "globalEventCompleted": "Global event complete: {title}!"
+  },
+  "shifts": {
+    "morning": "Morning Shift",
+    "afternoon": "Afternoon Shift",
+    "evening": "Evening Shift",
+    "night": "Night Shift"
+  },
+  "perks": {
+    "trunk_capacity": {
+      "name": "Heavy Lifter",
+      "desc": "Increases vehicle trunk capacity."
+    },
+    "strong_muscles": {
+      "name": "Strong Muscles",
+      "desc": "Increases movement speed while carrying heavy loads."
+    },
+    "negotiator": {
+      "name": "Negotiator",
+      "desc": "Earn more money from job payouts."
+    },
+    "xp_boost": {
+      "name": "Quick Learner",
+      "desc": "Gain more XP from all job actions."
+    },
+    "speed_demon": {
+      "name": "Speed Demon",
+      "desc": "Improves job vehicle engine performance."
+    },
+    "store_discount": {
+      "name": "Silver Tongue",
+      "desc": "Get off-duty store discounts. (Passive)"
+    },
+    "breath_capacity": {
+      "name": "Deep Breather",
+      "desc": "Increases underwater breath capacity. (Passive)"
+    },
+    "repair_speed": {
+      "name": "Grease Monkey",
+      "desc": "Fix vehicles faster. (Passive)"
+    },
+    "notEnoughPoints": "Not enough perk points!"
+  },
+  "serverError": {
+    "notInJob": "Not in job",
+    "noLobby": "No lobby",
+    "noSession": "No session",
+    "configError": "Config error",
+    "unknown": "Something went wrong.",
+    "invalidIndex": "Invalid index",
+    "levelRequired": "Level {level} required!",
+    "rateLimited": "Please wait before trying again.",
+    "tooFarFromNpc": "You must be near the NPC to do this.",
+    "notEnoughMoney": "Not enough money!",
+    "invalidAmount": "Invalid amount!",
+    "invalidProduct": "Invalid product!",
+    "purchaseFailed": "An error occurred during purchase.",
+    "sellFailed": "An error occurred during selling.",
+    "alreadyBroken": "Already broken",
+    "anotherPlayerBreaking": "Another player is breaking this",
+    "alreadyPickedUp": "Already picked up",
+    "alreadyUnlocked": "Already unlocked",
+    "invalidZone": "Invalid zone!",
+    "alreadyCollected": "This object was already collected",
+    "someoneElseWorking": "Someone else is working on this!",
+    "someoneElseDelivering": "Someone else is delivering",
+    "invalidAction": "Invalid action",
+    "invalidType": "Invalid type",
+    "alreadySold": "Already sold!",
+    "noItemsToSell": "No items to sell!",
+    "alreadyCarrying": "You are already carrying",
+    "notCarrying": "You are not carrying",
+    "trunkFull": "Trunk is full",
+    "trunkCapacityFull": "Trunk capacity full",
+    "noItemsInTrunk": "No items in trunk",
+    "alreadyDelivered": "Already delivered",
+    "invalidDeliveryPoint": "Invalid delivery point",
+    "invalidLocation": "Invalid location",
+    "objectNotFound": "Object not found",
+    "vehicleAlreadySpawned": "Vehicle already spawned",
+    "failedCreateVehicle": "Failed to create vehicle",
+    "vehicleEntityNotFound": "Vehicle entity not found",
+    "missingParameters": "Missing parameters",
+    "invalidSpawnData": "Invalid spawn data",
+    "jobConfigNotFound": "Job config not found",
+    "noToolAssigned": "No tool assigned to you",
+    "notYourTool": "This is not your tool",
+    "toolAlreadyTaken": "Tool already taken",
+    "toolBeingTaken": "Tool being taken by another player",
+    "positionBeingTaken": "Position being taken by another player",
+    "noPositionAvailable": "No position available",
+    "noActiveTruck": "No active truck",
+    "truckNotLoading": "Truck not loading",
+    "boxesFull": "Boxes full",
+    "palletsFull": "Pallets full",
+    "invalidJob": "Invalid job",
+    "jobEnding": "Job ending",
+    "fishingNoFishFound": "No fish found!",
+    "fishingInvalidRod": "Invalid rod!",
+    "fishingNoRod": "You do not have a rod!",
+    "fishingFishCaughtSingle": "{label} caught!",
+    "fishingFishCaughtMultiple": "{count}x {label} caught!",
+    "fishingNoFishToSell": "No fish to sell!",
+    "divingZoneAlreadySelected": "Zone already selected!",
+    "deliveryNotInLoadingPhase": "Not in loading phase",
+    "deliveryNotInDeliveryPhase": "Not in delivery phase",
+    "deliveryAlreadyCarryingBox": "You are already carrying a box",
+    "deliveryNotCarryingBox": "You are not carrying a box",
+    "deliveryNoBoxesInTrunk": "No boxes in the trunk",
+    "deliveryCompleteFirst": "Complete all deliveries first!",
+    "deliverySpawnFailed": "Vehicle spawn failed, job cancelled.",
+    "huntingSomeoneElsePickingUp": "Someone else is picking this up!",
+    "huntingAnimalNotFound": "Animal not found",
+    "huntingAnimalStillAlive": "Animal is still alive",
+    "huntingAnimalAlreadyPickedUp": "This animal was already picked up",
+    "cleanupTruckFullDeliverFirst": "Truck is full! Deliver first.",
+    "cleanupBinAlreadyEmpty": "Bin already empty",
+    "cleanupNoBagsLeft": "No bags left",
+    "warehouseBoxAlreadyTaken": "Box already taken",
+    "warehousePalletAlreadyTaken": "Pallet already taken",
+    "warehouseTruckNotReady": "Truck is not ready",
+    "forkliftWrongMode": "Wrong mode",
+    "forkliftInvalidCrate": "Invalid crate",
+    "forkliftCrateAlreadyTaken": "Crate already taken",
+    "forkliftConveyorBusy": "Conveyor busy",
+    "forkliftInvalidSlot": "Invalid slot",
+    "forkliftSlotOccupied": "Slot occupied",
+    "forkliftNotCarrying": "Not carrying",
+    "forkliftInvalidCrateData": "Invalid crate data",
+    "forkliftNoCratesOnBelt": "No crates on belt",
+    "forkliftNeed3Crates": "Need 3 crates on belt",
+    "forkliftEmptySlot": "Empty slot",
+    "forkliftAlreadyCarrying": "Already carrying",
+    "forkliftInvalidTarget": "Invalid target",
+    "forkliftInvalidShelfTarget": "Invalid shelf target",
+    "forkliftShelfOccupied": "Shelf occupied",
+    "newspaperLevelRequiredArea": "Level {level} required for this area!",
+    "newspaperDailyCompleted": "Daily quest already completed! Resets in: {hours}h {minutes}m",
+    "adminSetLevelUsage": "Usage: /setjoblevel [playerID] [jobId] [level]",
+    "adminLevelRange": "Level must be between 1 and 10",
+    "adminLevelSet": "Set {jobId} level {level} for player {playerId}",
+    "adminYourLevelSet": "Your {jobId} level has been set to {level}",
+    "adminXpManagerNotAvailable": "XPManager not available",
+    "adminGetLevelUsage": "Usage: /getjoblevel [playerID] [jobId]",
+    "adminPlayerJobLevel": "Player {playerId} - {jobId}: Level {level} (XP: {xp}/{maxXp})",
+    "adminToolSelected": "Selected: {tool}",
+    "adminToolUnlocked": "Tool unlocked!",
+    "alreadyHarvested": "Already harvested",
+    "noLootAvailable": "No loot available",
+    "tooFar": "You are too far away",
+    "tooFarFromDeliveryPoint": "You are too far from the delivery point"
+  },
+  "jobs": {
+    "miner": {
+      "name": "Miner",
+      "subtitle": "Underground Mining Operations",
+      "interactionText": "Start Mining Job",
+      "blipLabel": "Mining Job",
+      "locationLabel": "Quarry Mine",
+      "description": [
+        "Extract valuable ores from underground deposits",
+        "Use mining equipment to break rocks",
+        "Transport materials to processing facility",
+        "Work as a team for bonus rewards"
+      ],
+      "items": {
+        "pickaxe": "Pickaxe",
+        "miningHelmet": "Mining Helmet",
+        "oreCart": "Ore Cart"
+      },
+      "oreTypes": {
+        "coal": "Coal",
+        "iron": "Iron",
+        "gold": "Gold",
+        "emerald": "Emerald",
+        "diamond": "Diamond"
+      },
+      "preview": {
+        "step1Title": "Start the Job",
+        "step1Desc": [
+          "Walk up to the NPC at the quarry",
+          "Press E to open the job menu",
+          "Select your area and press Start"
+        ],
+        "step2Title": "Change Your Clothes",
+        "step2Desc": [
+          "Head to the portable cabin nearby",
+          "Step inside to change into your work outfit",
+          "Your original clothes are restored when the job ends"
+        ],
+        "step3Title": "Collect Your Tools",
+        "step3Desc": [
+          "Go to the job vehicle's open trunk",
+          "Pick up a pickaxe — each player takes their own",
+          "Up to 4 tools available for coop play"
+        ],
+        "step4Title": "Mine the Rocks",
+        "step4Desc": [
+          "Walk to the mining area with your pickaxe",
+          "Aim at a rock and swing to break it",
+          "Rocks shatter into collectable ore pieces"
+        ],
+        "step5Title": "Collect the Ore",
+        "step5Desc": [
+          "Pick up the ore pieces after breaking a rock",
+          "You carry the ore in your arms",
+          "Bring it back to the vehicle trunk"
+        ],
+        "step6Title": "Load the Vehicle",
+        "step6Desc": [
+          "Carry your ore to the vehicle trunk",
+          "The ore is automatically loaded into the truck",
+          "Fill the trunk then drive to the processing area"
+        ],
+        "step7Title": "Process at the Scale",
+        "step7Desc": [
+          "Drive to the processing point",
+          "Place your ore on the weighing scale",
+          "Each item is weighed and you receive payment"
+        ],
+        "step8Title": "NPC Collection",
+        "step8Desc": [
+          "After processing, a carrier NPC collects the items",
+          "The NPC walks over and picks up the processed ore",
+          "You earn money and XP for each completed batch"
+        ]
+      }
+    },
+    "lumberjack": {
+      "name": "Lumberjack",
+      "subtitle": "Forest Logging Operations",
+      "interactionText": "Start Lumberjack Job",
+      "blipLabel": "Lumberjack Job",
+      "locationLabel": "Paleto Forest",
+      "description": [
+        "Cut down trees in designated logging areas",
+        "Collect and load logs into your truck",
+        "Deliver logs to the sawmill for processing",
+        "Work as a team for bonus rewards"
+      ],
+      "items": {
+        "hatchet": "Hatchet",
+        "safetyVest": "Safety Vest",
+        "pickupTruck": "Pickup Truck"
+      },
+      "treeTypes": {
+        "pine": "Pine",
+        "oak": "Oak",
+        "maple": "Maple"
+      },
+      "drops": {
+        "wood": "Wood",
+        "pineResin": "Pine Resin",
+        "woodShavings": "Wood Shavings",
+        "oakWood": "Oak Wood",
+        "oakBark": "Oak Bark",
+        "mapleWood": "Maple Wood",
+        "mapleSap": "Maple Sap"
+      },
+      "preview": {
+        "step1Title": "Start the Job",
+        "step1Desc": [
+          "Walk up to the NPC at the forest",
+          "Press E to open the job menu",
+          "Select your area and press Start"
+        ],
+        "step2Title": "Change Your Clothes",
+        "step2Desc": [
+          "Head to the portable cabin nearby",
+          "Step inside to change into your work outfit",
+          "Your original clothes are restored when the job ends"
+        ],
+        "step3Title": "Collect Your Tools",
+        "step3Desc": [
+          "Go to the job vehicle's open trunk",
+          "Pick up a hatchet — each player takes their own",
+          "Up to 4 tools available for coop play"
+        ],
+        "step4Title": "Chop the Trees",
+        "step4Desc": [
+          "Walk to the forest area with your hatchet",
+          "Aim at a tree and swing to chop it",
+          "Trees drop logs when fully chopped"
+        ],
+        "step5Title": "Collect the Log",
+        "step5Desc": [
+          "Pick up the log after chopping a tree",
+          "You carry the log in your arms",
+          "Bring it back to the vehicle trunk"
+        ],
+        "step6Title": "Load the Vehicle",
+        "step6Desc": [
+          "Carry your log to the vehicle trunk",
+          "The log is automatically loaded into the truck",
+          "Fill the trunk then drive to the processing area"
+        ],
+        "step7Title": "Process at the Scale",
+        "step7Desc": [
+          "Drive to the processing point",
+          "Place your logs on the weighing scale",
+          "Each item is weighed and you receive payment"
+        ],
+        "step8Title": "NPC Collection",
+        "step8Desc": [
+          "After processing, a carrier NPC collects the items",
+          "The NPC walks over and picks up the processed logs",
+          "You earn money and XP for each completed batch"
+        ]
+      }
+    },
+    "scrapyard": {
+      "name": "Scrapyard Worker",
+      "subtitle": "Scrap Metal Recycling",
+      "interactionText": "Start Scrapyard Job",
+      "blipLabel": "Scrapyard",
+      "locationLabel": "Scrapyard",
+      "description": [
+        "Dismantle junk vehicles and salvage valuable parts",
+        "Use a crowbar to separate metal components",
+        "Load collected scrap onto the truck",
+        "Weigh and sell at the processing station"
+      ],
+      "items": {
+        "crowbar": "Crowbar",
+        "workGloves": "Work Gloves",
+        "scrapMetal": "Scrap Metal"
+      },
+      "preview": {
+        "step1Title": "Start the Job",
+        "step1Desc": [
+          "Walk up to the NPC at the scrapyard",
+          "Press E to open the job menu",
+          "Select your area and press Start"
+        ],
+        "step2Title": "Change Your Clothes",
+        "step2Desc": [
+          "Head to the portable cabin nearby",
+          "Step inside to change into your work outfit",
+          "Your original clothes are restored when the job ends"
+        ],
+        "step3Title": "Collect Your Tools",
+        "step3Desc": [
+          "Go to the job vehicle's open trunk",
+          "Pick up a crowbar — each player takes their own",
+          "Up to 4 tools available for coop play"
+        ],
+        "step4Title": "Dismantle the Scraps",
+        "step4Desc": [
+          "Walk to the junk cars in the yard",
+          "Use your crowbar to dismantle parts",
+          "Car wrecks break apart into collectable scrap"
+        ],
+        "step5Title": "Collect the Scrap",
+        "step5Desc": [
+          "Pick up the scrap parts after dismantling",
+          "You carry the parts to the vehicle",
+          "Bring it back to the vehicle trunk"
+        ],
+        "step6Title": "Load the Vehicle",
+        "step6Desc": [
+          "Carry your scrap to the vehicle trunk",
+          "The scrap is automatically loaded into the truck",
+          "Fill the trunk then drive to the processing area"
+        ],
+        "step7Title": "Process at the Scale",
+        "step7Desc": [
+          "Drive to the processing point",
+          "Place your scrap on the weighing scale",
+          "Each item is weighed and you receive payment"
+        ],
+        "step8Title": "NPC Collection",
+        "step8Desc": [
+          "After processing, a carrier NPC collects the items",
+          "The NPC walks over and picks up the processed scrap",
+          "You earn money and XP for each completed batch"
+        ]
+      }
+    },
+    "hunting": {
+      "name": "Hunter",
+      "subtitle": "Professional Hunting",
+      "interactionText": "Start Hunting Job",
+      "blipLabel": "Hunting",
+      "locationLabel": "Hunting",
+      "description": [
+        "Take your weapons and go hunting",
+        "Hunt deer, boar, and rabbits",
+        "Load hunted animals into the vehicle",
+        "Take them to the scale and sell"
+      ],
+      "items": {
+        "huntingRifle": "Hunting Rifle",
+        "binoculars": "Binoculars",
+        "huntingBag": "Hunting Bag"
+      },
+      "weapons": {
+        "tier1": "Hunting Rifle",
+        "tier2": "Bolt-Action Rifle",
+        "tier3": "Heavy Sniper"
+      },
+      "animals": {
+        "wildBoar": "Wild Boar",
+        "rabbit": "Rabbit",
+        "coyote": "Coyote",
+        "mountainLion": "Mountain Lion",
+        "hawk": "Hawk",
+        "crow": "Crow"
+      },
+      "areas": {
+        "forest": "Paleto Forest",
+        "desert": "Sandy Shores Desert",
+        "swamp": "Swamp"
+      },
+      "blips": {
+        "forestArea": "Forest Area",
+        "desertArea": "Desert Area",
+        "swampArea": "Swamp Area"
+      },
+      "preview": {
+        "step1Title": "Start the Job",
+        "step1Desc": [
+          "Walk up to the NPC at the hunting lodge",
+          "Press E to open the job menu",
+          "Select your area and press Start"
+        ],
+        "step2Title": "Change Your Clothes",
+        "step2Desc": [
+          "Head to the portable cabin nearby",
+          "Step inside to change into your hunting gear",
+          "Your original clothes are restored when the job ends"
+        ],
+        "step3Title": "Get Your Vehicle",
+        "step3Desc": [
+          "Head to the hunting truck nearby",
+          "You receive a weapon automatically",
+          "Drive to the hunting grounds"
+        ],
+        "step4Title": "Hunt Animals",
+        "step4Desc": [
+          "Explore the hunting area and find animals",
+          "Use your rifle to hunt boar, rabbits, and more",
+          "Each animal has different weight and value"
+        ],
+        "step5Title": "Carry the Animal",
+        "step5Desc": [
+          "Walk up to a killed animal to pick it up",
+          "Carry it on your shoulders back to the truck",
+          "Each animal has different weight"
+        ],
+        "step6Title": "Load the Vehicle",
+        "step6Desc": [
+          "Carry your game to the truck",
+          "Load animals onto the truck bed",
+          "Fill the truck then drive to processing"
+        ],
+        "step7Title": "Process & Sell",
+        "step7Desc": [
+          "Drive to the processing station",
+          "Place your game on the scale for weighing",
+          "A carrier NPC collects the processed goods"
+        ]
+      }
+    },
+    "farmer": {
+      "name": "Farmer",
+      "subtitle": "Fruit & Vegetable Harvesting",
+      "interactionText": "Start Farming Job",
+      "blipLabel": "Vegetable Farm",
+      "locationLabel": "Grapeseed Farm",
+      "description": [
+        "Pick up a crate from the vehicle",
+        "Harvest vegetables from the plants",
+        "Fill your crate and load it to the truck",
+        "Deliver full crates to the processing station"
+      ],
+      "items": {
+        "harvestCrate": "Harvest Crate",
+        "freshProduce": "Fresh Produce",
+        "deliveryTruck": "Delivery Truck"
+      },
+      "produceTypes": {
+        "lettuce": "Lettuce",
+        "pumpkin": "Pumpkin",
+        "melon": "Melon",
+        "watermelon": "Watermelon"
+      },
+      "preview": {
+        "step1Title": "Start the Job",
+        "step1Desc": [
+          "Walk up to the NPC at the farm",
+          "Press E to open the job menu",
+          "Select your area and press Start"
+        ],
+        "step2Title": "Change Your Clothes",
+        "step2Desc": [
+          "Head to the portable cabin nearby",
+          "Step inside to change into your work outfit",
+          "Your original clothes are restored when the job ends"
+        ],
+        "step3Title": "Get Your Vehicle",
+        "step3Desc": [
+          "Head to the job vehicle nearby",
+          "Pick up an empty crate from the truck",
+          "Drive to the field to start harvesting"
+        ],
+        "step4Title": "Harvest Plants",
+        "step4Desc": [
+          "Walk up to a plant and interact to harvest",
+          "Each plant yields fresh produce",
+          "Fill your crate before heading back"
+        ],
+        "step5Title": "Carry the Produce",
+        "step5Desc": [
+          "Pick up your filled crate",
+          "Carry it back to the vehicle",
+          "Load it onto the truck bed"
+        ],
+        "step6Title": "Load the Vehicle",
+        "step6Desc": [
+          "Carry your full crate to the truck",
+          "Load it onto the vehicle bed",
+          "Fill the truck then drive to the processing area"
+        ],
+        "step7Title": "Process & Sell",
+        "step7Desc": [
+          "Drive to the processing station",
+          "Place your crates on the scale",
+          "A carrier NPC collects the processed goods"
+        ]
+      }
+    },
+    "fruitpicker": {
+      "name": "Fruit Picker",
+      "subtitle": "Fruit Harvesting",
+      "interactionText": "Start Fruit Picking Job",
+      "blipLabel": "Fruit Grove",
+      "locationLabel": "Fruit Grove",
+      "description": [
+        "Pick up a crate from the vehicle",
+        "Go to fruit trees and pick oranges & apples",
+        "Fill your crate and load it to the truck",
+        "Deliver full crates to the processing station"
+      ],
+      "items": {
+        "harvestCrate": "Harvest Crate",
+        "freshOranges": "Fresh Oranges",
+        "deliveryTruck": "Delivery Truck"
+      },
+      "produceTypes": {
+        "orange": "Orange",
+        "apple": "Apple"
+      },
+      "qualityTiers": {
+        "common": "Common",
+        "fresh": "Fresh",
+        "premium": "Premium",
+        "organic": "Organic"
+      },
+      "preview": {
+        "step1Title": "Start the Job",
+        "step1Desc": [
+          "Walk up to the NPC at the orange grove",
+          "Press E to open the job menu",
+          "Select your area and press Start"
+        ],
+        "step2Title": "Change Your Clothes",
+        "step2Desc": [
+          "Head to the portable cabin nearby",
+          "Step inside to change into your work outfit",
+          "Your original clothes are restored when the job ends"
+        ],
+        "step3Title": "Get Your Vehicle",
+        "step3Desc": [
+          "Head to the job vehicle nearby",
+          "Pick up an empty crate from the truck",
+          "Drive to the orange trees to start picking"
+        ],
+        "step4Title": "Pick Oranges",
+        "step4Desc": [
+          "Walk up to an orange tree",
+          "Interact to reach up and pick oranges",
+          "Fill your crate before heading back"
+        ],
+        "step5Title": "Carry the Box",
+        "step5Desc": [
+          "Pick up your filled crate",
+          "Carry it back to the vehicle",
+          "Load it onto the truck bed"
+        ],
+        "step6Title": "Load the Vehicle",
+        "step6Desc": [
+          "Carry your full crate to the truck",
+          "Load it onto the vehicle bed",
+          "Fill the truck then drive to processing"
+        ],
+        "step7Title": "Process & Sell",
+        "step7Desc": [
+          "Drive to the processing station",
+          "Place your crates on the scale",
+          "A carrier NPC collects the processed goods"
+        ]
+      }
+    },
+    "cleaner": {
+      "name": "Street Cleaner",
+      "subtitle": "City Cleaning Service",
+      "interactionText": "Start Cleaning Job",
+      "blipLabel": "City Cleaning",
+      "locationLabel": "City Cleaning Depot",
+      "description": [
+        "Take the mop from the vehicle trunk",
+        "Go to dirt spots marked on the map",
+        "Clean the stains using your mop",
+        "Return to get paid when finished"
+      ],
+      "items": {
+        "mop": "Mop",
+        "dirtStain": "Dirt Stain",
+        "serviceVan": "Service Van"
+      },
+      "areas": {
+        "downtown": "Downtown"
+      },
+      "preview": {
+        "step1Title": "Start the Job",
+        "step1Desc": [
+          "Walk up to the NPC at the cleaning depot",
+          "Press E to open the job menu",
+          "Select your route and press Start"
+        ],
+        "step2Title": "Change Your Clothes",
+        "step2Desc": [
+          "Head to the portable cabin nearby",
+          "Step inside to change into your work outfit",
+          "Your original clothes are restored when the job ends"
+        ],
+        "step3Title": "Collect Your Tools",
+        "step3Desc": [
+          "Go to the job vehicle's trunk",
+          "Pick up a mop — each player takes their own",
+          "Up to 4 tools available for coop play"
+        ],
+        "step4Title": "Drive to Work Area",
+        "step4Desc": [
+          "Get in the vehicle and follow the GPS",
+          "Drive to the marked stain locations",
+          "Each route has multiple dirt spots to clean"
+        ],
+        "step5Title": "Clean the Stains",
+        "step5Desc": [
+          "Walk up to a dirt stain with your mop",
+          "Click the targets that appear to scrub the stain",
+          "Each stain requires multiple hits to fully clean"
+        ],
+        "step6Title": "Complete the Job",
+        "step6Desc": [
+          "After cleaning all stains, return to the depot",
+          "Speak to the NPC to collect your payment",
+          "Earn bonus money for completing the full route"
+        ]
+      }
+    },
+    "powerwash": {
+      "name": "Power Washer",
+      "subtitle": "Pressure Washing Service",
+      "interactionText": "Start Powerwash Job",
+      "blipLabel": "Pressure Washing",
+      "locationLabel": "Pressure Washing Depot",
+      "description": [
+        "Take the pressure wand from the vehicle",
+        "Go to dirty spots marked on the map",
+        "Hold LMB to spray and clean the surfaces",
+        "Return to get paid when finished"
+      ],
+      "items": {
+        "pressureWand": "Pressure Wand",
+        "dirtyStain": "Dirty Stain",
+        "washVan": "Wash Van"
+      },
+      "preview": {
+        "step1Title": "Start the Job",
+        "step1Desc": [
+          "Walk up to the NPC at the washing depot",
+          "Press E to open the job menu",
+          "Select your route and press Start"
+        ],
+        "step2Title": "Change Your Clothes",
+        "step2Desc": [
+          "Head to the portable cabin nearby",
+          "Step inside to change into your work outfit",
+          "Your original clothes are restored when the job ends"
+        ],
+        "step3Title": "Collect Your Tools",
+        "step3Desc": [
+          "Go to the job vehicle",
+          "Pick up a pressure wand — each player takes their own",
+          "Up to 4 tools available for coop play"
+        ],
+        "step4Title": "Drive to Work Area",
+        "step4Desc": [
+          "Get in the vehicle and follow the GPS",
+          "Drive to the marked stain locations",
+          "Each route has multiple dirty spots to clean"
+        ],
+        "step5Title": "Spray the Stains",
+        "step5Desc": [
+          "Aim the pressure wand at the dirty surface",
+          "Hold left mouse button to spray water",
+          "Keep spraying until the stain is fully cleaned"
+        ],
+        "step6Title": "Complete the Job",
+        "step6Desc": [
+          "After cleaning all stains, return to the depot",
+          "Step into the marker to collect your payment",
+          "Earn bonus money for completing the full route"
+        ]
+      }
+    },
+    "windowscleaner": {
+      "name": "Window Cleaner",
+      "subtitle": "City Window Cleaning Service",
+      "interactionText": "Start Window Cleaning Job",
+      "blipLabel": "Window Cleaning",
+      "locationLabel": "Window Cleaning Depot",
+      "description": [
+        "Take the sponge from the vehicle",
+        "Go to windows marked on the map",
+        "Clean the dirty spots on windows",
+        "Return to get paid when finished"
+      ],
+      "items": {
+        "sponge": "Sponge",
+        "windowDirt": "Window Dirt",
+        "cleaningVan": "Cleaning Van"
+      },
+      "preview": {
+        "step1Title": "Start the Job",
+        "step1Desc": [
+          "Walk up to the NPC at the cleaning depot",
+          "Press E to open the job menu",
+          "Select your route and press Start"
+        ],
+        "step2Title": "Change Your Clothes",
+        "step2Desc": [
+          "Head to the portable cabin nearby",
+          "Step inside to change into your work outfit",
+          "Your original clothes are restored when the job ends"
+        ],
+        "step3Title": "Collect Your Tools",
+        "step3Desc": [
+          "Go to the job vehicle",
+          "Pick up a sponge — each player takes their own",
+          "Up to 4 tools available for coop play"
+        ],
+        "step4Title": "Drive to Work Area",
+        "step4Desc": [
+          "Get in the vehicle and follow the GPS",
+          "Drive to the marked window locations",
+          "Each route has multiple dirty windows to clean"
+        ],
+        "step5Title": "Clean the Windows",
+        "step5Desc": [
+          "Walk up to a dirty window with your sponge",
+          "Click the targets that appear to scrub the window",
+          "Each window requires multiple hits to fully clean"
+        ],
+        "step6Title": "Complete the Job",
+        "step6Desc": [
+          "After cleaning all windows, return to the depot",
+          "Speak to the NPC to collect your payment",
+          "Earn bonus money for completing the full route"
+        ]
+      }
+    },
+    "cardetailer": {
+      "name": "Car Detailer",
+      "subtitle": "Mobile Car Detailing Service",
+      "interactionText": "Start Car Detailing Job",
+      "blipLabel": "Car Detailing",
+      "locationLabel": "Car Detailing Depot",
+      "description": [
+        "Take the pressure wand from the vehicle",
+        "Drive to customer cars marked on the map",
+        "Spray wash each car with the pressure wand",
+        "Polish and wax the car for bonus pay"
+      ],
+      "items": {
+        "pressureWand": "Pressure Wand",
+        "waxCloth": "Wax Cloth",
+        "serviceVan": "Service Van"
+      },
+      "preview": {
+        "step1Title": "Start the Job",
+        "step1Desc": [
+          "Walk up to the NPC at the detailing depot",
+          "Press E to open the job menu",
+          "Accept the job to begin"
+        ],
+        "step2Title": "Change Your Clothes",
+        "step2Desc": [
+          "Head to the portable cabin nearby",
+          "Step inside to change into your work outfit",
+          "Your original clothes are restored when the job ends"
+        ],
+        "step3Title": "Collect Your Tools",
+        "step3Desc": [
+          "Go to the job vehicle",
+          "Pick up the pressure wand from the back",
+          "A hose connects the wand to the water tank"
+        ],
+        "step4Title": "Drive to Customer Cars",
+        "step4Desc": [
+          "Get in the vehicle and follow the GPS",
+          "Drive to the marked customer car locations",
+          "Park close — the hose has limited range"
+        ],
+        "step5Title": "Wash the Car",
+        "step5Desc": [
+          "Aim the pressure wand at the dirty spots",
+          "Hold left mouse button to spray water",
+          "The car gets cleaner as you wash each spot"
+        ],
+        "step6Title": "Complete the Job",
+        "step6Desc": [
+          "After detailing all cars, return to the depot",
+          "Return your tools and finish the job",
+          "Higher levels unlock wax polishing for bonus pay"
+        ]
+      }
+    },
+    "newspaper": {
+      "name": "Newspaper Delivery",
+      "subtitle": "Newspaper Delivery Service",
+      "interactionText": "Start Newspaper Delivery",
+      "blipLabel": "Newspaper Delivery",
+      "locationLabel": "Newspaper Delivery",
+      "description": [
+        "Pick up the delivery bicycle",
+        "Throw newspapers to marked delivery points",
+        "More deliveries means more pay",
+        "Work as a team for faster completion"
+      ],
+      "items": {
+        "newspaperBundle": "Newspaper Bundle",
+        "deliveryList": "Delivery List",
+        "bikeKey": "Bike Key"
+      },
+      "routes": {
+        "restoran": "Restaurant Route",
+        "easy": "Easy Route",
+        "headline": "Headline Circuit",
+        "express": "Express Route",
+        "morning": "Morning Gazette",
+        "editorial": "Editorial Run"
+      },
+      "blips": {
+        "newspaperDelivery": "Newspaper Delivery",
+        "returnBike": "Return Bike"
+      }
+    },
+    "cleanup": {
+      "name": "Cleanup Collector",
+      "subtitle": "City Sanitation Services",
+      "interactionText": "Start Cleanup Collection",
+      "blipLabel": "Cleanup Collection",
+      "locationLabel": "Cleanup Center",
+      "description": [
+        "Collect cleanup from bins around the city",
+        "Load cleanup bags onto the truck",
+        "Deliver the truck when full",
+        "Work with a team and earn more"
+      ],
+      "items": {
+        "cleanupBag": "Cleanup Bag",
+        "gloves": "Gloves",
+        "cleanupTruck": "Cleanup Truck"
+      },
+      "areas": {
+        "downtown": "Downtown",
+        "industrial": "Industrial Area",
+        "residential": "Residential Area"
+      },
+      "blips": {
+        "cleanupDelivery": "Cleanup Delivery"
+      }
+    },
+    "trucker": {
+      "name": "Truck Driver",
+      "subtitle": "Long Haul Trucking",
+      "interactionText": "Start Trucking Job",
+      "blipLabel": "Truck Yard",
+      "locationLabel": "Truck Depot",
+      "description": [
+        "Pick up trailers and deliver cargo",
+        "Earn money based on distance traveled",
+        "Chance for illegal high-paying routes",
+        "Work as a team for bonus rewards"
+      ],
+      "items": {
+        "truck": "Truck",
+        "trailer": "Trailer",
+        "cargo": "Cargo"
+      },
+      "blips": {
+        "pickupTrailer": "Pickup Trailer",
+        "deliverCargo": "Deliver Cargo",
+        "illegalDelivery": "Illegal Delivery",
+        "returnTruck": "Return Truck"
+      }
+    },
+    "taxi": {
+      "name": "Taxi Driver",
+      "subtitle": "City Transportation",
+      "interactionText": "Start Taxi Job",
+      "blipLabel": "Taxi Depot",
+      "locationLabel": "Taxi Depot",
+      "description": [
+        "Pick up passengers around the city",
+        "Deliver them to their destination",
+        "Earn money based on distance",
+        "Bonus for fast delivery"
+      ],
+      "items": {
+        "taxi": "Taxi",
+        "passenger": "Passenger"
+      },
+      "blips": {
+        "pickupPassenger": "Pickup Passenger",
+        "dropOff": "Drop Off",
+        "returnTaxi": "Return Taxi"
+      }
+    },
+    "dogwalking": {
+      "name": "Dog Walker",
+      "subtitle": "Pet Care Services",
+      "interactionText": "Start Dog Walking",
+      "blipLabel": "Dog Walking",
+      "locationLabel": "Pet Services",
+      "description": [
+        "Walk dogs for wealthy clients",
+        "Pick up dogs from client homes",
+        "Walk required distance with your dog",
+        "Clean up after your dog for bonus pay",
+        "Work with friends for coop bonus!"
+      ],
+      "items": {
+        "leash": "Leash",
+        "poopBag": "Poop Bag",
+        "treats": "Treats"
+      },
+      "blips": {
+        "clientHome": "Client Home"
+      },
+      "preview": {
+        "step1Title": "Start the Job",
+        "step1Desc": [
+          "Find the Dog Walking NPC near the pet shop",
+          "Press E to open the job menu",
+          "Select your area and press Start"
+        ],
+        "step2Title": "Change Your Clothes",
+        "step2Desc": [
+          "Head to the changing area near the pet shop",
+          "Step inside to change into your work outfit",
+          "Your original clothes are restored when the job ends"
+        ],
+        "step3Title": "Pick Up the Dog",
+        "step3Desc": [
+          "Drive to the client's home in Vinewood Hills",
+          "Meet the dog owner waiting outside",
+          "Press E to take the dog on a leash"
+        ],
+        "step4Title": "Walk the Dog",
+        "step4Desc": [
+          "Walk with your dog on a leash",
+          "Cover the required distance shown on your HUD",
+          "Clean up after your dog for bonus pay"
+        ],
+        "step5Title": "Return the Dog",
+        "step5Desc": [
+          "Walk the dog back to the client's home",
+          "The dog returns to its owner automatically",
+          "Get paid based on distance walked and cleanups"
+        ]
+      }
+    },
+    "powerlines": {
+      "name": "Powerlines",
+      "subtitle": "City Power & Communications",
+      "interactionText": "Start Powerlines Job",
+      "blipLabel": "Powerlines Job",
+      "locationLabel": "Power Company",
+      "description": [
+        "Repair electrical panels in homes",
+        "Fix phone pole wiring using bucket truck",
+        "Work with your team for bonus rewards",
+        "Use minigames to complete repairs"
+      ],
+      "items": {
+        "multimeter": "Multimeter",
+        "wireKit": "Wire Kit",
+        "safetyGear": "Safety Gear"
+      },
+      "blips": {
+        "electricalPanel": "Electrical Panel",
+        "phonePole": "Phone Pole",
+        "bucketTruck": "Bucket Truck"
+      },
+      "routes": {
+        "rockfordHills": "Rockford Hills",
+        "davis": "Davis",
+        "vespucci": "Vespucci",
+        "strawberry": "Strawberry",
+        "centralLS": "Central LS",
+        "southLS": "South LS"
+      }
+    },
+    "delivery": {
+      "name": "Package Delivery",
+      "subtitle": "Package Delivery Service",
+      "interactionText": "Start Package Delivery Job",
+      "blipLabel": "Package Delivery",
+      "locationLabel": "Package Delivery",
+      "description": [
+        "Pick up the van and load boxes from the depot",
+        "Deliver boxes to designated customers",
+        "The more deliveries you make, the more you earn",
+        "Work as a team to finish faster"
+      ],
+      "items": {
+        "cargoBox": "Cargo Box",
+        "deliveryList": "Delivery List",
+        "vanKey": "Van Key"
+      },
+      "blips": {
+        "deliveryPoint": "Delivery Point"
+      },
+      "preview": {
+        "step1Title": "Start the Job",
+        "step1Desc": [
+          "Walk up to the NPC at the delivery depot",
+          "Press E to open the job menu",
+          "Select your area and press Start"
+        ],
+        "step2Title": "Change Your Clothes",
+        "step2Desc": [
+          "Head to the portable cabin nearby",
+          "Step inside to change into your work outfit",
+          "Your original clothes are restored when the job ends"
+        ],
+        "step3Title": "Collect Your Vehicle",
+        "step3Desc": [
+          "Head to the parked delivery van",
+          "The rear doors are open for loading",
+          "Each lobby gets their own vehicle"
+        ],
+        "step4Title": "Pick Up Packages",
+        "step4Desc": [
+          "Walk to the depot worker near the warehouse",
+          "Press E to pick up a cargo box",
+          "You can carry one box at a time"
+        ],
+        "step5Title": "Load the Van",
+        "step5Desc": [
+          "Carry packages to the van's open rear doors",
+          "Boxes are automatically stacked inside",
+          "Fill up the van before heading out"
+        ],
+        "step6Title": "Deliver the Packages",
+        "step6Desc": [
+          "Drive to the marked delivery location",
+          "Take a box from the trunk and carry it",
+          "Walk to the customer and press E to deliver"
+        ],
+        "step7Title": "Return to Depot",
+        "step7Desc": [
+          "After all deliveries, drive back to the depot",
+          "Park the van at the marked spot",
+          "Your earnings are paid out automatically"
+        ]
+      }
+    },
+    "warehouse": {
+      "name": "Warehouse Worker",
+      "subtitle": "Freight & Logistics",
+      "interactionText": "Start Warehouse Job",
+      "blipLabel": "Warehouse",
+      "locationLabel": "Warehouse",
+      "description": [
+        "Load boxes and pallets onto delivery trucks",
+        "Use a forklift for heavy pallets",
+        "Hand-carry smaller boxes to the truck",
+        "Complete truck orders for payment"
+      ],
+      "items": {
+        "forklift": "Forklift",
+        "boxes": "Boxes",
+        "pallets": "Pallets"
+      },
+      "blips": {
+        "truck": "Truck",
+        "deliveryPoint": "Delivery Point",
+        "forklift": "Forklift"
+      },
+      "deliveryRoutes": {
+        "vinewood": "Vinewood Market",
+        "davis": "Davis Supermarket",
+        "strawberry": "Strawberry Market"
+      }
+    },
+    "landscaping": {
+      "name": "Landscaping",
+      "subtitle": "Garden Maintenance",
+      "interactionText": "Start Landscaping Job",
+      "blipLabel": "Landscaping Job",
+      "locationLabel": "City Maintenance",
+      "description": [
+        "Trim overgrown bushes with a trimmer",
+        "Dig up weeds with a shovel",
+        "Pick up tools from the work truck",
+        "Work as a team for bonus rewards"
+      ],
+      "items": {
+        "trimmer": "Trimmer",
+        "shovel": "Shovel",
+        "workTruck": "Work Truck"
+      },
+      "routes": {
+        "vespucci": "Vespucci",
+        "pillboxHill": "Pillbox Hill",
+        "littleSeoul": "Little Seoul",
+        "burton": "Burton",
+        "vinewoodHills": "Vinewood Hills"
+      }
+    },
+    "fishing": {
+      "name": "Fishing",
+      "subtitle": "Professional Fishing",
+      "interactionText": "Start Fishing Job",
+      "blipLabel": "Fishing",
+      "locationLabel": "Fishing",
+      "description": [
+        "Get a rod and bait",
+        "Cast your line near water",
+        "Catch fish with the minigame",
+        "Caught fish are added to inventory",
+        "Sell to the fish buyer"
+      ],
+      "items": {
+        "fishingRod": "Fishing Rod",
+        "bait": "Bait"
+      },
+      "rods": {
+        "standartrod": "Standard Rod",
+        "carbonrod": "Carbon Rod",
+        "prorod": "Pro Rod"
+      },
+      "baits": {
+        "basicbait": "Worm Bait",
+        "spoonlure": "Spoon Lure",
+        "threesided": "Three-Sided Lure",
+        "tailfish": "Tail Fish Lure",
+        "doublehook": "Double Hook Lure",
+        "triplehook": "Triple Hook Lure"
+      },
+      "zones": {
+        "southCoast": "South Coast",
+        "westCoast": "West Coast",
+        "deepSea": "Deep Sea"
+      },
+      "fishTypes": {
+        "anchovy": "Anchovy",
+        "trout": "Trout",
+        "mackerel": "Mackerel",
+        "salmon": "Salmon",
+        "snapper": "Snapper",
+        "tuna": "Tuna",
+        "grouper": "Grouper",
+        "swordfish": "Swordfish",
+        "shark": "Shark"
+      },
+      "blips": {
+        "fishingShop": "Fishing Shop",
+        "fishBuyer": "Fish Buyer"
+      }
+    },
+    "diving": {
+      "name": "Diving",
+      "subtitle": "Professional Diving",
+      "interactionText": "Start Diving Job",
+      "blipLabel": "Diving",
+      "locationLabel": "Diving",
+      "description": [
+        "Board the boat and head to the dive zone",
+        "When the boat stops, drop anchor and enter the water",
+        "Dive underwater and complete tasks",
+        "Return to the boat and raise the anchor",
+        "Head back to the dock and sell your items"
+      ],
+      "items": {
+        "scubaTank": "Scuba Tank",
+        "divingSuit": "Diving Suit",
+        "flippers": "Flippers"
+      },
+      "zones": {
+        "shallowBay": "Shallow Bay",
+        "openSea": "Open Sea",
+        "shipwreck": "Shipwreck",
+        "deepTrench": "Deep Trench"
+      },
+      "sellItems": {
+        "dendrogyraCoral": "Dendrogyra Coral",
+        "antipathariaCoral": "Antipatharia Coral"
+      },
+      "taskTypes": {
+        "coral": "Coral",
+        "trash": "Trash"
+      },
+      "gear": {
+        "basic": "Basic Scuba",
+        "standard": "Standard Scuba",
+        "pro": "Pro Scuba"
+      },
+      "blips": {
+        "boatDelivery": "Boat Delivery"
+      },
+      "preview": {
+        "step1Title": "Start the Job",
+        "step1Desc": [
+          "Head to the diving instructor at Paleto Bay dock",
+          "Press E to open the job menu",
+          "Select a dive zone and press Start"
+        ],
+        "step2Title": "Board the Boat",
+        "step2Desc": [
+          "Walk to the dock and board your boat",
+          "Each dive zone has a departure point",
+          "Navigate to the marked dive zone"
+        ],
+        "step3Title": "Drop Anchor & Dive",
+        "step3Desc": [
+          "Stop the boat at the dive zone marker",
+          "Press E to drop the anchor",
+          "Jump into the water and dive down"
+        ],
+        "step4Title": "Collect Items",
+        "step4Desc": [
+          "Find coral and trash on the seabed",
+          "Press E to collect coral for selling",
+          "Clean up trash for bonus XP"
+        ],
+        "step5Title": "Sell Your Catch",
+        "step5Desc": [
+          "Return the boat to the dock",
+          "Walk to the buyer NPC nearby",
+          "Press E to sell your collected corals"
+        ]
+      }
+    },
+    "forklift": {
+      "name": "Forklift Operator",
+      "subtitle": "Underground Logistics",
+      "interactionText": "Start Forklift Job",
+      "blipLabel": "Forklift",
+      "locationLabel": "Forklift Depot",
+      "description": [
+        "Operate a forklift in an underground depot",
+        "Transport crates to the conveyor belt",
+        "Sort and place crates on designated shelves",
+        "Work as a team for bonus rewards"
+      ],
+      "items": {
+        "forklift": "Forklift",
+        "crate": "Crate",
+        "conveyorBelt": "Conveyor Belt"
+      },
+      "crateTypes": {
+        "jewellery": "Jewellery",
+        "antiques": "Antiques",
+        "tobacco": "Tobacco",
+        "hazard": "Hazard",
+        "fake": "Fake"
+      },
+      "blips": {
+        "forklift": "Forklift",
+        "conveyor": "Conveyor Belt"
+      }
+    },
+    "tiretechnician": {
+      "name": "Tire Technician",
+      "subtitle": "Roadside Tire Service",
+      "interactionText": "Start Tire Technician Job",
+      "blipLabel": "Tire Technician Job",
+      "locationLabel": "Tire Service Depot",
+      "description": [
+        "Change flat tires on stranded vehicles",
+        "Use a car jack and tools for tire changes",
+        "Multi-step realistic tire repair process",
+        "Work with your team for faster completions"
+      ],
+      "items": {
+        "wrenchSet": "Wrench Set",
+        "carJack": "Car Jack",
+        "spareParts": "Spare Parts"
+      },
+      "blips": {
+        "vehicleRepair": "Vehicle Repair",
+        "serviceTruck": "Service Truck"
+      }
+    },
+    "treasurehunter": {
+      "name": "Treasure Hunter",
+      "subtitle": "Underwater Treasure Hunting",
+      "interactionText": "Start Treasure Hunting Job",
+      "blipLabel": "Treasure Hunter",
+      "locationLabel": "Treasure Hunter Dock",
+      "description": [
+        "Board the boat and head to the treasure area",
+        "Follow the tracker beeps to locate treasure",
+        "Dive underwater and collect the treasure chest",
+        "Return to the dock to collect payment"
+      ],
+      "items": {
+        "scubaGear": "Scuba Gear",
+        "treasureChest": "Treasure Chest"
+      },
+      "lootTypes": {
+        "common": "Treasure Bag",
+        "legendary": "Gold Chest"
+      },
+      "gear": {
+        "basic": "Basic Scuba",
+        "standard": "Standard Scuba",
+        "pro": "Pro Scuba"
+      },
+      "preview": {
+        "step1Title": "Start the Job",
+        "step1Desc": [
+          "Head to the dock and talk to the instructor",
+          "Press E to open the job menu and start"
+        ],
+        "step2Title": "Board the Boat",
+        "step2Desc": [
+          "Walk to the dock and board your boat",
+          "Navigate toward the treasure area blip"
+        ],
+        "step3Title": "Drop Anchor & Dive",
+        "step3Desc": [
+          "Follow the tracker beeps to find the treasure",
+          "Drop anchor near the search area",
+          "Dive underwater with your scuba gear"
+        ],
+        "step4Title": "Collect Treasure",
+        "step4Desc": [
+          "Find the treasure chest on the seabed",
+          "Watch out for sharks and ocean currents!",
+          "Press E to collect the treasure"
+        ],
+        "step5Title": "Return to Dock",
+        "step5Desc": [
+          "Surface and return to the dock",
+          "Drive into the marker to finish",
+          "Collect your payment!"
+        ]
+      }
+    },
+    "metaldetector": {
+      "name": "Metal Detector",
+      "subtitle": "Advanced Recovery Operations",
+      "interactionText": "Start Metal Detector Job",
+      "blipLabel": "Metal Detector",
+      "locationLabel": "Metal Detector Station",
+      "description": [
+        "Take a metal detector from the truck's trunk",
+        "Follow beep speed to pinpoint hidden metal",
+        "Dig up buried spots with your shovel",
+        "Cash out your recovered finds at the station"
+      ],
+      "items": {
+        "detector": "Metal Detector",
+        "findings": "Recovered Findings"
+      },
+      "lootTypes": {
+        "scrap": "Scrap Metal",
+        "coin": "Old Coin",
+        "silver": "Silver Piece",
+        "gold": "Gold Nugget",
+        "relic": "Rare Relic"
+      }
+    },
+    "mechanic": {
+      "name": "Mechanic",
+      "subtitle": "Vehicle Repair Service",
+      "interactionText": "Start Mechanic Job",
+      "blipLabel": "Mechanic",
+      "locationLabel": "Mechanic Shop"
+    },
+    "gruppe6": {
+      "name": "Gruppe 6",
+      "subtitle": "Armored Transport",
+      "interactionText": "Talk to the depot manager",
+      "blipLabel": "Gruppe 6 Depot",
+      "description": [
+        "Drive an armored truck between Fleeca banks",
+        "Fill money bags at the vault and load them up",
+        "Return the truck to the depot to get paid"
+      ]
+    }
+  },
+  "quests": {
+    "daily_miner_collect": {
+      "label": "Daily Mining",
+      "description": "Break 5 rocks in the mine"
+    },
+    "weekly_miner_process": {
+      "label": "Master Processor",
+      "description": "Process 30 ores at the scale"
+    },
+    "monthly_miner_earn": {
+      "label": "Mining Tycoon",
+      "description": "Earn $10,000 from mining"
+    },
+    "daily_lumber_collect": {
+      "label": "Daily Chopping",
+      "description": "Chop down 5 trees"
+    },
+    "weekly_lumber_process": {
+      "label": "Lumber Master",
+      "description": "Process 25 logs at the scale"
+    },
+    "monthly_lumber_earn": {
+      "label": "Timber Tycoon",
+      "description": "Earn $10,000 from lumberjacking"
+    },
+    "daily_scrap_collect": {
+      "label": "Scrap Collector",
+      "description": "Collect 5 scrap pieces"
+    },
+    "weekly_scrap_process": {
+      "label": "Recycling Pro",
+      "description": "Process 20 scraps at the scale"
+    },
+    "monthly_scrap_earn": {
+      "label": "Scrap Magnate",
+      "description": "Earn $8,000 from scrapping"
+    },
+    "daily_hunting_collect": {
+      "label": "Daily Hunt",
+      "description": "Hunt 3 animals"
+    },
+    "weekly_hunting_process": {
+      "label": "Trophy Hunter",
+      "description": "Process 15 animals at the scale"
+    },
+    "monthly_hunting_earn": {
+      "label": "Master Hunter",
+      "description": "Earn $12,000 from hunting"
+    },
+    "daily_farmer_complete": {
+      "label": "Farm Hand",
+      "description": "Complete 2 farming runs"
+    },
+    "weekly_farmer_earn": {
+      "label": "Harvest King",
+      "description": "Earn $5,000 from farming"
+    },
+    "monthly_farmer_earn": {
+      "label": "Agriculture Baron",
+      "description": "Earn $15,000 from farming"
+    },
+    "daily_fruitpicker_complete": {
+      "label": "Orange Picker",
+      "description": "Complete 2 picking runs"
+    },
+    "weekly_fruitpicker_earn": {
+      "label": "Citrus Baron",
+      "description": "Earn $5,000 from oranges"
+    },
+    "monthly_fruitpicker_earn": {
+      "label": "Orchard Mogul",
+      "description": "Earn $15,000 from oranges"
+    },
+    "daily_cleaner_complete": {
+      "label": "Street Sweeper",
+      "description": "Complete 2 cleaning runs"
+    },
+    "weekly_cleaner_earn": {
+      "label": "Mr. Clean",
+      "description": "Earn $4,000 from cleaning"
+    },
+    "monthly_cleaner_earn": {
+      "label": "Sanitation Chief",
+      "description": "Earn $12,000 from cleaning"
+    },
+    "daily_powerwash_complete": {
+      "label": "Pressure Pro",
+      "description": "Complete 2 powerwash runs"
+    },
+    "weekly_powerwash_earn": {
+      "label": "Blast Master",
+      "description": "Earn $5,000 from powerwashing"
+    },
+    "monthly_powerwash_earn": {
+      "label": "Wash Wizard",
+      "description": "Earn $15,000 from powerwashing"
+    },
+    "daily_windowcleaner_complete": {
+      "label": "Window Wiper",
+      "description": "Complete 2 window cleaning runs"
+    },
+    "weekly_windowcleaner_earn": {
+      "label": "Glass Expert",
+      "description": "Earn $4,000 from window cleaning"
+    },
+    "monthly_windowcleaner_earn": {
+      "label": "Crystal Clear Co.",
+      "description": "Earn $12,000 from window cleaning"
+    },
+    "daily_cardetailer_complete": {
+      "label": "Shine Time",
+      "description": "Complete 2 detailing runs"
+    },
+    "weekly_cardetailer_earn": {
+      "label": "Detail Pro",
+      "description": "Earn $5,000 from car detailing"
+    },
+    "monthly_cardetailer_earn": {
+      "label": "Master Detailer",
+      "description": "Earn $15,000 from car detailing"
+    },
+    "daily_newspaper_complete": {
+      "label": "Paperboy",
+      "description": "Complete 2 delivery runs"
+    },
+    "weekly_newspaper_earn": {
+      "label": "Press Mogul",
+      "description": "Earn $3,000 from deliveries"
+    },
+    "monthly_newspaper_earn": {
+      "label": "Media Baron",
+      "description": "Earn $8,000 from deliveries"
+    },
+    "daily_cleanup_complete": {
+      "label": "Trash Collector",
+      "description": "Complete 2 cleanup runs"
+    },
+    "weekly_cleanup_earn": {
+      "label": "Waste Manager",
+      "description": "Earn $4,000 from cleanup runs"
+    },
+    "monthly_cleanup_earn": {
+      "label": "Waste Mogul",
+      "description": "Earn $12,000 from cleanup runs"
+    },
+    "daily_trucker_complete": {
+      "label": "Daily Haul",
+      "description": "Complete 2 trucking runs"
+    },
+    "weekly_trucker_earn": {
+      "label": "Road Warrior",
+      "description": "Earn $8,000 from trucking"
+    },
+    "monthly_trucker_earn": {
+      "label": "Convoy King",
+      "description": "Earn $25,000 from trucking"
+    },
+    "daily_taxi_complete": {
+      "label": "Cab Driver",
+      "description": "Complete 3 taxi fares"
+    },
+    "weekly_taxi_earn": {
+      "label": "Taxi King",
+      "description": "Earn $6,000 from fares"
+    },
+    "monthly_taxi_earn": {
+      "label": "Fleet Owner",
+      "description": "Earn $18,000 from fares"
+    },
+    "daily_dogwalking_complete": {
+      "label": "Dog Walker",
+      "description": "Complete 2 walks"
+    },
+    "weekly_dogwalking_earn": {
+      "label": "Pack Leader",
+      "description": "Earn $3,000 from dog walking"
+    },
+    "monthly_dogwalking_earn": {
+      "label": "Dog Whisperer",
+      "description": "Earn $8,000 from dog walking"
+    },
+    "daily_powerlines_complete": {
+      "label": "Sparky",
+      "description": "Complete 2 repair jobs"
+    },
+    "weekly_powerlines_earn": {
+      "label": "Master Powerlines",
+      "description": "Earn $6,000 from repairs"
+    },
+    "monthly_powerlines_earn": {
+      "label": "Power Grid Boss",
+      "description": "Earn $18,000 from repairs"
+    },
+    "daily_delivery_complete": {
+      "label": "Package Runner",
+      "description": "Complete 2 deliveries"
+    },
+    "weekly_delivery_earn": {
+      "label": "Express Courier",
+      "description": "Earn $5,000 from deliveries"
+    },
+    "monthly_delivery_earn": {
+      "label": "Delivery Kingpin",
+      "description": "Earn $15,000 from deliveries"
+    },
+    "daily_warehouse_complete": {
+      "label": "Dock Worker",
+      "description": "Complete 2 warehouse shifts"
+    },
+    "weekly_warehouse_earn": {
+      "label": "Logistics Expert",
+      "description": "Earn $5,000 from warehouse work"
+    },
+    "monthly_warehouse_earn": {
+      "label": "Warehouse Director",
+      "description": "Earn $15,000 from warehouse work"
+    },
+    "daily_landscaping_complete": {
+      "label": "Green Thumb",
+      "description": "Complete 2 gardening jobs"
+    },
+    "weekly_landscaping_earn": {
+      "label": "Master Landscaping",
+      "description": "Earn $4,000 from gardening"
+    },
+    "monthly_landscaping_earn": {
+      "label": "Landscape Architect",
+      "description": "Earn $12,000 from gardening"
+    },
+    "daily_fishing_complete": {
+      "label": "Angler",
+      "description": "Complete 2 fishing trips"
+    },
+    "weekly_fishing_earn": {
+      "label": "Deep Sea Fisher",
+      "description": "Earn $5,000 from fishing"
+    },
+    "monthly_fishing_earn": {
+      "label": "Fishing Legend",
+      "description": "Earn $15,000 from fishing"
+    },
+    "daily_diving_complete": {
+      "label": "Deep Diver",
+      "description": "Complete 2 diving trips"
+    },
+    "weekly_diving_earn": {
+      "label": "Ocean Explorer",
+      "description": "Earn $6,000 from diving"
+    },
+    "monthly_diving_earn": {
+      "label": "Treasure Diver",
+      "description": "Earn $18,000 from diving"
+    },
+    "daily_forklift_complete": {
+      "label": "Forklift Operator",
+      "description": "Complete 2 warehouse shifts"
+    },
+    "weekly_forklift_earn": {
+      "label": "Heavy Lifter",
+      "description": "Earn $5,000 from forklift work"
+    },
+    "monthly_forklift_earn": {
+      "label": "Logistics Titan",
+      "description": "Earn $15,000 from forklift work"
+    }
+  },
+  "shop": {
+    "buyRod": "Buy Rod",
+    "buyRodDesc": "Purchase a fishing rod",
+    "buyBait": "Buy Bait",
+    "buyBaitDesc": "Purchase fishing bait",
+    "sellAll": "Sell All",
+    "sellAllFish": "Sell all fish",
+    "sellAllItems": "Sell all items",
+    "levelRequired": "Level {level} required | {price}",
+    "howMany": "How many?"
+  },
+  "vehicle": {
+    "powerlines": "Powerlines",
+    "huntingVehicle": "Hunting Vehicle",
+    "workTruck": "Work Truck",
+    "divingBoat": "Diving Boat",
+    "fishingBoat": "Fishing Boat",
+    "cleanupTruck": "Cleanup Truck",
+    "lumberVehicle": "Lumber Vehicle",
+    "miningVehicle": "Mining Vehicle",
+    "metaldetectorVehicle": "Detector Truck",
+    "washVan": "Wash Van",
+    "windowCleanerVan": "Window Cleaner Van",
+    "cleaningVan": "Cleaning Van",
+    "serviceVehicle": "Service Vehicle",
+    "scrapyardTruck": "Scrapyard Truck",
+    "detailingVan": "Detailing Van",
+    "tiretechnician": "Tire Technician",
+    "pickupPassenger": "Pickup Passenger",
+    "returnTaxi": "Return Taxi",
+    "dropOff": "Drop Off",
+    "bucketTruck": "Bucket Truck",
+    "deliveryVan": "Delivery Van",
+    "newspaperBike": "Newspaper Bike",
+    "detachedTrailer": "Detached Trailer",
+    "deliveryTruck": "Delivery Truck",
+    "taxi": "Taxi",
+    "treasureBoat": "Treasure Hunter Boat"
+  },
+  "task": {
+    "panels": "Panels",
+    "poles": "Poles",
+    "repairPanels": "Repair panels ({done}/{total})",
+    "fixPoles": "Fix utility poles ({done}/{total})",
+    "repairDescription": "Repair electrical infrastructure across the area. Fix panels and utility poles.",
+    "plants": "Plants",
+    "cropPlant": "Crop Plant",
+    "nearestCrop": "Nearest Crop",
+    "bushes": "Bushes",
+    "lawns": "Lawns",
+    "bushToTrim": "Bush to Trim",
+    "lawnToDig": "Lawn to Dig",
+    "toilets": "Toilets",
+    "pipes": "Pipes",
+    "fishCaught": "Fish Caught",
+    "oreProcessed": "Ore Processed",
+    "trunkLoaded": "Trunk Loaded",
+    "logsProcessed": "Logs Processed",
+    "scrapsProcessed": "Scraps Processed",
+    "boxesProcessed": "Boxes Processed",
+    "animalsProcessed": "Animals Processed",
+    "treasures": "Treasures",
+    "spotsDug": "Spots Dug",
+    "tasks": "Tasks",
+    "loadBoxes": "Load boxes at the depot",
+    "deliveries": "Deliveries",
+    "deliverPackages": "Deliver packages",
+    "boxesLoaded": "Boxes Loaded",
+    "pickUpTrailer": "Pick up trailer",
+    "deliverCargo": "Deliver cargo",
+    "returnTruck": "Return truck",
+    "stage": "Stage",
+    "truckFill": "Truck Fill",
+    "shelved": "Shelved",
+    "activateConveyor": "Activate the conveyor belt [E]",
+    "deliverCratesToBelt": "Deliver crates to belt ({current}/{total})",
+    "placeCratesOnShelves": "Place crates on shelves ({current}/{total})",
+    "delivered": "Delivered",
+    "takeWandFromTrunk": "Take wand from vehicle trunk",
+    "spotsCleaned": "Spots Cleaned",
+    "takeSpongeFromTrunk": "Take sponge from vehicle trunk",
+    "windows": "Windows",
+    "takeMopFromTrunk": "Take mop from vehicle trunk",
+    "stains": "Stains",
+    "equipWandOrCloth": "Equip wand (wash) or cloth (polish)",
+    "carsWashed": "Cars Washed",
+    "carsPolished": "Cars Polished",
+    "distance": "Distance",
+    "cargo": "Cargo",
+    "regularAnimals": "Regular animals",
+    "predators": "Predators",
+    "birds": "Birds",
+    "mixed": "Mixed",
+    "nextDelivery": "Next Delivery",
+    "returnVehicle": "Return Vehicle",
+    "returnToDepot": "Return to Depot",
+    "returnToBase": "Return to Base",
+    "loadingArea": "Loading Area",
+    "fruitpickerTree": "Orange Tree",
+    "next": "Next",
+    "walkDistance": "Walk distance",
+    "dogsDelivered": "Dogs delivered",
+    "distanceWalked": "Distance Walked (m)",
+    "toolShovel": "Shovel",
+    "toolTrimmer": "Trimmer",
+    "trucksCompleted": "Trucks completed ({current}/{total})",
+    "loadBoxesCount": "Load boxes ({current}/{total})",
+    "loadPallets": "Load pallets ({current}/{total})",
+    "deliverPapers": "Deliver papers ({current}/{total})",
+    "trimBushes": "Trim bushes ({current}/{total})",
+    "rakeLawns": "Rake lawns ({current}/{total})",
+    "itemsCollected": "Items collected ({current}/{total})",
+    "cleanAllWindows": "Clean all windows ({current}/{total})",
+    "cleanAllSpots": "Clean all spots ({current}/{total})"
+  },
+  "drawText": {
+    "repairPanel": "[E] Repair electrical panel",
+    "repairPole": "[E] Repair phone pole wiring",
+    "collect": "[E] Collect",
+    "collectCoral": "[E] Collect Coral",
+    "cleanTrash": "[E] Clean Trash"
+  },
+  "achievements": {
+    "miner_lv5": {
+      "label": "Master Miner",
+      "desc": "Reach level 5 in Mining"
+    },
+    "miner_lv10": {
+      "label": "Mining Legend",
+      "desc": "Reach level 10 in Mining"
+    },
+    "lumberjack_lv5": {
+      "label": "Master Lumberjack",
+      "desc": "Reach level 5 in Lumberjack"
+    },
+    "fishing_lv5": {
+      "label": "Expert Angler",
+      "desc": "Reach level 5 in Fishing"
+    },
+    "cleanup_lv5": {
+      "label": "Waste Warrior",
+      "desc": "Reach level 5 in Cleanup"
+    },
+    "delivery_lv5": {
+      "label": "Express Courier",
+      "desc": "Reach level 5 in Delivery"
+    },
+    "trucker_lv5": {
+      "label": "Road King",
+      "desc": "Reach level 5 in Trucking"
+    },
+    "hunting_lv5": {
+      "label": "Expert Hunter",
+      "desc": "Reach level 5 in Hunting"
+    },
+    "taxi_lv5": {
+      "label": "Ace Driver",
+      "desc": "Reach level 5 in Taxi"
+    },
+    "powerlines_lv5": {
+      "label": "Master Powerlines",
+      "desc": "Reach level 5 in Powerlines"
+    },
+    "diving_lv5": {
+      "label": "Deep Sea Diver",
+      "desc": "Reach level 5 in Diving"
+    },
+    "cleaner_lv5": {
+      "label": "Clean Machine",
+      "desc": "Reach level 5 in Cleaner"
+    },
+    "powerwash_lv5": {
+      "label": "Pressure Pro",
+      "desc": "Reach level 5 in Powerwash"
+    },
+    "windowscleaner_lv5": {
+      "label": "Crystal Clear",
+      "desc": "Reach level 5 in Window Cleaning"
+    },
+    "cardetailer_lv5": {
+      "label": "Detail Master",
+      "desc": "Reach level 5 in Car Detailing"
+    },
+    "farmer_lv5": {
+      "label": "Green Thumb",
+      "desc": "Reach level 5 in Farming"
+    },
+    "fruitpicker_lv5": {
+      "label": "Citrus King",
+      "desc": "Reach level 5 in Orange Picking"
+    },
+    "landscaping_lv5": {
+      "label": "Garden Master",
+      "desc": "Reach level 5 in Gardening"
+    },
+    "dogwalking_lv5": {
+      "label": "Dog Whisperer",
+      "desc": "Reach level 5 in Dog Walking"
+    },
+    "newspaper_lv5": {
+      "label": "Press Runner",
+      "desc": "Reach level 5 in Newspaper"
+    },
+    "scrapyard_lv5": {
+      "label": "Scrap Lord",
+      "desc": "Reach level 5 in Scrapyard"
+    },
+    "warehouse_lv5": {
+      "label": "Stock Master",
+      "desc": "Reach level 5 in Warehouse"
+    },
+    "forklift_lv5": {
+      "label": "Lift Operator",
+      "desc": "Reach level 5 in Forklift"
+    },
+    "collect_100": {
+      "label": "Collector",
+      "desc": "Collect 100 items total"
+    },
+    "collect_500": {
+      "label": "Gatherer",
+      "desc": "Collect 500 items total"
+    },
+    "collect_1000": {
+      "label": "Hoarder",
+      "desc": "Collect 1,000 items total"
+    },
+    "miner_collect_500": {
+      "label": "Rock Breaker",
+      "desc": "Mine 500 rocks"
+    },
+    "lumber_collect_500": {
+      "label": "Tree Feller",
+      "desc": "Chop 500 trees"
+    },
+    "earn_10000": {
+      "label": "Breadwinner",
+      "desc": "Earn $10,000 total from jobs"
+    },
+    "earn_50000": {
+      "label": "High Roller",
+      "desc": "Earn $50,000 total from jobs"
+    },
+    "earn_100000": {
+      "label": "Millionaire Path",
+      "desc": "Earn $100,000 total from jobs"
+    },
+    "complete_10": {
+      "label": "Hard Worker",
+      "desc": "Complete 10 jobs"
+    },
+    "complete_50": {
+      "label": "Dedicated Worker",
+      "desc": "Complete 50 jobs"
+    },
+    "complete_100": {
+      "label": "Veteran Worker",
+      "desc": "Complete 100 jobs"
+    },
+    "process_100": {
+      "label": "Processor",
+      "desc": "Process 100 items at scale"
+    },
+    "process_500": {
+      "label": "Factory Worker",
+      "desc": "Process 500 items at scale"
+    }
+  },
+  "gruppe6": {
+    "truck": "Armored Truck",
+    "takeBagPrompt": "[E] Take an empty bag",
+    "returnBagPrompt": "[E] Put the bag back",
+    "loadBagPrompt": "[E] Load the bag",
+    "signPrompt": "[E] Sign the paperwork",
+    "fillBagPrompt": "[E] Fill the bag",
+    "stationBusy": "Another crew member is using this station!",
+    "newRound": "New heist round — fresh banks are on the map!",
+    "continueBusy": "Everyone must finish scooping and hand in their bags before continuing!",
+    "returnTruckPrompt": "[E] Hand in the truck",
+    "emptyBagTaken": "Empty bag taken. Fill it at the bank vault.",
+    "signingPapers": "Signing paperwork...",
+    "vaultOpening": "Vault is opening... ({seconds}s)",
+    "vaultOpened": "The vault is open!",
+    "fillingBag": "Filling the bag...",
+    "bagFilled": "Bag filled! (+{symbol}{amount})",
+    "allStopsDone": "All stops collected! Return the truck to the depot.",
+    "returnTruckHint": "Return the truck to the depot to end the shift.",
+    "returnTruckBlip": "Return Truck",
+    "onlyLeaderCanFinish": "Only the crew leader can hand in the truck!",
+    "tooFarFromDepot": "You are too far from the depot!",
+    "tooFarFromManager": "You are too far from the bank manager!",
+    "tooFarFromVault": "You are too far from the vault!",
+    "vaultNotOpen": "The vault is not open yet!",
+    "vaultAlreadyOpen": "The vault is already being opened!",
+    "vaultEmpty": "This vault has been emptied!",
+    "alreadyCarrying": "You are already carrying something!",
+    "needEmptyBag": "You need an empty bag first!",
+    "statBags": "Bags loaded",
+    "statEarnings": "Total earned",
+    "objSign": "Get the paperwork signed",
+    "objCollect": "Fill and load the bags",
+    "objReturn": "Return the truck to the depot",
+    "objWaiting": "Waiting for route...",
+    "progressTitle": "Gruppe 6",
+    "progressDetail": "Collect money bags from the banks, then return the armored truck to the depot to get paid.",
+    "jobEnded": "{bags} bags delivered, you earned {symbol}{earned}!",
+    "noEmptyBags": "No empty bags left in the truck!",
+    "truckNotAtDepot": "The armored truck must be at the depot!"
+  }
+}

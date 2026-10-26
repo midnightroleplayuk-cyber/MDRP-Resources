@@ -1,0 +1,3612 @@
+{
+  "blips": {
+    "category": "Joburi",
+    "jobCenter": "Centru de Joburi",
+    "miner": "Minerit",
+    "lumberjack": "Tăietor de Lemne",
+    "scrapyard": "Fier Vechi",
+    "hunting": "Vânătoare",
+    "farmer": "Fermă de Legume",
+    "fruitpicker": "Livadă de Fructe",
+    "cleaner": "Curățenie Urbană",
+    "powerwash": "Spălare cu Presiune",
+    "windowscleaner": "Spălat Geamuri",
+    "cardetailer": "Detailing Auto",
+    "newspaper": "Livrare Ziare",
+    "cleanup": "Colectare Deșeuri",
+    "trucker": "Parc de Camioane",
+    "taxi": "Depou de Taxiuri",
+    "dogwalking": "Plimbat Câini",
+    "powerlines": "Linii Electrice",
+    "delivery": "Livrare Colete",
+    "warehouse": "Depozit",
+    "landscaping": "Amenajare Peisagistică",
+    "fishing": "Pescuit",
+    "diving": "Scufundări",
+    "forklift": "Stivuitor",
+    "tiretechnician": "Vulcanizare",
+    "treasurehunter": "Vânător de Comori",
+    "metaldetector": "Detector de Metale",
+    "mechanic": "Mecanic"
+  },
+  "_meta": {
+    "name": "Română",
+    "flag": "🇷🇴"
+  },
+  "common": {
+    "continueHintGeneric": "Mergi la următoarea sarcină de pe hartă",
+    "pickupTaskGeneric": "Găsește locația următoarei sarcini",
+    "pickupDescriptionGeneric": "Mergi la locația marcată pe hartă și începe următoarea sarcină."
+  },
+  "ui": {
+    "blipCategoryName": "Joburi",
+    "jobDetails": "Detalii Job",
+    "owner": "Lider",
+    "member": "Membru",
+    "jobStart": "Începe Jobul",
+    "leaderboard": "Clasament",
+    "teamProgress": "Progres Echipă",
+    "top20": "Top 20",
+    "playerList": "Listă Jucători",
+    "clickToInvite": "Click pentru a Invita",
+    "emptySlot": "Loc Liber",
+    "level": "Nivel",
+    "lv": "Nv.",
+    "hours": "Ore",
+    "minRequiredHours": "Minim necesar",
+    "achievements": "Realizări",
+    "settings": "Setări",
+    "close": "Închide",
+    "cancel": "Anulează",
+    "confirm": "Confirmă",
+    "search": "Caută",
+    "selected": "Selectat",
+    "locationMarked": "Locație marcată pe hartă",
+    "jobAreaMarked": "Zona jobului a fost marcată pe hartă",
+    "noLocationAvailable": "Nicio locație disponibilă pentru acest job",
+    "routeLevelRequired": "Este necesar nivelul {level} pentru această rută!",
+    "spawnBlocked": "Zona de spawn a vehiculului este blocată! Eliberează zona și încearcă din nou.",
+    "vehicleSpawnFailed": "Vehiculul nu a putut fi spawnat!",
+    "viewStatistics": "Vezi Statisticile",
+    "history": "Istoric",
+    "earnings": "Câștiguri",
+    "totalEarn": "Câștig Total",
+    "totalExp": "EXP Total",
+    "markJob": "Marchează Jobul",
+    "registerJob": "Înscrie-te la Job",
+    "usedItems": "Iteme Folosite",
+    "online": "Online",
+    "offline": "Offline",
+    "loading": "Se încarcă...",
+    "back": "Înapoi",
+    "set": "Setează",
+    "reset": "Resetează",
+    "approve": "Aprobă",
+    "leave": "Părăsește",
+    "done": "Gata",
+    "prev": "Anterior",
+    "next": "Următor",
+    "xp": "XP",
+    "step": "Pas",
+    "on": "Pornit",
+    "off": "Oprit",
+    "save": "Salvează",
+    "vehicle": "Vehicul",
+    "coordinates": "Coordonate",
+    "active": "Activ",
+    "disabled": "Dezactivat",
+    "place": "Plasează",
+    "add": "Adaugă"
+  },
+  "settings": {
+    "title": "Setări Job",
+    "subtitle": "Alege Setările",
+    "jobSound": "Sunet Job",
+    "language": "Limbă",
+    "uiPosition": "Mutare UI",
+    "uiMoveActive": "Trage panourile pentru a le repoziționa",
+    "uiMoveSave": "Salvează",
+    "uiMoveCancel": "Anulează",
+    "uiMoveApplyDefault": "Aplică ca Implicit",
+    "uiMoveResetDefault": "Resetează la Original",
+    "progressPanel": "Progres"
+  },
+  "progress": {
+    "title": "Progres",
+    "subtitle": "Abilități, Misiuni și Îmbunătățiri",
+    "skillPoints": "SP",
+    "skills": "Abilități",
+    "quests": "Misiuni",
+    "upgrades": "Îmbunătățiri",
+    "max": "MAX",
+    "upgrade": "Îmbunătățește",
+    "upgradeItems": "Îmbunătățire Iteme",
+    "searchJobs": "Caută joburi...",
+    "noResults": "Niciun rezultat găsit",
+    "noQuests": "Nicio misiune disponibilă",
+    "all": "Toate",
+    "daily": "Zilnice",
+    "weekly": "Săptămânale"
+  },
+  "upgradeModal": {
+    "title": "Îmbunătățește Itemul",
+    "subtitle": "Confirmă îmbunătățirea",
+    "currentLevel": "Nivel Curent",
+    "nextLevel": "Nivel Următor",
+    "requirements": "Cerințe",
+    "requiredLevel": "Nivel Necesar",
+    "money": "Bani",
+    "upgrade": "Îmbunătățește"
+  },
+  "downgradeModal": {
+    "title": "Schimbă Nivelul",
+    "subtitle": "Confirmă schimbarea nivelului",
+    "returnToPrevious": "Revino la nivelul anterior",
+    "noLevelLoss": "Nu vei pierde progresul nivelului curent"
+  },
+  "finishJob": {
+    "jobComplete": "Job Finalizat!",
+    "summary": "Iată rezumatul tău",
+    "continueQuestion": "Continui?",
+    "ownerWantsContinue": "{name} vrea să continue",
+    "finishQuestion": "Închei Jobul?",
+    "finishSubtitle": "Alege ce faci mai departe",
+    "itemsCompleted": "Iteme Finalizate",
+    "totalEarnings": "Câștiguri Totale",
+    "progressSaved": "Progresul tău va fi salvat",
+    "waitingFor": "Se așteaptă: {players}",
+    "waitingOwner": "Se așteaptă decizia lui {name}...",
+    "autoApprove": "Aprobare automată în {time}s...",
+    "completed": "Job finalizat!",
+    "continue": "Continuă",
+    "endJob": "Încheie Jobul",
+    "leaveJob": "Părăsește Jobul"
+  },
+  "activeJob": {
+    "endJobTitle": "Închei Jobul?",
+    "endJobDesc": "Asta va încheia jobul pentru tine. Ceilalți jucători vor fi întrebați dacă vor să continue.",
+    "leaveJobTitle": "Părăsești Jobul?",
+    "leaveJobDesc": "Vei părăsi jobul curent.",
+    "remainingCanContinue": "Jucătorii rămași pot continua fără tine",
+    "progressSaved": "Progresul tău va fi salvat",
+    "ownerDisconnected": "Liderul s-a Deconectat",
+    "ownerLeft": "Liderul a Plecat",
+    "ownerHasDisconnected": "{name} s-a deconectat",
+    "ownerHasLeft": "{name} a părăsit jobul",
+    "continueJobQuestion": "Vrei să continui jobul?",
+    "autoContinue": "Continuare automată în {time}s..."
+  },
+  "illegal": {
+    "stolenCargo": "Marfă Furată Găsită!",
+    "highRisk": "Livrare cu Risc Ridicat",
+    "teamVote": "Vot de Echipă",
+    "description": "Ai descoperit marfă furată. Livreaz-o pentru plată dublă, dar poliția poate fi alertată.",
+    "reward": "Recompensă",
+    "risk": "Risc",
+    "x2Money": "Bani x2",
+    "policeAlertStatic": "90% Alertă Poliție",
+    "policeAlert": "{chance}% Alertă Poliție",
+    "suspiciousPassenger": "Pasager Suspect",
+    "suspiciousPassengerDesc": "Acest pasager vrea să meargă undeva... neoficial. Plată mai mare, dar există riscul de a atrage atenția poliției.",
+    "stolenCargoDesc": "Ai descoperit marfă furată în remorcă. Livreaz-o unui cumpărător de pe piața neagră pentru plată dublă, dar ai grijă - există o șansă mare de urmărire din partea poliției!",
+    "teamVotes": "Voturile echipei:",
+    "accept": "Acceptă",
+    "reject": "Refuză",
+    "policeWarning": "Poliția poate fi trimisă dacă accepți",
+    "leaderDecision": "Liderul va lua decizia finală",
+    "waitingLeader": "Se așteaptă decizia liderului...",
+    "stayLegal": "Rămâi Legal",
+    "acceptRisk": "Acceptă Riscul",
+    "voteStayLegal": "Vot: Rămâi Legal",
+    "voteAcceptRisk": "Vot: Acceptă Riscul",
+    "voteSubmitted": "Vot Trimis"
+  },
+  "lobby": {
+    "noLongerExists": "Lobby-ul nu mai există.",
+    "playerReconnected": "{name} s-a reconectat la lobby.",
+    "playerDisconnected": "{name} s-a deconectat de la lobby.",
+    "ownerDisconnectedNewOwner": "Liderul s-a deconectat. {name} este acum noul lider.",
+    "closedNoReplacement": "Lobby închis - nu s-a găsit un înlocuitor eligibil pentru lider.",
+    "full": "Lobby-ul este plin (maxim {count} jucători)",
+    "notOwner": "Doar liderul lobby-ului poate face asta",
+    "kicked": "Ai fost dat afară din lobby",
+    "alreadyInLobby": "Ești deja într-un lobby",
+    "noLobbyFound": "Niciun lobby găsit",
+    "playerLeft": "{name} a părăsit lobby-ul"
+  },
+  "invite": {
+    "sent": "Invitație trimisă lui {name}",
+    "received": "{name} te-a invitat în lobby-ul său - [Y] Acceptă | [N] Refuză",
+    "accepted": "{name} s-a alăturat lobby-ului",
+    "declined": "{name} a refuzat invitația",
+    "expired": "Invitația a expirat",
+    "targetAlreadyInLobby": "Acest jucător este deja într-un lobby!",
+    "tooFar": "Jucătorul este prea departe!"
+  },
+  "job": {
+    "started": "Job început!",
+    "completed": "Job finalizat!",
+    "failed": "Job eșuat!",
+    "resetInProgress": "Resetarea jobului este în curs, te rog așteaptă...",
+    "cantEnterVehicle": "Nu poți intra într-un vehicul cât timp cari ceva!"
+  },
+  "xp": {
+    "gained": "+{amount} XP",
+    "levelUp": "Nivel Nou! Acum ești nivelul {level}",
+    "maxLevel": "Ai atins nivelul maxim!"
+  },
+  "contract": {
+    "reward": "Recompensă",
+    "risk": "Risc",
+    "teamVotes": "Voturile echipei:",
+    "waitingLeader": "Se așteaptă decizia liderului...",
+    "voteStayLegal": "Vot: Rămâi Legal",
+    "voteAcceptRisk": "Vot: Acceptă Riscul",
+    "done": "GATA"
+  },
+  "hud": {
+    "truckFill": "Încărcare Camion",
+    "taximeter": "TAXIMETRU",
+    "fare": "TARIF",
+    "bonus": "BONUS",
+    "distance": "DIST",
+    "trailerHealth": "Stare Remorcă",
+    "pressure": "PRESIUNE",
+    "coopLeaderboard": "Clasament",
+    "illegalRide": "CURSĂ ILEGALĂ",
+    "normalRide": "CURSĂ NORMALĂ",
+    "goodCondition": "Stare Bună",
+    "needsRepair": "Necesită Reparații",
+    "criticalDamage": "Daune Critice",
+    "hold": "Ține apăsat",
+    "toClose": "pentru a închide",
+    "forDetails": "pentru detalii"
+  },
+  "preview": {
+    "step": "Pas {current}/{total}"
+  },
+  "minigame": {
+    "junctionBox": "CUTIE DE JONCȚIUNE",
+    "lsPower": "LS-POWER",
+    "circuitHint": "CLICK PENTRU A ROTI — CONECTEAZĂ SURSA LA CONSUMATOR",
+    "fish": "Pește",
+    "catch": "Prinde",
+    "space": "SPACE"
+  },
+  "admin": {
+    "title": "Panou Admin",
+    "subtitle": "Analize JobPack",
+    "dashboard": "Dashboard",
+    "players": "Jucători",
+    "market": "Piață",
+    "activeLobbies": "Lobby-uri Active",
+    "economy": "Economie",
+    "todaysPayouts": "Plățile de Azi",
+    "thisWeek": "Săptămâna Aceasta",
+    "allTime": "Din Toate Timpurile",
+    "jobsToday": "Joburi Azi",
+    "onlinePlayers": "Jucători Online",
+    "perJobEarnings": "Câștiguri per Job (Ultimele 7 Zile)",
+    "job": "Job",
+    "totalPayout": "Plată Totală",
+    "completions": "Finalizări",
+    "uniquePlayers": "Jucători Unici",
+    "name": "Nume",
+    "identifier": "Identificator",
+    "status": "Status",
+    "perkPoints": "Puncte de Perk:",
+    "jobLevels": "Niveluri Job",
+    "recentHistory": "Istoric Recent",
+    "region": "Regiune",
+    "earned": "Câștigat",
+    "date": "Dată",
+    "dynamicMarket": "Prețuri Dinamice de Piață",
+    "resetAllToBase": "Resetează Tot la Bază",
+    "current": "Curent",
+    "base": "Bază",
+    "minMax": "Min / Max",
+    "health": "Sănătate",
+    "setPrice": "Setează Prețul",
+    "action": "Acțiune",
+    "paymentRates": "Rate de Plată",
+    "qualityTiers": "Niveluri de Calitate",
+    "chance": "Șansă %",
+    "multiplier": "Multiplicator",
+    "levelBonuses": "Bonusuri de Nivel",
+    "payBonusPerLevel": "Bonus de Plată per Nivel",
+    "qualityChancePerLevel": "Șansă de Calitate per Nivel",
+    "estimatedEarnings": "Câștiguri Estimate (10 iteme)",
+    "selectJobToEdit": "Selectează un job pentru editare",
+    "noJobsFound": "Niciun job găsit",
+    "noJobData": "Nu există date despre joburi",
+    "noHistory": "Fără istoric",
+    "noMarketData": "Nu există date de piață (piața dinamică poate fi dezactivată)",
+    "noActiveLobbies": "Niciun lobby activ",
+    "searchPlaceholder": "Caută după nume sau identificator...",
+    "searchPlayer": "Caută un jucător mai sus",
+    "xp": "XP",
+    "owner": "Lider",
+    "state": "Stare",
+    "count": "Număr",
+    "loading": "Se încarcă..."
+  },
+  "editor": {
+    "title": "Editor de Joburi",
+    "npc": "NPC",
+    "npcModel": "Model NPC",
+    "scenarioAnimation": "Scenariu / Animație",
+    "npcPosition": "Poziție NPC",
+    "npcInteraction": "Interacțiune NPC",
+    "blip": "Blip",
+    "vehicleModel": "Model Vehicul",
+    "plate": "Plăcuță",
+    "primaryColor": "Culoare Principală",
+    "secondaryColor": "Culoare Secundară",
+    "spawnLocations": "Locații de Spawn",
+    "clickToChange": "Click pentru a schimba",
+    "clickToBrowse": "Click pentru a răsfoi scenariile",
+    "typeManually": "Sau scrie manual...",
+    "sprite": "Sprite",
+    "color": "Culoare",
+    "scale": "Scală",
+    "label": "Etichetă",
+    "enabled": "Activat",
+    "distance": "Distanță",
+    "keyCode": "Cod Tastă",
+    "interactionText": "Text de Interacțiune",
+    "searchBlip": "Caută blip...",
+    "searchCoords": "Caută coordonate...",
+    "noCoordFields": "Nu s-au găsit câmpuri de coordonate pentru acest job.",
+    "noVehicleConfig": "Acest job nu are configurație de vehicul.",
+    "selectJob": "Selectează un job pentru editare",
+    "spawnNum": "Spawn",
+    "unsavedChanges": "Modificări nesalvate",
+    "goTo": "Mergi La",
+    "setFromCamera": "Setează din Cameră",
+    "copy": "Copiază",
+    "go": "Du-te",
+    "cam": "Cam",
+    "preview": "Previzualizare",
+    "dup": "Dup",
+    "selectPedModel": "Selectează Modelul de Ped",
+    "selectVehicleModel": "Selectează Modelul de Vehicul",
+    "selectScenario": "Selectează Scenariul",
+    "searchPed": "Caută model de ped...",
+    "searchVehicle": "Caută model de vehicul...",
+    "searchScenario": "Caută scenariu...",
+    "noAnimations": "Nu s-au găsit animații",
+    "camera": "Cameră",
+    "browse": "Răsfoiește",
+    "devModeRequired": "Editorul de Joburi necesită activarea DevMode.",
+    "devModeHint": "Setează Config.DevMode = true în shared/config_settings.lua și repornește resursa."
+  },
+  "tutorial": {
+    "title": "Tutorial",
+    "skip": "Sari",
+    "next": "Următorul",
+    "miner": {
+      "step1": {
+        "title": "Ia-ți Vehiculul",
+        "desc": "Mergi la zona marcată pentru a-ți lua vehiculul de minerit."
+      },
+      "step2": {
+        "title": "Ia-ți Unealta",
+        "desc": "Deschide portbagajul vehiculului și ia un târnăcop."
+      },
+      "step3": {
+        "title": "Începe Mineritul",
+        "desc": "Mergi în zona de minerit și sparge pietre pentru a colecta minereuri."
+      },
+      "step4": {
+        "title": "Procesează Minereurile",
+        "desc": "Adu minereurile colectate la cântarul de procesare pentru a fi plătit."
+      }
+    },
+    "lumberjack": {
+      "step1": {
+        "title": "Ia-ți Vehiculul",
+        "desc": "Mergi la zona marcată pentru a-ți lua vehiculul de tăiat lemne."
+      },
+      "step2": {
+        "title": "Ia-ți Toporul",
+        "desc": "Deschide portbagajul vehiculului și ia un topor."
+      },
+      "step3": {
+        "title": "Taie Copaci",
+        "desc": "Mergi în zona de pădure și începe să tai copaci."
+      },
+      "step4": {
+        "title": "Procesează Buștenii",
+        "desc": "Adu buștenii colectați la cântarul de procesare pentru a fi plătit."
+      }
+    },
+    "farmer": {
+      "step1": {
+        "title": "Ia-ți Vehiculul",
+        "desc": "Mergi la zona marcată pentru a-ți lua vehiculul de fermă."
+      },
+      "step2": {
+        "title": "Ia-ți Unealta",
+        "desc": "Deschide portbagajul vehiculului și ia o lopățică."
+      },
+      "step3": {
+        "title": "Recoltează Culturile",
+        "desc": "Mergi în zona fermei și recoltează culturile."
+      },
+      "step4": {
+        "title": "Procesează Recolta",
+        "desc": "Adu culturile colectate la cântarul de procesare pentru a fi plătit."
+      }
+    },
+    "fishing": {
+      "step1": {
+        "title": "Găsește un Loc",
+        "desc": "Mergi la un loc de pescuit lângă apă."
+      },
+      "step2": {
+        "title": "Aruncă Undița",
+        "desc": "Folosește undița pentru a începe să pescuiești."
+      },
+      "step3": {
+        "title": "Vinde Captura",
+        "desc": "Adu peștii la punctul de procesare pentru a-i vinde."
+      }
+    },
+    "generic": {
+      "step1": {
+        "title": "Pregătește-te",
+        "desc": "Ia-ți vehiculul și mergi în zona de lucru."
+      },
+      "step2": {
+        "title": "Fă Treaba",
+        "desc": "Finalizează sarcinile în zona desemnată."
+      },
+      "step3": {
+        "title": "Încheie",
+        "desc": "Întoarce-te la NPC sau la punctul de procesare pentru a finaliza jobul."
+      }
+    }
+  },
+  "stats": {
+    "title": "Statistici",
+    "subtitle": "Privire de ansamblu asupra carierei tale",
+    "overview": "Prezentare Generală",
+    "perJob": "Per Job",
+    "history": "Istoric",
+    "totalEarnings": "Câștiguri Totale",
+    "totalXP": "XP Total",
+    "totalSessions": "Sesiuni Totale",
+    "totalTime": "Timp Total",
+    "bestDay": "Cea Mai Bună Zi",
+    "favoriteJob": "Job Preferat",
+    "avgEarnings": "Câștig Mediu",
+    "perSession": "per sesiune",
+    "sessions": "sesiuni",
+    "last7Days": "Ultimele 7 Zile",
+    "job": "Job",
+    "level": "Nivel",
+    "earnings": "Câștiguri",
+    "time": "Timp",
+    "noData": "Nu există date disponibile"
+  },
+  "drawtext": {
+    "jobCenter": "Centru de Joburi"
+  },
+  "notify": {
+    "jobAtCapacity": "Acest job este momentan plin ({current}/{max} echipe active). Încearcă alt job sau așteaptă.",
+    "cannotStartJob": "Nu poți începe acest job",
+    "failedStartJob": "Jobul nu a putut fi început",
+    "unknownError": "Eroare necunoscută",
+    "toolEquipped": "Unealtă echipată: {tool}",
+    "toolReturnedToTruck": "{tool} a fost returnat în camion.",
+    "deliveringStatus": "Se livrează...",
+    "jobRestarting": "Sistemul de joburi se repornește...",
+    "failedOpenMenu": "Meniul de joburi nu a putut fi deschis",
+    "noPermission": "Nu ai permisiune de admin",
+    "mustSelectJob": "Trebuie să selectezi mai întâi un job la Centrul de Joburi",
+    "achievementUnlocked": "Realizare Deblocată: {label}",
+    "globalEventStarted": "Eveniment Global Nou: {title}",
+    "alreadyCarrying": "Deja cari ceva!",
+    "notCarrying": "Nu cari nimic!",
+    "needToolFirst": "Ai nevoie mai întâi de o unealtă!",
+    "anotherPlayerBreaking": "Alt jucător sparge deja asta!",
+    "putToolOnBelt": "Pune mai întâi unealta la centură!",
+    "processingWait": "Procesare în curs, te rog așteaptă!",
+    "noBoxAvailable": "Nu sunt cutii disponibile!",
+    "alreadyHaveBox": "Ai deja o cutie!",
+    "failedTakeBox": "Nu s-a putut lua cutia!",
+    "noLoadedBoxes": "Nu există cutii încărcate!",
+    "notCarryingBox": "Nu cari nicio cutie!",
+    "failedLoadBox": "Nu s-a putut încărca cutia!",
+    "noRoomInTrunk": "Nu mai e loc în portbagaj, cutia a fost aruncată.",
+    "emptyBoxReturned": "Cutia goală a fost returnată.",
+    "workClothesEquipped": "Haine de lucru echipate!",
+    "normalClothes": "Te-ai schimbat înapoi în hainele normale",
+    "clothesRequired": "Trebuie să porți mai întâi haine de lucru!",
+    "failedPlaceBox": "Nu s-a putut plasa cutia!",
+    "takeBoxFirst": "Ia mai întâi o cutie!",
+    "boxFull": "Cutia este plină! Încarc-o în camion.",
+    "placeBoxFirst": "Pune mai întâi cutia pe jos!",
+    "objectBroken": "Obiect spart! Ridică itemul.",
+    "oreBroken": "Minereu de {ore} găsit! Ridică-l.",
+    "noItemsToSell": "Nu ai iteme de vândut!",
+    "cantRepairPanel": "Nu poți repara acest panou",
+    "cantRepairPole": "Nu poți repara acest stâlp",
+    "nothingInTrunk": "Nimic în portbagaj!",
+    "alreadyCarryingSomething": "Deja cari ceva!",
+    "trunkInUse": "Altcineva folosește portbagajul!",
+    "failedTakeItem": "Nu s-a putut lua itemul!",
+    "itemTaken": "Item luat! Pune-l pe cântar sau înapoi în camion.",
+    "failedPickupItem": "Nu s-a putut ridica itemul!",
+    "notCarryingAnything": "Nu cari nimic!",
+    "failedLoadItem": "Nu s-a putut încărca itemul!",
+    "vehicleSpawnBlocked": "Punctul de spawn al vehiculului este blocat!",
+    "failedStartCleaning": "Nu s-a putut începe curățarea!",
+    "cleanItemsFirst": "Curăță mai întâi câteva obiecte!",
+    "allDoneReturn": "Totul e gata! Întoarce-te pentru a termina.",
+    "newRouteAssigned": "Rută nouă atribuită! Continuă curățenia!",
+    "failedTakeLoadedBox": "Nu s-a putut lua cutia încărcată!",
+    "jobCompletedByTeam": "Jobul a fost finalizat de echipa ta!",
+    "jobFinishedSummary": "Job terminat! Iteme: {items} • Câștigat: {currency}{amount}",
+    "continuePayout": "Runda a fost plătită: {currency}{amount}. Începem din nou!",
+    "roundLimitReached": "Limita de runde a fost atinsă — cooldown-ul jobului a început.",
+    "cooldownWaitAny": "{name} trebuie să aștepte {time} înainte de a începe orice job.",
+    "cooldownWaitJob": "{name} trebuie să aștepte {time} înainte de a începe din nou acest job.",
+    "cantRunWithDog": "Nu poți alerga cât timp plimbi câinele!",
+    "cantJumpWithDog": "Nu poți sări cât timp plimbi câinele!",
+    "cantEnterVehicleWithDog": "Nu poți intra într-un vehicul cât timp plimbi câinele!",
+    "policeAlert": "ALERTĂ POLIȚIE! Ai fost reperat!",
+    "tooFarFromVan": "Prea departe de dubă! Furtunul nu ajunge.",
+    "tooFarFromTask": "Prea departe! Apropie-te și încearcă din nou.",
+    "itemCleanedPay": "Curățat! +{amount}",
+    "itemsCleaned": "Obiecte Curățate",
+    "alreadyTaken": "Deja luat!",
+    "actionFailed": "Acțiune eșuată!",
+    "saleFailed": "Vânzare eșuată!",
+    "failedSelectZone": "Nu s-a putut selecta zona!",
+    "purchaseFailed": "Cumpărare eșuată!",
+    "couldNotSell": "Nu s-a putut vinde!",
+    "couldNotCastRod": "Nu s-a putut arunca undița!",
+    "cannotTakeTool": "Nu poți lua unealta",
+    "cannotTrimBush": "Nu poți tunde acest tufiș",
+    "cannotDigLawn": "Nu poți săpa acest gazon",
+    "couldNotPickUpBox": "Nu s-a putut ridica cutia",
+    "couldNotPickUpPallet": "Nu s-a putut ridica paletul",
+    "trunkIsFull": "Portbagajul este plin!",
+    "scaleFull": "Cântarul este plin!",
+    "palletSlotsFull": "Sloturile pentru paleți sunt pline",
+    "truckIsFull": "Camionul este plin",
+    "toolTaken": "Unealtă luată: {tool}",
+    "toolReturned": "Unealtă returnată: {tool}",
+    "alreadyHaveTool": "Ai deja un {tool}!",
+    "noToolAvailable": "Nu există {tool} disponibile!",
+    "notHoldingTool": "Nu ții un {tool} în mână!",
+    "failedReturnTool": "Nu s-a putut returna {tool}!",
+    "takeToolFirst": "Ia mai întâi un {tool}!",
+    "itemLoaded": "Item încărcat! (slot {slot}/{max})",
+    "itemLoadedDrive": "Item încărcat! (slot {slot}/{max}) — Poți conduce până la cântarul de procesare sau poți continua încărcarea.",
+    "spotCleaned": "{spot} curățat! {count} loc(uri) rămase.",
+    "collected": "Ai colectat {item}!",
+    "truckHeadingTo": "Camionul se îndreaptă spre {dest}...",
+    "todaysBonusJobs": "Joburile bonus de azi: {jobs}",
+    "toolUnlocked": "Deblocat: {tool}",
+    "toolUpgraded": "{job}: {tool} deblocat!",
+    "toolSwitched": "{job}: ai trecut la {tool}!",
+    "qualityBonus": "Calitate {quality}! Bonus x{multiplier}",
+    "notAuthenticated": "Neautentificat",
+    "noToolsForJob": "Nu există unelte pentru acest job",
+    "toolNotFound": "Unealta nu a fost găsită",
+    "notEnoughMoney": "Nu ai destui bani",
+    "failedUnlockTool": "Nu s-a putut debloca unealta",
+    "toolNotUnlocked": "Unealta nu este deblocată",
+    "failedSelectTool": "Nu s-a putut selecta unealta",
+    "toolNotFoundForLevel": "Nu s-a găsit unealtă pentru acest nivel",
+    "failedSaveUpgrade": "Nu s-a putut salva îmbunătățirea",
+    "alreadyProcessing": "Cererea este deja în curs, te rog așteaptă.",
+    "alreadyInJob": "Ești deja într-un job!",
+    "minimumPlayersRequired": "Acest job necesită cel puțin {count} jucători pentru a începe.",
+    "insufficientHours": "Ai nevoie de cel puțin {required} ore pentru a începe acest job. Tu ai {current} ore.",
+    "exceededMaxHours": "Acest job este disponibil doar pentru jucătorii cu mai puțin de {max} ore. Tu ai {current} ore.",
+    "insufficientHoursPlayer": "{name} are nevoie de cel puțin {required} ore pentru a începe acest job. Momentan: {current} ore.",
+    "exceededMaxHoursPlayer": "{name} are prea multe ore pentru acest job ({current}/{max} maxim).",
+    "requiresJobLevel": "Necesită nivelul de job {level}",
+    "failedSwitchTool": "Nu s-a putut schimba unealta",
+    "playerNotFound": "Jucătorul nu a fost găsit sau nu este online",
+    "failedSetLevel": "Nu s-a putut seta nivelul",
+    "pickingUp": "Se ridică...",
+    "pickingUpBox": "Se ridică cutia...",
+    "placingBox": "Se plasează cutia...",
+    "loadingBox": "Se încarcă cutia...",
+    "placingOnScale": "Se plasează pe cântar...",
+    "returningBox": "Se returnează cutia...",
+    "loading": "Se încarcă...",
+    "takingItem": "Se ia itemul...",
+    "placingItem": "Se plasează itemul...",
+    "takingTool": "Se ia unealta...",
+    "storingTool": "Se depozitează unealta...",
+    "equippingTool": "Se echipează unealta...",
+    "toolActionInProgress": "O acțiune cu unealta este deja în curs",
+    "toolCooldownActive": "Te rog așteaptă înainte de a folosi unealta din nou",
+    "cannotTakeToolInVehicle": "Nu poți lua unelte cât timp ești într-un vehicul",
+    "alreadyHoldingTool": "Ai deja o unealtă",
+    "noToolInTrunk": "Nu există unealtă în portbagaj",
+    "toolNotAssigned": "Nu ai nicio unealtă atribuită",
+    "toolNotYours": "Aceasta nu este unealta ta",
+    "toolNotInTrunk": "Unealta nu este în portbagaj",
+    "toolActionCancelled": "Acțiune anulată",
+    "toolAttachFailed": "Nu s-a putut atașa unealta",
+    "noJobCallbacks": "Callback-urile jobului nu sunt configurate",
+    "serverDeniedTool": "Serverul a refuzat acțiunea",
+    "noToolInHand": "Nicio unealtă în mână",
+    "noToolOnBelt": "Nicio unealtă la centură",
+    "toolEntityNotFound": "Entitatea uneltei nu a fost găsită",
+    "noActiveTool": "Nicio unealtă activă",
+    "noToolToReturn": "Nicio unealtă de returnat",
+    "questProgress": "Misiune: {label} ({progress}/{target})",
+    "questCompleted": "Misiune Finalizată: {label}!{rewards}",
+    "boxTaken": "Cutie luată! Mergi la recoltat.",
+    "loadedBoxTaken": "Cutie încărcată luată! {count} {label} — Du-o la cântar.",
+    "boxEmpty": "Cutia este goală! Recoltează mai întâi niște produse.",
+    "boxEmptyError": "Cutia este goală",
+    "decalCleaned": "Curățat! ({count} rămase)",
+    "allDeliveriesComplete": "Toate livrările au fost finalizate! Returnează bicicleta.",
+    "allDeliveriesCompletePayment": "Toate livrările au fost finalizate! +{symbol}{payment} | Returnează bicicleta.",
+    "farmerJobStarted": "Jobul de fermier a început! Ia-ți hainele de lucru și o cutie.",
+    "farmerBoxTaken": "Cutie luată! Mergi la plante pentru a recolta.",
+    "farmerBoxEmpty": "Cutia este goală! Recoltează mai întâi niște produse.",
+    "fruitpickerJobStarted": "Jobul de cules portocale a început! Ia-ți hainele de lucru și o cutie.",
+    "fruitpickerBoxTaken": "Cutie luată! Mergi la portocali pentru a culege.",
+    "fruitpickerBoxEmpty": "Cutia este goală! Culege mai întâi niște portocale."
+  },
+  "prompt": {
+    "pickUpBox": "[E] Ridică Cutia",
+    "loadBox": "[E] Încarcă Cutia",
+    "openTrunk": "[E] Deschide Portbagajul",
+    "closeTrunk": "[E] Închide Portbagajul",
+    "returnVehicle": "[E] Returnează Vehiculul",
+    "deliver": "[E] Livrează",
+    "returnBoxToTrunk": "[E] Returnează Cutia în Portbagaj",
+    "dropAnchor": "[E] Aruncă Ancora",
+    "raiseAnchor": "[E] Ridică Ancora",
+    "returnBoat": "[E] Returnează Barca",
+    "boardBoat": "[E] Urcă în Barcă",
+    "sellItems": "[E] Vinde Itemele",
+    "catchDog": "[E] Prinde Câinele",
+    "cleanPoop": "[E] Curăță mizeria",
+    "deliverDog": "[E] Predă câinele",
+    "getInBucket": "[E] Urcă în nacelă",
+    "bucketInUse": "Nacela este ocupată",
+    "parkVehicle": "[E] Parchează Vehiculul",
+    "reelIn": "[E] Trage Firul!",
+    "sellFish": "[E] Vinde Peștele",
+    "changeClothes": "[E] Schimbă Hainele",
+    "changeToWorkClothes": "[E] Schimbă-te în haine de lucru",
+    "changeToNormalClothes": "[E] Schimbă-te în haine normale",
+    "collectTreasure": "[E] Dezgroapă Comoara",
+    "takeShovel": "[G] Ia Lopata",
+    "loadCargo": "[E] Încarcă pe Barcă",
+    "digTreasure": "[E] Sapă",
+    "openChest": "[E] Deschide Cufărul",
+    "pickupLoot": "[E] Ridică Prada",
+    "stealCargo": "[E] Fură Marfa",
+    "finishJob": "[E] Termină Jobul",
+    "cancelJob": "[E] Anulează Jobul",
+    "exitWarehouse": "[E] Ieși din depozit",
+    "completeJob": "[E] Finalizează Jobul",
+    "activateBelt": "[E] Activează Banda",
+    "throwCleanup": "[E] Aruncă Gunoiul",
+    "collectCleanup": "[E] Colectează Gunoiul",
+    "deliverTruck": "[E] Predă Camionul",
+    "takeTrimmer": "[E] Ia Trimmerul",
+    "trimBush": "[E] Tunde Tufișul",
+    "digLawn": "[E] Sapă Gazonul",
+    "returnWand": "[E] Returnează lancea",
+    "takeWand": "[E] Ia lancea de presiune",
+    "takeWandOrCloth": "[E] Ia Lancea | [G] Ia Cârpa",
+    "takeTrimmerOrShovel": "[E] Ia Trimmerul | [G] Ia Lopata",
+    "cleanToilet": "[E] Curăță Toaleta",
+    "fixPipe": "[E] Repară Țeava",
+    "returnWrench": "[E] Returnează Cheia",
+    "takeWrench": "[E] Ia Cheia",
+    "attachTrailer": "[E] Atașează Remorca",
+    "deliverTrailer": "[E] Livrează Remorca",
+    "reattachTrailer": "[E] Reatașează Remorca",
+    "pickUpPallet": "[E] Ridică Paletul",
+    "loadPallet": "[E] Încarcă Paletul",
+    "putDownBox": "[E] Lasă Cutia Jos",
+    "pickUpBoxForklift": "[E] Ridică Cutia cu Stivuitorul",
+    "fishingShop": "[E] Magazin de Pescuit",
+    "lowerFork": "Apasă [CTRL] pentru a coborî furca",
+    "raiseFork": "Apasă [SHIFT] pentru a ridica furca",
+    "useForklift": "Folosește un stivuitor pentru a muta paleții",
+    "trunkFull": "Portbagajul este plin! Pornește la drum.",
+    "completeDeliveriesFirst": "Finalizează mai întâi toate livrările!",
+    "forkliftControls": "Stivuitor: CTRL = Coboară Furca | SHIFT = Ridică Furca",
+    "processingInProgress": "Procesare în curs...",
+    "boxFullLoad": "Cutia e plină! Încarc-o în camion sau pe cântar.",
+    "trunkEmptyGoNpc": "Portbagajul e gol! Mergi la NPC.",
+    "takeWrenchFromTrunk": "Ia cheia din portbagajul dubei",
+    "reattachTrailerPrompt": "[E] Reatașează Remorca",
+    "finishJobCount": "[E] Termină Jobul ({count} curățate)",
+    "returnTool": "[E] Returnează {tool}",
+    "takeTool": "[E] Ia {tool}",
+    "finishProcessing": "[E] Finalizează Procesarea ({boxes} cutii, {currency}{value})",
+    "placeBoxOnScale": "[E] Pune cutia pe cântar",
+    "loadBoxToTruck": "[E] Încarcă cutia în camion ({count} {produce})",
+    "loadBoxToTruckTarget": "Încarcă cutia de {produce}",
+    "returnEmptyBox": "[E] Returnează cutia goală",
+    "takeLoadedBox": "[E] Ia cutia încărcată ({count} în camion)",
+    "takeHarvestBox": "[E] Ia cutia de recoltă ({count}/{cap})",
+    "takeHarvestBoxEmpty": "[E] Ia cutia de recoltă",
+    "polishSurface": "[E] Lustruiește {surface}",
+    "continuePolish": "[E] Continuă lustruirea {surface}",
+    "returnAndTake": "[E] Returnează {current} | [G] Ia {other}",
+    "deliverCount": "[E] Livrează ({current}/{total})",
+    "selectHuntingArea": "[E] Selectează Zona de Vânătoare",
+    "returnBicycle": "[E] Returnează Bicicleta",
+    "takeJack": "[E] Ia cricul",
+    "swapTire": "[E] Returnează cauciucul vechi și ia rezerva",
+    "closeValve": "[E] Închide Vana - Oprește fluxul de apă",
+    "openValve": "[E] Deschide Vana - Repornește fluxul de apă",
+    "wearHuntingClothes": "[E] Îmbracă hainele de vânătoare",
+    "placeBoxAndHarvest": "[E] Plasează cutia și recoltează {produce}",
+    "harvestProduce": "[E] Recoltează {produce}",
+    "castRod": "[E] Aruncă Undița ({zone})",
+    "returnToSeat": "[E] Întoarce-te la Scaun",
+    "clickTargetsToClean": "Dă click pe ținte pentru a le curăța!"
+  },
+  "hunting": {
+    "continueHint": "Urmărește următorul animal din zona de vânătoare",
+    "started": "Job de vânătoare început! Pune-ți hainele de lucru și selectează o zonă.",
+    "newAnimals": "Au apărut animale noi! Continuă.",
+    "continueHunting": "Poți continua vânătoarea.",
+    "weaponsGiven": "Ai primit armele de vânătoare!",
+    "goToArea": "Du-te în zona de vânătoare, animalele vor apărea acolo!",
+    "cantPickUp": "Nu poți ridica acest animal!",
+    "alreadyCarrying": "Deja cari ceva!",
+    "failedPickUp": "Ridicarea animalului a eșuat!",
+    "noAnimalsInTrunk": "Niciun animal în portbagaj!",
+    "trunkInUse": "Altcineva folosește portbagajul!",
+    "orePickedUp": "Animal ridicat! Pune-l pe cântar.",
+    "failedPickUpAnimal": "Ridicarea animalului a eșuat!",
+    "invalidArea": "Zonă invalidă!",
+    "areaLocked": "Această zonă este blocată!",
+    "animalsSpawned": "Au apărut {count} animale!",
+    "animalHunted": "{animal} vânat! ({weight} kg)",
+    "wildAnimalFound": "{animal} sălbatic găsit! ({weight} kg)",
+    "animalPickedUp": "{animal} ridicat! ({weight} kg) Încarcă-l în vehicul.",
+    "levelRequired": "Ai nevoie de nivelul {level} pentru această zonă!",
+    "areaSelected": "{area} selectată! Urmărește markerul de pe hartă.",
+    "processingComplete": "Procesare finalizată! {weight} kg, {currency}{amount} câștigați",
+    "tooFarWarning": "Te-ai îndepărtat prea mult de zona de vânătoare! Întoarce-te în 15 secunde sau jobul va fi anulat!",
+    "abandonedTooFar": "Te-ai îndepărtat prea mult de zona de vânătoare. Job anulat.",
+    "huntingAreaFallback": "Zonă de vânătoare",
+    "animalFallback": "Animal",
+    "areaFallback": "Zona {index}",
+    "selectArea": "Selectează zona: {name}",
+    "selectHuntingArea": "Selectează zona de vânătoare",
+    "pickUpAnimal": "[E] Ridică {label} ({weight} kg)",
+    "loadAnimalToVehicle": "[E] Încarcă animalul în vehicul",
+    "takeAnimalFromTrunk": "[E] Ia animalul din portbagaj",
+    "takeAnimalFromTrunkCount": "[E] Ia animalul din portbagaj ({count})",
+    "loadAnimalWeight": "[E] Încarcă animalul ({weight} kg | Camion: {current}/{max} kg)",
+    "finishProcessingWeight": "[E] Finalizează procesarea ({weight} kg)",
+    "vehicleOverweight": "~r~Vehicul supraîncărcat! ({current}/{max} kg)",
+    "vehicleOverweightDrop": "~r~Vehicul supraîncărcat! ({current}/{max} kg) ~w~[G] Aruncă carcasa",
+    "trunkFullDrop": "~r~Portbagajul e plin! ~w~[G] Aruncă carcasa sau procesează încărcătura curentă.",
+    "carcassDropped": "Carcasă aruncată.",
+    "dropHint": "[G] Aruncă carcasa",
+    "progressTitle": "Vânătoare",
+    "progressDetail": "Selectează o zonă de vânătoare, doboară animale, cară carcasele la camion, apoi condu la cântar.",
+    "stepSelectArea": "Selectează o zonă de vânătoare pe hartă",
+    "stepHuntAnimal": "Vânează un animal în zonă",
+    "stepPickingUp": "Ridici carcasa",
+    "stepPickupCarcass": "Ridică animalul mort",
+    "stepLoadTrunk": "Încarcă carcasa în camion",
+    "stepGoToScale": "Du carcasele la cântar",
+    "stepPlacingOnScale": "Pui animalul pe cântar",
+    "stepPlaceOnScale": "Pune animalul pe cântar",
+    "stepProcessAnimal": "Vorbește cu NPC-ul ca să procesezi animalele",
+    "stepNewArea": "Selectează o nouă zonă de vânătoare"
+  },
+  "tiretechnician": {
+    "continueHint": "Condu la următorul vehicul rămas în pană de pe hartă",
+    "goGetJack": "Du-te la camion și ia cricul!",
+    "takingJack": "Iei cricul...",
+    "jackTaken": "Cricul e pregătit! Așază-l sub mașină.",
+    "placingJack": "Așezi cricul...",
+    "jackPlaced": "Mașina e ridicată pe cric! Acum scoate roata dezumflată.",
+    "removingTire": "Scoți roata dezumflată...",
+    "tireRemoved": "Roată scoasă! Du-o la camion și ia una de rezervă.",
+    "swappingTires": "Schimbi roțile...",
+    "spareTaken": "Roata de rezervă e pregătită! Monteaz-o pe mașină.",
+    "installingTire": "Montezi roata de rezervă...",
+    "tireInstalled": "Roată montată! Coboară vehiculul ca să termini.",
+    "loweringVehicle": "Cobori vehiculul...",
+    "tireChanged": "Roată schimbată cu succes!",
+    "repairCancelled": "Reparație anulată",
+    "cantRepair": "Nu poți repara acest vehicul",
+    "finishCurrentFirst": "Termină mai întâi reparația curentă!",
+    "goToTruck": "Du-te la camionul de service!",
+    "returningJack": "Returnezi cricul...",
+    "takingSpare": "Iei roata de rezervă...",
+    "needSpare": "Ai nevoie de o roată de rezervă! Ia mai întâi una din camion.",
+    "returnVehicle": "Returnează camionul de service la depou!",
+    "interactPlaceJack": "[E] Așază cricul",
+    "interactRemoveTire": "[E] Scoate roata dezumflată",
+    "interactInstallTire": "[E] Montează roata de rezervă",
+    "interactLowerVehicle": "[E] Coboară vehiculul",
+    "interactPickupJack": "[E] Ridică cricul",
+    "interactChangeTire": "[E] Schimbă roata dezumflată",
+    "interactReturnJack": "[E] Returnează cricul",
+    "interactReturnTire": "[E] Returnează roata",
+    "interactTakeJack": "[E] Ia cricul",
+    "interactTakeSpare": "[G] Ia roata de rezervă",
+    "interactTakeSpareE": "[E] Ia roata de rezervă",
+    "progressTitle": "Vulcanizator",
+    "progressDetail": "Condu la vehiculele rămase în pană și schimbă-le roțile dezumflate.",
+    "progressTires": "Roți ({done}/{total})",
+    "serviceTruck": "Camion de vulcanizare",
+    "stepTakeJack": "Ia cricul din camion",
+    "stepJackUp": "Ridică mașina pe cric",
+    "stepRemoveFlat": "Scoate roata dezumflată",
+    "stepFitSpare": "Montează roata de rezervă",
+    "stepLowerCar": "Coboară mașina",
+    "stepReturnJack": "Returnează cricul la camion"
+  },
+  "powerlines": {
+    "continueHint": "Găsește următorul stâlp avariat pe hartă",
+    "bucketInstructions": "Folosește săgețile pentru a ridica/coborî nacela. [E] pentru a repara când ești aproape.",
+    "parkNearPoles": "Parchează lângă stâlpi și folosește nacela ca să ajungi la cabluri.",
+    "cantDriveWithBucket": "Nu poți conduce cât timp nacela e în uz",
+    "panelRepaired": "Panou reparat cu succes!",
+    "panelCancelled": "Reparația panoului a fost anulată",
+    "poleRepaired": "Stâlp de telefon reparat cu succes!",
+    "poleRepairFailed": "Reparația stâlpului a eșuat! Ai grijă la electricitate.",
+    "progressTitle": "Linii electrice",
+    "bucketControls": "Control nacelă | Sus Jos Stânga Dreapta",
+    "blipPanel": "Panou electric",
+    "blipPole": "Stâlp de telefon",
+    "blipVehicle": "Camion cu nacelă"
+  },
+  "diving": {
+    "continueHint": "Găsește următorul punct de scufundare pe hartă",
+    "oxygenCritical": "OXIGEN CRITIC! Ieși imediat la suprafață!",
+    "oxygenLow": "Oxigenul e pe terminate! Ar trebui să ieși la suprafață.",
+    "refillingTank": "Reumpli tubul de aer...",
+    "tankRefilled": "Tub de aer reumplut.",
+    "coralEmpty": "Coral spart, dar nimic înăuntru.",
+    "trashCleaned": "Gunoi curățat!",
+    "failedSyncBoat": "Sincronizarea bărcii a eșuat. Încearcă din nou.",
+    "allTasksComplete": "Toate sarcinile finalizate! Întoarce-te la barcă și ridică ancora.",
+    "anchorDropped": "Ancoră coborâtă! Coboară din barcă și scufundă-te.",
+    "anchorRaised": "Ancoră ridicată! Îndreaptă-te spre punctul de livrare.",
+    "anchorRaisedEarly": "Ancoră ridicată! Te întorci mai devreme — nu vei primi plată.",
+    "anchorRaisedContinue": "Ancoră ridicată! Poți ancora din nou în zona de scufundare ca să continui.",
+    "gearEquipped": "Ai echipat {gear}! ({seconds}s de oxigen)",
+    "itemsSold": "{count} obiecte vândute! {currency}{amount} câștigați!",
+    "zoneSelected": "Zonă de scufundare selectată: {zone}. La drum!",
+    "zoneInfo": "Zonă de scufundare: {zone}",
+    "reconnected": "Reconectat la jobul de scufundări!",
+    "started": "Job de scufundări început! Selectează o zonă și du-te la punctul de scufundare.",
+    "progressTitle": "Scufundări",
+    "progressDetail": "Colectează obiecte subacvatice la locul de scufundare. Înoată în adânc și adună obiecte de pe fundul mării.",
+    "divingStarted": "Ești în zona de scufundare! Colectează obiecte de pe fundul mării.",
+    "collectingCoral": "Colectezi corali...",
+    "cleaningTrash": "Cureți gunoiul...",
+    "unknownZone": "Necunoscută",
+    "sellAtNpcReminder": "Vinde obiectele colectate la NPC-ul cumpărător ca să primești plata."
+  },
+  "treasurehunter": {
+    "continueHint": "Urmărește trackerul până la următorul cufăr",
+    "started": "Job de vânătoare de comori început! Îndreaptă-te spre zona comorii.",
+    "reconnected": "Reconectat la jobul de vânătoare de comori!",
+    "newTarget": "O echipă a găsit comoara! Locație nouă atribuită.",
+    "treasureFound": "Ai găsit un {tier}! {currency}{value} câștigați!",
+    "someoneNearby": "Cineva e prea aproape! Îndepărtează-te ca să colectezi.",
+    "anchorDropped": "Ancoră coborâtă! Scufundă-te și găsește comoara!",
+    "anchorRaised": "Ancoră ridicată! Întoarce-te la doc.",
+    "oxygenCritical": "OXIGEN CRITIC! Ieși imediat la suprafață!",
+    "oxygenLow": "Oxigenul e pe terminate! Ar trebui să ieși la suprafață.",
+    "refillingTank": "Reumpli tubul de aer...",
+    "tankRefilled": "Tub de aer reumplut.",
+    "depthWarning": "Adâncime periculoasă! Oxigenul se consumă mai repede!",
+    "fakeLocation": "Semnal fals... Se recalculează coordonate noi.",
+    "penalty": "Penalizare: {currency}{amount} — Nicio barcă a companiei la doc.",
+    "digging": "Dezgropi comoara...",
+    "alreadyCollected": "Cineva a colectat deja această comoară!",
+    "alreadySurfaced": "Cufărul e deja la suprafață!",
+    "notSurfaced": "Cufărul nu a ieșit încă la suprafață! Continuă să sapi.",
+    "someoneOpening": "Altcineva deschide acest cufăr!",
+    "needShovel": "Ai nevoie de o lopată! Ia una din barcă.",
+    "cargoLoaded": "Pradă încărcată pe barcă!",
+    "cargoFull": "Cala bărcii e plină! Întoarce-te la doc ca să livrezi.",
+    "stolenItem": "Ai furat pradă de pe altă barcă!",
+    "cargoStolenFromYou": "Cineva a furat pradă de pe barca ta!",
+    "someoneOpened": "Cineva a deschis un {tier}!",
+    "stealDisabled": "Furtul nu este activat.",
+    "noCargoHere": "Nu e nimic de furat aici.",
+    "shovelTaken": "Lopată luată!",
+    "canFinishHint": "Colectează mai multe comori sau întoarce-te la doc ca să termini jobul.",
+    "anchorRaisedContinue": "Ancoră ridicată! Mergi la următoarea comoară sau întoarce-te la doc ca să termini.",
+    "progressTitle": "Vânător de comori",
+    "progressDetail": "Scufundă-te și colectează cufere cu comori. Urmărește semnalele trackerului ca să le găsești.",
+    "cargoProgress": "Încărcătură: {current}/{max}",
+    "blipDock": "Doc - Livrare",
+    "blipTreasure": "Locația comorii"
+  },
+  "metaldetector": {
+    "continueHint": "Urmărește semnalele detectorului și scanează următoarea zonă",
+    "started": "Tură cu detectorul de metale începută! Ia un detector din camion și du-te în zona de căutare.",
+    "newRound": "Rundă nouă începută. Scanner recalibrat.",
+    "newZone": "Zonă nouă de căutare: {zone}",
+    "teammateFound": "Coechipierul tău a recuperat un obiect.",
+    "pressDig": "[E] Sapă aici",
+    "digging": "Sapi...",
+    "digCancelled": "Săpat anulat.",
+    "digTooFast": "Sapi prea repede. Mai încet puțin.",
+    "exitVehicleFirst": "Coboară din vehicul ca să folosești detectorul.",
+    "outsideZone": "Trebuie să rămâi în zona de plajă marcată.",
+    "lootFound": "Ai recuperat {item}! +{currency}{amount}",
+    "lootFoundItem": "Ai recuperat {item}! A fost adăugat în inventarul tău.",
+    "unknownItem": "Obiect necunoscut",
+    "roundFinished": "Rundă completă! Fiecare loc din această zonă a fost săpat.",
+    "canFinishHint": "Deschide opțiunile jobului la NPC ca să termini sau să continui.",
+    "spotAlreadyDug": "Acest loc a fost deja săpat.",
+    "spotBusy": "Un coechipier sapă deja în acest loc.",
+    "continueBlockedDigging": "Un coechipier încă sapă — așteaptă să termine înainte de a începe o rundă nouă.",
+    "digDelayed": "Problemă de conexiune — dacă săpatul a reușit, recompensa ta a fost deja plătită.",
+    "scanHint": "Intră în zona de căutare — detectorul va localiza locurile de săpat odată ce ajungi.",
+    "scanningArea": "Scanezi zona după semnale...",
+    "spotsFound": "Scanare completă — {count} semnale localizate!",
+    "moreSignals": "Detectorul a prins {count} semnal(e) noi în apropiere!",
+    "takeDetectorFirst": "Ia mai întâi un detector de metale din camion.",
+    "detectorReturned": "Detector returnat la camion.",
+    "blipSearchArea": "Zonă de căutare",
+    "unknownZone": "Plajă necunoscută",
+    "progressTitle": "Detector de metale",
+    "progressDetail": "Folosește detectorul ca să localizezi și să dezgropi obiecte metalice ascunse în zonele de plajă.",
+    "progressSpots": "Locuri săpate: {current}/{max}",
+    "progressValue": "Valoare stocată: {currency}{amount}",
+    "labelTakeTool": "[E] Ia detectorul de metale",
+    "labelReturnTool": "[E] Returnează detectorul",
+    "labelPutOnBelt": "[G] Pune detectorul la curea",
+    "labelTakeFromBelt": "[G] Ia detectorul de la curea",
+    "labelTakeFromTrunk": "[E] Ia din portbagaj (%d)",
+    "labelNoMoreItems": "~y~Nu a mai rămas nimic în portbagaj.",
+    "labelLoadToTruck": "[E] Încarcă în camion",
+    "labelPickup": "[E] Ridică",
+    "labelDig": "[E] Sapă",
+    "labelClothesWork": "[E] Schimbă în haine de lucru",
+    "labelClothesNormal": "[E] Schimbă în haine normale",
+    "labelFailNotify": "Nu poți săpa aici acum",
+    "returnVehicleHint": "Tura se încheie — condu duba înapoi la depou ca să o predai.",
+    "returnVehiclePrompt": "[E] Predă duba",
+    "returnVehicleBlip": "Returnează duba",
+    "jobFinished": "Tură încheiată! Ai câștigat {symbol}{earned}.",
+    "vehicleNotAtDepot": "Duba trebuie să fie înapoi la depou!",
+    "tooFarFromDepot": "Ești prea departe de depou!"
+  },
+  "delivery": {
+    "continueHint": "Ridică următorul colet și livrează-l",
+    "reconnected": "Reconectat la jobul de livrări!",
+    "started": "Job de livrare de marfă început!",
+    "leaderPreparing": "Liderul pregătește vehiculul, te rugăm să aștepți...",
+    "spawnFailed": "Vehiculul nu a putut fi spawnat! Punctul de spawn e ocupat. Job anulat.",
+    "alreadyCarryingBox": "Deja cari o cutie!",
+    "boxPickedUp": "Cutie ridicată! Încarc-o în vehicul.",
+    "notCarryingBox": "Nu cari nicio cutie!",
+    "firstDelivery": "Primul punct de livrare atribuit! Pornește când ești gata.",
+    "trunkFull": "Portbagajul e plin! E timpul să livrezi.",
+    "boxDeliverPickup": "Cutie ridicată! Livreaz-o clientului.",
+    "newRound": "Rundă nouă! Încarcă cutii de la depozit.",
+    "pickUpToContinue": "Ridică cutii de la NPC ca să continui. Ca să termini, mergi la locul marcat și returnează vehiculul.",
+    "returnVehicleToFinish": "Toate livrările au fost făcute! Returnează vehiculul la locul marcat ca să termini jobul.",
+    "deliveriesStarting": "Încep livrările!",
+    "teammateTookBox": "Un coechipier a luat o cutie",
+    "teammateReturnedBox": "Un coechipier a pus o cutie înapoi în portbagaj",
+    "teammatePartialDelivery": "Un coechipier a făcut o livrare parțială!",
+    "allComplete": "Toate livrările finalizate! Întoarce-te la depozit.",
+    "progressTitle": "Livrări",
+    "progressDetail": "Livrează colete clienților din tot orașul. Încarcă cutii și livrează la fiecare adresă.",
+    "loadCapacity": "Încarcă cutii de la depozit! Capacitate: {capacity} cutii",
+    "vehicleReadyLoad": "Vehicul pregătit! Încarcă cutii de la depozit. Capacitate: {capacity} cutii",
+    "subtaskDeliver": "Livrează coletele ({current}/{total})",
+    "subtaskLoad": "Încarcă cutii la depozit ({current}/{total})",
+    "boxLoaded": "Cutie încărcată! ({current}/{total})",
+    "boxReturned": "Cutie returnată! ({count} în portbagaj)",
+    "partialDelivery": "Livrare parțială! ({current}/{total}) +{amount} | Adu altă cutie.",
+    "deliveryDone": "Livrare completă! +{amount} | Toate livrările au fost făcute! Întoarce-te la depozit.",
+    "deliveryDoneRemaining": "Livrare completă! +{amount} | Rămase: {remaining}",
+    "deliveryFailed": "Livrare eșuată!",
+    "couldNotContinue": "Nu s-a putut continua!",
+    "couldNotPickUp": "Nu s-a putut ridica cutia!",
+    "couldNotLoad": "Nu s-a putut încărca cutia!",
+    "couldNotReturn": "Nu s-a putut returna cutia!",
+    "teammateLoaded": "Un coechipier a încărcat o cutie ({current}/{total})",
+    "teammateDelivered": "Un coechipier a finalizat o livrare! Rămase: {remaining}",
+    "itemLabel": "Livrări"
+  },
+  "cardetailer": {
+    "continueHint": "Condu la următoarea mașină și începe detailingul",
+    "started": "Job de detailing auto început! Echipează-te și condu la mașinile clienților.",
+    "newCars": "Mașini noi atribuite! Continuă detailingul.",
+    "wandEquipped": "Lance de presiune echipată!",
+    "wandReturned": "Lance de presiune returnată la dubă.",
+    "clothEquipped": "Lavetă de polish echipată!",
+    "clothReturned": "Lavetă de polish returnată la dubă.",
+    "takeWandFirst": "Ia mai întâi lancea de presiune!",
+    "needCloth": "Ai nevoie de laveta de polish! Ia-o din dubă.",
+    "failedStartPolish": "Lustruirea nu a putut începe!",
+    "tooFar": "Prea departe! Apropie-te și încearcă din nou.",
+    "carDetailed": "Mașină detailată!",
+    "carWashed": "Mașină spălată! Lustruiește-o pentru un bonus la plată.",
+    "hoseLimit": "Limita furtunului atinsă! Stai mai aproape de dubă.",
+    "carDetailedTeammate": "Mașină detailată de un coechipier!",
+    "carWashedTeammate": "Mașină spălată de un coechipier!",
+    "carPolished": "Mașină lustruită! Bravo!",
+    "carPolishedTeammate": "Mașină lustruită de un coechipier!",
+    "returnToDepot": "Întoarce-te la depou ca să finalizezi jobul.",
+    "spotRightFrontDoor": "Ușă față dreapta",
+    "spotLeftFrontDoor": "Ușă față stânga",
+    "spotHood": "Capotă",
+    "spotTrunk": "Portbagaj",
+    "spotRightRearDoor": "Ușă spate dreapta",
+    "spotLeftRearDoor": "Ușă spate stânga",
+    "spotHoodRight": "Capotă dreapta",
+    "spotHoodLeft": "Capotă stânga",
+    "spotHoodCenter": "Capotă centru",
+    "spotRoof": "Plafon",
+    "spotRoofLeft": "Plafon stânga",
+    "spotTrunkRight": "Portbagaj dreapta",
+    "spotTrunkLeft": "Portbagaj stânga",
+    "spotFrontFenderRight": "Aripă față dreapta",
+    "spotFrontFenderLeft": "Aripă față stânga",
+    "spotDoorRight": "Ușă dreapta",
+    "spotDoorRightFront": "Ușă dreapta față",
+    "spotDoorLeft": "Ușă stânga",
+    "spotDoorLeftFront": "Ușă stânga față",
+    "spotRearFenderRight": "Aripă spate dreapta",
+    "spotRearFenderLeft": "Aripă spate stânga",
+    "toolWand": "Lance",
+    "toolCloth": "Lavetă",
+    "carsDetailed": "Mașini detailate",
+    "progressTitle": "Detailing auto",
+    "progressDetail": "Spală și lustruiește mașinile clienților. Folosește lancea de presiune pentru spălat, apoi lustruiește cu o lavetă.",
+    "carLabel": "Mașina #{index}",
+    "subtaskWashed": "{car} spălată",
+    "subtaskPolished": "{car} lustruită",
+    "subtaskDetailed": "{car} detailată",
+    "spotFallback": "Zonă"
+  },
+  "cleaner": {
+    "continueHint": "Mergi la următoarea pată de pe hartă",
+    "started": "Job de curățenie început! Ia-ți hainele de lucru și mopul.",
+    "toolMop": "Mop",
+    "progressTitle": "Curățător",
+    "progressDetail": "Curăță petele de murdărie marcate pe hartă folosind mopul. Mergi la fiecare pată și apasă [E] ca să începi curățarea.",
+    "itemLabel": "Pată de murdărie",
+    "blipLabel": "Pată de murdărie",
+    "finishItemLabel": "Pete curățate",
+    "cleanPrompt": "[E] Curăță pata ({current}/{total})",
+    "subtaskClean": "Curăță toate petele ({current}/{total})"
+  },
+  "windowscleaner": {
+    "continueHint": "Găsește următorul geam murdar pe hartă",
+    "started": "Job de spălat geamuri început! Ia-ți hainele de lucru și buretele.",
+    "toolSponge": "Burete",
+    "progressTitle": "Spălător de geamuri",
+    "progressDetail": "Curăță geamurile murdare din fiecare locație. Folosește buretele ca să freci locurile marcate.",
+    "dirtyWindow": "Geam murdar",
+    "dirtyWindowBlip": "Geam murdar #%d",
+    "windowsCleaned": "Geamuri curățate",
+    "cleanWindowProgress": "[E] Curăță geamul ({hits}/{required})"
+  },
+  "powerwash": {
+    "continueHint": "Mergi la următorul loc murdar de pe hartă",
+    "started": "Job de spălare cu presiune început! Ia-ți hainele de lucru și lancea.",
+    "takeWandFirst": "Ia mai întâi lancea de presiune!",
+    "tooFarFromSpot": "Prea departe de loc!",
+    "toolWand": "Lance de presiune",
+    "progressTitle": "Spălare cu presiune",
+    "progressDetail": "Stropește locurile murdare marcate pe hartă folosind lancea de presiune. Țintește pata și ține apăsat [LMB] ca să stropești.",
+    "dirtySpot": "Loc murdar",
+    "dirtySpotBlip": "Loc murdar #%d",
+    "spotsCleaned": "Locuri curățate"
+  },
+  "forklift": {
+    "continueHint": "Ridică următoarea ladă cu stivuitorul",
+    "newCrates": "Sosesc lăzi noi...",
+    "preparingForklifts": "Se pregătesc stivuitoarele...",
+    "failedSpawnForklifts": "Spawnarea stivuitoarelor a eșuat!",
+    "beltFull": "Banda e plină! Pornește mai întâi banda rulantă.",
+    "earnedReward": "+{symbol}{money}, +{xp} XP",
+    "modeBeltToShelf": "Ridică de pe bandă, așază pe rafturi!",
+    "modeCratesToBelt": "Mută lăzile pe bandă!",
+    "newRoundBeltToShelf": "Rundă nouă: ridică de pe bandă, așază pe rafturi!",
+    "newRoundStarting": "Începe o rundă nouă!",
+    "progressTitle": "Stivuitor",
+    "progressDetailToShelf": "Mută lăzile cu stivuitorul. Ridică lăzile și așază-le pe rafturi.",
+    "progressDetailToBelt": "Mută lăzile cu stivuitorul. Ridică lăzile și du-le la banda rulantă.",
+    "onlyLeaderCanCancel": "Doar liderul poate anula jobul",
+    "deliveredCrates": "Lăzi livrate"
+  },
+  "warehouse": {
+    "continueHint": "Încarcă următorul palet în camion",
+    "newTrucks": "Sosesc camioane noi...",
+    "failedInitSession": "Inițializarea sesiunii a eșuat!",
+    "preparingVehicles": "Se pregătesc vehiculele...",
+    "failedSpawnForklift": "Spawnarea stivuitorului a eșuat!",
+    "truckOnTheWay": "Camionul e pe drum...",
+    "truckReady": "Camionul e gata de încărcare!",
+    "truckReadyWithOrder": "Camion pregătit! De încărcat: {boxes} cutii, {pallets} paleți",
+    "boxesProgress": "Cutii: {current}/{total}",
+    "palletsProgress": "Paleți: {current}/{total}",
+    "orderInfo": "Comandă: {boxes} cutii, {pallets} paleți",
+    "deliveryCompleteReward": "Livrare completă! +${money}, +{xp} XP",
+    "newOrder": "Comandă nouă: {boxes} cutii, {pallets} paleți",
+    "newOrderWithRemaining": "Comandă nouă: {boxes} cutii, {pallets} paleți ({remaining} camioane rămase)",
+    "deliveryComplete": "Livrare completă!",
+    "takeBoxToTruck": "Du cutia la camion!",
+    "truckNotReady": "Camionul nu e pregătit",
+    "truckNotFound": "Camionul nu a fost găsit",
+    "getInForklift": "Urcă în stivuitor",
+    "alreadyCarrying": "Deja cari ceva",
+    "boxDropped": "Cutie aruncată",
+    "progressTitle": "Depozit",
+    "progressDetail": "Încarcă marfa în camionul de livrare. Folosește stivuitoarele sau cară obiectele cu mâna.",
+    "completedTrucks": "Camioane finalizate"
+  },
+  "landscaping": {
+    "continueHint": "Mergi la următoarea proprietate de întreținut",
+    "failedInit": "Inițializarea jobului a eșuat!",
+    "toolNotAvailable": "Unealta nu e disponibilă!",
+    "needTrimmer": "Ai nevoie de un trimmer ca să tunzi tufișurile!",
+    "trimmingCancelled": "Tunderea tufișului anulată",
+    "needShovel": "Ai nevoie de o lopată ca să sapi gazonul!",
+    "diggingCancelled": "Săpatul gazonului anulat",
+    "newTasks": "Sarcini noi de grădinărit atribuite!",
+    "allComplete": "Toate sarcinile finalizate! Întoarce-te la depou ca să termini.",
+    "onlyLeaderFinish": "Doar liderul poate termina jobul!",
+    "notAllBushes": "Nu toate tufișurile au fost tunse!",
+    "notAllLawns": "Nu toate gazoanele au fost greblate!",
+    "jobStarted": "Job de întreținere spații verzi început! Tunde {bushes} tufișuri și sapă {lawns} gazoane. Ia uneltele din camion.",
+    "bushTrimmed": "Tufiș tuns! Au rămas {bushes} tufișuri, {lawns} gazoane",
+    "lawnDug": "Gazon săpat! Au rămas {bushes} tufișuri, {lawns} gazoane",
+    "toolTrimmer": "Trimmer",
+    "toolShovel": "Lopată",
+    "progressTitle": "Spații verzi",
+    "progressDetail": "Întreține spațiile verzi. Tunde tufișurile și greblează gazoanele la fiecare proprietate.",
+    "toolFallback": "Unealtă"
+  },
+  "farmer": {
+    "continueHint": "Mergi la următoarea plantă și recolteaz-o",
+    "alreadyHarvested": "Planta a fost deja recoltată!",
+    "failedStartHarvest": "Recoltarea nu a putut începe",
+    "plantsRespawned": "Plantele au reapărut! {count} gata de recoltat.",
+    "progressTitle": "Fermier",
+    "progressDetail": "Ia o cutie, recoltează plante ca să o umpli, încarcă cutiile pline în camion, apoi condu la cântar.",
+    "stepTakeBox": "Ia o cutie din camion",
+    "stepHarvesting": "Continuă să recoltezi planta",
+    "stepHarvestPlant": "Mergi la o plantă și recolteaz-o",
+    "stepLoadBoxToTruck": "Încarcă cutia plină în camion",
+    "stepGoToScale": "Du cutiile la cântar",
+    "stepPlaceOnScale": "Pune cutia pe cântar",
+    "stepProcessProduce": "Vorbește cu NPC-ul ca să procesezi produsele",
+    "stepNewRound": "Ia o cutie și începe o rundă nouă",
+    "jobLabel": "Fermier",
+    "produceLabel": "produse",
+    "vehicleBlip": "Vehicul de fermă",
+    "subtaskHarvest": "Recoltează plante ({current}/{total})"
+  },
+  "fishing": {
+    "continueHint": "Mergi la următorul loc de pescuit și aruncă undița",
+    "failedSpawnBoat": "Spawnarea bărcii de pescuit a eșuat!",
+    "started": "Job de pescuit început! Urcă în barcă și du-te într-o zonă de pescuit.",
+    "failedSyncBoat": "Sincronizarea bărcii de pescuit a eșuat!",
+    "noFishToSell": "Niciun pește de vândut!",
+    "noWater": "Nu s-a găsit apă! Stai aproape de apă.",
+    "fishOnLine": "Pește pe fir! Apasă [E] ca să-l tragi!",
+    "fishGotAway": "Peștele a scăpat! Prea încet.",
+    "fishEscaped": "Peștele a scăpat!",
+    "castCancelled": "Pescuit anulat.",
+    "outfitEquipped": "Ținută de pescuit echipată!",
+    "cantUseInventoryRod": "Nu poți folosi undița din inventar în modul job!",
+    "alreadyCast": "Ai aruncat deja firul!",
+    "mustBeNearWater": "Trebuie să fii lângă apă!",
+    "completed": "Job de pescuit finalizat cu succes!",
+    "freeModeDisabled": "Modul liber este dezactivat!",
+    "noBait": "Nu ai momeală! Cumpără momeală de la magazinul de pescuit.",
+    "itemPurchased": "{amount}x {item} cumpărat! ({currency}{price})",
+    "fishSold": "{count} pești vânduți! {currency}{amount} câștigați!",
+    "progressTitle": "Pescuit",
+    "progressDetail": "Prinde pești la locul de pescuit. Aruncă firul și trage-i afară.",
+    "subtaskFishCaught": "Pești prinși: {count}",
+    "shopTitle": "Magazin de pescuit",
+    "selectRod": "Alege undița",
+    "selectBait": "Alege momeala",
+    "sellTitle": "Vinde pește",
+    "baitStats": "{price} | Șansă: +{chance}%",
+    "fishPriceRange": "interval {min} - {max}"
+  },
+  "cleanup": {
+    "continueHint": "Condu la următorul coș de gunoi de pe traseu",
+    "started": "Job de colectare a gunoiului început! Pune-ți mai întâi hainele de lucru, apoi colectează gunoiul din coșuri cu [E] și încarcă-l în camion.",
+    "alreadyCarrying": "Deja cari ceva!",
+    "binEmpty": "Acest coș de gunoi e gol!",
+    "noCleanupInBin": "Nu e gunoi în acest coș!",
+    "animFailed": "Animația nu a putut fi încărcată!",
+    "bagPickedUp": "Sac de gunoi ridicat! Du-te în spatele camionului și apasă [E] ca să-l arunci înăuntru.",
+    "notHoldingBag": "Nu ții un sac de gunoi!",
+    "thrownIn": "Gunoi aruncat înăuntru!",
+    "noCleanupInTruck": "Nu e gunoi în camion!",
+    "truckReady": "Camionul de gunoi e pregătit!",
+    "keepWorking": "Continuă treaba! Începe să cauți coșuri de gunoi noi.",
+    "truckTooFar": "Camionul e prea departe sau indisponibil. Apropie-te de camion.",
+    "truckFullBagDropped": "Camionul e plin! Sacul de gunoi a fost aruncat. Condu camionul la punctul de livrare.",
+    "jobEnded": "Jobul de colectare a gunoiului s-a încheiat.",
+    "truckFullDrive": "Camionul e plin! ({count}/{max}) Condu camionul la punctul de livrare de pe hartă.",
+    "spawnBlocked": "Zona de spawn e blocată! Mută vehiculul și încearcă din nou.",
+    "vehicleSpawnFailed": "Vehiculul nu a putut fi spawnat!",
+    "areaSelected": "Zona {area} selectată. Mergi la zona de pe hartă și colectează gunoiul din coșuri cu [E].",
+    "progressTitle": "Salubrizare",
+    "progressDetail": "Colectează coșurile de gunoi de pe traseu. Ridică fiecare sac și încarcă-l în camion.",
+    "deliveryBlip": "Livrare gunoi",
+    "collectBinsProgress": "Colectează coșurile ({current}/{max})",
+    "dumpDeliveries": "Livrări la groapă: {count}",
+    "hintCollectBins": "Caută coșuri de gunoi în apropiere și apasă [E] ca să colectezi un sac.",
+    "hintCollectBinsTarget": "Caută coșuri de gunoi în apropiere și folosește third eye ca să colectezi un sac.",
+    "bagPickedUpTarget": "Sac de gunoi ridicat! Du-te în spatele camionului și folosește third eye ca să-l arunci înăuntru.",
+    "areaSelectedTarget": "Zona {area} selectată. Mergi la zona de pe hartă și colectează gunoiul din coșuri cu third eye."
+  },
+  "dogwalking": {
+    "anotherWalk": "Începe o nouă plimbare!",
+    "continueHint": "Ia următorul câine și începe plimbarea",
+    "pickupTaskLabel": "Ia următorul câine",
+    "pickupDescription": "Mergi la câinele din locația marcată pe hartă și apasă [E] ca să începi plimbarea.",
+    "dogGotAway": "Câinele tău a fugit! Job eșuat.",
+    "dogDied": "Câinele tău a murit! Jobul este anulat.",
+    "dogNeedsToGo": "Câinele tău trebuie să-și facă nevoile! Așteaptă-l...",
+    "dogBrokeFree": "O, nu! Câinele tău s-a smuls din lesă! Prinde-l repede!",
+    "dogPickedUp": "Ți-ai luat câinele! Așteaptă-i pe ceilalți.",
+    "returnDog": "Plimbare reușită! Acum du câinele înapoi la stăpân.",
+    "caughtDog": "Uff! Ai prins câinele.",
+    "noDogAssigned": "Nu ai niciun câine atribuit!",
+    "alreadyClaimed": "Ți-ai luat deja câinele!",
+    "poopAlreadyCleaned": "Mizeria a fost deja curățată!",
+    "notYourDogPoop": "Asta nu e mizeria câinelui tău!",
+    "walkNotComplete": "Plimbarea nu e completă încă!",
+    "reconnected": "Reconectat la jobul de plimbat câini!",
+    "started": "Job de plimbat câini început! Mergi la casa clientului.",
+    "walkYourDog": "Plimbă-ți câinele {distance}m! Bucură-te de plimbare.",
+    "dogDelivered": "Câine predat! Ai câștigat {symbol}{payment} și {xp} XP",
+    "progressTitle": "Plimbat câini",
+    "progressDetail": "Plimbă câinii pe traseele lor. Ține-i fericiți și curăță după ei.",
+    "dogDiedNoPayment": "Un câine a murit! Job anulat — fără plată.",
+    "blipHome": "Casa clientului",
+    "clientHomeFallback": "Casa clientului",
+    "tooFarFromHome": "Ești prea departe de casa stăpânului!"
+  },
+  "harvest": {
+    "processingInProgress": "Procesare în curs, te rugăm să aștepți!",
+    "noBoxesOnScale": "Nicio cutie pe cântar de procesat!",
+    "processingComplete": "Procesare finalizată! {count} cutii, ai câștigat {currency}{amount}",
+    "boxLoadedScale": "Cutie încărcată! {count} {produce}, valoare: {currency}{value} — Condu la cântarul de procesare!",
+    "boxLoaded": "Cutie încărcată! {count} {produce}, valoare: {currency}{value}",
+    "boxPlaced": "Ladă așezată! {count} {produce}, valoare: {currency}{value}",
+    "produceHarvested": "{produce} recoltat! ({current}/{total})",
+    "produceAddFailed": "Nu s-a putut adăuga {produce} în ladă!"
+  },
+  "miner": {
+    "continueHint": "Găsește următorul zăcământ de minereu și minează-l",
+    "started": "Job de minerit început! Ia-ți hainele de lucru și echipamentul.",
+    "newRocks": "Au apărut roci noi! Continuă mineritul.",
+    "orePickedUp": "Minereu de {ore} ridicat! Încarcă-l în camion.",
+    "rocksRemaining": "Au mai rămas {count} roci de minat.",
+    "processingInProgress": "Procesare în curs, te rugăm să aștepți!",
+    "noRocksOnScale": "Niciun minereu pe cântar de procesat!",
+    "processingComplete": "Procesare finalizată! {count} minereuri, ai câștigat {currency}{amount}",
+    "pickaxeReturned": "Târnăcop returnat în portbagaj",
+    "returnVehicleBlip": "Predă camionul",
+    "returnVehicleHint": "Tura se încheie — du camionul înapoi la depozit.",
+    "returnVehiclePrompt": "[E] Predă camionul",
+    "vehicleNotAtDepot": "Camionul trebuie să fie înapoi la depozit!",
+    "tooFarFromDepot": "Ești prea departe de depozit!",
+    "labelProcessing": "~y~Procesare în curs...",
+    "labelFinish": "[E] Finalizează procesarea (%d minereuri)",
+    "labelPlaceOnScale": "[E] Pune minereul pe cântar",
+    "labelLoadToTruck": "[E] Încarcă minereul în camion",
+    "labelReturnTool": "[E] Returnează târnăcopul",
+    "labelTakeTool": "[E] Ia târnăcopul",
+    "labelTakeFromTrunk": "[E] Ia minereu din portbagaj (%d)",
+    "labelNoMoreItems": "~y~Nu mai sunt minereuri! Mergi la NPC ca să termini.",
+    "labelPickup": "[E] Ridică minereul",
+    "labelBreakAction": "[E] Minează roca",
+    "labelPutOnBelt": "[G] Pune târnăcopul la curea",
+    "labelTakeFromBelt": "[G] Ia târnăcopul de la curea",
+    "labelClothesWork": "[E] Schimbă în haine de lucru",
+    "labelClothesNormal": "[E] Schimbă în haine normale",
+    "labelFailNotify": "Mineritul nu a putut începe",
+    "progressTitle": "Miner",
+    "progressDetail": "Sparge roci pentru minereu, cară minereul la camion, apoi condu la cântar și procesează-l.",
+    "stepTakeTool": "Ia târnăcopul din portbagaj",
+    "stepBreaking": "Continuă să spargi roca",
+    "stepBreakRock": "Sparge o rocă pentru a extrage minereu",
+    "stepPickupOre": "Ridică minereul de pe jos",
+    "stepLoadTrunk": "Încarcă minereul în camion",
+    "stepGoToScale": "Du minereul la cântar",
+    "stepPlaceOnScale": "Pune minereul pe cântar",
+    "stepProcessOre": "Vorbește cu NPC-ul ca să procesezi minereul",
+    "stepNewRound": "Ia târnăcopul și începe o rundă nouă"
+  },
+  "lumberjack": {
+    "continueHint": "Găsește următorul copac și începe să tai",
+    "started": "Job de tăietor de lemne început!",
+    "newTrees": "Au apărut copaci noi! Poți continua tăierea.",
+    "takeHatchetFirst": "Ia-ți mai întâi toporul!",
+    "anotherPlayerCutting": "Alt jucător taie deja acest copac!",
+    "alreadyCarryingLog": "Deja cari un buștean!",
+    "alreadyPickedUp": "Altcineva l-a ridicat deja!",
+    "logPickedUp": "Buștean ridicat! Încarcă-l în camion.",
+    "hatchetTaken": "Topor luat!",
+    "treesRemaining": "Au mai rămas {count} copaci de tăiat.",
+    "axeDropBonus": "{name} | Bonus drop: +{bonus}%",
+    "treeCutDown": "Copacul {name} a fost tăiat! Colectează buștenii.",
+    "levelRequired": "Ai nevoie de nivelul {required} pentru acest copac! (Curent: {current})",
+    "processingComplete": "Procesare finalizată! {count} bușteni, ai câștigat {currency}{amount}",
+    "labelProcessing": "~y~Procesare în curs...",
+    "labelFinish": "[E] Finalizează procesarea (%d bușteni)",
+    "labelPlaceOnScale": "[E] Pune bușteanul la procesare",
+    "labelLoadToTruck": "[E] Încarcă bușteanul în camion",
+    "labelReturnTool": "[E] Returnează toporul",
+    "labelTakeTool": "[E] Ia toporul",
+    "labelTakeFromTrunk": "[E] Ia buștean din portbagaj (%d)",
+    "labelNoMoreItems": "~y~Nu mai sunt bușteni! Mergi la NPC ca să termini.",
+    "labelPickup": "[E] Ridică bușteanul",
+    "labelBreakAction": "[E] Taie copacul",
+    "labelPutOnBelt": "[G] Pune toporul la curea",
+    "labelTakeFromBelt": "[G] Ia toporul de la curea",
+    "labelClothesWork": "[E] Schimbă în haine de lucru",
+    "labelClothesNormal": "[E] Schimbă în haine normale",
+    "labelFailNotify": "Tăierea nu a putut începe",
+    "processingInProgress": "Procesare în curs, te rugăm să aștepți!",
+    "noLogsOnScale": "Niciun buștean în zona de procesare!",
+    "hatchetReturned": "Topor returnat!",
+    "treeFallback": "Copac",
+    "serverDenied": "Refuzat de server",
+    "progressTitle": "Tăietor de lemne",
+    "progressDetail": "Taie copaci pentru bușteni, cară-i la camion, apoi condu la cântarul de procesare.",
+    "stepTakeAxe": "Ia toporul din portbagaj",
+    "stepCutting": "Continuă să tai copacul",
+    "stepCutTree": "Taie un copac ca să obții bușteni",
+    "stepPickupLog": "Ridică bușteanul de pe jos",
+    "stepLoadTrunk": "Încarcă bușteanul în camion",
+    "stepGoToScale": "Du buștenii la cântarul de procesare",
+    "stepPlaceOnScale": "Pune bușteanul pe cântar",
+    "stepProcessLog": "Vorbește cu NPC-ul ca să procesezi buștenii",
+    "stepNewRound": "Ia toporul și începe o rundă nouă"
+  },
+  "scrapyard": {
+    "continueHint": "Condu la următoarea grămadă de fier vechi de pe hartă",
+    "started": "Job la fier vechi început! Pune-ți hainele de lucru și ia echipamentul.",
+    "newScraps": "A sosit fier vechi nou! Continuă.",
+    "putCrowbarOnBelt": "Pune mai întâi ranga la curea!",
+    "scrapPickedUp": "Fier vechi ridicat! Încarcă-l în vehicul.",
+    "scrapsRemaining": "Au mai rămas {count} bucăți de fier vechi.",
+    "processingInProgress": "Procesare în curs, te rugăm să aștepți!",
+    "noScrapsOnScale": "Niciun fier vechi pe cântar!",
+    "processingComplete": "Procesare finalizată! {count} bucăți de fier vechi, {currency}{amount} câștigați",
+    "crowbarReturned": "Rangă returnată la vehicul",
+    "workClothesEquipped": "Haine de lucru echipate!",
+    "normalClothes": "Te-ai schimbat în haine normale",
+    "scrapBlip": "Fier vechi #{index}",
+    "labelProcessing": "~y~Procesare în curs...",
+    "labelFinish": "[E] Finalizează procesarea (%d bucăți)",
+    "labelPlaceOnScale": "[E] Pune fierul vechi pe cântar",
+    "labelLoadToTruck": "[E] Încarcă fierul vechi în vehicul",
+    "labelReturnTool": "[E] Returnează ranga",
+    "labelTakeTool": "[E] Ia ranga",
+    "labelTakeFromTrunk": "[E] Ia fier vechi din portbagaj (%d)",
+    "labelNoMoreItems": "~y~Nu a mai rămas fier vechi! Mergi la NPC.",
+    "labelPickup": "[E] Ridică fierul vechi",
+    "labelBreakAction": "[E] Dezmembrează fierul vechi",
+    "labelPutOnBelt": "[G] Pune ranga la curea",
+    "labelTakeFromBelt": "[G] Ia ranga de la curea",
+    "labelClothesWork": "[E] Pune-ți hainele de lucru",
+    "labelClothesNormal": "[E] Schimbă în haine normale",
+    "labelFailNotify": "Dezmembrarea nu a putut începe",
+    "progressTitle": "Fier vechi",
+    "progressDetail": "Dezmembrează grămezile de fier vechi, cară piesele la camion, apoi condu la cântar și procesează-le.",
+    "stepTakeTool": "Ia ranga din portbagaj",
+    "stepBreaking": "Continuă să dezmembrezi fierul vechi",
+    "stepBreakScrap": "Dezmembrează o grămadă de fier vechi",
+    "stepPickupScrap": "Ridică piesele de fier vechi de pe jos",
+    "stepLoadTrunk": "Încarcă fierul vechi în camion",
+    "stepGoToScale": "Du fierul vechi la cântar",
+    "stepPlaceOnScale": "Pune fierul vechi pe cântar",
+    "stepProcessScrap": "Vorbește cu NPC-ul ca să procesezi fierul vechi",
+    "stepNewRound": "Ia ranga și începe o rundă nouă"
+  },
+  "fruitpicker": {
+    "continueHint": "Mergi la următorul pom și începe culesul",
+    "treesReset": "Toți pomii au fost resetați! Continuă să culegi fructe.",
+    "noMoreFruit": "Nu mai sunt fructe în acest pom!",
+    "treeOnCooldown": "Nu sunt fructe coapte disponibile. Se reîmprospătează în ~%{minutes} min — încearcă alt pom.",
+    "jobLabel": "Culegător de fructe",
+    "produceLabel": "fructe",
+    "vehicleBlip": "Camion de fructe",
+    "placeBoxAndPick": "[E] Așază cutia și culege {fruit} ({remaining} rămase)",
+    "pickFruit": "[E] Culege {fruit} ({remaining} rămase)",
+    "orangeTreeBlip": "Portocal",
+    "appleTreeBlip": "Măr",
+    "progressTitle": "Culegător de fructe",
+    "progressDetail": "Ia o cutie, umple-o din pomi, încarcă cutiile pline în camion, apoi condu la cântar.",
+    "stepTakeBox": "Ia o cutie din camion",
+    "stepPicking": "Continuă să culegi fructe",
+    "stepPickFruit": "Mergi la un pom și culege fructe",
+    "stepLoadBoxToTruck": "Încarcă cutia plină în camion",
+    "stepGoToScale": "Du cutiile la cântar",
+    "stepPlaceOnScale": "Pune cutia pe cântar",
+    "stepProcessFruit": "Vorbește cu NPC-ul ca să procesezi fructele",
+    "stepNewRound": "Ia o cutie și începe o rundă nouă",
+    "fruitFallback": "Fruct"
+  },
+  "newspaper": {
+    "continueHint": "Mergi pe următoarea stradă de livrare",
+    "settingsNotFound": "Setările pentru livrarea de ziare nu au fost găsite!",
+    "started": "Livrarea de ziare a început!",
+    "noAvailableRoutes": "Nu sunt trasee disponibile!",
+    "leaderSelecting": "Liderul alege bicicletele și zona, te rugăm să aștepți...",
+    "progressTitle": "Ziare",
+    "progressDetail": "Livrează ziare la casele de pe traseu. Aruncă ziarele la fiecare ușă.",
+    "outsideTimeWindow": "Livrarea de ziare e disponibilă doar între {startHour}:00 - {endHour}:00 (acum: {current}:00)",
+    "getOnCycle": "Urcă pe bicicletă ca să începi livrarea"
+  },
+  "taxi": {
+    "lookingForCustomer": "Se caută următorul client...",
+    "taxiReady": "Taxi pregătit! Așteaptă apelul unui client...",
+    "taxiModelFailed": "Modelul taxiului nu a putut fi încărcat!",
+    "passengerWokeUp": "Pasagerul s-a trezit!",
+    "passengerBoarded": "Pasagerul a urcat! Se așteaptă destinația...",
+    "newCustomer": "Client nou! Mergi la locul de preluare.",
+    "passengerDied": "Clientul tău a murit! Cursa a fost anulată.",
+    "returnTaxiToDepot": "Returnează taxiul la depou ca să-ți închei tura.",
+    "destinationSet": "Destinație setată! Distanță: {distance}m, Timp bonus: {bonus}s",
+    "vehicleDamaged": "Vehicul avariat! Timp bonus -{penalty}s",
+    "jobEnded": "Job de taxi încheiat! Curse: {rides}, Total câștigat: {symbol}{earned}",
+    "hornPassengerSleeping": "[HORN] Pasagerul doarme!",
+    "pickUpPassenger": "[E] Preia pasagerul",
+    "dropOffPassenger": "[E] Lasă pasagerul",
+    "returnTaxiEndShift": "[E] Returnează taxiul și încheie tura",
+    "getBackInTaxi": "[F] Urcă înapoi în taxi!",
+    "tooFarFromDepot": "Ești prea departe de depou",
+    "tooFarFromDropoff": "Ești prea departe de punctul de debarcare",
+    "progressTitle": "Taxi",
+    "progressDetail": "Preia pasageri și du-i la destinațiile lor. Condu cu grijă ca să câștigi bonusul de timp.",
+    "stagePickup": "Preia pasagerul",
+    "stageDropoff": "Lasă pasagerul la destinație",
+    "stageDepot": "Returnează taxiul la depou",
+    "ridesCompleted": "{count} curse finalizate",
+    "meterBonusTime": "bonus {seconds}s",
+    "statCustomers": "Clienți transportați",
+    "statEarnings": "Total câștigat"
+  },
+  "trucker": {
+    "continueHint": "Preia următoarea încărcătură de la depou",
+    "illegalAccepted": "Rută ilegală acceptată! Ai grijă...",
+    "trailerLost": "Remorcă pierdută! Ai eșuat această livrare.",
+    "failedReconnect": "Reconectarea la jobul de camionagiu a eșuat!",
+    "reconnected": "Reconectat la jobul de camionagiu!",
+    "failedGetData": "Nu s-au putut obține datele jobului!",
+    "started": "Job de camionagiu început! Mergi la locul de preluare a remorcii.",
+    "truckReady": "Camion pregătit! Urcă în camion.",
+    "truckModelFailed": "Modelul camionului nu a putut fi încărcat!",
+    "trailerModelFailed": "Modelul remorcii nu a putut fi încărcat!",
+    "trailerSpawnBlocked": "Punctul de spawn al remorcii e blocat! Se reîncearcă în 5 secunde...",
+    "trailerSpawnStillBlocked": "Punctul de spawn al remorcii e încă blocat! Se spawnează oricum.",
+    "trailerAttachedWaiting": "Remorcă atașată! Se așteaptă ceilalți jucători...",
+    "trailerAttachedWaitRoute": "Remorcă atașată! Așteaptă atribuirea rutei...",
+    "trailerDetached": "Remorcă detașată! Întoarce-te și reatașeaz-o!",
+    "needToBeInTruck": "Trebuie să fii în camion!",
+    "trailerGone": "Remorca a dispărut! Job eșuat.",
+    "trailerReattached": "Remorcă reatașată! Continuă livrarea.",
+    "failedReattach": "Reatașarea remorcii a eșuat. Încearcă din nou.",
+    "noTrailerNearby": "Nicio remorcă în apropiere!",
+    "failedAttach": "Atașarea remorcii a eșuat. Încearcă din nou.",
+    "noTrailerAttached": "Nicio remorcă atașată!",
+    "tooFarToDeliver": "Remorca nu e în zona de livrare!",
+    "perfectDelivery": "Remorcă livrată în stare perfectă! Returnează camionul la depou.",
+    "mustBeInTruck": "Trebuie să fii în camion!",
+    "notJobTruck": "Acesta nu e camionul jobului!",
+    "truckReturned": "Camion returnat! Se așteaptă rezumatul...",
+    "waitingForTrailers": "Se așteaptă ca ceilalți jucători să-și atașeze remorcile...",
+    "leaderAcceptedIllegal": "Liderul a acceptat ruta ilegală! Ai grijă...",
+    "leaderChoseNormal": "Liderul a ales ruta normală.",
+    "returnTruckToDepot": "Returnează camionul la depou.",
+    "newDeliveryRoute": "Rută nouă de livrare atribuită!",
+    "truckReturnedWaiting": "Camion returnat! Se așteaptă ca ceilalți jucători să-și returneze camioanele...",
+    "youLeftJob": "Ai părăsit jobul.",
+    "headToTrailer": "Mergi la locul marcat ca să preiei remorca!",
+    "trailerDestroyed": "Remorcă distrusă! Livrare eșuată.",
+    "trailerDeliveredCondition": "Remorcă livrată în stare de {condition}%. Returnează camionul la depou.",
+    "routeAssigned": "Rută atribuită ({route})! Distanță: {distance}m",
+    "progressTitle": "Camionagiu",
+    "progressDetail": "Livrează marfă la destinații din tot statul. Condu cu grijă ca să eviți avariile.",
+    "stagePickup": "Preia remorca",
+    "stageDelivery": "Livrează marfa",
+    "stageReturn": "Returnează camionul",
+    "stageWaiting": "Se așteaptă...",
+    "deliveriesCompleted": "Livrări finalizate: {count}",
+    "blipPickupTrailer": "Preluare remorcă",
+    "blipDeliverCargo": "Livrare marfă",
+    "blipIllegalDelivery": "Livrare ilegală",
+    "blipReturnTruck": "Returnare camion",
+    "aPlayerFallback": "Un jucător",
+    "teammateFallback": "Coechipier",
+    "playerReturnedTruck": "{name} și-a returnat camionul.",
+    "teammateTruck": "Camionul lui {name}"
+  },
+  "repair": {
+    "failedInit": "Inițializarea jobului a eșuat!",
+    "newTasks": "Sarcini noi de reparații atribuite!",
+    "allComplete": "Toate reparațiile finalizate! Întoarce-te ca să termini jobul.",
+    "jobStarted": "Jobul {label} a început! Repară {tasks}.",
+    "taskRepaired": "{task} reparat! {remaining} rămase"
+  },
+  "blip": {
+    "returnToFinish": "Înapoi la final",
+    "nextTask": "Următoarea sarcină",
+    "cargoDepot": "Depozit de marfă",
+    "deliveryPoint": "Punct de livrare",
+    "buyer": "Cumpărător",
+    "tree": "Copac",
+    "animal": "Animal",
+    "ore": "Minereu",
+    "divePoint": "Punct de scufundare",
+    "returnBoat": "Returnează barca",
+    "customerCar": "Mașina clientului",
+    "delivery": "Livrare",
+    "returnVehicle": "Returnează vehiculul",
+    "returnToDepot": "Înapoi la depozit"
+  },
+  "target": {
+    "interact": "Interacționează",
+    "pickup": "Ridică",
+    "finishProcessing": "Finalizează procesarea",
+    "finishProcessingPrompt": "[E] Finalizează procesarea",
+    "processing": "Se procesează...",
+    "placeOnScale": "Pune pe cântar",
+    "loadToTruck": "Încarcă în camion",
+    "returnTool": "Returnează unealta",
+    "takeTool": "Ia unealta",
+    "takeFromTrunk": "Ia din portbagaj",
+    "changeClothes": "Schimbă hainele",
+    "changeClothesPrompt": "[E] Schimbă hainele",
+    "changeClothesNormal": "[E] Schimbă în haine normale",
+    "changeClothesWork": "[E] Schimbă în haine de lucru",
+    "cleanItemPrompt": "[E] Curăță obiectul",
+    "finishJobPrompt": "[E] Termină jobul",
+    "pickFruit": "Culege fructe",
+    "pickUpLog": "Ridică bușteanul",
+    "returnItem": "Returnează obiectul",
+    "cutTree": "Taie {name}",
+    "pickUpCarcass": "Ridică {label} ({weight} kg)"
+  },
+  "server": {
+    "cannotInviteJobActive": "Nu poți invita jucători cât timp un job este activ!",
+    "cannotInviteSoloJob": "Acest job este doar solo — nu poți invita jucători!",
+    "playerAlreadyInvited": "Acest jucător are deja o invitație în așteptare!",
+    "inviteCooldown": "Te rog așteaptă {seconds} secunde înainte să inviți din nou acest jucător.",
+    "identifierNotReady": "Datele tale de jucător nu s-au încărcat încă, te rog încearcă din nou.",
+    "targetIdentifierNotReady": "Datele jucătorului țintă nu s-au încărcat încă, te rog încearcă din nou.",
+    "cannotKickJobActive": "Nu poți da afară jucători în timpul unui job activ!",
+    "lobbyClosed": "Lobby închis: Liderul a plecat",
+    "lobbyClosedDisconnect": "Lobby închis: Liderul s-a deconectat",
+    "jobCompletedLobbyDisbanded": "Job finalizat! Lobby desființat.",
+    "qualityBonus": "Calitate {quality}! Bonus x{multiplier}",
+    "poopPenalty": "Nu ai curățat după câinele tău! -{symbol}{amount}",
+    "poopCleanBonus": "Mizerie curățată! +{symbol}{amount}",
+    "lawnRaked": "Gazon greblat! +{symbol}{money} +{xp} XP",
+    "truckReturnFailed": "Ai întârziat prea mult cu returnarea camionului! Marcat ca eșuat.",
+    "repairComplete": "{item} reparat! +{symbol}{money} +{xp} XP",
+    "referralLimitReached": "Ai atins limita zilnică de bonusuri de recomandare",
+    "referralBonus": "Bonus de recomandare! +{xp} XP pentru că jucați împreună!",
+    "lobbyNoLongerExists": "Acest lobby nu mai există.",
+    "lobbyPlayerReconnected": "{name} s-a reconectat la lobby.",
+    "lobbyPlayerDisconnected": "{name} s-a deconectat.",
+    "lobbyOwnerDisconnectedNewOwner": "Liderul s-a deconectat. {name} este noul lider.",
+    "lobbyClosedNoReplacement": "Lobby închis: Nu s-a găsit un lider înlocuitor.",
+    "jobEndedOwnerLeft": "Job încheiat: Liderul jobului a plecat.",
+    "toolEfficiencyUpgrade": "Îmbunătățire de eficiență a uneltei",
+    "jobCancelled": "Job anulat! Lobby desființat.",
+    "jobCancelledByAdmin": "Jobul tău a fost anulat de un admin.",
+    "noActiveJob": "Nu ai un job activ.",
+    "jobCancelledAdmin": "Jobul '{jobId}' al jucătorului {playerId} a fost anulat.",
+    "cancelJobUsage": "Utilizare: /canceljob [playerId] - Anulează jobul tău activ sau al unui jucător",
+    "routeLevelInsufficient": "Nu ai nivelul necesar pentru această rută. (Nivel {current}/{required})",
+    "routeLevelInsufficientMember": "{name} nu are nivelul necesar pentru această rută. (Nivel {current}/{required})",
+    "globalEventCompleted": "Eveniment global finalizat: {title}!"
+  },
+  "shifts": {
+    "morning": "Tura de dimineață",
+    "afternoon": "Tura de după-amiază",
+    "evening": "Tura de seară",
+    "night": "Tura de noapte"
+  },
+  "perks": {
+    "trunk_capacity": {
+      "name": "Halterofil",
+      "desc": "Crește capacitatea portbagajului vehiculului."
+    },
+    "strong_muscles": {
+      "name": "Mușchi de Oțel",
+      "desc": "Crește viteza de deplasare când cari greutăți."
+    },
+    "negotiator": {
+      "name": "Negociator",
+      "desc": "Câștigi mai mulți bani din plățile joburilor."
+    },
+    "xp_boost": {
+      "name": "Minte Ageră",
+      "desc": "Primești mai mult XP din toate acțiunile de job."
+    },
+    "speed_demon": {
+      "name": "Demonul Vitezei",
+      "desc": "Îmbunătățește performanța motorului vehiculului de job."
+    },
+    "store_discount": {
+      "name": "Limbă de Argint",
+      "desc": "Primești reduceri la magazine în afara serviciului. (Pasiv)"
+    },
+    "breath_capacity": {
+      "name": "Plămâni de Oțel",
+      "desc": "Crește capacitatea de a-ți ține respirația sub apă. (Pasiv)"
+    },
+    "repair_speed": {
+      "name": "Mecanic Înnăscut",
+      "desc": "Repari vehiculele mai repede. (Pasiv)"
+    },
+    "notEnoughPoints": "Nu ai destule puncte de perk!"
+  },
+  "serverError": {
+    "notInJob": "Nu ești în job",
+    "noLobby": "Fără lobby",
+    "noSession": "Fără sesiune",
+    "configError": "Eroare de configurare",
+    "unknown": "Ceva n-a mers bine.",
+    "invalidIndex": "Index invalid",
+    "levelRequired": "Necesită nivelul {level}!",
+    "rateLimited": "Te rog așteaptă înainte să încerci din nou.",
+    "tooFarFromNpc": "Trebuie să fii lângă NPC pentru asta.",
+    "notEnoughMoney": "Nu ai destui bani!",
+    "invalidAmount": "Sumă invalidă!",
+    "invalidProduct": "Produs invalid!",
+    "purchaseFailed": "A apărut o eroare la cumpărare.",
+    "sellFailed": "A apărut o eroare la vânzare.",
+    "alreadyBroken": "Deja spart",
+    "anotherPlayerBreaking": "Alt jucător sparge asta",
+    "alreadyPickedUp": "Deja ridicat",
+    "alreadyUnlocked": "Deja deblocat",
+    "invalidZone": "Zonă invalidă!",
+    "alreadyCollected": "Acest obiect a fost deja colectat",
+    "someoneElseWorking": "Altcineva lucrează la asta!",
+    "someoneElseDelivering": "Altcineva livrează",
+    "invalidAction": "Acțiune invalidă",
+    "invalidType": "Tip invalid",
+    "alreadySold": "Deja vândut!",
+    "noItemsToSell": "Nu ai obiecte de vândut!",
+    "alreadyCarrying": "Deja cari ceva",
+    "notCarrying": "Nu cari nimic",
+    "trunkFull": "Portbagajul este plin",
+    "trunkCapacityFull": "Capacitatea portbagajului este plină",
+    "noItemsInTrunk": "Nu sunt obiecte în portbagaj",
+    "alreadyDelivered": "Deja livrat",
+    "invalidDeliveryPoint": "Punct de livrare invalid",
+    "invalidLocation": "Locație invalidă",
+    "objectNotFound": "Obiectul nu a fost găsit",
+    "vehicleAlreadySpawned": "Vehiculul a apărut deja",
+    "failedCreateVehicle": "Crearea vehiculului a eșuat",
+    "vehicleEntityNotFound": "Entitatea vehiculului nu a fost găsită",
+    "missingParameters": "Parametri lipsă",
+    "invalidSpawnData": "Date de spawn invalide",
+    "jobConfigNotFound": "Configurația jobului nu a fost găsită",
+    "noToolAssigned": "Nu ai nicio unealtă atribuită",
+    "notYourTool": "Aceasta nu este unealta ta",
+    "toolAlreadyTaken": "Unealta a fost deja luată",
+    "toolBeingTaken": "Unealta este luată de alt jucător",
+    "positionBeingTaken": "Poziția este luată de alt jucător",
+    "noPositionAvailable": "Nicio poziție disponibilă",
+    "noActiveTruck": "Niciun camion activ",
+    "truckNotLoading": "Camionul nu se încarcă",
+    "boxesFull": "Cutiile sunt pline",
+    "palletsFull": "Paleții sunt plini",
+    "invalidJob": "Job invalid",
+    "jobEnding": "Jobul se încheie",
+    "fishingNoFishFound": "Niciun pește găsit!",
+    "fishingInvalidRod": "Undiță invalidă!",
+    "fishingNoRod": "Nu ai undiță!",
+    "fishingFishCaughtSingle": "{label} prins!",
+    "fishingFishCaughtMultiple": "{count}x {label} prinși!",
+    "fishingNoFishToSell": "Niciun pește de vândut!",
+    "divingZoneAlreadySelected": "Zona a fost deja selectată!",
+    "deliveryNotInLoadingPhase": "Nu ești în faza de încărcare",
+    "deliveryNotInDeliveryPhase": "Nu ești în faza de livrare",
+    "deliveryAlreadyCarryingBox": "Cari deja o cutie",
+    "deliveryNotCarryingBox": "Nu cari nicio cutie",
+    "deliveryNoBoxesInTrunk": "Nu sunt cutii în portbagaj",
+    "deliveryCompleteFirst": "Finalizează mai întâi toate livrările!",
+    "deliverySpawnFailed": "Spawnul vehiculului a eșuat, job anulat.",
+    "huntingSomeoneElsePickingUp": "Altcineva ridică asta!",
+    "huntingAnimalNotFound": "Animalul nu a fost găsit",
+    "huntingAnimalStillAlive": "Animalul este încă viu",
+    "huntingAnimalAlreadyPickedUp": "Acest animal a fost deja ridicat",
+    "cleanupTruckFullDeliverFirst": "Camionul este plin! Livrează mai întâi.",
+    "cleanupBinAlreadyEmpty": "Tomberonul este deja gol",
+    "cleanupNoBagsLeft": "Nu mai sunt saci",
+    "warehouseBoxAlreadyTaken": "Cutia a fost deja luată",
+    "warehousePalletAlreadyTaken": "Paletul a fost deja luat",
+    "warehouseTruckNotReady": "Camionul nu este gata",
+    "forkliftWrongMode": "Mod greșit",
+    "forkliftInvalidCrate": "Ladă invalidă",
+    "forkliftCrateAlreadyTaken": "Lada a fost deja luată",
+    "forkliftConveyorBusy": "Banda transportoare este ocupată",
+    "forkliftInvalidSlot": "Slot invalid",
+    "forkliftSlotOccupied": "Slot ocupat",
+    "forkliftNotCarrying": "Nu cari nimic",
+    "forkliftInvalidCrateData": "Date de ladă invalide",
+    "forkliftNoCratesOnBelt": "Nu sunt lăzi pe bandă",
+    "forkliftNeed3Crates": "Sunt necesare 3 lăzi pe bandă",
+    "forkliftEmptySlot": "Slot gol",
+    "forkliftAlreadyCarrying": "Deja cari ceva",
+    "forkliftInvalidTarget": "Țintă invalidă",
+    "forkliftInvalidShelfTarget": "Raft țintă invalid",
+    "forkliftShelfOccupied": "Raft ocupat",
+    "newspaperLevelRequiredArea": "Necesită nivelul {level} pentru această zonă!",
+    "newspaperDailyCompleted": "Questul zilnic a fost deja finalizat! Se resetează în: {hours}h {minutes}m",
+    "adminSetLevelUsage": "Utilizare: /setjoblevel [playerID] [jobId] [level]",
+    "adminLevelRange": "Nivelul trebuie să fie între 1 și 10",
+    "adminLevelSet": "Nivelul {level} la {jobId} setat pentru jucătorul {playerId}",
+    "adminYourLevelSet": "Nivelul tău la {jobId} a fost setat la {level}",
+    "adminXpManagerNotAvailable": "XPManager nu este disponibil",
+    "adminGetLevelUsage": "Utilizare: /getjoblevel [playerID] [jobId]",
+    "adminPlayerJobLevel": "Jucător {playerId} - {jobId}: Nivel {level} (XP: {xp}/{maxXp})",
+    "adminToolSelected": "Selectat: {tool}",
+    "adminToolUnlocked": "Unealtă deblocată!",
+    "alreadyHarvested": "Deja recoltat",
+    "noLootAvailable": "Niciun loot disponibil",
+    "tooFar": "Ești prea departe",
+    "tooFarFromDeliveryPoint": "Ești prea departe de punctul de livrare"
+  },
+  "jobs": {
+    "miner": {
+      "name": "Miner",
+      "subtitle": "Operațiuni de minerit subteran",
+      "interactionText": "Începe jobul de miner",
+      "blipLabel": "Job de minerit",
+      "locationLabel": "Mina din carieră",
+      "description": [
+        "Extrage minereuri valoroase din zăcăminte subterane",
+        "Folosește echipamentul de minerit pentru a sparge rocile",
+        "Transportă materialele la stația de procesare",
+        "Lucrează în echipă pentru recompense bonus"
+      ],
+      "items": {
+        "pickaxe": "Târnăcop",
+        "miningHelmet": "Cască de miner",
+        "oreCart": "Vagonet de minereu"
+      },
+      "oreTypes": {
+        "coal": "Cărbune",
+        "iron": "Fier",
+        "gold": "Aur",
+        "emerald": "Smarald",
+        "diamond": "Diamant"
+      },
+      "preview": {
+        "step1Title": "Începe jobul",
+        "step1Desc": [
+          "Apropie-te de NPC-ul din carieră",
+          "Apasă E pentru a deschide meniul jobului",
+          "Alege zona și apasă Start"
+        ],
+        "step2Title": "Schimbă-ți hainele",
+        "step2Desc": [
+          "Mergi la cabina portabilă din apropiere",
+          "Intră înăuntru pentru a te schimba în ținuta de lucru",
+          "Hainele tale originale sunt restaurate la finalul jobului"
+        ],
+        "step3Title": "Ia-ți uneltele",
+        "step3Desc": [
+          "Mergi la portbagajul deschis al vehiculului de job",
+          "Ia un târnăcop — fiecare jucător îl ia pe al său",
+          "Până la 4 unelte disponibile pentru joc coop"
+        ],
+        "step4Title": "Minează rocile",
+        "step4Desc": [
+          "Mergi în zona de minerit cu târnăcopul",
+          "Țintește o rocă și lovește pentru a o sparge",
+          "Rocile se sfărâmă în bucăți de minereu colectabile"
+        ],
+        "step5Title": "Colectează minereul",
+        "step5Desc": [
+          "Ridică bucățile de minereu după ce spargi o rocă",
+          "Cari minereul în brațe",
+          "Adu-l înapoi la portbagajul vehiculului"
+        ],
+        "step6Title": "Încarcă vehiculul",
+        "step6Desc": [
+          "Cară minereul la portbagajul vehiculului",
+          "Minereul este încărcat automat în camion",
+          "Umple portbagajul, apoi condu spre zona de procesare"
+        ],
+        "step7Title": "Procesează la cântar",
+        "step7Desc": [
+          "Condu până la punctul de procesare",
+          "Pune minereul pe cântar",
+          "Fiecare obiect este cântărit și primești plata"
+        ],
+        "step8Title": "Colectare de către NPC",
+        "step8Desc": [
+          "După procesare, un NPC transportator colectează obiectele",
+          "NPC-ul vine și ridică minereul procesat",
+          "Câștigi bani și XP pentru fiecare lot finalizat"
+        ]
+      }
+    },
+    "lumberjack": {
+      "name": "Tăietor de lemne",
+      "subtitle": "Operațiuni de exploatare forestieră",
+      "interactionText": "Începe jobul de tăietor de lemne",
+      "blipLabel": "Job de tăietor de lemne",
+      "locationLabel": "Pădurea Paleto",
+      "description": [
+        "Taie copaci în zonele de exploatare desemnate",
+        "Colectează și încarcă buștenii în camion",
+        "Livrează buștenii la gater pentru procesare",
+        "Lucrează în echipă pentru recompense bonus"
+      ],
+      "items": {
+        "hatchet": "Topor",
+        "safetyVest": "Vestă de protecție",
+        "pickupTruck": "Camionetă"
+      },
+      "treeTypes": {
+        "pine": "Pin",
+        "oak": "Stejar",
+        "maple": "Arțar"
+      },
+      "drops": {
+        "wood": "Lemn",
+        "pineResin": "Rășină de pin",
+        "woodShavings": "Talaș",
+        "oakWood": "Lemn de stejar",
+        "oakBark": "Scoarță de stejar",
+        "mapleWood": "Lemn de arțar",
+        "mapleSap": "Sevă de arțar"
+      },
+      "preview": {
+        "step1Title": "Începe jobul",
+        "step1Desc": [
+          "Apropie-te de NPC-ul din pădure",
+          "Apasă E pentru a deschide meniul jobului",
+          "Alege zona și apasă Start"
+        ],
+        "step2Title": "Schimbă-ți hainele",
+        "step2Desc": [
+          "Mergi la cabina portabilă din apropiere",
+          "Intră înăuntru pentru a te schimba în ținuta de lucru",
+          "Hainele tale originale sunt restaurate la finalul jobului"
+        ],
+        "step3Title": "Ia-ți uneltele",
+        "step3Desc": [
+          "Mergi la portbagajul deschis al vehiculului de job",
+          "Ia un topor — fiecare jucător îl ia pe al său",
+          "Până la 4 unelte disponibile pentru joc coop"
+        ],
+        "step4Title": "Doboară copacii",
+        "step4Desc": [
+          "Mergi în zona forestieră cu toporul",
+          "Țintește un copac și lovește pentru a-l tăia",
+          "Copacii lasă bușteni când sunt tăiați complet"
+        ],
+        "step5Title": "Colectează bușteanul",
+        "step5Desc": [
+          "Ridică bușteanul după ce tai un copac",
+          "Cari bușteanul în brațe",
+          "Adu-l înapoi la portbagajul vehiculului"
+        ],
+        "step6Title": "Încarcă vehiculul",
+        "step6Desc": [
+          "Cară bușteanul la portbagajul vehiculului",
+          "Bușteanul este încărcat automat în camion",
+          "Umple portbagajul, apoi condu spre zona de procesare"
+        ],
+        "step7Title": "Procesează la cântar",
+        "step7Desc": [
+          "Condu până la punctul de procesare",
+          "Pune buștenii pe cântar",
+          "Fiecare obiect este cântărit și primești plata"
+        ],
+        "step8Title": "Colectare de către NPC",
+        "step8Desc": [
+          "După procesare, un NPC transportator colectează obiectele",
+          "NPC-ul vine și ridică buștenii procesați",
+          "Câștigi bani și XP pentru fiecare lot finalizat"
+        ]
+      }
+    },
+    "scrapyard": {
+      "name": "Muncitor la fier vechi",
+      "subtitle": "Reciclare de fier vechi",
+      "interactionText": "Începe jobul la fier vechi",
+      "blipLabel": "Fier vechi",
+      "locationLabel": "Cimitirul de mașini",
+      "description": [
+        "Dezmembrează vehicule vechi și recuperează piese valoroase",
+        "Folosește o rangă pentru a separa componentele metalice",
+        "Încarcă fierul vechi colectat în camion",
+        "Cântărește și vinde la stația de procesare"
+      ],
+      "items": {
+        "crowbar": "Rangă",
+        "workGloves": "Mănuși de lucru",
+        "scrapMetal": "Fier vechi"
+      },
+      "preview": {
+        "step1Title": "Începe jobul",
+        "step1Desc": [
+          "Apropie-te de NPC-ul de la cimitirul de mașini",
+          "Apasă E pentru a deschide meniul jobului",
+          "Alege zona și apasă Start"
+        ],
+        "step2Title": "Schimbă-ți hainele",
+        "step2Desc": [
+          "Mergi la cabina portabilă din apropiere",
+          "Intră înăuntru pentru a te schimba în ținuta de lucru",
+          "Hainele tale originale sunt restaurate la finalul jobului"
+        ],
+        "step3Title": "Ia-ți uneltele",
+        "step3Desc": [
+          "Mergi la portbagajul deschis al vehiculului de job",
+          "Ia o rangă — fiecare jucător o ia pe a sa",
+          "Până la 4 unelte disponibile pentru joc coop"
+        ],
+        "step4Title": "Dezmembrează epavele",
+        "step4Desc": [
+          "Mergi la mașinile vechi din curte",
+          "Folosește ranga pentru a dezmembra piese",
+          "Epavele se desfac în fier vechi colectabil"
+        ],
+        "step5Title": "Colectează fierul vechi",
+        "step5Desc": [
+          "Ridică piesele după dezmembrare",
+          "Cari piesele până la vehicul",
+          "Adu-le înapoi la portbagajul vehiculului"
+        ],
+        "step6Title": "Încarcă vehiculul",
+        "step6Desc": [
+          "Cară fierul vechi la portbagajul vehiculului",
+          "Fierul vechi este încărcat automat în camion",
+          "Umple portbagajul, apoi condu spre zona de procesare"
+        ],
+        "step7Title": "Procesează la cântar",
+        "step7Desc": [
+          "Condu până la punctul de procesare",
+          "Pune fierul vechi pe cântar",
+          "Fiecare obiect este cântărit și primești plata"
+        ],
+        "step8Title": "Colectare de către NPC",
+        "step8Desc": [
+          "După procesare, un NPC transportator colectează obiectele",
+          "NPC-ul vine și ridică fierul vechi procesat",
+          "Câștigi bani și XP pentru fiecare lot finalizat"
+        ]
+      }
+    },
+    "hunting": {
+      "name": "Vânător",
+      "subtitle": "Vânătoare profesionistă",
+      "interactionText": "Începe jobul de vânătoare",
+      "blipLabel": "Vânătoare",
+      "locationLabel": "Vânătoare",
+      "description": [
+        "Ia-ți armele și mergi la vânătoare",
+        "Vânează căprioare, mistreți și iepuri",
+        "Încarcă animalele vânate în vehicul",
+        "Du-le la cântar și vinde-le"
+      ],
+      "items": {
+        "huntingRifle": "Pușcă de vânătoare",
+        "binoculars": "Binoclu",
+        "huntingBag": "Geantă de vânătoare"
+      },
+      "weapons": {
+        "tier1": "Pușcă de vânătoare",
+        "tier2": "Pușcă cu repetiție",
+        "tier3": "Sniper greu"
+      },
+      "animals": {
+        "wildBoar": "Mistreț",
+        "rabbit": "Iepure",
+        "coyote": "Coiot",
+        "mountainLion": "Puma",
+        "hawk": "Șoim",
+        "crow": "Cioară"
+      },
+      "areas": {
+        "forest": "Pădurea Paleto",
+        "desert": "Deșertul Sandy Shores",
+        "swamp": "Mlaștină"
+      },
+      "blips": {
+        "forestArea": "Zona de pădure",
+        "desertArea": "Zona de deșert",
+        "swampArea": "Zona de mlaștină"
+      },
+      "preview": {
+        "step1Title": "Începe jobul",
+        "step1Desc": [
+          "Apropie-te de NPC-ul de la cabana de vânătoare",
+          "Apasă E pentru a deschide meniul jobului",
+          "Alege zona și apasă Start"
+        ],
+        "step2Title": "Schimbă-ți hainele",
+        "step2Desc": [
+          "Mergi la cabina portabilă din apropiere",
+          "Intră înăuntru pentru a te echipa cu ținuta de vânătoare",
+          "Hainele tale originale sunt restaurate la finalul jobului"
+        ],
+        "step3Title": "Ia-ți vehiculul",
+        "step3Desc": [
+          "Mergi la camioneta de vânătoare din apropiere",
+          "Primești automat o armă",
+          "Condu spre terenurile de vânătoare"
+        ],
+        "step4Title": "Vânează animale",
+        "step4Desc": [
+          "Explorează zona de vânătoare și găsește animale",
+          "Folosește pușca pentru a vâna mistreți, iepuri și altele",
+          "Fiecare animal are greutate și valoare diferite"
+        ],
+        "step5Title": "Cară animalul",
+        "step5Desc": [
+          "Apropie-te de un animal vânat pentru a-l ridica",
+          "Cară-l pe umeri înapoi la camion",
+          "Fiecare animal are o greutate diferită"
+        ],
+        "step6Title": "Încarcă vehiculul",
+        "step6Desc": [
+          "Cară vânatul până la camion",
+          "Încarcă animalele pe bena camionului",
+          "Umple camionul, apoi condu spre procesare"
+        ],
+        "step7Title": "Procesează și vinde",
+        "step7Desc": [
+          "Condu la stația de procesare",
+          "Pune vânatul pe cântar pentru cântărire",
+          "Un NPC transportator colectează bunurile procesate"
+        ]
+      }
+    },
+    "farmer": {
+      "name": "Fermier",
+      "subtitle": "Recoltare de fructe și legume",
+      "interactionText": "Începe jobul de fermier",
+      "blipLabel": "Fermă de legume",
+      "locationLabel": "Ferma Grapeseed",
+      "description": [
+        "Ia o ladă din vehicul",
+        "Recoltează legume de pe plante",
+        "Umple lada și încarc-o în camion",
+        "Livrează lăzile pline la stația de procesare"
+      ],
+      "items": {
+        "harvestCrate": "Ladă de recoltă",
+        "freshProduce": "Produse proaspete",
+        "deliveryTruck": "Camion de livrare"
+      },
+      "produceTypes": {
+        "lettuce": "Salată verde",
+        "pumpkin": "Dovleac",
+        "melon": "Pepene galben",
+        "watermelon": "Pepene roșu"
+      },
+      "preview": {
+        "step1Title": "Începe jobul",
+        "step1Desc": [
+          "Apropie-te de NPC-ul de la fermă",
+          "Apasă E pentru a deschide meniul jobului",
+          "Alege zona și apasă Start"
+        ],
+        "step2Title": "Schimbă-ți hainele",
+        "step2Desc": [
+          "Mergi la cabina portabilă din apropiere",
+          "Intră înăuntru pentru a te schimba în ținuta de lucru",
+          "Hainele tale originale sunt restaurate la finalul jobului"
+        ],
+        "step3Title": "Ia-ți vehiculul",
+        "step3Desc": [
+          "Mergi la vehiculul de job din apropiere",
+          "Ia o ladă goală din camion",
+          "Condu spre câmp pentru a începe recoltarea"
+        ],
+        "step4Title": "Recoltează plantele",
+        "step4Desc": [
+          "Apropie-te de o plantă și interacționează pentru a recolta",
+          "Fiecare plantă oferă produse proaspete",
+          "Umple lada înainte de a te întoarce"
+        ],
+        "step5Title": "Cară produsele",
+        "step5Desc": [
+          "Ridică lada plină",
+          "Car-o înapoi la vehicul",
+          "Încarc-o pe bena camionului"
+        ],
+        "step6Title": "Încarcă vehiculul",
+        "step6Desc": [
+          "Cară lada plină până la camion",
+          "Încarc-o pe bena vehiculului",
+          "Umple camionul, apoi condu spre zona de procesare"
+        ],
+        "step7Title": "Procesează și vinde",
+        "step7Desc": [
+          "Condu la stația de procesare",
+          "Pune lăzile pe cântar",
+          "Un NPC transportator colectează bunurile procesate"
+        ]
+      }
+    },
+    "fruitpicker": {
+      "name": "Culegător de fructe",
+      "subtitle": "Recoltare de fructe",
+      "interactionText": "Începe jobul de cules fructe",
+      "blipLabel": "Livada de fructe",
+      "locationLabel": "Livada de fructe",
+      "description": [
+        "Ia o ladă din vehicul",
+        "Mergi la pomii fructiferi și culege portocale și mere",
+        "Umple lada și încarc-o în camion",
+        "Livrează lăzile pline la stația de procesare"
+      ],
+      "items": {
+        "harvestCrate": "Ladă de recoltă",
+        "freshOranges": "Portocale proaspete",
+        "deliveryTruck": "Camion de livrare"
+      },
+      "produceTypes": {
+        "orange": "Portocală",
+        "apple": "Măr"
+      },
+      "qualityTiers": {
+        "common": "Comun",
+        "fresh": "Proaspăt",
+        "premium": "Premium",
+        "organic": "Organic"
+      },
+      "preview": {
+        "step1Title": "Începe jobul",
+        "step1Desc": [
+          "Apropie-te de NPC-ul din livada de portocali",
+          "Apasă E pentru a deschide meniul jobului",
+          "Alege zona și apasă Start"
+        ],
+        "step2Title": "Schimbă-ți hainele",
+        "step2Desc": [
+          "Mergi la cabina portabilă din apropiere",
+          "Intră înăuntru pentru a te schimba în ținuta de lucru",
+          "Hainele tale originale sunt restaurate la finalul jobului"
+        ],
+        "step3Title": "Ia-ți vehiculul",
+        "step3Desc": [
+          "Mergi la vehiculul de job din apropiere",
+          "Ia o ladă goală din camion",
+          "Condu spre portocali pentru a începe culesul"
+        ],
+        "step4Title": "Culege portocale",
+        "step4Desc": [
+          "Apropie-te de un portocal",
+          "Interacționează pentru a te întinde și a culege portocale",
+          "Umple lada înainte de a te întoarce"
+        ],
+        "step5Title": "Cară lada",
+        "step5Desc": [
+          "Ridică lada plină",
+          "Car-o înapoi la vehicul",
+          "Încarc-o pe bena camionului"
+        ],
+        "step6Title": "Încarcă vehiculul",
+        "step6Desc": [
+          "Cară lada plină până la camion",
+          "Încarc-o pe bena vehiculului",
+          "Umple camionul, apoi condu spre procesare"
+        ],
+        "step7Title": "Procesează și vinde",
+        "step7Desc": [
+          "Condu la stația de procesare",
+          "Pune lăzile pe cântar",
+          "Un NPC transportator colectează bunurile procesate"
+        ]
+      }
+    },
+    "cleaner": {
+      "name": "Curățător stradal",
+      "subtitle": "Serviciu de curățenie urbană",
+      "interactionText": "Începe jobul de curățenie",
+      "blipLabel": "Curățenie urbană",
+      "locationLabel": "Depoul de curățenie",
+      "description": [
+        "Ia mopul din portbagajul vehiculului",
+        "Mergi la petele de murdărie marcate pe hartă",
+        "Curăță petele folosind mopul",
+        "Întoarce-te pentru plată când ai terminat"
+      ],
+      "items": {
+        "mop": "Mop",
+        "dirtStain": "Pată de murdărie",
+        "serviceVan": "Dubă de serviciu"
+      },
+      "areas": {
+        "downtown": "Centru"
+      },
+      "preview": {
+        "step1Title": "Începe jobul",
+        "step1Desc": [
+          "Apropie-te de NPC-ul de la depoul de curățenie",
+          "Apasă E pentru a deschide meniul jobului",
+          "Alege ruta și apasă Start"
+        ],
+        "step2Title": "Schimbă-ți hainele",
+        "step2Desc": [
+          "Mergi la cabina portabilă din apropiere",
+          "Intră înăuntru pentru a te schimba în ținuta de lucru",
+          "Hainele tale originale sunt restaurate la finalul jobului"
+        ],
+        "step3Title": "Ia-ți uneltele",
+        "step3Desc": [
+          "Mergi la portbagajul vehiculului de job",
+          "Ia un mop — fiecare jucător îl ia pe al său",
+          "Până la 4 unelte disponibile pentru joc coop"
+        ],
+        "step4Title": "Condu spre zona de lucru",
+        "step4Desc": [
+          "Urcă în vehicul și urmează GPS-ul",
+          "Condu spre locațiile marcate cu pete",
+          "Fiecare rută are mai multe pete de murdărie de curățat"
+        ],
+        "step5Title": "Curăță petele",
+        "step5Desc": [
+          "Apropie-te de o pată de murdărie cu mopul",
+          "Apasă pe țintele care apar pentru a freca pata",
+          "Fiecare pată necesită mai multe lovituri pentru a fi curățată complet"
+        ],
+        "step6Title": "Finalizează jobul",
+        "step6Desc": [
+          "După ce cureți toate petele, întoarce-te la depou",
+          "Vorbește cu NPC-ul pentru a-ți încasa plata",
+          "Câștigi bani bonus pentru finalizarea întregii rute"
+        ]
+      }
+    },
+    "powerwash": {
+      "name": "Spălător cu presiune",
+      "subtitle": "Serviciu de spălare cu presiune",
+      "interactionText": "Începe jobul de spălare cu presiune",
+      "blipLabel": "Spălare cu presiune",
+      "locationLabel": "Depoul de spălare cu presiune",
+      "description": [
+        "Ia lancea de presiune din vehicul",
+        "Mergi la locurile murdare marcate pe hartă",
+        "Ține apăsat LMB pentru a pulveriza și a curăța suprafețele",
+        "Întoarce-te pentru plată când ai terminat"
+      ],
+      "items": {
+        "pressureWand": "Lance de presiune",
+        "dirtyStain": "Pată de murdărie",
+        "washVan": "Dubă de spălare"
+      },
+      "preview": {
+        "step1Title": "Începe jobul",
+        "step1Desc": [
+          "Apropie-te de NPC-ul de la depoul de spălare",
+          "Apasă E pentru a deschide meniul jobului",
+          "Alege ruta și apasă Start"
+        ],
+        "step2Title": "Schimbă-ți hainele",
+        "step2Desc": [
+          "Mergi la cabina portabilă din apropiere",
+          "Intră înăuntru pentru a te schimba în ținuta de lucru",
+          "Hainele tale originale sunt restaurate la finalul jobului"
+        ],
+        "step3Title": "Ia-ți uneltele",
+        "step3Desc": [
+          "Mergi la vehiculul de job",
+          "Ia o lance de presiune — fiecare jucător o ia pe a sa",
+          "Până la 4 unelte disponibile pentru joc coop"
+        ],
+        "step4Title": "Condu spre zona de lucru",
+        "step4Desc": [
+          "Urcă în vehicul și urmează GPS-ul",
+          "Condu spre locațiile marcate cu pete",
+          "Fiecare rută are mai multe locuri murdare de curățat"
+        ],
+        "step5Title": "Pulverizează petele",
+        "step5Desc": [
+          "Țintește lancea de presiune spre suprafața murdară",
+          "Ține apăsat butonul stâng al mouse-ului pentru a pulveriza apă",
+          "Continuă să pulverizezi până când pata este complet curățată"
+        ],
+        "step6Title": "Finalizează jobul",
+        "step6Desc": [
+          "După ce cureți toate petele, întoarce-te la depou",
+          "Intră în marker pentru a-ți încasa plata",
+          "Câștigi bani bonus pentru finalizarea întregii rute"
+        ]
+      }
+    },
+    "windowscleaner": {
+      "name": "Spălător de geamuri",
+      "subtitle": "Serviciu urban de curățare a geamurilor",
+      "interactionText": "Începe jobul de spălat geamuri",
+      "blipLabel": "Curățare geamuri",
+      "locationLabel": "Depoul de curățare geamuri",
+      "description": [
+        "Ia buretele din vehicul",
+        "Mergi la geamurile marcate pe hartă",
+        "Curăță petele murdare de pe geamuri",
+        "Întoarce-te pentru plată când ai terminat"
+      ],
+      "items": {
+        "sponge": "Burete",
+        "windowDirt": "Murdărie pe geam",
+        "cleaningVan": "Dubă de curățenie"
+      },
+      "preview": {
+        "step1Title": "Începe jobul",
+        "step1Desc": [
+          "Apropie-te de NPC-ul de la depoul de curățenie",
+          "Apasă E pentru a deschide meniul jobului",
+          "Alege ruta și apasă Start"
+        ],
+        "step2Title": "Schimbă-ți hainele",
+        "step2Desc": [
+          "Mergi la cabina portabilă din apropiere",
+          "Intră înăuntru pentru a te schimba în ținuta de lucru",
+          "Hainele tale originale sunt restaurate la finalul jobului"
+        ],
+        "step3Title": "Ia-ți uneltele",
+        "step3Desc": [
+          "Mergi la vehiculul de job",
+          "Ia un burete — fiecare jucător îl ia pe al său",
+          "Până la 4 unelte disponibile pentru joc coop"
+        ],
+        "step4Title": "Condu spre zona de lucru",
+        "step4Desc": [
+          "Urcă în vehicul și urmează GPS-ul",
+          "Condu spre locațiile marcate cu geamuri",
+          "Fiecare rută are mai multe geamuri murdare de curățat"
+        ],
+        "step5Title": "Curăță geamurile",
+        "step5Desc": [
+          "Apropie-te de un geam murdar cu buretele",
+          "Apasă pe țintele care apar pentru a freca geamul",
+          "Fiecare geam necesită mai multe lovituri pentru a fi curățat complet"
+        ],
+        "step6Title": "Finalizează jobul",
+        "step6Desc": [
+          "După ce cureți toate geamurile, întoarce-te la depou",
+          "Vorbește cu NPC-ul pentru a-ți încasa plata",
+          "Câștigi bani bonus pentru finalizarea întregii rute"
+        ]
+      }
+    },
+    "cardetailer": {
+      "name": "Detailer auto",
+      "subtitle": "Serviciu mobil de detailing auto",
+      "interactionText": "Începe jobul de detailing auto",
+      "blipLabel": "Detailing auto",
+      "locationLabel": "Depoul de detailing auto",
+      "description": [
+        "Ia lancea de presiune din vehicul",
+        "Condu spre mașinile clienților marcate pe hartă",
+        "Spală fiecare mașină cu lancea de presiune",
+        "Lustruiește și ceruiește mașina pentru plată bonus"
+      ],
+      "items": {
+        "pressureWand": "Lance de presiune",
+        "waxCloth": "Cârpă de ceruit",
+        "serviceVan": "Dubă de serviciu"
+      },
+      "preview": {
+        "step1Title": "Începe jobul",
+        "step1Desc": [
+          "Apropie-te de NPC-ul de la depoul de detailing",
+          "Apasă E pentru a deschide meniul jobului",
+          "Acceptă jobul pentru a începe"
+        ],
+        "step2Title": "Schimbă-ți hainele",
+        "step2Desc": [
+          "Mergi la cabina portabilă din apropiere",
+          "Intră înăuntru pentru a te schimba în ținuta de lucru",
+          "Hainele tale originale sunt restaurate la finalul jobului"
+        ],
+        "step3Title": "Ia-ți uneltele",
+        "step3Desc": [
+          "Mergi la vehiculul de job",
+          "Ia lancea de presiune din spate",
+          "Un furtun conectează lancea la rezervorul de apă"
+        ],
+        "step4Title": "Condu spre mașinile clienților",
+        "step4Desc": [
+          "Urcă în vehicul și urmează GPS-ul",
+          "Condu spre locațiile marcate ale mașinilor clienților",
+          "Parchează aproape — furtunul are rază limitată"
+        ],
+        "step5Title": "Spală mașina",
+        "step5Desc": [
+          "Țintește lancea de presiune spre petele murdare",
+          "Ține apăsat butonul stâng al mouse-ului pentru a pulveriza apă",
+          "Mașina devine mai curată pe măsură ce speli fiecare pată"
+        ],
+        "step6Title": "Finalizează jobul",
+        "step6Desc": [
+          "După ce termini toate mașinile, întoarce-te la depou",
+          "Returnează uneltele și încheie jobul",
+          "Nivelurile mai mari deblochează lustruirea cu ceară pentru plată bonus"
+        ]
+      }
+    },
+    "newspaper": {
+      "name": "Livrator de ziare",
+      "subtitle": "Serviciu de livrare a ziarelor",
+      "interactionText": "Începe livrarea de ziare",
+      "blipLabel": "Livrare ziare",
+      "locationLabel": "Livrare ziare",
+      "description": [
+        "Ia bicicleta de livrare",
+        "Aruncă ziare la punctele de livrare marcate",
+        "Mai multe livrări înseamnă mai mulți bani",
+        "Lucrează în echipă pentru finalizare mai rapidă"
+      ],
+      "items": {
+        "newspaperBundle": "Teanc de ziare",
+        "deliveryList": "Listă de livrări",
+        "bikeKey": "Cheia bicicletei"
+      },
+      "routes": {
+        "restoran": "Ruta restaurantelor",
+        "easy": "Ruta ușoară",
+        "headline": "Circuitul titlurilor",
+        "express": "Ruta expres",
+        "morning": "Gazeta de dimineață",
+        "editorial": "Cursa editorială"
+      },
+      "blips": {
+        "newspaperDelivery": "Livrare ziare",
+        "returnBike": "Returnează bicicleta"
+      }
+    },
+    "cleanup": {
+      "name": "Colector de deșeuri",
+      "subtitle": "Servicii de salubritate urbană",
+      "interactionText": "Începe colectarea deșeurilor",
+      "blipLabel": "Colectare deșeuri",
+      "locationLabel": "Centrul de salubritate",
+      "description": [
+        "Colectează deșeuri din tomberoanele din oraș",
+        "Încarcă sacii de deșeuri în camion",
+        "Livrează camionul când e plin",
+        "Lucrează în echipă și câștigă mai mult"
+      ],
+      "items": {
+        "cleanupBag": "Sac de deșeuri",
+        "gloves": "Mănuși",
+        "cleanupTruck": "Camion de salubritate"
+      },
+      "areas": {
+        "downtown": "Centru",
+        "industrial": "Zona industrială",
+        "residential": "Zona rezidențială"
+      },
+      "blips": {
+        "cleanupDelivery": "Livrare deșeuri"
+      }
+    },
+    "trucker": {
+      "name": "Șofer de camion",
+      "subtitle": "Transport de cursă lungă",
+      "interactionText": "Începe jobul de camionagiu",
+      "blipLabel": "Parcul de camioane",
+      "locationLabel": "Depoul de camioane",
+      "description": [
+        "Preia remorci și livrează marfă",
+        "Câștigă bani în funcție de distanța parcursă",
+        "Șansă la rute ilegale bine plătite",
+        "Lucrează în echipă pentru recompense bonus"
+      ],
+      "items": {
+        "truck": "Camion",
+        "trailer": "Remorcă",
+        "cargo": "Marfă"
+      },
+      "blips": {
+        "pickupTrailer": "Preia remorca",
+        "deliverCargo": "Livrează marfa",
+        "illegalDelivery": "Livrare ilegală",
+        "returnTruck": "Returnează camionul"
+      }
+    },
+    "taxi": {
+      "name": "Taximetrist",
+      "subtitle": "Transport urban",
+      "interactionText": "Începe jobul de taxi",
+      "blipLabel": "Depoul de taxiuri",
+      "locationLabel": "Depoul de taxiuri",
+      "description": [
+        "Preia pasageri din oraș",
+        "Du-i la destinația lor",
+        "Câștigă bani în funcție de distanță",
+        "Bonus pentru transport rapid"
+      ],
+      "items": {
+        "taxi": "Taxi",
+        "passenger": "Pasager"
+      },
+      "blips": {
+        "pickupPassenger": "Preia pasagerul",
+        "dropOff": "Lasă pasagerul",
+        "returnTaxi": "Returnează taxiul"
+      }
+    },
+    "dogwalking": {
+      "name": "Plimbător de câini",
+      "subtitle": "Servicii de îngrijire a animalelor",
+      "interactionText": "Începe plimbatul câinilor",
+      "blipLabel": "Plimbat câini",
+      "locationLabel": "Servicii pentru animale",
+      "description": [
+        "Plimbă câinii clienților bogați",
+        "Preia câinii de la casele clienților",
+        "Parcurge distanța necesară cu câinele tău",
+        "Curăță după câinele tău pentru plată bonus",
+        "Lucrează cu prietenii pentru bonus coop!"
+      ],
+      "items": {
+        "leash": "Lesă",
+        "poopBag": "Pungă pentru excremente",
+        "treats": "Bunătăți"
+      },
+      "blips": {
+        "clientHome": "Casa clientului"
+      },
+      "preview": {
+        "step1Title": "Începe jobul",
+        "step1Desc": [
+          "Găsește NPC-ul de plimbat câini lângă magazinul de animale",
+          "Apasă E pentru a deschide meniul jobului",
+          "Alege zona și apasă Start"
+        ],
+        "step2Title": "Schimbă-ți hainele",
+        "step2Desc": [
+          "Mergi la zona de schimbare de lângă magazinul de animale",
+          "Intră înăuntru pentru a te schimba în ținuta de lucru",
+          "Hainele tale originale sunt restaurate la finalul jobului"
+        ],
+        "step3Title": "Preia câinele",
+        "step3Desc": [
+          "Condu spre casa clientului din Vinewood Hills",
+          "Întâlnește-te cu stăpânul câinelui care așteaptă afară",
+          "Apasă E pentru a lua câinele în lesă"
+        ],
+        "step4Title": "Plimbă câinele",
+        "step4Desc": [
+          "Plimbă-te cu câinele în lesă",
+          "Parcurge distanța necesară afișată pe HUD",
+          "Curăță după câinele tău pentru plată bonus"
+        ],
+        "step5Title": "Returnează câinele",
+        "step5Desc": [
+          "Du câinele înapoi la casa clientului",
+          "Câinele se întoarce automat la stăpânul său",
+          "Ești plătit în funcție de distanța parcursă și curățenii"
+        ]
+      }
+    },
+    "powerlines": {
+      "name": "Rețele electrice",
+      "subtitle": "Energie și comunicații urbane",
+      "interactionText": "Începe jobul la rețele electrice",
+      "blipLabel": "Job rețele electrice",
+      "locationLabel": "Compania de electricitate",
+      "description": [
+        "Repară panourile electrice din case",
+        "Repară cablurile stâlpilor de telefonie folosind camionul cu nacelă",
+        "Lucrează cu echipa ta pentru recompense bonus",
+        "Folosește minigame-uri pentru a finaliza reparațiile"
+      ],
+      "items": {
+        "multimeter": "Multimetru",
+        "wireKit": "Kit de cabluri",
+        "safetyGear": "Echipament de protecție"
+      },
+      "blips": {
+        "electricalPanel": "Panou electric",
+        "phonePole": "Stâlp de telefonie",
+        "bucketTruck": "Camion cu nacelă"
+      },
+      "routes": {
+        "rockfordHills": "Rockford Hills",
+        "davis": "Davis",
+        "vespucci": "Vespucci",
+        "strawberry": "Strawberry",
+        "centralLS": "Central LS",
+        "southLS": "South LS"
+      }
+    },
+    "delivery": {
+      "name": "Livrare de colete",
+      "subtitle": "Serviciu de livrare a coletelor",
+      "interactionText": "Începe jobul de livrare colete",
+      "blipLabel": "Livrare colete",
+      "locationLabel": "Livrare colete",
+      "description": [
+        "Ia duba și încarcă cutii de la depou",
+        "Livrează cutiile clienților desemnați",
+        "Cu cât livrezi mai mult, cu atât câștigi mai mult",
+        "Lucrează în echipă pentru a termina mai repede"
+      ],
+      "items": {
+        "cargoBox": "Cutie de marfă",
+        "deliveryList": "Listă de livrări",
+        "vanKey": "Cheia dubei"
+      },
+      "blips": {
+        "deliveryPoint": "Punct de livrare"
+      },
+      "preview": {
+        "step1Title": "Începe jobul",
+        "step1Desc": [
+          "Apropie-te de NPC-ul de la depoul de livrări",
+          "Apasă E pentru a deschide meniul jobului",
+          "Alege zona și apasă Start"
+        ],
+        "step2Title": "Schimbă-ți hainele",
+        "step2Desc": [
+          "Mergi la cabina portabilă din apropiere",
+          "Intră înăuntru pentru a te schimba în ținuta de lucru",
+          "Hainele tale originale sunt restaurate la finalul jobului"
+        ],
+        "step3Title": "Ia-ți vehiculul",
+        "step3Desc": [
+          "Mergi la duba de livrare parcată",
+          "Ușile din spate sunt deschise pentru încărcare",
+          "Fiecare lobby primește propriul vehicul"
+        ],
+        "step4Title": "Ridică coletele",
+        "step4Desc": [
+          "Mergi la muncitorul depoului de lângă depozit",
+          "Apasă E pentru a ridica o cutie de marfă",
+          "Poți căra o singură cutie odată"
+        ],
+        "step5Title": "Încarcă duba",
+        "step5Desc": [
+          "Cară coletele la ușile din spate deschise ale dubei",
+          "Cutiile sunt stivuite automat înăuntru",
+          "Umple duba înainte de a porni la drum"
+        ],
+        "step6Title": "Livrează coletele",
+        "step6Desc": [
+          "Condu spre locația de livrare marcată",
+          "Ia o cutie din portbagaj și car-o",
+          "Mergi la client și apasă E pentru a livra"
+        ],
+        "step7Title": "Întoarce-te la depou",
+        "step7Desc": [
+          "După toate livrările, condu înapoi la depou",
+          "Parchează duba în locul marcat",
+          "Câștigurile tale sunt plătite automat"
+        ]
+      }
+    },
+    "warehouse": {
+      "name": "Muncitor de depozit",
+      "subtitle": "Marfă și logistică",
+      "interactionText": "Începe jobul de depozit",
+      "blipLabel": "Depozit",
+      "locationLabel": "Depozit",
+      "description": [
+        "Încarcă cutii și paleți în camioanele de livrare",
+        "Folosește un stivuitor pentru paleții grei",
+        "Cară manual cutiile mai mici până la camion",
+        "Finalizează comenzile camioanelor pentru plată"
+      ],
+      "items": {
+        "forklift": "Stivuitor",
+        "boxes": "Cutii",
+        "pallets": "Paleți"
+      },
+      "blips": {
+        "truck": "Camion",
+        "deliveryPoint": "Punct de livrare",
+        "forklift": "Stivuitor"
+      },
+      "deliveryRoutes": {
+        "vinewood": "Piața Vinewood",
+        "davis": "Supermarketul Davis",
+        "strawberry": "Piața Strawberry"
+      }
+    },
+    "landscaping": {
+      "name": "Peisagistică",
+      "subtitle": "Întreținerea grădinilor",
+      "interactionText": "Începe jobul de peisagistică",
+      "blipLabel": "Job de peisagistică",
+      "locationLabel": "Întreținere urbană",
+      "description": [
+        "Tunde tufișurile crescute cu un trimmer",
+        "Sapă buruienile cu o lopată",
+        "Ia uneltele din camionul de lucru",
+        "Lucrează în echipă pentru recompense bonus"
+      ],
+      "items": {
+        "trimmer": "Trimmer",
+        "shovel": "Lopată",
+        "workTruck": "Camion de lucru"
+      },
+      "routes": {
+        "vespucci": "Vespucci",
+        "pillboxHill": "Pillbox Hill",
+        "littleSeoul": "Little Seoul",
+        "burton": "Burton",
+        "vinewoodHills": "Vinewood Hills"
+      }
+    },
+    "fishing": {
+      "name": "Pescuit",
+      "subtitle": "Pescuit profesionist",
+      "interactionText": "Începe jobul de pescuit",
+      "blipLabel": "Pescuit",
+      "locationLabel": "Pescuit",
+      "description": [
+        "Ia o undiță și momeală",
+        "Aruncă firul lângă apă",
+        "Prinde pești cu minigame-ul",
+        "Peștii prinși sunt adăugați în inventar",
+        "Vinde-i cumpărătorului de pește"
+      ],
+      "items": {
+        "fishingRod": "Undiță",
+        "bait": "Momeală"
+      },
+      "rods": {
+        "standartrod": "Undiță standard",
+        "carbonrod": "Undiță de carbon",
+        "prorod": "Undiță pro"
+      },
+      "baits": {
+        "basicbait": "Momeală cu râme",
+        "spoonlure": "Momeală linguriță",
+        "threesided": "Momeală cu trei fețe",
+        "tailfish": "Momeală coadă de pește",
+        "doublehook": "Momeală cu cârlig dublu",
+        "triplehook": "Momeală cu cârlig triplu"
+      },
+      "zones": {
+        "southCoast": "Coasta de Sud",
+        "westCoast": "Coasta de Vest",
+        "deepSea": "Ape adânci"
+      },
+      "fishTypes": {
+        "anchovy": "Hamsie",
+        "trout": "Păstrăv",
+        "mackerel": "Macrou",
+        "salmon": "Somon",
+        "snapper": "Snapper",
+        "tuna": "Ton",
+        "grouper": "Merou",
+        "swordfish": "Pește-spadă",
+        "shark": "Rechin"
+      },
+      "blips": {
+        "fishingShop": "Magazin de pescuit",
+        "fishBuyer": "Cumpărător de pește"
+      }
+    },
+    "diving": {
+      "name": "Scufundări",
+      "subtitle": "Scufundări profesioniste",
+      "interactionText": "Începe jobul de scufundări",
+      "blipLabel": "Scufundări",
+      "locationLabel": "Scufundări",
+      "description": [
+        "Urcă-te în barcă și mergi spre zona de scufundare",
+        "Când barca se oprește, aruncă ancora și intră în apă",
+        "Scufundă-te și finalizează sarcinile subacvatice",
+        "Întoarce-te la barcă și ridică ancora",
+        "Revino la doc și vinde-ți obiectele"
+      ],
+      "items": {
+        "scubaTank": "Butelie de oxigen",
+        "divingSuit": "Costum de scufundare",
+        "flippers": "Labe de înot"
+      },
+      "zones": {
+        "shallowBay": "Golful puțin adânc",
+        "openSea": "Marea deschisă",
+        "shipwreck": "Epava",
+        "deepTrench": "Fosa adâncă"
+      },
+      "sellItems": {
+        "dendrogyraCoral": "Coral Dendrogyra",
+        "antipathariaCoral": "Coral Antipatharia"
+      },
+      "taskTypes": {
+        "coral": "Coral",
+        "trash": "Gunoi"
+      },
+      "gear": {
+        "basic": "Scuba de bază",
+        "standard": "Scuba standard",
+        "pro": "Scuba pro"
+      },
+      "blips": {
+        "boatDelivery": "Livrare cu barca"
+      },
+      "preview": {
+        "step1Title": "Începe jobul",
+        "step1Desc": [
+          "Mergi la instructorul de scufundări de la docul din Paleto Bay",
+          "Apasă E pentru a deschide meniul jobului",
+          "Alege o zonă de scufundare și apasă Start"
+        ],
+        "step2Title": "Urcă-te în barcă",
+        "step2Desc": [
+          "Mergi la doc și urcă-te în barca ta",
+          "Fiecare zonă de scufundare are un punct de plecare",
+          "Navighează spre zona de scufundare marcată"
+        ],
+        "step3Title": "Aruncă ancora și scufundă-te",
+        "step3Desc": [
+          "Oprește barca la markerul zonei de scufundare",
+          "Apasă E pentru a arunca ancora",
+          "Sari în apă și scufundă-te"
+        ],
+        "step4Title": "Colectează obiecte",
+        "step4Desc": [
+          "Găsește corali și gunoi pe fundul mării",
+          "Apasă E pentru a colecta corali de vânzare",
+          "Curăță gunoiul pentru XP bonus"
+        ],
+        "step5Title": "Vinde-ți captura",
+        "step5Desc": [
+          "Adu barca înapoi la doc",
+          "Mergi la NPC-ul cumpărător din apropiere",
+          "Apasă E pentru a vinde coralii colectați"
+        ]
+      }
+    },
+    "forklift": {
+      "name": "Operator de stivuitor",
+      "subtitle": "Logistică subterană",
+      "interactionText": "Începe jobul de stivuitorist",
+      "blipLabel": "Stivuitor",
+      "locationLabel": "Depoul de stivuitoare",
+      "description": [
+        "Operează un stivuitor într-un depou subteran",
+        "Transportă lăzi la banda transportoare",
+        "Sortează și așază lăzile pe rafturile desemnate",
+        "Lucrează în echipă pentru recompense bonus"
+      ],
+      "items": {
+        "forklift": "Stivuitor",
+        "crate": "Ladă",
+        "conveyorBelt": "Bandă transportoare"
+      },
+      "crateTypes": {
+        "jewellery": "Bijuterii",
+        "antiques": "Antichități",
+        "tobacco": "Tutun",
+        "hazard": "Periculos",
+        "fake": "Fals"
+      },
+      "blips": {
+        "forklift": "Stivuitor",
+        "conveyor": "Bandă transportoare"
+      }
+    },
+    "tiretechnician": {
+      "name": "Tehnician de anvelope",
+      "subtitle": "Service de anvelope la drum",
+      "interactionText": "Începe jobul de tehnician anvelope",
+      "blipLabel": "Job tehnician anvelope",
+      "locationLabel": "Depoul de service anvelope",
+      "description": [
+        "Schimbă anvelopele dezumflate ale vehiculelor rămase în pană",
+        "Folosește un cric și unelte pentru schimbarea anvelopelor",
+        "Proces realist de reparație în mai mulți pași",
+        "Lucrează cu echipa ta pentru finalizări mai rapide"
+      ],
+      "items": {
+        "wrenchSet": "Set de chei",
+        "carJack": "Cric",
+        "spareParts": "Piese de schimb"
+      },
+      "blips": {
+        "vehicleRepair": "Reparație vehicul",
+        "serviceTruck": "Camion de service"
+      }
+    },
+    "treasurehunter": {
+      "name": "Vânător de comori",
+      "subtitle": "Vânătoare de comori subacvatice",
+      "interactionText": "Începe jobul de vânător de comori",
+      "blipLabel": "Vânător de comori",
+      "locationLabel": "Docul vânătorului de comori",
+      "description": [
+        "Urcă-te în barcă și mergi spre zona comorii",
+        "Urmărește semnalele trackerului pentru a localiza comoara",
+        "Scufundă-te și colectează cufărul cu comori",
+        "Întoarce-te la doc pentru a-ți încasa plata"
+      ],
+      "items": {
+        "scubaGear": "Echipament de scufundare",
+        "treasureChest": "Cufăr cu comori"
+      },
+      "lootTypes": {
+        "common": "Sac cu comori",
+        "legendary": "Cufăr de aur"
+      },
+      "gear": {
+        "basic": "Scuba de bază",
+        "standard": "Scuba standard",
+        "pro": "Scuba pro"
+      },
+      "preview": {
+        "step1Title": "Începe jobul",
+        "step1Desc": [
+          "Mergi la doc și vorbește cu instructorul",
+          "Apasă E pentru a deschide meniul jobului și a începe"
+        ],
+        "step2Title": "Urcă-te în barcă",
+        "step2Desc": [
+          "Mergi la doc și urcă-te în barca ta",
+          "Navighează spre blipul zonei comorii"
+        ],
+        "step3Title": "Aruncă ancora și scufundă-te",
+        "step3Desc": [
+          "Urmărește semnalele trackerului pentru a găsi comoara",
+          "Aruncă ancora lângă zona de căutare",
+          "Scufundă-te cu echipamentul tău de scufundare"
+        ],
+        "step4Title": "Colectează comoara",
+        "step4Desc": [
+          "Găsește cufărul cu comori pe fundul mării",
+          "Ferește-te de rechini și de curenții oceanici!",
+          "Apasă E pentru a colecta comoara"
+        ],
+        "step5Title": "Întoarce-te la doc",
+        "step5Desc": [
+          "Ieși la suprafață și întoarce-te la doc",
+          "Intră cu barca în marker pentru a termina",
+          "Încasează-ți plata!"
+        ]
+      }
+    },
+    "metaldetector": {
+      "name": "Detector de metale",
+      "subtitle": "Operațiuni avansate de recuperare",
+      "interactionText": "Începe jobul cu detectorul de metale",
+      "blipLabel": "Detector de metale",
+      "locationLabel": "Stația detectorului de metale",
+      "description": [
+        "Ia un detector de metale din portbagajul camionului",
+        "Urmărește viteza semnalelor pentru a localiza metalul ascuns",
+        "Sapă locurile îngropate cu lopata ta",
+        "Încasează descoperirile recuperate la stație"
+      ],
+      "items": {
+        "detector": "Detector de metale",
+        "findings": "Descoperiri recuperate"
+      },
+      "lootTypes": {
+        "scrap": "Fier vechi",
+        "coin": "Monedă veche",
+        "silver": "Bucată de argint",
+        "gold": "Pepită de aur",
+        "relic": "Relicvă rară"
+      }
+    },
+    "mechanic": {
+      "name": "Mecanic",
+      "subtitle": "Service de reparații auto",
+      "interactionText": "Începe jobul de mecanic",
+      "blipLabel": "Mecanic",
+      "locationLabel": "Atelier mecanic"
+    },
+    "gruppe6": {
+      "name": "Gruppe 6",
+      "subtitle": "Transport blindat",
+      "interactionText": "Vorbește cu managerul depoului",
+      "blipLabel": "Depoul Gruppe 6",
+      "description": [
+        "Condu un camion blindat între băncile Fleeca",
+        "Umple sacii cu bani la seif și încarcă-i",
+        "Returnează camionul la depou pentru a fi plătit"
+      ]
+    }
+  },
+  "quests": {
+    "daily_miner_collect": {
+      "label": "Minerit zilnic",
+      "description": "Sparge 5 roci în mină"
+    },
+    "weekly_miner_process": {
+      "label": "Maestru al Procesării",
+      "description": "Procesează 30 de minereuri la cântar"
+    },
+    "monthly_miner_earn": {
+      "label": "Magnat al Mineritului",
+      "description": "Câștigă $10,000 din minerit"
+    },
+    "daily_lumber_collect": {
+      "label": "Tăiere zilnică",
+      "description": "Doboară 5 copaci"
+    },
+    "weekly_lumber_process": {
+      "label": "Maestru Cherestegiu",
+      "description": "Procesează 25 de bușteni la cântar"
+    },
+    "monthly_lumber_earn": {
+      "label": "Magnat al Lemnului",
+      "description": "Câștigă $10,000 din tăierea lemnului"
+    },
+    "daily_scrap_collect": {
+      "label": "Colecționar de Fiare",
+      "description": "Colectează 5 bucăți de fier vechi"
+    },
+    "weekly_scrap_process": {
+      "label": "Pro la Reciclare",
+      "description": "Procesează 20 de fiare vechi la cântar"
+    },
+    "monthly_scrap_earn": {
+      "label": "Magnat al Fierului Vechi",
+      "description": "Câștigă $8,000 din fier vechi"
+    },
+    "daily_hunting_collect": {
+      "label": "Vânătoarea zilnică",
+      "description": "Vânează 3 animale"
+    },
+    "weekly_hunting_process": {
+      "label": "Vânător de Trofee",
+      "description": "Procesează 15 animale la cântar"
+    },
+    "monthly_hunting_earn": {
+      "label": "Maestru Vânător",
+      "description": "Câștigă $12,000 din vânătoare"
+    },
+    "daily_farmer_complete": {
+      "label": "Argat la Fermă",
+      "description": "Finalizează 2 ture de fermă"
+    },
+    "weekly_farmer_earn": {
+      "label": "Regele Recoltei",
+      "description": "Câștigă $5,000 din agricultură"
+    },
+    "monthly_farmer_earn": {
+      "label": "Baron al Agriculturii",
+      "description": "Câștigă $15,000 din agricultură"
+    },
+    "daily_fruitpicker_complete": {
+      "label": "Culegător de Portocale",
+      "description": "Finalizează 2 ture de cules"
+    },
+    "weekly_fruitpicker_earn": {
+      "label": "Baron al Citricelor",
+      "description": "Câștigă $5,000 din portocale"
+    },
+    "monthly_fruitpicker_earn": {
+      "label": "Mogul al Livezilor",
+      "description": "Câștigă $15,000 din portocale"
+    },
+    "daily_cleaner_complete": {
+      "label": "Măturător de Stradă",
+      "description": "Finalizează 2 ture de curățenie"
+    },
+    "weekly_cleaner_earn": {
+      "label": "Domnul Curățenie",
+      "description": "Câștigă $4,000 din curățenie"
+    },
+    "monthly_cleaner_earn": {
+      "label": "Șef al Salubrității",
+      "description": "Câștigă $12,000 din curățenie"
+    },
+    "daily_powerwash_complete": {
+      "label": "Pro la Presiune",
+      "description": "Finalizează 2 ture de spălare cu presiune"
+    },
+    "weekly_powerwash_earn": {
+      "label": "Maestrul Jetului",
+      "description": "Câștigă $5,000 din spălarea cu presiune"
+    },
+    "monthly_powerwash_earn": {
+      "label": "Vrăjitorul Spălării",
+      "description": "Câștigă $15,000 din spălarea cu presiune"
+    },
+    "daily_windowcleaner_complete": {
+      "label": "Spălător de Geamuri",
+      "description": "Finalizează 2 ture de spălat geamuri"
+    },
+    "weekly_windowcleaner_earn": {
+      "label": "Expert în Sticlă",
+      "description": "Câștigă $4,000 din spălatul geamurilor"
+    },
+    "monthly_windowcleaner_earn": {
+      "label": "Clar ca Cristalul",
+      "description": "Câștigă $12,000 din spălatul geamurilor"
+    },
+    "daily_cardetailer_complete": {
+      "label": "Timp de Strălucire",
+      "description": "Finalizează 2 ture de detailing"
+    },
+    "weekly_cardetailer_earn": {
+      "label": "Pro la Detailing",
+      "description": "Câștigă $5,000 din detailing auto"
+    },
+    "monthly_cardetailer_earn": {
+      "label": "Maestru Detailer",
+      "description": "Câștigă $15,000 din detailing auto"
+    },
+    "daily_newspaper_complete": {
+      "label": "Băiatul cu Ziarele",
+      "description": "Finalizează 2 ture de livrare"
+    },
+    "weekly_newspaper_earn": {
+      "label": "Mogul al Presei",
+      "description": "Câștigă $3,000 din livrări"
+    },
+    "monthly_newspaper_earn": {
+      "label": "Baron Media",
+      "description": "Câștigă $8,000 din livrări"
+    },
+    "daily_cleanup_complete": {
+      "label": "Colector de Gunoi",
+      "description": "Finalizează 2 ture de salubrizare"
+    },
+    "weekly_cleanup_earn": {
+      "label": "Manager de Deșeuri",
+      "description": "Câștigă $4,000 din turele de salubrizare"
+    },
+    "monthly_cleanup_earn": {
+      "label": "Mogul al Deșeurilor",
+      "description": "Câștigă $12,000 din turele de salubrizare"
+    },
+    "daily_trucker_complete": {
+      "label": "Cursa Zilnică",
+      "description": "Finalizează 2 curse de camion"
+    },
+    "weekly_trucker_earn": {
+      "label": "Războinicul Șoselelor",
+      "description": "Câștigă $8,000 din camionaj"
+    },
+    "monthly_trucker_earn": {
+      "label": "Regele Convoiului",
+      "description": "Câștigă $25,000 din camionaj"
+    },
+    "daily_taxi_complete": {
+      "label": "Taximetrist",
+      "description": "Finalizează 3 curse de taxi"
+    },
+    "weekly_taxi_earn": {
+      "label": "Regele Taxiurilor",
+      "description": "Câștigă $6,000 din curse"
+    },
+    "monthly_taxi_earn": {
+      "label": "Proprietar de Flotă",
+      "description": "Câștigă $18,000 din curse"
+    },
+    "daily_dogwalking_complete": {
+      "label": "Plimbător de Câini",
+      "description": "Finalizează 2 plimbări"
+    },
+    "weekly_dogwalking_earn": {
+      "label": "Liderul Haitei",
+      "description": "Câștigă $3,000 din plimbatul câinilor"
+    },
+    "monthly_dogwalking_earn": {
+      "label": "Șoptitorul de Câini",
+      "description": "Câștigă $8,000 din plimbatul câinilor"
+    },
+    "daily_powerlines_complete": {
+      "label": "Electricianul",
+      "description": "Finalizează 2 joburi de reparații"
+    },
+    "weekly_powerlines_earn": {
+      "label": "Maestru al Liniilor Electrice",
+      "description": "Câștigă $6,000 din reparații"
+    },
+    "monthly_powerlines_earn": {
+      "label": "Șeful Rețelei Electrice",
+      "description": "Câștigă $18,000 din reparații"
+    },
+    "daily_delivery_complete": {
+      "label": "Curier de Pachete",
+      "description": "Finalizează 2 livrări"
+    },
+    "weekly_delivery_earn": {
+      "label": "Curier Expres",
+      "description": "Câștigă $5,000 din livrări"
+    },
+    "monthly_delivery_earn": {
+      "label": "Regele Livrărilor",
+      "description": "Câștigă $15,000 din livrări"
+    },
+    "daily_warehouse_complete": {
+      "label": "Muncitor la Docuri",
+      "description": "Finalizează 2 ture de depozit"
+    },
+    "weekly_warehouse_earn": {
+      "label": "Expert în Logistică",
+      "description": "Câștigă $5,000 din munca la depozit"
+    },
+    "monthly_warehouse_earn": {
+      "label": "Director de Depozit",
+      "description": "Câștigă $15,000 din munca la depozit"
+    },
+    "daily_landscaping_complete": {
+      "label": "Mână Verde",
+      "description": "Finalizează 2 joburi de grădinărit"
+    },
+    "weekly_landscaping_earn": {
+      "label": "Maestru Peisagist",
+      "description": "Câștigă $4,000 din grădinărit"
+    },
+    "monthly_landscaping_earn": {
+      "label": "Arhitect Peisagist",
+      "description": "Câștigă $12,000 din grădinărit"
+    },
+    "daily_fishing_complete": {
+      "label": "Pescarul",
+      "description": "Finalizează 2 ieșiri la pescuit"
+    },
+    "weekly_fishing_earn": {
+      "label": "Pescar de Adâncime",
+      "description": "Câștigă $5,000 din pescuit"
+    },
+    "monthly_fishing_earn": {
+      "label": "Legendă a Pescuitului",
+      "description": "Câștigă $15,000 din pescuit"
+    },
+    "daily_diving_complete": {
+      "label": "Scafandru de Adâncime",
+      "description": "Finalizează 2 scufundări"
+    },
+    "weekly_diving_earn": {
+      "label": "Explorator al Oceanului",
+      "description": "Câștigă $6,000 din scufundări"
+    },
+    "monthly_diving_earn": {
+      "label": "Scafandru de Comori",
+      "description": "Câștigă $18,000 din scufundări"
+    },
+    "daily_forklift_complete": {
+      "label": "Stivuitorist",
+      "description": "Finalizează 2 ture de depozit"
+    },
+    "weekly_forklift_earn": {
+      "label": "Ridicător de Greutăți",
+      "description": "Câștigă $5,000 din munca cu stivuitorul"
+    },
+    "monthly_forklift_earn": {
+      "label": "Titan al Logisticii",
+      "description": "Câștigă $15,000 din munca cu stivuitorul"
+    }
+  },
+  "shop": {
+    "buyRod": "Cumpără undiță",
+    "buyRodDesc": "Cumpără o undiță de pescuit",
+    "buyBait": "Cumpără momeală",
+    "buyBaitDesc": "Cumpără momeală de pescuit",
+    "sellAll": "Vinde tot",
+    "sellAllFish": "Vinde tot peștele",
+    "sellAllItems": "Vinde toate obiectele",
+    "levelRequired": "Necesită nivelul {level} | {price}",
+    "howMany": "Câte?"
+  },
+  "vehicle": {
+    "powerlines": "Linii electrice",
+    "huntingVehicle": "Vehicul de vânătoare",
+    "workTruck": "Camion de lucru",
+    "divingBoat": "Barcă de scufundări",
+    "fishingBoat": "Barcă de pescuit",
+    "cleanupTruck": "Camion de salubrizare",
+    "lumberVehicle": "Vehicul forestier",
+    "miningVehicle": "Vehicul de minerit",
+    "metaldetectorVehicle": "Camion cu detector",
+    "washVan": "Dubă de spălare",
+    "windowCleanerVan": "Dubă de spălat geamuri",
+    "cleaningVan": "Dubă de curățenie",
+    "serviceVehicle": "Vehicul de service",
+    "scrapyardTruck": "Camion de fier vechi",
+    "detailingVan": "Dubă de detailing",
+    "tiretechnician": "Tehnician Anvelope",
+    "pickupPassenger": "Preia pasagerul",
+    "returnTaxi": "Returnează taxiul",
+    "dropOff": "Lasă pasagerul",
+    "bucketTruck": "Camion cu nacelă",
+    "deliveryVan": "Dubă de livrări",
+    "newspaperBike": "Bicicletă de ziare",
+    "detachedTrailer": "Remorcă detașată",
+    "deliveryTruck": "Camion de livrări",
+    "taxi": "Taxi",
+    "treasureBoat": "Barca vânătorului de comori"
+  },
+  "task": {
+    "panels": "Panouri",
+    "poles": "Stâlpi",
+    "repairPanels": "Repară panourile ({done}/{total})",
+    "fixPoles": "Repară stâlpii de utilități ({done}/{total})",
+    "repairDescription": "Repară infrastructura electrică din zonă. Repară panourile și stâlpii de utilități.",
+    "plants": "Plante",
+    "cropPlant": "Plantă de cultură",
+    "nearestCrop": "Cea mai apropiată cultură",
+    "bushes": "Tufișuri",
+    "lawns": "Gazoane",
+    "bushToTrim": "Tufiș de tuns",
+    "lawnToDig": "Gazon de săpat",
+    "toilets": "Toalete",
+    "pipes": "Țevi",
+    "fishCaught": "Pești prinși",
+    "oreProcessed": "Minereu procesat",
+    "trunkLoaded": "Portbagaj încărcat",
+    "logsProcessed": "Bușteni procesați",
+    "scrapsProcessed": "Fiare procesate",
+    "boxesProcessed": "Cutii procesate",
+    "animalsProcessed": "Animale procesate",
+    "treasures": "Comori",
+    "spotsDug": "Locuri săpate",
+    "tasks": "Sarcini",
+    "loadBoxes": "Încarcă cutiile la depozit",
+    "deliveries": "Livrări",
+    "deliverPackages": "Livrează pachetele",
+    "boxesLoaded": "Cutii încărcate",
+    "pickUpTrailer": "Preia remorca",
+    "deliverCargo": "Livrează marfa",
+    "returnTruck": "Returnează camionul",
+    "stage": "Etapă",
+    "truckFill": "Umplere camion",
+    "shelved": "Pe rafturi",
+    "activateConveyor": "Activează banda transportoare [E]",
+    "deliverCratesToBelt": "Adu lăzile la bandă ({current}/{total})",
+    "placeCratesOnShelves": "Pune lăzile pe rafturi ({current}/{total})",
+    "delivered": "Livrat",
+    "takeWandFromTrunk": "Ia lancea de spălare din portbagajul vehiculului",
+    "spotsCleaned": "Pete curățate",
+    "takeSpongeFromTrunk": "Ia buretele din portbagajul vehiculului",
+    "windows": "Geamuri",
+    "takeMopFromTrunk": "Ia mopul din portbagajul vehiculului",
+    "stains": "Pete",
+    "equipWandOrCloth": "Echipează lancea (spălare) sau laveta (lustruire)",
+    "carsWashed": "Mașini spălate",
+    "carsPolished": "Mașini lustruite",
+    "distance": "Distanță",
+    "cargo": "Marfă",
+    "regularAnimals": "Animale obișnuite",
+    "predators": "Prădători",
+    "birds": "Păsări",
+    "mixed": "Mixt",
+    "nextDelivery": "Următoarea livrare",
+    "returnVehicle": "Returnează vehiculul",
+    "returnToDepot": "Înapoi la depozit",
+    "returnToBase": "Înapoi la bază",
+    "loadingArea": "Zonă de încărcare",
+    "fruitpickerTree": "Portocal",
+    "next": "Următorul",
+    "walkDistance": "Distanță de mers",
+    "dogsDelivered": "Câini predați",
+    "distanceWalked": "Distanță parcursă (m)",
+    "toolShovel": "Lopată",
+    "toolTrimmer": "Trimmer",
+    "trucksCompleted": "Camioane finalizate ({current}/{total})",
+    "loadBoxesCount": "Încarcă cutiile ({current}/{total})",
+    "loadPallets": "Încarcă paleții ({current}/{total})",
+    "deliverPapers": "Livrează ziarele ({current}/{total})",
+    "trimBushes": "Tunde tufișurile ({current}/{total})",
+    "rakeLawns": "Greblează gazonul ({current}/{total})",
+    "itemsCollected": "Obiecte colectate ({current}/{total})",
+    "cleanAllWindows": "Curăță toate geamurile ({current}/{total})",
+    "cleanAllSpots": "Curăță toate petele ({current}/{total})"
+  },
+  "drawText": {
+    "repairPanel": "[E] Repară panoul electric",
+    "repairPole": "[E] Repară cablurile stâlpului de telefonie",
+    "collect": "[E] Colectează",
+    "collectCoral": "[E] Colectează coral",
+    "cleanTrash": "[E] Curăță gunoiul"
+  },
+  "achievements": {
+    "miner_lv5": {
+      "label": "Miner Maestru",
+      "desc": "Atinge nivelul 5 la Minerit"
+    },
+    "miner_lv10": {
+      "label": "Legendă a Mineritului",
+      "desc": "Atinge nivelul 10 la Minerit"
+    },
+    "lumberjack_lv5": {
+      "label": "Tăietor Maestru",
+      "desc": "Atinge nivelul 5 la Tăiat lemne"
+    },
+    "fishing_lv5": {
+      "label": "Pescar Expert",
+      "desc": "Atinge nivelul 5 la Pescuit"
+    },
+    "cleanup_lv5": {
+      "label": "Războinic al Deșeurilor",
+      "desc": "Atinge nivelul 5 la Salubrizare"
+    },
+    "delivery_lv5": {
+      "label": "Curier Expres",
+      "desc": "Atinge nivelul 5 la Livrări"
+    },
+    "trucker_lv5": {
+      "label": "Regele Șoselelor",
+      "desc": "Atinge nivelul 5 la Camionaj"
+    },
+    "hunting_lv5": {
+      "label": "Vânător Expert",
+      "desc": "Atinge nivelul 5 la Vânătoare"
+    },
+    "taxi_lv5": {
+      "label": "Șofer de Elită",
+      "desc": "Atinge nivelul 5 la Taxi"
+    },
+    "powerlines_lv5": {
+      "label": "Maestru al Liniilor Electrice",
+      "desc": "Atinge nivelul 5 la Linii electrice"
+    },
+    "diving_lv5": {
+      "label": "Scafandru de Adâncime",
+      "desc": "Atinge nivelul 5 la Scufundări"
+    },
+    "cleaner_lv5": {
+      "label": "Mașină de Curățat",
+      "desc": "Atinge nivelul 5 la Curățenie"
+    },
+    "powerwash_lv5": {
+      "label": "Pro la Presiune",
+      "desc": "Atinge nivelul 5 la Spălare cu presiune"
+    },
+    "windowscleaner_lv5": {
+      "label": "Clar ca Cristalul",
+      "desc": "Atinge nivelul 5 la Spălat geamuri"
+    },
+    "cardetailer_lv5": {
+      "label": "Maestru al Detailingului",
+      "desc": "Atinge nivelul 5 la Detailing auto"
+    },
+    "farmer_lv5": {
+      "label": "Mână Verde",
+      "desc": "Atinge nivelul 5 la Agricultură"
+    },
+    "fruitpicker_lv5": {
+      "label": "Regele Citricelor",
+      "desc": "Atinge nivelul 5 la Cules portocale"
+    },
+    "landscaping_lv5": {
+      "label": "Maestru Grădinar",
+      "desc": "Atinge nivelul 5 la Grădinărit"
+    },
+    "dogwalking_lv5": {
+      "label": "Șoptitorul de Câini",
+      "desc": "Atinge nivelul 5 la Plimbat câini"
+    },
+    "newspaper_lv5": {
+      "label": "Curier de Presă",
+      "desc": "Atinge nivelul 5 la Ziare"
+    },
+    "scrapyard_lv5": {
+      "label": "Lordul Fierului Vechi",
+      "desc": "Atinge nivelul 5 la Fier vechi"
+    },
+    "warehouse_lv5": {
+      "label": "Maestru al Stocurilor",
+      "desc": "Atinge nivelul 5 la Depozit"
+    },
+    "forklift_lv5": {
+      "label": "Operator de Stivuitor",
+      "desc": "Atinge nivelul 5 la Stivuitor"
+    },
+    "collect_100": {
+      "label": "Colecționar",
+      "desc": "Colectează 100 de obiecte în total"
+    },
+    "collect_500": {
+      "label": "Culegător",
+      "desc": "Colectează 500 de obiecte în total"
+    },
+    "collect_1000": {
+      "label": "Strângător",
+      "desc": "Colectează 1,000 de obiecte în total"
+    },
+    "miner_collect_500": {
+      "label": "Spărgător de Roci",
+      "desc": "Minează 500 de roci"
+    },
+    "lumber_collect_500": {
+      "label": "Doborâtor de Copaci",
+      "desc": "Taie 500 de copaci"
+    },
+    "earn_10000": {
+      "label": "Stâlpul Casei",
+      "desc": "Câștigă $10,000 în total din joburi"
+    },
+    "earn_50000": {
+      "label": "High Roller",
+      "desc": "Câștigă $50,000 în total din joburi"
+    },
+    "earn_100000": {
+      "label": "Drumul spre Milion",
+      "desc": "Câștigă $100,000 în total din joburi"
+    },
+    "complete_10": {
+      "label": "Muncitor Harnic",
+      "desc": "Finalizează 10 joburi"
+    },
+    "complete_50": {
+      "label": "Muncitor Dedicat",
+      "desc": "Finalizează 50 de joburi"
+    },
+    "complete_100": {
+      "label": "Muncitor Veteran",
+      "desc": "Finalizează 100 de joburi"
+    },
+    "process_100": {
+      "label": "Procesator",
+      "desc": "Procesează 100 de obiecte la cântar"
+    },
+    "process_500": {
+      "label": "Muncitor de Fabrică",
+      "desc": "Procesează 500 de obiecte la cântar"
+    }
+  },
+  "gruppe6": {
+    "truck": "Camion blindat",
+    "takeBagPrompt": "[E] Ia un sac gol",
+    "returnBagPrompt": "[E] Pune sacul la loc",
+    "loadBagPrompt": "[E] Încarcă sacul",
+    "signPrompt": "[E] Semnează actele",
+    "fillBagPrompt": "[E] Umple sacul",
+    "stationBusy": "Alt membru al echipei folosește această stație!",
+    "newRound": "Rundă nouă de colectare — bănci noi au apărut pe hartă!",
+    "continueBusy": "Toți trebuie să termine de strâns și să predea sacii înainte de a continua!",
+    "returnTruckPrompt": "[E] Predă camionul",
+    "emptyBagTaken": "Sac gol luat. Umple-l la seiful băncii.",
+    "signingPapers": "Se semnează actele...",
+    "vaultOpening": "Seiful se deschide... ({seconds}s)",
+    "vaultOpened": "Seiful este deschis!",
+    "fillingBag": "Se umple sacul...",
+    "bagFilled": "Sac umplut! (+{symbol}{amount})",
+    "allStopsDone": "Toate opririle au fost colectate! Returnează camionul la depozit.",
+    "returnTruckHint": "Returnează camionul la depozit pentru a încheia tura.",
+    "returnTruckBlip": "Returnează camionul",
+    "onlyLeaderCanFinish": "Doar liderul echipei poate preda camionul!",
+    "tooFarFromDepot": "Ești prea departe de depozit!",
+    "tooFarFromManager": "Ești prea departe de directorul băncii!",
+    "tooFarFromVault": "Ești prea departe de seif!",
+    "vaultNotOpen": "Seiful nu este încă deschis!",
+    "vaultAlreadyOpen": "Seiful este deja în curs de deschidere!",
+    "vaultEmpty": "Acest seif a fost golit!",
+    "alreadyCarrying": "Deja cari ceva!",
+    "needEmptyBag": "Mai întâi ai nevoie de un sac gol!",
+    "statBags": "Saci încărcați",
+    "statEarnings": "Total câștigat",
+    "objSign": "Obține semnătura pe acte",
+    "objCollect": "Umple și încarcă sacii",
+    "objReturn": "Returnează camionul la depozit",
+    "objWaiting": "Se așteaptă ruta...",
+    "progressTitle": "Gruppe 6",
+    "progressDetail": "Colectează sacii cu bani de la bănci, apoi returnează camionul blindat la depozit pentru a fi plătit.",
+    "jobEnded": "{bags} saci livrați, ai câștigat {symbol}{earned}!",
+    "noEmptyBags": "Nu mai sunt saci goi în camion!",
+    "truckNotAtDepot": "Camionul blindat trebuie să fie la depozit!"
+  }
+}

@@ -1,0 +1,3604 @@
+{
+  "blips": {
+    "category": "Jobb",
+    "jobCenter": "Jobbcenter",
+    "miner": "Gruvjobb",
+    "lumberjack": "Skogshuggerjobb",
+    "scrapyard": "Skrotupplag",
+    "hunting": "Jakt",
+    "farmer": "Grönsaksfarm",
+    "fruitpicker": "Fruktlund",
+    "cleaner": "Städtjänst",
+    "powerwash": "Högtryckstvätt",
+    "windowscleaner": "Fönsterputsning",
+    "cardetailer": "Bilrekonditionering",
+    "newspaper": "Tidningsleverans",
+    "cleanup": "Sophämtning",
+    "trucker": "Lastbilsgård",
+    "taxi": "Taxidepå",
+    "dogwalking": "Hundrastning",
+    "powerlines": "Elledningsjobb",
+    "delivery": "Paketleverans",
+    "warehouse": "Lager",
+    "landscaping": "Trädgårdsjobb",
+    "fishing": "Fiske",
+    "diving": "Dykning",
+    "forklift": "Gaffeltruck",
+    "tiretechnician": "Däckteknikerjobb",
+    "treasurehunter": "Skattjägare",
+    "mechanic": "Mekaniker"
+  },
+  "_meta": {
+    "name": "Svenska",
+    "flag": "🇸🇪"
+  },
+  "common": {
+    "continueHintGeneric": "Bege dig till nästa uppgift på din karta",
+    "pickupTaskGeneric": "Hitta din nästa uppgiftsplats",
+    "pickupDescriptionGeneric": "Bege dig till den markerade platsen på din karta och börja nästa uppgift."
+  },
+  "ui": {
+    "blipCategoryName": "Jobb",
+    "jobDetails": "Jobbdetaljer",
+    "owner": "Ägare",
+    "member": "Medlem",
+    "jobStart": "Starta jobb",
+    "leaderboard": "Topplista",
+    "teamProgress": "Lagframsteg",
+    "top20": "Topp 20",
+    "playerList": "Spelarlista",
+    "clickToInvite": "Klicka för att bjuda in",
+    "emptySlot": "Tom plats",
+    "level": "Nivå",
+    "lv": "Nv.",
+    "hours": "Timmar",
+    "minRequiredHours": "Minst krävs",
+    "achievements": "Prestationer",
+    "settings": "Inställningar",
+    "close": "Stäng",
+    "cancel": "Avbryt",
+    "confirm": "Bekräfta",
+    "search": "Sök",
+    "selected": "Vald",
+    "locationMarked": "Plats markerad på kartan",
+    "jobAreaMarked": "Jobbområde markerat på kartan",
+    "noLocationAvailable": "Ingen plats tillgänglig för detta jobb",
+    "routeLevelRequired": "Nivå {level} krävs för denna rutt!",
+    "spawnBlocked": "Fordonets spawnområde är blockerat! Rensa området och försök igen.",
+    "vehicleSpawnFailed": "Fordonet kunde inte skapas!",
+    "viewStatistics": "Visa statistik",
+    "history": "Historik",
+    "earnings": "Inkomster",
+    "totalEarn": "Total inkomst",
+    "totalExp": "Total EXP",
+    "markJob": "Markera jobbet",
+    "registerJob": "Registrera dig för jobb",
+    "usedItems": "Använda föremål",
+    "online": "Online",
+    "offline": "Offline",
+    "loading": "Laddar...",
+    "back": "Tillbaka",
+    "set": "Ställ in",
+    "reset": "Återställ",
+    "approve": "Godkänn",
+    "leave": "Lämna",
+    "done": "Klar",
+    "prev": "Föreg",
+    "next": "Nästa",
+    "xp": "XP",
+    "step": "Steg",
+    "on": "På",
+    "off": "Av",
+    "save": "Spara",
+    "vehicle": "Fordon",
+    "coordinates": "Koordinater",
+    "active": "Aktiv",
+    "disabled": "Inaktiverad",
+    "place": "Placera",
+    "add": "Lägg till"
+  },
+  "settings": {
+    "title": "Jobbinställningar",
+    "subtitle": "Välj inställningar",
+    "jobSound": "Jobbljud",
+    "language": "Språk",
+    "uiPosition": "Flytta UI",
+    "uiMoveActive": "Dra paneler för att flytta dem",
+    "uiMoveSave": "Spara",
+    "uiMoveCancel": "Avbryt",
+    "uiMoveApplyDefault": "Ange standard",
+    "uiMoveResetDefault": "Återställ",
+    "progressPanel": "Framsteg"
+  },
+  "progress": {
+    "title": "Framsteg",
+    "subtitle": "Färdigheter, uppdrag & uppgraderingar",
+    "skillPoints": "SP",
+    "skills": "Färdigheter",
+    "quests": "Uppdrag",
+    "upgrades": "Uppgraderingar",
+    "max": "MAX",
+    "upgrade": "Uppgradera",
+    "upgradeItems": "Uppgraderingsföremål",
+    "searchJobs": "Sök jobb...",
+    "noResults": "Inga resultat hittades",
+    "noQuests": "Inga uppdrag tillgängliga",
+    "all": "Alla",
+    "daily": "Dagliga",
+    "weekly": "Veckovis"
+  },
+  "upgradeModal": {
+    "title": "Uppgradera föremål",
+    "subtitle": "Bekräfta din uppgradering",
+    "currentLevel": "Nuvarande nivå",
+    "nextLevel": "Nästa nivå",
+    "requirements": "Krav",
+    "requiredLevel": "Nivå som krävs",
+    "money": "Pengar",
+    "upgrade": "Uppgradera"
+  },
+  "downgradeModal": {
+    "title": "Ändra nivå",
+    "subtitle": "Bekräfta nivåändring",
+    "returnToPrevious": "Återvänd till föregående nivå",
+    "noLevelLoss": "Du förlorar inte dina nuvarande nivåframsteg"
+  },
+  "finishJob": {
+    "jobComplete": "Jobb klart!",
+    "summary": "Här är din sammanfattning",
+    "continueQuestion": "Fortsätta?",
+    "ownerWantsContinue": "{name} vill fortsätta",
+    "finishQuestion": "Avsluta jobb?",
+    "finishSubtitle": "Välj vad du vill göra",
+    "itemsCompleted": "Föremål klarade",
+    "totalEarnings": "Total inkomst",
+    "progressSaved": "Dina framsteg sparas",
+    "waitingFor": "Väntar på: {players}",
+    "waitingOwner": "Väntar på att {name} bestämmer...",
+    "autoApprove": "Godkänns automatiskt om {time}s...",
+    "completed": "Jobb avklarat!",
+    "continue": "Fortsätt",
+    "endJob": "Avsluta jobb",
+    "leaveJob": "Lämna jobb"
+  },
+  "activeJob": {
+    "endJobTitle": "Avsluta jobb?",
+    "endJobDesc": "Detta avslutar jobbet för dig. Övriga spelare får välja att fortsätta.",
+    "leaveJobTitle": "Lämna jobb?",
+    "leaveJobDesc": "Du lämnar det nuvarande jobbet.",
+    "remainingCanContinue": "Kvarvarande spelare kan fortsätta utan dig",
+    "progressSaved": "Dina framsteg sparas",
+    "ownerDisconnected": "Ägaren kopplade från",
+    "ownerLeft": "Ägaren lämnade",
+    "ownerHasDisconnected": "{name} har kopplat från",
+    "ownerHasLeft": "{name} har lämnat jobbet",
+    "continueJobQuestion": "Vill du fortsätta jobbet?",
+    "autoContinue": "Fortsätter automatiskt om {time}s..."
+  },
+  "illegal": {
+    "stolenCargo": "Stulet gods hittat!",
+    "highRisk": "Hög risk-leverans",
+    "teamVote": "Lagets röstning",
+    "description": "Du hittade stulna varor. Leverera dem för dubbel betalning, men polisen kan larmas.",
+    "reward": "Belöning",
+    "risk": "Risk",
+    "x2Money": "x2 pengar",
+    "policeAlertStatic": "90% polislarm",
+    "policeAlert": "{chance}% polislarm",
+    "suspiciousPassenger": "Misstänkt passagerare",
+    "suspiciousPassengerDesc": "Den här passageraren vill åka någonstans... inofficiellt. Högre betalning, men det finns risk för polisuppmärksamhet.",
+    "stolenCargoDesc": "Du har hittat stulna varor i släpet. Leverera dem till en svartamarknadsköpare för dubbel betalning, men var förberedd - det är hög risk för polisjakt!",
+    "teamVotes": "Lagets röster:",
+    "accept": "Acceptera",
+    "reject": "Avböj",
+    "policeWarning": "Polisen kan skickas ut om du accepterar",
+    "leaderDecision": "Ledaren fattar det slutgiltiga beslutet",
+    "waitingLeader": "Väntar på ledarens beslut...",
+    "stayLegal": "Håll dig laglig",
+    "acceptRisk": "Acceptera risken",
+    "voteStayLegal": "Rösta: Håll dig laglig",
+    "voteAcceptRisk": "Rösta: Acceptera risken",
+    "voteSubmitted": "Röst inskickad"
+  },
+  "lobby": {
+    "noLongerExists": "Lobbyn finns inte längre.",
+    "playerReconnected": "{name} har återanslutit till lobbyn.",
+    "playerDisconnected": "{name} har kopplat från lobbyn.",
+    "ownerDisconnectedNewOwner": "Ägaren kopplade från. {name} är nu ny ägare.",
+    "closedNoReplacement": "Lobbyn stängd - ingen behörig ersättningsägare hittades.",
+    "full": "Lobbyn är full (max {count} spelare)",
+    "notOwner": "Bara lobbyägaren kan göra detta",
+    "kicked": "Du har blivit utsparkad från lobbyn",
+    "alreadyInLobby": "Du är redan i en lobby",
+    "noLobbyFound": "Ingen lobby hittades",
+    "playerLeft": "{name} lämnade lobbyn"
+  },
+  "invite": {
+    "sent": "Inbjudan skickad till {name}",
+    "received": "{name} bjöd in dig till sin lobby - [Y] Acceptera | [N] Avböj",
+    "accepted": "{name} gick med i lobbyn",
+    "declined": "{name} avböjde inbjudan",
+    "expired": "Inbjudan gick ut",
+    "targetAlreadyInLobby": "Den här spelaren är redan i en lobby!",
+    "tooFar": "Spelaren är för långt bort!"
+  },
+  "job": {
+    "started": "Jobbet startat!",
+    "completed": "Jobbet klart!",
+    "failed": "Jobbet misslyckades!",
+    "resetInProgress": "Jobbet återställs, vänta...",
+    "cantEnterVehicle": "Du kan inte gå in i ett fordon medan du bär något!"
+  },
+  "xp": {
+    "gained": "+{amount} XP",
+    "levelUp": "Nivå upp! Du är nu nivå {level}",
+    "maxLevel": "Du har nått maxnivån!"
+  },
+  "contract": {
+    "reward": "Belöning",
+    "risk": "Risk",
+    "teamVotes": "Lagets röster:",
+    "waitingLeader": "Väntar på ledarens beslut...",
+    "voteStayLegal": "Rösta: Håll dig laglig",
+    "voteAcceptRisk": "Rösta: Acceptera risken",
+    "done": "KLAR"
+  },
+  "hud": {
+    "truckFill": "Lastbilsfyllnad",
+    "taximeter": "TAXAMETER",
+    "fare": "PRIS",
+    "bonus": "BONUS",
+    "distance": "AVST",
+    "trailerHealth": "Släphälsa",
+    "pressure": "TRYCK",
+    "coopLeaderboard": "Topplista",
+    "illegalRide": "ILLEGAL RESA",
+    "normalRide": "VANLIG RESA",
+    "goodCondition": "Bra skick",
+    "needsRepair": "Behöver reparation",
+    "criticalDamage": "Kritisk skada",
+    "hold": "Håll",
+    "toClose": "för att stänga",
+    "forDetails": "för detaljer"
+  },
+  "preview": {
+    "step": "Steg {current}/{total}"
+  },
+  "minigame": {
+    "junctionBox": "KOPPLINGSLÅDA",
+    "lsPower": "LS-POWER",
+    "circuitHint": "KLICKA FÖR ATT ROTERA — KOPPLA KÄLLA TILL LAST",
+    "fish": "Fisk",
+    "catch": "Fånga",
+    "space": "MELLANSLAG"
+  },
+  "admin": {
+    "title": "Adminpanel",
+    "subtitle": "JobPack-analys",
+    "dashboard": "Översikt",
+    "players": "Spelare",
+    "market": "Marknad",
+    "activeLobbies": "Aktiva lobbys",
+    "economy": "Ekonomi",
+    "todaysPayouts": "Dagens utbetalningar",
+    "thisWeek": "Denna vecka",
+    "allTime": "Sedan start",
+    "jobsToday": "Jobb idag",
+    "onlinePlayers": "Spelare online",
+    "perJobEarnings": "Inkomst per jobb (senaste 7 dagarna)",
+    "job": "Jobb",
+    "totalPayout": "Total utbetalning",
+    "completions": "Avklarade",
+    "uniquePlayers": "Unika spelare",
+    "name": "Namn",
+    "identifier": "Identifierare",
+    "status": "Status",
+    "perkPoints": "Förgångspoäng:",
+    "jobLevels": "Jobbnivå",
+    "recentHistory": "Senaste historik",
+    "region": "Region",
+    "earned": "Intjänat",
+    "date": "Datum",
+    "dynamicMarket": "Dynamiska marknadspriser",
+    "resetAllToBase": "Återställ alla till bas",
+    "current": "Nuvarande",
+    "base": "Bas",
+    "minMax": "Min / Max",
+    "health": "Hälsa",
+    "setPrice": "Sätt pris",
+    "action": "Åtgärd",
+    "paymentRates": "Betalningsnivå",
+    "qualityTiers": "Kvalitetsnivåer",
+    "chance": "Chans %",
+    "multiplier": "Multiplikator",
+    "levelBonuses": "Nivåbonusar",
+    "payBonusPerLevel": "Betalningsbonus per nivå",
+    "qualityChancePerLevel": "Kvalitetschans per nivå",
+    "estimatedEarnings": "Uppskattad inkomst (10 föremål)",
+    "selectJobToEdit": "Välj ett jobb att redigera",
+    "noJobsFound": "Inga jobb hittades",
+    "noJobData": "Ingen jobbdata tillgänglig",
+    "noHistory": "Ingen historik",
+    "noMarketData": "Ingen marknadsdata (dynamisk marknad kan vara inaktiverad)",
+    "noActiveLobbies": "Inga aktiva lobbys",
+    "searchPlaceholder": "Sök efter namn eller identifierare...",
+    "searchPlayer": "Sök efter en spelare ovan",
+    "xp": "XP",
+    "owner": "Ägare",
+    "state": "Status",
+    "count": "Antal",
+    "loading": "Laddar..."
+  },
+  "editor": {
+    "title": "Jobbredigerare",
+    "npc": "NPC",
+    "npcModel": "NPC-modell",
+    "scenarioAnimation": "Scenario / Animation",
+    "npcPosition": "NPC-position",
+    "npcInteraction": "NPC-interaktion",
+    "blip": "Blip",
+    "vehicleModel": "Fordonsmodell",
+    "plate": "Nummerskylt",
+    "primaryColor": "Primärfärg",
+    "secondaryColor": "Sekundärfärg",
+    "spawnLocations": "Spawnplatser",
+    "clickToChange": "Klicka för att ändra",
+    "clickToBrowse": "Klicka för att bläddra bland scenarier",
+    "typeManually": "Eller skriv manuellt...",
+    "sprite": "Sprite",
+    "color": "Färg",
+    "scale": "Skala",
+    "label": "Etikett",
+    "enabled": "Aktiverad",
+    "distance": "Avstånd",
+    "keyCode": "Tangentkod",
+    "interactionText": "Interaktionstext",
+    "searchBlip": "Sök blip...",
+    "searchCoords": "Sök koordinater...",
+    "noCoordFields": "Inga koordinatfält hittades för detta jobb.",
+    "noVehicleConfig": "Detta jobb har ingen fordonskonfiguration.",
+    "selectJob": "Välj ett jobb att redigera",
+    "spawnNum": "Spawn",
+    "unsavedChanges": "Osparade ändringar",
+    "goTo": "Gå till",
+    "setFromCamera": "Sätt från kamera",
+    "copy": "Kopiera",
+    "go": "Gå",
+    "cam": "Kam",
+    "preview": "Förhandsgranskning",
+    "dup": "Dupl",
+    "selectPedModel": "Välj NPC-modell",
+    "selectVehicleModel": "Välj fordonsmodell",
+    "selectScenario": "Välj scenario",
+    "searchPed": "Sök NPC-modell...",
+    "searchVehicle": "Sök fordonsmodell...",
+    "searchScenario": "Sök scenario...",
+    "noAnimations": "Inga animationer hittades",
+    "camera": "Kamera",
+    "browse": "Bläddra",
+    "devModeRequired": "Jobbredigeraren kräver att DevMode är aktiverat.",
+    "devModeHint": "Sätt Config.DevMode = true i shared/config_settings.lua och starta om resursen."
+  },
+  "tutorial": {
+    "title": "Handledning",
+    "skip": "Hoppa över",
+    "next": "Nästa",
+    "miner": {
+      "step1": {
+        "title": "Hämta ditt fordon",
+        "desc": "Gå till det markerade området för att hämta ditt gruvfordon."
+      },
+      "step2": {
+        "title": "Ta ditt verktyg",
+        "desc": "Öppna fordonsbacken och ta en hacka."
+      },
+      "step3": {
+        "title": "Börja gruva",
+        "desc": "Bege dig till gruvområdet och kross stenar för att samla malm."
+      },
+      "step4": {
+        "title": "Bearbeta malm",
+        "desc": "Ta den insamlade malmen till bearbetningsvågen för att få betalt."
+      }
+    },
+    "lumberjack": {
+      "step1": {
+        "title": "Hämta ditt fordon",
+        "desc": "Gå till det markerade området för att hämta ditt skogsbruksfordon."
+      },
+      "step2": {
+        "title": "Ta din yxa",
+        "desc": "Öppna fordonsbacken och ta en yxa."
+      },
+      "step3": {
+        "title": "Hugg träd",
+        "desc": "Bege dig till skogsområdet och börja hugga träd."
+      },
+      "step4": {
+        "title": "Bearbeta stockar",
+        "desc": "Ta insamlade stockar till bearbetningsvågen för att få betalt."
+      }
+    },
+    "farmer": {
+      "step1": {
+        "title": "Hämta ditt fordon",
+        "desc": "Gå till det markerade området för att hämta ditt jordbruksfordon."
+      },
+      "step2": {
+        "title": "Ta ditt verktyg",
+        "desc": "Öppna fordonsbacken och ta en planteringsspade."
+      },
+      "step3": {
+        "title": "Skörda grödor",
+        "desc": "Bege dig till jordbruksområdet och skörda grödorna."
+      },
+      "step4": {
+        "title": "Bearbeta skördar",
+        "desc": "Ta insamlade grödor till bearbetningsvågen för att få betalt."
+      }
+    },
+    "fishing": {
+      "step1": {
+        "title": "Hitta en plats",
+        "desc": "Gå till ett fiskeområde nära vattnet."
+      },
+      "step2": {
+        "title": "Kasta ut revet",
+        "desc": "Använd ditt fiskespö för att börja fiska."
+      },
+      "step3": {
+        "title": "Sälj din fångst",
+        "desc": "Ta din fisk till bearbetningspunkten för att sälja."
+      }
+    },
+    "generic": {
+      "step1": {
+        "title": "Gör dig redo",
+        "desc": "Hämta ditt fordon och bege dig till arbetsområdet."
+      },
+      "step2": {
+        "title": "Utför arbetet",
+        "desc": "Slutför uppgifter i det utsedda området."
+      },
+      "step3": {
+        "title": "Avsluta",
+        "desc": "Återvänd till NPC:n eller bearbetningspunkten för att slutföra jobbet."
+      }
+    }
+  },
+  "stats": {
+    "title": "Statistik",
+    "subtitle": "Din karriäröversikt",
+    "overview": "Översikt",
+    "perJob": "Per jobb",
+    "history": "Historik",
+    "totalEarnings": "Totala inkomster",
+    "totalXP": "Total XP",
+    "totalSessions": "Totala pass",
+    "totalTime": "Total tid",
+    "bestDay": "Bästa dag",
+    "favoriteJob": "Favoritjobb",
+    "avgEarnings": "Snitt inkomst",
+    "perSession": "per pass",
+    "sessions": "pass",
+    "last7Days": "Senaste 7 dagarna",
+    "job": "Jobb",
+    "level": "Nivå",
+    "earnings": "Inkomster",
+    "time": "Tid",
+    "noData": "Ingen data tillgänglig"
+  },
+  "drawtext": {
+    "jobCenter": "Jobbcenter"
+  },
+  "notify": {
+    "jobAtCapacity": "Detta jobb är för närvarande fullt ({current}/{max} lag aktiva). Prova ett annat jobb eller vänta.",
+    "cannotStartJob": "Kan inte starta detta jobb",
+    "failedStartJob": "Misslyckades att starta jobb",
+    "unknownError": "Okänt fel",
+    "toolEquipped": "Verktyg utrustat: {tool}",
+    "toolReturnedToTruck": "{tool} återlämnad till lastbilen.",
+    "deliveringStatus": "Levererar...",
+    "jobRestarting": "Jobbsystemet startar om...",
+    "failedOpenMenu": "Misslyckades att öppna jobbmenyn",
+    "noPermission": "Ingen adminbehörighet",
+    "mustSelectJob": "Du måste välja ett jobb vid jobbcentret först",
+    "achievementUnlocked": "Prestation upplåst: {label}",
+    "globalEventStarted": "Nytt globalt event startat: {title}",
+    "alreadyCarrying": "Du bär redan något!",
+    "notCarrying": "Du bär inget!",
+    "needToolFirst": "Du behöver ett verktyg först!",
+    "anotherPlayerBreaking": "En annan spelare bryter redan denna!",
+    "putToolOnBelt": "Lägg verktyget på bältet först!",
+    "processingWait": "Bearbetning pågår, vänta!",
+    "noBoxAvailable": "Inga lådor tillgängliga!",
+    "alreadyHaveBox": "Du har redan en låda!",
+    "failedTakeBox": "Misslyckades att ta lådan!",
+    "noLoadedBoxes": "Inga lastade lådor!",
+    "notCarryingBox": "Du bär inte en låda!",
+    "failedLoadBox": "Misslyckades att lasta lådan!",
+    "noRoomInTrunk": "Inget utrymme i bagaget, lådan kasserad.",
+    "emptyBoxReturned": "Tom låda återlämnad.",
+    "workClothesEquipped": "Arbetskläder påtagna!",
+    "normalClothes": "Bytt tillbaka till vanliga kläder",
+    "clothesRequired": "Du måste ta på dig arbetskläder först!",
+    "failedPlaceBox": "Misslyckades att placera lådan!",
+    "takeBoxFirst": "Ta en låda först!",
+    "boxFull": "Lådan är full! Lasta den på lastbilen.",
+    "placeBoxFirst": "Placera lådan på marken först!",
+    "objectBroken": "Objekt krosat! Plocka upp föremålet.",
+    "oreBroken": "{ore}-malm hittad! Plocka upp den.",
+    "noItemsToSell": "Inga föremål att sälja!",
+    "cantRepairPanel": "Kan inte reparera den här panelen",
+    "cantRepairPole": "Kan inte reparera den här stolpen",
+    "nothingInTrunk": "Inget i bagaget!",
+    "alreadyCarryingSomething": "Bär redan något!",
+    "trunkInUse": "Någon annan använder bagaget!",
+    "failedTakeItem": "Misslyckades att ta föremål!",
+    "itemTaken": "Föremål taget! Placera på vågen eller tillbaka i lastbilen.",
+    "failedPickupItem": "Misslyckades att plocka upp föremål!",
+    "notCarryingAnything": "Bär ingenting!",
+    "failedLoadItem": "Misslyckades att lasta föremål!",
+    "vehicleSpawnBlocked": "Fordonets spawnplats är blockerad!",
+    "failedStartCleaning": "Misslyckades att börja städningen!",
+    "cleanItemsFirst": "Städa några föremål först!",
+    "allDoneReturn": "Allt klart! Återvänd för att avsluta.",
+    "newRouteAssigned": "Ny rutt tilldelad! Fortsätt städa!",
+    "failedTakeLoadedBox": "Misslyckades att ta den lastade lådan!",
+    "jobCompletedByTeam": "Jobbet har slutförts av ditt lag!",
+    "jobFinishedSummary": "Jobb avslutat! Föremål: {items} • Intjänat: {currency}{amount}",
+    "continuePayout": "Runda utbetald: {currency}{amount}. Börjar om!",
+    "roundLimitReached": "Rondgränsen nådd — jobbets nedkylning har startat.",
+    "cooldownWaitAny": "{name} måste vänta {time} innan något jobb kan startas.",
+    "cooldownWaitJob": "{name} måste vänta {time} innan detta jobb kan startas igen.",
+    "cantRunWithDog": "Du kan inte springa medan du rastar hunden!",
+    "cantJumpWithDog": "Du kan inte hoppa medan du rastar hunden!",
+    "cantEnterVehicleWithDog": "Du kan inte gå in i ett fordon medan du rastar hunden!",
+    "policeAlert": "POLISLARM! Du har blivit upptäckt!",
+    "tooFarFromVan": "För långt från bussen! Slangen når inte.",
+    "tooFarFromTask": "För långt bort! Kom närmare och försök igen.",
+    "itemCleanedPay": "Städat! +{amount}",
+    "itemsCleaned": "Föremål städade",
+    "alreadyTaken": "Redan taget!",
+    "actionFailed": "Handling misslyckades!",
+    "saleFailed": "Försäljning misslyckades!",
+    "failedSelectZone": "Misslyckades att välja zon!",
+    "purchaseFailed": "Köp misslyckades!",
+    "couldNotSell": "Kunde inte sälja!",
+    "couldNotCastRod": "Kunde inte kasta revet!",
+    "cannotTakeTool": "Kan inte ta verktyget",
+    "cannotTrimBush": "Kan inte trimma denna buske",
+    "cannotDigLawn": "Kan inte gräva denna gräsmatta",
+    "couldNotPickUpBox": "Kunde inte plocka upp lådan",
+    "couldNotPickUpPallet": "Kunde inte plocka upp pallen",
+    "trunkIsFull": "Bagaget är fullt!",
+    "scaleFull": "Vågen är full!",
+    "palletSlotsFull": "Pallplatser fulla",
+    "truckIsFull": "Lastbilen är full",
+    "toolTaken": "Verktyg taget: {tool}",
+    "toolReturned": "Verktyg återlämnat: {tool}",
+    "alreadyHaveTool": "Du har redan en {tool}!",
+    "noToolAvailable": "Inga {tool} tillgängliga!",
+    "notHoldingTool": "Håller inte i en {tool}!",
+    "failedReturnTool": "Misslyckades att återlämna {tool}!",
+    "takeToolFirst": "Ta en {tool} först!",
+    "itemLoaded": "Föremål lastat! (plats {slot}/{max})",
+    "itemLoadedDrive": "Föremål lastat! (plats {slot}/{max}) — Du kan köra till bearbetningsvågen eller fortsätta lasta.",
+    "spotCleaned": "{spot} städad! {count} plats(er) kvar.",
+    "collected": "{item} insamlat!",
+    "truckHeadingTo": "Lastbilen är på väg till {dest}...",
+    "todaysBonusJobs": "Dagens bonusjobb: {jobs}",
+    "toolUnlocked": "Upplåst: {tool}",
+    "toolUpgraded": "{job}: {tool} upplåst!",
+    "toolSwitched": "{job}: bytt till {tool}!",
+    "qualityBonus": "{quality} kvalitet! x{multiplier} bonus",
+    "notAuthenticated": "Inte autentiserad",
+    "noToolsForJob": "Inga verktyg för detta jobb",
+    "toolNotFound": "Verktyg hittades inte",
+    "notEnoughMoney": "Inte tillräckligt med pengar",
+    "failedUnlockTool": "Misslyckades att låsa upp verktyg",
+    "toolNotUnlocked": "Verktyg inte upplåst",
+    "failedSelectTool": "Misslyckades att välja verktyg",
+    "toolNotFoundForLevel": "Verktyg hittades inte för denna nivå",
+    "failedSaveUpgrade": "Misslyckades att spara uppgradering",
+    "alreadyProcessing": "Begäran redan pågår, vänta.",
+    "alreadyInJob": "Du är redan i ett jobb!",
+    "minimumPlayersRequired": "Detta jobb kräver minst {count} spelare för att starta.",
+    "insufficientHours": "Du behöver minst {required} timmar för att starta detta jobb. Du har {current} timmar.",
+    "exceededMaxHours": "Detta jobb är bara tillgängligt för spelare med mindre än {max} timmar. Du har {current} timmar.",
+    "insufficientHoursPlayer": "{name} behöver minst {required} timmar för att starta detta jobb. Nuvarande: {current} timmar.",
+    "exceededMaxHoursPlayer": "{name} har för många timmar för detta jobb ({current}/{max} max).",
+    "requiresJobLevel": "Kräver jobbnivå {level}",
+    "failedSwitchTool": "Misslyckades att byta verktyg",
+    "playerNotFound": "Spelare hittades inte eller är inte online",
+    "failedSetLevel": "Misslyckades att sätta nivå",
+    "pickingUp": "Plockar upp...",
+    "pickingUpBox": "Plockar upp låda...",
+    "placingBox": "Placerar låda...",
+    "loadingBox": "Lastar låda...",
+    "placingOnScale": "Placerar på våg...",
+    "returningBox": "Återlämnar låda...",
+    "loading": "Laddar...",
+    "takingItem": "Tar föremål...",
+    "placingItem": "Placerar föremål...",
+    "takingTool": "Tar verktyg...",
+    "storingTool": "Förvarar verktyg...",
+    "equippingTool": "Utrustar verktyg...",
+    "toolActionInProgress": "Verktygshandling pågår redan",
+    "toolCooldownActive": "Vänta innan du använder verktyget igen",
+    "cannotTakeToolInVehicle": "Kan inte ta verktyg i ett fordon",
+    "alreadyHoldingTool": "Du har redan ett verktyg",
+    "noToolInTrunk": "Inget verktyg i bagaget",
+    "toolNotAssigned": "Inget verktyg tilldelat dig",
+    "toolNotYours": "Detta är inte ditt verktyg",
+    "toolNotInTrunk": "Verktyget är inte i bagaget",
+    "toolActionCancelled": "Handling avbruten",
+    "toolAttachFailed": "Misslyckades att fästa verktyg",
+    "noJobCallbacks": "Jobb-callbacks inte konfigurerade",
+    "serverDeniedTool": "Servern nekade handlingen",
+    "noToolInHand": "Inget verktyg i handen",
+    "noToolOnBelt": "Inget verktyg på bältet",
+    "toolEntityNotFound": "Verktygsentitet hittades inte",
+    "noActiveTool": "Inget aktivt verktyg",
+    "noToolToReturn": "Inget verktyg att återlämna",
+    "questProgress": "Uppdrag: {label} ({progress}/{target})",
+    "questCompleted": "Uppdrag klart: {label}!{rewards}",
+    "boxTaken": "Låda tagen! Gå och skörda.",
+    "loadedBoxTaken": "Lastad låda tagen! {count} {label} — Bär den till vågen.",
+    "boxEmpty": "Lådan är tom! Skörda lite först.",
+    "boxEmptyError": "Lådan är tom",
+    "decalCleaned": "Städat! ({count} kvar)",
+    "allDeliveriesComplete": "Alla leveranser klara! Lämna tillbaka cykeln.",
+    "allDeliveriesCompletePayment": "Alla leveranser klara! +{symbol}{payment} | Lämna tillbaka cykeln.",
+    "farmerJobStarted": "Jordbruksjobb startat! Ta på dig arbetskläder och plocka upp en låda.",
+    "farmerBoxTaken": "Låda tagen! Gå till växter för att skörda.",
+    "farmerBoxEmpty": "Lådan är tom! Skörda lite först.",
+    "fruitpickerJobStarted": "Apelsinplockningsjobb startat! Ta på dig arbetskläder och plocka upp en låda.",
+    "fruitpickerBoxTaken": "Låda tagen! Gå till apelsinträd för att plocka.",
+    "fruitpickerBoxEmpty": "Lådan är tom! Plocka några apelsiner först."
+  },
+  "prompt": {
+    "pickUpBox": "[E] Plocka upp låda",
+    "loadBox": "[E] Lasta låda",
+    "openTrunk": "[E] Öppna bagage",
+    "closeTrunk": "[E] Stäng bagage",
+    "returnVehicle": "[E] Lämna tillbaka fordon",
+    "deliver": "[E] Leverera",
+    "returnBoxToTrunk": "[E] Lämna tillbaka låda till bagage",
+    "dropAnchor": "[E] Släpp ankare",
+    "raiseAnchor": "[E] Lyft ankare",
+    "returnBoat": "[E] Lämna tillbaka båt",
+    "boardBoat": "[E] Gå ombord på båt",
+    "sellItems": "[E] Sälj föremål",
+    "catchDog": "[E] Fånga hund",
+    "cleanPoop": "[E] Städa bajs",
+    "deliverDog": "[E] Lämna av hund",
+    "getInBucket": "[E] Gå in i korgen",
+    "bucketInUse": "Korgen används",
+    "parkVehicle": "[E] Parkera fordon",
+    "reelIn": "[E] Rulla in!",
+    "sellFish": "[E] Sälj fisk",
+    "changeClothes": "[E] Byt kläder",
+    "changeToWorkClothes": "[E] Byt till arbetskläder",
+    "changeToNormalClothes": "[E] Byt till vanliga kläder",
+    "collectTreasure": "[E] Gräv upp skatt",
+    "takeShovel": "[G] Ta spade",
+    "loadCargo": "[E] Lasta på båt",
+    "digTreasure": "[E] Gräv",
+    "openChest": "[E] Öppna kista",
+    "pickupLoot": "[E] Plocka upp byte",
+    "stealCargo": "[E] Stjäl last",
+    "finishJob": "[E] Avsluta jobb",
+    "cancelJob": "[E] Avbryt jobb",
+    "exitWarehouse": "[E] Lämna lagret",
+    "completeJob": "[E] Slutför jobb",
+    "activateBelt": "[E] Aktivera band",
+    "throwCleanup": "[E] Kasta sopor",
+    "collectCleanup": "[E] Samla sopor",
+    "deliverTruck": "[E] Leverera lastbil",
+    "takeTrimmer": "[E] Ta häckseax",
+    "trimBush": "[E] Trimma buske",
+    "digLawn": "[E] Gräv gräsmatta",
+    "returnWand": "[E] Lämna tillbaka munstycke",
+    "takeWand": "[E] Ta trycksprutemunstycke",
+    "takeWandOrCloth": "[E] Ta munstycke | [G] Ta trasa",
+    "takeTrimmerOrShovel": "[E] Ta häckseax | [G] Ta spade",
+    "cleanToilet": "[E] Städa toalett",
+    "fixPipe": "[E] Laga rör",
+    "returnWrench": "[E] Lämna tillbaka skruvnyckel",
+    "takeWrench": "[E] Ta skruvnyckel",
+    "attachTrailer": "[E] Koppla släp",
+    "deliverTrailer": "[E] Leverera släp",
+    "reattachTrailer": "[E] Koppla om släp",
+    "pickUpPallet": "[E] Plocka upp pall",
+    "loadPallet": "[E] Lasta pall",
+    "putDownBox": "[E] Ställ ner låda",
+    "pickUpBoxForklift": "[E] Plocka upp låda med gaffeltruck",
+    "fishingShop": "[E] Fiskebutik",
+    "lowerFork": "Tryck [CTRL] för att sänka gaffeln",
+    "raiseFork": "Tryck [SHIFT] för att höja gaffeln",
+    "useForklift": "Använd gaffeltruck för att flytta pallar",
+    "trunkFull": "Bagaget är fullt! Kör iväg.",
+    "completeDeliveriesFirst": "Slutför alla leveranser först!",
+    "forkliftControls": "Gaffeltruck: CTRL = Sänk gaffel | SHIFT = Höj gaffel",
+    "processingInProgress": "Bearbetning pågår...",
+    "boxFullLoad": "Lådan är full! Lasta på lastbil eller våg.",
+    "trunkEmptyGoNpc": "Bagaget är tomt! Gå till NPC:n.",
+    "takeWrenchFromTrunk": "Ta skruvnyckel från bussbagaget",
+    "reattachTrailerPrompt": "[E] Koppla om släp",
+    "finishJobCount": "[E] Avsluta jobb ({count} städade)",
+    "returnTool": "[E] Lämna tillbaka {tool}",
+    "takeTool": "[E] Ta {tool}",
+    "finishProcessing": "[E] Slutför bearbetning ({boxes} lådor, {currency}{value})",
+    "placeBoxOnScale": "[E] Placera låda på våg",
+    "loadBoxToTruck": "[E] Lasta låda på lastbil ({count} {produce})",
+    "loadBoxToTruckTarget": "Lasta {produce}-låda",
+    "returnEmptyBox": "[E] Lämna tillbaka tom låda",
+    "takeLoadedBox": "[E] Ta lastad låda ({count} i lastbilen)",
+    "takeHarvestBox": "[E] Ta skördlåda ({count}/{cap})",
+    "takeHarvestBoxEmpty": "[E] Ta skördlåda",
+    "polishSurface": "[E] Polera {surface}",
+    "continuePolish": "[E] Fortsätt polera {surface}",
+    "returnAndTake": "[E] Lämna tillbaka {current} | [G] Ta {other}",
+    "deliverCount": "[E] Leverera ({current}/{total})",
+    "selectHuntingArea": "[E] Välj jaktområde",
+    "returnBicycle": "[E] Lämna tillbaka cykel",
+    "takeJack": "[E] Ta domkraft",
+    "swapTire": "[E] Lämna tillbaka gammalt däck & ta reserv",
+    "closeValve": "[E] Stäng ventil - Stoppa vattenflöde",
+    "openValve": "[E] Öppna ventil - Återställ vattenflöde",
+    "wearHuntingClothes": "[E] Ta på jaktkläder",
+    "placeBoxAndHarvest": "[E] Placera låda och skörda {produce}",
+    "harvestProduce": "[E] Skörda {produce}",
+    "castRod": "[E] Kasta rev ({zone})",
+    "returnToSeat": "[E] Återvänd till säte",
+    "clickTargetsToClean": "Klicka på målen för att städa!"
+  },
+  "hunting": {
+    "continueHint": "Spåra nästa djur i jaktområdet",
+    "started": "Jaktjobb startat! Ta på arbetskläder och välj ett område.",
+    "newAnimals": "Nya djur har ankommit! Fortsätt.",
+    "continueHunting": "Du kan fortsätta jaga.",
+    "weaponsGiven": "Jaktvapen tilldelade!",
+    "goToArea": "Bege dig till jaktområdet, djur dyker upp där!",
+    "cantPickUp": "Du kan inte plocka upp det här djuret!",
+    "alreadyCarrying": "Du bär redan något!",
+    "failedPickUp": "Misslyckades att plocka upp djur!",
+    "noAnimalsInTrunk": "Inga djur i bagaget!",
+    "trunkInUse": "Någon annan använder bagaget!",
+    "orePickedUp": "Djur upplockat! Placera det på vågen.",
+    "failedPickUpAnimal": "Misslyckades att plocka upp djur!",
+    "invalidArea": "Ogiltigt område!",
+    "areaLocked": "Detta område är låst!",
+    "animalsSpawned": "{count} djur har dykt upp!",
+    "animalHunted": "{animal} jagat! ({weight} kg)",
+    "wildAnimalFound": "Vild {animal} hittad! ({weight} kg)",
+    "animalPickedUp": "{animal} upplockat! ({weight} kg) Lasta in det i fordonet.",
+    "levelRequired": "Nivå {level} krävs för detta område!",
+    "areaSelected": "{area} valt! Följ markering på kartan.",
+    "processingComplete": "Bearbetning klar! {weight} kg, {currency}{amount} intjänat",
+    "tooFarWarning": "Du gick för långt från jaktområdet! Återvänd inom 15 sekunder annars avbryts jobbet!",
+    "abandonedTooFar": "Du gick för långt från jaktområdet. Jobbet avbrutet.",
+    "huntingAreaFallback": "Jaktområde",
+    "animalFallback": "Djur",
+    "areaFallback": "Område {index}",
+    "selectArea": "Välj område: {name}",
+    "selectHuntingArea": "Välj jaktområde",
+    "pickUpAnimal": "[E] Plocka upp {label} ({weight} kg)",
+    "loadAnimalToVehicle": "[E] Lasta djur i fordon",
+    "takeAnimalFromTrunk": "[E] Ta djur från bagage",
+    "takeAnimalFromTrunkCount": "[E] Ta djur från bagage ({count})",
+    "loadAnimalWeight": "[E] Lasta djur ({weight} kg | Lastbil: {current}/{max} kg)",
+    "finishProcessingWeight": "[E] Slutför bearbetning ({weight} kg)",
+    "vehicleOverweight": "~r~Fordon överlastat! ({current}/{max} kg)",
+    "vehicleOverweightDrop": "~r~Fordon överlastat! ({current}/{max} kg) ~w~[G] Släpp kadaver",
+    "trunkFullDrop": "~r~Bagaget är fullt! ~w~[G] Släpp kadaver, eller bearbeta nuvarande last.",
+    "carcassDropped": "Kadaver släppt.",
+    "dropHint": "[G] Släpp kadaver",
+    "progressTitle": "Jakt",
+    "progressDetail": "Välj ett jaktområde, fäll djur, bär kadavren till lastbilen och kör sedan till vågen.",
+    "stepSelectArea": "Välj ett jaktområde på kartan",
+    "stepHuntAnimal": "Jaga ett djur i området",
+    "stepPickingUp": "Plockar upp kadavret",
+    "stepPickupCarcass": "Plocka upp det döda djuret",
+    "stepLoadTrunk": "Lasta kadavret i lastbilen",
+    "stepGoToScale": "Kör kadavren till vågen",
+    "stepPlacingOnScale": "Placerar djur på vågen",
+    "stepPlaceOnScale": "Placera djuret på vågen",
+    "stepProcessAnimal": "Prata med NPC:n för att bearbeta djuren",
+    "stepNewArea": "Välj ett nytt jaktområde"
+  },
+  "tiretechnician": {
+    "continueHint": "Kör till nästa strandade fordon på din karta",
+    "goGetJack": "Gå till din lastbil och ta domkraften!",
+    "takingJack": "Tar domkraft...",
+    "jackTaken": "Domkraft redo! Placera den under bilen.",
+    "placingJack": "Placerar domkraft...",
+    "jackPlaced": "Bilen uppdomkraftad! Ta nu bort det platta däcket.",
+    "removingTire": "Tar bort platt däck...",
+    "tireRemoved": "Däck borttaget! Lämna tillbaka det till lastbilen och hämta ett reservdäck.",
+    "swappingTires": "Byter däck...",
+    "spareTaken": "Reservdäck redo! Montera det på bilen.",
+    "installingTire": "Monterar reservdäck...",
+    "tireInstalled": "Däck monterat! Sänk fordonet för att slutföra.",
+    "loweringVehicle": "Sänker fordon...",
+    "tireChanged": "Däckbyte lyckades!",
+    "repairCancelled": "Reparation avbruten",
+    "cantRepair": "Kan inte reparera detta fordon",
+    "finishCurrentFirst": "Slutför nuvarande reparation först!",
+    "goToTruck": "Gå till din servicelastbil!",
+    "returningJack": "Återlämnar domkraft...",
+    "takingSpare": "Tar reservdäck...",
+    "needSpare": "Du behöver ett reservdäck! Ta ett från lastbilen först.",
+    "returnVehicle": "Lämna tillbaka servicelastbilen till depån!",
+    "interactPlaceJack": "[E] Placera domkraft",
+    "interactRemoveTire": "[E] Ta bort platt däck",
+    "interactInstallTire": "[E] Montera reservdäck",
+    "interactLowerVehicle": "[E] Sänk fordon",
+    "interactPickupJack": "[E] Plocka upp domkraft",
+    "interactChangeTire": "[E] Byt platt däck",
+    "interactReturnJack": "[E] Lämna tillbaka domkraft",
+    "interactReturnTire": "[E] Lämna tillbaka däck",
+    "interactTakeJack": "[E] Ta domkraft",
+    "interactTakeSpare": "[G] Ta reservdäck",
+    "interactTakeSpareE": "[E] Ta reservdäck",
+    "progressTitle": "Däcktekniker",
+    "progressDetail": "Kör till strandade fordon och byt deras platta däck.",
+    "progressTires": "Däck ({done}/{total})",
+    "serviceTruck": "Däckservicelastbil",
+    "stepTakeJack": "Ta domkraften från lastbilen",
+    "stepJackUp": "Domkrafta upp bilen",
+    "stepRemoveFlat": "Ta bort det punkterade däcket",
+    "stepFitSpare": "Montera reservdäcket",
+    "stepLowerCar": "Sänk ner bilen",
+    "stepReturnJack": "Lämna tillbaka domkraften i lastbilen"
+  },
+  "powerlines": {
+    "continueHint": "Hitta nästa skadade stolpe på din karta",
+    "bucketInstructions": "Använd piltangenterna för att höja/sänka korgen. [E] för att reparera när du är inom räckvidd.",
+    "parkNearPoles": "Parkera nära stolpar och använd korgen för att nå ledningarna.",
+    "cantDriveWithBucket": "Kan inte köra medan korgen används",
+    "panelRepaired": "Panel reparerad!",
+    "panelCancelled": "Panelreparation avbruten",
+    "poleRepaired": "Telefonstolpe reparerad!",
+    "poleRepairFailed": "Stolpereparation misslyckades! Var försiktig med elektricitet.",
+    "progressTitle": "Elledningar",
+    "bucketControls": "Korgkontroller | Upp Ner Vänster Höger",
+    "blipPanel": "Elpanel",
+    "blipPole": "Telefonstolpe",
+    "blipVehicle": "Korglastbil"
+  },
+  "diving": {
+    "continueHint": "Hitta nästa dykplats på din karta",
+    "oxygenCritical": "SYRE KRITISKT! Stig upp omedelbart!",
+    "oxygenLow": "Syret börjar ta slut! Du bör stiga upp.",
+    "refillingTank": "Fyller på lufttank...",
+    "tankRefilled": "Lufttank fylld.",
+    "coralEmpty": "Korall krossad men inget inuti.",
+    "trashCleaned": "Skräp städat!",
+    "failedSyncBoat": "Misslyckades att synka båt. Försök igen.",
+    "allTasksComplete": "Alla uppgifter klara! Återvänd till båten och lyft ankaret.",
+    "anchorDropped": "Ankare släppt! Gå av båten och dyk i.",
+    "anchorRaised": "Ankare lyft! Bege dig till leveranspunkten.",
+    "anchorRaisedEarly": "Ankare lyft! Återvänder tidigt — ingen betalning ges.",
+    "anchorRaisedContinue": "Ankare lyft! Du kan ankra igen vid dykzonen för att fortsätta.",
+    "gearEquipped": "{gear} utrustad! ({seconds}s syre)",
+    "itemsSold": "{count} föremål sålda! {currency}{amount} intjänat!",
+    "zoneSelected": "Dykzon vald: {zone}. Kasta loss!",
+    "zoneInfo": "Dykzon: {zone}",
+    "reconnected": "Återansluten till dykjobb!",
+    "started": "Dykjobb startat! Välj en zon och bege dig till dykplatsen.",
+    "progressTitle": "Dykning",
+    "progressDetail": "Samla undervattensföremål vid dykplatsen. Sim ner och samla objekt från havsbotten.",
+    "divingStarted": "Du är i dykzonen! Samla föremål från havsbotten.",
+    "collectingCoral": "Samlar korall...",
+    "cleaningTrash": "Städar skräp...",
+    "unknownZone": "Okänd",
+    "sellAtNpcReminder": "Sälj dina insamlade föremål hos köpare-NPC:n för att få betalning."
+  },
+  "treasurehunter": {
+    "continueHint": "Följ spåret till nästa kista",
+    "started": "Skattjaktsjobb startat! Bege dig till skattområdet.",
+    "reconnected": "Återansluten till skattjaktsjobb!",
+    "newTarget": "Ett lag hittade skatten! Ny plats tilldelad.",
+    "treasureFound": "Du hittade en {tier}! {currency}{value} intjänat!",
+    "someoneNearby": "Någon är för nära! Flytta bort för att samla.",
+    "anchorDropped": "Ankare släppt! Dyk ner och hitta skatten!",
+    "anchorRaised": "Ankare lyft! Bege dig tillbaka till bryggan.",
+    "oxygenCritical": "SYRE KRITISKT! Stig upp omedelbart!",
+    "oxygenLow": "Syret börjar ta slut! Du bör stiga upp.",
+    "refillingTank": "Fyller på lufttank...",
+    "tankRefilled": "Lufttank fylld.",
+    "depthWarning": "Farligt djup! Syret förbrukas snabbare!",
+    "fakeLocation": "Falskt signal... Beräknar nya koordinater.",
+    "penalty": "Straff: {currency}{amount} — Ingen företagsbåt vid bryggan.",
+    "digging": "Gräver upp skatt...",
+    "alreadyCollected": "Någon har redan samlat denna skatt!",
+    "alreadySurfaced": "Kistan är redan på ytan!",
+    "notSurfaced": "Kistan har inte kommit upp än! Fortsätt gräv.",
+    "someoneOpening": "Någon annan öppnar denna kista!",
+    "needShovel": "Du behöver en spade! Ta en från båten.",
+    "cargoLoaded": "Byte lastat på båten!",
+    "cargoFull": "Båtens last är full! Återvänd till bryggan för att leverera.",
+    "stolenItem": "Du stal byte från en annan båt!",
+    "cargoStolenFromYou": "Någon stal byte från din båt!",
+    "someoneOpened": "Någon öppnade en {tier}!",
+    "stealDisabled": "Stöld är inte aktiverat.",
+    "noCargoHere": "Ingen last att stjäla här.",
+    "shovelTaken": "Spade tagen!",
+    "canFinishHint": "Samla fler skatter eller återvänd till bryggan för att avsluta jobbet.",
+    "anchorRaisedContinue": "Ankare lyft! Bege dig till nästa skatt eller återvänd till bryggan för att avsluta.",
+    "progressTitle": "Skattjägare",
+    "progressDetail": "Dyk under vattnet och samla skattkistor. Följ spårets pip för att hitta dem.",
+    "cargoProgress": "Last: {current}/{max}",
+    "blipDock": "Brygga - Leverera",
+    "blipTreasure": "Skattplats"
+  },
+  "metaldetector": {
+    "continueHint": "Följ detektorns pip och sök av nästa zon",
+    "started": "Metalldetektor-passet har börjat! Ta en detektor från lastbilen och bege dig till sökzonen.",
+    "newRound": "Ny runda startad. Skannern omkalibrerad.",
+    "newZone": "Ny sökzon: {zone}",
+    "teammateFound": "Din lagkamrat grävde upp ett föremål.",
+    "pressDig": "[E] Gräv här",
+    "digging": "Gräver...",
+    "digCancelled": "Grävning avbruten.",
+    "digTooFast": "Du gräver för snabbt. Sakta ner lite.",
+    "exitVehicleFirst": "Kliv ur fordonet för att använda detektorn.",
+    "outsideZone": "Du måste hålla dig inom den markerade strandzonen.",
+    "lootFound": "Du hittade {item}! +{currency}{amount}",
+    "lootFoundItem": "Du hittade {item}! Det har lagts till i ditt förråd.",
+    "unknownItem": "Okänt föremål",
+    "roundFinished": "Rundan klar! Alla platser i den här zonen har grävts upp.",
+    "canFinishHint": "Öppna jobbalternativen hos NPC:n för att avsluta eller fortsätta.",
+    "spotAlreadyDug": "Den här platsen har redan grävts upp.",
+    "spotBusy": "En lagkamrat gräver redan på den här platsen.",
+    "takeDetectorFirst": "Ta först en metalldetektor från lastbilen.",
+    "detectorReturned": "Detektorn har lagts tillbaka i lastbilen.",
+    "blipSearchArea": "Sökområde",
+    "unknownZone": "Okänd strand",
+    "progressTitle": "Metalldetektor",
+    "progressDetail": "Använd din detektor för att hitta och gräva upp dolda metallfynd i strandzoner.",
+    "progressSpots": "Uppgrävda platser: {current}/{max}",
+    "progressValue": "Samlat värde: {currency}{amount}",
+    "labelTakeTool": "[E] Ta metalldetektor",
+    "labelReturnTool": "[E] Lämna tillbaka detektorn",
+    "labelPutOnBelt": "[G] Häng detektorn i bältet",
+    "labelTakeFromBelt": "[G] Ta detektorn från bältet",
+    "labelTakeFromTrunk": "[E] Ta från bagageluckan (%d)",
+    "labelNoMoreItems": "~y~Inget kvar i bagageluckan.",
+    "labelLoadToTruck": "[E] Lasta i lastbilen",
+    "labelPickup": "[E] Plocka upp",
+    "labelDig": "[E] Gräv",
+    "labelClothesWork": "[E] Byt till arbetskläder",
+    "labelClothesNormal": "[E] Byt till vanliga kläder",
+    "labelFailNotify": "Du kan inte gräva här just nu",
+    "returnVehicleHint": "Passet slutar — kör tillbaka skåpbilen till depån för att lämna in den.",
+    "returnVehiclePrompt": "[E] Lämna in skåpbilen",
+    "returnVehicleBlip": "Återlämna skåpbil",
+    "jobFinished": "Passet är slut! Du tjänade {symbol}{earned}.",
+    "vehicleNotAtDepot": "Skåpbilen måste vara tillbaka vid depån!",
+    "tooFarFromDepot": "Du är för långt från depån!"
+  },
+  "delivery": {
+    "continueHint": "Hämta nästa paket och leverera det",
+    "reconnected": "Återansluten till leveransjobb!",
+    "started": "Fraktleveransjobb startat!",
+    "leaderPreparing": "Ledaren förbereder fordonet, vänta...",
+    "spawnFailed": "Fordonet kunde inte skapas! Spawnplatsen är upptagen. Jobb avbrutet.",
+    "alreadyCarryingBox": "Du bär redan en låda!",
+    "boxPickedUp": "Låda upplockad! Lasta den i fordonet.",
+    "notCarryingBox": "Du bär inte en låda!",
+    "firstDelivery": "Första leveranspunkten tilldelad! Kör iväg när du är redo.",
+    "trunkFull": "Bagaget är fullt! Dags att leverera.",
+    "boxDeliverPickup": "Låda upplockad! Leverera den till kunden.",
+    "newRound": "Ny runda! Lasta lådor från depån.",
+    "pickUpToContinue": "Plocka upp lådor från NPC:n för att fortsätta. För att avsluta, kör till den markerade platsen och lämna tillbaka fordonet.",
+    "returnVehicleToFinish": "Alla leveranser klara! Lämna tillbaka fordonet på den markerade platsen för att avsluta jobbet.",
+    "deliveriesStarting": "Leveranser påbörjas!",
+    "teammateTookBox": "Lagkamrat tog en låda",
+    "teammateReturnedBox": "Lagkamrat återlämnade en låda till bagaget",
+    "teammatePartialDelivery": "Lagkamrat gjorde en delleverans!",
+    "allComplete": "Alla leveranser klara! Återvänd till depån.",
+    "progressTitle": "Leverans",
+    "progressDetail": "Leverera paket till kunder över hela staden. Lasta lådor och leverera till varje adress.",
+    "loadCapacity": "Lasta lådor från depån! Kapacitet: {capacity} lådor",
+    "vehicleReadyLoad": "Fordon redo! Lasta lådor från depån. Kapacitet: {capacity} lådor",
+    "subtaskDeliver": "Leverera paket ({current}/{total})",
+    "subtaskLoad": "Lasta lådor vid depån ({current}/{total})",
+    "boxLoaded": "Låda lastad! ({current}/{total})",
+    "boxReturned": "Låda återlämnad! ({count} i bagaget)",
+    "partialDelivery": "Delleverans! ({current}/{total}) +{amount} | Hämta en till låda.",
+    "deliveryDone": "Leverans klar! +{amount} | Alla leveranser klara! Återvänd till depån.",
+    "deliveryDoneRemaining": "Leverans klar! +{amount} | Kvar: {remaining}",
+    "deliveryFailed": "Leverans misslyckades!",
+    "couldNotContinue": "Kunde inte fortsätta!",
+    "couldNotPickUp": "Kunde inte plocka upp låda!",
+    "couldNotLoad": "Kunde inte lasta låda!",
+    "couldNotReturn": "Kunde inte återlämna låda!",
+    "teammateLoaded": "Lagkamrat lastade en låda ({current}/{total})",
+    "teammateDelivered": "Lagkamrat slutförde en leverans! Kvar: {remaining}",
+    "itemLabel": "Leveranser"
+  },
+  "cardetailer": {
+    "continueHint": "Kör till nästa bil och börja detaljtvättä",
+    "started": "Bilrekonditioneringsjobb startat! Utrusta dig och kör till kundernas bilar.",
+    "newCars": "Nya bilar tilldelade! Fortsätt rekonditionera.",
+    "wandEquipped": "Trycksprutemunstycke utrustat!",
+    "wandReturned": "Trycksprutemunstycke återlämnat till bussen.",
+    "clothEquipped": "Polertrasa utrustad!",
+    "clothReturned": "Polertrasa återlämnad till bussen.",
+    "takeWandFirst": "Ta trycksprutemunstycket först!",
+    "needCloth": "Du behöver polertrasan! Ta den från bussen.",
+    "failedStartPolish": "Misslyckades att börja polera!",
+    "tooFar": "För långt bort! Kom närmare och försök igen.",
+    "carDetailed": "Bil rekonditionerad!",
+    "carWashed": "Bil tvättad! Polera för bonusbetalning.",
+    "hoseLimit": "Slanggränsen nådd! Stanna närmare bussen.",
+    "carDetailedTeammate": "Bil rekonditionerad av lagkamrat!",
+    "carWashedTeammate": "Bil tvättad av lagkamrat!",
+    "carPolished": "Bil polerad! Bra jobbat!",
+    "carPolishedTeammate": "Bil polerad av lagkamrat!",
+    "returnToDepot": "Återvänd till depån för att slutföra jobbet.",
+    "spotRightFrontDoor": "Höger framdörr",
+    "spotLeftFrontDoor": "Vänster framdörr",
+    "spotHood": "Motorhuv",
+    "spotTrunk": "Bagage",
+    "spotRightRearDoor": "Höger bakdörr",
+    "spotLeftRearDoor": "Vänster bakdörr",
+    "spotHoodRight": "Motorhuv höger",
+    "spotHoodLeft": "Motorhuv vänster",
+    "spotHoodCenter": "Motorhuv mitten",
+    "spotRoof": "Tak",
+    "spotRoofLeft": "Tak vänster",
+    "spotTrunkRight": "Bagage höger",
+    "spotTrunkLeft": "Bagage vänster",
+    "spotFrontFenderRight": "Höger framskärm",
+    "spotFrontFenderLeft": "Vänster framskärm",
+    "spotDoorRight": "Höger dörr",
+    "spotDoorRightFront": "Höger framdörr",
+    "spotDoorLeft": "Vänster dörr",
+    "spotDoorLeftFront": "Vänster framdörr",
+    "spotRearFenderRight": "Höger bakskärm",
+    "spotRearFenderLeft": "Vänster bakskärm",
+    "toolWand": "Munstycke",
+    "toolCloth": "Trasa",
+    "carsDetailed": "Bilar rekonditionerade",
+    "progressTitle": "Bilrekonditionerare",
+    "progressDetail": "Tvätta och polera kundbilar. Använd trycksprutan för tvättning, polera sedan med trasa.",
+    "carLabel": "Bil #{index}",
+    "subtaskWashed": "{car} tvättad",
+    "subtaskPolished": "{car} polerad",
+    "subtaskDetailed": "{car} rekonditionerad",
+    "spotFallback": "Plats"
+  },
+  "cleaner": {
+    "continueHint": "Bege dig till nästa fläck på din karta",
+    "started": "Städningsjobb startat! Ta på arbetskläder och mopp.",
+    "toolMop": "Mopp",
+    "progressTitle": "Städare",
+    "progressDetail": "Städa smutsfläckarna markerade på kartan med din mopp. Gå till varje fläck och tryck [E] för att börja städa.",
+    "itemLabel": "Smutsfläck",
+    "blipLabel": "Smutsfläck",
+    "finishItemLabel": "Fläckar städade",
+    "cleanPrompt": "[E] Städa fläck ({current}/{total})",
+    "subtaskClean": "Städa alla fläckar ({current}/{total})"
+  },
+  "windowscleaner": {
+    "continueHint": "Hitta nästa smutsiga fönster på din karta",
+    "started": "Fönsterputsningsjobb startat! Ta på arbetskläder och svamp.",
+    "toolSponge": "Svamp",
+    "progressTitle": "Fönsterputsare",
+    "progressDetail": "Putsa de smutsiga fönstren på varje plats. Använd din svamp för att skrubba de markerade platserna.",
+    "dirtyWindow": "Smutsigt fönster",
+    "dirtyWindowBlip": "Smutsigt fönster #%d",
+    "windowsCleaned": "Fönster putsade",
+    "cleanWindowProgress": "[E] Putsa fönster ({hits}/{required})"
+  },
+  "powerwash": {
+    "continueHint": "Gå till nästa smutsiga plats på din karta",
+    "started": "Högtryckstvättjobb startat! Ta på arbetskläder och munstycke.",
+    "takeWandFirst": "Ta trycksprutemunstycket först!",
+    "tooFarFromSpot": "För långt från platsen!",
+    "toolWand": "Trycksprutemunstycke",
+    "progressTitle": "Högtryckstvätt",
+    "progressDetail": "Spruta de smutsiga fläckarna markerade på kartan med ditt trycksprutemunstycke. Sikta på fläcken och håll [VMK] för att spruta.",
+    "dirtySpot": "Smutsig plats",
+    "dirtySpotBlip": "Smutsig plats #%d",
+    "spotsCleaned": "Platser städade"
+  },
+  "forklift": {
+    "continueHint": "Plocka upp nästa låda med gaffeltrucken",
+    "newCrates": "Nya lådor ankommande...",
+    "preparingForklifts": "Förbereder gaffeltruckar...",
+    "failedSpawnForklifts": "Misslyckades att skapa gaffeltruckar!",
+    "beltFull": "Bandet är fullt! Aktivera transportbandet först.",
+    "earnedReward": "+{symbol}{money}, +{xp} XP",
+    "modeBeltToShelf": "Plocka upp från band, placera på hyllor!",
+    "modeCratesToBelt": "Flytta lådor till bandet!",
+    "newRoundBeltToShelf": "Ny runda: Plocka upp från band, placera på hyllor!",
+    "newRoundStarting": "Ny runda börjar!",
+    "progressTitle": "Gaffeltruck",
+    "progressDetailToShelf": "Flytta lådor med gaffeltrucken. Plocka upp lådor och placera dem på hyllorna.",
+    "progressDetailToBelt": "Flytta lådor med gaffeltrucken. Plocka upp lådor och leverera dem till transportbandet.",
+    "onlyLeaderCanCancel": "Bara ledaren kan avbryta jobbet",
+    "deliveredCrates": "Levererade lådor"
+  },
+  "warehouse": {
+    "continueHint": "Lasta nästa pall på lastbilen",
+    "newTrucks": "Nya lastbilar ankommande...",
+    "failedInitSession": "Misslyckades att initiera session!",
+    "preparingVehicles": "Förbereder fordon...",
+    "failedSpawnForklift": "Misslyckades att skapa gaffeltruck!",
+    "truckOnTheWay": "Lastbilen är på väg...",
+    "truckReady": "Lastbilen är redo för lastning!",
+    "truckReadyWithOrder": "Lastbil redo! Lasta: {boxes} lådor, {pallets} pallar",
+    "boxesProgress": "Lådor: {current}/{total}",
+    "palletsProgress": "Pallar: {current}/{total}",
+    "orderInfo": "Order: {boxes} lådor, {pallets} pallar",
+    "deliveryCompleteReward": "Leverans klar! +${money}, +{xp} XP",
+    "newOrder": "Ny order: {boxes} lådor, {pallets} pallar",
+    "newOrderWithRemaining": "Ny order: {boxes} lådor, {pallets} pallar ({remaining} lastbilar kvar)",
+    "deliveryComplete": "Leverans klar!",
+    "takeBoxToTruck": "Ta lådan till lastbilen!",
+    "truckNotReady": "Lastbilen är inte redo",
+    "truckNotFound": "Lastbil hittades inte",
+    "getInForklift": "Sätt dig i gaffeltrucken",
+    "alreadyCarrying": "Du bär redan något",
+    "boxDropped": "Låda tappad",
+    "progressTitle": "Lagerarbetare",
+    "progressDetail": "Lasta gods på leveranslastbilen. Använd gaffeltruckar eller bär föremål för hand.",
+    "completedTrucks": "Klara lastbilar"
+  },
+  "landscaping": {
+    "continueHint": "Bege dig till nästa fastighet att underhålla",
+    "failedInit": "Misslyckades att initiera jobb!",
+    "toolNotAvailable": "Verktyg inte tillgängligt!",
+    "needTrimmer": "Du behöver en häckseax för att klippa buskar!",
+    "trimmingCancelled": "Busktrimning avbruten",
+    "needShovel": "Du behöver en spade för att gräva gräsmattan!",
+    "diggingCancelled": "Grävning avbruten",
+    "newTasks": "Nya trädgårdsuppgifter tilldelade!",
+    "allComplete": "Alla uppgifter klara! Återvänd till depån för att avsluta.",
+    "onlyLeaderFinish": "Bara ledaren kan avsluta jobbet!",
+    "notAllBushes": "Inte alla buskar trimmade!",
+    "notAllLawns": "Inte alla gräsmattor krattade!",
+    "jobStarted": "Trädgårdsjobb startat! Trimma {bushes} buskar och gräv {lawns} gräsmattor. Hämta verktyg från lastbilen.",
+    "bushTrimmed": "Buske trimmad! {bushes} buskar, {lawns} gräsmattor kvar",
+    "lawnDug": "Gräsmatta grävd! {bushes} buskar, {lawns} gräsmattor kvar",
+    "toolTrimmer": "Häckseax",
+    "toolShovel": "Spade",
+    "progressTitle": "Trädgårdsarbete",
+    "progressDetail": "Underhåll marken. Trimma buskar och kratta gräsmattor på varje fastighet.",
+    "toolFallback": "Verktyg"
+  },
+  "farmer": {
+    "continueHint": "Gå till nästa växt och skörda den",
+    "alreadyHarvested": "Växten har redan skördats!",
+    "failedStartHarvest": "Misslyckades att börja skörda",
+    "plantsRespawned": "Växter har återkommit! {count} redo att skördas.",
+    "progressTitle": "Bonde",
+    "progressDetail": "Ta en låda, skörda växter för att fylla den, lasta fulla lådor på lastbilen och kör sedan till vågen.",
+    "stepTakeBox": "Ta en låda från lastbilen",
+    "stepHarvesting": "Fortsätt skörda växten",
+    "stepHarvestPlant": "Gå till en växt och skörda den",
+    "stepLoadBoxToTruck": "Lasta den fulla lådan i lastbilen",
+    "stepGoToScale": "Kör lådorna till vågen",
+    "stepPlaceOnScale": "Placera låda på vågen",
+    "stepProcessProduce": "Prata med NPC:n för att bearbeta skörden",
+    "stepNewRound": "Ta en låda och börja en ny runda",
+    "jobLabel": "Bonde",
+    "produceLabel": "föremål",
+    "vehicleBlip": "Jordbruksfordon",
+    "subtaskHarvest": "Skörda växter ({current}/{total})"
+  },
+  "fishing": {
+    "continueHint": "Flytta till nästa fiskeplatsen och kasta revet",
+    "failedSpawnBoat": "Misslyckades att skapa fiskebåt!",
+    "started": "Fiskejobb startat! Gå ombord på båten och bege dig till en fiskezon.",
+    "failedSyncBoat": "Misslyckades att synka fiskebåt!",
+    "noFishToSell": "Ingen fisk att sälja!",
+    "noWater": "Inget vatten hittat! Stanna nära vatten.",
+    "fishOnLine": "Fisk på kroken! Tryck [E] för att rulla in!",
+    "fishGotAway": "Fisken smet! För långsam.",
+    "fishEscaped": "Fisken smet!",
+    "castCancelled": "Fiske avbrutet.",
+    "outfitEquipped": "Fiskekläder påtagna!",
+    "cantUseInventoryRod": "Kan inte använda inventarie-spö i jobbläge!",
+    "alreadyCast": "Du har redan kastat ditt rev!",
+    "mustBeNearWater": "Du måste vara nära vatten!",
+    "completed": "Fiskejobb slutfört!",
+    "freeModeDisabled": "Fritt läge är inaktiverat!",
+    "noBait": "Inget bete! Köp bete från fiskebutiken.",
+    "itemPurchased": "{amount}x {item} köpt! ({currency}{price})",
+    "fishSold": "{count} fiskar sålda! {currency}{amount} intjänat!",
+    "progressTitle": "Fiske",
+    "progressDetail": "Fånga fisk vid fiskeplatsen. Kasta ditt rev och rulla in dem.",
+    "subtaskFishCaught": "Fisk fångad: {count}",
+    "shopTitle": "Fiskebutik",
+    "selectRod": "Välj spö",
+    "selectBait": "Välj bete",
+    "sellTitle": "Sälj fisk",
+    "baitStats": "{price} | Chans: +{chance}%",
+    "fishPriceRange": "{min} - {max} omfång"
+  },
+  "cleanup": {
+    "continueHint": "Kör till nästa sopstation på din rutt",
+    "started": "Sophämtningsjobb startat! Ta på dig arbetskläder först, samla sedan sopor från tunnor med [E] och lasta dem på lastbilen.",
+    "alreadyCarrying": "Du bär redan något!",
+    "binEmpty": "Soptunnan är tom!",
+    "noCleanupInBin": "Inga sopor i tunnan!",
+    "animFailed": "Animation kunde inte laddas!",
+    "bagPickedUp": "Soppåse upplockad! Gå till baksidan av lastbilen och tryck [E] för att kasta in den.",
+    "notHoldingBag": "Du håller inte i en soppåse!",
+    "thrownIn": "Sopor kastade!",
+    "noCleanupInTruck": "Inga sopor i lastbilen!",
+    "truckReady": "Soplastbilen är redo!",
+    "keepWorking": "Fortsätt jobba! Börja leta efter nya soptunnor.",
+    "truckTooFar": "Lastbilen är för långt bort eller inte tillgänglig. Kom närmare lastbilen.",
+    "truckFullBagDropped": "Lastbilen är full! Soppåse tappad. Kör lastbilen till leveranspunkten.",
+    "jobEnded": "Sophämtningsjobbet har avslutats.",
+    "truckFullDrive": "Lastbilen är full! ({count}/{max}) Kör lastbilen till leveranspunkten på kartan.",
+    "spawnBlocked": "Spawnområdet är blockerat! Flytta fordonet och försök igen.",
+    "vehicleSpawnFailed": "Fordonet kunde inte skapas!",
+    "areaSelected": "{area}-området valt. Gå till området på kartan och samla sopor från tunnor med [E].",
+    "progressTitle": "Sophämtning",
+    "progressDetail": "Samla soptunnor längs rutten. Plocka upp varje tunna och lasta den på lastbilen.",
+    "deliveryBlip": "Sopleverans",
+    "collectBinsProgress": "Samla tunnor ({current}/{max})",
+    "dumpDeliveries": "Tippningsleveranser: {count}",
+    "hintCollectBins": "Leta efter soptunnor i närheten och tryck [E] för att samla en påse.",
+    "hintCollectBinsTarget": "Leta efter soptunnor i närheten och använd tredje ögat för att samla en påse.",
+    "bagPickedUpTarget": "Soppåse upplockad! Gå till baksidan av lastbilen och använd tredje ögat för att kasta in den.",
+    "areaSelectedTarget": "{area}-området valt. Gå till området på kartan och samla sopor från tunnor med tredje ögat."
+  },
+  "dogwalking": {
+    "anotherWalk": "Påbörjar en ny promenad!",
+    "continueHint": "Hämta din nästa hund och börja promenera",
+    "pickupTaskLabel": "Hämta din nästa hund",
+    "pickupDescription": "Bege dig till hunden på den markerade platsen på din karta och tryck [E] för att börja promenera.",
+    "dogGotAway": "Din hund rymde! Jobbet misslyckades.",
+    "dogDied": "Din hund har dött! Jobbet avbryts.",
+    "dogNeedsToGo": "Din hund behöver rasta! Vänta på den...",
+    "dogBrokeFree": "Oj då! Din hund slet sig loss! Fånga den snabbt!",
+    "dogPickedUp": "Du hämtade din hund! Vänta på alla.",
+    "returnDog": "Fin promenad! Lämna nu tillbaka hunden till ägaren.",
+    "caughtDog": "Puh! Du fångade hunden.",
+    "noDogAssigned": "Ingen hund tilldelad dig!",
+    "alreadyClaimed": "Du har redan hämtat din hund!",
+    "poopAlreadyCleaned": "Bajset är redan städat!",
+    "notYourDogPoop": "Det här är inte din hunds bajs!",
+    "walkNotComplete": "Promenaden är inte klar än!",
+    "reconnected": "Återansluten till hundrastningsjobb!",
+    "started": "Hundrastningsjobb startat! Bege dig till klientens hem.",
+    "walkYourDog": "Promenera med din hund {distance}m! Njut av promenaden.",
+    "dogDelivered": "Hund levererad! Intjänat {symbol}{payment} och {xp} XP",
+    "progressTitle": "Hundrastning",
+    "progressDetail": "Promenera med hundarna längs sina rutter. Håll dem glada och städa efter dem.",
+    "dogDiedNoPayment": "En hund har dött! Jobb avbrutet — ingen betalning.",
+    "blipHome": "Klientens hem",
+    "clientHomeFallback": "Klientens hem",
+    "tooFarFromHome": "Du är för långt från ägarens hem!"
+  },
+  "harvest": {
+    "processingInProgress": "Bearbetning pågår, vänta!",
+    "noBoxesOnScale": "Inga lådor på vågen att bearbeta!",
+    "processingComplete": "Bearbetning klar! {count} lådor, intjänat {currency}{amount}",
+    "boxLoadedScale": "Låda lastad! {count} {produce}, värde: {currency}{value} — Kör till bearbetningsvågen!",
+    "boxLoaded": "Låda lastad! {count} {produce}, värde: {currency}{value}",
+    "boxPlaced": "Låda placerad! {count} {produce}, värde: {currency}{value}",
+    "produceHarvested": "{produce} skördat! ({current}/{total})",
+    "produceAddFailed": "Misslyckades att lägga till {produce} i lådan!"
+  },
+  "miner": {
+    "continueHint": "Hitta nästa malmfyndighet och gruva den",
+    "started": "Gruvjobb startat! Ta på arbetskläder och utrustning.",
+    "newRocks": "Nya stenar har dykt upp! Fortsätt gruva.",
+    "orePickedUp": "{ore}-malm upplockad! Lasta den på lastbilen.",
+    "rocksRemaining": "Det finns {count} stenar kvar att gruva.",
+    "processingInProgress": "Bearbetning pågår, vänta!",
+    "noRocksOnScale": "Ingen malm på vågen att bearbeta!",
+    "processingComplete": "Bearbetning klar! {count} malmer, intjänat {currency}{amount}",
+    "pickaxeReturned": "Hacka återlämnad till bagaget",
+    "returnVehicleBlip": "Lämna tillbaka lastbilen",
+    "returnVehicleHint": "Skiftet slutar — kör tillbaka lastbilen till depån.",
+    "returnVehiclePrompt": "[E] Lämna in lastbilen",
+    "vehicleNotAtDepot": "Lastbilen måste vara tillbaka i depån!",
+    "tooFarFromDepot": "Du är för långt från depån!",
+    "labelProcessing": "~y~Bearbetning pågår...",
+    "labelFinish": "[E] Slutför bearbetning (%d malmer)",
+    "labelPlaceOnScale": "[E] Placera malm på våg",
+    "labelLoadToTruck": "[E] Lasta malm på lastbil",
+    "labelReturnTool": "[E] Lämna tillbaka hacka",
+    "labelTakeTool": "[E] Ta hacka",
+    "labelTakeFromTrunk": "[E] Ta malm från bagage (%d)",
+    "labelNoMoreItems": "~y~Ingen mer malm! Gå till NPC:n för att avsluta.",
+    "labelPickup": "[E] Plocka upp malm",
+    "labelBreakAction": "[E] Gruva sten",
+    "labelPutOnBelt": "[G] Lägg hacka på bälte",
+    "labelTakeFromBelt": "[G] Ta hacka från bälte",
+    "labelClothesWork": "[E] Byt till arbetskläder",
+    "labelClothesNormal": "[E] Byt till vanliga kläder",
+    "labelFailNotify": "Misslyckades att börja gruva",
+    "progressTitle": "Gruvarbetare",
+    "progressDetail": "Kross stenar för malm, bär malmen till lastbilen och kör sedan till vågen för bearbetning.",
+    "stepTakeTool": "Ta hackan från bagaget",
+    "stepBreaking": "Fortsätt krossa stenen",
+    "stepBreakRock": "Kross en sten för att ta ut malm",
+    "stepPickupOre": "Plocka upp malmen på marken",
+    "stepLoadTrunk": "Lasta malmen i lastbilen",
+    "stepGoToScale": "Kör malmen till vågen",
+    "stepPlaceOnScale": "Placera malm på vågen",
+    "stepProcessOre": "Prata med NPC:n för att bearbeta malmen",
+    "stepNewRound": "Ta hackan och börja en ny runda"
+  },
+  "lumberjack": {
+    "continueHint": "Hitta nästa träd och börja hugga",
+    "started": "Skogshuggargejobb startat!",
+    "newTrees": "Nya träd har dykt upp! Du kan fortsätta hugga.",
+    "takeHatchetFirst": "Ta din yxa först!",
+    "anotherPlayerCutting": "En annan spelare hugger redan detta träd!",
+    "alreadyCarryingLog": "Bär redan en stock!",
+    "alreadyPickedUp": "Någon annan har redan plockat upp detta!",
+    "logPickedUp": "Stock upplockad! Lasta den på lastbilen.",
+    "hatchetTaken": "Yxa tagen!",
+    "treesRemaining": "{count} träd kvar att hugga.",
+    "axeDropBonus": "{name} | Tappbonus: +{bonus}%",
+    "treeCutDown": "{name}-träd fällt! Samla stockarna.",
+    "levelRequired": "Nivå {required} krävs för detta träd! (Nuvarande: {current})",
+    "processingComplete": "Bearbetning klar! {count} stockar, intjänat {currency}{amount}",
+    "labelProcessing": "~y~Bearbetning pågår...",
+    "labelFinish": "[E] Slutför bearbetning (%d stockar)",
+    "labelPlaceOnScale": "[E] Placera stock på bearbetning",
+    "labelLoadToTruck": "[E] Lasta stock på lastbil",
+    "labelReturnTool": "[E] Lämna tillbaka yxa",
+    "labelTakeTool": "[E] Ta yxa",
+    "labelTakeFromTrunk": "[E] Ta stock från bagage (%d)",
+    "labelNoMoreItems": "~y~Inga fler stockar! Gå till NPC:n för att avsluta.",
+    "labelPickup": "[E] Plocka upp stock",
+    "labelBreakAction": "[E] Hugg träd",
+    "labelPutOnBelt": "[G] Lägg yxa på bälte",
+    "labelTakeFromBelt": "[G] Ta yxa från bälte",
+    "labelClothesWork": "[E] Byt till arbetskläder",
+    "labelClothesNormal": "[E] Byt till vanliga kläder",
+    "labelFailNotify": "Misslyckades att börja hugga",
+    "processingInProgress": "Bearbetning pågår, vänta!",
+    "noLogsOnScale": "Inga stockar på bearbetningsområdet!",
+    "hatchetReturned": "Yxa återlämnad!",
+    "treeFallback": "Träd",
+    "serverDenied": "Servern nekade",
+    "progressTitle": "Skogshuggare",
+    "progressDetail": "Hugg träd för stockar, bär dem till lastbilen och kör sedan till bearbetningsvågen.",
+    "stepTakeAxe": "Ta yxan från bagaget",
+    "stepCutting": "Fortsätt hugga trädet",
+    "stepCutTree": "Hugg ett träd för att fälla stockar",
+    "stepPickupLog": "Plocka upp stocken på marken",
+    "stepLoadTrunk": "Lasta stocken i lastbilen",
+    "stepGoToScale": "Kör stockarna till bearbetningsvågen",
+    "stepPlaceOnScale": "Placera stock på vågen",
+    "stepProcessLog": "Prata med NPC:n för att bearbeta stockarna",
+    "stepNewRound": "Ta yxan och börja en ny runda"
+  },
+  "scrapyard": {
+    "continueHint": "Kör till nästa skrothög på din karta",
+    "started": "Skrotjobb startat! Ta på arbetskläder och hämta utrustning.",
+    "newScraps": "Nytt skrot har ankommit! Fortsätt.",
+    "putCrowbarOnBelt": "Lägg kofoten på bältet först!",
+    "scrapPickedUp": "Skrot upplockat! Lasta det i fordonet.",
+    "scrapsRemaining": "{count} skrot kvar.",
+    "processingInProgress": "Bearbetning pågår, vänta!",
+    "noScrapsOnScale": "Inget skrot på vågen!",
+    "processingComplete": "Bearbetning klar! {count} skrot, {currency}{amount} intjänat",
+    "crowbarReturned": "Kofot återlämnad till fordonet",
+    "workClothesEquipped": "Arbetskläder påtagna!",
+    "normalClothes": "Bytt till vanliga kläder",
+    "scrapBlip": "Skrot #{index}",
+    "labelProcessing": "~y~Bearbetning pågår...",
+    "labelFinish": "[E] Slutför bearbetning (%d skrot)",
+    "labelPlaceOnScale": "[E] Placera skrot på våg",
+    "labelLoadToTruck": "[E] Lasta skrot i fordon",
+    "labelReturnTool": "[E] Lämna tillbaka kofot",
+    "labelTakeTool": "[E] Ta kofot",
+    "labelTakeFromTrunk": "[E] Ta skrot från bagage (%d)",
+    "labelNoMoreItems": "~y~Inget skrot kvar! Gå till NPC:n.",
+    "labelPickup": "[E] Plocka upp skrot",
+    "labelBreakAction": "[E] Demontera skrot",
+    "labelPutOnBelt": "[G] Lägg kofot på bälte",
+    "labelTakeFromBelt": "[G] Ta kofot från bälte",
+    "labelClothesWork": "[E] Ta på arbetskläder",
+    "labelClothesNormal": "[E] Byt till vanliga kläder",
+    "labelFailNotify": "Kunde inte börja demontera",
+    "progressTitle": "Skrotupplag",
+    "progressDetail": "Demontera skrothögar, bär delarna till lastbilen och kör sedan till vågen för bearbetning.",
+    "stepTakeTool": "Ta kofoten från bagaget",
+    "stepBreaking": "Fortsätt demontera skrotet",
+    "stepBreakScrap": "Demontera en skrothög",
+    "stepPickupScrap": "Plocka upp skrotdelarna på marken",
+    "stepLoadTrunk": "Lasta skrotet i lastbilen",
+    "stepGoToScale": "Kör skrotet till vågen",
+    "stepPlaceOnScale": "Placera skrot på vågen",
+    "stepProcessScrap": "Prata med NPC:n för att bearbeta skrotet",
+    "stepNewRound": "Ta kofoten och börja en ny runda"
+  },
+  "fruitpicker": {
+    "continueHint": "Gå till nästa träd och börja plocka",
+    "treesReset": "Alla träd har återställts! Fortsätt plocka frukt.",
+    "noMoreFruit": "Ingen mer frukt på detta träd!",
+    "treeOnCooldown": "Inga mogna frukter tillgängliga. Uppdateras om ~%{minutes} min — pröva ett annat träd.",
+    "jobLabel": "Fruktplockare",
+    "produceLabel": "frukter",
+    "vehicleBlip": "Fruktlastbil",
+    "placeBoxAndPick": "[E] Placera låda och plocka {fruit} ({remaining} kvar)",
+    "pickFruit": "[E] Plocka {fruit} ({remaining} kvar)",
+    "orangeTreeBlip": "Apelsinträd",
+    "appleTreeBlip": "Äppelträd",
+    "progressTitle": "Fruktplockare",
+    "progressDetail": "Ta en låda, fyll den från träden, lasta fulla lådor på lastbilen och kör sedan till vågen.",
+    "stepTakeBox": "Ta en låda från lastbilen",
+    "stepPicking": "Fortsätt plocka frukt",
+    "stepPickFruit": "Gå till ett träd och plocka frukt",
+    "stepLoadBoxToTruck": "Lasta den fulla lådan i lastbilen",
+    "stepGoToScale": "Kör lådorna till vågen",
+    "stepPlaceOnScale": "Placera låda på vågen",
+    "stepProcessFruit": "Prata med NPC:n för att bearbeta frukten",
+    "stepNewRound": "Ta en låda och börja en ny runda",
+    "fruitFallback": "Frukt"
+  },
+  "newspaper": {
+    "continueHint": "Flytta till nästa leveransgata",
+    "settingsNotFound": "Tidningsleveransinställningar hittades inte!",
+    "started": "Tidningsleverans startad!",
+    "noAvailableRoutes": "Inga tillgängliga rutter!",
+    "leaderSelecting": "Ledaren väljer cyklar och område, vänta...",
+    "progressTitle": "Tidningsbud",
+    "progressDetail": "Leverera tidningar till hus längs rutten. Kasta tidningar vid varje dörrtröskel.",
+    "outsideTimeWindow": "Tidningsleverans tillgänglig {startHour}:00 - {endHour}:00 (nuvarande: {current}:00)",
+    "getOnCycle": "Hoppa på cykeln för att börja leverera"
+  },
+  "taxi": {
+    "lookingForCustomer": "Letar efter nästa kund...",
+    "taxiReady": "Taxi redo! Vänta på kundsamtal...",
+    "taxiModelFailed": "Taximodell kunde inte laddas!",
+    "passengerWokeUp": "Passageraren vaknade!",
+    "passengerBoarded": "Passagerare ombord! Väntar på destination...",
+    "newCustomer": "Ny kund! Bege dig till upphämtningsplatsen.",
+    "passengerDied": "Din kund dog! Resan avbruten.",
+    "returnTaxiToDepot": "Lämna tillbaka taxin till depån för att avsluta skiftet.",
+    "destinationSet": "Destination satt! Avstånd: {distance}m, Bonustid: {bonus}s",
+    "vehicleDamaged": "Fordon skadat! Bonustid -{penalty}s",
+    "jobEnded": "Taxijobb avslutat! Resor: {rides}, Totalt intjänat: {symbol}{earned}",
+    "hornPassengerSleeping": "[TUTA] Passageraren sover!",
+    "pickUpPassenger": "[E] Plocka upp passagerare",
+    "dropOffPassenger": "[E] Lämna av passagerare",
+    "returnTaxiEndShift": "[E] Lämna tillbaka taxi och avsluta skift",
+    "getBackInTaxi": "[F] Gå tillbaka in i taxin!",
+    "tooFarFromDepot": "Du är för långt från depån",
+    "tooFarFromDropoff": "Du är för långt från avlämningsplatsen",
+    "progressTitle": "Taxi",
+    "progressDetail": "Plocka upp passagerare och kör dem till deras destination. Kör försiktigt för att få tidsbonusen.",
+    "stagePickup": "Plocka upp passageraren",
+    "stageDropoff": "Släpp av passageraren",
+    "stageDepot": "Lämna tillbaka taxin till depån",
+    "ridesCompleted": "{count} resor slutförda",
+    "meterBonusTime": "bonus {seconds}s",
+    "statCustomers": "Avlämnade passagerare",
+    "statEarnings": "Totalt intjänat"
+  },
+  "trucker": {
+    "continueHint": "Hämta nästa last från depån",
+    "illegalAccepted": "Illegal rutt accepterad! Var försiktig...",
+    "trailerLost": "Släp förlorat! Du misslyckades med leveransen.",
+    "failedReconnect": "Misslyckades att återansluta till lastbilsjobb!",
+    "reconnected": "Återansluten till lastbilsjobb!",
+    "failedGetData": "Misslyckades att hämta jobbdata!",
+    "started": "Lastbilsjobb startat! Bege dig till släphämtningsplatsen.",
+    "truckReady": "Lastbil redo! Sätt dig i lastbilen.",
+    "truckModelFailed": "Lastbilsmodell kunde inte laddas!",
+    "trailerModelFailed": "Släpmodell kunde inte laddas!",
+    "trailerSpawnBlocked": "Släpets spawnplats är blockerad! Försöker igen om 5 sekunder...",
+    "trailerSpawnStillBlocked": "Släpets spawnplats är fortfarande blockerad! Skapar ändå.",
+    "trailerAttachedWaiting": "Släp kopplat! Väntar på övriga spelare...",
+    "trailerAttachedWaitRoute": "Släp kopplat! Vänta på rutttilldelning...",
+    "trailerDetached": "Släp fråkopplat! Gå tillbaka och koppla om det!",
+    "needToBeInTruck": "Du måste sitta i lastbilen!",
+    "trailerGone": "Släpet är borta! Jobbet misslyckades.",
+    "trailerReattached": "Släp omanslutet! Fortsätt leveransen.",
+    "failedReattach": "Misslyckades att koppla om släp. Försök igen.",
+    "noTrailerNearby": "Inget släp i närheten!",
+    "failedAttach": "Misslyckades att koppla släp. Försök igen.",
+    "noTrailerAttached": "Inget släp kopplat!",
+    "tooFarToDeliver": "Släpet är inte i leveranszonen!",
+    "perfectDelivery": "Släp levererat i perfekt skick! Lämna tillbaka lastbilen till depån.",
+    "mustBeInTruck": "Du måste sitta i lastbilen!",
+    "notJobTruck": "Det här är inte jobblastbilen!",
+    "truckReturned": "Lastbil återlämnad! Väntar på sammanfattning...",
+    "waitingForTrailers": "Väntar på att övriga spelare kopplar sina släp...",
+    "leaderAcceptedIllegal": "Ledaren accepterade illegal rutt! Var försiktig...",
+    "leaderChoseNormal": "Ledaren valde normal rutt.",
+    "returnTruckToDepot": "Lämna tillbaka lastbilen till depån.",
+    "newDeliveryRoute": "Ny leveransrutt tilldelad!",
+    "truckReturnedWaiting": "Lastbil återlämnad! Väntar på att övriga spelare återlämnar sina lastbilar...",
+    "youLeftJob": "Du lämnade jobbet.",
+    "headToTrailer": "Bege dig till den markerade platsen för att hämta släpet!",
+    "trailerDestroyed": "Släp förstört! Leverans misslyckades.",
+    "trailerDeliveredCondition": "Släp levererat med {condition}% skick. Lämna tillbaka lastbilen till depån.",
+    "routeAssigned": "Rutt tilldelad ({route})! Avstånd: {distance}m",
+    "progressTitle": "Lastbilschaufför",
+    "progressDetail": "Leverera last till destinationer över hela delstaten. Kör försiktigt för att undvika skador.",
+    "stagePickup": "Hämta släp",
+    "stageDelivery": "Leverera last",
+    "stageReturn": "Lämna tillbaka lastbil",
+    "stageWaiting": "Väntar...",
+    "deliveriesCompleted": "Leveranser slutförda: {count}",
+    "blipPickupTrailer": "Hämta släp",
+    "blipDeliverCargo": "Leverera last",
+    "blipIllegalDelivery": "Illegal leverans",
+    "blipReturnTruck": "Lämna tillbaka lastbil",
+    "aPlayerFallback": "En spelare",
+    "teammateFallback": "Lagkamrat",
+    "playerReturnedTruck": "{name} återlämnade sin lastbil.",
+    "teammateTruck": "{name}s lastbil"
+  },
+  "repair": {
+    "failedInit": "Misslyckades att initiera jobb!",
+    "newTasks": "Nya reparationsuppgifter tilldelade!",
+    "allComplete": "Alla reparationer klara! Återvänd för att avsluta jobbet.",
+    "jobStarted": "{label}-jobb startat! Reparera {tasks}.",
+    "taskRepaired": "{task} reparerad! {remaining} kvar"
+  },
+  "blip": {
+    "returnToFinish": "Återvänd för att avsluta",
+    "nextTask": "Nästa uppgift",
+    "cargoDepot": "Fraktdepå",
+    "deliveryPoint": "Leveranspunkt",
+    "buyer": "Köpare",
+    "tree": "Träd",
+    "animal": "Djur",
+    "ore": "Malm",
+    "divePoint": "Dykpunkt",
+    "returnBoat": "Lämna tillbaka båt",
+    "customerCar": "Kundbil",
+    "delivery": "Leverans",
+    "returnVehicle": "Lämna tillbaka fordon",
+    "returnToDepot": "Återvänd till depån"
+  },
+  "target": {
+    "interact": "Interagera",
+    "pickup": "Plocka upp",
+    "finishProcessing": "Slutför bearbetning",
+    "finishProcessingPrompt": "[E] Slutför bearbetning",
+    "processing": "Bearbetar...",
+    "placeOnScale": "Placera på våg",
+    "loadToTruck": "Lasta på lastbil",
+    "returnTool": "Lämna tillbaka verktyg",
+    "takeTool": "Ta verktyg",
+    "takeFromTrunk": "Ta från bagage",
+    "changeClothes": "Byt kläder",
+    "changeClothesPrompt": "[E] Byt kläder",
+    "changeClothesNormal": "[E] Byt till vanliga kläder",
+    "changeClothesWork": "[E] Byt till arbetskläder",
+    "cleanItemPrompt": "[E] Städa föremål",
+    "finishJobPrompt": "[E] Avsluta jobb",
+    "pickFruit": "Plocka frukt",
+    "pickUpLog": "Plocka upp stock",
+    "returnItem": "Lämna tillbaka föremål",
+    "cutTree": "Hugg {name}",
+    "pickUpCarcass": "Plocka upp {label} ({weight} kg)"
+  },
+  "server": {
+    "cannotInviteJobActive": "Kan inte bjuda in spelare medan ett jobb är aktivt!",
+    "cannotInviteSoloJob": "Det här jobbet är endast för en spelare — du kan inte bjuda in spelare!",
+    "playerAlreadyInvited": "Denna spelare har redan en väntande inbjudan!",
+    "inviteCooldown": "Vänta {seconds} sekunder innan du bjuder in denna spelare igen.",
+    "identifierNotReady": "Din spelardata är inte laddad än, försök igen.",
+    "targetIdentifierNotReady": "Målspelarens data är inte laddad än, försök igen.",
+    "cannotKickJobActive": "Kan inte sparka spelare under ett aktivt jobb!",
+    "lobbyClosed": "Lobby stängd: Ägaren lämnade",
+    "lobbyClosedDisconnect": "Lobby stängd: Ägaren kopplade från",
+    "jobCompletedLobbyDisbanded": "Jobb klart! Lobbyn upplöstes.",
+    "qualityBonus": "{quality} kvalitet! x{multiplier} bonus",
+    "poopPenalty": "Du städade inte efter din hund! -{symbol}{amount}",
+    "poopCleanBonus": "Bajs städat! +{symbol}{amount}",
+    "lawnRaked": "Gräsmatta krattad! +{symbol}{money} +{xp} XP",
+    "truckReturnFailed": "Du tog för lång tid på dig att återlämna lastbilen! Markerad som misslyckad.",
+    "repairComplete": "{item} reparerad! +{symbol}{money} +{xp} XP",
+    "referralLimitReached": "Du har nått den dagliga värvningsbonusgränsen",
+    "referralBonus": "Värvningsbonus! +{xp} XP för att spela tillsammans!",
+    "lobbyNoLongerExists": "Denna lobby finns inte längre.",
+    "lobbyPlayerReconnected": "{name} har återanslutit till lobbyn.",
+    "lobbyPlayerDisconnected": "{name} har kopplat från.",
+    "lobbyOwnerDisconnectedNewOwner": "Ägaren kopplade från. {name} är den nya ägaren.",
+    "lobbyClosedNoReplacement": "Lobby stängd: Ingen ersättningsägare hittades.",
+    "jobEndedOwnerLeft": "Jobb avslutat: Jobbledaren har lämnat.",
+    "toolEfficiencyUpgrade": "Uppgradering av verktygseffektivitet",
+    "jobCancelled": "Jobb avbrutet! Lobbyn upplöstes.",
+    "jobCancelledByAdmin": "Ditt jobb har avbrutits av en admin.",
+    "noActiveJob": "Du har inget aktivt jobb.",
+    "jobCancelledAdmin": "Avbröt jobb '{jobId}' för spelare {playerId}.",
+    "cancelJobUsage": "Användning: /canceljob [playerId] - Avbryt ditt eget eller en spelares aktiva jobb",
+    "routeLevelInsufficient": "Du uppfyller inte nivån som krävs för denna rutt. (Nivå {current}/{required})",
+    "routeLevelInsufficientMember": "{name} uppfyller inte nivån som krävs för denna rutt. (Nivå {current}/{required})",
+    "globalEventCompleted": "Globalt event slutfört: {title}!"
+  },
+  "shifts": {
+    "morning": "Morgonpasset",
+    "afternoon": "Eftermiddagspasset",
+    "evening": "Kvällspasset",
+    "night": "Nattpasset"
+  },
+  "perks": {
+    "trunk_capacity": {
+      "name": "Tunglyftare",
+      "desc": "Ökar fordonets bagageutrymme."
+    },
+    "strong_muscles": {
+      "name": "Starka muskler",
+      "desc": "Ökar rörelsehastigheten när du bär tunga laster."
+    },
+    "negotiator": {
+      "name": "Förhandlare",
+      "desc": "Tjäna mer pengar från jobbutbetalningar."
+    },
+    "xp_boost": {
+      "name": "Snabblärd",
+      "desc": "Få mer XP från alla jobbhandlingar."
+    },
+    "speed_demon": {
+      "name": "Fartdemon",
+      "desc": "Förbättrar jobbfordonets motorprestanda."
+    },
+    "store_discount": {
+      "name": "Silvertungan",
+      "desc": "Få rabatt i butiker utanför jobbet. (Passiv)"
+    },
+    "breath_capacity": {
+      "name": "Djupandare",
+      "desc": "Ökar andningskapaciteten under vatten. (Passiv)"
+    },
+    "repair_speed": {
+      "name": "Mekanikernörd",
+      "desc": "Reparera fordon snabbare. (Passiv)"
+    },
+    "notEnoughPoints": "Inte tillräckligt med förgångspoäng!"
+  },
+  "serverError": {
+    "notInJob": "Inte i jobb",
+    "noLobby": "Ingen lobby",
+    "noSession": "Ingen session",
+    "configError": "Konfigurationsfel",
+    "invalidIndex": "Ogiltigt index",
+    "levelRequired": "Nivå {level} krävs!",
+    "rateLimited": "Vänta innan du försöker igen.",
+    "tooFarFromNpc": "Du måste vara nära NPC:n för att göra detta.",
+    "notEnoughMoney": "Inte tillräckligt med pengar!",
+    "invalidAmount": "Ogiltigt belopp!",
+    "invalidProduct": "Ogiltig produkt!",
+    "purchaseFailed": "Ett fel uppstod vid köp.",
+    "sellFailed": "Ett fel uppstod vid försäljning.",
+    "alreadyBroken": "Redan sönderslaget",
+    "anotherPlayerBreaking": "En annan spelare bryter detta",
+    "alreadyPickedUp": "Redan upplockat",
+    "alreadyUnlocked": "Redan upplåst",
+    "invalidZone": "Ogiltig zon!",
+    "alreadyCollected": "Detta objekt har redan samlats in",
+    "someoneElseWorking": "Någon annan arbetar på detta!",
+    "someoneElseDelivering": "Någon annan levererar",
+    "invalidAction": "Ogiltig handling",
+    "invalidType": "Ogiltig typ",
+    "alreadySold": "Redan sålt!",
+    "noItemsToSell": "Inga föremål att sälja!",
+    "alreadyCarrying": "Du bär redan något",
+    "notCarrying": "Du bär inget",
+    "trunkFull": "Bagaget är fullt",
+    "trunkCapacityFull": "Bagageutrymmet fullt",
+    "noItemsInTrunk": "Inga föremål i bagaget",
+    "alreadyDelivered": "Redan levererat",
+    "invalidDeliveryPoint": "Ogiltig leveranspunkt",
+    "invalidLocation": "Ogiltig plats",
+    "objectNotFound": "Objekt hittades inte",
+    "vehicleAlreadySpawned": "Fordon redan skapat",
+    "failedCreateVehicle": "Misslyckades att skapa fordon",
+    "vehicleEntityNotFound": "Fordonsentitet hittades inte",
+    "missingParameters": "Saknade parametrar",
+    "invalidSpawnData": "Ogiltig spawndata",
+    "jobConfigNotFound": "Jobbkonfiguration hittades inte",
+    "noToolAssigned": "Inget verktyg tilldelat dig",
+    "notYourTool": "Detta är inte ditt verktyg",
+    "toolAlreadyTaken": "Verktyg redan taget",
+    "toolBeingTaken": "Verktyget tas av en annan spelare",
+    "positionBeingTaken": "Position tas av en annan spelare",
+    "noPositionAvailable": "Ingen position tillgänglig",
+    "noActiveTruck": "Ingen aktiv lastbil",
+    "truckNotLoading": "Lastbilen lastar inte",
+    "boxesFull": "Lådor fulla",
+    "palletsFull": "Pallar fulla",
+    "invalidJob": "Ogiltigt jobb",
+    "jobEnding": "Jobb avslutas",
+    "fishingNoFishFound": "Ingen fisk hittades!",
+    "fishingInvalidRod": "Ogiltigt spö!",
+    "fishingNoRod": "Du har inget spö!",
+    "fishingFishCaughtSingle": "{label} fångad!",
+    "fishingFishCaughtMultiple": "{count}x {label} fångade!",
+    "fishingNoFishToSell": "Ingen fisk att sälja!",
+    "divingZoneAlreadySelected": "Zon redan vald!",
+    "deliveryNotInLoadingPhase": "Inte i lastningsfas",
+    "deliveryNotInDeliveryPhase": "Inte i leveransfas",
+    "deliveryAlreadyCarryingBox": "Du bär redan en låda",
+    "deliveryNotCarryingBox": "Du bär inte en låda",
+    "deliveryNoBoxesInTrunk": "Inga lådor i bagaget",
+    "deliveryCompleteFirst": "Slutför alla leveranser först!",
+    "deliverySpawnFailed": "Fordonskapande misslyckades, jobb avbrutet.",
+    "huntingSomeoneElsePickingUp": "Någon annan plockar upp detta!",
+    "huntingAnimalNotFound": "Djur hittades inte",
+    "huntingAnimalStillAlive": "Djuret lever fortfarande",
+    "huntingAnimalAlreadyPickedUp": "Detta djur har redan plockats upp",
+    "cleanupTruckFullDeliverFirst": "Lastbilen är full! Leverera först.",
+    "cleanupBinAlreadyEmpty": "Tunnan redan tom",
+    "cleanupNoBagsLeft": "Inga påsar kvar",
+    "warehouseBoxAlreadyTaken": "Låda redan tagen",
+    "warehousePalletAlreadyTaken": "Pall redan tagen",
+    "warehouseTruckNotReady": "Lastbilen är inte redo",
+    "forkliftWrongMode": "Fel läge",
+    "forkliftInvalidCrate": "Ogiltig låda",
+    "forkliftCrateAlreadyTaken": "Låda redan tagen",
+    "forkliftConveyorBusy": "Transportband upptaget",
+    "forkliftInvalidSlot": "Ogiltig plats",
+    "forkliftSlotOccupied": "Plats upptagen",
+    "forkliftNotCarrying": "Bär inget",
+    "forkliftInvalidCrateData": "Ogiltig låddata",
+    "forkliftNoCratesOnBelt": "Inga lådor på bandet",
+    "forkliftNeed3Crates": "Behöver 3 lådor på bandet",
+    "forkliftEmptySlot": "Tom plats",
+    "forkliftAlreadyCarrying": "Bär redan",
+    "forkliftInvalidTarget": "Ogiltigt mål",
+    "forkliftInvalidShelfTarget": "Ogiltigt hyllmål",
+    "forkliftShelfOccupied": "Hylla upptagen",
+    "newspaperLevelRequiredArea": "Nivå {level} krävs för detta område!",
+    "newspaperDailyCompleted": "Dagliga uppdraget redan klart! Återställs om: {hours}h {minutes}m",
+    "adminSetLevelUsage": "Användning: /setjoblevel [playerID] [jobId] [level]",
+    "adminLevelRange": "Nivå måste vara mellan 1 och 10",
+    "adminLevelSet": "Satte {jobId} nivå {level} för spelare {playerId}",
+    "adminYourLevelSet": "Din {jobId}-nivå har satts till {level}",
+    "adminXpManagerNotAvailable": "XPManager inte tillgänglig",
+    "adminGetLevelUsage": "Användning: /getjoblevel [playerID] [jobId]",
+    "adminPlayerJobLevel": "Spelare {playerId} - {jobId}: Nivå {level} (XP: {xp}/{maxXp})",
+    "adminToolSelected": "Vald: {tool}",
+    "adminToolUnlocked": "Verktyg upplåst!",
+    "alreadyHarvested": "Redan skördad",
+    "noLootAvailable": "Inget byte tillgängligt",
+    "tooFar": "Du är för långt bort",
+    "tooFarFromDeliveryPoint": "Du är för långt från leveranspunkten"
+  },
+  "jobs": {
+    "miner": {
+      "name": "Gruvarbetare",
+      "subtitle": "Underjordisk gruvverksamhet",
+      "interactionText": "Starta gruvjobb",
+      "blipLabel": "Gruvjobb",
+      "locationLabel": "Stenbrott",
+      "description": [
+        "Utvinn värdefull malm från underjordiska fyndigheter",
+        "Använd gruvutrustning för att krossa stenar",
+        "Transportera material till bearbetningsanläggningen",
+        "Arbeta i lag för bonusbelöningar"
+      ],
+      "items": {
+        "pickaxe": "Hacka",
+        "miningHelmet": "Gruvhjälm",
+        "oreCart": "Malmvagn"
+      },
+      "oreTypes": {
+        "coal": "Kol",
+        "iron": "Järn",
+        "gold": "Guld",
+        "emerald": "Smaragd",
+        "diamond": "Diamant"
+      },
+      "preview": {
+        "step1Title": "Starta jobbet",
+        "step1Desc": [
+          "Gå fram till NPC:n vid stenbrottet",
+          "Tryck E för att öppna jobbmenyn",
+          "Välj ditt område och tryck Starta"
+        ],
+        "step2Title": "Byt om kläder",
+        "step2Desc": [
+          "Bege dig till den portabla stugan i närheten",
+          "Gå in för att byta till din arbetsutrustning",
+          "Dina originalkläder återställs när jobbet avslutas"
+        ],
+        "step3Title": "Hämta dina verktyg",
+        "step3Desc": [
+          "Gå till jobbfordonets öppna bagage",
+          "Ta en hacka — varje spelare tar sin egen",
+          "Upp till 4 verktyg tillgängliga för co-op"
+        ],
+        "step4Title": "Gruva stenarna",
+        "step4Desc": [
+          "Gå till gruvområdet med din hacka",
+          "Sikta på en sten och sving för att krossa den",
+          "Stenar sönderfaller i samlingsbar malm"
+        ],
+        "step5Title": "Samla malmen",
+        "step5Desc": [
+          "Plocka upp malmbitarna efter att ha krossat en sten",
+          "Du bär malmen i dina armar",
+          "Bär den tillbaka till fordonets bagage"
+        ],
+        "step6Title": "Lasta fordonet",
+        "step6Desc": [
+          "Bär din malm till fordonets bagage",
+          "Malmen lastas automatiskt i lastbilen",
+          "Fyll bagaget och kör sedan till bearbetningsområdet"
+        ],
+        "step7Title": "Bearbeta vid vågen",
+        "step7Desc": [
+          "Kör till bearbetningspunkten",
+          "Placera din malm på vågen",
+          "Varje föremål vägs och du får betalning"
+        ],
+        "step8Title": "NPC-hämtning",
+        "step8Desc": [
+          "Efter bearbetning hämtar en NPC-bärare föremålen",
+          "NPC:n går över och plockar upp den bearbetade malmen",
+          "Du tjänar pengar och XP för varje avklarad omgång"
+        ]
+      }
+    },
+    "lumberjack": {
+      "name": "Skogshuggare",
+      "subtitle": "Skogsavverkning",
+      "interactionText": "Starta skogshuggerjobb",
+      "blipLabel": "Skogshuggerjobb",
+      "locationLabel": "Paleto-skogen",
+      "description": [
+        "Fäll träd i utsedda avverkningsområden",
+        "Samla och lasta stockar på din lastbil",
+        "Leverera stockar till sågverket för bearbetning",
+        "Arbeta i lag för bonusbelöningar"
+      ],
+      "items": {
+        "hatchet": "Yxa",
+        "safetyVest": "Skyddsväst",
+        "pickupTruck": "Pickup"
+      },
+      "treeTypes": {
+        "pine": "Tall",
+        "oak": "Ek",
+        "maple": "Lönn"
+      },
+      "drops": {
+        "wood": "Träd",
+        "pineResin": "Tallkåda",
+        "woodShavings": "Träspån",
+        "oakWood": "Ekträ",
+        "oakBark": "Ekbark",
+        "mapleWood": "Lönnträ",
+        "mapleSap": "Lönnsaft"
+      },
+      "preview": {
+        "step1Title": "Starta jobbet",
+        "step1Desc": [
+          "Gå fram till NPC:n i skogen",
+          "Tryck E för att öppna jobbmenyn",
+          "Välj ditt område och tryck Starta"
+        ],
+        "step2Title": "Byt om kläder",
+        "step2Desc": [
+          "Bege dig till den portabla stugan i närheten",
+          "Gå in för att byta till din arbetsutrustning",
+          "Dina originalkläder återställs när jobbet avslutas"
+        ],
+        "step3Title": "Hämta dina verktyg",
+        "step3Desc": [
+          "Gå till jobbfordonets öppna bagage",
+          "Ta en yxa — varje spelare tar sin egen",
+          "Upp till 4 verktyg tillgängliga för co-op"
+        ],
+        "step4Title": "Hugg träden",
+        "step4Desc": [
+          "Gå till skogsområdet med din yxa",
+          "Sikta på ett träd och sving för att hugga",
+          "Träd tappar stockar när de är fullt huggna"
+        ],
+        "step5Title": "Samla stocken",
+        "step5Desc": [
+          "Plocka upp stocken efter att ha huggt ett träd",
+          "Du bär stocken i dina armar",
+          "Bär den tillbaka till fordonets bagage"
+        ],
+        "step6Title": "Lasta fordonet",
+        "step6Desc": [
+          "Bär din stock till fordonets bagage",
+          "Stocken lastas automatiskt i lastbilen",
+          "Fyll bagaget och kör sedan till bearbetningsområdet"
+        ],
+        "step7Title": "Bearbeta vid vågen",
+        "step7Desc": [
+          "Kör till bearbetningspunkten",
+          "Placera dina stockar på vågen",
+          "Varje föremål vägs och du får betalning"
+        ],
+        "step8Title": "NPC-hämtning",
+        "step8Desc": [
+          "Efter bearbetning hämtar en NPC-bärare föremålen",
+          "NPC:n går över och plockar upp de bearbetade stockarna",
+          "Du tjänar pengar och XP för varje avklarad omgång"
+        ]
+      }
+    },
+    "scrapyard": {
+      "name": "Skrotarbetare",
+      "subtitle": "Skrotmetallsåtervinning",
+      "interactionText": "Starta skrotjobb",
+      "blipLabel": "Skrotupplag",
+      "locationLabel": "Skrotupplag",
+      "description": [
+        "Demontera skrotbilar och salva värdefulla delar",
+        "Använd en kofot för att separera metallkomponenter",
+        "Lasta insamlat skrot på lastbilen",
+        "Väg och sälj vid bearbetningsstationen"
+      ],
+      "items": {
+        "crowbar": "Kofot",
+        "workGloves": "Arbetshandskar",
+        "scrapMetal": "Skrotmetall"
+      },
+      "preview": {
+        "step1Title": "Starta jobbet",
+        "step1Desc": [
+          "Gå fram till NPC:n vid skrotupplaget",
+          "Tryck E för att öppna jobbmenyn",
+          "Välj ditt område och tryck Starta"
+        ],
+        "step2Title": "Byt om kläder",
+        "step2Desc": [
+          "Bege dig till den portabla stugan i närheten",
+          "Gå in för att byta till din arbetsutrustning",
+          "Dina originalkläder återställs när jobbet avslutas"
+        ],
+        "step3Title": "Hämta dina verktyg",
+        "step3Desc": [
+          "Gå till jobbfordonets öppna bagage",
+          "Ta en kofot — varje spelare tar sin egen",
+          "Upp till 4 verktyg tillgängliga för co-op"
+        ],
+        "step4Title": "Demontera skrotet",
+        "step4Desc": [
+          "Gå till skrotbilarna på upplagsplatsen",
+          "Använd din kofot för att demontera delar",
+          "Bilvrak bryts ner till samlingsbart skrot"
+        ],
+        "step5Title": "Samla skrotet",
+        "step5Desc": [
+          "Plocka upp skrotdelarna efter demontering",
+          "Du bär delarna till fordonet",
+          "Bär dem tillbaka till fordonets bagage"
+        ],
+        "step6Title": "Lasta fordonet",
+        "step6Desc": [
+          "Bär ditt skrot till fordonets bagage",
+          "Skrotet lastas automatiskt i lastbilen",
+          "Fyll bagaget och kör sedan till bearbetningsområdet"
+        ],
+        "step7Title": "Bearbeta vid vågen",
+        "step7Desc": [
+          "Kör till bearbetningspunkten",
+          "Placera ditt skrot på vågen",
+          "Varje föremål vägs och du får betalning"
+        ],
+        "step8Title": "NPC-hämtning",
+        "step8Desc": [
+          "Efter bearbetning hämtar en NPC-bärare föremålen",
+          "NPC:n går över och plockar upp det bearbetade skrotet",
+          "Du tjänar pengar och XP för varje avklarad omgång"
+        ]
+      }
+    },
+    "hunting": {
+      "name": "Jägare",
+      "subtitle": "Professionell jakt",
+      "interactionText": "Starta jaktjobb",
+      "blipLabel": "Jakt",
+      "locationLabel": "Jakt",
+      "description": [
+        "Ta dina vapen och ge dig ut på jakt",
+        "Jaga rådjur, vildsvin och kaniner",
+        "Lasta jagade djur i fordonet",
+        "Ta dem till vågen och sälj"
+      ],
+      "items": {
+        "huntingRifle": "Jaktgevär",
+        "binoculars": "Kikare",
+        "huntingBag": "Jaktväska"
+      },
+      "weapons": {
+        "tier1": "Jaktgevär",
+        "tier2": "Bultgevär",
+        "tier3": "Tungt prickskyttegevär"
+      },
+      "animals": {
+        "wildBoar": "Vildsvin",
+        "rabbit": "Kanin",
+        "coyote": "Prärievarg",
+        "mountainLion": "Bergslejon",
+        "hawk": "Hök",
+        "crow": "Kråka"
+      },
+      "areas": {
+        "forest": "Paleto-skogen",
+        "desert": "Sandy Shores-öknen",
+        "swamp": "Träsk"
+      },
+      "blips": {
+        "forestArea": "Skogsområde",
+        "desertArea": "Ökenområde",
+        "swampArea": "Träskområde"
+      },
+      "preview": {
+        "step1Title": "Starta jobbet",
+        "step1Desc": [
+          "Gå fram till NPC:n vid jaktstugan",
+          "Tryck E för att öppna jobbmenyn",
+          "Välj ditt område och tryck Starta"
+        ],
+        "step2Title": "Byt om kläder",
+        "step2Desc": [
+          "Bege dig till den portabla stugan i närheten",
+          "Gå in för att byta till din jaktutrustning",
+          "Dina originalkläder återställs när jobbet avslutas"
+        ],
+        "step3Title": "Hämta ditt fordon",
+        "step3Desc": [
+          "Bege dig till jaktlastbilen i närheten",
+          "Du får ett vapen automatiskt",
+          "Kör till jaktmarken"
+        ],
+        "step4Title": "Jaga djur",
+        "step4Desc": [
+          "Utforska jaktområdet och hitta djur",
+          "Använd ditt gevär för att jaga vildsvin, kaniner och mer",
+          "Varje djur har olika vikt och värde"
+        ],
+        "step5Title": "Bär djuret",
+        "step5Desc": [
+          "Gå fram till ett fällt djur för att plocka upp det",
+          "Bär det på dina axlar tillbaka till lastbilen",
+          "Varje djur har olika vikt"
+        ],
+        "step6Title": "Lasta fordonet",
+        "step6Desc": [
+          "Bär ditt villebråd till lastbilen",
+          "Lasta djuren på lastbilsflaket",
+          "Fyll lastbilen och kör sedan till bearbetning"
+        ],
+        "step7Title": "Bearbeta & Sälj",
+        "step7Desc": [
+          "Kör till bearbetningsstationen",
+          "Placera ditt villebråd på vågen för vägning",
+          "En NPC-bärare hämtar de bearbetade varorna"
+        ]
+      }
+    },
+    "farmer": {
+      "name": "Bonde",
+      "subtitle": "Frukt- & grönsaksskörd",
+      "interactionText": "Starta jordbruksjobb",
+      "blipLabel": "Grönsaksfarm",
+      "locationLabel": "Grapeseed-gården",
+      "description": [
+        "Plocka upp en låda från fordonet",
+        "Skörda grönsaker från växterna",
+        "Fyll din låda och lasta den på lastbilen",
+        "Leverera fulla lådor till bearbetningsstationen"
+      ],
+      "items": {
+        "harvestCrate": "Skördlåda",
+        "freshProduce": "Färsk skörd",
+        "deliveryTruck": "Leveranslastbil"
+      },
+      "produceTypes": {
+        "lettuce": "Sallad",
+        "pumpkin": "Pumpa",
+        "melon": "Melon",
+        "watermelon": "Vattenmelon"
+      },
+      "preview": {
+        "step1Title": "Starta jobbet",
+        "step1Desc": [
+          "Gå fram till NPC:n på gården",
+          "Tryck E för att öppna jobbmenyn",
+          "Välj ditt område och tryck Starta"
+        ],
+        "step2Title": "Byt om kläder",
+        "step2Desc": [
+          "Bege dig till den portabla stugan i närheten",
+          "Gå in för att byta till din arbetsutrustning",
+          "Dina originalkläder återställs när jobbet avslutas"
+        ],
+        "step3Title": "Hämta ditt fordon",
+        "step3Desc": [
+          "Bege dig till jobbfordonet i närheten",
+          "Plocka upp en tom låda från lastbilen",
+          "Kör till fältet för att börja skörda"
+        ],
+        "step4Title": "Skörda växter",
+        "step4Desc": [
+          "Gå fram till en växt och interagera för att skörda",
+          "Varje växt ger färsk skörd",
+          "Fyll din låda innan du går tillbaka"
+        ],
+        "step5Title": "Bär skörden",
+        "step5Desc": [
+          "Plocka upp din fyllda låda",
+          "Bär den tillbaka till fordonet",
+          "Lasta den på lastbilsflaket"
+        ],
+        "step6Title": "Lasta fordonet",
+        "step6Desc": [
+          "Bär din fulla låda till lastbilen",
+          "Lasta den på fordonsflaket",
+          "Fyll lastbilen och kör sedan till bearbetningsområdet"
+        ],
+        "step7Title": "Bearbeta & Sälj",
+        "step7Desc": [
+          "Kör till bearbetningsstationen",
+          "Placera dina lådor på vågen",
+          "En NPC-bärare hämtar de bearbetade varorna"
+        ]
+      }
+    },
+    "fruitpicker": {
+      "name": "Fruktplockare",
+      "subtitle": "Fruktskörd",
+      "interactionText": "Starta fruktplockningsjobb",
+      "blipLabel": "Fruktlund",
+      "locationLabel": "Fruktlund",
+      "description": [
+        "Plocka upp en låda från fordonet",
+        "Gå till fruktträden och plocka apelsiner & äpplen",
+        "Fyll din låda och lasta den på lastbilen",
+        "Leverera fulla lådor till bearbetningsstationen"
+      ],
+      "items": {
+        "harvestCrate": "Skördlåda",
+        "freshOranges": "Färska apelsiner",
+        "deliveryTruck": "Leveranslastbil"
+      },
+      "produceTypes": {
+        "orange": "Apelsin",
+        "apple": "Äpple"
+      },
+      "qualityTiers": {
+        "common": "Vanlig",
+        "fresh": "Färsk",
+        "premium": "Premium",
+        "organic": "Ekologisk"
+      },
+      "preview": {
+        "step1Title": "Starta jobbet",
+        "step1Desc": [
+          "Gå fram till NPC:n vid apelsinlunden",
+          "Tryck E för att öppna jobbmenyn",
+          "Välj ditt område och tryck Starta"
+        ],
+        "step2Title": "Byt om kläder",
+        "step2Desc": [
+          "Bege dig till den portabla stugan i närheten",
+          "Gå in för att byta till din arbetsutrustning",
+          "Dina originalkläder återställs när jobbet avslutas"
+        ],
+        "step3Title": "Hämta ditt fordon",
+        "step3Desc": [
+          "Bege dig till jobbfordonet i närheten",
+          "Plocka upp en tom låda från lastbilen",
+          "Kör till apelsinträden för att börja plocka"
+        ],
+        "step4Title": "Plocka apelsiner",
+        "step4Desc": [
+          "Gå fram till ett apelsinträd",
+          "Interagera för att sträcka dig upp och plocka apelsiner",
+          "Fyll din låda innan du går tillbaka"
+        ],
+        "step5Title": "Bär lådan",
+        "step5Desc": [
+          "Plocka upp din fyllda låda",
+          "Bär den tillbaka till fordonet",
+          "Lasta den på lastbilsflaket"
+        ],
+        "step6Title": "Lasta fordonet",
+        "step6Desc": [
+          "Bär din fulla låda till lastbilen",
+          "Lasta den på fordonsflaket",
+          "Fyll lastbilen och kör sedan till bearbetning"
+        ],
+        "step7Title": "Bearbeta & Sälj",
+        "step7Desc": [
+          "Kör till bearbetningsstationen",
+          "Placera dina lådor på vågen",
+          "En NPC-bärare hämtar de bearbetade varorna"
+        ]
+      }
+    },
+    "cleaner": {
+      "name": "Gatustädare",
+      "subtitle": "Städtjänst",
+      "interactionText": "Starta städningsjobb",
+      "blipLabel": "Städtjänst",
+      "locationLabel": "Städningsdepå",
+      "description": [
+        "Ta moppen från fordonets bagage",
+        "Gå till smutsfläckar markerade på kartan",
+        "Städa fläckarna med din mopp",
+        "Återvänd för att få betalt när du är klar"
+      ],
+      "items": {
+        "mop": "Mopp",
+        "dirtStain": "Smutsfläck",
+        "serviceVan": "Servicebuss"
+      },
+      "areas": {
+        "downtown": "Centrum"
+      },
+      "preview": {
+        "step1Title": "Starta jobbet",
+        "step1Desc": [
+          "Gå fram till NPC:n vid städningsdepån",
+          "Tryck E för att öppna jobbmenyn",
+          "Välj din rutt och tryck Starta"
+        ],
+        "step2Title": "Byt om kläder",
+        "step2Desc": [
+          "Bege dig till den portabla stugan i närheten",
+          "Gå in för att byta till din arbetsutrustning",
+          "Dina originalkläder återställs när jobbet avslutas"
+        ],
+        "step3Title": "Hämta dina verktyg",
+        "step3Desc": [
+          "Gå till jobbfordonets bagage",
+          "Ta en mopp — varje spelare tar sin egen",
+          "Upp till 4 verktyg tillgängliga för co-op"
+        ],
+        "step4Title": "Kör till arbetsområdet",
+        "step4Desc": [
+          "Sätt dig i fordonet och följ GPS:en",
+          "Kör till de markerade fläckplatserna",
+          "Varje rutt har flera smutsplatser att städa"
+        ],
+        "step5Title": "Städa fläckarna",
+        "step5Desc": [
+          "Gå fram till en smutsfläck med din mopp",
+          "Klicka på målen som dyker upp för att skrubba fläcken",
+          "Varje fläck kräver flera slag för att bli helt ren"
+        ],
+        "step6Title": "Slutför jobbet",
+        "step6Desc": [
+          "Efter att ha städat alla fläckar, återvänd till depån",
+          "Prata med NPC:n för att hämta din betalning",
+          "Tjäna bonuspengar för att slutföra hela rutten"
+        ]
+      }
+    },
+    "powerwash": {
+      "name": "Högtryckstvättare",
+      "subtitle": "Högtryckstvättstjänst",
+      "interactionText": "Starta högtryckstvättjobb",
+      "blipLabel": "Högtryckstvätt",
+      "locationLabel": "Högtryckstvättdepå",
+      "description": [
+        "Ta trycksprutemunstycket från fordonet",
+        "Gå till smutsiga platser markerade på kartan",
+        "Håll VMK för att spruta och städa ytorna",
+        "Återvänd för att få betalt när du är klar"
+      ],
+      "items": {
+        "pressureWand": "Trycksprutemunstycke",
+        "dirtyStain": "Smutsfläck",
+        "washVan": "Tvättbuss"
+      },
+      "preview": {
+        "step1Title": "Starta jobbet",
+        "step1Desc": [
+          "Gå fram till NPC:n vid tvättdepån",
+          "Tryck E för att öppna jobbmenyn",
+          "Välj din rutt och tryck Starta"
+        ],
+        "step2Title": "Byt om kläder",
+        "step2Desc": [
+          "Bege dig till den portabla stugan i närheten",
+          "Gå in för att byta till din arbetsutrustning",
+          "Dina originalkläder återställs när jobbet avslutas"
+        ],
+        "step3Title": "Hämta dina verktyg",
+        "step3Desc": [
+          "Gå till jobbfordonet",
+          "Ta ett trycksprutemunstycke — varje spelare tar sitt eget",
+          "Upp till 4 verktyg tillgängliga för co-op"
+        ],
+        "step4Title": "Kör till arbetsområdet",
+        "step4Desc": [
+          "Sätt dig i fordonet och följ GPS:en",
+          "Kör till de markerade fläckplatserna",
+          "Varje rutt har flera smutsiga platser att städa"
+        ],
+        "step5Title": "Spruta fläckarna",
+        "step5Desc": [
+          "Sikta trycksprutemunstycket mot den smutsiga ytan",
+          "Håll vänster musknapp för att spruta vatten",
+          "Fortsätt spruta tills fläcken är helt ren"
+        ],
+        "step6Title": "Slutför jobbet",
+        "step6Desc": [
+          "Efter att ha städat alla fläckar, återvänd till depån",
+          "Gå in i markeringen för att hämta din betalning",
+          "Tjäna bonuspengar för att slutföra hela rutten"
+        ]
+      }
+    },
+    "windowscleaner": {
+      "name": "Fönsterputsare",
+      "subtitle": "Fönsterputsarservice",
+      "interactionText": "Starta fönsterputsningsjobb",
+      "blipLabel": "Fönsterputsning",
+      "locationLabel": "Fönsterputsningsdepå",
+      "description": [
+        "Ta svampen från fordonet",
+        "Gå till fönster markerade på kartan",
+        "Putsa de smutsiga platserna på fönstren",
+        "Återvänd för att få betalt när du är klar"
+      ],
+      "items": {
+        "sponge": "Svamp",
+        "windowDirt": "Fönstersmuts",
+        "cleaningVan": "Städningsbuss"
+      },
+      "preview": {
+        "step1Title": "Starta jobbet",
+        "step1Desc": [
+          "Gå fram till NPC:n vid städningsdepån",
+          "Tryck E för att öppna jobbmenyn",
+          "Välj din rutt och tryck Starta"
+        ],
+        "step2Title": "Byt om kläder",
+        "step2Desc": [
+          "Bege dig till den portabla stugan i närheten",
+          "Gå in för att byta till din arbetsutrustning",
+          "Dina originalkläder återställs när jobbet avslutas"
+        ],
+        "step3Title": "Hämta dina verktyg",
+        "step3Desc": [
+          "Gå till jobbfordonet",
+          "Ta en svamp — varje spelare tar sin egen",
+          "Upp till 4 verktyg tillgängliga för co-op"
+        ],
+        "step4Title": "Kör till arbetsområdet",
+        "step4Desc": [
+          "Sätt dig i fordonet och följ GPS:en",
+          "Kör till de markerade fönsterplatserna",
+          "Varje rutt har flera smutsiga fönster att putsa"
+        ],
+        "step5Title": "Putsa fönstren",
+        "step5Desc": [
+          "Gå fram till ett smutsigt fönster med din svamp",
+          "Klicka på målen som dyker upp för att skrubba fönstret",
+          "Varje fönster kräver flera slag för att bli helt rent"
+        ],
+        "step6Title": "Slutför jobbet",
+        "step6Desc": [
+          "Efter att ha putsat alla fönster, återvänd till depån",
+          "Prata med NPC:n för att hämta din betalning",
+          "Tjäna bonuspengar för att slutföra hela rutten"
+        ]
+      }
+    },
+    "cardetailer": {
+      "name": "Bilrekonditionerare",
+      "subtitle": "Mobil bilrekonditionering",
+      "interactionText": "Starta bilrekonditioneringsjobb",
+      "blipLabel": "Bilrekonditionering",
+      "locationLabel": "Bilrekonditioneringsdepå",
+      "description": [
+        "Ta trycksprutemunstycket från fordonet",
+        "Kör till kundbilar markerade på kartan",
+        "Trycktvättä varje bil med munstycket",
+        "Polera och vaxa bilen för bonusbetalning"
+      ],
+      "items": {
+        "pressureWand": "Trycksprutemunstycke",
+        "waxCloth": "Vaxtrasa",
+        "serviceVan": "Servicebuss"
+      },
+      "preview": {
+        "step1Title": "Starta jobbet",
+        "step1Desc": [
+          "Gå fram till NPC:n vid rekonditioneringsdepån",
+          "Tryck E för att öppna jobbmenyn",
+          "Acceptera jobbet för att börja"
+        ],
+        "step2Title": "Byt om kläder",
+        "step2Desc": [
+          "Bege dig till den portabla stugan i närheten",
+          "Gå in för att byta till din arbetsutrustning",
+          "Dina originalkläder återställs när jobbet avslutas"
+        ],
+        "step3Title": "Hämta dina verktyg",
+        "step3Desc": [
+          "Gå till jobbfordonet",
+          "Ta trycksprutemunstycket från baksidan",
+          "En slang kopplar munstycket till vattentanken"
+        ],
+        "step4Title": "Kör till kundbilar",
+        "step4Desc": [
+          "Sätt dig i fordonet och följ GPS:en",
+          "Kör till de markerade kundbilarna",
+          "Parkera nära — slangen har begränsat räckvidd"
+        ],
+        "step5Title": "Tvätta bilen",
+        "step5Desc": [
+          "Sikta trycksprutemunstycket mot de smutsiga platserna",
+          "Håll vänster musknapp för att spruta vatten",
+          "Bilen blir renare ju mer du tvättar varje plats"
+        ],
+        "step6Title": "Slutför jobbet",
+        "step6Desc": [
+          "Efter att ha rekonditionerat alla bilar, återvänd till depån",
+          "Lämna tillbaka dina verktyg och avsluta jobbet",
+          "Högre nivåer låser upp vaxpolering för bonusbetalning"
+        ]
+      }
+    },
+    "newspaper": {
+      "name": "Tidningsbud",
+      "subtitle": "Tidningsleveranstjänst",
+      "interactionText": "Starta tidningsleverans",
+      "blipLabel": "Tidningsleverans",
+      "locationLabel": "Tidningsleverans",
+      "description": [
+        "Hämta leveranscykeln",
+        "Kasta tidningar till markerade leveranspunkter",
+        "Fler leveranser ger mer betalning",
+        "Arbeta i lag för snabbare slutförande"
+      ],
+      "items": {
+        "newspaperBundle": "Tidningsbunt",
+        "deliveryList": "Leveranslista",
+        "bikeKey": "Cykelnyckel"
+      },
+      "routes": {
+        "restoran": "Restaurangrutt",
+        "easy": "Lätt rutt",
+        "headline": "Rubrikslingan",
+        "express": "Expressrutt",
+        "morning": "Morgontidningen",
+        "editorial": "Redaktionsslingan"
+      },
+      "blips": {
+        "newspaperDelivery": "Tidningsleverans",
+        "returnBike": "Lämna tillbaka cykel"
+      }
+    },
+    "cleanup": {
+      "name": "Sophämtare",
+      "subtitle": "Kommunal renhållning",
+      "interactionText": "Starta sophämtning",
+      "blipLabel": "Sophämtning",
+      "locationLabel": "Sopcentral",
+      "description": [
+        "Samla sopor från tunnor runt om i staden",
+        "Lasta soppåsar på lastbilen",
+        "Leverera lastbilen när den är full",
+        "Arbeta i lag och tjäna mer"
+      ],
+      "items": {
+        "cleanupBag": "Soppåse",
+        "gloves": "Handskar",
+        "cleanupTruck": "Soplastbil"
+      },
+      "areas": {
+        "downtown": "Centrum",
+        "industrial": "Industriområde",
+        "residential": "Bostadsområde"
+      },
+      "blips": {
+        "cleanupDelivery": "Sopleverans"
+      }
+    },
+    "trucker": {
+      "name": "Lastbilschaufför",
+      "subtitle": "Långdistansfrakt",
+      "interactionText": "Starta lastbilsjobb",
+      "blipLabel": "Lastbilsgård",
+      "locationLabel": "Lastbilsdepå",
+      "description": [
+        "Hämta släp och leverera last",
+        "Tjäna pengar baserat på körd sträcka",
+        "Chans för illegala högbetalande rutter",
+        "Arbeta i lag för bonusbelöningar"
+      ],
+      "items": {
+        "truck": "Lastbil",
+        "trailer": "Släp",
+        "cargo": "Last"
+      },
+      "blips": {
+        "pickupTrailer": "Hämta släp",
+        "deliverCargo": "Leverera last",
+        "illegalDelivery": "Illegal leverans",
+        "returnTruck": "Lämna tillbaka lastbil"
+      }
+    },
+    "taxi": {
+      "name": "Taxichaufför",
+      "subtitle": "Stadstransport",
+      "interactionText": "Starta taxijobb",
+      "blipLabel": "Taxidepå",
+      "locationLabel": "Taxidepå",
+      "description": [
+        "Plocka upp passagerare i staden",
+        "Leverera dem till deras destination",
+        "Tjäna pengar baserat på avstånd",
+        "Bonus för snabb leverans"
+      ],
+      "items": {
+        "taxi": "Taxi",
+        "passenger": "Passagerare"
+      },
+      "blips": {
+        "pickupPassenger": "Hämta passagerare",
+        "dropOff": "Avlämning",
+        "returnTaxi": "Lämna tillbaka taxi"
+      }
+    },
+    "dogwalking": {
+      "name": "Hundrastare",
+      "subtitle": "Djurvårdstjänst",
+      "interactionText": "Starta hundrastning",
+      "blipLabel": "Hundrastning",
+      "locationLabel": "Djurtjänster",
+      "description": [
+        "Rasta hundar åt förmögna klienter",
+        "Hämta hundar från klienters hem",
+        "Promenera den nödvändiga sträckan med din hund",
+        "Städa efter din hund för bonusbetalning",
+        "Jobba med vänner för co-op-bonus!"
+      ],
+      "items": {
+        "leash": "Koppel",
+        "poopBag": "Bajspåse",
+        "treats": "Godis"
+      },
+      "blips": {
+        "clientHome": "Klientens hem"
+      },
+      "preview": {
+        "step1Title": "Starta jobbet",
+        "step1Desc": [
+          "Hitta hundrastnings-NPC:n nära djuraffären",
+          "Tryck E för att öppna jobbmenyn",
+          "Välj ditt område och tryck Starta"
+        ],
+        "step2Title": "Byt om kläder",
+        "step2Desc": [
+          "Bege dig till omklädningsområdet nära djuraffären",
+          "Gå in för att byta till din arbetsutrustning",
+          "Dina originalkläder återställs när jobbet avslutas"
+        ],
+        "step3Title": "Hämta hunden",
+        "step3Desc": [
+          "Kör till klientens hem i Vinewood Hills",
+          "Möt hundägaren som väntar utanför",
+          "Tryck E för att ta hunden i koppel"
+        ],
+        "step4Title": "Rasta hunden",
+        "step4Desc": [
+          "Promenera med din hund i koppel",
+          "Gå den sträcka som visas på din HUD",
+          "Städa efter din hund för bonusbetalning"
+        ],
+        "step5Title": "Lämna tillbaka hunden",
+        "step5Desc": [
+          "Promenera tillbaka hunden till klientens hem",
+          "Hunden återgår till sin ägare automatiskt",
+          "Få betalt baserat på promenerad sträcka och städningar"
+        ]
+      }
+    },
+    "powerlines": {
+      "name": "Elledningar",
+      "subtitle": "Stadsenergi & kommunikation",
+      "interactionText": "Starta elledningsjobb",
+      "blipLabel": "Elledningsjobb",
+      "locationLabel": "Elbolaget",
+      "description": [
+        "Reparera elpaneler i hem",
+        "Laga telefonstolpsledningar med korglastbil",
+        "Arbeta med ditt lag för bonusbelöningar",
+        "Använd minispel för att slutföra reparationer"
+      ],
+      "items": {
+        "multimeter": "Multimeter",
+        "wireKit": "Kabelkit",
+        "safetyGear": "Skyddsutrustning"
+      },
+      "blips": {
+        "electricalPanel": "Elpanel",
+        "phonePole": "Telefonstolpe",
+        "bucketTruck": "Korglastbil"
+      },
+      "routes": {
+        "rockfordHills": "Rockford Hills",
+        "davis": "Davis",
+        "vespucci": "Vespucci",
+        "strawberry": "Strawberry",
+        "centralLS": "Centrala LS",
+        "southLS": "Södra LS"
+      }
+    },
+    "delivery": {
+      "name": "Paketleverans",
+      "subtitle": "Paketleveranstjänst",
+      "interactionText": "Starta paketleveransjobb",
+      "blipLabel": "Paketleverans",
+      "locationLabel": "Paketleverans",
+      "description": [
+        "Hämta bussen och lasta lådor från depån",
+        "Leverera lådor till utsedda kunder",
+        "Ju fler leveranser du gör, desto mer tjänar du",
+        "Arbeta i lag för att slutföra snabbare"
+      ],
+      "items": {
+        "cargoBox": "Fraktlåda",
+        "deliveryList": "Leveranslista",
+        "vanKey": "Bussnyckel"
+      },
+      "blips": {
+        "deliveryPoint": "Leveranspunkt"
+      },
+      "preview": {
+        "step1Title": "Starta jobbet",
+        "step1Desc": [
+          "Gå fram till NPC:n vid leveransdepån",
+          "Tryck E för att öppna jobbmenyn",
+          "Välj ditt område och tryck Starta"
+        ],
+        "step2Title": "Byt om kläder",
+        "step2Desc": [
+          "Bege dig till den portabla stugan i närheten",
+          "Gå in för att byta till din arbetsutrustning",
+          "Dina originalkläder återställs när jobbet avslutas"
+        ],
+        "step3Title": "Hämta ditt fordon",
+        "step3Desc": [
+          "Bege dig till den parkerade leveransbussen",
+          "Bakdörrarna är öppna för lastning",
+          "Varje lobby får sitt eget fordon"
+        ],
+        "step4Title": "Hämta paket",
+        "step4Desc": [
+          "Gå till depåarbetaren nära lagret",
+          "Tryck E för att plocka upp en fraktlåda",
+          "Du kan bära en låda i taget"
+        ],
+        "step5Title": "Lasta bussen",
+        "step5Desc": [
+          "Bär paket till bussens öppna bakdörrar",
+          "Lådor staplas automatiskt inuti",
+          "Fyll bussen innan du ger dig ut"
+        ],
+        "step6Title": "Leverera paketen",
+        "step6Desc": [
+          "Kör till den markerade leveransplatsen",
+          "Ta en låda från bagaget och bär den",
+          "Gå till kunden och tryck E för att leverera"
+        ],
+        "step7Title": "Återvänd till depån",
+        "step7Desc": [
+          "Efter alla leveranser, kör tillbaka till depån",
+          "Parkera bussen på den markerade platsen",
+          "Dina inkomster betalas ut automatiskt"
+        ]
+      }
+    },
+    "warehouse": {
+      "name": "Lagerarbetare",
+      "subtitle": "Frakt & logistik",
+      "interactionText": "Starta lagerjobb",
+      "blipLabel": "Lager",
+      "locationLabel": "Lager",
+      "description": [
+        "Lasta lådor och pallar på leveranslastbilar",
+        "Använd gaffeltruck för tunga pallar",
+        "Bär mindre lådor för hand till lastbilen",
+        "Slutför lastbilsordrar för betalning"
+      ],
+      "items": {
+        "forklift": "Gaffeltruck",
+        "boxes": "Lådor",
+        "pallets": "Pallar"
+      },
+      "blips": {
+        "truck": "Lastbil",
+        "deliveryPoint": "Leveranspunkt",
+        "forklift": "Gaffeltruck"
+      },
+      "deliveryRoutes": {
+        "vinewood": "Vinewood-butiken",
+        "davis": "Davis-supermarket",
+        "strawberry": "Strawberry-butiken"
+      }
+    },
+    "landscaping": {
+      "name": "Trädgårdsarbete",
+      "subtitle": "Trädgårdsunderhåll",
+      "interactionText": "Starta trädgårdsjobb",
+      "blipLabel": "Trädgårdsjobb",
+      "locationLabel": "Kommunalt underhåll",
+      "description": [
+        "Trimma vuxna buskar med häckseax",
+        "Gräv upp ogräs med spade",
+        "Hämta verktyg från arbetslastbilen",
+        "Arbeta i lag för bonusbelöningar"
+      ],
+      "items": {
+        "trimmer": "Häckseax",
+        "shovel": "Spade",
+        "workTruck": "Arbetslastbil"
+      },
+      "routes": {
+        "vespucci": "Vespucci",
+        "pillboxHill": "Pillbox Hill",
+        "littleSeoul": "Little Seoul",
+        "burton": "Burton",
+        "vinewoodHills": "Vinewood Hills"
+      }
+    },
+    "fishing": {
+      "name": "Fiske",
+      "subtitle": "Professionellt fiske",
+      "interactionText": "Starta fiskejobb",
+      "blipLabel": "Fiske",
+      "locationLabel": "Fiske",
+      "description": [
+        "Skaffa spö och bete",
+        "Kasta revet nära vatten",
+        "Fånga fisk med minispelet",
+        "Fångad fisk läggs till i inventariet",
+        "Sälj till fiskuppköparen"
+      ],
+      "items": {
+        "fishingRod": "Fiskespö",
+        "bait": "Bete"
+      },
+      "rods": {
+        "standartrod": "Standardspö",
+        "carbonrod": "Kolfiberspö",
+        "prorod": "Proffsspö"
+      },
+      "baits": {
+        "basicbait": "Maskbete",
+        "spoonlure": "Skedrag",
+        "threesided": "Tresidigt drag",
+        "tailfish": "Svansaborre-drag",
+        "doublehook": "Dubbelkroksdrag",
+        "triplehook": "Trippelkroksdrag"
+      },
+      "zones": {
+        "southCoast": "Sydkusten",
+        "westCoast": "Västkusten",
+        "deepSea": "Djuphavet"
+      },
+      "fishTypes": {
+        "anchovy": "Ansjovis",
+        "trout": "Forell",
+        "mackerel": "Makrill",
+        "salmon": "Lax",
+        "snapper": "Snapper",
+        "tuna": "Tonfisk",
+        "grouper": "Havsabborre",
+        "swordfish": "Svärdfisk",
+        "shark": "Haj"
+      },
+      "blips": {
+        "fishingShop": "Fiskebutik",
+        "fishBuyer": "Fiskuppköpare"
+      }
+    },
+    "diving": {
+      "name": "Dykning",
+      "subtitle": "Professionell dykning",
+      "interactionText": "Starta dykjobb",
+      "blipLabel": "Dykning",
+      "locationLabel": "Dykning",
+      "description": [
+        "Gå ombord på båten och bege dig till dykzonen",
+        "När båten stannar, släpp ankaret och gå i vattnet",
+        "Dyk under vattnet och slutför uppgifter",
+        "Återvänd till båten och lyft ankaret",
+        "Bege dig tillbaka till bryggan och sälj dina föremål"
+      ],
+      "items": {
+        "scubaTank": "Dykartub",
+        "divingSuit": "Dykdräkt",
+        "flippers": "Fenor"
+      },
+      "zones": {
+        "shallowBay": "Grunt vik",
+        "openSea": "Öppet hav",
+        "shipwreck": "Skeppsvrak",
+        "deepTrench": "Djuphavsränna"
+      },
+      "sellItems": {
+        "dendrogyraCoral": "Dendrogyra-korall",
+        "antipathariaCoral": "Antipatharia-korall"
+      },
+      "taskTypes": {
+        "coral": "Korall",
+        "trash": "Skräp"
+      },
+      "gear": {
+        "basic": "Grundläggande dykutrustning",
+        "standard": "Standard dykutrustning",
+        "pro": "Professionell dykutrustning"
+      },
+      "blips": {
+        "boatDelivery": "Båtleverans"
+      },
+      "preview": {
+        "step1Title": "Starta jobbet",
+        "step1Desc": [
+          "Bege dig till dykinstruktören vid Paleto Bay-bryggan",
+          "Tryck E för att öppna jobbmenyn",
+          "Välj en dykzon och tryck Starta"
+        ],
+        "step2Title": "Gå ombord på båten",
+        "step2Desc": [
+          "Gå till bryggan och gå ombord på din båt",
+          "Varje dykzon har en avgångspunkt",
+          "Navigera till den markerade dykzonen"
+        ],
+        "step3Title": "Släpp ankare & dyk",
+        "step3Desc": [
+          "Stanna båten vid dykzonsmarkören",
+          "Tryck E för att släppa ankaret",
+          "Hoppa i vattnet och dyk ner"
+        ],
+        "step4Title": "Samla föremål",
+        "step4Desc": [
+          "Hitta korall och skräp på havsbotten",
+          "Tryck E för att samla korall för försäljning",
+          "Städa skräp för bonus-XP"
+        ],
+        "step5Title": "Sälj din fångst",
+        "step5Desc": [
+          "Lämna tillbaka båten vid bryggan",
+          "Gå till köpare-NPC:n i närheten",
+          "Tryck E för att sälja dina insamlade koraller"
+        ]
+      }
+    },
+    "forklift": {
+      "name": "Gaffeltrucksförare",
+      "subtitle": "Underjordisk logistik",
+      "interactionText": "Starta gaffeltrucksjobb",
+      "blipLabel": "Gaffeltruck",
+      "locationLabel": "Gaffeltrucksdepå",
+      "description": [
+        "Kör gaffeltruck i en underjordisk depå",
+        "Transportera lådor till transportbandet",
+        "Sortera och placera lådor på utsedda hyllor",
+        "Arbeta i lag för bonusbelöningar"
+      ],
+      "items": {
+        "forklift": "Gaffeltruck",
+        "crate": "Låda",
+        "conveyorBelt": "Transportband"
+      },
+      "crateTypes": {
+        "jewellery": "Smycken",
+        "antiques": "Antikviteter",
+        "tobacco": "Tobak",
+        "hazard": "Farligt gods",
+        "fake": "Förfalskningar"
+      },
+      "blips": {
+        "forklift": "Gaffeltruck",
+        "conveyor": "Transportband"
+      }
+    },
+    "tiretechnician": {
+      "name": "Däcktekniker",
+      "subtitle": "Vägassistans däck",
+      "interactionText": "Starta däckteknikerjobb",
+      "blipLabel": "Däckteknikerjobb",
+      "locationLabel": "Däckservicedepå",
+      "description": [
+        "Byt platta däck på strandade fordon",
+        "Använd domkraft och verktyg för däckbyten",
+        "Flerstegs realistisk däckreparationsprocess",
+        "Arbeta med ditt lag för snabbare slutförande"
+      ],
+      "items": {
+        "wrenchSet": "Skruvnyckelsats",
+        "carJack": "Domkraft",
+        "spareParts": "Reservdelar"
+      },
+      "blips": {
+        "vehicleRepair": "Fordonsreparation",
+        "serviceTruck": "Servicelastbil"
+      }
+    },
+    "treasurehunter": {
+      "name": "Skattjägare",
+      "subtitle": "Undervattensskattjakt",
+      "interactionText": "Starta skattjaktsjobb",
+      "blipLabel": "Skattjägare",
+      "locationLabel": "Skattjägarbryggan",
+      "description": [
+        "Gå ombord på båten och bege dig till skattområdet",
+        "Följ spårets pip för att hitta skatten",
+        "Dyk under vattnet och samla skattkistan",
+        "Återvänd till bryggan för att hämta betalning"
+      ],
+      "items": {
+        "scubaGear": "Dykutrustning",
+        "treasureChest": "Skattkista"
+      },
+      "lootTypes": {
+        "common": "Skattväska",
+        "legendary": "Guldkista"
+      },
+      "gear": {
+        "basic": "Grundläggande dykutrustning",
+        "standard": "Standard dykutrustning",
+        "pro": "Professionell dykutrustning"
+      },
+      "preview": {
+        "step1Title": "Starta jobbet",
+        "step1Desc": [
+          "Bege dig till bryggan och prata med instruktören",
+          "Tryck E för att öppna jobbmenyn och starta"
+        ],
+        "step2Title": "Gå ombord på båten",
+        "step2Desc": [
+          "Gå till bryggan och gå ombord på din båt",
+          "Navigera mot skattområdets blip"
+        ],
+        "step3Title": "Släpp ankare & dyk",
+        "step3Desc": [
+          "Följ spårets pip för att hitta skatten",
+          "Släpp ankaret nära sökområdet",
+          "Dyk under vattnet med din dykutrustning"
+        ],
+        "step4Title": "Samla skatt",
+        "step4Desc": [
+          "Hitta skattkistan på havsbotten",
+          "Akta dig för hajar och havsströmmar!",
+          "Tryck E för att samla skatten"
+        ],
+        "step5Title": "Återvänd till bryggan",
+        "step5Desc": [
+          "Stig upp till ytan och återvänd till bryggan",
+          "Kör in i markeringen för att avsluta",
+          "Hämta din betalning!"
+        ]
+      }
+    },
+    "metaldetector": {
+      "name": "Metalldetektor",
+      "subtitle": "Avancerade bärgningsuppdrag",
+      "interactionText": "Starta metalldetektor-jobb",
+      "blipLabel": "Metalldetektor",
+      "locationLabel": "Metalldetektorstation",
+      "description": [
+        "Ta en metalldetektor från lastbilens bagagelucka",
+        "Följ pip-hastigheten för att ringa in dold metall",
+        "Gräv upp nedgrävda platser med din spade",
+        "Lös in dina fynd vid stationen"
+      ],
+      "items": {
+        "detector": "Metalldetektor",
+        "findings": "Upphittade fynd"
+      },
+      "lootTypes": {
+        "scrap": "Metallskrot",
+        "coin": "Gammalt mynt",
+        "silver": "Silverbit",
+        "gold": "Guldklimp",
+        "relic": "Sällsynt relik"
+      }
+    },
+    "mechanic": {
+      "name": "Mekaniker",
+      "subtitle": "Fordonsreparationstjänst",
+      "interactionText": "Starta mekanikerjobb",
+      "blipLabel": "Mekaniker",
+      "locationLabel": "Mekanikerverkstad"
+    },
+    "gruppe6": {
+      "name": "Gruppe 6",
+      "subtitle": "Värdetransport",
+      "interactionText": "Prata med depåchefen",
+      "blipLabel": "Gruppe 6 Depå",
+      "description": [
+        "Kör en pansarbil mellan Fleeca-banker",
+        "Fyll pengapåsar vid valvet och lasta in dem",
+        "Lämna tillbaka bilen till depån för att få betalt"
+      ]
+    }
+  },
+  "quests": {
+    "daily_miner_collect": {
+      "label": "Daglig gruvning",
+      "description": "Kross 5 stenar i gruvan"
+    },
+    "weekly_miner_process": {
+      "label": "Mästa-bearbetaren",
+      "description": "Bearbeta 30 malmer vid vågen"
+    },
+    "monthly_miner_earn": {
+      "label": "Gruvmogul",
+      "description": "Tjäna $10 000 från gruvarbete"
+    },
+    "daily_lumber_collect": {
+      "label": "Daglig huggning",
+      "description": "Fäll 5 träd"
+    },
+    "weekly_lumber_process": {
+      "label": "Skogsmästare",
+      "description": "Bearbeta 25 stockar vid vågen"
+    },
+    "monthly_lumber_earn": {
+      "label": "Virkesmogul",
+      "description": "Tjäna $10 000 från skogsavverkning"
+    },
+    "daily_scrap_collect": {
+      "label": "Skrotsamlare",
+      "description": "Samla 5 skrotdelar"
+    },
+    "weekly_scrap_process": {
+      "label": "Återvinnarpropp",
+      "description": "Bearbeta 20 skrot vid vågen"
+    },
+    "monthly_scrap_earn": {
+      "label": "Skrotmagnat",
+      "description": "Tjäna $8 000 från skrotning"
+    },
+    "daily_hunting_collect": {
+      "label": "Daglig jakt",
+      "description": "Jaga 3 djur"
+    },
+    "weekly_hunting_process": {
+      "label": "Troféjägare",
+      "description": "Bearbeta 15 djur vid vågen"
+    },
+    "monthly_hunting_earn": {
+      "label": "Mästerjägare",
+      "description": "Tjäna $12 000 från jakt"
+    },
+    "daily_farmer_complete": {
+      "label": "Bondedräng",
+      "description": "Slutför 2 jordbruksrundor"
+    },
+    "weekly_farmer_earn": {
+      "label": "Skördekungen",
+      "description": "Tjäna $5 000 från jordbruk"
+    },
+    "monthly_farmer_earn": {
+      "label": "Jordbruksbaron",
+      "description": "Tjäna $15 000 från jordbruk"
+    },
+    "daily_fruitpicker_complete": {
+      "label": "Apelsinplockare",
+      "description": "Slutför 2 plockrundor"
+    },
+    "weekly_fruitpicker_earn": {
+      "label": "Citrusbaron",
+      "description": "Tjäna $5 000 från apelsiner"
+    },
+    "monthly_fruitpicker_earn": {
+      "label": "Fruktodlingsmogul",
+      "description": "Tjäna $15 000 från apelsiner"
+    },
+    "daily_cleaner_complete": {
+      "label": "Gatsopare",
+      "description": "Slutför 2 städningsrundor"
+    },
+    "weekly_cleaner_earn": {
+      "label": "Herr Ren",
+      "description": "Tjäna $4 000 från städning"
+    },
+    "monthly_cleaner_earn": {
+      "label": "Renhållningschefen",
+      "description": "Tjäna $12 000 från städning"
+    },
+    "daily_powerwash_complete": {
+      "label": "Tryckexperten",
+      "description": "Slutför 2 högtryckstvättrundor"
+    },
+    "weekly_powerwash_earn": {
+      "label": "Sprutmästarens",
+      "description": "Tjäna $5 000 från högtryckstvätt"
+    },
+    "monthly_powerwash_earn": {
+      "label": "Tvättgurun",
+      "description": "Tjäna $15 000 från högtryckstvätt"
+    },
+    "daily_windowcleaner_complete": {
+      "label": "Fönsterputsaren",
+      "description": "Slutför 2 fönsterputsningsrundor"
+    },
+    "weekly_windowcleaner_earn": {
+      "label": "Glasexperten",
+      "description": "Tjäna $4 000 från fönsterputsning"
+    },
+    "monthly_windowcleaner_earn": {
+      "label": "Kristallklart AB",
+      "description": "Tjäna $12 000 från fönsterputsning"
+    },
+    "daily_cardetailer_complete": {
+      "label": "Blanktid",
+      "description": "Slutför 2 rekonditioneringsrundor"
+    },
+    "weekly_cardetailer_earn": {
+      "label": "Detaljproffset",
+      "description": "Tjäna $5 000 från bilrekonditionering"
+    },
+    "monthly_cardetailer_earn": {
+      "label": "Masterrekonditioneraren",
+      "description": "Tjäna $15 000 från bilrekonditionering"
+    },
+    "daily_newspaper_complete": {
+      "label": "Tidningsbudet",
+      "description": "Slutför 2 leveransrundor"
+    },
+    "weekly_newspaper_earn": {
+      "label": "Pressmogul",
+      "description": "Tjäna $3 000 från leveranser"
+    },
+    "monthly_newspaper_earn": {
+      "label": "Mediabaron",
+      "description": "Tjäna $8 000 från leveranser"
+    },
+    "daily_cleanup_complete": {
+      "label": "Sopsamlare",
+      "description": "Slutför 2 sophämtningsrundor"
+    },
+    "weekly_cleanup_earn": {
+      "label": "Avfallsansvarig",
+      "description": "Tjäna $4 000 från sophämtningsrundor"
+    },
+    "monthly_cleanup_earn": {
+      "label": "Avfallsmogul",
+      "description": "Tjäna $12 000 från sophämtningsrundor"
+    },
+    "daily_trucker_complete": {
+      "label": "Daglig transport",
+      "description": "Slutför 2 fraktrundor"
+    },
+    "weekly_trucker_earn": {
+      "label": "Vägkrigaren",
+      "description": "Tjäna $8 000 från frakt"
+    },
+    "monthly_trucker_earn": {
+      "label": "Konvojkungen",
+      "description": "Tjäna $25 000 från frakt"
+    },
+    "daily_taxi_complete": {
+      "label": "Taxiföraren",
+      "description": "Slutför 3 taxiresor"
+    },
+    "weekly_taxi_earn": {
+      "label": "Taxikungen",
+      "description": "Tjäna $6 000 från resor"
+    },
+    "monthly_taxi_earn": {
+      "label": "Flottägaren",
+      "description": "Tjäna $18 000 från resor"
+    },
+    "daily_dogwalking_complete": {
+      "label": "Hundrastaren",
+      "description": "Slutför 2 promenader"
+    },
+    "weekly_dogwalking_earn": {
+      "label": "Flockledaren",
+      "description": "Tjäna $3 000 från hundrastning"
+    },
+    "monthly_dogwalking_earn": {
+      "label": "Hundviskaren",
+      "description": "Tjäna $8 000 från hundrastning"
+    },
+    "daily_powerlines_complete": {
+      "label": "Gnistan",
+      "description": "Slutför 2 reparationsjobb"
+    },
+    "weekly_powerlines_earn": {
+      "label": "Elmästaren",
+      "description": "Tjäna $6 000 från reparationer"
+    },
+    "monthly_powerlines_earn": {
+      "label": "Elnätschefen",
+      "description": "Tjäna $18 000 från reparationer"
+    },
+    "daily_delivery_complete": {
+      "label": "Paketspringaren",
+      "description": "Slutför 2 leveranser"
+    },
+    "weekly_delivery_earn": {
+      "label": "Expressbudet",
+      "description": "Tjäna $5 000 från leveranser"
+    },
+    "monthly_delivery_earn": {
+      "label": "Leveranskungen",
+      "description": "Tjäna $15 000 från leveranser"
+    },
+    "daily_warehouse_complete": {
+      "label": "Hamnarbetaren",
+      "description": "Slutför 2 lagerpass"
+    },
+    "weekly_warehouse_earn": {
+      "label": "Logistikexperten",
+      "description": "Tjäna $5 000 från lagerarbete"
+    },
+    "monthly_warehouse_earn": {
+      "label": "Lagerdirektören",
+      "description": "Tjäna $15 000 från lagerarbete"
+    },
+    "daily_landscaping_complete": {
+      "label": "Grönt tumme",
+      "description": "Slutför 2 trädgårdsjobb"
+    },
+    "weekly_landscaping_earn": {
+      "label": "Trädgårdsmästaren",
+      "description": "Tjäna $4 000 från trädgårdsarbete"
+    },
+    "monthly_landscaping_earn": {
+      "label": "Landskapsarkitekten",
+      "description": "Tjäna $12 000 från trädgårdsarbete"
+    },
+    "daily_fishing_complete": {
+      "label": "Sportfiskare",
+      "description": "Slutför 2 fisketurer"
+    },
+    "weekly_fishing_earn": {
+      "label": "Havsfiskare",
+      "description": "Tjäna $5 000 från fiske"
+    },
+    "monthly_fishing_earn": {
+      "label": "Fiskelegenden",
+      "description": "Tjäna $15 000 från fiske"
+    },
+    "daily_diving_complete": {
+      "label": "Djupdykaren",
+      "description": "Slutför 2 dykturer"
+    },
+    "weekly_diving_earn": {
+      "label": "Havsutforskaren",
+      "description": "Tjäna $6 000 från dykning"
+    },
+    "monthly_diving_earn": {
+      "label": "Skattdykaren",
+      "description": "Tjäna $18 000 från dykning"
+    },
+    "daily_forklift_complete": {
+      "label": "Gaffeltrucksföraren",
+      "description": "Slutför 2 lagerpass"
+    },
+    "weekly_forklift_earn": {
+      "label": "Tunglyftaren",
+      "description": "Tjäna $5 000 från gaffeltrucksarbete"
+    },
+    "monthly_forklift_earn": {
+      "label": "Logistiktitanen",
+      "description": "Tjäna $15 000 från gaffeltrucksarbete"
+    }
+  },
+  "shop": {
+    "buyRod": "Köp spö",
+    "buyRodDesc": "Köp ett fiskespö",
+    "buyBait": "Köp bete",
+    "buyBaitDesc": "Köp fiskebete",
+    "sellAll": "Sälj allt",
+    "sellAllFish": "Sälj all fisk",
+    "sellAllItems": "Sälj alla föremål",
+    "levelRequired": "Nivå {level} krävs | {price}",
+    "howMany": "Hur många?"
+  },
+  "vehicle": {
+    "powerlines": "Elledningar",
+    "huntingVehicle": "Jaktfordon",
+    "workTruck": "Arbetslastbil",
+    "divingBoat": "Dykbåt",
+    "fishingBoat": "Fiskebåt",
+    "cleanupTruck": "Soplastbil",
+    "lumberVehicle": "Skogsbruksfordon",
+    "miningVehicle": "Gruvfordon",
+    "metaldetectorVehicle": "Metalldetektorfordon",
+    "washVan": "Tvättbuss",
+    "windowCleanerVan": "Fönsterputsarbuss",
+    "cleaningVan": "Städningsbuss",
+    "serviceVehicle": "Servicefordon",
+    "scrapyardTruck": "Skrotlastbil",
+    "detailingVan": "Rekonditioneringsbuss",
+    "tiretechnician": "Däcktekniker",
+    "pickupPassenger": "Hämta passagerare",
+    "returnTaxi": "Lämna tillbaka taxi",
+    "dropOff": "Avlämning",
+    "bucketTruck": "Korglastbil",
+    "deliveryVan": "Leveransbuss",
+    "newspaperBike": "Tidningscykel",
+    "detachedTrailer": "Fråkopplat släp",
+    "deliveryTruck": "Leveranslastbil",
+    "taxi": "Taxi",
+    "treasureBoat": "Skattjägarbåt"
+  },
+  "task": {
+    "panels": "Paneler",
+    "poles": "Stolpar",
+    "repairPanels": "Reparera paneler ({done}/{total})",
+    "fixPoles": "Laga ledningsstolpar ({done}/{total})",
+    "repairDescription": "Reparera elektrisk infrastruktur över hela området. Laga paneler och ledningsstolpar.",
+    "plants": "Växter",
+    "cropPlant": "Gröda",
+    "nearestCrop": "Närmaste gröda",
+    "bushes": "Buskar",
+    "lawns": "Gräsmattor",
+    "bushToTrim": "Buske att trimma",
+    "lawnToDig": "Gräsmatta att gräva",
+    "toilets": "Toaletter",
+    "pipes": "Rör",
+    "fishCaught": "Fisk fångad",
+    "oreProcessed": "Malm bearbetad",
+    "trunkLoaded": "Bagage lastat",
+    "logsProcessed": "Stockar bearbetade",
+    "scrapsProcessed": "Skrot bearbetat",
+    "boxesProcessed": "Lådor bearbetade",
+    "animalsProcessed": "Djur bearbetade",
+    "treasures": "Skatter",
+    "spotsDug": "Uppgrävda platser",
+    "tasks": "Uppgifter",
+    "loadBoxes": "Lasta lådor vid depån",
+    "deliveries": "Leveranser",
+    "deliverPackages": "Leverera paket",
+    "boxesLoaded": "Lådor lastade",
+    "pickUpTrailer": "Hämta släp",
+    "deliverCargo": "Leverera last",
+    "returnTruck": "Lämna tillbaka lastbil",
+    "stage": "Fas",
+    "truckFill": "Lastbilsfyllnad",
+    "shelved": "Hyllplacerade",
+    "activateConveyor": "Aktivera transportbandet [E]",
+    "deliverCratesToBelt": "Leverera lådor till band ({current}/{total})",
+    "placeCratesOnShelves": "Placera lådor på hyllor ({current}/{total})",
+    "delivered": "Levererade",
+    "takeWandFromTrunk": "Ta munstycke från fordonets bagage",
+    "spotsCleaned": "Platser städade",
+    "takeSpongeFromTrunk": "Ta svamp från fordonets bagage",
+    "windows": "Fönster",
+    "takeMopFromTrunk": "Ta mopp från fordonets bagage",
+    "stains": "Fläckar",
+    "equipWandOrCloth": "Utrusta munstycke (tvätt) eller trasa (polering)",
+    "carsWashed": "Bilar tvättade",
+    "carsPolished": "Bilar polerade",
+    "distance": "Avstånd",
+    "cargo": "Last",
+    "regularAnimals": "Vanliga djur",
+    "predators": "Rovdjur",
+    "birds": "Fåglar",
+    "mixed": "Blandat",
+    "nextDelivery": "Nästa leverans",
+    "returnVehicle": "Lämna tillbaka fordon",
+    "returnToDepot": "Återvänd till depån",
+    "returnToBase": "Återvänd till basen",
+    "loadingArea": "Lastningsområde",
+    "fruitpickerTree": "Apelsinträd",
+    "next": "Nästa",
+    "walkDistance": "Promenadsträcka",
+    "dogsDelivered": "Hundar levererade",
+    "distanceWalked": "Promenerad sträcka (m)",
+    "toolShovel": "Spade",
+    "toolTrimmer": "Trimmer",
+    "trucksCompleted": "Slutförda lastbilar ({current}/{total})",
+    "loadBoxesCount": "Lasta lådor ({current}/{total})",
+    "loadPallets": "Lasta pallar ({current}/{total})",
+    "deliverPapers": "Leverera tidningar ({current}/{total})",
+    "trimBushes": "Trimma buskar ({current}/{total})",
+    "rakeLawns": "Kratta gräsmattor ({current}/{total})",
+    "itemsCollected": "Insamlade föremål ({current}/{total})",
+    "cleanAllWindows": "Rengör alla fönster ({current}/{total})",
+    "cleanAllSpots": "Rengör alla fläckar ({current}/{total})"
+  },
+  "drawText": {
+    "repairPanel": "[E] Reparera elpanel",
+    "repairPole": "[E] Reparera telefonstolpsledning",
+    "collect": "[E] Samla",
+    "collectCoral": "[E] Samla korall",
+    "cleanTrash": "[E] Städa skräp"
+  },
+  "achievements": {
+    "miner_lv5": {
+      "label": "Mästa-gruvarbetare",
+      "desc": "Nå nivå 5 i gruvarbete"
+    },
+    "miner_lv10": {
+      "label": "Gruvlegend",
+      "desc": "Nå nivå 10 i gruvarbete"
+    },
+    "lumberjack_lv5": {
+      "label": "Mästa-skogshuggare",
+      "desc": "Nå nivå 5 i skogsavverkning"
+    },
+    "fishing_lv5": {
+      "label": "Expertfiskare",
+      "desc": "Nå nivå 5 i fiske"
+    },
+    "cleanup_lv5": {
+      "label": "Avfallskrigare",
+      "desc": "Nå nivå 5 i sophämtning"
+    },
+    "delivery_lv5": {
+      "label": "Expressbud",
+      "desc": "Nå nivå 5 i leverans"
+    },
+    "trucker_lv5": {
+      "label": "Vägkungen",
+      "desc": "Nå nivå 5 i lastbilskörning"
+    },
+    "hunting_lv5": {
+      "label": "Expertjägare",
+      "desc": "Nå nivå 5 i jakt"
+    },
+    "taxi_lv5": {
+      "label": "Ässföraren",
+      "desc": "Nå nivå 5 i taxikörning"
+    },
+    "powerlines_lv5": {
+      "label": "Elmästaren",
+      "desc": "Nå nivå 5 i elledningar"
+    },
+    "diving_lv5": {
+      "label": "Djuphavsdykare",
+      "desc": "Nå nivå 5 i dykning"
+    },
+    "cleaner_lv5": {
+      "label": "Städmaskin",
+      "desc": "Nå nivå 5 i städning"
+    },
+    "powerwash_lv5": {
+      "label": "Tryckproffset",
+      "desc": "Nå nivå 5 i högtryckstvätt"
+    },
+    "windowscleaner_lv5": {
+      "label": "Kristallklart",
+      "desc": "Nå nivå 5 i fönsterputsning"
+    },
+    "cardetailer_lv5": {
+      "label": "Detaljmästaren",
+      "desc": "Nå nivå 5 i bilrekonditionering"
+    },
+    "farmer_lv5": {
+      "label": "Grönt tumme",
+      "desc": "Nå nivå 5 i jordbruk"
+    },
+    "fruitpicker_lv5": {
+      "label": "Citruskungen",
+      "desc": "Nå nivå 5 i apelsinplockning"
+    },
+    "landscaping_lv5": {
+      "label": "Trädgårdsmästaren",
+      "desc": "Nå nivå 5 i trädgårdsarbete"
+    },
+    "dogwalking_lv5": {
+      "label": "Hundviskaren",
+      "desc": "Nå nivå 5 i hundrastning"
+    },
+    "newspaper_lv5": {
+      "label": "Pressbudet",
+      "desc": "Nå nivå 5 i tidningsleverans"
+    },
+    "scrapyard_lv5": {
+      "label": "Skrothärskaren",
+      "desc": "Nå nivå 5 i skrotning"
+    },
+    "warehouse_lv5": {
+      "label": "Lagermästaren",
+      "desc": "Nå nivå 5 i lagerarbete"
+    },
+    "forklift_lv5": {
+      "label": "Lyftoperatören",
+      "desc": "Nå nivå 5 i gaffeltruckskörning"
+    },
+    "collect_100": {
+      "label": "Samlare",
+      "desc": "Samla 100 föremål totalt"
+    },
+    "collect_500": {
+      "label": "Hämtare",
+      "desc": "Samla 500 föremål totalt"
+    },
+    "collect_1000": {
+      "label": "Hamstrare",
+      "desc": "Samla 1 000 föremål totalt"
+    },
+    "miner_collect_500": {
+      "label": "Stenkrossare",
+      "desc": "Gruva 500 stenar"
+    },
+    "lumber_collect_500": {
+      "label": "Trädfällare",
+      "desc": "Hugg 500 träd"
+    },
+    "earn_10000": {
+      "label": "Försörjaren",
+      "desc": "Tjäna $10 000 totalt från jobb"
+    },
+    "earn_50000": {
+      "label": "Storslägare",
+      "desc": "Tjäna $50 000 totalt från jobb"
+    },
+    "earn_100000": {
+      "label": "Miljonärvägen",
+      "desc": "Tjäna $100 000 totalt från jobb"
+    },
+    "complete_10": {
+      "label": "Hårt arbetande",
+      "desc": "Slutför 10 jobb"
+    },
+    "complete_50": {
+      "label": "Engagerad arbetare",
+      "desc": "Slutför 50 jobb"
+    },
+    "complete_100": {
+      "label": "Veteranarbetare",
+      "desc": "Slutför 100 jobb"
+    },
+    "process_100": {
+      "label": "Bearbetare",
+      "desc": "Bearbeta 100 föremål vid våg"
+    },
+    "process_500": {
+      "label": "Fabriksarbetare",
+      "desc": "Bearbeta 500 föremål vid våg"
+    }
+  },
+  "gruppe6": {
+    "truck": "Pansarbil",
+    "takeBagPrompt": "[E] Ta en tom väska",
+    "returnBagPrompt": "[E] Lägg tillbaka väskan",
+    "loadBagPrompt": "[E] Lasta in väskan",
+    "signPrompt": "[E] Få pappren underskrivna",
+    "fillBagPrompt": "[E] Fyll väskan",
+    "stationBusy": "En annan lagmedlem använder den här stationen!",
+    "newRound": "Ny runda — nya banker finns på kartan!",
+    "continueBusy": "Alla måste bli klara och lämna in sina väskor innan ni fortsätter!",
+    "returnTruckPrompt": "[E] Lämna in bilen",
+    "emptyBagTaken": "Tom väska tagen. Fyll den vid bankvalvet.",
+    "signingPapers": "Skriver under papper...",
+    "vaultOpening": "Valvet öppnas... ({seconds}s)",
+    "vaultOpened": "Valvet är öppet!",
+    "fillingBag": "Fyller väskan...",
+    "bagFilled": "Väska fylld! (+{symbol}{amount})",
+    "allStopsDone": "Alla stopp insamlade! Kör tillbaka bilen till depån.",
+    "returnTruckHint": "Kör tillbaka bilen till depån för att avsluta skiftet.",
+    "returnTruckBlip": "Lämna in Bilen",
+    "onlyLeaderCanFinish": "Endast teamledaren kan lämna in bilen!",
+    "tooFarFromDepot": "Du är för långt från depån!",
+    "tooFarFromManager": "Du är för långt från bankchefen!",
+    "tooFarFromVault": "Du är för långt från valvet!",
+    "vaultNotOpen": "Valvet är inte öppet än!",
+    "vaultAlreadyOpen": "Valvet håller redan på att öppnas!",
+    "vaultEmpty": "Det här valvet har tömts!",
+    "alreadyCarrying": "Du bär redan på något!",
+    "needEmptyBag": "Du behöver en tom väska först!",
+    "statBags": "Inlastade väskor",
+    "statEarnings": "Totalt intjänat",
+    "objSign": "Få pappren underskrivna",
+    "objCollect": "Fyll och lasta väskorna",
+    "objReturn": "Kör tillbaka bilen till depån",
+    "objWaiting": "Väntar på rutt...",
+    "progressTitle": "Gruppe 6",
+    "progressDetail": "Samla pengapåsar från bankerna och lämna sedan tillbaka pansarbilen till depån.",
+    "jobEnded": "{bags} väskor levererade, du tjänade {symbol}{earned}!",
+    "noEmptyBags": "Inga tomma väskor kvar i bilen!",
+    "truckNotAtDepot": "Pansarbilen måste vara vid depån!"
+  }
+}
