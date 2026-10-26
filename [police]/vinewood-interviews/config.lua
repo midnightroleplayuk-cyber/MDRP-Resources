@@ -50,7 +50,7 @@ Config.Upload = {
     -- Recommended: leave this blank and add to server.cfg, above "ensure vinewood-interviews":
     --     set FIVEMANAGE_MEDIA_API_KEY "your-key"
     -- Only paste the key here if you can't edit server.cfg, and never share this file if you do.
-    ApiKey = '',
+    ApiKey = 'SwMM3lrxnKw7NLKKc6nuqFudyV1jmr8L',
     Endpoint = 'https://api.fivemanage.com/api/v3/file',
     PresignedEndpoint = 'https://api.fivemanage.com/api/v3/file/presigned-url',
 }
