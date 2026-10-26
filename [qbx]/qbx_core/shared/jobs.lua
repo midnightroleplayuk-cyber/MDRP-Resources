@@ -146,32 +146,123 @@ return {
         },
     },
     ['ambulance'] = {
-        label = 'EMS',
+        label = 'Midnight Health Service',
         type = 'ems',
-        defaultDuty = true,
+        defaultDuty = false,
         offDutyPay = false,
         grades = {
+            -- Amulance Team
             [0] = {
-                name = 'Recruit',
-                payment = 50
+                name = 'Apprentice EMT',
+                payment = 420
             },
             [1] = {
-                name = 'Paramedic',
-                payment = 75
+                name = 'Student Nurse',
+                payment = 420
             },
             [2] = {
-                name = 'Doctor',
-                payment = 100
+                name = 'EMT',
+                payment = 450
             },
             [3] = {
-                name = 'Surgeon',
-                payment = 125
+                name = 'Nurse',
+                payment = 450
             },
             [4] = {
-                name = 'Chief',
+                name = 'Paramedic',
+                payment = 500
+            },
+            [5] = {
+                name = 'Advanced Paramedic',
+                payment = 510
+            },
+            [6] = {
+                name = 'Doctor',
+                payment = 520
+            },
+            [7] = {
+                name = 'HEMS - Crit Care Paramedic',
+                isboss = false,
+                bankAuth = false,
+                payment = 530
+            },
+            [8] = {
+                name = 'HART - Advanced Paramedic',
+                isboss = false,
+                bankAuth = false,
+                payment = 530
+            },
+            [9] = {
+                name = 'HEMS - Crit Care Doctor',
+                isboss = false,
+                bankAuth = false,
+                payment = 540
+            },
+            [10] = {
+                name = 'HART - Crit Care Doctor',
+                isboss = false,
+                bankAuth = false,
+                payment = 540
+            },
+            [11] = {
+                name = 'HART Team Lead',
+                isboss = false,
+                bankAuth = false,
+                payment = 560
+            },
+            [12] = {
+                name = 'HEMS Team Lead',
+                isboss = false,
+                bankAuth = false,
+                payment = 560
+            },
+            [13] = {
+                name = 'Ambulance Team Lead',
+                isboss = false,
+                bankAuth = false,
+                payment = 560
+            },
+            [14] = {
+                name = 'Training & Development',
+                isboss = false,
+                bankAuth = false,
+                payment = 570
+            },
+            [15] = {
+                name = 'Hospital Operations Manager',
+                isboss = false,
+                bankAuth = false,
+                payment = 570
+            },
+            [16] = {
+                name = 'Ambulance Operations Manager',
+                isboss = false,
+                bankAuth = false,
+                payment = 570
+            },
+            [17] = {
+                name = 'Human Resources',
+                isboss = false,
+                bankAuth = false,
+                payment = 640
+            },
+            [18] = {
+                name = 'Director of Operations',
+                isboss = true,
+                bankAuth = false,
+                payment = 700
+            },
+            [19] = {
+                name = 'Deputy Chief Medicial Officer',
                 isboss = true,
                 bankAuth = true,
-                payment = 150
+                payment = 710
+            },
+            [20] = {
+                name = 'Chief Medical Officer',
+                isboss = true,
+                bankAuth = true,
+                payment = 720
             },
         },
     },
