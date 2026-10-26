@@ -16,7 +16,7 @@ Config.Menu = 'ox_lib'
 -- Target system - options are: 'ox_target', 'qb-target', 'qtarget', 'custom' & 'none'
 -- 'custom' needs to be added to client/functions.lua
 -- If 'none' then TextUI is used instead of targeting
-Config.Target = 'none'
+Config.Target = 'ox_target'
 
 -- Set your progress bar system below
 -- Available options are: 'lation_ui', 'ox_lib', 'qbcore' & 'custom'
@@ -134,7 +134,7 @@ Config.QBCore = {
     -- List your items below you want to hard-assign values too
     -- Be sure to follow the format below
     items = {
-        ['markedbills'] = 500,
+        ['black_money'] = 500,
         -- ['cashrolls'] = 250,
         -- Add more items here following the same format above
     }
@@ -315,7 +315,7 @@ Config.Warehouse = {
 Config.Levels = {
     [1] = { -- Level 1
         -- The dirty money item used at level 1
-        dirtyMoney = 'markedbills',
+        dirtyMoney = 'black_money',
         -- Tax rate is how much dirty money is lost during the cleaning process
         -- For example, a 25% tax rate means the player will receive $750 clean
         -- Cash for $1,000 dirty
