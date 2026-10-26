@@ -407,12 +407,14 @@ Config.Blips = {
         label = 'Money Laundering' -- Blip name/label
     },
     contracts = { -- Blip used when washing money with various peds
+        enabled = true, 
         sprite = 500,
         color = 2,
         scale = 0.8,
         label = 'Money Contract'
     },
     warehouse = { -- Blip used for the warehouse location if enabled
+        enabled = false,
         sprite = 473,
         color = 17,
         scale = 0.8,
