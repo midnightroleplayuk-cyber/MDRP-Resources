@@ -112,7 +112,7 @@ Config.RoadClosure = {
     -- closed road (disabling path nodes alone is just a soft deterrent). This is the
     -- DEFAULT for new closures; you can also flip it per-sign with [G] while placing.
     -- Never touches a player or occupied vehicle.
-    despawnVehicles  = false,
+    despawnVehicles  = true,
     despawnInterval  = 1000,   -- ms between despawn scans (only runs while a closure is active)
 }
 
