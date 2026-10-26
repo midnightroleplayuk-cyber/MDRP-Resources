@@ -5,7 +5,7 @@ Config.AmbientCleanup = false    -- delete any ambient ped / car that ends up in
 
 -- Gate access
 Config.GateAccess = {
-    RequireJob = true,          -- true = only the jobs below can use the intercoms / auto-open
+    RequireJob = false,          -- true = only the jobs below can use the intercoms / auto-open
     Framework = 'auto',          -- 'auto', 'qbx', 'qbcore', 'esx' or 'custom'
     Jobs = {                     -- job = minimum grade (gates can override with `jobs`)
         police = 0,
