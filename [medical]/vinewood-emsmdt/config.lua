@@ -1,6 +1,6 @@
 Config = {}
 
-Config.Debug = false
+Config.Debug = true
 
 -- 'auto' detects qbx_core, qb-core or es_extended
 Config.Framework = 'auto'
@@ -25,6 +25,7 @@ Config.Branding = {
 Config.Jobs = {             -- job names allowed to use the MDT
     ambulance = true,
 }
+
 Config.RequireOnDuty = true
 Config.Command       = 'mhs_mdt'
 Config.Keybind       = 'F7'   -- false to disable
