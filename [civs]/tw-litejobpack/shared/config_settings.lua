@@ -1,6 +1,6 @@
 -- Internal pack settings — edit config.lua for server setup
 
-Config.DevMode = false -- true = enable dev/debug features (jobeditor / gizmo / polish_placer commands) | false = production mode (recommended for live servers)
+Config.DevMode = true, -- true = enable dev/debug features (jobeditor / gizmo / polish_placer commands) | false = production mode (recommended for live servers)
 
 Config.NPCCamera = {
     enabled = true,    -- true = cinematic camera on NPC interaction | false = normal camera
