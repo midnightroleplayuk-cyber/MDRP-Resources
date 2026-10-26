@@ -85,7 +85,7 @@ Config.Police = {
     count = 3,
     -- Do you want to allow players with the police job access to the 
     -- Warehouse, ignoring all requirements such as level, key, etc?
-    warehouseAccess = true,
+    warehouseAccess = false,
     -- Do you want to enable police dispatch alerts? Police will only be
     -- Notified upon a player being rejected - so Config.Reject.enable must
     -- Be true to use this feature
