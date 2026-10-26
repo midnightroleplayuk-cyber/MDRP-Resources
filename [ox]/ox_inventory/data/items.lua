@@ -635,7 +635,7 @@ return {
         weight = 200,
     },
 
---LG MDT
+--VINEWOOD MDT
 ['mdt'] = {
     label = 'MPD PNC',
     weight = 400,
@@ -646,7 +646,41 @@ return {
         image = 'mdt.png',
     }
 },
-
+['bail_document'] = {
+    label = 'Bail Document',
+    weight = 200,
+    stack = false,
+    close = true,
+    description = 'A Bail Conditions Document.',
+    client = {
+        image = 'bail_document.png',
+    }
+},
+['driving_licence'] = {
+    label = 'Driving Licence',
+    weight = 10,
+    stack = false,
+    close = true,
+    description = 'UK DVLA style photocard driving licence.',
+    client = {
+        image = 'driving_licence.png',
+        status = { 'expiry' },
+        export = 'vinewood_licensing.useLicence'
+    }
+},
+    ['provisional_licence'] = {
+        label = 'Provisional Driving Licence',
+        weight = 10,
+        stack = false,
+        close = true,
+        consume = 0,          -- REQUIRED: a licence is not used up when shown
+        consume = 0,          -- REQUIRED: a licence is not used up when shown
+        description = 'Provisional entitlement - must be accompanied',
+        client = {
+            image = 'provisional_licence.png',
+            export = 'vinewood_licensing.useLicence'
+        }
+    },
 -- OP MECHANIC
 -- Tools & install parts
 ['repair_kit'] = {
@@ -4310,16 +4344,6 @@ return {
     description = 'Industrial detergent and solvents for a laundromat machine.',
 },
 
-
--- WASABI MDT
-    ["mdt_tablet"] = { 
-        label = 'MDT Tablet',
-        description = 'A law enforcement MDT device.',
-        weight = 50,
-        stack = false,
-        close = true
-    },
-
 -- POLARS REALISTIC GANG SHIT
 ["lgbtqandbandana"] = {
     label = "Lgbtq Bandana",
@@ -5053,18 +5077,6 @@ return {
         export = 'hf1_scratchcard.useScratchcard'
     }
 },
-
--- MDT APEX
-['mdt_tablet'] = {
-    label = 'MDT Tablet',
-    weight = 1000,
-    stack = false,
-    close = true,
-    description = 'Police / EMS Mobile Data Terminal',
-    client = { export = 'apex_mdt.useTablet' }, -- optional; the usable item is also registered server-side
-},
-
-
 
 -- SMART TASER LONDON STUDIOS
 ['taser_cartridge'] = {

@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8">
+  <title>Interview recorder</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- In-world recording indicator -->
+  <div id="hud" class="hud" hidden>
+    <span class="hud-dot" aria-hidden="true"></span>
+    <div class="hud-text">
+      <strong>Interview being recorded</strong>
+      <span><span id="hud-room"></span> <span id="hud-time" class="num">00:00:00</span></span>
+      <span id="hud-mode"></span>
+      <em id="hud-mic"></em>
+    </div>
+  </div>
+
+  <!-- Setup and seat key help -->
+  <div id="help" class="help" hidden>
+    <strong id="help-title"></strong>
+    <ul id="help-keys"></ul>
+    <p id="help-status" class="num" hidden></p>
+  </div>
+
+  <!-- Evidence viewer -->
+  <div id="viewer" class="viewer" hidden>
+    <div class="frame" role="dialog" aria-label="Interview recordings">
+      <div class="battenburg" aria-hidden="true"></div>
+      <header class="bar">
+        <h1>Interview recordings</h1>
+        <div id="filter" class="filter" hidden>
+          <span id="filter-label"></span>
+          <button id="filter-clear" type="button">Show all rooms</button>
+        </div>
+        <input id="search" type="search" placeholder="Search case reference, name or room" autocomplete="off">
+        <button id="close" type="button" class="ghost">Close</button>
+      </header>
+
+      <div class="body">
+        <aside class="list">
+          <ul id="sessions"></ul>
+          <p id="list-empty" class="list-empty" hidden>No recordings match.</p>
+          <button id="more" type="button" class="ghost wide" hidden>Load older recordings</button>
+        </aside>
+
+        <main class="player">
+          <div id="empty" class="empty">
+            <p>Pick a recording on the left to review it.</p>
+          </div>
+
+          <section id="detail" hidden>
+            <div class="screen" id="screen">
+              <div id="novideo" class="novideo">
+                <p id="novideo-text"></p>
+                <button id="replay-open" type="button" class="replay-cta" hidden>Watch CCTV replay</button>
+              </div>
+              <div class="burn">
+                <span id="burn-room"></span>
+                <span id="burn-clock" class="num"></span>
+              </div>
+            </div>
+
+            <div class="transport">
+              <button id="back" type="button" class="ghost" aria-label="Back 10 seconds">-10s</button>
+              <button id="play" type="button" class="play">Play</button>
+              <button id="fwd" type="button" class="ghost" aria-label="Forward 10 seconds">+10s</button>
+              <span id="tc" class="tc num">00:00:00 / 00:00:00</span>
+              <span id="a-status" class="a-status" aria-live="polite"></span>
+              <button id="replay-open-2" type="button" class="ghost" hidden>CCTV replay</button>
+              <label class="rate">Speed
+                <select id="rate">
+                  <option value="1">1x</option>
+                  <option value="1.25">1.25x</option>
+                  <option value="1.5">1.5x</option>
+                </select>
+              </label>
+            </div>
+
+            <div class="timeline" id="timeline">
+              <div class="lanes" id="lanes"></div>
+              <div class="playhead" id="playhead" aria-hidden="true"></div>
+            </div>
+
+            <div class="facts">
+              <dl id="facts"></dl>
+              <div class="side">
+                <h2>Files</h2>
+                <ul id="files"></ul>
+                <button id="discord" type="button" class="ghost wide-btn" hidden>Send to Discord</button>
+                <p id="discord-msg" class="side-msg" hidden></p>
+                <button id="delete" type="button" class="danger" hidden>Delete recording</button>
+              </div>
+            </div>
+          </section>
+        </main>
+      </div>
+    </div>
+  </div>
+
+  <!-- In-game CCTV replay controls -->
+  <div id="replaybar" class="replaybar" hidden>
+    <div class="replay-note">
+      <strong>CCTV replay</strong>
+      <span>Reconstructed from position data, not real footage</span>
+    </div>
+    <div class="replay-controls">
+      <button id="r-exit" type="button" class="ghost dark">Back to evidence</button>
+      <button id="r-play" type="button" class="play">Play</button>
+      <input id="r-seek" type="range" min="0" max="1000" step="1" value="0" aria-label="Replay position">
+      <span id="r-tc" class="tc num">00:00:00 / 00:00:00</span>
+      <span id="r-clock" class="num r-clock"></span>
+      <span id="r-status" class="a-status dark" aria-live="polite"></span>
+    </div>
+  </div>
+
+  <!-- Start recording -->
+  <div id="start" class="modal-wrap" hidden>
+    <form id="start-form" class="modal" role="dialog" aria-labelledby="start-title" novalidate>
+      <div class="battenburg" aria-hidden="true"></div>
+      <div class="modal-body">
+        <p class="eyebrow" id="start-room"></p>
+        <h2 id="start-title" data-text="startDialog"></h2>
+
+        <fieldset class="modes">
+          <legend data-text="mode"></legend>
+          <label class="choice" id="choice-replay">
+            <input type="radio" name="mode" value="replay">
+            <span><strong data-text="modeReplay"></strong><em data-text="modeReplayHint"></em></span>
+          </label>
+          <label class="choice">
+            <input type="radio" name="mode" value="audio">
+            <span><strong data-text="modeAudio"></strong><em data-text="modeAudioHint"></em></span>
+          </label>
+          <p class="note" id="no-camera" data-text="noCamera" hidden></p>
+        </fieldset>
+
+        <div class="field ac">
+          <span data-text="interviewee"></span>
+          <input id="f-who" maxlength="96" autocomplete="off" data-ph="intervieweeHint" role="combobox" aria-autocomplete="list" aria-controls="who-results" aria-expanded="false">
+          <ul id="who-results" class="ac-list" role="listbox" hidden></ul>
+          <div id="who-linked" class="linked" hidden>
+            <span class="linked-text"><strong data-text="mdtLinked"></strong><em id="who-linked-meta"></em></span>
+            <button type="button" id="who-unlink" class="link-btn" data-text="unlink"></button>
+          </div>
+        </div>
+        <div class="field">
+          <span data-text="caseRef"></span>
+          <input id="f-case" maxlength="64" autocomplete="off" data-ph="caseRefHint">
+          <div id="case-picker" class="cases" hidden>
+            <p class="cases-head" id="cases-head"></p>
+            <ul id="case-list"></ul>
+          </div>
+        </div>
+        <div class="field">
+          <span data-text="officers"></span>
+          <ul class="chips" id="officer-list"></ul>
+          <div class="add-row">
+            <input id="f-officer" maxlength="64" autocomplete="off" data-ph="officerHint">
+            <button type="button" class="ghost" id="officer-add" data-text="add"></button>
+          </div>
+        </div>
+        <label class="field"><span data-text="solicitor"></span><input id="f-solicitor" maxlength="96" autocomplete="off" data-ph="solicitorHint"></label>
+        <label class="field"><span data-text="notes"></span><textarea id="f-notes" maxlength="1000" rows="3"></textarea></label>
+
+        <p class="err" id="start-err" role="alert" hidden></p>
+        <div class="modal-actions">
+          <button type="button" class="ghost" id="start-cancel" data-text="cancel"></button>
+          <button type="submit" class="rec-btn" id="start-go"><span class="rec-dot" aria-hidden="true"></span><span data-text="startButton"></span></button>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <!-- End recording -->
+  <div id="stop" class="modal-wrap" hidden>
+    <div class="modal narrow" role="dialog" aria-labelledby="stop-title">
+      <div class="battenburg" aria-hidden="true"></div>
+      <div class="modal-body">
+        <p class="eyebrow" id="stop-room"></p>
+        <h2 id="stop-title" data-text="confirmStopTitle"></h2>
+        <p class="lede" data-text="confirmStop"></p>
+        <div class="elapsed"><span data-text="elapsedLabel"></span><strong id="stop-time" class="num">00:00:00</strong></div>
+        <p class="err" id="stop-err" role="alert" hidden></p>
+        <div class="modal-actions">
+          <button type="button" class="ghost" id="stop-cancel" data-text="keepRecording"></button>
+          <button type="button" class="end-btn" id="stop-go" data-text="endButton"></button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <textarea id="clip" aria-hidden="true" tabindex="-1"></textarea>
+  <script src="app.js"></script>
+</body>
+</html>

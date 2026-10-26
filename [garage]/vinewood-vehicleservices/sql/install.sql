@@ -1,0 +1,52 @@
+CREATE TABLE IF NOT EXISTS vw_insurance_policies (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    policy_no VARCHAR(16) NOT NULL UNIQUE,
+    plate VARCHAR(12) NOT NULL,
+    plate_key VARCHAR(12) NOT NULL,
+    model VARCHAR(64),
+    holder_cid VARCHAR(64) NOT NULL,
+    holder_name VARCHAR(96),
+    cover VARCHAR(16) NOT NULL,
+    any_driver TINYINT(1) NOT NULL DEFAULT 0,
+    drivers LONGTEXT,
+    premium INT NOT NULL,
+    starts_at BIGINT NOT NULL,
+    expires_at BIGINT NOT NULL,
+    cancelled_at BIGINT NULL,
+    INDEX idx_plate (plate_key, expires_at),
+    INDEX idx_holder (holder_cid)
+);
+CREATE TABLE IF NOT EXISTS vw_mot_tests (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    test_no VARCHAR(16) NOT NULL UNIQUE,
+    plate VARCHAR(12) NOT NULL,
+    plate_key VARCHAR(12) NOT NULL,
+    model VARCHAR(64),
+    result VARCHAR(8) NOT NULL,
+    dangerous TINYINT(1) NOT NULL DEFAULT 0,
+    defects LONGTEXT,
+    advisories TEXT,
+    tester_cid VARCHAR(64),
+    tester_name VARCHAR(96),
+    garage VARCHAR(96),
+    mileage INT NULL,
+    created_at BIGINT NOT NULL,
+    expires_at BIGINT NULL,
+    INDEX idx_plate (plate_key, created_at)
+);
+CREATE TABLE IF NOT EXISTS vw_vehicle_tax (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    ref VARCHAR(16) NOT NULL UNIQUE,
+    plate VARCHAR(12) NOT NULL,
+    plate_key VARCHAR(12) NOT NULL,
+    keeper_cid VARCHAR(64) NOT NULL,
+    keeper_name VARCHAR(96),
+    sorn TINYINT(1) NOT NULL DEFAULT 0,
+    band VARCHAR(48),
+    amount INT NOT NULL DEFAULT 0,
+    starts_at BIGINT NOT NULL,
+    expires_at BIGINT NULL,
+    cancelled_at BIGINT NULL,
+    INDEX idx_plate (plate_key, cancelled_at),
+    INDEX idx_keeper (keeper_cid)
+);

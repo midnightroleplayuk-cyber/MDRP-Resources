@@ -1,0 +1,80 @@
+-- =====================================================================
+--  vinewood_licensing — `driving_licence` ox_inventory item definition
+--  =====================================================================
+--  Paste the two blocks BELOW into:
+--    [1]  `[ox]/ox_inventory/data/items.lua`  (OR  qbx-core/shared/items.lua)
+--    [2]  `[ox]/ox_inventory/modules/items/client.lua`  (the UseItem block)
+--
+--  The `export` line in block [1] is REQUIRED — it's what makes using the
+--  item from the inventory show the licence. Block [2] is only for older
+--  forks without client exports; don't use both.
+--  =====================================================================
+
+-- [1] ITEM DEFINITION — paste into ox_inventory/data/items.lua
+driving_licence = {
+    label = 'Driving Licence',
+    weight = 10,
+    stack = false,
+    close = true,
+    description = 'UK DVLA style photocard driving licence.',
+    client = {
+        image = 'driving_licence.png',
+        status = { 'expiry' },
+        export = 'vinewood_licensing.useLicence'
+    }
+},
+
+-- [2] (OPTIONAL) FALLBACK USE-ITEM — paste into ox_inventory: modules/items/client.lua
+-- Item('driving_licence', function(data, slot)
+--     if not slot?.metadata then return end
+--     exports.ox_inventory:useItem(data, function(dat)
+--         if dat then
+--             TriggerEvent('vinewood_licensing:client:showLicence', slot.metadata,
+--                 ('%s %s'):format(slot.metadata.firstname or '', slot.metadata.lastname or ''))
+--         end
+--     end)
+-- end)
+
+
+================================================================
+PROVISIONAL LICENCE (added)
+================================================================
+
+1) Add a second item to ox_inventory/data/items.lua:
+
+    ['provisional_licence'] = {
+        label = 'Provisional Driving Licence',
+        weight = 10,
+        stack = false,
+        close = true,
+        consume = 0,          -- REQUIRED: a licence is not used up when shown
+        consume = 0,          -- REQUIRED: a licence is not used up when shown
+        description = 'Provisional entitlement - must be accompanied',
+        client = {
+            image = 'driving_licence.png',
+            export = 'vinewood_licensing.useLicence'
+        }
+    },
+
+   (Uses the same export as the full licence - one export serves both items.)
+
+2) Photo storage via Fivemanage:
+
+   - Install screenshot-basic (https://github.com/citizenfx/screenshot-basic)
+     and ensure it before vinewood_licensing.
+   - Create an API token at fivemanage.com.
+   - Paste it into server/config.lua:
+
+        Config.Fivemanage = {
+            ApiKey = 'YOUR_FIVEMANAGE_TOKEN'
+        }
+
+   server/config.lua is a server_script, so it is never sent to clients.
+   (A 'fivemanage_key' convar still works as a fallback if you prefer it.)
+   If screenshot-basic is missing or the token is unset, the provisional is
+   still issued - it just falls back to the live in-game mugshot on the card,
+   and a warning is printed in the server console.
+
+3) Settings live in shared/config.lua under Config.Provisional
+   (price, payment account, whether it's required before exams, camera
+   distance/FOV for the photo booth, countdown length).
