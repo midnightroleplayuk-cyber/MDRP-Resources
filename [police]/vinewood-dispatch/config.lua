@@ -69,7 +69,7 @@ Config.Priorities = {
 -- UI / timings
 ---------------------------------------------------------------------
 Config.UI = {
-    position = 'top-right',  -- top-right | top-left | bottom-right | bottom-left
+    position = 'top-left',  -- top-right | top-left | bottom-right | bottom-left
     duration = 30,           -- seconds an alert stays on screen
     maxOnScreen = 4,
     -- grades that stay on screen until you attach, dismiss them or open the log (1 Immediate, 2 Priority, 3 Routine)
