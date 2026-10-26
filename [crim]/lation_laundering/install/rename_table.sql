@@ -1,0 +1,1 @@
+RENAME TABLE money_washing TO lation_laundering;
