@@ -1,0 +1,50 @@
+Use /cityhall command
+
+
+Entity sets:
+
+static_elevator
+conference_chairs
+conference_meeting_table
+eventroom_voting
+
+Ipls:(they are made so you can combine them and create your own event)
+
+p_prompt_sandy_cityhall_backtables
+p_prompt_sandy_cityhall_coffin_closed
+p_prompt_sandy_cityhall_coffin_opened
+p_prompt_sandy_cityhall_fences_backclosed
+p_prompt_sandy_cityhall_fences_backopened
+p_prompt_sandy_cityhall_funeral_chairs
+p_prompt_sandy_cityhall_funeral_picture
+p_prompt_sandy_cityhall_leaves
+p_prompt_sandy_cityhall_tables
+p_prompt_sandy_cityhall_wedding_chairs
+p_prompt_sandy_cityhall_wedding_spotlight
+p_prompt_sandy_cityhall_wedding_venue 
+
+
+Preconfigured IPLS for events if you are lazy to create your own:
+
+Dinner:
+p_prompt_sandy_cityhall_backtables
+p_prompt_sandy_cityhall_tables
+p_prompt_sandy_cityhall_fences_backopened
+
+Dinner with closed back
+p_prompt_sandy_cityhall_tables
+p_prompt_sandy_cityhall_fences_backclosed
+
+Wedding Ceremony:
+p_prompt_sandy_cityhall_fences_backclosed
+p_prompt_sandy_cityhall_wedding_chairs
+p_prompt_sandy_cityhall_wedding_spotlight
+p_prompt_sandy_cityhall_wedding_venue
+
+Funeral:
+p_prompt_sandy_cityhall_fences_backclosed
+p_prompt_sandy_cityhall_funeral_chairs
+p_prompt_sandy_cityhall_funeral_picture
+
+Add Leaves?:
+p_prompt_sandy_cityhall_leaves
