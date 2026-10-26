@@ -26,7 +26,7 @@ Config.Jobs = {             -- job names allowed to use the MDT
     ambulance = true,
 }
 Config.RequireOnDuty = true
-Config.Command       = 'emsmdt'
+Config.Command       = 'mhs_mdt'
 Config.Keybind       = 'F7'   -- false to disable
 Config.Item          = 'mhs_mdt'  -- e.g. 'ems_tablet' to require an item (ox_inventory / framework usable item)
 Config.TabletProp    = true
@@ -38,12 +38,33 @@ Config.TabletProp    = true
 -- supervisor: can view the audit log, amend finalised ePRFs and manage incidents
 -- A grade not listed uses the nearest listed grade below it.
 ---------------------------------------------------------------------
+
 Config.Ranks = {
-    [0] = { label = 'Paramedic',                       formulary = 'basic', prescribe = false, transfuse = false, hems = false, supervisor = false },
-    [1] = { label = 'Advanced Paramedic',              formulary = 'full',  prescribe = true,  transfuse = false, hems = false, supervisor = false },
-    [2] = { label = 'Critical Care Paramedic (HEMS)',  formulary = 'full',  prescribe = true,  transfuse = true,  hems = true,  supervisor = false },
-    [3] = { label = 'Clinical Team Leader',            formulary = 'full',  prescribe = true,  transfuse = true,  hems = true,  supervisor = true,  trainer = true },
+    [0]  = { label = 'Apprentice EMT',                 formulary = 'basic', prescribe = false, transfuse = true, hems = false, supervisor = false },
+    [1]  = { label = 'Student Nurse',                  formulary = 'basic', prescribe = false, transfuse = true, hems = false, supervisor = false },
+    [2]  = { label = 'EMT',                            formulary = 'basic', prescribe = false, transfuse = true, hems = false, supervisor = false },
+    [3]  = { label = 'Nurse',                          formulary = 'basic', prescribe = false, transfuse = true, hems = false, supervisor = false },
+    [4]  = { label = 'Paramedic',                      formulary = 'basic', prescribe = false, transfuse = true, hems = false, supervisor = false },
+    [5]  = { label = 'Advanced Paramedic',             formulary = 'full',  prescribe = true,  transfuse = true, hems = false, supervisor = false },
+    [6]  = { label = 'Doctor',                         formulary = 'full',  prescribe = true,  transfuse = true,  hems = false, supervisor = false },
+    [7]  = { label = 'HEMS - Crit Care Paramedic',     formulary = 'full',  prescribe = true,  transfuse = true,  hems = true,  supervisor = false },
+    [8]  = { label = 'HART - Advanced Paramedic',      formulary = 'full',  prescribe = true,  transfuse = true, hems = false, supervisor = false },
+    [9]  = { label = 'HEMS - Crit Care Doctor',        formulary = 'full',  prescribe = true,  transfuse = true,  hems = true,  supervisor = false },
+    [10] = { label = 'HART - Crit Care Doctor',        formulary = 'full',  prescribe = true,  transfuse = true,  hems = false, supervisor = false },
+    [11] = { label = 'HART Team Lead',                 formulary = 'full',  prescribe = true,  transfuse = true,  hems = false, supervisor = true,  trainer = true },
+    [12] = { label = 'HEMS Team Lead',                 formulary = 'full',  prescribe = true,  transfuse = true,  hems = true,  supervisor = true,  trainer = true },
+    [13] = { label = 'Ambulance Team Lead',            formulary = 'full',  prescribe = true,  transfuse = true,  hems = false, supervisor = true,  trainer = true },
+    [14] = { label = 'Training & Development',         formulary = 'full',  prescribe = true,  transfuse = true,  hems = true,  supervisor = true,  trainer = true },
+    [15] = { label = 'Hospital Operations Manager',   formulary = 'full',  prescribe = true,  transfuse = true,  hems = false, supervisor = true,  trainer = true },
+    [16] = { label = 'Ambulance Operations Manager',  formulary = 'full',  prescribe = true,  transfuse = true,  hems = true,  supervisor = true,  trainer = true },
+    [17] = { label = 'Human Resources',                formulary = 'basic', prescribe = false, transfuse = false, hems = false, supervisor = true },
+    [18] = { label = 'Director of Operations',         formulary = 'full',  prescribe = true,  transfuse = true,  hems = true,  supervisor = true,  trainer = true },
+    [19] = { label = 'Deputy Chief Medicial Officer', formulary = 'full',  prescribe = true,  transfuse = true,  hems = true,  supervisor = true,  trainer = true },
+    [20] = { label = 'Chief Medical Officer',         formulary = 'full',  prescribe = true,  transfuse = true,  hems = true,  supervisor = true,  trainer = true },
 }
+
+-- trainer = can sign off competencies and record courses (supervisors can too)
+
 -- trainer = can sign off competencies and record courses (supervisors can too)
 
 ---------------------------------------------------------------------
