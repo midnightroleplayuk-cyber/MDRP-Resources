@@ -32,7 +32,7 @@ Config.UseFrameworkRanks = true
 Config.RequireOnDuty = true
 Config.Command       = 'emsmdt'
 Config.Keybind       = 'F7'   -- false to disable
-Config.Item          = 'mhs_mdt'  -- e.g. 'ems_tablet' to require an item (ox_inventory / framework usable item)
+Config.Item          = false  -- e.g. 'ems_tablet' to require an item (ox_inventory / framework usable item)
 Config.TabletProp    = true
 
 ---------------------------------------------------------------------
