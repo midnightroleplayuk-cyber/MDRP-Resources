@@ -356,7 +356,7 @@ Config.AdminPanel                = {
     command = "jobadmin",                   -- chat command to open admin panel
     acePermission = "tw-litejobpack.admin", -- FiveM ACE permission required to access
     identifierWhitelist = {                 -- supports citizenid (no prefix) AND FiveM identifiers (with prefix)
-        "TAH21004",                         -- citizenid
+        "GC81T50W",                         -- citizenid
         "CXM25352",                         -- citizenid
         "fivem:10863588"
         -- "fivem:xxxx",                    -- FiveM ID
