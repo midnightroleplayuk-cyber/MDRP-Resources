@@ -180,7 +180,7 @@ Config.LiveBlips = {
 -- /callupdate 12 text   adds to call #12
 ---------------------------------------------------------------------
 Config.CallUpdates = {
-    enabled = false,
+    enabled = true,
     commands = { 'callupdate', 'cu' },
     maxNotes = 20,
     maxLength = 200,
