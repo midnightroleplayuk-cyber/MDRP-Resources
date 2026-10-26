@@ -5266,4 +5266,19 @@ return {
 },
 
 
+-- APEX Tape
+['police_tape'] = {
+    label = 'Police Tape',
+    weight = 100,
+    stack = true,
+    description = 'Police Tape',
+},
+['scissors'] = {
+    label = 'Scissors',
+    weight = 100,
+    stack = true,
+    description = 'A pair of scissors',
+},
+
+
 }

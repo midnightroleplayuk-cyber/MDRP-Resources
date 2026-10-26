@@ -20,7 +20,7 @@ Config.items = {
 -- Controls the game map and mini-map display
 -- When changing the map style, you will have to rejoin the server to see the effects
 Config.map = {
-    displayIslandOnGameMap = true, -- make false on launch
+    displayIslandOnGameMap = false, -- make false on launch
 
     -- 0 = default base game (Grayscale) style
     -- 1 = Color map style (Created by @MarDarVin)
