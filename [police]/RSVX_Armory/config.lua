@@ -26,7 +26,7 @@ Config.HistoryPageSize = 10
 Config.ServiceBelow = 20
 
 Config.AutoReturn = {
-    offDuty = true,
+    offDuty = false,
     grace = 60,
     interval = 15,
 }
