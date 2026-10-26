@@ -7,6 +7,12 @@ return {
 			ammoname = 'ammo-rifle2',
 		},
 
+		['WEAPON_ACIDPACKAGE'] = {
+            label = 'Newspaper',
+            weight = 0,
+            throwable = true
+        },	
+
 		['WEAPON_SNOWLAUNCHER'] = {
 			label = 'Snowball Launcher',
 			weight = 1000,
@@ -2637,10 +2643,5 @@ return {
 			weight = 1,
 		},	
 
-	['WEAPON_ACIDPACKAGE'] = {
-    label = 'Newspaper',
-    weight = 0,
-    throwable = true
-        },	
 	}
 }
