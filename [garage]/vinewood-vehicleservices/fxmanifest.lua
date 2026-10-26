@@ -5,7 +5,7 @@ lua54 'yes'
 name 'vinewood-vehicleservices'
 author 'Vinewood Studios'
 description 'Vehicle services: motor insurance (NPC brokers), MOT testing (mechanic job) and vehicle tax/SORN, with vinewood-mdt integration'
-version '1.5.0'
+version '1.5.1'
 
 shared_scripts {
     '@ox_lib/init.lua',

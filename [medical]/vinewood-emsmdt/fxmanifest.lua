@@ -5,7 +5,7 @@ lua54 'yes'
 name 'vinewood-emsmdt'
 author 'Vinewood Studios'
 description 'Ambulance service MDT: incidents, ePRFs, patient records, admissions, training and police injury reports'
-version '1.5.0'
+version '1.5.1'
 
 shared_scripts {
     '@ox_lib/init.lua',

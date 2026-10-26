@@ -2,13 +2,13 @@ Config                = Config or {}
 
 Config.Framework      = "qb"      -- "qb" | "oldqb" | "esx" | "oldesx"  | "vrp" | "vrp2" | "tmc" | "standalone"
 Config.Inventory      =
-"qb_inventory"                    -- "qb_inventory" | "esx_inventory" | "ox_inventory" | "qs_inventory" | "ps-inventory" | "codem-inventory" | "tgiann-inventory" | "core_inventory" | "origen_inventory"
+"ox_inventory"                    -- "qb_inventory" | "esx_inventory" | "ox_inventory" | "qs_inventory" | "ps-inventory" | "codem-inventory" | "tgiann-inventory" | "core_inventory" | "origen_inventory"
 Config.MoneyAccount   = "cash"    -- "cash" = pay to cash | "bank" = pay to bank account
 
 Config.SQL            = "oxmysql" -- SQL resource name: "oxmysql" | "mysql-async" | "ghmattimysql"
 Config.Locale         = "en"      -- default language code (must match a value in Config.AvailableLocales below)
 Config.CurrencySymbol =
-"$"                               -- currency symbol for client-side UI display (notifications, HUD, job end screen)
+"£"                               -- currency symbol for client-side UI display (notifications, HUD, job end screen)
 
 
 Config.Clothes                   = {
@@ -124,7 +124,7 @@ Config.FinishModal               = {
 -- │  the mode it is running in.                                                │
 -- └─────────────────────────────────────────────────────────────────────────────┘
 Config.TargetSystem              = {
-    enabled = false,        -- true = use target system (ox_target/qb-target) | false = use proximity key press
+    enabled = true,        -- true = use target system (ox_target/qb-target) | false = use proximity key press
     resource = "ox_target", -- "auto", "ox_target", "qb-target"
     icon = "fas fa-briefcase",
     jobCenterIcon = "fas fa-building",

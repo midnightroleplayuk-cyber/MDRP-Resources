@@ -121,6 +121,39 @@ local function formatExpiry(iso)
     return d and (d .. ' ' .. t .. ' UTC') or tostring(iso)
 end
 
+-- Card shown in the connecting screen (queue, bans, allowlist), styled from Config.ConnectCards.
+-- FiveM renders Adaptive Cards version 1.0 only, so this sticks to 1.0 elements and properties.
+-- o = { title, headline, color, size, sub, facts, help, links, close }; o.links go before the configured ones.
+function HelmConnectCard(o)
+    local cc = Config.ConnectCards or {}
+    -- helm-card.png is sized for the card, since 1.0 cannot set an image's pixel size.
+    local logo = cc.Logo or ((Config.PanelUrl:gsub('/+$', '')) .. '/helm-card.png')
+    local title = cc.ServerName or o.title
+    local body = { { type = 'Image', url = logo, size = 'auto', horizontalAlignment = 'center' } }
+    if title then
+        body[#body + 1] = { type = 'TextBlock', text = title, size = 'large', weight = 'bolder', horizontalAlignment = 'center', wrap = true, spacing = 'medium' }
+    end
+    body[#body + 1] = { type = 'TextBlock', text = o.headline, size = o.size or 'large', weight = 'bolder', color = o.color, horizontalAlignment = 'center', wrap = true, spacing = 'medium' }
+    if o.sub then body[#body + 1] = { type = 'TextBlock', text = o.sub, isSubtle = true, horizontalAlignment = 'center', spacing = 'none' } end
+    if o.facts then body[#body + 1] = { type = 'FactSet', facts = o.facts, spacing = 'medium' } end
+    if o.help then body[#body + 1] = { type = 'TextBlock', text = o.help, wrap = true, isSubtle = true, horizontalAlignment = 'center', spacing = 'medium' } end
+
+    local actions = {}
+    for _, l in ipairs(o.links or {}) do actions[#actions + 1] = { type = 'Action.OpenUrl', title = l.label, url = l.url } end
+    for _, l in ipairs(cc.Links or {}) do
+        if l.label and l.url then actions[#actions + 1] = { type = 'Action.OpenUrl', title = l.label, url = l.url } end
+    end
+    if o.close then actions[#actions + 1] = { type = 'Action.Submit', title = 'Close', data = { action = 'close' } } end
+
+    return json.encode({
+        type = 'AdaptiveCard',
+        ['$schema'] = 'http://adaptivecards.io/schemas/adaptive-card.json',
+        version = '1.0',
+        body = body,
+        actions = #actions > 0 and actions or nil,
+    })
+end
+
 -- How long the rejection card stays up before the connection is closed anyway, in milliseconds.
 local CARD_SECONDS = 30
 
@@ -128,7 +161,7 @@ local CARD_SECONDS = 30
 -- The player closes it, or it closes itself after CARD_SECONDS; FiveM then shows the plain message.
 -- FiveM renders Adaptive Cards version 1.0 only, so the card sticks to 1.0 elements and properties.
 -- Turn off with Config.BrandedRejections = false.
-local function rejectWithCard(deferrals, title, facts, help, plain)
+local function rejectWithCard(deferrals, title, facts, help, plain, links)
     if Config.BrandedRejections == false then
         deferrals.done(plain)
         return
@@ -142,22 +175,8 @@ local function rejectWithCard(deferrals, title, facts, help, plain)
     end
 
     local ok, err = pcall(function()
-        local body = {
-            -- helm-card.png is sized for the card, since 1.0 cannot set an image's pixel size.
-            { type = 'Image', url = (Config.PanelUrl:gsub('/+$', '')) .. '/helm-card.png', size = 'auto', horizontalAlignment = 'center' },
-            { type = 'TextBlock', text = title, size = 'large', weight = 'bolder', color = 'attention', horizontalAlignment = 'center', wrap = true, spacing = 'large' },
-        }
-        if facts then body[#body + 1] = { type = 'FactSet', facts = facts, spacing = 'medium' } end
-        body[#body + 1] = { type = 'TextBlock', text = help, wrap = true, isSubtle = true, horizontalAlignment = 'center', spacing = 'medium' }
-
-        local card = {
-            type = 'AdaptiveCard',
-            ['$schema'] = 'http://adaptivecards.io/schemas/adaptive-card.json',
-            version = '1.0',
-            body = body,
-            actions = { { type = 'Action.Submit', title = 'Close', data = { action = 'close' } } },
-        }
-        deferrals.presentCard(json.encode(card), function() finish() end)
+        local card = HelmConnectCard({ headline = title, color = 'attention', facts = facts, help = help, links = links, close = true })
+        deferrals.presentCard(card, function() finish() end)
     end)
     if not ok then
         print(('^3[helm]^7 could not show the rejection card (%s); using the plain message'):format(tostring(err)))
@@ -269,11 +288,14 @@ local function checkAccess(src, deferrals)
         }
         if res.data.banRef then facts[#facts + 1] = { title = 'Ban ID', value = res.data.banRef } end
         local help = 'If you think this is a mistake, contact the server staff.'
+        local links
         if res.data.appealUrl then
-            help = ('To appeal, go to %s and sign in with Discord. Your ban ID is %s.'):format(res.data.appealUrl, res.data.banRef or '')
+            -- The link carries the ban ID, so the appeal form opens with it filled in.
+            help = 'Think this is a mistake? Press Appeal and sign in with Discord.'
+            links = { { label = 'Appeal', url = res.data.appealUrl } }
             plain = plain .. ' Appeal at ' .. res.data.appealUrl .. ' (ban ID ' .. (res.data.banRef or '') .. ').'
         end
-        rejectWithCard(deferrals, 'You are banned from this server', facts, help, plain)
+        rejectWithCard(deferrals, 'You are banned from this server', facts, help, plain, links)
         return
     end
 

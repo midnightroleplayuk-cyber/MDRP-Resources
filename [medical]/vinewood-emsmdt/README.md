@@ -23,6 +23,18 @@ Advanced Paramedics and above can prescribe Paracetamol, Tramadol, Vicodin, Xana
 - Uncollected prescriptions can be cancelled by the prescriber or a supervisor.
 - Items are given through ox_inventory, qs-inventory, qb-inventory or ESX, whichever is running.
 
+## Jobs and ranks
+- **Jobs:** the MDT opens for any job in `Config.Jobs`, plus every job your framework marks as EMS (`type = 'ems'` in QBCore / Qbox) when `Config.AutoEmsJobs` is on.
+- **Rank names:** these come from your framework's job grades (`Config.UseFrameworkRanks`), so the MDT shows exactly what your jobs file says.
+- **Scope:** `Config.Ranks` only decides clinical scope. Key it by grade number (`[2] = {...}`) or by grade name (`['paramedic'] = {...}`). A name match wins. Otherwise a grade uses the nearest numbered entry at or below it.
+- **Checking it:** on start, the server console lists every EMS job grade and the scope it gets, for example:
+```
+[vinewood-emsmdt] ambulance grades:
+    0  Recruit                      -> Paramedic (limited formulary)
+    1  Paramedic                    -> Advanced Paramedic (full formulary, prescribe)
+```
+If a grade gets the wrong scope, add or change its entry in `Config.Ranks`.
+
 ## Clinical scope
 `Config.Ranks` maps job grades to scope. The defaults are:
 - Paramedic: Epinephrine, Morphine, Naloxone and Paracetamol only. No prescribing or blood.

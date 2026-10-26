@@ -61,13 +61,17 @@ Config.RetryCooldownSeconds = 0
 
 Config.QuestionCountPerExam = 10
 
+-- Speed unit used everywhere: the test HUD, the menu and the MaxSpeed values
+-- in Config.VehicleCategories below. 'mph' or 'kmh'.
+Config.SpeedUnit = 'mph'
+
 Config.VehicleCategories = {
     car = {
         Label = 'Car (B)',
         Enabled = true,
-        VehicleModel = 'sultanrs',
+        VehicleModel = 'remus',
         VehicleSpawn = vector4(219.05, -1375.71, 30.56, 209.76),
-        MaxSpeed = 80,
+        MaxSpeed = 60,   -- in Config.SpeedUnit
         TimeLimitSeconds = 300,
         MaxMistakesTheory = 3,
         MaxMistakesPractical = 5
@@ -77,17 +81,17 @@ Config.VehicleCategories = {
         Enabled = true,
         VehicleModel = 'bati',
         VehicleSpawn = vector4(219.05, -1375.71, 30.56, 209.76),
-        MaxSpeed = 90,
+        MaxSpeed = 60,   -- in Config.SpeedUnit
         TimeLimitSeconds = 300,
         MaxMistakesTheory = 3,
         MaxMistakesPractical = 5
     },
     truck = {
         Label = 'Truck (C)',
-        Enabled = false,
+        Enabled = true,
         VehicleModel = 'packer',
         VehicleSpawn = vector4(219.05, -1375.71, 30.56, 209.76),
-        MaxSpeed = 70,
+        MaxSpeed = 54,   -- in Config.SpeedUnit
         TimeLimitSeconds = 420,
         MaxMistakesTheory = 4,
         MaxMistakesPractical = 6
@@ -108,13 +112,13 @@ Config.Provisional = {
         Enabled = true,
         -- API key lives in server/config.lua (server-only, never sent to clients)
         Encoding = 'png',       -- png | jpg | webp
-        Quality = 0.92,
+        Quality = 1.0,
         CountdownSeconds = 3,
         -- the picture is cropped and shrunk before leaving the client
         Output = {
             Width = 420,
             Height = 540,
-            Quality = 0.92
+            Quality = 1.0
         },
         Camera = {
             Distance = 0.95,     -- how far in front of the face (higher = further back)

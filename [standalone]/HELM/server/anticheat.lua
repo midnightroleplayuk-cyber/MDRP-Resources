@@ -65,15 +65,32 @@ local function u32(n) return (tonumber(n) or 0) % 4294967296 end
 local BLACKLIST = {}
 for _, name in ipairs(cfg.BlacklistedWeapons or {}) do BLACKLIST[u32(GetHashKey(name))] = name end
 
+local REVIVE_GRACE = 20000
+local downUntil = {}   -- src -> game timer; invincibility before this is the ambulance script's, not a cheat
+local esxDead = {}     -- src -> true between ESX's death and spawn events
+
+-- Downed or dead, by whichever signal the server's medical script gives.
+local function isDown(src, ped, char)
+    if GetEntityHealth(ped) <= 0 or esxDead[src] or (char and char.down) then return true end
+    local st = Player(src).state -- wasabi_ambulance, osp_ambulance and others use state bags
+    return st.isDead == true or st.dead == true or st.inLaststand == true or st.isDown == true
+end
+
+AddEventHandler('esx:onPlayerDeath', function() esxDead[source] = true end)
+AddEventHandler('esx:onPlayerSpawn', function() esxDead[source] = nil end)
+
 local function check(src)
     local ped = GetPlayerPed(src)
     if not ped or ped == 0 then return end
     local now = GetGameTimer()
     local settled = now - (joinedAt[src] or now) > 60000 and now > (graceUntil[src] or 0)
-    local loaded = Bridge.Character(src) ~= nil -- past character select, where scripts hide and freeze the ped
+    local char = Bridge.Character(src)
+    local loaded = char ~= nil -- past character select, where scripts hide and freeze the ped
 
     if on('GodMode') and loaded then
-        local god = GetPlayerInvincible(src) and not (HelmIsFrozen and HelmIsFrozen(src))
+        -- Ambulance scripts make downed and dead players invincible, and often keep it a few seconds after a revive.
+        if isDown(src, ped, char) then downUntil[src] = now + REVIVE_GRACE end
+        local god = GetPlayerInvincible(src) and not (HelmIsFrozen and HelmIsFrozen(src)) and now > (downUntil[src] or 0)
         godSamples[src] = god and (godSamples[src] or 0) + 1 or 0
         if godSamples[src] >= 5 then report(src, 'godmode', 'high', 'has been invincible (god mode) for over 15 seconds') end
     end
@@ -126,6 +143,7 @@ AddEventHandler('playerJoining', function() joinedAt[source] = GetGameTimer() en
 AddEventHandler('playerDropped', function()
     local src = source
     lastReport[src], lastPos[src], hidden[src], jumps[src], joinedAt[src], graceUntil[src], godSamples[src] = nil, nil, nil, nil, nil, nil, nil
+    downUntil[src], esxDead[src] = nil, nil
 end)
 
 CreateThread(function()

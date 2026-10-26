@@ -3,7 +3,7 @@ Config = {}
 Config.Debug = false
 
 -- 'auto' detects qbx_core, qb-core or es_extended
-Config.Framework = 'qbx_core'
+Config.Framework = 'auto'
 
 ---------------------------------------------------------------------
 -- Branding (all shown in the MDT; change freely per server)
@@ -25,10 +25,14 @@ Config.Branding = {
 Config.Jobs = {             -- job names allowed to use the MDT
     ambulance = true,
 }
+-- Also allow every job your framework marks as EMS (QBCore / Qbox jobs with type = 'ems')
+Config.AutoEmsJobs = true
+-- Show rank names from your framework's job grades. false = use the labels in Config.Ranks.
+Config.UseFrameworkRanks = true
 Config.RequireOnDuty = true
-Config.Command       = 'mhsmdt'
+Config.Command       = 'emsmdt'
 Config.Keybind       = 'F7'   -- false to disable
-Config.Item          = 'mhs_mdt'  -- e.g. 'ems_tablet' to require an item (ox_inventory / framework usable item)
+Config.Item          = false  -- e.g. 'ems_tablet' to require an item (ox_inventory / framework usable item)
 Config.TabletProp    = true
 
 ---------------------------------------------------------------------
@@ -36,9 +40,11 @@ Config.TabletProp    = true
 -- formulary: 'basic' = only medications marked basic=true below, 'full' = everything
 -- prescribe: can issue prescriptions; transfuse: can give blood products
 -- supervisor: can view the audit log, amend finalised ePRFs and manage incidents
--- A grade not listed uses the nearest listed grade below it.
+-- Keys can be grade numbers ([2] = ...) or your framework's grade names (['paramedic'] = ...).
+-- A grade name match wins; otherwise a grade uses the nearest listed number at or below it.
+-- With UseFrameworkRanks, `label` is only a fallback; the MDT shows your framework's grade name.
+-- The server console lists your job's grades and the scope each one gets on start.
 ---------------------------------------------------------------------
-
 Config.Ranks = {
     [0]  = { label = 'Apprentice EMT',                 formulary = 'basic', prescribe = false, transfuse = false, hems = false, supervisor = false },
     [1]  = { label = 'Student Nurse',                  formulary = 'basic', prescribe = false, transfuse = false, hems = false, supervisor = false },
@@ -55,14 +61,13 @@ Config.Ranks = {
     [12] = { label = 'HEMS Team Lead',                 formulary = 'full',  prescribe = true,  transfuse = true,  hems = true,  supervisor = true,  trainer = true },
     [13] = { label = 'Ambulance Team Lead',            formulary = 'full',  prescribe = true,  transfuse = true,  hems = false, supervisor = true,  trainer = true },
     [14] = { label = 'Training & Development',         formulary = 'full',  prescribe = true,  transfuse = true,  hems = true,  supervisor = true,  trainer = true },
-    [15] = { label = 'Hospital Operations Manager',   formulary = 'full',  prescribe = true,  transfuse = true,  hems = false, supervisor = true,  trainer = true },
-    [16] = { label = 'Ambulance Operations Manager',  formulary = 'full',  prescribe = true,  transfuse = true,  hems = true,  supervisor = true,  trainer = true },
-    [17] = { label = 'Human Resources',                formulary = 'basic', prescribe = false, transfuse = false, hems = false, supervisor = true },
+    [15] = { label = 'Hospital Operations Manager',    formulary = 'full',  prescribe = true,  transfuse = true,  hems = false, supervisor = true,  trainer = true },
+    [16] = { label = 'Ambulance Operations Manager',   formulary = 'full',  prescribe = true,  transfuse = true,  hems = true,  supervisor = true,  trainer = true },
+    [17] = { label = 'Human Resources',                formulary = 'basic', prescribe = false, transfuse = false, hems = false, supervisor = true,  trainer = true },
     [18] = { label = 'Director of Operations',         formulary = 'full',  prescribe = true,  transfuse = true,  hems = true,  supervisor = true,  trainer = true },
-    [19] = { label = 'Deputy Chief Medicial Officer', formulary = 'full',  prescribe = true,  transfuse = true,  hems = true,  supervisor = true,  trainer = true },
-    [20] = { label = 'Chief Medical Officer',         formulary = 'full',  prescribe = true,  transfuse = true,  hems = true,  supervisor = true,  trainer = true },
+    [19] = { label = 'Deputy Chief Medicial Officer',  formulary = 'full',  prescribe = true,  transfuse = true,  hems = true,  supervisor = true,  trainer = true },
+    [20] = { label = 'Chief Medical Officer',          formulary = 'full',  prescribe = true,  transfuse = true,  hems = true,  supervisor = true,  trainer = true },
 }
-
 -- trainer = can sign off competencies and record courses (supervisors can too)
 
 ---------------------------------------------------------------------
@@ -185,8 +190,9 @@ Config.UnitStatuses = {
 }
 
 Config.Hospitals = {
-    { id = 'burton', label = 'MHS Burton Hospital', coords = vec3(-356.14, -105.32, 37.74) },
-    { id = 'paleto',  label = 'MHS Paleto Bay Medical Centre',    coords = vec3(-255.7, 6318.66, 31.45) },
+    { id = 'pillbox', label = 'Pillbox Hill Medical Centre', coords = vec3(298.6, -584.5, 43.3) },
+    { id = 'sandy',   label = 'Sandy Shores Medical Centre',  coords = vec3(1839.3, 3672.9, 34.3) },
+    { id = 'paleto',  label = 'Paleto Bay Medical Centre',    coords = vec3(-247.8, 6331.2, 32.4) },
 }
 
 Config.AuditReasons = {

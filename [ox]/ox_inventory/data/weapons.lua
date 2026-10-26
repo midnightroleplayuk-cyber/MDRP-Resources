@@ -8,8 +8,8 @@ return {
 		},
         
 		['WEAPON_PRESSURE1'] = {
-    label = 'Pressure Washer',
-    weight = 0,
+   		label = 'Pressure Washer',
+    	weight = 0,
         },
 		
 		['WEAPON_ACIDPACKAGE'] = {

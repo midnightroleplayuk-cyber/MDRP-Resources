@@ -18,7 +18,7 @@ Config.buildingRadius = 30.0   -- Radius around the building that counts as "nea
 --  Furniture
 -- =======================================================
 
-Config.furniture = true   -- true = load the furniture entity sets on every floor
+Config.furniture = false   -- true = load the furniture entity sets on every floor
 
 -- Interior archetypes that make up the interiors
 Config.furnitureArchetypes = {
