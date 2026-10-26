@@ -123,7 +123,7 @@ Config.Video = {
 
 -- Interview room seats placed with /interviewadmin. Players target a seat to sit down.
 Config.Seats = {
-    Enabled = true,
+    Enabled = false,
     Max = 12,                                      -- per room
     Scenario = 'PROP_HUMAN_SEAT_CHAIR_MP_PLAYER',  -- keep this in Config.Replay.Scenarios so replays show it
     -- Used if the scenario above doesn't start (some MLO spots won't take it). Keep it in Config.Replay.Anims.
