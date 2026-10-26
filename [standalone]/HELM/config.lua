@@ -35,7 +35,7 @@ Config.SyncSeconds = 120
 -- If true, players who are not allowlisted in the panel are refused at connect. With Discord role allowlisting
 -- set up on the panel (Servers page), players who lose the role while playing are kicked with "Whitelist revoked".
 -- While on, nobody can join if the panel can't be reached, because the allowlist can't be checked.
-Config.EnforceAllowlist = false
+Config.EnforceAllowlist = true
 
 -- Connect queue. When the server is full (sv_maxclients), players wait in a queue instead of being refused.
 -- Order: anyone reconnecting within RejoinMinutes of leaving goes to the front, then players with priority points
@@ -54,10 +54,10 @@ Config.Queue = {
 -- Look of the cards in the connecting screen: the queue, bans and "not allowlisted".
 Config.ConnectCards = {
     Logo = nil,        -- image URL; nil = the Helm logo. A wide PNG around 400x120 looks best.
-    ServerName = nil,  -- shown under the logo, e.g. 'Midnight RP'
+    ServerName = Midnight RP,  -- shown under the logo, e.g. 'Midnight RP'
     -- Buttons on every card, opened in the player's browser. Up to 3 fit (ban cards add a Close button).
     Links = {
-        -- { label = 'Discord', url = 'https://discord.gg/yourserver' },
+         { label = 'Discord', url = 'https://discord.gg/uwJqgwf6pC' },
         -- { label = 'Store', url = 'https://yourserver.tebex.io' },
         -- Ban cards already get an Appeal button to the panel's appeal page, with the ban ID filled in.
     },
@@ -94,7 +94,7 @@ Config.ReportCommand = 'report'
 -- Refuse players connecting from the same device as a banned player (hardware tokens). Off by default: shared
 -- or family PCs can match, so staff are notified instead and can decide. Shared accounts (Discord, Steam, ...)
 -- are always refused.
-Config.BlockBanEvasion = false
+Config.BlockBanEvasion = true
 
 -- Banned or non-allowlisted players see a card (styled by Config.ConnectCards) with the details while connecting.
 -- Set to false for FiveM's plain text message only.
