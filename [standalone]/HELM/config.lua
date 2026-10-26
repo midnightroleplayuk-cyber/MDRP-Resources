@@ -54,7 +54,7 @@ Config.Queue = {
 -- Look of the cards in the connecting screen: the queue, bans and "not allowlisted".
 Config.ConnectCards = {
     Logo = nil,        -- image URL; nil = the Helm logo. A wide PNG around 400x120 looks best.
-    ServerName = Midnight RP,  -- shown under the logo, e.g. 'Midnight RP'
+    ServerName = 'Midnight RP',  -- shown under the logo, e.g. 'Midnight RP'
     -- Buttons on every card, opened in the player's browser. Up to 3 fit (ban cards add a Close button).
     Links = {
          { label = 'Discord', url = 'https://discord.gg/uwJqgwf6pC' },
