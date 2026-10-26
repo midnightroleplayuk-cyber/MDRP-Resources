@@ -134,7 +134,7 @@ Config.QBCore = {
     -- List your items below you want to hard-assign values too
     -- Be sure to follow the format below
     items = {
-        ['markedbills'] = 500,
+        ['black_money'] = 500,
         -- ['cashrolls'] = 250,
         -- Add more items here following the same format above
     }
