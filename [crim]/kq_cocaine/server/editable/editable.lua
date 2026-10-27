@@ -47,15 +47,15 @@ end
     --return true
 --end
 
-function AddPlayerItem(player, item, amount)
-    if not CementAllowed(player, item) then return false end
-    return exports.kq_link:AddPlayerItem(player, item, amount or 1)
-end
+--function AddPlayerItem(player, item, amount)
+    --if not CementAllowed(player, item) then return false end
+    --return exports.kq_link:AddPlayerItem(player, item, amount or 1)
+--end
 
-function AddPlayerItemToFit(player, item, amount)
-    if not CementAllowed(player, item) then return false end
-    return exports.kq_link:AddPlayerItemToFit(player, item, amount or 1)
-end
+--function AddPlayerItemToFit(player, item, amount)
+    --if not CementAllowed(player, item) then return false end
+    --return exports.kq_link:AddPlayerItemToFit(player, item, amount or 1)
+--end
 
 
 --
