@@ -223,28 +223,28 @@ SoccerFields = {
                 minZ = 30.91,
                 maxZ = 95.91,
             }),
-        GoaleeZoneRed = createBoxZone(vector3(744.67, -220.58, 66.11), 20.6, 8.8,
+        GoaleeZoneRed = createBoxZone(vector3(366.95, -2101.55, 17.42), 20.6, 8.8,
             { -- Polyzone for the red team goalee area (where the goalee can use their hands)
                 name = "default_field_goaleered",
                 heading = 334,
                 minZ = 65.11,
                 maxZ = 69.11,
             }),
-        GoaleeZoneBlue = createBoxZone(vector3(798.15, -247.13, 66.11), 20.0, 7.6,
+        GoaleeZoneBlue = createBoxZone(vector3(346.07, -2080.94, 17.42), 20.0, 7.6,
             { -- Polyzone for the blue team goalee area (where the goalee can use their hands)
                 name = "default_field_goaleeblue",
                 heading = 333,
                 minZ = 65.11,
                 maxZ = 69.11
             }),
-        RedTeamGoalZone = createBoxZone(vector3(740.98, -218.68, 66.11), 7.4, 0.4,
+        RedTeamGoalZone = createBoxZone(vec3(366.95, -2101.55, 17.42), 7.4, 0.4,
             { -- Polyzone for the red team goal (where the ball must be to score)
                 name = "default_field_goalred",
                 heading = 334,
                 minZ = 64.11,
                 maxZ = 68.11,
             }),
-        BlueTeamGoalZone = createBoxZone(vector3(801.7, -248.6, 66.11), 7.4, 0.4,
+        BlueTeamGoalZone = createBoxZone(vector3(346.07, -2080.94, 17.42), 7.4, 0.4,
             { -- Polyzone for the blue team goal (where the ball must be to score)
                 name = "default_field_goalblue",
                 heading = 333,
