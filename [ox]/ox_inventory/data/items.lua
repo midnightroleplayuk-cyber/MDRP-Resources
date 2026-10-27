@@ -5268,8 +5268,9 @@ return {
 -- New Tape
 ['police_tape'] = {
     label = 'Police Tape',
-    weight = 300,
+    weight = 200,
     stack = true,
+    close =true,
     description = 'Emergency Tape',
 },
 

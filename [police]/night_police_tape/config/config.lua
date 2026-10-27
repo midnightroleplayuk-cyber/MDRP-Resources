@@ -40,7 +40,7 @@ Config.PermissionRoles = {
 
 Config.Item = {
     Enabled = true,
-    System = 'auto',
+    System = 'ox',
     Name = 'police_tape',
     RemoveOnPlace = false,   -- take one item when a tape is hung
     ReturnOnRemove = false,  -- give it back when that player takes the tape down. Only applies if RemoveOnPlace is true.
