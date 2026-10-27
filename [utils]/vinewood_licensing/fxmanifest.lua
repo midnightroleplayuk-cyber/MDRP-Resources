@@ -3,7 +3,7 @@ game 'gta5'
 
 name 'vinewood_licensing'
 author 'Vinewood Studios'
-version '2.0.3'
+version '2.0.4'
 description 'Vinewood Licensing - UK DVLA style licensing for Qbox: theory, practical, provisional, photocard, points and bans'
 
 lua54 'yes'
@@ -39,18 +39,13 @@ server_scripts {
     'server/version.lua'
 }
 
--- ---------------------------------------------------------------
---  Cfx asset escrow
---  Everything listed below stays readable and editable after the
---  asset is escrowed. Everything else is encrypted.
--- ---------------------------------------------------------------
 escrow_ignore {
     'shared/config.lua',
-    'bridge/*.lua',               -- framework/inventory adapters
-    'shared/config.lua',          -- all settings, theory questions, test routes
-    'server/config.lua',          -- Fivemanage API key
-    'locales/*.json',             -- translations
-    'web/css/config.css',         -- UI colours
+    'server/config.lua',
+    'bridge/*.lua',
+    'locales/*.json',
+    'web/css/config.css',
+    'COMPATIBILITY.md',
     'EXPORTS.md',
     'MIGRATION.md',
     'INSTALL-driving_licence-item.txt'

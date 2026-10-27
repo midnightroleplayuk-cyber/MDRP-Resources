@@ -30,7 +30,7 @@ end
 Config.Insurance = {
     brokers = {
         {
-            label = 'Vinewood Insurance Brokers',
+            label = 'Ministry of Transport',  -- the broker's name
             coords = vec4(-1083.05, -245.86, 37.76, 206.0),
             ped = 'a_m_y_business_02',
             blip = { sprite = 408, colour = 2, scale = 0.7 },

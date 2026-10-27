@@ -18,15 +18,48 @@ function GetPlayerItemCount(player, item, meta)
     return data.count or data.amount or 0
 end
 
+--function AddPlayerItem(player, item, amount, meta)
+    --amount = amount or 1
+
+    --if not exports['ox_inventory']:CanCarryItem(player, item, amount, meta) then
+        --return false
+    --end
+
+    --return exports['ox_inventory']:AddItem(player, item, amount, meta)
+--end
+
+
+-- limit cement test 
+
+local CEMENT_COOLDOWN = 10 * 60 -- seconds between kq_cocaine cement pickups per player
+local lastCement = {}
+
 function AddPlayerItem(player, item, amount, meta)
     amount = amount or 1
 
-    if not exports['ox_inventory']:CanCarryItem(player, item, amount, meta) then
+    -- only kq_cocaine cement is rate-limited; every other item/resource is untouched
+    if item == 'cement' and GetInvokingResource() == 'kq_cocaine' then
+        local id = GetPlayerIdentifierByType(player, 'license') or player
+        local left = (lastCement[id] or 0) + CEMENT_COOLDOWN - os.time()
+        if left > 0 then
+            TriggerClientEvent('ox_lib:notify', player, {
+                type = 'error',
+                description = ('You can pick up more cement in %d min'):format(math.ceil(left / 60)),
+            })
+            return false
+        end
+        if not exports['ox_inventory']:CanCarryItem(player, item, amount, meta) then
+            return false
+        end
+        lastCement[id] = os.time()
+    elseif not exports['ox_inventory']:CanCarryItem(player, item, amount, meta) then
         return false
     end
 
     return exports['ox_inventory']:AddItem(player, item, amount, meta)
 end
+
+-- limit cement test 
 
 function SetItemDurability(player, slot, durability)
     local success, response = exports['ox_inventory']:SetDurability(player, slot, durability)

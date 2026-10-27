@@ -10,7 +10,7 @@ local MechanicJob = {
 
     npc = {
         enabled = true, -- true = spawn NPC | false = no NPC
-        coords = vector4(-68.9, -1331.45, 29.27, 175.71),
+        coords = vector4(-174.78, -1273.2, 32.6, 91.27),
         model = "s_m_y_ammucity_01",
         scenario = "WORLD_HUMAN_WELDING",
         interaction = {

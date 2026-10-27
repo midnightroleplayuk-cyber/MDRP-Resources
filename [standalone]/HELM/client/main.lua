@@ -328,7 +328,34 @@ RegisterNetEvent('helm:client:heal', function()
     SetPedArmour(ped, 100)
     ClearPedBloodDamage(ped)
     ResetPedVisibleDamage(ped)
+    HelmClearOspInjuries()
 end)
+
+-- OSP Ambulance keeps wounds, bleeding, fractures and vitals in the BodyDamage state bag, and keeps draining health
+-- while they're there. Reset them to OSP's healthy defaults (osp-development.gitbook.io, Player Statebag).
+function HelmClearOspInjuries()
+    if GetResourceState('osp_ambulance') ~= 'started' then return end
+    local d = LocalPlayer.state.BodyDamage
+    if type(d) ~= 'table' then return end
+    d.Pain, d.Pulse, d.Temp, d.Conscious = 0, 80, 37.0, true
+    d.hrIncrease, d.hrDecrease, d.BloodPressure, d.cardiacState = 0, 0, { 120, 80 }, 'NSR'
+    local parts = d.BodyPartDamage
+    if type(parts) == 'table' then
+        for key, v in pairs(parts) do
+            if key == 'BloodLevel' then
+                parts[key] = 6.0
+            elseif type(v) == 'table' then
+                -- Per body part (Rarm, Larm, Rleg, Lleg, Torso, Head): wounds become empty lists, flags false, amounts 0.
+                for part, x in pairs(v) do
+                    v[part] = type(x) == 'table' and {} or type(x) == 'boolean' and false or type(x) == 'number' and 0 or x
+                end
+            elseif type(v) == 'number' then
+                parts[key] = 0 -- blood and infusion refills
+            end
+        end
+    end
+    LocalPlayer.state:set('BodyDamage', d, true)
+end
 
 -- ---------------------------------------------------------------------------
 -- Staff tools: noclip, teleport to waypoint, fix / delete vehicle, copy coordinates. The server checks the staff

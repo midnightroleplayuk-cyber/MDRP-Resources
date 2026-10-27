@@ -23,10 +23,21 @@ Config.LockoutSeconds = 60
 -- ACE permission that can open/pick up any safe: add_ace group.admin rsvx_safe.admin allow
 Config.AdminAce = 'rsvx_safe.admin'
 
+-- Robbery: anyone except the owner who carries `item` can try to crack a safe open.
+Config.Robbery = {
+    enabled = true,
+    item = 'safecracker',              -- ox_inventory item needed (see install/items.lua)
+    breakChance = 50,                  -- % chance the item breaks on a failed crack
+    duration = 8000,                   -- ms of cracking before the skill check
+    difficulty = { 'easy', 'medium', 'medium', 'hard' }, -- one ox_lib skill check per entry
+    keys = { 'w', 'a', 's', 'd' },
+    cooldown = 1800,                   -- seconds before the same safe can be cracked again
+}
+
 Config.Shop = {
     label = 'Safe Dealer',
-    model = joaat('s_m_y_ammucity_01'),
-    coords = vec4(1628.66, 3605.59, 35.72, 204.99),
+    model = joaat('a_m_m_mexlabor_01'),
+    coords = vec4(257.8, -786.22, 29.45, 8.08),
     showBlip = false,                -- false = no map blip for the dealer
     blip = { sprite = 52, colour = 2, scale = 0.8 },
 }

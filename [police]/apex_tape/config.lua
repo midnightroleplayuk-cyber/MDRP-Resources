@@ -8,9 +8,9 @@ UserConfig={Version=2,Settings={
     -- Public works immediately. Choose 'ace' to require UseAce, or use
     -- Framework='qb'/'esx', Mode='jobs_or_staff' and your actual job names.
     Permissions={
-        Framework='standalone',Mode='public',
+        Framework='qb',Mode='public',
         Jobs={police=0,ambulance=0,fire=0},
-        RequireOnDuty=false,StaffBypass=true,
+        RequireOnDuty=true,StaffBypass=true,
         UseAce='apex.policetape',StaffAce='apex.policetape.admin',
     },
 
@@ -20,7 +20,7 @@ UserConfig={Version=2,Settings={
 
     -- Register these items in your inventory before enabling it.
     Inventory={
-        Enabled=false,System='ox', -- ox / qb / esx / custom
+        Enabled=true,System='ox', -- ox / qb / esx / custom
         TapeItem='police_tape',ConsumeOnPlace=true,RefundOnRemove=true,
         CutItem='scissors',ConsumeCutItem=false,
         RepairItem='police_tape',ConsumeRepairItem=true,
