@@ -5265,26 +5265,12 @@ return {
     description = 'A rare relic of unknown origin',
 },
 
-
--- APEX Tape
+-- New Tape
 ['police_tape'] = {
-    label = 'Scene Tape',
-    weight = 200,
+    label = 'Police Tape',
+    weight = 300,
     stack = true,
-    close = true,
-    consume = 0, -- APEX consumes tape on successful placement, not when opening the kit.
-    description = 'Choose a cordon design and deploy scene tape.',
-    client = {
-        export = 'APEX_Tape.UseTapeItem', -- Must match your actual resource folder name.
-    },
-},
-['scissors'] = {
-    label = 'Scissors',
-    weight = 100,
-    stack = true,
-    close = true,
-    consume = 0,
-    description = 'Used by APEX Tape cutting interactions.',
+    description = 'Emergency Tape',
 },
 
 -- Rsvx_safe

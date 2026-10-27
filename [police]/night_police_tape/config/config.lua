@@ -11,21 +11,20 @@ Config.Locale = 'en'
 
 --====================== PERMISSIONS ======================--
 
-Config.EveryoneHasPermission = true
+Config.EveryoneHasPermission = false
 
 Config.Enable_Night_DiscordApi_Permissions = false    -- server/s_functions.lua
 Config.Enable_Ace_Permissions = false                 -- server/s_functions.lua
 Config.Enable_ESX_Permissions = false                 -- client/c_functions.lua & server/s_functions.lua
 Config.Enable_QBCore_Permissions = {
-    Check_By_Job = false,                              -- client/c_functions.lua & server/s_functions.lua
-    Check_By_Permissions = false,                      -- server/s_functions.lua
+    Check_By_Job = true,                              -- client/c_functions.lua & server/s_functions.lua
+    Check_By_Permissions = true,                      -- server/s_functions.lua
 }
 
 Config.PermissionRoles = {
     'police',
     'ambulance',
     'fire',
-    'Administrator',
 }
 
 --====================== REQUIRED ITEM ======================--
@@ -40,7 +39,7 @@ Config.PermissionRoles = {
 --   qbox  ox_inventory data/items.lua, unless you are not running ox_inventory
 
 Config.Item = {
-    Enabled = false,
+    Enabled = true,
     System = 'auto',
     Name = 'police_tape',
     RemoveOnPlace = false,   -- take one item when a tape is hung
@@ -210,23 +209,23 @@ Config.AnchorTapeHeight = nil       -- fixed tie height above the ground in metr
 -- The designs live in tools/tape_styles.py. Rebuild with tools/build_tape.py, then add a line here.
 Config.Textures = {
     -- General
-    { id = 'police', label = 'Police line', model = 'ns_tape_police', enabled = true, color = { r = 245, g = 206, b = 20 } },
-    { id = 'police_yellow', label = 'Police line (yellow)', model = 'ns_tape_police_yellow', enabled = true, color = { r = 245, g = 206, b = 20 } },
-    { id = 'police_check', label = 'Police check', model = 'ns_tape_police_check', enabled = true, color = { r = 30, g = 76, b = 158 } },
-    { id = 'police_diag', label = 'Police diagonal', model = 'ns_tape_police_diag', enabled = true, color = { r = 30, g = 76, b = 158 } },
-    { id = 'caution', label = 'Caution', model = 'ns_tape_caution', enabled = true, color = { r = 245, g = 206, b = 20 } },
+    { id = 'police', label = 'Police line', model = 'ns_tape_police', enabled = false, color = { r = 245, g = 206, b = 20 } },
+    { id = 'police_yellow', label = 'Police line (yellow)', model = 'ns_tape_police_yellow', enabled = false, color = { r = 245, g = 206, b = 20 } },
+    { id = 'police_check', label = 'Police check', model = 'ns_tape_police_check', enabled = false, color = { r = 30, g = 76, b = 158 } },
+    { id = 'police_diag', label = 'Police diagonal', model = 'ns_tape_police_diag', enabled = false, color = { r = 30, g = 76, b = 158 } },
+    { id = 'caution', label = 'Caution', model = 'ns_tape_caution', enabled = false, color = { r = 245, g = 206, b = 20 } },
     { id = 'crime', label = 'Crime scene', model = 'ns_tape_crime', enabled = true, color = { r = 245, g = 206, b = 20 } },
     { id = 'crime_yellow', label = 'Crime scene (yellow)', model = 'ns_tape_crime_yellow', enabled = true, color = { r = 245, g = 206, b = 20 } },
-    { id = 'fire', label = 'Fire line', model = 'ns_tape_fire', enabled = true, color = { r = 210, g = 31, b = 40 } },
-    { id = 'fire_alert', label = 'Fire line alert', model = 'ns_tape_fire_alert', enabled = true, color = { r = 210, g = 31, b = 40 } },
+    { id = 'fire', label = 'Fire line', model = 'ns_tape_fire', enabled = false, color = { r = 210, g = 31, b = 40 } },
+    { id = 'fire_alert', label = 'Fire line alert', model = 'ns_tape_fire_alert', enabled = false, color = { r = 210, g = 31, b = 40 } },
     { id = 'danger', label = 'Danger', model = 'ns_tape_danger', enabled = true, color = { r = 210, g = 31, b = 40 } },
-    { id = 'detour', label = 'Detour', model = 'ns_tape_detour', enabled = true, color = { r = 245, g = 206, b = 20 } },
+    { id = 'detour', label = 'Detour', model = 'ns_tape_detour', enabled = false, color = { r = 245, g = 206, b = 20 } },
     { id = 'construction', label = 'Construction', model = 'ns_tape_construction', enabled = true, color = { r = 245, g = 206, b = 20 } },
 
     -- North America
-    { id = 'us_sheriff', label = "Sheriff's line (US)", model = 'ns_tape_us_sheriff', enabled = true, color = { r = 245, g = 206, b = 20 } },
-    { id = 'ca_police', label = 'Police line EN/FR (CA)', model = 'ns_tape_ca_police', enabled = true, color = { r = 245, g = 206, b = 20 } },
-    { id = 'us_biohazard', label = 'Biohazard', model = 'ns_tape_us_biohazard', enabled = true, color = { r = 242, g = 85, b = 28 } },
+    { id = 'us_sheriff', label = "Sheriff's line (US)", model = 'ns_tape_us_sheriff', enabled = false, color = { r = 245, g = 206, b = 20 } },
+    { id = 'ca_police', label = 'Police line EN/FR (CA)', model = 'ns_tape_ca_police', enabled = false, color = { r = 245, g = 206, b = 20 } },
+    { id = 'us_biohazard', label = 'Biohazard', model = 'ns_tape_us_biohazard', enabled = false, color = { r = 242, g = 85, b = 28 } },
 
     -- United Kingdom and Ireland
     { id = 'uk_police', label = 'Police line (UK)', model = 'ns_tape_uk_police', enabled = true, color = { r = 30, g = 76, b = 158 } },
@@ -234,44 +233,44 @@ Config.Textures = {
     { id = 'uk_fire', label = 'Fire, do not cross (UK)', model = 'ns_tape_uk_fire', enabled = true, color = { r = 210, g = 31, b = 40 } },
 
     -- Benelux
-    { id = 'nl_roodwit', label = 'Rood-wit lint', model = 'ns_tape_nl_roodwit', enabled = true, color = { r = 210, g = 31, b = 40 } },
-    { id = 'nl_politie', label = 'Politie, niet betreden (NL)', model = 'ns_tape_nl_politie', enabled = true, color = { r = 210, g = 31, b = 40 } },
-    { id = 'nl_brandweer', label = 'Brandweer (NL)', model = 'ns_tape_nl_brandweer', enabled = true, color = { r = 210, g = 31, b = 40 } },
-    { id = 'be_police', label = 'Politie / Police (BE)', model = 'ns_tape_be_police', enabled = true, color = { r = 30, g = 76, b = 158 } },
+    { id = 'nl_roodwit', label = 'Rood-wit lint', model = 'ns_tape_nl_roodwit', enabled = false, color = { r = 210, g = 31, b = 40 } },
+    { id = 'nl_politie', label = 'Politie, niet betreden (NL)', model = 'ns_tape_nl_politie', enabled = false, color = { r = 210, g = 31, b = 40 } },
+    { id = 'nl_brandweer', label = 'Brandweer (NL)', model = 'ns_tape_nl_brandweer', enabled = false, color = { r = 210, g = 31, b = 40 } },
+    { id = 'be_police', label = 'Politie / Police (BE)', model = 'ns_tape_be_police', enabled = false, color = { r = 30, g = 76, b = 158 } },
 
     -- Germany, Austria, Switzerland
-    { id = 'de_polizei', label = 'Polizeiabsperrung (DE)', model = 'ns_tape_de_polizei', enabled = true, color = { r = 210, g = 31, b = 40 } },
-    { id = 'de_feuerwehr', label = 'Feuerwehr-Sperrzone (DE)', model = 'ns_tape_de_feuerwehr', enabled = true, color = { r = 210, g = 31, b = 40 } },
-    { id = 'at_polizei', label = 'Polizei (AT)', model = 'ns_tape_at_polizei', enabled = true, color = { r = 210, g = 31, b = 40 } },
-    { id = 'ch_polizei', label = 'Polizei / Police / Polizia (CH)', model = 'ns_tape_ch_polizei', enabled = true, color = { r = 210, g = 31, b = 40 } },
+    { id = 'de_polizei', label = 'Polizeiabsperrung (DE)', model = 'ns_tape_de_polizei', enabled = false, color = { r = 210, g = 31, b = 40 } },
+    { id = 'de_feuerwehr', label = 'Feuerwehr-Sperrzone (DE)', model = 'ns_tape_de_feuerwehr', enabled = false, color = { r = 210, g = 31, b = 40 } },
+    { id = 'at_polizei', label = 'Polizei (AT)', model = 'ns_tape_at_polizei', enabled = false, color = { r = 210, g = 31, b = 40 } },
+    { id = 'ch_polizei', label = 'Polizei / Police / Polizia (CH)', model = 'ns_tape_ch_polizei', enabled = false, color = { r = 210, g = 31, b = 40 } },
 
     -- France, Italy, Spain, Portugal
-    { id = 'fr_police', label = 'Police, franchissement interdit (FR)', model = 'ns_tape_fr_police', enabled = true, color = { r = 210, g = 31, b = 40 } },
-    { id = 'fr_pompiers', label = 'Sapeurs-pompiers (FR)', model = 'ns_tape_fr_pompiers', enabled = true, color = { r = 210, g = 31, b = 40 } },
-    { id = 'it_polizia', label = 'Polizia (IT)', model = 'ns_tape_it_polizia', enabled = true, color = { r = 210, g = 31, b = 40 } },
-    { id = 'es_policia', label = 'Línea de policía (ES)', model = 'ns_tape_es_policia', enabled = true, color = { r = 30, g = 76, b = 158 } },
-    { id = 'es_bomberos', label = 'Bomberos (ES)', model = 'ns_tape_es_bomberos', enabled = true, color = { r = 210, g = 31, b = 40 } },
-    { id = 'pt_policia', label = 'Polícia (PT)', model = 'ns_tape_pt_policia', enabled = true, color = { r = 30, g = 76, b = 158 } },
+    { id = 'fr_police', label = 'Police, franchissement interdit (FR)', model = 'ns_tape_fr_police', enabled = false, color = { r = 210, g = 31, b = 40 } },
+    { id = 'fr_pompiers', label = 'Sapeurs-pompiers (FR)', model = 'ns_tape_fr_pompiers', enabled = false, color = { r = 210, g = 31, b = 40 } },
+    { id = 'it_polizia', label = 'Polizia (IT)', model = 'ns_tape_it_polizia', enabled = false, color = { r = 210, g = 31, b = 40 } },
+    { id = 'es_policia', label = 'Línea de policía (ES)', model = 'ns_tape_es_policia', enabled = false, color = { r = 30, g = 76, b = 158 } },
+    { id = 'es_bomberos', label = 'Bomberos (ES)', model = 'ns_tape_es_bomberos', enabled = false, color = { r = 210, g = 31, b = 40 } },
+    { id = 'pt_policia', label = 'Polícia (PT)', model = 'ns_tape_pt_policia', enabled = false, color = { r = 30, g = 76, b = 158 } },
 
     -- Nordics and eastern Europe
-    { id = 'se_polis', label = 'Polis avspärrat (SE)', model = 'ns_tape_se_polis', enabled = true, color = { r = 30, g = 76, b = 158 } },
-    { id = 'no_politi', label = 'Politi (NO)', model = 'ns_tape_no_politi', enabled = true, color = { r = 30, g = 76, b = 158 } },
-    { id = 'dk_politi', label = 'Politi (DK)', model = 'ns_tape_dk_politi', enabled = true, color = { r = 210, g = 31, b = 40 } },
-    { id = 'pl_policja', label = 'Policja (PL)', model = 'ns_tape_pl_policja', enabled = true, color = { r = 210, g = 31, b = 40 } },
-    { id = 'ru_policiya', label = 'Police, no entry (RU)', model = 'ns_tape_ru_policiya', enabled = true, color = { r = 210, g = 31, b = 40 } },
+    { id = 'se_polis', label = 'Polis avspärrat (SE)', model = 'ns_tape_se_polis', enabled = false, color = { r = 30, g = 76, b = 158 } },
+    { id = 'no_politi', label = 'Politi (NO)', model = 'ns_tape_no_politi', enabled = false, color = { r = 30, g = 76, b = 158 } },
+    { id = 'dk_politi', label = 'Politi (DK)', model = 'ns_tape_dk_politi', enabled = false, color = { r = 210, g = 31, b = 40 } },
+    { id = 'pl_policja', label = 'Policja (PL)', model = 'ns_tape_pl_policja', enabled = false, color = { r = 210, g = 31, b = 40 } },
+    { id = 'ru_policiya', label = 'Police, no entry (RU)', model = 'ns_tape_ru_policiya', enabled = false, color = { r = 210, g = 31, b = 40 } },
 
     -- Latin America
-    { id = 'mx_precaucion', label = 'Precaución (MX)', model = 'ns_tape_mx_precaucion', enabled = true, color = { r = 245, g = 206, b = 20 } },
-    { id = 'mx_policia', label = 'Línea de policía (MX)', model = 'ns_tape_mx_policia', enabled = true, color = { r = 245, g = 206, b = 20 } },
-    { id = 'br_policia', label = 'Local de crime (BR)', model = 'ns_tape_br_policia', enabled = true, color = { r = 245, g = 206, b = 20 } },
-    { id = 'br_perigo', label = 'Perigo, fita zebrada (BR)', model = 'ns_tape_br_perigo', enabled = true, color = { r = 210, g = 31, b = 40 } },
+    { id = 'mx_precaucion', label = 'Precaución (MX)', model = 'ns_tape_mx_precaucion', enabled = false, color = { r = 245, g = 206, b = 20 } },
+    { id = 'mx_policia', label = 'Línea de policía (MX)', model = 'ns_tape_mx_policia', enabled = false, color = { r = 245, g = 206, b = 20 } },
+    { id = 'br_policia', label = 'Local de crime (BR)', model = 'ns_tape_br_policia', enabled = false, color = { r = 245, g = 206, b = 20 } },
+    { id = 'br_perigo', label = 'Perigo, fita zebrada (BR)', model = 'ns_tape_br_perigo', enabled = false, color = { r = 210, g = 31, b = 40 } },
 
     -- Asia
-    { id = 'jp_keepout', label = 'Keep out (JP)', model = 'ns_tape_jp_keepout', enabled = true, color = { r = 245, g = 206, b = 20 } },
-    { id = 'kr_policeline', label = 'Police line, no entry (KR)', model = 'ns_tape_kr_policeline', enabled = true, color = { r = 245, g = 206, b = 20 } },
-    { id = 'cn_police', label = 'Police line (CN)', model = 'ns_tape_cn_police', enabled = true, color = { r = 30, g = 76, b = 158 } },
-    { id = 'hk_police', label = 'Police cordon (HK)', model = 'ns_tape_hk_police', enabled = true, color = { r = 210, g = 31, b = 40 } },
-    { id = 'id_policeline', label = 'Police line (ID)', model = 'ns_tape_id_policeline', enabled = true, color = { r = 245, g = 206, b = 20 } },
+    { id = 'jp_keepout', label = 'Keep out (JP)', model = 'ns_tape_jp_keepout', enabled = false, color = { r = 245, g = 206, b = 20 } },
+    { id = 'kr_policeline', label = 'Police line, no entry (KR)', model = 'ns_tape_kr_policeline', enabled = false, color = { r = 245, g = 206, b = 20 } },
+    { id = 'cn_police', label = 'Police line (CN)', model = 'ns_tape_cn_police', enabled = false, color = { r = 30, g = 76, b = 158 } },
+    { id = 'hk_police', label = 'Police cordon (HK)', model = 'ns_tape_hk_police', enabled = false, color = { r = 210, g = 31, b = 40 } },
+    { id = 'id_policeline', label = 'Police line (ID)', model = 'ns_tape_id_policeline', enabled = false, color = { r = 245, g = 206, b = 20 } },
 
     -- Plain, no wording
     { id = 'hazard_stripes', label = 'Hazard stripes, yellow/black', model = 'ns_tape_hazard_stripes', enabled = true, color = { r = 245, g = 206, b = 20 } },
