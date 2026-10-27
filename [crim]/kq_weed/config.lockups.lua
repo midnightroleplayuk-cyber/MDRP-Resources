@@ -65,8 +65,8 @@ Config.lockups = {
                 color = 4,
             },
             {
-                coords = vec3(-16.78, 6191.45, 30.47),
-                rotation = vec3(0.95, 0, 223),
+                coords = vec3(-2456.45, 2963.06, 31.81),
+                rotation = vec3(0.95, 0, 125),
                 color = 7,
             },
         },
