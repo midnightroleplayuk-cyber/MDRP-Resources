@@ -104,17 +104,17 @@ Config.pits = {
         rotation = vec3(-2.4, 0.7, 171.10)
     },
     ['addon_a_1'] = {
-        enabled = true,
+        enabled = false,
         coords = vec3(4294.01, 7713.74, 7.11),
         rotation = vec3(-2.3, -3.28, 171.7)
     },
     ['addon_b_1'] = {
-        enabled = true,
+        enabled = false,
         coords = vec3(-6394.12, 2772.58, 5.6),
         rotation = vec3(0, 0, 42)
     },
     ['addon_c_1'] = {
-        enabled = true,
+        enabled = false,
         coords = vec3(5161.87, -1212.85, 11.76),
         rotation = vec3(0.8, -.34, -52.52)
     },
@@ -133,32 +133,32 @@ Config.firepits = {
         rotation = vec3(-2.4, 0.7, 111)
     },
     ['addon_a_1'] = {
-        enabled = true,
+        enabled = false,
         coords = vec3(4275.0, 7724.18, 6.51),
         rotation = vec3(-2.4, 0.7, 75)
     },
     ['addon_b_1'] = {
-        enabled = true,
+        enabled = false,
         coords = vec3(-6371.59, 2770.76, 5.85),
         rotation = vec3(0, 0, 80)
     },
     ['addon_b_2'] = {
-        enabled = true,
+        enabled = false,
         coords = vec3(-6369.68, 2772.02, 5.6),
         rotation = vec3(0, 0, 100)
     },
     ['addon_b_3'] = {
-        enabled = true,
+        enabled = false,
         coords = vec3(-6384.28, 2817.21, 5.65),
         rotation = vec3(0, 0, 0)
     },
     ['addon_c_1'] = {
-        enabled = true,
+        enabled = false,
         coords = vec3(5144.55, -1221.04, 11.56),
         rotation = vec3(0, 0, 0)
     },
     ['addon_c_2'] = {
-        enabled = true,
+        enabled = false,
         coords = vec3(5173.03, -1214.89, 12.12),
         rotation = vec3(0, 0, 43)
     },
@@ -182,57 +182,57 @@ Config.barrels = {
         rotation = vec3(0.58, 2.54, 53.0)
     },
     ['addon_a_1'] = {
-        enabled = true,
+        enabled = false,
         coords = vec3(4283.65, 7725.79, 6.75),
         rotation = vec3(0.58, 2.54, 260.0)
     },
     ['addon_a_2'] = {
-        enabled = true,
+        enabled = false,
         coords = vec3(4282.42, 7725.94, 6.75),
         rotation = vec3(0.58, 2.54, 255.0)
     },
     ['addon_a_3'] = {
-        enabled = true,
+        enabled = false,
         coords = vec3(4280.91, 7726.0, 7.75),
         rotation = vec3(0.58, 2.54, 280.0)
     },
     ['addon_b_1'] = {
-        enabled = true,
+        enabled = false,
         coords = vec3(-6387.74, 2791.32, 5.69),
         rotation = vec3(0, 0, 320)
     },
     ['addon_b_2'] = {
-        enabled = true,
+        enabled = false,
         coords = vec3(-6386.45, 2792.44, 5.69),
         rotation = vec3(0, 0, 310)
     },
     ['addon_b_3'] = {
-        enabled = true,
+        enabled = false,
         coords = vec3(-6381.39, 2794.15, 5.7),
         rotation = vec3(0, 0, 225)
     },
     ['addon_b_4'] = {
-        enabled = true,
+        enabled = false,
         coords = vec3(-6391.21, 2760.84, 5.64),
         rotation = vec3(0, 0, 45)
     },
     ['addon_b_5'] = {
-        enabled = true,
+        enabled = false,
         coords = vec3(-6396.08, 2801.34, 5.82),
         rotation = vec3(0, 0, 282)
     },
     ['addon_c_1'] = {
-        enabled = true,
+        enabled = false,
         coords = vec3(5141.49, -1215.24, 11.47),
         rotation = vec3(0, 0, 27)
     },
     ['addon_c_2'] = {
-        enabled = true,
+        enabled = false,
         coords = vec3(5142.23, -1216.33, 11.47),
         rotation = vec3(0, 0, 25)
     },
     ['addon_c_3'] = {
-        enabled = true,
+        enabled = false,
         coords = vec3(5143.71, -1213.74, 11.56),
         rotation = vec3(0, 0, 273)
     },
@@ -349,7 +349,7 @@ Config.plantations = {
     },
     ['addon_a_1'] = {
         -- Whether the plantation should be enabled
-        enabled = true,
+        enabled = false,
 
         regrowTime = 30, -- time in minutes
 
@@ -464,7 +464,7 @@ Config.plantations = {
     },
     ['addon_b_1'] = {
         -- Whether the plantation should be enabled
-        enabled = true,
+        enabled = false,
 
         regrowTime = 30, -- time in minutes
 
@@ -578,7 +578,7 @@ Config.plantations = {
     },
     ['addon_c_1'] = {
         -- Whether the plantation should be enabled
-        enabled = true,
+        enabled = false,
 
         regrowTime = 30, -- time in minutes
 
