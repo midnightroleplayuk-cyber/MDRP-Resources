@@ -237,7 +237,7 @@ SoccerFields = {
                 minZ = 65.11,
                 maxZ = 69.11
             }),
-        RedTeamGoalZone = createBoxZone(vec3(366.95, -2101.55, 17.42), 7.4, 0.4,
+        RedTeamGoalZone = createBoxZone(vector3(366.95, -2101.55, 17.42), 7.4, 0.4,
             { -- Polyzone for the red team goal (where the ball must be to score)
                 name = "default_field_goalred",
                 heading = 334,
