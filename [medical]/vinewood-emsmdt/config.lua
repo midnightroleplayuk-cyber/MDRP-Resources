@@ -190,9 +190,8 @@ Config.UnitStatuses = {
 }
 
 Config.Hospitals = {
-    { id = 'pillbox', label = 'Pillbox Hill Medical Centre', coords = vec3(298.6, -584.5, 43.3) },
-    { id = 'sandy',   label = 'Sandy Shores Medical Centre',  coords = vec3(1839.3, 3672.9, 34.3) },
-    { id = 'paleto',  label = 'Paleto Bay Medical Centre',    coords = vec3(-247.8, 6331.2, 32.4) },
+    { id = 'burton', label = 'MHS Burton Hospital',           coords = vec3(-356.47, -104.97, 37.74) },
+    { id = 'paleto',  label = 'MHS Paleto Medical Centre',    coords = vec3(-255.83, 6318.71, 31.45) },
 }
 
 Config.AuditReasons = {
