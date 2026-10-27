@@ -18,7 +18,7 @@ Config.RequireOnDuty = true
 -- Ways to open it. Set any to false to disable.
 Config.Command = 'mdt'
 Config.Keybind = 'F6'
-Config.Item = 'mdt'            -- e.g. 'mdt_tablet' (ox_inventory / framework usable item)
+Config.Item = 'mdt'           -- e.g. 'mdt_tablet' (ox_inventory / framework usable item)
 Config.UseTabletProp = true
 
 -- Minimum grade for destructive actions (deleting records, removing markers).
@@ -103,7 +103,7 @@ Config.Interviews = {
     enabled = true,
     resource = 'vinewood-interviews',
     -- Jobs that can listen to interviews from the MDT. job = minimum grade.
-    jobs = { police = 1, sheriff = 0, cps = 0 },
+    jobs = { police = 0, sheriff = 0, cps = 0 },
 }
 
 ---------------------------------------------------------------------------
@@ -115,8 +115,8 @@ Config.Interviews = {
 Config.CPS = {
     enabled = true,
     -- Jobs that act as CPS lawyers. job = minimum grade. They only see the CPS section and interviews.
-    jobs = { cps = 0 },
-    RequireOnDuty = false,
+     jobs = { cps = 0, police = 4 },
+    RequireOnDuty = true,
     -- Police can only NFA a case themselves before it is sent to the CPS.
     -- true lets police NFA a case that is still awaiting a CPS decision (it is withdrawn).
     PoliceCanWithdraw = true,
@@ -311,6 +311,28 @@ Config.ANPR = {
     CameraAlerts = 'all',
     -- Also put fixed camera hits on the Live calls page.
     CameraHitsAsCalls = true,
+
+    -- Speed: in-car ANPR measures the speed of vehicles it reads, and roadside cameras with a
+    -- speed limit record anyone over it. Speeding goes to the ANPR page as evidence for a ticket.
+    Speed = {
+        enabled = true,
+        Unit = 'mph',                 -- 'mph' or 'kmh'
+        Tolerance = { percent = 10, plus = 2 },   -- UK guidance: limit + 10% + 2 before it counts
+        AlertOfficer = true,          -- in-car: a speeder in front or behind is an amber ANPR hit
+        AutoRecord = true,            -- in-car: speeders are recorded without pressing anything
+        LockCommand = 'anprlock',     -- record the vehicle in front's speed now (evidence), even under the limit
+        LockKey = 'K',
+        -- Limits by road. The street name is checked against Streets, then Patterns, then Default.
+        Default = 30,
+        Patterns = {
+            { match = 'Fwy', limit = 70 }, { match = 'Freeway', limit = 70 },
+            { match = 'Hwy', limit = 60 }, { match = 'Highway', limit = 60 }, { match = 'Route', limit = 60 },
+            { match = 'Blvd', limit = 40 },
+        },
+        Streets = {
+            -- ['Great Ocean Hwy'] = 60,
+        },
+    },
 }
 
 ---------------------------------------------------------------------------
@@ -503,6 +525,19 @@ Config.Forensics = {
     TorchShowsTraces = true,     -- holding a torch also shows traces
     CollectKey = 38,             -- E
     IgnoreJobs = {},             -- e.g. { police = true } so police shots leave no casings
+
+    -- Fingerprints: getting into a vehicle without gloves leaves prints on it. Officers dust a
+    -- vehicle in forensics mode ([G] next to it) to lift them. Booking someone in takes their prints.
+    Fingerprints = true,
+    PrintsOnArrest = true,
+    PrintMinutes = 120,          -- how long prints stay on a vehicle
+    DustKey = 47,                -- G
+    -- Arm (component 3) drawables that are bare hands, i.e. NO gloves. Anything else counts as gloves.
+    -- These are the base-game values used by qb-policejob; add your clothing pack's bare-arm IDs.
+    NoGloves = {
+        male = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 18, 26, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 112, 113, 114, 118, 125, 132 },
+        female = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 19, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 129, 130, 131, 135, 142, 149, 153, 157, 161, 165 },
+    },
 }
 
 -- Evidence storage. Every exhibit can hold real items in its own evidence bag (ox, qb, qs, ps or lj inventory).

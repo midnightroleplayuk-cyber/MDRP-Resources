@@ -164,6 +164,21 @@ window.addEventListener('message', async (e) => {
     } else if (m.action === 'anprRead') {
         const el = $(m.camera === 'Front' ? '#anprFront' : '#anprRear');
         el.textContent = m.plate; el.classList.add('flash'); setTimeout(() => el.classList.remove('flash'), 400);
+    } else if (m.action === 'anprLive') {
+        const put = (sel, t) => {
+            const el = $(sel);
+            el.textContent = t ? `${t.speed} ${m.unit}` : '';
+            el.classList.toggle('over', !!(t && t.over));
+        };
+        if (m.front) $('#anprFront').textContent = m.front.plate;
+        if (m.rear) $('#anprRear').textContent = m.rear.plate;
+        put('#anprFrontSpd', m.front); put('#anprRearSpd', m.rear);
+        $('#anprSpd').classList.remove('hidden');
+        $('#anprLimit').textContent = m.limit || '-';
+        $('#anprOwn').textContent = `${m.patrol} ${m.unit}`;
+    } else if (m.action === 'anprLocked') {
+        const el = $('#anprFront');
+        el.classList.add('locked'); setTimeout(() => el.classList.remove('locked'), 2500);
     } else if (m.action === 'anprHit') {
         showAnprHit(m.hit, m.key);
     } else if (m.action === 'anprLayoutLoad') {
@@ -460,6 +475,7 @@ function drawPerson() {
                     <dt>Address:</dt><dd>${home ? esc([home.label, home.address].filter(Boolean).join(', ')) : 'No fixed abode on record'}</dd>
                     <dt>Nationality:</dt><dd>${esc(p.nationality || 'Not recorded')}</dd>
                     <dt>Phone:</dt><dd>${esc(p.phone || 'Not recorded')}</dd>
+                    ${cfg.fingerprints ? `<dt>Fingerprints:</dt><dd>${d.prints ? `On database <span class="muted">(${fmtDate(d.prints.created_at, false)})</span>` : `Not on database ${p.online ? '<button class="btn tiny" id="aPrints">Take prints</button>' : ''}`}</dd>` : ''}
                     ${cfg.forensics ? `<dt>DNA:</dt><dd>${d.dna ? `On database <span class="muted">(${fmtDate(d.dna.created_at, false)})</span>` : `Not on database ${p.online ? '<button class="btn tiny" id="aDna">Take sample</button>' : ''}`}</dd>` : ''}
                 </dl>
             </div>
@@ -503,6 +519,10 @@ function drawPerson() {
     $('#aCustody').addEventListener('click', () => custodyModal());
     $('#aBail').addEventListener('click', () => bailModal());
     $('#aMarker').addEventListener('click', () => markerModal('person', p.cid));
+    $('#aPrints')?.addEventListener('click', () => confirmModal('Take their fingerprints and add them to the database? Earlier lifts are checked against them straight away.', async () => {
+        const r = await api('takePrints', { cid: p.cid });
+        if (r.ok) { toast(r.already ? 'Their prints are already on the database.' : 'Fingerprints taken and added to the database.'); viewPerson(); }
+    }));
     $('#aDna')?.addEventListener('click', () => confirmModal('Take a DNA sample and add it to the database? Earlier scene samples are checked against it straight away.', async () => {
         const r = await api('takeDNA', { cid: p.cid });
         if (r.ok) { toast(r.already ? 'Their DNA is already on the database.' : 'DNA sample taken and added to the database.'); viewPerson(); }
@@ -965,7 +985,7 @@ function viewAnpr() {
     main.innerHTML = pageHead('ANPR', 'Automatic number plate recognition: hits from in-car units and roadside cameras',
         `<button class="btn primary" id="anprNew">${icon('plus')}Add plate to ANPR</button>`) + `
         <div class="grid3" id="anprStats"></div>
-        <div class="filters section" id="anprTabs"><button data-t="hits">Recent hits</button><button data-t="markers">Plates on ANPR</button><button data-t="setup">Cameras and fitted vehicles</button></div>
+        <div class="filters section" id="anprTabs"><button data-t="hits">Recent hits</button><button data-t="markers">Plates on ANPR</button>${state.cfg.speed ? '<button data-t="speed">Speed detections</button>' : ''}<button data-t="setup">Cameras and fitted vehicles</button></div>
         <div class="panel flush" id="anprBody"><p class="muted" style="padding:14px">Loading</p></div>`;
     main.querySelectorAll('#anprTabs button').forEach((b) => {
         b.classList.toggle('active', b.dataset.t === tab);
@@ -976,6 +996,7 @@ function viewAnpr() {
 }
 async function loadAnpr(tab) {
     if (tab === 'setup') { loadAnprSetup(); }
+    if (tab === 'speed') { loadSpeed(); }
     const d = await api('anprList');
     if (d.error || state.view !== 'anpr') return;
     const today = d.hits.filter((h) => nowSecs() - h.created_at < 86400).length;
@@ -984,7 +1005,7 @@ async function loadAnpr(tab) {
         <div class="stat"><span class="ico">${icon('pin')}</span><span><span class="n">${d.cameras}</span><span class="l">Roadside cameras</span></span></div>
         <div class="stat ${today ? 'hot' : ''}"><span class="ico">${icon('alert')}</span><span><span class="n">${today}</span><span class="l">Hits in the last 24 hours</span></span></div>`;
     const el = $('#anprBody');
-    if (tab === 'setup') return;
+    if (tab === 'setup' || tab === 'speed') return;
     if (tab === 'hits') {
         el.innerHTML = d.hits.length ? `<div class="table-wrap"><table><tr><th>Time</th><th>VRM</th><th>Vehicle</th><th>Hit</th><th>Read by</th><th>Location</th></tr>
             ${d.hits.map((h) => `<tr class="click" data-plate="${esc(h.plate)}"><td>${fmtDate(h.created_at)}</td><td>${vrm(h.plate)}</td><td>${esc(h.model || '')}</td>
@@ -1040,6 +1061,30 @@ async function loadAnprSetup() {
     el.querySelectorAll('[data-cdel]').forEach((b) => b.addEventListener('click', () => confirmModal('Remove this camera?', () => act('camera', b.dataset.cdel))));
     el.querySelectorAll('[data-fdel]').forEach((b) => b.addEventListener('click', () => confirmModal('Take ANPR off this?', () => act('fitted', b.dataset.fdel))));
 }
+/* ---------- speed detections ---------- */
+async function loadSpeed() {
+    const d = await api('speedList', {});
+    const el = $('#anprBody');
+    if (d.error || !el || state.view !== 'anpr') return;
+    const tol = d.tolerance || { percent: 10, plus: 2 };
+    el.innerHTML = `<p class="muted" style="padding:12px 14px 0;margin:0">Speeds from in-car ANPR (automatic or locked with the lock key) and speed cameras. Over the limit means more than the limit + ${tol.percent}% + ${tol.plus} ${esc(d.unit)}.</p>
+        ${d.results.length ? `<div class="table-wrap"><table><tr><th>Time</th><th>VRM</th><th>Keeper</th><th>Speed</th><th>Device</th><th>Location</th><th></th></tr>
+        ${d.results.map((r) => `<tr><td>${fmtDate(r.created_at)}</td><td>${vrm(r.realPlate || r.plate)}<br><span class="muted">${esc(r.model || '')}</span></td>
+            <td>${esc(r.keeper || (r.owner ? r.owner : 'Not registered'))}</td>
+            <td>${r.over ? pill(`${r.speed} in a ${r.speed_limit}`, 'red') : pill(`${r.speed}${r.speed_limit ? ` in a ${r.speed_limit}` : ''}`, '')}<br><span class="muted">${esc(r.unit || d.unit)}${r.patrol_speed ? ` · patrol ${r.patrol_speed}` : ''}${r.locked ? ' · locked' : ''}</span></td>
+            <td>${esc(r.device || '')}<br><span class="muted">${esc(r.officer_name || '')}</span></td><td>${esc(r.location || '')}</td>
+            <td style="text-align:right;white-space:nowrap">${r.fine_ref ? pill(r.fine_ref, 'green') : (r.over && r.owner && state.cfg.fines ? `<button class="btn tiny" data-tk="${r.id}">Ticket keeper</button>` : '')}
+                ${r.realPlate ? ` <button class="btn tiny" data-veh="${esc(r.realPlate)}">Vehicle</button>` : ''}</td></tr>`).join('')}</table></div>`
+        : '<p class="empty" style="padding:14px">No speeds recorded yet.</p>'}`;
+    el.querySelectorAll('[data-veh]').forEach((b) => b.addEventListener('click', () => go('vehicle', { plate: b.dataset.veh })));
+    el.querySelectorAll('[data-tk]').forEach((b) => b.addEventListener('click', () => {
+        const r = d.results.find((x) => String(x.id) === b.dataset.tk);
+        fineModal({ cid: r.owner, name: r.keeper || r.owner, plate: r.realPlate || r.plate, location: r.location, codes: ['SP30'],
+            notes: `${r.speed} ${r.unit || d.unit} in a ${r.speed_limit} limit, ${r.device}${r.officer_name ? ` (${r.officer_name})` : ''}, ${fmtDate(r.created_at)}`,
+            onIssued: (f) => api('speedTicketed', { id: r.id, ref: f.ref }) });
+    }));
+}
+
 function anprModal(plate, after) {
     const actions = (state.cfg.anpr && state.cfg.anpr.actions) || ['Stop vehicle'];
     openModal(`<h1>Add plate to ANPR</h1><p class="muted">Officers with in-car ANPR and every roadside camera will alert on this plate. Any plate can be added, including false plates.</p>
@@ -1613,23 +1658,28 @@ function forensicBox(e) {
     if (e.lab_status === 'at_lab') body = `${pill('At the lab', 'amber')} <span class="muted">results due ${fmtTime(e.lab_due)}</span>`;
     else if (e.lab_status === 'complete' && r) {
         const lines = [];
+        if (r.kind === 'print') {
+            if (r.match) lines.push(`Fingerprint match: <a href="#" data-cid="${esc(r.match.cid)}" style="color:#9CC3FF">${esc(r.match.name)}</a>${r.lateMatch ? ' <span class="muted">(database hit after testing)</span>' : ''}`);
+            else if (r.noMatch) lines.push(`Prints <b>${esc(r.printRef)}</b>: no match on the database yet. They will match when the person is printed.`);
+            else lines.push('No usable prints.');
+        }
         if (r.kind === 'casing') lines.push(`<b>${esc(r.weapon || 'Firearm')}</b>${r.serial ? `, fired from serial <b>${esc(r.serial)}</b>` : ', no serial recovered'}`);
-        if (r.match) lines.push(`DNA match: <a href="#" data-cid="${esc(r.match.cid)}" style="color:#9CC3FF">${esc(r.match.name)}</a>${r.lateMatch ? ' <span class="muted">(database hit after testing)</span>' : ''}`);
-        else if (r.noMatch) lines.push(`DNA profile <b>${esc(r.profile)}</b>: no match on the database yet. It will match when they are sampled.`);
+        if (r.kind !== 'print' && r.match) lines.push(`DNA match: <a href="#" data-cid="${esc(r.match.cid)}" style="color:#9CC3FF">${esc(r.match.name)}</a>${r.lateMatch ? ' <span class="muted">(database hit after testing)</span>' : ''}`);
+        else if (r.kind !== 'print' && r.noMatch) lines.push(`DNA profile <b>${esc(r.profile)}</b>: no match on the database yet. It will match when they are sampled.`);
         else if (r.kind === 'blood') lines.push('No usable DNA.');
         if ((r.otherScenes || []).length) lines.push(`Same weapon fired at: ${r.otherScenes.map(esc).join(', ')}`);
         if ((r.seizedWeapons || []).length) lines.push(`Matches seized weapon: ${r.seizedWeapons.map(esc).join(', ')}`);
         body = lines.map((l) => `<div>${l}</div>`).join('');
     } else body = `<span class="muted">Not tested yet${f.collectedBy ? `. Collected by ${esc(f.collectedBy)}` : ''}.</span>`;
-    return `<div class="forensic-box"><span class="muted" style="font-size:11px;text-transform:uppercase;letter-spacing:.04em">${f.kind === 'casing' ? 'Ballistics' : 'DNA'}</span>${body}</div>`;
+    return `<div class="forensic-box"><span class="muted" style="font-size:11px;text-transform:uppercase;letter-spacing:.04em">${f.kind === 'casing' ? 'Ballistics' : f.kind === 'print' ? 'Fingerprints' : 'DNA'}</span>${body}</div>`;
 }
 
 async function bagSamplesModal(incident) {
     const d = await api('mySamples');
     if (d.error) return;
-    openModal(`<h1>Bag forensic samples</h1><p class="muted">Samples you collected at scenes with <b>/forensics</b> (or a torch). Each one becomes an exhibit on ${esc(incident.ref)}.</p>
+    openModal(`<h1>Bag forensic samples</h1><p class="muted">Samples you collected at scenes with <b>/forensics</b> (or a torch), and prints you lifted from vehicles. Each one becomes an exhibit on ${esc(incident.ref)}.</p>
         ${d.results.length ? `<div class="offence-list">${d.results.map((t) => `<label class="check"><input type="checkbox" data-sample="${t.id}" checked>
-            <span><b>${t.type === 'casing' ? `Shell casing (${esc(t.weapon || 'unknown')})` : 'Blood swab'}</b><br><span class="muted">${esc(t.location || '')} · ${fmtTime(t.collected_at)}</span></span></label>`).join('')}</div>`
+            <span><b>${t.type === 'casing' ? `Shell casing (${esc(t.weapon || 'unknown')})` : t.type === 'print' ? `Fingerprint lift (${esc(t.weapon || 'vehicle')})` : 'Blood swab'}</b><br><span class="muted">${esc(t.location || '')} · ${fmtTime(t.collected_at)}</span></span></label>`).join('')}</div>`
             : '<p class="empty">You have no unbagged samples. Collect them at the scene first.</p>'}
         <div class="actions"><button class="btn" data-close>Cancel</button>${d.results.length ? '<button class="btn primary" id="bsGo">Bag on this incident</button>' : ''}</div>`, (m) => {
         m.querySelector('#bsGo')?.addEventListener('click', async () => {
@@ -1646,7 +1696,7 @@ function exhibitTable(list, showIncident = true) {
     return `<div class="table-wrap"><table><tr><th>Exhibit</th>${showIncident ? '<th>Incident</th>' : ''}<th>Description</th><th>In the bag</th><th>Link</th><th>Status</th></tr>
         ${list.map((e) => `<tr ${showIncident ? `class="click" data-inc="${e.incident_id}"` : ''}><td class="strong">${esc(e.exhibit_ref)}<br><span class="muted">${fmtDate(e.created_at, false)}</span></td>
         ${showIncident ? `<td>${esc(e.incident_ref || '')}</td>` : ''}
-        <td>${esc(e.type)}: ${esc(e.description)}${e.lab_result && e.lab_result.match ? `<br><span class="chip ok">DNA match: ${esc(e.lab_result.match.name)}</span>` : ''}${e.lab_result && e.lab_result.serial ? `<br><span class="muted">Serial ${esc(e.lab_result.serial)}</span>` : ''}${e.lab_status === 'at_lab' ? '<br><span class="muted">At the lab</span>' : ''}</td>
+        <td>${esc(e.type)}: ${esc(e.description)}${e.lab_result && e.lab_result.match ? `<br><span class="chip ok">${e.lab_result.kind === 'print' ? 'Fingerprint' : 'DNA'} match: ${esc(e.lab_result.match.name)}</span>` : ''}${e.lab_result && e.lab_result.serial ? `<br><span class="muted">Serial ${esc(e.lab_result.serial)}</span>` : ''}${e.lab_status === 'at_lab' ? '<br><span class="muted">At the lab</span>' : ''}</td>
         <td>${e.bag ? (e.bag.length ? e.bag.map((it) => `${esc(it.count)}x ${esc(it.label)}`).join('<br>') : '<span class="muted">Empty</span>') : '<span class="muted">Not bagged</span>'}</td>
         <td>${[e.seized_from_name ? `Seized from ${esc(e.seized_from_name)}` : '', e.suspect_name && e.suspect_name !== e.seized_from_name ? `Suspect ${esc(e.suspect_name)}` : ''].filter(Boolean).join('<br>') || '<span class="muted">-</span>'}</td>
         <td>${pill(e.status, ['Returned to owner', 'Destroyed'].includes(e.status) ? 'green' : e.status === 'Sent for forensics' ? 'amber' : 'blue')}</td></tr>`).join('')}</table></div>`;
@@ -2255,8 +2305,8 @@ async function fineModal(pre) {
         <label>Offences</label><div class="offence-list" id="fOff"></div>
         <div id="fOther" class="hidden"><label for="fOt">Other offence for court</label><input id="fOt" placeholder="e.g. Driving without due care, s.3 RTA 1988"></div>
         <div class="two"><div><label for="fLoc">Location</label><input id="fLoc" value="${esc(here.location || '')}"></div>
-        <div><label for="fPlate">Vehicle (optional)</label><input id="fPlate" style="text-transform:uppercase"></div></div>
-        <label for="fNotes">Notes</label><input id="fNotes" placeholder="Speed recorded, device, anything the court needs">
+        <div><label for="fPlate">Vehicle (optional)</label><input id="fPlate" style="text-transform:uppercase" value="${esc(pre.plate || '')}"></div></div>
+        <label for="fNotes">Notes</label><input id="fNotes" placeholder="Speed recorded, device, anything the court needs" value="${esc(pre.notes || '')}">
         <div class="fine-total"><span id="fSum" class="muted">Choose offences</span><b id="fAmt"></b></div>
         <div class="actions"><button class="btn" data-close>Cancel</button><button class="btn primary" id="fSave">Issue</button></div>`, (m) => {
         let type = 'FPN';
@@ -2275,12 +2325,15 @@ async function fineModal(pre) {
             m.querySelector('#fSum').textContent = picked.length ? `${picked.length} offence(s)${pts ? `, ${pts} penalty points` : ''}${type !== 'TOR' ? `, pay within ${c.dueDays} days` : ', decided at court'}` : 'Choose offences';
             m.querySelector('#fAmt').textContent = type === 'TOR' ? '' : cur(amt);
         };
+        if (pre.location) m.querySelector('#fLoc').value = pre.location;
         m.querySelectorAll('#fType button').forEach((b) => b.addEventListener('click', () => {
             type = b.dataset.t;
             m.querySelectorAll('#fType button').forEach((x) => x.classList.toggle('active', x === b));
             drawList();
         }));
         drawList();
+        (pre.codes || []).forEach((code) => { const i = m.querySelector(`#fOff input[value="${code}"]`); if (i) { i.checked = true; } });
+        if ((pre.codes || []).length) m.querySelector('#fOff input')?.dispatchEvent(new Event('change'));
         m.querySelector('#fSave').addEventListener('click', async () => {
             const cid = pre.cid || m.querySelector('#fWho').value;
             if (!cid) { toast('Choose the person.', true); return; }
@@ -2290,6 +2343,7 @@ async function fineModal(pre) {
             if (!r.ok) return;
             closeModal();
             toast(`${r.ref} issued.${(r.endorsed || []).length ? ' ' + r.endorsed.join('. ') + '.' : ''}`);
+            if (pre.onIssued) await pre.onIssued(r);
             render();
         });
     });
