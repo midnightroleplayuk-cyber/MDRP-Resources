@@ -1,5 +1,6 @@
 local STASH = 'rsvx_safe_'
 local safes, busy, attempts = {}, {}, {}
+local robbing, crackedAt = {}, {}
 local loaded = false
 
 -- Framework bridge ----------------------------------------------------------
@@ -97,7 +98,7 @@ end)
 
 AddEventHandler('playerDropped', function()
     local src = source
-    busy[src], attempts[src] = nil, nil
+    busy[src], attempts[src], robbing[src] = nil, nil, nil
 end)
 
 -- Callbacks -----------------------------------------------------------------
@@ -227,4 +228,41 @@ lib.callback.register('rsvx_safe:pickup', function(src, id)
     exports.ox_inventory:AddItem(src, Config.Item, 1)
     TriggerClientEvent('rsvx_safe:remove', -1, id)
     return true, 'Safe picked up.'
+end)
+
+-- Robbery -------------------------------------------------------------------
+lib.callback.register('rsvx_safe:robstart', function(src, id)
+    local R = Config.Robbery
+    local s = safes[id]
+    if not R.enabled or not s or not nearPlayer(src, pos(s), 4.0) then return false, 'You are too far away.' end
+    if identifier(src) == s.owner then return false, 'This is your safe.' end
+    if robbing[src] then return false, 'You are already cracking a safe.' end
+    if crackedAt[id] and os.time() < crackedAt[id] + R.cooldown then return false, 'This safe was cracked recently.' end
+    if exports.ox_inventory:GetItemCount(src, R.item) < 1 then return false, 'You need the right tools.' end
+
+    robbing[src] = { id = id, t = os.time() }
+    return true
+end)
+
+lib.callback.register('rsvx_safe:robfinish', function(src, id, passed)
+    local R = Config.Robbery
+    local r = robbing[src]
+    robbing[src] = nil
+    local s = safes[id]
+    if not r or r.id ~= id or not s or not nearPlayer(src, pos(s), 4.0) then return false, 'Attempt cancelled.' end
+    if passed == nil then return false, 'Attempt cancelled.' end
+    if exports.ox_inventory:GetItemCount(src, R.item) < 1 then return false, 'You need the right tools.' end
+
+    -- shortcut: the skill check runs client-side, so the server only enforces the cracking time; add anticheat logging if it gets abused
+    if passed ~= true or os.time() - r.t < math.floor(R.duration / 1000) then
+        if math.random(100) <= R.breakChance then
+            exports.ox_inventory:RemoveItem(src, R.item, 1)
+            return false, 'You failed and your tools broke.'
+        end
+        return false, 'You failed to crack the safe.'
+    end
+
+    crackedAt[id] = os.time()
+    exports.ox_inventory:forceOpenInventory(src, 'stash', STASH .. id)
+    return true, 'Safe cracked.'
 end)

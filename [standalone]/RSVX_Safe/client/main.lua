@@ -42,6 +42,28 @@ local function pickUp(id)
     notify(msg, ok and 'success' or 'error')
 end
 
+local function crackSafe(id)
+    local R = Config.Robbery
+    local ok, msg = lib.callback.await('rsvx_safe:robstart', false, id)
+    if not ok then return notify(msg, 'error') end
+
+    local done = lib.progressCircle({
+        duration = R.duration,
+        label = 'Cracking safe...',
+        position = 'bottom',
+        canCancel = true,
+        disable = { move = true, car = true, combat = true },
+        anim = { dict = 'mini@safe_cracking', clip = 'dial_turn_anti_fast_1' },
+    })
+    -- nil = cancelled, so the server doesn't roll the break chance
+    local passed = nil
+    if done then passed = lib.skillCheck(R.difficulty, R.keys) end
+    ClearPedTasks(cache.ped)
+
+    ok, msg = lib.callback.await('rsvx_safe:robfinish', false, id, passed)
+    notify(msg, ok and 'success' or 'error')
+end
+
 local function spawnSafe(s)
     if props[s.id] then return end
     lib.requestModel(Config.Model)
@@ -55,6 +77,11 @@ local function spawnSafe(s)
         { label = 'Open safe', icon = 'fa-solid fa-vault', distance = 2.0, onSelect = function() openSafe(s.id) end },
         { label = 'Set PIN', icon = 'fa-solid fa-key', distance = 2.0, canInteract = mine, onSelect = function() setPin(s.id) end },
         { label = 'Pick up safe', icon = 'fa-solid fa-hand', distance = 2.0, canInteract = mine, onSelect = function() pickUp(s.id) end },
+        {
+            label = 'Crack safe', icon = 'fa-solid fa-unlock', distance = 2.0, items = Config.Robbery.item,
+            canInteract = function() return Config.Robbery.enabled and not mine() end,
+            onSelect = function() crackSafe(s.id) end,
+        },
     })
 end
 

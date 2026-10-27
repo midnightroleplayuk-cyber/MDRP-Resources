@@ -18,7 +18,7 @@ shared_scripts {
     'config.lua',
 }
 
-files { 'ui/rsvx_safe.png' }
+files { 'ui/rsvx_safe.png', 'ui/safecracker.png' }
 
 client_script 'client/main.lua'
 

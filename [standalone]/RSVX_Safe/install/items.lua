@@ -13,3 +13,13 @@
         event = 'rsvx_safe:use',
     },
 },
+
+-- Needed to crack other players' safes (Config.Robbery.item).
+['safecracker'] = {
+    label = 'Safe Cracker',
+    weight = 1500,
+    stack = true,
+    close = true,
+    description = 'A stethoscope and a set of picks. Not for honest work.',
+    client = { image = 'nui://rsvx_safe/ui/safecracker.png' },
+},
