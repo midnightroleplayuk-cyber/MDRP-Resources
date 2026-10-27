@@ -74,7 +74,7 @@ local MechanicJob = {
                 { offset = vector3(0.133, -1.118, 0.557), rotation = vector3(0.0, 0.0, 90.0) },
             },
             spawnLocations = {
-                vector4(-68.92, -1342.46, 28.8, 184.39),
+                vector4(-182.41, -1277.56, 30.3, 94.67),
                 vector4(-76.35, -1340.97, 28.79, 232.64)
             },
         },
