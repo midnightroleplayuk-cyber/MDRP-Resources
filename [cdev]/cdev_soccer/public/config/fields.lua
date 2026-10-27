@@ -208,7 +208,7 @@ SoccerFields = {
     },
      {
         Key = "jamestown_estate",                       -- Field identifier, must be unique to each field or will error!
-        Middle = vector3(356.41, -2091.28, 17.42), -- Ball origin (middle)
+        Middle = vector3(356.42, -2091.24, 20.88), -- Ball origin (middle)
         FieldZone = createBoxZone(vector3(356.41, -2091.28, 17.42), 77.600000000001, 119.6,
             {                                        -- Polyzone for the field (must be bigger than the area zone and cover the npc)
                 name = "default_field",
