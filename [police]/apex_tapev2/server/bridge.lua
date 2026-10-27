@@ -68,7 +68,8 @@ end
 function S.take(src,item,count,consume)
     if not Config.Inventory.Enabled or item=='' then return true end
     if Config.Inventory.System~='custom' then return originalTake(src,item,count,consume) end
-    if S.count(src,item)<count then return false end
+    if type(count)~='number' or count~=count or count<1 or count>=math.huge or count%1~=0 then return false end
+    if S.count(src,item)<(consume and count or 1) then return false end
     return not consume or hook('RemoveItem',src,item,count)==true
 end
 function S.give(src,item,count)

@@ -64,8 +64,8 @@ local function canUse(src)
     end
     return true
 end
-local function hasItem(src)
-    if Config.Inventory.Enabled and TapeServices.count(src,Config.Inventory.TapeItem)<1 then return false end
+local function hasItem(src,requireTape)
+    if requireTape~=false and Config.Inventory.Enabled and TapeServices.count(src,Config.Inventory.TapeItem)<1 then return false end
     if Config.RequiredOxItem == '' then return true end
     local ok, count = pcall(function() return exports.ox_inventory:Search(src, 'count', Config.RequiredOxItem) end)
     return ok and type(count) == 'number' and count > 0
@@ -161,7 +161,7 @@ local function create(src, p, trusted, quiet, reused)
     if not trusted and TapeAccessServer and TapeAccessServer.holding(src) then return fail('Lower the tape before deploying another span.') end
     if not ready then return fail('Tape storage is still loading.') end
     if storageFault then return fail('Tape storage needs administrator repair; see server console.') end
-    if not trusted and (not canUse(src) or not hasItem(src)) then return fail('Permission or required item missing.') end
+    if not trusted and (not canUse(src) or not hasItem(src,not reused)) then return fail('Permission or required item missing.') end
     if type(p) ~= 'table' then return fail('Invalid request.') end
     if not trusted and not quiet and not TapeFeaturesServer.checkDeployment(src,'place',p.ticket) then return fail('Deployment is incomplete or expired.') end
     local scene
@@ -206,7 +206,7 @@ local function create(src, p, trusted, quiet, reused)
     local paid=false
     if not trusted and not quiet and Config.Inventory.Enabled then
         if not TapeServices.take(src,Config.Inventory.TapeItem,1,Config.Inventory.ConsumeOnPlace) then return fail('Tape item missing or inventory transaction failed.') end
-        paid=Config.Inventory.ConsumeOnPlace
+        paid=Config.Inventory.ConsumeOnPlace and Config.Inventory.TapeItem~=''
     end
     local id, now = nextId, os.time(); nextId=nextId+1
     local t = { id=id, a=a,b=b, coneAId=p.coneAId,coneBId=p.coneBId,
@@ -453,7 +453,7 @@ local function perimeter(src,p)
         nextId=oldNext;dirty=oldDirty
         return nil,'Tape items missing or inventory transaction failed.'
     end
-    for _,id in ipairs(ids) do tapes[id].paidSpool=Config.Inventory.Enabled and Config.Inventory.ConsumeOnPlace;tapes[id].paidItem=tapes[id].paidSpool and Config.Inventory.TapeItem or nil end
+    for _,id in ipairs(ids) do tapes[id].paidSpool=Config.Inventory.Enabled and Config.Inventory.ConsumeOnPlace and Config.Inventory.TapeItem~='';tapes[id].paidItem=tapes[id].paidSpool and Config.Inventory.TapeItem or nil end
     TapeFeaturesServer.completeDeployment(src)
     TapeServices.audit('perimeter',src,{sceneId=scene.id,count=#ids,kind=p.kind})
     for _,id in ipairs(ids) do emit(scene.bucket,'apex_policetape:add',public(tapes[id]));TriggerEvent('apex_policetape:placed',id,src) end

@@ -8,9 +8,9 @@ UserConfig={Version=2,Settings={
     -- Public works immediately. Choose 'ace' to require UseAce, or use
     -- Framework='qb'/'esx', Mode='jobs_or_staff' and your actual job names.
     Permissions={
-        Framework='qb',Mode='public',
+        Framework='standalone',Mode='jobs',
         Jobs={police=0,ambulance=0,fire=0},
-        RequireOnDuty=true,StaffBypass=true,
+        RequireOnDuty=true,StaffBypass=false,
         UseAce='apex.policetape',StaffAce='apex.policetape.admin',
     },
 

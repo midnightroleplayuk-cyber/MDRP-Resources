@@ -46,6 +46,7 @@ client_scripts {
     'client/custom_text.lua',
     'client/npc_pedestrians.lua',
     'client/enhancements.lua',
+    'client/ox_inventory.lua',
 }
 
 server_scripts {

@@ -63,7 +63,7 @@ local function batch(src,spans,sceneId,ticket,slack)
     F.completeDeployment(src)
     for _,id in ipairs(ids) do
         local t=TapeRuntime.tapes[id]
-        t.paidSpool=Config.Inventory.Enabled and Config.Inventory.ConsumeOnPlace;t.paidItem=t.paidSpool and Config.Inventory.TapeItem or nil
+        t.paidSpool=Config.Inventory.Enabled and Config.Inventory.ConsumeOnPlace and Config.Inventory.TapeItem~='';t.paidItem=t.paidSpool and Config.Inventory.TapeItem or nil
         TapeRuntime.emit(t.bucket,'apex_policetape:add',TapeRuntime.public(t));TriggerEvent('apex_policetape:placed',id,src)
     end
     return {success=true,sceneId=sceneId,count=#ids}

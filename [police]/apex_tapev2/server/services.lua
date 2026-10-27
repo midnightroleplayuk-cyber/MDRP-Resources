@@ -40,11 +40,12 @@ function S.count(src,item)
         if Config.Inventory.System=='qb' then local p=exports['qb-core']:GetCoreObject().Functions.GetPlayer(src);local i=p and p.Functions.GetItemByName(item);return i and (i.amount or i.count) or 0 end
         local p=exports.es_extended:getSharedObject().GetPlayerFromId(src);local i=p and p.getInventoryItem(item);return i and i.count or 0
     end)
-    return ok and type(count)=='number' and count or 0
+    return ok and type(count)=='number' and count==count and count>=0 and count<math.huge and math.floor(count) or 0
 end
 function S.take(src,item,count,consume)
     if not Config.Inventory.Enabled or item=='' then return true end
-    if S.count(src,item)<count then return false end
+    if type(count)~='number' or count~=count or count<1 or count>=math.huge or count%1~=0 then return false end
+    if S.count(src,item)<(consume and count or 1) then return false end
     if not consume then return true end
     local ok,result=pcall(function()
         if Config.Inventory.System=='ox' then return exports.ox_inventory:RemoveItem(src,item,count) end
@@ -82,7 +83,7 @@ function S.audit(action,src,details)
     end
 end
 function S.refund(src,item,count)
-    if not item or count<1 then return false end
+    if type(item)~='string' or item=='' or type(count)~='number' or count~=count or count<1 or count>=math.huge or count%1~=0 then return false end
     if S.give(src,item,count) then S.audit('refund',src,{item=item,count=count});return true end
     local id=GetPlayerIdentifierByType(src,'license')
     if id then S.Refunds[id]=S.Refunds[id] or {};S.Refunds[id][item]=(S.Refunds[id][item] or 0)+count end
@@ -220,3 +221,4 @@ function S.startup()
     print(('[APEX Tape %s] Ready checks passed: %d designs, %s profile, locale %s.'):format(Config.Version,count,Config.PerformanceProfile,Config.Locale))
     return true
 end
+

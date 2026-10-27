@@ -5268,16 +5268,23 @@ return {
 
 -- APEX Tape
 ['police_tape'] = {
-    label = 'Police Tape',
-    weight = 100,
+    label = 'Scene Tape',
+    weight = 200,
     stack = true,
-    description = 'Police Tape',
+    close = true,
+    consume = 0, -- APEX consumes tape on successful placement, not when opening the kit.
+    description = 'Choose a cordon design and deploy scene tape.',
+    client = {
+        export = 'APEX_Tape.UseTapeItem', -- Must match your actual resource folder name.
+    },
 },
 ['scissors'] = {
     label = 'Scissors',
     weight = 100,
     stack = true,
-    description = 'A pair of scissors',
+    close = true,
+    consume = 0,
+    description = 'Used by APEX Tape cutting interactions.',
 },
 
 -- Rsvx_safe
