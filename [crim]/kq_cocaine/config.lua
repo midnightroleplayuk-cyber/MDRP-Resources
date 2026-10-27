@@ -349,7 +349,7 @@ Config.plantations = {
     },
     ['addon_a_1'] = {
         -- Whether the plantation should be enabled
-        enabled = false,
+        enabled = true,
 
         regrowTime = 30, -- time in minutes
 
@@ -464,7 +464,7 @@ Config.plantations = {
     },
     ['addon_b_1'] = {
         -- Whether the plantation should be enabled
-        enabled = false,
+        enabled = true,
 
         regrowTime = 30, -- time in minutes
 
@@ -578,7 +578,7 @@ Config.plantations = {
     },
     ['addon_c_1'] = {
         -- Whether the plantation should be enabled
-        enabled = false,
+        enabled = true,
 
         regrowTime = 30, -- time in minutes
 
