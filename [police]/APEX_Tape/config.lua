@@ -10,7 +10,7 @@ UserConfig={Version=2,Settings={
     Permissions={
         Framework='standalone',Mode='jobs',
         Jobs={police=0,ambulance=0,fire=0},
-        RequireOnDuty=true,StaffBypass=false,
+        RequireOnDuty=true,StaffBypass=true,
         UseAce='apex.policetape',StaffAce='apex.policetape.admin',
     },
 
