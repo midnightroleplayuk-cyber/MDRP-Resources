@@ -531,14 +531,14 @@ RegisterNetEvent('apex_adminmenu:panel:avatarReady', function(license, url)
 end)
 
 -- Server -> client clock sync (also drives the in-game time).
-RegisterNetEvent('apex_adminmenu:panel:timeSync', function(hour, minute)
-    if NetworkOverrideClockTime then
-        NetworkOverrideClockTime(tonumber(hour) or 12, tonumber(minute) or 0, 0)
-    end
-    if panelOpen then
-        SendNUIMessage({ action = 'panel:timeSync', hour = hour, minute = minute })
-    end
-end)
+--RegisterNetEvent('apex_adminmenu:panel:timeSync', function(hour, minute)
+    --if NetworkOverrideClockTime then
+        --NetworkOverrideClockTime(tonumber(hour) or 12, tonumber(minute) or 0, 0)
+    --end
+    --if panelOpen then
+        --SendNUIMessage({ action = 'panel:timeSync', hour = hour, minute = minute })
+    --end
+--end)
 
 -- Push our real in-game time to the server every few seconds so the
 -- admin panel can show "current server time" rather than a simulated
