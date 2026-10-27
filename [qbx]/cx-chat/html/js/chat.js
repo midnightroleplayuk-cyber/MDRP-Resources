@@ -88,6 +88,10 @@ function openChat(channel, channelColor) {
 }
 
 function closeChat() {
+    // Discard the unfinished draft, but preserve submitted command history.
+    inp.value = '';
+    hIdx = -1;
+    delete inp.dataset.editing;
     inpPan.classList.remove('open');
     hidePop();
 
