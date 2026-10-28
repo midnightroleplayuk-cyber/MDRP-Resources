@@ -37,7 +37,7 @@ Config.DepositMultiplier     = 1.0
 
 -- CurrencySymbol is what the UI prints next to an amount.
 -- MoneyAccount is the framework account the money is added to (bank / cash).
-Config.CurrencySymbol        = "$"
+Config.CurrencySymbol        = "£"
 Config.MoneyAccount          = "bank"
 
 -- PROMPTS — how the [E] prompt looks. One key:
@@ -72,7 +72,7 @@ Config.Showcase              = {
 }
 
 -- ---------------------------------------------------------------------- MISC
-Config.ServerName            = "TWORST"
+Config.ServerName            = "Midnight RP"
 Config.ExampleProfilePicture = "https://r2.fivemanage.com/biv23I9cFWICSObhZsr4C/LogoNEW.png"
 
 -- Discord logging. ⚠ DO NOT PUT THE WEBHOOK URL HERE: config/*.lua is a
