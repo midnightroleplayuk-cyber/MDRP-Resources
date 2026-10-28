@@ -18,7 +18,7 @@ Config.MaxPerHour = 5
 
 Config.Desk = {
 	Enabled = true,
-	Coords = vec3(441.2, -981.9, 30.7), -- UPDATE ME
+	Coords = vec3(413.49, -332.74, 47.1), -- UPDATE ME
 	Distance = 2.0,
 	PublicIcon = 'fa-solid fa-pen-to-square',
 	PublicLabel = 'Submit Complaint / Enquiry',
