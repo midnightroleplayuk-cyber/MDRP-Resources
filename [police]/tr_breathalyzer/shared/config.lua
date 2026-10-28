@@ -16,7 +16,7 @@ Config = {
 
     -- What the screen shows: 'percent' (0.084 % BAC, as US devices), 'permille' (0.84 ‰) or 'mgl'
     -- (0.42 mg/L of breath, as EU devices).
-    unit = 'percent',
+    unit = 'mgl',
     -- The legal limit in each unit: a reading at or over it shows OVER LIMIT.
     limits = { percent = 0.08, permille = 0.8, mgl = 0.35 },
 
