@@ -5273,7 +5273,6 @@ return {
     close = true,
     consume = 0,
     client = {
-        image = 'nui://night_police_tape/html/images/police_tape.png',
         export = 'night_police_tape.useTape',
     },
 },
