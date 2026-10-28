@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>Police complaints and enquiries</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="tablet" class="tablet hidden">
+    <main id="app" class="app" aria-labelledby="heading">
+      <header class="masthead">
+        <img class="brand-logo" src="mpd-logo.png" alt="Midnight Constabulary crest">
+        <div class="brand-copy">
+          <p class="eyebrow">MIDNIGHT CONSTABULARY</p>
+          <h1 id="heading">Complaints &amp; enquiries</h1>
+          <p id="subheading">Tell us about your experience</p>
+        </div>
+        <button id="close" class="icon-button close" type="button" aria-label="Close form">×</button>
+      </header>
+
+    <section id="citizenView" class="view citizen-view" aria-label="Submit a complaint">
+      <div class="intro">
+        <div>
+          <p class="kicker">Your voice matters</p>
+          <h2>How can we help?</h2>
+          <p>Give us as much detail as you can. Required fields are marked with an asterisk.</p>
+        </div>
+      </div>
+
+      <form id="form" novalidate>
+        <div class="field">
+          <label for="cat">What is your complaint about? <span>*</span></label>
+          <select id="cat" name="category" required>
+            <option value="Officer Conduct / Behaviour">Officer conduct or behaviour</option>
+            <option value="Standard of Service Provided">Standard of service</option>
+            <option value="Unreasonable Delay or Omission">Unreasonable delay or omission</option>
+            <option value="Discourtesy or Unfair Treatment">Discourtesy or unfair treatment</option>
+            <option value="Equipment / Resources">Equipment or resources</option>
+            <option value="Other Matter">Another matter</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="title">Subject <span>*</span></label>
+          <input id="title" name="title" type="text" maxlength="100" placeholder="A short summary of what happened" required>
+          <div class="field-foot"><span>Keep it brief and specific.</span><span id="titleCount">0 / 100</span></div>
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="loc">Where did it happen?</label>
+            <input id="loc" name="location" type="text" maxlength="150" placeholder="Street, area or station">
+          </div>
+          <div class="field">
+            <label for="contact">How can we contact you?</label>
+            <input id="contact" name="contact" type="text" maxlength="100" placeholder="Optional contact details">
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="desc">Tell us what happened <span>*</span></label>
+          <textarea id="desc" name="description" maxlength="2000" rows="5" placeholder="Include what happened, when it happened, and anyone involved." required></textarea>
+          <div class="field-foot"><span>Do not include passwords or sensitive account details.</span><span id="descCount">0 / 2000</span></div>
+        </div>
+
+        <label class="check-row" for="anon">
+          <input type="checkbox" id="anon" name="anonymous">
+          <span class="check-copy"><strong>Submit anonymously</strong><small>Your character ID and contact details will not be stored with this complaint.</small></span>
+        </label>
+
+        <div class="form-actions">
+          <p class="privacy-copy">Your submission will be reviewed by authorised police staff.</p>
+          <div class="button-row">
+            <button type="reset" class="button button-secondary">Clear form</button>
+            <button id="submitButton" type="submit" class="button button-primary"><span>Lodge complaint</span><span aria-hidden="true">→</span></button>
+          </div>
+        </div>
+      </form>
+    </section>
+
+    <section id="officerView" class="view staff-view hidden" aria-label="Staff complaint review">
+      <div class="staff-heading">
+        <div><p class="kicker">Professional standards</p><h2>Complaint register</h2></div>
+        <span id="recordCount" class="record-count">0 records</span>
+      </div>
+      <div class="toolbar">
+        <label class="search-wrap"><span aria-hidden="true">⌕</span><input id="search" type="search" placeholder="Search reference, name or subject" aria-label="Search complaints"></label>
+        <select id="flt" aria-label="Filter by status">
+          <option value="all">All statuses</option>
+          <option value="submitted">Submitted</option>
+          <option value="reviewed">Under review</option>
+          <option value="psd">Referred to PSD</option>
+          <option value="iopc">Referred to IOPC</option>
+          <option value="closed">Closed</option>
+        </select>
+        <button id="refr" class="button button-secondary" type="button">Refresh</button>
+      </div>
+      <div class="staff-layout">
+        <div id="list" class="complaint-list" role="list" aria-label="Complaints"></div>
+        <article id="det" class="detail-panel empty" aria-live="polite">
+          <div class="empty-detail"><span aria-hidden="true">◎</span><strong>Select a complaint</strong><p>Choose a record from the list to review its details.</p></div>
+        </article>
+      </div>
+    </section>
+      <div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
+    </main>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>
