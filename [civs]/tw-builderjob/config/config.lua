@@ -310,7 +310,7 @@ Config.JobClothes                = {
         { glasses = -1, texture= 0 },
         { watches = -1, texture = 0 },
         { bracelets = -1, texture = 0 }
-    }
+    },
 }
 
 -- Vehicle key integration. Swap GiveVehicleKey for your own key system.
