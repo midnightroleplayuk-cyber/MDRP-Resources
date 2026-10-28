@@ -307,7 +307,7 @@ Config.JobClothes                = {
         { chain = 0,     texture = 0 },
         { decals = 0,    texture = 0 },
         { helmet = 144,  texture = 0},
-        { glasses = -1,texture = 0 },
+        { glasses = -1, texture= 0 },
         { watches = -1, texture = 0 },
         { bracelets = -1, texture = 0 }
     }
