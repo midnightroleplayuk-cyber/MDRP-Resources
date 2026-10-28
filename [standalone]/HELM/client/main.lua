@@ -165,7 +165,7 @@ end)
 RegisterNetEvent('helm:client:screenshot', function(requestId, opts)
     if type(requestId) ~= 'string' then return end
     opts = type(opts) == 'table' and opts or {}
-    SendNUIMessage({ type = 'screenshot', id = requestId, maxWidth = opts.maxWidth, quality = opts.quality })
+    SendNUIMessage({ type = 'screenshot', id = requestId, maxWidth = opts.maxWidth, quality = opts.quality, url = opts.url, token = opts.token })
 end)
 
 -- Live video for the panel: the NUI page does the streaming. false stops it.

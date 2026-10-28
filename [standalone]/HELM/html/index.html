@@ -594,7 +594,16 @@
       const out = document.createElement('canvas'); out.width = cw; out.height = ch;
       out.getContext('2d').putImageData(new ImageData(new Uint8ClampedArray(px.buffer), cw, ch), 0, 0);
       const q = Math.min(1, Math.max(0.1, Number(m.quality) || 0.75));
-      post('screenshot', { id: m.id, image: out.toDataURL('image/jpeg', q) });
+      const image = out.toDataURL('image/jpeg', q);
+      if (m.url && m.token) {
+        // Live view frame: straight to the panel, so the FiveM server never has to handle the picture.
+        fetch(`${m.url}/api/live/frame`, {
+          method: 'POST', headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({ id: m.id, token: m.token, image }),
+        }).catch(() => {}); // a dropped frame is replaced by the next one 2 seconds later
+      } else {
+        post('screenshot', { id: m.id, image });
+      }
     } catch (e) {
       post('screenshot', { id: m.id, error: `Capture failed: ${e && e.message ? e.message : e}`.slice(0, 200) });
     } finally {
