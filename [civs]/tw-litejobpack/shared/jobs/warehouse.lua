@@ -89,7 +89,7 @@ local WarehouseJob = {
             boxCapacity = 8,
             palletCapacity = 3,
 
-            maxConcurrentTrucks = 1,
+            maxConcurrentTrucks = 3,
 
             trucksPerLevel = {
                 [0] = 1,
