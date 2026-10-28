@@ -299,17 +299,17 @@ Config.JobClothes                = {
     },
     female = {
         { jacket = 516,  texture = 0 },
-        { shirt = 36,    texture = 2 },
+        { shirt = 1,    texture = 1},
         { arms = 0,      texture = 0 },
-        { legs = 100,     texture = 2 },
+        { legs = 100,     texture = 1 },
         { shoes = 25,    texture = 0 },
         { mask = 0,      texture = 0 },
         { chain = 0,     texture = 0 },
         { decals = 0,    texture = 0 },
-        { helmet = 144,  texture = 2 },
-        { glasses = 0,   texture = 0 },
-        { watches = 0,   texture = 0 },
-        { bracelets = 0, texture = 0 }
+        { helmet = 144,  texture = 0},
+        { glasses = -1 texture = 0 },
+        { watches = -1  texture = 0 },
+        { bracelets = -1, texture = 0 }
     }
 }
 
