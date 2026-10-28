@@ -66,8 +66,7 @@ files {
     'web/assets/licence/*.jpg',
     'web/assets/licence/*.jpeg',
     'web/assets/licence/*.svg',
-    'locales/*.json',
-    'images/*.png',
+    'locales/*.json'
 }
 
 dependency '/assetpacks'
