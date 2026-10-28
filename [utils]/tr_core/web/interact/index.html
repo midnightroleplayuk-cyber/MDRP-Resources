@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <!-- tr_core's interaction panel (client/interact.lua draws this page at the thing in the world). -->
+    <link rel="stylesheet" href="interact.css" />
+  </head>
+  <body>
+    <div id="ui" class="ui" data-state="hidden">
+      <div id="panel" class="panel">
+        <div id="mark" class="mark">
+          <div id="key" class="key">E</div>
+          <svg class="wheel" viewBox="0 0 10 14" aria-hidden="true">
+            <rect x="0.75" y="0.75" width="8.5" height="12.5" rx="4.25" />
+            <line x1="5" y1="3.4" x2="5" y2="5.6" />
+          </svg>
+        </div>
+        <div id="rows"></div>
+      </div>
+    </div>
+    <script src="interact.js"></script>
+  </body>
+</html>
