@@ -5,7 +5,7 @@ local TruckerJob = {
     icon = "./img/jobs/trucker_icon.svg",
     image = "./img/jobs/trucker_bg.png",
     video = "https://tworst.info/uploads/videos/83a613862e4e5703ff4c80613a88bf56_1775405639.mp4",
-    enabled = true, -- true = job active | false = job disabled
+    enabled = false, -- true = job active | false = job disabled
     requiredHours = 0, -- minimum hours played to start this job (0 = no requirement, requires Config.HoursRequirement.enabled)
     maxHours = 0, -- maximum hours allowed to start this job (0 = no limit, e.g. 100 = players with 100+ hours cannot do this job)
 
