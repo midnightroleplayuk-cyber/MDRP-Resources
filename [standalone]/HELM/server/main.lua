@@ -638,7 +638,7 @@ function HelmReviveNearby(center, radius, by)
     for _, s in ipairs(GetPlayers()) do
         local id = tonumber(s)
         local ped = GetPlayerPed(id)
-        if ped ~= 0 and within(ped, center, radius) and GetEntityHealth(ped) <= 0 then
+        if ped ~= 0 and within(ped, center, radius) and Bridge.IsDown(id) then
             Bridge.Revive(id)
             HelmTellPlayer(id, 'revive', '{who} revived you.', by)
             n = n + 1
@@ -798,18 +798,27 @@ handlers.live_view = function(p)
     end
     if type(p.streamId) ~= 'string' or not p.streamId:match('^live_%w+$') then return false, 'bad request' end
     local current = liveViews[src]
+    -- With a token the game posts frames straight to the panel, so the image never crosses this server thread
+    -- (relaying it here caused "server thread hitch" warnings). No token = older panel, relay as before.
+    local token = type(p.token) == 'string' and p.token:match('^%x+$') and p.token or nil
     if current and current.id == p.streamId then
         current.untilAt = GetGameTimer() + math.min(seconds, 60) * 1000
+        current.token = token or current.token
         return true
     end
     -- A new stream: its own loop, which ends as soon as it is no longer the current one for this player.
-    local mine = { id = p.streamId, untilAt = GetGameTimer() + math.min(seconds, 60) * 1000 }
+    local mine = { id = p.streamId, untilAt = GetGameTimer() + math.min(seconds, 60) * 1000, token = token }
     liveViews[src] = mine
     HelmTellPlayer(src, 'live_view', '{who} is watching your screen.', p.by)
     CreateThread(function()
         while liveViews[src] == mine and GetGameTimer() < mine.untilAt and GetPlayerName(src) do
-            pendingShots[mine.id] = { src = src, license = p.license, at = GetGameTimer() }
-            TriggerClientEvent('helm:client:screenshot', src, mine.id, { maxWidth = 960, quality = 0.5 })
+            local opts = { maxWidth = 960, quality = 0.5 }
+            if mine.token then
+                opts.url, opts.token = (Config.PanelUrl:gsub('/+$', '')), mine.token
+            else
+                pendingShots[mine.id] = { src = src, license = p.license, at = GetGameTimer() }
+            end
+            TriggerClientEvent('helm:client:screenshot', src, mine.id, opts)
             Wait(2000)
         end
         if liveViews[src] == mine then liveViews[src] = nil end
