@@ -123,7 +123,7 @@ local fallbacks = {
     keys = 'none',
     fuel = 'none',
     dispatch = 'none',
-    target = 'tr_core',
+    target = 'ox_target',
 }
 
 -- What a kind uses when its convar isn't set ('auto': the first provider found). The target is tr_core's
