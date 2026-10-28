@@ -30,7 +30,7 @@ Config = {
     volume = 0.3,
 
     -- Keys, as the game names them. Players change theirs in Settings > Key Bindings > FiveM.
-    keys = { blow = 'E', cancel = 'X', accept = 'Y', refuse = 'N' },
+    keys = { blow = 'F', cancel = 'X', accept = 'Y', refuse = 'N' },
 
     -- Blood alcohol, in % BAC (grams per 100 ml of blood)
     perDrink = 0.02,                            -- one standard drink, taken up over absorbMinutes
