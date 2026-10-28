@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>UK Police — Complaints</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="app" class="hidden">
+  <header>
+    <div>
+      <h1 id="heading"></h1>
+      <p id="subheading"></p>
+    </div>
+    <button id="close" class="close">&times;</button>
+  </header>
+
+  <div id="citizenView" class="view">
+    <form id="form">
+      <div class="fg"><label>Nature of Complaint</label>
+        <select id="cat" required>
+          <option>Officer Conduct / Behaviour</option>
+          <option>Standard of Service Provided</option>
+          <option>Unreasonable Delay or Omission</option>
+          <option>Discourtesy or Unfair Treatment</option>
+          <option>Equipment / Resources</option>
+          <option>Other Matter</option>
+        </select>
+      </div>
+      <div class="fg"><label>Subject</label><input id="title" maxlength="100" required></div>
+      <div class="fg"><label>Location</label><input id="loc" maxlength="150"></div>
+      <div class="fg"><label>Contact (optional)</label><input id="contact" maxlength="100"></div>
+      <div class="fg"><label>Full Details</label><textarea id="desc" maxlength="2000" required></textarea></div>
+      <label class="cb"><input type="checkbox" id="anon"> Submit Anonymously</label>
+      <div class="acts">
+        <button type="reset" class="btn sec">Clear</button>
+        <button type="submit" class="btn pri">Lodge Complaint</button>
+      </div>
+    </form>
+  </div>
+
+  <div id="officerView" class="view hidden">
+    <div class="tb">
+      <input id="search" placeholder="Search reference, name, subject..." class="srch">
+      <select id="flt">
+        <option value="all">All Statuses</option>
+        <option value="submitted">Submitted</option>
+        <option value="reviewed">Under Review</option>
+        <option value="psd">Referred to PSD</option>
+        <option value="iopc">Referred to IOPC</option>
+        <option value="closed">Closed</option>
+      </select>
+      <button id="refr" class="btn sec">Refresh</button>
+    </div>
+    <div class="cols">
+      <div id="list" class="panel"></div>
+      <div id="det" class="panel det empty">Select a complaint</div>
+    </div>
+  </div>
+  <div id="toast" class="toast hidden"></div>
+</div>
+<script src="script.js"></script>
+</body>
+</html>
