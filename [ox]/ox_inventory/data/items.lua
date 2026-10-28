@@ -673,7 +673,7 @@ return {
     close = true,
     description = 'UK DVLA style photocard driving licence.',
     client = {
-        image = 'driving_licence.png',
+        image = 'nui://vinewood_licensing/images/driving_licence.png',
         status = { 'expiry' },
         export = 'vinewood_licensing.useLicence'
     }
@@ -687,7 +687,7 @@ return {
         consume = 0,          -- REQUIRED: a licence is not used up when shown
         description = 'Provisional entitlement - must be accompanied',
         client = {
-            image = 'provisional_licence.png',
+            image = 'nui://vinewood_licensing/images/provisional_licence.png',
             export = 'vinewood_licensing.useLicence'
         }
     },
@@ -5276,7 +5276,7 @@ return {
         image = 'nui://night_police_tape/html/images/police_tape.png',
         export = 'night_police_tape.useTape',
     },
-}
+},
 
 -- Rsvx_safe
 
