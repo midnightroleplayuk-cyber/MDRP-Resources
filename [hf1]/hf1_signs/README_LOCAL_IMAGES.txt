@@ -11,3 +11,8 @@ Existing database rows remain valid. No SQL migration is required. See sql/UPGRA
 Local images are streamed by FiveM NUI, not a third-party image host. Local images use DUI textures; remote images keep the existing server fetch/render mechanism.
 File names: letters, numbers, underscores, hyphens; extensions png/jpg/jpeg/webp/gif.
 Local files are included in fxmanifest.lua.
+
+V1.3.1: Local images now render through the full-canvas NUI image page
+with object-fit: fill. Wide and tall images stretch to fill the entire
+sign area (may change the original image aspect ratio). Existing signs
+and database records are unchanged. Restart hf1_signs after updating.

@@ -417,7 +417,12 @@ local function requestImage(sign)
 
     if validLocalSource(sign.image_url) then
         local filename = sign.image_url:sub(7)
-        local duiUrl = ('https://cfx-nui-%s/html/images/%s'):format(GetCurrentResourceName(), filename)
+        -- Render through our full-canvas NUI page so rectangular source images
+        -- stretch to the sign texture instead of gaining letterbox bars.
+        local encodedFilename = filename:gsub('([^%w%-%._])', function(c)
+            return ('%%%02X'):format(c:byte())
+        end)
+        local duiUrl = ('https://cfx-nui-%s/html/index.html?url=images/%s'):format(GetCurrentResourceName(), encodedFilename)
         local dui = CreateDui(duiUrl, 1024, 1024)
         if not dui then imageRequests[id] = nil return end
         local txdName = ('hf1_signs_%s_%s'):format(textureSession, id)
