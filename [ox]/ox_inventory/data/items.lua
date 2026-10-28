@@ -5272,9 +5272,7 @@ return {
     stack = true,
     close = true,
     consume = 0,
-    client = {
-        export = 'night_police_tape.useTape',
-    },
+    client = { export = 'night_police_tape.StartPlacement' },
 },
 
 -- Rsvx_safe
