@@ -957,7 +957,7 @@ local function registerCommands()
 	lib.addKeybind({
 		name = 'invclothing',
 		description = locale('open_clothing'),
-		defaultKey = GetConvar('inventory:clothingkeybind', 'Y'),
+		defaultKey = GetConvar('inventory:clothingkeybind', 'M'),
 		onPressed = function()
 			if invOpen then
 				if clothingTabOpen then
