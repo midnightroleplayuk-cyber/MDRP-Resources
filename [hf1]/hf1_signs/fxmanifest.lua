@@ -3,7 +3,7 @@ game 'gta5'
 
 author 'HF1'
 description 'Qbox flat 2D surface signs'
-version '1.2.8'
+version '1.3.0'
 
 lua54 'yes'
 
@@ -26,4 +26,13 @@ dependencies {
     'ox_lib',
     'oxmysql',
     'qbx_core'
+}
+
+files {
+    'html/index.html',
+    'html/images/*.png',
+    'html/images/*.jpg',
+    'html/images/*.jpeg',
+    'html/images/*.webp',
+    'html/images/*.gif'
 }
