@@ -10,7 +10,7 @@ local MechanicJob = {
 
     npc = {
         enabled = true, -- true = spawn NPC | false = no NPC
-        coords = vector4(-68.9, -1331.45, 29.27, 175.71),
+        coords = vector4(-174.78, -1273.2, 32.6, 91.27),
         model = "s_m_y_ammucity_01",
         scenario = "WORLD_HUMAN_WELDING",
         interaction = {
@@ -74,8 +74,8 @@ local MechanicJob = {
                 { offset = vector3(0.133, -1.118, 0.557), rotation = vector3(0.0, 0.0, 90.0) },
             },
             spawnLocations = {
-                vector4(-68.92, -1342.46, 28.8, 184.39),
-                vector4(-76.35, -1340.97, 28.79, 232.64)
+                vector4(-182.41, -1277.56, 30.3, 94.67),
+                vector4(-181.85, -1274.3, 30.3, 86.29),
             },
         },
 

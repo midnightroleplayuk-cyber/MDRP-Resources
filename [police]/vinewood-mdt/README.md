@@ -407,3 +407,26 @@ sent them is told about the hit.
 
 Traces disappear after `TraceMinutes` if nobody collects them. `IgnoreJobs` stops chosen jobs leaving
 casings (e.g. police on the range).
+
+### Fingerprints
+Getting into a vehicle (or trying its door) without gloves leaves that person's prints on it for
+`PrintMinutes`. Gloves are worked out from the arms clothing (component 3): anything not listed in
+`Config.Forensics.NoGloves` counts as gloves, so add bare-arm IDs from your clothing packs there.
+In forensics mode, stand next to a vehicle and press **G** to dust it; each set of prints becomes a sample
+to bag on the incident and send to the lab. A match against the **fingerprint database** links the person
+as a suspect. Booking someone in takes their prints (`PrintsOnArrest`), or use *Take prints* on their
+record; earlier lifts are re-checked when someone is added.
+
+## ANPR speed
+In-car ANPR measures the speed of the vehicles it reads. The strip at the bottom shows the plate and speed
+in front and behind (red when over), the speed limit of the road and your own speed.
+- Limits come from the street name: `Config.ANPR.Speed.Streets`, then `Patterns` (Fwy 70, Hwy 60...), then `Default`.
+- A speeder over the limit + 10% + 2 (UK guidance, `Tolerance`) is recorded automatically and alerts as an
+  amber ANPR hit (`AutoRecord`, `AlertOfficer`).
+- Press **K** (`/anprlock`) to lock the vehicle in front: its speed, the limit, your own speed, time and
+  place are saved as evidence even if it's under the limit.
+- **Speed cameras**: give a roadside camera a speed limit in `/anpradmin` (or `speedLimit` in config) and it
+  records anyone over it.
+- The ANPR page's **Speed detections** tab lists everything with the keeper. *Ticket keeper* opens a fixed
+  penalty (SP30) filled in with the speed, limit, device and time, and marks the detection as ticketed.
+  Speed checks also show in the vehicle record's activity.

@@ -40,8 +40,9 @@
 
 <div id="anprHud" class="anpr-hud hidden" aria-live="off">
     <span class="dot"></span><b>ANPR</b>
-    <span class="cam">F <span id="anprFront">-</span></span>
-    <span class="cam">R <span id="anprRear">-</span></span>
+    <span class="cam">F <span id="anprFront">-</span><em id="anprFrontSpd"></em></span>
+    <span class="cam">R <span id="anprRear">-</span><em id="anprRearSpd"></em></span>
+    <span class="cam spd hidden" id="anprSpd">LIMIT <span id="anprLimit">-</span> OWN <span id="anprOwn">-</span></span>
 </div>
 <div id="anprAlert" class="anpr-alert hidden" role="alert"></div>
 <div id="layoutBar" class="layout-bar hidden">

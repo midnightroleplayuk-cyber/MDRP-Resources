@@ -1,0 +1,288 @@
+/* The placement HUD on the Nights Software interface kit (kit/, copied from night_ers NUI/kit).
+   Every colour, size, weight and duration comes from a --k- token; the fonts (Tektur, Manrope)
+   are declared by kit/ns_kit_tokens.css. */
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  overflow: hidden;
+  user-select: none;
+}
+
+.tape-hud {
+  position: fixed;
+  left: 50%;
+  bottom: 1.25rem;
+  box-sizing: border-box;
+  width: 30rem;
+  max-width: calc(100% - 2rem);
+  overflow: hidden;
+  font-family: var(--k-body);
+  pointer-events: none;
+  opacity: 0;
+  transform: translate(-50%, 0.375rem);
+  transition:
+    opacity var(--k-dur-2) var(--k-ease),
+    transform var(--k-dur-2) var(--k-ease);
+}
+
+.tape-hud.is-shown {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+.tape-hud[hidden] {
+  display: none;
+}
+
+/* The panel's title is its section label; the step sits after the hairline. */
+.tape-hud__head {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  padding: 0.9375rem 1.125rem 0;
+}
+
+.tape-hud__title {
+  flex: 1;
+  min-width: 0;
+  color: var(--k-ink);
+}
+
+.tape-hud__title > span {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.tape-hud__step {
+  flex: none;
+  white-space: nowrap;
+}
+
+.tape-hud__step:empty {
+  display: none;
+}
+
+.tape-hud__meta {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  padding: 0.5625rem 1.125rem 0;
+  font-size: var(--k-text-md);
+  font-weight: var(--k-w-1);
+  line-height: 1.35;
+  color: var(--k-ink-2);
+  transition: color var(--k-dur-1) var(--k-ease);
+}
+
+.tape-hud__meta:empty {
+  display: none;
+}
+
+/* Why the aim point will not take: P2 with the kit's status diamond. */
+.tape-hud__meta.is-warn {
+  color: var(--k-p2);
+}
+
+.tape-hud__meta.is-warn::before {
+  content: '';
+  flex: none;
+  width: 0.4375rem;
+  height: 0.4375rem;
+  background: currentColor;
+  clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
+  transform: translateY(-0.0625rem);
+}
+
+/* The style picker: arrow keys either side of the tape, its name under it. Without a swatch the
+   name takes the tape's place between the keys. */
+.tape-hud__style {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  grid-template-areas:
+    'prev swatch next'
+    '. name .';
+  align-items: center;
+  gap: 0.5rem 0.625rem;
+  padding: 0.875rem 1.125rem 0;
+}
+
+.tape-hud__arrow {
+  justify-content: center;
+  min-width: 1.75rem;
+  height: 1.75rem;
+  box-sizing: border-box;
+  font-size: var(--k-text-sm);
+}
+
+.tape-hud__arrow:empty {
+  visibility: hidden;
+}
+
+.tape-hud__arrow--prev {
+  grid-area: prev;
+}
+
+.tape-hud__arrow--next {
+  grid-area: next;
+}
+
+/* One metre of 7.5 cm tape, cut at the top-left shoulder like the kit's fields and tags. */
+.tape-hud__swatch {
+  grid-area: swatch;
+  position: relative;
+  aspect-ratio: 40 / 3;
+  overflow: hidden;
+  background: rgb(var(--tape-color, 245, 206, 20)); /* cc-allow: the tape's own colour */
+  clip-path: polygon(var(--k-cut-s) 0, 100% 0, 100% 100%, 0 100%, 0 var(--k-cut-s));
+  transition: background-color var(--k-dur-2) var(--k-ease);
+}
+
+.tape-hud__swatch::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  box-shadow: inset 0 0 0 1px var(--k-shadow);
+  pointer-events: none;
+}
+
+/* Two images so a new style fades in over the old one instead of flashing. */
+.tape-hud__swatch img {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+  opacity: 0;
+  transition: opacity var(--k-dur-2) var(--k-ease);
+}
+
+.tape-hud__swatch img.is-front {
+  opacity: 1;
+}
+
+.tape-hud__name {
+  grid-area: name;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.75rem;
+  min-width: 0;
+}
+
+.tape-hud__label {
+  min-width: 0;
+  overflow: hidden;
+  font-size: var(--k-text-base);
+  font-weight: var(--k-w-3);
+  color: var(--k-ink);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.tape-hud__count {
+  flex: none;
+  font-size: var(--k-text-sm);
+  font-weight: var(--k-w-2);
+  color: var(--k-mute);
+}
+
+/* The keys: kit key caps with their action, under a soft hairline. */
+.tape-hud__keys {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.125rem;
+  margin-top: 0.875rem;
+  padding: 0.6875rem 1.125rem 0.875rem;
+  border-top: 1px solid var(--k-line-soft);
+}
+
+.tape-hud__keys:empty {
+  display: none;
+}
+
+.tape-key {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4375rem;
+  min-width: 0;
+}
+
+.tape-key__label {
+  font-size: var(--k-text-sm);
+  font-weight: var(--k-w-2);
+  color: var(--k-ink-2);
+  white-space: nowrap;
+}
+
+/* A key being held fills like the ping's accept key. */
+.tape-key.is-holding .k-kbd {
+  color: var(--k-on-a);
+  background: var(--k-accent);
+  box-shadow: none;
+}
+
+.tape-key.is-holding .tape-key__label {
+  color: var(--k-ink);
+}
+
+/* The hold runs as the kit's 3px bar along the bottom edge, filling instead of draining. */
+.tape-hud__hold {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 3px;
+  background: var(--k-accent-fg);
+  transform: scaleX(0);
+  transform-origin: left;
+}
+
+.tape-hud__hold.is-on {
+  animation: tape-hold var(--hold-ms, 1200ms) linear forwards; /* cc-allow: default when Lua sends none */
+}
+
+@keyframes tape-hold {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+
+/* Looking at a hung tape: no style keys, the tape's name is the title. */
+.tape-hud.is-aim {
+  width: 24rem;
+}
+
+.tape-hud.is-aim .tape-hud__style {
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-areas: 'swatch';
+}
+
+.tape-hud.is-aim .tape-hud__arrow,
+.tape-hud.is-aim .tape-hud__name {
+  display: none;
+}
+
+.tape-hud.no-swatch .tape-hud__swatch {
+  display: none;
+}
+
+.tape-hud.no-swatch .tape-hud__style {
+  grid-template-areas: 'prev name next';
+}
+
+.tape-hud.is-aim.no-swatch .tape-hud__style {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tape-hud,
+  .tape-hud__meta,
+  .tape-hud__swatch,
+  .tape-hud__swatch img {
+    transition: none;
+  }
+}

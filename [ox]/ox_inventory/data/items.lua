@@ -5265,19 +5265,13 @@ return {
     description = 'A rare relic of unknown origin',
 },
 
-
--- APEX Tape
+-- New Tape
 ['police_tape'] = {
     label = 'Police Tape',
-    weight = 100,
+    weight = 200,
     stack = true,
-    description = 'Police Tape',
-},
-['scissors'] = {
-    label = 'Scissors',
-    weight = 100,
-    stack = true,
-    description = 'A pair of scissors',
+    close =true,
+    description = 'Emergency Tape',
 },
 
 -- Rsvx_safe

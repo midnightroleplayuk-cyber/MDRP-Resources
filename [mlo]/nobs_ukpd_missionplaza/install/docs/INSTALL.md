@@ -1,7 +1,7 @@
-# Mission Plaza UK Police Station 1.2.0 - install guide (NO BS SCRIPTS)
+# Mission Plaza UK Police Station 1.2.2 - install guide (NO BS SCRIPTS)
 
-One resource: `nobs_ukpd_missionplaza`. Tested game build 3258 (newer builds are fine). Version 1.2.0,
-2026-10-08. Paths in this guide are inside the `nobs_ukpd_missionplaza` folder.
+One resource: `nobs_ukpd_missionplaza`. Tested game build 3258 (newer builds are fine). Version 1.2.2,
+2026-10-20. Paths in this guide are inside the `nobs_ukpd_missionplaza` folder.
 
 ## Install
 
@@ -44,9 +44,11 @@ Every update replaces the whole folder, `config.lua` included.
 3. Copy the new folder as in "Install", step 2 (your server.cfg lines stay as they are).
 4. Set your settings again in the new `config.lua` (from 1.1.x: with the table below and your four backed-up files).
    Do not paste a whole old file over it: a new version can add or move settings.
-5. Put back your edited branding `.ytd`. Vertex Hub merged files: put them back when the changelog says the edited
-   GTA files in `stream/vanilla/` did not change (true for 1.2.0), otherwise merge again. If you keep a merged file
-   in another resource, delete the station's new copy of that file again.
+5. Edited branding: import your edited textures into the new `stream/branding/nobs_ukpd_branding.ytd`
+   (do not copy your old file over it: a new version can add textures to it, as 1.2.2 added the parking bay
+   lettering). Vertex Hub merged files: put them back when the changelog says the edited GTA files in
+   `stream/vanilla/` did not change (true for 1.2.0 to 1.2.2), otherwise merge again. If you keep a merged file in
+   another resource, delete the station's new copy of that file again.
 6. Doorlock entries you imported and qb-doorlock config files you copied stay as they are: door names do not change.
 7. Start the server and check the console (see "Install", step 5).
 
@@ -85,7 +87,7 @@ before you delete it (step 2 above). Where your 1.1.x settings go:
 
 ## Settings
 
-`config.lua` (in the resource folder) holds every setting, in four sections. It is loaded on the server and on every
+`config.lua` (in the resource folder) holds every setting, in five sections. It is loaded on the server and on every
 client. After an edit, restart the resource and check the server console and F8. A yellow warning that names
 `config.lua` means the file has a mistake (a missing comma, quote or bracket: the station then runs on its default
 settings until you fix it) or still holds an old 1.1.x list, which is ignored (see "From 1.1.x (the old file layout)").
@@ -117,6 +119,10 @@ The generated data in `scripts/data/` is replaced by every update: do not edit i
 - **4. Ambient radio** (`MPDisabledEmitters`). GTA plays background radio from fixed "static emitters"; the
   restaurant that stood on this site left one (East Los FM) inside the station. The station switches it off while
   it runs and back on when it stops. Add another emitter name to the list to silence it too.
+- **5. Exterior brick** (`MPExterior`). `brick = 'default'` keeps the station's own brick; `brick = 'red'` puts GTA's
+  classic red brick (Flemish bond, at real UK brick size) on the building, the boundary walls and piers, the roof
+  enclosure and the distance models, so everything matches. It is a texture swap done by the station while it runs:
+  restart the resource after changing it. Pictures and details: `options/README.md`.
 - **Doorlocks** (optional). `install/doorlocks/` holds ready data for ox_doorlock, qb-doorlock and a neutral
   JSON / CSV / Lua list. The station does not load it; follow `install/doorlocks/README.md`. A station door that your
   doorlock locks while it stands open (or while it is still swinging shut) swings shut by itself, smoothly and in
@@ -128,7 +134,7 @@ The generated data in `scripts/data/` is replaced by every update: do not edit i
 ## What is open and what is protected
 
 Cfx asset escrow encrypts
-the 356 station models in `stream/mlo/` and `stream/exterior/` and the 8 scripts in `scripts/client/` and
+the 356 station models in `stream/mlo/` and `stream/exterior/` and the 9 scripts in `scripts/client/` and
 `scripts/server/`.
 Everything else ships readable:
 

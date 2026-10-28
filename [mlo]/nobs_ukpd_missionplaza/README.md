@@ -2,18 +2,19 @@
 
 A British police station at Mission Plaza (Hawick), Los Santos: interior MLO, exterior shell and site works, vehicle
 gates, entrance and garage doors, armoury display and map fixes, all in ONE resource: `nobs_ukpd_missionplaza`.
-Version 1.2.0 (2026-10-08).
+Version 1.2.2 (2026-10-20).
 
 ## What is in the folder
 
 | Item | What it is |
 |---|---|
 | `fxmanifest.lua` | the resource manifest |
-| `config.lua` | every setting, in four sections: vehicle gates, automatic doors, armoury display, ambient radio |
+| `config.lua` | every setting, in five sections: vehicle gates, automatic doors, armoury display, ambient radio, exterior brick |
 | `README.md` | this guide |
 | `stream/` | the map files: `stream/mlo/` (interior), `stream/exterior/`, `stream/branding/` (your logo textures) and `stream/vanilla/` (edited GTA files) |
 | `scripts/` | `scripts/client/` and `scripts/server/` (protected by Cfx asset escrow) and `scripts/data/` (generated data - do not edit) |
 | `install/` | not loaded by the server: `install/docs/` (guides), `install/doorlocks/` (doorlock data), `install/branding_kit/` (logo templates) |
+| `options/` | optional looks you switch on in `config.lua`, with pictures: `options/README.md` |
 
 ## Install
 
@@ -49,6 +50,8 @@ Every setting is in `config.lua`:
 2. Automatic doors (front entrance sliders, garage rollers): lock mode and opening distances.
 3. Armoury weapon display: on by default; `setr nobs_ukpd_armoury_display 0` in server.cfg turns it off for everyone.
 4. Ambient radio: the GTA radio emitter switched off inside the station (`MPDisabledEmitters`).
+5. Exterior brick: the station's own brick, or GTA's classic red brick all round (`MPExterior`; pictures in
+   `options/README.md`).
 
 After editing `config.lua`, restart the resource and check the server console and F8. A yellow warning that names
 `config.lua` means the file has a mistake (a missing comma, quote or bracket: the station then runs on its default
@@ -58,8 +61,9 @@ settings until you fix it) or still holds an old 1.1.x list, which is ignored.
 
 Every texture a server usually rebrands is in one open texture dictionary,
 `stream/branding/nobs_ukpd_branding.ytd`: the force crest (in colour, and white for the navy feature walls), the big
-lobby logo, the press-room backdrop, the POLICE STATION name plate and the entrance plaque. Steps and sizes:
-`install/docs/BRANDING.md`. PNG templates: `install/branding_kit/`.
+lobby logo, the press-room backdrop, the POLICE STATION name plate, the entrance plaque and the rank lettering on
+the three reserved parking bays in the police yard. Steps and sizes: `install/docs/BRANDING.md`. PNG templates:
+`install/branding_kit/`.
 
 ## Map clashes (Vertex Hub)
 
@@ -76,7 +80,7 @@ station). Chair models for sit scripts: `install/docs/CHAIRS.md`. Changes per ve
 ## Open and protected files
 
 Protected by Cfx asset escrow:
-the 356 station models in `stream/mlo/` and `stream/exterior/` and the 8 scripts in `scripts/client/` and
+the 356 station models in `stream/mlo/` and `stream/exterior/` and the 9 scripts in `scripts/client/` and
 `scripts/server/`.
 Everything else is open (not encrypted), so map tools such as Vertex Hub can read every texture dictionary, map
 placement, collision and archetype file in `stream/`. No framework is required.
