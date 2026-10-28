@@ -92,7 +92,7 @@ local WarehouseJob = {
             maxConcurrentTrucks = 3,
 
             trucksPerLevel = {
-                [0] = 1,
+                [0] = 3,
             },
             despawnDistance = 150.0,
 
