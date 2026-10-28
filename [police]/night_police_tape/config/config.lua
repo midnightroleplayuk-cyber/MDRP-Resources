@@ -137,8 +137,8 @@ Config.Stretch = {
     -- A player driving into tape faster than Speed tears it down for everybody. Slower,
     -- the tape stretches and lets them through. Needs Enabled and Vehicles above.
     Tear = {
-        Enabled = false,
-        Speed = 50.0,   -- km/h
+        Enabled = true,
+        Speed = 96.56,   -- km/h
     },
 }
 

@@ -5267,11 +5267,12 @@ return {
 
 -- New Tape
 ['police_tape'] = {
-    label = 'Police Tape',
+    label = 'Police tape',
     weight = 200,
     stack = true,
-    close =true,
-    description = 'Emergency Tape',
+    close = true,
+    consume = 0,
+    client = { export = 'night_police_tape.StartPlacement' },
 },
 
 -- Rsvx_safe

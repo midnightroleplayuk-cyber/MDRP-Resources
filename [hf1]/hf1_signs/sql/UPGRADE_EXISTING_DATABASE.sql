@@ -1,0 +1,3 @@
+-- No ALTER TABLE needed! Existing image_url column stores either HTTPS URLs or local:filename.png.
+-- Your existing signs, positions and IDs are preserved.
+-- Backup recommended before any resource update.
