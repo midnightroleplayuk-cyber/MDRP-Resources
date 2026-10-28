@@ -66,6 +66,7 @@ files {
     'web/assets/licence/*.jpg',
     'web/assets/licence/*.jpeg',
     'web/assets/licence/*.svg',
+    'images/*.png',
     'locales/*.json'
 }
 
