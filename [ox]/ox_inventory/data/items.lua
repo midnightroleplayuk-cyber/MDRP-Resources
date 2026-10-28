@@ -5299,5 +5299,30 @@ return {
     client = { image = 'nui://rsvx_safe/ui/safecracker.png' },
 },
 
+--TR BREATHALYZER
+	['breathalyzer'] = {
+		label = 'Breathalyzer',
+		weight = 350,
+		stack = false,
+		close = true,
+		description = 'A police breath alcohol tester. Use it to take it out or put it away.',
+	},
+
+	['breathalyzer_mouthpiece'] = {
+		label = 'Mouthpiece',
+		weight = 5,
+		stack = true,
+		close = false,
+		description = 'A sealed single-use mouthpiece for the breathalyzer.',
+	},
+
+	['breathalyzer_slip'] = {
+		label = 'Breath test slip',
+		weight = 1,
+		stack = false,
+		close = true,
+		description = 'The printed record of a breath test. Use it to read it.',
+	},
+
 
 }
