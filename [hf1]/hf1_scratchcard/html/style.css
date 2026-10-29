@@ -9,3 +9,7 @@
 /* Winning bonus uses the same crossed-fingers artwork as the card logo. */
 .bonus .value .bonus-fingers{display:block;width:58px;height:58px;max-width:78%;max-height:78%;object-fit:contain;filter:brightness(0) saturate(100%) drop-shadow(0 1px 1px #65728b);pointer-events:none}
 @media(max-height:700px){.bonus .value .bonus-fingers{width:42px;height:42px}}
+
+/* Bonus losing icons use the same artwork and responsive sizing as the main grid. */
+.bonus .value .bonus-loss-icon{display:block;width:60px;height:56px;max-width:80%;max-height:80%;object-fit:contain;filter:drop-shadow(0 1px 1px #64748b66);pointer-events:none}
+@media(max-height:700px){.bonus .value .bonus-loss-icon{width:43px;height:40px}}

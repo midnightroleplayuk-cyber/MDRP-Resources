@@ -28,6 +28,13 @@ if(data.bonus && data.bonus===data.bonusSymbol){
   const finger=document.createElement('img');finger.src='icons/crossed-fingers.png';finger.alt='Crossed fingers';finger.className='bonus-fingers';finger.draggable=false;
   bonusValue.appendChild(finger);
 }else{
-  bonusValue.textContent=data.bonus||'★';
+  // Losses use the same locally bundled artwork as the main game.
+  // Legacy emoji bonuses are mapped too, so previously issued cards display correctly.
+  const legacyBonusIcons={'★':'ruby.png','♦':'goldkey.png','7':'necklace.png','☘':'cloud.png'};
+  const lossIcons=['ruby.png','goldkey.png','necklace.png','pocketwatch.png','goldcup.png','bag.png','vault.png','camera.png','cloud.png','phone.png'];
+  const raw=String(data.bonus??'');
+  const icon=legacyBonusIcons[raw] || (lossIcons.includes(raw)?raw:null) || lossIcons[[...raw].reduce((sum,ch)=>sum+ch.codePointAt(0),0)%lossIcons.length];
+  const img=document.createElement('img');img.src='icons/'+icon;img.alt=icon.replace('.png','').replace(/([a-z])([A-Z])/g,'$1 $2');img.className='bonus-loss-icon';img.draggable=false;
+  bonusValue.appendChild(img);
 }const old=bonus.querySelector('canvas');old.replaceWith(document.createElement('canvas'));app.classList.remove('hidden');requestAnimationFrame(()=>requestAnimationFrame(()=>{if(token!==session)return;[...grid.children,bonus].forEach((el,i)=>makeScratch(el,i,token))}));}
 window.addEventListener('message',e=>{const d=e.data;if(d.action==='open')openCard(d.card);if(d.action==='close'){++session;app.classList.add('hidden')}});document.getElementById('close').addEventListener('click',()=>post('close'));document.addEventListener('keydown',e=>{if(e.key==='Escape')post('close')});

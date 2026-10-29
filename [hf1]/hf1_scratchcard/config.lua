@@ -51,7 +51,7 @@ Config.Prizes = {
 Config.BonusWinShare = 0.18
 Config.BonusPrize = 2000
 Config.BonusSymbol = '👑'
-Config.LosingBonusSymbols = { '★', '♦', '7', '☘' }
+Config.LosingBonusSymbols = { 'ruby.png', 'goldkey.png', 'necklace.png', 'pocketwatch.png', 'goldcup.png', 'bag.png', 'vault.png', 'camera.png', 'cloud.png', 'phone.png' }
 Config.DisplayAmounts = { 10, 20, 50, 100, 200, 250, 500, 1000, 2500, 5000, 10000 }
 
 -- LGMods_Banking on Qbox uses the player's framework bank balance, so bank payouts
