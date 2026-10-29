@@ -19,9 +19,11 @@ Config.GateAccess = {
 -- Gates, shutters and sliding doors
 Config.Intercom = {
     Enabled = true,
-    Interaction = 'ox_target',   -- 'ox_target' or 'custom' (exports.LGMods_RiversidePrison:useIntercom(gateId))
+    Interaction = 'ox_target',   -- 'ox_target' or 'custom' (CustomInteraction below)
     TargetDistance = 2.0,
     Size = vec3(0.45, 0.35, 0.65),
+    CustomInteraction = function(gateId, pole, use)   -- Interaction = 'custom': called once per intercom pole (client side)
+    end,
     Cooldown = 2,
     AutoOpenDriverOnly = true,
     Debug = false,

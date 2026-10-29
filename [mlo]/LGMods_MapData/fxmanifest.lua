@@ -2,6 +2,7 @@ fx_version { 'cerulean' } games { 'gta5' } lua54 { 'yes' }
 
 name { 'LGMods_MapData' }
 author { 'LGMods - https://discord.gg/lgmods' }
+version ( 'v4.0.3' )
 
 replace_level_meta 'gta5'
 

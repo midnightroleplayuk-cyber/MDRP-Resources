@@ -1,15 +1,14 @@
 Config = {}
 
--- AI traffic inside the estate. true = no npc cars spawn or drive through the estate, strays get removed.
--- The custom paths are stream/nodes*.ynd, don't delete them - the vanilla ones run through the buildings.
+-- AI traffic inside the estate. true = no npc cars spawn in or drive into the estate.
 Config.DisableAIVehicles = true
 
 -- street names shown on the HUD for the estate roads
 Config.StreetNames = {
-    JTE_ST_ASHDOWN = 'Ashdown Road',
-    JTE_ST_JAMESTOWN = 'Jamestown Way',
-    JTE_ST_TANNERY = 'Tannery Street',
-    JTE_ST_COBDEN = 'Cobden Street',
+  JTE_ST_ASHDOWN = 'Ashdown Road',
+  JTE_ST_JAMESTOWN = 'Jamestown Way',
+  JTE_ST_TANNERY = 'Tannery Street',
+  JTE_ST_COBDEN = 'Cobden Street',
 }
 
 Config.LiftConfig = {

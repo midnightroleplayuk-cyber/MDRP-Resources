@@ -4,7 +4,7 @@ lua54 'yes'
 
 author 'LGMods'
 description 'LGMods_RiversidePrison - HMP Riverside (UK Victorian / modern prison, El Burro Heights)'
-version '1.0.2'
+version '1.0.4'
 
 this_is_a_map 'yes'
 
