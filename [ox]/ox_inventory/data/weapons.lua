@@ -464,7 +464,7 @@ return {
 		},
 
 		['WEAPON_NIGHTSTICK'] = {
-			label = 'Nightstick',
+			label = 'ASP Baton',
 			weight = 1000,
 			durability = 0.1,
 		},
