@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<!--
+  pickle_restaurants — the food-image DUI painted onto a world quad.
+
+  One page per distinct (image, surface shape, crop); modules/quad pools them. The
+  parameters arrive in the query string:
+      ?img=<url>[&cx&cy&cw&ch]
+      cx/cy/cw/ch = the normalised (0..1) SOURCE rectangle the admin cropped in the
+                    menu editor. Absent → the image is `cover`-cropped to the surface.
+
+  It draws onto a CANVAS sized to the DUI surface (which modules/quad builds at the
+  world quad's own aspect), so the source rect maps 1:1 onto the rectangle in the box
+  — exactly the contract html/brand.html honours for brand textures. Letting CSS
+  `contain` the image instead would ignore the crop and letterbox anything whose
+  natural shape didn't match, which is precisely what this replaced.
+
+  The background stays fully TRANSPARENT so the quad reads as the food itself lying in
+  the box, not as a card. Nothing here is interactive — the texture is only ever
+  sampled by DrawSpritePoly.
+-->
+<html>
+<head>
+<meta charset="utf-8" />
+<style>
+  html, body { margin: 0; padding: 0; width: 100%; height: 100%; background: transparent; overflow: hidden; }
+  #surface { display: block; width: 100%; height: 100%; }
+</style>
+</head>
+<body>
+  <canvas id="surface"></canvas>
+  <script>
+    var params = new URLSearchParams(window.location.search);
+    var canvas = document.getElementById("surface");
+    var ctx = canvas.getContext("2d");
+
+    // the canvas is the DUI surface, 1:1 in device pixels
+    var W = window.innerWidth || 256;
+    var H = window.innerHeight || 256;
+    canvas.width = W;
+    canvas.height = H;
+
+    function num(k) {
+      var v = parseFloat(params.get(k));
+      return isFinite(v) ? v : null;
+    }
+    var crop = null;
+    var cx = num("cx"), cy = num("cy"), cw = num("cw"), ch = num("ch");
+    if (cx !== null && cy !== null && cw > 0 && ch > 0) crop = { x: cx, y: cy, w: cw, h: ch };
+
+    var img = new window.Image(); // no crossOrigin: we only draw, never read pixels back
+    img.onload = function () {
+      var nw = img.naturalWidth, nh = img.naturalHeight;
+      if (!nw || !nh) return;
+      ctx.clearRect(0, 0, W, H);
+      var sx, sy, sw, sh;
+      if (crop) {
+        // the exact source rectangle the admin cropped, in image pixels
+        sx = crop.x * nw; sy = crop.y * nh; sw = crop.w * nw; sh = crop.h * nh;
+      } else {
+        // no crop → `cover`: the largest centred source rect matching the surface,
+        // so an uncropped picture still fills the quad instead of letterboxing
+        var target = W / H, natural = nw / nh;
+        if (natural > target) { sh = nh; sw = nh * target; sx = (nw - sw) / 2; sy = 0; }
+        else { sw = nw; sh = nw / target; sx = 0; sy = (nh - sh) / 2; }
+      }
+      ctx.drawImage(img, sx, sy, sw, sh, 0, 0, W, H);
+    };
+    var src = params.get("img");
+    if (src) img.src = src;
+  </script>
+</body>
+</html>

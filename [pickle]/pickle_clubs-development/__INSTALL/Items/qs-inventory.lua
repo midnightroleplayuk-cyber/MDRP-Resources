@@ -1,0 +1,21 @@
+-- Default drink items for qs-inventory (pickle_clubs)
+-- Add these to your qs-inventory items configuration
+
+['screwdriver_drink'] = { name = 'screwdriver_drink', label = 'Screwdriver', weight = 200, type = 'item', image = 'screwdriver_drink.png', unique = false, useable = true, shouldClose = true, description = 'An orange juice and vodka cocktail.' },
+['cosmopolitan'] = { name = 'cosmopolitan', label = 'Cosmopolitan', weight = 200, type = 'item', image = 'cosmopolitan.png', unique = false, useable = true, shouldClose = true, description = 'A cranberry and lime cocktail.' },
+['cuba_libre'] = { name = 'cuba_libre', label = 'Cuba Libre', weight = 200, type = 'item', image = 'cuba_libre.png', unique = false, useable = true, shouldClose = true, description = 'Rum, cola, and a squeeze of lime.' },
+['gin_tonic'] = { name = 'gin_tonic', label = 'Gin & Tonic', weight = 200, type = 'item', image = 'gin_tonic.png', unique = false, useable = true, shouldClose = true, description = 'A classic gin and tonic water mix.' },
+['tequila_sunrise'] = { name = 'tequila_sunrise', label = 'Tequila Sunrise', weight = 200, type = 'item', image = 'tequila_sunrise.png', unique = false, useable = true, shouldClose = true, description = 'Tequila with orange juice and grenadine.' },
+['pina_colada'] = { name = 'pina_colada', label = 'Pina Colada', weight = 200, type = 'item', image = 'pina_colada.png', unique = false, useable = true, shouldClose = true, description = 'A tropical pineapple and rum blend.' },
+['whiskey_sour'] = { name = 'whiskey_sour', label = 'Whiskey Sour', weight = 200, type = 'item', image = 'whiskey_sour.png', unique = false, useable = true, shouldClose = true, description = 'Whiskey with a sour citrus mix.' },
+['sea_breeze'] = { name = 'sea_breeze', label = 'Sea Breeze', weight = 200, type = 'item', image = 'sea_breeze.png', unique = false, useable = true, shouldClose = true, description = 'Vodka with cranberry and pineapple juice.' },
+['bay_breeze'] = { name = 'bay_breeze', label = 'Bay Breeze', weight = 200, type = 'item', image = 'bay_breeze.png', unique = false, useable = true, shouldClose = true, description = 'A light cranberry and pineapple cocktail.' },
+['shirley_temple'] = { name = 'shirley_temple', label = 'Shirley Temple', weight = 200, type = 'item', image = 'shirley_temple.png', unique = false, useable = true, shouldClose = true, description = 'A non-alcoholic grenadine and lime drink.' },
+['arnold_palmer'] = { name = 'arnold_palmer', label = 'Arnold Palmer', weight = 200, type = 'item', image = 'arnold_palmer.png', unique = false, useable = true, shouldClose = true, description = 'A refreshing sour mix and tonic blend.' },
+['rum_punch'] = { name = 'rum_punch', label = 'Rum Punch', weight = 200, type = 'item', image = 'rum_punch.png', unique = false, useable = true, shouldClose = true, description = 'A fruity rum punch with tropical flavors.' },
+['jungle_juice'] = { name = 'jungle_juice', label = 'Jungle Juice', weight = 200, type = 'item', image = 'jungle_juice.png', unique = false, useable = true, shouldClose = true, description = 'A potent mix of fruit juices and spirits.' },
+['paloma'] = { name = 'paloma', label = 'Paloma', weight = 200, type = 'item', image = 'paloma.png', unique = false, useable = true, shouldClose = true, description = 'Tequila with lime and sour mix.' },
+['jack_coke'] = { name = 'jack_coke', label = 'Jack & Coke', weight = 200, type = 'item', image = 'jack_coke.png', unique = false, useable = true, shouldClose = true, description = 'Whiskey and cola.' },
+['vodka_cran'] = { name = 'vodka_cran', label = 'Vodka Cranberry', weight = 200, type = 'item', image = 'vodka_cran.png', unique = false, useable = true, shouldClose = true, description = 'Vodka with cranberry juice.' },
+['mai_tai'] = { name = 'mai_tai', label = 'Mai Tai', weight = 200, type = 'item', image = 'mai_tai.png', unique = false, useable = true, shouldClose = true, description = 'A tropical rum cocktail with citrus.' },
+['dark_stormy'] = { name = 'dark_stormy', label = 'Dark & Stormy', weight = 200, type = 'item', image = 'dark_stormy.png', unique = false, useable = true, shouldClose = true, description = 'Dark rum with cola and lime.' },

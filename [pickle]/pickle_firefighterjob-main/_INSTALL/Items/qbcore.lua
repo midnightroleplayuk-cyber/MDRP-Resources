@@ -1,0 +1,1 @@
+["watertank"] 					= {["name"] = "watertank",  	     		        ["label"] = "Water Tank",	 		    ["weight"] = 1, 		["type"] = "item", 		["image"] = "watertank.png", 				["unique"] = false, 	    ["useable"] = true, 	["shouldClose"] = true,   	["combinable"] = nil,   ["description"] = ""},
