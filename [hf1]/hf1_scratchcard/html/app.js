@@ -21,5 +21,13 @@ function scratch(e){if(!down)return;const r=canvas.getBoundingClientRect();const
 canvas.addEventListener('pointerdown',e=>{down=true;last=null;canvas.setPointerCapture(e.pointerId);scratch(e)});canvas.addEventListener('pointermove',scratch);canvas.addEventListener('pointerup',()=>{down=false;last=null;check()});canvas.addEventListener('pointercancel',()=>{down=false;last=null;check()});}
 function openCard(data){const token=++session;card=data;scratchReported=false;panels=Array(10).fill(false);grid.replaceChildren();priceEl.textContent=pounds(data.price);serialEl.textContent=String(data.cardId||'SC-000000').replace(/^SC-/,'').replace(/[^0-9-]/g,'');statusEl.textContent='Scratch all 9 panels and the bonus game.';
 for(let i=0;i<9;i++){const amount=data.grid?.[i];const el=document.createElement('div');el.className='scratch';const [symbol,name]=symbolFor(amount);const val=document.createElement('span');val.className='value';const sym=document.createElement('b');sym.className='symbol';if(symbol){const img=document.createElement('img');img.src='icons/'+symbol;img.alt=name;img.draggable=false;sym.appendChild(img)}else{sym.textContent='✕';}const label=document.createElement('small');label.textContent=name;const prize=document.createElement('strong');prize.textContent=pounds(amount??0);val.append(sym,label,prize);el.append(val,document.createElement('canvas'));grid.appendChild(el)}
-bonus.querySelector('.value').textContent=data.bonus||'★';const old=bonus.querySelector('canvas');old.replaceWith(document.createElement('canvas'));app.classList.remove('hidden');requestAnimationFrame(()=>requestAnimationFrame(()=>{if(token!==session)return;[...grid.children,bonus].forEach((el,i)=>makeScratch(el,i,token))}));}
+const bonusValue=bonus.querySelector('.value');bonusValue.replaceChildren();
+// Use the existing server-defined winning symbol, including on older tickets.
+// Only the appearance changes: redemption and win odds stay server-controlled.
+if(data.bonus && data.bonus===data.bonusSymbol){
+  const finger=document.createElement('img');finger.src='icons/crossed-fingers.png';finger.alt='Crossed fingers';finger.className='bonus-fingers';finger.draggable=false;
+  bonusValue.appendChild(finger);
+}else{
+  bonusValue.textContent=data.bonus||'★';
+}const old=bonus.querySelector('canvas');old.replaceWith(document.createElement('canvas'));app.classList.remove('hidden');requestAnimationFrame(()=>requestAnimationFrame(()=>{if(token!==session)return;[...grid.children,bonus].forEach((el,i)=>makeScratch(el,i,token))}));}
 window.addEventListener('message',e=>{const d=e.data;if(d.action==='open')openCard(d.card);if(d.action==='close'){++session;app.classList.add('hidden')}});document.getElementById('close').addEventListener('click',()=>post('close'));document.addEventListener('keydown',e=>{if(e.key==='Escape')post('close')});

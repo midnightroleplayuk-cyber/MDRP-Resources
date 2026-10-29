@@ -46,7 +46,7 @@ Config.Prizes = {
     { amount = 10000, weight = 2 },
 }
 
--- The bonus game is rolled independently from the main game. Revealing the crown
+-- The bonus game is rolled independently from the main game. Revealing the crossed fingers icon
 -- adds this amount to whatever was won in the 3-match game (including £0).
 Config.BonusWinShare = 0.18
 Config.BonusPrize = 2000

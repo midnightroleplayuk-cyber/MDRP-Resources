@@ -220,7 +220,7 @@ local function makeCardMetadata()
     local mainWin = math.random() < Config.WinChance
     local mainPrize = mainWin and weightedPrize() or 0
 
-    -- Bonus is independent: a crown always adds Config.BonusPrize, whether or not
+    -- Bonus is independent: the crossed-fingers bonus symbol always adds Config.BonusPrize, whether or not
     -- the main 3-match game also won.
     local bonusWin = math.random() < Config.BonusWinShare
     local bonusPrize = bonusWin and math.max(0, tonumber(Config.BonusPrize) or 2000) or 0

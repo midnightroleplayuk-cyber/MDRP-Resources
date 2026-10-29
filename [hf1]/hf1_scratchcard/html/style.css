@@ -5,3 +5,7 @@
 .symbol img{display:block;max-width:76px;max-height:36px;width:auto;height:auto;object-fit:contain;filter:drop-shadow(0 1px 1px #64748b66);pointer-events:none}
 .scratch .value small{font-size:9px;line-height:1.1;min-height:11px}
 @media(max-height:700px){.symbol{height:25px}.symbol img{max-height:24px;max-width:60px}.scratch .value small{font-size:8px}}
+
+/* Winning bonus uses the same crossed-fingers artwork as the card logo. */
+.bonus .value .bonus-fingers{display:block;width:58px;height:58px;max-width:78%;max-height:78%;object-fit:contain;filter:brightness(0) saturate(100%) drop-shadow(0 1px 1px #65728b);pointer-events:none}
+@media(max-height:700px){.bonus .value .bonus-fingers{width:42px;height:42px}}
