@@ -72,12 +72,9 @@ end
 
 local function detectRevive(fw)
     if Config.ReviveEvent and Config.ReviveEvent ~= '' and Config.ReviveEvent ~= 'auto' then return Config.ReviveEvent end
-    -- Qbox: always its own revive (what qbx_medical's /revive uses), even alongside OSP.
-    if fw == 'qbox' then return QBX_REVIVE end
-    -- OSP Ambulance Job documents the ESX and QB revive events as its server-side revive hooks.
-    if ospRunning() then
-        return fw == 'esx' and 'esx_ambulancejob:revive' or 'hospital:client:Revive'
-    end
+    -- OSP first: it owns the dead state even on Qbox, and its /revive fires hospital:client:Revive on every framework.
+    if ospRunning() then return 'hospital:client:Revive' end
+    if fw == 'qbox' and running('qbx_medical') then return QBX_REVIVE end
     for _, pair in ipairs(REVIVE_EVENTS) do
         if running(pair[1]) then return pair[2] end
     end
@@ -483,8 +480,11 @@ function Bridge.Revive(src, by)
     if REVIVE == QBX_REVIVE and running('qbx_medical') then
         exports.qbx_medical:Revive(src)
     else
-        TriggerClientEvent(REVIVE, src)
+        -- true = admin revive: OSP skips its "insurvivable injuries" block, other scripts ignore the extra arg.
+        TriggerClientEvent(REVIVE, src, true)
     end
+
+    if REVIVE == 'hospital:client:Revive' and ospRunning() then return end
     TriggerClientEvent('helm:client:revive', src)
     TriggerEvent('txAdmin:events:healedPlayer', { id = src })
     TriggerEvent('txAdmin:events:playerHealed', { target = src, author = by or 'Helm' })
