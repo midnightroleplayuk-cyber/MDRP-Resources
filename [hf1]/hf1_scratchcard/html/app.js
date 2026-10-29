@@ -1,63 +1,20 @@
-const app = document.getElementById('app');
-const grid = document.getElementById('grid');
-const bonus = document.getElementById('bonus');
-const statusEl = document.getElementById('status');
-const priceEl = document.getElementById('price');
-let card = null;
-let panels = [];
-let scratchReported = false;
-
-const REVEAL_THRESHOLD = 0.58;
-const resource = typeof GetParentResourceName === 'function' ? GetParentResourceName() : 'hf1_scratchcard';
-const post = (name, data={}) => fetch(`https://${resource}/${name}`, {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});
-const pounds = n => `£${Number(n).toLocaleString('en-GB')}`;
-
-function silver(ctx,w,h){
-  ctx.clearRect(0,0,w,h);
-  const g=ctx.createLinearGradient(0,0,w,h);g.addColorStop(0,'#b8bec5');g.addColorStop(.5,'#e8ecef');g.addColorStop(1,'#9ba3aa');ctx.fillStyle=g;ctx.fillRect(0,0,w,h);
-  ctx.fillStyle='rgba(70,80,90,.25)';for(let i=0;i<90;i++){ctx.fillRect(Math.random()*w,Math.random()*h,Math.random()*10+2,1)}
-  ctx.fillStyle='rgba(25,35,50,.65)';ctx.font='bold 13px Arial';ctx.textAlign='center';ctx.fillText('SCRATCH',w/2,h/2+5);
-}
-
-function reportComplete(){
-  if (scratchReported || !panels.every(Boolean) || !card) return;
-  scratchReported = true;
-  statusEl.textContent='Card revealed. Take it to a scratchcard stand and choose Claim Winnings.';
-  post('markScratched', { slot: card.slot, cardId: card.cardId });
-}
-
-function makeScratch(el,index){
-  const canvas=el.querySelector('canvas'); const rect=el.getBoundingClientRect(); const ratio=window.devicePixelRatio||1;
-  canvas.width=Math.round(rect.width*ratio);canvas.height=Math.round(rect.height*ratio);
-  const ctx=canvas.getContext('2d');ctx.scale(ratio,ratio);silver(ctx,rect.width,rect.height);ctx.globalCompositeOperation='destination-out';ctx.lineWidth=28;ctx.lineCap='round';
-  let down=false,last=null,thresholdReached=false;
-
-  const check=()=>{
-    if (thresholdReached) return;
-    const raw=ctx.getImageData(0,0,canvas.width,canvas.height).data;
-    let clear=0,sampled=0;
-    for(let i=3;i<raw.length;i+=16){sampled++;if(raw[i]<40)clear++;}
-    if(sampled && (clear/sampled)>=REVEAL_THRESHOLD){
-      thresholdReached=true;
-      panels[index]=true;
-      reportComplete();
-    }
-  };
-
-  // Reaching 58% only marks this panel as revealed. It deliberately does not
-  // clear the canvas or stop scratching, so the remaining foil never "pops" away.
-  const scratch=e=>{if(!down)return;const r=canvas.getBoundingClientRect();const p=e.touches?e.touches[0]:e;const x=p.clientX-r.left,y=p.clientY-r.top;ctx.beginPath();if(last)ctx.moveTo(last.x,last.y);else ctx.moveTo(x,y);ctx.lineTo(x,y);ctx.stroke();last={x,y};check();};
-  canvas.addEventListener('pointerdown',e=>{down=true;last=null;canvas.setPointerCapture(e.pointerId);scratch(e)});
-  canvas.addEventListener('pointermove',scratch);
-  canvas.addEventListener('pointerup',()=>{down=false;last=null});
-  canvas.addEventListener('pointercancel',()=>{down=false;last=null});
-}
-
-function openCard(data){
-  card=data;scratchReported=false;panels=new Array(10).fill(false);grid.innerHTML='';priceEl.textContent=pounds(data.price);statusEl.textContent='Scratch every panel, then claim the physical card at a scratchcard stand.';
-  data.grid.forEach((amount,i)=>{const el=document.createElement('div');el.className='scratch';el.innerHTML=`<span class="value">${pounds(amount)}</span><canvas></canvas>`;grid.appendChild(el);requestAnimationFrame(()=>makeScratch(el,i));});
-  bonus.querySelector('.value').textContent=data.bonus;requestAnimationFrame(()=>makeScratch(bonus,9));app.classList.remove('hidden');
-}
-window.addEventListener('message',e=>{const d=e.data;if(d.action==='open')openCard(d.card);if(d.action==='close')app.classList.add('hidden');});
-document.getElementById('close').addEventListener('click',()=>post('close'));
-document.addEventListener('keydown',e=>{if(e.key==='Escape')post('close')});
+const app=document.getElementById('app'),grid=document.getElementById('grid'),bonus=document.getElementById('bonus'),statusEl=document.getElementById('status'),priceEl=document.getElementById('price'),serialEl=document.getElementById('serial');
+let card=null,panels=[],scratchReported=false,session=0;
+const REVEAL_THRESHOLD=.58;
+const resource=typeof GetParentResourceName==='function'?GetParentResourceName():'hf1_scratchcard';
+const post=(name,data={})=>fetch(`https://${resource}/${name}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});
+const pounds=n=>`£${Number(n).toLocaleString('en-GB')}`;
+// Each amount has a unique symbol: the server still determines the actual result.
+// Edit these pairs to customise the visual symbols. Do not assign one symbol to two amounts.
+const SYMBOLS={10:['★','STAR'],20:['♦','DIAMOND'],50:['♣','CLUB'],100:['♠','SPADE'],200:['♥','HEART'],250:['☀','SUN'],500:['☘','CLOVER'],1000:['✿','FLOWER'],2500:['⚡','BOLT'],5000:['♛','QUEEN'],10000:['✦','GOLD']};
+const symbolFor=(amount)=>SYMBOLS[Number(amount)]||['◆',`PRIZE ${amount}`];
+function silver(ctx,w,h){ctx.clearRect(0,0,w,h);const g=ctx.createLinearGradient(0,0,w,h);g.addColorStop(0,'#9ea8b7');g.addColorStop(.5,'#e6e8ef');g.addColorStop(1,'#a5b1c2');ctx.fillStyle=g;ctx.fillRect(0,0,w,h);ctx.save();ctx.strokeStyle='rgba(79,97,131,.23)';ctx.lineWidth=1.3;for(let y=-15;y<h+20;y+=11){ctx.beginPath();for(let x=-10;x<=w+10;x+=3){let yy=y+Math.sin(x/13+y/18)*3;if(x===-10)ctx.moveTo(x,yy);else ctx.lineTo(x,yy)}ctx.stroke()}ctx.restore();ctx.fillStyle='rgba(42,57,85,.55)';ctx.font=`900 ${Math.max(10,Math.min(15,w/10))}px Arial`;ctx.textAlign='center';ctx.fillText('SCRATCH HERE',w/2,h/2+5)}
+function reportComplete(){if(scratchReported||!panels.every(Boolean)||!card)return;scratchReported=true;statusEl.textContent='Card revealed! Claim at a scratchcard stand.';post('markScratched',{slot:card.slot,cardId:card.cardId})}
+function makeScratch(el,index,token){if(token!==session)return;const canvas=el.querySelector('canvas'),rect=el.getBoundingClientRect();if(rect.width<2||rect.height<2)return;const ratio=Math.min(window.devicePixelRatio||1,2);canvas.width=Math.round(rect.width*ratio);canvas.height=Math.round(rect.height*ratio);const ctx=canvas.getContext('2d',{willReadFrequently:true});ctx.scale(ratio,ratio);silver(ctx,rect.width,rect.height);ctx.globalCompositeOperation='destination-out';ctx.lineWidth=Math.max(20,Math.min(rect.width,rect.height)*.30);ctx.lineCap='round';ctx.lineJoin='round';let down=false,last=null,done=false;
+function check(){if(done)return;const raw=ctx.getImageData(0,0,canvas.width,canvas.height).data;let clear=0,sampled=0;for(let i=3;i<raw.length;i+=16){sampled++;if(raw[i]<40)clear++}if(sampled&&clear/sampled>=REVEAL_THRESHOLD){done=true;panels[index]=true;canvas.style.opacity='0';canvas.style.pointerEvents='none';reportComplete()}}
+function scratch(e){if(!down)return;const r=canvas.getBoundingClientRect();const x=e.clientX-r.left,y=e.clientY-r.top;ctx.beginPath();if(last)ctx.moveTo(last.x,last.y);else{ctx.moveTo(x-.1,y);ctx.lineTo(x,y)}ctx.lineTo(x,y);ctx.stroke();last={x,y};check()}
+canvas.addEventListener('pointerdown',e=>{down=true;last=null;canvas.setPointerCapture(e.pointerId);scratch(e)});canvas.addEventListener('pointermove',scratch);canvas.addEventListener('pointerup',()=>{down=false;last=null});canvas.addEventListener('pointercancel',()=>{down=false;last=null});}
+function openCard(data){const token=++session;card=data;scratchReported=false;panels=Array(10).fill(false);grid.replaceChildren();priceEl.textContent=pounds(data.price);serialEl.textContent=String(data.cardId||'SC-000000').replace(/^SC-/,'').replace(/[^0-9-]/g,'').slice(-20);statusEl.textContent='Scratch all 9 panels and the bonus game.';
+for(let i=0;i<9;i++){const amount=data.grid?.[i];const el=document.createElement('div');el.className='scratch';const [symbol,name]=symbolFor(amount);const val=document.createElement('span');val.className='value';const sym=document.createElement('b');sym.className='symbol';sym.textContent=symbol;const label=document.createElement('small');label.textContent=name;const prize=document.createElement('strong');prize.textContent=pounds(amount??0);val.append(sym,label,prize);el.append(val,document.createElement('canvas'));grid.appendChild(el)}
+bonus.querySelector('.value').textContent=data.bonus||'★';const old=bonus.querySelector('canvas');old.replaceWith(document.createElement('canvas'));app.classList.remove('hidden');requestAnimationFrame(()=>requestAnimationFrame(()=>{if(token!==session)return;[...grid.children,bonus].forEach((el,i)=>makeScratch(el,i,token))}));}
+window.addEventListener('message',e=>{const d=e.data;if(d.action==='open')openCard(d.card);if(d.action==='close'){++session;app.classList.add('hidden')}});document.getElementById('close').addEventListener('click',()=>post('close'));document.addEventListener('keydown',e=>{if(e.key==='Escape')post('close')});

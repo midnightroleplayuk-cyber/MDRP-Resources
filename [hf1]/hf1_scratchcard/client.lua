@@ -18,7 +18,7 @@ local function openShop(standId)
         options = {
             {
                 title = ('Buy Scratchcard — £%s'):format(Config.CardPrice),
-                description = 'Receive a physical scratchcard. Match three amounts and/or reveal the crown for an extra £2,000.',
+                description = 'Receive a physical scratchcard. Match three symbols and/or reveal the crown for an extra £2,000.',
                 icon = 'ticket',
                 onSelect = function()
                     TriggerServerEvent('hf1_scratchcard:server:buyCard', standId)

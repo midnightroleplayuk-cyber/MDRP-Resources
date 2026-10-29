@@ -68,3 +68,7 @@ Ensure `oxmysql` starts before this resource.
 
 ## Interactive stand placement
 From `/scard`, choose **Place new stand**. Aim where the sign should go; the translucent preview follows your crosshair. Use Left/Right Arrow to rotate, Page Up/Page Down to adjust height, E to save it to MySQL, or Backspace to cancel. `Config.PlacementMaxDistance` controls how far from yourself you can position it.
+
+
+## Golden Edition UI
+The 3x3 grid now shows a unique symbol per prize amount (edit `SYMBOLS` in `html/app.js`). Three identical symbols therefore correspond to three identical amounts, preserving the server payout logic. The bonus crown is independent. All nine grid slots are created synchronously and canvas sizing occurs after the UI becomes visible. The serial printed at bottom right is the card ID from inventory metadata.
