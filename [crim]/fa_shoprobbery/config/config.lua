@@ -47,7 +47,7 @@ Config.Clerk = {
     },
     Fight = {
         Enabled = true,
-        Chance = 10,
+        Chance = 0,
         Weapon = `WEAPON_BAT`,
         Ammo = 60,
         Accuracy = 35,
