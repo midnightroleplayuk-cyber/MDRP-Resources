@@ -8,7 +8,7 @@ Config.PanelUrl = 'https://helm-panel.onrender.com'
 
 -- 'auto' (default) detects what is running on your server. Or force one: 'qbox', 'qbcore', 'esx', 'standalone'.
 -- Standalone = no framework: moderation, sessions and the activity log only.
-Config.Framework = 'auto'
+Config.Framework = 'qbox'
 
 -- 'auto' (default) detects ox_inventory, qs-inventory, ps-inventory, lj-inventory, qb-inventory or ESX's own.
 -- Or force one of those names, or 'none'.
@@ -18,7 +18,7 @@ Config.Inventory = 'auto'
 -- own bank money. Or force 'lgmods' or 'framework'.
 Config.Banking = 'auto'
 
--- Client event fired on a player to revive them. nil = auto-detect from osp_ambulance, qbx_medical,
+-- Client event fired on a player to revive them. nil = auto-detect: osp_ambulance if running, then qbx_medical,
 -- qb-ambulancejob, wasabi_ambulance or esx_ambulancejob. Set an event name if you use another ambulance script.
 Config.ReviveEvent = nil
 
@@ -57,7 +57,7 @@ Config.ConnectCards = {
     ServerName = 'Midnight RP',  -- shown under the logo, e.g. 'Midnight RP'
     -- Buttons on every card, opened in the player's browser. Up to 3 fit (ban cards add a Close button).
     Links = {
-         { label = 'Discord', url = 'https://discord.gg/uwJqgwf6pC' },
+        -- { label = 'Discord', url = 'https://discord.gg/yourserver' },
         -- { label = 'Store', url = 'https://yourserver.tebex.io' },
         -- Ban cards already get an Appeal button to the panel's appeal page, with the ban ID filled in.
     },
@@ -70,7 +70,7 @@ Config.ScheduledRestarts = false
 -- Anti-cheat style alerts. Checked on the server every few seconds; nothing is punished automatically, staff get
 -- an alert on the panel (Alerts page, Discord webhooks) and decide. Staff with the in-game menu are never flagged.
 Config.AntiCheat = {
-    Enabled = true,
+    Enabled = false,
     GodMode = true,        -- player stays invincible for over 15 seconds
     Health = true,         -- health or armour above the game maximum
     Invisible = true,      -- invisible for over 30 seconds (turn off if your scripts hide players, e.g. hiding in trunks)
