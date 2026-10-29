@@ -68,7 +68,7 @@ Settings.MinimapOffset = {
     paddingY = 0.0        -- Vertical offset compensation
 }
 
-Settings.DisableMapAlwaysOption = true  -- Set to true to hide "Always" option for minimap
+Settings.DisableMapAlwaysOption = false  -- Set to true to hide "Always" option for minimap
 
 Settings.MinimapTypes = {
     SQUARE = {
