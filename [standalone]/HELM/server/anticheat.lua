@@ -70,10 +70,8 @@ local downUntil = {}   -- src -> game timer; invincibility before this is the am
 local esxDead = {}     -- src -> true between ESX's death and spawn events
 
 -- Downed or dead, by whichever signal the server's medical script gives.
-local function isDown(src, ped, char)
-    if GetEntityHealth(ped) <= 0 or esxDead[src] or (char and char.down) then return true end
-    local st = Player(src).state -- wasabi_ambulance, osp_ambulance and others use state bags
-    return st.isDead == true or st.dead == true or st.inLaststand == true or st.isDown == true
+local function isDown(src)
+    return esxDead[src] or Bridge.IsDown(src)
 end
 
 AddEventHandler('esx:onPlayerDeath', function() esxDead[source] = true end)
@@ -89,7 +87,7 @@ local function check(src)
 
     if on('GodMode') and loaded then
         -- Ambulance scripts make downed and dead players invincible, and often keep it a few seconds after a revive.
-        if isDown(src, ped, char) then downUntil[src] = now + REVIVE_GRACE end
+        if isDown(src) then downUntil[src] = now + REVIVE_GRACE end
         local god = GetPlayerInvincible(src) and not (HelmIsFrozen and HelmIsFrozen(src)) and now > (downUntil[src] or 0)
         godSamples[src] = god and (godSamples[src] or 0) + 1 or 0
         if godSamples[src] >= 5 then report(src, 'godmode', 'high', 'has been invincible (god mode) for over 15 seconds') end

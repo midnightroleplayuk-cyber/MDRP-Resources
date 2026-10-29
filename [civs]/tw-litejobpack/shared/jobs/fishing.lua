@@ -5,7 +5,7 @@ local FishingJob = {
     icon = "./img/jobs/fishing_icon.svg",
     image = "./img/jobs/fishing_bg.png",
     video = "https://tworst.info/uploads/videos/32ceafe238d4ae84d41885c81d5f4b7a_1775405598.mp4",
-    enabled = true,    -- true = job active | false = job disabled
+    enabled = false,    -- true = job active | false = job disabled
     requiredHours = 0, -- minimum hours played to start this job (0 = no requirement, requires Config.HoursRequirement.enabled)
     maxHours = 0,      -- maximum hours allowed to start this job (0 = no limit, e.g. 100 = players with 100+ hours cannot do this job)
 

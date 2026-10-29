@@ -165,7 +165,7 @@ end)
 RegisterNetEvent('helm:client:screenshot', function(requestId, opts)
     if type(requestId) ~= 'string' then return end
     opts = type(opts) == 'table' and opts or {}
-    SendNUIMessage({ type = 'screenshot', id = requestId, maxWidth = opts.maxWidth, quality = opts.quality })
+    SendNUIMessage({ type = 'screenshot', id = requestId, maxWidth = opts.maxWidth, quality = opts.quality, url = opts.url, token = opts.token })
 end)
 
 -- Live video for the panel: the NUI page does the streaming. false stops it.
@@ -329,6 +329,20 @@ RegisterNetEvent('helm:client:heal', function()
     ClearPedBloodDamage(ped)
     ResetPedVisibleDamage(ped)
     HelmClearOspInjuries()
+end)
+
+-- Native revive, the same as txAdmin's heal: bring the ped back where it lies, then heal it.
+RegisterNetEvent('helm:client:revive', function()
+    local ped = PlayerPedId()
+    local pos = GetEntityCoords(ped)
+    if IsEntityDead(ped) then
+        NetworkResurrectLocalPlayer(pos.x, pos.y, pos.z, GetEntityHeading(ped), false, false)
+        ped = PlayerPedId()
+    end
+    ResurrectPed(ped)
+    SetEntityHealth(ped, GetEntityMaxHealth(ped))
+    ClearPedBloodDamage(ped)
+    RestorePlayerStamina(PlayerId(), 100.0)
 end)
 
 -- OSP Ambulance keeps wounds, bleeding, fractures and vitals in the BodyDamage state bag, and keeps draining health

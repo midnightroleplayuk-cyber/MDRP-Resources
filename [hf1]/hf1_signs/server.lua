@@ -46,6 +46,18 @@ local function validUrl(url)
     return Config.AllowedImageExtensions[extension] == true
 end
 
+local function validLocalImage(value)
+    if type(value) ~= 'string' then return false end
+    local filename = value:match('^local:([%w_%-]+%.[%a%d]+)$')
+    if not filename then return false end
+    local ext = filename:lower():match('(%.[%w]+)$')
+    return Config.AllowedImageExtensions[ext] == true and LoadResourceFile(GetCurrentResourceName(), 'html/images/' .. filename) ~= nil
+end
+
+local function validImageSource(value)
+    return validLocalImage(value) or validUrl(value)
+end
+
 local function getAllSigns()
     local query = ([[
         SELECT id, owner, label, image_url,
@@ -87,8 +99,8 @@ RegisterNetEvent('hf1_signs:create', function(data)
         return
     end
 
-    if type(data) ~= 'table' or not validUrl(data.image_url) then
-        TriggerClientEvent('hf1_signs:notify', src, 'Invalid image URL. Use a direct HTTPS image URL such as a .png.', 'error')
+    if type(data) ~= 'table' or not validImageSource(data.image_url) then
+        TriggerClientEvent('hf1_signs:notify', src, 'Use an HTTPS image URL or local:filename.png from html/images.', 'error')
         return
     end
 
@@ -144,8 +156,8 @@ RegisterNetEvent('hf1_signs:update', function(id, data)
         return
     end
 
-    if type(data) ~= 'table' or not validUrl(data.image_url) then
-        TriggerClientEvent('hf1_signs:notify', src, 'Invalid image URL. Use a direct HTTPS image URL such as a .png.', 'error')
+    if type(data) ~= 'table' or not validImageSource(data.image_url) then
+        TriggerClientEvent('hf1_signs:notify', src, 'Use an HTTPS image URL or local:filename.png from html/images.', 'error')
         return
     end
 

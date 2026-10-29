@@ -5,8 +5,9 @@ ONE texture dictionary that is not encrypted:
 
     stream/branding/nobs_ukpd_branding.ytd
 
-The models look these textures up by name, so a texture you replace in this file changes everywhere it is shown,
-inside and outside the station. Nothing else needs editing.
+It also holds the rank lettering of the three reserved parking bays in the police yard. The models look these
+textures up by name, so a texture you replace in this file changes everywhere it is shown, inside and outside the
+station. Nothing else needs editing.
 
 ## The textures
 
@@ -18,11 +19,21 @@ inside and outside the station. Nothing else needs editing.
 | `nobs_ukpd_d37_material_press_backdrop` | 512 x 512 | DXT1 | opaque | press-room backdrop (repeats across the wall) | `install/branding_kit/nobs_ukpd_d37_material_press_backdrop.png` |
 | `nobs_ukpd_mp_station_plate_name` | 1024 x 256 | DXT1 | opaque | POLICE STATION name plate on the front of the building | `install/branding_kit/nobs_ukpd_mp_station_plate_name.png` |
 | `nobs_ukpd_mp_plaque_face` | 1024 x 512 | DXT1 | opaque | entrance plaque (front counter hours, 999 / 101) | `install/branding_kit/nobs_ukpd_mp_plaque_face.png` |
+| `nobs_ukpd_mp_markings_label_reserved_commissioner` | 1024 x 512 | DXT5 | white on transparent | parking bay lettering, police yard: the reserved bay nearest the garage doors | `install/branding_kit/nobs_ukpd_mp_markings_label_reserved_commissioner.png` |
+| `nobs_ukpd_mp_markings_label_reserved_superintendent` | 1024 x 512 | DXT5 | white on transparent | parking bay lettering, police yard: the middle reserved bay | `install/branding_kit/nobs_ukpd_mp_markings_label_reserved_superintendent.png` |
+| `nobs_ukpd_mp_markings_label_reserved_inspector` | 1024 x 512 | DXT5 | white on transparent | parking bay lettering, police yard: the third reserved bay from the garage | `install/branding_kit/nobs_ukpd_mp_markings_label_reserved_inspector.png` |
 
 "White on transparent" textures are drawn as white artwork over the navy wall colour: keep the background fully
 transparent and the artwork white (or light). "Opaque" textures fill their whole panel, background included.
 `nobs_ukpd_d37_material_press_backdrop` repeats across the backdrop wall, so its left and right edges (and its
 top and bottom edges) must join up.
+
+The three parking bay textures (`nobs_ukpd_mp_markings_label_reserved_commissioner`, `_superintendent` and
+`_inspector`) are the white road lettering of the reserved bays in the police yard, the row by the garage doors
+(the fourth bay there has no lettering). They are painted on the ground and read from a car at a shallow angle, so
+the template's letters are tall and narrow: keep that look (letters about 1.6 times taller than normal), keep
+the template's way up, and keep the lettering inside the area the template uses, white on a fully transparent
+background. One, two or three lines all work, for example CHIEF CONSTABLE over RESERVED, or SGT alone.
 
 ## How to replace a texture
 
@@ -39,8 +50,9 @@ top and bottom edges) must join up.
 
 ## Good to know
 
-- Keep a copy of the original `.ytd` before you edit it. Updates of the station replace this file: keep your
-  edited copy and put it back after updating.
+- Keep a copy of the original `.ytd` before you edit it. Updates of the station replace this file and can add
+  textures to it (1.2.2 added the three parking bay textures): after an update, import your edited textures into
+  the NEW file instead of copying your old file over it.
 - The station's own models are encrypted by Cfx asset escrow; textures inside `.ytd` files never are, which is
   why your edits work on the escrowed resource.
 - The LSPS posters, notice boards and screens are part of other dictionaries and are not covered by this guide.

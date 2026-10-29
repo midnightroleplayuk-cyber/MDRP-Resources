@@ -5,7 +5,7 @@ lua54 'yes'
 name 'vinewood-mdt'
 author 'Vinewood Studios'
 description 'British police MDT: PNC checks, DVLA licences, custody and bail, CPS, ANPR, stop and search, fines, statements, interview playback and court results (vinewood-moj)'
-version '2.16.0'
+version '2.17.0'
 
 shared_scripts {
     '@ox_lib/init.lua',

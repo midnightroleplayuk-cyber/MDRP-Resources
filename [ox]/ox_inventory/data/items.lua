@@ -5265,19 +5265,14 @@ return {
     description = 'A rare relic of unknown origin',
 },
 
-
--- APEX Tape
+-- New Tape
 ['police_tape'] = {
-    label = 'Police Tape',
-    weight = 100,
+    label = 'Police tape',
+    weight = 200,
     stack = true,
-    description = 'Police Tape',
-},
-['scissors'] = {
-    label = 'Scissors',
-    weight = 100,
-    stack = true,
-    description = 'A pair of scissors',
+    close = true,
+    consume = 0,
+    client = { export = 'night_police_tape.StartPlacement' },
 },
 
 -- Rsvx_safe
@@ -5304,6 +5299,31 @@ return {
     description = 'A stethoscope and a set of picks. Not for honest work.',
     client = { image = 'nui://rsvx_safe/ui/safecracker.png' },
 },
+
+--TR BREATHALYZER
+	['breathalyzer'] = {
+		label = 'Breathalyzer',
+		weight = 350,
+		stack = false,
+		close = true,
+		description = 'A police breath alcohol tester. Use it to take it out or put it away.',
+	},
+
+	['breathalyzer_mouthpiece'] = {
+		label = 'Mouthpiece',
+		weight = 5,
+		stack = true,
+		close = false,
+		description = 'A sealed single-use mouthpiece for the breathalyzer.',
+	},
+
+	['breathalyzer_slip'] = {
+		label = 'Breath test slip',
+		weight = 1,
+		stack = false,
+		close = true,
+		description = 'The printed record of a breath test. Use it to read it.',
+	},
 
 
 }

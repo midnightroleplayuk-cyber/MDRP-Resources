@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="kit/ns_kit_tokens.css" />
+    <link rel="stylesheet" href="kit/ns_kit.css" />
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+    <div class="k-panel k-panel--m tape-hud" id="tape-hud" hidden>
+        <div class="tape-hud__head">
+            <span class="k-lab tape-hud__title"><span id="tape-title"></span></span>
+            <span class="k-lab__aside tape-hud__step" id="tape-step"></span>
+        </div>
+        <div class="tape-hud__meta" id="tape-meta"></div>
+        <div class="tape-hud__style">
+            <kbd class="k-kbd tape-hud__arrow tape-hud__arrow--prev" id="tape-prev"></kbd>
+            <div class="tape-hud__swatch" id="tape-swatch">
+                <img class="is-front" alt="" />
+                <img alt="" />
+            </div>
+            <kbd class="k-kbd tape-hud__arrow tape-hud__arrow--next" id="tape-next"></kbd>
+            <div class="tape-hud__name">
+                <span class="tape-hud__label" id="tape-name"></span>
+                <span class="k-num tape-hud__count" id="tape-count"></span>
+            </div>
+        </div>
+        <div class="tape-hud__keys" id="tape-keys"></div>
+        <div class="tape-hud__hold" id="tape-hold"></div>
+    </div>
+    <script src="kit/ns_kit_theme.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

@@ -124,7 +124,7 @@ return {
 		--}
 	--},
 
-	Medicine = {
+	--[[ Medicine = {
 		name = 'Medicine Cabinet',
 		groups = {
 			['ambulance'] = 0
@@ -154,7 +154,7 @@ return {
 		}, targets = {
 
 		}
-	},
+	}, ]]
 
 	VendingMachineDrinks = {
 		name = 'Vending Machine',

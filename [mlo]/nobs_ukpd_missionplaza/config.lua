@@ -124,3 +124,9 @@ ArmouryDisplay = {
 -- station (East Los FM, all day, heard through the walls). Every emitter listed here is switched off while this
 -- resource runs and back on when it stops. Add a name to silence it as well; MPDisabledEmitters = {} plays them all.
 MPDisabledEmitters = { 'se_restaurants_hollywood_28' }
+
+------------------------------------------------------------------------------------------------------ 5. EXTERIOR BRICK
+-- 'default' = the station's own brick. 'red' = GTA's classic red brick (Flemish bond, at real UK brick size) on the
+-- building, the boundary walls and piers, the roof enclosure and the distance models - one look all round. It is a
+-- texture swap only (nothing to download or copy): restart the resource after changing it. Pictures: options/README.md.
+MPExterior = { brick = 'default' }

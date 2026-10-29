@@ -1,5 +1,27 @@
 # Changelog - Mission Plaza UK Police Station (NO BS SCRIPTS)
 
+## 1.2.2 (2026-10-20)
+
+- The rank lettering on the three reserved parking bays in the police yard (COMMISSIONER, SUPERINTENDENT and INSPECTOR
+  over RESERVED, the row by the garage doors) is now an editable texture. The three textures are in the open branding
+  dictionary `stream/branding/nobs_ukpd_branding.ytd`, next to the crest and logos, with PNG templates in
+  `install/branding_kit/`; steps and sizes: `install/docs/BRANDING.md`. The default look is unchanged.
+- Updating from 1.2.1 or 1.2.0: replace the folder as usual and set your settings again in the new `config.lua` (no
+  new settings). If you edited the branding dictionary, import your edited textures into the NEW
+  `stream/branding/nobs_ukpd_branding.ytd`: an older copy of that file lacks the three bay textures, so those bays
+  would lose their lettering. The edited GTA files in `stream/vanilla/` did not change. Updating from 1.1.x: back up
+  all four 1.1.x settings files first, then follow `install/docs/INSTALL.md`, "Updating".
+
+## 1.2.1 (2026-10-14)
+
+- New option: GTA's classic red brick for the whole exterior. Set `MPExterior = { brick = 'red' }` in `config.lua`
+  (new section 5) and restart the resource: the building, the boundary walls and piers, the roof enclosure and the
+  distance models all switch to the red Flemish-bond brick at real UK brick size, so nothing mismatches. The default
+  look is unchanged. Pictures and details: `options/README.md`.
+- The package has a new `options/` folder for optional looks like this one.
+- Updating from 1.2.0: copy your settings into the new `config.lua` (it adds section 5). Updating from 1.1.x: back up
+  all four 1.1.x settings files first, then follow `install/docs/INSTALL.md`, "Updating".
+
 ## 1.2.0 (2026-10-08)
 
 New folder layout - please read before you update. The resource now has six items: `fxmanifest.lua`, `config.lua`,

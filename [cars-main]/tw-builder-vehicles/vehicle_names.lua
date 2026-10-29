@@ -1,0 +1,10 @@
+function AddTextEntry(key, value)
+	Citizen.InvokeNative(GetHashKey("ADD_TEXT_ENTRY"), key, value)
+end
+Citizen.CreateThread(function()
+	AddTextEntry("twmixer", "Mixer")
+	AddTextEntry("twhaulma", "HVY Haulmaster 6500")
+	AddTextEntry("twrough", "HVY Roughneck 4500")
+	AddTextEntry("twdigmas", "HVY Digmaster 580")
+	AddTextEntry("twtiptruck", "Tipper")
+end)

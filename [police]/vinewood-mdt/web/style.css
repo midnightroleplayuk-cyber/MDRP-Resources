@@ -433,3 +433,8 @@ tr.call-attached td:first-child { box-shadow: inset 3px 0 0 var(--blue); }
 .ex-actions { display: flex; flex-direction: column; gap: 4px; align-items: flex-end; margin-top: 8px; }
 .forensic-box { background: var(--inset); border: 1px solid #2A4C80; border-left: 3px solid #9CC3FF; border-radius: 4px; padding: 6px 10px; margin-top: 6px; font-size: 13px; display: flex; flex-direction: column; gap: 3px; }
 .forensic-box .pill { align-self: flex-start; }
+
+.anpr-hud .cam em { font-style: normal; font-family: var(--cond); font-weight: 700; color: #9CC3FF; margin-left: 6px; min-width: 52px; display: inline-block; }
+.anpr-hud .cam em.over { color: #FF5A55; }
+.anpr-hud .cam.spd span { min-width: 0; margin-right: 8px; }
+.anpr-hud .cam span.locked { color: var(--amber); }

@@ -321,6 +321,17 @@ end
 -- IMAGE DIALOG
 -- =========================================================
 
+local function validLocalSource(value)
+    if type(value) ~= 'string' then return false end
+    local filename = value:match('^local:([%w_%-]+%.[%a%d]+)$')
+    if not filename then return false end
+    return Config.AllowedImageExtensions[filename:lower():match('(%.[%w]+)$') or ''] == true
+end
+
+local function validImageSource(value)
+    return validLocalSource(value) or validClientUrl(value)
+end
+
 local function imageUrlDialog()
     local input = lib.inputDialog('New Sign', {
         {
@@ -333,8 +344,8 @@ local function imageUrlDialog()
         },
         {
             type = 'input',
-            label = 'PNG / image URL',
-            description = 'Direct HTTPS image URL (.png supported)',
+            label = 'Image URL or local:filename.png',
+            description = 'HTTPS URL or local:filename.png (html/images folder)',
             required = true,
             max = Config.MaxUrlLength
         },
@@ -372,11 +383,17 @@ local textureSession = ('%x'):format(GetGameTimer())
 local function destroyTexture(id)
     -- FiveM does not expose a per-runtime-texture destroy native. Dropping our
     -- references is still important so the render/cache logic stops using it.
+    if imageCache[id] and imageCache[id].dui then
+        DestroyDui(imageCache[id].dui)
+    end
     imageCache[id] = nil
     imageRequests[id] = nil
 end
 
 local function destroyAllTextures()
+    for _, entry in pairs(imageCache) do
+        if entry.dui then DestroyDui(entry.dui) end
+    end
     imageCache = {}
     imageRequests = {}
 end
@@ -398,6 +415,24 @@ local function requestImage(sign)
         requestedAt = GetGameTimer()
     }
 
+    if validLocalSource(sign.image_url) then
+        local filename = sign.image_url:sub(7)
+        -- Render through our full-canvas NUI page so rectangular source images
+        -- stretch to the sign texture instead of gaining letterbox bars.
+        local encodedFilename = filename:gsub('([^%w%-%._])', function(c)
+            return ('%%%02X'):format(c:byte())
+        end)
+        local duiUrl = ('https://cfx-nui-%s/html/index.html?url=images/%s'):format(GetCurrentResourceName(), encodedFilename)
+        local dui = CreateDui(duiUrl, 1024, 1024)
+        if not dui then imageRequests[id] = nil return end
+        local txdName = ('hf1_signs_%s_%s'):format(textureSession, id)
+        local runtimeTxd = CreateRuntimeTxd(txdName)
+        CreateRuntimeTextureFromDuiHandle(runtimeTxd, 'image', GetDuiHandle(dui))
+        imageCache[id] = { txd = txdName, txn = 'image', dui = dui, url = sign.image_url,
+            ready = true, lastUsed = GetGameTimer() }
+        imageRequests[id] = nil
+        return
+    end
     TriggerServerEvent('hf1_signs:requestImageData', id, sign.image_url)
 end
 
@@ -448,7 +483,7 @@ RegisterNetEvent('hf1_signs:imageError', function(id, message)
 end)
 
 local function getOrCreateTexture(sign)
-    if not validClientUrl(sign.image_url) then
+    if not validImageSource(sign.image_url) then
         return nil
     end
 
@@ -644,8 +679,8 @@ local function openCreate()
     local data = imageUrlDialog()
     if not data then return end
 
-    if not validClientUrl(data.image_url) then
-        notify('Use a direct HTTPS image URL with a configured extension such as .png.', 'error')
+    if not validImageSource(data.image_url) then
+        notify('Use HTTPS URL or local:filename.png (file in html/images).', 'error')
         return
     end
 
@@ -691,7 +726,7 @@ local function openManage()
                     },
                     {
                         type = 'input',
-                        label = 'Image URL',
+                        label = 'Image URL or local:filename.png',
                         default = sign.image_url,
                         required = true,
                         max = Config.MaxUrlLength

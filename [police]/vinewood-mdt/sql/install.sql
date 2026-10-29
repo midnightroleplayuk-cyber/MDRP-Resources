@@ -203,3 +203,11 @@ ALTER TABLE vw_mdt_evidence ADD COLUMN IF NOT EXISTS forensic LONGTEXT NULL;
 ALTER TABLE vw_mdt_evidence ADD COLUMN IF NOT EXISTS lab_status VARCHAR(16) NULL;
 ALTER TABLE vw_mdt_evidence ADD COLUMN IF NOT EXISTS lab_due BIGINT NULL;
 ALTER TABLE vw_mdt_evidence ADD COLUMN IF NOT EXISTS lab_result LONGTEXT NULL;
+
+CREATE TABLE IF NOT EXISTS vw_mdt_prints (cid VARCHAR(64) PRIMARY KEY, taken_by VARCHAR(96), custody_ref VARCHAR(32), created_at BIGINT NOT NULL);
+CREATE TABLE IF NOT EXISTS vw_mdt_speed (
+    id INT AUTO_INCREMENT PRIMARY KEY, plate VARCHAR(12) NOT NULL, model VARCHAR(64), speed INT NOT NULL, speed_limit INT, unit VARCHAR(4),
+    device VARCHAR(96), location VARCHAR(160), coords VARCHAR(96), officer_name VARCHAR(96), officer_cid VARCHAR(64), patrol_speed INT NULL,
+    locked TINYINT(1) NOT NULL DEFAULT 0, fine_ref VARCHAR(32) NULL, created_at BIGINT NOT NULL, INDEX idx_plate (plate), INDEX idx_created (created_at)
+);
+ALTER TABLE vw_mdt_anpr_cameras ADD COLUMN IF NOT EXISTS speed_limit INT NULL;

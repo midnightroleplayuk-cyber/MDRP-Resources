@@ -5,7 +5,7 @@ game 'gta5'
 this_is_a_map 'yes'
 author 'NO BS SCRIPTS'
 description 'Mission Plaza UK police station MLO (NO BS SCRIPTS)'
-version '1.2.0'
+version '1.2.2'
 lua54 'yes'
 dependency '/gameBuild:3258'
 dependency '/assetpacks'
@@ -38,6 +38,7 @@ client_scripts {
     'scripts/client/armoury_display.lua',
     'scripts/client/managed_doors.lua',
     'scripts/client/door_closer.lua',
+    'scripts/client/exterior_brick.lua',
 }
 
 server_scripts {

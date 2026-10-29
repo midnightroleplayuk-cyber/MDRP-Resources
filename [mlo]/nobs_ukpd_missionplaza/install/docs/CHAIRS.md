@@ -1,4 +1,4 @@
-# Mission Plaza UK Police Station 1.2.0: chairs you can sit on
+# Mission Plaza UK Police Station 1.2.2: chairs you can sit on
 
 Use this list for your sit script's model whitelist. We do not know which sit resource your server runs, so the
 chairs were picked from models that common FiveM sit scripts already list. Add any model your script is missing,

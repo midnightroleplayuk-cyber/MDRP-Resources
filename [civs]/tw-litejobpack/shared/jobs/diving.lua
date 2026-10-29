@@ -208,19 +208,19 @@ local DivingJob = {
         gear = {
             [1] = {
                 label = "Basic Scuba",
-                oxygenMax = 90.0,
+                oxygenMax = 150.0,
                 tankProp = "xm_prop_x17_scuba_tank",
                 requiredLevel = 0,
             },
             [2] = {
                 label = "Standard Scuba",
-                oxygenMax = 120.0,
+                oxygenMax = 200.0,
                 tankProp = "p_michael_scuba_tank_s",
                 requiredLevel = 3,
             },
             [3] = {
                 label = "Pro Scuba",
-                oxygenMax = 150.0,
+                oxygenMax = 260.0,
                 tankProp = "p_s_scuba_tank_s",
                 requiredLevel = 7,
             },

@@ -1,0 +1,253 @@
+
+
+
+
+<meta charset="utf-8">
+<title>Twostone Builders — Site Board</title>
+<style>
+  @font-face { font-family:'Gilroy'; src:url('./font/Gilroy-Regular_0.ttf');  font-weight:400 }
+  @font-face { font-family:'Gilroy'; src:url('./font/Gilroy-Medium_0.ttf');   font-weight:500 }
+  @font-face { font-family:'Gilroy'; src:url('./font/Gilroy-SemiBold_0.ttf'); font-weight:600 }
+  @font-face { font-family:'Gilroy'; src:url('./font/Gilroy-Bold_0.ttf');     font-weight:700 }
+
+  :root {
+    --gold:#e5b93b; --bg:rgba(29,29,29,.94); --title-bg:rgb(38,38,35);
+    --line:rgba(255,255,255,.13); --fill:rgba(255,255,255,.055);
+    --dim:rgba(255,255,255,.55); --dim2:rgba(255,255,255,.66);
+    --ok:#4ecb71;   --ok-bg:rgba(78,203,113,.09);
+    --warn:#ffd569; --warn-bg:rgba(255,213,105,.08);
+    --bad:#ff5a5a;  --bad-bg:rgba(255,90,90,.09);
+    --money:#69ff81;
+    --r:.78vmin;
+  }
+  * { margin:0; padding:0; box-sizing:border-box }
+  html,body { width:100%; height:100%; overflow:hidden; background:#0e0e0e; color:#fff;
+              font-family:'Gilroy',system-ui,sans-serif; -webkit-font-smoothing:antialiased }
+  .screen { position:absolute; inset:0; display:flex; flex-direction:column;
+            padding:2.2vmin; gap:1.6vmin; background:var(--bg) }
+
+  header { position:relative; display:flex; flex-direction:column; align-items:center;
+           justify-content:center; padding:1.8vmin 2vmin; border-radius:var(--r);
+           background:var(--title-bg); border:.18vmin solid var(--line) }
+  .brand { display:flex; align-items:center; gap:2vmin;
+           font-size:min(7vmin,8.4vw); font-weight:700; line-height:90%;
+           letter-spacing:.015em; white-space:nowrap }
+  .brand span { color:var(--gold); text-shadow:0 0 2vmin rgba(229,185,59,.55) }
+  .brand i { width:4.5vmin; height:.55vmin; background:var(--gold); border-radius:.3vmin;
+             box-shadow:0 0 1.6vmin rgba(229,185,59,.6); flex:none }
+  .kicker{ margin-top:1vmin; font-size:min(2.2vmin,2.7vw); font-weight:500; color:var(--dim);
+           letter-spacing:.34em; text-transform:uppercase; white-space:nowrap }
+  .live  { position:absolute; left:2vmin; top:50%; transform:translateY(-50%);
+           display:flex; align-items:center; gap:.9vmin;
+           padding:.8vmin 1.4vmin; border-radius:var(--r);
+           background:var(--ok-bg); color:var(--ok); font-size:min(2vmin,2.5vw);
+           font-weight:600; letter-spacing:.12em; text-shadow:0 0 1.2vmin rgba(78,203,113,.6) }
+  .dot   { width:1.2vmin; height:1.2vmin; border-radius:50%; background:currentColor;
+           box-shadow:0 0 1.3vmin currentColor; animation:pulse 2s ease-in-out infinite; flex:none }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.3} }
+  .clock { position:absolute; right:2vmin; top:50%; transform:translateY(-50%);
+           font-size:min(2.6vmin,3.2vw); font-weight:700; font-variant-numeric:tabular-nums;
+           letter-spacing:.1em }
+
+  .grid { flex:1; min-height:0; display:grid; gap:1.6vmin;
+          grid-template-columns:1fr 1fr; grid-template-rows:1fr 1fr;
+          transition:opacity .26s ease, transform .26s ease }
+  .grid.out { opacity:0; transform:translateY(-2vmin) }
+  .grid.one { grid-template-columns:1fr; grid-template-rows:repeat(var(--n,4),1fr) }
+
+  .card { position:relative; overflow:hidden; min-height:0;
+          display:flex; flex-direction:column; justify-content:center; gap:1.4vmin;
+          padding:2.4vmin 2.8vmin; border-radius:var(--r);
+          background:var(--fill); border:.16vmin solid var(--line);
+          border-left:.8vmin solid var(--dim);
+          animation:cardIn .42s cubic-bezier(.22,.9,.3,1) both }
+  @keyframes cardIn { from { opacity:0; transform:translateY(2.4vmin) } to { opacity:1; transform:none } }
+  .card:nth-child(1){ animation-delay:.00s } .card:nth-child(2){ animation-delay:.06s }
+  .card:nth-child(3){ animation-delay:.12s } .card:nth-child(4){ animation-delay:.18s }
+  .card.free { border-left-color:var(--ok);   background:linear-gradient(135deg,var(--ok-bg),transparent 46%),var(--fill) }
+  .card.open { border-left-color:var(--warn); background:linear-gradient(135deg,var(--warn-bg),transparent 46%),var(--fill) }
+  .card.busy { border-left-color:var(--bad);  background:linear-gradient(135deg,var(--bad-bg),transparent 46%),var(--fill) }
+
+  .top  { display:flex; align-items:center; gap:1.6vmin }
+  .idx  { font-size:3.6vmin; font-weight:700; color:var(--gold); opacity:.9;
+          font-variant-numeric:tabular-nums; letter-spacing:-.01em }
+  .pill { margin-left:auto; display:flex; flex-direction:column; align-items:center;
+          gap:.2vmin; padding:1vmin 1.8vmin; border-radius:var(--r); line-height:1.02;
+          font-size:2.9vmin; font-weight:700; letter-spacing:.08em;
+          text-transform:uppercase; white-space:nowrap }
+  .pill.free { background:var(--ok-bg);   color:var(--ok);   text-shadow:0 0 1.5vmin rgba(78,203,113,.6) }
+  .pill.open { background:var(--warn-bg); color:var(--warn); text-shadow:0 0 1.5vmin rgba(255,213,105,.6) }
+  .pill.busy { background:var(--bad-bg);  color:var(--bad);  text-shadow:0 0 1.5vmin rgba(255,90,90,.6) }
+  .pill u { text-decoration:none; font-size:1.5vmin; font-weight:600; opacity:.7; letter-spacing:.1em }
+
+  .name { font-size:5.1vmin; font-weight:700; line-height:96%;
+          white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+  .sub  { display:flex; align-items:center; gap:1.4vmin; font-size:2.5vmin; font-weight:500;
+          color:var(--dim2); white-space:nowrap; overflow:hidden }
+  .pay  { color:var(--money); font-weight:700; text-shadow:0 0 1.4vmin rgba(105,255,129,.6) }
+  .sep  { opacity:.3 }
+
+  footer { display:flex; align-items:center; gap:2vmin; flex:none;
+           padding:1.2vmin 2.2vmin; border-radius:var(--r);
+           background:var(--title-bg); border:.18vmin solid var(--line);
+           font-size:min(2vmin,2.5vw); font-weight:500; color:var(--dim); letter-spacing:.06em }
+  .key   { display:flex; align-items:center; gap:.8vmin; white-space:nowrap }
+  .key b { width:1.2vmin; height:1.2vmin; border-radius:50%; display:block; flex:none }
+  .pager { margin-left:auto; display:flex; align-items:center; gap:1vmin }
+  .pager s { text-decoration:none; width:2.6vmin; height:.65vmin; border-radius:.4vmin;
+             background:rgba(255,255,255,.18); transition:background .3s, width .3s }
+  .pager s.on { background:var(--gold); width:5vmin; box-shadow:0 0 1.4vmin rgba(229,185,59,.6) }
+
+  #cal { position:absolute; inset:0; display:none; align-items:center; justify-content:center; pointer-events:none }
+  #cal.on { display:flex }
+  #cal .ring { width:40%; aspect-ratio:1; border:.5vmin dashed var(--gold); border-radius:50% }
+  #cal .t { position:absolute; bottom:5%; left:50%; transform:translateX(-50%); color:var(--gold);
+            font-size:2vmin; font-weight:700; white-space:nowrap; background:rgba(0,0,0,.75);
+            padding:.6vmin 1.2vmin; border-radius:var(--r) }
+</style>
+
+<div class="screen">
+  <header>
+    <div class="live"><span class="dot"></span><span id="liveTxt">LIVE</span></div>
+    <div class="brand"><i></i>TWOSTONE <span>BUILDERS</span><i></i></div>
+    <div class="kicker" id="kicker">Site Availability Board</div>
+    <div class="clock" id="clock">--:--:--</div>
+  </header>
+
+  <div class="grid" id="grid"></div>
+
+  <footer>
+    <span class="key"><b style="background:#4ecb71"></b><span id="lFree">Open</span></span>
+    <span class="key"><b style="background:#ffd569"></b><span id="lOpen">Working</span></span>
+    <span class="key"><b style="background:#ff5a5a"></b><span id="lBusy">Full</span></span>
+    <span class="pager" id="pager"></span>
+  </footer>
+
+  <div id="cal"><div class="ring"></div><span class="t" id="calTxt"></span></div>
+</div>
+
+<script>
+  const PER_PAGE = 4;
+  const TURN_MS  = 5000;
+  const FADE_MS  = 260;
+
+  let T = { kicker:'Site Availability Board', free:'Open', open:'Working', busy:'Full',
+            lvl:'Lv', any:'Open to all', site_u:'sites', worker_u:'crew',
+            waiting:'Waiting for data' };
+
+  const gridEl  = document.getElementById('grid');
+  const pagerEl = document.getElementById('pager');
+  const esc = s => String(s==null?'':s).replace(/[&<>"]/g,
+    c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  const money = n => '$' + Number(n).toLocaleString('en-US');
+
+  let all = [];
+  let page = 0;
+  let timer = null;
+
+  const RANK = { busy:0, open:1, free:2 };
+  function sortRows(rows) {
+    return rows.slice().sort((a,b) => {
+      const ra = RANK[a.s] ?? 3, rb = RANK[b.s] ?? 3;
+      return ra !== rb ? ra - rb : (a.i - b.i);
+    });
+  }
+
+  function sliceOf(rows, sl) {
+    if (!sl || !sl.n || sl.n < 2) return rows;
+    const per = Math.ceil(rows.length / sl.n);
+    return rows.slice((sl.i-1)*per, (sl.i-1)*per + per);
+  }
+
+  function cardHtml(r) {
+    const s = (r.s === 'busy' || r.s === 'open') ? r.s : 'free';
+    let pill;
+    if (r.k > 0) {
+      const unit = (r.u === 'site') ? T.site_u : T.worker_u;
+      pill = Number(r.c) + '/' + Number(r.k) + '<u>' + esc(unit) + '</u>';
+    } else {
+      pill = esc(T[s]);
+    }
+    const bits = [];
+    if (r.m) bits.push('<span class="pay">' + money(r.m) + '</span>');
+    bits.push('<span>' + (r.l > 0 ? (T.lvl + ' ' + Number(r.l)) : esc(T.any)) + '</span>');
+
+    return '<div class="card ' + s + '">'
+         +   '<div class="top"><div class="idx">' + String(r.i).padStart(2,'0') + '</div>'
+         +     '<div class="pill ' + s + '">' + pill + '</div></div>'
+         +   '<div class="name">' + esc(r.n) + '</div>'
+         +   '<div class="sub">' + bits.join('<span class="sep">·</span>') + '</div>'
+         + '</div>';
+  }
+
+  function pageCount() { return Math.max(1, Math.ceil(all.length / PER_PAGE)); }
+
+  function paint() {
+    const n = pageCount();
+    if (page >= n) page = 0;
+    const part = all.slice(page*PER_PAGE, page*PER_PAGE + PER_PAGE);
+    gridEl.classList.toggle('one', part.length <= 2);
+    gridEl.style.setProperty('--n', part.length);
+    gridEl.innerHTML = part.map(cardHtml).join('');
+    pagerEl.innerHTML = Array.from({length:n},
+      (_,k) => '<s class="' + (k===page?'on':'') + '"></s>').join('');
+  }
+
+  function turn() {
+    if (pageCount() < 2) return;
+    gridEl.classList.add('out');
+    setTimeout(() => { page = (page + 1) % pageCount(); paint();
+                       gridEl.classList.remove('out'); }, FADE_MS);
+  }
+
+  function restartTimer() {
+    if (timer) clearInterval(timer);
+    timer = (pageCount() > 1) ? setInterval(turn, TURN_MS) : null;
+  }
+
+  function setData(rows, sl) {
+    if (!Array.isArray(rows) || !rows.length) {
+      all = []; gridEl.classList.add('one'); gridEl.style.setProperty('--n',1);
+      gridEl.innerHTML = '<div class="card"><div class="name">' + T.waiting + '</div></div>';
+      pagerEl.innerHTML = ''; if (timer) { clearInterval(timer); timer = null; }
+      return;
+    }
+    const before = pageCount();
+    all = sortRows(sliceOf(rows, sl));
+    paint();
+    if (pageCount() !== before) restartTimer();
+    else if (!timer) restartTimer();
+  }
+
+  function applyLabels() {
+    const set = (id,v) => { const e = document.getElementById(id); if (e) e.textContent = v };
+    set('kicker',T.kicker); set('lFree',T.free); set('lOpen',T.open); set('lBusy',T.busy);
+  }
+
+  window.addEventListener('message', e => {
+    const d = e.data || {};
+    if (d.action === 'board') {
+      if (d.labels && typeof d.labels === 'object') { Object.assign(T,d.labels); applyLabels() }
+      document.getElementById('liveTxt').textContent =
+        (d.slice && d.slice.n > 1) ? (d.slice.i + '/' + d.slice.n) : 'LIVE';
+      setData(d.rows, d.slice);
+    } else if (d.action === 'calibrate') {
+      const box = document.getElementById('cal');
+      if (d.on) {
+        document.getElementById('calTxt').textContent =
+          'CALIBRATION ' + d.w + 'x' + d.h + ' — circle must look ROUND';
+        box.classList.add('on');
+      } else box.classList.remove('on');
+    } else if (d.action === 'text' && typeof d.value === 'string') {
+      document.getElementById('kicker').textContent = d.value;
+    }
+  });
+
+  setInterval(() => {
+    const d = new Date();
+    document.getElementById('clock').textContent =
+      [d.getHours(),d.getMinutes(),d.getSeconds()].map(n => String(n).padStart(2,'0')).join(':');
+  }, 1000);
+
+  setData(null, null);
+</script>

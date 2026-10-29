@@ -1,0 +1,289 @@
+/*
+  tr_core's interaction panel: the key on a white keycap at the thing, its options in a panel beside it.
+  The colours are the ui-kit theme's. The corners are concentric: panel 10px, the selected row's band
+  8px (2px in), the key 5px.
+
+  The page is 400 x 512 css px, drawn at twice that (zoom) and shown at half: sharp text. The key sits at
+  --ax / --ay; client/interact.lua puts that point on the thing. The selected option is always at the key:
+  scrolling moves the list, not the key.
+*/
+
+@font-face {
+  font-family: 'Plus Jakarta Sans Variable';
+  font-style: normal;
+  font-display: block;
+  font-weight: 200 800;
+  src: url('fonts/plus-jakarta-sans-latin-ext-wght-normal.woff2') format('woff2-variations');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF,
+    U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+@font-face {
+  font-family: 'Plus Jakarta Sans Variable';
+  font-style: normal;
+  font-display: block;
+  font-weight: 200 800;
+  src: url('fonts/plus-jakarta-sans-latin-wght-normal.woff2') format('woff2-variations');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329,
+    U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+:root {
+  --surface: rgb(30 30 33 / 0.92);
+  --fg: #ededee;
+  --fg-muted: #8b8b91;
+  --accent: #fafafa;
+  --accent-fg: #0f0f10;
+  --ease: cubic-bezier(0.32, 0.72, 0, 1);
+
+  --ax: 40px;
+  --ay: 256px;
+  --row: 36px;
+  --sel: 0;
+  --kw: 28px;
+
+  zoom: 2;
+}
+
+/* The key's middle in the panel, where opening starts and closing ends. Worked out here, where the page
+   sets --kw and --sel (on :root it would keep their first values). */
+.ui {
+  --kx: calc(6px + var(--kw) / 2);
+  --ky: calc(20px + var(--sel) * var(--row));
+}
+
+html,
+body {
+  margin: 0;
+  width: 400px;
+  height: 512px;
+  overflow: hidden;
+  background: transparent;
+}
+
+body {
+  font-family: 'Plus Jakarta Sans Variable', 'Plus Jakarta Sans', 'Segoe UI', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  user-select: none;
+}
+
+.ui[data-state='hidden'] {
+  visibility: hidden;
+}
+
+/* The options. With the first selected its key is at --ax / --ay; it moves up a row per option further
+   down. */
+.panel {
+  position: absolute;
+  left: calc(var(--ax) - var(--kx));
+  top: calc(var(--ay) - 20px);
+  padding: 2px 0;
+  border-radius: 10px;
+  background: var(--surface);
+  box-shadow:
+    0 8px 24px rgb(0 0 0 / 0.4),
+    0 0 0 1px rgb(255 255 255 / 0.06);
+  transform: translateY(calc(var(--sel) * var(--row) * -1));
+  transition: transform 220ms var(--ease);
+}
+
+#rows {
+  position: relative;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: var(--row);
+  padding: 0 16px 0 6px;
+  white-space: nowrap;
+}
+
+.multi .row {
+  padding-right: 36px;
+}
+
+.slot {
+  flex: none;
+  width: var(--kw);
+}
+
+.label {
+  max-width: 18rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 13px;
+  line-height: 1.25;
+  font-weight: 500;
+  color: var(--fg-muted);
+  transition: color 160ms ease-out;
+}
+
+.row.on .label {
+  font-weight: 600;
+  color: var(--fg);
+}
+
+/* The selected row: the key, and with more than one option a band with the scroll wheel at its end. It
+   moves down the panel as the panel moves up, so it stays at the key's place. */
+.mark {
+  position: absolute;
+  left: 2px;
+  right: 2px;
+  top: 2px;
+  height: var(--row);
+  border-radius: 8px;
+  transform: translateY(calc(var(--sel) * var(--row)));
+  transition: transform 220ms var(--ease);
+}
+
+.multi .mark::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: rgb(255 255 255 / 0.07);
+}
+
+.instant .panel,
+.instant .mark,
+.instant .label {
+  transition: none;
+}
+
+.wheel {
+  position: absolute;
+  right: 12px;
+  top: 11px;
+  width: 10px;
+  height: 14px;
+  fill: none;
+  stroke: var(--fg-muted);
+  stroke-width: 1.3;
+  stroke-linecap: round;
+}
+
+.ui:not(.multi) .wheel {
+  display: none;
+}
+
+.key {
+  position: absolute;
+  left: 4px;
+  top: 4px;
+  z-index: 1;
+  box-sizing: border-box;
+  display: grid;
+  place-items: center;
+  min-width: 28px;
+  height: 28px;
+  padding: 0 8px 2px;
+  border-radius: 5px;
+  background: var(--accent);
+  color: var(--accent-fg);
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1;
+  /* the keycap's lower edge, and its shadow on the panel */
+  box-shadow:
+    inset 0 -2px 0 rgb(0 0 0 / 0.16),
+    0 1px 3px rgb(0 0 0 / 0.35);
+}
+
+/* Opening: the dot that marked the thing grows into the key (round, like the dot, until it's grown), and
+   the options open out of it. */
+.ui[data-state='shown'] .key {
+  animation: key-in 240ms var(--ease) both;
+}
+
+.ui[data-state='shown'] .panel {
+  animation: panel-in 300ms var(--ease) both;
+}
+
+.ui[data-state='shown'] .label {
+  animation: label-in 220ms ease-out 60ms both;
+}
+
+.ui[data-state='shown'] .mark::before,
+.ui[data-state='shown'] .wheel {
+  animation: fade-in 200ms ease-out 60ms both;
+}
+
+/* Closing: back into the dot. */
+.ui[data-state='leaving'] .key {
+  animation: key-out 150ms ease-in both;
+}
+
+.ui[data-state='leaving'] .panel {
+  animation: panel-out 150ms ease-in both;
+}
+
+.ui[data-state='leaving'] .label {
+  animation: fade-out 80ms ease-in both;
+}
+
+.key.pressed {
+  animation: key-press 200ms var(--ease);
+}
+
+@keyframes key-in {
+  from {
+    transform: scale(0.27);
+    border-radius: 14px;
+  }
+}
+
+@keyframes key-out {
+  to {
+    transform: scale(0.27);
+    border-radius: 14px;
+  }
+}
+
+/* Pressed: the keycap goes down onto its lower edge. */
+@keyframes key-press {
+  40% {
+    transform: translateY(1.5px);
+    box-shadow:
+      inset 0 -0.5px 0 rgb(0 0 0 / 0.16),
+      0 0.5px 1px rgb(0 0 0 / 0.35);
+  }
+}
+
+@keyframes panel-in {
+  from {
+    clip-path: circle(4px at var(--kx) var(--ky));
+  }
+  to {
+    clip-path: circle(150% at var(--kx) var(--ky));
+  }
+}
+
+@keyframes panel-out {
+  from {
+    clip-path: circle(150% at var(--kx) var(--ky));
+  }
+  to {
+    clip-path: circle(4px at var(--kx) var(--ky));
+  }
+}
+
+@keyframes label-in {
+  from {
+    opacity: 0;
+    transform: translateX(-6px);
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes fade-out {
+  to {
+    opacity: 0;
+  }
+}

@@ -1,0 +1,21 @@
+-- Default drink items for ox_inventory (pickle_clubs)
+-- Add these to your ox_inventory/data/items.lua file
+
+['screwdriver_drink'] = { label = 'Screwdriver', weight = 200, stack = true, description = 'An orange juice and vodka cocktail.' },
+['cosmopolitan'] = { label = 'Cosmopolitan', weight = 200, stack = true, description = 'A cranberry and lime cocktail.' },
+['cuba_libre'] = { label = 'Cuba Libre', weight = 200, stack = true, description = 'Rum, cola, and a squeeze of lime.' },
+['gin_tonic'] = { label = 'Gin & Tonic', weight = 200, stack = true, description = 'A classic gin and tonic water mix.' },
+['tequila_sunrise'] = { label = 'Tequila Sunrise', weight = 200, stack = true, description = 'Tequila with orange juice and grenadine.' },
+['pina_colada'] = { label = 'Pina Colada', weight = 200, stack = true, description = 'A tropical pineapple and rum blend.' },
+['whiskey_sour'] = { label = 'Whiskey Sour', weight = 200, stack = true, description = 'Whiskey with a sour citrus mix.' },
+['sea_breeze'] = { label = 'Sea Breeze', weight = 200, stack = true, description = 'Vodka with cranberry and pineapple juice.' },
+['bay_breeze'] = { label = 'Bay Breeze', weight = 200, stack = true, description = 'A light cranberry and pineapple cocktail.' },
+['shirley_temple'] = { label = 'Shirley Temple', weight = 200, stack = true, description = 'A non-alcoholic grenadine and lime drink.' },
+['arnold_palmer'] = { label = 'Arnold Palmer', weight = 200, stack = true, description = 'A refreshing sour mix and tonic blend.' },
+['rum_punch'] = { label = 'Rum Punch', weight = 200, stack = true, description = 'A fruity rum punch with tropical flavors.' },
+['jungle_juice'] = { label = 'Jungle Juice', weight = 200, stack = true, description = 'A potent mix of fruit juices and spirits.' },
+['paloma'] = { label = 'Paloma', weight = 200, stack = true, description = 'Tequila with lime and sour mix.' },
+['jack_coke'] = { label = 'Jack & Coke', weight = 200, stack = true, description = 'Whiskey and cola.' },
+['vodka_cran'] = { label = 'Vodka Cranberry', weight = 200, stack = true, description = 'Vodka with cranberry juice.' },
+['mai_tai'] = { label = 'Mai Tai', weight = 200, stack = true, description = 'A tropical rum cocktail with citrus.' },
+['dark_stormy'] = { label = 'Dark & Stormy', weight = 200, stack = true, description = 'Dark rum with cola and lime.' },

@@ -9,7 +9,7 @@
 --
 --   Frameworks: qbox (qbx_core), qbcore (qb-core), esx (es_extended), standalone (none of those)
 --   Inventories: ox_inventory, qb-inventory / ps-inventory / lj-inventory (qb API), qs-inventory, esx, none
---   Ambulance:   osp_ambulance, qbx_medical, qb-ambulancejob, esx_ambulancejob, wasabi_ambulance
+--   Ambulance:   qbx_medical (always on qbox), osp_ambulance, qb-ambulancejob, esx_ambulancejob, wasabi_ambulance
 --   Banking:     LG Mods UK Banking (LGMods_Banking), or the framework's own bank balance
 --
 -- 'standalone' still gives you sessions, bans, the staff menu, live players and the activity log (joins, chat,
@@ -52,19 +52,29 @@ local function detectInventory(fw)
     return 'none'
 end
 
+local QBX_REVIVE = 'qbx_medical:client:playerRevived'
+
 local REVIVE_EVENTS = {
-    { 'qbx_medical', 'qbx_medical:client:playerRevived' },
+    { 'qbx_medical', QBX_REVIVE },
     { 'qb-ambulancejob', 'hospital:client:Revive' },
     { 'wasabi_ambulance', 'wasabi_ambulance:revive' },
     { 'esx_ambulancejob', 'esx_ambulancejob:revive' },
 }
 
+-- OSP Ambulance under any folder name (osp_ambulance, osp_ambulance_v2, osp-ambulance...).
+local function ospRunning()
+    for i = 0, GetNumResources() - 1 do
+        local name = GetResourceByFindIndex(i)
+        if name and name:lower():gsub('-', '_'):find('^osp_ambulance') and running(name) then return true end
+    end
+    return false
+end
+
 local function detectRevive(fw)
     if Config.ReviveEvent and Config.ReviveEvent ~= '' and Config.ReviveEvent ~= 'auto' then return Config.ReviveEvent end
-    -- OSP Ambulance Job documents the ESX and QB revive events as its server-side revive hooks.
-    if running('osp_ambulance') then
-        return fw == 'esx' and 'esx_ambulancejob:revive' or 'hospital:client:Revive'
-    end
+    -- OSP first: it owns the dead state even on Qbox, and its /revive fires hospital:client:Revive on every framework.
+    if ospRunning() then return 'hospital:client:Revive' end
+    if fw == 'qbox' and running('qbx_medical') then return QBX_REVIVE end
     for _, pair in ipairs(REVIVE_EVENTS) do
         if running(pair[1]) then return pair[2] end
     end
@@ -450,9 +460,34 @@ function giveVehicle(v)
 end
 
 --- Revive the player with whatever your ambulance script uses (auto-detected, or Config.ReviveEvent).
-function Bridge.Revive(src)
+--- Dead or downed by whichever signal the medical script gives. Downed players often still have health above 0.
+function Bridge.IsDown(src)
+    local ped = GetPlayerPed(src)
+    if ped and ped ~= 0 and GetEntityHealth(ped) <= 0 then return true end
+    local c = Bridge.Character(src)
+    if c and c.down then return true end
+    local st = Player(src).state
+    local bd = st.BodyDamage -- OSP Ambulance
+    if type(bd) == 'table' and (bd.isDead or bd.inLastStand) then return true end
+    return st.isDead == true or st.dead == true or st.inLaststand == true or st.isDown == true -- wasabi and others
+end
+
+--- Works like txAdmin's heal: the ambulance script's revive, a native resurrect on the player's game, then
+--- txAdmin's heal events for scripts that listen to those (some only accept them from txAdmin itself).
+function Bridge.Revive(src, by)
     Bridge.Ready()
-    TriggerClientEvent(REVIVE, src)
+    -- Same call as qbx_medical's /revive: fires the revive event and refills hunger and thirst.
+    if REVIVE == QBX_REVIVE and running('qbx_medical') then
+        exports.qbx_medical:Revive(src)
+    else
+        -- true = admin revive: OSP skips its "insurvivable injuries" block, other scripts ignore the extra arg.
+        TriggerClientEvent(REVIVE, src, true)
+    end
+
+    if REVIVE == 'hospital:client:Revive' and ospRunning() then return end
+    TriggerClientEvent('helm:client:revive', src)
+    TriggerEvent('txAdmin:events:healedPlayer', { id = src })
+    TriggerEvent('txAdmin:events:playerHealed', { target = src, author = by or 'Helm' })
 end
 
 --- Vehicles owned by the given character ids: { { citizenId, plate, model, garage, state }, ... }

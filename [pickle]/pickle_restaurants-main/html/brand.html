@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <style>
+    /* The props use an OPAQUE shader, so the texture's alpha is ignored — a
+       transparent logo would show black. We render onto a canvas filled with a solid
+       colour (overridable via `bg`) so transparent logo areas read as packaging. */
+    html, body { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background: #ffffff; }
+    #surface { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+  </style>
+</head>
+<body>
+  <!-- one canvas is the whole DUI surface. It's sized to the texture's resolution so
+       the crop the owner picks in the panel maps 1:1 onto the prop. -->
+  <canvas id="surface"></canvas>
+  <script>
+    // The Lua render-target module drives this page via SendDuiMessage:
+    //   { action: "brand", url, crop?, w, h, bg? }
+    //        crop = { x, y, w, h } normalised (0..1) SOURCE rectangle in the image;
+    //        absent → the image is `cover`-cropped to the surface (centred).
+    //   { action: "calibrate", w, h, key }  — a grid/circle sized to the surface, so
+    //        a wrong DUI aspect ratio is obvious on the prop (the circle goes oval).
+    var canvas = document.getElementById("surface");
+    var ctx = canvas.getContext("2d");
+    var last = null;               // remember the last brand so an image onload repaints
+    var img = new window.Image();  // no crossOrigin: we only draw (never read pixels back)
+    img.onload = function () { if (last && last.action === "brand") paintBrand(last); };
+    img.onerror = function () { if (last && last.action === "brand") fillBlank(last); };
+
+    // Tell the Lua render-target module the instant the image has actually PAINTED, so
+    // it can (re)bind the texture replacement against a real frame instead of the blank
+    // surface it would otherwise catch while the (remote) image was still loading. This
+    // is what makes a pre-configured brand appear on load without a manual reload.
+    function notifyPainted() {
+      if (!last || (last.action !== "brand" && last.action !== "black") || !last.res || !last.key) return;
+      try {
+        fetch("https://" + last.res + "/rt:painted", {
+          method: "POST",
+          headers: { "Content-Type": "application/json; charset=UTF-8" },
+          body: JSON.stringify({ key: last.key }),
+        }).catch(function () {});
+      } catch (e) {}
+    }
+
+    function sizeCanvas(w, h) {
+      w = Math.max(1, Math.round(w || 1024));
+      h = Math.max(1, Math.round(h || 1024));
+      if (canvas.width !== w) canvas.width = w;
+      if (canvas.height !== h) canvas.height = h;
+    }
+
+    // Solid-black default: what a screen shows when no brand/content is configured for
+    // it, instead of reverting to the model's baked-in placeholder texture.
+    function paintBlack(d) {
+      sizeCanvas(d.w, d.h);
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+      ctx.fillStyle = "#000000";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      notifyPainted(); // let Lua bind against the painted black frame
+    }
+
+    function fillBlank(d) {
+      sizeCanvas(d.w, d.h);
+      ctx.fillStyle = d.bg || "#ffffff";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+    }
+
+    // Apply a target's orientation (rot 0/90/180/270 clockwise + flipx/flipy) as a
+    // canvas transform around the surface centre, then run `draw(DW, DH)` in the
+    // rotated frame — DW×DH is the destination the content fills BEFORE rotation, so a
+    // 90/270 turn swaps width/height and still fills the whole surface. Restores after.
+    function withOrient(d, draw) {
+      var W = canvas.width, H = canvas.height;
+      var rot = ((Math.round((d.rot || 0) / 90) * 90) % 360 + 360) % 360;
+      var swap = (rot === 90 || rot === 270);
+      var DW = swap ? H : W, DH = swap ? W : H;
+      ctx.save();
+      ctx.translate(W / 2, H / 2);
+      ctx.rotate(rot * Math.PI / 180);
+      if (d.flipx) ctx.scale(-1, 1);
+      if (d.flipy) ctx.scale(1, -1);
+      ctx.translate(-DW / 2, -DH / 2);
+      draw(DW, DH);
+      ctx.restore();
+    }
+
+    function paintBrand(d) {
+      sizeCanvas(d.w, d.h);
+      var W = canvas.width, H = canvas.height;
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+      ctx.fillStyle = d.bg || "#ffffff";
+      ctx.fillRect(0, 0, W, H);
+      if (!d.url) return;
+      if (img.getAttribute("data-src") !== d.url) {
+        // src not loaded yet — set it; onload will repaint from `last`
+        img.setAttribute("data-src", d.url);
+        img.src = d.url;
+        if (!img.complete || !img.naturalWidth) return;
+      }
+      var nw = img.naturalWidth, nh = img.naturalHeight;
+      if (!nw || !nh) return;
+      withOrient(d, function (DW, DH) {
+        var sx, sy, sw, sh;
+        if (d.crop && d.crop.w > 0 && d.crop.h > 0) {
+          // exact source rectangle the owner cropped, in image pixels
+          sx = d.crop.x * nw; sy = d.crop.y * nh; sw = d.crop.w * nw; sh = d.crop.h * nh;
+        } else {
+          // no crop → `cover`: largest centred source rect matching the (oriented) surface
+          var target = DW / DH, natural = nw / nh;
+          if (natural > target) { sh = nh; sw = nh * target; sx = (nw - sw) / 2; sy = 0; }
+          else { sw = nw; sh = nw / target; sx = 0; sy = (nh - sh) / 2; }
+        }
+        ctx.drawImage(img, sx, sy, sw, sh, 0, 0, DW, DH);
+      });
+      notifyPainted(); // the image is on the surface now — let Lua bind to it
+    }
+
+    function drawCalibration(d) {
+      var w = d.w || 1024, h = d.h || 1024;
+      sizeCanvas(w, h);
+      ctx.fillStyle = "#101418"; ctx.fillRect(0, 0, w, h);
+      var step = Math.max(16, Math.round(Math.min(w, h) / 16));
+      ctx.strokeStyle = "rgba(255,255,255,0.28)"; ctx.lineWidth = 1;
+      for (var x = 0; x <= w; x += step) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, h); ctx.stroke(); }
+      for (var y = 0; y <= h; y += step) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke(); }
+      ctx.strokeStyle = "#ff7a00"; ctx.lineWidth = Math.max(4, step / 4);
+      ctx.strokeRect(0, 0, w, h);
+      var r = Math.min(w, h) * 0.4; // reads as an ellipse if the aspect is wrong
+      ctx.strokeStyle = "#4ade80"; ctx.lineWidth = Math.max(3, step / 5);
+      ctx.beginPath(); ctx.arc(w / 2, h / 2, r, 0, Math.PI * 2); ctx.stroke();
+      ctx.strokeStyle = "rgba(255,255,255,0.5)"; ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(w, h); ctx.moveTo(w, 0); ctx.lineTo(0, h); ctx.stroke();
+      ctx.fillStyle = "#ffffff"; ctx.textAlign = "center"; ctx.textBaseline = "middle";
+      ctx.font = "bold " + Math.round(Math.min(w, h) / 10) + "px sans-serif";
+      ctx.fillText(w + " x " + h, w / 2, h / 2);
+      if (d.key) {
+        ctx.font = "bold " + Math.round(Math.min(w, h) / 16) + "px sans-serif";
+        ctx.fillText(String(d.key), w / 2, h / 2 + Math.min(w, h) / 7);
+      }
+      // Orientation indicator: an "UP" arrow near the top edge, drawn through the SAME
+      // transform as a real image — if it doesn't point up on the prop, rot/flip is off.
+      withOrient(d, function (DW, DH) {
+        var s = Math.min(DW, DH), ax = DW / 2, ay = DH * 0.16, a = s * 0.09;
+        ctx.strokeStyle = "#38bdf8"; ctx.fillStyle = "#38bdf8";
+        ctx.lineWidth = Math.max(4, s / 120); ctx.lineCap = "round"; ctx.lineJoin = "round";
+        ctx.beginPath(); ctx.moveTo(ax, ay - a); ctx.lineTo(ax, ay + a * 1.6); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(ax, ay - a * 1.4);
+        ctx.lineTo(ax - a * 0.7, ay - a * 0.2); ctx.lineTo(ax + a * 0.7, ay - a * 0.2);
+        ctx.closePath(); ctx.fill();
+        ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillStyle = "#38bdf8";
+        ctx.font = "bold " + Math.round(s / 14) + "px sans-serif";
+        ctx.fillText("UP", ax, ay + a * 2.6);
+      });
+    }
+
+    window.addEventListener("message", function (e) {
+      var d = e.data;
+      // SendDuiMessage delivers a raw JSON string; NUI-style delivery gives an object.
+      if (typeof d === "string") { try { d = JSON.parse(d); } catch (_) { return; } }
+      if (!d) return;
+      last = d;
+      if (d.action === "brand") paintBrand(d);
+      else if (d.action === "black") paintBlack(d);
+      else if (d.action === "calibrate") drawCalibration(d);
+    });
+  </script>
+</body>
+</html>
