@@ -522,7 +522,7 @@ end)
 handlers.revive = function(p)
     local src = sourceByLicense(p.license)
     if not src then return false, 'player offline' end
-    Bridge.Revive(src)
+    Bridge.Revive(src, p.by)
     HelmTellPlayer(src, 'revive', '{who} revived you.', p.by)
     return true
 end
@@ -639,7 +639,7 @@ function HelmReviveNearby(center, radius, by)
         local id = tonumber(s)
         local ped = GetPlayerPed(id)
         if ped ~= 0 and within(ped, center, radius) and Bridge.IsDown(id) then
-            Bridge.Revive(id)
+            Bridge.Revive(id, by)
             HelmTellPlayer(id, 'revive', '{who} revived you.', by)
             n = n + 1
         end

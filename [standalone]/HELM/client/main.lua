@@ -331,6 +331,20 @@ RegisterNetEvent('helm:client:heal', function()
     HelmClearOspInjuries()
 end)
 
+-- Native revive, the same as txAdmin's heal: bring the ped back where it lies, then heal it.
+RegisterNetEvent('helm:client:revive', function()
+    local ped = PlayerPedId()
+    local pos = GetEntityCoords(ped)
+    if IsEntityDead(ped) then
+        NetworkResurrectLocalPlayer(pos.x, pos.y, pos.z, GetEntityHeading(ped), false, false)
+        ped = PlayerPedId()
+    end
+    ResurrectPed(ped)
+    SetEntityHealth(ped, GetEntityMaxHealth(ped))
+    ClearPedBloodDamage(ped)
+    RestorePlayerStamina(PlayerId(), 100.0)
+end)
+
 -- OSP Ambulance keeps wounds, bleeding, fractures and vitals in the BodyDamage state bag, and keeps draining health
 -- while they're there. Reset them to OSP's healthy defaults (osp-development.gitbook.io, Player Statebag).
 function HelmClearOspInjuries()

@@ -9,7 +9,7 @@
 --
 --   Frameworks: qbox (qbx_core), qbcore (qb-core), esx (es_extended), standalone (none of those)
 --   Inventories: ox_inventory, qb-inventory / ps-inventory / lj-inventory (qb API), qs-inventory, esx, none
---   Ambulance:   osp_ambulance, qbx_medical, qb-ambulancejob, esx_ambulancejob, wasabi_ambulance
+--   Ambulance:   qbx_medical (always on qbox), osp_ambulance, qb-ambulancejob, esx_ambulancejob, wasabi_ambulance
 --   Banking:     LG Mods UK Banking (LGMods_Banking), or the framework's own bank balance
 --
 -- 'standalone' still gives you sessions, bans, the staff menu, live players and the activity log (joins, chat,
@@ -52,8 +52,10 @@ local function detectInventory(fw)
     return 'none'
 end
 
+local QBX_REVIVE = 'qbx_medical:client:playerRevived'
+
 local REVIVE_EVENTS = {
-    { 'qbx_medical', 'qbx_medical:client:playerRevived' },
+    { 'qbx_medical', QBX_REVIVE },
     { 'qb-ambulancejob', 'hospital:client:Revive' },
     { 'wasabi_ambulance', 'wasabi_ambulance:revive' },
     { 'esx_ambulancejob', 'esx_ambulancejob:revive' },
@@ -70,6 +72,8 @@ end
 
 local function detectRevive(fw)
     if Config.ReviveEvent and Config.ReviveEvent ~= '' and Config.ReviveEvent ~= 'auto' then return Config.ReviveEvent end
+    -- Qbox: always its own revive (what qbx_medical's /revive uses), even alongside OSP.
+    if fw == 'qbox' then return QBX_REVIVE end
     -- OSP Ambulance Job documents the ESX and QB revive events as its server-side revive hooks.
     if ospRunning() then
         return fw == 'esx' and 'esx_ambulancejob:revive' or 'hospital:client:Revive'
@@ -471,9 +475,19 @@ function Bridge.IsDown(src)
     return st.isDead == true or st.dead == true or st.inLaststand == true or st.isDown == true -- wasabi and others
 end
 
-function Bridge.Revive(src)
+--- Works like txAdmin's heal: the ambulance script's revive, a native resurrect on the player's game, then
+--- txAdmin's heal events for scripts that listen to those (some only accept them from txAdmin itself).
+function Bridge.Revive(src, by)
     Bridge.Ready()
-    TriggerClientEvent(REVIVE, src)
+    -- Same call as qbx_medical's /revive: fires the revive event and refills hunger and thirst.
+    if REVIVE == QBX_REVIVE and running('qbx_medical') then
+        exports.qbx_medical:Revive(src)
+    else
+        TriggerClientEvent(REVIVE, src)
+    end
+    TriggerClientEvent('helm:client:revive', src)
+    TriggerEvent('txAdmin:events:healedPlayer', { id = src })
+    TriggerEvent('txAdmin:events:playerHealed', { target = src, author = by or 'Helm' })
 end
 
 --- Vehicles owned by the given character ids: { { citizenId, plate, model, garage, state }, ... }
