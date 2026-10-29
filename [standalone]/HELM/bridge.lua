@@ -483,6 +483,8 @@ function Bridge.Revive(src, by)
         -- true = admin revive: OSP skips its "insurvivable injuries" block, other scripts ignore the extra arg.
         TriggerClientEvent(REVIVE, src, true)
     end
+
+    if REVIVE == 'hospital:client:Revive' and ospRunning() then return end
     TriggerClientEvent('helm:client:revive', src)
     TriggerEvent('txAdmin:events:healedPlayer', { id = src })
     TriggerEvent('txAdmin:events:playerHealed', { target = src, author = by or 'Helm' })

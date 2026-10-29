@@ -20,7 +20,7 @@ Config.Banking = 'auto'
 
 -- Client event fired on a player to revive them. nil = auto-detect: osp_ambulance if running, then qbx_medical,
 -- qb-ambulancejob, wasabi_ambulance or esx_ambulancejob. Set an event name if you use another ambulance script.
-Config.ReviveEvent = osp_ambulance
+Config.ReviveEvent = nil
 
 -- Garage that vehicles issued from the panel go to when staff leave the garage field blank.
 -- Must match a garage ID in your garage script (qb-garages and many QBox setups use 'pillboxgarage').
