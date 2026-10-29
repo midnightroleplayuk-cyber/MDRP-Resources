@@ -20,7 +20,7 @@ Config.Banking = 'auto'
 
 -- Client event fired on a player to revive them. nil = auto-detect: osp_ambulance if running, then qbx_medical,
 -- qb-ambulancejob, wasabi_ambulance or esx_ambulancejob. Set an event name if you use another ambulance script.
-Config.ReviveEvent = nil
+Config.ReviveEvent = osp_ambulance
 
 -- Garage that vehicles issued from the panel go to when staff leave the garage field blank.
 -- Must match a garage ID in your garage script (qb-garages and many QBox setups use 'pillboxgarage').
@@ -136,7 +136,7 @@ Config.Screenshots = {
 Config.BanCache = true
 Config.BanListSeconds = 120
 
-Config.Debug = false
+Config.Debug = true
 
 -- In-game staff menu. Staff are matched by the Discord ID linked on the panel's Staff & roles page,
 -- and every action is authorised by the panel, not by this resource.
