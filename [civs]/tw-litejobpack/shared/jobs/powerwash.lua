@@ -376,9 +376,9 @@ PowerwashJob.preview = {
 
 PowerwashJob.clothes = {
     male = {
-        tshirt_1 = 0,
+        tshirt_1 = 59,
         tshirt_2 = 1,
-        torso_1 = 59,
+        torso_1 = 0,
         torso_2 = 1,
         arms = 41,
         pants_1 = 102,
