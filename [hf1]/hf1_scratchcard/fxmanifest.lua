@@ -25,7 +25,9 @@ files {
     'html/index.html',
     'html/style.css',
     'html/app.js',
-    'html/fingers-crossed.png'
+    'html/fingers-crossed.png',
+    'html/icons/*.png',
+    'html/icons/*.svg'
 }
 
 dependencies {
