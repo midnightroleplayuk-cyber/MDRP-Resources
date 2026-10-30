@@ -84,9 +84,9 @@ lib.callback.register('hf1_bootscript:open', function(src, netId)
   local citizenid = player.PlayerData.citizenid
   local issuedState = {police = {}, firearms = {}}
   for _, e in ipairs(Config.Clothing) do if grade >= (e.minGrade or 0) then options.clothing[#options.clothing+1] = {id=e.id,label=e.label,image=e.image} end end
-  for _, e in ipairs(Config.PoliceItems) do if grade >= (e.minGrade or 0) then options.police[#options.police+1] = {id=e.id,label=e.label,image=e.image or e.item,count=available(netId,'police',e)} end; local k=issueKey(citizenid,netId,'police',e.id); issuedState.police[e.id] = issued[k] and issued[k].count or 0 end
+  for _, e in ipairs(Config.PoliceItems) do if grade >= (e.minGrade or 0) then options.police[#options.police+1] = {id=e.id,label=e.label,image=e.image or e.item,count=available(netId,'police',e),limit=math.max(1,math.floor(tonumber(e.count) or 1))} end; local k=issueKey(citizenid,netId,'police',e.id); issuedState.police[e.id] = issued[k] and issued[k].count or 0 end
   if authorized(src, netId, 'firearms') then
-    for _, e in ipairs(Config.Firearms) do if grade >= (e.minGrade or 0) then options.firearms[#options.firearms+1] = {id=e.id,label=e.label,image=e.image or e.item,count=available(netId,'firearms',e)} end; local k=issueKey(citizenid,netId,'firearms',e.id); issuedState.firearms[e.id] = issued[k] and issued[k].count or 0 end
+    for _, e in ipairs(Config.Firearms) do if grade >= (e.minGrade or 0) then options.firearms[#options.firearms+1] = {id=e.id,label=e.label,image=e.image or e.item,count=available(netId,'firearms',e),limit=math.max(1,math.floor(tonumber(e.count) or 1))} end; local k=issueKey(citizenid,netId,'firearms',e.id); issuedState.firearms[e.id] = issued[k] and issued[k].count or 0 end
   end
   return {options=options, traffic=not not authorized(src,netId,'traffic'), firearms=not not authorized(src,netId,'firearms'), vehicle=GetVehicleNumberPlateText(NetworkGetEntityFromNetworkId(netId)),issued=issuedState}
 end)
@@ -113,10 +113,12 @@ lib.callback.register('hf1_bootscript:issue', function(src, netId, section, id, 
   if not entry or grade < (entry.minGrade or 0) then return {ok=false,message='Item unavailable'} end
   local player = exports.qbx_core:GetPlayer(src)
   local key = issueKey(player.PlayerData.citizenid,netId,section,id)
-  if Config.TrackIssuedItems and issued[key] then return {ok=false,message='Already issued; return it first'} end
+  local previouslyIssued = issued[key] and issued[key].count or 0
+  local configuredLimit = math.max(1, math.floor(tonumber(entry.count) or 1))
+  if previouslyIssued >= configuredLimit then return {ok=false,message='Maximum allocation reached; return equipment first'} end
   local maxCount = available(netId,section,entry)
   local count = tonumber(requestedCount)
-  if not count or count ~= math.floor(count) or count < 1 or count > maxCount then return {ok=false,message='Invalid quantity'} end
+  if not count or count ~= math.floor(count) or count < 1 or count > maxCount or count > (configuredLimit - previouslyIssued) then return {ok=false,message='Invalid quantity or allocation limit reached'} end
   if not exports.ox_inventory:CanCarryItem(src,entry.item,count) then return {ok=false,message='Inventory full'} end
   local success = exports.ox_inventory:AddItem(src,entry.item,count)
   if not success then return {ok=false,message='Could not issue item'} end
@@ -124,8 +126,8 @@ lib.callback.register('hf1_bootscript:issue', function(src, netId, section, id, 
     exports.ox_inventory:RemoveItem(src,entry.item,count)
     return {ok=false,message='Vehicle stock unavailable'}
   end
-  issued[key]={item=entry.item,count=count}
-  return {ok=true,message=count .. ' × ' .. entry.label .. ' taken',issued=count,available=maxCount-count}
+  issued[key]={item=entry.item,count=previouslyIssued+count}
+  return {ok=true,message=count .. ' × ' .. entry.label .. ' taken',issued=previouslyIssued+count,available=maxCount-count}
 end)
 lib.callback.register('hf1_bootscript:returnItem', function(src,netId,section,id)
   if section ~= 'police' and section ~= 'firearms' or not active(src,netId,section) or not throttle(src) then return {ok=false,message='Access denied'} end
