@@ -13,7 +13,7 @@ local ScrapyardJob = {
         enabled = true, -- true = spawn NPC | false = no NPC
         coords = vector4(2403.48, 3127.78, 48.15, 247.39),
         model = "a_m_m_hillbilly_01",
-        scenario = "WORLD_HUMAN_WELDING",
+        scenario = "WORLD_HUMAN_CLIPBOARD",
         interaction = {
             distance = 2.0,
             key = 38,
