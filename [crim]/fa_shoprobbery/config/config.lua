@@ -46,8 +46,8 @@ Config.Clerk = {
         MaxDelay = 7000
     },
     Fight = {
-        Enabled = true,
-        Chance = 0,
+        Enabled = false,
+        Chance = 10,
         Weapon = `WEAPON_BAT`,
         Ammo = 60,
         Accuracy = 35,
