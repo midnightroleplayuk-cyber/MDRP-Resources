@@ -820,7 +820,7 @@ Config.Stores = {
             vector3(1481.6, 3575.67, 36.97),
         },
         safe = {
-            coords = vector3(1481.11, 3570.09, 35.82),
+            coords = vector3(1481.11, 3570.09, 36.82),
             heading = 199.96,
             methods = { 'drill' },
             prop = true
