@@ -169,7 +169,7 @@ Config.Profiles = {
 -- Optional safe prop and synchronized opening scene.
 Config.SafeProp = {
     Enabled = true,
-    Model = `h4_prop_h4_safe_01a`,
+    Model = `m25_1_prop_m51_arcade_safe_body`,
     BagModel = `hei_p_m_bag_var22_arm_s`,
     HeadingOffset = -180.0,
     ZOffset = 0.0,
