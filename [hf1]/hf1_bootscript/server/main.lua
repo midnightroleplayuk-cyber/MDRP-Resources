@@ -54,9 +54,9 @@ lib.callback.register('hf1_bootscript:open', function(src, netId)
   local citizenid = player.PlayerData.citizenid
   local issuedState = {police = {}, firearms = {}}
   for _, e in ipairs(Config.Clothing) do if grade >= (e.minGrade or 0) then options.clothing[#options.clothing+1] = {id=e.id,label=e.label,image=e.image} end end
-  for _, e in ipairs(Config.PoliceItems) do if grade >= (e.minGrade or 0) then options.police[#options.police+1] = {id=e.id,label=e.label,image=e.image or e.item} end; issuedState.police[e.id] = issued[citizenid .. ':police:' .. e.id] ~= nil end end
+  for _, e in ipairs(Config.PoliceItems) do if grade >= (e.minGrade or 0) then options.police[#options.police+1] = {id=e.id,label=e.label,image=e.image or e.item} end; issuedState.police[e.id] = issued[citizenid .. ':police:' .. e.id] ~= nil end
   if authorized(src, netId, 'firearms') then
-    for _, e in ipairs(Config.Firearms) do if grade >= (e.minGrade or 0) then options.firearms[#options.firearms+1] = {id=e.id,label=e.label,image=e.image or e.item} end; issuedState.firearms[e.id] = issued[citizenid .. ':firearms:' .. e.id] ~= nil end end
+    for _, e in ipairs(Config.Firearms) do if grade >= (e.minGrade or 0) then options.firearms[#options.firearms+1] = {id=e.id,label=e.label,image=e.image or e.item} end; issuedState.firearms[e.id] = issued[citizenid .. ':firearms:' .. e.id] ~= nil end
   end
   return {options=options, traffic=not not authorized(src,netId,'traffic'), firearms=not not authorized(src,netId,'firearms'), vehicle=GetVehicleNumberPlateText(NetworkGetEntityFromNetworkId(netId)),issued=issuedState}
 end)
