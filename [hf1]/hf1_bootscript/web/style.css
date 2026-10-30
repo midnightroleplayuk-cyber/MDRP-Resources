@@ -28,3 +28,11 @@ nav{gap:8px}nav button{background:transparent;border:1px solid transparent;borde
 @media(max-width:950px){.item{flex-wrap:wrap}.actions{width:100%;justify-content:flex-end}}
 @media(max-width:750px){#force-name{font-size:24px}.qty-control{flex:1;justify-content:center}.actions>button{flex:1}}
 @media(prefers-reduced-motion:reduce){button{transition:none}button:hover:not(:disabled){transform:none}}
+
+/* v1.4.6 — equipment controls and larger inventory thumbnails */
+.item-image{width:79px;height:79px;padding:7px}
+.item{min-height:127px}
+.actions>button[data-return="false"]{background:linear-gradient(145deg,#17754d,#0d5038);border-color:#38976c;color:#f1fff8}
+.actions>button[data-return="false"]:hover:not(:disabled){background:linear-gradient(145deg,#229765,#126445);border-color:#66c99b}
+.actions>button[data-return="true"]{background:linear-gradient(145deg,#672333,#421522);border-color:#9c4356;color:#fff2f4}
+.actions>button[data-return="true"]:hover:not(:disabled){background:linear-gradient(145deg,#833044,#561c2b);border-color:#bf6275}
