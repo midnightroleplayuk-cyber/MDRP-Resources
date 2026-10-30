@@ -1487,13 +1487,13 @@ RegisterServerCallback('canStartJobAtNPC', function(src, cb, jobId)
     local selectedJob = GetPlayerSelectedJob(src)
 
     if not selectedJob then
-        cb({ success = false, message = "You must first select a job from the Job Center" })
+        cb({ success = false, message = "You must first select a job from the Job Centre" })
         return
     end
 
     if selectedJob ~= jobId then
         local jobName = Config.Jobs[jobId].name or jobId
-        cb({ success = false, message = "You must select " .. jobName .. " from the Job Center first" })
+        cb({ success = false, message = "You must select " .. jobName .. " from the Job Centre first" })
         return
     end
 
