@@ -54,9 +54,9 @@ lib.callback.register('hf1_bootscript:open', function(src, netId)
   local citizenid = player.PlayerData.citizenid
   local issuedState = {police = {}, firearms = {}}
   for _, e in ipairs(Config.Clothing) do if grade >= (e.minGrade or 0) then options.clothing[#options.clothing+1] = {id=e.id,label=e.label,image=e.image} end end
-  for _, e in ipairs(Config.PoliceItems) do if grade >= (e.minGrade or 0) then options.police[#options.police+1] = {id=e.id,label=e.label,image=e.image or e.item} end; issuedState.police[e.id] = issued[citizenid .. ':police:' .. e.id] ~= nil end
+  for _, e in ipairs(Config.PoliceItems) do if grade >= (e.minGrade or 0) then options.police[#options.police+1] = {id=e.id,label=e.label,image=e.image or e.item,count=math.max(1,math.floor(tonumber(e.count) or 1))} end; issuedState.police[e.id] = issued[citizenid .. ':police:' .. e.id] and issued[citizenid .. ':police:' .. e.id].count or 0 end
   if authorized(src, netId, 'firearms') then
-    for _, e in ipairs(Config.Firearms) do if grade >= (e.minGrade or 0) then options.firearms[#options.firearms+1] = {id=e.id,label=e.label,image=e.image or e.item} end; issuedState.firearms[e.id] = issued[citizenid .. ':firearms:' .. e.id] ~= nil end
+    for _, e in ipairs(Config.Firearms) do if grade >= (e.minGrade or 0) then options.firearms[#options.firearms+1] = {id=e.id,label=e.label,image=e.image or e.item,count=math.max(1,math.floor(tonumber(e.count) or 1))} end; issuedState.firearms[e.id] = issued[citizenid .. ':firearms:' .. e.id] and issued[citizenid .. ':firearms:' .. e.id].count or 0 end
   end
   return {options=options, traffic=not not authorized(src,netId,'traffic'), firearms=not not authorized(src,netId,'firearms'), vehicle=GetVehicleNumberPlateText(NetworkGetEntityFromNetworkId(netId)),issued=issuedState}
 end)
@@ -74,7 +74,7 @@ lib.callback.register('hf1_bootscript:pin', function(src, netId, pin)
   sessions[src].unlocked=true
   return {ok=true}
 end)
-lib.callback.register('hf1_bootscript:issue', function(src, netId, section, id)
+lib.callback.register('hf1_bootscript:issue', function(src, netId, section, id, requestedCount)
   if section ~= 'police' and section ~= 'firearms' then return {ok=false,message='Invalid category'} end
   if not active(src,netId,section) or not throttle(src) then return {ok=false,message='Access denied or too many requests'} end
   if section == 'firearms' and not sessions[src].unlocked then return {ok=false,message='Unlock the lockbox first'} end
@@ -84,12 +84,14 @@ lib.callback.register('hf1_bootscript:issue', function(src, netId, section, id)
   local player = exports.qbx_core:GetPlayer(src)
   local key = player.PlayerData.citizenid .. ':' .. section .. ':' .. id
   if Config.TrackIssuedItems and issued[key] then return {ok=false,message='Already issued; return it first'} end
-  local count = math.max(1,math.floor(tonumber(entry.count) or 1))
+  local maxCount = math.max(1,math.floor(tonumber(entry.count) or 1))
+  local count = tonumber(requestedCount)
+  if not count or count ~= math.floor(count) or count < 1 or count > maxCount then return {ok=false,message='Invalid quantity'} end
   if not exports.ox_inventory:CanCarryItem(src,entry.item,count) then return {ok=false,message='Inventory full'} end
   local success = exports.ox_inventory:AddItem(src,entry.item,count)
   if not success then return {ok=false,message='Could not issue item'} end
   if Config.TrackIssuedItems then issued[key]={item=entry.item,count=count} end
-  return {ok=true,message=entry.label .. ' taken',issued=true}
+  return {ok=true,message=count .. ' × ' .. entry.label .. ' taken',issued=count}
 end)
 lib.callback.register('hf1_bootscript:returnItem', function(src,netId,section,id)
   if section ~= 'police' and section ~= 'firearms' or not active(src,netId,section) or not throttle(src) then return {ok=false,message='Access denied'} end
@@ -98,10 +100,15 @@ lib.callback.register('hf1_bootscript:returnItem', function(src,netId,section,id
   local key = player.PlayerData.citizenid .. ':' .. section .. ':' .. id
   local record = issued[key]
   if not record then return {ok=false,message='No tracked issue to return'} end
-  local removed = exports.ox_inventory:RemoveItem(src,record.item,record.count)
-  if not removed then return {ok=false,message='Required item not in inventory'} end
+  -- Consumables may have been used. Return only what remains, never remove more than issued.
+  local remaining = exports.ox_inventory:GetItemCount(src,record.item) or 0
+  local toReturn = math.min(record.count, math.max(0,remaining))
+  if toReturn > 0 then
+    local removed = exports.ox_inventory:RemoveItem(src,record.item,toReturn)
+    if not removed then return {ok=false,message='Could not return remaining items'} end
+  end
   issued[key]=nil
-  return {ok=true,message='Item returned',issued=false}
+  return {ok=true,message=toReturn .. ' returned; ' .. (record.count-toReturn) .. ' used or missing',issued=0}
 end)
 lib.callback.register('hf1_bootscript:check',function(src,netId,section)
   return not not active(src,netId,section)

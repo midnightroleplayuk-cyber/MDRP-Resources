@@ -150,7 +150,7 @@ RegisterNUICallback('action',function(data,cb)
   local netId=current.netId
   if data.action=='pin' then return cb(lib.callback.await('hf1_bootscript:pin',false,netId,tostring(data.pin or ''))) end
   if data.action=='issue' or data.action=='returnItem' then
-    return cb(lib.callback.await('hf1_bootscript:'..data.action,false,netId,data.section,data.id))
+    return cb(lib.callback.await('hf1_bootscript:'..data.action,false,netId,data.section,data.id,data.count))
   end
   if data.action=='clothing' then
     local ok=lib.callback.await('hf1_bootscript:check',false,netId,'clothing')
