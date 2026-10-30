@@ -5384,5 +5384,73 @@ return {
     description = nil
 },
 
+-- PICKLE RESTAURANTS
+
+['restaurant_bag'] = {
+        label  = 'Restaurant Bag',
+        weight = 800,
+        stack  = false,
+        close  = true,
+        consume = 0,
+        server = { export = 'pickle_restaurants.useItem' },
+    },
+    ['meal'] = {
+        label  = 'Meal',
+        weight = 800,
+        stack  = false,
+        close  = true,
+        consume = 0,
+        server = { export = 'pickle_restaurants.useItem' },
+    },
+    ['takeout_box'] = {
+        label  = 'Takeout Box',
+        weight = 500,
+        stack  = false,
+        close  = true,
+        consume = 0,
+        server = { export = 'pickle_restaurants.useItem' },
+    },
+    ['restaurant_item'] = {
+        label  = 'Restaurant Item',
+        weight = 300,
+        stack  = false,
+        close  = true,
+        consume = 0,
+        server = { export = 'pickle_restaurants.useItem' },
+    },
+    ['restaurant_receipt'] = {
+        label  = 'Receipt',
+        weight = 10,
+        stack  = true,
+        close  = true,
+    },
+
+    -- ── raw cook inputs (bought as supplies, cooked at a station) ─────────────
+    ['raw_beef_patty']    = { label = 'Raw Beef Patty',    weight = 220, stack = true, close = true },
+    ['raw_chicken_patty'] = { label = 'Raw Chicken Patty', weight = 220, stack = true, close = true },
+    ['raw_drumstick']     = { label = 'Raw Drumstick',     weight = 220, stack = true, close = true },
+    ['raw_fries']         = { label = 'Raw Cut Fries',     weight = 180, stack = true, close = true },
+    ['raw_nuggets']       = { label = 'Raw Nuggets',       weight = 180, stack = true, close = true },
+    ['raw_doughnut']      = { label = 'Raw Doughnut',      weight = 150, stack = true, close = true },
+    ['empty_cup']         = { label = 'Empty Cup',         weight = 100, stack = true, close = true },
+    ['baking_mix']        = { label = 'Baking Mix',        weight = 400, stack = true, close = true },
+
+    -- ── assembly ingredients (dropped onto builds at the prep table) ──────────
+    ['bun']          = { label = 'Burger Bun',     weight = 120, stack = true, close = true },
+    ['cheese']       = { label = 'Cheese Slice',   weight = 60,  stack = true, close = true },
+    ['lettuce']      = { label = 'Lettuce',        weight = 80,  stack = true, close = true },
+    ['tomato']       = { label = 'Tomato',         weight = 90,  stack = true, close = true },
+    ['pickle']       = { label = 'Pickle',         weight = 40,  stack = true, close = true },
+    ['pizza_dough']  = { label = 'Pizza Dough',    weight = 300, stack = true, close = true },
+    ['pizza_sauce']  = { label = 'Pizza Sauce',    weight = 100, stack = true, close = true },
+    ['pizza_cheese'] = { label = 'Shredded Cheese', weight = 120, stack = true, close = true },
+    ['pepperoni']    = { label = 'Pepperoni',      weight = 80,  stack = true, close = true },
+
+    -- ── tools (squeeze bottles, decorating tubes — consumed as applied) ───────
+    ['frosting']  = { label = 'Frosting',  weight = 100, stack = true, close = true },
+    ['sprinkles'] = { label = 'Sprinkles', weight = 40,  stack = true, close = true },
+    ['ketchup']   = { label = 'Ketchup',   weight = 100, stack = true, close = true },
+    ['mustard']   = { label = 'Mustard',   weight = 100, stack = true, close = true },
+    ['mayo']      = { label = 'Mayo',      weight = 100, stack = true, close = true },
 
 }
