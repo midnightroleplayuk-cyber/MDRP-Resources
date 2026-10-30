@@ -53,3 +53,13 @@ The PIN is checked only server-side. Add `set hf1_boot_pin "YOUR4DIGITS"` to `se
 
 ## v1.4.3 quantities
 For items with `count > 1`, officers choose a quantity between 1 and the configured maximum. Once taken, only Return is shown. Return removes up to the issued quantity still present in inventory; consumed or missing items are not demanded. Issuance state is per officer and item, not persistent across resource restarts. Note: if identical items were obtained elsewhere, ox_inventory cannot distinguish them without unique metadata, so returning may remove those instead.
+
+
+## Vehicle stock (v1.4.4)
+
+- Each *live vehicle entity* has independent police/firearms stock. `count` is its starting allocation.
+- USE deducts immediately; RETURN restores only items actually removed from the officer's inventory. Consumed or lost items remain deducted.
+- Stock survives tablet close and reopening, and is shared by all officers using that vehicle.
+- A new vehicle spawned from the garage gets full stock; garage scripts must **despawn/delete the old entity**. Merely hiding/teleporting/storing a still-existing vehicle does not restock it.
+- Stock is in server memory: restarting this resource or server resets live-vehicle stock. Persist to a database for restart-proof stock.
+- The existing issuance tracking is per officer, vehicle network ID and item. Avoid vehicle network ID reuse without despawning.

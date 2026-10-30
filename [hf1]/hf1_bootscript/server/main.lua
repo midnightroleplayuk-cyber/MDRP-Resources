@@ -1,4 +1,34 @@
 local sessions, issued, attempts, lastAction = {}, {}, {}, {}
+-- Stock is attached to the live vehicle entity. A freshly spawned garage vehicle
+-- starts with a full allocation. Opening/closing the tablet never resets stock.
+local vehicleStocks = {}
+local function vehicleStock(netId)
+  local vehicle = NetworkGetEntityFromNetworkId(tonumber(netId) or 0)
+  if vehicle == 0 or not DoesEntityExist(vehicle) then return nil end
+  local plate = GetVehicleNumberPlateText(vehicle)
+  local record = vehicleStocks[netId]
+  if not record or record.entity ~= vehicle or record.plate ~= plate then
+    record = {entity=vehicle,plate=plate,stock={police={},firearms={}}}
+    vehicleStocks[netId] = record
+  end
+  return record
+end
+local function available(netId, section, entry)
+  local record = vehicleStock(netId)
+  if not record then return 0 end
+  local remaining = record.stock[section][entry.id]
+  if remaining == nil then return math.max(1, math.floor(tonumber(entry.count) or 1)) end
+  return remaining
+end
+local function setAvailable(netId,section,id,value)
+  local record = vehicleStock(netId)
+  if not record then return false end
+  record.stock[section][id]=math.max(0,value)
+  return true
+end
+local function issueKey(citizenid,netId,section,id)
+  return citizenid .. ':' .. tostring(netId) .. ':' .. section .. ':' .. id
+end
 local function contains(t, value)
   for _, v in ipairs(t) do if v == value then return true end end
   return false
@@ -54,9 +84,9 @@ lib.callback.register('hf1_bootscript:open', function(src, netId)
   local citizenid = player.PlayerData.citizenid
   local issuedState = {police = {}, firearms = {}}
   for _, e in ipairs(Config.Clothing) do if grade >= (e.minGrade or 0) then options.clothing[#options.clothing+1] = {id=e.id,label=e.label,image=e.image} end end
-  for _, e in ipairs(Config.PoliceItems) do if grade >= (e.minGrade or 0) then options.police[#options.police+1] = {id=e.id,label=e.label,image=e.image or e.item,count=math.max(1,math.floor(tonumber(e.count) or 1))} end; issuedState.police[e.id] = issued[citizenid .. ':police:' .. e.id] and issued[citizenid .. ':police:' .. e.id].count or 0 end
+  for _, e in ipairs(Config.PoliceItems) do if grade >= (e.minGrade or 0) then options.police[#options.police+1] = {id=e.id,label=e.label,image=e.image or e.item,count=available(netId,'police',e)} end; local k=issueKey(citizenid,netId,'police',e.id); issuedState.police[e.id] = issued[k] and issued[k].count or 0 end
   if authorized(src, netId, 'firearms') then
-    for _, e in ipairs(Config.Firearms) do if grade >= (e.minGrade or 0) then options.firearms[#options.firearms+1] = {id=e.id,label=e.label,image=e.image or e.item,count=math.max(1,math.floor(tonumber(e.count) or 1))} end; issuedState.firearms[e.id] = issued[citizenid .. ':firearms:' .. e.id] and issued[citizenid .. ':firearms:' .. e.id].count or 0 end
+    for _, e in ipairs(Config.Firearms) do if grade >= (e.minGrade or 0) then options.firearms[#options.firearms+1] = {id=e.id,label=e.label,image=e.image or e.item,count=available(netId,'firearms',e)} end; local k=issueKey(citizenid,netId,'firearms',e.id); issuedState.firearms[e.id] = issued[k] and issued[k].count or 0 end
   end
   return {options=options, traffic=not not authorized(src,netId,'traffic'), firearms=not not authorized(src,netId,'firearms'), vehicle=GetVehicleNumberPlateText(NetworkGetEntityFromNetworkId(netId)),issued=issuedState}
 end)
@@ -82,22 +112,26 @@ lib.callback.register('hf1_bootscript:issue', function(src, netId, section, id, 
   local _, grade = authorized(src,netId,section)
   if not entry or grade < (entry.minGrade or 0) then return {ok=false,message='Item unavailable'} end
   local player = exports.qbx_core:GetPlayer(src)
-  local key = player.PlayerData.citizenid .. ':' .. section .. ':' .. id
+  local key = issueKey(player.PlayerData.citizenid,netId,section,id)
   if Config.TrackIssuedItems and issued[key] then return {ok=false,message='Already issued; return it first'} end
-  local maxCount = math.max(1,math.floor(tonumber(entry.count) or 1))
+  local maxCount = available(netId,section,entry)
   local count = tonumber(requestedCount)
   if not count or count ~= math.floor(count) or count < 1 or count > maxCount then return {ok=false,message='Invalid quantity'} end
   if not exports.ox_inventory:CanCarryItem(src,entry.item,count) then return {ok=false,message='Inventory full'} end
   local success = exports.ox_inventory:AddItem(src,entry.item,count)
   if not success then return {ok=false,message='Could not issue item'} end
-  if Config.TrackIssuedItems then issued[key]={item=entry.item,count=count} end
-  return {ok=true,message=count .. ' × ' .. entry.label .. ' taken',issued=count}
+  if not setAvailable(netId,section,id,maxCount-count) then
+    exports.ox_inventory:RemoveItem(src,entry.item,count)
+    return {ok=false,message='Vehicle stock unavailable'}
+  end
+  issued[key]={item=entry.item,count=count}
+  return {ok=true,message=count .. ' × ' .. entry.label .. ' taken',issued=count,available=maxCount-count}
 end)
 lib.callback.register('hf1_bootscript:returnItem', function(src,netId,section,id)
   if section ~= 'police' and section ~= 'firearms' or not active(src,netId,section) or not throttle(src) then return {ok=false,message='Access denied'} end
   if section == 'firearms' and not sessions[src].unlocked then return {ok=false,message='Unlock first'} end
   local player = exports.qbx_core:GetPlayer(src)
-  local key = player.PlayerData.citizenid .. ':' .. section .. ':' .. id
+  local key = issueKey(player.PlayerData.citizenid,netId,section,id)
   local record = issued[key]
   if not record then return {ok=false,message='No tracked issue to return'} end
   -- Consumables may have been used. Return only what remains, never remove more than issued.
@@ -107,11 +141,26 @@ lib.callback.register('hf1_bootscript:returnItem', function(src,netId,section,id
     local removed = exports.ox_inventory:RemoveItem(src,record.item,toReturn)
     if not removed then return {ok=false,message='Could not return remaining items'} end
   end
+  local newAvailable = available(netId,section,findEntry(section == 'police' and Config.PoliceItems or Config.Firearms,id)) + toReturn
+  setAvailable(netId,section,id,newAvailable)
   issued[key]=nil
-  return {ok=true,message=toReturn .. ' returned; ' .. (record.count-toReturn) .. ' used or missing',issued=0}
+  return {ok=true,message=toReturn .. ' returned; ' .. (record.count-toReturn) .. ' used or missing',issued=0,available=newAvailable}
 end)
 lib.callback.register('hf1_bootscript:check',function(src,netId,section)
   return not not active(src,netId,section)
 end)
 RegisterNetEvent('hf1_bootscript:close',function() sessions[source]=nil end)
 AddEventHandler('playerDropped',function() sessions[source]=nil attempts[source]=nil lastAction[source]=nil end)
+
+-- Clean stock records for despawned vehicles. Fresh garage spawns restock automatically.
+CreateThread(function()
+  while true do
+    Wait(60000)
+    for netId, record in pairs(vehicleStocks) do
+      local entity=NetworkGetEntityFromNetworkId(tonumber(netId) or 0)
+      if entity == 0 or not DoesEntityExist(entity) or entity ~= record.entity then
+        vehicleStocks[netId]=nil
+      end
+    end
+  end
+end)
