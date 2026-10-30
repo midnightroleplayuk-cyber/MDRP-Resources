@@ -5,7 +5,7 @@ Config.InteractionDistance = 2.5
 Config.SessionDistance = 6.0
 -- GTA trunk / boot door index is 5. Custom vehicles must have a working boot door.
 Config.BootDoorIndex = 5
-Config.MinGrade = { clothing = 0, police = 0, traffic = 3, firearms = 4 }
+Config.MinGrade = { clothing = 0, police = 0, traffic = 3, firearms = 5 }
 
 Config.Vehicles = {'srhatpd','cazadorpd','shenronpd','sr6pd','sr3pd','sen5tourpd','strcoupepd','rhinea19xpd','tailstmk','reblaxpd','xlsstrpd','sr8pd','komtmark','strwagmark','taurionpd','clubrpd'}
 Config.TrafficVehicles = {'sr6pd','sr3pd','sen5tourpd','strcoupepd','rhinea19xpd','tailstmk','taurionpd','clubrpd'}
@@ -30,8 +30,8 @@ Config.PoliceItems = {
 
 }
 Config.Firearms = {
-  { id = 'pistol', label = 'Service Pistol', item = 'WEAPON_PISTOL', count = 1, minGrade = 4 },
-  { id = 'carbine', label = 'Patrol Carbine', item = 'WEAPON_CARBINERIFLE', count = 1, minGrade = 5 },
+  { id = 'pistol', label = 'Service Pistol', item = 'WEAPON_PISTOL', count = 1, minGrade = 5 },
+  { id = 'carbine', label = 'Patrol Carbine', item = 'WEAPON_CARBINERIFLE', count = 1, minGrade = 10 },
 }
 -- Appearance integration: 'illenium-appearance' or 'fivem-appearance'.
 -- Full outfits use appearance exports to save current skin then apply configured outfit components/props.

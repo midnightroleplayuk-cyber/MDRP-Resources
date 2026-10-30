@@ -140,7 +140,7 @@ exports.ox_target:addModel(hashes,{{
   canInteract=function(entity,distance)
     if distance > Config.InteractionDistance or IsPedInAnyVehicle(cache.ped,false) then return false end
     local p=exports.qbx_core:GetPlayerData()
-    return p and p.job and p.job.name==Config.Job and (not Config.RequireDuty or p.job.onduty) and (tonumber(type(p.job.grade)=='table' and p.job.grade.level or p.job.grade) or 0) >= (tonumber(Config.MinGrade.clothing) or 0)
+    return p and p.job and p.job.name==Config.Job and (not Config.RequireDuty or p.job.onduty) and (tonumber(type(p.job.grade)=='table' and (p.job.grade.level or p.job.grade.grade or p.job.grade.rank) or p.job.grade) or 0) >= (tonumber(Config.MinGrade.clothing) or 0)
   end,
   onSelect=function(data) openBoot(data.entity) end
 }})

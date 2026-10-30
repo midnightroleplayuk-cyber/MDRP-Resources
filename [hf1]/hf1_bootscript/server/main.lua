@@ -71,7 +71,8 @@ local function gradeOf(player)
   local job = player and player.PlayerData and player.PlayerData.job
   if not job or job.name ~= Config.Job or (Config.RequireDuty and not job.onduty) then return nil end
   local grade = job.grade
-  return tonumber(type(grade) == 'table' and grade.level or grade) or 0
+  if type(grade) == 'table' then grade = grade.level or grade.grade or grade.rank end
+  return tonumber(grade) or 0
 end
 local function validVehicle(src, netId, section)
   local ped = GetPlayerPed(src)
