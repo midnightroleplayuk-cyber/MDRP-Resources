@@ -26,7 +26,7 @@ Config.ActionCooldownMs = 800
 Config.PoliceItems = {
   { id = 'police_tape', label = 'Police Tape', item = 'police_tape', count = 2, minGrade = 0 },
   { id = 'breathalyzer', label = 'Breathalyzer', item = 'breathalyzer', count = 2, minGrade = 0 },
-  { id = 'breathalyzer_mouthpiece', label = 'Breathalyzer Mouthpiece', item = 'breathalyzer_mouthpiece', count = 10, minGrade = 0 },
+  { id = 'breathalyzer_mouthpiece', label = 'Breathalyzer Mouthpieces', item = 'breathalyzer_mouthpiece', count = 10, minGrade = 0 },
 
 }
 Config.Firearms = {
