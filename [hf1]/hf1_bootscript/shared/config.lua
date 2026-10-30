@@ -45,10 +45,10 @@ Config.Tablet = { logo = 'logo.png', forceName = 'Midnight Police Constabulary',
 -- Fill in the drawable/texture numbers from OP Clothing for your male/female uniforms.
 -- No forced undershirt changes. Sample values below are NOT guaranteed to exist.
 Config.Clothing = {
-  { id = 'highvis', label = 'High Visibility Jacket', image = 'highvis.png', minGrade = 0,
+  { id = 'highvis', label = 'High Visibility Jacket', image = 'hivis_jacket.png', minGrade = 0,
     male = { components = { { component_id = 11, drawable = 619, texture = 0 } } },
     female = { components = { { component_id = 11, drawable = 0, texture = 0 } } } },
-  { id = 'gloves', label = 'Blue Protective Gloves', image = 'gloves.png', minGrade = 0,
+  { id = 'gloves', label = 'Blue Protective Gloves', image = 'blue_gloves.png', minGrade = 0,
     male = { components = { { component_id = 3, drawable = 85, texture = 0 } } },
     female = { components = { { component_id = 3, drawable = 0, texture = 0 } } } },
 }
