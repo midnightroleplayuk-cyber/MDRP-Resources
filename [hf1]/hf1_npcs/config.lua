@@ -61,6 +61,7 @@ Config.Sync = {
 -- { label = 'Dealer - Thanks', value = 'dealer_thanks.ogg' },
 Config.DialogueSounds = {
     { label = 'Weekend', value = 'weekend.ogg' },
+    { label = 'Raw', value = 'raw.ogg' },
 }
 
 -- Local volume for dialogue response sounds (0.0 - 1.0).

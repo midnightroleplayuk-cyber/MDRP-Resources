@@ -575,6 +575,8 @@ ig_vagspeak
 ig_vincent
 ig_wade
 ig_zimbor
+ig_gordon_ramsay
+ig_gordon_ramsay_casual
 mp_f_bennymech_01
 mp_f_boatstaff_01
 mp_f_cardesign_01
