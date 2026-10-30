@@ -45,3 +45,8 @@ The PIN is checked only server-side. Add `set hf1_boot_pin "YOUR4DIGITS"` to `se
 - Police items and firearms display one USE button until taken, then one RETURN button. State is server-tracked per citizen ID while the resource is running, and synced each time the boot opens. Items must be returned through the tablet before another can be taken.
 - Item icons use ox_inventory images: `https://cfx-nui-ox_inventory/web/images/<item>.png`. Optional `image = 'filename_without_extension'` can be set per item in config. Missing images hide automatically.
 - Issuance records are in memory and reset on resource restart; consider persistent storage for production.
+
+## v1.3 notes / testing
+- GTA trunk is door index **5**. This version requests network control, opens the trunk, retries, and warns when the custom vehicle does not expose an operable trunk. The model must have a working boot door/bone; Lua cannot create a missing door. `Config.BootDoorIndex` can be changed if your model uses a nonstandard door.
+- Clothing: jacket uses component **11** (not undershirt 8); gloves use component **3** (arms/hands). Set drawable and texture per gender to **real OP Clothing values**. Example numbers are placeholders and will not magically select blue gloves. Invalid combinations show an in-game warning.
+- Item images: uses `https://cfx-nui-ox_inventory/web/images/ITEM.png`, and shows a fallback icon if the ox_inventory image is missing. `image = 'yourfilename'` can override. Check ox_inventory image filenames, case, and browser/NUI devtools. A `refresh` alone does not load new script code; run `restart hf1_bootscript` (and restart ox_inventory only if you changed its files).
