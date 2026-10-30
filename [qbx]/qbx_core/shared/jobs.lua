@@ -84,71 +84,10 @@ return {
             },
         },
     },
-
-    ['bcso'] = {
-        label = 'BCSO',
-        type = 'leo',
-        defaultDuty = true,
-        offDutyPay = false,
-        grades = {
-            [0] = {
-                name = 'Recruit',
-                payment = 50
-            },
-            [1] = {
-                name = 'Officer',
-                payment = 75
-            },
-            [2] = {
-                name = 'Sergeant',
-                payment = 100
-            },
-            [3] = {
-                name = 'Lieutenant',
-                payment = 125
-            },
-            [4] = {
-                name = 'Chief',
-                isboss = true,
-                bankAuth = true,
-                payment = 150
-            },
-        },
-    },
-    ['sasp'] = {
-        label = 'SASP',
-        type = 'leo',
-        defaultDuty = true,
-        offDutyPay = false,
-        grades = {
-            [0] = {
-                name = 'Recruit',
-                payment = 50
-            },
-            [1] = {
-                name = 'Officer',
-                payment = 75
-            },
-            [2] = {
-                name = 'Sergeant',
-                payment = 100
-            },
-            [3] = {
-                name = 'Lieutenant',
-                payment = 125
-            },
-            [4] = {
-                name = 'Chief',
-                isboss = true,
-                bankAuth = true,
-                payment = 150
-            },
-        },
-    },
     ['ambulance'] = {
         label = 'Midnight Health Service',
         type = 'ems',
-        defaultDuty = false,
+        defaultDuty = true,
         offDutyPay = false,
         grades = {
             -- Amulance Team
@@ -477,6 +416,35 @@ return {
             },
         },
     },
+    ['fookyus'] = {
+        label = 'FookYus Chippy',
+        defaultDuty = true,
+        offDutyPay = false,
+        grades = {
+            [0] = {
+                name = 'New Hire',
+                payment = 50
+            },
+            [1] = {
+                name = 'Staff Member',
+                payment = 75
+            },
+            [2] = {
+                name = 'Senior Staff',
+                payment = 100
+            },
+            [3] = {
+                name = 'Manager',
+                payment = 125
+            },
+            [4] = {
+                name = 'FookYus Owner',
+                isboss = true,
+                bankAuth = true,
+                payment = 150
+            },
+        },
+    },
     ['mechanic'] = {
         label = 'Mechanic',
         type = 'mechanic',
@@ -544,6 +512,17 @@ return {
         grades = {
             [0] = {
                 name = 'Judge',
+                payment = 100
+            },
+        },
+    },
+    ['cps'] = {
+        label = 'Crown Prosecution Service',
+        defaultDuty = true,
+        offDutyPay = false,
+        grades = {
+            [0] = {
+                name = 'CPS Solicitor',
                 payment = 100
             },
         },
