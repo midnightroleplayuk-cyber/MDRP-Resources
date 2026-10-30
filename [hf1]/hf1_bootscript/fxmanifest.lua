@@ -5,7 +5,7 @@ name 'hf1_bootscript'
 author 'HF1'
 
 description 'Bootscript for Police Job'
-version '1.4.6'
+version '1.4.9'
 
 ui_page 'web/index.html'
 

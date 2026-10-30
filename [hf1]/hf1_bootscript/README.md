@@ -69,3 +69,12 @@ For items with `count > 1`, officers choose a quantity between 1 and the configu
 - Modernized button styles and accessible focus states.
 - Larger quantity picker with +/- controls; number entry still works.
 - No changes to server stock logic.
+
+
+## v1.4.9 — metadata-based returns
+
+Inventory items grabbed from a boot now receive ox_inventory metadata identifying the vehicle spawn session, section, and equipment ID. If you drop two mouthpieces, return the other two, then pick up the dropped two, you can return those later to the **same still-existing vehicle**. Returns search inventory slots for matching metadata and remove only matching items. Vehicle stock is capped at its configured allocation. Another officer can return transferred equipment to the originating vehicle.
+
+**Important:** Install by replacing the entire resource, then `restart hf1_bootscript`. Items issued by older versions **do not have origin metadata** and cannot be returned through the new system. Clear or consume those legacy items before testing. The original vehicle must still exist; a fresh garage spawn is a different session, even if its plate matches. Restarting this resource loses in-memory stock/session identities, so old items cannot be returned after a restart. A database-backed vehicle session system would be needed for persistence.
+
+ox_inventory items and scripts must preserve metadata when moving/dropping/picking up items. Some consumable scripts may replace items and strip metadata. Weapons can have special ox_inventory metadata/stacking behavior; test firearms separately.

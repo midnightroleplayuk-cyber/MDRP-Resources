@@ -1,14 +1,19 @@
-local sessions, issued, attempts, lastAction = {}, {}, {}, {}
+local sessions, attempts, lastAction = {}, {}, {}
 -- Stock is attached to the live vehicle entity. A freshly spawned garage vehicle
 -- starts with a full allocation. Opening/closing the tablet never resets stock.
 local vehicleStocks = {}
+local nextVehicleSession = 0
+local function newVehicleSession()
+  nextVehicleSession = nextVehicleSession + 1
+  return ("%d-%d-%d"):format(os.time(), GetGameTimer(), nextVehicleSession)
+end
 local function vehicleStock(netId)
   local vehicle = NetworkGetEntityFromNetworkId(tonumber(netId) or 0)
   if vehicle == 0 or not DoesEntityExist(vehicle) then return nil end
   local plate = GetVehicleNumberPlateText(vehicle)
   local record = vehicleStocks[netId]
   if not record or record.entity ~= vehicle or record.plate ~= plate then
-    record = {entity=vehicle,plate=plate,stock={police={},firearms={}}}
+    record = {entity=vehicle,plate=plate,sessionId=newVehicleSession(),stock={police={},firearms={}}}
     vehicleStocks[netId] = record
   end
   return record
@@ -26,8 +31,37 @@ local function setAvailable(netId,section,id,value)
   record.stock[section][id]=math.max(0,value)
   return true
 end
-local function issueKey(citizenid,netId,section,id)
-  return citizenid .. ':' .. tostring(netId) .. ':' .. section .. ':' .. id
+-- Equipment carries an exact origin marker so ground drops and transfers remain returnable.
+-- This only works for metadata-preserving ox_inventory items.
+local function originMetadata(netId, section, id)
+  local vehicle = vehicleStock(netId)
+  if not vehicle then return nil end
+  return {hf1_bootscript = true, hf1_vehicle_session = vehicle.sessionId,
+    hf1_equipment_section = section, hf1_equipment_id = id}
+end
+local function matchingSlots(src, itemName, metadata)
+  local slots = exports.ox_inventory:Search(src, 'slots', itemName) or {}
+  local result, total = {}, 0
+  for _, slot in pairs(slots) do
+    local m = slot.metadata or {}
+    if m.hf1_bootscript == true and
+       m.hf1_vehicle_session == metadata.hf1_vehicle_session and
+       m.hf1_equipment_section == metadata.hf1_equipment_section and
+       m.hf1_equipment_id == metadata.hf1_equipment_id then
+      local count = tonumber(slot.count) or 0
+      if count > 0 then
+        result[#result+1] = {slot=slot.slot,count=count,metadata=m}
+        total = total + count
+      end
+    end
+  end
+  return result,total
+end
+local function heldAmount(src,netId,section,entry)
+  local metadata=originMetadata(netId,section,entry.id)
+  if not metadata then return 0 end
+  local _,count=matchingSlots(src,entry.item,metadata)
+  return count
 end
 local function contains(t, value)
   for _, v in ipairs(t) do if v == value then return true end end
@@ -80,13 +114,11 @@ lib.callback.register('hf1_bootscript:open', function(src, netId)
   local _, grade = authorized(src, netId, 'clothing')
   sessions[src] = {netId = netId, expires = os.time() + Config.SessionSeconds, unlocked = false}
   local options = {clothing = {}, police = {}, firearms = {}}
-  local player = exports.qbx_core:GetPlayer(src)
-  local citizenid = player.PlayerData.citizenid
   local issuedState = {police = {}, firearms = {}}
   for _, e in ipairs(Config.Clothing) do if grade >= (e.minGrade or 0) then options.clothing[#options.clothing+1] = {id=e.id,label=e.label,image=e.image} end end
-  for _, e in ipairs(Config.PoliceItems) do if grade >= (e.minGrade or 0) then options.police[#options.police+1] = {id=e.id,label=e.label,image=e.image or e.item,count=available(netId,'police',e),limit=math.max(1,math.floor(tonumber(e.count) or 1))} end; local k=issueKey(citizenid,netId,'police',e.id); issuedState.police[e.id] = issued[k] and issued[k].count or 0 end
+  for _, e in ipairs(Config.PoliceItems) do if grade >= (e.minGrade or 0) then options.police[#options.police+1] = {id=e.id,label=e.label,image=e.image or e.item,count=available(netId,'police',e),limit=math.max(1,math.floor(tonumber(e.count) or 1))} end; issuedState.police[e.id] = heldAmount(src,netId,'police',e) end
   if authorized(src, netId, 'firearms') then
-    for _, e in ipairs(Config.Firearms) do if grade >= (e.minGrade or 0) then options.firearms[#options.firearms+1] = {id=e.id,label=e.label,image=e.image or e.item,count=available(netId,'firearms',e),limit=math.max(1,math.floor(tonumber(e.count) or 1))} end; local k=issueKey(citizenid,netId,'firearms',e.id); issuedState.firearms[e.id] = issued[k] and issued[k].count or 0 end
+    for _, e in ipairs(Config.Firearms) do if grade >= (e.minGrade or 0) then options.firearms[#options.firearms+1] = {id=e.id,label=e.label,image=e.image or e.item,count=available(netId,'firearms',e),limit=math.max(1,math.floor(tonumber(e.count) or 1))} end; issuedState.firearms[e.id] = heldAmount(src,netId,'firearms',e) end
   end
   return {options=options, traffic=not not authorized(src,netId,'traffic'), firearms=not not authorized(src,netId,'firearms'), vehicle=GetVehicleNumberPlateText(NetworkGetEntityFromNetworkId(netId)),issued=issuedState}
 end)
@@ -111,42 +143,54 @@ lib.callback.register('hf1_bootscript:issue', function(src, netId, section, id, 
   local entry = findEntry(section == 'police' and Config.PoliceItems or Config.Firearms,id)
   local _, grade = authorized(src,netId,section)
   if not entry or grade < (entry.minGrade or 0) then return {ok=false,message='Item unavailable'} end
-  local player = exports.qbx_core:GetPlayer(src)
-  local key = issueKey(player.PlayerData.citizenid,netId,section,id)
-  local previouslyIssued = issued[key] and issued[key].count or 0
+  local previouslyIssued = heldAmount(src,netId,section,entry)
+  local metadata = originMetadata(netId,section,id)
+  if not metadata then return {ok=false,message='Vehicle stock unavailable'} end
   local configuredLimit = math.max(1, math.floor(tonumber(entry.count) or 1))
   if previouslyIssued >= configuredLimit then return {ok=false,message='Maximum allocation reached; return equipment first'} end
   local maxCount = available(netId,section,entry)
   local count = tonumber(requestedCount)
   if not count or count ~= math.floor(count) or count < 1 or count > maxCount or count > (configuredLimit - previouslyIssued) then return {ok=false,message='Invalid quantity or allocation limit reached'} end
   if not exports.ox_inventory:CanCarryItem(src,entry.item,count) then return {ok=false,message='Inventory full'} end
-  local success = exports.ox_inventory:AddItem(src,entry.item,count)
+  local success = exports.ox_inventory:AddItem(src,entry.item,count,metadata)
   if not success then return {ok=false,message='Could not issue item'} end
   if not setAvailable(netId,section,id,maxCount-count) then
-    exports.ox_inventory:RemoveItem(src,entry.item,count)
+    exports.ox_inventory:RemoveItem(src,entry.item,count,metadata)
     return {ok=false,message='Vehicle stock unavailable'}
   end
-  issued[key]={item=entry.item,count=previouslyIssued+count}
   return {ok=true,message=count .. ' × ' .. entry.label .. ' taken',issued=previouslyIssued+count,available=maxCount-count}
 end)
 lib.callback.register('hf1_bootscript:returnItem', function(src,netId,section,id)
   if section ~= 'police' and section ~= 'firearms' or not active(src,netId,section) or not throttle(src) then return {ok=false,message='Access denied'} end
   if section == 'firearms' and not sessions[src].unlocked then return {ok=false,message='Unlock first'} end
-  local player = exports.qbx_core:GetPlayer(src)
-  local key = issueKey(player.PlayerData.citizenid,netId,section,id)
-  local record = issued[key]
-  if not record then return {ok=false,message='No tracked issue to return'} end
-  -- Consumables may have been used. Return only what remains, never remove more than issued.
-  local remaining = exports.ox_inventory:GetItemCount(src,record.item) or 0
-  local toReturn = math.min(record.count, math.max(0,remaining))
-  if toReturn > 0 then
-    local removed = exports.ox_inventory:RemoveItem(src,record.item,toReturn)
-    if not removed then return {ok=false,message='Could not return remaining items'} end
+  local entry = findEntry(section == 'police' and Config.PoliceItems or Config.Firearms,id)
+  local _,grade=authorized(src,netId,section)
+  if not entry or not grade or grade < (entry.minGrade or 0) then return {ok=false,message='Item unavailable'} end
+  local metadata=originMetadata(netId,section,id)
+  if not metadata then return {ok=false,message='Vehicle unavailable'} end
+  local slots,total=matchingSlots(src,entry.item,metadata)
+  if total == 0 then return {ok=false,message='No matching vehicle equipment in your inventory'} end
+  local current=available(netId,section,entry)
+  local limit=math.max(1,math.floor(tonumber(entry.count) or 1))
+  local room=math.max(0,limit-current)
+  local toReturn=math.min(total,room)
+  if toReturn < 1 then return {ok=false,message='Vehicle allocation already full'} end
+  local returned=0
+  for _,slot in ipairs(slots) do
+    local qty=math.min(slot.count,toReturn-returned)
+    if qty > 0 then
+      -- Exact slot + metadata prevents removal of unissued or unrelated items.
+      local removed=exports.ox_inventory:RemoveItem(src,entry.item,qty,slot.metadata,slot.slot)
+      if not removed then break end
+      returned=returned+qty
+    end
+    if returned == toReturn then break end
   end
-  local newAvailable = available(netId,section,findEntry(section == 'police' and Config.PoliceItems or Config.Firearms,id)) + toReturn
+  if returned == 0 then return {ok=false,message='Could not return equipment'} end
+  local newAvailable=current+returned
   setAvailable(netId,section,id,newAvailable)
-  issued[key]=nil
-  return {ok=true,message=toReturn .. ' returned; ' .. (record.count-toReturn) .. ' used or missing',issued=0,available=newAvailable}
+  local stillHeld=heldAmount(src,netId,section,entry)
+  return {ok=true,message=returned .. ' returned to vehicle',issued=stillHeld,available=newAvailable}
 end)
 lib.callback.register('hf1_bootscript:check',function(src,netId,section)
   return not not active(src,netId,section)
