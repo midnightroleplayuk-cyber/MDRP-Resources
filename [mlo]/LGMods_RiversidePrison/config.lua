@@ -1,7 +1,7 @@
 Config = {}
 
 Config.BlockScenarios = true     -- block vanilla scenario peds inside the site
-Config.AmbientCleanup = false    -- delete any ambient ped / car that ends up inside the walls
+Config.AmbientCleanup = true     -- server deletes any game-spawned vehicle / ped inside the compound (never script-spawned ones)
 
 -- Gate access
 Config.GateAccess = {
@@ -16,11 +16,13 @@ Config.GateAccess = {
     end,
 }
 
--- Gates, shutters and sliding doors
+-- Gates and sliding doors
 Config.Intercom = {
     Enabled = true,
-    Interaction = 'ox_target',   -- 'ox_target' or 'custom' (CustomInteraction below)
+    Interaction = 'ox_target',   -- 'ox_target', 'qb-target', 'prompt' (GTA "Press E" help text) or 'custom' (CustomInteraction below)
     TargetDistance = 2.0,
+    PromptDistance = 1.5,        -- 'prompt' only
+    Key = 38,                    -- 'prompt' only (38 = E)
     Size = vec3(0.45, 0.35, 0.65),
     CustomInteraction = function(gateId, pole, use)   -- Interaction = 'custom': called once per intercom pole (client side)
     end,
@@ -38,6 +40,9 @@ Config.Intercom = {
             poles = {
                 { coords = vec3(1204.466, -1387.695, 35.403), heading = 20.0 },
             },
+            keypads = {          -- inside intercom, gatehouse north wall
+                { coords = vec3(1195.000, -1389.250, 35.350), heading = 0.0 },
+            },
             exitZone = { coords = vec3(1190.5, -1392.0, 35.0), size = vec3(11.0, 4.4, 5.0), heading = 0.0 },
             -- map data, don't change
             leaves = {
@@ -54,6 +59,9 @@ Config.Intercom = {
             poles = {
                 { coords = vec3(1139.484, -1416.955, 34.148), heading = 200.0 },
             },
+            keypads = {          -- inside intercom, perimeter wall by the south pier
+                { coords = vec3(1145.600, -1417.120, 34.860), heading = 0.0 },
+            },
             exitZone = { coords = vec3(1148.8, -1412.75, 34.5), size = vec3(8.5, 7.0, 5.0), heading = 0.0 },
             -- map data, don't change
             model = `lgmods_rvp_bifold`,
@@ -68,41 +76,12 @@ Config.Intercom = {
         },
     },
 
-    Shutters = {
-        ws_bay1 = {
-            label = 'Workshops Loading Bay 1',
-            OpenTime = 3,
-            RollTime = 2.5,
-            zones = {
-                { coords = vec3(1140.80, -1386.0, 34.5), size = vec3(4.2, 4.0, 5.0), heading = 0.0 },
-                { coords = vec3(1140.80, -1381.8, 35.5), size = vec3(4.2, 3.4, 4.0), heading = 0.0 },
-            },
-            model = `lgmods_rvp_shutter_ws`, coords = vec3(1140.80, -1383.67, 37.37), heading = 0.0,
-        },
-        ws_bay2 = {
-            label = 'Workshops Loading Bay 2',
-            OpenTime = 3,
-            RollTime = 2.5,
-            zones = {
-                { coords = vec3(1153.80, -1386.0, 34.5), size = vec3(4.2, 4.0, 5.0), heading = 0.0 },
-                { coords = vec3(1153.80, -1381.8, 35.5), size = vec3(4.2, 3.4, 4.0), heading = 0.0 },
-            },
-            model = `lgmods_rvp_shutter_ws`, coords = vec3(1153.80, -1383.67, 37.37), heading = 0.0,
-        },
-        kitchen = {
-            label = 'Kitchen Goods In',
-            OpenTime = 3,
-            RollTime = 2.5,
-            zones = {
-                { coords = vec3(1127.70, -1374.0, 34.5), size = vec3(4.6, 4.0, 5.0), heading = 0.0 },
-                { coords = vec3(1127.70, -1369.7, 35.5), size = vec3(5.0, 3.6, 4.0), heading = 0.0 },
-            },
-            model = `lgmods_rvp_shutter_kg`, coords = vec3(1127.50, -1371.67, 37.426), heading = 0.0,
-        },
-    },
 
     Text = {
         target = 'Use Intercom',
+        keypad = 'Open Gate',
+        prompt = 'Press ~INPUT_CONTEXT~ to use the intercom',
+        keypadPrompt = 'Press ~INPUT_CONTEXT~ to open the gate',
         opening = '%s opening',
         closing = '%s closing',
         noaccess = 'Access denied',
