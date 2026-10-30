@@ -1819,13 +1819,13 @@ return {
         stack = true,
     },
 
-    ['water_bottle'] = {
-        label = 'Water Bottle',
-        weight = 100,
-        stack = true,
-        close = true,
-        description = '350 kcal',
-    },
+   -- ['water_bottle'] = {
+   --     label = 'Water Bottle',
+   --     weight = 100,
+   --     stack = true,
+  --      close = true,
+  --      description = '350 kcal',
+  --  },
 
     ['default_lamp'] = {
         label = 'Lamp',
@@ -5052,7 +5052,7 @@ return {
     ['empty_cup'] = { label = 'Empty Cup', weight = 50, stack = true, close = true, description = '0 kcal', client = { image = 'empty_cup.png' } },
     ['milkshake'] = { label = 'Milkshake', weight = 350, stack = true, close = true, description = '350 kcal', client = { image = 'milkshake.png' } },
     ['orange_juice'] = { label = 'Orange Juice', weight = 350, stack = true, close = true, description = '110 kcal', client = { image = 'orange_juice.png' } },
-    ['water'] = { label = 'Water', weight = 350, stack = true, close = true, description = '350 kcal', client = { image = 'water.png' } },
+  --  ['water'] = { label = 'Water', weight = 350, stack = true, close = true, description = '350 kcal', client = { image = 'water.png' } },
 
     -- ─── COOKED DISHES ───
     ['cheeseburger'] = { label = 'Cheeseburger', weight = 400, stack = true, close = true, description = '500 kcal', client = { image = 'cheeseburger.png' } },
