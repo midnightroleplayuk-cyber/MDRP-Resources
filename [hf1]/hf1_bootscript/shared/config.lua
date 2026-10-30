@@ -9,7 +9,7 @@ Config.MinGrade = { clothing = 0, police = 0, traffic = 3, firearms = 5 }
 
 Config.Vehicles = {'srhatpd','cazadorpd','shenronpd','sr6pd','sr3pd','sen5tourpd','strcoupepd','rhinea19xpd','tailstmk','reblaxpd','xlsstrpd','sr8pd','komtmark','strwagmark','taurionpd','clubrpd'}
 -- Traffic props are available on every configured police vehicle.
-Config.TrafficVehicles = Config.Vehicles
+Config.TrafficVehicles = {'sr6pd','sr3pd','sen5tourpd','strcoupepd','rhinea19xpd','tailstmk','taurionpd','clubrpd'}
 Config.FirearmsVehicles = {'reblaxpd','xlsstrpd','sr8pd','komtmark','strwagmark'}
 
 -- The /signs command is used directly; no event integration is required.
