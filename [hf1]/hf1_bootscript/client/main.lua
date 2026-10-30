@@ -1,4 +1,20 @@
 local current, savedAppearance, wearing = nil, nil, {}
+local function closeVehicleBoot(vehicle)
+  if vehicle and DoesEntityExist(vehicle) then SetVehicleDoorShut(vehicle, 5, false) end
+end
+local function animateOpenBoot(vehicle)
+  local ped = cache.ped
+  local dict = 'anim@mp_player_intmenu@key_fob@'
+  RequestAnimDict(dict)
+  local deadline = GetGameTimer() + 1500
+  while not HasAnimDictLoaded(dict) and GetGameTimer() < deadline do Wait(0) end
+  if HasAnimDictLoaded(dict) then
+    TaskPlayAnim(ped, dict, 'fob_click', 8.0, -8.0, 850, 48, 0.0, false, false, false)
+    Wait(550)
+    RemoveAnimDict(dict)
+  end
+  if DoesEntityExist(vehicle) then SetVehicleDoorOpen(vehicle, 5, false, false) end
+end
 local function notify(message, kind) lib.notify({title='HF1 Boot',description=message,type=kind or 'inform'}) end
 local function appearanceExport(method, ...)
   if GetResourceState(Config.Appearance) ~= 'started' then return nil end
@@ -47,7 +63,10 @@ end
 local function closeUI()
   SetNuiFocus(false,false)
   SendNUIMessage({type='close'})
-  if current then TriggerServerEvent('hf1_bootscript:close') end
+  if current then
+    closeVehicleBoot(current.entity)
+    TriggerServerEvent('hf1_bootscript:close')
+  end
   current=nil
 end
 local function openBoot(entity)
@@ -56,6 +75,8 @@ local function openBoot(entity)
   local data = lib.callback.await('hf1_bootscript:open',false,netId)
   if not data or data.error then return notify(data and data.error or 'Unable to open boot','error') end
   current={netId=netId,entity=entity}
+  animateOpenBoot(entity)
+  if not current or not DoesEntityExist(entity) then closeUI() return end
   SetNuiFocus(true,true)
   SendNUIMessage({type='open',data=data,wearing=wearing,branding=Config.Tablet})
 end
@@ -104,4 +125,7 @@ CreateThread(function()
     if current and (not DoesEntityExist(current.entity) or #(GetEntityCoords(cache.ped)-GetEntityCoords(current.entity))>Config.SessionDistance or IsEntityDead(cache.ped)) then closeUI() end
   end
 end)
-AddEventHandler('onResourceStop',function(resource) if resource==GetCurrentResourceName() then SetNuiFocus(false,false) end end)
+AddEventHandler('onResourceStop',function(resource) if resource==GetCurrentResourceName() then
+  if current then closeVehicleBoot(current.entity) end
+  SetNuiFocus(false,false)
+end end)
