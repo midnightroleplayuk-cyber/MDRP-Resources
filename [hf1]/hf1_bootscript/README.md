@@ -78,3 +78,12 @@ Inventory items grabbed from a boot now receive ox_inventory metadata identifyin
 **Important:** Install by replacing the entire resource, then `restart hf1_bootscript`. Items issued by older versions **do not have origin metadata** and cannot be returned through the new system. Clear or consume those legacy items before testing. The original vehicle must still exist; a fresh garage spawn is a different session, even if its plate matches. Restarting this resource loses in-memory stock/session identities, so old items cannot be returned after a restart. A database-backed vehicle session system would be needed for persistence.
 
 ox_inventory items and scripts must preserve metadata when moving/dropping/picking up items. Some consumable scripts may replace items and strip metadata. Weapons can have special ox_inventory metadata/stacking behavior; test firearms separately.
+
+
+## Local clothing images (v1.5.0)
+Put your PNG, WebP, JPG or SVG files in `web/images/clothing/`.
+For each entry in `Config.Clothing`, set `image = 'highvis.png'` (or your own filename).
+The UI loads clothing images from this resource, while Police Items and Firearms continue using ox_inventory images.
+Only simple filenames are supported (letters, numbers, underscores and hyphens).
+Missing images fall back to the generic item icon. Restart the resource after adding files.
+The ZIP does not contain your actual clothing images; add them yourself.
