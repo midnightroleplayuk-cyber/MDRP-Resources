@@ -24,8 +24,10 @@ Config.ActionCooldownMs = 800
 -- Override any entry with image = 'custom_image_name' (without .png).
 -- ox_inventory item names MUST exist in ox_inventory/data/items.lua; weapon items must be configured there too.
 Config.PoliceItems = {
-  { id = 'radio', label = 'Police Radio', item = 'radio', count = 1, minGrade = 0 },
-  { id = 'medkit', label = 'First Aid Kit', item = 'firstaid', count = 1, minGrade = 0 },
+  { id = 'police_tape', label = 'Police Tape', item = 'police_tape', count = 2, minGrade = 0 },
+  { id = 'breathalyzer', label = 'Breathalyzer', item = 'breathalyzer', count = 2, minGrade = 0 },
+  { id = 'breathalyzer_mouthpiece', label = 'Breathalyzer Mouthpiece', item = 'breathalyzer_mouthpiece', count = 10, minGrade = 0 },
+
 }
 Config.Firearms = {
   { id = 'pistol', label = 'Service Pistol', item = 'WEAPON_PISTOL', count = 1, minGrade = 4 },
