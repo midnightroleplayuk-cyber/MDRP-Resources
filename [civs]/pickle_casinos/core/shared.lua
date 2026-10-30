@@ -20,7 +20,7 @@ function debugPrint(...)
 end
 
 function NumberWithCommas(x, noCurrency)
-    local left, num, right = string.match(x, '^([^%d]*%d)(%d*)(.-)£')
+    local left, num, right = string.match(x, '^([^%d]*%d)(%d*)(.-)$')
     return (not noCurrency and "£" or "") .. left..(num:reverse():gsub('(%d%d%d)','%1,'):reverse())
 end
 
