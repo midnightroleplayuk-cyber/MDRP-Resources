@@ -50,12 +50,15 @@ lib.callback.register('hf1_bootscript:open', function(src, netId)
   local _, grade = authorized(src, netId, 'clothing')
   sessions[src] = {netId = netId, expires = os.time() + Config.SessionSeconds, unlocked = false}
   local options = {clothing = {}, police = {}, firearms = {}}
-  for _, e in ipairs(Config.Clothing) do if grade >= (e.minGrade or 0) then options.clothing[#options.clothing+1] = {id=e.id,label=e.label} end end
-  for _, e in ipairs(Config.PoliceItems) do if grade >= (e.minGrade or 0) then options.police[#options.police+1] = {id=e.id,label=e.label} end end
+  local player = exports.qbx_core:GetPlayer(src)
+  local citizenid = player.PlayerData.citizenid
+  local issuedState = {police = {}, firearms = {}}
+  for _, e in ipairs(Config.Clothing) do if grade >= (e.minGrade or 0) then options.clothing[#options.clothing+1] = {id=e.id,label=e.label,image=e.image} end end
+  for _, e in ipairs(Config.PoliceItems) do if grade >= (e.minGrade or 0) then options.police[#options.police+1] = {id=e.id,label=e.label,image=e.image or e.item} end; issuedState.police[e.id] = issued[citizenid .. ':police:' .. e.id] ~= nil end end
   if authorized(src, netId, 'firearms') then
-    for _, e in ipairs(Config.Firearms) do if grade >= (e.minGrade or 0) then options.firearms[#options.firearms+1] = {id=e.id,label=e.label} end end
+    for _, e in ipairs(Config.Firearms) do if grade >= (e.minGrade or 0) then options.firearms[#options.firearms+1] = {id=e.id,label=e.label,image=e.image or e.item} end; issuedState.firearms[e.id] = issued[citizenid .. ':firearms:' .. e.id] ~= nil end end
   end
-  return {options=options, traffic=not not authorized(src,netId,'traffic'), firearms=not not authorized(src,netId,'firearms'), vehicle=GetVehicleNumberPlateText(NetworkGetEntityFromNetworkId(netId))}
+  return {options=options, traffic=not not authorized(src,netId,'traffic'), firearms=not not authorized(src,netId,'firearms'), vehicle=GetVehicleNumberPlateText(NetworkGetEntityFromNetworkId(netId)),issued=issuedState}
 end)
 lib.callback.register('hf1_bootscript:pin', function(src, netId, pin)
   if not active(src,netId,'firearms') then return {ok=false,message='Access denied'} end
@@ -86,7 +89,7 @@ lib.callback.register('hf1_bootscript:issue', function(src, netId, section, id)
   local success = exports.ox_inventory:AddItem(src,entry.item,count)
   if not success then return {ok=false,message='Could not issue item'} end
   if Config.TrackIssuedItems then issued[key]={item=entry.item,count=count} end
-  return {ok=true,message=entry.label .. ' issued'}
+  return {ok=true,message=entry.label .. ' taken',issued=true}
 end)
 lib.callback.register('hf1_bootscript:returnItem', function(src,netId,section,id)
   if section ~= 'police' and section ~= 'firearms' or not active(src,netId,section) or not throttle(src) then return {ok=false,message='Access denied'} end
@@ -98,7 +101,7 @@ lib.callback.register('hf1_bootscript:returnItem', function(src,netId,section,id
   local removed = exports.ox_inventory:RemoveItem(src,record.item,record.count)
   if not removed then return {ok=false,message='Required item not in inventory'} end
   issued[key]=nil
-  return {ok=true,message='Item returned'}
+  return {ok=true,message='Item returned',issued=false}
 end)
 lib.callback.register('hf1_bootscript:check',function(src,netId,section)
   return not not active(src,netId,section)

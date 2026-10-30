@@ -38,3 +38,10 @@ The PIN is checked only server-side. Add `set hf1_boot_pin "YOUR4DIGITS"` to `se
 - **BS Prop Placer**: The attached `bs-propplacer/config.lua` confirms `Config.OpenCommand = 'signs'`. This build uses `ExecuteCommand('signs')` after closing the boot tablet. Its client is escrow-protected, so the command is the confirmed integration point, not an invented event. Start `bs-propplacer` before `hf1_bootscript`.
 - **Police logo**: Replace `web/logo.png` with your force crest (prefer a transparent PNG, e.g. 256x256). Configure `Config.Tablet.logo`, `forceName` and `title` in `shared/config.lua`. If changing the logo filename, also include it in `fxmanifest.lua` `files`.
 - No BS Prop Placer files are redistributed in this archive; install your purchased resource separately.
+
+
+## v1.2 changes
+- Opening the tablet plays a key-fob opening animation and opens the vehicle boot (door index 5). Closing the tablet, opening /signs, walking away, or stopping the resource shuts the boot without a player closing animation. Vehicle door behaviour depends on the custom vehicle model.
+- Police items and firearms display one USE button until taken, then one RETURN button. State is server-tracked per citizen ID while the resource is running, and synced each time the boot opens. Items must be returned through the tablet before another can be taken.
+- Item icons use ox_inventory images: `https://cfx-nui-ox_inventory/web/images/<item>.png`. Optional `image = 'filename_without_extension'` can be set per item in config. Missing images hide automatically.
+- Issuance records are in memory and reset on resource restart; consider persistent storage for production.
