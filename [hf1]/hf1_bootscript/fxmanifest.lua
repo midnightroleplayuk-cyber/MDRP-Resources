@@ -5,7 +5,7 @@ name 'hf1_bootscript'
 author 'HF1'
 
 description 'Bootscript for Police Job'
-version '1.4.4'
+version '1.4.5'
 
 ui_page 'web/index.html'
 
@@ -15,6 +15,6 @@ client_scripts {'client/main.lua'}
 
 server_scripts {'server/main.lua'}
 
-files {'web/index.html','web/style.css','web/app.js','web/logo.png','web/item-fallback.svg'}
+files {'web/index.html','web/style.css','web/app.js','web/logo.png','web/item-fallback.svg','web/Helvetica-Bold-Font.ttf'}
 
 dependencies {'ox_lib','ox_target','ox_inventory','qbx_core'}

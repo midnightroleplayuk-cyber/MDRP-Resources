@@ -63,3 +63,9 @@ For items with `count > 1`, officers choose a quantity between 1 and the configu
 - A new vehicle spawned from the garage gets full stock; garage scripts must **despawn/delete the old entity**. Merely hiding/teleporting/storing a still-existing vehicle does not restock it.
 - Stock is in server memory: restarting this resource or server resets live-vehicle stock. Persist to a database for restart-proof stock.
 - The existing issuance tracking is per officer, vehicle network ID and item. Avoid vehicle network ID reuse without despawning.
+
+## v1.4.5 UI refresh
+- Uses supplied Helvetica Bold font for the main force name (bundled locally).
+- Modernized button styles and accessible focus states.
+- Larger quantity picker with +/- controls; number entry still works.
+- No changes to server stock logic.
