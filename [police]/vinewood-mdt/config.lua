@@ -404,7 +404,7 @@ Config.StopSearch = {
     Objects = { 'Controlled drugs', 'Offensive weapon', 'Bladed article', 'Firearm', 'Stolen property', 'Going equipped', 'Fireworks', 'Criminal damage articles', 'Other' },
     Outcomes = { 'No further action', 'Arrest', 'Community resolution', 'Penalty notice', 'Cannabis or khat warning', 'Summons / postal requisition', 'Caution' },
     -- Give the person searched a record of the search (ox_inventory item). false = notice only.
-    ReceiptItem = false,     -- e.g. 'stop_search_record'
+    ReceiptItem = 'stop_search_document',     -- e.g. 'stop_search_record'
 }
 
 ---------------------------------------------------------------------------

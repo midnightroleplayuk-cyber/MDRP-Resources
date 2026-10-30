@@ -666,6 +666,16 @@ return {
         image = 'bail_document.png',
     }
 },
+['stop_search_document'] = {
+    label = 'Stop & Search Copy',
+    weight = 200,
+    stack = false,
+    close = true,
+    description = 'A Stop & Search Copy',
+    client = {
+        image = 'stop_search_document.png',
+    }
+},
 ['driving_licence'] = {
     label = 'Driving Licence',
     weight = 10,
