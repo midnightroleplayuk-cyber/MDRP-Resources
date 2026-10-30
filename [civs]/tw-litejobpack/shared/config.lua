@@ -233,7 +233,7 @@ Config.JobCenter                 = {
     -- The interaction key/distance below is shared by all locations.
     locations = {
         {
-            coords = vector4(1527.73, 3511.45, 35.72, 8.93),
+            coords = vector4(1527.73, 3511.45, 36.72, 8.93),
             ped = {
                 model = "a_m_m_prolhost_01",
                 scenario = "WORLD_HUMAN_CLIPBOARD",
