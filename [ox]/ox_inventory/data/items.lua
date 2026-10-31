@@ -630,10 +630,10 @@ return {
         weight = 200,
     },
 
-    ['handcuffs'] = {
+ --[[    ['handcuffs'] = {
         label = 'Handcuffs',
         weight = 200,
-    },
+    }, ]]
 
 --VINEWOOD MDT
 ['mdt'] = {
@@ -654,26 +654,6 @@ return {
     description = 'Medical Tablet for MHS Staff',
     client = {
         image = 'mhs_mdt.png',
-    }
-},
-['bail_document'] = {
-    label = 'Bail Document',
-    weight = 200,
-    stack = false,
-    close = true,
-    description = 'A Bail Conditions Document.',
-    client = {
-        image = 'bail_document.png',
-    }
-},
-['stop_search_document'] = {
-    label = 'Stop & Search Copy',
-    weight = 200,
-    stack = false,
-    close = true,
-    description = 'A Stop & Search Copy',
-    client = {
-        image = 'stop_search_document.png',
     }
 },
 ['driving_licence'] = {
@@ -1315,12 +1295,12 @@ return {
 		close = true,
 	},
 
-	['handcuffs'] = {
+--[[ 	['handcuffs'] = {
 		label = 'Handcuffs',
 		weight = 100,
 		stack = true,
 		close = true,
-	},
+	}, ]]
 
 	['bodycam'] = {
 		label = 'Bodycam',
@@ -5517,6 +5497,35 @@ return {
     stack = false,
     close = true,
     description = "Plate from locals vehicle.",
+},
+
+
+-- VINEWOOD PD JOB
+['handcuffs'] = {
+    label = 'Handcuffs', weight = 300, stack = false, close = true,
+    description = 'Rigid handcuffs. Use to take them out, then cuff the person in front.',
+    server = { export = 'vinewood_police.useItem' },
+},
+['police_notice'] = {
+    label = 'Police notice', weight = 10, stack = false, close = true,
+    description = 'A notice handed to you by the police. Use to read it.',
+    server = { export = 'vinewood_police.useItem' },
+},
+['mobile_id'] = {  -- only needed if Config.NPC.FingerprintItem = 'mobile_id'
+    label = 'Mobile fingerprint scanner', weight = 250, stack = false, close = true,
+    description = 'Checks fingerprints against the national database.',
+},
+
+-- vinewood-mdt (2.19.2+)
+['bail_notice'] = {
+    label = 'Bail notice', weight = 10, stack = false, close = true,
+    description = 'Your bail notice. Use to read it.',
+    server = { export = 'vinewood-mdt.useDocument' },
+},
+['stop_search_record'] = {
+    label = 'Stop and search record', weight = 10, stack = false, close = true,
+    description = 'Your record of being searched. Use to read it.',
+    server = { export = 'vinewood-mdt.useDocument' },
 },
 
 }

@@ -8,7 +8,7 @@ Config.Duty = {
     Keybind = '',
 
     -- Sign on only at a station sign-on point (Config.Stations). false = anywhere.
-    SignOnAtStation = true,
+    SignOnAtStation = false,
     -- Sign off only at a station. false = anywhere (recommended: players log off mid-patrol).
     SignOffAtStation = false,
     -- How close to a sign-on point counts as "at" it (metres).
@@ -21,7 +21,7 @@ Config.Duty = {
 
     -- Officers without a collar number may pick their own at first sign-on (still unique).
     -- false = a sergeant must set it with /collar first.
-    SelfAssignCollar = true,
+    SelfAssignCollar = false,
     RequireCollar = true,
 
     -- Keep the framework's duty flag (QB/Qbox) in step with sign-on. Turning a police officer
@@ -31,8 +31,8 @@ Config.Duty = {
     -- Unit types an officer can sign on as. qualifications: all must be held and in date.
     UnitTypes = {
         { id = 'response',      label = 'Response' },
-        { id = 'neighbourhood', label = 'Neighbourhood' },
         { id = 'roads',         label = 'Roads policing',  qualifications = { 'advanced_driver' } },
+        { id = 'tviu',          label = 'TVIU',            qualifications = { 'advanced_driver' } },
         { id = 'arv',           label = 'Armed response',  qualifications = { 'firearms', 'advanced_driver' } },
         { id = 'dogs',          label = 'Dog section',     qualifications = { 'dog_handler' } },
         { id = 'cid',           label = 'CID',             minRank = 'pc' },

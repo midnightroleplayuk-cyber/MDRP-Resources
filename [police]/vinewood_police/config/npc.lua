@@ -5,7 +5,7 @@
 -- Weights are relative: { a = 80, b = 20 } means a 4 in 5 chance of a.
 ---------------------------------------------------------------------------
 Config.NPC = {
-    Enabled = true,
+    Enabled = false,
 
     -- Limits so NPC stops never flood the server
     MaxActive = 12,           -- NPC stops open across the whole server

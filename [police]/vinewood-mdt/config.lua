@@ -163,7 +163,7 @@ Config.BailConditions = {
 }
 
 -- Give the released person a bail notice item (ox_inventory). false to disable.
-Config.BailNoticeItem = 'bail_document'   -- e.g. 'bail_notice'
+Config.BailNoticeItem = 'bail_notice'   -- e.g. 'bail_notice'
 
 -- Called after a bail record is saved. target is the server id (nil if offline).
 -- Use it to free someone from your custody script.
@@ -440,7 +440,7 @@ Config.StopSearch = {
     Objects = { 'Controlled drugs', 'Offensive weapon', 'Bladed article', 'Firearm', 'Stolen property', 'Going equipped', 'Fireworks', 'Criminal damage articles', 'Other' },
     Outcomes = { 'No further action', 'Arrest', 'Community resolution', 'Penalty notice', 'Cannabis or khat warning', 'Summons / postal requisition', 'Caution' },
     -- Give the person searched a record of the search (ox_inventory item). false = notice only.
-    ReceiptItem = 'stop_search_document',     -- e.g. 'stop_search_record'
+    ReceiptItem = 'stop_search_record',     -- e.g. 'stop_search_record'
 }
 
 ---------------------------------------------------------------------------

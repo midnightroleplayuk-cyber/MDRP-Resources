@@ -5,13 +5,13 @@ Config = {}
 ---------------------------------------------------------------------------
 -- 'auto' detects the framework. Force one if auto picks wrong:
 -- 'qbox' | 'qbcore' | 'esx'. (Qbox running under the qb-core name is detected as Qbox.)
-Config.Framework = 'auto'
+Config.Framework = 'qbox'
 -- 'auto' | 'ox' | 'qb' | 'esx'
-Config.Inventory = 'auto'
+Config.Inventory = 'ox'
 -- 'auto' | 'ox' | 'qb'
-Config.Target = 'auto'
+Config.Target = 'ox'
 -- 'auto' | 'ox' | 'qb' | 'esx' | 'native'
-Config.Notify = 'auto'
+Config.Notify = 'ox'
 
 Config.Locale = 'en'
 -- 'error' | 'warn' | 'info' | 'debug'
@@ -22,8 +22,8 @@ Config.Debug = false
 -- Shown on forms and used in references when the MDT isn't installed.
 -- When vinewood-mdt is running, its Config.ForceName / ForceShort are used instead.
 Config.Force = {
-    name = 'Los Santos Police',
-    short = 'LSP',
+    name = 'Midnight Police Constabulary',
+    short = 'MPC',
 }
 
 -- Players with this ace can use admin commands (/vpo status, granting qualifications during setup).
@@ -45,7 +45,7 @@ Config.Commands = {
 }
 
 -- Collar numbers: digits only, at most this many.
-Config.CollarMaxDigits = 5
+Config.CollarMaxDigits = 4
 
 ---------------------------------------------------------------------------
 -- Audit log (append-only)
@@ -120,4 +120,4 @@ Config.Integrations = {
 -- Paper notices the public are handed (fixed penalties, vehicle seizure notices, and stop and search
 -- records when the MDT isn't running). Using the item shows the notice again. false = no item.
 -- (Bail notices and stop and search records with the MDT are vinewood-mdt items: bail_notice, stop_search_record.)
-Config.NoticeItem = 'police_notice'
+Config.NoticeItem = 'bail_notice'
