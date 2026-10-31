@@ -237,7 +237,7 @@ Config.DieselVehicles = {
 -- Fuel consumption multiplier per fuel type
 -- Lower values means more economic
 Config.FuelConsumptionPerFuelType = {
-    regular = 0.7,
+    regular = 1.0,
     plus = 0.9,
     premium = 0.8,
     diesel = 1.0,
