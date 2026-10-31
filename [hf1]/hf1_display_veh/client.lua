@@ -100,21 +100,75 @@ CreateThread(function()
     end
 end)
 
--- No per-frame work when there are no streamed rotating displays.
+-- Smooth rotation: frame-based only while a rotating display is actually streamed.
+-- Absolute time prevents accumulated drift; no networking or database traffic per frame.
 CreateThread(function()
     while true do
         local active = false
-        local now = GetGameTimer() / 1000.0
+        local now = GetGameTimer() * 0.001
         for id, veh in pairs(spawned) do
             local d = records[id] or records[tostring(id)]
             if d and (d.rotating == true or d.rotating == 1) and DoesEntityExist(veh) then
                 active = true
-                SetEntityHeading(veh, (tonumber(d.heading) + now * (tonumber(d.speed) or 0)) % 360)
+                local speed = tonumber(d.speed) or 0
+                if speed ~= 0 then
+                    SetEntityHeading(veh, ((tonumber(d.heading) or 0) + now * speed) % 360.0)
+                end
             end
         end
-        Wait(active and Config.RotationTick or 500)
+        -- Frame updates remove visible stepping at high turntable speeds.
+        -- Sleep when no rotating displays are nearby.
+        Wait(active and 0 or 500)
     end
 end)
+
+-- Raycast from gameplay camera through the crosshair for click-to-place.
+local function cameraTarget(maxDistance)
+    local origin = GetGameplayCamCoord()
+    local rot = GetGameplayCamRot(2)
+    local pitch, yaw = math.rad(rot.x), math.rad(rot.z)
+    local cosPitch = math.cos(pitch)
+    local direction = vector3(-math.sin(yaw)*cosPitch, math.cos(yaw)*cosPitch, math.sin(pitch))
+    local finish = origin + direction * maxDistance
+    local ray = StartShapeTestRay(origin.x, origin.y, origin.z, finish.x, finish.y, finish.z, 1 + 16, PlayerPedId(), 7)
+    local _, hit, coords = GetShapeTestResult(ray)
+    if hit == 1 then return coords end
+    return nil
+end
+
+local function snapVehicleToSurface(veh, d)
+    -- Use the vehicle's own wheel/bounding geometry, not an arbitrary z offset.
+    -- Temporarily enable collision for the native, then restore decorative settings.
+    RequestCollisionAtCoord(d.x, d.y, d.z)
+    SetEntityCollision(veh, true, true)
+    FreezeEntityPosition(veh, false)
+    SetEntityCoordsNoOffset(veh, d.x, d.y, d.z + 2.0, false, false, false)
+    local success = false
+    for i = 1, 15 do
+        RequestCollisionAtCoord(d.x, d.y, d.z)
+        if SetVehicleOnGroundProperly(veh) then success = true break end
+        Wait(0)
+    end
+    if success then
+        local coords = GetEntityCoords(veh)
+        d.x, d.y, d.z = coords.x, coords.y, coords.z
+    else
+        -- Ground native fallback for streamed terrain; never silently change z on failure.
+        local found, ground = GetGroundZFor_3dCoord(d.x, d.y, d.z + 50.0, false)
+        if found then
+            SetEntityCoordsNoOffset(veh, d.x, d.y, ground + 2.0, false, false, false)
+            if SetVehicleOnGroundProperly(veh) then
+                local coords = GetEntityCoords(veh)
+                d.z = coords.z
+                success = true
+            end
+        end
+    end
+    SetEntityHeading(veh, d.heading)
+    FreezeEntityPosition(veh, true)
+    SetEntityCollision(veh, false, false)
+    return success
+end
 
 -- GTA V vehicle paint names mapped to native colour IDs.
 -- Select entries by name; stored IDs remain compatible with existing SQL rows.
@@ -198,7 +252,7 @@ local function editor(existing)
     SetModelAsNoLongerNeeded(hash)
     local original=existing and spawned[tonumber(existing.id)]
     if original and DoesEntityExist(original) then SetEntityVisible(original,false,false) end
-    message('Live paint: Z/X cycle colour, C switches primary/secondary. Enter saves; Backspace cancels.')
+    message('Aim + LEFT CLICK to place | G ground snap | Z/X colours | C paint channel | Enter save')
     -- Live paint preview while positioning: cycle GTA paint IDs on the preview entity.
     -- The initial searchable dropdown still lets admins jump directly to a named paint.
     local activePaint = 1 -- 1 = primary, 2 = secondary
@@ -214,12 +268,29 @@ local function editor(existing)
     while true do
         Wait(0)
         DisableControlAction(0, 200, true)
+        DisableControlAction(0, 24, true) -- Left mouse click: place at crosshair
+        DisableControlAction(0, 47, true) -- G: snap vehicle onto ground/surface
         DisableControlAction(0, 20, true) -- Z: previous paint
         DisableControlAction(0, 73, true) -- X: next paint
         DisableControlAction(0, 26, true) -- C: primary/secondary toggle
         if IsDisabledControlJustPressed(0, 20) then cyclePaint(-1) end
         if IsDisabledControlJustPressed(0, 73) then cyclePaint(1) end
         if IsDisabledControlJustPressed(0, 26) then activePaint = 3 - activePaint end
+        if IsDisabledControlJustPressed(0, 24) then
+            local hit = cameraTarget(Config.PlacementRayDistance or 150.0)
+            if hit then
+                d.x, d.y, d.z = hit.x, hit.y, hit.z + 1.0
+                SetEntityCoordsNoOffset(veh,d.x,d.y,d.z,false,false,false)
+                if Config.AutoSnapOnClick then
+                    if not snapVehicleToSurface(veh,d) then message('Could not snap here; use Page Up/Down or aim at another surface','error') end
+                end
+            else
+                message('No surface under crosshair; aim at the floor or platform','error')
+            end
+        end
+        if IsDisabledControlJustPressed(0, 47) then
+            if not snapVehicleToSurface(veh,d) then message('Could not find ground at this position','error') end
+        end
         local step=Config.PreviewStep*(IsControlPressed(0,21) and 5 or 1)
         local heading=GetEntityHeading(veh)
         local rad=math.rad(heading)
@@ -239,7 +310,7 @@ local function editor(existing)
         local primaryName = paintNames[tonumber(d.primary) or 0] or 'Other'
         local secondaryName = paintNames[tonumber(d.secondary) or 0] or 'Other'
         local selected = activePaint == 1 and 'PRIMARY' or 'SECONDARY'
-        AddTextComponentSubstringPlayerName(('Arrows Move | PgUp/PgDn Height | Q/E Heading | Shift Fast | Enter Save | Backspace Cancel~n~Z/X Previous/Next Colour | C Switch Paint (%s)~n~Primary: %s (%d) | Secondary: %s (%d)~n~Height: %.2f | Heading: %.1f'):format(selected,primaryName,tonumber(d.primary) or 0,secondaryName,tonumber(d.secondary) or 0,d.z,d.heading))
+        AddTextComponentSubstringPlayerName(('Aim + LEFT CLICK Place | G Snap to Ground | Arrows Move | PgUp/PgDn Height~n~Q/E Heading | Shift Fast | Enter Save | Backspace Cancel~n~LIVE COLOURS: Z Previous | X Next | C Primary/Secondary (%s)~n~Primary: %s (%d) | Secondary: %s (%d) | Z: %.2f | Heading: %.1f'):format(selected,primaryName,tonumber(d.primary) or 0,secondaryName,tonumber(d.secondary) or 0,d.z,d.heading))
         EndTextCommandDisplayHelp(0,false,false,-1)
         if IsControlJustPressed(0,191) or IsControlJustPressed(0,201) then saved=true break end
         if IsDisabledControlJustPressed(0,200) or IsControlJustPressed(0,177) then break end
