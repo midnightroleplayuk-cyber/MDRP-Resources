@@ -1,0 +1,1 @@
+gg.camera = gg.camera or {}
