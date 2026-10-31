@@ -2667,7 +2667,7 @@ return {
 
     ["cement"] = {
         label = "Cement",
-        weight = 5000,
+        weight = 500,
         stack = true,
         close = true,
         consume = 0,
