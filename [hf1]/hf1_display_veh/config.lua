@@ -1,8 +1,8 @@
 Config = {}
 Config.Command = 'displayveh'
 Config.AllowedIdentifiers = {
-    'license:REPLACE_WITH_YOUR_LICENSE',
-    -- 'discord:123456789012345678',
+    ['identifier.fivem:17286926'] = true, -- Kapper
+    ['identifier.fivem:1059188'] = true,  -- Hardy
 }
 Config.MaxDistance = 80.0
 Config.DefaultRotationSpeed = 8.0 -- degrees per second
