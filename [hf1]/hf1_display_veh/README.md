@@ -20,3 +20,6 @@ Arrow keys: move relative to vehicle heading. Page Up/Down: change height. Q/E: 
 - The resource does not create a physical turntable prop; position the vehicle on your casino's turntable.
 - The resource is intended for trusted admins. Permissions are checked server-side for every write.
 - This is an initial implementation and should be tested on your specific QBox/ox_lib build.
+
+## Performance / streaming
+Displays now spawn client-side only when within `Config.StreamDistance` (default 100 m), and despawn beyond `Config.DespawnDistance` (120 m). Checks run every `Config.DistanceCheckInterval` (1500 ms); rotating vehicles update every `Config.RotationTick` (33 ms) only while locally spawned. These values are configurable. Keep despawn distance larger than spawn distance to avoid edge flicker. All display records are still synced as small metadata entries, not networked vehicle entities. No SQL migration is needed when upgrading.

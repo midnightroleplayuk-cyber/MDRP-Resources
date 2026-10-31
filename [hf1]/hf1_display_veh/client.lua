@@ -1,6 +1,7 @@
 local spawned = {}
 local records = {}
 local editing = false
+local spawnedSignatures = {}
 local function message(text, kind)
     lib.notify({description=text, type=kind or 'inform'})
 end
@@ -18,6 +19,7 @@ local function removeAll()
         if DoesEntityExist(veh) then DeleteEntity(veh) end
     end
     spawned={}
+    spawnedSignatures={}
 end
 local function applyAppearance(veh, d)
     SetVehicleNumberPlateText(veh, d.plate or 'DISPLAY')
@@ -40,34 +42,80 @@ local function spawnDisplay(id,d)
     spawned[id]=veh
     SetModelAsNoLongerNeeded(hash)
 end
+-- Sync only updates metadata. Nearby vehicles are streamed by the distance worker.
 RegisterNetEvent('hf1_display_veh:client:sync', function(data)
-    records=data or {}
-    removeAll()
-    for id,d in pairs(records) do
-        local numeric=tonumber(id)
-        if numeric then spawnDisplay(numeric,d) end
-    end
+    records = data or {}
 end)
+
 CreateThread(function()
     Wait(1500)
-    local data=lib.callback.await('hf1_display_veh:server:get',false)
-    if data then TriggerEvent('hf1_display_veh:client:sync',data) end
+    local data = lib.callback.await('hf1_display_veh:server:get', false)
+    if data then TriggerEvent('hf1_display_veh:client:sync', data) end
 end)
+
+local function signature(d)
+    return table.concat({tostring(d.model), tostring(d.x), tostring(d.y), tostring(d.z),
+        tostring(d.heading), tostring(d.plate), tostring(d.primary_color or d.primary),
+        tostring(d.secondary_color or d.secondary)}, '|')
+end
+
+-- Hysteresis prevents repeated spawn/delete at the edge of the stream radius.
 CreateThread(function()
     while true do
-        Wait(0)
-        local now=GetGameTimer()/1000.0
-        local active=false
-        for id,veh in pairs(spawned) do
-            local d=records[id] or records[tostring(id)]
-            if d and d.rotating and DoesEntityExist(veh) then
-                active=true
-                SetEntityHeading(veh,(d.heading + now * (tonumber(d.speed) or 0))%360)
+        local ped = PlayerPedId()
+        local pos = GetEntityCoords(ped)
+        local spawnSq = Config.StreamDistance * Config.StreamDistance
+        local despawnSq = Config.DespawnDistance * Config.DespawnDistance
+        for key, d in pairs(records) do
+            local id = tonumber(key)
+            if id then
+                local dx, dy, dz = pos.x - d.x, pos.y - d.y, pos.z - d.z
+                local distSq = dx * dx + dy * dy + dz * dz
+                local veh = spawned[id]
+                if veh and not DoesEntityExist(veh) then
+                    spawned[id] = nil
+                    spawnedSignatures[id] = nil
+                    veh = nil
+                end
+                if veh and (distSq > despawnSq or spawnedSignatures[id] ~= signature(d)) then
+                    DeleteEntity(veh)
+                    spawned[id] = nil
+                    spawnedSignatures[id] = nil
+                    veh = nil
+                end
+                if not veh and distSq <= spawnSq then
+                    spawnDisplay(id, d)
+                    if spawned[id] then spawnedSignatures[id] = signature(d) end
+                end
             end
         end
-        if not active then Wait(500) end
+        for id, veh in pairs(spawned) do
+            if not (records[id] or records[tostring(id)]) then
+                if DoesEntityExist(veh) then DeleteEntity(veh) end
+                spawned[id] = nil
+                spawnedSignatures[id] = nil
+            end
+        end
+        Wait(Config.DistanceCheckInterval)
     end
 end)
+
+-- No per-frame work when there are no streamed rotating displays.
+CreateThread(function()
+    while true do
+        local active = false
+        local now = GetGameTimer() / 1000.0
+        for id, veh in pairs(spawned) do
+            local d = records[id] or records[tostring(id)]
+            if d and (d.rotating == true or d.rotating == 1) and DoesEntityExist(veh) then
+                active = true
+                SetEntityHeading(veh, (tonumber(d.heading) + now * (tonumber(d.speed) or 0)) % 360)
+            end
+        end
+        Wait(active and Config.RotationTick or 500)
+    end
+end)
+
 local openMenu
 local function editor(existing)
     if editing then return end
