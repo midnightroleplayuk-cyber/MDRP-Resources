@@ -6,7 +6,7 @@ Config.Incidents = {
     Types = { 'Crime scene', 'Major incident', 'Firearms incident', 'Serious collision', 'Missing person search', 'Public order', 'Sudden death' },
     Roles = { 'Bronze commander', 'Silver commander', 'Scene guard', 'Cordon officer', 'Scene log keeper', 'CSI', 'Search lead', 'Family liaison' },
     -- Silver commander needs this rank or above
-    SilverRank = 'insp',
+    SilverRank = 'supt',
     DefaultInner = 25,    -- metres
     DefaultOuter = 80,
     MaxRadius = 400,
@@ -22,6 +22,6 @@ Config.CID = {
         'Missing person', 'Sudden death', 'Public order', 'Other' },
     PersonRoles = { 'Suspect', 'Victim', 'Witness', 'Person of interest' },
     -- Who can edit a case besides its officer in case (OIC): this rank and above, or anyone signed on as one of these units
-    ManageRank = 'ps',
+    ManageRank = 'sgt',
     ManageUnits = { 'cid' },
 }
