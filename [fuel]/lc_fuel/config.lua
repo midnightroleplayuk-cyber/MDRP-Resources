@@ -237,10 +237,10 @@ Config.DieselVehicles = {
 -- Fuel consumption multiplier per fuel type
 -- Lower values means more economic
 Config.FuelConsumptionPerFuelType = {
-    regular = 1.0,
-    plus = 0.9,
-    premium = 0.8,
-    diesel = 1.0,
+    regular = 0.4,
+    plus = 0.3,
+    premium = 0.6,
+    diesel = 0.7,
 }
 
 -- Fuel tank sizes (in liters) per vehicle class and specific vehicles

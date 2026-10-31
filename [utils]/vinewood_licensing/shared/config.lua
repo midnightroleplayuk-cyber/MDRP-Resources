@@ -30,7 +30,7 @@ Config.Locations = {
         Distance = 8.0,        -- how close before they can use it
         Label = 'DVLA Desk',
         Icon = 'fa-solid fa-id-card',
-        Blip = { Enabled = false, Sprite = 498, Colour = 38, Scale = 0.7 }
+        Blip = { Enabled = true, Sprite = 498, Colour = 2, Scale = 0.7 }
     },
     ExamCentre = {
         Enabled = true,

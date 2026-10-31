@@ -2,8 +2,8 @@ Config = {}
 
 Config.Attachments = {
     bone = 24818,
-    position = { x = 0.12, y = 0.16, z = 0.02 },
-    rotation = { x = 0.0, y = 90.0, z = 0.0 },
+    position = { x = 0.05, y = 0.23, z = 0.02 },
+    rotation = { x = 180.0, y = 135.0, z = 0.0 },
 }
 
 Config.Enabled = true
