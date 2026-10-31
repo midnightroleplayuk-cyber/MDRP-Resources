@@ -26,7 +26,7 @@ Config.Duty = {
 
     -- Keep the framework's duty flag (QB/Qbox) in step with sign-on. Turning a police officer
     -- on duty any other way (qb-core's duty toggle, another police job) is undone.
-    EnforceFrameworkDuty = true,
+    EnforceFrameworkDuty = false,
 
     -- Unit types an officer can sign on as. qualifications: all must be held and in date.
     UnitTypes = {
