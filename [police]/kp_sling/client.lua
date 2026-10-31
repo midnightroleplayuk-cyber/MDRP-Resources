@@ -223,9 +223,13 @@ CreateThread(function()
         Wait(500)
     end
 
-    while type(exports.ox_inventory:GetPlayerItems()) ~= 'table' do
-        Wait(500)
+    while true do
+    local items = exports.ox_inventory:GetPlayerItems()
+    if type(items) == 'table' then
+        break
     end
+    Wait(500)
+end
 
     scheduleReconcile()
 
