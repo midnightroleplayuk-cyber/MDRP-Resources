@@ -11,9 +11,9 @@ Config.Ranks = {
     { id = 'aru',    label = 'Armed Response',            short = 'ARU',   level = 6 },
     { id = 'sgt',   label = 'Sergeant',      short = 'SGT', level = 7 },
     { id = 'insp',     label = 'Inspector', short = 'Insp',    level = 8 },
-    { id = 'c/insp',     label = 'Chief Inspector',    short = 'C/Insp',    level = 9 },
+    { id = 'cinsp',     label = 'Chief Inspector',    short = 'CInsp',    level = 9 },
     { id = 'supt',      label = 'Superintendent',           short = 'Supt',     level = 10 },
-    { id = 'c/supt',      label = 'Chief Superintendent',           short = 'C/Supt',     level = 11 },
+    { id = 'csupt',      label = 'Chief Superintendent',           short = 'CSupt',     level = 11 },
     { id = 'acc',      label = 'Assistant Chief Constable',           short = 'ACC',     level = 12 },
     { id = 'dcc',      label = 'Deputy Chief Constable',           short = 'DCC',     level = 13 },
     { id = 'cc',      label = 'Chief Constable',           short = 'CC',     level = 14 },
@@ -55,9 +55,9 @@ Config.Jobs = {
 Config.Permissions = {
     ['duty.toggle']    = { rank = 'student', duty = false },
     ['qual.view']      = { rank = 'student', duty = false },
-    ['qual.grant']     = { rank = 'ps' },
-    ['qual.revoke']    = { rank = 'ps' },
-    ['officer.collar'] = { rank = 'ps' },
+    ['qual.grant']     = { rank = 'sgt' },
+    ['qual.revoke']    = { rank = 'sgt' },
+    ['officer.collar'] = { rank = 'sgt' },
     ['audit.view']     = { rank = 'insp', duty = false },
 
     ['duty.status']    = { rank = 'student' },
@@ -82,11 +82,11 @@ Config.Permissions = {
     ['scene.place']        = { rank = 'student' },
     ['custody.view']       = { rank = 'student' },
     ['custody.cells']      = { rank = 'student' },                                  -- cells, welfare checks
-    ['custody.book']       = { rank = 'ps' },                                       -- book in, observation level, release (sergeant and above)
+    ['custody.book']       = { rank = 'sgt' },                                       -- book in, observation level, release (sergeant and above)
     ['evidence.view']      = { rank = 'student' },
     ['calls.attend']       = { rank = 'student' },
     ['incident.join']      = { rank = 'student' },
-    ['incident.declare']   = { rank = 'ps' },             -- declare, assign roles, move cordons, stand down
+    ['incident.declare']   = { rank = 'sgt' },             -- declare, assign roles, move cordons, stand down
     ['cid.view']           = { rank = 'pc' },
     ['cid.create']         = { rank = 'pc' },
     ['uof.submit']         = { rank = 'student', duty = false },
@@ -96,8 +96,8 @@ Config.Permissions = {
     -- Management (/management): rank limits always apply on top of these
     ['manage.view']        = { rank = 'insp', duty = false },
     ['manage.hire']        = { rank = 'insp', duty = false },
-    ['manage.promote']     = { rank = 'c/insp', duty = false },
+    ['manage.promote']     = { rank = 'cinsp', duty = false },
     ['manage.discipline']  = { rank = 'insp', duty = false },  -- suspend from duty
     ['manage.fire']        = { rank = 'supt', duty = false },
-    ['evidence.manage']    = { rank = 'ps' },                                       -- return to owner, destroy
+    ['evidence.manage']    = { rank = 'sgt' },                                       -- return to owner, destroy
 }
