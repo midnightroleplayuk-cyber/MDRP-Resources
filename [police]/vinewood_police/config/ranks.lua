@@ -90,14 +90,14 @@ Config.Permissions = {
     ['cid.view']           = { rank = 'pc' },
     ['cid.create']         = { rank = 'pc' },
     ['uof.submit']         = { rank = 'student', duty = false },
-    ['standards.view']     = { rank = 'insp', duty = false },   -- reviews, complaints, audit log
+    ['standards.view']     = { rank = 'supt', duty = false },   -- reviews, complaints, audit log
     ['dogs.handle']        = { rank = 'pc', qualifications = { 'dog_handler' } },
     ['roads.stinger']      = { rank = 'pc', qualifications = { 'stinger' } },
     -- Management (/management): rank limits always apply on top of these
-    ['manage.view']        = { rank = 'insp', duty = false },
-    ['manage.hire']        = { rank = 'insp', duty = false },
+    ['manage.view']        = { rank = 'supt', duty = false },
+    ['manage.hire']        = { rank = 'supt', duty = false },
     ['manage.promote']     = { rank = 'ci', duty = false },
-    ['manage.discipline']  = { rank = 'insp', duty = false },  -- suspend from duty
+    ['manage.discipline']  = { rank = 'supt', duty = false },  -- suspend from duty
     ['manage.fire']        = { rank = 'supt', duty = false },
     ['evidence.manage']    = { rank = 'ps' },                                       -- return to owner, destroy
 }
