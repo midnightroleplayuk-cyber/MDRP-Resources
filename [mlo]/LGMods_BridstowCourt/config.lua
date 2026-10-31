@@ -5,8 +5,6 @@ Config = {}
 -- =======================================================
 
 Config.debug    = false   -- Console logging + /bridstow_debug, /bridstow_sets and /bridstow_plaques
-Config.target   = true   -- true = ox_target / qb-target / qtarget, false = press E
-Config.interact = 1.8     -- Lift interaction distance (metres)
 
 -- =======================================================
 --  Building / floors
@@ -16,13 +14,15 @@ Config.iplPrefix = 'lgmods_bridstowcourts_floor_'
 Config.minFloor  = 0
 Config.maxFloor  = 19
 
--- Floors are loaded while you are within buildingRadius of the lift (on any
--- floor, by height) and all unloaded once you are further than unloadRadius.
+Config.building = {
+    x = -288.982,
+    y = -1629.618,
+    room = 'foyer',
+}
+
 Config.buildingRadius = 30.0
 Config.unloadRadius   = 60.0
 
--- z   = where the lift puts you on that floor
--- ref = a point inside that floor at mid-height (used to find the floor's interior)
 Config.floors = {
     [0]  = { z = 31.44,  ref = vector3(-290.25, -1627.69, 32.34)  },
     [1]  = { z = 35.19,  ref = vector3(-289.39, -1628.80, 36.11)  },
@@ -45,49 +45,6 @@ Config.floors = {
     [18] = { z = 98.94,  ref = vector3(-292.34, -1628.78, 99.86)  },
     [19] = { z = 102.69, ref = vector3(-290.75, -1629.43, 103.61) },
 }
-
--- =======================================================
---  Lift
--- =======================================================
-
-Config.elevator = {
-    x = -288.982,
-    y = -1629.618,
-    heading = 90.0,
-    room = 'foyer',        -- MLO room the lift stands in
-    time = 800,            -- Base journey time (ms)
-    timePerFloor = 150,    -- Added per floor travelled (ms)
-
-    -- Target box on every floor. It sits on the floor at the lift point and
-    -- goes up to head height, so aiming at the lift doors, the call panel or
-    -- the floor in front of them all work.
-    target = {
-        size     = vector3(3.0, 3.0, 2.6),  -- length, width, height (metres)
-        offset   = vector3(0.0, 0.0, 0.0),  -- nudge the box if your doors sit further away
-        distance = 2.5,                     -- how close you need to be
-        debug    = false,                   -- draw the boxes so you can line them up
-    },
-
-    -- Also show "Press E" when a target resource is running.
-    -- (With Config.target = false, or no target resource, E is always used.)
-    keyWithTarget = false,
-}
-
--- =======================================================
---  Layouts (from lgmods_bridstowcourts.ytyp)
---  All positions are MLO-local. Flats are numbered in this order:
---  floor 0 = G01, floor 12 = 1201 / 1202 / 1203, floor 19 = 1901 ...
---
---  set    = furniture entity set for that flat (from the split ytyp).
---  legacy = the old single furniture set for the whole floor. If the
---           per-flat sets aren't in the streamed ytyp, the script falls
---           back to this one (all flats on that floor toggle together) and
---           prints a warning. If the per-flat sets ARE there, the legacy set
---           is kept off so its props can't sit on top of them.
---  door   = front door entity position (used to line the plaques up)
---  plaque = where the flat number is drawn (corridor wall, hinge side)
---  face   = which way the plaque faces (towards the corridor)
--- =======================================================
 
 Config.layouts = {
     gf = {

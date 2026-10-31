@@ -5,9 +5,7 @@ this_is_a_map 'yes'
 
 authors 'LGMods'
 description 'Bridstow Courts Int + Exterior'
-version '3.1.0'
-
-ui_page 'ui/index.html'
+version '4.0.0'
 
 data_file 'SCALEFORM_DLC_FILE' 'stream/minimap/int915664316.gfx'
 data_file 'SCALEFORM_DLC_FILE' 'stream/minimap/int2118847047.gfx'
@@ -20,7 +18,6 @@ shared_scripts {
 
 client_scripts {
     'client/floors.lua',
-    'client/elevator.lua',
     'client/flats.lua',
 }
 
@@ -29,7 +26,6 @@ server_scripts {
 }
 
 files {
-    'ui/index.html',
     'stream/*.ytyp',
     'stream/*.ymap',
     'stream/floors/*.ymap'
