@@ -4,7 +4,7 @@ SvConfig = {}
 -- Custody photos are uploaded to Fivemanage. Paste a media API key here.
 -- (Falls back to the "fivemanage_key" convar if left empty, same as citydriving.)
 SvConfig.Fivemanage = {
-    ApiKey = 'SwMM3lrxnKw7NLKKc6nuqFudyV1jmr8L',
+    ApiKey = '',
     Endpoint = 'https://api.fivemanage.com/api/v3/file/base64',
 }
 

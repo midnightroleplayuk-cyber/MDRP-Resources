@@ -7,9 +7,9 @@ cfg.starting_data = {
 
 cfg.ped_purchase_tablet = {
     enabled = true,
-    coord = vector4(-145.5, -1430.14, 30.92, 302.7),
+    coord = vector4(-759.24, -209.56, 36.27, 119.43),
     model = "a_m_y_genstreet_02",
-    tablet_cost = 5000,
+    tablet_cost = 20000,
     payment_type = 'cash',
 }
 

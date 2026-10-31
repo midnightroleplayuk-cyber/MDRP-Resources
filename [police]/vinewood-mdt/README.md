@@ -234,6 +234,10 @@ Conditions are configurable; "reside at" is pre-filled from their housing.
 - `Config.OnBailGranted(target, bail)` lets you free them from your custody script.
 - Server event: `vinewood-mdt:server:bailGranted (bail, target)`
 
+Server event when an outcome is recorded on a custody record (2.19+):
+`vinewood-mdt:server:custodyOutcome (recordId, ref, cid, outcome, officerSrc)`
+It fires for every way an outcome changes: Record outcome, Release on bail / RUI, No further action, and a CPS charge (officerSrc is the CPS lawyer there).
+
 ## No further action
 Available on a custody record and on active bail. It marks the record "No further action",
 cancels any bail for it, withdraws a pending CPS file (if `Config.CPS.PoliceCanWithdraw`), and tells
@@ -295,7 +299,35 @@ reference from that incident), and in the person's Interviews tab.
 ```lua
 exports['vinewood-mdt']:GetActiveBail(citizenid)      -- bail table or nil
 exports['vinewood-mdt']:GetMarkers('person', citizenid) -- or ('vehicle', plate)
+exports['vinewood-mdt']:SearchPeople(query, limit)    -- { cid, name, dob, online }
+exports['vinewood-mdt']:GetCasesForPerson(citizenid)  -- custody records and incidents, newest first
+exports['vinewood-mdt']:AddCall(data)                 -- live call (see Dispatch)
+exports['vinewood-mdt']:SetCustodyStatus(identifier, status, data) -- prison scripts
 ```
+
+### Acting for an officer (2.18+)
+Other resources (vinewood_police) can run MDT actions as an officer. The request goes through the same
+checks as the tablet: the officer needs MDT access (job, grade, on duty), audited actions need a lawful
+purpose from `Config.Audit.Reasons` in `_reason`, and the audit log and webhooks record it as theirs.
+
+```lua
+local res = exports['vinewood-mdt']:Request(officerSrc, 'createRecord', {
+    cid = 'ABC12345', offences = { ... }, narrative = '...', incidentId = 12, _reason = 'Arrest / custody',
+})
+if res.error then print(res.error) else print(res.ref) end -- e.g. LSP/2610/00042
+```
+
+Allowed actions: searchPeople, getPerson, searchVehicles, getVehicle, nearbyPeople, checkDriver,
+wantedPeople, flaggedVehicles, createIncident, getIncident, searchIncidents, linkIncident, addEvidence,
+seizeItems, createRecord, custodyList, setOutcome, releaseOnBail, nfa, stopSearchCreate, issueFine,
+anprAdd, addMarker. The list is `EXTERNAL_ACTIONS` in `server/main.lua`.
+
+`exports['vinewood-mdt']:GetFormOptions()` returns the lists the MDT's forms use (offences, outcomes,
+stop and search powers, incident types, evidence types, markers, bail types, audit reasons, force name),
+so other resources can build forms that match. From 2.18.1 it also returns `fines` (the fixed penalty and PND list), so roadside tickets offer the same offences.
+
+**ESX duty:** ESX has no duty state, so the MDT treats everyone as on duty. When vinewood_police is
+running, its sign-on is used instead (`IsOnDuty` export).
 
 ## Ambulance service (vinewood-emsmdt)
 Requires `vinewood-emsmdt` 1.0+ running. Configure with `Config.Ambulance`.
@@ -430,3 +462,6 @@ in front and behind (red when over), the speed limit of the road and your own sp
 - The ANPR page's **Speed detections** tab lists everything with the keeper. *Ticket keeper* opens a fixed
   penalty (SP30) filled in with the speed, limit, device and time, and marks the detection as ticketed.
   Speed checks also show in the vehicle record's activity.
+
+## Offences (2.19.1)
+`Config.Offences` is now the full list shared with vinewood_police: 100 offences across 28 groups. That covers drugs supply and being concerned in supply, money laundering, weapons, violence, public order, harassment, fraud, roads, warrants and recall. Every offence has sentencing guidance in `sentencing.lua`, looked up by the exact name, so if you rename an offence, rename its guidance too. Sexual offences aren't included by default; add them (and their guidance) if your server allows that roleplay.

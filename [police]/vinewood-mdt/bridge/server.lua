@@ -85,13 +85,25 @@ local function dispatchCallsign(src)
     return ok and cs or nil
 end
 
+-- ESX has no duty state of its own. When vinewood_police is running, its sign-on decides it.
+local POLICE_RESOURCES = { 'vinewood_police', 'vinewood-police' }
+local function policeDuty(src)
+    for _, name in ipairs(POLICE_RESOURCES) do
+        if GetResourceState(name) == 'started' then
+            local ok, on = pcall(function() return exports[name]:IsOnDuty(src) end)
+            if ok and on ~= nil then return on == true end
+        end
+    end
+    return nil
+end
+
 --- { name, label, grade, gradeLabel, onduty, callsign }
 function Bridge.GetJob(src)
     local f = Bridge.Framework()
     if f == 'esx' then
         local x = ESX.GetPlayerFromId(src)
         if not x then return nil end
-        return { name = x.job.name, label = x.job.label, grade = x.job.grade, gradeLabel = x.job.grade_label, onduty = true,
+        return { name = x.job.name, label = x.job.label, grade = x.job.grade, gradeLabel = x.job.grade_label, onduty = policeDuty(src) ~= false,
             callsign = dispatchCallsign(src) }
     end
     local p = qbPlayer(src)
