@@ -173,7 +173,7 @@ lang.translations = {
     },
     build = {
         target_collect_package = "Collect Packages",
-        target_purchase_tablet = "Buy Boosting Tablet $%s",
+        target_purchase_tablet = "Buy Boosting Tablet £%s",
     },
     admin = {
         actions = {
