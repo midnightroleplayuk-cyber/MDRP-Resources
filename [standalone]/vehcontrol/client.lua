@@ -116,7 +116,9 @@ end)
 function EngineControl()
     local vehicle = GetVehiclePedIsIn(PlayerPedId(), false)
     if vehicle ~= nil and vehicle ~= 0 and GetPedInVehicleSeat(vehicle, 0) then
-        SetVehicleEngineOn(vehicle, (not GetIsVehicleEngineRunning(vehicle)), false, true)
+        local start = not GetIsVehicleEngineRunning(vehicle)
+        if start and not exports['Renewed-Vehiclekeys']:hasKey(vehicle) then return end
+        SetVehicleEngineOn(vehicle, start, false, true)
     end
 end
 

@@ -90,6 +90,8 @@ function Keybinds:Start()
         local isRunning = GetIsVehicleEngineRunning(veh)
         local newState = not isRunning
 
+        if newState and not exports['Renewed-Vehiclekeys']:hasKey(veh) then return end
+
         SetVehicleEngineOn(veh, newState, 1, 1)
 
         SendNUIMessage({
