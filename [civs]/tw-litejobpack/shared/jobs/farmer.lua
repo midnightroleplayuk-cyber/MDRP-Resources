@@ -630,7 +630,7 @@ FarmerJob.clothes = {
         tshirt_1 = 15,
         tshirt_2 = 1,
         torso_1 = 234,
-        torso_2 = 6,
+        torso_2 = 19,
         arms = 0,
         pants_1 = 90,
         pants_2 = 2,
@@ -638,7 +638,7 @@ FarmerJob.clothes = {
         shoes_2 = 0,
         chain_1 = 0,
         chain_2 = 0,
-        helmet_1 = 13,
+        helmet_1 = -1,
         helmet_2 = 1,
     },
     female = {

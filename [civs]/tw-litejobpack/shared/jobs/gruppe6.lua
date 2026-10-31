@@ -339,7 +339,7 @@ local Gruppe6Job = {
             decals_1 = 71,
             decals_2 = 0,
             bproof_1 = 27, -- vest
-            bproof_2 = 6,
+            bproof_2 = 9,
             -- Empty back (component 5 = 0): the player takes the actual bag from
             -- the truck, so the uniform must NOT put a duffel on. 0 is truthy in
             -- Lua, so ApplyJobClothes still runs and clears the slot to no bag.
