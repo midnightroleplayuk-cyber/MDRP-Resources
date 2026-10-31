@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<title>Police hub</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600&family=Barlow+Semi+Condensed:wght@500;600;700&display=swap">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<aside id="hub" class="hub" hidden aria-label="Police hub">
+  <div class="pc-titlebar" aria-hidden="true"><span class="pc-dots"><i></i><i></i><i></i></span><span id="pcTitle">Custody system</span><span id="pcClock"></span></div>
+  <div class="battenburg" aria-hidden="true"></div>
+  <header class="hub-head">
+    <div class="who">
+      <p class="force" id="force"></p>
+      <p class="officer" id="officer"></p>
+    </div>
+    <div class="ident">
+      <p class="callsign" id="callsign"></p>
+      <p class="status-chip" id="statusChip"></p>
+    </div>
+    <button class="close" id="close" type="button" aria-label="Close">&times;</button>
+  </header>
+  <nav class="tabs" role="tablist">
+    <button role="tab" data-tab="duty" type="button">Duty</button>
+    <button role="tab" data-tab="notebook" type="button">Notebook</button>
+    <button role="tab" data-tab="locker" type="button">Locker</button>
+    <button role="tab" data-tab="roster" type="button">On duty</button>
+    <button role="tab" data-tab="forms" type="button">Forms</button>
+  </nav>
+  <main class="body" id="body" role="tabpanel" tabindex="-1"></main>
+</aside>
+<div id="prompt" class="prompt" hidden role="dialog" aria-modal="true" aria-labelledby="promptTitle">
+  <div class="prompt-card">
+    <div class="battenburg" aria-hidden="true"></div>
+    <div class="prompt-body">
+      <h2 id="promptTitle"></h2>
+      <p id="promptText"></p>
+      <p class="note" id="promptTimer"></p>
+      <div class="actions" id="promptActions"></div>
+    </div>
+  </div>
+</div>
+<aside id="notice" class="notice" hidden aria-live="assertive">
+  <div class="battenburg" aria-hidden="true"></div>
+  <div class="notice-body">
+    <h2 id="noticeTitle"></h2>
+    <p class="note" id="noticeFrom"></p>
+    <p id="noticeText" class="notice-text"></p>
+  </div>
+</aside>
+<script src="app.js"></script>
+</body>
+</html>
