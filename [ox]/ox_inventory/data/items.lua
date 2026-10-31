@@ -5336,7 +5336,13 @@ return {
 	},
 
    -- PICKLE CASINO 
-
+   ['casino_chips'] = {
+    label = 'Casino Chips',
+    weight = 1,
+    stack = true,
+    close = true,
+    description = nil
+},
    ['blackjack_table'] = {
     label = 'Blackjack Table',
     weight = 1,
