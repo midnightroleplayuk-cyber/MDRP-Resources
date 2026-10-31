@@ -17,7 +17,7 @@ Config.Locale = 'en'
 -- 'error' | 'warn' | 'info' | 'debug'
 Config.LogLevel = 'info'
 -- Enables the test helpers in /vpo (state set/clear). Leave off on live servers.
-Config.Debug = false
+Config.Debug = true
 
 -- Shown on forms and used in references when the MDT isn't installed.
 -- When vinewood-mdt is running, its Config.ForceName / ForceShort are used instead.

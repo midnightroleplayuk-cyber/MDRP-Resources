@@ -8,54 +8,45 @@ local function OnLeafUse(player, item)
 end
 
 
+-- Pickup cooldowns (seconds) per player, per item
+local PICKUP_COOLDOWNS = {
+    [Config.items.cement] = 10 * 60,
+    [Config.items.gasoline] = 10 * 60,
+    [Config.items.hydrochloricAcid] = 10 * 60,
+}
+local lastPickup = {}
+
+-- true if this player may take the item now; also starts their cooldown
+local function PickupAllowed(player, item)
+    local cooldown = PICKUP_COOLDOWNS[item]
+    if not cooldown then return true end
+
+    local key = (GetPlayerIdentifierByType(player, 'license') or player) .. ':' .. item
+    local now = os.time()
+    local left = (lastPickup[key] or 0) + cooldown - now
+
+    if left > 0 then
+        TriggerClientEvent('ox_lib:notify', player, {
+            type = 'error',
+            description = ('You can pick up more %s in %d min'):format(item:gsub('_', ' '), math.ceil(left / 60)),
+        })
+        return false
+    end
+
+    lastPickup[key] = now
+    return true
+end
+
 --
- function AddPlayerItem(player, item, amount)
-    local success = exports.kq_link:AddPlayerItem(player, item, amount or 1)
-    
-    return success
+function AddPlayerItem(player, item, amount)
+    if not PickupAllowed(player, item) then return false end
+    return exports.kq_link:AddPlayerItem(player, item, amount or 1)
 end
 
 function AddPlayerItemToFit(player, item, amount)
-    local success = exports.kq_link:AddPlayerItemToFit(player, item, amount or 1)
-    
-    return success
+    if not PickupAllowed(player, item) then return false end
+    return exports.kq_link:AddPlayerItemToFit(player, item, amount or 1)
 end
-
-
--- cement cool down test --
-
---local CEMENT_COOLDOWN = 10 * 60 -- seconds between cement pickups per player
---local lastCement = {}
-
--- true if this player may take cement now; also starts their cooldown
---local function CementAllowed(player, item)
-    --if item ~= Config.items.cement then return true end
-
-    --local id = GetPlayerIdentifierByType(player, 'license') or player
-    --local now = os.time()
-    --local left = (lastCement[id] or 0) + CEMENT_COOLDOWN - now
-
-    --if left > 0 then
-        --TriggerClientEvent('ox_lib:notify', player, {
-            --type = 'error',
-            --description = ('You can pick up more cement in %d min'):format(math.ceil(left / 60)),
-        --})
-        --return false
-    --end
-
-    --lastCement[id] = now
-    --return true
---end
-
---function AddPlayerItem(player, item, amount)
-    --if not CementAllowed(player, item) then return false end
-    --return exports.kq_link:AddPlayerItem(player, item, amount or 1)
---end
-
---function AddPlayerItemToFit(player, item, amount)
-    --if not CementAllowed(player, item) then return false end
-    --return exports.kq_link:AddPlayerItemToFit(player, item, amount or 1)
---end
 
 
 --
