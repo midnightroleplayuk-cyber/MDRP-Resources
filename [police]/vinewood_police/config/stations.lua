@@ -17,17 +17,6 @@ Config.Stations = {
             { coords = vec3(452.3, -980.0, 30.7), size = vec3(2.0, 1.2, 2.0), rotation = 0.0 },
         },
     },
-        {
-        id = 'vinewood_station',
-        label = 'Vinewood Station',
-        signOn = { coords = vec3(411.57, -327.92, 45.94), size = vec3(1.6, 1.0, 2.0), rotation = 0.0 },
-        lockers = {
-            { coords = vec3(461.6, -996.3, 30.7), size = vec3(2.0, 1.0, 2.0), rotation = 0.0 },
-        },
-        armouries = {
-            { coords = vec3(397.31, -312.01, 45.94), size = vec3(2.0, 1.2, 2.0), rotation = 0.0 },
-        },
-    },
     {
         id = 'sandy_shores',
         label = 'Sandy Shores',

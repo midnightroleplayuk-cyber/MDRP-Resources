@@ -318,6 +318,20 @@ Officer F: firearms + Taser qualified, signed on as Armed response.
 - [ ] Door release: click "Locked · release" on an occupied cell: the door opens in the world and the detainee shows as out. "Open · lock" with them inside: back in the cell. From outside the desk area: refused.
 - [ ] /evidence at the desk also opens as the computer.
 
+## Police tape
+- [ ] /scenekit, Put up tape: aim at a lamp post and E (blue dot), at a second post and E. The tape between them shows while placing, faint if a span's too long. Enter: "Tape up". A second player sees it.
+- [ ] Aim at the ground: the point is at waist height. Run a length round a corner with 4 points.
+- [ ] The print reads correctly from one side and mirrored from the other (like real tape). It sags a little and moves in the wind. Walking 80 m away it stops drawing.
+- [ ] Take down tape near me (or the radial): gone for everyone. A PC can't take down another officer's tape; a sergeant can.
+- [ ] Pick everything up, signing off, or after the scene lifetime: your tape goes.
+
+## Quick keys, handcuffs item, paper notices
+- [ ] On duty, next to someone: Up cuffs (rear), Left escorts, Left again lets go, Down uncuffs. Nobody near: "Nobody close enough". Off duty, in a vehicle, or with a panel open: nothing.
+- [ ] Use the handcuffs item: cuffs appear in your right hand with a hint. E cuffs the person in front and the cuffs go away. Nobody near: the cuffs stay out. Backspace or using it again: put away. You can't punch while holding them.
+- [ ] Issue a fixed penalty: the driver sees the notice and gets a "Police notice" item. Hours later, using it shows the notice again (the tooltip shows the title, ref and date).
+- [ ] Seize a vehicle: the driver gets a police notice they can read again.
+- [ ] With vinewood-mdt 2.19.2: grant bail, and the person gets a bail notice; using it reopens the bail notice. Stop and search: using the record reopens it.
+
 ## Custody CCTV and buzzers
 - [ ] Editor, Custody: Place cameras in the world. The camera flies (WASD, Space/Ctrl, mouse, scroll). Inside a cell the help says "saves as: Cell 1". E saves, F toggles the CCTV look, Z undoes, Enter saves.
 - [ ] Custody computer: Watch CCTV. Fades into the camera with an overlay (camera, cell occupant, time, REC). WASD pans within limits, scroll zooms, arrows change camera, Backspace goes back to the computer.
