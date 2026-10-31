@@ -17,4 +17,5 @@ Config.Debug = false
 
 Config.Weapons = {
     { item = 'WEAPON_CARBINERIFLE_MK2', model = 'w_ar_carbineriflemk2' },
+    { item = 'WEAPON_SIGMCX', model = 'w_ar_sigmcx' },
 }
