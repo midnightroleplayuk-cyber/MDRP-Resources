@@ -1133,6 +1133,12 @@ function renderScene(body, task) {
     body.append(grid);
   }
 
+  body.append(h('h3', {}, 'Police tape'),
+    h('p', { class: 'note', style: 'margin:0 0 6px' }, `${d.tapes || 0} of ${d.tapeMax || 0} lengths up. Aim at a post, cone or fence (or the ground for waist height), E ties it, Enter finishes.`),
+    h('div', { class: 'actions', style: 'margin-top:0' },
+      h('button', { class: 'primary', style: 'margin-top:0', type: 'button', onclick: () => { nui('sceneTape', {}); $('hub').hidden = true; state.task = null; } }, 'Put up tape'),
+      h('button', { class: 'secondary', style: 'margin-top:0', type: 'button', onclick: () => { nui('sceneTape', { remove: true }); $('hub').hidden = true; state.task = null; } }, 'Take down tape near me')));
+
   body.append(h('h3', {}, 'Traffic'));
   const seg = h('div', { class: 'seg', role: 'group', 'aria-label': 'Traffic' });
   for (const [m, label] of [['none', 'Normal'], ['slow', 'Slow past the scene'], ['closed', 'Road closed']]) {
@@ -1148,8 +1154,8 @@ function renderScene(body, task) {
   body.append(h('button', { class: 'secondary', type: 'button', onclick: async (e) => { await busy(e.currentTarget, async () => {
     const res = await request('scene:clear');
     if (res.error) return message(body, res.error);
-    d.count = 0; d.mode = 'none'; render();
-    message($('body'), 'All your scene kit has been picked up.', 'success');
+    d.count = 0; d.tapes = 0; d.mode = 'none'; render();
+    message($('body'), 'All your scene kit and tape has been taken down.', 'success');
   }); } }, 'Pick everything up'));
 }
 

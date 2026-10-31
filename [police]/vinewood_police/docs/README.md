@@ -20,7 +20,7 @@ Built to sit alongside the Vinewood suite (MDT, Dispatch, Licensing, Vehicle Ser
 - **Escort**, and putting prisoners in or taking them out of vehicles. Cuffs survive relogs and restarts.
 - **Arrest:** offences, grounds, PACE Code G necessity and the caution.
 - **Person search** (with consent, or detained), seizing into evidence, and **stop and search** records with GOWISELY.
-- **Scene kit:** Vinewood cones, road signs and forensic tent, plus lamps and barriers. Signs can slow or close NPC traffic around the scene.
+- **Scene kit:** Vinewood cones, road signs, forensic tent and **police tape** strung between posts, plus lamps and barriers. Signs can slow or close NPC traffic around the scene.
 
 **Roads policing**
 - **Vehicle stops** from your car (`/stopvehicle`), and a roadside panel showing keeper, licence, points, insurance, MOT, tax, markers and the driver's licence.
@@ -60,4 +60,5 @@ Everything in `config/`, `locales/`, `bridge/`, `integrations/` and `client/hook
 - `SETUP.md`: your first hour, from empty server to first arrest
 - `EXPORTS.md`: exports, events, statebags and commands
 - `TESTS.md`: the test checklist
+- `ITEMS.md`: ready-made items for ox_inventory, qb-inventory and ESX
 - `CHANGELOG.md`
