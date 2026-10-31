@@ -1,5 +1,11 @@
 return {
 	Weapons = {
+		['WEAPON_DIGISCANNER'] = {
+    label = 'Digi Scanner',
+    weight = 1000,
+    durability = 1.0,
+        },
+		
 		['WEAPON_BATTLERIFLE'] = {
 			label = 'Battle Rifle',
 			weight = 3300,

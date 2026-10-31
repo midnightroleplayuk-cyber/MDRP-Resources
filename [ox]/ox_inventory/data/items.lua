@@ -5463,4 +5463,54 @@ return {
     ['mustard']   = { label = 'Mustard',   weight = 100, stack = true, close = true },
     ['mayo']      = { label = 'Mayo',      weight = 100, stack = true, close = true },
 
+-- GG'S BOOSTING 
+
+["gg_boosting_tablet"] = {
+    label = "Boosting Tablet",
+    weight = 1000,
+    stack = false,
+    close = true,
+    description = "Boosting What In the Heck is That!!",
+},
+
+["gg_tracker_scrambler"] = {
+    label = "Tracker Scrambler",
+    weight = 1000,
+    stack = false,
+    close = true,
+    description = "Tracker scrambler",
+},
+
+["gg_rattle_can"] = {
+    label = "Rattle Can",
+    weight = 100,
+    stack = true,
+    close = true,
+    description = "Quickly give your boost a new coat.",
+},
+
+["gg_signal_jammer"] = {
+    label = "Signal Jammer",
+    weight = 1000,
+    stack = false,
+    close = true,
+    description = "Block tower signals by using this item near a tower.",
+},
+
+["gg_wire_cutters"] = {
+    label = "Wire Cutters",
+    weight = 1000,
+    stack = false,
+    close = true,
+    description = "Cut the wires within the vehicle to stop alarms.",
+},
+
+["gg_boost_plate"] = {
+    label = "Stolen Plate",
+    weight = 1000,
+    stack = false,
+    close = true,
+    description = "Plate from locals vehicle.",
+},
+
 }
