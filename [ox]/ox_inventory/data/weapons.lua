@@ -21,10 +21,12 @@ return {
 		['WEAPON_SIGMCX'] = {
    		label = 'Sig MCX Rifle',
     	weight = 0,
+		ammoname = 'ammo-rifle',
         },
 
 		['WEAPON_P226'] = {
    		label = 'P226 Pistol',
+		ammoname = 'ammo-9',
     	weight = 0,
         },
 		

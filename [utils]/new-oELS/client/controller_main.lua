@@ -315,7 +315,13 @@ AddEventHandler("oELS:VehicleRemoved", function(netId)
             SavedVehicles[netId].sirens.Handle = nil
         end
 
-        if SavedVehicles[netId].sirens.Handle then
+        if SavedVehicles[netId].dualSiren.Handle then
+            StopSound(SavedVehicles[netId].dualSiren.Handle)
+            ReleaseSoundId(SavedVehicles[netId].dualSiren.Handle)
+            SavedVehicles[netId].dualSiren.Handle = nil
+        end
+
+        if SavedVehicles[netId].bullhorn.Handle then
             StopSound(SavedVehicles[netId].bullhorn.Handle)
             ReleaseSoundId(SavedVehicles[netId].bullhorn.Handle)
             SavedVehicles[netId].bullhorn.Handle = nil
@@ -354,7 +360,13 @@ function MainController.VehicleLeftScope(netId)
             SavedVehicles[netId].sirens.Handle = nil
         end
 
-        if SavedVehicles[netId].sirens.Handle then
+        if SavedVehicles[netId].dualSiren.Handle then
+            StopSound(SavedVehicles[netId].dualSiren.Handle)
+            ReleaseSoundId(SavedVehicles[netId].dualSiren.Handle)
+            SavedVehicles[netId].dualSiren.Handle = nil
+        end
+
+        if SavedVehicles[netId].bullhorn.Handle then
             StopSound(SavedVehicles[netId].bullhorn.Handle)
             ReleaseSoundId(SavedVehicles[netId].bullhorn.Handle)
             SavedVehicles[netId].bullhorn.Handle = nil
