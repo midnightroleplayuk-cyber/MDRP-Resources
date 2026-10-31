@@ -1,0 +1,50 @@
+-- vinewood_police 008_npc_custody: NPC detainees and exhibits kept by vinewood_police.
+
+CREATE TABLE IF NOT EXISTS `vpo_npc_custody` (
+    `arrest_id`     INT UNSIGNED NOT NULL,
+    `ref`           VARCHAR(32)  DEFAULT NULL,
+    `person_id`     INT UNSIGNED DEFAULT NULL,
+    `name`          VARCHAR(100) DEFAULT NULL,
+    `model`         BIGINT       DEFAULT NULL,
+    `suite`         VARCHAR(32)  NOT NULL,
+    `status`        VARCHAR(16)  NOT NULL DEFAULT 'awaiting',
+    `offences`      TEXT         DEFAULT NULL,
+    `arrested_by`   VARCHAR(120) DEFAULT NULL,
+    `arrested_at`   INT UNSIGNED NOT NULL,
+    `stop_ref`      VARCHAR(32)  DEFAULT NULL,
+    `evidence`      TEXT         DEFAULT NULL,
+    `booked_at`     INT UNSIGNED DEFAULT NULL,
+    `booked_by`     VARCHAR(120) DEFAULT NULL,
+    `grounds`       VARCHAR(160) DEFAULT NULL,
+    `risk`          VARCHAR(16)  DEFAULT NULL,
+    `observation`   TINYINT UNSIGNED DEFAULT NULL,
+    `cell`          VARCHAR(16)  DEFAULT NULL,
+    `out_reason`    VARCHAR(48)  DEFAULT NULL,
+    `next_welfare`  INT UNSIGNED DEFAULT NULL,
+    `interview`     TEXT         DEFAULT NULL,
+    `outcome`       VARCHAR(64)  DEFAULT NULL,
+    `released_at`   INT UNSIGNED DEFAULT NULL,
+    PRIMARY KEY (`arrest_id`),
+    KEY `idx_vpo_npcc_open` (`status`, `suite`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS `vpo_exhibits` (
+    `id`                 INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    `ref`                VARCHAR(16)  NOT NULL,
+    `description`        VARCHAR(255) NOT NULL,
+    `type`               VARCHAR(48)  DEFAULT NULL,
+    `from_name`          VARCHAR(100) DEFAULT NULL,
+    `from_identifier`    VARCHAR(64)  DEFAULT NULL,
+    `linked_ref`         VARCHAR(32)  DEFAULT NULL,
+    `stash`              VARCHAR(64)  DEFAULT NULL,
+    `items`              TEXT         DEFAULT NULL,
+    `status`             VARCHAR(16)  NOT NULL DEFAULT 'seized',
+    `continuity`         TEXT         DEFAULT NULL,
+    `officer_identifier` VARCHAR(64)  NOT NULL,
+    `officer_name`       VARCHAR(120) DEFAULT NULL,
+    `created_at`         INT UNSIGNED NOT NULL,
+    PRIMARY KEY (`id`),
+    KEY `idx_vpo_exh_ref` (`ref`),
+    KEY `idx_vpo_exh_linked` (`linked_ref`),
+    KEY `idx_vpo_exh_officer` (`officer_identifier`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
