@@ -116,6 +116,53 @@ CreateThread(function()
     end
 end)
 
+-- GTA V vehicle paint names mapped to native colour IDs.
+-- Select entries by name; stored IDs remain compatible with existing SQL rows.
+local paintNames = {
+    [0]='Metallic Black',[1]='Metallic Graphite Black',[2]='Metallic Black Steel',[3]='Metallic Dark Silver',
+    [4]='Metallic Silver',[5]='Metallic Blue Silver',[6]='Metallic Steel Gray',[7]='Metallic Shadow Silver',
+    [8]='Metallic Stone Silver',[9]='Metallic Midnight Silver',[10]='Metallic Gun Metal',[11]='Metallic Anthracite Grey',
+    [12]='Matte Black',[13]='Matte Gray',[14]='Matte Light Grey',[15]='Util Black',[16]='Util Black Poly',
+    [17]='Util Dark Silver',[18]='Util Silver',[19]='Util Gun Metal',[20]='Util Shadow Silver',
+    [21]='Worn Black',[22]='Worn Graphite',[23]='Worn Silver Grey',[24]='Worn Silver',[25]='Worn Blue Silver',
+    [26]='Worn Shadow Silver',[27]='Metallic Red',[28]='Metallic Torino Red',[29]='Metallic Formula Red',
+    [30]='Metallic Blaze Red',[31]='Metallic Graceful Red',[32]='Metallic Garnet Red',[33]='Metallic Desert Red',
+    [34]='Metallic Cabernet Red',[35]='Metallic Candy Red',[36]='Metallic Sunrise Orange',[37]='Metallic Classic Gold',
+    [38]='Metallic Orange',[39]='Matte Red',[40]='Matte Dark Red',[41]='Matte Orange',[42]='Matte Yellow',
+    [43]='Util Red',[44]='Util Bright Red',[45]='Util Garnet Red',[46]='Worn Red',[47]='Worn Golden Red',
+    [48]='Worn Dark Red',[49]='Metallic Dark Green',[50]='Metallic Racing Green',[51]='Metallic Sea Green',
+    [52]='Metallic Olive Green',[53]='Metallic Green',[54]='Metallic Gasoline Blue Green',[55]='Matte Lime Green',
+    [56]='Util Dark Green',[57]='Util Green',[58]='Worn Dark Green',[59]='Worn Green',[60]='Worn Sea Wash',
+    [61]='Metallic Midnight Blue',[62]='Metallic Dark Blue',[63]='Metallic Saxony Blue',[64]='Metallic Blue',
+    [65]='Metallic Mariner Blue',[66]='Metallic Harbor Blue',[67]='Metallic Diamond Blue',[68]='Metallic Surf Blue',
+    [69]='Metallic Nautical Blue',[70]='Metallic Bright Blue',[71]='Metallic Purple Blue',[72]='Metallic Spinnaker Blue',
+    [73]='Metallic Ultra Blue',[74]='Metallic Bright Blue',[75]='Util Dark Blue',[76]='Util Midnight Blue',
+    [77]='Util Blue',[78]='Util Sea Foam Blue',[79]='Util Lightning Blue',[80]='Util Maui Blue Poly',
+    [81]='Util Bright Blue',[82]='Matte Dark Blue',[83]='Matte Blue',[84]='Matte Midnight Blue',
+    [85]='Worn Dark Blue',[86]='Worn Blue',[87]='Worn Light Blue',[88]='Metallic Taxi Yellow',
+    [89]='Metallic Race Yellow',[90]='Metallic Bronze',[91]='Metallic Yellow Bird',[92]='Metallic Lime',
+    [93]='Metallic Champagne',[94]='Metallic Pueblo Beige',[95]='Metallic Dark Ivory',[96]='Metallic Choco Brown',
+    [97]='Metallic Golden Brown',[98]='Metallic Light Brown',[99]='Metallic Straw Beige',[100]='Metallic Moss Brown',
+    [101]='Metallic Biston Brown',[102]='Metallic Beechwood',[103]='Metallic Dark Beechwood',[104]='Metallic Choco Orange',
+    [105]='Metallic Beach Sand',[106]='Metallic Sun Bleeched Sand',[107]='Metallic Cream',[108]='Util Brown',
+    [109]='Util Medium Brown',[110]='Util Light Brown',[111]='Metallic White',[112]='Metallic Frost White',
+    [113]='Worn Honey Beige',[114]='Worn Brown',[115]='Worn Dark Brown',[116]='Worn Straw Beige',
+    [117]='Brushed Steel',[118]='Brushed Black Steel',[119]='Brushed Aluminium',[120]='Chrome',
+    [121]='Worn Off White',[122]='Util Off White',[123]='Worn Orange',[124]='Worn Light Orange',
+    [125]='Metallic Securicor Green',[126]='Worn Taxi Yellow',[127]='Police Car Blue',[128]='Matte Green',
+    [129]='Matte Brown',[130]='Worn Orange',[131]='Matte White',[132]='Worn White',[133]='Worn Olive Army Green',
+    [134]='Pure White',[135]='Hot Pink',[136]='Salmon Pink',[137]='Metallic Vermillion Pink',
+    [138]='Orange',[139]='Green',[140]='Blue',[141]='Metallic Black Blue',[142]='Metallic Black Purple',
+    [143]='Metallic Black Red',[144]='Hunter Green',[145]='Metallic Purple',[146]='Metallic Dark Blue',
+    [147]='Modshop Black',[148]='Matte Purple',[149]='Matte Dark Purple',[150]='Metallic Lava Red',
+    [151]='Matte Forest Green',[152]='Matte Olive Drab',[153]='Matte Desert Brown',[154]='Matte Desert Tan',
+    [155]='Matte Foilage Green',[156]='Default Alloy',[157]='Epsilon Blue',[158]='Pure Gold',[159]='Brushed Gold'
+}
+local paintOptions = {}
+for id=0,160 do
+    paintOptions[#paintOptions+1] = {value=id, label=('%s (ID %d)'):format(paintNames[id] or 'Other / Unlabelled',id)}
+end
+
 local openMenu
 local function editor(existing)
     if editing then return end
@@ -134,8 +181,8 @@ local function editor(existing)
         {type='input',label='Display name',required=true,default=d.name,max=60},
         {type='input',label='Vehicle spawn name',required=true,default=d.model},
         {type='input',label='Licence plate (max 8)',required=true,default=d.plate,max=8},
-        {type='number',label='Primary GTA colour ID (0-160)',default=d.primary,min=0,max=160},
-        {type='number',label='Secondary GTA colour ID (0-160)',default=d.secondary,min=0,max=160},
+        {type='select',label='Primary paint colour',description='Choose a GTA paint name',options=paintOptions,default=tonumber(d.primary) or 0,required=true,searchable=true},
+        {type='select',label='Secondary paint colour',description='Choose a GTA paint name',options=paintOptions,default=tonumber(d.secondary) or 0,required=true,searchable=true},
         {type='checkbox',label='Rotate on turntable',checked=d.rotating},
         {type='number',label='Rotation speed (degrees/sec; negative reverses)',default=d.speed,min=Config.MinRotationSpeed,max=Config.MaxRotationSpeed}
     })
@@ -151,11 +198,28 @@ local function editor(existing)
     SetModelAsNoLongerNeeded(hash)
     local original=existing and spawned[tonumber(existing.id)]
     if original and DoesEntityExist(original) then SetEntityVisible(original,false,false) end
-    message('Arrow keys move | PgUp/PgDn height | Q/E heading | Shift faster | Enter save | Backspace cancel')
+    message('Live paint: Z/X cycle colour, C switches primary/secondary. Enter saves; Backspace cancels.')
+    -- Live paint preview while positioning: cycle GTA paint IDs on the preview entity.
+    -- The initial searchable dropdown still lets admins jump directly to a named paint.
+    local activePaint = 1 -- 1 = primary, 2 = secondary
+    local function updatePaint()
+        SetVehicleColours(veh, tonumber(d.primary) or 0, tonumber(d.secondary) or 0)
+    end
+    local function cyclePaint(direction)
+        local key = activePaint == 1 and 'primary' or 'secondary'
+        d[key] = ((tonumber(d[key]) or 0) + direction) % 160
+        updatePaint()
+    end
     local saved=false
     while true do
         Wait(0)
         DisableControlAction(0, 200, true)
+        DisableControlAction(0, 20, true) -- Z: previous paint
+        DisableControlAction(0, 73, true) -- X: next paint
+        DisableControlAction(0, 26, true) -- C: primary/secondary toggle
+        if IsDisabledControlJustPressed(0, 20) then cyclePaint(-1) end
+        if IsDisabledControlJustPressed(0, 73) then cyclePaint(1) end
+        if IsDisabledControlJustPressed(0, 26) then activePaint = 3 - activePaint end
         local step=Config.PreviewStep*(IsControlPressed(0,21) and 5 or 1)
         local heading=GetEntityHeading(veh)
         local rad=math.rad(heading)
@@ -172,7 +236,10 @@ local function editor(existing)
         SetEntityCoordsNoOffset(veh,d.x,d.y,d.z,false,false,false)
         SetEntityHeading(veh,d.heading)
         BeginTextCommandDisplayHelp('STRING')
-        AddTextComponentSubstringPlayerName(('~INPUT_CELLPHONE_UP~/Down/Left/Right Move | PgUp/PgDn Height | Q/E Rotate | Shift Fast | Enter Save | Backspace Cancel~n~Z: %.2f | Heading: %.1f'):format(d.z,d.heading))
+        local primaryName = paintNames[tonumber(d.primary) or 0] or 'Other'
+        local secondaryName = paintNames[tonumber(d.secondary) or 0] or 'Other'
+        local selected = activePaint == 1 and 'PRIMARY' or 'SECONDARY'
+        AddTextComponentSubstringPlayerName(('Arrows Move | PgUp/PgDn Height | Q/E Heading | Shift Fast | Enter Save | Backspace Cancel~n~Z/X Previous/Next Colour | C Switch Paint (%s)~n~Primary: %s (%d) | Secondary: %s (%d)~n~Height: %.2f | Heading: %.1f'):format(selected,primaryName,tonumber(d.primary) or 0,secondaryName,tonumber(d.secondary) or 0,d.z,d.heading))
         EndTextCommandDisplayHelp(0,false,false,-1)
         if IsControlJustPressed(0,191) or IsControlJustPressed(0,201) then saved=true break end
         if IsDisabledControlJustPressed(0,200) or IsControlJustPressed(0,177) then break end

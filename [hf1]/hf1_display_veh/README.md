@@ -4,7 +4,7 @@ Persistent, client-side decorative display vehicles for QBox / FiveM.
 ## Install
 1. Import `hf1_display_veh.sql` into your server database.
 2. Put the `hf1_display_veh` folder in `resources/[local]/`.
-3. Add your **real** FiveM `license:` (or other identifier) to `Config.AllowedIdentifiers` in `config.lua`. Remove the placeholder.
+3. The allowed FiveM identifiers are configured in `config.lua` (Kapper and Hardy). Update them if needed.
 4. Ensure `oxmysql`, `ox_lib`, `qbx_core` are running before this resource; add `ensure hf1_display_veh` to server.cfg.
 5. Use `/displayveh` in game. Create a display, fill out the details, position it, then press Enter to save.
 
@@ -23,3 +23,9 @@ Arrow keys: move relative to vehicle heading. Page Up/Down: change height. Q/E: 
 
 ## Performance / streaming
 Displays now spawn client-side only when within `Config.StreamDistance` (default 100 m), and despawn beyond `Config.DespawnDistance` (120 m). Checks run every `Config.DistanceCheckInterval` (1500 ms); rotating vehicles update every `Config.RotationTick` (33 ms) only while locally spawned. These values are configurable. Keep despawn distance larger than spawn distance to avoid edge flicker. All display records are still synced as small metadata entries, not networked vehicle entities. No SQL migration is needed when upgrading.
+
+## Named paint colours
+Primary and secondary vehicle paint now use searchable named GTA colour dropdowns instead of numeric inputs. The corresponding GTA IDs are shown in each option for reference. Existing database values and SQL schema are unchanged.
+
+## Live colour preview
+Choose starting primary and secondary colours by name in the searchable dropdowns. During vehicle placement, press **Z / X** to cycle through the GTA paint colours on the actual preview vehicle, and **C** to switch between primary and secondary paint. The current colour names and IDs appear on-screen and the vehicle updates immediately. Press **Enter** to save the currently previewed colours along with the placement, or **Backspace** to cancel without saving. This uses existing SQL fields; no migration is required.
