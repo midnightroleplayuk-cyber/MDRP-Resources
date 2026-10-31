@@ -2,7 +2,7 @@ cfg = cfg or {} cfg.settings = cfg.settings or {}
 
 
 cfg.settings.ui = {
-    primary_color = 'rgb(11, 250, 196)',
+    primary_color = 'rgb(134, 11, 250)',
     vehicle_image_directory = "vehicle_images/",
     image_format = ".png",  -- Item Images ( Vehicles are Stored as webp )
 }
