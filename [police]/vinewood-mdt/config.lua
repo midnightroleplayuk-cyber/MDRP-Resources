@@ -4,10 +4,10 @@ Config = {}
 Config.Framework = 'auto'
 
 -- Force name shown on the MDT header and bail notices.
-Config.ForceName = 'Los Santos Police'
-Config.ForceShort = 'LSP'
+Config.ForceName = 'Midnight Police Constabulary'
+Config.ForceShort = 'MPC'
 -- Crest shown top left. A URL or nui:// path to a PNG/SVG, or false for the built-in star.
-Config.ForceCrest = false
+Config.ForceCrest = 'https://cfx-nui-vinewood-mdt/web/pdlogo.png'
 
 -- Jobs that can use the MDT. job = minimum grade.
 Config.Jobs = {
@@ -19,7 +19,7 @@ Config.RequireOnDuty = true
 -- Ways to open it. Set any to false to disable.
 Config.Command = 'mdt'
 Config.Keybind = 'F6'
-Config.Item = false            -- e.g. 'mdt_tablet' (ox_inventory / framework usable item)
+Config.Item = 'mdt'            -- e.g. 'mdt_tablet' (ox_inventory / framework usable item)
 Config.UseTabletProp = true
 
 -- Minimum grade for destructive actions (deleting records, removing markers).
@@ -116,8 +116,8 @@ Config.Interviews = {
 Config.CPS = {
     enabled = true,
     -- Jobs that act as CPS lawyers. job = minimum grade. They only see the CPS section and interviews.
-    jobs = { cps = 0 },
-    RequireOnDuty = false,
+    jobs = { cps = 0, police = 4 },
+    RequireOnDuty = true,
     -- Police can only NFA a case themselves before it is sent to the CPS.
     -- true lets police NFA a case that is still awaiting a CPS decision (it is withdrawn).
     PoliceCanWithdraw = true,
@@ -138,10 +138,7 @@ Config.CPS = {
 -- Custody and bail
 ---------------------------------------------------------------------------
 Config.Stations = {
-    'Mission Row Police Station',
-    'Vespucci Police Station',
-    'Davis Police Station',
-    'Sandy Shores Police Station',
+    'Vinewood Police Station',
     'Paleto Bay Police Station',
 }
 
@@ -166,7 +163,7 @@ Config.BailConditions = {
 }
 
 -- Give the released person a bail notice item (ox_inventory). false to disable.
-Config.BailNoticeItem = false   -- e.g. 'bail_notice'
+Config.BailNoticeItem = 'bail_document'   -- e.g. 'bail_notice'
 
 -- Called after a bail record is saved. target is the server id (nil if offline).
 -- Use it to free someone from your custody script.
@@ -257,7 +254,7 @@ Config.Offences = {
 Config.Defence = {
     enabled = true,
     jobs = { lawyer = 0, solicitor = 0 },
-    RequireOnDuty = false,
+    RequireOnDuty = true,
     -- What the solicitor sees on top of the officer's written disclosure.
     ShowOffences = true,      -- offences the client was arrested for
     ShowNarrative = false,    -- the officer's full circumstances of arrest (usually withheld pre-interview)
@@ -302,7 +299,7 @@ Config.ANPR = {
     -- Who can run in-car ANPR. job = minimum grade.
     Jobs = { police = 0, sheriff = 0 },
     -- Vehicles fitted with ANPR (spawn names). Empty table = every emergency-class vehicle.
-    Vehicles = { 'police', 'police2', 'police3', 'police4', 'policeb', 'fbi2' },
+    Vehicles = { 'sr6pd', 'sr3pd', 'sen5tourpd', 'strcoupepd', 'rhinea19xpd', 'tailstmk', 'taurionpd', 'clubrpd' },
     -- Turn on automatically when an officer gets into a fitted vehicle. /anpr toggles it.
     AutoStart = true,
     Command = 'anpr',
@@ -312,7 +309,7 @@ Config.ANPR = {
     -- In-game setup: fit vehicles with ANPR and place roadside cameras.
     -- Allowed for police at ManageGrade or above, or anyone with the ace 'vinewood-mdt.anpradmin'.
     AdminCommand = 'anpradmin',
-    ManageGrade = 3,
+    ManageGrade = 10,
     CameraProp = 'prop_cctv_pole_02',   -- pole spawned at cameras placed in game. false = no prop -- drag the ANPR strip and alert to where you want them (saved per player)
 
     Range = 30.0,                 -- metres in front of and behind the car
@@ -422,8 +419,8 @@ Config.Custody = {
 Config.Mugshot = {
     enabled = true,
     MaxDistance = 4.0,
-    Encoding = 'jpg',
-    Quality = 0.75,              -- lower = smaller upload
+    Encoding = 'png',
+    Quality = 0.90,              -- lower = smaller upload
     Camera = { Distance = 0.75, HeightOffset = 0.02, Fov = 28.0 },
 }
 
@@ -443,7 +440,7 @@ Config.StopSearch = {
     Objects = { 'Controlled drugs', 'Offensive weapon', 'Bladed article', 'Firearm', 'Stolen property', 'Going equipped', 'Fireworks', 'Criminal damage articles', 'Other' },
     Outcomes = { 'No further action', 'Arrest', 'Community resolution', 'Penalty notice', 'Cannabis or khat warning', 'Summons / postal requisition', 'Caution' },
     -- Give the person searched a record of the search (ox_inventory item). false = notice only.
-    ReceiptItem = false,     -- e.g. 'stop_search_record'
+    ReceiptItem = 'stop_search_document',     -- e.g. 'stop_search_record'
 }
 
 ---------------------------------------------------------------------------
@@ -586,7 +583,7 @@ Config.Evidence = {
     enabled = true,              -- switches itself off if no supported inventory is running
     -- 'auto', 'ox_inventory', 'qb-inventory' (2.x), 'qs-inventory', 'ps-inventory', 'lj-inventory',
     -- 'qb-inventory-old' (before 2.0), or your own from server/inventory.lua
-    Inventory = 'auto',
+    Inventory = 'ox_inventory',
     Slots = 30,
     MaxWeight = 100000,
     SeizeDistance = 4.0,         -- officer must be this close to the suspect to seize
