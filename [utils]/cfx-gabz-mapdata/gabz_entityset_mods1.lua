@@ -1213,10 +1213,10 @@ local interiors = {
             --{ name = 'mba_rocketleague', enable = true },
 
             -- SOCCER/FOOTBALL - enable all of the entitySets below
-            --{ name = 'mba_tribune', enable = true },
-            --{ name = 'mba_chairs', enable = true },
-            --{ name = 'mba_field', enable = true },
-            --{ name = 'mba_soccer', enable = true },
+            { name = 'mba_tribune', enable = true },
+            { name = 'mba_chairs', enable = true },
+            { name = 'mba_field', enable = true },
+            { name = 'mba_soccer', enable = true },
 
             -- ICE HOCKEY - enable all of the entitySets below
             --{ name = 'mba_tribune', enable = true },
@@ -1225,8 +1225,8 @@ local interiors = {
             --{ name = 'mba_hockey', enable = true },
 
             -- GOKART TRACK 1 - enable all of the entitySets below
-            { name = 'mba_cover', enable = true },
-            { name = 'mba_gokart_01', enable = true },
+          --  { name = 'mba_cover', enable = true },
+           -- { name = 'mba_gokart_01', enable = true },
 
             -- GOKART TRACK 2 - enable all of the entitySets below
             --{ name = 'mba_cover', enable = true },
@@ -1260,9 +1260,9 @@ local interiors = {
             --"gabz_ipl_mba_sign_boxing",
             --"gabz_ipl_mba_sign_mma",
             --"gabz_ipl_mba_sign_curling",
-            --"gabz_ipl_mba_sign_soccer",
+            "gabz_ipl_mba_sign_soccer",
             --"gabz_ipl_mba_sign_icehockey",
-            "gabz_ipl_mba_sign_gokart",
+           -- "gabz_ipl_mba_sign_gokart",
             --"gabz_ipl_mba_sign_banditoleague",
             --"gabz_ipl_mba_sign_banditomania",
         }
