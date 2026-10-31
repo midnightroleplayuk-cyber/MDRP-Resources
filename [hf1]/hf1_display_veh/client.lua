@@ -252,7 +252,7 @@ local function editor(existing)
     SetModelAsNoLongerNeeded(hash)
     local original=existing and spawned[tonumber(existing.id)]
     if original and DoesEntityExist(original) then SetEntityVisible(original,false,false) end
-    message('Aim + LEFT CLICK to place | G ground snap | Z/X colours | C paint channel | Enter save')
+    -- A compact ox_lib panel replaces GTA's truncated help notification.
     -- Live paint preview while positioning: cycle GTA paint IDs on the preview entity.
     -- The initial searchable dropdown still lets admins jump directly to a named paint.
     local activePaint = 1 -- 1 = primary, 2 = secondary
@@ -264,6 +264,37 @@ local function editor(existing)
         d[key] = ((tonumber(d[key]) or 0) + direction) % 160
         updatePaint()
     end
+    local function showPlacementControls()
+        local primaryName = paintNames[tonumber(d.primary) or 0] or 'Other'
+        local secondaryName = paintNames[tonumber(d.secondary) or 0] or 'Other'
+        local selected = activePaint == 1 and 'Primary' or 'Secondary'
+        local panel = table.concat({
+            '**DISPLAY VEHICLE PLACEMENT**',
+            '**Left Click**  ·  Place at crosshair',
+            '**G**  ·  Snap to ground / platform',
+            '**Arrow Keys**  ·  Move vehicle',
+            '**Page Up / Page Down**  ·  Adjust height',
+            '**Q / E**  ·  Turn vehicle',
+            '**Shift**  ·  Move faster',
+            '',
+            '**LIVE PAINT PREVIEW**',
+            '**Z / X**  ·  Previous / next colour',
+            '**C**  ·  Switch primary / secondary',
+            ('**Editing:** %s'):format(selected),
+            ('**Primary:** %s (%d)'):format(primaryName, tonumber(d.primary) or 0),
+            ('**Secondary:** %s (%d)'):format(secondaryName, tonumber(d.secondary) or 0),
+            '',
+            '**Enter**  ·  Save display',
+            '**Backspace**  ·  Cancel',
+        }, '  \n')
+        lib.showTextUI(panel, {position = 'right-center', icon = 'car', style = {
+            borderRadius = 8,
+            backgroundColor = '#151a22',
+            color = '#f3f4f6',
+            maxWidth = '310px'
+        }})
+    end
+    showPlacementControls()
     local saved=false
     while true do
         Wait(0)
@@ -273,9 +304,9 @@ local function editor(existing)
         DisableControlAction(0, 20, true) -- Z: previous paint
         DisableControlAction(0, 73, true) -- X: next paint
         DisableControlAction(0, 26, true) -- C: primary/secondary toggle
-        if IsDisabledControlJustPressed(0, 20) then cyclePaint(-1) end
-        if IsDisabledControlJustPressed(0, 73) then cyclePaint(1) end
-        if IsDisabledControlJustPressed(0, 26) then activePaint = 3 - activePaint end
+        if IsDisabledControlJustPressed(0, 20) then cyclePaint(-1); showPlacementControls() end
+        if IsDisabledControlJustPressed(0, 73) then cyclePaint(1); showPlacementControls() end
+        if IsDisabledControlJustPressed(0, 26) then activePaint = 3 - activePaint; showPlacementControls() end
         if IsDisabledControlJustPressed(0, 24) then
             local hit = cameraTarget(Config.PlacementRayDistance or 150.0)
             if hit then
@@ -306,15 +337,10 @@ local function editor(existing)
         d.x=d.x+dx;d.y=d.y+dy
         SetEntityCoordsNoOffset(veh,d.x,d.y,d.z,false,false,false)
         SetEntityHeading(veh,d.heading)
-        BeginTextCommandDisplayHelp('STRING')
-        local primaryName = paintNames[tonumber(d.primary) or 0] or 'Other'
-        local secondaryName = paintNames[tonumber(d.secondary) or 0] or 'Other'
-        local selected = activePaint == 1 and 'PRIMARY' or 'SECONDARY'
-        AddTextComponentSubstringPlayerName(('Aim + LEFT CLICK Place | G Snap to Ground | Arrows Move | PgUp/PgDn Height~n~Q/E Heading | Shift Fast | Enter Save | Backspace Cancel~n~LIVE COLOURS: Z Previous | X Next | C Primary/Secondary (%s)~n~Primary: %s (%d) | Secondary: %s (%d) | Z: %.2f | Heading: %.1f'):format(selected,primaryName,tonumber(d.primary) or 0,secondaryName,tonumber(d.secondary) or 0,d.z,d.heading))
-        EndTextCommandDisplayHelp(0,false,false,-1)
         if IsControlJustPressed(0,191) or IsControlJustPressed(0,201) then saved=true break end
         if IsDisabledControlJustPressed(0,200) or IsControlJustPressed(0,177) then break end
     end
+    lib.hideTextUI()
     DeleteEntity(veh)
     if original and DoesEntityExist(original) then SetEntityVisible(original,true,false) end
     editing=false
