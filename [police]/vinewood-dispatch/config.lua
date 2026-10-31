@@ -203,7 +203,7 @@ Config.Detections = {
         ignoreSilenced = true,
         ignoredWeapons = {
             'WEAPON_STUNGUN', 'WEAPON_STUNGUN_MP', 'WEAPON_FLAREGUN', 'WEAPON_FIREEXTINGUISHER',
-            'WEAPON_PETROLCAN', 'WEAPON_SNOWBALL', 'WEAPON_BALL', 'WEAPON_FLARE',
+            'WEAPON_PETROLCAN', 'WEAPON_SNOWBALL', 'WEAPON_BALL', 'WEAPON_FLARE', 'WEAPON_P226', 'WEAPON_SIGMCX',
         },
         ignoreZones = {
             { coords = vec3(13.8, -1097.3, 29.8), radius = 25.0 },   -- Ammu-Nation range, Pillbox
