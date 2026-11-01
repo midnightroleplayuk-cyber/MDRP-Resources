@@ -80,6 +80,11 @@ Config.Ammo = {
     { item = 'ammo-shotgun', label = '12 Gauge Shells', amount = 24, desc = 'Shotgun shells.' },
 }
 
+Config.Items = {
+    { item = 'radio', label = 'Radio', amount = 1, desc = 'Police radio.' },
+    { item = 'bodycam', label = 'Bodycam', amount = 1, desc = 'BWV.' },
+}
+
 Config.AmmoCooldown = 30
 
 Config.AmmoPerShift = 3
