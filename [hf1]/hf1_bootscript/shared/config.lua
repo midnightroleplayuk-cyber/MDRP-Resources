@@ -33,7 +33,7 @@ Config.PoliceItems = {
 Config.Firearms = {
   { id = 'tasercart', label = 'Taser Cartridge', item = 'taser_cartridge', count = 20, minGrade = 2 },
   { id = '9mm', label = '9x19mm', item = 'ammo-9', count = 100, minGrade = 5 },
-  { id = '556', label = '5.56x45mm', item = 'rifle', count = 240, minGrade = 7 },
+  { id = '556', label = '5.56x45mm', item = 'ammo-rifle', count = 240, minGrade = 7 },
 
 }
 -- Appearance integration: 'illenium-appearance' or 'fivem-appearance'.
