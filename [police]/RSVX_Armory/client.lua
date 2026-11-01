@@ -5,6 +5,7 @@ local function weaponImages()
     local images = {}
     local names = {}
     for _, n in ipairs(lib.callback.await('armory:weaponNames', false) or {}) do names[#names + 1] = n end
+    for _, n in ipairs(lib.callback.await('armory:itemNames', false) or {}) do names[#names + 1] = n end
     for _, name in ipairs(names) do
         local ok, item = pcall(function() return exports.ox_inventory:Items(name) end)
         local file = ok and type(item) == 'table' and item.client and item.client.image
@@ -104,6 +105,10 @@ end)
 
 RegisterNUICallback('takeAmmo', function(d, cb)
     withHandover('Taking ammo...', function() return call('armory:takeAmmo', d.item) end, cb)
+end)
+
+RegisterNUICallback('takeItem', function(d, cb)
+    withHandover('Collecting equipment...', function() return call('armory:takeItem', d.item) end, cb)
 end)
 
 RegisterNUICallback('return', function(d, cb)

@@ -66,7 +66,7 @@ async function refresh() {
 function tabsFor() {
     if (state.mode === 'admin') return [['armories', 'Armories'], ['weapons', 'Weapons'], ['ammotypes', 'Ammo Types']];
     const t = [];
-    if (state.mode !== 'log') t.push(['checkout', 'Retrieve Weapon'], ['ammo', 'Ammo'], ['mine', 'My Weapons'], ['myhistory', 'My History']);
+    if (state.mode !== 'log') t.push(['checkout', 'Retrieve Weapon'], ['ammo', 'Ammo'], ['items', 'Equipment'], ['mine', 'My Weapons'], ['myhistory', 'My History']);
     if (state.command) t.push(['out', 'Signed Out'], ['history', 'History']);
     if (state.can.lookup) t.push(['lookup', 'Serial Lookup']);
     if (state.can.stock) t.push(['stock', 'Stock']);
@@ -77,6 +77,7 @@ function tabsFor() {
 const ICONS = {
     checkout: '<path d="M3 8h13l2-2h3v6h-3l-1 2h-5l-1 5H7l1-5H3z"/>',
     ammo: '<path d="M9 21V10c0-3 1.5-5 3-7 1.5 2 3 4 3 7v11z"/><path d="M9 15h6"/>',
+    items: '<path d="M4 7h16v13H4z"/><path d="M8 7V5a4 4 0 0 1 8 0v2m-8 5h8"/>',
     mine: '<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/>',
     myhistory: '<path d="M4 5h16v14H4z"/><path d="M8 10h8M8 14h5"/>',
     out: '<path d="M4 6h16M4 12h16M4 18h10"/>',
@@ -91,6 +92,7 @@ const ICONS = {
 const SECTIONS = {
     checkout: ['Retrieve Weapon', 'Choose a weapon, then sign for it with your full name.'],
     ammo: ['Ammo', 'Take ammunition. Free, with no signature and nothing logged.'],
+    items: ['Equipment', 'Collect configured police equipment for your shift.'],
     mine: ['My Weapons', 'Weapons currently signed out to you.'],
     myhistory: ['My History', 'Everything you have signed out and returned.'],
     out: ['Signed Out', 'Every weapon currently out of the armory.'],
@@ -122,9 +124,9 @@ function render() {
     $('sec-sub').textContent = SECTIONS[state.tab][1];
 
     view.replaceChildren();
-    view.classList.toggle('grid', state.tab === 'checkout' || state.tab === 'ammo');
+    view.classList.toggle('grid', state.tab === 'checkout' || state.tab === 'ammo' || state.tab === 'items');
     ({
-        checkout: renderCheckout, ammo: renderAmmo, mine: renderMine, myhistory: renderHistory, out: renderOut, history: renderHistory,
+        checkout: renderCheckout, ammo: renderAmmo, items: renderItems, mine: renderMine, myhistory: renderHistory, out: renderOut, history: renderHistory,
         lookup: renderLookup, stock: renderStock, rules: renderRules, armories: renderArmories, weapons: renderWeapons, ammotypes: renderAmmoTypes,
     })[state.tab]();
 }
@@ -220,6 +222,32 @@ function renderAmmo() {
         };
         showLeft();
         card.append(weaponImg(a.item), top, el('div', 'w-desc', a.desc), left, b);
+        view.append(card);
+    });
+}
+
+function renderItems() {
+    const list = state.data.items || [];
+    if (!list.length) return view.append(el('div', 'empty', 'This armory does not issue equipment items.'));
+    list.forEach((item) => {
+        const card = el('div', 'card');
+        const top = el('div', 'card-top');
+        top.append(el('div', 'w-name', item.label), el('span', 'pill', `x${item.amount}`));
+        const button = el('button', 'btn gold', 'Collect Equipment');
+        const left = el('div', 'w-desc dim');
+        const showLeft = () => {
+            left.textContent = item.left === undefined || item.left === null ? '' : `${item.left} draw${item.left === 1 ? '' : 's'} left this shift`;
+            button.disabled = item.left === 0;
+        };
+        button.onclick = async () => {
+            button.disabled = true;
+            const result = await post('takeItem', { item: item.item });
+            toast(result.msg, result.ok);
+            if (result.ok && result.left !== undefined) item.left = result.left;
+            showLeft();
+        };
+        card.append(weaponImg(item.item), top, el('div', 'w-desc', item.desc), left, button);
+        showLeft();
         view.append(card);
     });
 }
@@ -451,7 +479,7 @@ function newDraft() {
     return {
         id: null, label: '', mode: 'ped', coords: { x: '', y: '', z: '', w: '' }, radius: 1,
         model: 's_m_y_cop_01', scenario: 'WORLD_HUMAN_CLIPBOARD', blip: true,
-        allWeapons: true, weapons: [], allAmmo: true, ammo: [], jobs: [], outfit: null,
+        allWeapons: true, weapons: [], allAmmo: true, ammo: [], allItems: true, items: [], jobs: [], outfit: null,
     };
 }
 
@@ -461,7 +489,7 @@ function draftFrom(a) {
         coords: { x: a.coords.x, y: a.coords.y, z: a.coords.z, w: a.coords.w },
         model: a.model || '', scenario: a.scenario || '',
         allWeapons: !a.weapons, weapons: a.weapons || [], allAmmo: !a.ammo, ammo: a.ammo || [],
-        jobs: a.jobs || [], outfit: a.outfit || null,
+        allItems: !a.items, items: a.items || [], jobs: a.jobs || [], outfit: a.outfit || null,
     };
 }
 
@@ -530,6 +558,7 @@ function renderArmories() {
         c.append(tag(a.mode === 'target' ? 'Third-eye only' : 'Ped + third-eye', a.mode === 'target' ? 'kit' : 'ok'));
         c.append(tag(a.weapons ? `${a.weapons.length} weapon types` : 'All weapons'));
         c.append(tag(a.ammo ? `${a.ammo.length} ammo types` : 'All ammo'));
+        c.append(tag(a.items ? `${a.items.length} equipment items` : 'All equipment'));
         if (a.mode === 'ped' && a.outfit) c.append(tag('Custom clothing', 'warn'));
         body.append(c);
         body.append(el('div', 'w-desc dim', `${a.coords.x.toFixed(1)}, ${a.coords.y.toFixed(1)}, ${a.coords.z.toFixed(1)}`));
@@ -624,6 +653,7 @@ function renderArmoryForm() {
     form.append(formRow('Jobs allowed (none ticked = all police jobs)', chipPicker(d.jobs, a.jobs, 'name', 'label')));
     form.append(formRow('Weapons stored here', allOrPick(d, 'allWeapons', 'weapons', a.weapons, 'name', 'label', 'Issue every weapon')));
     form.append(formRow('Ammo stored here', allOrPick(d, 'allAmmo', 'ammo', a.ammo, 'item', 'label', 'Hand out every ammo type')));
+    form.append(formRow('Equipment items stored here', allOrPick(d, 'allItems', 'items', a.items || [], 'item', 'label', 'Issue every equipment item')));
 
     const acts = el('div', 'confirm-actions');
     const cancel = el('button', 'btn', 'Cancel');
@@ -636,7 +666,8 @@ function renderArmoryForm() {
             id: d.id, label: d.label, mode: d.mode, radius: n(d.radius), blip: d.blip,
             coords: draftCoords(d),
             model: d.model, scenario: d.scenario, outfit: d.mode === 'ped' ? d.outfit : null,
-            weapons: d.allWeapons ? null : d.weapons, ammo: d.allAmmo ? null : d.ammo, jobs: d.jobs,
+            weapons: d.allWeapons ? null : d.weapons, ammo: d.allAmmo ? null : d.ammo,
+            items: d.allItems ? state.admin.items.map((item) => item.item) : d.items, jobs: d.jobs,
         });
         save.disabled = false;
         toast(res.msg, res.ok);
