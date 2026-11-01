@@ -1,4 +1,4 @@
---[[return {
+-return {
     truckPrice = 250,
     locations = {
         main = {
