@@ -1,0 +1,31 @@
+import { GroupType } from "../types/types";
+
+export const ApiCrew: GroupType = {
+  identifier: "avilcrew",
+  owner: "abc123",
+  label: "Santos Vagos Crew",
+  password: undefined,
+  status: "Waiting",
+  members: [
+    { name: "Avilchiis", identifier: "abc123" },
+    { name: "Ghost", identifier: "gho555" },
+    { name: "Viper", identifier: "vip321" },
+    { name: "Rogue", identifier: "rog987" },
+    { name: "Blaze", identifier: "blz444" },
+    { name: "Shadow", identifier: "shd789" },
+    { name: "Jinx", identifier: "jnx111" },
+    { name: "Reaper", identifier: "rpr666" },
+    { name: "Diesel", identifier: "dsl888" },
+    { name: "Cipher", identifier: "cph234" },
+    { name: "Havoc", identifier: "hvc777" },
+    { name: "Talon", identifier: "tln345" },
+    { name: "Spike", identifier: "spk654" },
+    { name: "Wraith", identifier: "wth999" },
+    { name: "Nomad", identifier: "nmd123" },
+    { name: "Khaos", identifier: "khs456" },
+    { name: "Fury", identifier: "fry876" },
+    { name: "Omen", identifier: "omn567" },
+    { name: "Vandal", identifier: "vnd101" },
+  ],
+  maxMembers: 4,
+};
