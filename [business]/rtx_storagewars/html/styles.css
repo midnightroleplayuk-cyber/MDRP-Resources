@@ -1,0 +1,901 @@
+:root {
+  --color: #ff66ff;
+}
+
+@import url('https://kit-pro.fontawesome.com/releases/v5.14.0/css/pro.min.css');
+
+@font-face {
+  font-family: BebasNeueBold;
+  src: url(BebasNeueBold.ttf);
+}
+
+*{
+	user-select: none; /* supported by Chrome and Opera */
+   -webkit-user-select: none; /* Safari */
+   -khtml-user-select: none; /* Konqueror HTML */
+   -moz-user-select: none; /* Firefox */
+   -ms-user-select: none; /* Internet Explorer/Edge */
+}
+
+html {
+  overflow: hidden;
+  font-family: 'Open Sans', sans-serif;
+}
+
+body{
+	display: none;
+	color: #a8a8aa;
+}
+
+.infonotify-container {
+	width: 17%;
+	background-color: rgba(0, 0, 0, 0.70);
+	border-bottom: 3px solid var(--color);	
+	margin: 0;
+	position: absolute;
+	top: 50%;
+	left: 10%;
+	margin-right: -50%;
+	transform: translate(-50%, -50%);
+	overflow: hidden;
+	z-index: 9999999;
+	border-radius: 10px;
+	display: none;
+}
+
+.infonotifytext {
+	padding-top: 10px;
+	padding-bottom: 10px;
+	padding-left: 2px;
+	padding-right: 2px;	
+	vertical-align: middle;
+	text-align: center;
+	font-size: 25px;
+	font-family: BebasNeueBold;
+	color: #ffffff;
+}
+
+#infobindcolor {
+	color: var(--color);
+}
+
+.storagewarsbuy-container {
+	width: 30%;
+	height: 50%;
+	background-color: rgba(0, 0, 0, 0.70);
+	border-bottom: 3px solid var(--color);	
+	border-radius: 10px;	
+	margin: 0;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	margin-right: -50%;
+	transform: translate(-50%, -50%);
+	overflow: hidden;
+	z-index: 9999999;
+	display: none;
+}
+
+.closestoragewarsbuy {
+	position: absolute;
+	margin: 0;
+	top: 5%;
+	left: 95%;
+	margin-right: -50%;
+	transform: translate(-50%, -50%);
+	overflow: hidden;
+	z-index: 9999999;
+}
+
+.logostoragewarsbuy img {
+	position: absolute;
+	max-width:100%;
+	max-height:100%;
+	top: 20%;
+	left: 50%;
+	margin-right: -50%;
+	transform: translate(-50%, -50%);
+	overflow: hidden;
+	z-index: 9999999;
+}
+
+.storagewarsbuystarttext {
+	position: absolute;
+	margin: 0;
+	text-decoration: none;
+	text-align: center;
+	top: 40%;
+	left: 50%;
+	margin-right: -50%;
+	transform: translate(-50%, -50%);	
+	font-size: 25px;
+	color: #ffffff;
+	text-align:center;
+	font-family: BebasNeueBold;
+}
+
+#storagewarsbuystarttextdata {
+	font-size: 25px;
+	color: var(--color);
+	text-align:center;
+	font-family: BebasNeueBold;
+}
+
+.storagewarsbuyregistredtext {
+	position: absolute;
+	margin: 0;
+	text-decoration: none;
+	text-align: center;
+	top: 50%;
+	left: 50%;
+	margin-right: -50%;
+	transform: translate(-50%, -50%);	
+	font-size: 25px;
+	color: #ffffff;
+	text-align:center;
+	font-family: BebasNeueBold;
+}
+
+#storagewarsbuyregistredtextdata {
+	font-size: 25px;
+	color: #ff66ff;
+	text-align:center;
+	font-family: BebasNeueBold;
+}
+
+.storagewarsbuystorageidtext {
+	position: absolute;
+	margin: 0;
+	text-decoration: none;
+	text-align: center;
+	top: 60%;
+	left: 50%;
+	margin-right: -50%;
+	transform: translate(-50%, -50%);	
+	font-size: 25px;
+	color: #ffffff;
+	text-align:center;
+	font-family: BebasNeueBold;
+}
+
+#storagewarsbuystorageidtextdata {
+	font-size: 25px;
+	color: #ff66ff;
+	text-align:center;
+	font-family: BebasNeueBold;
+}
+
+.storagewarsbuypricetext {
+	position: absolute;
+	margin: 0;
+	text-decoration: none;
+	text-align: center;
+	top: 70%;
+	left: 50%;
+	margin-right: -50%;
+	transform: translate(-50%, -50%);	
+	font-size: 25px;
+	color: #ffffff;
+	text-align:center;
+	font-family: BebasNeueBold;
+}
+
+#storagewarsbuypricetextdata {
+	font-size: 25px;
+	color: #ff66ff;
+	text-align:center;
+	font-family: BebasNeueBold;
+}
+
+.storagewarsbuybutton {
+	position: absolute;
+	margin: 0;
+	background-color: rgba(0, 0, 0, 1);
+	border-bottom: 5px solid #ff66ff;
+	color: #ffffff;
+	font-size: 40px;
+	padding-top: 12px;
+	padding-bottom: 12px;
+	padding-left: 5px;
+	padding-right: 5px;
+	text-decoration: none;
+	text-align: center;
+	top: 85%;
+	left: 50%;
+	margin-right: -50%;
+	transform: translate(-50%, -50%);
+	overflow: hidden;
+	z-index: 99999999;
+	width: 40%;
+	border-radius: 10px;
+	font-family: BebasNeueBold;
+}
+
+.storagewarsbuybutton:hover {
+	background: #ff66ff;
+	text-decoration: none;	
+}
+
+.storagewars-container {
+	width: 100%;
+	height: 100%;
+	background-color: rgba(0, 0, 0, 0.0);
+	margin: 0;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	margin-right: -50%;
+	transform: translate(-50%, -50%);
+	overflow: hidden;
+	z-index: 9999999;
+	display: block;
+}
+
+.storagewarskeys {
+	position: absolute;
+	margin: 0;
+	text-decoration: none;
+	text-align: center;
+	top: 90%;
+	left: 50%;
+	margin-right: -50%;
+	transform: translate(-50%, -50%);	
+	font-size: 20px;
+	color: #ffffff;
+	text-align:center;
+	font-family: BebasNeueBold;
+	padding-left: 2.5%;
+	padding-right: 2.5%;
+	padding-top: 0.5%;
+	padding-bottom: 0.5%;
+	background-color: rgba(0, 0, 0, 0.70);
+	border-left: 3px solid var(--color);		
+	border-right: 3px solid var(--color);	
+	border-radius: 10px;
+	display: none;
+}
+
+#storagewarskeysdata1 {
+	font-size: 20px;
+	color: var(--color);
+	text-align:center;
+	font-family: BebasNeueBold;
+}
+
+#storagewarskeysdata2 {
+	font-size: 20px;
+	color: var(--color);
+	text-align:center;
+	font-family: BebasNeueBold;
+}
+
+.storagewarskeysinfo {
+	position: absolute;
+	margin: 0;
+	text-decoration: none;
+	text-align: center;
+	top: 50%;
+	left: 88%;
+	margin-right: -50%;
+	transform: translate(-50%, -50%);	
+	font-size: 20px;
+	color: #ffffff;
+	text-align:center;
+	font-family: BebasNeueBold;
+	padding-left: 2.5%;
+	padding-right: 2.5%;
+	padding-top: 0.5%;
+	padding-bottom: 0.5%;
+	background-color: rgba(0, 0, 0, 0.70);
+	border-left: 3px solid var(--color);		
+	border-right: 3px solid var(--color);	
+	border-radius: 10px;
+	display: none;
+}
+
+#storagewarskeysinfowinnerdata {
+	font-size: 20px;
+	color: var(--color);
+	text-align:center;
+	font-family: BebasNeueBold;
+}
+
+#storagewarskeysinfobiddata {
+	font-size: 20px;
+	color: var(--color);
+	text-align:center;
+	font-family: BebasNeueBold;
+}
+
+#storagewarsinprogressenddata {
+	font-size: 20px;
+	color: var(--color);
+	text-align:center;
+	font-family: BebasNeueBold;
+}
+
+
+#storagewarskeysinfomaintext {
+	font-size: 30px;
+	color: var(--color);
+	text-align:center;
+	font-family: BebasNeueBold;
+}
+
+#storagewarskeysinfolockeridtext {
+	font-size: 20px;
+	color: var(--color);
+	text-align:center;
+	font-family: BebasNeueBold;
+}
+
+.storagewarsnotify {
+	position: absolute;
+	margin: 0;
+	text-decoration: none;
+	text-align: center;
+	top: 50%;
+	left: 12%;
+	margin-right: -50%;
+	transform: translate(-50%, -50%);	
+	font-size: 25px;
+	color: #ffffff;
+	text-align:center;
+	font-family: BebasNeueBold;
+	padding-left: 2.5%;
+	padding-right: 2.5%;
+	padding-top: 0.5%;
+	padding-bottom: 0.5%;
+	background-color: rgba(0, 0, 0, 0.70);
+	border-left: 3px solid var(--color);		
+	border-right: 3px solid var(--color);	
+	border-radius: 10px;
+	display: none;
+}
+
+#storagewarsnotifydata1 {
+	font-size: 25px;
+	color: var(--color);
+	text-align:center;
+	font-family: BebasNeueBold;
+}
+
+#storagewarsnotifydata2 {
+	font-size: 25px;
+	color: var(--color);
+	text-align:center;
+	font-family: BebasNeueBold;
+}
+
+.storagewarsstartinfo {
+	position: absolute;
+	margin: 0;
+	text-decoration: none;
+	text-align: center;
+	top: 50%;
+	left: 88%;
+	margin-right: -50%;
+	transform: translate(-50%, -50%);	
+	font-size: 20px;
+	color: #ffffff;
+	text-align:center;
+	font-family: BebasNeueBold;
+	padding-left: 2.5%;
+	padding-right: 2.5%;
+	padding-top: 0.5%;
+	padding-bottom: 0.5%;
+	background-color: rgba(0, 0, 0, 0.70);
+	border-left: 3px solid var(--color);		
+	border-right: 3px solid var(--color);	
+	border-radius: 10px;
+	display: none;
+}
+
+#storagewarskeysstartinfomaintext {
+	font-size: 30px;
+	color: var(--color);
+	text-align:center;
+	font-family: BebasNeueBold;
+}
+
+#storagewarskeysstartinfolockeridtext {
+	font-size: 20px;
+	color: var(--color);
+	text-align:center;
+	font-family: BebasNeueBold;
+}
+
+#storagewarsstartprogressenddata {
+	font-size: 20px;
+	color: var(--color);
+	text-align:center;
+	font-family: BebasNeueBold;
+}
+
+.storagewarsstartbidinfo {
+	position: absolute;
+	margin: 0;
+	text-decoration: none;
+	text-align: center;
+	top: 50%;
+	left: 88%;
+	margin-right: -50%;
+	transform: translate(-50%, -50%);	
+	font-size: 20px;
+	color: #ffffff;
+	text-align:center;
+	font-family: BebasNeueBold;
+	padding-left: 2.5%;
+	padding-right: 2.5%;
+	padding-top: 0.5%;
+	padding-bottom: 0.5%;
+	background-color: rgba(0, 0, 0, 0.70);
+	border-left: 3px solid var(--color);		
+	border-right: 3px solid var(--color);	
+	border-radius: 10px;
+	display: none;
+}
+
+#storagewarsstartbidinfomaintext {
+	font-size: 30px;
+	color: var(--color);
+	text-align:center;
+	font-family: BebasNeueBold;
+}
+
+#storagewarsstartbidinfolockeridtext {
+	font-size: 20px;
+	color: var(--color);
+	text-align:center;
+	font-family: BebasNeueBold;
+}
+
+#storagewarsstartbidminimumdata {
+	font-size: 20px;
+	color: var(--color);
+	text-align:center;
+	font-family: BebasNeueBold;
+}
+
+#storagewarsstartbidinprogressenddata {
+	font-size: 20px;
+	color: var(--color);
+	text-align:center;
+	font-family: BebasNeueBold;
+}
+
+.storagewarssearch-container {
+	width: 100%;
+	height: 100%;
+	background-color: rgba(0, 0, 0, 0.0);
+	margin: 0;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	margin-right: -50%;
+	transform: translate(-50%, -50%);
+	overflow: hidden;
+	z-index: 9999999;
+	display: none;
+}
+
+.storagewarssearchinfo {
+	position: absolute;
+	margin: 0;
+	text-decoration: none;
+	text-align: center;
+	top: 50%;
+	left: 88%;
+	margin-right: -50%;
+	transform: translate(-50%, -50%);	
+	font-size: 20px;
+	color: #ffffff;
+	text-align:center;
+	font-family: BebasNeueBold;
+	padding-left: 2.5%;
+	padding-right: 2.5%;
+	padding-top: 0.5%;
+	padding-bottom: 0.5%;
+	background-color: rgba(0, 0, 0, 0.70);
+	border-left: 3px solid var(--color);		
+	border-right: 3px solid var(--color);	
+	border-radius: 10px;
+	display: block;
+}
+
+#storagewarssearchinfomaintext {
+	font-size: 30px;
+	color: var(--color);
+	text-align:center;
+	font-family: BebasNeueBold;
+}
+
+#storagewarssearchinfoidtext {
+	font-size: 20px;
+	color: var(--color);
+	text-align:center;
+	font-family: BebasNeueBold;
+}
+
+#storagewarssearchinfoitemstext {
+	font-size: 20px;
+	color: var(--color);
+	text-align:center;
+	font-family: BebasNeueBold;
+}
+
+#storagewarssearchprogressdatatext {
+	font-size: 20px;
+	color: var(--color);
+	text-align:center;
+	font-family: BebasNeueBold;
+}
+
+.storagewarsbid-container {
+	width: 25%;
+	height: 40%;
+	background-color: rgba(0, 0, 0, 0.70);
+	border-bottom: 3px solid var(--color);	
+	border-radius: 10px;	
+	margin: 0;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	margin-right: -50%;
+	transform: translate(-50%, -50%);
+	overflow: hidden;
+	z-index: 9999999;
+	display: none;
+}
+
+.closestoragewarsbid {
+	position: absolute;
+	margin: 0;
+	top: 5%;
+	left: 95%;
+	margin-right: -50%;
+	transform: translate(-50%, -50%);
+	overflow: hidden;
+	z-index: 9999999;
+}
+
+.logostoragewarsbid img {
+	position: absolute;
+	max-width:100%;
+	max-height:100%;
+	top: 20%;
+	left: 50%;
+	margin-right: -50%;
+	transform: translate(-50%, -50%);
+	overflow: hidden;
+	z-index: 9999999;
+}
+
+.storagewarsbidtext {
+	position: absolute;
+	margin: 0;
+	text-decoration: none;
+	text-align: center;
+	top: 45%;
+	left: 50%;
+	margin-right: -50%;
+	transform: translate(-50%, -50%);	
+	font-size: 25px;
+	color: #ffffff;
+	text-align:center;
+	font-family: BebasNeueBold;
+}
+
+.storagewarsbidinput {
+	position: absolute;
+	margin: 0;
+	background-color: rgba(0, 0, 0, 1);
+	border-bottom: 3px solid var(--color);
+	color: #ffffff;
+	font-size: 25px;
+	padding-top: 10px;
+	padding-bottom: 10px;
+	padding-left: 5px;
+	padding-right: 5px;
+	text-decoration: none;
+	text-align: center;
+	top: 60%;
+	left: 50%;
+	margin-right: -50%;
+	transform: translate(-50%, -50%);
+	overflow: hidden;
+	z-index: 9999999;
+	width: 75%;
+	border-radius: 8px;
+}
+
+#storagewarsbidinputdata {
+    border: none;
+    outline: none;
+    font-size: 25px;
+	color: #ffffff;
+	border-bottom: 3px solid var(--color);
+}
+
+.storagewarsbidbutton {
+	position: absolute;
+	margin: 0;
+	background-color: rgba(0, 0, 0, 1);
+	border-bottom: 3px solid #ff66ff;
+	color: #ffffff;
+	font-size: 30px;
+	padding-top: 10px;
+	padding-bottom: 10px;
+	padding-left: 5px;
+	padding-right: 5px;
+	text-decoration: none;
+	text-align: center;
+	top: 85%;
+	left: 50%;
+	margin-right: -50%;
+	transform: translate(-50%, -50%);
+	overflow: hidden;
+	z-index: 99999999;
+	width: 40%;
+	border-radius: 10px;
+	font-family: BebasNeueBold;
+}
+
+.storagewarsbidbutton:hover {
+	background: #ff66ff;
+	text-decoration: none;	
+}
+
+.storagewarssign-container {
+	width: 25%;
+	height: 40%;
+	background-color: rgba(0, 0, 0, 0.70);
+	border-bottom: 3px solid var(--color);	
+	border-radius: 10px;	
+	margin: 0;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	margin-right: -50%;
+	transform: translate(-50%, -50%);
+	overflow: hidden;
+	z-index: 9999999;
+	display: none;
+}
+
+.closestoragewarssign {
+	position: absolute;
+	margin: 0;
+	top: 5%;
+	left: 95%;
+	margin-right: -50%;
+	transform: translate(-50%, -50%);
+	overflow: hidden;
+	z-index: 9999999;
+}
+
+.logostoragewarssign img {
+	position: absolute;
+	max-width:100%;
+	max-height:100%;
+	top: 20%;
+	left: 50%;
+	margin-right: -50%;
+	transform: translate(-50%, -50%);
+	overflow: hidden;
+	z-index: 9999999;
+}
+
+.storagewarssigntext {
+	position: absolute;
+	margin: 0;
+	text-decoration: none;
+	text-align: center;
+	top: 45%;
+	left: 50%;
+	margin-right: -50%;
+	transform: translate(-50%, -50%);	
+	font-size: 22px;
+	color: #ffffff;
+	text-align:center;
+	font-family: BebasNeueBold;
+}
+
+.storagewarssigninput {
+	position: absolute;
+	margin: 0;
+	background-color: rgba(0, 0, 0, 1);
+	border-bottom: 3px solid var(--color);
+	color: #ffffff;
+	font-size: 25px;
+	padding-top: 10px;
+	padding-bottom: 10px;
+	padding-left: 5px;
+	padding-right: 5px;
+	text-decoration: none;
+	text-align: center;
+	top: 60%;
+	left: 50%;
+	margin-right: -50%;
+	transform: translate(-50%, -50%);
+	overflow: hidden;
+	z-index: 9999999;
+	width: 75%;
+	border-radius: 8px;
+}
+
+#storagewarssigninputdata {
+    border: none;
+    outline: none;
+    font-size: 25px;
+	color: #ffffff;
+	border-bottom: 3px solid var(--color);
+}
+
+.storagewarssignbutton {
+	position: absolute;
+	margin: 0;
+	background-color: rgba(0, 0, 0, 1);
+	border-bottom: 3px solid #ff66ff;
+	color: #ffffff;
+	font-size: 30px;
+	padding-top: 10px;
+	padding-bottom: 10px;
+	padding-left: 5px;
+	padding-right: 5px;
+	text-decoration: none;
+	text-align: center;
+	top: 85%;
+	left: 50%;
+	margin-right: -50%;
+	transform: translate(-50%, -50%);
+	overflow: hidden;
+	z-index: 99999999;
+	width: 40%;
+	border-radius: 10px;
+	font-family: BebasNeueBold;
+}
+
+.storagewarssignbutton:hover {
+	background: #ff66ff;
+	text-decoration: none;	
+}
+
+.storagewarsended-container {
+	width: 100%;
+	height: 100%;
+	background-color: rgba(0, 0, 0, 0.0);
+	margin: 0;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	margin-right: -50%;
+	transform: translate(-50%, -50%);
+	overflow: hidden;
+	z-index: 9999999;
+	display: none;
+}
+
+.storagewarsendedinfo {
+	position: absolute;
+	margin: 0;
+	text-decoration: none;
+	text-align: center;
+	top: 50%;
+	left: 50%;
+	margin-right: -50%;
+	transform: translate(-50%, -50%);	
+	font-size: 20px;
+	color: #ffffff;
+	text-align:center;
+	font-family: BebasNeueBold;
+	padding-left: 2.5%;
+	padding-right: 2.5%;
+	padding-top: 0.5%;
+	padding-bottom: 0.5%;
+	background-color: rgba(0, 0, 0, 0.70);
+	border-left: 3px solid var(--color);		
+	border-right: 3px solid var(--color);	
+	border-radius: 10px;
+	display: block;
+}
+
+#storagewarsendedinfomaintext {
+	font-size: 30px;
+	color: var(--color);
+	text-align:center;
+	font-family: BebasNeueBold;
+}
+
+#storagewarsendedinfolockeridtext {
+	font-size: 20px;
+	color: var(--color);
+	text-align:center;
+	font-family: BebasNeueBold;
+}
+
+#storagewarsendedinfowinnernametext {
+	font-size: 20px;
+	color: var(--color);
+	text-align:center;
+	font-family: BebasNeueBold;
+}
+
+#storagewarsendedinfopricetext {
+	font-size: 20px;
+	color: var(--color);
+	text-align:center;
+	font-family: BebasNeueBold;
+}
+
+.storagewarsprogressbar-container {
+	width: 40%;
+	height: 15%;
+	background-color: rgba(0, 0, 0, 0.70);
+	border-bottom: 3px solid var(--color);	
+	margin: 0;
+	position: absolute;
+	top: 90%;
+	left: 50%;
+	margin-right: -50%;
+	transform: translate(-50%, -50%);
+	overflow: hidden;
+	z-index: 9999999;
+	border-radius: 10px;
+	display: none;
+}
+
+.storagewarsprogressbartext {
+	position: absolute;
+	margin: 0;
+	text-decoration: none;
+	text-align: center;
+	top: 30%;
+	left: 50%;
+	margin-right: -50%;
+	transform: translate(-50%, -50%);	
+	font-size: 40px;
+	color: #ffffff;
+	text-align:center;
+}
+
+.storagewarsprogressbarmaincontainer {
+	width: 90%;
+	height: 25%;
+	background-color: rgba(255, 255, 255, 0.70);
+	margin: 0;
+	position: absolute;
+	top: 70%;
+	left: 50%;
+	margin-right: -50%;
+	transform: translate(-50%, -50%);
+	overflow: hidden;
+	z-index: 9999999;
+	border-radius: 5px;
+}
+
+.storagewarsprogressbarmaincontainerdata {
+	width: 0%;
+	height: 100%;
+	background-color: var(--color);
+	z-index: 9999999;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+input[type=number] {
+    -moz-appearance: textfield;
+	color: #ffffff;
+}
+
+input::placeholder { 
+	color: #ffffff;
+}
+
+*{
+	font-family: BebasNeueBold;
+}
