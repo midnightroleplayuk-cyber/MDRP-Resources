@@ -1,0 +1,46 @@
+:root[data-mantine-color-scheme="dark"] {
+  --mantine-color-scheme: light;
+}
+
+.main-container {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 100%
+}
+
+.laptop-frame {
+  display: flex;
+  position: absolute;
+  border: solid 5px #242424;
+  border-radius: 14px;
+  width: 80% !important;
+  max-width: 2200px !important;
+  height: 90vh !important;
+  max-height: 1200px !important;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+.app-window {
+  background-color: rgba(39, 43, 54, 0.55);
+  backdrop-filter: blur(10px);
+  border-radius: 5px;
+  box-shadow: 2px 3px 5px rgba(0, 0, 0, 0.45);
+  overflow: hidden;
+  overflow-x: hidden;
+  z-index: 2;
+  width: calc(80%);
+  height: calc(80%);
+}
+
+.app-bar {
+  background-color: rgba(20, 20, 20, 0.95);
+  height: 25px;
+  align-items: center;
+  margin-left: auto;
+  margin-right: auto;
+}

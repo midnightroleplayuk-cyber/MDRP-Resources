@@ -1,0 +1,65 @@
+Config = Config or {}
+Config.Contacts = {
+
+    -- THIS ARE JUST EXAMPLES AND NOT REAL PEDS OR LOCATIONS
+    -- THIS ARE JUST EXAMPLES AND NOT REAL PEDS OR LOCATIONS
+    -- THIS ARE JUST EXAMPLES AND NOT REAL PEDS OR LOCATIONS
+
+--     ['garbage_job'] = { -- an unique identifier, this will be used for exports too
+--         avatar = "https://files.fivemerr.com/images/05edd4cb-19ad-4305-ab4b-73ad4ceba165.png", -- avatar URL
+--         name = "Frankie Delgado", -- display name
+--         description = "Contact me if you need money and you're interested in working in the recycling business.", -- short description
+--         coords = {x = 123.10, y = 10.2, z = 10.5}, -- Coords for GPS
+--         default = true -- makes this contact available for everyone by default
+--     },
+--     ['marco_cars'] = { -- an unique identifier, this will be used for exports too
+--         avatar = "https://files.fivemerr.com/images/82d7d48b-9f82-4454-8910-ea294ece103e.png", -- avatar URL
+--         name = "Marco Varela", -- display name
+--         description = "Used car dealer who also launders stolen vehicles.", -- short description
+--         coords = {x = 123.10, y = 10.2, z = 10.5}, -- Coords for GPS
+--         default = true -- makes this contact available for everyone by default
+--     },
+--     ['felix_launder'] = { -- an unique identifier, this will be used for exports too
+--         avatar = "https://files.fivemerr.com/images/75fdc46f-27d2-46ac-9ad4-a7f0a6948dd4.png", -- avatar URL
+--         name = "Felix Duran", -- display name
+--         description = "Accountant who launders money and fakes business books.", -- short description
+--         coords = {x = 123.10, y = 10.2, z = 10.5}, -- Coords for GPS
+--         default = true -- makes this contact available for everyone by default
+--     },
+--     ['vincent_mob'] = {
+--         name = "Vincent Moretti",
+--         avatar = "https://files.fivemerr.com/images/e447f5eb-993d-47d1-9c5e-efe2deb3f1a5.png",
+--         description = "Mafia operator offering collection and protection jobs.",
+--         coords = { x = -115.3, y = 983.2, z = 235.7 },
+--         default = true
+--   },
+--     ['luna_docs'] = {
+--         name = "Luna Castillo",
+--         avatar = "https://files.fivemerr.com/images/303c36b5-0730-4d9f-b1c8-e61725a233d3.png",
+--         description = "Underground doctor selling medical supplies off the record.",
+--         coords = { x = 328.5, y = -1440.1, z = 29.5 },
+--         default = true
+--     },
+--     ['niko_imports'] = {
+--         name = "Niko Petrov",
+--         avatar = "https://files.fivemerr.com/images/3251bac6-74af-4ed6-8cb1-2912ab58dfd5.png",
+--         description = "Importer of illegal goods from Eastern Europe.",
+--         coords = { x = 2550.3, y = 385.9, z = 108.6 },
+--         default = true
+--     },
+
+--     ['bishop_bounty'] = {
+--         name = "Bishop",
+--         avatar = "https://files.fivemerr.com/images/a5174e37-23cf-43c3-821d-069f0dc8acdd.png",
+--         description = "Bounty hunter with connections in both law enforcement and the underworld.",
+--         coords = { x = 1861.4, y = 3682.2, z = 34.3 },
+--         default = true
+--     },
+--     ['matt_tech'] = {
+--         name = "Matt Tech",
+--         avatar = "https://files.fivemerr.com/images/103f8feb-5b6e-4fbd-b275-7960310a3c80.png",
+--         description = "Tech expert specializing in vehicle mods and electronic tampering.",
+--         coords = { x = 738.1, y = -1086.4, z = 22.2 },
+--         default = true
+--     },
+}
