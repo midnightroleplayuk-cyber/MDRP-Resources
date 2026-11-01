@@ -90,6 +90,13 @@ If `vinewood-mdt` (2.7.1 or later) is running, the Interviewee field in the star
 
 Start `vinewood-interviews` before `vinewood-mdt` in `server.cfg`. Turn the link off with `Config.MDT.Enabled = false`.
 
+## Server events (1.8.1+)
+Other resources can listen for interviews starting and ending (vinewood_police logs them on the custody record):
+```lua
+AddEventHandler('vinewood-interviews:server:started', function(data) end) -- id, roomLabel, caseRef, interviewee, intervieweeCid, officers, solicitor, cctv, startedBy
+AddEventHandler('vinewood-interviews:server:ended', function(data) end)   -- id, roomLabel, durationMs, reason, caseRef, intervieweeCid
+```
+
 ## Officer seat CCTV (real footage)
 
 In **Seats**, open a seat and turn on **Officer seat** (one per room). When an interview is recording **Audio and CCTV** and a police officer sits in that seat, their screen switches to the ceiling camera and it is recorded as real footage through screencapture. Their character stays in the chair, so voice works as normal. X stands them up and returns their view; the footage stops and restarts automatically if another officer sits down. If the officer is already seated when the recording starts, footage starts straight away.

@@ -7,7 +7,7 @@
 Config.Callouts = {
     -- Default only: admins can switch callouts on and off in game with `vpo callouts on|off`, and that
     -- choice is kept (it survives restarts) until changed again.
-    Enabled = true,
+    Enabled = false,
     MinOfficers = 1,            -- signed-on officers needed before any callouts are made
     PerOfficer = 0.75,          -- open calls allowed per signed-on officer (rounded up)...
     MaxActive = 6,              -- ...but never more than this
@@ -16,7 +16,7 @@ Config.Callouts = {
     Unattended = 20,            -- minutes before an unattended call closes as "No police attendance"
     Abandoned = 10,             -- minutes with no officer within 300 m before an active scene is cleared
     MinSpacing = 150.0,         -- open calls are at least this far apart
-    CreateMdtIncident = true,   -- closing a call creates an MDT incident (vinewood-mdt 2.18+)
+    CreateMdtIncident = false,   -- closing a call creates an MDT incident (vinewood-mdt 2.18+)
     Command = 'calls',          -- the built-in call list (when vinewood-dispatch isn't running)
 
     -- Scenario weights (0 = off) and the fewest officers on duty each needs

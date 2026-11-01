@@ -42,6 +42,8 @@ Config.Armories = {
         blip = true,
         weapons = { 'WEAPON_PISTOL', 'WEAPON_COMBATPISTOL', 'WEAPON_STUNGUN', 'WEAPON_NIGHTSTICK' },
         ammo = { 'ammo-9' },
+        -- Item names must exist in the equipment catalog. Use {} to issue none.
+        items = { 'radio', 'bodycam' },
 
     },
     {
@@ -52,6 +54,7 @@ Config.Armories = {
         blip = true,
         weapons = { 'WEAPON_CARBINERIFLE', 'WEAPON_PUMPSHOTGUN' },
         ammo = { 'ammo-rifle', 'ammo-shotgun' },
+        items = {},
     },
 }
 
@@ -80,6 +83,17 @@ Config.Ammo = {
     { item = 'ammo-shotgun', label = '12 Gauge Shells', amount = 24, desc = 'Shotgun shells.' },
 }
 
-Config.AmmoCooldown = 30
+-- These ox_inventory equipment entries seed the admin-managed catalog on first startup.
+-- Items can also be added and managed in the armoryadmin Equipment Items tab.
+Config.Items = {
+    { item = 'radio', label = 'Radio', amount = 1, desc = 'Police radio.' },
+    { item = 'bodycam', label = 'Bodycam', amount = 1, desc = 'BWV.' },
+}
 
-Config.AmmoPerShift = 3
+-- Maximum number of draw actions per item while on duty. Set to 0 for no per-shift cap.
+Config.ItemsPerShift = 1
+Config.ItemCooldown = 5
+
+Config.AmmoCooldown = 0
+
+Config.AmmoPerShift = 5

@@ -14,7 +14,7 @@ Config.StorageWarsInteriorCoords = {coords = vector3(1212.25900000, -3155.321000
 
 Config.QBCoreFrameworkResourceName = "qb-core" -- qb-core resource name, change this if you have different name of main resource of qbcore
 
-Config.InterfaceColor = "#7c22b8" -- change interface color, color must be in hex
+Config.InterfaceColor = "#9f4ed4" -- change interface color, color must be in hex
 
 Config.Language = "English" -- text language from code (English)
 
@@ -28,7 +28,7 @@ Config.TargetIcons = {registericon = "fa-solid fa-bars-progress", searchicon = "
 
 Config.StorageWarsInteractionSystem = 1 -- 1 == Our custom interact system, 2 == 3D Text Interact, 3 == Gta V Online Interaction Style
 
-Config.StorageWarsAuctionRegisterLocation = {coords = vector3(1214.54, -3180.6, 9.58), distance = 2.5} -- location for register in the auction
+Config.StorageWarsAuctionRegisterLocation = {coords = vector3(1215.63, -3200.93, 6.44), distance = 2.5} -- location for register in the auction
 
 Config.StorageWarsAuctionRegisterKey = "E" -- storage wars key for register
 
@@ -583,7 +583,7 @@ end
 
 
 function Notify(text)
-    lib.notify({
+    exports.ox_lib:notify({
         title = 'Storage Wars',
         description = text,
         type = 'inform',
@@ -591,3 +591,4 @@ function Notify(text)
         position = 'top-right'
     })
 end
+

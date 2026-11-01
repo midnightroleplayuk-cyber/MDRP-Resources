@@ -64,9 +64,9 @@ async function refresh() {
 }
 
 function tabsFor() {
-    if (state.mode === 'admin') return [['armories', 'Armories'], ['weapons', 'Weapons'], ['ammotypes', 'Ammo Types']];
+    if (state.mode === 'admin') return [['armories', 'Armories'], ['weapons', 'Weapons'], ['ammotypes', 'Ammo Types'], ['adminitems', 'Equipment Items']];
     const t = [];
-    if (state.mode !== 'log') t.push(['checkout', 'Retrieve Weapon'], ['ammo', 'Ammo'], ['mine', 'My Weapons'], ['myhistory', 'My History']);
+    if (state.mode !== 'log') t.push(['checkout', 'Retrieve Weapon'], ['ammo', 'Ammo'], ['items', 'Equipment'], ['mine', 'My Weapons'], ['myhistory', 'My History']);
     if (state.command) t.push(['out', 'Signed Out'], ['history', 'History']);
     if (state.can.lookup) t.push(['lookup', 'Serial Lookup']);
     if (state.can.stock) t.push(['stock', 'Stock']);
@@ -77,6 +77,7 @@ function tabsFor() {
 const ICONS = {
     checkout: '<path d="M3 8h13l2-2h3v6h-3l-1 2h-5l-1 5H7l1-5H3z"/>',
     ammo: '<path d="M9 21V10c0-3 1.5-5 3-7 1.5 2 3 4 3 7v11z"/><path d="M9 15h6"/>',
+    items: '<path d="M4 7h16v13H4z"/><path d="M8 7V5a4 4 0 0 1 8 0v2m-8 5h8"/>',
     mine: '<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/>',
     myhistory: '<path d="M4 5h16v14H4z"/><path d="M8 10h8M8 14h5"/>',
     out: '<path d="M4 6h16M4 12h16M4 18h10"/>',
@@ -84,6 +85,7 @@ const ICONS = {
     lookup: '<circle cx="11" cy="11" r="6"/><path d="M16 16l5 5"/>',
     stock: '<path d="M3 8l9-5 9 5v9l-9 5-9-5z"/><path d="M3 8l9 5 9-5M12 13v9"/>',
     ammotypes: '<path d="M9 21V10c0-3 1.5-5 3-7 1.5 2 3 4 3 7v11z"/><path d="M9 15h6"/>',
+    adminitems: '<path d="M4 7h16v13H4z"/><path d="M8 7V5a4 4 0 0 1 8 0v2m-8 5h8"/>',
     weapons: '<path d="M3 8h13l2-2h3v6h-3l-1 2h-5l-1 5H7l1-5H3z"/>',
     armories: '<path d="M3 21V9l9-6 9 6v12z"/><path d="M9 21v-7h6v7"/>',
     rules: '<path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M9 12l2 2 4-4"/>',
@@ -91,6 +93,7 @@ const ICONS = {
 const SECTIONS = {
     checkout: ['Retrieve Weapon', 'Choose a weapon, then sign for it with your full name.'],
     ammo: ['Ammo', 'Take ammunition. Free, with no signature and nothing logged.'],
+    items: ['Equipment', 'Collect configured police equipment for your shift.'],
     mine: ['My Weapons', 'Weapons currently signed out to you.'],
     myhistory: ['My History', 'Everything you have signed out and returned.'],
     out: ['Signed Out', 'Every weapon currently out of the armory.'],
@@ -99,6 +102,7 @@ const SECTIONS = {
     stock: ['Stock', 'Add weapons, send them for maintenance, retire them or restore lost ones.'],
     rules: ['Rank Access', 'Control which ranks can sign out each weapon.'],
     ammotypes: ['Ammo Types', 'Add, edit or remove the ammunition armories can hand out. Free and untracked.'],
+    adminitems: ['Equipment Items', 'Add, edit or remove equipment items that armories can issue.'],
     weapons: ['Weapons', 'Add, edit or remove the weapon types that can be issued, with serial prefix, stock and approval rules.'],
     armories: ['Armories', 'Add armories, choose ped or third-eye only, set clothing, position and what each one stores.'],
 };
@@ -122,10 +126,11 @@ function render() {
     $('sec-sub').textContent = SECTIONS[state.tab][1];
 
     view.replaceChildren();
-    view.classList.toggle('grid', state.tab === 'checkout' || state.tab === 'ammo');
+    view.classList.toggle('grid', state.tab === 'checkout' || state.tab === 'ammo' || state.tab === 'items');
     ({
-        checkout: renderCheckout, ammo: renderAmmo, mine: renderMine, myhistory: renderHistory, out: renderOut, history: renderHistory,
+        checkout: renderCheckout, ammo: renderAmmo, items: renderItems, mine: renderMine, myhistory: renderHistory, out: renderOut, history: renderHistory,
         lookup: renderLookup, stock: renderStock, rules: renderRules, armories: renderArmories, weapons: renderWeapons, ammotypes: renderAmmoTypes,
+        adminitems: renderAdminItems,
     })[state.tab]();
 }
 
@@ -220,6 +225,32 @@ function renderAmmo() {
         };
         showLeft();
         card.append(weaponImg(a.item), top, el('div', 'w-desc', a.desc), left, b);
+        view.append(card);
+    });
+}
+
+function renderItems() {
+    const list = state.data.items || [];
+    if (!list.length) return view.append(el('div', 'empty', 'This armory does not issue equipment items.'));
+    list.forEach((item) => {
+        const card = el('div', 'card');
+        const top = el('div', 'card-top');
+        top.append(el('div', 'w-name', item.label), el('span', 'pill', `x${item.amount}`));
+        const button = el('button', 'btn gold', 'Collect Equipment');
+        const left = el('div', 'w-desc dim');
+        const showLeft = () => {
+            left.textContent = item.left === undefined || item.left === null ? '' : `${item.left} draw${item.left === 1 ? '' : 's'} left this shift`;
+            button.disabled = item.left === 0;
+        };
+        button.onclick = async () => {
+            button.disabled = true;
+            const result = await post('takeItem', { item: item.item });
+            toast(result.msg, result.ok);
+            if (result.ok && result.left !== undefined) item.left = result.left;
+            showLeft();
+        };
+        card.append(weaponImg(item.item), top, el('div', 'w-desc', item.desc), left, button);
+        showLeft();
         view.append(card);
     });
 }
@@ -451,7 +482,7 @@ function newDraft() {
     return {
         id: null, label: '', mode: 'ped', coords: { x: '', y: '', z: '', w: '' }, radius: 1,
         model: 's_m_y_cop_01', scenario: 'WORLD_HUMAN_CLIPBOARD', blip: true,
-        allWeapons: true, weapons: [], allAmmo: true, ammo: [], jobs: [], outfit: null,
+        allWeapons: true, weapons: [], allAmmo: true, ammo: [], allItems: true, items: [], jobs: [], outfit: null,
     };
 }
 
@@ -461,7 +492,7 @@ function draftFrom(a) {
         coords: { x: a.coords.x, y: a.coords.y, z: a.coords.z, w: a.coords.w },
         model: a.model || '', scenario: a.scenario || '',
         allWeapons: !a.weapons, weapons: a.weapons || [], allAmmo: !a.ammo, ammo: a.ammo || [],
-        jobs: a.jobs || [], outfit: a.outfit || null,
+        allItems: !a.items, items: a.items || [], jobs: a.jobs || [], outfit: a.outfit || null,
     };
 }
 
@@ -530,6 +561,7 @@ function renderArmories() {
         c.append(tag(a.mode === 'target' ? 'Third-eye only' : 'Ped + third-eye', a.mode === 'target' ? 'kit' : 'ok'));
         c.append(tag(a.weapons ? `${a.weapons.length} weapon types` : 'All weapons'));
         c.append(tag(a.ammo ? `${a.ammo.length} ammo types` : 'All ammo'));
+        c.append(tag(a.items ? `${a.items.length} equipment items` : 'All equipment'));
         if (a.mode === 'ped' && a.outfit) c.append(tag('Custom clothing', 'warn'));
         body.append(c);
         body.append(el('div', 'w-desc dim', `${a.coords.x.toFixed(1)}, ${a.coords.y.toFixed(1)}, ${a.coords.z.toFixed(1)}`));
@@ -624,6 +656,7 @@ function renderArmoryForm() {
     form.append(formRow('Jobs allowed (none ticked = all police jobs)', chipPicker(d.jobs, a.jobs, 'name', 'label')));
     form.append(formRow('Weapons stored here', allOrPick(d, 'allWeapons', 'weapons', a.weapons, 'name', 'label', 'Issue every weapon')));
     form.append(formRow('Ammo stored here', allOrPick(d, 'allAmmo', 'ammo', a.ammo, 'item', 'label', 'Hand out every ammo type')));
+    form.append(formRow('Equipment items stored here', allOrPick(d, 'allItems', 'items', a.items || [], 'item', 'label', 'Issue every equipment item')));
 
     const acts = el('div', 'confirm-actions');
     const cancel = el('button', 'btn', 'Cancel');
@@ -636,7 +669,8 @@ function renderArmoryForm() {
             id: d.id, label: d.label, mode: d.mode, radius: n(d.radius), blip: d.blip,
             coords: draftCoords(d),
             model: d.model, scenario: d.scenario, outfit: d.mode === 'ped' ? d.outfit : null,
-            weapons: d.allWeapons ? null : d.weapons, ammo: d.allAmmo ? null : d.ammo, jobs: d.jobs,
+            weapons: d.allWeapons ? null : d.weapons, ammo: d.allAmmo ? null : d.ammo,
+            items: d.allItems ? state.admin.items.map((item) => item.item) : d.items, jobs: d.jobs,
         });
         save.disabled = false;
         toast(res.msg, res.ok);
@@ -828,6 +862,81 @@ function renderAmmoForm() {
     view.append(form);
 }
 
+function renderAdminItems() {
+    if (!state.admin) return view.append(el('div', 'empty', 'Nothing to show.'));
+    if (state.idraft) return renderAdminItemForm();
+
+    const top = el('div', 'filters');
+    const add = el('button', 'btn gold', '+ New equipment item');
+    add.onclick = () => { state.idraft = { isNew: true, item: '', label: '', amount: 1, desc: '' }; render(); };
+    top.append(add);
+    view.append(top);
+
+    if (!state.admin.itemCatalog.length) view.append(el('div', 'empty', 'No equipment items yet. Add one to get started.'));
+    state.admin.itemCatalog.forEach((item) => {
+        const row = el('div', 'row');
+        const body = el('div', 'w-body');
+        body.append(el('div', 'w-name', item.label));
+        const c = el('div', 'chips');
+        c.append(tag(item.item), tag(`${item.amount} per collection`));
+        body.append(c);
+        if (item.desc) body.append(el('div', 'w-desc dim', item.desc));
+        const side = el('div', 'w-side');
+        const edit = el('button', 'btn', 'Edit');
+        edit.onclick = () => {
+            state.idraft = { isNew: false, item: item.item, label: item.label, amount: item.amount, desc: item.desc || '' };
+            render();
+        };
+        const del = el('button', 'btn red', 'Remove');
+        del.onclick = async () => {
+            if (!(await ask('Remove equipment item', `Remove "${item.label}"? Armories stop issuing it immediately.`, 'Remove'))) return;
+            const res = await post('adminDeleteItem', { item: item.item });
+            toast(res.msg, res.ok);
+            if (res.ok) applyAdminItems(res);
+        };
+        side.append(edit, del);
+        row.append(weaponImg(item.item), body, side);
+        view.append(row);
+    });
+}
+
+function applyAdminItems(res) {
+    if (res.images) Object.assign(weaponImages, res.images);
+    state.admin.itemCatalog = res.itemCatalog;
+    state.admin.items = res.items;
+    state.idraft = null;
+    render();
+}
+
+function renderAdminItemForm() {
+    const d = state.idraft;
+    const form = el('div', 'form');
+    form.append(el('h3', 'grid-title', d.isNew ? 'New equipment item' : 'Edit equipment item'));
+    form.append(formRow('ox_inventory item name' + (d.isNew ? '' : ' (cannot be changed)'), textInput(d, 'item', 'text', {
+        maxLength: 64, placeholder: 'e.g. radio', disabled: !d.isNew,
+    })));
+    form.append(formRow('Display name', textInput(d, 'label', 'text', { maxLength: 40, placeholder: 'e.g. Radio' })));
+    form.append(formRow('Amount handed out per collection', textInput(d, 'amount', 'number', { min: 1, max: 100 })));
+    form.append(formRow('Description', textInput(d, 'desc', 'text', { maxLength: 80 })));
+
+    const acts = el('div', 'confirm-actions');
+    const cancel = el('button', 'btn', 'Cancel');
+    cancel.onclick = () => { state.idraft = null; render(); };
+    const save = el('button', 'btn gold', 'Save equipment item');
+    save.onclick = async () => {
+        save.disabled = true;
+        const res = await post('adminSaveItem', {
+            isNew: d.isNew, item: d.item, label: d.label, amount: d.amount === '' ? null : Number(d.amount), desc: d.desc,
+        });
+        save.disabled = false;
+        toast(res.msg, res.ok);
+        if (res.ok) applyAdminItems(res);
+    };
+    acts.append(cancel, save);
+    form.append(acts);
+    view.append(form);
+}
+
 const norm = (s) => s.replace(/\s+/g, ' ').trim().toLowerCase();
 
 function updateSignBtn() {
@@ -900,7 +1009,7 @@ window.addEventListener('message', (e) => {
         can: m.can || {},
         tab: 'checkout',
         page: 1, filters: {}, lookup: m.lookup || '', stockFilter: 'attention',
-        admin: m.admin || null, draft: null, wdraft: null, adraft: null,
+        admin: m.admin || null, draft: null, wdraft: null, adraft: null, idraft: null,
     };
     if (m.mode === 'admin') state.tab = 'armories';
     if (m.mode === 'log') {

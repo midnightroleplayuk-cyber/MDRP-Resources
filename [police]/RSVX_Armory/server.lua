@@ -6,7 +6,10 @@ local armoriesReady = false
 local W = {}
 local Weapons = {}
 local Ammo = {}
+local Items = {}
 local ammoTaken = {}
+local itemsTaken = {}
+local itemCooldown = {}
 
 local function loadAmmo()
     Ammo = {}
@@ -15,6 +18,17 @@ local function loadAmmo()
         if ok and type(a) == 'table' then
             a.item = r.item
             Ammo[#Ammo + 1] = a
+        end
+    end
+end
+
+local function loadItems()
+    Items = {}
+    for _, r in ipairs(MySQL.query.await('SELECT item, data FROM armory_items ORDER BY id')) do
+        local ok, item = pcall(json.decode, r.data)
+        if ok and type(item) == 'table' then
+            item.item = r.item
+            Items[#Items + 1] = item
         end
     end
 end
@@ -94,6 +108,7 @@ local function loadArmories()
         if ok and type(a) == 'table' and type(a.coords) == 'table' then
             a.id = r.id
             a.outfit = cleanOutfit(a.outfit)
+            a.items = type(a.items) == 'table' and a.items or {}
             a.mode = a.mode == 'target' and 'target' or 'ped'
             Armories[#Armories + 1] = a
         else
@@ -178,7 +193,7 @@ CreateThread(function()
             local seed = {
                 label = a.label, mode = 'ped', coords = { x = c.x, y = c.y, z = c.z, w = c.w },
                 model = a.model, scenario = a.scenario, blip = a.blip or false,
-                weapons = a.weapons, ammo = a.ammo, jobs = a.jobs, outfit = a.outfit,
+                weapons = a.weapons, ammo = a.ammo, items = a.items, jobs = a.jobs, outfit = a.outfit,
             }
             MySQL.insert.await('INSERT INTO armory_points (data) VALUES (?)', { json.encode(seed) })
         end
@@ -217,6 +232,25 @@ CreateThread(function()
     end
     loadAmmo()
 
+    local itemsTableExists = MySQL.scalar.await(
+        'SELECT COUNT(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = ?',
+        { 'armory_items' }) > 0
+    MySQL.query.await([[
+        CREATE TABLE IF NOT EXISTS armory_items (
+            id    INT AUTO_INCREMENT PRIMARY KEY,
+            item  VARCHAR(64) NOT NULL UNIQUE,
+            data  LONGTEXT NOT NULL
+        )
+    ]])
+    if not itemsTableExists then
+        for _, item in ipairs(Config.Items or {}) do
+            MySQL.insert.await('INSERT INTO armory_items (item, data) VALUES (?, ?)', {
+                item.item, json.encode({ label = item.label, amount = item.amount, desc = item.desc }),
+            })
+        end
+    end
+    loadItems()
+
     for _, w in ipairs(Weapons) do
         local have = MySQL.scalar.await('SELECT COUNT(*) FROM armory_weapons WHERE weapon = ?', { w.name })
         if w.stock > have then addStock(w.name, w.stock - have) end
@@ -227,6 +261,12 @@ end)
 local function inList(list, v)
     for _, x in ipairs(list) do if x == v then return true end end
     return false
+end
+
+local function configuredItem(itemName)
+    for _, item in ipairs(Items) do
+        if item.item == itemName then return item end
+    end
 end
 
 local function getOfficer(src)
@@ -554,12 +594,27 @@ lib.callback.register('armory:getData', function(src)
         end
     end
 
+    local items = {}
+    for _, item in ipairs(Items) do
+        if inList(armory.items or {}, item.item) then
+            local cap = Config.ItemsPerShift or 0
+            local taken = itemsTaken[o.id] and itemsTaken[o.id][item.item] or 0
+            items[#items + 1] = {
+                item = item.item,
+                label = item.label,
+                amount = item.amount,
+                desc = item.desc or '',
+                left = cap > 0 and math.max(0, cap - taken) or nil,
+            }
+        end
+    end
+
     local mine = MySQL.query.await(
         'SELECT serial, weapon, label, checked_out FROM armory_weapons WHERE status = "out" AND holder_id = ? ORDER BY checked_out',
         { o.id })
     for _, m in ipairs(mine) do m.since = fmtTime(m.checked_out) end
 
-    return { name = o.name, command = o.command, can = o.can, available = available, ammo = ammo, mine = mine }
+    return { name = o.name, command = o.command, can = o.can, available = available, ammo = ammo, items = items, mine = mine }
 end)
 
 lib.callback.register('armory:checkout', function(src, serial, signature, reason)
@@ -623,6 +678,50 @@ lib.callback.register('armory:takeAmmo', function(src, item)
     ammoTaken[o.id] = ammoTaken[o.id] or {}
     ammoTaken[o.id][item] = taken + 1
     return { ok = true, msg = ('Took %d x %s'):format(cfg.amount, cfg.label), left = cap > 0 and cap - taken - 1 or nil }
+end)
+
+lib.callback.register('armory:takeItem', function(src, itemName)
+    local o, armory = accessArmory(src)
+    if not o then return fail('No access.') end
+    if type(itemName) ~= 'string' then return fail('Invalid equipment item.') end
+
+    local cfg = configuredItem(itemName)
+    if not cfg or (armory.items and not inList(armory.items, itemName)) then
+        return fail('This armory does not issue that equipment.')
+    end
+
+    local amount = num(cfg.amount, 1, 100)
+    if not amount then return fail('This equipment has an invalid configured amount.') end
+
+    local cap = Config.ItemsPerShift or 0
+    local taken = itemsTaken[o.id] and itemsTaken[o.id][itemName] or 0
+    if cap > 0 and taken >= cap then
+        return fail(('You have taken all the %s allowed this shift.'):format(cfg.label))
+    end
+
+    local cooldown = math.max(0, tonumber(Config.ItemCooldown) or 0)
+    local key = o.id .. ':' .. itemName
+    local wait = (itemCooldown[key] or 0) + cooldown - os.time()
+    if wait > 0 then
+        return fail(('Please wait %d seconds before taking more.'):format(wait))
+    end
+
+    if not exports.ox_inventory:Items(itemName) then
+        return fail(('The configured item "%s" is missing from ox_inventory.'):format(itemName))
+    end
+    if not exports.ox_inventory:AddItem(src, itemName, math.floor(amount)) then
+        return fail('You cannot carry that.')
+    end
+
+    itemCooldown[key] = os.time()
+    itemsTaken[o.id] = itemsTaken[o.id] or {}
+    itemsTaken[o.id][itemName] = taken + 1
+    local remaining = cap > 0 and cap - taken - 1 or nil
+    return {
+        ok = true,
+        msg = ('Took %d x %s'):format(math.floor(amount), cfg.label),
+        left = remaining,
+    }
 end)
 
 lib.callback.register('armory:reportLost', function(src, serial)
@@ -855,7 +954,11 @@ lib.callback.register('armory:adminGet', function(src)
     for _, a in ipairs(Ammo) do ammo[#ammo + 1] = { item = a.item, label = a.label } end
     for name, j in pairs(exports.qbx_core:GetJobs()) do jobs[#jobs + 1] = { name = name, label = j.label or name } end
     table.sort(jobs, function(a, b) return a.name < b.name end)
-    return { points = Armories, weapons = weapons, catalog = Weapons, ammo = ammo, ammoCatalog = Ammo, jobs = jobs, policeJobs = Config.PoliceJobs }
+    local items = {}
+    for _, item in ipairs(Items) do
+        items[#items + 1] = { item = item.item, label = item.label }
+    end
+    return { points = Armories, weapons = weapons, catalog = Weapons, ammo = ammo, ammoCatalog = Ammo, items = items, itemCatalog = Items, jobs = jobs, policeJobs = Config.PoliceJobs }
 end)
 
 local function pick(list, valid)
@@ -876,9 +979,10 @@ lib.callback.register('armory:adminSave', function(src, d)
     local x, y, z, w = num(d.coords.x, -10000, 10000), num(d.coords.y, -10000, 10000), num(d.coords.z, -1000, 3000), num(d.coords.w or 0, 0, 360)
     if not (x and y and z and w) then return fail('Set a valid position.') end
 
-    local validW, validA, validJ = {}, {}, {}
+    local validW, validA, validI, validJ = {}, {}, {}, {}
     for _, cw in ipairs(Weapons) do validW[cw.name] = true end
     for _, ca in ipairs(Ammo) do validA[ca.item] = true end
+    for _, ci in ipairs(Items) do validI[ci.item] = true end
     for name in pairs(exports.qbx_core:GetJobs()) do validJ[name] = true end
 
     local a = {
@@ -889,6 +993,7 @@ lib.callback.register('armory:adminSave', function(src, d)
         blip = d.blip == true,
         weapons = pick(d.weapons, validW),
         ammo = pick(d.ammo, validA),
+        items = pick(d.items, validI),
         jobs = pick(d.jobs, validJ),
         model = trim(d.model):sub(1, 50),
         scenario = trim(d.scenario):sub(1, 60),
@@ -929,6 +1034,14 @@ lib.callback.register('armory:weaponNames', function()
     local names = {}
     for _, w in ipairs(Weapons) do names[#names + 1] = w.name end
     for _, a in ipairs(Ammo) do names[#names + 1] = a.item end
+    return names
+end)
+
+lib.callback.register('armory:itemNames', function()
+    local names = {}
+    for _, item in ipairs(Items) do
+        if type(item.item) == 'string' then names[#names + 1] = item.item end
+    end
     return names
 end)
 
@@ -1047,6 +1160,49 @@ lib.callback.register('armory:adminDeleteAmmo', function(src, item)
     return { ok = true, msg = 'Ammo removed.', ammoCatalog = Ammo, ammo = ammoPicker() }
 end)
 
+local function itemPicker()
+    local out = {}
+    for _, item in ipairs(Items) do out[#out + 1] = { item = item.item, label = item.label } end
+    return out
+end
+
+lib.callback.register('armory:adminSaveItem', function(src, d)
+    if not isAdmin(src) then return fail('No access.') end
+    if type(d) ~= 'table' then return fail('Invalid data.') end
+
+    local item = trim(d.item):lower()
+    if not item:match('^[%w_%-]+$') or #item > 64 then return fail('Invalid item name.') end
+    if not itemExists(item) then return fail(('ox_inventory has no item called %s.'):format(item)) end
+    local isNew = d.isNew == true
+    local exists = MySQL.scalar.await('SELECT 1 FROM armory_items WHERE item = ?', { item })
+    if isNew and exists then return fail('That equipment item already exists.') end
+    if not isNew and not exists then return fail('That equipment item no longer exists.') end
+
+    local label = trim(d.label):sub(1, 40)
+    if label == '' then return fail('Give the item a display name.') end
+    local amount = num(d.amount, 1, 100)
+    if not amount then return fail('Amount must be 1 - 100.') end
+
+    local data = { label = label, amount = math.floor(amount), desc = trim(d.desc):sub(1, 80) }
+    if isNew then
+        MySQL.insert.await('INSERT INTO armory_items (item, data) VALUES (?, ?)', { item, json.encode(data) })
+    else
+        MySQL.update.await('UPDATE armory_items SET data = ? WHERE item = ?', { json.encode(data), item })
+    end
+    loadItems()
+    print(('[armory_checkout] %s (%s) saved equipment item %s'):format(GetPlayerName(src), src, item))
+    return { ok = true, msg = 'Equipment item saved.', itemCatalog = Items, items = itemPicker() }
+end)
+
+lib.callback.register('armory:adminDeleteItem', function(src, item)
+    if not isAdmin(src) then return fail('No access.') end
+    if type(item) ~= 'string' or not configuredItem(item) then return fail('That equipment item no longer exists.') end
+    MySQL.update.await('DELETE FROM armory_items WHERE item = ?', { item })
+    loadItems()
+    print(('[armory_checkout] %s (%s) deleted equipment item %s'):format(GetPlayerName(src), src, item))
+    return { ok = true, msg = 'Equipment item removed.', itemCatalog = Items, items = itemPicker() }
+end)
+
 lib.addCommand('armoryadmin', { help = 'Set up armories: ped or third-eye, position, clothing, contents (admin)' }, function(src)
     if isAdmin(src) then TriggerClientEvent('armory:openAdmin', src) end
 end)
@@ -1062,6 +1218,11 @@ local function sweep()
         local player = exports.qbx_core:GetPlayerByCitizenId(cid)
         local d = player and player.PlayerData
         if not d or not d.job.onduty or not inList(Config.PoliceJobs, d.job.name) then ammoTaken[cid] = nil end
+    end
+    for cid in pairs(itemsTaken) do
+        local player = exports.qbx_core:GetPlayerByCitizenId(cid)
+        local d = player and player.PlayerData
+        if not d or not d.job.onduty or not inList(Config.PoliceJobs, d.job.name) then itemsTaken[cid] = nil end
     end
 
     for _, r in ipairs(MySQL.query.await('SELECT serial, weapon, label, holder_id FROM armory_weapons WHERE status = "out"')) do
