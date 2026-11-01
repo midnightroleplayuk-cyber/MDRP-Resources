@@ -663,7 +663,7 @@ return {
     close = true,
     description = 'UK DVLA style photocard driving licence.',
     client = {
-        image = 'https://cfx-nui-vinewood_licensing/web/images/driving_licence.png',
+        image = 'driving_licence.png',
         status = { 'expiry' },
         export = 'vinewood_licensing.useLicence'
     }
@@ -677,7 +677,7 @@ return {
         consume = 0,          -- REQUIRED: a licence is not used up when shown
         description = 'Provisional entitlement - must be accompanied',
         client = {
-            image = 'https://cfx-nui-vinewood_licensing/web/images/provisional_licence.png',
+            image = 'provisional_licence.png',
             export = 'vinewood_licensing.useLicence'
         }
     },

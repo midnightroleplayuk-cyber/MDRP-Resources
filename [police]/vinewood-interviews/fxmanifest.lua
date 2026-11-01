@@ -5,7 +5,7 @@ lua54 'yes'
 name 'vinewood-interviews'
 author 'Vinewood Studios'
 description 'Police interview recording: audio, officer-seat CCTV footage and CCTV replay on Fivemanage, interview seats and an evidence viewer'
-version '1.8.0'
+version '1.8.1'
 
 shared_scripts {
     '@ox_lib/init.lua',
