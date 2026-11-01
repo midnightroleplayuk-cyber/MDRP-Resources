@@ -2790,14 +2790,6 @@ return {
         stack = true,
         close = true,
     },
-
-    ["laptop"] = {
-        label = "Laptop",
-        weight = 1000,
-        stack = true,
-        close = true,
-    },
-
     ["copper"] = {
         label = "Copper ingot",
         weight = 1000,
@@ -3513,16 +3505,6 @@ return {
         image = 'gps_tracker.png',
     }
 },    
-
--- DEVHUB LAPTOP
-['devhub_laptop'] = {
-    label = 'Laptop',
-    weight = 0,
-    stack = true,
-    close = true,
-    description = "Running DevhubOS"
-},
-
 
 -- DEVHUB CRIME SCENE CLEANUP
 ['devhub_bodybag'] = {
@@ -5627,4 +5609,116 @@ return {
     server = { export = 'vinewood-mdt.useDocument' },
 },
 
+-- AV LAPTOP 
+
+['laptop'] = {
+        label = 'Laptop',
+        weight = 1,
+        stack = false,
+        close = true,
+        description = '',
+        buttons = {
+            {
+                label = "Devices",
+                action = function(slot)
+                    exports['av_laptop']:openContainer(slot)
+                end,
+            }
+        }
+    },
+    ['decrypter'] = {
+        label = 'Decrypter',
+        weight = 1,
+        stack = true,
+        close = true,
+        description = ''
+    },
+    ['black_usb'] = {
+        label = 'Black USB',
+        weight = 1,
+        stack = true,
+        close = true,
+        description = ''
+    },
+    ['pendrive'] = {
+        label = 'Pendrive',
+        weight = 1,
+        stack = false,
+        close = false,
+        description = 'Can store personal data'
+    },
+    ['citizenid'] = {
+        label = 'Citizen ID',
+        weight = 1,
+        stack = false,
+        close = true,
+        description = 'Official ID card'
+    },
+    ['driver_license'] = {
+        label = 'Driver License',
+        weight = 1,
+        stack = false,
+        close = true,
+        description = 'Issued by the DMV'
+    },
+    ['firearm_license'] = {
+        label = 'Firearm License',
+        weight = 1,
+        stack = false,
+        close = true,
+        description = 'Issued by the police department'
+    },
+```
+
+**For Quasar Inventory qs-inventory/shared/items.lua (ESX Only)**
+
+```lua
+["laptop"] = {
+    ["name"] = "laptop",
+    ["label"] = "Laptop",
+    ["weight"] = 1,
+    ["type"] = "item",
+    ["image"] = "laptop.png",
+    ["unique"] = true,
+    ["useable"] = true,
+    ["shouldClose"] = true,
+    ["combinable"] = nil,
+    ["description"] = ""
+},
+["pendrive"] = {
+    ["name"] = "pendrive",
+    ["label"] = "Pendrive",
+    ["weight"] = 1,
+    ["type"] = "item",
+    ["image"] = "pendrive.png",
+    ["unique"] = true,
+    ["useable"] = false,
+    ["shouldClose"] = false,
+    ["combinable"] = nil,
+    ["description"] = "Can store personal data"
+},
+["decrypter"] = {
+    ["name"] = "decrypter",
+    ["label"] = "Decrypter",
+    ["weight"] = 1,
+    ["type"] = "item",
+    ["image"] = "decrypter.png",
+    ["unique"] = false,
+    ["useable"] = false,
+    ["shouldClose"] = false,
+    ["combinable"] = nil,
+    ["description"] = ""
+},
+["black_usb"] = {
+    ["name"] = "black_usb",
+    ["label"] = "Black USB",
+    ["weight"] = 1,
+    ["type"] = "item",
+    ["image"] = "black_usb.png",
+    ["unique"] = false,
+    ["useable"] = false,
+    ["shouldClose"] = false,
+    ["combinable"] = nil,
+    ["description"] = ""
+},
 }
