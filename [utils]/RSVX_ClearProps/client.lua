@@ -89,7 +89,7 @@ RegisterCommand(Config.Command, function()
     end
 end, false)
 
-RegisterKeyMapping(Config.Command, 'Clear stuck props', 'keyboard', Config.Keybind)
+--[[ RegisterKeyMapping(Config.Command, 'Clear stuck props', 'keyboard', Config.Keybind) ]]
 
 TriggerEvent('chat:addSuggestion', '/' .. Config.Command, 'Remove props stuck in your hands')
 
