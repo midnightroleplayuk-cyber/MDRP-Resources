@@ -1,0 +1,85 @@
+.mantine-Modal-content {
+  background-color: var(--bg-panel);
+  border: 1px solid var(--border-light);
+  color: var(--text-main);
+  font-family: var(--font-body);
+}
+
+.mantine-Modal-header {
+  background-color: var(--bg-panel);
+  border-bottom: 1px solid var(--border-light);
+  padding-bottom: 16px;
+}
+
+.mantine-Modal-title {
+  font-weight: 600;
+  font-size: 18px;
+  color: var(--text-main);
+  font-family: var(--font-body);
+}
+
+.mantine-Modal-close {
+  color: var(--text-muted);
+  background-color: var(--bg-elevated);
+  border: 1px solid var(--border-light);
+  font-family: var(--font-body);
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.mantine-Modal-close:hover {
+  background-color: var(--bg-pill-active);
+  color: var(--text-main);
+}
+
+.mantine-Input-input {
+  background-color: var(--bg-main);
+  border: 1px solid var(--border-light);
+  color: var(--text-main);
+  font-family: var(--font-body);
+}
+
+.mantine-Select-dropdown {
+  background-color: var(--bg-main);
+  border: 1px solid var(--border-light);
+  color: var(--text-main);
+  font-family: var(--font-body);
+}
+
+.mantine-Select-option:hover {
+  background-color: var(--bg-pill-active);
+  color: var(--text-main);
+}
+
+.mantine-Button-root {
+  background-color: var(--accent);
+  color: var(--text-main);
+  font-family: var(--font-display);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  border: none;
+  transition:
+    opacity 0.2s ease,
+    filter 0.2s ease;
+}
+
+.mantine-Button-root:hover {
+  background-color: var(--accent);
+  color: var(--text-main);
+  filter: brightness(1.1);
+}
+
+.mantine-Button-root:active {
+  filter: brightness(0.95);
+}
+
+.mantine-Tooltip-tooltip {
+  background-color: var(--bg-card-hover);
+  color: white;
+  font-size: 14px;
+  letter-spacing: 0.55px;
+  font-weight: 400;
+  font-family: var(--font-body);
+  border: 1px solid var(--border-light);
+}
