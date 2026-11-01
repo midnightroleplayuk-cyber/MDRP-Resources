@@ -42,7 +42,7 @@ Config.Armories = {
         blip = true,
         weapons = { 'WEAPON_PISTOL', 'WEAPON_COMBATPISTOL', 'WEAPON_STUNGUN', 'WEAPON_NIGHTSTICK' },
         ammo = { 'ammo-9' },
-        -- Item names must exist in Config.Items below. Use {} to issue none.
+        -- Item names must exist in the equipment catalog. Use {} to issue none.
         items = { 'radio', 'bodycam' },
 
     },
@@ -83,8 +83,8 @@ Config.Ammo = {
     { item = 'ammo-shotgun', label = '12 Gauge Shells', amount = 24, desc = 'Shotgun shells.' },
 }
 
--- Equipment entries must use item names registered with ox_inventory.
--- Add an entry here, then include its item name in the desired armory's items list above.
+-- These ox_inventory equipment entries seed the admin-managed catalog on first startup.
+-- Items can also be added and managed in the armoryadmin Equipment Items tab.
 Config.Items = {
     { item = 'radio', label = 'Radio', amount = 1, desc = 'Police radio.' },
     { item = 'bodycam', label = 'Bodycam', amount = 1, desc = 'BWV.' },
