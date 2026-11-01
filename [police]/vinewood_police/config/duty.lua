@@ -30,14 +30,16 @@ Config.Duty = {
 
     -- Unit types an officer can sign on as. qualifications: all must be held and in date.
     UnitTypes = {
-        { id = 'response',      label = 'Response' },
-        { id = 'roads',         label = 'Roads policing',  qualifications = { 'advanced_driver' } },
-        { id = 'tviu',          label = 'TVIU',            qualifications = { 'advanced_driver' } },
-        { id = 'arv',           label = 'Armed response',  qualifications = { 'firearms', 'advanced_driver' } },
-        { id = 'dogs',          label = 'Dog section',     qualifications = { 'dog_handler' } },
-        { id = 'cid',           label = 'CID',             minRank = 'pc' },
-        { id = 'custody',       label = 'Custody',         minRank = 'ps' },
+        { id = 'response',      label = 'ERPT' },
+        { id = 'roads',         label = 'Roads Policing Unit',                qualifications = { 'advanced_driver' } },
+        { id = 'tviu',          label = 'TVIU',                               qualifications = { 'advanced_driver' } },
+        { id = 'dogs',          label = 'Dog Unit',                           qualifications = { 'dog_handler' } },
+        { id = 'arv',           label = 'Armed response',    minRank = 'pc',  qualifications = { 'firearms', 'advanced_driver' } },
+        { id = 'cid',           label = 'CID',               minRank = 'pc' },
+        { id = 'custody',       label = 'Custody',           minRank = 'pc' },
         { id = 'control',       label = 'Control room' },
+        { id = 'silver',        label = 'Silver Command',    minRank = 'supt', qualifications = { 'firearms', 'advanced_driver', 'dog_handler' } },
+        { id = 'gc',            label = 'Gold Command',      minRank = 'acc', qualifications = { 'firearms', 'advanced_driver', 'dog_handler' } },
     },
 
     -- Officer statuses. tone: 'ok' | 'busy' | 'away' (colour in the hub).
