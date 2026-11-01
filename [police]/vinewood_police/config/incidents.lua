@@ -6,7 +6,7 @@ Config.Incidents = {
     Types = { 'Crime scene', 'Major incident', 'Firearms incident', 'Serious collision', 'Missing person search', 'Public order', 'Sudden death' },
     Roles = { 'Bronze commander', 'Silver commander', 'Scene guard', 'Cordon officer', 'Scene log keeper', 'CSI', 'Search lead', 'Family liaison' },
     -- Silver commander needs this rank or above
-    SilverRank = 'insp',
+    SilverRank = 'supt',
     DefaultInner = 25,    -- metres
     DefaultOuter = 80,
     MaxRadius = 400,

@@ -5,14 +5,18 @@
 Config.Ranks = {
     { id = 'student', label = 'Student Officer',           short = 'SPC',    level = 1 },
     { id = 'pc',      label = 'Police Constable',          short = 'PC',     level = 2 },
-    { id = 'ps',      label = 'Police Sergeant',           short = 'PS',     level = 3 },
-    { id = 'insp',    label = 'Inspector',                 short = 'Insp',   level = 4 },
-    { id = 'ci',      label = 'Chief Inspector',           short = 'CI',     level = 5 },
-    { id = 'supt',    label = 'Superintendent',            short = 'Supt',   level = 6 },
-    { id = 'csupt',   label = 'Chief Superintendent',      short = 'C/Supt', level = 7 },
-    { id = 'acc',     label = 'Assistant Chief Constable', short = 'ACC',    level = 8 },
-    { id = 'dcc',     label = 'Deputy Chief Constable',    short = 'DCC',    level = 9 },
-    { id = 'cc',      label = 'Chief Constable',           short = 'CC',     level = 10 },
+    { id = 'ts',      label = 'Taser Officer',             short = 'TS',     level = 3 },
+    { id = 'rpu',     label = 'Traffic Officer',           short = 'RPU',    level = 4 },
+    { id = 'cid',     label = 'CID',                       short = 'CID',    level = 5 },
+    { id = 'aru',     label = 'Armed response',            short = 'ARU',    level = 6 },
+    { id = 'ps',      label = 'Police Sergeant',           short = 'PS',     level = 7 },
+    { id = 'insp',    label = 'Inspector',                 short = 'Insp',   level = 8 },
+    { id = 'ci',      label = 'Chief Inspector',           short = 'CI',     level = 9 },
+    { id = 'supt',    label = 'Superintendent',            short = 'Supt',   level = 10 },
+    { id = 'csupt',   label = 'Chief Superintendent',      short = 'C/Supt', level = 11 },
+    { id = 'acc',     label = 'Assistant Chief Constable', short = 'ACC',    level = 12 },
+    { id = 'dcc',     label = 'Deputy Chief Constable',    short = 'DCC',    level = 13 },
+    { id = 'cc',      label = 'Chief Constable',           short = 'CC',     level = 14 },
 }
 
 ---------------------------------------------------------------------------
@@ -25,12 +29,18 @@ Config.Jobs = {
         grades = {
             [0] = 'student',
             [1] = 'pc',
-            [2] = 'ps',
-            [3] = 'insp',
-            [4] = 'ci',
-            [5] = 'supt',
-            [6] = 'csupt',
-            [7] = 'cc',
+            [2] = 'ts',
+            [3] = 'rpu',
+            [4] = 'cid',
+            [5] = 'aru',
+            [6] = 'ps',
+            [7] = 'insp',
+            [8] = 'ci',
+            [9] = 'supt',
+            [10] = 'csupt',
+            [11] = 'acc',
+            [12] = 'dcc',
+            [13] = 'cc',
         },
     },
 }
@@ -80,14 +90,14 @@ Config.Permissions = {
     ['cid.view']           = { rank = 'pc' },
     ['cid.create']         = { rank = 'pc' },
     ['uof.submit']         = { rank = 'student', duty = false },
-    ['standards.view']     = { rank = 'insp', duty = false },   -- reviews, complaints, audit log
+    ['standards.view']     = { rank = 'supt', duty = false },   -- reviews, complaints, audit log
     ['dogs.handle']        = { rank = 'pc', qualifications = { 'dog_handler' } },
     ['roads.stinger']      = { rank = 'pc', qualifications = { 'stinger' } },
     -- Management (/management): rank limits always apply on top of these
-    ['manage.view']        = { rank = 'insp', duty = false },
-    ['manage.hire']        = { rank = 'insp', duty = false },
+    ['manage.view']        = { rank = 'supt', duty = false },
+    ['manage.hire']        = { rank = 'supt', duty = false },
     ['manage.promote']     = { rank = 'ci', duty = false },
-    ['manage.discipline']  = { rank = 'insp', duty = false },  -- suspend from duty
+    ['manage.discipline']  = { rank = 'supt', duty = false },  -- suspend from duty
     ['manage.fire']        = { rank = 'supt', duty = false },
     ['evidence.manage']    = { rank = 'ps' },                                       -- return to owner, destroy
 }
