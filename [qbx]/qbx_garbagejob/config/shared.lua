@@ -8,13 +8,13 @@ return {
         vehicle = {
             label = 'Garbage Truck Storage',
             coords = {
-                [1] = vec4(-333.84, -1527.28, 27.28, 1.97),
-                [2] = vec4(-327.55, -1527.69, 27.25, 359.43),
+                --[1] = vec4(-333.84, -1527.28, 27.28, 1.97),
+                --[2] = vec4(-327.55, -1527.69, 27.25, 359.43),
             },
         },
         paycheck = {
             label = 'Payslip Collection',
-            coords = vec3(-321.45, -1545.86, 31.02),
+            --coords = vec3(-321.45, -1545.86, 31.02),
         },
         trashcan = {
             {
