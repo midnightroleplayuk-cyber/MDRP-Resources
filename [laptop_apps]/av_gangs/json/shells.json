@@ -1,0 +1,611 @@
+{
+  "k4meth_shell": {
+    "peds": [
+      {
+        "dict": "anim@amb@board_room@diagram_blueprints@",
+        "heading": 186.5,
+        "x": -2.02,
+        "y": -2.02,
+        "z": -3.19,
+        "entity": 4076035,
+        "animation": "idle_01_amy_skater_01",
+        "model": "s_m_m_scientist_01"
+      },
+      {
+        "dict": "anim@amb@business@coc@coc_unpack_cut@",
+        "heading": 7,
+        "x": 1.76,
+        "y": 3.28,
+        "z": -3.67,
+        "entity": 4103171,
+        "animation": "fullcut_cycle_v3_cokepacker",
+        "model": "mp_f_meth_01"
+      },
+      {
+        "dict": "anim@amb@business@coc@coc_unpack_cut@",
+        "heading": -179,
+        "x": 4.62,
+        "y": -3.27,
+        "z": -3.67,
+        "entity": 4103939,
+        "animation": "fullcut_cycle_v6_cokepacker",
+        "model": "s_m_m_scientist_01"
+      },
+      {
+        "dict": "anim@amb@business@cfm@cfm_cut_sheets@",
+        "heading": 94.5,
+        "x": -9.83,
+        "y": -2.69,
+        "z": -3.67,
+        "entity": 4105987,
+        "animation": "load_guillotine_billcutter",
+        "model": "s_m_m_scientist_01"
+      }
+    ],
+    "interactions": [
+      {
+        "dist": 2,
+        "identifier": "1G7657M681",
+        "x": 0.08,
+        "y": 3.78,
+        "label": "Ingredients",
+        "name": "Ingredients",
+        "z": -2.51,
+        "event": "av_gangs:ingredients"
+      },
+      {
+        "dist": 2,
+        "identifier": "XA07LDOI4Y",
+        "x": 9.99,
+        "y": 2.15,
+        "label": "Product",
+        "name": "Product",
+        "z": -2.68,
+        "event": "av_gangs:product"
+      },
+      {
+        "dist": 2,
+        "identifier": "C12GP9BCM6",
+        "x": 10.25,
+        "y": -2.31,
+        "label": "Stash",
+        "name": "Stash",
+        "z": -2.97,
+        "event": "av_gangs:stash"
+      }
+    ],
+    "zIndex": 30,
+    "label": "Meth Lab",
+    "shell": "k4meth_shell",
+    "door": {
+      "dist": 2,
+      "heading": -90.63,
+      "x": -10.6,
+      "y": -2.45,
+      "label": "Door",
+      "z": -1,
+      "event": "av_gangs:exit"
+    }
+  },
+  "k4mb1_furnishedoffice4_shell": {
+    "peds": [],
+    "interactions": [
+      {
+        "dist": 2,
+        "identifier": "P13L15T33S",
+        "x": -8.72,
+        "y": 0.3,
+        "label": "Stash",
+        "name": "Stash",
+        "z": -1.73,
+        "event": "av_gangs:stash"
+      }
+    ],
+    "zIndex": 25,
+    "label": "Office 4",
+    "shell": "k4mb1_furnishedoffice4_shell",
+    "door": {
+      "dist": 2,
+      "heading": -271.48,
+      "x": 8.63,
+      "y": -2.38,
+      "label": "Door",
+      "z": -2.2,
+      "event": "av_gangs:exit"
+    }
+  },
+  "k4mb1_furnishedoffice2_shell": {
+    "peds": [],
+    "interactions": [
+      {
+        "dist": 2,
+        "identifier": "Z4UA39PO3F",
+        "x": -4.18,
+        "y": 0.34,
+        "label": "Stash",
+        "name": "Stash",
+        "z": -1,
+        "event": "av_gangs:stash"
+      }
+    ],
+    "zIndex": 25,
+    "label": "Office 2",
+    "shell": "k4mb1_furnishedoffice2_shell",
+    "door": {
+      "dist": 2,
+      "heading": -180.02,
+      "x": 4.61,
+      "y": 3.44,
+      "label": "Door",
+      "z": -1.5,
+      "event": "av_gangs:exit"
+    }
+  },
+  "container2_shell": {
+    "peds": [],
+    "interactions": [
+      {
+        "dist": 2,
+        "label": "Stash",
+        "x": -0.45,
+        "y": 5.01,
+        "z": -0.26,
+        "name": "Stash",
+        "event": "av_gangs:stash",
+        "identifier": "VH3II3JQ8I"
+      }
+    ],
+    "zIndex": 25,
+    "label": "Container",
+    "shell": "container2_shell",
+    "door": { "z": -1, "heading": 356.46, "x": 0.06, "y": -5.35 }
+  },
+  "stashhouse1_shell": {
+    "peds": [],
+    "interactions": [
+      {
+        "dist": 2,
+        "identifier": "7B7681O27",
+        "x": -19.25,
+        "y": 0.82,
+        "label": "Stash",
+        "name": "Stash",
+        "z": -1.74,
+        "event": "av_gangs:stash"
+      }
+    ],
+    "zIndex": 25,
+    "label": "Big Warehouse",
+    "shell": "stashhouse1_shell",
+    "door": {
+      "dist": 2,
+      "heading": -270.69,
+      "x": 21.02,
+      "y": -0.62,
+      "label": "Door",
+      "z": -3,
+      "event": "av_gangs:exit"
+    }
+  },
+  "k4mb1_laundry_shell": {
+    "peds": [
+      {
+        "heading": -181.63,
+        "x": -5.63,
+        "y": -4.71,
+        "z": 0.45,
+        "dict": "anim@amb@business@cfm@cfm_cut_sheets@",
+        "animation": "load_guillotine_billcutter",
+        "model": "g_m_m_chicold_01"
+      },
+      {
+        "heading": -183.59,
+        "x": -1.53,
+        "y": -4.14,
+        "z": 1.2,
+        "dict": "anim@amb@business@coc@coc_unpack_cut@",
+        "animation": "fullcut_cycle_v3_cokepacker",
+        "model": "g_m_m_chicold_01"
+      },
+      {
+        "heading": -0.54,
+        "x": -3.75,
+        "y": 5.39,
+        "z": 0.5,
+        "dict": "anim@amb@business@cfm@cfm_drying_notes@",
+        "animation": "loading_v1_worker",
+        "model": "g_m_m_chicold_01"
+      },
+      {
+        "heading": -273.57,
+        "x": 10.03,
+        "y": 4.07,
+        "z": 0.45,
+        "dict": "anim@amb@business@coc@coc_unpack_cut@",
+        "animation": "fullcut_cycle_v7_cokepacker",
+        "model": "g_m_m_chicold_01"
+      }
+    ],
+    "interactions": [
+      {
+        "dist": 2,
+        "identifier": "7UPXZM3T0A",
+        "x": -5.23,
+        "y": 5.74,
+        "label": "Ingredients",
+        "name": "Ingredients",
+        "z": -3.06,
+        "event": "av_gangs:ingredients"
+      },
+      {
+        "dist": 2,
+        "identifier": "595W0I6V04",
+        "x": -1.96,
+        "y": 5.87,
+        "label": "Product",
+        "name": "Product",
+        "z": -3.04,
+        "event": "av_gangs:product"
+      },
+      {
+        "dist": 2,
+        "identifier": "K30NVSSF57",
+        "x": 10.59,
+        "y": 0.39,
+        "label": "Stash",
+        "name": "Stash",
+        "z": -3.09,
+        "event": "av_gangs:stash"
+      }
+    ],
+    "zIndex": 30,
+    "label": "Laundromat Shell",
+    "shell": "k4mb1_laundry_shell",
+    "door": {
+      "dist": 2,
+      "heading": -1.93,
+      "x": 10.35,
+      "y": -5.48,
+      "label": "Door",
+      "z": -3,
+      "event": "av_gangs:exit"
+    }
+  },
+  "k4coke_shell": {
+    "peds": [
+      {
+        "animation": "fullcut_cycle_v7_cokepacker",
+        "heading": 0,
+        "x": 2.11,
+        "y": 3.22,
+        "z": -3.67,
+        "entity": 5700868,
+        "dict": "anim@amb@business@coc@coc_unpack_cut@",
+        "model": "mp_m_cocaine_01"
+      },
+      {
+        "animation": "fullcut_cycle_v3_cokepacker",
+        "heading": 0,
+        "x": 6.9,
+        "y": 3.42,
+        "z": -3.67,
+        "entity": 5836292,
+        "dict": "anim@amb@business@coc@coc_unpack_cut@",
+        "model": "mp_f_cocaine_01"
+      },
+      {
+        "animation": "fullcut_cycle_v6_cokepacker",
+        "heading": 0,
+        "x": 4.09,
+        "y": -0.53,
+        "z": -3.67,
+        "entity": 5921028,
+        "dict": "anim@amb@business@coc@coc_unpack_cut@",
+        "model": "mp_m_cocaine_01"
+      },
+      {
+        "animation": "load_guillotine_billcutter",
+        "heading": -184.5,
+        "x": -5.92,
+        "y": -2.23,
+        "z": -3.67,
+        "entity": 5937668,
+        "dict": "anim@amb@business@cfm@cfm_cut_sheets@",
+        "model": "mp_f_meth_01"
+      },
+      {
+        "animation": "loop",
+        "heading": 86.5,
+        "x": -9.76,
+        "y": -0.53,
+        "z": -3.67,
+        "entity": 5683204,
+        "dict": "mp_fbi_heist",
+        "model": "s_m_m_scientist_01"
+      }
+    ],
+    "interactions": [
+      {
+        "dist": 2,
+        "identifier": "UUN3920K92",
+        "x": 0.12,
+        "y": 3.78,
+        "label": "Ingredients",
+        "name": "Ingredients",
+        "z": -2.46,
+        "event": "av_gangs:ingredients"
+      },
+      {
+        "dist": 2,
+        "identifier": "MS424UB284",
+        "x": 9.87,
+        "y": 1.78,
+        "label": "Product",
+        "name": "Product",
+        "z": -2.38,
+        "event": "av_gangs:product"
+      },
+      {
+        "dist": 2,
+        "identifier": "E27YPO4NE",
+        "x": 9.84,
+        "y": -2.05,
+        "label": "Stash",
+        "name": "Stash",
+        "z": -2.41,
+        "event": "av_gangs:stash"
+      }
+    ],
+    "zIndex": 30,
+    "label": "Coke Shell",
+    "shell": "k4coke_shell",
+    "door": {
+      "dist": 2,
+      "heading": -90.63,
+      "x": -10.6,
+      "y": -2.45,
+      "label": "Door",
+      "z": -1.2,
+      "event": "av_gangs:exit"
+    }
+  },
+  "k4weed_shell": {
+    "peds": [
+      {
+        "animation": "fullcut_cycle_v3_cokepacker",
+        "heading": 8,
+        "x": 2.33,
+        "y": 3.4,
+        "z": -3.67,
+        "entity": 8014595,
+        "dict": "anim@amb@business@coc@coc_unpack_cut@",
+        "model": "mp_f_weed_01"
+      },
+      {
+        "animation": "idle_b",
+        "heading": 73.5,
+        "x": 7.12,
+        "y": 0.24,
+        "z": -3.56,
+        "entity": 8014851,
+        "dict": "amb@prop_human_movie_bulb@idle_a",
+        "model": "mp_m_weed_01"
+      },
+      {
+        "animation": "fullcut_cycle_v3_cokepacker",
+        "heading": 176,
+        "x": -6.27,
+        "y": -3.1,
+        "z": -3.67,
+        "entity": 8015107,
+        "dict": "anim@amb@business@coc@coc_unpack_cut@",
+        "model": "mp_m_weed_01"
+      },
+      {
+        "animation": "idle_b",
+        "heading": -70.5,
+        "x": -4.54,
+        "y": -2.33,
+        "z": -3.58,
+        "entity": 8015363,
+        "dict": "amb@prop_human_movie_bulb@idle_a",
+        "model": "mp_f_weed_01"
+      }
+    ],
+    "interactions": [
+      {
+        "dist": 2,
+        "identifier": "F4286TBV2",
+        "x": 0.16,
+        "y": 3.78,
+        "label": "Ingredients",
+        "name": "Ingredients",
+        "z": -2.36,
+        "event": "av_gangs:ingredients"
+      },
+      {
+        "dist": 2,
+        "identifier": "L6C1772D9",
+        "x": 9.87,
+        "y": 2.03,
+        "label": "Product",
+        "name": "Product",
+        "z": -2.29,
+        "event": "av_gangs:product"
+      },
+      {
+        "dist": 2,
+        "identifier": "25QRAFKD4",
+        "x": 9.97,
+        "y": -0.76,
+        "label": "Stash",
+        "name": "Stash",
+        "z": -2.37,
+        "event": "av_gangs:stash"
+      }
+    ],
+    "zIndex": 30,
+    "label": "Weed Shell",
+    "shell": "k4weed_shell",
+    "door": {
+      "dist": 2,
+      "heading": -90.63,
+      "x": -10.6,
+      "y": -2.45,
+      "label": "Door",
+      "z": -1,
+      "event": "av_gangs:exit"
+    }
+  },
+  "stashhouse3_shell": {
+    "peds": [],
+    "interactions": [
+      {
+        "dist": 2,
+        "identifier": "1A3JNJ1JH",
+        "x": 1.52,
+        "y": -3.59,
+        "label": "Stash",
+        "name": "Stash",
+        "z": -0.94,
+        "event": "av_gangs:stash"
+      }
+    ],
+    "zIndex": 25,
+    "label": "Stash House 3",
+    "shell": "stashhouse3_shell",
+    "door": {
+      "dist": 2,
+      "heading": -180.63,
+      "x": -0.08,
+      "y": 5.29,
+      "label": "Door",
+      "z": -1.8,
+      "event": "av_gangs:exit"
+    }
+  },
+  "k4mb1_furnishedoffice5_shell": {
+    "peds": [],
+    "interactions": [
+      {
+        "dist": 2,
+        "identifier": "0XMCW79F1Q",
+        "x": -5.47,
+        "y": 10.98,
+        "label": "Stash",
+        "name": "Stash",
+        "z": 0.63,
+        "event": "av_gangs:stash"
+      }
+    ],
+    "zIndex": 25,
+    "label": "Office 5",
+    "shell": "k4mb1_furnishedoffice5_shell",
+    "door": {
+      "dist": 2,
+      "heading": -2.04,
+      "x": 0.18,
+      "y": -11.76,
+      "label": "Door",
+      "z": -3.5,
+      "event": "av_gangs:exit"
+    }
+  },
+  "k4mb1_furnishedoffice1_shell": {
+    "peds": [],
+    "interactions": [
+      {
+        "dist": 2,
+        "identifier": "VY2XMIG6P0",
+        "x": 2.95,
+        "y": 3.22,
+        "label": "Stash",
+        "name": "Stash",
+        "z": -0.67,
+        "event": "av_gangs:stash"
+      }
+    ],
+    "zIndex": 25,
+    "label": "Office 1",
+    "shell": "k4mb1_furnishedoffice1_shell",
+    "door": {
+      "dist": 2,
+      "heading": -267.53,
+      "x": 3.39,
+      "y": -2.02,
+      "label": "Door",
+      "z": -2.1,
+      "event": "av_gangs:exit"
+    }
+  },
+  "k4mb1_acid2_shell": {
+    "peds": [
+      {
+        "animation": "fullcut_cycle_v6_cokepacker",
+        "heading": -178,
+        "x": -0.71,
+        "y": -1.01,
+        "z": -0.06,
+        "entity": 5828354,
+        "dict": "anim@amb@business@coc@coc_unpack_cut@",
+        "model": "s_m_m_scientist_01"
+      },
+      {
+        "animation": "idle_01_amy_skater_01",
+        "heading": -91.5,
+        "x": 3.61,
+        "y": 1.32,
+        "z": 0.34,
+        "entity": 5828610,
+        "dict": "anim@amb@board_room@diagram_blueprints@",
+        "model": "s_m_m_scientist_01"
+      },
+      {
+        "animation": "idle_01_amy_skater_01",
+        "heading": 0,
+        "x": 2.48,
+        "y": 1.38,
+        "z": 0.34,
+        "entity": 5828866,
+        "dict": "anim@amb@board_room@diagram_blueprints@",
+        "model": "s_m_m_scientist_01"
+      }
+    ],
+    "interactions": [
+      {
+        "dist": 2,
+        "identifier": "3M9SL162DT",
+        "x": -4.79,
+        "y": -0.56,
+        "label": "Product",
+        "name": "Product",
+        "z": 1.18,
+        "event": "av_gangs:product"
+      },
+      {
+        "dist": 2,
+        "identifier": "65157X7FC9",
+        "x": -0.35,
+        "y": 1.75,
+        "label": "Ingredients",
+        "name": "Ingredients",
+        "z": 0.88,
+        "event": "av_gangs:ingredients"
+      },
+      {
+        "dist": 2,
+        "identifier": "0O96CTA6K",
+        "x": 3.21,
+        "y": -1.87,
+        "label": "Stash",
+        "name": "Stash",
+        "z": 1.09,
+        "event": "av_gangs:stash"
+      }
+    ],
+    "zIndex": 25,
+    "label": "Acid Lab",
+    "shell": "k4mb1_acid2_shell",
+    "door": { "z": 0, "heading": 180.38, "x": -2.59, "y": 1.83 }
+  }
+}

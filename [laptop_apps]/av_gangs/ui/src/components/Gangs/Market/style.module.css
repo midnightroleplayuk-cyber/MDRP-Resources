@@ -1,0 +1,52 @@
+.card {
+  background-color: rgba(30, 30, 36, 0.55);
+  border: solid 1.25px rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(5px);
+  border-radius: 10px;
+}
+
+.image {
+  position: relative;
+  opacity: 0.8;
+}
+
+.description {
+  height: 60px;
+  overflow: auto;
+}
+
+.buttonBox {
+  width: 100%;
+}
+
+.button {
+  display: flex;
+  margin-left: auto;
+}
+
+.blur {
+  position: absolute;
+  background-color: rgba(10, 10, 16, 0.25);
+  height: 100%;
+  width: 100%;
+  backdrop-filter: blur(2px);
+  z-index: 999;
+}
+
+@media (max-height: 900px) and (min-height: 701px) {
+  .scroll {
+    height: calc(85vh - 120px);
+  }
+}
+
+@media (max-height: 700px) {
+  .scroll {
+    height: calc(75vh - 100px);
+  }
+}
+
+@media (min-height: 901px) {
+  .scroll {
+    height: calc(90vh - 130px);
+  }
+}

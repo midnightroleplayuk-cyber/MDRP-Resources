@@ -1,0 +1,25 @@
+.app {
+  background: url("/background.png");
+  width: calc(100%);
+  height: 100vh;
+  justify-content: center;
+  align-items: center;
+}
+
+.container {
+  width: 100%;
+  height: 100%;
+}
+
+.main {
+  position: relative;
+  display: flex;
+  height: 65%;
+  width: 100%;
+}
+
+.content {
+  position: relative;
+  width: 100%;
+  height: calc(100% - 45px);
+}
