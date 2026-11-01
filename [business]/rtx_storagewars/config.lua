@@ -1,6 +1,6 @@
 Config = {}
 
-Config.Framework = "standalone"  -- types (standalone, qbcore, esx)
+Config.Framework = qbcore"  -- types (standalone, qbcore, esx)
 
 Config.ESXFramework = {
 	newversion = true, -- use this if you using new esx version (if you get error with old esxsharedobjectmethod in console)
@@ -14,13 +14,13 @@ Config.StorageWarsInteriorCoords = {coords = vector3(1212.25900000, -3155.321000
 
 Config.QBCoreFrameworkResourceName = "qb-core" -- qb-core resource name, change this if you have different name of main resource of qbcore
 
-Config.InterfaceColor = "#ff66ff" -- change interface color, color must be in hex
+Config.InterfaceColor = "#270427" -- change interface color, color must be in hex
 
 Config.Language = "English" -- text language from code (English)
 
 Config.Target = false -- enable this if you want use target
 
-Config.Targettype = "qtarget" -- types - qtarget, qbtarget, oxtarget
+Config.Targettype = "oxtarget" -- types - qtarget, qbtarget, oxtarget
 
 Config.TargetSystemsNames = {qtarget = "qtarget", qbtarget = "qb-target", oxtarget = "ox_target"}
 
