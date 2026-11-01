@@ -5668,4 +5668,20 @@ return {
         close = true,
         description = 'Issued by the police department'
     }, ]]
+
+    -- AV GANGS
+    ['spray'] = {
+        label = 'Spray',
+        weight = 1,
+        stack = true,
+        close = true,
+        description = ''
+},
+    ['spray_remover'] = {
+        label = 'Spray Remover',
+        weight = 1,
+        stack = true,
+        close = true,
+        description = ''
+},
 }
