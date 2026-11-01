@@ -5647,7 +5647,7 @@ return {
         close = false,
         description = 'Can store personal data'
     },
-    ['citizenid'] = {
+--[[     ['citizenid'] = {
         label = 'Citizen ID',
         weight = 1,
         stack = false,
@@ -5667,5 +5667,5 @@ return {
         stack = false,
         close = true,
         description = 'Issued by the police department'
-    },
+    }, ]]
 }
