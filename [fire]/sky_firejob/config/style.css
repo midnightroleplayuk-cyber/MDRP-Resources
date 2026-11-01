@@ -1,0 +1,72 @@
+/*
+ * Fallback theme variables for sky_firejob.
+ * Runtime NUI colors are applied from Config.PrimaryColor via theme:update.
+ */
+:root {
+  /* Professional workstation palette */
+  --primary-color: #eea125;
+  --primary-color-strong: #ffd18a;
+  --primary-color-soft: rgba(238, 161, 37, 0.28);
+  --primary-color-faint: rgba(238, 161, 37, 0.1);
+  --primary-gradient-soft:
+    radial-gradient(circle at 100% 0%, rgba(238, 161, 37, 0.18), transparent 34%),
+    radial-gradient(circle at 50% 125%, rgba(238, 161, 37, 0.2), transparent 44%);
+  --primary-gradient-panel:
+    radial-gradient(circle at 100% 0%, rgba(238, 161, 37, 0.22), transparent 38%),
+    radial-gradient(circle at 50% 125%, rgba(238, 161, 37, 0.2), transparent 46%);
+  --success-color: #3fa67a;
+  --error-color: #d14d57;
+  --warning-color: #c99a43;
+  --info-color: #5aa7c8;
+  --accent-glow: rgba(213, 213, 213, 0);
+  --accent-glow-strong: rgba(255, 255, 255, 0.12);
+  --fence-wire: rgba(198, 205, 212, 0.55);
+  --fence-wire-light: rgba(237, 243, 249, 0.9);
+  --fence-wire-dark: rgba(150, 158, 166, 0.6);
+  --fence-wire-strong: rgba(216, 224, 232, 0.75);
+  --fence-shadow: rgba(6, 7, 9, 0.9);
+
+  /* Surfaces */
+  --panel-surface: #171a1f;
+  --surface-color: #1f2329;
+  --surface-secondary: #252a31;
+  --surface-overlay: rgba(8, 10, 13, 0.78);
+  --surface-border: rgba(205, 216, 230, 0.24);
+  --surface-border-strong: rgba(226, 235, 247, 0.42);
+  --glass-surface: rgba(31, 35, 41, 0.86);
+  --glass-surface-strong: #20242b;
+  --glass-border: rgba(214, 223, 237, 0.14);
+  --glass-shadow: 0 1.4vh 3.2vh rgba(0, 0, 0, 0.32);
+  --divider-strong: #3a404a;
+  --neutral-color: rgba(122, 132, 146, 0.45);
+  --border-muted: rgba(185, 194, 207, 0.14);
+
+  /* Creator solid surfaces (opaque tablet palette) */
+  --creator-panel: #15191f;
+  --creator-panel-soft: #10141a;
+  --creator-card: #222832;
+  --creator-card-strong: #11151a;
+  --creator-card-hover: #303846;
+  --creator-pill: #242b35;
+  --creator-input-bg: #0f1318;
+  --creator-border: rgba(205, 216, 230, 0.24);
+
+  /* Text */
+  --text-color: #f1f5fa;
+  --text-strong: #ffffff;
+  --text-muted: rgba(239, 245, 252, 0.9);
+  --text-subtle: rgba(232, 239, 248, 0.82);
+  --text-soft: rgba(224, 233, 244, 0.76);
+
+  /* Feedback */
+  --feedback-success: #74d4aa;
+  --feedback-error: #ff8d96;
+
+  --app-body-bg: #111418;
+
+  --ui-radius-xs: 0.25vh;
+  --ui-radius-sm: 0.4vh;
+  --ui-radius-md: 0.65vh;
+  --ui-radius-lg: 0.8vh;
+  --ui-transition: 140ms ease;
+}

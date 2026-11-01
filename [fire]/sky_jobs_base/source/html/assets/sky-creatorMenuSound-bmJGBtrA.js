@@ -1,0 +1,1 @@
+import{n as e}from"./sky-index-TW_2TIhV.js";const r=new Set(["","text","search","email","password","number","tel"]),a=t=>t?t instanceof HTMLInputElement?r.has((t.type||"").toLowerCase()):t instanceof HTMLTextAreaElement?!0:t.getAttribute("contenteditable")==="true":!1;function o(t){e("creator/playSound",{sound:t},"POST",{logErrors:!1})}export{a as i,o as p};

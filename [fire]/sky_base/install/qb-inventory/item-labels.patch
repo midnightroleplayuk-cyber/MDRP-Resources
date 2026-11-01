@@ -1,0 +1,97 @@
+--- a/html/app.js
++++ b/html/app.js
+@@ -764,7 +764,7 @@
+             }
+         },
+         showItemNotification(itemData) {
+-            this.notificationText = itemData.item.label;
++            this.notificationText = this.getItemDisplayName(itemData.item);
+             this.notificationImage = "images/" + itemData.item.image;
+             this.notificationType = itemData.type === "add" ? "Received" : itemData.type === "use" ? "Used" : "Removed";
+             this.notificationAmount = itemData.amount || 1;
+@@ -864,20 +864,32 @@
+                     this.selectedWeaponAttachments.splice(index, 0, attachment);
+                 });
+         },
++        getItemDisplayName(item) {
++            const metadata = item.metadata || item.info;
++            if (metadata && typeof metadata.label === "string" && metadata.label.trim()) {
++                return metadata.label;
++            }
++            return item.label || item.name;
++        },
++        escapeTooltipText(value) {
++            const entities = { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" };
++            return String(value).replace(/[&<>"']/g, character => entities[character]);
++        },
+         generateTooltipContent(item) {
+             if (!item) {
+                 return "";
+             }
+-            let content = `<div class="custom-tooltip"><div class="tooltip-header">${item.label}</div><hr class="tooltip-divider">`;
+-            const description = item.info && item.info.description ? item.info.description.replace(/\n/g, "<br>") : item.description ? item.description.replace(/\n/g, "<br>") : "No description available.";
+-            if (item.info && Object.keys(item.info).length > 0 && item.info.display !== false) {
+-                for (const [key, value] of Object.entries(item.info)) {
+-                    if (key !== "description" && key !== "display") {
++            let content = `<div class="custom-tooltip"><div class="tooltip-header">${this.escapeTooltipText(this.getItemDisplayName(item))}</div><hr class="tooltip-divider">`;
++            const metadata = item.metadata || item.info;
++            const description = this.escapeTooltipText((metadata && metadata.description) || item.description || "No description available.").replace(/\n/g, "<br>");
++            if (metadata && Object.keys(metadata).length > 0 && metadata.display !== false) {
++                for (const [key, value] of Object.entries(metadata)) {
++                    if (key !== "description" && key !== "display" && key !== "label") {
+                         let valueStr = value;
+                         if (key === "attachments") {
+                             valueStr = Object.keys(value).length > 0 ? "true" : "false";
+                         }
+-                        content += `<div class="tooltip-info"><span class="tooltip-info-key">${this.formatKey(key)}:</span> ${valueStr}</div>`;
++                        content += `<div class="tooltip-info"><span class="tooltip-info-key">${this.escapeTooltipText(this.formatKey(key))}:</span> ${this.escapeTooltipText(valueStr)}</div>`;
+                     }
+                 }
+             }
+--- a/html/index.html
++++ b/html/index.html
+@@ -57,7 +57,7 @@
+                                     <div class="item-slot-durability-fill" v-else style="width: 0%"></div>
+                                 </div>
+                                 <!-- <div class="item-slot-label" v-if="getItemInSlot(slot, 'player')">
+-                                    <p>{{ getItemInSlot(slot, 'player').label }}</p>
++                                    <p>{{ getItemDisplayName(getItemInSlot(slot, 'player')) }}</p>
+                                 </div> -->
+                             </div>
+                         </div>
+@@ -114,7 +114,7 @@
+                                     <div class="item-slot-durability-fill" v-else style="width: 0%"></div>
+                                 </div>
+                                 <!-- <div class="item-slot-label" v-if="getItemInSlot(slot, 'other')">
+-                                    <p>{{ getItemInSlot(slot, 'other').label }}</p>
++                                    <p>{{ getItemDisplayName(getItemInSlot(slot, 'other')) }}</p>
+                                 </div> -->
+                             </div>
+                         </div>
+@@ -147,7 +147,7 @@
+                             <div class="item-slot-durability-fill" v-else style="width: 0%"></div>
+                         </div>
+                         <div class="item-slot-label" v-if="getHotbarItemInSlot(slot)">
+-                            <p>{{ getHotbarItemInSlot(slot).label }}</p>
++                            <p>{{ getItemDisplayName(getHotbarItemInSlot(slot)) }}</p>
+                         </div>
+                     </div>
+                 </div>
+@@ -175,7 +175,7 @@
+                             <img :src="'images/' + item.image" alt="" />
+                         </div>
+                         <div class="item-slot-label">
+-                            <p>{{ item.label }}</p>
++                            <p>{{ getItemDisplayName(item) }}</p>
+                         </div>
+                     </div>
+                 </div>
+@@ -194,7 +194,7 @@
+                     <p>x{{ draggedItem.amount }}</p>
+                 </div>
+                 <div class="item-slot-label">
+-                    <p>{{ draggedItem.label }}</p>
++                    <p>{{ getItemDisplayName(draggedItem) }}</p>
+                 </div>
+             </div>
+             <ul v-if="showContextMenu" class="context-menu" :style="{ top: contextMenuPosition.top, left: contextMenuPosition.left }">

@@ -1,0 +1,27 @@
+<article class="player-document sky-identity-card sky-service-card" data-document>
+  <header class="document-header">
+    <div class="heading"><p class="country" data-if="issuer" data-field="issuer"></p><h1 data-field="title"></h1><p class="service-department" data-field="service.department" data-title="service.department"></p></div>
+  </header>
+  <div class="document-body">
+    <div class="portrait-column">
+      <div class="portrait" data-portrait>
+        <img data-if="portrait" data-image="portrait" data-alt="holder.name">
+        <svg data-if-not="portrait" viewBox="0 0 120 150" preserveAspectRatio="xMidYMax meet" aria-hidden="true"><path class="shoulders" d="M0 150v-20c0-18 24-26 40-32h40c16 6 40 14 40 32v20Z"/><path class="neck" d="M43 82h34v27l-17 19-17-19Z"/><ellipse class="face" cx="60" cy="56" rx="30" ry="39"/><path class="hair" d="M30 60C18 16 43 9 61 9c29 0 36 21 29 51l-7-25c-18 11-31-10-46 2Z"/><path class="collar" d="m40 98 20 26 20-26 10 7-17 45H47l-17-45Z"/></svg>
+      </div>
+    </div>
+    <div class="details">
+      <img class="document-watermark" data-if="logo" data-image="logo" alt="" aria-hidden="true">
+      <div class="name-row" data-if="holder.splitName">
+        <div class="field name-field"><label data-field="labels.firstName"></label><p data-field="holder.firstname" data-title="holder.firstname"></p></div>
+        <div class="field name-field"><label data-field="labels.lastName"></label><p data-field="holder.lastname" data-title="holder.lastname"></p></div>
+      </div>
+      <div class="field name-field" data-if-not="holder.splitName"><label data-field="labels.name"></label><p data-field="holder.name"></p></div>
+      <div class="service-fields">
+        <div class="field service-rank"><label data-field="labels.rank"></label><p data-field="service.rank"></p></div>
+        <div class="field service-number" data-if="service.number"><label data-field="labels.number"></label><p data-field="service.number"></p></div>
+      </div>
+    </div>
+  </div>
+  <div class="document-code" aria-hidden="true" data-list="code"><template><p data-field="item"></p></template></div>
+  <footer data-if="issuer" data-field="issuer"></footer>
+</article>
