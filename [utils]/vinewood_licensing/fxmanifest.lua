@@ -55,6 +55,7 @@ ui_page 'web/index.html'
 
 files {
     'web/index.html',
+    'web/images/*.png',
     'web/css/config.css',
     'web/css/style.css',
     'web/js/app.js',
