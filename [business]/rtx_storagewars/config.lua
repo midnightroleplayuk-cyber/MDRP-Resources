@@ -1,6 +1,6 @@
 Config = {}
 
-Config.Framework = "qbcore"  -- types (standalone, qbcore, esx)
+Config.Framework = "standalone"  -- types (standalone, qbcore, esx)
 
 Config.ESXFramework = {
 	newversion = true, -- use this if you using new esx version (if you get error with old esxsharedobjectmethod in console)
@@ -14,11 +14,11 @@ Config.StorageWarsInteriorCoords = {coords = vector3(1212.25900000, -3155.321000
 
 Config.QBCoreFrameworkResourceName = "qb-core" -- qb-core resource name, change this if you have different name of main resource of qbcore
 
-Config.InterfaceColor = "#270427" -- change interface color, color must be in hex
+Config.InterfaceColor = "#7c22b8" -- change interface color, color must be in hex
 
 Config.Language = "English" -- text language from code (English)
 
-Config.Target = false -- enable this if you want use target
+Config.Target = true -- enable this if you want use target
 
 Config.Targettype = "oxtarget" -- types - qtarget, qbtarget, oxtarget
 
@@ -581,7 +581,13 @@ function DrawText3D(x, y, z, text)
 	end
 end
 
+
 function Notify(text)
-	exports["rtx_notify"]:Notify("Storage Wars", text, 5000, "info") -- if you get error in this line its because you dont use our notify system buy it here https://rtx.tebex.io/package/5402098 or you can use some other notify system just replace this notify line with your notify system
-	--exports["mythic_notify"]:SendAlert("inform", text, 5000)
+    lib.notify({
+        title = 'Storage Wars',
+        description = text,
+        type = 'inform',
+        duration = 5000,
+        position = 'top-right'
+    })
 end
