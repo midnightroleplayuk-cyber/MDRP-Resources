@@ -31,8 +31,10 @@ Config.PoliceItems = {
 
 }
 Config.Firearms = {
-  { id = 'pistol', label = 'Service Pistol', item = 'WEAPON_PISTOL', count = 1, minGrade = 5 },
-  { id = 'carbine', label = 'Patrol Carbine', item = 'WEAPON_CARBINERIFLE', count = 1, minGrade = 10 },
+  { id = 'tasercart', label = 'Taser Cartridge', item = 'taser_cartridge', count = 20, minGrade = 10 },
+  { id = '9mm', label = '9x19mm', item = 'ammo-9', count = 100, minGrade = 5 },
+  { id = '556', label = '5.56x45mm', item = 'rifle', count = 240, minGrade = 10 },
+
 }
 -- Appearance integration: 'illenium-appearance' or 'fivem-appearance'.
 -- Full outfits use appearance exports to save current skin then apply configured outfit components/props.
