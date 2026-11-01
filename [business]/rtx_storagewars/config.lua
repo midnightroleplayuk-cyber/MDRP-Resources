@@ -14,7 +14,7 @@ Config.StorageWarsInteriorCoords = {coords = vector3(1212.25900000, -3155.321000
 
 Config.QBCoreFrameworkResourceName = "qb-core" -- qb-core resource name, change this if you have different name of main resource of qbcore
 
-Config.InterfaceColor = "#7c22b8" -- change interface color, color must be in hex
+Config.InterfaceColor = "#9f4ed4" -- change interface color, color must be in hex
 
 Config.Language = "English" -- text language from code (English)
 
