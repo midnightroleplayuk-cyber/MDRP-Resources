@@ -28,7 +28,7 @@ Config.TargetIcons = {registericon = "fa-solid fa-bars-progress", searchicon = "
 
 Config.StorageWarsInteractionSystem = 1 -- 1 == Our custom interact system, 2 == 3D Text Interact, 3 == Gta V Online Interaction Style
 
-Config.StorageWarsAuctionRegisterLocation = {coords = vector3(1214.54, -3180.6, 9.58), distance = 2.5} -- location for register in the auction
+Config.StorageWarsAuctionRegisterLocation = {coords = vector3(1215.63, -3200.93, 6.44), distance = 2.5} -- location for register in the auction
 
 Config.StorageWarsAuctionRegisterKey = "E" -- storage wars key for register
 
