@@ -32,7 +32,7 @@ PublicSharedSoccerConfig = {
     },
 
     UseTarget = true,
-    UseGabzMBA = false,
+    UseGabzMBA = true,
     DisableGunUsage = true,
     WantNPCMarker = true,
 
