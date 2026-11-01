@@ -3,18 +3,16 @@ Config = {}
 Config.Debug = false
 
 -- 'auto' detects qbx_core, qb-core or es_extended. 'standalone' uses ACE permissions only.
-Config.Framework = 'auto'
+Config.Framework = 'qbx_core'
 
 -- Jobs allowed to start/stop interviews. job = minimum grade.
 Config.PoliceJobs = {
-    police = 1,
-    sheriff = 0,
+    police = 0,
 }
 
 -- Jobs allowed to open the evidence viewer and play back recordings.
 Config.ReviewJobs = {
     police = 4,
-    sheriff = 0,
 }
 
 Config.RequireOnDuty = true
