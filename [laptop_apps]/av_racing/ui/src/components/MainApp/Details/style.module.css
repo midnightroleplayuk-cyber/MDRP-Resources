@@ -1,0 +1,203 @@
+.element {
+  background-color: var(--bg-panel);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 14px;
+  transition: all 0.2s ease;
+}
+
+.element:hover {
+  background-color: var(--bg-panel-hover);
+  border-color: var(--accent);
+}
+
+.label {
+  color: var(--text-dim);
+  font-size: 11px;
+  font-weight: 700;
+  font-family: var(--font-main);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.value {
+  color: var(--text-main);
+  font-size: 13px;
+  font-weight: 600;
+  font-family: var(--font-main);
+  text-align: right;
+}
+
+.tooltip {
+  background-color: rgba(255, 255, 255, 0.05);
+  display: flex;
+  height: 16px;
+  width: 16px;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+  margin-left: 8px;
+  cursor: help;
+  transition: background-color 0.2s ease;
+}
+
+.tooltip:hover {
+  background-color: var(--accent);
+}
+
+.tooltipText {
+  font-size: 10px;
+  color: var(--text-main);
+  font-weight: 800;
+  transition: color 0.2s ease;
+}
+
+.tooltip:hover .tooltipText {
+  color: var(--bg-main);
+}
+
+.mapContainer {
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
+  overflow: hidden;
+  height: 100%;
+  background-color: var(--bg-panel);
+}
+
+.modalHeader {
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 16px;
+  margin-bottom: 8px;
+}
+
+.modalTitle {
+  color: var(--text-main);
+  font-family: var(--font-main);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-size: 18px;
+}
+
+.copyIcon {
+  color: var(--text-dim);
+  transition: color 0.2s ease;
+}
+
+.copyIcon:hover {
+  color: var(--accent);
+}
+
+.metrics {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.metric {
+  background-color: var(--bg-panel);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  padding: 10px;
+  min-width: 0;
+}
+
+.metricLabel {
+  font-family: var(--font-main);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-bottom: 4px;
+}
+
+.metricValue {
+  font-family: var(--font-main);
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-main);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.metricAccent {
+  color: var(--accent);
+}
+
+.sectionLabel {
+  font-family: var(--font-main);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-family: var(--font-main);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--border-color);
+  color: var(--text-dim);
+}
+
+.chipOn {
+  color: var(--accent);
+  border-color: rgba(206, 255, 28, 0.35);
+  background-color: rgba(206, 255, 28, 0.12);
+}
+
+.rows {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0 16px;
+  border-top: 1px solid var(--border-color);
+  padding-top: 8px;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 5px 0;
+  min-width: 0;
+}
+
+.rowKey {
+  font-size: 11.5px;
+  color: var(--text-dim);
+  white-space: nowrap;
+}
+
+.rowValue {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-main);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.adminBlock {
+  border-top: 1px solid var(--border-color);
+  padding-top: 10px;
+}

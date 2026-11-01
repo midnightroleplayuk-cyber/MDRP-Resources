@@ -1,0 +1,216 @@
+.card {
+  background-color: rgba(110, 113, 128, 0.085);
+  border: solid 1.25px rgba(255, 255, 255, 0.125);
+}
+
+.badge {
+  background-color: rgba(110, 113, 128, 0.095);
+  border: solid 1.25px rgba(110, 113, 128, 0.33);
+  border-radius: 4px;
+  letter-spacing: 1.5px;
+  padding: 12px;
+  width: fit-content;
+}
+
+.item {
+  background-color: transparent;
+  border: none;
+  font-family: "Bebas-Regular";
+  color: white;
+  margin-bottom: 6px;
+}
+
+.content {
+  background-color: rgba(15, 16, 27, 0.15);
+  color: rgba(179, 179, 179, 1);
+  border-bottom: solid 1.25px rgba(255, 255, 255, 0.125);
+  border-left: solid 1.25px rgba(255, 255, 255, 0.125);
+  border-right: solid 1.25px rgba(255, 255, 255, 0.125);
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+}
+
+.root {
+  [data-active] {
+    & .control {
+      border-bottom-left-radius: 0px;
+      border-bottom-right-radius: 0px;
+    }
+  }
+}
+
+.control {
+  background-color: rgba(110, 113, 128, 0.085);
+  border: solid 1.25px rgba(255, 255, 255, 0.125);
+  border-radius: 10px;
+}
+
+.control:hover {
+  background-color: rgba(110, 113, 128, 0.175);
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+}
+
+.title {
+  display: flex;
+  flex-direction: column;
+  gap: 0px;
+  padding: var(--mantine-spacing-xs);
+  font-family: "Roboto Condensed", sans-serif;
+  text-align: center;
+  background-color: rgba(110, 113, 128, 0.095);
+  border: solid 1.25px rgba(110, 113, 128, 0.33);
+  border-radius: 6px;
+  box-shadow: inset 1px 1px 10px 1px rgba(110, 113, 128, 0.05);
+}
+
+.badge {
+  background-color: rgba(110, 113, 128, 0.095);
+  border: solid 1.25px rgba(110, 113, 128, 0.33);
+  border-radius: 4px;
+  padding: 15px;
+  width: fit-content;
+}
+
+.text {
+  font-size: var(--mantine-font-size-lg);
+  letter-spacing: 1.25px;
+  font-weight: 500;
+  color: var(--mantine-color-gray-3);
+  font-family: "Roboto Condensed", sans-serif;
+  text-transform: uppercase;
+}
+.actionIcon {
+  border-radius: 4px;
+  background: rgba(110, 113, 128, 0.15);
+  font-weight: lighter;
+  border: solid 1.25px rgba(110, 113, 128, 0.33);
+  cursor: pointer;
+}
+
+.actionIcon:hover {
+  background: rgba(110, 113, 128, 0.24);
+}
+
+.eventsList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.eventRow {
+  background-color: var(--bg-panel);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: all 0.2s ease;
+}
+
+.eventRow:hover {
+  border-color: var(--text-dim);
+  background-color: var(--bg-panel-hover);
+}
+
+.eventInfo {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.eventIcon {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background-color: rgba(206, 255, 28, 0.1);
+  color: var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(206, 255, 28, 0.2);
+}
+
+.eventDetails h3 {
+  font-size: 16px;
+  font-weight: 700;
+  margin: 0 0 4px 0;
+  color: var(--text-main);
+  font-family: var(--font-main);
+}
+
+.eventMeta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 12px;
+  color: var(--text-dim);
+  font-weight: 500;
+  font-family: var(--font-main);
+}
+
+.eventMeta span {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.eventActions {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+}
+
+.expires {
+  text-align: right;
+}
+
+.expiresLabel {
+  font-size: 11px;
+  color: var(--text-dim);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 4px;
+  font-family: var(--font-main);
+}
+
+.expiresTime {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--accent);
+  font-family: var(--font-main);
+}
+
+.btnGroup {
+  display: flex;
+  gap: 8px;
+}
+
+.actionBtn {
+  width: 36px;
+  height: 36px;
+  border-radius: 6px;
+  background-color: transparent;
+  border: none;
+  color: var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  padding: 0;
+}
+
+.actionBtn:hover {
+  background-color: rgba(206, 255, 28, 0.1);
+}
+
+.actionBtnDanger {
+  color: var(--danger);
+}
+
+.actionBtnDanger:hover {
+  background-color: rgba(239, 90, 90, 0.1);
+}

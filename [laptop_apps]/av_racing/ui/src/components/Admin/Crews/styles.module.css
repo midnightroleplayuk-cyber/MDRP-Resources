@@ -1,0 +1,107 @@
+.control,
+.root {
+  background-color: transparent;
+}
+
+.indicator {
+  background-color: rgba(110, 113, 128, 0.33);
+}
+
+.box {
+  background-color: rgba(50, 50, 67, 0.45);
+  height: 35px;
+  width: 35px;
+  display: flex;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+  border-radius: 8px;
+  border: solid 1px rgba(110, 113, 128, 0.15);
+}
+
+.settingsWrap {
+  display: flex;
+  justify-content: center;
+  padding: 28px 20px;
+}
+
+.settingsCard {
+  display: flex;
+  gap: 28px;
+  width: min(820px, 100%);
+  padding: 26px;
+  background-color: var(--bg-panel);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+}
+
+.avatarCol {
+  flex-shrink: 0;
+  width: 220px;
+}
+
+.avatarFrame {
+  width: 220px;
+  height: 220px;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid var(--border-color);
+  background-color: rgba(0, 0, 0, 0.25);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+.crewName {
+  font-family: var(--font-main);
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.4px;
+  text-align: center;
+  color: var(--text-main);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.crewNameSub {
+  font-size: 11px;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  text-align: center;
+  color: var(--text-dim);
+}
+
+.formCol {
+  flex: 1;
+  min-width: 0;
+}
+
+.sectionTitle {
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+.dangerZone {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 14px;
+  border: 1px solid rgba(239, 90, 90, 0.28);
+  border-radius: 8px;
+  background-color: rgba(239, 90, 90, 0.06);
+}
+
+.dangerTitle {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--danger);
+}
+
+.dangerDesc {
+  font-size: 11.5px;
+  color: var(--text-dim);
+}

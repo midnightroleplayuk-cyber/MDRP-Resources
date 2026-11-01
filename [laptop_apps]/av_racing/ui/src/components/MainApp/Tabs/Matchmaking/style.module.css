@@ -1,0 +1,223 @@
+.wrapper {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.card {
+  width: 100%;
+  max-width: 460px;
+  background-color: var(--bg-panel);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
+  padding: 28px;
+}
+
+.rankedBadge {
+  background-color: rgba(206, 255, 28, 0.1);
+  color: var(--accent);
+  border: 1px solid rgba(206, 255, 28, 0.2);
+  font-family: var(--font-main);
+  font-size: 9px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  width: fit-content;
+  margin-bottom: 8px;
+}
+
+.title {
+  font-family: var(--font-main);
+  color: var(--text-main);
+  font-size: 20px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.subtitle {
+  font-family: var(--font-main);
+  font-size: 12px;
+  color: var(--text-dim);
+  margin-top: 4px;
+}
+
+.label {
+  font-family: var(--font-main);
+  color: var(--text-dim);
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.value {
+  font-family: var(--font-main);
+  color: var(--text-main);
+  font-size: 16px;
+  font-weight: 800;
+}
+
+.statRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.barWrap {
+  width: 100%;
+  height: 6px;
+  border-radius: 3px;
+  background-color: var(--bg-main);
+  border: 1px solid var(--border-color);
+  overflow: hidden;
+}
+
+.barFill {
+  height: 100%;
+  background-color: var(--accent);
+  transition: width 0.4s ease;
+}
+
+.hint {
+  font-family: var(--font-main);
+  font-size: 12px;
+  color: var(--text-dim);
+  text-align: center;
+}
+
+.disabledText {
+  font-family: var(--font-main);
+  font-size: 12px;
+  color: var(--danger);
+  text-align: center;
+}
+
+.waitingText {
+  font-family: var(--font-main);
+  font-size: 12px;
+  color: var(--text-dim);
+}
+
+.countdown {
+  font-family: var(--font-main);
+  font-size: 52px;
+  font-weight: 800;
+  line-height: 1;
+  color: var(--accent);
+}
+
+.primaryButton,
+.acceptButton {
+  background-color: var(--accent);
+  color: #000;
+  border: none;
+  border-radius: 6px;
+  padding: 12px 24px;
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: var(--font-main);
+}
+
+.primaryButton {
+  width: 100%;
+}
+
+.primaryButton:hover,
+.acceptButton:hover {
+  background-color: #e2ff4d;
+}
+
+.primaryButton:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.primaryButton:disabled:hover {
+  background-color: var(--accent);
+}
+
+.leaveButton,
+.declineButton {
+  background-color: transparent;
+  color: var(--text-main);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  padding: 12px 24px;
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: var(--font-main);
+}
+
+.leaveButton {
+  width: 100%;
+}
+
+.leaveButton:hover,
+.declineButton:hover {
+  background-color: var(--bg-panel-hover);
+  border-color: var(--text-dim);
+}
+
+.acceptButton,
+.declineButton {
+  min-width: 130px;
+}
+
+.trackCard {
+  background-color: var(--bg-main);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  padding: 10px 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.trackCard:hover {
+  background-color: var(--bg-panel-hover);
+  border-color: var(--text-dim);
+}
+
+.trackCardMine {
+  border-color: var(--accent);
+  background-color: rgba(206, 255, 28, 0.06);
+}
+
+.trackName {
+  font-family: var(--font-main);
+  color: var(--text-main);
+  font-size: 13px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.trackMeta {
+  font-family: var(--font-main);
+  color: var(--text-dim);
+  font-size: 10px;
+  letter-spacing: 1px;
+}
+
+.voteCount {
+  font-family: var(--font-main);
+  color: var(--accent);
+  font-size: 20px;
+  font-weight: 800;
+  line-height: 1;
+}

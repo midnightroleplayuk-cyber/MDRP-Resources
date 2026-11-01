@@ -1,0 +1,20 @@
+{
+  "race": {
+    "moneyAccount": "cosmo",
+    "laps": [2, 3],
+    "reversed": false,
+    "phasing": "racers",
+    "moneypot": [50, 100]
+  },
+  "fillMinCore": 1,
+  "enabled": false,
+  "maxRacers": 30,
+  "startsIn": 10,
+  "inviteSeconds": 45,
+  "voting": { "candidates": 3, "seconds": 20, "enabled": true },
+  "tickInterval": 5,
+  "queueUpdateInterval": 3,
+  "trackCacheSeconds": 60,
+  "bracket": { "initial": 150, "widenEvery": 30, "max": 2000, "widenBy": 100 },
+  "noShowCooldown": 10
+}

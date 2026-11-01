@@ -1,0 +1,109 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.titlebar {
+  height: 32px;
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  font-size: 11px;
+  letter-spacing: 2px;
+  color: var(--text-dim);
+  font-weight: 600;
+  border-bottom: 1px solid var(--border-color);
+  background: rgba(0, 0, 0, 0.2);
+  text-transform: uppercase;
+  font-family: var(--font-main);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 32px;
+  background-color: var(--bg-panel);
+  border-bottom: 1px solid var(--border-color);
+  height: 80px;
+}
+
+.avatar {
+  width: 46px;
+  height: 46px;
+  border-radius: var(--radius);
+  background-color: var(--bg-panel);
+  border: 1px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.userName {
+  font-size: 18px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  color: var(--text-main);
+  margin-bottom: 6px;
+  line-height: 1;
+  font-family: var(--font-main);
+  text-transform: uppercase;
+}
+
+.statsGroup {
+  display: flex;
+  gap: 14px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-dim);
+}
+
+.tabGroup {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  gap: 8px;
+}
+
+.disabled,
+.active {
+  background: none;
+  border: none;
+  color: var(--text-dim);
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 0 20px;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  font-family: var(--font-main);
+  margin-bottom: -1px;
+}
+
+.disabled:hover {
+  color: var(--text-main);
+  background-color: transparent;
+}
+
+.active {
+  color: var(--text-main);
+  border-bottom-color: var(--accent);
+}
+
+.active:hover {
+  background-color: transparent;
+}
+
+.dropdown {
+  background-color: var(--bg-panel);
+  border: 1px solid var(--border-color);
+  backdrop-filter: blur(3px);
+}
