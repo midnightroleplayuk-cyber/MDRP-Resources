@@ -654,7 +654,7 @@ return {
     description = 'Medical Tablet for MHS Staff',
     client = {
         image = 'mhs_mdt.png',
-        export = 'vinewood-emsmdt.openMDT
+        export = 'vinewood-emsmdt.openMDT,
     }
 },
 ['driving_licence'] = {
