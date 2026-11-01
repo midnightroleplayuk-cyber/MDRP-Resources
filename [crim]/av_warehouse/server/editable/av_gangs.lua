@@ -3,7 +3,7 @@
 -- Requires: https://av-scripts.tebex.io/package/6351957
 
 Config = Config or {}
-Config.UsingAVGangs = false -- Set warehouse robbery as mission in av_gangs
+Config.UsingAVGangs = true -- Set warehouse robbery as mission in av_gangs
 Config.GangCooldown = true -- Sets the gang on cooldown to prevent multiple active warehouse for the same gang
 Config.GangXP = 10 -- number or false, add XP to player gang after hacking a warehouse
 
