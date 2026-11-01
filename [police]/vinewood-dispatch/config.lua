@@ -70,10 +70,10 @@ Config.Priorities = {
 ---------------------------------------------------------------------
 Config.UI = {
     position = 'top-left',  -- top-right | top-left | bottom-right | bottom-left
-    duration = 30,           -- seconds an alert stays on screen
+    duration = 20,           -- seconds an alert stays on screen
     maxOnScreen = 4,
     -- grades that stay on screen until you attach, dismiss them or open the log (1 Immediate, 2 Priority, 3 Routine)
-    stickyPriorities = { 1 },
+    stickyPriorities = false,
     -- alerts that time out before you attach are counted as missed, with a reminder on screen until you open the log
     showMissed = true,
 }
