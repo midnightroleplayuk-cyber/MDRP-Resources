@@ -62,3 +62,19 @@ Config.Restraint = {
     -- Key to let go of the person you're escorting (players can rebind it in GTA settings)
     LetGoKey = 'G',
 }
+
+-- Quick keys for officers (on duty, on foot), acting on the closest person. Players can rebind them in
+-- GTA settings under FiveM. Set Enabled = false to have none.
+Config.Restraint.Keybinds = {
+    Enabled = true,
+    Cuff = 'UP',      -- handcuff (rear)
+    Escort = 'LEFT',  -- escort / let go
+    Uncuff = 'DOWN',  -- remove handcuffs
+}
+
+-- The handcuffs item: using it takes the cuffs out, in your hand. Then cuff the person in front
+-- (E or the cuff key), or put them away (Backspace or use the item again).
+Config.Restraint.HandcuffsItem = {
+    Item = 'handcuffs',
+    Prop = { model = 'p_cs_cuffs_02_s', bone = 57005, offset = vec3(0.12, 0.03, -0.03), rot = vec3(-90.0, 0.0, 0.0) },
+}

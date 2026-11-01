@@ -5,7 +5,7 @@ lua54 'yes'
 name 'vinewood_police'
 author 'Vinewood Studios'
 description 'Vinewood Police Operations: British police job for Qbox, QBCore and ESX'
-version '1.7.0'
+version '1.9.0'
 
 shared_scripts {
     '@ox_lib/init.lua',
@@ -63,6 +63,7 @@ server_scripts {
     'server/core/commands.lua',
     'server/core/main.lua',
     'server/modules/locations.lua',
+    'server/modules/documents.lua',
     'server/modules/admin.lua',
     'server/modules/stations.lua',
     'server/modules/duty.lua',
@@ -106,10 +107,12 @@ client_scripts {
     'client/modules/restraint.lua',
     'client/modules/restraint_props.lua',
     'client/modules/restraint_target.lua',
+    'client/modules/handcuffs.lua',
     'client/modules/arrest.lua',
     'client/modules/roads.lua',
     'client/modules/npc.lua',
     'client/modules/scene.lua',
+    'client/modules/tape.lua',
     'client/modules/custody.lua',
     'client/modules/celldoors.lua',
     'client/modules/worldtools.lua',
@@ -135,6 +138,7 @@ files {
     'web/style.css',
     'web/app.js',
     'web/sounds/*.wav',
+    'web/textures/policeline.png',
 }
 
 dependencies {
@@ -151,6 +155,7 @@ escrow_ignore {
     'bridge/*.lua',
     'integrations/*.lua',
     'client/hooks.lua',
+    'install/*.lua',
 }
 
 dependency '/assetpacks'

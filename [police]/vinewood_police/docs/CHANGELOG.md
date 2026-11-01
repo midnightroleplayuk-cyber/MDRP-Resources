@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.9.0
+- Police tape, drawn with web/textures/policeline.png. /scenekit, Put up tape (or the radial, Scene): aim at a lamp post, cone or fence and press E to tie it there. Aim at the ground and it's tied at waist height. Keep adding points to run it round a scene; Enter finishes. It has a slight sag and a flutter, every player sees it, and the print reads the right way from the front. "Take down tape near me" removes it (your own, or anyone's for sergeants and above). It clears with "Pick everything up", on sign-off and after the scene lifetime. Settings: Config.Scene.Tape (width, sag, flutter, limits). Swap the PNG to change the design.
+
+## 1.8.0
+- Quick keys: Up arrow handcuffs, Left arrow escorts / lets go, Down arrow removes handcuffs (on duty, on foot, the person in front). Rebindable; switch off with Config.Restraint.Keybinds.
+- Handcuffs item: using it takes the cuffs out, in your hand (prop), then E or the cuff key cuffs the person in front. Backspace puts them away.
+- Paper notices: fixed penalties, traffic offence reports, vehicle seizure notices and (without the MDT) stop and search records now come with a police_notice item. Using it shows the notice again.
+- Ready-made items: install/ has definitions for ox_inventory, qb-inventory and ESX, with icons. See docs/ITEMS.md.
+- Companion: vinewood-mdt 2.19.2. The bail notice and stop and search record items are on by default, and using them shows the notice again.
+
 ## 1.7.0
 - Full UK offence list for arrests: 100 offences across 28 groups, from s.4(3) being concerned in the supply of a controlled drug, s.5(3) possession with intent to supply and money laundering, to affray, violent disorder, threats to kill, firearms offences, stalking, fraud, failing to stop for police, warrants and recall to prison. The arrest form's filter box finds them quickly.
 - One merged list: the job's offences and the MDT's are combined (same groups joined, duplicates dropped), so an offence in either always shows. Used by player arrests, callout suspects and NPC vehicle stops alike.

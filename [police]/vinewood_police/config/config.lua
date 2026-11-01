@@ -5,7 +5,7 @@ Config = {}
 ---------------------------------------------------------------------------
 -- 'auto' detects the framework. Force one if auto picks wrong:
 -- 'qbox' | 'qbcore' | 'esx'. (Qbox running under the qb-core name is detected as Qbox.)
-Config.Framework = 'ox'
+Config.Framework = 'qbox'
 -- 'auto' | 'ox' | 'qb' | 'esx'
 Config.Inventory = 'ox'
 -- 'auto' | 'ox' | 'qb'
@@ -17,7 +17,7 @@ Config.Locale = 'en'
 -- 'error' | 'warn' | 'info' | 'debug'
 Config.LogLevel = 'info'
 -- Enables the test helpers in /vpo (state set/clear). Leave off on live servers.
-Config.Debug = false
+Config.Debug = true
 
 -- Shown on forms and used in references when the MDT isn't installed.
 -- When vinewood-mdt is running, its Config.ForceName / ForceShort are used instead.
@@ -116,3 +116,8 @@ Config.Integrations = {
     prison          = { enabled = true, resources = { 'vinewood_prison' }, minVersion = '2.4.0' },
     moj             = { enabled = true, resources = { 'vinewood-moj' }, minVersion = '1.2.0' },
 }
+
+-- Paper notices the public are handed (fixed penalties, vehicle seizure notices, and stop and search
+-- records when the MDT isn't running). Using the item shows the notice again. false = no item.
+-- (Bail notices and stop and search records with the MDT are vinewood-mdt items: bail_notice, stop_search_record.)
+Config.NoticeItem = 'bail_notice'

@@ -37,7 +37,7 @@ Config.Robbery = {
 Config.Shop = {
     label = 'Safe Dealer',
     model = joaat('a_m_m_mexlabor_01'),
-    coords = vec4(257.8, -786.22, 29.45, 8.08),
+    coords = vec4(465.61, -3118.04, 5.09, 223.47),
     showBlip = false,                -- false = no map blip for the dealer
     blip = { sprite = 52, colour = 2, scale = 0.8 },
 }

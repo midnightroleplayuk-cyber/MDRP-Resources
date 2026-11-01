@@ -11,7 +11,7 @@
 
 | Resource | Version | What it adds |
 |---|---|---|
-| vinewood-mdt | 2.19.1+ | Records in the MDT as the officer (custody, stop and search, exhibits, incidents, tickets), automatic release on MDT outcomes, MDT duty on ESX |
+| vinewood-mdt | 2.19.2+ | Records in the MDT as the officer (custody, stop and search, exhibits, incidents, tickets), automatic release on MDT outcomes, MDT duty on ESX |
 | vinewood-dispatch | 1.6.0+ | Callsigns, callouts as dispatch alerts, backup requests, ESX duty |
 | vinewood_licensing | 2.0.0+ | Roadside licence checks and points without the MDT |
 | vinewood-vehicleservices | 1.5.0+ | Insurance, MOT and tax at the roadside without the MDT |
@@ -50,6 +50,8 @@ Each is picked up automatically when running, and checked again whenever it star
 Remove (or switch off) qb-policejob, qbx_police, esx_policejob or similar. Two scripts cuffing, escorting or toggling duty on the same players will fight. With `Config.Duty.EnforceFrameworkDuty`, other duty toggles are undone anyway.
 
 ## Items
+Ready-made definitions and icons are in `install/` (see `ITEMS.md`): ox_inventory, qb-inventory and ESX.
+
 The equipment and armoury lists in `config/equipment.lua` use ox_inventory item names (`handcuffs`, `WEAPON_STUNGUN`, `ammo-9`...). Change them to your inventory's names. The dog's drug items are in `config/specialist.lua`.
 
 ## Impound

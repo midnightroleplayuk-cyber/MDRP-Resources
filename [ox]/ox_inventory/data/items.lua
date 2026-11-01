@@ -630,10 +630,10 @@ return {
         weight = 200,
     },
 
-    ['handcuffs'] = {
+ --[[    ['handcuffs'] = {
         label = 'Handcuffs',
         weight = 200,
-    },
+    }, ]]
 
 --VINEWOOD MDT
 ['mdt'] = {
@@ -654,26 +654,6 @@ return {
     description = 'Medical Tablet for MHS Staff',
     client = {
         image = 'mhs_mdt.png',
-    }
-},
-['bail_document'] = {
-    label = 'Bail Document',
-    weight = 200,
-    stack = false,
-    close = true,
-    description = 'A Bail Conditions Document.',
-    client = {
-        image = 'bail_document.png',
-    }
-},
-['stop_search_document'] = {
-    label = 'Stop & Search Copy',
-    weight = 200,
-    stack = false,
-    close = true,
-    description = 'A Stop & Search Copy',
-    client = {
-        image = 'stop_search_document.png',
     }
 },
 ['driving_licence'] = {
@@ -1315,12 +1295,12 @@ return {
 		close = true,
 	},
 
-	['handcuffs'] = {
+--[[ 	['handcuffs'] = {
 		label = 'Handcuffs',
 		weight = 100,
 		stack = true,
 		close = true,
-	},
+	}, ]]
 
 	['bodycam'] = {
 		label = 'Bodycam',
@@ -2687,7 +2667,7 @@ return {
 
     ["cement"] = {
         label = "Cement",
-        weight = 5000,
+        weight = 500,
         stack = true,
         close = true,
         consume = 0,
@@ -5336,7 +5316,13 @@ return {
 	},
 
    -- PICKLE CASINO 
-
+   ['casino_chips'] = {
+    label = 'Casino Chips',
+    weight = 0,
+    stack = true,
+    close = true,
+    description = nil
+},
    ['blackjack_table'] = {
     label = 'Blackjack Table',
     weight = 1,
@@ -5511,6 +5497,133 @@ return {
     stack = false,
     close = true,
     description = "Plate from locals vehicle.",
+},
+-- Blueprint/crafting item
+['blueprint_gang_baseball_bat'] = {
+    label = 'Baseball Bat Blueprint',
+    weight = 10,
+    stack = false,
+    close = true,
+    description = 'Used to craft a baseball bat',
+},
+['blueprint_gang_butterfly_knife'] = {
+    label = 'Butterfly Knife Blueprint',
+    weight = 10,
+    stack = false,
+    close = true,
+    description = 'Used to craft a butterfly knife',
+},
+['blueprint_gang_hatchet'] = {
+    label = 'Hatchet Blueprint',
+    weight = 10,
+    stack = false,
+    close = true,
+    description = 'Used to craft a hatchet',
+},
+['blueprint_gang_knife'] = {
+    label = 'Knife Blueprint',
+    weight = 10,
+    stack = false,
+    close = true,
+    description = 'Used to craft a knife',
+},
+['blueprint_gang_katana'] = {
+    label = 'Katana Blueprint',
+    weight = 10,
+    stack = false,
+    close = true,
+    description = 'Used to craft a katana',
+},
+['blueprint_gang_machete'] = {
+    label = 'Machete Blueprint',
+    weight = 10,
+    stack = false,
+    close = true,
+    description = 'Used to craft a machete',
+},
+['blueprint_gang_sledgehammer'] = {
+    label = 'Sledgehammer OCG Blueprint',
+    weight = 10,
+    stack = false,
+    close = true,
+    description = 'Used to craft a sledgehammer',
+},
+['blueprint_gang_spikey_baseball_bat'] = {
+    label = 'Spikey Baseball Bat Blueprint',
+    weight = 10,
+    stack = false,
+    close = true,
+    description = 'Used to craft a spikey baseball bat',
+},
+['blueprint_kitchen_knife'] = {
+    label = 'Kitchen Knife Blueprint',
+    weight = 10,
+    stack = false,
+    close = true,
+    description = 'Used to craft a kitchen knife',
+},
+['blueprint_sledgehammer'] = {
+    label = 'Sledgehammer Blueprint',
+    weight = 10,
+    stack = false,
+    close = true,
+    description = 'Used to craft a sledgehammer',
+},
+['blueprint_spiked_knuckles'] = {
+    label = 'Spiked Knuckles Blueprint',
+    weight = 10,
+    stack = false,
+    close = true,
+    description = 'Used to craft spiked knuckles',
+},
+['blueprint_spikey_bat'] = {
+    label = 'Spikey Bat Blueprint',
+    weight = 10,
+    stack = false,
+    close = true,
+    description = 'Used to craft a spikey bat',
+},
+['blueprint_tactical_cleaver'] = {
+    label = 'Tactical Cleaver Blueprint',
+    weight = 10,
+    stack = false,
+    close = true,
+    description = 'Used to craft a tactical cleaver',
+},
+['blueprint_tactical_hatchet'] = {
+    label = 'Tactical Hatchet Blueprint',
+    weight = 10,
+    stack = false,
+    close = true,
+    description = 'Used to craft a tactical hatchet',
+},
+
+-- VINEWOOD PD JOB
+['handcuffs'] = {
+    label = 'Handcuffs', weight = 300, stack = false, close = true,
+    description = 'Rigid handcuffs. Use to take them out, then cuff the person in front.',
+    server = { export = 'vinewood_police.useItem' },
+},
+['police_notice'] = {
+    label = 'Police notice', weight = 10, stack = false, close = true,
+    description = 'A notice handed to you by the police. Use to read it.',
+    server = { export = 'vinewood_police.useItem' },
+},
+['mobile_id'] = {  -- only needed if Config.NPC.FingerprintItem = 'mobile_id'
+    label = 'Mobile fingerprint scanner', weight = 250, stack = false, close = true,
+    description = 'Checks fingerprints against the national database.',
+},
+
+-- vinewood-mdt (2.19.2+)
+['bail_notice'] = {
+    label = 'Bail notice', weight = 10, stack = false, close = true,
+    description = 'Your bail notice. Use to read it.',
+    server = { export = 'vinewood-mdt.useDocument' },
+},
+['stop_search_record'] = {
+    label = 'Stop and search record', weight = 10, stack = false, close = true,
+    description = 'Your record of being searched. Use to read it.',
+    server = { export = 'vinewood-mdt.useDocument' },
 },
 
 }

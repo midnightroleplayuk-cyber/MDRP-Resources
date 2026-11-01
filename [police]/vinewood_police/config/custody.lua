@@ -9,7 +9,7 @@ Config.Custody = {
     AreaRadius = 45.0,            -- how far from the desk counts as "in the suite"
     DeskRadius = 4.0,             -- booking in / property: officer and detainee this close to the desk
     CellRadius = 2.6,             -- a detainee further than this from their cell spot is put back
-    RemoveCuffsInCell = true,
+    RemoveCuffsInCell = false,
     HourLength = 2,               -- real minutes per custody hour, for the clock shown here (match the MDT)
     LimitHours = 24,
 
@@ -84,7 +84,7 @@ Config.Custody.CCTV = {
 -- computer shows which cell. Each cell's buzzer can be muted from the custody computer.
 ---------------------------------------------------------------------------
 Config.Custody.Buzzer = {
-    Enabled = true,
+    Enabled = false,
     Key = 'E',               -- detainee's call button (rebindable in GTA settings)
     Cooldown = 20,           -- seconds between presses from the same cell
     AutoClear = 180,         -- a call nobody answers stops showing after this many seconds

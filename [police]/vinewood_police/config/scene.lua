@@ -3,6 +3,19 @@
 ---------------------------------------------------------------------------
 Config.Scene = {
     Command = 'scenekit',
+    -- Police tape: strung between points you choose (lamp posts, cones, fences...), drawn with
+    -- web/textures/policeline.png. Shown to everyone, cleared with the rest of your scene.
+    Tape = {
+        Texture = 'web/textures/policeline.png',
+        Width = 0.12,            -- metres from edge to edge
+        Sag = 0.06,              -- how far it dips mid-span (per 10 m)
+        Flutter = 0.015,         -- movement in the wind (0 = still)
+        WaistHeight = 1.0,       -- aimed at the ground, the tape is tied this high
+        MaxPoints = 10,          -- points on one length of tape
+        MaxSpan = 25.0,          -- longest straight span between two points
+        MaxPerOfficer = 6,       -- lengths of tape per officer
+        DrawDistance = 80.0,
+    },
     MaxPerOfficer = 25,
     Lifetime = 90,            -- minutes before an officer's props clear themselves
     PlaceRange = 10.0,        -- how far from you a prop can go

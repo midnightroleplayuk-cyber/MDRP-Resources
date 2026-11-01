@@ -275,6 +275,8 @@ function LightsController.ProcessLights()
                     SetVehicleSiren(vehicleData.entity, false)
                 elseif not IsVehicleSirenOn(vehicleData.entity) then
                     SetVehicleSiren(vehicleData.entity, true)
+                    -- re-arming the siren (e.g. after the driver gets out) can bring back the stock GTA tone under the ELS one
+                    SetVehicleHasMutedSirens(vehicleData.entity, true)
                 end
             elseif IsVehicleSirenOn(vehicleData.entity) then
                 SetVehicleSiren(vehicleData.entity, false)

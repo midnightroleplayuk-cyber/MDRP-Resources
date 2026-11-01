@@ -478,11 +478,11 @@ local LandscapingJob = {
 
     clothes = {
         male = {
-            tshirt_1 = 59,
+            tshirt_1 = 15,
             tshirt_2 = 0,
             torso_1 = 56,
             torso_2 = 0,
-            arms = 73,
+            arms = 63,
             pants_1 = 9,
             pants_2 = 1,
             shoes_1 = 25,
