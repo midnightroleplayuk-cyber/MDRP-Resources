@@ -3,7 +3,7 @@ return {
     locations = {
         main = {
             label = 'Garbage Depot',
-            coords = vec3(-313.84, -1522.82, 27.56),
+            --coords = vec3(-313.84, -1522.82, 27.56),
         },
         vehicle = {
             label = 'Garbage Truck Storage',
