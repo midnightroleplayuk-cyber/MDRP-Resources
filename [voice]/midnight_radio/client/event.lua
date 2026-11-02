@@ -257,6 +257,7 @@ RegisterNetEvent('QBCore:Client:OnPlayerUnload', function()
     Radio.hasRadio = false
     Radio:leaveradio()
     Radio.playerLoaded = false
+    Radio:SendSvelteMessage('radioSessionReset', {})
 end)
 
 RegisterNetEvent('QBCore:Client:OnJobUpdate', function(job)

@@ -16,14 +16,10 @@
     opacity: 41, volume: 30, displayName: ''
   };
 
-  // Client-local fallback for roster position. mm_radio also saves the position in
-  // radioSettings2 per character, so the position survives logout/resource/server restarts.
-  try {
-    const saved = JSON.parse(localStorage.getItem('mm_radio_dual_roster_position') || 'null');
-    if (saved && Number.isFinite(Number(saved.x)) && Number.isFinite(Number(saved.y))) {
-      state.rosterCoords = { x: Number(saved.x), y: Number(saved.y) };
-    }
-  } catch (_) {}
+  // Overlay placement is character-specific and restored by Lua KVP. Do not
+  // reuse browser localStorage across characters or resource renames.
+  let rosterPositionReady = false;
+  let characterReady = false;
 
   const post = (name, data = {}) => fetch(`https://${RESOURCE}/${name}`, {
     method: 'POST', headers: {'Content-Type':'application/json; charset=UTF-8'}, body: JSON.stringify(data)
@@ -128,21 +124,37 @@
   }
 
   function applyRosterPosition() {
-    if (state.rosterCoords && Number.isFinite(Number(state.rosterCoords.x)) && Number.isFinite(Number(state.rosterCoords.y))) {
-      roster.style.right = `${Math.max(0, Number(state.rosterCoords.x))}px`;
-      roster.style.top = `${Math.max(0, Number(state.rosterCoords.y))}px`;
-    }
     const scale = Math.max(75, Math.min(150, Number(state.rosterScale) || 100));
+    const factor = scale / 100;
+    // Keep the entire scaled overlay visible at the current resolution.
+    const maxRight = Math.max(0, window.innerWidth - roster.offsetWidth * factor);
+    const maxTop = Math.max(0, window.innerHeight - roster.offsetHeight * factor);
+    const coords = state.rosterCoords || { x: 15, y: 40 };
+    const x = Math.max(0, Math.min(maxRight, Number(coords.x) || 0));
+    const y = Math.max(0, Math.min(maxTop, Number(coords.y) || 0));
+    roster.style.right = `${x}px`;
+    roster.style.top = `${y}px`;
     roster.style.transformOrigin = 'top right';
-    roster.style.transform = `scale(${scale / 100})`;
+    roster.style.transform = `scale(${factor})`;
     roster.style.setProperty('--mm-roster-style-opacity', String(Math.max(.2, Math.min(1, state.opacity / 100))));
     roster.style.opacity = '1';
+  }
+
+  function restoreRosterPreferences(data) {
+    if (!data?.userData?.playerlist) return;
+    const prefs = data.userData;
+    state.overlayEnabled = prefs.playerlist.show === true;
+    const c = prefs.playerlist.coords;
+    state.rosterCoords = c && Number.isFinite(Number(c.x)) && Number.isFinite(Number(c.y))
+      ? {x:Number(c.x), y:Number(c.y)} : {x:15,y:40};
+    state.rosterScale = Math.max(75, Math.min(150, Number(prefs.overlaySizeMultiplier) || 100));
+    rosterPositionReady = true;
   }
 
   function renderRoster() {
     const hasPrimary = Number(state.primary) > 0;
     const hasSecondary = Number(state.channel) > 0;
-    roster.classList.toggle('show', !!state.overlayEnabled && (hasPrimary || hasSecondary));
+    roster.classList.toggle('show', characterReady && rosterPositionReady && !!state.overlayEnabled && (hasPrimary || hasSecondary));
     roster.classList.toggle('editable', !!state.visible && !!state.overlayEnabled);
     // Do not leave an empty SECONDARY block behind after disconnecting. It comes
     // back automatically as soon as a secondary channel is joined again.
@@ -207,7 +219,6 @@
     if (!dragging) return;
     dragging = false;
     if (state.rosterCoords) {
-      try { localStorage.setItem('mm_radio_dual_roster_position', JSON.stringify(state.rosterCoords)); } catch (_) {}
       post('updatePlayerListPosition', state.rosterCoords);
     }
   });
@@ -388,6 +399,7 @@
     const action = msg.action;
     const data = msg.data || {};
     if (action === 'setRadioVisible') {
+      characterReady = true;
       state.visible = true;
       state.primary = Number(data.channel) || 0;
       state.channel = Number(data.secondaryChannel) || 0;
@@ -395,26 +407,25 @@
       if (data.channelName && typeof data.channelName === 'object') state.channelNames = data.channelName;
       state.visiblePresetChannels = Array.isArray(data.visiblePresetChannels) ? data.visiblePresetChannels.map(Number) : [];
       syncPreferences(data);
-      if (data.userData?.playerlist) {
-        state.overlayEnabled = data.userData.playerlist.show === true;
-        if (data.userData.playerlist.coords) state.rosterCoords = data.userData.playerlist.coords;
-        state.rosterScale = Math.max(75, Math.min(150, Number(data.userData.overlaySizeMultiplier) || 100));
-      }
+      restoreRosterPreferences(data);
       panel.dataset.docked = '0';
       render();
     } else if (action === 'setRadioHide') {
       state.visible = false; render();
+    } else if (action === 'radioSessionReset') {
+      characterReady = false; rosterPositionReady = false;
+      state.visible = false; state.primary = 0; state.channel = 0;
+      state.primaryMembers = {}; state.secondaryMembers = {};
+      state.rosterCoords = null; roster.classList.remove('show', 'editable');
+      render();
     } else if (action === 'updateRadio') {
+      characterReady = true;
       state.primary = Number(data.channel) || 0;
       if (data.secondaryChannel !== undefined) state.channel = Number(data.secondaryChannel) || 0;
       if (data.channelName && typeof data.channelName === 'object') state.channelNames = data.channelName;
       state.visiblePresetChannels = Array.isArray(data.visiblePresetChannels) ? data.visiblePresetChannels.map(Number) : [];
       syncPreferences(data);
-      if (data.userData?.playerlist) {
-        state.overlayEnabled = data.userData.playerlist.show === true;
-        if (data.userData.playerlist.coords) state.rosterCoords = data.userData.playerlist.coords;
-        state.rosterScale = Math.max(75, Math.min(150, Number(data.userData.overlaySizeMultiplier) || 100));
-      }
+      restoreRosterPreferences(data);
       render();
     } else if (action === 'overlayVisibilityChanged') {
       state.overlayEnabled = data.show === true;
@@ -430,6 +441,7 @@
       if (data.channel !== undefined) state.channel = Number(data.channel) || state.channel;
       render();
     } else if (action === 'dualRadioListUpdate') {
+      if (!characterReady) return;
       state.primary = Number(data.primaryChannel) || 0;
       state.channel = Number(data.secondaryChannel) || 0;
       state.primaryMembers = data.primary || {};
@@ -438,5 +450,6 @@
     }
   });
 
+  window.addEventListener('resize', applyRosterPosition);
   render();
 })();
