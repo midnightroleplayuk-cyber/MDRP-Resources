@@ -6,7 +6,7 @@ Config.Attachments = {
     rotation = { x = 180.0, y = 135.0, z = 0.0 },
 }
 
-Config.Enabled = true
+Config.Enabled = false
 Config.HideEquippedWeapon = true
 Config.NetworkedProps = true
 Config.PropCollision = false
