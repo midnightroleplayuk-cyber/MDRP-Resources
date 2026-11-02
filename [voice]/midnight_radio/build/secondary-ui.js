@@ -66,6 +66,7 @@
   const secondaryFreq = roster.querySelector('.mm-secondary-frequency');
   const primaryMembers = roster.querySelector('.mm-primary-members');
   const secondaryMembers = roster.querySelector('.mm-secondary-members');
+  const primarySection = roster.querySelector('.mm-primary-section');
   const secondarySection = roster.querySelector('.mm-secondary-section');
 
   function safeText(value) { return String(value ?? 'Unknown'); }
@@ -158,8 +159,9 @@
     const hasSecondary = sessionJoinedSecondary && Number(state.channel) > 0;
     roster.classList.toggle('show', characterReady && rosterPositionReady && !!state.overlayEnabled && (hasPrimary || hasSecondary));
     roster.classList.toggle('editable', !!state.visible && !!state.overlayEnabled && (hasPrimary || hasSecondary));
-    // Do not leave an empty SECONDARY block behind after disconnecting. It comes
-    // back automatically as soon as a secondary channel is joined again.
+    // Independently hide each disconnected radio section. The other section
+    // remains visible and keeps its roster and position unchanged.
+    primarySection.classList.toggle('mm-channel-hidden', !hasPrimary);
     secondarySection.classList.toggle('mm-channel-hidden', !hasSecondary);
     primaryFreq.textContent = hasPrimary ? rosterChannelText(state.primary) : 'OFF';
     secondaryFreq.textContent = hasSecondary ? rosterChannelText(state.channel) : 'OFF';
