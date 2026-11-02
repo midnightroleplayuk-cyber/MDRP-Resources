@@ -39,7 +39,8 @@ return {
 				vector4(1481.7, 3572.17, 36.77, 287.85), -- Sandy Shores Estate
 				vector4(311.2435, -2041.4139, 20.2700, 241.0878), -- Jamestown street
 				vector4(22.51, -1104.95, 29.8, 170.13), --Bossman Legion
-				vector4(-662.49, -933.46, 21.82, 172.83) -- Bossman Little Seoul
+				vector4(-662.49, -933.46, 21.82, 172.83), -- Bossman Little Seoul
+				vector4(810.66, -2159.17, 29.62, 356.03) --Cypress Flats
 			},
 
 			--? For icons, use Iconify: https://icon-sets.iconify.design
