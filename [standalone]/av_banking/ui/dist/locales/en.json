@@ -16,8 +16,8 @@
     "loans": "Loans",
     "cards": "Cards",
     "settings": "Settings",
-    "help": "Help Center",
-    "teller": "Teller",
+    "help": "Help Centre",
+    "teller": "Bank Counter",
     "invest": "Invest",
     "security": "Security"
   },
@@ -91,7 +91,7 @@
     "lock_label": "Lock-in term",
     "lock_hint": "Locked plans earn bonus interest, but withdrawing before the term ends forfeits every interest earned during the lock.",
     "lock_none": "No lock",
-    "lock_option": "{days} days · +{pct}% APY",
+    "lock_option": "{days} days · +{pct}% AER",
     "locked_badge": "Locked +{pct}%",
     "locked_until": "Unlocks {date}",
     "break_title": "Break the lock?",
@@ -229,7 +229,7 @@
     "active": "Active",
     "paid_of": "{paid} paid of {total}",
     "next_payment": "Next payment {amount} due {date}",
-    "pay_installment": "Pay Installment",
+    "pay_installment": "Pay Repayment",
     "pay_full": "Pay Remaining",
     "payment_done": "Loan payment completed",
     "deposit_to": "Deposit To",
@@ -238,7 +238,7 @@
     "term": "Term",
     "term_days": "{days} days",
     "select_term": "Select a term",
-    "preview": "Total to repay {total} ({interest}% interest). Daily installment: {installment}",
+    "preview": "Total to repay {total} ({interest}% interest). Daily repayment: {repayment}",
     "requested": "Loan request submitted for review",
     "approved": "Loan approved and disbursed",
     "submit": "Submit Request",
@@ -254,12 +254,12 @@
     "quick_terms": "{interest}% interest · {days} day term",
     "quick_total": "Repay {total}",
     "quick_take": "Get it now",
-    "quick_done": "Money is in your account — installments start tomorrow",
+    "quick_done": "Money is in your account — repayments start tomorrow",
     "quick_score": "Unlocks at {score}+ credit",
     "quick_active_quick": "Pay off your current quick loan first",
     "quick_limit": "You're at your loan limit",
     "vehicles_title": "Vehicle Financing",
-    "vehicles_hint": "Financed vehicles from dealerships. Payments come from your Checking, straight through the dealership.",
+    "vehicles_hint": "Financed vehicles from dealerships. Payments come from your My Account, straight through the dealership.",
     "veh_ok": "On time",
     "veh_late": "Late",
     "veh_repossess": "Repossession risk",
@@ -300,7 +300,7 @@
     "perk_transfer_fee": "-{value}% transfer fees",
     "perk_savings": "+{value}% savings interest",
     "perk_cashback": "{value}% cashback on purchases",
-    "perk_priority": "Priority teller service",
+    "perk_priority": "Priority bank counter service",
     "perk_free_print": "Free card printing",
     "requested": "Card request sent",
     "perk_overdraft": "Overdraft up to {value}",
@@ -329,26 +329,26 @@
     "a11y_reveal": "Show or hide card details"
   },
   "teller": {
-    "title": "Teller",
-    "available": "A teller is available",
+    "title": "Bank Counter",
+    "available": "A bank counter is available",
     "available_hint": "Your request will be reviewed right now, in person.",
-    "none": "No teller on duty",
+    "none": "No bank counter on duty",
     "none_hint": "Your request goes to the approval queue instead.",
-    "auto_approved": "Approved automatically, no teller needed",
+    "auto_approved": "Approved automatically, no bank counter needed",
     "request": "Request a service",
     "service": "Service",
     "submit_live": "Request at the desk",
     "submit_queue": "Send to the queue",
     "queued": "Request sent to the approval queue",
-    "waiting": "Waiting for a teller",
-    "waiting_hint": "Stay at the desk. A teller will attend you shortly.",
+    "waiting": "Waiting for a bank counter",
+    "waiting_hint": "Stay at the desk. A bank counter will attend you shortly.",
     "being_served": "You are being attended",
     "with_agent": "Agent: {name}",
     "cancel": "Cancel request",
     "cancelled": "Request cancelled",
-    "ticket_expired": "No teller attended you in time. Your request moved to the approval queue",
-    "approved": "The teller approved your request",
-    "denied": "The teller declined your request: {note}",
+    "ticket_expired": "No bank counter attended you in time. Your request moved to the approval queue",
+    "approved": "The bank counter approved your request",
+    "denied": "The bank counter declined your request: {note}",
     "branch": "Branch",
     "on_duty": "On duty",
     "off_duty": "Off duty",
@@ -405,7 +405,7 @@
     "tries_left": "{count} tries left",
     "wrong_pin_left": "Wrong PIN · {count} tries left",
     "pin_digits": "{count}-digit PIN",
-    "checking": "Checking…",
+    "checking": "My Account…",
     "clear": "Clear",
     "fee_pct": "Fee {pct}%",
     "no_fee": "No fee",
@@ -477,8 +477,8 @@
     "rename_btn": "Save Name",
     "renamed": "Account renamed",
     "close": "Close Account",
-    "closed": "Account closed. The remaining balance was moved to your personal checking.",
-    "close_hint": "The remaining balance moves to your personal checking. Requires no active loans or card debt.",
+    "closed": "Account closed. The remaining balance was moved to your personal main account.",
+    "close_hint": "The remaining balance moves to your personal main account. Requires no active loans or card debt.",
     "card_ordered": "Card ordered — collect it at any branch card counter",
     "offshore": "Offshore",
     "favorited": "Account pinned to your dashboard",
@@ -495,7 +495,7 @@
     "your_role": "Your role",
     "role_owner": "Owner",
     "close_short": "Close account",
-    "close_confirm": "Close \"{name}\"? {amount} will move to your personal checking. This cannot be undone.",
+    "close_confirm": "Close \"{name}\"? {amount} will move to your personal main account. This cannot be undone.",
     "favorite_set": "Show on dashboard",
     "favorite_clear": "Stop showing on dashboard",
     "open_title": "Open an account",
@@ -505,13 +505,13 @@
     "approval": "Approval",
     "approval_agent": "Reviewed by an agent",
     "approval_instant": "Instant",
-    "fee_cash_hint": "Charged to your personal checking.",
+    "fee_cash_hint": "Charged to your personal main account.",
     "replace_card": "Replace card",
     "replace_card_hint": "Prints a new plastic at the branch counter",
     "get_card": "Get a card",
     "get_card_hint": "No card yet · request one",
     "open_meta": "Shared or business",
-    "kind_checking": "Checking",
+    "kind_checking": "My Account",
     "kind_business": "Business",
     "type_business_desc": "Company money, kept apart.",
     "limit_reached": "Limit",
@@ -576,8 +576,8 @@
     "tab_appearance": "Appearance",
     "tab_security": "Security",
     "tab_networth": "Net Worth",
-    "theme_title": "Accent color",
-    "theme_hint": "Pick the color the app uses for highlights and buttons.",
+    "theme_title": "Accent colour",
+    "theme_hint": "Pick the colour the app uses for highlights and buttons.",
     "freeze_title": "Lost your card?",
     "freeze_hint": "You can freeze any card instantly from Accounts › Cards.",
     "requests_hint": "Loans, cards and business accounts you asked the bank for.",
@@ -658,7 +658,7 @@
     "bank_save": "Create Branch",
     "bank_saved": "Branch created — zones are live",
     "bank_removed": "Branch removed",
-    "no_banks": "No branches yet. Create the first one to enable desks, tellers and card counters.",
+    "no_banks": "No branches yet. Create the first one to enable desks, bank counters and card counters.",
     "has_blip": "Blip",
     "atms_title": "Custom ATM Zones",
     "atms_hint": "World ATM props already work by model. Add zones here for spots without a prop.",
@@ -776,7 +776,7 @@
     "sec_tax": "Periodic wealth tax",
     "sec_fraud": "Holds on suspicious movements",
     "sec_automation": "What the bank decides without a banker",
-    "sec_staff": "Banking job and the live teller",
+    "sec_staff": "Banking job and the live bank counter",
     "sec_notifications": "Bank mail and player webhooks",
     "sec_integrations": "Exports for other resources",
     "tab_catalog": "Catalog",
@@ -828,7 +828,7 @@
     "group_alerts": "Alerts",
     "group_unattended_bank": "Unattended bank",
     "group_banking_job": "Banking job",
-    "group_live_teller": "Live teller",
+    "group_live_teller": "Live bank counter",
     "group_mail": "Mail",
     "group_discord_webhooks": "Discord webhooks",
     "group_hacker_api": "Hacker API",
@@ -965,7 +965,7 @@
     "to_player": "player {id}"
   },
   "help": {
-    "title": "Help Center",
+    "title": "Help Centre",
     "subtitle": "How can we help you?",
     "search_ph": "How can we help you?",
     "select_topic": "Select Topic",
@@ -986,27 +986,27 @@
       {
         "topic": "account",
         "q": "What accounts do I have?",
-        "a": "Everyone has a personal checking account. It is created for you, it is where money sent to your server ID arrives, and it cannot be closed. On top of it you can open Shared accounts for you and the people you trust, and Business accounts for your company."
+        "a": "Everyone has a personal main account. It is created for you, it is where money sent to your server ID arrives, and it cannot be closed. On top of it you can open Shared accounts for you and the people you trust, and Business accounts for your company."
       },
       {
         "topic": "account",
         "q": "How do I open a new bank account?",
-        "a": "Open the Accounts tab and press Open Account, then choose Shared or Business. The opening fee is shown before you confirm and is paid from your personal checking. Business accounts usually need a bank agent's approval, and there is a limit on how many of each you can have. Offshore business accounts can only be opened in person at the desk of an offshore branch."
+        "a": "Open the Accounts tab and press Open Account, then choose Shared or Business. The opening fee is shown before you confirm and is paid from your personal main account. Business accounts usually need a bank agent's approval, and there is a limit on how many of each you can have. Offshore business accounts can only be opened in person at the desk of an offshore branch."
       },
       {
         "topic": "account",
         "q": "Can other people use my account?",
-        "a": "Yes, on Shared and Business accounts you own. In the Accounts tab select the account and press Access, then add the person by their server ID. Members get only the permissions you tick, such as deposit, withdraw, transfer, invoices, cards or history. Managers get full access. Your personal checking cannot be shared."
+        "a": "Yes, on Shared and Business accounts you own. In the Accounts tab select the account and press Access, then add the person by their server ID. Members get only the permissions you tick, such as deposit, withdraw, transfer, invoices, cards or history. Managers get full access. Your personal main account cannot be shared."
       },
       {
         "topic": "account",
         "q": "How do I close an account?",
-        "a": "Open the Accounts tab, select the account and use Close Account at the bottom of its details. Only the owner can close it. The remaining balance moves to your personal checking. You cannot close an account with active loans, card debt or a negative balance, and you must always keep at least one account."
+        "a": "Open the Accounts tab, select the account and use Close Account at the bottom of its details. Only the owner can close it. The remaining balance moves to your personal main account. You cannot close an account with active loans, card debt or a negative balance, and you must always keep at least one account."
       },
       {
         "topic": "account",
         "q": "Can I do this at a bank branch instead?",
-        "a": "Yes. At a branch desk you can apply for a card, a loan or a business account in person. If a teller is on duty they review it on the spot, otherwise it goes to the approval queue like any request from the app. The ATM and the teller window are the only places where you can deposit or withdraw cash."
+        "a": "Yes. At a branch desk you can apply for a card, a loan or a business account in person. If a bank counter is on duty they review it on the spot, otherwise it goes to the approval queue like any request from the app. The ATM and the bank counter window are the only places where you can deposit or withdraw cash."
       },
       {
         "topic": "cards",
@@ -1051,7 +1051,7 @@
       {
         "topic": "transfers",
         "q": "How do I send money to someone?",
-        "a": "From the Dashboard press Send and choose the source account. To pay a person, enter their server ID or pick a contact: the money always goes to their personal checking. To pay into any other account, such as a shared or business one, enter its account number, which the owner can copy from Receive."
+        "a": "From the Dashboard press Send and choose the source account. To pay a person, enter their server ID or pick a contact: the money always goes to their personal main account. To pay into any other account, such as a shared or business one, enter its account number, which the owner can copy from Receive."
       },
       {
         "topic": "transfers",
@@ -1086,7 +1086,7 @@
       {
         "topic": "loans",
         "q": "How do loans work?",
-        "a": "In the Loans tab choose the loan type, amount, term and the account that receives the money. Requests are usually reviewed by a bank agent, who may offer a different amount or term. Once approved, the total with interest is split into daily installments charged automatically. Some loan types need a minimum credit score or a business account."
+        "a": "In the Loans tab choose the loan type, amount, term and the account that receives the money. Requests are usually reviewed by a bank agent, who may offer a different amount or term. Once approved, the total with interest is split into daily repayments charged automatically. Some loan types need a minimum credit score or a business account."
       },
       {
         "topic": "loans",
@@ -1096,7 +1096,7 @@
       {
         "topic": "loans",
         "q": "What if I miss a loan payment?",
-        "a": "Each missed installment adds a late fee and lowers your credit score. Too many missed installments put the loan in default, and the bank then collects the debt automatically from money that arrives in your accounts. You can always pay installments manually from the Loans tab."
+        "a": "Each missed repayment adds a late fee and lowers your credit score. Too many missed repayments put the loan in default, and the bank then collects the debt automatically from money that arrives in your accounts. You can always pay repayments manually from the Loans tab."
       },
       {
         "topic": "score",
@@ -1106,7 +1106,7 @@
       {
         "topic": "score",
         "q": "How is the score calculated?",
-        "a": "Everyone starts from 650. It rises with the money you hold across your accounts (one point per £10,000, up to +100) and with every loan you fully repay (+15 each, permanent). It falls with missed loan installments and missed credit card payments (-20 each), overdue invoices and late vehicle financing payments (-15 each), and defaulted loans (-100 each)."
+        "a": "Everyone starts from 650. It rises with the money you hold across your accounts (one point per £10,000, up to +100) and with every loan you fully repay (+15 each, permanent). It falls with missed loan repayments and missed credit card payments (-20 each), overdue invoices and late vehicle financing payments (-15 each), and defaulted loans (-100 each)."
       },
       {
         "topic": "score",
@@ -1116,7 +1116,7 @@
       {
         "topic": "score",
         "q": "What hurts my score, and can it recover?",
-        "a": "Missed loan installments and card payments stop counting once you catch up, and overdue invoices stop hurting once they are paid. A defaulted loan stays on your record permanently. A low score locks you out of some loan types, quick loans and higher card tiers."
+        "a": "Missed loan repayments and card payments stop counting once you catch up, and overdue invoices stop hurting once they are paid. A defaulted loan stays on your record permanently. A low score locks you out of some loan types, quick loans and higher card tiers."
       }
     ]
   },
@@ -1313,7 +1313,7 @@
     "active_loans": "This account has active loans",
     "card_debt": "There is outstanding card debt",
     "last_account": "You can't close your only account",
-    "native_account": "Your default Checking account can't be closed or shared",
+    "native_account": "Your default My Account account can't be closed or shared",
     "no_business_permission": "You're not allowed to bill on behalf of your business",
     "note_required": "A note is required when denying a request",
     "mail_offline": "The mail system is not available",
@@ -1361,7 +1361,7 @@
     "no_loan": "Loan not found",
     "no_invoice": "Invoice not found",
     "invoice_closed": "This invoice is already closed",
-    "not_banker": "You are not authorized for the banker terminal",
+    "not_banker": "You are not authorised for the banker terminal",
     "no_request": "Request not found",
     "invalid_request": "Invalid request",
     "no_funding_account": "No personal account available for this operation",
@@ -1373,7 +1373,7 @@
     "invalid_pin": "The PIN must be 4 to 6 digits",
     "ticket_open": "You already have a request at the desk",
     "desk_cooldown": "Give the counter a moment, {seconds}s left",
-    "ticket_claimed": "Another teller is already attending this client",
+    "ticket_claimed": "Another bank counter is already attending this client",
     "no_ticket": "That request is no longer active",
     "card_not_carried": "You are not carrying that card",
     "invalid_data": "That request was not valid",
@@ -1382,7 +1382,7 @@
     "webhooks_off": "Webhooks are disabled on this server",
     "stocks_off": "The stock market is disabled",
     "too_fast": "Slow down, that action is still being processed",
-    "teller_off": "Live teller service is disabled on this server",
+    "teller_off": "Live bank counter service is disabled on this server",
     "not_at_branch": "You need to be at the branch desk for this",
     "loans_off": "Loans are disabled on this server",
     "cards_off": "Bank cards are disabled on this server",
@@ -1471,7 +1471,7 @@
     "removed": "Payment removed"
   },
   "staff_help": {
-    "title": "Staff Help Center",
+    "title": "Staff Help Centre",
     "subtitle": "Branch procedures, step by step",
     "search_ph": "Search a procedure...",
     "select_topic": "Select Topic",
@@ -1509,12 +1509,12 @@
       {
         "topic": "desk",
         "q": "What happens if I forget to end my shift?",
-        "a": "Your duty ends automatically when you disconnect, and any ticket you had claimed goes back to the line for another teller. Otherwise press End shift when you leave the counter so new desk requests go to the approval queue again."
+        "a": "Your duty ends automatically when you disconnect, and any ticket you had claimed goes back to the line for another bank counter. Otherwise press End shift when you leave the counter so new desk requests go to the approval queue again."
       },
       {
         "topic": "queue",
         "q": "What lands in the approval queue?",
-        "a": "Every pending request: loan applications, cards that require approval and business account openings, whether they were sent from the Banking app or from a branch desk with no teller on duty. The sidebar shows a counter of what is pending. If the server uses automatic approvals, some requests are approved without reaching you, and requests left unreviewed for too long can be declined automatically."
+        "a": "Every pending request: loan applications, cards that require approval and business account openings, whether they were sent from the Banking app or from a branch desk with no bank counter on duty. The sidebar shows a counter of what is pending. If the server uses automatic approvals, some requests are approved without reaching you, and requests left unreviewed for too long can be declined automatically."
       },
       {
         "topic": "queue",
@@ -1534,12 +1534,12 @@
       {
         "topic": "queue",
         "q": "How do I read the credit score?",
-        "a": "The score summarizes payment behavior: loans repaid, missed installments, overdue invoices, missed credit card payments and defaults. Excellent and Good clients are low risk. Treat it as guidance, the final decision is yours."
+        "a": "The score summarizes payment behavior: loans repaid, missed repayments, overdue invoices, missed credit card payments and defaults. Excellent and Good clients are low risk. Treat it as guidance, the final decision is yours."
       },
       {
         "topic": "queue",
         "q": "How exactly is the credit score calculated?",
-        "a": "Base 650, plus one point per £10,000 held across the client's accounts (up to +100), plus 15 per fully repaid loan. Minus 20 per missed loan installment, 20 per missed credit card payment, 15 per overdue invoice, 15 per late vehicle financing payment and 100 per defaulted loan. Clamped between 300 and 850. Bands: 780+ Excellent, 700+ Good, 600+ Fair, below 600 Poor. Missed and overdue penalties go away once they are paid; defaults are permanent."
+        "a": "Base 650, plus one point per £10,000 held across the client's accounts (up to +100), plus 15 per fully repaid loan. Minus 20 per missed loan repayment, 20 per missed credit card payment, 15 per overdue invoice, 15 per late vehicle financing payment and 100 per defaulted loan. Clamped between 300 and 850. Bands: 780+ Excellent, 700+ Good, 600+ Fair, below 600 Poor. Missed and overdue penalties go away once they are paid; defaults are permanent."
       },
       {
         "topic": "cards",
@@ -1657,7 +1657,7 @@
     "d_lockPlans": "Locked savings terms and their bonus rate",
     "d_listings": "Companies traded on the market",
     "d_tierRules": "Credit score that unlocks each card tier automatically",
-    "d_themes": "Accent colors players can pick in the app",
+    "d_themes": "Accent colours players can pick in the app",
     "col_id": "ID",
     "col_label": "Name",
     "col_min_score": "Min score",
@@ -1676,7 +1676,7 @@
     "empty": "Nothing here yet",
     "remove": "Remove",
     "add_row": "Add row",
-    "add_theme": "Add color",
+    "add_theme": "Add colour",
     "new_card": "New card type",
     "g_identity": "Identity",
     "g_look": "Look",
@@ -1687,9 +1687,9 @@
     "id_locked": "Fixed once saved.",
     "kind": "Kind",
     "tier_label": "Tier name",
-    "color": "Card color",
+    "color": "Card colour",
     "accent": "Highlight",
-    "text": "Text color",
+    "text": "Text colour",
     "finish": "Finish",
     "finish_matte": "Matte",
     "finish_metallic": "Metallic",
@@ -1703,7 +1703,7 @@
     "manual": "Always in person",
     "manual_hint": "Automation never approves it; a banker must.",
     "tier": "Tier",
-    "priority": "Teller priority",
+    "priority": "Bank Counter priority",
     "atm_fee": "ATM fee",
     "atm_limit": "ATM limits",
     "transfer_fee": "Transfer fee",
@@ -1721,7 +1721,7 @@
   },
   "receive": {
     "copied": "Copied",
-    "server_id_note": "Players nearby can also send to your checking with your server ID."
+    "server_id_note": "Players nearby can also send to your main account with your server ID."
   },
   "send": {
     "sub": "To an account number or a nearby player ID.",
@@ -1779,7 +1779,7 @@
       },
       "sharedAccountCost": {
         "label": "Shared account fee",
-        "desc": "Charged from personal checking when a player opens a shared account."
+        "desc": "Charged from personal main account when a player opens a shared account."
       },
       "maxAccessPlayers": {
         "label": "Max shared members",
@@ -1920,7 +1920,7 @@
       },
       "fee": {
         "label": "Design fee",
-        "desc": "Charged from personal checking each time a holder applies a new design. Removing it is free."
+        "desc": "Charged from personal main account each time a holder applies a new design. Removing it is free."
       }
     },
     "Credit": {
@@ -1999,7 +1999,7 @@
       },
       "missedPaymentFeePct": {
         "label": "Missed payment fee",
-        "desc": "Percent of the installment added to the debt on a missed payment."
+        "desc": "Percent of the repayment added to the debt on a missed payment."
       },
       "maxMissedBeforeDefault": {
         "label": "Misses before default"
@@ -2249,7 +2249,7 @@
         },
         "maxMissedPayments": {
           "label": "Missed payments allowed",
-          "desc": "Missed installments across the client's history before automation stops lending to them."
+          "desc": "Missed repayments across the client's history before automation stops lending to them."
         },
         "maxActiveLoans": {
           "label": "Stop lending at",
@@ -2305,16 +2305,16 @@
     },
     "Teller": {
       "enabled": {
-        "label": "Live teller",
+        "label": "Live bank counter",
         "desc": "Requests made at a counter go to the banker on duty there instead of the queue."
       },
       "waitSeconds": {
-        "label": "Wait for a teller",
+        "label": "Wait for a bank counter",
         "desc": "How long a client waits at the counter before the request goes to the queue."
       },
       "reviewSeconds": {
         "label": "Review time",
-        "desc": "How long a teller has to decide a claimed request."
+        "desc": "How long a bank counter has to decide a claimed request."
       },
       "requestCooldown": {
         "label": "Desk request cooldown",
@@ -2349,8 +2349,8 @@
         "desc": "Name shown on the webhook messages."
       },
       "color": {
-        "label": "Embed color",
-        "desc": "Side color of the webhook embeds."
+        "label": "Embed colour",
+        "desc": "Side colour of the webhook embeds."
       }
     },
     "HackerApi": {
@@ -2364,7 +2364,7 @@
       },
       "includeNative": {
         "label": "Include personal accounts",
-        "desc": "Random targets can be personal checking accounts, not only extra accounts."
+        "desc": "Random targets can be personal main accounts, not only extra accounts."
       },
       "minBalance": {
         "label": "Min target balance",
