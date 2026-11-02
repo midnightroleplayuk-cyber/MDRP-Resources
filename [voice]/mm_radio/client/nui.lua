@@ -154,16 +154,33 @@ RegisterNUICallback('updateRadioSize', function(data, cb)
 end)
 
 RegisterNUICallback('saveData', function(data, cb)
-    local player = QBX.PlayerData
-    local identifier = player.cid
-    if not identifier then return Radio:Notify(locale('unsuccess_name', channel)) end
-    Radio.userData[Radio.identifier].name = data.name
+    local identifier = Radio.identifier
+    local settings = identifier and Radio.userData[identifier]
+    if not settings then
+        cb('error')
+        return
+    end
+
+    local name = type(data) == 'table' and data.name or nil
+    if type(name) ~= 'string' then
+        cb('error')
+        return
+    end
+    name = name:match('^%s*(.-)%s*$')
+    if name == '' then
+        cb('error')
+        return
+    end
+
+    settings.name = name
+    -- Save both the main KVP and per-character backup immediately.
+    SaveRadioPrefs()
     Radio:update()
-    TriggerServerEvent('mm_radio:server:addToRadioChannel', Radio.RadioChannel, data.name)
-    -- Keep the secondary roster display name in sync with the primary roster.
-    TriggerServerEvent('mm_radio:server:updateSecondaryName', data.name)
-    SetResourceKvp('radioSettings2', json.encode(Radio.userData))
-    cb("ok")
+    if Radio.RadioChannel and Radio.RadioChannel > 0 then
+        TriggerServerEvent('mm_radio:server:addToRadioChannel', Radio.RadioChannel, name)
+    end
+    TriggerServerEvent('mm_radio:server:updateSecondaryName', name)
+    cb('ok')
 end)
 
 RegisterNUICallback('getMutedList', function(_, cb)
