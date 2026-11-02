@@ -39,7 +39,7 @@ return {
 		groups = shared.police
 	},
 
-	{
+	--[[{
 		coords = vec3(374.72, -321.4, 45.9),
 		target = {
 			loc = vec3(374.72, -321.4, 45.9),
@@ -56,7 +56,7 @@ return {
 		slots = 10,
 		weight = 10000,
 		groups = shared.police
-	},
+	},]]
     
 	-- MHS personal locker
 
