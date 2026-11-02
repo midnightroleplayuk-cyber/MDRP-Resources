@@ -1,6 +1,7 @@
 AddEventHandler('onResourceStart', function(resource)
     if GetCurrentResourceName() == resource then
         if LocalPlayer.state.isLoggedIn then
+            Radio.playerLoaded = false
             Radio:Init()
             Radio.playerLoaded = true
             TriggerServerEvent('mm_radio:server:createdefaultjammer')
@@ -255,7 +256,12 @@ end)
 
 RegisterNetEvent('QBCore:Client:OnPlayerUnload', function()
     Radio.hasRadio = false
-    Radio:leaveradio()
+    if Radio.SecondaryRadioChannel ~= 0 then Radio:LeaveSecondaryRadio(true) end
+    if Radio.RadioChannel ~= 0 then Radio:leaveradio() end
+    Radio.RadioChannel = 0
+    Radio.SecondaryRadioChannel = 0
+    Radio.PrimaryRadioMembers = {}
+    Radio.SecondaryRadioMembers = {}
     Radio.playerLoaded = false
     Radio:SendSvelteMessage('radioSessionReset', {})
 end)

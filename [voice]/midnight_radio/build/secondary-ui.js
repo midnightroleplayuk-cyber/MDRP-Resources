@@ -20,6 +20,8 @@
   // reuse browser localStorage across characters or resource renames.
   let rosterPositionReady = false;
   let characterReady = false;
+  let sessionJoinedPrimary = false;
+  let sessionJoinedSecondary = false;
 
   const post = (name, data = {}) => fetch(`https://${RESOURCE}/${name}`, {
     method: 'POST', headers: {'Content-Type':'application/json; charset=UTF-8'}, body: JSON.stringify(data)
@@ -152,8 +154,8 @@
   }
 
   function renderRoster() {
-    const hasPrimary = Number(state.primary) > 0;
-    const hasSecondary = Number(state.channel) > 0;
+    const hasPrimary = sessionJoinedPrimary && Number(state.primary) > 0;
+    const hasSecondary = sessionJoinedSecondary && Number(state.channel) > 0;
     roster.classList.toggle('show', characterReady && rosterPositionReady && !!state.overlayEnabled && (hasPrimary || hasSecondary));
     roster.classList.toggle('editable', !!state.visible && !!state.overlayEnabled);
     // Do not leave an empty SECONDARY block behind after disconnecting. It comes
@@ -403,6 +405,8 @@
       state.visible = true;
       state.primary = Number(data.channel) || 0;
       state.channel = Number(data.secondaryChannel) || 0;
+      // Opening the handset does not establish a new radio connection.
+      // Session membership is only accepted from live channel updates.
       state.maxChannel = Number(data.maxChannel) || state.maxChannel;
       if (data.channelName && typeof data.channelName === 'object') state.channelNames = data.channelName;
       state.visiblePresetChannels = Array.isArray(data.visiblePresetChannels) ? data.visiblePresetChannels.map(Number) : [];
@@ -415,6 +419,7 @@
     } else if (action === 'radioSessionReset') {
       characterReady = false; rosterPositionReady = false;
       state.visible = false; state.primary = 0; state.channel = 0;
+      sessionJoinedPrimary = false; sessionJoinedSecondary = false;
       state.primaryMembers = {}; state.secondaryMembers = {};
       state.rosterCoords = null; roster.classList.remove('show', 'editable');
       render();
@@ -432,6 +437,7 @@
       render();
     } else if (action === 'secondaryChannelChanged') {
       state.channel = Number(data.channel) || 0;
+      sessionJoinedSecondary = state.channel > 0;
       state.talking = !!data.talking;
       input.value = state.channel > 0 ? state.channel : '';
       if (!state.channel) state.secondaryMembers = {};
@@ -444,6 +450,8 @@
       if (!characterReady) return;
       state.primary = Number(data.primaryChannel) || 0;
       state.channel = Number(data.secondaryChannel) || 0;
+      sessionJoinedPrimary = state.primary > 0;
+      sessionJoinedSecondary = state.channel > 0;
       state.primaryMembers = data.primary || {};
       state.secondaryMembers = data.secondary || {};
       render();

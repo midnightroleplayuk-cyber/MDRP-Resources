@@ -87,6 +87,16 @@ function Radio:SetDefaultData(cid)
 end
 
 function Radio:Init(data)
+    -- On a new character session, never restore radio membership from saved
+    -- preferences. The player must explicitly join channels again.
+    if not self.playerLoaded or self.identifier == nil then
+        self.RadioChannel = 0
+        self.SecondaryRadioChannel = 0
+        self.PrimaryRadioMembers = {}
+        self.SecondaryRadioMembers = {}
+        self.onRadio = false
+        self:SendSvelteMessage('radioSessionReset', {})
+    end
     local player = data or QBX.PlayerData
     self.identifier = player.cid
     self.PlayerJob = player.job.name
