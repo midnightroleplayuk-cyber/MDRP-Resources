@@ -9,23 +9,55 @@
 Target = {}
 
 local system
+local KNOWN = { { 'ox_target', 'ox' }, { 'qb-target', 'qb' }, { 'qtarget', 'qtarget' } }
+
+local function pick()
+    for _, t in ipairs(KNOWN) do
+        if GetResourceState(t[1]) == 'started' then return t[2] end
+    end
+end
+
+--- A target resource that exists on the server but hasn't finished starting yet.
+local function pending()
+    for _, t in ipairs(KNOWN) do
+        local st = GetResourceState(t[1])
+        if st == 'starting' or st == 'stopped' or st == 'uninitialized' then return true end
+    end
+    return false
+end
 
 local function detect()
     if system then return system end
     local want = Config.Target or 'auto'
     if want ~= 'auto' then
         system = want
-    elseif GetResourceState('ox_target') == 'started' then
-        system = 'ox'
-    elseif GetResourceState('qb-target') == 'started' then
-        system = 'qb'
-    elseif GetResourceState('qtarget') == 'started' then
-        system = 'qtarget'
     else
-        system = 'keypress'
+        system = pick()
+        -- ox_target etc. may start after this resource: wait for it rather than
+        -- falling back to press-E for the whole session.
+        if not system and pending() then
+            local deadline = GetGameTimer() + 15000
+            while not system and GetGameTimer() < deadline do
+                Wait(250)
+                system = pick()
+            end
+        end
+        system = system or 'keypress'
     end
+    print(('[vinewood-interviews] Using target system: %s'):format(system))
     return system
 end
+
+-- If a target script starts later on (or is restarted), switch to it and rebuild the rooms.
+AddEventHandler('onClientResourceStart', function(res)
+    for _, t in ipairs(KNOWN) do
+        if res == t[1] and system ~= t[2] and (Config.Target or 'auto') == 'auto' then
+            system = nil
+            SetTimeout(500, function() TriggerEvent('vwi:reload') end)
+            return
+        end
+    end
+end)
 
 function Target.System() return detect() end
 
@@ -133,20 +165,20 @@ function Target.AddSphere(name, data)
     else
         if not Target._loop then Target._loop = true keypressLoop() end
         nextId = nextId + 1
-        points[nextId] = { coords = data.coords, reach = maxDistance(data.options) + (data.radius or 0), options = data.options }
-        return nextId
+        local handle = { kp = nextId }
+        points[handle] = { coords = data.coords, reach = maxDistance(data.options) + (data.radius or 0), options = data.options }
+        return handle
     end
 end
 
 function Target.Remove(handle)
     if handle == nil then return end
-    local sys = detect()
-    if sys == 'ox' then
-        exports.ox_target:removeZone(handle)
-    elseif type(handle) == 'table' and handle.res then
-        exports[handle.res]:RemoveZone(handle.name)
-    else
+    if type(handle) == 'table' and handle.kp then
         if showing == handle then showing = nil HideHelp() end
         points[handle] = nil
+    elseif type(handle) == 'table' and handle.res then
+        if GetResourceState(handle.res) == 'started' then exports[handle.res]:RemoveZone(handle.name) end
+    elseif GetResourceState('ox_target') == 'started' then
+        exports.ox_target:removeZone(handle)
     end
 end

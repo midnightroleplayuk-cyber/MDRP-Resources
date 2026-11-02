@@ -38,6 +38,8 @@ Config.Duty = {
         { id = 'cid',           label = 'CID',             minRank = 'pc' },
         { id = 'custody',       label = 'Custody',         minRank = 'ps' },
         { id = 'control',       label = 'Control room' },
+        { id = 'silver',        label = 'Silver Command',   minRank = 'supt',  qualifications = { 'firearms', 'advanced_driver', 'dog_handler' } },
+        { id = 'gold',          label = 'Gold Command',     minRank = 'acc',   qualifications = { 'firearms', 'advanced_driver', 'dog_handler' } },
     },
 
     -- Officer statuses. tone: 'ok' | 'busy' | 'away' (colour in the hub).
@@ -73,7 +75,7 @@ Config.Notebook = {
 Config.Radial = {
     Enabled = true,
     Style = 'own',              -- 'own': our radial menu on the key below; 'ox': ox_lib's radial (Z)
-    Key = 'L',                  -- default key for our radial (players can rebind it in GTA settings)
+    Key = 'F3',                  -- default key for our radial (players can rebind it in GTA settings)
     DisableWhenCuffed = true,   -- nobody uses the radial menu while handcuffed
     CloseDistance = 3.0,        -- how close the person or vehicle must be for radial actions
 }
