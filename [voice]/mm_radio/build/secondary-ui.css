@@ -240,3 +240,31 @@ body.mm-dash-open #app{visibility:hidden!important}
 /* v6.3: explicit default bottom-right; only fresh user-dragged positions override. */
 #mm-radio-dashboard:not(.radio-position-custom){left:auto!important;right:2vw!important;top:auto!important;bottom:1.5vh!important;transform:none!important}
 #mm-radio-dashboard.radio-position-custom{right:auto!important;bottom:auto!important;left:var(--radio-x)!important;top:var(--radio-y)!important;transform:none!important}
+
+/* v6.5: compact disconnect action, placed ahead of job-channel navigation. */
+#mm-radio-dashboard .mm-dash-disconnect {
+  display: block!important;
+  width: fit-content!important;
+  max-width: 100%!important;
+  min-height: 25px!important;
+  margin: 0 0 11px 0!important;
+  padding: 6px 10px!important;
+  border-radius: 6px!important;
+  border: 1px solid #d65b75!important;
+  background: #a62948!important;
+  color: #fff!important;
+  font-size: 7.5px!important;
+  font-weight: 800!important;
+  letter-spacing: .3px!important;
+  line-height: 1.2!important;
+  box-shadow: none!important;
+  cursor: pointer;
+}
+#mm-radio-dashboard .mm-dash-disconnect:hover:not(:disabled) {
+  background: #bd3555!important;
+  border-color: #ef8198!important;
+}
+#mm-radio-dashboard .mm-dash-disconnect:disabled {
+  opacity: .45!important;
+  cursor: not-allowed;
+}
