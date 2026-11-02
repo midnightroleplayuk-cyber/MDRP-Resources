@@ -267,7 +267,30 @@ Config.vendors = {
             anim = "base"
         },
         items = {
-            ['kq_weed_seed_og_kush'] = { label = "Weed seed [OG Kush]", price = 100 },
+            ['kq_weed_seed_purple_haze'] = { label = "Weed seed [Purple Haze]", price = 100 },
+            ['watering_can'] = { label = "Watering Can", price = 50 },
+            
+        },
+        blip = {
+            enabled = false,
+
+            label = 'Seed dealer',
+            sprite = 622,
+            color = 62,
+            alpha = 255,
+            scale = 0.7,
+        },
+    },
+        ["seed_store2"] = {
+        coords = vector3(-1146.72, -485.42, 49.15),
+        heading = 80.0,
+        model = "g_m_y_ballasout_01",
+        idleAnim = {
+            dict = "amb@world_human_leaning@male@wall@back@foot_up@idle_a",
+            anim = "base"
+        },
+        items = {
+            ['kq_weed_seed_white_widow'] = { label = "Weed seed [White Widow]", price = 100 },
             ['watering_can'] = { label = "Watering Can", price = 50 },
             
         },
