@@ -5699,4 +5699,36 @@ return {
         close = true,
         description = ''
 },
+
+-- AV BANKING
+    ['debit_standard'] = {
+        label = 'Debit - Neon Standard',
+        weight = 10,
+        stack = false,
+        close = true,
+        description = 'A Fleeca card linked to a bank account'
+    },
+    ['debit_premium'] = {
+        label = 'Debit - Neon Premium',
+        weight = 10,
+        stack = false,
+        close = true,
+        description = 'A Fleeca card linked to a bank account'
+    },
+    ['credit_gold'] = {
+        label = 'Credit - Neon Gold',
+        weight = 10,
+        stack = false,
+        close = true,
+        description = 'A Fleeca card linked to a bank account'
+    },
+    ['credit_black'] = {
+        label = 'Credit - Neon Black',
+        weight = 10,
+        stack = false,
+        close = true,
+        description = 'A Fleeca card linked to a bank account'
+    },
+
+
 }
