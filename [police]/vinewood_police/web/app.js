@@ -1133,6 +1133,10 @@ function renderScene(body, task) {
     body.append(grid);
   }
 
+  body.append(h('h3', {}, 'Evidence markers'),
+    h('p', { class: 'note', style: 'margin:0 0 6px' }, `${d.markers || 0} placed by you. They number themselves (lowest free number at the scene); keep pressing Enter to put down the next one.`),
+    h('button', { class: 'primary', style: 'margin-top:0', type: 'button', onclick: () => { nui('sceneMarkers', {}); $('hub').hidden = true; state.task = null; } }, 'Place evidence markers'));
+
   body.append(h('h3', {}, 'Police tape'),
     h('p', { class: 'note', style: 'margin:0 0 6px' }, `${d.tapes || 0} of ${d.tapeMax || 0} lengths up. Aim at a post, cone or fence (or the ground for waist height), E ties it, Enter finishes.`),
     h('div', { class: 'actions', style: 'margin-top:0' },

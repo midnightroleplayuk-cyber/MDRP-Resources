@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.11.1
+- Lighter front-cuff model: ukpolice_cuffs.ydr is now 1.1 MB instead of 6.3 MB, so players download about 5 MB less.
+
+## 1.11.0
+- Numbered evidence markers (vw_evidence_01 to 30, sharing the evidencemarkers texture dictionary). /scenekit, Place evidence markers (or the radial, Scene): a preview of the next number follows your aim, Enter puts it down, and the next number is ready straight away. Q/E turn, Backspace stops. Numbers are shared across officers: each marker takes the lowest number not already used within 60 m, so two officers at one scene never double up. Inside a major incident's outer cordon, placing and picking up markers is written to the scene log. Markers come down with the rest of your scene kit and don't count towards its limit.
+- stream/vinewood_policeprops.ytyp replaced with the new one (cuffs, cone, signs and all 30 markers).
+
 ## 1.10.1
 - Custody is only at the custody desk: removed from the radial, and the /custody command is off by default (Config.Custody.Command = 'custody' turns it back on).
 - Fixed: Vinewood resources in a folder named a little differently (vinewood_interviews, Vinewood-MDT...) showed as "not running". Names are now matched without case, hyphens or underscores. The admin panel shows which names were looked for when one isn't found.

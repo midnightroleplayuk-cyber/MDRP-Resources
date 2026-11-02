@@ -320,6 +320,13 @@ Officer F: firearms + Taser qualified, signed on as Armed response.
 - [ ] Door release: click "Locked · release" on an occupied cell: the door opens in the world and the detainee shows as out. "Open · lock" with them inside: back in the cell. From outside the desk area: refused.
 - [ ] /evidence at the desk also opens as the computer.
 
+## Evidence markers
+- [ ] /scenekit, Place evidence markers: a see-through "1" follows your aim. Enter puts down 1, and the preview becomes 2. Q/E turn it. Backspace stops.
+- [ ] A second officer at the same scene starts at the next free number. Pick up marker 2: the next one placed there is 2 again.
+- [ ] Inside a major incident's outer cordon: "Evidence marker 3 placed" and "...picked up" appear in the scene log with the officer's name.
+- [ ] 60 m away, numbering starts again at 1. Placing a 31st within 60 m: "All 30 evidence markers are in use here".
+- [ ] Pick everything up, or sign off: your markers go too. Markers don't count towards the scene kit limit.
+
 ## Police tape
 - [ ] /scenekit, Put up tape: aim at a lamp post and E (blue dot), at a second post and E. The tape between them shows while placing, faint if a span's too long. Enter: "Tape up". A second player sees it.
 - [ ] Aim at the ground: the point is at waist height. Run a length round a corner with 4 points.

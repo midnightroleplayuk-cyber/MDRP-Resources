@@ -58,7 +58,7 @@ The equipment and armoury lists in `config/equipment.lua` use ox_inventory item 
 `Config.Roads.Seizure.OnImpound` sends QB/Qbox vehicles to impound (`player_vehicles.state = 2`). For ESX or a garage script, put your garage's impound call there.
 
 ## Streamed assets
-`stream/` holds the Vinewood props: rigid cuffs, police cone, road closed, accident and checkpoint signs, and forensic tent, plus the front-cuff pose. Nothing extra to install.
+`stream/` holds the Vinewood props: rigid cuffs, police cone, road closed, accident and checkpoint signs, 30 numbered evidence markers (one shared texture dictionary), and forensic tent, plus the front-cuff pose. Nothing extra to install.
 
 ## Updating
 If you keep your own `config/` through an update, settings added in the new version are filled in from the defaults, and the console lists which. Copy them into your config to change them.
