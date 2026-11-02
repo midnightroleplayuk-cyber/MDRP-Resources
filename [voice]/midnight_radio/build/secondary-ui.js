@@ -414,7 +414,8 @@
       if (data.channelName && typeof data.channelName === 'object') state.channelNames = data.channelName;
       state.visiblePresetChannels = Array.isArray(data.visiblePresetChannels) ? data.visiblePresetChannels.map(Number) : [];
       syncPreferences(data);
-      restoreRosterPreferences(data);
+      // Only restore saved coordinates at session initialization, not after name/settings updates.
+      if (!rosterPositionReady) restoreRosterPreferences(data);
       panel.dataset.docked = '0';
       render();
     } else if (action === 'setRadioHide') {
@@ -433,7 +434,8 @@
       if (data.channelName && typeof data.channelName === 'object') state.channelNames = data.channelName;
       state.visiblePresetChannels = Array.isArray(data.visiblePresetChannels) ? data.visiblePresetChannels.map(Number) : [];
       syncPreferences(data);
-      restoreRosterPreferences(data);
+      // Only restore saved coordinates at session initialization, not after name/settings updates.
+      if (!rosterPositionReady) restoreRosterPreferences(data);
       render();
     } else if (action === 'overlayVisibilityChanged') {
       state.overlayEnabled = data.show === true;
