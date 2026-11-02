@@ -29,7 +29,7 @@ Config.UIlib = "lation_ui" -- Avaiable options "ox_lib" or "lation_ui"
     and if it is it will add/remove the item from the player's inventory instead of money
 ]]
 Config.UseItemAsMoneyAccount = {
-	["my_item_name"] = true,
+	["black_money"] = true,
 }
 
 -- Container config, this config is ONLY AVAILABLE WITH OX_INVENTORY and origen_inventory

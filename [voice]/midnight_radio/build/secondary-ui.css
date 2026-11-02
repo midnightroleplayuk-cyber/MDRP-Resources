@@ -1,0 +1,407 @@
+#mm-secondary-panel{position:relative;display:none;width:100%;box-sizing:border-box;margin-top:8px;padding:10px 0 2px;border-top:1px solid rgba(143,92,193,.55);font-family:Arial,sans-serif;color:#fff;background:transparent;box-shadow:none}#mm-secondary-panel.show{display:block}.sec-title{display:flex;justify-content:space-between;align-items:center;font-size:10px;font-weight:800;margin-bottom:7px;color:#f4f5f8;letter-spacing:.03em}.sec-current{color:#bfc4d2;font-size:9px;letter-spacing:0}.sec-row{display:flex;gap:5px}.sec-input{width:100%;min-width:0;height:24px;box-sizing:border-box;background:rgba(80,26,138,.48);border:1px solid rgba(255,255,255,.08);border-radius:5px;color:#fff;padding:0 7px;font-size:9px;outline:none}.sec-input:focus{border-color:#a46bdb}.sec-join,.sec-leave{border:0;border-radius:5px;color:#fff;font-size:8px;font-weight:800;cursor:pointer}.sec-join{padding:0 9px;background:#501A8A}.sec-leave{width:100%;height:22px;margin-top:5px;background:rgba(80,26,138,.72)}.sec-join:hover,.sec-leave:hover{filter:brightness(1.18)}.sec-leave:disabled{opacity:.4;cursor:default}
+#mm-dual-radio-roster{position:fixed;right:1.35vw;top:8vh;bottom:auto;width:168px;display:none;flex-direction:column;gap:5px;z-index:9997;pointer-events:none;font-family:Arial,sans-serif;color:#fff;user-select:none}#mm-dual-radio-roster.show{display:flex}#mm-dual-radio-roster.editable{pointer-events:auto;cursor:move}.mm-roster-section{background:rgba(80,26,138,.17);border:1px solid rgba(183,132,232,.20);border-radius:7px;overflow:hidden;box-shadow:none;backdrop-filter:none;-webkit-backdrop-filter:none}.mm-roster-heading{display:flex;justify-content:space-between;align-items:center;padding:4px 7px;background:rgba(80,26,138,.22);font-size:8px;font-weight:800;letter-spacing:.07em;color:#fff;text-shadow:none}.mm-roster-heading span:last-child{color:#eadcff;font-size:8px;letter-spacing:0;font-weight:700}.mm-members{padding:2px 0 3px}.mm-member{display:flex;align-items:center;gap:5px;padding:2px 7px;color:rgba(255,255,255,.96);font-size:10px;font-weight:700;line-height:1.2;text-shadow:none}.mm-talk-dot{width:5px;height:5px;border-radius:50%;background:rgba(221,199,245,.72);box-shadow:none;flex:0 0 auto}.mm-member.talking{color:#fff;background:rgba(147,82,207,.10)}.mm-member.talking .mm-talk-dot{background:#a8ffbd;box-shadow:0 0 6px rgba(168,255,189,.82)}.mm-member.mm-empty{font-size:9px;font-weight:600;font-style:italic;color:rgba(241,231,250,.72);padding:3px 7px}.mm-member-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+.mm-roster-section.mm-channel-hidden{display:none!important}
+
+.sec-overlay-row{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:9px;padding:7px 8px;background:rgba(80,26,138,.16);border:1px solid rgba(183,132,232,.20);border-radius:6px}.sec-overlay-title{display:block;font-size:9px;font-weight:800;letter-spacing:.04em;color:#fff}.sec-overlay-sub{display:block;margin-top:2px;font-size:7px;font-weight:600;color:rgba(239,225,255,.72)}.sec-switch{position:relative;display:inline-block;width:28px;height:15px;flex:0 0 auto}.sec-switch input{opacity:0;width:0;height:0}.sec-switch span{position:absolute;inset:0;cursor:pointer;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.16);border-radius:20px;transition:.15s}.sec-switch span:before{content:"";position:absolute;width:9px;height:9px;left:2px;top:2px;background:#fff;border-radius:50%;transition:.15s;box-shadow:0 1px 3px rgba(0,0,0,.35)}.sec-switch input:checked+span{background:#501A8A;border-color:rgba(196,146,239,.7);box-shadow:0 0 7px rgba(80,26,138,.45)}.sec-switch input:checked+span:before{transform:translateX(13px)}
+/* Clean purple-only roster: prevent dark/black backing rectangles in FiveM NUI. */
+#mm-dual-radio-roster,.mm-members,.mm-member,.mm-member-name{box-shadow:none!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
+.mm-members,.mm-member{background-color:transparent}
+.mm-member.talking{background:rgba(80,26,138,.14)}
+
+/* 2026-09-13 radio UI repair + purple theme.
+   The compiled Svelte markup uses Tailwind arbitrary-color class names. After the
+   accent was changed to #501A8A the generated utility did not exist, which left
+   parts of the screen/input unstyled. Define it explicitly and retheme the
+   remaining native blue/indigo panels to the requested purple family. */
+.bg-\[\#501A8A\]{--tw-bg-opacity:1!important;background-color:rgb(80 26 138 / var(--tw-bg-opacity))!important}
+.bg-\[\#18162F\]{--tw-bg-opacity:1!important;background-color:rgb(47 15 82 / var(--tw-bg-opacity))!important}
+.bg-\[\#18182b\]{--tw-bg-opacity:1!important;background-color:rgb(37 12 64 / var(--tw-bg-opacity))!important}
+.bg-\[\#212146\]{--tw-bg-opacity:1!important;background-color:rgb(59 20 102 / var(--tw-bg-opacity))!important}
+.bg-\[\#0e0d1a\]{--tw-bg-opacity:1!important;background-color:rgb(27 8 45 / var(--tw-bg-opacity))!important}
+.bg-accent{--tw-bg-opacity:1!important;background-color:rgb(80 26 138 / var(--tw-bg-opacity))!important}
+.shadow-\[\#18162F\]\/40{--tw-shadow-color:rgb(80 26 138 / .28)!important}
+
+/* Keep the radio-name field readable instead of falling back to a white browser input. */
+input.bg-\[\#501A8A\]{background:#501A8A!important;color:#fff!important;caret-color:#fff!important;border:1px solid rgba(220,190,247,.32)!important}
+input.bg-\[\#501A8A\]::placeholder{color:rgba(255,255,255,.62)!important}
+
+/* Purple treatment for the native settings toggles/focus state. */
+.peer:checked~.peer-checked\:bg-blue-600{background-color:#501A8A!important}
+.peer:focus~.peer-focus\:ring-blue-300{--tw-ring-color:rgba(180,130,224,.72)!important}
+
+/* Keep the Favourites tab readable against the purple radio theme. The first tab
+   in the favourites/recommended selector is the favourites control. */
+#app button:has(.fa-star), main button:has(.fa-star){color:#f7f0ff!important}
+#app button:has(.fa-star) i, main button:has(.fa-star) i{color:#fff!important;filter:drop-shadow(0 0 2px rgba(255,255,255,.25))}
+
+
+/* mm_radio dual-channel: improve Recommended control contrast on purple theme */
+button[aria-label*="Recommended" i],
+button[title*="Recommended" i],
+[aria-label*="Recommended" i],
+[title*="Recommended" i],
+.recommended,
+.recommended-button,
+.recommendedButton {
+    color: rgba(255,255,255,0.96) !important;
+}
+button[aria-label*="Recommended" i] svg,
+button[title*="Recommended" i] svg,
+[aria-label*="Recommended" i] svg,
+[title*="Recommended" i] svg,
+.recommended svg,
+.recommended-button svg,
+.recommendedButton svg {
+    color: #fff !important;
+    fill: #fff !important;
+    stroke: #fff !important;
+    opacity: 1 !important;
+}
+
+/* Named channel labels in the persistent Primary/Secondary roster.
+   Configured channels use Shared.RadioNames -> NAME | Frequency.
+   Unnamed channels remain frequency-only. */
+.mm-roster-heading span:last-child{
+  max-width:118px;
+  min-width:0;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+  text-align:right;
+  font-size:7.5px!important;
+  color:#f0e4ff!important;
+}
+
+/* Job-coloured radio speaking indicators (QBox) */
+.mm-member.talking .mm-talk-dot.job-police{background:#2f80ff;box-shadow:0 0 6px rgba(47,128,255,.90)}
+.mm-member.talking .mm-talk-dot.job-ambulance{background:#39e75f;box-shadow:0 0 6px rgba(57,231,95,.90)}
+.mm-member.talking .mm-talk-dot.job-fire{background:#ff3b30;box-shadow:0 0 6px rgba(255,59,48,.90)}
+.mm-member.talking .mm-talk-dot.job-default{background:#FFD700;box-shadow:0 0 6px rgba(255,215,0,.90)}
+/* Unified radio dashboard: original radio UI retains its 15vw footprint. */
+body.mm-dash-open #app{visibility:hidden!important}
+#mm-radio-dashboard{display:none;position:fixed;right:2vw;top:19vh;width:15vw;min-width:225px;max-width:310px;height:390px;box-sizing:border-box;z-index:9998;padding:12px;background:linear-gradient(155deg,#6719C0,#35105c 78%);border:1px solid #a46ae1;border-radius:12px;color:#fff;font:11px Arial,sans-serif;box-shadow:0 12px 35px #15072288;overflow:hidden}
+#mm-radio-dashboard.show{display:flex;flex-direction:column}
+#mm-radio-dashboard *{box-sizing:border-box;color:#fff}
+.mm-dash-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:13px}.mm-dash-header strong{font-size:16px;letter-spacing:1.3px}.mm-dash-header small{display:block;font-size:8px;opacity:.8;margin-top:3px;letter-spacing:1px}.mm-dash-header button{border:0;background:#8340cb;border-radius:6px;padding:6px 9px;cursor:pointer}
+.mm-dash-tabs{display:flex;gap:3px;margin-bottom:13px;background:#3b1169;padding:3px;border-radius:7px}.mm-dash-tabs button{flex:1;min-width:0;background:transparent;border:0;border-radius:5px;padding:8px 2px;font-size:9px;font-weight:800;cursor:pointer}.mm-dash-tabs button.active{background:#8840d0}
+.mm-dash-page{display:none;min-height:0;flex:1;overflow-y:auto;scrollbar-width:thin;scrollbar-color:#9954d4 transparent}.mm-dash-page.active{display:block}.mm-dash-caption{display:flex;align-items:center;justify-content:space-between;gap:5px;font-size:9px;font-weight:800;margin-bottom:11px}.mm-dash-caption b{font-size:9px;color:#f0d9ff!important;text-align:right}.mm-dash-entry{display:flex;gap:5px;margin-bottom:12px}.mm-dash-entry input{width:100%;min-width:0;padding:9px 7px;border-radius:6px;background:#431276;border:1px solid #9654ce;outline:0;font-size:10px}.mm-dash-entry input:focus{border-color:#d4aff8}.mm-dash-entry button,.mm-dash-presets button,.mm-dash-disconnect{border:1px solid #a56bde;background:#7d31c7;border-radius:6px;font-size:9px;font-weight:800;cursor:pointer;padding:8px}.mm-dash-entry button:hover,.mm-dash-presets button:hover,.mm-dash-disconnect:hover{background:#9852dd}.mm-dash-label{font-size:9px;font-weight:800;letter-spacing:.8px;margin-bottom:7px}.mm-dash-presets{display:grid;grid-template-columns:1fr 1fr;gap:5px;max-height:158px;overflow-y:auto}.mm-dash-presets button{text-align:left;font-size:9px;line-height:1.3;padding:7px 5px}.mm-dash-disconnect{width:100%;margin-top:12px;background:#4d1a7e}.mm-dash-page button:disabled{opacity:.35;cursor:not-allowed}#mm-radio-dashboard label:not(.mm-dash-toggle){display:block;font-size:9px;font-weight:800;margin:10px 0 7px}#mm-radio-dashboard output{float:right}#mm-radio-dashboard input[type=range]{width:100%;accent-color:#ae71ed;cursor:pointer}.mm-dash-toggle{display:flex;align-items:center;justify-content:space-between;font-weight:800;font-size:9px;margin:14px 0}.mm-dash-toggle input{accent-color:#9950df;width:17px;height:17px}.mm-dash-hint{font-size:9px;line-height:1.45;opacity:.8}.mm-dash-feedback{font-size:9px;min-height:13px;color:#f4d7ff!important;margin-top:5px}
+
+/* v2: Restore the actual radio handset artwork as the outer frame.
+   Controls sit within the original screen cutout, not over the handset. */
+#mm-radio-dashboard{
+  right:2vw;top:8vh;width:326px;min-width:0;max-width:none;height:660px;
+  padding:274px 52px 79px 65px;
+  border:0;border-radius:0;box-shadow:none;
+  background: url('./overlay.webp') center center / 100% 100% no-repeat;
+  overflow:hidden;
+}
+#mm-radio-dashboard::before{
+  content:"";position:absolute;z-index:-1;left:65px;right:52px;top:274px;bottom:79px;
+  background:linear-gradient(155deg,#6719C0,#35105c 85%);
+}
+#mm-radio-dashboard .mm-dash-header{margin-bottom:8px}
+#mm-radio-dashboard .mm-dash-header strong{font-size:13px}
+#mm-radio-dashboard .mm-dash-tabs{margin-bottom:8px}
+#mm-radio-dashboard .mm-dash-tabs button{font-size:8px;padding:6px 1px}
+#mm-radio-dashboard .mm-dash-entry{margin-bottom:8px}
+#mm-radio-dashboard .mm-dash-presets{max-height:118px}
+#mm-radio-dashboard .mm-dash-disconnect{margin-top:8px}
+/* Scroll content with wheel/touch, but never show browser-native scrollbars. */
+#mm-radio-dashboard .mm-dash-page,
+#mm-radio-dashboard .mm-dash-presets{
+  scrollbar-width:none!important;-ms-overflow-style:none!important;
+}
+#mm-radio-dashboard .mm-dash-page::-webkit-scrollbar,
+#mm-radio-dashboard .mm-dash-presets::-webkit-scrollbar{display:none!important;width:0!important;height:0!important}
+
+/* v3: preserve original handset image proportions (439 x 1100). */
+#mm-radio-dashboard{width:263.4px!important;height:660px!important;min-width:0!important;max-width:none!important;padding:263px 38px 78px 48px!important;background-size:100% 100%!important}
+#mm-radio-dashboard::before{left:48px;right:38px;top:263px;bottom:78px;z-index:0}
+#mm-radio-dashboard > *{position:relative;z-index:1}
+#mm-radio-dashboard .mm-dash-header{margin-bottom:5px}
+#mm-radio-dashboard .mm-dash-header strong{font-size:11px}
+#mm-radio-dashboard .mm-dash-header small{font-size:6px;letter-spacing:.25px}
+#mm-radio-dashboard .mm-dash-header button{padding:4px 6px}
+#mm-radio-dashboard .mm-dash-tabs{gap:1px;padding:2px;margin-bottom:8px}
+#mm-radio-dashboard .mm-dash-tabs button{font-size:7px;padding:6px 0}
+#mm-radio-dashboard .mm-dash-caption{font-size:8px;margin-bottom:7px}
+#mm-radio-dashboard .mm-dash-entry{margin-bottom:8px}
+#mm-radio-dashboard .mm-dash-entry input{padding:7px 5px;font-size:9px}
+#mm-radio-dashboard .mm-dash-entry button{padding:6px}
+#mm-radio-dashboard .mm-dash-disconnect{margin-top:9px;font-size:8px;padding:7px 4px}
+#mm-radio-dashboard .mm-channel-open{width:100%;display:flex;justify-content:space-between;gap:4px;align-items:center;background:#7831bd;border:1px solid #a46ae1;border-radius:6px;padding:11px 7px;font-weight:800;font-size:9px;cursor:pointer}
+#mm-radio-dashboard .mm-channel-open span{font-size:8px}
+#mm-radio-dashboard .mm-channel-list{height:158px;min-height:0}
+#mm-radio-dashboard [hidden]{display:none!important}
+#mm-radio-dashboard .mm-channel-back{width:100%;border:0;background:#4d1a7e;border-radius:5px;padding:7px 4px;margin-bottom:5px;text-align:left;font-weight:800;font-size:8px;cursor:pointer}
+#mm-radio-dashboard .mm-dash-presets{display:flex;flex-direction:column;gap:3px;max-height:126px;overflow-y:auto}
+#mm-radio-dashboard .mm-dash-presets button{width:100%;text-align:left;padding:7px 6px;font-size:9px}
+#mm-radio-dashboard .mm-dash-page,#mm-radio-dashboard .mm-dash-presets{scrollbar-width:none!important}
+#mm-radio-dashboard .mm-dash-page::-webkit-scrollbar,#mm-radio-dashboard .mm-dash-presets::-webkit-scrollbar{display:none!important}
+
+/* v4: Photoshop mockup screen inset, aligned to the physical handset bezel.
+   The frame is always a background and never stretched or covered by UI. */
+#mm-radio-dashboard{
+ width:263.4px!important;height:660px!important;
+ padding:280px 49px 90px 50px!important;
+ background-size:263.4px 660px!important;
+ background-position:center center!important;
+ background-repeat:no-repeat!important;
+ isolation:isolate;
+}
+#mm-radio-dashboard::before{
+ left:50px!important;right:49px!important;top:280px!important;bottom:90px!important;
+ border-radius:6px!important;z-index:0!important;pointer-events:none;
+}
+#mm-radio-dashboard > *{position:relative;z-index:1;min-width:0}
+#mm-radio-dashboard .mm-dash-page{min-height:0;overflow-y:auto;overflow-x:hidden}
+#mm-radio-dashboard .mm-dash-header{flex-shrink:0}
+#mm-radio-dashboard .mm-dash-tabs{flex-shrink:0}
+#mm-radio-dashboard .mm-dash-feedback{flex-shrink:0}
+
+/* v5: extend purple display vertically into bezel opening, retain exact side edges.
+   Inner content receives its own breathing room independently of screen background. */
+#mm-radio-dashboard {
+  padding: 276px 55px 84px 55px!important;
+}
+#mm-radio-dashboard::before {
+  top: 273px!important;
+  bottom: 83px!important;
+  left: 50px!important;
+  right: 49px!important;
+  border-radius: 7px!important;
+}
+/* More restrained controls with clear separation and consistent rhythm. */
+#mm-radio-dashboard .mm-dash-header { margin-bottom: 10px!important; }
+#mm-radio-dashboard .mm-dash-header button {
+  border-radius: 7px!important; background: #7431b4!important;
+  border: 1px solid #9853d2!important; min-width: 22px;
+}
+#mm-radio-dashboard .mm-dash-tabs {
+  gap: 2px!important; padding: 3px!important;
+  margin-bottom: 12px!important; border-radius: 8px!important;
+  background: #39105f!important;
+}
+#mm-radio-dashboard .mm-dash-tabs button {
+  font-size: 6.8px!important; letter-spacing: .12px;
+  border-radius: 6px!important; padding: 7px 1px!important;
+  transition: background .12s ease;
+}
+#mm-radio-dashboard .mm-dash-tabs button.active {
+  background: #8842ce!important; box-shadow: inset 0 1px 0 #b985e9;
+}
+#mm-radio-dashboard .mm-dash-caption { margin-bottom: 9px!important; }
+#mm-radio-dashboard .mm-dash-entry { gap: 6px!important; margin-bottom: 12px!important; }
+#mm-radio-dashboard .mm-dash-entry input {
+  border-radius: 7px!important; background: #401369!important;
+  border-color: #8850ba!important; padding: 9px 6px!important;
+}
+#mm-radio-dashboard .mm-dash-entry button {
+  border-radius: 7px!important; padding: 8px 9px!important;
+  background: #8540c8!important; border-color: #a269d9!important;
+}
+#mm-radio-dashboard .mm-channel-open {
+  border-radius: 8px!important; padding: 12px 8px!important;
+  background: #7430b5!important; border: 1px solid #9657d1!important;
+  box-shadow: inset 0 1px 0 #a86ada55;
+  font-size: 8.5px!important;
+}
+#mm-radio-dashboard .mm-channel-open span { font-size: 7px!important; white-space: nowrap; opacity:.9; }
+#mm-radio-dashboard .mm-dash-disconnect {
+  margin-top: 12px!important; padding: 10px 5px!important;
+  border-radius: 8px!important; background: #4a1a75!important;
+  border: 1px solid #7e42aa!important;
+}
+#mm-radio-dashboard .mm-channel-back, #mm-radio-dashboard .mm-dash-presets button {
+  border-radius: 7px!important; margin-bottom: 3px;
+}
+#mm-radio-dashboard button:hover:not(:disabled) { filter: brightness(1.12); }
+#mm-radio-dashboard button:focus-visible, #mm-radio-dashboard input:focus-visible {
+  outline: 2px solid #d6b2f5!important; outline-offset: -1px;
+}
+
+/* Midnight Radio v6: bottom-right placement; same native handset size and inset. */
+#mm-radio-dashboard{top:auto!important;bottom:1.5vh!important;right:2vw!important}
+#mm-radio-dashboard[style*="top:"]{bottom:auto!important;right:auto!important}
+#mm-radio-dashboard .mm-dash-header strong{font-size:10px!important;letter-spacing:.2px!important;white-space:nowrap}
+#mm-radio-dashboard .mm-dash-header small{font-size:6px!important;letter-spacing:.15px!important}
+#mm-radio-dashboard [data-tab="settings"]{flex:0 0 27px!important;display:flex;align-items:center;justify-content:center}
+#mm-radio-dashboard [data-tab="settings"] svg{pointer-events:none}
+#mm-radio-dashboard .mm-dash-header{touch-action:none}
+#mm-radio-dashboard.radio-movable .mm-dash-header{cursor:grab}
+#mm-radio-dashboard.radio-movable .mm-dash-header:active{cursor:grabbing}
+#mm-radio-dashboard .mm-reset-position{width:100%;background:#58238a;border:1px solid #9355c8;border-radius:7px;padding:7px;font-size:8px;font-weight:700;cursor:pointer}
+
+/* v6.1: default anchor is bottom RIGHT, never inherit a left anchor. */
+#mm-radio-dashboard{left:auto!important;right:2vw!important;top:auto!important;bottom:1.5vh!important}
+#mm-radio-dashboard.radio-position-custom{left:var(--radio-x)!important;top:var(--radio-y)!important;right:auto!important;bottom:auto!important}
+
+/* v6.3: explicit default bottom-right; only fresh user-dragged positions override. */
+#mm-radio-dashboard:not(.radio-position-custom){left:auto!important;right:2vw!important;top:auto!important;bottom:1.5vh!important;transform:none!important}
+#mm-radio-dashboard.radio-position-custom{right:auto!important;bottom:auto!important;left:var(--radio-x)!important;top:var(--radio-y)!important;transform:none!important}
+
+/* v6.5: compact disconnect action, placed ahead of job-channel navigation. */
+#mm-radio-dashboard .mm-dash-disconnect {
+  display: block!important;
+  width: fit-content!important;
+  max-width: 100%!important;
+  min-height: 25px!important;
+  margin: 0 0 11px 0!important;
+  padding: 6px 10px!important;
+  border-radius: 6px!important;
+  border: 1px solid #d65b75!important;
+  background: #a62948!important;
+  color: #fff!important;
+  font-size: 7.5px!important;
+  font-weight: 800!important;
+  letter-spacing: .3px!important;
+  line-height: 1.2!important;
+  box-shadow: none!important;
+  cursor: pointer;
+}
+#mm-radio-dashboard .mm-dash-disconnect:hover:not(:disabled) {
+  background: #bd3555!important;
+  border-color: #ef8198!important;
+}
+#mm-radio-dashboard .mm-dash-disconnect:disabled {
+  opacity: .45!important;
+  cursor: not-allowed;
+}
+
+/* Midnight Radio v6.6 — unified purple radio-list overlay.
+   Appearance only: retain job-specific speaking dot colours, drag and opacity. */
+#mm-dual-radio-roster { gap: 7px; font-family: Arial,sans-serif; }
+#mm-dual-radio-roster .mm-roster-section {
+  background: linear-gradient(145deg,rgba(103,25,192,.90),rgba(52,13,94,.91));
+  border: 1px solid rgba(185,125,242,.68);
+  border-radius: 9px;
+  box-shadow: 0 4px 14px rgba(19,5,39,.24),inset 0 1px 0 rgba(255,255,255,.12);
+  overflow: hidden;
+}
+#mm-dual-radio-roster .mm-roster-heading {
+  padding: 7px 9px;
+  background: rgba(39,9,78,.56);
+  border-bottom: 1px solid rgba(198,149,241,.32);
+  color: #fff;
+  font-size: 9px;
+  letter-spacing: .08em;
+}
+#mm-dual-radio-roster .mm-roster-heading span:last-child { color:#f2e6ff!important; font-size:8px!important; }
+#mm-dual-radio-roster .mm-members { padding: 4px 0 5px; background:transparent!important; }
+#mm-dual-radio-roster .mm-member {
+  min-height: 21px;
+  padding: 4px 9px;
+  gap: 7px;
+  font-size: 10px;
+  font-weight: 600;
+  color:#fff;
+  transition:background-color .12s ease;
+}
+#mm-dual-radio-roster .mm-member + .mm-member { border-top: 1px solid rgba(218,186,255,.08); }
+#mm-dual-radio-roster .mm-member.talking { background:rgba(192,134,251,.23)!important; }
+#mm-dual-radio-roster .mm-talk-dot { width:6px;height:6px;background:#d2b6ec;flex:0 0 6px; }
+#mm-dual-radio-roster .mm-member.talking .mm-talk-dot.job-police {background:#2f80ff;box-shadow:0 0 7px #2f80ff}
+#mm-dual-radio-roster .mm-member.talking .mm-talk-dot.job-ambulance {background:#39e75f;box-shadow:0 0 7px #39e75f}
+#mm-dual-radio-roster .mm-member.talking .mm-talk-dot.job-fire {background:#ff3b30;box-shadow:0 0 7px #ff3b30}
+#mm-dual-radio-roster .mm-member.talking .mm-talk-dot.job-default {background:#ffd700;box-shadow:0 0 7px #ffd700}
+#mm-dual-radio-roster .mm-member.mm-empty {padding:6px 9px;color:#e9d6fc;font-size:9px}
+
+/* v6.8 accessibility: fine black outline on readable text.
+   Applied to handset UI and radio roster, without affecting coloured talk dots. */
+#mm-radio-dashboard,
+#mm-dual-radio-roster {
+  -webkit-text-stroke: 0.16px rgba(0,0,0,.85);
+  text-shadow:
+    -0.55px -0.55px 0 rgba(0,0,0,.88),
+     0.55px -0.55px 0 rgba(0,0,0,.88),
+    -0.55px  0.55px 0 rgba(0,0,0,.88),
+     0.55px  0.55px 0 rgba(0,0,0,.88);
+}
+#mm-radio-dashboard input::placeholder {
+  text-shadow: 0 0 1px #000, 0 1px 1px #000;
+}
+#mm-dual-radio-roster .mm-roster-heading,
+#mm-dual-radio-roster .mm-member,
+#mm-radio-dashboard button,
+#mm-radio-dashboard label,
+#mm-radio-dashboard input,
+#mm-radio-dashboard small,
+#mm-radio-dashboard strong {
+  text-shadow: -0.55px -0.55px 0 #000, .55px -.55px 0 #000,
+               -.55px .55px 0 #000, .55px .55px 0 #000 !important;
+}
+
+/* v6.9: opacity affects decorative panels only, never text or talk indicators.
+   Pseudo-elements paint the translucent backgrounds behind the contents. */
+#mm-dual-radio-roster .mm-roster-section {
+  position:relative!important; isolation:isolate; background:transparent!important;
+  border-color:transparent!important; box-shadow:none!important;
+}
+#mm-dual-radio-roster .mm-roster-section::before {
+  content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;
+  border-radius:inherit;opacity:var(--mm-roster-style-opacity,1);
+  background:linear-gradient(155deg,rgba(103,25,192,.94),rgba(47,11,92,.94));
+  border:1px solid rgba(192,144,240,.55);box-sizing:border-box;
+}
+#mm-dual-radio-roster .mm-roster-heading {
+  position:relative;isolation:isolate;background:transparent!important;
+}
+#mm-dual-radio-roster .mm-roster-heading::before {
+  content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;
+  background:rgba(159,92,225,.34);opacity:var(--mm-roster-style-opacity,1);
+}
+#mm-dual-radio-roster .mm-member.talking {background:transparent!important;position:relative;isolation:isolate}
+#mm-dual-radio-roster .mm-member.talking::before {
+  content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;
+  background:rgba(192,134,251,.23);opacity:var(--mm-roster-style-opacity,1);
+}
+#mm-dual-radio-roster .mm-roster-heading,
+#mm-dual-radio-roster .mm-member,
+#mm-dual-radio-roster .mm-member-name,
+#mm-dual-radio-roster .mm-talk-dot {opacity:1!important}
+
+/* v6.10: speech indication is the coloured dot ONLY; no highlighted name row. */
+#mm-dual-radio-roster .mm-member.talking,
+#mm-dual-radio-roster .mm-member.talking:hover {background:transparent!important;box-shadow:none!important;}
+#mm-dual-radio-roster .mm-member.talking::before,
+#mm-dual-radio-roster .mm-member.talking::after {content:none!important;display:none!important;}
+
+/* v6.11: whole handset is a drag surface when move mode is enabled. */
+#mm-radio-dashboard.radio-movable { cursor: grab; touch-action: none; }
+#mm-radio-dashboard.radio-movable:active { cursor: grabbing; }
+#mm-radio-dashboard.radio-movable button, #mm-radio-dashboard.radio-movable input,
+#mm-radio-dashboard.radio-movable label { cursor: pointer; }
+
+/* v6.12: header remains visible and draggable, but cannot be text-selected. */
+#mm-radio-dashboard .mm-dash-header,
+#mm-radio-dashboard .mm-dash-header * {
+  -webkit-user-select: none !important;
+  user-select: none !important;
+  -webkit-touch-callout: none;
+}
+
+/* v6.13: moved handsets close where the player placed them. */
+#mm-radio-dashboard.radio-position-custom.radio-closing-in-place {
+  opacity: 0!important;
+  transition: opacity 180ms ease-out!important;
+  transform: none!important;
+}
+#mm-radio-dashboard.radio-position-custom:not(.radio-closing-in-place) {
+  opacity: 1!important;
+  transition: opacity 120ms ease-in!important;
+}
+
+/* v6.14: handset is fixed; override all earlier custom-position rules. */
+#mm-radio-dashboard,
+#mm-radio-dashboard.radio-position-custom,
+#mm-radio-dashboard.radio-movable {
+  left:auto!important; top:auto!important;
+  right:2vw!important; bottom:1.5vh!important;
+  cursor:default; touch-action:auto;
+}
+#mm-radio-dashboard.radio-position-custom.radio-closing-in-place {opacity:1!important;transition:none!important;}
+
+/* v6.21: the roster is never visible merely because the handset is open. */
+#mm-dual-radio-roster:not(.show){display:none!important;pointer-events:none!important;}
+#mm-dual-radio-roster.show{display:flex;}
