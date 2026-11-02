@@ -10,6 +10,7 @@
     primaryMembers: {},
     secondaryMembers: {},
     channelNames: {},
+    visiblePresetChannels: [],
     rosterCoords: null,
     rosterScale: 100,
     opacity: 100, volume: 30, displayName: ''
@@ -337,7 +338,7 @@
     for (const side of ['primary','secondary']) {
       const target = get(`[data-presets="${side}"]`);
       target.replaceChildren();
-      const entries = Object.entries(state.channelNames).filter(([key]) => /^\d+(?:\.\d+)?$/.test(key)).sort((a,b) => Number(a[0])-Number(b[0]));
+      const entries = Object.entries(state.channelNames).filter(([key]) => /^\d+(?:\.\d+)?$/.test(key) && state.visiblePresetChannels.includes(Number(key))).sort((a,b) => Number(a[0])-Number(b[0]));
       for (const [channel, label] of entries) {
         const btn = document.createElement('button');
         btn.textContent = `${label} · ${channel}`;
@@ -392,6 +393,7 @@
       state.channel = Number(data.secondaryChannel) || 0;
       state.maxChannel = Number(data.maxChannel) || state.maxChannel;
       if (data.channelName && typeof data.channelName === 'object') state.channelNames = data.channelName;
+      state.visiblePresetChannels = Array.isArray(data.visiblePresetChannels) ? data.visiblePresetChannels.map(Number) : [];
       syncPreferences(data);
       if (data.userData?.playerlist) {
         state.overlayEnabled = data.userData.playerlist.show === true;
@@ -405,6 +407,7 @@
       state.primary = Number(data.channel) || 0;
       if (data.secondaryChannel !== undefined) state.channel = Number(data.secondaryChannel) || 0;
       if (data.channelName && typeof data.channelName === 'object') state.channelNames = data.channelName;
+      state.visiblePresetChannels = Array.isArray(data.visiblePresetChannels) ? data.visiblePresetChannels.map(Number) : [];
       syncPreferences(data);
       if (data.userData?.playerlist) {
         state.overlayEnabled = data.userData.playerlist.show === true;

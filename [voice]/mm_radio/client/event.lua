@@ -39,6 +39,7 @@ RegisterNetEvent('mm_radio:client:use', function(slot)
         maxChannel = Shared.MaxFrequency,
         locale = Radio.locale,
         channelName = Shared.RadioNames,
+        visiblePresetChannels = Radio:GetVisiblePresetChannels(),
         insideJammerZone = Radio.signalJammed,
         battery = battery,
         overlay = Shared.Overlay

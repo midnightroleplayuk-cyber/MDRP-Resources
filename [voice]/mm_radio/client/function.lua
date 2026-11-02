@@ -220,6 +220,24 @@ function Radio:leaveradio()
     self:update()
 end
 
+function Radio:GetVisiblePresetChannels()
+    local visible = {}
+    for key, _ in pairs(Shared.RadioNames or {}) do
+        local channel = tonumber(key)
+        if channel then
+            local restriction = Shared.RestrictedChannels[channel]
+            local permitted = not restriction
+            if restriction and restriction.type == 'job' then
+                permitted = self.PlayerDuty == true and lib.table.contains(restriction.name, self.PlayerJob)
+            elseif restriction and restriction.type == 'gang' then
+                permitted = lib.table.contains(restriction.name, self.PlayerGang)
+            end
+            if permitted then visible[#visible + 1] = channel end
+        end
+    end
+    return visible
+end
+
 function Radio:update()
     local battery, radioId = lib.callback.await('mm_radio:server:getradiodata', false)
     self:SendSvelteMessage("updateRadio", {
@@ -235,6 +253,7 @@ function Radio:update()
         street = self:getCrossroads(),
         locale = self.locale,
         channelName = Shared.RadioNames,
+        visiblePresetChannels = self:GetVisiblePresetChannels(),
         insideJammerZone = self.signalJammed,
         battery = battery,
         overlay = Shared.Overlay
