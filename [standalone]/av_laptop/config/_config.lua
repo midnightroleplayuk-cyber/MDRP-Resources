@@ -20,7 +20,7 @@ Config.UseTerminal = function(serial)
 end
 
 -- Other laptop configs
-Config.UIlib = "lation_ui" -- Avaiable options "ox_lib" or "lation_ui"
+Config.UIlib = "ox_lib" -- Avaiable options "ox_lib" or "lation_ui"
 
 --[[
     if you want to use an item as a money account add it here, the key is the item name and the value is true/false

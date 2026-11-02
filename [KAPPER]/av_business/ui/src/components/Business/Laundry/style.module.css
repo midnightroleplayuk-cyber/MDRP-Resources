@@ -1,0 +1,117 @@
+.container {
+  padding: 10px;
+  height: 100%;
+}
+
+.title {
+  text-transform: uppercase;
+}
+
+.panelCard {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border);
+}
+
+.panelCardFull {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.kpiCard {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border);
+  position: relative;
+  overflow: hidden;
+}
+
+.kpiIconBg {
+  position: absolute;
+  right: -20px;
+  bottom: -20px;
+  opacity: 0.03;
+  color: white;
+  width: 100px;
+  height: 100px;
+}
+
+.numberInput {
+  background-color: var(--bg-input);
+  border-color: var(--border);
+  color: var(--text-main);
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 600;
+  height: 45px;
+}
+
+.btnStash {
+  border-color: var(--yellow) !important;
+  color: var(--yellow) !important;
+}
+
+.btnWithdraw {
+  background-color: var(--cyan) !important;
+  color: #000 !important;
+}
+
+.btnBoost {
+  background-color: rgba(168, 85, 247, 0.1) !important;
+  border: 1px solid var(--accent) !important;
+}
+
+.mathFlowBox {
+  background-color: var(--bg-input);
+  border-radius: 8px;
+  border: 1px solid var(--border);
+}
+
+.badgeProcessing {
+  background-color: transparent;
+  border: none;
+}
+
+.progressOverride {
+  background-color: var(--bg-input);
+  border: 1px solid var(--border);
+}
+
+.tableContainer {
+  flex: 1;
+  overflow-y: auto;
+  margin: -10px;
+}
+
+.tableHeader {
+  border-color: var(--border);
+  color: var(--text-dim);
+}
+
+.tableRow {
+  border-color: rgba(255, 255, 255, 0.02);
+}
+
+.badgeAccent {
+  background-color: rgba(168, 85, 247, 0.1);
+  border: 1px solid rgba(168, 85, 247, 0.2);
+}
+
+@media (max-height: 700px) {
+  .scroll {
+    height: calc(85vh - 55px);
+  }
+}
+
+@media (max-height: 900px) and (min-height: 701px) {
+  .scroll {
+    height: calc(95vh - 70px);
+  }
+}
+
+@media (min-height: 901px) {
+  .scroll {
+    height: calc(95vh - 80px);
+  }
+}

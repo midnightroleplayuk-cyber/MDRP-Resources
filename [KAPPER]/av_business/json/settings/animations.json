@@ -1,0 +1,67 @@
+[
+  {
+    "time": 5000,
+    "jobs": false,
+    "value": "burger",
+    "type": ["food", "drink"],
+    "canWalk": true,
+    "progressLabel": "Eating",
+    "label": "Burger",
+    "anim": {
+      "dict": "mp_player_inteat@burger",
+      "clip": "mp_player_int_eat_burger"
+    },
+    "canDrive": true,
+    "prop": [
+      {
+        "pos": { "z": 0.02, "y": 0.05, "x": 0.13 },
+        "model": "prop_cs_burger_01",
+        "rot": { "z": 60, "y": 16, "x": -50 },
+        "bone": 18905
+      },
+      {
+        "pos": { "z": 0, "y": 0, "x": 0 },
+        "model": "prop_cs_burger_01",
+        "rot": { "z": 0, "y": 0, "x": 0 },
+        "bone": 18905
+      }
+    ]
+  },
+  {
+    "time": 5000,
+    "jobs": false,
+    "value": "sandwich",
+    "type": ["food"],
+    "canWalk": true,
+    "progressLabel": "Eating",
+    "label": "Sandwich",
+    "anim": {
+      "dict": "mp_player_inteat@burger",
+      "clip": "mp_player_int_eat_burger"
+    },
+    "canDrive": true,
+    "prop": {
+      "pos": { "z": 0.02, "y": 0.05, "x": 0.13 },
+      "model": "prop_sandwich_01",
+      "rot": { "z": 60, "y": 16, "x": -50 },
+      "bone": 18905
+    }
+  },
+  {
+    "time": 5000,
+    "jobs": false,
+    "value": "soda",
+    "type": ["drink", "alcohol"],
+    "canWalk": true,
+    "progressLabel": "Drinking",
+    "label": "Soda",
+    "anim": { "dict": "mp_player_intdrink", "clip": "loop_bottle" },
+    "canDrive": true,
+    "prop": {
+      "pos": { "z": 0.03, "y": -0.01, "x": 0.11 },
+      "model": "prop_ecola_can",
+      "rot": { "z": -2, "y": -30, "x": 240 },
+      "bone": 18905
+    }
+  }
+]

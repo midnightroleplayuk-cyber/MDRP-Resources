@@ -1,5 +1,16 @@
 # Changelog
 
+## 1.10.1
+- Custody is only at the custody desk: removed from the radial, and the /custody command is off by default (Config.Custody.Command = 'custody' turns it back on).
+- Fixed: Vinewood resources in a folder named a little differently (vinewood_interviews, Vinewood-MDT...) showed as "not running". Names are now matched without case, hyphens or underscores. The admin panel shows which names were looked for when one isn't found.
+
+## 1.10.0
+- Police radial menu of its own, on L (rebindable in GTA settings). Dark see-through wedges with icons, blue highlight on hover, back arrow in the centre, submenus. Same sections and actions as before. ox_lib's radial is still available: Config.Radial.Style = 'ox'.
+- Font Awesome (solid icons) is bundled with the resource, so icons show even if a player's game can't reach the internet. Licence in web/fa/LICENSE.txt.
+
+## 1.9.1
+- Fixed: the Police section of the radial menu could disappear until the script was restarted. It now checks itself every 5 seconds and puts itself back if anything removed it (ox_lib restarting, another script clearing radial items, a missed duty update). A brief "off duty" reading during a relog or restore no longer removes it. Coming out of handcuffs re-adds it, and /policeradial rebuilds it on the spot.
+
 ## 1.9.0
 - Police tape, drawn with web/textures/policeline.png. /scenekit, Put up tape (or the radial, Scene): aim at a lamp post, cone or fence and press E to tie it there. Aim at the ground and it's tied at waist height. Keep adding points to run it round a scene; Enter finishes. It has a slight sag and a flutter, every player sees it, and the print reads the right way from the front. "Take down tape near me" removes it (your own, or anyone's for sergeants and above). It clears with "Pick everything up", on sign-off and after the scene lifetime. Settings: Config.Scene.Tape (width, sag, flutter, limits). Swap the PNG to change the design.
 

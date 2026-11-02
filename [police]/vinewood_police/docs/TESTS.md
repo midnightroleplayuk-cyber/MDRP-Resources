@@ -245,7 +245,9 @@ Officers: an Inspector (I), a Sergeant (S), a PC (P), a Chief Inspector (C), and
 - [ ] Audit rows for hire, promote, demote, suspend, unsuspend and dismiss.
 
 ## Radial menu
-- [ ] Off duty: no Police section in the radial (Z). Sign on: it appears. Sign off: it goes.
+- [ ] Off duty: L does nothing. On duty: L opens the police radial in the middle of the screen, with the mouse free. Hovering lights a section blue; ••• sections open their submenu; the centre arrow goes back; Escape or L again closes.
+- [ ] Rebind it in GTA settings (FiveM, "Police: radial menu"): the new key works.
+- [ ] Cuffed: L does nothing. With `Config.Radial.Style = 'ox'`: the Police section is in ox_lib's radial (Z) instead.
 - [ ] Status: each status changes your header and the roster.
 - [ ] Restrain, with a player next to you: cuff rear, front, remove, double-lock, escort and let go, put in and take out of the nearest car. Nobody near: "Nobody close enough".
 - [ ] Search & arrest: search (consent prompt if they're not cuffed), arrest, release, stop and search all open the right panels.

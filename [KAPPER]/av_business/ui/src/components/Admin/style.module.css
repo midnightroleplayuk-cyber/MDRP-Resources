@@ -1,0 +1,51 @@
+.container {
+  display: flex;
+  height: 100vh;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+.box {
+  background-color: var(--bg-main);
+  position: absolute;
+  height: 720px;
+  width: 1200px;
+  border-radius: 10px;
+  box-shadow: 0px 8px 32px rgba(0, 0, 0, 0.55);
+  overflow: hidden;
+}
+
+.header {
+  background-color: rgba(30, 30, 36, 0.5);
+  border-bottom: solid 1.25px rgba(255, 255, 255, 0.1);
+}
+
+.content {
+  position: relative;
+  height: 660px;
+}
+
+.disabled {
+  background: transparent !important;
+  color: rgba(255, 255, 255, 0.65) !important;
+  border-radius: 6px !important;
+  transition: background 0.15s, color 0.15s !important;
+}
+
+.disabled:hover {
+  background: rgba(255, 255, 255, 0.08) !important;
+  color: rgba(255, 255, 255, 1) !important;
+}
+
+.active {
+  background: rgba(88, 88, 184, 0.18) !important;
+  color: var(--cyan) !important;
+  border-radius: 6px !important;
+}
+
+.active:hover {
+  background: rgba(88, 88, 184, 0.28) !important;
+  color: var(--cyan) !important;
+}

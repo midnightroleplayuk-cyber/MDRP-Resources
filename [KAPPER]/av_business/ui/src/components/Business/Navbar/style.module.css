@@ -1,0 +1,27 @@
+.navbar {
+  background: var(--bg-sidebar);
+  min-width: 180px;
+  width: 180px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid var(--border);
+}
+
+.option {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 8px 8px 8px 0px;
+  gap: 8px;
+  border-radius: 8px;
+  flex: none;
+  order: 0;
+  align-self: stretch;
+  flex-grow: 0;
+}
+
+.option:hover {
+  cursor: pointer;
+  color: white;
+}

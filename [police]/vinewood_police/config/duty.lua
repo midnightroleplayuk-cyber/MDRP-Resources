@@ -8,7 +8,7 @@ Config.Duty = {
     Keybind = '',
 
     -- Sign on only at a station sign-on point (Config.Stations). false = anywhere.
-    SignOnAtStation = false,
+    SignOnAtStation = true,
     -- Sign off only at a station. false = anywhere (recommended: players log off mid-patrol).
     SignOffAtStation = false,
     -- How close to a sign-on point counts as "at" it (metres).
@@ -21,25 +21,23 @@ Config.Duty = {
 
     -- Officers without a collar number may pick their own at first sign-on (still unique).
     -- false = a sergeant must set it with /collar first.
-    SelfAssignCollar = false,
+    SelfAssignCollar = true,
     RequireCollar = true,
 
     -- Keep the framework's duty flag (QB/Qbox) in step with sign-on. Turning a police officer
     -- on duty any other way (qb-core's duty toggle, another police job) is undone.
-    EnforceFrameworkDuty = false,
+    EnforceFrameworkDuty = true,
 
     -- Unit types an officer can sign on as. qualifications: all must be held and in date.
     UnitTypes = {
-        { id = 'response',      label = 'ERPT' },
-        { id = 'roads',         label = 'Roads Policing Unit',                qualifications = { 'advanced_driver' } },
-        { id = 'tviu',          label = 'TVIU',                               qualifications = { 'advanced_driver' } },
-        { id = 'dogs',          label = 'Dog Unit',                           qualifications = { 'dog_handler' } },
-        { id = 'arv',           label = 'Armed response',    minRank = 'pc',  qualifications = { 'firearms', 'advanced_driver' } },
-        { id = 'cid',           label = 'CID',               minRank = 'pc' },
-        { id = 'custody',       label = 'Custody',           minRank = 'pc' },
+        { id = 'response',      label = 'Response' },
+        { id = 'neighbourhood', label = 'Neighbourhood' },
+        { id = 'roads',         label = 'Roads policing',  qualifications = { 'advanced_driver' } },
+        { id = 'arv',           label = 'Armed response',  qualifications = { 'firearms', 'advanced_driver' } },
+        { id = 'dogs',          label = 'Dog section',     qualifications = { 'dog_handler' } },
+        { id = 'cid',           label = 'CID',             minRank = 'pc' },
+        { id = 'custody',       label = 'Custody',         minRank = 'ps' },
         { id = 'control',       label = 'Control room' },
-        { id = 'silver',        label = 'Silver Command',    minRank = 'supt', qualifications = { 'firearms', 'advanced_driver', 'dog_handler' } },
-        { id = 'gc',            label = 'Gold Command',      minRank = 'acc', qualifications = { 'firearms', 'advanced_driver', 'dog_handler' } },
     },
 
     -- Officer statuses. tone: 'ok' | 'busy' | 'away' (colour in the hub).
@@ -70,10 +68,12 @@ Config.Notebook = {
 }
 
 ---------------------------------------------------------------------------
--- Radial menu (ox_lib, default key Z). A "Police" section appears while you're signed on.
+-- Radial menu while signed on: our own (L by default) or ox_lib's (Z).
 ---------------------------------------------------------------------------
 Config.Radial = {
     Enabled = true,
+    Style = 'own',              -- 'own': our radial menu on the key below; 'ox': ox_lib's radial (Z)
+    Key = 'L',                  -- default key for our radial (players can rebind it in GTA settings)
     DisableWhenCuffed = true,   -- nobody uses the radial menu while handcuffed
     CloseDistance = 3.0,        -- how close the person or vehicle must be for radial actions
 }

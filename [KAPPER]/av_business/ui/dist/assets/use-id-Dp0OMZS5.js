@@ -1,0 +1,1 @@
+import{It as e,Nt as t,vt as n}from"./atoms-6aderh4w.js";function r(e=`mantine-`){return`${e}${Math.random().toString(36).slice(2,11)}`}var i=e(t(),1);function a(e){let[t,a]=(0,i.useState)(`mantine-${(0,i.useId)().replace(/:/g,``)}`),o=(0,i.useRef)(!1);return n(()=>{o.current||(o.current=!0,a(r()))},[]),typeof e==`string`?e:t}export{r as n,a as t};

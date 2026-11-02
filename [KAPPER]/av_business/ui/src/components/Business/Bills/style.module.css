@@ -1,0 +1,43 @@
+.dirtBar {
+  background: var(--border);
+  border-radius: 99px;
+  height: 8px;
+  overflow: hidden;
+}
+
+.dirtFill {
+  height: 100%;
+  border-radius: 99px;
+  transition: width 0.4s ease, background-color 0.4s ease;
+}
+
+.billCard {
+  background: var(--bg-card);
+  border: 1.25px solid var(--border);
+  border-radius: 10px;
+  padding: 14px 16px;
+}
+
+.billCardOverdue {
+  border-color: rgba(239, 68, 68, 0.45);
+}
+
+.overdueTag {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: #ef4444;
+  background: rgba(239, 68, 68, 0.12);
+  padding: 2px 7px;
+  border-radius: 99px;
+}
+
+.okTag {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: #22c55e;
+  background: rgba(34, 197, 94, 0.1);
+  padding: 2px 7px;
+  border-radius: 99px;
+}

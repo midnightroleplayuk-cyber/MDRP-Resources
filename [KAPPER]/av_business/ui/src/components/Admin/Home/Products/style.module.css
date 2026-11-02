@@ -1,0 +1,21 @@
+.tbody {
+  background-color: var(--bg-sidebar);
+  border: solid 1px var(--border);
+}
+
+.th {
+  padding: 4px;
+  background-color: var(--bg-main);
+  font-family: var(--font-display);
+  text-transform: uppercase;
+  padding-left: 10px;
+}
+
+.td {
+  background-color: var(--bg-card);
+}
+
+.tr {
+  border: solid 1px var(--border);
+  border-radius: 8px;
+}

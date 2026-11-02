@@ -1,0 +1,320 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 9998;
+  pointer-events: none;
+}
+
+.panel {
+  position: absolute;
+  width: 380px;
+  background: var(--bg-card);
+  border: 1px solid var(--bg-input-alt);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.65);
+  user-select: none;
+  font-family: inherit;
+  transition: opacity 0.2s ease;
+}
+
+.panelActive {
+  pointer-events: all;
+  opacity: 1;
+}
+.panelInactive {
+  pointer-events: none;
+  opacity: 0.75;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  height: 74px;
+  box-sizing: border-box;
+}
+
+.headerGrab {
+  cursor: grab;
+}
+.headerDefault {
+  cursor: default;
+}
+
+.cover {
+  width: 46px;
+  height: 46px;
+  border-radius: 6px;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.coverPlaceholder {
+  width: 46px;
+  height: 46px;
+  border-radius: 6px;
+  flex-shrink: 0;
+  background: var(--bg-thumb);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.trackInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.deviceLabel {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: 1px;
+}
+
+.deviceText {
+  color: var(--text-secondary);
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.trackTitle {
+  color: var(--text-primary);
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.trackArtist {
+  color: var(--text-secondary);
+  font-size: 11px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-bottom: 4px;
+}
+
+.progressRow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.timeLabel {
+  color: var(--text-secondary);
+  font-size: 9px;
+  min-width: 28px;
+  line-height: 1;
+}
+
+.timeLabelRight {
+  color: var(--text-secondary);
+  font-size: 9px;
+  min-width: 28px;
+  text-align: right;
+  line-height: 1;
+}
+
+.progressTrack {
+  flex: 1;
+  height: 3px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 2px;
+}
+
+.progressBar {
+  height: 100%;
+  background: var(--accent);
+  border-radius: 2px;
+  transition: width 0.25s linear;
+}
+
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  flex-shrink: 0;
+}
+
+.ctrl {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  background: transparent;
+  color: var(--text-primary);
+  border-radius: 6px;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition:
+    background 0.15s,
+    color 0.15s;
+}
+
+.ctrl:hover {
+  background: var(--bg-hover);
+}
+
+.ctrlPrimary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  background: var(--accent);
+  color: var(--text-white);
+  border-radius: 50%;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.15s;
+}
+
+.ctrlPrimary:hover {
+  background: var(--accent-hover);
+}
+
+.ctrlActive {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  background: var(--accent-mid);
+  color: var(--accent);
+  border-radius: 6px;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition:
+    background 0.15s,
+    color 0.15s;
+}
+
+.divider {
+  height: 1px;
+  background: var(--bg-input-alt);
+}
+
+.queuePanel {
+  overflow: hidden;
+  transition: max-height 0.25s ease;
+}
+
+.queueScroll {
+  overflow-y: auto;
+}
+
+.queueEmpty {
+  padding: 14px 16px;
+  color: var(--text-secondary);
+  font-size: 11px;
+  text-align: center;
+}
+
+.queueRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 12px;
+  height: 46px;
+  box-sizing: border-box;
+}
+
+.queueRowActive {
+  background: var(--accent-soft);
+  border-left: 2px solid var(--accent);
+}
+.queueRowInactive {
+  background: transparent;
+  border-left: 2px solid transparent;
+}
+
+.queueIndex {
+  width: 14px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.queueDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  margin: 0 auto;
+  animation: miniPulse 1.4s ease-in-out infinite;
+}
+
+.queueNum {
+  color: var(--text-secondary);
+  font-size: 10px;
+}
+
+.queueCover {
+  width: 28px;
+  height: 28px;
+  border-radius: 4px;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.queueCoverPlaceholder {
+  width: 28px;
+  height: 28px;
+  border-radius: 4px;
+  flex-shrink: 0;
+  background: var(--bg-thumb);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.queueTrackInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.queueTrackTitle {
+  font-size: 11px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.queueTrackTitleActive {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+.queueTrackTitleInactive {
+  color: var(--text-dim);
+  font-weight: 400;
+}
+
+.queueTrackArtist {
+  color: var(--text-secondary);
+  font-size: 10px;
+}
+
+.queueTime {
+  color: var(--text-secondary);
+  font-size: 10px;
+  flex-shrink: 0;
+}
+
+@keyframes miniPulse {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.5;
+    transform: scale(0.7);
+  }
+}

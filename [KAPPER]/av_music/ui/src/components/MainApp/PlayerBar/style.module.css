@@ -1,0 +1,71 @@
+.playerBar {
+  flex-shrink: 0;
+  height: 90px;
+  background: var(--bg-root-a92);
+  backdrop-filter: blur(20px);
+  border-top: 1px solid var(--border-faint);
+  display: grid;
+  grid-template-columns: 1fr 2fr 1fr;
+  align-items: center;
+  padding: 0 32px;
+  z-index: 100;
+}
+
+.playerTrack {
+  min-width: 0;
+}
+
+.trackTitle {
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  color: var(--text-white) !important;
+  line-height: 1.2 !important;
+}
+
+.trackArtist {
+  font-size: 11px !important;
+  color: var(--text-secondary) !important;
+}
+
+.playerCenter {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+}
+
+.controlBtn {
+  color: var(--text-secondary) !important;
+  transition: color 0.15s !important;
+}
+
+.controlBtn:hover {
+  color: var(--text-white) !important;
+}
+
+.playBtn {
+  background: var(--gradient-primary) !important;
+  color: var(--text-white) !important;
+  border: none !important;
+  box-shadow: 0 4px 18px var(--accent-glow) !important;
+  transition:
+    transform 0.15s,
+    box-shadow 0.15s !important;
+}
+
+.playBtn:hover {
+  transform: scale(1.08);
+  box-shadow: 0 6px 24px var(--accent-glow-strong) !important;
+}
+
+.timeLabel {
+  font-size: 10px !important;
+  color: var(--text-secondary) !important;
+  font-variant-numeric: tabular-nums;
+  flex-shrink: 0;
+}
+
+.playerVolume {
+  flex-shrink: 0;
+}

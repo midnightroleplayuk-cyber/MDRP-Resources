@@ -12,7 +12,7 @@
 Config.Equipment = {
     -- What happens to issued kit still held at sign-off:
     -- 'return' takes it back automatically, 'keep' leaves it with the officer (still listed as outstanding).
-    OnSignOff = 'keep',
+    OnSignOff = 'return',
     -- Audit every draw and return. false = only serialised items (weapons, Tasers).
     AuditAll = false,
 
@@ -24,18 +24,13 @@ Config.Equipment = {
         { item = 'WEAPON_NIGHTSTICK',  label = 'Baton',             max = 1, permission = 'equipment.basic' },
         { item = 'WEAPON_FLASHLIGHT',  label = 'Torch',             max = 1, permission = 'equipment.basic' },
         { item = 'radio',              label = 'Radio',             max = 1, permission = 'equipment.basic' },
-        { item = 'bodycam',            label = 'bodycam',           max = 1, permission = 'equipment.basic' },
-        { item = 'dash_cam',           label = 'Dash Camera',       max = 1, permission = 'equipment.basic' },
-        { item = 'mdt',                label = 'Police MDT',        max = 1, permission = 'equipment.basic' },
-        { item = 'fingerprint_scanner', label = 'Fingerpring scanner', max = 1, permission = 'equipment.basic' },
-        { item = 'breathalyzer',       label = 'Breathalyzer',      max = 1, permission = 'equipment.basic' },
-        { item = 'breathalyzer_mouthpiece', label = 'Mouthpiece',   max = 1, permission = 'equipment.basic' },
+        { item = 'bandage',            label = 'First aid dressings', max = 4, count = 2, permission = 'equipment.basic' },
 
-        --{ item = 'WEAPON_STUNGUN',      label = 'Taser',            max = 1, permission = 'equipment.taser', serial = true, armoury = true },
-        --{ item = 'WEAPON_PISTOL',       label = 'Glock 17',         max = 1, permission = 'equipment.firearms', serial = true, armoury = true, units = { 'arv' }, ammo = 'ammo-9' },
-        --{ item = 'ammo-9',              label = '9mm rounds',       max = 51, count = 17, permission = 'equipment.firearms', armoury = true, units = { 'arv' } },
-        --{ item = 'WEAPON_CARBINERIFLE', label = 'Carbine',          max = 1, permission = 'equipment.firearms', serial = true, armoury = true, units = { 'arv' }, ammo = 'ammo-rifle' },
-        --{ item = 'ammo-rifle',          label = '5.56mm rounds',    max = 60, count = 30, permission = 'equipment.firearms', armoury = true, units = { 'arv' } },
+        { item = 'WEAPON_STUNGUN',      label = 'Taser',            max = 1, permission = 'equipment.taser', serial = true, armoury = true },
+        { item = 'WEAPON_PISTOL',       label = 'Glock 17',         max = 1, permission = 'equipment.firearms', serial = true, armoury = true, units = { 'arv' }, ammo = 'ammo-9' },
+        { item = 'ammo-9',              label = '9mm rounds',       max = 51, count = 17, permission = 'equipment.firearms', armoury = true, units = { 'arv' } },
+        { item = 'WEAPON_CARBINERIFLE', label = 'Carbine',          max = 1, permission = 'equipment.firearms', serial = true, armoury = true, units = { 'arv' }, ammo = 'ammo-rifle' },
+        { item = 'ammo-rifle',          label = '5.56mm rounds',    max = 60, count = 30, permission = 'equipment.firearms', armoury = true, units = { 'arv' } },
     },
 }
 
@@ -48,7 +43,7 @@ Config.Equipment = {
 ---------------------------------------------------------------------------
 Config.Uniforms = {
     -- Put the officer's own clothes back when they sign off.
-    RestoreOnSignOff = false,
+    RestoreOnSignOff = true,
 
     Outfits = {
         {

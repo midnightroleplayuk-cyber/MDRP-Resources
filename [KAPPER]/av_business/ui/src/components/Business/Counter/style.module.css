@@ -1,0 +1,94 @@
+.card {
+  background: var(--bg-card) !important;
+  border: 1px solid rgba(255, 255, 255, 0.06) !important;
+  border-radius: 8px !important;
+  padding: 12px !important;
+  display: flex;
+  flex-direction: column;
+  transition: border-color 0.15s;
+}
+
+.card:hover {
+  border-color: rgba(255, 255, 255, 0.12) !important;
+}
+
+.imageWrap {
+  width: 100%;
+  height: 68px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.itemLabel {
+  font-family: var(--font-display) !important;
+  font-size: 14px !important;
+  font-weight: 700 !important;
+  color: var(--text-main) !important;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  line-height: 1.1 !important;
+}
+
+.stockLabel {
+  font-family: var(--font-display) !important;
+  font-size: 11px !important;
+  color: var(--text-dim) !important;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.stockValue {
+  font-family: var(--font-display) !important;
+  font-size: 12px !important;
+  font-weight: 700 !important;
+}
+
+.price {
+  font-family: var(--font-display) !important;
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  color: var(--success) !important;
+  letter-spacing: -0.3px;
+}
+
+.btnDeposit {
+  font-family: var(--font-display) !important;
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.5px !important;
+  background: rgba(124, 96, 200, 0.15) !important;
+  border: 1px solid rgba(124, 96, 200, 0.3) !important;
+  color: var(--accent) !important;
+  height: 28px !important;
+  transition: all 0.15s !important;
+}
+
+.btnDeposit:hover {
+  background: rgba(124, 96, 200, 0.28) !important;
+  border-color: var(--accent) !important;
+}
+
+.btnWithdraw {
+  font-family: var(--font-display) !important;
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.5px !important;
+  background: rgba(248, 113, 113, 0.08) !important;
+  border: 1px solid rgba(248, 113, 113, 0.2) !important;
+  color: var(--danger) !important;
+  height: 28px !important;
+  transition: all 0.15s !important;
+}
+
+.btnWithdraw:hover:not([disabled]) {
+  background: rgba(248, 113, 113, 0.18) !important;
+  border-color: var(--danger) !important;
+}
+
+.btnWithdraw[disabled] {
+  opacity: 0.3 !important;
+  cursor: not-allowed !important;
+}

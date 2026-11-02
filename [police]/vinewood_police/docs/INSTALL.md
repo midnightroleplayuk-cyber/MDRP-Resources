@@ -19,7 +19,7 @@
 | vinewood_prison | 2.4.0+ | Remand ends police custody when the prison receives them |
 | vinewood-moj | 1.2.0+ | Nothing extra needed: the MDT drives court and remand |
 
-Each is picked up automatically when running, and checked again whenever it starts or stops. `vpo status` shows what was found.
+Each is picked up automatically when running, and checked again whenever it starts or stops. The folder name doesn't have to match exactly: `vinewood_interviews` and `vinewood-interviews` are both found. `/vpo` (Integrations) shows what was found, and what was looked for when something wasn't. For a completely different folder name, add it in `config/config.lua`: `Config.Integrations.interviews = { resources = { 'my-interviews' } }`.
 
 ## Steps
 1. Put `vinewood_police` in your resources folder.

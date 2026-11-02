@@ -22,6 +22,28 @@ local function resourcesFor(name)
     return cfg(name).resources or defs[name].resources or {}
 end
 
+-- Folder names vary (vinewood-interviews, vinewood_interviews, Vinewood-Interviews...), so names are
+-- compared without case, hyphens, underscores or spaces.
+local function norm(s) return (tostring(s or ''):lower():gsub('[%-_%s]', '')) end
+
+local function matches(name, res)
+    local n = norm(res)
+    for _, cand in ipairs(resourcesFor(name)) do if norm(cand) == n then return true end end
+    return false
+end
+
+--- The started resource for this integration: an exact name first, then any folder that matches loosely.
+local function findStarted(name)
+    for _, res in ipairs(resourcesFor(name)) do
+        if GetResourceState(res) == 'started' then return res end
+    end
+    for i = 0, GetNumResources() - 1 do
+        local res = GetResourceByFindIndex(i)
+        if res and GetResourceState(res) == 'started' and matches(name, res) then return res end
+    end
+    return nil
+end
+
 local function detect(name)
     local def, c = defs[name], cfg(name)
     local prev = state[name]
@@ -31,8 +53,10 @@ local function detect(name)
         new.reason = 'disabled'
     else
         new.reason = 'not_running'
-        for _, res in ipairs(resourcesFor(name)) do
-            if GetResourceState(res) == 'started' then
+        new.lookedFor = table.concat(resourcesFor(name), ', ')
+        local res = findStarted(name)
+        if res then
+            do
                 local version = GetResourceMetadata(res, 'version', 0)
                 local min = c.minVersion or def.minVersion
                 local limited = (min and version and VPO.Util.CompareVersion(version, min) < 0) or false
@@ -43,7 +67,6 @@ local function detect(name)
                     new.reason = 'setup_failed'
                     VPO.Log.error('Integration %s (%s) failed to set up: %s', name, res, tostring(adapter))
                 end
-                break
             end
         end
     end
@@ -70,7 +93,7 @@ end
 function I.Status()
     local out = {}
     for name, s in pairs(state) do
-        out[name] = { available = s.available, resource = s.resource, version = s.version, limited = s.limited, reason = s.reason }
+        out[name] = { available = s.available, resource = s.resource, version = s.version, limited = s.limited, reason = s.reason, lookedFor = s.lookedFor }
     end
     return out
 end
@@ -100,7 +123,7 @@ end
 -- Re-check when a watched resource starts or stops.
 local function onChange(res)
     for name in pairs(defs) do
-        if VPO.Util.Contains(resourcesFor(name), res) then
+        if matches(name, res) then
             -- Give a starting resource a moment to register its exports.
             SetTimeout(1000, function() detect(name) end)
         end
