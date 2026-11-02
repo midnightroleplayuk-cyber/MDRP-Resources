@@ -267,51 +267,19 @@
     <nav class="mm-dash-tabs"><button data-tab="primary" class="active">PRIMARY</button><button data-tab="secondary">SECONDARY</button><button data-tab="settings" aria-label="Settings" title="Settings"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06-1.9 1.9-.06-.06A1.65 1.65 0 0 0 16 18.4a1.65 1.65 0 0 0-1 1.5V20h-6v-.1a1.65 1.65 0 0 0-1-1.5 1.65 1.65 0 0 0-1.82.33l-.06.06-1.9-1.9.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-1.5-1H3v-4h.1a1.65 1.65 0 0 0 1.5-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06 1.9-1.9.06.06A1.65 1.65 0 0 0 8 5.6a1.65 1.65 0 0 0 1-1.5V4h6v.1a1.65 1.65 0 0 0 1 1.5 1.65 1.65 0 0 0 1.82-.33l.06-.06 1.9 1.9-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.5 1h.1v4h-.1a1.65 1.65 0 0 0-1.5 1z"/></svg></button></nav>
     <section data-page="primary" class="mm-dash-page active"><div class="mm-dash-caption">PRIMARY FREQUENCY <b data-current="primary">OFF</b></div><div class="mm-dash-entry"><input data-frequency="primary" type="number" min="1" step="0.01" placeholder="Enter frequency"><button data-join="primary">JOIN</button></div><button class="mm-dash-disconnect" data-leave="primary">DISCONNECT PRIMARY</button><button class="mm-channel-open" data-open-channels="primary">JOB CHANNELS <span>VIEW LIST ›</span></button><div class="mm-channel-list" data-channel-list="primary" hidden><button class="mm-channel-back" data-back-channels="primary">‹ BACK</button><div class="mm-dash-presets" data-presets="primary"></div></div></section>
     <section data-page="secondary" class="mm-dash-page"><div class="mm-dash-caption">SECONDARY FREQUENCY <b data-current="secondary">OFF</b></div><div class="mm-dash-entry"><input data-frequency="secondary" type="number" min="1" step="0.01" placeholder="Enter frequency"><button data-join="secondary">JOIN</button></div><button class="mm-dash-disconnect" data-leave="secondary">DISCONNECT SECONDARY</button><button class="mm-channel-open" data-open-channels="secondary">JOB CHANNELS <span>VIEW LIST ›</span></button><div class="mm-channel-list" data-channel-list="secondary" hidden><button class="mm-channel-back" data-back-channels="secondary">‹ BACK</button><div class="mm-dash-presets" data-presets="secondary"></div></div></section>
-    <section data-page="settings" class="mm-dash-page"><label>RADIO DISPLAY NAME</label><div class="mm-dash-entry"><input data-name maxlength="48" placeholder="Your radio name"><button data-save-name>SAVE</button></div><label>RADIO VOLUME <output data-volume-label>30%</output></label><input data-volume type="range" min="0" max="100"><label class="mm-dash-toggle">SHOW RADIO LIST <input data-overlay type="checkbox"></label><label>RADIO LIST OPACITY <output data-opacity-label>41%</output></label><input data-opacity type="range" min="20" max="100"><label class="mm-dash-toggle">RADIO TALK BEEPS <input data-clicks type="checkbox" checked></label><label class="mm-dash-toggle">MOVE RADIO <input data-move-radio type="checkbox"></label><button class="mm-reset-position" type="button" data-reset-position>RESET RADIO POSITION</button><p class="mm-dash-hint">Enable Move Radio, then drag any free area of the radio frame or screen. Drag the radio list while this menu is open to move it. Settings save automatically.</p></section>
+    <section data-page="settings" class="mm-dash-page"><label>RADIO DISPLAY NAME</label><div class="mm-dash-entry"><input data-name maxlength="48" placeholder="Your radio name"><button data-save-name>SAVE</button></div><label>RADIO VOLUME <output data-volume-label>30%</output></label><input data-volume type="range" min="0" max="100"><label class="mm-dash-toggle">SHOW RADIO LIST <input data-overlay type="checkbox"></label><label>RADIO LIST OPACITY <output data-opacity-label>41%</output></label><input data-opacity type="range" min="20" max="100"><label class="mm-dash-toggle">RADIO TALK BEEPS <input data-clicks type="checkbox" checked></label><p class="mm-dash-hint">Drag the radio list while this menu is open to move the overlay. Settings save automatically.</p></section>
     <div class="mm-dash-feedback" aria-live="polite"></div>`;
   document.body.appendChild(dashboard);
   let activeTab = 'primary';
-  let radioPosition = null;
-  let moveRadio = false;
-  try { const p = JSON.parse(localStorage.getItem('midnight_radio_position_v63') || 'null'); if (p && Number.isFinite(p.x) && Number.isFinite(p.y)) radioPosition = p; } catch (_) {}
-  function positionRadio() {
-    if (!radioPosition) { dashboard.classList.remove('radio-position-custom'); dashboard.style.removeProperty('--radio-x'); dashboard.style.removeProperty('--radio-y'); dashboard.style.left = ''; dashboard.style.top = ''; dashboard.style.right = ''; dashboard.style.bottom = ''; return; }
-    const maxX = Math.max(0, innerWidth - dashboard.offsetWidth);
-    const maxY = Math.max(0, innerHeight - dashboard.offsetHeight);
-    dashboard.classList.add('radio-position-custom');
-    dashboard.style.setProperty('--radio-x', Math.max(0, Math.min(maxX, radioPosition.x)) + 'px');
-    dashboard.style.setProperty('--radio-y', Math.max(0, Math.min(maxY, radioPosition.y)) + 'px');
-    dashboard.style.left = Math.max(0, Math.min(maxX, radioPosition.x)) + 'px';
-    dashboard.style.top = Math.max(0, Math.min(maxY, radioPosition.y)) + 'px';
-    dashboard.style.right = 'auto'; dashboard.style.bottom = 'auto';
-  }
-  // Drag from any non-interactive part of the handset, not just its tiny title.
-  // Controls remain clickable so users can still change settings while move mode is on.
-  let radioDrag = null;
-  dashboard.addEventListener('pointerdown', e => {
-    if (!moveRadio || e.button !== 0 || e.target.closest('button, input, select, textarea, label, a, [role="button"]')) return;
-    const r = dashboard.getBoundingClientRect();
-    radioDrag = {pointerId:e.pointerId, dx:e.clientX-r.left, dy:e.clientY-r.top};
-    dashboard.setPointerCapture(e.pointerId);
-    e.preventDefault();
-  });
-  dashboard.addEventListener('pointermove', e => {
-    if (!radioDrag || radioDrag.pointerId !== e.pointerId) return;
-    radioPosition = {x:e.clientX-radioDrag.dx,y:e.clientY-radioDrag.dy};
-    positionRadio();
-  });
-  function finishRadioDrag(e) {
-    if (!radioDrag || radioDrag.pointerId !== e.pointerId) return;
-    radioDrag = null;
-    if (radioPosition) {
-      localStorage.setItem('midnight_radio_position_v63', JSON.stringify(radioPosition));
-      post('updateRadioPosition', {x:radioPosition.x,y:radioPosition.y});
-    }
-  }
-  dashboard.addEventListener('pointerup', finishRadioDrag);
-  dashboard.addEventListener('pointercancel', finishRadioDrag);
-  window.addEventListener('resize', positionRadio);
-  positionRadio();
+  // Fixed handset: always anchored to the bottom-right. Ignore legacy saved positions.
+  for (const key of ['midnight_radio_position', 'midnight_radio_position_v63']) localStorage.removeItem(key);
+  dashboard.classList.remove('radio-position-custom', 'radio-movable', 'radio-closing-in-place');
+  dashboard.style.removeProperty('--radio-x');
+  dashboard.style.removeProperty('--radio-y');
+  dashboard.style.removeProperty('left');
+  dashboard.style.removeProperty('top');
+  dashboard.style.removeProperty('right');
+  dashboard.style.removeProperty('bottom');
   const get = selector => dashboard.querySelector(selector);
   const feedback = message => { get('.mm-dash-feedback').textContent = message; };
   function syncPreferences(data) {
@@ -320,7 +288,6 @@
     if (data.userData) {
       state.displayName = data.userData.name || '';
       state.enableClicks = data.userData.enableClicks !== false;
-      positionRadio();
       state.opacity = Number(data.userData.overlayOpacity ?? 41);
       if (data.userData.volume !== undefined) state.volume = Number(data.userData.volume) || 0;
     }
@@ -356,7 +323,6 @@
     get('[data-leave="secondary"]').disabled = !state.channel;
     get('[data-overlay]').checked = state.overlayEnabled;
     get('[data-clicks]').checked = state.enableClicks !== false;
-    get('[data-move-radio]').checked = moveRadio;
     get('[data-volume]').value = state.volume;
     get('[data-volume-label]').textContent = state.volume + '%';
     get('[data-opacity]').value = state.opacity;
@@ -399,11 +365,6 @@
   });
   dashboard.querySelectorAll('[data-frequency]').forEach(el => el.addEventListener('keydown', e => {if(e.key === 'Enter') tune(el.dataset.frequency, Number(el.value));}));
   get('[data-clicks]').addEventListener('change', e => {state.enableClicks = e.target.checked; post('enableClicks', e.target.checked);});
-  get('[data-move-radio]').addEventListener('change', e => {moveRadio = e.target.checked; dashboard.classList.toggle('radio-movable', moveRadio);});
-  get('[data-reset-position]').addEventListener('click', () => {
-    radioPosition = null; localStorage.removeItem('midnight_radio_position_v63'); positionRadio();
-    post('updateRadioPosition', {x:-1,y:-1}); feedback('Radio position reset.');
-  });
   get('[data-overlay]').addEventListener('change', e => {state.overlayEnabled = e.target.checked; post('showPlayerList', state.overlayEnabled); renderRoster();});
   get('[data-volume]').addEventListener('input', e => {state.volume = Number(e.target.value); get('[data-volume-label]').textContent = state.volume + '%'; post('volumeChange', state.volume);});
   get('[data-opacity]').addEventListener('input', e => {state.opacity = Number(e.target.value); get('[data-opacity-label]').textContent = state.opacity + '%'; applyRosterPosition(); post('setOverlayOpacity', state.opacity);});

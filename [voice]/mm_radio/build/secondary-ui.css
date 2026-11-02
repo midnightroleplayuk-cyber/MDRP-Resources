@@ -391,3 +391,13 @@ body.mm-dash-open #app{visibility:hidden!important}
   opacity: 1!important;
   transition: opacity 120ms ease-in!important;
 }
+
+/* v6.14: handset is fixed; override all earlier custom-position rules. */
+#mm-radio-dashboard,
+#mm-radio-dashboard.radio-position-custom,
+#mm-radio-dashboard.radio-movable {
+  left:auto!important; top:auto!important;
+  right:2vw!important; bottom:1.5vh!important;
+  cursor:default; touch-action:auto;
+}
+#mm-radio-dashboard.radio-position-custom.radio-closing-in-place {opacity:1!important;transition:none!important;}
