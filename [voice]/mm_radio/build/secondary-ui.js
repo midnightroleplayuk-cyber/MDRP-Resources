@@ -135,7 +135,8 @@
     const scale = Math.max(75, Math.min(150, Number(state.rosterScale) || 100));
     roster.style.transformOrigin = 'top right';
     roster.style.transform = `scale(${scale / 100})`;
-    roster.style.opacity = String(Math.max(.2, Math.min(1, state.opacity / 100)));
+    roster.style.setProperty('--mm-roster-style-opacity', String(Math.max(.2, Math.min(1, state.opacity / 100))));
+    roster.style.opacity = '1';
   }
 
   function renderRoster() {

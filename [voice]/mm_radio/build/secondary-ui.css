@@ -331,3 +331,32 @@ body.mm-dash-open #app{visibility:hidden!important}
   text-shadow: -0.55px -0.55px 0 #000, .55px -.55px 0 #000,
                -.55px .55px 0 #000, .55px .55px 0 #000 !important;
 }
+
+/* v6.9: opacity affects decorative panels only, never text or talk indicators.
+   Pseudo-elements paint the translucent backgrounds behind the contents. */
+#mm-dual-radio-roster .mm-roster-section {
+  position:relative!important; isolation:isolate; background:transparent!important;
+  border-color:transparent!important; box-shadow:none!important;
+}
+#mm-dual-radio-roster .mm-roster-section::before {
+  content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;
+  border-radius:inherit;opacity:var(--mm-roster-style-opacity,1);
+  background:linear-gradient(155deg,rgba(103,25,192,.94),rgba(47,11,92,.94));
+  border:1px solid rgba(192,144,240,.55);box-sizing:border-box;
+}
+#mm-dual-radio-roster .mm-roster-heading {
+  position:relative;isolation:isolate;background:transparent!important;
+}
+#mm-dual-radio-roster .mm-roster-heading::before {
+  content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;
+  background:rgba(159,92,225,.34);opacity:var(--mm-roster-style-opacity,1);
+}
+#mm-dual-radio-roster .mm-member.talking {background:transparent!important;position:relative;isolation:isolate}
+#mm-dual-radio-roster .mm-member.talking::before {
+  content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;
+  background:rgba(192,134,251,.23);opacity:var(--mm-roster-style-opacity,1);
+}
+#mm-dual-radio-roster .mm-roster-heading,
+#mm-dual-radio-roster .mm-member,
+#mm-dual-radio-roster .mm-member-name,
+#mm-dual-radio-roster .mm-talk-dot {opacity:1!important}
