@@ -372,3 +372,11 @@ body.mm-dash-open #app{visibility:hidden!important}
 #mm-radio-dashboard.radio-movable:active { cursor: grabbing; }
 #mm-radio-dashboard.radio-movable button, #mm-radio-dashboard.radio-movable input,
 #mm-radio-dashboard.radio-movable label { cursor: pointer; }
+
+/* v6.12: header remains visible and draggable, but cannot be text-selected. */
+#mm-radio-dashboard .mm-dash-header,
+#mm-radio-dashboard .mm-dash-header * {
+  -webkit-user-select: none !important;
+  user-select: none !important;
+  -webkit-touch-callout: none;
+}
