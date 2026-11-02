@@ -4,7 +4,7 @@ local function SaveRadioPrefs()
     SetResourceKvp('radioSettings2', json.encode(Radio.userData))
     SetResourceKvp(('mm_radio_prefs_%s'):format(Radio.identifier), json.encode({
         name = data.name, overlay = data.playerlist.show,
-        opacity = data.overlayOpacity or 100, volume = data.volume or Radio.Volume
+        opacity = data.overlayOpacity or 41, volume = data.volume or Radio.Volume
     }))
 end
 

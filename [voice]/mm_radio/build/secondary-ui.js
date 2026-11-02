@@ -13,7 +13,7 @@
     visiblePresetChannels: [],
     rosterCoords: null,
     rosterScale: 100,
-    opacity: 100, volume: 30, displayName: ''
+    opacity: 41, volume: 30, displayName: ''
   };
 
   // Client-local fallback for roster position. mm_radio also saves the position in
@@ -267,7 +267,7 @@
     <nav class="mm-dash-tabs"><button data-tab="primary" class="active">PRIMARY</button><button data-tab="secondary">SECONDARY</button><button data-tab="settings" aria-label="Settings" title="Settings"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06-1.9 1.9-.06-.06A1.65 1.65 0 0 0 16 18.4a1.65 1.65 0 0 0-1 1.5V20h-6v-.1a1.65 1.65 0 0 0-1-1.5 1.65 1.65 0 0 0-1.82.33l-.06.06-1.9-1.9.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-1.5-1H3v-4h.1a1.65 1.65 0 0 0 1.5-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06 1.9-1.9.06.06A1.65 1.65 0 0 0 8 5.6a1.65 1.65 0 0 0 1-1.5V4h6v.1a1.65 1.65 0 0 0 1 1.5 1.65 1.65 0 0 0 1.82-.33l.06-.06 1.9 1.9-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.5 1h.1v4h-.1a1.65 1.65 0 0 0-1.5 1z"/></svg></button></nav>
     <section data-page="primary" class="mm-dash-page active"><div class="mm-dash-caption">PRIMARY FREQUENCY <b data-current="primary">OFF</b></div><div class="mm-dash-entry"><input data-frequency="primary" type="number" min="1" step="0.01" placeholder="Enter frequency"><button data-join="primary">JOIN</button></div><button class="mm-dash-disconnect" data-leave="primary">DISCONNECT PRIMARY</button><button class="mm-channel-open" data-open-channels="primary">JOB CHANNELS <span>VIEW LIST ›</span></button><div class="mm-channel-list" data-channel-list="primary" hidden><button class="mm-channel-back" data-back-channels="primary">‹ BACK</button><div class="mm-dash-presets" data-presets="primary"></div></div></section>
     <section data-page="secondary" class="mm-dash-page"><div class="mm-dash-caption">SECONDARY FREQUENCY <b data-current="secondary">OFF</b></div><div class="mm-dash-entry"><input data-frequency="secondary" type="number" min="1" step="0.01" placeholder="Enter frequency"><button data-join="secondary">JOIN</button></div><button class="mm-dash-disconnect" data-leave="secondary">DISCONNECT SECONDARY</button><button class="mm-channel-open" data-open-channels="secondary">JOB CHANNELS <span>VIEW LIST ›</span></button><div class="mm-channel-list" data-channel-list="secondary" hidden><button class="mm-channel-back" data-back-channels="secondary">‹ BACK</button><div class="mm-dash-presets" data-presets="secondary"></div></div></section>
-    <section data-page="settings" class="mm-dash-page"><label>RADIO DISPLAY NAME</label><div class="mm-dash-entry"><input data-name maxlength="48" placeholder="Your radio name"><button data-save-name>SAVE</button></div><label>RADIO VOLUME <output data-volume-label>30%</output></label><input data-volume type="range" min="0" max="100"><label class="mm-dash-toggle">SHOW RADIO LIST <input data-overlay type="checkbox"></label><label>RADIO LIST OPACITY <output data-opacity-label>100%</output></label><input data-opacity type="range" min="20" max="100"><label class="mm-dash-toggle">RADIO TALK BEEPS <input data-clicks type="checkbox" checked></label><label class="mm-dash-toggle">MOVE RADIO <input data-move-radio type="checkbox"></label><button class="mm-reset-position" type="button" data-reset-position>RESET RADIO POSITION</button><p class="mm-dash-hint">Enable Move Radio, then drag the radio by its title area. Drag the radio list while this menu is open to move it. Settings save automatically.</p></section>
+    <section data-page="settings" class="mm-dash-page"><label>RADIO DISPLAY NAME</label><div class="mm-dash-entry"><input data-name maxlength="48" placeholder="Your radio name"><button data-save-name>SAVE</button></div><label>RADIO VOLUME <output data-volume-label>30%</output></label><input data-volume type="range" min="0" max="100"><label class="mm-dash-toggle">SHOW RADIO LIST <input data-overlay type="checkbox"></label><label>RADIO LIST OPACITY <output data-opacity-label>41%</output></label><input data-opacity type="range" min="20" max="100"><label class="mm-dash-toggle">RADIO TALK BEEPS <input data-clicks type="checkbox" checked></label><label class="mm-dash-toggle">MOVE RADIO <input data-move-radio type="checkbox"></label><button class="mm-reset-position" type="button" data-reset-position>RESET RADIO POSITION</button><p class="mm-dash-hint">Enable Move Radio, then drag the radio by its title area. Drag the radio list while this menu is open to move it. Settings save automatically.</p></section>
     <div class="mm-dash-feedback" aria-live="polite"></div>`;
   document.body.appendChild(dashboard);
   let activeTab = 'primary';
@@ -317,7 +317,7 @@
       state.displayName = data.userData.name || '';
       state.enableClicks = data.userData.enableClicks !== false;
       positionRadio();
-      state.opacity = Number(data.userData.overlayOpacity) || 100;
+      state.opacity = Number(data.userData.overlayOpacity ?? 41);
       if (data.userData.volume !== undefined) state.volume = Number(data.userData.volume) || 0;
     }
   }

@@ -360,3 +360,9 @@ body.mm-dash-open #app{visibility:hidden!important}
 #mm-dual-radio-roster .mm-member,
 #mm-dual-radio-roster .mm-member-name,
 #mm-dual-radio-roster .mm-talk-dot {opacity:1!important}
+
+/* v6.10: speech indication is the coloured dot ONLY; no highlighted name row. */
+#mm-dual-radio-roster .mm-member.talking,
+#mm-dual-radio-roster .mm-member.talking:hover {background:transparent!important;box-shadow:none!important;}
+#mm-dual-radio-roster .mm-member.talking::before,
+#mm-dual-radio-roster .mm-member.talking::after {content:none!important;display:none!important;}

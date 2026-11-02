@@ -67,6 +67,7 @@ function Radio:SetDefaultData(cid)
         radioSizeMultiplier = 50,
         allowMovement = false,
         enableClicks = true,
+        overlayOpacity = 41,
         secondaryChannel = 0,
         playerlist = {
             show = false,
