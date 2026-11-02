@@ -268,3 +268,41 @@ body.mm-dash-open #app{visibility:hidden!important}
   opacity: .45!important;
   cursor: not-allowed;
 }
+
+/* Midnight Radio v6.6 — unified purple radio-list overlay.
+   Appearance only: retain job-specific speaking dot colours, drag and opacity. */
+#mm-dual-radio-roster { gap: 7px; font-family: Arial,sans-serif; }
+#mm-dual-radio-roster .mm-roster-section {
+  background: linear-gradient(145deg,rgba(103,25,192,.90),rgba(52,13,94,.91));
+  border: 1px solid rgba(185,125,242,.68);
+  border-radius: 9px;
+  box-shadow: 0 4px 14px rgba(19,5,39,.24),inset 0 1px 0 rgba(255,255,255,.12);
+  overflow: hidden;
+}
+#mm-dual-radio-roster .mm-roster-heading {
+  padding: 7px 9px;
+  background: rgba(39,9,78,.56);
+  border-bottom: 1px solid rgba(198,149,241,.32);
+  color: #fff;
+  font-size: 9px;
+  letter-spacing: .08em;
+}
+#mm-dual-radio-roster .mm-roster-heading span:last-child { color:#f2e6ff!important; font-size:8px!important; }
+#mm-dual-radio-roster .mm-members { padding: 4px 0 5px; background:transparent!important; }
+#mm-dual-radio-roster .mm-member {
+  min-height: 21px;
+  padding: 4px 9px;
+  gap: 7px;
+  font-size: 10px;
+  font-weight: 600;
+  color:#fff;
+  transition:background-color .12s ease;
+}
+#mm-dual-radio-roster .mm-member + .mm-member { border-top: 1px solid rgba(218,186,255,.08); }
+#mm-dual-radio-roster .mm-member.talking { background:rgba(192,134,251,.23)!important; }
+#mm-dual-radio-roster .mm-talk-dot { width:6px;height:6px;background:#d2b6ec;flex:0 0 6px; }
+#mm-dual-radio-roster .mm-member.talking .mm-talk-dot.job-police {background:#2f80ff;box-shadow:0 0 7px #2f80ff}
+#mm-dual-radio-roster .mm-member.talking .mm-talk-dot.job-ambulance {background:#39e75f;box-shadow:0 0 7px #39e75f}
+#mm-dual-radio-roster .mm-member.talking .mm-talk-dot.job-fire {background:#ff3b30;box-shadow:0 0 7px #ff3b30}
+#mm-dual-radio-roster .mm-member.talking .mm-talk-dot.job-default {background:#ffd700;box-shadow:0 0 7px #ffd700}
+#mm-dual-radio-roster .mm-member.mm-empty {padding:6px 9px;color:#e9d6fc;font-size:9px}
