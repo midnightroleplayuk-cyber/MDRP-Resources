@@ -139,3 +139,23 @@ body.mm-dash-open #app{visibility:hidden!important}
 #mm-radio-dashboard .mm-dash-presets button{width:100%;text-align:left;padding:7px 6px;font-size:9px}
 #mm-radio-dashboard .mm-dash-page,#mm-radio-dashboard .mm-dash-presets{scrollbar-width:none!important}
 #mm-radio-dashboard .mm-dash-page::-webkit-scrollbar,#mm-radio-dashboard .mm-dash-presets::-webkit-scrollbar{display:none!important}
+
+/* v4: Photoshop mockup screen inset, aligned to the physical handset bezel.
+   The frame is always a background and never stretched or covered by UI. */
+#mm-radio-dashboard{
+ width:263.4px!important;height:660px!important;
+ padding:280px 49px 90px 50px!important;
+ background-size:263.4px 660px!important;
+ background-position:center center!important;
+ background-repeat:no-repeat!important;
+ isolation:isolate;
+}
+#mm-radio-dashboard::before{
+ left:50px!important;right:49px!important;top:280px!important;bottom:90px!important;
+ border-radius:6px!important;z-index:0!important;pointer-events:none;
+}
+#mm-radio-dashboard > *{position:relative;z-index:1;min-width:0}
+#mm-radio-dashboard .mm-dash-page{min-height:0;overflow-y:auto;overflow-x:hidden}
+#mm-radio-dashboard .mm-dash-header{flex-shrink:0}
+#mm-radio-dashboard .mm-dash-tabs{flex-shrink:0}
+#mm-radio-dashboard .mm-dash-feedback{flex-shrink:0}
