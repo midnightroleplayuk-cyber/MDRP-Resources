@@ -1,0 +1,101 @@
+.error {
+  background: rgba(248, 113, 113, 0.12);
+  border: 1px solid rgba(248, 113, 113, 0.4);
+  color: var(--danger);
+  font-size: 12px;
+  padding: 8px 10px;
+  border-radius: var(--border-radius-sm);
+  margin-bottom: 14px;
+}
+
+.optionName {
+  font-size: 13px;
+  display: block;
+}
+.optionEmail {
+  font-size: 11px;
+  color: var(--text-dim);
+  display: block;
+}
+
+.charCount {
+  color: var(--text-secondary);
+  font-size: 12px;
+  text-align: right;
+  margin-bottom: 12px;
+  display: block;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.chip {
+  font-size: 11px;
+  color: var(--text-dim);
+  background: var(--bg-card-hover);
+  border-radius: 10px;
+  padding: 6px 10px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.panel {
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: var(--border-radius-base);
+  padding: 18px;
+  max-height: 180px;
+  overflow-y: auto;
+}
+.panelTitle {
+  font-size: 14px;
+  margin: 0 0 12px;
+  display: block;
+}
+.fileRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 13px;
+  cursor: pointer;
+}
+.fileRow:last-child {
+  border-bottom: none;
+}
+.fileName {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.pill {
+  font-size: 11px;
+  color: var(--text-dim);
+  background: var(--bg-card-hover);
+  border-radius: 10px;
+  padding: 2px 8px;
+}
+
+.footer {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.imageForm {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 8px;
+}
+.imageErr {
+  color: var(--danger);
+  font-size: 12px;
+  margin-bottom: 8px;
+  display: block;
+}

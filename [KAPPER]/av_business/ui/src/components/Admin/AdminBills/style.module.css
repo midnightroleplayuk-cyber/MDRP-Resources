@@ -1,0 +1,31 @@
+.card {
+  background-color: var(--bg-card);
+  border: solid 1.25px var(--border);
+  box-shadow: 1px 1px 3px 1px rgba(0, 0, 0, 0.095);
+  border-radius: 10px;
+  padding: 12px 14px;
+}
+
+.rentCard {
+  background-color: var(--bg-card);
+  border: solid 1.25px var(--border);
+  border-radius: 10px;
+  padding: 14px 16px;
+}
+
+.rentCardActive {
+  border-color: rgba(124, 96, 200, 0.45);
+}
+
+.segLabel {
+  color: var(--text-dim);
+  font-size: 12px;
+  min-width: 100px;
+}
+.segLabel[data-active] {
+  color: var(--text-main) !important;
+}
+
+.segIndicator {
+  background-color: var(--accent) !important;
+}

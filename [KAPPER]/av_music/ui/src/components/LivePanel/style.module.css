@@ -1,0 +1,227 @@
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  pointer-events: none;
+}
+
+.panel {
+  width: 420px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-input);
+  border-radius: 16px;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.7);
+  overflow: hidden;
+  pointer-events: all;
+}
+
+.panelHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  background: var(--bg-card-alt);
+  border-bottom: 1px solid var(--border-input);
+}
+
+.headerLeft {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.iconBox {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: var(--accent-soft);
+  border: 1px solid var(--accent-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.panelTitle {
+  color: var(--text-white);
+  font-weight: 600;
+  font-size: 15px;
+  letter-spacing: 0.3px;
+}
+
+.closeBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  color: rgba(255, 255, 255, 0.35);
+  cursor: pointer;
+  transition:
+    color 0.15s,
+    background 0.15s;
+}
+
+.closeBtn:hover {
+  color: var(--text-white);
+  background: var(--bg-hover);
+}
+
+.panelBody {
+  padding: 20px 20px 10px;
+}
+
+.coverPreview {
+  width: 100%;
+  height: 110px;
+  border-radius: 10px;
+  background-color: var(--bg-card-alt);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  border: 1px solid var(--border-input);
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.noCover {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  color: rgba(255, 255, 255, 0.35);
+}
+
+.noCoverLabel {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.35);
+}
+
+.field {
+  margin-bottom: 12px;
+}
+
+.fieldLabel {
+  display: block;
+  color: var(--text-secondary);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 5px;
+}
+
+.fieldInput {
+  width: 100%;
+  padding: 9px 12px;
+  border-radius: 8px;
+  background: var(--bg-input);
+  border: 1px solid var(--border-hover);
+  color: var(--text-primary);
+  font-size: 13px;
+  font-family: inherit;
+  outline: none;
+  box-sizing: border-box;
+  transition:
+    border-color 0.15s,
+    background 0.15s;
+}
+
+.fieldInput:focus {
+  background: var(--bg-input-alt);
+  border-color: var(--accent-border);
+}
+
+.fieldInput::placeholder {
+  color: rgba(255, 255, 255, 0.25);
+}
+
+.errorBox {
+  margin-top: 6px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: rgba(255, 62, 108, 0.1);
+  border: 1px solid rgba(255, 62, 108, 0.3);
+  color: #ff6b8a;
+  font-size: 12px;
+}
+
+.successBox {
+  margin-top: 6px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: rgba(72, 199, 142, 0.1);
+  border: 1px solid rgba(72, 199, 142, 0.3);
+  color: #48c78e;
+  font-size: 12px;
+}
+
+.panelFooter {
+  display: flex;
+  gap: 10px;
+  padding: 12px 20px 20px;
+}
+
+.previewBtn {
+  flex: 1;
+  padding: 10px 0;
+  border-radius: 9px;
+  cursor: pointer;
+  background: var(--bg-input);
+  border: 1px solid var(--border-hover);
+  color: var(--text-muted);
+  font-size: 13px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  font-family: inherit;
+  transition:
+    background 0.15s,
+    border-color 0.15s,
+    color 0.15s;
+}
+
+.previewBtnActive {
+  border-color: var(--accent-border-hi);
+  background: var(--accent-subtle);
+  color: var(--accent);
+}
+
+.publishBtn {
+  flex: 1.5;
+  padding: 10px 0;
+  border-radius: 9px;
+  cursor: pointer;
+  border: none;
+  background: var(--gradient-primary);
+  color: var(--text-white);
+  font-size: 13px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  font-family: inherit;
+  transition: opacity 0.15s;
+}
+
+.publishBtn:disabled {
+  cursor: default;
+  opacity: 0.6;
+}
+
+.publishBtnDone {
+  background: rgba(72, 199, 142, 0.25);
+}

@@ -1,0 +1,1 @@
+import{J as e,lt as t,ut as n}from"./atoms-6aderh4w.js";function r({classNames:r,styles:i,props:a,stylesCtx:o}){let s=e();return{resolvedClassNames:r===void 0?void 0:n({theme:s,classNames:r,props:a,stylesCtx:o||void 0}),resolvedStyles:i===void 0?void 0:t({theme:s,styles:i,props:a,stylesCtx:o||void 0})}}export{r as t};

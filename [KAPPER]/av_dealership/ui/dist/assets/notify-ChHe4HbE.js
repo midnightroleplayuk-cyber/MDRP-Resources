@@ -1,0 +1,1 @@
+import{f as o}from"./index-CH0nWTMe.js";import{u as n}from"./useLang-CeycmDeL.js";const u=()=>{const r=n(),e=(s,t)=>{o("av_dealership","notify",{title:r("app_title"),message:s,type:t})};return{success:s=>e(r(s),"success"),error:s=>e(r(s&&s.length>0?s:"errors.no_response"),"error")}};export{u};

@@ -1,0 +1,69 @@
+.sidebarWrap {
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: 100%;
+  z-index: 50;
+  pointer-events: none;
+}
+
+.sidebarHitbox {
+  position: absolute;
+  display: flex;
+  top: 0;
+  right: 0;
+  width: fit-content;
+  height: 100%;
+  align-items: center;
+  pointer-events: all;
+  background: rgba(255, 255, 255, 0.02);
+  border-left: 1px solid rgba(255, 255, 255, 0.1);
+  transition: background 0.3s;
+}
+
+.sidebarWrap:not(.pinned):hover .sidebarHitbox {
+  background: transparent;
+  border: none;
+  opacity: 0;
+}
+
+.sidebarContent {
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: 100%;
+  width: 280px;
+  background: rgba(10, 13, 16, 0.35);
+  backdrop-filter: blur(12px);
+  border-left: 1px solid rgba(255, 255, 255, 0.15);
+  transform: translateX(100%);
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  pointer-events: all;
+  padding: 40px 24px;
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebarWrap:not(.pinned):hover .sidebarContent {
+  transform: translateX(0);
+}
+
+.sidebarWrap.pinned .sidebarContent {
+  transform: translateX(0);
+}
+
+.sidebarWrap.pinned .sidebarHitbox {
+  background: transparent;
+  border: none;
+  opacity: 0;
+}
+
+.keyBadge {
+  background: #ffffff;
+  color: #000000;
+  font-weight: 700;
+  font-size: 10px;
+  padding: 4px 10px;
+  border-radius: 4px;
+  letter-spacing: 0.5px;
+}

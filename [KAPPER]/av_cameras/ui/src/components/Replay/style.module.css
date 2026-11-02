@@ -1,0 +1,73 @@
+.box {
+  position: fixed;
+  bottom: 28px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 480px;
+  background: rgba(8, 8, 10, 0.82);
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  padding: 14px 20px 16px;
+  box-shadow:
+    0 8px 40px rgba(0, 0, 0, 0.55),
+    0 1px 0 rgba(255, 255, 255, 0.05) inset;
+  user-select: none;
+}
+
+.label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.4);
+  text-transform: uppercase;
+}
+
+.timer {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: rgba(255, 255, 255, 0.35);
+  font-variant-numeric: tabular-nums;
+  font-family: monospace;
+}
+
+.sliderRoot {
+  margin-bottom: 14px;
+}
+
+.sliderTrack {
+  background: rgba(255, 255, 255, 0.1);
+  cursor: pointer;
+}
+
+.sliderBar {
+  background: rgba(255, 255, 255, 0.9);
+}
+
+.sliderThumb {
+  background: #fff;
+  border: 2px solid rgba(255, 255, 255, 0.6);
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.12);
+  cursor: grab;
+  transition: transform 0.1s;
+}
+
+.sideBtn {
+  color: rgba(255, 255, 255, 0.6);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.playBtn {
+  background: rgba(255, 255, 255, 0.92);
+  color: #0a0a0c;
+  border: none;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.4);
+  transition:
+    transform 0.1s,
+    background 0.15s;
+}
+
+.playBtn:hover {
+  background: #fff;
+}

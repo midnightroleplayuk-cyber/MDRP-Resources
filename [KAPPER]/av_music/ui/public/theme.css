@@ -1,0 +1,47 @@
+:root {
+  --font-body: "Inter", system-ui, sans-serif;
+  --font-heading: "Rajdhani", sans-serif;
+  --font-family: var(--font-body);
+  --accent: #ff3e6c;
+  --accent-hover: #ff5c84;
+  --accent-2: #7b2ff7;
+  --accent-soft: rgba(255, 62, 108, 0.07);
+  --accent-subtle: rgba(255, 62, 108, 0.12);
+  --accent-mid: rgba(255, 62, 108, 0.15);
+  --accent-glow: rgba(255, 62, 108, 0.4);
+  --accent-glow-mid: rgba(255, 62, 108, 0.35);
+  --accent-glow-strong: rgba(255, 62, 108, 0.6);
+  --accent-border: rgba(255, 62, 108, 0.3);
+  --accent-border-hi: rgba(255, 62, 108, 0.5);
+  --gradient-primary: linear-gradient(135deg, #ff3e6c 0%, #7b2ff7 100%);
+  --gradient-hero: linear-gradient(
+    135deg,
+    #1a0a2e 0%,
+    #0f0f1a 60%,
+    #090a10 100%
+  );
+  --bg-root: #090a10;
+  --bg-sidebar: #0c0e16;
+  --bg-card: #13141f;
+  --bg-card-alt: #1a1d2e;
+  --bg-thumb: #1e2030;
+  --bg-root-a92: rgba(9, 10, 16, 0.92);
+  --bg-hover: rgba(255, 255, 255, 0.04);
+  --bg-input: rgba(255, 255, 255, 0.05);
+  --bg-input-alt: rgba(255, 255, 255, 0.07);
+  --text-white: #ffffff;
+  --text-primary: #e0e6f0;
+  --text-secondary: #8b9bb4;
+  --text-dim: #aab4c8;
+  --text-muted: #cccccc;
+  --border-subtle: rgba(255, 255, 255, 0.04);
+  --border-faint: rgba(255, 255, 255, 0.06);
+  --border-card: rgba(255, 255, 255, 0.07);
+  --border-input: rgba(255, 255, 255, 0.08);
+  --border-strong: rgba(255, 255, 255, 0.09);
+  --border-hover: rgba(255, 255, 255, 0.12);
+  --success: #4ade80;
+  --success-alt: #48c78e;
+  --warning: #ff9800;
+  --danger: #f87171;
+}

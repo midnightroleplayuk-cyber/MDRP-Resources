@@ -1,0 +1,492 @@
+.overlayWrapper {
+  position: fixed;
+  inset: 0;
+  font-family: var(--font-family);
+  overflow: hidden;
+  user-select: none;
+}
+
+.camBg {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  transition: filter 0.4s ease;
+}
+
+.camBg::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+}
+
+.camBg::after {
+  content: "";
+  position: absolute;
+  inset: -50%;
+  width: 200%;
+  height: 200%;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+  opacity: 0.1;
+  pointer-events: none;
+}
+
+.scanlines {
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 0, 0, 0.02) 2px,
+    rgba(0, 0, 0, 0.04) 4px
+  );
+  pointer-events: none;
+  z-index: 1;
+}
+
+.visionLayer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2;
+  transition: opacity 0.4s ease;
+  opacity: 0;
+}
+
+.visionLayerActive {
+  opacity: 1;
+}
+
+.visionThermal {
+  background:
+    radial-gradient(
+      ellipse 50% 60% at 45% 58%,
+      rgba(180, 80, 40, 0.18) 0%,
+      transparent 65%
+    ),
+    radial-gradient(
+      ellipse 25% 30% at 68% 28%,
+      rgba(140, 60, 30, 0.14) 0%,
+      transparent 55%
+    );
+  mix-blend-mode: screen;
+}
+
+.visionThermal::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(80, 20, 0, 0.08);
+}
+
+.visionNight {
+  background: radial-gradient(
+    ellipse 70% 70% at 50% 50%,
+    rgba(0, 30, 10, 0.25) 0%,
+    rgba(0, 0, 0, 0.6) 100%
+  );
+  mix-blend-mode: multiply;
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.corner {
+  position: absolute;
+  width: 28px;
+  height: 28px;
+  pointer-events: none;
+}
+.corner::before,
+.corner::after {
+  content: "";
+  position: absolute;
+  background: rgba(220, 230, 240, 0.88);
+  opacity: 0.6;
+}
+.corner::before {
+  width: 2px;
+  height: 100%;
+}
+.corner::after {
+  width: 100%;
+  height: 2px;
+}
+
+.cornerTl {
+  top: 18px;
+  left: 18px;
+  --cx: 1;
+  --cy: 1;
+  animation: cornerIn 0.35s 0.1s ease both;
+}
+
+.cornerTr {
+  top: 18px;
+  right: 18px;
+  --cx: -1;
+  --cy: 1;
+  animation: cornerIn 0.35s 0.15s ease both;
+}
+
+.cornerBl {
+  bottom: 18px;
+  left: 18px;
+  --cx: 1;
+  --cy: -1;
+  animation: cornerIn 0.35s 0.2s ease both;
+}
+
+.cornerBr {
+  bottom: 18px;
+  right: 18px;
+  --cx: -1;
+  --cy: -1;
+  animation: cornerIn 0.35s 0.25s ease both;
+}
+
+@keyframes cornerIn {
+  from {
+    opacity: 0;
+    transform: scale(1.4) scaleX(var(--cx)) scaleY(var(--cy));
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) scaleX(var(--cx)) scaleY(var(--cy));
+  }
+}
+
+.topBar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 52px;
+  padding: 0 54px;
+  pointer-events: none;
+  animation: fadeDown 0.4s 0.2s ease both;
+}
+
+.bottomBar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 64px;
+  padding: 0 54px;
+  pointer-events: all;
+  animation: fadeUp 0.4s 0.3s ease both;
+}
+
+@keyframes fadeDown {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.liveDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #d97a7a;
+}
+.liveDotPulsing {
+  animation: livepulse 1.4s ease-in-out infinite;
+}
+
+@keyframes livepulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.3;
+  }
+}
+
+.btnSep {
+  width: 1px;
+  height: 22px;
+  background: rgba(220, 230, 240, 0.1);
+  margin: 0 4px;
+}
+
+.zoomBtn {
+  width: 26px;
+  height: 26px;
+  border: 1px solid rgba(220, 230, 240, 0.18);
+  background: rgba(0, 0, 0, 0.4);
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: rgba(180, 195, 210, 0.45);
+  transition: all 0.15s;
+  pointer-events: all;
+}
+.zoomBtn:hover {
+  border-color: rgba(180, 195, 210, 0.45);
+  color: rgba(220, 230, 240, 0.88);
+  background: rgba(0, 0, 0, 0.6);
+}
+
+.zoomIndicator {
+  position: absolute;
+  right: 54px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.zoomIndicatorVis {
+  opacity: 1;
+}
+.ziLabel {
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+}
+.ziTrack {
+  width: 2px;
+  height: 80px;
+  background: rgba(220, 230, 240, 0.1);
+  border-radius: 2px;
+  position: relative;
+  overflow: hidden;
+}
+.ziFill {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(180, 195, 210, 0.45);
+  border-radius: 2px;
+  transition: height 0.25s ease;
+}
+
+.reticle {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  opacity: 0.5;
+  transition:
+    opacity 0.3s,
+    transform 0.3s;
+}
+.reticleActive {
+  opacity: 0.5;
+}
+
+.gridLines {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.04;
+}
+.gridLines::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(220, 230, 240, 0.2) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(220, 230, 240, 0.2) 1px, transparent 1px);
+  background-size: 80px 80px;
+}
+.vignette {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    ellipse at center,
+    transparent 55%,
+    rgba(0, 0, 0, 0.55) 100%
+  );
+  pointer-events: none;
+  z-index: 3;
+}
+
+.camSwitcherWrap {
+  position: absolute;
+  bottom: 72px;
+  left: 54px;
+  pointer-events: all;
+}
+
+.camPanel {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 0;
+  width: 280px;
+  background: rgba(10, 13, 16, 0.92);
+  border: 1px solid rgba(220, 230, 240, 0.1);
+  border-radius: 8px;
+  overflow: hidden;
+  backdrop-filter: blur(12px);
+  box-shadow: 0 -12px 40px rgba(0, 0, 0, 0.6);
+  transform-origin: bottom left;
+  transform: scaleY(0.88) translateY(6px);
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1),
+    opacity 0.18s ease;
+}
+.camPanelOpen {
+  transform: scaleY(1) translateY(0);
+  opacity: 1;
+  pointer-events: all;
+}
+
+.cpHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 9px 12px 8px;
+  border-bottom: 1px solid rgba(220, 230, 240, 0.07);
+}
+
+.cpGroup {
+  padding: 7px 12px 3px;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 8px;
+  color: rgba(180, 195, 210, 0.25);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.cpCam {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 12px;
+  cursor: pointer;
+  transition: background 0.12s;
+  border-left: 2px solid transparent;
+}
+.cpCam:hover {
+  background: rgba(220, 230, 240, 0.04);
+}
+.cpCamActive {
+  background: rgba(168, 196, 216, 0.08);
+  border-left-color: var(--accent);
+}
+.cpCamOffline {
+  opacity: 0.38;
+  cursor: default;
+  pointer-events: none;
+}
+
+.cpDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.cpDotOn {
+  background: #5a9e7a;
+}
+.cpDotOff {
+  background: #3a3a46;
+}
+
+.csbArrow {
+  transition: transform 0.2s ease;
+  flex-shrink: 0;
+}
+.csbArrowOpen {
+  transform: rotate(180deg);
+}
+
+.controlsPanelWrap {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  pointer-events: all;
+  z-index: 20;
+}
+
+.controlsContent {
+  width: 0;
+  overflow: hidden;
+  background: rgba(10, 13, 16, 0.92);
+  backdrop-filter: blur(12px);
+  transition: width 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: -8px 0 24px rgba(0, 0, 0, 0.4);
+  border-left: 0px solid rgba(220, 230, 240, 0.1);
+}
+
+.controlsPanelWrap:hover .controlsContent {
+  width: 200px;
+}
+
+.controlsInner {
+  padding: 16px;
+  min-width: 200px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.controlsHandle {
+  width: 24px;
+  height: 100px;
+  background: rgba(10, 13, 16, 0.25);
+  border-left: 2px solid rgba(220, 230, 240, 0.4);
+  border-top-left-radius: 6px;
+  border-bottom-left-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: crosshair;
+  transition:
+    background 0.2s,
+    border-color 0.2s;
+}
+
+.controlsPanelWrap:hover .controlsHandle {
+  background: rgba(10, 13, 16, 0.5);
+  border-color: var(--accent, #a8c4d8);
+}
+
+.controlsHandleText {
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  font-family: var(--font-mono);
+  font-size: 9px;
+  color: rgba(180, 195, 210, 0.6);
+  letter-spacing: 0.15em;
+}
+
+.controlsKey {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  color: #a8c4d8;
+  background: rgba(168, 196, 216, 0.12);
+  padding: 3px 6px;
+  border-radius: 3px;
+  border: 1px solid rgba(168, 196, 216, 0.2);
+}
