@@ -198,18 +198,25 @@
     renderRoster();
   });
 
-  // Drag the persistent roster only while the handheld radio UI is open. Position is
-  // stored through mm_radio's existing player-list position callback.
+  // Persist during movement as well as on release. FiveM can consume mouseup
+  // when NUI focus changes; never rely on that single event for persistence.
   let dragging = false, startX = 0, startY = 0, startRight = 0, startTop = 0;
+  let lastSaveAt = 0, saveSequence = 0;
+  function persistRosterPosition() {
+    if (!state.rosterCoords) return;
+    const coords = {x: state.rosterCoords.x, y: state.rosterCoords.y};
+    const sequence = ++saveSequence;
+    fetch(`https://${RESOURCE}/updatePlayerListPosition`, {
+      method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(coords)
+    }).then(r => r.text()).then(result => {
+      if (result.includes('error')) console.error('[midnight_radio] Overlay save failed', sequence, result);
+      else console.info('[midnight_radio] Overlay saved', sequence, coords);
+    }).catch(err => console.error('[midnight_radio] Overlay save request failed', err));
+  }
   roster.addEventListener('mousedown', e => {
     if (!state.visible || !state.overlayEnabled || e.button !== 0) return;
     dragging = true;
-    // Capture release even when the pointer leaves the overlay.
-    if (e.pointerId !== undefined && roster.setPointerCapture) {
-      try { roster.setPointerCapture(e.pointerId); } catch (_) {}
-    }
-    startX = e.clientX;
-    startY = e.clientY;
+    startX = e.clientX; startY = e.clientY;
     startRight = Number.parseFloat(roster.style.right) || 0;
     startTop = Number.parseFloat(roster.style.top) || 0;
     e.preventDefault();
@@ -217,31 +224,23 @@
   window.addEventListener('mousemove', e => {
     if (!dragging) return;
     const factor = Math.max(.75, Math.min(1.5, Number(state.rosterScale || 100) / 100));
-    const nextRight = Math.max(0, Math.min(window.innerWidth - roster.offsetWidth * factor, startRight - (e.clientX - startX)));
-    const nextTop = Math.max(0, Math.min(window.innerHeight - roster.offsetHeight * factor, startTop + (e.clientY - startY)));
-    state.rosterCoords = { x: nextRight, y: nextTop };
+    state.rosterCoords = {
+      x: Math.max(0, Math.min(window.innerWidth - roster.offsetWidth * factor, startRight - (e.clientX - startX))),
+      y: Math.max(0, Math.min(window.innerHeight - roster.offsetHeight * factor, startTop + (e.clientY - startY)))
+    };
     applyRosterPosition();
+    const now = Date.now();
+    if (now - lastSaveAt > 350) { lastSaveAt = now; persistRosterPosition(); }
   });
-  function saveDraggedRosterPosition() {
+  function finishRosterDrag() {
     if (!dragging) return;
     dragging = false;
-    if (state.rosterCoords) {
-      // Persist only on completed drag, using the final screen coordinates.
-      // Do not re-read stale preferences after the save.
-      const finalCoords = {x: state.rosterCoords.x, y: state.rosterCoords.y};
-      // Save immediately on release and report a failed server write.
-      fetch(`https://${GetParentResourceName()}/updatePlayerListPosition`, {
-        method: 'POST', headers: {'Content-Type':'application/json'},
-        body: JSON.stringify(finalCoords)
-      }).then(r => r.text()).then(result => {
-        if (result.includes('error')) console.error('[midnight_radio] Overlay position NOT saved:', result);
-        else console.info('[midnight_radio] Overlay position saved:', finalCoords);
-      }).catch(err => console.error('[midnight_radio] Overlay save request failed:', err));
-    }
+    persistRosterPosition();
   }
-  window.addEventListener('mouseup', saveDraggedRosterPosition);
-  window.addEventListener('blur', saveDraggedRosterPosition);
-  window.addEventListener('pointerup', saveDraggedRosterPosition);
+  window.addEventListener('mouseup', finishRosterDrag);
+  window.addEventListener('pointerup', finishRosterDrag);
+  window.addEventListener('blur', finishRosterDrag);
+  window.addEventListener('beforeunload', () => { if (dragging) persistRosterPosition(); });
 
   function findSettingsBody() {
     const checkboxes = [...document.querySelectorAll('input[type="checkbox"]')];
