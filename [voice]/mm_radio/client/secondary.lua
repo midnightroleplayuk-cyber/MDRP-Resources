@@ -45,7 +45,7 @@ function Radio:SetSecondaryRadio(channel, silent)
     self.SecondaryRadioChannel = channel
     self.SecondaryRadioMembers = {}
 
-    local allowed, reason = lib.callback.await('mm_radio:server:setSecondaryRadio', false, channel)
+    local allowed, reason = lib.callback.await('mm_radio:server:setSecondaryRadio', false, channel, self.userData[self.identifier] and self.userData[self.identifier].name)
     if not allowed then
         self.SecondaryRadioChannel = previousChannel or 0
         if not silent then self:Notify(reason or 'Unable to join secondary channel') end

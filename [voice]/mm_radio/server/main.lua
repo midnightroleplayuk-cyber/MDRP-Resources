@@ -339,7 +339,7 @@ local function leaveSecondary(src)
     TriggerClientEvent('mm_radio:client:secondaryListUpdate', src, {}, 0)
 end
 
-lib.callback.register('mm_radio:server:setSecondaryRadio', function(source, channel)
+lib.callback.register('mm_radio:server:setSecondaryRadio', function(source, channel, preferredName)
     channel = tonumber(channel)
     if channel then channel = math.floor(channel * 100 + 0.5) / 100 end
 
@@ -359,6 +359,14 @@ lib.callback.register('mm_radio:server:setSecondaryRadio', function(source, chan
         local charinfo = player.PlayerData.charinfo or {}
         local fullName = ((charinfo.firstname or '') .. ' ' .. (charinfo.lastname or '')):gsub('^%s*(.-)%s*$', '%1')
         if fullName ~= '' then name = fullName end
+    end
+    -- The same per-character display name used by Primary is passed by the client.
+    -- Fall back to the character name for clients without a saved preference.
+    if type(preferredName) == 'string' then
+        preferredName = preferredName:gsub('^%s*(.-)%s*$', '%1')
+        if preferredName ~= '' and #preferredName <= 64 then
+            name = preferredName
+        end
     end
     secondaryChannels[channel][source] = { name = name, isTalking = false, job = getPlayerJobName(source) }
     playerSecondaryChannel[source] = channel
