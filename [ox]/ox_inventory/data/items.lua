@@ -5598,15 +5598,13 @@ return {
 },
 
 -- vinewood-mdt (2.19.2+)
-['bail_notice'] = {
-    label = 'Bail notice', weight = 10, stack = false, close = true,
-    description = 'Your bail notice. Use to read it.',
-    server = { export = 'vinewood-mdt.useDocument' },
+['bail_notice'] = { 
+    label = 'Bail notice', weight = 10, stack = false, close = true, 
+    server = { export = 'vinewood-mdt.useDocument' } 
 },
-['stop_search_record'] = {
-    label = 'Stop and search record', weight = 10, stack = false, close = true,
-    description = 'Your record of being searched. Use to read it.',
-    server = { export = 'vinewood-mdt.useDocument' },
+['stop_search_record'] = { 
+    label = 'Stop and search record', weight = 10, stack = false, close = true, 
+    server = { export = 'vinewood-mdt.useDocument' } 
 },
 
 -- AV LAPTOP 
