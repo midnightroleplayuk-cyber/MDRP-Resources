@@ -306,3 +306,28 @@ body.mm-dash-open #app{visibility:hidden!important}
 #mm-dual-radio-roster .mm-member.talking .mm-talk-dot.job-fire {background:#ff3b30;box-shadow:0 0 7px #ff3b30}
 #mm-dual-radio-roster .mm-member.talking .mm-talk-dot.job-default {background:#ffd700;box-shadow:0 0 7px #ffd700}
 #mm-dual-radio-roster .mm-member.mm-empty {padding:6px 9px;color:#e9d6fc;font-size:9px}
+
+/* v6.8 accessibility: fine black outline on readable text.
+   Applied to handset UI and radio roster, without affecting coloured talk dots. */
+#mm-radio-dashboard,
+#mm-dual-radio-roster {
+  -webkit-text-stroke: 0.16px rgba(0,0,0,.85);
+  text-shadow:
+    -0.55px -0.55px 0 rgba(0,0,0,.88),
+     0.55px -0.55px 0 rgba(0,0,0,.88),
+    -0.55px  0.55px 0 rgba(0,0,0,.88),
+     0.55px  0.55px 0 rgba(0,0,0,.88);
+}
+#mm-radio-dashboard input::placeholder {
+  text-shadow: 0 0 1px #000, 0 1px 1px #000;
+}
+#mm-dual-radio-roster .mm-roster-heading,
+#mm-dual-radio-roster .mm-member,
+#mm-radio-dashboard button,
+#mm-radio-dashboard label,
+#mm-radio-dashboard input,
+#mm-radio-dashboard small,
+#mm-radio-dashboard strong {
+  text-shadow: -0.55px -0.55px 0 #000, .55px -.55px 0 #000,
+               -.55px .55px 0 #000, .55px .55px 0 #000 !important;
+}
