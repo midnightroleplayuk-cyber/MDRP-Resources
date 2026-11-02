@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.13.1
+- Fixed: "Your dog couldn't be deployed". The dog was created by the handler's game, and servers that block or delay player-made entities (sv_entityLockdown, anti-cheat entity protection, slow OneSync sync) removed it before the server could see it. The server now creates the dog and the handler's game takes control of it, keeping control so the dog doesn't stop following when it streams to another player.
+- The dog model gets up to 20 s to load the first time (with a "Loading your dog..." message), for big custom dogs.
+- Clearer messages: model not on the server, model too slow to load, server couldn't create it (with the reason in the server console), or it didn't arrive.
+
 ## 1.13.0
 - Custom police dog: stream/policedog/ replaces the game's shepherd (a_c_shepherd) with the Vinewood police dog. Its head and coat textures and harness are set when it's deployed (Config.Dogs.Look; random = true mixes them).
 - Custom bark: web/sounds/policedogbark.mp3, heard by everyone within 40 m and quieter with distance. Barks close together overlap rather than cut each other off. Config.Dogs.Bark.Sound = false goes back to the game's bark.
