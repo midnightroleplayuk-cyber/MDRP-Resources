@@ -204,6 +204,10 @@
   roster.addEventListener('mousedown', e => {
     if (!state.visible || !state.overlayEnabled || e.button !== 0) return;
     dragging = true;
+    // Capture release even when the pointer leaves the overlay.
+    if (e.pointerId !== undefined && roster.setPointerCapture) {
+      try { roster.setPointerCapture(e.pointerId); } catch (_) {}
+    }
     startX = e.clientX;
     startY = e.clientY;
     startRight = Number.parseFloat(roster.style.right) || 0;

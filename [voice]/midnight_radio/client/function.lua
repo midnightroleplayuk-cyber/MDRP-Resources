@@ -133,6 +133,17 @@ function Radio:Init(data)
             if tonumber(prefs.volume) then self.userData[self.identifier].volume = math.max(0, math.min(100, tonumber(prefs.volume))) end
         end
     end
+    -- The server-side record wins over legacy client snapshots on every login.
+    -- The callback is resolved before initial UI data is sent.
+    local ok, serverCoords = pcall(function()
+        return lib.callback.await('midnight_radio:server:getOverlayPosition', false)
+    end)
+    if ok and type(serverCoords) == 'table' and tonumber(serverCoords.x) and tonumber(serverCoords.y) then
+        self.userData[self.identifier].playerlist.coords = {
+            x = tonumber(serverCoords.x), y = tonumber(serverCoords.y)
+        }
+        SetResourceKvp(('mm_radio_overlay_pos_%s'):format(self.identifier), json.encode(serverCoords))
+    end
     self.Volume = tonumber(self.userData[self.identifier].volume) or self.Volume
     exports['pma-voice']:setRadioVolume(self.Volume)
     pcall(function() exports['pma-voice']:resyncSecondaryRadioVolume() end)

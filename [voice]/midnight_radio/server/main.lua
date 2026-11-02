@@ -417,3 +417,31 @@ end)
 exports('GetPlayerSecondaryRadio', function(source)
     return playerSecondaryChannel[source] or 0
 end)
+
+-- Authoritative overlay coordinates stored server-side per Qbox character.
+-- Unlike client resource KVP, these survive a player quitting FiveM.
+local function overlayKey(src)
+    local player = exports.qbx_core:GetPlayer(src)
+    local cid = player and player.PlayerData and player.PlayerData.citizenid
+    if not cid then return nil end
+    return 'midnight_radio_overlay_' .. cid
+end
+
+RegisterNetEvent('midnight_radio:server:saveOverlayPosition', function(coords)
+    local key = overlayKey(source)
+    if not key or type(coords) ~= 'table' then return end
+    local x, y = tonumber(coords.x), tonumber(coords.y)
+    if not x or not y or x ~= x or y ~= y or x < 0 or y < 0 or x > 20000 or y > 20000 then return end
+    SetResourceKvp(key, json.encode({x=x, y=y}))
+end)
+
+lib.callback.register('midnight_radio:server:getOverlayPosition', function(src)
+    local key = overlayKey(src)
+    local raw = key and GetResourceKvpString(key)
+    if not raw then return nil end
+    local ok, coords = pcall(json.decode, raw)
+    if ok and type(coords) == 'table' and tonumber(coords.x) and tonumber(coords.y) then
+        return {x=tonumber(coords.x), y=tonumber(coords.y)}
+    end
+    return nil
+end)
