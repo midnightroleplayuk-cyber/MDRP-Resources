@@ -132,7 +132,6 @@ RegisterNUICallback('updatePlayerListPosition', function(data, cb)
         cb('error')
         return
     end
-    print(('[midnight_radio] Overlay position confirmed saved x=%.1f y=%.1f'):format(coords.x, coords.y))
     cb('ok')
 end)
 

@@ -208,12 +208,10 @@
     if (!dragMoved || !state.rosterCoords) return;
     const coords = {x: Math.round(state.rosterCoords.x * 10) / 10, y: Math.round(state.rosterCoords.y * 10) / 10};
     const seq = ++saveSequence;
-    console.info('[midnight_radio] Overlay DRAG SAVE', reason, 'x='+coords.x, 'y='+coords.y, 'seq='+seq);
     fetch(`https://${RESOURCE}/updatePlayerListPosition`, {
       method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(coords)
     }).then(r=>r.text()).then(result=>{
       if (result.includes('error')) console.error('[midnight_radio] Overlay SAVE FAILED', seq, result);
-      else console.info('[midnight_radio] Overlay SAVE ACK', seq, 'x='+coords.x, 'y='+coords.y);
     }).catch(err=>console.error('[midnight_radio] Overlay SAVE NETWORK ERROR', seq, err));
   }
   roster.addEventListener('pointerdown', e => {
@@ -225,7 +223,6 @@
     dragRight = window.innerWidth - rect.right;
     dragTop = rect.top;
     try { roster.setPointerCapture(e.pointerId); } catch (_) {}
-    console.info('[midnight_radio] Overlay DRAG START', 'right='+dragRight.toFixed(1), 'top='+dragTop.toFixed(1));
     e.preventDefault();
   });
   roster.addEventListener('pointermove', e => {
@@ -432,7 +429,6 @@
       if (c && Number.isFinite(Number(c.x)) && Number.isFinite(Number(c.y))) {
         state.rosterCoords = {x: Number(c.x), y: Number(c.y)};
         rosterPositionReady = true;
-        console.info('[midnight_radio] Overlay LOAD applied x='+state.rosterCoords.x+' y='+state.rosterCoords.y);
         applyRosterPosition();
         renderRoster();
       }

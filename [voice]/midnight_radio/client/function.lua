@@ -145,9 +145,6 @@ function Radio:Init(data)
         SetResourceKvp(('mm_radio_overlay_pos_%s'):format(self.identifier), json.encode(serverCoords))
     end
     local loadedCoords = self.userData[self.identifier].playerlist.coords
-    print(('[midnight_radio] Overlay INIT coords: x=%s y=%s (server=%s)'):format(
-        tostring(loadedCoords and loadedCoords.x), tostring(loadedCoords and loadedCoords.y),
-        tostring(ok and type(serverCoords) == 'table')))
     -- Explicitly push the authoritative position into the custom roster.
     -- The UI may already be initialized and otherwise skip restoring preferences.
     if ok and type(serverCoords) == 'table' then
