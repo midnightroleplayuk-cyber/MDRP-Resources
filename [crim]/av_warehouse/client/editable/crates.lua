@@ -63,7 +63,7 @@ function registerTarget(data)
 
         }
     }
-    if Config.Target == "ox_target" then
+    if Config.Target == "ox-target" then
         exports[Config.Target]:addLocalEntity(data['entity'], options)
     else
         exports[Config.Target]:AddTargetEntity(data['entity'], {
@@ -76,7 +76,7 @@ end
 function removeTarget(entity)
     if not Config.Target then return end
     if isCop() then return end
-    if Config.Target == "ox_target" then
+    if Config.Target == "ox-target" then
         exports.ox_target:removeLocalEntity(entity)
     else
         exports[Config.Target]:RemoveTargetEntity(entity, Lang['open'])
