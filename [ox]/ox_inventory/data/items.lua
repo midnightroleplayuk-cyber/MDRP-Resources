@@ -5607,6 +5607,23 @@ return {
     server = { export = 'vinewood-mdt.useDocument' } 
 },
 
+
+-- VINEWOOD PRISON
+['prison_tablet'] = {
+    label = 'Prison tablet',
+    weight = 500,
+    stack = false,
+    client = { export = 'vinewood_prison.useTablet' },
+},
+['prison_keycard'] = {
+    label = 'Prison keycard',
+    weight = 10,
+    stack = false,
+    -- give with metadata = { level = 1-5 }
+},
+
+
+
 -- AV LAPTOP 
 
 ['laptop'] = {
