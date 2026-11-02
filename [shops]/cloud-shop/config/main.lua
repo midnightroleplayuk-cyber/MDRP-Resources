@@ -45,7 +45,8 @@ return {
 				vector4(-1119.24, 2699.78, 18.54, 217.72), -- Grand Chaparral
 				vector4(1692.14, 3760.94, 34.7, 222.61), -- Sandy Shores Boss
 				vector4(253.96, -50.43, 69.93, 70.61), -- Spanish Avenue
-				vector4(-1303.99, -394.57, 36.69, 72.05) -- Boulevard Del Perro
+				vector4(-1303.99, -394.57, 36.69, 72.05), -- Boulevard Del Perro
+				vector4(842.51, -1035.39, 28.18, 354.92) -- La Mesa
 			},
 
 			--? For icons, use Iconify: https://icon-sets.iconify.design
