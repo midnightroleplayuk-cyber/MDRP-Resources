@@ -44,7 +44,7 @@ return {
 				vector4(-331.85, 6084.85, 31.44, 224.5), -- Paleto Bay
 				vector4(-1119.24, 2699.78, 18.54, 217.72), -- Grand Chaparral
 				vector4(1692.14, 3760.94, 34.7, 222.61), -- Sandy Shores Boss
-				vector4(253.96, -50.43, 69.93, 70.61) -- Boulevard Del Perro
+				vector4(253.96, -50.43, 69.93, 70.61) -- Spanish Avenue
 			},
 
 			--? For icons, use Iconify: https://icon-sets.iconify.design
