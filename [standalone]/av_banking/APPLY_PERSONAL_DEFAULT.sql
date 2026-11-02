@@ -1,17 +1,24 @@
--- RUN THIS ON YOUR LIVE DATABASE IN HEIDISQL / PHPMYADMIN.
--- It fixes NEW personal accounts, including when escrowed code explicitly inserts Checking.
+-- Run against the database actually used by your FiveM server.
+-- Converts only untouched default labels, never custom names.
 ALTER TABLE `av_banking_accounts` MODIFY COLUMN `label` VARCHAR(60) NOT NULL DEFAULT 'PERSONAL';
+UPDATE `av_banking_accounts` SET `label`='PERSONAL'
+WHERE LOWER(TRIM(`label`))='checking' AND LOWER(TRIM(`type`))='personal';
 DROP TRIGGER IF EXISTS `av_banking_default_personal_label`;
+DROP TRIGGER IF EXISTS `av_banking_personal_label_update`;
 DELIMITER $$
-CREATE TRIGGER `av_banking_default_personal_label`
-BEFORE INSERT ON `av_banking_accounts`
-FOR EACH ROW
-BEGIN
-  IF LOWER(TRIM(COALESCE(NEW.`type`, ''))) = 'personal'
-     AND LOWER(TRIM(COALESCE(NEW.`label`, ''))) IN ('', 'checking', 'bank account - personal', 'personal') THEN
-    SET NEW.`label` = 'PERSONAL';
-  END IF;
+CREATE TRIGGER `av_banking_default_personal_label` BEFORE INSERT ON `av_banking_accounts`
+FOR EACH ROW BEGIN
+ IF LOWER(TRIM(COALESCE(NEW.`type`,'')))='personal'
+ AND LOWER(TRIM(COALESCE(NEW.`label`,''))) IN ('','checking','bank account - personal')
+ THEN SET NEW.`label`='PERSONAL'; END IF;
+END$$
+CREATE TRIGGER `av_banking_personal_label_update` BEFORE UPDATE ON `av_banking_accounts`
+FOR EACH ROW BEGIN
+ IF LOWER(TRIM(COALESCE(NEW.`type`,'')))='personal'
+ AND LOWER(TRIM(COALESCE(NEW.`label`,'')))='checking'
+ THEN SET NEW.`label`='PERSONAL'; END IF;
 END$$
 DELIMITER ;
--- OPTIONAL: convert ONLY existing personal accounts still called Checking:
--- UPDATE `av_banking_accounts` SET `label` = 'PERSONAL' WHERE LOWER(TRIM(`type`)) = 'personal' AND LOWER(TRIM(`label`)) = 'checking';
+-- Check results:
+SELECT `id`,`type`,`label`,`native` FROM `av_banking_accounts` ORDER BY `id` DESC LIMIT 20;
+SHOW TRIGGERS LIKE 'av_banking_accounts';
