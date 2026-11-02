@@ -1,0 +1,2390 @@
+{
+  "app": {
+    "name": "Banking",
+    "brand_sub": "Personal banking",
+    "loading": "Connecting to your bank...",
+    "cash": "Cash"
+  },
+  "nav": {
+    "main_menu": "Main Menu",
+    "general": "General",
+    "dashboard": "Dashboard",
+    "accounts": "Accounts",
+    "transactions": "Transactions",
+    "invoices": "Invoices",
+    "savings": "Savings",
+    "loans": "Loans",
+    "cards": "Cards",
+    "settings": "Settings",
+    "help": "Help Center",
+    "teller": "Teller",
+    "invest": "Invest",
+    "security": "Security"
+  },
+  "dashboard": {
+    "welcome": "Welcome back, {name}",
+    "total_income": "Total Income",
+    "total_expense": "Total Expense",
+    "net": "Net",
+    "from_last_week": "From last week",
+    "saving_plans": "Saving Plans",
+    "manage_plans": "Manage",
+    "total_balance": "Total Balance",
+    "overview_income": "Overview Income",
+    "no_data": "No activity in the last 7 days",
+    "daily_limit": "Daily Limit",
+    "limit_used": "used from {limit} limit",
+    "send": "Send",
+    "request": "Request",
+    "deposit": "Deposit",
+    "withdraw": "Withdraw",
+    "receive": "Receive",
+    "no_activity": "No recent transactions",
+    "pending_requests": "Pending Bank Requests",
+    "latest_transactions": "Latest Transactions",
+    "view_all": "View all",
+    "manage": "Manage",
+    "a11y_previous": "Previous account",
+    "a11y_next": "Next account",
+    "no_card_limit": "No card on this account"
+  },
+  "requests": {
+    "loan": "Loan",
+    "card": "Card Request",
+    "account": "Business Account",
+    "pending": "Pending",
+    "approved": "Approved",
+    "denied": "Denied"
+  },
+  "savings": {
+    "title": "Savings",
+    "create": "Create Plan",
+    "plans": "Saving Plans",
+    "none": "No saving plans yet. Create one to start saving for your goals.",
+    "total_savings": "Total Savings",
+    "total_targets": "Total Targets",
+    "total_plans": "Total Plans",
+    "in_progress": "in Progress",
+    "completed": "Completed",
+    "due_date": "Due date",
+    "add_funds": "Add Funds",
+    "withdraw": "Withdraw",
+    "edit": "Edit",
+    "remove": "Remove",
+    "edit_plan": "Edit Plan",
+    "plan_name": "Plan Name",
+    "plan_name_ph": "e.g. Buying Car",
+    "icon": "Icon",
+    "target_amount": "Target Amount",
+    "deadline_days": "Deadline (days, optional)",
+    "deadline_ph": "e.g. 60",
+    "save": "Save",
+    "created": "Saving plan created",
+    "updated": "Saving plan updated",
+    "deleted": "Saving plan removed",
+    "contributed": "Added {amount} to your savings",
+    "withdrawn": "Withdrew {amount} from your savings",
+    "contribute_hint": "Money is moved from the selected account into '{plan}'.",
+    "withdraw_hint": "Available in this plan: {amount}",
+    "delete_refund_hint": "This plan holds {amount}. Select the account where the money will be refunded.",
+    "delete_hint": "This plan is empty and will be removed.",
+    "lock_label": "Lock-in term",
+    "lock_hint": "Locked plans earn bonus interest, but withdrawing before the term ends forfeits every interest earned during the lock.",
+    "lock_none": "No lock",
+    "lock_option": "{days} days · +{pct}% APY",
+    "locked_badge": "Locked +{pct}%",
+    "locked_until": "Unlocks {date}",
+    "break_title": "Break the lock?",
+    "break_warning": "'{plan}' is still locked until {date}. Continuing forfeits the {amount} of interest earned during the lock. Your principal is untouched.",
+    "break_confirm": "Break lock",
+    "refund_to": "Send the balance to"
+  },
+  "p2p": {
+    "title": "Money Requests",
+    "incoming_title": "Requests For You",
+    "request_title": "Request Money",
+    "request_from": "Request From",
+    "server_id_ph": "Server ID",
+    "server_id_hint": "Ask them for their server ID, or pick one of your saved contacts below.",
+    "receive_in": "Receive In",
+    "note": "Note",
+    "note_ph": "What is this for?",
+    "request_btn": "Send Request",
+    "request_sent": "Money request sent",
+    "pay": "Pay",
+    "decline": "Decline",
+    "cancel": "Cancel",
+    "paid": "Request paid",
+    "declined_ok": "Request declined",
+    "cancelled_ok": "Request cancelled",
+    "from": "From {name}",
+    "to": "To {name}",
+    "no_note": "No note",
+    "status_pending": "Pending",
+    "status_accepted": "Paid",
+    "status_declined": "Declined",
+    "status_cancelled": "Cancelled",
+    "status_expired": "Expired",
+    "split_toggle": "Split between several people",
+    "split_hint": "The total is divided equally between you and everyone you pick. Each person gets a request for their share.",
+    "split_with": "Split with",
+    "split_share": "{share} each, split {people} ways",
+    "split_btn": "Send split requests",
+    "split_sent": "{count} request(s) sent, {share} each",
+    "dismiss": "Remove"
+  },
+  "transactions": {
+    "title": "Transactions",
+    "search": "Search transactions...",
+    "all_accounts": "All accounts",
+    "filter_all": "All",
+    "filter_in": "Received",
+    "filter_out": "Sent",
+    "filter_transfers": "Transfers",
+    "none": "No transactions found",
+    "type": "Type",
+    "amount": "Amount",
+    "account": "Account",
+    "details": "Transaction",
+    "date": "Date",
+    "page_of": "Page {page} of {pages}"
+  },
+  "txtypes": {
+    "deposit": "Received",
+    "withdraw": "Withdrawal",
+    "transfer_in": "Received",
+    "transfer_out": "Transfer",
+    "purchase": "Purchase",
+    "credit": "Card credit",
+    "payment": "Payment",
+    "tax": "Tax",
+    "fee": "Fee",
+    "loan": "Loan",
+    "saving_in": "Savings",
+    "saving_out": "Savings",
+    "system": "System"
+  },
+  "billing": {
+    "title": "Invoices",
+    "add": "Add Invoice",
+    "tab_all": "All",
+    "tab_received": "Received",
+    "tab_sent": "Sent",
+    "tab_paid": "Paid",
+    "tab_overdue": "Past Due",
+    "none": "No invoices here",
+    "amount": "Amount",
+    "reference": "Invoice Number",
+    "counterpart": "Client",
+    "subject": "Subject",
+    "due": "Due / Paid",
+    "received": "Received",
+    "sent": "Sent",
+    "status_pending": "Pending",
+    "status_paid": "Paid",
+    "status_overdue": "Past Due",
+    "status_cancelled": "Cancelled",
+    "pay_now": "Pay Now",
+    "cancel": "Cancel",
+    "bill_as": "Billing Profile (Bill As)",
+    "as_personal": "Personal (myself)",
+    "as_business": "My Business / Job",
+    "billed_to": "Billed To",
+    "billed_to_hint": "Enter the player's server ID. They must be nearby.",
+    "player_id": "Server ID",
+    "total_amount": "Total Amount",
+    "concept": "Description / Concept",
+    "concept_ph": "e.g. Vehicle Repair",
+    "due_hint": "Invoices are due {days} days after being issued.",
+    "send": "Send Invoice",
+    "sent_ok": "Invoice sent",
+    "paid_ok": "Invoice paid",
+    "cancelled_ok": "Invoice cancelled",
+    "pay_confirm": "Pay {amount} to {name}?",
+    "confirm_pay": "Confirm Payment",
+    "details": "Invoice details",
+    "total": "Total",
+    "direction": "Type",
+    "from": "From",
+    "to": "Billed to",
+    "issued_by": "Issued by {name}",
+    "issued": "Issued",
+    "due_date": "Due date",
+    "paid_on": "Paid on",
+    "items": "Items ({count})",
+    "pay_from": "Pay from"
+  },
+  "loans": {
+    "title": "Loans",
+    "request": "Request Loan",
+    "your_loans": "Your Loans",
+    "none": "No active loans",
+    "outstanding": "Outstanding Debt",
+    "active_count": "Active Loans",
+    "interest_rate": "Interest Rate",
+    "good_standing": "In Good Standing",
+    "missed": "{count} missed",
+    "paid": "Paid Off",
+    "defaulted": "Defaulted",
+    "active": "Active",
+    "paid_of": "{paid} paid of {total}",
+    "next_payment": "Next payment {amount} due {date}",
+    "pay_installment": "Pay Installment",
+    "pay_full": "Pay Remaining",
+    "payment_done": "Loan payment completed",
+    "deposit_to": "Deposit To",
+    "purpose": "Purpose",
+    "purpose_ph": "e.g. Karin Sultan RS - Auto Loan",
+    "term": "Term",
+    "term_days": "{days} days",
+    "select_term": "Select a term",
+    "preview": "Total to repay {total} ({interest}% interest). Daily installment: {installment}",
+    "requested": "Loan request submitted for review",
+    "approved": "Loan approved and disbursed",
+    "submit": "Submit Request",
+    "type": "Loan type",
+    "type_personal": "Personal",
+    "type_auto": "Auto",
+    "type_business": "Business",
+    "type_quick": "Quick",
+    "type_needs_business": "needs a business account",
+    "type_needs_score": "needs {score}+ credit",
+    "quick_title": "Quick Loans",
+    "your_score": "Your credit score: {score}",
+    "quick_terms": "{interest}% interest · {days} day term",
+    "quick_total": "Repay {total}",
+    "quick_take": "Get it now",
+    "quick_done": "Money is in your account — installments start tomorrow",
+    "quick_score": "Unlocks at {score}+ credit",
+    "quick_active_quick": "Pay off your current quick loan first",
+    "quick_limit": "You're at your loan limit",
+    "vehicles_title": "Vehicle Financing",
+    "vehicles_hint": "Financed vehicles from dealerships. Payments come from your Checking, straight through the dealership.",
+    "veh_ok": "On time",
+    "veh_late": "Late",
+    "veh_repossess": "Repossession risk",
+    "veh_progress": "{paid} of {total} · payment {made}/{count}",
+    "veh_pay": "Pay {amount}",
+    "veh_payoff": "Pay off {amount}",
+    "veh_paid": "Payment made",
+    "veh_settled": "Contract settled, {vehicle} is fully yours"
+  },
+  "cards": {
+    "title": "Cards",
+    "brand": "FLEECA",
+    "brand_credit": "FLEECA CREDIT",
+    "holder": "Card Holder",
+    "expires": "Expires",
+    "request": "Request Card",
+    "none": "No cards yet. Request one for any of your accounts.",
+    "type": "Card Type",
+    "account": "Linked Account",
+    "available_credit": "Available Credit",
+    "balance_used": "Credit Used",
+    "freeze": "Freeze Card",
+    "unfreeze": "Unfreeze",
+    "set_limit": "Set Limit",
+    "pay_debt": "Pay Balance",
+    "delete": "Cancel Card",
+    "updated": "Card updated",
+    "deleted": "Card cancelled",
+    "pending_approval": "Request submitted. A bank agent will review it soon.",
+    "select_type": "Select a card type",
+    "debt_info": "Outstanding balance: {amount}",
+    "debt_paid": "Card balance paid",
+    "perks_title": "Tier benefits",
+    "perks_none": "This card has no tier perks. It works as a plain payment card with the standard fees and limits.",
+    "perk_atm_fee": "{value}% ATM fee",
+    "perk_atm_fee_free": "No ATM fees",
+    "perk_atm_limit": "{value}x ATM limits",
+    "perk_transfer_fee": "-{value}% transfer fees",
+    "perk_savings": "+{value}% savings interest",
+    "perk_cashback": "{value}% cashback on purchases",
+    "perk_priority": "Priority teller service",
+    "perk_free_print": "Free card printing",
+    "requested": "Card request sent",
+    "perk_overdraft": "Overdraft up to {value}",
+    "perk_transfer_cap": "{value}x daily transfer limit",
+    "frozen": "Frozen",
+    "count": "{count} card(s)",
+    "request_title": "Request a card",
+    "request_sub": "Pick a card and the account it draws from.",
+    "kind_debit": "Debit",
+    "kind_credit": "Credit",
+    "issue_fee": "Issue fee",
+    "credit_line": "Credit line",
+    "request_submit": "Send request",
+    "request_issue": "Issue card",
+    "tier_n": "Tier {tier}",
+    "your_clearance": "Your card clearance: Tier {tier} ({label})",
+    "your_score": "Score {score}",
+    "locked_title": "{label} needs Tier {tier} clearance",
+    "locked_score": "Reach a credit score of {score} (yours: {yours}) or ask a banker at any branch to raise your clearance.",
+    "locked_banker": "Ask a banker at any branch to raise your clearance.",
+    "approval_note": "A banker reviews this card before it is issued. Visiting a branch desk gets it reviewed faster.",
+    "next_payment": "Next payment {amount} on {date}",
+    "missed_count": "{count} missed",
+    "delinquent": "Frozen after {count} missed payments. Pay the balance in full to unfreeze.",
+    "credit_terms": "{pct}% interest every {days} days on what you owe",
+    "a11y_reveal": "Show or hide card details"
+  },
+  "teller": {
+    "title": "Teller",
+    "available": "A teller is available",
+    "available_hint": "Your request will be reviewed right now, in person.",
+    "none": "No teller on duty",
+    "none_hint": "Your request goes to the approval queue instead.",
+    "auto_approved": "Approved automatically, no teller needed",
+    "request": "Request a service",
+    "service": "Service",
+    "submit_live": "Request at the desk",
+    "submit_queue": "Send to the queue",
+    "queued": "Request sent to the approval queue",
+    "waiting": "Waiting for a teller",
+    "waiting_hint": "Stay at the desk. A teller will attend you shortly.",
+    "being_served": "You are being attended",
+    "with_agent": "Agent: {name}",
+    "cancel": "Cancel request",
+    "cancelled": "Request cancelled",
+    "ticket_expired": "No teller attended you in time. Your request moved to the approval queue",
+    "approved": "The teller approved your request",
+    "denied": "The teller declined your request: {note}",
+    "branch": "Branch",
+    "on_duty": "On duty",
+    "off_duty": "Off duty",
+    "duty_hint": "While on duty, desk requests at this branch come straight to you.",
+    "off_duty_hint": "Go on duty to attend clients at a branch.",
+    "queue": "Clients at the desk",
+    "no_clients": "No one is waiting right now.",
+    "attend": "Attend",
+    "claimed_by": "With {name}",
+    "expires_in": "{seconds}s left",
+    "on_duty_at": "On duty · {branch}",
+    "start_shift": "Start shift",
+    "end_shift": "End shift",
+    "my_requests": "My requests"
+  },
+  "atm": {
+    "insert_card": "Insert your card",
+    "no_cards": "You have no cards. Request one from the banking app.",
+    "card_frozen": "Frozen",
+    "enter_pin": "Enter your PIN",
+    "welcome": "Welcome",
+    "hi": "Hi, {name}",
+    "balance": "Available balance",
+    "daily_limit": "Daily limit",
+    "withdraw": "Withdraw",
+    "deposit": "Deposit",
+    "transfer": "Transfer",
+    "statement": "Latest transactions",
+    "to_account": "Account number or player ID",
+    "no_movements": "No recent movements",
+    "withdraw_ok": "Dispensed {amount}",
+    "deposit_ok": "Deposited {amount}",
+    "transfer_ok": "Transfer sent",
+    "use_card": "Use this card",
+    "no_card_item": "You are not carrying a bank card.",
+    "card_foreign": "This card belongs to someone else's account",
+    "card_setup_hint": "New card — set a PIN to activate it",
+    "card_ready": "Ready to use",
+    "card_locked_title": "Card locked",
+    "card_locked_hint": "Too many wrong PINs. This card is blocked for {minutes} more minute(s).",
+    "card_locked_wait": "Too many wrong PINs. This card is blocked for now.",
+    "card_locked_leave": "Take the card back",
+    "activate_card": "Activate card",
+    "set_pin": "Choose a PIN",
+    "type_hint": "Type your PIN or use the keypad",
+    "pick_card": "Pick a card",
+    "carrying": "You are carrying {count} bank card(s)",
+    "next_card": "Next card",
+    "state_ready": "Ready",
+    "state_setup": "Needs PIN",
+    "state_foreign": "Foreign",
+    "state_locked": "Locked",
+    "card_frozen_hint": "This card is frozen. Unfreeze it from the banking app.",
+    "tries_left": "{count} tries left",
+    "wrong_pin_left": "Wrong PIN · {count} tries left",
+    "pin_digits": "{count}-digit PIN",
+    "checking": "Checking…",
+    "clear": "Clear",
+    "fee_pct": "Fee {pct}%",
+    "no_fee": "No fee",
+    "statement_sub": "Last movements",
+    "no_fee_line": "No fee on this card",
+    "deposit_hint": "Goes straight into the account",
+    "transfer_hint": "A fee may apply to other people's accounts",
+    "over_max": "Over the limit for this operation",
+    "send": "Send",
+    "receipt": "Receipt",
+    "held_title": "Under review",
+    "take_cash": "Take your cash below the screen",
+    "deposit_done": "The cash is in your account",
+    "transfer_done": "The money is on its way",
+    "r_operation": "Operation",
+    "r_withdraw": "Withdrawal",
+    "r_deposit": "Deposit",
+    "r_transfer": "Transfer",
+    "r_account": "Account",
+    "r_to": "To",
+    "r_amount": "Amount",
+    "r_fee": "Fee",
+    "r_balance": "New balance",
+    "r_reference": "Reference",
+    "another": "Another operation",
+    "eject": "Eject card",
+    "locked_sub": "Too many wrong PINs",
+    "locked_help": "Your card stays safe. Wait for the timer, or unfreeze it from the banking app on your laptop.",
+    "exit_hint": "Eject card and leave",
+    "hint_pick": "Scroll or tap to pick a card",
+    "hint_pin": "Keypad or number keys",
+    "hint_menu": "Pick an operation",
+    "hint_amount": "Type an amount",
+    "hint_transfer": "Recipient, then amount",
+    "chip_max": "Max",
+    "chip_today": "Left today",
+    "you_receive": "You receive {net} · fee {fee}",
+    "over_daily": "Over your daily card limit",
+    "to_personal": "Goes to that player's personal account",
+    "credit_line": "Credit available {available} of {limit}",
+    "chip_credit": "Credit left",
+    "advance": "Cash advance",
+    "advance_hint": "Cash advances are charged to your credit line",
+    "advance_line": "{total} charged to your credit line · fee {fee}",
+    "advance_off": "Cash advances are disabled on this card",
+    "advance_delinquent": "Pay this card in full before using it again",
+    "over_credit": "Over your available credit",
+    "r_credit_left": "Credit left",
+    "a11y_backspace": "Delete last digit",
+    "a11y_back": "Back",
+    "a11y_exit": "Eject card",
+    "key_esc": "Esc"
+  },
+  "accounts": {
+    "open": "Open Account",
+    "personal": "Personal",
+    "business": "Business",
+    "frozen": "Frozen",
+    "staff": "Access",
+    "label": "Account Name",
+    "type": "Account Type",
+    "free": "Free",
+    "created": "Account opened",
+    "pending_approval": "Request submitted. A bank agent will review it soon.",
+    "number": "Account Number",
+    "owner": "Owner",
+    "opened_on": "Opened",
+    "rename": "Rename Account",
+    "rename_btn": "Save Name",
+    "renamed": "Account renamed",
+    "close": "Close Account",
+    "closed": "Account closed. The remaining balance was moved to your personal checking.",
+    "close_hint": "The remaining balance moves to your personal checking. Requires no active loans or card debt.",
+    "card_ordered": "Card ordered — collect it at any branch card counter",
+    "offshore": "Offshore",
+    "favorited": "Account pinned to your dashboard",
+    "favorite_cleared": "Account unpinned",
+    "subtitle": "Your bank accounts, balances and who can use them.",
+    "cards_subtitle": "Debit and credit cards linked to your accounts.",
+    "total": "Total balance",
+    "count": "{count} account(s)",
+    "copy_number": "Copy number",
+    "pin": "Pin to dashboard",
+    "pinned": "Pinned",
+    "cards_waiting": "{count} waiting at the counter",
+    "info": "Details",
+    "your_role": "Your role",
+    "role_owner": "Owner",
+    "close_short": "Close account",
+    "close_confirm": "Close \"{name}\"? {amount} will move to your personal checking. This cannot be undone.",
+    "favorite_set": "Show on dashboard",
+    "favorite_clear": "Stop showing on dashboard",
+    "open_title": "Open an account",
+    "open_sub": "An extra account to share, or one for your company.",
+    "label_ph_short": "Account name",
+    "opening_fee": "Opening fee",
+    "approval": "Approval",
+    "approval_agent": "Reviewed by an agent",
+    "approval_instant": "Instant",
+    "fee_cash_hint": "Charged to your personal checking.",
+    "replace_card": "Replace card",
+    "replace_card_hint": "Prints a new plastic at the branch counter",
+    "get_card": "Get a card",
+    "get_card_hint": "No card yet · request one",
+    "open_meta": "Shared or business",
+    "kind_checking": "Checking",
+    "kind_business": "Business",
+    "type_business_desc": "Company money, kept apart.",
+    "limit_reached": "Limit",
+    "label_ph_business": "e.g. PDM Dealership",
+    "shared": "Shared",
+    "kind_shared": "Shared",
+    "type_shared_desc": "For you and your loved ones.",
+    "label_ph_shared": "e.g. Home, Trip fund",
+    "shared_hint": "Once open, add people from Access. Each one can order their own card.",
+    "society": "Society",
+    "kind_society": "Society"
+  },
+  "access": {
+    "server_id_ph": "Player server ID",
+    "member": "Member",
+    "manager": "Manager",
+    "grant": "Grant Access",
+    "granted": "Access granted",
+    "updated": "Access updated",
+    "revoked": "Access revoked",
+    "save": "Save",
+    "revoke": "Revoke",
+    "no_members": "Nobody else has access to this account",
+    "heading": "Shared access",
+    "count": "{count} with access",
+    "add": "Add member",
+    "search_ph": "Search members",
+    "manager_note": "Managers get every permission.",
+    "all_perms": "Full access",
+    "no_perms": "No permissions",
+    "confirm_revoke": "Confirm revoke",
+    "no_match": "No members match your search",
+    "server_id": "Player ID",
+    "boss": "Boss"
+  },
+  "perms": {
+    "deposit": "Deposit",
+    "withdraw": "Withdraw",
+    "transfer": "Transfer",
+    "invoices": "Invoices",
+    "cards": "Cards",
+    "history": "History",
+    "approve_loans": "Approve loans",
+    "approve_cards": "Approve cards",
+    "approve_accounts": "Approve accounts",
+    "freeze_accounts": "Freeze accounts",
+    "view_clients": "View client records",
+    "email_clients": "Email clients",
+    "manage_employees": "Manage employees"
+  },
+  "networth": {
+    "subtitle": "Total estimated value of everything you own minus your debts.",
+    "assets": "Assets",
+    "liabilities": "Liabilities",
+    "savings": "Held in savings"
+  },
+  "settings": {
+    "title": "Settings",
+    "tab_contacts": "Contacts",
+    "tab_requests": "Bank Requests",
+    "tab_notifications": "Notifications",
+    "tab_appearance": "Appearance",
+    "tab_security": "Security",
+    "tab_networth": "Net Worth",
+    "theme_title": "Accent color",
+    "theme_hint": "Pick the color the app uses for highlights and buttons.",
+    "freeze_title": "Lost your card?",
+    "freeze_hint": "You can freeze any card instantly from Accounts › Cards.",
+    "requests_hint": "Loans, cards and business accounts you asked the bank for.",
+    "requests_none": "You haven't made any bank requests yet.",
+    "request_cancel": "Cancel request",
+    "request_cancelled": "Request cancelled",
+    "request_note": "Agent note: {note}",
+    "skins_title": "Show custom card designs",
+    "skins_hint": "Off by default. When on, cards with a custom image show it instead of their standard design.",
+    "skins_on": "Custom card designs shown",
+    "skins_off": "Custom card designs hidden"
+  },
+  "mail": {
+    "hint": "Get bank notices by email or on Discord.",
+    "unavailable": "Email is not available on this server.",
+    "link": "Link",
+    "unlink": "Unlink",
+    "linked": "Email linked",
+    "unlinked": "Email unlinked",
+    "what_to_receive": "Notify me about",
+    "pref_decisions": "Request decisions",
+    "pref_loans": "Loan reminders",
+    "pref_invoices": "Invoices",
+    "pref_security": "Security alerts",
+    "pref_cards": "New cards",
+    "pref_transactions": "Account movements",
+    "pref_reports": "Credit reports",
+    "request_report": "Email my credit report",
+    "report_sent": "Report sent to your mailbox",
+    "webhook": "Discord",
+    "webhook_linked": "Webhook linked",
+    "webhook_unlinked": "Webhook removed",
+    "email": "Email",
+    "connected": "Connected",
+    "not_connected": "Not connected",
+    "off": "Unavailable",
+    "reveal": "Show or hide",
+    "email_ph": "name@example.com",
+    "webhook_ph": "https://discord.com/api/webhooks/..."
+  },
+  "admin": {
+    "title": "Banking Admin",
+    "badge": "Admin",
+    "sections": "Sections",
+    "tab_stats": "Overview",
+    "desc_stats": "Live totals for money, accounts, loans and requests.",
+    "tab_accounts": "Accounts",
+    "desc_accounts": "Search any account, adjust balances and freeze.",
+    "tab_settings": "Settings",
+    "desc_settings": "Everything the bank does, applied live without a restart.",
+    "search_settings": "Search settings...",
+    "search_accounts": "Search...",
+    "save_settings_idle": "Save Settings",
+    "saved": "Settings saved",
+    "no_settings": "No settings match your search.",
+    "no_accounts": "No accounts found.",
+    "native": "Native",
+    "stat_accounts": "Accounts",
+    "stat_frozen": "Frozen",
+    "stat_cards": "Cards",
+    "stat_loans": "Active loans",
+    "stat_pending": "Pending requests",
+    "stat_ledger": "Ledger balance",
+    "search_account_btn": "Search Account",
+    "acc_owner": "Owner",
+    "acc_identifier": "Identifier",
+    "reveal": "Show sensitive data",
+    "conceal": "Hide sensitive data",
+    "tab_banks": "Banks",
+    "desc_banks": "Create branches and ATM zones in-world, no Lua editing.",
+    "banks_title": "Branches",
+    "banks_hint": "Branches only exist here — create them in-world and they go live for everyone instantly. Teleport to a window to check it before deleting anything.",
+    "bank_add": "New Branch",
+    "bank_label": "Branch name",
+    "place_desk": "Add desk",
+    "place_printer": "Add card counter",
+    "place_blip": "Place blip",
+    "bank_save": "Create Branch",
+    "bank_saved": "Branch created — zones are live",
+    "bank_removed": "Branch removed",
+    "no_banks": "No branches yet. Create the first one to enable desks, tellers and card counters.",
+    "has_blip": "Blip",
+    "atms_title": "Custom ATM Zones",
+    "atms_hint": "World ATM props already work by model. Add zones here for spots without a prop.",
+    "atm_add": "Place ATM Zone",
+    "atm_saved": "ATM zone created",
+    "atm_removed": "ATM zone removed",
+    "no_atms": "No custom ATM zones",
+    "atm_zone": "ATM zone #{id}",
+    "atm_radius": "Radius {radius} m",
+    "bank_offshore": "Offshore haven",
+    "bank_offshore_hint": "Accounts opened at this branch pay no wealth tax — only the haven's maintenance fee.",
+    "offshore_badge": "Offshore",
+    "filter_all": "All types",
+    "filter_shared": "Shared",
+    "account_frozen": "Account frozen",
+    "account_unfrozen": "Account unfrozen",
+    "reset_limits": "Reset limits",
+    "reset_limits_hint": "Clears what this account's cards spent today, so their daily limit starts over",
+    "limits_reset": "Daily limit reset on {count} card(s)",
+    "no_cards_to_reset": "This account has no cards",
+    "tab_fraud": "Fraud",
+    "desc_fraud": "Suspicious movements held in escrow, waiting for a verdict",
+    "reason_big_deposit": "Big deposit",
+    "reason_big_transfer": "Big transfer",
+    "reason_window_inflow": "High inflow",
+    "reason_burst": "Burst",
+    "outcome_released": "Released",
+    "outcome_expired": "Auto-released",
+    "outcome_refunded": "Refunded",
+    "outcome_confiscated": "Confiscated",
+    "hold_approve": "Approve",
+    "hold_refund": "Refund",
+    "hold_confiscate": "Confiscate",
+    "hold_info": "Player details",
+    "hold_identity_title": "Hold #{id} · identities",
+    "id_actor": "Actor",
+    "id_owner": "Account owner",
+    "id_character": "Character",
+    "id_server": "Server ID",
+    "id_player_name": "Player",
+    "id_online": "Online",
+    "id_offline": "Offline",
+    "id_offline_hint": "FiveM identifiers are only available while the player is connected.",
+    "copy": "Copy",
+    "copied": "Copied to clipboard",
+    "copy_failed": "Could not copy",
+    "hold_refresh": "Refresh",
+    "hold_resolved_approve": "Movement released to the destination account",
+    "hold_resolved_refund": "Movement denied, money returned to its origin",
+    "hold_resolved_confiscate": "Movement denied, funds confiscated",
+    "hold_from_cash": "Cash",
+    "hold_from_account": "From",
+    "hold_expires": "auto-releases {date}",
+    "hold_by": "by {name}",
+    "holds_pending": "Pending review ({count})",
+    "holds_resolved": "Recent verdicts",
+    "no_holds": "Nothing is being held right now",
+    "no_resolved_holds": "No verdicts yet",
+    "tab_activity": "Activity",
+    "desc_activity": "Movement intelligence: who moves money, how often, how much",
+    "act_window_1": "Last 24 hours",
+    "act_window_7": "Last 7 days",
+    "act_window_15": "Last 15 days",
+    "act_movements": "Movements",
+    "act_inflow": "Money in",
+    "act_outflow": "Money out",
+    "act_actors": "Unique players",
+    "act_movers": "Top senders",
+    "act_movers_hint": "Players moving the most money to other people's accounts in this window.",
+    "act_pairs": "Recurrent pairs",
+    "act_pairs_hint": "Same sender, same destination, over and over. The classic shape of funneling, RMT and dupe laundering.",
+    "act_biggest": "Largest movements",
+    "act_biggest_hint": "Ranked by size. Anything at or above {threshold} (your fraud threshold) is flagged.",
+    "act_transfers": "{count} transfer(s)",
+    "act_flag": "Suspicious",
+    "act_empty": "Nothing in this window",
+    "desk_count": "{count} desk(s)",
+    "counter_count": "{count} counter(s)",
+    "add_desk": "Add desk",
+    "add_counter": "Add counter",
+    "point_added": "Window added — zones are live",
+    "point_removed": "Window removed",
+    "teleport": "Teleport",
+    "confirm_delete": "Click again to delete",
+    "desk_point": "Desk",
+    "counter_point": "Counter",
+    "remove_branch": "Remove branch",
+    "edit": "Rename",
+    "edit_branch": "Rename branch",
+    "edit_zone": "Rename zone",
+    "zone_name": "Name",
+    "zone_desc": "Description",
+    "zone_desc_ph": "e.g. Left window, next to the entrance",
+    "zone_edit_hint": "Only visible in this panel, to tell zones apart. Leave the name empty to use the default one.",
+    "save_changes": "Save changes",
+    "branch_updated": "Branch updated",
+    "zone_updated": "Zone updated",
+    "list_add": "Add",
+    "reset_default": "Reset to default",
+    "search_results": "{count} results",
+    "state_on": "On",
+    "state_off": "Off",
+    "show_advanced": "Show advanced ({count})",
+    "hide_advanced": "Hide advanced",
+    "unsaved": "{count} unsaved changes",
+    "discard": "Discard",
+    "sec_general": "Theme, currency and system behaviour",
+    "sec_accounts": "Opening accounts, sharing and history",
+    "sec_transfers": "Fees, caps, money requests and recurring payments",
+    "sec_atm": "Cash limits, PINs and robberies",
+    "sec_cards": "Card access, physical cards and overdraft",
+    "sec_lending": "Loans, missed payments and debt collection",
+    "sec_savings_invoices": "Savings goals and player invoices",
+    "sec_market": "Stock trading and how prices move",
+    "sec_tax": "Periodic wealth tax",
+    "sec_fraud": "Holds on suspicious movements",
+    "sec_automation": "What the bank decides without a banker",
+    "sec_staff": "Banking job and the live teller",
+    "sec_notifications": "Bank mail and player webhooks",
+    "sec_integrations": "Exports for other resources",
+    "tab_catalog": "Catalog",
+    "desc_catalog": "Card types, loans, plans, stocks and themes the bank offers.",
+    "tags_add": "Add and press Enter",
+    "section_general": "General",
+    "section_accounts": "Accounts",
+    "section_transfers": "Transfers",
+    "section_atm": "ATM",
+    "section_cards": "Cards",
+    "section_lending": "Lending",
+    "section_savings_invoices": "Savings & invoices",
+    "section_market": "Market",
+    "section_tax": "Tax",
+    "section_fraud": "Fraud",
+    "section_automation": "Automation",
+    "section_staff": "Staff",
+    "section_notifications": "Notifications",
+    "section_integrations": "Integrations",
+    "group_interface": "Interface",
+    "group_system": "System",
+    "group_business_accounts": "Business accounts",
+    "group_shared_accounts": "Shared accounts",
+    "group_sharing_and_contacts": "Sharing and contacts",
+    "group_history": "History",
+    "group_transfers": "Transfers",
+    "group_money_requests": "Money requests",
+    "group_recurring_payments": "Recurring payments",
+    "group_limits": "Limits",
+    "group_pin_and_statements": "PIN and statements",
+    "group_cards": "Cards",
+    "group_physical_cards": "Physical cards",
+    "group_custom_designs": "Custom designs",
+    "group_credit_cards": "Credit cards",
+    "group_cash_advances": "Cash advances",
+    "group_overdraft": "Overdraft",
+    "group_loans": "Loans",
+    "group_missed_payments": "Missed payments",
+    "group_debt_collection": "Debt collection",
+    "group_savings": "Savings",
+    "group_invoices": "Invoices",
+    "group_trading": "Trading",
+    "group_price_limits": "Price limits",
+    "group_price_simulation": "Price simulation",
+    "group_wealth_tax": "Wealth tax",
+    "group_detection": "Detection",
+    "group_patterns": "Patterns",
+    "group_stolen_cards": "Stolen cards",
+    "group_alerts": "Alerts",
+    "group_unattended_bank": "Unattended bank",
+    "group_banking_job": "Banking job",
+    "group_live_teller": "Live teller",
+    "group_mail": "Mail",
+    "group_discord_webhooks": "Discord webhooks",
+    "group_hacker_api": "Hacker API",
+    "branch_name_ph": "e.g. Fleeca Bank - Vinewood",
+    "migrate": {
+      "nav": "Migrate",
+      "title": "Migrate",
+      "sub": "Bring player accounts and society funds over from another banking script",
+      "source_title": "Source",
+      "source_sub": "The banking script your server used before av_banking.",
+      "st_tables_ok": "Its data was found in this database",
+      "st_tables_missing": "No data from this script was found in this database",
+      "st_running": "{resource} is running. Stop it before migrating",
+      "st_stopped": "{resource} is stopped",
+      "st_societies_ok": "Job and gang funds become society accounts in av_banking",
+      "history_title": "Previous migrations",
+      "history_badge": "Already migrated",
+      "history_none": "Nothing has been migrated from this script yet.",
+      "history_row": "{date} · by {admin}",
+      "history_detail": "{accounts} accounts · {members} members · {funds} · {societies} societies · {societyFunds}",
+      "backup": "Back up your database first. The source tables are only read, never changed.",
+      "analyze": "Analyze",
+      "migrate": "Migrate",
+      "summary_title": "Analysis",
+      "summary_sub": "What will be created. Anything migrated before is skipped.",
+      "summary_none": "Everything from this script is already in av_banking.",
+      "s_accounts": "Accounts",
+      "s_funds": "Account funds",
+      "s_members": "Members",
+      "s_societies": "Societies",
+      "s_society_funds": "Society funds",
+      "s_skipped": "Already migrated",
+      "s_warnings": "{count} warnings",
+      "members_count": "{count} members",
+      "frozen": "Frozen",
+      "preview_more": "+{count} more accounts",
+      "console_title": "Console",
+      "console_empty": "Run an analysis to see what will be migrated.",
+      "console_clear": "Clear",
+      "level_info": "info",
+      "level_step": "step",
+      "level_ok": "ok",
+      "level_warn": "warn",
+      "level_error": "error",
+      "confirm_title": "Migrate from {source}?",
+      "confirm_text": "{accounts} shared accounts ({funds}) and {societies} job and gang society accounts ({societyFunds}) will be added to av_banking.",
+      "confirm_note": "Members join without permissions, the owner grants them again from the app. If anything fails while creating the accounts, nothing is kept and you can try again.",
+      "confirm_btn": "Migrate now",
+      "done": "Migration finished",
+      "nothing": "Nothing new to migrate",
+      "log": {
+        "analyze_start": "Analyzing {source}…",
+        "no_tables": "No {source} data was found in this database",
+        "failed": "Stopped: {reason}",
+        "analyze_done": "Analysis finished: {accounts} accounts and {societies} societies ready to migrate",
+        "resource_running": "{resource} is running. Stop it and try again",
+        "run_start": "Migration from {source} started by {admin}",
+        "run_done": "Done: {accounts} accounts, {members} members and {funds}, plus {societies} societies with {societyFunds}",
+        "rows_found": "{count} accounts found in bank_accounts_new",
+        "bad_auth": "{account}: its member list can't be read, it is migrated without members",
+        "negative_balance": "{account}: negative balance ({amount}), migrated with 0",
+        "unknown_owner": "{account}: owner {owner} has no character, the identifier is used as name",
+        "over_limit": "{owner} will own {count} shared accounts (limit {max}), all of them are kept",
+        "society_merge": "{name}: {amount} is added to its society account, which already holds {current}",
+        "found_accounts": "{count} player accounts with {funds} and {members} members",
+        "found_societies": "{count} job and gang balances with {funds}",
+        "already_migrated": "Migrated before and skipped: {accounts} accounts, {societies} societies",
+        "empty_societies": "{count} empty job and gang accounts are skipped",
+        "nothing_to_do": "Nothing new to migrate",
+        "accounts_start": "Creating {count} shared accounts…",
+        "account_done": "{label} → {number} · {owner} · {amount} · {members} members",
+        "rollback": "Something failed, the {count} accounts created in this run were removed: {reason}",
+        "societies_start": "Creating {count} job and gang society accounts…",
+        "society_done": "{name} → {number} · {amount}",
+        "society_mode": "Settings > General > Society funds now uses av_banking society accounts"
+      }
+    },
+    "group_societies": "Society funds"
+  },
+  "contacts": {
+    "hint": "Save people you send money to. Contacts appear as suggestions when transferring.",
+    "label": "Contact name",
+    "label_ph": "e.g. Tommy Vercetti",
+    "account": "Account number",
+    "add": "Add",
+    "none": "No contacts yet.",
+    "remove": "Remove contact",
+    "added": "Contact added",
+    "deleted": "Contact removed",
+    "suggestions": "Contacts"
+  },
+  "actions": {
+    "deposit_title": "Deposit Cash",
+    "withdraw_title": "Withdraw Cash",
+    "account": "Account",
+    "select_account": "Select an account",
+    "amount": "Amount",
+    "cash_available": "Cash on hand: {amount}",
+    "deposit_btn": "Deposit",
+    "withdraw_btn": "Withdraw",
+    "deposit_done": "Deposited {amount}",
+    "withdraw_done": "Withdrew {amount}",
+    "transfer_title": "Send Money",
+    "from_account": "Transfer From",
+    "to_account": "To (account or player ID)",
+    "description": "Note",
+    "description_ph": "What is this for?",
+    "external_fee": "Transfers to other players have a {pct}% fee.",
+    "transfer_btn": "Send",
+    "preview": "Preview Send",
+    "back": "Back",
+    "done": "Done",
+    "close": "Close",
+    "confirm": "Confirm",
+    "sent_success": "Successfully sent to {to}",
+    "receive_title": "Receive Money",
+    "receive_hint": "Tap an account to copy its number and share it.",
+    "copy": "Copy",
+    "copied": "Copied to clipboard",
+    "copy_failed": "Could not copy. Select the number and copy it by hand.",
+    "repeat": "Repeat this payment",
+    "repeat_none": "One-time payment",
+    "repeat_daily": "Every day",
+    "repeat_weekly": "Every week",
+    "repeat_biweekly": "Every 2 weeks",
+    "repeat_monthly": "Every month",
+    "repeat_hint": "The first payment is sent now; the rest run automatically. Manage them from the Transactions tab.",
+    "held_notice": "This movement was flagged by bank security and is under review. It will be credited once verified.",
+    "cancel": "Cancel",
+    "recipient_ph": "NB-0000-0000 or player ID",
+    "recipient_player": "Player ID",
+    "recipient_account": "Account",
+    "recipient_player_hint": "Goes to the personal account of the player with that server ID.",
+    "to_player": "player {id}"
+  },
+  "help": {
+    "title": "Help Center",
+    "subtitle": "How can we help you?",
+    "search_ph": "How can we help you?",
+    "select_topic": "Select Topic",
+    "topic_hint": "Select the topic below that best suits your question.",
+    "all_topics": "All",
+    "no_results": "No answers found for your search",
+    "topics": {
+      "account": "Profile and Account",
+      "security": "Security and Fraud",
+      "transfers": "Transfers",
+      "invoices": "Invoices",
+      "savings": "Savings",
+      "loans": "Loans",
+      "score": "Credit Score",
+      "cards": "Cards"
+    },
+    "faq": [
+      {
+        "topic": "account",
+        "q": "What accounts do I have?",
+        "a": "Everyone has a personal checking account. It is created for you, it is where money sent to your server ID arrives, and it cannot be closed. On top of it you can open Shared accounts for you and the people you trust, and Business accounts for your company."
+      },
+      {
+        "topic": "account",
+        "q": "How do I open a new bank account?",
+        "a": "Open the Accounts tab and press Open Account, then choose Shared or Business. The opening fee is shown before you confirm and is paid from your personal checking. Business accounts usually need a bank agent's approval, and there is a limit on how many of each you can have. Offshore business accounts can only be opened in person at the desk of an offshore branch."
+      },
+      {
+        "topic": "account",
+        "q": "Can other people use my account?",
+        "a": "Yes, on Shared and Business accounts you own. In the Accounts tab select the account and press Access, then add the person by their server ID. Members get only the permissions you tick, such as deposit, withdraw, transfer, invoices, cards or history. Managers get full access. Your personal checking cannot be shared."
+      },
+      {
+        "topic": "account",
+        "q": "How do I close an account?",
+        "a": "Open the Accounts tab, select the account and use Close Account at the bottom of its details. Only the owner can close it. The remaining balance moves to your personal checking. You cannot close an account with active loans, card debt or a negative balance, and you must always keep at least one account."
+      },
+      {
+        "topic": "account",
+        "q": "Can I do this at a bank branch instead?",
+        "a": "Yes. At a branch desk you can apply for a card, a loan or a business account in person. If a teller is on duty they review it on the spot, otherwise it goes to the approval queue like any request from the app. The ATM and the teller window are the only places where you can deposit or withdraw cash."
+      },
+      {
+        "topic": "cards",
+        "q": "How do I get a card?",
+        "a": "In the Cards tab press Request Card, pick the account first and then the card type: the account decides which cards are available, and some tiers need a higher clearance. Some cards are issued instantly and others need approval. Once issued, collect the physical card yourself at any branch card counter."
+      },
+      {
+        "topic": "cards",
+        "q": "How do I replace a card?",
+        "a": "In the Accounts tab select the account and press Replace card. The printing fee is charged to that account, and some card tiers print for free. Collect it at any branch card counter. Printing a new copy disables every older physical copy of that card."
+      },
+      {
+        "topic": "cards",
+        "q": "How do I use my card at an ATM?",
+        "a": "Insert the card and, the first time, choose your PIN. Only the cardholder can set it. Too many wrong PINs lock the card for a few minutes. Withdrawals count towards the card's daily limit, which you can adjust from the Cards tab."
+      },
+      {
+        "topic": "cards",
+        "q": "How do credit cards work?",
+        "a": "A credit card spends from its own credit line instead of your balance. Each billing cycle interest is added and a minimum payment is taken automatically from the linked account. Missed payments hurt your credit score, and after several in a row the card freezes until you pay the balance in full from the Cards tab. Cash advances at the ATM, when enabled, carry their own fee."
+      },
+      {
+        "topic": "cards",
+        "q": "Can I customize how my card looks?",
+        "a": "If the bank allows it, use the design option on a card in the Cards tab to set your own image link, for a small fee. Only you see custom designs, and you can turn them off in Settings › Appearance to always see the standard style."
+      },
+      {
+        "topic": "security",
+        "q": "I lost my card, what do I do?",
+        "a": "Freeze it from the Cards tab: a frozen card stops working at ATMs and in shops, even if someone knows the PIN. Then order a replacement from the Accounts tab and collect it at a branch card counter. Printing it disables the lost card for good."
+      },
+      {
+        "topic": "security",
+        "q": "Why is my account frozen?",
+        "a": "The bank can freeze accounts during an investigation or at your request. While frozen, no money can enter or leave the account. Visit a bank agent to resolve it."
+      },
+      {
+        "topic": "security",
+        "q": "Why was my transfer put on hold?",
+        "a": "Unusually large deposits or transfers, or many in a short time, can be held for review. The money leaves your account right away and reaches the destination automatically when the review period ends, unless the bank decides to return it to you or keep it. You get an email either way."
+      },
+      {
+        "topic": "transfers",
+        "q": "How do I send money to someone?",
+        "a": "From the Dashboard press Send and choose the source account. To pay a person, enter their server ID or pick a contact: the money always goes to their personal checking. To pay into any other account, such as a shared or business one, enter its account number, which the owner can copy from Receive."
+      },
+      {
+        "topic": "transfers",
+        "q": "Are there transfer fees?",
+        "a": "Moving money between your own accounts is free. Transfers to someone else's account may have a small fee, shown before you confirm, and there is a daily limit on how much you can send to others."
+      },
+      {
+        "topic": "transfers",
+        "q": "How do money requests work?",
+        "a": "Press Request on the Dashboard, choose the account that will receive the money, then enter the person's server ID or pick a contact, the amount and an optional note. They can pay or decline it from their app, and you can cancel it while it is still pending."
+      },
+      {
+        "topic": "invoices",
+        "q": "How do I bill someone for my services?",
+        "a": "Open Invoices and create a new one. Choose who you bill as, yourself or your business if you are allowed to, enter the customer's server ID, the amount and a concept. The customer has to be near you. The money arrives when they pay."
+      },
+      {
+        "topic": "invoices",
+        "q": "What happens if I don't pay an invoice?",
+        "a": "After a few days an unpaid invoice becomes overdue. Overdue invoices lower your credit score, and the bank may collect them automatically from money that later arrives in your accounts."
+      },
+      {
+        "topic": "savings",
+        "q": "What are saving plans?",
+        "a": "Saving plans set money aside for a goal, separated from your account balance so you don't spend it by accident, and they earn interest. You can add or withdraw at any time."
+      },
+      {
+        "topic": "savings",
+        "q": "What does locking a plan do?",
+        "a": "When you create a plan you can lock it for a fixed number of days to earn bonus interest. Withdrawing before the lock ends is allowed, but you lose the bonus interest earned so far."
+      },
+      {
+        "topic": "loans",
+        "q": "How do loans work?",
+        "a": "In the Loans tab choose the loan type, amount, term and the account that receives the money. Requests are usually reviewed by a bank agent, who may offer a different amount or term. Once approved, the total with interest is split into daily installments charged automatically. Some loan types need a minimum credit score or a business account."
+      },
+      {
+        "topic": "loans",
+        "q": "What are quick loans?",
+        "a": "Small loans with a short term that are paid out instantly, with no review, if your credit score is high enough. They usually carry more interest than regular loans."
+      },
+      {
+        "topic": "loans",
+        "q": "What if I miss a loan payment?",
+        "a": "Each missed installment adds a late fee and lowers your credit score. Too many missed installments put the loan in default, and the bank then collects the debt automatically from money that arrives in your accounts. You can always pay installments manually from the Loans tab."
+      },
+      {
+        "topic": "score",
+        "q": "What is my credit score?",
+        "a": "A number between 300 and 850 that summarizes your banking history. The bank uses it to decide which loans and card tiers you can access. 780 or more is Excellent, 700+ is Good, 600+ is Fair and anything below is Poor."
+      },
+      {
+        "topic": "score",
+        "q": "How is the score calculated?",
+        "a": "Everyone starts from 650. It rises with the money you hold across your accounts (one point per $10,000, up to +100) and with every loan you fully repay (+15 each, permanent). It falls with missed loan installments and missed credit card payments (-20 each), overdue invoices and late vehicle financing payments (-15 each), and defaulted loans (-100 each)."
+      },
+      {
+        "topic": "score",
+        "q": "How do I improve my score?",
+        "a": "Keep healthy balances, make sure the accounts linked to your loans and credit cards have funds on the due date, pay invoices before they go overdue, and finish your loans: every fully repaid loan adds a permanent bonus."
+      },
+      {
+        "topic": "score",
+        "q": "What hurts my score, and can it recover?",
+        "a": "Missed loan installments and card payments stop counting once you catch up, and overdue invoices stop hurting once they are paid. A defaulted loan stays on your record permanently. A low score locks you out of some loan types, quick loans and higher card tiers."
+      }
+    ]
+  },
+  "banker": {
+    "brand": "Banking",
+    "brand_sub": "Staff terminal",
+    "pending": "Pending Requests",
+    "clients": "Total Active Clients",
+    "dispensed": "Capital Dispensed (24h)",
+    "queue": "Pending Action Queue",
+    "no_requests": "No pending requests",
+    "review": "Review",
+    "tab_overview": "Overview",
+    "tab_queue": "Queue",
+    "tab_clients": "Clients",
+    "tab_staff": "Employees",
+    "active_loans": "Active loans",
+    "outstanding": "Outstanding debt",
+    "defaulted": "Defaulted loans",
+    "overdue_invoices": "Overdue invoices",
+    "approved24h": "Approved (24h)",
+    "denied24h": "Denied (24h)",
+    "queue_breakdown": "Queue by type",
+    "recent_activity": "Recent staff activity",
+    "no_activity": "No activity yet",
+    "no_perm": "No permission",
+    "privacy_note": "Client records show credit standing only. Balances, account numbers, cards, savings and transactions are never shown.",
+    "score_factors": "Score factors",
+    "summary": "Summary",
+    "f_balance": "Held balance",
+    "f_paid": "Loans paid",
+    "f_missed": "Missed payments",
+    "f_overdue": "Overdue invoices",
+    "f_defaulted": "Defaults",
+    "accounts_personal": "Personal accounts",
+    "accounts_business": "Business accounts",
+    "cards_held": "Cards held",
+    "loans_history": "Loan history",
+    "paid": "paid",
+    "frozen_count": "{count} frozen account(s)",
+    "actions": "Actions",
+    "freeze_all": "Freeze all accounts",
+    "unfreeze_all": "Unfreeze all",
+    "staff": "Employees",
+    "staff_hint": "Bosses have every permission. Everyone else only sees what you grant them.",
+    "staff_add": "Hire employee",
+    "staff_added": "Employee hired",
+    "staff_updated": "Employee updated",
+    "staff_removed": "Employee fired",
+    "no_staff": "Nobody holds the banking job yet.",
+    "since": "Since",
+    "history": "History",
+    "history_of": "History - {name}",
+    "edit": "Edit",
+    "remove": "Remove",
+    "log_request_approved": "Approved a request",
+    "log_request_denied": "Denied a request",
+    "log_account_frozen": "Froze an account",
+    "log_account_unfrozen": "Unfroze an account",
+    "log_client_frozen": "Froze all client accounts",
+    "log_client_unfrozen": "Unfroze all client accounts",
+    "log_client_viewed": "Viewed a client record",
+    "log_staff_added": "Hired an employee",
+    "log_staff_updated": "Updated an employee",
+    "log_staff_removed": "Fired an employee",
+    "log_report_sent": "Emailed a credit report",
+    "log_client_emailed": "Emailed a client",
+    "email_report": "Email credit report",
+    "email_client": "Email client",
+    "email_sent": "Email sent",
+    "report_sent": "Credit report sent",
+    "mail_subject": "Subject",
+    "mail_body": "Message",
+    "send_email": "Send email",
+    "search": "Search",
+    "client_search": "Client Database",
+    "credit_score": "Credit score",
+    "type": "Type",
+    "client": "Client",
+    "detail": "Detail",
+    "date": "Date",
+    "approved": "Request approved",
+    "denied": "Request denied",
+    "search_ph": "Name, identifier or account no.",
+    "not_found": "No client found",
+    "freeze_toggled": "Account freeze updated",
+    "freeze": "Freeze",
+    "unfreeze": "Release",
+    "score_excellent": "Excellent",
+    "score_good": "Good",
+    "score_fair": "Fair",
+    "score_poor": "Poor",
+    "note": "Agent Authorization Note",
+    "note_ph": "Optional note for the client",
+    "deny": "Deny",
+    "approve": "Authorize",
+    "tab_desk": "Desk",
+    "log_duty_on": "Went on duty",
+    "log_duty_off": "Went off duty",
+    "app_title": "Banking Management",
+    "record_denied": "You need the client access permission to see records.",
+    "record_missing": "No record found for this client.",
+    "welcome_prefix": "Welcome,",
+    "matches": "Matches ({count})",
+    "match_accounts": "{count} account(s)",
+    "tier_1": "Standard",
+    "tier_2": "Premium",
+    "tier_3": "Gold",
+    "tier_4": "Black",
+    "tier_saved": "Tier access updated",
+    "log_tier_set": "Set card tier access",
+    "tab_help": "Help",
+    "page_of": "Page {page} of {total}",
+    "prev": "Prev",
+    "next": "Next",
+    "f_vehicle_late": "Late vehicle payments",
+    "r_request": "Request",
+    "r_product": "Product",
+    "r_cost": "Fee",
+    "counter_offer": "Counter-offer",
+    "deny_needs_note": "Denying requires a note for the client.",
+    "guide_title": "How client tools work",
+    "guide_sub": "Four steps from search to an issued card",
+    "g1_title": "Find the client",
+    "g1_text": "Search by name or account number. You only see banking data, never their exact balances.",
+    "g2_title": "Read the score",
+    "g2_text": "The credit score and its factors tell you how reliable the client is. Loans and premium cards rely on it.",
+    "g3_title": "Set card clearance",
+    "g3_text": "Clearance is the highest card tier the client may request. Automatic follows their score; picking a tier here overrides it.",
+    "g4_title": "Approve the request",
+    "g4_text": "Cards that need approval land in your Queue, or on your desk if the client visits a branch. Approve or deny there.",
+    "score_help": "300 to 850. Paid loans and balances raise it; missed payments, overdue invoices and defaults lower it.",
+    "clearance_title": "Card clearance",
+    "clearance_help": "The highest card tier this client may request. Cards above it are locked in their app.",
+    "source_manual": "Set by a banker",
+    "source_auto": "Automatic by score",
+    "source_default": "Server default",
+    "tier_n": "Tier {tier}",
+    "clearance_now": "{name} can request cards up to Tier {tier} ({label}).",
+    "clearance_unlocks": "Unlocked: {cards}.",
+    "auto_rules": "Automatic: {rules}. Everyone else starts at Tier {base}.",
+    "auto_rule": "Tier {tier} at score {score}",
+    "auto_off": "Automatic upgrades are off; every client starts at Tier {base}.",
+    "manual_note": "Manual clearance ignores the score until you switch it back.",
+    "set_auto": "Back to automatic",
+    "eligibility_title": "Card eligibility",
+    "eligibility_help": "What this client can request right now and what is holding them back.",
+    "elig_owned": "Already holds this card",
+    "elig_clearance": "Locked · needs Tier {tier} clearance",
+    "elig_business": "Needs a business account",
+    "elig_approval": "Can request · you approve it",
+    "elig_instant": "Can request · issued instantly",
+    "grant_tier": "Grant Tier {tier}",
+    "email_report_help": "Sends the full score breakdown to the client's linked mailbox.",
+    "email_client_help": "Write a message signed by the bank.",
+    "freeze_help": "Blocks every account they own: no payments, transfers or withdrawals until released.",
+    "unfreeze_help": "Releases every frozen account they own.",
+    "send": "Send",
+    "write": "Write",
+    "r_card_tier": "Card tier",
+    "r_client_clearance": "Client clearance",
+    "staff_hire": "Hire",
+    "staff_hire_sub": "They get the banking job right away.",
+    "staff_hire_perms": "Starting permissions",
+    "staff_fire": "Fire",
+    "staff_confirm_fire": "Confirm fire",
+    "staff_boss": "Boss",
+    "staff_employee": "Employee",
+    "staff_you": "You",
+    "staff_no_perms": "No permissions yet",
+    "limited_access": "Limited access. Ask your boss to grant you permissions.",
+    "f_card_missed": "Missed card payments",
+    "history_count": "{count} of {total} actions, latest 100",
+    "history_all": "All",
+    "history_requests": "Requests",
+    "history_accounts": "Freezes",
+    "history_clients": "Clients",
+    "history_staff": "Employees",
+    "history_duty": "Duty",
+    "history_mail": "Mail"
+  },
+  "errors": {
+    "no_response": "No response from server",
+    "no_identity": "Could not identify your character",
+    "invalid_label": "Invalid name",
+    "account_limit": "You reached the account limit for this type",
+    "request_pending": "You already have a pending request",
+    "not_enough_cash": "Not enough cash",
+    "db_error": "Database error, try again",
+    "no_permission": "You don't have permission for this",
+    "account_frozen": "This account is frozen",
+    "account_overdrawn": "Settle the overdraft before closing this account",
+    "account_changed": "The account changed while processing, try again",
+    "active_loans": "This account has active loans",
+    "card_debt": "There is outstanding card debt",
+    "last_account": "You can't close your only account",
+    "native_account": "Your default Checking account can't be closed or shared",
+    "no_business_permission": "You're not allowed to bill on behalf of your business",
+    "note_required": "A note is required when denying a request",
+    "mail_offline": "The mail system is not available",
+    "mail_failed": "The email could not be sent",
+    "no_email": "No email address linked",
+    "email_not_found": "That mailbox does not exist",
+    "email_not_yours": "That mailbox is not yours",
+    "client_no_email": "This client has no email linked",
+    "report_cooldown": "You already requested a report recently",
+    "atm_session": "Your ATM session expired, insert your card again",
+    "atm_max": "That amount is over the ATM limit",
+    "card_locked": "Card locked for {minutes} minute(s) after too many failed attempts",
+    "card_frozen": "This card is frozen",
+    "daily_limit": "That exceeds the card's daily limit ({left} left today)",
+    "no_member": "Member not found",
+    "contact_exists": "That account is already in your contacts",
+    "contact_limit": "You've reached the contact limit",
+    "no_contact": "Contact not found",
+    "no_account": "Account not found",
+    "player_offline": "That player is not online",
+    "player_too_far": "That player must be within {distance} m to receive an invoice",
+    "hire_too_far": "That player must be within {distance} m of you to be hired",
+    "invalid_target": "Invalid target",
+    "already_member": "That player already has access",
+    "member_limit": "Member limit reached for this account",
+    "invalid_amount": "Invalid amount",
+    "insufficient_funds": "Insufficient funds",
+    "target_not_found": "Destination account not found",
+    "same_account": "You can't transfer to the same account",
+    "target_frozen": "The destination account is frozen",
+    "no_card": "Card not found",
+    "credit_limit": "That exceeds the card's credit limit",
+    "pos_no_charge": "There is no payment waiting for you",
+    "pos_processing": "This payment is already being processed",
+    "pos_too_far": "You moved away from the terminal",
+    "pos_merchant_gone": "The merchant is no longer available",
+    "invalid_card_type": "Invalid card type",
+    "business_only": "This is only available for business accounts",
+    "card_exists": "You already have that card on this account",
+    "invalid_limit": "Invalid limit (max {max})",
+    "no_debt": "This card has no outstanding balance",
+    "invalid_loan_amount": "Loan must be between {min} and {max}",
+    "invalid_term": "Invalid loan term",
+    "loan_limit": "You reached the active loan limit",
+    "no_loan": "Loan not found",
+    "no_invoice": "Invoice not found",
+    "invoice_closed": "This invoice is already closed",
+    "not_banker": "You are not authorized for the banker terminal",
+    "no_request": "Request not found",
+    "invalid_request": "Invalid request",
+    "no_funding_account": "No personal account available for this operation",
+    "empty_query": "Type something to search",
+    "no_saving": "Saving plan not found",
+    "savings_limit": "You reached the saving plans limit",
+    "invalid_target_amount": "Invalid target amount",
+    "wrong_pin": "Wrong PIN",
+    "invalid_pin": "The PIN must be 4 to 6 digits",
+    "ticket_open": "You already have a request at the desk",
+    "desk_cooldown": "Give the counter a moment, {seconds}s left",
+    "ticket_claimed": "Another teller is already attending this client",
+    "no_ticket": "That request is no longer active",
+    "card_not_carried": "You are not carrying that card",
+    "invalid_data": "That request was not valid",
+    "card_dead": "This card was cancelled for inactivity, order a replacement at the bank",
+    "invalid_webhook": "That doesn't look like a Discord webhook URL",
+    "webhooks_off": "Webhooks are disabled on this server",
+    "stocks_off": "The stock market is disabled",
+    "too_fast": "Slow down, that action is still being processed",
+    "teller_off": "Live teller service is disabled on this server",
+    "not_at_branch": "You need to be at the branch desk for this",
+    "loans_off": "Loans are disabled on this server",
+    "cards_off": "Bank cards are disabled on this server",
+    "savings_off": "Savings plans are disabled on this server",
+    "invoices_off": "Invoices are disabled on this server",
+    "stock_cap": "Daily market cash-out limit reached — {left} left today (cap {cap})",
+    "not_enough_shares": "You don't own that many shares",
+    "card_not_yours": "This card is not linked to any of your accounts",
+    "inventory_off": "Physical cards are disabled on this server",
+    "inventory_full": "You can't carry more cards",
+    "too_many_orders": "You already have too many cards waiting at the counter",
+    "orders_off": "Recurring payments are disabled on this server",
+    "invalid_interval": "That repeat interval is not allowed",
+    "too_many_sto": "You have too many recurring payments already",
+    "zone_missing_desk": "Place the desk before saving",
+    "quick_score": "Your credit score is below {score}",
+    "quick_active": "You already have an active quick loan",
+    "loan_needs_business": "This loan type requires a business account",
+    "loan_score": "Your credit score is below {score} for this loan type",
+    "loan_type_min": "This loan type starts at {min}",
+    "tier_clearance": "Your card clearance doesn't allow {tier} cards yet. Ask a banker at a branch.",
+    "dealership_off": "The dealership is not available right now",
+    "transfer_cap": "Daily transfer limit reached ({cap}). You can still send {left} today. Higher card tiers raise this limit.",
+    "atm_out_of_service": "This ATM is out of service",
+    "zone_last_desk": "A branch needs at least one desk",
+    "no_branch": "That branch no longer exists",
+    "card_theft_blocked": "This card has been frozen for suspicious activity",
+    "card_theft_limit": "This card has been frozen for suspicious activity",
+    "staff_self": "You cannot do that to yourself",
+    "staff_boss": "Bosses always have every permission",
+    "hire_failed": "Could not set the job",
+    "fire_failed": "Could not remove the job",
+    "shared_limit_target": "That player already manages the most shared accounts allowed",
+    "skins_off": "Custom card designs are disabled",
+    "skin_url_invalid": "That image link is not allowed",
+    "catalog_empty": "The list needs at least one valid entry",
+    "catalog_in_use": "{id} is still in use and cannot be removed",
+    "card_delinquent": "This card is frozen for missed payments. Pay its balance in full first.",
+    "cash_advance_off": "Cash advances are disabled",
+    "cash_advance_limit": "That exceeds the cash advance limit of this card",
+    "client_insufficient_funds": "{name} does not have {amount} available in {account} to pay for this. The request stays in the queue.",
+    "client_no_account": "{name} has no personal account to charge. The request stays in the queue.",
+    "migration_running": "A migration is already running",
+    "migration_no_data": "No data to migrate was found",
+    "migration_failed": "The migration failed, check the console",
+    "migration_resource_running": "Stop the source script before migrating"
+  },
+  "invest": {
+    "title": "Investments",
+    "subtitle": "Buy and sell shares in Los Santos companies.",
+    "portfolio_value": "Portfolio Value",
+    "invested": "Invested",
+    "profit": "Profit / Loss",
+    "holdings": "Your Holdings",
+    "no_holdings": "You don't own any shares yet.",
+    "market": "Market",
+    "mood_bull": "Market rising",
+    "mood_bear": "Market falling",
+    "mood_flat": "Market steady",
+    "since_open": "since open",
+    "company": "Company",
+    "shares": "Shares",
+    "avg_price": "Avg. Price",
+    "value": "Value",
+    "buy": "Buy",
+    "sell": "Sell",
+    "you_own": "You own {shares} shares",
+    "estimate": "Estimated total {total} (fee {fee})",
+    "bought": "Bought {shares} shares of {symbol}",
+    "sold": "Sold {shares} shares of {symbol}",
+    "sell_cap": "Daily cash-out left: {left}",
+    "position_cap": "Max {cap} per stock · {left} more at this price"
+  },
+  "sto": {
+    "title": "Scheduled Payments",
+    "active": "Active",
+    "paused_badge": "Paused",
+    "failing": "{count} failed attempt(s)",
+    "every_days": "every {days}d",
+    "next": "next {date}",
+    "pause": "Pause",
+    "resume": "Resume",
+    "remove": "Remove",
+    "paused": "Payment paused",
+    "resumed": "Payment resumed",
+    "removed": "Payment removed"
+  },
+  "staff_help": {
+    "title": "Staff Help Center",
+    "subtitle": "Branch procedures, step by step",
+    "search_ph": "Search a procedure...",
+    "select_topic": "Select Topic",
+    "topic_hint": "Pick the area of the procedure you need a refresher on.",
+    "all_topics": "All",
+    "no_results": "No procedures found for your search",
+    "topics": {
+      "desk": "Counter Duty",
+      "queue": "Approvals",
+      "cards": "Cards",
+      "clients": "Clients",
+      "staff": "Team"
+    },
+    "faq": [
+      {
+        "topic": "desk",
+        "q": "How do I start attending clients at the counter?",
+        "a": "Open the Desk tab, pick the branch you are working at and press Start shift. You need permission to approve at least one type of request. While you are on duty, requests that clients make at that branch's desk come straight to you instead of the approval queue."
+      },
+      {
+        "topic": "desk",
+        "q": "A client is waiting at the desk. What do I do?",
+        "a": "Their ticket appears under Clients at the desk. Press Attend to claim it: the client sees your name and you get the request together with their credit report. Approve or deny it from there. You can only attend request types you have permission for."
+      },
+      {
+        "topic": "desk",
+        "q": "What happens if nobody attends a ticket in time?",
+        "a": "Waiting tickets expire after a short time and the client is told to try again later. The request itself is not lost: it stays pending in the Queue tab, where any agent can still review it. A claimed ticket gets extra time while you review it."
+      },
+      {
+        "topic": "desk",
+        "q": "Why do some clients appear ahead of others in the line?",
+        "a": "Some card tiers include priority service as a perk. The line is ordered by priority first, then by arrival."
+      },
+      {
+        "topic": "desk",
+        "q": "What happens if I forget to end my shift?",
+        "a": "Your duty ends automatically when you disconnect, and any ticket you had claimed goes back to the line for another teller. Otherwise press End shift when you leave the counter so new desk requests go to the approval queue again."
+      },
+      {
+        "topic": "queue",
+        "q": "What lands in the approval queue?",
+        "a": "Every pending request: loan applications, cards that require approval and business account openings, whether they were sent from the Banking app or from a branch desk with no teller on duty. The sidebar shows a counter of what is pending. If the server uses automatic approvals, some requests are approved without reaching you, and requests left unreviewed for too long can be declined automatically."
+      },
+      {
+        "topic": "queue",
+        "q": "How should I review a request?",
+        "a": "Press Review to open the request next to the client record: credit score, score factors, accounts summary and loan history. For loans you can change the amount or the term before approving as a counter-offer. You can only review the request types you have permission for."
+      },
+      {
+        "topic": "queue",
+        "q": "Do I need to charge the client anything?",
+        "a": "No. Any fee, such as a card fee or the business account opening fee, is charged to the client automatically when you approve. If they don't have enough funds, the approval fails, the request stays pending and the client is told to add funds."
+      },
+      {
+        "topic": "queue",
+        "q": "Is a note required?",
+        "a": "A note is optional when approving and mandatory when denying, so the client always knows the reason. Notes are included in the decision email the client receives."
+      },
+      {
+        "topic": "queue",
+        "q": "How do I read the credit score?",
+        "a": "The score summarizes payment behavior: loans repaid, missed installments, overdue invoices, missed credit card payments and defaults. Excellent and Good clients are low risk. Treat it as guidance, the final decision is yours."
+      },
+      {
+        "topic": "queue",
+        "q": "How exactly is the credit score calculated?",
+        "a": "Base 650, plus one point per $10,000 held across the client's accounts (up to +100), plus 15 per fully repaid loan. Minus 20 per missed loan installment, 20 per missed credit card payment, 15 per overdue invoice, 15 per late vehicle financing payment and 100 per defaulted loan. Clamped between 300 and 850. Bands: 780+ Excellent, 700+ Good, 600+ Fair, below 600 Poor. Missed and overdue penalties go away once they are paid; defaults are permanent."
+      },
+      {
+        "topic": "cards",
+        "q": "How does a client receive their physical card?",
+        "a": "You never hand cards over. When a card is issued, whether approved by you or opened directly from the app, it is queued at the bank's card counter. The client collects it themselves at any branch card counter, and the card is linked to the account it was issued for."
+      },
+      {
+        "topic": "cards",
+        "q": "How do card replacements work?",
+        "a": "The client orders the replacement from the Cards page of their Banking app and pays the printing fee there; some card tiers print for free. They collect it themselves at a branch card counter, with nothing for you to do or charge. Printing a new copy disables every older physical copy of that card, which is what a client should do after losing one."
+      },
+      {
+        "topic": "cards",
+        "q": "A client cannot use their card at the ATM.",
+        "a": "A new card has no PIN yet: the first time it is used at an ATM, the cardholder sets it. Anyone else inserting a card without a PIN is rejected. Too many wrong PINs lock the card for a few minutes. A frozen card or a frozen account is also refused at the ATM."
+      },
+      {
+        "topic": "cards",
+        "q": "What is tier clearance?",
+        "a": "It is the highest card tier a client is allowed to request. By default it follows their credit score automatically. With the card approval permission you can set a fixed tier from the client record, which ignores the score until you switch it back to automatic. Higher tiers unlock better limits, fees and perks, so grant them to trusted clients."
+      },
+      {
+        "topic": "clients",
+        "q": "How do I look up a client?",
+        "a": "Open the Clients tab and search by name, identifier or account number, then pick the match to open their record. You need the client access permission. For privacy, balances, account numbers, cards, savings and transactions are never shown, only counts and the credit profile. Opening a record is logged."
+      },
+      {
+        "topic": "clients",
+        "q": "When should I freeze a client's accounts?",
+        "a": "During fraud investigations or at the client's own request. Use Freeze all accounts in the record, which needs the freeze permission. It blocks every movement on all the accounts the client owns until you release them, and the client is notified by email."
+      },
+      {
+        "topic": "clients",
+        "q": "How do I contact a client?",
+        "a": "From the client record you can email them their full credit report or write them a message signed by the bank. You need the email permission, and the client must have a mailbox linked to their bank profile."
+      },
+      {
+        "topic": "staff",
+        "q": "Who can manage employees?",
+        "a": "The boss of the banking job has every permission. Other employees only get what a boss, or someone with the manage employees permission, grants them in the Employees tab. Hiring there by server ID gives the player the banking job and firing removes it, whether they are online or not."
+      },
+      {
+        "topic": "staff",
+        "q": "I opened the terminal but most tabs are missing.",
+        "a": "New employees start without permissions. Ask your boss to grant them in the Employees tab; the terminal updates as soon as they save."
+      },
+      {
+        "topic": "staff",
+        "q": "Is my activity recorded?",
+        "a": "Yes. Approvals, denials, freezes, tier changes, client record views, emails and reports, shifts, and changes to employees are written to the activity log under your name. Bosses and anyone with the manage employees permission can review each employee's history from the Employees tab."
+      }
+    ]
+  },
+  "pos": {
+    "amount_due": "Amount due",
+    "pay_with": "Pay with",
+    "no_methods": "You have no card or account able to cover this.",
+    "pay": "Pay {amount}",
+    "decline": "Decline",
+    "paid": "Payment approved",
+    "available": "Available {amount}",
+    "daily_left": "Daily left {amount}",
+    "card_unusable": "Not available",
+    "charged_by": "Charged by {name}",
+    "expires_in": "Expires in {seconds}s"
+  },
+  "security": {
+    "title": "Security",
+    "subtitle": "Suspicious activity on your cards and accounts.",
+    "alerts_title": "Alerts",
+    "none": "Nothing suspicious. Your cards look fine.",
+    "new": "New",
+    "clear": "Clear all",
+    "cleared": "Alerts cleared",
+    "type_card_theft_blocked": "Large withdrawal blocked",
+    "type_card_theft_limit": "Card hit its theft ceiling",
+    "type_card_foreign_use": "Card used by someone else",
+    "frozen_title": "Frozen cards",
+    "frozen_hint": "Unfreeze one from the Cards tab once you have it back.",
+    "advice_title": "If a card was stolen",
+    "step_freeze": "Freeze it",
+    "step_freeze_hint": "From the Cards tab. It stops working at cash machines and in shops, even if the thief knows the PIN.",
+    "step_replace": "Order a replacement",
+    "step_replace_hint": "From the Accounts tab with Replace card, then collect it at any branch card counter. The new card keeps your limit and your history.",
+    "step_dead": "The old one dies",
+    "step_dead_hint": "Printing the replacement kills the stolen card, so whatever the thief carries opens nothing."
+  },
+  "design": {
+    "title": "Card design",
+    "sub": "Put your own image on this card. Only you see it.",
+    "status_idle": "Paste an image link",
+    "status_checking": "Loading image...",
+    "status_ok": "Looks good",
+    "status_format": "Use a full https:// image link",
+    "status_broken": "The image could not be loaded",
+    "apply": "Apply design",
+    "apply_fee": "Apply · {fee}",
+    "remove": "Remove design",
+    "applied": "Card design applied",
+    "removed": "Card design removed",
+    "hidden_note": "Custom designs are hidden in Settings > Appearance, so the preview shows the standard design. You can still apply one.",
+    "url_ph": "https://..."
+  },
+  "catalog": {
+    "s_cardTypes": "Card types",
+    "s_loanTypes": "Loan types",
+    "s_quickLoans": "Quick loans",
+    "s_lockPlans": "Savings plans",
+    "s_listings": "Stocks",
+    "s_tierRules": "Tier rules",
+    "s_themes": "App themes",
+    "d_cardTypes": "Design, price and perks of every card the bank issues",
+    "d_loanTypes": "Loan categories and who can ask for them",
+    "d_quickLoans": "Instant offers paid out without a banker",
+    "d_lockPlans": "Locked savings terms and their bonus rate",
+    "d_listings": "Companies traded on the market",
+    "d_tierRules": "Credit score that unlocks each card tier automatically",
+    "d_themes": "Accent colors players can pick in the app",
+    "col_id": "ID",
+    "col_label": "Name",
+    "col_min_score": "Min score",
+    "col_min_amount": "Min amount",
+    "col_business": "Business",
+    "col_amount": "Amount",
+    "col_interest": "Interest",
+    "col_term": "Term",
+    "col_days": "Lock",
+    "col_bonus": "Bonus",
+    "col_symbol": "Symbol",
+    "col_company": "Company",
+    "col_base_price": "Base price",
+    "col_volatility": "Volatility",
+    "col_tier": "Tier",
+    "empty": "Nothing here yet",
+    "remove": "Remove",
+    "add_row": "Add row",
+    "add_theme": "Add color",
+    "new_card": "New card type",
+    "g_identity": "Identity",
+    "g_look": "Look",
+    "g_money": "Price and rules",
+    "g_perks": "Perks",
+    "perks_hint": "A player gets the perks of their best non-frozen card. Multipliers: 1 = normal, 0.5 = half, 2 = double.",
+    "id_hint": "Lowercase, no spaces. Cannot change after saving.",
+    "id_locked": "Fixed once saved.",
+    "kind": "Kind",
+    "tier_label": "Tier name",
+    "color": "Card color",
+    "accent": "Highlight",
+    "text": "Text color",
+    "finish": "Finish",
+    "finish_matte": "Matte",
+    "finish_metallic": "Metallic",
+    "finish_glass": "Glass",
+    "cost": "Issue fee",
+    "overdraft": "Overdraft limit",
+    "approval": "Needs approval",
+    "approval_hint": "Requests wait for a banker or automation.",
+    "business_only": "Business only",
+    "business_only_hint": "Can only be issued on business accounts.",
+    "manual": "Always in person",
+    "manual_hint": "Automation never approves it; a banker must.",
+    "tier": "Tier",
+    "priority": "Teller priority",
+    "atm_fee": "ATM fee",
+    "atm_limit": "ATM limits",
+    "transfer_fee": "Transfer fee",
+    "transfer_cap": "Transfer cap",
+    "stock_cap": "Stock sell cap",
+    "savings_bonus": "Savings bonus",
+    "cashback": "Cashback",
+    "free_printing": "Free card printing",
+    "free_printing_hint": "Physical card orders cost nothing.",
+    "item_hint": "Physical cards need an inventory item named \"{id}\".",
+    "delete_card": "Delete card type",
+    "unsaved": "Unsaved changes in {section}",
+    "new_card_label": "New card",
+    "new_tier_label": "Standard"
+  },
+  "receive": {
+    "copied": "Copied",
+    "server_id_note": "Players nearby can also send to your checking with your server ID."
+  },
+  "send": {
+    "sub": "To an account number or a nearby player ID.",
+    "review_sub": "Check everything before sending.",
+    "available": "Available {amount}",
+    "over_balance": "More than this account holds",
+    "to": "To",
+    "from": "From",
+    "once": "Once",
+    "daily": "Daily",
+    "weekly": "Weekly",
+    "biweekly": "2 weeks",
+    "monthly": "Monthly",
+    "continue": "Review",
+    "fee": "Fee",
+    "no_fee": "No fee",
+    "send_amount": "Send {amount}"
+  },
+  "request": {
+    "sub": "Ask someone to pay you, or split a bill.",
+    "one_person": "One person",
+    "split": "Split a bill",
+    "contact": "Contact"
+  },
+  "settings_text": {
+    "AdminPanel": {
+      "accent": {
+        "label": "Admin theme"
+      }
+    },
+    "Banking": {
+      "currency": {
+        "label": "Currency symbol",
+        "desc": "Shown before every amount in the apps, mails and receipts."
+      },
+      "accountPrefix": {
+        "label": "Account number prefix",
+        "desc": "Letters at the start of new account numbers. Existing accounts keep theirs."
+      },
+      "businessRequiresApproval": {
+        "label": "Business needs approval",
+        "desc": "Business accounts go to the banker queue instead of opening instantly."
+      },
+      "businessAccountCost": {
+        "label": "Business account fee",
+        "desc": "Charged when a business account request is approved."
+      },
+      "maxBusinessAccounts": {
+        "label": "Max business accounts",
+        "desc": "How many business accounts a single player can own."
+      },
+      "maxSharedAccounts": {
+        "label": "Max shared accounts",
+        "desc": "Shared accounts a player can own or manage at the same time. Being made manager of someone else's shared account counts too."
+      },
+      "sharedAccountCost": {
+        "label": "Shared account fee",
+        "desc": "Charged from personal checking when a player opens a shared account."
+      },
+      "maxAccessPlayers": {
+        "label": "Max shared members",
+        "desc": "How many players can be granted access to one account."
+      },
+      "maxContacts": {
+        "label": "Max contacts",
+        "desc": "Saved payees a player can keep."
+      },
+      "historyPageSize": {
+        "label": "History page size",
+        "desc": "Transactions shown per page."
+      },
+      "transactionRetentionDays": {
+        "label": "Transaction retention",
+        "desc": "Transactions older than this are deleted to save space. Set 0 to keep everything."
+      },
+      "externalTransferFeePct": {
+        "label": "External transfer fee",
+        "desc": "Percent charged when sending money to an account owned by someone else."
+      },
+      "dailyTransferCap": {
+        "label": "Daily transfer cap",
+        "desc": "Most a player can transfer to other people's accounts per day: app, ATM, accepted money requests and standing orders combined. Card tiers multiply it. 0 = unlimited."
+      },
+      "defaultTierClearance": {
+        "label": "Default card tier access",
+        "desc": "Highest card tier open to everyone. Above it, a banker must grant clearance per client."
+      }
+    },
+    "Debug": {
+      "enabled": {
+        "label": "Debug mode",
+        "desc": "Prints every callback and money flow to the server and client consoles. Turn it on to diagnose, off on a busy server."
+      }
+    },
+    "SchedulerIntervalMinutes": {
+      "label": "Scheduler interval",
+      "desc": "Minutes between loan auto-debits, overdue checks and cleanup. Also how often stock prices move."
+    },
+    "P2P": {
+      "maxAmount": {
+        "label": "Max money request",
+        "desc": "Largest amount a player can request from another player."
+      },
+      "expireDays": {
+        "label": "Money request expiry",
+        "desc": "Pending requests are cancelled after this many days."
+      }
+    },
+    "StandingOrders": {
+      "enabled": {
+        "label": "Recurring payments",
+        "desc": "Players can schedule repeating transfers from the send flow."
+      },
+      "maxPerPlayer": {
+        "label": "Max recurring payments"
+      },
+      "maxFails": {
+        "label": "Failures before cancel",
+        "desc": "Missed charges before a recurring payment cancels itself."
+      },
+      "minIntervalDays": {
+        "label": "Shortest interval",
+        "desc": "Fewest days allowed between two charges of a recurring payment."
+      }
+    },
+    "ATM": {
+      "maxWithdraw": {
+        "label": "Max withdrawal",
+        "desc": "Largest cash withdrawal in one go. Card tiers multiply it."
+      },
+      "maxDeposit": {
+        "label": "Max deposit",
+        "desc": "Largest cash deposit in one go."
+      },
+      "maxTransfer": {
+        "label": "Max transfer",
+        "desc": "Largest transfer from an ATM. Card tiers multiply it."
+      },
+      "feePct": {
+        "label": "Withdrawal fee",
+        "desc": "Percent charged on ATM withdrawals. Card tiers reduce it."
+      },
+      "quickAmounts": {
+        "label": "Quick amounts",
+        "desc": "One-tap amounts shown on the withdraw and deposit screens."
+      },
+      "pinLength": {
+        "label": "PIN length",
+        "desc": "Digits in a card PIN."
+      },
+      "maxAttempts": {
+        "label": "Wrong PIN attempts",
+        "desc": "Failed tries before the card locks."
+      },
+      "lockMinutes": {
+        "label": "Card lock time",
+        "desc": "How long a card stays locked after too many wrong PINs."
+      },
+      "statementRows": {
+        "label": "Mini statement rows",
+        "desc": "Movements printed on an ATM mini statement."
+      }
+    },
+    "Cards": {
+      "enabled": {
+        "label": "Cards",
+        "desc": "Players can request debit and credit cards."
+      }
+    },
+    "CardItem": {
+      "enabled": {
+        "label": "Physical cards",
+        "desc": "Cards are handed out as inventory items that can be lost, given away or stolen."
+      },
+      "defaultType": {
+        "label": "Default card type",
+        "desc": "Card the issueCard export hands out when the caller does not name a type."
+      },
+      "printCost": {
+        "label": "Print cost",
+        "desc": "Ordering a physical card from the app costs this much. The player collects it at a branch."
+      },
+      "maxPendingOrders": {
+        "label": "Max pending orders",
+        "desc": "Card orders a player can have waiting at the branch."
+      },
+      "inactivityDays": {
+        "label": "Inactive card expiry",
+        "desc": "Cards unused this long stop working on the next restart and must be replaced at the bank. 0 disables."
+      }
+    },
+    "CardSkins": {
+      "enabled": {
+        "label": "Custom card designs",
+        "desc": "Card holders can put their own image on their card from a link. Only they see it."
+      },
+      "fee": {
+        "label": "Design fee",
+        "desc": "Charged from personal checking each time a holder applies a new design. Removing it is free."
+      }
+    },
+    "Credit": {
+      "interestPct": {
+        "label": "Interest per cycle",
+        "desc": "Percent added to the outstanding balance at the end of every billing cycle. 0 disables interest."
+      },
+      "cycleDays": {
+        "label": "Billing cycle",
+        "desc": "Days between statements. On each one interest is charged and the minimum payment is taken from the card's account."
+      },
+      "minPaymentPct": {
+        "label": "Minimum payment",
+        "desc": "Percent of the outstanding balance collected automatically on each statement."
+      },
+      "minPaymentFloor": {
+        "label": "Minimum payment floor",
+        "desc": "The minimum payment is never below this, unless the balance itself is smaller."
+      },
+      "maxMissedBeforeFreeze": {
+        "label": "Misses before freeze",
+        "desc": "Missed minimum payments before the card freezes itself. It unfreezes once the balance is paid in full. Every missed payment also lowers the holder's credit score."
+      },
+      "cashAdvance": {
+        "label": "Cash advances",
+        "desc": "Credit cards can withdraw cash at the ATM against their credit line."
+      },
+      "cashAdvanceFeePct": {
+        "label": "Cash advance fee",
+        "desc": "Percent charged on every cash advance, on top of the amount. Replaces the regular ATM fee for credit cards."
+      },
+      "cashAdvancePct": {
+        "label": "Cash share of the line",
+        "desc": "How much of the credit line can be out as cash at once. Payments free it up again."
+      }
+    },
+    "Overdraft": {
+      "enabled": {
+        "label": "Overdraft",
+        "desc": "Card tiers let account owners spend below zero on their own ledger accounts, up to the tier limit."
+      },
+      "feePct": {
+        "label": "Overdraft usage fee",
+        "desc": "Percent charged on the newly overdrawn amount every time a movement digs deeper into the red."
+      },
+      "dailyInterestPct": {
+        "label": "Overdraft daily interest",
+        "desc": "Percent of the negative balance charged once a day while the account stays in the red."
+      }
+    },
+    "Loans": {
+      "enabled": {
+        "label": "Loans",
+        "desc": "Players can request loans from the bank."
+      },
+      "requiresApproval": {
+        "label": "Loans need approval",
+        "desc": "Loan requests go to the banker queue instead of paying out instantly."
+      },
+      "interestPct": {
+        "label": "Interest rate",
+        "desc": "Percent added on top of the borrowed amount."
+      },
+      "minAmount": {
+        "label": "Min loan"
+      },
+      "maxAmount": {
+        "label": "Max loan"
+      },
+      "maxActivePerPlayer": {
+        "label": "Max active loans"
+      },
+      "termOptions": {
+        "label": "Loan terms",
+        "desc": "Repayment periods players can choose from."
+      },
+      "missedPaymentFeePct": {
+        "label": "Missed payment fee",
+        "desc": "Percent of the installment added to the debt on a missed payment."
+      },
+      "maxMissedBeforeDefault": {
+        "label": "Misses before default"
+      }
+    },
+    "DebtCollection": {
+      "enabled": {
+        "label": "Debt collection",
+        "desc": "Overdue invoices and defaulted loans are collected automatically from incoming money on personal accounts and on shared accounts the debtor owns."
+      },
+      "maxPct": {
+        "label": "Max garnish percent",
+        "desc": "Largest share of each incoming payment the bank may seize to settle debts."
+      }
+    },
+    "Savings": {
+      "enabled": {
+        "label": "Savings plans",
+        "desc": "Players can create savings goals."
+      },
+      "maxPlans": {
+        "label": "Max plans"
+      },
+      "interestPct": {
+        "label": "Savings interest",
+        "desc": "Annual rate on savings plans, accrued daily. Set to 0 to disable."
+      },
+      "minTarget": {
+        "label": "Min goal",
+        "desc": "Smallest target a savings plan can have."
+      },
+      "maxTarget": {
+        "label": "Max goal",
+        "desc": "Largest target a savings plan can have."
+      }
+    },
+    "Invoices": {
+      "enabled": {
+        "label": "Invoices",
+        "desc": "Players can bill each other from the app."
+      },
+      "dueDays": {
+        "label": "Invoice due days",
+        "desc": "Days before an unpaid invoice is marked overdue."
+      },
+      "minAmount": {
+        "label": "Min invoice",
+        "desc": "Smallest amount an invoice can bill."
+      },
+      "maxAmount": {
+        "label": "Max invoice"
+      },
+      "maxDistance": {
+        "label": "Max distance",
+        "desc": "How far away the billed player can be from the sender."
+      }
+    },
+    "Stocks": {
+      "enabled": {
+        "label": "Stock market",
+        "desc": "Players can trade shares from the Invest tab."
+      },
+      "feePct": {
+        "label": "Brokerage fee",
+        "desc": "Percent charged on both buying and selling. A round trip costs double this."
+      },
+      "maxShares": {
+        "label": "Max shares per order"
+      },
+      "maxPositionValue": {
+        "label": "Max investment per stock",
+        "desc": "Cap on what one player can hold in a single stock, valued at the current price. 0 = no cap."
+      },
+      "dailySellCap": {
+        "label": "Daily sell cap",
+        "desc": "Most a player can cash out of the stock market per day. Card tiers multiply it. 0 = unlimited."
+      },
+      "floorPct": {
+        "label": "Price floor",
+        "desc": "A stock can never fall below this percent of its base price."
+      },
+      "ceilPct": {
+        "label": "Price ceiling",
+        "desc": "A stock can never rise above this percent of its base price."
+      },
+      "historyPoints": {
+        "label": "Chart points",
+        "desc": "Price points kept per stock for the charts."
+      },
+      "meanReversion": {
+        "label": "Pull to fair value",
+        "desc": "How hard a price is dragged toward its fair value each tick. Higher is calmer and recovers faster; 0 lets prices wander until they hit a clamp."
+      },
+      "fairReversion": {
+        "label": "Fair value anchor",
+        "desc": "How hard the fair value itself returns to the listing's base price. Keep it well under the pull above, or listings drift off and never come back."
+      },
+      "fairDrift": {
+        "label": "Fair value wander",
+        "desc": "How much a stock's fair value moves on its own, as a fraction of its volatility. This is what stops 'buy anything under its base price' from being free money."
+      },
+      "fairMin": {
+        "label": "Fair value floor",
+        "desc": "Lowest the fair value can wander, as a multiple of the base price."
+      },
+      "fairMax": {
+        "label": "Fair value ceiling",
+        "desc": "Highest the fair value can wander, as a multiple of the base price."
+      },
+      "trendStrength": {
+        "label": "Trend strength",
+        "desc": "Largest total move a bull or bear run makes over its whole life. 0.5 = up to 50%. Not per tick."
+      },
+      "trendMinTicks": {
+        "label": "Trend min length",
+        "desc": "Shortest a bull/bear run can last, in scheduler ticks."
+      },
+      "trendMaxTicks": {
+        "label": "Trend max length",
+        "desc": "Longest a bull/bear run can last, in scheduler ticks."
+      },
+      "trendFlatChance": {
+        "label": "Flat trend chance",
+        "desc": "Percent chance a new run is directionless instead of bull or bear."
+      },
+      "marketSentiment": {
+        "label": "Market mood strength",
+        "desc": "Largest total move a market-wide mood makes over its life, applied to every listing at once. This is what makes whole-market green and red stretches."
+      },
+      "marketMinTicks": {
+        "label": "Mood min length"
+      },
+      "marketMaxTicks": {
+        "label": "Mood max length"
+      },
+      "shockChance": {
+        "label": "News shock chance",
+        "desc": "Percent chance per stock per tick of a sudden jump. Keep it low, this is the unforecastable part."
+      },
+      "shockSize": {
+        "label": "News shock size",
+        "desc": "Largest percent a shock can move a price in one tick, up or down."
+      }
+    },
+    "Tax": {
+      "enabled": {
+        "label": "Wealth tax",
+        "desc": "Periodically tax Los Santos account balances above the threshold. Offshore accounts are exempt."
+      },
+      "wealthPct": {
+        "label": "Tax rate",
+        "desc": "Percent collected from the balance above the threshold each cycle."
+      },
+      "everyDays": {
+        "label": "Tax cycle"
+      },
+      "threshold": {
+        "label": "Tax-free threshold",
+        "desc": "Balances at or below this are never taxed."
+      },
+      "offshoreMaintenancePct": {
+        "label": "Offshore maintenance",
+        "desc": "What the haven charges offshore accounts instead of tax. Keep it below the tax rate."
+      },
+      "society": {
+        "label": "Collected into",
+        "desc": "Society account that receives taxes and confiscated funds."
+      }
+    },
+    "Fraud": {
+      "enabled": {
+        "label": "Anomaly detection",
+        "desc": "Suspicious incoming movements are held in escrow until an admin reviews them or the hold expires."
+      },
+      "holdHours": {
+        "label": "Hold duration",
+        "desc": "How long a movement stays held. If no admin resolves it in time, it releases itself."
+      },
+      "bigDeposit": {
+        "label": "Big deposit threshold",
+        "desc": "A single cash deposit at or above this is held. 0 disables this trigger."
+      },
+      "bigTransfer": {
+        "label": "Big transfer threshold",
+        "desc": "A single transfer to someone else's account at or above this is held. 0 disables this trigger."
+      },
+      "windowInflow": {
+        "label": "Inflow window threshold",
+        "desc": "Total money entering one account within the window below. Catches many small deposits that add up. 0 disables."
+      },
+      "windowHours": {
+        "label": "Inflow window"
+      },
+      "burstCount": {
+        "label": "Burst transaction count",
+        "desc": "This many movements on one account within the burst window flags the next one. Catches scripts and dupes. 0 disables."
+      },
+      "burstMinutes": {
+        "label": "Burst window"
+      },
+      "foreignUseAlert": {
+        "label": "Alert on foreign use",
+        "desc": "Tells the card holder, in the app, by notification and by email, the first time someone else uses their card in an ATM session. The card keeps working until the ceiling below is reached."
+      },
+      "stolenCardLimit": {
+        "label": "Stolen card ceiling",
+        "desc": "How much anyone other than the card holder may pull from a card in a day before it freezes itself. The move that would cross it is refused. 0 lets a thief drain the account."
+      },
+      "stolenCardInstant": {
+        "label": "Panic multiplier",
+        "desc": "A single attempt at this many times the stolen card ceiling freezes the card immediately and pays out nothing. 0 disables the instant freeze."
+      },
+      "webhook": {
+        "label": "Discord webhook",
+        "desc": "Every new hold and every verdict is posted here. Leave empty to disable."
+      }
+    },
+    "Automation": {
+      "enabled": {
+        "label": "Unattended bank",
+        "desc": "Lets the bank review requests itself when the rules below are met. Everything stays in the same queue, it is just decided without a player."
+      },
+      "onlyWhenNoStaff": {
+        "label": "Only when no staff online",
+        "desc": "Holds every automatic decision while a player with the banking job is connected. Leave off if your server has no banker job."
+      },
+      "reviewMinutes": {
+        "label": "Re-check queue after",
+        "desc": "Minutes before a pending request that automation could approve is picked up again by the scheduler. 0 only decides at request time."
+      },
+      "expireHours": {
+        "label": "Deny stale requests after",
+        "desc": "Hours before a pending request nobody reviewed and automation cannot approve is denied. 0 leaves it pending forever."
+      },
+      "loans": {
+        "enabled": {
+          "label": "Approve loans",
+          "desc": "Small loans to clients with good credit are paid out without a banker."
+        },
+        "maxAmount": {
+          "label": "Loan ceiling",
+          "desc": "The most the bank lends on its own. Anything above waits for a banker. 0 disables automatic loans."
+        },
+        "minScore": {
+          "label": "Loan credit score",
+          "desc": "Minimum credit score for an automatic loan, on the usual 300-850 scale."
+        },
+        "maxMissedPayments": {
+          "label": "Missed payments allowed",
+          "desc": "Missed installments across the client's history before automation stops lending to them."
+        },
+        "maxActiveLoans": {
+          "label": "Stop lending at",
+          "desc": "Automatic lending stops once the client already has this many active loans. At 1 they get one loan without a banker and have to ask for the next."
+        },
+        "allowDefaulted": {
+          "label": "Lend after a default",
+          "desc": "Lets automation lend to clients who defaulted on a loan before."
+        }
+      },
+      "cards": {
+        "enabled": {
+          "label": "Approve cards",
+          "desc": "Card requests are issued on credit score alone and the plastic waits at the branch counter."
+        },
+        "minScore": {
+          "label": "Card credit score",
+          "desc": "Minimum credit score for an automatic card. Tier clearance and the card type rules still apply on top."
+        }
+      },
+      "tier": {
+        "enabled": {
+          "label": "Tier by credit score",
+          "desc": "Unlocks the higher card tiers from the client's credit score when no banker has set their clearance by hand. A banker's decision always wins."
+        }
+      },
+      "accounts": {
+        "enabled": {
+          "label": "Approve business accounts",
+          "desc": "Opens business accounts without a banker. Off by default, since opening one is usually worth the roleplay."
+        },
+        "minScore": {
+          "label": "Business credit score",
+          "desc": "Minimum credit score for an automatic business account."
+        }
+      }
+    },
+    "BankingJob": {
+      "label": "Banking job",
+      "desc": "Players with this job see the Banker Terminal. Bosses of the job get every permission."
+    },
+    "UnemployedJob": {
+      "label": "Job after firing",
+      "desc": "Job given to an employee fired from the Employees tab."
+    },
+    "HireGrade": {
+      "label": "Hire grade",
+      "desc": "Job grade given to new employees."
+    },
+    "HireDistance": {
+      "label": "Hire distance",
+      "desc": "How close the new employee must be to whoever hires them from the Banking Terminal. Stops staff from hiring people across the map. 0 disables the check."
+    },
+    "Teller": {
+      "enabled": {
+        "label": "Live teller",
+        "desc": "Requests made at a counter go to the banker on duty there instead of the queue."
+      },
+      "waitSeconds": {
+        "label": "Wait for a teller",
+        "desc": "How long a client waits at the counter before the request goes to the queue."
+      },
+      "reviewSeconds": {
+        "label": "Review time",
+        "desc": "How long a teller has to decide a claimed request."
+      },
+      "requestCooldown": {
+        "label": "Desk request cooldown",
+        "desc": "Seconds a client waits between desk requests. They can still only have one pending request per type."
+      }
+    },
+    "Mail": {
+      "enabled": {
+        "label": "Bank mail",
+        "desc": "Statements, alerts and receipts are sent through av_mail when it is running."
+      },
+      "from": {
+        "label": "Sender address",
+        "desc": "Address bank mails are sent from."
+      },
+      "largeMovement": {
+        "label": "Large movement alert",
+        "desc": "Movements at or above this send the owner an alert. 0 disables."
+      },
+      "creditReportDays": {
+        "label": "Credit report every",
+        "desc": "Days between the automatic credit report mails. 0 disables."
+      }
+    },
+    "Webhooks": {
+      "enabled": {
+        "label": "Player webhooks",
+        "desc": "Players can link their own Discord webhook to receive bank alerts."
+      },
+      "username": {
+        "label": "Bot name",
+        "desc": "Name shown on the webhook messages."
+      },
+      "color": {
+        "label": "Embed color",
+        "desc": "Side color of the webhook embeds."
+      }
+    },
+    "HackerApi": {
+      "enabled": {
+        "label": "Hacker API",
+        "desc": "Lets hacking resources read account snapshots through the exports."
+      },
+      "statementRows": {
+        "label": "Statement rows",
+        "desc": "Movements included in a snapshot."
+      },
+      "includeNative": {
+        "label": "Include personal accounts",
+        "desc": "Random targets can be personal checking accounts, not only extra accounts."
+      },
+      "minBalance": {
+        "label": "Min target balance",
+        "desc": "Random targets must hold at least this much when possible. 0 picks any account."
+      }
+    },
+    "Societies": {
+      "storage": {
+        "label": "Society funds",
+        "desc": "Where job and gang money is kept. av_banking society accounts are created by the Migrate tab; otherwise your av_laptop society functions are used."
+      }
+    }
+  },
+  "browser": {
+    "view": "View",
+    "banking": "Banking App",
+    "desk": "Bank Desk",
+    "atm": "ATM",
+    "pos": "POS Terminal",
+    "terminal": "Banking Terminal",
+    "admin": "Admin Panel"
+  }
+}

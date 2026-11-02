@@ -1,0 +1,16 @@
+Lang = {
+    ['app_title'] = Config.App['label'],
+    ['added_queue'] = "Added to queue",
+    ['mousekey_label'] = "Music Player",
+    ['audio_blocked'] = "Audio blocked",
+    ['audio_unblocked'] = "Audio unblocked",
+    ['zone_placement'] = "Zone Placement",
+    ['placer_add'] = "Add",
+    ['placer_undo'] = "Undo",
+    ['placer_confirm'] = "Confirm",
+    ['placer_exit'] = "Exit",
+    ['placer_move_camera'] = "Move camera",
+    ['placer_up_down'] = "Up / Down",
+    ['placer_fast'] = "Fast",
+    ['miniplayer_requires_device'] = "Mini player requires a connected device (headphones, vehicle or zone)",
+}

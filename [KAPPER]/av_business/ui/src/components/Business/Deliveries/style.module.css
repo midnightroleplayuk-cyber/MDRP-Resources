@@ -1,0 +1,31 @@
+.card {
+  background: var(--bg-card);
+  box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
+  border: 1.25px solid var(--border);
+  border-radius: 10px;
+}
+
+.tooltip {
+  background-color: var(--tooltip);
+  color: var(--text-main);
+  border: 1px solid var(--border);
+  width: 170px;
+}
+
+@media (max-height: 900px) and (min-height: 701px) {
+  .scroll {
+    height: calc(95vh - 130px);
+  }
+}
+
+@media (max-height: 700px) {
+  .scroll {
+    height: calc(85vh - 100px);
+  }
+}
+
+@media (min-height: 901px) {
+  .scroll {
+    height: calc(95vh - 130px);
+  }
+}

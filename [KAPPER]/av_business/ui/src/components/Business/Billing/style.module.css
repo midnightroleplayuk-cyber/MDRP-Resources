@@ -1,0 +1,28 @@
+.thead {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background-color: var(--bg-sidebar);
+  border-bottom: 1px solid var(--border);
+}
+
+.th {
+  padding: 0;
+  background-color: var(--bg-sidebar);
+  font-family: var(--font-display);
+  text-transform: uppercase;
+}
+
+.tbody {
+  background-color: var(--bg-card);
+}
+
+.td {
+  padding: 7px 12px;
+  border-bottom: 1px solid rgba(88, 88, 184, 0.07);
+  vertical-align: middle;
+}
+
+.tr:last-child .td {
+  border-bottom: none;
+}

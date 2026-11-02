@@ -1,0 +1,30 @@
+.card {
+  background-color: var(--bg-card);
+  border: solid 1.25px var(--border);
+  box-shadow: 1px 1px 3px 1px rgba(0, 0, 0, 0.095);
+  border-radius: 10px;
+  height: auto;
+  min-height: 100px;
+}
+
+.tooltip {
+  background-color: gray;
+  display: flex;
+  height: 16px;
+  width: 16px;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50px;
+  margin-left: auto;
+}
+
+.segLabel {
+  color: var(--text-dim);
+  font-size: 12px;
+  min-width: 100px;
+}
+
+.segLabel[data-active] {
+  color: var(--text-main) !important;
+}

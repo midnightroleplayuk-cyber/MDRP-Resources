@@ -1,0 +1,40 @@
+.input {
+  background-color: rgba(13, 14, 15, 0.25);
+  border: solid 1px rgba(255, 255, 255, 0.1);
+}
+
+.input:focus {
+  border: solid 1px rgba(255, 255, 255, 0.1);
+}
+
+.button {
+  background: rgba(88, 88, 184, 0.12);
+  border: 1px solid rgba(88, 88, 184, 0.28);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: #fff;
+  transition: background 0.18s, border-color 0.18s;
+}
+
+.button:hover {
+  background: rgba(88, 88, 184, 0.22);
+  border-color: rgba(88, 88, 184, 0.45);
+}
+
+@media (max-height: 900px) and (min-height: 701px) {
+  .scroll {
+    height: calc(95vh - 130px);
+  }
+}
+
+@media (max-height: 700px) {
+  .scroll {
+    height: calc(80vh - 130px);
+  }
+}
+
+@media (min-height: 901px) {
+  .scroll {
+    height: calc(95vh - 130px);
+  }
+}

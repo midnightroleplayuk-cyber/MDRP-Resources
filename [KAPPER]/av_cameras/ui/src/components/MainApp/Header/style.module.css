@@ -1,0 +1,36 @@
+.header {
+  width: 100%;
+  height: 56px;
+  padding: 0 24px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  background: var(--bg-panel);
+  flex-shrink: 0;
+}
+
+.vtBtn {
+  padding: 5px 10px;
+  border-radius: 3px;
+  border: none;
+  background: transparent;
+  color: var(--text-dim);
+  cursor: pointer;
+  transition: all 0.15s;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.vtBtn:hover {
+  color: var(--text-main);
+}
+
+.vtBtnActive {
+  background: var(--tooltip);
+  color: var(--accent);
+}

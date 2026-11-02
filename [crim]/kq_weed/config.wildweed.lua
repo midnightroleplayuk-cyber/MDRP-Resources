@@ -25,11 +25,11 @@ Config.wildWeed = {
 
     -- Areas where the wild weed will spawn.
     zones = {
-        ['zancudo_river'] = {
+        ['alamo_sea'] = {
             -- Item given to the player after collection
-            yieldItem = 'kq_weed_bud_white_widow',
+            yieldItem = 'kq_weed_bud_og_kush',
             -- Optional. When defined one of the seeds will always be given on collection
-            seedItem = 'kq_weed_seed_white_widow',
+            seedItem = 'kq_weed_seed_og_kush',
 
             -- Amount of the yieldItem gained from a single wild plant
             yield = {
@@ -56,8 +56,8 @@ Config.wildWeed = {
             respawnDelay = 14400,
         },
         ['gordo_trail'] = {
-            yieldItem = 'kq_weed_bud_purple_haze',
-            seedItem = 'kq_weed_seed_purple_haze',
+            yieldItem = 'kq_weed_bud_og_kush',
+            seedItem = 'kq_weed_seed_og_kush',
 
             yield = {
                 min = 2,

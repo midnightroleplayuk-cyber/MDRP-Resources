@@ -1,0 +1,1 @@
+import{yt as e}from"./atoms-6aderh4w.js";var t=()=>e(`(min-width: 1300px)`);export{t};
