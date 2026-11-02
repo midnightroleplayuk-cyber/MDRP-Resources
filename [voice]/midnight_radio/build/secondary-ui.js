@@ -455,6 +455,7 @@
       // has just opened; only the live connected frequencies count.
       state.primary = Number(data.primaryChannel) || 0;
       state.channel = Number(data.secondaryChannel) || 0;
+      // Only display sections for live channels, not restored preferences.
       sessionJoinedPrimary = state.primary > 0;
       sessionJoinedSecondary = state.channel > 0;
       state.primaryMembers = data.primary || {};

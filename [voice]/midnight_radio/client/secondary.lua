@@ -113,27 +113,7 @@ exports('GetSecondaryRadio', function()
     return Radio.SecondaryRadioChannel
 end)
 
-AddEventHandler('QBCore:Client:OnPlayerLoaded', function()
-    SetTimeout(1500, function()
-        if not Radio.identifier or not Radio.userData[Radio.identifier] then return end
-        local saved = tonumber(Radio.userData[Radio.identifier].secondaryChannel) or 0
-        if saved > 0 and Radio.hasRadio then
-            Radio:SetSecondaryRadio(saved, true)
-        end
-    end)
-end)
-
-AddEventHandler('onResourceStart', function(resource)
-    if resource ~= GetCurrentResourceName() then return end
-    SetTimeout(1500, function()
-        if not LocalPlayer.state.isLoggedIn or not Radio.identifier or not Radio.userData[Radio.identifier] then return end
-        local saved = tonumber(Radio.userData[Radio.identifier].secondaryChannel) or 0
-        if saved > 0 and Radio.hasRadio then
-            Radio:SetSecondaryRadio(saved, true)
-        end
-    end)
-end)
-
+-- Never auto-rejoin Secondary from a previous session.
 
 RegisterNetEvent('mm_radio:client:secondaryListUpdate', function(players, channel)
     if tonumber(channel) == tonumber(Radio.SecondaryRadioChannel) or tonumber(channel) == 0 then

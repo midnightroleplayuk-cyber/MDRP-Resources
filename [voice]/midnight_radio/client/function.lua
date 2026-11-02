@@ -103,6 +103,8 @@ function Radio:Init(data)
     self.PlayerDuty = player.job.onduty
     self.PlayerGang = player.gang.name
     if not self.userData[self.identifier] then self:SetDefaultData(self.identifier) end
+    -- A saved frequency is not a live connection.
+    self.userData[self.identifier].secondaryChannel = 0
     -- Dedicated position backup: player-list coordinates are also stored separately
     -- per character so a dragged overlay survives logout/reconnect/client restarts even
     -- if another radio setting is rewritten later.
