@@ -325,8 +325,28 @@
       if (data.userData.volume !== undefined) state.volume = Number(data.userData.volume) || 0;
     }
   }
+  let customCloseTimer = null;
   function renderDashboard() {
-    dashboard.classList.toggle('show', state.visible);
+    if (customCloseTimer !== null) {
+      clearTimeout(customCloseTimer);
+      customCloseTimer = null;
+    }
+    const customPlacement = dashboard.classList.contains('radio-position-custom');
+    if (state.visible) {
+      dashboard.classList.remove('radio-closing-in-place');
+      dashboard.classList.add('show');
+    } else if (customPlacement && dashboard.classList.contains('show')) {
+      // At a user-chosen position, fade in place instead of travelling
+      // towards the default bottom-right anchor.
+      dashboard.classList.add('radio-closing-in-place');
+      customCloseTimer = setTimeout(() => {
+        dashboard.classList.remove('show', 'radio-closing-in-place');
+        customCloseTimer = null;
+      }, 190);
+    } else {
+      // Original close behaviour is unchanged at the default position.
+      dashboard.classList.remove('show', 'radio-closing-in-place');
+    }
     dashboard.querySelectorAll('[data-page]').forEach(el => el.classList.toggle('active', el.dataset.page === activeTab));
     dashboard.querySelectorAll('[data-tab]').forEach(el => el.classList.toggle('active', el.dataset.tab === activeTab));
     document.body.classList.toggle('mm-dash-open', state.visible);

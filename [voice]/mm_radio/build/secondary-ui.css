@@ -380,3 +380,14 @@ body.mm-dash-open #app{visibility:hidden!important}
   user-select: none !important;
   -webkit-touch-callout: none;
 }
+
+/* v6.13: moved handsets close where the player placed them. */
+#mm-radio-dashboard.radio-position-custom.radio-closing-in-place {
+  opacity: 0!important;
+  transition: opacity 180ms ease-out!important;
+  transform: none!important;
+}
+#mm-radio-dashboard.radio-position-custom:not(.radio-closing-in-place) {
+  opacity: 1!important;
+  transition: opacity 120ms ease-in!important;
+}
