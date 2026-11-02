@@ -361,7 +361,19 @@
     if (btn.dataset.join) tune(btn.dataset.join, Number(get(`[data-frequency="${btn.dataset.join}"]`).value));
     if (btn.dataset.leave) post(btn.dataset.leave === 'primary' ? 'leave' : 'leaveSecondary');
     if (btn.dataset.action === 'close') post('hideUI');
-    if (btn.hasAttribute('data-save-name')) { const name = get('[data-name]').value.trim(); if (name) {state.displayName = name; post('saveData', {name}); feedback('Name saved.');} }
+    if (btn.hasAttribute('data-save-name')) saveDisplayName();
+  });
+  function saveDisplayName() {
+    const name = get('[data-name]').value.trim();
+    if (!name) return;
+    state.displayName = name;
+    post('saveData', {name});
+    feedback('Name saved.');
+  }
+  get('[data-name]').addEventListener('keydown', e => {
+    if (e.key !== 'Enter' || e.isComposing || e.repeat) return;
+    e.preventDefault();
+    saveDisplayName();
   });
   dashboard.querySelectorAll('[data-frequency]').forEach(el => el.addEventListener('keydown', e => {if(e.key === 'Enter') tune(el.dataset.frequency, Number(el.value));}));
   get('[data-clicks]').addEventListener('change', e => {state.enableClicks = e.target.checked; post('enableClicks', e.target.checked);});
