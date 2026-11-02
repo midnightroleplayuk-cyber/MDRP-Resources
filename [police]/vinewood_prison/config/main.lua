@@ -7,7 +7,7 @@ Config.Locale = 'en'
 Config.Framework = 'auto'
 
 -- Framework job names that count as prison staff
-Config.Jobs = { 'prison', 'police' }
+Config.Jobs = { 'police' }
 
 -- qb/qbx only: staff must be on duty to use permissions. ESX has no duty, so staff always count as on duty.
 Config.RequireDuty = true
