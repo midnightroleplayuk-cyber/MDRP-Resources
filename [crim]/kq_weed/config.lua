@@ -287,7 +287,7 @@ Config.vendors = {
         model = "g_m_y_ballasout_01",
         idleAnim = {
             dict = "amb@world_human_leaning@male@wall@back@foot_up@idle_a",
-            anim = "base"
+            anim = "idle_a"
         },
         items = {
             ['kq_weed_seed_white_widow'] = { label = "Weed seed [White Widow]", price = 100 },
