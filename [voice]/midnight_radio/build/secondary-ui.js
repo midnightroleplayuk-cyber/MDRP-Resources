@@ -417,7 +417,16 @@
     const msg = e.data || {};
     const action = msg.action;
     const data = msg.data || {};
-    if (action === 'setRadioVisible') {
+    if (action === 'authoritativeOverlayPosition') {
+      const c = data.coords;
+      if (c && Number.isFinite(Number(c.x)) && Number.isFinite(Number(c.y))) {
+        state.rosterCoords = {x: Number(c.x), y: Number(c.y)};
+        rosterPositionReady = true;
+        console.info('[midnight_radio] Overlay LOAD applied', state.rosterCoords);
+        applyRosterPosition();
+        renderRoster();
+      }
+    } else if (action === 'setRadioVisible') {
       characterReady = true;
       state.visible = true;
       state.primary = Number(data.channel) || 0;

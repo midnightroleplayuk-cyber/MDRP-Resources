@@ -438,7 +438,11 @@ end)
 lib.callback.register('midnight_radio:server:getOverlayPosition', function(src)
     local key = overlayKey(src)
     local raw = key and GetResourceKvpString(key)
-    if not raw then return nil end
+    if not raw then
+        print(('[midnight_radio] Overlay LOAD: no server record for %s'):format(tostring(key)))
+        return nil
+    end
+    print(('[midnight_radio] Overlay LOAD for %s: %s'):format(tostring(key), raw))
     local ok, coords = pcall(json.decode, raw)
     if ok and type(coords) == 'table' and tonumber(coords.x) and tonumber(coords.y) then
         return {x=tonumber(coords.x), y=tonumber(coords.y)}
