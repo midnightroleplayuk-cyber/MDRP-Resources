@@ -366,3 +366,9 @@ body.mm-dash-open #app{visibility:hidden!important}
 #mm-dual-radio-roster .mm-member.talking:hover {background:transparent!important;box-shadow:none!important;}
 #mm-dual-radio-roster .mm-member.talking::before,
 #mm-dual-radio-roster .mm-member.talking::after {content:none!important;display:none!important;}
+
+/* v6.11: whole handset is a drag surface when move mode is enabled. */
+#mm-radio-dashboard.radio-movable { cursor: grab; touch-action: none; }
+#mm-radio-dashboard.radio-movable:active { cursor: grabbing; }
+#mm-radio-dashboard.radio-movable button, #mm-radio-dashboard.radio-movable input,
+#mm-radio-dashboard.radio-movable label { cursor: pointer; }
