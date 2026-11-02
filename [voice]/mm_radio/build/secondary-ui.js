@@ -271,7 +271,7 @@
   let activeTab = 'primary';
   let radioPosition = null;
   let moveRadio = false;
-  try { const p = JSON.parse(localStorage.getItem('midnight_radio_position') || 'null'); if (p && Number.isFinite(p.x) && Number.isFinite(p.y)) radioPosition = p; } catch (_) {}
+  try { const p = JSON.parse(localStorage.getItem('midnight_radio_position_v63') || 'null'); if (p && Number.isFinite(p.x) && Number.isFinite(p.y)) radioPosition = p; } catch (_) {}
   function positionRadio() {
     if (!radioPosition) { dashboard.classList.remove('radio-position-custom'); dashboard.style.removeProperty('--radio-x'); dashboard.style.removeProperty('--radio-y'); dashboard.style.left = ''; dashboard.style.top = ''; dashboard.style.right = ''; dashboard.style.bottom = ''; return; }
     const maxX = Math.max(0, innerWidth - dashboard.offsetWidth);
@@ -299,7 +299,7 @@
   function finishRadioDrag() {
     if (!radioDrag) return;
     radioDrag = null;
-    localStorage.setItem('midnight_radio_position', JSON.stringify(radioPosition));
+    localStorage.setItem('midnight_radio_position_v63', JSON.stringify(radioPosition));
     post('updateRadioPosition', {x:radioPosition.x,y:radioPosition.y});
   }
   dashboard.querySelector('.mm-dash-header').addEventListener('pointerup', finishRadioDrag);
@@ -314,10 +314,6 @@
     if (data.userData) {
       state.displayName = data.userData.name || '';
       state.enableClicks = data.userData.enableClicks !== false;
-      if (data.userData.radio && data.userData.radio.coords && !radioPosition) {
-        const p = data.userData.radio.coords;
-        if (Number.isFinite(Number(p.x)) && Number.isFinite(Number(p.y))) radioPosition = {x:Number(p.x),y:Number(p.y)};
-      }
       positionRadio();
       state.opacity = Number(data.userData.overlayOpacity) || 100;
       if (data.userData.volume !== undefined) state.volume = Number(data.userData.volume) || 0;
@@ -377,7 +373,7 @@
   get('[data-clicks]').addEventListener('change', e => {state.enableClicks = e.target.checked; post('enableClicks', e.target.checked);});
   get('[data-move-radio]').addEventListener('change', e => {moveRadio = e.target.checked; dashboard.classList.toggle('radio-movable', moveRadio);});
   get('[data-reset-position]').addEventListener('click', () => {
-    radioPosition = null; localStorage.removeItem('midnight_radio_position'); positionRadio();
+    radioPosition = null; localStorage.removeItem('midnight_radio_position_v63'); positionRadio();
     post('updateRadioPosition', {x:-1,y:-1}); feedback('Radio position reset.');
   });
   get('[data-overlay]').addEventListener('change', e => {state.overlayEnabled = e.target.checked; post('showPlayerList', state.overlayEnabled); renderRoster();});
