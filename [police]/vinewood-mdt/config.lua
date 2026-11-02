@@ -1,7 +1,7 @@
 Config = {}
 
 -- 'auto', 'qbx', 'qb' or 'esx'
-Config.Framework = 'auto'
+Config.Framework = 'qbx'
 
 -- Force name shown on the MDT header and bail notices.
 Config.ForceName = 'Midnight Police Constabulary'
@@ -12,7 +12,6 @@ Config.ForceCrest = 'https://cfx-nui-vinewood-mdt/web/pdlogo.png'
 -- Jobs that can use the MDT. job = minimum grade.
 Config.Jobs = {
     police = 0,
-    sheriff = 0,
 }
 Config.RequireOnDuty = true
 
@@ -163,7 +162,7 @@ Config.BailConditions = {
 }
 
 -- Give the released person a bail notice item (ox_inventory). false to disable.
-Config.BailNoticeItem = 'bail_notice'   -- e.g. 'bail_notice'
+Config.BailNoticeItem = 'bail_notice'   -- false = no item. Using it shows the notice again.
 
 -- Called after a bail record is saved. target is the server id (nil if offline).
 -- Use it to free someone from your custody script.
@@ -384,7 +383,7 @@ Config.Audit = {
         'Warrant / wanted check', 'Intelligence development', 'Missing person', 'Victim / witness contact', 'Other',
     },
     -- Minimum grade to read the audit log and a record's access history.
-    ViewGrade = 3,
+    ViewGrade = 9,
     -- How long log entries are kept (days). 0 = forever.
     KeepDays = 90,
 }
@@ -440,7 +439,7 @@ Config.StopSearch = {
     Objects = { 'Controlled drugs', 'Offensive weapon', 'Bladed article', 'Firearm', 'Stolen property', 'Going equipped', 'Fireworks', 'Criminal damage articles', 'Other' },
     Outcomes = { 'No further action', 'Arrest', 'Community resolution', 'Penalty notice', 'Cannabis or khat warning', 'Summons / postal requisition', 'Caution' },
     -- Give the person searched a record of the search (ox_inventory item). false = notice only.
-    ReceiptItem = 'stop_search_record',     -- e.g. 'stop_search_record'
+    ReceiptItem = 'stop_search_record',   -- false = no item. Using it shows the record again.
 }
 
 ---------------------------------------------------------------------------
@@ -619,7 +618,7 @@ Config.WarrantTypes = {
     { id = 'fa46',    label = 'Search warrant (s.46 Firearms Act)' },
 }
 -- Minimum grade to record a warrant on the system.
-Config.WarrantGrade = 0
+Config.WarrantGrade = 9
 
 -- Markers that put the HIGH RISK badge on a person.
 Config.HighRiskMarkers = { Violent = true, Weapons = true, Escaper = true, Wanted = true }

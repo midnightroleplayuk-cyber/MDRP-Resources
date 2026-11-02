@@ -465,3 +465,15 @@ in front and behind (red when over), the speed limit of the road and your own sp
 
 ## Offences (2.19.1)
 `Config.Offences` is now the full list shared with vinewood_police: 100 offences across 28 groups. That covers drugs supply and being concerned in supply, money laundering, weapons, violence, public order, harassment, fraud, roads, warrants and recall. Every offence has sentencing guidance in `sentencing.lua`, looked up by the exact name, so if you rename an offence, rename its guidance too. Sexual offences aren't included by default; add them (and their guidance) if your server allows that roleplay.
+
+## Paper documents
+On release, the person gets a **bail notice** item (`Config.BailNoticeItem`, default `bail_notice`).
+After a search they get a **stop and search record** (`Config.StopSearch.ReceiptItem`, default `stop_search_record`).
+Using either item shows the notice again. Set either to `false` to give no item.
+
+ox_inventory, `data/items.lua`:
+```lua
+['bail_notice'] = { label = 'Bail notice', weight = 10, stack = false, close = true, server = { export = 'vinewood-mdt.useDocument' } },
+['stop_search_record'] = { label = 'Stop and search record', weight = 10, stack = false, close = true, server = { export = 'vinewood-mdt.useDocument' } },
+```
+qb-inventory and ESX: add items with the same names; they're registered as usable automatically.
