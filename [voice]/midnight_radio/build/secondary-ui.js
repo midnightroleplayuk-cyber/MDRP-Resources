@@ -157,7 +157,7 @@
     const hasPrimary = sessionJoinedPrimary && Number(state.primary) > 0;
     const hasSecondary = sessionJoinedSecondary && Number(state.channel) > 0;
     roster.classList.toggle('show', characterReady && rosterPositionReady && !!state.overlayEnabled && (hasPrimary || hasSecondary));
-    roster.classList.toggle('editable', !!state.visible && !!state.overlayEnabled);
+    roster.classList.toggle('editable', !!state.visible && !!state.overlayEnabled && (hasPrimary || hasSecondary));
     // Do not leave an empty SECONDARY block behind after disconnecting. It comes
     // back automatically as soon as a secondary channel is joined again.
     secondarySection.classList.toggle('mm-channel-hidden', !hasSecondary);
@@ -405,7 +405,10 @@
       state.visible = true;
       state.primary = Number(data.channel) || 0;
       state.channel = Number(data.secondaryChannel) || 0;
-      // Opening the handset does not establish a new radio connection.
+      // Opening the handset never reveals the list by itself. If no channels
+      // are actually connected, discard any stale membership from earlier UI updates.
+      if (state.primary <= 0) { sessionJoinedPrimary = false; state.primaryMembers = {}; }
+      if (state.channel <= 0) { sessionJoinedSecondary = false; state.secondaryMembers = {}; }
       // Session membership is only accepted from live channel updates.
       state.maxChannel = Number(data.maxChannel) || state.maxChannel;
       if (data.channelName && typeof data.channelName === 'object') state.channelNames = data.channelName;
@@ -448,6 +451,8 @@
       render();
     } else if (action === 'dualRadioListUpdate') {
       if (!characterReady) return;
+      // A roster packet must not resurrect a disconnected radio when the menu
+      // has just opened; only the live connected frequencies count.
       state.primary = Number(data.primaryChannel) || 0;
       state.channel = Number(data.secondaryChannel) || 0;
       sessionJoinedPrimary = state.primary > 0;

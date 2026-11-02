@@ -401,3 +401,7 @@ body.mm-dash-open #app{visibility:hidden!important}
   cursor:default; touch-action:auto;
 }
 #mm-radio-dashboard.radio-position-custom.radio-closing-in-place {opacity:1!important;transition:none!important;}
+
+/* v6.21: the roster is never visible merely because the handset is open. */
+#mm-dual-radio-roster:not(.show){display:none!important;pointer-events:none!important;}
+#mm-dual-radio-roster.show{display:flex;}
