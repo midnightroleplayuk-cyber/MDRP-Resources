@@ -14,7 +14,7 @@ Config.Warehouses = {
                 {x = 1103.4929, y = -3101.6475, z = -39.0000, heading = 80.0659},
                 {x = 1099.4677, y = -3101.2676, z = -39.0000, heading = 350.5373},
             },
-            weapons = {`WEAPON_PISTOL`, `WEAPON_COMBATPISTOL`, `WEAPON_HEAVYPISTOL`}
+            weapons = {`WEAPON_NIGHTSTICK`}
         },
         crates = {
             models = { -- possible models to spawn, each model have their own list of items in config/rewards.lua
