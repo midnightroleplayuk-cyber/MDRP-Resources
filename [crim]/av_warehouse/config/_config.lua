@@ -6,7 +6,7 @@
 Config = {}
 Config.Debug = false -- Used for debug prints
 Config.UseNPC = true -- or false, use NPC to get a warehouse mission
-Config.Target = "ox_target" -- "qb-target", "ox_target" or false to use TextUI instead
+Config.Target = "ox-target" -- "qb-target", "ox_target" or false to use TextUI instead
 Config.MinCops = 0 -- Min cops needed to get a warehouse
 Config.PoliceJobs = {"police", "bcso", "leo"}-- Job name/type used for cops count and dispatch
 Config.MissionPrice = 5000 -- Price to start mission
