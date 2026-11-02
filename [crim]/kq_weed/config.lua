@@ -340,8 +340,8 @@ Config.vendors = {
         items = {
             ['kq_weed_paper'] = { label = "Rolling paper", price = 15, amount = 5 },
             ['kq_weed_pot'] = { label = "Weed Pot", price = 1000 },
-            ['kq_weed_table'] = { label = "Weed workbench", price = 5000 },
-            ['kq_weed_press'] = { label = "Weed press", price = 15000 },
+           -- ['kq_weed_table'] = { label = "Weed workbench", price = 5000 },
+           -- ['kq_weed_press'] = { label = "Weed press", price = 15000 },
             ['kq_weed_tent'] = { label = "Grow tent", price = 6000 },
             ['kq_weed_watering_system'] = { label = "Automatic watering system", price = 7000 },
         },
