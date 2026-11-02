@@ -4,7 +4,7 @@ Config.Department = 'Midnight Police Department'
 
 Config.PoliceJobs = { 'police' }
 
-Config.CommandGrade = 4
+Config.CommandGrade = 6
 
 Config.TabGrades = {
     lookup = 4,
