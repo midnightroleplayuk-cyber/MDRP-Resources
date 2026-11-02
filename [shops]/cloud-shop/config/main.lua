@@ -46,7 +46,8 @@ return {
 				vector4(1692.14, 3760.94, 34.7, 222.61), -- Sandy Shores Boss
 				vector4(253.96, -50.43, 69.93, 70.61), -- Spanish Avenue
 				vector4(-1303.99, -394.57, 36.69, 72.05), -- Boulevard Del Perro
-				vector4(842.51, -1035.39, 28.18, 354.92) -- La Mesa
+				vector4(842.51, -1035.39, 28.18, 354.92), -- La Mesa
+				vector4(-3173.64, 1088.4, 20.83, 239.28) -- Great Ocean Highway
 			},
 
 			--? For icons, use Iconify: https://icon-sets.iconify.design
