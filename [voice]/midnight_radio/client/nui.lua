@@ -4,7 +4,8 @@ local function SaveRadioPrefs()
     SetResourceKvp('radioSettings2', json.encode(Radio.userData))
     SetResourceKvp(('mm_radio_prefs_%s'):format(Radio.identifier), json.encode({
         name = data.name, overlay = data.playerlist.show,
-        opacity = data.overlayOpacity or 41, volume = data.volume or Radio.Volume
+        opacity = data.overlayOpacity or 41, volume = data.volume or Radio.Volume,
+        overlayCoords = data.playerlist and data.playerlist.coords or nil
     }))
 end
 
@@ -112,8 +113,14 @@ RegisterNUICallback('updatePlayerListPosition', function(data, cb)
         x = tonumber(data.x) or 0,
         y = tonumber(data.y) or 0
     }
+    if not Radio.identifier or not Radio.userData[Radio.identifier] then
+        cb('error')
+        return
+    end
     Radio.userData[Radio.identifier].playerlist.coords = coords
-    SetResourceKvp('radioSettings2', json.encode(Radio.userData))
+    -- Save the most recent position to every persistent preferences store.
+    -- Otherwise a later settings refresh can restore an older copy.
+    SaveRadioPrefs()
     -- Separate per-character backup makes the dragged position durable across
     -- /logout, reconnects, client restarts and later sessions.
     SetResourceKvp(('mm_radio_overlay_pos_%s'):format(Radio.identifier), json.encode(coords))

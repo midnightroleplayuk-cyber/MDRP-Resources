@@ -219,13 +219,18 @@
     state.rosterCoords = { x: nextRight, y: nextTop };
     applyRosterPosition();
   });
-  window.addEventListener('mouseup', () => {
+  function saveDraggedRosterPosition() {
     if (!dragging) return;
     dragging = false;
     if (state.rosterCoords) {
-      post('updatePlayerListPosition', state.rosterCoords);
+      // Persist only on completed drag, using the final screen coordinates.
+      // Do not re-read stale preferences after the save.
+      const finalCoords = {x: state.rosterCoords.x, y: state.rosterCoords.y};
+      post('updatePlayerListPosition', finalCoords);
     }
-  });
+  }
+  window.addEventListener('mouseup', saveDraggedRosterPosition);
+  window.addEventListener('blur', saveDraggedRosterPosition);
 
   function findSettingsBody() {
     const checkboxes = [...document.querySelectorAll('input[type="checkbox"]')];

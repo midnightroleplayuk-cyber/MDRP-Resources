@@ -121,6 +121,12 @@ function Radio:Init(data)
     if savedPrefs then
         local ok, prefs = pcall(json.decode, savedPrefs)
         if ok and type(prefs) == 'table' then
+            -- Use the newest saved position from per-character preferences.
+            -- This also migrates users whose position was only stored here.
+            local c = prefs.overlayCoords
+            if type(c) == 'table' and tonumber(c.x) and tonumber(c.y) then
+                self.userData[self.identifier].playerlist.coords = {x = tonumber(c.x), y = tonumber(c.y)}
+            end
             if type(prefs.name) == 'string' and prefs.name ~= '' then self.userData[self.identifier].name = prefs.name end
             if type(prefs.overlay) == 'boolean' then self.userData[self.identifier].playerlist.show = prefs.overlay end
             if tonumber(prefs.opacity) then self.userData[self.identifier].overlayOpacity = math.max(20, math.min(100, tonumber(prefs.opacity))) end
