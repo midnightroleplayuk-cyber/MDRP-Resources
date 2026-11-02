@@ -1,10 +1,9 @@
 fx_version 'cerulean'
 game 'gta5'
 
-author 'Master Mind'
-version '0.2.1'
-description 'A beautiful Radio Resource for FiveM'
-repository 'https://github.com/SOH69/mm_radio'
+author 'HF1'
+version '7.0.0'
+description 'A beautiful Radio for Midnight RP'
 
 lua54 'yes'
 
