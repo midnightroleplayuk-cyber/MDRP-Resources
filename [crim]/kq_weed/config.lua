@@ -259,8 +259,8 @@ Config.prePlaced = {
 -- We highly recommend adding these items to your shops, heists, robberies etc. instead
 Config.vendors = {
     ["seed_store"] = {
-        coords = vector3(660.90, 1282.48, 359.3),
-        heading = 250.0,
+        coords = vector3(660.75, 1282.48, 359.3),
+        heading = 249.0,
         model = "g_m_y_salvagoon_01",
         idleAnim = {
             dict = "amb@world_human_leaning@male@wall@back@foot_up@idle_a",
