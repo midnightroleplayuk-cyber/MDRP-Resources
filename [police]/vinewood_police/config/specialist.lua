@@ -2,7 +2,7 @@
 -- Specialist units (phase 5): police dogs and Stinger.
 ---------------------------------------------------------------------------
 Config.Dogs = {
-    Command = 'pd_dog',              -- deploy or recall your dog (signed on as Dog section)
+    Command = 'dog',              -- deploy or recall your dog (signed on as Dog section)
     Units = { 'dogs' },
     Model = 'a_c_shepherd',
     SearchRange = 4.0,            -- the dog must be this close to what it searches

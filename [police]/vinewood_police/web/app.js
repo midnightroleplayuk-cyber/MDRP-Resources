@@ -2594,6 +2594,96 @@ function renderAdmin(body, task) {
   body.append(il);
 }
 
+
+/* ---------- radial menu ---------- */
+
+const radial = { stack: [], hover: -1 };
+const RAD = { size: 440, R: 210, r: 72 };
+
+function polar(a, rad) { const t = (a * Math.PI) / 180; return [RAD.size / 2 + rad * Math.cos(t), RAD.size / 2 + rad * Math.sin(t)]; }
+
+function wedgePath(a0, a1) {
+  const [x0, y0] = polar(a0, RAD.R), [x1, y1] = polar(a1, RAD.R), [x2, y2] = polar(a1, RAD.r), [x3, y3] = polar(a0, RAD.r);
+  const big = a1 - a0 > 180 ? 1 : 0;
+  return `M${x0},${y0} A${RAD.R},${RAD.R} 0 ${big} 1 ${x1},${y1} L${x2},${y2} A${RAD.r},${RAD.r} 0 ${big} 0 ${x3},${y3} Z`;
+}
+
+function drawRadial() {
+  const ring = $('radialRing');
+  ring.replaceChildren();
+  const level = radial.stack[radial.stack.length - 1];
+  const items = level.items || [];
+  const n = Math.max(items.length, 1);
+  const step = 360 / n;
+  const NS = 'http://www.w3.org/2000/svg';
+  const svg = document.createElementNS(NS, 'svg');
+  svg.setAttribute('viewBox', `0 0 ${RAD.size} ${RAD.size}`);
+  items.forEach((it, i) => {
+    const a0 = -90 - step / 2 + i * step, a1 = a0 + step;
+    const path = document.createElementNS(NS, 'path');
+    path.setAttribute('d', n === 1 ? wedgePath(-89.9, 269.9) : wedgePath(a0, a1));
+    path.setAttribute('class', `wedge${radial.hover === i ? ' hot' : ''}`);
+    svg.append(path);
+    const [x, y] = polar(a0 + step / 2, (RAD.R + RAD.r) / 2 + 4);
+    ring.append(h('div', { class: 'radial-item', style: `left:${x}px;top:${y}px` },
+      h('i', { class: `fa-solid fa-${it.icon || 'circle'}` }), it.label, it.items ? h('div', { class: 'more' }, '•••') : null));
+  });
+  const hub = document.createElementNS(NS, 'circle');
+  hub.setAttribute('cx', RAD.size / 2); hub.setAttribute('cy', RAD.size / 2); hub.setAttribute('r', RAD.r - 6);
+  hub.setAttribute('class', `hub${radial.hover === 'centre' ? ' hot' : ''}`);
+  svg.append(hub);
+  ring.prepend(svg);
+  ring.append(h('div', { class: 'radial-centre' }, h('i', { class: `fa-solid ${radial.stack.length > 1 ? 'fa-arrow-left' : 'fa-xmark'}` }), h('span', {}, level.title || '')));
+}
+
+function radialHover(e) {
+  const box = $('radialRing').getBoundingClientRect();
+  const dx = e.clientX - (box.left + box.width / 2), dy = e.clientY - (box.top + box.height / 2);
+  const dist = Math.hypot(dx, dy);
+  const items = radial.stack[radial.stack.length - 1].items || [];
+  let hot;
+  if (dist < RAD.r - 6) hot = 'centre';
+  else if (!items.length) hot = -1;
+  else {
+    const step = 360 / items.length;
+    let a = (Math.atan2(dy, dx) * 180) / Math.PI + 90 + step / 2;
+    a = ((a % 360) + 360) % 360;
+    hot = Math.floor(a / step) % items.length;
+  }
+  if (hot !== radial.hover) { radial.hover = hot; drawRadial(); }
+}
+
+function radialBack() {
+  if (radial.stack.length > 1) { radial.stack.pop(); radial.hover = -1; drawRadial(); return; }
+  radialClose(true);
+}
+
+function radialClose(tell) {
+  $('radial').hidden = true;
+  radial.stack = [];
+  if (tell) nui('radialClose');
+}
+
+function radialClick() {
+  if (radial.hover === 'centre') return radialBack();
+  const level = radial.stack[radial.stack.length - 1];
+  const it = (level.items || [])[radial.hover];
+  if (!it) return;
+  if (it.items) { radial.stack.push({ title: it.label, items: it.items }); radial.hover = -1; drawRadial(); return; }
+  $('radial').hidden = true;
+  radial.stack = [];
+  nui('radialSelect', { id: it.id });
+}
+
+$('radial').addEventListener('mousemove', radialHover);
+$('radial').addEventListener('click', radialClick);
+$('radial').addEventListener('contextmenu', (e) => { e.preventDefault(); radialBack(); });
+document.addEventListener('keydown', (e) => {
+  if ($('radial').hidden) return;
+  if (e.key === 'Escape') { e.preventDefault(); radialClose(true); }
+  else if (e.key === 'Backspace') { e.preventDefault(); radialBack(); }
+});
+
 const TASKS = { arrest: renderArrest, search: renderSearch, stopsearch: renderStopSearch, release: renderRelease, roadside: renderRoadside, scene: renderScene, custody: renderCustody, evidence: renderEvidence, person: renderPerson, call: renderCall, calls: renderCalls, locations: renderLocations, armoury: renderArmoury, incident: renderIncident, cases: renderCases, case: renderCase, standards: renderStandards, complaint: renderComplaint, changing: renderChanging, management: renderManagement, admin: renderAdmin };
 
 /* ---------- consent prompt and notices ---------- */
@@ -2651,6 +2741,8 @@ window.addEventListener('message', (e) => {
   const msg = fixLua(e.data || {});
   if (Array.isArray(msg)) return;
   if (msg.type === 'sound') return playSound(msg.name, msg.volume);
+  if (msg.type === 'radial') { radial.stack = [{ title: msg.title, items: list(msg.items) }]; radial.hover = -1; $('radial').hidden = false; drawRadial(); return; }
+  if (msg.type === 'radialClose') return radialClose(false);
   if (msg.type === 'soundStop') { const a = sounds[msg.name]; if (a) a.pause(); return; }
   if (msg.type === 'custodyRefresh') {
     if (state.task && state.task.name === 'custody' && !$('hub').hidden) {
