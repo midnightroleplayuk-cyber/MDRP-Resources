@@ -220,3 +220,15 @@ body.mm-dash-open #app{visibility:hidden!important}
 #mm-radio-dashboard button:focus-visible, #mm-radio-dashboard input:focus-visible {
   outline: 2px solid #d6b2f5!important; outline-offset: -1px;
 }
+
+/* Midnight Radio v6: bottom-right placement; same native handset size and inset. */
+#mm-radio-dashboard{top:auto!important;bottom:1.5vh!important;right:2vw!important}
+#mm-radio-dashboard[style*="top:"]{bottom:auto!important;right:auto!important}
+#mm-radio-dashboard .mm-dash-header strong{font-size:10px!important;letter-spacing:.2px!important;white-space:nowrap}
+#mm-radio-dashboard .mm-dash-header small{font-size:6px!important;letter-spacing:.15px!important}
+#mm-radio-dashboard [data-tab="settings"]{flex:0 0 27px!important;display:flex;align-items:center;justify-content:center}
+#mm-radio-dashboard [data-tab="settings"] svg{pointer-events:none}
+#mm-radio-dashboard .mm-dash-header{touch-action:none}
+#mm-radio-dashboard.radio-movable .mm-dash-header{cursor:grab}
+#mm-radio-dashboard.radio-movable .mm-dash-header:active{cursor:grabbing}
+#mm-radio-dashboard .mm-reset-position{width:100%;background:#58238a;border:1px solid #9355c8;border-radius:7px;padding:7px;font-size:8px;font-weight:700;cursor:pointer}

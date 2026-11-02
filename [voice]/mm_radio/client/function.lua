@@ -154,9 +154,7 @@ function Radio:Init(data)
         end
     end
 
-    if not self.userData[self.identifier].enableClicks then
-        exports['pma-voice']:setVoiceProperty('micClicks', false)
-    end
+    exports['pma-voice']:setVoiceProperty('micClicks', self.userData[self.identifier].enableClicks ~= false)
 
     self:doRadioCheck()
 end
