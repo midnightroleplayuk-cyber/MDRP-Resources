@@ -3,16 +3,18 @@ Config = {}
 Config.Debug = false
 
 -- 'auto' detects qbx_core, qb-core or es_extended. 'standalone' uses ACE permissions only.
-Config.Framework = 'qbx_core'
+Config.Framework = 'auto'
 
 -- Jobs allowed to start/stop interviews. job = minimum grade.
 Config.PoliceJobs = {
     police = 0,
+    sheriff = 0,
 }
 
 -- Jobs allowed to open the evidence viewer and play back recordings.
 Config.ReviewJobs = {
-    police = 4,
+    police = 0,
+    sheriff = 0,
 }
 
 Config.RequireOnDuty = true
@@ -35,7 +37,7 @@ Config.MicTestCommand = 'interviewmictest'
 
 -- Target system: 'auto' picks ox_target, then qb-target, then qtarget. If none is running,
 -- players walk up to the point and press E instead. Force one with 'ox', 'qb', 'qtarget' or 'keypress'.
-Config.Target = 'auto'
+Config.Target = 'ox_target'
 
 Config.InteractDistance = 1.5
 

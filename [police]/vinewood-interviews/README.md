@@ -39,7 +39,7 @@ Requires FiveM server build 5181 or newer, and the server's license key must bel
 set FIVEMANAGE_MEDIA_API_KEY "your-media-api-key"
 
 ensure ox_lib
-ensure ox_target   # or qb-target / qtarget
+ensure ox_target   # or qb-target / qtarget - start it before vinewood-interviews
 ensure oxmysql
 ensure screencapture
 ensure vinewood-interviews
