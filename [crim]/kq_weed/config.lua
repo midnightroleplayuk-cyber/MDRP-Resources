@@ -283,7 +283,7 @@ Config.vendors = {
     },
         ["seed_store2"] = {
         coords = vector3(-1146.72, -485.42, 49.15),
-        heading = 200.0,
+        heading = 180.0,
         model = "g_m_y_ballasout_01",
         idleAnim = {
             dict = "amb@world_human_leaning@male@wall@back@foot_up@idle_a",
