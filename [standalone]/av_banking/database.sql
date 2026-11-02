@@ -1,7 +1,7 @@
 CREATE TABLE IF NOT EXISTS `av_banking_accounts` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `account_number` VARCHAR(24) NOT NULL,
-  `label` VARCHAR(60) NOT NULL,
+  `label` VARCHAR(60) NOT NULL DEFAULT 'Personal',
   `type` VARCHAR(20) NOT NULL DEFAULT 'personal',
   `owner` VARCHAR(64) NOT NULL,
   `owner_name` VARCHAR(64) DEFAULT '',
@@ -366,16 +366,18 @@ CREATE TABLE IF NOT EXISTS `av_banking_atm_state` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- Default name for newly created native personal accounts.
--- Custom names remain editable and are not overwritten on updates.
+-- Run this trigger on the LIVE database to replace the previous trigger.
+-- The protected server may explicitly insert CHECKING, bypassing a column DEFAULT.
 DROP TRIGGER IF EXISTS `av_banking_default_personal_label`;
 DELIMITER $$
 CREATE TRIGGER `av_banking_default_personal_label`
 BEFORE INSERT ON `av_banking_accounts`
 FOR EACH ROW
 BEGIN
-  IF NEW.`type` = 'personal' AND NEW.`native` = 1 THEN
-    SET NEW.`label` = 'Bank Account - Personal';
+  IF LOWER(NEW.`type`) = 'personal'
+     AND (NEW.`label` IS NULL OR TRIM(NEW.`label`) = ''
+          OR LOWER(TRIM(NEW.`label`)) = 'checking') THEN
+    SET NEW.`label` = 'Personal';
   END IF;
 END$$
 DELIMITER ;
