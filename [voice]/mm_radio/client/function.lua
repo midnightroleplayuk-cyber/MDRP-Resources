@@ -103,6 +103,20 @@ function Radio:Init(data)
             self.userData[self.identifier].playerlist.coords = { x = tonumber(overlayPos.x), y = tonumber(overlayPos.y) }
         end
     end
+    -- Restore persistent per-character preferences even after a fresh login.
+    local savedPrefs = GetResourceKvpString(('mm_radio_prefs_%s'):format(self.identifier))
+    if savedPrefs then
+        local ok, prefs = pcall(json.decode, savedPrefs)
+        if ok and type(prefs) == 'table' then
+            if type(prefs.name) == 'string' and prefs.name ~= '' then self.userData[self.identifier].name = prefs.name end
+            if type(prefs.overlay) == 'boolean' then self.userData[self.identifier].playerlist.show = prefs.overlay end
+            if tonumber(prefs.opacity) then self.userData[self.identifier].overlayOpacity = math.max(20, math.min(100, tonumber(prefs.opacity))) end
+            if tonumber(prefs.volume) then self.userData[self.identifier].volume = math.max(0, math.min(100, tonumber(prefs.volume))) end
+        end
+    end
+    self.Volume = tonumber(self.userData[self.identifier].volume) or self.Volume
+    exports['pma-voice']:setRadioVolume(self.Volume)
+    pcall(function() exports['pma-voice']:resyncSecondaryRadioVolume() end)
     self.userData[self.identifier].name = self.userData[self.identifier].name or player.charinfo.firstname .. " " .. player.charinfo.lastname
     -- Overlay scale now uses direct percentages (75-150). Older builds stored 25-75
     -- with a x2 multiplier, so migrate those values once while preserving appearance.

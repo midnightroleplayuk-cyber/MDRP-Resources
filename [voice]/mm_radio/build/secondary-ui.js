@@ -11,7 +11,8 @@
     secondaryMembers: {},
     channelNames: {},
     rosterCoords: null,
-    rosterScale: 100
+    rosterScale: 100,
+    opacity: 100, volume: 30, displayName: ''
   };
 
   // Client-local fallback for roster position. mm_radio also saves the position in
@@ -133,6 +134,7 @@
     const scale = Math.max(75, Math.min(150, Number(state.rosterScale) || 100));
     roster.style.transformOrigin = 'top right';
     roster.style.transform = `scale(${scale / 100})`;
+    roster.style.opacity = String(Math.max(.2, Math.min(1, state.opacity / 100)));
   }
 
   function renderRoster() {
@@ -159,6 +161,7 @@
     panel.classList.toggle('show', !!state.visible && panel.dataset.docked === '1');
     leave.disabled = !on;
     renderRoster();
+    renderDashboard();
   }
 
   function joinSecondary() {
@@ -251,7 +254,82 @@
     render();
   }
 
-  setInterval(dockPanelIntoSettings, 200);
+  // Legacy settings docking disabled in favour of the unified three-tab dashboard.
+
+
+
+  const dashboard = document.createElement('div');
+  dashboard.id = 'mm-radio-dashboard';
+  dashboard.innerHTML = `
+    <header class="mm-dash-header"><div><strong>MM RADIO</strong><small>DUAL FREQUENCY CONTROL</small></div><button data-action="close" aria-label="Close">✕</button></header>
+    <nav class="mm-dash-tabs"><button data-tab="primary" class="active">PRIMARY</button><button data-tab="secondary">SECONDARY</button><button data-tab="settings">SETTINGS</button></nav>
+    <section data-page="primary" class="mm-dash-page active"><div class="mm-dash-caption">PRIMARY FREQUENCY <b data-current="primary">OFF</b></div><div class="mm-dash-entry"><input data-frequency="primary" type="number" min="1" step="0.01" placeholder="Enter frequency"><button data-join="primary">JOIN</button></div><div class="mm-dash-label">QUICK CHANNELS</div><div class="mm-dash-presets" data-presets="primary"></div><button class="mm-dash-disconnect" data-leave="primary">DISCONNECT PRIMARY</button></section>
+    <section data-page="secondary" class="mm-dash-page"><div class="mm-dash-caption">SECONDARY FREQUENCY <b data-current="secondary">OFF</b></div><div class="mm-dash-entry"><input data-frequency="secondary" type="number" min="1" step="0.01" placeholder="Enter frequency"><button data-join="secondary">JOIN</button></div><div class="mm-dash-label">QUICK CHANNELS</div><div class="mm-dash-presets" data-presets="secondary"></div><button class="mm-dash-disconnect" data-leave="secondary">DISCONNECT SECONDARY</button></section>
+    <section data-page="settings" class="mm-dash-page"><label>RADIO DISPLAY NAME</label><div class="mm-dash-entry"><input data-name maxlength="48" placeholder="Your radio name"><button data-save-name>SAVE</button></div><label>RADIO VOLUME <output data-volume-label>30%</output></label><input data-volume type="range" min="0" max="100"><label class="mm-dash-toggle">SHOW RADIO LIST <input data-overlay type="checkbox"></label><label>RADIO LIST OPACITY <output data-opacity-label>100%</output></label><input data-opacity type="range" min="20" max="100"><p class="mm-dash-hint">Drag the radio list while this menu is open to move it. Settings save automatically.</p></section>
+    <div class="mm-dash-feedback" aria-live="polite"></div>`;
+  document.body.appendChild(dashboard);
+  let activeTab = 'primary';
+  const get = selector => dashboard.querySelector(selector);
+  const feedback = message => { get('.mm-dash-feedback').textContent = message; };
+  function syncPreferences(data) {
+    if (!data) return;
+    if (data.volume !== undefined) state.volume = Number(data.volume) || 0;
+    if (data.userData) {
+      state.displayName = data.userData.name || '';
+      state.opacity = Number(data.userData.overlayOpacity) || 100;
+      if (data.userData.volume !== undefined) state.volume = Number(data.userData.volume) || 0;
+    }
+  }
+  function renderDashboard() {
+    dashboard.classList.toggle('show', state.visible);
+    document.body.classList.toggle('mm-dash-open', state.visible);
+    get('[data-current="primary"]').textContent = rosterChannelText(state.primary);
+    get('[data-current="secondary"]').textContent = rosterChannelText(state.channel);
+    get('[data-leave="primary"]').disabled = !state.primary;
+    get('[data-leave="secondary"]').disabled = !state.channel;
+    get('[data-overlay]').checked = state.overlayEnabled;
+    get('[data-volume]').value = state.volume;
+    get('[data-volume-label]').textContent = state.volume + '%';
+    get('[data-opacity]').value = state.opacity;
+    get('[data-opacity-label]').textContent = state.opacity + '%';
+    if (document.activeElement !== get('[data-name]')) get('[data-name]').value = state.displayName;
+    for (const side of ['primary','secondary']) {
+      const target = get(`[data-presets="${side}"]`);
+      target.replaceChildren();
+      const entries = Object.entries(state.channelNames).filter(([key]) => /^\d+(?:\.\d+)?$/.test(key)).sort((a,b) => Number(a[0])-Number(b[0]));
+      for (const [channel, label] of entries) {
+        const btn = document.createElement('button');
+        btn.textContent = `${label} · ${channel}`;
+        btn.disabled = Number(channel) === (side === 'primary' ? state.channel : state.primary);
+        btn.addEventListener('click', () => tune(side, Number(channel)));
+        target.appendChild(btn);
+      }
+      if (!entries.length) target.textContent = 'No preset channels configured';
+    }
+  }
+  function tune(side, channel) {
+    const other = side === 'primary' ? state.channel : state.primary;
+    if (!Number.isFinite(channel) || channel < 1 || channel > state.maxChannel) return feedback('Invalid frequency.');
+    if (Math.abs(channel - other) < 0.0001) return feedback('Already connected on the other radio.');
+    feedback('');
+    post(side === 'primary' ? 'join' : 'joinSecondary', side === 'primary' ? channel : {channel});
+  }
+  dashboard.addEventListener('click', e => {
+    const btn = e.target.closest('button'); if (!btn) return;
+    if (btn.dataset.tab) {
+      activeTab = btn.dataset.tab;
+      dashboard.querySelectorAll('[data-tab]').forEach(el => el.classList.toggle('active', el.dataset.tab === activeTab));
+      dashboard.querySelectorAll('[data-page]').forEach(el => el.classList.toggle('active', el.dataset.page === activeTab));
+    }
+    if (btn.dataset.join) tune(btn.dataset.join, Number(get(`[data-frequency="${btn.dataset.join}"]`).value));
+    if (btn.dataset.leave) post(btn.dataset.leave === 'primary' ? 'leave' : 'leaveSecondary');
+    if (btn.dataset.action === 'close') post('hideUI');
+    if (btn.hasAttribute('data-save-name')) { const name = get('[data-name]').value.trim(); if (name) {state.displayName = name; post('saveData', {name}); feedback('Name saved.');} }
+  });
+  dashboard.querySelectorAll('[data-frequency]').forEach(el => el.addEventListener('keydown', e => {if(e.key === 'Enter') tune(el.dataset.frequency, Number(el.value));}));
+  get('[data-overlay]').addEventListener('change', e => {state.overlayEnabled = e.target.checked; post('showPlayerList', state.overlayEnabled); renderRoster();});
+  get('[data-volume]').addEventListener('input', e => {state.volume = Number(e.target.value); get('[data-volume-label]').textContent = state.volume + '%'; post('volumeChange', state.volume);});
+  get('[data-opacity]').addEventListener('input', e => {state.opacity = Number(e.target.value); get('[data-opacity-label]').textContent = state.opacity + '%'; applyRosterPosition(); post('setOverlayOpacity', state.opacity);});
 
   // Legacy Show/Hide Overlay footer control is removed directly from the compiled radio UI.
 
@@ -265,6 +343,7 @@
       state.channel = Number(data.secondaryChannel) || 0;
       state.maxChannel = Number(data.maxChannel) || state.maxChannel;
       if (data.channelName && typeof data.channelName === 'object') state.channelNames = data.channelName;
+      syncPreferences(data);
       if (data.userData?.playerlist) {
         state.overlayEnabled = data.userData.playerlist.show === true;
         if (data.userData.playerlist.coords) state.rosterCoords = data.userData.playerlist.coords;
@@ -277,6 +356,7 @@
       state.primary = Number(data.channel) || 0;
       if (data.secondaryChannel !== undefined) state.channel = Number(data.secondaryChannel) || 0;
       if (data.channelName && typeof data.channelName === 'object') state.channelNames = data.channelName;
+      syncPreferences(data);
       if (data.userData?.playerlist) {
         state.overlayEnabled = data.userData.playerlist.show === true;
         if (data.userData.playerlist.coords) state.rosterCoords = data.userData.playerlist.coords;

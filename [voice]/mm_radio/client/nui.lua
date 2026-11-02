@@ -1,3 +1,13 @@
+local function SaveRadioPrefs()
+    if not Radio.identifier or not Radio.userData[Radio.identifier] then return end
+    local data = Radio.userData[Radio.identifier]
+    SetResourceKvp('radioSettings2', json.encode(Radio.userData))
+    SetResourceKvp(('mm_radio_prefs_%s'):format(Radio.identifier), json.encode({
+        name = data.name, overlay = data.playerlist.show,
+        opacity = data.overlayOpacity or 100, volume = data.volume or Radio.Volume
+    }))
+end
+
 function Radio:SendSvelteMessage(name, data)
     if not Shared.Ready then return end
     SendNUIMessage({
@@ -38,6 +48,8 @@ RegisterNUICallback('toggleMute', function(volume, cb)
     -- One shared slider controls both Primary and Secondary radio voice volume.
     pcall(function() exports["pma-voice"]:resyncSecondaryRadioVolume() end)
     Radio.Volume = volume
+    Radio.userData[Radio.identifier].volume = volume
+    SaveRadioPrefs()
     cb('ok')
 end)
 
@@ -48,6 +60,8 @@ RegisterNUICallback("volumeChange", function(data, cb)
     -- Re-apply the new shared radio volume to anyone already talking on Secondary.
     pcall(function() exports["pma-voice"]:resyncSecondaryRadioVolume() end)
     Radio.Volume = data
+    Radio.userData[Radio.identifier].volume = data
+    SaveRadioPrefs()
     cb('ok')
 end)
 
@@ -89,6 +103,7 @@ RegisterNUICallback('showPlayerList', function(data, cb)
     SetResourceKvp('radioSettings2', json.encode(Radio.userData))
     -- Keep the custom dual-channel roster tied to the stock overlay setting.
     Radio:SendSvelteMessage('overlayVisibilityChanged', { show = data == true })
+    SaveRadioPrefs()
     cb("ok")
 end)
 
@@ -164,4 +179,10 @@ RegisterNUICallback('togglemutePlayer', function(data, cb)
     Wait(100)
     print(json.encode(exports['pma-voice']:getMutedPlayers()))
     cb(exports['pma-voice']:getMutedPlayers())
+end)
+RegisterNUICallback('setOverlayOpacity', function(data, cb)
+    local value = math.max(20, math.min(100, tonumber(data) or 100))
+    Radio.userData[Radio.identifier].overlayOpacity = value
+    SaveRadioPrefs()
+    cb('ok')
 end)
