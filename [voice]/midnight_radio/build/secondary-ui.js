@@ -198,49 +198,59 @@
     renderRoster();
   });
 
-  // Persist during movement as well as on release. FiveM can consume mouseup
-  // when NUI focus changes; never rely on that single event for persistence.
-  let dragging = false, startX = 0, startY = 0, startRight = 0, startTop = 0;
-  let lastSaveAt = 0, saveSequence = 0;
-  function persistRosterPosition() {
-    if (!state.rosterCoords) return;
-    const coords = {x: state.rosterCoords.x, y: state.rosterCoords.y};
-    const sequence = ++saveSequence;
+  // Save ONLY a real drag, never a click, blur, menu close, or reconnect.
+  // A no-movement save previously overwrote the correct server position with
+  // stale coordinates during session transitions.
+  let dragging = false, dragMoved = false, dragStartX = 0, dragStartY = 0;
+  let dragRight = 0, dragTop = 0, dragPointerId = null;
+  let saveSequence = 0, lastSaveAt = 0;
+  function persistRosterPosition(reason) {
+    if (!dragMoved || !state.rosterCoords) return;
+    const coords = {x: Math.round(state.rosterCoords.x * 10) / 10, y: Math.round(state.rosterCoords.y * 10) / 10};
+    const seq = ++saveSequence;
+    console.info('[midnight_radio] Overlay DRAG SAVE', reason, 'x='+coords.x, 'y='+coords.y, 'seq='+seq);
     fetch(`https://${RESOURCE}/updatePlayerListPosition`, {
-      method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(coords)
-    }).then(r => r.text()).then(result => {
-      if (result.includes('error')) console.error('[midnight_radio] Overlay save failed', sequence, result);
-      else console.info('[midnight_radio] Overlay saved', sequence, coords);
-    }).catch(err => console.error('[midnight_radio] Overlay save request failed', err));
+      method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(coords)
+    }).then(r=>r.text()).then(result=>{
+      if (result.includes('error')) console.error('[midnight_radio] Overlay SAVE FAILED', seq, result);
+      else console.info('[midnight_radio] Overlay SAVE ACK', seq, 'x='+coords.x, 'y='+coords.y);
+    }).catch(err=>console.error('[midnight_radio] Overlay SAVE NETWORK ERROR', seq, err));
   }
-  roster.addEventListener('mousedown', e => {
+  roster.addEventListener('pointerdown', e => {
     if (!state.visible || !state.overlayEnabled || e.button !== 0) return;
-    dragging = true;
-    startX = e.clientX; startY = e.clientY;
-    startRight = Number.parseFloat(roster.style.right) || 0;
-    startTop = Number.parseFloat(roster.style.top) || 0;
+    dragging = true; dragMoved = false; dragPointerId = e.pointerId;
+    dragStartX = e.clientX; dragStartY = e.clientY;
+    // Read the real rendered box; never use a stale inline position.
+    const rect = roster.getBoundingClientRect();
+    dragRight = window.innerWidth - rect.right;
+    dragTop = rect.top;
+    try { roster.setPointerCapture(e.pointerId); } catch (_) {}
+    console.info('[midnight_radio] Overlay DRAG START', 'right='+dragRight.toFixed(1), 'top='+dragTop.toFixed(1));
     e.preventDefault();
   });
-  window.addEventListener('mousemove', e => {
-    if (!dragging) return;
+  roster.addEventListener('pointermove', e => {
+    if (!dragging || e.pointerId !== dragPointerId) return;
+    const dx = e.clientX - dragStartX, dy = e.clientY - dragStartY;
+    if (Math.abs(dx) + Math.abs(dy) < 2 && !dragMoved) return;
+    dragMoved = true;
     const factor = Math.max(.75, Math.min(1.5, Number(state.rosterScale || 100) / 100));
     state.rosterCoords = {
-      x: Math.max(0, Math.min(window.innerWidth - roster.offsetWidth * factor, startRight - (e.clientX - startX))),
-      y: Math.max(0, Math.min(window.innerHeight - roster.offsetHeight * factor, startTop + (e.clientY - startY)))
+      x: Math.max(0, Math.min(window.innerWidth - roster.offsetWidth * factor, dragRight - dx)),
+      y: Math.max(0, Math.min(window.innerHeight - roster.offsetHeight * factor, dragTop + dy))
     };
     applyRosterPosition();
     const now = Date.now();
-    if (now - lastSaveAt > 350) { lastSaveAt = now; persistRosterPosition(); }
+    if (now-lastSaveAt >= 350) { lastSaveAt=now; persistRosterPosition('move'); }
   });
-  function finishRosterDrag() {
-    if (!dragging) return;
-    dragging = false;
-    persistRosterPosition();
+  function finishRosterDrag(e) {
+    if (!dragging || (e && e.pointerId !== undefined && e.pointerId !== dragPointerId)) return;
+    if (dragMoved) persistRosterPosition('release');
+    dragging=false; dragMoved=false; dragPointerId=null;
   }
-  window.addEventListener('mouseup', finishRosterDrag);
-  window.addEventListener('pointerup', finishRosterDrag);
-  window.addEventListener('blur', finishRosterDrag);
-  window.addEventListener('beforeunload', () => { if (dragging) persistRosterPosition(); });
+  roster.addEventListener('pointerup', finishRosterDrag);
+  roster.addEventListener('pointercancel', finishRosterDrag);
+  roster.addEventListener('lostpointercapture', finishRosterDrag);
+  window.addEventListener('blur', () => { if (dragging) finishRosterDrag(); });
 
   function findSettingsBody() {
     const checkboxes = [...document.querySelectorAll('input[type="checkbox"]')];
@@ -422,7 +432,7 @@
       if (c && Number.isFinite(Number(c.x)) && Number.isFinite(Number(c.y))) {
         state.rosterCoords = {x: Number(c.x), y: Number(c.y)};
         rosterPositionReady = true;
-        console.info('[midnight_radio] Overlay LOAD applied', state.rosterCoords);
+        console.info('[midnight_radio] Overlay LOAD applied x='+state.rosterCoords.x+' y='+state.rosterCoords.y);
         applyRosterPosition();
         renderRoster();
       }
