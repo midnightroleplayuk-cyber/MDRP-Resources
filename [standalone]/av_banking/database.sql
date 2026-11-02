@@ -365,3 +365,17 @@ CREATE TABLE IF NOT EXISTS `av_banking_atm_state` (
   `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Default name for newly created native personal accounts.
+-- Custom names remain editable and are not overwritten on updates.
+DROP TRIGGER IF EXISTS `av_banking_default_personal_label`;
+DELIMITER $$
+CREATE TRIGGER `av_banking_default_personal_label`
+BEFORE INSERT ON `av_banking_accounts`
+FOR EACH ROW
+BEGIN
+  IF NEW.`type` = 'personal' AND NEW.`native` = 1 THEN
+    SET NEW.`label` = 'Bank Account - Personal';
+  END IF;
+END$$
+DELIMITER ;
