@@ -206,16 +206,15 @@
     dragging = true;
     startX = e.clientX;
     startY = e.clientY;
-    const r = roster.getBoundingClientRect();
-    startRight = window.innerWidth - r.right;
-    startTop = r.top;
+    startRight = Number.parseFloat(roster.style.right) || 0;
+    startTop = Number.parseFloat(roster.style.top) || 0;
     e.preventDefault();
   });
   window.addEventListener('mousemove', e => {
     if (!dragging) return;
-    const bounds = roster.getBoundingClientRect();
-    const nextRight = Math.max(0, Math.min(window.innerWidth - bounds.width, startRight - (e.clientX - startX)));
-    const nextTop = Math.max(0, Math.min(window.innerHeight - bounds.height, startTop + (e.clientY - startY)));
+    const factor = Math.max(.75, Math.min(1.5, Number(state.rosterScale || 100) / 100));
+    const nextRight = Math.max(0, Math.min(window.innerWidth - roster.offsetWidth * factor, startRight - (e.clientX - startX)));
+    const nextTop = Math.max(0, Math.min(window.innerHeight - roster.offsetHeight * factor, startTop + (e.clientY - startY)));
     state.rosterCoords = { x: nextRight, y: nextTop };
     applyRosterPosition();
   });
@@ -231,6 +230,7 @@
   }
   window.addEventListener('mouseup', saveDraggedRosterPosition);
   window.addEventListener('blur', saveDraggedRosterPosition);
+  window.addEventListener('pointerup', saveDraggedRosterPosition);
 
   function findSettingsBody() {
     const checkboxes = [...document.querySelectorAll('input[type="checkbox"]')];

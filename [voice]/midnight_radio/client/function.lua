@@ -121,10 +121,10 @@ function Radio:Init(data)
     if savedPrefs then
         local ok, prefs = pcall(json.decode, savedPrefs)
         if ok and type(prefs) == 'table' then
-            -- Use the newest saved position from per-character preferences.
-            -- This also migrates users whose position was only stored here.
+            -- Dedicated overlay position KVP is authoritative. The prefs snapshot
+            -- is only a migration fallback when no dedicated position exists.
             local c = prefs.overlayCoords
-            if type(c) == 'table' and tonumber(c.x) and tonumber(c.y) then
+            if not overlayPosRaw and type(c) == 'table' and tonumber(c.x) and tonumber(c.y) then
                 self.userData[self.identifier].playerlist.coords = {x = tonumber(c.x), y = tonumber(c.y)}
             end
             if type(prefs.name) == 'string' and prefs.name ~= '' then self.userData[self.identifier].name = prefs.name end
