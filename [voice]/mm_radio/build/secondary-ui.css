@@ -114,3 +114,28 @@ body.mm-dash-open #app{visibility:hidden!important}
 }
 #mm-radio-dashboard .mm-dash-page::-webkit-scrollbar,
 #mm-radio-dashboard .mm-dash-presets::-webkit-scrollbar{display:none!important;width:0!important;height:0!important}
+
+/* v3: preserve original handset image proportions (439 x 1100). */
+#mm-radio-dashboard{width:263.4px!important;height:660px!important;min-width:0!important;max-width:none!important;padding:263px 38px 78px 48px!important;background-size:100% 100%!important}
+#mm-radio-dashboard::before{left:48px;right:38px;top:263px;bottom:78px;z-index:0}
+#mm-radio-dashboard > *{position:relative;z-index:1}
+#mm-radio-dashboard .mm-dash-header{margin-bottom:5px}
+#mm-radio-dashboard .mm-dash-header strong{font-size:11px}
+#mm-radio-dashboard .mm-dash-header small{font-size:6px;letter-spacing:.25px}
+#mm-radio-dashboard .mm-dash-header button{padding:4px 6px}
+#mm-radio-dashboard .mm-dash-tabs{gap:1px;padding:2px;margin-bottom:8px}
+#mm-radio-dashboard .mm-dash-tabs button{font-size:7px;padding:6px 0}
+#mm-radio-dashboard .mm-dash-caption{font-size:8px;margin-bottom:7px}
+#mm-radio-dashboard .mm-dash-entry{margin-bottom:8px}
+#mm-radio-dashboard .mm-dash-entry input{padding:7px 5px;font-size:9px}
+#mm-radio-dashboard .mm-dash-entry button{padding:6px}
+#mm-radio-dashboard .mm-dash-disconnect{margin-top:9px;font-size:8px;padding:7px 4px}
+#mm-radio-dashboard .mm-channel-open{width:100%;display:flex;justify-content:space-between;gap:4px;align-items:center;background:#7831bd;border:1px solid #a46ae1;border-radius:6px;padding:11px 7px;font-weight:800;font-size:9px;cursor:pointer}
+#mm-radio-dashboard .mm-channel-open span{font-size:8px}
+#mm-radio-dashboard .mm-channel-list{height:158px;min-height:0}
+#mm-radio-dashboard [hidden]{display:none!important}
+#mm-radio-dashboard .mm-channel-back{width:100%;border:0;background:#4d1a7e;border-radius:5px;padding:7px 4px;margin-bottom:5px;text-align:left;font-weight:800;font-size:8px;cursor:pointer}
+#mm-radio-dashboard .mm-dash-presets{display:flex;flex-direction:column;gap:3px;max-height:126px;overflow-y:auto}
+#mm-radio-dashboard .mm-dash-presets button{width:100%;text-align:left;padding:7px 6px;font-size:9px}
+#mm-radio-dashboard .mm-dash-page,#mm-radio-dashboard .mm-dash-presets{scrollbar-width:none!important}
+#mm-radio-dashboard .mm-dash-page::-webkit-scrollbar,#mm-radio-dashboard .mm-dash-presets::-webkit-scrollbar{display:none!important}

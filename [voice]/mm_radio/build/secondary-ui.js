@@ -263,8 +263,8 @@
   dashboard.innerHTML = `
     <header class="mm-dash-header"><div><strong>MM RADIO</strong><small>DUAL FREQUENCY CONTROL</small></div><button data-action="close" aria-label="Close">✕</button></header>
     <nav class="mm-dash-tabs"><button data-tab="primary" class="active">PRIMARY</button><button data-tab="secondary">SECONDARY</button><button data-tab="settings">SETTINGS</button></nav>
-    <section data-page="primary" class="mm-dash-page active"><div class="mm-dash-caption">PRIMARY FREQUENCY <b data-current="primary">OFF</b></div><div class="mm-dash-entry"><input data-frequency="primary" type="number" min="1" step="0.01" placeholder="Enter frequency"><button data-join="primary">JOIN</button></div><div class="mm-dash-label">QUICK CHANNELS</div><div class="mm-dash-presets" data-presets="primary"></div><button class="mm-dash-disconnect" data-leave="primary">DISCONNECT PRIMARY</button></section>
-    <section data-page="secondary" class="mm-dash-page"><div class="mm-dash-caption">SECONDARY FREQUENCY <b data-current="secondary">OFF</b></div><div class="mm-dash-entry"><input data-frequency="secondary" type="number" min="1" step="0.01" placeholder="Enter frequency"><button data-join="secondary">JOIN</button></div><div class="mm-dash-label">QUICK CHANNELS</div><div class="mm-dash-presets" data-presets="secondary"></div><button class="mm-dash-disconnect" data-leave="secondary">DISCONNECT SECONDARY</button></section>
+    <section data-page="primary" class="mm-dash-page active"><div class="mm-dash-caption">PRIMARY FREQUENCY <b data-current="primary">OFF</b></div><div class="mm-dash-entry"><input data-frequency="primary" type="number" min="1" step="0.01" placeholder="Enter frequency"><button data-join="primary">JOIN</button></div><button class="mm-channel-open" data-open-channels="primary">JOB CHANNELS <span>VIEW LIST ›</span></button><div class="mm-channel-list" data-channel-list="primary" hidden><button class="mm-channel-back" data-back-channels="primary">‹ BACK</button><div class="mm-dash-presets" data-presets="primary"></div></div><button class="mm-dash-disconnect" data-leave="primary">DISCONNECT PRIMARY</button></section>
+    <section data-page="secondary" class="mm-dash-page"><div class="mm-dash-caption">SECONDARY FREQUENCY <b data-current="secondary">OFF</b></div><div class="mm-dash-entry"><input data-frequency="secondary" type="number" min="1" step="0.01" placeholder="Enter frequency"><button data-join="secondary">JOIN</button></div><button class="mm-channel-open" data-open-channels="secondary">JOB CHANNELS <span>VIEW LIST ›</span></button><div class="mm-channel-list" data-channel-list="secondary" hidden><button class="mm-channel-back" data-back-channels="secondary">‹ BACK</button><div class="mm-dash-presets" data-presets="secondary"></div></div><button class="mm-dash-disconnect" data-leave="secondary">DISCONNECT SECONDARY</button></section>
     <section data-page="settings" class="mm-dash-page"><label>RADIO DISPLAY NAME</label><div class="mm-dash-entry"><input data-name maxlength="48" placeholder="Your radio name"><button data-save-name>SAVE</button></div><label>RADIO VOLUME <output data-volume-label>30%</output></label><input data-volume type="range" min="0" max="100"><label class="mm-dash-toggle">SHOW RADIO LIST <input data-overlay type="checkbox"></label><label>RADIO LIST OPACITY <output data-opacity-label>100%</output></label><input data-opacity type="range" min="20" max="100"><p class="mm-dash-hint">Drag the radio list while this menu is open to move it. Settings save automatically.</p></section>
     <div class="mm-dash-feedback" aria-live="polite"></div>`;
   document.body.appendChild(dashboard);
@@ -301,7 +301,7 @@
         const btn = document.createElement('button');
         btn.textContent = `${label} · ${channel}`;
         btn.disabled = Number(channel) === (side === 'primary' ? state.channel : state.primary);
-        btn.addEventListener('click', () => tune(side, Number(channel)));
+        btn.addEventListener('click', () => {tune(side, Number(channel)); target.closest('[data-channel-list]').hidden = true; get(`[data-open-channels="${side}"]`).hidden = false;});
         target.appendChild(btn);
       }
       if (!entries.length) target.textContent = 'No preset channels configured';
@@ -317,10 +317,12 @@
   dashboard.addEventListener('click', e => {
     const btn = e.target.closest('button'); if (!btn) return;
     if (btn.dataset.tab) {
-      activeTab = btn.dataset.tab;
+      activeTab = btn.dataset.tab; dashboard.querySelectorAll('[data-channel-list]').forEach(el => el.hidden = true); dashboard.querySelectorAll('[data-open-channels]').forEach(el => el.hidden = false);
       dashboard.querySelectorAll('[data-tab]').forEach(el => el.classList.toggle('active', el.dataset.tab === activeTab));
       dashboard.querySelectorAll('[data-page]').forEach(el => el.classList.toggle('active', el.dataset.page === activeTab));
     }
+    if (btn.dataset.openChannels) {get(`[data-channel-list="${btn.dataset.openChannels}"]`).hidden = false; btn.hidden = true;}
+    if (btn.dataset.backChannels) {get(`[data-channel-list="${btn.dataset.backChannels}"]`).hidden = true; get(`[data-open-channels="${btn.dataset.backChannels}"]`).hidden = false;}
     if (btn.dataset.join) tune(btn.dataset.join, Number(get(`[data-frequency="${btn.dataset.join}"]`).value));
     if (btn.dataset.leave) post(btn.dataset.leave === 'primary' ? 'leave' : 'leaveSecondary');
     if (btn.dataset.action === 'close') post('hideUI');
