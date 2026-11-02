@@ -261,7 +261,7 @@
   const dashboard = document.createElement('div');
   dashboard.id = 'mm-radio-dashboard';
   dashboard.innerHTML = `
-    <header class="mm-dash-header"><div><strong>MIDNIGHT RADIO</strong><small>SECURE ENCRYPTED RADIO</small></div><button data-action="close" aria-label="Close">✕</button></header>
+    <header class="mm-dash-header"><div><strong>MIDNIGHT RADIO</strong><small>SECURE ENCRYPTED RADIO</small></div></header>
     <nav class="mm-dash-tabs"><button data-tab="primary" class="active">PRIMARY</button><button data-tab="secondary">SECONDARY</button><button data-tab="settings" aria-label="Settings" title="Settings"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06-1.9 1.9-.06-.06A1.65 1.65 0 0 0 16 18.4a1.65 1.65 0 0 0-1 1.5V20h-6v-.1a1.65 1.65 0 0 0-1-1.5 1.65 1.65 0 0 0-1.82.33l-.06.06-1.9-1.9.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-1.5-1H3v-4h.1a1.65 1.65 0 0 0 1.5-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06 1.9-1.9.06.06A1.65 1.65 0 0 0 8 5.6a1.65 1.65 0 0 0 1-1.5V4h6v.1a1.65 1.65 0 0 0 1 1.5 1.65 1.65 0 0 0 1.82-.33l.06-.06 1.9 1.9-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.5 1h.1v4h-.1a1.65 1.65 0 0 0-1.5 1z"/></svg></button></nav>
     <section data-page="primary" class="mm-dash-page active"><div class="mm-dash-caption">PRIMARY FREQUENCY <b data-current="primary">OFF</b></div><div class="mm-dash-entry"><input data-frequency="primary" type="number" min="1" step="0.01" placeholder="Enter frequency"><button data-join="primary">JOIN</button></div><button class="mm-channel-open" data-open-channels="primary">JOB CHANNELS <span>VIEW LIST ›</span></button><div class="mm-channel-list" data-channel-list="primary" hidden><button class="mm-channel-back" data-back-channels="primary">‹ BACK</button><div class="mm-dash-presets" data-presets="primary"></div></div><button class="mm-dash-disconnect" data-leave="primary">DISCONNECT PRIMARY</button></section>
     <section data-page="secondary" class="mm-dash-page"><div class="mm-dash-caption">SECONDARY FREQUENCY <b data-current="secondary">OFF</b></div><div class="mm-dash-entry"><input data-frequency="secondary" type="number" min="1" step="0.01" placeholder="Enter frequency"><button data-join="secondary">JOIN</button></div><button class="mm-channel-open" data-open-channels="secondary">JOB CHANNELS <span>VIEW LIST ›</span></button><div class="mm-channel-list" data-channel-list="secondary" hidden><button class="mm-channel-back" data-back-channels="secondary">‹ BACK</button><div class="mm-dash-presets" data-presets="secondary"></div></div><button class="mm-dash-disconnect" data-leave="secondary">DISCONNECT SECONDARY</button></section>
@@ -273,9 +273,12 @@
   let moveRadio = false;
   try { const p = JSON.parse(localStorage.getItem('midnight_radio_position') || 'null'); if (p && Number.isFinite(p.x) && Number.isFinite(p.y)) radioPosition = p; } catch (_) {}
   function positionRadio() {
-    if (!radioPosition) { dashboard.style.left = ''; dashboard.style.top = ''; dashboard.style.right = ''; dashboard.style.bottom = ''; return; }
+    if (!radioPosition) { dashboard.classList.remove('radio-position-custom'); dashboard.style.removeProperty('--radio-x'); dashboard.style.removeProperty('--radio-y'); dashboard.style.left = ''; dashboard.style.top = ''; dashboard.style.right = ''; dashboard.style.bottom = ''; return; }
     const maxX = Math.max(0, innerWidth - dashboard.offsetWidth);
     const maxY = Math.max(0, innerHeight - dashboard.offsetHeight);
+    dashboard.classList.add('radio-position-custom');
+    dashboard.style.setProperty('--radio-x', Math.max(0, Math.min(maxX, radioPosition.x)) + 'px');
+    dashboard.style.setProperty('--radio-y', Math.max(0, Math.min(maxY, radioPosition.y)) + 'px');
     dashboard.style.left = Math.max(0, Math.min(maxX, radioPosition.x)) + 'px';
     dashboard.style.top = Math.max(0, Math.min(maxY, radioPosition.y)) + 'px';
     dashboard.style.right = 'auto'; dashboard.style.bottom = 'auto';
