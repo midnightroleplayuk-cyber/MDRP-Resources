@@ -159,7 +159,7 @@
     const on = Number(state.channel) > 0;
     current.textContent = on ? `${state.channel} MHz` : 'OFF';
     overlayToggle.checked = !!state.overlayEnabled;
-    panel.classList.toggle('show', !!state.visible && panel.dataset.docked === '1');
+    panel.classList.remove('show'); // Legacy panel must never appear in the three-tab interface.
     leave.disabled = !on;
     renderRoster();
     renderDashboard();
@@ -322,6 +322,8 @@
   }
   function renderDashboard() {
     dashboard.classList.toggle('show', state.visible);
+    dashboard.querySelectorAll('[data-page]').forEach(el => el.classList.toggle('active', el.dataset.page === activeTab));
+    dashboard.querySelectorAll('[data-tab]').forEach(el => el.classList.toggle('active', el.dataset.tab === activeTab));
     document.body.classList.toggle('mm-dash-open', state.visible);
     get('[data-current="primary"]').textContent = rosterChannelText(state.primary);
     get('[data-current="secondary"]').textContent = rosterChannelText(state.channel);
@@ -400,7 +402,8 @@
         if (data.userData.playerlist.coords) state.rosterCoords = data.userData.playerlist.coords;
         state.rosterScale = Math.max(75, Math.min(150, Number(data.userData.overlaySizeMultiplier) || 100));
       }
-      render(); setTimeout(dockPanelIntoSettings, 50);
+      panel.dataset.docked = '0';
+      render();
     } else if (action === 'setRadioHide') {
       state.visible = false; render();
     } else if (action === 'updateRadio') {
