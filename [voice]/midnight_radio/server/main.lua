@@ -445,3 +445,26 @@ lib.callback.register('midnight_radio:server:getOverlayPosition', function(src)
     end
     return nil
 end)
+
+-- Confirmed save path: the UI only reports success after the server writes KVP.
+lib.callback.register('midnight_radio:server:storeOverlayPosition', function(src, coords)
+    local key = overlayKey(src)
+    if not key or type(coords) ~= 'table' then
+        print(('[midnight_radio] Overlay save rejected: missing character for %s'):format(src))
+        return false
+    end
+    local x, y = tonumber(coords.x), tonumber(coords.y)
+    if not x or not y or x ~= x or y ~= y or x < 0 or y < 0 or x > 20000 or y > 20000 then
+        print(('[midnight_radio] Overlay save rejected: invalid coords for %s'):format(src))
+        return false
+    end
+    local payload = json.encode({x=x, y=y})
+    SetResourceKvp(key, payload)
+    local verified = GetResourceKvpString(key)
+    if verified ~= payload then
+        print(('[midnight_radio] Overlay KVP verification failed for %s'):format(key))
+        return false
+    end
+    print(('[midnight_radio] Overlay position SAVED for %s: x=%.1f y=%.1f'):format(key, x, y))
+    return true
+end)

@@ -124,8 +124,16 @@ RegisterNUICallback('updatePlayerListPosition', function(data, cb)
     -- Separate per-character backup makes the dragged position durable across
     -- /logout, reconnects, client restarts and later sessions.
     SetResourceKvp(('mm_radio_overlay_pos_%s'):format(Radio.identifier), json.encode(coords))
-    TriggerServerEvent('midnight_radio:server:saveOverlayPosition', coords)
-    cb("ok")
+    local ok, saved = pcall(function()
+        return lib.callback.await('midnight_radio:server:storeOverlayPosition', false, coords)
+    end)
+    if not ok or saved ~= true then
+        print('[midnight_radio] WARNING: overlay position was NOT confirmed saved on server')
+        cb('error')
+        return
+    end
+    print(('[midnight_radio] Overlay position confirmed saved x=%.1f y=%.1f'):format(coords.x, coords.y))
+    cb('ok')
 end)
 
 RegisterNUICallback('updateRadioPosition', function(data, cb)

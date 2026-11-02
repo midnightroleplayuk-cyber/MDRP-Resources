@@ -229,7 +229,14 @@
       // Persist only on completed drag, using the final screen coordinates.
       // Do not re-read stale preferences after the save.
       const finalCoords = {x: state.rosterCoords.x, y: state.rosterCoords.y};
-      post('updatePlayerListPosition', finalCoords);
+      // Save immediately on release and report a failed server write.
+      fetch(`https://${GetParentResourceName()}/updatePlayerListPosition`, {
+        method: 'POST', headers: {'Content-Type':'application/json'},
+        body: JSON.stringify(finalCoords)
+      }).then(r => r.text()).then(result => {
+        if (result.includes('error')) console.error('[midnight_radio] Overlay position NOT saved:', result);
+        else console.info('[midnight_radio] Overlay position saved:', finalCoords);
+      }).catch(err => console.error('[midnight_radio] Overlay save request failed:', err));
     }
   }
   window.addEventListener('mouseup', saveDraggedRosterPosition);
