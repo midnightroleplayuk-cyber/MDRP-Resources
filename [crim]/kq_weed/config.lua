@@ -259,12 +259,12 @@ Config.prePlaced = {
 -- We highly recommend adding these items to your shops, heists, robberies etc. instead
 Config.vendors = {
     ["seed_store"] = {
-        coords = vector3(2221.41, 5612.42, 53.68),
+        coords = vector3(660.92, 1282.48, 359.3),
         heading = 80.0,
-        model = "a_m_m_hillbilly_01",
+        model = "g_m_y_salvagoon_01",
         idleAnim = {
-            dict = "timetable@ron@ig_3_couch",
-            anim = "base"
+            dict = "amb@world_human_leaning@male@wall@back@foot_up@idle_a",
+            anim = "idle_a"
         },
         items = {
             ['kq_weed_seed_purple_haze'] = { label = "Weed seed [Purple Haze]", price = 100 },
