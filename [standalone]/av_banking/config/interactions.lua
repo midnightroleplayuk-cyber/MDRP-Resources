@@ -1,5 +1,5 @@
 -- Auto detect target system using av_laptop config
-Config.TargetSystem = true
+Config.TargetSystem = 'ox_target'
 Config.Interaction = {
 	distance = 1.6,
 	key = 38,
