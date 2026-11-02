@@ -317,7 +317,7 @@ Config.vendors = {
             ['kq_weed_fertilizer_yield'] = { label = "Fertilizer [Yield amount]", price = 200 },
             ['kq_weed_fertilizer_resistance'] = { label = "Fertilizer [Resistance booster]", price = 200 },
             ['kq_weed_fertilizer_blackmarket'] = { label = "Fertilizer [Blackmarket]", price = 400 },
-            ['kq_weed_bag_empty'] = { label = "Empty baggie", price = 30, amount = 5 },
+           -- ['kq_weed_bag_empty'] = { label = "Empty baggie", price = 30, amount = 5 },
         },
         blip = {
             enabled = false,
