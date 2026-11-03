@@ -5759,5 +5759,3 @@ return {
         server = { export = 'rex_darts.useItem' },
     },
 }
-
-}
