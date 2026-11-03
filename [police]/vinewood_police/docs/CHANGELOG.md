@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.14.5
+- Config.Dogs.Model is always used as written. 1.14.0 quietly switched 'a_c_shepherd' to 'vw_policedog' for older configs, which meant choosing the normal shepherd had no effect. (KeepStockShepherd is no longer needed.)
+
+## 1.14.4
+- Fixed: crash on /dog. 1.14.2 set the dog's IsStreamedGfx to false, which doesn't match how the model is built; it's back to the game's own value (true).
+- The dog's head, coat and harness are only set if the model really has that part and texture (checked first), so a different model can't crash it. Config.Dogs.Look.enabled = false leaves the model exactly as it is.
+- Config.Dogs.Debug = true prints each step of /dog to F8 as it happens, so the log shows how far it got even if the game crashes.
+
 ## 1.14.3
 - Fixed: game crash on /dog. The police dog's skeleton (vw_policedog.yft) still had its old internal name (pack:/a_c_shepherd) from before it became an add-on ped, so GTA crashed building it. The name inside the file is now vw_policedog. Nothing else in the model changed.
 
@@ -13,7 +21,7 @@
 
 ## 1.14.0
 - The police dog is now an add-on ped, vw_policedog, instead of replacing the game's shepherd (which didn't stream reliably: another script streaming a_c_shepherd, or the stock dog already being loaded, won). data/policedog_peds.meta uses the game's own German shepherd settings (movement, capsule, get-ups, navigation, personality), so it behaves exactly like a dog. Pets and ambient shepherds from other scripts are no longer changed.
-- Config.Dogs.Model is now 'vw_policedog'. An older config that still says 'a_c_shepherd' is switched over automatically (set Config.Dogs.KeepStockShepherd = true to keep the plain shepherd).
+- Config.Dogs.Model is now 'vw_policedog'. An older config that still says 'a_c_shepherd' is switched over automatically.
 
 ## 1.13.1
 - Fixed: "Your dog couldn't be deployed". The dog was created by the handler's game, and servers that block or delay player-made entities (sv_entityLockdown, anti-cheat entity protection, slow OneSync sync) removed it before the server could see it. The server now creates the dog and the handler's game takes control of it, keeping control so the dog doesn't stop following when it streams to another player.

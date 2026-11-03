@@ -4,10 +4,12 @@
 Config.Dogs = {
     Command = 'dog',              -- deploy or recall your dog (signed on as Dog section)
     Units = { 'dogs' },
-    Model = 'a_c_shepherd',       -- the Vinewood police dog (stream/policedog/). 'a_c_shepherd' = the game's shepherd
+    Model = 'vw_policedog',       -- the Vinewood police dog (stream/policedog/). 'a_c_shepherd' = the game's shepherd
     -- Which texture of each part the dog wears (0 = the first: a, 1 = b...). random = true picks
     -- different head and coat textures each time it's deployed.
+    Debug = false,                -- true: every step of /dog is printed to F8 as it happens (survives a crash)
     Look = {
+        enabled = true,           -- false: don't change the dog's parts at all (test a different model)
         random = false,
         head = 0,                 -- head: a, b or c (0-2)
         uppr = 0,                 -- coat: a, b, c or d (0-3)
