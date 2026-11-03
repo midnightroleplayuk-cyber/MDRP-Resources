@@ -1133,6 +1133,10 @@ function renderScene(body, task) {
     body.append(grid);
   }
 
+  body.append(h('h3', {}, 'Evidence markers'),
+    h('p', { class: 'note', style: 'margin:0 0 6px' }, `${d.markers || 0} placed by you. They number themselves (lowest free number at the scene); keep pressing Enter to put down the next one.`),
+    h('button', { class: 'primary', style: 'margin-top:0', type: 'button', onclick: () => { nui('sceneMarkers', {}); $('hub').hidden = true; state.task = null; } }, 'Place evidence markers'));
+
   body.append(h('h3', {}, 'Police tape'),
     h('p', { class: 'note', style: 'margin:0 0 6px' }, `${d.tapes || 0} of ${d.tapeMax || 0} lengths up. Aim at a post, cone or fence (or the ground for waist height), E ties it, Enter finishes.`),
     h('div', { class: 'actions', style: 'margin-top:0' },
@@ -2574,6 +2578,33 @@ function renderAdmin(body, task) {
   body.append(h('div', { class: 'actions', style: 'flex-wrap:nowrap' }, sc,
     h('button', { class: 'small', type: 'button', onclick: call('admin:callout', () => ({ scenario: sc.value })) }, 'Start one near me')));
 
+  body.append(h('h3', {}, 'Qualifications (testing)'));
+  const qbox = h('div');
+  const qwho = select('f-adm-qwho', (d.players || []).map((p) => ({ value: String(p.src), label: `${p.name} (${p.src})` })));
+  qwho.style.width = 'auto'; qwho.style.flex = '1';
+  const me = (d.players || []).find((p) => p.me);
+  if (me) qwho.value = String(me.src);
+  const qrun = (op, qual) => async (e) => { await busy(e.currentTarget, async () => {
+    const res = await request('admin:quals', { target: Number(qwho.value), op, qual });
+    if (res.error) return message(qbox, res.error);
+    drawQuals(res);
+    if (op) message(qbox, op === 'all' ? `Granted ${res.changed}.` : op === 'none' ? `Removed ${res.changed}.` : 'Done.', 'success');
+  }); };
+  function drawQuals(q) {
+    qbox.replaceChildren();
+    const grid = h('div', { class: 'statuses' });
+    for (const x of list(q.defs)) {
+      grid.append(h('button', { type: 'button', style: `--tone:${x.held ? 'var(--ok)' : 'var(--edge)'}`, 'aria-pressed': String(x.held),
+        title: x.held ? 'Held: click to remove' : 'Click to grant', onclick: qrun(x.held ? 'revoke' : 'grant', x.id) }, x.label));
+    }
+    qbox.append(grid);
+  }
+  body.append(h('div', { class: 'actions', style: 'flex-wrap:nowrap;margin-top:0' }, qwho,
+    h('button', { class: 'small', type: 'button', onclick: qrun('all') }, 'Give all'),
+    h('button', { class: 'small', type: 'button', onclick: qrun('none') }, 'Remove all')), qbox);
+  qwho.addEventListener('change', () => qrun()({ currentTarget: qwho }));
+  request('admin:quals', { target: Number(qwho.value) }).then((q) => { if (!q.error) drawQuals(q); else message(qbox, q.error); });
+
   body.append(h('h3', {}, 'Players'));
   const ul = h('ul', { class: 'rows' });
   for (const p of d.players || []) {
@@ -2731,7 +2762,10 @@ function close() {
 
 const sounds = {};
 function playSound(name, volume) {
-  const a = sounds[name] || (sounds[name] = new Audio(`sounds/${name}.wav`));
+  const file = /\.[a-z0-9]+$/i.test(name) ? name : `${name}.wav`;
+  // A fresh copy each time, so two barks close together overlap instead of cutting each other off
+  const base = sounds[name] || (sounds[name] = new Audio(`sounds/${file}`));
+  const a = base.paused ? base : base.cloneNode();
   a.volume = Math.max(0, Math.min(1, volume == null ? 0.6 : volume));
   a.currentTime = 0;
   a.play().catch(() => {});

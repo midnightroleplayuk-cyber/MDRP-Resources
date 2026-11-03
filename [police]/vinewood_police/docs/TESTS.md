@@ -277,6 +277,18 @@ Officers: an Inspector (I), a Sergeant (S), a PC (P), a Chief Inspector (C), and
 - [ ] Audit log: search "restraint": cuff entries. An `audit.view` entry is written for the search itself.
 - [ ] A PC runs `/standards`: no permission.
 
+## Custom police dog
+- [ ] /dog: the Vinewood police dog appears, with harness, and walks, sits and runs like a dog (not a person).
+- [ ] Config.Dogs.Look head 1 / uppr 2: the head and coat textures change. random = true: different each deploy.
+- [ ] Bark at someone: the custom bark plays, a second player within 40 m hears it, and it's quieter further away.
+
+## Dog lead and barking
+- [ ] Dog out: target it, Lead on. A thin rope goes from your right hand to its collar, and a second player sees it too. Walk and run: the dog stays tight at heel. Lead off: the rope goes.
+- [ ] On the lead, target someone and Dog: bark at them. The dog stays beside you, faces them and barks for about 8 s, then settles. Heel stops it early.
+- [ ] Off the lead: it goes up to them, stops about 3 m away and barks, and follows if they move. It never bites.
+- [ ] Callout suspect running or fighting within 10 m: often "They give up as the dog barks", and the call notes it.
+- [ ] On the lead, Dog: detain them: the lead comes off and the dog goes.
+
 ## Phase 5, drop 2: dogs and Stinger
 - [ ] Signed on as Response: `/dog` refused. As Dog section with the qualification: the dog appears and follows. Heel, sit and van from the dog's target.
 - [ ] Get in a car: the dog goes. `/dog` again: back out.
@@ -319,6 +331,13 @@ Officer F: firearms + Taser qualified, signed on as Armed response.
 - [ ] The cells board shows occupants (NPCs marked), risk, "Out: ..." and a red border when welfare is overdue. The counts are right.
 - [ ] Door release: click "Locked · release" on an occupied cell: the door opens in the world and the detainee shows as out. "Open · lock" with them inside: back in the cell. From outside the desk area: refused.
 - [ ] /evidence at the desk also opens as the computer.
+
+## Evidence markers
+- [ ] /scenekit, Place evidence markers: a see-through "1" follows your aim. Enter puts down 1, and the preview becomes 2. Q/E turn it. Backspace stops.
+- [ ] A second officer at the same scene starts at the next free number. Pick up marker 2: the next one placed there is 2 again.
+- [ ] Inside a major incident's outer cordon: "Evidence marker 3 placed" and "...picked up" appear in the scene log with the officer's name.
+- [ ] 60 m away, numbering starts again at 1. Placing a 31st within 60 m: "All 30 evidence markers are in use here".
+- [ ] Pick everything up, or sign off: your markers go too. Markers don't count towards the scene kit limit.
 
 ## Police tape
 - [ ] /scenekit, Put up tape: aim at a lamp post and E (blue dot), at a second post and E. The tape between them shows while placing, faint if a span's too long. Enter: "Tape up". A second player sees it.

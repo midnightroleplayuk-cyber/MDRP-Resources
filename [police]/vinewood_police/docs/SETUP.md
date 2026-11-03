@@ -23,7 +23,7 @@ Give your sergeant the police job at a sergeant grade, then:
 /qualgrant <id> tutor
 /qualgrant <id> taser 365
 ```
-From then on, sergeants sign off other officers' qualifications themselves (`/qualgrant`, `/quals`).
+From then on, sergeants sign off other officers' qualifications themselves (`/qualgrant`, `/quals`). For testing, `/vpo` has a Qualifications section: give yourself everything with one click, and take it away again.
 
 ## Management (boss menu)
 Senior officers use `/management` (also in the radial under Station):

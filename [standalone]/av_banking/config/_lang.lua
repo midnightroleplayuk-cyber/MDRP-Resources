@@ -232,7 +232,7 @@ Lang = {
 
 	["notify_access_granted"] = "You now have access to account %s",
 	["notify_request_denied"] = "Your %s request was denied: %s",
-	["notify_request_unfunded"] = "Your %s request could not be completed: you need %s available in your checking account",
+	["notify_request_unfunded"] = "Your %s request could not be completed: you need %s available in your main account",
 	["notify_request_approved"] = "Your %s request was approved",
 	["notify_invoice_settled"] = "Invoice settled by the bank on behalf of %s: %s",
 	["notify_new_invoice"] = "New invoice from %s: %s",
@@ -291,7 +291,7 @@ function Money(amount)
 	local n = math.floor(tonumber(amount) or 0)
 	local sign = n < 0 and "-" or ""
 	local out = tostring(math.abs(n)):reverse():gsub("(%d%d%d)", "%1,"):reverse():gsub("^,", "")
-	return sign .. (Config.Banking and Config.Banking.currency or "$") .. out
+	return sign .. (Config.Banking and Config.Banking.currency or "£") .. out
 end
 
 function L(key, ...)

@@ -25,7 +25,7 @@ Config.BankerApp = {
 }
 
 Config.Phone = {
-	enabled = true,
+	enabled = false,
 	resource = "sd-phone",
 	identifier = "av_banking",
 	name = "Fleeca",
