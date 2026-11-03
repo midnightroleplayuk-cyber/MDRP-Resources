@@ -42,6 +42,38 @@ local function animateOpenBoot(vehicle)
     end
   end
 end
+-- Walk the officer to the actual rear of the selected vehicle before showing NUI.
+-- Vehicle model bounds are used instead of a fixed offset so long/short custom cars work.
+local function moveToBoot(vehicle)
+  if not DoesEntityExist(vehicle) then return false end
+  local ped = cache.ped
+  if IsPedInAnyVehicle(ped, false) or IsEntityDead(ped) then return false end
+  local minBounds, maxBounds = GetModelDimensions(GetEntityModel(vehicle))
+  local rearY = minBounds.y - (tonumber(Config.BootWalkOffset) or 0.65)
+  local target = GetOffsetFromEntityInWorldCoords(vehicle, 0.0, rearY, 0.0)
+  local tolerance = tonumber(Config.BootWalkTolerance) or 1.05
+  local timeout = tonumber(Config.BootWalkTimeoutMs) or 7500
+
+  if #(GetEntityCoords(ped) - target) > tolerance then
+    TaskGoStraightToCoord(ped, target.x, target.y, target.z, 1.0, timeout, GetEntityHeading(ped), 0.25)
+    local deadline = GetGameTimer() + timeout
+    while GetGameTimer() < deadline do
+      Wait(100)
+      if not DoesEntityExist(vehicle) or IsEntityDead(ped) or IsPedInAnyVehicle(ped, false) then
+        ClearPedTasks(ped)
+        return false
+      end
+      if #(GetEntityCoords(ped) - target) <= tolerance then break end
+    end
+    ClearPedTasks(ped)
+  end
+  if #(GetEntityCoords(ped) - target) > tolerance then return false end
+  -- Turn toward the boot so the officer is facing the equipment terminal.
+  TaskTurnPedToFaceEntity(ped, vehicle, 650)
+  Wait(450)
+  return DoesEntityExist(vehicle) and not IsEntityDead(ped)
+end
+
 local function appearanceExport(method, ...)
   if GetResourceState(Config.Appearance) ~= 'started' then return nil end
   if Config.Appearance == 'illenium-appearance' or Config.Appearance == 'op-clothing' then
@@ -128,6 +160,12 @@ local function openBoot(entity)
   if not data or data.error then return notify(data and data.error or 'Unable to open boot','error') end
   current={netId=netId,entity=entity}
   animateOpenBoot(entity)
+  if not current or not DoesEntityExist(entity) then closeUI() return end
+  if not moveToBoot(entity) then
+    notify('Could not reach the rear of the vehicle. Move closer and try again.', 'warning')
+    closeUI()
+    return
+  end
   if not current or not DoesEntityExist(entity) then closeUI() return end
   SetNuiFocus(true,true)
   SendNUIMessage({type='open',data=data,wearing=wearing,branding={forceName=Config.Tablet.forceName,title=Config.Tablet.title,logo=Config.Tablet.logo}})

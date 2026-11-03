@@ -87,3 +87,7 @@ The UI loads clothing images from this resource, while Police Items and Firearms
 Only simple filenames are supported (letters, numbers, underscores and hyphens).
 Missing images fall back to the generic item icon. Restart the resource after adding files.
 The ZIP does not contain your actual clothing images; add them yourself.
+
+
+## v1.5.6 — Walk to boot
+When Open Boot is selected, the officer plays the existing key-fob animation, the trunk opens, and the officer walks to the rear bumper before the tablet opens. The destination is calculated using the vehicle model bounds. If the officer cannot reach it within `Config.BootWalkTimeoutMs`, the tablet stays closed and the trunk closes. Tune `BootWalkOffset` and `BootWalkTolerance` in `shared/config.lua` for unusual custom vehicle models. The officer is never teleported.

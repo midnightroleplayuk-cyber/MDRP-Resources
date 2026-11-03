@@ -3,6 +3,10 @@ Config.Job = 'police'
 Config.RequireDuty = true
 Config.InteractionDistance = 2.5
 Config.SessionDistance = 6.0
+-- After the key-fob animation, walk to the rear of the vehicle before opening the tablet.
+Config.BootWalkOffset = 0.65       -- metres behind the rear bumper
+Config.BootWalkTolerance = 1.05   -- how close the officer must get
+Config.BootWalkTimeoutMs = 7500   -- abort and close the boot if path is blocked
 -- GTA trunk / boot door index is 5. Custom vehicles must have a working boot door.
 Config.BootDoorIndex = 5
 Config.MinGrade = { clothing = 0, police = 0, traffic = 3, firearms = 5 }
