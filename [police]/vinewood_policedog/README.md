@@ -7,3 +7,6 @@ The Vinewood police dog, `vw_policedog`, used by vinewood_police (`Config.Dogs.M
 - Without this resource, set `Config.Dogs.Model = 'a_c_shepherd'` in vinewood_police to use the game's own shepherd.
 - `data/peds.meta` uses the game's own German shepherd settings, so it moves and behaves like a dog.
 - To swap in a different dog model, export it from CodeWalker or OpenIV **as** `vw_policedog`. Renaming the files isn't enough, because the `.yft` stores the model's name inside it.
+
+## 1.0.2
+- All textures resized: every file is well under FiveM's 16 MiB limit, and the whole dog is about 12 MB instead of 51 MB. Any head and coat texture can be used, including random.
