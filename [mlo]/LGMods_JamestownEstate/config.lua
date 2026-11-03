@@ -1,14 +1,19 @@
 Config = {}
 
 -- AI traffic inside the estate. true = no npc cars spawn in or drive into the estate.
-Config.DisableAIVehicles = true
+-- Deleted stream/nodes*.ynd (e.g. clashing with another map)? Set this to true, or AI cars use the old roads through the buildings.
+Config.DisableAIVehicles = false
+
+-- true = flat and house windows cannot be seen through from outside (interiors are not drawn from the street - big FPS gain).
+-- false = see-through windows, every flat in view is drawn.
+Config.OneWayWindows = true
 
 -- street names shown on the HUD for the estate roads
 Config.StreetNames = {
-  JTE_ST_ASHDOWN = 'Ashdown Road',
-  JTE_ST_JAMESTOWN = 'Jamestown Way',
-  JTE_ST_TANNERY = 'Tannery Street',
-  JTE_ST_COBDEN = 'Cobden Street',
+    JTE_ST_ASHDOWN = 'Ashdown Road',
+    JTE_ST_JAMESTOWN = 'Jamestown Way',
+    JTE_ST_TANNERY = 'Tannery Street',
+    JTE_ST_COBDEN = 'Cobden Street',
 }
 
 Config.LiftConfig = {

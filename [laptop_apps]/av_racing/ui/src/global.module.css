@@ -1,0 +1,107 @@
+.input {
+  background-color: var(--bg-main);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  color: var(--text-main);
+  transition: all 0.2s ease;
+
+  &:focus,
+  &:focus-within {
+    border-color: var(--accent);
+    background-color: var(--bg-main);
+  }
+
+  &:disabled,
+  &[data-disabled] {
+    background-color: rgba(0, 0, 0, 0.2);
+    color: var(--text-dim);
+    border-color: rgba(58, 64, 82, 0.5);
+  }
+}
+
+.label:global(.mantine-InputWrapper-label) {
+  font-family: var(--font-main);
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-dim);
+  margin-bottom: 4px;
+}
+
+.fieldLabel {
+  font-family: var(--font-main);
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-dim);
+}
+
+.help {
+  font-family: var(--font-main);
+  font-size: 9px;
+  font-weight: 800;
+  color: #fff;
+  cursor: help;
+  background-color: rgba(255, 255, 255, 0.1);
+  padding: 0 5px;
+  border-radius: 4px;
+  line-height: 14px;
+}
+
+.card {
+  background-color: rgba(30, 30, 36, 0.55);
+  border: 1px solid rgba(110, 113, 128, 0.55);
+  border-radius: 10px;
+  backdrop-filter: blur(5px);
+}
+
+.option {
+  color: #ffffff;
+}
+
+.option:hover,
+.option[data-hovered] {
+  background-color: rgba(255, 255, 255, 0.09);
+}
+
+.content {
+  background-color: var(--bg-panel);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+}
+
+.header {
+  background-color: transparent;
+}
+
+.title {
+  color: var(--text-main);
+  font-family: var(--font-main);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.button {
+  background-color: rgba(110, 113, 128, 0.095);
+  color: #ffffff;
+  border: 1.25px solid rgba(110, 113, 128, 0.33);
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.button:hover {
+  background-color: rgba(110, 113, 128, 0.2);
+}
+
+.dropdown {
+  background-color: var(--bg-panel);
+  border: 1px solid var(--border-color);
+}

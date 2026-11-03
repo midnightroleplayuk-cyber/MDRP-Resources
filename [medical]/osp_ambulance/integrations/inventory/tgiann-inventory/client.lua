@@ -24,6 +24,15 @@ Inventory['tgiann-inventory'] = {
     end,
 
     OpenBloodStorage = function(stashid)
-        return false
+        TriggerServerEvent('osp_ambulance:registerBloodstorage', stashid)
+        Wait(100)
+        exports["tgiann-inventory"]:OpenInventory('stash', stashid)
+    end,
+
+    OpenMedicalBagStash = function(stashid)
+        TriggerServerEvent('osp_ambulance:registerMedicalBagStash', stashid)
+        Wait(100)
+        local bagConfig = Config.MedicalBag or {}
+        exports["tgiann-inventory"]:OpenInventory('stash', { id = stashid, label = bagConfig.stashLabel or 'Medical Bag' })
     end
 }

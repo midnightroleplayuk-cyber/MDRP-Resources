@@ -62,6 +62,9 @@ function loadPlayerData()
     local ped = PlayerPedId()
     local player = PlayerId()
     SetEntityMaxHealth(ped, 200)
+    if AllowMedicalHealthGain then
+        AllowMedicalHealthGain()
+    end
     SetEntityHealth(ped, 200)
     SetPlayerHealthRechargeMultiplier(player, 0.0)
     SetPlayerHealthRechargeLimit(player, 0.0)
@@ -150,9 +153,9 @@ function loadPlayerData()
     Wait(2000)
     local timeLeft = lib.callback.await('osp_ambulance:checkInjuryTime', 1000)
     if timeLeft then
-        if timeLeft?.crutch then
+        if timeLeft.crutch then
             TriggerEvent('osp_ambulance:giveCrutch', timeLeft.time)
-        elseif timeLeft?.WheelChair then
+        elseif timeLeft.WheelChair then
             TriggerEvent('osp_ambulance:giveWheelChair', timeLeft.time)
         end
     end
@@ -227,6 +230,7 @@ local function applyPlayerJob(JobInfo)
     end
 
     local previousJob = PlayerJob and PlayerJob.name
+    local previousGrade = ConfigLoader.GradeFromJob(PlayerJob)
     local previousDuty = onDuty == true
     -- Job *definitions* have no onduty flag. Keep the current duty instead of forcing off-duty.
     local nextDuty = previousDuty
@@ -235,6 +239,7 @@ local function applyPlayerJob(JobInfo)
     end
     local jobChanged = previousJob ~= JobInfo.name
     local dutyChanged = previousDuty ~= nextDuty
+    local gradeChanged = previousGrade ~= ConfigLoader.GradeFromJob(JobInfo)
 
     PlayerJob = JobInfo
     onDuty = nextDuty
@@ -248,7 +253,7 @@ local function applyPlayerJob(JobInfo)
         TriggerServerEvent('hospital:server:AddDoctor', JobInfo.name)
     end
 
-    if not jobChanged and not dutyChanged then
+    if not jobChanged and not dutyChanged and not gradeChanged then
         return
     end
 
@@ -333,6 +338,5 @@ RegisterNetEvent('osp_ambulance:bloodstorage', function()
     if not BodyDamage then return end
     if not HasAccess('bloodstorage') then return end
 
-    local stashid = 'bloodstorage_' .. GetPlayerData().citizenid
-    return Inventory[GetInventoryTool()].OpenBloodStorage(stashid)
+    return Inventory[GetInventoryTool()].OpenBloodStorage('hospital_bloodstorage')
 end)

@@ -1,0 +1,1 @@
+import{T as e}from"./sky-TabletChatShell-CFTKWZvo.js";import{d as t,j as o,A as a}from"./sky-recordTemplate-DZYUYefG.js";import"./sky-index-TW_2TIhV.js";import"./sky-GallerySelectModal-BIxVs7WB.js";import"./sky-TabletConfirmModal-Dnzz09lS.js";const _=t({__name:"TabletChatView",setup(r){return(m,p)=>(o(),a(e,{mode:"normal"}))}});export{_ as default};

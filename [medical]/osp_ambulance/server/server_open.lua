@@ -7,22 +7,22 @@ end
 -- Override this to integrate a custom dispatch system (server-side path).
 -- Built-in adapters live in integrations/dispatch/* and are selected via Config.Dispatch.
 -- src (optional): the server id of the player who triggered the alert.
---function TriggerDispatchAlert(coords, message, src)
+function TriggerDispatchAlert(coords, message, src)
     local tool = GetEnsuredDispatchTool()
     local dispatch = Dispatch[tool]
 
- --   if dispatch and dispatch.alert then
- --       dispatch.alert(coords, message, src)
- --       return true
- --   end
+    if dispatch and dispatch.alert then
+        dispatch.alert(coords, message, src)
+        return true
+    end
 
- --   if tool ~= 'default' and Dispatch['default'] and Dispatch['default'].alert then
- --       Dispatch['default'].alert(coords, message, src)
- --       return true
-   -- end
+    if tool ~= 'default' and Dispatch['default'] and Dispatch['default'].alert then
+        Dispatch['default'].alert(coords, message, src)
+        return true
+    end
 
-   -- return false
---end
+    return false
+end
 
 function IsValidBloodType(bloodType)
     return type(bloodType) == 'string' and bloodType ~= '' and Config.bloodTypes and Config.bloodTypes[bloodType] ~= nil
@@ -72,7 +72,7 @@ end)
 --     planId = 'external',
 --     label = 'National Health',
 --     checkInDiscount = 0.50,            -- 0.0-1.0 off check-in / hospital bill
---     freeMedications = true,            -- true = all medications, or { 'paracetamol', 'xanax' }
+--     freeMedications = true,            -- true = all medications, or { 'cough_syrup', 'xanax' }
 --     expiresAt = os.time() + 86400,     -- optional unix timestamp
 -- }
 function GetExternalInsurance(source)
@@ -121,18 +121,138 @@ CreateUseableItem(Config.MedicalBag.itemName, function(source, item, metadata)
     UseMedicalBagItem(source, item, metadata)
 end)
 
-CreateUseableItem('prescription', function(source, item, metadata)
-    TriggerClientEvent('osp_ambulance:viewPrescription', source, metadata or item.info or item.metadata or {}, metadata.slot or item.slot)
+local function RegisterPrescriptionPadUse(name)
+    if not name then return end
+    CreateUseableItem(name, function(source)
+        TriggerClientEvent('osp_ambulance:usePrescriptionNotepad', source)
+    end)
+end
+
+RegisterPrescriptionPadUse(Config.PrescriptionNotepadItem or 'prescription_pad')
+RegisterPrescriptionPadUse('prescription_pad')
+RegisterPrescriptionPadUse('prescription_notepad')
+
+local PrescriptionItemAliases = {
+    coughsyrup = 'cough_syrup',
+    ['cough-syrup'] = 'cough_syrup',
+    cough = 'cough_syrup',
+}
+
+local function ResolvePrescriptionItem(name)
+    if type(name) ~= 'string' or name == '' then return end
+    name = string.lower(name)
+    if PrescriptionItemAliases[name] then
+        return PrescriptionItemAliases[name]
+    end
+    for _, medication in pairs(Config.PrescriptionMedications or {}) do
+        if medication.itemName == name or medication.id == name then
+            return medication.itemName
+        end
+    end
+end
+
+local lastPrescriptionConsume = {}
+
+local function ConsumePrescriptionItem(src, name)
+    if not src or not name then return end
+    local key = tostring(src) .. ':' .. tostring(name)
+    local now = GetGameTimer()
+    if lastPrescriptionConsume[key] and now - lastPrescriptionConsume[key] < 4000 then
+        return
+    end
+    lastPrescriptionConsume[key] = now
+    pcall(function()
+        if GetResourceState('ox_inventory') == 'started' then
+            exports.ox_inventory:RemoveItem(src, name, 1)
+            return
+        end
+        RemoveItem(src, name, 1)
+    end)
+end
+
+CreateThread(function()
+    while GetResourceState('ox_inventory') ~= 'started' do
+        Wait(200)
+    end
+    local pad = Config.PrescriptionNotepadItem or 'prescription_pad'
+    pcall(function()
+        exports.ox_inventory:registerHook('usingItem', function(payload)
+            local name = payload and payload.item and payload.item.name
+            if name == 'prescription' then
+                return false
+            end
+            -- Handled by osp (progress then heal), which removes the bandage itself once applied
+            if name == 'elastic_bandage' then
+                TriggerClientEvent('osp_ambulance:useElasticBandage', payload.source)
+                return false
+            end
+            if name == pad or name == 'prescription_pad' or name == 'prescription_notepad' then
+                TriggerClientEvent('osp_ambulance:usePrescriptionNotepad', payload.source)
+            end
+            if name == 'painkillers' or name == 'painkiller' or name == 'pain_killers' then
+                TriggerClientEvent('osp_ambulance:painKillers', payload.source)
+            end
+            local prescriptionItem = ResolvePrescriptionItem(name)
+            if prescriptionItem then
+                ConsumePrescriptionItem(payload.source, name)
+                TriggerClientEvent('osp_ambulance:usePrescriptionMedication', payload.source, prescriptionItem)
+            end
+        end)
+    end)
 end)
+
+CreateUseableItem(Config.GlucoseItem or 'glucose', function(source)
+    TriggerClientEvent('osp_ambulance:useGlucose', source)
+end)
+
+local function UsePainkillersItem(source)
+    TriggerClientEvent('osp_ambulance:painKillers', source)
+end
+
+CreateUseableItem('elastic_bandage', function(source)
+    TriggerClientEvent('osp_ambulance:useElasticBandage', source)
+end)
+
+CreateUseableItem('painkillers', UsePainkillersItem)
+CreateUseableItem('painkiller', UsePainkillersItem)
+CreateUseableItem('pain_killers', UsePainkillersItem)
+
+exports('usePainkillers', function(event, item, inventory)
+    local src = inventory and inventory.id
+    if src then
+        UsePainkillersItem(src)
+    end
+end)
+
+local function UsePrescriptionItem(source, itemName)
+    local resolved = ResolvePrescriptionItem(itemName) or itemName
+    ConsumePrescriptionItem(source, itemName or resolved)
+    TriggerClientEvent('osp_ambulance:usePrescriptionMedication', source, resolved)
+end
 
 for _, medication in pairs(Config.PrescriptionMedications or {}) do
     local itemName = medication.itemName
     if itemName then
-        CreateUseableItem(itemName, function(source, item)
-            TriggerClientEvent('osp_ambulance:usePrescriptionMedication', source, itemName)
+        CreateUseableItem(itemName, function(source)
+            UsePrescriptionItem(source, itemName)
         end)
     end
 end
+
+CreateUseableItem('coughsyrup', function(source)
+    UsePrescriptionItem(source, 'cough_syrup')
+end)
+CreateUseableItem('cough-syrup', function(source)
+    UsePrescriptionItem(source, 'cough_syrup')
+end)
+
+exports('usePrescriptionMedication', function(event, item, inventory)
+    local src = inventory and inventory.id
+    local name = item and item.name
+    if src and name then
+        UsePrescriptionItem(src, name)
+    end
+end)
 
 RegisterNetEvent('osp_ambulance:buyItemSv', function(data, input, price, name)
     local src = source
@@ -178,6 +298,117 @@ RegisterNetEvent('osp_ambulance:partialReviveSv', function(ply)
     TriggerClientEvent('osp_ambulance:partialRevive', ply)
 end)
 
+local function PlayerHasNamedItem(src, name)
+    local adapter = Inventory[GetInventoryTool()]
+    if not adapter or not adapter.GetInventory then return false end
+    local inventory = adapter.GetInventory(src)
+    if type(inventory) ~= 'table' then return false end
+    for _, item in pairs(inventory) do
+        if type(item) == 'table' and (item.name or item.item) == name then
+            if (tonumber(item.count or item.amount or item.quantity) or 0) >= 1 then
+                return true
+            end
+        end
+    end
+    return false
+end
+
+local function IsGlucoseAuthorized(source)
+    local sourcePlayer = GetPlayer(source)
+    if not sourcePlayer then return false end
+    local jobName
+    if sourcePlayer.PlayerData and sourcePlayer.PlayerData.job then
+        jobName = sourcePlayer.PlayerData.job.name
+    elseif sourcePlayer.job then
+        jobName = sourcePlayer.job.name
+    end
+    return ConfigLoader.IsEmsJob(Config, jobName, ConfigLoader.GradeFromJob(sourcePlayer.PlayerData and sourcePlayer.PlayerData.job or sourcePlayer.job))
+end
+
+function CountOnDutyEms()
+    local count = 0
+    local players = GetPlayers()
+    for i = 1, #players do
+        local src = tonumber(players[i])
+        local player = src and GetPlayer(src)
+        if player then
+            local job = (player.PlayerData and player.PlayerData.job) or player.job
+            if job and job.name and ConfigLoader.IsEmsJob(Config, job.name) then
+                if GetActiveFramework() == 'esx' or job.onduty == true then
+                    count = count + 1
+                end
+            end
+        end
+    end
+    return count
+end
+
+lib.callback.register('osp_ambulance:getOnDutyEmsCount', function()
+    return CountOnDutyEms()
+end)
+
+local function NormalizeNeedValue(value)
+    value = tonumber(value)
+    if not value then return 100 end
+    if value > 100 then
+        return value / 10000
+    end
+    return value
+end
+
+local function GetPlayerNeedLevels(src)
+    local player = GetPlayer(src)
+    if not player then return 100, 100 end
+    local meta = (player.PlayerData and player.PlayerData.metadata) or player.metadata or {}
+    return NormalizeNeedValue(meta.hunger), NormalizeNeedValue(meta.thirst)
+end
+
+RegisterNetEvent('osp_ambulance:useGlucoseSv', function(targetId)
+    local src = source
+    local itemName = Config.GlucoseItem or 'glucose'
+    targetId = tonumber(targetId)
+    if not IsGlucoseAuthorized(src) or not targetId or src == targetId then return end
+    if not PlayerHasNamedItem(src, itemName) then
+        TriggerClientEvent('osp_ambulance:SendTextMessage', src, GetLang().interactions.medicalHeader, GetLang().error.missing_item, 3000, 'error')
+        return
+    end
+
+    local srcPed = GetPlayerPed(src)
+    local tgtPed = GetPlayerPed(targetId)
+    if srcPed == 0 or tgtPed == 0 then return end
+    if #(GetEntityCoords(srcPed) - GetEntityCoords(tgtPed)) > (Config.MedicalMenuMaxDistance or 10.0) then
+        TriggerClientEvent('osp_ambulance:SendTextMessage', src, GetLang().interactions.medicalHeader, GetLang().error.player_too_far_away, 3000, 'error')
+        return
+    end
+
+    local bodyDamage = Player(targetId).state.BodyDamage
+    if type(bodyDamage) ~= 'table' or (bodyDamage.isDead ~= true and bodyDamage.inLastStand ~= true) then
+        TriggerClientEvent('osp_ambulance:SendTextMessage', src, GetLang().interactions.medicalHeader, GetLang().error.glucose_not_downed, 3000, 'error')
+        return
+    end
+
+    local allowed = bodyDamage.needsGlucose == true
+    if bodyDamage.needsGlucose == nil then
+        local hunger, thirst = GetPlayerNeedLevels(targetId)
+        local threshold = tonumber(Config.GlucoseNeedThreshold) or 5
+        allowed = hunger <= threshold or thirst <= threshold
+    end
+
+    if not allowed then
+        TriggerClientEvent('osp_ambulance:SendTextMessage', src, GetLang().interactions.medicalHeader, GetLang().error.glucose_no_effect, 3000, 'error')
+        return
+    end
+
+    if bodyDamage.insurvivable == true then
+        TriggerClientEvent('osp_ambulance:SendTextMessage', src, GetLang().interactions.medicalHeader, GetLang().error.insurvivable_injury, 3000, 'error')
+        return
+    end
+
+    RemoveItem(src, itemName, 1)
+    TriggerClientEvent('osp_ambulance:partialRevive', targetId)
+    TriggerClientEvent('osp_ambulance:SendTextMessage', src, GetLang().interactions.medicalHeader, GetLang().error.glucose_revived, 4000, 'success')
+end)
+
 RegisterNetEvent('osp_ambulance:CprHelpUpSv', function(patientId)
     local medicId = source
     if type(patientId) ~= 'number' then return end
@@ -200,34 +431,31 @@ end)
 CreateThread(function()
     Wait(1000)
     while true do
-        doctorCount = 0
-        local serverPlayers = GetPlayers()
-        for k,v in pairs(serverPlayers) do
-            local sourcePlayer = GetPlayer(v)
-            if sourcePlayer then
-                if GetActiveFramework() == 'qb'  then
-                    for _,x in pairs(Config.AmbulanceJobs) do
-                        if sourcePlayer.PlayerData.job.name == x and sourcePlayer.PlayerData.job.onduty then
-                            doctorCount = doctorCount + 1
-                        end
-                    end
-                else
-                    for _,x in pairs(Config.AmbulanceJobs) do
-                        if sourcePlayer.job.name == x then
-                            doctorCount = doctorCount + 1
-                        end
-                    end
-                end
-            end
-            Wait(10)
-        end
-        Wait(2*60*1000)
+        doctorCount = CountOnDutyEms()
         TriggerClientEvent("hospital:client:SetDoctorCount", -1, doctorCount)
+        Wait(2 * 60 * 1000)
     end
 end)
 
 RegisterNetEvent('hospital:server:SendToBed', function(bedId, isRevive, hospitalID, bedType)
     local src = source
+    if isRevive and GetResourceState('Callum_MDT') == 'started' then
+        local open = true
+        local ok, result = pcall(function()
+            return exports.Callum_MDT:isCheckInOpen()
+        end)
+        if ok then open = result ~= false end
+        if not open then
+            local place = 'the hospital'
+            if hospitalID and Config.Hospitals and Config.Hospitals[hospitalID] and Config.Hospitals[hospitalID].label then
+                place = Config.Hospitals[hospitalID].label
+            end
+            pcall(function()
+                exports.Callum_MDT:alertClosedCheckIn(src, { hospital = place })
+            end)
+            return
+        end
+    end
     bedType = bedType or 'beds'
 
     local bedData
@@ -376,7 +604,11 @@ RegisterNetEvent('hospital:server:RespawnAtHospital', function()
     local src = source
     local sourcePlayer = GetPlayer(src)
     if GetActiveFramework() == 'qb'  then
-        if sourcePlayer.PlayerData.metadata["injail"] > 0 then
+        local injail = 0
+        if sourcePlayer and sourcePlayer.PlayerData and sourcePlayer.PlayerData.metadata then
+            injail = tonumber(sourcePlayer.PlayerData.metadata["injail"]) or 0
+        end
+        if injail > 0 then
             for k, v in pairs(Config.JailBeds) do
                 if not v.taken then
                     TriggerClientEvent('hospital:client:SendToBed', src, k, v, true)

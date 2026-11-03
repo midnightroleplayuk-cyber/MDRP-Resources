@@ -23,7 +23,7 @@ Give your sergeant the police job at a sergeant grade, then:
 /qualgrant <id> tutor
 /qualgrant <id> taser 365
 ```
-From then on, sergeants sign off other officers' qualifications themselves (`/qualgrant`, `/quals`).
+From then on, sergeants sign off other officers' qualifications themselves (`/qualgrant`, `/quals`). For testing, `/vpo` has a Qualifications section: give yourself everything with one click, and take it away again.
 
 ## Management (boss menu)
 Senior officers use `/management` (also in the radial under Station):
@@ -53,14 +53,14 @@ Callouts start by themselves while officers are signed on. To see one now: `vpo 
 To switch them off for an event night: `vpo callouts off` (add `clear` to also cancel calls nobody has reached yet), then `vpo callouts on` afterwards. `vpo callouts` on its own shows whether they're on. The setting is kept through restarts. Admins can still start one with `vpo callout <scenario>` while they're off.
 
 ## The radial menu
-While signed on, the radial menu (ox_lib, **Z** by default) has a **Police** section:
+While signed on, press **L** (rebindable in GTA settings, Key Bindings, FiveM: "Police: radial menu") for the police radial menu. Move the mouse over a section and click; sections with ••• open a submenu, the centre goes back (or closes), right-click or Backspace goes back, Escape closes. Prefer ox_lib's radial (Z)? Set `Config.Radial.Style = 'ox'`.
 - **Status**
 - **Restrain:** cuff front or rear, remove, double-lock, escort, into or out of a vehicle
 - **Search & arrest**
 - **Roads:** stop the vehicle in front, roadside checks, Stinger
 - **Scene:** scene kit, major incident
 - **Calls & backup:** call list, request backup and urgent assistance at your position
-- **Station:** custody, evidence, CID, use of force forms, notebook
+- **Station:** evidence, CID, use of force forms, notebook (custody is at the custody desk)
 - **Dog** (Dog section only)
 
 Radial actions use the closest player or vehicle. NPCs are dealt with through the target menu. The radial is switched off while you're handcuffed.

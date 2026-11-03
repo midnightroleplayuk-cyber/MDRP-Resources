@@ -1,0 +1,1 @@
+import{r,A as o}from"./index-DUYGERrm.js";function c(t){const[s,a]=r.useState(!1);return r.useEffect(()=>{let e=!0;return o("av_laptop","resourceStarted",{name:t}).then(u=>{e&&a(!!u)}),()=>{e=!1}},[t]),s}export{c as u};

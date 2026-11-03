@@ -7,8 +7,8 @@
 Config.ShopTemplates = {
     binco = {
         type              = 'clothing',
-        label             = 'Binco',
-        logo              = 'binco.png',
+        label             = 'Stride',
+        logo              = 'stride.png',
         blip              = { enabled = true, sprite = 73, color = 47, scale = 0.8, shortRange = true },
         allowedCategories = 'all',
         pricing           = { modules = { clothing = 35 } },

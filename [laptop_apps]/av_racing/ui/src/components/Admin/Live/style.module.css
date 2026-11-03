@@ -1,0 +1,12 @@
+.button {
+  background-color: var(--accent);
+  color: black;
+  border: solid 1.25px rgba(110, 113, 128, 0.33);
+  border-radius: 4px;
+}
+
+.button:hover {
+  background-color: var(--accent);
+  opacity: 0.95;
+  color: black;
+}

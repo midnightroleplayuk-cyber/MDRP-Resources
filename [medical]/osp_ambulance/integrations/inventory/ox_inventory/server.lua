@@ -1,5 +1,12 @@
 Inventory = Inventory or {}
 
+CreateThread(function()
+    while GetResourceState('ox_inventory') ~= 'started' do
+        Wait(200)
+    end
+    exports.ox_inventory:RegisterStash('hospital_bloodstorage', 'Blood Storage', 50, 100000, false)
+end)
+
 Inventory['ox_inventory'] = {
     CreateUseableItem = function(name, cb)
         if GetActiveFramework() == 'qb' then
@@ -15,7 +22,23 @@ Inventory['ox_inventory'] = {
     end,
 
     AddItem = function(src, name, amount, info)
-        exports.ox_inventory:AddItem(src, name, amount, info)
+        return exports.ox_inventory:AddItem(src, name, amount, info)
+    end,
+
+    CanCarryItem = function(src, name, amount)
+        local ok, can = pcall(function()
+            return exports.ox_inventory:CanCarryItem(src, name, amount)
+        end)
+        if not ok then return true end
+        return can ~= false
+    end,
+
+    ItemExists = function(name)
+        local ok, item = pcall(function()
+            return exports.ox_inventory:Items(name)
+        end)
+        if not ok then return true end
+        return item ~= nil
     end,
 
     RemoveItem = function(src, name, amount)
@@ -27,7 +50,7 @@ Inventory['ox_inventory'] = {
         if not inventoryItems then return false end
 
         for _, item in pairs(inventoryItems) do
-            if item.slot == slot then
+            if type(item) == 'table' and item.slot == slot then
                 return exports.ox_inventory:RemoveItem(src, item.name, amount or 1, nil, slot)
             end
         end
@@ -45,7 +68,7 @@ Inventory['ox_inventory'] = {
 
         local item
         for _, inventoryItem in pairs(inventoryItems) do
-            if inventoryItem.slot == slot then
+            if type(inventoryItem) == 'table' and inventoryItem.slot == slot then
                 item = inventoryItem
                 break
             end
@@ -69,7 +92,7 @@ Inventory['ox_inventory'] = {
     end,
 
     RegisterBloodStorage = function(src, stashid)
-        exports.ox_inventory:RegisterStash(stashid, 'Blood Storage', 20, 20000, true)
+        exports.ox_inventory:RegisterStash(stashid or 'hospital_bloodstorage', 'Blood Storage', 50, 100000, false)
     end,
 
     RegisterMedicalBagStash = function(src, stashid)

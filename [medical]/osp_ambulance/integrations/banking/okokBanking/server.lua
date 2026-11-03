@@ -33,7 +33,13 @@ Banking['okokBanking'] = {
         RemoveMoney(source, amount)
 
         exports['okokBanking']:AddMoney('society_ambulance', amount)
-        exports['okokBanking']:AddTransaction(playerIdentifier, transactionData, source)
+        local AddTransaction = pcall(function()
+            exports['okokBanking']:AddTransaction(playerIdentifier, transactionData, source)
+        end)
+
+        if not AddTransaction then
+            TriggerEvent('okokBanking:AddTransferTransactionFromSocietyToP', amount, 'ambulance', 'Ambulance', playerIdentifier, playerName)
+        end
 
         return true
     end

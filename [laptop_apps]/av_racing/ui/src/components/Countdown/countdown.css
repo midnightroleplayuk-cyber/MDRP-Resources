@@ -1,0 +1,137 @@
+.countdown-container {
+  position: absolute;
+  width: 100vw;
+  height: 100vh;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  font-family: "Poppins", sans-serif;
+  font-weight: 900;
+  font-style: italic;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+.big-outer {
+  position: absolute;
+  font-size: 80vh;
+  line-height: 1;
+  color: transparent;
+  -webkit-text-stroke: 4px rgba(255, 255, 255, 0.08);
+  text-transform: uppercase;
+  z-index: 1;
+  text-align: center;
+}
+
+.small-fill {
+  position: absolute;
+  font-size: 22vh;
+  line-height: 1;
+  color: #ffffff;
+  text-transform: uppercase;
+  text-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  z-index: 2;
+  text-align: center;
+}
+
+.animate-pulse {
+  animation: pop-bg 1s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+}
+
+.animate-slide {
+  animation: slide-fg 1s cubic-bezier(0.175, 0.885, 0.32, 1.1) forwards;
+}
+
+@keyframes pop-bg {
+  0% {
+    transform: scale(0.7) translateX(-15%);
+    opacity: 0;
+  }
+  20% {
+    transform: scale(1.05) translateX(-5%);
+    opacity: 0.8;
+  }
+  80% {
+    transform: scale(1) translateX(5%);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(1.2) translateX(15%);
+    opacity: 0;
+  }
+}
+
+@keyframes slide-fg {
+  0% {
+    transform: scale(1.5) translateX(30%);
+    opacity: 0;
+    filter: blur(15px);
+  }
+  20% {
+    transform: scale(1) translateX(0);
+    opacity: 1;
+    filter: blur(0px);
+  }
+  80% {
+    transform: scale(0.95) translateX(0);
+    opacity: 1;
+    filter: blur(0px);
+  }
+  100% {
+    transform: scale(0.8) translateX(-30%);
+    opacity: 0;
+    filter: blur(10px);
+  }
+}
+
+.go-explode-bg {
+  -webkit-text-stroke: 6px var(--accent);
+  filter: drop-shadow(0 0 50px var(--accent));
+  animation: go-bg 1s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+.go-explode-fg {
+  color: var(--accent);
+  text-shadow: 0 0 40px var(--accent);
+  animation: go-fg 1s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+@keyframes go-bg {
+  0% {
+    transform: scale(0.5);
+    opacity: 0;
+  }
+  30% {
+    transform: scale(1.1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(2.5);
+    opacity: 0;
+    filter: blur(10px);
+  }
+}
+
+@keyframes go-fg {
+  0% {
+    transform: scale(0) skewX(-15deg);
+    opacity: 0;
+    filter: blur(20px);
+  }
+  30% {
+    transform: scale(1.5) skewX(0deg);
+    opacity: 1;
+    filter: blur(0px);
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(3);
+    opacity: 0;
+    filter: blur(15px);
+  }
+}

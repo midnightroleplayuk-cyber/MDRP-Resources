@@ -7,13 +7,13 @@ Config.Framework = 'auto'
 
 -- Jobs allowed to start/stop interviews. job = minimum grade.
 Config.PoliceJobs = {
-    police = 1,
+    police = 0,
     sheriff = 0,
 }
 
 -- Jobs allowed to open the evidence viewer and play back recordings.
 Config.ReviewJobs = {
-    police = 4,
+    police = 0,
     sheriff = 0,
 }
 
@@ -37,7 +37,7 @@ Config.MicTestCommand = 'interviewmictest'
 
 -- Target system: 'auto' picks ox_target, then qb-target, then qtarget. If none is running,
 -- players walk up to the point and press E instead. Force one with 'ox', 'qb', 'qtarget' or 'keypress'.
-Config.Target = 'auto'
+Config.Target = 'ox_target'
 
 Config.InteractDistance = 1.5
 

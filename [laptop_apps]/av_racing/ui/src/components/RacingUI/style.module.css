@@ -1,0 +1,289 @@
+@font-face {
+  font-family: "Bebas-Regular";
+  src: url("../../fonts/Bebas-Regular.ttf") format("truetype");
+}
+
+.wrapper {
+  position: absolute;
+  box-sizing: border-box;
+  height: 100vh;
+  width: 100vw;
+  pointer-events: none;
+}
+
+.hudWrap {
+  position: fixed;
+  top: 2vh;
+  right: 1.5vw;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 3vh;
+}
+
+.infoBlock {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.standingsBlock {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.infoRow {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+}
+
+.label {
+  font-size: clamp(9px, 0.55vw, 11px);
+  letter-spacing: 3px;
+  color: rgba(255, 255, 255, 0.4);
+  text-transform: uppercase;
+  text-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
+}
+
+.labelAmber {
+  font-size: clamp(9px, 0.55vw, 11px);
+  letter-spacing: 3px;
+  color: var(--warning);
+  text-transform: uppercase;
+  text-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
+}
+
+.lapCurrent {
+  font-size: clamp(42px, 3.2vw, 58px);
+  font-weight: 700;
+  color: #fff;
+  line-height: 1;
+  letter-spacing: -1px;
+  font-variant-numeric: tabular-nums;
+  text-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
+}
+
+.lapSep {
+  font-size: clamp(18px, 1.4vw, 24px);
+  color: rgba(255, 255, 255, 0.2);
+  text-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
+}
+
+.lapTotal {
+  font-size: clamp(18px, 1.4vw, 24px);
+  color: rgba(255, 255, 255, 0.35);
+  font-variant-numeric: tabular-nums;
+  text-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
+}
+
+.cpCurrent {
+  font-size: clamp(20px, 1.6vw, 28px);
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.85);
+  font-variant-numeric: tabular-nums;
+  text-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
+}
+
+.cpSep {
+  font-size: clamp(15px, 1.1vw, 20px);
+  color: rgba(255, 255, 255, 0.2);
+  text-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
+}
+
+.cpTotal {
+  font-size: clamp(15px, 1.1vw, 20px);
+  color: rgba(255, 255, 255, 0.3);
+  font-variant-numeric: tabular-nums;
+  text-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
+}
+
+.cpBarWrap {
+  width: clamp(80px, 6vw, 120px);
+  height: 2px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 1px;
+  overflow: hidden;
+  margin-top: 6px;
+}
+
+.cpBarFill {
+  height: 100%;
+  background: var(--success);
+  border-radius: 1px;
+  transition: width 0.3s;
+}
+
+.timerBig {
+  font-size: clamp(26px, 2vw, 36px);
+  font-weight: 600;
+  color: #fff;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.5px;
+  text-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
+}
+
+.timerMs {
+  font-size: clamp(17px, 1.3vw, 22px);
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.35);
+  font-variant-numeric: tabular-nums;
+  align-self: flex-end;
+  padding-bottom: 1px;
+  text-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
+}
+
+.bestBig {
+  font-size: clamp(20px, 1.6vw, 28px);
+  font-weight: 600;
+  color: var(--warning);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.3px;
+  text-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
+}
+
+.bestMs {
+  font-size: clamp(15px, 1.1vw, 20px);
+  font-weight: 400;
+  color: var(--warning);
+  font-variant-numeric: tabular-nums;
+  align-self: flex-end;
+  padding-bottom: 5px;
+  opacity: 0.55;
+  text-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
+}
+
+.sRow {
+  display: flex;
+  align-items: center;
+  padding: 7px 8px;
+  border-radius: 4px;
+  border-left: 2px solid transparent;
+  min-width: clamp(240px, 20vw, 320px);
+  margin-bottom: 2px;
+}
+
+.sRowEven {
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.sRowOdd {
+  background: rgba(0, 0, 0, 0.15);
+}
+
+.sRowMe {
+  border-left-color: #ffb400;
+  background: rgba(255, 180, 0, 0.08);
+}
+
+.sNum {
+  font-size: clamp(17px, 1.3vw, 22px);
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.9);
+  width: clamp(28px, 2vw, 36px);
+  flex-shrink: 0;
+}
+
+.sNumMe {
+  color: #ffb400;
+}
+
+.sName {
+  font-size: clamp(16px, 1.2vw, 21px);
+  color: rgba(255, 255, 255, 0.6);
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-weight: 400;
+}
+
+.sNameMe {
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: 500;
+}
+
+.sDelta {
+  font-size: clamp(15px, 1.1vw, 20px);
+  font-variant-numeric: tabular-nums;
+  min-width: clamp(64px, 5vw, 90px);
+  text-align: right;
+  font-weight: 500;
+}
+
+.sDeltaAhead {
+  color: var(--success);
+}
+
+.sDeltaBehind {
+  color: rgba(248, 113, 113, 0.75);
+}
+
+.sDeltaMe {
+  color: var(--warning);
+}
+
+.sSep {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.04);
+  margin: 4px 0;
+}
+
+.sGap {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 8px;
+}
+
+.sGapLine {
+  flex: 1;
+  height: 0.5px;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.sGapDots {
+  font-size: clamp(9px, 0.55vw, 11px);
+  color: rgba(255, 255, 255, 0.18);
+  letter-spacing: 2px;
+}
+
+.timeWarning {
+  color: var(--danger, #ff4d4d) !important;
+  animation: pulse-danger 0.5s ease-in-out infinite alternate;
+}
+
+@keyframes pulse-danger {
+  0% {
+    text-shadow: 0 0 10px rgba(255, 77, 77, 0.8);
+    opacity: 1;
+  }
+  100% {
+    text-shadow: 0 0 20px rgba(255, 77, 77, 1);
+    opacity: 0.6;
+  }
+}
+
+.deltaBig {
+  font-size: clamp(26px, 2vw, 36px);
+  font-weight: 600;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.5px;
+  text-shadow: 0 0 6px rgba(0, 0, 0, 0.6);
+}
+
+.deltaAhead {
+  color: #3ad07a;
+}
+
+.deltaBehind {
+  color: var(--danger, #ff4d4d);
+}
+
+.deltaNeutral {
+  color: rgba(255, 255, 255, 0.75);
+}

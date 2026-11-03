@@ -58,7 +58,7 @@ Global: `vpo_locations`, `vpo_incidents`, `vpo_scene_zones`, `vpo_stingers`, `vp
 | `/stopvehicle` | police | stop the vehicle in front (keybind in config) |
 | `/stopsearch` | police | stop and search record |
 | `/scenekit` | police | cones, signs, barriers, tent, traffic |
-| `/custody` | police | custody panel (in a suite) |
+| `/custody` | police | off by default: the custody computer is at the desk (`Config.Custody.Command`) |
 | `/evidence` | police | evidence store (custody desk or locker) |
 | `/calls` | police | open calls |
 | `/incident` | police | major incidents |

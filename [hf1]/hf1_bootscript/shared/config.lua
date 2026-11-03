@@ -31,8 +31,10 @@ Config.PoliceItems = {
 
 }
 Config.Firearms = {
-  { id = 'pistol', label = 'Service Pistol', item = 'WEAPON_PISTOL', count = 1, minGrade = 5 },
-  { id = 'carbine', label = 'Patrol Carbine', item = 'WEAPON_CARBINERIFLE', count = 1, minGrade = 10 },
+  { id = 'tasercart', label = 'Taser Cartridge', item = 'taser_cartridge', count = 20, minGrade = 2 },
+  { id = '9mm', label = '9x19mm', item = 'ammo-9', count = 100, minGrade = 5 },
+  { id = '556', label = '5.56x45mm', item = 'ammo-rifle', count = 240, minGrade = 7 },
+
 }
 -- Appearance integration: 'illenium-appearance' or 'fivem-appearance'.
 -- Full outfits use appearance exports to save current skin then apply configured outfit components/props.
@@ -47,7 +49,7 @@ Config.Tablet = { logo = 'logo.png', forceName = 'Midnight Police Constabulary',
 -- No forced undershirt changes. Sample values below are NOT guaranteed to exist.
 Config.Clothing = {
   { id = 'highvis', label = 'High Visibility Jacket', image = 'hivis_jacket.png', minGrade = 0,
-    male = { components = { { component_id = 11, drawable = 619, texture = 0 } } },
+    male = { components = { { component_id = 11, drawable = 621, texture = 1 } } },
     female = { components = { { component_id = 11, drawable = 0, texture = 0 } } } },
   { id = 'gloves', label = 'Blue Protective Gloves', image = 'blue_gloves.png', minGrade = 0,
     male = { components = { { component_id = 3, drawable = 85, texture = 0 } } },

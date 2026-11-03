@@ -6,7 +6,8 @@ function inGamePlay()
     if 
     GetResourceState("nass_paintball") == "started" and exports["nass_paintball"]:inGame() or 
     GetResourceState("pug-paintball") == "started" and exports["pug-paintball"]:IsInPaintball() or
-    GetResourceState("rtx_lasergame") == "started" and exports["rtx_lasergame"]:IsPlayerPlayingLaserGame()
+    GetResourceState("rtx_lasergame") == "started" and exports["rtx_lasergame"]:IsPlayerPlayingLaserGame() or
+    GetResourceState("ak4y-boxing") == "started" and exports["ak4y-boxing"]:IsInBoxingMatch()
     then
         return true
     end

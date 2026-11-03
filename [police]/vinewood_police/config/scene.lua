@@ -5,6 +5,13 @@ Config.Scene = {
     Command = 'scenekit',
     -- Police tape: strung between points you choose (lamp posts, cones, fences...), drawn with
     -- web/textures/policeline.png. Shown to everyone, cleared with the rest of your scene.
+    -- Numbered evidence markers (vw_evidence_01 to vw_evidence_30). Each new one takes the lowest number
+    -- not already used within Radius of it, whoever placed the others.
+    EvidenceMarkers = {
+        Model = 'vw_evidence_%02d',
+        Count = 30,
+        Radius = 60.0,
+    },
     Tape = {
         Texture = 'web/textures/policeline.png',
         Width = 0.12,            -- metres from edge to edge

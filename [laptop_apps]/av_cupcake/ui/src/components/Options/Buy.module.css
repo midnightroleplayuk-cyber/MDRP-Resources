@@ -1,0 +1,33 @@
+.option:hover {
+    background-color: rgba(100,100,100,0.25);
+}
+
+.input {
+    background-color: transparent;
+    &:disabled,
+    &[data-disabled] {
+        color: rgba(255, 255, 255, 0.2);
+        border-color: light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-4));
+        background-color: rgba(80, 80, 80, 0.35);
+        cursor: default;
+    }
+}
+
+.input:focus {
+    border: solid 1px rgba(200,200,200,0.45)
+}
+
+.dropdown {
+    background-color: rgba(39, 43, 54, 0.45);
+    backdrop-filter: blur(10px);
+}
+
+.button {
+    &:disabled,
+    &[data-disabled] {
+        color: rgba(255, 255, 255, 0.2);
+        border-color: light-dark(var(--mantine-color-gray-5), var(--mantine-color-dark-6));
+        background-color: rgba(80, 80, 80, 0.35);
+        cursor: default;
+    }
+}

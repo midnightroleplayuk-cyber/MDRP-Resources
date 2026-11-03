@@ -22,6 +22,19 @@ Inventory['tgiann-inventory'] = {
         exports['tgiann-inventory']:RemoveItem(src, name, amount)
     end,
 
+    RemoveItemBySlot = function(src, slot, amount)
+        local inventoryItems = exports["tgiann-inventory"]:GetInventoryItems(src)
+        if not inventoryItems then return false end
+
+        for _, item in pairs(inventoryItems) do
+            if item.slot == slot then
+                return exports['tgiann-inventory']:RemoveItem(src, item.name, amount or 1, nil, slot)
+            end
+        end
+
+        return false
+    end,
+
     GetInventory = function(source)
         return exports['tgiann-inventory']:GetPlayerItems(source)
     end,
@@ -44,6 +57,17 @@ Inventory['tgiann-inventory'] = {
     end,
 
     RegisterBloodStorage = function(src, stashid)
-        return false
+        exports['tgiann-inventory']:RegisterStash(stashid, 'Blood Storage', 20, 20000, true)
+    end,
+
+    RegisterMedicalBagStash = function(src, stashid)
+        local bagConfig = Config.MedicalBag or {}
+        exports['tgiann-inventory']:RegisterStash(
+            stashid,
+            bagConfig.stashLabel or 'Medical Bag',
+            bagConfig.stashSlots or 15,
+            bagConfig.stashWeight or 10000,
+            true
+        )
     end
 }

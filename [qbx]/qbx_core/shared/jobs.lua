@@ -259,6 +259,17 @@ return {
             },
         },
     },
+    ['gov'] = {
+        label = 'Midnight Staff',
+        defaultDuty = true,
+        offDutyPay = false,
+        grades = {
+            [0] = {
+                name = 'Gov STAFF',
+                payment = 0
+            },
+        },
+    },
     ['realestate'] = {
         label = 'Real Estate',
         type = 'realestate',

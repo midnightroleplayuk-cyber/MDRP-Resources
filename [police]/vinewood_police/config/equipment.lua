@@ -12,7 +12,7 @@
 Config.Equipment = {
     -- What happens to issued kit still held at sign-off:
     -- 'return' takes it back automatically, 'keep' leaves it with the officer (still listed as outstanding).
-    OnSignOff = 'keep',
+    OnSignOff = 'return',
     -- Audit every draw and return. false = only serialised items (weapons, Tasers).
     AuditAll = false,
 
@@ -43,7 +43,7 @@ Config.Equipment = {
 ---------------------------------------------------------------------------
 Config.Uniforms = {
     -- Put the officer's own clothes back when they sign off.
-    RestoreOnSignOff = false,
+    RestoreOnSignOff = true,
 
     Outfits = {
         {

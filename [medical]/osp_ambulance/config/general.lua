@@ -5,7 +5,7 @@ Config.Framework = 'qb' -- don't touch this! (Framework setter)
 Config.startDamageTimer = 1000 -- Time in ms before the player damages gets applied when loading the chracters
 Config.UseRadialProgressBar = false -- Use the radial progress bar instead of the default one
 Config.UseOxNotif = true -- Set this to false if you want to use the default framework notificatins
-Config.UsedInventory = 'ox_inventory' -- empty is framework inventory
+Config.UsedInventory = 'ox' -- empty is framework inventory
 
 -- !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 -- To change the localization, go into server.cfg and paste the following code: setr ox:locale en
@@ -15,9 +15,9 @@ Config.UsedInventory = 'ox_inventory' -- empty is framework inventory
 Config.UseTarget = true -- Set to false if you don't want to use targetting at all and instead use drawtext
 Config.UseOxTarget = true
 Config.TargetName = false -- The name of the target resource (only needed if you use qb-target or qtarget)
-Config.Dispatch = "op-ambulancemdt" -- 'default', 'op-ambulancemdt', 'ps-dispatch', 'cd_dispatch', 'lb-phone', 'lb-tablet', 'piotreq_gmt' (aliases: ps, cd, cd_dispatch3d, gmt)
-Config.Banking = "LGMods_Banking" -- 'default', 'okokBanking' (aliases: okok), 'wasabi_banking' (alias: wasabi), 'osp-banking' (aliases: osp, osp_banking)
-Config.DispatchNotifyButton = "H" -- Avoid G if cd_dispatch uses G for Respond; change this or the cd_dispatch respond key
+Config.Dispatch = "cd_dispatch" -- 'default', 'ps-dispatch', 'cd_dispatch', 'lb-phone', 'lb-tablet', 'piotreq_gmt' (aliases: ps, cd, cd_dispatch3d, gmt)
+Config.Banking = "default" -- 'default', 'okokBanking' (aliases: okok), 'wasabi_banking' (alias: wasabi), 'osp-banking' (aliases: osp, osp_banking), 'qs-banking' (aliases: qs, qs_banking)
+Config.DispatchNotifyButton = "G" -- Avoid G if cd_dispatch uses G for Respond; change this or the cd_dispatch respond key
 Config.UseXsound = false -- If set to false you'll use native audio, which is to be recommended to everyone who's got it working. 
 
 Config.OpenKey = "O" -- The default key to open the medical menu
@@ -32,11 +32,11 @@ Config.Debug = false -- Enable or disable debug mode to investigate issues with 
 Config.UseRoomLoad = false -- let us know if toggling this breaks/fixes screens
 
 Config.MedicalMenuStyle = "console" -- 'default', 'console', 'legacy'
-Config.AutoTriage = false -- When true, triage is computed automatically (blood, pain, LOC, severity). When false, medical staff must set triage manually.
+Config.AutoTriage = true -- When true, triage is computed automatically (blood, pain, LOC, severity). When false, medical staff must set triage manually.
 Config.CustomDeathScreen = false -- Enable of disable a customised death timer screen, keep at false if you don't know what you are doing
 Config.PopUpSkelly = false
-Config.EnableWoundEditor = true -- Self-edit wounds/fractures for RP/scenes (command: woundeditor)
-Config.WoundEditorAddOnly = true -- When true, players can only add new injuries (cannot remove existing wounds or turn off fractures)
+Config.EnableWoundEditor = false -- Self-edit wounds/fractures for RP/scenes (command: woundeditor)
+Config.WoundEditorAddOnly = false -- When true, players can only add new injuries (cannot remove existing wounds or turn off fractures)
 Config.WoundEditorKey = '' -- Optional keybind; empty = command only
 Config.ClientSettingsCommand = 'medicalsettings' -- Command to open personal FX settings menu
 Config.ClientSettingsKey = '' -- Optional keybind; empty = command only
@@ -48,14 +48,14 @@ Config.InteractionDict = "anim@heists@narcotics@funding@gang_idle"
 Config.InteractionAnim = "gang_chatting_idle01"
 
 Config.JobBlips = false -- Whether or not ambulance personel can see eachother on the map.
-Config.MinimalDoctors = 2 -- How many players with the ambulance job to prevent the hospital check-in system from being used
+Config.MinimalDoctors = 5 -- How many players with the ambulance job to prevent the hospital check-in system from being used
 Config.DocCooldown = 1 -- Cooldown between doctor calls allowed, in minutes
-Config.AIHealTimer = 60 -- How long it will take to be healed after checking in, in seconds
+Config.AIHealTimer = 120 -- Time in bed before revive after check-in / respawn
 Config.WipeInventoryOnRespawn = true -- Enable or disable removing all the players items when they respawn at the hospital
 Config.ExcludeItems = {'iphone', 'anotheritem'}
-Config.Helicopter = "polmav" -- Helicopter model that players with the ambulance job can use
-Config.LastStandTime = 120 -- How long before the player is percived as medically dead (in seconds)
-Config.RespawnTime = 120 -- How long before the player can respawn (in seconds)
+Config.Helicopter = "aeron" -- Helicopter model that players with the ambulance job can use
+Config.LastStandTime = 600
+Config.RespawnTime = 300
 -- 'bed' = nearest available hospital bed (default). 'coords' = closest entry in Config.RespawnLocations (no bed).
 -- Override HandleCustomRespawn / GetClosestRespawnLocation in client_open.lua (and server GetClosestRespawnLocation) for custom logic.
 Config.RespawnMode = "bed"
@@ -63,33 +63,33 @@ Config.RespawnLocations = {
     -- vector4(x, y, z, heading),
     -- vector4(311.0, -583.0, 43.3, 340.0), -- Example: Pillbox front
 }
-Config.Crawl = false -- Enable to make the player crawl whilst in laststand
+Config.Crawl = true -- Enable to make the player crawl whilst in laststand
 Config.PropDespawnTimer = 360000 -- How long before the ecg prop despawns after being placed in ms
 Config.SavePlayerDataTimer = 60000 -- How often the player data should be saved in ms (the lower the more accurate the data is saved but the more performance impact) (The data is sent to the server so that the player data is saved when the player quits)
 Config.AntiCombatLogLoop = 200 -- How often the anti combat log loop should run in ms (lower is better but has a higher performance impact)
-Config.DeadBlipDelay = 360 -- How long the dead blip should be visible on the map in ms, with each tick of this reducing the transpaerncy of the blip 250 - 0
+Config.DeadBlipDelay = 500 -- How long the dead blip should be visible on the map in ms, with each tick of this reducing the transpaerncy of the blip 250 - 0
 Config.AutomaticAmbulanceAlert = false -- Enable or disable the automatic ambulance alert when a player is downed
 Config.inLastStandHealth = 150 -- MUST BE ABOVE ZERO 0, The health the player should have when they are in last stand
 Config.DeathHealth = 200 -- MUST BE ABOVE ZERO 0, The health the player should have when they are dead
 Config.XrayScreenTimeout = 10000 -- How long before the screen automatically shuts off after an xray
 Config.CodeBlueTimeout = 300 -- The time in seconds before a code blue is automatically cleared (0 = disabled)
-Config.BillCost = 2000 -- Price that players are charged for using the hospital check-in system
-Config.WoundBills = false -- if this is true the checkin revive and respawn revive tooks wound calculator and set the price them
+Config.BillCost = 0 -- Price that players are charged for using the hospital check-in system
+Config.WoundBills = false -- Wound-priced hospital bills. Off: check-in / respawn stay at Config.BillCost (free)
 Config.WoundPrices = {
-    ["abrasion"] = 200,
-    ["avulsion"] = 100,
-    ["contusion"] = 50,
-    ["crush"] = 20,
-    ["cut"] = 15,
+    ["abrasion"] = 15,
+    ["avulsion"] = 50,
+    ["contusion"] = 25,
+    ["crush"] = 60,
+    ["cut"] = 10,
     ["laceration"] = 30,
-    ["lowvelocitywound"] = 80,
-    ["mediumvelocitywound"] = 90,
+    ["lowvelocitywound"] = 60,
+    ["mediumvelocitywound"] = 80,
     ["velocitywound"] = 100,
-    ["puncturewound"] = 100,
-    ["burn"] = 150,
-    
+    ["puncturewound"] = 90,
+    ["burn"] = 70,
+
     -- default price if wound missing in this list
-    ["default"] = 50,
+    ["default"] = 40,
 }
 
 Config.MutePlayerOnLastStand = false
@@ -98,32 +98,35 @@ Config.MutePlayerOnDeath = true
 
 -- Regen stuff
 Config.BleedLossMultiplier = 1
-Config.BleedingUpdate = 40000 -- How often should the bleeding update in ms?
+Config.BleedingUpdate = 40000 -- How often the bleeding update in ms? The blood loss rate (liters/second) is scaled by the time elapsed between updates, so this only controls how smooth the drop looks.
 Config.BloodRegen = 0.0025 -- The amount of blood that regen every 10 seconds in liter (6 liters is max). (When in stable condition)
-Config.HealthRegen = 1 -- The amount of health that regen every 10 seconds in healthpoints (200 is max). (When in good condition)
+Config.HealthRegen = 0.0 -- The amount of health that regen every 10 seconds in healthpoints (200 is max). (When in good condition)
 Config.HealthRegenUpdate = 10000
 
-Config.MinimumBleedAmountBeforeHealthDegen = 0.005 -- The minimum amount of blood that must be activly lost before health starts to degenerate
-Config.HealthBleedingDegen = 1 -- The amount of health that degens every bleedingupdate, in healthpoints. (When bleeding)
-Config.HealthDegenUpdate = 3000 -- How often the health should degenerate when bleeding in ms
+Config.MinimumBleedAmountBeforeHealthDegen = 0.002 -- The minimum blood loss rate (in liters/second) that must be activly present before health starts to degenerate
+Config.HealthBleedingDegen = 1 -- The amount of health that degens every HealthDegenUpdate, in healthpoints. (When bleeding)
+Config.HealthDegenUpdate = 9000 -- How often the health should degenerate when bleeding in ms
 
 Config.KillPlayerInCriticalCondition = true -- Enable or disable to kill player when in critical condition (lower bpm than 30 and next to no bloodpressure)
 
 -- The different types of equipment and their time to apply in ms
 Config.QuickCheckVitalsTime = 3000 -- How long it should take to check pulse etc in ms
 Config.ReviveKitTime = 5000
+Config.GlucoseItem = 'glucose'
+Config.GlucoseNeedThreshold = 5
+Config.GlucoseUseTime = 4000
 Config.BodybagTime = 5000
 
 -- SIDE EFFECTS
 Config.SideEffectsTime = 60000 -- The interval for how often the side effects should be triggered in ms
 
-Config.ArmInjuryChance = 10 -- Chance, in percent, that an arm injury side-effect gets applied
-Config.ArmInjuryTimer = 10 -- How much time, in seconds. (This disables firing weapons and stearing a vehicles left/right)
+Config.ArmInjuryChance = 5 -- Chance, in percent, that an arm injury side-effect gets applied
+Config.ArmInjuryTimer = 5 -- How much time, in seconds. (This disables firing weapons and stearing a vehicles left/right)
 
 Config.CameraShakeIntensity = 0.1 -- How intense the camera shake should be when injured
 Config.LegInjuryChance = { -- The chance, in percent, that leg injury side-effects get applied
-    Running = 30,
-    Walking = 10
+    Running = 15,
+    Walking = 5
 }
 
 Config.UseMovementRate = true -- Might contradict with other gym scripts? Set to false if so
@@ -139,15 +142,20 @@ Config.BleedTime = 5000 -- The interval for how often the bleed effect (only vis
 Config.PainThreshold = 10 -- The pain threshold for when the screen should start to flash
 Config.PainFlashIntensity = 100 -- Default pain flash intensity (0-100). Players can still change this in personal settings
 
-Config.BlackoutEffect = false -- Blackouts caused by very high or low bp, not to be confused with head injuries that can cause short blackouts.
-Config.HeadInjuryChance = 25 -- Chance, in percent, that a head injury side-effect gets applied (MINI BLACKOUTS)
+Config.BlackoutEffect = true -- Blackouts caused by very high or low bp, not to be confused with head injuries that can cause short blackouts.
+Config.BlackoutLowBP = { 55, 32 } -- Both systolic and diastolic must drop below this
+Config.BlackoutHighBP = { 210, 140 } -- Both systolic and diastolic must rise above this
+Config.HeadInjuryChance = 8 -- Chance, in percent, that a head injury side-effect gets applied (MINI BLACKOUTS)
 
-Config.PainEffect = false
-Config.BleedEffect = false
+Config.PainEffect = true
+Config.BleedEffect = true
+Config.BleedFxScale = 0.32 -- Size of the blood particle (was 0.85)
+Config.BleedFxBursts = 1 -- How many spurts play per bleed tick (was 3)
 
 -- Wheelchair and Crutch
-Config.MaxWheelChairTime = 60 -- The maximum time a player can be set in a wheelchair in minutes
-Config.MaxCrutchTime = 60 -- The maximum time a player can be set in a wheelchair in minutes
+Config.MaxWheelChairTime = 30 -- The maximum time a player can be set in a wheelchair in minutes
+Config.MaxCrutchTime = 30 -- The maximum time a player can be set in a wheelchair in minutes
+Config.CheckInCrutchMinutes = 1 -- Crutch time after leaving a check-in bed, in minutes
 
 
 Config.AmbulanceBypassItems = false -- Set to true if you want to enable all buttons in ui for medics and disable item requierment
@@ -164,7 +172,7 @@ Config.Prop = "prop_ld_bomb"
 Config.RenderDistance = 50 -- The rendering distance of an ECG, recommended to keep above 50 to avoid sync issues. 
 Config.Alpha = 100 -- The prop transparency (51-300)
 Config.AutoDeleteTime = 500 -- The time in seconds before the ECG is automatically deleted after being placed
-Config.ECGCooldown = 1.5 -- The cooldown in seconds between being able to place ECGs
+Config.ECGCooldown = 5 -- The cooldown in seconds between being able to place ECGs
 
 -- Recommended to have all different keys (only needed if you _dont_ use target)
 -- Use a control name from config/controls.lua (e.g. 'E', 'G') or a 1-based index (e.g. 1, 2)

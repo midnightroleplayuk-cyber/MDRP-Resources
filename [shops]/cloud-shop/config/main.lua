@@ -37,7 +37,17 @@ return {
 				--vector4(1984.2482, 3054.3589, 47.2151, 240.0611), -- Panorama Dr
 				vector4(209.35, -867.63, 31.30, 74.26), --New Legion Square
 				vector4(1481.7, 3572.17, 36.77, 287.85), -- Sandy Shores Estate
-				vector4(311.2435, -2041.4139, 20.2700, 241.0878) -- Jamestown street
+				vector4(311.2435, -2041.4139, 20.2700, 241.0878), -- Jamestown street
+				vector4(22.51, -1104.95, 29.8, 170.13), --Bossman Legion
+				vector4(-662.49, -933.46, 21.82, 172.83), -- Bossman Little Seoul
+				vector4(810.66, -2159.17, 29.62, 356.03), --Cypress Flats
+				vector4(-331.85, 6084.85, 31.44, 224.5), -- Paleto Bay
+				vector4(-1119.24, 2699.78, 18.54, 217.72), -- Grand Chaparral
+				vector4(1692.14, 3760.94, 34.7, 222.61), -- Sandy Shores Boss
+				vector4(253.96, -50.43, 69.93, 70.61), -- Spanish Avenue
+				vector4(-1303.99, -394.57, 36.69, 72.05), -- Boulevard Del Perro
+				vector4(842.51, -1035.39, 28.18, 354.92), -- La Mesa
+				vector4(-3173.64, 1088.4, 20.83, 239.28) -- Great Ocean Highway
 			},
 
 			--? For icons, use Iconify: https://icon-sets.iconify.design

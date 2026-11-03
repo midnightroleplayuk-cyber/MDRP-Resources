@@ -1,0 +1,1 @@
+Run APPLY_PERSONAL_DEFAULT.sql on the LIVE database. Restart resource. Existing default Checking names are corrected. Custom names preserved. If UI still displays Checking, inspect live SQL rows and report whether label is PERSONAL; protected server/UI may be overriding display. Back up DB before running.

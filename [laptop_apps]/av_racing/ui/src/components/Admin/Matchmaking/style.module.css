@@ -1,0 +1,103 @@
+.wrapper {
+  color: var(--text-main);
+  overflow-y: auto;
+  height: 100%;
+}
+
+.title {
+  font-family: var(--font-main);
+  font-size: 22px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--text-main);
+}
+
+.muted {
+  font-family: var(--font-main);
+  font-size: 11px;
+  color: var(--text-dim);
+}
+
+.section {
+  font-family: var(--font-main);
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--accent);
+  margin-bottom: 10px;
+  display: block;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px 18px;
+}
+
+.labelRow {
+  margin-bottom: 4px;
+}
+
+.fieldLabel {
+  font-family: var(--font-main);
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-dim);
+}
+
+.help {
+  font-family: var(--font-main);
+  font-size: 9px;
+  font-weight: 800;
+  color: #fff;
+  cursor: help;
+  background-color: rgba(255, 255, 255, 0.1);
+  padding: 0 5px;
+  border-radius: 4px;
+  line-height: 14px;
+}
+
+.switchBox {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  justify-content: flex-start;
+}
+
+.saveButton {
+  margin-top: 22px;
+  width: 100%;
+  background-color: var(--accent);
+  color: #000;
+  border: none;
+  border-radius: 6px;
+  padding: 12px 24px;
+  font-family: var(--font-main);
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.saveButton:hover {
+  background-color: #e2ff4d;
+}
+
+.group {
+  background-color: var(--bg-panel);
+  border: solid 1.25px rgba(255, 255, 255, 0.1);
+  box-shadow: 1px 1px 3px 1px rgba(0, 0, 0, 0.15);
+  border-radius: 10px;
+  padding: 16px;
+  margin-bottom: 14px;
+}
+
+.group .section {
+  margin-bottom: 12px;
+}

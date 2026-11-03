@@ -1,5 +1,40 @@
 # Changelog
 
+## 1.13.1
+- Fixed: "Your dog couldn't be deployed". The dog was created by the handler's game, and servers that block or delay player-made entities (sv_entityLockdown, anti-cheat entity protection, slow OneSync sync) removed it before the server could see it. The server now creates the dog and the handler's game takes control of it, keeping control so the dog doesn't stop following when it streams to another player.
+- The dog model gets up to 20 s to load the first time (with a "Loading your dog..." message), for big custom dogs.
+- Clearer messages: model not on the server, model too slow to load, server couldn't create it (with the reason in the server console), or it didn't arrive.
+
+## 1.13.0
+- Custom police dog: stream/policedog/ replaces the game's shepherd (a_c_shepherd) with the Vinewood police dog. Its head and coat textures and harness are set when it's deployed (Config.Dogs.Look; random = true mixes them).
+- Custom bark: web/sounds/policedogbark.mp3, heard by everyone within 40 m and quieter with distance. Barks close together overlap rather than cut each other off. Config.Dogs.Bark.Sound = false goes back to the game's bark.
+- The supplied peds.meta isn't used: it gave the shepherd human settings (walk, capsule, getups), which would break dog animations. A replaced model keeps the game's own dog settings.
+
+## 1.12.1
+- Admin panel (/vpo): Qualifications (testing). Pick yourself or any online player and click a qualification to grant or remove it (green = held), or Give all / Remove all. Admin grants skip rank and sign-off rules (prerequisites are granted in order), are audited as admin, and can be switched off with Config.AllowAdminQualifications = false.
+
+## 1.12.0
+- Dog lead: "Lead on / off" (target the dog, or the radial, Dog). A real rope runs from the handler's hand to the dog's collar, seen by everyone nearby. On the lead the dog stays tight at heel and can't wander off.
+- "Dog: bark at them" (target anyone within 25 m). On the lead the dog holds its ground at your side, faces them and barks. Off the lead it goes up to them and stops a few metres away to bark, without biting. Heel stops it. NPC suspects who are running or fighting within 10 m often give up (60%), noted on the call. "Detain them" slips the lead first. Settings: Config.Dogs.Lead and Config.Dogs.Bark.
+
+## 1.11.1
+- Lighter front-cuff model: ukpolice_cuffs.ydr is now 1.1 MB instead of 6.3 MB, so players download about 5 MB less.
+
+## 1.11.0
+- Numbered evidence markers (vw_evidence_01 to 30, sharing the evidencemarkers texture dictionary). /scenekit, Place evidence markers (or the radial, Scene): a preview of the next number follows your aim, Enter puts it down, and the next number is ready straight away. Q/E turn, Backspace stops. Numbers are shared across officers: each marker takes the lowest number not already used within 60 m, so two officers at one scene never double up. Inside a major incident's outer cordon, placing and picking up markers is written to the scene log. Markers come down with the rest of your scene kit and don't count towards its limit.
+- stream/vinewood_policeprops.ytyp replaced with the new one (cuffs, cone, signs and all 30 markers).
+
+## 1.10.1
+- Custody is only at the custody desk: removed from the radial, and the /custody command is off by default (Config.Custody.Command = 'custody' turns it back on).
+- Fixed: Vinewood resources in a folder named a little differently (vinewood_interviews, Vinewood-MDT...) showed as "not running". Names are now matched without case, hyphens or underscores. The admin panel shows which names were looked for when one isn't found.
+
+## 1.10.0
+- Police radial menu of its own, on L (rebindable in GTA settings). Dark see-through wedges with icons, blue highlight on hover, back arrow in the centre, submenus. Same sections and actions as before. ox_lib's radial is still available: Config.Radial.Style = 'ox'.
+- Font Awesome (solid icons) is bundled with the resource, so icons show even if a player's game can't reach the internet. Licence in web/fa/LICENSE.txt.
+
+## 1.9.1
+- Fixed: the Police section of the radial menu could disappear until the script was restarted. It now checks itself every 5 seconds and puts itself back if anything removed it (ox_lib restarting, another script clearing radial items, a missed duty update). A brief "off duty" reading during a relog or restore no longer removes it. Coming out of handcuffs re-adds it, and /policeradial rebuilds it on the spot.
+
 ## 1.9.0
 - Police tape, drawn with web/textures/policeline.png. /scenekit, Put up tape (or the radial, Scene): aim at a lamp post, cone or fence and press E to tie it there. Aim at the ground and it's tied at waist height. Keep adding points to run it round a scene; Enter finishes. It has a slight sag and a flutter, every player sees it, and the print reads the right way from the front. "Take down tape near me" removes it (your own, or anyone's for sergeants and above). It clears with "Pick everything up", on sign-off and after the scene lifetime. Settings: Config.Scene.Tape (width, sag, flutter, limits). Swap the PNG to change the design.
 

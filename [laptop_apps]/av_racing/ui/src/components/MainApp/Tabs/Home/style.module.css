@@ -1,0 +1,62 @@
+.disabled {
+  background-color: transparent;
+}
+
+.disabled:hover {
+  background-color: rgba(155, 155, 155, 0.1);
+}
+
+.active {
+  background-color: transparent;
+}
+
+.active:hover {
+  background-color: transparent;
+}
+
+.control,
+.root {
+  background-color: transparent;
+}
+
+.indicator {
+  background-color: rgba(110, 113, 128, 0.33);
+}
+
+.box {
+  background-color: rgba(50, 50, 67, 0.45);
+  height: 45px;
+  width: 45px;
+  display: flex;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+  border-radius: 8px;
+  border: solid 1px rgba(110, 113, 128, 0.15);
+}
+
+.title {
+  font-size: 2.05rem;
+  font-family: "Bebas-Regular", sans-serif;
+  letter-spacing: 4.5px;
+  color: var(--white);
+  text-transform: uppercase;
+}
+
+.sectionTitle {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: var(--bg-panel);
+  padding: 12px 20px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border-color);
+}
+
+.sectionTitle h2 {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-main);
+  font-family: var(--font-main);
+  margin: 0;
+}

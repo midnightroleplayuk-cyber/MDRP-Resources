@@ -1,0 +1,96 @@
+/* Editable Vantis-style document template.
+   All three cards share this file; .sky-license-card selects the license variant.
+   All lengths scale with viewport height; the card height follows its content.
+   Position comes from Config.PlayerIdentityCard / jobconfig. */
+.player-document.sky-identity-card {
+  --sky-id-width: 44.444444444vh;
+  --ink: #3e6770; --line: #609282; --muted: #496260;
+  position: relative; isolation: isolate; box-sizing: border-box;
+  width: var(--sky-id-width); padding: 1.666666667vh 2.12962963vh 2.222222222vh;
+  border: 0.092592593vh solid #eff4df; border-radius: 1.296296296vh; overflow: hidden; outline: none;
+  font-family: Roboto, Arial, sans-serif; font-size: 1.481481481vh; color: #273738;
+  background: radial-gradient(ellipse at 13% 14%, #dfe0d2 0, transparent 49%), radial-gradient(ellipse at 84% 85%, #91c2ba 0, transparent 48%), linear-gradient(110deg, #d9dfc1, #e4e9d6 38%, #b5d8d9 69%, #d4d1d5);
+  box-shadow: 0 1.296296296vh 3.518518519vh #0005, inset 0 0 0 0.37037037vh #fff3;
+}
+.sky-identity-card *, .sky-identity-card *::before, .sky-identity-card *::after { box-sizing: border-box; }
+.sky-identity-card p, .sky-identity-card h1 { margin: 0; }
+.sky-identity-card::before, .sky-identity-card::after { content: ''; position: absolute; inset: 0; z-index: -1; pointer-events: none; }
+.sky-identity-card::before { opacity: .32; background: repeating-linear-gradient(154deg, transparent 0 1.111111111vh, #ffffffa3 1.148148148vh 1.185185185vh, transparent 1.203703704vh 1.481481481vh); }
+.sky-identity-card::after { background: repeating-linear-gradient(0deg, #fff0 0 0.185185185vh, #fff2 0.185185185vh 0.231481481vh, #fff0 0.277777778vh 0.462962963vh); opacity: .35; }
+.sky-identity-card .document-watermark { position: absolute; right: 1.296296296vh; top: 7.12962963vh; width: 15.277777778vh; height: 17.777777778vh; object-fit: contain; opacity: .075; z-index: -1; filter: grayscale(1); }
+.sky-identity-card .document-header { position: relative; display: flex; align-items: center; gap: 1.111111111vh; min-height: 3.240740741vh; margin-bottom: 0.925925926vh; background: none; }
+.sky-identity-card .country-mark { flex: 0 0 3.055555556vh; width: 3.055555556vh; height: 3.981481481vh; }
+.sky-identity-card .country-mark img { display: block; width: 100%; height: 100%; object-fit: contain; }
+.sky-identity-card .heading { min-width: 0; }
+.sky-identity-card .country { color: var(--ink); font-size: 1.296296296vh; font-weight: 700; letter-spacing: 0.287037037vh; line-height: 1.2; margin-bottom: 0.277777778vh; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.sky-identity-card h1 { color: #233b42; font-size: 1.851851852vh; line-height: 1.12; letter-spacing: 0.078703704vh; font-weight: 700; text-transform: uppercase; }
+.sky-identity-card .document-body { position: relative; display: grid; grid-template-columns: 10.740740741vh minmax(0, 1fr); gap: 2.037037037vh; }
+.sky-identity-card .portrait { position: relative; width: 10.740740741vh; height: 12.592592593vh; overflow: hidden; background: repeating-linear-gradient(0deg, #fff2 0 0.092592593vh, transparent 0.092592593vh 0.277777778vh), linear-gradient(145deg, #aabdb5, #d9e0d0); border: 0.092592593vh solid #4b6e6954; border-radius: 0.185185185vh; }
+.sky-identity-card .portrait svg { width: 100%; height: 100%; opacity: .9; }
+.sky-identity-card .portrait img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: center bottom; transform: scale(1.12); transform-origin: center bottom; }
+.sky-identity-card .portrait.has-portrait { background: linear-gradient(160deg, #ffffff75, #49626024); border-color: #49626038; }
+.sky-identity-card .shoulders { fill: #58615e; } .sky-identity-card .neck { fill: #a2aaa4; } .sky-identity-card .face { fill: #c3c8bf; } .sky-identity-card .hair { fill: #636d66; } .sky-identity-card .collar { fill: #e6e7dd; }
+.sky-identity-card .details { min-width: 0; padding-right: 1.018518519vh; }
+.sky-identity-card .field { min-width: 0; margin-bottom: 0.740740741vh; }
+.sky-identity-card label { display: block; color: var(--muted); font-size: 0.740740741vh; line-height: 1.25; }
+.sky-identity-card .field p { margin-top: 0.277777778vh; font-size: 1.574074074vh; font-weight: 700; line-height: 1.15; text-transform: uppercase; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.sky-identity-card .name-field p { white-space: normal; overflow-wrap: anywhere; max-height: 2.3em; }
+.sky-identity-card .name-row, .sky-identity-card .field-row { display: grid; grid-template-columns: minmax(7.777777778vh, max-content) minmax(0, 1fr); gap: 1.851851852vh; }
+.sky-identity-card .name-row > .name-field:first-child { max-width: 12.962962963vh; }
+.sky-identity-card:not(.sky-license-card):not(.sky-service-card) .details { display: grid; grid-template-columns: minmax(7.777777778vh, max-content) minmax(0, 1fr); column-gap: 1.851851852vh; align-content: start; }
+.sky-identity-card:not(.sky-license-card):not(.sky-service-card) .name-row, .sky-identity-card:not(.sky-license-card):not(.sky-service-card) .field-row { display: contents; }
+.sky-identity-card .field-row p { font-size: 1.388888889vh; letter-spacing: 0.050925926vh; }
+.sky-identity-card .license-field p { font-size: 1.111111111vh; white-space: normal; }
+.sky-identity-card .details { max-height: 14.722222222vh; overflow: auto; }
+.sky-identity-card .document-code { margin-top: 0.555555556vh; padding: 0.462962963vh 0.740740741vh; background: #ffffff36; border-radius: 0.185185185vh; color: #273738; }
+.sky-identity-card .document-code p { font-family: 'Courier New', monospace; font-size: 1.203703704vh; font-weight: 700; line-height: 1.4; letter-spacing: 0.083333333vh; white-space: nowrap; overflow: hidden; }
+.sky-identity-card footer { margin-top: 0.740740741vh; display: flex; justify-content: space-between; gap: 1.388888889vh; color: var(--muted); font-size: 0.648148148vh; letter-spacing: 0.111111111vh; line-height: 1; text-transform: uppercase; }
+.player-document.sky-license-card { --ink: #334d81; --line: #a77c9b; --muted: #605779; background: radial-gradient(ellipse at 4% 42%, #a3c7d0 0, transparent 39%), radial-gradient(ellipse at 91% 29%, #edb7c9 0, transparent 54%), linear-gradient(110deg, #d5d8e1, #eecbd8 46%, #eacbd3 85%, #c7d5d9); }
+.sky-license-card .country-mark { flex-basis: 3.518518519vh; width: 3.518518519vh; height: 3.888888889vh; padding: 0.462962963vh; background: #344f86; border: 0.185185185vh solid #d7b874; border-radius: 0.185185185vh; }
+.sky-license-card .country-mark img { filter: brightness(0) invert(1); }
+.sky-license-card h1 { color: #34487a; }
+.sky-license-card .country { font-size: 0.925925926vh; letter-spacing: 0.222222222vh; }
+.sky-license-card .portrait { background: linear-gradient(125deg, #b4bcc9, #e1ced9); }
+.sky-identity-card .document-licenses { list-style: none; display: flex; flex-wrap: wrap; gap: 0.462962963vh; max-height: 4.814814815vh; overflow: auto; margin: 0.37037037vh 0; padding: 0; }
+.sky-identity-card .document-licenses li { display: flex; align-items: center; gap: 0.555555556vh; padding: 0.185185185vh 0.648148148vh; border: 0.092592593vh solid #6655829e; border-radius: 0.185185185vh; color: #3a376b; background: #ffffff4d; font-size: 1.111111111vh; line-height: 1.296296296vh; font-weight: 700; }
+.sky-license-card .details { display: flex; flex-direction: column; height: 12.592592593vh; padding-right: 0; overflow: hidden; }
+.sky-license-card .name-row { flex-shrink: 0; }
+.sky-license-card .license-field { display: flex; flex-direction: column; flex: 1; min-height: 0; margin-bottom: 0; }
+.sky-license-card .document-licenses { flex: 1; min-height: 0; max-height: 8.518518519vh; gap: 0.37037037vh; margin-bottom: 0; align-content: flex-start; overflow-x: hidden; overflow-y: auto; scrollbar-gutter: stable; scrollbar-width: thin; scrollbar-color: #6655829e #ffffff36; }
+.sky-license-card .document-licenses::-webkit-scrollbar { width: 0.555555556vh; }
+.sky-license-card .document-licenses::-webkit-scrollbar-track { background: #ffffff36; border-radius: 0.277777778vh; }
+.sky-license-card .document-licenses::-webkit-scrollbar-thumb { background: #6655829e; border-radius: 0.277777778vh; }
+.sky-license-card .document-licenses:focus-visible { outline: 0.092592593vh solid #665582; outline-offset: 0.185185185vh; }
+.sky-license-card .document-licenses li { max-width: 100%; flex-shrink: 0; }
+.sky-license-card .document-licenses li span { min-width: 0; overflow-wrap: anywhere; }
+.player-document.sky-service-card { --ink: var(--service-color); --line: var(--service-color); --muted: #526371; background: linear-gradient(115deg, #f3f2eb 0%, var(--service-tint, #3177b730) 100%), #f0f3f2; border-color: #d7dee2; }
+.sky-service-card .details { position: relative; isolation: isolate; }
+.sky-service-card .document-watermark { left: 50%; top: 50%; right: auto; width: 14.814814815vh; height: 14.814814815vh; max-width: 100%; max-height: 100%; transform: translate(-50%, -50%); pointer-events: none; }
+.sky-service-card .heading { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.37037037vh 1.111111111vh; width: 100%; }
+.sky-service-card .country { order: 0; flex-basis: 100%; }
+.sky-service-card h1 { order: 1; flex-shrink: 0; white-space: nowrap; color: var(--service-color); }
+.sky-service-card .service-department { order: 2; flex: 1; min-width: 0; font-size: 1.111111111vh; line-height: 1.2; font-weight: 700; text-align: right; color: #263a4b; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.sky-service-card .service-rank { margin-top: 0.462962963vh; }
+.sky-service-card .service-rank p { font-size: 1.944444444vh; color: var(--service-color); }
+.sky-service-card .service-fields { display: grid; grid-template-columns: minmax(0, 1fr); gap: 0.740740741vh; }
+.sky-service-card .service-fields > .field:last-child { margin-bottom: 0; }
+.sky-service-card .service-number p { font-size: 1.574074074vh; font-variant-numeric: tabular-nums; }
+.sky-service-card .service-rank p, .sky-service-card .service-number p { overflow-wrap: anywhere; }
+.sky-service-card[data-template="medical"] { background: linear-gradient(115deg, #fff9f9, var(--service-tint, #bf465b30)), #f4f1f1; }
+.sky-service-card[data-template="medical"] .document-body { grid-template-columns: minmax(0, 1fr) 10.740740741vh; }
+.sky-service-card[data-template="medical"] .portrait-column { order: 2; }
+.sky-service-card[data-template="medical"] .details { order: 1; padding-right: 0; }
+.sky-service-card[data-template="compact"] { border-left: 0.925925926vh solid var(--service-color); padding-left: 1.481481481vh; background: linear-gradient(120deg, #f4f2ea, var(--service-tint, #a36a2430)), #f4f2ea; }
+.sky-service-card[data-template="compact"] .document-body { gap: 1.481481481vh; }
+.sky-service-card[data-template="compact"] .service-rank p { font-size: 1.666666667vh; }
+
+/* Background choice is independent of the per-department field layout. */
+.sky-service-card[data-background="matte"] { background: linear-gradient(110deg, #f1f0e7 10%, #f8f8f1 45%, var(--service-tint)), #f6f5ef; }
+.sky-service-card[data-background="matte"]::before { opacity: .12; background: repeating-linear-gradient(90deg, transparent 0 0.185185185vh, #68787c44 0.203703704vh 0.231481481vh, transparent 0.259259259vh 0.462962963vh); }
+.sky-service-card[data-background="matte"]::after { opacity: .1; background: repeating-linear-gradient(0deg, transparent 0 0.277777778vh, #697676 0.296296296vh 0.324074074vh, transparent 0.351851852vh 0.555555556vh); }
+.sky-service-card[data-background="engraved"] { background: linear-gradient(125deg, #f1f0e5 5%, #f5f6f3 36%, var(--service-tint)), #f5f6f3; }
+.sky-service-card[data-background="engraved"]::before { opacity: 1; background: url("./service-security.svg") center / 100% 100%; }
+.sky-service-card[data-background="engraved"]::after { opacity: .12; background: repeating-linear-gradient(0deg, transparent 0 0.37037037vh, #fff 0.398148148vh 0.435185185vh, transparent 0.462962963vh 0.740740741vh); }
+.sky-service-card[data-background="tinted"] { background: linear-gradient(115deg, #f7f7f0 20%, #ffffff85 58%, transparent 100%), var(--service-color); }
+.sky-service-card[data-background="tinted"]::before { opacity: .3; background: url("./service-security.svg") center / 100% 100%; }
+.sky-service-card[data-background="tinted"]::after { opacity: 0; }

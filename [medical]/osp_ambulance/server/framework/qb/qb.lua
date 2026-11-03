@@ -145,17 +145,39 @@ AddEventHandler('osp_ambulance:setItemMetadata', function(slot, info)
 end)
 
 function CheckMoney(source)
-    local src = source
-    local sourcePlayer = QBCore.Functions.GetPlayer(src)
-    local currentCash = sourcePlayer.Functions.GetMoney('bank')
-    return currentCash
+    local sourcePlayer = QBCore.Functions.GetPlayer(source)
+    if not sourcePlayer then return 0 end
+    local bank = tonumber(sourcePlayer.Functions.GetMoney('bank')) or 0
+    local cash = tonumber(sourcePlayer.Functions.GetMoney('cash')) or 0
+    return bank + cash
 end
 
 function RemoveMoney(source, amount)
-    local src = source
-    local sourcePlayer = QBCore.Functions.GetPlayer(src)
+    amount = tonumber(amount) or 0
+    if amount <= 0 then return true end
+
+    local sourcePlayer = QBCore.Functions.GetPlayer(source)
+    if not sourcePlayer then return false end
+
+    local remaining = amount
+    local bank = tonumber(sourcePlayer.Functions.GetMoney('bank')) or 0
+    local fromBank = math.min(bank, remaining)
+    if fromBank > 0 then
+        sourcePlayer.Functions.RemoveMoney('bank', fromBank, 'osp_ambulance')
+        remaining = remaining - fromBank
+    end
+    if remaining > 0 then
+        sourcePlayer.Functions.RemoveMoney('cash', remaining, 'osp_ambulance')
+    end
+    return true
+end
+
+function AddMoney(source, amount)
+    amount = tonumber(amount) or 0
+    if amount <= 0 then return end
+    local sourcePlayer = QBCore.Functions.GetPlayer(source)
     if sourcePlayer then
-        sourcePlayer.Functions.RemoveMoney('bank', amount)
+        sourcePlayer.Functions.AddMoney('bank', amount, 'osp_ambulance_refund')
     end
 end
 
@@ -286,6 +308,11 @@ RegisterNetEvent('hospital:server:resetHungerThirst', function()
 
     sourcePlayer.Functions.SetMetaData('hunger', 100)
     sourcePlayer.Functions.SetMetaData('thirst', 100)
+    local playerState = Player(source).state
+    if playerState then
+        playerState:set('hunger', 100, true)
+        playerState:set('thirst', 100, true)
+    end
 
     TriggerClientEvent('hud:client:UpdateNeeds', source, 100, 100)
 end)
@@ -294,8 +321,8 @@ RegisterNetEvent('osp_ambulance:registerStash', function(stashid)
     return Inventory[GetInventoryTool()].RegisterStash(source, stashid)
 end)
 
-RegisterNetEvent('osp_ambulance:registerBloodstorage', function(stashid)
-    return Inventory[GetInventoryTool()].RegisterBloodStorage(source, stashid)
+RegisterNetEvent('osp_ambulance:registerBloodstorage', function()
+    return Inventory[GetInventoryTool()].RegisterBloodStorage(source, 'hospital_bloodstorage')
 end)
 
 RegisterNetEvent('osp_ambulance:registerMedicalBagStash', function(stashid)

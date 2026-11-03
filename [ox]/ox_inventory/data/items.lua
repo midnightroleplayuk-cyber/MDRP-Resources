@@ -654,6 +654,7 @@ return {
     description = 'Medical Tablet for MHS Staff',
     client = {
         image = 'mhs_mdt.png',
+        export = 'vinewood-emsmdt.openMDT',
     }
 },
 ['driving_licence'] = {
@@ -2667,7 +2668,7 @@ return {
 
     ["cement"] = {
         label = "Cement",
-        weight = 5000,
+        weight = 500,
         stack = true,
         close = true,
         consume = 0,
@@ -2789,14 +2790,6 @@ return {
         stack = true,
         close = true,
     },
-
-    ["laptop"] = {
-        label = "Laptop",
-        weight = 1000,
-        stack = true,
-        close = true,
-    },
-
     ["copper"] = {
         label = "Copper ingot",
         weight = 1000,
@@ -3512,16 +3505,6 @@ return {
         image = 'gps_tracker.png',
     }
 },    
-
--- DEVHUB LAPTOP
-['devhub_laptop'] = {
-    label = 'Laptop',
-    weight = 0,
-    stack = true,
-    close = true,
-    description = "Running DevhubOS"
-},
-
 
 -- DEVHUB CRIME SCENE CLEANUP
 ['devhub_bodybag'] = {
@@ -5615,15 +5598,137 @@ return {
 },
 
 -- vinewood-mdt (2.19.2+)
-['bail_notice'] = {
-    label = 'Bail notice', weight = 10, stack = false, close = true,
-    description = 'Your bail notice. Use to read it.',
-    server = { export = 'vinewood-mdt.useDocument' },
+['bail_notice'] = { 
+    label = 'Bail notice', weight = 10, stack = false, close = true, 
+    server = { export = 'vinewood-mdt.useDocument' } 
 },
-['stop_search_record'] = {
-    label = 'Stop and search record', weight = 10, stack = false, close = true,
-    description = 'Your record of being searched. Use to read it.',
-    server = { export = 'vinewood-mdt.useDocument' },
+['stop_search_record'] = { 
+    label = 'Stop and search record', weight = 10, stack = false, close = true, 
+    server = { export = 'vinewood-mdt.useDocument' } 
 },
+
+
+-- VINEWOOD PRISON
+['prison_tablet'] = {
+    label = 'Prison tablet',
+    weight = 500,
+    stack = false,
+    client = { export = 'vinewood_prison.useTablet' },
+},
+['prison_keycard'] = {
+    label = 'Prison keycard',
+    weight = 10,
+    stack = false,
+    -- give with metadata = { level = 1-5 }
+},
+
+
+
+-- AV LAPTOP 
+
+['laptop'] = {
+        label = 'Laptop',
+        weight = 1,
+        stack = false,
+        close = true,
+        description = '',
+        buttons = {
+            {
+                label = "Devices",
+                action = function(slot)
+                    exports['av_laptop']:openContainer(slot)
+                end,
+            }
+        }
+    },
+    ['decrypter'] = {
+        label = 'Decrypter',
+        weight = 1,
+        stack = true,
+        close = true,
+        description = ''
+    },
+    ['black_usb'] = {
+        label = 'Black USB',
+        weight = 1,
+        stack = true,
+        close = true,
+        description = ''
+    },
+    ['pendrive'] = {
+        label = 'Pendrive',
+        weight = 1,
+        stack = false,
+        close = false,
+        description = 'Can store personal data'
+    },
+--[[     ['citizenid'] = {
+        label = 'Citizen ID',
+        weight = 1,
+        stack = false,
+        close = true,
+        description = 'Official ID card'
+    },
+    ['driver_license'] = {
+        label = 'Driver License',
+        weight = 1,
+        stack = false,
+        close = true,
+        description = 'Issued by the DMV'
+    },
+    ['firearm_license'] = {
+        label = 'Firearm License',
+        weight = 1,
+        stack = false,
+        close = true,
+        description = 'Issued by the police department'
+    }, ]]
+
+    -- AV GANGS
+    ['spray'] = {
+        label = 'Spray',
+        weight = 1,
+        stack = true,
+        close = true,
+        description = ''
+},
+    ['spray_remover'] = {
+        label = 'Spray Remover',
+        weight = 1,
+        stack = true,
+        close = true,
+        description = ''
+},
+
+-- AV BANKING
+    ['debit_standard'] = {
+        label = 'Debit - Neon Standard',
+        weight = 10,
+        stack = false,
+        close = true,
+        description = 'A Fleeca card linked to a bank account'
+    },
+    ['debit_premium'] = {
+        label = 'Debit - Neon Premium',
+        weight = 10,
+        stack = false,
+        close = true,
+        description = 'A Fleeca card linked to a bank account'
+    },
+    ['credit_gold'] = {
+        label = 'Credit - Neon Gold',
+        weight = 10,
+        stack = false,
+        close = true,
+        description = 'A Fleeca card linked to a bank account'
+    },
+    ['credit_black'] = {
+        label = 'Credit - Neon Black',
+        weight = 10,
+        stack = false,
+        close = true,
+        description = 'A Fleeca card linked to a bank account'
+    },
+
 
 }

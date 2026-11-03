@@ -19,8 +19,8 @@ Banking['default'] = {
         RemoveMoney(source, amount)
 
         if GetActiveFramework() == 'qb' or GetActiveFramework() == 'qbox' then
-            if GetResourceState('qb-banking') == 'started' then
-                exports['qb-banking']:AddMoney('ambulance', amount, reason or 'Hospital bill')
+            if GetResourceState('GH_bank') == 'started' then
+                exports['GH_bank']:AddMoney('ambulance', amount, reason or 'Hospital bill')
             end
         else
             if GetResourceState('esx_society') == 'started' then

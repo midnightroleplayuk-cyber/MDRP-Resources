@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document layout preview</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&amp;display=swap">
+    <link rel="stylesheet" href="./documents.css">
+    <style>
+      body { margin: 0; background: #171b22; color: #edf0f4; font-family: Arial, sans-serif; }
+      .preview-toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; padding: 24px; }
+      .preview-toolbar label { display: flex; align-items: center; gap: 8px; font-size: 14px; }
+      .preview-toolbar select, .preview-toolbar button { border: 1px solid #505965; border-radius: 6px; padding: 8px;
+        background: #252c37; color: inherit; font: inherit; }
+      #preview { position: absolute; outline: none; font-size: 1.481481481vh; font-weight: 500; }
+      .preview-note { position: fixed; bottom: 20px; left: 24px; right: 24px; color: #a6afbb; font-size: 13px; }
+      #error { padding: 24px; color: #ffc4c4; }
+    </style>
+  </head>
+  <body>
+    <header class="preview-toolbar">
+      <strong>Document layout preview</strong>
+      <label>Document <select id="document"><option value="identity">Identity</option><option value="licenses">Licenses</option><option value="service">Service ID</option></select></label>
+      <label>Licenses <select id="count"><option>0</option><option selected>2</option><option>8</option><option>24</option></select></label>
+      <label>Service layout <select id="template"><option>official</option><option>medical</option><option>compact</option></select></label>
+      <label>Background <select id="background"><option>matte</option><option>engraved</option><option>tinted</option></select></label>
+      <label>Name <select id="name"><option>normal</option><option>long</option><option>missing</option></select></label>
+      <label><input id="branding" type="checkbox"> Example issuer/logo</label>
+      <label><input id="portrait" type="checkbox"> Example portrait</label>
+      <button id="reopen" type="button">Reopen</button>
+    </header>
+    <main id="preview" tabindex="-1" role="dialog"></main>
+    <p id="error" role="alert" hidden></p>
+    <p class="preview-note">Sample data only. Uses the shipped HTML, CSS and JavaScript. Enter or Escape closes the preview. Reload the page after editing files.</p>
+    <script type="module" src="./preview.js"></script>
+  </body>
+</html>

@@ -19,7 +19,7 @@
 | vinewood_prison | 2.4.0+ | Remand ends police custody when the prison receives them |
 | vinewood-moj | 1.2.0+ | Nothing extra needed: the MDT drives court and remand |
 
-Each is picked up automatically when running, and checked again whenever it starts or stops. `vpo status` shows what was found.
+Each is picked up automatically when running, and checked again whenever it starts or stops. The folder name doesn't have to match exactly: `vinewood_interviews` and `vinewood-interviews` are both found. `/vpo` (Integrations) shows what was found, and what was looked for when something wasn't. For a completely different folder name, add it in `config/config.lua`: `Config.Integrations.interviews = { resources = { 'my-interviews' } }`.
 
 ## Steps
 1. Put `vinewood_police` in your resources folder.
@@ -58,7 +58,12 @@ The equipment and armoury lists in `config/equipment.lua` use ox_inventory item 
 `Config.Roads.Seizure.OnImpound` sends QB/Qbox vehicles to impound (`player_vehicles.state = 2`). For ESX or a garage script, put your garage's impound call there.
 
 ## Streamed assets
-`stream/` holds the Vinewood props: rigid cuffs, police cone, road closed, accident and checkpoint signs, and forensic tent, plus the front-cuff pose. Nothing extra to install.
+`stream/` holds the Vinewood props: rigid cuffs, police cone, road closed, accident and checkpoint signs, 30 numbered evidence markers (one shared texture dictionary), and forensic tent, plus the front-cuff pose. Nothing extra to install.
+
+## The police dog
+`stream/policedog/` **replaces** the game's German shepherd (`a_c_shepherd`). Every shepherd on the server, including pets or ambient dogs from other scripts, will look like the police dog. If you'd rather keep the normal shepherd, delete `stream/policedog/` and the dog uses the game's model.
+
+The dog's textures are large (about 42 MB). Saving them at 2048 or 1024 in a compressed format (DXT1, or DXT5 where transparency is needed) brings the download down a lot.
 
 ## Updating
 If you keep your own `config/` through an update, settings added in the new version are filled in from the defaults, and the console lists which. Copy them into your config to change them.

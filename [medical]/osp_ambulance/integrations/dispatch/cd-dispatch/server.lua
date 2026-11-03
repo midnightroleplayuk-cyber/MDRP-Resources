@@ -9,10 +9,10 @@ local function GetAmbulanceJobTable()
     return { 'ambulance' }
 end
 
--- Server-side path (hospital:server:ambulanceAlert). Do NOT use TriggerClientEvent
--- for cd_dispatch:AddNotification — that is deprecated on cd_dispatch3d (error 7132).
+-- Server-side path (hospital:server:ambulanceAlert). Routed through GH_dispatch
+-- (our central dispatch resource) instead of cd_dispatch directly.
 local function CdDispatchAlert(coords, message)
-    TriggerEvent('cd_dispatch:AddNotification', {
+    TriggerEvent('GH_dispatch:server:notify', {
         job_table = GetAmbulanceJobTable(),
         coords = coords,
         title = 'Ambulance Alert',

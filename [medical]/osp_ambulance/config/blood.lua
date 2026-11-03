@@ -31,6 +31,7 @@ Config.bloodTypes = {
 }
  
 local bloodVolumes = {
+    {name = "250ml", volume = 250, timeToInject = 120*1000},
     {name = "500ml", volume = 500, timeToInject = 240*1000}
 }
 

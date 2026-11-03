@@ -1,0 +1,54 @@
+@font-face {
+  font-family: "Bebas-Regular";
+  src: url("../../fonts/Bebas-Regular.ttf") format("truetype");
+}
+
+.container {
+  position: absolute;
+  display: flex;
+  width: 100%;
+  height: 100%;
+  justify-content: center;
+  align-items: center;
+  backdrop-filter: blur(3px);
+  z-index: 999;
+}
+
+.box {
+  font-family: "Bebas-Regular";
+  position: relative;
+  background-image: url("/background.png");
+  background-position: left;
+  background-size: cover;
+  border: solid 1px rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  box-shadow: 1px 1px 5px 2px rgba(0, 0, 0, 0.55);
+  width: fit-content;
+  height: auto;
+  text-align: center;
+  z-index: 999;
+}
+
+.title {
+  font-family: "Bebas-Regular";
+}
+
+.input {
+  background-color: rgba(26, 26, 32, 0.5);
+  border: solid 1px rgba(255, 255, 255, 0.1);
+}
+
+.input:focus {
+  border: solid 1px rgba(255, 255, 255, 0.1);
+}
+
+.divider {
+  width: 100%;
+  background: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 0.33) 1%,
+    rgba(64, 66, 77, 0) 100%
+  );
+  height: 1.55px;
+  margin-top: 10px;
+}

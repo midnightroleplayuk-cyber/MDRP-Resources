@@ -39,7 +39,7 @@ Requires FiveM server build 5181 or newer, and the server's license key must bel
 set FIVEMANAGE_MEDIA_API_KEY "your-media-api-key"
 
 ensure ox_lib
-ensure ox_target   # or qb-target / qtarget
+ensure ox_target   # or qb-target / qtarget - start it before vinewood-interviews
 ensure oxmysql
 ensure screencapture
 ensure vinewood-interviews
@@ -89,6 +89,13 @@ Rooms cannot be edited while an interview is being recorded in them.
 If `vinewood-mdt` (2.7.1 or later) is running, the Interviewee field in the start dialog searches the MDT as you type. Picking someone links the interview to their record and lists their custody records and incidents; picking one fills in the case reference. The interview then shows on that person and case in the MDT however the name was spelled. Without the MDT, or if you just type a name and don't pick anyone, it works as before.
 
 Start `vinewood-interviews` before `vinewood-mdt` in `server.cfg`. Turn the link off with `Config.MDT.Enabled = false`.
+
+## Server events (1.8.1+)
+Other resources can listen for interviews starting and ending (vinewood_police logs them on the custody record):
+```lua
+AddEventHandler('vinewood-interviews:server:started', function(data) end) -- id, roomLabel, caseRef, interviewee, intervieweeCid, officers, solicitor, cctv, startedBy
+AddEventHandler('vinewood-interviews:server:ended', function(data) end)   -- id, roomLabel, durationMs, reason, caseRef, intervieweeCid
+```
 
 ## Officer seat CCTV (real footage)
 

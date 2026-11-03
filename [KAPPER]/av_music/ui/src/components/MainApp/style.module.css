@@ -1,0 +1,470 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+  background: var(--bg-root);
+  color: var(--text-white);
+  font-family: var(--font-body);
+}
+
+.contentRow {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.mainView {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: relative;
+  z-index: 1;
+}
+
+.hero {
+  height: 260px;
+  background: var(--gradient-hero);
+  display: flex;
+  align-items: flex-end;
+  padding: 40px 40px 32px;
+  position: relative;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    ellipse at 70% 50%,
+    var(--accent-subtle) 0%,
+    transparent 65%
+  );
+  pointer-events: none;
+}
+
+.heroOverlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 80px;
+  background: linear-gradient(to bottom, transparent, var(--bg-root));
+}
+
+.heroInfo {
+  position: relative;
+  z-index: 2;
+}
+
+.heroTag {
+  font-size: 10px !important;
+  letter-spacing: 3px;
+  color: var(--accent) !important;
+  text-transform: uppercase;
+  margin-bottom: 6px !important;
+  font-weight: 600 !important;
+}
+
+.heroName {
+  font-family: var(--font-heading) !important;
+  font-size: 52px !important;
+  font-weight: 700 !important;
+  line-height: 1 !important;
+  color: var(--text-white) !important;
+  letter-spacing: -1px;
+}
+
+.heroSub {
+  font-size: 12px !important;
+  color: var(--text-secondary) !important;
+  margin-top: 6px !important;
+}
+
+.heroPlay {
+  background: var(--accent) !important;
+  color: var(--text-white) !important;
+  border: none !important;
+  transition:
+    transform 0.15s,
+    background 0.15s !important;
+}
+
+.heroPlay:hover {
+  background: var(--accent-hover) !important;
+  transform: scale(1.06);
+}
+
+.sectionTitle {
+  font-family: var(--font-heading) !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: var(--text-white) !important;
+}
+
+.albumCard {
+  cursor: pointer;
+  transition: transform 0.2s;
+  text-align: left;
+}
+
+.albumCard:hover {
+  transform: translateY(-4px);
+}
+
+.albumTitle {
+  font-weight: 600 !important;
+  color: var(--text-white) !important;
+  margin-bottom: 2px !important;
+}
+
+.albumYear {
+  font-size: 11px !important;
+  color: var(--text-secondary) !important;
+}
+
+.trackList {
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.trackListHeader {
+  color: var(--text-secondary);
+  text-transform: capitalize;
+  letter-spacing: 1px;
+  padding-top: 10px;
+}
+
+.trackListDivider {
+  height: 1px;
+  background: var(--bg-input);
+  margin-bottom: 4px;
+}
+
+.trackRow {
+  padding: 6px 0;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.12s;
+}
+
+.trackRow:hover {
+  background: var(--bg-hover);
+}
+
+.trackRowActive {
+  background: var(--accent-soft) !important;
+}
+
+.trackIndex {
+  font-size: 13px !important;
+  color: var(--text-secondary) !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.playingDot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+  animation: blink 1.2s ease-in-out infinite;
+}
+
+@keyframes blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.3;
+  }
+}
+
+.trackName {
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  color: var(--text-white) !important;
+  line-height: 1.2 !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+.trackNameActive {
+  color: var(--accent) !important;
+}
+
+.trackArtistSmall {
+  font-size: 11px !important;
+  color: var(--text-secondary) !important;
+  margin-top: 1px !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+.trackAlbum {
+  font-size: 12px !important;
+  color: var(--text-secondary) !important;
+  flex-shrink: 0;
+}
+
+.trackDuration {
+  font-size: 12px !important;
+  color: var(--text-secondary) !important;
+  flex-shrink: 0;
+  width: 36px;
+  text-align: right;
+}
+
+.searchBar {
+  padding: 20px 32px 16px;
+  border-bottom: 1px solid var(--bg-hover);
+  flex-shrink: 0;
+}
+
+.searchInputWrapper {
+  width: 100%;
+  display: block;
+}
+
+.searchInputField {
+  background: var(--bg-input) !important;
+  border: 1px solid var(--border-strong) !important;
+  border-radius: 10px !important;
+  color: var(--text-white) !important;
+  height: 40px !important;
+  font-size: 13px !important;
+  transition:
+    border-color 0.2s,
+    background 0.2s !important;
+}
+
+.searchInputField::placeholder {
+  color: var(--text-secondary) !important;
+}
+
+.searchInputField:focus {
+  border-color: var(--accent-border-hi) !important;
+  background: var(--bg-input-alt) !important;
+  outline: none !important;
+}
+
+.searchBtn {
+  background: var(--gradient-primary) !important;
+  color: var(--text-white) !important;
+  border-radius: 10px !important;
+  width: 30px !important;
+  height: 30px !important;
+  flex-shrink: 0;
+  box-shadow: 0 3px 12px var(--accent-glow-mid) !important;
+  transition:
+    opacity 0.15s,
+    box-shadow 0.15s,
+    transform 0.15s !important;
+}
+
+.searchBtn:hover:not([disabled]) {
+  opacity: 0.9;
+  transform: scale(1.05);
+  box-shadow: 0 5px 18px var(--accent-border-hi) !important;
+}
+
+.searchBtn:disabled {
+  opacity: 0.35 !important;
+}
+
+.searchEmpty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 0;
+}
+
+.searchHero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: calc(100% - 80px);
+  min-height: 260px;
+  padding: 40px;
+  text-align: center;
+  gap: 8px;
+}
+
+.searchHero .heroTag {
+  font-size: 11px !important;
+  letter-spacing: 4px;
+  color: var(--accent) !important;
+  text-transform: uppercase;
+  font-weight: 600 !important;
+}
+
+.searchHero .heroName {
+  font-family: var(--font-heading) !important;
+  font-size: 48px !important;
+  font-weight: 700 !important;
+  line-height: 1 !important;
+  color: var(--text-white) !important;
+  letter-spacing: -1px;
+}
+
+.searchHero .heroSub {
+  font-size: 13px !important;
+  color: var(--text-secondary) !important;
+  margin-top: 4px !important;
+}
+
+.addToPlaylistBtn {
+  opacity: 0;
+  color: var(--text-secondary) !important;
+  transition:
+    opacity 0.15s,
+    color 0.15s !important;
+}
+
+.trackRow:hover .addToPlaylistBtn {
+  opacity: 1;
+}
+
+.playlistGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 20px;
+}
+
+.playlistCard {
+  position: relative;
+  cursor: pointer;
+  transition: transform 0.2s;
+  text-align: left;
+}
+
+.playlistCard:hover {
+  transform: translateY(-3px);
+}
+
+.playlistCardCover {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: 10px;
+  overflow: hidden;
+  background: var(--bg-input);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 10px;
+}
+
+.playlistCardHover {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.playlistCard:hover .playlistCardHover {
+  opacity: 1;
+}
+
+.playlistCardInfo {
+  padding: 0 2px;
+}
+
+.playlistCardName {
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  color: var(--text-white) !important;
+  margin-bottom: 2px !important;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.playlistCardCount {
+  font-size: 11px !important;
+  color: var(--text-secondary) !important;
+}
+
+.playlistDeleteBtn {
+  position: absolute !important;
+  top: 6px;
+  right: 6px;
+  opacity: 0;
+  transition: opacity 0.15s !important;
+  background: rgba(0, 0, 0, 0.5) !important;
+  border-radius: 4px !important;
+  padding: 3px !important;
+}
+
+.playlistCard:hover .playlistDeleteBtn {
+  opacity: 1;
+}
+
+.playlistCoverPlaceholder {
+  border-radius: 10px;
+  background: var(--gradient-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  color: var(--text-white);
+  flex-shrink: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.viewWrapper {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.blurBg {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  transform: scale(1.15);
+  filter: blur(75px);
+  opacity: 0.01;
+  z-index: 0;
+  pointer-events: none;
+  transition: opacity 0.7s ease;
+}
+
+.blurBg[data-visible="true"] {
+  opacity: 0.075;
+}
+
+.pageTitle {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-white);
+  letter-spacing: 0.3px;
+}
+
+.headerLeft {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}

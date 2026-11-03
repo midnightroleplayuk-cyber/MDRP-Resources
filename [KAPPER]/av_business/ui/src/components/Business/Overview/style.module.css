@@ -1,0 +1,39 @@
+.container {
+  padding: 10px;
+  height: 100%;
+}
+
+.title {
+  text-transform: uppercase;
+}
+
+.panelCard {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border);
+}
+
+.panelCardFull {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border);
+
+  display: flex;
+  flex-direction: column;
+}
+
+.kpiCard {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border);
+  position: relative;
+  overflow: hidden;
+}
+
+.kpiIconBg {
+  position: absolute;
+  right: -20px;
+  bottom: -20px;
+  opacity: 0.03;
+  color: white;
+  width: 100px;
+  height: 100px;
+  pointer-events: none;
+}

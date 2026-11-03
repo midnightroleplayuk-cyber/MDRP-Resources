@@ -83,7 +83,7 @@ cfg.tasks.types = {
             },
         },
         {
-            enabled = true,
+            enabled = false,
             id = "stop_vehicle",
             label = lang:get("tasks_info.stop_vehicle.l"),
             description = lang:get("tasks_info.stop_vehicle.d"),
@@ -91,7 +91,7 @@ cfg.tasks.types = {
             enemy_ped = 'default'
         },
         {
-            enabled = true,
+            enabled = false,
             id = "gang_theft",
             label = lang:get("tasks_info.gang_theft.l"),
             description = lang:get("tasks_info.gang_theft.d"),
@@ -99,7 +99,7 @@ cfg.tasks.types = {
             enemy_ped = "gang"
         },
         {
-            enabled = true,
+            enabled = false,
             id = "military_theft",
             label = lang:get("tasks_info.military_theft.l"),
             description = lang:get("tasks_info.military_theft.d"),
@@ -377,7 +377,7 @@ cfg.tasks.settings = {
 
     gang_theft = {
         dispatch = {
-            enabled  = true,
+            enabled  = false,
             code     = "10-31",
             message  = lang:get("tasks_settings.gang_theft.dispatch"),
             icon     = "fas fa-user-secret",
@@ -397,7 +397,7 @@ cfg.tasks.settings = {
 
     military_theft = {
         dispatch = {
-            enabled  = true,
+            enabled  = false,
             code     = "10-66",
             message  = lang:get("tasks_settings.military_theft.dispatch"),
             icon     = "fas fa-user-secret",
@@ -447,11 +447,11 @@ cfg.tasks.settings = {
             ['C']  = {hack_count = 2, progress_bar = 30, passenger_seat = false, progressive_progress = false},
             ['C+'] = {hack_count = 2, progress_bar = 45, passenger_seat = false, progressive_progress = false},
             ['B']  = {hack_count = 3, progress_bar = 30, passenger_seat = false, progressive_progress = false},
-            ['B+'] = {hack_count = 3, progress_bar = 45, passenger_seat = false, progressive_progress = true},
-            ['A']  = {hack_count = 4, progress_bar = 30, passenger_seat = false, progressive_progress = true},
-            ['A+'] = {hack_count = 4, progress_bar = 45, passenger_seat = false, progressive_progress = true},
-            ['S']  = {hack_count = 5, progress_bar = 30, passenger_seat = false, progressive_progress = true},
-            ['S+'] = {hack_count = 5, progress_bar = 45, passenger_seat = false, progressive_progress = true},
+            ['B+'] = {hack_count = 3, progress_bar = 45, passenger_seat = true, progressive_progress = true},
+            ['A']  = {hack_count = 4, progress_bar = 30, passenger_seat = true, progressive_progress = true},
+            ['A+'] = {hack_count = 4, progress_bar = 45, passenger_seat = true, progressive_progress = true},
+            ['S']  = {hack_count = 5, progress_bar = 30, passenger_seat = true, progressive_progress = true},
+            ['S+'] = {hack_count = 5, progress_bar = 45, passenger_seat = true, progressive_progress = true},
         },
     },
 

@@ -1,0 +1,83 @@
+.screen {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background:
+    radial-gradient(1200px 600px at 20% -10%, rgba(102, 217, 232, 0.06), transparent),
+    var(--bg-base);
+}
+
+.card {
+  width: 360px;
+  padding: 32px 28px;
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: var(--border-radius-base);
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.45);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 24px;
+}
+.logo {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: var(--accent-dim);
+  color: var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.brandName {
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: 0.5px;
+  color: var(--text-main);
+}
+.brandTag {
+  display: block;
+  font-size: 12px;
+  line-height: 1.2;
+  margin-top: 1px;
+  color: var(--text-dim);
+}
+
+.field {
+  margin-bottom: 14px;
+}
+.fieldRow {
+  display: flex;
+  gap: 8px;
+  align-items: flex-end;
+}
+
+.error {
+  background: rgba(248, 113, 113, 0.12);
+  border: 1px solid rgba(248, 113, 113, 0.4);
+  color: var(--danger);
+  font-size: 12px;
+  padding: 8px 10px;
+  border-radius: var(--border-radius-sm);
+  margin-bottom: 14px;
+}
+
+.switch {
+  margin-top: 18px;
+  font-size: 12px;
+  color: var(--text-dim);
+  text-align: center;
+}
+.switchBtn {
+  color: var(--accent);
+  font-size: 12px;
+  display: inline;
+}

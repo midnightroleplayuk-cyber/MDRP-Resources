@@ -1,0 +1,1 @@
+import{d as n,j as s,k as o,l as a,_ as r}from"./sky-recordTemplate-DZYUYefG.js";const t={class:"spinner-wrapper"},p=n({__name:"LoadingSpinner",setup(_){return(c,e)=>(s(),o("div",t,[...e[0]||(e[0]=[a("div",{class:"loader"},null,-1)])]))}}),i=r(p,[["__scopeId","data-v-e829375c"]]);export{i as L};

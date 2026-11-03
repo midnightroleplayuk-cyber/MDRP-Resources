@@ -1,0 +1,27 @@
+.tooltip {
+  background-color: gray;
+  display: flex;
+  height: 16px;
+  width: 16px;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50px;
+  margin-left: auto;
+}
+
+.pulse {
+  animation: pulse-animation 2s infinite;
+}
+
+@keyframes pulse-animation {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.4;
+  }
+  100% {
+    opacity: 1;
+  }
+}

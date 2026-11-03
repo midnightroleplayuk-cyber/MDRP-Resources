@@ -87,10 +87,18 @@ end)
 
 CreateThread(function()
     while true do
-        local ply = PlayerPedId()
-        SetPlayerHealthRechargeMultiplier(ply, 0.0)
-        SetPlayerHealthRechargeLimit(ply, 0.0)
-        Wait(2000)
+        local player = PlayerId()
+        local ped = PlayerPedId()
+        SetPlayerHealthRechargeMultiplier(player, 0.0)
+        SetPlayerHealthRechargeLimit(player, 0.0)
+        if HasActiveInjuries and HasActiveInjuries() then
+            if EnforceInjuredHealth then
+                EnforceInjuredHealth(ped, GetEntityHealth(ped))
+            end
+            Wait(400)
+        else
+            Wait(1500)
+        end
     end
 end)
 

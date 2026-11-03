@@ -1,0 +1,468 @@
+.mainView {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: relative;
+  z-index: 1;
+}
+
+.headerRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.headerLeft {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.pageTitle {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-white);
+  letter-spacing: 0.3px;
+}
+
+.countBadge {
+  background: var(--accent-soft);
+  border: 1px solid var(--accent-border);
+  border-radius: 10px;
+  padding: 1px 8px;
+}
+
+.countText {
+  font-size: 11px;
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding-top: 60px;
+  gap: 12px;
+  color: var(--text-secondary);
+}
+
+.emptyText {
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.stationGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 14px;
+}
+
+.card {
+  cursor: pointer;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid var(--bg-input-alt);
+  background: var(--bg-card);
+  transition:
+    border-color 0.15s,
+    background 0.15s;
+  position: relative;
+}
+
+.cardTunedIn {
+  border-color: var(--accent-border-hi) !important;
+  background: var(--accent-soft) !important;
+}
+
+.cardHovered {
+  border-color: var(--border-hover) !important;
+}
+
+.thumb {
+  position: relative;
+  width: 100%;
+  padding-top: 56.25%;
+  background: #0d0e1a;
+}
+
+.thumbImg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: filter 0.15s;
+}
+
+.thumbImgDim {
+  filter: brightness(0.8);
+}
+
+.thumbPlaceholder {
+  position: absolute;
+  inset: 0;
+  background: var(--gradient-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.thumbPlaceholderLetter {
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--text-white);
+}
+
+.liveBadge {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  background: var(--accent);
+  border-radius: 4px;
+  padding: 2px 7px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.liveDot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--text-white);
+  animation: livePulse 1.2s ease-in-out infinite;
+}
+
+.liveBadgeText {
+  font-size: 9px;
+  font-weight: 700;
+  color: var(--text-white);
+  letter-spacing: 1px;
+}
+
+.hoverOverlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.45);
+}
+
+.tuneInPill {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--accent);
+  border-radius: 20px;
+  padding: 6px 14px;
+}
+
+.tuneInText {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-white);
+}
+
+.onAirRow {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.onAirDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--success-alt);
+  box-shadow: 0 0 6px var(--success-alt);
+}
+
+.onAirText {
+  font-size: 10px;
+  color: var(--success-alt);
+  font-weight: 600;
+}
+
+.cardInfo {
+  padding: 10px 12px 11px;
+}
+
+.cardName {
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cardNameTunedIn {
+  color: var(--accent);
+}
+.cardNameDefault {
+  color: var(--text-primary);
+}
+
+@keyframes livePulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.3;
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.goLiveBtn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 11px;
+  border-radius: 8px;
+  background: var(--accent-soft);
+  border: 1px solid var(--accent-border);
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition:
+    background 0.15s,
+    border-color 0.15s;
+}
+
+.goLiveBtn:hover {
+  background: var(--accent-subtle);
+  border-color: var(--accent-border-hi);
+}
+
+.modalHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  background: var(--bg-card-alt);
+  border-bottom: 1px solid var(--border-input);
+}
+
+.modalHeaderLeft {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.iconBox {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: var(--accent-soft);
+  border: 1px solid var(--accent-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.modalTitle {
+  color: var(--text-white);
+  font-weight: 600;
+  font-size: 15px;
+  letter-spacing: 0.3px;
+}
+
+.closeBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  color: rgba(255, 255, 255, 0.35);
+  cursor: pointer;
+  font-size: 14px;
+  transition:
+    color 0.15s,
+    background 0.15s;
+}
+
+.closeBtn:hover {
+  color: var(--text-white);
+  background: var(--bg-hover);
+}
+
+.modalBody {
+  padding: 20px 20px 10px;
+}
+
+.coverPreview {
+  width: 100%;
+  height: 110px;
+  border-radius: 10px;
+  background-color: var(--bg-card-alt);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  border: 1px solid var(--border-input);
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.noCover {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  color: rgba(255, 255, 255, 0.35);
+}
+
+.noCoverLabel {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.35);
+}
+
+.field {
+  margin-bottom: 12px;
+}
+
+.fieldLabel {
+  display: block;
+  color: var(--text-secondary);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 5px;
+}
+
+.fieldInput {
+  width: 100%;
+  padding: 9px 12px;
+  border-radius: 8px;
+  background: var(--bg-input);
+  border: 1px solid var(--border-hover);
+  color: var(--text-primary);
+  font-size: 13px;
+  font-family: inherit;
+  outline: none;
+  box-sizing: border-box;
+  transition:
+    border-color 0.15s,
+    background 0.15s;
+}
+
+.fieldInput:focus {
+  background: var(--bg-input-alt);
+  border-color: var(--accent-border);
+}
+
+.fieldInput::placeholder {
+  color: rgba(255, 255, 255, 0.25);
+}
+
+.errorBox {
+  margin-top: 6px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: rgba(255, 62, 108, 0.1);
+  border: 1px solid rgba(255, 62, 108, 0.3);
+  color: #ff6b8a;
+  font-size: 12px;
+}
+
+.successBox {
+  margin-top: 6px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: rgba(72, 199, 142, 0.1);
+  border: 1px solid rgba(72, 199, 142, 0.3);
+  color: #48c78e;
+  font-size: 12px;
+}
+
+.modalFooter {
+  display: flex;
+  gap: 10px;
+  padding: 12px 20px 20px;
+}
+
+.previewBtn {
+  flex: 1;
+  padding: 10px 0;
+  border-radius: 9px;
+  cursor: pointer;
+  background: var(--bg-input);
+  border: 1px solid var(--border-hover);
+  color: var(--text-muted);
+  font-size: 13px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  font-family: inherit;
+  transition:
+    background 0.15s,
+    border-color 0.15s,
+    color 0.15s;
+}
+
+.previewBtnActive {
+  border-color: var(--accent-border-hi);
+  background: var(--accent-subtle);
+  color: var(--accent);
+}
+
+.publishBtn {
+  flex: 1.5;
+  padding: 10px 0;
+  border-radius: 9px;
+  cursor: pointer;
+  border: none;
+  background: var(--gradient-primary);
+  color: var(--text-white);
+  font-size: 13px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  font-family: inherit;
+  transition: opacity 0.15s;
+}
+
+.publishBtn:disabled {
+  cursor: default;
+  opacity: 0.6;
+}
+
+.publishBtnDone {
+  background: rgba(72, 199, 142, 0.25);
+}

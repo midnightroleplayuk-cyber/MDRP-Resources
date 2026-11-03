@@ -115,9 +115,9 @@ function loadPlayerData(d)
     Wait(2000)
     local timeLeft = lib.callback.await('osp_ambulance:checkInjuryTime', 100)
     if timeLeft then
-        if timeLeft?.crutch then
+        if timeLeft.crutch then
             TriggerEvent('osp_ambulance:giveCrutch', timeLeft.time)
-        elseif timeLeft?.WheelChair then
+        elseif timeLeft.WheelChair then
             TriggerEvent('osp_ambulance:giveWheelChair', timeLeft.time)
         end
     end
@@ -210,8 +210,7 @@ RegisterNetEvent('osp_ambulance:bloodstorage', function()
     if not BodyDamage then return end
     if not HasAccess('bloodstorage') then return end
 
-    local stashid = 'bloodstorage_' .. GetPlayerData().identifier
-    return Inventory[GetInventoryTool()].OpenBloodStorage(stashid)
+    return Inventory[GetInventoryTool()].OpenBloodStorage('hospital_bloodstorage')
 end)
 
 RegisterNetEvent('esx_ambulancejob:revive', function()

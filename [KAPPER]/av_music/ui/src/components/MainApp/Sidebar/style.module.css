@@ -1,0 +1,66 @@
+.sidebar {
+  width: 210px;
+  flex-shrink: 0;
+  background: var(--bg-sidebar);
+  border-right: 1px solid var(--bg-hover);
+  padding: 28px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.logo {
+  font-family: var(--font-heading) !important;
+  font-size: 17px !important;
+  font-weight: 700 !important;
+  letter-spacing: 3px;
+  color: var(--text-white) !important;
+  margin-bottom: 28px;
+  padding-left: 10px;
+}
+
+.navLabel {
+  font-size: 9px !important;
+  text-transform: uppercase;
+  letter-spacing: 2.5px;
+  color: rgba(139, 155, 180, 0.5) !important;
+  padding-left: 10px;
+  margin: 20px 0 8px !important;
+}
+
+.sidebarSectionLabel {
+  font-size: 9px !important;
+  font-weight: 700 !important;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: rgba(139, 155, 180, 0.4) !important;
+  padding-left: 10px;
+  margin-bottom: 6px !important;
+}
+
+.sidebarDivider {
+  border-color: var(--bg-input) !important;
+  margin-bottom: 6px !important;
+}
+
+.navLink {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 12px;
+  border-radius: 7px;
+  font-size: 13px;
+  color: var(--text-secondary);
+  transition: all 0.15s;
+  width: 100%;
+}
+
+.navLink:hover {
+  color: var(--text-white);
+  background: var(--bg-hover);
+}
+
+.navLinkActive {
+  color: var(--accent) !important;
+  background: var(--accent-soft) !important;
+}

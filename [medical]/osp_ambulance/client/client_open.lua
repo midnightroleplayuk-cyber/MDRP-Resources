@@ -29,6 +29,386 @@ local checkInPoly = {}
 
 local nodam = false
 
+function HasActiveInjuries(bodyDamage)
+    bodyDamage = bodyDamage or BodyDamage
+    if type(bodyDamage) ~= 'table' then
+        return false
+    end
+    if bodyDamage.isDead or bodyDamage.inLastStand then
+        return true
+    end
+    if (tonumber(bodyDamage.Pain) or 0) > 0.2 then
+        return true
+    end
+    local bpd = bodyDamage.BodyPartDamage
+    if type(bpd) ~= 'table' then
+        return false
+    end
+    if type(bpd.DamageType) == 'table' then
+        for _, value in pairs(bpd.DamageType) do
+            if (tonumber(value) or 0) > 0 then
+                return true
+            end
+        end
+    end
+    if type(bpd.Wounds) == 'table' then
+        for _, wounds in pairs(bpd.Wounds) do
+            if type(wounds) == 'table' then
+                for _ in pairs(wounds) do
+                    return true
+                end
+            end
+        end
+    end
+    if type(bpd.Bleeding) == 'table' then
+        for _, value in pairs(bpd.Bleeding) do
+            if (tonumber(value) or 0) > 0 then
+                return true
+            end
+        end
+    end
+    if type(bpd.Fractures) == 'table' then
+        for _, value in pairs(bpd.Fractures) do
+            if value == true then
+                return true
+            end
+        end
+    end
+    return false
+end
+
+function AllowMedicalHealthGain()
+    HealthRestoreAllowedUntil = GetGameTimer() + 5000
+    LockedInjuredHealth = nil
+end
+
+function LockInjuredHealth(health)
+    health = tonumber(health)
+    if not health then
+        return
+    end
+    if LockedInjuredHealth == nil or health < LockedInjuredHealth then
+        LockedInjuredHealth = health
+    end
+end
+
+function EnforceInjuredHealth(ped, health)
+    ped = ped or PlayerPedId()
+    health = tonumber(health) or GetEntityHealth(ped)
+    if HealthRestoreAllowedUntil and GetGameTimer() < HealthRestoreAllowedUntil then
+        LockedInjuredHealth = health
+        return health
+    end
+    if HasActiveInjuries() then
+        LockInjuredHealth(health)
+    end
+    if LockedInjuredHealth and health > LockedInjuredHealth then
+        SetEntityHealth(ped, LockedInjuredHealth)
+        return LockedInjuredHealth
+    end
+    return health
+end
+
+function LockCombatHealth(health)
+    LockInjuredHealth(health)
+end
+
+function EnforceCombatHealth(ped, health)
+    return EnforceInjuredHealth(ped, health)
+end
+
+function HasRemainingTreatments(bodyDamage, regions)
+    if type(regions) ~= 'table' then
+        if type(BuildRegionTreatments) ~= 'function' then
+            return true
+        end
+        regions = BuildRegionTreatments(bodyDamage or BodyDamage)
+    end
+    for _, list in pairs(regions) do
+        if type(list) == 'table' then
+            for i = 1, #list do
+                local row = list[i]
+                if type(row) == 'table' and not row.optional then
+                    return true
+                end
+            end
+        end
+    end
+    return false
+end
+
+function RestoreHealthIfFullyTreated(bodyDamage, regions)
+    bodyDamage = bodyDamage or BodyDamage
+    if type(bodyDamage) ~= 'table' then
+        return false
+    end
+    if bodyDamage.isDead or bodyDamage.inLastStand then
+        return false
+    end
+    if HasRemainingTreatments(bodyDamage, regions) then
+        return false
+    end
+    if AllowMedicalHealthGain then
+        AllowMedicalHealthGain()
+    end
+    local ped = PlayerPedId()
+    local maxHealth = GetEntityMaxHealth(ped)
+    if not maxHealth or maxHealth < 150 then
+        maxHealth = 200
+    end
+    SetEntityMaxHealth(ped, maxHealth)
+    SetEntityHealth(ped, maxHealth)
+    LockedInjuredHealth = nil
+    return true
+end
+
+function GrantTreatmentHealth(amount)
+    amount = math.floor(tonumber(amount) or 0)
+    if type(BodyDamage) == 'table' and (BodyDamage.isDead or BodyDamage.inLastStand) then
+        return false
+    end
+    if RestoreHealthIfFullyTreated(BodyDamage) then
+        return true
+    end
+    if amount <= 0 then
+        return false
+    end
+    AllowMedicalHealthGain()
+    local ped = PlayerPedId()
+    local health = GetEntityHealth(ped)
+    local maxHealth = GetEntityMaxHealth(ped)
+    if not maxHealth or maxHealth < 150 then
+        maxHealth = 200
+    end
+    local nextHealth = math.min(math.max(health, maxHealth - 8), health + amount)
+    SetEntityHealth(ped, nextHealth)
+    LockedInjuredHealth = nextHealth
+    return true
+end
+
+function RequestTreatmentHeal(playerId, amount)
+    playerId = tonumber(playerId)
+    amount = tonumber(amount)
+    if not playerId or not amount or amount <= 0 then
+        return
+    end
+    TriggerServerEvent('osp_ambulance:treatmentHealSv', playerId, amount)
+end
+
+RegisterNetEvent('osp_ambulance:treatmentHealCl', function(amount)
+    GrantTreatmentHealth(amount)
+end)
+
+function IsCardiacArrestPatient(stat)
+    if type(stat) ~= 'table' then
+        return false
+    end
+    local pulse = tonumber(stat.Pulse) or 80
+    local cardiac = tostring(stat.cardiacState or '')
+    return stat.isDead == true
+        or stat.inLastStand == true
+        or pulse <= 0
+        or cardiac == 'asystole'
+        or cardiac == 'PEA'
+        or cardiac == 'VF'
+        or cardiac == 'VT'
+        or cardiac == 'vFib'
+        or cardiac == 'vTach'
+        or cardiac == 'cardiac_arrest'
+end
+
+function ApplyEpinephrineEffect(stat)
+    if type(stat) ~= 'table' then
+        return
+    end
+    local pulse = tonumber(stat.Pulse) or 0
+    local cardiac = tostring(stat.cardiacState or '')
+    stat.epiGiven = true
+    if IsCardiacArrestPatient(stat) then
+        if pulse <= 0 then
+            stat.Pulse = 40
+        else
+            stat.Pulse = math.min(140, pulse + 20)
+        end
+        if cardiac == 'asystole' or cardiac == '' or cardiac == 'cardiac_arrest' then
+            stat.cardiacState = 'PEA'
+        end
+        stat.oxygenSaturation = math.min(94, (tonumber(stat.oxygenSaturation) or 80) + 8)
+    else
+        stat.Pulse = math.min(140, math.max(pulse, 70) + 15)
+    end
+end
+
+local MEDICATION_TIMERS = {
+    txa = 'txaUntil',
+    atropine = 'atropineUntil',
+    amiodarone = 'amiodaroneUntil',
+}
+
+local SHOCKABLE_RHYTHMS = {
+    torsades = true,
+    vFib = true,
+    vTach = true,
+    VF = true,
+    VT = true,
+}
+
+function GetMedicationConfig(itemName)
+    for _, med in pairs(Config.Medication or {}) do
+        if med.itemName == itemName then
+            return med
+        end
+    end
+    return nil
+end
+
+function IsMedicationActive(stat, itemName)
+    local key = MEDICATION_TIMERS[itemName]
+    if not key or type(stat) ~= 'table' then
+        return false
+    end
+    return (tonumber(stat[key]) or 0) > GetCloudTimeAsInt()
+end
+
+function StampMedicationTimer(stat, itemName)
+    local key = MEDICATION_TIMERS[itemName]
+    local med = key and GetMedicationConfig(itemName)
+    if not med or type(stat) ~= 'table' then
+        return
+    end
+    stat[key] = GetCloudTimeAsInt() + (tonumber(med.duration) or 300)
+end
+
+function IsShockableRhythm(stat)
+    if type(stat) ~= 'table' then
+        return false
+    end
+    return stat.shockableRythm == true or SHOCKABLE_RHYTHMS[tostring(stat.cardiacState or '')] == true
+end
+
+function GetTxaBleedMultiplier(stat)
+    if not IsMedicationActive(stat, 'txa') then
+        return 1.0
+    end
+    local med = GetMedicationConfig('txa')
+    return math.max(0.0, math.min(1.0, tonumber(med and med.bleedMultiplier) or 0.4))
+end
+
+function GetAtropineHeartRateBoost(stat)
+    if not IsMedicationActive(stat, 'atropine') then
+        return 0
+    end
+    local med = GetMedicationConfig('atropine')
+    return tonumber(med and med.heartRateBoost) or 15
+end
+
+-- Runs on the patient's client once a timed medication reaches them
+function ApplyMedicationEffect(stat, itemName)
+    if not MEDICATION_TIMERS[itemName] or type(stat) ~= 'table' then
+        return
+    end
+    local med = GetMedicationConfig(itemName)
+    if not med then
+        return
+    end
+
+    StampMedicationTimer(stat, itemName)
+
+    if itemName == 'txa' then
+        updateBloodLoss()
+    elseif itemName == 'atropine' then
+        local reversal = tonumber(med.opioidReversal) or 0
+        stat.hrDecrease = math.max(0, (tonumber(stat.hrDecrease) or 0) - reversal)
+    elseif itemName == 'amiodarone' then
+        if not stat.isDead and not stat.inLastStand and IsShockableRhythm(stat) then
+            stat.cardiacState = 'NSR'
+            stat.shockableRythm = false
+        end
+    end
+
+    -- Pulse only recalculates on events, so nudge it once the effect wears off
+    SetTimeout(((tonumber(med.duration) or 300) + 1) * 1000, function()
+        updatePulse()
+    end)
+end
+
+function HasMedicalItem(itemName)
+    for _, entry in pairs(GetMedicalInventoryItems() or {}) do
+        if entry.item == itemName and (tonumber(entry.amount) or 0) >= 1 then
+            return true
+        end
+    end
+    return false
+end
+
+local medicationActionBusy = false
+
+-- Gives a Config.Medication item to a patient outside the medical menu (used by the ECG options)
+function AdministerMedicationTo(playerId, itemName)
+    playerId = tonumber(playerId)
+    if medicationActionBusy or not playerId then
+        return
+    end
+    local med = GetMedicationConfig(itemName)
+    if not med then
+        return
+    end
+
+    local header = GetLang().interactions.medicalHeader
+    if med.lockAccess and not IsEmsStaff() then
+        SendTextMessage(header, GetLang().error.not_authorized, 5000, 'error')
+        return
+    end
+    if not HasMedicalItem(itemName) then
+        SendTextMessage(header, GetLang().error.missing_item, 5000, 'error')
+        return
+    end
+
+    medicationActionBusy = true
+    local ok, err = pcall(function()
+        if getPlayerDistance(playerId) >= Config.MedicalMenuMaxDistance then
+            SendTextMessage(header, GetLang().error.player_too_far_away, 5000, 'error')
+            return
+        end
+        if RejectInsurvivableTreatment(playerId) then
+            return
+        end
+        local stat = ResolvePlayerBodyDamage(playerId)
+        if not stat or not IsBodyDamageReady(stat) then
+            SendTextMessage(header, 'Medical data is still loading, try again.', 5000, 'error')
+            return
+        end
+
+        local timeResult = lib.callback.await('osp_ambulance:GetTime', 1000)
+        if timeResult then
+            time = timeResult
+        end
+
+        dynamicActionAnimations(playerId, med.time)
+        if not dynamicMinigameActions('medication') or not ProgressBar(med.lang, med.time) then
+            stopDynamicActionAnimations()
+            return
+        end
+        stopDynamicActionAnimations()
+
+        if med.removeItem then
+            TriggerServerEvent('osp_ambulance:removeItem', med.itemName, 1)
+        end
+        if type(stat.MessageLog) ~= 'table' then
+            stat.MessageLog = {}
+        end
+        table.insert(stat.MessageLog, tostring(time) .. ' | ' .. med.langUsed)
+        StampMedicationTimer(stat, itemName)
+        Wait(Config.ServerDelay)
+        SaveBodyDamage(playerId, stat, true)
+        TriggerServerEvent('osp_ambulance:medicationSv', playerId, med.itemName, med)
+    end)
+    medicationActionBusy = false
+    if not ok then
+        DebugPrint('AdministerMedicationTo failed: ', err)
+    end
+end
+
 if Config and Config.UseXsound then
     xSound = exports.xsound
 end
@@ -91,6 +471,9 @@ function GetAmbulanceItemNames()
     addAmbulanceItemName(items, 'bloodsample')
     addAmbulanceItemName(items, 'expiredblood')
     addAmbulanceItemName(items, 'prescription')
+    addAmbulanceItemName(items, Config.PrescriptionNotepadItem or 'prescription_pad')
+    addAmbulanceItemName(items, Config.GlucoseItem or 'glucose')
+    addAmbulanceItemName(items, 'bvm')
 
     ambulanceItemNamesCache = items
     return items
@@ -111,10 +494,17 @@ end
 
 function BuildInventoryNuiFields(invItems)
     invItems = invItems or GetMedicalInventoryItems()
+    local visible = {}
+    for _, entry in pairs(invItems or {}) do
+        local name = type(entry) == 'table' and entry.item or nil
+        if not JobDeniesItem(name) then
+            visible[#visible + 1] = entry
+        end
+    end
 
     return {
-        invItems = json.encode(invItems),
-        supplyItems = json.encode(FilterSupplyItems(invItems)),
+        invItems = json.encode(visible),
+        supplyItems = json.encode(FilterSupplyItems(visible)),
     }
 end
 
@@ -430,6 +820,9 @@ function ApplyLoginMedicalState(pending)
         local health = pending.health
         local armour = pending.armour or 0
         CreateThread(function()
+            if AllowMedicalHealthGain then
+                AllowMedicalHealthGain()
+            end
             SetEntityHealth(ped, health)
             SetPedArmour(ped, armour)
             Wait(1000)
@@ -650,8 +1043,25 @@ function EnsureBodyDamageStructure(bd)
     if type(bd.inLastStand) ~= 'boolean' then
         bd.inLastStand = bd.inLastStand == true
     end
+    if type(bd.isCarried) ~= 'boolean' then
+        bd.isCarried = bd.isCarried == true
+    end
+    if type(bd.needsGlucose) ~= 'boolean' then
+        bd.needsGlucose = bd.needsGlucose == true
+    end
+    if type(bd.glucoseCause) ~= 'string' then
+        bd.glucoseCause = bd.needsGlucose and 'hunger' or ''
+    end
     if type(bd.cardiacState) ~= 'string' or bd.cardiacState == '' then
         bd.cardiacState = 'NSR'
+    end
+    if type(bd.epiGiven) ~= 'boolean' then
+        bd.epiGiven = bd.epiGiven == true
+    end
+    for _, key in pairs(MEDICATION_TIMERS) do
+        if type(bd[key]) ~= 'number' then
+            bd[key] = tonumber(bd[key]) or 0
+        end
     end
     if type(bd.MessageLog) ~= 'table' then
         bd.MessageLog = {}
@@ -940,6 +1350,467 @@ function BuildClinicalFindings(bodyDamage)
     return findings
 end
 
+local WOUND_DISPLAY_NAMES = {
+    abrasion = 'Abrasion',
+    avulsion = 'Avulsion',
+    contusion = 'Contusion',
+    crush = 'Crush',
+    cut = 'Cut',
+    laceration = 'Laceration',
+    lowvelocitywound = 'Low Velocity Wound',
+    mediumvelocitywound = 'Medium Velocity Wound',
+    highvelocitywound = 'High Velocity Wound',
+    velocitywound = 'Velocity Wound',
+    puncturewound = 'Puncture Wound',
+    burn = 'Burn',
+}
+
+local treatmentItemLabels = {}
+local function GetTreatmentItemLabel(itemName)
+    if not itemName or itemName == '' then
+        return ''
+    end
+    local cached = treatmentItemLabels[itemName]
+    if cached then
+        return cached
+    end
+    local label = itemName
+    for _, shopItem in pairs(Config.ItemShop or {}) do
+        if shopItem.name == itemName then
+            label = shopItem.label or itemName
+            break
+        end
+    end
+    if label == itemName then
+        label = itemName:gsub('_', ' '):gsub('(%a)([%w]*)', function(first, rest)
+            return first:upper() .. rest
+        end)
+    end
+    treatmentItemLabels[itemName] = label
+    return label
+end
+
+local castItemByPart = {}
+local function GetCastItemForPart(part, castType)
+    local cacheKey = tostring(part) .. ':' .. tostring(castType)
+    local cached = castItemByPart[cacheKey]
+    if cached then
+        return cached[1], cached[2]
+    end
+    for _, group in pairs(Config.Casts or {}) do
+        if group.type == castType and type(group.casts) == 'table' then
+            for _, cast in pairs(group.casts) do
+                if cast.bone == part then
+                    local label = GetTreatmentItemLabel(cast.itemName)
+                    castItemByPart[cacheKey] = { cast.itemName, label }
+                    return cast.itemName, label
+                end
+            end
+        end
+    end
+    castItemByPart[cacheKey] = { nil, nil }
+end
+
+local bandageByWound = {}
+local function GetBestBandageForWound(woundName)
+    local cached = bandageByWound[woundName]
+    if cached then
+        return cached[1], cached[2]
+    end
+    local bestItem, bestScore = 'field_dressing', -1
+    for _, med in pairs(Config.Medication or {}) do
+        if med.type == 'bandage' and type(med.effectivenessModifiers) == 'table' then
+            local score = tonumber(med.effectivenessModifiers[woundName]) or 0
+            if score > bestScore then
+                bestScore = score
+                bestItem = med.itemName
+            end
+        end
+    end
+    local label = GetTreatmentItemLabel(bestItem)
+    bandageByWound[woundName] = { bestItem, label }
+    return bestItem, label
+end
+
+local PART_PLAN_LABELS = {
+    Head = 'Head',
+    Torso = 'Torso',
+    Rarm = 'Right arm',
+    Larm = 'Left arm',
+    Rleg = 'Right leg',
+    Lleg = 'Left leg',
+}
+
+local function ResolvePatientBloodType(bodyDamage)
+    local bloodType = bodyDamage and bodyDamage.bloodType
+    if IsValidBloodType and IsValidBloodType(bloodType) then
+        return bloodType
+    end
+    bloodType = bodyDamage and bodyDamage.reportedBloodType
+    if IsValidBloodType and IsValidBloodType(bloodType) then
+        return bloodType
+    end
+    return 'O-'
+end
+
+local function GetMatchingBloodItem(bodyDamage)
+    local bloodType = ResolvePatientBloodType(bodyDamage)
+    local suffix = 'ominus'
+    local typeData = Config.bloodTypes and Config.bloodTypes[bloodType]
+    if typeData and typeData.itemName then
+        suffix = typeData.itemName
+    end
+    local item = 'blood500ml_' .. suffix
+    return item, 'Blood 500ml ' .. bloodType, bloodType
+end
+
+local function GetTotalBleedAmount(bpd)
+    local total = 0
+    local bleeding = type(bpd.Bleeding) == 'table' and bpd.Bleeding or {}
+    for i = 1, #BODY_DAMAGE_PARTS do
+        total = total + (tonumber(bleeding[BODY_DAMAGE_PARTS[i]]) or 0)
+    end
+    return total
+end
+
+local function HasActiveFluidSupport(bpd)
+    local infusions = type(bpd.ActiveInfusions) == 'table' and bpd.ActiveInfusions or {}
+    for name, amount in pairs(infusions) do
+        if (tonumber(amount) or 0) > 0 then
+            local lower = string.lower(tostring(name))
+            if string.find(lower, 'saline', 1, true) or string.find(lower, 'blood', 1, true) then
+                return true
+            end
+        end
+    end
+    return (tonumber(bpd.RefillBloodLeft) or 0) > 0 or (tonumber(bpd.TotalBloodFill) or 0) > 0
+end
+
+local function ApplyTreatmentOrder(regions)
+    local lowest = 99
+    for _, list in pairs(regions) do
+        for i = 1, #list do
+            local row = list[i]
+            local step = tonumber(row.step) or 0
+            if not row.optional and step > 0 and step < lowest then
+                lowest = step
+            end
+        end
+    end
+    if lowest == 99 then
+        lowest = 0
+    end
+    for _, list in pairs(regions) do
+        for i = 1, #list do
+            local row = list[i]
+            local step = tonumber(row.step) or 0
+            row.locked = (not row.optional) and step > 0 and lowest > 0 and step > lowest
+        end
+    end
+    return lowest
+end
+
+function BuildTreatmentPlan(regions)
+    local buckets = {
+        [1] = { title = 'Stop bleeding', hints = {} },
+        [2] = { title = 'Close wounds', hints = {} },
+        [3] = { title = 'Stabilize', hints = {} },
+        [4] = { title = 'Fluids', hints = {} },
+        [5] = { title = 'Support', hints = {} },
+    }
+    for part, list in pairs(regions or {}) do
+        if type(list) == 'table' then
+            for i = 1, #list do
+                local row = list[i]
+                local step = tonumber(row.step) or 0
+                local bucket = buckets[step]
+                if bucket and not row.optional then
+                    bucket.hints[#bucket.hints + 1] = (PART_PLAN_LABELS[part] or part) .. ' · ' .. (row.action or row.itemLabel or row.condition)
+                end
+            end
+        end
+    end
+    local lowest = 99
+    for step = 1, 5 do
+        if #buckets[step].hints > 0 and step < lowest then
+            lowest = step
+        end
+    end
+    local plan = {}
+    for step = 1, 5 do
+        local bucket = buckets[step]
+        local status = 'done'
+        if #bucket.hints > 0 then
+            status = (step == lowest) and 'current' or 'locked'
+        end
+        plan[#plan + 1] = {
+            step = step,
+            title = bucket.title,
+            status = status,
+            hint = bucket.hints[1] or 'Done',
+            remaining = #bucket.hints,
+        }
+    end
+    return plan
+end
+
+local function PushRegionTreatment(list, seen, entry)
+    local key = table.concat({ entry.condition or '', entry.item or '', entry.callback or '' }, '|')
+    if seen[key] then
+        return
+    end
+    seen[key] = true
+    list[#list + 1] = entry
+end
+
+function BuildRegionTreatments(bodyDamage)
+    local regions = {
+        Head = {},
+        Torso = {},
+        Rarm = {},
+        Larm = {},
+        Rleg = {},
+        Lleg = {},
+    }
+
+    if type(bodyDamage) ~= 'table' then
+        return regions
+    end
+
+    local bpd = bodyDamage.BodyPartDamage or {}
+    local woundsByPart = type(bpd.Wounds) == 'table' and bpd.Wounds or {}
+    local fractures = type(bpd.Fractures) == 'table' and bpd.Fractures or {}
+    local bleeding = type(bpd.Bleeding) == 'table' and bpd.Bleeding or {}
+    local needSewed = type(bpd.NeedSewed) == 'table' and bpd.NeedSewed or {}
+    local tourniquets = type(bpd.appliedTourniquets) == 'table' and bpd.appliedTourniquets or {}
+    local spo2 = tonumber(bodyDamage.oxygenSaturation) or 99
+    local bloodLevel = tonumber(bpd.BloodLevel) or 6.0
+    local pain = tonumber(bodyDamage.Pain) or 0
+    local arrest = IsCardiacArrestPatient(bodyDamage)
+
+    for i = 1, #BODY_DAMAGE_PARTS do
+        local part = BODY_DAMAGE_PARTS[i]
+        local list = regions[part]
+        local seen = {}
+        local partWounds = CompactWoundList(woundsByPart[part])
+        local fracture = fractures[part]
+        local bleedAmount = tonumber(bleeding[part]) or 0
+        local needsStitches = needSewed[part] == true
+
+        if needsStitches then
+            PushRegionTreatment(list, seen, {
+                condition = 'Needs stitches',
+                action = 'Sewing Kit',
+                item = 'sewing_kit',
+                itemLabel = GetTreatmentItemLabel('sewing_kit'),
+                callback = 'UsedMedication',
+                step = 2,
+                payload = { BodyPart = part, item = 'sewing_kit', apply = true },
+            })
+        end
+
+        if fracture == true or fracture == 'xrayed' then
+            local item, label = GetCastItemForPart(part, 'splint')
+            if item then
+                PushRegionTreatment(list, seen, {
+                    condition = 'Fracture',
+                    action = 'Apply ' .. label,
+                    item = item,
+                    itemLabel = label,
+                    callback = 'ApplyCast',
+                    fractured = true,
+                    step = 3,
+                    payload = { BodyPart = part, item = item },
+                })
+            end
+        elseif fracture == 'splint' then
+            local item, label = GetCastItemForPart(part, 'cast')
+            if item then
+                PushRegionTreatment(list, seen, {
+                    condition = 'Fracture',
+                    action = 'Apply ' .. label,
+                    item = item,
+                    itemLabel = label,
+                    callback = 'ApplyCast',
+                    fractured = true,
+                    optional = true,
+                    step = 3,
+                    payload = { BodyPart = part, item = item },
+                })
+            end
+        end
+
+        for w = 1, #partWounds do
+            local woundName = partWounds[w]
+            if type(woundName) == 'string' then
+                local display = WOUND_DISPLAY_NAMES[woundName] or woundName
+                local bandageItem, bandageLabel = GetBestBandageForWound(woundName)
+                PushRegionTreatment(list, seen, {
+                    condition = display,
+                    action = bandageLabel,
+                    item = bandageItem,
+                    itemLabel = bandageLabel,
+                    callback = 'UsedMedication',
+                    step = bleedAmount > 0 and 1 or 2,
+                    payload = { BodyPart = part, item = bandageItem, apply = true, wound = woundName },
+                })
+            end
+        end
+
+        if bleedAmount > 0 and part ~= 'Head' and part ~= 'Torso' and not tourniquets[part] then
+            PushRegionTreatment(list, seen, {
+                condition = 'Bleeding',
+                action = 'Tourniquet',
+                item = 'tourniquet',
+                itemLabel = GetTreatmentItemLabel('tourniquet'),
+                callback = 'UsedMedication',
+                step = 1,
+                payload = { BodyPart = part, item = 'tourniquet', apply = true },
+            })
+        end
+    end
+
+    local torsoSeen = {}
+    if arrest then
+        if bodyDamage.epiGiven ~= true then
+            PushRegionTreatment(regions.Torso, torsoSeen, {
+                condition = 'Cardiac arrest',
+                action = 'Administer Epinephrine',
+                item = 'epinephrine',
+                itemLabel = GetTreatmentItemLabel('epinephrine'),
+                callback = 'UsedMedication',
+                step = 0,
+                payload = { BodyPart = 'Torso', item = 'epinephrine', apply = true },
+            })
+        end
+        PushRegionTreatment(regions.Torso, torsoSeen, {
+            condition = 'Cardiac arrest',
+            action = 'Commence CPR',
+            callback = 'CPR',
+            step = 0,
+            payload = {},
+        })
+    end
+    local shockable = IsShockableRhythm(bodyDamage)
+    if shockable and not IsMedicationActive(bodyDamage, 'amiodarone') then
+        PushRegionTreatment(regions.Torso, torsoSeen, {
+            condition = 'Shockable rhythm',
+            action = 'Administer Amiodarone',
+            item = 'amiodarone',
+            itemLabel = GetTreatmentItemLabel('amiodarone'),
+            callback = 'UsedMedication',
+            step = 0,
+            payload = { BodyPart = 'Torso', item = 'amiodarone', apply = true },
+        })
+    end
+    local pulse = tonumber(bodyDamage.Pulse) or 80
+    if bodyDamage.isDead ~= true and not shockable and pulse > 0 and pulse < 60
+        and not IsMedicationActive(bodyDamage, 'atropine') then
+        PushRegionTreatment(regions.Torso, torsoSeen, {
+            condition = 'Slow heart rate',
+            action = 'Administer Atropine',
+            item = 'atropine',
+            itemLabel = GetTreatmentItemLabel('atropine'),
+            callback = 'UsedMedication',
+            step = 0,
+            payload = { BodyPart = 'Torso', item = 'atropine', apply = true },
+        })
+    end
+    local totalBleed = GetTotalBleedAmount(bpd)
+    if totalBleed > 0 and (totalBleed >= 0.35 or bloodLevel < 5.2) and not IsMedicationActive(bodyDamage, 'txa') then
+        PushRegionTreatment(regions.Torso, torsoSeen, {
+            condition = 'Major bleeding',
+            action = 'Administer TXA',
+            item = 'txa',
+            itemLabel = GetTreatmentItemLabel('txa'),
+            callback = 'UsedMedication',
+            optional = true,
+            step = 1,
+            payload = { BodyPart = 'Torso', item = 'txa', apply = true },
+        })
+    end
+    if spo2 < 94 then
+        PushRegionTreatment(regions.Torso, torsoSeen, {
+            condition = 'Low oxygen',
+            action = 'Use BVM',
+            item = 'bvm',
+            itemLabel = GetTreatmentItemLabel('bvm'),
+            callback = 'BVM',
+            step = 5,
+            payload = {},
+        })
+    end
+    if bloodLevel < 5.2 and not HasActiveFluidSupport(bpd) then
+        local heavyBleed = bloodLevel < 4.2 or GetTotalBleedAmount(bpd) >= 0.35
+        local bloodItem, bloodLabel = GetMatchingBloodItem(bodyDamage)
+        if heavyBleed and bloodItem and not JobDeniesItem(bloodItem) then
+            PushRegionTreatment(regions.Torso, torsoSeen, {
+                condition = 'Blood loss',
+                action = bloodLabel,
+                item = bloodItem,
+                itemLabel = bloodLabel,
+                callback = 'UsedMedication',
+                step = 4,
+                payload = { BodyPart = 'Torso', item = bloodItem, apply = true },
+            })
+        else
+            PushRegionTreatment(regions.Torso, torsoSeen, {
+                condition = 'Blood loss',
+                action = GetTreatmentItemLabel('saline500ml'),
+                item = 'saline500ml',
+                itemLabel = GetTreatmentItemLabel('saline500ml'),
+                callback = 'UsedMedication',
+                step = 4,
+                payload = { BodyPart = 'Torso', item = 'saline500ml', apply = true },
+            })
+        end
+    end
+    if pain >= 4 then
+        local headInjured = #CompactWoundList(woundsByPart.Head) > 0
+            or (tonumber((bpd.DamageType or {}).Head) or 0) > 0
+            or fractures.Head == true
+            or fractures.Head == 'xrayed'
+            or fractures.Head == 'splint'
+        local painPart = headInjured and 'Head' or 'Torso'
+        local painSeen = painPart == 'Torso' and torsoSeen or {}
+        PushRegionTreatment(regions[painPart], painSeen, {
+            condition = 'Pain',
+            action = 'Administer Morphine',
+            item = 'morphine',
+            itemLabel = GetTreatmentItemLabel('morphine'),
+            callback = 'UsedMedication',
+            step = 5,
+            payload = { BodyPart = painPart, item = 'morphine', apply = true },
+        })
+    end
+    if type(bodyDamage.overdose) == 'table' and bodyDamage.overdose.active == true and not bodyDamage.overdose.treated then
+        PushRegionTreatment(regions.Torso, torsoSeen, {
+            condition = 'Overdose',
+            action = 'Administer Narcan',
+            item = 'narcan',
+            itemLabel = GetTreatmentItemLabel('narcan'),
+            callback = 'UsedMedication',
+            step = 0,
+            payload = { BodyPart = 'Torso', item = 'narcan', apply = true },
+        })
+    end
+    if bodyDamage.needsGlucose == true and (bodyDamage.isDead == true or bodyDamage.inLastStand == true) then
+        local glucoseItem = Config.GlucoseItem or 'glucose'
+        PushRegionTreatment(regions.Torso, torsoSeen, {
+            condition = GlucoseDownedLabel(bodyDamage.glucoseCause),
+            action = 'Glucose Tablet',
+            item = glucoseItem,
+            itemLabel = 'Glucose Tablet',
+            callback = 'GlucoseTablet',
+            step = 0,
+            payload = {},
+        })
+    end
+
+    ApplyTreatmentOrder(regions)
+    return regions
+end
+
 function EncodeBodyDamageForNui(stat)
     if type(stat) ~= 'table' then
         return 'null'
@@ -970,11 +1841,13 @@ function EncodeBodyDamageForNui(stat)
     end
 
     payload.clinicalFindings = BuildClinicalFindings(payload)
+    payload.regionTreatments = BuildRegionTreatments(payload)
+    payload.treatmentPlan = BuildTreatmentPlan(payload.regionTreatments)
     return json.encode(payload)
 end
 
 function GetLocalServerId()
-    return GetPlayerServerId(NetworkGetPlayerIndexFromPed(PlayerPedId()))
+    return GetPlayerServerId(PlayerId())
 end
 
 -- Skelly uses the local BodyDamage table; the medical UI historically read the
@@ -1196,8 +2069,68 @@ local function AddHospitalTargetZone(name, coords, x, y, z, option)
     return id
 end
 
-local function TrackBedTargetZone(name, coords, x, y, z, option)
-    local id = TargetingBoxZone(name, coords, x, y, z, option)
+local function GetPlayerServerIdAtCoords(coords, radius)
+    local origin = CoordsToVec3(coords)
+    if not origin then return end
+    radius = radius or 1.4
+    local closestId, closestDist
+    for _, player in ipairs(GetActivePlayers()) do
+        local ped = GetPlayerPed(player)
+        if ped ~= 0 then
+            local dist = #(GetEntityCoords(ped) - origin)
+            if dist <= radius and (not closestDist or dist < closestDist) then
+                closestDist = dist
+                closestId = GetPlayerServerId(player)
+            end
+        end
+    end
+    return closestId
+end
+
+local function BedLieInOption(hospitalId, bedCoords)
+    return {
+        name = 'lieInBed',
+        type = 'client',
+        event = 'osp_ambulance:beds',
+        icon = 'fas fa-bed',
+        label = GetLang().update1.lay_in_bed,
+        hospitalID = hospitalId,
+        distance = 2.5,
+        canInteract = function()
+            if isInHospitalBed then return false end
+            return GetPlayerServerIdAtCoords(bedCoords) == nil
+        end,
+    }
+end
+
+local function BedTreatOption(bedCoords)
+    return {
+        name = 'treatPatientInBed',
+        icon = 'fa-solid fa-clipboard',
+        label = 'Medical Menu',
+        distance = 2.5,
+        canInteract = function()
+            if not JobHasAccess('medicalMenu') then return false end
+            local id = GetPlayerServerIdAtCoords(bedCoords)
+            return id ~= nil and id ~= GetPlayerServerId(PlayerId())
+        end,
+        onSelect = function()
+            local id = GetPlayerServerIdAtCoords(bedCoords)
+            if id then
+                TriggerEvent('osp_ambulance:openMedicalMenu', id)
+            end
+        end,
+        action = function()
+            local id = GetPlayerServerIdAtCoords(bedCoords)
+            if id then
+                TriggerEvent('osp_ambulance:openMedicalMenu', id)
+            end
+        end,
+    }
+end
+
+local function TrackBedTargetZone(name, coords, x, y, z, ...)
+    local id = TargetingBoxZone(name, coords, x, y, z, ...)
 
     if Config.UseOxTarget then
         if id then
@@ -1233,7 +2166,15 @@ AddEventHandler("osp_ambulance:SendTextMessage", function(msgtitle, msg, time, t
 end)
 
 
-function ProgressBar(msg, time, animdict, anim)
+function ProgressBar(msg, time, animdict, anim, animFlag)
+    local animPayload = nil
+    if animdict and anim then
+        animPayload = {
+            dict = animdict,
+            clip = anim,
+            flag = animFlag,
+        }
+    end
     if Config.UseRadialProgressBar then
         if lib.progressCircle({
             duration = time,
@@ -1243,39 +2184,94 @@ function ProgressBar(msg, time, animdict, anim)
             disable = {
                 car = true,
             },
-            anim = {
-                dict = animdict,
-                clip = anim
-            },
+            anim = animPayload,
         }) then return true else return false end
     else
-        if animdict then
-            if lib.progressBar({
-                duration = time,
-                label = msg,
-                useWhileDead = true,
-                canCancel = false,
-                disable = {
-                    car = true,
-                },
-                anim = {
-                    dict = animdict,
-                    clip = anim
-                },
-            }) then return true else return false end
-        else
-            if lib.progressBar({
-                duration = time,
-                label = msg,
-                useWhileDead = true,
-                canCancel = false,
-                disable = {
-                    car = true,
-                },
-            }) then return true else return false end
-        end
+        if lib.progressBar({
+            duration = time,
+            label = msg,
+            useWhileDead = true,
+            canCancel = false,
+            disable = {
+                car = true,
+            },
+            anim = animPayload,
+        }) then return true else return false end
     end
 end
+
+local PILL_CONSUME_DICT = 'mp_suicide'
+local PILL_CONSUME_CLIP = 'pill'
+local PILL_CONSUME_MS = 2700
+
+function IsPillMedication(itemName)
+    if type(itemName) ~= 'string' or itemName == '' then
+        return false
+    end
+    local name = string.lower(itemName)
+    if name == 'cough_syrup' or name == 'morphine' or name == 'epinephrine' or name == 'narcan' then
+        return false
+    end
+    if name == 'painkillers' or name == 'painkiller' or name == 'pain_killers' or name == 'glucose' then
+        return true
+    end
+    if string.find(name, 'pill', 1, true) or string.find(name, 'tablet', 1, true) then
+        return true
+    end
+    for _, medication in pairs(Config.PrescriptionMedications or {}) do
+        if medication.itemName == itemName or medication.id == itemName then
+            local form = string.lower(tostring(medication.form or 'pill'))
+            return form == 'pill' or form == 'tablet'
+        end
+    end
+    for _, med in pairs(Config.Medication or {}) do
+        if med.itemName == itemName then
+            return string.lower(tostring(med.form or '')) == 'pill'
+        end
+    end
+    return false
+end
+
+local function stopPillConsumeAnim()
+    local ped = PlayerPedId()
+    StopAnimTask(ped, PILL_CONSUME_DICT, PILL_CONSUME_CLIP, 1.0)
+    if IsEntityPlayingAnim(ped, PILL_CONSUME_DICT, PILL_CONSUME_CLIP, 3) then
+        ClearPedSecondaryTask(ped)
+    end
+end
+
+local function requestPillConsumeDict()
+    if lib.requestAnimDict then
+        lib.requestAnimDict(PILL_CONSUME_DICT, 1000)
+        return
+    end
+    RequestAnimDict(PILL_CONSUME_DICT)
+    local timeout = GetGameTimer() + 1000
+    while not HasAnimDictLoaded(PILL_CONSUME_DICT) and GetGameTimer() < timeout do
+        Wait(10)
+    end
+end
+
+function PlayPillConsumeAnim()
+    if BodyDamage and (BodyDamage.isDead or BodyDamage.inLastStand) then
+        return
+    end
+    requestPillConsumeDict()
+    TaskPlayAnim(PlayerPedId(), PILL_CONSUME_DICT, PILL_CONSUME_CLIP, 8.0, -8.0, PILL_CONSUME_MS, 49, 0, false, false, false)
+    SetTimeout(PILL_CONSUME_MS, stopPillConsumeAnim)
+end
+
+function PlayPillConsumeProgress(msg, time)
+    time = math.min(tonumber(time) or PILL_CONSUME_MS, PILL_CONSUME_MS)
+    requestPillConsumeDict()
+    local finished = ProgressBar(msg, time, PILL_CONSUME_DICT, PILL_CONSUME_CLIP, 49)
+    stopPillConsumeAnim()
+    return finished
+end
+
+RegisterNetEvent('osp_ambulance:playPillAnimCl', function()
+    PlayPillConsumeAnim()
+end)
 
 
 
@@ -1342,8 +2338,6 @@ function TriggerDispatchAlert(coords, message)
     return false
 end
 
--- Single entry point for EMS notify (auto on down / manual G).
--- AutomaticAmbulanceAlert only affects automatic calls; manual always works once per down.
 function RequestEmsAlert(isAutomatic)
     if emsNotified then
         return false
@@ -1357,11 +2351,24 @@ function RequestEmsAlert(isAutomatic)
     local message = lang and lang.info and lang.info.civ_down or 'Civilian Down'
     TriggerDispatchAlert(GetEntityCoords(PlayerPedId()), message)
     emsNotified = true
+    local onDuty = tonumber(doctorCount) or 0
+    if lib and lib.callback and lib.callback.await then
+        onDuty = tonumber(lib.callback.await('osp_ambulance:getOnDutyEmsCount', false)) or onDuty
+        doctorCount = onDuty
+    end
     SendNUIMessage({
         emsnotif = 2,
+        doctorCount = onDuty,
     })
     return true
 end
+
+RegisterCommand('emsnotify', function()
+    if not BodyDamage or not (BodyDamage.isDead or BodyDamage.inLastStand) then
+        return
+    end
+    RequestEmsAlert(false)
+end, false)
 
 local nuiAlertSounds = {
     codeblue = true,
@@ -1390,7 +2397,7 @@ function TriggerNuiAlertSound(sound, coords, distance)
     SendNUIMessage({
         action = 'playAlertSound',
         sound = sound,
-        volume = 1.0,
+        volume = sound == 'codeblue' and 0.7 or 1.0,
     })
 end
 
@@ -1624,8 +2631,8 @@ function CPRFunction(data)
     Wait(500)
     local ent = Player(data.PlayerId)
     local stat = ent.state.BodyDamage
-    if not stat.isDead then
-        SendTextMessage(GetLang().interactions.medicalHeader, 'The player is not dead!', 3000, "error")
+    if not IsCardiacArrestPatient(stat) then
+        SendTextMessage(GetLang().interactions.medicalHeader, GetLang().update1.not_dead or 'The player is not in cardiac arrest', 3000, "error")
         return
     end
     if IsInsurvivable(stat) then
@@ -1639,7 +2646,7 @@ function CPRFunction(data)
 
     local cprAnimDict = 'missheistfbi3b_ig8_2'
     local cprAnimName = 'cpr_loop_paramedic'
-    local cprTimeCycle = 60*1000
+    local cprTimeCycle = 15*1000
 
 
     -- Teleport player to a relative position to target player
@@ -1652,7 +2659,7 @@ function CPRFunction(data)
 
     lib.requestAnimDict(cprAnimDict, 1000)
 
-    if stat.Pulse == 0 or stat.isDead then
+    if stat.Pulse == 0 or stat.isDead or stat.inLastStand then
     -- if true then
         stat.Pulse = 60
         stat.cardiacState = 'NSR'
@@ -1812,8 +2819,113 @@ RegisterNetEvent("osp_ambulance:OnPlayerDeath", function()
 end)
 
 
+local function NormalizeNeedValue(value)
+    value = tonumber(value)
+    if value == nil then return nil end
+    if value > 100 then
+        return value / 10000
+    end
+    if value < 0 then
+        return 0
+    end
+    return value
+end
+
+local function LowestNeed(...)
+    local lowest
+    for i = 1, select('#', ...) do
+        local value = NormalizeNeedValue(select(i, ...))
+        if value ~= nil and (not lowest or value < lowest) then
+            lowest = value
+        end
+    end
+    return lowest or 100
+end
+
+function GetPlayerNeedLevels()
+    local hunger, thirst
+    if LocalPlayer and LocalPlayer.state then
+        hunger = LocalPlayer.state.hunger
+        thirst = LocalPlayer.state.thirst
+    end
+    local meta
+    if GetPlayerData then
+        local data = GetPlayerData()
+        meta = data and data.metadata
+    end
+    return LowestNeed(hunger, meta and meta.hunger), LowestNeed(thirst, meta and meta.thirst)
+end
+
+function GlucoseDownedLabel(cause)
+    if cause == 'thirst' then
+        return 'Dehydration'
+    end
+    if cause == 'both' then
+        return 'Starvation / Dehydration'
+    end
+    return 'Starvation'
+end
+
+function StampGlucoseNeed()
+    if not BodyDamage then return end
+    local hunger, thirst = GetPlayerNeedLevels()
+    local threshold = tonumber(Config.GlucoseNeedThreshold) or 5
+    local starved = hunger <= threshold
+    local dehydrated = thirst <= threshold
+    BodyDamage.needsGlucose = starved or dehydrated
+    if starved and dehydrated then
+        BodyDamage.glucoseCause = 'both'
+    elseif starved then
+        BodyDamage.glucoseCause = 'hunger'
+    elseif dehydrated then
+        BodyDamage.glucoseCause = 'thirst'
+    else
+        BodyDamage.glucoseCause = ''
+    end
+    if BodyDamage.needsGlucose then
+        BodyDamage.MessageLog = BodyDamage.MessageLog or {}
+        local line = 'Downed from ' .. string.lower(GlucoseDownedLabel(BodyDamage.glucoseCause))
+        local logged = false
+        for i = 1, #BodyDamage.MessageLog do
+            if BodyDamage.MessageLog[i] == line then
+                logged = true
+                break
+            end
+        end
+        if not logged then
+            BodyDamage.MessageLog[#BodyDamage.MessageLog + 1] = line
+        end
+    end
+    if SaveBodyDamage then
+        SaveBodyDamage(GetPlayerServerId(PlayerId()), BodyDamage, true)
+    end
+end
+
+CreateThread(function()
+    Wait(8000)
+    while true do
+        Wait(4000)
+        if BodyDamage
+            and not BodyDamage.isDead
+            and not BodyDamage.inLastStand
+            and not isInHospitalBed
+            and not checkin
+        then
+            local ped = PlayerPedId()
+            if ped ~= 0 and not IsEntityDead(ped) then
+                local hunger, thirst = GetPlayerNeedLevels()
+                if hunger <= 0 or thirst <= 0 then
+                    StampGlucoseNeed()
+                    SetEntityHealth(ped, 0)
+                end
+            end
+        end
+    end
+end)
+
 RegisterNetEvent("osp_ambulance:OnPlayerDead")
 AddEventHandler("osp_ambulance:OnPlayerDead", function()
+    StampGlucoseNeed()
     if GetActiveFramework() == 'esx' then
         TriggerServerEvent('osp_amblance:setDeathStatus', true)
         ESX.SetPlayerData('dead', true)
@@ -1943,19 +3055,22 @@ function isPedMovingCheck(ped)
     end
 end
 
-
 function GetPlayers()
-    local maxplayers = GetConvarInt('sv_maxclients', 255) - 1
-    -- local maxplayers = 255
-    local players = {}
-
-    for i=0, maxplayers do
-        if NetworkIsPlayerActive(i) then
-            table.insert(players, i)
-        end
-    end
-    return players
+    return GetActivePlayers()
 end
+
+-- function GetPlayers()
+--     local maxplayers = GetConvarInt('sv_maxclients', 255) - 1
+--     -- local maxplayers = 255
+--     local players = {}
+
+--     for i=0, maxplayers do
+--         if NetworkIsPlayerActive(i) then
+--             table.insert(players, i)
+--         end
+--     end
+--     return players
+-- end
 
 -- function GetPlayers()
 --     local players = {}
@@ -2112,16 +3227,54 @@ function LockSteering() -- Will be triggered every 15 seconds
 
 end
 
+local function currentJobGrade()
+    return ConfigLoader.GradeFromJob(PlayerJob)
+end
+
+function JobDeniesItem(itemName)
+    if type(itemName) ~= 'string' then
+        return false
+    end
+    local jobName = PlayerJob and PlayerJob.name
+    local jobCfg = type(Config.Jobs) == 'table' and Config.Jobs[jobName]
+    if type(jobCfg) ~= 'table' then
+        return false
+    end
+    if ConfigLoader.GetJobAccess(Config, jobName, ConfigLoader.GradeFromJob(PlayerJob)) ~= jobCfg then
+        return false
+    end
+    if string.match(itemName, '^blood%d+ml') then
+        return jobCfg.blood == false
+    end
+    if itemName == 'revivekit' then
+        return jobCfg.revivekit == false
+    end
+    if itemName == 'emergencykit' or itemName == 'emergency_kit' then
+        return jobCfg.emergencykit == false
+    end
+    return false
+end
+
+function MedicationListForMenu()
+    local kept = {}
+    for _, med in pairs(deepCopyWithoutFunctions(Config.Medication) or {}) do
+        if type(med) == 'table' and not JobDeniesItem(med.itemName) then
+            kept[#kept + 1] = med
+        end
+    end
+    return kept
+end
+
 function HasAccess(feature)
-    return ConfigLoader.HasAccess(Config, PlayerJob and PlayerJob.name, feature, onDuty == true)
+    return ConfigLoader.HasAccess(Config, PlayerJob and PlayerJob.name, feature, onDuty == true, currentJobGrade())
 end
 
 function JobHasAccess(feature)
-    return ConfigLoader.JobHasAccess(Config, PlayerJob and PlayerJob.name, feature)
+    return ConfigLoader.JobHasAccess(Config, PlayerJob and PlayerJob.name, feature, currentJobGrade())
 end
 
 function IsEmsStaff()
-    return ConfigLoader.IsEmsJob(Config, PlayerJob and PlayerJob.name)
+    return ConfigLoader.IsEmsJob(Config, PlayerJob and PlayerJob.name, currentJobGrade())
 end
 
 function IsAuthorized()
@@ -2788,6 +3941,11 @@ ReloadBloodChairs()
 
 RegisterNetEvent('hospital:client:SetDoctorCount', function(amount)
     doctorCount = amount
+    if emsNotified and BodyDamage and (BodyDamage.isDead or BodyDamage.inLastStand) then
+        SendNUIMessage({
+            doctorCount = tonumber(amount) or 0,
+        })
+    end
 end)
 
 function ReloadBedInteractions()
@@ -2815,27 +3973,19 @@ function ReloadBedInteractions()
         for id, hospital in pairs(Config.Hospitals) do
             for _, v in pairs(hospital["beds"] or {}) do
                 bedIndex = bedIndex + 1
-                TrackBedTargetZone("beds".. bedIndex, v.coords, 2.3, 2.3, 1,
-                    {
-                        type = "client",
-                        event = "osp_ambulance:beds",
-                        icon = "fas fa-bed",
-                        label = GetLang().update1.lay_in_bed,
-                        hospitalID = id,
-                    }
+                local bedCoords = v.coords
+                TrackBedTargetZone("beds".. bedIndex, bedCoords, 2.3, 2.3, 1,
+                    BedLieInOption(id, bedCoords),
+                    BedTreatOption(bedCoords)
                 )
             end
             for k, v in pairs(hospital["Xray"] or {}) do
                 xrayIndex = xrayIndex + 1
                 bedIndex = bedIndex + 1
-                TrackBedTargetZone("beds".. bedIndex, v.bedcoords, 2.3, 2.3, 1,
-                    {
-                        type = "client",
-                        event = "osp_ambulance:beds",
-                        icon = "fas fa-bed",
-                        label = GetLang().update1.lay_in_bed,
-                        hospitalID = id,
-                    }
+                local bedCoords = v.bedcoords
+                TrackBedTargetZone("beds".. bedIndex, bedCoords, 2.3, 2.3, 1,
+                    BedLieInOption(id, bedCoords),
+                    BedTreatOption(bedCoords)
                 )
                 TrackBedTargetZone("xrayMonitor".. xrayIndex, v.screencoords, 2.3, 2.3, 1,
                     {
@@ -3083,8 +4233,7 @@ RegisterNetEvent('osp_ambulance:openMedicalMenu', function(playerId)
     DebugPrint('Player state data ', stat, stat.isDead, playerId)
     local invPayload = BuildInventoryNuiFields()
     ConfigLoader.ApplyRuntimeTables(Config)
-    local medicationDataWithoutFunctions = deepCopyWithoutFunctions(Config.Medication)
-    local medications = json.encode(medicationDataWithoutFunctions)
+    local medications = json.encode(MedicationListForMenu())
     SendNUIMessage(
         {
             damageStatus = EncodeBodyDamageForNui(stat),
@@ -3117,6 +4266,7 @@ function createPlayerMedicalMenuInteraction()
                             name = 'playerInteract',
                             icon = 'fa-solid fa-clipboard',
                             label = 'Medical Menu',
+                            distance = 5.5,
                             onSelect = function(data)
                                 if IsPedAPlayer(data.entity) then
                                     local playerId = GetPlayerServerId(NetworkGetPlayerIndexFromPed(data.entity))
@@ -3233,136 +4383,116 @@ exports('IsInsurvivable', function(bodyDamage)
     return IsInsurvivable(bodyDamage or BodyDamage)
 end)
 
-RegisterNetEvent("osp_ambulance:SendAttachCl")
-AddEventHandler("osp_ambulance:SendAttachCl", function(ped, pos)
+-- Amiodarone gives a failed shock on a shockable rhythm a second 50% chance to convert
+local function shockConverts(odds)
+    if math.random(1, odds) == 1 then
+        return true
+    end
+    return IsMedicationActive(BodyDamage, 'amiodarone') and math.random(1, 2) == 1
+end
 
-    RegisterNetEvent("osp_ambulance:ChockCl")
-    AddEventHandler("osp_ambulance:ChockCl", function(currentjoule)
-        joule = currentjoule
-        if GetEntityHealth(PlayerPedId()) >= 100 and BodyDamage.cardiacState == 'NSR' and not (BodyDamage.isDead or BodyDamage.inLastStand) then
-            deathTime = 0
-            OnDeath()
-            DeathTimer()
+local function holdShockedRhythm()
+    CreateThread(function()
+        BodyDamage.cardiacState = 'NSR'
+        BodyDamage.Pulse = 80
+        Wait(5000)
+        if BodyDamage.isDead or BodyDamage.inLastStand then
+            BodyDamage.cardiacState = 'asystole'
+            BodyDamage.Pulse = 0
+            SaveBodyDamage(GetPlayerServerId(NetworkGetPlayerIndexFromPed(PlayerPedId())), BodyDamage)
         end
-        if (BodyDamage.isDead or BodyDamage.inLastStand or BodyDamage.shockableRythm) then
-            if (joule > 20) and (joule < 80) then
-                if BodyDamage.cardiacState == 'asystole' then
-                    local chance = math.random(1,2)
-                    if chance == 1 then
-                        TriggerEvent("osp_ambulance:partialRevive")
-                    end
-                end
-
-                if BodyDamage.cardiacState == 'torsades' then
-                    local chance = math.random(1,2)
-                    if chance == 1 then
-                        BodyDamage.cardiacState = 'NSR'
-                        TriggerEvent("osp_ambulance:partialRevive")
-                    else
-                        BodyDamage.cardiacState = 'asystole'
-                    end
-                end
-
-                if BodyDamage.shockableRythm then
-                    local chance = math.random(1,2)
-                    if chance == 1 then
-                        BodyDamage.cardiacState = 'NSR'
-                        TriggerEvent("osp_ambulance:partialRevive")
-                        BodyDamage.shockableRythm = false
-                    end
-                end
-
-            elseif (joule < 150) and (joule > 80) then
-                if BodyDamage.cardiacState == 'asystole' then
-                    local chance = math.random(1,2)
-                    if chance == 1 then
-                        TriggerEvent("osp_ambulance:partialRevive")
-                    else
-                        local chance = math.random(1,2)
-                        if chance == 1 then
-                            CreateThread(function()
-                                BodyDamage.cardiacState = 'NSR'
-                                BodyDamage.Pulse = 80
-                                Wait(5000)
-                                BodyDamage.cardiacState = 'asystole'
-                                BodyDamage.Pulse = 0
-                                SaveBodyDamage(GetPlayerServerId(NetworkGetPlayerIndexFromPed(PlayerPedId())), BodyDamage)
-                            end)
-                        else
-                            BodyDamage.cardiacState = 'asystole'
-                        end
-                    end
-                end
-
-                if BodyDamage.cardiacState == 'torsades' then
-                    local chance = math.random(1,2)
-                    if chance == 1 then
-                        BodyDamage.cardiacState = 'NSR'
-                        TriggerEvent("osp_ambulance:partialRevive")
-                    else
-                        BodyDamage.cardiacState = 'asystole'
-                    end
-                end
-
-                if BodyDamage.shockableRythm then
-                    local chance = math.random(1,2)
-                    if chance == 1 then
-                        BodyDamage.cardiacState = 'NSR'
-                        TriggerEvent("osp_ambulance:partialRevive")
-                        BodyDamage.shockableRythm = false
-                    end
-                end
-
-            elseif (joule > 150) then
-                if BodyDamage.cardiacState == 'asystole' then
-                    local chance = math.random(1,1)
-                    if chance == 1 then
-                        TriggerEvent("osp_ambulance:partialRevive")
-                    else
-                        CreateThread(function()
-                            BodyDamage.cardiacState = 'NSR'
-                            BodyDamage.Pulse = 80
-                            Wait(5000)
-                            BodyDamage.cardiacState = 'asystole'
-                            BodyDamage.Pulse = 0
-                            SaveBodyDamage(GetPlayerServerId(NetworkGetPlayerIndexFromPed(PlayerPedId())), BodyDamage)
-                        end)
-                    end
-                end
-
-                if BodyDamage.cardiacState == 'vFib' then
-                    local chance = math.random(1,2)
-                    if chance == 1 then
-                        TriggerEvent("osp_ambulance:partialRevive")
-                    end
-                end
-
-                if BodyDamage.cardiacState == 'torsades' then
-                    local chance = math.random(1,3)
-                    if chance == 1 then
-                        BodyDamage.cardiacState = 'NSR'
-                        BodyDamage.Pulse = 80
-                    else
-                        BodyDamage.Pulse = 0
-                        BodyDamage.cardiacState = 'asystole'
-                    end
-                end
-
-
-                if BodyDamage.shockableRythm then
-                    local chance = math.random(1,4)
-                    if chance == 1 then
-                        BodyDamage.cardiacState = 'NSR'
-                        TriggerEvent("osp_ambulance:partialRevive")
-                        BodyDamage.shockableRythm = false
-                    end
-                end
-
-            end
-        end
-
-        SaveBodyDamage(GetPlayerServerId(NetworkGetPlayerIndexFromPed(PlayerPedId())), BodyDamage)
     end)
+end
+
+RegisterNetEvent("osp_ambulance:ChockCl")
+AddEventHandler("osp_ambulance:ChockCl", function(currentjoule)
+    joule = tonumber(currentjoule) or 0
+    if BodyDamage.isDead or BodyDamage.inLastStand or BodyDamage.shockableRythm then
+        if (joule > 20) and (joule < 80) then
+            if BodyDamage.cardiacState == 'asystole' then
+                if math.random(1, 2) == 1 then
+                    TriggerEvent("osp_ambulance:partialRevive")
+                end
+            end
+
+            if BodyDamage.cardiacState == 'torsades' then
+                if shockConverts(2) then
+                    BodyDamage.cardiacState = 'NSR'
+                    TriggerEvent("osp_ambulance:partialRevive")
+                else
+                    BodyDamage.cardiacState = 'asystole'
+                end
+            end
+
+            if BodyDamage.shockableRythm then
+                if shockConverts(2) then
+                    BodyDamage.cardiacState = 'NSR'
+                    TriggerEvent("osp_ambulance:partialRevive")
+                    BodyDamage.shockableRythm = false
+                end
+            end
+
+        elseif (joule < 150) and (joule > 80) then
+            if BodyDamage.cardiacState == 'asystole' then
+                if math.random(1, 2) == 1 then
+                    TriggerEvent("osp_ambulance:partialRevive")
+                elseif math.random(1, 2) == 1 then
+                    holdShockedRhythm()
+                else
+                    BodyDamage.cardiacState = 'asystole'
+                end
+            end
+
+            if BodyDamage.cardiacState == 'torsades' then
+                if shockConverts(2) then
+                    BodyDamage.cardiacState = 'NSR'
+                    TriggerEvent("osp_ambulance:partialRevive")
+                else
+                    BodyDamage.cardiacState = 'asystole'
+                end
+            end
+
+            if BodyDamage.shockableRythm then
+                if shockConverts(2) then
+                    BodyDamage.cardiacState = 'NSR'
+                    TriggerEvent("osp_ambulance:partialRevive")
+                    BodyDamage.shockableRythm = false
+                end
+            end
+
+        elseif (joule > 150) then
+            if BodyDamage.cardiacState == 'asystole' then
+                TriggerEvent("osp_ambulance:partialRevive")
+            end
+
+            if BodyDamage.cardiacState == 'vFib' then
+                if shockConverts(2) then
+                    TriggerEvent("osp_ambulance:partialRevive")
+                end
+            end
+
+            if BodyDamage.cardiacState == 'torsades' then
+                if shockConverts(3) then
+                    BodyDamage.cardiacState = 'NSR'
+                    BodyDamage.Pulse = 80
+                else
+                    BodyDamage.Pulse = 0
+                    BodyDamage.cardiacState = 'asystole'
+                end
+            end
+
+            if BodyDamage.shockableRythm then
+                if shockConverts(4) then
+                    BodyDamage.cardiacState = 'NSR'
+                    TriggerEvent("osp_ambulance:partialRevive")
+                    BodyDamage.shockableRythm = false
+                end
+            end
+
+        end
+    end
+
+    SaveBodyDamage(GetPlayerServerId(NetworkGetPlayerIndexFromPed(PlayerPedId())), BodyDamage)
 end)
 
 
@@ -3434,11 +4564,17 @@ CreateThread(function()
 end)
 
 RegisterNetEvent('hospital:client:RespawnAtHospital', function()
-    if GetActiveFramework() == 'qb' or GetActiveFramework() == 'qbox' then
-        if IsHandCuffed() then
+    if GetActiveFramework() == 'qb' then
+        local cuffed = false
+        pcall(function()
+            cuffed = IsHandCuffed()
+        end)
+        if cuffed then
             TriggerEvent("police:client:GetCuffed", -1)
         end
-        TriggerEvent("police:client:DeEscort")
+        pcall(function()
+            TriggerEvent("police:client:DeEscort")
+        end)
     end
 
     -- Override HandleCustomRespawn in this file for fully custom respawn logic.
@@ -3607,20 +4743,17 @@ end
 -- Restoring the player on admin revive
 
 function RestorePlayer(player, skipSave)
+    if AllowMedicalHealthGain then
+        AllowMedicalHealthGain()
+    end
     SetEntityMaxHealth(player, 200)
     SetEntityHealth(player, 200)
     ClearPedBloodDamage(player)
     SetPlayerSprint(PlayerId(), true)
     ResetPedMovementClipset(player, 0.0)
-    if HasWounds() then
-        TriggerServerEvent('hud:server:RelieveStress', 100)
-    end
-
-    -- Always restore needs after an admin revive. Qbox metadata is updated
-    -- server-side by hospital:server:resetHungerThirst, which tuff-hud reads.
+    TriggerServerEvent('hud:server:RelieveStress', 100)
     TriggerServerEvent("hospital:server:resetHungerThirst")
-
-    if GetActiveFramework() == 'qb' or GetActiveFramework() == 'qbox' then
+    if GetActiveFramework() == 'qb' then
         TriggerServerEvent("hospital:server:SetDeathStatus", false)
         TriggerServerEvent("hospital:server:SetLaststandStatus", false)
     end
@@ -3640,13 +4773,20 @@ function RestorePlayer(player, skipSave)
     BodyDamage.oxygenSaturation = 99
     BodyDamage.Temp = 37.0
     BodyDamage.cardiacState = 'NSR'
+    BodyDamage.shockableRythm = false
     BodyDamage.BloodPressure[1] = 120
     BodyDamage.BloodPressure[2] = 80
     BodyDamage.isCarried = false
     BodyDamage.isDead = false
     BodyDamage.inLastStand = false
+    BodyDamage.needsGlucose = false
+    BodyDamage.glucoseCause = ''
     BodyDamage.clothesStripped = false
     BodyDamage.beingPerformedCPROn = false
+    BodyDamage.epiGiven = false
+    BodyDamage.txaUntil = 0
+    BodyDamage.atropineUntil = 0
+    BodyDamage.amiodaroneUntil = 0
     BodyDamage.insurvivable = false
     BodyDamage.BodyPartDamage.Wounds["Rarm"] = {}
     BodyDamage.BodyPartDamage.Wounds["Larm"] = {}
@@ -3743,8 +4883,9 @@ RegisterNetEvent('osp_ambulance:partialRevive', function(bypassInsurvivable)
     else
         -- ClearPedTasksImmediately(PlayerPedId())
     end
-    SetExtraTimecycleModifier("fp_vig_red")
-    SetExtraTimecycleModifierStrength(1.0)
+    if ClearDeathAtmosphere then
+        ClearDeathAtmosphere()
+    end
     SetPedMotionBlur(ply, false)
     ClearExtraTimecycleModifier()
     SendNUIMessage(
@@ -3757,6 +4898,9 @@ RegisterNetEvent('osp_ambulance:partialRevive', function(bypassInsurvivable)
     )
     SetEntityInvincible(ply, false)
     SetEntityMaxHealth(ply, 200)
+    if AllowMedicalHealthGain then
+        AllowMedicalHealthGain()
+    end
     SetEntityHealth(ply, 125)
     if GetActiveFramework() == 'qb' then
         TriggerServerEvent("hospital:server:SetDeathStatus", false)
@@ -3767,7 +4911,11 @@ RegisterNetEvent('osp_ambulance:partialRevive', function(bypassInsurvivable)
     BodyDamage.Conscious = true
     BodyDamage.isDead = false
     BodyDamage.inLastStand = false
+    BodyDamage.needsGlucose = false
+    BodyDamage.glucoseCause = ''
     BodyDamage.cardiacState = 'NSR'
+    BodyDamage.shockableRythm = false
+    BodyDamage.epiGiven = false
     itemsInjected = {}
     BodyDamage.overdose = { active = false, treated = true }
     TriggerEvent('osp_ambulance:overdoseTreatedCl')
@@ -3824,8 +4972,9 @@ RegisterNetEvent('hospital:client:Revive', function(bypassInsurvivable)
     end
     RestorePlayer(ply)
     TriggerEvent('osp_ambulance:restoreStrippedClothesAppearance')
-    SetExtraTimecycleModifier("fp_vig_red")
-    SetExtraTimecycleModifierStrength(1.0)
+    if ClearDeathAtmosphere then
+        ClearDeathAtmosphere()
+    end
     SetPedMotionBlur(ply, false)
     ClearExtraTimecycleModifier()
     SetEntityInvincible(ply, false)
@@ -3908,25 +5057,89 @@ end)
 --     -- FreezeEntityPosition(PlayerPedId(), false)
 -- end)
 
--- RegisterNetEvent('osp_ambulance:painKillers', function()
---     -- FreezeEntityPosition(PlayerPedId(), true)
---     local dict, anim = 'anim@scripted@npc@freemode@ig1_cook_lab@flask_rack@' , 'idle_01'
---     ProgressBar(GetLang().update1.consumePainkillers, 3000, dict, anim)
---     local ped = PlayerPedId()
---     local health = GetEntityHealth(ped)
---     local maxHealth = GetEntityMaxHealth(ped)
---     if maxHealth > health then
---         if health + 10 > maxHealth then
---             SetEntityHealth(ped, maxHealth)
---         else
---             SetEntityHealth(ped, health + 10)
---         end
---     end
---     TriggerServerEvent('hud:server:RelieveStress', 100)
---     BodyDamage.Pain = BodyDamage.Pain/2
---     BodyDamage.hrDecrease = BodyDamage.hrDecrease + 10
---     -- FreezeEntityPosition(PlayerPedId(), false)
--- end)
+local function TakePainkillers()
+    if not BodyDamage then return end
+    if BodyDamage.isDead then
+        SendTextMessage(GetLang().interactions.medicalHeader, GetLang().error.insurvivable_injury or 'You cannot do that right now', 4000, 'error')
+        return
+    end
+
+    local label = GetLang().update1.consumePainkillers or GetLang().progress.taking_painkillers or 'Taking painkillers...'
+    if PlayPillConsumeProgress(label, 2700) == false then
+        return
+    end
+
+    TriggerServerEvent('osp_ambulance:removeItem', 'painkillers', 1)
+
+    local ped = PlayerPedId()
+    local health = GetEntityHealth(ped)
+    local maxHealth = GetEntityMaxHealth(ped)
+    if maxHealth > health then
+        if AllowMedicalHealthGain then
+            AllowMedicalHealthGain()
+        end
+        SetEntityHealth(ped, math.min(maxHealth, health + 10))
+    end
+    pcall(function()
+        TriggerServerEvent('hud:server:RelieveStress', 40)
+    end)
+    BodyDamage.Pain = math.max(0, (tonumber(BodyDamage.Pain) or 0) / 2)
+    BodyDamage.hrDecrease = (tonumber(BodyDamage.hrDecrease) or 0) + 8
+    if updatePulse then
+        updatePulse()
+    end
+    SaveBodyDamage(GetPlayerServerId(NetworkGetPlayerIndexFromPed(PlayerPedId())), BodyDamage)
+end
+
+RegisterNetEvent('osp_ambulance:painKillers', TakePainkillers)
+
+exports('usePainkillers', function()
+    TakePainkillers()
+end)
+
+-- Elastic bandage used on yourself from the inventory: heals 10 HP, a bit at a time
+local SELF_BANDAGE_HEAL = 10
+local SELF_BANDAGE_TICK = 500
+local selfBandaging = false
+
+local function UseElasticBandage()
+    if selfBandaging or not BodyDamage then return end
+    if BodyDamage.isDead then
+        SendTextMessage(GetLang().interactions.medicalHeader, GetLang().error.insurvivable_injury or 'You cannot do that right now', 4000, 'error')
+        return
+    end
+    local ped = PlayerPedId()
+    if GetEntityHealth(ped) >= GetEntityMaxHealth(ped) then
+        SendTextMessage(GetLang().interactions.medicalHeader, 'You are not hurt', 3000, 'error')
+        return
+    end
+
+    selfBandaging = true
+    local label = GetLang().progress.applying_elastic_bandage or 'Applying elastic bandage...'
+    if ProgressBar(label, 5000, 'anim@amb@clubhouse@tutorial@bkr_tut_ig3@', 'machinic_loop_mechandplayer', 49) == false then
+        selfBandaging = false
+        return
+    end
+    TriggerServerEvent('osp_ambulance:removeItem', 'elastic_bandage', 1)
+
+    CreateThread(function()
+        for _ = 1, SELF_BANDAGE_HEAL do
+            ped = PlayerPedId()
+            local health, maxHealth = GetEntityHealth(ped), GetEntityMaxHealth(ped)
+            if (BodyDamage and BodyDamage.isDead) or health <= 0 or health >= maxHealth then break end
+            AllowMedicalHealthGain()
+            SetEntityHealth(ped, health + 1)
+            Wait(SELF_BANDAGE_TICK)
+        end
+        selfBandaging = false
+    end)
+end
+
+RegisterNetEvent('osp_ambulance:useElasticBandage', UseElasticBandage)
+
+exports('useElasticBandage', function()
+    UseElasticBandage()
+end)
 
 
 Weapons = {
@@ -4607,27 +5820,62 @@ function createBypassItemTable()
     if not IsEmsStaff() then return tbl end
     local medicationDataWithoutFunctions = deepCopyWithoutFunctions(Config.Medication)
     for k, v in pairs(medicationDataWithoutFunctions) do
-        table.insert(tbl, {
-            item = v.itemName,
-            amount = 999
-        })
+        if not JobDeniesItem(v.itemName) then
+            table.insert(tbl, {
+                item = v.itemName,
+                amount = 999
+            })
+        end
     end
-    for _, v in pairs(Config.bloodTypes) do
-        table.insert(tbl, {
-            item = 'blood250ml_' .. v.itemName,
-            amount = 999
-        })
-        table.insert(tbl, {
-            item = 'blood500ml_' .. v.itemName,
-            amount = 999
-        })
+    for _, v in pairs(Config.bloodTypes or {}) do
+        if not JobDeniesItem('blood250ml_' .. v.itemName) then
+            table.insert(tbl, {
+                item = 'blood250ml_' .. v.itemName,
+                amount = 999
+            })
+            table.insert(tbl, {
+                item = 'blood500ml_' .. v.itemName,
+                amount = 999
+            })
+        end
     end
     table.insert(tbl, { item = 'bodybag', amount = 999 })
-    table.insert(tbl, { item = 'revivekit', amount = 999 })
+    if not JobDeniesItem('revivekit') then
+        table.insert(tbl, { item = 'revivekit', amount = 999 })
+    end
+    table.insert(tbl, { item = 'bvm', amount = 999 })
     return tbl
 end
 
-RegisterNetEvent('osp_ambulance:usePrescriptionMedication', function(itemName)
+local PrescriptionItemAliases = {
+    coughsyrup = 'cough_syrup',
+    ['cough-syrup'] = 'cough_syrup',
+    cough = 'cough_syrup',
+}
+
+local lastPrescriptionTake = 0
+
+local function ResolvePrescriptionItem(name)
+    if type(name) ~= 'string' or name == '' then return end
+    name = string.lower(name)
+    if PrescriptionItemAliases[name] then
+        return PrescriptionItemAliases[name]
+    end
+    for _, medication in pairs(Config.PrescriptionMedications or {}) do
+        if medication.itemName == name or medication.id == name then
+            return medication.itemName
+        end
+    end
+end
+
+local function TakePrescriptionMedication(rawName)
+    local now = GetGameTimer()
+    if now - lastPrescriptionTake < 4000 then
+        return
+    end
+    lastPrescriptionTake = now
+
+    local itemName = ResolvePrescriptionItem(rawName) or rawName
     local medicationConfig = nil
     for _, medication in pairs(Config.PrescriptionMedications or {}) do
         if medication.itemName == itemName then
@@ -4638,38 +5886,16 @@ RegisterNetEvent('osp_ambulance:usePrescriptionMedication', function(itemName)
 
     if not medicationConfig then return end
 
-    local dict = 'anim@scripted@npc@freemode@ig1_cook_lab@flask_rack@'
-    local anim = 'idle_01'
-
-
-    local playerPed = PlayerPedId()
-    local medProp = medicationConfig.prop or "v_club_vu_pills" -- fallback to pill bottle
-    local bone = 18905 -- hand bone
-    local object = nil
-
-    lib.requestModel(medProp, 1000)
-
-    object = CreateObject(medProp, GetEntityCoords(playerPed), true, true, false)
-    SetEntityCollision(object, false, true)
-    AttachEntityToEntity(object, playerPed, GetPedBoneIndex(PlayerPedId(), 18905), 0.1, 0.0, 0.0, 0.0, 0.0, 0.0, true, true, false, true, 1, true)
-
-    CreateThread(function()
-        Wait(4200)
-        if DoesEntityExist(object) then
-            DeleteObject(object)
+    local label = (GetLang().prescriptions and GetLang().prescriptions.consuming) or 'Taking medication...'
+    if IsPillMedication(itemName) then
+        if PlayPillConsumeProgress(label, 2700) == false then
+            return
         end
-        SetModelAsNoLongerNeeded(medProp)
-    end)
-
-
-    if not ProgressBar(GetLang().prescriptions.consuming, 4000, dict, anim) then
-        if DoesEntityExist(object) then
-            DeleteObject(object)
+    else
+        if ProgressBar(label, 4000) == false then
+            return
         end
-        return
     end
-
-    TriggerServerEvent('osp_ambulance:removeItem', itemName, 1)
 
     SuppressConditionsForMedication(itemName)
 
@@ -4688,6 +5914,15 @@ RegisterNetEvent('osp_ambulance:usePrescriptionMedication', function(itemName)
     SaveBodyDamage(GetPlayerServerId(NetworkGetPlayerIndexFromPed(PlayerPedId())), BodyDamage)
 
     TriggerServerEvent('osp_ambulance:recordDrugUseSv', itemName, 'prescription')
+end
+
+RegisterNetEvent('osp_ambulance:usePrescriptionMedication', function(itemName)
+    TakePrescriptionMedication(itemName)
+end)
+
+exports('usePrescriptionMedication', function(data, slot)
+    local name = (slot and (slot.name or slot.itemName)) or (data and (data.name or data.itemName))
+    TakePrescriptionMedication(name)
 end)
 
 RegisterNetEvent("osp_ambulance:medicationCl")

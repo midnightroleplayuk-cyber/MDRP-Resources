@@ -1,0 +1,30 @@
+.wrapper {
+  background: var(--bg-main);
+  color: var(--text-main);
+  height: 100%;
+  width: 100%;
+  display: flex;
+  overflow: hidden;
+  font-family: var(--font-body);
+}
+
+.mainContent {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  overflow: hidden;
+}
+/* 
+.scrollArea {
+  flex: 1;
+  padding: 12px 24px 12px 24px;
+}
+
+.scrollArea :global(.mantine-ScrollArea-viewport) {
+  overflow-y: auto !important;
+  overflow-x: visible !important;
+}
+
+.scrollArea :global(.mantine-SimpleGrid) {
+  padding-top: 8px;
+} */

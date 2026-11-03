@@ -4,7 +4,7 @@ lua54 'yes'
 
 author 'LGMods'
 description 'LGMods_JamestownEstate'
-version '2.4.0'
+version '2.5.0'
 
 this_is_a_map 'yes'
 
@@ -17,10 +17,11 @@ data_file 'DLC_ITYP_REQUEST' 'stream/jamestown_estate.ytyp'
 data_file 'DLC_ITYP_REQUEST' 'stream/jte_interiors_3.ytyp'
 data_file 'DLC_ITYP_REQUEST' 'stream/jte_interiors_1.ytyp'
 data_file 'DLC_ITYP_REQUEST' 'stream/jte_interiors_2.ytyp'
-data_file 'DLC_ITYP_REQUEST' 'stream/lgmods_signs.ytyp'      -- estate road signs (prop pack, placed by lgmods_signs.ymap)
+data_file 'DLC_ITYP_REQUEST' 'stream/jte_signs.ytyp'        -- estate road signs (static props, placed by jte_signs.ymap)
 
 client_scripts {
     'config.lua',
+    'oneway.lua',
     'client.lua',
     'population.lua',
     'lifts.lua'

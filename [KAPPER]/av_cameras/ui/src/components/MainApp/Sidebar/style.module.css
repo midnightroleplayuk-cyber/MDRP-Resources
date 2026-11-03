@@ -1,0 +1,70 @@
+.sidebar {
+  width: 220px;
+  min-width: 220px;
+  background: var(--bg-panel);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+}
+
+.navItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 4px 10px 12px;
+  border-radius: 4px;
+  color: var(--text-secondary);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 1px;
+  text-transform: capitalize;
+  border: 1px solid transparent;
+  transition: all 0.15s ease;
+  width: 100%;
+  cursor: pointer;
+}
+
+.navItem:hover {
+  background: var(--bg-card-hover);
+  color: var(--text-main);
+}
+
+.navItemName {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 1px;
+  text-transform: capitalize;
+}
+
+.navItemActive {
+  background: var(--accent-dim);
+  color: var(--accent);
+  border-color: rgba(232, 160, 32, 0.2);
+}
+
+.navBadge {
+  margin-left: auto;
+  font-size: 10px;
+  background: var(--tooltip);
+  padding: 1px 6px;
+  border-radius: 2px;
+  color: var(--text-main);
+  font-family: "JetBrains Mono", monospace;
+}
+
+.navBadgeActive {
+  background: rgba(232, 160, 32, 0.2);
+  color: var(--accent);
+}
+
+.addGroupBtn {
+  color: var(--text-dim);
+  transition: all 0.15s ease;
+}
+.addGroupBtn:hover {
+  color: var(--accent);
+  cursor: pointer;
+}

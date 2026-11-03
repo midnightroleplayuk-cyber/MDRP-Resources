@@ -1,0 +1,6 @@
+/* Main editable stylesheet. Keep identity.css for existing server customizations. */
+@import url('./identity.css');
+
+/* The frame owns screen position, including with older customer identity.css files. */
+.player-document-frame .player-document.sky-identity-card { position: relative; }
+[data-if][hidden], [data-if-not][hidden] { display: none !important; }

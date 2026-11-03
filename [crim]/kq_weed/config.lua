@@ -259,15 +259,38 @@ Config.prePlaced = {
 -- We highly recommend adding these items to your shops, heists, robberies etc. instead
 Config.vendors = {
     ["seed_store"] = {
-        coords = vector3(2221.41, 5612.42, 53.68),
-        heading = 80.0,
-        model = "a_m_m_hillbilly_01",
+        coords = vector3(660.75, 1282.48, 359.3),
+        heading = 260.0,
+        model = "g_m_y_salvagoon_01",
         idleAnim = {
-            dict = "timetable@ron@ig_3_couch",
-            anim = "base"
+            dict = "amb@world_human_leaning@male@wall@back@foot_up@idle_a",
+            anim = "idle_a"
         },
         items = {
-            ['kq_weed_seed_og_kush'] = { label = "Weed seed [OG Kush]", price = 100 },
+            ['kq_weed_seed_purple_haze'] = { label = "Weed seed [Purple Haze]", price = 100 },
+            ['watering_can'] = { label = "Watering Can", price = 50 },
+            
+        },
+        blip = {
+            enabled = false,
+
+            label = 'Seed dealer',
+            sprite = 622,
+            color = 62,
+            alpha = 255,
+            scale = 0.7,
+        },
+    },
+        ["seed_store2"] = {
+        coords = vector3(-1146.90, -485.42, 49.15),
+        heading = 250.0,
+        model = "g_m_y_ballasout_01",
+        idleAnim = {
+            dict = "amb@world_human_leaning@male@wall@back@foot_up@idle_a",
+            anim = "idle_a"
+        },
+        items = {
+            ['kq_weed_seed_white_widow'] = { label = "Weed seed [White Widow]", price = 100 },
             ['watering_can'] = { label = "Watering Can", price = 50 },
             
         },
@@ -293,8 +316,8 @@ Config.vendors = {
             ['kq_weed_fertilizer_speed'] = { label = "Fertilizer [Growth speed]", price = 200 },
             ['kq_weed_fertilizer_yield'] = { label = "Fertilizer [Yield amount]", price = 200 },
             ['kq_weed_fertilizer_resistance'] = { label = "Fertilizer [Resistance booster]", price = 200 },
-            ['kq_weed_fertilizer_blackmarket'] = { label = "Fertilizer [Blackmarket]", price = 400 },
-            ['kq_weed_bag_empty'] = { label = "Empty baggie", price = 30, amount = 5 },
+           -- ['kq_weed_fertilizer_blackmarket'] = { label = "Fertilizer [Blackmarket]", price = 400 },
+           -- ['kq_weed_bag_empty'] = { label = "Empty baggie", price = 30, amount = 5 },
         },
         blip = {
             enabled = false,
@@ -317,8 +340,8 @@ Config.vendors = {
         items = {
             ['kq_weed_paper'] = { label = "Rolling paper", price = 15, amount = 5 },
             ['kq_weed_pot'] = { label = "Weed Pot", price = 1000 },
-            ['kq_weed_table'] = { label = "Weed workbench", price = 5000 },
-            ['kq_weed_press'] = { label = "Weed press", price = 15000 },
+           -- ['kq_weed_table'] = { label = "Weed workbench", price = 5000 },
+           -- ['kq_weed_press'] = { label = "Weed press", price = 15000 },
             ['kq_weed_tent'] = { label = "Grow tent", price = 6000 },
             ['kq_weed_watering_system'] = { label = "Automatic watering system", price = 7000 },
         },

@@ -181,23 +181,66 @@ AddEventHandler('osp_ambulance:setItemMetadata', function(slot, info)
     return Inventory[GetInventoryTool()].SetItemMetadata(source, slot, info)
 end)
 
+local function GetQboxAccountMoney(player, account)
+    if not player then return 0 end
+    if player.Functions and player.Functions.GetMoney then
+        return tonumber(player.Functions.GetMoney(account)) or 0
+    end
+    local data = getPlayerData(player)
+    return tonumber(data and data.money and data.money[account]) or 0
+end
+
 function CheckMoney(source)
     local player = GetPlayer(source)
-    local data = getPlayerData(player)
-    return data and data.money and data.money.bank or 0
+    if not player then return 0 end
+    return GetQboxAccountMoney(player, 'bank') + GetQboxAccountMoney(player, 'cash')
 end
 
 function RemoveMoney(source, amount)
+    amount = tonumber(amount) or 0
+    if amount <= 0 then return true end
+
+    local player = GetPlayer(source)
+    if not player then return false end
+
+    local remaining = amount
+    local bank = GetQboxAccountMoney(player, 'bank')
+    local fromBank = math.min(bank, remaining)
+
+    local function take(account, value)
+        if value <= 0 then return end
+        if player.Functions and player.Functions.RemoveMoney then
+            player.Functions.RemoveMoney(account, value, 'osp_ambulance')
+            return
+        end
+        pcall(function()
+            exports.qbx_core:RemoveMoney(source, account, value, 'osp_ambulance')
+        end)
+    end
+
+    take('bank', fromBank)
+    remaining = remaining - fromBank
+    if remaining > 0 then
+        take('cash', remaining)
+    end
+
+    return true
+end
+
+function AddMoney(source, amount)
+    amount = tonumber(amount) or 0
+    if amount <= 0 then return end
+
     local player = GetPlayer(source)
     if not player then return end
 
-    if player.Functions and player.Functions.RemoveMoney then
-        player.Functions.RemoveMoney('bank', tonumber(amount))
+    if player.Functions and player.Functions.AddMoney then
+        player.Functions.AddMoney('bank', amount, 'osp_ambulance_refund')
         return
     end
 
     pcall(function()
-        exports.qbx_core:RemoveMoney(source, 'bank', tonumber(amount), 'osp_ambulance')
+        exports.qbx_core:AddMoney(source, 'bank', amount, 'osp_ambulance_refund')
     end)
 end
 
@@ -304,17 +347,23 @@ RegisterNetEvent('hospital:server:SetLaststandStatus', function(bool)
 end)
 
 RegisterNetEvent('hospital:server:resetHungerThirst', function()
-    setQboxMetadata(source, 'hunger', 100)
-    setQboxMetadata(source, 'thirst', 100)
-    TriggerClientEvent('hud:client:UpdateNeeds', source, 100, 100)
+    local src = source
+    setQboxMetadata(src, 'hunger', 100)
+    setQboxMetadata(src, 'thirst', 100)
+    local playerState = Player(src).state
+    if playerState then
+        playerState:set('hunger', 100, true)
+        playerState:set('thirst', 100, true)
+    end
+    TriggerClientEvent('hud:client:UpdateNeeds', src, 100, 100)
 end)
 
 RegisterNetEvent('osp_ambulance:registerStash', function(stashid)
     return Inventory[GetInventoryTool()].RegisterStash(source, stashid)
 end)
 
-RegisterNetEvent('osp_ambulance:registerBloodstorage', function(stashid)
-    return Inventory[GetInventoryTool()].RegisterBloodStorage(source, stashid)
+RegisterNetEvent('osp_ambulance:registerBloodstorage', function()
+    return Inventory[GetInventoryTool()].RegisterBloodStorage(source, 'hospital_bloodstorage')
 end)
 
 RegisterNetEvent('osp_ambulance:registerMedicalBagStash', function(stashid)

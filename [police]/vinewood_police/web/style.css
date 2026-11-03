@@ -291,3 +291,24 @@ label.check input { width: auto; margin-top: 3px; accent-color: var(--blue); }
   font: 700 14px/1.2 var(--head); letter-spacing: .03em; text-transform: uppercase; color: #ffd5d3;
 }
 @media (prefers-reduced-motion: reduce) { .celltile.buzzing { animation: none; background: #3a1414; } }
+
+/* ---------- Radial menu ---------- */
+.radial { position: fixed; inset: 0; display: grid; place-items: center; z-index: 50; pointer-events: auto; }
+.radial[hidden] { display: none; }
+.radial-ring { position: relative; width: 440px; height: 440px; animation: radialIn .12s ease-out; user-select: none; }
+@keyframes radialIn { from { transform: scale(.92); opacity: 0; } to { transform: none; opacity: 1; } }
+.radial-ring svg { position: absolute; inset: 0; overflow: visible; filter: drop-shadow(0 6px 18px rgba(0,0,0,.45)); }
+.radial-ring .wedge { fill: rgba(16, 17, 19, .74); stroke: rgba(255, 255, 255, .16); stroke-width: 1.5; transition: fill .08s; }
+.radial-ring .wedge.hot { fill: rgba(33, 66, 220, .92); }
+.radial-ring .hub { fill: rgba(16, 17, 19, .86); stroke: rgba(255, 255, 255, .18); stroke-width: 1.5; }
+.radial-ring .hub.hot { fill: rgba(40, 44, 52, .95); }
+.radial-item {
+  position: absolute; transform: translate(-50%, -50%); width: 110px; text-align: center; pointer-events: none;
+  color: #fff; font: 600 14px/1.15 var(--head); letter-spacing: .02em; text-shadow: 0 1px 2px rgba(0,0,0,.6);
+}
+.radial-item i { display: block; font-size: 26px; margin-bottom: 8px; }
+.radial-item .more { font-size: 11px; opacity: .7; margin-top: 3px; }
+.radial-centre { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); text-align: center; color: #fff; pointer-events: none; }
+.radial-centre i { font-size: 30px; display: block; }
+.radial-centre span { display: block; font: 600 12px/1 var(--head); letter-spacing: .08em; text-transform: uppercase; opacity: .75; margin-top: 6px; }
+@media (prefers-reduced-motion: reduce) { .radial-ring { animation: none; } }

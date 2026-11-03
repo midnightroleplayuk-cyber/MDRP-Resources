@@ -1,0 +1,1 @@
+Default UI accent set to purple (#845ef7) for players without a saved accent preference. Existing saved custom accent preferences remain unchanged. Players can continue choosing another accent in the UI. Admin-specific accent settings are not modified.

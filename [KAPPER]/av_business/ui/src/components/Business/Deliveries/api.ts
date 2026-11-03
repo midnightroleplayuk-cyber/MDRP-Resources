@@ -1,0 +1,43 @@
+import { SelectType } from "../../../types/types";
+
+export const ApiSelectedItems: string[] = [
+  "water",
+  "sushi",
+  "donut",
+  "hotdog",
+  "taco",
+  "fries",
+];
+
+export const ApiItemList: SelectType[] = [
+  { value: "water", label: "Water" },
+  { value: "burger", label: "Burger" },
+  { value: "sushi", label: "Sushi" },
+  { value: "coke", label: "Coke" },
+  { value: "sandwich", label: "Sandwich" },
+  { value: "donut", label: "Donut" },
+  { value: "hotdog", label: "Hotdog" },
+  { value: "pizza_slice", label: "Pizza Slice" },
+  { value: "fries", label: "Fries" },
+  { value: "taco", label: "Taco" },
+  { value: "burrito", label: "Burrito" },
+  { value: "coffee", label: "Coffee" },
+  { value: "sprunk", label: "Sprunk" },
+  { value: "e_cola", label: "eCola" },
+  { value: "beer", label: "Beer" },
+  { value: "wine", label: "Wine" },
+  { value: "whiskey", label: "Whiskey" },
+  { value: "vodka", label: "Vodka" },
+  { value: "energy_drink", label: "Energy Drink" },
+  { value: "orange_juice", label: "Orange Juice" },
+  { value: "milkshake", label: "Milkshake" },
+  { value: "chicken_wings", label: "Chicken Wings" },
+  { value: "chicken_nuggets", label: "Chicken Nuggets" },
+  { value: "salad", label: "Salad" },
+  { value: "ice_cream", label: "Ice Cream" },
+  { value: "chocolate_bar", label: "Meteorite Bar" },
+  { value: "chips", label: "P's & Q's" },
+  { value: "beef_jerky", label: "Beef Jerky" },
+  { value: "muffin", label: "Muffin" },
+  { value: "apple", label: "Apple" },
+];
