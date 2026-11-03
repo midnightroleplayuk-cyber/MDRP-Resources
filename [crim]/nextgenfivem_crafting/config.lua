@@ -26,8 +26,8 @@ BenchOptions = {
     pauseCraftingOnDisconnect = true,      -- Pause the crafting process when the player disconnects from the server
     cancelCraftingOnExit = false,          -- Cancel all in-progress crafts and refund ingredients when the player exits the bench (takes precedence over pauseCraftingOnExit)
     disableLevelSystem = false,            -- Disable the levels for the bench
-    queueLimit = 3,                        -- Maximum number of crafts a player can have in queue at the same bench (0 = unlimited)
-    globalQueueLimit = 3,                  -- Maximum number of crafts a player can have in queue across ALL benches (0 = unlimited)
+    queueLimit = 5,                        -- Maximum number of crafts a player can have in queue at the same bench (0 = unlimited)
+    globalQueueLimit = 5,                  -- Maximum number of crafts a player can have in queue across ALL benches (0 = unlimited)
     maxCraftAmount = 0,                    -- Maximum number of items that can be crafted in a single craft operation (0 = unlimited)
     giveXPOnFailure = false,               -- Give XP even when crafting fails
 }
