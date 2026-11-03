@@ -180,11 +180,11 @@ function CreateEnviromentLight(vehicle, entityBone, offsetX, offsetY, offsetZ, r
     local rotX, rotY, rotZ = table.unpack(GetWorldRotationOfEntityBone(vehicle, entityBone))
 
     if colour == 'blue' then
-        DrawSpotLight(coords.x, coords.y, coords.z, somethingelse, 0, 0, 255, 60.0, 1.0, 0.0, radius, 100.0) -- Blue Lights
+        DrawSpotLight(coords.x, coords.y, coords.z, somethingelse, 11, 181, 255, 60.0, 1.0, 0.0, radius, 100.0) -- Blue Lights
     elseif colour == 'red' then
-        DrawSpotLight(coords.x, coords.y, coords.z, somethingelse, 255, 0, 0, 60.0, 1.0, 0.0, radius, 100.0) -- Red Lights
+        DrawSpotLight(coords.x, coords.y, coords.z, somethingelse, 227, 30, 51, 60.0, 1.0, 0.0, radius, 100.0) -- Red Lights
     elseif colour == 'green' then
-        DrawSpotLight(coords.x, coords.y, coords.z, somethingelse, 0, 255, 0, 60.0, 1.0, 0.0, radius, 100.0) -- Green Lights
+        DrawSpotLight(coords.x, coords.y, coords.z, somethingelse, 0, 132, 88, 60.0, 1.0, 0.0, radius, 100.0) -- Green Lights
     elseif colour == 'white' then
         DrawSpotLight(coords.x, coords.y, coords.z, somethingelse, 255, 255, 255, 60.0, 1.0, 0.0, radius, 100.0) -- White Lights
     elseif colour == 'amber' then
