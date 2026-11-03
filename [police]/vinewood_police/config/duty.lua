@@ -8,7 +8,7 @@ Config.Duty = {
     Keybind = '',
 
     -- Sign on only at a station sign-on point (Config.Stations). false = anywhere.
-    SignOnAtStation = true,
+    SignOnAtStation = false,
     -- Sign off only at a station. false = anywhere (recommended: players log off mid-patrol).
     SignOffAtStation = false,
     -- How close to a sign-on point counts as "at" it (metres).
