@@ -157,7 +157,7 @@ Config.Dispatcher = {
     access = {
         jobs = {
             dispatch = 0,           -- a dedicated dispatcher job
-            -- police = 4,          -- e.g. sergeants and above can also run control
+            police = 4,          -- e.g. sergeants and above can also run control
         },
         ace = 'vinewood.dispatch.dispatcher',  -- add_ace group.admin vinewood.dispatch.dispatcher allow
     },
