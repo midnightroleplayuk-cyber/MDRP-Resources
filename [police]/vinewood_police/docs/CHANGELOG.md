@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.14.2
+- Police dog: peds.meta now marks it as a streamed add-on ped (IsStreamedGfx false), which a resource-streamed ped needs for its body to show.
+- When deployed, the dog is made visible and solid, and moved next to you if it appeared under the floor or far away (server-created peds can drop through MLO floors before collision loads).
+- /dogcheck writes every step of the last deploy (model found, loaded, server spawn, dog reached your game, position, visibility, body parts) to the F8 console.
+
 ## 1.14.1
 - Fixed: the dog lead didn't show. GTA's physics rope can fail to appear when tied between two moving peds, so the lead is now drawn: a black strap from the handler's hand to the dog's collar, redrawn every frame from both bones. It sags when slack and tightens when the dog pulls, and everyone within 60 m sees it. Config.Dogs.Lead: Colour and Thickness. Style = 'rope' brings back the physics rope.
 
