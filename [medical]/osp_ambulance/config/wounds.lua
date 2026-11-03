@@ -1,6 +1,14 @@
 Config = Config or {}
 
-Config.DamageRigorousness = 5 -- Amount of hp on a hit before damages gets applied
+Config.DamageRigorousness = 9 -- HP lost on a hit before a wound can apply
+Config.UnarmedDamageModifier = 0.35 -- Fist HP multiplier (1.0 = GTA default). ~0.35 is about 20 punches to laststand.
+Config.SevereWoundDamage = 26 -- Crush, laceration and similar need at least this much HP
+Config.FractureMinDamage = 30 -- Fractures only roll on hits this heavy
+Config.WoundApplyChance = {
+    lightImpact = 52,
+    other = 70,
+    heavyImpact = 78,
+}
 
 Config.Wounds = { -- These are major/critical injuries
     ["abrasion"] = {
@@ -56,7 +64,6 @@ Config.Wounds = { -- These are major/critical injuries
     ["cut"] = {
         name = "cut",
         causes = { 
-            [Config.WeaponClasses['OTHER']] = true,
             [Config.WeaponClasses['EXPLOSIVE']] = true,
             [Config.WeaponClasses['CUTTING']] = true,
         },
@@ -70,7 +77,6 @@ Config.Wounds = { -- These are major/critical injuries
         name = "laceration",
         causes = { 
             [Config.WeaponClasses['HEAVY_IMPACT']] = true,
-            [Config.WeaponClasses['LIGHT_IMPACT']] = true,
         },
         bleeding = 0.05,
         pain = 0.5,
@@ -190,7 +196,7 @@ Config.MinorWounds = { -- These are minor wounds that might happen during soft c
 -- With skipLaststand = true they go straight to stage-2 death instead of laststand.
 -- Add extra entries to rules, or override CustomInsurvivableCheck in client_open.lua.
 Config.InsurvivableInjuries = {
-    enabled = true,
+    enabled = false,
     skipLaststand = true, -- false = laststand as usual, but still unrevivable
 
     -- Named wound lists that rules can reference by string (e.g. wounds = 'bulletWounds')

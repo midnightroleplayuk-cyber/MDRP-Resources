@@ -9,10 +9,10 @@ local function GetAmbulanceJobTable()
     return { 'ambulance' }
 end
 
--- Resource folder may be cd_dispatch or cd_dispatch3d; both use this event.
--- Alerts must be triggered from the client (server->client AddNotification is deprecated on 3D).
+-- Routed through GH_dispatch (our central dispatch resource) instead of cd_dispatch directly.
+-- GH_dispatch:server:notify auto-converts this legacy cd_dispatch-style payload.
 local function CdDispatchAlert(coords, message)
-    TriggerServerEvent('cd_dispatch:AddNotification', {
+    TriggerServerEvent('GH_dispatch:server:notify', {
         job_table = GetAmbulanceJobTable(),
         coords = coords,
         title = 'Ambulance Alert',

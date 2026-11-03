@@ -113,6 +113,24 @@ Config.Medication = { -- lockAccess = true requires an ems job from Config.Jobs
         lockAccess = true,
     },
     {
+        itemName = 'painkillers',
+        type = 'medication',
+        form = 'pill',
+        anim = {
+            name = 'pill',
+            dict = 'mp_suicide',
+        },
+        lang = GetLang().progress.taking_painkillers,
+        langUsed = GetLang().vitals.gave_painkillers,
+        buttonLang = GetLang().buttons.painkillers,
+        time = 3000,
+        removeItem = true,
+        painReduce = 4.0,
+        maxDose = 5,
+        hrDecrease = 8,
+        lockAccess = false,
+    },
+    {
         itemName = 'epinephrine',
         type = 'medication',
         anim = {
@@ -247,6 +265,78 @@ Config.Medication = { -- lockAccess = true requires an ems job from Config.Jobs
                 CancelInfusion('propofol')
             end
         end,
+    },
+    {
+        itemName = 'txa',
+        type = 'medication',
+        anim = {
+            name = 'gang_chatting_idle01',
+            dict = 'anim@heists@narcotics@funding@gang_idle',
+        },
+        lang = GetLang().progress.injected_txa or 'Injecting TXA...',
+        langUsed = GetLang().vitals.injected_txa or 'Injected TXA in the patient',
+        buttonLang = GetLang().buttons.txa or 'Administer TXA',
+        time = 4000,
+        removeItem = true,
+        maxDose = 2,
+        hrIncrease = 0,
+        hrDecrease = 0,
+        duration = 600, -- seconds the reduced bleeding lasts
+        bleedMultiplier = 0.4, -- blood loss is multiplied by this while TXA is active
+        onOverDose = function(self)
+            local ped = PlayerPedId()
+            SetPedToRagdoll(ped, 6000, 6000, 0, false, false, false)
+            ShakeGameplayCam('SMALL_EXPLOSION_SHAKE', 0.4)
+        end,
+        lockAccess = true,
+    },
+    {
+        itemName = 'atropine',
+        type = 'medication',
+        anim = {
+            name = 'gang_chatting_idle01',
+            dict = 'anim@heists@narcotics@funding@gang_idle',
+        },
+        lang = GetLang().progress.injected_atropine or 'Injecting Atropine...',
+        langUsed = GetLang().vitals.injected_atropine or 'Injected atropine in the patient',
+        buttonLang = GetLang().buttons.atropine or 'Administer Atropine',
+        time = 3000,
+        removeItem = true,
+        maxDose = 3,
+        hrIncrease = 0,
+        hrDecrease = 0,
+        duration = 300, -- seconds the heart rate boost lasts
+        heartRateBoost = 15, -- beats per minute added while active
+        opioidReversal = 25, -- removes this much of the slowing caused by morphine and other opioids
+        onOverDose = function(self)
+            BodyDamage.hrIncrease = (tonumber(BodyDamage.hrIncrease) or 0) + 20
+            SetTimeout(300000, function()
+                BodyDamage.hrIncrease = math.max(0, (tonumber(BodyDamage.hrIncrease) or 0) - 20)
+                updatePulse()
+            end)
+        end,
+        lockAccess = true,
+    },
+    {
+        itemName = 'amiodarone',
+        type = 'medication',
+        anim = {
+            name = 'gang_chatting_idle01',
+            dict = 'anim@heists@narcotics@funding@gang_idle',
+        },
+        lang = GetLang().progress.injected_amiodarone or 'Injecting Amiodarone...',
+        langUsed = GetLang().vitals.injected_amiodarone or 'Injected amiodarone in the patient',
+        buttonLang = GetLang().buttons.amiodarone or 'Administer Amiodarone',
+        time = 4000,
+        removeItem = true,
+        maxDose = 2,
+        hrIncrease = 0,
+        hrDecrease = 10,
+        duration = 300, -- seconds the rhythm stabilisation and defib bonus last
+        onOverDose = function(self)
+            BodyDamage.hrDecrease = (tonumber(BodyDamage.hrDecrease) or 0) + 30
+        end,
+        lockAccess = true,
     },
 
 

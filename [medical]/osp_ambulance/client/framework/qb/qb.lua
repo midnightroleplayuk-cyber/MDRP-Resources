@@ -137,9 +137,15 @@ function loadPlayerData()
 
     QBCore.Functions.GetPlayerData(function(PlayerData)
         PlayerJob = PlayerData.job
+        while PlayerJob == nil do
+            Wait(100)
+            PlayerData = QBCore.Functions.GetPlayerData()
+            PlayerJob = PlayerData.job
+        end
+
         onDuty = PlayerData.job.onduty
         SetPedArmour(PlayerPedId(), PlayerData.metadata["armor"])
-        for _,x in pairs(Config.AmbulanceJobs) do
+        for _, x in pairs(Config.AmbulanceJobs) do
             if PlayerJob.name == x and onDuty then
                 TriggerServerEvent("hospital:server:AddDoctor", PlayerJob.name)
             end
@@ -153,9 +159,9 @@ function loadPlayerData()
     Wait(2000)
     local timeLeft = lib.callback.await('osp_ambulance:checkInjuryTime', 1000)
     if timeLeft then
-        if timeLeft?.crutch then
+        if timeLeft.crutch then
             TriggerEvent('osp_ambulance:giveCrutch', timeLeft.time)
-        elseif timeLeft?.WheelChair then
+        elseif timeLeft.WheelChair then
             TriggerEvent('osp_ambulance:giveWheelChair', timeLeft.time)
         end
     end
@@ -280,6 +286,5 @@ RegisterNetEvent('osp_ambulance:bloodstorage', function()
     if not BodyDamage then return end
     if not HasAccess('bloodstorage') then return end
 
-    local stashid = 'bloodstorage_' .. GetPlayerData().citizenid
-    return Inventory[GetInventoryTool()].OpenBloodStorage(stashid)
+    return Inventory[GetInventoryTool()].OpenBloodStorage('hospital_bloodstorage')
 end)

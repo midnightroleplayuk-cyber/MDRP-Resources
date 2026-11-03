@@ -7,10 +7,12 @@ Inventory['ox_inventory'] = {
 
         for _, x in pairs(inventory) do
             table.insert(items, {
+                name = x.name,
                 item = x.name,
                 slot = x.slot,
                 amount = x.count,
-                info = x.metadata or {}
+                info = x.metadata or {},
+                metadata = x.metadata or {},
             })
         end
 
@@ -24,9 +26,10 @@ Inventory['ox_inventory'] = {
     end,
 
     OpenBloodStorage = function(stashid)
-        TriggerServerEvent('osp_ambulance:registerBloodstorage', stashid)
+        stashid = stashid or 'hospital_bloodstorage'
+        TriggerServerEvent('osp_ambulance:registerBloodstorage')
         Wait(100)
-        exports.ox_inventory:openInventory('stash', stashid)
+        exports.ox_inventory:openInventory('stash', { id = stashid, owner = false })
     end,
 
     OpenMedicalBagStash = function(stashid)

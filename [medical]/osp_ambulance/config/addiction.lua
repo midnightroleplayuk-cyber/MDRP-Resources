@@ -1,7 +1,7 @@
 Config = Config or {}
 
 Config.Addiction = {
-    enabled = false,
+    enabled = true,
     checkInterval = 1000,
     notifyOnAddiction = true,
     notifyOnRecovery = true,

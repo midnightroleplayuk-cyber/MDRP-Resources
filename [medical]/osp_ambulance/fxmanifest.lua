@@ -5,7 +5,7 @@ lua54 'yes'
 
 description 'OSP-Development Medical System'
 author 'OSP Development'
-version '2.0.5'
+version '2.0.4'
 
 shared_script {
     '@ox_lib/init.lua',
@@ -29,6 +29,7 @@ client_script {
     'client/dead.lua',
     'client/ecg.lua',
     'client/fractures.lua',
+    'client/glucose.lua',
     'client/incoming.lua',
     'client/insurance.lua',
     'client/job.lua',
@@ -120,5 +121,3 @@ dependencies {
     'oxmysql',
     'ox_lib'
 }
-
-dependency '/assetpacks'

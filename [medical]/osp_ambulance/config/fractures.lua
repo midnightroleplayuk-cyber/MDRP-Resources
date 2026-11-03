@@ -3,25 +3,25 @@ Config = Config or {}
 Config.Fractures = {
     {
         bone = 'Head',
-        chance = 10, -- Chance in % that a fracture is being applied when wounded
+        chance = 9, -- Chance in % that a fracture is being applied when wounded
         causes = { 
             [Config.WeaponClasses['HEAVY_IMPACT']] = true,
             [Config.WeaponClasses['EXPLOSIVE']] = true,
             [Config.WeaponClasses['OTHER']] = true,
             [Config.WeaponClasses['SHOTGUN']] = true,
         },
-        pain = 15.0
+        pain = 13.0
     }, 
     {
         bone = 'Larm',
-        chance = 10,
+        chance = 12,
         causes = { 
             [Config.WeaponClasses['HEAVY_IMPACT']] = true,
             [Config.WeaponClasses['EXPLOSIVE']] = true,
             [Config.WeaponClasses['OTHER']] = true,
             [Config.WeaponClasses['SHOTGUN']] = true,
         },
-        pain = 15.0,
+        pain = 17.0,
         lockSteering = true,
     },
     {
@@ -38,26 +38,26 @@ Config.Fractures = {
     },
     {
         bone = 'Rleg',
-        chance = 10,
+        chance = 11,
         causes = { 
             [Config.WeaponClasses['HEAVY_IMPACT']] = true,
             [Config.WeaponClasses['EXPLOSIVE']] = true,
             [Config.WeaponClasses['OTHER']] = true,
             [Config.WeaponClasses['SHOTGUN']] = true,
         },
-        pain = 15.0,
+        pain = 17.0,
         causeStaggering = true, 
     },
     {
         bone = 'Lleg',
-        chance = 10,
+        chance = 11,
         causes = { 
             [Config.WeaponClasses['HEAVY_IMPACT']] = true,
             [Config.WeaponClasses['EXPLOSIVE']] = true,
             [Config.WeaponClasses['OTHER']] = true,
             [Config.WeaponClasses['SHOTGUN']] = true,
         },
-        pain = 15.0,
+        pain = 17.0,
         causeStaggering = true,
     },
 }

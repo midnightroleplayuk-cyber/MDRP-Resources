@@ -169,20 +169,53 @@ AddEventHandler('osp_ambulance:setItemMetadata', function(slot, info)
     return Inventory[GetInventoryTool()].SetItemMetadata(source, slot, info)
 end)
 
+local function GetEsxAccountMoney(sourcePlayer, account)
+    if not sourcePlayer then return 0 end
+    if account == 'cash' or account == 'money' then
+        if sourcePlayer.getMoney then
+            return tonumber(sourcePlayer.getMoney()) or 0
+        end
+        account = 'money'
+    end
+    if sourcePlayer.getAccount then
+        local data = sourcePlayer.getAccount(account)
+        return tonumber(data and data.money) or 0
+    end
+    return 0
+end
+
 function CheckMoney(source)
-    local src = source
     local sourcePlayer = GetPlayer(source)
-    local currentCash = sourcePlayer.getAccount('bank').money
-    return currentCash
+    if not sourcePlayer then return 0 end
+    return GetEsxAccountMoney(sourcePlayer, 'bank') + GetEsxAccountMoney(sourcePlayer, 'cash')
 end
 
 function RemoveMoney(source, amount)
-    local src = source
-    local sourcePlayer = GetPlayer(src)
-    if sourcePlayer.getMoney() >= amount then
-        sourcePlayer.removeMoney(amount)
-    elseif sourcePlayer.getAccount('bank').money >= amount then
-        sourcePlayer.removeAccountMoney('bank', amount)
+    amount = tonumber(amount) or 0
+    if amount <= 0 then return true end
+
+    local sourcePlayer = GetPlayer(source)
+    if not sourcePlayer then return false end
+
+    local remaining = amount
+    local bank = GetEsxAccountMoney(sourcePlayer, 'bank')
+    local fromBank = math.min(bank, remaining)
+    if fromBank > 0 then
+        sourcePlayer.removeAccountMoney('bank', fromBank)
+        remaining = remaining - fromBank
+    end
+    if remaining > 0 then
+        sourcePlayer.removeMoney(remaining)
+    end
+    return true
+end
+
+function AddMoney(source, amount)
+    amount = tonumber(amount) or 0
+    if amount <= 0 then return end
+    local sourcePlayer = GetPlayer(source)
+    if sourcePlayer then
+        sourcePlayer.addAccountMoney('bank', amount)
     end
 end
 
@@ -329,8 +362,8 @@ RegisterNetEvent('osp_ambulance:registerStash', function(stashid)
     return Inventory[GetInventoryTool()].RegisterStash(source, stashid)
 end)
 
-RegisterNetEvent('osp_ambulance:registerBloodstorage', function(stashid)
-    return Inventory[GetInventoryTool()].RegisterBloodStorage(source, stashid)
+RegisterNetEvent('osp_ambulance:registerBloodstorage', function()
+    return Inventory[GetInventoryTool()].RegisterBloodStorage(source, 'hospital_bloodstorage')
 end)
 
 RegisterNetEvent('osp_ambulance:registerMedicalBagStash', function(stashid)
