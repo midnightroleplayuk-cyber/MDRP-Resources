@@ -54,5 +54,3 @@ escrow_ignore {
     'server/hooks.lua',
     'bridge/*.lua',
 }
-
-dependency '/assetpacks'

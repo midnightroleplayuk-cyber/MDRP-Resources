@@ -484,3 +484,40 @@ RegisterNetEvent('vinewood_police:client:dog:bark', function(c)
     local vol = (Cfg.Bark.Volume or 0.8) * (1.0 - d / range) ^ 1.5
     SendNUIMessage({ type = 'sound', name = Cfg.Bark.Sound, volume = vol })
 end)
+
+---------------------------------------------------------------------------
+-- /dogtest: your dog model and the game's shepherd side by side, in your game only (not networked),
+-- for 20 seconds. Tells a model problem apart from a spawning problem.
+---------------------------------------------------------------------------
+RegisterCommand('dogtest', function()
+    CreateThread(function()
+        local me = PlayerPedId()
+        local made = {}
+        local function one(model, side)
+            local hash = GetHashKey(model)
+            local line = ('[vinewood_police] dogtest %-14s in files %s  '):format(model, tostring(IsModelInCdimage(hash)))
+            if not IsModelInCdimage(hash) then return print(line .. 'not found') end
+            RequestModel(hash)
+            local deadline = GetGameTimer() + 10000
+            while not HasModelLoaded(hash) and GetGameTimer() < deadline do Wait(50) end
+            if not HasModelLoaded(hash) then return print(line .. 'did not load') end
+            local c = GetOffsetFromEntityInWorldCoords(me, side, 2.5, 0.0)
+            local p = CreatePed(28, hash, c.x, c.y, c.z - 0.9, GetEntityHeading(me) + 180.0, false, false)
+            SetModelAsNoLongerNeeded(hash)
+            FreezeEntityPosition(p, true)
+            SetBlockingOfNonTemporaryEvents(p, true)
+            made[#made + 1] = p
+            Wait(500)
+            local mn, mx = GetModelDimensions(hash)
+            print(line .. ('size %.2f x %.2f x %.2f m  visible %s  on screen %s  head parts %d (textures %d)  coat parts %d (textures %d)'):format(
+                mx.x - mn.x, mx.y - mn.y, mx.z - mn.z, tostring(IsEntityVisible(p)), tostring(IsEntityOnScreen(p)),
+                GetNumberOfPedDrawableVariations(p, 0), GetNumberOfPedTextureVariations(p, 0, 0),
+                GetNumberOfPedDrawableVariations(p, 3), GetNumberOfPedTextureVariations(p, 3, 0)))
+        end
+        one(Cfg.Model, -1.0)
+        if Cfg.Model ~= 'a_c_shepherd' then one('a_c_shepherd', 1.0) end
+        VPO.ClientNotify(L('dog_test_shown'), 'inform', 6000)
+        Wait(20000)
+        for _, p in ipairs(made) do if DoesEntityExist(p) then DeleteEntity(p) end end
+    end)
+end, false)

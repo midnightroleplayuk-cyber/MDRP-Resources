@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.15.3
+- /dogtest: shows the dog model and the game's own shepherd side by side, in your game only, for 20 seconds, with their size and parts in F8. It tells a model problem apart from a spawning problem.
+
 ## 1.15.0
 - The police dog model is now its own resource, vinewood_policedog (included). Restarting a resource that carries a ped's metadata while players are connected crashes their game the next time that ped spawns. That's what happened when vinewood_police was restarted for a config change and then /dog was used. Now vinewood_police can be restarted freely. Ensure vinewood_policedog before vinewood_police, and only restart it with a full server restart.
 
