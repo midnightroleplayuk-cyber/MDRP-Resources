@@ -292,6 +292,7 @@ window.addEventListener('message', ({ data }) => {
             break;
         }
         case 'newAlert':
+            if (window.VD_CONSOLE_OPEN) break; // the console shows it instead
             showAlert(data.alert);
             break;
         case 'updateAlert': {

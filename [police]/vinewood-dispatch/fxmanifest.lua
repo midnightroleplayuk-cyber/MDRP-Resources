@@ -4,8 +4,8 @@ lua54 'yes'
 
 name 'vinewood-dispatch'
 author 'Vinewood Studios'
-description 'Police, ambulance and fire dispatch with live units, backup, call updates and callsigns'
-version '1.5.0'
+description 'Police, ambulance and fire dispatch with a control room console, live units, backup, call updates and callsigns'
+version '1.7.0'
 
 shared_scripts {
     '@ox_lib/init.lua',
@@ -17,6 +17,7 @@ client_scripts {
     'client/utils.lua',
     'client/units.lua',
     'client/main.lua',
+    'client/dispatcher.lua',
     'client/detections.lua',
 }
 
@@ -24,6 +25,7 @@ server_scripts {
     'bridge/server.lua',
     'server/callsigns.lua',
     'server/main.lua',
+    'server/dispatcher.lua',
 }
 
 ui_page 'html/index.html'
@@ -32,6 +34,7 @@ files {
     'html/index.html',
     'html/style.css',
     'html/app.js',
+    'html/console.js',
 }
 
 dependencies {

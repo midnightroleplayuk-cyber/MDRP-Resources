@@ -46,6 +46,20 @@ local function getJob(src)
     end
 end
 
+---@return string|nil job, number grade
+function Bridge.GetJobInfo(src)
+    if Bridge.Framework == 'qbx' or Bridge.Framework == 'qb' then
+        local player = getQbPlayer(src)
+        if not player then return end
+        local job = player.PlayerData.job
+        return job.name, tonumber(job.grade and job.grade.level) or 0
+    elseif Bridge.Framework == 'esx' then
+        local xPlayer = ESX.GetPlayerFromId(src)
+        if not xPlayer then return end
+        return xPlayer.job.name, tonumber(xPlayer.job.grade) or 0
+    end
+end
+
 ---@return string|nil service, boolean onDuty
 function Bridge.GetService(src)
     if Bridge.Framework == 'standalone' then

@@ -97,6 +97,14 @@ Config.Talkgroups = {
     },
 }
 
+-- Control room (e.g. vinewood-dispatch): dispatchers call units and move talkgroups from their console,
+-- without carrying a radio. Incoming control calls show this name and number on the unit's terminal.
+Config.Control = {
+    enabled = true,
+    label = 'Control',
+    issi = '0000',
+}
+
 -- Point-to-point (individual) calls between terminals
 Config.PTP = {
     enabled = true,

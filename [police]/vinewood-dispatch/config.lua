@@ -4,7 +4,7 @@ Config.Debug = false
 
 -- 'auto' | 'qbx' | 'qb' | 'esx' | 'standalone'
 -- Standalone uses ace permissions: add_ace group.police vinewood.dispatch.police allow
-Config.Framework = 'qbx'
+Config.Framework = 'auto'
 
 -- 'mi' or 'km'
 Config.Units = 'mi'
@@ -37,19 +37,19 @@ Config.CallsignExports = {
 ---------------------------------------------------------------------
 Config.Services = {
     police = {
-        label = 'Midnight Police Constabulary',
+        label = 'Police',
         colour = '#1b3f9a',           -- Battenburg colour on alert cards
         jobs = { 'police', 'sheriff', 'bcso', 'sasp' },
         requireDuty = true,
     },
     ambulance = {
-        label = 'Midnight Health Service',
+        label = 'Ambulance',
         colour = '#0b7a3e',
         jobs = { 'ambulance', 'ems', 'nbhs' },
         requireDuty = true,
     },
     fire = {
-        label = 'Midnight Fire & Rescue',
+        label = 'Fire',
         colour = '#b8141b',
         jobs = { 'fire', 'firefighter' },
         requireDuty = true,
@@ -69,11 +69,11 @@ Config.Priorities = {
 -- UI / timings
 ---------------------------------------------------------------------
 Config.UI = {
-    position = 'top-left',  -- top-right | top-left | bottom-right | bottom-left
-    duration = 20,           -- seconds an alert stays on screen
+    position = 'top-right',  -- top-right | top-left | bottom-right | bottom-left
+    duration = 30,           -- seconds an alert stays on screen
     maxOnScreen = 4,
     -- grades that stay on screen until you attach, dismiss them or open the log (1 Immediate, 2 Priority, 3 Routine)
-    stickyPriorities = false,
+    stickyPriorities = { 1 },
     -- alerts that time out before you attach are counted as missed, with a reminder on screen until you open the log
     showMissed = true,
 }
@@ -83,8 +83,8 @@ Config.AlertExpiry = 30      -- minutes alerts stay in the server log / history
 Config.HistoryLimit = 50     -- alerts kept in the dispatch log
 
 Config.Keys = {
-    respond = 'G',           -- attach / detach from the latest alert (sets waypoint)
-    history = 'F5',          -- open the dispatch log
+    respond = 'Y',           -- attach / detach from the latest alert (sets waypoint)
+    history = 'F9',          -- open the dispatch log
     dismiss = 'DELETE',      -- clear the newest alert from the screen (it stays in the log)
     panic = '',              -- panic button, unbound by default
 }
@@ -113,10 +113,14 @@ Config.Security = {
 ---------------------------------------------------------------------
 Config.Calls = {
     enabled = true,
-    emergencyCommand = '999',   -- /999 [police|ambulance|fire] message
-    nonEmergencyCommand = '101',-- /101 message (police)
-    cooldown = 30,              -- seconds
-    showCallerName = false,
+    -- One command per service: /999 message, /111 message, /101 message
+    commands = {
+        { command = '999', preset = 'call_999', label = 'Police', sent = 'Your call has been passed to the police.' },
+        { command = '111', preset = 'call_111', label = 'Ambulance', sent = 'Your call has been passed to the ambulance service.' },
+        { command = '101', preset = 'call_101', label = 'Fire', sent = 'Your call has been passed to the fire service.' },
+    },
+    cooldown = 30,              -- seconds between calls (shared across all the numbers)
+    showCallerName = true,
     showCallerNumber = true,    -- QB/Qbox charinfo.phone where available
     requireItem = false,        -- e.g. 'phone' (checked through ox_inventory)
 }
@@ -135,6 +139,49 @@ Config.Backup = {
         routine = { preset = 'backup_routine', label = 'Request routine backup', key = '' },
         urgent = { preset = 'backup_urgent', label = 'Request urgent assistance', key = '' },
         firearms = { preset = 'backup_firearms', label = 'Request firearms support', key = '' },
+    },
+}
+
+---------------------------------------------------------------------
+-- Dispatcher / control room
+-- /dispatcher logs in and opens the console (again to reopen it; log out from the console).
+-- Logged-in dispatchers get every call for the services below, see all units live,
+-- and can create, assign, regrade, update and close calls.
+---------------------------------------------------------------------
+Config.Dispatcher = {
+    enabled = true,
+    command = 'dispatcher',
+    key = '',                       -- optional key to open the console once logged in
+
+    -- who can log in: job name = minimum grade, and/or an ace permission
+    access = {
+        jobs = {
+            dispatch = 0,           -- a dedicated dispatcher job
+            -- police = 4,          -- e.g. sergeants and above can also run control
+        },
+        ace = 'vinewood.dispatch.dispatcher',  -- add_ace group.admin vinewood.dispatch.dispatcher allow
+    },
+
+    services = { 'police', 'ambulance', 'fire' },  -- services a dispatcher covers
+    author = 'Control',             -- how dispatcher updates are signed (plus their callsign if set)
+
+    -- require being at a control room desk to log in (ox_target zones are added automatically)
+    requireLocation = false,
+    locations = {
+        -- { coords = vec3(441.8, -978.9, 30.7), radius = 1.5, label = 'Control room' },
+    },
+
+    unitsInterval = 3000,           -- ms between units board updates
+
+    -- vinewood_radio: move units' talkgroups and make individual calls from the console.
+    -- The dispatcher doesn't need a radio; calls are open mic (just talk) once the unit answers.
+    radio = {
+        enabled = true,
+        resource = 'vinewood_radio',
+    },
+    outcomes = {                    -- quick picks when closing a call
+        'Resolved on scene', 'Arrest made', 'Conveyed to hospital', 'No trace', 'False alarm',
+        'Advice given', 'Handed to another service',
     },
 }
 
@@ -185,7 +232,7 @@ Config.CallUpdates = {
     maxNotes = 20,
     maxLength = 200,
     cooldown = 3,             -- seconds between updates per unit
-    notifyAttached = false,    -- attached units get a notification for each update
+    notifyAttached = true,    -- attached units get a notification for each update
 }
 
 ---------------------------------------------------------------------
@@ -203,7 +250,7 @@ Config.Detections = {
         ignoreSilenced = true,
         ignoredWeapons = {
             'WEAPON_STUNGUN', 'WEAPON_STUNGUN_MP', 'WEAPON_FLAREGUN', 'WEAPON_FIREEXTINGUISHER',
-            'WEAPON_PETROLCAN', 'WEAPON_SNOWBALL', 'WEAPON_BALL', 'WEAPON_FLARE', 'WEAPON_P226', 'WEAPON_SIGMCX',
+            'WEAPON_PETROLCAN', 'WEAPON_SNOWBALL', 'WEAPON_BALL', 'WEAPON_FLARE',
         },
         ignoreZones = {
             { coords = vec3(13.8, -1097.3, 29.8), radius = 25.0 },   -- Ammu-Nation range, Pillbox
@@ -421,16 +468,23 @@ Config.Alerts = {
     call_999 = {
         title = '999 call',
         priority = 1,
-        services = { 'police', 'ambulance', 'fire' },
+        services = { 'police' },
         caller = true,
-        blip = { sprite = 480, colour = 1, scale = 1.0 },
+        blip = { sprite = 480, colour = 3, scale = 1.0 },
+    },
+    call_111 = {
+        title = '111 call',
+        priority = 1,
+        services = { 'ambulance' },
+        caller = true,
+        blip = { sprite = 480, colour = 2, scale = 1.0 },
     },
     call_101 = {
         title = '101 call',
-        priority = 3,
-        services = { 'police' },
+        priority = 1,
+        services = { 'fire' },
         caller = true,
-        blip = { sprite = 480, colour = 3, scale = 0.9 },
+        blip = { sprite = 480, colour = 1, scale = 1.0 },
     },
     person_down = {
         title = 'Person unresponsive',

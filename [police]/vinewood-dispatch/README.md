@@ -22,14 +22,16 @@ Dispatch alerts for police, ambulance and fire. Works with Qbox, QBCore, ESX or 
 | Open dispatch log | F9 | `/dispatch` |
 | Clear newest alert from screen | Delete | `/dispatchdismiss` |
 | Panic button (on duty) | unbound | `/panic` |
-| Emergency call | – | `/999 [police\|ambulance\|fire] message` |
-| Non-emergency call | – | `/101 message` |
+| Call the police | – | `/999 message` |
+| Call an ambulance | – | `/111 message` |
+| Call the fire service | – | `/101 message` |
 
 | Request backup (on duty) | unbound | `/backup [routine\|urgent\|firearms]` |
 | Post a call update | – | `/callupdate [call number] text` or `/cu` |
+| Dispatcher console | – | `/dispatcher` |
 | Set your callsign | – | `/callsign 1A-12`, `/callsign` (dialog), `/callsign clear` |
 
-`/999` with no service named goes to all three.
+Change the numbers, or add more, in `Config.Calls.commands`. Each one points at a preset (`call_999`, `call_111`, `call_101`), which sets the service, grade and blip.
 
 ## Backup requests
 
@@ -46,6 +48,41 @@ On-duty units see each other on the map, coloured by service, with a sprite for 
 ## Call updates
 
 Each call has a number (#12) shown on the card. Units post updates with `/callupdate text` (goes to the call you're attached to) or `/callupdate 12 text`, or type into the box on a call in the F9 log. Everyone on that service sees the updates in the log, the latest one shows on the pop-up, and attached units get a notification.
+
+## Dispatcher console
+
+A dispatcher logs in with `/dispatcher`, or at a control room desk if you set `Config.Dispatcher.locations` (ox_target zones are added automatically). `/dispatcher` again reopens the console; **Log out** is in the console.
+
+Who can log in is set in `Config.Dispatcher.access`: a job and minimum grade (e.g. a `dispatch` job, or police sergeants and above), or the ace `vinewood.dispatch.dispatcher`. Set `requireLocation = true` to only allow logging in at a desk.
+
+While logged in, the dispatcher gets every call for the services in `Config.Dispatcher.services`, sees every unit's live blip, and can:
+
+- **Create calls** at their map waypoint or own position, for any mix of services.
+- **Assign units.** The unit gets a notification and a waypoint (or follows the requesting unit on backup calls).
+- **Stand units down.** The unit is told and their route is cleared.
+- **Regrade** a call (Immediate, Priority, Routine).
+- **Post updates**, signed "Control" plus the dispatcher's callsign.
+- **Close calls** with an outcome. Attached units are told the outcome.
+
+**With vinewood_radio** (`Config.Dispatcher.radio`), the units board also shows each unit's talkgroup and ISSI, and the dispatcher can:
+
+- **Change a unit's talkgroup** with **Channel**, or move every unit on a call at once with **Move attached units to a talkgroup**. Only talkgroups those units are allowed on are offered. The unit's radio switches and shows who moved it.
+- **Call a unit directly** with **Call**. Their radio rings as an individual call from "Control" with the usual PTP tones, and they come off their talkgroup while connected. The dispatcher doesn't need a radio: once answered they just talk (open mic, no push-to-talk). The call bar at the top shows the timer and **Hang up**. `/dispatchhangup` (bindable) also hangs up.
+
+Assignments, stand-downs, regrades and closures are recorded in the call's updates. The units board shows each unit's location, vehicle, whether their lights are on, and whether they're available, on a call or have pressed their panic button. Use the arrow keys to move through calls, and Esc to close the console (you stay logged in and keep getting pop-ups).
+
+```lua
+-- server
+exports['vinewood-dispatch']:IsDispatcher(source)
+exports['vinewood-dispatch']:GetDispatchers()
+exports['vinewood-dispatch']:LogoutDispatcher(source)
+AddEventHandler('vinewood-dispatch:server:dispatcherLogin', function(src) end)
+AddEventHandler('vinewood-dispatch:server:dispatcherLogout', function(src) end)
+AddEventHandler('vinewood-dispatch:server:alertResulted', function(alert, outcome, src) end)
+-- client
+exports['vinewood-dispatch']:IsDispatcher()
+exports['vinewood-dispatch']:OpenConsole()
+```
 
 ## Alerts on screen
 

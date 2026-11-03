@@ -5,7 +5,7 @@ lua54 'yes'
 name 'vinewood_radio'
 author 'Vinewood Studios'
 description 'British-style TETRA emergency services radio (talkgroups, PTP individual calls, emergency button)'
-version '1.0.0'
+version '1.1.0'
 
 shared_scripts {
     '@ox_lib/init.lua',

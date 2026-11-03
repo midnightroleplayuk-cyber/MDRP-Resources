@@ -23,6 +23,39 @@
         </div>
     </div>
 
+    <div id="console" class="hidden" role="dialog" aria-modal="true" aria-labelledby="console-title">
+        <header class="con-head">
+            <div class="con-brand">
+                <span class="con-strip" aria-hidden="true"></span>
+                <h1 id="console-title">Control</h1>
+                <span id="conAuthor" class="sub"></span>
+            </div>
+            <div id="conFilters" class="con-filters" role="group" aria-label="Show calls for"></div>
+            <div id="conCallBar" class="con-callbar hidden" role="status" aria-live="polite"></div>
+            <div class="con-actions">
+                <button type="button" class="btn primary" id="conNew">New call</button>
+                <button type="button" class="btn" id="conHide">Close console</button>
+                <button type="button" class="btn ghost" id="conLogout">Log out</button>
+            </div>
+        </header>
+        <div class="con-body">
+            <section class="con-col con-calls" aria-labelledby="callsTitle">
+                <h2 id="callsTitle">Calls <span id="conCount" class="count"></span></h2>
+                <ul id="conCalls" class="con-list"></ul>
+            </section>
+            <section class="con-col con-detail" aria-label="Selected call">
+                <div id="conDetail"></div>
+            </section>
+            <section class="con-col con-units" aria-labelledby="unitsTitle">
+                <h2 id="unitsTitle">Units <span id="conUnitCount" class="count"></span></h2>
+                <div id="conUnits"></div>
+            </section>
+        </div>
+        <div id="conToast" class="con-toast hidden" role="status"></div>
+        <div id="conModal" class="con-modal hidden"></div>
+    </div>
+
     <script src="app.js"></script>
+    <script src="console.js"></script>
 </body>
 </html>

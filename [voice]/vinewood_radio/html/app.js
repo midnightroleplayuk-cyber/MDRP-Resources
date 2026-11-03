@@ -857,6 +857,16 @@ addEventListener('message', ({ data: msg }) => {
             S.ptp = { state: 'in', peer: d };
             play('PTP', true);
             break;
+        case 'tgForced': {
+            const i = S.flat.findIndex(g => g.id === d.id);
+            if (i === -1) return;
+            clearTimeout(joinTimer);
+            S.tg = S.attached = i;
+            S.attaching = false;
+            play('PTT');
+            toast(`${S.flat[i].name}: moved by ${d.by || 'Control'}`, 2600);
+            break;
+        }
         case 'ptpConnected':
             if (!S.ptp) return;
             stopLoop('PTP');

@@ -141,3 +141,18 @@ Edit `server/hooks.lua` — `Hooks.OnEmergency` receives callsign, ISSI, talkgro
 
 ## Browser preview
 Open `html/index.html` in Chrome to click through the Septra with mock data, or `html/index.html?walkie` for the handheld.
+
+## Control room (vinewood-dispatch)
+
+Dispatchers using the vinewood-dispatch console can move units between talkgroups and make individual calls to them, without carrying a radio. A moved terminal switches straight over and shows "moved by Control". A control call rings like a normal PTP call, showing `Config.Control.label` and `Config.Control.issi`, and takes the unit off their talkgroup while connected (`Config.PTP.leaveTalkgroup`). Set `Config.Control.enabled = false` to turn control calls off.
+
+Server exports used by the console (available to any resource):
+
+```lua
+exports.vinewood_radio:GetUnitTalkgroups(source)           -- folders/groups this terminal may join
+exports.vinewood_radio:SetUnitTalkgroup(source, id, 'Control') -- ok, err ('off' | 'not_permitted')
+exports.vinewood_radio:ControlCall(callerSrc, targetSrc, 'Control') -- callId or false, err ('disabled' | 'busy' | 'unavailable' | 'caller_busy' | 'invalid_caller' | 'invalid_target')
+exports.vinewood_radio:EndCall(source)                     -- hang up whatever call they're in
+AddEventHandler('vinewood_radio:server:controlCallState', function(callId, caller, target, state, reason) end)
+-- state: 'ringing' | 'active' | 'ended' (reason: 'no_answer' | 'rejected' | 'unavailable' | 'ended')
+```
