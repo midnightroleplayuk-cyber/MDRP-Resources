@@ -4,7 +4,7 @@
 Config.Dogs = {
     Command = 'dog',              -- deploy or recall your dog (signed on as Dog section)
     Units = { 'dogs' },
-    Model = 'a_c_shepherd',       -- stream/policedog/ replaces the game's shepherd with the police dog
+    Model = 'vw_policedog',       -- the Vinewood police dog (stream/policedog/). 'a_c_shepherd' = the game's shepherd
     -- Which texture of each part the dog wears (0 = the first: a, 1 = b...). random = true picks
     -- different head and coat textures each time it's deployed.
     Look = {
@@ -26,7 +26,11 @@ Config.Dogs = {
     -- when told to bark at someone, holds its ground beside you. Off the lead it goes up to them and barks.
     Lead = {
         Length = 1.8,             -- metres of lead
-        RopeType = 4,             -- GTA rope style (4 is thin)
+        Style = 'drawn',          -- 'drawn': a strap drawn between hand and collar every frame (reliable);
+                                  -- 'rope': GTA's physics rope (can fail to show on some builds)
+        Colour = { 18, 18, 22 },  -- drawn lead colour (black nylon)
+        Thickness = 0.018,        -- drawn lead width, metres
+        RopeType = 4,             -- GTA rope style, for Style = 'rope' (4 is thin)
         HandBone = 'SKEL_R_Hand',
         CollarBone = 'SKEL_Neck_1',
     },

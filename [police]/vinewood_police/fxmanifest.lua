@@ -5,7 +5,7 @@ lua54 'yes'
 name 'vinewood_police'
 author 'Vinewood Studios'
 description 'Vinewood Police Operations: British police job for Qbox, QBCore and ESX'
-version '1.13.1'
+version '1.14.1'
 
 shared_scripts {
     '@ox_lib/init.lua',
@@ -130,6 +130,9 @@ client_scripts {
 data_file 'DLC_ITYP_REQUEST' 'stream/vinewood_policeprops.ytyp'
 data_file 'DLC_ITYP_REQUEST' 'stream/forensic_tent.ytyp'
 
+-- The police dog (add-on ped vw_policedog, settings copied from the game's German shepherd)
+data_file 'PED_METADATA_FILE' 'data/policedog_peds.meta'
+
 ui_page 'web/index.html'
 
 files {
@@ -139,6 +142,7 @@ files {
     'web/app.js',
     'web/sounds/*.wav',
     'web/sounds/*.mp3',
+    'data/policedog_peds.meta',
     'web/textures/policeline.png',
     'web/fa/css/fa.min.css',
     'web/fa/webfonts/fa-solid-900.woff2',

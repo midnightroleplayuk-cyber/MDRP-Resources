@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.14.1
+- Fixed: the dog lead didn't show. GTA's physics rope can fail to appear when tied between two moving peds, so the lead is now drawn: a black strap from the handler's hand to the dog's collar, redrawn every frame from both bones. It sags when slack and tightens when the dog pulls, and everyone within 60 m sees it. Config.Dogs.Lead: Colour and Thickness. Style = 'rope' brings back the physics rope.
+
+## 1.14.0
+- The police dog is now an add-on ped, vw_policedog, instead of replacing the game's shepherd (which didn't stream reliably: another script streaming a_c_shepherd, or the stock dog already being loaded, won). data/policedog_peds.meta uses the game's own German shepherd settings (movement, capsule, get-ups, navigation, personality), so it behaves exactly like a dog. Pets and ambient shepherds from other scripts are no longer changed.
+- Config.Dogs.Model is now 'vw_policedog'. An older config that still says 'a_c_shepherd' is switched over automatically (set Config.Dogs.KeepStockShepherd = true to keep the plain shepherd).
+
 ## 1.13.1
 - Fixed: "Your dog couldn't be deployed". The dog was created by the handler's game, and servers that block or delay player-made entities (sv_entityLockdown, anti-cheat entity protection, slow OneSync sync) removed it before the server could see it. The server now creates the dog and the handler's game takes control of it, keeping control so the dog doesn't stop following when it streams to another player.
 - The dog model gets up to 20 s to load the first time (with a "Loading your dog..." message), for big custom dogs.

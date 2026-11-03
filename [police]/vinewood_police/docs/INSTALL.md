@@ -61,7 +61,9 @@ The equipment and armoury lists in `config/equipment.lua` use ox_inventory item 
 `stream/` holds the Vinewood props: rigid cuffs, police cone, road closed, accident and checkpoint signs, 30 numbered evidence markers (one shared texture dictionary), and forensic tent, plus the front-cuff pose. Nothing extra to install.
 
 ## The police dog
-`stream/policedog/` **replaces** the game's German shepherd (`a_c_shepherd`). Every shepherd on the server, including pets or ambient dogs from other scripts, will look like the police dog. If you'd rather keep the normal shepherd, delete `stream/policedog/` and the dog uses the game's model.
+The police dog is its own add-on ped, `vw_policedog` (`stream/policedog/` plus `data/policedog_peds.meta`). It doesn't replace the game's German shepherd, so pets and ambient dogs from other scripts are untouched, and nothing else can override it. Its settings are the game's own shepherd's, so it moves and behaves exactly like a dog.
+
+After adding or changing it, **restart the server and reconnect**: new models aren't picked up by restarting the resource.
 
 The dog's textures are large (about 42 MB). Saving them at 2048 or 1024 in a compressed format (DXT1, or DXT5 where transparency is needed) brings the download down a lot.
 
