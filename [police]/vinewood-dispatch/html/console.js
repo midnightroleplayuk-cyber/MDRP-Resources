@@ -582,8 +582,10 @@ window.addEventListener('message', ({ data }) => {
             renderUnits();
             conEl.classList.remove('hidden');
             window.VD_CONSOLE_OPEN = true;
-            // the console replaces the pop-up feed while it's open
+            // the console replaces the pop-up feed while it's open, and everything in it has now been seen
             for (const id of [...live.keys()]) dismiss(id);
+            missed = 0;
+            renderMissed();
             break;
         }
         case 'consoleClose':

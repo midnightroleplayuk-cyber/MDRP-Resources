@@ -71,7 +71,7 @@ While logged in, the dispatcher gets every call for the services in `Config.Disp
 - **Change a unit's talkgroup** with **Channel**, or move every unit on a call at once with **Move attached units to a talkgroup**. Only talkgroups those units are allowed on are offered. The unit's radio switches and shows who moved it.
 - **Call a unit directly** with **Call**. Their radio rings as an individual call from "Control" with the usual PTP tones, and they come off their talkgroup while connected. The dispatcher doesn't need a radio: once answered they just talk (open mic, no push-to-talk). The call bar at the top shows the timer and **Hang up**. `/dispatchhangup` (bindable) also hangs up.
 
-Assignments, stand-downs, regrades and closures are recorded in the call's updates. The units board shows each unit's location, vehicle, whether their lights are on, and whether they're available, on a call or have pressed their panic button. Use the arrow keys to move through calls, and Esc to close the console (you stay logged in and keep getting pop-ups).
+Assignments, stand-downs, regrades and closures are recorded in the call's updates. The units board shows each unit's location, vehicle, whether their lights are on, and whether they're available, on a call or have pressed their panic button. Use the arrow keys to move through calls, and Esc to close the console. You stay logged in and keep getting pop-ups, and the log key (F9) reopens the console. Opening the console clears the missed calls reminder.
 
 ```lua
 -- server

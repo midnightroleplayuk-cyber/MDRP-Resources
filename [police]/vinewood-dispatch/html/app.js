@@ -16,7 +16,7 @@ missedEl.setAttribute('role', 'status');
 
 function renderMissed() {
     if (!cfg.showMissed || missed === 0) { missedEl.classList.add('hidden'); return; }
-    missedEl.innerHTML = `<b>${missed}</b> missed ${missed === 1 ? 'call' : 'calls'}<span class="sub">Press <kbd>${esc(keyLabel(cfg.historyKey))}</kbd> for the log</span>`;
+    missedEl.innerHTML = `<b>${missed}</b> missed ${missed === 1 ? 'call' : 'calls'}<span class="sub">Press <kbd>${esc(keyLabel(cfg.historyKey))}</kbd> for the ${cfg.dispatcher ? 'console' : 'log'}</span>`;
     missedEl.classList.remove('hidden');
 }
 const KEY_LABELS = { DELETE: 'Del', BACK: 'Backspace', RETURN: 'Enter', PAGEUP: 'PgUp', PAGEDOWN: 'PgDn' };
@@ -284,6 +284,10 @@ window.addEventListener('message', ({ data }) => {
             Object.assign(cfg, data.config);
             feed.className = `pos-${cfg.position}`;
             if (!missedEl.isConnected) feed.append(missedEl);
+            renderMissed();
+            break;
+        case 'dispatcherState':
+            cfg.dispatcher = !!data.on;
             renderMissed();
             break;
         case 'dismissNewest': {
