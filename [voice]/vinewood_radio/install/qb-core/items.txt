@@ -1,0 +1,7 @@
+-- Paste these into qb-core/shared/items.lua (inside QBShared.Items = { ... })
+-- Copy the images in ./images to qb-inventory/html/images/ (or your inventory's image folder)
+-- If you run ox_inventory on QBCore/Qbox, use ../ox_inventory/items.txt instead.
+
+radio = { name = 'radio', label = 'Septra Radio', weight = 400, type = 'item', image = 'radio.png', unique = true, useable = true, shouldClose = true, description = 'TETRA terminal. Emergency services only.' },
+walkie = { name = 'walkie', label = 'Handheld Radio', weight = 300, type = 'item', image = 'walkie.png', unique = true, useable = true, shouldClose = true, description = 'Cheap handheld radio. Loud unless you have an earpiece.' },
+earpiece = { name = 'earpiece', label = 'Radio Earpiece', weight = 50, type = 'item', image = 'earpiece.png', unique = false, useable = false, shouldClose = true, description = 'Keeps your handheld radio quiet.' },

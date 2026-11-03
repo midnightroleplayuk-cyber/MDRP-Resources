@@ -1,0 +1,32 @@
+-- Paste these into ox_inventory/data/items.lua (inside the return { ... } table)
+-- Copy the images in ./images to ox_inventory/web/images/
+
+['radio'] = {
+    label = 'Septra Radio',
+    weight = 400,
+    stack = false,
+    close = true,
+    description = 'TETRA terminal. Emergency services only.',
+    client = {
+        export = 'vinewood_radio.useRadio',
+    },
+},
+
+['walkie'] = {
+    label = 'Handheld Radio',
+    weight = 300,
+    stack = false,
+    close = true,
+    description = 'Cheap handheld radio. Loud unless you have an earpiece.',
+    client = {
+        export = 'vinewood_radio.useWalkie',
+    },
+},
+
+['earpiece'] = {
+    label = 'Radio Earpiece',
+    weight = 50,
+    stack = true,
+    close = true,
+    description = 'Keeps your handheld radio quiet.',
+},
