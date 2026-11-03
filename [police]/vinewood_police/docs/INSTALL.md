@@ -63,6 +63,8 @@ The equipment and armoury lists in `config/equipment.lua` use ox_inventory item 
 ## The police dog
 The police dog is its own add-on ped, `vw_policedog` (`stream/policedog/` plus `data/policedog_peds.meta`). It doesn't replace the game's German shepherd, so pets and ambient dogs from other scripts are untouched, and nothing else can override it. Its settings are the game's own shepherd's, so it moves and behaves exactly like a dog.
 
+If you ever replace the dog with a different model, export it from CodeWalker or OpenIV **as** `vw_policedog`. Renaming the files isn't enough: the `.yft` stores the model's name inside it, and a mismatch crashes the game when the dog spawns.
+
 After adding or changing it, **restart the server and reconnect**: new models aren't picked up by restarting the resource.
 
 The dog's textures are large (about 42 MB). Saving them at 2048 or 1024 in a compressed format (DXT1, or DXT5 where transparency is needed) brings the download down a lot.

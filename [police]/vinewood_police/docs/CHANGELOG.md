@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.14.3
+- Fixed: game crash on /dog. The police dog's skeleton (vw_policedog.yft) still had its old internal name (pack:/a_c_shepherd) from before it became an add-on ped, so GTA crashed building it. The name inside the file is now vw_policedog. Nothing else in the model changed.
+
 ## 1.14.2
 - Police dog: peds.meta now marks it as a streamed add-on ped (IsStreamedGfx false), which a resource-streamed ped needs for its body to show.
 - When deployed, the dog is made visible and solid, and moved next to you if it appeared under the floor or far away (server-created peds can drop through MLO floors before collision loads).

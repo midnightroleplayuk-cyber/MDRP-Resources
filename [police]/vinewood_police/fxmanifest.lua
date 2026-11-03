@@ -5,7 +5,7 @@ lua54 'yes'
 name 'vinewood_police'
 author 'Vinewood Studios'
 description 'Vinewood Police Operations: British police job for Qbox, QBCore and ESX'
-version '1.14.2'
+version '1.14.3'
 
 shared_scripts {
     '@ox_lib/init.lua',
