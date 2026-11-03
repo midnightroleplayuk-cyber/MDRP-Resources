@@ -32,6 +32,7 @@ Each is picked up automatically when running, and checked again whenever it star
    ensure ox_target
    ensure vinewood-mdt        # optional
    ensure vinewood-dispatch   # optional
+   ensure vinewood_policedog  # the police dog model
    ensure vinewood_police
    ```
 3. Admin tools (`vpo status`, `vpo locations`, `vpo callouts`...) work for anyone who has **any** of:
@@ -61,13 +62,15 @@ The equipment and armoury lists in `config/equipment.lua` use ox_inventory item 
 `stream/` holds the Vinewood props: rigid cuffs, police cone, road closed, accident and checkpoint signs, 30 numbered evidence markers (one shared texture dictionary), and forensic tent, plus the front-cuff pose. Nothing extra to install.
 
 ## The police dog
-The police dog is its own add-on ped, `vw_policedog` (`stream/policedog/` plus `data/policedog_peds.meta`). It doesn't replace the game's German shepherd, so pets and ambient dogs from other scripts are untouched, and nothing else can override it. Its settings are the game's own shepherd's, so it moves and behaves exactly like a dog.
-
-If you ever replace the dog with a different model, export it from CodeWalker or OpenIV **as** `vw_policedog`. Renaming the files isn't enough: the `.yft` stores the model's name inside it, and a mismatch crashes the game when the dog spawns.
-
-After adding or changing it, **restart the server and reconnect**: new models aren't picked up by restarting the resource.
-
-The dog's textures are large (about 42 MB). Saving them at 2048 or 1024 in a compressed format (DXT1, or DXT5 where transparency is needed) brings the download down a lot.
+The police dog model is its own resource, **`vinewood_policedog`** (in the same download). Add it and ensure it **before** vinewood_police:
+```
+ensure vinewood_policedog
+ensure vinewood_police
+```
+- **Only restart `vinewood_policedog` with a full server restart.** Restarting it while players are connected reloads the dog's ped data and crashes their game the next time a dog spawns. Restarting `vinewood_police` for config changes is safe.
+- The dog is an add-on ped, `vw_policedog`, with the game's own German shepherd settings. Other scripts' shepherds aren't changed.
+- Without the dog resource, set `Config.Dogs.Model = 'a_c_shepherd'` to use the game's shepherd.
+- The dog's textures are large (about 42 MB). Saving them at 2048 or 1024 in a compressed format (DXT1, or DXT5 where transparency is needed) brings the download down a lot.
 
 ## Updating
 If you keep your own `config/` through an update, settings added in the new version are filled in from the defaults, and the console lists which. Copy them into your config to change them.

@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.15.0
+- The police dog model is now its own resource, vinewood_policedog (included). Restarting a resource that carries a ped's metadata while players are connected crashes their game the next time that ped spawns. That's what happened when vinewood_police was restarted for a config change and then /dog was used. Now vinewood_police can be restarted freely. Ensure vinewood_policedog before vinewood_police, and only restart it with a full server restart.
+
 ## 1.14.5
 - Config.Dogs.Model is always used as written. 1.14.0 quietly switched 'a_c_shepherd' to 'vw_policedog' for older configs, which meant choosing the normal shepherd had no effect. (KeepStockShepherd is no longer needed.)
 
