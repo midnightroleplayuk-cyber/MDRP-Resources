@@ -662,6 +662,7 @@ return {
     weight = 10,
     stack = false,
     close = true,
+	consume = 0,          -- REQUIRED: a licence is not used up when shown
     description = 'UK DVLA style photocard driving licence.',
     client = {
         image = 'driving_licence.png',
@@ -674,7 +675,6 @@ return {
         weight = 10,
         stack = false,
         close = true,
-        consume = 0,          -- REQUIRED: a licence is not used up when shown
         consume = 0,          -- REQUIRED: a licence is not used up when shown
         description = 'Provisional entitlement - must be accompanied',
         client = {
@@ -4856,16 +4856,35 @@ return {
 },
 
 ['radio'] = {
-    label = 'Radio',
-    weight = 500,
+    label = 'Septra Radio',
+    weight = 400,
     stack = false,
     close = true,
-    consume = 0,
-    description = 'A Handheld Radio',
+    description = 'TETRA terminal. Emergency services only.',
     client = {
-        event = 'mm_radio:client:use'
+        export = 'vinewood_radio.useRadio',
     },
 },
+
+['walkie'] = {
+    label = 'Handheld Radio',
+    weight = 300,
+    stack = false,
+    close = true,
+    description = 'Cheap handheld radio. Loud unless you have an earpiece.',
+    client = {
+        export = 'vinewood_radio.useWalkie',
+    },
+},
+
+['earpiece'] = {
+    label = 'Radio Earpiece',
+    weight = 50,
+    stack = true,
+    close = true,
+    description = 'Keeps your handheld radio quiet.',
+},
+
 
 -- ─── Money laundering lab equipment ───────────────────────────────────────────
 ['washer_basic'] = {
