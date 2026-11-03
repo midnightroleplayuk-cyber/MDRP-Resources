@@ -12,6 +12,17 @@ return {
             },
         },
     },
+ ['dispatch'] = {
+        label = 'Dispatch',
+        defaultDuty = true,
+        offDutyPay = false,
+        grades = {
+            [0] = {
+                name = 'Control Room Operator',
+                payment = 500
+            },
+        },
+    },
     ['police'] = {
         label = 'Midnight Police Constabulary',
         type = 'leo',
