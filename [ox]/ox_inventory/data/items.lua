@@ -5749,5 +5749,15 @@ return {
         description = 'A Fleeca card linked to a bank account'
     },
 
+    --REX STUFF
+        ['dartboard'] = {
+        label = 'Dartboard',
+        weight = 2500,
+        stack = false,
+        close = true,
+        description = 'Hang it on a wall and challenge the room.',
+        server = { export = 'rex_darts.useItem' },
+    },
+}
 
 }

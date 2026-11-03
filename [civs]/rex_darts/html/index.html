@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Rex Darts</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- Live scoreboard (top right): players and spectators -->
+<section id="board" class="hidden" aria-live="polite">
+  <header class="sb-head">
+    <img class="sb-logo" src="img/logo.png" alt="">
+    <div class="sb-ttl">
+      <div class="sb-mode" id="sbMode"></div>
+      <div class="sb-meta" id="sbMeta"></div>
+    </div>
+    <div class="sb-timer" id="sbTimer"></div>
+  </header>
+  <div class="sb-rows" id="sbRows"></div>
+  <div class="sb-cricket hidden" id="sbCricket"></div>
+  <footer class="sb-foot">
+    <div class="sb-visit">
+      <div class="sb-mini"><svg id="miniBoard" viewBox="-110 -110 220 220" aria-hidden="true"></svg></div>
+      <div class="sb-visit-r">
+        <div class="cap" id="sbTurnLabel"></div>
+        <div class="sb-darts" id="sbDarts"></div>
+        <div class="sb-hint" id="sbHint"></div>
+      </div>
+    </div>
+  </footer>
+</section>
+
+<!-- Aim reticle: screen-space overlay placed on the game's projection of the aim point -->
+<div id="reticle" class="hidden" aria-hidden="true">
+  <div class="rt-ring"><b class="rt-c"></b><i class="rt-t n"></i><i class="rt-t e"></i><i class="rt-t s"></i><i class="rt-t w"></i></div>
+  <div class="rt-dot"></div>
+</div>
+
+<!-- Throw HUD (bottom centre): current thrower only -->
+<section id="hud" class="hidden">
+  <div class="hud-row">
+    <div class="hud-block power">
+      <div class="hud-lbl"><span class="cap" data-l="power"></span><span class="hud-val" id="powerVal">0</span></div>
+      <div class="meter" id="powerMeter"><div class="zone" id="powerZone"></div><div class="fill" id="powerFill"></div><div class="tick" id="powerTick"></div></div>
+    </div>
+    <div class="hud-block focus">
+      <div class="hud-lbl"><span class="cap" data-l="focus"></span><span class="hud-val"></span></div>
+      <div class="meter thin"><div class="fill steady" id="focusFill"></div></div>
+    </div>
+    <div class="hud-block darts">
+      <div class="hud-lbl"><span class="cap" data-l="darts"></span><span class="hud-val" id="dartsVal">3</span></div>
+      <div class="pips" id="dartPips"><i></i><i></i><i></i></div>
+    </div>
+  </div>
+  <div class="hud-keys">
+    <span><kbd id="kAim">Mouse</kbd><i data-l="key_aim"></i></span>
+    <span><kbd id="kThrow">LMB</kbd><i data-l="key_throw"></i></span>
+    <span><kbd id="kFocus">Shift</kbd><i data-l="key_focus"></i></span>
+    <span><kbd id="kCamera">C / V</kbd><i data-l="key_camera"></i><b class="view" id="viewName"></b></span>
+    <span><kbd id="kLeave">Bksp</kbd><i data-l="key_leave"></i></span>
+  </div>
+</section>
+
+<!-- Callouts -->
+<div id="callout" class="hidden"><div class="co-in"><div class="co-over" id="coOver"></div><div class="co-main" id="coMain"></div></div></div>
+
+<!-- Modal: lobby / leaderboard / results -->
+<div id="modal" class="hidden">
+  <div class="window" id="window" role="dialog" aria-modal="true">
+    <header class="win-head">
+      <img class="mark" src="img/logo.png" alt="Rex Studio">
+      <div class="ttl">
+        <div class="over" data-l="lobby_over"></div>
+        <h1 id="winTitle"></h1>
+        <p id="winSub"></p>
+      </div>
+      <nav class="tabs" id="tabs">
+        <button data-tab="play" data-l="tab_play"></button>
+        <button data-tab="leaderboard" data-l="tab_leaderboard"></button>
+      </nav>
+      <button class="x" id="closeBtn" aria-label="Close"><svg viewBox="0 0 16 16"><path d="M3 3l10 10M13 3L3 13" stroke="currentColor" stroke-width="1.6"/></svg></button>
+    </header>
+    <div class="win-body" id="winBody"></div>
+    <footer class="win-foot" id="winFoot"></footer>
+  </div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
