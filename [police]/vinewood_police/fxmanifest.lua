@@ -5,7 +5,7 @@ lua54 'yes'
 name 'vinewood_police'
 author 'Vinewood Studios'
 description 'Vinewood Police Operations: British police job for Qbox, QBCore and ESX'
-version '1.15.0'
+version '1.15.2'
 
 shared_scripts {
     '@ox_lib/init.lua',
@@ -162,5 +162,3 @@ escrow_ignore {
     'client/hooks.lua',
     'install/*.lua',
 }
-
-dependency '/assetpacks'
