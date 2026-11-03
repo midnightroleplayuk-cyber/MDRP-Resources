@@ -64,6 +64,8 @@ While logged in, the dispatcher gets every call for the services in `Config.Disp
 - **Post updates**, signed "Control" plus the dispatcher's callsign.
 - **Close calls** with an outcome. Attached units are told the outcome.
 
+**Map:** when creating a call, choose **Pick on map** to drop a pin anywhere. **Change location** on any open call moves it on the map: its blips move for every unit, the move is recorded in the call's updates, and attached units get a new waypoint and a notification. The map shows open calls and live units, with scroll to zoom and drag to pan, and shows the street name for the pin before you confirm. To use a different map image, see `Config.Dispatcher.map`.
+
 **With vinewood_radio** (`Config.Dispatcher.radio`), the units board also shows each unit's talkgroup and ISSI, and the dispatcher can:
 
 - **Change a unit's talkgroup** with **Channel**, or move every unit on a call at once with **Move attached units to a talkgroup**. Only talkgroups those units are allowed on are offered. The unit's radio switches and shows who moved it.

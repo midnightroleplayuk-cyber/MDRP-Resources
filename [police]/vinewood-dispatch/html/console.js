@@ -11,6 +11,7 @@ const con = {
     fresh: new Set(),    // ids that arrived while open (highlighted until selected)
     pendingSelect: null,
     radio: false,        // vinewood_radio running
+    map: null,           // { image, size, bounds }
     call: null,          // { state, label, target, startedAt }
 };
 window.VD_CONSOLE_OPEN = false;
@@ -180,6 +181,7 @@ function renderDetail(reset = false) {
                 <label class="grade-pick">Grade
                     <select id="detGrade">${con.priorities.map((p) => `<option value="${p.value}" ${p.value === a.priority ? 'selected' : ''}>${esc(p.label)}</option>`).join('')}</select>
                 </label>
+                ${con.map ? '<button type="button" class="btn" data-act="relocate">Change location</button>' : ''}
                 <button type="button" class="btn" data-act="waypoint">Set waypoint</button>
                 <button type="button" class="btn danger" data-act="close">Close call</button>
             </div>
@@ -274,6 +276,18 @@ $c('conDetail').addEventListener('click', async (e) => {
             return r.ok ? conToast(`${unitById(unit)?.label || 'Unit'} assigned.`) : conToast(r.err, true);
         }
         case 'note': return postNote();
+        case 'relocate':
+            return openMapPicker({
+                title: `Move call #${a.id}: ${a.title}`,
+                initial: a.coords,
+                confirm: 'Move call here',
+                onPick: async (coords) => {
+                    const r = await conAction('relocate', { id: a.id, coords });
+                    if (!r.ok) { conToast(r.err, true); return false; }
+                    conToast(`Call #${a.id} moved. Attached units have a new waypoint.`);
+                    return true;
+                },
+            });
         case 'moveAttached':
             return talkgroupPicker((a.attachedUnits || []).map((u) => u.src).filter((s) => unitById(s)?.radio));
     }
@@ -446,10 +460,13 @@ function newCallModal() {
             <fieldset><legend>Services</legend>
                 ${con.services.map((s) => `<label class="check"><input type="checkbox" value="${esc(s.key)}" ${con.filter.has(s.key) && con.filter.size === 1 ? 'checked' : ''}> ${esc(s.label)}</label>`).join('')}
             </fieldset>
-            <fieldset><legend>Location</legend>
-                <label class="check"><input type="radio" name="ncWhere" value="waypoint" checked> My map waypoint</label>
+            <fieldset class="where"><legend>Location</legend>
+                ${con.map ? `<label class="check"><input type="radio" name="ncWhere" value="map" checked> Pick on map</label>` : ''}
+                <label class="check"><input type="radio" name="ncWhere" value="waypoint" ${con.map ? '' : 'checked'}> My map waypoint</label>
                 <label class="check"><input type="radio" name="ncWhere" value="self"> My position</label>
             </fieldset>
+            ${con.map ? `<div class="picked"><span id="ncPicked" class="sub">No location picked yet</span>
+                <button type="button" class="btn tiny" data-nc="map">Open map</button></div>` : ''}
             <p id="ncErr" class="err" role="alert"></p>
             <div class="row end">
                 <button type="button" class="btn" data-nc="cancel">Cancel</button>
@@ -460,6 +477,21 @@ function newCallModal() {
     $c('ncTitle').focus();
 
     m.querySelector('[data-nc="cancel"]').addEventListener('click', closeConModal);
+    let picked = null;
+    const openPicker = () => openMapPicker({
+        title: 'Pick a location for the new call',
+        initial: picked,
+        confirm: 'Use this location',
+        onPick: (coords, where) => {
+            picked = coords;
+            $c('ncPicked').textContent = where || 'Location picked';
+            $c('ncPicked').classList.remove('sub');
+            m.querySelector('input[name="ncWhere"][value="map"]').checked = true;
+            return true;
+        },
+    });
+    m.querySelector('[data-nc="map"]')?.addEventListener('click', openPicker);
+    m.querySelector('input[name="ncWhere"][value="map"]')?.addEventListener('change', () => { if (!picked) openPicker(); });
     $c('ncForm').addEventListener('submit', async (e) => {
         e.preventDefault();
         const services = [...m.querySelectorAll('fieldset input[type="checkbox"]:checked')].map((i) => i.value);
@@ -471,6 +503,10 @@ function newCallModal() {
             services,
             where: m.querySelector('input[name="ncWhere"]:checked').value,
         };
+        if (data.where === 'map') {
+            if (!picked) { $c('ncErr').textContent = 'Pick a location on the map.'; return openPicker(); }
+            data.coords = picked;
+        }
         const err = $c('ncErr');
         if (!data.title) { err.textContent = 'Give the call a title.'; $c('ncTitle').focus(); return; }
         if (!services.length) { err.textContent = 'Choose at least one service.'; return; }
@@ -498,6 +534,7 @@ $c('conLogout').addEventListener('click', () => { hideConsole(); post('consoleLo
 document.addEventListener('keydown', (e) => {
     if (!window.VD_CONSOLE_OPEN) return;
     if (e.key === 'Escape') {
+        if (!$c('conMap').classList.contains('hidden')) return closeMapPicker();
         if (!$c('conModal').classList.contains('hidden')) return closeConModal();
         hideConsole();
         post('consoleClose');
@@ -532,6 +569,7 @@ window.addEventListener('message', ({ data }) => {
             con.outcomes = data.outcomes || [];
             con.priorities = data.priorities || [];
             con.radio = !!data.radio;
+            con.map = data.map || null;
             con.call = data.call ? { ...data.call, startedAt: Date.now() - (data.call.elapsed || 0) * 1000 } : null;
             renderCallBar();
             con.fresh.clear();
@@ -594,3 +632,196 @@ window.addEventListener('message', ({ data }) => {
             break;
     }
 });
+
+
+/* ---------- Map picker ---------- */
+
+const mapState = { scale: 1, tx: 0, ty: 0, fit: 1, pin: null, opts: null, resolveSeq: 0 };
+
+function worldToPx(x, y) {
+    const { size, bounds: b } = con.map;
+    return { px: (x - b.left) / (b.right - b.left) * size, py: (b.top - y) / (b.top - b.bottom) * size };
+}
+function pxToWorld(px, py) {
+    const { size, bounds: b } = con.map;
+    return { x: b.left + px / size * (b.right - b.left), y: b.top - py / size * (b.top - b.bottom) };
+}
+
+function closeMapPicker() {
+    const el = $c('conMap');
+    el.classList.add('hidden');
+    el.innerHTML = '';
+    mapState.opts = null;
+}
+
+function applyMapTransform() {
+    const layer = $c('mapLayer');
+    if (!layer) return;
+    layer.style.transform = `translate(${mapState.tx}px, ${mapState.ty}px) scale(${mapState.scale})`;
+    layer.style.setProperty('--inv', 1 / mapState.scale);
+}
+
+function clampMap() {
+    const view = $c('mapView').getBoundingClientRect();
+    const w = con.map.size * mapState.scale;
+    // keep at least a third of the view covered by map
+    const minX = view.width / 3 - w, maxX = view.width * 2 / 3;
+    const minY = view.height / 3 - w, maxY = view.height * 2 / 3;
+    mapState.tx = Math.min(maxX, Math.max(minX, mapState.tx));
+    mapState.ty = Math.min(maxY, Math.max(minY, mapState.ty));
+}
+
+function zoomAt(factor, cx, cy) {
+    const next = Math.min(mapState.fit * 10, Math.max(mapState.fit, mapState.scale * factor));
+    mapState.tx = cx - (cx - mapState.tx) * (next / mapState.scale);
+    mapState.ty = cy - (cy - mapState.ty) * (next / mapState.scale);
+    mapState.scale = next;
+    clampMap();
+    applyMapTransform();
+}
+
+function centreOn(px, py, scale) {
+    const view = $c('mapView').getBoundingClientRect();
+    mapState.scale = scale;
+    mapState.tx = view.width / 2 - px * scale;
+    mapState.ty = view.height / 2 - py * scale;
+    clampMap();
+    applyMapTransform();
+}
+
+async function placePin(px, py) {
+    const world = pxToWorld(px, py);
+    mapState.pin = world;
+    const pin = $c('mapPin');
+    pin.style.left = `${px}px`;
+    pin.style.top = `${py}px`;
+    pin.classList.remove('hidden');
+    const where = $c('mapWhere');
+    where.innerHTML = `<b>Finding street…</b> <span class="sub">${Math.round(world.x)}, ${Math.round(world.y)}</span>`;
+    $c('mapUse').disabled = false;
+
+    const seq = ++mapState.resolveSeq;
+    let loc = {};
+    try {
+        const res = await fetch(`https://${RESOURCE}/consoleResolve`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json; charset=UTF-8' }, body: JSON.stringify(world),
+        });
+        loc = await res.json();
+    } catch { /* preview in a browser */ }
+    if (seq !== mapState.resolveSeq || !$c('mapWhere')) return;
+    const road = [loc.street, loc.cross].filter(Boolean).join(' / ');
+    mapState.pinLabel = [road, loc.zone].filter(Boolean).join(', ') || 'Unknown location';
+    where.innerHTML = `<b>${esc(mapState.pinLabel)}</b> <span class="sub">${Math.round(world.x)}, ${Math.round(world.y)}</span>`;
+}
+
+function mapMarkers() {
+    const out = [];
+    for (const a of con.alerts.values()) {
+        if (!a.coords) continue;
+        const { px, py } = worldToPx(a.coords.x, a.coords.y);
+        out.push(`<div class="mk mk-call g${Number(a.priority) || 2}" style="left:${px}px;top:${py}px" title="#${a.id} ${esc(a.title)}"><span>#${a.id}</span></div>`);
+    }
+    for (const u of con.units) {
+        if (!u.coords) continue;
+        const { px, py } = worldToPx(u.coords.x, u.coords.y);
+        out.push(`<div class="mk mk-unit ${u.panic ? 'panic' : ''}" style="left:${px}px;top:${py}px;--c:${esc(u.colour)}" title="${esc(u.label)}"><span>${esc(u.label)}</span></div>`);
+    }
+    return out.join('');
+}
+
+function openMapPicker(opts) {
+    if (!con.map) return conToast('The map is turned off in the config.', true);
+    mapState.opts = opts;
+    mapState.pin = null;
+    mapState.pinLabel = null;
+    const el = $c('conMap');
+    el.innerHTML = `
+        <div class="map-panel">
+            <header class="map-head">
+                <div><h2 id="mapTitle">${esc(opts.title || 'Pick a location')}</h2>
+                    <p class="sub">Click the map to place the pin. Scroll to zoom, drag to move around.</p></div>
+                <div class="map-legend"><span class="mk-key mk-call"></span>Calls <span class="mk-key mk-unit"></span>Units</div>
+                <div class="map-zoom" role="group" aria-label="Zoom">
+                    <button type="button" class="btn" data-zoom="in" aria-label="Zoom in">+</button>
+                    <button type="button" class="btn" data-zoom="out" aria-label="Zoom out">&minus;</button>
+                    <button type="button" class="btn" data-zoom="fit">Whole map</button>
+                </div>
+            </header>
+            <div class="map-view" id="mapView">
+                <div class="map-layer" id="mapLayer" style="width:${con.map.size}px;height:${con.map.size}px">
+                    <img src="${esc(con.map.image)}" alt="" draggable="false" width="${con.map.size}" height="${con.map.size}">
+                    ${mapMarkers()}
+                    <div id="mapPin" class="map-pin hidden" aria-hidden="true"></div>
+                </div>
+            </div>
+            <footer class="map-foot">
+                <div id="mapWhere" class="map-where"><span class="sub">No location picked</span></div>
+                <button type="button" class="btn" data-map="cancel">Cancel</button>
+                <button type="button" class="btn primary" id="mapUse" disabled>${esc(opts.confirm || 'Use this location')}</button>
+            </footer>
+        </div>`;
+    el.classList.remove('hidden');
+
+    const view = $c('mapView');
+    const rect = view.getBoundingClientRect();
+    mapState.fit = Math.min(rect.width, rect.height) / con.map.size;
+    if (opts.initial && Number.isFinite(opts.initial.x)) {
+        const { px, py } = worldToPx(opts.initial.x, opts.initial.y);
+        centreOn(px, py, mapState.fit * 3);
+        placePin(px, py);
+    } else {
+        centreOn(con.map.size / 2, con.map.size / 2, mapState.fit);
+    }
+
+    view.addEventListener('wheel', (e) => {
+        e.preventDefault();
+        const r = view.getBoundingClientRect();
+        zoomAt(e.deltaY < 0 ? 1.25 : 0.8, e.clientX - r.left, e.clientY - r.top);
+    }, { passive: false });
+
+    let drag = null;
+    view.addEventListener('pointerdown', (e) => {
+        drag = { x: e.clientX, y: e.clientY, tx: mapState.tx, ty: mapState.ty, moved: false };
+        view.setPointerCapture(e.pointerId);
+    });
+    view.addEventListener('pointermove', (e) => {
+        if (!drag) return;
+        const dx = e.clientX - drag.x, dy = e.clientY - drag.y;
+        if (!drag.moved && Math.hypot(dx, dy) < 4) return;
+        drag.moved = true;
+        view.classList.add('dragging');
+        mapState.tx = drag.tx + dx;
+        mapState.ty = drag.ty + dy;
+        clampMap();
+        applyMapTransform();
+    });
+    view.addEventListener('pointerup', (e) => {
+        if (!drag) return;
+        const wasDrag = drag.moved;
+        drag = null;
+        view.classList.remove('dragging');
+        if (wasDrag) return;
+        const r = view.getBoundingClientRect();
+        const px = (e.clientX - r.left - mapState.tx) / mapState.scale;
+        const py = (e.clientY - r.top - mapState.ty) / mapState.scale;
+        if (px < 0 || py < 0 || px > con.map.size || py > con.map.size) return;
+        placePin(px, py);
+    });
+
+    el.querySelector('.map-zoom').addEventListener('click', (e) => {
+        const b = e.target.closest('[data-zoom]');
+        if (!b) return;
+        const r = view.getBoundingClientRect();
+        if (b.dataset.zoom === 'fit') return centreOn(con.map.size / 2, con.map.size / 2, mapState.fit);
+        zoomAt(b.dataset.zoom === 'in' ? 1.5 : 1 / 1.5, r.width / 2, r.height / 2);
+    });
+    el.querySelector('[data-map="cancel"]').addEventListener('click', closeMapPicker);
+    $c('mapUse').addEventListener('click', async () => {
+        if (!mapState.pin) return;
+        const btn = $c('mapUse');
+        btn.disabled = true;
+        const done = await opts.onPick({ x: mapState.pin.x, y: mapState.pin.y }, mapState.pinLabel);
+        if (done !== false) closeMapPicker(); else btn.disabled = false;
+    });
+    $c('mapUse').focus();
+}

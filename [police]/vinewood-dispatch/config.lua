@@ -173,6 +173,16 @@ Config.Dispatcher = {
 
     unitsInterval = 3000,           -- ms between units board updates
 
+    -- Map in the console (pick a location for a new call, or move an existing one).
+    -- To use your own map image: put it in html/img/, set image and size, and set bounds to the
+    -- world coordinates at the image's left/right/top/bottom edges.
+    map = {
+        enabled = true,
+        image = 'img/map.jpg',
+        size = 2048,
+        bounds = { left = -5694.8, right = 6761.7, top = 8390.8, bottom = -4065.8 },
+    },
+
     -- vinewood_radio: move units' talkgroups and make individual calls from the console.
     -- The dispatcher doesn't need a radio; calls are open mic (just talk) once the unit answers.
     radio = {
