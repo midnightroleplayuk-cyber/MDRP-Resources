@@ -6,7 +6,7 @@ Config.Ranks = {
     { id = 'student', label = 'Student Officer',           short = 'SPC',    level = 1 },
     { id = 'pc',      label = 'Police Constable',          short = 'PC',     level = 2 },
     { id = 'tase',    label = 'Taser Officer',             short = 'TASE',   level = 3 },
-    { id = 'traffic', label = 'Traffic Officer',           short = 'RPU',    level = 4 },
+    { id = 'rpu', label = 'Traffic Officer',           short = 'RPU',    level = 4 },
     { id = 'cid',     label = 'CID',                       short = 'CID',    level = 5 },
     { id = 'arv',     label = 'Armed Response',            short = 'ARV',    level = 6 },
     { id = 'ps',      label = 'Police Sergeant',           short = 'PS',     level = 7 },
