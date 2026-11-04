@@ -44,6 +44,54 @@ Config.Carriers = {
 }
 
 ---------------------------------------------------------------------------
+-- GoodCiv training (quiz at the sign-up NPC before a player can go on duty)
+---------------------------------------------------------------------------
+-- Players talk to the sign-up NPC (hf1_npcs, target event: goodciv:client:toggleCarrier).
+-- Not certified yet -> they take the quiz. Pass -> certified for good and put on duty.
+-- Certified -> the NPC (or /goodciv) puts them on / off duty.
+Config.Training = {
+    Enabled = true,
+    -- Correct answers needed to pass (out of #Questions).
+    PassMark = 3,
+    -- Seconds a player must wait after failing before trying again.
+    RetryCooldown = 300,
+    -- answer = the number of the correct option (1 = first option).
+    -- Answers are checked on the server and never sent to players.
+    Questions = {
+        {
+            question = 'You find someone unresponsive and not breathing normally. What do you do first?',
+            options = {
+                'Put them in the recovery position and wait',
+                'Call for help and start CPR',
+                'Give them some water',
+                'Leave them and look for a medic',
+            },
+            answer = 2,
+        },
+        {
+            question = 'How fast should you do chest compressions during CPR?',
+            options = {
+                '30 to 50 per minute',
+                '60 to 80 per minute',
+                '100 to 120 per minute',
+                '150 to 180 per minute',
+            },
+            answer = 3,
+        },
+        {
+            question = 'Someone is bleeding heavily from their leg and it will not stop. What should you do?',
+            options = {
+                'Wash the wound with water',
+                'Remove their clothing and leave it uncovered',
+                'Apply a tourniquet above the wound',
+                'Ask them to walk it off',
+            },
+            answer = 3,
+        },
+    },
+}
+
+---------------------------------------------------------------------------
 -- Sign-up peds (talk to one of these to sign up / sign off as a carrier)
 ---------------------------------------------------------------------------
 Config.SignupPeds = {

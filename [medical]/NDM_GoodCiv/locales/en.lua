@@ -6,6 +6,15 @@ Locales.en = {
     carrier_blocked_job = 'Emergency services can\'t sign up as GoodCiv carriers.',
     carrier_no_item = 'You need a %s to sign up as a GoodCiv carrier.',
     carrier_no_perm = 'You are not certified to be a GoodCiv carrier.',
+    carrier_not_certified = 'You need to pass the GoodCiv training at the volunteer desk first.',
+
+    training_title = 'GoodCiv volunteer training',
+    training_intro = 'GoodCiv volunteers help people in life-threatening emergencies when no medics are available.\n\nAnswer %s quick first aid questions. You need %s correct to pass.',
+    training_start = 'Start',
+    training_cancel = 'Not now',
+    training_passed = 'You passed the GoodCiv training (%s/%s). Welcome aboard!',
+    training_failed = 'You got %s/%s. You need %s to pass. Try again in %s minute(s).',
+    training_cooldown = 'You can retake the GoodCiv training in %s minute(s).',
 
     medic_requested = 'Your call has been passed to emergency services.',
     medic_requested_goodciv = 'No medics are available. Nearby GoodCiv volunteers have been alerted.',

@@ -8,6 +8,7 @@ description 'GoodCiv: civilian first-responder volunteers who answer life-threat
 version '1.0.0'
 
 shared_scripts {
+    '@ox_lib/init.lua',
     'config.lua',
     'locales/en.lua',
     'shared/utils.lua',
@@ -20,6 +21,11 @@ client_scripts {
     'client/responder.lua',
     'client/treatment.lua',
     'client/signup.lua',
+    'client/training.lua',
+}
+
+dependencies {
+    'ox_lib',
 }
 
 server_scripts {
