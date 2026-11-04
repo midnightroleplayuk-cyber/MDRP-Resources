@@ -322,11 +322,42 @@ if IsDuplicityVersion() then
         return p.getMoney and p.getMoney() or 0
     end
 
+    -- Native QBox Checking account: AV Banking is the sole bank-money writer.
+    -- Do not also call qbx_core AddMoney/RemoveMoney for bank transactions.
+    local function avNativeChecking(src)
+        if not Bridge.isQBX or GetResourceState('av_banking') ~= 'started' then return nil end
+        local p = Bridge:GetPlayer(src)
+        local citizenid = p and p.PlayerData and p.PlayerData.citizenid
+        if not citizenid then return nil end
+        return MySQL.scalar.await([[SELECT account_number FROM av_banking_accounts
+            WHERE owner = ? AND type = 'personal' AND native = 1
+            ORDER BY id ASC LIMIT 1]], { citizenid })
+    end
+
+    local function avPersonalMove(src, amount, credit)
+        local accountNumber = avNativeChecking(src)
+        if not accountNumber then
+            print(('[apex_dealerships] AV native Checking account missing for source %s; bank payment blocked'):format(src))
+            return false
+        end
+        local exportName = credit and 'addAccountMoney' or 'removeAccountMoney'
+        local description = credit and 'Apex Dealerships - vehicle payment/refund credit'
+                                   or 'Apex Dealerships - vehicle purchase/payment'
+        local ok, result = pcall(function()
+            return exports['av_banking'][exportName](exports['av_banking'], accountNumber, amount, description)
+        end)
+        if not ok then
+            print(('[apex_dealerships] AV Banking %s failed: %s'):format(exportName, tostring(result)))
+        end
+        return ok and result == true
+    end
+
     function Bridge:AddMoney(src, account, amount)
         local p = self:GetPlayer(src)
         if not p then return false end
         amount = math.floor(tonumber(amount) or 0)
         if amount <= 0 then return false end
+        if self.isQBX and account == 'bank' then return avPersonalMove(src, amount, true) end
         if self.isQB then return p.Functions.AddMoney(account, amount, 'apex_dealerships') end
         return esxApplyDelta(p, account, amount)
     end
@@ -337,6 +368,7 @@ if IsDuplicityVersion() then
         amount = math.floor(tonumber(amount) or 0)
         if amount <= 0 then return false end
         if self:GetMoney(src, account) < amount then return false end
+        if self.isQBX and account == 'bank' then return avPersonalMove(src, amount, false) end
         if self.isQB then return p.Functions.RemoveMoney(account, amount, 'apex_dealerships') end
         return esxApplyDelta(p, account, -amount)
     end
@@ -564,6 +596,11 @@ if IsDuplicityVersion() then
 
     function Bridge:GetSocietyMoney(job, src)
         if self.isQB then
+            if provider('av_banking') then
+                local ok, balance = pcall(function() return exports['av_banking']:getSocietyMoney(job) end)
+                if ok and balance ~= false then return tonumber(balance) end
+                return nil
+            end
             if provider('LGMods_Banking') then
                 return lgmodsBalance(job, src)
             end
@@ -600,6 +637,12 @@ if IsDuplicityVersion() then
         amount = math.floor(tonumber(amount) or 0)
         if amount <= 0 then return false end
         if self.isQB then
+            if provider('av_banking') then
+                local ok, result = pcall(function()
+                    return exports['av_banking']:addSocietyMoney(job, amount, 'Apex Dealerships', 'Dealership funds received')
+                end)
+                return ok and result == true
+            end
             if provider('LGMods_Banking') then
                 local playerId = lgmodsAnySource(src)
                 if not playerId then return false end
@@ -635,6 +678,13 @@ if IsDuplicityVersion() then
     function Bridge:RemoveSocietyMoney(job, amount, src)
         amount = math.floor(tonumber(amount) or 0)
         if amount <= 0 then return false end
+
+        if self.isQB and provider('av_banking') then
+            local ok, result = pcall(function()
+                return exports['av_banking']:removeSocietyMoney(job, amount, 'Apex Dealerships', 'Dealership funds paid')
+            end)
+            return ok and result == true
+        end
 
         if self.isQB and provider('LGMods_Banking') then
             local playerId = lgmodsJobSource(job, src)
@@ -682,10 +732,10 @@ if IsDuplicityVersion() then
     CreateThread(function()
         Wait(3000)
         if not Bridge.isQB then return end
-        if provider('LGMods_Banking') or provider('qb-banking') or provider('qb-management')
+        if provider('av_banking') or provider('LGMods_Banking') or provider('qb-banking') or provider('qb-management')
             or provider('okokBanking') or provider('Renewed-Banking') then return end
         print('^3[apex_dealerships]^0 no society banking resource detected ' ..
-            '(LGMods_Banking / qb-banking / qb-management / okokBanking / Renewed-Banking). ' ..
+            '(av_banking / LGMods_Banking / qb-banking / qb-management / okokBanking / Renewed-Banking). ' ..
             'Business funds will use this resource\'s internal wallet.')
     end)
 

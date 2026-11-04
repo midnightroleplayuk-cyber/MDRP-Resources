@@ -247,9 +247,7 @@ local function payout(src, amount)
     amount = math.floor(math.min(tonumber(amount) or 0, tonumber(Config.MaximumTotalWin) or Config.MaximumWin))
     if amount <= 0 then return false end
 
-    -- LGMods_Banking's public store page does not document a player-credit export.
-    -- On Qbox its personal bank is framework-backed, so qbx_core bank money is the
-    -- safe integration path and is reflected by LGMods_Banking.
+
     return exports.qbx_core:AddMoney(src, Config.PayoutAccount, amount, 'scratchcard-win') == true
 end
 

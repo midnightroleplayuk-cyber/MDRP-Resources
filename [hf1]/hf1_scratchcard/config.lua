@@ -11,7 +11,7 @@ Config.PurchaseLimitWindowSeconds = 24 * 60 * 60
 Config.PurchaseLimitFile = 'purchase_limits.json'
 Config.PurchaseLimitMessage = 'Sorry, we are out of stock, please visit tomorrow.'
 Config.PaymentAccount = 'cash'
-Config.PayoutAccount = 'bank' -- Recommended with LGMods_Banking/Qbox.
+Config.PayoutAccount = 'bank' -- Recommended with Qbox.
 Config.TargetDistance = 2.0
 Config.PlaceDistance = 2.0
 Config.ClaimDistance = 3.0 -- server-side anti-event-abuse distance check
@@ -54,10 +54,7 @@ Config.BonusSymbol = '👑'
 Config.LosingBonusSymbols = { 'ruby.png', 'goldkey.png', 'necklace.png', 'pocketwatch.png', 'goldcup.png', 'bag.png', 'vault.png', 'camera.png', 'cloud.png', 'phone.png' }
 Config.DisplayAmounts = { 10, 20, 50, 100, 200, 250, 500, 1000, 2500, 5000, 10000 }
 
--- LGMods_Banking on Qbox uses the player's framework bank balance, so bank payouts
--- are made through qbx_core. This keeps the money visible to LGMods_Banking while
--- avoiding reliance on undocumented/private LGMods exports.
-Config.Banking = 'auto' -- 'auto', 'qbox', or 'lgmods'
+Config.Banking = 'qbox' -- 'auto', 'qbox', or 'lgmods'
 
 -- Stand persistence is database-backed. The table is created automatically via oxmysql.
 Config.PersistStands = true
