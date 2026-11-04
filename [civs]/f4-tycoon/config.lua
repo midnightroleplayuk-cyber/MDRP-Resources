@@ -6,7 +6,7 @@ Config.Debug = false
 
 -- Money is only used for the optional bets.
 -- 'auto' | 'qbx' | 'qb' | 'esx' | 'standalone'  (standalone = no bets, the game itself works everywhere)
-Config.Framework = 'auto'
+Config.Framework = 'qbx'
 
 -- ============================================================
 -- TABLES
@@ -150,14 +150,14 @@ Config.Bet = {
 -- ============================================================
 Config.Bots = {
     enabled = true,
-    names = { 'Bot Kemal', 'Bot Elif', 'Bot Mert', 'Bot Zeynep', 'Bot Arda', 'Bot Selin' },
+    names = { 'Shaun', 'Keith', 'Charlie', 'James', 'Paddy', 'Michael' },
     peds = { 'a_m_y_business_01', 'a_f_y_business_02', 'a_m_m_business_01', 'a_f_y_hipster_01' },
     thinkMin = 700,               -- ms a bot "thinks" before each decision
     thinkMax = 1700,
     minReserve = 150000,          -- cash a bot keeps at least (more when expensive spaces lie ahead)
 }
 
-Config.Currency = '$'
+Config.Currency = '£'
 
 Config.Camera = {
     fov = 48.0,
