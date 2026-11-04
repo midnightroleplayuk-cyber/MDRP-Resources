@@ -3,10 +3,10 @@
 Locales = Locales or {}
 Locales.en = {
     -- world
-    prompt_sit = 'Press ~INPUT_PICKUP~ to sit at the F4 Tycoon table',
+    prompt_sit = 'Press ~INPUT_PICKUP~ to sit at the Midnightopoly table',
     prompt_sit_plain = 'Sit at the table',
     prompt_full = 'This seat is taken',
-    blip = 'F4 Tycoon',
+    blip = 'Midnightopoly',
 
     -- notifications
     raw = '%1',
@@ -32,9 +32,9 @@ Locales.en = {
     admin_removed = 'Table %s removed',
 
     -- game log
-    log_start = 'F4 City opens for business. Good luck!',
+    log_start = 'Midnightopoly Begins! Good luck!',
     log_winner = '%1 wins the game! %2',
-    log_win_prestige = '%1 is the most respected tycoon in F4 City!',
+    log_win_prestige = '%1 is the most respected player in Midnightopoly!',
     log_win_wealth = '%1 reached the wealth target!',
     log_roll = '%1 rolled %2 + %3',
     log_roll_double = '%1 rolled a double %2 + %3',
@@ -102,7 +102,7 @@ Locales.en = {
     card_n_tourism = 'Tourist season: collect {amount} for every landmark you own.',
 
     -- ui
-    ui_title = 'F4 TYCOON',
+    ui_title = 'MIDNIGHTOPOLY',
     ui_lobby = 'Lobby',
     ui_seat = 'Seat %1',
     ui_empty_seat = 'Empty seat',
@@ -311,7 +311,7 @@ Locales.en = {
     ui_bankrupt_confirm = 'Your cash goes to the creditor, your spaces go back to the bank and you are out of the game.',
 
     -- map
-    ui_map_title = 'F4 City',
+    ui_map_title = 'Midnightopoly Map',
     ui_map_sub = 'Who owns what, and how close everyone is to winning',
     ui_free = 'For sale',
 
