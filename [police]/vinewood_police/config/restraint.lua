@@ -42,7 +42,9 @@ Config.Restraint = {
         Officer = { dict = 'mp_arresting', clip = 'a_uncuff', flag = 49 },
         Suspect = nil, -- turns to face the officer
         -- Vinewood front-cuff pose and rigid cuffs (stream/)
-        Idle = { dict = 'anim@policearrest', clip = 'frontcuff_speed', flag = 49 },
+        -- The original front-cuff pose (stream/anim_vinewoodpoliceinteration.ycd). anim@policearrest has a
+        -- frontcuff_speed too, but switch to it only once that clip has been re-exported correctly.
+        Idle = { dict = 'anim_vinewoodpoliceinteration', clip = 'frontcuff_speed', flag = 49 },
         Prop = {
             model = 'ukpolice_cuffs', bone = 57005,
             offset = vec3(0.020, -0.082, -0.004), rot = vec3(114.5, 44.3, -42.0),
@@ -67,8 +69,10 @@ Config.Restraint = {
         rot = vec3(0.0, 0.0, 0.0),
         vertex = 2,
         keepBone = false,
-        -- The officer's escorting animation (upper body, so they can walk). false = none.
-        OfficerAnim = { dict = 'anim@policearrest', clip = 'escorting', flag = 49 },
+        -- The officer's escorting animation (upper body, so they can walk). Off until the escorting clip in
+        -- anim@policearrest.ycd stops crashing the game when blended with walking. To try it:
+        -- OfficerAnim = { dict = 'anim@policearrest', clip = 'escorting', flag = 49 },
+        OfficerAnim = false,
     },
     -- Key to let go of the person you're escorting (players can rebind it in GTA settings)
     LetGoKey = 'G',

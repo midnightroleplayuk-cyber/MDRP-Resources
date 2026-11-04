@@ -1,11 +1,11 @@
 Locales = Locales or {}
 
 Locales.en = {
-    carrier_on = 'You are now a GoodCiv carrier. You will be alerted to emergencies when no medics are available.',
-    carrier_off = 'You are no longer a GoodCiv carrier.',
+    carrier_on = 'You are now a GoodCiv Volunteer. You will be alerted to emergencies when no medics are available.',
+    carrier_off = 'You are no longer a GoodCiv Volunteer.',
     carrier_blocked_job = 'Emergency services can\'t sign up as GoodCiv carriers.',
-    carrier_no_item = 'You need a %s to sign up as a GoodCiv carrier.',
-    carrier_no_perm = 'You are not certified to be a GoodCiv carrier.',
+    carrier_no_item = 'You need a %s to sign up as a GoodCiv Volunteer.',
+    carrier_no_perm = 'You are not certified to be a GoodCiv Volunteer.',
     carrier_not_certified = 'You need to pass the GoodCiv training at the volunteer desk first.',
 
     training_title = 'GoodCiv volunteer training',
@@ -51,7 +51,7 @@ Locales.en = {
     crash = 'That crash hurt your patient. Check them!',
     handover_done = 'Patient handed over to %s. Thank you for helping.',
     handover_patient = 'A GoodCiv volunteer brought you to %s.',
-    reward = 'You received $%s for your help.',
+    reward = 'You received £%s for your help.',
     resolved = 'The patient has been revived. Call closed.',
     medic_took_over = 'A medic has taken over the call. Thank you.',
 
