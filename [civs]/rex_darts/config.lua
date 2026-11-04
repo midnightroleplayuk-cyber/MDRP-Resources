@@ -124,7 +124,7 @@ Config.Item = {
     name = 'dartboard',
     model = 'prop_dart_bd_01',
     persistent = true,       -- saved in the database (rex_darts_boards) and restored on restart
-    maxPerPlayer = 2,
+    maxPerPlayer = 3,
     placeDistance = 3.0,     -- max raycast distance when placing
     height = 1.73,           -- regulation bullseye height above the floor
 }
