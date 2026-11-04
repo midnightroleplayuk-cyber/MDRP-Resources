@@ -18,13 +18,14 @@ Config.Framework = 'qbx'
 -- and remove them with /tycoontable remove.
 -- ============================================================
 Config.Tables = {
-    { id = 'legion', coords = vector4(200.96, -928.4, 28.55, 281.22), snapToGround = true },
+    { id = 'bowl1', coords = vector4(1554.63, 3792.96, 33.9, 313.33), snapToGround = true },
+    { id = 'bowl2', coords = vector4(1550.3, 3789.94, 33.9, 307.41), snapToGround = true },
 }
 
 Config.SpawnDistance = 60.0       -- props are created within this range (and the table is "watched")
 Config.InteractDistance = 1.4     -- distance to a chair to get the sit prompt
 Config.SitKey = 38                -- E (INPUT_PICKUP)
-Config.Blip = { enabled = true, sprite = 680, color = 46, scale = 0.75 }
+Config.Blip = { enabled = false, sprite = 680, color = 46, scale = 0.75 }
 
 -- Sitting: the chair props are 0.48 m high. Tweak if a ped model floats or sinks.
 Config.Seat = {
