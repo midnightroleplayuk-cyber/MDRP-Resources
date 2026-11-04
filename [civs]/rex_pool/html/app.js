@@ -625,7 +625,7 @@ function handle(msg) {
   switch (action) {
     case 'init':
       S.L = data.locale || {}; S.modes = data.modes || {}; S.formats = data.formats || S.formats;
-      S.powerMode = data.powerMode; S.currency = data.currency || '$'; S.shotClock = data.shotClock || 0;
+      S.powerMode = data.powerMode; S.currency = data.currency || '£'; S.shotClock = data.shotClock || 0;
       break;
     case 'open':
       S.view = data.view;
