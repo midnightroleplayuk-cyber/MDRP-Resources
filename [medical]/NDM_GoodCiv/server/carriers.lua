@@ -60,8 +60,8 @@ local function restore(src)
     end
 end
 
-RegisterCommand(Config.Carriers.Command, function(src)
-    if src == 0 then return end
+---Toggle carrier status for src, with feedback toasts.
+function Carriers.Toggle(src)
     if Carriers.IsCarrier(src) then
         Carriers.Set(src, false)
         TriggerClientEvent('goodciv:client:toast', src, 'info', L('carrier_off'))
@@ -74,7 +74,28 @@ RegisterCommand(Config.Carriers.Command, function(src)
     end
     Carriers.Set(src, true)
     TriggerClientEvent('goodciv:client:toast', src, 'success', L('carrier_on'))
-end, false)
+end
+
+if Config.Carriers.Command then
+    RegisterCommand(Config.Carriers.Command, function(src)
+        if src == 0 then return end
+        Carriers.Toggle(src)
+    end, false)
+end
+
+-- Sign-up peds: the client sends the index of the ped it used; check the player is actually next to it.
+RegisterNetEvent('goodciv:server:signupPed', function(index)
+    local src = source
+    local cfg = Config.SignupPeds
+    if not cfg or not cfg.Enabled or type(index) ~= 'number' then return end
+    local entry = cfg.Locations[index]
+    if not entry then return end
+    local ped = GetPlayerPed(src)
+    if ped == 0 then return end
+    local c = entry.coords
+    if #(GetEntityCoords(ped) - vector3(c.x, c.y, c.z)) > (cfg.Distance or 2.5) + 3.0 then return end
+    Carriers.Toggle(src)
+end)
 
 -- Restore opt-in once the character is loaded (identifier depends on framework).
 RegisterNetEvent('goodciv:server:ready', function()

@@ -8,7 +8,7 @@ Works with **QBCore**, **QBox**, **ESX** and **standalone** through a small fram
 
 ## Features
 
-- Opt-in volunteers with `/goodciv`, remembered between sessions.
+- Opt-in volunteers with `/goodciv` or by talking to a sign-up ped, remembered between sessions.
 - Alerts only fire when fewer than `Config.Medics.MinOnDuty` medics are on duty.
 - Hooks into existing "call EMS" events (qb-ambulancejob, esx_ambulancejob) or your own via export.
 - `/medic` command that forwards to the built-in medic alert, ps-dispatch, cd_dispatch, or your own function, then falls back to GoodCiv.
@@ -49,6 +49,12 @@ ESX:
 ```sql
 INSERT INTO items (name, label, weight) VALUES ('tourniquet', 'Tourniquet', 1);
 ```
+
+## Sign-up peds
+
+`Config.SignupPeds.Locations` places NPCs players can talk to in order to sign up or sign off as a carrier. Each entry takes a `model`, `coords` (vector4 of where a player would stand, the ped is dropped 1m onto the floor), an optional `scenario` and an optional map `blip`.
+
+Interaction uses ox_target, then qb-target, then a "Press E" prompt (`Interaction = 'auto'`). The server checks the player is next to the ped before toggling. Set `Config.Carriers.Command = nil` to make the peds the only way to sign up.
 
 ## How a call flows
 

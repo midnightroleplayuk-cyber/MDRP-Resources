@@ -19,6 +19,7 @@ client_scripts {
     'client/patient.lua',
     'client/responder.lua',
     'client/treatment.lua',
+    'client/signup.lua',
 }
 
 server_scripts {

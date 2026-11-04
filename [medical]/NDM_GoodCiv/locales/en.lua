@@ -50,4 +50,9 @@ Locales.en = {
     help_handover = 'Press ~INPUT_%s~ to hand over the patient',
 
     medic_alert = 'Medical call: %s',
+
+    signup_join = 'Sign up as a GoodCiv volunteer',
+    signup_leave = 'Sign off as a GoodCiv volunteer',
+    help_signup_join = 'Press ~INPUT_CONTEXT~ to sign up as a GoodCiv volunteer',
+    help_signup_leave = 'Press ~INPUT_CONTEXT~ to sign off as a GoodCiv volunteer',
 }

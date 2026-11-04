@@ -29,6 +29,7 @@ Config.Medics = {
 ---------------------------------------------------------------------------
 Config.Carriers = {
     -- Command players use to sign up / sign off as a GoodCiv carrier.
+    -- Set to nil to only allow signing up at a sign-up ped (Config.SignupPeds).
     Command = 'goodciv',
     -- Players with these jobs can never be carriers (they have their own dispatch).
     BlockedJobs = { 'police', 'sheriff', 'ambulance', 'ems', 'doctor', 'fire' },
@@ -40,6 +41,33 @@ Config.Carriers = {
     AcePermission = nil,
     -- Remember opt-in between sessions (stored in server KVP by identifier).
     Persist = true,
+}
+
+---------------------------------------------------------------------------
+-- Sign-up peds (talk to one of these to sign up / sign off as a carrier)
+---------------------------------------------------------------------------
+Config.SignupPeds = {
+    Enabled = true,
+    -- 'auto' | 'ox_target' | 'qb-target' | 'key'
+    -- 'auto' uses ox_target, then qb-target, then a "press E" prompt.
+    Interaction = 'auto',
+    -- How close (metres) the player must be to interact.
+    Distance = 2.5,
+    -- Peds spawn when a player is within this distance and despawn beyond it.
+    SpawnDistance = 60.0,
+    Locations = {
+        {
+            label = 'GoodCiv Volunteer desk',
+            model = `s_m_m_doctor_01`,
+            -- Where the ped stands (x, y, z, heading). Use the coords from where YOUR
+            -- character stands (e.g. /getcoords): the ped is placed 1m lower onto the floor.
+            coords = vector4(-303.81, -146.09, 40.24, 132.82),
+            scenario = 'WORLD_HUMAN_CLIPBOARD', -- nil = stand idle
+            blip = { sprite = 280, colour = 2, scale = 0.7 }, -- nil = no blip
+        },
+        -- Add more:
+        -- { label = 'GoodCiv - Sandy Shores', model = `s_f_y_scrubs_01`, coords = vector4(1839.0, 3673.0, 34.3, 210.0) },
+    },
 }
 
 ---------------------------------------------------------------------------
