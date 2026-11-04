@@ -273,7 +273,7 @@ Config.Animations = {
             rotation = vec3(0.0, 0.0, 0.0),
         },
         hold = { dict = 'cellphone@', clip = 'cellphone_text_read_base', flag = 49 },
-        talk = { dict = 'cellphone@', clip = 'cellphone_call_listen_base', flag = 49, prop = true }, -- handheld up to the face
+        talk = { dict = 'cellphone@', clip = 'cellphone_cellphone_text_base', flag = 49, prop = true }, -- handheld up to the face
         inVehicle = false,
     },
 }
