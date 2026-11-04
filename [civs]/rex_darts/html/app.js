@@ -10,7 +10,7 @@
 
   const L = (k, ...a) => { let s = T[k] ?? k; a.forEach((v) => { s = s.replace('%s', v); }); return s.replace(/%%/g, '%'); };
   const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-  const money = (n) => '$' + Math.floor(n || 0).toLocaleString('en-US');
+  const money = (n) => '£' + Math.floor(n || 0).toLocaleString('en-US');
   const post = (name, data) => fetch(`https://${RES}/${name}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data || {}) })
     .then((r) => r.json()).catch(() => null);
 

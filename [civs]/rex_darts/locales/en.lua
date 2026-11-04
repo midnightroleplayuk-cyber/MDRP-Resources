@@ -2,14 +2,14 @@
 Locales = Locales or {}
 
 Locales.en = {
-    title = "Rex Darts",
+    title = "Midnight Darts",
     blip_name = "Darts",
     prompt_board = "[E] Dartboard",
     target_play = "Play darts",
     target_pickup = "Take the dartboard",
 
     -- lobby
-    lobby_over = "Rex Studio · Minigames",
+    lobby_over = "Midnight · Minigames",
     lobby_title = "Darts",
     lobby_sub = "Pick a game, set the stake and invite the room.",
     tab_play = "Play",
