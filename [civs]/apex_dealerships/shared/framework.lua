@@ -564,6 +564,11 @@ if IsDuplicityVersion() then
 
     function Bridge:GetSocietyMoney(job, src)
         if self.isQB then
+            if provider('av_banking') then
+                local ok, balance = pcall(function() return exports['av_banking']:getSocietyMoney(job) end)
+                if ok and balance ~= false then return tonumber(balance) end
+                return nil
+            end
             if provider('LGMods_Banking') then
                 return lgmodsBalance(job, src)
             end
@@ -600,6 +605,12 @@ if IsDuplicityVersion() then
         amount = math.floor(tonumber(amount) or 0)
         if amount <= 0 then return false end
         if self.isQB then
+            if provider('av_banking') then
+                local ok, result = pcall(function()
+                    return exports['av_banking']:addSocietyMoney(job, amount, 'Apex Dealerships', 'Dealership funds received')
+                end)
+                return ok and result == true
+            end
             if provider('LGMods_Banking') then
                 local playerId = lgmodsAnySource(src)
                 if not playerId then return false end
@@ -635,6 +646,13 @@ if IsDuplicityVersion() then
     function Bridge:RemoveSocietyMoney(job, amount, src)
         amount = math.floor(tonumber(amount) or 0)
         if amount <= 0 then return false end
+
+        if self.isQB and provider('av_banking') then
+            local ok, result = pcall(function()
+                return exports['av_banking']:removeSocietyMoney(job, amount, 'Apex Dealerships', 'Dealership funds paid')
+            end)
+            return ok and result == true
+        end
 
         if self.isQB and provider('LGMods_Banking') then
             local playerId = lgmodsJobSource(job, src)
@@ -682,10 +700,10 @@ if IsDuplicityVersion() then
     CreateThread(function()
         Wait(3000)
         if not Bridge.isQB then return end
-        if provider('LGMods_Banking') or provider('qb-banking') or provider('qb-management')
+        if provider('av_banking') or provider('LGMods_Banking') or provider('qb-banking') or provider('qb-management')
             or provider('okokBanking') or provider('Renewed-Banking') then return end
         print('^3[apex_dealerships]^0 no society banking resource detected ' ..
-            '(LGMods_Banking / qb-banking / qb-management / okokBanking / Renewed-Banking). ' ..
+            '(av_banking / LGMods_Banking / qb-banking / qb-management / okokBanking / Renewed-Banking). ' ..
             'Business funds will use this resource\'s internal wallet.')
     end)
 
