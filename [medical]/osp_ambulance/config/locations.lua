@@ -85,7 +85,7 @@ Config.Hospitals = {
         beds = {
             {coords = vector4(-911.33, -725.44, 18.10, 181.79), taken = false, model = "v_med_bed1", getOutOffset = 1.3}, --Bed 1 -ICU
             {coords = vector4(-907.37, -725.08, 18.10, 179.94), taken = false, model = "v_med_bed1", getOutOffset = 1.3}, --Bed 2 -ICU
-            {coords = vector4(-903.35, -725.43, 18.10, 184.41), taken = false, model = "v_med_bed1", --Bed 4 -ICU
+            {coords = vector4(-903.35, -725.43, 18.10, 184.41), taken = false, model = "v_med_bed1"}, --Bed 4 -ICU
             {coords = vector4(-905.85, -735.19, 18.10, 359.11), taken = false, model = "v_med_bed1", getOutOffset = 1.3}, --Bed 5 -ICU
             {coords = vector4(-926.05, -712.41, 18.10, 179.88), taken = false, model = "v_med_bed1", getOutOffset = 1.3, lockedBed = true}, --Surgery Bed
             {coords = vector4(-941.97, -712.44, 18.10, 178.35), taken = false, model = "v_med_bed1", getOutOffset = 1.3, lockedBed = true}, -- Surgery Bed
