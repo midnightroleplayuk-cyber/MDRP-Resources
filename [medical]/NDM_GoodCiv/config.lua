@@ -61,7 +61,7 @@ Config.SignupPeds = {
             model = `s_m_m_doctor_01`,
             -- Where the ped stands (x, y, z, heading). Use the coords from where YOUR
             -- character stands (e.g. /getcoords): the ped is placed 1m lower onto the floor.
-            coords = vector4(-303.81, -146.09, 40.24, 132.82),
+            coords = vector4(-305.35, -147.01, 40.24, 120.35),
             scenario = 'WORLD_HUMAN_CLIPBOARD', -- nil = stand idle
             blip = { sprite = 280, colour = 2, scale = 0.7 }, -- nil = no blip
         },
@@ -180,7 +180,7 @@ Config.Treatment = {
     Assess = { Duration = 3 },
     Tourniquet = {
         Duration = 6,
-        Item = 'tourniquet',   -- nil = no item needed
+        Item = '',   -- nil = no item needed
         ConsumeItem = true,
     },
     CPR = {
