@@ -68,7 +68,7 @@ ensure vinewood_policedog
 ensure vinewood_police
 ```
 - **Only restart `vinewood_policedog` with a full server restart.** Restarting it while players are connected reloads the dog's ped data and crashes their game the next time a dog spawns. Restarting `vinewood_police` for config changes is safe.
-- The dog is an add-on ped, `vw_policedog`, with the game's own German shepherd settings. Other scripts' shepherds aren't changed.
+- The dog is an add-on ped, `vw_policedog`, with the game's own German shepherd settings. Its body parts and textures are named `vw_policedog^...` (the caret is how FiveM attaches them to the ped). Other scripts' shepherds aren't changed.
 - Without the dog resource, set `Config.Dogs.Model = 'a_c_shepherd'` to use the game's shepherd.
 - The dog's textures are large (about 42 MB). Saving them at 2048 or 1024 in a compressed format (DXT1, or DXT5 where transparency is needed) brings the download down a lot.
 

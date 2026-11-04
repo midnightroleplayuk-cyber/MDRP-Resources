@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.16.0
+- Fixed: Heel did nothing. It now stops whatever the dog is doing (sitting, barking, running somewhere), brings it to your left side and walks it with you, and says "Heel."
+- Send the dog somewhere: "Send to a spot" (target the dog, or the radial, Dog) lets you aim at the ground or anything else up to 80 m away; E sends it. Or target any car or object for "Dog: go here". The dog runs there and sits waiting until you call it to heel. On the lead, the lead is slipped first.
+- Searches find drugs, firearms and ammunition, and criminal cash, in players' pockets, vehicle boots and gloveboxes, and on NPCs. The dog says what it's indicating on (e.g. "indicating (drugs, cash)"). Choose what it finds with Config.Dogs.Detects. Everyday items (torch, baton, Taser, fuel can...) are ignored. It won't search on-duty officers.
+
+## 1.15.4
+- Fixed: the police dog spawned invisible. Its body parts and textures (vinewood_policedog 1.0.3) are now named vw_policedog^part, which is how FiveM attaches streamed parts to a ped.
+
 ## 1.15.3
 - /dogtest: shows the dog model and the game's own shepherd side by side, in your game only, for 20 seconds, with their size and parts in F8. It tells a model problem apart from a spawning problem.
 

@@ -282,6 +282,12 @@ Officers: an Inspector (I), a Sergeant (S), a PC (P), a Chief Inspector (C), and
 - [ ] Config.Dogs.Look head 1 / uppr 2: the head and coat textures change. random = true: different each deploy.
 - [ ] Bark at someone: the custom bark plays, a second player within 40 m hears it, and it's quieter further away.
 
+## Dog commands and searches
+- [ ] Sit, then Heel: the dog gets up, comes to your left side and walks with you ("Heel.").
+- [ ] Send to a spot: a blue ring follows your aim, including on the ground. E: the dog runs there and sits. Heel brings it back.
+- [ ] Target a parked car: Dog: go here. It runs to the car and waits.
+- [ ] Put a drug item in a player's pocket: "indicating (drugs)". A pistol and ammo in a car boot: "indicating (firearms or ammunition)". markedbills: "(cash)". A torch alone: no indication. An on-duty officer: refused.
+
 ## Dog lead and barking
 - [ ] Dog out: target it, Lead on. A thin rope goes from your right hand to its collar, and a second player sees it too. Walk and run: the dog stays tight at heel. Lead off: the rope goes.
 - [ ] On the lead, target someone and Dog: bark at them. The dog stays beside you, faces them and barks for about 8 s, then settles. Heel stops it early.

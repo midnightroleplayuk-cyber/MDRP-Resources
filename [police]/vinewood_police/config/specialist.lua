@@ -3,7 +3,7 @@
 ---------------------------------------------------------------------------
 Config.Dogs = {
     Command = 'dog',              -- deploy or recall your dog (signed on as Dog section)
-    Units = { 'dogs', 'silver', 'gold' },
+    Units = { 'dogs' },
     Model = 'vw_policedog',       -- the Vinewood police dog (stream/policedog/). 'a_c_shepherd' = the game's shepherd
     -- Which texture of each part the dog wears (0 = the first: a, 1 = b...). random = true picks
     -- different head and coat textures each time it's deployed.
@@ -21,6 +21,16 @@ Config.Dogs = {
     DrugItems = { 'weed', 'weed_brick', 'cannabis', 'coke', 'coke_brick', 'cocaine', 'crack', 'meth', 'heroin', 'xtc', 'joint' },
     -- Words in an NPC's finds that a dog indicates on
     DrugWords = { 'cannabis', 'powder', 'wraps', 'drug', 'grinder', 'deal bag' },
+
+    -- What the dog is trained to find (UK dogs are drugs, firearms and cash dogs; this one does all three)
+    Detects = { drugs = true, firearms = true, cash = true },
+    -- Firearms: any WEAPON_ item and any ammo item, except these everyday ones
+    IgnoreWeapons = { 'WEAPON_FLASHLIGHT', 'WEAPON_NIGHTSTICK', 'WEAPON_STUNGUN', 'WEAPON_PETROLCAN', 'WEAPON_FIREEXTINGUISHER',
+        'WEAPON_FLARE', 'WEAPON_BALL', 'WEAPON_SNOWBALL', 'WEAPON_HAMMER', 'WEAPON_WRENCH', 'WEAPON_CROWBAR' },
+    FirearmWords = { 'handgun', 'pistol', 'firearm', 'shotgun', 'rifle', 'ammunition', 'rounds', 'revolver', 'smg' },
+    -- Cash: criminal money items, and these words in an NPC's finds
+    CashItems = { 'markedbills', 'black_money', 'dirtymoney', 'dirty_money', 'money_roll', 'cashroll', 'band' },
+    CashWords = { 'cash', '£' },
     BitePlayers = true,           -- the dog can detain fleeing players (false: NPCs only)
     RedeployAfterInjury = 300,    -- seconds before an injured dog can be deployed again
 
