@@ -1,0 +1,61 @@
+{
+  "_comment": "Shared by blender/generate_tycoon_assets.py (models, board texture) and the Lua scripts (token, building, card and dice placement). Meters; board local frame: origin = board centre on its top surface, +Y = away from seat 1, +X = seat 1's right. The number of spaces comes from data/board.json (4 sides, corners included).",
+  "board": {
+    "size": 1.0,
+    "corner": 0.13,
+    "band": 0.028,
+    "thickness": 0.012
+  },
+  "table": {
+    "size": 1.5,
+    "surface": 0.776,
+    "boardGap": 0.001
+  },
+  "chair": {
+    "distance": 0.98,
+    "seatHeight": 0.48
+  },
+  "die": {
+    "size": 0.022
+  },
+  "rollArea": 0.355,
+  "card": {
+    "w": 0.088,
+    "h": 0.058,
+    "thickness": 0.0008,
+    "deckHeight": 0.012
+  },
+  "deed": {
+    "w": 0.05,
+    "h": 0.07,
+    "thickness": 0.0006
+  },
+  "decks": {
+    "news": {
+      "x": 0.185,
+      "y": -0.185,
+      "rot": 45
+    }
+  },
+  "lot": {
+    "_comment": "Owned space, on its colour band (space-local x along the band, y toward the board centre). Lot models are built at `scale`. Flag pole at flagX, houses from houseX0 every houseStep, the hotel at hotelX, a landmark's building at landmarkX.",
+    "scale": 1.1,
+    "y": 0.051,
+    "flagX": -0.037,
+    "houseX0": -0.016,
+    "houseStep": 0.0225,
+    "hotelX": 0.008,
+    "landmarkX": 0.016,
+    "poleHeight": 0.0616,
+    "clothTop": 0.0594,
+    "clothLow": 0.02
+  },
+  "bill": {
+    "_comment": "Cash in front of every seat: piles of note bundles (1M, 100K, 10K) at seat-local y, `spread` apart.",
+    "w": 0.066,
+    "h": 0.033,
+    "thickness": 0.0022,
+    "y": -0.585,
+    "spread": 0.085
+  }
+}

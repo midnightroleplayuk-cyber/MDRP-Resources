@@ -1,0 +1,531 @@
+{
+ "_comment": "F4 City: 36 spaces, 8 between the corners. Edit names and prices here or in tools/make_board.py; the Blender bake prints them on the board. District levels: 0 land, 1-3 houses, 4 hotel.",
+ "version": 3,
+ "groups": {
+  "harbor": {
+   "color": "#5D7EA6",
+   "name": {
+    "tr": "Liman",
+    "en": "Harbor"
+   },
+   "houseCost": 30000,
+   "hotelCost": 80000
+  },
+  "bazaar": {
+   "color": "#C9822B",
+   "name": {
+    "tr": "Çarşı",
+    "en": "Bazaar"
+   },
+   "houseCost": 50000,
+   "hotelCost": 120000
+  },
+  "campus": {
+   "color": "#8FA33A",
+   "name": {
+    "tr": "Kampüs",
+    "en": "Campus"
+   },
+   "houseCost": 70000,
+   "hotelCost": 180000
+  },
+  "coast": {
+   "color": "#22AFC0",
+   "name": {
+    "tr": "Sahil",
+    "en": "Coast"
+   },
+   "houseCost": 90000,
+   "hotelCost": 220000,
+   "hotel": "coast"
+  },
+  "arts": {
+   "color": "#C2479A",
+   "name": {
+    "tr": "Sanat",
+    "en": "Arts"
+   },
+   "houseCost": 110000,
+   "hotelCost": 280000,
+   "hotel": "arts"
+  },
+  "tech": {
+   "color": "#6A5ACD",
+   "name": {
+    "tr": "Tekno",
+    "en": "Tech"
+   },
+   "houseCost": 130000,
+   "hotelCost": 320000,
+   "hotel": "tech"
+  },
+  "finance": {
+   "color": "#D4A72C",
+   "name": {
+    "tr": "Finans",
+    "en": "Finance"
+   },
+   "houseCost": 150000,
+   "hotelCost": 380000,
+   "hotel": "finance"
+  },
+  "hills": {
+   "color": "#B23A48",
+   "name": {
+    "tr": "Tepe",
+    "en": "Hills"
+   },
+   "houseCost": 180000,
+   "hotelCost": 450000,
+   "hotel": "hills"
+  }
+ },
+ "spaces": [
+  {
+   "type": "start",
+   "name": {
+    "tr": "BAŞLA",
+    "en": "START"
+   }
+  },
+  {
+   "type": "district",
+   "name": {
+    "tr": "Balıkçı İskelesi",
+    "en": "Fisher Pier"
+   },
+   "group": "harbor",
+   "price": 50000,
+   "rent": [
+    6000,
+    22000,
+    60000,
+    130000,
+    210000
+   ]
+  },
+  {
+   "type": "district",
+   "name": {
+    "tr": "Fener Yolu",
+    "en": "Lighthouse Road"
+   },
+   "group": "harbor",
+   "price": 60000,
+   "rent": [
+    7000,
+    27000,
+    72000,
+    156000,
+    252000
+   ]
+  },
+  {
+   "type": "news",
+   "name": {
+    "tr": "Manşet",
+    "en": "Headline"
+   }
+  },
+  {
+   "type": "district",
+   "name": {
+    "tr": "Bakır Çarşı",
+    "en": "Copper Bazaar"
+   },
+   "group": "bazaar",
+   "price": 80000,
+   "rent": [
+    10000,
+    36000,
+    96000,
+    208000,
+    336000
+   ]
+  },
+  {
+   "type": "landmark",
+   "name": {
+    "tr": "Dev Dönme Dolap",
+    "en": "Big Wheel"
+   },
+   "icon": "wheel",
+   "price": 180000
+  },
+  {
+   "type": "district",
+   "name": {
+    "tr": "Baharat Sokağı",
+    "en": "Spice Street"
+   },
+   "group": "bazaar",
+   "price": 80000,
+   "rent": [
+    10000,
+    36000,
+    96000,
+    208000,
+    336000
+   ]
+  },
+  {
+   "type": "district",
+   "name": {
+    "tr": "Han Avlusu",
+    "en": "Caravan Court"
+   },
+   "group": "bazaar",
+   "price": 100000,
+   "rent": [
+    12000,
+    45000,
+    120000,
+    260000,
+    420000
+   ]
+  },
+  {
+   "type": "rentday",
+   "name": {
+    "tr": "Kira Günü",
+    "en": "Rent Day"
+   }
+  },
+  {
+   "type": "traffic",
+   "name": {
+    "tr": "Trafik",
+    "en": "Gridlock"
+   }
+  },
+  {
+   "type": "district",
+   "name": {
+    "tr": "Kütüphane Meydanı",
+    "en": "Library Square"
+   },
+   "group": "campus",
+   "price": 120000,
+   "rent": [
+    14000,
+    54000,
+    144000,
+    312000,
+    504000
+   ]
+  },
+  {
+   "type": "district",
+   "name": {
+    "tr": "Laboratuvar Caddesi",
+    "en": "Lab Avenue"
+   },
+   "group": "campus",
+   "price": 120000,
+   "rent": [
+    14000,
+    54000,
+    144000,
+    312000,
+    504000
+   ]
+  },
+  {
+   "type": "district",
+   "name": {
+    "tr": "Öğrenci Köyü",
+    "en": "Student Village"
+   },
+   "group": "campus",
+   "price": 140000,
+   "rent": [
+    17000,
+    63000,
+    168000,
+    364000,
+    588000
+   ]
+  },
+  {
+   "type": "news",
+   "name": {
+    "tr": "Manşet",
+    "en": "Headline"
+   }
+  },
+  {
+   "type": "landmark",
+   "name": {
+    "tr": "Liman Stadyumu",
+    "en": "Harbor Stadium"
+   },
+   "icon": "stadium",
+   "price": 180000
+  },
+  {
+   "type": "district",
+   "name": {
+    "tr": "Mercan Koyu",
+    "en": "Coral Cove"
+   },
+   "group": "coast",
+   "price": 160000,
+   "rent": [
+    19000,
+    72000,
+    192000,
+    416000,
+    672000
+   ]
+  },
+  {
+   "type": "district",
+   "name": {
+    "tr": "Martı Bulvarı",
+    "en": "Gull Boulevard"
+   },
+   "group": "coast",
+   "price": 180000,
+   "rent": [
+    22000,
+    81000,
+    216000,
+    468000,
+    756000
+   ]
+  },
+  {
+   "type": "contractor",
+   "name": {
+    "tr": "Müteahhit",
+    "en": "Contractor"
+   }
+  },
+  {
+   "type": "exchange",
+   "name": {
+    "tr": "Borsa",
+    "en": "Exchange"
+   }
+  },
+  {
+   "type": "district",
+   "name": {
+    "tr": "Galeri Pasajı",
+    "en": "Gallery Arcade"
+   },
+   "group": "arts",
+   "price": 200000,
+   "rent": [
+    24000,
+    90000,
+    240000,
+    520000,
+    840000
+   ]
+  },
+  {
+   "type": "district",
+   "name": {
+    "tr": "Sahne Sokağı",
+    "en": "Stage Lane"
+   },
+   "group": "arts",
+   "price": 220000,
+   "rent": [
+    26000,
+    99000,
+    264000,
+    572000,
+    924000
+   ]
+  },
+  {
+   "type": "news",
+   "name": {
+    "tr": "Manşet",
+    "en": "Headline"
+   }
+  },
+  {
+   "type": "landmark",
+   "name": {
+    "tr": "Opera Sarayı",
+    "en": "Opera House"
+   },
+   "icon": "opera",
+   "price": 180000
+  },
+  {
+   "type": "district",
+   "name": {
+    "tr": "Çip Caddesi",
+    "en": "Chip Street"
+   },
+   "group": "tech",
+   "price": 240000,
+   "rent": [
+    29000,
+    108000,
+    288000,
+    624000,
+    1008000
+   ]
+  },
+  {
+   "type": "district",
+   "name": {
+    "tr": "Veri Yolu",
+    "en": "Data Road"
+   },
+   "group": "tech",
+   "price": 240000,
+   "rent": [
+    29000,
+    108000,
+    288000,
+    624000,
+    1008000
+   ]
+  },
+  {
+   "type": "district",
+   "name": {
+    "tr": "Bulut Plaza",
+    "en": "Cloud Plaza"
+   },
+   "group": "tech",
+   "price": 260000,
+   "rent": [
+    31000,
+    117000,
+    312000,
+    676000,
+    1092000
+   ]
+  },
+  {
+   "type": "tax",
+   "name": {
+    "tr": "Vergi",
+    "en": "Tax"
+   }
+  },
+  {
+   "type": "cityhall",
+   "name": {
+    "tr": "Belediye",
+    "en": "City Hall"
+   }
+  },
+  {
+   "type": "district",
+   "name": {
+    "tr": "Kambiyo Caddesi",
+    "en": "Exchange Street"
+   },
+   "group": "finance",
+   "price": 280000,
+   "rent": [
+    34000,
+    126000,
+    336000,
+    728000,
+    1176000
+   ]
+  },
+  {
+   "type": "district",
+   "name": {
+    "tr": "Kristal Plaza",
+    "en": "Crystal Plaza"
+   },
+   "group": "finance",
+   "price": 280000,
+   "rent": [
+    34000,
+    126000,
+    336000,
+    728000,
+    1176000
+   ]
+  },
+  {
+   "type": "district",
+   "name": {
+    "tr": "Safir Kuleleri",
+    "en": "Sapphire Towers"
+   },
+   "group": "finance",
+   "price": 300000,
+   "rent": [
+    36000,
+    135000,
+    360000,
+    780000,
+    1260000
+   ]
+  },
+  {
+   "type": "landmark",
+   "name": {
+    "tr": "Gökyüzü Kulesi",
+    "en": "Sky Tower"
+   },
+   "icon": "tower",
+   "price": 180000
+  },
+  {
+   "type": "news",
+   "name": {
+    "tr": "Manşet",
+    "en": "Headline"
+   }
+  },
+  {
+   "type": "district",
+   "name": {
+    "tr": "Zümrüt Tepe",
+    "en": "Emerald Heights"
+   },
+   "group": "hills",
+   "price": 330000,
+   "rent": [
+    40000,
+    148000,
+    396000,
+    858000,
+    1386000
+   ]
+  },
+  {
+   "type": "district",
+   "name": {
+    "tr": "Kartal Yuvası",
+    "en": "Eagle's Nest"
+   },
+   "group": "hills",
+   "price": 360000,
+   "rent": [
+    43000,
+    162000,
+    432000,
+    936000,
+    1512000
+   ]
+  },
+  {
+   "type": "contractor",
+   "name": {
+    "tr": "Müteahhit",
+    "en": "Contractor"
+   }
+  }
+ ],
+ "landmarkRent": [
+  40000,
+  90000,
+  180000,
+  360000
+ ]
+}
