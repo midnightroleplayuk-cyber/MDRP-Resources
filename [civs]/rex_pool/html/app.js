@@ -7,7 +7,7 @@ const $ = (s, el) => (el || document).querySelector(s);
 const $$ = (s, el) => Array.from((el || document).querySelectorAll(s));
 
 const S = {
-  L: {}, modes: {}, formats: ['1v1', '2v2'], powerMode: 'drag', currency: '$',
+  L: {}, modes: {}, formats: ['1v1', '2v2'], powerMode: 'drag', currency: '£',
   view: null, data: null, me: null, adminTab: 'sessions', form: null,
 };
 
