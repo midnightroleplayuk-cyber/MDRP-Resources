@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.18.3
+- Updated arrest animations (anim@policearrest.ycd): the escorting clip now keys both clavicles, both upper arms, forearms and hands, so the officer's arms hold the pose from Anim Studio instead of being moved by other animations.
+
+## 1.18.2
+- /animtest [clip] [dict]: plays an animation on you full body, full body looping, then upper body while moving (as escorting uses), 4 seconds each, so you can see how a clip behaves in game. Defaults to the officer's escorting clip.
+
 ## 1.18.1
 - Fixed: the escorted prisoner lay flat in mid-air. The offsets were measured against the pelvis in the animation's first frame, but in game the escorting animation runs on the upper body only, so the pelvis sits differently. The prisoner is now held relative to the officer's root (always upright), starting just in front of them.
 - /escortadjust (while escorting): move the prisoner with the arrows, height with Page Up/Down, turn with Q/E (Shift for bigger steps), G to switch between root and pelvis, H to turn the officer's animation on and off. The real prisoner moves as you adjust. Enter prints the lines for Config.Restraint.Escort to F8 (and keeps them for the session); Backspace cancels.

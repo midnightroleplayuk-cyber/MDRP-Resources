@@ -390,3 +390,33 @@ AddEventHandler('onResourceStop', function(res)
         pcall(VPO.Hooks.OnRestrained, false)
     end
 end)
+
+---------------------------------------------------------------------------
+-- /animtest [clip] [dict]: plays a clip on you three ways, 4 seconds each, to compare in game:
+--   1. full body (flag 0)  2. full body, looping (flag 1)  3. upper body while you can move (flag 49)
+-- Defaults to the officer's escorting clip.
+---------------------------------------------------------------------------
+RegisterCommand('animtest', function(_, args)
+    local clip = args[1] or 'escorting'
+    local dict = args[2] or (Cfg.Escort.OfficerAnim and Cfg.Escort.OfficerAnim.dict) or 'anim@policearrest'
+    CreateThread(function()
+        RequestAnimDict(dict)
+        local deadline = GetGameTimer() + 5000
+        while not HasAnimDictLoaded(dict) and GetGameTimer() < deadline do Wait(10) end
+        if not HasAnimDictLoaded(dict) then return print(('[vinewood_police] animtest: dictionary %s not found'):format(dict)) end
+        local me = PlayerPedId()
+        for _, t in ipairs({ { 0, 'full body' }, { 1, 'full body, looping' }, { 49, 'upper body, can move (what escorting uses)' } }) do
+            ClearPedTasksImmediately(me)
+            TaskPlayAnim(me, dict, clip, 8.0, -8.0, -1, t[1], 0.0, false, false, false)
+            print(('[vinewood_police] animtest %s/%s flag %d: %s  playing=%s'):format(dict, clip, t[1], t[2], tostring(IsEntityPlayingAnim(me, dict, clip, 3))))
+            local untilT = GetGameTimer() + 4000
+            while GetGameTimer() < untilT do
+                BeginTextCommandDisplayHelp('STRING')
+                AddTextComponentSubstringPlayerName(('Anim test: %s~n~flag %d - %s'):format(clip, t[1], t[2]))
+                EndTextCommandDisplayHelp(0, false, false, -1)
+                Wait(0)
+            end
+        end
+        ClearPedTasks(me)
+    end)
+end, false)
