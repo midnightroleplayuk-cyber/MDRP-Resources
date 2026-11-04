@@ -20,7 +20,7 @@ function t(key, ...args) {
 function esc(v) {
   return String(v ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 }
-function money(n) { const v = Number(n || 0); return (v < 0 ? '-' : '') + S.currency + Math.abs(v).toLocaleString('en-US'); }
+function money(n) { const v = Number(n || 0); return (v < 0 ? '-' : '') + S.currency + Math.abs(v).toLocaleString('en-GB'); }
 
 async function post(name, data) {
   if (!isGame) return Mock.post(name, data);
@@ -164,7 +164,7 @@ function renderCreate(info) {
       <div class="field" id="fTarget"><label class="cap">${t('target_score')}</label>
         ${seg('target', targetOptions().map(v => ({ v, label: String(v) })))}<small></small></div>
       <div class="field" id="fWager"><label class="cap">${t('wager')}</label>
-        <div class="wager"><span>${S.currency}</span><input id="wager" type="number" min="${info.minWager || 0}" max="${info.maxWager || 0}" step="50" value="${f.wager}"></div><small></small></div>
+        <div class="wager"><span>£</span><input id="wager" type="number" min="${info.minWager || 0}" max="${info.maxWager || 0}" step="50" value="${f.wager}"></div><small></small></div>
     </div>
     <div class="win-foot">
       <div class="rent">${info.rental > 0 ? t('rental_fee', `<b>${money(info.rental)}</b>`) : t('rental_free')}</div>
@@ -548,7 +548,7 @@ async function renderAdmin() {
       <div class="field"><label class="cap">${t('adm_rental')}</label>${seg('rt', ['on', 'off'].map(v => ({ v, label: t('rules_' + v), on: (v === 'on') === r.rentalEnabled })), 'data-k="rentalEnabled"')}</div>
       <div class="field"><label class="cap">${t('adm_rental_mult')}</label><div class="wager"><span>×</span><input data-k="rentalMultiplier" type="number" step="0.1" value="${r.rentalMultiplier}"></div></div>
       <div class="field"><label class="cap">${t('adm_wagers')}</label>${seg('rt', ['on', 'off'].map(v => ({ v, label: t('rules_' + v), on: (v === 'on') === r.wagersEnabled })), 'data-k="wagersEnabled"')}</div>
-      <div class="field"><label class="cap">${t('adm_max_wager')}</label><div class="wager"><span>${S.currency}</span><input data-k="maxWager" type="number" step="100" value="${r.maxWager}"></div></div>
+      <div class="field"><label class="cap">${t('adm_max_wager')}</label><div class="wager"><span>£</span><input data-k="maxWager" type="number" step="100" value="${r.maxWager}"></div></div>
       <div class="field"><label class="cap">${t('adm_house_cut')}</label><div class="wager"><span>%</span><input data-k="houseCut" type="number" step="1" value="${Math.round(r.houseCut * 100)}"></div></div>
       <div class="field"><label class="cap">${t('adm_info')}</label><small>Framework: <b>${esc(d.framework)}</b> · Stats: <b>${d.statsEnabled ? 'oxmysql' : 'off'}</b></small>
         ${d.disabled.length ? `<small>${t('adm_disabled_tables')}: ${d.disabled.map(k => `<button class="mini" data-act="enable" data-k="${esc(k)}">${esc(k)} ✕</button>`).join(' ')}</small>` : ''}</div>
@@ -625,7 +625,7 @@ function handle(msg) {
   switch (action) {
     case 'init':
       S.L = data.locale || {}; S.modes = data.modes || {}; S.formats = data.formats || S.formats;
-      S.powerMode = data.powerMode; S.currency = data.currency || '$'; S.shotClock = data.shotClock || 0;
+      S.powerMode = data.powerMode; S.currency = '£'; S.shotClock = data.shotClock || 0;
       break;
     case 'open':
       S.view = data.view;
