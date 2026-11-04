@@ -50,7 +50,7 @@ Config.SignupPeds = {
     Enabled = true,
     -- 'auto' | 'ox_target' | 'qb-target' | 'key'
     -- 'auto' uses ox_target, then qb-target, then a "press E" prompt.
-    Interaction = 'auto',
+    Interaction = 'ox_target',
     -- How close (metres) the player must be to interact.
     Distance = 2.5,
     -- Peds spawn when a player is within this distance and despawn beyond it.
