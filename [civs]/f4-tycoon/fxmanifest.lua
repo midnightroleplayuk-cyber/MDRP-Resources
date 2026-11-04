@@ -15,6 +15,7 @@ shared_scripts {
     'shared/settings.lua',
     'shared/board.lua',
     'shared/cards.lua',
+    '@ox_lib/init.lua',
 }
 
 server_scripts {
