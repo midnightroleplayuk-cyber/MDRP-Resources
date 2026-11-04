@@ -202,7 +202,7 @@ Config.Companies.Services = {
     },
     {
         job = "ambulance",
-        name = "Ambulance",
+        name = "Hospital",
         icon = "https://cdn-icons-png.flaticon.com/128/1032/1032989.png",
         canCall = true, -- if true, players can call the company
         canMessage = true, -- if true, players can message the company
