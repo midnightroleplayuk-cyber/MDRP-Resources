@@ -5602,7 +5602,7 @@ return {
 
 -- VINEWOOD PD JOB
 ['handcuffs'] = {
-    label = 'Handcuffs', weight = 300, stack = false, close = true,
+    label = 'Handcuffs', weight = 300, stack = true, close = true,
     description = 'Rigid handcuffs. Use to take them out, then cuff the person in front.',
     server = { export = 'vinewood_police.useItem' },
 },
