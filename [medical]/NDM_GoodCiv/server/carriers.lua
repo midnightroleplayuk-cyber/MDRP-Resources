@@ -83,6 +83,11 @@ if Config.Carriers.Command then
     end, false)
 end
 
+-- Sign-up through an NPC placed with hf1_npcs (or any other script): same checks as the command.
+RegisterNetEvent('goodciv:server:toggleCarrier', function()
+    Carriers.Toggle(source)
+end)
+
 -- Sign-up peds: the client sends the index of the ped it used; check the player is actually next to it.
 RegisterNetEvent('goodciv:server:signupPed', function(index)
     local src = source

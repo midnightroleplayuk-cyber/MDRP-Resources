@@ -47,7 +47,8 @@ Config.Carriers = {
 -- Sign-up peds (talk to one of these to sign up / sign off as a carrier)
 ---------------------------------------------------------------------------
 Config.SignupPeds = {
-    Enabled = true,
+    -- Off: the sign-up NPC is placed with hf1_npcs instead (target event: goodciv:client:toggleCarrier).
+    Enabled = false,
     -- 'auto' | 'ox_target' | 'qb-target' | 'key'
     -- 'auto' uses ox_target, then qb-target, then a "press E" prompt.
     Interaction = 'ox_target',
