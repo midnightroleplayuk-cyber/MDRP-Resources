@@ -25,6 +25,12 @@ if Bridge.Name == 'esx' then
     AddEventHandler('esx_ambulancejob:revive', function() esxDead = false end)
 end
 
+-- osp_ambulance death events (same ones vinewood-dispatch uses).
+local ospDown = false
+RegisterNetEvent('osp_ambulance:OnPlayerDead', function() ospDown = true end)
+RegisterNetEvent('osp_ambulance:OnPlayerSpawn', function() ospDown = false end)
+AddEventHandler('hospital:client:Revive', function() ospDown = false end)
+
 ---True while the local player is dead, in last stand, or otherwise incapacitated.
 function Bridge.IsDowned()
     local ped = PlayerPedId()
@@ -34,9 +40,11 @@ function Bridge.IsDowned()
     if state.isDead or state.isLaststand or state.dead then return true end
 
     -- osp_ambulance keeps its own death / last stand state and doesn't set framework metadata.
+    -- Read its BodyDamage state bag directly (its exports aren't always registered).
     if started('osp_ambulance') then
-        local ok, dead = pcall(function() return exports.osp_ambulance:isDead() end)
-        if ok then return dead == true end
+        if ospDown then return true end
+        local bd = state.BodyDamage
+        if type(bd) == 'table' then return bd.isDead == true or bd.inLastStand == true end
     end
 
     if Bridge.Name == 'qbcore' then
