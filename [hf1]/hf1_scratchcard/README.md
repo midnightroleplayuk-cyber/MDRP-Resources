@@ -7,7 +7,6 @@ Physical UK-style scratchcards for Qbox using ox_inventory metadata.
 - ox_lib
 - ox_target
 - ox_inventory
-- Optional UI/banking frontend: LGMods_Banking
 
 ## Install
 1. Put `hf1_scratchcard` in your resources folder.
@@ -21,7 +20,6 @@ ensure ox_lib
 ensure qbx_core
 ensure ox_inventory
 ensure ox_target
-ensure LGMods_Banking # only if your server uses it
 ensure hf1_scratchcard
 ```
 
@@ -40,9 +38,6 @@ add_ace group.admin scratchcards.manage allow
 - A winning card is removed before payout to prevent double redemption.
 - If no winner exists, one detected losing card is deleted and the player gets exactly: `Error: You do not have a winner.`
 - Claim and purchase events verify the player is physically near the selected managed stand.
-
-## LGMods_Banking
-LGMods_Banking's public product information does not publish a stable player-credit export. On Qbox, this resource pays the configured framework `bank` balance through `qbx_core`, which is the account banking frontends integrate with. This avoids guessing an escrow/private export name. `Config.PayoutAccount = 'bank'` is therefore recommended when using LGMods_Banking.
 
 ## Important metadata note
 Do not expose inventory/admin tools that let ordinary players edit arbitrary item metadata. `winner` and `prize` are bearer-ticket metadata and are validated/capped server-side on redemption.
