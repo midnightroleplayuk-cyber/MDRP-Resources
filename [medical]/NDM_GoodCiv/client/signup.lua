@@ -16,6 +16,7 @@ local function detectInteraction()
 end
 
 local interaction = detectInteraction()
+print(('^2[goodciv]^7 sign-up peds: %d location(s), interaction: %s'):format(#cfg.Locations, interaction))
 
 local function isCarrier()
     return LocalPlayer.state['goodciv:carrier'] == true
@@ -86,13 +87,21 @@ local function spawnPed(index, loc)
     RequestModel(model)
     local timeout = GetGameTimer() + 5000
     while not HasModelLoaded(model) do
-        if GetGameTimer() > timeout then return end
+        if GetGameTimer() > timeout then
+            print(('^1[goodciv]^7 sign-up ped %d: model failed to load'):format(index))
+            return
+        end
         Wait(0)
     end
 
     local c = loc.coords
     local ped = CreatePed(4, model, c.x, c.y, c.z - 1.0, c.w, false, true)
     SetModelAsNoLongerNeeded(model)
+    if ped == 0 then
+        print(('^1[goodciv]^7 sign-up ped %d: CreatePed failed'):format(index))
+        return
+    end
+    GoodCiv.Debug(('sign-up ped %d spawned at %.2f, %.2f, %.2f'):format(index, c.x, c.y, c.z - 1.0))
     SetEntityHeading(ped, c.w)
     FreezeEntityPosition(ped, true)
     SetEntityInvincible(ped, true)
