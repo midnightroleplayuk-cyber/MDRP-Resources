@@ -143,6 +143,7 @@ function Incidents.Close(inc, reason)
         TriggerClientEvent('goodciv:client:incidentClosed', src, inc.id, reason and L(reason))
     end
     TriggerClientEvent('goodciv:client:patientClosed', inc.patient, reason and L(reason))
+    if Incidents.OnClosed then Incidents.OnClosed(inc, reason) end
     GoodCiv.Debug(('incident %d closed (%s)'):format(inc.id, reason or 'none'))
 end
 
@@ -187,6 +188,7 @@ RegisterNetEvent('goodciv:server:accept', function(id)
     TriggerClientEvent('goodciv:client:accepted', src, view(inc, src))
     TriggerClientEvent('goodciv:client:toast', src, 'success', L('accepted'))
     TriggerClientEvent('goodciv:client:toast', inc.patient, 'info', L('responder_en_route', Bridge.GetName(src)))
+    if Incidents.OnAccepted then Incidents.OnAccepted(inc, src) end
 
     if inc.responderCount >= Config.Alerts.MaxResponders then
         dismissAlerts(inc, 'alert_filled')
@@ -225,7 +227,7 @@ CreateThread(function()
             elseif t - inc.createdAt > Config.Alerts.IncidentLifetime then
                 Incidents.Close(inc, 'alert_closed')
             elseif inc.responderCount == 0 then
-                medicsOnDuty = medicsOnDuty or #Bridge.GetOnDutyMedics()
+                medicsOnDuty = medicsOnDuty or Bridge.CountOnDutyMedics()
                 if medicsOnDuty >= Config.Medics.MinOnDuty then
                     Incidents.Close(inc, 'medic_took_over')
                 elseif Config.Alerts.RealertAfter > 0 and t - inc.lastAlert >= Config.Alerts.RealertAfter then

@@ -50,7 +50,7 @@ Config.SignupPeds = {
     Enabled = true,
     -- 'auto' | 'ox_target' | 'qb-target' | 'key'
     -- 'auto' uses ox_target, then qb-target, then a "press E" prompt.
-    Interaction = 'auto',
+    Interaction = 'ox_target',
     -- How close (metres) the player must be to interact.
     Distance = 2.5,
     -- Peds spawn when a player is within this distance and despawn beyond it.
@@ -61,7 +61,7 @@ Config.SignupPeds = {
             model = `s_m_m_doctor_01`,
             -- Where the ped stands (x, y, z, heading). Use the coords from where YOUR
             -- character stands (e.g. /getcoords): the ped is placed 1m lower onto the floor.
-            coords = vector4(-303.81, -146.09, 40.24, 132.82),
+            coords = vector4(-305.35, -147.01, 40.24, 120.35),
             scenario = 'WORLD_HUMAN_CLIPBOARD', -- nil = stand idle
             blip = { sprite = 280, colour = 2, scale = 0.7 }, -- nil = no blip
         },
@@ -97,7 +97,8 @@ Config.Alerts = {
 Config.Dispatch = {
     -- Command civilians use to request a medic. Goes through the normal
     -- dispatch first, then falls back to GoodCiv carriers if no medics are on duty.
-    Command = 'medic',
+    -- nil = no command (vinewood-dispatch's /111 is used instead, see Config.Dispatch.Vinewood).
+    Command = nil,
 
     -- Existing "call EMS" server events to piggyback on. When any of these fire,
     -- the call has already gone to your normal dispatch, so GoodCiv only performs
@@ -114,11 +115,32 @@ Config.Dispatch = {
 
     -- Where /medic calls are forwarded so real medics see them.
     -- 'builtin'      : GoodCiv shows its own alert + blip to on-duty medics
+    -- 'vinewood'     : vinewood-dispatch (injured_person preset)
     -- 'ps-dispatch'  : ps-dispatch (v2) server event
     -- 'cd_dispatch'  : cd_dispatch
     -- 'custom'       : call Config.Dispatch.Custom below
     -- 'none'         : don't forward
-    Provider = 'builtin',
+    Provider = 'vinewood',
+
+    -- vinewood-dispatch bridge (only active while vinewood-dispatch is running).
+    -- When vinewood raises one of these ambulance calls and no ambulance units are on duty,
+    -- GoodCiv alerts carriers for any downed player near the call.
+    Vinewood = {
+        Enabled = true,
+        Presets = {
+            'person_down',     -- automatic civilian down detection
+            'call_111',        -- /111
+            'injured_person',
+        },
+        -- Downed players within this distance (metres) of the call become GoodCiv patients.
+        -- Covers bystanders calling /111 for someone else.
+        PatientRadius = 30.0,
+        -- Count on-duty medics with vinewood's ambulance service (Config.Services in vinewood).
+        UseVinewoodDuty = true,
+        -- Post GoodCiv progress (volunteers alerted / responding / handed over) as call updates.
+        Notes = true,
+        NoteAuthor = 'GoodCiv',
+    },
 
     -- Used when Provider = 'custom'. Runs on the server.
     ---@param patient number server id of the caller
@@ -158,7 +180,7 @@ Config.Treatment = {
     Assess = { Duration = 3 },
     Tourniquet = {
         Duration = 6,
-        Item = 'tourniquet',   -- nil = no item needed
+        Item = '',   -- nil = no item needed
         ConsumeItem = true,
     },
     CPR = {
@@ -205,8 +227,13 @@ Config.Hospitals = {
 Config.Revive = {
     qbcore = function(src) TriggerClientEvent('hospital:client:Revive', src) end,
     qbox = function(src)
-        -- qbx_medical; swap for your own if you use a different medical script
-        TriggerClientEvent('qbx_medical:client:playerRevived', src)
+        if GetResourceState('osp_ambulance') == 'started' then
+            -- osp_ambulance full revive (true = revive even if osp flags the injuries as unsurvivable)
+            TriggerClientEvent('hospital:client:Revive', src, true)
+        else
+            -- qbx_medical; swap for your own if you use a different medical script
+            TriggerClientEvent('qbx_medical:client:playerRevived', src)
+        end
     end,
     esx = function(src) TriggerClientEvent('esx_ambulancejob:revive', src) end,
     standalone = function(src) TriggerClientEvent('goodciv:client:standaloneRevive', src) end,

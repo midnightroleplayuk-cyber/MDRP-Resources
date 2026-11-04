@@ -205,6 +205,7 @@ RegisterNetEvent('goodciv:server:handover', function()
         toast(inc.patient, 'success', L('handover_patient', hospital.label))
         for r in pairs(inc.responders) do toast(r, 'success', L('handover_done', hospital.label)) end
         Incidents.Reward(inc, Config.Rewards.Handover)
+        inc.handedOverAt = hospital.label
         Incidents.Close(inc)
     end)
 end)
