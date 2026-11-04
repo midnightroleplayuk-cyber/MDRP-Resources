@@ -42,7 +42,9 @@ Config.Restraint = {
         Officer = { dict = 'mp_arresting', clip = 'a_uncuff', flag = 49 },
         Suspect = nil, -- turns to face the officer
         -- Vinewood front-cuff pose and rigid cuffs (stream/)
-        Idle = { dict = 'anim@policearrest', clip = 'frontcuff_speed', flag = 49 },
+        -- The original front-cuff pose (stream/anim_vinewoodpoliceinteration.ycd). anim@policearrest has a
+        -- frontcuff_speed too, but switch to it only once that clip has been re-exported correctly.
+        Idle = { dict = 'anim_vinewoodpoliceinteration', clip = 'frontcuff_speed', flag = 49 },
         Prop = {
             model = 'ukpolice_cuffs', bone = 57005,
             offset = vec3(0.020, -0.082, -0.004), rot = vec3(114.5, 44.3, -42.0),

@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.18.4
+- Front cuffs use the original front-cuff animation again (stream/anim_vinewoodpoliceinteration.ycd). The frontcuff_speed in the re-exported anim@policearrest.ycd bends the prisoner forward about 90° and was likely behind the crash while escorting. The officer's escorting animation still comes from anim@policearrest.ycd.
+
 ## 1.18.3
 - Updated arrest animations (anim@policearrest.ycd): the escorting clip now keys both clavicles, both upper arms, forearms and hands, so the officer's arms hold the pose from Anim Studio instead of being moved by other animations.
 
