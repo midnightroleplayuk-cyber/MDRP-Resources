@@ -33,6 +33,12 @@ function Bridge.IsDowned()
     local state = LocalPlayer.state
     if state.isDead or state.isLaststand or state.dead then return true end
 
+    -- osp_ambulance keeps its own death / last stand state and doesn't set framework metadata.
+    if started('osp_ambulance') then
+        local ok, dead = pcall(function() return exports.osp_ambulance:isDead() end)
+        if ok then return dead == true end
+    end
+
     if Bridge.Name == 'qbcore' then
         local meta = QBCore.Functions.GetPlayerData().metadata
         return meta ~= nil and (meta.isdead or meta.inlaststand) or false

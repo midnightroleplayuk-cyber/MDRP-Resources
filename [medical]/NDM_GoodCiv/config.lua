@@ -205,8 +205,13 @@ Config.Hospitals = {
 Config.Revive = {
     qbcore = function(src) TriggerClientEvent('hospital:client:Revive', src) end,
     qbox = function(src)
-        -- qbx_medical; swap for your own if you use a different medical script
-        TriggerClientEvent('qbx_medical:client:playerRevived', src)
+        if GetResourceState('osp_ambulance') == 'started' then
+            -- osp_ambulance full revive (true = revive even if osp flags the injuries as unsurvivable)
+            TriggerClientEvent('hospital:client:Revive', src, true)
+        else
+            -- qbx_medical; swap for your own if you use a different medical script
+            TriggerClientEvent('qbx_medical:client:playerRevived', src)
+        end
     end,
     esx = function(src) TriggerClientEvent('esx_ambulancejob:revive', src) end,
     standalone = function(src) TriggerClientEvent('goodciv:client:standaloneRevive', src) end,
