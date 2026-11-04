@@ -57,7 +57,7 @@ Config.DisplayAmounts = { 10, 20, 50, 100, 200, 250, 500, 1000, 2500, 5000, 1000
 -- LGMods_Banking on Qbox uses the player's framework bank balance, so bank payouts
 -- are made through qbx_core. This keeps the money visible to LGMods_Banking while
 -- avoiding reliance on undocumented/private LGMods exports.
-Config.Banking = 'auto' -- 'auto', 'qbox', or 'lgmods'
+Config.Banking = 'qbox' -- 'auto', 'qbox', or 'lgmods'
 
 -- Stand persistence is database-backed. The table is created automatically via oxmysql.
 Config.PersistStands = true
