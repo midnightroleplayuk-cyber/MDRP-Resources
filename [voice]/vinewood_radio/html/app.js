@@ -44,7 +44,7 @@ const S = {
     txSlot: 'primary',
     rxSlot: 'primary',
     me: null,
-    talking: new Set(),
+    talking: new Map(), // [src] = 'primary' | 'secondary' (which of OUR talkgroups they're talking on)
     listVisible: true,
     listMoving: false,
     listPos: null,      // { x, y } as fractions of the screen
@@ -176,7 +176,14 @@ function unitPages() {
     return pages;
 }
 
-const isTalking = u => (u.src === S.me && S.tx) || S.talking.has(u.src);
+// Is this unit talking on talkgroup `id`? (Only lights the section/screen for the talkgroup they're actually on.)
+const slotFor = id => !id || id === '*' ? null : id === attachedId() ? 'primary' : id === S.tg2 ? 'secondary' : null;
+function isTalking(u, id) {
+    const slot = slotFor(id);
+    if (u.src === S.me) return S.tx && (!slot || S.txSlot === slot);
+    const s = S.talking.get(u.src);
+    return s !== undefined && (!slot || s === slot);
+}
 
 const peerName = p => p ? (p.callsign || p.issi) : '';
 const lookup = issi => S.dir.find(u => u.issi === issi);
@@ -256,7 +263,7 @@ async function powerOn() {
 
     S.data = res;
     S.me = res.me ?? null;
-    S.talking = new Set();
+    S.talking = new Map();
     S.volume = res.volume ?? 60;
     S.speaker = !!res.speaker;
     S.tg2 = res.tg2 || null;
@@ -282,7 +289,7 @@ async function deny(reason) {
 function resetLive() {
     stopLoop('PTP');
     S.tx = false; S.rx = null; S.ptp = null; S.emergency = false; S.alert = null;
-    S.talking = new Set();
+    S.talking = new Map();
     S.toast = null; S.stack = []; S.screen = 'home';
 }
 
@@ -461,7 +468,7 @@ const LISTS = {
             const id = S.ctx.tg || attachedId();
             return unitsOn(id).map(u => ({
                 label: u.callsign,
-                value: isTalking(u) ? 'TX' : u.src === S.me ? 'You' : u.inCall ? 'In call'
+                value: isTalking(u, id) ? 'TX' : u.src === S.me ? 'You' : u.inCall ? 'In call'
                     : (id !== '*' && u.tg2 === id) ? '2nd'
                     : id === '*' ? (u.talkgroup || '') : u.issi,
                 act: () => { if (u.src !== S.me) dialIssi(u.issi); else toast('That is you'); },
@@ -662,7 +669,7 @@ function placeList(el) {
 function listSection(title, units, live, max, slot) {
     const rows = units.slice(0, max).map(u => {
         const mon = slot !== '*' && u.tg2 === slot;
-        const cls = [live && isTalking(u) ? 'talk' : '', u.src === S.me ? 'me' : '', u.inCall ? 'call' : '', mon ? 'mon' : ''].join(' ');
+        const cls = [live && isTalking(u, slot) ? 'talk' : '', u.src === S.me ? 'me' : '', u.inCall ? 'call' : '', mon ? 'mon' : ''].join(' ');
         const tag = u.inCall ? 'In call' : mon ? '2nd' : esc(u.service);
         return `<li class="${cls}"><i></i><span>${esc(u.callsign)}</span><small>${tag}</small></li>`;
     }).join('');
@@ -892,7 +899,7 @@ addEventListener('message', ({ data: msg }) => {
             break;
         case 'rx':
             if (S.power !== 'on') return;
-            if (d.active) { S.rx = d.label; S.rxSlot = d.slot || 'primary'; if (d.src != null) S.talking.add(d.src); }
+            if (d.active) { S.rx = d.label; S.rxSlot = d.slot || 'primary'; if (d.src != null) S.talking.set(d.src, d.slot || 'primary'); }
             else {
                 if (d.src != null) S.talking.delete(d.src);
                 S.rx = null;
