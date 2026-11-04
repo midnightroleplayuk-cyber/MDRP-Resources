@@ -69,8 +69,10 @@ Config.Restraint = {
         rot = vec3(0.0, 0.0, 0.0),
         vertex = 2,
         keepBone = false,
-        -- The officer's escorting animation (upper body, so they can walk). false = none.
-        OfficerAnim = { dict = 'anim@policearrest', clip = 'escorting', flag = 49 },
+        -- The officer's escorting animation (upper body, so they can walk). Off until the escorting clip in
+        -- anim@policearrest.ycd stops crashing the game when blended with walking. To try it:
+        -- OfficerAnim = { dict = 'anim@policearrest', clip = 'escorting', flag = 49 },
+        OfficerAnim = false,
     },
     -- Key to let go of the person you're escorting (players can rebind it in GTA settings)
     LetGoKey = 'G',

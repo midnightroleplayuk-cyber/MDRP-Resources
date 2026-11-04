@@ -210,7 +210,7 @@ end, false)
 ---------------------------------------------------------------------------
 -- The officer's escorting animation (upper body, so they can still walk and run)
 ---------------------------------------------------------------------------
-Cfg.Escort._anim = Cfg.Escort.OfficerAnim or nil
+Cfg.Escort._anim = Cfg.Escort.OfficerAnim or { dict = 'anim@policearrest', clip = 'escorting', flag = 49 }
 local function officerAnim(on)
     local a = Cfg.Escort.OfficerAnim
     if not a then return end
@@ -227,13 +227,23 @@ local function officerAnim(on)
     end
 end
 
--- Kept playing for as long as you're escorting (other actions can interrupt it)
+-- Started once when you begin escorting, and only put back if something else has stopped it for a
+-- couple of seconds (not re-started constantly)
 CreateThread(function()
-    local was = false
+    local was, missing = false, 0
     while true do
         Wait(500)
         local now = escortingTarget ~= nil and escortingTarget ~= false
-        if now then officerAnim(true) elseif was then officerAnim(false) end
+        local a = Cfg.Escort.OfficerAnim
+        if now and a then
+            if not was then officerAnim(true); missing = 0
+            elseif not IsEntityPlayingAnim(PlayerPedId(), a.dict, a.clip, 3) then
+                missing = missing + 1
+                if missing >= 4 then officerAnim(true); missing = 0 end
+            else missing = 0 end
+        elseif was and not now then
+            officerAnim(false)
+        end
         was = now
     end
 end)

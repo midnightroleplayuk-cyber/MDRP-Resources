@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.18.5
+- The officer's escorting animation is off by default (Config.Restraint.Escort.OfficerAnim = false). The re-exported escorting clip crashes the game while the officer walks with a prisoner attached. Escorting works normally without it. When it's on, it's started once per escort and only put back if something else has stopped it for 2 seconds, instead of being re-started every half second.
+
 ## 1.18.4
 - Front cuffs use the original front-cuff animation again (stream/anim_vinewoodpoliceinteration.ycd). The frontcuff_speed in the re-exported anim@policearrest.ycd bends the prisoner forward about 90° and was likely behind the crash while escorting. The officer's escorting animation still comes from anim@policearrest.ycd.
 
