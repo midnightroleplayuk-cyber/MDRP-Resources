@@ -18,7 +18,7 @@
 OpenServer = {}
 
 -- Show character names (firstname lastname) instead of FiveM names at the table.
-local USE_CHARACTER_NAMES = false
+local USE_CHARACTER_NAMES = true
 
 ---------------------------------------------------------------------------------------------------
 --- Money (stakes only)
