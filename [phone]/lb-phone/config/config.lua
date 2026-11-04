@@ -210,8 +210,8 @@ Config.Companies.Services = {
         location = {
             name = "Midnight Health Service",
             coords = {
-                x = 304.2,
-                y = -587.0
+                x = -308.91,
+                y = -163.5
             }
         }
     },
@@ -443,14 +443,14 @@ Config.CellTowers.Range = {
 Config.Locations = { -- Locations that'll appear in the maps app.
     {
         position = vector2(428.9, -984.5),
-        name = "LSPD",
+        name = "Police",
         description = "MIDNIGHT POLICE CONSTABULARY",
         icon = "https://cdn-icons-png.flaticon.com/512/7211/7211100.png",
     },
     {
-        position = vector2(304.2, -587.0),
-        name = "Pillbox",
-        description = "Pillbox Medical Hospital",
+        position = vector2(-308.91, -163.5),
+        name = "Hospital",
+        description = "Midnight Health Service",
         icon = "https://cdn-icons-png.flaticon.com/128/1032/1032989.png",
     },
 }
