@@ -42,7 +42,7 @@ Config.Restraint = {
         Officer = { dict = 'mp_arresting', clip = 'a_uncuff', flag = 49 },
         Suspect = nil, -- turns to face the officer
         -- Vinewood front-cuff pose and rigid cuffs (stream/)
-        Idle = { dict = 'anim_vinewoodpoliceinteration', clip = 'frontcuff_speed', flag = 49 },
+        Idle = { dict = 'anim@policearrest', clip = 'frontcuff_speed', flag = 49 },
         Prop = {
             model = 'ukpolice_cuffs', bone = 57005,
             offset = vec3(0.020, -0.082, -0.004), rot = vec3(114.5, 44.3, -42.0),
@@ -58,7 +58,17 @@ Config.Restraint = {
     },
 
     -- bone 0 is the officer's root, which stays upright (the pelvis, 11816, rocks as they walk and tilts the prisoner)
-    Escort = { bone = 0, offset = vec3(0.38, 0.45, 0.0), rot = vec3(0.0, 0.0, 0.0) },
+    -- Escorting (stream/anim@policearrest.ycd): the officer plays the escorting animation and the prisoner is
+    -- held relative to the officer's pelvis (bone 11816) at the animation's frame 0. Re-copy the offset
+    -- and rotation if the escorting pose is changed.
+    Escort = {
+        bone = 11816,
+        offset = vec3(-0.019, 0.346, 0.182),
+        rot = vec3(0.0, -90.0, 0.0),
+        vertex = 1,
+        keepBone = true,      -- use the bone exactly as given (older configs used the root instead)
+        OfficerAnim = { dict = 'anim@policearrest', clip = 'escorting', flag = 49 },
+    },
     -- Key to let go of the person you're escorting (players can rebind it in GTA settings)
     LetGoKey = 'G',
 }
