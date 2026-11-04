@@ -107,7 +107,9 @@ end)
 --- Attach point on the officer. The pelvis (11816, used by older configs) rocks as they walk and tilts the
 --- prisoner sideways, so it's swapped for the root (0), which stays upright.
 local function boneOn(op, bone)
-    if bone == nil or bone == 11816 then bone = 0 end
+    -- Older configs used the pelvis without a matching pose, which tilted the prisoner; those get the
+    -- root. A config made for the escorting animation sets keepBone and uses its bone exactly.
+    if bone == nil or (bone == 11816 and not Cfg.Escort.keepBone) then bone = 0 end
     return GetPedBoneIndex(op, bone)
 end
 
@@ -116,9 +118,39 @@ local function attachTo(officerServerId)
     if op == 0 then return false end
     local e = Cfg.Escort
     AttachEntityToEntity(ped, op, boneOn(op, e.bone), e.offset.x, e.offset.y, e.offset.z,
-        e.rot.x, e.rot.y, e.rot.z, false, false, false, false, 2, true)
+        e.rot.x, e.rot.y, e.rot.z, false, false, false, false, e.vertex or 2, true)
     return true
 end
+
+---------------------------------------------------------------------------
+-- The officer's escorting animation (upper body, so they can still walk and run)
+---------------------------------------------------------------------------
+local function officerAnim(on)
+    local a = Cfg.Escort.OfficerAnim
+    if not a then return end
+    local me = PlayerPedId()
+    if on then
+        RequestAnimDict(a.dict)
+        local deadline = GetGameTimer() + 3000
+        while not HasAnimDictLoaded(a.dict) and GetGameTimer() < deadline do Wait(10) end
+        if HasAnimDictLoaded(a.dict) and not IsEntityPlayingAnim(me, a.dict, a.clip, 3) then
+            TaskPlayAnim(me, a.dict, a.clip, 8.0, -8.0, -1, a.flag or 49, 0, false, false, false)
+        end
+    else
+        StopAnimTask(me, a.dict, a.clip, 2.0)
+    end
+end
+
+-- Kept playing for as long as you're escorting (other actions can interrupt it)
+CreateThread(function()
+    local was = false
+    while true do
+        Wait(500)
+        local now = escortingTarget ~= nil and escortingTarget ~= false
+        if now then officerAnim(true) elseif was then officerAnim(false) end
+        was = now
+    end
+end)
 
 local function applyEscort(value)
     local ped = PlayerPedId()

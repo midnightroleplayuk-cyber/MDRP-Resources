@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.18.0
+- New arrest animations, stream/anim@policearrest.ycd: the officer plays "escorting" while escorting someone, and front cuffs use its "frontcuff_speed". The prisoner is held to the officer's pelvis with the offset and rotation taken from the escorting pose's first frame (Config.Restraint.Escort). The old anim_vinewoodpoliceinteration.ycd is removed.
+
 ## 1.17.1
 - The dog command menu is on G by default (was K). G still lets go while you're escorting someone; otherwise, with the dog out, it opens the dog menu. With no dog out, it does nothing.
 
