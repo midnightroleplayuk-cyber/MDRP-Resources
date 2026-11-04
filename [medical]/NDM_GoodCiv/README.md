@@ -56,6 +56,10 @@ INSERT INTO items (name, label, weight) VALUES ('tourniquet', 'Tourniquet', 1);
 
 Interaction uses ox_target, then qb-target, then a "Press E" prompt (`Interaction = 'auto'`). The server checks the player is next to the ped before toggling. Set `Config.Carriers.Command = nil` to make the peds the only way to sign up.
 
+## vinewood-dispatch
+
+With `Config.Dispatch.Vinewood.Enabled` and vinewood-dispatch running, GoodCiv listens for vinewood's ambulance calls (`person_down`, `call_111`, `injured_person` by default). If no players are on duty in vinewood's `ambulance` service, every downed player within `PatientRadius` of the call becomes a GoodCiv patient and carriers are alerted. GoodCiv posts its progress (volunteers alerted, who is responding, handover or revive) as updates on the vinewood call, so units and dispatchers can see them in the F9 log. `Provider = 'vinewood'` sends GoodCiv's own requests (the `RequestMedic` export) to vinewood as `injured_person`. `/medic` is off by default because `/111` does the same job.
+
 ## How a call flows
 
 1. A player goes down and uses their death screen's "call EMS" (one of `Config.Dispatch.ListenEvents`), or types `/medic`, or your script calls the export.

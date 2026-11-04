@@ -146,4 +146,26 @@ function Bridge.GetOnDutyMedics()
     return medics
 end
 
+local function useVinewoodDuty()
+    local v = Config.Dispatch.Vinewood
+    return v and v.Enabled and v.UseVinewoodDuty and started('vinewood-dispatch')
+end
+
+---Number of on-duty medics (vinewood-dispatch's ambulance service when bridged).
+function Bridge.CountOnDutyMedics()
+    if useVinewoodDuty() then
+        -- Not GetOnDutyCount: that also counts logged-in dispatchers.
+        local ok, count = pcall(function()
+            local n = 0
+            for _, id in ipairs(GetPlayers()) do
+                local service, onDuty = exports['vinewood-dispatch']:GetPlayerService(tonumber(id))
+                if service == 'ambulance' and onDuty then n = n + 1 end
+            end
+            return n
+        end)
+        if ok then return count end
+    end
+    return #Bridge.GetOnDutyMedics()
+end
+
 print(('^2[goodciv]^7 framework: %s, inventory: %s'):format(Bridge.Name, Bridge.Inventory))

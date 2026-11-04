@@ -28,6 +28,7 @@ server_scripts {
     'server/incidents.lua',
     'server/treatment.lua',
     'server/dispatch.lua',
+    'server/vinewood.lua',
 }
 
 ui_page 'html/index.html'

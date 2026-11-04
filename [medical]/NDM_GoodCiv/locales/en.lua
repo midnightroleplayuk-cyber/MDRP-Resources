@@ -51,6 +51,13 @@ Locales.en = {
 
     medic_alert = 'Medical call: %s',
 
+    vw_note_alerted = 'No ambulance units on duty. %s GoodCiv volunteer(s) alerted.',
+    vw_note_none = 'No ambulance units or GoodCiv volunteers available.',
+    vw_note_responding = 'GoodCiv volunteer %s is responding.',
+    vw_note_handover = 'Patient taken to %s by GoodCiv volunteers.',
+    vw_note_resolved = 'Patient revived on scene.',
+    vw_note_ended = 'GoodCiv response ended.',
+
     signup_join = 'Sign up as a GoodCiv volunteer',
     signup_leave = 'Sign off as a GoodCiv volunteer',
     help_signup_join = 'Press ~INPUT_CONTEXT~ to sign up as a GoodCiv volunteer',

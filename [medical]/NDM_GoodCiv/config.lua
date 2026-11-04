@@ -97,7 +97,8 @@ Config.Alerts = {
 Config.Dispatch = {
     -- Command civilians use to request a medic. Goes through the normal
     -- dispatch first, then falls back to GoodCiv carriers if no medics are on duty.
-    Command = 'medic',
+    -- nil = no command (vinewood-dispatch's /111 is used instead, see Config.Dispatch.Vinewood).
+    Command = nil,
 
     -- Existing "call EMS" server events to piggyback on. When any of these fire,
     -- the call has already gone to your normal dispatch, so GoodCiv only performs
@@ -114,11 +115,32 @@ Config.Dispatch = {
 
     -- Where /medic calls are forwarded so real medics see them.
     -- 'builtin'      : GoodCiv shows its own alert + blip to on-duty medics
+    -- 'vinewood'     : vinewood-dispatch (injured_person preset)
     -- 'ps-dispatch'  : ps-dispatch (v2) server event
     -- 'cd_dispatch'  : cd_dispatch
     -- 'custom'       : call Config.Dispatch.Custom below
     -- 'none'         : don't forward
-    Provider = 'builtin',
+    Provider = 'vinewood',
+
+    -- vinewood-dispatch bridge (only active while vinewood-dispatch is running).
+    -- When vinewood raises one of these ambulance calls and no ambulance units are on duty,
+    -- GoodCiv alerts carriers for any downed player near the call.
+    Vinewood = {
+        Enabled = true,
+        Presets = {
+            'person_down',     -- automatic civilian down detection
+            'call_111',        -- /111
+            'injured_person',
+        },
+        -- Downed players within this distance (metres) of the call become GoodCiv patients.
+        -- Covers bystanders calling /111 for someone else.
+        PatientRadius = 30.0,
+        -- Count on-duty medics with vinewood's ambulance service (Config.Services in vinewood).
+        UseVinewoodDuty = true,
+        -- Post GoodCiv progress (volunteers alerted / responding / handed over) as call updates.
+        Notes = true,
+        NoteAuthor = 'GoodCiv',
+    },
 
     -- Used when Provider = 'custom'. Runs on the server.
     ---@param patient number server id of the caller
