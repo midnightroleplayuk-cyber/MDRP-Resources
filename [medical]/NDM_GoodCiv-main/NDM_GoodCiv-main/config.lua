@@ -1,0 +1,195 @@
+Config = {}
+
+-- Framework: 'auto' | 'qbcore' | 'qbox' | 'esx' | 'standalone'
+-- 'auto' picks qbx_core, then qb-core, then es_extended, then falls back to standalone.
+Config.Framework = 'auto'
+
+-- Inventory used for tourniquets / kits: 'auto' | 'ox_inventory' | 'framework' | 'none'
+-- 'none' means items are never required or consumed.
+Config.Inventory = 'auto'
+
+Config.Locale = 'en'
+Config.Debug = false
+
+---------------------------------------------------------------------------
+-- Medics
+---------------------------------------------------------------------------
+Config.Medics = {
+    -- Jobs that count as medics. A medic must be on duty to count.
+    Jobs = { 'ambulance', 'ems', 'doctor', 'fire' },
+    -- Standalone servers: players with this ace count as on-duty medics.
+    StandaloneAce = 'goodciv.medic',
+    -- GoodCiv carriers are only alerted when FEWER than this many medics are on duty.
+    -- 1 = "only when there are no medics at all".
+    MinOnDuty = 1,
+}
+
+---------------------------------------------------------------------------
+-- GoodCiv carriers (the civilian volunteers)
+---------------------------------------------------------------------------
+Config.Carriers = {
+    -- Command players use to sign up / sign off as a GoodCiv carrier.
+    Command = 'goodciv',
+    -- Players with these jobs can never be carriers (they have their own dispatch).
+    BlockedJobs = { 'police', 'sheriff', 'ambulance', 'ems', 'doctor', 'fire' },
+    -- Optional item a carrier must hold to sign up and to receive alerts (nil = none).
+    -- e.g. 'firstaid_kit'
+    RequiredItem = nil,
+    -- Optional ace permission required to sign up (nil = anyone).
+    -- e.g. 'goodciv.carrier'  ->  add_ace group.carrier goodciv.carrier allow
+    AcePermission = nil,
+    -- Remember opt-in between sessions (stored in server KVP by identifier).
+    Persist = true,
+}
+
+---------------------------------------------------------------------------
+-- Alerts
+---------------------------------------------------------------------------
+Config.Alerts = {
+    -- Only carriers within this distance (metres) of the patient are alerted. 0 = everyone.
+    Radius = 2500.0,
+    -- Seconds an alert stays on screen before it is auto-declined.
+    Timeout = 30,
+    -- How many carriers may accept the same incident.
+    MaxResponders = 2,
+    -- If nobody accepts, re-alert carriers this many seconds later (0 = never).
+    RealertAfter = 60,
+    -- Incident closes automatically after this many seconds with no handover.
+    IncidentLifetime = 900,
+    -- Default keys (players can rebind in Settings > Key Bindings > FiveM).
+    AcceptKey = 'PAGEUP',
+    DeclineKey = 'PAGEDOWN',
+    -- Sound on alert (frontend sound name / set).
+    Sound = { name = 'Event_Message_Purple', set = 'GTAO_FM_Events_Soundset' },
+}
+
+---------------------------------------------------------------------------
+-- Dispatch integration
+---------------------------------------------------------------------------
+Config.Dispatch = {
+    -- Command civilians use to request a medic. Goes through the normal
+    -- dispatch first, then falls back to GoodCiv carriers if no medics are on duty.
+    Command = 'medic',
+
+    -- Existing "call EMS" server events to piggyback on. When any of these fire,
+    -- the call has already gone to your normal dispatch, so GoodCiv only performs
+    -- the "no medics available" fallback check for the sender.
+    -- Remove the ones you don't use or add your own.
+    ListenEvents = {
+        'hospital:server:ambulanceAlert',      -- qb-ambulancejob (last stand / dead "call EMS")
+        'esx_ambulancejob:onPlayerDistress',   -- esx_ambulancejob distress signal
+    },
+
+    -- Automatically raise an incident when a player goes down (seconds after going down, 0 = off).
+    -- Leave at 0 if your death screen already has a "call EMS" button wired into ListenEvents.
+    AutoAlertDelay = 0,
+
+    -- Where /medic calls are forwarded so real medics see them.
+    -- 'builtin'      : GoodCiv shows its own alert + blip to on-duty medics
+    -- 'ps-dispatch'  : ps-dispatch (v2) server event
+    -- 'cd_dispatch'  : cd_dispatch
+    -- 'custom'       : call Config.Dispatch.Custom below
+    -- 'none'         : don't forward
+    Provider = 'builtin',
+
+    -- Used when Provider = 'custom'. Runs on the server.
+    ---@param patient number server id of the caller
+    ---@param coords vector3
+    ---@param message string
+    Custom = function(patient, coords, message)
+        -- exports['my-dispatch']:SendAlert({ job = 'ambulance', coords = coords, message = message })
+    end,
+}
+
+---------------------------------------------------------------------------
+-- Patient condition
+---------------------------------------------------------------------------
+Config.Conditions = {
+    -- Only life-threatening calls (unconscious, not breathing, major bleeding) go to carriers.
+    LifeThreateningOnly = true,
+    -- Chance (0-1) a downed patient is in cardiac arrest (not breathing).
+    NotBreathingChance = 0.6,
+    -- Chance (0-1) of major bleeding by the damage type that put the patient down.
+    -- Damage types: bullet, explosive, melee, vehicle, fall, other
+    MajorBleedChance = {
+        bullet = 0.85,
+        explosive = 0.7,
+        melee = 0.4,
+        vehicle = 0.5,
+        fall = 0.2,
+        other = 0.1,
+    },
+}
+
+---------------------------------------------------------------------------
+-- Treatment
+---------------------------------------------------------------------------
+Config.Treatment = {
+    -- Responder must be this close (metres) to treat.
+    Distance = 3.0,
+    Assess = { Duration = 3 },
+    Tourniquet = {
+        Duration = 6,
+        Item = 'tourniquet',   -- nil = no item needed
+        ConsumeItem = true,
+    },
+    CPR = {
+        Duration = 20,         -- seconds per CPR cycle
+        TargetBpm = { 100, 120 },
+        BaseChance = 0.25,     -- chance of ROSC with zero technique
+        TechniqueBonus = 0.55, -- added on top, scaled by compression quality (0-1)
+        UntreatedBleedPenalty = 0.6, -- chance multiplier if major bleed not controlled
+        Cooldown = 3,
+    },
+    RecoveryPosition = { Duration = 4 },
+}
+
+---------------------------------------------------------------------------
+-- Transport
+---------------------------------------------------------------------------
+Config.Transport = {
+    -- Patient must be breathing with bleeding controlled before you can load them.
+    RequireStable = true,
+    -- Max distance (metres) from the responder to the vehicle used.
+    VehicleDistance = 6.0,
+    -- Speed limit (mph) for the driver while the patient is onboard. 0 = no limit.
+    SpeedLimitMph = 70,
+    -- A hit that removes this much vehicle body health counts as a crash.
+    CrashThreshold = 80.0,
+    -- Chance a crash makes a stable patient arrest again.
+    CrashArrestChance = 0.35,
+    -- Vehicle classes that can't be used (8 = motorcycles, 13 = cycles, 14 = boats, 15 = helis, 16 = planes...).
+    BlockedClasses = { 8, 13, 14, 15, 16, 21 },
+}
+
+Config.Hospitals = {
+    { label = 'Pillbox Hill Medical', coords = vector3(298.6, -584.5, 43.3), drop = vector4(307.6, -595.3, 43.3, 70.0), radius = 30.0 },
+    { label = 'Mount Zonah Medical', coords = vector3(-449.7, -340.8, 34.5), drop = vector4(-448.5, -336.6, 34.5, 80.0), radius = 30.0 },
+    { label = 'Sandy Shores Medical', coords = vector3(1839.4, 3672.9, 34.3), drop = vector4(1838.3, 3674.3, 34.3, 210.0), radius = 30.0 },
+    { label = 'Paleto Bay Medical', coords = vector3(-247.8, 6331.2, 32.4), drop = vector4(-251.2, 6334.1, 32.4, 225.0), radius = 30.0 },
+}
+
+---------------------------------------------------------------------------
+-- Revive on handover
+---------------------------------------------------------------------------
+-- How a patient is revived once handed over at a hospital. Runs on the server.
+-- Defaults per framework are below; override if your ambulance script differs.
+Config.Revive = {
+    qbcore = function(src) TriggerClientEvent('hospital:client:Revive', src) end,
+    qbox = function(src)
+        -- qbx_medical; swap for your own if you use a different medical script
+        TriggerClientEvent('qbx_medical:client:playerRevived', src)
+    end,
+    esx = function(src) TriggerClientEvent('esx_ambulancejob:revive', src) end,
+    standalone = function(src) TriggerClientEvent('goodciv:client:standaloneRevive', src) end,
+}
+
+---------------------------------------------------------------------------
+-- Rewards
+---------------------------------------------------------------------------
+Config.Rewards = {
+    Enabled = true,
+    Account = 'cash',   -- qb/qbx: cash | bank, esx: money | bank
+    Handover = 350,     -- per responder on successful hospital handover
+    Assist = 100,       -- per responder whose patient was revived on scene by others
+}

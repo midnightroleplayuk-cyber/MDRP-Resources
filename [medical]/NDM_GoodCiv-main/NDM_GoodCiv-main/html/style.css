@@ -1,0 +1,274 @@
+:root {
+    --bg: rgba(14, 18, 24, 0.92);
+    --bg-raised: rgba(28, 34, 44, 0.95);
+    --line: rgba(255, 255, 255, 0.08);
+    --text: #e8edf2;
+    --muted: #93a0ad;
+    --accent: #22c58b;
+    --accent-dim: rgba(34, 197, 139, 0.16);
+    --warn: #f5a524;
+    --danger: #ef4d5a;
+    --danger-dim: rgba(239, 77, 90, 0.16);
+    --info: #4ea8ff;
+    --radius: 12px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: transparent;
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    color: var(--text);
+    font-size: 14px;
+    user-select: none;
+}
+
+.hidden { display: none !important; }
+
+.card {
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+    padding: 14px 16px;
+}
+
+.eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 700;
+}
+
+.dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); }
+.dot.pulse, .alert .dot { animation: pulse 1.2s ease-in-out infinite; }
+.alert .dot { background: var(--danger); }
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.35; transform: scale(0.75); }
+}
+
+.tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+.tag {
+    font-size: 12px;
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 999px;
+    background: var(--danger-dim);
+    color: #ff9aa2;
+}
+
+kbd {
+    display: inline-block;
+    font-family: inherit;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 1px 6px;
+    border-radius: 4px;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    background: rgba(255, 255, 255, 0.08);
+}
+
+/* Alerts --------------------------------------------------------------- */
+#alerts {
+    position: absolute;
+    top: 24px;
+    right: 24px;
+    width: 330px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.alert { border-left: 3px solid var(--danger); animation: slideIn 0.25s ease-out; }
+.alert .eyebrow { color: var(--danger); }
+.alert h2 { font-size: 16px; margin-top: 6px; }
+.alert .meta { color: var(--muted); margin-top: 6px; font-size: 13px; }
+.alert .buttons { display: flex; gap: 8px; margin-top: 12px; }
+.alert .buttons button { flex: 1; }
+.alert .timer { height: 3px; background: var(--line); border-radius: 2px; margin-top: 12px; overflow: hidden; }
+.alert .timer div { height: 100%; background: var(--danger); width: 100%; }
+
+@keyframes slideIn {
+    from { transform: translateX(40px); opacity: 0; }
+    to { transform: none; opacity: 1; }
+}
+
+button {
+    font-family: inherit;
+    font-size: 13px;
+    color: var(--text);
+    background: var(--bg-raised);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 8px 12px;
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s, opacity 0.15s;
+}
+button:hover:not(:disabled) { border-color: rgba(255, 255, 255, 0.25); }
+button:disabled { opacity: 0.35; cursor: not-allowed; }
+button.primary { background: var(--accent); border-color: var(--accent); color: #04140d; font-weight: 700; }
+button.ghost { background: transparent; }
+button.danger { color: var(--danger); }
+button.icon { width: 32px; height: 32px; padding: 0; font-size: 20px; line-height: 1; }
+
+/* Toasts --------------------------------------------------------------- */
+#toasts {
+    position: absolute;
+    top: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    width: 440px;
+}
+.toast {
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-left: 3px solid var(--info);
+    border-radius: 8px;
+    padding: 10px 14px;
+    width: 100%;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+    animation: fadeDown 0.2s ease-out;
+    transition: opacity 0.3s;
+}
+.toast.success { border-left-color: var(--accent); }
+.toast.warning { border-left-color: var(--warn); }
+.toast.error { border-left-color: var(--danger); }
+.toast.out { opacity: 0; }
+
+@keyframes fadeDown {
+    from { transform: translateY(-10px); opacity: 0; }
+    to { transform: none; opacity: 1; }
+}
+
+/* HUD + patient card -------------------------------------------------- */
+#hud { position: absolute; right: 24px; bottom: 260px; width: 280px; }
+.hud-step { margin-top: 10px; color: var(--muted); font-size: 13px; }
+
+#patient {
+    position: absolute;
+    bottom: 120px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 380px;
+    text-align: center;
+}
+#patient .eyebrow { justify-content: center; }
+.patient-title { font-size: 16px; font-weight: 600; margin-top: 8px; }
+.patient-sub { color: var(--muted); margin-top: 4px; font-size: 13px; }
+
+/* Progress ------------------------------------------------------------- */
+#progress {
+    position: absolute;
+    bottom: 80px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 360px;
+    z-index: 20;
+}
+.progress-label { text-align: center; margin-bottom: 6px; font-weight: 600; text-shadow: 0 1px 4px #000; }
+.bar { height: 8px; background: rgba(255, 255, 255, 0.1); border-radius: 4px; overflow: hidden; }
+.bar .fill { height: 100%; width: 0; background: var(--accent); }
+
+/* Treatment panel ------------------------------------------------------ */
+#treatment {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.25);
+}
+.panel {
+    position: relative;
+    width: 560px;
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+.panel header { display: flex; justify-content: space-between; align-items: flex-start; }
+.panel h1 { font-size: 20px; margin-top: 4px; }
+
+.vitals { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 16px; }
+.vital {
+    background: var(--bg-raised);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 10px;
+}
+.vital span { display: block; font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; }
+.vital strong { display: block; margin-top: 4px; font-size: 14px; }
+.vital.bad { border-color: rgba(239, 77, 90, 0.5); background: var(--danger-dim); }
+.vital.bad strong { color: #ff9aa2; }
+.vital.good strong { color: var(--accent); }
+.vital.unknown strong { color: var(--muted); }
+
+.advice {
+    margin-top: 14px;
+    padding: 10px 12px;
+    border-radius: 10px;
+    background: var(--accent-dim);
+    color: #a6f0d2;
+    font-size: 13px;
+}
+.advice.urgent { background: var(--danger-dim); color: #ffc2c7; }
+
+.actions { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-top: 14px; }
+.actions button { text-align: left; padding: 12px; display: flex; flex-direction: column; gap: 3px; }
+.actions button b { font-size: 14px; }
+.actions button small { color: var(--muted); font-size: 12px; }
+.actions button.recommended { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent) inset; }
+
+.panel footer { display: flex; justify-content: space-between; align-items: center; margin-top: 16px; color: var(--muted); font-size: 12px; }
+
+/* CPR minigame --------------------------------------------------------- */
+#cpr {
+    position: absolute;
+    inset: 0;
+    background: rgb(14, 18, 24);
+    border-radius: 16px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+}
+.cpr-title { font-size: 22px; font-weight: 700; }
+.cpr-hint { color: var(--muted); }
+.metronome { position: relative; width: 150px; height: 150px; }
+.metronome .beat, .metronome .press {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+}
+.metronome .beat { border: 3px solid var(--accent); opacity: 0.35; }
+.metronome .beat.tick { animation: tick 0.3s ease-out; }
+.metronome .press { background: var(--accent-dim); transform: scale(0.6); transition: transform 0.08s; }
+.metronome .press.down { transform: scale(0.85); background: rgba(34, 197, 139, 0.4); }
+.metronome .press.good { background: rgba(34, 197, 139, 0.6); }
+.metronome .press.bad { background: var(--danger-dim); }
+
+@keyframes tick {
+    from { transform: scale(1.08); opacity: 1; }
+    to { transform: scale(1); opacity: 0.35; }
+}
+
+.cpr-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; width: 100%; text-align: center; }
+.cpr-stats span { display: block; font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; }
+.cpr-stats strong { display: block; font-size: 20px; margin-top: 4px; }
+#cpr .bar { width: 100%; }

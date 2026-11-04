@@ -1,0 +1,53 @@
+Locales = Locales or {}
+
+Locales.en = {
+    carrier_on = 'You are now a GoodCiv carrier. You will be alerted to emergencies when no medics are available.',
+    carrier_off = 'You are no longer a GoodCiv carrier.',
+    carrier_blocked_job = 'Emergency services can\'t sign up as GoodCiv carriers.',
+    carrier_no_item = 'You need a %s to sign up as a GoodCiv carrier.',
+    carrier_no_perm = 'You are not certified to be a GoodCiv carrier.',
+
+    medic_requested = 'Your call has been passed to emergency services.',
+    medic_requested_goodciv = 'No medics are available. Nearby GoodCiv volunteers have been alerted.',
+    medic_none_available = 'No medics or GoodCiv volunteers are available right now.',
+    medic_not_needed = 'Your call has been logged. GoodCiv only responds to life-threatening emergencies.',
+    medic_cooldown = 'You already have an active call.',
+
+    alert_title = 'GoodCiv emergency',
+    alert_filled = 'Enough responders are on the way.',
+    alert_closed = 'The emergency has ended.',
+    accepted = 'You are responding. Follow the GPS to the patient.',
+    not_available = 'This call is no longer available.',
+    responder_en_route = 'A GoodCiv volunteer is on the way (%s).',
+    responder_dropped = 'Your GoodCiv responder had to leave the call.',
+
+    too_far = 'You are too far from the patient.',
+    busy = 'You are already doing something.',
+    need_item = 'You need a %s.',
+    already_controlled = 'The bleeding is already controlled.',
+    no_major_bleed = 'There is no major bleeding to control.',
+    is_breathing = 'The patient is breathing. CPR is not needed.',
+    not_breathing = 'The patient is not breathing. Start CPR.',
+    tourniquet_done = 'Tourniquet applied. Major bleeding controlled.',
+    cpr_success = 'You feel a pulse. The patient is breathing again.',
+    cpr_fail = 'Still no pulse. Keep going.',
+    recovery_done = 'Patient placed in the recovery position.',
+    assess_done = 'Assessment complete.',
+    not_stable = 'The patient must be breathing with bleeding controlled before you move them.',
+    no_vehicle = 'No suitable vehicle nearby.',
+    vehicle_full = 'That vehicle has no free seat.',
+    loaded = 'Patient loaded. Drive carefully to %s.',
+    unloaded = 'Patient unloaded.',
+    not_at_hospital = 'You need to be at a hospital to hand over.',
+    crash = 'That crash hurt your patient. Check them!',
+    handover_done = 'Patient handed over to %s. Thank you for helping.',
+    handover_patient = 'A GoodCiv volunteer brought you to %s.',
+    reward = 'You received $%s for your help.',
+    resolved = 'The patient has been revived. Call closed.',
+    medic_took_over = 'A medic has taken over the call. Thank you.',
+
+    help_treat = 'Press ~INPUT_%s~ to treat the patient',
+    help_handover = 'Press ~INPUT_%s~ to hand over the patient',
+
+    medic_alert = 'Medical call: %s',
+}
