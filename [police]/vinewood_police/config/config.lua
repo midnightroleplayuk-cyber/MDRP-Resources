@@ -22,8 +22,8 @@ Config.Debug = false
 -- Shown on forms and used in references when the MDT isn't installed.
 -- When vinewood-mdt is running, its Config.ForceName / ForceShort are used instead.
 Config.Force = {
-    name = 'Los Santos Police',
-    short = 'LSP',
+    name = 'Midnight Police Constabulary',
+    short = 'MPC',
 }
 
 -- Players with this ace can use admin commands (/vpo status, granting qualifications during setup).

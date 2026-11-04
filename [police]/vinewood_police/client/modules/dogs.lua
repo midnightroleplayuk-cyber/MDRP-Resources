@@ -620,3 +620,134 @@ AddEventHandler('onResourceStop', function(res)
 end)
 
 function VPO.DogHeel() CreateThread(function() heel(true) end) end
+
+---------------------------------------------------------------------------
+-- Dog command menu (G by default, rebindable): works while you run. The mouse picks a command, your
+-- movement keys keep working. Whatever you're looking at when you open it is the target.
+---------------------------------------------------------------------------
+local menuOpen, aim = false, nil
+
+-- What's under the crosshair: a person, a vehicle, or just a spot
+local function lookingAt()
+    local cam, rot = GetGameplayCamCoord(), GetGameplayCamRot(2)
+    local rx, rz = math.rad(rot.x), math.rad(rot.z)
+    local dir = vector3(-math.sin(rz) * math.abs(math.cos(rx)), math.cos(rz) * math.abs(math.cos(rx)), math.sin(rx))
+    local to = cam + dir * 60.0
+    local ray = StartExpensiveSynchronousShapeTestLosProbe(cam.x, cam.y, cam.z, to.x, to.y, to.z, 1 | 2 | 4 | 8 | 16, PlayerPedId(), 7)
+    local _, hit, pos, _, ent = GetShapeTestResult(ray)
+    local out = { pos = hit == 1 and pos or nil }
+    if hit == 1 and ent and ent ~= 0 and ent ~= dog then
+        local t = GetEntityType(ent)
+        if t == 1 then out.ped = ent elseif t == 2 then out.vehicle = ent end
+    end
+    return out
+end
+
+local function nearestPed(from, range, exclude)
+    local best, bestD
+    for _, p in ipairs(GetGamePool('CPed')) do
+        if p ~= PlayerPedId() and p ~= dog and p ~= exclude and not IsEntityDead(p) and GetPedType(p) ~= 28 then
+            local d = #(GetEntityCoords(p) - from)
+            if d < range and (not bestD or d < bestD) then best, bestD = p, d end
+        end
+    end
+    return best
+end
+
+local function nearestVehicle(from, range)
+    local mine = GetVehiclePedIsIn(PlayerPedId(), true)
+    local best, bestD
+    for _, v in ipairs(GetGamePool('CVehicle')) do
+        if v ~= mine then
+            local d = #(GetEntityCoords(v) - from)
+            if d < range and (not bestD or d < bestD) then best, bestD = v, d end
+        end
+    end
+    return best
+end
+
+-- The target for a command: what you looked at, or the nearest that fits
+local function personTarget(range)
+    if aim and aim.ped and DoesEntityExist(aim.ped) then return aim.ped end
+    return nearestPed(GetEntityCoords(PlayerPedId()), range)
+end
+local function vehicleTarget()
+    if aim and aim.vehicle and DoesEntityExist(aim.vehicle) then return aim.vehicle end
+    return nearestVehicle(GetEntityCoords(dog), 8.0) or nearestVehicle(GetEntityCoords(PlayerPedId()), 8.0)
+end
+
+local COMMANDS = {
+    heel = function() heel(true) end,
+    sit = function() sit() end,
+    lead = function() setLead(not onLead) end,
+    move = function()
+        local p = aim and (aim.vehicle and GetEntityCoords(aim.vehicle) or aim.ped and GetEntityCoords(aim.ped) or aim.pos)
+        if not p then return VPO.ClientNotify(L('dog_look_somewhere'), 'error') end
+        sendTo(p)
+    end,
+    search_vehicle = function()
+        local v = vehicleTarget()
+        if not v then return VPO.ClientNotify(L('radial_no_vehicle'), 'error') end
+        searchAt(v, { kind = 'vehicle', net = VehToNet(v) })
+    end,
+    search_person = function()
+        local p = personTarget(8.0)
+        if not p then return VPO.ClientNotify(L('radial_nobody'), 'error') end
+        searchAt(p, personData(p))
+    end,
+    bark = function()
+        local p = personTarget(Cfg.Bark.Range)
+        if not p then return VPO.ClientNotify(L('radial_nobody'), 'error') end
+        barkAt(p, personData(p))
+    end,
+    detain = function()
+        local p = personTarget(40.0)
+        if not p then return VPO.ClientNotify(L('radial_nobody'), 'error') end
+        if sidOf(p) and not Cfg.BitePlayers then return VPO.ClientNotify(L('dog_no_players'), 'error') end
+        sendAfter(p, personData(p))
+    end,
+    recall = function() recall() end,
+}
+
+local function closeMenu()
+    if not menuOpen then return end
+    menuOpen = false
+    SendNUIMessage({ type = 'dogmenuClose' })
+    SetNuiFocusKeepInput(false)
+    if not VPO.UI.open then SetNuiFocus(false, false) end
+end
+
+local function openMenu()
+    if menuOpen then return closeMenu() end
+    -- G is also "let go" while escorting: then it's that, not this
+    if VPO.IsEscorting and VPO.IsEscorting() then return end
+    if not dog or not DoesEntityExist(dog) then return end -- no dog out: the key just does nothing
+    if VPO.UI.open or IsPauseMenuActive() then return end
+    aim = lookingAt()
+    local target = aim.ped and (sidOf(aim.ped) and 'Looking at: a person' or 'Looking at: someone')
+        or aim.vehicle and 'Looking at: a vehicle' or aim.pos and 'Looking at: a spot' or 'Not looking at anything'
+    menuOpen = true
+    SetNuiFocus(true, true)
+    SetNuiFocusKeepInput(true) -- keep running while the menu is up
+    SendNUIMessage({ type = 'dogmenu', target = target, onLead = onLead })
+    CreateThread(function()
+        while menuOpen do
+            -- Movement stays; the mouse is for the menu, not the camera or a punch
+            for _, c in ipairs({ 1, 2, 3, 4, 5, 6, 24, 25, 68, 69, 70, 91, 92, 106, 114, 140, 141, 142, 257, 263, 264, 200, 199 }) do
+                DisableControlAction(0, c, true)
+            end
+            Wait(0)
+        end
+    end)
+end
+
+RegisterCommand('vpo_dogmenu', openMenu, false)
+RegisterKeyMapping('vpo_dogmenu', 'Police: dog commands', 'keyboard', (Cfg.MenuKey or 'G'))
+
+RegisterNUICallback('dogmenuSelect', function(body, cb)
+    cb({})
+    local fn = COMMANDS[type(body) == 'table' and body.id or '']
+    closeMenu()
+    if fn then CreateThread(fn) end
+end)
+RegisterNUICallback('dogmenuClose', function(_, cb) cb({}); closeMenu() end)

@@ -2715,6 +2715,42 @@ document.addEventListener('keydown', (e) => {
   else if (e.key === 'Backspace') { e.preventDefault(); radialBack(); }
 });
 
+
+/* ---------- dog command menu ---------- */
+
+function dogMenu(msg) {
+  const root = $('dogmenu');
+  root.replaceChildren();
+  const wrap = h('div', { class: 'dm-wrap' });
+  const R = 128;
+  const items = [
+    { id: 'search_vehicle', label: 'Search vehicle', icon: 'car', a: -90 },
+    { id: 'lead', label: msg.onLead ? 'Lead off' : 'Lead on', icon: 'link', a: -38 },
+    { id: 'move', label: 'Move', icon: 'person-running', a: 0 },
+    { id: 'detain', label: 'Detain', icon: 'hand-fist', a: 38 },
+    { id: 'search_person', label: 'Search person', icon: 'person', a: 90 },
+    { id: 'recall', label: 'Back in van', icon: 'van-shuttle', a: 142 },
+    { id: 'bark', label: 'Bark', icon: 'volume-high', a: 180 },
+    { id: 'sit', label: 'Sit / stay', icon: 'hand', a: -142 },
+  ];
+  const pick = (id) => { root.hidden = true; nui('dogmenuSelect', { id }); };
+  for (const it of items) {
+    const t = (it.a * Math.PI) / 180;
+    const x = Math.cos(t) * R * (Math.abs(Math.cos(t)) > 0.5 ? 1.15 : 1), y = Math.sin(t) * R * 0.82;
+    wrap.append(h('button', { class: 'dm-btn', type: 'button', style: `left:${x}px;top:${y}px`, onclick: () => pick(it.id) },
+      h('i', { class: `fa-solid fa-${it.icon}` }), it.label));
+  }
+  wrap.append(h('button', { class: 'dm-centre', type: 'button', title: 'Heel', onclick: () => pick('heel') }, h('i', { class: 'fa-solid fa-play' })),
+    h('div', { class: 'dm-caption' }, `Centre: heel · ${msg.target || ''}`));
+  root.append(wrap);
+  root.hidden = false;
+}
+
+document.addEventListener('keydown', (e) => {
+  if ($('dogmenu').hidden) return;
+  if (e.key === 'Escape') { e.preventDefault(); $('dogmenu').hidden = true; nui('dogmenuClose'); }
+});
+
 const TASKS = { arrest: renderArrest, search: renderSearch, stopsearch: renderStopSearch, release: renderRelease, roadside: renderRoadside, scene: renderScene, custody: renderCustody, evidence: renderEvidence, person: renderPerson, call: renderCall, calls: renderCalls, locations: renderLocations, armoury: renderArmoury, incident: renderIncident, cases: renderCases, case: renderCase, standards: renderStandards, complaint: renderComplaint, changing: renderChanging, management: renderManagement, admin: renderAdmin };
 
 /* ---------- consent prompt and notices ---------- */
@@ -2777,6 +2813,8 @@ window.addEventListener('message', (e) => {
   if (msg.type === 'sound') return playSound(msg.name, msg.volume);
   if (msg.type === 'radial') { radial.stack = [{ title: msg.title, items: list(msg.items) }]; radial.hover = -1; $('radial').hidden = false; drawRadial(); return; }
   if (msg.type === 'radialClose') return radialClose(false);
+  if (msg.type === 'dogmenu') return dogMenu(msg);
+  if (msg.type === 'dogmenuClose') { $('dogmenu').hidden = true; return; }
   if (msg.type === 'soundStop') { const a = sounds[msg.name]; if (a) a.pause(); return; }
   if (msg.type === 'custodyRefresh') {
     if (state.task && state.task.name === 'custody' && !$('hub').hidden) {

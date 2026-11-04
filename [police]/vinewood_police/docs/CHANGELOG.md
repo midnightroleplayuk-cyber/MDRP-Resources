@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.17.1
+- The dog command menu is on G by default (was K). G still lets go while you're escorting someone; otherwise, with the dog out, it opens the dog menu. With no dog out, it does nothing.
+
+## 1.17.0
+- Dog command menu, on K (rebindable: "Police: dog commands"), while the dog is out. Pill buttons around a centre button, lit green on hover. You can keep running while it's open (movement keys still work; the mouse is for the menu). Whatever you're looking at when you open it is the target, otherwise the nearest that fits: Search vehicle, Search person, Move (run to what you looked at, or the spot), Bark, Detain, Sit / stay, Lead on/off, Back in van, and the centre button for Heel. Escape or K again closes it.
+
 ## 1.16.0
 - Fixed: Heel did nothing. It now stops whatever the dog is doing (sitting, barking, running somewhere), brings it to your left side and walks it with you, and says "Heel."
 - Send the dog somewhere: "Send to a spot" (target the dog, or the radial, Dog) lets you aim at the ground or anything else up to 80 m away; E sends it. Or target any car or object for "Dog: go here". The dog runs there and sits waiting until you call it to heel. On the lead, the lead is slipped first.

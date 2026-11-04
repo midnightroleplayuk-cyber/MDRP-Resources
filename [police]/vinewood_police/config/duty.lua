@@ -8,7 +8,7 @@ Config.Duty = {
     Keybind = '',
 
     -- Sign on only at a station sign-on point (Config.Stations). false = anywhere.
-    SignOnAtStation = true,
+    SignOnAtStation = false,
     -- Sign off only at a station. false = anywhere (recommended: players log off mid-patrol).
     SignOffAtStation = false,
     -- How close to a sign-on point counts as "at" it (metres).
@@ -30,14 +30,17 @@ Config.Duty = {
 
     -- Unit types an officer can sign on as. qualifications: all must be held and in date.
     UnitTypes = {
-        { id = 'response',      label = 'Response' },
-        { id = 'neighbourhood', label = 'Neighbourhood' },
+        { id = 'response',      label = 'ERPT' },
         { id = 'roads',         label = 'Roads policing',  qualifications = { 'advanced_driver' } },
         { id = 'arv',           label = 'Armed response',  qualifications = { 'firearms', 'advanced_driver' } },
         { id = 'dogs',          label = 'Dog section',     qualifications = { 'dog_handler' } },
+        { id = 'tviu',          label = 'TVIU',            minRank = 'pc',    qualifications = { 'advanced_driver' } },        
         { id = 'cid',           label = 'CID',             minRank = 'pc' },
         { id = 'custody',       label = 'Custody',         minRank = 'ps' },
         { id = 'control',       label = 'Control room' },
+        { id = 'silver',        label = 'Silver Command',  minRank = 'supt',  qualifications = { 'firearms', 'advanced_driver', 'dog_handler' } },
+        { id = 'gold',          label = 'Gold Command',    minRank = 'acc',   qualifications = { 'firearms', 'advanced_driver', 'dog_handler' } },
+
     },
 
     -- Officer statuses. tone: 'ok' | 'busy' | 'away' (colour in the hub).

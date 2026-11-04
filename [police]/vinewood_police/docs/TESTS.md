@@ -282,6 +282,11 @@ Officers: an Inspector (I), a Sergeant (S), a PC (P), a Chief Inspector (C), and
 - [ ] Config.Dogs.Look head 1 / uppr 2: the head and coat textures change. random = true: different each deploy.
 - [ ] Bark at someone: the custom bark plays, a second player within 40 m hears it, and it's quieter further away.
 
+## Dog command menu
+- [ ] Dog out, running: press G. The menu appears and you keep running with WASD. The camera doesn't spin with the mouse.
+- [ ] Look at a car, G, Search vehicle: the dog searches that car. Look at a suspect, G, Detain: it goes for them. Look at the ground, G, Move: it runs there and waits.
+- [ ] Centre button: Heel. Escape or G again: closes.
+
 ## Dog commands and searches
 - [ ] Sit, then Heel: the dog gets up, comes to your left side and walks with you ("Heel.").
 - [ ] Send to a spot: a blue ring follows your aim, including on the ground. E: the dog runs there and sits. Heel brings it back.

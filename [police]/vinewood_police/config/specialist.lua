@@ -3,6 +3,8 @@
 ---------------------------------------------------------------------------
 Config.Dogs = {
     Command = 'dog',              -- deploy or recall your dog (signed on as Dog section)
+    MenuKey = 'G',                -- dog command menu while the dog is out (players can rebind it). Shares G with
+                                  -- "let go": while escorting, G lets go; otherwise it opens the dog menu
     Units = { 'dogs' },
     Model = 'vw_policedog',       -- the Vinewood police dog (stream/policedog/). 'a_c_shepherd' = the game's shepherd
     -- Which texture of each part the dog wears (0 = the first: a, 1 = b...). random = true picks
