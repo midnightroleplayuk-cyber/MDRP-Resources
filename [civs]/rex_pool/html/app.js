@@ -20,7 +20,7 @@ function t(key, ...args) {
 function esc(v) {
   return String(v ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 }
-function money(n) { const v = Number(n || 0); return (v < 0 ? '-' : '') + S.currency + Math.abs(v).toLocaleString('en-US'); }
+function money(n) { const v = Number(n || 0); return (v < 0 ? '-' : '') + S.currency + Math.abs(v).toLocaleString('en-GB'); }
 
 async function post(name, data) {
   if (!isGame) return Mock.post(name, data);
