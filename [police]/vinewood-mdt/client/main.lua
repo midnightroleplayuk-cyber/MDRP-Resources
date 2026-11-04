@@ -219,7 +219,7 @@ local function openFines()
         else
             options[#options + 1] = {
                 title = ('%s - %s%s'):format(f.ref, money(f.amount), f.overdue and ' (overdue)' or ''),
-                description = ('%s\nPay by %s'):format(table.concat(names, ', '), f.due_at and os.date('%d/%m/%Y', f.due_at) or 'now'),
+                description = ('%s\nPay by %s'):format(table.concat(names, ', '), f.due_text or 'now'),
                 icon = 'sterling-sign',
                 iconColor = f.overdue and 'red' or nil,
                 onSelect = function()

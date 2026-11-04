@@ -2388,7 +2388,11 @@ lib.callback.register('vinewood-mdt:server:myFines', function(src)
     local cid = Bridge.GetCid(src)
     if not cid then return {} end
     local rows = MySQL.query.await("SELECT * FROM vw_mdt_fines WHERE cid = ? AND status IN ('unpaid','court') ORDER BY created_at DESC", { cid }) or {}
-    for _, f in ipairs(rows) do escalate(f) end
+    for _, f in ipairs(rows) do
+        escalate(f)
+        -- Client Lua has no os library, so the date is formatted here.
+        f.due_text = f.due_at and os.date('%d/%m/%Y', f.due_at) or nil
+    end
     return rows
 end)
 
