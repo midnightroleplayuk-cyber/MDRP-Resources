@@ -113,18 +113,104 @@ local function boneOn(op, bone)
     return GetPedBoneIndex(op, bone)
 end
 
+local tuning = nil -- while the officer is adjusting: { bone, offset, rot }
+
 local function attachTo(officerServerId)
     local ped, op = PlayerPedId(), otherPed(officerServerId)
     if op == 0 then return false end
-    local e = Cfg.Escort
+    local e = tuning or Cfg.Escort
     AttachEntityToEntity(ped, op, boneOn(op, e.bone), e.offset.x, e.offset.y, e.offset.z,
         e.rot.x, e.rot.y, e.rot.z, false, false, false, false, e.vertex or 2, true)
     return true
 end
 
 ---------------------------------------------------------------------------
+-- /escortadjust (officer, while escorting): move and turn the prisoner live, then print the config lines.
+-- The prisoner's game re-attaches on every change, so what you see is what everyone sees.
+---------------------------------------------------------------------------
+RegisterNetEvent('vinewood_police:client:escortTune', function(t)
+    if not escortBy then return end
+    if type(t) == 'table' and t.offset then
+        tuning = { bone = t.bone or 0, keepBone = true, vertex = Cfg.Escort.vertex or 2,
+            offset = vector3(t.offset.x, t.offset.y, t.offset.z), rot = vector3(t.rot.x, t.rot.y, t.rot.z) }
+    else
+        tuning = nil
+    end
+    DetachEntity(PlayerPedId(), true, false)
+    attachTo(escortBy)
+end)
+
+local adjusting = false
+RegisterCommand('escortadjust', function()
+    if not escortingTarget then return VPO.ClientNotify(VPO.L('escort_adjust_need'), 'error') end
+    if adjusting then return end
+    adjusting = true
+    CreateThread(function()
+        local e = Cfg.Escort
+        local o = { x = e.offset.x, y = e.offset.y, z = e.offset.z }
+        local r = { x = e.rot.x, y = e.rot.y, z = e.rot.z }
+        local bone = (e.bone == 11816 and e.keepBone) and 11816 or 0
+        local anim = e.OfficerAnim ~= false and e.OfficerAnim ~= nil
+        local lastSent = 0
+        local function send()
+            TriggerServerEvent('vinewood_police:server:restraint:escortTune', { bone = bone, offset = o, rot = r })
+        end
+        send()
+        while adjusting and escortingTarget do
+            Wait(0)
+            for _, c in ipairs({ 172, 173, 174, 175, 10, 11, 44, 38, 47, 74, 191, 201, 177, 200, 21 }) do DisableControlAction(0, c, true) end
+            local step = IsDisabledControlPressed(0, 21) and 0.05 or 0.01   -- Shift = bigger steps
+            local turn = IsDisabledControlPressed(0, 21) and 5.0 or 1.0
+            local changed = false
+            local function held(c) return IsDisabledControlJustPressed(0, c) end
+            if held(172) then o.y = o.y + step; changed = true end      -- up arrow: forward
+            if held(173) then o.y = o.y - step; changed = true end      -- down arrow: back
+            if held(175) then o.x = o.x + step; changed = true end      -- right arrow: right
+            if held(174) then o.x = o.x - step; changed = true end      -- left arrow: left
+            if held(10) then o.z = o.z + step; changed = true end       -- page up: up
+            if held(11) then o.z = o.z - step; changed = true end       -- page down: down
+            if held(44) then r.z = r.z + turn; changed = true end       -- Q: turn left
+            if held(38) then r.z = r.z - turn; changed = true end       -- E: turn right
+            if held(47) then bone = bone == 0 and 11816 or 0; changed = true end -- G: root / pelvis
+            if held(74) then                                               -- H: officer animation on / off
+                anim = not anim
+                Cfg.Escort.OfficerAnim = anim and (Cfg.Escort._anim or { dict = 'anim@policearrest', clip = 'escorting', flag = 49 }) or false
+                if not anim then ClearPedSecondaryTask(PlayerPedId()) end
+            end
+            if changed and GetGameTimer() - lastSent > 60 then send(); lastSent = GetGameTimer() end
+            BeginTextCommandDisplayHelp('STRING')
+            AddTextComponentSubstringPlayerName(('Escort: offset %.2f %.2f %.2f  turn %.0f  bone %s  anim %s~n~Arrows move  PgUp/PgDn height  Q/E turn  Shift faster~n~G root/pelvis  H animation  Enter print  Backspace cancel'):format(
+                o.x, o.y, o.z, r.z, bone == 0 and 'root' or 'pelvis', anim and 'on' or 'off'))
+            EndTextCommandDisplayHelp(0, false, false, -1)
+            if IsDisabledControlJustReleased(0, 191) or IsDisabledControlJustReleased(0, 201) then
+                local lines = {
+                    ('bone = %d,'):format(bone),
+                    ('offset = vec3(%.3f, %.3f, %.3f),'):format(o.x, o.y, o.z),
+                    ('rot = vec3(%.1f, %.1f, %.1f),'):format(r.x, r.y, r.z),
+                    ('keepBone = %s,'):format(bone == 11816 and 'true' or 'false'),
+                    anim and "OfficerAnim = { dict = 'anim@policearrest', clip = 'escorting', flag = 49 }," or 'OfficerAnim = false,',
+                }
+                print('[vinewood_police] Paste into Config.Restraint.Escort in config/restraint.lua:')
+                for _, l in ipairs(lines) do print('        ' .. l) end
+                -- Use these for the rest of the session too
+                Cfg.Escort.bone, Cfg.Escort.keepBone = bone, bone == 11816
+                Cfg.Escort.offset, Cfg.Escort.rot = vec3(o.x, o.y, o.z), vec3(r.x, r.y, r.z)
+                VPO.ClientNotify(VPO.L('escort_adjust_printed'), 'success', 6000)
+                break
+            end
+            if IsDisabledControlJustReleased(0, 177) or IsDisabledControlJustReleased(0, 200) then
+                TriggerServerEvent('vinewood_police:server:restraint:escortTune', false)
+                break
+            end
+        end
+        adjusting = false
+    end)
+end, false)
+
+---------------------------------------------------------------------------
 -- The officer's escorting animation (upper body, so they can still walk and run)
 ---------------------------------------------------------------------------
+Cfg.Escort._anim = Cfg.Escort.OfficerAnim or nil
 local function officerAnim(on)
     local a = Cfg.Escort.OfficerAnim
     if not a then return end

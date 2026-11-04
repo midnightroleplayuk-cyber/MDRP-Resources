@@ -293,3 +293,19 @@ VPO.Duty.OnSignOff(function(src)
     local prisoner = VPO.State.Get(src, 'escorting')
     if prisoner then R.StopEscort(prisoner, 'signed_off') end
 end)
+
+-- Live escort tuning: the escorting officer's adjustments go to the prisoner's game to re-attach
+VPO.Net.On('restraint:escortTune', { permission = 'restraint.escort', rate = 'restraint', silent = true }, function(src, _, t)
+    local target
+    for prisoner, officer in pairs(escorts) do if officer == src then target = prisoner end end
+    if not target then return end
+    if type(t) == 'table' then
+        local function n(v, lim) v = tonumber(v); if not v or v ~= v then return 0.0 end return math.max(-lim, math.min(lim, v)) end
+        t = { bone = (tonumber(t.bone) == 11816) and 11816 or 0,
+              offset = { x = n(t.offset and t.offset.x, 3.0), y = n(t.offset and t.offset.y, 3.0), z = n(t.offset and t.offset.z, 3.0) },
+              rot = { x = n(t.rot and t.rot.x, 360.0), y = n(t.rot and t.rot.y, 360.0), z = n(t.rot and t.rot.z, 360.0) } }
+    else
+        t = false
+    end
+    TriggerClientEvent('vinewood_police:client:escortTune', target, t)
+end)

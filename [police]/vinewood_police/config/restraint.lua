@@ -58,15 +58,16 @@ Config.Restraint = {
     },
 
     -- bone 0 is the officer's root, which stays upright (the pelvis, 11816, rocks as they walk and tilts the prisoner)
-    -- Escorting (stream/anim@policearrest.ycd): the officer plays the escorting animation and the prisoner is
-    -- held relative to the officer's pelvis (bone 11816) at the animation's frame 0. Re-copy the offset
-    -- and rotation if the escorting pose is changed.
+    -- Escorting: where the prisoner is held, relative to the officer's root (bone 0: always upright, facing
+    -- the way the officer faces). x = right, y = forward, z = up, in metres; rot in degrees.
+    -- Tune it live: escort someone, then /escortadjust. It prints the lines to paste here.
     Escort = {
-        bone = 11816,
-        offset = vec3(-0.019, 0.346, 0.182),
-        rot = vec3(0.0, -90.0, 0.0),
-        vertex = 1,
-        keepBone = true,      -- use the bone exactly as given (older configs used the root instead)
+        bone = 0,
+        offset = vec3(0.0, 0.45, 0.0),
+        rot = vec3(0.0, 0.0, 0.0),
+        vertex = 2,
+        keepBone = false,
+        -- The officer's escorting animation (upper body, so they can walk). false = none.
         OfficerAnim = { dict = 'anim@policearrest', clip = 'escorting', flag = 49 },
     },
     -- Key to let go of the person you're escorting (players can rebind it in GTA settings)

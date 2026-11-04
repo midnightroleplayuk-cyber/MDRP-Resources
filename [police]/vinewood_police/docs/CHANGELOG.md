@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.18.1
+- Fixed: the escorted prisoner lay flat in mid-air. The offsets were measured against the pelvis in the animation's first frame, but in game the escorting animation runs on the upper body only, so the pelvis sits differently. The prisoner is now held relative to the officer's root (always upright), starting just in front of them.
+- /escortadjust (while escorting): move the prisoner with the arrows, height with Page Up/Down, turn with Q/E (Shift for bigger steps), G to switch between root and pelvis, H to turn the officer's animation on and off. The real prisoner moves as you adjust. Enter prints the lines for Config.Restraint.Escort to F8 (and keeps them for the session); Backspace cancels.
+
 ## 1.18.0
 - New arrest animations, stream/anim@policearrest.ycd: the officer plays "escorting" while escorting someone, and front cuffs use its "frontcuff_speed". The prisoner is held to the officer's pelvis with the offset and rotation taken from the escorting pose's first frame (Config.Restraint.Escort). The old anim_vinewoodpoliceinteration.ycd is removed.
 
