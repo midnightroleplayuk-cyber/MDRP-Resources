@@ -75,6 +75,18 @@ Unbind pma-voice's own **"Talk over Radio"** so players don't have two talk keys
 
 Mouse buttons can't be used as the talk key while the radio is open on screen (they work fine with it closed).
 
+## Secondary talkgroup
+Septra users can monitor a second talkgroup alongside their main one, e.g. **OPS 1** primary and **ROADS** secondary.
+
+- Set it: **Menu > Secondary**, pick a talkgroup (or **None**). It's remembered for next time.
+- Talk on it: hold **"Radio: talk on secondary talkgroup"** (default **CapsLock**, rebindable in key bindings). Your normal talk key stays on the primary. Both work with the radio open on screen too.
+- The home screen shows the secondary under the primary; it lights green when someone talks on it (with their callsign) and red when you do. The HUD strip shows `OPS 1 / ROADS`, and the radio list gets a second section, with people monitoring it as their secondary marked **2nd**.
+- Units monitoring a talkgroup count for emergency alerts on it (`scope = 'talkgroup'`), loudspeakers, and the Channel/Units screens.
+- During a PTP call both talkgroups go quiet. If Control moves your primary onto your secondary, the secondary clears.
+- Turn off with `Config.Secondary.enabled = false`.
+
+How it works: pma-voice only supports one radio channel, so the primary stays on pma-voice and the secondary is routed by the radio. When anyone transmits, the server finds people monitoring that talkgroup as a secondary and the talker adds them as voice targets; their client applies the radio filter and volume. Talking on your secondary works the same way, with the radio holding GTA's voice push-to-talk for you, as pma-voice does.
+
 ## Radio list
 With the Septra on, a list of everyone on your talkgroup sits on the right of the screen. Whoever is transmitting lights up green; your own row lights red when you talk. It hides while the radio is open.
 
@@ -108,6 +120,10 @@ Other resources (MDT, dispatch) can join on this table, e.g. `LEFT JOIN vinewood
 The Comtel's last frequency and volume are stored client-side, not in the database.
 
 ## Animations and props
+**Set `setr voice_enableRadioAnim 0` in server.cfg.** pma-voice has its own radio animation (the shoulder-mic `generic_radio_chatter`). If it's on, it plays on top of these, and replaces them entirely if a configured clip is wrong.
+
+If an animation in `Config.Animations` has a wrong dictionary or clip name, F8 prints a warning the first time it's used. GTA otherwise fails silently.
+
 If the prop doesn't show in hand, set `Config.Debug = true` and open F8 when you open the radio: it prints whether the prop was created, networked and attached. If your server uses `sv_entityLockdown strict`, client-created props are blocked; the radio falls back to a local prop (only the holder sees it) and warns in F8.
 
 `talk.prop` can be `false` (no prop), `true` (same prop and position as when holding the radio), or its own `{ model, bone, offset, rotation }`, which you need if the talk animation uses the other hand. The Septra's default talk animation raises the **left** hand to a shoulder mic, so it shows no prop; use bone `60309` (left hand) if you want a radio there.
