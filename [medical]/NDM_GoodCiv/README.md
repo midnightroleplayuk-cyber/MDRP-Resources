@@ -50,6 +50,12 @@ ESX:
 INSERT INTO items (name, label, weight) VALUES ('tourniquet', 'Tourniquet', 1);
 ```
 
+## Training and the sign-up NPC
+
+Place an NPC with hf1_npcs and set its target event to `goodciv:client:toggleCarrier`. A player who isn't certified gets a short first aid quiz (`Config.Training`). The server marks the answers. If they pass, they are certified for good and put on duty. If they fail, they can retry after `RetryCooldown`. Certified players use the NPC or `/goodciv` to go on and off duty. Uncertified players can't use `/goodciv`.
+
+Admins (ace `goodciv.admin`, or the server console) can run `/goodcivcert [id] [on|off]` to certify or uncertify a player. Server exports: `IsCertified(src)`, `SetCertified(src, bool)`. Requires ox_lib.
+
 ## Sign-up peds
 
 `Config.SignupPeds.Locations` places NPCs players can talk to in order to sign up or sign off as a carrier. Each entry takes a `model`, `coords` (vector4 of where a player would stand, the ped is dropped 1m onto the floor), an optional `scenario` and an optional map `blip`.
