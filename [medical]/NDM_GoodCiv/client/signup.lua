@@ -102,6 +102,8 @@ local function spawnPed(index, loc)
         return
     end
     GoodCiv.Debug(('sign-up ped %d spawned at %.2f, %.2f, %.2f'):format(index, c.x, c.y, c.z - 1.0))
+    -- Mission entity so population / NPC-cleanup scripts leave it alone.
+    SetEntityAsMissionEntity(ped, true, true)
     SetEntityHeading(ped, c.w)
     FreezeEntityPosition(ped, true)
     SetEntityInvincible(ped, true)
@@ -178,6 +180,24 @@ if interaction == 'key' then
         end
     end)
 end
+
+-- /goodcivped : print what the sign-up ped script is doing (F8 console).
+RegisterCommand('goodcivped', function()
+    local pos = GetEntityCoords(PlayerPedId())
+    print(('[goodciv] interaction: %s, spawn distance: %.0f'):format(interaction, cfg.SpawnDistance))
+    for i, loc in ipairs(cfg.Locations) do
+        local c = loc.coords
+        local dist = #(pos - vector3(c.x, c.y, c.z))
+        local ped = spawned[i]
+        local exists = ped and DoesEntityExist(ped)
+        local pc = exists and GetEntityCoords(ped)
+        print(('[goodciv] ped %d "%s": you are %.1fm away, model in game files: %s, spawned: %s%s'):format(
+            i, loc.label or '?', dist,
+            tostring(IsModelInCdimage(type(loc.model) == 'string' and joaat(loc.model) or loc.model)),
+            tostring(exists or false),
+            exists and (' at %.2f, %.2f, %.2f'):format(pc.x, pc.y, pc.z) or ''))
+    end
+end, false)
 
 AddEventHandler('onResourceStop', function(res)
     if res ~= GetCurrentResourceName() then return end
