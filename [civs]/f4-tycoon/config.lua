@@ -18,8 +18,8 @@ Config.Framework = 'qbx'
 -- and remove them with /tycoontable remove.
 -- ============================================================
 Config.Tables = {
-    { id = 'bowl1', coords = vector4(1554.63, 3792.96, 33.9, 313.33), snapToGround = true },
-    { id = 'bowl2', coords = vector4(1550.3, 3789.94, 33.9, 307.41), snapToGround = true },
+    { id = 'bowl1', coords = vector4(1554.63, 3792.96, 33.9, 305.41), snapToGround = true },
+    { id = 'bowl2', coords = vector4(1550.3, 3789.94, 33.9, 305.41), snapToGround = true },
 }
 
 Config.SpawnDistance = 60.0       -- props are created within this range (and the table is "watched")
