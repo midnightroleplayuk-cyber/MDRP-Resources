@@ -45,3 +45,10 @@ Accept signed render target IDs (including negative values), and handle FiveM na
 ## v0.2.4 YouTube diagnostic patch
 
 The test pattern works, confirming the GTA render target and DUI pipeline. YouTube now uses the standard youtube.com/embed endpoint instead of youtube-nocookie.com, avoids passing an invalid cfx-nui origin, and calculates start offset from server-supplied timestamps. The on-screen status reports iframe load (which does **not** prove playback succeeded). YouTube may still refuse playback due to embed, codec, age or autoplay restrictions. Try a public embeddable video; if it remains blank, report the exact on-screen status and whether the YouTube player UI appears.
+
+
+## v0.2.5 Playback diagnosis
+- Fix server URL validation: Lua patterns do not support regex `?` quantifiers, so YouTube/Twitch/TikTok links were silently rejected.
+- Reject invalid requests with client notification and server log.
+- Pass initial playback state in DUI page fragment to avoid SendDuiMessage before page JS is ready.
+- Confirm with Test Pattern, then a public YouTube video. If the YouTube iframe remains blank, check embedded browser restrictions; do not assume this fixes CEF platform playback.

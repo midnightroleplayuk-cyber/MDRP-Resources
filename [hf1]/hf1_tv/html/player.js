@@ -15,7 +15,7 @@ const elapsed=Number.isFinite(now)&&Number.isFinite(started)?Math.max(0,Math.flo
 // as the origin parameter. The youtube.com embed is the supported iframe endpoint.
 const p=new URLSearchParams({autoplay:'1',mute:'1',controls:'1',playsinline:'1',start:String(elapsed),rel:'0'});
 const f=iframe(`https://www.youtube.com/embed/${id}?${p}`);
-show('YouTube: loading embedded player (muted autoplay)');
+show('YouTube: loading video '+id+' (muted autoplay)');
 f.addEventListener('load',()=>show('YouTube embed loaded — if blank, video may block embedding or FiveM CEF playback'));
 f.addEventListener('error',()=>show('YouTube iframe failed to load'));
 }else if(d.kind==='video'){
@@ -36,3 +36,12 @@ else throw Error('Unsupported type');
 }catch(e){show('Cannot load: '+e.message)}
 }
 window.addEventListener('message',e=>{let d=e.data||{};if(d.action==='play')play(d);if(d.action==='volume'){volume=Number(d.volume||0);if(media?.tagName==='VIDEO')media.volume=volume/100}});
+
+// Load the initial command after the document script is ready, avoiding DUI message races.
+try {
+  const initial = decodeURIComponent(location.hash.slice(1));
+  if (initial) {
+    const data = JSON.parse(initial);
+    if (data.action === 'play') play(data);
+  }
+} catch (e) { show('Player initialization error: ' + e.message); }

@@ -22,11 +22,17 @@ local function validate(data)
     if type(data.url) ~= 'string' or not hostAllowed(data.url) then return false end
     if data.kind == 'website' then return Config.AllowWebsites end
     if data.kind == 'video' then return true end
-    if data.kind == 'youtube' then
-        return data.url:match('^https://([%w%-]+%.)?youtube%.com/') ~= nil or data.url:match('^https://youtu%.be/') ~= nil
+    local host = data.url:match('^https://([^/:?#]+)')
+    if not host then return false end
+    host = host:lower()
+    local function domain(base)
+        return host == base or host:sub(-#base-1) == '.' .. base
     end
-    if data.kind == 'twitch' then return data.url:match('^https://([%w%-]+%.)?twitch%.tv/') ~= nil end
-    if data.kind == 'tiktok' then return data.url:match('^https://([%w%-]+%.)?tiktok%.com/') ~= nil end
+    if data.kind == 'youtube' then
+        return domain('youtube.com') or domain('youtube-nocookie.com') or host == 'youtu.be'
+    end
+    if data.kind == 'twitch' then return domain('twitch.tv') end
+    if data.kind == 'tiktok' then return domain('tiktok.com') end
     return false
 end
 local function keyCoords(key)
@@ -36,7 +42,11 @@ local function keyCoords(key)
 end
 RegisterNetEvent('hf1_tv:update', function(key, data)
     local src = source
-    if not validKey(key) or not validate(data) then return end
+    if not validKey(key) or not validate(data) then
+        print(('[hf1_tv] Rejected update from %s: key=%s kind=%s url=%s'):format(src,tostring(key),tostring(data and data.kind),tostring(data and data.url)))
+        TriggerClientEvent('hf1_tv:rejected', src, 'Invalid TV URL or content type')
+        return
+    end
     local pos = keyCoords(key)
     local ped = GetPlayerPed(src)
     if ped == 0 or #(GetEntityCoords(ped)-pos) > Config.InteractDistance + 5.0 then return end

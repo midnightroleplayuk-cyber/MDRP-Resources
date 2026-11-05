@@ -75,7 +75,14 @@ local function start(entity, key, data)
         end
         return
     end
-    local obj=CreateDui(('https://cfx-nui-%s/html/player.html'):format(GetCurrentResourceName()),Config.DuiWidth,Config.DuiHeight)
+    -- Pass initial playback in the page URL: SendDuiMessage may fire before JS loads.
+    local payload = json.encode({action='play',kind=data.kind,url=data.url,volume=data.volume,started=data.started,now=GetCloudTimeAsInt()})
+    local function urlEncode(str)
+        return (str:gsub('[^%w%-_%.~]', function(c) return ('%%%02X'):format(c:byte()) end))
+    end
+    local page = ('https://cfx-nui-%s/html/player.html#%s'):format(GetCurrentResourceName(),urlEncode(payload))
+    print(('[hf1_tv] Starting player kind=%s url=%s'):format(tostring(data.kind),tostring(data.url)))
+    local obj=CreateDui(page,Config.DuiWidth,Config.DuiHeight)
     if not obj then return end
     local ready=false
     for i=1,80 do if IsDuiAvailable(obj) then ready=true break end Wait(50) end
@@ -87,7 +94,7 @@ local function start(entity, key, data)
     dui=obj
     renderId=id
     current={key=key,entity=entity,model=model,started=data.started,kind=data.kind,url=data.url,volume=data.volume}
-    message({action='play',kind=data.kind,url=data.url,volume=data.volume,started=data.started,now=GetCloudTimeAsInt()})
+    -- Initial state is loaded from the URL fragment; do not race the JS listener.
 end
 local function sendUpdate(entity, data)
     if not entity or not DoesEntityExist(entity) then return end
@@ -134,6 +141,7 @@ CreateThread(function()
     exports.ox_target:addModel(models,{{name='hf1_tv_interact',icon='fa-solid fa-tv',label='Interact with TV',distance=Config.InteractDistance,onSelect=function(data) menu(data.entity) end}})
     TriggerServerEvent('hf1_tv:request')
 end)
+RegisterNetEvent('hf1_tv:rejected',function(reason) notice(reason,'error') end)
 RegisterNetEvent('hf1_tv:snapshot',function(data) screens=data or {} end)
 RegisterNetEvent('hf1_tv:changed',function(key,data)
     screens[key]=data
