@@ -12,17 +12,47 @@ local function keyFor(entity)
     local c = GetEntityCoords(entity)
     return ('%d:%d:%d:%d'):format(GetEntityModel(entity), math.floor(c.x*10+0.5), math.floor(c.y*10+0.5), math.floor(c.z*10+0.5))
 end
+-- GetClosestObjectOfType returns only ONE prop per model. When two TVs share a
+-- model it can return the wrong prop, making the player repeatedly leave/re-enter
+-- the active TV's playback radius. Inspect all streamed objects instead.
 local function closest()
     local origin = GetEntityCoords(PlayerPedId())
     local best, dist = nil, Config.SearchRadius
-    for model in pairs(Config.Models) do
-        local e = GetClosestObjectOfType(origin.x,origin.y,origin.z,Config.SearchRadius,model,false,false,false)
-        if e ~= 0 and DoesEntityExist(e) then
+    for _, e in ipairs(GetGamePool('CObject')) do
+        if DoesEntityExist(e) and Config.Models[GetEntityModel(e)] then
             local d = #(GetEntityCoords(e)-origin)
             if d < dist then best,dist=e,d end
         end
     end
     return best,dist
+end
+
+-- Prefer a TV that is actually playing, not an idle prop of the same model.
+-- Hold the current playback while within range to prevent rapid switching
+-- between nearby TVs as the player moves.
+local function playbackCandidate()
+    local origin = GetEntityCoords(PlayerPedId())
+    local radius = Config.PerformanceRadius
+    if current and DoesEntityExist(current.entity) and screens[current.key] then
+        local entity = current.entity
+        if keyFor(entity) == current.key and #(GetEntityCoords(entity)-origin) <= radius then
+            return entity, current.key, screens[current.key]
+        end
+    end
+    local best, bestKey, bestData, bestDistance = nil, nil, nil, radius
+    for _, e in ipairs(GetGamePool('CObject')) do
+        if DoesEntityExist(e) and Config.Models[GetEntityModel(e)] then
+            local d = #(GetEntityCoords(e)-origin)
+            if d < bestDistance then
+                local key = keyFor(e)
+                local data = screens[key]
+                if data and data.kind ~= 'off' then
+                    best, bestKey, bestData, bestDistance = e, key, data, d
+                end
+            end
+        end
+    end
+    return best, bestKey, bestData
 end
 local function closeFocus()
     if focused then SetNuiFocus(false,false) SetNuiFocusKeepInput(false) focused=false SendNUIMessage({action='hide'}) end
@@ -327,11 +357,10 @@ RegisterNetEvent('hf1_tv:changed',function(key,data)
 end)
 CreateThread(function()
     while true do
-        local e,dist=closest()
-        local key=e and keyFor(e)
-        local data=key and screens[key]
-        if not e or not data or dist>Config.PerformanceRadius then
+        local e, key, data = playbackCandidate()
+        if not e or not data then
             if current then destroy() end
+            pending=false
         elseif not current or pending or current.key~=key or current.entity~=e then
             pending=false
             start(e,key,data)
