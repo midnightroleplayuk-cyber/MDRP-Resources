@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>body { margin: 0; background: transparent; }</style>
+</head>
+<body>
+<script>
+const audioElements = {};
+
+function ensureEl(netId) {
+    if (audioElements[netId]) return audioElements[netId];
+    const el = new Audio('scrap_iron.mp3');
+    el.loop = false;
+    el.preload = 'auto';
+    audioElements[netId] = el;
+    return el;
+}
+
+window.addEventListener('message', (e) => {
+    const data = e.data;
+    if (!data || !data.action) return;
+
+    if (data.action === 'play') {
+        const el = ensureEl(data.netId);
+        el.volume = Math.max(0, Math.min(1, data.volume ?? 1));
+        try {
+            el.currentTime = 0;
+            el.play().catch(err => console.warn('horn play failed', err));
+        } catch (err) { console.warn(err); }
+    }
+    else if (data.action === 'stop') {
+        const el = audioElements[data.netId];
+        if (el) { el.pause(); el.currentTime = 0; }
+    }
+    else if (data.action === 'volume') {
+        const el = audioElements[data.netId];
+        if (el) el.volume = Math.max(0, Math.min(1, data.volume ?? 1));
+    }
+    else if (data.action === 'stopAll') {
+        Object.values(audioElements).forEach(el => { el.pause(); el.currentTime = 0; });
+    }
+});
+</script>
+</body>
+</html>
