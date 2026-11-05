@@ -47,7 +47,7 @@ Config.TwitchPlayerUrl = 'https://hf1-tv-twitch.pages.dev'
 
 -- Placeable TV system: one ox_inventory item, selectable models.
 Config.TelevisionItem = 'tv'
-Config.PlacementShowHelp = false -- set true to show placement controls on screen
+Config.PlacementShowHelp = true -- show placement controls while placing
 Config.PlacementShowDiagnostics = false -- amber position marker and diagnostic logs
 Config.PlacementMaxDistance = 10.0
 Config.PlacementMinSpacing = 1.2
