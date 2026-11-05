@@ -97,3 +97,14 @@ Adds an **HLS stream (.m3u8) - experimental** choice in Play a URL. Supply an HT
 The HLS option now loads HLS.js v1.6.13 from jsDelivr at runtime and attempts playback through Media Source Extensions. It reports CDN load failures, missing MSE support, playlist parsing, CORS/network errors and codec errors on the TV. An internet connection to jsDelivr is required for this experimental build. This is not a Twitch URL converter and does not retrieve protected Twitch stream URLs. YouTube playback is unchanged.
 
 Test with an authorized, public HTTPS HLS playlist that permits cross-origin access. A failed stream may be caused by access restrictions rather than browser capabilities.
+
+
+## v0.3.4 Twitch direct-DUI test
+
+Twitch URLs now open the Cloudflare Pages player directly in a DUI instead of
+inside the local `html/player.html` iframe. Upload the matching v0.3.4
+Cloudflare ZIP to Pages Production before installing this FiveM resource.
+The hosted page accepts native `SendDuiMessage` volume/mute updates and still
+starts muted when distance volume is zero. Twitch's embedded player may still
+block playback or automatic sound in FiveM CEF; this is an experiment.
+YouTube and all non-Twitch playback still use the original local player.

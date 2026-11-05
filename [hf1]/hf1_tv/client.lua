@@ -93,6 +93,33 @@ local function start(entity, key, data)
         return (str:gsub('[^%w%-_%.~]', function(c) return ('%%%02X'):format(c:byte()) end))
     end
     local page = ('https://cfx-nui-%s/html/player.html#%s'):format(GetCurrentResourceName(),urlEncode(payload))
+    if data.kind == 'twitch' then
+        -- Give the hosted page its own top-level DUI document rather than nesting
+        -- it in html/player.html. Twitch's iframe now has just one parent.
+        local twitchUrl = Config.TwitchPlayerUrl or 'https://hf1-tv-twitch.pages.dev'
+        local host, path = tostring(data.url):match('^https://([^/]+)(/[^?#]*)')
+        host = host and host:lower() or ''
+        if host ~= 'twitch.tv' and host ~= 'www.twitch.tv' and host ~= 'm.twitch.tv' then
+            print('[hf1_tv] Twitch: invalid hostname')
+            return
+        end
+        local parts = {}
+        for part in path:gmatch('[^/]+') do parts[#parts+1] = part end
+        local keyName, keyValue
+        if parts[1] == 'videos' and parts[2] and parts[2]:match('^%d+$') then
+            keyName, keyValue = 'video', parts[2]
+        elseif parts[1] and parts[1]:match('^[%w_]+$') and #parts[1] >= 2 and #parts[1] <= 25 then
+            keyName, keyValue = 'channel', parts[1]
+        else
+            print('[hf1_tv] Twitch: invalid channel or VOD path')
+            return
+        end
+        local separator = twitchUrl:find('?', 1, true) and '&' or '?'
+        page = twitchUrl .. separator .. keyName .. '=' .. urlEncode(keyValue)
+            .. '&volume=' .. tostring(initialVolume)
+            .. '&muted=' .. tostring(localMuted or initialVolume == 0)
+        print('[hf1_tv] Twitch direct DUI: ' .. page)
+    end
     print(('[hf1_tv] Starting player kind=%s url=%s'):format(tostring(data.kind),tostring(data.url)))
     local obj=CreateDui(page,Config.DuiWidth,Config.DuiHeight)
     if not obj then return end
