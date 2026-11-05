@@ -17,7 +17,7 @@
   color: var(--ink);
 }
 * { box-sizing: border-box; }
-html, body { margin: 0; height: 100%; background: transparent; overflow: hidden; }
+html, body { margin: 0; height: 100%; background: transparent !important; overflow: hidden; }
 .hidden { display: none !important; }
 button, input, select, textarea { font: inherit; color: inherit; }
 
@@ -31,8 +31,10 @@ button, input, select, textarea { font: inherit; color: inherit; }
   --red: #ff5a6e;
   --amber: #ff9b3d;
   --blue: #4da3ff;
-  color-scheme: dark;
 }
+/* Dark form controls inside the MDT only. Never put color-scheme on :root/html/body:
+   in FiveM that paints the whole NUI page opaque and blacks out the game. */
+:root[data-theme="dark"] #tablet, :root[data-theme="dark"] .modal-card { color-scheme: dark; }
 :root[data-theme="dark"] .tag { background: #14213a; border-color: var(--line); }
 :root[data-theme="dark"] .tag.red, :root[data-theme="dark"] .alert.red { background: #3a1219; border-color: #7a2533; color: #ffc9d0; }
 :root[data-theme="dark"] .tag.yellow, :root[data-theme="dark"] .alert.yellow { background: #3a3007; border-color: #7a6512; color: #ffe9a3; }
@@ -109,7 +111,7 @@ input, select, textarea {
   padding: 8px 10px; width: 100%;
 }
 textarea { min-height: 70px; resize: vertical; line-height: 1.45; }
-input:focus, select:focus, textarea:focus, button:focus-visible { outline: 3px solid color-mix(in srgb, var(--primary) 45%, transparent); outline-offset: 1px; }
+input:focus, select:focus, textarea:focus, button:focus-visible { outline: 3px solid rgba(0,132,61,.45); outline: 3px solid color-mix(in srgb, var(--primary) 45%, transparent); outline-offset: 1px; }
 select option { background: #fff; color: #15262b; }
 label.f { display: block; font-size: 13px; color: var(--muted); }
 label.f > span { display: block; margin-bottom: 4px; }
@@ -120,7 +122,7 @@ label.f > span { display: block; margin-bottom: 4px; }
 .btn:hover { background: var(--paper); }
 .btn.primary { background: var(--primary); border-color: var(--primary); color: #fff; }
 .btn.primary:hover { filter: brightness(1.08); }
-.btn.danger { color: var(--red); border-color: color-mix(in srgb, var(--red) 40%, var(--line)); }
+.btn.danger { color: var(--red); border-color: var(--red); border-color: color-mix(in srgb, var(--red) 40%, var(--line)); }
 .btn.hems { background: var(--secondary); border-color: var(--secondary); color: var(--ink); }
 .btn.small { padding: 5px 10px; font-size: 13px; }
 .btn:disabled { opacity: .45; cursor: not-allowed; }
@@ -232,7 +234,9 @@ table.t .sub { font-size: 12.5px; color: var(--muted); }
 
 /* Frame image (Config.Branding.frame). The screen sits in the frame's cut-out window. */
 #tablet.framed {
-  width: min(1440px, 96vw, calc(94vh * 1448 / 1086)); height: auto; aspect-ratio: 1448 / 1086;
+  /* Explicit width and height (no aspect-ratio) so older FiveM CEF builds size it the same */
+  width: min(1440px, 96vw, calc(94vh * 1448 / 1086));
+  height: min(calc(1440px * 1086 / 1448), calc(96vw * 1086 / 1448), 94vh);
   background: none; border-radius: 0; padding: 0; box-shadow: none;
 }
 #tablet.framed { filter: brightness(var(--bri, 1)) drop-shadow(0 30px 50px rgba(0,0,0,.45)); }
