@@ -40,3 +40,8 @@ Accept signed render target IDs (including negative values), and handle FiveM na
 - Replaced unavailable client-side `os.time()` with FiveM `GetCloudTimeAsInt()` to prevent the playback command from crashing.
 - Retains v0.2.2 render-target validation fix.
 - Test pattern should now be delivered to DUI; streaming embeds remain experimental.
+
+
+## v0.2.4 YouTube diagnostic patch
+
+The test pattern works, confirming the GTA render target and DUI pipeline. YouTube now uses the standard youtube.com/embed endpoint instead of youtube-nocookie.com, avoids passing an invalid cfx-nui origin, and calculates start offset from server-supplied timestamps. The on-screen status reports iframe load (which does **not** prove playback succeeded). YouTube may still refuse playback due to embed, codec, age or autoplay restrictions. Try a public embeddable video; if it remains blank, report the exact on-screen status and whether the YouTube player UI appears.

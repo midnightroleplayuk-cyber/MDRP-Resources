@@ -8,9 +8,16 @@ try{
 const u=new URL(d.url);if(u.protocol!=='https:')throw Error('HTTPS only');
 if(d.kind==='youtube'){
 const id=youtubeId(d.url);if(!id)throw Error('Invalid YouTube video URL');
-const elapsed=Math.max(0,Math.floor(Date.now()/1000-Number(d.now||Date.now()/1000)+Number(d.now||0)-Number(d.started||0)));
-const p=new URLSearchParams({autoplay:'1',mute:'1',controls:'1',playsinline:'1',enablejsapi:'1',origin:location.origin,start:String(elapsed)});
-iframe(`https://www.youtube-nocookie.com/embed/${id}?${p}`);show('YouTube • starts muted (browser autoplay policy)');
+// Use the server-provided wall clock, not the browser clock (which may differ).
+const now=Number(d.now), started=Number(d.started);
+const elapsed=Number.isFinite(now)&&Number.isFinite(started)?Math.max(0,Math.floor(now-started)):0;
+// FiveM's cfx-nui:// origin is not a public YouTube embed origin. Avoid passing it
+// as the origin parameter. The youtube.com embed is the supported iframe endpoint.
+const p=new URLSearchParams({autoplay:'1',mute:'1',controls:'1',playsinline:'1',start:String(elapsed),rel:'0'});
+const f=iframe(`https://www.youtube.com/embed/${id}?${p}`);
+show('YouTube: loading embedded player (muted autoplay)');
+f.addEventListener('load',()=>show('YouTube embed loaded — if blank, video may block embedding or FiveM CEF playback'));
+f.addEventListener('error',()=>show('YouTube iframe failed to load'));
 }else if(d.kind==='video'){
 const v=document.createElement('video');v.autoplay=true;v.controls=false;v.playsInline=true;v.src=d.url;v.volume=Math.max(0,Math.min(1,volume/100));screen.append(v);media=v;
 v.addEventListener('loadedmetadata',()=>{if(Number.isFinite(v.duration)&&v.duration>0){const elapsed=Math.max(0,Number(d.now||0)-Number(d.started||0));v.currentTime=Math.min(elapsed,Math.max(0,v.duration-.2))}v.play().catch(()=>{v.muted=true;v.play().catch(()=>show('Autoplay blocked by browser'))})});v.addEventListener('error',()=>show('Direct video failed: check CORS, codec and URL'));show('Direct video');
