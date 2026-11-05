@@ -139,6 +139,28 @@ local function start(entity, key, data)
     current={key=key,entity=entity,model=model,started=data.started,kind=data.kind,url=data.url,volume=data.volume}
     lastEffectiveVolume=initialVolume
     -- Initial state is loaded from the URL fragment; do not race the JS listener.
+    -- Experimental Twitch clip start: one DUI click at the centre of the hosted
+    -- Cloudflare fallback button (shown after 3.5 seconds in Pages v0.3.7).
+    -- This is a synthetic event, NOT a trusted user gesture. Twitch/CEF may
+    -- ignore it; never claim autoplay is guaranteed.
+    if data.kind == 'twitch' and keyName == 'clip' then
+        local clipDui = obj
+        local clipKey = key
+        CreateThread(function()
+            Wait(5200)
+            if dui ~= clipDui or not current or current.key ~= clipKey or current.kind ~= 'twitch' then return end
+            if focused or not IsDuiAvailable(clipDui) then return end
+            local cx = math.floor(Config.DuiWidth / 2)
+            local cy = math.floor(Config.DuiHeight / 2)
+            print('[hf1_tv] Experimental Twitch clip: sending one synthetic DUI click at centre')
+            SendDuiMouseMove(clipDui, cx, cy)
+            Wait(80)
+            if dui ~= clipDui or focused then return end
+            SendDuiMouseDown(clipDui, 'left')
+            Wait(110)
+            if dui == clipDui then SendDuiMouseUp(clipDui, 'left') end
+        end)
+    end
 end
 local function sendUpdate(entity, data)
     if not entity or not DoesEntityExist(entity) then return end
