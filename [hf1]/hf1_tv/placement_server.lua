@@ -64,7 +64,8 @@ RegisterNetEvent('hf1_tv:place',function(data)
     end
     placed[id]={id=id,owner=idOwner,model=data.model,coords=p,heading=data.heading}
     broadcast()
-    tell(src,'Television placed and saved','success')
+    TriggerClientEvent('hf1_tv:placedConfirmed',src,placed[id])
+    print(('[hf1_tv] Saved TV id=%s model=%s at %.2f %.2f %.2f'):format(tostring(id),data.model,p.x,p.y,p.z))
 end)
 local function removePlaced(src,id,admin)
     id=tonumber(id)

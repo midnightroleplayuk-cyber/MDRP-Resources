@@ -1,0 +1,1 @@
+v0.5.1.4: server sends explicit placedConfirmed only after successful DB insert; client attempts immediate prop spawn, requests re-sync and logs spawn failures. Existing placement aim unchanged. Ensure placement.sql has been imported and oxmysql is started.

@@ -14,14 +14,14 @@ end
 local function spawnObject(tv)
     if objects[tv.id] and DoesEntityExist(objects[tv.id]) then return end
     local model=joaat(tv.model)
-    if not IsModelInCdimage(model) then return end
+    if not IsModelInCdimage(model) then print('[hf1_tv] Saved TV invalid model: '..tostring(tv.model)) return end
     RequestModel(model)
     local limit=GetGameTimer()+5000
     while not HasModelLoaded(model) and GetGameTimer()<limit do Wait(0) end
-    if not HasModelLoaded(model) then return end
+    if not HasModelLoaded(model) then print('[hf1_tv] Saved TV model load timed out: '..tostring(tv.model)) return end
     local p=tv.coords
     local e=CreateObjectNoOffset(model,p.x,p.y,p.z,false,false,false)
-    if e==0 then return end
+    if e==0 then print('[hf1_tv] Saved TV CreateObject failed: '..tostring(tv.model)) return end
     SetEntityHeading(e,tv.heading)
     FreezeEntityPosition(e,true)
     SetEntityInvincible(e,true)
@@ -39,10 +39,25 @@ RegisterNetEvent('hf1_tv:placedSnapshot',function(data)
         if id and tv and tv.coords then
             tv.id=id
             seen[id]=true
-            if not objects[id] then CreateThread(function() spawnObject(tv) end) end
+            if not objects[id] or not DoesEntityExist(objects[id]) then CreateThread(function() spawnObject(tv) end) end
         end
     end
     for id in pairs(objects) do if not seen[id] then clearObject(id) end end
+end)
+-- Explicit confirmation after the database commit, so the placing player
+-- does not depend solely on a potentially missed snapshot broadcast.
+RegisterNetEvent('hf1_tv:placedConfirmed',function(tv)
+    if not tv or not tv.id then return end
+    notify('Television saved. Loading the placed object...', 'success')
+    CreateThread(function()
+        spawnObject(tv)
+        Wait(1000)
+        if not objects[tv.id] or not DoesEntityExist(objects[tv.id]) then
+            print(('[hf1_tv] Placed TV %s not visible after confirmation; requesting sync'):format(tostring(tv.id)))
+            TriggerServerEvent('hf1_tv:placedRequest')
+            notify('TV saved, but the prop did not load. Check F8 for details.', 'error')
+        end
+    end)
 end)
 RegisterNetEvent('hf1_tv:placedRemoved',function(id)
     clearObject(tonumber(id))
@@ -265,7 +280,7 @@ local function placement(modelName)
     DeleteEntity(ghost)
     SetModelAsNoLongerNeeded(model)
     placing=false
-    if placed then notify('Placement submitted. The server will confirm and save it.','inform') end
+    if placed then notify('Sending TV placement to server...', 'inform') end
 end
 local function beginPlacement()
     if placing then return end
