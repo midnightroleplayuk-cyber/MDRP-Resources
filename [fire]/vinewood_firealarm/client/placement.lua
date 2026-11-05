@@ -52,11 +52,16 @@ function Placement.Start(kind, mode)
     local anchor = model and Placement.AnchorFor(kind) or nil
     local rot, snap = 0.0, true
     local result
-    lib.showTextUI('[E] Place  \n[Scroll] Rotate · [Shift] fine  \n[G] Surface snap on/off  \n[Backspace] Cancel', { position = 'right-center' })
+    -- Let the game take input back from the NUI before reading keys,
+    -- otherwise the first key press is swallowed.
+    SetNuiFocus(false, false)
+    Wait(250)
+    local ready = GetGameTimer() + 150
+    lib.showTextUI('[E / Enter] Place  \n[Scroll] Rotate · [Shift] fine  \n[G] Surface snap on/off  \n[Backspace] Cancel', { position = 'right-center' })
 
     while true do
         Wait(0)
-        for _, c in ipairs({ 14, 15, 16, 17, 24, 25, 37, 44, 47, 140, 141, 142, 200 }) do DisableControlAction(0, c, true) end
+        for _, c in ipairs({ 14, 15, 16, 17, 24, 25, 37, 38, 44, 47, 140, 141, 142, 177, 191, 200, 201 }) do DisableControlAction(0, c, true) end
 
         local hit, _, coords, normal = lib.raycast.cam(17, 4, Config.Placement.maxDistance)
         local surface = hit and surfaceOf(normal) or 'wall'
@@ -89,15 +94,25 @@ function Placement.Start(kind, mode)
             end
         end
 
-        if IsControlJustPressed(0, 38) then
+        local canAct = GetGameTimer() > ready
+        if canAct and (IsDisabledControlJustPressed(0, 38) or IsDisabledControlJustPressed(0, 191) or IsDisabledControlJustPressed(0, 201)) then
             if hit then
-                result = { x = pos.x, y = pos.y, z = pos.z, h = heading, surface = surface, mode = mode }
+                local s1, s2 = GetStreetNameAtCoord(pos.x, pos.y, pos.z)
+                local cross = s2 ~= 0 and GetStreetNameFromHashKey(s2) or nil
+                result = {
+                    x = pos.x, y = pos.y, z = pos.z, h = heading, surface = surface, mode = mode,
+                    location = {
+                        street = GetStreetNameFromHashKey(s1),
+                        cross = cross ~= '' and cross or nil,
+                        zone = GetLabelText(GetNameOfZone(pos.x, pos.y, pos.z)),
+                    },
+                }
                 break
             else
                 lib.notify({ type = 'error', description = 'Aim at a wall, ceiling or floor' })
             end
         end
-        if IsControlJustPressed(0, 177) or IsDisabledControlJustPressed(0, 200) then break end
+        if canAct and (IsDisabledControlJustPressed(0, 177) or IsDisabledControlJustPressed(0, 200)) then break end
     end
 
     lib.hideTextUI()

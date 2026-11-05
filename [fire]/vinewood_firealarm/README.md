@@ -10,7 +10,7 @@ British-style fire alarm systems that admins set up for businesses in game. Each
    add_ace group.admin vinewood.firealarm.admin allow
    ```
 3. The database table creates itself on first start (`sql/install.sql` is there if you'd rather run it yourself).
-4. Point `Config.Dispatch.Send` in `config.lua` at your dispatch export.
+4. Dispatch is detected automatically (see **Dispatch** below).
 
 Frameworks: Qbox, QBCore and ESX are detected automatically. Standalone works too (no job-based access).
 
@@ -19,7 +19,7 @@ Frameworks: Qbox, QBCore and ESX are detected automatically. Standalone works to
 1. `/firealarm` opens the commissioning menu.
 2. **New system** → business name, owner job and grade, user code (level 2), optional engineer code (level 3), tone, sound range and ARC delay. Name the zones (Kitchen, Stores, etc).
 3. Under **Devices**, pick a device and zone, then **Place in world**:
-   - Aim at a surface. Scroll rotates (Shift for fine), **G** toggles wall snap, **E** places, **Backspace** cancels.
+   - Aim at a surface. Scroll rotates (Shift for fine), **G** toggles wall snap, **E** or **Enter** places, **Backspace** cancels.
    - **Prop** spawns your model; **Target point** is an invisible ox_target zone (for MLOs that already have a call point baked in).
 4. Start with the control panel, then call points, then sounders. If a system has no sounders, every device acts as a sound source.
 
@@ -35,9 +35,10 @@ Devices can be relabelled, re-zoned, moved, teleported to or removed from the de
 
 - **Break glass** latches the call point. With `Config.RequireCallPointReset`, the panel won't reset until someone with level 2 resets the call point at the device (like using the MCP test key).
 - A **new zone** going into alarm resounds silenced sounders.
-- If the alarm isn't reset within the ARC delay, `Config.Dispatch.Send` fires once.
+- If the alarm isn't reset within the ARC delay, the fire service is called through your dispatch (see **Dispatch**).
 - **Disabled zones** persist through restarts and light the fault LED.
-- **Test mode** (level 3): devices sound for a few seconds and auto-clear; no dispatch.
+- **Test mode** (level 3): it's a walk test, so nothing sounds until you activate a device. Each call point or detector you activate sounds the sounders for `Config.TestSoundDuration` and clears itself; no dispatch, no break-glass cooldown.
+- **Test sounders** (level 2, panel menu or admin menu): runs every sounder on the system for `Config.SounderTestDuration` without needing a device.
 - Access drops back to level 1 after `Config.AccessTimeout` of inactivity. Wrong codes lock the keypad after `Config.MaxCodeAttempts`.
 
 Panel keys: digits enter a code, ✓ opens the menu (Evacuate, Zones, Event log, Lamp test, Test mode, Exit access level), arrows navigate, ← goes back. The key switch drops your access level. Keyboard works too (digits, Enter, Backspace, arrows, Esc).
@@ -46,12 +47,39 @@ The default sounder is a recorded BS two-tone (800/970Hz alternating at 2Hz) in 
 
 ## Props
 
-The panel (`prop_vw_firepanel`) and call point (`prop_vw_firealert`) are streamed from `/stream`, with textures in `firealarm_txd.ytd` linked through `firealarm_props.ytyp`. Sounders and detectors don't have models yet, so they place as target points until you add them to `Config.Props`. Any model that isn't streamed falls back to a target point automatically.
+All four devices have models, streamed from `/stream`: panel (`prop_vw_firepanel`), call point (`prop_vw_firealert`), sounder (`prop_vw_sounder`) and smoke detector (`prop_vw_smokedetector`, for ceilings). Textures are in `firealarm_txd.ytd`, linked through `firealarm_props.ytyp`. Any model that isn't streamed falls back to a target point automatically.
 
 - Each model's wall anchor and facing are set in `Config.PropAnchors` (the back-centre of the model and a heading offset), so the pivot can be anywhere. The included props face -Y, hence `heading = 180`.
 - Model the **detector as already ceiling-mounted** (base at the origin, body hanging down).
 - `mcp_active` is optional: a broken-glass version swapped in while the call point is latched.
 - Use `Config.WallOffset` if the pivot sits proud of the wall.
+
+## Dispatch
+
+If the alarm isn't reset within the ARC delay, an **Automatic fire alarm** call goes to the fire service. `Config.Dispatch.system = 'auto'` uses the first of these that's running:
+
+| Dispatch | How it's sent | Notes |
+|---|---|---|
+| vinewood-dispatch | `CreateAlert` export | Further zones, silencing and reset are added to the call. `closeOnReset` closes it on reset. |
+| ps-dispatch | `ps-dispatch:server:notify` | Add a blip entry for `psCodeName` (below). Uses job types: set `psJobs` if yours differ. |
+| cd_dispatch | `cd_dispatch:AddNotification` | Sent through the player nearest the premises, as cd_dispatch expects alerts from a client. |
+| qs-dispatch | `qs-dispatch:server:CreateDispatchCall` | |
+| rcore_dispatch | `rcore_dispatch:server:sendAlert` | |
+| core_dispatch | `sendAlert` export | |
+| lb-tablet | `AddDispatch` export | Goes to the MDT named in `lbMdt` (default `Fire`). |
+
+Set `system` to one of those names to force it, `'none'` to disable, or fill in `Config.Dispatch.Send` for anything else. Jobs, priority, code, title and blip are shared settings in `Config.Dispatch`.
+
+ps-dispatch blip entry, in `ps-dispatch/shared/config.lua` under `Config.Blips`:
+
+```lua
+['firealarm'] = {
+    radius = 0, sprite = 436, color = 1, scale = 1.2, length = 3,
+    sound = 'Lose_1st', sound2 = 'GTAO_FM_Events_Soundset', offset = false, flash = true,
+},
+```
+
+Devices store their street and area when placed, so calls show a proper location. Devices placed before this update get one when you move them.
 
 ## Live panel screen
 

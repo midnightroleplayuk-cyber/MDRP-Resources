@@ -42,7 +42,9 @@ const Snd = {
     }
     setInterval(() => this.tick(), 100);
   },
-  resume() { if (this.ctx && this.ctx.state === 'suspended') this.ctx.resume(); },
+  resume() {
+    if (this.ctx && this.ctx.state === 'suspended') this.ctx.resume().catch(() => {});
+  },
   setAlarm(vol, tone) {
     this.init(); this.resume();
     if (tone !== this.tone) {
@@ -158,6 +160,7 @@ function menuItems() {
     { k: 'zones', t: 'Disable or enable zones' },
     { k: 'events', t: 'Event log' },
     { k: 'lamp', t: 'Lamp test' },
+    { k: 'sounders', t: 'Test sounders' },
   ];
   if (P.level >= 3) it.push({ k: 'test', t: P.st.test ? 'Turn test mode off' : 'Turn test mode on' });
   it.push({ k: 'exit', t: 'Exit access level' });
@@ -209,6 +212,8 @@ function lcdStatus() {
     body += `<div class="big ${st.silenced ? '' : 'blink'}">EVACUATE</div>`;
     body += `<div>${st.silenced ? 'Sounders silenced' : 'All sounders active'}</div>`;
     body += `<div class="dim">Reset to clear</div>`;
+  } else if (st.testSounding && !st.test) {
+    body += `<div class="center"><div class="big">SOUNDER TEST</div><div>Sounders running</div></div>`;
   } else if (st.test) {
     body += `<div class="big">TEST MODE</div>`;
     body += `<div>${st.testSounding ? 'Sounders running' : 'Activate devices to test'}</div>`;
@@ -304,6 +309,7 @@ async function pick() {
     P.screen = 'events'; P.idx = 0;
   }
   else if (it.k === 'lamp') { lampTest(); return; }
+  else if (it.k === 'sounders') { const r = await action('sounderTest'); P.screen = 'status'; if (r && r.ok) flash('Sounder test running'); return; }
   else if (it.k === 'test') { const r = await action('testMode'); P.screen = 'status'; if (r && r.ok) flash(P.st.test ? 'Test mode on' : 'Test mode off'); }
   else if (it.k === 'exit') { await action('logout'); P.screen = 'status'; flash(`Access level ${P.level}`); return; }
   render();
@@ -505,7 +511,7 @@ function renderDevices() {
       <label class="f">Placed as<span class="seg"><button data-mode="prop" class="${p.mode === 'prop' ? 'on' : ''}">Prop</button><button data-mode="target" class="${p.mode === 'target' ? 'on' : ''}">Target point</button></span></label>
       <button class="btn primary" id="p-go">Place in world</button>
     </div>
-    <p class="hint">Aim at a wall or ceiling. Scroll rotates (hold Shift for fine), G toggles surface snap, E places, Backspace cancels. Sounders are where the alarm is heard from; if a system has none, every device sounds.</p>
+    <p class="hint">Aim at a wall or ceiling. Scroll rotates (hold Shift for fine), G toggles surface snap, E or Enter places, Backspace cancels. Sounders are where the alarm is heard from; if a system has none, every device sounds.</p>
     ${rows ? `<table class="dev"><thead><tr><th>Type</th><th>Label</th><th>Zone</th><th>Placement</th><th></th></tr></thead><tbody>${rows}</tbody></table>` : `<p class="hint">No devices yet. Start with the control panel.</p>`}`;
 
   $('#p-type').addEventListener('change', e => A.place.type = e.target.value);
@@ -541,7 +547,7 @@ function renderLive() {
         <div class="status"><span class="led ${ss.led}"></span>${ss.text}</div>
         ${zones.length ? `<div class="hint">In alarm: ${zones.map(z => `Z${z} ${esc(arr(s.zones)[z - 1] || '')}`).join(', ')}</div>` : ''}
         <div class="inline"><select id="l-zone">${zoneOptions(1, s)}</select><button class="btn" id="l-trigger">Trigger zone</button></div>
-        <div class="inline"><button class="btn danger" id="l-reset">Force reset</button><button class="btn ghost" id="l-refresh">Refresh</button></div>
+        <div class="inline"><button class="btn" id="l-sounders">Test sounders</button><button class="btn danger" id="l-reset">Force reset</button><button class="btn ghost" id="l-refresh">Refresh</button></div>
         <p class="hint">Force reset clears everything, including call points still latched in alarm.</p>
       </div>
       <div class="box">
@@ -552,6 +558,10 @@ function renderLive() {
   $('#l-trigger').addEventListener('click', async () => {
     const r = await post('adminTrigger', { id: s.id, zone: +$('#l-zone').value });
     if (r && r.systems) { A.systems = arr(r.systems); renderList(); renderLive(); renderDevices(); toast('Zone triggered'); }
+  });
+  $('#l-sounders').addEventListener('click', async () => {
+    const r = await post('adminSounderTest', { id: s.id });
+    if (r && r.systems) { A.systems = arr(r.systems); renderList(); renderLive(); toast('Sounders running for a few seconds'); }
   });
   $('#l-reset').addEventListener('click', async () => {
     const r = await post('adminReset', { id: s.id });
@@ -640,7 +650,7 @@ window.addEventListener('message', e => {
     case 'sound': Snd.setAlarm(d.volume || 0, d.tone || 'bs_alternating'); break;
     case 'openAdmin': openAdmin(d); break;
     case 'adminShow': openAdmin(d); break;
-    case 'adminHide': A.open = false; $('#admin').classList.add('hidden'); break;
+    case 'adminHide': A.open = false; $('#admin').classList.add('hidden'); if (document.activeElement) document.activeElement.blur(); break;
   }
 });
 
