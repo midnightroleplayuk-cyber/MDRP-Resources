@@ -78,7 +78,8 @@ local function placement(modelName)
     -- Disable physics so gravity cannot pull the preview away from the cursor.
     -- Move it with NoOffset every frame, then keep it frozen.
     SetEntityDynamic(ghost,false)
-    FreezeEntityPosition(ghost,true)
+    SetEntityHasGravity(ghost,false)
+    FreezeEntityPosition(ghost,false)
     local heading=GetEntityHeading(ped)
     local wallModel=Config.PlaceableModels[modelName].wall
     local snap=wallModel
@@ -209,11 +210,32 @@ local function placement(modelName)
         -- NoOffset avoids GTA's model-radius/Z offset applied by SetEntityCoords.
         -- Temporarily unfreeze for engines that reject frozen entity teleports,
         -- then refreeze before physics can move the object.
-        FreezeEntityPosition(ghost,false)
+        -- Use an absolute world position, never local-space offsets. Keep the
+        -- preview unfrozen, non-dynamic and collisionless during the move.
         SetEntityCoordsNoOffset(ghost,pos.x,pos.y,pos.z,false,false,false)
         SetEntityHeading(ghost,heading)
-        FreezeEntityPosition(ghost,true)
+        SetEntityVelocity(ghost,0.0,0.0,0.0)
         SetEntityAlpha(ghost,ready and 215 or 150,false)
+        -- Some GTA prop instances refuse to teleport even when collisionless.
+        -- Recreate the LOCAL preview at the intended world coords if that
+        -- happens. This avoids the old object staying behind the player.
+        local actualBefore=GetEntityCoords(ghost)
+        if #(actualBefore-pos)>0.35 then
+            DeleteEntity(ghost)
+            ghost=CreateObjectNoOffset(model,pos.x,pos.y,pos.z,false,false,false)
+            if ghost==0 then
+                lib.hideTextUI()
+                placing=false
+                notify('Preview object could not be repositioned','error')
+                return
+            end
+            SetEntityCollision(ghost,false,false)
+            SetEntityDynamic(ghost,false)
+            SetEntityHasGravity(ghost,false)
+            FreezeEntityPosition(ghost,false)
+            SetEntityHeading(ghost,heading)
+            SetEntityAlpha(ghost,ready and 215 or 150,false)
+        end
         -- Amber marker follows the *actual* entity coordinates, not the
         -- intended position. If it differs from the cyan target, report it.
         local actual=GetEntityCoords(ghost)
@@ -221,7 +243,7 @@ local function placement(modelName)
             0.065,0.065,0.065,255,190,60,180,false,false,2,false,nil,nil,false)
         local mismatch=#(actual-pos)
         if mismatch>0.25 and GetGameTimer()%1500<20 then
-            print(('[hf1_tv] TV preview failed to move (delta %.2fm)'):format(mismatch))
+            print(('[hf1_tv] TV preview mismatch %.2fm target=(%.2f,%.2f,%.2f) actual=(%.2f,%.2f,%.2f)'):format(mismatch,pos.x,pos.y,pos.z,actual.x,actual.y,actual.z))
         end
         local status=ready and 'READY' or 'CLICK TO POSITION' 
         local modeLabel=walkMode and 'WALK' or 'ADJUST'
