@@ -50,10 +50,10 @@ Config.wildWeed = {
             -- Zone radius
             radius = 35.0,
             -- Amount of plants spawned in this zone
-            count = 15,
+            count = 20,
 
             -- Seconds before a collected plant respawns somewhere else in this zone.
-            respawnDelay = 14400,
+            respawnDelay = 3600,
         },
              ['north_manchester'] = {
             -- Item given to the player after collection
@@ -80,10 +80,10 @@ Config.wildWeed = {
             -- Zone radius
             radius = 35.0,
             -- Amount of plants spawned in this zone
-            count = 15,
+            count = 20,
 
             -- Seconds before a collected plant respawns somewhere else in this zone.
-            respawnDelay = 14400,
+            respawnDelay = 3600,
         },
         ['gordo_trail'] = {
             yieldItem = 'kq_weed_bud_og_kush',
@@ -102,9 +102,9 @@ Config.wildWeed = {
 
             center = vec3(2996.97, 6249.26, 78.68), 
             radius = 40.0,
-            count = 15,
+            count = 20,
 
-            respawnDelay = 14400,
+            respawnDelay = 3600,
         },
     },
 }
