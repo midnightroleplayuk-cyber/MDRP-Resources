@@ -5,7 +5,7 @@
 - Add the item definition in `ox_inventory_item.lua` to `ox_inventory/data/items.lua` and restart ox_inventory.
 - Import `placement.sql` into your FiveM MySQL database before starting the resource.
 - Ensure dependencies before `ensure hf1_tv` in server.cfg.
-- To give yourself a test item, use your server's normal ox_inventory item-giving mechanism: item name `television`.
+- To give yourself a test item, use your server's normal ox_inventory item-giving mechanism: item name `tv`.
 - `/tvplace` is a testing shortcut, but the server still requires a television item and consumes one on successful placement.
 - Use the item, choose from all 17 supported models (some are overlay/laptop props and experimental), aim at a wall (flat TVs) or floor (standing TVs), mouse wheel to rotate floor models, E to confirm, X to cancel.
 - Pick up through ox_target. Server verifies license ownership and inventory capacity before returning item.
@@ -20,3 +20,8 @@
 - The owner is a license identifier, not a character identifier. All characters sharing the same license can pick up that owner's TV.
 - No placement cap or housing/property permissions are enforced yet; restrict item distribution until tested.
 - Test on a staging server first; back up your database and the working v0.4.4.1 ZIP.
+
+**Item identifier:** `tv` (display label remains Television). If you previously added `television` to items.lua, replace its key with `tv` and restart ox_inventory.
+
+## v0.5.0.2 Placement controls
+Uses ox_lib textUI at right-center (no GTA top-left help text). Aim at a surface to position the ghost. G toggles wall snapping; E places; X cancels; arrow up/down adjust height by 5 cm; arrow left/right adjust wall clearance by 2.5 cm; mouse wheel rotates in manual mode. In wall-snap mode heading is aligned to the wall automatically. The existing server-side placement validation, database persistence, owner-only pickup and ACE-protected admin removal are unchanged.

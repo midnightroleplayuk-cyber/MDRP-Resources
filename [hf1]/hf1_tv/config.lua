@@ -46,7 +46,7 @@ Config.AudioFadeExponent = 1.5 -- 1=linear, >1 fades more strongly with distance
 Config.TwitchPlayerUrl = 'https://hf1-tv-twitch.pages.dev'
 
 -- Placeable TV system: one ox_inventory item, selectable models.
-Config.TelevisionItem = 'television'
+Config.TelevisionItem = 'tv'
 Config.PlacementMaxDistance = 4.0
 Config.PlacementMinSpacing = 1.2
 Config.WallOffset = 0.08 -- model pivot clearance; tune for your props

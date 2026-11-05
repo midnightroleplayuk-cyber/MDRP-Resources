@@ -70,48 +70,81 @@ local function placement(modelName)
     local ped=PlayerPedId()
     local start=GetEntityCoords(ped)
     local ghost=CreateObjectNoOffset(model,start.x,start.y,start.z,false,false,false)
-    SetEntityAlpha(ghost,160,false)
+    if ghost==0 then placing=false notify('Cannot create preview','error') return end
     SetEntityCollision(ghost,false,false)
     FreezeEntityPosition(ghost,true)
     local heading=GetEntityHeading(ped)
-    local wall=Config.PlaceableModels[modelName].wall
+    local wallModel=Config.PlaceableModels[modelName].wall
+    local snap=wallModel -- toggle with G
+    local height=0.0
+    local depth=0.0
     local ready=false
-    notify('Aim at '..(wall and 'a wall' or 'the floor')..' | Mouse wheel: rotate | E: place | X: cancel')
+    local placed=false
+    local lastUi=''
+    local function updateUI(message)
+        if message~=lastUi then
+            lib.hideTextUI()
+            lib.showTextUI(message,{position='right-center',icon='tv',style={borderRadius=8}})
+            lastUi=message
+        end
+    end
     while placing do
         Wait(0)
         DisableControlAction(0,24,true)
         DisableControlAction(0,25,true)
         DisableControlAction(0,14,true)
         DisableControlAction(0,15,true)
+        DisableControlAction(0,172,true) -- arrow up
+        DisableControlAction(0,173,true) -- arrow down
+        DisableControlAction(0,174,true) -- arrow left
+        DisableControlAction(0,175,true) -- arrow right
+        DisableControlAction(0,44,true) -- Q
+        DisableControlAction(0,51,true) -- E
+        DisableControlAction(0,47,true) -- G
+        DisableControlAction(0,73,true) -- X
         local hit,p,n=cameraRay(Config.PlacementMaxDistance)
         ready=false
         if hit and p and n then
-            local validSurface=wall and math.abs(n.z)<0.35 or (not wall and n.z>0.75)
-            if validSurface and #(GetEntityCoords(ped)-p)<=Config.PlacementMaxDistance then
-                ready=true
-                local pos=wall and p+n*Config.WallOffset or p
-                -- Floor models use their natural base offset; wall models face away from wall.
-                if wall then heading=(math.deg(math.atan(n.y,n.x))-90.0)%360 end
-                SetEntityCoordsNoOffset(ghost,pos.x,pos.y,pos.z,false,false,false)
+            local isWall=math.abs(n.z)<0.35
+            local isFloor=n.z>0.65
+            -- Wall snap follows the wall normal; manual mode permits wall or floor
+            -- placement while preserving the selected heading.
+            if #(GetEntityCoords(ped)-p)<=Config.PlacementMaxDistance and (isWall or isFloor) then
+                if not snap or isWall then
+                    ready=true
+                    if snap and isWall then
+                        heading=(math.deg(math.atan(n.y,n.x))-90.0)%360
+                    end
+                    local offset=(snap and isWall) and Config.WallOffset or 0.03
+                    local pos=p+n*(offset+depth)+vector3(0,0,height)
+                    SetEntityCoordsNoOffset(ghost,pos.x,pos.y,pos.z,false,false,false)
+                end
             end
         end
+        if IsDisabledControlJustPressed(0,47) then snap=not snap end
+        if IsDisabledControlJustPressed(0,172) then height=math.min(height+0.05,2.5) end
+        if IsDisabledControlJustPressed(0,173) then height=math.max(height-0.05,-1.0) end
+        if IsDisabledControlJustPressed(0,174) then depth=math.max(depth-0.025,-0.3) end
+        if IsDisabledControlJustPressed(0,175) then depth=math.min(depth+0.025,0.5) end
         if IsDisabledControlJustPressed(0,14) then heading=(heading+5)%360 end
         if IsDisabledControlJustPressed(0,15) then heading=(heading-5)%360 end
         SetEntityHeading(ghost,heading)
-        SetEntityAlpha(ghost,ready and 190 or 70,false)
-        BeginTextCommandDisplayHelp('STRING')
-        AddTextComponentSubstringPlayerName(ready and '~g~E~s~ Place  ~b~Mouse wheel~s~ Rotate  ~r~X~s~ Cancel' or '~r~Aim at a suitable surface~s~  ~r~X~s~ Cancel')
-        EndTextCommandDisplayHelp(0,false,false,-1)
-        if IsControlJustPressed(0,73) then break end
-        if ready and IsControlJustPressed(0,38) then
+        SetEntityAlpha(ghost,ready and 195 or 75,false)
+        local status=ready and 'READY' or (snap and 'AIM AT A WALL' or 'AIM AT A SURFACE')
+        updateUI(('**TV Placement — %s**\n[E] Place  [X] Cancel\n[G] Snap to wall: **%s**\n[↑/↓] Height: **%.2fm**\n[←/→] Wall clearance: **%.2fm**\n[Mouse wheel] Rotate'):format(status,snap and 'ON' or 'OFF',height,depth))
+        if IsDisabledControlJustPressed(0,73) then break end
+        if ready and IsDisabledControlJustPressed(0,51) then
             local pos=GetEntityCoords(ghost)
             TriggerServerEvent('hf1_tv:place',{model=modelName,coords={x=pos.x,y=pos.y,z=pos.z},heading=heading})
+            placed=true
             break
         end
     end
+    lib.hideTextUI()
     DeleteEntity(ghost)
     SetModelAsNoLongerNeeded(model)
     placing=false
+    if placed then notify('Placement submitted. The server will confirm and save it.','inform') end
 end
 local function beginPlacement()
     if placing then return end
