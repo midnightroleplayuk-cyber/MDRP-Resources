@@ -214,14 +214,13 @@ local function menu(entity)
         {title='Play a URL',description='YouTube, Twitch, TikTok or MP4/WebM',icon='play',onSelect=function()
             local result=lib.inputDialog('HF1 TV - Play',{
                 {type='select',label='Content type',required=true,options={{value='youtube',label='YouTube'},{value='video',label='Direct video (MP4/WebM)'},{value='twitch',label='Twitch'},{value='tiktok',label='TikTok'}}},
-                {type='input',label='HTTPS URL',required=true}
+                {type='input',label='HTTPS URL',required=true},
+                {type='slider',label='Initial volume',description='Choose a precise volume (0–100)',min=0,max=100,step=1,default=Config.DefaultVolume,required=true}
             })
             if not result then return end
             if not result[2]:match('^https://') then notice('Use an HTTPS link','error') return end
-            if focused or volumeDialog then return end
-            volumeDialog = {key=key,entity=entity,mode='new',kind=result[1],url=result[2]}
-            SetNuiFocus(true,true)
-            SendNUIMessage({action='volumeOpen',value=Config.DefaultVolume,mode='new'})
+            local vol=math.floor(math.max(0,math.min(100,tonumber(result[3]) or Config.DefaultVolume)))
+            sendUpdate(entity,{kind=result[1],url=result[2],volume=vol})
         end},
         {title='Open Website',description='Load an HTTPS website directly on the TV',icon='globe',onSelect=function()
             if not Config.AllowWebsites then notice('Websites are disabled by server configuration','error') return end

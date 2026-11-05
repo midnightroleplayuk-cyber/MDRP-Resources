@@ -117,3 +117,6 @@ YouTube and all non-Twitch playback still use the original local player.
 - Experimental HLS (.m3u8) selection removed from the menu and server validation.
 - Twitch clips retain the working two-stage auto-click sequence from v0.3.8.2. No Cloudflare deployment changes required.
 - For production, consider setting `Config.AllowedWebsiteHosts` to an allowlist of trusted domains. Never enter account passwords into untrusted pages.
+
+### v0.4.0.1
+The Play a URL ox_lib input dialog now includes a native initial volume slider (0–100, step 1, default Config.DefaultVolume). No separate volume prompt after submitting the link. The existing precise volume control remains unchanged.
