@@ -35,6 +35,11 @@ Advanced Paramedics and above can prescribe Paracetamol, Tramadol, Vicodin, Xana
 ```
 If a grade gets the wrong scope, add or change its entry in `Config.Ranks`.
 
+## Display
+- **Tablet frame:** the MDT sits inside a tablet frame (`Config.Branding.frame = 'img/frame.webp'`). Swap in your own image with the same cut-out, or set `''` for a plain bezel.
+- **Theme and brightness:** players can switch Dark or Light and set brightness from 50% to 100% from the ⚙ button. The choice is saved on their PC.
+- **Defaults:** set the defaults in `Config.Display`. Set `allowPlayerChange = false` to lock everyone to them.
+
 ## Clinical scope
 `Config.Ranks` maps job grades to scope. The defaults are:
 - Paramedic: Epinephrine, Morphine, Naloxone and Paracetamol only. No prescribing or blood.

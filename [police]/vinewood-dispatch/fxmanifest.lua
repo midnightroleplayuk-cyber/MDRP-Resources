@@ -5,7 +5,7 @@ lua54 'yes'
 name 'vinewood-dispatch'
 author 'Vinewood Studios'
 description 'Police, ambulance and fire dispatch with a control room console, live units, backup, call updates and callsigns'
-version '1.8.1'
+version '1.9.0'
 
 shared_scripts {
     '@ox_lib/init.lua',

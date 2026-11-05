@@ -121,7 +121,44 @@ async function go(page, params = {}) {
   await PAGES[page].render($('#page'), params);
 }
 
+/* ---------- display (theme + brightness), saved per player in NUI storage ---------- */
+const DISPLAY_KEY = 'vems-display';
+function loadDisplay() { try { return JSON.parse(localStorage.getItem(DISPLAY_KEY) || 'null'); } catch (e) { return null; } }
+function saveDisplay(d) { try { localStorage.setItem(DISPLAY_KEY, JSON.stringify(d)); } catch (e) {} }
+function applyDisplay(d) {
+  const theme = d.theme === 'light' ? 'light' : 'dark';
+  const bri = Math.max(50, Math.min(100, Number(d.brightness) || 100));
+  document.documentElement.dataset.theme = theme;
+  document.documentElement.style.setProperty('--bri', String(bri / 100));
+}
+function currentDisplay() {
+  const def = (S.boot && S.boot.display) || {};
+  const mine = def.allowPlayerChange === false ? null : loadDisplay();
+  return { theme: (mine && mine.theme) || def.theme || 'dark', brightness: (mine && mine.brightness) || def.brightness || 100 };
+}
+applyDisplay(loadDisplay() || { theme: 'dark', brightness: 100 });
+
+function displayModal() {
+  const d = currentDisplay();
+  openModal(`<h3>Display</h3><p>Saved on this PC for your character's MDT.</p>
+    <label class="f"><span>Theme</span></label><div class="seg" id="thm"><button data-t="dark">Dark</button><button data-t="light">Light</button></div>
+    <label class="f" style="margin-top:16px"><span>Brightness</span></label>
+    <div class="range-row"><input type="range" id="bri" min="50" max="100" step="5" value="${d.brightness}"><output id="briOut">${d.brightness}%</output></div>
+    <div class="row end"><button class="btn" id="dReset">Reset</button><button class="btn primary" data-x>Done</button></div>`, (m) => {
+    const sync = () => { $$('#thm button', m).forEach((b) => b.classList.toggle('on', b.dataset.t === d.theme)); $('#bri', m).value = d.brightness; $('#briOut', m).textContent = d.brightness + '%'; applyDisplay(d); saveDisplay(d); };
+    $$('#thm button', m).forEach((b) => (b.onclick = () => { d.theme = b.dataset.t; sync(); }));
+    $('#bri', m).oninput = (e) => { d.brightness = +e.target.value; sync(); };
+    $('#dReset', m).onclick = () => { try { localStorage.removeItem(DISPLAY_KEY); } catch (e) {} Object.assign(d, currentDisplay()); sync(); try { localStorage.removeItem(DISPLAY_KEY); } catch (e) {} };
+    $('[data-x]', m).onclick = closeModal;
+    sync();
+  });
+}
+$('#displayBtn').onclick = displayModal;
+
 function applyBranding(b) {
+  const fr = $('#frame');
+  if (b.frame) { fr.src = b.frame; fr.classList.remove('hidden'); $('#tablet').classList.add('framed'); }
+  else { fr.classList.add('hidden'); $('#tablet').classList.remove('framed'); }
   const r = document.documentElement.style;
   b.primary && r.setProperty('--primary', b.primary);
   b.secondary && r.setProperty('--secondary', b.secondary);
@@ -136,6 +173,8 @@ async function boot() {
   if (!r) return false;
   S.boot = r;
   applyBranding(r.branding);
+  applyDisplay(currentDisplay());
+  $('#displayBtn').classList.toggle('hidden', (r.display || {}).allowPlayerChange === false);
   $('#meName').textContent = r.me.name;
   $('#meRank').textContent = r.me.rank.label;
   $('#callsign').value = r.me.callsign || '';

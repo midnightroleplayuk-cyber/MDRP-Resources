@@ -64,6 +64,12 @@ While logged in, the dispatcher gets every call for the services in `Config.Disp
 - **Post updates**, signed "Control" plus the dispatcher's callsign.
 - **Close calls** with an outcome. Attached units are told the outcome.
 
+**Live map:** the console shows a live map of every open call and on-duty unit, above the selected call's details. Selecting a call highlights it and pans to it. Lines join it to its attached units, and a dashed line points to the closest free unit. Click a call on the map to open it, or a unit to find it on the units board. **Hide map** gives the details the full column (remembered between sessions).
+
+With a call selected, the units board sorts each service by distance from the call, shows each unit's distance, and marks the **closest free** unit (not on a call or panicking). The assign list is sorted the same way, with the closest free unit picked by default.
+
+**Call updates** show the time they were posted, in each player's own time zone (worked out in game, so the server's clock and time zone don't matter). Each person on a call gets their own colour, with Control always in yellow.
+
 **Map:** when creating a call, choose **Pick on map** to drop a pin anywhere. **Change location** on any open call moves it on the map: its blips move for every unit, the move is recorded in the call's updates, and attached units get a new waypoint and a notification. The map shows open calls and live units, with scroll to zoom and drag to pan, and shows the street name for the pin before you confirm. To use a different map image, see `Config.Dispatcher.map`.
 
 **With vinewood_radio** (`Config.Dispatcher.radio`), the units board also shows each unit's talkgroup and ISSI, and the dispatcher can:

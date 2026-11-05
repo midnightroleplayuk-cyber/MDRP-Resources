@@ -138,7 +138,18 @@ local function isAttached(alert)
     return false
 end
 
+-- Real times for calls and updates, worked out here from how long ago they happened and the
+-- game's cloud clock (UTC). The server's clock and time zone never come into it.
+local function stampTimes(alert)
+    local now = GetCloudTimeAsInt()
+    if not alert.at then alert.at = now - (alert.age or 0) end
+    for _, n in ipairs(alert.notes or {}) do
+        if not n.at then n.at = now - (n.age or 0) end
+    end
+end
+
 local function toNui(alert)
+    stampTimes(alert)
     local services = {}
     for _, key in ipairs(alert.services) do
         local svc = Config.Services[key]
@@ -178,6 +189,7 @@ local function toNui(alert)
         unit = alert.unit,
         unitSrc = alert.unitSrc,
         notes = alert.notes or {},
+        at = alert.at,
     }
 end
 

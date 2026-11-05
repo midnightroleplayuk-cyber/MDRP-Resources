@@ -21,6 +21,37 @@ html, body { margin: 0; height: 100%; background: transparent; overflow: hidden;
 .hidden { display: none !important; }
 button, input, select, textarea { font: inherit; color: inherit; }
 
+/* Dark theme */
+:root[data-theme="dark"] {
+  --paper: #060d1b;
+  --surface: #0d182b;
+  --ink: #e4ebf3;
+  --muted: #93a2b6;
+  --line: #1f2c43;
+  --red: #ff5a6e;
+  --amber: #ff9b3d;
+  --blue: #4da3ff;
+  color-scheme: dark;
+}
+:root[data-theme="dark"] .tag { background: #14213a; border-color: var(--line); }
+:root[data-theme="dark"] .tag.red, :root[data-theme="dark"] .alert.red { background: #3a1219; border-color: #7a2533; color: #ffc9d0; }
+:root[data-theme="dark"] .tag.yellow, :root[data-theme="dark"] .alert.yellow { background: #3a3007; border-color: #7a6512; color: #ffe9a3; }
+:root[data-theme="dark"] .tag.green { background: #0d3322; border-color: #1d6a45; color: #b7f0cf; }
+:root[data-theme="dark"] .alert.red { border-left-color: var(--red); }
+:root[data-theme="dark"] .alert.yellow { border-left-color: var(--secondary); }
+:root[data-theme="dark"] .status-pill { background: #14213a; border-color: var(--line); }
+:root[data-theme="dark"] .status-pill.s-Available { background: #0d3322; border-color: #1d6a45; }
+:root[data-theme="dark"] .status-pill.s-Conveying, :root[data-theme="dark"] .status-pill.s-En\ route { background: #3a3007; border-color: #7a6512; }
+:root[data-theme="dark"] .cat.c4, :root[data-theme="dark"] .news.none { background: #4a5a70; }
+:root[data-theme="dark"] .cat.c3 { background: #1f6fd1; }
+:root[data-theme="dark"] .modal { background: rgba(0,0,0,.6); }
+:root[data-theme="dark"] select option { background: #0d182b; color: #e4ebf3; }
+:root[data-theme="dark"] ::-webkit-scrollbar-thumb { background: #2a3a55; border-color: var(--paper); }
+:root[data-theme="dark"] a { color: #7cc4ff; }
+
+/* Brightness: dims the tablet, dialogs and toasts together */
+#tablet, .modal-card, .toast { filter: brightness(var(--bri, 1)); }
+
 /* Tablet */
 #tablet {
   position: fixed; inset: 0; margin: auto;
@@ -175,7 +206,7 @@ table.t tr.click:hover td { background: var(--paper); }
 .modal-card p { margin: 0 0 14px; color: var(--muted); }
 .modal-card .row.end { margin-top: 16px; }
 #toasts { position: fixed; right: 4vw; bottom: 6vh; display: flex; flex-direction: column; gap: 8px; z-index: 20; }
-.toast { background: var(--ink); color: #fff; padding: 10px 16px; border-radius: 8px; max-width: 360px; box-shadow: 0 8px 24px rgba(0,0,0,.25); }
+.toast { background: #15262b; color: #fff; padding: 10px 16px; border-radius: 8px; max-width: 360px; box-shadow: 0 8px 24px rgba(0,0,0,.25); }
 .toast.err { background: var(--red); }
 @media (prefers-reduced-motion: no-preference) {
   .modal-card { animation: pop .14s ease-out; }
@@ -198,3 +229,26 @@ table.t tr.click:hover td { background: var(--paper); }
 .call-notes-box { max-height: 280px; overflow-y: auto; margin: 10px 0 14px; }
 .call-notes { list-style: none; margin: 0; padding: 0 0 0 10px; border-left: 2px solid var(--primary); display: flex; flex-direction: column; gap: 6px; }
 table.t .sub { font-size: 12.5px; color: var(--muted); }
+
+/* Frame image (Config.Branding.frame). The screen sits in the frame's cut-out window. */
+#tablet.framed {
+  width: min(1440px, 96vw, calc(94vh * 1448 / 1086)); height: auto; aspect-ratio: 1448 / 1086;
+  background: none; border-radius: 0; padding: 0; box-shadow: none;
+}
+#tablet.framed { filter: brightness(var(--bri, 1)) drop-shadow(0 30px 50px rgba(0,0,0,.45)); }
+.frame { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; user-select: none; z-index: 2; }
+#tablet.framed .screen {
+  position: absolute; left: 3.8%; top: 16.67%; width: 92.47%; height: 71.64%;
+  border-radius: 0; grid-template-rows: auto 1fr;
+}
+#tablet.framed .battenburg { display: none; }
+#tablet.framed .rail { grid-row: 1 / 3; }
+
+/* Display settings */
+.seg { display: inline-flex; border: 1px solid var(--line); border-radius: var(--radius-sm); overflow: hidden; }
+.seg button { border: 0; background: var(--surface); padding: 8px 16px; cursor: pointer; font-weight: 700; color: var(--muted); }
+.seg button.on { background: var(--primary); color: #fff; }
+input[type=range] { padding: 0; accent-color: var(--primary); }
+.range-row { display: flex; align-items: center; gap: 12px; }
+.range-row output { width: 48px; text-align: right; font-weight: 700; }
+input[type=range] { border: 0; background: none; }

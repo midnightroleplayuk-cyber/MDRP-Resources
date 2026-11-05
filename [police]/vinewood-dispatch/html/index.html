@@ -33,6 +33,7 @@
             <div id="conFilters" class="con-filters" role="group" aria-label="Show calls for"></div>
             <div id="conCallBar" class="con-callbar hidden" role="status" aria-live="polite"></div>
             <div class="con-actions">
+                <button type="button" class="btn" id="conMapToggle" aria-pressed="true">Hide map</button>
                 <button type="button" class="btn primary" id="conNew">New call</button>
                 <button type="button" class="btn" id="conHide">Close console</button>
                 <button type="button" class="btn ghost" id="conLogout">Log out</button>
@@ -43,8 +44,11 @@
                 <h2 id="callsTitle">Calls <span id="conCount" class="count"></span></h2>
                 <ul id="conCalls" class="con-list"></ul>
             </section>
-            <section class="con-col con-detail" aria-label="Selected call">
-                <div id="conDetail"></div>
+            <section class="con-mid">
+                <div id="conLiveMap" class="live-map" aria-label="Live map of calls and units"></div>
+                <div class="con-col con-detail" aria-label="Selected call">
+                    <div id="conDetail"></div>
+                </div>
             </section>
             <section class="con-col con-units" aria-labelledby="unitsTitle">
                 <h2 id="unitsTitle">Units <span id="conUnitCount" class="count"></span></h2>

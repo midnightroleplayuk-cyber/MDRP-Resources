@@ -12,6 +12,7 @@ const con = {
     pendingSelect: null,
     radio: false,        // vinewood_radio running
     map: null,           // { image, size, bounds }
+    distanceUnit: 'mi',
     call: null,          // { state, label, target, startedAt }
 };
 window.VD_CONSOLE_OPEN = false;
@@ -56,6 +57,31 @@ function visibleAlerts() {
 
 const unitById = (src) => con.units.find((u) => u.src === src);
 
+/* ---------- Distances ---------- */
+
+function metresBetween(a, b) {
+    if (!a || !b) return null;
+    return Math.hypot(a.x - b.x, a.y - b.y);
+}
+function formatDistance(m) {
+    if (m == null) return '';
+    if (con.distanceUnit === 'km') return m < 100 ? '<0.1 km' : `${(m / 1000).toFixed(1)} km`;
+    const mi = m / 1609.34;
+    return mi < 0.1 ? '<0.1 mi' : `${mi.toFixed(1)} mi`;
+}
+// units sorted nearest first to a call, with their distance attached
+function byDistance(units, a) {
+    return units
+        .map((u) => ({ u, d: metresBetween(u.coords, a?.coords) }))
+        .sort((x, y) => (x.d ?? Infinity) - (y.d ?? Infinity));
+}
+// nearest unit that could still be assigned (not attached, not already busy on another call, not in panic)
+function closestFree(a) {
+    if (!a) return null;
+    const free = eligibleUnits(a).filter((u) => !u.panic && !(u.calls && u.calls.length));
+    return byDistance(free, a)[0]?.u || null;
+}
+
 /* ---------- Filters ---------- */
 
 function renderFilters() {
@@ -73,6 +99,7 @@ $c('conFilters').addEventListener('click', (e) => {
     renderFilters();
     renderCalls();
     renderUnits();
+    renderLiveMap();
 });
 
 /* ---------- Calls list ---------- */
@@ -107,12 +134,15 @@ $c('conCalls').addEventListener('click', (e) => {
     select(Number(b.dataset.id));
 });
 
-function select(id) {
+function select(id, fromMap = false) {
     con.selected = id;
     con.fresh.delete(id);
     renderCalls();
     renderDetail(true);
     renderUnits();
+    renderLiveMap();
+    const a = con.alerts.get(id);
+    if (!fromMap && a?.coords && liveMap) liveMap.ensureVisible(a.coords.x, a.coords.y);
 }
 
 /* ---------- Detail ---------- */
@@ -143,6 +173,10 @@ function renderDetail(reset = false) {
     const typing = !reset && note && document.activeElement === note;
     const closeOpen = !reset && box.querySelector('#detClose:not([hidden])');
     const outcomeDraft = closeOpen ? box.querySelector('#detOutcome').value : '';
+    // whichever box has the cursor keeps it, in the same place
+    const active = document.activeElement;
+    const focus = !reset && active && active.id && box.contains(active) && active.tagName === 'INPUT'
+        ? { id: active.id, start: active.selectionStart, end: active.selectionEnd } : null;
 
     if (!a) {
         box.innerHTML = `<div class="det-empty"><p>Select a call to see its details.</p>
@@ -167,16 +201,18 @@ function renderDetail(reset = false) {
             <button type="button" class="btn tiny" data-standdown="${u.src}">Stand down</button></li>`).join('');
 
     const eligible = eligibleUnits(a);
-    const assignOptions = eligible.map((u) => {
+    const closest = closestFree(a);
+    const assignOptions = byDistance(eligible, a).map(({ u, d }) => {
         const st = unitStatus(u);
-        return `<option value="${u.src}">${esc(u.label)} (${esc(u.serviceLabel)}, ${esc(st.text.toLowerCase())}, ${esc(u.distance)})</option>`;
+        return `<option value="${u.src}" ${closest && u.src === closest.src ? 'selected' : ''}>${esc(u.label)} (${esc(u.serviceLabel)}, ${esc(st.text.toLowerCase())}${d != null ? `, ${formatDistance(d)} away` : ''})${closest && u.src === closest.src ? ', closest free' : ''}</option>`;
     }).join('');
 
-    const notes = (a.notes || []).map((n) => `<li><span class="who">${esc(n.author)}</span> ${esc(n.text)} <span class="sub">${ago(n.age || 0)}</span></li>`).join('');
+    const colours = authorColours(a.notes);
+    const notes = (a.notes || []).map((n) => noteLine(n, colours)).join('');
 
     box.innerHTML = `
         <div class="det-head">
-            <div class="meta"><span class="ref">#${a.id}</span>${svcPills}<span class="spacer"></span><span class="when">${ago(ageOf(a))}</span></div>
+            <div class="meta"><span class="ref">#${a.id}</span>${svcPills}<span class="spacer"></span><span class="when">${a.at ? `Received ${clockTime(a.at)}, ` : ''}${ago(ageOf(a))}</span></div>
             <div class="det-tools">
                 <label class="grade-pick">Grade
                     <select id="detGrade">${con.priorities.map((p) => `<option value="${p.value}" ${p.value === a.priority ? 'selected' : ''}>${esc(p.label)}</option>`).join('')}</select>
@@ -226,10 +262,17 @@ function renderDetail(reset = false) {
     if (assignEl && assignPick && [...assignEl.options].some((o) => o.value === assignPick)) assignEl.value = assignPick;
     const input = box.querySelector('#detNote');
     input.value = draft;
-    if (typing) input.focus();
+    if (typing && !focus) input.focus();
     if (closeOpen) {
         box.querySelector('#detClose').hidden = false;
         box.querySelector('#detOutcome').value = outcomeDraft;
+    }
+    if (focus) {
+        const el = box.querySelector(`#${focus.id}`);
+        if (el) {
+            el.focus();
+            try { el.setSelectionRange(focus.start, focus.end); } catch { /* not a text box */ }
+        }
     }
 }
 
@@ -382,16 +425,26 @@ function renderUnits() {
     const a = con.alerts.get(con.selected);
     const canAssign = new Set(a ? eligibleUnits(a).map((u) => u.src) : []);
 
+    const closest = closestFree(a);
     const groups = con.services.filter((s) => con.filter.has(s.key)).map((s) => {
-        const list = units.filter((u) => u.service === s.key);
+        let list = units.filter((u) => u.service === s.key);
         if (!list.length) return '';
+        // with a call selected, nearest first and distances measured from the call
+        const dist = new Map();
+        if (a?.coords) {
+            list = byDistance(list, a).map(({ u, d }) => { dist.set(u.src, d); return u; });
+        } else {
+            list = [...list].sort((x, y) => String(x.label).localeCompare(String(y.label)));
+        }
         return `<h3 class="grp" style="--c:${esc(s.colour)}">${esc(s.label)} <span class="count">${list.length}</span></h3>
             <ul class="unit-list">${list.map((u) => {
                 const st = unitStatus(u);
-                return `<li class="unit">
+                const d = dist.get(u.src);
+                const isClosest = closest && closest.src === u.src;
+                return `<li class="unit ${isClosest ? 'closest' : ''}" data-unit="${u.src}">
                     <div class="u-top"><b>${esc(u.label)}</b>${u.callsign ? ` <span class="sub">${esc(u.name)}</span>` : ''}
-                        <span class="spacer"></span><span class="status ${st.cls}">${esc(st.text)}</span></div>
-                    <div class="u-sub">${esc(u.location || 'Unknown')}, ${esc(u.distance)}. ${esc(u.vehicle)}${u.lights ? ', lights on' : ''}</div>
+                        <span class="spacer"></span>${isClosest ? '<span class="status near">Closest free</span> ' : ''}<span class="status ${st.cls}">${esc(st.text)}</span></div>
+                    <div class="u-sub">${d != null ? `<b class="u-dist">${formatDistance(d)} from #${a.id}</b>. ` : ''}${esc(u.location || 'Unknown')}. ${esc(u.vehicle)}${u.lights ? ', lights on' : ''}</div>
                     ${con.radio ? `<div class="u-radio">${u.radio
                         ? `Radio <b>${esc(u.radio.talkgroup || 'No talkgroup')}</b> <span class="sub">ISSI ${esc(u.radio.issi)}</span>${u.radio.inCall ? ' <span class="status busy">In call</span>' : ''}`
                         : '<span class="sub">Radio off</span>'}</div>` : ''}
@@ -555,7 +608,7 @@ setInterval(() => {
     renderCalls();
     const when = $c('conDetail').querySelector('.det-head .when');
     const a = con.alerts.get(con.selected);
-    if (when && a) when.textContent = ago(ageOf(a));
+    if (when && a) when.textContent = `${a.at ? `Received ${clockTime(a.at)}, ` : ''}${ago(ageOf(a))}`;
 }, 20000);
 
 window.addEventListener('message', ({ data }) => {
@@ -570,6 +623,7 @@ window.addEventListener('message', ({ data }) => {
             con.priorities = data.priorities || [];
             con.radio = !!data.radio;
             con.map = data.map || null;
+            con.distanceUnit = data.distanceUnit || 'mi';
             con.call = data.call ? { ...data.call, startedAt: Date.now() - (data.call.elapsed || 0) * 1000 } : null;
             renderCallBar();
             con.fresh.clear();
@@ -582,6 +636,7 @@ window.addEventListener('message', ({ data }) => {
             renderUnits();
             conEl.classList.remove('hidden');
             window.VD_CONSOLE_OPEN = true;
+            initLiveMap();
             // the console replaces the pop-up feed while it's open, and everything in it has now been seen
             for (const id of [...live.keys()]) dismiss(id);
             missed = 0;
@@ -601,6 +656,7 @@ window.addEventListener('message', ({ data }) => {
             renderCalls();
             if (con.selected === a.id) renderDetail();
             renderUnits();
+            renderLiveMap();
             break;
         }
         case 'consoleRemove':
@@ -612,6 +668,7 @@ window.addEventListener('message', ({ data }) => {
             }
             renderCalls();
             renderUnits();
+            renderLiveMap();
             break;
         case 'consoleCall': {
             const c = data.call;
@@ -629,6 +686,7 @@ window.addEventListener('message', ({ data }) => {
         case 'consoleUnits':
             con.units = data.units || [];
             renderUnits();
+            renderLiveMap();
             // refresh the assign list without losing what's being typed
             if (con.selected) renderDetail();
             break;
@@ -636,9 +694,7 @@ window.addEventListener('message', ({ data }) => {
 });
 
 
-/* ---------- Map picker ---------- */
-
-const mapState = { scale: 1, tx: 0, ty: 0, fit: 1, pin: null, opts: null, resolveSeq: 0 };
+/* ---------- Map view (shared by the live map and the location picker) ---------- */
 
 function worldToPx(x, y) {
     const { size, bounds: b } = con.map;
@@ -649,93 +705,265 @@ function pxToWorld(px, py) {
     return { x: b.left + px / size * (b.right - b.left), y: b.top - py / size * (b.top - b.bottom) };
 }
 
+/**
+ * opts: { onClick(px, py), onMarker(kind, id), controls: bool, zoomMax }
+ */
+function createMapView(el, opts = {}) {
+    const size = con.map.size;
+    const st = { scale: 1, tx: 0, ty: 0, fit: 1, touched: false };
+    el.classList.add('map-view');
+    el.innerHTML = `
+        <div class="map-layer" style="width:${size}px;height:${size}px">
+            <img src="${esc(con.map.image)}" alt="" draggable="false" width="${size}" height="${size}">
+            <svg class="map-lines" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" aria-hidden="true"></svg>
+            <div class="mk-layer"></div>
+            <div class="map-pin hidden" aria-hidden="true"></div>
+        </div>
+        ${opts.controls ? `<div class="map-ctrl" role="group" aria-label="Map zoom">
+            <button type="button" class="btn tiny" data-mz="in" aria-label="Zoom in">+</button>
+            <button type="button" class="btn tiny" data-mz="out" aria-label="Zoom out">&minus;</button>
+            <button type="button" class="btn tiny" data-mz="fit">Whole map</button></div>` : ''}`;
+    const layer = el.querySelector('.map-layer');
+    const mk = el.querySelector('.mk-layer');
+    const lines = el.querySelector('.map-lines');
+    const pin = el.querySelector('.map-pin');
+
+    const apply = () => {
+        layer.style.transform = `translate(${st.tx}px, ${st.ty}px) scale(${st.scale})`;
+        layer.style.setProperty('--inv', 1 / st.scale);
+    };
+    const clamp = () => {
+        const r = el.getBoundingClientRect();
+        const w = size * st.scale;
+        st.tx = Math.min(r.width * 2 / 3, Math.max(r.width / 3 - w, st.tx));
+        st.ty = Math.min(r.height * 2 / 3, Math.max(r.height / 3 - w, st.ty));
+    };
+    const zoomAt = (factor, cx, cy) => {
+        const next = Math.min(st.fit * (opts.zoomMax || 10), Math.max(st.fit, st.scale * factor));
+        st.tx = cx - (cx - st.tx) * (next / st.scale);
+        st.ty = cy - (cy - st.ty) * (next / st.scale);
+        st.scale = next;
+        clamp(); apply();
+    };
+    const centreOn = (px, py, scale = st.scale) => {
+        const r = el.getBoundingClientRect();
+        st.scale = scale;
+        st.tx = r.width / 2 - px * scale;
+        st.ty = r.height / 2 - py * scale;
+        clamp(); apply();
+    };
+    const refit = () => {
+        const r = el.getBoundingClientRect();
+        if (!r.width || !r.height) return;
+        const old = st.fit;
+        st.fit = Math.min(r.width, r.height) / size;
+        if (!st.touched) centreOn(size / 2, size / 2, st.fit);
+        else { st.scale = Math.max(st.fit, st.scale * (old ? 1 : 1)); clamp(); apply(); }
+    };
+
+    el.addEventListener('wheel', (e) => {
+        e.preventDefault();
+        st.touched = true;
+        const r = el.getBoundingClientRect();
+        zoomAt(e.deltaY < 0 ? 1.25 : 0.8, e.clientX - r.left, e.clientY - r.top);
+    }, { passive: false });
+
+    let drag = null;
+    el.addEventListener('pointerdown', (e) => {
+        if (e.target.closest('.map-ctrl')) return;
+        drag = { x: e.clientX, y: e.clientY, tx: st.tx, ty: st.ty, moved: false };
+        el.setPointerCapture(e.pointerId);
+    });
+    el.addEventListener('pointermove', (e) => {
+        if (!drag) return;
+        const dx = e.clientX - drag.x, dy = e.clientY - drag.y;
+        if (!drag.moved && Math.hypot(dx, dy) < 4) return;
+        drag.moved = true;
+        st.touched = true;
+        el.classList.add('dragging');
+        st.tx = drag.tx + dx; st.ty = drag.ty + dy;
+        clamp(); apply();
+    });
+    el.addEventListener('pointerup', (e) => {
+        if (!drag) return;
+        const wasDrag = drag.moved;
+        drag = null;
+        el.classList.remove('dragging');
+        if (wasDrag) return;
+        const hit = document.elementFromPoint(e.clientX, e.clientY)?.closest('[data-mk]');
+        if (hit && el.contains(hit) && opts.onMarker) return opts.onMarker(hit.dataset.mk, Number(hit.dataset.id));
+        const r = el.getBoundingClientRect();
+        const px = (e.clientX - r.left - st.tx) / st.scale;
+        const py = (e.clientY - r.top - st.ty) / st.scale;
+        if (px < 0 || py < 0 || px > size || py > size) return;
+        opts.onClick?.(px, py);
+    });
+    el.querySelector('.map-ctrl')?.addEventListener('click', (e) => {
+        const b = e.target.closest('[data-mz]');
+        if (!b) return;
+        st.touched = true;
+        const r = el.getBoundingClientRect();
+        if (b.dataset.mz === 'fit') { st.touched = false; return centreOn(size / 2, size / 2, st.fit); }
+        zoomAt(b.dataset.mz === 'in' ? 1.5 : 1 / 1.5, r.width / 2, r.height / 2);
+    });
+
+    const ro = new ResizeObserver(() => refit());
+    ro.observe(el);
+    refit();
+
+    return {
+        st,
+        el,
+        setMarkers(html) { mk.innerHTML = html; },
+        setLines(svg) { lines.innerHTML = svg; },
+        setPin(px, py) {
+            if (px == null) return pin.classList.add('hidden');
+            pin.style.left = `${px}px`; pin.style.top = `${py}px`;
+            pin.classList.remove('hidden');
+        },
+        centreOn,
+        zoomToWorld(x, y, times = 3) {
+            if (!el.getBoundingClientRect().width) return;
+            const { px, py } = worldToPx(x, y);
+            st.touched = true;
+            centreOn(px, py, st.fit * times);
+        },
+        // pan so a point is in view, without changing zoom (zooms in a little if fully zoomed out)
+        ensureVisible(x, y) {
+            const { px, py } = worldToPx(x, y);
+            const r = el.getBoundingClientRect();
+            const sx = px * st.scale + st.tx, sy = py * st.scale + st.ty;
+            const margin = 60;
+            if (st.scale <= st.fit * 1.01) { st.touched = true; return centreOn(px, py, st.fit * 2.5); }
+            if (sx < margin || sy < margin || sx > r.width - margin || sy > r.height - margin) centreOn(px, py);
+        },
+        destroy() { ro.disconnect(); el.innerHTML = ''; },
+    };
+}
+
+function callMarker(a, selected) {
+    const { px, py } = worldToPx(a.coords.x, a.coords.y);
+    return `<div class="mk mk-call g${Number(a.priority) || 2} ${selected ? 'sel' : ''}" data-mk="call" data-id="${a.id}"
+        style="left:${px}px;top:${py}px" title="#${a.id} ${esc(a.title)}"><span>#${a.id}${selected ? ` ${esc(a.title)}` : ''}</span></div>`;
+}
+function unitMarker(u, cls = '') {
+    const { px, py } = worldToPx(u.coords.x, u.coords.y);
+    return `<div class="mk mk-unit ${u.panic ? 'panic' : ''} ${cls}" data-mk="unit" data-id="${u.src}"
+        style="left:${px}px;top:${py}px;--c:${esc(u.colour)}" title="${esc(u.label)}"><span>${esc(u.label)}</span></div>`;
+}
+
+/* ---------- Live map (always on in the console) ---------- */
+
+let liveMap = null;
+let mapHidden = false;
+try { mapHidden = localStorage.getItem('vd_console_map') === 'hidden'; } catch { /* no storage */ }
+
+function setMapHidden(hidden) {
+    mapHidden = hidden;
+    try { localStorage.setItem('vd_console_map', hidden ? 'hidden' : 'shown'); } catch { /* no storage */ }
+    conEl.classList.toggle('map-hidden', hidden || !con.map);
+    const b = $c('conMapToggle');
+    b.textContent = hidden ? 'Show map' : 'Hide map';
+    b.setAttribute('aria-pressed', String(!hidden));
+    if (!hidden) renderLiveMap();
+}
+$c('conMapToggle').addEventListener('click', () => setMapHidden(!mapHidden));
+
+function initLiveMap() {
+    $c('conMapToggle').hidden = !con.map;
+    conEl.classList.toggle('map-hidden', mapHidden || !con.map);
+    if (!con.map) return;
+    if (!liveMap) {
+        liveMap = createMapView($c('conLiveMap'), {
+            controls: true,
+            onMarker: (kind, id) => {
+                if (kind === 'call') return select(id, true);
+                // unit: highlight it on the units board
+                const card = $c('conUnits').querySelector(`[data-unit="${id}"]`);
+                if (card) {
+                    card.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+                    card.classList.remove('flash'); void card.offsetWidth; card.classList.add('flash');
+                }
+            },
+        });
+        // start on Los Santos rather than the whole island
+        requestAnimationFrame(() => {
+            const a = con.alerts.get(con.selected);
+            if (a?.coords) liveMap.zoomToWorld(a.coords.x, a.coords.y, 2.5);
+            else liveMap.zoomToWorld(0, -900, 2.2);
+        });
+    }
+    renderLiveMap();
+}
+
+function renderLiveMap() {
+    if (!liveMap || !con.map || mapHidden || !window.VD_CONSOLE_OPEN) return;
+    const sel = con.alerts.get(con.selected);
+    const calls = visibleAlerts().filter((a) => a.coords);
+    const units = con.units.filter((u) => u.coords && con.filter.has(u.service));
+    const attached = new Set((sel?.attachedUnits || []).map((u) => u.src));
+    const closest = closestFree(sel);
+
+    const markers = [
+        ...calls.filter((a) => a.id !== con.selected).map((a) => callMarker(a, false)),
+        ...units.map((u) => unitMarker(u, attached.has(u.src) ? 'att' : (closest && closest.src === u.src ? 'near' : ''))),
+        ...(sel?.coords ? [callMarker(sel, true)] : []),
+    ];
+    liveMap.setMarkers(markers.join(''));
+
+    // lines from the selected call to its units, and a dashed line to the closest free unit
+    let svg = '';
+    if (sel?.coords) {
+        const c = worldToPx(sel.coords.x, sel.coords.y);
+        for (const u of units) {
+            const isAtt = attached.has(u.src);
+            const isNear = closest && closest.src === u.src;
+            if (!isAtt && !isNear) continue;
+            const p = worldToPx(u.coords.x, u.coords.y);
+            svg += `<line x1="${c.px}" y1="${c.py}" x2="${p.px}" y2="${p.py}" class="${isAtt ? 'ln-att' : 'ln-near'}" vector-effect="non-scaling-stroke"/>`;
+        }
+    }
+    liveMap.setLines(svg);
+}
+
+/* ---------- Location picker ---------- */
+
+let picker = null;
+const pickState = { pin: null, label: null, seq: 0 };
+
 function closeMapPicker() {
+    picker?.destroy();
+    picker = null;
     const el = $c('conMap');
     el.classList.add('hidden');
     el.innerHTML = '';
-    mapState.opts = null;
 }
 
-function applyMapTransform() {
-    const layer = $c('mapLayer');
-    if (!layer) return;
-    layer.style.transform = `translate(${mapState.tx}px, ${mapState.ty}px) scale(${mapState.scale})`;
-    layer.style.setProperty('--inv', 1 / mapState.scale);
-}
-
-function clampMap() {
-    const view = $c('mapView').getBoundingClientRect();
-    const w = con.map.size * mapState.scale;
-    // keep at least a third of the view covered by map
-    const minX = view.width / 3 - w, maxX = view.width * 2 / 3;
-    const minY = view.height / 3 - w, maxY = view.height * 2 / 3;
-    mapState.tx = Math.min(maxX, Math.max(minX, mapState.tx));
-    mapState.ty = Math.min(maxY, Math.max(minY, mapState.ty));
-}
-
-function zoomAt(factor, cx, cy) {
-    const next = Math.min(mapState.fit * 10, Math.max(mapState.fit, mapState.scale * factor));
-    mapState.tx = cx - (cx - mapState.tx) * (next / mapState.scale);
-    mapState.ty = cy - (cy - mapState.ty) * (next / mapState.scale);
-    mapState.scale = next;
-    clampMap();
-    applyMapTransform();
-}
-
-function centreOn(px, py, scale) {
-    const view = $c('mapView').getBoundingClientRect();
-    mapState.scale = scale;
-    mapState.tx = view.width / 2 - px * scale;
-    mapState.ty = view.height / 2 - py * scale;
-    clampMap();
-    applyMapTransform();
-}
-
-async function placePin(px, py) {
+async function pickAt(px, py) {
     const world = pxToWorld(px, py);
-    mapState.pin = world;
-    const pin = $c('mapPin');
-    pin.style.left = `${px}px`;
-    pin.style.top = `${py}px`;
-    pin.classList.remove('hidden');
+    pickState.pin = world;
+    picker.setPin(px, py);
     const where = $c('mapWhere');
     where.innerHTML = `<b>Finding street…</b> <span class="sub">${Math.round(world.x)}, ${Math.round(world.y)}</span>`;
     $c('mapUse').disabled = false;
-
-    const seq = ++mapState.resolveSeq;
+    const seq = ++pickState.seq;
     let loc = {};
     try {
         const res = await fetch(`https://${RESOURCE}/consoleResolve`, {
             method: 'POST', headers: { 'Content-Type': 'application/json; charset=UTF-8' }, body: JSON.stringify(world),
         });
         loc = await res.json();
-    } catch { /* preview in a browser */ }
-    if (seq !== mapState.resolveSeq || !$c('mapWhere')) return;
+    } catch { /* browser preview */ }
+    if (seq !== pickState.seq || !$c('mapWhere')) return;
     const road = [loc.street, loc.cross].filter(Boolean).join(' / ');
-    mapState.pinLabel = [road, loc.zone].filter(Boolean).join(', ') || 'Unknown location';
-    where.innerHTML = `<b>${esc(mapState.pinLabel)}</b> <span class="sub">${Math.round(world.x)}, ${Math.round(world.y)}</span>`;
-}
-
-function mapMarkers() {
-    const out = [];
-    for (const a of con.alerts.values()) {
-        if (!a.coords) continue;
-        const { px, py } = worldToPx(a.coords.x, a.coords.y);
-        out.push(`<div class="mk mk-call g${Number(a.priority) || 2}" style="left:${px}px;top:${py}px" title="#${a.id} ${esc(a.title)}"><span>#${a.id}</span></div>`);
-    }
-    for (const u of con.units) {
-        if (!u.coords) continue;
-        const { px, py } = worldToPx(u.coords.x, u.coords.y);
-        out.push(`<div class="mk mk-unit ${u.panic ? 'panic' : ''}" style="left:${px}px;top:${py}px;--c:${esc(u.colour)}" title="${esc(u.label)}"><span>${esc(u.label)}</span></div>`);
-    }
-    return out.join('');
+    pickState.label = [road, loc.zone].filter(Boolean).join(', ') || 'Unknown location';
+    where.innerHTML = `<b>${esc(pickState.label)}</b> <span class="sub">${Math.round(world.x)}, ${Math.round(world.y)}</span>`;
 }
 
 function openMapPicker(opts) {
     if (!con.map) return conToast('The map is turned off in the config.', true);
-    mapState.opts = opts;
-    mapState.pin = null;
-    mapState.pinLabel = null;
+    pickState.pin = null;
+    pickState.label = null;
     const el = $c('conMap');
     el.innerHTML = `
         <div class="map-panel">
@@ -743,19 +971,8 @@ function openMapPicker(opts) {
                 <div><h2 id="mapTitle">${esc(opts.title || 'Pick a location')}</h2>
                     <p class="sub">Click the map to place the pin. Scroll to zoom, drag to move around.</p></div>
                 <div class="map-legend"><span class="mk-key mk-call"></span>Calls <span class="mk-key mk-unit"></span>Units</div>
-                <div class="map-zoom" role="group" aria-label="Zoom">
-                    <button type="button" class="btn" data-zoom="in" aria-label="Zoom in">+</button>
-                    <button type="button" class="btn" data-zoom="out" aria-label="Zoom out">&minus;</button>
-                    <button type="button" class="btn" data-zoom="fit">Whole map</button>
-                </div>
             </header>
-            <div class="map-view" id="mapView">
-                <div class="map-layer" id="mapLayer" style="width:${con.map.size}px;height:${con.map.size}px">
-                    <img src="${esc(con.map.image)}" alt="" draggable="false" width="${con.map.size}" height="${con.map.size}">
-                    ${mapMarkers()}
-                    <div id="mapPin" class="map-pin hidden" aria-hidden="true"></div>
-                </div>
-            </div>
+            <div id="mapView" class="map-pick"></div>
             <footer class="map-foot">
                 <div id="mapWhere" class="map-where"><span class="sub">No location picked</span></div>
                 <button type="button" class="btn" data-map="cancel">Cancel</button>
@@ -764,65 +981,26 @@ function openMapPicker(opts) {
         </div>`;
     el.classList.remove('hidden');
 
-    const view = $c('mapView');
-    const rect = view.getBoundingClientRect();
-    mapState.fit = Math.min(rect.width, rect.height) / con.map.size;
-    if (opts.initial && Number.isFinite(opts.initial.x)) {
-        const { px, py } = worldToPx(opts.initial.x, opts.initial.y);
-        centreOn(px, py, mapState.fit * 3);
-        placePin(px, py);
-    } else {
-        centreOn(con.map.size / 2, con.map.size / 2, mapState.fit);
-    }
+    picker = createMapView($c('mapView'), { controls: true, onClick: (px, py) => pickAt(px, py) });
+    picker.setMarkers([
+        ...[...con.alerts.values()].filter((a) => a.coords).map((a) => callMarker(a, false)),
+        ...con.units.filter((u) => u.coords).map((u) => unitMarker(u)),
+    ].join(''));
 
-    view.addEventListener('wheel', (e) => {
-        e.preventDefault();
-        const r = view.getBoundingClientRect();
-        zoomAt(e.deltaY < 0 ? 1.25 : 0.8, e.clientX - r.left, e.clientY - r.top);
-    }, { passive: false });
-
-    let drag = null;
-    view.addEventListener('pointerdown', (e) => {
-        drag = { x: e.clientX, y: e.clientY, tx: mapState.tx, ty: mapState.ty, moved: false };
-        view.setPointerCapture(e.pointerId);
-    });
-    view.addEventListener('pointermove', (e) => {
-        if (!drag) return;
-        const dx = e.clientX - drag.x, dy = e.clientY - drag.y;
-        if (!drag.moved && Math.hypot(dx, dy) < 4) return;
-        drag.moved = true;
-        view.classList.add('dragging');
-        mapState.tx = drag.tx + dx;
-        mapState.ty = drag.ty + dy;
-        clampMap();
-        applyMapTransform();
-    });
-    view.addEventListener('pointerup', (e) => {
-        if (!drag) return;
-        const wasDrag = drag.moved;
-        drag = null;
-        view.classList.remove('dragging');
-        if (wasDrag) return;
-        const r = view.getBoundingClientRect();
-        const px = (e.clientX - r.left - mapState.tx) / mapState.scale;
-        const py = (e.clientY - r.top - mapState.ty) / mapState.scale;
-        if (px < 0 || py < 0 || px > con.map.size || py > con.map.size) return;
-        placePin(px, py);
+    requestAnimationFrame(() => {
+        if (opts.initial && Number.isFinite(opts.initial.x)) {
+            picker.zoomToWorld(opts.initial.x, opts.initial.y, 3);
+            const { px, py } = worldToPx(opts.initial.x, opts.initial.y);
+            pickAt(px, py);
+        }
     });
 
-    el.querySelector('.map-zoom').addEventListener('click', (e) => {
-        const b = e.target.closest('[data-zoom]');
-        if (!b) return;
-        const r = view.getBoundingClientRect();
-        if (b.dataset.zoom === 'fit') return centreOn(con.map.size / 2, con.map.size / 2, mapState.fit);
-        zoomAt(b.dataset.zoom === 'in' ? 1.5 : 1 / 1.5, r.width / 2, r.height / 2);
-    });
     el.querySelector('[data-map="cancel"]').addEventListener('click', closeMapPicker);
     $c('mapUse').addEventListener('click', async () => {
-        if (!mapState.pin) return;
+        if (!pickState.pin) return;
         const btn = $c('mapUse');
         btn.disabled = true;
-        const done = await opts.onPick({ x: mapState.pin.x, y: mapState.pin.y }, mapState.pinLabel);
+        const done = await opts.onPick({ x: pickState.pin.x, y: pickState.pin.y }, pickState.label);
         if (done !== false) closeMapPicker(); else btn.disabled = false;
     });
     $c('mapUse').focus();

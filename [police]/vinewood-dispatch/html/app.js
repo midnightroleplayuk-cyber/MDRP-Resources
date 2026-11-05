@@ -37,6 +37,37 @@ function post(name, data = {}) {
     }).catch(() => {});
 }
 
+// Clock time in the player's own time zone. `at` is a UTC timestamp worked out in game.
+function clockTime(at) {
+    if (!at) return '';
+    try {
+        return new Date(at * 1000).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+    } catch {
+        const d = new Date(at * 1000);
+        return `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
+    }
+}
+
+// A different colour for each person on a call, in the order they first post, so every
+// person on one call is distinct. Control is always hi-vis yellow.
+const AUTHOR_COLOURS = ['#7cc4ff', '#7ee2a8', '#ffab70', '#f59bd0', '#b9a6ff', '#5fe0d6', '#ff8a80', '#d4e157', '#ffcc80', '#c5e1a5'];
+const isControl = (name) => /^control\b/i.test(String(name || ''));
+function authorColours(notes) {
+    const map = new Map();
+    let next = 0;
+    for (const n of notes || []) {
+        if (map.has(n.author)) continue;
+        map.set(n.author, isControl(n.author) ? '#f2c500' : AUTHOR_COLOURS[next++ % AUTHOR_COLOURS.length]);
+    }
+    return map;
+}
+
+function noteLine(n, colours) {
+    const colour = (colours && colours.get(n.author)) || (isControl(n.author) ? '#f2c500' : AUTHOR_COLOURS[0]);
+    const time = clockTime(n.at);
+    return `<li class="note" style="--who:${colour}">${time ? `<time class="note-time">${time}</time>` : ''}<span class="who">${esc(n.author)}</span> <span class="note-text">${esc(n.text)}</span></li>`;
+}
+
 function ago(seconds) {
     if (seconds < 45) return 'just now';
     const m = Math.round(seconds / 60);
@@ -73,10 +104,11 @@ function unitLine(u) {
 }
 
 function notesHTML(a) {
+    const colours = authorColours(a.notes);
     const notes = a.notes || [];
     const list = notes.length
         ? `<ol class="notes">${notes.map((n) => `
-            <li><span class="who">${esc(n.author)}</span> ${esc(n.text)} <span class="sub">${ago(n.age || 0)}</span></li>`).join('')}
+            ${noteLine(n, colours)}`).join('')}
            </ol>`
         : '';
     return `
@@ -130,7 +162,7 @@ function cardHTML(a, mode, age, sticky = false) {
     if (caller) facts.push(['Caller', caller]);
     facts.push(['Distance', esc(a.distance)]);
     const latest = a.notes?.length ? a.notes[a.notes.length - 1] : null;
-    if (mode === 'live' && latest) facts.push(['Update', `<span class="who">${esc(latest.author)}</span> ${esc(latest.text)}`]);
+    if (mode === 'live' && latest) facts.push(['Update', `<span class="note-inline" style="--who:${authorColours(a.notes).get(latest.author)}">${latest.at ? `<time class="note-time">${clockTime(latest.at)}</time>` : ''}<span class="who">${esc(latest.author)}</span> <span class="note-text">${esc(latest.text)}</span></span>`]);
 
     return `
         <div class="strip" style="--svc:${esc(svc)}"></div>
