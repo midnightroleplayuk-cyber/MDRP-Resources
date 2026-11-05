@@ -92,3 +92,8 @@ YouTube now requests unmuted autoplay (`mute=0`) and sends `unMute`, `setVolume`
 Adds an **HLS stream (.m3u8) - experimental** choice in Play a URL. Supply an HTTPS `.m3u8` URL that you are authorized to access. This tests whether FiveM CEF supports that stream directly through HTML5 video; error code and stalled messages are displayed on the TV. No external domain or Twitch embed is needed for this diagnostic.
 
 **This is not Twitch channel URL playback.** Twitch channel pages are not direct media URLs. Twitch playback requires legitimately authorized playable stream URLs and may require HLS JavaScript playback support, CORS and appropriate codecs. The script does not obtain Twitch access tokens, bypass access controls or proxy Twitch streams. YouTube functionality is unchanged.
+
+## v0.3.2 - HLS.js MSE compatibility diagnostic
+The HLS option now loads HLS.js v1.6.13 from jsDelivr at runtime and attempts playback through Media Source Extensions. It reports CDN load failures, missing MSE support, playlist parsing, CORS/network errors and codec errors on the TV. An internet connection to jsDelivr is required for this experimental build. This is not a Twitch URL converter and does not retrieve protected Twitch stream URLs. YouTube playback is unchanged.
+
+Test with an authorized, public HTTPS HLS playlist that permits cross-origin access. A failed stream may be caused by access restrictions rather than browser capabilities.

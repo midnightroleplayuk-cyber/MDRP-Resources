@@ -2,6 +2,47 @@ const screen=document.getElementById('screen'), status=document.getElementById('
 let media=null, volume=35, youtubeFrame=null, youtubeReady=false, youtubeQueue=[];
 let youtubeRetry=null, audioRequested=true, youtubeAudioInitialized=false, mutedByController=false;
 let twitchFrame=null, twitchTimeout=null;
+let hlsInstance=null, hlsLoadPromise=null;
+function destroyHls(){if(hlsInstance){try{hlsInstance.destroy()}catch(e){} hlsInstance=null}}
+function loadHls(){
+  if(window.Hls)return Promise.resolve(window.Hls);
+  if(hlsLoadPromise)return hlsLoadPromise;
+  // This test uses an external library CDN; it must be reachable from FiveM CEF.
+  hlsLoadPromise=new Promise((resolve,reject)=>{
+    const tag=document.createElement('script');
+    const timeout=setTimeout(()=>reject(Error('HLS.js CDN timed out (CEF network or CSP)')),12000);
+    tag.src='https://cdn.jsdelivr.net/npm/hls.js@1.6.13/dist/hls.min.js';
+    tag.onload=()=>{clearTimeout(timeout);window.Hls?resolve(window.Hls):reject(Error('HLS.js loaded but unavailable'))};
+    tag.onerror=()=>{clearTimeout(timeout);reject(Error('Cannot load HLS.js CDN in CEF'))};
+    document.head.appendChild(tag);
+  }).catch(err=>{hlsLoadPromise=null;throw err});
+  return hlsLoadPromise;
+}
+function playHlsVideo(v,d){
+  show('HLS.js: loading library...');
+  loadHls().then(Hls=>{
+    if(media!==v)return;
+    if(!Hls.isSupported()){
+      show('HLS.js: MediaSource unsupported in this FiveM CEF build');
+      return;
+    }
+    show('HLS.js: MSE supported, loading playlist...');
+    const hls=new Hls({enableWorker:false,lowLatencyMode:true});hlsInstance=hls;
+    hls.on(Hls.Events.ERROR,(_,data)=>{
+      if(media!==v)return;
+      const reason=(data.details||data.type||'unknown');
+      show('HLS.js: '+reason+(data.fatal?' (fatal)':'')+' • check CORS/URL/codec');
+      if(data.fatal){if(data.type===Hls.ErrorTypes.MEDIA_ERROR){try{hls.recoverMediaError()}catch(e){}}else{hls.destroy();if(hlsInstance===hls)hlsInstance=null}}
+    });
+    hls.on(Hls.Events.MANIFEST_PARSED,()=>{
+      if(media!==v)return;
+      show('HLS.js: playlist parsed; starting video');
+      v.play().catch(e=>show('HLS.js: play blocked: '+e.message));
+    });
+    hls.attachMedia(v);
+    hls.on(Hls.Events.MEDIA_ATTACHED,()=>{if(media===v)hls.loadSource(d.url)});
+  }).catch(e=>{if(media===v)show('HLS.js unavailable: '+e.message)});
+}
 // Prefer audible autoplay. Browsers may still deny it; the menu retains manual unmute.
 function attemptYoutubeSound(){
   if(!youtubeFrame)return;
@@ -36,7 +77,7 @@ window.addEventListener('message', e=>{
 function show(text){status.textContent=text;status.style.display='block'}
 function iframe(src,allow='autoplay; encrypted-media; fullscreen; picture-in-picture'){const f=document.createElement('iframe');f.src=src;f.allow=allow;f.referrerPolicy='strict-origin-when-cross-origin';f.allowFullscreen=true;screen.append(f);media=f;return f}
 function youtubeId(url){try{const u=new URL(url);let id=u.hostname==='youtu.be'?u.pathname.slice(1):u.searchParams.get('v');if(!id){const m=u.pathname.match(/^\/(?:shorts|live|embed)\/([^/?]+)/);id=m?.[1]}return /^[\w-]{11}$/.test(id||'')?id:null}catch{return null}}
-function play(d){if(youtubeRetry)clearInterval(youtubeRetry);if(twitchTimeout)clearTimeout(twitchTimeout);twitchTimeout=null;twitchFrame=null;youtubeRetry=null;youtubeFrame=null;youtubeReady=false;youtubeAudioInitialized=false;screen.replaceChildren();media=null;volume=Math.max(0,Math.min(100,Number(d.initialVolume ?? d.volume ?? 35)||0));audioRequested=true;mutedByController=d.initialMuted===true || volume===0;if(d.kind==='test'){const t=document.createElement('div');t.className='bars';t.innerHTML='<b>HF1 TV TEST OK</b>';screen.append(t);show('Test pattern');return}
+function play(d){destroyHls();if(youtubeRetry)clearInterval(youtubeRetry);if(twitchTimeout)clearTimeout(twitchTimeout);twitchTimeout=null;twitchFrame=null;youtubeRetry=null;youtubeFrame=null;youtubeReady=false;youtubeAudioInitialized=false;screen.replaceChildren();media=null;volume=Math.max(0,Math.min(100,Number(d.initialVolume ?? d.volume ?? 35)||0));audioRequested=true;mutedByController=d.initialMuted===true || volume===0;if(d.kind==='test'){const t=document.createElement('div');t.className='bars';t.innerHTML='<b>HF1 TV TEST OK</b>';screen.append(t);show('Test pattern');return}
 try{
 const u=new URL(d.url);if(u.protocol!=='https:')throw Error('HTTPS only');
 if(d.kind==='youtube'){
@@ -62,8 +103,8 @@ show('YouTube: loading video '+id+' (sound requested)');
 f.addEventListener('load',()=>show('YouTube embed loaded — if blank, video may block embedding or FiveM CEF playback'));
 f.addEventListener('error',()=>show('YouTube iframe failed to load'));
 }else if(d.kind==='video'||d.kind==='hls'){
-const v=document.createElement('video');v.autoplay=true;v.controls=false;v.playsInline=true;v.volume=0;v.muted=true;v.src=d.url;screen.append(v);media=v;
-v.addEventListener('loadedmetadata',()=>{if(Number.isFinite(v.duration)&&v.duration>0){const elapsed=Math.max(0,Number(d.now||0)-Number(d.started||0));v.currentTime=Math.min(elapsed,Math.max(0,v.duration-.2))}v.play().catch(()=>{v.muted=true;v.play().catch(()=>show('Autoplay blocked by browser'))})});v.addEventListener('error',()=>{const code=v.error?.code||'unknown';show((d.kind==='hls'?'HLS':'Direct video')+' failed: media error '+code+' • check CEF HLS support, CORS, codec and authorization')});v.addEventListener('stalled',()=>show('Video stalled • check network and playlist segments'));v.addEventListener('playing',()=>show((d.kind==='hls'?'HLS':'Direct video')+' playing'));show(d.kind==='hls'?'HLS test: loading playlist (experimental)':'Direct video');
+const v=document.createElement('video');v.autoplay=true;v.controls=false;v.playsInline=true;v.volume=0;v.muted=true;if(d.kind!=='hls')v.src=d.url;screen.append(v);media=v;
+v.addEventListener('loadedmetadata',()=>{if(Number.isFinite(v.duration)&&v.duration>0){const elapsed=Math.max(0,Number(d.now||0)-Number(d.started||0));v.currentTime=Math.min(elapsed,Math.max(0,v.duration-.2))}v.play().catch(()=>{v.muted=true;v.play().catch(()=>show('Autoplay blocked by browser'))})});v.addEventListener('error',()=>{const code=v.error?.code||'unknown';show((d.kind==='hls'?'HLS':'Direct video')+' failed: media error '+code+' • check CEF HLS support, CORS, codec and authorization')});v.addEventListener('stalled',()=>show('Video stalled • check network and playlist segments'));v.addEventListener('playing',()=>{v.volume=volume/100;v.muted=mutedByController;show((d.kind==='hls'?'HLS.js':'Direct video')+' playing')});if(d.kind==='hls')playHlsVideo(v,d);else show('Direct video');
  }else if(d.kind==='twitch'){
 // Official Twitch embed requires a parent hostname matching the actual embedding page.
 // FiveM's cfx-nui host is not a normal public HTTPS origin; this is a diagnostic test,
