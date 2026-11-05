@@ -120,3 +120,4 @@ YouTube and all non-Twitch playback still use the original local player.
 
 ### v0.4.0.1
 The Play a URL ox_lib input dialog now includes a native initial volume slider (0–100, step 1, default Config.DefaultVolume). No separate volume prompt after submitting the link. The existing precise volume control remains unchanged.
+\n## v0.4.2 Keyboard toolbar (experimental)\nWhen interacting with a website, type into the toolbar at the bottom of the screen. Enter submits a Google search (or navigates to an HTTPS URL if the text begins with https://). Google Search and Go to URL buttons are also available. Navigation updates the TV for nearby players through the existing server event and closes the interaction overlay; reopen Interact with screen to continue. This does NOT inject keyboard input into arbitrary website fields. Site restrictions still apply.\n

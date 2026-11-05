@@ -398,6 +398,48 @@ RegisterNUICallback('mouse',function(data,cb)
     end
     cb({ok=true})
 end)
+-- Keyboard toolbar: search Google or navigate to a full HTTPS address.
+-- This is navigation, not synthetic typing into arbitrary third-party DOM inputs.
+RegisterNUICallback('websiteNavigate',function(data,cb)
+    if not focused or not current or current.kind~='website' or not dui then
+        cb({ok=false,error='No interactive website is active'})
+        return
+    end
+    local mode = type(data)=='table' and data.mode or nil
+    local value = type(data)=='table' and data.value or nil
+    if type(value)~='string' or #value<1 or #value>1200 or value:find('[%c]') then
+        cb({ok=false,error='Enter a valid search or address'})
+        return
+    end
+    local target
+    if mode=='search' then
+        local encoded=value:gsub('[^%w%-_%.~]',function(c) return ('%%%02X'):format(c:byte()) end)
+        target='https://www.google.com/search?q='..encoded
+    elseif mode=='address' then
+        target=value
+        if not target:match('^https://') then
+            cb({ok=false,error='Only full HTTPS addresses are supported'})
+            return
+        end
+    else
+        cb({ok=false,error='Unknown navigation mode'})
+        return
+    end
+    -- Preserve the existing server-side URL policy and multiplayer synchronization.
+    local entity=current.entity
+    if not entity or not DoesEntityExist(entity) then
+        cb({ok=false,error='TV is no longer available'})
+        return
+    end
+    local key=current.key
+    if keyFor(entity)~=key then
+        cb({ok=false,error='TV changed'})
+        return
+    end
+    sendUpdate(entity,{kind='website',url=target,volume=0})
+    closeFocus()
+    cb({ok=true})
+end)
 RegisterNUICallback('key',function(data,cb)
     if focused and dui and IsDuiAvailable(dui) then
         -- FiveM does not expose general keyboard injection into DUI via documented natives.
