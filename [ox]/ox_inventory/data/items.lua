@@ -5599,6 +5599,34 @@ return {
     close = true,
     description = 'Used to craft a tactical hatchet',
 },
+['knife_handle'] = {
+    label = 'Knife Handle',
+    weight = 50,
+    stack = false,
+    close = true,
+    description = 'Handle used to craft a Knife',
+},
+['sledgehammer_handle'] = {
+    label = 'Sledgehammer Handle',
+    weight = 50,
+    stack = false,
+    close = true,
+    description = 'Handle used to craft a sledgehammer',
+},
+['ali_pole'] = {
+    label = 'Aluminium Pole',
+    weight = 50,
+    stack = false,
+    close = true,
+    description = 'Used to craft weapons',
+},
+['hatchet_handle'] = {
+    label = 'Hatchet Handle',
+    weight = 50,
+    stack = false,
+    close = true,
+    description = 'Used to craft a hatchet',
+},
 
 -- VINEWOOD PD JOB
 ['handcuffs'] = {
