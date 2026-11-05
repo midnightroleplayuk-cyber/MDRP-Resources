@@ -23,3 +23,6 @@ A new diagnostic resource for QBCore / Qbox. It is **framework-independent at th
 
 ## Credits
 TV prop model metadata adapted from Pickle Mods' open-source ptelevision (user-supplied source). This is a separate diagnostic implementation, not a patch of the original scripts.
+
+## Stage 1.1 diagnostic
+Run `/tvpreview` to show the test page as a HUD overlay without relying on any TV prop. Run it again to stop. If preview works but `/tvtest` fails, the problem is the prop render-target link, not the DUI browser. The link attempt now logs native result and verifies the linked state.

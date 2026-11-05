@@ -3,6 +3,7 @@ local runtimeName = 'qb_tv_diag_' .. tostring(GetPlayerServerId(PlayerId()))
 local textureName = 'screen'
 local dictName = runtimeName
 local width, height = 1280, 720
+local preview = nil
 
 local function log(message)
     print(('[qb_tv_stage1] %s'):format(message))
@@ -66,7 +67,11 @@ local function startTest()
     end
     if not IsNamedRendertargetLinked(model) then
         local ok, result = safeNative(LinkNamedRendertarget, model)
-        if not ok or result == false then notify('LinkNamedRendertarget failed. Check F8.') return end
+        log(('Link attempt: nativeOK=%s result=%s linked=%s'):format(tostring(ok), tostring(result), tostring(IsNamedRendertargetLinked(model))))
+        if not ok or not IsNamedRendertargetLinked(model) then
+            notify('This prop cannot link to tvscreen. Use /tvpreview to test DUI separately, or try prop_tv_flat_01.')
+            return
+        end
     end
     if not IsNamedRendertargetRegistered(name) or not IsNamedRendertargetLinked(model) then
         notify('Render target registration/linking was not confirmed. Check F8.') return
@@ -105,6 +110,53 @@ local function startTest()
     state = { entity = entity, model = model, target = name, renderId = renderId, dui = dui, txd = txd }
     notify(('Test running on model %s / target %s. Look at TV. Use /tvdebug for diagnostics.'):format(model, name))
 end
+
+local function startPreview()
+    if preview then
+        if preview.dui then safeNative(DestroyDui, preview.dui) end
+        preview = nil
+        notify('DUI preview stopped.')
+        return
+    end
+    local url = ('https://cfx-nui-%s/html/test.html'):format(GetCurrentResourceName())
+    local dui = CreateDui(url, width, height)
+    if not dui then notify('Preview CreateDui failed.') return end
+    local ready = false
+    for i = 1, 100 do
+        if IsDuiAvailable(dui) then ready = true break end
+        Wait(50)
+    end
+    if not ready then
+        safeNative(DestroyDui, dui)
+        notify('Preview DUI unavailable after 5 seconds.')
+        return
+    end
+    local handle = GetDuiHandle(dui)
+    if not handle or handle == '' then
+        safeNative(DestroyDui, dui)
+        notify('Preview GetDuiHandle failed.')
+        return
+    end
+    local txd = CreateRuntimeTxd('qb_tv_preview_dict')
+    if not txd then safeNative(DestroyDui, dui) notify('Preview TXD failed.') return end
+    local tex = CreateRuntimeTextureFromDuiHandle(txd, 'preview', handle)
+    if not tex then safeNative(DestroyDui, dui) notify('Preview texture failed.') return end
+    preview = { dui = dui }
+    notify('DUI preview running at top-right. Run /tvpreview again to stop.')
+end
+
+RegisterCommand('tvpreview', function() CreateThread(startPreview) end, false)
+
+CreateThread(function()
+    while true do
+        if preview and IsDuiAvailable(preview.dui) then
+            DrawSprite('qb_tv_preview_dict', 'preview', 0.78, 0.24, 0.38, 0.38 * (9.0 / 16.0) * (GetAspectRatio(false)), 0.0, 255, 255, 255, 255)
+            Wait(0)
+        else
+            Wait(200)
+        end
+    end
+end)
 
 RegisterCommand('tvtest', function() CreateThread(startTest) end, false)
 RegisterCommand('tvstop', function() CreateThread(stopTest) end, false)
@@ -154,6 +206,10 @@ end)
 
 AddEventHandler('onResourceStop', function(resource)
     if resource ~= GetCurrentResourceName() then return end
+    if preview then
+        if preview.dui then safeNative(DestroyDui, preview.dui) end
+        preview = nil
+    end
     if state then
         safeNative(SetTextRenderId, GetDefaultScriptRendertargetRenderId())
         if state.dui then safeNative(DestroyDui, state.dui) end
