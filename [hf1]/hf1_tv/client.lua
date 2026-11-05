@@ -32,12 +32,28 @@ local function destroy()
     renderId=nil
     if old then pcall(DestroyDui,old) end
 end
+local targetFailure = {}
 local function setupTarget(model, name)
-    if not IsNamedRendertargetRegistered(name) then RegisterNamedRendertarget(name,false) end
-    if not IsNamedRendertargetLinked(model) then LinkNamedRendertarget(model) end
-    if not IsNamedRendertargetLinked(model) then return nil end
-    local id = GetNamedRendertargetRenderId(name)
-    if not id or id <= 0 then return nil end
+    -- Named targets are client-global and may survive a resource restart.
+    -- Diagnose each native independently rather than silently treating a false link as a DUI failure.
+    local ok, registered = pcall(IsNamedRendertargetRegistered, name)
+    if not ok then print(('[hf1_tv] IsNamedRendertargetRegistered error: %s'):format(registered)) return nil end
+    if not registered then
+        local rok, result = pcall(RegisterNamedRendertarget, name, false)
+        print(('[hf1_tv] Register target=%s ok=%s result=%s'):format(name, tostring(rok), tostring(result)))
+        if not rok then return nil end
+    end
+    local lok, linked = pcall(IsNamedRendertargetLinked, model)
+    if not lok then print(('[hf1_tv] Linked check error: %s'):format(linked)) return nil end
+    if not linked then
+        local linkOK, result = pcall(LinkNamedRendertarget, model)
+        local checkOK, after = pcall(IsNamedRendertargetLinked, model)
+        print(('[hf1_tv] Link attempt: model=%s target=%s nativeOK=%s result=%s checkOK=%s linked=%s'):format(model, name, tostring(linkOK), tostring(result), tostring(checkOK), tostring(after)))
+        if not linkOK or not checkOK or not after then return nil end
+    end
+    local idOK, id = pcall(GetNamedRendertargetRenderId, name)
+    print(('[hf1_tv] Render ID: target=%s nativeOK=%s id=%s'):format(name, tostring(idOK), tostring(id)))
+    if not idOK or type(id) ~= 'number' or id <= 0 then return nil end
     return id
 end
 local function message(data)
@@ -50,7 +66,14 @@ local function start(entity, key, data)
     local settings=Config.Models[model]
     if not settings then return end
     local id=setupTarget(model,settings.target)
-    if not id then if Config.Debug then print('[hf1_tv] Could not link '..settings.target..' to '..model) end return end
+    if not id then
+        local signature = tostring(model)..':'..tostring(settings.target)
+        if not targetFailure[signature] or GetGameTimer()-targetFailure[signature]>10000 then
+            print(('[hf1_tv] Could not link %s to %s; inspect Link attempt above. If resource was restarted, fully exit and reconnect FiveM before retesting.'):format(settings.target,model))
+            targetFailure[signature]=GetGameTimer()
+        end
+        return
+    end
     local obj=CreateDui(('https://cfx-nui-%s/html/player.html'):format(GetCurrentResourceName()),Config.DuiWidth,Config.DuiHeight)
     if not obj then return end
     local ready=false
@@ -155,6 +178,15 @@ end)
 RegisterCommand('tvdebug',function()
     local e,d=closest()
     print(('[hf1_tv] nearest=%s dist=%s active=%s dui=%s'):format(e or 'none',d or 'none',current and current.key or 'none',tostring(dui~=nil)))
+    if e then
+        local model=GetEntityModel(e)
+        local cfg=Config.Models[model]
+        if cfg then
+            local okReg,reg=pcall(IsNamedRendertargetRegistered,cfg.target)
+            local okLink,link=pcall(IsNamedRendertargetLinked,model)
+            print(('[hf1_tv] model=%s target=%s registered=%s (ok=%s) linked=%s (ok=%s)'):format(model,cfg.target,tostring(reg),tostring(okReg),tostring(link),tostring(okLink)))
+        end
+    end
 end)
 RegisterNUICallback('close',function(_,cb) closeFocus() cb({ok=true}) end)
 RegisterNUICallback('mouse',function(data,cb)
