@@ -534,6 +534,11 @@ async function renderHeistList() {
 function renderHeistEditor() {
   const x = admin.heist;           // the draft being edited
   const meta = admin.heistMeta || {};
+  if (!x || typeof x !== 'object' || !x.data) {
+    admin.heist = null;
+    toast('Couldn\'t open that heist. Try again.', true);
+    return h('p', { class: 'empty', text: 'Couldn\'t open that heist.' });
+  }
   const d = x.data;
   const rerender = () => renderAdminTab();
 
@@ -853,7 +858,9 @@ async function renderAdminRackets() {
           const r = await adminRequest('addRacketShop', name.value.trim(), Number(rate.value));
           if (!r.ok) return toast(r.error, true);
           name.value = '';
-          toast(r.data === true ? 'Shop added. Gangs can talk business there straight away.' : 'Shop added.');
+          toast(typeof r.data === 'string'
+            ? `Shop added in ${r.data}. Gangs can talk business there straight away.`
+            : 'Shop added, but it\'s outside every area, so gangs can\'t work it until you draw one around it.');
           renderAdminTab();
         },
       }, 'Add shop here')));
