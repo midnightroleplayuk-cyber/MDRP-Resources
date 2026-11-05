@@ -76,6 +76,7 @@ local function placement(modelName)
     local heading=GetEntityHeading(ped)
     local wallModel=Config.PlaceableModels[modelName].wall
     local snap=wallModel
+    local walkMode=false
     local height=0.0
     local depth=0.0
     local placed=false
@@ -95,8 +96,11 @@ local function placement(modelName)
         if not point or not normal then return false end
         local isWall=math.abs(normal.z)<0.35
         local isFloor=normal.z>0.65
+        -- Wall-mounted flatscreens belong on vertical surfaces; desktop and
+        -- standing models belong on horizontal surfaces (desks, shelves, floors).
+        local surfaceOK = wallModel and isWall or (not wallModel and isFloor)
         return #(GetEntityCoords(ped)-point)<=Config.PlacementMaxDistance
-            and (isWall or isFloor) and (not snap or isWall)
+            and surfaceOK
     end
     local function calculatePosition(point,normal)
         local offset=(snap and math.abs(normal.z)<0.35) and Config.WallOffset or 0.03
@@ -106,9 +110,16 @@ local function placement(modelName)
         Wait(0)
         -- Same interaction pattern as hf1_npcs: click to choose the world
         -- position, then use movement/rotation/height controls to fine-tune.
-        for _,control in ipairs({24,25,14,15,172,173,174,175,44,45,47,73,30,31,32,33,34,35,21,36,191,177}) do
-            DisableControlAction(0,control,true)
+        -- F switches between moving your character and adjusting the TV.
+        -- In walk mode the movement keys are deliberately left enabled.
+        if IsControlJustPressed(0,23) then walkMode=not walkMode end
+        local blocked={24,25,14,15,172,173,174,175,44,45,47,73,191,177}
+        if not walkMode then
+            for _,control in ipairs({30,31,32,33,34,35,21,36}) do
+                blocked[#blocked+1]=control
+            end
         end
+        for _,control in ipairs(blocked) do DisableControlAction(0,control,true) end
         DisablePlayerFiring(PlayerId(),true)
         local hit,point,normal=cameraRay(Config.PlacementMaxDistance)
         local aimingValid=hit and validSurface(point,normal)
@@ -130,7 +141,7 @@ local function placement(modelName)
                 notify('Aim at a nearby valid surface before left-clicking.','error')
             end
         end
-        if IsDisabledControlJustPressed(0,47) then
+        if not walkMode and IsDisabledControlJustPressed(0,47) and wallModel then
             snap=not snap
             -- Keep a selected position only if it is still a valid surface.
             if selected and not validSurface(anchor,anchorNormal) then selected=false end
@@ -138,7 +149,7 @@ local function placement(modelName)
         local speed=0.012
         if IsDisabledControlPressed(0,21) then speed=speed*3.0 end
         if IsDisabledControlPressed(0,36) then speed=speed*0.25 end
-        if selected then
+        if selected and not walkMode then
             local rad=math.rad(heading)
             local forward=vector3(-math.sin(rad),math.cos(rad),0)
             local right=vector3(math.cos(rad),math.sin(rad),0)
@@ -172,7 +183,13 @@ local function placement(modelName)
         SetEntityHeading(ghost,heading)
         SetEntityAlpha(ghost,ready and 205 or (pos and 100 or 40),false)
         local status=ready and 'POSITION SELECTED' or 'AIM AND LEFT CLICK TO SELECT'
-        updateUI(('**TV Placement — %s**\n[LEFT CLICK] Select surface  [E] Place  [X] Cancel\n[W/A/S/D] Fine move  [Q/R] Height\n[←/→] Rotate  [↑/↓] Wall clearance: **%.2fm**  [Mouse wheel] Rotate\n[SHIFT] Fast  [CTRL] Precision  [G] Snap to wall: **%s**  Height: **%.2fm**'):format(status,depth,snap and 'ON' or 'OFF',height))
+        local surfaceLabel=wallModel and 'WALL ONLY' or 'DESK / FLOOR / SHELF'
+        local modeLabel=walkMode and 'WALK (movement enabled)' or 'ADJUST TV'
+        updateUI(('**TV Placement — %s — %s**\n[F] Toggle Walk / Adjust  [LEFT CLICK] Select  [E] Place  [X] Cancel\n%s\n%s'):format(modeLabel,surfaceLabel,
+            walkMode and 'Move your character with WASD; click a new surface when close enough.'
+                or '[WASD] Move TV  [Q/R] Height  [←/→] Rotate  [↑/↓] Clearance  [Wheel] Rotate',
+            ('Selected: **%s**  Height: **%.2fm**  Clearance: **%.2fm**  Snap: **%s**'):format(
+                ready and 'YES' or 'NO',height,depth,wallModel and (snap and 'ON' or 'OFF') or 'N/A')))
         if IsDisabledControlJustPressed(0,73) or IsDisabledControlJustPressed(0,177) then break end
         -- E confirms, matching the existing TV placer request. Left click only
         -- chooses an anchor, so accidental clicks cannot consume inventory.

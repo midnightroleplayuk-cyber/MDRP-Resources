@@ -26,3 +26,9 @@
 ## v0.5.0.2 Placement controls
 Uses ox_lib textUI at right-center (no GTA top-left help text). Aim at a surface to position the ghost. G toggles wall snapping; E places; X cancels; arrow up/down adjust height by 5 cm; arrow left/right adjust wall clearance by 2.5 cm; mouse wheel rotates in manual mode. In wall-snap mode heading is aligned to the wall automatically. The existing server-side placement validation, database persistence, owner-only pickup and ACE-protected admin removal are unchanged.
 \n\n### v0.5.0.3 NPC-style placement\n- ox_lib instruction panel at top-centre.\n- Aim and left-click to lock the preview to a chosen surface; click again to reposition.\n- WASD fine movement, Q/R height, left/right arrows or mouse wheel rotation, up/down arrows wall clearance. Shift fast, Ctrl precision.\n- G toggles wall snapping. E confirms and saves; X or Backspace cancels.\n- This changes placement interaction only; existing ownership, persistence and playback remain unchanged.\n
+
+### v0.5.0.4 placement controls
+- F toggles Walk / Adjust mode while placement remains active. Walk mode enables normal WASD movement to approach walls and desks; left-click still selects a surface.
+- Wall-mounted models accept vertical wall surfaces only; standing TVs and monitor models accept horizontal surfaces (desks, shelves, floors).
+- E places the selected TV; X cancels. Wall snapping (G) applies to wall-mounted models only.
+- The top-centre ox_lib panel shows the mode and permitted surface type.
