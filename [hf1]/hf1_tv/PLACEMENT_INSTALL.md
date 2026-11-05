@@ -50,3 +50,4 @@ Uses ox_lib textUI at right-center (no GTA top-left help text). Aim at a surface
 
 ### v0.5.0.8 raycast self-hit fix
 Aim ray now excludes the TV preview object, avoiding a feedback loop where the beam hits the TV itself. When a custom interior has no collision, mouse wheel before clicking adjusts the aim distance. Left click locks the selected position; E places.
+\n\n### v0.5.0.9 Preview movement hotfix\nUnfreezes the temporary TV preview and teleports it each frame to the same target used by the cyan aiming marker. The amber marker now reads actual entity coordinates. The placement ray ignores the player's ped; preview collision remains disabled. If the preview cannot move, F8 logs a mismatch. No database changes.\n

@@ -75,7 +75,9 @@ local function placement(modelName)
     if ghost==0 then placing=false notify('Cannot create preview','error') return end
     SetEntityCollision(ghost,false,false)
     SetEntityAlpha(ghost,170,false)
-    FreezeEntityPosition(ghost,true)
+    -- Keep the preview unfrozen: on some FiveM builds a frozen local prop
+    -- ignores SetEntityCoordsNoOffset, leaving it at its original spawn point.
+    FreezeEntityPosition(ghost,false)
     local heading=GetEntityHeading(ped)
     local wallModel=Config.PlaceableModels[modelName].wall
     local snap=wallModel
@@ -125,7 +127,9 @@ local function placement(modelName)
         end
         -- Ignore the preview itself. Otherwise the ray repeatedly hits the TV
         -- we are moving, making the blue target appear stuck in one spot.
-        local point,normal,hasCollision=cameraRay(Config.PlacementMaxDistance,ghost)
+        -- Ignore the player's ped in the ray; the preview has collision disabled
+        -- and is no longer a valid ray obstruction.
+        local point,normal,hasCollision=cameraRay(Config.PlacementMaxDistance,ped)
         -- When an MLO has no usable collision, allow manual distance control.
         if not hasCollision then
             local cam=GetGameplayCamCoord()
@@ -200,13 +204,21 @@ local function placement(modelName)
         local target=ready and anchor or point
         local targetNormal=ready and anchorNormal or normal
         pos=calculatePosition(target,targetNormal)
-        SetEntityCoordsNoOffset(ghost,pos.x,pos.y,pos.z,false,false,false)
+        -- Teleport the unfrozen preview directly to the calculated position.
+        -- Both aiming and locked positions must use this exact transform.
+        SetEntityCoords(ghost,pos.x,pos.y,pos.z,false,false,false,false)
         SetEntityHeading(ghost,heading)
         SetEntityAlpha(ghost,ready and 215 or 150,false)
-        -- Show where the selected model's origin actually is, not just the hit.
-        DrawMarker(28,pos.x,pos.y,pos.z,0,0,0,0,0,0,
+        -- Amber marker follows the *actual* entity coordinates, not the
+        -- intended position. If it differs from the cyan target, report it.
+        local actual=GetEntityCoords(ghost)
+        DrawMarker(28,actual.x,actual.y,actual.z,0,0,0,0,0,0,
             0.065,0.065,0.065,255,190,60,180,false,false,2,false,nil,nil,false)
-        local status=ready and 'READY' or 'CLICK TO POSITION'
+        local mismatch=#(GetEntityCoords(ghost)-pos)
+        if mismatch>0.25 and GetGameTimer()%1500<20 then
+            print(('[hf1_tv] TV preview failed to move (delta %.2fm)'):format(mismatch))
+        end
+        local status=ready and 'READY' or 'CLICK TO POSITION' 
         local modeLabel=walkMode and 'WALK' or 'ADJUST'
         local line=('[TV] %s | %s | [CLICK] Position | [E] Place | [X] Exit | [F] Walk | [G] Snap %s'):format(status,modeLabel,snap and 'ON' or 'OFF')
         if not walkMode then line=line..'\\n[WASD] Move | [Q/R] Height | [Arrows] Rotate/Depth' end
