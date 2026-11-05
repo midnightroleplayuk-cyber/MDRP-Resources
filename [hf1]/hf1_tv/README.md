@@ -35,3 +35,8 @@ If `/tvtest` shows nothing, run `/tvdebug` and copy the `Link attempt` and `Rend
 
 ## v0.2.2 Render target fix
 Accept signed render target IDs (including negative values), and handle FiveM native 0/1 link-state results explicitly. This fixes a confirmed false rejection of the `tvscreen` target. Restart the resource, then try Test pattern first.
+
+## v0.2.3 hotfix
+- Replaced unavailable client-side `os.time()` with FiveM `GetCloudTimeAsInt()` to prevent the playback command from crashing.
+- Retains v0.2.2 render-target validation fix.
+- Test pattern should now be delivered to DUI; streaming embeds remain experimental.

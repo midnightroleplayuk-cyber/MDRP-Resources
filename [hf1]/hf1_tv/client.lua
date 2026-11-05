@@ -87,7 +87,7 @@ local function start(entity, key, data)
     dui=obj
     renderId=id
     current={key=key,entity=entity,model=model,started=data.started,kind=data.kind,url=data.url,volume=data.volume}
-    message({action='play',kind=data.kind,url=data.url,volume=data.volume,started=data.started,now=os.time()})
+    message({action='play',kind=data.kind,url=data.url,volume=data.volume,started=data.started,now=GetCloudTimeAsInt()})
 end
 local function sendUpdate(entity, data)
     if not entity or not DoesEntityExist(entity) then return end
