@@ -92,13 +92,38 @@ local function placement(modelName)
             lastUi=message
         end
     end
-    -- Raycast is an aid, not a gate: missing collision must never block placement.
+    -- Collision detection helps with snapping but is never required to select a spot.
     local function aimPoint()
         local rot=GetGameplayCamRot(2)
         local origin=GetGameplayCamCoord()
         local pitch,yaw=math.rad(rot.x),math.rad(rot.z)
         local direction=vector3(-math.sin(yaw)*math.cos(pitch),math.cos(yaw)*math.cos(pitch),math.sin(pitch))
-        local point,normal,hit=aimPoint()
+        local hit,point,normal=cameraRay(Config.PlacementMaxDistance)
+        if hit and point and #(point-origin)>0.15 then return point,normal end
+        return origin+direction*math.min(Config.PlacementMaxDistance,3.0),nil
+    end
+    local function calculatePosition(point,normal)
+        local offset=normal and snap and math.abs(normal.z)<0.55 and Config.WallOffset or 0
+        local normalOffset=normal and normal*offset or vector3(0,0,0)
+        return point+normalOffset+vector3(0,0,height+depth)
+    end
+    while placing do
+        Wait(0)
+        -- Disable placement keys in Adjust mode. Walk mode leaves movement available.
+        for _,control in ipairs({24,25,14,15,172,173,174,175,44,45,47,73,177,191}) do
+            DisableControlAction(0,control,true)
+        end
+        if not walkMode then
+            for _,control in ipairs({30,31,32,33,34,35,21,36}) do
+                DisableControlAction(0,control,true)
+            end
+        end
+        DisablePlayerFiring(PlayerId(),true)
+        -- F toggles between moving the player and moving the preview.
+        if IsControlJustPressed(0,23) or IsDisabledControlJustPressed(0,23) then
+            walkMode=not walkMode
+        end
+        local point,normal=aimPoint()
         if IsDisabledControlJustPressed(0,24) then
             anchor=point
             anchorNormal=normal
@@ -109,10 +134,11 @@ local function placement(modelName)
                 heading=(math.deg(math.atan(normal.y,normal.x))-90.0)%360
             end
         end
-        if not walkMode and IsDisabledControlJustPressed(0,47) then
+        if IsDisabledControlJustPressed(0,47) then
             snap=not snap
-            -- Keep a selected position only if it is still a valid surface.
-
+            if snap and selected and anchorNormal and math.abs(anchorNormal.z)<0.55 then
+                heading=(math.deg(math.atan(anchorNormal.y,anchorNormal.x))-90.0)%360
+            end
         end
         local speed=0.012
         if IsDisabledControlPressed(0,21) then speed=speed*3.0 end
@@ -141,17 +167,15 @@ local function placement(modelName)
         end
         local ready=selected and anchor~=nil
         pos=calculatePosition(ready and anchor or point,ready and anchorNormal or normal)
-        if pos then SetEntityCoordsNoOffset(ghost,pos.x,pos.y,pos.z,false,false,false) end
+        SetEntityCoordsNoOffset(ghost,pos.x,pos.y,pos.z,false,false,false)
         SetEntityHeading(ghost,heading)
         SetEntityAlpha(ghost,ready and 205 or 100,false)
         local status=ready and 'READY' or 'CLICK TO POSITION'
         local modeLabel=walkMode and 'WALK' or 'ADJUST'
         local line=('[TV] %s | %s | [LMB] Set | [E] Place | [X] Exit | [F] Mode | [G] Snap %s'):format(status,modeLabel,snap and 'ON' or 'OFF')
-        if not walkMode then line=line..'\\n[WASD] Move | [Q/R] Height | [←/→] Rotate | [↑/↓] Depth' end
+        if not walkMode then line=line..'\\n[WASD] Move | [Q/R] Height | [Arrows] Rotate/Depth' end
         updateUI(line)
         if IsDisabledControlJustPressed(0,73) or IsDisabledControlJustPressed(0,177) then break end
-        -- E confirms, matching the existing TV placer request. Left click only
-        -- chooses an anchor, so accidental clicks cannot consume inventory.
         if ready and (IsControlJustPressed(0,51) or IsDisabledControlJustPressed(0,51)) then
             TriggerServerEvent('hf1_tv:place',{model=modelName,coords={x=pos.x,y=pos.y,z=pos.z},heading=heading})
             placed=true
