@@ -207,6 +207,22 @@ local function openVolumeDialog(entity, key, mode)
     SetNuiFocus(true, true)
     SendNUIMessage({action='volumeOpen', value=(mode=='existing' and data and data.volume) or Config.DefaultVolume, mode=mode})
 end
+-- Accept a bare hostname but always submit an HTTPS URL for server validation.
+local function normalizeHttpsUrl(value)
+    if type(value) ~= 'string' then return nil end
+    value = value:match('^%s*(.-)%s*$')
+    if value == '' or value:find('[%c%s]') or value:find('\\') then return nil end
+    if value:match('^https?://') then
+        if value:match('^http://') then return nil end
+    elseif value:find('://', 1, true) then
+        return nil
+    else
+        value = 'https://' .. value
+    end
+    local host = value:match('^https://([^/:?#]+)')
+    if not host or not host:find('%.') or host:find('%.%.',1,true) then return nil end
+    return value
+end
 local function menu(entity)
     if not DoesEntityExist(entity) then return end
     local key=keyFor(entity)
@@ -218,16 +234,18 @@ local function menu(entity)
                 {type='slider',label='Initial volume',description='Choose a precise volume (0–100)',min=0,max=100,step=1,default=Config.DefaultVolume,required=true}
             })
             if not result then return end
-            if not result[2]:match('^https://') then notice('Use an HTTPS link','error') return end
+            local url=normalizeHttpsUrl(result[2])
+            if not url then notice('Enter a valid HTTPS URL or domain','error') return end
             local vol=math.floor(math.max(0,math.min(100,tonumber(result[3]) or Config.DefaultVolume)))
-            sendUpdate(entity,{kind=result[1],url=result[2],volume=vol})
+            sendUpdate(entity,{kind=result[1],url=url,volume=vol})
         end},
         {title='Open Website',description='Load an HTTPS website directly on the TV',icon='globe',onSelect=function()
             if not Config.AllowWebsites then notice('Websites are disabled by server configuration','error') return end
             local result=lib.inputDialog('HF1 TV - Website',{{type='input',label='HTTPS website address',required=true,placeholder='https://example.com'}})
             if not result then return end
-            if not result[1]:match('^https://') then notice('Use an HTTPS link','error') return end
-            sendUpdate(entity,{kind='website',url=result[1],volume=0})
+            local url=normalizeHttpsUrl(result[1])
+            if not url then notice('Enter a valid HTTPS URL or domain','error') return end
+            sendUpdate(entity,{kind='website',url=url,volume=0})
         end},
         {title='Toggle Mute',description='Mute or unmute this TV on your client',icon='volume-2',onSelect=function()
             if not current or current.key~=key or not dui then notice('Move closer to the active TV','error') return end
@@ -416,9 +434,9 @@ RegisterNUICallback('websiteNavigate',function(data,cb)
         local encoded=value:gsub('[^%w%-_%.~]',function(c) return ('%%%02X'):format(c:byte()) end)
         target='https://www.google.com/search?q='..encoded
     elseif mode=='address' then
-        target=value
-        if not target:match('^https://') then
-            cb({ok=false,error='Only full HTTPS addresses are supported'})
+        target=normalizeHttpsUrl(value)
+        if not target then
+            cb({ok=false,error='Enter a valid HTTPS URL or domain'})
             return
         end
     else
