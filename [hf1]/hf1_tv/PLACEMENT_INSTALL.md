@@ -39,3 +39,11 @@ Uses ox_lib textUI at right-center (no GTA top-left help text). Aim at a surface
 - Short ox_lib top-centre controls; F walk/adjust, E place, X cancel, Q/R height, WASD fine move, arrows adjust.
 - Server still checks distance, item ownership and spacing. Clicks beyond server's allowed range may be rejected; move closer using F.
 \n\n### v0.5.0.6 Aim beam\nThe placement camera now draws a cyan beam to the current aiming point and a small cyan target marker. Left-click locks the TV preview to that target; click again to choose another position. Missing raycast collision falls back to a point along the camera ray, so no 'valid surface' requirement is reintroduced. Other placement controls are unchanged.\n
+
+### v0.5.0.7 targeting fix
+- Replaced immediate reads of asynchronous raycasts with a synchronous collision probe.
+- TV preview follows the live aim point until left-click locks the position.
+- Small cyan marker shows the aiming point; small amber marker shows the TV model origin.
+- Desk/floor models compensate for their bounding-box bottom, so the base is placed on the selected surface.
+- G still toggles wall snapping. E confirms; F toggles walking.
+- If an MLO surface has no collision, aiming uses the end of the camera ray; manually adjust the preview.

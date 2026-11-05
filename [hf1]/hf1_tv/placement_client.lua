@@ -49,15 +49,17 @@ RegisterNetEvent('hf1_tv:placedRemoved',function(id)
 end)
 local function cameraRay(distance)
     local rot=GetGameplayCamRot(2)
-    local pos=GetGameplayCamCoord()
-    local z=math.rad(rot.z)
-    local x=math.rad(rot.x)
-    local horizontal=math.abs(math.cos(x))
-    local dir=vector3(-math.sin(z)*horizontal,math.cos(z)*horizontal,math.sin(x))
-    local dest=pos+dir*distance
-    local handle=StartShapeTestRay(pos.x,pos.y,pos.z,dest.x,dest.y,dest.z,1+16,PlayerPedId(),7)
-    local _,hit,coords,normal=GetShapeTestResult(handle)
-    return hit==1,coords,normal
+    local origin=GetGameplayCamCoord()
+    local pitch,yaw=math.rad(rot.x),math.rad(rot.z)
+    local direction=vector3(-math.sin(yaw)*math.cos(pitch),math.cos(yaw)*math.cos(pitch),math.sin(pitch))
+    local dest=origin+direction*distance
+    -- Synchronous probe: the previous asynchronous ray was read immediately,
+    -- often before collision results were ready. Ignore the player and preview.
+    local ray=StartExpensiveSynchronousShapeTestLosProbe(origin.x,origin.y,origin.z,
+        dest.x,dest.y,dest.z,511,PlayerPedId(),7)
+    local _,hit,point,normal=GetShapeTestResult(ray)
+    if hit==1 and point and #(point-origin)>0.1 then return point,normal,true end
+    return dest,nil,false
 end
 local function placement(modelName)
     if placing then return end
@@ -93,20 +95,16 @@ local function placement(modelName)
             lastUi=message
         end
     end
-    -- Collision detection helps with snapping but is never required to select a spot.
-    local function aimPoint()
-        local rot=GetGameplayCamRot(2)
-        local origin=GetGameplayCamCoord()
-        local pitch,yaw=math.rad(rot.x),math.rad(rot.z)
-        local direction=vector3(-math.sin(yaw)*math.cos(pitch),math.cos(yaw)*math.cos(pitch),math.sin(pitch))
-        local hit,point,normal=cameraRay(Config.PlacementMaxDistance)
-        if hit and point and #(point-origin)>0.15 then return point,normal end
-        return origin+direction*math.min(Config.PlacementMaxDistance,3.0),nil
-    end
+    local _,minDim,maxDim=GetModelDimensions(model)
+    -- GTA prop origins are not consistently at the bottom of the object.
+    -- For desk/floor models place the model's bounding-box bottom on the hit point.
+    -- Wall models use their centre pivot and optional wall snap.
+    local baseOffset=wallModel and 0.0 or -minDim.z
     local function calculatePosition(point,normal)
-        local offset=normal and snap and math.abs(normal.z)<0.55 and Config.WallOffset or 0
-        local normalOffset=normal and normal*offset or vector3(0,0,0)
-        return point+normalOffset+vector3(0,0,height+depth)
+        local wallHit=normal and math.abs(normal.z)<0.55
+        local offset=wallHit and snap and Config.WallOffset or 0.0
+        local normalOffset=wallHit and normal*offset or vector3(0,0,0)
+        return point+normalOffset+vector3(0,0,height+depth+baseOffset)
     end
     while placing do
         Wait(0)
@@ -124,7 +122,7 @@ local function placement(modelName)
         if IsControlJustPressed(0,23) or IsDisabledControlJustPressed(0,23) then
             walkMode=not walkMode
         end
-        local point,normal=aimPoint()
+        local point,normal,hasCollision=cameraRay(Config.PlacementMaxDistance)
         -- NPC-placer-style live targeting: a thin beam from the camera
         -- to the point being aimed at, plus a visible marker at its end.
         -- Drawing is independent of collision, so custom MLO surfaces
@@ -135,7 +133,7 @@ local function placement(modelName)
             point.x,point.y,point.z,90,210,255,210)
         DrawMarker(28,point.x,point.y,point.z,
             0.0,0.0,0.0,0.0,0.0,0.0,
-            0.14,0.14,0.14,90,210,255,215,
+            0.07,0.07,0.07,90,210,255,215,
             false,false,2,false,nil,nil,false)
         if IsDisabledControlJustPressed(0,24) then
             anchor=point
@@ -179,10 +177,16 @@ local function placement(modelName)
             if IsDisabledControlJustPressed(0,15) then heading=(heading-5)%360 end
         end
         local ready=selected and anchor~=nil
-        pos=calculatePosition(ready and anchor or point,ready and anchorNormal or normal)
+        -- Preview tracks the live aiming marker until left-click locks it.
+        local target=ready and anchor or point
+        local targetNormal=ready and anchorNormal or normal
+        pos=calculatePosition(target,targetNormal)
         SetEntityCoordsNoOffset(ghost,pos.x,pos.y,pos.z,false,false,false)
         SetEntityHeading(ghost,heading)
-        SetEntityAlpha(ghost,ready and 205 or 100,false)
+        SetEntityAlpha(ghost,ready and 215 or 150,false)
+        -- Show where the selected model's origin actually is, not just the hit.
+        DrawMarker(28,pos.x,pos.y,pos.z,0,0,0,0,0,0,
+            0.065,0.065,0.065,255,190,60,180,false,false,2,false,nil,nil,false)
         local status=ready and 'READY' or 'CLICK TO POSITION'
         local modeLabel=walkMode and 'WALK' or 'ADJUST'
         local line=('[TV] %s | %s | [CLICK] Position | [E] Place | [X] Exit | [F] Walk | [G] Snap %s'):format(status,modeLabel,snap and 'ON' or 'OFF')
