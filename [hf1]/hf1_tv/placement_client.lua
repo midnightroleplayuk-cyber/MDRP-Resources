@@ -75,9 +75,10 @@ local function placement(modelName)
     if ghost==0 then placing=false notify('Cannot create preview','error') return end
     SetEntityCollision(ghost,false,false)
     SetEntityAlpha(ghost,170,false)
-    -- Keep the preview unfrozen: on some FiveM builds a frozen local prop
-    -- ignores SetEntityCoordsNoOffset, leaving it at its original spawn point.
-    FreezeEntityPosition(ghost,false)
+    -- Disable physics so gravity cannot pull the preview away from the cursor.
+    -- Move it with NoOffset every frame, then keep it frozen.
+    SetEntityDynamic(ghost,false)
+    FreezeEntityPosition(ghost,true)
     local heading=GetEntityHeading(ped)
     local wallModel=Config.PlaceableModels[modelName].wall
     local snap=wallModel
@@ -204,17 +205,21 @@ local function placement(modelName)
         local target=ready and anchor or point
         local targetNormal=ready and anchorNormal or normal
         pos=calculatePosition(target,targetNormal)
-        -- Teleport the unfrozen preview directly to the calculated position.
-        -- Both aiming and locked positions must use this exact transform.
-        SetEntityCoords(ghost,pos.x,pos.y,pos.z,false,false,false,false)
+        -- The cyan marker and the preview share one world-space target.
+        -- NoOffset avoids GTA's model-radius/Z offset applied by SetEntityCoords.
+        -- Temporarily unfreeze for engines that reject frozen entity teleports,
+        -- then refreeze before physics can move the object.
+        FreezeEntityPosition(ghost,false)
+        SetEntityCoordsNoOffset(ghost,pos.x,pos.y,pos.z,false,false,false)
         SetEntityHeading(ghost,heading)
+        FreezeEntityPosition(ghost,true)
         SetEntityAlpha(ghost,ready and 215 or 150,false)
         -- Amber marker follows the *actual* entity coordinates, not the
         -- intended position. If it differs from the cyan target, report it.
         local actual=GetEntityCoords(ghost)
         DrawMarker(28,actual.x,actual.y,actual.z,0,0,0,0,0,0,
             0.065,0.065,0.065,255,190,60,180,false,false,2,false,nil,nil,false)
-        local mismatch=#(GetEntityCoords(ghost)-pos)
+        local mismatch=#(actual-pos)
         if mismatch>0.25 and GetGameTimer()%1500<20 then
             print(('[hf1_tv] TV preview failed to move (delta %.2fm)'):format(mismatch))
         end
