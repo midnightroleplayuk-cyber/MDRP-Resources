@@ -76,6 +76,12 @@ local function cameraRay(distance, ignoredEntity)
     if hit==1 and point and #(point-origin)>0.1 then return point,normal,true end
     return dest,nil,false
 end
+local pendingPlacement=false
+RegisterNetEvent('hf1_tv:placeResult',function(success,msg)
+    pendingPlacement=false
+    notify(msg,success and 'success' or 'error')
+    print(('[hf1_tv] server placement response: %s %s'):format(tostring(success),tostring(msg)))
+end)
 local function placement(modelName)
     if placing then return end
     placing=true
@@ -271,7 +277,17 @@ local function placement(modelName)
         updateUI(line)
         if IsDisabledControlJustPressed(0,73) or IsDisabledControlJustPressed(0,177) then break end
         if ready and (IsControlJustPressed(0,51) or IsDisabledControlJustPressed(0,51)) then
-            TriggerServerEvent('hf1_tv:place',{model=modelName,coords={x=pos.x,y=pos.y,z=pos.z},heading=heading})
+            pendingPlacement=true
+            local payload={model=modelName,coords={x=pos.x,y=pos.y,z=pos.z},heading=heading}
+            print(('[hf1_tv] sending placement model=%s coords=(%.2f,%.2f,%.2f)'):format(modelName,pos.x,pos.y,pos.z))
+            TriggerServerEvent('hf1_tv:place',payload)
+            SetTimeout(8000,function()
+                if pendingPlacement then
+                    pendingPlacement=false
+                    notify('No placement reply from server. Check server console for hf1_tv errors; item has not been confirmed removed.','error')
+                    print('[hf1_tv] ERROR: no server placement response after 8 seconds. Check that placement_server.lua is running.')
+                end
+            end)
             placed=true
             break
         end
@@ -280,7 +296,7 @@ local function placement(modelName)
     DeleteEntity(ghost)
     SetModelAsNoLongerNeeded(model)
     placing=false
-    if placed then notify('Sending TV placement to server...', 'inform') end
+    if placed then notify('Sending TV placement to server... awaiting confirmation', 'inform') end
 end
 local function beginPlacement()
     if placing then return end

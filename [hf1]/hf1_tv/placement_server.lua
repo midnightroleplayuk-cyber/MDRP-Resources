@@ -3,6 +3,14 @@ local lastAction = {}
 local function tell(src,msg,kind)
     TriggerClientEvent('ox_lib:notify',src,{title='HF1 TV',description=msg,type=kind or 'error'})
 end
+local function placementReply(src,success,msg)
+    TriggerClientEvent('hf1_tv:placeResult',src,success,msg)
+    print(('[hf1_tv] placement reply to %s: %s - %s'):format(src,tostring(success),msg))
+end
+local function reject(src,msg)
+    placementReply(src,false,msg)
+    tell(src,msg,'error')
+end
 local function owner(src)
     for _,id in ipairs(GetPlayerIdentifiers(src)) do
         if id:sub(1,8)=='license:' then return id end
@@ -48,23 +56,36 @@ RegisterNetEvent('hf1_tv:placedRequest',function()
 end)
 RegisterNetEvent('hf1_tv:place',function(data)
     local src=source
-    if not throttle(src) or not validPlacement(src,data) then tell(src,'Invalid TV position or another TV is too close') return end
+    print(('[hf1_tv] placement received from %s model=%s'):format(src,tostring(type(data)=='table' and data.model or 'missing')))
+    if not throttle(src) then reject(src,'Please wait two seconds before placing another TV') return end
+    if not validPlacement(src,data) then
+        local p=type(data)=='table' and data.coords or nil
+        local ped=GetPlayerPed(src)
+        local dist=(ped~=0 and type(p)=='table' and type(p.x)=='number' and type(p.y)=='number' and type(p.z)=='number') and #(GetEntityCoords(ped)-vector3(p.x,p.y,p.z)) or -1
+        print(('[hf1_tv] REJECT placement model=%s distance=%.2f allowed=%.2f'):format(tostring(type(data)=='table' and data.model),dist,Config.PlacementMaxDistance+2.0))
+        reject(src,'Invalid TV position, too far away, or another TV is too close (distance '..string.format('%.1f',dist)..'m)') return
+    end
     local idOwner=owner(src)
-    if not idOwner then tell(src,'Could not verify your player license') return end
-    if exports.ox_inventory:GetItemCount(src,Config.TelevisionItem)<1 then tell(src,'You need a television item') return end
-    if not exports.ox_inventory:RemoveItem(src,Config.TelevisionItem,1) then tell(src,'Could not take the television item') return end
+    if not idOwner then reject(src,'Could not verify your player license') return end
+    local okCount,count=pcall(function() return exports.ox_inventory:GetItemCount(src,Config.TelevisionItem) end)
+    if not okCount then reject(src,'Inventory check failed; see server console') return end
+    if count<1 then reject(src,'You need a television item') return end
+    local okRemove,removed=pcall(function() return exports.ox_inventory:RemoveItem(src,Config.TelevisionItem,1) end)
+    if not okRemove or not removed then reject(src,'Could not take the television item') return end
     local p=data.coords
     local ok,id=pcall(function()
         return MySQL.insert.await('INSERT INTO hf1_tv_placed (owner,model,x,y,z,heading) VALUES (?,?,?,?,?,?)', {idOwner,data.model,p.x,p.y,p.z,data.heading})
     end)
     if not ok or not id then
+        print('[hf1_tv] SQL placement failure: '..tostring(id))
         exports.ox_inventory:AddItem(src,Config.TelevisionItem,1)
-        tell(src,'Database save failed; television returned')
+        reject(src,'Database save failed; television returned. Check server console')
         return
     end
     placed[id]={id=id,owner=idOwner,model=data.model,coords=p,heading=data.heading}
     broadcast()
     TriggerClientEvent('hf1_tv:placedConfirmed',src,placed[id])
+    placementReply(src,true,'Television saved successfully')
     print(('[hf1_tv] Saved TV id=%s model=%s at %.2f %.2f %.2f'):format(tostring(id),data.model,p.x,p.y,p.z))
 end)
 local function removePlaced(src,id,admin)
