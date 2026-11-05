@@ -102,6 +102,8 @@ local function unitInfo(src)
         serviceKey = u.service,
         talkgroup = u.tg and TG[u.tg] and TG[u.tg].name or nil,
         tg = u.tg,
+        tg2 = u.tg2,
+        talkgroup2 = u.tg2 and TG[u.tg2] and TG[u.tg2].name or nil,
         inCall = u.inCall == true,
     }
 end
@@ -126,6 +128,7 @@ local function joinGroup(src, id)
     local g = TG[id]
     if not u or not g or not canUseGroup(u.service, u.grade, g) then return false end
     u.tg = id
+    if u.tg2 == id then u.tg2 = nil; DB.SetSecondaryTalkgroup(u.ident, nil) end
     if not u.inCall then pma:setPlayerRadio(src, g.channel) end -- in a PTP call: rejoins when it ends
     DB.SetLastTalkgroup(u.ident, id)
     broadcastDirectory()
@@ -225,6 +228,10 @@ lib.callback.register('vinewood_radio:powerOn', function(src)
     end
     if startTg then joinGroup(src, startTg) end
 
+    local startTg2 = Config.Secondary.enabled and rec.lastTg2 or nil
+    if startTg2 and (startTg2 == startTg or not canUseGroup(service, grade, TG[startTg2])) then startTg2 = nil end
+    Radios[src].tg2 = startTg2
+
     local list = {}
     for s in pairs(Radios) do list[#list + 1] = unitInfo(s) end
     broadcastDirectory()
@@ -238,6 +245,7 @@ lib.callback.register('vinewood_radio:powerOn', function(src)
         name = Radios[src].name,
         folders = folders,
         tg = startTg,
+        tg2 = startTg2,
         volume = rec.volume,
         directory = list,
         speaker = Radios[src].speaker,
@@ -269,6 +277,21 @@ lib.callback.register('vinewood_radio:setCallsign', function(src, text)
     DB.SetCallsign(u.ident, text)
     broadcastDirectory()
     return text
+end)
+
+lib.callback.register('vinewood_radio:setSecondary', function(src, id)
+    local u = Radios[src]
+    if not u or not Config.Secondary.enabled then return { ok = false } end
+    if id == nil or id == false or id == '' then
+        u.tg2 = nil
+    else
+        local g = TG[id]
+        if not g or id == u.tg or not canUseGroup(u.service, u.grade, g) then return { ok = false } end
+        u.tg2 = id
+    end
+    DB.SetSecondaryTalkgroup(u.ident, u.tg2)
+    broadcastDirectory()
+    return { ok = true, tg2 = u.tg2 }
 end)
 
 lib.callback.register('vinewood_radio:setSpeaker', function(src, on)
@@ -383,7 +406,7 @@ end)
 local function inScope(me, other)
     if Config.Emergency.scope == 'all' then return true end
     if Config.Emergency.scope == 'service' then return other.service == me.service end
-    return other.tg ~= nil and other.tg == me.tg
+    return other.tg ~= nil and (other.tg == me.tg or other.tg2 == me.tg)
 end
 
 lib.callback.register('vinewood_radio:emergency', function(src, street)
@@ -619,10 +642,17 @@ exports('EndCall', function(src)
 end)
 
 ---------------------------------------------------------------------------
--- Loudspeaker: route transmissions to bystanders near loudspeaker radios
+-- Transmission routing beyond pma-voice's single radio channel:
+--   * secondary talkgroups (people monitoring a talkgroup that isn't their pma-voice channel)
+--   * loudspeaker radios (bystanders near a radio on speaker)
+-- The talker adds everyone found here as extra voice targets; each listener's client
+-- applies the radio filter and volume.
 ---------------------------------------------------------------------------
 local Spk = Config.Speaker
-local Tx = {} -- [talker] = { kind, channel, targets = { [bystander] = listener } }
+local Tx = {} -- [talker] = { kind, channel, secondary, targets = { [bystander] = listener }, side = { [listener] = slot } }
+
+local function primaryChannel(u) return u and u.tg and TG[u.tg] and TG[u.tg].channel end
+local function secondaryChannel(u) return u and u.tg2 and TG[u.tg2] and TG[u.tg2].channel end
 
 local function radioChannelOf(src)
     local u = Radios[src]
@@ -632,13 +662,50 @@ local function radioChannelOf(src)
     if c and c ~= 0 then return c, 'civ' end
 end
 
+-- Does this player hear `channel` at all (pma-voice primary or our secondary)?
+local function hearsChannel(src, channel)
+    if radioChannelOf(src) == channel then return true end
+    local u = Radios[src]
+    return u and not u.inCall and secondaryChannel(u) == channel
+end
+
+-- The channel this transmission is on
+local function txChannel(src, secondary)
+    if secondary then
+        local u = Radios[src]
+        if not u or u.inCall or not Config.Secondary.enabled then return nil end
+        return secondaryChannel(u), 'tetra'
+    end
+    return radioChannelOf(src)
+end
+
 local function speakerListeners(channel, talker)
     local out = {}
     for s, u in pairs(Radios) do
-        if s ~= talker and u.speaker and not u.inCall and u.tg and TG[u.tg] and TG[u.tg].channel == channel then out[#out + 1] = s end
+        if s ~= talker and u.speaker and not u.inCall and (primaryChannel(u) == channel or secondaryChannel(u) == channel) then
+            out[#out + 1] = s
+        end
     end
     for s, c in pairs(Civ) do
         if s ~= talker and c == channel and CivSpeaker[s] then out[#out + 1] = s end
+    end
+    return out
+end
+
+-- Listeners pma-voice won't reach for this transmission, and which of their slots it arrives on
+local function sideListeners(channel, talker, secondary)
+    local out = {}
+    if not Config.Secondary.enabled then return out end
+    for s, u in pairs(Radios) do
+        if s ~= talker and not u.inCall then
+            local p, q = primaryChannel(u), secondaryChannel(u)
+            if secondary then
+                -- talking on a secondary: pma-voice isn't involved, so everyone on it needs routing
+                if p == channel then out[s] = 'primary' elseif q == channel then out[s] = 'secondary' end
+            elseif q == channel and p ~= channel then
+                out[s] = 'secondary'
+            end
+        end
     end
     return out
 end
@@ -654,33 +721,40 @@ local function stopTx(talker)
     if not t then return end
     Tx[talker] = nil
     for pid in pairs(t.targets) do TriggerClientEvent('vinewood_radio:speakerStop', pid, talker) end
+    for pid in pairs(t.side) do TriggerClientEvent('vinewood_radio:sideRx', pid, talker, false) end
     TriggerClientEvent('vinewood_radio:speakerTargets', talker, {})
 end
 
 local function updateTx(talker)
     local t = Tx[talker]
     if not t then return end
-    local channel, kind = radioChannelOf(talker)
+    local channel, kind = txChannel(talker, t.secondary)
     if channel ~= t.channel then return stopTx(talker) end
 
     local talkerPos = pedPos(talker)
     if not talkerPos then return stopTx(talker) end
     local bucket = GetPlayerRoutingBucket(talker)
 
+    -- radio users who need routing
+    local side = sideListeners(channel, talker, t.secondary)
+
+    -- bystanders near loudspeaker radios
     local new = {}
-    local listeners = speakerListeners(channel, talker)
-    if #listeners > 0 then
-        local players = GetPlayers()
-        for _, l in ipairs(listeners) do
-            local lp = pedPos(l)
-            if lp and GetPlayerRoutingBucket(l) == bucket then
-                for _, id in ipairs(players) do
-                    local pid = tonumber(id)
-                    if pid ~= talker and pid ~= l and not new[pid] and radioChannelOf(pid) ~= channel
-                        and GetPlayerRoutingBucket(pid) == bucket then
-                        local pp = pedPos(pid)
-                        if pp and #(pp - lp) <= Spk.range and #(pp - talkerPos) > Spk.skipNearTalker then
-                            new[pid] = l
+    if Spk.enabled then
+        local listeners = speakerListeners(channel, talker)
+        if #listeners > 0 then
+            local players = GetPlayers()
+            for _, l in ipairs(listeners) do
+                local lp = pedPos(l)
+                if lp and GetPlayerRoutingBucket(l) == bucket then
+                    for _, id in ipairs(players) do
+                        local pid = tonumber(id)
+                        if pid ~= talker and pid ~= l and not new[pid] and not side[pid] and not hearsChannel(pid, channel)
+                            and GetPlayerRoutingBucket(pid) == bucket then
+                            local pp = pedPos(pid)
+                            if pp and #(pp - lp) <= Spk.range and #(pp - talkerPos) > Spk.skipNearTalker then
+                                new[pid] = l
+                            end
                         end
                     end
                 end
@@ -701,23 +775,48 @@ local function updateTx(talker)
             TriggerClientEvent('vinewood_radio:speakerStop', pid, talker)
         end
     end
-    t.targets = new
+    for pid, slot in pairs(side) do
+        if t.side[pid] ~= slot then
+            changed = true
+            TriggerClientEvent('vinewood_radio:sideRx', pid, talker, true, slot)
+        end
+    end
+    for pid in pairs(t.side) do
+        if not side[pid] then
+            changed = true
+            TriggerClientEvent('vinewood_radio:sideRx', pid, talker, false)
+        end
+    end
+    t.targets, t.side = new, side
 
     if changed then
         local list = {}
         for pid in pairs(new) do list[#list + 1] = pid end
+        for pid in pairs(side) do list[#list + 1] = pid end
         TriggerClientEvent('vinewood_radio:speakerTargets', talker, list)
     end
 end
 
+local function startTx(src, secondary)
+    stopTx(src)
+    local channel, kind = txChannel(src, secondary)
+    if not channel then return end
+    Tx[src] = { kind = kind, channel = channel, secondary = secondary, targets = {}, side = {} }
+    updateTx(src)
+end
+
+-- primary: pma-voice is transmitting; we only add secondary monitors and loudspeaker bystanders
 RegisterNetEvent('vinewood_radio:tx', function(active)
     local src = source
-    if not Spk.enabled then return end
     if not active then return stopTx(src) end
-    local channel, kind = radioChannelOf(src)
-    if not channel then return end
-    Tx[src] = { kind = kind, channel = channel, targets = {} }
-    updateTx(src)
+    startTx(src, false)
+end)
+
+-- secondary: the client is transmitting itself; we provide every listener on that talkgroup
+RegisterNetEvent('vinewood_radio:tx2', function(active)
+    local src = source
+    if not active then return stopTx(src) end
+    startTx(src, true)
 end)
 
 AddEventHandler('playerDropped', function()
@@ -726,9 +825,8 @@ AddEventHandler('playerDropped', function()
 end)
 
 CreateThread(function()
-    if not Spk.enabled then return end
     while true do
-        Wait(Spk.updateInterval)
+        Wait(Spk.updateInterval or 500)
         for talker in pairs(Tx) do updateTx(talker) end
     end
 end)

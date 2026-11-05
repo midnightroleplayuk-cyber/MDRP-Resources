@@ -142,6 +142,8 @@ local function mainMenu(d)
         reg({ id = 'vpo_dog', items = {
             { label = 'Deploy / recall', icon = 'dog', onSelect = cmd(Config.Dogs.Command) },
             { label = 'Lead on / off', icon = 'link', onSelect = function() VPO.DogLead() end },
+            { label = 'Heel', icon = 'person-walking', onSelect = function() VPO.DogHeel() end },
+            { label = 'Send to a spot', icon = 'location-crosshairs', onSelect = function() CreateThread(VPO.DogSendAim) end },
         } })
         items[#items + 1] = { label = 'Dog', icon = 'dog', menu = 'vpo_dog' }
     end

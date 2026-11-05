@@ -2,7 +2,7 @@
 Locales = Locales or {}
 
 Locales.en = {
-    title = "Rex Pool",
+    title = "Midnight Pool",
     blip_name = "Pool table",
     prompt_table = "[E] Pool table",
     help_your_turn = "~INPUT_CONTEXT~ Take your shot   ~INPUT_DETONATE~ Table menu",
@@ -117,7 +117,7 @@ Locales.en = {
     state_lobby = "Lobby",
     state_playing = "Playing",
     state_finished = "Finished",
-    admin_title = "Rex Pool admin",
+    admin_title = "Midnight Pool admin",
     admin_sub = "%s active table(s)",
     adm_tab_sessions = "Live tables",
     adm_tab_settings = "Economy",

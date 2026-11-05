@@ -144,6 +144,32 @@ html, body {
 }
 .home .tg { font-size: 50px; font-weight: 700; letter-spacing: .5px; line-height: 1.12; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .home .line { font-size: 19px; font-weight: 600; margin-top: 4px; color: var(--dim); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.home .sec {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    margin: 4px -12px 0;
+    padding: 2px 12px;
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--ink);
+    transition: background-color .1s;
+}
+.home .sec b {
+    display: inline-grid;
+    place-items: center;
+    width: 18px;
+    height: 18px;
+    border-radius: 2px;
+    background: rgba(255, 255, 255, .16);
+    font-size: 13px;
+}
+.home .sec span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.home .sec.tx { background: var(--tx); }
+.home .sec.rx { background: var(--rx); }
+#hud .hg em { font-style: normal; color: var(--dim); font-weight: 500; }
+#rlist ul + header { border-top: 1px solid rgba(255, 255, 255, .12); }
+#rlist li.mon span { color: var(--dim); }
 .home .who { margin-top: auto; display: flex; justify-content: space-between; gap: 10px; font-size: 15px; color: var(--dim); }
 .home .who span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .home .who span:first-child { flex: none; }

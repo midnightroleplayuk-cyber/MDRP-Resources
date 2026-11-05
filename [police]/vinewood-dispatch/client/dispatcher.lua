@@ -77,6 +77,7 @@ local function openConsole()
         radio = state.radio,
         call = state.call,
         map = state.map,
+        distanceUnit = Config.Units,
         priorities = (function()
             local list = {}
             for p, info in pairs(Config.Priorities) do list[#list + 1] = { value = p, label = info.label } end

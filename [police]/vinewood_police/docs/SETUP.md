@@ -65,6 +65,9 @@ While signed on, press **L** (rebindable in GTA settings, Key Bindings, FiveM: "
 
 Radial actions use the closest player or vehicle. NPCs are dealt with through the target menu. The radial is switched off while you're handcuffed.
 
+## Dog command menu
+With the dog out, press **G** (rebindable) for its commands, even while running. Look at the car, person or spot first: that's what the dog acts on.
+
 ## Quick keys
 On duty and on foot, for the person in front of you: **Up arrow** handcuffs (rear), **Left arrow** escorts or lets go, **Down arrow** removes the handcuffs. Rebind them in GTA settings, Key Bindings, FiveM, or switch them off with `Config.Restraint.Keybinds.Enabled = false`.
 

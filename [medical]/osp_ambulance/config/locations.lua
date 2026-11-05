@@ -29,14 +29,6 @@ Config.Hospitals = {
             vector3(-929.53, -750.99, 18.05),
         },
 
-        --vehicle = {
-        --    vector4(-926.96, -751.37, 18.05, 177.21),
-        --    vector4(-929.53, -750.99, 18.05, 339.8551),
-        --},
-
-        --helicopter = {
-        --    vector4(351.58, -587.45, 74.2, 160.5),
-        --},
         helicopter = {
             vector4(351.58, -587.45, 74.2, 160.5),
         },
@@ -47,24 +39,9 @@ Config.Hospitals = {
             vector3(-951.9423, -707.9423, 18.4991), --DONE
             vector3(-915.3173, -734.7429, 18.4174), --DONE
             vector3(-897.9966, -729.9738, 18.4488), --DONE
-             vector3(-901.5538, -728.8372, 24.6676), --DONE
+            vector3(-901.5538, -728.8372, 24.6676), --DONE
         },
 
-        --elevator = {
-        --    {
-        --        label = "Main Elevator",
-        --        floors = {
-        --            {
-        --                label = "Ground",
-        --                coords = vector4(-909.07, -746.81, 18.06, 89.53),
-        --            },
-        --            {
-        --                label = "Second",
-        --                coords = vector4(-908.86, -746.89, 24.64, 93.57),
-        --            },
-        --        },
-        --    },
-        --},
         elevator = {
             {
                 label = "Main Elevator",
@@ -108,8 +85,7 @@ Config.Hospitals = {
         beds = {
             {coords = vector4(-911.33, -725.44, 18.10, 181.79), taken = false, model = "v_med_bed1", getOutOffset = 1.3}, --Bed 1 -ICU
             {coords = vector4(-907.37, -725.08, 18.10, 179.94), taken = false, model = "v_med_bed1", getOutOffset = 1.3}, --Bed 2 -ICU
-            {coords = vector4(-903.35, -725.43, 18.10, 184.41), taken = false, model = "v_med_bed1", getOutOffset = 1.3}, --Bed 3 -ICU
-            {coords = vector4(-902.32, -735.44, 18.10, 2.67), taken = false, model = "v_med_bed1", getOutOffset = 1.3}, --Bed 4 -ICU
+            {coords = vector4(-903.35, -725.43, 18.10, 184.41), taken = false, model = "v_med_bed1"}, --Bed 4 -ICU
             {coords = vector4(-905.85, -735.19, 18.10, 359.11), taken = false, model = "v_med_bed1", getOutOffset = 1.3}, --Bed 5 -ICU
             {coords = vector4(-926.05, -712.41, 18.10, 179.88), taken = false, model = "v_med_bed1", getOutOffset = 1.3, lockedBed = true}, --Surgery Bed
             {coords = vector4(-941.97, -712.44, 18.10, 178.35), taken = false, model = "v_med_bed1", getOutOffset = 1.3, lockedBed = true}, -- Surgery Bed

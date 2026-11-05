@@ -22,8 +22,8 @@ Config.defaultGarage = 'G1'       -- matches apex_advancedgarage's default publi
 
 -- Society / business funds provider. 'auto' tries, in order: the apex_bossmenu
 -- treasury, then the framework's banking resource, then this resource's own
--- internal wallet. LGMods_Banking is supported for QB/QBCore. Pin it if you run several.
-Config.societyProvider = 'LGMods_Banking'      -- 'auto' | 'LGMods_Banking' | 'qb-banking' | 'qb-management' | 'okokBanking' | 'Renewed-Banking' | 'esx_addonaccount'
+-- internal wallet. av_banking and LGMods_Banking are supported for QB/QBCore. Pin it if you run several.
+Config.societyProvider = 'av_banking'      -- 'auto' | 'av_banking' | 'LGMods_Banking' | 'qb-banking' | 'qb-management' | 'okokBanking' | 'Renewed-Banking' | 'esx_addonaccount'
 
 -- =========================================================================
 -- PURCHASE / DELIVERY

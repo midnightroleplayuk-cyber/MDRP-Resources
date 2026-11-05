@@ -91,17 +91,34 @@ end)
 ---------------------------------------------------------------------------
 -- Searches: does the dog indicate?
 ---------------------------------------------------------------------------
-local function wordsMatch(label)
-    label = tostring(label or ''):lower()
-    for _, w in ipairs(Cfg.DrugWords) do if label:find(w, 1, true) then return true end end
-    return false
+-- What a find is, if it's something the dog is trained for: 'drugs', 'firearms' or 'cash'
+local function itemKind(name)
+    name = tostring(name or '')
+    local D = Cfg.Detects or { drugs = true }
+    if D.drugs and VPO.Util.Contains(Cfg.DrugItems, name) then return 'drugs' end
+    if D.firearms then
+        local up = name:upper()
+        if (up:find('^WEAPON_') and not VPO.Util.Contains(Cfg.IgnoreWeapons or {}, up)) or name:lower():find('^ammo') then return 'firearms' end
+    end
+    if D.cash and VPO.Util.Contains(Cfg.CashItems or {}, name) then return 'cash' end
+    return nil
 end
 
-local function itemsMatch(items)
-    for _, it in ipairs(items or {}) do
-        if VPO.Util.Contains(Cfg.DrugItems, it.name) then return true end
-    end
-    return false
+local function wordsKind(label)
+    label = tostring(label or ''):lower()
+    local D = Cfg.Detects or { drugs = true }
+    local function any(list) for _, w in ipairs(list or {}) do if label:find(w, 1, true) then return true end end return false end
+    if D.drugs and any(Cfg.DrugWords) then return 'drugs' end
+    if D.firearms and any(Cfg.FirearmWords) then return 'firearms' end
+    if D.cash and any(Cfg.CashWords) then return 'cash' end
+    return nil
+end
+
+local function addItems(found, items)
+    for _, it in ipairs(items or {}) do local k = itemKind(it.name); if k then found[k] = true end end
+end
+local function addWords(found, list)
+    for _, f in ipairs(list or {}) do local k = wordsKind(f.label); if k then found[k] = true end end
 end
 
 local function oxItems(id)
@@ -112,34 +129,46 @@ local function oxItems(id)
     return out
 end
 
---- Search a vehicle: NPC stop finds, or a player vehicle's boot and glovebox (ox_inventory).
+--- Search a vehicle: NPC stop finds, or a player vehicle's boot and glovebox (ox_inventory). Returns { kind = true }, stop
 local function searchVehicle(veh, net)
+    local found = {}
     local stop = VPO.Roads.ForVehicle(net)
     if stop and stop.npc then
-        if stop.npc.enc.drug then return true, stop end
-        for _, f in ipairs((stop.npc.finds or {}).vehicle or {}) do if wordsMatch(f.label) then return true, stop end end
-        return false, stop
+        if stop.npc.enc.drug and (Cfg.Detects or {}).drugs ~= false then found.drugs = true end
+        addWords(found, (stop.npc.finds or {}).vehicle)
+        return found, stop
     end
-    if GetResourceState('ox_inventory') ~= 'started' then return false, stop end
+    if GetResourceState('ox_inventory') ~= 'started' then return found, stop end
     local plate = (GetVehicleNumberPlateText(veh) or ''):gsub('^%s+', ''):gsub('%s+$', '')
-    return itemsMatch(oxItems('trunk' .. plate)) or itemsMatch(oxItems('glove' .. plate)), stop
+    addItems(found, oxItems('trunk' .. plate))
+    addItems(found, oxItems('glove' .. plate))
+    return found, stop
 end
 
---- Search a person: an NPC at a scene or stop, or a player.
+--- Search a person: an NPC at a scene or stop, or a player. Returns { kind = true }
 local function searchPerson(target)
-    if target.player then return itemsMatch(VPO.Inventory.List(target.player)) end
+    local found = {}
+    if target.player then addItems(found, VPO.Inventory.List(target.player)); return found end
     local p = target.encounter
     if p then
-        if p.drug then return true end
-        for _, f in ipairs(p.finds or {}) do if wordsMatch(f.label) then return true end end
-        return false
+        if p.drug and (Cfg.Detects or {}).drugs ~= false then found.drugs = true end
+        if p.weapon and (Cfg.Detects or {}).firearms and tostring(p.weapon):upper() ~= 'WEAPON_KNIFE' then found.firearms = true end
+        addWords(found, p.finds)
+        return found
     end
     local stop = target.stop
     if stop and stop.npc then
-        if stop.npc.enc.drug then return true end
-        for _, f in ipairs((stop.npc.finds or {}).person or {}) do if wordsMatch(f.label) then return true end end
+        if stop.npc.enc.drug and (Cfg.Detects or {}).drugs ~= false then found.drugs = true end
+        addWords(found, (stop.npc.finds or {}).person)
     end
-    return false
+    return found
+end
+
+local KIND_LABEL = { drugs = 'drugs', firearms = 'firearms or ammunition', cash = 'cash' }
+local function describe(found)
+    local list = {}
+    for _, k in ipairs({ 'drugs', 'firearms', 'cash' }) do if found[k] then list[#list + 1] = KIND_LABEL[k] end end
+    return list
 end
 
 VPO.Net.Callback('dog:search', { permission = 'dogs.handle', rate = 'dogs' }, function(src, o, d)
@@ -152,15 +181,17 @@ VPO.Net.Callback('dog:search', { permission = 'dogs.handle', rate = 'dogs' }, fu
         local veh = entity(d.net)
         if not veh or GetEntityType(veh) ~= 2 then return { error = L('restraint_no_vehicle') } end
         if dist(dog, veh) > Cfg.SearchRange + 2.5 then return { error = L('dog_get_closer') } end
-        local stop
-        hit, stop = searchVehicle(veh, tonumber(d.net))
+        local stop, found
+        found, stop = searchVehicle(veh, tonumber(d.net))
+        hit = describe(found)
         what = (GetVehicleNumberPlateText(veh) or ''):gsub('%s+$', '')
-        if stop then stop.checks.dog = { at = os.time(), indicated = hit, by = VPO.Officers.Label(o) } end
+        if stop then stop.checks.dog = { at = os.time(), indicated = #hit > 0, found = hit, by = VPO.Officers.Label(o) } end
     else
         local target = {}
         local tped
         if tonumber(d.player) then
             target.player = tonumber(d.player)
+            if VPO.IsOnDuty(target.player) == true then return { error = L('dog_not_officers') } end
             tped = ped(target.player)
             what = VPO.Bridge.GetName(target.player)
         else
@@ -173,14 +204,14 @@ VPO.Net.Callback('dog:search', { permission = 'dogs.handle', rate = 'dogs' }, fu
             what = 'person'
         end
         if not tped or dist(dog, tped) > Cfg.SearchRange then return { error = L('dog_get_closer') } end
-        hit = searchPerson(target)
+        hit = describe(searchPerson(target))
         if target.encounter then
             local call = VPO.Callouts.Get(target.encounter.callId)
-            if call then VPO.Callouts.Note(call, hit and 'Drugs dog indicated on a person' or 'Drugs dog: no indication on a person') end
+            if call then VPO.Callouts.Note(call, #hit > 0 and ('Police dog indicated on a person (%s)'):format(table.concat(hit, ', ')) or 'Police dog: no indication on a person') end
         end
     end
     VPO.Audit.Log({ action = 'dogs.search', actor = src, targetType = d.kind or 'person', targetId = what, new = { indicated = hit } })
-    return { ok = true, indicated = hit, message = hit and L('dog_indicates') or L('dog_no_indication') }
+    return { ok = true, indicated = #hit > 0, message = #hit > 0 and L('dog_indicates_on', table.concat(hit, ', ')) or L('dog_no_indication') }
 end)
 
 --- The dog is sent after someone. Players only if allowed; it counts as use of force.

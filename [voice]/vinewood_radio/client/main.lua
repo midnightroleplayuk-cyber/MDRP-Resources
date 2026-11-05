@@ -141,9 +141,31 @@ local function sweepProps(keep)
     end
 end
 
+local warnedAnims = {}
+
 local function playAnim(a, blendIn)
-    if not a or not a.dict or not HasAnimDictLoaded(a.dict) then return end
-    TaskPlayAnim(cache.ped, a.dict, a.clip, blendIn or 3.0, 3.0, -1, a.flag or 49, 0, false, false, false)
+    if not a or not a.dict then return end
+    if not HasAnimDictLoaded(a.dict) then
+        if not DoesAnimDictExist(a.dict) and not warnedAnims[a.dict] then
+            warnedAnims[a.dict] = true
+            print(('^1[vinewood_radio] animation dictionary "%s" does not exist. Check Config.Animations.^7'):format(a.dict))
+        end
+        return
+    end
+    local ped = cache.ped
+    TaskPlayAnim(ped, a.dict, a.clip, blendIn or 3.0, 3.0, -1, a.flag or 49, 0, false, false, false)
+
+    -- A wrong clip name fails silently in GTA, so check it actually started and say so once
+    local key = a.dict .. '/' .. tostring(a.clip)
+    if warnedAnims[key] ~= nil then return end
+    CreateThread(function()
+        Wait(250)
+        local ok = IsEntityPlayingAnim(ped, a.dict, a.clip, 3)
+        warnedAnims[key] = ok
+        if not ok then
+            print(('^1[vinewood_radio] animation "%s" in "%s" did not play. Is the clip name right? Check Config.Animations.^7'):format(tostring(a.clip), a.dict))
+        end
+    end)
 end
 
 local function stopAnim(a)
@@ -206,7 +228,7 @@ end
 ---------------------------------------------------------------------------
 -- Open / close
 ---------------------------------------------------------------------------
-local closeWalkie, pttKeyCode -- defined further down
+local closeWalkie, pttKeyCode, stopSecondaryTx, clearSideRx -- defined further down
 
 local function openRadio()
     if state.open then return end
@@ -217,7 +239,7 @@ local function openRadio()
     end
     state.open = true
     SetNuiFocus(true, true)
-    nui('open', { talkKey = pttKeyCode() })
+    nui('open', { talkKey = pttKeyCode(), talkKey2 = Config.Secondary.enabled and pttKeyCode('+vr_ptt2') or nil })
     setTalkAnim(false)
     startHoldAnim('tetra')
 end
@@ -252,8 +274,8 @@ local PUNCT = {
     ['['] = 'BracketLeft', [']'] = 'BracketRight', ["'"] = 'Quote', ['`'] = 'Backquote', ['\\'] = 'Backslash', ['#'] = 'Backslash',
 }
 
-pttKeyCode = function()
-    local btn = GetControlInstructionalButton(2, joaat('+vr_ptt') | 0x80000000, true) or ''
+pttKeyCode = function(cmd)
+    local btn = GetControlInstructionalButton(2, joaat(cmd or '+vr_ptt') | 0x80000000, true) or ''
     if btn:sub(1, 2) == 't_' then
         local k = btn:sub(3)
         if k:match('^%a$') then return 'Key' .. k:upper() end
@@ -261,11 +283,12 @@ pttKeyCode = function()
         if k:match('^F%d%d?$') then return k end
         if PUNCT[k] then return PUNCT[k] end
     end
-    return SPECIAL_KEYS[btn] or 'AltLeft'
+    return SPECIAL_KEYS[btn] or (cmd == '+vr_ptt2' and 'CapsLock' or 'AltLeft')
 end
 
 local function closeRadio()
     nuiTalk(false)
+    if stopSecondaryTx then stopSecondaryTx() end
     if not state.open then return end
     state.open = false
     SetNuiFocus(false, false)
@@ -298,7 +321,9 @@ local function localPowerOff(reason, fromNui)
     state.units = {}
     state.ptp = false
     state.emergency = false
+    if stopSecondaryTx then stopSecondaryTx() end
     state.talking = false
+    if clearSideRx then clearSideRx() end
     syncPmaEnabled()
     setTalkAnim(false)
     clearBlips()
@@ -319,6 +344,8 @@ local function powerOn()
     state.on = true
     for _, u in ipairs(res.directory or {}) do state.units[u.src] = u end
     syncPmaEnabled()
+    state.volume = res.volume or 60
+    state.tg2 = res.tg2
     pma:setRadioVolume(res.volume)
     pma:setCallVolume(res.volume)
     return res
@@ -346,6 +373,7 @@ RegisterNUICallback('ready', function(_, cb)
         emergency = Config.Emergency.enabled,
         powerHold = Config.PowerHoldTime,
         radioList = Config.RadioList,
+        secondary = Config.Secondary.enabled,
         callsignMax = math.min(Config.CallsignMaxLength or 24, 32),
         ptp = Config.PTP.enabled,
     })
@@ -377,10 +405,17 @@ end)
 
 RegisterNUICallback('setVolume', function(data, cb)
     local v = math.floor(tonumber(data.volume) or 60)
+    state.volume = v
     pma:setRadioVolume(v)
     pma:setCallVolume(v)
     TriggerServerEvent('vinewood_radio:setVolume', v)
     cb(1)
+end)
+
+RegisterNUICallback('setSecondary', function(data, cb)
+    local res = lib.callback.await('vinewood_radio:setSecondary', false, data.id or false)
+    if res and res.ok then state.tg2 = res.tg2 end
+    cb(res or { ok = false })
 end)
 
 RegisterNUICallback('setSpeaker', function(data, cb)
@@ -497,11 +532,11 @@ local Spk = Config.Speaker
 local extraTargets = {}
 
 local function onTx(talking)
-    if not Spk.enabled then return end
+    if not (Spk.enabled or Config.Secondary.enabled) then return end
     TriggerServerEvent('vinewood_radio:tx', talking)
     if not talking then extraTargets = {} return end
     CreateThread(function()
-        while state.talking or civ.talking do
+        while (state.talking or civ.talking) and not state.talking2 do
             for i = 1, #extraTargets do
                 MumbleAddVoiceTargetPlayerByServerId(Spk.voiceTarget, extraTargets[i])
             end
@@ -512,7 +547,7 @@ end
 
 RegisterNetEvent('vinewood_radio:speakerTargets', function(list)
     extraTargets = type(list) == 'table' and list or {}
-    if state.talking or civ.talking then
+    if state.talking or civ.talking or state.talking2 then
         for i = 1, #extraTargets do
             MumbleAddVoiceTargetPlayerByServerId(Spk.voiceTarget, extraTargets[i])
         end
@@ -818,3 +853,91 @@ RegisterCommand('radiodebug', function()
         end
     end)
 end, false)
+
+---------------------------------------------------------------------------
+-- Secondary talkgroup (Septra)
+-- pma-voice only has one radio channel, so talking on the secondary is done here:
+-- the server supplies everyone on that talkgroup as voice targets, and we hold
+-- GTA's voice push-to-talk while the key is down (the same way pma-voice does).
+---------------------------------------------------------------------------
+local Sec = Config.Secondary
+
+local function startSecondaryTx()
+    if not Sec.enabled or state.talking2 then return end
+    if not state.on or not state.tg2 or state.ptp or state.talking then return end
+    if IsEntityDead(cache.ped) then return end
+
+    state.talking2 = true
+    extraTargets = {}
+    nui('tx', { active = true, secondary = true })
+    setTalkAnim(true, 'tetra')
+    TriggerServerEvent('vinewood_radio:tx2', true)
+
+    CreateThread(function()
+        local tick = 0
+        while state.talking2 do
+            SetControlNormal(0, 249, 1.0)
+            SetControlNormal(1, 249, 1.0)
+            SetControlNormal(2, 249, 1.0)
+            if tick % 10 == 0 then
+                for i = 1, #extraTargets do
+                    MumbleAddVoiceTargetPlayerByServerId(Spk.voiceTarget, extraTargets[i])
+                end
+            end
+            tick = tick + 1
+            if not state.on or IsEntityDead(cache.ped) then break end
+            Wait(0)
+        end
+        if state.talking2 then stopSecondaryTx() end
+    end)
+end
+
+stopSecondaryTx = function()
+    if not state.talking2 then return end
+    state.talking2 = false
+    extraTargets = {}
+    MumbleClearVoiceTargetPlayers(Spk.voiceTarget)
+    TriggerServerEvent('vinewood_radio:tx2', false)
+    nui('tx', { active = false, secondary = true })
+    setTalkAnim(false)
+end
+
+if Sec.enabled then
+    RegisterCommand('+vr_ptt2', startSecondaryTx, false)
+    RegisterCommand('-vr_ptt2', function() stopSecondaryTx() end, false)
+    RegisterKeyMapping('+vr_ptt2', 'Radio: talk on secondary talkgroup', 'keyboard', Sec.defaultKey or 'CAPITAL')
+end
+
+RegisterNUICallback('ptt2', function(data, cb)
+    if data.down then startSecondaryTx() else stopSecondaryTx() end
+    cb(1)
+end)
+
+-- Hearing a transmission pma-voice isn't delivering (someone on our secondary, or talking on their secondary)
+local sideHearing = {} -- [talkerServerId] = slot
+
+clearSideRx = function()
+    for t in pairs(sideHearing) do
+        MumbleSetVolumeOverrideByServerId(t, -1.0)
+        MumbleSetSubmixForServerId(t, -1)
+    end
+    sideHearing = {}
+end
+
+RegisterNetEvent('vinewood_radio:sideRx', function(talker, active, slot)
+    if active then
+        if not state.on then return end
+        sideHearing[talker] = slot
+        MumbleSetVolumeOverrideByServerId(talker, math.max(0.0, math.min(1.0, (state.volume or 60) / 100)) + 0.0)
+        local submix = GetRadioSubmix and GetRadioSubmix('tetra')
+        if submix then MumbleSetSubmixForServerId(talker, submix) end
+    else
+        slot = sideHearing[talker]
+        if not slot then return end
+        sideHearing[talker] = nil
+        MumbleSetVolumeOverrideByServerId(talker, -1.0)
+        MumbleSetSubmixForServerId(talker, -1)
+    end
+    local u = state.units[talker]
+    nui('rx', { active = active, label = u and u.callsign or 'Unknown', src = talker, slot = slot })
+end)

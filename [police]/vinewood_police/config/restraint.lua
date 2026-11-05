@@ -42,6 +42,8 @@ Config.Restraint = {
         Officer = { dict = 'mp_arresting', clip = 'a_uncuff', flag = 49 },
         Suspect = nil, -- turns to face the officer
         -- Vinewood front-cuff pose and rigid cuffs (stream/)
+        -- The original front-cuff pose (stream/anim_vinewoodpoliceinteration.ycd). anim@policearrest has a
+        -- frontcuff_speed too, but switch to it only once that clip has been re-exported correctly.
         Idle = { dict = 'anim_vinewoodpoliceinteration', clip = 'frontcuff_speed', flag = 49 },
         Prop = {
             model = 'ukpolice_cuffs', bone = 57005,
@@ -58,7 +60,20 @@ Config.Restraint = {
     },
 
     -- bone 0 is the officer's root, which stays upright (the pelvis, 11816, rocks as they walk and tilts the prisoner)
-    Escort = { bone = 0, offset = vec3(0.38, 0.45, 0.0), rot = vec3(0.0, 0.0, 0.0) },
+    -- Escorting: where the prisoner is held, relative to the officer's root (bone 0: always upright, facing
+    -- the way the officer faces). x = right, y = forward, z = up, in metres; rot in degrees.
+    -- Tune it live: escort someone, then /escortadjust. It prints the lines to paste here.
+    Escort = {
+        bone = 0,
+        offset = vec3(0.0, 0.45, 0.0),
+        rot = vec3(0.0, 0.0, 0.0),
+        vertex = 2,
+        keepBone = false,
+        -- The officer's escorting animation (upper body, so they can walk). Off until the escorting clip in
+        -- anim@policearrest.ycd stops crashing the game when blended with walking. To try it:
+        -- OfficerAnim = { dict = 'anim@policearrest', clip = 'escorting', flag = 49 },
+        OfficerAnim = false,
+    },
     -- Key to let go of the person you're escorting (players can rebind it in GTA settings)
     LetGoKey = 'G',
 }

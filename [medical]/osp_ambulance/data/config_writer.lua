@@ -938,6 +938,31 @@ local function getIndentLevelAt(text, pos)
     return math.floor(spaces / 4)
 end
 
+-- A hospital block may not contain every section (e.g. no `vehicle = {}`).
+-- Without this, locations added to a missing section were kept in memory and
+-- reported as saved, but never written to config/locations.lua.
+local function insertMissingSection(block, sectionKey, newValue)
+    if type(newValue) ~= 'table' or next(newValue) == nil then
+        return block
+    end
+
+    if block:sub(-1) ~= '}' then
+        setPatchError(('cannot_insert_section_%s'):format(sectionKey))
+        return block
+    end
+
+    local body = block:sub(1, -2):gsub('%s+$', '')
+    local indent = getIndentLevelAt(block, #block) + 1
+    local pad = string.rep('    ', indent)
+    local lastChar = body:sub(-1)
+    local separator = (lastChar == ',' or lastChar == '{') and '' or ','
+    local serialized = serializeLuaValue(newValue, indent)
+
+    return ('%s%s\n%s%s = %s,\n%s}'):format(
+        body, separator, pad, sectionKey, serialized, string.rep('    ', indent - 1)
+    )
+end
+
 local function patchSectionAssignment(inner, sectionKey, newValue)
     if type(newValue) ~= 'table' then
         return inner
@@ -946,7 +971,7 @@ local function patchSectionAssignment(inner, sectionKey, newValue)
     local sectionStart = inner:find(sectionKey .. '%s*=%s*{')
 
     if not sectionStart then
-        return inner
+        return insertMissingSection(inner, sectionKey, newValue)
     end
 
     local openPos = inner:find('{', sectionStart)

@@ -134,6 +134,13 @@ Config.PushToTalk = {
     command = 'radiotalk',      -- pma-voice's command (runs +radiotalk / -radiotalk)
 }
 
+-- Secondary talkgroup (Septra only): monitor and talk on a second talkgroup, e.g. OPS 1 primary + ROADS secondary.
+-- Players set it in Menu > Secondary and talk on it with "Radio: talk on secondary" (rebindable, default CapsLock).
+Config.Secondary = {
+    enabled = true,
+    defaultKey = 'CAPITAL',     -- FiveM key name (CAPITAL = CapsLock)
+}
+
 -- On-screen list of everyone on your talkgroup, highlighting who's talking (Septra only)
 Config.RadioList = {
     enabled = true,

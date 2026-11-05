@@ -38,7 +38,7 @@ Config.PharmacyOTCItems = {
 }
 
 Config.DiseaseSpread = {
-    enabled = true,                     -- Master toggle for random infection and player-to-player spread
+    enabled = false,                     -- Master toggle for random infection and player-to-player spread
     randomCheckInterval = 60*60*1000,       -- How often (ms) the server rolls for random disease acquisition per player
     randomAcquireChance = 0.005,         -- Default chance (0.0-1.0) per check when a condition has no randomAcquireChance set
     spreadCheckInterval = 60*1000,        -- How often (ms) contagious players are checked for nearby targets

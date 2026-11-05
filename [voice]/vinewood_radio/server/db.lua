@@ -11,6 +11,7 @@ CREATE TABLE IF NOT EXISTS `vinewood_radio` (
     `service` VARCHAR(32) NOT NULL,
     `callsign` VARCHAR(32) NOT NULL,
     `last_tg` VARCHAR(64) DEFAULT NULL,
+    `last_tg2` VARCHAR(64) DEFAULT NULL,
     `volume` TINYINT UNSIGNED NOT NULL DEFAULT 60,
     `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (`identifier`),
@@ -21,6 +22,12 @@ MySQL.ready(function()
     MySQL.query.await(SCHEMA)
     -- Older installs had VARCHAR(16); widen it so longer callsigns aren't cut off
     MySQL.query('ALTER TABLE `vinewood_radio` MODIFY `callsign` VARCHAR(32) NOT NULL')
+    -- Secondary talkgroup column (added in 1.2.0). Checked first: MySQL 8 has no ADD COLUMN IF NOT EXISTS
+    local has = MySQL.scalar.await([[SELECT COUNT(*) FROM information_schema.COLUMNS
+        WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'vinewood_radio' AND COLUMN_NAME = 'last_tg2']])
+    if (tonumber(has) or 0) == 0 then
+        MySQL.query('ALTER TABLE `vinewood_radio` ADD COLUMN `last_tg2` VARCHAR(64) DEFAULT NULL AFTER `last_tg`')
+    end
 end)
 
 local function nextIssi(serviceKey)
@@ -60,10 +67,10 @@ function DB.Get(identifier, serviceKey)
 
     if not rec then
         local row = MySQL.single.await(
-            'SELECT `issi`, `service`, `callsign`, `last_tg`, `volume` FROM `vinewood_radio` WHERE `identifier` = ?',
+            'SELECT `issi`, `service`, `callsign`, `last_tg`, `last_tg2`, `volume` FROM `vinewood_radio` WHERE `identifier` = ?',
             { identifier })
         if row then
-            rec = { issi = row.issi, service = row.service, callsign = row.callsign, lastTg = row.last_tg, volume = row.volume }
+            rec = { issi = row.issi, service = row.service, callsign = row.callsign, lastTg = row.last_tg, lastTg2 = row.last_tg2, volume = row.volume }
         end
     end
 
@@ -88,6 +95,15 @@ function DB.SetLastTalkgroup(identifier, tg)
     if not rec or rec.lastTg == tg then return end
     rec.lastTg = tg
     MySQL.update('UPDATE `vinewood_radio` SET `last_tg` = ? WHERE `identifier` = ?', { tg, identifier })
+end
+
+function DB.SetSecondaryTalkgroup(identifier, tg)
+    local rec = Cache[identifier]
+    if rec then
+        if rec.lastTg2 == tg then return end
+        rec.lastTg2 = tg
+    end
+    MySQL.update('UPDATE `vinewood_radio` SET `last_tg2` = ? WHERE `identifier` = ?', { tg, identifier })
 end
 
 function DB.SetVolume(identifier, volume)

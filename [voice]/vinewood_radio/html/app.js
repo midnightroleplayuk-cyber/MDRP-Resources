@@ -40,8 +40,11 @@ const S = {
     bright: 100,
     keyTones: true,
     speaker: false,
+    tg2: null,          // secondary talkgroup id
+    txSlot: 'primary',
+    rxSlot: 'primary',
     me: null,
-    talking: new Set(),
+    talking: new Map(), // [src] = 'primary' | 'secondary' (which of OUR talkgroups they're talking on)
     listVisible: true,
     listMoving: false,
     listPos: null,      // { x, y } as fractions of the screen
@@ -56,7 +59,7 @@ const S = {
     cfg: {
         sounds: { volume: .6, listenerClose: true, outgoingRing: true },
         ui: { scale: .78, offset: 40, hud: true },
-        emergencyHold: 1000, powerHold: 1000, ptp: true, emergency: true, talkKey: 'AltLeft',
+        emergencyHold: 1000, powerHold: 1000, ptp: true, emergency: true, talkKey: 'AltLeft', talkKey2: 'CapsLock',
         radioList: { enabled: true, visibleByDefault: true, maxRows: 12 },
     },
 };
@@ -149,13 +152,16 @@ function goHome() {
 }
 
 const attachedId = () => (S.flat[S.attached] || {}).id;
+const groupName = id => (S.flat.find(g => g.id === id) || {}).name || '';
 function channelUnits() {
     const id = attachedId();
     if (!id) return [];
-    return S.dir.filter(u => u.tg === id).sort((a, b) => a.callsign.localeCompare(b.callsign, 'en-GB', { numeric: true }));
+    return unitsOn(id);
 }
 const byCallsign = (a, b) => a.callsign.localeCompare(b.callsign, 'en-GB', { numeric: true });
-const unitsOn = id => id === '*' ? [...S.dir].sort(byCallsign) : S.dir.filter(u => u.tg === id).sort(byCallsign);
+// Units on a talkgroup: those with it as primary, plus those monitoring it as their secondary
+const unitsOn = id => id === '*' ? [...S.dir].sort(byCallsign)
+    : S.dir.filter(u => u.tg === id || u.tg2 === id).sort((a, b) => (a.tg2 === id) - (b.tg2 === id) || byCallsign(a, b));
 
 // Talkgroups that currently have units on them: yours first, then your folders' order,
 // then any others (e.g. another service's groups), then "All units".
@@ -170,7 +176,14 @@ function unitPages() {
     return pages;
 }
 
-const isTalking = u => (u.src === S.me && S.tx) || S.talking.has(u.src);
+// Is this unit talking on talkgroup `id`? (Only lights the section/screen for the talkgroup they're actually on.)
+const slotFor = id => !id || id === '*' ? null : id === attachedId() ? 'primary' : id === S.tg2 ? 'secondary' : null;
+function isTalking(u, id) {
+    const slot = slotFor(id);
+    if (u.src === S.me) return S.tx && (!slot || S.txSlot === slot);
+    const s = S.talking.get(u.src);
+    return s !== undefined && (!slot || s === slot);
+}
 
 const peerName = p => p ? (p.callsign || p.issi) : '';
 const lookup = issi => S.dir.find(u => u.issi === issi);
@@ -199,6 +212,15 @@ async function join() {
     else { S.tg = S.attached; toast('Not permitted'); }
     S.attaching = false;
     render();
+}
+
+async function setSecondary(id) {
+    const r = await post('setSecondary', { id });
+    if (r && r.ok) {
+        S.tg2 = r.tg2 || null;
+        toast(S.tg2 ? `Secondary: ${groupName(S.tg2)}` : 'Secondary off');
+        goHome();
+    } else toast('Not permitted');
 }
 
 async function toggleSpeaker() {
@@ -241,9 +263,10 @@ async function powerOn() {
 
     S.data = res;
     S.me = res.me ?? null;
-    S.talking = new Set();
+    S.talking = new Map();
     S.volume = res.volume ?? 60;
     S.speaker = !!res.speaker;
+    S.tg2 = res.tg2 || null;
     S.dir = res.directory || [];
     flatten();
     const i = Math.max(0, S.flat.findIndex(g => g.id === res.tg));
@@ -266,7 +289,7 @@ async function deny(reason) {
 function resetLive() {
     stopLoop('PTP');
     S.tx = false; S.rx = null; S.ptp = null; S.emergency = false; S.alert = null;
-    S.talking = new Set();
+    S.talking = new Map();
     S.toast = null; S.stack = []; S.screen = 'home';
 }
 
@@ -399,20 +422,31 @@ const LISTS = {
         items: () => [
             { label: 'Units', value: S.dir.length, act: () => go('members') },
             { label: 'Talkgroups', act: () => go('folders') },
+            ...(S.cfg.secondary !== false ? [{ label: 'Secondary', value: S.tg2 ? groupName(S.tg2) : 'None', act: () => go('folders', { mode: 'sec' }) }] : []),
             { label: 'Contacts', act: () => go('contacts') },
             ...(S.cfg.ptp ? [{ label: 'Dial ISSI', act: () => { S.dial = ''; go('dial'); } }] : []),
             { label: 'Settings', act: () => go('settings') },
         ],
     },
     folders: {
-        title: () => 'Talkgroups',
-        items: () => (S.data.folders || []).map((f, i) => ({ label: f.label, value: f.groups.length, act: () => go('groups', { fi: i }) })),
+        title: () => S.ctx.mode === 'sec' ? 'Secondary' : 'Talkgroups',
+        items: () => [
+            ...(S.ctx.mode === 'sec' ? [{ label: 'None', value: S.tg2 ? '' : 'Set', act: () => setSecondary(null) }] : []),
+            ...(S.data.folders || []).map((f, i) => ({ label: f.label, value: f.groups.length, act: () => go('groups', { fi: i, mode: S.ctx.mode }) })),
+        ],
     },
     groups: {
-        title: () => S.data.folders[S.ctx.fi].label,
+        title: () => (S.ctx.mode === 'sec' ? '2nd: ' : '') + S.data.folders[S.ctx.fi].label,
         items: () => S.data.folders[S.ctx.fi].groups.map(g => {
             const idx = S.flat.findIndex(x => x.id === g.id);
-            return { label: g.name, value: idx === S.attached ? 'Active' : '', act: () => { selectTG(idx, true); goHome(); } };
+            const isPri = idx === S.attached, isSec = g.id === S.tg2;
+            if (S.ctx.mode === 'sec') {
+                return {
+                    label: g.name, value: isSec ? 'Secondary' : isPri ? 'Primary' : '',
+                    act: () => isPri ? toast('Already your primary') : setSecondary(g.id),
+                };
+            }
+            return { label: g.name, value: isPri ? 'Primary' : isSec ? 'Secondary' : '', act: () => { selectTG(idx, true); goHome(); } };
         }),
     },
     members: {
@@ -434,7 +468,8 @@ const LISTS = {
             const id = S.ctx.tg || attachedId();
             return unitsOn(id).map(u => ({
                 label: u.callsign,
-                value: isTalking(u) ? 'TX' : u.src === S.me ? 'You' : u.inCall ? 'In call'
+                value: isTalking(u, id) ? 'TX' : u.src === S.me ? 'You' : u.inCall ? 'In call'
+                    : (id !== '*' && u.tg2 === id) ? '2nd'
                     : id === '*' ? (u.talkgroup || '') : u.issi,
                 act: () => { if (u.src !== S.me) dialIssi(u.issi); else toast('That is you'); },
             }));
@@ -497,15 +532,20 @@ const scr = (cls, html) => `<div class="scr ${cls}">${html}</div>`;
 function viewHome() {
     const g = S.flat[S.tg];
     if (!g) return scr('', bar() + `<div class="pane"><div class="small">No talkgroups assigned</div></div>` + soft('Menu', ''));
-    let cls = '', line = 'Standby';
-    if (S.tx) { cls = 'tx'; line = 'Transmitting'; }
+    let cls = '', line = 'Standby', sec2 = '';
+    const n2 = S.tg2 ? groupName(S.tg2) : '';
+    if (S.tx && S.txSlot === 'secondary') { sec2 = 'tx'; line = `Transmitting on ${esc(n2)}`; }
+    else if (S.tx) { cls = 'tx'; line = 'Transmitting'; }
+    else if (S.rx && S.rxSlot === 'secondary') { sec2 = 'rx'; line = `${esc(n2)}: ${esc(S.rx)}`; }
     else if (S.rx) { cls = 'rx'; line = esc(S.rx); }
     else if (S.attaching) { cls = 'att'; line = 'Attaching…'; }
+    const secRow = S.tg2 ? `<div class="sec ${sec2}"><b>2</b><span>${esc(n2)}</span></div>` : '';
     return scr('', bar() + `
         <div class="home ${cls}">
             <div class="folder"><span>${esc(g.folder)}</span><span>${channelUnits().length} on channel</span></div>
             <div class="tgw"><div class="tg">${esc(g.name)}</div></div>
             <div class="line">${line}</div>
+            ${secRow}
             <div class="who"><span>ISSI ${esc(S.data.issi)}</span><span>${esc(S.data.callsign)}</span></div>
         </div>` + soft('Menu', 'Channel'));
 }
@@ -626,6 +666,17 @@ function placeList(el) {
     }
 }
 
+function listSection(title, units, live, max, slot) {
+    const rows = units.slice(0, max).map(u => {
+        const mon = slot !== '*' && u.tg2 === slot;
+        const cls = [live && isTalking(u, slot) ? 'talk' : '', u.src === S.me ? 'me' : '', u.inCall ? 'call' : '', mon ? 'mon' : ''].join(' ');
+        const tag = u.inCall ? 'In call' : mon ? '2nd' : esc(u.service);
+        return `<li class="${cls}"><i></i><span>${esc(u.callsign)}</span><small>${tag}</small></li>`;
+    }).join('');
+    const more = units.length > max ? `<li class="more">+${units.length - max} more</li>` : '';
+    return `<header><b>${esc(title)}</b><span>${units.length}</span></header><ul>${rows}${more}</ul>`;
+}
+
 function renderList() {
     const el = $('#rlist');
     const rl = S.cfg.radioList || {};
@@ -634,20 +685,20 @@ function renderList() {
 
     if (!S.listMoving && (!rl.enabled || !S.listVisible || S.open || !live)) { el.className = 'hidden'; return; }
 
-    const units = live ? channelUnits() : SAMPLE_UNITS;
-    const title = live ? g.name : 'OPS 1';
     const max = rl.maxRows || 12;
-    const rows = units.slice(0, max).map(u => {
-        const cls = [live && isTalking(u) ? 'talk' : '', u.src === S.me ? 'me' : ''].join(' ');
-        return `<li class="${cls}${u.inCall ? ' call' : ''}"><i></i><span>${esc(u.callsign)}</span><small>${u.inCall ? 'In call' : esc(u.service)}</small></li>`;
-    }).join('');
-    const more = units.length > max ? `<li class="more">+${units.length - max} more</li>` : '';
+    let html;
+    if (live) {
+        html = listSection(g.name, unitsOn(g.id), true, max, g.id);
+        if (S.tg2) html += listSection(`2: ${groupName(S.tg2)}`, unitsOn(S.tg2), true, Math.max(4, Math.floor(max / 2)), S.tg2);
+    } else {
+        html = listSection('OPS 1', SAMPLE_UNITS, false, max, '*');
+    }
     const hint = S.listMoving
         ? `<footer>Drag to move, scroll to resize<br>R to reset, Enter or Esc to save</footer>` : '';
 
     el.className = S.listMoving ? 'moving' : '';
     placeList(el);
-    el.innerHTML = `<header><b>${esc(title)}</b><span>${units.length}</span></header><ul>${rows}${more}</ul>${hint}`;
+    el.innerHTML = html + hint;
 }
 
 /* ---- Move mode ---- */
@@ -700,10 +751,10 @@ function renderHud() {
         const n = peerName(S.ptp.peer);
         status = S.ptp.state === 'in' ? `Call from ${n}` : S.ptp.state === 'active' ? `In call ${n}` : `Calling ${n}`;
     }
-    else if (S.tx) { cls = 'tx'; status = 'TX'; }
-    else if (S.rx) { cls = 'rx'; status = S.rx; }
+    else if (S.tx) { cls = 'tx'; status = S.txSlot === 'secondary' ? `TX ${groupName(S.tg2)}` : 'TX'; }
+    else if (S.rx) { cls = 'rx'; status = S.rxSlot === 'secondary' ? `${groupName(S.tg2)}: ${S.rx}` : S.rx; }
     el.className = cls;
-    el.innerHTML = `${S.speaker ? SPK_ICON : ''}<span class="hg">${esc(g ? g.name : '')}</span>${status ? `<span class="hs">${esc(status)}</span>` : ''}`;
+    el.innerHTML = `${S.speaker ? SPK_ICON : ''}<span class="hg">${esc(g ? g.name : '')}${S.tg2 ? ` <em>/ ${esc(groupName(S.tg2))}</em>` : ''}</span>${status ? `<span class="hs">${esc(status)}</span>` : ''}`;
 }
 
 /* ---------------- Layout & input ---------------- */
@@ -767,7 +818,14 @@ function ptt(down) {
     pttDown = down;
     post('ptt', { down });
 }
-addEventListener('blur', () => ptt(false));
+let ptt2Down = false;
+function ptt2(down) {
+    if (down === ptt2Down) return;
+    if (down && (S.power !== 'on' || !S.tg2)) return;
+    ptt2Down = down;
+    post('ptt2', { down });
+}
+addEventListener('blur', () => { ptt(false); ptt2(false); });
 
 const KB = { ArrowUp: 'up', ArrowDown: 'down', ArrowLeft: 'left', ArrowRight: 'right', Enter: 'softL', Backspace: 'softR' };
 addEventListener('keydown', e => {
@@ -780,6 +838,7 @@ addEventListener('keydown', e => {
     if (!S.open) return;
     if (e.key === 'Escape') { e.preventDefault(); return; } // closes on keyup, see below
     if (e.code === S.cfg.talkKey) { e.preventDefault(); if (!e.repeat) ptt(true); return; }
+    if (S.tg2 && e.code === S.cfg.talkKey2) { e.preventDefault(); if (!e.repeat) ptt2(true); return; }
     if (S.power === 'on' && S.screen === 'edit' && !S.ptp && !S.alert && !S.emergency) {
         if (e.key === 'Backspace') { S.edit = S.edit.slice(0, -1); render(); return; }
         if (e.key.length === 1) { typeChar(e.key); return; }
@@ -799,6 +858,7 @@ addEventListener('keyup', e => {
     }
     if (!S.open) return;
     if (e.code === S.cfg.talkKey) { e.preventDefault(); ptt(false); return; }
+    if (e.code === S.cfg.talkKey2) { e.preventDefault(); ptt2(false); return; }
     if (e.key === 'Escape') { ptt(false); post('close'); }
 });
 
@@ -821,22 +881,25 @@ addEventListener('message', ({ data: msg }) => {
             break;
         case 'open':
             if (d.talkKey) S.cfg.talkKey = d.talkKey;
+            if (d.talkKey2) S.cfg.talkKey2 = d.talkKey2;
             S.open = true;
             $('#radio').classList.remove('hidden');
             break;
         case 'close':
             pttDown = false;
+            ptt2Down = false;
             S.open = false;
             $('#radio').classList.add('hidden');
             break;
         case 'tx':
             if (S.power !== 'on') return;
             S.tx = !!d.active;
+            if (S.tx) S.txSlot = d.secondary ? 'secondary' : 'primary';
             play(S.tx ? 'PTT' : 'CLOSE');
             break;
         case 'rx':
             if (S.power !== 'on') return;
-            if (d.active) { S.rx = d.label; if (d.src != null) S.talking.add(d.src); }
+            if (d.active) { S.rx = d.label; S.rxSlot = d.slot || 'primary'; if (d.src != null) S.talking.set(d.src, d.slot || 'primary'); }
             else {
                 if (d.src != null) S.talking.delete(d.src);
                 S.rx = null;
@@ -845,6 +908,7 @@ addEventListener('message', ({ data: msg }) => {
             break;
         case 'directory':
             S.dir = Array.isArray(d) ? d : [];
+            { const me = S.dir.find(u => u.src === S.me); if (me) S.tg2 = me.tg2 || null; }
             if (S.ptp && S.ptp.peer) S.ptp.peer = lookup(S.ptp.peer.issi) || S.ptp.peer;
             break;
         case 'ptpRinging':
@@ -917,7 +981,7 @@ setInterval(() => {
 async function mock(name, data) {
     await sleep(120);
     if (name === 'power' && data.on) return {
-        ok: true, me: 1, issi: '1042', callsign: 'NB 4521', service: 'Police', name: 'Sam Patel', volume: 60, tg: 'pol_ops1',
+        ok: true, me: 1, issi: '1042', tg2: 'pol_roads', callsign: 'NB 4521', service: 'Police', name: 'Sam Patel', volume: 60, tg: 'pol_ops1',
         folders: [
             { label: 'Police', groups: [{ id: 'pol_ops1', name: 'OPS 1' }, { id: 'pol_ops2', name: 'OPS 2' }, { id: 'pol_tac1', name: 'TAC 1' }, { id: 'pol_roads', name: 'ROADS' }, { id: 'pol_arv', name: 'ARV' }] },
             { label: 'Interop', groups: [{ id: 'ess_1', name: 'ESS 1' }, { id: 'ess_major', name: 'MAJOR INC' }] },
@@ -934,6 +998,7 @@ async function mock(name, data) {
     };
     if (name === 'setTalkgroup') return { ok: true };
     if (name === 'setSpeaker') return { ok: true, speaker: data.on };
+    if (name === 'setSecondary') return { ok: true, tg2: data.id };
     if (name === 'civSetSpeaker') return data.on ? { ok: true, speaker: true } : { ok: false, reason: 'no_earpiece', speaker: true };
     if (name === 'setCallsign') return { callsign: data.callsign };
     if (name === 'emergency') return { ok: true };

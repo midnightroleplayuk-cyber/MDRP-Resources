@@ -5,7 +5,7 @@ lua54 'yes'
 name 'vinewood-mdt'
 author 'Vinewood Studios'
 description 'British police MDT: PNC checks, DVLA licences, custody and bail, CPS, ANPR, stop and search, fines, statements, interview playback and court results (vinewood-moj)'
-version '2.19.3'
+version '2.19.5'
 
 shared_scripts {
     '@ox_lib/init.lua',
@@ -64,5 +64,3 @@ escrow_ignore {
     'server/prison.lua',       -- prison script adapters (remand)
     'server/inventory.lua'     -- inventory adapters (evidence bags)
 }
-
-dependency '/assetpacks'

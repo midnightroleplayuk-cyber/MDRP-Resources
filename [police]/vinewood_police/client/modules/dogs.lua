@@ -19,20 +19,43 @@ end
 
 local onLead, barkToken, barking = false, 0, false
 
-local function heel()
-    if not dog or not DoesEntityExist(dog) then return end
-    barkToken = barkToken + 1 -- stops any barking
-    ClearPedTasks(dog)
-    if onLead then
-        TaskFollowToOffsetOfEntity(dog, PlayerPedId(), 0.45, -0.35, 0.0, 7.0, -1, 0.4, true)
-    else
-        TaskFollowToOffsetOfEntity(dog, PlayerPedId(), 0.6, -0.8, 0.0, 7.0, -1, 1.2, true)
-    end
+local sendToken, staying = 0, false
+
+-- Make sure this game is the one moving the dog before giving it an order
+local function own()
+    if not dog or not DoesEntityExist(dog) then return false end
+    if NetworkHasControlOfEntity(dog) then return true end
+    local deadline = GetGameTimer() + 1000
+    NetworkRequestControlOfEntity(dog)
+    while not NetworkHasControlOfEntity(dog) and GetGameTimer() < deadline do Wait(25); NetworkRequestControlOfEntity(dog) end
+    return NetworkHasControlOfEntity(dog)
 end
 
+-- Stop whatever the dog is doing: barking, a sit, running somewhere
+local function stopAll()
+    barkToken = barkToken + 1
+    sendToken = sendToken + 1
+    StopAnimTask(dog, 'creatures@rottweiler@amb@world_dog_sitting@base', 'base', 1.0)
+    ClearPedTasksImmediately(dog)
+end
+
+--- Heel: come back to the handler's left side and walk with them
+local function heel(tell)
+    if not own() then return end
+    stopAll()
+    staying = false
+    if onLead then
+        TaskFollowToOffsetOfEntity(dog, PlayerPedId(), -0.45, -0.35, 0.0, 2.5, -1, 0.4, true)
+    else
+        TaskFollowToOffsetOfEntity(dog, PlayerPedId(), -0.6, -0.6, 0.0, 2.5, -1, 0.9, true)
+    end
+    SetPedKeepTask(dog, true)
+    if tell then VPO.ClientNotify(L('dog_heel'), 'inform', 1500) end
+end
 local function sit()
-    if not dog then return end
-    ClearPedTasks(dog)
+    if not own() then return end
+    stopAll()
+    staying = true
     if loadDict('creatures@rottweiler@amb@world_dog_sitting@base') then
         TaskPlayAnim(dog, 'creatures@rottweiler@amb@world_dog_sitting@base', 'base', 8.0, -8.0, -1, 1, 0.0, false, false, false)
     end
@@ -212,7 +235,7 @@ CreateThread(function()
         if dog and DoesEntityExist(dog) and not NetworkHasControlOfEntity(dog) then
             NetworkRequestControlOfEntity(dog)
             Wait(300)
-            if NetworkHasControlOfEntity(dog) then heel() end
+            if NetworkHasControlOfEntity(dog) and not staying then heel() end
         end
     end
 end)
@@ -311,11 +334,13 @@ local personOptions = {
 
 local dogOptions = {
     { name = 'vpo_dog_heel', label = 'Heel', icon = 'fas fa-dog', distance = 3.0,
-      canInteract = function(e) return e == dog end, onSelect = function() heel() end },
+      canInteract = function(e) return e == dog end, onSelect = function() CreateThread(function() heel(true) end) end },
+    { name = 'vpo_dog_spot', label = 'Send to a spot', icon = 'fas fa-location-crosshairs', distance = 3.0,
+      canInteract = function(e) return e == dog end, onSelect = function() CreateThread(function() VPO.DogSendAim() end) end },
     { name = 'vpo_dog_lead', label = 'Lead on / off', icon = 'fas fa-link', distance = 3.0,
       canInteract = function(e) return e == dog end, onSelect = function() VPO.DogLead() end },
     { name = 'vpo_dog_sit', label = 'Sit / stay', icon = 'fas fa-hand', distance = 3.0,
-      canInteract = function(e) return e == dog end, onSelect = function() sit() end },
+      canInteract = function(e) return e == dog end, onSelect = function() CreateThread(sit) end },
     { name = 'vpo_dog_recall', label = 'Back in the van', icon = 'fas fa-van-shuttle', distance = 3.0,
       canInteract = function(e) return e == dog end, onSelect = function() CreateThread(function() recall() end) end },
 }
@@ -521,3 +546,208 @@ RegisterCommand('dogtest', function()
         for _, p in ipairs(made) do if DoesEntityExist(p) then DeleteEntity(p) end end
     end)
 end, false)
+
+---------------------------------------------------------------------------
+-- Sending the dog somewhere: a spot you aim at (the floor included), or a car or object you target.
+-- It runs there and waits, sitting, until you call it to heel.
+---------------------------------------------------------------------------
+local function sendTo(pos)
+    if not own() then return VPO.ClientNotify(L('dog_not_out'), 'error') end
+    if onLead then setLead(false) end -- slipping the lead to send it
+    stopAll()
+    staying = true
+    local token = sendToken
+    SetBlockingOfNonTemporaryEvents(dog, true)
+    TaskGoToCoordAnyMeans(dog, pos.x, pos.y, pos.z, 3.0, 0, false, 786603, 0.0)
+    VPO.ClientNotify(L('dog_sent'), 'inform', 3000)
+    CreateThread(function()
+        local deadline = GetGameTimer() + 25000
+        while dog and DoesEntityExist(dog) and token == sendToken and GetGameTimer() < deadline do
+            if #(GetEntityCoords(dog) - pos) < 1.6 then
+                ClearPedTasks(dog)
+                if loadDict('creatures@rottweiler@amb@world_dog_sitting@base') then
+                    TaskPlayAnim(dog, 'creatures@rottweiler@amb@world_dog_sitting@base', 'base', 8.0, -8.0, -1, 1, 0.0, false, false, false)
+                end
+                VPO.ClientNotify(L('dog_arrived'), 'success', 2500)
+                return
+            end
+            Wait(250)
+        end
+    end)
+end
+
+local function aimSpot()
+    local cam, rot = GetGameplayCamCoord(), GetGameplayCamRot(2)
+    local rx, rz = math.rad(rot.x), math.rad(rot.z)
+    local dir = vector3(-math.sin(rz) * math.abs(math.cos(rx)), math.cos(rz) * math.abs(math.cos(rx)), math.sin(rx))
+    local to = cam + dir * 80.0
+    local ray = StartExpensiveSynchronousShapeTestLosProbe(cam.x, cam.y, cam.z, to.x, to.y, to.z, 1 | 16, PlayerPedId(), 7)
+    local _, hit, pos = GetShapeTestResult(ray)
+    return hit == 1 and pos or nil
+end
+
+function VPO.DogSendAim()
+    if not dog or not DoesEntityExist(dog) then return VPO.ClientNotify(L('dog_not_out'), 'error') end
+    while true do
+        Wait(0)
+        for _, c in ipairs({ 24, 25, 38, 140, 141, 142, 177, 200 }) do DisableControlAction(0, c, true) end
+        local p = aimSpot()
+        local ok = p and #(p - GetEntityCoords(PlayerPedId())) <= 80.0
+        if p then DrawMarker(25, p.x, p.y, p.z + 0.03, 0, 0, 0, 0, 0, 0, 0.8, 0.8, 0.8, ok and 47 or 217, ok and 111 or 83, ok and 224 or 79, 200, false, false, 2, false, nil, nil, false) end
+        BeginTextCommandDisplayHelp('STRING')
+        AddTextComponentSubstringPlayerName(L('dog_send_help', p and ('%d m away'):format(math.floor(#(p - GetEntityCoords(PlayerPedId())))) or 'aim at the ground or an object'))
+        EndTextCommandDisplayHelp(0, false, false, -1)
+        if IsDisabledControlJustReleased(0, 38) and ok then return sendTo(p) end
+        if IsDisabledControlJustReleased(0, 177) or IsDisabledControlJustReleased(0, 200) then return end
+    end
+end
+
+-- Target a car or an object: "Dog: go here"
+local goHere = {
+    { name = 'vpo_dog_gohere', label = 'Dog: go here', icon = 'fas fa-location-dot', distance = 30.0,
+      canInteract = function(e) return dog ~= nil and DoesEntityExist(dog) and e ~= dog end,
+      onSelect = function(e) CreateThread(function() sendTo(GetEntityCoords(e)) end) end },
+}
+CreateThread(function()
+    Wait(1800)
+    VPO.Target.AddGlobalVehicle(goHere)
+    if VPO.Target.AddGlobalObject then VPO.Target.AddGlobalObject(goHere) end
+end)
+AddEventHandler('onResourceStop', function(res)
+    if res ~= VPO.Resource then return end
+    VPO.Target.RemoveGlobalVehicle(goHere)
+    if VPO.Target.RemoveGlobalObject then VPO.Target.RemoveGlobalObject(goHere) end
+end)
+
+function VPO.DogHeel() CreateThread(function() heel(true) end) end
+
+---------------------------------------------------------------------------
+-- Dog command menu (G by default, rebindable): works while you run. The mouse picks a command, your
+-- movement keys keep working. Whatever you're looking at when you open it is the target.
+---------------------------------------------------------------------------
+local menuOpen, aim = false, nil
+
+-- What's under the crosshair: a person, a vehicle, or just a spot
+local function lookingAt()
+    local cam, rot = GetGameplayCamCoord(), GetGameplayCamRot(2)
+    local rx, rz = math.rad(rot.x), math.rad(rot.z)
+    local dir = vector3(-math.sin(rz) * math.abs(math.cos(rx)), math.cos(rz) * math.abs(math.cos(rx)), math.sin(rx))
+    local to = cam + dir * 60.0
+    local ray = StartExpensiveSynchronousShapeTestLosProbe(cam.x, cam.y, cam.z, to.x, to.y, to.z, 1 | 2 | 4 | 8 | 16, PlayerPedId(), 7)
+    local _, hit, pos, _, ent = GetShapeTestResult(ray)
+    local out = { pos = hit == 1 and pos or nil }
+    if hit == 1 and ent and ent ~= 0 and ent ~= dog then
+        local t = GetEntityType(ent)
+        if t == 1 then out.ped = ent elseif t == 2 then out.vehicle = ent end
+    end
+    return out
+end
+
+local function nearestPed(from, range, exclude)
+    local best, bestD
+    for _, p in ipairs(GetGamePool('CPed')) do
+        if p ~= PlayerPedId() and p ~= dog and p ~= exclude and not IsEntityDead(p) and GetPedType(p) ~= 28 then
+            local d = #(GetEntityCoords(p) - from)
+            if d < range and (not bestD or d < bestD) then best, bestD = p, d end
+        end
+    end
+    return best
+end
+
+local function nearestVehicle(from, range)
+    local mine = GetVehiclePedIsIn(PlayerPedId(), true)
+    local best, bestD
+    for _, v in ipairs(GetGamePool('CVehicle')) do
+        if v ~= mine then
+            local d = #(GetEntityCoords(v) - from)
+            if d < range and (not bestD or d < bestD) then best, bestD = v, d end
+        end
+    end
+    return best
+end
+
+-- The target for a command: what you looked at, or the nearest that fits
+local function personTarget(range)
+    if aim and aim.ped and DoesEntityExist(aim.ped) then return aim.ped end
+    return nearestPed(GetEntityCoords(PlayerPedId()), range)
+end
+local function vehicleTarget()
+    if aim and aim.vehicle and DoesEntityExist(aim.vehicle) then return aim.vehicle end
+    return nearestVehicle(GetEntityCoords(dog), 8.0) or nearestVehicle(GetEntityCoords(PlayerPedId()), 8.0)
+end
+
+local COMMANDS = {
+    heel = function() heel(true) end,
+    sit = function() sit() end,
+    lead = function() setLead(not onLead) end,
+    move = function()
+        local p = aim and (aim.vehicle and GetEntityCoords(aim.vehicle) or aim.ped and GetEntityCoords(aim.ped) or aim.pos)
+        if not p then return VPO.ClientNotify(L('dog_look_somewhere'), 'error') end
+        sendTo(p)
+    end,
+    search_vehicle = function()
+        local v = vehicleTarget()
+        if not v then return VPO.ClientNotify(L('radial_no_vehicle'), 'error') end
+        searchAt(v, { kind = 'vehicle', net = VehToNet(v) })
+    end,
+    search_person = function()
+        local p = personTarget(8.0)
+        if not p then return VPO.ClientNotify(L('radial_nobody'), 'error') end
+        searchAt(p, personData(p))
+    end,
+    bark = function()
+        local p = personTarget(Cfg.Bark.Range)
+        if not p then return VPO.ClientNotify(L('radial_nobody'), 'error') end
+        barkAt(p, personData(p))
+    end,
+    detain = function()
+        local p = personTarget(40.0)
+        if not p then return VPO.ClientNotify(L('radial_nobody'), 'error') end
+        if sidOf(p) and not Cfg.BitePlayers then return VPO.ClientNotify(L('dog_no_players'), 'error') end
+        sendAfter(p, personData(p))
+    end,
+    recall = function() recall() end,
+}
+
+local function closeMenu()
+    if not menuOpen then return end
+    menuOpen = false
+    SendNUIMessage({ type = 'dogmenuClose' })
+    SetNuiFocusKeepInput(false)
+    if not VPO.UI.open then SetNuiFocus(false, false) end
+end
+
+local function openMenu()
+    if menuOpen then return closeMenu() end
+    -- G is also "let go" while escorting: then it's that, not this
+    if VPO.IsEscorting and VPO.IsEscorting() then return end
+    if not dog or not DoesEntityExist(dog) then return end -- no dog out: the key just does nothing
+    if VPO.UI.open or IsPauseMenuActive() then return end
+    aim = lookingAt()
+    local target = aim.ped and (sidOf(aim.ped) and 'Looking at: a person' or 'Looking at: someone')
+        or aim.vehicle and 'Looking at: a vehicle' or aim.pos and 'Looking at: a spot' or 'Not looking at anything'
+    menuOpen = true
+    SetNuiFocus(true, true)
+    SetNuiFocusKeepInput(true) -- keep running while the menu is up
+    SendNUIMessage({ type = 'dogmenu', target = target, onLead = onLead })
+    CreateThread(function()
+        while menuOpen do
+            -- Movement stays; the mouse is for the menu, not the camera or a punch
+            for _, c in ipairs({ 1, 2, 3, 4, 5, 6, 24, 25, 68, 69, 70, 91, 92, 106, 114, 140, 141, 142, 257, 263, 264, 200, 199 }) do
+                DisableControlAction(0, c, true)
+            end
+            Wait(0)
+        end
+    end)
+end
+
+RegisterCommand('vpo_dogmenu', openMenu, false)
+RegisterKeyMapping('vpo_dogmenu', 'Police: dog commands', 'keyboard', (Cfg.MenuKey or 'G'))
+
+RegisterNUICallback('dogmenuSelect', function(body, cb)
+    cb({})
+    local fn = COMMANDS[type(body) == 'table' and body.id or '']
+    closeMenu()
+    if fn then CreateThread(fn) end
+end)
+RegisterNUICallback('dogmenuClose', function(_, cb) cb({}); closeMenu() end)

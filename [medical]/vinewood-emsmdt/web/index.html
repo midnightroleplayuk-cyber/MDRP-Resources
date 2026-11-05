@@ -9,6 +9,7 @@
 </head>
 <body>
 <div id="tablet" class="hidden">
+  <img id="frame" class="frame hidden" alt="" draggable="false">
   <div class="screen">
     <div class="battenburg" aria-hidden="true"></div>
     <aside class="rail">
@@ -22,6 +23,7 @@
         <label class="callsign">Callsign <input id="callsign" maxlength="12" spellcheck="false"></label>
         <select id="status" aria-label="Unit status"></select>
         <div class="who"><strong id="meName"></strong><span id="meRank"></span></div>
+        <button class="icon-btn" id="displayBtn" aria-label="Display settings" title="Display settings">⚙</button>
         <button class="icon-btn" id="closeBtn" aria-label="Close MDT">✕</button>
       </div>
     </header>

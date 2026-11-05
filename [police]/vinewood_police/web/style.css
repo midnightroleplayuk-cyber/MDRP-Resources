@@ -312,3 +312,29 @@ label.check input { width: auto; margin-top: 3px; accent-color: var(--blue); }
 .radial-centre i { font-size: 30px; display: block; }
 .radial-centre span { display: block; font: 600 12px/1 var(--head); letter-spacing: .08em; text-transform: uppercase; opacity: .75; margin-top: 6px; }
 @media (prefers-reduced-motion: reduce) { .radial-ring { animation: none; } }
+
+/* ---------- Dog command menu ---------- */
+.dogmenu { position: fixed; inset: 0; z-index: 55; pointer-events: none; }
+.dogmenu[hidden] { display: none; }
+.dm-wrap { position: absolute; left: 50%; top: 50%; width: 0; height: 0; pointer-events: none; animation: radialIn .1s ease-out; }
+.dm-btn {
+  position: absolute; transform: translate(-50%, -50%); pointer-events: auto; cursor: pointer;
+  display: inline-flex; align-items: center; gap: 9px; white-space: nowrap;
+  padding: 9px 16px; border-radius: 7px; border: 1px solid rgba(255,255,255,.08);
+  background: rgba(22, 24, 28, .88); color: #e8ecf1; font: 600 15px/1 var(--head); letter-spacing: .01em;
+  box-shadow: 0 4px 14px rgba(0,0,0,.35); transition: background .08s, border-color .08s, color .08s;
+}
+.dm-btn i { font-size: 14px; opacity: .9; }
+.dm-btn:hover, .dm-btn:focus-visible { background: rgba(22, 120, 84, .92); border-color: #2fd08f; color: #fff; outline: none; box-shadow: 0 0 0 2px rgba(47,208,143,.25), 0 4px 14px rgba(0,0,0,.35); }
+.dm-centre {
+  position: absolute; transform: translate(-50%, -50%); pointer-events: auto; cursor: pointer;
+  width: 70px; height: 70px; border-radius: 50%; border: 1px solid rgba(255,255,255,.1);
+  background: rgba(16, 40, 34, .9); color: #fff; display: grid; place-items: center; box-shadow: 0 4px 14px rgba(0,0,0,.4);
+}
+.dm-centre i { font-size: 24px; }
+.dm-centre:hover { background: rgba(22, 120, 84, .95); border-color: #2fd08f; }
+.dm-caption {
+  position: absolute; transform: translate(-50%, 0); top: 150px; pointer-events: none; white-space: nowrap;
+  font: 600 12px/1 var(--head); letter-spacing: .08em; text-transform: uppercase; color: rgba(255,255,255,.75);
+  text-shadow: 0 1px 3px rgba(0,0,0,.7);
+}

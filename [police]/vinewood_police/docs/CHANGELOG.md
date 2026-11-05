@@ -1,5 +1,38 @@
 # Changelog
 
+## 1.18.5
+- The officer's escorting animation is off by default (Config.Restraint.Escort.OfficerAnim = false). The re-exported escorting clip crashes the game while the officer walks with a prisoner attached. Escorting works normally without it. When it's on, it's started once per escort and only put back if something else has stopped it for 2 seconds, instead of being re-started every half second.
+
+## 1.18.4
+- Front cuffs use the original front-cuff animation again (stream/anim_vinewoodpoliceinteration.ycd). The frontcuff_speed in the re-exported anim@policearrest.ycd bends the prisoner forward about 90° and was likely behind the crash while escorting. The officer's escorting animation still comes from anim@policearrest.ycd.
+
+## 1.18.3
+- Updated arrest animations (anim@policearrest.ycd): the escorting clip now keys both clavicles, both upper arms, forearms and hands, so the officer's arms hold the pose from Anim Studio instead of being moved by other animations.
+
+## 1.18.2
+- /animtest [clip] [dict]: plays an animation on you full body, full body looping, then upper body while moving (as escorting uses), 4 seconds each, so you can see how a clip behaves in game. Defaults to the officer's escorting clip.
+
+## 1.18.1
+- Fixed: the escorted prisoner lay flat in mid-air. The offsets were measured against the pelvis in the animation's first frame, but in game the escorting animation runs on the upper body only, so the pelvis sits differently. The prisoner is now held relative to the officer's root (always upright), starting just in front of them.
+- /escortadjust (while escorting): move the prisoner with the arrows, height with Page Up/Down, turn with Q/E (Shift for bigger steps), G to switch between root and pelvis, H to turn the officer's animation on and off. The real prisoner moves as you adjust. Enter prints the lines for Config.Restraint.Escort to F8 (and keeps them for the session); Backspace cancels.
+
+## 1.18.0
+- New arrest animations, stream/anim@policearrest.ycd: the officer plays "escorting" while escorting someone, and front cuffs use its "frontcuff_speed". The prisoner is held to the officer's pelvis with the offset and rotation taken from the escorting pose's first frame (Config.Restraint.Escort). The old anim_vinewoodpoliceinteration.ycd is removed.
+
+## 1.17.1
+- The dog command menu is on G by default (was K). G still lets go while you're escorting someone; otherwise, with the dog out, it opens the dog menu. With no dog out, it does nothing.
+
+## 1.17.0
+- Dog command menu, on K (rebindable: "Police: dog commands"), while the dog is out. Pill buttons around a centre button, lit green on hover. You can keep running while it's open (movement keys still work; the mouse is for the menu). Whatever you're looking at when you open it is the target, otherwise the nearest that fits: Search vehicle, Search person, Move (run to what you looked at, or the spot), Bark, Detain, Sit / stay, Lead on/off, Back in van, and the centre button for Heel. Escape or K again closes it.
+
+## 1.16.0
+- Fixed: Heel did nothing. It now stops whatever the dog is doing (sitting, barking, running somewhere), brings it to your left side and walks it with you, and says "Heel."
+- Send the dog somewhere: "Send to a spot" (target the dog, or the radial, Dog) lets you aim at the ground or anything else up to 80 m away; E sends it. Or target any car or object for "Dog: go here". The dog runs there and sits waiting until you call it to heel. On the lead, the lead is slipped first.
+- Searches find drugs, firearms and ammunition, and criminal cash, in players' pockets, vehicle boots and gloveboxes, and on NPCs. The dog says what it's indicating on (e.g. "indicating (drugs, cash)"). Choose what it finds with Config.Dogs.Detects. Everyday items (torch, baton, Taser, fuel can...) are ignored. It won't search on-duty officers.
+
+## 1.15.4
+- Fixed: the police dog spawned invisible. Its body parts and textures (vinewood_policedog 1.0.3) are now named vw_policedog^part, which is how FiveM attaches streamed parts to a ped.
+
 ## 1.15.3
 - /dogtest: shows the dog model and the game's own shepherd side by side, in your game only, for 20 seconds, with their size and parts in F8. It tells a model problem apart from a spawning problem.
 

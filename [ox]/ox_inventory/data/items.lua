@@ -52,6 +52,29 @@ return {
         },
         consume = 0.3
     },
+	
+	-- Vinewood Gang ITEMS
+	['burner_phone'] = {
+    label = 'Burner phone',
+    weight = 150,
+    stack = false,
+    close = true,
+    description = 'One number saved. No name.',
+    client = {
+        export = 'vinewood_gangs.useBurner',
+    },
+},
+
+['gang_tablet'] = {
+    label = 'Gang tablet',
+    weight = 500,
+    stack = false,
+    close = true,
+    description = 'Keeps the business running.',
+    client = {
+        export = 'vinewood_gangs.openTablet',
+    },
+},
 
     ['burger'] = {
         label = 'Burger',
@@ -5630,7 +5653,7 @@ return {
 
 -- VINEWOOD PD JOB
 ['handcuffs'] = {
-    label = 'Handcuffs', weight = 300, stack = false, close = true,
+    label = 'Handcuffs', weight = 300, stack = true, close = true,
     description = 'Rigid handcuffs. Use to take them out, then cuff the person in front.',
     server = { export = 'vinewood_police.useItem' },
 },
@@ -5786,4 +5809,18 @@ return {
         description = 'Hang it on a wall and challenge the room.',
         server = { export = 'rex_darts.useItem' },
     },
+
+
+    --HF1 TV
+    ['tv'] = {
+    label = 'Television',
+    weight = 5000,
+    stack = false,
+    close = true,
+    consume = 0,
+    client = { export = 'hf1_tv.useTelevision' }
+    },
+
+
+
 }

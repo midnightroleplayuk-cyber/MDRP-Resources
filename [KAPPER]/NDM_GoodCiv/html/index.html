@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>GoodCiv</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="toasts"></div>
+    <div id="alerts"></div>
+
+    <div id="hud" class="card hidden">
+        <div class="eyebrow"><span class="dot"></span>GoodCiv responding</div>
+        <div class="hud-tags tags"></div>
+        <div class="hud-step"></div>
+    </div>
+
+    <div id="patient" class="card hidden">
+        <div class="eyebrow"><span class="dot pulse"></span>GoodCiv</div>
+        <div class="patient-title"></div>
+        <div class="patient-sub"></div>
+    </div>
+
+    <div id="progress" class="hidden">
+        <div class="progress-label"></div>
+        <div class="bar"><div class="fill"></div></div>
+    </div>
+
+    <div id="treatment" class="hidden">
+        <div class="panel">
+            <header>
+                <div>
+                    <div class="eyebrow"><span class="dot"></span>GoodCiv first aid</div>
+                    <h1>Patient care</h1>
+                </div>
+                <button class="icon" data-cb="close" title="Close (Esc)">&times;</button>
+            </header>
+
+            <section class="vitals">
+                <div class="vital" data-vital="conscious"><span>Response</span><strong></strong></div>
+                <div class="vital" data-vital="breathing"><span>Breathing</span><strong></strong></div>
+                <div class="vital" data-vital="bleeding"><span>Bleeding</span><strong></strong></div>
+                <div class="vital" data-vital="position"><span>Position</span><strong></strong></div>
+            </section>
+
+            <div class="advice"></div>
+
+            <section class="actions">
+                <button data-action="assess"><b>Assess</b><small>Check airway, breathing, bleeding</small></button>
+                <button data-action="tourniquet"><b>Tourniquet</b><small>Stop major limb bleeding</small></button>
+                <button data-action="cpr"><b>CPR</b><small>Chest compressions, 100&ndash;120/min</small></button>
+                <button data-action="recovery"><b>Recovery position</b><small>Keep the airway open</small></button>
+                <button data-action="load"><b>Load into vehicle</b><small class="load-sub">Nearest vehicle, to hospital</small></button>
+                <button data-action="unload"><b>Unload</b><small>Take patient out of the vehicle</small></button>
+            </section>
+
+            <footer>
+                <span class="responders"></span>
+                <button class="ghost danger" data-cb="abandon">Leave call</button>
+            </footer>
+
+            <div id="cpr" class="hidden">
+                <div class="cpr-title">CPR</div>
+                <div class="cpr-hint">Press <kbd>SPACE</kbd> or click in time with the beat</div>
+                <div class="metronome"><div class="beat"></div><div class="press"></div></div>
+                <div class="cpr-stats">
+                    <div><span>Rate</span><strong class="cpr-bpm">--</strong></div>
+                    <div><span>Technique</span><strong class="cpr-quality">--</strong></div>
+                    <div><span>Compressions</span><strong class="cpr-count">0</strong></div>
+                </div>
+                <div class="bar"><div class="fill cpr-time"></div></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

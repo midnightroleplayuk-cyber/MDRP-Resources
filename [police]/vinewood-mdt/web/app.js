@@ -191,6 +191,7 @@ window.addEventListener('message', async (e) => {
         $('#tablet').style.visibility = m.hide ? 'hidden' : '';
         $('#modal').style.visibility = m.hide ? 'hidden' : '';
     } else if (m.action === 'fineNotice') {
+        if (m.currency) state.noticeCurrency = m.currency;
         showFineNotice(m.fine, m.force);
     } else if (m.action === 'signStatement') {
         showSignStatement(m.statement);
@@ -2173,7 +2174,8 @@ async function tabAccess(body, d) {
 }
 
 /* ---------- fines and traffic offence reports ---------- */
-const cur = (n) => `${(state.cfg.fines && state.cfg.fines.currency) || '£'}${Math.floor(n || 0)}`;
+// Notices can arrive before the MDT has ever opened (state.cfg is still null), e.g. a member of the public's fine.
+const cur = (n) => `${(state.cfg && state.cfg.fines && state.cfg.fines.currency) || state.noticeCurrency || '£'}${Math.floor(n || 0)}`;
 function fineStatusPill(f) {
     if (f.status === 'paid') return pill('Paid', 'green');
     if (f.status === 'cancelled') return pill('Cancelled');

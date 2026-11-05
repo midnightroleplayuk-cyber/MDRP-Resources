@@ -97,38 +97,6 @@ Config.Jobs = {
         cloakroom = false,
     },
 
-    flightops = {
-        ems = true,
-        minGrade = 4, -- grade 4 and above only; lower ranks stay civilian
-        menuWithoutDuty = true, -- not tied to the hospital duty clock
-        medicalMenu = true,
-
-        cpr = true,
-        bodybag = true,
-        revivekit = false,
-        emergencykit = false,
-        blood = false,
-        transportation = true,
-        cast = true,
-        splint = true,
-        quickChecks = true,
-        castsaw = true,
-        stripclothes = true,
-
-        duty = false,
-        stash = false,
-        shop = false,
-        vehicles = false,
-        helicopter = false,
-        roof = false,
-        main = false,
-        elevator = false,
-        bloodstorage = false,
-        bloodanalysis = false,
-        boss = false,
-        cloakroom = false,
-    },
-
     -- Example: limited access for another job
     -- police = {
     --     ems = false,
