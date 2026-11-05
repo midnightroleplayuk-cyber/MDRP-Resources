@@ -108,3 +108,12 @@ The hosted page accepts native `SendDuiMessage` volume/mute updates and still
 starts muted when distance volume is zero. Twitch's embedded player may still
 block playback or automatic sound in FiveM CEF; this is an experiment.
 YouTube and all non-Twitch playback still use the original local player.
+
+
+## v0.4.0: Websites and numbered volume
+- `Open Website` opens an HTTPS site as a top-level DUI document on the physical TV. Some websites may refuse to work in embedded Chromium, or may require authentication.
+- `Interact with screen` displays the live DUI texture as a preview and forwards mouse clicks and scroll wheel events. Press ESC to exit. **General keyboard typing into arbitrary DUI websites is not supported by the documented FiveM DUI native API.**
+- Initial playback volume and later TV volume both use the same NUI slider with a visible 0–100 value and synchronized numeric input.
+- Experimental HLS (.m3u8) selection removed from the menu and server validation.
+- Twitch clips retain the working two-stage auto-click sequence from v0.3.8.2. No Cloudflare deployment changes required.
+- For production, consider setting `Config.AllowedWebsiteHosts` to an allowlist of trusted domains. Never enter account passwords into untrusted pages.

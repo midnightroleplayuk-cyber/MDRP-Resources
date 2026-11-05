@@ -2,6 +2,7 @@ local screens, current, pending, dui, txd, renderId = {}, nil, nil, nil, nil, ni
 local dict = 'hf1_tv_' .. GetPlayerServerId(PlayerId())
 local tex = 'display'
 local focused = false
+local volumeDialog = nil
 local localMuted = false
 local lastEffectiveVolume = -1
 local function notice(msg, kind)
@@ -94,6 +95,11 @@ local function start(entity, key, data)
     end
     local page = ('https://cfx-nui-%s/html/player.html#%s'):format(GetCurrentResourceName(),urlEncode(payload))
     local twitchContentType = nil
+    if data.kind == 'website' then
+        -- A top-level DUI URL avoids iframe/X-Frame-Options blocking for many sites.
+        -- Site CSP, login and browser compatibility restrictions still apply.
+        page = data.url
+    end
     if data.kind == 'twitch' then
         -- Give the hosted page its own top-level DUI document rather than nesting
         -- it in html/player.html. Twitch's iframe now has just one parent.
@@ -190,41 +196,61 @@ local function sendUpdate(entity, data)
     if not entity or not DoesEntityExist(entity) then return end
     TriggerServerEvent('hf1_tv:update',keyFor(entity),data)
 end
+local function openVolumeDialog(entity, key, mode)
+    if not entity or not DoesEntityExist(entity) then return end
+    local data = screens[key]
+    if mode == 'existing' and (not data or data.kind == 'off' or data.kind == 'test') then
+        notice('TV is not playing', 'error') return
+    end
+    if focused or volumeDialog then notice('Close the current TV control first', 'error') return end
+    volumeDialog = {key=key, entity=entity, mode=mode, data=data}
+    SetNuiFocus(true, true)
+    SendNUIMessage({action='volumeOpen', value=(mode=='existing' and data and data.volume) or Config.DefaultVolume, mode=mode})
+end
 local function menu(entity)
     if not DoesEntityExist(entity) then return end
     local key=keyFor(entity)
     local options={
-        {title='Play a URL',description='YouTube, Twitch, TikTok, MP4/WebM, HLS test or website',icon='play',onSelect=function()
+        {title='Play a URL',description='YouTube, Twitch, TikTok or MP4/WebM',icon='play',onSelect=function()
             local result=lib.inputDialog('HF1 TV - Play',{
-                {type='select',label='Content type',required=true,options={{value='youtube',label='YouTube'},{value='video',label='Direct video (MP4/WebM)'},{value='hls',label='HLS stream (.m3u8) - experimental'},{value='twitch',label='Twitch'},{value='tiktok',label='TikTok'},{value='website',label='Website'}}},
-                {type='input',label='HTTPS URL',required=true},
-                {type='number',label='Volume (0-100)',default=Config.DefaultVolume,min=0,max=100}
+                {type='select',label='Content type',required=true,options={{value='youtube',label='YouTube'},{value='video',label='Direct video (MP4/WebM)'},{value='twitch',label='Twitch'},{value='tiktok',label='TikTok'}}},
+                {type='input',label='HTTPS URL',required=true}
             })
             if not result then return end
             if not result[2]:match('^https://') then notice('Use an HTTPS link','error') return end
-            sendUpdate(entity,{kind=result[1],url=result[2],volume=result[3]})
+            if focused or volumeDialog then return end
+            volumeDialog = {key=key,entity=entity,mode='new',kind=result[1],url=result[2]}
+            SetNuiFocus(true,true)
+            SendNUIMessage({action='volumeOpen',value=Config.DefaultVolume,mode='new'})
+        end},
+        {title='Open Website',description='Load an HTTPS website directly on the TV',icon='globe',onSelect=function()
+            if not Config.AllowWebsites then notice('Websites are disabled by server configuration','error') return end
+            local result=lib.inputDialog('HF1 TV - Website',{{type='input',label='HTTPS website address',required=true,placeholder='https://example.com'}})
+            if not result then return end
+            if not result[1]:match('^https://') then notice('Use an HTTPS link','error') return end
+            sendUpdate(entity,{kind='website',url=result[1],volume=0})
         end},
         {title='Toggle Mute',description='Mute or unmute this TV on your client',icon='volume-2',onSelect=function()
             if not current or current.key~=key or not dui then notice('Move closer to the active TV','error') return end
-            if current.kind~='youtube' and current.kind~='video' and current.kind~='hls' then notice('Audio control supports YouTube and direct video','error') return end
+            if current.kind=='website' or current.kind=='test' then notice('This content does not support TV volume controls','error') return end
             localMuted=not localMuted
-            lastEffectiveVolume=-1 -- force a new attenuation update
+            lastEffectiveVolume=-1
             notice(localMuted and 'TV muted locally' or 'TV unmuted locally','inform')
         end},
-        {title='Volume',icon='volume-2',onSelect=function()
-            local data=screens[key]
-            if not data or data.kind=='off' then notice('TV is not playing','error') return end
-            local result=lib.inputDialog('TV Volume',{{type='slider',label='Volume',min=0,max=100,default=data.volume or Config.DefaultVolume}})
-            if result then sendUpdate(entity,{kind=data.kind,url=data.url,volume=result[1]}) end
+        {title='Volume',description='Adjust volume with a numbered slider',icon='sliders-horizontal',onSelect=function()
+            openVolumeDialog(entity,key,'existing')
         end},
-        {title='Interact with screen',description='Visible TV preview with mouse control; ESC to exit',icon='mouse-pointer',onSelect=function()
+        {title='Interact with screen',description='Visible preview, mouse clicks and scrolling; ESC to exit',icon='mouse-pointer',onSelect=function()
             local data=screens[key]
             if not data or (data.kind~='website' and data.kind~='twitch') then notice('Start Twitch or a website first','error') return end
-            -- NUI is a separate browser instance; direct DUI mouse events are forwarded from it.
             if not current or current.key~=key or not dui then notice('Move closer to the active TV','error') return end
             focused=true
             SetNuiFocus(true,true)
-            SendNUIMessage({action='focus',url=data.url})
+            SendNUIMessage({action='focus',url=data.url,website=data.kind=='website'})
+        end},
+        {title='Reload Website',description='Reload the current webpage',icon='refresh-cw',onSelect=function()
+            if not current or current.key~=key or current.kind~='website' or not dui then notice('Start a website first','error') return end
+            SetDuiUrl(dui,current.url)
         end},
         {title='Test pattern',icon='monitor',onSelect=function() sendUpdate(entity,{kind='test'}) end},
         {title='Turn off',icon='power',onSelect=function() sendUpdate(entity,{kind='off'}) end}
@@ -332,7 +358,38 @@ RegisterCommand('tvdebug',function()
         end
     end
 end)
-RegisterNUICallback('close',function(_,cb) closeFocus() cb({ok=true}) end)
+RegisterNUICallback('close',function(_,cb)
+    if volumeDialog then volumeDialog=nil SetNuiFocus(false,false) SendNUIMessage({action='volumeHide'}) end
+    closeFocus()
+    cb({ok=true})
+end)
+RegisterNUICallback('volumeSave',function(data,cb)
+    local dlg=volumeDialog
+    volumeDialog=nil
+    SetNuiFocus(false,false)
+    SendNUIMessage({action='volumeHide'})
+    if dlg and DoesEntityExist(dlg.entity) and keyFor(dlg.entity)==dlg.key then
+        local vol=math.floor(math.max(0,math.min(100,tonumber(data.volume) or Config.DefaultVolume)))
+        if dlg.mode=='new' then
+            sendUpdate(dlg.entity,{kind=dlg.kind,url=dlg.url,volume=vol})
+        elseif dlg.mode=='existing' then
+            local latest=screens[dlg.key]
+            if latest and latest.kind~='off' and latest.kind~='test' then
+                sendUpdate(dlg.entity,{kind=latest.kind,url=latest.url,volume=vol})
+            end
+        end
+    end
+    cb({ok=true})
+end)
+RegisterNUICallback('wheel',function(data,cb)
+    if focused and dui and IsDuiAvailable(dui) then
+        local x=math.floor(math.max(0,math.min(Config.DuiWidth-1,tonumber(data.x) or 0)))
+        local y=math.floor(math.max(0,math.min(Config.DuiHeight-1,tonumber(data.y) or 0)))
+        SendDuiMouseMove(dui,x,y)
+        SendDuiMouseWheel(dui,math.floor(tonumber(data.delta) or 0),0)
+    end
+    cb({ok=true})
+end)
 RegisterNUICallback('mouse',function(data,cb)
     if focused and dui and IsDuiAvailable(dui) then
         local x=math.floor(math.max(0,math.min(Config.DuiWidth-1,tonumber(data.x) or 0)))
@@ -351,6 +408,7 @@ RegisterNUICallback('key',function(data,cb)
 end)
 AddEventHandler('onResourceStop',function(name)
     if name~=GetCurrentResourceName() then return end
+    if volumeDialog then volumeDialog=nil SetNuiFocus(false,false) end
     destroy()
     exports.ox_target:removeModel((function() local t={} for m in pairs(Config.Models) do t[#t+1]=m end return t end)(),'hf1_tv_interact')
 end)
