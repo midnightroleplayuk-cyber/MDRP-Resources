@@ -141,33 +141,48 @@ local function start(entity, key, data)
     current={key=key,entity=entity,model=model,started=data.started,kind=data.kind,url=data.url,volume=data.volume}
     lastEffectiveVolume=initialVolume
     -- Initial state is loaded from the URL fragment; do not race the JS listener.
-    -- Experimental Twitch clip start: one DUI click at the centre of the hosted
-    -- Cloudflare fallback button (shown after 3.5 seconds in Pages v0.3.7).
-    -- This is a synthetic event, NOT a trusted user gesture. Twitch/CEF may
-    -- ignore it; never claim autoplay is guaranteed.
+    -- Experimental two-stage clip click for Pages v0.3.7:
+    -- 1) Click the Cloudflare fallback button after it appears (reloads the clip).
+    -- 2) Click the Twitch player's centre Play button after its reload.
+    -- Synthetic DUI input may not qualify as a trusted user gesture; the second
+    -- click may also pause a clip that started on its own. This is a test only.
     if data.kind == 'twitch' and twitchContentType == 'clip' then
-        print('[hf1_tv] Clip auto-click scheduled (5200ms)')
+        print('[hf1_tv] Clip two-click test scheduled: first at 5200ms, second 3200ms later')
         local clipDui = obj
         local clipKey = key
         CreateThread(function()
+            local function stillCurrent()
+                return dui == clipDui and current and current.key == clipKey
+                    and current.kind == 'twitch' and current.url == data.url
+                    and not focused and IsDuiAvailable(clipDui)
+            end
+            local function clickCentre(attempt)
+                if not stillCurrent() then
+                    print(('[hf1_tv] Clip click %d cancelled: DUI changed, unavailable or interaction active'):format(attempt))
+                    return false
+                end
+                local cx = math.floor(Config.DuiWidth / 2)
+                local cy = math.floor(Config.DuiHeight / 2)
+                print(('[hf1_tv] Clip click %d: mouse move (%d,%d)'):format(attempt,cx,cy))
+                SendDuiMouseMove(clipDui,cx,cy)
+                Wait(160)
+                if not stillCurrent() then return false end
+                print(('[hf1_tv] Clip click %d: left mouse DOWN'):format(attempt))
+                SendDuiMouseDown(clipDui,'left')
+                Wait(180)
+                -- Always release a mouse-down on the same live DUI even if focus
+                -- changed during the wait, to avoid a stuck button state.
+                if dui == clipDui and IsDuiAvailable(clipDui) then
+                    SendDuiMouseUp(clipDui,'left')
+                    print(('[hf1_tv] Clip click %d: left mouse UP'):format(attempt))
+                end
+                return true
+            end
             Wait(5200)
-            if dui ~= clipDui or not current or current.key ~= clipKey or current.kind ~= 'twitch' then
-                print('[hf1_tv] Clip auto-click cancelled: TV playback changed')
-                return
-            end
-            if focused or not IsDuiAvailable(clipDui) then
-                print('[hf1_tv] Clip auto-click skipped: interaction focused or DUI unavailable')
-                return
-            end
-            local cx = math.floor(Config.DuiWidth / 2)
-            local cy = math.floor(Config.DuiHeight / 2)
-            print('[hf1_tv] Experimental Twitch clip: sending one synthetic DUI click at centre')
-            SendDuiMouseMove(clipDui, cx, cy)
-            Wait(80)
-            if dui ~= clipDui or focused then return end
-            SendDuiMouseDown(clipDui, 'left')
-            Wait(110)
-            if dui == clipDui then SendDuiMouseUp(clipDui, 'left') end
+            if not clickCentre(1) then return end
+            Wait(3200)
+            clickCentre(2)
+            print('[hf1_tv] Clip two-click test complete; if still paused, use Interact with screen')
         end)
     end
 end
