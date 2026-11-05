@@ -47,3 +47,6 @@ Uses ox_lib textUI at right-center (no GTA top-left help text). Aim at a surface
 - Desk/floor models compensate for their bounding-box bottom, so the base is placed on the selected surface.
 - G still toggles wall snapping. E confirms; F toggles walking.
 - If an MLO surface has no collision, aiming uses the end of the camera ray; manually adjust the preview.
+
+### v0.5.0.8 raycast self-hit fix
+Aim ray now excludes the TV preview object, avoiding a feedback loop where the beam hits the TV itself. When a custom interior has no collision, mouse wheel before clicking adjusts the aim distance. Left click locks the selected position; E places.

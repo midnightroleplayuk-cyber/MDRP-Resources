@@ -47,7 +47,7 @@ end)
 RegisterNetEvent('hf1_tv:placedRemoved',function(id)
     clearObject(tonumber(id))
 end)
-local function cameraRay(distance)
+local function cameraRay(distance, ignoredEntity)
     local rot=GetGameplayCamRot(2)
     local origin=GetGameplayCamCoord()
     local pitch,yaw=math.rad(rot.x),math.rad(rot.z)
@@ -56,7 +56,7 @@ local function cameraRay(distance)
     -- Synchronous probe: the previous asynchronous ray was read immediately,
     -- often before collision results were ready. Ignore the player and preview.
     local ray=StartExpensiveSynchronousShapeTestLosProbe(origin.x,origin.y,origin.z,
-        dest.x,dest.y,dest.z,511,PlayerPedId(),7)
+        dest.x,dest.y,dest.z,511,ignoredEntity or PlayerPedId(),7)
     local _,hit,point,normal=GetShapeTestResult(ray)
     if hit==1 and point and #(point-origin)>0.1 then return point,normal,true end
     return dest,nil,false
@@ -87,6 +87,7 @@ local function placement(modelName)
     local anchor=nil
     local anchorNormal=nil
     local pos=nil
+    local aimDistance=3.0
     local lastUi=''
     local function updateUI(message)
         if message~=lastUi then
@@ -122,7 +123,23 @@ local function placement(modelName)
         if IsControlJustPressed(0,23) or IsDisabledControlJustPressed(0,23) then
             walkMode=not walkMode
         end
-        local point,normal,hasCollision=cameraRay(Config.PlacementMaxDistance)
+        -- Ignore the preview itself. Otherwise the ray repeatedly hits the TV
+        -- we are moving, making the blue target appear stuck in one spot.
+        local point,normal,hasCollision=cameraRay(Config.PlacementMaxDistance,ghost)
+        -- When an MLO has no usable collision, allow manual distance control.
+        if not hasCollision then
+            local cam=GetGameplayCamCoord()
+            local rot=GetGameplayCamRot(2)
+            local pitch,yaw=math.rad(rot.x),math.rad(rot.z)
+            local direction=vector3(-math.sin(yaw)*math.cos(pitch),math.cos(yaw)*math.cos(pitch),math.sin(pitch))
+            point=cam+direction*aimDistance
+        end
+        -- The wheel changes placement depth whenever the cursor has no
+        -- collision target. Do not silently change the TV's heading instead.
+        if not selected and not hasCollision then
+            if IsDisabledControlJustPressed(0,14) then aimDistance=math.min(aimDistance+0.25,Config.PlacementMaxDistance) end
+            if IsDisabledControlJustPressed(0,15) then aimDistance=math.max(aimDistance-0.25,0.75) end
+        end
         -- NPC-placer-style live targeting: a thin beam from the camera
         -- to the point being aimed at, plus a visible marker at its end.
         -- Drawing is independent of collision, so custom MLO surfaces
@@ -133,7 +150,7 @@ local function placement(modelName)
             point.x,point.y,point.z,90,210,255,210)
         DrawMarker(28,point.x,point.y,point.z,
             0.0,0.0,0.0,0.0,0.0,0.0,
-            0.07,0.07,0.07,90,210,255,215,
+            0.035,0.035,0.035,90,210,255,215,
             false,false,2,false,nil,nil,false)
         if IsDisabledControlJustPressed(0,24) then
             anchor=point
@@ -173,8 +190,10 @@ local function placement(modelName)
             if IsDisabledControlPressed(0,175) then heading=(heading-0.75)%360 end
             if IsDisabledControlJustPressed(0,172) then depth=math.min(depth+0.025,0.75) end
             if IsDisabledControlJustPressed(0,173) then depth=math.max(depth-0.025,-0.5) end
-            if IsDisabledControlJustPressed(0,14) then heading=(heading+5)%360 end
-            if IsDisabledControlJustPressed(0,15) then heading=(heading-5)%360 end
+            if selected then
+                if IsDisabledControlJustPressed(0,14) then heading=(heading+5)%360 end
+                if IsDisabledControlJustPressed(0,15) then heading=(heading-5)%360 end
+            end
         end
         local ready=selected and anchor~=nil
         -- Preview tracks the live aiming marker until left-click locks it.
@@ -191,6 +210,7 @@ local function placement(modelName)
         local modeLabel=walkMode and 'WALK' or 'ADJUST'
         local line=('[TV] %s | %s | [CLICK] Position | [E] Place | [X] Exit | [F] Walk | [G] Snap %s'):format(status,modeLabel,snap and 'ON' or 'OFF')
         if not walkMode then line=line..'\\n[WASD] Move | [Q/R] Height | [Arrows] Rotate/Depth' end
+        if not selected and not hasCollision then line=line..' | [Wheel] Aim distance '..string.format('%.1fm',aimDistance) end
         updateUI(line)
         if IsDisabledControlJustPressed(0,73) or IsDisabledControlJustPressed(0,177) then break end
         if ready and (IsControlJustPressed(0,51) or IsDisabledControlJustPressed(0,51)) then
