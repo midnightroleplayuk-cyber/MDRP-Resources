@@ -38,3 +38,4 @@ Uses ox_lib textUI at right-center (no GTA top-left help text). Aim at a surface
 - G toggles optional wall alignment when a wall normal is available. Free placement works even without detected collision.
 - Short ox_lib top-centre controls; F walk/adjust, E place, X cancel, Q/R height, WASD fine move, arrows adjust.
 - Server still checks distance, item ownership and spacing. Clicks beyond server's allowed range may be rejected; move closer using F.
+\n\n### v0.5.0.6 Aim beam\nThe placement camera now draws a cyan beam to the current aiming point and a small cyan target marker. Left-click locks the TV preview to that target; click again to choose another position. Missing raycast collision falls back to a point along the camera ray, so no 'valid surface' requirement is reintroduced. Other placement controls are unchanged.\n

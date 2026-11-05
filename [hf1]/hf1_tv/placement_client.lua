@@ -72,6 +72,7 @@ local function placement(modelName)
     local ghost=CreateObjectNoOffset(model,start.x,start.y,start.z,false,false,false)
     if ghost==0 then placing=false notify('Cannot create preview','error') return end
     SetEntityCollision(ghost,false,false)
+    SetEntityAlpha(ghost,170,false)
     FreezeEntityPosition(ghost,true)
     local heading=GetEntityHeading(ped)
     local wallModel=Config.PlaceableModels[modelName].wall
@@ -124,6 +125,18 @@ local function placement(modelName)
             walkMode=not walkMode
         end
         local point,normal=aimPoint()
+        -- NPC-placer-style live targeting: a thin beam from the camera
+        -- to the point being aimed at, plus a visible marker at its end.
+        -- Drawing is independent of collision, so custom MLO surfaces
+        -- with missing shape-test collision still show a target.
+        local camera=GetGameplayCamCoord()
+        local beamStart=camera+((point-camera)*0.12)
+        DrawLine(beamStart.x,beamStart.y,beamStart.z,
+            point.x,point.y,point.z,90,210,255,210)
+        DrawMarker(28,point.x,point.y,point.z,
+            0.0,0.0,0.0,0.0,0.0,0.0,
+            0.14,0.14,0.14,90,210,255,215,
+            false,false,2,false,nil,nil,false)
         if IsDisabledControlJustPressed(0,24) then
             anchor=point
             anchorNormal=normal
@@ -172,7 +185,7 @@ local function placement(modelName)
         SetEntityAlpha(ghost,ready and 205 or 100,false)
         local status=ready and 'READY' or 'CLICK TO POSITION'
         local modeLabel=walkMode and 'WALK' or 'ADJUST'
-        local line=('[TV] %s | %s | [LMB] Set | [E] Place | [X] Exit | [F] Mode | [G] Snap %s'):format(status,modeLabel,snap and 'ON' or 'OFF')
+        local line=('[TV] %s | %s | [CLICK] Position | [E] Place | [X] Exit | [F] Walk | [G] Snap %s'):format(status,modeLabel,snap and 'ON' or 'OFF')
         if not walkMode then line=line..'\\n[WASD] Move | [Q/R] Height | [Arrows] Rotate/Depth' end
         updateUI(line)
         if IsDisabledControlJustPressed(0,73) or IsDisabledControlJustPressed(0,177) then break end
