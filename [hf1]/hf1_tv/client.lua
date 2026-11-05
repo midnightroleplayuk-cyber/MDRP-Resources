@@ -282,7 +282,6 @@ local function menu(entity)
             if not current or current.key~=key or current.kind~='website' or not dui then notice('Start a website first','error') return end
             SetDuiUrl(dui,current.url)
         end},
-        {title='Test pattern',icon='monitor',onSelect=function() sendUpdate(entity,{kind='test'}) end},
         {title='Turn off',icon='power',onSelect=function() sendUpdate(entity,{kind='off'}) end}
     }
     lib.registerContext({id='hf1_tv_menu',title='HF1 Television',options=options})
