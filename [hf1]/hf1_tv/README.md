@@ -123,3 +123,14 @@ The Play a URL ox_lib input dialog now includes a native initial volume slider (
 \n## v0.4.2 Keyboard toolbar (experimental)\nWhen interacting with a website, type into the toolbar at the bottom of the screen. Enter submits a Google search (or navigates to an HTTPS URL if the text begins with https://). Google Search and Go to URL buttons are also available. Navigation updates the TV for nearby players through the existing server event and closes the interaction overlay; reopen Interact with screen to continue. This does NOT inject keyboard input into arbitrary website fields. Site restrictions still apply.\n
 ## v0.4.3: URL auto-HTTPS
 Bare domains such as facebook.com are automatically prefixed with https:// in the Play URL dialog, Open Website dialog, and interaction toolbar Go to URL action. Existing https:// URLs are unchanged. Insecure http:// and non-HTTPS schemes are rejected. The server continues to enforce the URL allowlist. Arbitrary third-party website typing remains unsupported by the documented DUI keyboard API.
+
+## Experimental v0.4.4: website keyboard toolbar and TikTok
+- The keyboard toolbar can now submit searches to Google, Bing, DuckDuckGo, YouTube and Wikipedia. It navigates the whole TV browser; it does **not** type inside third-party website forms.
+- Bare domains still receive `https://` automatically.
+- TikTok content now opens as a top-level DUI document instead of an iframe inside the NUI player, which may avoid iframe restrictions. TikTok playback, login, sound and autoplay remain site-dependent and unverified.
+- TikTok is enabled in the existing **Interact with screen** menu, so you can click its player controls.
+- The original Twitch clip two-click sequence and Cloudflare configuration are unchanged.
+- Full keyboard input to arbitrary third-party sites is **not supported** by FiveM's documented DUI native API. Do not enter credentials into unknown sites.
+
+## v0.4.4.1: Simplified website toolbar
+Removed Bing, DuckDuckGo, YouTube, and Wikipedia search-provider shortcuts. The website interaction toolbar keeps Google Search and Go to URL (with automatic HTTPS normalization). Experimental TikTok direct-DUI playback and mouse interaction remain. Full keyboard typing into arbitrary third-party pages is not supported.
