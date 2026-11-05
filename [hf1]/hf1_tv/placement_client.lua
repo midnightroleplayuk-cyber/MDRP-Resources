@@ -75,66 +75,108 @@ local function placement(modelName)
     FreezeEntityPosition(ghost,true)
     local heading=GetEntityHeading(ped)
     local wallModel=Config.PlaceableModels[modelName].wall
-    local snap=wallModel -- toggle with G
+    local snap=wallModel
     local height=0.0
     local depth=0.0
-    local ready=false
     local placed=false
+    local selected=false
+    local anchor=nil
+    local anchorNormal=nil
+    local pos=nil
     local lastUi=''
     local function updateUI(message)
         if message~=lastUi then
             lib.hideTextUI()
-            lib.showTextUI(message,{position='right-center',icon='tv',style={borderRadius=8}})
+            lib.showTextUI(message,{position='top-center',icon='tv',style={borderRadius=8}})
             lastUi=message
         end
     end
+    local function validSurface(point,normal)
+        if not point or not normal then return false end
+        local isWall=math.abs(normal.z)<0.35
+        local isFloor=normal.z>0.65
+        return #(GetEntityCoords(ped)-point)<=Config.PlacementMaxDistance
+            and (isWall or isFloor) and (not snap or isWall)
+    end
+    local function calculatePosition(point,normal)
+        local offset=(snap and math.abs(normal.z)<0.35) and Config.WallOffset or 0.03
+        return point+normal*(offset+depth)+vector3(0,0,height)
+    end
     while placing do
         Wait(0)
-        DisableControlAction(0,24,true)
-        DisableControlAction(0,25,true)
-        DisableControlAction(0,14,true)
-        DisableControlAction(0,15,true)
-        DisableControlAction(0,172,true) -- arrow up
-        DisableControlAction(0,173,true) -- arrow down
-        DisableControlAction(0,174,true) -- arrow left
-        DisableControlAction(0,175,true) -- arrow right
-        DisableControlAction(0,44,true) -- Q
-        DisableControlAction(0,51,true) -- E
-        DisableControlAction(0,47,true) -- G
-        DisableControlAction(0,73,true) -- X
-        local hit,p,n=cameraRay(Config.PlacementMaxDistance)
-        ready=false
-        if hit and p and n then
-            local isWall=math.abs(n.z)<0.35
-            local isFloor=n.z>0.65
-            -- Wall snap follows the wall normal; manual mode permits wall or floor
-            -- placement while preserving the selected heading.
-            if #(GetEntityCoords(ped)-p)<=Config.PlacementMaxDistance and (isWall or isFloor) then
-                if not snap or isWall then
-                    ready=true
-                    if snap and isWall then
-                        heading=(math.deg(math.atan(n.y,n.x))-90.0)%360
-                    end
-                    local offset=(snap and isWall) and Config.WallOffset or 0.03
-                    local pos=p+n*(offset+depth)+vector3(0,0,height)
-                    SetEntityCoordsNoOffset(ghost,pos.x,pos.y,pos.z,false,false,false)
+        -- Same interaction pattern as hf1_npcs: click to choose the world
+        -- position, then use movement/rotation/height controls to fine-tune.
+        for _,control in ipairs({24,25,14,15,172,173,174,175,44,45,47,73,30,31,32,33,34,35,21,36,191,177}) do
+            DisableControlAction(0,control,true)
+        end
+        DisablePlayerFiring(PlayerId(),true)
+        local hit,point,normal=cameraRay(Config.PlacementMaxDistance)
+        local aimingValid=hit and validSurface(point,normal)
+        if aimingValid then
+            DrawMarker(28,point.x,point.y,point.z+0.025,0,0,0,0,0,0,
+                0.14,0.14,0.14,255,255,255,210,false,false,2,false,nil,nil,false)
+        end
+        if IsDisabledControlJustPressed(0,24) then
+            if aimingValid then
+                anchor=point
+                anchorNormal=normal
+                selected=true
+                height=0.0
+                depth=0.0
+                if snap and math.abs(normal.z)<0.35 then
+                    heading=(math.deg(math.atan(normal.y,normal.x))-90.0)%360
                 end
+            else
+                notify('Aim at a nearby valid surface before left-clicking.','error')
             end
         end
-        if IsDisabledControlJustPressed(0,47) then snap=not snap end
-        if IsDisabledControlJustPressed(0,172) then height=math.min(height+0.05,2.5) end
-        if IsDisabledControlJustPressed(0,173) then height=math.max(height-0.05,-1.0) end
-        if IsDisabledControlJustPressed(0,174) then depth=math.max(depth-0.025,-0.3) end
-        if IsDisabledControlJustPressed(0,175) then depth=math.min(depth+0.025,0.5) end
-        if IsDisabledControlJustPressed(0,14) then heading=(heading+5)%360 end
-        if IsDisabledControlJustPressed(0,15) then heading=(heading-5)%360 end
+        if IsDisabledControlJustPressed(0,47) then
+            snap=not snap
+            -- Keep a selected position only if it is still a valid surface.
+            if selected and not validSurface(anchor,anchorNormal) then selected=false end
+        end
+        local speed=0.012
+        if IsDisabledControlPressed(0,21) then speed=speed*3.0 end
+        if IsDisabledControlPressed(0,36) then speed=speed*0.25 end
+        if selected then
+            local rad=math.rad(heading)
+            local forward=vector3(-math.sin(rad),math.cos(rad),0)
+            local right=vector3(math.cos(rad),math.sin(rad),0)
+            local move=vector3(0,0,0)
+            if IsDisabledControlPressed(0,32) then move=move+forward*speed end
+            if IsDisabledControlPressed(0,33) then move=move-forward*speed end
+            if IsDisabledControlPressed(0,34) then move=move-right*speed end
+            if IsDisabledControlPressed(0,35) then move=move+right*speed end
+            if #(move)>0 then
+                local candidate=anchor+move
+                if #(GetEntityCoords(ped)-candidate)<=Config.PlacementMaxDistance then anchor=candidate end
+            end
+            if IsDisabledControlPressed(0,45) then height=math.min(height+speed,3.0) end
+            if IsDisabledControlPressed(0,44) then height=math.max(height-speed,-2.0) end
+            if IsDisabledControlPressed(0,174) then heading=(heading+0.75)%360 end
+            if IsDisabledControlPressed(0,175) then heading=(heading-0.75)%360 end
+            if IsDisabledControlJustPressed(0,172) then depth=math.min(depth+0.025,0.75) end
+            if IsDisabledControlJustPressed(0,173) then depth=math.max(depth-0.025,-0.5) end
+            if IsDisabledControlJustPressed(0,14) then heading=(heading+5)%360 end
+            if IsDisabledControlJustPressed(0,15) then heading=(heading-5)%360 end
+        end
+        local ready=selected and validSurface(anchor,anchorNormal)
+        if ready then
+            pos=calculatePosition(anchor,anchorNormal)
+        elseif aimingValid then
+            pos=calculatePosition(point,normal)
+        else
+            pos=nil
+        end
+        if pos then SetEntityCoordsNoOffset(ghost,pos.x,pos.y,pos.z,false,false,false) end
         SetEntityHeading(ghost,heading)
-        SetEntityAlpha(ghost,ready and 195 or 75,false)
-        local status=ready and 'READY' or (snap and 'AIM AT A WALL' or 'AIM AT A SURFACE')
-        updateUI(('**TV Placement — %s**\n[E] Place  [X] Cancel\n[G] Snap to wall: **%s**\n[↑/↓] Height: **%.2fm**\n[←/→] Wall clearance: **%.2fm**\n[Mouse wheel] Rotate'):format(status,snap and 'ON' or 'OFF',height,depth))
-        if IsDisabledControlJustPressed(0,73) then break end
-        if ready and IsDisabledControlJustPressed(0,51) then
-            local pos=GetEntityCoords(ghost)
+        SetEntityAlpha(ghost,ready and 205 or (pos and 100 or 40),false)
+        local status=ready and 'POSITION SELECTED' or 'AIM AND LEFT CLICK TO SELECT'
+        updateUI(('**TV Placement — %s**\n[LEFT CLICK] Select surface  [E] Place  [X] Cancel\n[W/A/S/D] Fine move  [Q/R] Height\n[←/→] Rotate  [↑/↓] Wall clearance: **%.2fm**  [Mouse wheel] Rotate\n[SHIFT] Fast  [CTRL] Precision  [G] Snap to wall: **%s**  Height: **%.2fm**'):format(status,depth,snap and 'ON' or 'OFF',height))
+        if IsDisabledControlJustPressed(0,73) or IsDisabledControlJustPressed(0,177) then break end
+        -- E confirms, matching the existing TV placer request. Left click only
+        -- chooses an anchor, so accidental clicks cannot consume inventory.
+        if ready and IsControlJustPressed(0,51) then
             TriggerServerEvent('hf1_tv:place',{model=modelName,coords={x=pos.x,y=pos.y,z=pos.z},heading=heading})
             placed=true
             break
