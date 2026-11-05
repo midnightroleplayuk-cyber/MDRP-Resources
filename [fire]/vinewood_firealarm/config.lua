@@ -93,6 +93,23 @@ Config.DetectorRange = 12.0          -- TriggerAtCoords export: max distance to 
 Config.EventLogSize = 50
 
 ---------------------------------------------------------------------
+-- Automatic detection: smoke detectors go off on their own when they
+-- sense fire or smoke. A detection has to be seen on `confirm` checks
+-- in a row (so a passing molotov flash doesn't set it off instantly).
+---------------------------------------------------------------------
+Config.Detection = {
+    enabled = true,
+    interval = 2000,          -- ms between checks
+    confirm = 2,              -- consecutive checks needed before the alarm triggers
+    range = 6.0,              -- metres from the detector
+
+    vinewoodFire = true,      -- fires from vinewood_fire (checked on the server via IsFireNear)
+    nativeFire = true,        -- GTA fires: molotovs, burning vehicles, script fires
+    explosions = true,        -- explosions near the detector
+    smokeGrenades = true,     -- smoke grenades and BZ gas
+}
+
+---------------------------------------------------------------------
 -- Sound
 -- Tones: 'bs_alternating' (recorded BS two-tone 800/970Hz at 2Hz, html/sounds),
 --        'alternating' (generated 800/970Hz two-tone), 'continuous' (970Hz),

@@ -94,6 +94,17 @@ Setting up the model in Blender (Sollumz):
 
 Texture replacement applies to every copy of the model, so the screen always shows the panel **nearest** to you (within `Config.Screen.distance`). Two panels in sight of each other will show the same screen. Target-point panels don't have a screen.
 
+## Automatic detection
+
+Smoke detectors go off on their own (settings in `Config.Detection`):
+
+- **vinewood_fire** fires, checked on the server with its `IsFireNear` export, so fire spreading under a detector sets it off.
+- **GTA fires**: molotovs, burning vehicles and other script fires.
+- **Explosions** near a detector (instant).
+- **Smoke grenades and BZ gas**.
+
+A detection has to be seen on `confirm` checks in a row (default 2, about 4 seconds) before the alarm goes off, so a quick flash doesn't trigger it. Detectors in disabled zones ignore everything, and test mode treats detections as tests. Other fire scripts can still use the `TriggerAtCoords` export.
+
 ## Exports (server)
 
 ```lua

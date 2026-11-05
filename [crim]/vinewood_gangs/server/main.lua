@@ -1,0 +1,58 @@
+MySQL.ready(function()
+    CreateThread(function()
+        Migrations.Run()
+        ZoneStore.Load()
+        Gangs.Load()
+        Influence.Load()
+        Relations.Load()
+        Progression.Load()
+        Graffiti.Load()
+        ContractSpots.Load()
+        Contracts.Load()
+        Rackets.Load()
+        Safehouses.Load()
+        Enterprises.Load()
+        Supply.Load()
+        Informants.Load()
+        Auctions.Load()
+        Laundering.Load()
+        Heists.Load()
+
+        Influence.Start()
+        Heat.Start()
+        Relations.Start()
+        Progression.Start()
+        Graffiti.Start()
+        Contracts.Start()
+        Rackets.Start()
+        Safehouses.Start()
+        Enterprises.Start()
+        Supply.Start()
+        Informants.Start()
+        Auctions.Start()
+        Laundering.Start_loop()
+        Heists.StartLoop()
+        Director.Start()
+
+        Activity.Prune()
+        Intel.ExpireOld()
+
+        -- Covers resource restarts while players are already loaded in
+        Gangs.SyncAllOnline()
+
+        local count = 0
+        for _ in pairs(Gangs.All()) do count = count + 1 end
+        lib.print.info(('vinewood_gangs ready - %d gangs loaded (%s)'):format(count, Bridge.Framework))
+    end)
+end)
+
+Bridge.OnPlayerLoaded(function(src)
+    Gangs.OnPlayerLoaded(src)
+    Auctions.SyncPlayer(src)
+end)
+
+if Config.Tablet.item then
+    Bridge.RegisterUsableItem(Config.Tablet.item, function(src)
+        TriggerClientEvent('vinewood_gangs:client:openTablet', src)
+    end)
+end

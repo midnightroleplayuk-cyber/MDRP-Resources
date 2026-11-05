@@ -52,6 +52,29 @@ return {
         },
         consume = 0.3
     },
+	
+	-- Vinewood Gang ITEMS
+	['burner_phone'] = {
+    label = 'Burner phone',
+    weight = 150,
+    stack = false,
+    close = true,
+    description = 'One number saved. No name.',
+    client = {
+        export = 'vinewood_gangs.useBurner',
+    },
+},
+
+['gang_tablet'] = {
+    label = 'Gang tablet',
+    weight = 500,
+    stack = false,
+    close = true,
+    description = 'Keeps the business running.',
+    client = {
+        export = 'vinewood_gangs.openTablet',
+    },
+},
 
     ['burger'] = {
         label = 'Burger',
