@@ -95,6 +95,19 @@ local function start(entity, key, data)
     end
     local page = ('https://cfx-nui-%s/html/player.html#%s'):format(GetCurrentResourceName(),urlEncode(payload))
     local twitchContentType = nil
+    if data.kind == 'tiktok' then
+        -- Experimental direct top-level TikTok page; unlike an iframe this avoids
+        -- X-Frame-Options restrictions, but TikTok may still block CEF playback.
+        local host = tostring(data.url):match('^https://([^/:?#]+)')
+        host = host and host:lower() or ''
+        if host ~= 'tiktok.com' and host ~= 'www.tiktok.com' and host ~= 'm.tiktok.com'
+            and host ~= 'vm.tiktok.com' and host ~= 'vt.tiktok.com' then
+            print('[hf1_tv] TikTok: unsupported hostname')
+            return
+        end
+        page = data.url
+        print('[hf1_tv] TikTok experimental direct DUI: ' .. page)
+    end
     if data.kind == 'website' then
         -- A top-level DUI URL avoids iframe/X-Frame-Options blocking for many sites.
         -- Site CSP, login and browser compatibility restrictions still apply.
@@ -259,11 +272,11 @@ local function menu(entity)
         end},
         {title='Interact with screen',description='Visible preview, mouse clicks and scrolling; ESC to exit',icon='mouse-pointer',onSelect=function()
             local data=screens[key]
-            if not data or (data.kind~='website' and data.kind~='twitch') then notice('Start Twitch or a website first','error') return end
+            if not data or (data.kind~='website' and data.kind~='twitch' and data.kind~='tiktok') then notice('Start Twitch, TikTok or a website first','error') return end
             if not current or current.key~=key or not dui then notice('Move closer to the active TV','error') return end
             focused=true
             SetNuiFocus(true,true)
-            SendNUIMessage({action='focus',url=data.url,website=data.kind=='website'})
+            SendNUIMessage({action='focus',url=data.url,website=data.kind=='website',tiktok=data.kind=='tiktok'})
         end},
         {title='Reload Website',description='Reload the current webpage',icon='refresh-cw',onSelect=function()
             if not current or current.key~=key or current.kind~='website' or not dui then notice('Start a website first','error') return end
