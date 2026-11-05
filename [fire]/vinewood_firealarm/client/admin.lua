@@ -36,6 +36,10 @@ RegisterNUICallback('adminTrigger', function(data, cb)
     cb({ ok = true, systems = relay('trigger', data.id, data.zone) })
 end)
 
+RegisterNUICallback('adminSounderTest', function(data, cb)
+    cb({ ok = true, systems = relay('sounderTest', data.id) })
+end)
+
 RegisterNUICallback('adminReset', function(data, cb)
     cb({ ok = true, systems = relay('reset', data.id) })
 end)

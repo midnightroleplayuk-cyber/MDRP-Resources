@@ -22,8 +22,8 @@ Config.Props = {
     mcp        = 'prop_vw_firealert',    -- red break glass call point (streamed in /stream)
     mcp_active = nil,                    -- optional: broken-glass model swapped in while activated
     panel      = 'prop_vw_firepanel',    -- control panel (streamed in /stream)
-    sounder    = 'vinewood_sounder',     -- not made yet: places as a target point until it exists
-    detector   = 'vinewood_detector',    -- not made yet: places as a target point until it exists
+    sounder    = 'prop_vw_sounder',      -- wall sounder (streamed in /stream)
+    detector   = 'prop_vw_smokedetector',-- ceiling smoke detector (streamed in /stream)
 }
 
 -- Where each model touches the wall. anchor = the point on the model (in its
@@ -33,6 +33,8 @@ Config.Props = {
 Config.PropAnchors = {
     prop_vw_firepanel = { anchor = vec3(0.0, 0.081, 0.212), heading = 180.0 },
     prop_vw_firealert = { anchor = vec3(-0.0425, 0.014, 0.038), heading = 180.0 },
+    prop_vw_sounder   = { anchor = vec3(0.0, 0.097, 0.0775), heading = 180.0 },
+    prop_vw_smokedetector = { anchor = vec3(0.01, 0.0065, 0.042), heading = 0.0 },  -- top of the base, for ceilings
 }
 
 -- Extra gap from the surface (metres), on top of the anchor.
@@ -85,7 +87,8 @@ Config.OwnerJobGetsLevel2 = true
 Config.BreakGlassCooldown = 60       -- per player, seconds
 Config.RequireCallPointReset = true  -- activated MCPs must be reset with the key at the device before the panel can reset
 Config.NewZoneResounds = true        -- a new zone going into alarm resounds silenced sounders
-Config.TestSoundDuration = 5         -- seconds sounders run per device during test mode
+Config.TestSoundDuration = 10        -- seconds sounders run per device activation in test mode
+Config.SounderTestDuration = 15      -- seconds for the 'Test sounders' panel option
 Config.DetectorRange = 12.0          -- TriggerAtCoords export: max distance to a detector
 Config.EventLogSize = 50
 
@@ -107,27 +110,33 @@ Config.BeaconRange = 6.0
 ---------------------------------------------------------------------
 Config.Dispatch = {
     enabled = true,
-    defaultDelay = 30,               -- seconds between first alarm and fire service being called (if not reset)
+    defaultDelay = 30,               -- seconds between first alarm and the fire service being called (if not reset)
 
-    -- Runs on the SERVER. Hook into your dispatch here.
-    Send = function(data)
-        -- data = { system, zone, zoneName, device, reason, coords (vector3) }
-        if GetResourceState('vinewood_dispatch') == 'started' then
-            -- Adjust to match your vinewood_dispatch export signature
-            local ok, err = pcall(function()
-                exports.vinewood_dispatch:SendAlert({
-                    service = { 'fire' },
-                    code = 'AFA',
-                    title = 'Automatic Fire Alarm',
-                    message = ('%s — Zone %d %s (%s)'):format(data.system, data.zone, data.zoneName, data.reason),
-                    coords = data.coords,
-                })
-            end)
-            if not ok then print(('[vinewood_firealarm] dispatch export failed: %s'):format(err)) end
-        else
-            print(('[vinewood_firealarm] ARC call: %s Zone %d (%s)'):format(data.system, data.zone, data.zoneName))
-        end
-    end,
+    -- Which dispatch to send to. 'auto' picks the first one running, in this order:
+    --   'vinewood-dispatch', 'ps-dispatch', 'cd_dispatch', 'qs-dispatch',
+    --   'rcore_dispatch', 'core_dispatch', 'lb-tablet'
+    -- or set one of those names to force it, or 'none' to only log to the console.
+    system = 'auto',
+
+    code = 'AFA',
+    title = 'Automatic fire alarm',
+    priority = 2,                    -- 1 = immediate, 2 = urgent, 3 = routine (mapped to each dispatch's own scale)
+    jobs = { 'fire' },               -- jobs that get the call
+    blip = { sprite = 436, colour = 1, scale = 1.1, flash = true, time = 300 },  -- time in seconds
+
+    -- Per-dispatch extras
+    psCodeName = 'firealarm',        -- ps-dispatch: add a Config.Blips entry with this name (see README)
+    psJobs = nil,                    -- ps-dispatch: job TYPES if different from jobs, e.g. { 'fire' }
+    lbMdt = 'Fire',                  -- lb-tablet: MDT to send to (from lb-tablet/config/mdts.json)
+    icon = 'fas fa-fire',            -- ps-dispatch / qs-dispatch icon
+
+    notes = true,                    -- vinewood-dispatch only: post updates to the call (further zones, silenced, reset)
+    closeOnReset = false,            -- vinewood-dispatch only: close the call when the panel is reset
+
+    -- Optional: replace all of the above with your own. Runs on the server.
+    -- Send = function(data)
+    --     -- data = { system, systemId, zone, zoneName, device, reason, coords (vector3), location, title, description, street }
+    -- end,
 }
 
 -- Discord webhook for activation logs (leave blank to disable)

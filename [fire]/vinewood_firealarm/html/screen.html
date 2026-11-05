@@ -64,6 +64,8 @@ function render() {
     }
   } else if (st.evacuate) {
     body += `<div class="center"><div class="big ${st.silenced ? '' : 'blink'}">EVACUATE</div><div>${st.silenced ? 'Sounders silenced' : 'All sounders active'}</div></div>`;
+  } else if (st.testSounding && !st.test) {
+    body += `<div class="center"><div class="big">SOUNDER TEST</div><div>Sounders running</div></div>`;
   } else if (st.test) {
     body += `<div class="center"><div class="big">TEST MODE</div><div>${st.testSounding ? 'Sounders running' : 'Walk test in progress'}</div></div>`;
   } else if (disabled.length) {

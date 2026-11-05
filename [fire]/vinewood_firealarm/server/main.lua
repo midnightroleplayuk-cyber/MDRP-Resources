@@ -167,14 +167,27 @@ local function scheduleDispatch(id)
         if not dev then
             for _, d in ipairs(sys.devices) do if d.type == 'panel' then dev = d break end end
         end
-        local ok, err = pcall(Config.Dispatch.Send, {
+        local loc = dev and dev.location
+        if not loc then
+            for _, d in ipairs(sys.devices) do if d.location then loc = d.location break end end
+        end
+        s.alertId = Dispatch.Send({
             system = sys.label, systemId = id, zone = zone, zoneName = zoneName(sys, zone),
             device = dev and dev.label or nil, reason = dev and TYPE_NAMES[dev.type] or 'Fire alarm',
-            coords = dev and devCoords(dev) or nil,
+            coords = dev and devCoords(dev) or nil, location = loc,
         })
-        if not ok then print(('[vinewood_firealarm] Dispatch.Send error: %s'):format(err)) end
         addEvent(id, 'Fire service called by ARC')
         syncState(id)
+    end)
+end
+
+local function SoundFor(id, seconds)
+    local st = States[id]
+    local untilT = os.time() + seconds
+    st.testUntil = untilT
+    syncState(id)
+    SetTimeout(seconds * 1000, function()
+        if States[id] == st and st.testUntil == untilT then st.testUntil = nil syncState(id) end
     end)
 end
 
@@ -195,12 +208,7 @@ local function TriggerAlarm(id, zone, devId, reason, actor)
 
     if st.test then
         addEvent(id, ('Test Z%02d %s'):format(zone, what), actor)
-        local untilT = os.time() + Config.TestSoundDuration
-        st.testUntil = untilT
-        syncState(id)
-        SetTimeout(Config.TestSoundDuration * 1000, function()
-            if st.testUntil == untilT then st.testUntil = nil syncState(id) end
-        end)
+        SoundFor(id, Config.TestSoundDuration)
         return true
     end
 
@@ -219,6 +227,9 @@ local function TriggerAlarm(id, zone, devId, reason, actor)
         st.silenced = false
     end
 
+    if newZone and st.dispatched then
+        Dispatch.Note(st.alertId, ('Further zone in alarm: Zone %d %s (%s)'):format(zone, zoneName(sys, zone), what))
+    end
     addEvent(id, ('Fire Z%02d %s — %s'):format(zone, zoneName(sys, zone), what), actor)
     syncState(id)
     webhook('Fire alarm activation', ('**%s**\nZone %d — %s\nDevice: %s\nBy: %s'):format(sys.label, zone, zoneName(sys, zone), what, actor or 'n/a'))
@@ -236,6 +247,11 @@ local function ResetSystem(id, actor, force)
             end
         end
     end
+    if st.alertId then
+        Dispatch.Note(st.alertId, 'Alarm reset at the panel')
+        if Config.Dispatch.closeOnReset then Dispatch.Close(st.alertId) end
+        st.alertId = nil
+    end
     st.fire, st.zones, st.active = false, {}, {}
     st.silenced, st.evacuate, st.testUntil = false, false, nil
     st.alarmAt, st.dispatched = nil, false
@@ -250,6 +266,7 @@ local function SilenceSystem(id, actor)
     if not st then return false, 'Unknown system' end
     if not (st.fire or st.evacuate or st.testUntil) then return false, 'Nothing to silence' end
     st.silenced = true
+    if st.dispatched then Dispatch.Note(st.alertId, 'Sounders silenced at the panel') end
     addEvent(id, 'Sounders silenced', actor)
     syncState(id)
     return true
@@ -379,6 +396,13 @@ local Actions = {
         syncState(id)
         return true
     end },
+    sounderTest = { level = 2, fn = function(src, id)
+        local st = States[id]
+        if st.fire or st.evacuate then return false, 'Not available during an alarm' end
+        addEvent(id, 'Sounder test', Bridge.GetName(src))
+        SoundFor(id, Config.SounderTestDuration)
+        return true
+    end },
     logout = { level = 1, fn = function(src, id)
         if Sessions[src] then Sessions[src][id] = nil end
         return true
@@ -403,9 +427,11 @@ lib.callback.register('vinewood_firealarm:breakGlass', function(src, id, devId)
     local d = sys and getDevice(sys, devId)
     if not d or d.type ~= 'mcp' or not nearDevice(src, d) then return false, 'Too far away' end
     if contains(States[id].active, devId) then return false, 'Already activated' end
-    local last = Cooldowns[src]
-    if last and os.time() - last < Config.BreakGlassCooldown then return false, 'You need to wait before doing that again' end
-    Cooldowns[src] = os.time()
+    if not States[id].test and not Bridge.IsAdmin(src) then
+        local last = Cooldowns[src]
+        if last and os.time() - last < Config.BreakGlassCooldown then return false, 'You need to wait before doing that again' end
+        Cooldowns[src] = os.time()
+    end
     return TriggerAlarm(id, d.zone, devId, 'Manual call point', Bridge.GetName(src))
 end)
 
@@ -507,6 +533,13 @@ lib.callback.register('vinewood_firealarm:admin:delete', function(src, id)
     return adminList()
 end)
 
+function cleanLocation(l)
+    if type(l) ~= 'table' then return nil end
+    local function str(v) v = v and tostring(v) or '' return v ~= '' and v:sub(1, 60) or nil end
+    local out = { street = str(l.street), cross = str(l.cross), zone = str(l.zone) }
+    return out.street and out or nil
+end
+
 lib.callback.register('vinewood_firealarm:admin:addDevice', function(src, id, dev)
     local sys = Systems[id]
     if not isAdmin(src) or not sys or type(dev) ~= 'table' then return false end
@@ -523,6 +556,7 @@ lib.callback.register('vinewood_firealarm:admin:addDevice', function(src, id, de
         x = tonumber(dev.x) + 0.0, y = tonumber(dev.y) + 0.0, z = tonumber(dev.z) + 0.0,
         h = (tonumber(dev.h) or 0.0) + 0.0,
         pitch = (tonumber(dev.pitch) or 0.0) + 0.0,
+        location = cleanLocation(dev.location),
     }
     if d.label == '' then d.label = ('%s %d'):format(TYPE_NAMES[d.type], d.id) end
     sys.nextId = sys.nextId + 1
@@ -546,6 +580,7 @@ lib.callback.register('vinewood_firealarm:admin:updateDevice', function(src, id,
         d.h = (tonumber(fields.h) or d.h) + 0.0
         d.surface = fields.surface or d.surface
         if fields.mode then d.mode = fields.mode == 'prop' and 'prop' or 'target' end
+        d.location = cleanLocation(fields.location) or d.location
     end
     persist(id)
     syncSystem(id)
@@ -574,6 +609,16 @@ end)
 lib.callback.register('vinewood_firealarm:admin:reset', function(src, id)
     if not isAdmin(src) or not Systems[id] then return false end
     ResetSystem(id, Bridge.GetName(src), true)
+    return adminList()
+end)
+
+lib.callback.register('vinewood_firealarm:admin:sounderTest', function(src, id)
+    if not isAdmin(src) or not Systems[id] then return false end
+    local st = States[id]
+    if not (st.fire or st.evacuate) then
+        addEvent(id, 'Sounder test', Bridge.GetName(src))
+        SoundFor(id, Config.SounderTestDuration)
+    end
     return adminList()
 end)
 

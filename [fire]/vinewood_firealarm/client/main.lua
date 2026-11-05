@@ -133,7 +133,8 @@ CreateThread(function()
                     local p = props[key]
                     if dist < Config.SpawnDistance then
                         local model = wantedModel(id, d)
-                        if model and (not p or p.model ~= model or not DoesEntityExist(p.entity)) then
+                        local moved = p and (p.x ~= d.x or p.y ~= d.y or p.z ~= d.z or p.h ~= d.h)
+                        if model and (not p or moved or p.model ~= model or not DoesEntityExist(p.entity)) then
                             deleteProp(key)
                             lib.requestModel(model, 5000)
                             local ep = Placement.EntityPos(vec3(d.x, d.y, d.z), d.h, Placement.AnchorFor(d.type))
@@ -141,7 +142,7 @@ CreateThread(function()
                             SetEntityHeading(e, d.h)
                             FreezeEntityPosition(e, true)
                             SetModelAsNoLongerNeeded(model)
-                            props[key] = { entity = e, model = model }
+                            props[key] = { entity = e, model = model, x = d.x, y = d.y, z = d.z, h = d.h }
                         end
                     elseif p and dist > Config.SpawnDistance + 10.0 then
                         deleteProp(key)
@@ -194,6 +195,9 @@ CreateThread(function()
             end
         end
 
+        if Config.Debug and best > 0 and GetGameTimer() % 1000 < 260 then
+            print(('[vinewood_firealarm] sounding: volume %.2f tone %s'):format(best * Config.MasterVolume, tostring(bestTone)))
+        end
         nearbyBeacons = beacons
         local vol = math.floor(best * Config.MasterVolume * 100 + 0.5) / 100
         if vol ~= lastVol or bestTone ~= lastTone then
@@ -294,4 +298,16 @@ end)
 AddEventHandler('onResourceStop', function(res)
     if res ~= GetCurrentResourceName() then return end
     for key in pairs(props) do deleteProp(key) end
+end)
+
+---------------------------------------------------------------------
+-- cd_dispatch relay: cd_dispatch takes alerts from a client, so the
+-- server hands the alarm's alert to the player nearest the premises.
+---------------------------------------------------------------------
+RegisterNetEvent('vinewood_firealarm:cdRelay', function(data)
+    if GetResourceState('cd_dispatch') ~= 'started' then return end
+    local ok, info = pcall(function() return exports['cd_dispatch']:GetPlayerInfo() end)
+    data.unique_id = ok and info and info.unique_id or tostring(math.random(100000, 999999))
+    data.coords = vec3(data.coords.x, data.coords.y, data.coords.z)
+    TriggerServerEvent('cd_dispatch:AddNotification', data)
 end)
