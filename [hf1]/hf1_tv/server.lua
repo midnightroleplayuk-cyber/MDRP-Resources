@@ -7,7 +7,14 @@ local function hostAllowed(url)
     if not url:match('^https://') then return false end
     local host = url:match('^https://([^/:?#]+)')
     if not host then return false end
-    host = host:lower()
+    host = host:lower():gsub('%.$', '')
+    -- Enforce blacklist on the server for all playback and website requests.
+    for _, blocked in ipairs(Config.BlockedWebsiteHosts or {}) do
+        blocked = tostring(blocked):lower():gsub('^%.*', ''):gsub('%.$', '')
+        if blocked ~= '' and (host == blocked or host:sub(-#blocked - 1) == '.' .. blocked) then
+            return false
+        end
+    end
     if host == 'localhost' or host:match('^127%.') or host:match('^10%.') or host:match('^192%.168%.') or host:match('^172%.1[6-9]%.') or host:match('^172%.2%d%.') or host:match('^172%.3[01]%.') then return false end
     if #Config.AllowedWebsiteHosts > 0 then
         local allowed = false

@@ -205,9 +205,22 @@ local function start(entity, key, data)
         end)
     end
 end
+-- Match exact blocked domains and subdomains, not lookalike domains.
+local function blockedWebsite(url)
+    local host = type(url)=='string' and url:match('^https://([^/:?#]+)')
+    if not host then return false end
+    host=host:lower():gsub('%.$','')
+    for _, blocked in ipairs(Config.BlockedWebsiteHosts or {}) do
+        blocked=tostring(blocked):lower():gsub('^%.*',''):gsub('%.$','')
+        if blocked~='' and (host==blocked or host:sub(-#blocked-1)=='.'..blocked) then return true end
+    end
+    return false
+end
 local function sendUpdate(entity, data)
+    if data and blockedWebsite(data.url) then notice('This website is blocked on this TV', 'error') return false end
     if not entity or not DoesEntityExist(entity) then return end
     TriggerServerEvent('hf1_tv:update',keyFor(entity),data)
+    return true
 end
 local function openVolumeDialog(entity, key, mode)
     if not entity or not DoesEntityExist(entity) then return end
@@ -473,7 +486,10 @@ RegisterNUICallback('websiteNavigate',function(data,cb)
         cb({ok=false,error='TV changed'})
         return
     end
-    sendUpdate(entity,{kind='website',url=target,volume=0})
+    if not sendUpdate(entity,{kind='website',url=target,volume=0}) then
+        cb({ok=false,error='This website is blocked on this TV'})
+        return
+    end
     closeFocus()
     cb({ok=true})
 end)

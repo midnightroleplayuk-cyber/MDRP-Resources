@@ -32,6 +32,33 @@ Config.DefaultVolume = 35
 Config.MaxUrlLength = 1800
 Config.AllowWebsites = true -- WARNING: arbitrary websites are untrusted content; allow only trusted domains in production.
 Config.AllowedWebsiteHosts = {} -- empty = all HTTPS hosts; e.g. {'example.com'}
+
+-- Blocked website domains (also blocks all subdomains). Add/remove domains as needed.
+-- Applies to all TV URL types and Google toolbar direct navigation.
+Config.BlockedWebsiteHosts = {
+    -- Adult sites
+    'pornhub.com', 'xvideos.com', 'xnxx.com', 'xhamster.com',
+    'redtube.com', 'youporn.com', 'tube8.com', 'spankbang.com',
+    'eporner.com', 'tnaflix.com', 'thumbzilla.com', 'beeg.com',
+    'brazzers.com', 'bangbros.com', 'realitykings.com', 'naughtyamerica.com',
+    'onlyfans.com', 'fansly.com', 'manyvids.com', 'chaturbate.com',
+    'stripchat.com', 'bongacams.com', 'livejasmin.com', 'cam4.com',
+    'myfreecams.com', 'flirt4free.com', 'jerkmate.com', 'adultfriendfinder.com',
+    'literotica.com', 'nhentai.net', 'rule34.xxx', 'e621.net',
+    -- Gambling, betting, casinos
+    'bet365.com', 'betfair.com', 'paddypower.com', 'williamhill.com',
+    'ladbrokes.com', 'coral.co.uk', 'skybet.com', 'betfred.com',
+    'unibet.com', '888casino.com', '888sport.com', '888poker.com',
+    'pokerstars.com', 'partypoker.com', 'bwin.com', 'betway.com',
+    'draftkings.com', 'fanduel.com', 'stake.com', 'stake.us',
+    'roobet.com', 'rollbit.com', 'bc.game', 'cloudbet.com',
+    '1xbet.com', '22bet.com', 'betwinner.com', 'sportsbet.io',
+    'gamdom.com', 'duelbits.com', 'jackpotcitycasino.com',
+    'casumo.com', 'leovegas.com', 'mrgreen.com', 'grosvenorcasinos.com',
+    'virgingames.com', 'tombola.co.uk', 'bingo.com', 'betmgm.com',
+    'caesars.com', 'betrivers.com', 'pointsbet.com', 'betonline.ag',
+}
+
 Config.Debug = false
 
 -- Positional audio: at/below FullVolumeDistance use selected volume; fade to zero at PerformanceRadius.

@@ -126,3 +126,9 @@ Bare domains such as facebook.com are automatically prefixed with https:// in th
 - TikTok is enabled in the existing **Interact with screen** menu, so you can click its player controls.
 - The original Twitch clip two-click sequence and Cloudflare configuration are unchanged.
 - Full keyboard input to arbitrary third-party sites is **not supported** by FiveM's documented DUI native API. Do not enter credentials into unknown sites.
+
+
+## Website blacklist
+Edit `Config.BlockedWebsiteHosts` in `config.lua` to block domains (including their subdomains). The included list covers many popular adult and gambling websites. Server-side validation rejects blocked URLs for websites and video links; the client also displays a friendly error. Domain matching is exact or subdomain-only (e.g. `example.com` blocks `www.example.com`, but not `notexample.com`). Restart the resource after editing.
+
+**Limitations:** This is a domain blacklist, not comprehensive web filtering. It does not automatically stop redirects, links clicked within a loaded third-party site, newly registered sites, mirror domains, Google search results, or embedded third-party content. For strict public-server filtering, use `Config.AllowedWebsiteHosts` as a short allowlist instead, or disable arbitrary websites with `Config.AllowWebsites = false`.
