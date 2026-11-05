@@ -44,7 +44,7 @@ local function setupTarget(model, name)
     if not ok then print(('[hf1_tv] IsNamedRendertargetRegistered error: %s'):format(registered)) return nil end
     if registered == false or registered == 0 then
         local rok, result = pcall(RegisterNamedRendertarget, name, false)
-        print(('[hf1_tv] Register target=%s ok=%s result=%s'):format(name, tostring(rok), tostring(result)))
+        if Config.Debug then print(('[hf1_tv] Register target=%s ok=%s result=%s'):format(name, tostring(rok), tostring(result))) end
         if not rok then return nil end
     end
     local lok, linked = pcall(IsNamedRendertargetLinked, model)
@@ -52,11 +52,11 @@ local function setupTarget(model, name)
     if linked == false or linked == 0 then
         local linkOK, result = pcall(LinkNamedRendertarget, model)
         local checkOK, after = pcall(IsNamedRendertargetLinked, model)
-        print(('[hf1_tv] Link attempt: model=%s target=%s nativeOK=%s result=%s checkOK=%s linked=%s'):format(model, name, tostring(linkOK), tostring(result), tostring(checkOK), tostring(after)))
+        if Config.Debug then print(('[hf1_tv] Link attempt: model=%s target=%s nativeOK=%s result=%s checkOK=%s linked=%s'):format(model, name, tostring(linkOK), tostring(result), tostring(checkOK), tostring(after))) end
         if not linkOK or not checkOK or after == false or after == 0 or after == nil then return nil end
     end
     local idOK, id = pcall(GetNamedRendertargetRenderId, name)
-    print(('[hf1_tv] Render ID: target=%s nativeOK=%s id=%s'):format(name, tostring(idOK), tostring(id)))
+    if Config.Debug then print(('[hf1_tv] Render ID: target=%s nativeOK=%s id=%s'):format(name, tostring(idOK), tostring(id))) end
     -- Render IDs are signed 32-bit hashes: negative values are valid. -1 is the invalid sentinel.
     if not idOK or type(id) ~= 'number' or id == -1 or id == 0 then return nil end
     return id
@@ -106,7 +106,7 @@ local function start(entity, key, data)
             return
         end
         page = data.url
-        print('[hf1_tv] TikTok experimental direct DUI: ' .. page)
+        if Config.Debug then print('[hf1_tv] TikTok experimental direct DUI: ' .. page) end
     end
     if data.kind == 'website' then
         -- A top-level DUI URL avoids iframe/X-Frame-Options blocking for many sites.
@@ -143,9 +143,9 @@ local function start(entity, key, data)
         page = twitchUrl .. separator .. keyName .. '=' .. urlEncode(keyValue)
             .. '&volume=' .. tostring(initialVolume)
             .. '&muted=' .. tostring(localMuted or initialVolume == 0)
-        print('[hf1_tv] Twitch direct DUI: ' .. page)
+        if Config.Debug then print('[hf1_tv] Twitch direct DUI: ' .. page) end
     end
-    print(('[hf1_tv] Starting player kind=%s url=%s'):format(tostring(data.kind),tostring(data.url)))
+    if Config.Debug then print(('[hf1_tv] Starting player kind=%s url=%s'):format(tostring(data.kind),tostring(data.url))) end
     local obj=CreateDui(page,Config.DuiWidth,Config.DuiHeight)
     if not obj then return end
     local ready=false
@@ -166,7 +166,7 @@ local function start(entity, key, data)
     -- Synthetic DUI input may not qualify as a trusted user gesture; the second
     -- click may also pause a clip that started on its own. This is a test only.
     if data.kind == 'twitch' and twitchContentType == 'clip' then
-        print('[hf1_tv] Clip two-click test scheduled: first at 5200ms, second 3200ms later')
+        if Config.Debug then print('[hf1_tv] Clip two-click test scheduled: first at 5200ms, second 3200ms later') end
         local clipDui = obj
         local clipKey = key
         CreateThread(function()
@@ -177,23 +177,23 @@ local function start(entity, key, data)
             end
             local function clickCentre(attempt)
                 if not stillCurrent() then
-                    print(('[hf1_tv] Clip click %d cancelled: DUI changed, unavailable or interaction active'):format(attempt))
+                    if Config.Debug then print(('[hf1_tv] Clip click %d cancelled: DUI changed, unavailable or interaction active'):format(attempt)) end
                     return false
                 end
                 local cx = math.floor(Config.DuiWidth / 2)
                 local cy = math.floor(Config.DuiHeight / 2)
-                print(('[hf1_tv] Clip click %d: mouse move (%d,%d)'):format(attempt,cx,cy))
+                if Config.Debug then print(('[hf1_tv] Clip click %d: mouse move (%d,%d)'):format(attempt,cx,cy)) end
                 SendDuiMouseMove(clipDui,cx,cy)
                 Wait(160)
                 if not stillCurrent() then return false end
-                print(('[hf1_tv] Clip click %d: left mouse DOWN'):format(attempt))
+                if Config.Debug then print(('[hf1_tv] Clip click %d: left mouse DOWN'):format(attempt)) end
                 SendDuiMouseDown(clipDui,'left')
                 Wait(180)
                 -- Always release a mouse-down on the same live DUI even if focus
                 -- changed during the wait, to avoid a stuck button state.
                 if dui == clipDui and IsDuiAvailable(clipDui) then
                     SendDuiMouseUp(clipDui,'left')
-                    print(('[hf1_tv] Clip click %d: left mouse UP'):format(attempt))
+                    if Config.Debug then print(('[hf1_tv] Clip click %d: left mouse UP'):format(attempt)) end
                 end
                 return true
             end
@@ -201,13 +201,26 @@ local function start(entity, key, data)
             if not clickCentre(1) then return end
             Wait(3200)
             clickCentre(2)
-            print('[hf1_tv] Clip two-click test complete; if still paused, use Interact with screen')
+            if Config.Debug then print('[hf1_tv] Clip two-click test complete; if still paused, use Interact with screen') end
         end)
     end
 end
+-- Match exact blocked domains and subdomains, not lookalike domains.
+local function blockedWebsite(url)
+    local host = type(url)=='string' and url:match('^https://([^/:?#]+)')
+    if not host then return false end
+    host=host:lower():gsub('%.$','')
+    for _, blocked in ipairs(Config.BlockedWebsiteHosts or {}) do
+        blocked=tostring(blocked):lower():gsub('^%.*',''):gsub('%.$','')
+        if blocked~='' and (host==blocked or host:sub(-#blocked-1)=='.'..blocked) then return true end
+    end
+    return false
+end
 local function sendUpdate(entity, data)
+    if data and blockedWebsite(data.url) then notice('This website is blocked on this TV', 'error') return false end
     if not entity or not DoesEntityExist(entity) then return end
     TriggerServerEvent('hf1_tv:update',keyFor(entity),data)
+    return true
 end
 local function openVolumeDialog(entity, key, mode)
     if not entity or not DoesEntityExist(entity) then return end
@@ -282,16 +295,22 @@ local function menu(entity)
             if not current or current.key~=key or current.kind~='website' or not dui then notice('Start a website first','error') return end
             SetDuiUrl(dui,current.url)
         end},
-        {title='Test pattern',icon='monitor',onSelect=function() sendUpdate(entity,{kind='test'}) end},
         {title='Turn off',icon='power',onSelect=function() sendUpdate(entity,{kind='off'}) end}
     }
     lib.registerContext({id='hf1_tv_menu',title='HF1 Television',options=options})
     lib.showContext('hf1_tv_menu')
 end
+RegisterNetEvent('hf1_tv:openPlacedMenu',function(entity)
+    if entity and DoesEntityExist(entity) then menu(entity) end
+end)
 CreateThread(function()
     local models={}
     for model in pairs(Config.Models) do models[#models+1]=model end
-    exports.ox_target:addModel(models,{{name='hf1_tv_interact',icon='fa-solid fa-tv',label='Interact with TV',distance=Config.InteractDistance,onSelect=function(data) menu(data.entity) end}})
+    exports.ox_target:addModel(models,{{name='hf1_tv_interact',icon='fa-solid fa-tv',label='Interact',distance=Config.InteractDistance,
+        canInteract=function(entity)
+            return not (HF1TVPlacedEntities and HF1TVPlacedEntities[entity])
+        end,
+        onSelect=function(data) menu(data.entity) end}})
     TriggerServerEvent('hf1_tv:request')
 end)
 RegisterNetEvent('hf1_tv:rejected',function(reason) notice(reason,'error') end)
@@ -467,7 +486,10 @@ RegisterNUICallback('websiteNavigate',function(data,cb)
         cb({ok=false,error='TV changed'})
         return
     end
-    sendUpdate(entity,{kind='website',url=target,volume=0})
+    if not sendUpdate(entity,{kind='website',url=target,volume=0}) then
+        cb({ok=false,error='This website is blocked on this TV'})
+        return
+    end
     closeFocus()
     cb({ok=true})
 end)

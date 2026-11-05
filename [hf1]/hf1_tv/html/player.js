@@ -1,6 +1,7 @@
 const screen=document.getElementById('screen'), status=document.getElementById('status');
 let media=null, volume=35, youtubeFrame=null, youtubeReady=false, youtubeQueue=[];
 let youtubeRetry=null, audioRequested=true, youtubeAudioInitialized=false, mutedByController=false;
+let youtubeCaptionTimer=null;
 let twitchFrame=null, twitchTimeout=null;
 const TWITCH_HOST='https://hf1-tv-twitch.pages.dev';
 function twitchCommand(){
@@ -67,6 +68,14 @@ function ytCommand(func,args=[]){
   try { youtubeFrame.contentWindow.postMessage(command,'https://www.youtube.com'); }
   catch(e){show('YouTube command failed: '+e.message)}
 }
+// YouTube may restore the viewer's saved caption preference even when
+// cc_load_policy=0. Explicitly disable the captions module via iframe API.
+function youtubeCaptionsOff(){
+  if(!youtubeFrame)return;
+  ytCommand('unloadModule',['captions']);
+  ytCommand('unloadModule',['cc']);
+  ytCommand('setOption',['captions','track',{}]);
+}
 function ytAudio(enable){
   if(!youtubeFrame)return;
   ytCommand('setVolume',[Math.max(0,Math.min(100,volume))]);
@@ -79,13 +88,13 @@ window.addEventListener('message', e=>{
   try{if(typeof data==='string')data=JSON.parse(data)}catch{return}
   if(data?.event==='onReady'||data?.event==='initialDelivery'){
     youtubeReady=true;
-    if(youtubeFrame){attemptYoutubeSound();show('YouTube loaded • attempting audio automatically (use TV menu if silent)');}
+    if(youtubeFrame){youtubeCaptionsOff();attemptYoutubeSound();show('YouTube loaded • attempting audio automatically (use TV menu if silent)');}
   }
 });
 function show(text){status.textContent=text;status.style.display='block'}
 function iframe(src,allow='autoplay; encrypted-media; fullscreen; picture-in-picture'){const f=document.createElement('iframe');f.src=src;f.allow=allow;f.referrerPolicy='strict-origin-when-cross-origin';f.allowFullscreen=true;screen.append(f);media=f;return f}
 function youtubeId(url){try{const u=new URL(url);let id=u.hostname==='youtu.be'?u.pathname.slice(1):u.searchParams.get('v');if(!id){const m=u.pathname.match(/^\/(?:shorts|live|embed)\/([^/?]+)/);id=m?.[1]}return /^[\w-]{11}$/.test(id||'')?id:null}catch{return null}}
-function play(d){destroyHls();if(youtubeRetry)clearInterval(youtubeRetry);if(twitchTimeout)clearTimeout(twitchTimeout);twitchTimeout=null;twitchFrame=null;youtubeRetry=null;youtubeFrame=null;youtubeReady=false;youtubeAudioInitialized=false;screen.replaceChildren();media=null;volume=Math.max(0,Math.min(100,Number(d.initialVolume ?? d.volume ?? 35)||0));audioRequested=true;mutedByController=d.initialMuted===true || volume===0;if(d.kind==='test'){const t=document.createElement('div');t.className='bars';t.innerHTML='<b>HF1 TV TEST OK</b>';screen.append(t);show('Test pattern');return}
+function play(d){destroyHls();if(youtubeRetry)clearInterval(youtubeRetry);if(youtubeCaptionTimer)clearTimeout(youtubeCaptionTimer);youtubeCaptionTimer=null;if(twitchTimeout)clearTimeout(twitchTimeout);twitchTimeout=null;twitchFrame=null;youtubeRetry=null;youtubeFrame=null;youtubeReady=false;youtubeAudioInitialized=false;screen.replaceChildren();media=null;volume=Math.max(0,Math.min(100,Number(d.initialVolume ?? d.volume ?? 35)||0));audioRequested=true;mutedByController=d.initialMuted===true || volume===0;if(d.kind==='test'){const t=document.createElement('div');t.className='bars';t.innerHTML='<b>HF1 TV TEST OK</b>';screen.append(t);show('Test pattern');return}
 try{
 const u=new URL(d.url);if(u.protocol!=='https:')throw Error('HTTPS only');
 if(d.kind==='youtube'){
@@ -95,7 +104,7 @@ const now=Number(d.now), started=Number(d.started);
 const elapsed=Number.isFinite(now)&&Number.isFinite(started)?Math.max(0,Math.floor(now-started)):0;
 // FiveM's cfx-nui:// origin is not a public YouTube embed origin. Avoid passing it
 // as the origin parameter. The youtube.com embed is the supported iframe endpoint.
-const p=new URLSearchParams({autoplay:'1',mute:'1',controls:'1',playsinline:'1',start:String(elapsed),rel:'0',enablejsapi:'1'});
+const p=new URLSearchParams({autoplay:'1',mute:'1',controls:'1',playsinline:'1',start:String(elapsed),rel:'0',cc_load_policy:'0',enablejsapi:'1'});
 const f=iframe(`https://www.youtube.com/embed/${id}?${p}`);
 youtubeFrame=f;
 // The iframe API accepts postMessage commands even when the full JS API script
@@ -106,7 +115,10 @@ youtubeRetry=setInterval(()=>{
   ytCommand('addEventListener',['onReady']);
   // Repeat the requested state while the iframe initializes. Early postMessages can be lost.
   attemptYoutubeSound();
+  youtubeCaptionsOff();
 },1000);
+// YouTube can apply stored caption preferences after its initial ready event.
+youtubeCaptionTimer=setTimeout(()=>{if(youtubeFrame===f)youtubeCaptionsOff();youtubeCaptionTimer=null},16000);
 show('YouTube: loading video '+id+' (sound requested)');
 f.addEventListener('load',()=>show('YouTube embed loaded — if blank, video may block embedding or FiveM CEF playback'));
 f.addEventListener('error',()=>show('YouTube iframe failed to load'));
