@@ -21,7 +21,7 @@ local function validate(data)
     if data.kind == 'off' or data.kind == 'test' then return true end
     if type(data.url) ~= 'string' or not hostAllowed(data.url) then return false end
     if data.kind == 'website' then return Config.AllowWebsites end
-    if data.kind == 'video' then return true end
+    if data.kind == 'video' or data.kind == 'hls' then return true end
     local host = data.url:match('^https://([^/:?#]+)')
     if not host then return false end
     host = host:lower()

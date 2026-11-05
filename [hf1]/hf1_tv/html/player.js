@@ -61,9 +61,9 @@ youtubeRetry=setInterval(()=>{
 show('YouTube: loading video '+id+' (sound requested)');
 f.addEventListener('load',()=>show('YouTube embed loaded — if blank, video may block embedding or FiveM CEF playback'));
 f.addEventListener('error',()=>show('YouTube iframe failed to load'));
-}else if(d.kind==='video'){
+}else if(d.kind==='video'||d.kind==='hls'){
 const v=document.createElement('video');v.autoplay=true;v.controls=false;v.playsInline=true;v.volume=0;v.muted=true;v.src=d.url;screen.append(v);media=v;
-v.addEventListener('loadedmetadata',()=>{if(Number.isFinite(v.duration)&&v.duration>0){const elapsed=Math.max(0,Number(d.now||0)-Number(d.started||0));v.currentTime=Math.min(elapsed,Math.max(0,v.duration-.2))}v.play().catch(()=>{v.muted=true;v.play().catch(()=>show('Autoplay blocked by browser'))})});v.addEventListener('error',()=>show('Direct video failed: check CORS, codec and URL'));show('Direct video');
+v.addEventListener('loadedmetadata',()=>{if(Number.isFinite(v.duration)&&v.duration>0){const elapsed=Math.max(0,Number(d.now||0)-Number(d.started||0));v.currentTime=Math.min(elapsed,Math.max(0,v.duration-.2))}v.play().catch(()=>{v.muted=true;v.play().catch(()=>show('Autoplay blocked by browser'))})});v.addEventListener('error',()=>{const code=v.error?.code||'unknown';show((d.kind==='hls'?'HLS':'Direct video')+' failed: media error '+code+' • check CEF HLS support, CORS, codec and authorization')});v.addEventListener('stalled',()=>show('Video stalled • check network and playlist segments'));v.addEventListener('playing',()=>show((d.kind==='hls'?'HLS':'Direct video')+' playing'));show(d.kind==='hls'?'HLS test: loading playlist (experimental)':'Direct video');
  }else if(d.kind==='twitch'){
 // Official Twitch embed requires a parent hostname matching the actual embedding page.
 // FiveM's cfx-nui host is not a normal public HTTPS origin; this is a diagnostic test,

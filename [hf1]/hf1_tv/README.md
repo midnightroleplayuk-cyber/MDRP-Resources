@@ -86,3 +86,9 @@ YouTube now requests unmuted autoplay (`mute=0`) and sends `unMute`, `setVolume`
 - Twitch's official embed **requires an approved parent domain**; the local `cfx-nui` origin may be rejected. This release does not bypass that requirement.
 - Twitch embeds start muted; **YouTube-only auto-audio and volume behavior is unchanged**. Twitch volume and distance attenuation are **not yet implemented** because they require a working authorized Twitch player API.
 - If Twitch refuses playback, note the on-screen message, Twitch error, and whether a live channel or VOD was tested. A hosted HTTPS player may be necessary.
+
+
+## v0.3.1 - FiveM-only HLS diagnostic
+Adds an **HLS stream (.m3u8) - experimental** choice in Play a URL. Supply an HTTPS `.m3u8` URL that you are authorized to access. This tests whether FiveM CEF supports that stream directly through HTML5 video; error code and stalled messages are displayed on the TV. No external domain or Twitch embed is needed for this diagnostic.
+
+**This is not Twitch channel URL playback.** Twitch channel pages are not direct media URLs. Twitch playback requires legitimately authorized playable stream URLs and may require HLS JavaScript playback support, CORS and appropriate codecs. The script does not obtain Twitch access tokens, bypass access controls or proxy Twitch streams. YouTube functionality is unchanged.

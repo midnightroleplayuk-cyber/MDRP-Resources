@@ -117,9 +117,9 @@ local function menu(entity)
     if not DoesEntityExist(entity) then return end
     local key=keyFor(entity)
     local options={
-        {title='Play a URL',description='YouTube, Twitch, TikTok, MP4/WebM or website',icon='play',onSelect=function()
+        {title='Play a URL',description='YouTube, Twitch, TikTok, MP4/WebM, HLS test or website',icon='play',onSelect=function()
             local result=lib.inputDialog('HF1 TV - Play',{
-                {type='select',label='Content type',required=true,options={{value='youtube',label='YouTube'},{value='video',label='Direct video (MP4/WebM)'},{value='twitch',label='Twitch'},{value='tiktok',label='TikTok'},{value='website',label='Website'}}},
+                {type='select',label='Content type',required=true,options={{value='youtube',label='YouTube'},{value='video',label='Direct video (MP4/WebM)'},{value='hls',label='HLS stream (.m3u8) - experimental'},{value='twitch',label='Twitch'},{value='tiktok',label='TikTok'},{value='website',label='Website'}}},
                 {type='input',label='HTTPS URL',required=true},
                 {type='number',label='Volume (0-100)',default=Config.DefaultVolume,min=0,max=100}
             })
@@ -129,7 +129,7 @@ local function menu(entity)
         end},
         {title='Toggle Mute',description='Mute or unmute this TV on your client',icon='volume-2',onSelect=function()
             if not current or current.key~=key or not dui then notice('Move closer to the active TV','error') return end
-            if current.kind~='youtube' and current.kind~='video' then notice('Audio control supports YouTube and direct video','error') return end
+            if current.kind~='youtube' and current.kind~='video' and current.kind~='hls' then notice('Audio control supports YouTube and direct video','error') return end
             localMuted=not localMuted
             lastEffectiveVolume=-1 -- force a new attenuation update
             notice(localMuted and 'TV muted locally' or 'TV unmuted locally','inform')
