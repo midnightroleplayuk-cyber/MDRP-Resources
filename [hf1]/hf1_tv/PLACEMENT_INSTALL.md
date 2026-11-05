@@ -32,3 +32,9 @@ Uses ox_lib textUI at right-center (no GTA top-left help text). Aim at a surface
 - Wall-mounted models accept vertical wall surfaces only; standing TVs and monitor models accept horizontal surfaces (desks, shelves, floors).
 - E places the selected TV; X cancels. Wall snapping (G) applies to wall-mounted models only.
 - The top-centre ox_lib panel shows the mode and permitted surface type.
+
+### v0.5.0.5 free placement
+- No surface-type restriction. Left-click sets the preview wherever the camera points, including fallback points when a desk/MLO wall has no collision hit.
+- G toggles optional wall alignment when a wall normal is available. Free placement works even without detected collision.
+- Short ox_lib top-centre controls; F walk/adjust, E place, X cancel, Q/R height, WASD fine move, arrows adjust.
+- Server still checks distance, item ownership and spacing. Clicks beyond server's allowed range may be rejected; move closer using F.

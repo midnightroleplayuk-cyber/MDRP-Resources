@@ -92,59 +92,27 @@ local function placement(modelName)
             lastUi=message
         end
     end
-    local function validSurface(point,normal)
-        if not point or not normal then return false end
-        local isWall=math.abs(normal.z)<0.35
-        local isFloor=normal.z>0.65
-        -- Wall-mounted flatscreens belong on vertical surfaces; desktop and
-        -- standing models belong on horizontal surfaces (desks, shelves, floors).
-        local surfaceOK = wallModel and isWall or (not wallModel and isFloor)
-        return #(GetEntityCoords(ped)-point)<=Config.PlacementMaxDistance
-            and surfaceOK
-    end
-    local function calculatePosition(point,normal)
-        local offset=(snap and math.abs(normal.z)<0.35) and Config.WallOffset or 0.03
-        return point+normal*(offset+depth)+vector3(0,0,height)
-    end
-    while placing do
-        Wait(0)
-        -- Same interaction pattern as hf1_npcs: click to choose the world
-        -- position, then use movement/rotation/height controls to fine-tune.
-        -- F switches between moving your character and adjusting the TV.
-        -- In walk mode the movement keys are deliberately left enabled.
-        if IsControlJustPressed(0,23) then walkMode=not walkMode end
-        local blocked={24,25,14,15,172,173,174,175,44,45,47,73,191,177}
-        if not walkMode then
-            for _,control in ipairs({30,31,32,33,34,35,21,36}) do
-                blocked[#blocked+1]=control
-            end
-        end
-        for _,control in ipairs(blocked) do DisableControlAction(0,control,true) end
-        DisablePlayerFiring(PlayerId(),true)
-        local hit,point,normal=cameraRay(Config.PlacementMaxDistance)
-        local aimingValid=hit and validSurface(point,normal)
-        if aimingValid then
-            DrawMarker(28,point.x,point.y,point.z+0.025,0,0,0,0,0,0,
-                0.14,0.14,0.14,255,255,255,210,false,false,2,false,nil,nil,false)
-        end
+    -- Raycast is an aid, not a gate: missing collision must never block placement.
+    local function aimPoint()
+        local rot=GetGameplayCamRot(2)
+        local origin=GetGameplayCamCoord()
+        local pitch,yaw=math.rad(rot.x),math.rad(rot.z)
+        local direction=vector3(-math.sin(yaw)*math.cos(pitch),math.cos(yaw)*math.cos(pitch),math.sin(pitch))
+        local point,normal,hit=aimPoint()
         if IsDisabledControlJustPressed(0,24) then
-            if aimingValid then
-                anchor=point
-                anchorNormal=normal
-                selected=true
-                height=0.0
-                depth=0.0
-                if snap and math.abs(normal.z)<0.35 then
-                    heading=(math.deg(math.atan(normal.y,normal.x))-90.0)%360
-                end
-            else
-                notify('Aim at a nearby valid surface before left-clicking.','error')
+            anchor=point
+            anchorNormal=normal
+            selected=true
+            height=0.0
+            depth=0.0
+            if snap and normal and math.abs(normal.z)<0.55 then
+                heading=(math.deg(math.atan(normal.y,normal.x))-90.0)%360
             end
         end
-        if not walkMode and IsDisabledControlJustPressed(0,47) and wallModel then
+        if not walkMode and IsDisabledControlJustPressed(0,47) then
             snap=not snap
             -- Keep a selected position only if it is still a valid surface.
-            if selected and not validSurface(anchor,anchorNormal) then selected=false end
+
         end
         local speed=0.012
         if IsDisabledControlPressed(0,21) then speed=speed*3.0 end
@@ -171,29 +139,20 @@ local function placement(modelName)
             if IsDisabledControlJustPressed(0,14) then heading=(heading+5)%360 end
             if IsDisabledControlJustPressed(0,15) then heading=(heading-5)%360 end
         end
-        local ready=selected and validSurface(anchor,anchorNormal)
-        if ready then
-            pos=calculatePosition(anchor,anchorNormal)
-        elseif aimingValid then
-            pos=calculatePosition(point,normal)
-        else
-            pos=nil
-        end
+        local ready=selected and anchor~=nil
+        pos=calculatePosition(ready and anchor or point,ready and anchorNormal or normal)
         if pos then SetEntityCoordsNoOffset(ghost,pos.x,pos.y,pos.z,false,false,false) end
         SetEntityHeading(ghost,heading)
-        SetEntityAlpha(ghost,ready and 205 or (pos and 100 or 40),false)
-        local status=ready and 'POSITION SELECTED' or 'AIM AND LEFT CLICK TO SELECT'
-        local surfaceLabel=wallModel and 'WALL ONLY' or 'DESK / FLOOR / SHELF'
-        local modeLabel=walkMode and 'WALK (movement enabled)' or 'ADJUST TV'
-        updateUI(('**TV Placement — %s — %s**\n[F] Toggle Walk / Adjust  [LEFT CLICK] Select  [E] Place  [X] Cancel\n%s\n%s'):format(modeLabel,surfaceLabel,
-            walkMode and 'Move your character with WASD; click a new surface when close enough.'
-                or '[WASD] Move TV  [Q/R] Height  [←/→] Rotate  [↑/↓] Clearance  [Wheel] Rotate',
-            ('Selected: **%s**  Height: **%.2fm**  Clearance: **%.2fm**  Snap: **%s**'):format(
-                ready and 'YES' or 'NO',height,depth,wallModel and (snap and 'ON' or 'OFF') or 'N/A')))
+        SetEntityAlpha(ghost,ready and 205 or 100,false)
+        local status=ready and 'READY' or 'CLICK TO POSITION'
+        local modeLabel=walkMode and 'WALK' or 'ADJUST'
+        local line=('[TV] %s | %s | [LMB] Set | [E] Place | [X] Exit | [F] Mode | [G] Snap %s'):format(status,modeLabel,snap and 'ON' or 'OFF')
+        if not walkMode then line=line..'\\n[WASD] Move | [Q/R] Height | [←/→] Rotate | [↑/↓] Depth' end
+        updateUI(line)
         if IsDisabledControlJustPressed(0,73) or IsDisabledControlJustPressed(0,177) then break end
         -- E confirms, matching the existing TV placer request. Left click only
         -- chooses an anchor, so accidental clicks cannot consume inventory.
-        if ready and IsControlJustPressed(0,51) then
+        if ready and (IsControlJustPressed(0,51) or IsDisabledControlJustPressed(0,51)) then
             TriggerServerEvent('hf1_tv:place',{model=modelName,coords={x=pos.x,y=pos.y,z=pos.z},heading=heading})
             placed=true
             break
