@@ -1,0 +1,10 @@
+fx_version 'cerulean'
+game 'gta5'
+lua54 'yes'
+name 'qb_tv_stage1'
+author 'Community rebuild; TV model data derived from Pickle Mods ptelevision'
+description 'Stage 1: FiveM DUI named render-target diagnostic for QBCore/Qbox'
+version '0.1.0'
+shared_script 'config.lua'
+client_script 'client.lua'
+files { 'html/test.html' }
