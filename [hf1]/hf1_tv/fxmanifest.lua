@@ -1,10 +1,13 @@
 fx_version 'cerulean'
 game 'gta5'
 lua54 'yes'
-name 'qb_tv_stage1'
-author 'Community rebuild; TV model data derived from Pickle Mods ptelevision'
-description 'Stage 1: FiveM DUI named render-target diagnostic for QBCore/Qbox'
-version '0.1.0'
+name 'hf1_tv'
+description 'QBCore/Qbox compatible TV with ox_target, ox_lib, DUI and synced playback'
+version '0.2.0'
 shared_script 'config.lua'
-client_script 'client.lua'
-files { 'html/test.html' }
+client_scripts {'client.lua'}
+server_scripts {'server.lua'}
+ui_page 'html/controller.html'
+files {'html/*.html','html/*.js','html/*.css'}
+dependencies {'ox_lib','ox_target'}
+shared_script '@ox_lib/init.lua'

@@ -1,6 +1,6 @@
 Config = {}
 Config.Debug = true
-Config.SearchRadius = 12.0
+Config.SearchRadius = 35.0
 Config.DrawDistance = 35.0
 Config.Models = {
     [`des_tvsmash_start`] = { target = "tvscreen", scale = 0.085, offset = vector3(-1.02, -0.055, 1.04) },
@@ -23,3 +23,15 @@ Config.Models = {
 }
 -- Original ptelevision model/target/scale/offset values retained.
 -- Stage 1 uses named render targets only; offsets reserved for future fallback.
+
+-- Only players this close render a TV (metres). Others do not create a DUI.
+Config.PerformanceRadius = 30.0
+Config.InteractDistance = 2.5
+Config.ScanInterval = 1200
+Config.DuiWidth = 1280
+Config.DuiHeight = 720
+Config.DefaultVolume = 35
+Config.MaxUrlLength = 1800
+Config.AllowWebsites = true -- WARNING: arbitrary websites are untrusted content; allow only trusted domains in production.
+Config.AllowedWebsiteHosts = {} -- empty = all HTTPS hosts; e.g. {'example.com'}
+Config.Debug = true

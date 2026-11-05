@@ -1,218 +1,180 @@
-local state = nil
-local runtimeName = 'qb_tv_diag_' .. tostring(GetPlayerServerId(PlayerId()))
-local textureName = 'screen'
-local dictName = runtimeName
-local width, height = 1280, 720
-local preview = nil
-
-local function log(message)
-    print(('[qb_tv_stage1] %s'):format(message))
+local screens, current, pending, dui, txd, renderId = {}, nil, nil, nil, nil, nil
+local dict = 'hf1_tv_' .. GetPlayerServerId(PlayerId())
+local tex = 'display'
+local focused = false
+local function notice(msg, kind)
+    lib.notify({title='HF1 TV', description=msg, type=kind or 'inform'})
 end
-
-local function notify(message)
-    log(message)
-    TriggerEvent('chat:addMessage', { args = { 'TV Test', message } })
+local function keyFor(entity)
+    local c = GetEntityCoords(entity)
+    return ('%d:%d:%d:%d'):format(GetEntityModel(entity), math.floor(c.x*10+0.5), math.floor(c.y*10+0.5), math.floor(c.z*10+0.5))
 end
-
-local function safeNative(fn, ...)
-    local ok, result = pcall(fn, ...)
-    if not ok then log('Native failed: ' .. tostring(result)) end
-    return ok, result
-end
-
-local function stopTest()
-    if not state then return end
-    local old = state
-    state = nil -- stop draw thread before releasing handles
-    Wait(100)
-    if old.dui then safeNative(DestroyDui, old.dui) end
-    -- Do not release a model-wide named render target while another resource might use it.
-    log('Test stopped; DUI destroyed. Named render target remains registered until resource cleanup.')
-end
-
-local function nearestTV()
-    local player = PlayerPedId()
-    local origin = GetEntityCoords(player)
-    local best, bestDistance, bestConfig = nil, Config.SearchRadius + 0.01, nil
-    for model, settings in pairs(Config.Models) do
-        local entity = GetClosestObjectOfType(origin.x, origin.y, origin.z, Config.SearchRadius, model, false, false, false)
-        if entity ~= 0 and DoesEntityExist(entity) then
-            local dist = #(origin - GetEntityCoords(entity))
-            if dist < bestDistance then
-                best, bestDistance, bestConfig = entity, dist, settings
-            end
+local function closest()
+    local origin = GetEntityCoords(PlayerPedId())
+    local best, dist = nil, Config.SearchRadius
+    for model in pairs(Config.Models) do
+        local e = GetClosestObjectOfType(origin.x,origin.y,origin.z,Config.SearchRadius,model,false,false,false)
+        if e ~= 0 and DoesEntityExist(e) then
+            local d = #(GetEntityCoords(e)-origin)
+            if d < dist then best,dist=e,d end
         end
     end
-    return best, bestDistance, bestConfig
+    return best,dist
 end
-
-local function startTest()
-    stopTest()
-    local entity, distance, settings = nearestTV()
-    if not entity then
-        notify(('No supported TV prop found within %.1fm. Try standing next to a TV.'):format(Config.SearchRadius))
-        return
-    end
-    if not settings.target or settings.target == '' then
-        notify('This TV has no named render target configured; Stage 1 cannot draw to it.')
-        return
-    end
-    local model = GetEntityModel(entity)
-    local name = settings.target
-    log(('Entity=%s model=%s distance=%.2f target=%s'):format(entity, model, distance, name))
-
-    if not IsNamedRendertargetRegistered(name) then
-        local ok, result = safeNative(RegisterNamedRendertarget, name, false)
-        if not ok or result == false then notify('RegisterNamedRendertarget failed. Check F8.') return end
-    end
-    if not IsNamedRendertargetLinked(model) then
-        local ok, result = safeNative(LinkNamedRendertarget, model)
-        log(('Link attempt: nativeOK=%s result=%s linked=%s'):format(tostring(ok), tostring(result), tostring(IsNamedRendertargetLinked(model))))
-        if not ok or not IsNamedRendertargetLinked(model) then
-            notify('This prop cannot link to tvscreen. Use /tvpreview to test DUI separately, or try prop_tv_flat_01.')
-            return
-        end
-    end
-    if not IsNamedRendertargetRegistered(name) or not IsNamedRendertargetLinked(model) then
-        notify('Render target registration/linking was not confirmed. Check F8.') return
-    end
-    local ok, renderId = safeNative(GetNamedRendertargetRenderId, name)
-    if not ok or not renderId or renderId == 0 or renderId == -1 then
-        notify('Invalid named render ID: ' .. tostring(renderId)) return
-    end
-    local url = ('https://cfx-nui-%s/html/test.html'):format(GetCurrentResourceName())
-    local dui = CreateDui(url, width, height)
-    if not dui then notify('CreateDui returned no handle.') return end
-    local available = false
-    for i = 1, 100 do
-        if IsDuiAvailable(dui) then available = true break end
-        Wait(50)
-    end
-    if not available then
-        safeNative(DestroyDui, dui)
-        notify('DUI did not become available within 5 seconds.') return
-    end
-    local duiHandle = GetDuiHandle(dui)
-    if not duiHandle or duiHandle == '' then
-        safeNative(DestroyDui, dui)
-        notify('GetDuiHandle returned an empty handle.') return
-    end
-    local txd = CreateRuntimeTxd(dictName)
-    if not txd then
-        safeNative(DestroyDui, dui)
-        notify('CreateRuntimeTxd failed.') return
-    end
-    local texture = CreateRuntimeTextureFromDuiHandle(txd, textureName, duiHandle)
-    if not texture then
-        safeNative(DestroyDui, dui)
-        notify('CreateRuntimeTextureFromDuiHandle failed.') return
-    end
-    state = { entity = entity, model = model, target = name, renderId = renderId, dui = dui, txd = txd }
-    notify(('Test running on model %s / target %s. Look at TV. Use /tvdebug for diagnostics.'):format(model, name))
+local function closeFocus()
+    if focused then SetNuiFocus(false,false) SetNuiFocusKeepInput(false) focused=false end
 end
-
-local function startPreview()
-    if preview then
-        if preview.dui then safeNative(DestroyDui, preview.dui) end
-        preview = nil
-        notify('DUI preview stopped.')
-        return
-    end
-    local url = ('https://cfx-nui-%s/html/test.html'):format(GetCurrentResourceName())
-    local dui = CreateDui(url, width, height)
-    if not dui then notify('Preview CreateDui failed.') return end
-    local ready = false
-    for i = 1, 100 do
-        if IsDuiAvailable(dui) then ready = true break end
-        Wait(50)
-    end
-    if not ready then
-        safeNative(DestroyDui, dui)
-        notify('Preview DUI unavailable after 5 seconds.')
-        return
-    end
-    local handle = GetDuiHandle(dui)
-    if not handle or handle == '' then
-        safeNative(DestroyDui, dui)
-        notify('Preview GetDuiHandle failed.')
-        return
-    end
-    local txd = CreateRuntimeTxd('qb_tv_preview_dict')
-    if not txd then safeNative(DestroyDui, dui) notify('Preview TXD failed.') return end
-    local tex = CreateRuntimeTextureFromDuiHandle(txd, 'preview', handle)
-    if not tex then safeNative(DestroyDui, dui) notify('Preview texture failed.') return end
-    preview = { dui = dui }
-    notify('DUI preview running at top-right. Run /tvpreview again to stop.')
+local function destroy()
+    closeFocus()
+    local old = dui
+    dui=nil
+    current=nil
+    renderId=nil
+    if old then pcall(DestroyDui,old) end
 end
-
-RegisterCommand('tvpreview', function() CreateThread(startPreview) end, false)
-
+local function setupTarget(model, name)
+    if not IsNamedRendertargetRegistered(name) then RegisterNamedRendertarget(name,false) end
+    if not IsNamedRendertargetLinked(model) then LinkNamedRendertarget(model) end
+    if not IsNamedRendertargetLinked(model) then return nil end
+    local id = GetNamedRendertargetRenderId(name)
+    if not id or id <= 0 then return nil end
+    return id
+end
+local function message(data)
+    if dui and IsDuiAvailable(dui) then SendDuiMessage(dui,json.encode(data)) end
+end
+local function start(entity, key, data)
+    destroy()
+    if not data or data.kind == 'off' then return end
+    local model=GetEntityModel(entity)
+    local settings=Config.Models[model]
+    if not settings then return end
+    local id=setupTarget(model,settings.target)
+    if not id then if Config.Debug then print('[hf1_tv] Could not link '..settings.target..' to '..model) end return end
+    local obj=CreateDui(('https://cfx-nui-%s/html/player.html'):format(GetCurrentResourceName()),Config.DuiWidth,Config.DuiHeight)
+    if not obj then return end
+    local ready=false
+    for i=1,80 do if IsDuiAvailable(obj) then ready=true break end Wait(50) end
+    if not ready then DestroyDui(obj) return end
+    local handle=GetDuiHandle(obj)
+    if not handle or handle=='' then DestroyDui(obj) return end
+    txd=CreateRuntimeTxd(dict)
+    if not txd or not CreateRuntimeTextureFromDuiHandle(txd,tex,handle) then DestroyDui(obj) return end
+    dui=obj
+    renderId=id
+    current={key=key,entity=entity,model=model,started=data.started,kind=data.kind,url=data.url,volume=data.volume}
+    message({action='play',kind=data.kind,url=data.url,volume=data.volume,started=data.started,now=os.time()})
+end
+local function sendUpdate(entity, data)
+    if not entity or not DoesEntityExist(entity) then return end
+    TriggerServerEvent('hf1_tv:update',keyFor(entity),data)
+end
+local function menu(entity)
+    if not DoesEntityExist(entity) then return end
+    local key=keyFor(entity)
+    local options={
+        {title='Play a URL',description='YouTube, Twitch, TikTok, MP4/WebM or website',icon='play',onSelect=function()
+            local result=lib.inputDialog('HF1 TV - Play',{
+                {type='select',label='Content type',required=true,options={{value='youtube',label='YouTube'},{value='video',label='Direct video (MP4/WebM)'},{value='twitch',label='Twitch'},{value='tiktok',label='TikTok'},{value='website',label='Website'}}},
+                {type='input',label='HTTPS URL',required=true},
+                {type='number',label='Volume (0-100)',default=Config.DefaultVolume,min=0,max=100}
+            })
+            if not result then return end
+            if not result[2]:match('^https://') then notice('Use an HTTPS link','error') return end
+            sendUpdate(entity,{kind=result[1],url=result[2],volume=result[3]})
+        end},
+        {title='Volume',icon='volume-2',onSelect=function()
+            local data=screens[key]
+            if not data or data.kind=='off' then notice('TV is not playing','error') return end
+            local result=lib.inputDialog('TV Volume',{{type='slider',label='Volume',min=0,max=100,default=data.volume or Config.DefaultVolume}})
+            if result then sendUpdate(entity,{kind=data.kind,url=data.url,volume=result[1]}) end
+        end},
+        {title='Interact with website',description='Opens browser controls; press ESC to exit',icon='mouse-pointer',onSelect=function()
+            local data=screens[key]
+            if not data or data.kind~='website' then notice('Start a website first','error') return end
+            -- NUI is a separate browser instance; direct DUI mouse events are forwarded from it.
+            if not current or current.key~=key or not dui then notice('Move closer to the active TV','error') return end
+            focused=true
+            SetNuiFocus(true,true)
+            SendNUIMessage({action='focus',url=data.url})
+        end},
+        {title='Test pattern',icon='monitor',onSelect=function() sendUpdate(entity,{kind='test'}) end},
+        {title='Turn off',icon='power',onSelect=function() sendUpdate(entity,{kind='off'}) end}
+    }
+    lib.registerContext({id='hf1_tv_menu',title='HF1 Television',options=options})
+    lib.showContext('hf1_tv_menu')
+end
 CreateThread(function()
-    while true do
-        if preview and IsDuiAvailable(preview.dui) then
-            DrawSprite('qb_tv_preview_dict', 'preview', 0.78, 0.24, 0.38, 0.38 * (9.0 / 16.0) * (GetAspectRatio(false)), 0.0, 255, 255, 255, 255)
-            Wait(0)
-        else
-            Wait(200)
-        end
+    local models={}
+    for model in pairs(Config.Models) do models[#models+1]=model end
+    exports.ox_target:addModel(models,{{name='hf1_tv_interact',icon='fa-solid fa-tv',label='Interact with TV',distance=Config.InteractDistance,onSelect=function(data) menu(data.entity) end}})
+    TriggerServerEvent('hf1_tv:request')
+end)
+RegisterNetEvent('hf1_tv:snapshot',function(data) screens=data or {} end)
+RegisterNetEvent('hf1_tv:changed',function(key,data)
+    screens[key]=data
+    if current and current.key==key then
+        if not data then destroy()
+        elseif data.kind==current.kind and data.url==current.url then
+            current.volume=data.volume
+            message({action='volume',volume=data.volume})
+        else pending=true end
     end
 end)
-
-RegisterCommand('tvtest', function() CreateThread(startTest) end, false)
-RegisterCommand('tvstop', function() CreateThread(stopTest) end, false)
-RegisterCommand('tvdebug', function()
-    local entity, distance, settings = nearestTV()
-    log(('Nearest TV: entity=%s distance=%s target=%s'):format(tostring(entity), tostring(distance), settings and tostring(settings.target) or 'none'))
-    if entity and settings then
-        log(('model=%s exists=%s registered=%s linked=%s'):format(GetEntityModel(entity), tostring(DoesEntityExist(entity)), tostring(IsNamedRendertargetRegistered(settings.target)), tostring(IsNamedRendertargetLinked(GetEntityModel(entity)))))
-    end
-    if state then
-        log(('Active: entity=%s renderId=%s DUIavailable=%s target=%s'):format(state.entity, state.renderId, tostring(IsDuiAvailable(state.dui)), state.target))
-    else
-        log('No active test')
-    end
-    notify('Diagnostics printed to F8 console.')
-end, false)
-
 CreateThread(function()
     while true do
-        if not state then
-            Wait(250)
-        else
-            local current = state
-            local valid = DoesEntityExist(current.entity) and GetEntityModel(current.entity) == current.model
-            if not valid then
-                log('TV entity disappeared or changed. Stopping test.')
-                stopTest()
-            else
-                local distance = #(GetEntityCoords(PlayerPedId()) - GetEntityCoords(current.entity))
-                if distance <= Config.DrawDistance and IsDuiAvailable(current.dui) then
-                    -- Named targets are model-wide: other TVs sharing this model may show the test.
-                    local ok = safeNative(SetTextRenderId, current.renderId)
-                    if ok then
-                        SetScriptGfxDrawBehindPausemenu(true)
-                        DrawSprite(dictName, textureName, 0.5, 0.5, 1.0, 1.0, 0.0, 255, 255, 255, 255)
-                        safeNative(SetTextRenderId, GetDefaultScriptRendertargetRenderId())
-                        SetScriptGfxDrawBehindPausemenu(false)
-                    end
-                    Wait(0)
-                else
-                    Wait(100)
-                end
-            end
+        local e,dist=closest()
+        local key=e and keyFor(e)
+        local data=key and screens[key]
+        if not e or not data or dist>Config.PerformanceRadius then
+            if current then destroy() end
+        elseif not current or pending or current.key~=key or current.entity~=e then
+            pending=false
+            start(e,key,data)
         end
+        Wait(Config.ScanInterval)
     end
 end)
-
-AddEventHandler('onResourceStop', function(resource)
-    if resource ~= GetCurrentResourceName() then return end
-    if preview then
-        if preview.dui then safeNative(DestroyDui, preview.dui) end
-        preview = nil
+CreateThread(function()
+    while true do
+        if current and dui and renderId and DoesEntityExist(current.entity) and IsDuiAvailable(dui) then
+            local pos=GetEntityCoords(PlayerPedId())
+            if #(pos-GetEntityCoords(current.entity))<=Config.PerformanceRadius then
+                SetTextRenderId(renderId)
+                DrawSprite(dict,tex,0.5,0.5,1.0,1.0,0.0,255,255,255,255)
+                SetTextRenderId(GetDefaultScriptRendertargetRenderId())
+                Wait(0)
+            else Wait(150) end
+        else Wait(200) end
     end
-    if state then
-        safeNative(SetTextRenderId, GetDefaultScriptRendertargetRenderId())
-        if state.dui then safeNative(DestroyDui, state.dui) end
-        state = nil
+end)
+RegisterCommand('tvtest',function()
+    local e=closest()
+    if e then sendUpdate(e,{kind='test'}) else notice('No TV nearby','error') end
+end)
+RegisterCommand('tvdebug',function()
+    local e,d=closest()
+    print(('[hf1_tv] nearest=%s dist=%s active=%s dui=%s'):format(e or 'none',d or 'none',current and current.key or 'none',tostring(dui~=nil)))
+end)
+RegisterNUICallback('close',function(_,cb) closeFocus() cb({ok=true}) end)
+RegisterNUICallback('mouse',function(data,cb)
+    if focused and dui and IsDuiAvailable(dui) then
+        local x=math.floor(math.max(0,math.min(Config.DuiWidth-1,tonumber(data.x) or 0)))
+        local y=math.floor(math.max(0,math.min(Config.DuiHeight-1,tonumber(data.y) or 0)))
+        SendDuiMouseMove(dui,x,y)
+        if data.event=='down' then SendDuiMouseDown(dui,'left') elseif data.event=='up' then SendDuiMouseUp(dui,'left') end
     end
+    cb({ok=true})
+end)
+RegisterNUICallback('key',function(data,cb)
+    if focused and dui and IsDuiAvailable(dui) then
+        -- FiveM does not expose general keyboard injection into DUI via documented natives.
+        -- Website typing must use a supported in-page bridge, not a fake native.
+    end
+    cb({ok=true})
+end)
+AddEventHandler('onResourceStop',function(name)
+    if name~=GetCurrentResourceName() then return end
+    destroy()
+    exports.ox_target:removeModel((function() local t={} for m in pairs(Config.Models) do t[#t+1]=m end return t end)(),'hf1_tv_interact')
 end)

@@ -1,28 +1,31 @@
-# qb_tv_stage1 — FiveM TV render-target test
+# hf1_tv 0.2.0 (experimental)
 
-A new diagnostic resource for QBCore / Qbox. It is **framework-independent at the rendering layer**, so it runs on both. It does not yet implement YouTube, Twitch, menus, server synchronisation, or entity-specific screens.
+New FiveM TV resource for QBCore and Qbox. It does not depend on framework internals; requires `ox_lib` and `ox_target`.
 
 ## Install
-1. Extract `qb_tv_stage1` into `resources/[local]/` (any resources directory is fine).
-2. In `server.cfg`, add `ensure qb_tv_stage1` after your core framework. Do **not** run ptelevision simultaneously while testing: it may use the same named render targets.
-3. Restart the server or run `ensure qb_tv_stage1`.
-4. Stand close to a supported TV prop and enter `/tvtest`.
-5. The screen should display **TV TEST OK**, moving white dot, and changing clock.
-6. Run `/tvdebug` and copy the F8 console lines if the TV is blank. `/tvstop` stops the test.
+1. Stop `ptelevision` and `qb_tv_stage1` (they can conflict over named render targets).
+2. Extract the `hf1_tv` folder to `resources`.
+3. In server.cfg: `ensure ox_lib`, `ensure ox_target`, then `ensure hf1_tv`.
+4. Approach a supported GTA TV and choose **Interact with TV** using ox_target.
+5. Choose Test pattern first, then Play a URL.
 
-## Important limitations
-- Stage 1 tests **named render targets only**. Some listed props may not actually support the `tvscreen` target despite being in the source configuration. Test a known GTA TV such as `prop_tv_flat_01` first.
-- A named render target is shared by a model; all visible instances of the same model may display the pattern. Per-TV rendering needs further design.
-- The original model definitions, target names, scales and offsets were copied from the supplied open-source ptelevision config. Scale/offset are reserved for later non-render-target fallback.
-- The resource does not spawn TVs. You need a supported prop already in the world.
-- No dependency on ox_lib, qb-core or qbx_core for this stage. Compatible with either framework.
-- If the test page is blank but `/tvdebug` reports a valid render ID and available DUI, check other resources rendering to `tvscreen`, verify the prop actually supports the target, and check F8 for runtime errors.
+## Configuration
+`Config.PerformanceRadius = 30.0` controls the range where a client creates a DUI and renders the TV. Outside it, the resource renders nothing (the prop's underlying texture may still appear). `Config.SearchRadius` controls the nearest TV selection and should be at least the performance radius. `Config.Models` retains the 17 model hashes and render-target settings from the uploaded Stage 1 resource.
 
-## Diagnostics
-`/tvtest` creates a 1280x720 local DUI and draws its runtime texture to the nearest supported prop's named render target. `/tvdebug` reports model hash, entity handle, target registration/linking, render ID and DUI availability.
+## Playback notes
+- Direct MP4/WebM playback is the best initial end-to-end test. Server timestamps approximate sync when joining; exact frame sync is not guaranteed.
+- YouTube embeds start muted because of autoplay policy. Shorts and standard/live video links are normalized to the embed player. Restricted/age-gated videos can fail.
+- Twitch's player enforces its `parent` host allowlist. CFX NUI hosts may be rejected; this cannot be bypassed by client code.
+- TikTok videos use official embed URLs. TikTok Live is best effort only and is frequently blocked by embedded browser restrictions.
+- Websites can refuse to be embedded (X-Frame-Options/CSP). The mouse controller is experimental and keyboard typing into DUI is **not** supported by FiveM's standard native API. The controller's dashed area maps pointer coordinates to the TV's DUI, not a live preview.
+- GTA named render targets are model-wide, not entity-specific. Two TVs of the same model with different content near a client cannot be independently displayed through this implementation. A per-entity 3D screen renderer would be needed for that.
+- This release is **not yet tested in a live FiveM server**. It is a testable build, not a guarantee all external sites will play.
 
-## Credits
-TV prop model metadata adapted from Pickle Mods' open-source ptelevision (user-supplied source). This is a separate diagnostic implementation, not a patch of the original scripts.
+## Security
+Arbitrary HTTPS websites can expose players to untrusted content. Set `Config.AllowedWebsiteHosts` to a strict allowlist before deploying publicly. Server validates proximity and URL format; for production, add rate limits and permissions.
 
-## Stage 1.1 diagnostic
-Run `/tvpreview` to show the test page as a HUD overlay without relying on any TV prop. Run it again to stop. If preview works but `/tvtest` fails, the problem is the prop render-target link, not the DUI browser. The link attempt now logs native result and verifies the linked state.
+## Commands
+`/tvtest` plays the test pattern on the closest TV. `/tvdebug` prints nearest TV and active DUI information to F8.
+
+## Next steps
+Per-entity rendering for concurrent TVs, tighter timestamp sync, validated URL normalization, improved browser interaction, optional ox_inventory items.
