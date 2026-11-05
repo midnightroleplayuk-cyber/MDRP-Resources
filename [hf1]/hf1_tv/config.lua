@@ -44,3 +44,30 @@ Config.AudioFadeExponent = 1.5 -- 1=linear, >1 fades more strongly with distance
 -- Twitch is served by the free Cloudflare Pages HTTPS site.
 -- The Twitch iframe on that site uses its actual pages.dev hostname as parent.
 Config.TwitchPlayerUrl = 'https://hf1-tv-twitch.pages.dev'
+
+-- Placeable TV system: one ox_inventory item, selectable models.
+Config.TelevisionItem = 'television'
+Config.PlacementMaxDistance = 4.0
+Config.PlacementMinSpacing = 1.2
+Config.WallOffset = 0.08 -- model pivot clearance; tune for your props
+-- Floor/stand TVs need a floor raycast; flat screens require a vertical wall.
+-- Model pivots vary in GTA; test placement and adjust wall offset if needed.
+Config.PlaceableModels = {
+    prop_tv_flat_01 = {label='Wall TV - Flat 01',wall=true},
+    prop_tv_flat_02 = {label='Wall TV - Flat 02',wall=true},
+    prop_tv_flat_02b = {label='Wall TV - Flat 02B',wall=true},
+    prop_tv_flat_03 = {label='Wall TV - Flat 03',wall=true},
+    prop_tv_flat_03b = {label='Wall TV - Flat 03B',wall=true},
+    prop_tv_flat_michael = {label='Wall TV - Michael',wall=true},
+    prop_tv_02 = {label='Standing TV - 02',wall=false},
+    prop_tv_03 = {label='Standing TV - 03',wall=false},
+    prop_tv_06 = {label='Standing TV - 06',wall=false},
+    prop_trev_tv_01 = {label='Standing TV - Trevor',wall=false},
+    des_tvsmash_start = {label='TV - Smash Start (experimental)',wall=false},
+    prop_flatscreen_overlay = {label='Flat Screen Overlay (experimental)',wall=true},
+    prop_laptop_lester2 = {label='Lester Laptop (experimental)',wall=false},
+    prop_monitor_02 = {label='Monitor 02 (experimental)',wall=false},
+    prop_tv_03_overlay = {label='TV 03 Overlay (experimental)',wall=false},
+    prop_tv_flat_01_screen = {label='Flat 01 Screen (experimental)',wall=true},
+    prop_monitor_w_large = {label='Large Monitor (experimental)',wall=false},
+}

@@ -1,0 +1,22 @@
+# HF1 TV v0.5.0 - Placeable television experiment
+
+## Required
+- ox_lib, ox_target, ox_inventory, oxmysql
+- Add the item definition in `ox_inventory_item.lua` to `ox_inventory/data/items.lua` and restart ox_inventory.
+- Import `placement.sql` into your FiveM MySQL database before starting the resource.
+- Ensure dependencies before `ensure hf1_tv` in server.cfg.
+- To give yourself a test item, use your server's normal ox_inventory item-giving mechanism: item name `television`.
+- `/tvplace` is a testing shortcut, but the server still requires a television item and consumes one on successful placement.
+- Use the item, choose from all 17 supported models (some are overlay/laptop props and experimental), aim at a wall (flat TVs) or floor (standing TVs), mouse wheel to rotate floor models, E to confirm, X to cancel.
+- Pick up through ox_target. Server verifies license ownership and inventory capacity before returning item.
+- Admins with `group.admin` ACE can use `/tvadminremove` to select the nearest placed TV and permanently remove it (no item refund).
+- If your server's admins are granted via a different ACE principal, assign `group.admin` appropriately in server.cfg. The check is `IsPlayerAceAllowed(source, 'group.admin')`.
+- Database remembers model, position, heading, owner; playback URLs are **not** saved. TVs spawn off after resource/server restarts.
+
+## Important limitations
+- This is an in-game test build. GTA prop pivots vary: wall orientation/offset and floor height may need tuning per model.
+- World streaming/interior instancing is not yet handled; all placed TVs are local client objects synchronized via the server.
+- GTA named render targets are shared **by model**. Two TVs of the same model near a client cannot display independent videos at once with this renderer.
+- The owner is a license identifier, not a character identifier. All characters sharing the same license can pick up that owner's TV.
+- No placement cap or housing/property permissions are enforced yet; restrict item distribution until tested.
+- Test on a staging server first; back up your database and the working v0.4.4.1 ZIP.

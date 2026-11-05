@@ -57,3 +57,13 @@ end)
 RegisterNetEvent('hf1_tv:request', function()
     TriggerClientEvent('hf1_tv:snapshot', source, screens)
 end)
+
+-- A picked-up TV must stop playback for everyone. The key is model + rounded coords.
+AddEventHandler('hf1_tv:placedDeletedInternal',function(tv)
+    local p=tv.coords
+    local model=joaat(tv.model)
+    local function rnd(v) return math.floor(v*10+0.5) end
+    local key=('%d:%d:%d:%d'):format(model,rnd(p.x),rnd(p.y),rnd(p.z))
+    screens[key]=nil
+    TriggerClientEvent('hf1_tv:changed',-1,key,nil)
+end)

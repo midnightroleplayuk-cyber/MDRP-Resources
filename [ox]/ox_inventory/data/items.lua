@@ -5758,4 +5758,18 @@ return {
         description = 'Hang it on a wall and challenge the room.',
         server = { export = 'rex_darts.useItem' },
     },
+
+
+    --HF1 TV
+    ['tv'] = {
+    label = 'Television',
+    weight = 5000,
+    stack = false,
+    close = true,
+    consume = 0,
+    client = { export = 'hf1_tv.useTelevision' }
+    },
+
+
+
 }
