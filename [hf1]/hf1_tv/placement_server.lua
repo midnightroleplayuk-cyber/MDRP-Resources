@@ -42,15 +42,7 @@ end
 local function broadcast()
     TriggerClientEvent('hf1_tv:placedSnapshot',-1,placed)
 end
-MySQL.ready(function()
-    local rows=MySQL.query.await('SELECT id, owner, model, x, y, z, heading FROM hf1_tv_placed',{})
-    for _,r in ipairs(rows or {}) do
-        if Config.PlaceableModels[r.model] then
-            placed[tonumber(r.id)]={id=tonumber(r.id),owner=r.owner,model=r.model,coords={x=r.x+0.0,y=r.y+0.0,z=r.z+0.0},heading=r.heading+0.0}
-        end
-    end
-    print(('[hf1_tv] Loaded %d placed TVs (all start switched off)'):format(#(rows or {})))
-end)
+print('[hf1_tv] placement_server.lua loaded; registering placement handlers')
 RegisterNetEvent('hf1_tv:placedRequest',function()
     TriggerClientEvent('hf1_tv:placedSnapshot',source,placed)
 end)
@@ -122,3 +114,33 @@ RegisterNetEvent('hf1_tv:adminRemove',function(id)
     removePlaced(src,id,true)
 end)
 AddEventHandler('playerDropped',function() lastAction[source]=nil end)
+
+-- Initialise the database only AFTER the network handlers are registered.
+-- A missing table or oxmysql error must never prevent placement replies.
+CreateThread(function()
+    Wait(1000)
+    local ok,err=pcall(function()
+        MySQL.query.await([[CREATE TABLE IF NOT EXISTS `hf1_tv_placed` (
+            `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+            `owner` VARCHAR(90) NOT NULL,
+            `model` VARCHAR(80) NOT NULL,
+            `x` DOUBLE NOT NULL,
+            `y` DOUBLE NOT NULL,
+            `z` DOUBLE NOT NULL,
+            `heading` DOUBLE NOT NULL,
+            PRIMARY KEY (`id`),
+            KEY `idx_owner` (`owner`)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4]])
+        local rows=MySQL.query.await('SELECT id, owner, model, x, y, z, heading FROM hf1_tv_placed',{})
+        for _,r in ipairs(rows or {}) do
+            if Config.PlaceableModels[r.model] then
+                placed[tonumber(r.id)]={id=tonumber(r.id),owner=r.owner,model=r.model,
+                    coords={x=r.x+0.0,y=r.y+0.0,z=r.z+0.0},heading=r.heading+0.0}
+            end
+        end
+        print(('[hf1_tv] Placement database ready; loaded %d saved TVs'):format(#(rows or {})))
+        broadcast()
+    end)
+    if not ok then print('[hf1_tv] ERROR initialising placement database: '..tostring(err)) end
+end)
+print('[hf1_tv] placement event hf1_tv:place registered')
