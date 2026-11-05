@@ -40,3 +40,7 @@ Config.Debug = true
 Config.FullVolumeDistance = 3.0
 Config.AudioUpdateInterval = 250 -- milliseconds
 Config.AudioFadeExponent = 1.5 -- 1=linear, >1 fades more strongly with distance
+
+-- Twitch embed diagnostic: blank uses actual FiveM NUI hostname.
+-- Do not set an unrelated domain: Twitch requires parent to match the real embedding origin.
+Config.TwitchParent = ''

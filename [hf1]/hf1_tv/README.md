@@ -78,3 +78,11 @@ YouTube now requests unmuted autoplay (`mute=0`) and sends `unMute`, `setVolume`
 - Repeatedly requests setVolume/unMute/playVideo during the iframe startup window, even if an earlier volume update arrived before the player was ready.
 - The first Toggle Mute now represents the actual requested local mute state rather than compensating for a missed startup unmute.
 - YouTube/CEF may still reject audible autoplay on some content.
+
+
+## v0.3.0 Twitch FiveM-only diagnostic
+- Supports Twitch live channels (`https://www.twitch.tv/channel`) and VODs (`https://www.twitch.tv/videos/123456789`).
+- Corrects VOD embed ID format (`v123456789`) and logs the parent hostname visibly on the TV.
+- Twitch's official embed **requires an approved parent domain**; the local `cfx-nui` origin may be rejected. This release does not bypass that requirement.
+- Twitch embeds start muted; **YouTube-only auto-audio and volume behavior is unchanged**. Twitch volume and distance attenuation are **not yet implemented** because they require a working authorized Twitch player API.
+- If Twitch refuses playback, note the on-screen message, Twitch error, and whether a live channel or VOD was tested. A hosted HTTPS player may be necessary.

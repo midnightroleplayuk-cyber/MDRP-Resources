@@ -88,7 +88,7 @@ local function start(entity, key, data)
     elseif distance < radius then gain = ((radius-distance)/(radius-full)) ^ (Config.AudioFadeExponent or 1.0) end
     local initialVolume = localMuted and 0 or math.floor(math.max(0, math.min(100, (tonumber(data.volume) or Config.DefaultVolume) * gain)) + 0.5)
     -- Pass initial playback in the page URL: SendDuiMessage may fire before JS loads.
-    local payload = json.encode({action='play',kind=data.kind,url=data.url,volume=data.volume,initialVolume=initialVolume,initialMuted=localMuted or initialVolume==0,started=data.started,now=GetCloudTimeAsInt()})
+    local payload = json.encode({action='play',kind=data.kind,url=data.url,volume=data.volume,initialVolume=initialVolume,initialMuted=localMuted or initialVolume==0,started=data.started,now=GetCloudTimeAsInt(),twitchParent=Config.TwitchParent or ''})
     local function urlEncode(str)
         return (str:gsub('[^%w%-_%.~]', function(c) return ('%%%02X'):format(c:byte()) end))
     end
