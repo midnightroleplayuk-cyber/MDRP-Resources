@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<title>Vinewood Fire Alarm</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- ============ CONTROL PANEL ============ -->
+<div id="panel" class="hidden" aria-label="Fire alarm control panel">
+  <div class="enclosure">
+    <div class="hinge"></div>
+    <div class="fascia">
+      <div class="top">
+        <div class="indicators">
+          <div class="ind"><span class="led red" id="led-fire"></span>Fire</div>
+          <div class="ind"><span class="led amber" id="led-fault"></span>Fault</div>
+          <div class="ind"><span class="led green on" id="led-power"></span>Power</div>
+        </div>
+        <div class="lcd-frame"><div class="lcd" id="lcd"></div></div>
+        <div class="zones">
+          <div class="zones-title">Zones</div>
+          <div id="zone-leds"></div>
+        </div>
+      </div>
+      <div class="bottom">
+        <div class="brand">
+          <div class="brand-title">Fire Alarm<br>Control Panel</div>
+          <div class="brand-rule"></div>
+          <div class="grille"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+        </div>
+        <div class="keypad">
+          <button class="key" data-k="1">1</button><button class="key" data-k="2">2</button><button class="key" data-k="3">3</button>
+          <button class="key" data-k="4">4</button><button class="key" data-k="5">5</button><button class="key" data-k="6">6</button>
+          <button class="key" data-k="7">7</button><button class="key" data-k="8">8</button><button class="key" data-k="9">9</button>
+          <button class="key" data-k="back" aria-label="Back">&#8592;</button><button class="key" data-k="0">0</button><button class="key" data-k="ok" aria-label="Enter">&#10003;</button>
+        </div>
+        <div class="dpad">
+          <button class="key arrow up" data-k="up" aria-label="Up"><span>&#9650;</span></button>
+          <button class="key arrow left" data-k="left" aria-label="Left"><span>&#9664;</span></button>
+          <button class="key arrow right" data-k="right" aria-label="Right"><span>&#9654;</span></button>
+          <button class="key arrow down" data-k="down" aria-label="Down"><span>&#9660;</span></button>
+        </div>
+        <div class="controls">
+          <button class="key wide" data-k="silence">Silence</button>
+          <button class="key wide" data-k="reset">Reset</button>
+        </div>
+      </div>
+    </div>
+    <button class="keyswitch" id="keyswitch" aria-label="Access key"><span class="barrel"></span></button>
+  </div>
+  <div class="panel-hint">Esc to step away</div>
+</div>
+
+<!-- ============ ADMIN / COMMISSIONING ============ -->
+<div id="admin" class="hidden">
+  <div class="adm">
+    <aside class="adm-side">
+      <div class="adm-brand">
+        <div class="adm-mark"></div>
+        <div><strong>Fire alarm systems</strong><small>Vinewood commissioning</small></div>
+      </div>
+      <button class="btn primary" id="adm-new">New system</button>
+      <div id="adm-list" class="adm-list"></div>
+      <button class="btn ghost" id="adm-close">Close</button>
+    </aside>
+    <main class="adm-main" id="adm-main"></main>
+  </div>
+</div>
+
+<div id="toast" class="toast hidden"></div>
+
+<script src="app.js"></script>
+</body>
+</html>
