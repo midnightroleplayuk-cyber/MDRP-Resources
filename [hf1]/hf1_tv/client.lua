@@ -288,10 +288,17 @@ local function menu(entity)
     lib.registerContext({id='hf1_tv_menu',title='HF1 Television',options=options})
     lib.showContext('hf1_tv_menu')
 end
+RegisterNetEvent('hf1_tv:openPlacedMenu',function(entity)
+    if entity and DoesEntityExist(entity) then menu(entity) end
+end)
 CreateThread(function()
     local models={}
     for model in pairs(Config.Models) do models[#models+1]=model end
-    exports.ox_target:addModel(models,{{name='hf1_tv_interact',icon='fa-solid fa-tv',label='Interact with TV',distance=Config.InteractDistance,onSelect=function(data) menu(data.entity) end}})
+    exports.ox_target:addModel(models,{{name='hf1_tv_interact',icon='fa-solid fa-tv',label='Interact',distance=Config.InteractDistance,
+        canInteract=function(entity)
+            return not (HF1TVPlacedEntities and HF1TVPlacedEntities[entity])
+        end,
+        onSelect=function(data) menu(data.entity) end}})
     TriggerServerEvent('hf1_tv:request')
 end)
 RegisterNetEvent('hf1_tv:rejected',function(reason) notice(reason,'error') end)

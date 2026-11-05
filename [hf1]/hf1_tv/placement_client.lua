@@ -1,11 +1,13 @@
 local objects={}
+HF1TVPlacedEntities = HF1TVPlacedEntities or {}
 local placing=false
 local function notify(msg,kind) lib.notify({title='HF1 TV',description=msg,type=kind or 'inform'}) end
 local function clearObject(id)
     local e=objects[id]
     if e then
         if DoesEntityExist(e) then
-            exports.ox_target:removeLocalEntity(e,{'hf1_tv_placed_pickup_'..id})
+            exports.ox_target:removeLocalEntity(e,{'hf1_tv_placed_interact_'..id,'hf1_tv_placed_pickup_'..id})
+            HF1TVPlacedEntities[e]=nil
             DeleteEntity(e)
         end
         objects[id]=nil
@@ -26,8 +28,11 @@ local function spawnObject(tv)
     FreezeEntityPosition(e,true)
     SetEntityInvincible(e,true)
     objects[tv.id]=e
+    HF1TVPlacedEntities[e]=true
     SetModelAsNoLongerNeeded(model)
     exports.ox_target:addLocalEntity(e,{
+        {name='hf1_tv_placed_interact_'..tv.id,icon='fa-solid fa-tv',label='Interact',distance=Config.InteractDistance,
+         onSelect=function(data) TriggerEvent('hf1_tv:openPlacedMenu',data.entity) end},
         {name='hf1_tv_placed_pickup_'..tv.id,icon='fa-solid fa-box',label='Pickup TV',distance=2.5,
          onSelect=function() TriggerServerEvent('hf1_tv:pickup',tv.id) end}
     })
