@@ -56,7 +56,7 @@ local function cameraRay(distance, ignoredEntity)
     -- Synchronous probe: the previous asynchronous ray was read immediately,
     -- often before collision results were ready. Ignore the player and preview.
     local ray=StartExpensiveSynchronousShapeTestLosProbe(origin.x,origin.y,origin.z,
-        dest.x,dest.y,dest.z,511,ignoredEntity or PlayerPedId(),7)
+        dest.x,dest.y,dest.z,1 + 16 + 32 + 64,ignoredEntity or PlayerPedId(),7)
     local _,hit,point,normal=GetShapeTestResult(ray)
     if hit==1 and point and #(point-origin)>0.1 then return point,normal,true end
     return dest,nil,false
@@ -91,7 +91,7 @@ local function placement(modelName)
     local anchor=nil
     local anchorNormal=nil
     local pos=nil
-    local aimDistance=3.0
+    local aimDistance=6.0
     local lastUi=''
     local function updateUI(message)
         if message~=lastUi then
@@ -131,7 +131,8 @@ local function placement(modelName)
         -- we are moving, making the blue target appear stuck in one spot.
         -- Ignore the player's ped in the ray; the preview has collision disabled
         -- and is no longer a valid ray obstruction.
-        local point,normal,hasCollision=cameraRay(Config.PlacementMaxDistance,ped)
+        -- Cast through the scene, excluding the ghost so it cannot intercept the aim ray.
+        local point,normal,hasCollision=cameraRay(Config.PlacementMaxDistance,ghost)
         -- When an MLO has no usable collision, allow manual distance control.
         if not hasCollision then
             local cam=GetGameplayCamCoord()
@@ -156,7 +157,7 @@ local function placement(modelName)
             point.x,point.y,point.z,90,210,255,210)
         DrawMarker(28,point.x,point.y,point.z,
             0.0,0.0,0.0,0.0,0.0,0.0,
-            0.035,0.035,0.035,90,210,255,215,
+            0.14,0.14,0.14,25,220,255,240,
             false,false,2,false,nil,nil,false)
         if IsDisabledControlJustPressed(0,24) then
             anchor=point
@@ -214,7 +215,7 @@ local function placement(modelName)
         SetEntityCoordsNoOffset(ghost,pos.x,pos.y,pos.z,false,false,false)
         SetEntityHeading(ghost,heading)
         SetEntityVelocity(ghost,0.0,0.0,0.0)
-        SetEntityAlpha(ghost,ready and 215 or 150,false)
+        SetEntityAlpha(ghost,ready and 190 or 105,false)
         -- Some GTA prop instances refuse to teleport even when collisionless.
         -- Recreate the LOCAL preview at the intended world coords if that
         -- happens. This avoids the old object staying behind the player.
@@ -233,7 +234,7 @@ local function placement(modelName)
             SetEntityHasGravity(ghost,false)
             FreezeEntityPosition(ghost,false)
             SetEntityHeading(ghost,heading)
-            SetEntityAlpha(ghost,ready and 215 or 150,false)
+            SetEntityAlpha(ghost,ready and 190 or 105,false)
         end
         -- Amber marker follows the *actual* entity coordinates, not the
         -- intended position. If it differs from the cyan target, report it.
@@ -251,7 +252,7 @@ local function placement(modelName)
         local modeLabel=walkMode and 'WALK' or 'ADJUST'
         local line=('[TV] %s | %s | [CLICK] Position | [E] Place | [X] Exit | [F] Walk | [G] Snap %s'):format(status,modeLabel,snap and 'ON' or 'OFF')
         if not walkMode then line=line..'\\n[WASD] Move | [Q/R] Height | [Arrows] Rotate/Depth' end
-        if not selected and not hasCollision then line=line..' | [Wheel] Aim distance '..string.format('%.1fm',aimDistance) end
+        if not selected and not hasCollision then line=line..' | NO SURFACE HIT: [Wheel] Aim distance '..string.format('%.1fm',aimDistance) end
         updateUI(line)
         if IsDisabledControlJustPressed(0,73) or IsDisabledControlJustPressed(0,177) then break end
         if ready and (IsControlJustPressed(0,51) or IsDisabledControlJustPressed(0,51)) then
