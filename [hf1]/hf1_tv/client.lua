@@ -114,6 +114,16 @@ local function menu(entity)
             if not result[2]:match('^https://') then notice('Use an HTTPS link','error') return end
             sendUpdate(entity,{kind=result[1],url=result[2],volume=result[3]})
         end},
+        {title='Enable Audio / Unmute',description='Request sound on this TV (YouTube or direct video)',icon='volume-2',onSelect=function()
+            if not current or current.key~=key or not dui then notice('Move closer to the active TV','error') return end
+            if current.kind~='youtube' and current.kind~='video' then notice('Audio control supports YouTube and direct video','error') return end
+            message({action='audio',enabled=true,volume=current.volume or Config.DefaultVolume})
+            notice('Requested audio. If still silent, the embedded browser may be blocking unmute.','inform')
+        end},
+        {title='Mute Audio',icon='volume-x',onSelect=function()
+            if not current or current.key~=key or not dui then notice('Move closer to the active TV','error') return end
+            message({action='audio',enabled=false})
+        end},
         {title='Volume',icon='volume-2',onSelect=function()
             local data=screens[key]
             if not data or data.kind=='off' then notice('TV is not playing','error') return end

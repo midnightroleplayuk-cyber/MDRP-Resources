@@ -52,3 +52,11 @@ The test pattern works, confirming the GTA render target and DUI pipeline. YouTu
 - Reject invalid requests with client notification and server log.
 - Pass initial playback state in DUI page fragment to avoid SendDuiMessage before page JS is ready.
 - Confirm with Test Pattern, then a public YouTube video. If the YouTube iframe remains blank, check embedded browser restrictions; do not assume this fixes CEF platform playback.
+
+
+## v0.2.6 YouTube audio experiment
+YouTube uses `enablejsapi=1` and iframe postMessage commands for `setVolume`, `unMute`, and `playVideo`. After starting a video, select **Interact with TV → Enable Audio / Unmute**. The command is local to the viewer; every player may need to enable sound individually. FiveM CEF may still block unmuting because the ox_lib menu interaction is not a trusted user gesture inside the YouTube iframe. Volume changes remain server-synchronized, but volume does not automatically unmute YouTube. The console's `allowfullscreen` warning is harmless.
+
+
+### v0.2.7: automatic sound attempt
+YouTube now requests unmuted autoplay (`mute=0`) and sends `unMute`, `setVolume`, and `playVideo` to the iframe repeatedly during initialization. Direct videos already attempt audible autoplay before falling back to muted playback. Browser autoplay policies may still prevent sound; use **Enable Audio / Unmute** from the TV menu if necessary. This is an attempted improvement, not a bypass of Chromium or YouTube restrictions.
