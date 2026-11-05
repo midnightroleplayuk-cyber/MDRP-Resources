@@ -80,7 +80,7 @@ local pendingPlacement=false
 RegisterNetEvent('hf1_tv:placeResult',function(success,msg)
     pendingPlacement=false
     notify(msg,success and 'success' or 'error')
-    print(('[hf1_tv] server placement response: %s %s'):format(tostring(success),tostring(msg)))
+    if Config.PlacementShowDiagnostics then print(('[hf1_tv] server placement response: %s %s'):format(tostring(success),tostring(msg))) end
 end)
 local function placement(modelName)
     if placing then return end
@@ -115,6 +115,7 @@ local function placement(modelName)
     local aimDistance=6.0
     local lastUi=''
     local function updateUI(message)
+        if Config.PlacementShowHelp == false then return end
         if message~=lastUi then
             lib.hideTextUI()
             lib.showTextUI(message,{position='top-center',icon='tv',style={borderRadius=8}})
@@ -186,7 +187,7 @@ local function placement(modelName)
             selected=true
             height=0.0
             depth=0.0
-            print(("[hf1_tv] CLICK blue=(%.3f,%.3f,%.3f) ped=(%.3f,%.3f,%.3f) collision=%s normal=%s"):format(point.x,point.y,point.z,GetEntityCoords(ped).x,GetEntityCoords(ped).y,GetEntityCoords(ped).z,tostring(hasCollision),normal and ("%.2f,%.2f,%.2f"):format(normal.x,normal.y,normal.z) or "none"))
+            if Config.PlacementShowDiagnostics then print(("[hf1_tv] CLICK blue=(%.3f,%.3f,%.3f) ped=(%.3f,%.3f,%.3f) collision=%s normal=%s"):format(point.x,point.y,point.z,GetEntityCoords(ped).x,GetEntityCoords(ped).y,GetEntityCoords(ped).z,tostring(hasCollision),normal and ("%.2f,%.2f,%.2f"):format(normal.x,normal.y,normal.z) or "none")) end
             -- Keep heading unchanged during diagnostic lock; no wall-facing recalculation.
         end
         if IsDisabledControlJustPressed(0,47) then
@@ -260,14 +261,16 @@ local function placement(modelName)
         -- Amber marker follows the *actual* entity coordinates, not the
         -- intended position. If it differs from the cyan target, report it.
         local actual=GetEntityCoords(ghost)
-        DrawMarker(28,actual.x,actual.y,actual.z,0,0,0,0,0,0,
-            0.065,0.065,0.065,255,190,60,180,false,false,2,false,nil,nil,false)
+        if Config.PlacementShowDiagnostics then
+            DrawMarker(28,actual.x,actual.y,actual.z,0,0,0,0,0,0,
+                0.065,0.065,0.065,255,190,60,180,false,false,2,false,nil,nil,false)
+        end
         if IsDisabledControlJustPressed(0,24) then
-            print(("[hf1_tv] LOCK target=(%.3f,%.3f,%.3f) calculated=(%.3f,%.3f,%.3f) actual=(%.3f,%.3f,%.3f)"):format(target.x,target.y,target.z,pos.x,pos.y,pos.z,actual.x,actual.y,actual.z))
+            if Config.PlacementShowDiagnostics then print(("[hf1_tv] LOCK target=(%.3f,%.3f,%.3f) calculated=(%.3f,%.3f,%.3f) actual=(%.3f,%.3f,%.3f)"):format(target.x,target.y,target.z,pos.x,pos.y,pos.z,actual.x,actual.y,actual.z)) end
         end
         local mismatch=#(actual-pos)
         if mismatch>0.25 and GetGameTimer()%1500<20 then
-            print(('[hf1_tv] TV preview mismatch %.2fm target=(%.2f,%.2f,%.2f) actual=(%.2f,%.2f,%.2f)'):format(mismatch,pos.x,pos.y,pos.z,actual.x,actual.y,actual.z))
+            if Config.PlacementShowDiagnostics then print(('[hf1_tv] TV preview mismatch %.2fm target=(%.2f,%.2f,%.2f) actual=(%.2f,%.2f,%.2f)'):format(mismatch,pos.x,pos.y,pos.z,actual.x,actual.y,actual.z)) end
         end
         local status=ready and 'READY' or 'CLICK TO POSITION' 
         local modeLabel=walkMode and 'WALK' or 'ADJUST'
@@ -279,7 +282,7 @@ local function placement(modelName)
         if ready and (IsControlJustPressed(0,51) or IsDisabledControlJustPressed(0,51)) then
             pendingPlacement=true
             local payload={model=modelName,coords={x=pos.x,y=pos.y,z=pos.z},heading=heading}
-            print(('[hf1_tv] sending placement model=%s coords=(%.2f,%.2f,%.2f)'):format(modelName,pos.x,pos.y,pos.z))
+            if Config.PlacementShowDiagnostics then print(('[hf1_tv] sending placement model=%s coords=(%.2f,%.2f,%.2f)'):format(modelName,pos.x,pos.y,pos.z)) end
             TriggerServerEvent('hf1_tv:place',payload)
             SetTimeout(8000,function()
                 if pendingPlacement then

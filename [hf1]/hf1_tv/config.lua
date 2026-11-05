@@ -1,5 +1,5 @@
 Config = {}
-Config.Debug = true
+Config.Debug = false
 Config.SearchRadius = 35.0
 Config.DrawDistance = 35.0
 Config.Models = {
@@ -34,7 +34,7 @@ Config.DefaultVolume = 35
 Config.MaxUrlLength = 1800
 Config.AllowWebsites = true -- WARNING: arbitrary websites are untrusted content; allow only trusted domains in production.
 Config.AllowedWebsiteHosts = {} -- empty = all HTTPS hosts; e.g. {'example.com'}
-Config.Debug = true
+Config.Debug = false
 
 -- Positional audio: at/below FullVolumeDistance use selected volume; fade to zero at PerformanceRadius.
 Config.FullVolumeDistance = 3.0
@@ -47,6 +47,8 @@ Config.TwitchPlayerUrl = 'https://hf1-tv-twitch.pages.dev'
 
 -- Placeable TV system: one ox_inventory item, selectable models.
 Config.TelevisionItem = 'tv'
+Config.PlacementShowHelp = false -- set true to show placement controls on screen
+Config.PlacementShowDiagnostics = false -- amber position marker and diagnostic logs
 Config.PlacementMaxDistance = 10.0
 Config.PlacementMinSpacing = 1.2
 Config.WallOffset = 0.08 -- model pivot clearance; tune for your props

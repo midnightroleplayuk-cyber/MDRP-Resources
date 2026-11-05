@@ -5,7 +5,7 @@ local function tell(src,msg,kind)
 end
 local function placementReply(src,success,msg)
     TriggerClientEvent('hf1_tv:placeResult',src,success,msg)
-    print(('[hf1_tv] placement reply to %s: %s - %s'):format(src,tostring(success),msg))
+    if Config.Debug then print(('[hf1_tv] placement reply to %s: %s - %s'):format(src,tostring(success),msg)) end
 end
 local function reject(src,msg)
     placementReply(src,false,msg)
@@ -42,13 +42,13 @@ end
 local function broadcast()
     TriggerClientEvent('hf1_tv:placedSnapshot',-1,placed)
 end
-print('[hf1_tv] placement_server.lua loaded; registering placement handlers')
+if Config.Debug then print('[hf1_tv] placement_server.lua loaded; registering placement handlers') end
 RegisterNetEvent('hf1_tv:placedRequest',function()
     TriggerClientEvent('hf1_tv:placedSnapshot',source,placed)
 end)
 RegisterNetEvent('hf1_tv:place',function(data)
     local src=source
-    print(('[hf1_tv] placement received from %s model=%s'):format(src,tostring(type(data)=='table' and data.model or 'missing')))
+    if Config.Debug then print(('[hf1_tv] placement received from %s model=%s'):format(src,tostring(type(data)=='table' and data.model or 'missing'))) end
     if not throttle(src) then reject(src,'Please wait two seconds before placing another TV') return end
     if not validPlacement(src,data) then
         local p=type(data)=='table' and data.coords or nil
@@ -78,7 +78,7 @@ RegisterNetEvent('hf1_tv:place',function(data)
     broadcast()
     TriggerClientEvent('hf1_tv:placedConfirmed',src,placed[id])
     placementReply(src,true,'Television saved successfully')
-    print(('[hf1_tv] Saved TV id=%s model=%s at %.2f %.2f %.2f'):format(tostring(id),data.model,p.x,p.y,p.z))
+    if Config.Debug then print(('[hf1_tv] Saved TV id=%s model=%s at %.2f %.2f %.2f'):format(tostring(id),data.model,p.x,p.y,p.z)) end
 end)
 local function removePlaced(src,id,admin)
     id=tonumber(id)
@@ -138,9 +138,9 @@ CreateThread(function()
                     coords={x=r.x+0.0,y=r.y+0.0,z=r.z+0.0},heading=r.heading+0.0}
             end
         end
-        print(('[hf1_tv] Placement database ready; loaded %d saved TVs'):format(#(rows or {})))
+        if Config.Debug then print(('[hf1_tv] Placement database ready; loaded %d saved TVs'):format(#(rows or {}))) end
         broadcast()
     end)
     if not ok then print('[hf1_tv] ERROR initialising placement database: '..tostring(err)) end
 end)
-print('[hf1_tv] placement event hf1_tv:place registered')
+if Config.Debug then print('[hf1_tv] placement event hf1_tv:place registered') end
