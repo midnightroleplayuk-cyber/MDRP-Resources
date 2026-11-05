@@ -311,3 +311,53 @@ RegisterNetEvent('vinewood_firealarm:cdRelay', function(data)
     data.coords = vec3(data.coords.x, data.coords.y, data.coords.z)
     TriggerServerEvent('cd_dispatch:AddNotification', data)
 end)
+
+---------------------------------------------------------------------
+-- Automatic detection (GTA fires, explosions, smoke grenades).
+-- vinewood_fire fires are checked on the server instead.
+---------------------------------------------------------------------
+local SMOKE = { `WEAPON_SMOKEGRENADE`, `WEAPON_BZGAS` }
+
+CreateThread(function()
+    local hits, cooldown = {}, {}
+    while true do
+        local D = Config.Detection
+        Wait(D and D.interval or 2000)
+        if D and D.enabled and (D.nativeFire or D.explosions or D.smokeGrenades) then
+            local pc = GetEntityCoords(PlayerPedId())
+            local now = GetGameTimer()
+            for id, sys in pairs(Systems) do
+                local st = States[id]
+                for _, d in ipairs(sys.devices) do
+                    if d.type == 'detector' and #(pc - vec3(d.x, d.y, d.z)) < 60.0 then
+                        local key = id .. ':' .. d.id
+                        local active = st and contains(st.active, d.id)
+                        local kind
+                        if not active and (cooldown[key] or 0) < now then
+                            if D.nativeFire and GetNumberOfFiresInRange(d.x, d.y, d.z, D.range) > 0 then
+                                kind = 'fire'
+                            elseif D.explosions and IsExplosionInSphere(-1, d.x, d.y, d.z, D.range) then
+                                kind = 'explosion'
+                            elseif D.smokeGrenades then
+                                for _, w in ipairs(SMOKE) do
+                                    if IsProjectileTypeWithinDistance(d.x, d.y, d.z, w, D.range, false) then kind = 'smoke' break end
+                                end
+                            end
+                        end
+                        if kind then
+                            hits[key] = (hits[key] or 0) + 1
+                            -- explosions are instant; everything else must persist
+                            if kind == 'explosion' or hits[key] >= D.confirm then
+                                hits[key] = 0
+                                cooldown[key] = now + 15000
+                                TriggerServerEvent('vinewood_firealarm:detect', id, d.id, kind)
+                            end
+                        else
+                            hits[key] = nil
+                        end
+                    end
+                end
+            end
+        end
+    end
+end)

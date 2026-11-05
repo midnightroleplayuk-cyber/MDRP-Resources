@@ -625,6 +625,61 @@ end)
 lib.callback.register('vinewood_firealarm:isAdmin', function(src) return isAdmin(src) end)
 
 ---------------------------------------------------------------------
+-- Automatic detection
+---------------------------------------------------------------------
+local DetectCooldown = {} -- [src] = GetGameTimer of last report
+
+local function detectorCanTrigger(id, d)
+    local st = States[id]
+    return st and not contains(st.active, d.id) and not contains(st.disabled, d.zone)
+end
+
+-- Reports from clients: GTA fires, explosions and smoke near a detector
+RegisterNetEvent('vinewood_firealarm:detect', function(id, devId, kind)
+    local src = source
+    if not Config.Detection.enabled then return end
+    local sys = Systems[id]
+    local d = sys and getDevice(sys, devId)
+    if not d or d.type ~= 'detector' or not nearDevice(src, d, 80.0) then return end
+    local now = GetGameTimer()
+    if DetectCooldown[src] and now - DetectCooldown[src] < 1500 then return end
+    DetectCooldown[src] = now
+    if not detectorCanTrigger(id, d) then return end
+    local reason = kind == 'smoke' and 'Smoke detected' or (kind == 'explosion' and 'Heat detected (explosion)' or 'Smoke detected (fire)')
+    TriggerAlarm(id, d.zone, d.id, reason, 'detector')
+end)
+
+AddEventHandler('playerDropped', function() DetectCooldown[source] = nil end)
+
+-- vinewood_fire: fires live on the server, so check them here
+CreateThread(function()
+    local seen = {} -- ['id:dev'] = consecutive hits
+    while true do
+        Wait(Config.Detection.interval)
+        local D = Config.Detection
+        if D.enabled and D.vinewoodFire and GetResourceState('vinewood_fire') == 'started' then
+            for id, sys in pairs(Systems) do
+                for _, d in ipairs(sys.devices) do
+                    if d.type == 'detector' then
+                        local key = id .. ':' .. d.id
+                        local ok, near = pcall(function() return exports.vinewood_fire:IsFireNear(devCoords(d), D.range) end)
+                        if ok and near and detectorCanTrigger(id, d) then
+                            seen[key] = (seen[key] or 0) + 1
+                            if seen[key] >= D.confirm then
+                                seen[key] = 0
+                                TriggerAlarm(id, d.zone, d.id, 'Smoke detected (fire)', 'vinewood_fire')
+                            end
+                        else
+                            seen[key] = nil
+                        end
+                    end
+                end
+            end
+        end
+    end
+end)
+
+---------------------------------------------------------------------
 -- Exports (server)
 ---------------------------------------------------------------------
 exports('TriggerZone', function(id, zone, reason)
