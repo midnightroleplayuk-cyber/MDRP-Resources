@@ -60,3 +60,13 @@ YouTube uses `enablejsapi=1` and iframe postMessage commands for `setVolume`, `u
 
 ### v0.2.7: automatic sound attempt
 YouTube now requests unmuted autoplay (`mute=0`) and sends `unMute`, `setVolume`, and `playVideo` to the iframe repeatedly during initialization. Direct videos already attempt audible autoplay before falling back to muted playback. Browser autoplay policies may still prevent sound; use **Enable Audio / Unmute** from the TV menu if necessary. This is an attempted improvement, not a bypass of Chromium or YouTube restrictions.
+
+
+## v0.2.8 - positional audio
+- One **Toggle Mute** menu action, local to each player.
+- Starts YouTube embeds muted to avoid the brief 100%-volume burst, then sets volume before unmuting.
+- Every 250ms the client sends the selected TV volume multiplied by a distance-based gain.
+- `Config.FullVolumeDistance` sets the near-field zone; `Config.PerformanceRadius` is the zero-volume cutoff and DUI unload boundary.
+- Distance fades are per viewer; the server-selected base volume stays shared.
+- Browser restrictions may still prevent autoplay/unmute on some videos.
+- `tvscreen` is a shared GTA render target; this version does not guarantee independent content on multiple TVs of the same model in one client.

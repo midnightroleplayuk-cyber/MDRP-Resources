@@ -35,3 +35,8 @@ Config.MaxUrlLength = 1800
 Config.AllowWebsites = true -- WARNING: arbitrary websites are untrusted content; allow only trusted domains in production.
 Config.AllowedWebsiteHosts = {} -- empty = all HTTPS hosts; e.g. {'example.com'}
 Config.Debug = true
+
+-- Positional audio: at/below FullVolumeDistance use selected volume; fade to zero at PerformanceRadius.
+Config.FullVolumeDistance = 3.0
+Config.AudioUpdateInterval = 250 -- milliseconds
+Config.AudioFadeExponent = 1.5 -- 1=linear, >1 fades more strongly with distance

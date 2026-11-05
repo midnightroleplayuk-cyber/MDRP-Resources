@@ -2,6 +2,8 @@ local screens, current, pending, dui, txd, renderId = {}, nil, nil, nil, nil, ni
 local dict = 'hf1_tv_' .. GetPlayerServerId(PlayerId())
 local tex = 'display'
 local focused = false
+local localMuted = false
+local lastEffectiveVolume = -1
 local function notice(msg, kind)
     lib.notify({title='HF1 TV', description=msg, type=kind or 'inform'})
 end
@@ -30,6 +32,7 @@ local function destroy()
     dui=nil
     current=nil
     renderId=nil
+    lastEffectiveVolume=-1
     if old then pcall(DestroyDui,old) end
 end
 local targetFailure = {}
@@ -94,6 +97,7 @@ local function start(entity, key, data)
     dui=obj
     renderId=id
     current={key=key,entity=entity,model=model,started=data.started,kind=data.kind,url=data.url,volume=data.volume}
+    lastEffectiveVolume=-1
     -- Initial state is loaded from the URL fragment; do not race the JS listener.
 end
 local function sendUpdate(entity, data)
@@ -114,15 +118,12 @@ local function menu(entity)
             if not result[2]:match('^https://') then notice('Use an HTTPS link','error') return end
             sendUpdate(entity,{kind=result[1],url=result[2],volume=result[3]})
         end},
-        {title='Enable Audio / Unmute',description='Request sound on this TV (YouTube or direct video)',icon='volume-2',onSelect=function()
+        {title='Toggle Mute',description='Mute or unmute this TV on your client',icon='volume-2',onSelect=function()
             if not current or current.key~=key or not dui then notice('Move closer to the active TV','error') return end
             if current.kind~='youtube' and current.kind~='video' then notice('Audio control supports YouTube and direct video','error') return end
-            message({action='audio',enabled=true,volume=current.volume or Config.DefaultVolume})
-            notice('Requested audio. If still silent, the embedded browser may be blocking unmute.','inform')
-        end},
-        {title='Mute Audio',icon='volume-x',onSelect=function()
-            if not current or current.key~=key or not dui then notice('Move closer to the active TV','error') return end
-            message({action='audio',enabled=false})
+            localMuted=not localMuted
+            lastEffectiveVolume=-1 -- force a new attenuation update
+            notice(localMuted and 'TV muted locally' or 'TV unmuted locally','inform')
         end},
         {title='Volume',icon='volume-2',onSelect=function()
             local data=screens[key]
@@ -159,7 +160,7 @@ RegisterNetEvent('hf1_tv:changed',function(key,data)
         if not data then destroy()
         elseif data.kind==current.kind and data.url==current.url then
             current.volume=data.volume
-            message({action='volume',volume=data.volume})
+            lastEffectiveVolume=-1 -- recompute selected volume * distance gain
         else pending=true end
     end
 end)
@@ -175,6 +176,29 @@ CreateThread(function()
             start(e,key,data)
         end
         Wait(Config.ScanInterval)
+    end
+end)
+-- Distance-based local gain. Server-selected volume remains unchanged for everyone.
+-- When outside PerformanceRadius the scan thread destroys the DUI entirely.
+CreateThread(function()
+    while true do
+        if current and dui and IsDuiAvailable(dui) and DoesEntityExist(current.entity) then
+            local dist = #(GetEntityCoords(PlayerPedId()) - GetEntityCoords(current.entity))
+            local radius = math.max(0.1, Config.PerformanceRadius)
+            local full = math.max(0, math.min(radius - 0.01, Config.FullVolumeDistance or 3.0))
+            local gain = 0.0
+            if dist <= full then gain = 1.0
+            elseif dist < radius then
+                local t = (radius - dist) / (radius - full)
+                gain = t ^ (Config.AudioFadeExponent or 1.0)
+            end
+            local effective = localMuted and 0 or math.floor(math.max(0, math.min(100, (tonumber(current.volume) or Config.DefaultVolume) * gain)) + 0.5)
+            if effective ~= lastEffectiveVolume then
+                lastEffectiveVolume=effective
+                message({action='volume',volume=effective,muted=localMuted or effective==0})
+            end
+        end
+        Wait(math.max(100, Config.AudioUpdateInterval or 250))
     end
 end)
 CreateThread(function()
