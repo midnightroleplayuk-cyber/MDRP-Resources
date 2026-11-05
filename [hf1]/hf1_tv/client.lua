@@ -38,22 +38,23 @@ local function setupTarget(model, name)
     -- Diagnose each native independently rather than silently treating a false link as a DUI failure.
     local ok, registered = pcall(IsNamedRendertargetRegistered, name)
     if not ok then print(('[hf1_tv] IsNamedRendertargetRegistered error: %s'):format(registered)) return nil end
-    if not registered then
+    if registered == false or registered == 0 then
         local rok, result = pcall(RegisterNamedRendertarget, name, false)
         print(('[hf1_tv] Register target=%s ok=%s result=%s'):format(name, tostring(rok), tostring(result)))
         if not rok then return nil end
     end
     local lok, linked = pcall(IsNamedRendertargetLinked, model)
     if not lok then print(('[hf1_tv] Linked check error: %s'):format(linked)) return nil end
-    if not linked then
+    if linked == false or linked == 0 then
         local linkOK, result = pcall(LinkNamedRendertarget, model)
         local checkOK, after = pcall(IsNamedRendertargetLinked, model)
         print(('[hf1_tv] Link attempt: model=%s target=%s nativeOK=%s result=%s checkOK=%s linked=%s'):format(model, name, tostring(linkOK), tostring(result), tostring(checkOK), tostring(after)))
-        if not linkOK or not checkOK or not after then return nil end
+        if not linkOK or not checkOK or after == false or after == 0 or after == nil then return nil end
     end
     local idOK, id = pcall(GetNamedRendertargetRenderId, name)
     print(('[hf1_tv] Render ID: target=%s nativeOK=%s id=%s'):format(name, tostring(idOK), tostring(id)))
-    if not idOK or type(id) ~= 'number' or id <= 0 then return nil end
+    -- Render IDs are signed 32-bit hashes: negative values are valid. -1 is the invalid sentinel.
+    if not idOK or type(id) ~= 'number' or id == -1 or id == 0 then return nil end
     return id
 end
 local function message(data)

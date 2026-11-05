@@ -32,3 +32,6 @@ Per-entity rendering for concurrent TVs, tighter timestamp sync, validated URL n
 
 ## v0.2.1 render-target diagnostics
 If `/tvtest` shows nothing, run `/tvdebug` and copy the `Link attempt` and `Render ID` lines from F8. If you restarted only the resource, fully quit FiveM and reconnect once to clear client-side render-target state. Do not run ptelevision or qb_tv_stage1 concurrently. This update adds logging and protected native calls; it does not claim to resolve a failed native link automatically.
+
+## v0.2.2 Render target fix
+Accept signed render target IDs (including negative values), and handle FiveM native 0/1 link-state results explicitly. This fixes a confirmed false rejection of the `tvscreen` target. Restart the resource, then try Test pattern first.
