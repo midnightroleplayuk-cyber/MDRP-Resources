@@ -9,7 +9,7 @@ function CreateNamedRenderTargetForModel(name, model)
 	if IsNamedRendertargetRegistered(name) then
 		handle = GetNamedRendertargetRenderId(name)
 	end
-	return handle
+	return (handle and handle > 0) and handle or nil
 end
 
 function RequestTextureDictionary(dict)
@@ -26,6 +26,7 @@ function LoadModel(model)
 end
 
 function RenderScaleformTV(renderTarget, scaleform, entity)
+    if not renderTarget or renderTarget <= 0 or not entity or not DoesEntityExist(entity) then return end
     SetTextRenderId(renderTarget) -- set render target
     Set_2dLayer(4)
     SetScriptGfxDrawBehindPausemenu(1)

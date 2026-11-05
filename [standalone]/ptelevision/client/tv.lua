@@ -125,12 +125,16 @@ function OpenTVMenu()
 end
 
 function PlayBrowser(data)
-    while not IsDuiAvailable(duiObj) do Wait(10) end
+    if not duiObj then return end
+    while duiObj and not IsDuiAvailable(duiObj) do Wait(10) end
+    if not duiObj then return end
     setDuiURL(data.url)
 end
 
 function PlayVideo(data)
-    while not IsDuiAvailable(duiObj) do Wait(10) end
+    if not duiObj then return end
+    while duiObj and not IsDuiAvailable(duiObj) do Wait(10) end
+    if not duiObj then return end
     if (getDuiURL() ~= DEFAULT_URL) then 
         waitForLoad = true
         setDuiURL(DEFAULT_URL)
@@ -143,7 +147,7 @@ function PlayVideo(data)
 end
 
 function ResetDisplay()
-    setDuiURL(DEFAULT_URL)
+    if duiObj then setDuiURL(DEFAULT_URL) end
 end
 
 function GetTelevisionLocal(coords)

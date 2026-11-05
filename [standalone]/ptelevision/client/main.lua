@@ -26,7 +26,9 @@ end
 
 function setDuiURL(url)
 	duiUrl = url
-	SetDuiUrl(duiObj, duiUrl)
+	if duiObj and IsDuiAvailable(duiObj) then
+        SetDuiUrl(duiObj, duiUrl)
+    end
 end
 
 local sfName = 'generic_texture_renderer'
@@ -49,12 +51,14 @@ function loadScaleform(scaleform)
 end
 
 function ShowScreen(data)
+    if not data or not data.entity or not DoesEntityExist(data.entity) then return end
     CURRENT_SCREEN = data
     sfHandle = loadScaleform(sfName)
     runtimeTxd = 'ptelevision_b_dict'
 
     local txd = CreateRuntimeTxd('ptelevision_b_dict')
     duiObj = CreateDui(duiUrl, width, height)
+    if not duiObj then return end
     local dui = GetDuiHandle(duiObj)
     local tx = CreateRuntimeTextureFromDuiHandle(txd, 'ptelevision_b_txd', dui)
     
@@ -76,13 +80,13 @@ function ShowScreen(data)
         local tvObj = data.entity
         local screenModel = Config.Models[data.model]
         while duiObj do
-            if (tvObj and sfHandle ~= nil and HasScaleformMovieLoaded(sfHandle)) then
+            if (duiObj and tvObj and DoesEntityExist(tvObj) and sfHandle and sfHandle ~= 0 and HasScaleformMovieLoaded(sfHandle)) then
                 local pos = GetEntityCoords(tvObj)
                 local scale = screenModel.Scale
                 local offset = GetOffsetFromEntityInWorldCoords(tvObj, screenModel.Offset.x, screenModel.Offset.y, screenModel.Offset.z)
                 if (screenModel.Target) then 
                     local id = CreateNamedRenderTargetForModel(screenModel.Target, data.model)
-                    if (id ~= -1) then
+                    if (id and id > 0) then
                         RenderScaleformTV(id, sfHandle, tvObj)
                     end
                 else
@@ -107,6 +111,7 @@ function ShowScreen(data)
         while duiObj do 
             local pcoords = GetEntityCoords(PlayerPedId())
             local dist = #(coords - pcoords)
+            if not duiObj or not IsDuiAvailable(duiObj) then break end
             SendDuiMessage(duiObj, json.encode({
                 setVolume = true,
                 data = GetVolume(dist, range, volume)
@@ -119,9 +124,10 @@ end
 function HideScreen()
     CURRENT_SCREEN = nil
     if (duiObj) then 
-        DestroyDui(duiObj)
-        SetScaleformMovieAsNoLongerNeeded(sfHandle)
+        local oldDui = duiObj
         duiObj = nil
+        if oldDui then DestroyDui(oldDui) end
+        if sfHandle and sfHandle ~= 0 then SetScaleformMovieAsNoLongerNeeded(sfHandle) end
         sfHandle = nil 
     end
 end
@@ -218,7 +224,7 @@ AddEventHandler('onResourceStop', function(name)
     if name == GetCurrentResourceName() then
         HideScreen()
         for i=1, #Locations do 
-            DeleteEntity(Locations[i].obj)
+            if Locations[i].obj and DoesEntityExist(Locations[i].obj) then DeleteEntity(Locations[i].obj) end
         end
     end
 end)

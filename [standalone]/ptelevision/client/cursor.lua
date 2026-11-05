@@ -23,6 +23,10 @@ function SetInteractScreen(bool)
             
             -- Update controls while active
             while shouldDraw do
+                if not duiObj or not IsDuiAvailable(duiObj) then
+                    shouldDraw = false
+                    break
+                end
                 nX = GetControlNormal(0, 239) * screenWidth
                 nY = GetControlNormal(0, 240) * screenHeight
                 DisableControlAction(0, 1, true) -- Disable looking horizontally
