@@ -78,8 +78,17 @@ local function start(entity, key, data)
         end
         return
     end
+    -- Set the local distance-adjusted gain BEFORE the iframe is allowed to unmute.
+    -- Prevents a brief burst at the server-selected (or YouTube default) volume.
+    local distance = #(GetEntityCoords(PlayerPedId()) - GetEntityCoords(entity))
+    local radius = math.max(0.1, Config.PerformanceRadius)
+    local full = math.max(0, math.min(radius - 0.01, Config.FullVolumeDistance or 3.0))
+    local gain = 0.0
+    if distance <= full then gain = 1.0
+    elseif distance < radius then gain = ((radius-distance)/(radius-full)) ^ (Config.AudioFadeExponent or 1.0) end
+    local initialVolume = localMuted and 0 or math.floor(math.max(0, math.min(100, (tonumber(data.volume) or Config.DefaultVolume) * gain)) + 0.5)
     -- Pass initial playback in the page URL: SendDuiMessage may fire before JS loads.
-    local payload = json.encode({action='play',kind=data.kind,url=data.url,volume=data.volume,started=data.started,now=GetCloudTimeAsInt()})
+    local payload = json.encode({action='play',kind=data.kind,url=data.url,volume=data.volume,initialVolume=initialVolume,initialMuted=localMuted or initialVolume==0,started=data.started,now=GetCloudTimeAsInt()})
     local function urlEncode(str)
         return (str:gsub('[^%w%-_%.~]', function(c) return ('%%%02X'):format(c:byte()) end))
     end
@@ -97,7 +106,7 @@ local function start(entity, key, data)
     dui=obj
     renderId=id
     current={key=key,entity=entity,model=model,started=data.started,kind=data.kind,url=data.url,volume=data.volume}
-    lastEffectiveVolume=-1
+    lastEffectiveVolume=initialVolume
     -- Initial state is loaded from the URL fragment; do not race the JS listener.
 end
 local function sendUpdate(entity, data)

@@ -3,11 +3,11 @@ let media=null, volume=35, youtubeFrame=null, youtubeReady=false, youtubeQueue=[
 let youtubeRetry=null, audioRequested=true, youtubeAudioInitialized=false, mutedByController=false;
 // Prefer audible autoplay. Browsers may still deny it; the menu retains manual unmute.
 function attemptYoutubeSound(){
-  if(!youtubeFrame || !audioRequested)return;
+  if(!youtubeFrame)return;
   // Never allow the iframe's default 100% audio to escape: embed starts muted.
   // Apply desired volume first, then unmute, then play.
   ytCommand('setVolume',[Math.max(0,Math.min(100,volume))]);
-  ytCommand(volume===0 || mutedByController ? 'mute' : 'unMute');
+  ytCommand(volume===0 || mutedByController || !audioRequested ? 'mute' : 'unMute');
   ytCommand('playVideo');
   youtubeAudioInitialized=true;
 }
@@ -35,7 +35,7 @@ window.addEventListener('message', e=>{
 function show(text){status.textContent=text;status.style.display='block'}
 function iframe(src,allow='autoplay; encrypted-media; fullscreen; picture-in-picture'){const f=document.createElement('iframe');f.src=src;f.allow=allow;f.referrerPolicy='strict-origin-when-cross-origin';f.allowFullscreen=true;screen.append(f);media=f;return f}
 function youtubeId(url){try{const u=new URL(url);let id=u.hostname==='youtu.be'?u.pathname.slice(1):u.searchParams.get('v');if(!id){const m=u.pathname.match(/^\/(?:shorts|live|embed)\/([^/?]+)/);id=m?.[1]}return /^[\w-]{11}$/.test(id||'')?id:null}catch{return null}}
-function play(d){if(youtubeRetry)clearInterval(youtubeRetry);youtubeRetry=null;youtubeFrame=null;youtubeReady=false;youtubeAudioInitialized=false;screen.replaceChildren();media=null;volume=0;audioRequested=true;mutedByController=false;if(d.kind==='test'){const t=document.createElement('div');t.className='bars';t.innerHTML='<b>HF1 TV TEST OK</b>';screen.append(t);show('Test pattern');return}
+function play(d){if(youtubeRetry)clearInterval(youtubeRetry);youtubeRetry=null;youtubeFrame=null;youtubeReady=false;youtubeAudioInitialized=false;screen.replaceChildren();media=null;volume=Math.max(0,Math.min(100,Number(d.initialVolume ?? d.volume ?? 35)||0));audioRequested=true;mutedByController=d.initialMuted===true || volume===0;if(d.kind==='test'){const t=document.createElement('div');t.className='bars';t.innerHTML='<b>HF1 TV TEST OK</b>';screen.append(t);show('Test pattern');return}
 try{
 const u=new URL(d.url);if(u.protocol!=='https:')throw Error('HTTPS only');
 if(d.kind==='youtube'){
@@ -54,7 +54,8 @@ let attempts=0;
 youtubeRetry=setInterval(()=>{
   if(youtubeFrame!==f||++attempts>12){clearInterval(youtubeRetry);youtubeRetry=null;return}
   ytCommand('addEventListener',['onReady']);
-  if(!youtubeAudioInitialized)attemptYoutubeSound();
+  // Repeat the requested state while the iframe initializes. Early postMessages can be lost.
+  attemptYoutubeSound();
 },1000);
 show('YouTube: loading video '+id+' (sound requested)');
 f.addEventListener('load',()=>show('YouTube embed loaded — if blank, video may block embedding or FiveM CEF playback'));
@@ -76,7 +77,7 @@ else {iframe(d.url);show('TikTok Live • may be blocked by TikTok')}
 else throw Error('Unsupported type');
 }catch(e){show('Cannot load: '+e.message)}
 }
-window.addEventListener('message',e=>{let d=e.data||{};if(d.action==='play')play(d);if(d.action==='volume'){volume=Math.max(0,Math.min(100,Number(d.volume||0)));mutedByController=d.muted===true;if(media?.tagName==='VIDEO'){media.volume=volume/100;media.muted=mutedByController;}if(youtubeFrame){ytCommand('setVolume',[volume]);ytCommand(mutedByController?'mute':'unMute');youtubeAudioInitialized=true}}if(d.action==='audio'){if(Number.isFinite(Number(d.volume)))volume=Math.max(0,Math.min(100,Number(d.volume)));if(youtubeFrame){audioRequested=d.enabled!==false;ytAudio(audioRequested);show(d.enabled!==false?'YouTube: audio requested • if silent, CEF may block autoplay sound':'YouTube: muted')}else if(media?.tagName==='VIDEO'){media.volume=volume/100;media.muted=d.enabled===false;media.play().catch(()=>{})}}});
+window.addEventListener('message',e=>{let d=e.data||{};if(d.action==='play')play(d);if(d.action==='volume'){volume=Math.max(0,Math.min(100,Number(d.volume||0)));mutedByController=d.muted===true;if(media?.tagName==='VIDEO'){media.volume=volume/100;media.muted=mutedByController;}if(youtubeFrame){attemptYoutubeSound()}}if(d.action==='audio'){if(Number.isFinite(Number(d.volume)))volume=Math.max(0,Math.min(100,Number(d.volume)));if(youtubeFrame){audioRequested=d.enabled!==false;ytAudio(audioRequested && !mutedByController && volume>0);show(d.enabled!==false?'YouTube: audio requested • if silent, CEF may block autoplay sound':'YouTube: muted')}else if(media?.tagName==='VIDEO'){media.volume=volume/100;media.muted=d.enabled===false;media.play().catch(()=>{})}}});
 
 // Load the initial command after the document script is ready, avoiding DUI message races.
 try {

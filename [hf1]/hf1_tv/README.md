@@ -70,3 +70,11 @@ YouTube now requests unmuted autoplay (`mute=0`) and sends `unMute`, `setVolume`
 - Distance fades are per viewer; the server-selected base volume stays shared.
 - Browser restrictions may still prevent autoplay/unmute on some videos.
 - `tvscreen` is a shared GTA render target; this version does not guarantee independent content on multiple TVs of the same model in one client.
+
+
+## v0.2.9 - initial audio state correction
+- Initial DUI URL now includes the viewer's distance-adjusted volume and local mute state, before the iframe starts.
+- The YouTube player initializes its volume from this value instead of zero.
+- Repeatedly requests setVolume/unMute/playVideo during the iframe startup window, even if an earlier volume update arrived before the player was ready.
+- The first Toggle Mute now represents the actual requested local mute state rather than compensating for a missed startup unmute.
+- YouTube/CEF may still reject audible autoplay on some content.
