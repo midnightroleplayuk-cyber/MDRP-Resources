@@ -99,14 +99,18 @@ local function start(entity, key, data)
         local twitchUrl = Config.TwitchPlayerUrl or 'https://hf1-tv-twitch.pages.dev'
         local host, path = tostring(data.url):match('^https://([^/]+)(/[^?#]*)')
         host = host and host:lower() or ''
-        if host ~= 'twitch.tv' and host ~= 'www.twitch.tv' and host ~= 'm.twitch.tv' then
+        if host ~= 'twitch.tv' and host ~= 'www.twitch.tv' and host ~= 'm.twitch.tv' and host ~= 'clips.twitch.tv' then
             print('[hf1_tv] Twitch: invalid hostname')
             return
         end
         local parts = {}
         for part in path:gmatch('[^/]+') do parts[#parts+1] = part end
         local keyName, keyValue
-        if parts[1] == 'videos' and parts[2] and parts[2]:match('^%d+$') then
+        if host == 'clips.twitch.tv' and parts[1] and parts[1]:match('^[%w_%-]+$') then
+            keyName, keyValue = 'clip', parts[1]
+        elseif parts[2] == 'clip' and parts[3] and parts[3]:match('^[%w_%-]+$') then
+            keyName, keyValue = 'clip', parts[3]
+        elseif parts[1] == 'videos' and parts[2] and parts[2]:match('^%d+$') then
             keyName, keyValue = 'video', parts[2]
         elseif parts[1] and parts[1]:match('^[%w_]+$') and #parts[1] >= 2 and #parts[1] <= 25 then
             keyName, keyValue = 'channel', parts[1]
@@ -167,9 +171,9 @@ local function menu(entity)
             local result=lib.inputDialog('TV Volume',{{type='slider',label='Volume',min=0,max=100,default=data.volume or Config.DefaultVolume}})
             if result then sendUpdate(entity,{kind=data.kind,url=data.url,volume=result[1]}) end
         end},
-        {title='Interact with website',description='Opens browser controls; press ESC to exit',icon='mouse-pointer',onSelect=function()
+        {title='Interact with screen',description='Click Twitch content warnings or website controls; ESC to exit',icon='mouse-pointer',onSelect=function()
             local data=screens[key]
-            if not data or data.kind~='website' then notice('Start a website first','error') return end
+            if not data or (data.kind~='website' and data.kind~='twitch') then notice('Start Twitch or a website first','error') return end
             -- NUI is a separate browser instance; direct DUI mouse events are forwarded from it.
             if not current or current.key~=key or not dui then notice('Move closer to the active TV','error') return end
             focused=true
