@@ -21,8 +21,6 @@ Config.Models = {
     [`prop_tv_03`] = { target = "tvscreen", scale = 0.085, offset = vector3(-1.02, -0.055, 1.04) },
     [`prop_tv_flat_02`] = { target = "tvscreen", scale = 0.085, offset = vector3(-1.02, -0.055, 1.04) },
 }
--- Original ptelevision model/target/scale/offset values retained.
--- Stage 1 uses named render targets only; offsets reserved for future fallback.
 
 -- Only players this close render a TV (metres). Others do not create a DUI.
 Config.PerformanceRadius = 30.0

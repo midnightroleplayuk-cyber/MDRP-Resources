@@ -3,11 +3,10 @@
 New FiveM TV resource for QBCore and Qbox. It does not depend on framework internals; requires `ox_lib` and `ox_target`.
 
 ## Install
-1. Stop `ptelevision` and `qb_tv_stage1` (they can conflict over named render targets).
-2. Extract the `hf1_tv` folder to `resources`.
-3. In server.cfg: `ensure ox_lib`, `ensure ox_target`, then `ensure hf1_tv`.
-4. Approach a supported GTA TV and choose **Interact with TV** using ox_target.
-5. Choose Test pattern first, then Play a URL.
+1. Extract the `hf1_tv` folder to `resources`.
+2. In server.cfg: `ensure ox_lib`, `ensure ox_target`, then `ensure hf1_tv`.
+3. Approach a supported GTA TV and choose **Interact with TV** using ox_target.
+4. Choose Test pattern first, then Play a URL.
 
 ## Configuration
 `Config.PerformanceRadius = 30.0` controls the range where a client creates a DUI and renders the TV. Outside it, the resource renders nothing (the prop's underlying texture may still appear). `Config.SearchRadius` controls the nearest TV selection and should be at least the performance radius. `Config.Models` retains the 17 model hashes and render-target settings from the uploaded Stage 1 resource.
@@ -88,10 +87,6 @@ YouTube now requests unmuted autoplay (`mute=0`) and sends `unMute`, `setVolume`
 - If Twitch refuses playback, note the on-screen message, Twitch error, and whether a live channel or VOD was tested. A hosted HTTPS player may be necessary.
 
 
-## v0.3.1 - FiveM-only HLS diagnostic
-Adds an **HLS stream (.m3u8) - experimental** choice in Play a URL. Supply an HTTPS `.m3u8` URL that you are authorized to access. This tests whether FiveM CEF supports that stream directly through HTML5 video; error code and stalled messages are displayed on the TV. No external domain or Twitch embed is needed for this diagnostic.
-
-**This is not Twitch channel URL playback.** Twitch channel pages are not direct media URLs. Twitch playback requires legitimately authorized playable stream URLs and may require HLS JavaScript playback support, CORS and appropriate codecs. The script does not obtain Twitch access tokens, bypass access controls or proxy Twitch streams. YouTube functionality is unchanged.
 
 ## v0.3.2 - HLS.js MSE compatibility diagnostic
 The HLS option now loads HLS.js v1.6.13 from jsDelivr at runtime and attempts playback through Media Source Extensions. It reports CDN load failures, missing MSE support, playlist parsing, CORS/network errors and codec errors on the TV. An internet connection to jsDelivr is required for this experimental build. This is not a Twitch URL converter and does not retrieve protected Twitch stream URLs. YouTube playback is unchanged.
@@ -131,6 +126,3 @@ Bare domains such as facebook.com are automatically prefixed with https:// in th
 - TikTok is enabled in the existing **Interact with screen** menu, so you can click its player controls.
 - The original Twitch clip two-click sequence and Cloudflare configuration are unchanged.
 - Full keyboard input to arbitrary third-party sites is **not supported** by FiveM's documented DUI native API. Do not enter credentials into unknown sites.
-
-## v0.4.4.1: Simplified website toolbar
-Removed Bing, DuckDuckGo, YouTube, and Wikipedia search-provider shortcuts. The website interaction toolbar keeps Google Search and Go to URL (with automatic HTTPS normalization). Experimental TikTok direct-DUI playback and mouse interaction remain. Full keyboard typing into arbitrary third-party pages is not supported.

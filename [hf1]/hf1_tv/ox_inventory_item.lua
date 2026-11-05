@@ -1,4 +1,4 @@
--- Add this ENTRY inside ox_inventory/data/items.lua (not as a standalone resource script):
+-- Add this ENTRY inside ox_inventory/data/items.lua:
 ['tv'] = {
     label = 'Television',
     weight = 5000,
