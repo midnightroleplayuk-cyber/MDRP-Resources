@@ -93,6 +93,7 @@ local function start(entity, key, data)
         return (str:gsub('[^%w%-_%.~]', function(c) return ('%%%02X'):format(c:byte()) end))
     end
     local page = ('https://cfx-nui-%s/html/player.html#%s'):format(GetCurrentResourceName(),urlEncode(payload))
+    local twitchContentType = nil
     if data.kind == 'twitch' then
         -- Give the hosted page its own top-level DUI document rather than nesting
         -- it in html/player.html. Twitch's iframe now has just one parent.
@@ -118,6 +119,7 @@ local function start(entity, key, data)
             print('[hf1_tv] Twitch: invalid channel or VOD path')
             return
         end
+        twitchContentType = keyName
         local separator = twitchUrl:find('?', 1, true) and '&' or '?'
         page = twitchUrl .. separator .. keyName .. '=' .. urlEncode(keyValue)
             .. '&volume=' .. tostring(initialVolume)
@@ -143,13 +145,20 @@ local function start(entity, key, data)
     -- Cloudflare fallback button (shown after 3.5 seconds in Pages v0.3.7).
     -- This is a synthetic event, NOT a trusted user gesture. Twitch/CEF may
     -- ignore it; never claim autoplay is guaranteed.
-    if data.kind == 'twitch' and keyName == 'clip' then
+    if data.kind == 'twitch' and twitchContentType == 'clip' then
+        print('[hf1_tv] Clip auto-click scheduled (5200ms)')
         local clipDui = obj
         local clipKey = key
         CreateThread(function()
             Wait(5200)
-            if dui ~= clipDui or not current or current.key ~= clipKey or current.kind ~= 'twitch' then return end
-            if focused or not IsDuiAvailable(clipDui) then return end
+            if dui ~= clipDui or not current or current.key ~= clipKey or current.kind ~= 'twitch' then
+                print('[hf1_tv] Clip auto-click cancelled: TV playback changed')
+                return
+            end
+            if focused or not IsDuiAvailable(clipDui) then
+                print('[hf1_tv] Clip auto-click skipped: interaction focused or DUI unavailable')
+                return
+            end
             local cx = math.floor(Config.DuiWidth / 2)
             local cy = math.floor(Config.DuiHeight / 2)
             print('[hf1_tv] Experimental Twitch clip: sending one synthetic DUI click at centre')
