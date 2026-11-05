@@ -95,7 +95,7 @@ const now=Number(d.now), started=Number(d.started);
 const elapsed=Number.isFinite(now)&&Number.isFinite(started)?Math.max(0,Math.floor(now-started)):0;
 // FiveM's cfx-nui:// origin is not a public YouTube embed origin. Avoid passing it
 // as the origin parameter. The youtube.com embed is the supported iframe endpoint.
-const p=new URLSearchParams({autoplay:'1',mute:'1',controls:'1',playsinline:'1',start:String(elapsed),rel:'0',enablejsapi:'1'});
+const p=new URLSearchParams({autoplay:'1',mute:'1',controls:'1',playsinline:'1',start:String(elapsed),rel:'0',cc_load_policy:'0',enablejsapi:'1'});
 const f=iframe(`https://www.youtube.com/embed/${id}?${p}`);
 youtubeFrame=f;
 // The iframe API accepts postMessage commands even when the full JS API script

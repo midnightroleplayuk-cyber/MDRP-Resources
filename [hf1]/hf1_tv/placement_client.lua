@@ -28,7 +28,7 @@ local function spawnObject(tv)
     objects[tv.id]=e
     SetModelAsNoLongerNeeded(model)
     exports.ox_target:addLocalEntity(e,{
-        {name='hf1_tv_placed_pickup_'..tv.id,icon='fa-solid fa-box',label='Pick up television (owner only)',distance=2.5,
+        {name='hf1_tv_placed_pickup_'..tv.id,icon='fa-solid fa-box',label='Pickup TV',distance=2.5,
          onSelect=function() TriggerServerEvent('hf1_tv:pickup',tv.id) end}
     })
 end
@@ -136,7 +136,7 @@ local function placement(modelName)
     while placing do
         Wait(0)
         -- Disable placement keys in Adjust mode. Walk mode leaves movement available.
-        for _,control in ipairs({24,25,14,15,172,173,174,175,44,45,47,73,177,191}) do
+        for _,control in ipairs({24,25,14,15,172,173,174,175,38,44,47,73,177,191,201}) do
             DisableControlAction(0,control,true)
         end
         if not walkMode then
@@ -212,7 +212,7 @@ local function placement(modelName)
                 local candidate=anchor+move
                 if #(GetEntityCoords(ped)-candidate)<=Config.PlacementMaxDistance then anchor=candidate end
             end
-            if IsDisabledControlPressed(0,45) then height=math.min(height+speed,3.0) end
+            if IsDisabledControlPressed(0,38) then height=math.min(height+speed,3.0) end
             if IsDisabledControlPressed(0,44) then height=math.max(height-speed,-2.0) end
             if IsDisabledControlPressed(0,174) then heading=(heading+0.75)%360 end
             if IsDisabledControlPressed(0,175) then heading=(heading-0.75)%360 end
@@ -274,12 +274,12 @@ local function placement(modelName)
         end
         local status=ready and 'READY' or 'CLICK TO POSITION' 
         local modeLabel=walkMode and 'WALK' or 'ADJUST'
-        local line=('[TV] %s | %s | [CLICK] Position | [E] Place | [X] Exit | [F] Walk | [G] Snap %s'):format(status,modeLabel,snap and 'ON' or 'OFF')
-        if not walkMode then line=line..'\\n[WASD] Move | [Q/R] Height | [Arrows] Rotate/Depth' end
+        local line=('[TV] %s | %s | [CLICK] Position | [ENTER] Place | [X] Exit | [F] Walk | [G] Snap %s'):format(status,modeLabel,snap and 'ON' or 'OFF')
+        if not walkMode then line=line..'\\n[WASD] Move | [Q/E] Height | [Arrows] Rotate/Depth' end
         if not selected and not hasCollision then line=line..' | NO SURFACE HIT: [Wheel] Aim distance '..string.format('%.1fm',aimDistance) end
         updateUI(line)
         if IsDisabledControlJustPressed(0,73) or IsDisabledControlJustPressed(0,177) then break end
-        if ready and (IsControlJustPressed(0,51) or IsDisabledControlJustPressed(0,51)) then
+        if ready and (IsControlJustPressed(0,191) or IsDisabledControlJustPressed(0,191) or IsDisabledControlJustPressed(0,201)) then
             pendingPlacement=true
             local payload={model=modelName,coords={x=pos.x,y=pos.y,z=pos.z},heading=heading}
             if Config.PlacementShowDiagnostics then print(('[hf1_tv] sending placement model=%s coords=(%.2f,%.2f,%.2f)'):format(modelName,pos.x,pos.y,pos.z)) end
