@@ -100,7 +100,7 @@ local function placement(modelName)
             lastUi=message
         end
     end
-    local _,minDim,maxDim=GetModelDimensions(model)
+    local minDim,maxDim=GetModelDimensions(model)
     -- GTA prop origins are not consistently at the bottom of the object.
     -- For desk/floor models place the model's bounding-box bottom on the hit point.
     -- Wall models use their centre pivot and optional wall snap.
@@ -109,7 +109,7 @@ local function placement(modelName)
         local wallHit=normal and math.abs(normal.z)<0.55
         local offset=wallHit and snap and Config.WallOffset or 0.0
         local normalOffset=wallHit and normal*offset or vector3(0,0,0)
-        return point+normalOffset+vector3(0,0,height+depth+baseOffset)
+        return point + vector3(0,0,height+depth) -- diagnostic: no model or wall offsets; exact blue-marker world XY
     end
     while placing do
         Wait(0)
@@ -164,9 +164,8 @@ local function placement(modelName)
             selected=true
             height=0.0
             depth=0.0
-            if snap and normal and math.abs(normal.z)<0.55 then
-                heading=(math.deg(math.atan(normal.y,normal.x))-90.0)%360
-            end
+            print(("[hf1_tv] CLICK blue=(%.3f,%.3f,%.3f) ped=(%.3f,%.3f,%.3f) collision=%s normal=%s"):format(point.x,point.y,point.z,GetEntityCoords(ped).x,GetEntityCoords(ped).y,GetEntityCoords(ped).z,tostring(hasCollision),normal and ("%.2f,%.2f,%.2f"):format(normal.x,normal.y,normal.z) or "none"))
+            -- Keep heading unchanged during diagnostic lock; no wall-facing recalculation.
         end
         if IsDisabledControlJustPressed(0,47) then
             snap=not snap
@@ -241,6 +240,9 @@ local function placement(modelName)
         local actual=GetEntityCoords(ghost)
         DrawMarker(28,actual.x,actual.y,actual.z,0,0,0,0,0,0,
             0.065,0.065,0.065,255,190,60,180,false,false,2,false,nil,nil,false)
+        if IsDisabledControlJustPressed(0,24) then
+            print(("[hf1_tv] LOCK target=(%.3f,%.3f,%.3f) calculated=(%.3f,%.3f,%.3f) actual=(%.3f,%.3f,%.3f)"):format(target.x,target.y,target.z,pos.x,pos.y,pos.z,actual.x,actual.y,actual.z))
+        end
         local mismatch=#(actual-pos)
         if mismatch>0.25 and GetGameTimer()%1500<20 then
             print(('[hf1_tv] TV preview mismatch %.2fm target=(%.2f,%.2f,%.2f) actual=(%.2f,%.2f,%.2f)'):format(mismatch,pos.x,pos.y,pos.z,actual.x,actual.y,actual.z))
