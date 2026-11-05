@@ -24,7 +24,7 @@ local function closest()
     return best,dist
 end
 local function closeFocus()
-    if focused then SetNuiFocus(false,false) SetNuiFocusKeepInput(false) focused=false end
+    if focused then SetNuiFocus(false,false) SetNuiFocusKeepInput(false) focused=false SendNUIMessage({action='hide'}) end
 end
 local function destroy()
     closeFocus()
@@ -171,7 +171,7 @@ local function menu(entity)
             local result=lib.inputDialog('TV Volume',{{type='slider',label='Volume',min=0,max=100,default=data.volume or Config.DefaultVolume}})
             if result then sendUpdate(entity,{kind=data.kind,url=data.url,volume=result[1]}) end
         end},
-        {title='Interact with screen',description='Click Twitch content warnings or website controls; ESC to exit',icon='mouse-pointer',onSelect=function()
+        {title='Interact with screen',description='Visible TV preview with mouse control; ESC to exit',icon='mouse-pointer',onSelect=function()
             local data=screens[key]
             if not data or (data.kind~='website' and data.kind~='twitch') then notice('Start Twitch or a website first','error') return end
             -- NUI is a separate browser instance; direct DUI mouse events are forwarded from it.
@@ -216,6 +216,21 @@ CreateThread(function()
             start(e,key,data)
         end
         Wait(Config.ScanInterval)
+    end
+end)
+-- Draw the SAME DUI runtime texture as a large HUD preview while interacting.
+-- This is not a second iframe or browser: the preview and physical TV share one DUI.
+-- The transparent NUI input surface maps exactly to the preview rectangle.
+CreateThread(function()
+    while true do
+        if focused and dui and IsDuiAvailable(dui) then
+            HideHudAndRadarThisFrame()
+            DrawRect(0.5, 0.5, 1.0, 1.0, 0, 0, 0, 205)
+            DrawSprite(dict, tex, 0.5, 0.5, 0.80, 0.80, 0.0, 255, 255, 255, 255)
+            Wait(0)
+        else
+            Wait(150)
+        end
     end
 end)
 -- Distance-based local gain. Server-selected volume remains unchanged for everyone.

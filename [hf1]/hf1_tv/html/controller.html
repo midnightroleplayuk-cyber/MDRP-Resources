@@ -1,3 +1,19 @@
-<!doctype html><html><head><meta charset="utf-8"><style>html,body{margin:0;background:transparent;color:white;font:16px Arial}#overlay{display:none;position:fixed;inset:0;background:#0006;cursor:crosshair}#help{position:absolute;top:12px;left:12px;background:#121827;padding:14px;border-radius:8px}#surface{position:absolute;left:10%;top:12%;width:80%;height:76%;border:2px dashed #ffffff90}button{padding:8px;margin-left:8px}</style></head><body><div id="overlay"><div id="surface"></div><div id="help">TV mouse controller • click inside the dashed area to control the website • ESC to close <button id="close">Close</button><div style="font-size:12px;margin-top:6px">Keyboard input to DUI is not available through standard FiveM natives.</div></div></div><script>
-const overlay=document.getElementById('overlay'),surface=document.getElementById('surface');const send=(name,data)=>fetch(`https://${GetParentResourceName()}/${name}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data||{})});function close(){overlay.style.display='none';send('close')}window.addEventListener('message',e=>{if(e.data.action==='focus')overlay.style.display='block'});document.getElementById('close').onclick=close;document.addEventListener('keydown',e=>{if(e.key==='Escape')close()});function pointer(e,type){const r=surface.getBoundingClientRect();send('mouse',{event:type,x:(e.clientX-r.left)/r.width*1280,y:(e.clientY-r.top)/r.height*720})}surface.addEventListener('mousemove',e=>pointer(e,'move'));surface.addEventListener('mousedown',e=>pointer(e,'down'));surface.addEventListener('mouseup',e=>pointer(e,'up'));
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+*{box-sizing:border-box}html,body{margin:0;background:transparent;color:white;font:15px Arial,sans-serif}
+#overlay{display:none;position:fixed;inset:0;cursor:default}
+#surface{position:absolute;left:10vw;top:10vh;width:80vw;height:80vh;cursor:crosshair;touch-action:none}
+#help{position:absolute;top:1vh;left:10vw;right:10vw;min-height:7vh;display:flex;align-items:center;justify-content:space-between;gap:10px;background:#121827e8;padding:8px 14px;border-radius:8px;pointer-events:auto}
+#help span{font-size:13px}button{background:#334155;color:#fff;border:1px solid #64748b;border-radius:6px;padding:8px 15px;cursor:pointer}
+</style></head><body><div id="overlay"><div id="surface"></div><div id="help"><span>Live TV preview • Click on the video to interact • ESC to exit. Twitch may require account sign-in.</span><button id="close">Close (ESC)</button></div></div>
+<script>
+const overlay=document.getElementById('overlay'),surface=document.getElementById('surface');
+const send=(name,data)=>fetch(`https://${GetParentResourceName()}/${name}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data||{})});
+function close(){overlay.style.display='none';send('close')}
+window.addEventListener('message',e=>{if(e.data.action==='focus')overlay.style.display='block';if(e.data.action==='hide')overlay.style.display='none'});
+document.getElementById('close').onclick=close;
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){e.preventDefault();close()}});
+function pointer(e,type){const r=surface.getBoundingClientRect();send('mouse',{event:type,x:(e.clientX-r.left)/r.width*1280,y:(e.clientY-r.top)/r.height*720})}
+surface.addEventListener('mousemove',e=>pointer(e,'move'));surface.addEventListener('mousedown',e=>{if(e.button===0)pointer(e,'down')});surface.addEventListener('mouseup',e=>{if(e.button===0)pointer(e,'up')});
 </script></body></html>
