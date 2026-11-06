@@ -66,7 +66,7 @@ Config.Territory = {
 }
 
 Config.Tablet = {
-    keybind         = 'F6',         -- false to disable
+    keybind         = 'F7',         -- false to disable
     command         = 'gangtablet', -- false to disable
     item            = false,        -- e.g. 'gang_tablet' (ox_inventory: see README in the reply / use export openTablet)
     showNearbyNames = false,        -- invite list shows character names instead of 'Person (ID)'
