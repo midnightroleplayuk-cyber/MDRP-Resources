@@ -51,6 +51,8 @@ Everything is done from the gang tablet: **F6**, `/gangtablet`, or an item (`Con
 
 ## Staff panel: `/gangadmin`
 
+- **Gangs > Starting a gang:** whether players can start their own gang from the tablet or only staff can,
+  the price (0 for free) and whether it's paid from bank or cash. Applies straight away; config is the start.
 - **Gangs:** create a gang for an online player, set its tier, add or remove reputation, adjust its influence in
   any area, change ranks, add or remove members, disband.
 - **Rackets:** which gang protects each business and what's owed; release any business; add a shop at the

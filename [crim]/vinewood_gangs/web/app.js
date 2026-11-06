@@ -434,7 +434,9 @@ function renderCreate() {
     h('label', { class: 'field' }, 'Short name', name,
       h('span', { class: 'hint', text: `${s.nameMin} to ${s.nameMax} letters, numbers or underscores. Staff use this to find your gang.` })),
     h('label', { class: 'field' }, 'Colour', colour),
-    h('p', { class: 'hint', text: s.creationCost > 0 ? `Costs ${money(s.creationCost)} from your bank. You'll be the boss.` : 'You\'ll be the boss.' }),
+    h('p', { class: 'hint', text: s.creationCost > 0
+      ? `Costs ${money(s.creationCost)} from your ${s.creationAccount === 'cash' ? 'cash' : 'bank'}. You'll be the boss.`
+      : 'Free to start. You\'ll be the boss.' }),
     h('div', {}, submit),
   ));
   name.focus();

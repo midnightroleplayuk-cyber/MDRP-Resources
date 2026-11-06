@@ -302,6 +302,60 @@ end
 AddEventHandler('onResourceStop', function(res) if res == GetCurrentResourceName() then flush() end end)
 
 -------------------------------------------------------------------------------
+-- "You're on ... turf" notices. Worked out here because only the server knows every hex: a player is told
+-- they're on a rival's turf without that hex (or, unless they've found it, the gang) being revealed to them.
+-------------------------------------------------------------------------------
+
+local notice = Config.Territory.enterNotice
+local standingOn = {} -- standingOn[src] = owner gang id, or false on free ground
+local lastTold = {}   -- lastTold[src][kind] = os.time()
+
+local function tell(src, kind, message, ntype)
+    lastTold[src] = lastTold[src] or {}
+    if lastTold[src][kind] and now() - lastTold[src][kind] < (notice.cooldown or 60) then return end
+    lastTold[src][kind] = now()
+    Bridge.Notify(src, message, ntype)
+end
+
+local function checkPlayer(src)
+    local gang = Gangs.GetPlayerGang(src)
+    if notice.showTo ~= 'everyone' and not gang then standingOn[src] = nil return end
+    local c = GetEntityCoords(GetPlayerPed(src))
+    local h = hexes[Hex.Key(Hex.FromCoords(c.x, c.y))]
+    local owner = h and h.gangId or false
+    local before = standingOn[src]
+    standingOn[src] = owner
+    if before == nil or before == owner then return end -- just joined, or still on the same gang's ground
+
+    if not owner then
+        if notice.onLeave then tell(src, 'left', locale('turf_left'), 'inform') end
+    elseif gang and owner == gang.id then
+        tell(src, 'own', locale('turf_entered_own'), 'success')
+    else
+        -- Name the gang only if this player's gang has already found this hex
+        local known = gang and revealedTo(gang.id, h.key)
+        local g = known and Gangs.Get(owner)
+        tell(src, 'rival:' .. owner, g and locale('turf_entered_known', g.label) or locale('turf_entered_rival'), 'warning')
+    end
+end
+
+CreateThread(function()
+    if not notice.enabled then return end
+    Wait(10000)
+    while true do
+        for _, id in ipairs(GetPlayers()) do
+            local src = tonumber(id)
+            local ok = pcall(checkPlayer, src)
+            if not ok then standingOn[src] = nil end
+        end
+        Wait(2000)
+    end
+end)
+
+AddEventHandler('playerDropped', function() standingOn[source], lastTold[source] = nil, nil end)
+Hexes._checkPlayer = checkPlayer -- for tests
+
+-------------------------------------------------------------------------------
 -- Staff
 -------------------------------------------------------------------------------
 

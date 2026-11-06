@@ -156,10 +156,10 @@ function Airdrops.Open(src, id)
             got[#got + 1] = { item = Bridge.ItemLabel(l.item), count = amount }
         end
     end
-    if gang and gang.id ~= d.gangId then
+    if d.gangId and gang and gang.id ~= d.gangId then
         Gangs.NotifyGang(d.gangId, locale('airdrop_stolen', gang.label), 'error')
     end
-    Logger.Log(src, 'airdrop_opened', ('%s opened drop %d (called by gang %d)'):format(cid or GetPlayerName(src), d.id, d.gangId))
+    Logger.Log(src, 'airdrop_opened', ('%s opened drop %d (called by %s)'):format(cid or GetPlayerName(src), d.id, d.gangId and ('gang ' .. d.gangId) or 'staff'))
     remove(d, 'opened')
     return true, got
 end
@@ -198,7 +198,7 @@ local function tick()
                     description = 'Callers report a military plane dropping a crate by parachute.' })
             end
         elseif d.state == 'landed' and t - d.landedAt >= cfg.despawn * 60 then
-            Gangs.NotifyGang(d.gangId, locale('airdrop_expired'), 'inform')
+            if d.gangId then Gangs.NotifyGang(d.gangId, locale('airdrop_expired'), 'inform') end
             remove(d, 'expired')
         end
     end
@@ -220,11 +220,33 @@ end)
 function Airdrops.AdminList()
     local list = {}
     for _, d in pairs(drops) do
-        local g = Gangs.Get(d.gangId)
-        list[#list + 1] = { id = d.id, gang = g and g.label or '?', state = d.state, x = d.x, y = d.y,
+        local g = d.gangId and Gangs.Get(d.gangId)
+        list[#list + 1] = { id = d.id, gang = g and g.label or (d.byStaff and 'Staff drop (for nobody)' or '?'), state = d.state, x = d.x, y = d.y,
             arrivesIn = math.max(0, d.arriveAt - now()) }
     end
     return list
+end
+
+---Staff call one in: where they're standing (or x, y), for a gang or nobody, arriving in a few minutes.
+---No cost, cooldown or one-at-a-time limit.
+function Airdrops.AdminCall(src, x, y, gangId, minutes)
+    x, y = tonumber(x), tonumber(y)
+    if not x or not y then
+        local c = GetEntityCoords(GetPlayerPed(src))
+        x, y = c.x, c.y
+    end
+    gangId = tonumber(gangId)
+    if gangId and not Gangs.Get(gangId) then gangId = nil end
+    local delay = math.floor(math.max(0, math.min(30, tonumber(minutes) or 1)) * 60)
+    nextId = nextId + 1
+    local t = now()
+    local a, r = math.random() * math.pi * 2, math.random() * cfg.radius * 0.6
+    local d = { id = nextId, gangId = gangId, x = x, y = y, cx = x + math.cos(a) * r, cy = y + math.sin(a) * r,
+        arriveAt = t + delay, landAt = t + delay + FALL_TIME, state = 'called', byStaff = true }
+    drops[d.id] = d
+    if gangId then Gangs.NotifyGang(gangId, locale('airdrop_called', math.max(1, math.ceil(delay / 60))), 'inform') end
+    Logger.Log(src, 'staff_airdrop_called', ('called a drop at %.0f, %.0f%s'):format(x, y, gangId and (' for gang ' .. gangId) or ''))
+    return true
 end
 
 function Airdrops.AdminCancel(src, id)

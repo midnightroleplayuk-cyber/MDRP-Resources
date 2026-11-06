@@ -28,6 +28,7 @@ local ACTION_GROUP = {
     gotoTag = 'teleport', gotoSafehouse = 'teleport', gotoContractSpot = 'teleport', gotoRacketShop = 'teleport', gotoPoint = 'teleport',
     reviewLogo = 'reviews', reviewDesign = 'reviews',
     removeTag = 'tags',
+    gangCreation = 'view', gangCreationSave = 'gangs', gangCreationReset = 'gangs',
     createGang = 'gangs', disband = 'gangs', addMember = 'gangs', removeMember = 'gangs', setGrade = 'gangs', setTier = 'gangs',
     adjustReputation = 'economy',
     createSafehouse = 'world', shellPreview = 'world', shellPreviewEnd = 'world',
@@ -35,7 +36,7 @@ local ACTION_GROUP = {
     addContractSpot = 'world', deleteContractSpot = 'world', closeEnterprise = 'world',
     heistCreate = 'world', heistSave = 'world', heistDelete = 'world', heistReset = 'world', heistStop = 'world', heistHere = 'world',
     directorStart = 'events', directorEnd = 'events', auctionOpen = 'events', auctionCancel = 'events', cancelAgreement = 'events',
-    airdropCancel = 'events',
+    airdropCancel = 'events', airdropAdminCall = 'events',
     informants = 'informants', informantActive = 'informants',
     drugItemsSave = 'settings', drugItemsReset = 'settings',
     -- anything not listed here (e.g. Staff access itself) is management only
@@ -194,6 +195,10 @@ admin('gangDetail', function(_, gangId)
     return { gang = summary, members = Gangs.GetMembers(g.id), ranks = Gangs.GetRanks(g.id), maxMembers = Config.Gangs.maxMembers }
 end)
 
+admin('gangCreation', function() return Gangs.CreationRules() end)
+admin('gangCreationSave', function(src, data) return Gangs.AdminSaveCreationRules(src, data) end)
+admin('gangCreationReset', function(src) return Gangs.AdminResetCreationRules(src) end)
+
 admin('createGang', function(src, target, name, label, colour)
     target = tonumber(target)
     if not target or not GetPlayerName(target) then return false, 'invalid_target' end
@@ -260,6 +265,7 @@ admin('hexSettingsSave', function(src, data) return Hexes.AdminSaveSettings(src,
 
 admin('airdrops', function() return Airdrops.AdminList() end)
 admin('airdropCancel', function(src, id) return Airdrops.AdminCancel(src, id) end)
+admin('airdropAdminCall', function(src, x, y, gangId, minutes) return Airdrops.AdminCall(src, x, y, gangId, minutes) end)
 admin('searchItems', function(_, query) return Bridge.SearchItems(query, 30) end)
 admin('drugItems', function() return Drugs.AdminGet() end)
 admin('drugItemsSave', function(src, list) return Drugs.AdminSave(src, list) end)

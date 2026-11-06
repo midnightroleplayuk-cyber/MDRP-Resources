@@ -939,3 +939,16 @@ input[type="search"]::-webkit-search-cancel-button { filter: invert(0.7); cursor
 .hex-buy { padding: 12px 14px; border: 1px dashed var(--line); border-radius: 12px; }
 .hex-rival { display: flex; align-items: center; gap: 8px; padding: 4px 2px; }
 .hex-rival .muted { margin-left: auto; }
+
+/* Text areas match the other fields */
+textarea {
+  padding: 9px 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--asphalt);
+  color: var(--chalk);
+  font: 14px/1.45 var(--body);
+  resize: vertical;
+}
+textarea::placeholder, input::placeholder { color: #6B727C; }
+textarea:focus { outline: none; border-color: var(--concrete); }

@@ -194,6 +194,7 @@ function Contracts.Tier(gangId, contact)
 end
 
 local function addTrust(gangId, contact, amount)
+    if contact == 'custom' then return end -- a one-off name on a custom job isn't a contact to build trust with
     trust[gangId] = trust[gangId] or {}
     local value = math.max(0, (trust[gangId][contact] or 0) + amount)
     trust[gangId][contact] = value
@@ -278,9 +279,11 @@ function Contracts.OfferCustom(gangId, job, minutes)
         elseif job.type == 'transport' then data.description = ('Take a car from %s and get it to %s without too much damage.'):format(areaLabel(data.pickup), areaLabel(data.drop))
         else data.description = ('Pick up a package in %s and drop it in %s.'):format(areaLabel(data.pickup), areaLabel(data.drop)) end
     end
-    data.contactLabel, data.timeLimit = job.contact, job.timeLimit * 60
+    -- A regular contact (current name, and trust is built with them) or a one-off name
+    local regular = job.contactKey and contactsByKey[job.contactKey]
+    data.contactLabel, data.timeLimit = regular and regular.label or job.contact, job.timeLimit * 60
     data.rewardItems, data.rewardRep, data.custom = job.items, job.reputation, job.id
-    return storeOffer(gangId, job.type, 'custom', job.difficulty, job.money, job.account, data, minutes)
+    return storeOffer(gangId, job.type, regular and regular.key or 'custom', job.difficulty, job.money, job.account, data, minutes)
 end
 
 local function generateOffer(gangId)

@@ -85,6 +85,12 @@ local function clean(input)
         gangId = gangId, minTier = math.floor(num(input.minTier, 1, #Config.Progression.tiers, 1)),
         chance = num(input.chance, 0, 100, 25), once = input.once == true, enabled = input.enabled ~= false,
     }
+    -- One of the regular contacts (so the job builds trust with them), or a one-off name
+    local key = tostring(input.contactKey or '')
+    local regular
+    for _, c in ipairs(Config.Contracts.contacts) do if c.key == key then regular = c end end
+    if regular then job.contactKey, job.contact = regular.key, regular.label
+    else job.contactKey = nil end
     if #job.contact == 0 then job.contact = 'Unknown' end
     -- Only keep the spots that job type uses
     if job.type == 'collect' then job.pickup, job.drop = nil, nil else job.spot = nil end
@@ -111,7 +117,9 @@ function CustomContracts.AdminList()
     local gangs = {}
     for id, g in pairs(Gangs.All()) do gangs[#gangs + 1] = { id = id, label = g.label } end
     table.sort(gangs, function(a, b) return a.label < b.label end)
-    return { jobs = list, types = types, difficulty = diff, tiers = tiers, gangs = gangs }
+    local contacts = {}
+    for _, c in ipairs(Config.Contracts.contacts) do contacts[#contacts + 1] = { key = c.key, label = c.label } end
+    return { jobs = list, types = types, difficulty = diff, tiers = tiers, gangs = gangs, contacts = contacts }
 end
 
 function CustomContracts.AdminSave(src, input)

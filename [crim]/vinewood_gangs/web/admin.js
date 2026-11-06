@@ -143,7 +143,9 @@ async function renderGangList() {
     h('td', { class: 'num fig', text: g.zones }),
     h('td', { class: 'num fig', text: g.heat })));
 
+  const creation = await adminRequest('gangCreation');
   return h('div', {},
+    creation.ok ? creationCard(creation.data) : null,
     h('div', { class: 'section-head' },
       h('h2', {}, 'Gangs ', h('span', { class: 'muted fig', text: res.data.length })),
       h('button', { class: 'btn primary', type: 'button', onclick: openCreateGang }, 'New gang')),
@@ -247,6 +249,33 @@ async function renderGangDetail(gangId) {
           onConfirm: async () => { if (await adminAct('disband', [gang.id], 'Gang disbanded.')) { admin.gangId = null; renderAdminTab(); } },
         }),
       }, 'Disband gang')));
+}
+
+/* Gangs app: who can start a gang and what it costs */
+function creationCard(r) {
+  const edit = () => {
+    const allow = h('input', { type: 'checkbox', checked: r.allow });
+    const cost = h('input', { type: 'number', min: 0, step: 1000, value: r.cost, style: 'width:140px' });
+    const account = select([{ value: 'bank', label: 'Bank' }, { value: 'cash', label: 'Cash' }], r.account);
+    showModal(
+      h('h2', { text: 'Starting a gang' }),
+      h('label', { class: 'toggle', style: 'margin-bottom:14px' }, allow, ' Players can start their own gang from the tablet'),
+      h('p', { class: 'hint', text: 'Turned off, only staff can create gangs (New gang, here in Gangs).' }),
+      h('div', { class: 'row', style: 'align-items:end;margin-top:8px' },
+        h('label', { class: 'field' }, 'Price (0 = free)', cost),
+        h('label', { class: 'field' }, 'Paid from', account)),
+      h('div', { class: 'buttons' },
+        !r.fromConfig ? h('button', { class: 'btn', type: 'button', style: 'margin-right:auto', onclick: async () => { if (await adminAct('gangCreationReset', [], 'Back to the config settings.')) hideModal(); } }, 'Reset to config') : null,
+        h('button', { class: 'btn', type: 'button', onclick: hideModal }, 'Cancel'),
+        h('button', { class: 'btn primary', type: 'button', onclick: async () => {
+          if (await adminAct('gangCreationSave', [{ allow: allow.checked, cost: Math.max(0, Math.floor(Number(cost.value) || 0)), account: account.value }], 'Saved. It applies straight away.')) hideModal();
+        } }, 'Save')));
+  };
+  const summary = !r.allow ? 'Only staff can create gangs.'
+    : (r.cost > 0 ? `Players can start a gang from the tablet for ${money(r.cost)} from their ${r.account}.` : 'Players can start a gang from the tablet for free.');
+  return h('div', { class: 'heist-edit-start', style: 'margin-bottom:18px' },
+    h('div', {}, h('strong', { text: 'Starting a gang' }), h('div', { class: 'hint', style: 'margin:0', text: summary })),
+    h('button', { class: 'btn small', type: 'button', onclick: edit }, 'Change'));
 }
 
 /* Gang page: add or take away reputation */
@@ -441,8 +470,33 @@ async function renderAdminAirdrops() {
   const res = await adminRequest('airdrops');
   if (!res.ok) return h('div', {});
   const state = { called: 'Plane on its way', flying: 'Falling', landed: 'On the ground' };
+  const callIn = async () => {
+    const gr = await adminRequest('listGangs');
+    const gangs = gr.ok ? gr.data : [];
+    const forGang = select([{ value: '', label: 'Nobody in particular (anyone can grab it)' }, ...gangs.map((g) => ({ value: g.id, label: g.label }))], '');
+    const minutes = h('input', { type: 'number', min: 0, max: 30, value: 1, style: 'width:80px' });
+    const send = async (x, y) => {
+      if (await adminAct('airdropAdminCall', [x ?? null, y ?? null, forGang.value ? Number(forGang.value) : null, Number(minutes.value)], 'Air drop called in.')) { hideModal(); renderAdminTab(); }
+    };
+    showModal(
+      h('h2', { text: 'Call in an air drop' }),
+      h('p', { text: 'A plane drops a crate of the usual loot (config/airdrops.lua). No cost, no cooldown. Everyone set to see drops gets the search circle on their map.' }),
+      h('label', { class: 'field' }, 'For', forGang),
+      h('label', { class: 'field', style: 'margin-top:12px' }, 'Plane arrives in (minutes)', minutes),
+      h('div', { class: 'buttons' },
+        h('button', { class: 'btn', type: 'button', onclick: hideModal }, 'Cancel'),
+        h('button', { class: 'btn', type: 'button', onclick: async () => {
+          if (!IN_GAME) return send(1700, 3300);
+          const r = await postNui('airdropWaypoint');
+          const w = r && r.json ? await r.json() : null;
+          if (w && w.ok) send(w.x, w.y); else toast('Set a waypoint on your map first.', true);
+        } }, 'At my waypoint'),
+        h('button', { class: 'btn primary', type: 'button', onclick: () => send() }, 'Where I\'m standing')));
+  };
+
   return h('div', { style: 'margin-top:28px' },
-    h('h3', { text: 'Air drops' }),
+    h('div', { class: 'section-head' }, h('h3', { style: 'margin:0', text: 'Air drops' }),
+      h('button', { class: 'btn primary small', type: 'button', onclick: callIn }, 'Call in an air drop')),
     res.data.length ? h('table', {}, h('tbody', {}, res.data.map((d) => h('tr', {},
       h('td', {}, h('strong', { text: d.gang }), h('div', { class: 'hint', style: 'margin:0', text: `${Math.round(d.x)}, ${Math.round(d.y)}` })),
       h('td', {}, state[d.state] || d.state, d.state === 'called' ? h('span', { class: 'muted' }, ' · ', countdown(d.arrivesIn)) : null),
@@ -686,7 +740,7 @@ async function renderJobList() {
     contractTabs(),
     h('div', { class: 'section-head' }, h('h2', { text: 'Custom jobs' }),
       h('button', { class: 'btn primary', type: 'button', onclick: () => { admin.job = blank(); renderAdminTab(); } }, 'New contract')),
-    h('p', { class: 'hint', style: 'margin-bottom:14px', text: 'Jobs you make here turn up on gangs\' Contracts boards alongside the usual ones, or you can offer one straight to a gang. You choose the reward: money, items and reputation.' }),
+    h('p', { class: 'hint', style: 'margin-bottom:14px', text: 'Jobs you make here turn up on gangs\' Contracts boards alongside the usual ones, or you can offer one straight to a gang. You choose the reward: money, items and reputation. Jobs from a regular contact build trust with them like their usual work.' }),
     jobs.length ? h('table', {}, h('tbody', {}, rows)) : h('p', { class: 'empty', text: 'No custom contracts yet. Press New contract to make one.' }));
 }
 
@@ -709,6 +763,14 @@ function renderJobEditor() {
     el.addEventListener('change', () => { j[key] = /^\d+$/.test(el.value) ? Number(el.value) : (el.value === '' ? null : el.value); if (after) after(); });
     return el;
   };
+  // From: one of the regular contacts (the job builds trust with them) or someone else, typed in
+  const contacts = meta.contacts || [];
+  if (j.contactKey === undefined) j.contactKey = j.id ? null : (contacts[0] ? contacts[0].key : null);
+  const isOther = !j.contactKey || !contacts.some((c) => c.key === j.contactKey);
+  const contactSel = select([...contacts.map((c) => ({ value: c.key, label: c.label })), { value: '__other', label: 'Someone else…' }], isOther ? '__other' : j.contactKey);
+  contactSel.addEventListener('change', () => { j.contactKey = contactSel.value === '__other' ? null : contactSel.value; rerender(); });
+  const contactPick = h('div', { class: 'row', style: 'flex-wrap:nowrap' }, contactSel,
+    isOther ? input('contact', 'Their name', 170, 32) : null);
   const description = h('textarea', { rows: 2, maxlength: 200, placeholder: 'Optional. Left blank, it describes the route for you.', style: 'width:100%' });
   description.value = j.description || '';
   description.addEventListener('input', () => { j.description = description.value; });
@@ -753,7 +815,7 @@ function renderJobEditor() {
     h('h3', { style: 'margin-top:6px', text: j.id ? j.title : 'New contract' }),
     h('div', { class: 'heist-settings' },
       h('label', { class: 'field' }, 'Title', input('title', 'e.g. Bring me the Pegasus files')),
-      h('label', { class: 'field' }, 'From (contact)', input('contact', 'e.g. The Accountant', 200, 32)),
+      h('label', { class: 'field' }, 'From (contact)', contactPick),
       h('label', { class: 'field' }, 'Job type', choose('type', meta.types.map((t) => ({ value: t.key, label: t.label })), rerender)),
       h('label', { class: 'field' }, 'Risk', choose('difficulty', meta.difficulty.map((d, i) => ({ value: i + 1, label: d })))),
       h('label', { class: 'field' }, 'Time to finish (minutes)', num(j, 'timeLimit', 3, 120))),
@@ -1465,6 +1527,7 @@ const AdminMock = {
         expandCost: { money: 50000, account: 'dirty', item: 'weed_og_kush', count: 50 }, expandItemLabel: 'OG Kush' });
       case 'customContracts': return ok({ types: [{ key: 'collect', label: 'Collect a debt' }, { key: 'courier', label: 'Courier run' }, { key: 'transport', label: 'Move a stolen car' }],
         difficulty: ['Low risk', 'Medium risk', 'High risk'], tiers: ['Street crew', 'Firm', 'Organisation', 'Syndicate'], gangs: [{ id: 1, label: 'Grove Kings' }, { id: 2, label: 'Los Vagos' }],
+        contacts: [{ key: 'mags', label: 'Mags' }, { key: 'ray', label: 'Ray the Fence' }, { key: 'dutchy', label: 'Dutchy' }],
         jobs: [{ id: 1, title: 'The Accountant\'s ledger', contact: 'The Accountant', type: 'courier', difficulty: 2, timeLimit: 15, money: 8000, account: 'dirty', items: [{ item: 'goldbar', label: 'Gold bar', count: 2 }], reputation: 10, chance: 20, once: false, enabled: true, minTier: 2 },
           { id: 2, title: 'Christmas Eve run', contact: 'Santa', type: 'transport', difficulty: 3, timeLimit: 20, money: 0, account: 'dirty', items: [{ item: 'weapon_pistol', label: 'Pistol', count: 1 }], reputation: 25, chance: 0, once: true, done: 1, enabled: false, gangId: 1, gangLabel: 'Grove Kings', minTier: 1 }] });
       case 'customContractSave': return ok(3);
@@ -1475,6 +1538,9 @@ const AdminMock = {
         contacts: [{ key: 'mags', label: 'Mags', templates: ['courier', 'collect'] }, { key: 'ray', label: 'Ray the Fence', templates: ['transport', 'courier'] }] });
       case 'contractSettingsSave': return ok(args[0]);
       case 'airdrops': return ok([{ id: 3, gang: 'Grove Kings', state: 'called', x: 1712, y: 3290, arrivesIn: 184 }]);
+      case 'airdropAdminCall': return ok(true);
+      case 'gangCreation': return ok({ allow: true, cost: 50000, account: 'bank', fromConfig: true });
+      case 'gangCreationSave': return ok(args[0]);
       case 'staffAccess': return ok({ users: [{ license: 'license:2b6f…91', role: 'staff', name: 'Moderator Dave' }, { license: 'license:9ac1…07', role: 'management', name: 'Kerry' }],
         groups: [['view', 'See everything (lists, details)', true], ['teleport', 'Teleport to places (Go to buttons)', true], ['reviews', 'Approve or turn down logos and tag designs', true], ['tags', 'Remove tags from walls', true], ['gangs', 'Create and disband gangs, manage members, ranks and tiers', false], ['economy', 'Change reputation and influence, run influence ticks', false], ['world', 'Build in the world: areas, safehouses, shops, contract spots, heists', false], ['events', 'Run street events, auctions and air drops; cancel deals', false], ['informants', 'See informants (sensitive)', false], ['settings', 'Change settings such as what can be sold on the street', false]].map(([key, label, on]) => ({ key, label, on })) });
       case 'searchItems': {

@@ -1,3 +1,6 @@
+-- Config.Tablet.item = true means the standard tablet item
+if Config.Tablet and Config.Tablet.item == true then Config.Tablet.item = 'gang_tablet' end
+
 Utils = {}
 
 function Utils.Round(n, places)

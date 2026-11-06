@@ -22,18 +22,20 @@ Config.Modules = {
 
 Config.Gangs = {
     maxMembers   = 25,
-    creationCost = 50000, -- taken from the creator's bank
     nameMin      = 3,
     nameMax      = 24,
-    allowPlayerCreation = true, -- false = staff create gangs with /gangcreate only
+
+    -- Starting a gang. Also changeable in game: /gangadmin > Gangs > "Starting a gang" (that overrides these).
+    allowPlayerCreation = true,    -- false = only staff can create gangs (/gangadmin > Gangs > New gang)
+    creationCost        = 50000,   -- price to start one; 0 = free
+    creationAccount     = 'bank',  -- what it's paid from: 'bank' or 'cash'
+
     inviteDistance      = 5.0,  -- metres; 0 disables the proximity check
     inviteExpirySeconds = 60,
     disbandRefund       = true, -- pay the clean treasury to the boss's bank on disband (if online)
 }
 
 Config.Territory = {
-
-
     -- A notification when a player walks into (or out of) an area
     enterNotice = {
         enabled  = true,
@@ -68,7 +70,7 @@ Config.Territory = {
 Config.Tablet = {
     keybind         = 'F6',         -- false to disable
     command         = 'gangtablet', -- false to disable
-    item            = false,        -- e.g. 'gang_tablet' (ox_inventory: see README in the reply / use export openTablet)
+    item            = true,         -- true = the 'gang_tablet' item opens it, or another item name, or false for no item
     showNearbyNames = false,        -- invite list shows character names instead of 'Person (ID)'
 }
 

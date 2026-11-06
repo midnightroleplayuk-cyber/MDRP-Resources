@@ -5,6 +5,13 @@ local ANIM_DICT = 'amb@code_human_in_bus_passenger_idles@female@tablet@base'
 local PROP = GetHashKey('prop_cs_tablet')
 
 -- Only these server callbacks can be reached from the NUI
+---Who can start a gang and the price: set by the server (config, or what staff changed in game).
+local function creationRules()
+    local r = GlobalState.vg_gang_creation
+    if type(r) == 'table' then return r end
+    return { allow = Config.Gangs.allowPlayerCreation ~= false, cost = Config.Gangs.creationCost or 0, account = Config.Gangs.creationAccount or 'bank' }
+end
+
 local ALLOWED = {
     getOverview = true, getMembers = true, getTerritory = true, getTreasury = true, getNearby = true, getTags = true,
     createGang = true, invite = true, kick = true, setGrade = true, transfer = true, editRank = true,
@@ -20,6 +27,8 @@ local ALLOWED = {
     getShop = true, shopBuy = true,
     getLaundering = true, launder = true,
     getDiplomacy = true, proposeDeal = true, respondDeal = true, withdrawDeal = true, breakDeal = true, declareRelation = true,
+    getHeists = true, heistStart = true, heistAbandon = true,
+    getAirdrop = true, airdropCall = true, hexExpand = true,
 }
 
 local ADMIN_ALLOWED = {
@@ -33,14 +42,13 @@ local ADMIN_ALLOWED = {
     auctions = true, auctionOpen = true, auctionCancel = true, setTier = true, adjustReputation = true,
     contractSpots = true, addContractSpot = true, deleteContractSpot = true, gotoContractSpot = true,
     addRacketShop = true, deleteRacketShop = true, gotoRacketShop = true,
-    getHeists = true, heistStart = true, heistAbandon = true,
-    getAirdrop = true, airdropCall = true, hexExpand = true,
     hexGang = true, hexGive = true, hexRemove = true, hexControl = true, hexMain = true, hexSettings = true, hexSettingsSave = true,
-    airdrops = true, airdropCancel = true,
+    airdrops = true, airdropCancel = true, airdropAdminCall = true,
     searchItems = true, drugItems = true, drugItemsSave = true, drugItemsReset = true,
     staffAccess = true, staffGrant = true, staffRevoke = true, staffPerms = true,
     customContracts = true, customContractSave = true, customContractDelete = true, customContractOffer = true,
     contractSettings = true, contractSettingsSave = true, contractSettingsReset = true,
+    gangCreation = true, gangCreationSave = true, gangCreationReset = true,
     heists = true, heistCreate = true, heistSave = true, heistDelete = true, heistReset = true, heistStop = true, heistHere = true, gotoPoint = true,
 }
 
@@ -77,8 +85,9 @@ local function staticData()
         zones = zones,
         permissions = permissions,
         currency = Config.Currency,
-        creationCost = Config.Gangs.creationCost,
-        allowCreation = Config.Gangs.allowPlayerCreation,
+        creationCost = creationRules().cost,
+        creationAccount = creationRules().account,
+        allowCreation = creationRules().allow,
         nameMin = Config.Gangs.nameMin,
         nameMax = Config.Gangs.nameMax,
         maxTransaction = Config.Ledger.maxTransaction,
@@ -123,8 +132,8 @@ end
 function OpenTablet()
     if isOpen or IsEntityDead(cache.ped) or IsPauseMenuActive() then return end
     local gang = RefreshPlayerGang()
-    if not gang and not Config.Gangs.allowPlayerCreation then
-        lib.notify({ description = locale('not_in_gang'), type = 'error' })
+    if not gang and not creationRules().allow then
+        lib.notify({ description = locale('not_in_gang_staff_create'), type = 'error' })
         return
     end
     isOpen, mode = true, 'tablet'
@@ -253,7 +262,7 @@ end)
 -- Live refresh when your own membership or rank changes while the tablet is open
 AddEventHandler('vinewood_gangs:client:gangUpdated', function(data)
     if not isOpen or mode ~= 'tablet' then return end
-    if not data and not Config.Gangs.allowPlayerCreation then
+    if not data and not creationRules().allow then
         closeTablet()
         return
     end

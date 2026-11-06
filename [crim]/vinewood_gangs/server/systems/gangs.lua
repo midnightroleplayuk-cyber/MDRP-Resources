@@ -248,7 +248,8 @@ function Gangs.Create(src, name, label, colour, opts)
     local cid = Bridge.GetCitizenId(src)
     if not cid then return false, 'no_player' end
     if members[cid] then return false, 'already_in_gang' end
-    if not opts.free and not Config.Gangs.allowPlayerCreation then return false, 'creation_disabled' end
+    local rules = Gangs.CreationRules()
+    if not opts.free and not rules.allow then return false, 'creation_disabled' end
 
     name = tostring(name or ''):lower()
     local cfg = Config.Gangs
@@ -262,14 +263,14 @@ function Gangs.Create(src, name, label, colour, opts)
         return false, 'name_taken'
     end
 
-    local cost = opts.free and 0 or cfg.creationCost
-    if cost > 0 and not Bridge.RemoveMoney(src, 'bank', cost, 'gang-creation') then
+    local cost = opts.free and 0 or rules.cost
+    if cost > 0 and not Bridge.RemoveMoney(src, rules.account, cost, 'gang-creation') then
         return false, 'insufficient_funds'
     end
 
     local gangId = MySQL.insert.await('INSERT INTO vg_gangs (name, label, colour, created_by) VALUES (?, ?, ?, ?)', { name, label, colour, cid })
     if not gangId then
-        if cost > 0 then Bridge.AddMoney(src, 'bank', cost, 'gang-creation-refund') end
+        if cost > 0 then Bridge.AddMoney(src, rules.account, cost, 'gang-creation-refund') end
         return false, 'db_error'
     end
 
@@ -744,6 +745,58 @@ function Gangs.OnlineMembers(gangId)
         if m and m.gangId == gangId and GetPlayerName(src) then out[#out + 1] = { source = src, citizenid = cid } end
     end
     return out
+end
+
+-------------------------------------------------------------------------------
+-- Starting a gang: who can, and what it costs (config, overridden in game by staff)
+-------------------------------------------------------------------------------
+
+local creation = nil
+
+local function publishCreation()
+    local r = Gangs.CreationRules()
+    GlobalState.vg_gang_creation = { allow = r.allow, cost = r.cost, account = r.account }
+end
+
+function Gangs.CreationRules()
+    local c = Config.Gangs
+    local r = creation or {}
+    local allow = r.allow
+    if allow == nil then allow = c.allowPlayerCreation ~= false end
+    return {
+        allow = allow,
+        cost = math.max(0, math.floor(tonumber(r.cost or c.creationCost) or 0)),
+        account = (r.account or c.creationAccount) == 'cash' and 'cash' or 'bank',
+        fromConfig = creation == nil,
+    }
+end
+
+function Gangs.LoadCreationRules()
+    local raw = MySQL.scalar.await("SELECT value FROM vg_settings WHERE `key` = 'gang_creation'")
+    local ok, saved = pcall(json.decode, raw or '')
+    creation = ok and type(saved) == 'table' and saved or nil
+    publishCreation()
+end
+
+function Gangs.AdminSaveCreationRules(src, input)
+    if type(input) ~= 'table' then return false, 'invalid' end
+    creation = {
+        allow = input.allow == true,
+        cost = math.max(0, math.min(100000000, math.floor(tonumber(input.cost) or 0))),
+        account = input.account == 'cash' and 'cash' or 'bank',
+    }
+    MySQL.insert.await("INSERT INTO vg_settings (`key`, value, updated_by) VALUES ('gang_creation', ?, ?) ON DUPLICATE KEY UPDATE value = VALUES(value), updated_by = VALUES(updated_by)",
+        { json.encode(creation), Bridge.GetCitizenId(src) or 'console' })
+    publishCreation()
+    Logger.Log(src, 'staff_gang_creation', ('players can start gangs: %s, cost %d (%s)'):format(tostring(creation.allow), creation.cost, creation.account))
+    return true, Gangs.CreationRules()
+end
+
+function Gangs.AdminResetCreationRules(src)
+    creation = nil
+    MySQL.update.await("DELETE FROM vg_settings WHERE `key` = 'gang_creation'")
+    publishCreation()
+    return true, Gangs.CreationRules()
 end
 
 function Gangs.HasOnlineMember(gangId)

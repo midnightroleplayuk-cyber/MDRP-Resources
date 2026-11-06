@@ -5,7 +5,7 @@ lua54 'yes'
 name 'vinewood_gangs'
 author 'Vinewood Studios'
 description 'Advanced gang, territory and organised crime system'
-version '3.3.0'
+version '3.4.0'
 
 ox_lib 'locale'
 
