@@ -6,7 +6,7 @@
    "color": "#5D7EA6",
    "name": {
     "tr": "Liman",
-    "en": "Harbor"
+    "en": "Grapeseed"
    },
    "houseCost": 30000,
    "hotelCost": 80000
@@ -15,7 +15,7 @@
    "color": "#C9822B",
    "name": {
     "tr": "Çarşı",
-    "en": "Bazaar"
+    "en": "Sandy Estate"
    },
    "houseCost": 50000,
    "hotelCost": 120000
@@ -24,7 +24,7 @@
    "color": "#8FA33A",
    "name": {
     "tr": "Kampüs",
-    "en": "Campus"
+    "en": "Richman"
    },
    "houseCost": 70000,
    "hotelCost": 180000
@@ -33,51 +33,51 @@
    "color": "#22AFC0",
    "name": {
     "tr": "Sahil",
-    "en": "Coast"
+    "en": "West Coast"
    },
    "houseCost": 90000,
    "hotelCost": 220000,
-   "hotel": "coast"
+   "hotel": "West Coast"
   },
   "arts": {
    "color": "#C2479A",
    "name": {
     "tr": "Sanat",
-    "en": "Arts"
+    "en": "Hillside"
    },
    "houseCost": 110000,
    "hotelCost": 280000,
-   "hotel": "arts"
+   "hotel": "Hillside"
   },
   "tech": {
    "color": "#6A5ACD",
    "name": {
     "tr": "Tekno",
-    "en": "Tech"
+    "en": "Paleto Bay"
    },
    "houseCost": 130000,
    "hotelCost": 320000,
-   "hotel": "tech"
+   "hotel": "Paleto Bay"
   },
   "finance": {
    "color": "#D4A72C",
    "name": {
     "tr": "Finans",
-    "en": "Finance"
+    "en": "High Life"
    },
    "houseCost": 150000,
    "hotelCost": 380000,
-   "hotel": "finance"
+   "hotel": "High Life"
   },
   "hills": {
    "color": "#B23A48",
    "name": {
     "tr": "Tepe",
-    "en": "Hills"
+    "en": "Wealth"
    },
    "houseCost": 180000,
    "hotelCost": 450000,
-   "hotel": "hills"
+   "hotel": "Wealth"
   }
  },
  "spaces": [
@@ -85,14 +85,14 @@
    "type": "start",
    "name": {
     "tr": "BAŞLA",
-    "en": "START"
+    "en": "GO, GO, GO!"
    }
   },
   {
    "type": "district",
    "name": {
     "tr": "Balıkçı İskelesi",
-    "en": "Fisher Pier"
+    "en": "Grapeseed Ranch"
    },
    "group": "harbor",
    "price": 50000,
@@ -108,7 +108,7 @@
    "type": "district",
    "name": {
     "tr": "Fener Yolu",
-    "en": "Lighthouse Road"
+    "en": "Wonderama Arcade"
    },
    "group": "harbor",
    "price": 60000,
@@ -124,14 +124,14 @@
    "type": "news",
    "name": {
     "tr": "Manşet",
-    "en": "Headline"
+    "en": "MYSTERY"
    }
   },
   {
    "type": "district",
    "name": {
     "tr": "Bakır Çarşı",
-    "en": "Copper Bazaar"
+    "en": "RANJEETS"
    },
    "group": "bazaar",
    "price": 80000,
@@ -156,7 +156,7 @@
    "type": "district",
    "name": {
     "tr": "Baharat Sokağı",
-    "en": "Spice Street"
+    "en": "Maggies Pub"
    },
    "group": "bazaar",
    "price": 80000,
@@ -172,7 +172,7 @@
    "type": "district",
    "name": {
     "tr": "Han Avlusu",
-    "en": "Caravan Court"
+    "en": "FookYus Chipshop"
    },
    "group": "bazaar",
    "price": 100000,
@@ -195,14 +195,14 @@
    "type": "traffic",
    "name": {
     "tr": "Trafik",
-    "en": "Gridlock"
+    "en": "Custody"
    }
   },
   {
    "type": "district",
    "name": {
     "tr": "Kütüphane Meydanı",
-    "en": "Library Square"
+    "en": "Midnight University"
    },
    "group": "campus",
    "price": 120000,
@@ -218,7 +218,7 @@
    "type": "district",
    "name": {
     "tr": "Laboratuvar Caddesi",
-    "en": "Lab Avenue"
+    "en": "KORTZ CENTER"
    },
    "group": "campus",
    "price": 120000,
@@ -234,7 +234,7 @@
    "type": "district",
    "name": {
     "tr": "Öğrenci Köyü",
-    "en": "Student Village"
+    "en": "Richman Hotel"
    },
    "group": "campus",
    "price": 140000,
@@ -250,14 +250,14 @@
    "type": "news",
    "name": {
     "tr": "Manşet",
-    "en": "Headline"
+    "en": "MYSTERY"
    }
   },
   {
    "type": "landmark",
    "name": {
     "tr": "Liman Stadyumu",
-    "en": "Harbor Stadium"
+    "en": "MIDNIGHT STADIUM"
    },
    "icon": "stadium",
    "price": 180000
@@ -266,7 +266,7 @@
    "type": "district",
    "name": {
     "tr": "Mercan Koyu",
-    "en": "Coral Cove"
+    "en": "Pearls Restaurant"
    },
    "group": "coast",
    "price": 160000,
@@ -282,7 +282,7 @@
    "type": "district",
    "name": {
     "tr": "Martı Bulvarı",
-    "en": "Gull Boulevard"
+    "en": "Pacific Bluffs"
    },
    "group": "coast",
    "price": 180000,
@@ -298,21 +298,21 @@
    "type": "contractor",
    "name": {
     "tr": "Müteahhit",
-    "en": "Contractor"
+    "en": "BUILDER"
    }
   },
   {
    "type": "exchange",
    "name": {
     "tr": "Borsa",
-    "en": "Exchange"
+    "en": "STOCK MARKET"
    }
   },
   {
    "type": "district",
    "name": {
     "tr": "Galeri Pasajı",
-    "en": "Gallery Arcade"
+    "en": "Observatory"
    },
    "group": "arts",
    "price": 200000,
@@ -328,7 +328,7 @@
    "type": "district",
    "name": {
     "tr": "Sahne Sokağı",
-    "en": "Stage Lane"
+    "en": "Midnight Sign"
    },
    "group": "arts",
    "price": 220000,
@@ -344,14 +344,14 @@
    "type": "news",
    "name": {
     "tr": "Manşet",
-    "en": "Headline"
+    "en": "MYSTERY"
    }
   },
   {
    "type": "landmark",
    "name": {
     "tr": "Opera Sarayı",
-    "en": "Opera House"
+    "en": "Banner Hotel"
    },
    "icon": "opera",
    "price": 180000
@@ -360,7 +360,7 @@
    "type": "district",
    "name": {
     "tr": "Çip Caddesi",
-    "en": "Chip Street"
+    "en": "Cascabel Coffee"
    },
    "group": "tech",
    "price": 240000,
@@ -376,7 +376,7 @@
    "type": "district",
    "name": {
     "tr": "Veri Yolu",
-    "en": "Data Road"
+    "en": "Paleto Park"
    },
    "group": "tech",
    "price": 240000,
@@ -392,7 +392,7 @@
    "type": "district",
    "name": {
     "tr": "Bulut Plaza",
-    "en": "Cloud Plaza"
+    "en": "Paleto Pier"
    },
    "group": "tech",
    "price": 260000,
@@ -408,21 +408,21 @@
    "type": "tax",
    "name": {
     "tr": "Vergi",
-    "en": "Tax"
+    "en": "THE TAX MAN"
    }
   },
   {
    "type": "cityhall",
    "name": {
     "tr": "Belediye",
-    "en": "City Hall"
+    "en": "Town Hall"
    }
   },
   {
    "type": "district",
    "name": {
     "tr": "Kambiyo Caddesi",
-    "en": "Exchange Street"
+    "en": "Private Hangar"
    },
    "group": "finance",
    "price": 280000,
@@ -438,7 +438,7 @@
    "type": "district",
    "name": {
     "tr": "Kristal Plaza",
-    "en": "Crystal Plaza"
+    "en": "Legion Square"
    },
    "group": "finance",
    "price": 280000,
@@ -454,7 +454,7 @@
    "type": "district",
    "name": {
     "tr": "Safir Kuleleri",
-    "en": "Sapphire Towers"
+    "en": "The Casino"
    },
    "group": "finance",
    "price": 300000,
@@ -470,7 +470,7 @@
    "type": "landmark",
    "name": {
     "tr": "Gökyüzü Kulesi",
-    "en": "Sky Tower"
+    "en": "Maze Bank Tower"
    },
    "icon": "tower",
    "price": 180000
@@ -479,14 +479,14 @@
    "type": "news",
    "name": {
     "tr": "Manşet",
-    "en": "Headline"
+    "en": "MYSTERY"
    }
   },
   {
    "type": "district",
    "name": {
     "tr": "Zümrüt Tepe",
-    "en": "Emerald Heights"
+    "en": "Midnight Mansion"
    },
    "group": "hills",
    "price": 330000,
@@ -502,7 +502,7 @@
    "type": "district",
    "name": {
     "tr": "Kartal Yuvası",
-    "en": "Eagle's Nest"
+    "en": "Midnight Golf Club"
    },
    "group": "hills",
    "price": 360000,
@@ -518,7 +518,7 @@
    "type": "contractor",
    "name": {
     "tr": "Müteahhit",
-    "en": "Contractor"
+    "en": "BUILDER"
    }
   }
  ],
