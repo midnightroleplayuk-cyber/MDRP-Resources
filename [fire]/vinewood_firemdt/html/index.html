@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="UTF-8">
+<title>Fire MDT</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Barlow+Condensed:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- Alerts that show even when the MDT is closed -->
+<div id="toasts"></div>
+<div id="mobilise" class="hidden">
+    <div class="mob-flash"></div>
+    <div class="mob-body">
+        <div class="mob-title">Mobilise</div>
+        <div class="mob-type" id="mobType"></div>
+        <div class="mob-loc" id="mobLoc"></div>
+        <div class="mob-meta" id="mobMeta"></div>
+        <div class="mob-actions">
+            <button class="btn big go" id="mobAccept">Acknowledge and set route</button>
+        </div>
+        <div class="mob-hint" id="mobHint">Open the MDT to acknowledge</div>
+    </div>
+</div>
+
+<div id="shell" class="hidden">
+    <div id="terminal">
+        <header class="bar">
+            <div class="brand">
+                <img id="brandLogo" alt="" class="hidden">
+                <div>
+                    <div class="brand-name" id="brandName">Fire &amp; Rescue Service</div>
+                    <div class="brand-sub">Mobile data terminal</div>
+                </div>
+            </div>
+            <button class="callsign" id="callsignBtn" title="Change callsign">Sign on</button>
+            <div class="incident-chip hidden" id="incChip"></div>
+            <div class="spacer"></div>
+            <div class="clock" id="clock">00:00:00</div>
+            <button class="icon-btn" id="closeBtn" title="Close (Esc)">✕</button>
+        </header>
+
+        <div class="body">
+            <nav class="rail" id="rail">
+                <button data-view="incident" class="active">Incident</button>
+                <button data-view="map">Map</button>
+                <button data-view="hydrants">Hydrants</button>
+                <button data-view="risks">Risk info</button>
+                <button data-view="hazmat">HazMat</button>
+                <button data-view="rescue">Vehicle rescue</button>
+                <button data-view="sops">Procedures</button>
+                <button data-view="messages">Messages <span class="badge hidden" id="msgBadge">0</span></button>
+                <button data-view="control" class="hidden" id="controlTab">Fire Control</button>
+            </nav>
+            <main id="view"></main>
+        </div>
+
+        <footer class="status-strip" id="statusStrip"></footer>
+    </div>
+</div>
+
+<div id="modal" class="hidden"><div class="modal-card" id="modalCard"></div></div>
+
+<script src="app.js"></script>
+</body>
+</html>
