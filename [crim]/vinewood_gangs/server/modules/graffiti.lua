@@ -77,6 +77,11 @@ local function cleanPlacement(src, p)
     return out
 end
 
+local function paintOverContains(list, tag)
+    for _, t in ipairs(list) do if t == tag then return true end end
+    return false
+end
+
 local function tagPos(tag) return vector3(tag.p.x, tag.p.y, tag.p.z) end
 
 local function nearTag(src, tag, range)
@@ -325,7 +330,21 @@ local function validateSpray(src, designId, placement)
             perZone = perZone + 1
         end
     end
-    if zone and perZone >= cfg.maxPerZone then return nil, 'zone_tag_limit' end
+    if Hex.Enabled() then
+        if not zone or Influence.GetOwner(zone) ~= gang.id then return nil, 'graffiti_not_your_turf' end
+        local active, onMain = 0, false
+        local main = Hexes.MainOf(gang.id)
+        for _, t in pairs(tags) do
+            if t.gangId == gang.id and t.status == 'active' and not paintOverContains(paintOver, t) then
+                active = active + 1
+                if t.zone == main then onMain = true end
+            end
+        end
+        if not onMain and zone ~= main then return nil, 'graffiti_main_first' end
+        if active >= Hexes.SpraySlots(gang.id) then return nil, 'graffiti_no_slots' end
+    elseif zone and perZone >= cfg.maxPerZone then
+        return nil, 'zone_tag_limit'
+    end
 
     return { gang = gang, cid = cid, design = design, p = p, pos = pos, zone = zone, paintOver = paintOver }
 end

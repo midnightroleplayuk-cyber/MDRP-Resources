@@ -5,7 +5,7 @@ lua54 'yes'
 name 'vinewood_gangs'
 author 'Vinewood Studios'
 description 'Advanced gang, territory and organised crime system'
-version '2.2.1'
+version '3.0.0'
 
 ox_lib 'locale'
 
@@ -13,6 +13,7 @@ shared_scripts {
     '@ox_lib/init.lua',
     'config/config.lua',
     'config/zones.lua',
+    'config/hexes.lua',
     'config/ranks.lua',
     'config/activities.lua',
     'config/graffiti.lua',
@@ -24,6 +25,7 @@ shared_scripts {
     'config/director.lua',
     'config/drugs.lua',
     'config/heists.lua',
+    'config/airdrops.lua',
     'config/informants.lua',
     'config/auctions.lua',
     'config/progression.lua',
@@ -31,6 +33,7 @@ shared_scripts {
     'config/laundering.lua',
     'shared/utils.lua',
     'shared/zones.lua',
+    'shared/hexes.lua',
 }
 
 server_scripts {
@@ -48,6 +51,7 @@ server_scripts {
     'server/systems/intel.lua',
     'server/systems/heat.lua',
     'server/systems/influence.lua',
+    'server/systems/hexes.lua',
     'server/systems/relations.lua',
     'server/systems/activity.lua',
     'server/systems/director.lua',
@@ -63,6 +67,7 @@ server_scripts {
     'server/modules/shop.lua',
     'server/modules/drugs.lua',
     'server/modules/heists.lua',
+    'server/modules/airdrops.lua',
     'server/modules/laundering.lua',
     'server/api/exports.lua',
     'server/api/callbacks.lua',
@@ -73,6 +78,7 @@ server_scripts {
 client_scripts {
     'client/bridge.lua',
     'client/main.lua',
+    'client/hexes.lua',
     'client/zones.lua',
     'client/map_areas.lua',
     'client/tablet.lua',
@@ -86,6 +92,7 @@ client_scripts {
     'client/auctions.lua',
     'client/drugs.lua',
     'client/heists.lua',
+    'client/airdrops.lua',
     'client/admin_safehouses.lua',
     'client/admin_zones.lua',
 }

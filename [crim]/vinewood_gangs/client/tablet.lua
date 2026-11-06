@@ -34,6 +34,11 @@ local ADMIN_ALLOWED = {
     contractSpots = true, addContractSpot = true, deleteContractSpot = true, gotoContractSpot = true,
     addRacketShop = true, deleteRacketShop = true, gotoRacketShop = true,
     getHeists = true, heistStart = true, heistAbandon = true,
+    getAirdrop = true, airdropCall = true, hexExpand = true,
+    hexGang = true, hexGive = true, hexRemove = true, hexControl = true, hexMain = true, hexSettings = true, hexSettingsSave = true,
+    airdrops = true, airdropCancel = true,
+    searchItems = true, drugItems = true, drugItemsSave = true, drugItemsReset = true,
+    staffAccess = true, staffGrant = true, staffRevoke = true, staffPerms = true,
     heists = true, heistCreate = true, heistSave = true, heistDelete = true, heistReset = true, heistStop = true, heistHere = true, gotoPoint = true,
 }
 
@@ -87,6 +92,10 @@ local function staticData()
         shop = Config.Shop.enabled,
         tabletMap = Config.Territory.tabletMap,
         heists = Config.Heists.enabled,
+        airdrops = Config.Airdrops.enabled,
+        hexMode = Config.Territory.mode == 'hexes',
+        hexSize = Config.Hexes.size, hexOrigin = Config.Hexes.origin,
+        airdropShowTo = Config.Airdrops.showTo,
         tiers = (function()
             local out = {}
             for i, t in ipairs(Config.Progression.tiers) do out[i] = { label = t.label, unlocks = t.unlocks } end
@@ -125,11 +134,13 @@ end
 exports('openTablet', OpenTablet)
 RegisterNetEvent('vinewood_gangs:client:openTablet', OpenTablet)
 
-RegisterNetEvent('vinewood_gangs:client:openAdmin', function()
+RegisterNetEvent('vinewood_gangs:client:openAdmin', function(access)
     if isOpen then closeTablet() end
     isOpen, mode = true, 'admin'
     SetNuiFocus(true, true)
-    SendNUIMessage({ action = 'openAdmin', static = staticData() })
+    local static = staticData()
+    static.access = access -- { role = 'management'|'staff', perms = { group = true } } (the server checks every action anyway)
+    SendNUIMessage({ action = 'openAdmin', static = static })
 end)
 
 if Config.Tablet.keybind then
@@ -183,6 +194,28 @@ RegisterNUICallback('adminRequest', function(body, cb)
         SetEntityCoords(cache.ped, res.x, res.y, res.z - 0.9, false, false, false, false)
         SetEntityHeading(cache.ped, heading)
     end
+end)
+
+-- Air drop app: where's my waypoint?
+RegisterNUICallback('airdropWaypoint', function(_, cb)
+    local blip = GetFirstBlipInfoId(8)
+    if not DoesBlipExist(blip) then return cb({ ok = false }) end
+    local c = GetBlipInfoIdCoord(blip)
+    cb({ ok = true, x = c.x, y = c.y })
+end)
+
+-- Air drop app: is this spot on land? (A crate dropped in water would sink out of reach.)
+RegisterNUICallback('airdropCheck', function(data, cb)
+    local x, y = tonumber(data and data.x), tonumber(data and data.y)
+    if not x or not y then return cb({ ok = false }) end
+    local ground
+    for _, start in ipairs({ 1000.0, 500.0, 200.0 }) do
+        local found, z = GetGroundZFor_3dCoord(x, y, start, false)
+        if found then ground = z break end
+    end
+    local water, waterZ = GetWaterHeight(x, y, (ground or 0.0) + 50.0)
+    local wet = water and (not ground or waterZ > ground + 0.5)
+    cb({ ok = not wet, water = wet })
 end)
 
 -- Areas tab: close the panel and start drawing in the world

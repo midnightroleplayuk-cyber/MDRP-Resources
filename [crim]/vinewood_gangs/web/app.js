@@ -244,6 +244,7 @@ const TABS = [
   { id: 'shop', label: 'Shop', icon: 'shop', tint: '#E39A6B', show: () => state.static.shop },
   { id: 'contracts', label: 'Contracts', icon: 'contracts', tint: '#B793F0', show: () => state.static.contracts },
   { id: 'heists', label: 'Heists', icon: 'vault', tint: '#E88686', show: () => state.static.heists },
+  { id: 'airdrop', label: 'Air drop', icon: 'parachute', tint: '#8FB3FF', show: () => state.static.airdrops },
   { id: 'rackets', label: 'Rackets', icon: 'rackets', tint: '#E2BE5A', show: () => state.static.rackets && can('rackets') },
   { id: 'safehouses', label: 'Safehouses', icon: 'safehouses', tint: '#E88686', show: () => state.static.safehouses },
   { id: 'business', label: 'Business', icon: 'business', tint: '#6FD0C0', show: () => state.static.enterprises },
@@ -379,6 +380,7 @@ async function renderTab() {
     shop: renderShop,
     contracts: renderContracts,
     heists: renderHeists,
+    airdrop: renderAirdrop,
     rackets: renderRackets,
     safehouses: renderSafehouses,
     business: renderBusiness,
@@ -705,6 +707,7 @@ window.addEventListener('mouseup', () => { if (mapDragHandlers) mapDragHandlers.
 async function renderTerritory() {
   const res = await request('getTerritory');
   if (!res.ok) return loadError(res);
+  if (res.data.mode === 'hexes') return renderHexTerritory(res.data);
   const { zones, captureThreshold, holdThreshold, margin } = res.data;
   // One line on how the area could change hands, from what everyone's influence looks like
   const contestNote = (z) => {
@@ -1079,6 +1082,263 @@ const TIER_TEXT = { 1: 'Low-risk jobs only', 2: 'Trusts you with medium-risk job
 function clock(seconds) {
   const m = Math.floor(seconds / 60), sec = seconds % 60;
   return `${m}:${String(sec).padStart(2, '0')}`;
+}
+
+/* Hex turf --------------------------------------------------------------- */
+
+const SQ3 = Math.sqrt(3);
+function hexCentre(q, r) {
+  const o = state.static.hexOrigin || { x: 0, y: 0 };
+  const R = state.static.hexSize || 150;
+  return [o.x + R * SQ3 * (q + r / 2), o.y + R * 1.5 * r];
+}
+function hexCorners(q, r) {
+  const [cx, cy] = hexCentre(q, r);
+  const R = state.static.hexSize || 150;
+  return Array.from({ length: 6 }, (_, i) => { const a = (Math.PI / 180) * (60 * i - 30); return [cx + R * Math.cos(a), cy + R * Math.sin(a)]; });
+}
+
+function renderHexTerritory(v) {
+  const mine = v.hexes.filter((x) => x.mine);
+  const rivals = v.hexes.filter((x) => !x.mine);
+  const accent = (state.gang && state.gang.colour) || '#5B8DEF';
+  let picked = null;
+
+  // Map: the atlas, our hexes shaded by control, rivals we've found, and ground we could buy
+  const map = svg('svg', { class: 'map has-picture', role: 'img', 'aria-label': 'Turf map' });
+  const tm = state.static.tabletMap;
+  if (tm && tm.image) {
+    const left = (0 - tm.offsetX) / tm.scaleX + (tm.nudgeX || 0);
+    const top = (0 - tm.offsetY) / tm.scaleY + (tm.nudgeY || 0);
+    map.append(svg('image', { href: tm.image, x: left, y: -top, width: tm.size / tm.scaleX, height: tm.size / Math.abs(tm.scaleY), preserveAspectRatio: 'none' }));
+  }
+  const all = [...v.hexes, ...v.options];
+  const pts = all.flatMap((x) => hexCorners(x.q, x.r));
+  const xs = pts.map((p) => p[0]), ys = pts.map((p) => p[1]);
+  const fit = pts.length
+    ? { cx: (Math.min(...xs) + Math.max(...xs)) / 2, cy: (Math.min(...ys) + Math.max(...ys)) / 2, half: Math.max(Math.max(...xs) - Math.min(...xs), Math.max(...ys) - Math.min(...ys), 600) / 2 * 1.25 }
+    : { cx: 0, cy: -800, half: 2500 };
+  let view = { ...fit };
+  const apply = () => map.setAttribute('viewBox', `${view.cx - view.half} ${-view.cy - view.half} ${view.half * 2} ${view.half * 2}`);
+  const polys = {};
+  const draw = (x, kind) => {
+    const colour = kind === 'option' ? '#ffffff' : (x.owner ? x.owner.colour : accent);
+    const poly = svg('polygon', {
+      points: hexCorners(x.q, x.r).map(([px, py]) => `${px},${-py}`).join(' '),
+      fill: kind === 'option' ? 'rgba(255,255,255,0.08)' : colour,
+      'fill-opacity': kind === 'mine' ? 0.2 + 0.55 * ((x.control || 0) / 100) : (kind === 'rival' ? 0.45 : 1),
+      stroke: kind === 'option' ? '#ffffff' : '#1C2127', 'stroke-width': kind === 'option' ? 1.5 : 1.2,
+      'stroke-dasharray': kind === 'option' ? '6 5' : '', 'vector-effect': 'non-scaling-stroke', class: `hex hex-${kind}`,
+    });
+    const [cx, cy] = hexCentre(x.q, x.r);
+    const label = svg('text', { x: cx, y: -cy, 'text-anchor': 'middle', 'dominant-baseline': 'middle', class: 'hex-label' });
+    label.textContent = kind === 'mine' ? `${x.main ? '★ ' : ''}${Math.round(x.control)}%` : (kind === 'rival' ? (x.owner ? x.owner.label : '?') : '+');
+    poly.addEventListener('click', () => { if (!dragged) pick(x, kind); });
+    map.append(poly, label);
+    polys[x.key] = poly;
+  };
+  v.options.forEach((x) => draw(x, 'option'));
+  rivals.forEach((x) => draw(x, 'rival'));
+  mine.forEach((x) => draw(x, 'mine'));
+  map.querySelectorAll('.hex-label').forEach((t) => t.setAttribute('font-size', (state.static.hexSize || 150) * 0.32));
+
+  // Scroll to zoom, drag to move (same feel as the area map)
+  let drag = null, dragged = false;
+  map.addEventListener('wheel', (e) => {
+    e.preventDefault();
+    const r = map.getBoundingClientRect();
+    const fx = (e.clientX - r.left) / (r.width || 1), fy = (e.clientY - r.top) / (r.height || 1);
+    const wx = view.cx - view.half + fx * 2 * view.half, wy = -view.cy - view.half + fy * 2 * view.half;
+    const half = Math.min(6000, Math.max(250, view.half * (e.deltaY > 0 ? 1.25 : 0.8)));
+    view = { cx: wx - fx * 2 * half + half, cy: -(wy - fy * 2 * half + half), half };
+    apply();
+  }, { passive: false });
+  map.addEventListener('mousedown', (e) => { drag = { x: e.clientX, y: e.clientY, view: { ...view } }; dragged = false; });
+  mapDragHandlers = {
+    move: (e) => {
+      if (!drag || !map.isConnected) return;
+      const r = map.getBoundingClientRect();
+      if (Math.abs(e.clientX - drag.x) + Math.abs(e.clientY - drag.y) > 4) dragged = true;
+      view = { cx: drag.view.cx - (e.clientX - drag.x) / (r.width || 1) * 2 * drag.view.half, cy: drag.view.cy + (e.clientY - drag.y) / (r.height || 1) * 2 * drag.view.half, half: drag.view.half };
+      apply();
+    },
+    up: () => { drag = null; setTimeout(() => { dragged = false; }, 0); },
+  };
+  apply();
+
+  // Side panel
+  const cost = v.cost;
+  const costText = [cost.money ? `${money(cost.money)} ${cost.account === 'clean' ? 'clean' : 'dirty'} money` : null, cost.item && cost.count ? `${cost.count} x ${cost.item} from your pockets` : null].filter(Boolean).join(' and ') || 'nothing';
+  const buyBox = h('div', { class: 'hex-buy' });
+  const showBuy = () => {
+    if (!picked || picked.kind !== 'option') {
+      buyBox.replaceChildren(h('p', { class: 'hint', style: 'margin:0', text: v.options.length
+        ? 'Tap a dashed hex on the map to buy that ground.'
+        : `Get one of your hexes to ${v.expandAt}% control and the ground around it opens up to buy.` }));
+      return;
+    }
+    const x = picked.x;
+    buyBox.replaceChildren(
+      h('div', { style: 'font-weight:600', text: x.label }),
+      h('p', { class: 'hint', style: 'margin:2px 0 10px', text: `Costs ${costText}. It starts at a low control %, so sell there straight away. If someone already runs it, you'll find out who.` }),
+      v.canExpand
+        ? h('button', { class: 'btn primary', type: 'button', onclick: () => confirmModal({ title: `Buy ${x.label}?`, body: `This costs ${costText}.`, confirmLabel: 'Buy it', onConfirm: () => act('hexExpand', [x.q, x.r], 'It\'s yours. Sell there to build it up.') }) }, 'Buy this ground')
+        : h('p', { class: 'hint debit', style: 'margin:0', text: 'Your rank can\'t buy new turf.' }));
+  };
+  const pick = (x, kind) => {
+    picked = { x, kind };
+    Object.values(polys).forEach((p) => p.classList.remove('picked'));
+    if (polys[x.key]) polys[x.key].classList.add('picked');
+    showBuy();
+  };
+  showBuy();
+
+  const rows = mine.sort((a, b) => (b.main ? 1 : 0) - (a.main ? 1 : 0) || b.control - a.control).map((x) => h('button', {
+    class: 'hex-row', type: 'button', onclick: () => { pick(x, 'mine'); const [cx, cy] = hexCentre(x.q, x.r); view = { cx, cy, half: 700 }; apply(); },
+  },
+    h('span', { class: 'hex-row-head' },
+      h('strong', { text: x.label }),
+      x.main ? h('span', { class: 'badge', text: 'Main' }) : (x.compound ? h('span', { class: 'badge muted', text: 'Compound' }) : null),
+      h('span', { class: 'fig', text: `${Math.round(x.control)}%` })),
+    h('span', { class: 'bar' }, h('span', { style: `width:${Math.min(100, x.control)}%;background:${x.control >= v.expandAt ? '#6CC070' : (x.control < 25 ? '#E5484D' : accent)}` }))));
+
+  const sprays = v.sprays;
+  const side = h('div', { class: 'hex-side' },
+    h('div', { class: 'hex-stats' },
+      h('div', {}, h('div', { class: 'eyebrow', text: 'Turf' }), h('div', { class: 'big fig', text: `${mine.length} ${mine.length === 1 ? 'hex' : 'hexes'}` })),
+      h('div', {}, h('div', { class: 'eyebrow', text: 'Tags' }), h('div', { class: 'big fig', text: `${sprays.used} of ${sprays.slots}` }))),
+    h('p', { class: 'hint', style: 'margin:0', text: `Sell ${joinList(v.turfDrugs, 'or')} on your turf to build control (+${v.controlPerSale}% each). Every hex loses ${v.decayPerHour}% an hour, and rivals dealing on it cost you. Your first tag goes on your main hex, and you get another for every ${sprays.every} hexes.` }),
+    h('div', { class: 'hex-list' }, rows.length ? rows : [h('p', { class: 'empty', text: 'Your gang has no turf yet. Staff set up your compound.' })]),
+    h('h3', { style: 'margin:6px 0 0', text: 'Buy new ground' }),
+    buyBox,
+    rivals.length ? h('div', {}, h('h3', { style: 'margin:6px 0 6px', text: 'Rival turf you\'ve found' }),
+      h('div', { class: 'hex-list' }, rivals.map((x) => h('div', { class: 'hex-rival' }, h('span', { class: 'swatch', style: `background:${x.owner ? x.owner.colour : '#888'}` }), h('span', { text: x.label }), h('span', { class: 'muted', text: x.owner ? x.owner.label : '' }))))) : null);
+
+  return h('div', {},
+    h('div', { class: 'section-head' }, h('h2', { text: 'Territory' })),
+    h('div', { class: 'territory' },
+      h('div', { class: 'map-box' }, map,
+        h('div', { class: 'map-tools' },
+          h('span', { class: 'hint', style: 'margin:0', text: 'Scroll to zoom, drag to move. Rival turf only shows once your gang has dealt on it.' }),
+          h('button', { class: 'btn small', type: 'button', onclick: () => { view = { ...fit }; apply(); } }, 'Our turf'))),
+      side));
+}
+
+/* Air drop -------------------------------------------------------------- */
+
+// Map picture pixel <-> world coordinates, from the Territory map calibration
+function mapToWorld(px, py) {
+  const tm = state.static.tabletMap;
+  return { x: (px - tm.offsetX) / tm.scaleX - (tm.nudgeX || 0), y: (py - tm.offsetY) / tm.scaleY - (tm.nudgeY || 0) };
+}
+function worldToMap(x, y) {
+  const tm = state.static.tabletMap;
+  return { px: (x + (tm.nudgeX || 0)) * tm.scaleX + tm.offsetX, py: (y + (tm.nudgeY || 0)) * tm.scaleY + tm.offsetY };
+}
+
+async function renderAirdrop() {
+  const res = await request('getAirdrop');
+  if (!res.ok) return loadError(res);
+  const v = res.data;
+  const tm = state.static.tabletMap;
+  const parts = [h('div', { class: 'section-head' }, h('h2', { text: 'Air drop' }))];
+
+  if (v.active) {
+    const a = v.active;
+    const label = { called: 'Plane on its way', flying: 'Plane overhead, crate falling', landed: 'Crate on the ground' }[a.state] || a.state;
+    parts.push(h('div', { class: 'heist-active' },
+      h('div', { class: 'row', style: 'justify-content:space-between;align-items:center' },
+        h('div', {}, h('div', { class: 'eyebrow', text: 'Your drop' }), h('h3', { style: 'margin:2px 0 0', text: label })),
+        a.state === 'called' ? h('div', { style: 'text-align:right' }, h('div', { class: 'eyebrow', text: 'Arrives in' }), countdown(a.arrivesIn)) : null),
+      h('div', { class: 'row', style: 'justify-content:space-between;align-items:center' },
+        h('span', { class: 'hint', style: 'margin:0', text: 'Look for the red circle on your map and the red smoke. Anyone can open it, so get there first.' }),
+        waypointButton(a.x, a.y))));
+  }
+
+  const costText = `Costs ${money(v.cost)} ${v.account === 'clean' ? 'clean' : 'dirty'} money${v.item ? ` and ${v.item.count} x ${v.item.label}` : ''}. The treasury has ${money(v.balance)}.`;
+  parts.push(h('p', { class: 'hint', style: 'margin:0 0 14px', text: `A military cargo plane drops a crate of gear wherever you choose. ${costText} One drop every ${Math.round(v.cooldownMins / 60 * 10) / 10} hours.` }));
+
+  if (!v.canCall) {
+    parts.push(h('p', { class: 'empty', text: 'Only gang management can call in air drops.' }));
+    return h('div', {}, parts);
+  }
+  if (v.active) return h('div', {}, parts);
+
+  // Where: tap the map (zoom in for detail) or use the waypoint
+  let pick = null;
+  let zoom = 1;
+  const marker = h('span', { class: 'drop-marker', hidden: true });
+  const img = h('img', { class: 'drop-map-img', src: tm && tm.image ? tm.image : '', alt: 'Map of San Andreas', draggable: 'false' });
+  const inner = h('div', { class: 'drop-map-inner' }, img, marker);
+  const frame = h('div', { class: 'drop-map' }, inner);
+  const where = h('span', { class: 'hint', style: 'margin:0', text: 'Tap the map where you want it, or use your waypoint.' });
+  const call = h('button', { class: 'btn primary', type: 'button', disabled: true }, 'Call it in');
+
+  const place = (x, y) => {
+    const b = v.bounds;
+    if (x < b.minX || x > b.maxX || y < b.minY || y > b.maxY) { toast('The plane can\'t drop there.', true); return; }
+    pick = { x, y };
+    const m = worldToMap(x, y);
+    marker.style.left = `${(m.px / tm.size) * 100}%`;
+    marker.style.top = `${(m.py / tm.size) * 100}%`;
+    marker.hidden = false;
+    where.textContent = `Dropping at ${Math.round(x)}, ${Math.round(y)}.`;
+    call.disabled = v.waitFor > 0 || v.busy;
+  };
+  img.addEventListener('click', (e) => {
+    const r = img.getBoundingClientRect();
+    const px = ((e.clientX - r.left) / r.width) * tm.size;
+    const py = ((e.clientY - r.top) / r.height) * tm.size;
+    const w = mapToWorld(px, py);
+    place(w.x, w.y);
+  });
+  const setZoom = (z) => {
+    zoom = Math.max(1, Math.min(4, z));
+    inner.style.width = `${zoom * 100}%`;
+    // Keep the picked spot (or the middle) in view
+    requestAnimationFrame(() => {
+      const fx = pick ? worldToMap(pick.x, pick.y).px / tm.size : 0.5;
+      const fy = pick ? worldToMap(pick.x, pick.y).py / tm.size : 0.5;
+      frame.scrollLeft = fx * frame.scrollWidth - frame.clientWidth / 2;
+      frame.scrollTop = fy * frame.scrollHeight - frame.clientHeight / 2;
+    });
+  };
+
+  call.addEventListener('click', () => confirmModal({
+    title: 'Call in the air drop?', body: `${costText} The plane arrives in a few minutes, and the area shows on the map${state.static.airdropShowTo === 'caller' ? ' for your gang' : ' for everyone'}.`,
+    confirmLabel: 'Call it in',
+    onConfirm: async () => {
+      if (IN_GAME) {
+        const r = await postNui('airdropCheck', pick);
+        const check = r && r.json ? await r.json() : { ok: true };
+        if (!check.ok) { toast('That\'s water. Pick a spot on land.', true); return; }
+      }
+      act('airdropCall', [pick.x, pick.y], 'Called in. Watch the sky.');
+    },
+  }));
+
+  parts.push(h('div', { class: 'drop-wrap' },
+    frame,
+    h('div', { class: 'drop-side' },
+      h('h3', { style: 'margin:0', text: 'Where should it land?' }),
+      where,
+      h('div', { class: 'row' },
+        h('button', { class: 'btn small', type: 'button', 'aria-label': 'Zoom out', onclick: () => setZoom(zoom / 2) }, '−'),
+        h('button', { class: 'btn small', type: 'button', 'aria-label': 'Zoom in', onclick: () => setZoom(zoom * 2) }, '+'),
+        h('button', {
+          class: 'btn small', type: 'button',
+          onclick: async () => {
+            if (!IN_GAME) return place(1700, 3300);
+            const r = await postNui('airdropWaypoint');
+            const data = r && r.json ? await r.json() : null;
+            if (data && data.ok) place(data.x, data.y); else toast('Set a waypoint on your map first.', true);
+          },
+        }, 'Use my waypoint')),
+      h('p', { class: 'hint', style: 'margin:0', text: 'The plane arrives a few minutes after you call it. The crate lands inside a red circle on the map, with red smoke so you can spot it. Whoever opens it first gets everything inside.' }),
+      v.waitFor > 0 ? h('p', { class: 'hint debit', style: 'margin:0' }, 'Not yet. Ready in ', countdown(v.waitFor), '.') : null,
+      v.busy ? h('p', { class: 'hint debit', style: 'margin:0', text: 'Another drop is already in the air. Try again soon.' }) : null,
+      h('div', {}, call))));
+  return h('div', {}, parts);
 }
 
 /* Heists ---------------------------------------------------------------- */
@@ -2176,7 +2436,8 @@ const Mock = {
           { grade: 1, label: 'Soldier', permissions: ['graffiti', 'contracts_accept'] },
           { grade: 0, label: 'Associate', permissions: ['graffiti'] },
         ] });
-      case 'getTerritory': return ok({ captureThreshold: 100, holdThreshold: 60, margin: 25, zones: [
+      case 'getTerritory': if (location.search.includes('hex')) return this.request('getTerritoryHex');
+        return ok({ captureThreshold: 100, holdThreshold: 60, margin: 25, zones: [
         { key: 'davis', label: 'Davis', influence: 164.2, owner: { label: this.gang.label, colour: this.gang.colour, mine: true },
           breakdown: [{ label: this.gang.label, colour: this.gang.colour, influence: 164.2, mine: true }, { label: 'Los Vagos', colour: '#E8C31E', influence: 151 }, { label: 'East Side', colour: '#3FA7D6', influence: 22 }] },
         { key: 'rancho', label: 'Rancho', influence: 112, owner: { label: this.gang.label, colour: this.gang.colour, mine: true },
@@ -2244,6 +2505,15 @@ const Mock = {
           { key: 'cleaner', label: 'A cleaner', description: 'Someone who asks no questions. Expensive, but anyone can use them.', cut: 0.3, minutes: 30, min: 1000, limit: 25000, left: 25000 },
         ],
         washing: [{ id: 3, method: 'Your protected businesses', amountIn: 5000, amountOut: 4400, secondsLeft: 1820 }], done: [] });
+      case 'getTerritoryHex': return ok({ mode: 'hexes', expandAt: 100, decayPerHour: 4, controlPerSale: 1.5, turfDrugs: ['OG Kush'], canExpand: true, balance: 48250,
+        cost: { money: 50000, account: 'dirty', item: 'OG Kush', count: 50 }, sprays: { used: 1, slots: 2, every: 3, main: 'h:4:-7' },
+        hexes: [{ key: 'h:4:-7', q: 4, r: -7, label: 'Davis (4, -7)', mine: true, main: true, compound: true, control: 100, owner: { label: 'Grove Kings', colour: '#7B3FBF' } },
+          { key: 'h:5:-7', q: 5, r: -7, label: 'Rancho (5, -7)', mine: true, compound: true, control: 62, owner: { label: 'Grove Kings', colour: '#7B3FBF' } },
+          { key: 'h:3:-6', q: 3, r: -6, label: 'Davis (3, -6)', mine: true, control: 18, owner: { label: 'Grove Kings', colour: '#7B3FBF' } },
+          { key: 'h:6:-8', q: 6, r: -8, label: 'Rancho (6, -8)', mine: false, owner: { label: 'Los Vagos', colour: '#E8C31E' } }],
+        options: [{ key: 'h:4:-8', q: 4, r: -8, label: 'Davis (4, -8)' }, { key: 'h:3:-7', q: 3, r: -7, label: 'Chamberlain Hills (3, -7)' }, { key: 'h:5:-8', q: 5, r: -8, label: 'Rancho (5, -8)' }, { key: 'h:4:-6', q: 4, r: -6, label: 'Davis (4, -6)' }] });
+      case 'getAirdrop': return ok({ canCall: true, cost: 25000, account: 'dirty', balance: 48250, waitFor: 0, busy: false, cooldownMins: 120,
+        bounds: { minX: -3800, maxX: 4300, minY: -3700, maxY: 7800 }, active: null });
       case 'getHeists': return ok({ canStart: true,
         active: { id: 4, label: 'Fleeca, Great Ocean', endsAt: 812, alarm: 'silent', loot: 0, steps: [
           { i: 1, label: 'Security panel', done: true }, { i: 2, label: 'Inner gate', available: true, busy: true },
@@ -2282,7 +2552,8 @@ if (!IN_GAME && !location.search.includes('admin') && !location.search.includes(
     action: 'open',
     gang: Mock.gang,
     static: {
-      currency: '£', creationCost: 50000, allowCreation: true, nameMin: 3, nameMax: 24, maxTransaction: 1000000, graffiti: true, contracts: true, rackets: true, safehouses: true, enterprises: true, diplomacy: true, informants: true, auctions: true, progression: true, shop: true, heists: true,
+      currency: '£', creationCost: 50000, allowCreation: true, nameMin: 3, nameMax: 24, maxTransaction: 1000000, graffiti: true, contracts: true, rackets: true, safehouses: true, enterprises: true, diplomacy: true, informants: true, auctions: true, progression: true, shop: true, heists: true, airdrops: true,
+      hexMode: location.search.includes('hex'), hexSize: 150, hexOrigin: { x: 0, y: 0 },
       tabletMap: { image: 'images/map.jpg', size: 2048, scaleX: 0.16576, offsetX: 938.4, scaleY: -0.164, offsetY: 1382.4, nudgeX: 0, nudgeY: 0 },
       tiers: [{ label: 'Street crew', unlocks: [] }, { label: 'Firm', unlocks: ['rackets', 'safehouses', 'contracts_medium'] }, { label: 'Organisation', unlocks: ['enterprises', 'diplomacy', 'second_safehouse'] }, { label: 'Syndicate', unlocks: ['auctions', 'contracts_high'] }], logos: true, logoApproval: true, logoHosts: ['i.imgur.com', 'i.ibb.co', 'r2.fivemanage.com'],
       zones: [

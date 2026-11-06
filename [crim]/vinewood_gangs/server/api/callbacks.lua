@@ -69,6 +69,7 @@ read('getMembers', function(src)
 end)
 
 read('getTerritory', function(src)
+    if Hex.Enabled() then return Hexes.TabletView(src) end
     local gang = Gangs.GetPlayerGang(src)
     if not gang then return nil, 'not_in_gang' end
     local zones = {}
@@ -194,6 +195,23 @@ action('safehouseRaidFinish', function(src, id) return Safehouses.RaidFinish(src
 
 read('getLaundering', function(src) return Laundering.View(src) end)
 action('launder', function(src, method, amount) return Laundering.Start(src, tostring(method), amount) end, 2000)
+
+-- Hex turf ------------------------------------------------------------------
+
+action('hexExpand', function(src, q, r) return Hexes.Expand(src, q, r) end, 3000)
+lib.callback.register('vinewood_gangs:server:hexView', function(src)
+    if not Hex.Enabled() then return nil end
+    local gang = Gangs.GetPlayerGang(src)
+    return Hexes.ViewFor(gang and gang.id)
+end)
+
+-- Air drops -----------------------------------------------------------------
+
+read('getAirdrop', function(src) return Airdrops.View(src) end)
+action('airdropCall', function(src, x, y) return Airdrops.Request(src, x, y) end, 3000)
+lib.callback.register('vinewood_gangs:server:airdropBeginOpen', function(src, id) return Airdrops.BeginOpen(src, id) end)
+lib.callback.register('vinewood_gangs:server:airdropOpen', function(src, id) return Airdrops.Open(src, id) end)
+lib.callback.register('vinewood_gangs:server:airdropActive', function(src) return Airdrops.Active(src) end)
 
 -- Heists -------------------------------------------------------------------
 

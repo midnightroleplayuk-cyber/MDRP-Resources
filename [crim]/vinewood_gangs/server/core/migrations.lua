@@ -1,7 +1,7 @@
 Migrations = {}
 
 -- sql/install.sql creates the whole database at this version.
-local SCHEMA_VERSION = 15
+local SCHEMA_VERSION = 18
 -- The first release that used a single install.sql. Anything older came from pre-release builds.
 local BASE_VERSION = 10
 
@@ -14,6 +14,9 @@ local UPDATES = {
     [13] = 'sql/update_013.sql', -- racket shops added in game
     [14] = 'sql/update_014.sql', -- street dealing permission
     [15] = 'sql/update_015.sql', -- heists
+    [16] = 'sql/update_016.sql', -- settings changed in game
+    [17] = 'sql/update_017.sql', -- air drop permission
+    [18] = 'sql/update_018.sql', -- hex territory
 }
 
 local resource = GetCurrentResourceName()

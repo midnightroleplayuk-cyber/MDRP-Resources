@@ -337,7 +337,7 @@ h3 {
 
 label.field { display: grid; gap: 6px; font-size: 14px; color: var(--concrete); }
 
-input[type="text"], input[type="number"], input[type="url"] {
+input[type="text"], input[type="number"], input[type="url"], input[type="search"] {
   height: 38px;
   padding: 0 12px;
   border: 1px solid var(--line);
@@ -790,7 +790,7 @@ tr.clickable:hover td { background: var(--kerb); }
 .btn { border-radius: 8px; font-weight: 500; letter-spacing: 0; }
 .btn.primary { background: var(--accent); color: var(--on-accent); border-color: transparent; }
 .btn.primary:hover { filter: brightness(1.08); }
-input[type=text], input[type=number], input[type=url], textarea, select { border-radius: 8px; }
+input[type=text], input[type=number], input[type=url], input[type=search], textarea, select { border-radius: 8px; }
 h2 { font-weight: 650; letter-spacing: -0.01em; }
 h3 { font-weight: 600; }
 .fig, .num { font-variant-numeric: tabular-nums; }
@@ -881,6 +881,61 @@ h3 { font-weight: 600; }
 .heist-edit-head { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
 .heist-step-tools { display: inline-flex; gap: 6px; margin-left: auto; }
 .step-no { display: grid; place-items: center; width: 24px; height: 24px; border-radius: 50%; background: var(--kerb-high); font-size: 12px; font-weight: 600; }
-.heist-edit-extra { display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: end; padding-left: 34px; }
+.heist-edit-extra { display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: start; padding-left: 34px; }
 .heist-save { display: flex; justify-content: space-between; align-items: center; margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--line); }
 .toggle { display: inline-flex; align-items: center; gap: 8px; }
+
+/* Item picker and street dealing (staff) ------------------------------------ */
+
+.picker { display: grid; gap: 6px; }
+.pick-results { display: grid; max-height: 220px; overflow-y: auto; border: 1px solid var(--line); border-radius: 10px; background: var(--asphalt); }
+.pick-row { display: grid; grid-template-columns: 24px 1fr auto; gap: 10px; align-items: center; padding: 7px 10px; border: 0; border-bottom: 1px solid var(--line); background: none; color: var(--chalk); font: inherit; text-align: left; cursor: pointer; }
+.pick-row:last-child { border-bottom: 0; }
+.pick-row:hover { background: var(--kerb-high); }
+.pick-row .muted { font-size: 12px; }
+.pick-chosen { display: flex; align-items: center; gap: 10px; padding: 6px 8px; border: 1px solid var(--line); border-radius: 10px; background: var(--asphalt); }
+.pick-chosen > span { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pick-img { object-fit: contain; border-radius: 6px; background: var(--kerb-high); }
+.drug-list { display: grid; gap: 10px; }
+.drug-row { display: grid; gap: 10px; padding: 12px 14px; border: 1px solid var(--line); border-radius: 12px; background: var(--kerb); }
+.drug-item { max-width: 420px; }
+.drug-fields { display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: start; }
+
+input[type="search"]::-webkit-search-cancel-button { filter: invert(0.7); cursor: pointer; }
+.pick-chosen { min-height: 40px; }
+
+/* Staff access ------------------------------------------------------------ */
+
+.perm-list { display: grid; gap: 2px; max-width: 640px; }
+.perm-row { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 10px; cursor: pointer; }
+.perm-row:hover { background: var(--kerb); }
+.perm-row input { width: 18px; height: 18px; accent-color: var(--accent); }
+
+/* Air drop (tablet) ------------------------------------------------------- */
+
+.drop-wrap { display: grid; grid-template-columns: min(430px, 100%) 1fr; gap: 20px; align-items: start; }
+.drop-map { position: relative; width: 100%; aspect-ratio: 1; overflow: auto; border: 1px solid var(--line); border-radius: 12px; background: #0FA8D2; }
+.drop-side { display: grid; gap: 12px; align-content: start; }
+@media (max-width: 760px) { .drop-wrap { grid-template-columns: 1fr; } }
+.drop-map-inner { position: relative; width: 100%; aspect-ratio: 1; }
+.drop-map-img { display: block; width: 100%; height: 100%; cursor: crosshair; user-select: none; }
+.drop-marker { position: absolute; width: 22px; height: 22px; margin: -11px 0 0 -11px; border: 3px solid #E5484D; border-radius: 50%; background: rgba(229, 72, 77, 0.25); box-shadow: 0 0 0 4px rgba(229, 72, 77, 0.2); pointer-events: none; }
+
+/* Hex turf (tablet) ------------------------------------------------------- */
+
+.map .hex { cursor: pointer; }
+.map .hex.picked { stroke: #ffffff; stroke-width: 3; }
+.map .hex-label { fill: #ffffff; font-weight: 700; pointer-events: none; paint-order: stroke; stroke: rgba(0, 0, 0, 0.6); stroke-width: 0.18em; }
+.hex-side { display: grid; gap: 12px; align-content: start; }
+.hex-stats { display: flex; gap: 28px; }
+.hex-stats .big { font-size: 20px; font-weight: 650; }
+.hex-list { display: grid; gap: 4px; max-height: 240px; overflow-y: auto; }
+.hex-row { display: grid; gap: 6px; padding: 8px 10px; border: 1px solid var(--line); border-radius: 10px; background: var(--kerb); color: var(--chalk); font: inherit; text-align: left; cursor: pointer; }
+.hex-row:hover { border-color: var(--accent); }
+.hex-row-head { display: flex; align-items: center; gap: 8px; }
+.hex-row-head .fig { margin-left: auto; }
+.badge { padding: 1px 7px; border-radius: 99px; background: var(--accent-soft); color: var(--accent); font-size: 11px; font-weight: 600; }
+.badge.muted { background: var(--kerb-high); color: var(--concrete); }
+.hex-buy { padding: 12px 14px; border: 1px dashed var(--line); border-radius: 12px; }
+.hex-rival { display: flex; align-items: center; gap: 8px; padding: 4px 2px; }
+.hex-rival .muted { margin-left: auto; }

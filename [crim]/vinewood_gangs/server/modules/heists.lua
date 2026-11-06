@@ -12,6 +12,16 @@ local LOOT_STEPS = { loot = true }
 local GAMES = { hack = 'hack', thermite = 'thermite', drill = 'drill', truck_doors = 'thermite' }
 
 local function now() return os.time() end
+
+---Loot in its current form: { kind = 'money', account, min, max } or { kind = 'item', item, label, min, max }.
+local function normaliseLoot(l)
+    if type(l) ~= 'table' then return nil end
+    if l.kind == 'money' or l.kind == 'item' then return l end
+    local def = l.type and cfg.lootTypes[l.type]
+    if not def then return nil end
+    if def.kind == 'money' then return { kind = 'money', account = def.account or 'dirty', min = l.min, max = l.max } end
+    return { kind = 'item', item = def.item, label = def.label, min = l.min, max = l.max }
+end
 local function dist(a, b) return math.sqrt((a.x - b.x) ^ 2 + (a.y - b.y) ^ 2 + (a.z - b.z) ^ 2) end
 local function pedPos(src) local c = GetEntityCoords(GetPlayerPed(src)) return { x = c.x, y = c.y, z = c.z } end
 
@@ -40,6 +50,7 @@ function Heists.Load()
         local ok, data = pcall(json.decode, r.data)
         if ok and type(data) == 'table' then
             data.steps = data.steps or {}
+            for _, st in ipairs(data.steps) do if st.loot then st.loot = normaliseLoot(st.loot) end end
             heists[r.id] = { id = r.id, label = r.label, kind = r.kind, enabled = r.enabled == 1 or r.enabled == true, nextAt = r.next_at or 0, data = data }
         end
     end
@@ -272,8 +283,8 @@ function Heists.BeginStep(src, runId, i)
     if run.failedAt[i] and now() - run.failedAt[i] < cfg.retryDelay then return false, 'heist_retry_wait' end
     local p = stepPos(run, i)
     if not p or dist(pedPos(src), p) > cfg.stepRadius + 1.5 then return false, 'too_far' end
-    local tool = cfg.tools[s.type]
-    if tool and tool.item and not Bridge.HasItem(src, tool.item, 1) then return false, 'heist_need_item', tool.item end
+    local tool = (s.item and s.item ~= '') and { item = s.item, consume = s.consume } or cfg.tools[s.type]
+    if tool and tool.item and not Bridge.HasItem(src, tool.item, 1) then return false, 'heist_need_item', s.itemLabel or Bridge.ItemLabel(tool.item) end
 
     run.locks[i] = { src = src, at = GetGameTimer() }
     run.crewSeen[cid] = true
@@ -286,16 +297,15 @@ function Heists.BeginStep(src, runId, i)
 end
 
 local function payLoot(run, src, s)
-    local l = s.loot
-    local def = l and cfg.lootTypes[l.type]
-    if not def then return nil end
+    local l = normaliseLoot(s.loot)
+    if not l then return nil end
     local amount = math.random(math.floor(l.min or 1), math.floor(math.max(l.min or 1, l.max or l.min or 1)))
-    if def.kind == 'money' then
-        Ledger.Transact(run.gangId, def.account or 'dirty', amount, 'heist', { note = run.heist.label })
+    if l.kind == 'money' then
+        Ledger.Transact(run.gangId, l.account or 'dirty', amount, 'heist', { note = run.heist.label })
         run.loot = run.loot + amount
         return { money = amount }
     end
-    if Bridge.AddItem(src, def.item, amount) then return { item = def.label, count = amount } end
+    if Bridge.AddItem(src, l.item, amount) then return { item = l.label or Bridge.ItemLabel(l.item), count = amount } end
     return nil
 end
 
@@ -324,7 +334,7 @@ function Heists.FinishStep(src, runId, i, success)
         return true, { result = 'failed' }
     end
 
-    local tool = cfg.tools[s.type]
+    local tool = (s.item and s.item ~= '') and { item = s.item, consume = s.consume } or cfg.tools[s.type]
     if tool and tool.item and tool.consume then Bridge.RemoveItem(src, tool.item, 1) end
     if s.doorId and s.doorId ~= '' then Bridge.UnlockDoor(s.doorId) end
     if s.alert and s.alert ~= 'none' then alarm(run, s.alert, p) end
@@ -442,10 +452,21 @@ local function cleanHeist(input)
         local p = cleanPoint(s)
         if p then step.x, step.y, step.z, step.w = p.x, p.y, p.z, p.w end
         if s.type == 'loot' then
-            local l = type(s.loot) == 'table' and s.loot or {}
-            if not cfg.lootTypes[l.type] then return nil, 'heist_bad_loot' end
+            local l = normaliseLoot(s.loot) or {}
             local lo = math.floor(cleanNumber(l.min, 1, 10000000, 1))
-            step.loot = { type = l.type, min = lo, max = math.max(lo, math.floor(cleanNumber(l.max, 1, 10000000, lo))) }
+            local hi = math.max(lo, math.floor(cleanNumber(l.max, 1, 10000000, lo)))
+            if l.kind == 'money' then
+                step.loot = { kind = 'money', account = l.account == 'clean' and 'clean' or 'dirty', min = lo, max = hi }
+            elseif l.kind == 'item' then
+                if not Bridge.ItemExists(l.item) then return nil, 'item_not_found' end
+                step.loot = { kind = 'item', item = l.item, label = cleanText(l.label ~= '' and l.label or Bridge.ItemLabel(l.item), 40), min = lo, max = math.min(hi, 500) }
+            else
+                return nil, 'heist_bad_loot'
+            end
+        end
+        if s.item and s.item ~= '' then
+            if not Bridge.ItemExists(s.item) then return nil, 'item_not_found' end
+            step.item, step.itemLabel, step.consume = s.item, cleanText(s.itemLabel or Bridge.ItemLabel(s.item), 40), s.consume == true
         end
         data.steps[#data.steps + 1] = step
     end
@@ -486,7 +507,11 @@ function Heists.AdminList()
     table.sort(loot, function(a, b) return a.label < b.label end)
     local tiers = {}
     for i, t in ipairs(Config.Progression.tiers) do tiers[i] = t.label end
-    return { heists = list, templates = templates, stepTypes = types, lootTypes = loot, tiers = tiers,
+    local tools = {}
+    for key, t in pairs(cfg.tools) do
+        if t.item then tools[key] = { item = t.item, label = Bridge.ItemLabel(t.item), consume = t.consume == true } end
+    end
+    return { heists = list, templates = templates, stepTypes = types, lootTypes = loot, tiers = tiers, tools = tools,
         defaultTier = Progression.TierFor('heists') or 1 }
 end
 
@@ -496,7 +521,7 @@ function Heists.AdminCreate(src, template)
     local steps = {}
     for i, s in ipairs(t.steps) do
         steps[i] = { type = s.type, label = s.label, difficulty = s.difficulty, time = s.time, alert = s.alert,
-            loot = s.loot and { type = s.loot.type, min = s.loot.min, max = s.loot.max } or nil }
+            loot = s.loot and normaliseLoot(s.loot) or nil }
     end
     local data = { police = t.police, crew = t.crew, cooldown = t.cooldown, timeLimit = t.timeLimit, steps = steps }
     local id = MySQL.insert.await('INSERT INTO vg_heists (label, kind, enabled, data, created_by) VALUES (?, ?, 0, ?, ?)',

@@ -1,0 +1,448 @@
+-- Hex territory. In hex mode this replaces areas and influence: the hexes gangs hold ARE the areas, and a
+-- hex's control % is what "influence" means. Everything that asks Zones / Influence gets hex answers.
+Hexes = {}
+
+local cfg = Config.Hexes
+local hexes = {}    -- hexes[key] = { key, q, r, gangId, control, main, compound, claimedAt }
+local reveals = {}  -- reveals[gangId][key] = os.time() the gang found it
+local dirty = {}    -- control values to write back
+local warned = {}   -- warned[key] = true once the owner's been told it's running low
+local settings = {} -- the numbers staff can change in game (start from config/hexes.lua)
+
+local EDITABLE = { 'turfDrugs', 'controlPerSale', 'rivalLoss', 'decayPerHour', 'startControl', 'expandAt', 'expandCost', 'sprayEvery' }
+
+local function now() return os.time() end
+local function S(name) if settings[name] ~= nil then return settings[name] end return cfg[name] end
+
+function Hexes.Setting(name) return S(name) end
+
+-------------------------------------------------------------------------------
+-- What each gang can see
+-------------------------------------------------------------------------------
+
+local function rebuildZones()
+    local defs = {}
+    for key, h in pairs(hexes) do
+        defs[key] = { label = Hex.Label(h.q, h.r), value = 1.0, points = Hex.Corners(h.q, h.r) }
+    end
+    Zones.Set(defs)
+end
+
+local function owned(gangId)
+    local list = {}
+    for _, h in pairs(hexes) do if h.gangId == gangId then list[#list + 1] = h end end
+    return list
+end
+
+function Hexes.Count(gangId) return #owned(gangId) end
+
+function Hexes.MainOf(gangId)
+    for key, h in pairs(hexes) do if h.gangId == gangId and h.main then return key end end
+end
+
+---Tags a gang may have up: one, plus one for every sprayEvery hexes.
+function Hexes.SpraySlots(gangId)
+    local n = Hexes.Count(gangId)
+    if n == 0 then return 0 end
+    return 1 + math.floor(n / math.max(1, S('sprayEvery')))
+end
+
+local function revealedTo(gangId, key)
+    local r = reveals[gangId] and reveals[gangId][key]
+    if not r then return false end
+    local days = cfg.revealDays or 0
+    return days <= 0 or now() - r < days * 86400
+end
+
+---Everything a gang's members' games are told about: their own hexes and the rivals' they've found.
+function Hexes.ViewFor(gangId)
+    local out = {}
+    if not gangId then return out end
+    for key, h in pairs(hexes) do
+        local mine = h.gangId == gangId
+        if mine or revealedTo(gangId, key) then
+            local g = Gangs.Get(h.gangId)
+            out[#out + 1] = {
+                key = key, q = h.q, r = h.r, label = Hex.Label(h.q, h.r), mine = mine, main = mine and h.main or nil,
+                compound = mine and h.compound or nil, control = mine and math.floor(h.control * 10 + 0.5) / 10 or nil,
+                owner = g and { id = g.id, label = g.label, colour = g.colour } or nil,
+            }
+        end
+    end
+    return out
+end
+
+local function pushGang(gangId)
+    if not gangId then return end
+    local view = Hexes.ViewFor(gangId)
+    for _, m in ipairs(Gangs.OnlineMembers(gangId)) do
+        TriggerClientEvent('vinewood_gangs:client:hexes', m.source, view)
+    end
+end
+Hexes.Push = pushGang
+
+-- Gangs that can currently see a hex (its owner and anyone who's found it)
+local function watchers(key)
+    local list, seen = {}, {}
+    local h = hexes[key]
+    if h then list[#list + 1] = h.gangId seen[h.gangId] = true end
+    for gid, keys in pairs(reveals) do
+        if keys[key] and not seen[gid] then list[#list + 1] = gid seen[gid] = true end
+    end
+    return list
+end
+
+function Hexes.Reveal(gangId, key)
+    local h = hexes[key]
+    if not h or h.gangId == gangId or revealedTo(gangId, key) then return false end
+    reveals[gangId] = reveals[gangId] or {}
+    reveals[gangId][key] = now()
+    MySQL.insert('INSERT INTO vg_hex_reveals (gang_id, hex_key, revealed_at) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE revealed_at = VALUES(revealed_at)', { gangId, key, now() })
+    local owner = Gangs.Get(h.gangId)
+    Gangs.NotifyGang(gangId, locale('hex_revealed', owner and owner.label or '?', Hex.Label(h.q, h.r)), 'warning')
+    pushGang(gangId)
+    return true
+end
+
+-------------------------------------------------------------------------------
+-- Claiming and losing
+-------------------------------------------------------------------------------
+
+local function claim(key, gangId, control, main, compound)
+    local q, r = Hex.Parse(key)
+    hexes[key] = { key = key, q = q, r = r, gangId = gangId, control = control, main = main == true, compound = compound == true, claimedAt = now() }
+    MySQL.insert.await('INSERT INTO vg_hexes (hex_key, gang_id, control, is_main, compound, claimed_at) VALUES (?, ?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE gang_id = VALUES(gang_id), control = VALUES(control), is_main = VALUES(is_main), compound = VALUES(compound), claimed_at = VALUES(claimed_at)',
+        { key, gangId, control, main and 1 or 0, compound and 1 or 0, now() })
+    warned[key] = nil
+    rebuildZones()
+end
+
+local function lose(key, reason)
+    local h = hexes[key]
+    if not h then return end
+    local watching = watchers(key)
+    hexes[key], dirty[key], warned[key] = nil, nil, nil
+    for _, keys in pairs(reveals) do keys[key] = nil end
+    MySQL.update('DELETE FROM vg_hexes WHERE hex_key = ?', { key })
+    MySQL.update('DELETE FROM vg_hex_reveals WHERE hex_key = ?', { key })
+    rebuildZones()
+    Gangs.NotifyGang(h.gangId, locale(reason or 'hex_lost', Hex.Label(h.q, h.r)), 'error')
+    for _, gid in ipairs(watching) do pushGang(gid) end
+end
+
+local function setControl(h, value)
+    local before = h.control
+    h.control = math.max(0, math.min(100, value))
+    dirty[h.key] = true
+    if h.control <= 0 and not (h.compound and cfg.protectCompound) then
+        lose(h.key, 'hex_lost')
+        return
+    end
+    if h.control < 25 and before >= 25 and not warned[h.key] then
+        warned[h.key] = true
+        Gangs.NotifyGang(h.gangId, locale('hex_low', Hex.Label(h.q, h.r), math.floor(h.control)), 'warning')
+    elseif h.control >= 25 then
+        warned[h.key] = nil
+    end
+    -- The tablet shows the exact %, the map only needs to know when something changes hands
+    if math.floor(before / 10) ~= math.floor(h.control / 10) then pushGang(h.gangId) end
+end
+
+-------------------------------------------------------------------------------
+-- Dealing (server/modules/drugs.lua calls these)
+-------------------------------------------------------------------------------
+
+local function isTurfDrug(item)
+    for _, d in ipairs(S('turfDrugs') or {}) do if d == item then return true end end
+    return false
+end
+
+function Hexes.IsTurfDrug(item) return isTurfDrug(item) end
+
+---A sale on a hex. Own hex + turf drug builds control; a rival's sale costs the owner control and reveals the hex.
+function Hexes.OnSale(key, sellerGangId, item, qty)
+    local h = hexes[key]
+    if not h or not sellerGangId then return end
+    if h.gangId == sellerGangId then
+        if isTurfDrug(item) then setControl(h, h.control + S('controlPerSale') * qty) end
+    else
+        Hexes.Reveal(sellerGangId, key)
+        if hexes[key] then setControl(h, h.control - S('rivalLoss') * qty) end
+    end
+end
+
+-------------------------------------------------------------------------------
+-- Expanding (tablet)
+-------------------------------------------------------------------------------
+
+---Hexes this gang could buy next: touching one of theirs that's at the expand threshold.
+function Hexes.Options(gangId)
+    local mine, out, seen = owned(gangId), {}, {}
+    for _, h in ipairs(mine) do
+        if h.control >= S('expandAt') then
+            for _, n in ipairs(Hex.Neighbours(h.q, h.r)) do
+                local key = Hex.Key(n[1], n[2])
+                local other = hexes[key]
+                if not seen[key] and not (other and other.gangId == gangId) then
+                    seen[key] = true
+                    -- Rival ground the gang hasn't found stays a mystery until they try to buy it
+                    local known = other and revealedTo(gangId, key)
+                    if not known then out[#out + 1] = { key = key, q = n[1], r = n[2], label = Hex.Label(n[1], n[2]) } end
+                end
+            end
+        end
+    end
+    return out
+end
+
+function Hexes.Expand(src, q, r)
+    if not Hex.Enabled() then return false, 'invalid' end
+    local gang, _, cid = Gangs.GetPlayerGang(src)
+    if not gang then return false, 'not_in_gang' end
+    if not Gangs.HasPermission(cid, 'expand_turf') then return false, 'no_permission' end
+    q, r = math.floor(tonumber(q) or 0), math.floor(tonumber(r) or 0)
+    local key = Hex.Key(q, r)
+    if hexes[key] and hexes[key].gangId == gang.id then return false, 'hex_already_yours' end
+
+    local touching = false
+    for _, h in ipairs(owned(gang.id)) do
+        if h.control >= S('expandAt') and Hex.Touching(h.q, h.r, q, r) then touching = true break end
+    end
+    if not touching then return false, 'hex_not_touching' end
+    if hexes[key] then
+        Hexes.Reveal(gang.id, key)
+        return false, 'hex_taken'
+    end
+
+    local cost = S('expandCost') or {}
+    if cost.item and cost.count and cost.count > 0 and not Bridge.HasItem(src, cost.item, cost.count) then
+        return false, 'hex_need_drugs', ('%d x %s'):format(cost.count, Bridge.ItemLabel(cost.item))
+    end
+    if (cost.money or 0) > 0 and not Ledger.Transact(gang.id, cost.account or 'dirty', -cost.money, 'hex_expand', { citizenid = cid, note = Hex.Label(q, r) }) then
+        return false, 'insufficient_funds'
+    end
+    if cost.item and cost.count and cost.count > 0 then Bridge.RemoveItem(src, cost.item, cost.count) end
+
+    claim(key, gang.id, S('startControl'), false, false)
+    Gangs.NotifyGang(gang.id, locale('hex_bought', Hex.Label(q, r)), 'success')
+    Logger.Log(src, 'hex_expand', ('%s bought %s for gang %d'):format(cid, key, gang.id))
+    pushGang(gang.id)
+    return true
+end
+
+---For the tablet's Territory app.
+function Hexes.TabletView(src)
+    local gang, _, cid = Gangs.GetPlayerGang(src)
+    if not gang then return nil, 'not_in_gang' end
+    local cost = S('expandCost') or {}
+    local used = 0
+    for _, t in ipairs(Graffiti and Graffiti.GangTags and Graffiti.GangTags(gang.id) or {}) do used = used + (t.active or 0) end
+    return {
+        mode = 'hexes', hexes = Hexes.ViewFor(gang.id), options = Hexes.Options(gang.id),
+        canExpand = Gangs.HasPermission(cid, 'expand_turf'), expandAt = S('expandAt'),
+        cost = { money = cost.money or 0, account = cost.account or 'dirty', item = cost.item and Bridge.ItemLabel(cost.item) or nil, count = cost.count or 0 },
+        decayPerHour = S('decayPerHour'), controlPerSale = S('controlPerSale'),
+        turfDrugs = (function() local l = {} for _, d in ipairs(S('turfDrugs') or {}) do l[#l + 1] = Bridge.ItemLabel(d) end return l end)(),
+        sprays = { used = used, slots = Hexes.SpraySlots(gang.id), every = S('sprayEvery'), main = Hexes.MainOf(gang.id) },
+        balance = Ledger.GetBalance(gang.id, cost.account or 'dirty'),
+    }
+end
+
+-------------------------------------------------------------------------------
+-- Ticking, saving, loading
+-------------------------------------------------------------------------------
+
+local function flush()
+    local rows = {}
+    for key in pairs(dirty) do
+        local h = hexes[key]
+        if h then rows[#rows + 1] = { math.floor(h.control * 100 + 0.5) / 100, key } end
+    end
+    dirty = {}
+    if #rows > 0 then MySQL.prepare('UPDATE vg_hexes SET control = ? WHERE hex_key = ?', rows) end
+end
+Hexes.Flush = flush
+
+local function tick()
+    local loss = S('decayPerHour') / 60 -- runs every minute
+    local list = {}
+    for _, h in pairs(hexes) do list[#list + 1] = h end
+    for _, h in ipairs(list) do if hexes[h.key] then setControl(h, h.control - loss) end end
+    flush()
+end
+Hexes._tick = tick
+
+function Hexes.Load()
+    hexes, reveals = {}, {}
+    local raw = MySQL.scalar.await("SELECT value FROM vg_settings WHERE `key` = 'hex_settings'")
+    settings = raw and json.decode(raw) or {}
+    for _, row in ipairs(MySQL.query.await('SELECT hex_key, gang_id, control, is_main, compound, claimed_at FROM vg_hexes') or {}) do
+        local q, r = Hex.Parse(row.hex_key)
+        if q then
+            hexes[row.hex_key] = { key = row.hex_key, q = q, r = r, gangId = row.gang_id, control = tonumber(row.control) or 0,
+                main = row.is_main == 1 or row.is_main == true, compound = row.compound == 1 or row.compound == true, claimedAt = row.claimed_at }
+        end
+    end
+    for _, row in ipairs(MySQL.query.await('SELECT gang_id, hex_key, revealed_at FROM vg_hex_reveals') or {}) do
+        reveals[row.gang_id] = reveals[row.gang_id] or {}
+        reveals[row.gang_id][row.hex_key] = row.revealed_at
+    end
+    rebuildZones()
+end
+
+function Hexes.Start()
+    CreateThread(function()
+        while true do
+            Wait(60000)
+            local ok, err = pcall(tick)
+            if not ok then lib.print.error(('hex tick: %s'):format(err)) end
+        end
+    end)
+end
+
+AddEventHandler('onResourceStop', function(res) if res == GetCurrentResourceName() then flush() end end)
+
+-------------------------------------------------------------------------------
+-- Staff
+-------------------------------------------------------------------------------
+
+function Hexes.AdminGang(gangId)
+    local list = {}
+    for _, h in ipairs(owned(tonumber(gangId))) do
+        list[#list + 1] = { key = h.key, label = Hex.Label(h.q, h.r), control = math.floor(h.control * 10 + 0.5) / 10, main = h.main, compound = h.compound }
+    end
+    table.sort(list, function(a, b) return (a.main and 1 or 0) > (b.main and 1 or 0) or (a.main == b.main and a.label < b.label) end)
+    return { hexes = list, startHexes = cfg.startHexes }
+end
+
+---Gives a gang the hex the staff member is standing in. Their first hexes are the compound (the first is main).
+function Hexes.AdminGive(src, gangId)
+    gangId = tonumber(gangId)
+    if not gangId or not Gangs.Get(gangId) then return false, 'invalid' end
+    local c = GetEntityCoords(GetPlayerPed(src))
+    local q, r = Hex.FromCoords(c.x, c.y)
+    local key = Hex.Key(q, r)
+    local other = hexes[key]
+    if other and other.gangId ~= gangId then
+        local g = Gangs.Get(other.gangId)
+        return false, 'hex_taken_by', g and g.label or '?'
+    end
+    if other then return false, 'hex_already_theirs' end
+    local count = Hexes.Count(gangId)
+    claim(key, gangId, S('startControl'), count == 0, count < (cfg.startHexes or 2))
+    Logger.Log(src, 'staff_hex_given', ('gave %s to gang %d'):format(key, gangId))
+    pushGang(gangId)
+    return true, Hex.Label(q, r)
+end
+
+function Hexes.AdminRemove(src, key)
+    local h = hexes[tostring(key)]
+    if not h then return false, 'invalid' end
+    local gangId = h.gangId
+    lose(h.key, 'hex_removed_staff')
+    Logger.Log(src, 'staff_hex_removed', ('removed %s from gang %d'):format(key, gangId))
+    -- If the main hex went, the oldest remaining one becomes main
+    if not Hexes.MainOf(gangId) then
+        local oldest
+        for _, x in ipairs(owned(gangId)) do if not oldest or x.claimedAt < oldest.claimedAt then oldest = x end end
+        if oldest then oldest.main = true MySQL.update('UPDATE vg_hexes SET is_main = 1 WHERE hex_key = ?', { oldest.key }) pushGang(gangId) end
+    end
+    return true
+end
+
+function Hexes.AdminSetControl(src, key, value)
+    local h = hexes[tostring(key)]
+    value = tonumber(value)
+    if not h or not value then return false, 'invalid' end
+    setControl(h, value)
+    flush()
+    Logger.Log(src, 'staff_hex_control', ('%s set to %.0f%%'):format(key, value))
+    return true
+end
+
+function Hexes.AdminSetMain(src, key)
+    local h = hexes[tostring(key)]
+    if not h then return false, 'invalid' end
+    for _, x in ipairs(owned(h.gangId)) do x.main = x.key == h.key end
+    MySQL.update('UPDATE vg_hexes SET is_main = (hex_key = ?) WHERE gang_id = ?', { h.key, h.gangId })
+    pushGang(h.gangId)
+    return true
+end
+
+function Hexes.AdminSettings()
+    local out = {}
+    for _, k in ipairs(EDITABLE) do out[k] = S(k) end
+    out.turfDrugItems = {}
+    for _, d in ipairs(S('turfDrugs') or {}) do out.turfDrugItems[#out.turfDrugItems + 1] = { name = d, label = Bridge.ItemLabel(d) } end
+    local cost = S('expandCost') or {}
+    out.expandItemLabel = cost.item and Bridge.ItemLabel(cost.item) or nil
+    out.size = cfg.size
+    return out
+end
+
+function Hexes.AdminSaveSettings(src, input)
+    if type(input) ~= 'table' then return false, 'invalid' end
+    local n = function(v, lo, hi, d) v = tonumber(v) return v and math.max(lo, math.min(hi, v)) or d end
+    local drugs = {}
+    for _, d in ipairs(type(input.turfDrugs) == 'table' and input.turfDrugs or {}) do
+        if not Bridge.ItemExists(d) then return false, 'item_not_found' end
+        drugs[#drugs + 1] = d
+    end
+    if #drugs == 0 then return false, 'hex_need_turf_drug' end
+    local cost = type(input.expandCost) == 'table' and input.expandCost or {}
+    local item = cost.item and cost.item ~= '' and tostring(cost.item) or nil
+    if item and not Bridge.ItemExists(item) then return false, 'item_not_found' end
+    local new = {
+        turfDrugs = drugs,
+        controlPerSale = n(input.controlPerSale, 0.1, 100, cfg.controlPerSale),
+        rivalLoss = n(input.rivalLoss, 0, 100, cfg.rivalLoss),
+        decayPerHour = n(input.decayPerHour, 0, 100, cfg.decayPerHour),
+        startControl = n(input.startControl, 0, 100, cfg.startControl),
+        expandAt = n(input.expandAt, 1, 100, cfg.expandAt),
+        sprayEvery = math.floor(n(input.sprayEvery, 1, 50, cfg.sprayEvery)),
+        expandCost = { money = math.floor(n(cost.money, 0, 100000000, 0)), account = cost.account == 'clean' and 'clean' or 'dirty',
+            item = item, count = item and math.floor(n(cost.count, 1, 10000, 1)) or 0 },
+    }
+    settings = new
+    MySQL.insert.await("INSERT INTO vg_settings (`key`, value, updated_by) VALUES ('hex_settings', ?, ?) ON DUPLICATE KEY UPDATE value = VALUES(value), updated_by = VALUES(updated_by)",
+        { json.encode(new), Bridge.GetCitizenId(src) or 'console' })
+    Logger.Log(src, 'staff_hex_settings', 'changed turf settings')
+    return true, Hexes.AdminSettings()
+end
+
+-------------------------------------------------------------------------------
+-- Hex mode: take over areas and influence, so every other system works on hexes
+-------------------------------------------------------------------------------
+
+if Hex.Enabled() then
+    -- Areas are the claimed hexes, and nothing about them is broadcast to everyone (fog of war)
+    ZoneStore.Load = function() Hexes.Load() end
+    ZoneStore.Save = function() return false, 'hex_mode' end
+    ZoneStore.Delete = function() return false, 'hex_mode' end
+    function Zones.FromCoords(coords)
+        local key = Hex.Key(Hex.FromCoords(coords.x, coords.y))
+        return hexes[key] and key or nil
+    end
+    local plainLabel = Zones.Label
+    function Zones.Label(key)
+        local q, r = Hex.Parse(key)
+        if q then return Hex.Label(q, r) end
+        return plainLabel(key)
+    end
+
+    -- Influence = a hex's control. Only dealing (above) and decay change it.
+    Influence.Load = function() end
+    Influence.Start = function() Hexes.Start() end
+    Influence.Publish = function() end
+    Influence.Flush = function() flush() end
+    Influence.Tick = function() tick() end
+    Influence.Add = function() end
+    Influence.Get = function(key, gangId) local h = hexes[key] return (h and h.gangId == gangId) and h.control or 0 end
+    Influence.GetOwner = function(key) local h = hexes[key] return h and h.gangId or nil end
+    Influence.GetZoneBreakdown = function(key) local h = hexes[key] return h and { { gangId = h.gangId, influence = h.control } } or {} end
+    Influence.RemoveGang = function(gangId) for _, h in ipairs(owned(gangId)) do lose(h.key, 'hex_lost') end end
+    Influence.ClearZone = function(key) lose(key, 'hex_removed_staff') end
+end
+
+-- For tests
+Hexes._hexes = hexes

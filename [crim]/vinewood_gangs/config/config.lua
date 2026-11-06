@@ -32,6 +32,10 @@ Config.Gangs = {
 }
 
 Config.Territory = {
+    -- 'hexes': a honeycomb of hexes gangs claim and expand (config/hexes.lua). 'areas': the drawn areas and
+    -- influence system (config/zones.lua and /gangadmin > Areas). Everything else works with either.
+    mode = 'hexes',
+
     showAllInfluence = true, -- tablet shows every gang's influence in each area (false = only your own)
 
     -- A notification when a player walks into (or out of) an area
@@ -66,15 +70,23 @@ Config.Territory = {
 }
 
 Config.Tablet = {
-    keybind         = 'F7',         -- false to disable
+    keybind         = 'F6',         -- false to disable
     command         = 'gangtablet', -- false to disable
     item            = false,        -- e.g. 'gang_tablet' (ox_inventory: see README in the reply / use export openTablet)
     showNearbyNames = false,        -- invite list shows character names instead of 'Person (ID)'
 }
 
--- Staff commands are restricted to this ACE principal, e.g. add_principal identifier.fivem:123 group.admin
+-- /gangadmin has two staff levels:
+--   Management: full access, and decides what Staff can do (in game: /gangadmin > Staff access).
+--               Anyone in `group` below, anyone with the ACE vinewood_gangs.management, or anyone given it in game.
+--   Staff:      only the groups of actions management allow. Anyone with the ACE vinewood_gangs.staff,
+--               or anyone given it in game.
+-- e.g.  add_principal identifier.fivem:123 group.admin
+--       add_ace group.moderator vinewood_gangs.staff allow
 Config.Admin = {
     group = 'group.admin',
+    -- What Staff can do until management changes it in game
+    defaultStaffPermissions = { 'view', 'reviews', 'tags', 'teleport' },
 }
 
 Config.Influence = {

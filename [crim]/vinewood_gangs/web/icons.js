@@ -22,6 +22,8 @@ const ICON_PATHS = {
   phone: '<rect x="7" y="2.5" width="10" height="19" rx="2.2"/><path d="M10.8 18.3h2.4"/>',
   check: '<circle cx="12" cy="12" r="8.6"/><path d="M8.2 12.2l2.6 2.6 5-5.6"/>',
   vault: '<rect x="3" y="3.5" width="18" height="16" rx="2.4"/><circle cx="12" cy="11.5" r="4.2"/><path d="M12 7.3v1.6M12 14.1v1.6M7.8 11.5h1.6M14.6 11.5h1.6"/><path d="M6 19.5v1.5M18 19.5v1.5"/>',
+  pill: '<rect x="3.2" y="8.6" width="17.6" height="6.8" rx="3.4" transform="rotate(-35 12 12)"/><path d="M9.4 8.4l5.2 7.2"/>',
+  parachute: '<path d="M3.5 10.5a8.5 8.5 0 0 1 17 0"/><path d="M3.5 10.5c1.4-1 2.9-1 4.3 0 1.4-1 2.9-1 4.2 0 1.4-1 2.9-1 4.2 0 1.4-1 2.9-1 4.3 0"/><path d="M3.5 10.5l7 7.5M20.5 10.5l-7 7.5M12 10.5v7.5"/><rect x="9.8" y="18" width="4.4" height="3.5" rx="0.8"/>',
   lock: '<rect x="5" y="10.8" width="14" height="10" rx="2.2"/><path d="M8.3 10.8V7.9a3.7 3.7 0 0 1 7.4 0v2.9"/>',
   back: '<path d="M14.5 18l-6-6 6-6"/>',
   close: '<path d="M6.5 6.5l11 11M17.5 6.5l-11 11"/>',

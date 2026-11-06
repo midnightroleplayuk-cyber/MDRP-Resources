@@ -81,12 +81,35 @@ they leave. Every shell safehouse shares one hidden spot under the map (`shellOr
 apart, so any number of gangs can use the same shell. List the shell models your server streams in
 `config/safehouses.lua` > `shells` (common free starter shells are listed; remove any you don't have).
 
+## Air drops
+
+Ranks with "Call in air drops" (boss and underboss by default) open the tablet's **Air drop** app, tap where it
+should land (zoom in for detail) or use their waypoint, and pay from the treasury. A few minutes later a military
+cargo plane flies over and a crate parachutes down inside a red search circle on the map, with red smoke on the
+ground. Whoever breaks it open first gets the loot; if a rival gang beats you to it, you're told. Unopened crates
+disappear after a while, and police get an approximate call when one lands. Spots in water are refused.
+
+Cost, cooldowns, timings, who sees the blip and the loot table are all in `config/airdrops.lua`. Staff can see
+and cancel drops in `/gangadmin` > Street events.
+
+## Staff access
+
+`/gangadmin` has two levels. **Management** can do everything: your server admins (`Config.Admin.group`),
+anyone with the ACE `vinewood_gangs.management`, or anyone given it in game. **Staff** can only use the groups
+of tools management tick in `/gangadmin` > **Staff access** (view, teleport, reviews, removing tags, gangs and
+members, reputation and influence, building in the world, street events, informants, settings). Give access
+to online players there too; it's tied to their licence. The ACE `vinewood_gangs.staff` also gives Staff. The
+server checks every action, and Staff only see the apps they can use.
+
 ## Heists
 
 Staff build heists in game from `/gangadmin` > **Heists**: pick a template (bank vault, armoured truck, store,
 jewellery, or custom), walk to each spot and press **Set here**, then set the police needed, crew, gang tier,
 time limit, cooldown and loot. Tick **Live** to make it appear in gangs' tablets.
 
+- **Items** are picked in game from a search of your inventory (ox_inventory, qb-core or ESX): loot can be
+  money to the treasury or any item, and any step can need an item (and use it up), such as a hacking
+  laptop for a panel. Without one, a step uses the default in `config/heists.lua` > `tools`.
 - **Steps** run in order: hack a panel, thermite a door, drill a vault, grab loot, wait out a time lock. Loot
   steps next to each other can be grabbed at once by different crew. Each step can trip a silent or loud alarm,
   and unlock a door in ox_doorlock or qb-doorlock when it's done.
@@ -113,9 +136,30 @@ and calls the police, or turns out to be an undercover officer (drugs seized, ex
 - There's a cooldown between offers, an hourly cap per player, and each pedestrian is only approached once in a
   while. Rank permission: "Sell drugs on the street".
 
-The items (`weed_bag`, `coke_bag`, `meth_bag`) are in `install/`, or point `config/drugs.lua` at your
-server's own drug items. Gangs with a weed grow or cocaine lab can bag up stock from the Business tab.
+What can be sold is managed in game: `/gangadmin` > **Street dealing**. Search your inventory's items, pick
+one, and set its name, price range, how many sell at once and which gang business can bag it up. Saving
+replaces the starting list in `config/drugs.lua` (Reset to config brings it back). The items `weed_bag`,
+`coke_bag` and `meth_bag` are in `install/` if your server has no drug items of its own. Gangs with a weed grow or cocaine lab can bag up stock from the Business tab.
 Everything is in `config/drugs.lua`.
+
+## Hex turf (territory)
+
+With `Config.Territory.mode = 'hexes'` (the default), San Andreas is split into a honeycomb of hexes (150 m by
+default) and **hexes replace areas everywhere**: tags, rackets, street dealing, street events, gang tiers and the
+maps all work on the hexes gangs hold. Set it to `'areas'` to use drawn areas and influence instead.
+
+- **Starting turf:** staff give each gang its compound in game: `/gangadmin` > Gangs > the gang > **Turf**, stand in
+  a hex and press "Give them the hex I'm standing in" (twice by default). The first is the **main** hex.
+- **Control (0 to 100%):** selling the **turf drug** (OG Kush by default) on your own hex builds its control. Every
+  hex loses some each hour, and a rival dealing on it costs you more. A hex at 0% is lost, except the compound.
+- **Expanding:** once a hex reaches 100%, the ground touching it can be bought from the tablet's **Territory** app,
+  for an amount of the turf drug from the buyer's pockets plus dirty money (rank permission "Buy new turf").
+- **Tags:** only on your own turf; the first must go on the main hex, and every 3 hexes unlocks another tag.
+- **Fog of war:** gangs only see their own hexes. A rival's hex shows up on your tablet and map once your gang deals
+  on it (or tries to buy it). Nothing about unrevealed turf is ever sent to players' games.
+
+The turf drug, control rates, decay, expansion cost and tag rate are set in game in `/gangadmin` > **Turf**
+(`config/hexes.lua` is the starting point). The turf drug also needs to be on the Street dealing list.
 
 ## Washing money
 

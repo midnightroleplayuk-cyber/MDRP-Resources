@@ -458,5 +458,35 @@ CREATE TABLE IF NOT EXISTS `vg_heist_runs` (
     KEY `idx_heist_runs_gang` (`gang_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- SETTINGS CHANGED IN GAME ---------------------------------------------
+CREATE TABLE IF NOT EXISTS `vg_settings` (
+    `key`        VARCHAR(48) NOT NULL,
+    `value`      LONGTEXT    NOT NULL,
+    `updated_by` VARCHAR(64) NULL DEFAULT NULL,
+    `updated_at` TIMESTAMP   NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (`key`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- HEX TERRITORY --------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `vg_hexes` (
+    `hex_key`    VARCHAR(24)   NOT NULL,
+    `gang_id`    INT UNSIGNED  NOT NULL,
+    `control`    DECIMAL(6,2)  NOT NULL DEFAULT 0,
+    `is_main`    TINYINT(1)    NOT NULL DEFAULT 0,
+    `compound`   TINYINT(1)    NOT NULL DEFAULT 0,
+    `claimed_at` INT UNSIGNED  NOT NULL,
+    PRIMARY KEY (`hex_key`),
+    KEY `idx_hexes_gang` (`gang_id`),
+    CONSTRAINT `fk_hexes_gang` FOREIGN KEY (`gang_id`) REFERENCES `vg_gangs` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `vg_hex_reveals` (
+    `gang_id`     INT UNSIGNED NOT NULL,
+    `hex_key`     VARCHAR(24)  NOT NULL,
+    `revealed_at` INT UNSIGNED NOT NULL,
+    PRIMARY KEY (`gang_id`, `hex_key`),
+    CONSTRAINT `fk_hex_reveals_gang` FOREIGN KEY (`gang_id`) REFERENCES `vg_gangs` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 -- Marks the schema as current so the resource doesn't try to set it up again
-INSERT IGNORE INTO `vg_meta` (`key`, `value`) VALUES ('schema_version', '15');
+INSERT IGNORE INTO `vg_meta` (`key`, `value`) VALUES ('schema_version', '18');

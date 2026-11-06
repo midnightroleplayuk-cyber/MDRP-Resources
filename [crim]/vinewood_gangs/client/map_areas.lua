@@ -96,7 +96,7 @@ local function drawArea(key, zone, owner, budget)
 end
 
 local function redraw()
-    local owners = GlobalState.vg_zones or {}
+    local owners = ZoneOwners()
     local show = shouldShow()
 
     -- Build a fingerprint of what we'd draw, and skip the work if nothing changed
@@ -126,6 +126,7 @@ end
 -- Redraw when ownership changes, areas are drawn or deleted, or we join or leave a gang
 AddStateBagChangeHandler('vg_zones', 'global', function() SetTimeout(250, redraw) end)
 AddStateBagChangeHandler('vg_zone_defs', 'global', function() SetTimeout(500, redraw) end)
+AddEventHandler('vinewood_gangs:client:hexesUpdated', function() SetTimeout(250, redraw) end)
 AddEventHandler('vinewood_gangs:client:gangUpdated', function() SetTimeout(250, redraw) end)
 
 CreateThread(function()

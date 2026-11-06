@@ -1,6 +1,7 @@
 Drugs = {}
 
 local cfg = Config.Drugs
+local items = cfg.items -- what can be sold right now (staff edit this in /gangadmin > Street dealing)
 local lastOffer = {}  -- lastOffer[src] = os.time() of their last offer
 local perHour = {}    -- perHour[src] = { start, count }
 local zoneSales = {}  -- zoneSales[zone] = { timestamps of sales in the last hour }
@@ -31,7 +32,7 @@ end
 ---The most valuable drug the player is carrying, and how many.
 local function bestHeld(src)
     local best, bestCount
-    for _, d in ipairs(cfg.items) do
+    for _, d in ipairs(items) do
         local n = Bridge.GetItemCount(src, d.item)
         if n > 0 and (not best or d.price[2] > best.price[2]) then best, bestCount = d, n end
     end
@@ -113,6 +114,8 @@ function Drugs.Sell(src)
     if gang then
         Activity.Record({ type = 'drug_sale', gangId = gang.id, citizenid = cid, zone = zone, coords = pos,
             multiplier = qty, targetGangId = rivalOwner, metadata = { item = item.item, qty = qty, paid = total } })
+        -- Hex turf: the turf drug on your own hex builds control; dealing on a rival's costs them and reveals it
+        if zone and Hex.Enabled() then Hexes.OnSale(zone, gang.id, item.item, qty) end
     end
 
     -- Someone might ring it in, more so on a rival's patch (and during a crackdown)
@@ -130,6 +133,73 @@ function Drugs.Sell(src)
     end
 
     return true, { result = 'sold', label = item.label, qty = qty, paid = total - cut, area = zone and Zones.Label(zone) or nil }
+end
+
+-------------------------------------------------------------------------------
+-- Sellable list, edited in game
+-------------------------------------------------------------------------------
+
+function Drugs.Items() return items end
+
+local function cleanList(list)
+    if type(list) ~= 'table' or #list > 30 then return nil, 'invalid' end
+    local out, seen = {}, {}
+    local businessTypes = Config.Enterprises and Config.Enterprises.types or {}
+    for _, d in ipairs(list) do
+        if type(d) ~= 'table' then return nil, 'invalid' end
+        local item = tostring(d.item or '')
+        if not Bridge.ItemExists(item) then return nil, 'item_not_found' end
+        if seen[item] then return nil, 'drugs_duplicate' end
+        seen[item] = true
+        local lo = math.max(1, math.floor(tonumber(d.min) or tonumber(d.price and d.price[1]) or 50))
+        local hi = math.max(lo, math.floor(tonumber(d.max) or tonumber(d.price and d.price[2]) or lo))
+        local label = tostring(d.label or ''):gsub('[<>]', ''):match('^%s*(.-)%s*$'):sub(1, 32)
+        out[#out + 1] = {
+            item = item, label = #label > 0 and label or Bridge.ItemLabel(item):lower(),
+            price = { math.min(lo, 1000000), math.min(hi, 1000000) },
+            max = math.max(1, math.min(20, math.floor(tonumber(d.maxPer or d.max_per or d.maxQty) or 1))),
+            enterprise = (d.enterprise and businessTypes[d.enterprise]) and d.enterprise or nil,
+        }
+    end
+    return out
+end
+
+function Drugs.Load()
+    local raw = MySQL.scalar.await("SELECT value FROM vg_settings WHERE `key` = 'drug_items'")
+    if raw then
+        local ok, list = pcall(json.decode, raw)
+        if ok and type(list) == 'table' then items = list return end
+    end
+    items = cfg.items
+end
+
+function Drugs.AdminGet()
+    local list = {}
+    for i, d in ipairs(items) do
+        list[i] = { item = d.item, label = d.label, min = d.price[1], max = d.price[2], maxPer = d.max, enterprise = d.enterprise,
+            itemLabel = Bridge.ItemLabel(d.item) }
+    end
+    local businesses = {}
+    for key, t in pairs(Config.Enterprises and Config.Enterprises.types or {}) do businesses[#businesses + 1] = { key = key, label = t.label } end
+    table.sort(businesses, function(a, b) return a.label < b.label end)
+    return { items = list, businesses = businesses, fromConfig = items == cfg.items }
+end
+
+function Drugs.AdminSave(src, list)
+    local clean, err = cleanList(list)
+    if not clean then return false, err end
+    MySQL.insert.await("INSERT INTO vg_settings (`key`, value, updated_by) VALUES ('drug_items', ?, ?) ON DUPLICATE KEY UPDATE value = VALUES(value), updated_by = VALUES(updated_by)",
+        { json.encode(clean), Bridge.GetCitizenId(src) or 'console' })
+    items = clean
+    Logger.Log(src, 'staff_drug_items', ('saved %d sellable drugs'):format(#clean))
+    return true, Drugs.AdminGet()
+end
+
+function Drugs.AdminReset(src)
+    MySQL.update.await("DELETE FROM vg_settings WHERE `key` = 'drug_items'")
+    items = cfg.items
+    Logger.Log(src, 'staff_drug_items_reset', 'reset sellable drugs to config/drugs.lua')
+    return true, Drugs.AdminGet()
 end
 
 AddEventHandler('playerDropped', function()

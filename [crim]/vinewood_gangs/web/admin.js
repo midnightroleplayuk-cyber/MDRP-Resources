@@ -35,19 +35,36 @@ async function adminAct(action, args, successMessage) {
 
 const ADMIN_TABS = [
   { id: 'gangs', label: 'Gangs', icon: 'gangs', tint: '#5EC2A0' },
-  { id: 'areas', label: 'Areas', icon: 'territory', tint: '#5FB4E8' },
+  { id: 'areas', label: 'Areas', icon: 'territory', tint: '#5FB4E8', show: () => !state.static.hexMode },
+  { id: 'turf', label: 'Turf', icon: 'territory', tint: '#5FB4E8', show: () => !!state.static.hexMode },
   { id: 'rackets', label: 'Rackets', icon: 'rackets', tint: '#E2BE5A' },
   { id: 'safehouses', label: 'Safehouses', icon: 'safehouses', tint: '#E88686' },
   { id: 'enterprises', label: 'Businesses', icon: 'business', tint: '#6FD0C0' },
   { id: 'spots', label: 'Contract spots', icon: 'pin', tint: '#B793F0' },
   { id: 'heists', label: 'Heists', icon: 'vault', tint: '#E88686' },
+  { id: 'drugs', label: 'Street dealing', icon: 'pill', tint: '#6CC070' },
   { id: 'diplomacy', label: 'Diplomacy', icon: 'diplomacy', tint: '#8FB3FF' },
   { id: 'director', label: 'Street events', icon: 'bolt', tint: '#F0AD4E' },
   { id: 'informants', label: 'Informants', icon: 'phone', tint: '#A6AEB9' },
   { id: 'auctions', label: 'Auctions', icon: 'market', tint: '#D592D2' },
   { id: 'reviews', label: 'Reviews', icon: 'check', tint: '#6CC070' },
   { id: 'tags', label: 'Tags in world', icon: 'tags', tint: '#E39A6B' },
+  { id: 'staff', label: 'Staff access', icon: 'shield', tint: '#7AA2FF', needs: 'management' },
 ];
+
+const APP_NEEDS = { informants: 'informants', reviews: 'reviews' };
+
+function adminCan(group) {
+  const a = state.static.access;
+  if (!a) return true; // browser preview
+  if (a.role === 'management') return true;
+  if (group === 'management') return false;
+  return !!(a.perms && a.perms[group]);
+}
+
+function visibleAdminApps() {
+  return ADMIN_TABS.filter((t) => (!t.show || t.show()) && adminCan(t.needs || APP_NEEDS[t.id] || 'view'));
+}
 
 function renderAdminFrame() {
   applyAccent(null);
@@ -58,9 +75,12 @@ function renderAdminFrame() {
   $('home-badge').hidden = false;
   $('status-title').textContent = 'Staff';
   $('tag').textContent = 'Gang admin';
-  $('sub').textContent = 'Staff only. Every change here is logged.';
+  const access = state.static.access;
+  $('sub').textContent = access && access.role === 'staff'
+    ? 'Staff access. Some tools are management only. Every change is logged.'
+    : 'Management. Every change here is logged.';
   if (admin.tab === 'home') {
-    showHome(ADMIN_TABS.map((t) => appIcon(t, () => { admin.tab = t.id; admin.gangId = null; admin.heist = null; renderAdminFrame(); })));
+    showHome(visibleAdminApps().map((t) => appIcon(t, () => { admin.tab = t.id; admin.gangId = null; admin.heist = null; admin.drugDraft = null; admin.turfDraft = null; renderAdminFrame(); })));
     return;
   }
   showApp(ADMIN_TABS.find((t) => t.id === admin.tab).label);
@@ -78,8 +98,11 @@ async function renderAdminTab() {
   else if (admin.tab === 'enterprises') content = await renderAdminEnterprises();
   else if (admin.tab === 'spots') content = await renderAdminSpots();
   else if (admin.tab === 'heists') content = admin.heist ? renderHeistEditor() : await renderHeistList();
+  else if (admin.tab === 'drugs') content = await renderAdminDrugs();
+  else if (admin.tab === 'staff') content = await renderStaffAccess();
+  else if (admin.tab === 'turf') content = await renderTurfSettings();
   else if (admin.tab === 'diplomacy') content = await renderAdminDiplomacy();
-  else if (admin.tab === 'director') content = await renderAdminDirector();
+  else if (admin.tab === 'director') content = h('div', {}, await renderAdminDirector(), await renderAdminAirdrops());
   else if (admin.tab === 'informants') content = await renderAdminInformants();
   else if (admin.tab === 'auctions') content = await renderAdminAuctions();
   else if (admin.tab === 'reviews') content = await renderReviews();
@@ -209,7 +232,7 @@ async function renderGangDetail(gangId) {
       h('thead', {}, h('tr', {}, h('th', { text: 'Name' }), h('th', { text: 'Rank' }), h('th', { text: 'Status' }), h('th', {}))),
       h('tbody', {}, rows)),
     reputationBlock(gang),
-    influenceBlock(gang),
+    state.static.hexMode ? await turfBlock(gang) : influenceBlock(gang),
     h('div', { class: 'block', style: 'margin-top:28px' },
       h('h3', { text: 'Disband this gang' }),
       h('p', { text: 'Removes every member, clears their territory and takes their tags off the walls.' }),
@@ -241,6 +264,95 @@ function reputationBlock(gang) {
     h('div', { class: 'row' }, amount,
       h('button', { class: 'btn primary', type: 'button', onclick: () => go(1) }, 'Add'),
       h('button', { class: 'btn danger', type: 'button', onclick: () => go(-1) }, 'Remove')));
+}
+
+/* Gang page: their hex turf (hex mode) */
+async function turfBlock(gang) {
+  const res = await adminRequest('hexGang', gang.id);
+  const v = res.ok ? res.data : { hexes: [], startHexes: 2 };
+  const setControl = (x) => {
+    const input = h('input', { type: 'number', min: 0, max: 100, value: Math.round(x.control), style: 'width:100px' });
+    showModal(
+      h('h2', { text: `${x.label}: control` }),
+      h('p', { text: 'Set the control %. A hex that isn\'t part of the compound is lost at 0%.' }),
+      h('div', { class: 'row', style: 'align-items:center' }, input, h('span', { text: '%' })),
+      h('div', { class: 'buttons' },
+        h('button', { class: 'btn', type: 'button', onclick: hideModal }, 'Cancel'),
+        h('button', { class: 'btn primary', type: 'button', onclick: async () => { if (await adminAct('hexControl', [x.key, Number(input.value)], 'Control set.')) hideModal(); } }, 'Set')));
+  };
+  const rows = v.hexes.map((x) => h('tr', {},
+    h('td', {}, h('strong', { text: x.label }), x.main ? h('span', { class: 'you', text: 'main' }) : (x.compound ? h('span', { class: 'you', style: 'opacity:.7', text: 'compound' }) : null)),
+    h('td', { class: 'num fig', text: `${Math.round(x.control)}%` }),
+    h('td', { class: 'actions' },
+      h('button', { class: 'btn small', type: 'button', onclick: () => setControl(x) }, 'Set %'),
+      !x.main ? h('button', { class: 'btn small', type: 'button', onclick: () => adminAct('hexMain', [x.key], 'Main hex changed.') }, 'Make main') : null,
+      h('button', { class: 'btn small danger', type: 'button', onclick: () => confirmModal({ title: `Take ${x.label} off them?`, body: 'The hex becomes free ground. Tags on it stay up.', confirmLabel: 'Remove', danger: true, onConfirm: () => adminAct('hexRemove', [x.key], 'Hex removed.') }) }, 'Remove'))));
+  const left = Math.max(0, v.startHexes - v.hexes.length);
+  return h('div', { class: 'block' },
+    h('h3', { text: 'Turf' }),
+    h('p', { class: 'hint', style: 'margin:0 0 10px', text: v.hexes.length
+      ? `${v.hexes.length} ${v.hexes.length === 1 ? 'hex' : 'hexes'}. ${left ? `Give them ${left} more for their starting compound.` : 'After the compound, they buy new ground themselves from the tablet.'}`
+      : `They have no turf yet. Stand in the hex that should be their main compound and press the button, then do the same for the rest of their compound (${v.startHexes} hexes).` }),
+    rows.length ? h('table', {}, h('tbody', {}, rows)) : null,
+    h('button', { class: 'btn primary', type: 'button', style: 'margin-top:10px', onclick: async () => {
+      const r = await adminRequest('hexGive', gang.id);
+      if (!r.ok) return toast(r.error, true);
+      toast(`Gave them ${r.data}.`);
+      renderAdminTab();
+    } }, 'Give them the hex I\'m standing in'));
+}
+
+/* Turf settings (hex mode) */
+async function renderTurfSettings() {
+  const res = await adminRequest('hexSettings');
+  if (!res.ok) return loadError(res);
+  const v = admin.turfDraft || (admin.turfDraft = JSON.parse(JSON.stringify(res.data)));
+  const rerender = () => renderAdminTab();
+  const num = (obj, key, min, max, width = 90) => {
+    const el = h('input', { type: 'number', min, max, step: 'any', value: obj[key] ?? '', style: `width:${width}px` });
+    el.addEventListener('change', () => { obj[key] = Number(el.value); });
+    return el;
+  };
+  v.expandCost = v.expandCost || { money: 0, account: 'dirty' };
+  const drugs = (v.turfDrugItems || []).map((d, i) => h('div', { class: 'row', style: 'align-items:center' },
+    h('div', { style: 'flex:1;max-width:420px' }, itemPicker({ item: d.name, label: d.label, image: d.image }, (it) => { if (it) { v.turfDrugItems[i] = { name: it.name, label: it.label, image: it.image }; } }, { allowClear: false })),
+    h('button', { class: 'btn small danger', type: 'button', onclick: () => { v.turfDrugItems.splice(i, 1); rerender(); } }, 'Remove')));
+  const accountSel = select([{ value: 'dirty', label: 'Dirty money' }, { value: 'clean', label: 'Clean money' }], v.expandCost.account || 'dirty');
+  accountSel.addEventListener('change', () => { v.expandCost.account = accountSel.value; });
+
+  const save = async () => {
+    const data = { ...v, turfDrugs: (v.turfDrugItems || []).map((d) => d.name).filter(Boolean) };
+    const r = await adminRequest('hexSettingsSave', data);
+    if (!r.ok) return toast(r.error, true);
+    admin.turfDraft = null;
+    toast('Turf settings saved. They apply straight away.');
+    rerender();
+  };
+
+  return h('div', {},
+    h('div', { class: 'section-head' }, h('h2', { text: 'Turf' }), h('button', { class: 'btn primary', type: 'button', onclick: save }, 'Save')),
+    h('p', { class: 'hint', style: 'margin-bottom:16px', text: `The map is split into hexes (${v.size} m). Gangs start with a compound you give them (open a gang in Gangs), build control by selling the turf drug there, and buy the ground next to a hex at full control. Rival turf stays hidden until a gang deals on it.` }),
+    h('h3', { text: 'Turf drug' }),
+    h('p', { class: 'hint', style: 'margin:0 0 8px', text: 'Selling these on your own hex builds its control. (They also need to be on the Street dealing list so they can be sold.)' }),
+    h('div', { style: 'display:grid;gap:8px' }, drugs),
+    h('button', { class: 'btn small', type: 'button', style: 'margin-top:8px', onclick: () => { v.turfDrugItems = v.turfDrugItems || []; v.turfDrugItems.push({ name: null, label: null }); rerender(); } }, 'Add a turf drug'),
+    h('h3', { style: 'margin-top:22px', text: 'Control' }),
+    h('div', { class: 'heist-settings' },
+      h('label', { class: 'field' }, '% per unit sold on own turf', num(v, 'controlPerSale', 0.1, 100)),
+      h('label', { class: 'field' }, '% lost per unit a rival sells', num(v, 'rivalLoss', 0, 100)),
+      h('label', { class: 'field' }, '% every hex loses per hour', num(v, 'decayPerHour', 0, 100)),
+      h('label', { class: 'field' }, 'New hexes start at (%)', num(v, 'startControl', 0, 100))),
+    h('h3', { style: 'margin-top:8px', text: 'Buying new ground' }),
+    h('div', { class: 'heist-settings' },
+      h('label', { class: 'field' }, 'A touching hex needs (%)', num(v, 'expandAt', 1, 100)),
+      h('label', { class: 'field' }, 'Money', num(v.expandCost, 'money', 0, 100000000, 120)),
+      h('label', { class: 'field' }, 'From', accountSel),
+      h('div', { class: 'field', style: 'min-width:300px' }, 'Plus this item from their pockets',
+        itemPicker(v.expandCost.item ? { item: v.expandCost.item, label: v.expandItemLabel } : null, (it) => { v.expandCost.item = it ? it.name : null; v.expandItemLabel = it ? it.label : null; }, { emptyText: 'No item needed' })),
+      h('label', { class: 'field' }, 'How many', num(v.expandCost, 'count', 0, 10000))),
+    h('h3', { style: 'margin-top:8px', text: 'Tags' }),
+    h('div', { class: 'heist-settings' },
+      h('label', { class: 'field' }, 'One extra tag for every … hexes', num(v, 'sprayEvery', 1, 50))));
 }
 
 /* Gang page: influence in every area, adjustable */
@@ -434,6 +546,21 @@ const EVENT_NAMES = {
   crew: 'Outside crew', drop: 'Lost shipment', undercover: 'Undercover operation', hotwork: 'Hot work',
 };
 
+async function renderAdminAirdrops() {
+  const res = await adminRequest('airdrops');
+  if (!res.ok) return h('div', {});
+  const state = { called: 'Plane on its way', flying: 'Falling', landed: 'On the ground' };
+  return h('div', { style: 'margin-top:28px' },
+    h('h3', { text: 'Air drops' }),
+    res.data.length ? h('table', {}, h('tbody', {}, res.data.map((d) => h('tr', {},
+      h('td', {}, h('strong', { text: d.gang }), h('div', { class: 'hint', style: 'margin:0', text: `${Math.round(d.x)}, ${Math.round(d.y)}` })),
+      h('td', {}, state[d.state] || d.state, d.state === 'called' ? h('span', { class: 'muted' }, ' · ', countdown(d.arrivesIn)) : null),
+      h('td', { class: 'actions' },
+        waypointButton(d.x, d.y),
+        h('button', { class: 'btn small danger', type: 'button', onclick: () => adminAct('airdropCancel', [d.id], 'Air drop cancelled.') }, 'Cancel'))))))
+      : h('p', { class: 'empty', text: 'No air drops right now.' }));
+}
+
 async function renderAdminDirector() {
   const res = await adminRequest('director');
   if (!res.ok) return loadError(res);
@@ -490,6 +617,149 @@ async function renderAdminDiplomacy() {
         h('thead', {}, h('tr', {}, h('th', { text: 'Deal' }), h('th', { text: 'Proposed by' }), h('th', { text: 'With' }), h('th', { class: 'num', text: 'Payment' }), h('th', {}))),
         h('tbody', {}, rows))
       : h('p', { class: 'empty', text: 'No deals proposed or running.' }));
+}
+
+/* Staff access (management only) ----------------------------------------- */
+
+async function renderStaffAccess() {
+  const res = await adminRequest('staffAccess');
+  if (!res.ok) return loadError(res);
+  const v = res.data;
+
+  const people = v.users.map((u) => h('tr', {},
+    h('td', {}, h('strong', { text: u.name || 'Unknown' }), h('div', { class: 'hint', style: 'margin:0', text: u.license })),
+    h('td', { text: u.role === 'management' ? 'Management' : 'Staff' }),
+    h('td', { class: 'actions' }, h('button', {
+      class: 'btn small danger', type: 'button',
+      onclick: () => confirmModal({ title: `Remove ${u.name || 'this person'}?`, body: 'They lose access to /gangadmin given here. Access from ACE permissions in server.cfg isn\'t affected.', confirmLabel: 'Remove', danger: true, onConfirm: () => adminAct('staffRevoke', [u.license], 'Access removed.') }),
+    }, 'Remove'))));
+
+  const grant = async () => {
+    const pick = await playerSelect();
+    const role = select([{ value: 'staff', label: 'Staff' }, { value: 'management', label: 'Management' }], 'staff');
+    showModal(
+      h('h2', { text: 'Give access' }),
+      h('p', { text: 'Pick an online player. Access is tied to their game licence, so it carries across characters.' }),
+      h('label', { class: 'field' }, 'Player', pick),
+      h('label', { class: 'field', style: 'margin-top:12px' }, 'Level', role),
+      h('div', { class: 'buttons' },
+        h('button', { class: 'btn', type: 'button', onclick: hideModal }, 'Cancel'),
+        h('button', { class: 'btn primary', type: 'button', onclick: async () => { if (await adminAct('staffGrant', [Number(pick.value), role.value], 'Access given.')) hideModal(); } }, 'Give access')));
+  };
+
+  const boxes = v.groups.map((g) => {
+    const box = h('input', { type: 'checkbox', checked: g.on, value: g.key });
+    return h('label', { class: 'perm-row' }, box, h('span', { text: g.label }));
+  });
+  const savePerms = () => adminAct('staffPerms', [boxes.map((b) => b.querySelector('input')).filter((i) => i.checked).map((i) => i.value)], 'Staff permissions saved.');
+
+  return h('div', {},
+    h('div', { class: 'section-head' }, h('h2', { text: 'Staff access' }), h('button', { class: 'btn primary', type: 'button', onclick: grant }, 'Give access')),
+    h('p', { class: 'hint', style: 'margin-bottom:14px', text: 'Management can do everything here. Staff can only do what\'s ticked below. Your server admins (Config.Admin.group) are always management; you can also grant access with the ACEs vinewood_gangs.staff and vinewood_gangs.management.' }),
+    v.users.length ? h('table', {}, h('tbody', {}, people)) : h('p', { class: 'empty', text: 'Nobody has been given access in game yet.' }),
+    h('h3', { style: 'margin:24px 0 8px', text: 'What Staff can do' }),
+    h('div', { class: 'perm-list' }, boxes),
+    h('button', { class: 'btn primary', type: 'button', style: 'margin-top:14px', onclick: savePerms }, 'Save'));
+}
+
+/* Item picker: search the server's inventory items ------------------------ */
+
+function itemImage(src, size = 28) {
+  const img = h('img', { class: 'pick-img', src: src || '', alt: '', style: `width:${size}px;height:${size}px` });
+  img.addEventListener('error', () => { img.style.visibility = 'hidden'; });
+  return img;
+}
+
+/* value = { item, label, image } or null. onPick(item|null) runs when staff choose or clear.
+   Stays compact until staff press Choose or Change; then it searches as they type. */
+function itemPicker(value, onPick, { placeholder = 'Search items…', allowClear = true, emptyText = 'Nothing chosen', openNow = false } = {}) {
+  const box = h('div', { class: 'picker' });
+  const idle = () => {
+    if (value && value.item) {
+      box.replaceChildren(h('div', { class: 'pick-chosen' },
+        itemImage(value.image),
+        h('span', {}, h('strong', { text: value.label || value.item }), h('span', { class: 'muted', text: ` ${value.item}` })),
+        h('button', { class: 'btn small', type: 'button', onclick: () => searching() }, 'Change'),
+        allowClear ? h('button', { class: 'btn small', type: 'button', onclick: () => { value = null; onPick(null); idle(); } }, 'Clear') : null));
+    } else {
+      box.replaceChildren(h('div', { class: 'pick-chosen' },
+        h('span', { class: 'muted', text: emptyText }),
+        h('button', { class: 'btn small', type: 'button', onclick: () => searching() }, 'Choose')));
+    }
+  };
+  const searching = () => {
+    const input = h('input', { type: 'search', placeholder, style: 'flex:1;min-width:0', 'aria-label': 'Search items' });
+    const results = h('div', { class: 'pick-results' });
+    let timer;
+    const run = async () => {
+      const res = await adminRequest('searchItems', input.value.trim());
+      const list = res.ok ? res.data : [];
+      results.replaceChildren(...(list.length ? list.map((it) => h('button', {
+        class: 'pick-row', type: 'button',
+        onclick: () => { value = it; onPick(it); idle(); },
+      }, itemImage(it.image, 24), h('span', { text: it.label }), h('span', { class: 'muted', text: it.name }))) : [h('p', { class: 'hint', style: 'margin:6px 8px', text: 'No items match.' })]));
+    };
+    input.addEventListener('input', () => { clearTimeout(timer); timer = setTimeout(run, 180); });
+    input.addEventListener('keydown', (e) => { if (e.key === 'Escape') { e.stopPropagation(); idle(); } });
+    box.replaceChildren(h('div', { class: 'row', style: 'flex-wrap:nowrap' }, input, h('button', { class: 'btn small', type: 'button', onclick: idle }, 'Cancel')), results);
+    setTimeout(() => input.focus(), 0);
+    run();
+  };
+  if (openNow && !(value && value.item)) searching(); else idle();
+  return box;
+}
+
+/* Street dealing ---------------------------------------------------------- */
+
+async function renderAdminDrugs() {
+  const res = await adminRequest('drugItems');
+  if (!res.ok) return loadError(res);
+  const v = res.data;
+  const list = admin.drugDraft || (admin.drugDraft = v.items.map((d) => ({ ...d })));
+  const businesses = [{ value: '', label: 'None' }, ...v.businesses.map((b) => ({ value: b.key, label: b.label }))];
+  const rerender = () => renderAdminTab();
+  const num = (obj, key, min, max) => {
+    const el = h('input', { type: 'number', min, max, value: obj[key] ?? '', style: 'width:96px' });
+    el.addEventListener('change', () => { obj[key] = Number(el.value); });
+    return el;
+  };
+
+  const rows = list.map((d, i) => {
+    const label = h('input', { type: 'text', value: d.label || '', maxlength: 32, placeholder: 'e.g. weed', style: 'width:150px' });
+    label.addEventListener('input', () => { d.label = label.value; });
+    const biz = select(businesses, d.enterprise || '');
+    biz.addEventListener('change', () => { d.enterprise = biz.value || null; });
+    return h('div', { class: 'drug-row' },
+      h('div', { class: 'drug-item' }, itemPicker(d.item ? { item: d.item, label: d.itemLabel || d.item, image: d.image } : null, (it) => {
+        d.item = it ? it.name : null; d.itemLabel = it ? it.label : null; d.image = it ? it.image : null;
+        if (it && !d.label) { d.label = it.label.toLowerCase(); rerender(); }
+      }, { allowClear: false, emptyText: 'No item chosen yet', openNow: !d.item })),
+      h('div', { class: 'drug-fields' },
+        h('label', { class: 'field' }, 'Called', label),
+        h('label', { class: 'field' }, 'Price from', num(d, 'min', 1, 1000000)),
+        h('label', { class: 'field' }, 'to', num(d, 'max', 1, 1000000)),
+        h('label', { class: 'field' }, 'Most per sale', num(d, 'maxPer', 1, 20)),
+        h('label', { class: 'field' }, 'Bagged up by', biz),
+        h('button', { class: 'btn small danger', type: 'button', style: 'align-self:end', onclick: () => { list.splice(i, 1); rerender(); } }, 'Remove')));
+  });
+
+  const save = async () => {
+    if (list.some((d) => !d.item)) return toast('Pick an item for every row first.', true);
+    const r = await adminRequest('drugItemsSave', list);
+    if (!r.ok) return toast(r.error, true);
+    admin.drugDraft = null;
+    toast('Saved. Dealers use the new list straight away.');
+    rerender();
+  };
+
+  return h('div', {},
+    h('div', { class: 'section-head' }, h('h2', { text: 'Street dealing' }),
+      h('div', { class: 'row' },
+        !v.fromConfig ? h('button', { class: 'btn small', type: 'button', onclick: () => confirmModal({ title: 'Go back to the config list?', body: 'Replaces this list with the one in config/drugs.lua.', confirmLabel: 'Reset', danger: true, onConfirm: async () => { const r = await adminRequest('drugItemsReset'); if (r.ok) { admin.drugDraft = null; toast('Back to the config list.'); rerender(); } } }) }, 'Reset to config') : null,
+        h('button', { class: 'btn primary', type: 'button', onclick: save }, 'Save'))),
+    h('p', { class: 'hint', style: 'margin-bottom:16px', text: `What gang members can sell to people on the street. Price is per unit, before the area's value and market events. ${v.fromConfig ? 'Currently using the list from config/drugs.lua; saving here replaces it.' : 'Saved here (config/drugs.lua is no longer used for this).'}` }),
+    rows.length ? h('div', { class: 'drug-list' }, rows) : h('p', { class: 'empty', text: 'Nothing can be sold. Add an item below.' }),
+    h('button', { class: 'btn', type: 'button', style: 'margin-top:12px', onclick: () => { list.push({ item: null, label: '', min: 80, max: 140, maxPer: 2, enterprise: null }); rerender(); } }, 'Add an item'));
 }
 
 /* Heists builder ---------------------------------------------------------- */
@@ -594,10 +864,38 @@ function renderHeistEditor() {
     if (type.game) extra.push(h('label', { class: 'field' }, 'Difficulty', pick(s, 'difficulty', DIFFICULTY)));
     if (type.game || s.type === 'loot' || s.type === 'wait') extra.push(h('label', { class: 'field' }, type.game ? 'Time to solve (s)' : 'Takes (s)', num(s, 'time', 3, 600)));
     if (s.type === 'loot') {
-      s.loot = s.loot || { type: (lootOptions[0] || {}).value, min: 1000, max: 2000 };
-      extra.push(h('label', { class: 'field' }, 'Loot', pick(s.loot, 'type', lootOptions)),
-        h('label', { class: 'field' }, 'Min', num(s.loot, 'min', 1, 10000000, 100)),
-        h('label', { class: 'field' }, 'Max', num(s.loot, 'max', 1, 10000000, 100)));
+      if (s.loot && !s.loot.kind) { // older loot from config names: the server converts these, but be safe here too
+        s.loot = s.loot.type === 'cash' ? { kind: 'money', account: 'dirty', min: s.loot.min, max: s.loot.max } : { kind: 'item', item: null, min: 1, max: 3 };
+      }
+      s.loot = s.loot || { kind: 'money', account: 'dirty', min: 1000, max: 2000 };
+      const l = s.loot;
+      const kind = select([{ value: 'money', label: 'Money to the treasury' }, { value: 'item', label: 'An item' }], l.kind);
+      kind.addEventListener('change', () => {
+        l.kind = kind.value;
+        // Amounts that suit the new kind: a handful of items, or a sensible sum of money
+        if (l.kind === 'item') { l.min = 1; l.max = 3; } else { l.account = l.account || 'dirty'; l.min = 1000; l.max = 2000; }
+        rerender();
+      });
+      extra.push(h('label', { class: 'field' }, 'Loot', kind));
+      if (l.kind === 'money') {
+        extra.push(h('label', { class: 'field' }, 'Into', pick(l, 'account', [{ value: 'dirty', label: 'Dirty money' }, { value: 'clean', label: 'Clean money' }])));
+      } else {
+        extra.push(h('div', { class: 'field', style: 'min-width:280px' }, 'Item', itemPicker(l.item ? { item: l.item, label: l.label, image: l.image } : null,
+          (it) => { l.item = it ? it.name : null; l.label = it ? it.label : null; l.image = it ? it.image : null; }, { allowClear: false, emptyText: 'No item chosen yet' })));
+      }
+      extra.push(h('label', { class: 'field' }, l.kind === 'money' ? 'Min (£)' : 'Min', num(l, 'min', 1, 10000000, 100)),
+        h('label', { class: 'field' }, l.kind === 'money' ? 'Max (£)' : 'Max', num(l, 'max', 1, 10000000, 100)));
+    }
+    // Something the crew must carry for this step (otherwise the config default for the step type)
+    if (type.game || s.type === 'wait') {
+      const def = (meta.tools || {})[s.type];
+      const consume = h('input', { type: 'checkbox', checked: s.item ? s.consume === true : !!(def && def.consume) });
+      consume.addEventListener('change', () => { s.consume = consume.checked; });
+      extra.push(h('div', { class: 'field', style: 'min-width:280px' }, 'Needs',
+        itemPicker(s.item ? { item: s.item, label: s.itemLabel, image: s.itemImage } : null,
+          (it) => { s.item = it ? it.name : null; s.itemLabel = it ? it.label : null; s.itemImage = it ? it.image : null; if (it && s.consume == null) s.consume = true; rerender(); },
+          { placeholder: def ? `Search to replace ${def.label}…` : 'Search for a required item…', emptyText: def ? `${def.label} (default)` : 'Nothing needed' })));
+      if (s.item) extra.push(h('label', { class: 'toggle', style: 'align-self:end;padding-bottom:8px' }, consume, ' Used up'));
     }
     extra.push(h('label', { class: 'field' }, 'Alarm', pick(s, 'alert', ALERT_OPTIONS)));
     if (s.type !== 'truck' && s.type !== 'loot' && s.type !== 'wait') extra.push(h('label', { class: 'field' }, 'Door to unlock (optional)', text(s, 'doorId', 160, 'door-lock ID or name')));
@@ -627,7 +925,7 @@ function renderHeistEditor() {
         const t = addType.value;
         const game = ((meta.stepTypes || []).find((x) => x.key === t) || {}).game;
         const step = { type: t, label: '', difficulty: 2, alert: 'none', time: game ? 30 : (t === 'wait' ? 60 : 15) };
-        if (t === 'loot') step.loot = { type: (lootOptions[0] || {}).value, min: 1000, max: 2000 };
+        if (t === 'loot') step.loot = { kind: 'money', account: 'dirty', min: 1000, max: 2000 };
         d.steps.push(step);
         rerender();
       },
@@ -993,7 +1291,7 @@ const AdminMock = {
         events: [{ id: 3, kind: 'undercover', public: 'Word is the police have someone on the inside of one of the gangs.', gang: 'Los Vagos', minutesLeft: 88 },
           { id: 4, kind: 'crew', public: 'An outside crew has moved into Rancho.', zone: 'Rancho', strength: 39, minutesLeft: 64 }] });
       case 'agreements': return ok([{ id: 4, label: 'Trade agreement', status: 'active', a: 'Grove Kings', aColour: '#7B3FBF', b: 'East Side', bColour: '#3FA7D6', payment: 0, secondsLeft: 300000 }]);
-      case 'heists': return ok({ defaultTier: 3, tiers: ['Street crew', 'Firm', 'Organisation', 'Syndicate'],
+      case 'heists': return ok({ defaultTier: 3, tools: { thermite: { item: 'thermite', label: 'Thermite', consume: true }, truck_doors: { item: 'thermite', label: 'Thermite', consume: true } }, tiers: ['Street crew', 'Firm', 'Organisation', 'Syndicate'],
         templates: [{ key: 'bank', label: 'Bank vault', steps: 5 }, { key: 'truck', label: 'Armoured truck', steps: 3 }, { key: 'store', label: 'Store robbery', steps: 3 }, { key: 'jewellery', label: 'Jewellery store', steps: 5 }, { key: 'custom', label: 'Custom heist', steps: 0 }],
         stepTypes: [{ key: 'hack', label: 'Hack a panel', game: 'hack' }, { key: 'thermite', label: 'Thermite a door', game: 'thermite' }, { key: 'drill', label: 'Drill (vault or boxes)', game: 'drill' }, { key: 'loot', label: 'Grab loot' }, { key: 'wait', label: 'Wait (time lock)' }, { key: 'truck', label: 'Armoured truck: stop it' }, { key: 'truck_doors', label: 'Armoured truck: open the back', game: 'thermite' }],
         lootTypes: [{ key: 'cash', label: 'Cash (to dirty treasury)' }, { key: 'goldbar', label: 'Gold bars (item)' }, { key: 'jewels', label: 'Jewellery (item)' }],
@@ -1002,9 +1300,26 @@ const AdminMock = {
             { type: 'hack', label: 'Security panel', difficulty: 2, time: 30, alert: 'silent', x: -2956, y: 483, z: 15 },
             { type: 'thermite', label: 'Inner gate', difficulty: 2, time: 25, alert: 'loud', doorId: 'fleeca_gate' },
             { type: 'drill', label: 'Vault door', difficulty: 3, time: 45, alert: 'none' },
-            { type: 'loot', label: 'Cash trolley', time: 20, alert: 'none', loot: { type: 'cash', min: 15000, max: 25000 } }] } },
-          { id: 6, label: 'Gruppe armoured truck', kind: 'truck', enabled: false, cooldownLeft: 1880, data: { police: 3, crew: 3, cooldown: 90, timeLimit: 15, steps: [{ type: 'truck', label: 'Stop the truck' }, { type: 'truck_doors', label: 'Rear doors' }, { type: 'loot', label: 'Cash bags', loot: { type: 'cash', min: 12000, max: 20000 } }] } }] });
+            { type: 'loot', label: 'Cash trolley', time: 20, alert: 'none', loot: { kind: 'money', account: 'dirty', min: 15000, max: 25000 } }] } },
+          { id: 6, label: 'Gruppe armoured truck', kind: 'truck', enabled: false, cooldownLeft: 1880, data: { police: 3, crew: 3, cooldown: 90, timeLimit: 15, steps: [{ type: 'truck', label: 'Stop the truck' }, { type: 'truck_doors', label: 'Rear doors' }, { type: 'loot', label: 'Cash bags', loot: { kind: 'money', account: 'dirty', min: 12000, max: 20000 } }] } }] });
       case 'safehouseShells': return ok([{ model: 'shell_v16low', label: 'Low-end apartment' }, { model: 'shell_trevor', label: 'Trevor\'s trailer' }, { model: 'shell_warehouse1', label: 'Warehouse' }]);
+      case 'hexGang': return ok({ startHexes: 2, hexes: [{ key: 'h:4:-7', label: 'Davis (4, -7)', control: 100, main: true, compound: true }, { key: 'h:5:-7', label: 'Rancho (5, -7)', control: 62, compound: true }, { key: 'h:3:-6', label: 'Davis (3, -6)', control: 18 }] });
+      case 'hexGive': return ok('Davis (4, -8)');
+      case 'hexSettings': return ok({ size: 150, turfDrugs: ['weed_og_kush'], turfDrugItems: [{ name: 'weed_og_kush', label: 'OG Kush' }], controlPerSale: 1.5, rivalLoss: 2, decayPerHour: 4, startControl: 10, expandAt: 100, sprayEvery: 3,
+        expandCost: { money: 50000, account: 'dirty', item: 'weed_og_kush', count: 50 }, expandItemLabel: 'OG Kush' });
+      case 'airdrops': return ok([{ id: 3, gang: 'Grove Kings', state: 'called', x: 1712, y: 3290, arrivesIn: 184 }]);
+      case 'staffAccess': return ok({ users: [{ license: 'license:2b6f…91', role: 'staff', name: 'Moderator Dave' }, { license: 'license:9ac1…07', role: 'management', name: 'Kerry' }],
+        groups: [['view', 'See everything (lists, details)', true], ['teleport', 'Teleport to places (Go to buttons)', true], ['reviews', 'Approve or turn down logos and tag designs', true], ['tags', 'Remove tags from walls', true], ['gangs', 'Create and disband gangs, manage members, ranks and tiers', false], ['economy', 'Change reputation and influence, run influence ticks', false], ['world', 'Build in the world: areas, safehouses, shops, contract spots, heists', false], ['events', 'Run street events, auctions and air drops; cancel deals', false], ['informants', 'See informants (sensitive)', false], ['settings', 'Change settings such as what can be sold on the street', false]].map(([key, label, on]) => ({ key, label, on })) });
+      case 'searchItems': {
+        const all = [['goldbar', 'Gold bar'], ['rolex', 'Rolex watch'], ['diamond', 'Diamond'], ['markedbills', 'Marked bills'], ['thermite', 'Thermite'],
+          ['laptop_hack', 'Hacking laptop'], ['weed_bag', 'Bag of weed'], ['coke_bag', 'Bag of cocaine'], ['meth_bag', 'Bag of meth'], ['lockpick', 'Lockpick'], ['gold_chain', 'Gold chain']];
+        const q = String(args[0] || '').toLowerCase();
+        return ok(all.filter(([n, l]) => !q || n.includes(q) || l.toLowerCase().includes(q)).map(([name, label]) => ({ name, label, image: `images/${name}.png` })));
+      }
+      case 'drugItems': return ok({ fromConfig: true, businesses: [{ key: 'coke', label: 'Cocaine lab' }, { key: 'weed', label: 'Weed grow' }],
+        items: [{ item: 'weed_bag', itemLabel: 'Bag of weed', label: 'weed', min: 90, max: 140, maxPer: 3, enterprise: 'weed', image: 'images/weed_bag.png' },
+          { item: 'coke_bag', itemLabel: 'Bag of cocaine', label: 'cocaine', min: 240, max: 340, maxPer: 2, enterprise: 'coke', image: 'images/coke_bag.png' }] });
+      case 'drugItemsSave': return ok({ fromConfig: false, businesses: [], items: args[0] });
       case 'heistHere': return ok({ x: -2958.4, y: 482.1, z: 15.7, w: 88.2 });
       case 'heistSave': return ok({ ...args[1], id: args[0], data: args[1], cooldownLeft: 0 });
       case 'contractSpots': return ok({ minRoute: 700, spots: {
@@ -1030,6 +1345,6 @@ const AdminMock = {
 };
 
 if (!IN_GAME && location.search.includes('admin')) {
-  window.postMessage({ action: 'openAdmin', static: { currency: '£', nameMax: 24, zones: [], permissions: [], fonts: [],
+  window.postMessage({ action: 'openAdmin', static: { currency: '£', nameMax: 24, hexMode: location.search.includes('hex'), hexSize: 150, hexOrigin: { x: 0, y: 0 }, zones: [], permissions: [], fonts: [],
     tiers: [{ label: 'Street crew', unlocks: [] }, { label: 'Firm', unlocks: [] }, { label: 'Organisation', unlocks: [] }, { label: 'Syndicate', unlocks: [] }] } }, '*');
 }

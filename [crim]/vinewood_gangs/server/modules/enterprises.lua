@@ -226,7 +226,7 @@ end
 ---Which dealing item a business's stock bags up into (config/drugs.lua), if any.
 local function dealItem(e)
     if not Config.Drugs or not Config.Drugs.enabled then return nil end
-    for _, d in ipairs(Config.Drugs.items) do
+    for _, d in ipairs(Drugs.Items()) do
         if d.enterprise == e.type then return d end
     end
 end

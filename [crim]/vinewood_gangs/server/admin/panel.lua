@@ -1,29 +1,160 @@
--- /gangadmin opens the staff panel. Access is the ACE 'command.gangadmin', granted to Config.Admin.group.
+-- /gangadmin opens the staff panel. Two levels: Management (everything) and Staff (what management allow).
 
-local ACE = 'command.gangadmin'
+local OWNER_ACE = 'command.gangadmin'           -- people in Config.Admin.group (existing admins): management
+local MANAGEMENT_ACE = 'vinewood_gangs.management'
+local STAFF_ACE = 'vinewood_gangs.staff'
 
-local function isStaff(src)
-    return src == 0 or IsPlayerAceAllowed(src, ACE)
+-- Every staff action belongs to a group; Staff can only use the groups management tick for them.
+local GROUPS = {
+    view       = 'See everything (lists, details)',
+    teleport   = 'Teleport to places (Go to buttons)',
+    reviews    = 'Approve or turn down logos and tag designs',
+    tags       = 'Remove tags from walls',
+    gangs      = 'Create and disband gangs, manage members, ranks and tiers',
+    economy    = 'Change reputation and influence, run influence ticks',
+    world      = 'Build in the world: areas, safehouses, shops, contract spots, heists',
+    events     = 'Run street events, auctions and air drops; cancel deals',
+    informants = 'See informants (sensitive)',
+    settings   = 'Change settings such as what can be sold on the street',
+}
+local ACTION_GROUP = {
+    listGangs = 'view', gangDetail = 'view', zones = 'view', auctions = 'view', director = 'view', agreements = 'view',
+    drugItems = 'view', heists = 'view', contractSpots = 'view', enterprises = 'view', safehouses = 'view',
+    safehouseShells = 'view', rackets = 'view', pendingDesigns = 'view', pendingLogos = 'view', listTags = 'view',
+    onlinePlayers = 'view', searchItems = 'view', airdrops = 'view', hexGang = 'view', hexSettings = 'view',
+    hexGive = 'world', hexRemove = 'world', hexMain = 'world', hexControl = 'economy', hexSettingsSave = 'settings',
+    gotoTag = 'teleport', gotoSafehouse = 'teleport', gotoContractSpot = 'teleport', gotoRacketShop = 'teleport', gotoPoint = 'teleport',
+    reviewLogo = 'reviews', reviewDesign = 'reviews',
+    removeTag = 'tags',
+    createGang = 'gangs', disband = 'gangs', addMember = 'gangs', removeMember = 'gangs', setGrade = 'gangs', setTier = 'gangs',
+    adjustReputation = 'economy', addInfluence = 'economy', tick = 'economy',
+    saveZone = 'world', deleteZone = 'world', createSafehouse = 'world', shellPreview = 'world', shellPreviewEnd = 'world',
+    evictSafehouse = 'world', deleteSafehouse = 'world', addRacketShop = 'world', deleteRacketShop = 'world', releaseRacket = 'world',
+    addContractSpot = 'world', deleteContractSpot = 'world', closeEnterprise = 'world',
+    heistCreate = 'world', heistSave = 'world', heistDelete = 'world', heistReset = 'world', heistStop = 'world', heistHere = 'world',
+    directorStart = 'events', directorEnd = 'events', auctionOpen = 'events', auctionCancel = 'events', cancelAgreement = 'events',
+    airdropCancel = 'events',
+    informants = 'informants', informantActive = 'informants',
+    drugItemsSave = 'settings', drugItemsReset = 'settings',
+    -- anything not listed here (e.g. Staff access itself) is management only
+}
+
+local staffUsers = {}  -- staffUsers[license] = { role = 'staff'|'management', name }
+local staffPerms = {}  -- staffPerms[group] = true for what Staff can do
+
+local function license(src)
+    return src and src > 0 and GetPlayerIdentifierByType(src, 'license') or nil
 end
 
-lib.addCommand('gangadmin', {
-    help = 'Open the gang staff panel',
-    restricted = Config.Admin.group,
-}, function(src)
+local function loadAccess()
+    local users = MySQL.scalar.await("SELECT value FROM vg_settings WHERE `key` = 'admin_users'")
+    local perms = MySQL.scalar.await("SELECT value FROM vg_settings WHERE `key` = 'admin_staff_perms'")
+    staffUsers = users and json.decode(users) or {}
+    staffPerms = {}
+    local list = perms and json.decode(perms) or Config.Admin.defaultStaffPermissions or {}
+    for _, g in ipairs(list) do if GROUPS[g] then staffPerms[g] = true end end
+end
+
+local function saveSetting(key, value, src)
+    MySQL.insert.await("INSERT INTO vg_settings (`key`, value, updated_by) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE value = VALUES(value), updated_by = VALUES(updated_by)",
+        { key, json.encode(value), license(src) or 'console' })
+end
+
+---'management', 'staff' or nil.
+local function roleOf(src)
+    if src == 0 then return 'management' end
+    if IsPlayerAceAllowed(src, OWNER_ACE) or IsPlayerAceAllowed(src, MANAGEMENT_ACE) then return 'management' end
+    local stored = staffUsers[license(src) or '']
+    if stored and stored.role == 'management' then return 'management' end
+    if IsPlayerAceAllowed(src, STAFF_ACE) or (stored and stored.role == 'staff') then return 'staff' end
+    return nil
+end
+
+local function can(src, group)
+    local role = roleOf(src)
+    if role == 'management' then return true end
+    if role == 'staff' and group and staffPerms[group] then return true end
+    return false
+end
+
+local function permsFor(src)
+    local role = roleOf(src)
+    local out = {}
+    for g in pairs(GROUPS) do out[g] = role == 'management' or (role == 'staff' and staffPerms[g] == true) end
+    return role, out
+end
+
+function AdminAccess_Can(src, group) return can(src, group) end -- for other files
+
+-- The command itself is open; who gets in is decided here (so in-game staff without ACE can use it)
+RegisterCommand('gangadmin', function(src)
     if src == 0 then return print('[vinewood_gangs] /gangadmin is in-game only') end
-    TriggerClientEvent('vinewood_gangs:client:openAdmin', src)
-end)
+    local role, perms = permsFor(src)
+    if not role then return Bridge.Notify(src, locale('no_permission'), 'error') end
+    TriggerClientEvent('vinewood_gangs:client:openAdmin', src, { role = role, perms = perms })
+end, false)
 
 local function admin(name, fn)
     lib.callback.register('vinewood_gangs:admin:' .. name, function(src, ...)
-        if not isStaff(src) then
-            Logger.Log(src, 'admin_denied', ('blocked admin call %s'):format(name))
-            return false, 'no_permission'
+        local group = ACTION_GROUP[name]
+        if not can(src, group) then
+            Logger.Log(src, 'admin_denied', ('blocked admin call %s (%s)'):format(name, group or 'management only'))
+            return false, roleOf(src) and 'staff_not_allowed' or 'no_permission'
         end
         if not Security.Throttle(src, 'admin_' .. name, 200) then return false, 'slow_down' end
         return fn(src, ...)
     end)
 end
+
+-------------------------------------------------------------------------------
+-- Staff access (management only)
+-------------------------------------------------------------------------------
+
+admin('staffAccess', function()
+    local list = {}
+    for lic, u in pairs(staffUsers) do list[#list + 1] = { license = lic, role = u.role, name = u.name } end
+    table.sort(list, function(a, b) return (a.name or '') < (b.name or '') end)
+    local groups = {}
+    for key, label in pairs(GROUPS) do groups[#groups + 1] = { key = key, label = label, on = staffPerms[key] == true } end
+    table.sort(groups, function(a, b) return a.key < b.key end)
+    return { users = list, groups = groups }
+end)
+
+admin('staffGrant', function(src, target, role)
+    target = tonumber(target)
+    if role ~= 'staff' and role ~= 'management' then return false, 'invalid' end
+    local lic = target and license(target)
+    if not lic then return false, 'player_offline' end
+    staffUsers[lic] = { role = role, name = GetPlayerName(target) }
+    saveSetting('admin_users', staffUsers, src)
+    Logger.Log(src, 'staff_access_granted', ('%s given %s'):format(GetPlayerName(target), role))
+    return true
+end)
+
+admin('staffRevoke', function(src, lic)
+    lic = tostring(lic or '')
+    if not staffUsers[lic] then return false, 'invalid' end
+    if lic == license(src) then return false, 'staff_not_yourself' end
+    Logger.Log(src, 'staff_access_removed', ('removed %s (%s)'):format(staffUsers[lic].name or lic, staffUsers[lic].role))
+    staffUsers[lic] = nil
+    saveSetting('admin_users', staffUsers, src)
+    return true
+end)
+
+admin('staffPerms', function(src, list)
+    if type(list) ~= 'table' then return false, 'invalid' end
+    staffPerms = {}
+    local saved = {}
+    for _, g in ipairs(list) do if GROUPS[g] then staffPerms[g] = true saved[#saved + 1] = g end end
+    saveSetting('admin_staff_perms', saved, src)
+    Logger.Log(src, 'staff_permissions_changed', table.concat(saved, ', '))
+    return true
+end)
+
+CreateThread(function()
+    while not MySQL do Wait(100) end
+    MySQL.ready(function() loadAccess() end)
+end)
 
 local function gangSummary(g)
     local zones = 0
@@ -182,6 +313,21 @@ end)
 
 admin('agreements', function() return Relations.AdminList() end)
 admin('cancelAgreement', function(src, id) return Relations.AdminCancel(src, id) end)
+
+admin('hexGang', function(_, gangId) return Hexes.AdminGang(gangId) end)
+admin('hexGive', function(src, gangId) return Hexes.AdminGive(src, gangId) end)
+admin('hexRemove', function(src, key) return Hexes.AdminRemove(src, key) end)
+admin('hexControl', function(src, key, value) return Hexes.AdminSetControl(src, key, value) end)
+admin('hexMain', function(src, key) return Hexes.AdminSetMain(src, key) end)
+admin('hexSettings', function() return Hexes.AdminSettings() end)
+admin('hexSettingsSave', function(src, data) return Hexes.AdminSaveSettings(src, data) end)
+
+admin('airdrops', function() return Airdrops.AdminList() end)
+admin('airdropCancel', function(src, id) return Airdrops.AdminCancel(src, id) end)
+admin('searchItems', function(_, query) return Bridge.SearchItems(query, 30) end)
+admin('drugItems', function() return Drugs.AdminGet() end)
+admin('drugItemsSave', function(src, list) return Drugs.AdminSave(src, list) end)
+admin('drugItemsReset', function(src) return Drugs.AdminReset(src) end)
 
 admin('heists', function() return Heists.AdminList() end)
 admin('heistCreate', function(src, template) return Heists.AdminCreate(src, template) end)

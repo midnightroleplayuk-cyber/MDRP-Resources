@@ -21,7 +21,7 @@ local function announce(zone, previous)
     if lastNotice[zone] and now - lastNotice[zone] < cfg.cooldown * 1000 then return end
     lastNotice[zone] = now
 
-    local state = GlobalState.vg_zones and GlobalState.vg_zones[zone]
+    local state = ZoneOwnerInfo(zone)
     local label = Zones.Label(zone)
     local gang = GetPlayerGang()
     local message, kind
@@ -43,7 +43,7 @@ CreateThread(function()
         if zone ~= currentZone then
             local previous = currentZone
             currentZone = zone
-            local state = zone and GlobalState.vg_zones and GlobalState.vg_zones[zone] or nil
+            local state = ZoneOwnerInfo(zone)
             TriggerEvent('vinewood_gangs:client:zoneChanged', zone, state)
             announce(zone, previous)
         end
