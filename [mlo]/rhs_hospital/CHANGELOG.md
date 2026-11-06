@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.0.0-rc.12
+
+- **Bedside furniture is now optional.** `config.lua` has a new `Config.Furniture` block: set `BedsideTrays`,
+  `BedsideChairs` or `BedCurtains` to `false` to take that group out of the hospital (for servers whose own scripts place
+  them). Everything is on by default, so the hospital looks the same as before. Restart the resource after a change.
+
+Updating from an earlier 1.0.0 candidate: replace the whole `rhs_hospital` folder (keep your edited `.ytd` files; copy
+your own settings into the new `config.lua`), upload the new `.fxap` with it, restart the server and clear the client
+cache. Only `stream/interior/rhs_hospital.ytyp`, `config.lua` and the new `client/furniture.lua` changed.
+
 ## 1.0.0-rc.11
 
 - **Crash on loading in fixed** (`GTA5_b3258.exe+13BF39D`, "november-table-ink"), introduced in rc.10: three of the

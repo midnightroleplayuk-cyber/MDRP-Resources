@@ -156,13 +156,16 @@ local function forward(prefix, allowed, body, cb)
         return cb({ ok = false, error = locale('invalid') })
     end
     local args = type(body.args) == 'table' and body.args or {}
-    local res, err = lib.callback.await(prefix .. action, false, args[1], args[2], args[3], args[4])
+    local res, extra = lib.callback.await(prefix .. action, false, args[1], args[2], args[3], args[4])
     if res == nil or res == false then
-        cb({ ok = false, error = locale(err or 'failed') })
-    else
-        cb({ ok = true, data = res })
+        cb({ ok = false, error = locale(extra or 'failed') })
+        return res
     end
-    return res
+    -- Server functions return either the result, or true plus the result (e.g. true, heist). Pass the result on.
+    local data = res
+    if res == true and extra ~= nil then data = extra end
+    cb({ ok = true, data = data })
+    return data
 end
 
 RegisterNUICallback('request', function(body, cb)

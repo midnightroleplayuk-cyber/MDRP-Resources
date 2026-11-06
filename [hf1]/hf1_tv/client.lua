@@ -255,7 +255,7 @@ end
 local function openVolumeDialog(entity, key, mode)
     if not entity or not DoesEntityExist(entity) then return end
     local data = screens[key]
-    if mode == 'existing' and (not data or data.kind == 'off' or data.kind == 'test') then
+    if mode == 'existing' and (not data or data.kind == 'off' or data.kind == 'test' or data.kind == 'image' or data.kind == 'website') then
         notice('TV is not playing', 'error') return
     end
     if focused or volumeDialog then notice('Close the current TV control first', 'error') return end
@@ -295,6 +295,16 @@ local function menu(entity)
             local vol=math.floor(math.max(0,math.min(100,tonumber(result[3]) or Config.DefaultVolume)))
             sendUpdate(entity,{kind=result[1],url=url,volume=vol})
         end},
+        {title='Display Image',description='Show PNG, JPEG or animated GIF from a direct HTTPS URL',icon='image',onSelect=function()
+            local result=lib.inputDialog('HF1 TV - Display Image',{{type='input',label='Direct HTTPS image URL (.png, .jpg, .jpeg, .gif)',required=true,placeholder='https://example.com/image.gif'}})
+            if not result then return end
+            local url=normalizeHttpsUrl(result[1])
+            local path=url and url:lower():match('^https://[^/]+([^?#]*)') or ''
+            if not (path:match('%.png$') or path:match('%.jpg$') or path:match('%.jpeg$') or path:match('%.gif$')) then
+                notice('Use a direct HTTPS PNG, JPG, JPEG or GIF image link', 'error') return
+            end
+            sendUpdate(entity,{kind='image',url=url,volume=0})
+        end},
         {title='Open Website',description='Load an HTTPS website directly on the TV',icon='globe',onSelect=function()
             if not Config.AllowWebsites then notice('Websites are disabled by server configuration','error') return end
             local result=lib.inputDialog('HF1 TV - Website',{{type='input',label='HTTPS website address',required=true,placeholder='https://example.com'}})
@@ -305,7 +315,7 @@ local function menu(entity)
         end},
         {title='Toggle Mute',description='Mute or unmute this TV on your client',icon='volume-2',onSelect=function()
             if not current or current.key~=key or not dui then notice('Move closer to the active TV','error') return end
-            if current.kind=='website' or current.kind=='test' then notice('This content does not support TV volume controls','error') return end
+            if current.kind=='website' or current.kind=='image' or current.kind=='test' then notice('This content does not support TV volume controls','error') return end
             localMuted=not localMuted
             lastEffectiveVolume=-1
             notice(localMuted and 'TV muted locally' or 'TV unmuted locally','inform')

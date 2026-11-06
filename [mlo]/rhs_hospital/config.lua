@@ -20,6 +20,14 @@ Config.NpcBlock = { Enabled = true }
 -- Leave it on unless another resource already does this.
 Config.RetireOldCustoms = true
 
+-- Bedside furniture. Set a group to false to take it out of every bay and ward (for servers whose own scripts place
+-- curtains, trays or chairs). Applied when the resource starts; restart it after a change.
+Config.Furniture = {
+    BedsideTrays = true,  -- over-bed tables (ward)
+    BedsideChairs = true, -- the chair beside each bed (A&E treatment, ward, ICU)
+    BedCurtains = true,   -- curtain rails and curtains round the beds (A&E, resus, recovery, ward, ICU, doctors' offices)
+}
+
 -- The door list used by the door controller. id must stay unique. coords are the WORLD position of the door entity of
 -- the MLO (the hinge, at floor level); model is the door model. Delete a line to leave that door to another resource.
 RHSDoors = {

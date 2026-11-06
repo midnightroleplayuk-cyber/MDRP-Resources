@@ -132,3 +132,7 @@ Bare domains such as facebook.com are automatically prefixed with https:// in th
 Edit `Config.BlockedWebsiteHosts` in `config.lua` to block domains (including their subdomains). The included list covers many popular adult and gambling websites. Server-side validation rejects blocked URLs for websites and video links; the client also displays a friendly error. Domain matching is exact or subdomain-only (e.g. `example.com` blocks `www.example.com`, but not `notexample.com`). Restart the resource after editing.
 
 **Limitations:** This is a domain blacklist, not comprehensive web filtering. It does not automatically stop redirects, links clicked within a loaded third-party site, newly registered sites, mirror domains, Google search results, or embedded third-party content. For strict public-server filtering, use `Config.AllowedWebsiteHosts` as a short allowlist instead, or disable arbitrary websites with `Config.AllowWebsites = false`.
+
+
+### Display images (PNG / JPEG / animated GIF)
+Use **Interact → Display Image**, then paste a direct HTTPS URL ending in `.png`, `.jpg`, `.jpeg`, or `.gif` (query parameters are supported). The image fits inside the TV without distortion; animated GIFs loop according to the GIF file. Images are silent and shared with nearby players through the existing TV state sync. The existing blocked-host policy is enforced on the server. Links to image-viewing webpages (rather than the image file itself) are not supported. Some hosts may reject FiveM's embedded browser or require authentication.

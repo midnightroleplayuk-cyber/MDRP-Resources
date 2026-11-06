@@ -1,12 +1,13 @@
 Config = {}
 
--- AI traffic inside the estate. true = no npc cars spawn in or drive into the estate.
--- Deleted stream/nodes*.ynd (e.g. clashing with another map)? Set this to true, or AI cars use the old roads through the buildings.
+-- AI traffic inside the estate. true = no npc cars spawn in the estate, and any that drive in are removed once nobody can see them.
+-- Removing stream/Vanilla/nodes368.ynd and nodes400.ynd (e.g. clashing with another map)? Remove both together, never just one,
+-- then set this to true or AI cars use the old roads through the buildings.
 Config.DisableAIVehicles = true
 
 -- true = flat and house windows cannot be seen through from outside (interiors are not drawn from the street - big FPS gain).
 -- false = see-through windows, every flat in view is drawn.
-Config.OneWayWindows = false
+Config.OneWayWindows = true
 
 -- street names shown on the HUD for the estate roads
 Config.StreetNames = {
