@@ -498,8 +498,8 @@ const MILESTONE_TEXT = {
   contracts: (n) => `Finish ${n} contracts`,
   tags: (n) => `Spray ${n} tags`,
   members: (n) => `Have ${n} members`,
-  areas: (n) => `Hold ${n} ${n === 1 ? 'area' : 'areas'}`,
-  area_hours: (n) => `${n} hours of area control`,
+  areas: (n) => `Hold ${n} ${n === 1 ? 'hex' : 'hexes'} of turf`,
+  area_hours: (n) => `${n} hex-hours of turf held`,
   safehouses: (n) => `Own ${n} ${n === 1 ? 'safehouse' : 'safehouses'}`,
   racket_income: (n) => `Collect ${money(n)} from rackets`,
   enterprise_income: (n) => `Make ${money(n)} from business sales`,
@@ -707,205 +707,7 @@ window.addEventListener('mouseup', () => { if (mapDragHandlers) mapDragHandlers.
 async function renderTerritory() {
   const res = await request('getTerritory');
   if (!res.ok) return loadError(res);
-  if (res.data.mode === 'hexes') return renderHexTerritory(res.data);
-  const { zones, captureThreshold, holdThreshold, margin } = res.data;
-  // One line on how the area could change hands, from what everyone's influence looks like
-  const contestNote = (z) => {
-    const [first, second] = z.breakdown || [];
-    if (!first) return `${captureThreshold} influence takes an area that nobody holds.`;
-    if (z.owner && first.label === z.owner.label) {
-      if (second && first.influence - second.influence < margin) return `Contested: ${second.mine ? 'you\'re' : `${second.label} are`} within ${margin} of the lead.`;
-      return first.influence < holdThreshold + 10 ? `Slipping: ${first.mine ? 'you need' : 'they need'} to stay above ${holdThreshold} to hold it.` : 'Held comfortably.';
-    }
-    const need = Math.max(0, captureThreshold - first.influence, (second ? second.influence + margin : 0) - first.influence);
-    return need > 0 ? `${first.mine ? 'You need' : `${first.label} need`} ${Math.ceil(need)} more to take it.` : `${first.mine ? 'You\'ll' : `${first.label} will`} take it at the next tick.`;
-  };
-  const zoneNote = (z) => {
-    if (z.owner && z.owner.mine) return `Your influence ${z.influence}. Keep it above ${holdThreshold} to hold the area.`;
-    if (z.influence > 0) return `Your influence ${z.influence} of the ${captureThreshold} needed to take it.`;
-    return 'No influence here yet.';
-  };
-  const byKey = Object.fromEntries(zones.map((z) => [z.key, z]));
-  const shapes = state.static.zones.filter((z) => byKey[z.key]);
-
-  // GTA's y axis points north and SVG's points down, so every y is flipped when drawn
-  const boundsOf = (pts) => {
-    const b = { minX: Infinity, minY: Infinity, maxX: -Infinity, maxY: -Infinity };
-    pts.forEach(([x, y]) => {
-      b.minX = Math.min(b.minX, x); b.maxX = Math.max(b.maxX, x);
-      b.minY = Math.min(b.minY, y); b.maxY = Math.max(b.maxY, y);
-    });
-    return b;
-  };
-  const fitTo = (b, pad) => {
-    const size = Math.max(b.maxX - b.minX, b.maxY - b.minY, 150);
-    return { cx: (b.minX + b.maxX) / 2, cy: (b.minY + b.maxY) / 2, half: (size / 2) * (1 + pad) };
-  };
-  const everything = shapes.length ? fitTo(boundsOf(shapes.flatMap((z) => z.points)), 0.15) : { cx: 0, cy: 0, half: 1000 };
-  let view = { ...(state.mapView || everything) };
-
-  const map = svg('svg', { class: 'map', role: 'img', 'aria-label': 'Territory map' });
-
-  const tm = state.static.tabletMap;
-  let wholeMap = null;
-  if (tm && tm.image) {
-    // Pixel = world * scale + offset, so the image's corners in world coordinates are:
-    const left = (0 - tm.offsetX) / tm.scaleX + (tm.nudgeX || 0);
-    const top = (0 - tm.offsetY) / tm.scaleY + (tm.nudgeY || 0);  // world y at the top edge (north)
-    const width = tm.size / tm.scaleX;
-    const height = tm.size / Math.abs(tm.scaleY);
-    map.classList.add('has-picture');
-    map.append(svg('image', {
-      href: tm.image,
-      x: left, y: -top, width, height, preserveAspectRatio: 'none',
-    }));
-    wholeMap = { cx: left + width / 2, cy: top - height / 2, half: Math.max(width, height) / 2 * 0.9 };
-  }
-  const items = []; // per zone: polygon, label, dot and its size, kept for zoom updates
-  const listButtons = {};
-
-  // Map units per screen pixel at the current zoom
-  const unitPx = () => (view.half * 2) / (map.clientWidth || 460);
-
-  const apply = () => {
-    map.setAttribute('viewBox', `${view.cx - view.half} ${-view.cy - view.half} ${view.half * 2} ${view.half * 2}`);
-    state.mapView = view;
-    const u = unitPx();
-    const placed = []; // screen positions of names already shown, so small-area names don't pile up
-    const clash = (x, y) => placed.some((p) => Math.abs(p.x - x) < 70 && Math.abs(p.y - y) < 16);
-    // Big areas and the picked one get their names first
-    const order = [...items].sort((a, b) => (b.key === state.selectedZone) - (a.key === state.selectedZone) || b.size - a.size);
-    order.forEach((it) => {
-      const px = it.size / u;              // how big the area is on screen
-      const small = px < 40;               // too small to read: mark it with a dot
-      it.dot.style.display = small ? '' : 'none';
-      it.dot.setAttribute('r', u * (it.key === state.selectedZone ? 6 : 4.5));
-      it.dot.setAttribute('stroke-width', u * 1.5);
-      it.label.setAttribute('font-size', u * 12);
-      const ly = small ? -it.cy - u * 13 : -it.cy;
-      it.label.setAttribute('y', ly);
-      const sx = (it.cx - view.cx) / u, sy = (ly + view.cy) / u;
-      const show = it.key === state.selectedZone || !clash(sx, sy);
-      it.label.style.display = show ? '' : 'none';
-      if (show) placed.push({ x: sx, y: sy });
-    });
-  };
-
-  const select = (key, zoom) => {
-    state.selectedZone = key;
-    items.forEach((it) => {
-      const on = it.key === key;
-      it.poly.setAttribute('stroke-width', on ? 3 : 1.5);
-      it.poly.setAttribute('stroke', on ? 'var(--accent)' : (tm && tm.image ? '#1C2127' : '#8A949E'));
-    });
-    Object.entries(listButtons).forEach(([k, b]) => b.classList.toggle('selected', k === key));
-    const it = items.find((x) => x.key === key);
-    if (zoom && it) view = fitTo(it.bounds, 0.9);
-    apply();
-  };
-
-  shapes.forEach((z) => {
-    const info = byKey[z.key];
-    const colour = info.owner ? info.owner.colour : '#56606B';
-    const poly = svg('polygon', {
-      points: z.points.map(([x, y]) => `${x},${-y}`).join(' '),
-      fill: colour,
-      'fill-opacity': info.owner ? 0.5 : (tm && tm.image ? 0.25 : 0.35),
-      stroke: tm && tm.image ? '#1C2127' : '#8A949E',
-      'stroke-width': 1.5,
-      'vector-effect': 'non-scaling-stroke', // outline stays crisp at any zoom
-      'stroke-linejoin': 'round',
-    });
-    const bounds = boundsOf(z.points);
-    const ax = z.points.reduce((sum, p) => sum + p[0], 0) / z.points.length;
-    const ay = z.points.reduce((sum, p) => sum + p[1], 0) / z.points.length;
-
-    // A dot marks areas too small to see when zoomed out
-    const dot = svg('circle', { cx: ax, cy: -ay, fill: colour, stroke: '#E6E8EA' });
-    const title = svg('title'); title.textContent = z.label; dot.append(title);
-    const label = svg('text', { x: ax, y: -ay, 'text-anchor': 'middle', 'dominant-baseline': 'middle' });
-    label.textContent = z.label;
-
-    [poly, dot].forEach((el) => el.addEventListener('click', () => { if (!dragged) select(z.key, false); }));
-    map.append(poly, dot, label);
-    items.push({ key: z.key, poly, dot, label, bounds, cx: ax, cy: ay, size: Math.max(bounds.maxX - bounds.minX, bounds.maxY - bounds.minY) });
-  });
-
-  // Scroll to zoom around the mouse, drag to move
-  let drag = null;
-  let dragged = false;
-  map.addEventListener('wheel', (e) => {
-    e.preventDefault();
-    const r = map.getBoundingClientRect();
-    const fx = (e.clientX - r.left) / (r.width || 1), fy = (e.clientY - r.top) / (r.height || 1);
-    const wx = view.cx - view.half + fx * 2 * view.half;
-    const wy = -view.cy - view.half + fy * 2 * view.half; // SVG space
-    const half = Math.min(wholeMap ? Math.max(wholeMap.half, everything.half) : everything.half * 1.6, Math.max(60, view.half * (e.deltaY > 0 ? 1.25 : 0.8)));
-    view = { cx: wx - fx * 2 * half + half, cy: -(wy - fy * 2 * half + half), half };
-    apply();
-  }, { passive: false });
-  map.addEventListener('mousedown', (e) => { drag = { x: e.clientX, y: e.clientY, view: { ...view } }; dragged = false; });
-  // The page-wide mouse listeners are added once (below); they call whichever map is showing
-  mapDragHandlers = {
-    move: (e) => {
-      if (!drag || !map.isConnected) return;
-      const r = map.getBoundingClientRect();
-      const dx = (e.clientX - drag.x) / (r.width || 1) * 2 * drag.view.half;
-      const dy = (e.clientY - drag.y) / (r.height || 1) * 2 * drag.view.half;
-      if (Math.abs(e.clientX - drag.x) + Math.abs(e.clientY - drag.y) > 4) dragged = true;
-      view = { cx: drag.view.cx - dx, cy: drag.view.cy + dy, half: drag.view.half };
-      apply();
-    },
-    up: () => { drag = null; setTimeout(() => { dragged = false; }, 0); },
-  };
-
-  const mapBox = h('div', { class: 'map-box' },
-    map,
-    h('div', { class: 'map-tools' },
-      h('span', { class: 'hint', style: 'margin:0', text: 'Scroll to zoom, drag to move, click an area on the right to jump to it.' }),
-      h('div', { class: 'row', style: 'flex-wrap:nowrap' },
-        wholeMap ? h('button', { class: 'btn small', type: 'button', onclick: () => { view = { ...wholeMap }; apply(); } }, 'Whole map') : null,
-        h('button', { class: 'btn small', type: 'button', onclick: () => { view = { ...everything }; apply(); } }, 'Our areas'))));
-
-  const list = zones.map((z) => {
-    const pct = Math.min(100, (z.influence / captureThreshold) * 100);
-    const owner = z.owner
-      ? h('span', { class: 'owner' }, h('span', { class: 'swatch', style: `background:${z.owner.colour}` }), z.owner.mine ? 'Yours' : z.owner.label)
-      : h('span', { class: 'owner', text: 'Unclaimed' });
-
-    // Every gang's standing in the area, scaled so the leader (or the capture line) fills the bar
-    let standings;
-    if (z.breakdown) {
-      const top = Math.max(captureThreshold, ...z.breakdown.map((b) => b.influence));
-      const shown = z.breakdown.slice(0, 4);
-      standings = shown.length
-        ? h('span', { class: 'standings' }, shown.map((b) => h('span', { class: b.mine ? 'standing-row mine' : 'standing-row' },
-          h('span', { class: 'who' }, h('span', { class: 'swatch', style: `background:${b.colour}` }), b.mine ? 'You' : b.label),
-          h('span', { class: 'fig', text: b.influence }),
-          h('span', { class: 'bar' }, h('span', { style: `width:${Math.min(100, (b.influence / top) * 100)}%;background:${b.colour}` })))),
-          z.breakdown.length > shown.length ? h('span', { class: 'hint', style: 'margin:0', text: `and ${z.breakdown.length - shown.length} more` }) : null)
-        : h('span', { class: 'hint', style: 'grid-column:1/-1;margin:0', text: 'No gang has any influence here yet.' });
-    }
-
-    const btn = h('button', { class: 'zone', type: 'button', onclick: () => select(z.key, true) },
-      h('span', { class: 'name', text: z.label }),
-      owner,
-      standings || h('span', { class: 'hint', style: 'grid-column:1/-1;margin:0', text: zoneNote(z) }),
-      standings ? h('span', { class: 'hint', style: 'grid-column:1/-1;margin:2px 0 0', text: contestNote(z) }) : h('span', { class: 'bar' }, h('span', { style: `width:${pct}%` })));
-    listButtons[z.key] = btn;
-    return btn;
-  });
-
-  const wrap = h('div', {},
-    h('div', { class: 'section-head' }, h('h2', { text: 'Territory' })),
-    h('div', { class: 'territory' }, mapBox, h('div', { class: 'zones' }, list)));
-
-  // Size labels and dots once the map is on screen and has a width
-  requestAnimationFrame(() => {
-    if (state.selectedZone && byKey[state.selectedZone]) select(state.selectedZone, false); else apply();
-  });
-  apply();
-  return wrap;
+  return renderHexTerritory(res.data);
 }
 
 /* Treasury -------------------------------------------------------------- */
@@ -1436,12 +1238,13 @@ async function renderContracts() {
   } else {
     parts.push(h('div', { class: 'offers' }, offers.map((o) => h('div', { class: 'offer' },
       h('div', {},
-        h('h3', {}, o.title, h('span', { class: 'from', text: ` from ${o.contact}` })),
+        h('h3', {}, o.title, h('span', { class: 'from', text: ` from ${o.contact}` }), o.special ? h('span', { class: 'badge', style: 'margin-left:8px', text: 'Special' }) : null),
         h('p', { text: o.description }),
+        o.extras ? h('p', { class: 'hint credit', style: 'margin:0', text: `Also: ${o.extras.join(', ')}` }) : null,
         h('p', { class: 'hint' },
           h('span', { class: `risk-${o.level}`, text: o.difficulty }),
           `. ${o.minutes} minutes to finish. Offer ends in ${Math.max(1, Math.round(o.expiresIn / 60))} min.`)),
-      h('div', { class: 'pay' }, money(o.reward), h('small', { text: o.account === 'dirty' ? 'dirty money' : 'clean money' })),
+      h('div', { class: 'pay' }, o.reward > 0 ? money(o.reward) : h('span', { text: 'Gear' }), h('small', { text: o.reward > 0 ? (o.account === 'dirty' ? 'dirty money' : 'clean money') : 'see below' })),
       h('button', {
         class: 'btn primary', type: 'button',
         disabled: !!active || !canAccept,
@@ -1684,7 +1487,7 @@ function enterpriseCard(e, b) {
       controls.push(h('div', { class: 'control' },
         h('div', { class: 'name', text: 'Street distribution' }),
         h('div', { class: 'hint', style: 'margin:0', text: b.areasHeld
-          ? `Sells about ${b.streetPerArea * b.areasHeld} an hour across your ${b.areasHeld} ${b.areasHeld === 1 ? 'area' : 'areas'} at ${money(e.street)} each. Builds influence, and heat.`
+          ? `Sells about ${b.streetPerArea * b.areasHeld} an hour across your ${b.areasHeld} ${b.areasHeld === 1 ? 'hex' : 'hexes'} at ${money(e.street)} each. Draws heat.`
           : 'You need to hold an area to sell on the street.' }),
         h('button', { class: e.distribute ? 'btn small' : 'btn small primary', type: 'button', disabled: !b.areasHeld && !e.distribute,
           onclick: () => act('setDistribution', [e.id, !e.distribute], e.distribute ? 'Pulled off the street.' : 'Out on the street.') },
@@ -2048,7 +1851,7 @@ async function renderTags() {
   const full = t.designs.length >= t.maxDesigns;
 
   const intro = t.activeTags
-    ? `${t.activeTags} of your tags are up across ${t.activeZones} ${t.activeZones === 1 ? 'area' : 'areas'}. Each one adds a little influence to its area over time.`
+    ? `${t.activeTags} of your tags are up across ${t.activeZones} ${t.activeZones === 1 ? 'hex' : 'hexes'}. Tags mark your turf; selling there is what builds control.`
     : 'None of your tags are up yet. Every tag adds influence to the area it\'s in, and keeps adding a little while it stays up.';
   const areaNote = t.onlyInAreas ? ' Tags can only go up inside a gang area, so check the Territory map for where they count.' : '';
 
@@ -2436,16 +2239,7 @@ const Mock = {
           { grade: 1, label: 'Soldier', permissions: ['graffiti', 'contracts_accept'] },
           { grade: 0, label: 'Associate', permissions: ['graffiti'] },
         ] });
-      case 'getTerritory': if (location.search.includes('hex')) return this.request('getTerritoryHex');
-        return ok({ captureThreshold: 100, holdThreshold: 60, margin: 25, zones: [
-        { key: 'davis', label: 'Davis', influence: 164.2, owner: { label: this.gang.label, colour: this.gang.colour, mine: true },
-          breakdown: [{ label: this.gang.label, colour: this.gang.colour, influence: 164.2, mine: true }, { label: 'Los Vagos', colour: '#E8C31E', influence: 151 }, { label: 'East Side', colour: '#3FA7D6', influence: 22 }] },
-        { key: 'rancho', label: 'Rancho', influence: 112, owner: { label: this.gang.label, colour: this.gang.colour, mine: true },
-          breakdown: [{ label: this.gang.label, colour: this.gang.colour, influence: 112, mine: true }] },
-        { key: 'strawberry', label: 'Strawberry', influence: 38.5, owner: { label: 'Los Vagos', colour: '#E8C31E', mine: false },
-          breakdown: [{ label: 'Los Vagos', colour: '#E8C31E', influence: 140 }, { label: this.gang.label, colour: this.gang.colour, influence: 38.5, mine: true }] },
-        { key: 'paleto', label: 'Palato Bay', influence: 0, owner: null, breakdown: [] },
-      ] });
+      case 'getTerritory': return this.request('getTerritoryHex');
       case 'getTreasury': return ok({ canView: true, canDeposit: true, canWithdraw: true, cash: 3400,
         balances: { clean: 48250, dirty: 12900 },
         history: [
@@ -2553,7 +2347,7 @@ if (!IN_GAME && !location.search.includes('admin') && !location.search.includes(
     gang: Mock.gang,
     static: {
       currency: '£', creationCost: 50000, allowCreation: true, nameMin: 3, nameMax: 24, maxTransaction: 1000000, graffiti: true, contracts: true, rackets: true, safehouses: true, enterprises: true, diplomacy: true, informants: true, auctions: true, progression: true, shop: true, heists: true, airdrops: true,
-      hexMode: location.search.includes('hex'), hexSize: 150, hexOrigin: { x: 0, y: 0 },
+      hexMode: true, hexSize: 150, hexOrigin: { x: 0, y: 0 },
       tabletMap: { image: 'images/map.jpg', size: 2048, scaleX: 0.16576, offsetX: 938.4, scaleY: -0.164, offsetY: 1382.4, nudgeX: 0, nudgeY: 0 },
       tiers: [{ label: 'Street crew', unlocks: [] }, { label: 'Firm', unlocks: ['rackets', 'safehouses', 'contracts_medium'] }, { label: 'Organisation', unlocks: ['enterprises', 'diplomacy', 'second_safehouse'] }, { label: 'Syndicate', unlocks: ['auctions', 'contracts_high'] }], logos: true, logoApproval: true, logoHosts: ['i.imgur.com', 'i.ibb.co', 'r2.fivemanage.com'],
       zones: [

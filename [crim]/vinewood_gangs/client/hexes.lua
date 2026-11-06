@@ -3,25 +3,19 @@
 
 KnownHexes = {}  -- KnownHexes[key] = { key, q, r, label, mine, main, owner = { id, label, colour } }
 
----Who holds an area or hex, as far as this player knows: { owner = gangId, label, colour } or nil.
+---Who holds a hex, as far as this player knows: { owner = gangId, label, colour } or nil.
 function ZoneOwnerInfo(key)
-    if not key then return nil end
-    if Hex.Enabled() then
-        local h = KnownHexes[key]
-        return h and h.owner and { owner = h.owner.id, label = h.owner.label, colour = h.owner.colour } or nil
-    end
-    return GlobalState.vg_zones and GlobalState.vg_zones[key] or nil
+    local h = key and KnownHexes[key]
+    return h and h.owner and { owner = h.owner.id, label = h.owner.label, colour = h.owner.colour } or nil
 end
 
----Every known area's owner, for the map shading.
+---Every known hex's owner, for the map shading.
 function ZoneOwners()
-    if not Hex.Enabled() then return GlobalState.vg_zones or {} end
     local out = {}
     for key in pairs(KnownHexes) do out[key] = ZoneOwnerInfo(key) end
     return out
 end
 
-if not Hex.Enabled() then return end
 
 local function apply(list)
     KnownHexes = {}
@@ -39,11 +33,9 @@ function Zones.FromCoords(coords)
     local key = Hex.Key(Hex.FromCoords(coords.x, coords.y))
     return KnownHexes[key] and key or nil
 end
-local plainLabel = Zones.Label
 function Zones.Label(key)
     local q, r = Hex.Parse(key)
-    if q then return Hex.Label(q, r) end
-    return plainLabel(key)
+    return q and Hex.Label(q, r) or 'Unknown'
 end
 
 RegisterNetEvent('vinewood_gangs:client:hexes', apply)

@@ -323,8 +323,6 @@ function Gangs.Disband(gangId, opts)
     MySQL.update.await('DELETE FROM vg_members WHERE gang_id = ?', { gangId })
     -- Free the name for reuse; '#' can't appear in a valid gang name so this never collides
     MySQL.update.await("UPDATE vg_gangs SET status = 'disbanded', disbanded_at = NOW(), name = CONCAT(LEFT(name, 20), '#', id) WHERE id = ?", { gangId })
-    MySQL.update.await('DELETE FROM vg_zone_influence WHERE gang_id = ?', { gangId })
-    MySQL.update.await('UPDATE vg_zone_state SET owner_gang_id = NULL, owned_since = NULL WHERE owner_gang_id = ?', { gangId })
 
     for cid, inv in pairs(invites) do
         if inv.gangId == gangId then invites[cid] = nil end

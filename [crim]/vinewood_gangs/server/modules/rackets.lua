@@ -54,7 +54,7 @@ local function odds(gangId, b, intimidate)
     local o = cfg.odds
     local zone = zoneOf(b)
     local influence = zone and Influence.Get(zone, gangId) or 0
-    local p = o.base + o.influence * math.min(1.0, influence / Config.Influence.captureThreshold)
+    local p = o.base + o.influence * math.min(1.0, influence / 100) -- influence is the hex's control %
     if zone and Influence.GetOwner(zone) == gangId then p = p + o.holdsArea end
     if intimidate then p = p + o.intimidate end
     local s = state[b.key]

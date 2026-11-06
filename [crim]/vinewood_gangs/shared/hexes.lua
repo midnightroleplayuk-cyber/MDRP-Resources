@@ -3,7 +3,7 @@ Hex = {}
 
 local SQ3 = math.sqrt(3)
 
-function Hex.Enabled() return Config.Territory and Config.Territory.mode == 'hexes' end
+function Hex.Enabled() return true end -- territory is always hexes
 
 local function cfg() return Config.Hexes end
 

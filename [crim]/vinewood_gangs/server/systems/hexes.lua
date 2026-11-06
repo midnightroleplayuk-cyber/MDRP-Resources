@@ -1,5 +1,5 @@
--- Hex territory. In hex mode this replaces areas and influence: the hexes gangs hold ARE the areas, and a
--- hex's control % is what "influence" means. Everything that asks Zones / Influence gets hex answers.
+-- Hex territory: the hexes gangs hold are the script's territory, and a hex's control % is its "influence".
+-- Everything that asks Zones / Influence gets hex answers.
 Hexes = {}
 
 local cfg = Config.Hexes
@@ -196,7 +196,6 @@ function Hexes.Options(gangId)
 end
 
 function Hexes.Expand(src, q, r)
-    if not Hex.Enabled() then return false, 'invalid' end
     local gang, _, cid = Gangs.GetPlayerGang(src)
     if not gang then return false, 'not_in_gang' end
     if not Gangs.HasPermission(cid, 'expand_turf') then return false, 'no_permission' end
@@ -411,38 +410,36 @@ function Hexes.AdminSaveSettings(src, input)
 end
 
 -------------------------------------------------------------------------------
--- Hex mode: take over areas and influence, so every other system works on hexes
+-- Territory for the rest of the script: the claimed hexes ARE the areas, and control is "influence"
 -------------------------------------------------------------------------------
 
-if Hex.Enabled() then
-    -- Areas are the claimed hexes, and nothing about them is broadcast to everyone (fog of war)
-    ZoneStore.Load = function() Hexes.Load() end
-    ZoneStore.Save = function() return false, 'hex_mode' end
-    ZoneStore.Delete = function() return false, 'hex_mode' end
-    function Zones.FromCoords(coords)
-        local key = Hex.Key(Hex.FromCoords(coords.x, coords.y))
-        return hexes[key] and key or nil
-    end
-    local plainLabel = Zones.Label
-    function Zones.Label(key)
-        local q, r = Hex.Parse(key)
-        if q then return Hex.Label(q, r) end
-        return plainLabel(key)
-    end
-
-    -- Influence = a hex's control. Only dealing (above) and decay change it.
-    Influence.Load = function() end
-    Influence.Start = function() Hexes.Start() end
-    Influence.Publish = function() end
-    Influence.Flush = function() flush() end
-    Influence.Tick = function() tick() end
-    Influence.Add = function() end
-    Influence.Get = function(key, gangId) local h = hexes[key] return (h and h.gangId == gangId) and h.control or 0 end
-    Influence.GetOwner = function(key) local h = hexes[key] return h and h.gangId or nil end
-    Influence.GetZoneBreakdown = function(key) local h = hexes[key] return h and { { gangId = h.gangId, influence = h.control } } or {} end
-    Influence.RemoveGang = function(gangId) for _, h in ipairs(owned(gangId)) do lose(h.key, 'hex_lost') end end
-    Influence.ClearZone = function(key) lose(key, 'hex_removed_staff') end
+-- Only these server-side lookups know about every claimed hex; players' games are only told their own
+-- and the rivals' they've found (fog of war), so nothing here is broadcast.
+function Zones.FromCoords(coords)
+    local key = Hex.Key(Hex.FromCoords(coords.x, coords.y))
+    return hexes[key] and key or nil
 end
+function Zones.Label(key)
+    local q, r = Hex.Parse(key)
+    return q and Hex.Label(q, r) or 'Unknown'
+end
+
+Influence = {}
+function Influence.Start() Hexes.Start() end
+function Influence.Publish() end
+function Influence.Flush() flush() end
+function Influence.Tick() tick() end
+---Other systems can only take control away (a rival crossing out a tag, a police raid, a street event).
+---Building it up only happens by dealing the turf drug (Hexes.OnSale).
+function Influence.Add(key, gangId, amount)
+    local h = hexes[key]
+    if h and h.gangId == gangId and (tonumber(amount) or 0) < 0 then setControl(h, h.control + amount) end
+end
+function Influence.Get(key, gangId) local h = hexes[key] return (h and h.gangId == gangId) and h.control or 0 end
+function Influence.GetOwner(key) local h = hexes[key] return h and h.gangId or nil end
+function Influence.GetZoneBreakdown(key) local h = hexes[key] return h and { { gangId = h.gangId, influence = h.control } } or {} end
+function Influence.RemoveGang(gangId) for _, h in ipairs(owned(gangId)) do lose(h.key, 'hex_lost') end end
+function Influence.ClearZone(key) lose(key, 'hex_removed_staff') end
 
 -- For tests
 Hexes._hexes = hexes

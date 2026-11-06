@@ -52,24 +52,6 @@ CREATE TABLE IF NOT EXISTS `vg_members` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- TERRITORY -------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS `vg_zone_influence` (
-    `zone`       VARCHAR(48)   NOT NULL,
-    `gang_id`    INT UNSIGNED  NOT NULL,
-    `influence`  DECIMAL(10,2) NOT NULL DEFAULT 0,
-    `updated_at` TIMESTAMP     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    PRIMARY KEY (`zone`, `gang_id`),
-    KEY `idx_influence_gang` (`gang_id`),
-    CONSTRAINT `fk_influence_gang` FOREIGN KEY (`gang_id`) REFERENCES `vg_gangs` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
-CREATE TABLE IF NOT EXISTS `vg_zone_state` (
-    `zone`          VARCHAR(48)  NOT NULL,
-    `owner_gang_id` INT UNSIGNED NULL DEFAULT NULL,
-    `owned_since`   TIMESTAMP    NULL DEFAULT NULL,
-    PRIMARY KEY (`zone`),
-    CONSTRAINT `fk_zone_owner` FOREIGN KEY (`owner_gang_id`) REFERENCES `vg_gangs` (`id`) ON DELETE SET NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
 -- ACTIVITY LOG ----------------------------------------------------------
 CREATE TABLE IF NOT EXISTS `vg_activity_log` (
     `id`              BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -253,16 +235,6 @@ CREATE TABLE IF NOT EXISTS `vg_graffiti` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- AREAS DRAWN IN GAME ---------------------------------------------------
-CREATE TABLE IF NOT EXISTS `vg_zones` (
-    `zone`       VARCHAR(48)  NOT NULL,
-    `label`      VARCHAR(64)  NOT NULL,
-    `value`      DECIMAL(4,2) NOT NULL DEFAULT 1.00,
-    `points`     LONGTEXT     NOT NULL,
-    `created_by` VARCHAR(64)  NULL DEFAULT NULL,
-    `created_at` TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (`zone`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
 -- PROTECTION RACKETS ----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `vg_rackets` (
     `business`       VARCHAR(48)  NOT NULL,

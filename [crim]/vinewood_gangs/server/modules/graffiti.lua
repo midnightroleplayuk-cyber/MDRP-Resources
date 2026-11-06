@@ -330,7 +330,7 @@ local function validateSpray(src, designId, placement)
             perZone = perZone + 1
         end
     end
-    if Hex.Enabled() then
+    do -- tags only go on your own turf; the first on the main hex; more as the gang holds more hexes
         if not zone or Influence.GetOwner(zone) ~= gang.id then return nil, 'graffiti_not_your_turf' end
         local active, onMain = 0, false
         local main = Hexes.MainOf(gang.id)
@@ -342,8 +342,6 @@ local function validateSpray(src, designId, placement)
         end
         if not onMain and zone ~= main then return nil, 'graffiti_main_first' end
         if active >= Hexes.SpraySlots(gang.id) then return nil, 'graffiti_no_slots' end
-    elseif zone and perZone >= cfg.maxPerZone then
-        return nil, 'zone_tag_limit'
     end
 
     return { gang = gang, cid = cid, design = design, p = p, pos = pos, zone = zone, paintOver = paintOver }
@@ -488,24 +486,7 @@ end
 -- Ticks and lifecycle
 -------------------------------------------------------------------------------
 
----Every influence tick, each active tag adds a little influence to its zone.
-local function passiveTick()
-    for _, t in pairs(tags) do
-        if t.status == 'active' and t.zone and Gangs.Get(t.gangId) then
-            Influence.Add(t.zone, t.gangId, cfg.passiveInfluence)
-        end
-    end
-end
-
-function Graffiti.Start()
-    if not Config.Modules.graffiti then return end
-    CreateThread(function()
-        while true do
-            Wait(Config.Influence.tickMinutes * 60000)
-            passiveTick()
-        end
-    end)
-end
+function Graffiti.Start() end -- tags mark turf; control comes from dealing (server/systems/hexes.lua)
 
 AddEventHandler('vinewood_gangs:server:gangDisbanded', function(gangId)
     for _, t in pairs(tags) do

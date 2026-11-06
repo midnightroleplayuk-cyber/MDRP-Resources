@@ -124,8 +124,6 @@ local function redraw()
 end
 
 -- Redraw when ownership changes, areas are drawn or deleted, or we join or leave a gang
-AddStateBagChangeHandler('vg_zones', 'global', function() SetTimeout(250, redraw) end)
-AddStateBagChangeHandler('vg_zone_defs', 'global', function() SetTimeout(500, redraw) end)
 AddEventHandler('vinewood_gangs:client:hexesUpdated', function() SetTimeout(250, redraw) end)
 AddEventHandler('vinewood_gangs:client:gangUpdated', function() SetTimeout(250, redraw) end)
 

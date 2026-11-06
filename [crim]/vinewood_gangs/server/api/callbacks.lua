@@ -68,40 +68,7 @@ read('getMembers', function(src)
     }
 end)
 
-read('getTerritory', function(src)
-    if Hex.Enabled() then return Hexes.TabletView(src) end
-    local gang = Gangs.GetPlayerGang(src)
-    if not gang then return nil, 'not_in_gang' end
-    local zones = {}
-    for key in pairs(Config.Zones) do
-        local ownerId = Influence.GetOwner(key)
-        local owner = ownerId and Gangs.Get(ownerId)
-        local breakdown
-        if Config.Territory.showAllInfluence then
-            breakdown = {}
-            for _, row in ipairs(Influence.GetZoneBreakdown(key)) do
-                local g = Gangs.Get(row.gangId)
-                if g then
-                    breakdown[#breakdown + 1] = { label = g.label, colour = g.colour, influence = row.influence, mine = g.id == gang.id }
-                end
-            end
-        end
-        zones[#zones + 1] = {
-            key = key,
-            label = Zones.Label(key),
-            owner = owner and { label = owner.label, colour = owner.colour, mine = ownerId == gang.id } or nil,
-            influence = Utils.Round(Influence.Get(key, gang.id), 1),
-            breakdown = breakdown, -- every gang with influence here, highest first (nil when hidden by config)
-        }
-    end
-    table.sort(zones, function(a, b) return a.label < b.label end)
-    return {
-        zones = zones,
-        captureThreshold = Config.Influence.captureThreshold,
-        holdThreshold = Config.Influence.holdThreshold,
-        margin = Config.Influence.ownershipMargin,
-    }
-end)
+read('getTerritory', function(src) return Hexes.TabletView(src) end)
 
 read('getTreasury', function(src)
     local gang, _, cid = Gangs.GetPlayerGang(src)
@@ -200,7 +167,6 @@ action('launder', function(src, method, amount) return Laundering.Start(src, tos
 
 action('hexExpand', function(src, q, r) return Hexes.Expand(src, q, r) end, 3000)
 lib.callback.register('vinewood_gangs:server:hexView', function(src)
-    if not Hex.Enabled() then return nil end
     local gang = Gangs.GetPlayerGang(src)
     return Hexes.ViewFor(gang and gang.id)
 end)

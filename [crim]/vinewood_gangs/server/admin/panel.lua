@@ -11,24 +11,26 @@ local GROUPS = {
     reviews    = 'Approve or turn down logos and tag designs',
     tags       = 'Remove tags from walls',
     gangs      = 'Create and disband gangs, manage members, ranks and tiers',
-    economy    = 'Change reputation and influence, run influence ticks',
-    world      = 'Build in the world: areas, safehouses, shops, contract spots, heists',
+    economy    = 'Change reputation and hex control',
+    world      = 'Build in the world: hex turf, safehouses, shops, contract spots, heists',
     events     = 'Run street events, auctions and air drops; cancel deals',
     informants = 'See informants (sensitive)',
     settings   = 'Change settings such as what can be sold on the street',
 }
 local ACTION_GROUP = {
-    listGangs = 'view', gangDetail = 'view', zones = 'view', auctions = 'view', director = 'view', agreements = 'view',
+    listGangs = 'view', gangDetail = 'view', auctions = 'view', director = 'view', agreements = 'view',
     drugItems = 'view', heists = 'view', contractSpots = 'view', enterprises = 'view', safehouses = 'view',
     safehouseShells = 'view', rackets = 'view', pendingDesigns = 'view', pendingLogos = 'view', listTags = 'view',
     onlinePlayers = 'view', searchItems = 'view', airdrops = 'view', hexGang = 'view', hexSettings = 'view',
     hexGive = 'world', hexRemove = 'world', hexMain = 'world', hexControl = 'economy', hexSettingsSave = 'settings',
+    customContracts = 'view', customContractSave = 'world', customContractDelete = 'world', customContractOffer = 'events',
+    contractSettings = 'view', contractSettingsSave = 'settings', contractSettingsReset = 'settings',
     gotoTag = 'teleport', gotoSafehouse = 'teleport', gotoContractSpot = 'teleport', gotoRacketShop = 'teleport', gotoPoint = 'teleport',
     reviewLogo = 'reviews', reviewDesign = 'reviews',
     removeTag = 'tags',
     createGang = 'gangs', disband = 'gangs', addMember = 'gangs', removeMember = 'gangs', setGrade = 'gangs', setTier = 'gangs',
-    adjustReputation = 'economy', addInfluence = 'economy', tick = 'economy',
-    saveZone = 'world', deleteZone = 'world', createSafehouse = 'world', shellPreview = 'world', shellPreviewEnd = 'world',
+    adjustReputation = 'economy',
+    createSafehouse = 'world', shellPreview = 'world', shellPreviewEnd = 'world',
     evictSafehouse = 'world', deleteSafehouse = 'world', addRacketShop = 'world', deleteRacketShop = 'world', releaseRacket = 'world',
     addContractSpot = 'world', deleteContractSpot = 'world', closeEnterprise = 'world',
     heistCreate = 'world', heistSave = 'world', heistDelete = 'world', heistReset = 'world', heistStop = 'world', heistHere = 'world',
@@ -187,20 +189,6 @@ admin('gangDetail', function(_, gangId)
     summary.tier = Progression.Tier(g.id)
     summary.tierLabel = Config.Progression.tiers[summary.tier] and Config.Progression.tiers[summary.tier].label or nil
 
-    -- Every area this gang has influence in (and the ones it doesn't, for adding)
-    local influence, others = {}, {}
-    for zone in pairs(Config.Zones) do
-        local amount = Influence.Get(zone, g.id)
-        if amount > 0 then
-            influence[#influence + 1] = { key = zone, label = Zones.Label(zone), amount = Utils.Round(amount, 1), owned = Influence.GetOwner(zone) == g.id }
-        else
-            others[#others + 1] = { key = zone, label = Zones.Label(zone) }
-        end
-    end
-    table.sort(influence, function(a, b) return a.amount > b.amount end)
-    table.sort(others, function(a, b) return a.label < b.label end)
-    summary.influence, summary.otherZones = influence, others
-    summary.captureThreshold = Config.Influence.captureThreshold
     summary.clean = Ledger.GetBalance(g.id, 'clean')
     summary.dirty = Ledger.GetBalance(g.id, 'dirty')
     return { gang = summary, members = Gangs.GetMembers(g.id), ranks = Gangs.GetRanks(g.id), maxMembers = Config.Gangs.maxMembers }
@@ -234,58 +222,6 @@ end)
 admin('removeMember', function(src, cid) return Gangs.AdminRemoveMember(tostring(cid), src) end)
 admin('setGrade', function(src, cid, grade) return Gangs.AdminSetGrade(tostring(cid), grade, src) end)
 
-admin('zones', function()
-    local zones = {}
-    for key in pairs(Config.Zones) do
-        local ownerId = Influence.GetOwner(key)
-        local owner = ownerId and Gangs.Get(ownerId)
-        local breakdown = {}
-        for _, row in ipairs(Influence.GetZoneBreakdown(key)) do
-            local g = Gangs.Get(row.gangId)
-            if g then breakdown[#breakdown + 1] = { gangId = g.id, label = g.label, colour = g.colour, influence = row.influence } end
-        end
-        zones[#zones + 1] = {
-            key = key, label = Zones.Label(key), drawn = not Zones.IsFromConfig(key),
-            value = Config.Zones[key].value or 1.0,
-            owner = owner and { label = owner.label, colour = owner.colour } or nil,
-            breakdown = breakdown,
-        }
-    end
-    table.sort(zones, function(a, b) return a.label < b.label end)
-
-    local gangs = {}
-    for _, g in pairs(Gangs.All()) do gangs[#gangs + 1] = { id = g.id, label = g.label } end
-    table.sort(gangs, function(a, b) return a.label:lower() < b.label:lower() end)
-
-    return {
-        zones = zones, gangs = gangs,
-        captureThreshold = Config.Influence.captureThreshold,
-        tickMinutes = Config.Influence.tickMinutes,
-    }
-end)
-
-admin('addInfluence', function(src, zone, gangId, amount)
-    gangId, amount = tonumber(gangId), tonumber(amount)
-    local g = gangId and Gangs.Get(gangId)
-    if not g or not Config.Zones[zone] or not amount or amount == 0 then return false, 'invalid' end
-    -- Divide out the zone multiplier so staff get exactly what they typed
-    Influence.Add(zone, g.id, amount / (Config.Zones[zone].value or 1.0))
-    Logger.Log(src, 'staff_influence', ('%s %+.1f influence in %s'):format(g.name, amount, zone))
-    return true
-end)
-
-admin('saveZone', function(src, label, value, points)
-    local ok, res, extra = ZoneStore.Save(src, label, value, points)
-    if not ok and res == 'zone_overlap' then return false, 'zone_overlap', extra end
-    return ok, res
-end)
-admin('deleteZone', function(src, key) return ZoneStore.Delete(src, tostring(key)) end)
-
-admin('tick', function()
-    Influence.Tick()
-    Heat.Tick()
-    return true
-end)
 
 admin('auctions', function() return Auctions.AdminList() end)
 admin('auctionOpen', function(src)
@@ -340,6 +276,14 @@ admin('gotoPoint', function(_, p)
     if type(p) ~= 'table' or not tonumber(p.x) then return false, 'invalid' end
     return { x = tonumber(p.x), y = tonumber(p.y), z = tonumber(p.z) + 1.0, w = tonumber(p.w) or 0.0 }
 end)
+
+admin('contractSettings', function() return Contracts.AdminSettings() end)
+admin('contractSettingsSave', function(src, data) return Contracts.AdminSaveSettings(src, data) end)
+admin('contractSettingsReset', function(src) return Contracts.AdminResetSettings(src) end)
+admin('customContracts', function() return CustomContracts.AdminList() end)
+admin('customContractSave', function(src, data) return CustomContracts.AdminSave(src, data) end)
+admin('customContractDelete', function(src, id) return CustomContracts.AdminDelete(src, id) end)
+admin('customContractOffer', function(src, id, gangId) return CustomContracts.AdminOfferNow(src, id, gangId) end)
 
 admin('contractSpots', function() return ContractSpots.List() end)
 admin('addContractSpot', function(src, pool, label) return ContractSpots.Add(src, tostring(pool), label) end)

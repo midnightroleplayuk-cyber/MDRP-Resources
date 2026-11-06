@@ -1,5 +1,5 @@
--- Hex territory. When Config.Territory.mode = 'hexes', a honeycomb of hexes replaces areas everywhere:
--- tags, rackets, dealing, street events, gang tiers and the maps all work on the hexes gangs hold.
+-- Hex territory: San Andreas is a honeycomb of hexes, and the hexes a gang holds are its turf. Tags, rackets,
+-- dealing, street events, gang tiers and the maps all work on them.
 -- Staff place each gang's starting hexes in game (/gangadmin > Gangs > a gang > Turf) and set the
 -- numbers below in game too (/gangadmin > Turf); this file is the starting point.
 Config.Hexes = {

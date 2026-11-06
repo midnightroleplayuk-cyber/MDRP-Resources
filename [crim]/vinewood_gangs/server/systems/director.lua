@@ -356,7 +356,7 @@ local function tick()
     for id, e in pairs(events) do
         if t >= e.endsAt then
             Director.End(id, 'expired')
-        elseif e.kind == 'crew' and t - e.lastPressure >= Config.Influence.tickMinutes * 60 then
+        elseif e.kind == 'crew' and t - e.lastPressure >= (cfg.kinds.crew.every or 10) * 60 then
             -- The crew squeezes everyone with influence in the area
             e.lastPressure = t
             for _, row in ipairs(Influence.GetZoneBreakdown(e.zone)) do

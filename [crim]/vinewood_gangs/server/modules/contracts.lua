@@ -7,9 +7,167 @@ local byGang = {}   -- byGang[gangId] = active contract id
 local trust = {}    -- trust[gangId][contactKey] = number
 
 local contactsByKey = {}
-for _, c in ipairs(cfg.contacts) do contactsByKey[c.key] = c end
+local function indexContacts()
+    contactsByKey = {}
+    for _, c in ipairs(cfg.contacts) do contactsByKey[c.key] = c end
+end
+indexContacts()
+
+-------------------------------------------------------------------------------
+-- Settings staff can change in game (/gangadmin > Contracts > Job types & board).
+-- config/contracts.lua is the starting point; saved changes are applied on top of it.
+-------------------------------------------------------------------------------
+
+local BOARD = { 'offersPerGang', 'offerMinutes', 'refreshMinutes', 'minRouteDistance', 'policeAlertChance' }
+local TEMPLATE_FIELDS = { 'title', 'reward', 'account', 'timeLimit', 'vehicles', 'peds', 'payChance', 'fightChance' }
+
+local function copy(v)
+    if type(v) ~= 'table' then return v end
+    local out = {}
+    for k, x in pairs(v) do out[k] = copy(x) end
+    return out
+end
+
+local function snapshot()
+    local s = { difficulty = copy(cfg.difficulty), tiers = copy(cfg.tiers), contacts = copy(cfg.contacts), templates = {} }
+    for _, k in ipairs(BOARD) do s[k] = cfg[k] end
+    for key, t in pairs(cfg.templates) do
+        s.templates[key] = {}
+        for _, f in ipairs(TEMPLATE_FIELDS) do s.templates[key][f] = copy(t[f]) end
+    end
+    return s
+end
+local DEFAULTS = snapshot()
+
+local function applySettings(s)
+    for _, k in ipairs(BOARD) do cfg[k] = s[k] end
+    cfg.difficulty, cfg.tiers, cfg.contacts = s.difficulty, s.tiers, s.contacts
+    for key, t in pairs(s.templates) do
+        local cur = cfg.templates[key]
+        if cur then for _, f in ipairs(TEMPLATE_FIELDS) do if t[f] ~= nil then cur[f] = t[f] end end end
+    end
+    indexContacts()
+end
+
+local function text(v, max) return tostring(v or ''):gsub('[<>]', ''):match('^%s*(.-)%s*$'):sub(1, max) end
+local function num(v, lo, hi, d) v = tonumber(v) return v and math.max(lo, math.min(hi, v)) or d end
+
+---Checks and tidies settings from the staff panel. Returns settings, or nil and a reason.
+local function cleanSettings(input)
+    if type(input) ~= 'table' then return nil, 'invalid' end
+    local s = { templates = {} }
+    s.offersPerGang = math.floor(num(input.offersPerGang, 1, 10, DEFAULTS.offersPerGang))
+    s.offerMinutes = math.floor(num(input.offerMinutes, 5, 600, DEFAULTS.offerMinutes))
+    s.refreshMinutes = math.floor(num(input.refreshMinutes, 1, 60, DEFAULTS.refreshMinutes))
+    s.minRouteDistance = num(input.minRouteDistance, 100, 5000, DEFAULTS.minRouteDistance)
+    s.policeAlertChance = num(input.policeAlertChance, 0, 1, DEFAULTS.policeAlertChance)
+
+    if type(input.difficulty) ~= 'table' or #input.difficulty ~= #DEFAULTS.difficulty then return nil, 'invalid' end
+    s.difficulty = {}
+    for i, d in ipairs(input.difficulty) do
+        local label = text(d.label, 24)
+        s.difficulty[i] = {
+            label = #label > 0 and label or DEFAULTS.difficulty[i].label,
+            reward = num(d.reward, 0.1, 10, 1), trust = math.floor(num(d.trust, 0, 100, 5)),
+            reputation = math.floor(num(d.reputation, 0, 100, 2)), failTrust = -math.abs(math.floor(num(d.failTrust, -100, 100, -3))),
+        }
+    end
+
+    if type(input.tiers) ~= 'table' then return nil, 'invalid' end
+    s.tiers = {}
+    local last = 0
+    for i = 1, #DEFAULTS.tiers do
+        local v = i == 1 and 0 or math.floor(num(input.tiers[i], 0, 100000, DEFAULTS.tiers[i]))
+        if v < last then return nil, 'contracts_tiers_order' end
+        s.tiers[i], last = v, v
+    end
+
+    for key in pairs(DEFAULTS.templates) do
+        local t = type(input.templates) == 'table' and input.templates[key] or {}
+        local d = DEFAULTS.templates[key]
+        local title = text(t.title, 40)
+        local out = {
+            title = #title >= 2 and title or d.title,
+            reward = math.floor(num(t.reward, 0, 10000000, d.reward)),
+            account = t.account == 'clean' and 'clean' or 'dirty',
+            timeLimit = math.floor(num(t.timeLimit, 180, 7200, d.timeLimit)),
+        }
+        local function models(list, fallback)
+            local m = {}
+            for _, name in ipairs(type(list) == 'table' and list or {}) do
+                name = text(name, 32):lower()
+                if name:match('^[%w_]+$') then m[#m + 1] = name end
+            end
+            return #m > 0 and m or fallback
+        end
+        if d.vehicles then out.vehicles = models(t.vehicles, d.vehicles) end
+        if d.peds then out.peds = models(t.peds, d.peds) end
+        if d.payChance then out.payChance = num(t.payChance, 0, 1, d.payChance) end
+        if d.fightChance then out.fightChance = num(t.fightChance, 0, 1, d.fightChance) end
+        s.templates[key] = out
+    end
+
+    s.contacts = {}
+    local used = {}
+    for _, c in ipairs(type(input.contacts) == 'table' and input.contacts or {}) do
+        if #s.contacts >= 20 then break end
+        local label = text(c.label, 32)
+        if #label >= 2 then
+            local key = text(c.key, 32)
+            if key == '' or not key:match('^[%w_]+$') then
+                key = label:lower():gsub('[^%w]+', '_'):gsub('^_+', ''):gsub('_+$', ''):sub(1, 24)
+            end
+            local base, n = key, 1
+            while used[key] do n = n + 1 key = base .. '_' .. n end
+            used[key] = true
+            local templates = {}
+            for _, t in ipairs(type(c.templates) == 'table' and c.templates or {}) do
+                if cfg.templates[t] then templates[#templates + 1] = t end
+            end
+            if #templates == 0 then return nil, 'contracts_contact_no_jobs' end
+            s.contacts[#s.contacts + 1] = { key = key, label = label, templates = templates }
+        end
+    end
+    if #s.contacts == 0 then return nil, 'contracts_need_contact' end
+    return s
+end
+
+function Contracts.AdminSettings()
+    local s = snapshot()
+    s.templateKeys = {}
+    for key in pairs(cfg.templates) do s.templateKeys[#s.templateKeys + 1] = key end
+    table.sort(s.templateKeys)
+    return s
+end
+
+function Contracts.AdminSaveSettings(src, input)
+    local s, err = cleanSettings(input)
+    if not s then return false, err end
+    applySettings(s)
+    MySQL.insert.await("INSERT INTO vg_settings (`key`, value, updated_by) VALUES ('contracts_config', ?, ?) ON DUPLICATE KEY UPDATE value = VALUES(value), updated_by = VALUES(updated_by)",
+        { json.encode(s), Bridge.GetCitizenId(src) or 'console' })
+    Logger.Log(src, 'staff_contract_settings', 'changed contract job types and board settings')
+    return true, Contracts.AdminSettings()
+end
+
+function Contracts.AdminResetSettings(src)
+    applySettings(copy(DEFAULTS))
+    MySQL.update.await("DELETE FROM vg_settings WHERE `key` = 'contracts_config'")
+    Logger.Log(src, 'staff_contract_settings_reset', 'reset contract settings to config/contracts.lua')
+    return true, Contracts.AdminSettings()
+end
+
+local function loadSettings()
+    local raw = MySQL.scalar.await("SELECT value FROM vg_settings WHERE `key` = 'contracts_config'")
+    if not raw then return end
+    local ok, saved = pcall(json.decode, raw)
+    local s = ok and cleanSettings(saved)
+    if s then applySettings(s) end
+end
 
 local function pick(list) return list[math.random(#list)] end
+local function titleOf(c) return (c.data and c.data.title) or cfg.templates[c.template].title end
+local function minutesOf(o) return (o.data and o.data.timeLimit) or cfg.templates[o.template].timeLimit end
 local function v3(t) return vector3(t.x, t.y, t.z) end
 local function playerPos(src) return GetEntityCoords(GetPlayerPed(src)) end
 local function near(src, point, range) return #(playerPos(src) - v3(point)) <= range end
@@ -81,7 +239,55 @@ local generators = {
     end,
 }
 
+local function storeOffer(gangId, key, contactKey, difficulty, reward, account, data, minutes)
+    local id = MySQL.insert.await([[
+        INSERT INTO vg_contracts (template, gang_id, issued_by, difficulty, reward, reward_account, data, expires_at)
+        VALUES (?, ?, ?, ?, ?, ?, ?, DATE_ADD(NOW(), INTERVAL ? MINUTE))
+    ]], { key, gangId, contactKey, difficulty, reward, account, json.encode(data), minutes or cfg.offerMinutes })
+    if not id then return nil end
+    offers[gangId] = offers[gangId] or {}
+    offers[gangId][id] = {
+        id = id, template = key, contact = contactKey, difficulty = difficulty,
+        reward = reward, account = account, data = data, expiresAt = os.time() + (minutes or cfg.offerMinutes) * 60,
+    }
+    return offers[gangId][id]
+end
+
+---Is this custom contract already on the gang's board (or being run by them)?
+function Contracts.HasCustom(gangId, jobId)
+    for _, o in pairs(offers[gangId] or {}) do if o.data.custom == jobId then return true end end
+    local id = byGang[gangId]
+    return id and active[id] and active[id].data.custom == jobId or false
+end
+
+---Puts one of staff's custom contracts on a gang's board. Fixed spots are used; random ones come from the spot lists.
+function Contracts.OfferCustom(gangId, job, minutes)
+    local gen = generators[job.type]
+    local t = cfg.templates[job.type]
+    if not gen or not t then return nil end
+    local data = gen(t)
+    if not data then return nil end
+    if job.pickup then data.pickup = job.pickup end
+    if job.drop then data.drop = job.drop end
+    if job.spot then data.spot = job.spot end
+    if job.model and job.model ~= '' then data.model = job.model end
+    data.title = job.title
+    data.description = job.description ~= '' and job.description or nil
+    if not data.description then
+        if job.type == 'collect' then data.description = ('Someone in %s owes money. Make him pay.'):format(areaLabel(data.spot))
+        elseif job.type == 'transport' then data.description = ('Take a car from %s and get it to %s without too much damage.'):format(areaLabel(data.pickup), areaLabel(data.drop))
+        else data.description = ('Pick up a package in %s and drop it in %s.'):format(areaLabel(data.pickup), areaLabel(data.drop)) end
+    end
+    data.contactLabel, data.timeLimit = job.contact, job.timeLimit * 60
+    data.rewardItems, data.rewardRep, data.custom = job.items, job.reputation, job.id
+    return storeOffer(gangId, job.type, 'custom', job.difficulty, job.money, job.account, data, minutes)
+end
+
 local function generateOffer(gangId)
+    -- Now and then, one of staff's custom contracts instead
+    local job = CustomContracts and CustomContracts.PickFor(gangId)
+    if job and Contracts.OfferCustom(gangId, job) then return end
+
     local contact = pick(cfg.contacts)
     local key = pick(contact.templates)
     local t, gen = cfg.templates[key], generators[key]
@@ -132,6 +338,8 @@ local function refreshBoards()
     end
 end
 
+Contracts._refresh = function() refreshBoards() end -- for tests
+
 -------------------------------------------------------------------------------
 -- Running contracts
 -------------------------------------------------------------------------------
@@ -172,9 +380,16 @@ local function complete(c, factor, endPoint)
     local diff = cfg.difficulty[c.difficulty]
     cleanup(c)
 
-    Ledger.Transact(c.gangId, c.account, reward, 'contract_reward', {
-        citizenid = c.cid, refType = 'contract', refId = c.id, note = cfg.templates[c.template].title,
+    if reward > 0 then Ledger.Transact(c.gangId, c.account, reward, 'contract_reward', {
+        citizenid = c.cid, refType = 'contract', refId = c.id, note = titleOf(c),
     })
+    end
+    local runner = Bridge.GetSourceFromCitizenId(c.cid)
+    for _, it in ipairs(c.data.rewardItems or {}) do
+        if runner then Bridge.AddItem(runner, it.item, it.count) end
+    end
+    if (c.data.rewardRep or 0) > 0 then Gangs.AddReputation(c.gangId, c.data.rewardRep) end
+    if c.data.custom and CustomContracts then CustomContracts.Completed(c.data.custom) end
     Activity.Record({ type = 'contract_complete', gangId = c.gangId, citizenid = c.cid, coords = endPoint and v3(endPoint) or nil, metadata = { contract = c.id } })
     addTrust(c.gangId, c.contact, diff.trust)
     Gangs.AddReputation(c.gangId, diff.reputation)
@@ -299,7 +514,7 @@ function Contracts.ActiveFor(gangId)
     local c = id and active[id]
     if not c then return nil end
     local src = Bridge.GetSourceFromCitizenId(c.cid)
-    return { id = c.id, title = cfg.templates[c.template].title, coords = src and GetEntityCoords(GetPlayerPed(src)) or nil }
+    return { id = c.id, title = titleOf(c), coords = src and GetEntityCoords(GetPlayerPed(src)) or nil }
 end
 
 ---Adds a prize job straight to a gang's board (auction lot). Highest risk, multiplied reward.
@@ -327,13 +542,15 @@ function Contracts.Board(src)
 
     local list = {}
     for _, o in pairs(offers[gang.id] or {}) do
-        local t = cfg.templates[o.template]
+        local extras = {}
+        for _, it in ipairs(o.data.rewardItems or {}) do extras[#extras + 1] = ('%d x %s'):format(it.count, it.label or Bridge.ItemLabel(it.item)) end
+        if (o.data.rewardRep or 0) > 0 then extras[#extras + 1] = ('+%d reputation'):format(o.data.rewardRep) end
         list[#list + 1] = {
-            id = o.id, title = t.title, description = o.data.description,
-            contact = contactsByKey[o.contact] and contactsByKey[o.contact].label or o.contact,
+            id = o.id, title = o.data.title or cfg.templates[o.template].title, description = o.data.description,
+            contact = o.data.contactLabel or (contactsByKey[o.contact] and contactsByKey[o.contact].label) or o.contact,
             difficulty = cfg.difficulty[o.difficulty].label, level = o.difficulty,
-            reward = o.reward, account = o.account,
-            minutes = math.floor(t.timeLimit / 60), expiresIn = math.max(0, o.expiresAt - os.time()),
+            reward = o.reward, account = o.account, extras = #extras > 0 and extras or nil, special = o.data.custom ~= nil,
+            minutes = math.floor(minutesOf(o) / 60), expiresIn = math.max(0, o.expiresAt - os.time()),
         }
     end
     table.sort(list, function(a, b) return a.reward > b.reward end)
@@ -344,7 +561,7 @@ function Contracts.Board(src)
         local c = active[id]
         local runner = Gangs.GetMembership(c.cid)
         current = {
-            id = c.id, template = c.template, stage = c.stage, title = cfg.templates[c.template].title,
+            id = c.id, template = c.template, stage = c.stage, title = titleOf(c),
             description = c.data.description, runner = runner and runner.name or 'A member',
             isRunner = c.cid == cid, secondsLeft = math.max(0, c.deadline - os.time()), reward = c.reward,
         }
@@ -384,7 +601,7 @@ function Contracts.Accept(src, offerId)
         id = o.id, gangId = gang.id, cid = cid, src = src, template = o.template, contact = o.contact,
         difficulty = o.difficulty, reward = o.reward, account = o.account, data = o.data,
         stage = FIRST_STAGE[o.template], stageAt = os.time(),
-        deadline = os.time() + cfg.templates[o.template].timeLimit,
+        deadline = os.time() + minutesOf(o),
     }
 
     if c.template == 'transport' and not spawnVehicle(c) then
@@ -403,7 +620,7 @@ function Contracts.Accept(src, offerId)
     end
 
     TriggerClientEvent('vinewood_gangs:client:contractStart', src, clientView(c))
-    Gangs.NotifyGang(gang.id, locale('contract_started_gang', Bridge.GetCharName(src), cfg.templates[c.template].title), 'inform')
+    Gangs.NotifyGang(gang.id, locale('contract_started_gang', Bridge.GetCharName(src), titleOf(c)), 'inform')
     return true
 end
 
@@ -457,6 +674,7 @@ end
 -------------------------------------------------------------------------------
 
 function Contracts.Load()
+    loadSettings()
     -- Anything mid-run when the resource stopped can't be resumed
     MySQL.update.await("UPDATE vg_contracts SET status = 'failed' WHERE status = 'accepted'")
     MySQL.update.await("UPDATE vg_contracts SET status = 'expired' WHERE status = 'available' AND expires_at < NOW()")
@@ -467,7 +685,7 @@ function Contracts.Load()
         FROM vg_contracts WHERE status = 'available' AND gang_id IS NOT NULL
     ]])) do
         local ok, data = pcall(json.decode, r.data)
-        if ok and data and Gangs.Get(r.gang_id) and cfg.templates[r.template] and contactsByKey[r.issued_by] then
+        if ok and data and Gangs.Get(r.gang_id) and cfg.templates[r.template] and (contactsByKey[r.issued_by] or (data and data.custom)) then
             offers[r.gang_id] = offers[r.gang_id] or {}
             offers[r.gang_id][r.id] = {
                 id = r.id, template = r.template, contact = r.issued_by, difficulty = math.min(r.difficulty, #cfg.difficulty),

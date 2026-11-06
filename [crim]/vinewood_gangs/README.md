@@ -57,13 +57,22 @@ Everything is done from the gang tablet: **F6**, `/gangtablet`, or an item (`Con
   counter you're standing at (with its hourly rate), go to any shop, and delete shops added in game.
 - **Safehouses:** set up new ones in game, go to, evict a gang, or delete.
 - **Businesses:** every gang enterprise, its stock and output; shut any down.
+- **Contracts > Job types & board:** everything in `config/contracts.lua`, changed in game and applied straight
+  away: each job type's title, base reward, dirty or clean, time limit, car and debtor models and debtor odds; the
+  risk levels (reward multiplier, trust and reputation); trust tiers; contacts and which jobs they give; and the
+  board (jobs per gang, how long offers last, refresh rate, route length, police alert chance). Reset to config
+  puts it back.
+- **Contracts > Custom jobs:** make your own jobs: title, contact, job type (courier run, stolen car or debt
+  collection), risk, time limit, fixed spots (set where you're standing) or random ones, and the reward: money,
+  items (given to whoever completes it) and bonus reputation. Choose every gang or one, a minimum tier, how often
+  it turns up on boards, and whether it can only be done once. "Offer now" puts it straight on a gang's board.
 - **Contract spots:** every pickup/drop-off, stolen-car and debtor spot. Add new ones where you're standing
   (they're used by new jobs straight away), go to any spot, and delete the ones added in game.
 - **Diplomacy:** every deal proposed or running; cancel any without penalty.
 - **Street events:** what the director is running (with the hidden details), start one now, or end one.
 - **Informants:** every CHIS code and the character behind it, tips given, money paid; cut anyone off.
 - **Auctions:** lots up for bidding, who leads, dead drops waiting; hold an auction now or cancel a lot.
-- **Areas:** influence per gang, adjust it, run a tick, show outlines in the world, and draw new areas by walking their corners.
+- **Turf:** influence per gang, adjust it, run a tick, show outlines in the world, and draw new areas by walking their corners.
 - **Reviews:** approve or reject gang logos and tag designs.
 - **Tags in world:** go to any tag or remove it.
 
@@ -144,14 +153,15 @@ Everything is in `config/drugs.lua`.
 
 ## Hex turf (territory)
 
-With `Config.Territory.mode = 'hexes'` (the default), San Andreas is split into a honeycomb of hexes (150 m by
-default) and **hexes replace areas everywhere**: tags, rackets, street dealing, street events, gang tiers and the
-maps all work on the hexes gangs hold. Set it to `'areas'` to use drawn areas and influence instead.
+San Andreas is split into a honeycomb of hexes (150 m by default), and the hexes a gang holds are its turf:
+tags, rackets, street dealing, street events, gang tiers and the maps all work on them.
 
 - **Starting turf:** staff give each gang its compound in game: `/gangadmin` > Gangs > the gang > **Turf**, stand in
   a hex and press "Give them the hex I'm standing in" (twice by default). The first is the **main** hex.
 - **Control (0 to 100%):** selling the **turf drug** (OG Kush by default) on your own hex builds its control. Every
-  hex loses some each hour, and a rival dealing on it costs you more. A hex at 0% is lost, except the compound.
+  hex loses some each hour, and a rival dealing on it costs you more. Other knocks cost control too: a rival
+  crossing out your tag, police cleaning it, a safehouse raid, a failed heist, or a street-event crew. A hex at
+  0% is lost, except the compound.
 - **Expanding:** once a hex reaches 100%, the ground touching it can be bought from the tablet's **Territory** app,
   for an amount of the turf drug from the buyer's pockets plus dirty money (rank permission "Buy new turf").
 - **Tags:** only on your own turf; the first must go on the main hex, and every 3 hexes unlocks another tag.
@@ -387,9 +397,6 @@ influence (`Config.Graffiti.onlyInAreas`; set it to false to allow decorative ta
 on a flat surface it lies flush, and floor tags read upright from where they were sprayed. Hold Shift and
 scroll to push a tag into or out of the surface, for buildings whose collision sits in front of the visible wall.
 
-Draw areas in game from `/gangadmin` > Areas > Draw new area: walk to each corner and press E,
-then Enter to finish and name it. Areas can't overlap. You can also define them in `config/zones.lua`;
-those can't be deleted from the panel.
 
 ## Integrations
 
@@ -419,7 +426,7 @@ Client: `exports.vinewood_gangs:openTablet()`, `GetGang()`, `HasGangPermission(p
 | File | Covers |
 |---|---|
 | `config/config.lua` | Modules, gangs, influence, heat, treasury, tablet, logos, integrations |
-| `config/zones.lua` | Areas defined in config |
+| `config/hexes.lua` | Hex turf: grid size, compound size, and the starting turf settings (changed in game in /gangadmin > Turf) |
 | `config/ranks.lua` | Permissions and the default ranks for new gangs |
 | `config/activities.lua` | Influence and heat for each activity |
 | `config/graffiti.lua` | Spraying, limits, cleaning jobs, fonts |
@@ -444,3 +451,9 @@ Everything that matters is decided on the server: money, influence, heat, permis
 every contract step. Rank checks stop members acting on anyone at or above their rank or handing out
 permissions they don't have. Contract deliveries faster than a car could drive are rejected. All text
 shown in the tablet is inserted as text, never HTML. Staff callbacks re-check permission on every call.
+
+## Upgrading from a version with drawn areas
+
+Territory is hexes only now; the area drawing tool and influence system are gone. Your old area data is left in
+the database but no longer used. To remove it, run `sql/optional_remove_old_areas.sql` (it's never run
+automatically). Give each gang its compound in `/gangadmin` > Gangs > the gang > Turf.

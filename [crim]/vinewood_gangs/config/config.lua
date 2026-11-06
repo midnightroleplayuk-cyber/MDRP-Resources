@@ -32,11 +32,7 @@ Config.Gangs = {
 }
 
 Config.Territory = {
-    -- 'hexes': a honeycomb of hexes gangs claim and expand (config/hexes.lua). 'areas': the drawn areas and
-    -- influence system (config/zones.lua and /gangadmin > Areas). Everything else works with either.
-    mode = 'hexes',
 
-    showAllInfluence = true, -- tablet shows every gang's influence in each area (false = only your own)
 
     -- A notification when a player walks into (or out of) an area
     enterNotice = {
@@ -87,18 +83,6 @@ Config.Admin = {
     group = 'group.admin',
     -- What Staff can do until management changes it in game
     defaultStaffPermissions = { 'view', 'reviews', 'tags', 'teleport' },
-}
-
-Config.Influence = {
-    tickMinutes         = 5,
-    captureThreshold    = 100,  -- influence needed to take a zone
-    holdThreshold       = 60,   -- owner keeps the zone while above this
-    ownershipMargin     = 25,   -- lead over 2nd place needed to take a zone
-    maxPerZone          = 1000,
-    decayPercentPerHour = 4.0,
-    pruneBelow          = 0.5,
-    -- Decay slows down when the server is quiet so gangs don't lose turf overnight
-    population = { minPlayers = 10, fullAt = 64, minScale = 0.15 },
 }
 
 Config.Heat = {

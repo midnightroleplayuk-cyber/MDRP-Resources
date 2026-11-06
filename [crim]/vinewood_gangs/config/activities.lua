@@ -3,7 +3,7 @@
 -- heat           : added to the gang (and member, if known)
 -- rivalInfluence : applied to data.targetGangId in the same zone (negative = damage)
 Config.Activities = {
-    drug_sale         = { influence = 2.0,   heat = 1.5, rivalInfluence = -1.0 }, -- per unit sold
+    drug_sale         = { influence = 2.0,   heat = 1.5 }, -- per unit; what it does to hex control is in config/hexes.lua
     intimidation      = { influence = 3.0,   heat = 2.0 },
     graffiti_tag      = { influence = 5.0,   heat = 0.5 },
     graffiti_cross    = { influence = 3.0,   heat = 0.5, rivalInfluence = -6.0 },

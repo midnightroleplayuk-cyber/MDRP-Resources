@@ -24,9 +24,9 @@ local ALLOWED = {
 
 local ADMIN_ALLOWED = {
     listGangs = true, gangDetail = true, createGang = true, disband = true, addMember = true, removeMember = true,
-    setGrade = true, zones = true, addInfluence = true, tick = true, pendingDesigns = true, reviewDesign = true,
+    setGrade = true, pendingDesigns = true, reviewDesign = true,
     listTags = true, removeTag = true, gotoTag = true, onlinePlayers = true,
-    pendingLogos = true, reviewLogo = true, deleteZone = true, rackets = true, releaseRacket = true,
+    pendingLogos = true, reviewLogo = true, rackets = true, releaseRacket = true,
     safehouses = true, evictSafehouse = true, deleteSafehouse = true, gotoSafehouse = true, safehouseShells = true,
     enterprises = true, closeEnterprise = true, agreements = true, cancelAgreement = true,
     director = true, directorStart = true, directorEnd = true, informants = true, informantActive = true,
@@ -39,6 +39,8 @@ local ADMIN_ALLOWED = {
     airdrops = true, airdropCancel = true,
     searchItems = true, drugItems = true, drugItemsSave = true, drugItemsReset = true,
     staffAccess = true, staffGrant = true, staffRevoke = true, staffPerms = true,
+    customContracts = true, customContractSave = true, customContractDelete = true, customContractOffer = true,
+    contractSettings = true, contractSettingsSave = true, contractSettingsReset = true,
     heists = true, heistCreate = true, heistSave = true, heistDelete = true, heistReset = true, heistStop = true, heistHere = true, gotoPoint = true,
 }
 
@@ -93,7 +95,7 @@ local function staticData()
         tabletMap = Config.Territory.tabletMap,
         heists = Config.Heists.enabled,
         airdrops = Config.Airdrops.enabled,
-        hexMode = Config.Territory.mode == 'hexes',
+        hexMode = true,
         hexSize = Config.Hexes.size, hexOrigin = Config.Hexes.origin,
         airdropShowTo = Config.Airdrops.showTo,
         tiers = (function()
@@ -219,13 +221,6 @@ RegisterNUICallback('airdropCheck', function(data, cb)
 end)
 
 -- Areas tab: close the panel and start drawing in the world
-RegisterNUICallback('drawZone', function(_, cb)
-    cb('ok')
-    if mode ~= 'admin' then return end
-    closeTablet()
-    Wait(200)
-    StartZoneEditor()
-end)
 
 RegisterNUICallback('setupSafehouse', function(data, cb)
     cb('ok')
@@ -233,10 +228,6 @@ RegisterNUICallback('setupSafehouse', function(data, cb)
     closeTablet()
     Wait(200)
     StartSafehouseEditor(type(data) == 'table' and type(data.shell) == 'string' and data.shell or nil)
-end)
-
-RegisterNUICallback('toggleOutlines', function(_, cb)
-    cb({ on = ToggleZoneOutlines() })
 end)
 
 -- "Set waypoint" buttons in the tablet

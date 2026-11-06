@@ -51,10 +51,5 @@ CreateThread(function()
     end
 end)
 
-AddStateBagChangeHandler('vg_zones', 'global', function(_, _, value)
-    if currentZone and value and value[currentZone] then
-        TriggerEvent('vinewood_gangs:client:zoneChanged', currentZone, value[currentZone])
-    end
-end)
 
 exports('GetCurrentZone', function() return currentZone end)

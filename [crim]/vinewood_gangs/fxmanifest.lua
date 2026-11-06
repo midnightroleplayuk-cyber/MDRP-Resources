@@ -5,14 +5,13 @@ lua54 'yes'
 name 'vinewood_gangs'
 author 'Vinewood Studios'
 description 'Advanced gang, territory and organised crime system'
-version '3.0.0'
+version '3.3.0'
 
 ox_lib 'locale'
 
 shared_scripts {
     '@ox_lib/init.lua',
     'config/config.lua',
-    'config/zones.lua',
     'config/hexes.lua',
     'config/ranks.lua',
     'config/activities.lua',
@@ -44,13 +43,11 @@ server_scripts {
     'server/core/security.lua',
     'server/core/migrations.lua',
     'server/core/vehicles.lua',
-    'server/systems/zones_db.lua',
     'server/systems/gangs.lua',
     'server/systems/progression.lua',
     'server/systems/ledger.lua',
     'server/systems/intel.lua',
     'server/systems/heat.lua',
-    'server/systems/influence.lua',
     'server/systems/hexes.lua',
     'server/systems/relations.lua',
     'server/systems/activity.lua',
@@ -58,6 +55,7 @@ server_scripts {
     'server/modules/graffiti.lua',
     'server/modules/contracts.lua',
     'server/modules/contract_spots.lua',
+    'server/modules/custom_contracts.lua',
     'server/modules/rackets.lua',
     'server/modules/safehouses.lua',
     'server/modules/enterprises.lua',
@@ -94,7 +92,6 @@ client_scripts {
     'client/heists.lua',
     'client/airdrops.lua',
     'client/admin_safehouses.lua',
-    'client/admin_zones.lua',
 }
 
 ui_page 'web/index.html'
