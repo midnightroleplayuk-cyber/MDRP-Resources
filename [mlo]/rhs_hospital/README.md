@@ -22,8 +22,8 @@ Version 1.0.0-rc.11. Standalone: no framework, no database, no other resource ne
   X-ray, MRI and the theatres), white doors into the toilets, a green steel fire exit door from the garage, and
   automatic glass sliding doors at the A&E, ambulance, main and rear entrances (telescopic at the A&E, ambulance and
   rear).
-- **Optional scripts** (all switchable in `config.lua`): door controller, automatic entrances, lift, NPC blocker, and the
-  retirement of the old Burton Customs interior.
+- **Optional scripts** (all switchable in `config.lua`): door controller, automatic entrances, lift, NPC blocker, the
+  retirement of the old Burton Customs interior, and bedside trays, chairs and bed curtains you can switch off.
 
 ## Requirements
 
@@ -54,6 +54,9 @@ Version 1.0.0-rc.11. Standalone: no framework, no database, no other resource ne
 | `Config.Lift.Enabled` | `true` | Four-stop lift. Stand at a lift front: **E** up, **G** down. |
 | `Config.NpcBlock.Enabled` | `true` | Stops ambient peds spawning or walking inside the hospital. Mission peds and players are never touched. |
 | `Config.RetireOldCustoms` | `true` | Switches off the old Burton Los Santos Customs interior. Leave it on unless another resource does it. |
+| `Config.Furniture.BedsideTrays` | `true` | Over-bed tables on the ward. `false` removes them. |
+| `Config.Furniture.BedsideChairs` | `true` | The chair beside each bed (A&E treatment, ward, ICU). `false` removes them. |
+| `Config.Furniture.BedCurtains` | `true` | Curtain rails and curtains round the beds (A&E treatment and resus, recovery, ward, ICU, doctors' offices). `false` removes them. |
 | `RHSDoors` | all doors | The hinged door list (model + world position of the hinge at floor level). Delete a line to leave that door to another resource. |
 | `RHSAutoDoors` | 14 leaves | The automatic sliding leaves: four at the telescopic A&E, ambulance and rear entrances, two at the main entrance. Delete an entrance's lines (same `group`) to remove it. |
 

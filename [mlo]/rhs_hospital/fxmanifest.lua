@@ -7,7 +7,7 @@ this_is_a_map 'yes'
 name 'rhs_hospital'
 author 'NO BS SCRIPTS'
 description 'RHS Burton Hospital - a British district general hospital MLO on the Burton plot (replaces the Burton Los Santos Customs)'
-version '1.0.0-rc.11'
+version '1.0.0-rc.12'
 
 files {
     'stream/interior/rhs_hospital.ytyp',
