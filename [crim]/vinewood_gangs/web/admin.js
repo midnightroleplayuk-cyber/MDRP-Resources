@@ -466,23 +466,98 @@ const EVENT_NAMES = {
   crew: 'Outside crew', drop: 'Lost shipment', undercover: 'Undercover operation', hotwork: 'Hot work',
 };
 
+/* The usual air drop loot: each pick takes one entry by chance */
+async function editAirdropLoot() {
+  const res = await adminRequest('airdropLoot');
+  if (!res.ok) return toast(res.error, true);
+  const v = res.data;
+  const rows = h('div', { style: 'display:grid;gap:8px;max-height:46vh;overflow-y:auto;padding-right:4px' });
+  const numIn = (obj, key, min, width = 90) => { const el = h('input', { type: 'number', min, value: obj[key], style: `width:${width}px` }); el.addEventListener('change', () => { obj[key] = Number(el.value); }); return el; };
+  const total = () => v.loot.reduce((n, l) => n + (Number(l.chance) || 0), 0) || 1;
+  const draw = () => rows.replaceChildren(...v.loot.map((l, i) => h('div', { class: 'loot-entry' },
+    l.money ? h('strong', { text: 'Money (£)' }) : itemPicker(l.item ? { item: l.item, label: l.label } : null, (it) => { l.item = it ? it.name : null; l.label = it ? it.label : null; }, { allowClear: false, openNow: !l.item, emptyText: 'No item chosen yet' }),
+    h('div', { class: 'loot-fields' },
+      h('label', { class: 'field' }, 'Min', numIn(l, 'min', 1, 90)),
+      h('label', { class: 'field' }, 'Max', numIn(l, 'max', 1, 90)),
+      h('label', { class: 'field' }, 'Weight', h('span', { class: 'row', style: 'flex-wrap:nowrap;align-items:center;gap:8px' }, numIn(l, 'chance', 1, 80), h('span', { class: 'muted', text: `about ${Math.round((l.chance || 0) / total() * 100)}% of picks` }))),
+      h('button', { class: 'btn small danger', type: 'button', style: 'margin-left:auto;align-self:end', onclick: () => { v.loot.splice(i, 1); draw(); } }, 'Remove')))));
+  draw();
+  const rolls = h('input', { type: 'number', min: 1, max: 20, value: v.rolls, style: 'width:80px' });
+  $('sheet').classList.add('wide');
+  showModal(
+    h('h2', { text: 'Air drop loot' }),
+    h('p', { text: 'Every crate makes a number of picks from this list. Each pick takes one entry: the higher its weight, the likelier it is. Money goes to the opener\'s gang treasury (dirty), or as cash if they\'re not in a gang.' }),
+    h('label', { class: 'field' }, 'Picks per crate', rolls),
+    rows,
+    h('div', { class: 'row', style: 'margin-top:8px' },
+      h('button', { class: 'btn small', type: 'button', onclick: () => { v.loot.push({ item: null, min: 1, max: 1, chance: 10 }); draw(); } }, 'Add an item'),
+      h('button', { class: 'btn small', type: 'button', onclick: () => { v.loot.push({ money: true, min: 5000, max: 15000, chance: 20 }); draw(); } }, 'Add money')),
+    h('div', { class: 'buttons' },
+      !v.fromConfig ? h('button', { class: 'btn', type: 'button', style: 'margin-right:auto', onclick: async () => { if (await adminAct('airdropLootReset', [], 'Back to the config loot.')) hideModal(); } }, 'Reset to config') : null,
+      h('button', { class: 'btn', type: 'button', onclick: hideModal }, 'Cancel'),
+      h('button', { class: 'btn primary', type: 'button', onclick: async () => {
+        if (v.loot.some((l) => !l.money && !l.item)) return toast('Pick an item for every row, or remove it.', true);
+        const data = { rolls: Number(rolls.value), loot: v.loot.map((l) => (l.money ? { money: true, min: l.min, max: l.max, chance: l.chance } : { item: l.item, min: l.min, max: l.max, chance: l.chance })) };
+        if (await adminAct('airdropLootSave', [data], 'Loot saved. New crates use it straight away.')) hideModal();
+      } }, 'Save')));
+}
+
 async function renderAdminAirdrops() {
   const res = await adminRequest('airdrops');
   if (!res.ok) return h('div', {});
-  const state = { called: 'Plane on its way', flying: 'Falling', landed: 'On the ground' };
+  const stage = { called: 'Plane on its way', flying: 'Falling', landed: 'On the ground' };
   const callIn = async () => {
     const gr = await adminRequest('listGangs');
     const gangs = gr.ok ? gr.data : [];
-    const forGang = select([{ value: '', label: 'Nobody in particular (anyone can grab it)' }, ...gangs.map((g) => ({ value: g.id, label: g.label }))], '');
-    const minutes = h('input', { type: 'number', min: 0, max: 30, value: 1, style: 'width:80px' });
-    const send = async (x, y) => {
-      if (await adminAct('airdropAdminCall', [x ?? null, y ?? null, forGang.value ? Number(forGang.value) : null, Number(minutes.value)], 'Air drop called in.')) { hideModal(); renderAdminTab(); }
+    // Who can get it: all gangs, gangs of a tier and up, or one gang
+    const tiers = (state.static.tiers || []).map((t, i) => ({ value: i + 1, label: `${t.label} and up` }));
+    const whoKind = select([{ value: 'all', label: 'All gangs' }, { value: 'tier', label: 'Gangs of a tier and up' }, { value: 'gang', label: 'One gang' }], 'all');
+    const whoTier = select(tiers.length ? tiers : [{ value: 1, label: 'Any tier' }], 3 <= tiers.length ? 3 : 1);
+    const whoGang = select(gangs.map((g) => ({ value: g.id, label: g.label })), gangs[0] ? gangs[0].id : '');
+    const whoHint = h('p', { class: 'hint', style: 'margin:4px 0 0' });
+    const showWho = () => {
+      whoTier.hidden = whoKind.value !== 'tier';
+      whoGang.hidden = whoKind.value !== 'gang';
+      whoHint.textContent = whoKind.value === 'all' ? 'Anyone can see the search circle and go for it.'
+        : 'Only they see it on the map and are told it\'s coming. Nobody else can open it.';
     };
+    whoKind.addEventListener('change', showWho);
+    showWho();
+    const minutes = h('input', { type: 'number', min: 0, max: 30, value: 1, style: 'width:80px' });
+    // What's in the crate: the usual loot table, or an exact list
+    const contents = [];
+    const contentsBox = h('div', { style: 'display:grid;gap:8px' });
+    const drawContents = () => contentsBox.replaceChildren(...contents.map((c, i) => h('div', { class: 'row', style: 'align-items:center;flex-wrap:nowrap' },
+      c.money
+        ? h('span', { style: 'flex:1', text: 'Money (to the opener\'s gang treasury, or cash)' })
+        : h('div', { style: 'flex:1;min-width:0' }, itemPicker(c.item ? { item: c.item, label: c.label } : null, (it) => { c.item = it ? it.name : null; c.label = it ? it.label : null; }, { allowClear: false, openNow: !c.item, emptyText: 'No item chosen yet' })),
+      (() => { const n = h('input', { type: 'number', min: 1, value: c.count, style: 'width:100px' }); n.addEventListener('change', () => { c.count = Number(n.value); }); return n; })(),
+      h('button', { class: 'btn small danger', type: 'button', onclick: () => { contents.splice(i, 1); drawContents(); } }, 'Remove'))),
+      h('div', { class: 'row' },
+        h('button', { class: 'btn small', type: 'button', onclick: () => { contents.push({ item: null, count: 1 }); drawContents(); } }, 'Add an item'),
+        h('button', { class: 'btn small', type: 'button', onclick: () => { contents.push({ money: true, count: 10000 }); drawContents(); } }, 'Add money')));
+    const kind = select([{ value: 'usual', label: 'The usual loot (random from the loot table)' }, { value: 'exact', label: 'Choose exactly what\'s in it' }], 'usual');
+    kind.addEventListener('change', () => { contentsBox.hidden = kind.value !== 'exact'; if (kind.value === 'exact' && !contents.length) { contents.push({ item: null, count: 1 }); } drawContents(); });
+    contentsBox.hidden = true;
+    const send = async (x, y) => {
+      let exact = null;
+      if (kind.value === 'exact') {
+        exact = contents.filter((c) => c.money || c.item).map((c) => (c.money ? { money: true, count: c.count } : { item: c.item, count: c.count }));
+        if (!exact.length) return toast('Add at least one item or some money, or use the usual loot.', true);
+      }
+      if (whoKind.value === 'gang' && !whoGang.value) return toast('There are no gangs to choose from yet.', true);
+      const who = whoKind.value === 'tier' ? { kind: 'tier', tier: Number(whoTier.value) }
+        : (whoKind.value === 'gang' ? { kind: 'gang', gangId: Number(whoGang.value) } : { kind: 'all' });
+      if (await adminAct('airdropAdminCall', [{ x: x ?? null, y: y ?? null, minutes: Number(minutes.value), contents: exact, who }], 'Air drop called in.')) { hideModal(); renderAdminTab(); }
+    };
+    $('sheet').classList.add('wide');
     showModal(
       h('h2', { text: 'Call in an air drop' }),
-      h('p', { text: 'A plane drops a crate of the usual loot (config/airdrops.lua). No cost, no cooldown. Everyone set to see drops gets the search circle on their map.' }),
-      h('label', { class: 'field' }, 'For', forGang),
+      h('p', { text: 'A plane drops a crate wherever you choose. No cost, no cooldown. Everyone set to see drops gets the search circle on their map.' }),
+      h('div', { class: 'field' }, 'Who can get it', h('div', { class: 'row', style: 'flex-wrap:nowrap' }, whoKind, whoTier, whoGang), whoHint),
       h('label', { class: 'field', style: 'margin-top:12px' }, 'Plane arrives in (minutes)', minutes),
+      h('label', { class: 'field', style: 'margin-top:12px' }, 'What\'s in the crate', kind),
+      contentsBox,
       h('div', { class: 'buttons' },
         h('button', { class: 'btn', type: 'button', onclick: hideModal }, 'Cancel'),
         h('button', { class: 'btn', type: 'button', onclick: async () => {
@@ -496,10 +571,12 @@ async function renderAdminAirdrops() {
 
   return h('div', { style: 'margin-top:28px' },
     h('div', { class: 'section-head' }, h('h3', { style: 'margin:0', text: 'Air drops' }),
-      h('button', { class: 'btn primary small', type: 'button', onclick: callIn }, 'Call in an air drop')),
+      h('div', { class: 'row' },
+        h('button', { class: 'btn small', type: 'button', onclick: editAirdropLoot }, 'Loot'),
+        h('button', { class: 'btn primary small', type: 'button', onclick: callIn }, 'Call in an air drop'))),
     res.data.length ? h('table', {}, h('tbody', {}, res.data.map((d) => h('tr', {},
       h('td', {}, h('strong', { text: d.gang }), h('div', { class: 'hint', style: 'margin:0', text: `${Math.round(d.x)}, ${Math.round(d.y)}` })),
-      h('td', {}, state[d.state] || d.state, d.state === 'called' ? h('span', { class: 'muted' }, ' · ', countdown(d.arrivesIn)) : null),
+      h('td', {}, stage[d.state] || d.state, d.state === 'called' ? h('span', { class: 'muted' }, ' · ', countdown(d.arrivesIn)) : null),
       h('td', { class: 'actions' },
         waypointButton(d.x, d.y),
         h('button', { class: 'btn small danger', type: 'button', onclick: () => adminAct('airdropCancel', [d.id], 'Air drop cancelled.') }, 'Cancel'))))))
@@ -1539,6 +1616,8 @@ const AdminMock = {
       case 'contractSettingsSave': return ok(args[0]);
       case 'airdrops': return ok([{ id: 3, gang: 'Grove Kings', state: 'called', x: 1712, y: 3290, arrivesIn: 184 }]);
       case 'airdropAdminCall': return ok(true);
+      case 'airdropLoot': return ok({ rolls: 4, fromConfig: true, loot: [{ money: true, min: 5000, max: 15000, chance: 40 }, { item: 'weapon_pistol', label: 'Pistol', min: 1, max: 1, chance: 15 }, { item: 'armour', label: 'Body armour', min: 1, max: 2, chance: 20 }, { item: 'goldbar', label: 'Gold bar', min: 1, max: 3, chance: 10 }] });
+      case 'airdropLootSave': return ok(args[0]);
       case 'gangCreation': return ok({ allow: true, cost: 50000, account: 'bank', fromConfig: true });
       case 'gangCreationSave': return ok(args[0]);
       case 'staffAccess': return ok({ users: [{ license: 'license:2b6f…91', role: 'staff', name: 'Moderator Dave' }, { license: 'license:9ac1…07', role: 'management', name: 'Kerry' }],

@@ -36,7 +36,7 @@ local ACTION_GROUP = {
     addContractSpot = 'world', deleteContractSpot = 'world', closeEnterprise = 'world',
     heistCreate = 'world', heistSave = 'world', heistDelete = 'world', heistReset = 'world', heistStop = 'world', heistHere = 'world',
     directorStart = 'events', directorEnd = 'events', auctionOpen = 'events', auctionCancel = 'events', cancelAgreement = 'events',
-    airdropCancel = 'events', airdropAdminCall = 'events',
+    airdropCancel = 'events', airdropAdminCall = 'events', airdropLoot = 'view', airdropLootSave = 'settings', airdropLootReset = 'settings',
     informants = 'informants', informantActive = 'informants',
     drugItemsSave = 'settings', drugItemsReset = 'settings',
     -- anything not listed here (e.g. Staff access itself) is management only
@@ -265,7 +265,10 @@ admin('hexSettingsSave', function(src, data) return Hexes.AdminSaveSettings(src,
 
 admin('airdrops', function() return Airdrops.AdminList() end)
 admin('airdropCancel', function(src, id) return Airdrops.AdminCancel(src, id) end)
-admin('airdropAdminCall', function(src, x, y, gangId, minutes) return Airdrops.AdminCall(src, x, y, gangId, minutes) end)
+admin('airdropAdminCall', function(src, opts) return Airdrops.AdminCall(src, opts) end)
+admin('airdropLoot', function() return Airdrops.AdminLoot() end)
+admin('airdropLootSave', function(src, data) return Airdrops.AdminSaveLoot(src, data) end)
+admin('airdropLootReset', function(src) return Airdrops.AdminResetLoot(src) end)
 admin('searchItems', function(_, query) return Bridge.SearchItems(query, 30) end)
 admin('drugItems', function() return Drugs.AdminGet() end)
 admin('drugItemsSave', function(src, list) return Drugs.AdminSave(src, list) end)

@@ -19,6 +19,7 @@ MySQL.ready(function()
         Laundering.Load()
         Heists.Load()
         Drugs.Load()
+        Airdrops.LoadLoot()
 
         Influence.Start()
         Heat.Start()

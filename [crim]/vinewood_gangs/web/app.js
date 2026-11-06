@@ -2348,7 +2348,7 @@ if (!IN_GAME && !location.search.includes('admin') && !location.search.includes(
     action: 'open',
     gang: Mock.gang,
     static: {
-      currency: '£', creationCost: 50000, allowCreation: true, nameMin: 3, nameMax: 24, maxTransaction: 1000000, graffiti: true, contracts: true, rackets: true, safehouses: true, enterprises: true, diplomacy: true, informants: true, auctions: true, progression: true, shop: true, heists: true, airdrops: true,
+      currency: '£', creationCost: 50000, allowCreation: true, nameMin: 3, nameMax: 24, maxTransaction: 1000000, graffiti: true, contracts: true, rackets: true, safehouses: true, enterprises: true, diplomacy: true, informants: true, auctions: true, progression: true, shop: true, heists: true, airdrops: false,
       hexMode: true, hexSize: 150, hexOrigin: { x: 0, y: 0 },
       tabletMap: { image: 'images/map.jpg', size: 2048, scaleX: 0.16576, offsetX: 938.4, scaleY: -0.164, offsetY: 1382.4, nudgeX: 0, nudgeY: 0 },
       tiers: [{ label: 'Street crew', unlocks: [] }, { label: 'Firm', unlocks: ['rackets', 'safehouses', 'contracts_medium'] }, { label: 'Organisation', unlocks: ['enterprises', 'diplomacy', 'second_safehouse'] }, { label: 'Syndicate', unlocks: ['auctions', 'contracts_high'] }], logos: true, logoApproval: true, logoHosts: ['i.imgur.com', 'i.ibb.co', 'r2.fivemanage.com'],

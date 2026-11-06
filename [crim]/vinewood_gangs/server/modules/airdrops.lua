@@ -7,6 +7,9 @@ local gangNext = {}    -- gangNext[gangId] = os.time() the gang can call again
 local lastDrop = 0
 local nextId = 0
 
+-- The loot table staff edit in game (falls back to config/airdrops.lua)
+local lootTable, lootRolls = cfg.loot, cfg.rolls
+
 local FALL_TIME = 40   -- seconds from the plane passing over to the crate landing (roughly, on every client)
 
 local function now() return os.time() end
@@ -16,8 +19,27 @@ local function publicView(d)
         state = d.state, landsIn = math.max(0, d.landAt - now()), plane = cfg.plane, crate = cfg.crate }
 end
 
+---Can this player go for this drop? Staff drops can be for one gang, or gangs of a tier and up.
+local function eligible(src, d)
+    local who = d.who
+    if not who or who.kind == 'all' then return true end
+    local gang = Gangs.GetPlayerGang(src)
+    if not gang then return false end
+    if who.kind == 'gang' then return gang.id == who.gangId end
+    if who.kind == 'tier' then return Progression.Tier(gang.id) >= (who.tier or 1) end
+    return true
+end
+
 ---Who should see this drop's blip.
 local function audience(d)
+    if d.who and d.who.kind ~= 'all' then
+        local out = {}
+        for _, src in ipairs(GetPlayers()) do
+            src = tonumber(src)
+            if eligible(src, d) then out[#out + 1] = src end
+        end
+        return out
+    end
     if cfg.showTo == 'everyone' then return -1 end
     local out = {}
     if cfg.showTo == 'caller' then
@@ -54,7 +76,7 @@ end
 -------------------------------------------------------------------------------
 
 function Airdrops.View(src)
-    if not cfg.enabled then return nil, 'invalid' end
+    if not cfg.enabled or not cfg.playersCanCall then return nil, 'airdrop_staff_only' end
     local gang, _, cid = Gangs.GetPlayerGang(src)
     if not gang then return nil, 'not_in_gang' end
     local mine
@@ -71,7 +93,7 @@ function Airdrops.View(src)
 end
 
 function Airdrops.Request(src, x, y)
-    if not cfg.enabled then return false, 'invalid' end
+    if not cfg.enabled or not cfg.playersCanCall then return false, 'airdrop_staff_only' end
     local gang, _, cid = Gangs.GetPlayerGang(src)
     if not gang then return false, 'not_in_gang' end
     if not Gangs.HasPermission(cid, 'airdrops') then return false, 'no_permission' end
@@ -116,6 +138,7 @@ end
 function Airdrops.BeginOpen(src, id)
     local d = drops[tonumber(id)]
     if not d or d.state ~= 'landed' then return false, 'airdrop_not_here' end
+    if not eligible(src, d) then return false, 'airdrop_not_for_you' end
     if not near2D(src, d, 4.0) then return false, 'too_far' end
     if d.lock and d.lock.src ~= src and GetGameTimer() - d.lock.at < (cfg.openTime + 5) * 1000 then return false, 'airdrop_someone_opening' end
     d.lock = { src = src, at = GetGameTimer() }
@@ -124,11 +147,11 @@ end
 
 local function rollLoot()
     local total = 0
-    for _, l in ipairs(cfg.loot) do total = total + (l.chance or 1) end
+    for _, l in ipairs(lootTable) do total = total + (l.chance or 1) end
     local picks = {}
-    for _ = 1, cfg.rolls do
+    for _ = 1, lootRolls do
         local r, acc = math.random() * total, 0
-        for _, l in ipairs(cfg.loot) do
+        for _, l in ipairs(lootTable) do
             acc = acc + (l.chance or 1)
             if r <= acc then picks[#picks + 1] = l break end
         end
@@ -146,8 +169,8 @@ function Airdrops.Open(src, id)
     d.state = 'opened'
     local gang, _, cid = Gangs.GetPlayerGang(src)
     local got = {}
-    for _, l in ipairs(rollLoot()) do
-        local amount = math.random(l.min or 1, math.max(l.min or 1, l.max or l.min or 1))
+    for _, l in ipairs(d.contents or rollLoot()) do
+        local amount = d.contents and l.count or math.random(l.min or 1, math.max(l.min or 1, l.max or l.min or 1))
         if l.money then
             if gang then Ledger.Transact(gang.id, 'dirty', amount, 'airdrop_loot', { citizenid = cid })
             else Bridge.AddMoney(src, 'cash', amount, 'airdrop') end
@@ -221,31 +244,117 @@ function Airdrops.AdminList()
     local list = {}
     for _, d in pairs(drops) do
         local g = d.gangId and Gangs.Get(d.gangId)
-        list[#list + 1] = { id = d.id, gang = g and g.label or (d.byStaff and 'Staff drop (for nobody)' or '?'), state = d.state, x = d.x, y = d.y,
+        local tierLabel = d.who and d.who.kind == 'tier' and Config.Progression.tiers[d.who.tier] and Config.Progression.tiers[d.who.tier].label
+        list[#list + 1] = { id = d.id, gang = g and g.label or (tierLabel and ('Staff drop: ' .. tierLabel .. ' and up')) or (d.byStaff and 'Staff drop: all gangs' or '?'), state = d.state, x = d.x, y = d.y,
             arrivesIn = math.max(0, d.arriveAt - now()) }
     end
     return list
 end
 
+-------------------------------------------------------------------------------
+-- Loot staff choose
+-------------------------------------------------------------------------------
+
+local function cleanEntry(e, exact)
+    if type(e) ~= 'table' then return nil end
+    local lo = math.floor(math.max(1, math.min(100000000, tonumber(exact and e.count or e.min) or 1)))
+    local out = exact and { count = lo } or { min = lo, max = math.floor(math.max(lo, math.min(100000000, tonumber(e.max) or lo))),
+        chance = math.max(1, math.min(1000, math.floor(tonumber(e.chance) or 1))) }
+    if e.money then
+        out.money = true
+    else
+        if not e.item or not Bridge.ItemExists(e.item) then return nil, 'item_not_found' end
+        out.item = tostring(e.item)
+        if exact then out.count = math.min(out.count, 1000) else out.max = math.min(out.max, 1000) out.min = math.min(out.min, out.max) end
+    end
+    return out
+end
+
+function Airdrops.AdminLoot()
+    local list = {}
+    for i, l in ipairs(lootTable) do
+        list[i] = { money = l.money == true, item = l.item, label = l.item and Bridge.ItemLabel(l.item) or nil, min = l.min, max = l.max, chance = l.chance }
+    end
+    return { rolls = lootRolls, loot = list, fromConfig = lootTable == cfg.loot }
+end
+
+function Airdrops.AdminSaveLoot(src, input)
+    if type(input) ~= 'table' or type(input.loot) ~= 'table' or #input.loot == 0 or #input.loot > 40 then return false, 'airdrop_need_loot' end
+    local list = {}
+    for _, e in ipairs(input.loot) do
+        local clean, err = cleanEntry(e, false)
+        if not clean then return false, err or 'invalid' end
+        list[#list + 1] = clean
+    end
+    lootTable, lootRolls = list, math.max(1, math.min(20, math.floor(tonumber(input.rolls) or cfg.rolls)))
+    MySQL.insert.await("INSERT INTO vg_settings (`key`, value, updated_by) VALUES ('airdrop_loot', ?, ?) ON DUPLICATE KEY UPDATE value = VALUES(value), updated_by = VALUES(updated_by)",
+        { json.encode({ rolls = lootRolls, loot = lootTable }), Bridge.GetCitizenId(src) or 'console' })
+    Logger.Log(src, 'staff_airdrop_loot', ('saved the air drop loot table (%d entries, %d picks)'):format(#list, lootRolls))
+    return true, Airdrops.AdminLoot()
+end
+
+function Airdrops.AdminResetLoot(src)
+    lootTable, lootRolls = cfg.loot, cfg.rolls
+    MySQL.update.await("DELETE FROM vg_settings WHERE `key` = 'airdrop_loot'")
+    return true, Airdrops.AdminLoot()
+end
+
+function Airdrops.LoadLoot()
+    local raw = MySQL.scalar.await("SELECT value FROM vg_settings WHERE `key` = 'airdrop_loot'")
+    local ok, saved = pcall(json.decode, raw or '')
+    if ok and type(saved) == 'table' and type(saved.loot) == 'table' and #saved.loot > 0 then
+        lootTable, lootRolls = saved.loot, saved.rolls or cfg.rolls
+    end
+end
+
 ---Staff call one in: where they're standing (or x, y), for a gang or nobody, arriving in a few minutes.
+---contents = an exact list to put in the crate ({ item, count } or { money = true, count }), or nil for the usual loot.
 ---No cost, cooldown or one-at-a-time limit.
-function Airdrops.AdminCall(src, x, y, gangId, minutes)
-    x, y = tonumber(x), tonumber(y)
+function Airdrops.AdminCall(src, opts)
+    opts = type(opts) == 'table' and opts or {}
+    local x, y, minutes, contents = tonumber(opts.x), tonumber(opts.y), opts.minutes, opts.contents
+    -- Who can get it: all gangs, gangs of a tier and up, or one gang
+    local w = type(opts.who) == 'table' and opts.who or {}
+    local who = { kind = 'all' }
+    local gangId
+    if w.kind == 'gang' and tonumber(w.gangId) and Gangs.Get(tonumber(w.gangId)) then
+        who = { kind = 'gang', gangId = tonumber(w.gangId) }
+        gangId = who.gangId
+    elseif w.kind == 'tier' then
+        who = { kind = 'tier', tier = math.max(1, math.min(#Config.Progression.tiers, math.floor(tonumber(w.tier) or 1))) }
+    end
     if not x or not y then
         local c = GetEntityCoords(GetPlayerPed(src))
         x, y = c.x, c.y
     end
-    gangId = tonumber(gangId)
-    if gangId and not Gangs.Get(gangId) then gangId = nil end
     local delay = math.floor(math.max(0, math.min(30, tonumber(minutes) or 1)) * 60)
+    local exact
+    if type(contents) == 'table' and #contents > 0 then
+        exact = {}
+        for _, e in ipairs(contents) do
+            if #exact >= 20 then break end
+            local clean, err = cleanEntry(e, true)
+            if not clean then return false, err or 'invalid' end
+            exact[#exact + 1] = clean
+        end
+    end
     nextId = nextId + 1
     local t = now()
     local a, r = math.random() * math.pi * 2, math.random() * cfg.radius * 0.6
     local d = { id = nextId, gangId = gangId, x = x, y = y, cx = x + math.cos(a) * r, cy = y + math.sin(a) * r,
-        arriveAt = t + delay, landAt = t + delay + FALL_TIME, state = 'called', byStaff = true }
+        arriveAt = t + delay, landAt = t + delay + FALL_TIME, state = 'called', byStaff = true, contents = exact, who = who }
     drops[d.id] = d
-    if gangId then Gangs.NotifyGang(gangId, locale('airdrop_called', math.max(1, math.ceil(delay / 60))), 'inform') end
-    Logger.Log(src, 'staff_airdrop_called', ('called a drop at %.0f, %.0f%s'):format(x, y, gangId and (' for gang ' .. gangId) or ''))
+    -- Tell the gangs it's for (an "all gangs" drop is found by its plane and search circle, like any other)
+    local mins = math.max(1, math.ceil(delay / 60))
+    if who.kind == 'gang' then
+        Gangs.NotifyGang(gangId, locale('airdrop_called', mins), 'inform')
+    elseif who.kind == 'tier' then
+        for id in pairs(Gangs.All()) do
+            if Progression.Tier(id) >= who.tier then Gangs.NotifyGang(id, locale('airdrop_called', mins), 'inform') end
+        end
+    end
+    Logger.Log(src, 'staff_airdrop_called', ('called a drop at %.0f, %.0f for %s'):format(x, y,
+        who.kind == 'gang' and ('gang ' .. who.gangId) or (who.kind == 'tier' and ('tier ' .. who.tier .. '+') or 'all gangs')))
     return true
 end
 

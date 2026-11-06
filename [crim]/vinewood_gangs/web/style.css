@@ -952,3 +952,7 @@ textarea {
 }
 textarea::placeholder, input::placeholder { color: #6B727C; }
 textarea:focus { outline: none; border-color: var(--concrete); }
+
+/* Air drop loot table */
+.loot-entry { display: grid; gap: 8px; padding: 10px 12px; border: 1px solid var(--line); border-radius: 10px; background: var(--kerb); }
+.loot-fields { display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: end; }

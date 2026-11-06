@@ -1,7 +1,12 @@
 Config.Airdrops = {
     enabled = true,
 
-    -- Calling one in (tablet > Air drop). Rank permission: "Call in air drops".
+    -- Who calls them in. Staff always can: /gangadmin > Street events > Call in an air drop (no cost or cooldown).
+    -- true also gives gangs an Air drop app on the tablet, for ranks with "Call in air drops", using the
+    -- cost and cooldowns below.
+    playersCanCall = false,
+
+    -- Gang calls only (when playersCanCall = true)
     cost        = 25000,      -- taken from the gang treasury
     account     = 'dirty',    -- 'dirty' or 'clean'
     item        = false,      -- also needs an item, e.g. { item = 'flare', count = 1 }, or false

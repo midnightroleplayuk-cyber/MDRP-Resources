@@ -43,7 +43,7 @@ local ADMIN_ALLOWED = {
     contractSpots = true, addContractSpot = true, deleteContractSpot = true, gotoContractSpot = true,
     addRacketShop = true, deleteRacketShop = true, gotoRacketShop = true,
     hexGang = true, hexGive = true, hexRemove = true, hexControl = true, hexMain = true, hexSettings = true, hexSettingsSave = true,
-    airdrops = true, airdropCancel = true, airdropAdminCall = true,
+    airdrops = true, airdropCancel = true, airdropAdminCall = true, airdropLoot = true, airdropLootSave = true, airdropLootReset = true,
     searchItems = true, drugItems = true, drugItemsSave = true, drugItemsReset = true,
     staffAccess = true, staffGrant = true, staffRevoke = true, staffPerms = true,
     customContracts = true, customContractSave = true, customContractDelete = true, customContractOffer = true,
@@ -103,7 +103,7 @@ local function staticData()
         shop = Config.Shop.enabled,
         tabletMap = Config.Territory.tabletMap,
         heists = Config.Heists.enabled,
-        airdrops = Config.Airdrops.enabled,
+        airdrops = Config.Airdrops.enabled and Config.Airdrops.playersCanCall == true, -- the gang tablet's Air drop app
         hexMode = true,
         hexSize = Config.Hexes.size, hexOrigin = Config.Hexes.origin,
         airdropShowTo = Config.Airdrops.showTo,
@@ -178,7 +178,7 @@ local function forward(prefix, allowed, body, cb)
         return cb({ ok = false, error = locale('invalid') })
     end
     local args = type(body.args) == 'table' and body.args or {}
-    local res, extra = lib.callback.await(prefix .. action, false, args[1], args[2], args[3], args[4])
+    local res, extra = lib.callback.await(prefix .. action, false, args[1], args[2], args[3], args[4], args[5], args[6])
     if res == nil or res == false then
         cb({ ok = false, error = locale(extra or 'failed') })
         return res
