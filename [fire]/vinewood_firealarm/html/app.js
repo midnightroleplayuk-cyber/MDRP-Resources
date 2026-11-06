@@ -132,7 +132,7 @@ const sounding = st => ((st.fire || st.evacuate) && !st.silenced) || st.testSoun
 
 function setState(st) {
   if (!st) return;
-  st.zones = arr(st.zones); st.active = arr(st.active); st.disabled = arr(st.disabled); st.events = arr(st.events);
+  st.zones = arr(st.zones); st.active = arr(st.active); st.disabled = arr(st.disabled); st.events = arr(st.events); st.sprinklers = arr(st.sprinklers);
   if (st.serverTime) P.offset = st.serverTime - Date.now() / 1000;
   if (st.zones.length > P.lastZones) P.buzzerMuted = false;
   if (!st.fire && !st.evacuate) { P.buzzerMuted = false; P.alarmIdx = 0; }
@@ -162,6 +162,7 @@ function menuItems() {
     { k: 'lamp', t: 'Lamp test' },
     { k: 'sounders', t: 'Test sounders' },
   ];
+  if (P.st && arr(P.st.sprinklers).length) it.unshift({ k: 'sprinklersOff', t: 'Shut off sprinklers' });
   if (P.level >= 3) it.push({ k: 'test', t: P.st.test ? 'Turn test mode off' : 'Turn test mode on' });
   it.push({ k: 'exit', t: 'Exit access level' });
   return it;
@@ -203,7 +204,7 @@ function lcdStatus() {
     body += `<div class="mid">Z${pad(z)} ${esc(zoneName(z))}</div>`;
     body += `<div>${devs.length ? esc(devs.join(', ')) : 'Zone input'}</div>`;
     body += `<div class="dim">Alarm ${P.alarmIdx + 1} of ${st.zones.length}${P.alarmIdx === 0 ? ' (first)' : ''}${st.zones.length > 1 ? '  ▲▼' : ''}</div>`;
-    body += `<div>${st.silenced ? 'Sounders silenced' : 'Sounders active'}</div>`;
+    body += `<div>${st.silenced ? 'Sounders silenced' : 'Sounders active'}${st.sprinklers.length ? '  ·  Sprinklers on' : ''}</div>`;
     if (sys.dispatch) {
       const left = Math.max(0, Math.ceil((st.alarmAt + sys.dispatchDelay) - now));
       body += `<div>${st.dispatched ? 'Fire service called' : `Calling fire service in ${left}s`}</div>`;
@@ -309,6 +310,7 @@ async function pick() {
     P.screen = 'events'; P.idx = 0;
   }
   else if (it.k === 'lamp') { lampTest(); return; }
+  else if (it.k === 'sprinklersOff') { const r = await action('sprinklersOff'); P.screen = 'status'; if (r && r.ok) flash('Sprinklers shut off'); return; }
   else if (it.k === 'sounders') { const r = await action('sounderTest'); P.screen = 'status'; if (r && r.ok) flash('Sounder test running'); return; }
   else if (it.k === 'test') { const r = await action('testMode'); P.screen = 'status'; if (r && r.ok) flash(P.st.test ? 'Test mode on' : 'Test mode off'); }
   else if (it.k === 'exit') { await action('logout'); P.screen = 'status'; flash(`Access level ${P.level}`); return; }
@@ -412,6 +414,7 @@ const TYPE = {
   mcp: { name: 'Call point', ico: 'MCP' },
   sounder: { name: 'Sounder', ico: 'S' },
   detector: { name: 'Detector', ico: 'D' },
+  sprinkler: { name: 'Sprinkler', ico: 'SP' },
 };
 const TONE_NAMES = { bs_alternating: 'BS two-tone, recorded (800/970Hz 2Hz)', alternating: 'Two-tone, generated (800/970Hz)', continuous: 'Continuous (970Hz)', pulsed: 'Pulsed alert', sweep: 'Sweep' };
 
@@ -511,7 +514,7 @@ function renderDevices() {
       <label class="f">Placed as<span class="seg"><button data-mode="prop" class="${p.mode === 'prop' ? 'on' : ''}">Prop</button><button data-mode="target" class="${p.mode === 'target' ? 'on' : ''}">Target point</button></span></label>
       <button class="btn primary" id="p-go">Place in world</button>
     </div>
-    <p class="hint">Aim at a wall or ceiling. Scroll rotates (hold Shift for fine), G toggles surface snap, E or Enter places, Backspace cancels. Sounders are where the alarm is heard from; if a system has none, every device sounds.</p>
+    <p class="hint">Sprinklers go on the ceiling and only operate when a detector in their zone picks up fire or smoke. Aim at a wall or ceiling. Scroll rotates (hold Shift for fine), G toggles surface snap, E or Enter places, Backspace cancels. Sounders are where the alarm is heard from; if a system has none, every device sounds.</p>
     ${rows ? `<table class="dev"><thead><tr><th>Type</th><th>Label</th><th>Zone</th><th>Placement</th><th></th></tr></thead><tbody>${rows}</tbody></table>` : `<p class="hint">No devices yet. Start with the control panel.</p>`}`;
 
   $('#p-type').addEventListener('change', e => A.place.type = e.target.value);
@@ -546,6 +549,7 @@ function renderLive() {
       <div class="box">
         <div class="status"><span class="led ${ss.led}"></span>${ss.text}</div>
         ${zones.length ? `<div class="hint">In alarm: ${zones.map(z => `Z${z} ${esc(arr(s.zones)[z - 1] || '')}`).join(', ')}</div>` : ''}
+        ${arr(st.sprinklers).length ? `<div class="hint" style="color:#7fb8ff">Sprinklers operating: ${arr(st.sprinklers).length} head(s)</div>` : ''}
         <div class="inline"><select id="l-zone">${zoneOptions(1, s)}</select><button class="btn" id="l-trigger">Trigger zone</button></div>
         <div class="inline"><button class="btn" id="l-sounders">Test sounders</button><button class="btn danger" id="l-reset">Force reset</button><button class="btn ghost" id="l-refresh">Refresh</button></div>
         <p class="hint">Force reset clears everything, including call points still latched in alarm.</p>

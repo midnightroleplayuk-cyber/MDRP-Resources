@@ -24,6 +24,7 @@ Config.Props = {
     panel      = 'prop_vw_firepanel',    -- control panel (streamed in /stream)
     sounder    = 'prop_vw_sounder',      -- wall sounder (streamed in /stream)
     detector   = 'prop_vw_smokedetector',-- ceiling smoke detector (streamed in /stream)
+    sprinkler  = 'prop_vw_sprinkler',    -- ceiling sprinkler head (streamed in /stream)
 }
 
 -- Where each model touches the wall. anchor = the point on the model (in its
@@ -33,7 +34,8 @@ Config.Props = {
 Config.PropAnchors = {
     prop_vw_firepanel = { anchor = vec3(0.0, 0.081, 0.212), heading = 180.0 },
     prop_vw_firealert = { anchor = vec3(-0.0425, 0.014, 0.038), heading = 180.0 },
-    prop_vw_sounder   = { anchor = vec3(0.0, 0.097, 0.0775), heading = 180.0 },
+    prop_vw_sounder   = { anchor = vec3(0.0, 0.043, 0.0775), heading = 180.0 },
+    prop_vw_sprinkler = { anchor = vec3(0.0, 0.0035, 0.11), heading = 0.0 },     -- top plate, for ceilings
     prop_vw_smokedetector = { anchor = vec3(0.01, 0.0065, 0.042), heading = 0.0 },  -- top of the base, for ceilings
 }
 
@@ -107,6 +109,30 @@ Config.Detection = {
     nativeFire = true,        -- GTA fires: molotovs, burning vehicles, script fires
     explosions = true,        -- explosions near the detector
     smokeGrenades = true,     -- smoke grenades and BZ gas
+}
+
+---------------------------------------------------------------------
+-- Sprinklers. Only operate when a smoke detector detects fire or smoke
+-- (never from call points, admin triggers or tests). They run until the
+-- panel is reset or someone with level 2 shuts them off.
+---------------------------------------------------------------------
+Config.Sprinklers = {
+    enabled = true,
+    mode = 'zone',            -- 'zone': every sprinkler in the detector's zone
+                              -- 'radius': only sprinklers within `radius` of the detector (same zone)
+    radius = 10.0,
+    coverage = 4.0,           -- metres each sprinkler head covers
+    maxDuration = 0,          -- seconds before they stop on their own (0 = until reset/shut off)
+
+    -- Putting fires out
+    suppressNative = true,    -- puts out GTA fires under the head
+    suppressVinewoodFire = true, -- applies water to vinewood_fire cells (via its GrantAgent/ApplyAgent)
+    agent = 'water',
+    rate = 8.0,               -- agent per second per head (vinewood_fire scale)
+    wetPlayers = true,        -- players under a head get soaked
+
+    -- Spray effect. Adjust rot if the spray points the wrong way.
+    ptfx = { dict = 'core', name = 'water_cannon_spray', scale = 0.45, rot = vec3(-90.0, 0.0, 0.0), offset = -0.15 },
 }
 
 ---------------------------------------------------------------------

@@ -57,7 +57,7 @@ function render() {
     body += `<div class="mid">Z${pad(z)} ${esc(zoneName(z))}</div>`;
     body += `<div class="line">${devs.length ? esc(devs.join(', ')) : 'Zone input'}</div>`;
     body += `<div class="line dim">Alarm ${i + 1} of ${zones.length}${i === 0 ? ' (first)' : ''}</div>`;
-    body += `<div class="line">${st.silenced ? 'Sounders silenced' : 'Sounders active'}</div>`;
+    body += `<div class="line">${st.silenced ? 'Sounders silenced' : 'Sounders active'}${arr(st.sprinklers).length ? ' · Sprinklers on' : ''}</div>`;
     if (sys.dispatch) {
       const left = Math.max(0, Math.ceil((st.alarmAt + sys.dispatchDelay) - t));
       body += `<div class="line">${st.dispatched ? 'Fire service called' : `Calling fire service in ${left}s`}</div>`;

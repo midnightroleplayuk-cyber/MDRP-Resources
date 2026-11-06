@@ -361,3 +361,80 @@ CreateThread(function()
         end
     end
 end)
+
+---------------------------------------------------------------------
+-- Sprinklers: spray effect, soaking, putting out GTA fires, and
+-- applying water to vinewood_fire when the server asks.
+---------------------------------------------------------------------
+local sprayFx = {} -- ['id:dev'] = handle
+
+local function sprinklerList()
+    local list = {}
+    for id, st in pairs(States) do
+        local sys = Systems[id]
+        if sys and st.sprinklers then
+            for _, devId in ipairs(st.sprinklers) do
+                for _, d in ipairs(sys.devices) do
+                    if d.id == devId then list[id .. ':' .. d.id] = d break end
+                end
+            end
+        end
+    end
+    return list
+end
+
+CreateThread(function()
+    local S = Config.Sprinklers
+    if not S or not S.enabled then return end
+    local fx = S.ptfx
+    while true do
+        local ped = PlayerPedId()
+        local pc = GetEntityCoords(ped)
+        local active = sprinklerList()
+        local any = false
+
+        for key, d in pairs(active) do
+            local c = vec3(d.x, d.y, d.z)
+            local dist = #(pc - c)
+            if dist < 60.0 then
+                any = true
+                if not sprayFx[key] then
+                    lib.requestNamedPtfxAsset(fx.dict)
+                    UseParticleFxAsset(fx.dict)
+                    sprayFx[key] = StartParticleFxLoopedAtCoord(fx.name, c.x, c.y, c.z + fx.offset, fx.rot.x, fx.rot.y, fx.rot.z, fx.scale, false, false, false, false)
+                end
+                if S.suppressNative then StopFireInRange(c.x, c.y, c.z - 1.5, S.coverage) end
+                if S.wetPlayers and #(vec2(pc.x, pc.y) - vec2(c.x, c.y)) < S.coverage and pc.z < c.z and c.z - pc.z < 6.0 then
+                    SetPedWetnessHeight(ped, 2.0)
+                end
+            elseif sprayFx[key] then
+                StopParticleFxLooped(sprayFx[key], false)
+                sprayFx[key] = nil
+            end
+        end
+
+        for key, h in pairs(sprayFx) do
+            if not active[key] then StopParticleFxLooped(h, false) sprayFx[key] = nil end
+        end
+        Wait(any and 500 or 1500)
+    end
+end)
+
+RegisterNetEvent('vinewood_firealarm:sprinklerAgent', function(origins)
+    local S = Config.Sprinklers
+    if GetResourceState('vinewood_fire') ~= 'started' then return end
+    local down = vec3(0.0, 0.0, -1.0)
+    for _ = 1, 4 do
+        for _, o in ipairs(origins) do
+            pcall(function()
+                exports.vinewood_fire:ApplyAgent(vec3(o.x, o.y, o.z), down, S.agent, S.coverage + 3.0, 60.0, S.rate, 0.25)
+            end)
+        end
+        Wait(250)
+    end
+end)
+
+AddEventHandler('onResourceStop', function(res)
+    if res ~= GetCurrentResourceName() then return end
+    for _, h in pairs(sprayFx) do StopParticleFxLooped(h, false) end
+end)

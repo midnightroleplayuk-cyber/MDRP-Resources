@@ -4,8 +4,8 @@ local Sessions = {}  -- [src][sysId] = { level, expires }
 local Attempts = {}  -- [src] = { count, lockedUntil }
 local Cooldowns = {} -- [src] = os.time() of last break glass
 
-local DEVICE_TYPES = { panel = true, mcp = true, sounder = true, detector = true }
-local TYPE_NAMES = { panel = 'Control panel', mcp = 'Call point', sounder = 'Sounder', detector = 'Detector' }
+local DEVICE_TYPES = { panel = true, mcp = true, sounder = true, detector = true, sprinkler = true }
+local TYPE_NAMES = { panel = 'Control panel', mcp = 'Call point', sounder = 'Sounder', detector = 'Detector', sprinkler = 'Sprinkler' }
 
 ---------------------------------------------------------------------
 -- Helpers
@@ -32,7 +32,7 @@ local function newState(sys)
     return {
         fire = false, zones = {}, active = {}, silenced = false, evacuate = false,
         test = false, testUntil = nil, disabled = sys.disabled, events = {},
-        alarmAt = nil, alarmToken = 0, dispatched = false,
+        alarmAt = nil, alarmToken = 0, dispatched = false, sprinklers = {}, sprinklerToken = 0,
     }
 end
 
@@ -72,7 +72,7 @@ local function publicState(id, withActors)
         fire = st.fire, zones = st.zones, active = st.active, silenced = st.silenced,
         evacuate = st.evacuate, test = st.test, testSounding = st.testUntil ~= nil,
         disabled = st.disabled, events = events, alarmAt = st.alarmAt, dispatched = st.dispatched,
-        serverTime = os.time(),
+        sprinklers = st.sprinklers, serverTime = os.time(),
     }
 end
 
@@ -253,6 +253,7 @@ local function ResetSystem(id, actor, force)
         st.alertId = nil
     end
     st.fire, st.zones, st.active = false, {}, {}
+    st.sprinklers, st.sprinklerToken = {}, st.sprinklerToken + 1
     st.silenced, st.evacuate, st.testUntil = false, false, nil
     st.alarmAt, st.dispatched = nil, false
     st.alarmToken = st.alarmToken + 1
@@ -271,6 +272,86 @@ local function SilenceSystem(id, actor)
     syncState(id)
     return true
 end
+
+---------------------------------------------------------------------
+-- Sprinklers (automatic detection only)
+---------------------------------------------------------------------
+local function ActivateSprinklers(id, detector)
+    local S = Config.Sprinklers
+    local sys, st = Systems[id], States[id]
+    if not S.enabled or not sys or st.test or not detector then return end
+    local dc = devCoords(detector)
+    local added = {}
+    for _, d in ipairs(sys.devices) do
+        if d.type == 'sprinkler' and d.zone == detector.zone and not contains(st.sprinklers, d.id)
+            and (S.mode ~= 'radius' or #(devCoords(d) - dc) <= S.radius) then
+            st.sprinklers[#st.sprinklers + 1] = d.id
+            added[#added + 1] = d
+        end
+    end
+    if #added == 0 then return end
+    addEvent(id, ('Sprinklers operating Z%02d (%d head%s)'):format(detector.zone, #added, #added == 1 and '' or 's'))
+    if st.dispatched then Dispatch.Note(st.alertId, ('Sprinklers operating in zone %d %s'):format(detector.zone, zoneName(sys, detector.zone))) end
+    syncState(id)
+
+    if S.maxDuration and S.maxDuration > 0 then
+        local token = st.sprinklerToken
+        SetTimeout(S.maxDuration * 1000, function()
+            if States[id] == st and st.sprinklerToken == token and #st.sprinklers > 0 then
+                st.sprinklers = {}
+                addEvent(id, 'Sprinklers stopped (time limit)')
+                syncState(id)
+            end
+        end)
+    end
+end
+
+-- Trigger from a detector and, if it's a real detection, run the sprinklers
+local function DetectorAlarm(id, d, reason, actor)
+    local ok = TriggerAlarm(id, d.zone, d.id, reason, actor)
+    if ok and not States[id].test then ActivateSprinklers(id, d) end
+    return ok
+end
+
+-- vinewood_fire suppression: its water is applied from a player's client,
+-- so hand each burning area to the nearest player and grant them the agent.
+CreateThread(function()
+    while true do
+        Wait(1000)
+        local S = Config.Sprinklers
+        if S.enabled and S.suppressVinewoodFire and GetResourceState('vinewood_fire') == 'started' then
+            local jobs = {} -- [src] = { origins }
+            for id, st in pairs(States) do
+                local sys = Systems[id]
+                for _, devId in ipairs(st.sprinklers or {}) do
+                    local d = sys and getDevice(sys, devId)
+                    if d then
+                        local c = devCoords(d)
+                        local ok, near = pcall(function() return exports.vinewood_fire:IsFireNear(c, S.coverage + 3.0) end)
+                        if ok and near then
+                            local best, bestDist
+                            for _, p in ipairs(GetPlayers()) do
+                                local ped = GetPlayerPed(p)
+                                if ped ~= 0 then
+                                    local dist = #(GetEntityCoords(ped) - c)
+                                    if dist < 60.0 and (not bestDist or dist < bestDist) then best, bestDist = tonumber(p), dist end
+                                end
+                            end
+                            if best then
+                                jobs[best] = jobs[best] or {}
+                                jobs[best][#jobs[best] + 1] = { x = c.x, y = c.y, z = c.z }
+                            end
+                        end
+                    end
+                end
+            end
+            for src, origins in pairs(jobs) do
+                pcall(function() exports.vinewood_fire:GrantAgent(src, S.agent, 1500, 80.0) end)
+                TriggerClientEvent('vinewood_firealarm:sprinklerAgent', src, origins)
+            end
+        end
+    end
+end)
 
 ---------------------------------------------------------------------
 -- Load
@@ -401,6 +482,15 @@ local Actions = {
         if st.fire or st.evacuate then return false, 'Not available during an alarm' end
         addEvent(id, 'Sounder test', Bridge.GetName(src))
         SoundFor(id, Config.SounderTestDuration)
+        return true
+    end },
+    sprinklersOff = { level = 2, fn = function(src, id)
+        local st = States[id]
+        if #st.sprinklers == 0 then return false, 'Sprinklers are not running' end
+        st.sprinklers, st.sprinklerToken = {}, st.sprinklerToken + 1
+        addEvent(id, 'Sprinklers shut off', Bridge.GetName(src))
+        if st.dispatched then Dispatch.Note(st.alertId, 'Sprinklers shut off at the premises') end
+        syncState(id)
         return true
     end },
     logout = { level = 1, fn = function(src, id)
@@ -594,6 +684,7 @@ lib.callback.register('vinewood_firealarm:admin:deleteDevice', function(src, id,
         if d.id == devId then table.remove(sys.devices, i) break end
     end
     removeVal(States[id].active, devId)
+    removeVal(States[id].sprinklers, devId)
     persist(id)
     syncSystem(id)
     syncState(id)
@@ -646,7 +737,7 @@ RegisterNetEvent('vinewood_firealarm:detect', function(id, devId, kind)
     DetectCooldown[src] = now
     if not detectorCanTrigger(id, d) then return end
     local reason = kind == 'smoke' and 'Smoke detected' or (kind == 'explosion' and 'Heat detected (explosion)' or 'Smoke detected (fire)')
-    TriggerAlarm(id, d.zone, d.id, reason, 'detector')
+    DetectorAlarm(id, d, reason, 'detector')
 end)
 
 AddEventHandler('playerDropped', function() DetectCooldown[source] = nil end)
@@ -667,7 +758,7 @@ CreateThread(function()
                             seen[key] = (seen[key] or 0) + 1
                             if seen[key] >= D.confirm then
                                 seen[key] = 0
-                                TriggerAlarm(id, d.zone, d.id, 'Smoke detected (fire)', 'vinewood_fire')
+                                DetectorAlarm(id, d, 'Smoke detected (fire)', 'vinewood_fire')
                             end
                         else
                             seen[key] = nil
@@ -703,7 +794,7 @@ exports('TriggerAtCoords', function(coords, reason, range)
     end
     if not best then return false end
     if contains(States[bestSys].active, best.id) then return true, bestSys end
-    return TriggerAlarm(bestSys, best.zone, best.id, reason or 'Smoke detector', 'detector'), bestSys
+    return DetectorAlarm(bestSys, best, reason or 'Smoke detector', 'detector'), bestSys
 end)
 
 exports('ResetSystem', function(id, force) return ResetSystem(tonumber(id), 'export', force) end)

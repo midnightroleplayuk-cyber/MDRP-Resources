@@ -47,7 +47,7 @@ The default sounder is a recorded BS two-tone (800/970Hz alternating at 2Hz) in 
 
 ## Props
 
-All four devices have models, streamed from `/stream`: panel (`prop_vw_firepanel`), call point (`prop_vw_firealert`), sounder (`prop_vw_sounder`) and smoke detector (`prop_vw_smokedetector`, for ceilings). Textures are in `firealarm_txd.ytd`, linked through `firealarm_props.ytyp`. Any model that isn't streamed falls back to a target point automatically.
+All five devices have models, streamed from `/stream`: panel (`prop_vw_firepanel`), call point (`prop_vw_firealert`), sounder (`prop_vw_sounder`), smoke detector (`prop_vw_smokedetector`) and sprinkler (`prop_vw_sprinkler`); the last two go on ceilings. Textures are in `firealarm_txd.ytd`, linked through `firealarm_props.ytyp`. Any model that isn't streamed falls back to a target point automatically.
 
 - Each model's wall anchor and facing are set in `Config.PropAnchors` (the back-centre of the model and a heading offset), so the pivot can be anywhere. The included props face -Y, hence `heading = 180`.
 - Model the **detector as already ceiling-mounted** (base at the origin, body hanging down).
@@ -93,6 +93,15 @@ Setting up the model in Blender (Sollumz):
 4. Set `Config.Screen.txd` and `Config.Screen.texture` to match (already set to `firealarm_txd` / `firealarmscreen` for the included panel). Set `width`/`height` to the shape of the screen face so text isn't stretched.
 
 Texture replacement applies to every copy of the model, so the screen always shows the panel **nearest** to you (within `Config.Screen.distance`). Two panels in sight of each other will show the same screen. Target-point panels don't have a screen.
+
+## Sprinklers
+
+Place sprinklers on the ceiling like any other device (`prop_vw_sprinkler`, streamed in `/stream`). They **only operate when a smoke detector in the same zone detects fire or smoke**: never from call points, admin triggers, detector tests or test mode.
+
+- `Config.Sprinklers.mode = 'zone'` runs every sprinkler in the zone; `'radius'` only those within `radius` of the detector.
+- Heads spray, soak players underneath, put out GTA fires and apply water to vinewood_fire cells within `coverage`. Water on petrol or chip-pan fires flares them up, as vinewood_fire models it.
+- They run until the panel is reset, someone with level 2 picks **Shut off sprinklers** on the panel, or `maxDuration` runs out.
+- The panel, in-world screen, event log and vinewood-dispatch call all show when sprinklers are operating.
 
 ## Automatic detection
 

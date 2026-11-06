@@ -38,7 +38,7 @@ local function slimState(st)
         fire = st.fire, zones = st.zones, active = st.active, silenced = st.silenced,
         evacuate = st.evacuate, test = st.test, testSounding = st.testSounding,
         disabled = st.disabled, alarmAt = st.alarmAt, dispatched = st.dispatched,
-        serverTime = st.serverTime,
+        sprinklers = st.sprinklers, serverTime = st.serverTime,
     }
 end
 
@@ -67,7 +67,7 @@ CreateThread(function()
             local encoded = json.encode(payload)
             -- serverTime changes every sync, so hash without it
             local hash = bestId .. json.encode({ payload.system.label, payload.system.zones, payload.state.fire, payload.state.zones, payload.state.active,
-                payload.state.silenced, payload.state.evacuate, payload.state.test, payload.state.testSounding, payload.state.disabled, payload.state.dispatched })
+                payload.state.silenced, payload.state.evacuate, payload.state.test, payload.state.testSounding, payload.state.disabled, payload.state.dispatched, payload.state.sprinklers })
             local t = GetGameTimer()
             if hash ~= lastHash or bestId ~= currentId or t - lastSend > 5000 then
                 SendDuiMessage(dui, encoded)
