@@ -366,20 +366,16 @@ CREATE TABLE IF NOT EXISTS `av_banking_atm_state` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- RUN THIS ON YOUR LIVE DATABASE IN HEIDISQL / PHPMYADMIN.
--- It fixes NEW personal accounts, including when escrowed code explicitly inserts Checking.
-ALTER TABLE `av_banking_accounts` MODIFY COLUMN `label` VARCHAR(60) NOT NULL DEFAULT 'PERSONAL';
+-- Personal accounts: normalize default-style labels on insert.
+-- Single-statement trigger: no DELIMITER or BEGIN/END required.
+-- The accounts table already declares label DEFAULT 'PERSONAL'.
 DROP TRIGGER IF EXISTS `av_banking_default_personal_label`;
-DELIMITER $$
 CREATE TRIGGER `av_banking_default_personal_label`
 BEFORE INSERT ON `av_banking_accounts`
 FOR EACH ROW
-BEGIN
-  IF LOWER(TRIM(COALESCE(NEW.`type`, ''))) = 'personal'
-     AND LOWER(TRIM(COALESCE(NEW.`label`, ''))) IN ('', 'checking', 'bank account - personal', 'personal') THEN
-    SET NEW.`label` = 'PERSONAL';
-  END IF;
-END$$
-DELIMITER ;
--- OPTIONAL: convert ONLY existing personal accounts still called Checking:
--- UPDATE `av_banking_accounts` SET `label` = 'PERSONAL' WHERE LOWER(TRIM(`type`)) = 'personal' AND LOWER(TRIM(`label`)) = 'checking';
+SET NEW.`label` = IF(
+  LOWER(TRIM(COALESCE(NEW.`type`, ''))) = 'personal'
+  AND LOWER(TRIM(COALESCE(NEW.`label`, ''))) IN ('', 'checking', 'bank account - personal', 'personal'),
+  'PERSONAL',
+  NEW.`label`
+);
