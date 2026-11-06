@@ -122,6 +122,17 @@ youtubeCaptionTimer=setTimeout(()=>{if(youtubeFrame===f)youtubeCaptionsOff();you
 show('YouTube: loading video '+id+' (sound requested)');
 f.addEventListener('load',()=>show('YouTube embed loaded — if blank, video may block embedding or FiveM CEF playback'));
 f.addEventListener('error',()=>show('YouTube iframe failed to load'));
+}else if(d.kind==='image'){
+// Use an actual image element, not an iframe: GIFs animate natively in FiveM CEF.
+// Contain the image within the render target without cropping or distortion.
+const path=u.pathname.toLowerCase();
+if(!/\.(png|jpe?g|gif)$/.test(path))throw Error('Use a direct PNG, JPEG or GIF image URL');
+const img=document.createElement('img');
+img.className='tv-image';img.alt='TV image';img.decoding='async';
+img.addEventListener('load',()=>show('Image loaded'));
+img.addEventListener('error',()=>show('Image could not load • check URL, HTTPS and image host restrictions'));
+img.src=d.url;screen.append(img);media=img;
+show('Loading image');
 }else if(d.kind==='video'||d.kind==='hls'){
 const v=document.createElement('video');v.autoplay=true;v.controls=false;v.playsInline=true;v.volume=0;v.muted=true;if(d.kind!=='hls')v.src=d.url;screen.append(v);media=v;
 v.addEventListener('loadedmetadata',()=>{if(Number.isFinite(v.duration)&&v.duration>0){const elapsed=Math.max(0,Number(d.now||0)-Number(d.started||0));v.currentTime=Math.min(elapsed,Math.max(0,v.duration-.2))}v.play().catch(()=>{v.muted=true;v.play().catch(()=>show('Autoplay blocked by browser'))})});v.addEventListener('error',()=>{const code=v.error?.code||'unknown';show((d.kind==='hls'?'HLS':'Direct video')+' failed: media error '+code+' • check CEF HLS support, CORS, codec and authorization')});v.addEventListener('stalled',()=>show('Video stalled • check network and playlist segments'));v.addEventListener('playing',()=>{v.volume=volume/100;v.muted=mutedByController;show((d.kind==='hls'?'HLS.js':'Direct video')+' playing')});if(d.kind==='hls')playHlsVideo(v,d);else show('Direct video');

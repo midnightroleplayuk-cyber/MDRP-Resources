@@ -2,3 +2,6 @@
 
 /* Keep internal player status messages available to JS but never overlay video. */
 #status { display: none !important; }
+
+/* Image playback: preserve aspect ratio and allow animated GIFs. */
+#screen img.tv-image{display:block;width:100%;height:100%;object-fit:contain;border:0}
