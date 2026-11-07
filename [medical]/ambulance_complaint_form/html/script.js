@@ -296,7 +296,7 @@ window.addEventListener('message', (event) => {
     officerView.classList.toggle('hidden', currentMode !== 'officer');
     document.getElementById('heading').textContent = currentMode === 'officer'
       ? 'Ambulance complaints register'
-      : 'Ambulance service feedback';
+      : 'Midnight Health Service - Feedback';
     document.getElementById('subheading').textContent = currentMode === 'officer'
       ? 'Ambulance service review'
       : 'Tell us about your experience with ambulance services';
