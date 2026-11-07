@@ -166,7 +166,7 @@ local function addZone()
 
     zoneId = exports.ox_target:addSphereZone({
         coords = Config.Desk.Coords,
-        radius = Config.Desk.Distance,
+        radius = Config.Desk.Radius or 1.0,
         options = {
             {
                 name = 'uk_fire_complaints_public',
