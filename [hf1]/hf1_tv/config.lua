@@ -20,7 +20,6 @@ Config.Models = {
     [`prop_monitor_w_large`] = { target = "tvscreen", scale = 0.085, offset = vector3(-1.02, -0.055, 1.04) },
     [`prop_tv_03`] = { target = "tvscreen", scale = 0.085, offset = vector3(-1.02, -0.055, 1.04) },
     [`prop_tv_flat_02`] = { target = "tvscreen", scale = 0.085, offset = vector3(-1.02, -0.055, 1.04) },
-    [`ex_prop_ex_tv_flat_01`] = { target = "tvscreen", scale = 0.085, offset = vector3(-1.02, -0.055, 1.04) },
 }
 
 -- Only players this close render a TV (metres). Others do not create a DUI.
@@ -87,7 +86,6 @@ Config.PlaceableModels = {
     prop_tv_flat_03 = {label='Wall TV - Flat 03',wall=true},
     prop_tv_flat_03b = {label='Wall TV - Flat 03B',wall=true},
     prop_tv_flat_michael = {label='Wall TV - Michael',wall=true},
-    ex_prop_ex_tv_flat_01 = {label='Wall TV - Alt Flat 01',wall=true},
     prop_tv_02 = {label='Standing TV - 02',wall=false},
     prop_tv_03 = {label='Standing TV - 03',wall=false},
     prop_tv_06 = {label='Standing TV - 06',wall=false},
