@@ -10,7 +10,8 @@ local nextId = 0
 -- The loot table staff edit in game (falls back to config/airdrops.lua)
 local lootTable, lootRolls = cfg.loot, cfg.rolls
 
-local FALL_TIME = 40   -- seconds from the plane passing over to the crate landing (roughly, on every client)
+local FALL_TIME = 40
+local broadcastOpening -- defined below   -- seconds from the plane passing over to the crate landing (roughly, on every client)
 
 local function now() return os.time() end
 
@@ -135,13 +136,32 @@ local function near2D(src, d, range)
     return math.sqrt((p.x - d.x) ^ 2 + (p.y - d.y) ^ 2) <= range
 end
 
+---Everyone who can see the drop is told someone's breaking into it (or that they've stopped).
+broadcastOpening = function(d, seconds)
+    local to = audience(d)
+    if to == -1 then TriggerClientEvent('vinewood_gangs:client:airdropOpening', -1, d.id, seconds) return end
+    for _, s in ipairs(to) do TriggerClientEvent('vinewood_gangs:client:airdropOpening', s, d.id, seconds) end
+end
+
+---The opener stopped: got hurt, knocked down, killed, moved away or gave up. The crate's free again.
+function Airdrops.StopOpen(src, id)
+    local d = drops[tonumber(id)]
+    if d and d.lock and d.lock.src == src then
+        d.lock = nil
+        broadcastOpening(d, nil)
+    end
+    return true
+end
+
 function Airdrops.BeginOpen(src, id)
     local d = drops[tonumber(id)]
     if not d or d.state ~= 'landed' then return false, 'airdrop_not_here' end
     if not eligible(src, d) then return false, 'airdrop_not_for_you' end
     if not near2D(src, d, 4.0) then return false, 'too_far' end
     if d.lock and d.lock.src ~= src and GetGameTimer() - d.lock.at < (cfg.openTime + 5) * 1000 then return false, 'airdrop_someone_opening' end
+    if GetEntityHealth(GetPlayerPed(src)) <= 0 then return false, 'invalid' end
     d.lock = { src = src, at = GetGameTimer() }
+    broadcastOpening(d, cfg.openTime)
     return true, cfg.openTime
 end
 
@@ -163,8 +183,10 @@ function Airdrops.Open(src, id)
     local d = drops[tonumber(id)]
     if not d or d.state ~= 'landed' then return false, 'airdrop_not_here' end
     if not d.lock or d.lock.src ~= src then return false, 'invalid' end
-    if (GetGameTimer() - d.lock.at) / 1000 < cfg.openTime * 0.85 then return false, 'invalid' end
-    if not near2D(src, d, 5.0) then return false, 'too_far' end
+    -- The whole time has to pass, and they have to still be standing there alive
+    if (GetGameTimer() - d.lock.at) / 1000 < cfg.openTime * 0.97 then return false, 'invalid' end
+    if GetEntityHealth(GetPlayerPed(src)) <= 0 then d.lock = nil broadcastOpening(d, nil) return false, 'airdrop_interrupted' end
+    if not near2D(src, d, 5.0) then d.lock = nil broadcastOpening(d, nil) return false, 'too_far' end
 
     d.state = 'opened'
     local gang, _, cid = Gangs.GetPlayerGang(src)
@@ -216,9 +238,9 @@ local function tick()
             d.landedAt = t
             broadcast('vinewood_gangs:client:airdropLanded', d)
             if cfg.alertPolice then
-                Bridge.Dispatch.Alert({ title = 'Cargo dropped from aircraft', code = '10-66', priority = 2,
+                Bridge.Dispatch.Alert({ title = 'Package dropped from aircraft', code = '10-66', priority = 2,
                     coords = vector3(d.cx, d.cy, 0.0), approximate = true,
-                    description = 'Callers report a military plane dropping a crate by parachute.' })
+                    description = 'Callers report a light aircraft flying low and dropping a package by parachute.' })
             end
         elseif d.state == 'landed' and t - d.landedAt >= cfg.despawn * 60 then
             if d.gangId then Gangs.NotifyGang(d.gangId, locale('airdrop_expired'), 'inform') end
@@ -369,3 +391,10 @@ end
 -- For tests
 Airdrops._drops = drops
 Airdrops._tick = tick
+
+AddEventHandler('playerDropped', function()
+    local src = source
+    for _, d in pairs(drops) do
+        if d.lock and d.lock.src == src then d.lock = nil broadcastOpening(d, nil) end
+    end
+end)

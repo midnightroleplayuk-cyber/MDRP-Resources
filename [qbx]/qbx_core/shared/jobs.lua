@@ -219,7 +219,7 @@ return {
     ['fire'] = {
         label = 'Midnight Fire & Rescue',
         type = 'fire',
-        defaultDuty = false,
+        defaultDuty = true,
         offDutyPay = false,
         grades = {
             -- Firefighter Team

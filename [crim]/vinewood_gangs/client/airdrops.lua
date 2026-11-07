@@ -169,27 +169,81 @@ CreateThread(function()
     end
 end)
 
+local function mmss(ms)
+    local sec = math.max(0, math.ceil(ms / 1000))
+    return ('%d:%02d'):format(math.floor(sec / 60), sec % 60)
+end
+
+-- Someone (maybe us) is breaking into a crate: everyone who can see the drop gets the time left
+RegisterNetEvent('vinewood_gangs:client:airdropOpening', function(id, seconds)
+    local e = drops[id]
+    if not e then return end
+    e.openingUntil = seconds and (GetGameTimer() + seconds * 1000) or nil
+    for _, b in ipairs(e.blips or {}) do if DoesBlipExist(b) then SetBlipFlashes(b, seconds ~= nil) end end
+end)
+
+local function drawText3D(x, y, z, text)
+    SetDrawOrigin(x, y, z, 0)
+    SetTextScale(0.0, 0.38)
+    SetTextFont(4)
+    SetTextCentre(true)
+    SetTextOutline()
+    SetTextColour(255, 255, 255, 230)
+    BeginTextCommandDisplayText('STRING')
+    AddTextComponentSubstringPlayerName(text)
+    EndTextCommandDisplayText(0.0, 0.0)
+    ClearDrawOrigin()
+end
+
+---Breaking the crate open takes a while. Getting hurt, knocked down, killed or moving away stops it.
 local function open(e)
     busy = true
     setPrompt(nil)
     local ok, seconds = lib.callback.await('vinewood_gangs:server:airdropBeginOpen', false, e.data.id)
     if not ok then notify(seconds or 'failed', 'error') busy = false return end
-    local done = lib.progressBar({
-        duration = seconds * 1000, label = locale('airdrop_opening'), canCancel = true,
-        disable = { move = true, car = true, combat = true },
-        anim = { dict = 'mini@repair', clip = 'fixing_a_ped' },
-    })
-    if done then
-        local ok2, got = lib.callback.await('vinewood_gangs:server:airdropOpen', false, e.data.id)
-        if ok2 then
-            local parts = {}
-            for _, g in ipairs(got or {}) do
-                parts[#parts + 1] = g.money and Utils.FormatMoney(g.money) or ('%s x %s'):format(g.count, g.item)
-            end
-            notify('airdrop_loot', 'success', #parts > 0 and table.concat(parts, ', ') or '-')
-        else
-            notify(got or 'failed', 'error')
+
+    local ped = cache.ped
+    local startPos = GetEntityCoords(ped)
+    local health, armour = GetEntityHealth(ped), GetPedArmour(ped)
+    local endsAt = GetGameTimer() + seconds * 1000
+    local dict, clip = 'mini@repair', 'fixing_a_ped'
+    lib.requestAnimDict(dict)
+    TaskPlayAnim(ped, dict, clip, 8.0, -8.0, -1, 1, 0, false, false, false)
+
+    local stopped, shown
+    while true do
+        local left = endsAt - GetGameTimer()
+        if left <= 0 then break end
+        if IsEntityDead(ped) or IsPedRagdoll(ped) or IsPedBeingStunned(ped, 0) then stopped = 'airdrop_interrupted' break end
+        if GetEntityHealth(ped) < health or GetPedArmour(ped) < armour then stopped = 'airdrop_interrupted' break end
+        if #(GetEntityCoords(ped) - startPos) > (cfg.openRange or 2.0) then stopped = 'airdrop_moved' break end
+        if IsControlJustPressed(0, 73) then stopped = 'airdrop_gave_up' break end -- X
+        if not IsEntityPlayingAnim(ped, dict, clip, 3) then TaskPlayAnim(ped, dict, clip, 8.0, -8.0, -1, 1, 0, false, false, false) end
+        DisableControlAction(0, 24, true) -- attack
+        DisableControlAction(0, 25, true) -- aim
+        local label = mmss(left)
+        if label ~= shown then lib.showTextUI(locale('airdrop_timer', label)) shown = label end
+        Wait(0)
+    end
+    lib.hideTextUI()
+    ClearPedTasks(ped)
+
+    if stopped then
+        lib.callback.await('vinewood_gangs:server:airdropStopOpen', false, e.data.id)
+        notify(stopped, stopped == 'airdrop_gave_up' and 'inform' or 'error')
+        busy = false
+        return
+    end
+
+    local ok2, got = lib.callback.await('vinewood_gangs:server:airdropOpen', false, e.data.id)
+    if ok2 then
+        local parts = {}
+        for _, g in ipairs(got or {}) do
+            parts[#parts + 1] = g.money and Utils.FormatMoney(g.money) or ('%s x %s'):format(g.count, g.item)
         end
+        notify('airdrop_loot', 'success', #parts > 0 and table.concat(parts, ', ') or '-')
+    else
+        notify(got or 'failed', 'error')
     end
     busy = false
 end
@@ -205,6 +259,16 @@ CreateThread(function()
                 local d2 = #(vector2(me.x, me.y) - vector2(e.data.x, e.data.y))
                 if d2 < 400.0 and not (e.crate and DoesEntityExist(e.crate)) then placeLanded(e) end
                 if d2 < 30.0 then sleep = 0 end
+                if e.openingUntil and d2 < 60.0 and not busy then
+                    sleep = 0
+                    local left = e.openingUntil - GetGameTimer()
+                    if left > 0 then
+                        local z = e.crate and DoesEntityExist(e.crate) and GetEntityCoords(e.crate).z or me.z
+                        drawText3D(e.data.x, e.data.y, z + 1.3, locale('airdrop_being_opened', mmss(left)))
+                    else
+                        e.openingUntil = nil
+                    end
+                end
                 if d2 < 2.5 and not busy and not IsPedInAnyVehicle(cache.ped, false) then target = e end
             end
         end
