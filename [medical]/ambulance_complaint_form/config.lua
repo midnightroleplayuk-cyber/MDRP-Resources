@@ -32,10 +32,10 @@ Config.MaxPerHour = 5
 
 Config.Desk = {
     Enabled = true,
-    Coords = vec3(307.2, -595.1, 43.3),
+    Coords = vec3(344.86, -128.24, 38.62),
     Distance = 2.0,
     PublicIcon = 'fa-solid fa-pen-to-square',
-    PublicLabel = 'Submit Ambulance Service Feedback',
+    PublicLabel = 'Submit MHS Feedback',
     StaffIcon = 'fa-solid fa-clipboard-list',
     StaffLabel = 'Ambulance Staff: View Complaints'
 }
