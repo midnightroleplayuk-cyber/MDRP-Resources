@@ -5,6 +5,31 @@ local modelSet = {}
 local sourceLabel = 'bundled fallback'
 local lastUpdate = 0
 
+-- Custom medical props retained even when the remote catalogue refreshes.
+local customModels = {
+    'bbs_big_red_bed',
+    'bbs_bloodbag',
+    'bbs_bp_monitor',
+    'bbs_bvm_machine',
+    'bbs_crutch',
+    'bbs_defibrillator',
+    'bbs_doubleiv_stand',
+    'bbs_ech_machine',
+    'bbs_heartbeat_monitor',
+    'bbs_infusionpump',
+    'bbs_medicalbox_closed',
+    'bbs_medicalbox_open',
+    'bbs_medical_proppack',
+    'bbs_oxygentank1',
+    'bbs_oxygentank2',
+    'bbs_plasmabag',
+    'bbs_singleiv_stand',
+    'bbs_strecher_blue',
+    'bbs_strecher_red',
+    'bbs_ultrasound_machine',
+    'bbs_ventilator',
+}
+
 local function trim(value)
     if type(value) ~= 'string' then return '' end
     return value:match('^%s*(.-)%s*$') or ''
@@ -23,6 +48,16 @@ local function parseCatalogue(raw)
                 seen[key] = true
                 parsed[#parsed + 1] = model
             end
+        end
+    end
+
+    -- Merge custom models into every catalogue source (cached and remote).
+    for i = 1, #customModels do
+        local model = customModels[i]
+        local key = model:lower()
+        if not seen[key] then
+            seen[key] = true
+            parsed[#parsed + 1] = model
         end
     end
 
