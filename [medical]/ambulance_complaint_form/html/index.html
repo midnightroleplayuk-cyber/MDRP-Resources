@@ -32,11 +32,14 @@
       <form id="form" novalidate>
         <div class="field">
           <label for="service">Which service is your complaint about? <span>*</span></label>
-          <input id="service" name="service" type="text" value="Ambulance Services" readonly required>
+          <select id="service" name="service" required>
+            <option value="Ambulance Services">Ambulance Services</option>
+            <option value="Hospital Services">Hospital Services</option>
+          </select>
         </div>
 
         <div class="field">
-          <label for="cat">What is your ambulance service complaint about? <span>*</span></label>
+          <label for="cat">What is your complaint about? <span>*</span></label>
           <select id="cat" name="category" required>
             <option value="Staff Conduct / Behaviour">Staff conduct or behaviour</option>
             <option value="Quality of Care or Treatment">Quality of care or treatment</option>

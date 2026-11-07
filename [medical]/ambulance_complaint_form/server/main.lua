@@ -68,16 +68,16 @@ lib.callback.register('uk_ambulance_complaints:submit', function(src, data)
         end
     end
 
-    if service ~= Config.ServiceName or not validCategory or
+    if (service ~= 'Ambulance Services' and service ~= 'Hospital Services') or not validCategory or
         not title or not description or not location or not contact then
-        return { ok = false, message = 'Please complete the required ambulance complaint fields and check their length.' }
+        return { ok = false, message = 'Please complete the required complaint fields and check their length.' }
     end
 
     local citizenId = player.PlayerData.citizenid
     if not anonymous then
         local recent = MySQL.single.await(
             'SELECT COUNT(*) AS n FROM uk_complaints WHERE citizen_id = ? AND service = ? AND submitted_at > NOW() - INTERVAL 1 HOUR',
-            { citizenId, Config.ServiceName }
+            { citizenId, service }
         )
         if recent and (tonumber(recent.n) or 0) >= Config.MaxPerHour then
             return { ok = false, message = 'You have reached the hourly complaint limit. Please try again later.' }
@@ -127,7 +127,7 @@ lib.callback.register('uk_ambulance_complaints:submit', function(src, data)
             end
         end, 'POST', json.encode({
             embeds = {{
-                title = 'New Ambulance Service complaint',
+                title = 'New Health Service complaint',
                 fields = {
                     { name = 'Reference', value = reference, inline = true },
                     { name = 'From', value = citizenName, inline = true },
@@ -143,7 +143,7 @@ lib.callback.register('uk_ambulance_complaints:submit', function(src, data)
     return {
         ok = true,
         reference = reference,
-        message = ('Your ambulance service complaint has been lodged. Reference: %s. We aim to respond within 10 working days.'):format(reference)
+        message = ('Your complaint has been lodged. Reference: %s. We aim to respond within 10 working days.'):format(reference)
     }
 end)
 
@@ -164,8 +164,8 @@ lib.callback.register('uk_ambulance_complaints:requestData', function(src)
     end
 
     local rows = MySQL.query.await(
-        'SELECT * FROM uk_complaints WHERE service = ? ORDER BY submitted_at DESC LIMIT 100',
-        { Config.ServiceName }
+        'SELECT * FROM uk_complaints WHERE service IN (?, ?) ORDER BY submitted_at DESC LIMIT 100',
+        { 'Ambulance Services', 'Hospital Services' }
     )
     for _, row in ipairs(rows or {}) do
         row.created_at = row.submitted_at
@@ -188,8 +188,8 @@ lib.callback.register('uk_ambulance_complaints:setStatus', function(src, id, sta
         tostring(player.PlayerData.citizenid or ''):sub(1, 4)
     )
     local changed = MySQL.update.await(
-        'UPDATE uk_complaints SET status = ?, updated_by = ?, updated_at = NOW() WHERE id = ? AND service = ?',
-        { status, who, id, Config.ServiceName }
+        'UPDATE uk_complaints SET status = ?, updated_by = ?, updated_at = NOW() WHERE id = ? AND service IN (?, ?)',
+        { status, who, id, 'Ambulance Services', 'Hospital Services' }
     )
     if not changed or changed < 1 then
         return { ok = false, message = 'Complaint not found or status unchanged.' }
@@ -218,8 +218,8 @@ lib.callback.register('uk_ambulance_complaints:addNote', function(src, id, note)
     )
     local stamp = os.date('%d/%m/%Y %H:%M') .. ' - ' .. who
     local changed = MySQL.update.await(
-        'UPDATE uk_complaints SET officer_note = CONCAT(IFNULL(officer_note, ""), ?), updated_by = ?, updated_at = NOW() WHERE id = ? AND service = ?',
-        { ('\n[%s]\n%s\n'):format(stamp, cleanNote), who, id, Config.ServiceName }
+        'UPDATE uk_complaints SET officer_note = CONCAT(IFNULL(officer_note, ""), ?), updated_by = ?, updated_at = NOW() WHERE id = ? AND service IN (?, ?)',
+        { ('\n[%s]\n%s\n'):format(stamp, cleanNote), who, id, 'Ambulance Services', 'Hospital Services' }
     )
     if not changed or changed < 1 then
         return { ok = false, message = 'Complaint not found; the note was not saved.' }
