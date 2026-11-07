@@ -37,7 +37,7 @@ Config.Desk = {
     PublicIcon = 'fa-solid fa-pen-to-square',
     PublicLabel = 'Submit MHS Feedback',
     StaffIcon = 'fa-solid fa-clipboard-list',
-    StaffLabel = 'Ambulance Staff: View Complaints'
+    StaffLabel = 'MHS Staff: View Complaints'
 }
 
 Config.DiscordWebhook = ''
