@@ -299,7 +299,7 @@ window.addEventListener('message', (event) => {
       : 'Midnight Health Service - Feedback';
     document.getElementById('subheading').textContent = currentMode === 'officer'
       ? 'Ambulance service review'
-      : 'Tell us about your experience with ambulance services';
+      : 'Tell us about your experience with MHS. Your feedback helps us improve our services.';
     if (currentMode === 'officer') refreshComplaints();
   } else if (message.action === 'close') {
     app.classList.add('hidden');
