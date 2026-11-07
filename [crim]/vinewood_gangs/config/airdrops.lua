@@ -19,13 +19,16 @@ Config.Airdrops = {
     -- What everyone sees
     showTo      = 'everyone', -- who gets the blip: 'everyone', 'gangs' (anyone in a gang) or 'caller' (just that gang)
     radius      = 120.0,      -- size of the search area on the map (the crate is somewhere inside it)
-    alertPolice = true,       -- police get an approximate "cargo dropped from a military plane" call when it lands
+    alertPolice = true,       -- police get an approximate "package dropped from a light aircraft" call when it lands
     despawn     = 20,         -- minutes before an unopened crate is gone
 
-    -- The plane and crate (props from the base game)
-    plane       = { model = 'titan', speed = 70.0, height = 320.0 },
+    -- The smuggler's plane and the crate (props from the base game)
+    plane       = { model = 'cuban800', speed = 55.0, height = 180.0 },
     crate       = { model = 'prop_mil_crate_01', parachute = 'p_cargo_chute_s', fallSpeed = 7.0 },
-    openTime    = 12,         -- seconds to break the crate open
+    -- Breaking it open is meant to be a fight: it takes a while, and getting hurt, knocked down or moving away
+    -- stops it, so another crew can have a go. Anyone nearby sees the time left above the crate.
+    openTime    = 120,        -- seconds to break the crate open
+    openRange   = 2.0,        -- metres the opener can move before it stops
 
     -- Loot: each roll picks one entry by chance; rolls = how many picks per crate.
     --   item  = an inventory item (count min-max), or money = true (paid to the opener's gang dirty treasury,

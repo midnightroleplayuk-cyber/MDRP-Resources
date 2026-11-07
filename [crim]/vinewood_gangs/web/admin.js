@@ -553,7 +553,7 @@ async function renderAdminAirdrops() {
     $('sheet').classList.add('wide');
     showModal(
       h('h2', { text: 'Call in an air drop' }),
-      h('p', { text: 'A plane drops a crate wherever you choose. No cost, no cooldown. Everyone set to see drops gets the search circle on their map.' }),
+      h('p', { text: 'A smuggler\'s plane drops a crate wherever you choose. No cost, no cooldown. Breaking it open takes 2 minutes and stops if the opener gets hurt or moves away, so others can fight for it.' }),
       h('div', { class: 'field' }, 'Who can get it', h('div', { class: 'row', style: 'flex-wrap:nowrap' }, whoKind, whoTier, whoGang), whoHint),
       h('label', { class: 'field', style: 'margin-top:12px' }, 'Plane arrives in (minutes)', minutes),
       h('label', { class: 'field', style: 'margin-top:12px' }, 'What\'s in the crate', kind),

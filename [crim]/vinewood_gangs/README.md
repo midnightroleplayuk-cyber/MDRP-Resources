@@ -95,11 +95,14 @@ apart, so any number of gangs can use the same shell. List the shell models your
 ## Air drops
 
 Staff call them in from `/gangadmin` > Street events > **Call in an air drop**: where they're standing or at
-their waypoint, arriving in 0 to 30 minutes, with no cost or cooldown. **Who can get it:** all gangs, gangs of a
+their waypoint, arriving in 0 to 30 minutes, with no cost or cooldown. A smuggler's plane (a Cuban 800) flies in low
+and drops the crate. **Who can get it:** all gangs, gangs of a
 tier and up (e.g. Organisation and up), or one gang. Only those gangs see it on the map and are told it's coming,
 and nobody else can open it. A
-military cargo plane flies over and a crate parachutes down inside a red search circle on the map, with red smoke
-on the ground. Whoever breaks it open first gets the loot. Unopened crates disappear after a while, and police get
+crate parachutes down inside a red search circle on the map, with red smoke on the ground. Breaking it open takes
+**2 minutes**, with a countdown for the opener. Getting hurt, knocked down, killed or moving away stops it, and the
+crate is free for anyone to try. While someone's working on it, everyone nearby sees the time left above the crate
+and the blip flashes on the map, so rival crews know there's a window to stop them. Unopened crates disappear after a while, and police get
 an approximate call when one lands. Staff can also see and cancel drops there.
 
 **Loot:** the Loot button (Street events) edits the loot table every crate uses: items from the inventory search

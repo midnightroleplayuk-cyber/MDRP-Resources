@@ -412,8 +412,8 @@
   "player_offline": "That player isn't online.",
   "perm_airdrops": "Call in air drops",
   "airdrop_called": "Air drop called in. The plane will be over in about %s minutes.",
-  "airdrop_incoming": "A military plane is inbound. Watch the sky.",
-  "airdrop_landed": "The crate is down. Find it before anyone else does.",
+  "airdrop_incoming": "A smuggler's plane is coming in low. Watch the sky.",
+  "airdrop_landed": "The package is down. Find it before anyone else does.",
   "airdrop_stolen": "%s got to your air drop first.",
   "airdrop_expired": "Nobody reached the air drop in time. It's gone.",
   "airdrop_bad_spot": "The plane can't drop there.",
@@ -421,8 +421,8 @@
   "airdrop_sky_busy": "The skies are too busy right now. Try again later.",
   "airdrop_cooldown": "Your gang needs to wait before calling another drop.",
   "airdrop_not_here": "That crate's gone.",
-  "airdrop_someone_opening": "Someone's already breaking into it.",
-  "airdrop_open_prompt": "[E] Break open the crate",
+  "airdrop_someone_opening": "Someone's already breaking into it. Stop them.",
+  "airdrop_open_prompt": "[E] Break open the crate (takes 2 minutes)",
   "airdrop_opening": "Breaking open the crate",
   "airdrop_loot": "You got: %s",
   "airdrop_blip": "Air drop",
@@ -456,5 +456,10 @@
   "not_in_gang_staff_create": "You're not in a gang. New gangs are set up by staff on this server.",
   "airdrop_staff_only": "Air drops are called in by staff on this server.",
   "airdrop_need_loot": "Give the loot table at least one entry.",
-  "airdrop_not_for_you": "This crate isn't meant for your crew."
+  "airdrop_not_for_you": "This crate isn't meant for your crew.",
+  "airdrop_timer": "Breaking it open: %s left  \n[X] Stop",
+  "airdrop_interrupted": "You got hit. Whoever gets there next can try.",
+  "airdrop_moved": "You moved away from the crate. Start again to open it.",
+  "airdrop_gave_up": "You stopped breaking into the crate.",
+  "airdrop_being_opened": "Being broken into: %s"
 }

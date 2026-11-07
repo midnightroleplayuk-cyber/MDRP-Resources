@@ -1060,7 +1060,7 @@ async function renderAirdrop() {
   }
 
   const costText = `Costs ${money(v.cost)} ${v.account === 'clean' ? 'clean' : 'dirty'} money${v.item ? ` and ${v.item.count} x ${v.item.label}` : ''}. The treasury has ${money(v.balance)}.`;
-  parts.push(h('p', { class: 'hint', style: 'margin:0 0 14px', text: `A military cargo plane drops a crate of gear wherever you choose. ${costText} One drop every ${Math.round(v.cooldownMins / 60 * 10) / 10} hours.` }));
+  parts.push(h('p', { class: 'hint', style: 'margin:0 0 14px', text: `A smuggler flies in low and drops a crate of gear wherever you choose. ${costText} One drop every ${Math.round(v.cooldownMins / 60 * 10) / 10} hours.` }));
 
   if (!v.canCall) {
     parts.push(h('p', { class: 'empty', text: 'Only gang management can call in air drops.' }));

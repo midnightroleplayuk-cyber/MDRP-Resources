@@ -177,6 +177,7 @@ read('getAirdrop', function(src) return Airdrops.View(src) end)
 action('airdropCall', function(src, x, y) return Airdrops.Request(src, x, y) end, 3000)
 lib.callback.register('vinewood_gangs:server:airdropBeginOpen', function(src, id) return Airdrops.BeginOpen(src, id) end)
 lib.callback.register('vinewood_gangs:server:airdropOpen', function(src, id) return Airdrops.Open(src, id) end)
+lib.callback.register('vinewood_gangs:server:airdropStopOpen', function(src, id) return Airdrops.StopOpen(src, id) end)
 lib.callback.register('vinewood_gangs:server:airdropActive', function(src) return Airdrops.Active(src) end)
 
 -- Heists -------------------------------------------------------------------
