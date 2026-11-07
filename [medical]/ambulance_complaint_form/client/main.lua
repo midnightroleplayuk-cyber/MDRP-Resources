@@ -161,45 +161,81 @@ RegisterNUICallback('addNote', function(data, cb)
     cb(result or { ok = false, message = 'The note could not be added.' })
 end)
 
-local function addZone()
-    if not Config.Desk.Enabled or zoneAdded then return end
+local function removeZone()
+    if not zoneAdded then return end
+    if GetResourceState('ox_target') == 'started' then
+        exports.ox_target:removeZone(zoneId)
+    end
+    zoneAdded = false
+    zoneId = nil
+end
 
-    zoneId = exports.ox_target:addSphereZone({
-        coords = Config.Desk.Coords,
-        radius = Config.Desk.Distance,
-        options = {
-            {
-                name = 'uk_ambulance_complaints_public',
-                icon = Config.Desk.PublicIcon,
-                label = Config.Desk.PublicLabel,
-                onSelect = function()
-                    openUi('submit')
-                end
-            },
-            {
-                name = 'uk_ambulance_complaints_staff',
-                icon = Config.Desk.StaffIcon,
-                label = Config.Desk.StaffLabel,
-                groups = Config.StaffJobs,
-                onSelect = function()
-                    TriggerServerEvent('uk_ambulance_complaints:requestAccess')
-                end
+local function addZone()
+    if not Config.Desk.Enabled or zoneAdded or GetResourceState('ox_target') ~= 'started' then return end
+
+    local success, result = pcall(function()
+        return exports.ox_target:addSphereZone({
+            coords = Config.Desk.Coords,
+            radius = Config.Desk.Radius or Config.Desk.Distance or 2.0,
+            debug = Config.Desk.Debug or false,
+            options = {
+                {
+                    name = 'uk_ambulance_complaints_public',
+                    icon = Config.Desk.PublicIcon,
+                    label = Config.Desk.PublicLabel,
+                    distance = Config.Desk.Distance or 2.0,
+                    onSelect = function()
+                        openUi('submit')
+                    end
+                },
+                {
+                    name = 'uk_ambulance_complaints_staff',
+                    icon = Config.Desk.StaffIcon,
+                    label = Config.Desk.StaffLabel,
+                    distance = Config.Desk.Distance or 2.0,
+                    groups = Config.StaffJobs,
+                    onSelect = function()
+                        TriggerServerEvent('uk_ambulance_complaints:requestAccess')
+                    end
+                }
             }
-        }
-    })
+        })
+    end)
+
+    if not success then
+        print(('[uk_ambulance_complaints] Failed to register ox_target desk: %s'):format(tostring(result)))
+        return
+    end
+    zoneId = result
     zoneAdded = true
 end
 
 CreateThread(function()
+    if not Config.Desk.Enabled then return end
     while GetResourceState('ox_target') ~= 'started' do
         Wait(500)
     end
     addZone()
 end)
 
+AddEventHandler('onClientResourceStart', function(resource)
+    if resource == 'ox_target' then
+        zoneAdded = false
+        zoneId = nil
+        addZone()
+    end
+end)
+
+AddEventHandler('onClientResourceStop', function(resource)
+    if resource == 'ox_target' then
+        zoneAdded = false
+        zoneId = nil
+    end
+end)
+
 AddEventHandler('onResourceStop', function(resource)
     if resource ~= GetCurrentResourceName() then return end
     stopTabletAnimation()
     if uiOpen then SetNuiFocus(false, false) end
-    if zoneAdded then exports.ox_target:removeZone(zoneId) end
+    removeZone()
 end)
