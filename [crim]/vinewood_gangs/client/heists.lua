@@ -7,7 +7,10 @@ local blips = {}
 local gameResult    -- promise resolved by the minigame
 
 local VERB = { hack = 'heist_do_hack', thermite = 'heist_do_thermite', drill = 'heist_do_drill', loot = 'heist_do_loot',
-    wait = 'heist_do_wait', truck_doors = 'heist_do_thermite' }
+    wait = 'heist_do_wait', truck_doors = 'heist_do_thermite', talk = 'heist_do_talk' }
+-- Steps whose spot is an NPC (no ground marker), or which aren't worked by pressing E
+local NPC_STEP = { talk = true, hostage = true, guards = true }
+local NO_PROMPT = { truck = true, hostage = true, guards = true }
 
 local function notify(key, kind, ...) lib.notify({ description = locale(key, ...), type = kind or 'inform' }) end
 
@@ -105,7 +108,17 @@ local function work(s)
         return
     end
 
-    if s.w then SetEntityHeading(cache.ped, s.w) end
+    if s.type == 'talk' then
+        local npc = NpcFor and NpcFor(s.i)
+        if npc then
+            TaskTurnPedToFaceEntity(cache.ped, npc, 1000)
+            TaskTurnPedToFaceEntity(npc, cache.ped, 1000)
+            Wait(800)
+            PlayPedAmbientSpeechNative(npc, 'GENERIC_HI', 'SPEECH_PARAMS_FORCE')
+        end
+    elseif s.w then
+        SetEntityHeading(cache.ped, s.w)
+    end
     playAnim((cfg.stepTypes[s.type] or {}).anim)
     local success
     if game.game then
@@ -120,7 +133,9 @@ local function work(s)
 
     local ok2, res = lib.callback.await('vinewood_gangs:server:heistFinish', false, run and run.id, s.i, success == true)
     if ok2 and res then
-        if res.result == 'failed' then
+        if res.say and res.say ~= '' then
+            lib.notify({ title = s.label, description = res.say, type = 'inform', duration = 10000 })
+        elseif res.result == 'failed' then
             notify('heist_step_failed', 'error', cfg.retryDelay)
         elseif res.reward and res.reward.money then
             notify('heist_loot_money', 'success', Utils.FormatMoney(res.reward.money))
@@ -160,6 +175,182 @@ RegisterNetEvent('vinewood_gangs:client:heistTruck', function(netId, truck)
 end)
 
 -------------------------------------------------------------------------------
+-- NPC steps
+-------------------------------------------------------------------------------
+
+local npcs = {}        -- npcs[i] = the contact or hostage for step i (this game only: they don't fight)
+local guardsOwned = {} -- guard ped netIds we've been told about, so we can keep their AI going
+local asked = {}       -- asked[key] = true once we've asked the server something, so we don't ask every second
+
+function NpcFor(i) local p = npcs[i] return p and DoesEntityExist(p) and p or nil end
+
+local function removeNpc(i)
+    if npcs[i] and DoesEntityExist(npcs[i]) then DeleteEntity(npcs[i]) end
+    npcs[i] = nil
+end
+
+local function spawnNpc(s)
+    local model = lib.requestModel(s.ped or cfg.npc.ped, 10000)
+    if not model then return end
+    local ped = CreatePed(4, model, s.x, s.y, s.z - 1.0, s.w or 0.0, false, true)
+    SetModelAsNoLongerNeeded(model)
+    SetEntityAsMissionEntity(ped, true, true)
+    SetBlockingOfNonTemporaryEvents(ped, true)
+    SetPedFleeAttributes(ped, 0, false)
+    SetPedCanRagdollFromPlayerImpact(ped, false)
+    if s.type == 'talk' then
+        SetEntityInvincible(ped, true)
+        FreezeEntityPosition(ped, true)
+        TaskStartScenarioInPlace(ped, 'WORLD_HUMAN_STAND_IMPATIENT', 0, true)
+    else
+        TaskStartScenarioInPlace(ped, 'WORLD_HUMAN_STAND_MOBILE', 0, true)
+    end
+    npcs[s.i] = ped
+end
+
+-- The guards' hostility is set on whichever game controls each guard (control moves between players)
+local GUARD_GROUP = GetHashKey('VG_HEIST_GUARDS')
+AddRelationshipGroup('VG_HEIST_GUARDS')
+SetRelationshipBetweenGroups(5, GUARD_GROUP, GetHashKey('PLAYER'))
+SetRelationshipBetweenGroups(5, GetHashKey('PLAYER'), GUARD_GROUP)
+
+local function armGuard(ped, g)
+    SetPedRelationshipGroupHash(ped, GUARD_GROUP)
+    SetPedArmour(ped, g.armour or 50)
+    SetPedAccuracy(ped, g.accuracy or 40)
+    SetPedCombatAttributes(ped, 46, true)
+    SetPedCombatAttributes(ped, 5, true)
+    SetPedCombatAbility(ped, 2)
+    SetPedCombatRange(ped, 1)
+    SetPedFleeAttributes(ped, 0, false)
+    SetPedDropsWeaponsWhenDead(ped, false)
+    SetPedKeepTask(ped, true)
+    TaskCombatHatedTargetsAroundPed(ped, 60.0, 0)
+end
+
+local function spawnGuards(runId, i)
+    local ok, g = lib.callback.await('vinewood_gangs:server:heistGuardsClaim', false, runId, i)
+    if not ok or not g then return end
+    local model = lib.requestModel(g.ped, 10000)
+    if not model then return end
+    local nets = {}
+    for n = 1, g.count do
+        local a = (n / g.count) * math.pi * 2
+        local r = g.radius * (0.4 + math.random() * 0.6)
+        local x, y = g.x + math.cos(a) * r, g.y + math.sin(a) * r
+        local found, z = GetGroundZFor_3dCoord(x, y, g.z + 3.0, false)
+        local ped = CreatePed(4, model, x, y, found and z or g.z, math.random(0, 359) + 0.0, true, true)
+        if ped and ped ~= 0 then
+            SetEntityAsMissionEntity(ped, true, true)
+            GiveWeaponToPed(ped, GetHashKey(g.weapon), 250, false, true)
+            armGuard(ped, g)
+            TaskGuardCurrentPosition(ped, 15.0, 10.0, true)
+            nets[#nets + 1] = NetworkGetNetworkIdFromEntity(ped)
+        end
+    end
+    SetModelAsNoLongerNeeded(model)
+    lib.callback.await('vinewood_gangs:server:heistGuardsSpawned', false, runId, i, nets)
+end
+
+-- Intimidating: aim at them until they comply. Returns true while the "aim at" hint is showing.
+local aiming = false
+function HostagePrompt(pos)
+    if busy or aiming then return false end
+    for _, s in ipairs(run.steps) do
+        local ped = s.type == 'hostage' and s.available and not s.done and NpcFor(s.i)
+        if ped and #(pos - GetEntityCoords(ped)) < cfg.npc.aimDistance then
+            if IsPlayerFreeAimingAtEntity(PlayerId(), ped) and not s.busy then
+                setPrompt(nil)
+                aiming = true
+                CreateThread(function()
+                    local ok, game = lib.callback.await('vinewood_gangs:server:heistBegin', false, run.id, s.i)
+                    if not ok then notify(game or 'failed', 'error') aiming = false return end
+                    ClearPedTasksImmediately(ped)
+                    TaskHandsUp(ped, -1, cache.ped, -1, true)
+                    local endsAt, shown = GetGameTimer() + (game.duration or 8) * 1000, nil
+                    local held = true
+                    while GetGameTimer() < endsAt do
+                        if IsEntityDead(ped) or not IsPlayerFreeAimingAtEntity(PlayerId(), ped) then held = false break end
+                        local left = math.ceil((endsAt - GetGameTimer()) / 1000)
+                        if left ~= shown then lib.showTextUI(locale('heist_intimidating', ('0:%02d'):format(left))) shown = left end
+                        Wait(0)
+                    end
+                    lib.hideTextUI()
+                    if held then
+                        local ok2 = lib.callback.await('vinewood_gangs:server:heistFinish', false, run and run.id, s.i, true)
+                        if ok2 then notify('heist_hostage_complied', 'success', s.label) end
+                    else
+                        lib.callback.await('vinewood_gangs:server:heistFinish', false, run and run.id, s.i, false)
+                        if not IsEntityDead(ped) then notify('heist_hostage_lost', 'error') TaskHandsUp(ped, 4000, cache.ped, -1, true) end
+                    end
+                    aiming = false
+                end)
+                return true
+            end
+            setPrompt('heist_aim_hint', s.label)
+            return true
+        end
+    end
+    return false
+end
+
+-- Keep NPCs in step with the heist: show them when the crew is near, take them away when done; spot a
+-- killed hostage; spawn guards; keep the guards we control fighting.
+CreateThread(function()
+    while true do
+        local sleep = 1500
+        if run then
+            local pos = GetEntityCoords(cache.ped)
+            local wanted = {}
+            for _, s in ipairs(run.steps) do
+                if (s.type == 'talk' or s.type == 'hostage') and s.x and not s.done then
+                    local near = #(pos - vector3(s.x, s.y, s.z)) < cfg.npc.spawnDistance
+                    if near then
+                        wanted[s.i] = true
+                        if not NpcFor(s.i) then spawnNpc(s) end
+                        local ped = NpcFor(s.i)
+                        if s.type == 'hostage' and s.available and ped and IsEntityDead(ped) and not asked['dead' .. run.id .. ':' .. s.i] then
+                            asked['dead' .. run.id .. ':' .. s.i] = true
+                            lib.callback.await('vinewood_gangs:server:heistHostageKilled', false, run.id, s.i)
+                        end
+                    end
+                elseif s.type == 'guards' and s.available and not s.done and s.x and not s.guardsUp
+                    and #(pos - vector3(s.x, s.y, s.z)) < cfg.npc.spawnDistance and not asked['guards' .. run.id .. ':' .. s.i] then
+                    asked['guards' .. run.id .. ':' .. s.i] = true
+                    spawnGuards(run.id, s.i)
+                    -- If the server said no (someone else is spawning them), we can ask again later
+                    SetTimeout(25000, function() asked['guards' .. (run and run.id or 0) .. ':' .. s.i] = nil end)
+                end
+                if s.guards then
+                    for _, n in ipairs(s.guards) do guardsOwned[n] = s end
+                end
+            end
+            -- A talk step that's done keeps its NPC a moment (they just spoke); a dead hostage stays where they fell
+            for i in pairs(npcs) do
+                local s = run.steps[i]
+                if not wanted[i] and not (s and s.type == 'hostage' and s.done) then removeNpc(i) end
+            end
+            -- Guards we control: keep them hostile and fighting
+            for n in pairs(guardsOwned) do
+                if NetworkDoesEntityExistWithNetworkId(n) then
+                    local ped = NetToPed(n)
+                    if NetworkGetEntityOwner(ped) == PlayerId() and not IsEntityDead(ped) then
+                        if GetPedRelationshipGroupHash(ped) ~= GUARD_GROUP or not IsPedInCombat(ped, 0) then
+                            armGuard(ped, guardsOwned[n])
+                        end
+                    end
+                end
+            end
+            sleep = 1000
+        else
+            for i in pairs(npcs) do removeNpc(i) end
+            guardsOwned, asked = {}, {}
+        end
+        Wait(sleep)
+    end
+end)
+
+-------------------------------------------------------------------------------
 -- Prompts
 -------------------------------------------------------------------------------
 
@@ -180,12 +371,14 @@ CreateThread(function()
 
             if run then
                 for _, s in ipairs(run.steps) do
-                    if s.available and not s.done and s.x and s.type ~= 'truck' then
+                    if s.available and not s.done and s.x and not NO_PROMPT[s.type] then
                         local d = #(pos - vector3(s.x, s.y, s.z))
                         if d < 25.0 then
                             sleep = 0
-                            DrawMarker(1, s.x, s.y, s.z - 0.98, 0, 0, 0, 0, 0, 0, 0.6, 0.6, 0.12, 240, 173, 78, s.busy and 60 or 140, false, false, 2, false, nil, nil, false)
-                            if d < cfg.stepRadius and not s.busy then target = s end
+                            if not NPC_STEP[s.type] then
+                                DrawMarker(1, s.x, s.y, s.z - 0.98, 0, 0, 0, 0, 0, 0, 0.6, 0.6, 0.12, 240, 173, 78, s.busy and 60 or 140, false, false, 2, false, nil, nil, false)
+                            end
+                            if d < cfg.stepRadius + (NPC_STEP[s.type] and 0.8 or 0) and not s.busy then target = s end
                         end
                     end
                 end
@@ -197,6 +390,8 @@ CreateThread(function()
             if target then
                 setPrompt(VERB[target.type] or 'heist_do_loot', target.label)
                 if IsControlJustPressed(0, 38) then work(target) end
+            elseif run and HostagePrompt and HostagePrompt(pos) then
+                sleep = 0
             elseif startHere then
                 setPrompt('heist_start_prompt', startHere.label)
                 if IsControlJustPressed(0, 38) then
@@ -218,6 +413,7 @@ end)
 AddEventHandler('onResourceStop', function(res)
     if res ~= GetCurrentResourceName() then return end
     clearBlips()
+    for i in pairs(npcs) do removeNpc(i) end
     if prompt then lib.hideTextUI() end
     if gameResult then SetNuiFocus(false, false) end
 end)

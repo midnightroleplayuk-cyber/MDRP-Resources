@@ -147,6 +147,18 @@ time limit, cooldown and loot. Tick **Live** to make it appear in gangs' tablets
 Gangs see live heists in the tablet's **Heists** app (unlocked at Organisation). Rules shared by every heist
 (tools, loot types, truck, alarm timing) are in `config/heists.lua`.
 
+**NPC steps** can go anywhere in a heist, including first to start it off:
+
+- **Talk to someone:** an NPC stands at the spot; the crew walks up and presses E, and they say your line. They can
+  want paying (from the dirty treasury) or want an item. Good for an inside man or a fixer to kick the job off.
+- **Intimidate someone:** aim a weapon at them (within 12 m) until they comply, for as long as you set (8 s by
+  default). Killing them completes the step too, but sets off the loud alarm.
+- **Deal with guards:** armed NPCs spawn around the spot when the crew gets close (how many, model, weapon, armour,
+  accuracy and spread are set per step). Everyone fights the same guards; the step is done when they're all down.
+
+NPC defaults (models, talk time, aim distance, spawn distance) are in `config/heists.lua` under `npc`. The bank
+template now starts with an inside man and the bank manager.
+
 ## Street dealing
 
 Gang members carrying drugs can walk up to a pedestrian inside an area and press E to offer a deal. After a
@@ -183,6 +195,10 @@ tags, rackets, street dealing, street events, gang tiers and the maps all work o
 - **Tags:** only on your own turf; the first must go on the main hex, and every 3 hexes unlocks another tag.
 - **Fog of war:** gangs only see their own hexes. A rival's hex shows up on your tablet and map once your gang deals
   on it (or tries to buy it). Nothing about unrevealed turf is ever sent to players' games.
+
+Dealers see what each sale did: "Davis (4, -7): +3% control (now 45%)", or which drug builds control if the one
+they sold doesn't. Turf settings warn you if a turf drug isn't a real item on your server or isn't on the Street
+dealing list. Tick **Any drug builds control** to count every drug instead of a chosen one.
 
 The turf drug, control rates, decay, expansion cost and tag rate are set in game in `/gangadmin` > **Turf**
 (`config/hexes.lua` is the starting point). The turf drug also needs to be on the Street dealing list.
@@ -486,3 +502,11 @@ The resource is protected by the Cfx asset escrow. These files are left open for
 - `locales/en.json`: every message players see (copy it to translate)
 - `sql/`: the database files
 - `web/`: the tablet's look (style.css) and images
+
+## Dirty money
+
+Street dealing pays the dealer in dirty money. How a player is given it is set by `Config.DirtyMoney` in
+`config/config.lua` (and `Bridge.AddDirtyMoney` in `bridge/server/framework.lua`, which you can edit):
+ESX uses the `black_money` account, ox_inventory gives `black_money` items (one per £1), and QBCore with
+qb-inventory gives a `markedbills` bag worth the amount. You can switch it to another item or account, or back to
+clean cash (`moneyType` in `config/drugs.lua`).

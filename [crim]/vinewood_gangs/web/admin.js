@@ -473,9 +473,14 @@ async function renderTurfSettings() {
     return el;
   };
   v.expandCost = v.expandCost || { money: 0, account: 'dirty' };
-  const drugs = (v.turfDrugItems || []).map((d, i) => h('div', { class: 'row', style: 'align-items:center' },
-    h('div', { style: 'flex:1;max-width:420px' }, itemPicker({ item: d.name, label: d.label, image: d.image }, (it) => { if (it) { v.turfDrugItems[i] = { name: it.name, label: it.label, image: it.image }; } }, { allowClear: false })),
-    h('button', { class: 'btn small danger', type: 'button', onclick: () => { v.turfDrugItems.splice(i, 1); rerender(); } }, 'Remove')));
+  const drugs = (v.turfDrugItems || []).map((d, i) => h('div', {},
+    h('div', { class: 'row', style: 'align-items:center' },
+      h('div', { style: 'flex:1;max-width:420px' }, itemPicker(d.name ? { item: d.name, label: d.label, image: d.image } : null, (it) => { if (it) { v.turfDrugItems[i] = { name: it.name, label: it.label, image: it.image, exists: true }; rerender(); } }, { allowClear: false, openNow: !d.name, emptyText: 'No item chosen yet' })),
+      h('button', { class: 'btn small danger', type: 'button', onclick: () => { v.turfDrugItems.splice(i, 1); rerender(); } }, 'Remove')),
+    d.name && d.exists === false ? h('p', { class: 'hint debit', style: 'margin:4px 0 0', text: `There's no item called "${d.name}" on your server, so nothing builds control. Use Change to pick your real one.` })
+      : (d.name && d.sellable === false ? h('p', { class: 'hint debit', style: 'margin:4px 0 0', text: `${d.label} isn't on the Street dealing list, so it can't be sold. Add it there.` }) : null)));
+  const anyDrug = h('input', { type: 'checkbox', checked: v.anyDrugCounts === true });
+  anyDrug.addEventListener('change', () => { v.anyDrugCounts = anyDrug.checked; rerender(); });
   const accountSel = select([{ value: 'dirty', label: 'Dirty money' }, { value: 'clean', label: 'Clean money' }], v.expandCost.account || 'dirty');
   accountSel.addEventListener('change', () => { v.expandCost.account = accountSel.value; });
 
@@ -492,9 +497,10 @@ async function renderTurfSettings() {
     h('div', { class: 'section-head' }, h('h2', { text: 'Turf' }), h('button', { class: 'btn primary', type: 'button', onclick: save }, 'Save')),
     h('p', { class: 'hint', style: 'margin-bottom:16px', text: `The map is split into hexes (${v.size} m). Gangs start with a compound you give them (open a gang in Gangs), build control by selling the turf drug there, and buy the ground next to a hex at full control. Rival turf stays hidden until a gang deals on it.` }),
     h('h3', { text: 'Turf drug' }),
-    h('p', { class: 'hint', style: 'margin:0 0 8px', text: 'Selling these on your own hex builds its control. (They also need to be on the Street dealing list so they can be sold.)' }),
-    h('div', { style: 'display:grid;gap:8px' }, drugs),
-    h('button', { class: 'btn small', type: 'button', style: 'margin-top:8px', onclick: () => { v.turfDrugItems = v.turfDrugItems || []; v.turfDrugItems.push({ name: null, label: null }); rerender(); } }, 'Add a turf drug'),
+    h('label', { class: 'toggle', style: 'margin:0 0 10px' }, anyDrug, ' Any drug builds control (not just the ones below)'),
+    h('p', { class: 'hint', style: 'margin:0 0 8px', text: v.anyDrugCounts ? 'Every drug on the Street dealing list builds control when sold on your own hex.' : 'Selling these on your own hex builds its control. (They also need to be on the Street dealing list so they can be sold.)' }),
+    v.anyDrugCounts ? null : h('div', { style: 'display:grid;gap:8px' }, drugs),
+    v.anyDrugCounts ? null : h('button', { class: 'btn small', type: 'button', style: 'margin-top:8px', onclick: () => { v.turfDrugItems = v.turfDrugItems || []; v.turfDrugItems.push({ name: null, label: null }); rerender(); } }, 'Add a turf drug'),
     h('h3', { style: 'margin-top:22px', text: 'Control' }),
     h('div', { class: 'heist-settings' },
       h('label', { class: 'field' }, '% per unit sold on own turf', num(v, 'controlPerSale', 0.1, 100)),
@@ -1442,8 +1448,45 @@ function renderHeistEditor() {
           { placeholder: def ? `Search to replace ${def.label}…` : 'Search for a required item…', emptyText: def ? `${def.label} (default)` : 'Nothing needed' })));
       if (s.item) extra.push(h('label', { class: 'toggle', style: 'align-self:end;padding-bottom:8px' }, consume, ' Used up'));
     }
-    extra.push(h('label', { class: 'field' }, 'Alarm', pick(s, 'alert', ALERT_OPTIONS)));
-    if (s.type !== 'truck' && s.type !== 'loot' && s.type !== 'wait') extra.push(h('label', { class: 'field' }, 'Door to unlock (optional)', text(s, 'doorId', 160, 'door-lock ID or name')));
+    // NPC steps (fill in the defaults so staff can see them)
+    const npc = meta.npc || {};
+    if (s.type === 'talk' && s.pay == null) s.pay = 0;
+    if (s.type === 'guards') { if (s.count == null) s.count = 4; if (s.armour == null) s.armour = 50; if (s.accuracy == null) s.accuracy = 40; if (s.radius == null) s.radius = 10; }
+    if (s.type === 'talk' || s.type === 'hostage' || s.type === 'guards') {
+      extra.push(h('label', { class: 'field' }, s.type === 'guards' ? 'Guard model' : 'NPC model',
+        text(s, 'ped', 180, s.type === 'guards' ? (npc.guardPed || 's_m_m_security_01') : (npc.ped || 'a_m_m_business_01'))));
+    }
+    if (s.type === 'talk') {
+      const say = h('textarea', { rows: 2, maxlength: 200, placeholder: 'What they say, e.g. "The manager has the vault code. Get to him before he leaves."', style: 'width:100%' });
+      say.value = s.say || '';
+      say.addEventListener('input', () => { s.say = say.value; });
+      extra.push(h('label', { class: 'field', style: 'flex:1 1 100%' }, 'What they say', say));
+      extra.push(h('label', { class: 'field' }, 'They want paying (£, 0 = nothing)', num(s, 'pay', 0, 10000000, 120)));
+      const def = (meta.tools || {})[s.type];
+      extra.push(h('div', { class: 'field', style: 'min-width:280px' }, 'Needs (optional)',
+        itemPicker(s.item ? { item: s.item, label: s.itemLabel, image: s.itemImage } : null,
+          (it) => { s.item = it ? it.name : null; s.itemLabel = it ? it.label : null; s.itemImage = it ? it.image : null; if (it && s.consume == null) s.consume = true; rerender(); },
+          { placeholder: 'Search for an item they want…', emptyText: 'Nothing needed' })));
+      if (s.item) {
+        const consume = h('input', { type: 'checkbox', checked: s.consume === true });
+        consume.addEventListener('change', () => { s.consume = consume.checked; });
+        extra.push(h('label', { class: 'toggle', style: 'align-self:end;padding-bottom:8px' }, consume, ' They keep it'));
+      }
+    }
+    if (s.type === 'hostage') {
+      // A new step comes with 30 s (right for a hack); 8 s at gunpoint suits this better. Only set once.
+      if (!s.hostageSet) { if (s.time == null || s.time === 30 || s.time > 60) s.time = 8; s.hostageSet = true; }
+      extra.push(h('label', { class: 'field' }, 'Keep them at gunpoint for (s)', num(s, 'time', 3, 60)));
+    }
+    if (s.type === 'guards') {
+      extra.push(h('label', { class: 'field' }, 'How many', num(s, 'count', 1, 12, 70)),
+        h('label', { class: 'field' }, 'Weapon', text(s, 'weapon', 160, npc.guardWeapon || 'weapon_pistol')),
+        h('label', { class: 'field' }, 'Armour (0-100)', num(s, 'armour', 0, 100, 80)),
+        h('label', { class: 'field' }, 'Accuracy (1-100)', num(s, 'accuracy', 1, 100, 80)),
+        h('label', { class: 'field' }, 'Spread out over (m)', num(s, 'radius', 2, 40, 80)));
+    }
+    extra.push(h('label', { class: 'field' }, s.type === 'hostage' ? 'Alarm (if they comply)' : 'Alarm', pick(s, 'alert', ALERT_OPTIONS)));
+    if (s.type !== 'truck' && s.type !== 'loot' && s.type !== 'wait' && s.type !== 'guards') extra.push(h('label', { class: 'field' }, 'Door to unlock (optional)', text(s, 'doorId', 160, 'door-lock ID or name')));
 
     return h('div', { class: 'heist-edit-step' },
       h('div', { class: 'heist-edit-head' },
@@ -1452,7 +1495,8 @@ function renderHeistEditor() {
         text(s, 'label', 200, 'Label, e.g. Vault door'),
         h('span', { class: 'heist-pos' }, followsTruck(s) ? h('span', { class: 'muted', text: 'At the truck' }) : [
           h('span', { class: s.x != null ? 'fig' : 'debit', text: point(s) }),
-          h('button', { class: 'btn small', type: 'button', onclick: () => here((p) => Object.assign(s, p)) }, s.type === 'truck' ? 'Truck starts here' : 'Set here'),
+          h('button', { class: 'btn small', type: 'button', onclick: () => here((p) => Object.assign(s, p)) },
+            { truck: 'Truck starts here', talk: 'They stand here', hostage: 'They stand here', guards: 'Guards around here' }[s.type] || 'Set here'),
           h('button', { class: 'btn small', type: 'button', onclick: () => goTo(s) }, 'Go to')]),
         h('span', { class: 'heist-step-tools' },
           h('button', { class: 'btn small', type: 'button', title: 'Move up', onclick: () => move(i, -1) }, '↑'),
@@ -1832,7 +1876,9 @@ const AdminMock = {
       case 'agreements': return ok([{ id: 4, label: 'Trade agreement', status: 'active', a: 'Grove Kings', aColour: '#7B3FBF', b: 'East Side', bColour: '#3FA7D6', payment: 0, secondsLeft: 300000 }]);
       case 'heists': return ok({ defaultTier: 3, tools: { thermite: { item: 'thermite', label: 'Thermite', consume: true }, truck_doors: { item: 'thermite', label: 'Thermite', consume: true } }, tiers: ['Street crew', 'Firm', 'Organisation', 'Syndicate'],
         templates: [{ key: 'bank', label: 'Bank vault', steps: 5 }, { key: 'truck', label: 'Armoured truck', steps: 3 }, { key: 'store', label: 'Store robbery', steps: 3 }, { key: 'jewellery', label: 'Jewellery store', steps: 5 }, { key: 'custom', label: 'Custom heist', steps: 0 }],
-        stepTypes: [{ key: 'hack', label: 'Hack a panel', game: 'hack' }, { key: 'thermite', label: 'Thermite a door', game: 'thermite' }, { key: 'drill', label: 'Drill (vault or boxes)', game: 'drill' }, { key: 'loot', label: 'Grab loot' }, { key: 'wait', label: 'Wait (time lock)' }, { key: 'truck', label: 'Armoured truck: stop it' }, { key: 'truck_doors', label: 'Armoured truck: open the back', game: 'thermite' }],
+        stepTypes: [{ key: 'hack', label: 'Hack a panel', game: 'hack' }, { key: 'thermite', label: 'Thermite a door', game: 'thermite' }, { key: 'drill', label: 'Drill (vault or boxes)', game: 'drill' }, { key: 'loot', label: 'Grab loot' }, { key: 'wait', label: 'Wait (time lock)' }, { key: 'truck', label: 'Armoured truck: stop it' }, { key: 'truck_doors', label: 'Armoured truck: open the back', game: 'thermite' },
+          { key: 'talk', label: 'Talk to someone (NPC)' }, { key: 'guards', label: 'Deal with guards (NPCs)' }, { key: 'hostage', label: 'Intimidate someone (NPC)' }],
+        npc: { ped: 'a_m_m_business_01', guardPed: 's_m_m_security_01', guardWeapon: 'weapon_pistol' },
         lootTypes: [{ key: 'cash', label: 'Cash (to dirty treasury)' }, { key: 'goldbar', label: 'Gold bars (item)' }, { key: 'jewels', label: 'Jewellery (item)' }],
         heists: [{ id: 4, label: 'Fleeca, Great Ocean', kind: 'bank', enabled: true, cooldownLeft: 0, running: 'Grove Kings',
           data: { police: 4, crew: 3, cooldown: 120, timeLimit: 20, tier: 3, start: { x: -2957, y: 481, z: 15, w: 0 }, steps: [
@@ -1847,7 +1893,7 @@ const AdminMock = {
       case 'hexMap': return ok([{ key: 'h:4:-7', q: 4, r: -7, gangId: 1, gang: 'Grove Kings', colour: '#7B3FBF', label: 'Davis (4, -7)', control: 100, main: true },
         { key: 'h:5:-7', q: 5, r: -7, gangId: 1, gang: 'Grove Kings', colour: '#7B3FBF', label: 'Rancho (5, -7)', control: 62 },
         { key: 'h:6:-8', q: 6, r: -8, gangId: 2, gang: 'Los Vagos', colour: '#E8C31E', label: 'Rancho (6, -8)', control: 40 }]);
-      case 'hexSettings': return ok({ size: 150, turfDrugs: ['weed_og_kush'], turfDrugItems: [{ name: 'weed_og_kush', label: 'OG Kush' }], controlPerSale: 1.5, rivalLoss: 2, decayPerHour: 4, startControl: 10, expandAt: 100, sprayEvery: 3,
+      case 'hexSettings': return ok({ size: 150, turfDrugs: ['weed_og_kush'], turfDrugItems: [{ name: 'weed_og_kush', label: 'weed_og_kush', exists: false, sellable: false }], controlPerSale: 1.5, rivalLoss: 2, decayPerHour: 4, startControl: 10, expandAt: 100, sprayEvery: 3,
         expandCost: { money: 50000, account: 'dirty', item: 'weed_og_kush', count: 50 }, expandItemLabel: 'OG Kush' });
       case 'customContracts': return ok({ types: [{ key: 'collect', label: 'Collect a debt' }, { key: 'courier', label: 'Courier run' }, { key: 'transport', label: 'Move a stolen car' }],
         difficulty: ['Low risk', 'Medium risk', 'High risk'], tiers: ['Street crew', 'Firm', 'Organisation', 'Syndicate'], gangs: [{ id: 1, label: 'Grove Kings' }, { id: 2, label: 'Los Vagos' }],

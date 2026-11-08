@@ -9,7 +9,7 @@ local dirty = {}    -- control values to write back
 local warned = {}   -- warned[key] = true once the owner's been told it's running low
 local settings = {} -- the numbers staff can change in game (start from config/hexes.lua)
 
-local EDITABLE = { 'turfDrugs', 'controlPerSale', 'rivalLoss', 'decayPerHour', 'startControl', 'expandAt', 'expandCost', 'sprayEvery' }
+local EDITABLE = { 'turfDrugs', 'anyDrugCounts', 'controlPerSale', 'rivalLoss', 'decayPerHour', 'startControl', 'expandAt', 'expandCost', 'sprayEvery' }
 
 local function now() return os.time() end
 local function S(name) if settings[name] ~= nil then return settings[name] end return cfg[name] end
@@ -153,6 +153,7 @@ end
 -------------------------------------------------------------------------------
 
 local function isTurfDrug(item)
+    if S('anyDrugCounts') then return true end
     for _, d in ipairs(S('turfDrugs') or {}) do if d == item then return true end end
     return false
 end
@@ -169,15 +170,25 @@ function Hexes.BoostWeakest(gangId, amount)
 end
 
 ---A sale on a hex. Own hex + turf drug builds control; a rival's sale costs the owner control and reveals the hex.
+---Returns what happened, for the dealer's message: { own, counted, label, gained, control } or { rival = true }.
 function Hexes.OnSale(key, sellerGangId, item, qty)
     local h = hexes[key]
-    if not h or not sellerGangId then return end
+    if not h or not sellerGangId then return nil end
     if h.gangId == sellerGangId then
-        if isTurfDrug(item) then setControl(h, h.control + S('controlPerSale') * qty) end
-    else
-        Hexes.Reveal(sellerGangId, key)
-        if hexes[key] then setControl(h, h.control - S('rivalLoss') * qty) end
+        local label = Hex.Label(h.q, h.r)
+        if not isTurfDrug(item) then
+            local names = {}
+            for _, d in ipairs(S('turfDrugs') or {}) do names[#names + 1] = Bridge.ItemLabel(d) end
+            return { own = true, counted = false, label = label, needs = table.concat(names, ' or ') }
+        end
+        local before = h.control
+        setControl(h, h.control + S('controlPerSale') * qty)
+        return { own = true, counted = true, label = label, gained = math.floor((h.control - before) * 10 + 0.5) / 10,
+            control = math.floor(h.control) }
     end
+    Hexes.Reveal(sellerGangId, key)
+    if hexes[key] then setControl(h, h.control - S('rivalLoss') * qty) end
+    return { rival = true }
 end
 
 -------------------------------------------------------------------------------
@@ -454,8 +465,13 @@ end
 function Hexes.AdminSettings()
     local out = {}
     for _, k in ipairs(EDITABLE) do out[k] = S(k) end
+    -- Flag turf drugs that can't build control: not a real item, or not on the Street dealing list
+    local sellable = {}
+    for _, it in ipairs(Drugs and Drugs.Items and Drugs.Items() or {}) do sellable[it.item] = true end
     out.turfDrugItems = {}
-    for _, d in ipairs(S('turfDrugs') or {}) do out.turfDrugItems[#out.turfDrugItems + 1] = { name = d, label = Bridge.ItemLabel(d) } end
+    for _, d in ipairs(S('turfDrugs') or {}) do
+        out.turfDrugItems[#out.turfDrugItems + 1] = { name = d, label = Bridge.ItemLabel(d), exists = Bridge.ItemExists(d), sellable = sellable[d] == true }
+    end
     local cost = S('expandCost') or {}
     out.expandItemLabel = cost.item and Bridge.ItemLabel(cost.item) or nil
     out.size = cfg.size
@@ -470,12 +486,12 @@ function Hexes.AdminSaveSettings(src, input)
         if not Bridge.ItemExists(d) then return false, 'item_not_found' end
         drugs[#drugs + 1] = d
     end
-    if #drugs == 0 then return false, 'hex_need_turf_drug' end
+    if #drugs == 0 and input.anyDrugCounts ~= true then return false, 'hex_need_turf_drug' end
     local cost = type(input.expandCost) == 'table' and input.expandCost or {}
     local item = cost.item and cost.item ~= '' and tostring(cost.item) or nil
     if item and not Bridge.ItemExists(item) then return false, 'item_not_found' end
     local new = {
-        turfDrugs = drugs,
+        turfDrugs = drugs, anyDrugCounts = input.anyDrugCounts == true,
         controlPerSale = n(input.controlPerSale, 0.1, 100, cfg.controlPerSale),
         rivalLoss = n(input.rivalLoss, 0, 100, cfg.rivalLoss),
         decayPerHour = n(input.decayPerHour, 0, 100, cfg.decayPerHour),
