@@ -2,7 +2,7 @@ Config = {}
 
 -- Copy both values from the Game Link page in AxisPanel.
 Config.Url = 'https://axis-panel.com/api/game-link-node'   -- for example https://axis-panel.com/api/game-link-node
-Config.Key = 'PASTE_YOUR_KEY_HERE'
+Config.Key = 'axk_762430906b9405133902553eca4cf277d352c22a321c1679'
 
 Config.PollSeconds = 2         -- how often the server asks AxisPanel for new commands
 
