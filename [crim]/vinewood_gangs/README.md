@@ -70,6 +70,10 @@ Everything is done from the gang tablet: **F6**, `/gangtablet`, or an item (`Con
   it turns up on boards, and whether it can only be done once. "Offer now" puts it straight on a gang's board.
 - **Contract spots:** every pickup/drop-off, stolen-car and debtor spot. Add new ones where you're standing
   (they're used by new jobs straight away), go to any spot, and delete the ones added in game.
+- **Auctions:** open or close the black market (closed: no new auctions, and the tablet app is hidden). The
+  Settings tab changes everything in `config/auctions.lua` in game: contraband items (from the inventory search,
+  with how many and a reserve price), how often each lot type comes up (0 turns it off) and their numbers, and the
+  auction and dead-drop timings. The "connections" lot adds control to the winner's weakest hex.
 - **Diplomacy:** every deal proposed or running; cancel any without penalty.
 - **Street events:** what the director is running (with the hidden details), start one now, or end one.
 - **Informants:** every CHIS code and the character behind it, tips given, money paid; cut anyone off.

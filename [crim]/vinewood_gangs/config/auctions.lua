@@ -1,3 +1,4 @@
+-- The black market. Staff can close it and change all of this in game: /gangadmin > Auctions (and its Settings tab).
 Config.Auctions = {
     intervalMinutes = { 90, 180 }, -- between auctions
     biddingMinutes  = 15,
@@ -13,7 +14,7 @@ Config.Auctions = {
         supplies   = { weight = 3, amount = { 150, 300 }, reservePerUnit = 0.6 }, -- reserve = amount x supply cost x this
         contract   = { weight = 2, rewardMultiplier = 2.5, reserve = { 6000, 12000 } },
         copper     = { weight = 2, heat = 40, reserve = { 15000, 30000 } },
-        connections = { weight = 2, influence = 60, reserve = { 10000, 25000 } },
+        connections = { weight = 2, influence = 15, reserve = { 10000, 25000 } }, -- influence = % control added to the winner's weakest hex
         items      = { weight = 3 }, -- only offered if Config.Auctions.items has entries
     },
 

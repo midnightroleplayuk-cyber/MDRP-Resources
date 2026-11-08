@@ -43,6 +43,7 @@ local ADMIN_ALLOWED = {
     contractSpots = true, addContractSpot = true, deleteContractSpot = true, gotoContractSpot = true,
     addRacketShop = true, deleteRacketShop = true, gotoRacketShop = true,
     hexGang = true, hexGive = true, hexRemove = true, hexControl = true, hexMain = true, hexSettings = true, hexSettingsSave = true,
+    blackmarketSettings = true, blackmarketSave = true, blackmarketOpen = true, blackmarketReset = true,
     airdrops = true, airdropCancel = true, airdropAdminCall = true, airdropLoot = true, airdropLootSave = true, airdropLootReset = true,
     searchItems = true, drugItems = true, drugItemsSave = true, drugItemsReset = true,
     staffAccess = true, staffGrant = true, staffRevoke = true, staffPerms = true,
@@ -98,7 +99,7 @@ local function staticData()
         enterprises = Config.Modules.enterprises,
         diplomacy = Config.Modules.diplomacy,
         informants = Config.Modules.informants,
-        auctions = Config.Modules.auctions,
+        auctions = Config.Modules.auctions and GlobalState.vg_blackmarket ~= false, -- staff can close the black market in game
         progression = Config.Progression.enabled,
         shop = Config.Shop.enabled,
         tabletMap = Config.Territory.tabletMap,

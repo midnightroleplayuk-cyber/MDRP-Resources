@@ -80,7 +80,7 @@ function renderAdminFrame() {
     ? 'Staff access. Some tools are management only. Every change is logged.'
     : 'Management. Every change here is logged.';
   if (admin.tab === 'home') {
-    showHome(visibleAdminApps().map((t) => appIcon(t, () => { admin.tab = t.id; admin.gangId = null; admin.heist = null; admin.drugDraft = null; admin.turfDraft = null; admin.job = null; admin.contractDraft = null; renderAdminFrame(); })));
+    showHome(visibleAdminApps().map((t) => appIcon(t, () => { admin.tab = t.id; admin.gangId = null; admin.heist = null; admin.drugDraft = null; admin.turfDraft = null; admin.job = null; admin.contractDraft = null; admin.bmDraft = null; admin.auctionTab = null; renderAdminFrame(); })));
     return;
   }
   showApp(ADMIN_TABS.find((t) => t.id === admin.tab).label);
@@ -104,7 +104,7 @@ async function renderAdminTab() {
   else if (admin.tab === 'diplomacy') content = await renderAdminDiplomacy();
   else if (admin.tab === 'director') content = h('div', {}, await renderAdminDirector(), await renderAdminAirdrops());
   else if (admin.tab === 'informants') content = await renderAdminInformants();
-  else if (admin.tab === 'auctions') content = await renderAdminAuctions();
+  else if (admin.tab === 'auctions') content = admin.auctionTab === 'settings' ? await renderBlackmarketSettings() : await renderAdminAuctions();
   else if (admin.tab === 'reviews') content = await renderReviews();
   else if (admin.tab === 'tags') content = await renderWorldTags();
   if (id !== admin.renderId || !content) return;
@@ -406,6 +406,105 @@ async function openAddMember(gang, gradeOptions) {
 
 /* Auctions -------------------------------------------------------------- */
 
+function auctionTabs() {
+  const tab = admin.auctionTab || 'auctions';
+  return h('div', { class: 'choices', role: 'radiogroup', style: 'margin-bottom:16px' },
+    [['auctions', 'Auctions'], ['settings', 'Settings']].map(([key, label]) => h('button', {
+      type: 'button', role: 'radio', class: 'choice', 'aria-checked': String(tab === key),
+      onclick: () => { admin.auctionTab = key; admin.bmDraft = null; renderAdminTab(); },
+    }, label)));
+}
+
+/* Black market settings: contraband, lot types, timings (config/auctions.lua, changed in game) */
+async function renderBlackmarketSettings() {
+  if (!admin.bmDraft) {
+    const res = await adminRequest('blackmarketSettings');
+    if (!res.ok) return loadError(res);
+    admin.bmDraft = res.data;
+  }
+  const v = admin.bmDraft;
+  const rerender = () => renderAdminTab();
+  const num = (obj, key, min, max, width = 90, step = 'any') => {
+    const el = h('input', { type: 'number', min, max, step, value: obj[key] ?? '', style: `width:${width}px` });
+    el.addEventListener('change', () => { obj[key] = Number(el.value); });
+    return el;
+  };
+  const pct = (obj, key) => {
+    const el = h('input', { type: 'number', min: 0, max: 100, value: Math.round((obj[key] || 0) * 100), style: 'width:80px' });
+    el.addEventListener('change', () => { obj[key] = Math.max(0, Math.min(100, Number(el.value))) / 100; });
+    return el;
+  };
+  const range = (obj, key, label, width = 90) => {
+    const lo = h('input', { type: 'number', min: 0, value: obj[key][0], style: `width:${width}px` });
+    const hi = h('input', { type: 'number', min: 0, value: obj[key][1], style: `width:${width}px` });
+    lo.addEventListener('change', () => { obj[key][0] = Number(lo.value); });
+    hi.addEventListener('change', () => { obj[key][1] = Number(hi.value); });
+    return h('label', { class: 'field' }, label, h('span', { class: 'row', style: 'flex-wrap:nowrap;align-items:center;gap:6px' }, lo, h('span', { class: 'muted', text: 'to' }), hi));
+  };
+
+  const items = v.items.map((it, i) => h('div', { class: 'loot-entry' },
+    itemPicker(it.item ? { item: it.item, label: it.itemLabel || it.item } : null, (p) => { it.item = p ? p.name : null; it.itemLabel = p ? p.label : null; if (p && !it.label) { it.label = p.label; rerender(); } }, { allowClear: false, openNow: !it.item, emptyText: 'No item chosen yet' }),
+    h('div', { class: 'loot-fields' },
+      h('label', { class: 'field' }, 'Name on the lot', (() => { const t = h('input', { type: 'text', value: it.label || '', maxlength: 40, style: 'width:200px' }); t.addEventListener('input', () => { it.label = t.value; }); return t; })()),
+      h('label', { class: 'field' }, 'How many in the lot', num(it, 'count', 1, 1000, 90, 1)),
+      h('label', { class: 'field' }, 'Reserve price (£)', num(it, 'reserve', 100, 100000000, 120, 500)),
+      h('button', { class: 'btn small danger', type: 'button', style: 'margin-left:auto;align-self:end', onclick: () => { v.items.splice(i, 1); rerender(); } }, 'Remove'))));
+
+  const L = v.lots;
+  const lot = (title, desc, body) => h('div', { class: 'loot-entry' }, h('strong', { text: title }), h('div', { class: 'hint', style: 'margin:0', text: desc }), h('div', { class: 'loot-fields' }, body));
+
+  const save = async () => {
+    if (v.items.some((it) => !it.item)) return toast('Pick an item for every contraband row, or remove it.', true);
+    const r = await adminRequest('blackmarketSave', v);
+    if (!r.ok) return toast(r.error, true);
+    admin.bmDraft = r.data;
+    toast('Saved. The next auction uses these settings.');
+    rerender();
+  };
+
+  return h('div', {},
+    auctionTabs(),
+    h('div', { class: 'section-head' }, h('h2', { text: 'Black market settings' }),
+      h('div', { class: 'row' },
+        h('button', { class: 'btn small', type: 'button', onclick: () => confirmModal({ title: 'Go back to config/auctions.lua?', body: 'Your contraband list and settings here are replaced with the config ones.', confirmLabel: 'Reset', danger: true, onConfirm: async () => { const r = await adminRequest('blackmarketReset'); if (r.ok) { admin.bmDraft = r.data; toast('Back to the config settings.'); rerender(); } } }) }, 'Reset to config'),
+        h('button', { class: 'btn primary', type: 'button', onclick: save }, 'Save'))),
+    h('h3', { text: 'Contraband' }),
+    h('p', { class: 'hint', style: 'margin:0 0 8px', text: 'Items auctioned as lots. The winner collects them from a dead drop, and rival gangs may be tipped off where it is.' }),
+    items.length ? h('div', { style: 'display:grid;gap:8px' }, items) : h('p', { class: 'empty', text: 'No contraband yet, so item lots never come up.' }),
+    h('button', { class: 'btn small', type: 'button', style: 'margin-top:8px', onclick: () => { v.items.push({ item: null, label: '', count: 1, reserve: 10000 }); rerender(); } }, 'Add an item'),
+    h('h3', { style: 'margin-top:22px', text: 'Lot types' }),
+    h('p', { class: 'hint', style: 'margin:0 0 8px', text: 'How often each kind of lot comes up (a higher number is likelier, 0 turns it off).' }),
+    h('div', { style: 'display:grid;gap:8px' },
+      lot('Contraband', 'One of the items above.', [h('label', { class: 'field' }, 'How often', num(L.items, 'weight', 0, 100, 80, 1))]),
+      lot('Business supplies', 'Supplies for a gang business; the reserve is the amount times the supply cost times this.', [
+        h('label', { class: 'field' }, 'How often', num(L.supplies, 'weight', 0, 100, 80, 1)), range(L.supplies, 'amount', 'Amount', 80),
+        h('label', { class: 'field' }, 'Reserve per unit (×)', num(L.supplies, 'reservePerUnit', 0.01, 100, 80, 0.1))]),
+      lot('An exclusive contract', 'A one-off job paying several times the usual reward.', [
+        h('label', { class: 'field' }, 'How often', num(L.contract, 'weight', 0, 100, 80, 1)),
+        h('label', { class: 'field' }, 'Reward (× usual)', num(L.contract, 'rewardMultiplier', 1, 20, 80, 0.5)), range(L.contract, 'reserve', 'Reserve (£)', 100)]),
+      lot('A bent copper', 'Wipes some of the winning gang\'s heat.', [
+        h('label', { class: 'field' }, 'How often', num(L.copper, 'weight', 0, 100, 80, 1)),
+        h('label', { class: 'field' }, 'Heat wiped', num(L.copper, 'heat', 1, 1000, 80, 1)), range(L.copper, 'reserve', 'Reserve (£)', 100)]),
+      lot('Connections', 'Adds control to the winner\'s weakest hex.', [
+        h('label', { class: 'field' }, 'How often', num(L.connections, 'weight', 0, 100, 80, 1)),
+        h('label', { class: 'field' }, 'Control added (%)', num(L.connections, 'influence', 1, 100, 80, 1)), range(L.connections, 'reserve', 'Reserve (£)', 100)])),
+    h('h3', { style: 'margin-top:22px', text: 'Auctions' }),
+    h('div', { class: 'heist-settings' },
+      range(v, 'intervalMinutes', 'Time between auctions (min)', 70),
+      h('label', { class: 'field' }, 'Bidding lasts (min)', num(v, 'biddingMinutes', 2, 120, 80, 1)),
+      range(v, 'lotsPerAuction', 'Lots per auction', 60),
+      h('label', { class: 'field' }, 'Players online needed', num(v, 'minPlayers', 0, 200, 80, 1)),
+      h('label', { class: 'field' }, 'Each bid beats the last by (%)', pct(v, 'increment')),
+      h('label', { class: 'field' }, 'Late bids extend by (s)', num(v, 'antiSnipe', 0, 600, 80, 1)),
+      h('label', { class: 'field' }, 'Buy now (× reserve)', num(v, 'buyNowMultiplier', 1, 20, 80, 0.5))),
+    h('h3', { style: 'margin-top:8px', text: 'Dead drops' }),
+    h('div', { class: 'heist-settings' },
+      h('label', { class: 'field' }, 'Time to collect (min)', num(v, 'dropMinutes', 5, 240, 80, 1)),
+      h('label', { class: 'field' }, 'Rivals tipped off (%)', pct(v, 'tipChance')),
+      h('label', { class: 'field' }, 'Winner\'s head start (s)', num(v, 'headStart', 0, 1800, 80, 10)),
+      h('label', { class: 'field' }, 'Refund if nobody collects (%)', pct(v, 'unclaimedRefund'))));
+}
+
 async function renderAdminAuctions() {
   const res = await adminRequest('auctions');
   if (!res.ok) return loadError(res);
@@ -422,7 +521,22 @@ async function renderAdminAuctions() {
         confirmLabel: 'Cancel lot', danger: true, onConfirm: () => adminAct('auctionCancel', [l.id], 'Lot cancelled.'),
       }),
     }, 'Cancel'))));
+  const bm = await adminRequest('blackmarketSettings');
+  const on = bm.ok ? bm.data.enabled : true;
   return h('div', {},
+    auctionTabs(),
+    h('div', { class: 'heist-edit-start', style: 'margin-bottom:18px' },
+      h('div', {},
+        h('strong', { text: on ? 'The black market is open' : 'The black market is closed' }),
+        h('div', { class: 'hint', style: 'margin:0', text: on
+          ? 'Auctions run on their own, and gangs see the Black market app on their tablet.'
+          : 'No new auctions, and the Black market app is hidden from gang tablets. Anything already running finishes as normal.' })),
+      h('button', {
+        class: on ? 'btn small danger' : 'btn small primary', type: 'button',
+        onclick: () => (on
+          ? confirmModal({ title: 'Close the black market?', body: 'No new auctions start, and gangs lose the Black market app until you open it again. Auctions already running finish normally.', confirmLabel: 'Close it', danger: true, onConfirm: () => adminAct('blackmarketOpen', [false], 'The black market is closed.') })
+          : adminAct('blackmarketOpen', [true], 'The black market is open again.')),
+      }, on ? 'Close it' : 'Open it')),
     h('div', { class: 'section-head' },
       h('h2', {}, 'Auctions ', h('span', { class: 'muted fig', text: v.lots.length })),
       h('button', { class: 'btn primary', type: 'button', onclick: () => adminAct('auctionOpen', [], 'Auction opened.') }, 'Hold an auction now')),
@@ -1614,6 +1728,12 @@ const AdminMock = {
         templates: { courier: { title: 'Courier run', reward: 2500, account: 'dirty', timeLimit: 900 }, transport: { title: 'Move a stolen car', reward: 4000, account: 'dirty', timeLimit: 1200, vehicles: ['sultan', 'felon', 'baller'] }, collect: { title: 'Collect a debt', reward: 3000, account: 'dirty', timeLimit: 900, peds: ['a_m_m_business_01'], payChance: 0.55, fightChance: 0.35 } },
         contacts: [{ key: 'mags', label: 'Mags', templates: ['courier', 'collect'] }, { key: 'ray', label: 'Ray the Fence', templates: ['transport', 'courier'] }] });
       case 'contractSettingsSave': return ok(args[0]);
+      case 'blackmarketSettings': return ok({ enabled: true, intervalMinutes: [90, 180], biddingMinutes: 15, lotsPerAuction: [2, 3], minPlayers: 2, increment: 0.05, antiSnipe: 60, buyNowMultiplier: 2.5,
+        dropMinutes: 30, headStart: 120, tipChance: 0.35, unclaimedRefund: 0.5,
+        lots: { supplies: { weight: 3, amount: [150, 300], reservePerUnit: 0.6 }, contract: { weight: 2, rewardMultiplier: 2.5, reserve: [6000, 12000] }, copper: { weight: 2, heat: 40, reserve: [15000, 30000] }, connections: { weight: 2, influence: 15, reserve: [10000, 25000] }, items: { weight: 3 } },
+        items: [{ item: 'weapon_pistol50', itemLabel: 'Desert Eagle', label: 'Desert Eagle', count: 1, reserve: 20000 }] });
+      case 'blackmarketSave': return ok(args[0]);
+      case 'blackmarketOpen': return ok(true);
       case 'airdrops': return ok([{ id: 3, gang: 'Grove Kings', state: 'called', x: 1712, y: 3290, arrivesIn: 184 }]);
       case 'airdropAdminCall': return ok(true);
       case 'airdropLoot': return ok({ rolls: 4, fromConfig: true, loot: [{ money: true, min: 5000, max: 15000, chance: 40 }, { item: 'weapon_pistol', label: 'Pistol', min: 1, max: 1, chance: 15 }, { item: 'armour', label: 'Body armour', min: 1, max: 2, chance: 20 }, { item: 'goldbar', label: 'Gold bar', min: 1, max: 3, chance: 10 }] });

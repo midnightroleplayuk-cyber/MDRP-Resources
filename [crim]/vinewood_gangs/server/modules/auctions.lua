@@ -58,14 +58,10 @@ function makers.copper()
         detail = locale('lot_copper_detail'), reserve = round100(rand(cfg.lots.copper.reserve)) }
 end
 
+-- No place is named: the winner's weakest hex gets the boost (naming a hex would reveal someone's turf)
 function makers.connections()
-    local zones = {}
-    for key in pairs(Config.Zones) do zones[#zones + 1] = key end
-    if #zones == 0 then return nil end
-    table.sort(zones)
-    local zone = zones[math.random(#zones)]
-    return { kind = 'connections', zone = zone, influence = cfg.lots.connections.influence,
-        title = locale('lot_connections', Zones.Label(zone)), detail = locale('lot_connections_detail', cfg.lots.connections.influence),
+    return { kind = 'connections', influence = cfg.lots.connections.influence,
+        title = locale('lot_connections'), detail = locale('lot_connections_detail', cfg.lots.connections.influence),
         reserve = round100(rand(cfg.lots.connections.reserve)) }
 end
 
@@ -219,9 +215,9 @@ deliver = function(l)
         l.status = 'sold'
         Gangs.NotifyGang(gangId, locale('auction_won_copper'), 'success')
     elseif lot.kind == 'connections' then
-        if Config.Zones[lot.zone] then Influence.Add(lot.zone, gangId, lot.influence / (Config.Zones[lot.zone].value or 1.0)) end
+        local where = Hexes.BoostWeakest(gangId, lot.influence)
         l.status = 'sold'
-        Gangs.NotifyGang(gangId, locale('auction_won_connections', Zones.Label(lot.zone)), 'success')
+        Gangs.NotifyGang(gangId, where and locale('auction_won_connections', where, lot.influence) or locale('auction_won_connections_no_turf'), 'success')
     elseif lot.kind == 'items' then
         local pool = Config.Contracts.locations.general
         l.drop = pool[math.random(#pool)]
@@ -276,6 +272,7 @@ end
 -------------------------------------------------------------------------------
 
 function Auctions.View(src)
+    if cfg.enabled == false then return nil, 'blackmarket_closed' end
     local gang, _, cid = Gangs.GetPlayerGang(src)
     if not gang then return nil, 'not_in_gang' end
     local open, drops = {}, {}
@@ -362,11 +359,127 @@ local function tick()
 
     if not anyOpen and t >= nextAuctionAt then
         schedule()
-        if #GetPlayers() >= cfg.minPlayers then Auctions.Open() end
+        if cfg.enabled ~= false and #GetPlayers() >= cfg.minPlayers then Auctions.Open() end
     end
 end
 
+-------------------------------------------------------------------------------
+-- Settings staff change in game (/gangadmin > Auctions > Settings), applied on top of config/auctions.lua
+-------------------------------------------------------------------------------
+
+local function copy(v)
+    if type(v) ~= 'table' then return v end
+    local out = {}
+    for k, x in pairs(v) do out[k] = copy(x) end
+    return out
+end
+
+local FIELDS = { 'intervalMinutes', 'biddingMinutes', 'lotsPerAuction', 'minPlayers', 'increment', 'antiSnipe',
+    'buyNowMultiplier', 'dropMinutes', 'headStart', 'tipChance', 'unclaimedRefund', 'lots', 'items' }
+local DEFAULTS = {}
+for _, f in ipairs(FIELDS) do DEFAULTS[f] = copy(cfg[f]) end
+DEFAULTS.enabled = true
+
+local function publishOpen() GlobalState.vg_blackmarket = cfg.enabled ~= false end
+
+local function n(v, lo, hi, d) v = tonumber(v) return v and math.max(lo, math.min(hi, v)) or d end
+local function range(v, lo, hi, d)
+    if type(v) ~= 'table' then return copy(d) end
+    local a, b = math.floor(n(v[1], lo, hi, d[1])), math.floor(n(v[2], lo, hi, d[2]))
+    return { math.min(a, b), math.max(a, b) }
+end
+
+local function cleanSettings(input)
+    if type(input) ~= 'table' then return nil, 'invalid' end
+    local s = { enabled = input.enabled ~= false }
+    s.intervalMinutes = range(input.intervalMinutes, 5, 1440, DEFAULTS.intervalMinutes)
+    s.biddingMinutes = math.floor(n(input.biddingMinutes, 2, 120, DEFAULTS.biddingMinutes))
+    s.lotsPerAuction = range(input.lotsPerAuction, 1, 8, DEFAULTS.lotsPerAuction)
+    s.minPlayers = math.floor(n(input.minPlayers, 0, 200, DEFAULTS.minPlayers))
+    s.increment = n(input.increment, 0.01, 1, DEFAULTS.increment)
+    s.antiSnipe = math.floor(n(input.antiSnipe, 0, 600, DEFAULTS.antiSnipe))
+    s.buyNowMultiplier = n(input.buyNowMultiplier, 1, 20, DEFAULTS.buyNowMultiplier)
+    s.dropMinutes = math.floor(n(input.dropMinutes, 5, 240, DEFAULTS.dropMinutes))
+    s.headStart = math.floor(n(input.headStart, 0, 1800, DEFAULTS.headStart))
+    s.tipChance = n(input.tipChance, 0, 1, DEFAULTS.tipChance)
+    s.unclaimedRefund = n(input.unclaimedRefund, 0, 1, DEFAULTS.unclaimedRefund)
+
+    local L, D = type(input.lots) == 'table' and input.lots or {}, DEFAULTS.lots
+    local function w(kind) return math.floor(n(L[kind] and L[kind].weight, 0, 100, D[kind].weight)) end
+    s.lots = {
+        supplies = { weight = w('supplies'), amount = range(L.supplies and L.supplies.amount, 1, 10000, D.supplies.amount),
+            reservePerUnit = n(L.supplies and L.supplies.reservePerUnit, 0.01, 100, D.supplies.reservePerUnit) },
+        contract = { weight = w('contract'), rewardMultiplier = n(L.contract and L.contract.rewardMultiplier, 1, 20, D.contract.rewardMultiplier),
+            reserve = range(L.contract and L.contract.reserve, 100, 100000000, D.contract.reserve) },
+        copper = { weight = w('copper'), heat = math.floor(n(L.copper and L.copper.heat, 1, 1000, D.copper.heat)),
+            reserve = range(L.copper and L.copper.reserve, 100, 100000000, D.copper.reserve) },
+        connections = { weight = w('connections'), influence = math.floor(n(L.connections and L.connections.influence, 1, 100, D.connections.influence)),
+            reserve = range(L.connections and L.connections.reserve, 100, 100000000, D.connections.reserve) },
+        items = { weight = w('items') },
+    }
+
+    s.items = {}
+    for _, it in ipairs(type(input.items) == 'table' and input.items or {}) do
+        if #s.items >= 50 then break end
+        if type(it) == 'table' and it.item and it.item ~= '' then
+            if not Bridge.ItemExists(it.item) then return nil, 'item_not_found' end
+            local label = tostring(it.label or ''):gsub('[<>]', ''):match('^%s*(.-)%s*$'):sub(1, 40)
+            s.items[#s.items + 1] = { item = tostring(it.item), label = #label > 0 and label or Bridge.ItemLabel(it.item),
+                count = math.floor(n(it.count, 1, 1000, 1)), reserve = math.floor(n(it.reserve, 100, 100000000, 10000)) }
+        end
+    end
+    return s
+end
+
+local function applySettings(s)
+    for _, f in ipairs(FIELDS) do cfg[f] = s[f] end
+    cfg.enabled = s.enabled
+    publishOpen()
+end
+
+function Auctions.AdminSettings()
+    local s = { enabled = cfg.enabled ~= false }
+    for _, f in ipairs(FIELDS) do s[f] = copy(cfg[f]) end
+    for _, it in ipairs(s.items) do it.itemLabel = Bridge.ItemLabel(it.item) end
+    return s
+end
+
+local function store(s, src)
+    MySQL.insert.await("INSERT INTO vg_settings (`key`, value, updated_by) VALUES ('blackmarket', ?, ?) ON DUPLICATE KEY UPDATE value = VALUES(value), updated_by = VALUES(updated_by)",
+        { json.encode(s), Bridge.GetCitizenId(src) or 'console' })
+end
+
+function Auctions.AdminSaveSettings(src, input)
+    local s, err = cleanSettings(input)
+    if not s then return false, err end
+    applySettings(s)
+    store(s, src)
+    Logger.Log(src, 'staff_blackmarket_settings', ('black market %s, %d contraband items'):format(s.enabled and 'on' or 'off', #s.items))
+    return true, Auctions.AdminSettings()
+end
+
+---Just the on/off switch.
+function Auctions.AdminSetOpen(src, on)
+    local s = Auctions.AdminSettings()
+    s.enabled = on == true
+    return Auctions.AdminSaveSettings(src, s)
+end
+
+function Auctions.AdminResetSettings(src)
+    applySettings(copy(DEFAULTS))
+    MySQL.update.await("DELETE FROM vg_settings WHERE `key` = 'blackmarket'")
+    return true, Auctions.AdminSettings()
+end
+
+local function loadSettings()
+    local raw = MySQL.scalar.await("SELECT value FROM vg_settings WHERE `key` = 'blackmarket'")
+    local ok, saved = pcall(json.decode, raw or '')
+    local s = ok and type(saved) == 'table' and cleanSettings(saved)
+    if s then applySettings(s) else publishOpen() end
+end
+
 function Auctions.Load()
+    loadSettings()
     lots = {}
     for _, r in ipairs(MySQL.query.await("SELECT id, lot, status, ends_at, top_gang, top_bid, bids, drop_point, drop_until FROM vg_auctions WHERE status IN ('open','awaiting_pickup')")) do
         local ok, lot = pcall(json.decode, r.lot)

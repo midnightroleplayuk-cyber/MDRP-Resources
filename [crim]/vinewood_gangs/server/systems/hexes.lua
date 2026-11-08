@@ -159,6 +159,15 @@ end
 
 function Hexes.IsTurfDrug(item) return isTurfDrug(item) end
 
+---Adds control to a gang's weakest hex (the black market's "connections" lot). Returns that hex's label.
+function Hexes.BoostWeakest(gangId, amount)
+    local weakest
+    for _, h in ipairs(owned(gangId)) do if not weakest or h.control < weakest.control then weakest = h end end
+    if not weakest then return nil end
+    setControl(weakest, weakest.control + amount)
+    return Hex.Label(weakest.q, weakest.r)
+end
+
 ---A sale on a hex. Own hex + turf drug builds control; a rival's sale costs the owner control and reveals the hex.
 function Hexes.OnSale(key, sellerGangId, item, qty)
     local h = hexes[key]
