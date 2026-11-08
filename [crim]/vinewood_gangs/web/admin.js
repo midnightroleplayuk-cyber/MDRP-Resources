@@ -506,6 +506,8 @@ async function renderTurfSettings() {
       h('label', { class: 'field' }, '% per unit sold on own turf', num(v, 'controlPerSale', 0.1, 100)),
       h('label', { class: 'field' }, '% lost per unit a rival sells', num(v, 'rivalLoss', 0, 100)),
       h('label', { class: 'field' }, '% every hex loses per hour', num(v, 'decayPerHour', 0, 100)),
+      (() => { const c = h('input', { type: 'checkbox', checked: v.decayOnlyOnline !== false }); c.addEventListener('change', () => { v.decayOnlyOnline = c.checked; });
+        return h('label', { class: 'toggle', style: 'align-self:end;padding-bottom:8px' }, c, ' Only while a member of that gang is online'); })(),
       h('label', { class: 'field' }, 'New hexes start at (%)', num(v, 'startControl', 0, 100))),
     h('h3', { style: 'margin-top:8px', text: 'Buying new ground' }),
     h('div', { class: 'heist-settings' },
