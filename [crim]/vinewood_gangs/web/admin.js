@@ -46,7 +46,7 @@ const ADMIN_TABS = [
   { id: 'diplomacy', label: 'Diplomacy', icon: 'diplomacy', tint: '#8FB3FF' },
   { id: 'director', label: 'Street events', icon: 'bolt', tint: '#F0AD4E' },
   { id: 'informants', label: 'Informants', icon: 'phone', tint: '#A6AEB9' },
-  { id: 'auctions', label: 'Auctions', icon: 'market', tint: '#D592D2' },
+  { id: 'auctions', label: 'Black market', icon: 'market', tint: '#D592D2' },
   { id: 'reviews', label: 'Reviews', icon: 'check', tint: '#6CC070' },
   { id: 'tags', label: 'Tags in world', icon: 'tags', tint: '#E39A6B' },
   { id: 'staff', label: 'Staff access', icon: 'shield', tint: '#7AA2FF', needs: 'management' },
@@ -409,7 +409,7 @@ async function openAddMember(gang, gradeOptions) {
 function auctionTabs() {
   const tab = admin.auctionTab || 'auctions';
   return h('div', { class: 'choices', role: 'radiogroup', style: 'margin-bottom:16px' },
-    [['auctions', 'Auctions'], ['settings', 'Settings']].map(([key, label]) => h('button', {
+    [['auctions', 'Auctions'], ['settings', 'Black market settings']].map(([key, label]) => h('button', {
       type: 'button', role: 'radio', class: 'choice', 'aria-checked': String(tab === key),
       onclick: () => { admin.auctionTab = key; admin.bmDraft = null; renderAdminTab(); },
     }, label)));
@@ -540,7 +540,7 @@ async function renderAdminAuctions() {
     h('div', { class: 'section-head' },
       h('h2', {}, 'Auctions ', h('span', { class: 'muted fig', text: v.lots.length })),
       h('button', { class: 'btn primary', type: 'button', onclick: () => adminAct('auctionOpen', [], 'Auction opened.') }, 'Hold an auction now')),
-    h('p', { class: 'hint', style: 'margin-bottom:16px', text: `Next automatic auction in about ${v.nextIn} min. ${v.hasItems ? '' : 'No contraband items are set up in config/auctions.lua, so item lots never appear.'}` }),
+    h('p', { class: 'hint', style: 'margin-bottom:16px', text: `Next automatic auction in about ${v.nextIn} min. ${v.hasItems ? '' : 'No contraband items yet, so item lots never come up: add some in Black market settings.'}` }),
     rows.length
       ? h('table', {},
         h('thead', {}, h('tr', {}, h('th', { text: 'Lot' }), h('th', { text: 'Leading / won by' }), h('th', { class: 'num', text: 'Price' }), h('th', { class: 'num', text: 'Left' }), h('th', {}))),

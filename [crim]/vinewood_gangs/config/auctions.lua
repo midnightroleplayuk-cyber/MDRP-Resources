@@ -1,4 +1,4 @@
--- The black market. Staff can close it and change all of this in game: /gangadmin > Auctions (and its Settings tab).
+-- The black market. Staff can close it and change all of this in game: /gangadmin > Black market (and its settings tab).
 Config.Auctions = {
     intervalMinutes = { 90, 180 }, -- between auctions
     biddingMinutes  = 15,

@@ -70,8 +70,8 @@ Everything is done from the gang tablet: **F6**, `/gangtablet`, or an item (`Con
   it turns up on boards, and whether it can only be done once. "Offer now" puts it straight on a gang's board.
 - **Contract spots:** every pickup/drop-off, stolen-car and debtor spot. Add new ones where you're standing
   (they're used by new jobs straight away), go to any spot, and delete the ones added in game.
-- **Auctions:** open or close the black market (closed: no new auctions, and the tablet app is hidden). The
-  Settings tab changes everything in `config/auctions.lua` in game: contraband items (from the inventory search,
+- **Black market:** open or close the black market (closed: no new auctions, and the tablet app is hidden). The
+  Black market settings tab changes everything in `config/auctions.lua` in game: contraband items (from the inventory search,
   with how many and a reserve price), how often each lot type comes up (0 turns it off) and their numbers, and the
   auction and dead-drop timings. The "connections" lot adds control to the winner's weakest hex.
 - **Diplomacy:** every deal proposed or running; cancel any without penalty.
@@ -355,7 +355,7 @@ anonymous ("another gang leads"). A bid in the last minute extends the lot by a 
 restart never loses anyone's money.
 
 Item lots only appear once you add items to `Config.Auctions.items`, using names from your own inventory.
-Staff can hold an auction on demand or cancel any lot (refunding the leader) from `/gangadmin` > Auctions.
+Staff can hold an auction on demand or cancel any lot (refunding the leader) from `/gangadmin` > Black market.
 
 ## Informants
 
@@ -472,3 +472,16 @@ shown in the tablet is inserted as text, never HTML. Staff callbacks re-check pe
 Territory is hexes only now; the area drawing tool and influence system are gone. Your old area data is left in
 the database but no longer used. To remove it, run `sql/optional_remove_old_areas.sql` (it's never run
 automatically). Give each gang its compound in `/gangadmin` > Gangs > the gang > Turf.
+
+## What you can edit
+
+The resource is protected by the Cfx asset escrow. These files are left open for you to edit:
+
+- `config/*.lua`: every setting (most can also be changed in game in `/gangadmin`)
+- `bridge/server/framework.lua`: framework, inventory and money hooks (for a custom framework or inventory)
+- `bridge/server/integrations.lua`: dispatch, MDT and door-lock hooks (for a different dispatch or MDT script)
+- `client/bridge.lua`: client-side framework and job hooks
+- `install/`: item definitions and images to add to your inventory
+- `locales/en.json`: every message players see (copy it to translate)
+- `sql/`: the database files
+- `web/`: the tablet's look (style.css) and images
