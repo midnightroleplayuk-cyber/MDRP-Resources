@@ -161,7 +161,7 @@ function showModal(...content) {
 }
 function hideModal() {
   $('modal').hidden = true;
-  $('sheet').classList.remove('wide');
+  $('sheet').classList.remove('wide', 'xwide');
 }
 
 function confirmModal({ title, body, confirmLabel, danger, typeToConfirm, onConfirm }) {
@@ -896,6 +896,29 @@ function hexCentre(q, r) {
   const R = state.static.hexSize || 150;
   return [o.x + R * SQ3 * (q + r / 2), o.y + R * 1.5 * r];
 }
+// A hex's name, the same as the server's: the nearest district plus its grid reference
+function hexLabel(q, r) {
+  const [cx, cy] = hexCentre(q, r);
+  let best = 'Hex', bestD = Infinity;
+  for (const d of state.static.hexDistricts || []) {
+    const dd = (d[1] - cx) ** 2 + (d[2] - cy) ** 2;
+    if (dd < bestD) { best = d[0]; bestD = dd; }
+  }
+  return `${best} (${q}, ${r})`;
+}
+
+// Which hex a world position is in (the same maths as shared/hexes.lua)
+function hexFromCoords(x, y) {
+  const o = state.static.hexOrigin || { x: 0, y: 0 };
+  const R = state.static.hexSize || 150;
+  x -= o.x; y -= o.y;
+  const fq = (SQ3 / 3 * x - y / 3) / R, fr = (2 / 3 * y) / R, fs = -fq - fr;
+  let q = Math.round(fq), r = Math.round(fr); const s = Math.round(fs);
+  const dq = Math.abs(q - fq), dr = Math.abs(r - fr), ds = Math.abs(s - fs);
+  if (dq > dr && dq > ds) q = -r - s; else if (dr > ds) r = -q - s;
+  return [q, r];
+}
+
 function hexCorners(q, r) {
   const [cx, cy] = hexCentre(q, r);
   const R = state.static.hexSize || 150;

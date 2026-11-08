@@ -956,3 +956,13 @@ textarea:focus { outline: none; border-color: var(--concrete); }
 /* Air drop loot table */
 .loot-entry { display: grid; gap: 8px; padding: 10px 12px; border: 1px solid var(--line); border-radius: 10px; background: var(--kerb); }
 .loot-fields { display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: end; }
+
+/* Staff hex picker */
+#sheet.xwide { width: min(1040px, 94vw); max-width: none; }
+.hex-pick { display: grid; grid-template-columns: minmax(0, 1fr) 260px; gap: 18px; align-items: start; }
+.hex-picker { width: 100%; height: auto; aspect-ratio: 1 / 1; max-height: 62vh; cursor: crosshair; }
+.hex-picker .hex-grid polygon { fill: none; stroke: rgba(20, 24, 30, 0.35); stroke-width: 1; vector-effect: non-scaling-stroke; }
+.hex-picker .hex-hover { fill: rgba(255, 255, 255, 0.18); stroke: #ffffff; stroke-width: 1.5; vector-effect: non-scaling-stroke; pointer-events: none; }
+.hex-picker .hex-picked { fill: rgba(91, 141, 239, 0.35); stroke: #5B8DEF; stroke-width: 3; vector-effect: non-scaling-stroke; pointer-events: none; }
+.hex-picker polygon { pointer-events: none; }
+.hex-pick-info { display: grid; gap: 2px; align-content: start; }

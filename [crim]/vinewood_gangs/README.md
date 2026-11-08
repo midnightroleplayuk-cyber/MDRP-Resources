@@ -171,8 +171,9 @@ Everything is in `config/drugs.lua`.
 San Andreas is split into a honeycomb of hexes (150 m by default), and the hexes a gang holds are its turf:
 tags, rackets, street dealing, street events, gang tiers and the maps all work on them.
 
-- **Starting turf:** staff give each gang its compound in game: `/gangadmin` > Gangs > the gang > **Turf**, stand in
-  a hex and press "Give them the hex I'm standing in" (twice by default). The first is the **main** hex.
+- **Starting turf:** staff give each gang its compound in game: `/gangadmin` > Gangs > the gang > **Turf**. Either
+  **Pick on the map** (zoom in, click a hex, give it; staff see every gang's turf there), or stand in a hex and
+  press "Give them the hex I'm standing in". Two hexes by default; the first is the **main** hex.
 - **Control (0 to 100%):** selling the **turf drug** (OG Kush by default) on your own hex builds its control. Every
   hex loses some each hour, and a rival dealing on it costs you more. Other knocks cost control too: a rival
   crossing out your tag, police cleaning it, a safehouse raid, a failed heist, or a street-event crew. A hex at

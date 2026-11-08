@@ -323,12 +323,142 @@ async function turfBlock(gang) {
       ? `${v.hexes.length} ${v.hexes.length === 1 ? 'hex' : 'hexes'}. ${left ? `Give them ${left} more for their starting compound.` : 'After the compound, they buy new ground themselves from the tablet.'}`
       : `They have no turf yet. Stand in the hex that should be their main compound and press the button, then do the same for the rest of their compound (${v.startHexes} hexes).` }),
     rows.length ? h('table', {}, h('tbody', {}, rows)) : null,
-    h('button', { class: 'btn primary', type: 'button', style: 'margin-top:10px', onclick: async () => {
-      const r = await adminRequest('hexGive', gang.id);
-      if (!r.ok) return toast(r.error, true);
-      toast(`Gave them ${r.data}.`);
-      renderAdminTab();
-    } }, 'Give them the hex I\'m standing in'));
+    h('div', { class: 'row', style: 'margin-top:10px' },
+      h('button', { class: 'btn primary', type: 'button', onclick: () => hexMapPicker(gang, v.hexes) }, 'Pick on the map'),
+      h('button', { class: 'btn', type: 'button', onclick: async () => {
+        const r = await adminRequest('hexGive', gang.id);
+        if (!r.ok) return toast(r.error, true);
+        toast(`Gave them ${r.data}.`);
+        renderAdminTab();
+      } }, 'Give them the hex I\'m standing in')));
+}
+
+/* Pick hexes on the map to give a gang (staff see every gang's turf here) */
+async function hexMapPicker(gang, theirs) {
+  const res = await adminRequest('hexMap');
+  if (!res.ok) return toast(res.error, true);
+  let claimed = res.data;
+  const byKey = () => Object.fromEntries(claimed.map((x) => [x.key, x]));
+  const R = state.static.hexSize || 150;
+  const tm = state.static.tabletMap;
+
+  const map = svg('svg', { class: 'map has-picture hex-picker', role: 'img', 'aria-label': 'Pick a hex' });
+  if (tm && tm.image) {
+    const left = (0 - tm.offsetX) / tm.scaleX + (tm.nudgeX || 0);
+    const top = (0 - tm.offsetY) / tm.scaleY + (tm.nudgeY || 0);
+    map.append(svg('image', { href: tm.image, x: left, y: -top, width: tm.size / tm.scaleX, height: tm.size / Math.abs(tm.scaleY), preserveAspectRatio: 'none' }));
+  }
+  const grid = svg('g', { class: 'hex-grid' });
+  const owned = svg('g', {});
+  const hover = svg('polygon', { class: 'hex-hover', points: '' });
+  const picked = svg('polygon', { class: 'hex-picked', points: '' });
+  map.append(grid, owned, hover, picked);
+  const pts = (q, r) => hexCorners(q, r).map(([x, y]) => `${x},${-y}`).join(' ');
+
+  const drawOwned = () => owned.replaceChildren(...claimed.map((x) => svg('polygon', {
+    points: pts(x.q, x.r), fill: x.colour, 'fill-opacity': x.gangId === gang.id ? 0.6 : 0.4,
+    stroke: x.gangId === gang.id ? '#ffffff' : '#1C2127', 'stroke-width': x.gangId === gang.id ? 2 : 1, 'vector-effect': 'non-scaling-stroke' })));
+
+  // Start on their turf, or Los Santos
+  const mine = claimed.filter((x) => x.gangId === gang.id);
+  let view = { cx: 0, cy: -900, half: 2200 };
+  if (mine.length) { const [cx, cy] = hexCentre(mine[0].q, mine[0].r); view = { cx, cy, half: 900 }; }
+  // The grid is only drawn zoomed in (otherwise it's thousands of hexes)
+  const drawGrid = () => {
+    if (view.half > 1600) { grid.replaceChildren(); return; }
+    const [q0, r0] = hexFromCoords(view.cx, view.cy);
+    const hx = view.half * aspect();
+    const n = Math.ceil(Math.max(hx, view.half) / (R * 1.4)) + 2;
+    const cells = [];
+    for (let dr = -n; dr <= n; dr += 1) for (let dq = -n - Math.ceil(n / 2); dq <= n + Math.ceil(n / 2); dq += 1) {
+      const q = q0 + dq, r = r0 + dr;
+      const [x, y] = hexCentre(q, r);
+      if (Math.abs(x - view.cx) < hx + R && Math.abs(y - view.cy) < view.half + R) cells.push(svg('polygon', { points: pts(q, r) }));
+    }
+    grid.replaceChildren(...cells);
+  };
+  // view.half is half the visible height; the width follows the map's real shape on screen
+  const aspect = () => { const r = map.getBoundingClientRect(); return r.height ? r.width / r.height : 1; };
+  const apply = () => {
+    const hx = view.half * aspect();
+    map.setAttribute('viewBox', `${view.cx - hx} ${-view.cy - view.half} ${hx * 2} ${view.half * 2}`);
+    drawGrid();
+  };
+  const toWorld = (e) => {
+    const r = map.getBoundingClientRect();
+    const fx = (e.clientX - r.left) / (r.width || 1), fy = (e.clientY - r.top) / (r.height || 1);
+    const hx = view.half * aspect();
+    return [view.cx - hx + fx * 2 * hx, view.cy + view.half - fy * 2 * view.half];
+  };
+
+  // Details of the picked hex and the Give button
+  const info = h('div', { class: 'hex-pick-info' });
+  let sel = null;
+  const showInfo = () => {
+    if (!sel) { info.replaceChildren(h('p', { class: 'hint', style: 'margin:0', text: 'Zoom in and click a hex. Your gang\'s hexes have a white outline; other colours are other gangs.' })); return; }
+    const owner = byKey()[`h:${sel[0]}:${sel[1]}`];
+    const label = owner ? owner.label : hexLabel(sel[0], sel[1]);
+    info.replaceChildren(...[
+      h('strong', { text: label }),
+      h('div', { class: 'hint', style: 'margin:2px 0 8px', text: owner
+        ? (owner.gangId === gang.id ? `Already theirs (${owner.control}% control${owner.main ? ', main hex' : ''}).` : `Held by ${owner.gang}. Remove it from them first if you want to move it.`)
+        : 'Free ground.' }),
+      !owner ? h('button', { class: 'btn primary', type: 'button', onclick: async () => {
+        const r = await adminRequest('hexGive', gang.id, sel[0], sel[1]);
+        if (!r.ok) return toast(r.error, true);
+        toast(`Gave ${gang.label} ${r.data}.`);
+        const again = await adminRequest('hexMap');
+        if (again.ok) claimed = again.data;
+        drawOwned(); showInfo();
+      } }, `Give ${gang.label} this hex`) : null].filter(Boolean));
+  };
+
+  let drag = null, dragged = false;
+  map.addEventListener('mousemove', (e) => {
+    if (drag) return;
+    const [x, y] = toWorld(e);
+    const [q, r] = hexFromCoords(x, y);
+    hover.setAttribute('points', pts(q, r));
+  });
+  map.addEventListener('mouseleave', () => hover.setAttribute('points', ''));
+  map.addEventListener('click', (e) => {
+    if (dragged) return;
+    const [x, y] = toWorld(e);
+    sel = hexFromCoords(x, y);
+    picked.setAttribute('points', pts(sel[0], sel[1]));
+    if (view.half > 1600) { const [cx, cy] = hexCentre(sel[0], sel[1]); view = { cx, cy, half: 900 }; apply(); }
+    showInfo();
+  });
+  map.addEventListener('wheel', (e) => {
+    e.preventDefault();
+    const r = map.getBoundingClientRect();
+    const fx = (e.clientX - r.left) / (r.width || 1), fy = (e.clientY - r.top) / (r.height || 1);
+    const [wx, wy] = toWorld(e);
+    const half = Math.min(6000, Math.max(300, view.half * (e.deltaY > 0 ? 1.25 : 0.8)));
+    view = { cx: wx - (fx * 2 - 1) * half * aspect(), cy: wy + (fy * 2 - 1) * half, half };
+    apply();
+  }, { passive: false });
+  map.addEventListener('mousedown', (e) => { drag = { x: e.clientX, y: e.clientY, view: { ...view } }; dragged = false; });
+  mapDragHandlers = {
+    move: (e) => {
+      if (!drag || !map.isConnected) return;
+      const r = map.getBoundingClientRect();
+      if (Math.abs(e.clientX - drag.x) + Math.abs(e.clientY - drag.y) > 4) dragged = true;
+      if (!dragged) return;
+      view = { cx: drag.view.cx - (e.clientX - drag.x) / (r.width || 1) * 2 * drag.view.half * aspect(), cy: drag.view.cy + (e.clientY - drag.y) / (r.height || 1) * 2 * drag.view.half, half: drag.view.half };
+      apply();
+    },
+    up: () => { drag = null; setTimeout(() => { dragged = false; }, 0); },
+  };
+
+  drawOwned(); showInfo();
+  $('sheet').classList.add('xwide');
+  showModal(
+    h('h2', { text: `Give ${gang.label} turf` }),
+    h('p', { class: 'hint', style: 'margin:0 0 10px', text: `Scroll to zoom, drag to move, click a hex. Their first ${theirs.length ? 'hexes were' : 'two hexes are'} their compound; the first is their main hex.` }),
+    h('div', { class: 'hex-pick' }, map, info),
+    h('div', { class: 'buttons' }, h('button', { class: 'btn primary', type: 'button', onclick: () => { hideModal(); renderAdminTab(); } }, 'Done')));
+  requestAnimationFrame(apply);
 }
 
 /* Turf settings */
@@ -1713,7 +1843,10 @@ const AdminMock = {
           { id: 6, label: 'Gruppe armoured truck', kind: 'truck', enabled: false, cooldownLeft: 1880, data: { police: 3, crew: 3, cooldown: 90, timeLimit: 15, steps: [{ type: 'truck', label: 'Stop the truck' }, { type: 'truck_doors', label: 'Rear doors' }, { type: 'loot', label: 'Cash bags', loot: { kind: 'money', account: 'dirty', min: 12000, max: 20000 } }] } }] });
       case 'safehouseShells': return ok([{ model: 'shell_v16low', label: 'Low-end apartment' }, { model: 'shell_trevor', label: 'Trevor\'s trailer' }, { model: 'shell_warehouse1', label: 'Warehouse' }]);
       case 'hexGang': return ok({ startHexes: 2, hexes: [{ key: 'h:4:-7', label: 'Davis (4, -7)', control: 100, main: true, compound: true }, { key: 'h:5:-7', label: 'Rancho (5, -7)', control: 62, compound: true }, { key: 'h:3:-6', label: 'Davis (3, -6)', control: 18 }] });
-      case 'hexGive': return ok('Davis (4, -8)');
+      case 'hexGive': return ok(args[1] != null ? `Hex (${args[1]}, ${args[2]})` : 'Davis (4, -8)');
+      case 'hexMap': return ok([{ key: 'h:4:-7', q: 4, r: -7, gangId: 1, gang: 'Grove Kings', colour: '#7B3FBF', label: 'Davis (4, -7)', control: 100, main: true },
+        { key: 'h:5:-7', q: 5, r: -7, gangId: 1, gang: 'Grove Kings', colour: '#7B3FBF', label: 'Rancho (5, -7)', control: 62 },
+        { key: 'h:6:-8', q: 6, r: -8, gangId: 2, gang: 'Los Vagos', colour: '#E8C31E', label: 'Rancho (6, -8)', control: 40 }]);
       case 'hexSettings': return ok({ size: 150, turfDrugs: ['weed_og_kush'], turfDrugItems: [{ name: 'weed_og_kush', label: 'OG Kush' }], controlPerSale: 1.5, rivalLoss: 2, decayPerHour: 4, startControl: 10, expandAt: 100, sprayEvery: 3,
         expandCost: { money: 50000, account: 'dirty', item: 'weed_og_kush', count: 50 }, expandItemLabel: 'OG Kush' });
       case 'customContracts': return ok({ types: [{ key: 'collect', label: 'Collect a debt' }, { key: 'courier', label: 'Courier run' }, { key: 'transport', label: 'Move a stolen car' }],
@@ -1777,6 +1910,6 @@ const AdminMock = {
 };
 
 if (!IN_GAME && location.search.includes('admin')) {
-  window.postMessage({ action: 'openAdmin', static: { currency: '£', nameMax: 24, hexMode: true, hexSize: 150, hexOrigin: { x: 0, y: 0 }, zones: [], permissions: [], fonts: [],
+  window.postMessage({ action: 'openAdmin', static: { currency: '£', nameMax: 24, hexMode: true, hexSize: 150, hexOrigin: { x: 0, y: 0 }, hexDistricts: [['Davis', 100, -1700], ['Strawberry', -150, -1400], ['Chamberlain Hills', -170, -1640], ['Rancho', 430, -1800], ['La Mesa', 800, -1100]], tabletMap: { image: 'images/map.jpg', size: 2048, scaleX: 0.16576, offsetX: 938.4, scaleY: -0.164, offsetY: 1382.4 }, zones: [], permissions: [], fonts: [],
     tiers: [{ label: 'Street crew', unlocks: [] }, { label: 'Firm', unlocks: [] }, { label: 'Organisation', unlocks: [] }, { label: 'Syndicate', unlocks: [] }] } }, '*');
 }

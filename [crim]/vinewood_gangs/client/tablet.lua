@@ -42,7 +42,7 @@ local ADMIN_ALLOWED = {
     auctions = true, auctionOpen = true, auctionCancel = true, setTier = true, adjustReputation = true,
     contractSpots = true, addContractSpot = true, deleteContractSpot = true, gotoContractSpot = true,
     addRacketShop = true, deleteRacketShop = true, gotoRacketShop = true,
-    hexGang = true, hexGive = true, hexRemove = true, hexControl = true, hexMain = true, hexSettings = true, hexSettingsSave = true,
+    hexGang = true, hexMap = true, hexGive = true, hexRemove = true, hexControl = true, hexMain = true, hexSettings = true, hexSettingsSave = true,
     blackmarketSettings = true, blackmarketSave = true, blackmarketOpen = true, blackmarketReset = true,
     airdrops = true, airdropCancel = true, airdropAdminCall = true, airdropLoot = true, airdropLootSave = true, airdropLootReset = true,
     searchItems = true, drugItems = true, drugItemsSave = true, drugItemsReset = true,
@@ -106,7 +106,7 @@ local function staticData()
         heists = Config.Heists.enabled,
         airdrops = Config.Airdrops.enabled and Config.Airdrops.playersCanCall == true, -- the gang tablet's Air drop app
         hexMode = true,
-        hexSize = Config.Hexes.size, hexOrigin = Config.Hexes.origin,
+        hexSize = Config.Hexes.size, hexOrigin = Config.Hexes.origin, hexDistricts = Config.Hexes.districts,
         airdropShowTo = Config.Airdrops.showTo,
         tiers = (function()
             local out = {}

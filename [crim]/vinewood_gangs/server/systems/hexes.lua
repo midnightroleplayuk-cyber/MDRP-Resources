@@ -377,12 +377,32 @@ function Hexes.AdminGang(gangId)
     return { hexes = list, startHexes = cfg.startHexes }
 end
 
----Gives a gang the hex the staff member is standing in. Their first hexes are the compound (the first is main).
-function Hexes.AdminGive(src, gangId)
+---Every claimed hex, for the staff map picker. Staff see all turf (players only see what their gang knows).
+function Hexes.AdminMap()
+    local out = {}
+    for key, h in pairs(hexes) do
+        local g = Gangs.Get(h.gangId)
+        out[#out + 1] = { key = key, q = h.q, r = h.r, gangId = h.gangId, label = Hex.Label(h.q, h.r),
+            gang = g and g.label or '?', colour = g and g.colour or '#888888', control = math.floor(h.control), main = h.main }
+    end
+    return out
+end
+
+---Gives a gang a hex: the one the staff member is standing in, or the one picked on the map (q, r).
+---Their first hexes are the compound (the first is main).
+function Hexes.AdminGive(src, gangId, q, r)
     gangId = tonumber(gangId)
     if not gangId or not Gangs.Get(gangId) then return false, 'invalid' end
-    local c = GetEntityCoords(GetPlayerPed(src))
-    local q, r = Hex.FromCoords(c.x, c.y)
+    q, r = tonumber(q), tonumber(r)
+    if q and r then
+        q, r = math.floor(q), math.floor(r)
+        -- Keep it on the map (roughly the playable area)
+        local x, y = Hex.Centre(q, r)
+        if math.abs(x) > 5000 or y < -4500 or y > 8500 then return false, 'invalid' end
+    else
+        local c = GetEntityCoords(GetPlayerPed(src))
+        q, r = Hex.FromCoords(c.x, c.y)
+    end
     local key = Hex.Key(q, r)
     local other = hexes[key]
     if other and other.gangId ~= gangId then
