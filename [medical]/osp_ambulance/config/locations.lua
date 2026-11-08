@@ -80,7 +80,7 @@ Config.Hospitals = {
         },
 
         pharmacy = {
-            vvector4(-316.49, -133.95, 40.24, 242.4), --DONE
+            vector4(-316.49, -133.95, 40.24, 242.4), --DONE
         },
 
         beds = {
