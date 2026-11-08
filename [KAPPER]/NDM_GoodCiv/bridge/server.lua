@@ -136,6 +136,16 @@ function Bridge.Revive(src)
     if fn then fn(src) end
 end
 
+---Bring a patient round on scene with low health (after successful CPR).
+function Bridge.WakeUp(src)
+    local key = GetResourceState('osp_ambulance') == 'started' and 'osp' or Bridge.Name
+    local fn = Config.WakeUp and Config.WakeUp[key]
+    if not fn then return false end
+    fn(src)
+    TriggerClientEvent('goodciv:client:wakeHealth', src, Config.Treatment.CPR.WakeHealth)
+    return true
+end
+
 ---Server ids of every online player who is an on-duty medic.
 function Bridge.GetOnDutyMedics()
     local medics = {}

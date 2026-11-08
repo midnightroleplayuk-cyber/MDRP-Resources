@@ -26,11 +26,11 @@ local function rollCondition(src)
         conscious = true,
         breathing = true,
         bleeding = 'none', -- none | major | controlled
-        recovery = false,
     }
     if report.downed then
         state.conscious = false
-        state.breathing = math.random() >= Config.Conditions.NotBreathingChance
+        -- Cardiac arrest only at stage 2 (no signs of life). Last stand = breathing, can crawl.
+        state.breathing = report.stage ~= 2
         local chance = Config.Conditions.MajorBleedChance[report.damage or 'other'] or Config.Conditions.MajorBleedChance.other
         if math.random() < chance then state.bleeding = 'major' end
     end
@@ -118,6 +118,7 @@ function Incidents.Create(patient, origin)
         coords = coords,
         origin = origin,
         createdAt = now(),
+        stage = (Player(patient).state['goodciv:patient'] or {}).stage or 0,
         state = state,
         assessed = false,
         responders = {},
@@ -219,6 +220,21 @@ CreateThread(function()
             local report = Player(inc.patient).state['goodciv:patient']
             local coords = pedCoords(inc.patient)
             if coords then inc.coords = coords end
+
+            -- Last stand -> stage 2 (or back) during the call: follow the real state.
+            if report and report.downed and report.stage and report.stage ~= inc.stage then
+                inc.stage = report.stage
+                local breathing = report.stage ~= 2
+                if inc.state.breathing ~= breathing then
+                    inc.state.breathing = breathing
+                    if not breathing then
+                        for r in pairs(inc.responders) do
+                            TriggerClientEvent('goodciv:client:toast', r, 'error', L('arrested'))
+                        end
+                    end
+                    Incidents.Sync(inc)
+                end
+            end
 
             if report and not report.downed and not inc.transport and not inc.handingOver then
                 -- Patient got up (revived by a medic, admin, or another script).

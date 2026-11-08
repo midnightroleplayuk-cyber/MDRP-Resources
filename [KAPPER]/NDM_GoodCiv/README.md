@@ -17,7 +17,6 @@ Works with **QBCore**, **QBox**, **ESX** and **standalone** through a small fram
   - **Assess**: check breathing before deciding what to do.
   - **Tourniquet**: controls catastrophic bleeding (optional item, consumed).
   - **CPR**: a rhythm minigame. Compressions at 100 to 120 per minute give the best chance of getting the patient breathing again. Uncontrolled bleeding lowers the chance.
-  - **Recovery position** for patients who are breathing but unresponsive.
   - **Load into vehicle / unload** and **hand over at hospital**.
 - Safe transport: speed limit while the patient is onboard, and crashes can put a stable patient back into cardiac arrest.
 - The server owns the patient's condition and checks distance and timing for every action.

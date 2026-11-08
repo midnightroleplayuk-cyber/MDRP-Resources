@@ -25,39 +25,53 @@ if Bridge.Name == 'esx' then
     AddEventHandler('esx_ambulancejob:revive', function() esxDead = false end)
 end
 
--- osp_ambulance death events (same ones vinewood-dispatch uses).
-local ospDown = false
-RegisterNetEvent('osp_ambulance:OnPlayerDead', function() ospDown = true end)
-RegisterNetEvent('osp_ambulance:OnPlayerSpawn', function() ospDown = false end)
-AddEventHandler('hospital:client:Revive', function() ospDown = false end)
+-- osp_ambulance stage events: 1 = last stand (crawling), 2 = stage 2 death (no signs of life).
+local ospStage = 0
+RegisterNetEvent('osp_ambulance:OnPlayerLastStand', function(on) ospStage = on and 1 or 0 end)
+RegisterNetEvent('osp_ambulance:OnPlayerDeath', function() ospStage = 2 end)
+RegisterNetEvent('osp_ambulance:OnPlayerDead', function() if ospStage == 0 then ospStage = 1 end end)
+RegisterNetEvent('osp_ambulance:OnPlayerSpawn', function() ospStage = 0 end)
+AddEventHandler('hospital:client:Revive', function() ospStage = 0 end)
+
+---0 = up, 1 = last stand (down but alive), 2 = dead / no signs of life.
+function Bridge.DownedStage()
+    local state = LocalPlayer.state
+
+    -- osp_ambulance keeps its own death / last stand state and doesn't set framework metadata.
+    if started('osp_ambulance') then
+        if ospStage > 0 then return ospStage end
+        local bd = state.BodyDamage
+        if type(bd) == 'table' then
+            if bd.isDead then return 2 end
+            if bd.inLastStand then return 1 end
+        end
+        return 0
+    end
+
+    local ped = PlayerPedId()
+    if state.isDead or state.dead then return 2 end
+    if state.isLaststand then return 1 end
+
+    local meta
+    if Bridge.Name == 'qbcore' then
+        meta = QBCore.Functions.GetPlayerData().metadata
+    elseif Bridge.Name == 'qbox' then
+        local data = exports.qbx_core:GetPlayerData()
+        meta = data and data.metadata
+    elseif Bridge.Name == 'esx' and esxDead then
+        return 2
+    end
+    if meta then
+        if meta.isdead then return 2 end
+        if meta.inlaststand then return 1 end
+    end
+    if IsEntityDead(ped) or IsPedFatallyInjured(ped) then return 2 end
+    return 0
+end
 
 ---True while the local player is dead, in last stand, or otherwise incapacitated.
 function Bridge.IsDowned()
-    local ped = PlayerPedId()
-    if IsEntityDead(ped) or IsPedFatallyInjured(ped) then return true end
-
-    local state = LocalPlayer.state
-    if state.isDead or state.isLaststand or state.dead then return true end
-
-    -- osp_ambulance keeps its own death / last stand state and doesn't set framework metadata.
-    -- Read its BodyDamage state bag directly (its exports aren't always registered).
-    if started('osp_ambulance') then
-        if ospDown then return true end
-        local bd = state.BodyDamage
-        if type(bd) == 'table' then return bd.isDead == true or bd.inLastStand == true end
-    end
-
-    if Bridge.Name == 'qbcore' then
-        local meta = QBCore.Functions.GetPlayerData().metadata
-        return meta ~= nil and (meta.isdead or meta.inlaststand) or false
-    elseif Bridge.Name == 'qbox' then
-        local data = exports.qbx_core:GetPlayerData()
-        local meta = data and data.metadata
-        return meta ~= nil and (meta.isdead or meta.inlaststand) or false
-    elseif Bridge.Name == 'esx' then
-        return esxDead
-    end
-    return false
+    return Bridge.DownedStage() > 0
 end
 
 -- Standalone revive used on hospital handover when no framework is running.

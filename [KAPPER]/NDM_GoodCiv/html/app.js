@@ -80,7 +80,6 @@
         if (s.bleeding === 'major') return { text: 'Life-threatening bleeding. Apply a tourniquet first.', urgent: true, action: 'tourniquet' };
         if (!inc.assessed) return { text: 'Check the patient: are they responsive and breathing?', action: 'assess' };
         if (!s.breathing) return { text: 'Not breathing. Start CPR now and keep going until they breathe.', urgent: true, action: 'cpr' };
-        if (!s.conscious && !s.recovery) return { text: 'Breathing but unresponsive. Place them in the recovery position.', action: 'recovery' };
         return { text: `Patient is stable. Load them into a vehicle and get them to ${inc.hospital || 'hospital'}.`, action: 'load' };
     }
 
@@ -123,7 +122,7 @@
         }
         const bleed = { none: ['None seen', 'good'], major: ['Catastrophic', 'bad'], controlled: ['Controlled', 'good'] }[s.bleeding];
         setVital('bleeding', bleed[0], bleed[1]);
-        setVital('position', inc.transport ? 'In vehicle' : s.recovery ? 'Recovery' : 'On back', s.recovery || inc.transport ? 'good' : '');
+        setVital('position', inc.transport ? 'In vehicle' : 'On back', inc.transport ? 'good' : '');
 
         const step = nextStep(inc);
         const advice = $('.advice');
@@ -134,7 +133,6 @@
             assess: !inc.transport,
             tourniquet: !inc.transport && s.bleeding === 'major',
             cpr: !inc.transport && inc.assessed && !s.breathing,
-            recovery: !inc.transport && inc.assessed && s.breathing && !s.conscious && !s.recovery,
             load: !inc.transport && inc.stable,
             unload: !!inc.transport,
         };

@@ -70,20 +70,13 @@ actions.cpr = {
         GoodCiv.Debug(('cpr quality %.2f chance %.2f'):format(quality, chance))
         if math.random() < chance then
             inc.state.breathing = true
+            -- Patient gets up; the incident closes as 'resolved' once their client reports it.
+            if T.CPR.WakeOnSuccess and Bridge.WakeUp(inc.patient) then
+                toast(inc.patient, 'warning', L('cpr_woken'))
+            end
             return 'success', L('cpr_success')
         end
         return 'warning', L('cpr_fail')
-    end,
-}
-
-actions.recovery = {
-    duration = function() return T.RecoveryPosition.Duration end,
-    check = function(inc)
-        if not inc.state.breathing then return L('not_breathing') end
-    end,
-    apply = function(inc)
-        inc.state.recovery = true
-        return 'success', L('recovery_done')
     end,
 }
 

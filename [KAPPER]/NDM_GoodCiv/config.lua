@@ -206,8 +206,8 @@ Config.Dispatch = {
 Config.Conditions = {
     -- Only life-threatening calls (unconscious, not breathing, major bleeding) go to carriers.
     LifeThreateningOnly = true,
-    -- Chance (0-1) a downed patient is in cardiac arrest (not breathing).
-    NotBreathingChance = 0.6,
+    -- Cardiac arrest (CPR needed) comes from the real downed state: only stage 2 / no signs
+    -- of life. Last stand patients are breathing and only need bleeding control.
     -- Chance (0-1) of major bleeding by the damage type that put the patient down.
     -- Damage types: bullet, explosive, melee, vehicle, fall, other
     MajorBleedChance = {
@@ -239,8 +239,11 @@ Config.Treatment = {
         TechniqueBonus = 0.55, -- added on top, scaled by compression quality (0-1)
         UntreatedBleedPenalty = 0.6, -- chance multiplier if major bleed not controlled
         Cooldown = 3,
+        -- Successful CPR brings the patient round on scene (see Config.WakeUp) instead of
+        -- leaving them down until hospital handover. They stay injured until they check in.
+        WakeOnSuccess = true,
+        WakeHealth = 120,      -- health after coming round (max 200, 100 = downed)
     },
-    RecoveryPosition = { Duration = 4 },
 }
 
 ---------------------------------------------------------------------------
@@ -284,6 +287,22 @@ Config.Revive = {
             TriggerClientEvent('qbx_medical:client:playerRevived', src)
         end
     end,
+    esx = function(src) TriggerClientEvent('esx_ambulancejob:revive', src) end,
+    standalone = function(src) TriggerClientEvent('goodciv:client:standaloneRevive', src) end,
+}
+
+---------------------------------------------------------------------------
+-- Wake up after CPR
+---------------------------------------------------------------------------
+-- How a patient is brought round on scene after successful CPR (Config.Treatment.CPR.WakeOnSuccess).
+-- Health is then dropped to Config.Treatment.CPR.WakeHealth. 'osp' is used whenever
+-- osp_ambulance is running, whatever the framework.
+Config.WakeUp = {
+    -- osp partial revive: gets them up but keeps their wounds, and osp won't let health
+    -- go back up until they're treated or check in at a hospital.
+    osp = function(src) TriggerClientEvent('osp_ambulance:partialRevive', src, true) end,
+    qbcore = function(src) TriggerClientEvent('hospital:client:Revive', src) end,
+    qbox = function(src) TriggerClientEvent('qbx_medical:client:playerRevived', src) end,
     esx = function(src) TriggerClientEvent('esx_ambulancejob:revive', src) end,
     standalone = function(src) TriggerClientEvent('goodciv:client:standaloneRevive', src) end,
 }
