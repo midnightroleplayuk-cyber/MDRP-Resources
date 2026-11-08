@@ -713,6 +713,9 @@ local Models = {
     },
 
     -- Beds --
+    [`rhs6_xray_table_v12`] = {
+        lay = { type = 'bed', teleportIn = true, seats = {[1] = vector4(-0.05, 0.0, 0.3, 180.0)} }
+    },
     [1631638868] = {
         sit = { type = 'chair2', teleportIn = true, seats = {[1] = vector4(-0.3, 0.0, 0.4, 90.0), [2] = vector4(0.20, 0.0, 0.4, 270.0)} },
         lay = { type = 'bed', teleportIn = true, seats = {[1] = vector4(-0.05, 0.0, 0.3, 180.0)} }
