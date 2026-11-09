@@ -4,7 +4,12 @@
 -- numbers below in game too (/gangadmin > Turf); this file is the starting point.
 Config.Hexes = {
     size   = 150.0,                  -- metres from a hex's centre to a corner
-    origin = { x = 0.0, y = 0.0 },   -- where the grid is anchored (moving it moves every hex: set it once)
+    origin = { x = 0.0, y = 0.0 },   -- where the grid is anchored
+
+    -- Changing size or origin after gangs hold turf: on the next start, existing turf is moved onto the new grid
+    -- in the same place. 'centre' = each old hex becomes the one new hex at its centre (gangs keep the same number
+    -- of hexes); 'fill' = each old hex becomes every new hex inside it (gangs keep the same ground, as more hexes).
+    onResize = 'centre',
 
     startHexes = 2,     -- hexes staff give a new gang (its compound); the first is the main hex
     protectCompound = true, -- compound hexes can drop to 0% but are never lost
@@ -21,7 +26,7 @@ Config.Hexes = {
     -- Expanding: buy a hex touching one of yours that's at expandAt % or more
     expandAt = 100.0,
     expandCost = {
-        money = 50000, account = 'black',            -- from the gang treasury
+        money = 50000, account = 'dirty',            -- from the gang treasury
         item = 'weed_og_kush', count = 50,            -- from the buyer's own pockets (false for none)
     },
 

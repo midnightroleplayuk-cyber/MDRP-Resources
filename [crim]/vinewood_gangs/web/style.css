@@ -966,3 +966,17 @@ textarea:focus { outline: none; border-color: var(--concrete); }
 .hex-picker .hex-picked { fill: rgba(91, 141, 239, 0.35); stroke: #5B8DEF; stroke-width: 3; vector-effect: non-scaling-stroke; pointer-events: none; }
 .hex-picker polygon { pointer-events: none; }
 .hex-pick-info { display: grid; gap: 2px; align-content: start; }
+
+/* Air drop schedule form */
+.sched-form { display: grid; gap: 12px; max-height: 62vh; overflow-y: auto; padding-right: 4px; }
+
+/* Date and time boxes match the other fields (and use the dark picker) */
+input[type="time"], input[type="date"], input[type="datetime-local"] {
+  padding: 8px 10px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--asphalt);
+  color: var(--chalk);
+  font: 14px var(--body);
+  color-scheme: dark;
+}

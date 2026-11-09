@@ -3,6 +3,8 @@
 Hexes = {}
 
 local cfg = Config.Hexes
+local standingOn = {} -- where each player stood last turf check (see the notices below)
+local CONFIG_GRID = { size = cfg.size, origin = { x = cfg.origin.x, y = cfg.origin.y } } -- what config/hexes.lua says
 local hexes = {}    -- hexes[key] = { key, q, r, gangId, control, main, compound, claimedAt }
 local reveals = {}  -- reveals[gangId][key] = os.time() the gang found it
 local dirty = {}    -- control values to write back
@@ -297,7 +299,137 @@ local function tick()
 end
 Hexes._tick = tick
 
+-------------------------------------------------------------------------------
+-- Changing the grid size or origin: move existing turf onto the new grid, in the same place
+-------------------------------------------------------------------------------
+
+local SQ3 = math.sqrt(3)
+local function centreOn(grid, q, r)
+    return grid.origin.x + grid.size * SQ3 * (q + r / 2), grid.origin.y + grid.size * 1.5 * r
+end
+local function cornersOn(grid, q, r)
+    local cx, cy = centreOn(grid, q, r)
+    local out = {}
+    for i = 0, 5 do
+        local a = math.rad(60 * i - 30)
+        out[#out + 1] = { x = cx + grid.size * math.cos(a), y = cy + grid.size * math.sin(a) }
+    end
+    return out
+end
+
+---The new hexes an old hex becomes: the one at its centre first, then (in 'fill' mode) the rest inside it.
+local function newKeysFor(old, q, r)
+    local cx, cy = centreOn(old, q, r)
+    local cq, cr = Hex.FromCoords(cx, cy)
+    local keys = { Hex.Key(cq, cr) }
+    if (cfg.onResize or 'centre') ~= 'fill' then return keys end
+    local poly = cornersOn(old, q, r)
+    local reach = math.ceil(old.size / cfg.size) + 2
+    for dq = -reach * 2, reach * 2 do
+        for dr = -reach * 2, reach * 2 do
+            local nq, nr = cq + dq, cr + dr
+            if not (nq == cq and nr == cr) then
+                local x, y = Hex.Centre(nq, nr)
+                if Zones.PointInPolygon(poly, x, y) then keys[#keys + 1] = Hex.Key(nq, nr) end
+            end
+        end
+    end
+    return keys
+end
+
+local function sameGrid(a, b)
+    return math.abs((a.size or 0) - cfg.size) < 0.001 and math.abs((a.origin and a.origin.x or 0) - cfg.origin.x) < 0.001
+        and math.abs((a.origin and a.origin.y or 0) - cfg.origin.y) < 0.001
+end
+
+---Runs once when the grid in config/hexes.lua no longer matches the one the turf was made on.
+local function convertTurf(old, rows, revealRows)
+    local moved, merged, newRows, map = 0, 0, {}, {}
+    table.sort(rows, function(a, b) return (a.is_main == 1 and 1 or 0) > (b.is_main == 1 and 1 or 0) end) -- main hexes first
+    for _, row in ipairs(rows) do
+        local q, r = Hex.Parse(row.hex_key)
+        if q then
+            map[row.hex_key] = {}
+            for n, key in ipairs(newKeysFor(old, q, r)) do
+                if newRows[key] then
+                    merged = merged + 1 -- two old hexes landed on the same new one: the first keeps it
+                else
+                    newRows[key] = { hex_key = key, gang_id = row.gang_id, control = row.control,
+                        is_main = (n == 1 and (row.is_main == 1 or row.is_main == true)) and 1 or 0,
+                        compound = (row.compound == 1 or row.compound == true) and 1 or 0, claimed_at = row.claimed_at }
+                    map[row.hex_key][#map[row.hex_key] + 1] = key
+                end
+            end
+            moved = moved + 1
+        end
+    end
+    MySQL.update.await('DELETE FROM vg_hexes')
+    for _, n in pairs(newRows) do
+        MySQL.insert.await('INSERT INTO vg_hexes (hex_key, gang_id, control, is_main, compound, claimed_at) VALUES (?, ?, ?, ?, ?, ?)',
+            { n.hex_key, n.gang_id, n.control, n.is_main, n.compound, n.claimed_at })
+    end
+    -- Rival hexes each gang had found: found the new ones they became
+    MySQL.update.await('DELETE FROM vg_hex_reveals')
+    for _, rv in ipairs(revealRows) do
+        for _, key in ipairs(map[rv.hex_key] or {}) do
+            MySQL.insert.await('INSERT IGNORE INTO vg_hex_reveals (gang_id, hex_key, revealed_at) VALUES (?, ?, ?)', { rv.gang_id, key, rv.revealed_at })
+        end
+    end
+    -- Tags: re-match each one to the hex it's now in, from where it actually is
+    for _, t in ipairs(MySQL.query.await("SELECT id, placement FROM vg_graffiti WHERE status = 'active'") or {}) do
+        local ok, p = pcall(json.decode, t.placement or '')
+        if ok and type(p) == 'table' and tonumber(p.x) and tonumber(p.y) then
+            local key = Hex.Key(Hex.FromCoords(tonumber(p.x), tonumber(p.y)))
+            MySQL.update.await('UPDATE vg_graffiti SET zone = ? WHERE id = ?', { newRows[key] and key or nil, t.id })
+        end
+    end
+    local count = 0 for _ in pairs(newRows) do count = count + 1 end
+    lib.print.info(('Hex grid changed (%sm -> %sm): moved %d hexes onto the new grid as %d (%s mode)%s.'):format(
+        old.size, cfg.size, moved, count, cfg.onResize or 'centre', merged > 0 and (', ' .. merged .. ' overlapped and were merged') or ''))
+end
+
+local function publishGrid()
+    GlobalState.vg_hex_grid = { size = cfg.size, origin = { x = cfg.origin.x, y = cfg.origin.y } }
+end
+
+local function saveGrid(fromAdmin)
+    MySQL.insert.await("INSERT INTO vg_settings (`key`, value, updated_by) VALUES ('hex_grid', ?, 'server') ON DUPLICATE KEY UPDATE value = VALUES(value)",
+        { json.encode({ size = cfg.size, origin = { x = cfg.origin.x, y = cfg.origin.y }, fromAdmin = fromAdmin or nil,
+            configSize = CONFIG_GRID.size, configOrigin = CONFIG_GRID.origin }) })
+end
+
+---Which grid to use, and moving turf onto it if it changed. A size set in game stays until someone edits
+---the size in config/hexes.lua; then the config wins.
+local function checkGrid()
+    local raw = MySQL.scalar.await("SELECT value FROM vg_settings WHERE `key` = 'hex_grid'")
+    local ok, grid = pcall(json.decode, raw or '')
+    grid = ok and type(grid) == 'table' and grid or nil
+    local keepAdmin = grid and grid.fromAdmin and math.abs((grid.configSize or 0) - CONFIG_GRID.size) < 0.001
+        and grid.configOrigin and math.abs((grid.configOrigin.x or 0) - CONFIG_GRID.origin.x) < 0.001
+        and math.abs((grid.configOrigin.y or 0) - CONFIG_GRID.origin.y) < 0.001
+    if keepAdmin then
+        cfg.size, cfg.origin = grid.size, { x = grid.origin.x, y = grid.origin.y }
+    else
+        cfg.size, cfg.origin = CONFIG_GRID.size, { x = CONFIG_GRID.origin.x, y = CONFIG_GRID.origin.y }
+    end
+    local rows = MySQL.query.await('SELECT hex_key, gang_id, control, is_main, compound, claimed_at FROM vg_hexes') or {}
+    -- Turf made before the grid was recorded was made on the original 150 m grid
+    if not grid and #rows > 0 then grid = { size = cfg.convertFrom or 150.0, origin = { x = 0.0, y = 0.0 } } end
+    if grid and #rows > 0 and not sameGrid(grid) then
+        convertTurf(grid, rows, MySQL.query.await('SELECT gang_id, hex_key, revealed_at FROM vg_hex_reveals') or {})
+    end
+    saveGrid(keepAdmin)
+    publishGrid()
+end
+
+local loadTurf
+
 function Hexes.Load()
+    checkGrid()
+    loadTurf()
+end
+
+loadTurf = function()
     hexes, reveals = {}, {}
     local raw = MySQL.scalar.await("SELECT value FROM vg_settings WHERE `key` = 'hex_settings'")
     settings = raw and json.decode(raw) or {}
@@ -333,7 +465,7 @@ AddEventHandler('onResourceStop', function(res) if res == GetCurrentResourceName
 -------------------------------------------------------------------------------
 
 local notice = Config.Territory.enterNotice
-local standingOn = {} -- standingOn[src] = owner gang id, or false on free ground
+standingOn = {} -- standingOn[src] = owner gang id, or false on free ground (reset when the grid is resized)
 local lastTold = {}   -- lastTold[src][kind] = os.time()
 
 local function tell(src, kind, message, ntype)
@@ -468,6 +600,35 @@ function Hexes.AdminSetMain(src, key)
     return true
 end
 
+---Resizes the grid now, moving every gang's turf onto it in the same place ('centre' or 'fill').
+function Hexes.AdminResize(src, size, mode)
+    size = tonumber(size)
+    if not size or size < 20 or size > 500 then return false, 'hex_size_range' end
+    size = math.floor(size * 10 + 0.5) / 10
+    if math.abs(size - cfg.size) < 0.001 then return false, 'hex_size_same' end
+    mode = mode == 'fill' and 'fill' or 'centre'
+    flush()
+    local before = 0 for _ in pairs(hexes) do before = before + 1 end
+    local old = { size = cfg.size, origin = { x = cfg.origin.x, y = cfg.origin.y } }
+    local rows = MySQL.query.await('SELECT hex_key, gang_id, control, is_main, compound, claimed_at FROM vg_hexes') or {}
+    local revealRows = MySQL.query.await('SELECT gang_id, hex_key, revealed_at FROM vg_hex_reveals') or {}
+    cfg.size = size
+    local savedMode = cfg.onResize
+    cfg.onResize = mode
+    if #rows > 0 then convertTurf(old, rows, revealRows) end
+    cfg.onResize = savedMode
+    saveGrid(true)
+    publishGrid()
+    loadTurf()
+    if Graffiti and Graffiti.Rezone then Graffiti.Rezone() end
+    -- Everyone's game: new grid, new turf
+    for id in pairs(Gangs.All()) do pushGang(id) end
+    standingOn = {}
+    local after = 0 for _ in pairs(hexes) do after = after + 1 end
+    Logger.Log(src, 'staff_hex_resize', ('resized hexes %sm -> %sm (%s): %d hexes became %d'):format(old.size, size, mode, before, after))
+    return true, { from = old.size, to = size, before = before, after = after }
+end
+
 function Hexes.AdminSettings()
     local out = {}
     for _, k in ipairs(EDITABLE) do out[k] = S(k) end
@@ -481,6 +642,8 @@ function Hexes.AdminSettings()
     local cost = S('expandCost') or {}
     out.expandItemLabel = cost.item and Bridge.ItemLabel(cost.item) or nil
     out.size = cfg.size
+    out.configSize = CONFIG_GRID.size
+    out.onResize = cfg.onResize or 'centre'
     return out
 end
 

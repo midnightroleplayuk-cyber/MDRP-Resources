@@ -101,13 +101,19 @@ apart, so any number of gangs can use the same shell. List the shell models your
 Staff call them in from `/gangadmin` > Street events > **Call in an air drop**: where they're standing or at
 their waypoint, arriving in 0 to 30 minutes, with no cost or cooldown. A smuggler's plane (a Cuban 800) flies in low
 and drops the crate. **Who can get it:** all gangs, gangs of a
-tier and up (e.g. Organisation and up), or one gang. Only those gangs see it on the map and are told it's coming,
-and nobody else can open it. A
+tier and up (e.g. Organisation and up), one gang, or everyone. For the gang options, only those gangs' members see
+it on the map and are told it's coming, and nobody else can open it (players who aren't in a gang, staff included,
+are never told). **Everyone** means every player on the server, in a gang or not. A
 crate parachutes down inside a red search circle on the map, with red smoke on the ground. Breaking it open takes
 **2 minutes**, with a countdown for the opener. Getting hurt, knocked down, killed or moving away stops it, and the
 crate is free for anyone to try. While someone's working on it, everyone nearby sees the time left above the crate
 and the blip flashes on the map, so rival crews know there's a window to stop them. Unopened crates disappear after a while, and police get
 an approximate call when one lands. Staff can also see and cancel drops there.
+
+**Scheduled drops:** Street events > **Scheduled air drops** > New schedule. Every few hours, daily at set times
+(server time), or once at a date and time; one or more spots (each drop picks one at random); who can get it; how
+long until the plane arrives; a minimum number of players online; and the usual loot or exact contents. Each can
+be switched on and off. A drop that comes due while the server is off is skipped rather than fired late.
 
 **Loot:** the Loot button (Street events) edits the loot table every crate uses: items from the inventory search
 or money, each with a min, max and weight, plus how many picks a crate gets. It's saved and applies straight away
@@ -199,6 +205,15 @@ tags, rackets, street dealing, street events, gang tiers and the maps all work o
 Dealers see what each sale did: "Davis (4, -7): +3% control (now 45%)", or which drug builds control if the one
 they sold doesn't. Turf settings warn you if a turf drug isn't a real item on your server or isn't on the Street
 dealing list. Tick **Any drug builds control** to count every drug instead of a chosen one.
+
+**Resizing hexes in game:** `/gangadmin` > Turf > **Hex size**. Enter the new size, choose whether existing turf
+keeps the same number of hexes or the same ground, and press Resize: it happens live for everyone. The size set in
+game is kept across restarts until someone changes the size in `config/hexes.lua`, then the config wins.
+
+**Changing the hex size (or grid origin)** in `config/hexes.lua` after gangs hold turf is safe too: on the next start
+the script moves existing turf onto the new grid in the same place (`onResize`: `'centre'` keeps each gang's number
+of hexes, `'fill'` keeps the same ground as more, smaller hexes), along with control, main and compound hexes,
+found rival hexes and tags. The console says what it did.
 
 The turf drug, control rates, decay, expansion cost and tag rate are set in game in `/gangadmin` > **Turf**
 (`config/hexes.lua` is the starting point). The turf drug also needs to be on the Street dealing list.

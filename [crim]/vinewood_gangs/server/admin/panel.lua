@@ -22,7 +22,7 @@ local ACTION_GROUP = {
     drugItems = 'view', heists = 'view', contractSpots = 'view', enterprises = 'view', safehouses = 'view',
     safehouseShells = 'view', rackets = 'view', pendingDesigns = 'view', pendingLogos = 'view', listTags = 'view',
     onlinePlayers = 'view', searchItems = 'view', airdrops = 'view', hexGang = 'view', hexSettings = 'view', hexMap = 'view',
-    hexGive = 'world', hexRemove = 'world', hexMain = 'world', hexControl = 'economy', hexSettingsSave = 'settings',
+    hexGive = 'world', hexRemove = 'world', hexMain = 'world', hexControl = 'economy', hexSettingsSave = 'settings', hexResize = 'settings',
     customContracts = 'view', customContractSave = 'world', customContractDelete = 'world', customContractOffer = 'events',
     contractSettings = 'view', contractSettingsSave = 'settings', contractSettingsReset = 'settings',
     gotoTag = 'teleport', gotoSafehouse = 'teleport', gotoContractSpot = 'teleport', gotoRacketShop = 'teleport', gotoPoint = 'teleport',
@@ -37,7 +37,8 @@ local ACTION_GROUP = {
     heistCreate = 'world', heistSave = 'world', heistDelete = 'world', heistReset = 'world', heistStop = 'world', heistHere = 'world',
     directorStart = 'events', directorEnd = 'events', auctionOpen = 'events', auctionCancel = 'events', cancelAgreement = 'events',
     blackmarketSettings = 'view', blackmarketSave = 'settings', blackmarketReset = 'settings', blackmarketOpen = 'events',
-    airdropCancel = 'events', airdropAdminCall = 'events', airdropLoot = 'view', airdropLootSave = 'settings', airdropLootReset = 'settings',
+    airdropCancel = 'events', airdropAdminCall = 'events', airdropSchedules = 'view',
+    airdropScheduleSave = 'events', airdropScheduleDelete = 'events', airdropScheduleToggle = 'events', airdropLoot = 'view', airdropLootSave = 'settings', airdropLootReset = 'settings',
     informants = 'informants', informantActive = 'informants',
     drugItemsSave = 'settings', drugItemsReset = 'settings',
     -- anything not listed here (e.g. Staff access itself) is management only
@@ -263,6 +264,7 @@ admin('hexRemove', function(src, key) return Hexes.AdminRemove(src, key) end)
 admin('hexControl', function(src, key, value) return Hexes.AdminSetControl(src, key, value) end)
 admin('hexMain', function(src, key) return Hexes.AdminSetMain(src, key) end)
 admin('hexSettings', function() return Hexes.AdminSettings() end)
+admin('hexResize', function(src, size, mode) return Hexes.AdminResize(src, size, mode) end)
 admin('hexSettingsSave', function(src, data) return Hexes.AdminSaveSettings(src, data) end)
 
 admin('blackmarketSettings', function() return Auctions.AdminSettings() end)
@@ -274,6 +276,10 @@ admin('airdrops', function() return Airdrops.AdminList() end)
 admin('airdropCancel', function(src, id) return Airdrops.AdminCancel(src, id) end)
 admin('airdropAdminCall', function(src, opts) return Airdrops.AdminCall(src, opts) end)
 admin('airdropLoot', function() return Airdrops.AdminLoot() end)
+admin('airdropSchedules', function() return Airdrops.AdminSchedules() end)
+admin('airdropScheduleSave', function(src, data) return Airdrops.AdminSaveSchedule(src, data) end)
+admin('airdropScheduleDelete', function(src, id) return Airdrops.AdminDeleteSchedule(src, id) end)
+admin('airdropScheduleToggle', function(src, id, on) return Airdrops.AdminToggleSchedule(src, id, on) end)
 admin('airdropLootSave', function(src, data) return Airdrops.AdminSaveLoot(src, data) end)
 admin('airdropLootReset', function(src) return Airdrops.AdminResetLoot(src) end)
 admin('searchItems', function(_, query) return Bridge.SearchItems(query, 30) end)

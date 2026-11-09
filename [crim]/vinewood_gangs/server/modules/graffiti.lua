@@ -152,6 +152,13 @@ function Graffiti.Load()
     loaded = true
 end
 
+---Re-checks which hex each tag is in, from where it actually is (after the hex grid is resized).
+function Graffiti.Rezone()
+    for _, t in pairs(tags) do
+        if t.p and t.p.x then t.zone = Zones.FromCoords({ x = t.p.x, y = t.p.y, z = t.p.z or 0 }) end
+    end
+end
+
 ---Full snapshot for a client that just started.
 function Graffiti.Snapshot()
     if not loaded then return nil end

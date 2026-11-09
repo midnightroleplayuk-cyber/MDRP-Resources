@@ -42,9 +42,10 @@ local ADMIN_ALLOWED = {
     auctions = true, auctionOpen = true, auctionCancel = true, setTier = true, adjustReputation = true,
     contractSpots = true, addContractSpot = true, deleteContractSpot = true, gotoContractSpot = true,
     addRacketShop = true, deleteRacketShop = true, gotoRacketShop = true,
-    hexGang = true, hexMap = true, hexGive = true, hexRemove = true, hexControl = true, hexMain = true, hexSettings = true, hexSettingsSave = true,
+    hexGang = true, hexMap = true, hexResize = true, hexGive = true, hexRemove = true, hexControl = true, hexMain = true, hexSettings = true, hexSettingsSave = true,
     blackmarketSettings = true, blackmarketSave = true, blackmarketOpen = true, blackmarketReset = true,
-    airdrops = true, airdropCancel = true, airdropAdminCall = true, airdropLoot = true, airdropLootSave = true, airdropLootReset = true,
+    airdrops = true, airdropCancel = true, airdropAdminCall = true,
+    airdropSchedules = true, airdropScheduleSave = true, airdropScheduleDelete = true, airdropScheduleToggle = true, airdropLoot = true, airdropLootSave = true, airdropLootReset = true,
     searchItems = true, drugItems = true, drugItemsSave = true, drugItemsReset = true,
     staffAccess = true, staffGrant = true, staffRevoke = true, staffPerms = true,
     customContracts = true, customContractSave = true, customContractDelete = true, customContractOffer = true,
@@ -77,9 +78,14 @@ local function staticData()
         zones[#zones + 1] = { key = key, label = z.label, points = points }
     end
 
+    -- Permissions for features gangs can't use on this server aren't offered on the Ranks page
+    local hidden = {
+        airdrops = not (Config.Airdrops and Config.Airdrops.enabled and Config.Airdrops.playersCanCall == true),
+        heists = Config.Heists and Config.Heists.enabled == false,
+    }
     local permissions = {}
     for _, p in ipairs(Config.Permissions) do
-        permissions[#permissions + 1] = { key = p, label = locale('perm_' .. p) }
+        if not hidden[p] then permissions[#permissions + 1] = { key = p, label = locale('perm_' .. p) } end
     end
 
     return {
@@ -106,7 +112,7 @@ local function staticData()
         heists = Config.Heists.enabled,
         airdrops = Config.Airdrops.enabled and Config.Airdrops.playersCanCall == true, -- the gang tablet's Air drop app
         hexMode = true,
-        hexSize = Config.Hexes.size, hexOrigin = Config.Hexes.origin, hexDistricts = Config.Hexes.districts,
+        hexSize = Hex.Grid().size, hexOrigin = Hex.Grid().origin, hexDistricts = Config.Hexes.districts,
         airdropShowTo = Config.Airdrops.showTo,
         tiers = (function()
             local out = {}

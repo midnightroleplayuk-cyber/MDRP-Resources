@@ -154,7 +154,8 @@ function toast(message, isError) {
 
 function showModal(...content) {
   const sheet = $('sheet');
-  sheet.replaceChildren(...content);
+  // Optional parts left out (null/false) would otherwise show as the word "null"
+  sheet.replaceChildren(...content.filter((c) => c != null && c !== false));
   $('modal').hidden = false;
   const focusable = sheet.querySelector('input, button.primary, button.danger, button');
   if (focusable) focusable.focus();

@@ -83,7 +83,14 @@ local function flyOver(e)
     local from = vector3(d.x, d.y, height) - dir * 1500.0
     local to = vector3(d.x, d.y, height) + dir * 1500.0
 
-    local model = lib.requestModel(d.plane.model)
+    -- A wrong model name shouldn't stop the drop: fall back to planes that are in every copy of the game
+    local planeModel
+    for _, name in ipairs({ d.plane.model, 'cuban800', 'duster', 'titan' }) do
+        if name and IsModelInCdimage(GetHashKey(name)) and IsModelAVehicle(GetHashKey(name)) then planeModel = name break end
+        if name == d.plane.model then print(('^3[vinewood_gangs] air drop plane model "%s" does not exist, using a fallback^0'):format(tostring(name))) end
+    end
+    local model = lib.requestModel(planeModel, 15000)
+    if not model then return end
     e.plane = CreateVehicle(model, from.x, from.y, from.z, 0.0, false, false)
     SetModelAsNoLongerNeeded(model)
     SetEntityHeading(e.plane, (math.deg(heading) - 90.0) % 360.0)
@@ -137,7 +144,7 @@ RegisterNetEvent('vinewood_gangs:client:airdropIncoming', function(d)
     local e = { data = d }
     drops[d.id] = e
     e.blips = addBlips(d)
-    notify('airdrop_incoming', 'inform')
+    if not d.watching then notify('airdrop_incoming', 'inform') end
     CreateThread(function() flyOver(e) end)
 end)
 
@@ -149,7 +156,7 @@ RegisterNetEvent('vinewood_gangs:client:airdropLanded', function(d)
         e.blips = addBlips(d)
     end
     e.data = d
-    notify('airdrop_landed', 'inform')
+    if not (d and d.watching) then notify('airdrop_landed', 'inform') end
     -- If we're near and it hasn't finished falling on our screen yet, it lands now
     local me = GetEntityCoords(cache.ped)
     if #(vector2(me.x, me.y) - vector2(d.x, d.y)) < 400.0 then placeLanded(e) else e.landed = true end

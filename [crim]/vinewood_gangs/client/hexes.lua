@@ -44,4 +44,6 @@ local function refresh()
     apply(lib.callback.await('vinewood_gangs:server:hexView', false))
 end
 AddEventHandler('vinewood_gangs:client:gangUpdated', function() SetTimeout(500, refresh) end)
+-- Staff resized the hexes: redraw our turf once the new grid has arrived
+AddStateBagChangeHandler('vg_hex_grid', 'global', function() SetTimeout(750, refresh) end)
 CreateThread(function() Wait(4000) refresh() end)

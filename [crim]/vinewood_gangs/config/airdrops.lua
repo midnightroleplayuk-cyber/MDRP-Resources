@@ -17,7 +17,9 @@ Config.Airdrops = {
     bounds      = { minX = -3800, maxX = 4300, minY = -3700, maxY = 7800 }, -- where drops can land
 
     -- What everyone sees
-    showTo      = 'everyone', -- who gets the blip: 'everyone', 'gangs' (anyone in a gang) or 'caller' (just that gang)
+    -- Who's told about a drop a gang calls in (staff choose for their own drops: all gangs, a tier and up, or one gang):
+    -- 'gangs' (anyone in a gang), 'caller' (just that gang) or 'everyone' (every player, gang or not)
+    showTo      = 'gangs',
     radius      = 120.0,      -- size of the search area on the map (the crate is somewhere inside it)
     alertPolice = true,       -- police get an approximate "package dropped from a light aircraft" call when it lands
     despawn     = 20,         -- minutes before an unopened crate is gone

@@ -5,7 +5,20 @@ local SQ3 = math.sqrt(3)
 
 function Hex.Enabled() return true end -- territory is always hexes
 
-local function cfg() return Config.Hexes end
+---The grid in use: the server shares it (it can be resized in game); config/hexes.lua until then.
+function Hex.Grid()
+    -- The server is the authority (its Config.Hexes is what the grid is); players' games follow what it shares
+    if IsDuplicityVersion() then return Config.Hexes end
+    local g = GlobalState and GlobalState.vg_hex_grid
+    if type(g) == 'table' and tonumber(g.size) and type(g.origin) == 'table' then return g end
+    return Config.Hexes
+end
+
+local function cfg()
+    local g = Hex.Grid()
+    if g == Config.Hexes then return g end
+    return { size = g.size, origin = g.origin, districts = Config.Hexes.districts }
+end
 
 function Hex.Key(q, r) return ('h:%d:%d'):format(q, r) end
 
