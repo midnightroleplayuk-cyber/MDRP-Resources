@@ -1017,3 +1017,7 @@ div.field { display: grid; gap: 6px; font-size: 14px; color: var(--concrete); }
 /* Item pickers can shrink (long names trim with "…" instead of spilling under buttons beside them) */
 .picker, .pick-chosen { min-width: 0; }
 .turf-drug-row { flex-wrap: nowrap; align-items: flex-start; gap: 10px; }
+
+/* Tags app: the gang's tag allowance (hexes) */
+.tag-allowance { display: flex; align-items: center; gap: 16px; padding: 12px 14px; margin: 4px 0 10px; border: 1px solid var(--line); border-radius: 12px; background: var(--kerb); }
+.tag-allowance .big { font-size: 22px; font-weight: 650; white-space: nowrap; }

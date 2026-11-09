@@ -61,7 +61,7 @@ Config.Territory = {
         minimap       = false,   -- also draw on the minimap (busier)
         showUnclaimed = true,    -- grey areas nobody holds yet
         alpha         = 90,      -- 0-255
-        cellSize      = 40.0,    -- metres; areas are filled with squares this size (bigger = fewer blips)
+        cellSize      = 40.0,    -- metres; squares the shading is made of (with hexes it's automatic: a fifth of a hex)
         maxCells      = 150,     -- per area: cells grow automatically for large areas
         maxTotal      = 900,     -- across every area, so lots of areas never hit GTA's limit on map markers
     },

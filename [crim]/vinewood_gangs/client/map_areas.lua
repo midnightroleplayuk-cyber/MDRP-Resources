@@ -58,38 +58,11 @@ local function shouldShow()
     return GetPlayerGang() ~= nil
 end
 
-local function drawArea(key, zone, owner, budget)
-    local colour = owner and nearestColour(owner.colour) or UNCLAIMED
-    local pts = zone.points
-
-    local minX, minY, maxX, maxY = math.huge, math.huge, -math.huge, -math.huge
+---The name marker in the middle of an area (shown when hovering on the map and in the legend).
+local function addLabel(zone, owner, colour, display)
     local cx, cy = 0, 0
-    for _, p in ipairs(pts) do
-        minX, maxX = math.min(minX, p.x), math.max(maxX, p.x)
-        minY, maxY = math.min(minY, p.y), math.max(maxY, p.y)
-        cx, cy = cx + p.x, cy + p.y
-    end
-    cx, cy = cx / #pts, cy / #pts
-
-    -- Grow the squares for big areas so we never place too many
-    local area = (maxX - minX) * (maxY - minY)
-    local size = math.max(cfg.cellSize, math.sqrt(area / (budget * 0.85))) -- headroom: a grid over a shape overshoots a little
-
-    local display = live().minimap and 2 or 3 -- 3 = main map only
-    for x = minX + size / 2, maxX, size do
-        for y = minY + size / 2, maxY, size do
-            if Zones.PointInPolygon(pts, x, y) then
-                local b = AddBlipForArea(x, y, 0.0, size, size)
-                SetBlipColour(b, colour)
-                SetBlipAlpha(b, cfg.alpha)
-                SetBlipDisplay(b, display)
-                SetBlipAsShortRange(b, true)
-                blips[#blips + 1] = b
-            end
-        end
-    end
-
-    -- A marker in the middle carries the name, shown when hovering on the map and in the legend
+    for _, p in ipairs(zone.points) do cx, cy = cx + p.x, cy + p.y end
+    cx, cy = cx / #zone.points, cy / #zone.points
     local label = AddBlipForCoord(cx, cy, 0.0)
     SetBlipSprite(label, 437)
     SetBlipColour(label, colour)
@@ -102,15 +75,81 @@ local function drawArea(key, zone, owner, budget)
     blips[#blips + 1] = label
 end
 
+---Shades every area with ONE grid shared across the whole map: each square goes to the area its centre is in, so
+---neighbouring areas meet with no gaps and no double shading. Squares side by side in the same colour are merged
+---into one strip (across neighbouring hexes of the same gang too), which keeps the number of map blips down.
+local function shade(drawn, display)
+    -- Square size: a fifth of a hex (smooth edges), grown if needed to stay inside the blip budget
+    local hexSize = Hex and Hex.Enabled and Hex.Enabled() and Hex.Grid().size or nil
+    local size = hexSize and math.max(4.0, hexSize / 5) or cfg.cellSize
+    local rowsNeeded = function(sz)
+        local n = 0
+        for _, d in ipairs(drawn) do
+            local minY, maxY = math.huge, -math.huge
+            for _, p in ipairs(d.zone.points) do minY, maxY = math.min(minY, p.y), math.max(maxY, p.y) end
+            n = n + math.ceil((maxY - minY) / sz) + 1
+        end
+        return n
+    end
+    local budget = (cfg.maxTotal or 900) - #drawn -- leave room for the name markers
+    while rowsNeeded(size) > budget and size < 500 do size = size * 1.25 end
+
+    -- Which colour each grid square gets: cells[row][col] = colour
+    local cells = {}
+    for _, d in ipairs(drawn) do
+        local pts = d.zone.points
+        local minX, minY, maxX, maxY = math.huge, math.huge, -math.huge, -math.huge
+        for _, p in ipairs(pts) do
+            minX, maxX = math.min(minX, p.x), math.max(maxX, p.x)
+            minY, maxY = math.min(minY, p.y), math.max(maxY, p.y)
+        end
+        for row = math.floor(minY / size), math.floor(maxY / size) do
+            local y = (row + 0.5) * size
+            for col = math.floor(minX / size), math.floor(maxX / size) do
+                local x = (col + 0.5) * size
+                if Zones.PointInPolygon(pts, x, y) then
+                    cells[row] = cells[row] or {}
+                    if not cells[row][col] then cells[row][col] = d.colour end
+                end
+            end
+        end
+    end
+
+    -- Merge each row into strips of one colour, and draw them
+    for row, cols in pairs(cells) do
+        local list = {}
+        for col in pairs(cols) do list[#list + 1] = col end
+        table.sort(list)
+        local i = 1
+        while i <= #list do
+            local first, colour = list[i], cols[list[i]]
+            local last = first
+            while i < #list and list[i + 1] == last + 1 and cols[list[i + 1]] == colour do
+                i = i + 1
+                last = list[i]
+            end
+            local width = (last - first + 1) * size
+            local b = AddBlipForArea((first * size) + width / 2, (row + 0.5) * size, 0.0, width, size)
+            SetBlipColour(b, colour)
+            SetBlipAlpha(b, cfg.alpha or 90)
+            SetBlipDisplay(b, display)
+            SetBlipAsShortRange(b, true)
+            blips[#blips + 1] = b
+            i = i + 1
+        end
+    end
+end
+
 local function redraw()
     local owners = ZoneOwners()
     local show = shouldShow()
 
     -- Build a fingerprint of what we'd draw, and skip the work if nothing changed
-    local parts = { tostring(show), tostring(live().minimap) }
+    local parts = { tostring(show), tostring(live().minimap), tostring(Hex and Hex.Grid and Hex.Grid().size or '') }
     for key, zone in pairs(Config.Zones) do
         local o = owners[key]
-        parts[#parts + 1] = ('%s:%d:%s:%s'):format(key, #zone.points, o and o.owner or '-', o and o.colour or '-')
+        local p1 = zone.points[1] or {}
+        parts[#parts + 1] = ('%s:%d:%.1f:%.1f:%s:%s'):format(key, #zone.points, p1.x or 0, p1.y or 0, o and o.owner or '-', o and o.colour or '-')
     end
     table.sort(parts)
     local fingerprint = table.concat(parts, '|')
@@ -123,11 +162,14 @@ local function redraw()
     for key, zone in pairs(Config.Zones) do
         local o = owners[key]
         local owner = o and o.owner and o or nil
-        if owner or cfg.showUnclaimed then drawn[#drawn + 1] = { key = key, zone = zone, owner = owner } end
+        if owner or cfg.showUnclaimed then
+            drawn[#drawn + 1] = { key = key, zone = zone, owner = owner, colour = owner and nearestColour(owner.colour) or UNCLAIMED }
+        end
     end
-    -- Share the marker budget between areas (one marker each goes on the name)
-    local budget = math.max(4, math.min(cfg.maxCells, math.floor(cfg.maxTotal / math.max(1, #drawn)) - 1))
-    for _, d in ipairs(drawn) do drawArea(d.key, d.zone, d.owner, budget) end
+    table.sort(drawn, function(x, y) return x.key < y.key end)
+    local display = live().minimap and 2 or 3 -- 3 = main map only
+    shade(drawn, display)
+    for _, d in ipairs(drawn) do addLabel(d.zone, d.owner, d.colour, display) end
 end
 
 -- Redraw when ownership changes, areas are drawn or deleted, or we join or leave a gang

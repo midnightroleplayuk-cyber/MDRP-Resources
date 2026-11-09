@@ -1934,6 +1934,16 @@ function wallsSection(t) {
   const areas = t.onWalls || [];
   const total = areas.reduce((n, a) => n + a.tags.length, 0);
   const parts = [h('h3', { style: 'margin-top:28px' }, 'On the walls ', h('span', { class: 'muted fig', text: total }))];
+  // With hexes: how many tags the gang can have up, and when the next one comes
+  const sp = t.sprays;
+  if (sp) {
+    const left = Math.max(0, sp.slots - sp.used);
+    parts.push(h('div', { class: 'tag-allowance' },
+      h('div', { class: 'big fig', text: `${sp.used} of ${sp.slots}` }),
+      h('div', {},
+        h('strong', { text: left ? `You can put up ${left} more ${left === 1 ? 'tag' : 'tags'}.` : 'All your tags are up.' }),
+        h('div', { class: 'hint', style: 'margin:0', text: `One tag, plus one for every ${sp.every} hexes you hold. You hold ${sp.hexes}, so your next tag comes at ${sp.nextAt} hexes.${sp.main && !sp.onMain ? ` Your first tag has to go on your main hex, ${sp.main}.` : ''}` }))));
+  }
   if (!total) {
     parts.push(h('p', { class: 'empty', text: 'None of your tags are up right now.' }));
     return h('div', {}, parts);
@@ -1941,9 +1951,9 @@ function wallsSection(t) {
 
   areas.forEach((a) => {
     parts.push(h('div', { class: 'wall-area' },
-      h('span', { class: 'name', text: a.area }),
+      h('span', { class: 'name' }, a.area, a.main ? h('span', { class: 'badge', style: 'margin-left:8px', text: 'Main hex' }) : null),
       a.limit ? h('span', { class: a.active >= a.limit ? 'fig debit' : 'fig muted', text: `${a.active} of ${a.limit} up` })
-        : h('span', { class: 'hint', style: 'margin:0', text: 'Not in an area, so these earn no influence' })));
+        : (a.inArea ? h('span', {}) : h('span', { class: 'hint', style: 'margin:0', text: sp ? 'Not on your turf any more' : 'Not in an area, so these earn no influence' }))));
 
     a.tags.forEach((tag) => {
       parts.push(h('div', { class: 'wall-tag' },
@@ -2349,13 +2359,14 @@ const Mock = {
       ] });
       case 'getNearby': return ok([{ id: 14, distance: 2 }, { id: 31, distance: 4 }]);
       case 'getTags': return ok({ canSpray: true, canDesign: true, requireApproval: true, maxDesigns: 3, maxTextLength: 14, maxPerZone: 6,
+        sprays: { used: 2, slots: 2, hexes: 4, every: 3, nextAt: 6, main: 'Del Perro (-14, -10)', onMain: true },
         activeTags: 3, activeZones: 2, sprayItem: 'spraycan', styles: ['plain', 'outline', 'shadow'], canRemove: true,
         allowPictures: true, onlyInAreas: true, logo: 'images/gang_tablet.png', hosts: ['i.imgur.com', 'i.ibb.co', 'r2.fivemanage.com'],
         onWalls: [
-          { area: 'Davis', inArea: true, active: 2, limit: 6, tags: [
+          { area: 'Davis (4, -7)', inArea: true, main: true, active: 2, tags: [
             { id: 11, design: 'Main tag', spec: { text: 'GROVE KINGS', font: 'handstyle', style: 'outline', fill: '#7B3FBF', outline: '#111418' }, status: 'active', age: 2400, x: -100, y: -1700 },
             { id: 9, design: 'Main tag', spec: { text: 'GROVE KINGS', font: 'handstyle', style: 'outline', fill: '#7B3FBF', outline: '#111418' }, status: 'crossed', crossedBy: 'Los Vagos', age: 190000, x: -90, y: -1650 }] },
-          { area: 'Rancho', inArea: true, active: 1, limit: 6, tags: [
+          { area: 'Rancho (5, -7)', inArea: true, active: 1, tags: [
             { id: 12, design: 'GK throwie', spec: { text: 'GK', font: 'block', style: 'shadow', fill: '#F2A93B', outline: '#7B3FBF' }, status: 'active', age: 9000, x: 450, y: -1850 }] }],
         fonts: [{ key: 'handstyle', label: 'Handstyle', family: 'Sedgwick Ave Display' }, { key: 'spray', label: 'Spray', family: 'Rubik Spray Paint' }, { key: 'marker', label: 'Marker', family: 'Permanent Marker' }, { key: 'block', label: 'Block', family: 'Bungee' }],
         designs: [

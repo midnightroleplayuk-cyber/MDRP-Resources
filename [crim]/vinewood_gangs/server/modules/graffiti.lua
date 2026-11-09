@@ -207,6 +207,15 @@ function Graffiti.GetGangOverview(src)
         maxDesigns = cfg.maxDesigns,
         maxTextLength = cfg.maxTextLength,
         maxPerZone = cfg.maxPerZone,
+        -- The real tag allowance with hexes: one, plus one for every few hexes held (across all your turf)
+        sprays = (Hex and Hex.Enabled and Hex.Enabled() and Hexes) and (function()
+            local held, every = Hexes.Count(gang.id), math.max(1, Hexes.Setting('sprayEvery') or 3)
+            local main = Hexes.MainOf(gang.id)
+            local onMain = false
+            for _, t in pairs(tags) do if t.gangId == gang.id and t.status == 'active' and t.zone == main then onMain = true end end
+            return { used = active, slots = Hexes.SpraySlots(gang.id), hexes = held, every = every,
+                nextAt = (math.floor(held / every) + 1) * every, main = main and Zones.Label(main) or nil, onMain = onMain }
+        end)() or nil,
         activeTags = active,
         activeZones = zoneCount,
         fonts = cfg.fonts,
@@ -225,10 +234,13 @@ end
 ---Every tag a gang has up, grouped by area, for the tablet.
 function Graffiti.GangTags(gangId)
     local byArea, now = {}, os.time()
+    local hexMode = Hex and Hex.Enabled and Hex.Enabled() and Hexes ~= nil
+    local mainKey = hexMode and Hexes.MainOf(gangId) or nil
     for _, t in pairs(tags) do
         if t.gangId == gangId then
             local key = t.zone or '_none'
-            byArea[key] = byArea[key] or { area = t.zone and Zones.Label(t.zone) or 'Outside any area', inArea = t.zone ~= nil, tags = {}, active = 0 }
+            byArea[key] = byArea[key] or { area = t.zone and Zones.Label(t.zone) or (hexMode and 'Off your turf' or 'Outside any area'), inArea = t.zone ~= nil, tags = {}, active = 0,
+                main = hexMode and t.zone ~= nil and t.zone == mainKey or nil }
             local d = designs[t.designId]
             local crosser = t.crossedBy and Gangs.Get(t.crossedBy)
             table.insert(byArea[key].tags, {
@@ -242,11 +254,13 @@ function Graffiti.GangTags(gangId)
     local list = {}
     for _, a in pairs(byArea) do
         table.sort(a.tags, function(x, y) return x.age < y.age end)
-        a.limit = a.inArea and cfg.maxPerZone or nil
+        -- With hexes there's no per-hex limit (the allowance is across all your turf; see the overview)
+        a.limit = (a.inArea and not hexMode) and cfg.maxPerZone or nil
         list[#list + 1] = a
     end
     table.sort(list, function(x, y)
         if x.inArea ~= y.inArea then return x.inArea end
+        if (x.main or false) ~= (y.main or false) then return x.main == true end -- main hex first
         return x.area < y.area
     end)
     return list

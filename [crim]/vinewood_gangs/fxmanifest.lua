@@ -16,7 +16,7 @@ escrow_ignore {
 name 'vinewood_gangs'
 author 'Vinewood Studios'
 description 'Advanced gang, territory and organised crime system'
-version '3.17.1'
+version '3.17.3'
 
 ox_lib 'locale'
 
