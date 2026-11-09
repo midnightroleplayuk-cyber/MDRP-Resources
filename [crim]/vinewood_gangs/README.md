@@ -162,7 +162,11 @@ Gangs see live heists in the tablet's **Heists** app (unlocked at Organisation).
 - **Deal with guards:** armed NPCs spawn around the spot when the crew gets close (how many, model, weapon, armour,
   accuracy and spread are set per step). Everyone fights the same guards; the step is done when they're all down.
 
-NPC defaults (models, talk time, aim distance, spawn distance) are in `config/heists.lua` under `npc`. The bank
+Choosing who the NPC is: a picker with categories (bank and business, security, shop staff, criminals, workers,
+medical, military, police, civilians), pictures, and a search; or type any ped model (add-on peds included). The
+list is in `config/peds.lua`, so you can add or remove NPCs. If a model doesn't exist in the game, a default NPC is
+used instead (and the F8 console says so). NPC defaults (talk time, aim distance, spawn distance) are in
+`config/heists.lua` under `npc`. The bank
 template now starts with an inside man and the bank manager.
 
 ## Street dealing

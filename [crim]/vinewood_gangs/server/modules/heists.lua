@@ -634,7 +634,13 @@ function Heists.AdminList()
     for key, t in pairs(cfg.tools) do
         if t.item then tools[key] = { item = t.item, label = Bridge.ItemLabel(t.item), consume = t.consume == true } end
     end
-    return { heists = list, templates = templates, stepTypes = types, lootTypes = loot, tiers = tiers, tools = tools, npc = cfg.npc,
+    local peds = {}
+    for _, c in ipairs(Config.PedList or {}) do
+        local list2 = {}
+        for _, p in ipairs(c.peds or {}) do list2[#list2 + 1] = { model = p[1], label = p[2] or p[1] } end
+        peds[#peds + 1] = { category = c.category, peds = list2 }
+    end
+    return { heists = list, templates = templates, stepTypes = types, lootTypes = loot, tiers = tiers, tools = tools, npc = cfg.npc, peds = peds,
         defaultTier = Progression.TierFor('heists') or 1 }
 end
 

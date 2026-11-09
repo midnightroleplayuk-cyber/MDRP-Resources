@@ -980,3 +980,23 @@ input[type="time"], input[type="date"], input[type="datetime-local"] {
   font: 14px var(--body);
   color-scheme: dark;
 }
+
+/* NPC picker (heist builder) */
+.ped-picker { width: 100%; }
+.ped-current { display: flex; align-items: center; gap: 12px; padding: 6px 8px; border: 1px solid var(--line); border-radius: 10px; background: var(--asphalt); max-width: 520px; }
+.ped-current .btn { margin-left: auto; }
+.ped-name { display: grid; line-height: 1.25; }
+.ped-name .muted { font-size: 12px; }
+.ped-thumb { flex: none; width: 36px; height: 36px; border-radius: 8px; overflow: hidden; background: var(--kerb-high); display: grid; place-items: center; }
+.ped-thumb.big { width: 100%; height: 110px; }
+.ped-thumb img { width: 100%; height: 100%; object-fit: cover; object-position: top; }
+.ped-thumb.none::after { content: ''; width: 40%; height: 60%; background: var(--concrete); opacity: 0.35;
+  -webkit-mask: radial-gradient(circle at 50% 22%, #000 22%, transparent 23%), radial-gradient(ellipse at 50% 100%, #000 48%, transparent 49%);
+  mask: radial-gradient(circle at 50% 22%, #000 22%, transparent 23%), radial-gradient(ellipse at 50% 100%, #000 48%, transparent 49%); }
+.ped-open { display: grid; gap: 10px; padding: 10px; border: 1px solid var(--line); border-radius: 12px; background: var(--asphalt); }
+.ped-tabs { flex-wrap: wrap; }
+.ped-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(118px, 1fr)); gap: 8px; max-height: 300px; overflow-y: auto; }
+.ped-card { display: grid; gap: 4px; padding: 6px; border: 1px solid var(--line); border-radius: 10px; background: var(--kerb); color: var(--chalk); font: inherit; text-align: left; cursor: pointer; }
+.ped-card strong { font-size: 13px; line-height: 1.2; }
+.ped-card .muted { font-size: 11px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ped-card:hover, .ped-card.on { border-color: var(--accent); }

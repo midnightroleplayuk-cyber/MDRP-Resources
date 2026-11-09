@@ -1078,6 +1078,75 @@ async function renderAdminDiplomacy() {
       : h('p', { class: 'empty', text: 'No deals proposed or running.' }));
 }
 
+/* NPC picker: categories with pictures, search, or any custom model ------------------ */
+
+const PED_IMAGE = (model) => `https://docs-backend.fivem.net/peds/${model}.webp`; // FiveM's ped reference pictures
+
+function pedThumb(model, big) {
+  const box = h('span', { class: big ? 'ped-thumb big' : 'ped-thumb' });
+  const img = h('img', { src: PED_IMAGE(model), alt: '', loading: 'lazy' });
+  img.addEventListener('error', () => { img.remove(); box.classList.add('none'); });
+  box.append(img);
+  return box;
+}
+
+function pedLabel(model, categories) {
+  for (const c of categories) for (const p of c.peds) if (p.model === model) return p.label;
+  return null;
+}
+
+function pedPicker(value, onPick, categories) {
+  const wrap = h('div', { class: 'ped-picker' });
+  let current = value;
+  let cat = 0;
+  const findCat = () => { categories.forEach((c, i) => { if (c.peds.some((p) => p.model === current)) cat = i; }); };
+  findCat();
+
+  const closed = () => {
+    const label = pedLabel(current, categories);
+    wrap.replaceChildren(h('div', { class: 'ped-current' },
+      pedThumb(current),
+      h('span', { class: 'ped-name' }, h('strong', { text: label || 'Custom NPC' }), h('span', { class: 'muted', text: current })),
+      h('button', { class: 'btn small', type: 'button', onclick: open }, 'Change')));
+  };
+
+  const choose = (model) => { current = model; onPick(model); closed(); };
+
+  const open = () => {
+    const search = h('input', { type: 'search', placeholder: 'Search every NPC…', style: 'flex:1' });
+    const tabs = h('div', { class: 'choices ped-tabs', role: 'radiogroup' });
+    const grid = h('div', { class: 'ped-grid' });
+    const custom = h('input', { type: 'text', placeholder: 'any ped model, e.g. my_addon_ped', value: pedLabel(current, categories) ? '' : current, style: 'flex:1;min-width:0' });
+    const draw = () => {
+      const q = search.value.trim().toLowerCase();
+      tabs.hidden = !!q;
+      tabs.replaceChildren(...categories.map((c, i) => h('button', { type: 'button', role: 'radio', class: 'choice', 'aria-checked': String(i === cat), onclick: () => { cat = i; draw(); } }, c.category)));
+      const list = q
+        ? categories.flatMap((c) => c.peds.map((p) => ({ ...p, category: c.category }))).filter((p) => p.label.toLowerCase().includes(q) || p.model.includes(q))
+        : (categories[cat] || { peds: [] }).peds;
+      grid.replaceChildren(...(list.length ? list.map((p) => h('button', { type: 'button', class: `ped-card${p.model === current ? ' on' : ''}`, onclick: () => choose(p.model) },
+        pedThumb(p.model, true), h('strong', { text: p.label }), h('span', { class: 'muted', text: p.model })))
+        : [h('p', { class: 'empty', style: 'grid-column:1/-1', text: 'Nothing matches. Use a custom model below.' })]));
+    };
+    search.addEventListener('input', draw);
+    draw();
+    wrap.replaceChildren(h('div', { class: 'ped-open' },
+      h('div', { class: 'row', style: 'flex-wrap:nowrap' }, search, h('button', { class: 'btn small', type: 'button', onclick: closed }, 'Cancel')),
+      tabs, grid,
+      h('div', { class: 'row', style: 'flex-wrap:nowrap;align-items:center' },
+        h('span', { class: 'muted', style: 'white-space:nowrap', text: 'Not listed?' }), custom,
+        h('button', { class: 'btn small', type: 'button', onclick: () => {
+          const m = custom.value.trim().toLowerCase();
+          if (!/^[a-z0-9_]+$/.test(m)) return toast('Ped model names are letters, numbers and underscores.', true);
+          choose(m);
+        } }, 'Use this model'))));
+    search.focus();
+  };
+
+  closed();
+  return wrap;
+}
+
 /* Custom contracts --------------------------------------------------------- */
 
 const JOB_SPOTS = {
@@ -1640,8 +1709,9 @@ function renderHeistEditor() {
     if (s.type === 'talk' && s.pay == null) s.pay = 0;
     if (s.type === 'guards') { if (s.count == null) s.count = 4; if (s.armour == null) s.armour = 50; if (s.accuracy == null) s.accuracy = 40; if (s.radius == null) s.radius = 10; }
     if (s.type === 'talk' || s.type === 'hostage' || s.type === 'guards') {
-      extra.push(h('label', { class: 'field' }, s.type === 'guards' ? 'Guard model' : 'NPC model',
-        text(s, 'ped', 180, s.type === 'guards' ? (npc.guardPed || 's_m_m_security_01') : (npc.ped || 'a_m_m_business_01'))));
+      const fallback = s.type === 'guards' ? (npc.guardPed || 's_m_m_security_01') : (npc.ped || 'a_m_m_business_01');
+      extra.push(h('div', { class: 'field', style: 'flex:1 1 100%' }, s.type === 'guards' ? 'Guards look like' : 'Who they are',
+        pedPicker(s.ped || fallback, (model) => { s.ped = model; }, meta.peds || [])));
     }
     if (s.type === 'talk') {
       const say = h('textarea', { rows: 2, maxlength: 200, placeholder: 'What they say, e.g. "The manager has the vault code. Get to him before he leaves."', style: 'width:100%' });
@@ -2066,6 +2136,9 @@ const AdminMock = {
         stepTypes: [{ key: 'hack', label: 'Hack a panel', game: 'hack' }, { key: 'thermite', label: 'Thermite a door', game: 'thermite' }, { key: 'drill', label: 'Drill (vault or boxes)', game: 'drill' }, { key: 'loot', label: 'Grab loot' }, { key: 'wait', label: 'Wait (time lock)' }, { key: 'truck', label: 'Armoured truck: stop it' }, { key: 'truck_doors', label: 'Armoured truck: open the back', game: 'thermite' },
           { key: 'talk', label: 'Talk to someone (NPC)' }, { key: 'guards', label: 'Deal with guards (NPCs)' }, { key: 'hostage', label: 'Intimidate someone (NPC)' }],
         npc: { ped: 'a_m_m_business_01', guardPed: 's_m_m_security_01', guardWeapon: 'weapon_pistol' },
+        peds: [{ category: 'Bank & business', peds: [{ model: 'ig_bankman', label: 'Bank manager' }, { model: 'a_m_m_business_01', label: 'Businessman' }, { model: 'a_m_y_business_02', label: 'Businessman (open collar)' }, { model: 'a_f_y_business_01', label: 'Businesswoman' }] },
+          { category: 'Security & guards', peds: [{ model: 's_m_m_security_01', label: 'Security guard' }, { model: 's_m_m_armoured_01', label: 'Armoured truck guard' }, { model: 'mp_m_securoguard_01', label: 'Gruppe Sechs guard' }, { model: 's_m_m_highsec_01', label: 'High-security guard' }] },
+          { category: 'Criminals', peds: [{ model: 'g_m_m_armboss_01', label: 'Armenian boss' }, { model: 'g_m_m_chiboss_01', label: 'Triad boss' }, { model: 'g_m_y_lost_01', label: 'Biker' }] }],
         lootTypes: [{ key: 'cash', label: 'Cash (to dirty treasury)' }, { key: 'goldbar', label: 'Gold bars (item)' }, { key: 'jewels', label: 'Jewellery (item)' }],
         heists: [{ id: 4, label: 'Fleeca, Great Ocean', kind: 'bank', enabled: true, cooldownLeft: 0, running: 'Grove Kings',
           data: { police: 4, crew: 3, cooldown: 120, timeLimit: 20, tier: 3, start: { x: -2957, y: 481, z: 15, w: 0 }, steps: [

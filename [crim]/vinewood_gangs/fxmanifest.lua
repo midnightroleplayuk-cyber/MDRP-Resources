@@ -16,7 +16,7 @@ escrow_ignore {
 name 'vinewood_gangs'
 author 'Vinewood Studios'
 description 'Advanced gang, territory and organised crime system'
-version '3.11.0'
+version '3.12.0'
 
 ox_lib 'locale'
 
@@ -35,6 +35,7 @@ shared_scripts {
     'config/director.lua',
     'config/drugs.lua',
     'config/heists.lua',
+    'config/peds.lua',
     'config/airdrops.lua',
     'config/informants.lua',
     'config/auctions.lua',

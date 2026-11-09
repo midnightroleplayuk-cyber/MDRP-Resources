@@ -179,6 +179,16 @@ end)
 -------------------------------------------------------------------------------
 
 local npcs = {}        -- npcs[i] = the contact or hostage for step i (this game only: they don't fight)
+
+---Loads a ped model, falling back to a default if the name doesn't exist in the game (or isn't streamed).
+local function loadPed(name, fallback)
+    for _, m in ipairs({ name, fallback }) do
+        if m and IsModelInCdimage(GetHashKey(m)) and IsModelAPed(GetHashKey(m)) then
+            return lib.requestModel(m, 10000)
+        end
+        if m == name and name then print(('^3[vinewood_gangs] heist NPC model "%s" does not exist, using %s^0'):format(tostring(name), tostring(fallback))) end
+    end
+end
 local guardsOwned = {} -- guard ped netIds we've been told about, so we can keep their AI going
 local asked = {}       -- asked[key] = true once we've asked the server something, so we don't ask every second
 
@@ -190,7 +200,7 @@ local function removeNpc(i)
 end
 
 local function spawnNpc(s)
-    local model = lib.requestModel(s.ped or cfg.npc.ped, 10000)
+    local model = loadPed(s.ped or cfg.npc.ped, cfg.npc.ped)
     if not model then return end
     local ped = CreatePed(4, model, s.x, s.y, s.z - 1.0, s.w or 0.0, false, true)
     SetModelAsNoLongerNeeded(model)
@@ -231,7 +241,7 @@ end
 local function spawnGuards(runId, i)
     local ok, g = lib.callback.await('vinewood_gangs:server:heistGuardsClaim', false, runId, i)
     if not ok or not g then return end
-    local model = lib.requestModel(g.ped, 10000)
+    local model = loadPed(g.ped, cfg.npc.guardPed)
     if not model then return end
     local nets = {}
     for n = 1, g.count do
