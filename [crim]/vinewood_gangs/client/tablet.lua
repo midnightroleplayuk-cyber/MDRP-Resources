@@ -246,6 +246,24 @@ RegisterNUICallback('setupSafehouse', function(data, cb)
     StartSafehouseEditor(type(data) == 'table' and type(data.shell) == 'string' and data.shell or nil)
 end)
 
+-- Placing NPCs in the world from the staff panel: the panel hides (keeping its place), staff place the NPC,
+-- then it comes back with the result
+RegisterNUICallback('placeNpc', function(data, cb)
+    cb('ok')
+    if mode ~= 'admin' or type(data) ~= 'table' then return end
+    SetNuiFocus(false, false)
+    SendNUIMessage({ action = 'adminHide' })
+    CreateThread(function()
+        Wait(150)
+        local ok, points = pcall(PlaceNpcs, { model = data.model, multi = data.multi, max = data.max })
+        if not ok then points = nil end
+        if mode == 'admin' then
+            SetNuiFocus(true, true)
+            SendNUIMessage({ action = 'adminPlaced', token = data.token, points = points })
+        end
+    end)
+end)
+
 -- "Set waypoint" buttons in the tablet
 RegisterNUICallback('waypoint', function(data, cb)
     cb('ok')

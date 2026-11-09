@@ -1078,6 +1078,70 @@ async function renderAdminDiplomacy() {
       : h('p', { class: 'empty', text: 'No deals proposed or running.' }));
 }
 
+/* Placing NPCs in the game: the panel steps aside, staff place the NPC, the panel comes back -------- */
+
+const placeWaits = {};
+function placeInGame({ model, multi = false, max = 1 }) {
+  if (!IN_GAME) {
+    // Browser preview: pretend some spots were placed
+    const n = multi ? Math.min(max, 3) : 1;
+    return Promise.resolve(Array.from({ length: n }, (_, i) => ({ x: 152.4 + i * 2.5, y: -1041.2 + i, z: 29.4, w: 90 + i * 30 })));
+  }
+  const token = `${Date.now()}${Math.random()}`;
+  return new Promise((resolve) => {
+    placeWaits[token] = resolve;
+    postNui('placeNpc', { token, model, multi, max });
+  });
+}
+window.addEventListener('message', (event) => {
+  const msg = event.data || {};
+  if (msg.action === 'adminHide') {
+    hideModal();
+    $('device').hidden = true;
+  } else if (msg.action === 'adminPlaced') {
+    $('device').hidden = false;
+    const done = placeWaits[msg.token];
+    delete placeWaits[msg.token];
+    if (done) done(Array.isArray(msg.points) && msg.points.length ? msg.points : null);
+  }
+});
+
+/* Heist builder: how the job starts (tablet, a contact at the start point, or either) */
+function startSection(d, meta, { here, goTo, point, rerender }) {
+  d.startMode = d.startMode || 'tablet';
+  const usesNpc = d.startMode !== 'tablet';
+  if (usesNpc) d.startNpc = d.startNpc || { ped: (meta.npc || {}).ped || 'a_m_m_business_01', name: '', say: '' };
+  if (d.startMode === 'both') d.startMode = 'npc';
+  const mode = select([
+    { value: 'tablet', label: 'Press E at the start point' },
+    { value: 'npc', label: 'Talk to a contact at the start point' },
+  ], d.startMode);
+  mode.addEventListener('change', () => { d.startMode = mode.value; rerender(); });
+  const name = h('input', { type: 'text', maxlength: 32, placeholder: 'e.g. Lester', value: (d.startNpc || {}).name || '', style: 'width:180px' });
+  name.addEventListener('input', () => { d.startNpc.name = name.value; });
+  const say = h('textarea', { rows: 2, maxlength: 200, placeholder: 'What they say when the job starts, e.g. "Right, you\'re on. The vault opens at midnight."', style: 'width:100%' });
+  say.value = (d.startNpc || {}).say || '';
+  say.addEventListener('input', () => { d.startNpc.say = say.value; });
+  return h('div', { class: 'heist-start-box' },
+    h('div', { class: 'heist-edit-start' },
+      h('div', {}, h('strong', { text: 'Start point' }), h('div', { class: 'hint', style: 'margin:0', text: usesNpc
+        ? 'Where the contact stands. The crew walks up and presses E to start the job; crew within 40 m count.'
+        : 'Where the crew gathers; whoever starts it presses E at the marker there. Crew within 40 m count.' })),
+      h('span', { class: 'heist-pos' },
+        h('span', { class: d.start ? 'fig' : 'debit', text: point(d.start) }),
+        usesNpc ? h('button', { class: 'btn small primary', type: 'button', onclick: async () => {
+          const pts = await placeInGame({ model: d.startNpc.ped });
+          if (pts) { d.start = pts[0]; toast('Placed.'); rerender(); }
+        } }, 'Place in game') : null,
+        h('button', { class: 'btn small', type: 'button', onclick: () => here((p) => { d.start = p; }) }, usesNpc ? 'Where I stand' : 'Set here'),
+        h('button', { class: 'btn small', type: 'button', onclick: () => goTo(d.start) }, 'Go to'))),
+    h('div', { class: 'heist-settings', style: 'margin:10px 0 0' },
+      h('label', { class: 'field' }, 'How it starts', mode),
+      usesNpc ? h('label', { class: 'field' }, 'Contact\'s name', name) : null),
+    usesNpc ? h('div', { class: 'field' }, 'Who they are', pedPicker(d.startNpc.ped, (m) => { d.startNpc.ped = m; }, meta.peds || [])) : null,
+    usesNpc ? h('label', { class: 'field', style: 'margin-top:8px' }, 'What they say', say) : null);
+}
+
 /* NPC picker: categories with pictures, search, or any custom model ------------------ */
 
 const PED_IMAGE = (model) => `https://docs-backend.fivem.net/peds/${model}.webp`; // FiveM's ped reference pictures
@@ -1735,12 +1799,18 @@ function renderHeistEditor() {
       if (!s.hostageSet) { if (s.time == null || s.time === 30 || s.time > 60) s.time = 8; s.hostageSet = true; }
       extra.push(h('label', { class: 'field' }, 'Keep them at gunpoint for (s)', num(s, 'time', 3, 60)));
     }
+    if (s.type === 'guards' && s.spots && s.spots.length) {
+      extra.push(h('div', { class: 'field', style: 'flex:1 1 100%' }, 'Where they stand',
+        h('div', { class: 'row', style: 'align-items:center' },
+          h('span', { text: `${s.spots.length} ${s.spots.length === 1 ? 'guard' : 'guards'} placed one by one, each facing the way you set.` }),
+          h('button', { class: 'btn small', type: 'button', onclick: () => { s.spots = null; rerender(); } }, 'Spread them out randomly instead'))));
+    }
     if (s.type === 'guards') {
-      extra.push(h('label', { class: 'field' }, 'How many', num(s, 'count', 1, 12, 70)),
+      extra.push(s.spots && s.spots.length ? h('span', {}) : h('label', { class: 'field' }, 'How many', num(s, 'count', 1, 12, 70)),
         h('label', { class: 'field' }, 'Weapon', text(s, 'weapon', 160, npc.guardWeapon || 'weapon_pistol')),
         h('label', { class: 'field' }, 'Armour (0-100)', num(s, 'armour', 0, 100, 80)),
         h('label', { class: 'field' }, 'Accuracy (1-100)', num(s, 'accuracy', 1, 100, 80)),
-        h('label', { class: 'field' }, 'Spread out over (m)', num(s, 'radius', 2, 40, 80)));
+        s.spots && s.spots.length ? h('span', {}) : h('label', { class: 'field' }, 'Spread out over (m)', num(s, 'radius', 2, 40, 80)));
     }
     extra.push(h('label', { class: 'field' }, s.type === 'hostage' ? 'Alarm (if they comply)' : 'Alarm', pick(s, 'alert', ALERT_OPTIONS)));
     if (s.type !== 'truck' && s.type !== 'loot' && s.type !== 'wait' && s.type !== 'guards') extra.push(h('label', { class: 'field' }, 'Door to unlock (optional)', text(s, 'doorId', 160, 'door-lock ID or name')));
@@ -1752,8 +1822,26 @@ function renderHeistEditor() {
         text(s, 'label', 200, 'Label, e.g. Vault door'),
         h('span', { class: 'heist-pos' }, followsTruck(s) ? h('span', { class: 'muted', text: 'At the truck' }) : [
           h('span', { class: s.x != null ? 'fig' : 'debit', text: point(s) }),
+          (s.type === 'talk' || s.type === 'hostage')
+            ? h('button', { class: 'btn small primary', type: 'button', onclick: async () => {
+              const pts = await placeInGame({ model: s.ped || (meta.npc || {}).ped });
+              if (pts) { Object.assign(s, pts[0]); toast('Placed.'); rerender(); }
+            } }, 'Place in game')
+            : null,
+          s.type === 'guards'
+            ? h('button', { class: 'btn small primary', type: 'button', onclick: async () => {
+              const pts = await placeInGame({ model: s.ped || (meta.npc || {}).guardPed, multi: true, max: 12 });
+              if (pts) {
+                s.spots = pts; s.count = pts.length;
+                // The step's own position: the middle of the guards
+                const c = pts.reduce((a, p) => ({ x: a.x + p.x / pts.length, y: a.y + p.y / pts.length, z: a.z + p.z / pts.length }), { x: 0, y: 0, z: 0 });
+                Object.assign(s, c, { w: pts[0].w });
+                toast(`${pts.length} ${pts.length === 1 ? 'guard' : 'guards'} placed.`); rerender();
+              }
+            } }, 'Place guards one by one')
+            : null,
           h('button', { class: 'btn small', type: 'button', onclick: () => here((p) => Object.assign(s, p)) },
-            { truck: 'Truck starts here', talk: 'They stand here', hostage: 'They stand here', guards: 'Guards around here' }[s.type] || 'Set here'),
+            { truck: 'Truck starts here', talk: 'Where I stand', hostage: 'Where I stand', guards: 'Spread around me' }[s.type] || 'Set here'),
           h('button', { class: 'btn small', type: 'button', onclick: () => goTo(s) }, 'Go to')]),
         h('span', { class: 'heist-step-tools' },
           h('button', { class: 'btn small', type: 'button', title: 'Move up', onclick: () => move(i, -1) }, '↑'),
@@ -1794,14 +1882,9 @@ function renderHeistEditor() {
         h('button', { class: 'btn small danger', type: 'button', onclick: () => confirmModal({ title: `Delete ${x.label}?`, body: 'It\'s gone for good, and any run in progress stops.', confirmLabel: 'Delete heist', danger: true, onConfirm: async () => { if (await adminAct('heistDelete', [x.id], 'Deleted.')) { admin.heist = null; rerender(); } } }) }, 'Delete'))),
     h('h3', { style: 'margin-top:6px', text: x.label || 'New heist' }),
     settings,
-    h('div', { class: 'heist-edit-start' },
-      h('div', {}, h('strong', { text: 'Start point' }), h('div', { class: 'hint', style: 'margin:0', text: 'Where the crew gathers and presses E to begin. Crew within 40m count.' })),
-      h('span', { class: 'heist-pos' },
-        h('span', { class: d.start ? 'fig' : 'debit', text: point(d.start) }),
-        h('button', { class: 'btn small', type: 'button', onclick: () => here((p) => { d.start = p; }) }, 'Set here'),
-        h('button', { class: 'btn small', type: 'button', onclick: () => goTo(d.start) }, 'Go to'))),
+    startSection(d, meta, { here, goTo, point, rerender }),
     h('h3', { style: 'margin:22px 0 4px', text: 'Steps' }),
-    h('p', { class: 'hint', style: 'margin:0 0 10px', text: 'Done in order. Loot steps next to each other can be grabbed at the same time by different crew. Stand at each spot and press Set here.' }),
+    h('p', { class: 'hint', style: 'margin:0 0 10px', text: 'Done in order. Loot steps next to each other can be grabbed at the same time by different crew. Place NPCs in game, or stand at each spot and press Set here.' }),
     steps.length ? h('div', { class: 'heist-edit-steps' }, steps) : h('p', { class: 'empty', text: 'No steps yet.' }),
     add,
     h('div', { class: 'heist-save' },

@@ -33,7 +33,9 @@ local function publish()
     local starts = {}
     for _, h in pairs(heists) do
         if h.enabled and h.data.start then
-            starts[#starts + 1] = { id = h.id, label = h.label, x = h.data.start.x, y = h.data.start.y, z = h.data.start.z }
+            local npc = (h.data.startMode == 'npc' or h.data.startMode == 'both') and h.data.startNpc or nil
+            starts[#starts + 1] = { id = h.id, label = h.label, x = h.data.start.x, y = h.data.start.y, z = h.data.start.z, w = h.data.start.w,
+                npc = npc and { ped = npc.ped, name = npc.name } or nil }
         end
     end
     GlobalState.vg_heist_starts = starts
@@ -43,6 +45,8 @@ local function saveHeist(h)
     MySQL.update.await('UPDATE vg_heists SET label = ?, kind = ?, enabled = ?, data = ?, next_at = ? WHERE id = ?',
         { h.label, h.kind, h.enabled and 1 or 0, json.encode(h.data), h.nextAt or 0, h.id })
 end
+
+function Heists.Get(id) return heists[tonumber(id)] end
 
 function Heists.Load()
     heists = {}
@@ -101,6 +105,7 @@ function Heists.View(src)
             local why = startBlocker(h, gang, cid, nil)
             local zone = Zones.FromCoords(vector3(h.data.start.x, h.data.start.y, h.data.start.z))
             list[#list + 1] = {
+                startMode = h.data.startMode or 'tablet', contact = h.data.startNpc and h.data.startNpc.name or nil,
                 id = h.id, label = h.label, kind = h.kind, area = zone and Zones.Label(zone) or nil,
                 crew = h.data.crew or 1, steps = #h.data.steps, cooldownMins = h.data.cooldown,
                 blocked = why, readyIn = why == 'heist_cooldown' and (h.nextAt - now()) or (why == 'heist_gang_cooldown' and (gangNext[gang.id] - now()) or nil),
@@ -241,11 +246,14 @@ local function spawnTruck(run, i)
     return true
 end
 
-function Heists.Start(src, heistId)
+function Heists.Start(src, heistId, fromNpc)
     local gang, _, cid = Gangs.GetPlayerGang(src)
     if not gang then return false, 'not_in_gang' end
     local h = heists[tonumber(heistId)]
     if not h then return false, 'heist_unavailable' end
+    local mode = h.data.startMode or 'tablet'
+    if mode == 'npc' and not fromNpc then return false, 'heist_talk_to_contact', (h.data.startNpc and h.data.startNpc.name or '?') end
+    if mode == 'tablet' and fromNpc then return false, 'heist_unavailable' end
     local why = startBlocker(h, gang, cid, src)
     if why then return false, why end
     local truckJob = h.data.steps[1] and h.data.steps[1].type == 'truck'
@@ -412,7 +420,7 @@ function Heists.GuardsClaim(src, runId, i)
     local c = run.guardClaims[i]
     if c and GetGameTimer() - c.at < 20000 then return false end -- someone's already spawning them
     run.guardClaims[i] = { src = src, at = GetGameTimer() }
-    return true, { x = s.x, y = s.y, z = s.z, w = s.w or 0.0, count = s.count or 4, ped = s.ped or cfg.npc.guardPed,
+    return true, { x = s.x, y = s.y, z = s.z, w = s.w or 0.0, count = s.count or 4, ped = s.ped or cfg.npc.guardPed, spots = s.spots,
         weapon = s.weapon or cfg.npc.guardWeapon, armour = s.armour or 50, accuracy = s.accuracy or 40, radius = s.radius or 10 }
 end
 
@@ -543,7 +551,16 @@ local function cleanHeist(input)
         tier = input.tier and math.floor(cleanNumber(input.tier, 1, #Config.Progression.tiers, 3)) or nil,
         start = cleanPoint(input.start),
         steps = {},
+        -- How the job starts: press E at a marker on the start point ('tablet', the original way), or talk to a
+        -- contact standing there ('npc'). ('both' from an earlier version counts as a contact.)
+        startMode = (input.startMode == 'npc' or input.startMode == 'both') and 'npc' or 'tablet',
     }
+    if data.startMode ~= 'tablet' then
+        local n = type(input.startNpc) == 'table' and input.startNpc or {}
+        local model = cleanText(n.ped, 32):lower()
+        local name = cleanText(n.name, 32)
+        data.startNpc = { ped = model:match('^[%w_]+$') and model or cfg.npc.ped, name = #name > 0 and name or 'The contact', say = cleanText(n.say, 200) }
+    end
     if type(input.steps) ~= 'table' or #input.steps > 20 then return nil, 'heist_bad_steps' end
     for _, s in ipairs(input.steps) do
         if type(s) ~= 'table' or not VALID_TYPES[s.type] then return nil, 'heist_bad_steps' end
@@ -571,6 +588,15 @@ local function cleanHeist(input)
             step.armour = math.floor(cleanNumber(s.armour, 0, 100, 50))
             step.accuracy = math.floor(cleanNumber(s.accuracy, 1, 100, 40))
             step.radius = math.floor(cleanNumber(s.radius, 2, 40, 10))
+            -- Guards placed one by one: their exact spots and facing (then the count is how many were placed)
+            if type(s.spots) == 'table' and #s.spots > 0 then
+                step.spots = {}
+                for _, p in ipairs(s.spots) do
+                    local cp = cleanPoint(p)
+                    if cp and #step.spots < 12 then step.spots[#step.spots + 1] = cp end
+                end
+                if #step.spots > 0 then step.count = #step.spots else step.spots = nil end
+            end
         end
         local p = cleanPoint(s)
         if p then step.x, step.y, step.z, step.w = p.x, p.y, p.z, p.w end

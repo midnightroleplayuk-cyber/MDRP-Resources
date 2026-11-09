@@ -245,11 +245,19 @@ local function spawnGuards(runId, i)
     if not model then return end
     local nets = {}
     for n = 1, g.count do
-        local a = (n / g.count) * math.pi * 2
-        local r = g.radius * (0.4 + math.random() * 0.6)
-        local x, y = g.x + math.cos(a) * r, g.y + math.sin(a) * r
-        local found, z = GetGroundZFor_3dCoord(x, y, g.z + 3.0, false)
-        local ped = CreatePed(4, model, x, y, found and z or g.z, math.random(0, 359) + 0.0, true, true)
+        local x, y, z, w
+        local spot = g.spots and g.spots[n]
+        if spot then
+            -- Placed one by one in the builder: exactly there, facing that way
+            x, y, z, w = spot.x, spot.y, spot.z - 1.0, spot.w or 0.0
+        else
+            local a = (n / g.count) * math.pi * 2
+            local r = g.radius * (0.4 + math.random() * 0.6)
+            x, y = g.x + math.cos(a) * r, g.y + math.sin(a) * r
+            local found, gz = GetGroundZFor_3dCoord(x, y, g.z + 3.0, false)
+            z, w = found and gz or g.z, math.random(0, 359) + 0.0
+        end
+        local ped = CreatePed(4, model, x, y, z, w, true, true)
         if ped and ped ~= 0 then
             SetEntityAsMissionEntity(ped, true, true)
             GiveWeaponToPed(ped, GetHashKey(g.weapon), 250, false, true)
@@ -361,13 +369,76 @@ CreateThread(function()
 end)
 
 -------------------------------------------------------------------------------
+-- Contacts who start a heist (stand at its start point; the crew talks to them to begin)
+-------------------------------------------------------------------------------
+
+local contacts = {} -- contacts[heistId] = ped (this game only)
+
+CreateThread(function()
+    while true do
+        local sleep = 1500
+        local list = GlobalState.vg_heist_starts or {}
+        local pos = GetEntityCoords(cache.ped)
+        local wanted = {}
+        for _, st in ipairs(list) do
+            if st.npc then
+                local d = #(pos - vector3(st.x, st.y, st.z))
+                if d < cfg.npc.spawnDistance then
+                    wanted[st.id] = true
+                    if not (contacts[st.id] and DoesEntityExist(contacts[st.id])) then
+                        local model = loadPed(st.npc.ped, cfg.npc.ped)
+                        if model then
+                            local ped = CreatePed(4, model, st.x, st.y, st.z - 1.0, st.w or 0.0, false, true)
+                            SetModelAsNoLongerNeeded(model)
+                            SetEntityInvincible(ped, true)
+                            FreezeEntityPosition(ped, true)
+                            SetBlockingOfNonTemporaryEvents(ped, true)
+                            TaskStartScenarioInPlace(ped, 'WORLD_HUMAN_STAND_IMPATIENT', 0, true)
+                            contacts[st.id] = ped
+                        end
+                    end
+                    -- Walk up and press E (no prompt while a heist is already running for us)
+                    if d < 2.2 and not run and not busy then
+                        sleep = 0
+                        setPrompt('heist_start_npc', st.npc.name or '?', st.label)
+                        if IsControlJustPressed(0, 38) then
+                            setPrompt(nil)
+                            local ped = contacts[st.id]
+                            if ped then TaskTurnPedToFaceEntity(cache.ped, ped, 800) end
+                            local ok, res, extra = lib.callback.await('vinewood_gangs:server:heistStartNpc', false, st.id)
+                            if ok then
+                                if res and res ~= '' then lib.notify({ title = st.npc.name, description = res, type = 'inform', duration = 10000 }) end
+                                if ped then PlayPedAmbientSpeechNative(ped, 'GENERIC_HI', 'SPEECH_PARAMS_FORCE') end
+                            else
+                                notify(res or 'failed', 'error', extra)
+                            end
+                            Wait(1000)
+                        end
+                    elseif d < 3.0 and prompt == 'heist_start_npc' then
+                        setPrompt(nil)
+                    end
+                end
+            end
+        end
+        for id, ped in pairs(contacts) do
+            if not wanted[id] then
+                if DoesEntityExist(ped) then DeleteEntity(ped) end
+                contacts[id] = nil
+            end
+        end
+        Wait(sleep)
+    end
+end)
+
+-------------------------------------------------------------------------------
 -- Prompts
 -------------------------------------------------------------------------------
 
 local function nearestStart(pos)
     local starts = GlobalState.vg_heist_starts or {}
     for _, h in ipairs(starts) do
-        if #(pos - vector3(h.x, h.y, h.z)) < 2.5 then return h end
+        -- Jobs started by talking to a contact don't have a marker (the contact is there instead)
+        if not h.npc and #(pos - vector3(h.x, h.y, h.z)) < 2.5 then return h end
     end
 end
 
@@ -424,6 +495,7 @@ AddEventHandler('onResourceStop', function(res)
     if res ~= GetCurrentResourceName() then return end
     clearBlips()
     for i in pairs(npcs) do removeNpc(i) end
+    for _, ped in pairs(contacts) do if DoesEntityExist(ped) then DeleteEntity(ped) end end
     if prompt then lib.hideTextUI() end
     if gameResult then SetNuiFocus(false, false) end
 end)

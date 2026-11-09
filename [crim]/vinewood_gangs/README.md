@@ -153,7 +153,16 @@ time limit, cooldown and loot. Tick **Live** to make it appear in gangs' tablets
 Gangs see live heists in the tablet's **Heists** app (unlocked at Organisation). Rules shared by every heist
 (tools, loot types, truck, alarm timing) are in `config/heists.lua`.
 
-**NPC steps** can go anywhere in a heist, including first to start it off:
+**How a heist starts:** press E at a marker on the start point, or **talk to a contact** standing there (set in the
+builder: their name, look and what they say). Either way the usual rules apply (tier, rank permission, crew nearby,
+cooldowns, police on duty).
+
+**Placing NPCs in game:** the start contact and NPC steps have **Place in game**: the panel steps aside and a
+see-through preview of the actual NPC follows where you look. Mouse wheel turns them (hold Shift for fine turns),
+E places them, X cancels, and the panel comes back where you were. Guards can be **placed one by one**, each with
+their own spot and facing (Backspace undoes the last, Enter finishes).
+
+**NPC steps** can go anywhere in a heist:
 
 - **Talk to someone:** an NPC stands at the spot; the crew walks up and presses E, and they say your line. They can
   want paying (from the dirty treasury) or want an item. Good for an inside man or a fixer to kick the job off.

@@ -16,7 +16,7 @@ escrow_ignore {
 name 'vinewood_gangs'
 author 'Vinewood Studios'
 description 'Advanced gang, territory and organised crime system'
-version '3.12.0'
+version '3.13.0'
 
 ox_lib 'locale'
 
@@ -101,6 +101,7 @@ client_scripts {
     'client/informants.lua',
     'client/auctions.lua',
     'client/drugs.lua',
+    'client/placer.lua',
     'client/heists.lua',
     'client/airdrops.lua',
     'client/admin_safehouses.lua',

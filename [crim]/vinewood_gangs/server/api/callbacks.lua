@@ -186,6 +186,13 @@ read('getHeists', function(src) return Heists.View(src) end)
 action('heistStart', function(src, id) return Heists.Start(src, id) end, 3000)
 action('heistAbandon', function(src) return Heists.Abandon(src) end, 3000)
 lib.callback.register('vinewood_gangs:server:heistStart', function(src, id) return Heists.Start(src, id) end)
+-- Talking to a heist's contact at its start point
+lib.callback.register('vinewood_gangs:server:heistStartNpc', function(src, id)
+    local ok, err, extra = Heists.Start(src, id, true)
+    if not ok then return false, err, extra end
+    local h = Heists.Get and Heists.Get(id)
+    return true, h and h.data.startNpc and h.data.startNpc.say or nil
+end)
 lib.callback.register('vinewood_gangs:server:heistBegin', function(src, runId, i) return Heists.BeginStep(src, runId, i) end)
 lib.callback.register('vinewood_gangs:server:heistFinish', function(src, runId, i, ok)
     return Heists.FinishStep(src, runId, i, ok == 'killed' and 'killed' or ok == true)

@@ -1000,3 +1000,7 @@ input[type="time"], input[type="date"], input[type="datetime-local"] {
 .ped-card strong { font-size: 13px; line-height: 1.2; }
 .ped-card .muted { font-size: 11px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .ped-card:hover, .ped-card.on { border-color: var(--accent); }
+
+/* Heist builder: start section */
+.heist-start-box { display: grid; gap: 4px; padding: 12px 14px; border: 1px solid var(--line); border-radius: 12px; background: var(--kerb); margin-bottom: 8px; }
+.heist-start-box .heist-edit-start { border: 0; padding: 0; background: none; }
