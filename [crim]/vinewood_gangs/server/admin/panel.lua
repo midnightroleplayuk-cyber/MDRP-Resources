@@ -296,6 +296,8 @@ admin('heistStop', function(src, id) return Heists.AdminStop(src, id) end)
 admin('heistHere', function(src) return Heists.AdminHere(src) end)
 admin('gotoPoint', function(_, p)
     if type(p) ~= 'table' or not tonumber(p.x) then return false, 'invalid' end
+    -- A spot picked on the map has no height: the staff member's game finds the ground there
+    if not tonumber(p.z) then return { x = tonumber(p.x), y = tonumber(p.y), z = 0.0, w = tonumber(p.w) or 0.0, ground = true } end
     return { x = tonumber(p.x), y = tonumber(p.y), z = tonumber(p.z) + 1.0, w = tonumber(p.w) or 0.0 }
 end)
 

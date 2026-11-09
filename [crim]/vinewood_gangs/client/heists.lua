@@ -398,7 +398,7 @@ CreateThread(function()
                         end
                     end
                     -- Walk up and press E (no prompt while a heist is already running for us)
-                    if d < 2.2 and not run and not busy then
+                    if d < 2.2 and not run and not busy and (st.anyone or GetPlayerGang()) then
                         sleep = 0
                         setPrompt('heist_start_npc', st.npc.name or '?', st.label)
                         if IsControlJustPressed(0, 38) then
@@ -434,11 +434,12 @@ end)
 -- Prompts
 -------------------------------------------------------------------------------
 
-local function nearestStart(pos)
+local function nearestStart(pos, anyoneOnly)
     local starts = GlobalState.vg_heist_starts or {}
     for _, h in ipairs(starts) do
-        -- Jobs started by talking to a contact don't have a marker (the contact is there instead)
-        if not h.npc and #(pos - vector3(h.x, h.y, h.z)) < 2.5 then return h end
+        -- Jobs started by talking to a contact don't have a marker (the contact is there instead).
+        -- Players with no gang only get jobs open to anyone.
+        if not h.npc and (not anyoneOnly or h.anyone) and #(pos - vector3(h.x, h.y, h.z)) < 2.5 then return h end
     end
 end
 
@@ -446,7 +447,8 @@ CreateThread(function()
     while true do
         local sleep = 1000
         local gang = GetPlayerGang()
-        if gang and not busy and not IsPedInAnyVehicle(cache.ped, false) then
+        -- Gang members, or anyone on a job / near one that's open to everyone
+        if not busy and not IsPedInAnyVehicle(cache.ped, false) then
             local pos = GetEntityCoords(cache.ped)
             local target, startHere
 
@@ -463,8 +465,10 @@ CreateThread(function()
                         end
                     end
                 end
-            elseif HasGangPermission('heists') then
+            elseif gang and HasGangPermission('heists') then
                 startHere = nearestStart(pos)
+            elseif not gang then
+                startHere = nearestStart(pos, true)
                 if startHere then sleep = 0 end
             end
 

@@ -154,11 +154,27 @@ end
 -- Dealing (server/modules/drugs.lua calls these)
 -------------------------------------------------------------------------------
 
-local function isTurfDrug(item)
-    if S('anyDrugCounts') then return true end
-    for _, d in ipairs(S('turfDrugs') or {}) do if d == item then return true end end
-    return false
+---The turf drugs as { item, perUnit } (perUnit nil = the default % per unit). Older settings and config/hexes.lua
+---may list plain item names; those use the default.
+local function turfList()
+    local out = {}
+    for _, d in ipairs(S('turfDrugs') or {}) do
+        if type(d) == 'string' then out[#out + 1] = { item = d }
+        elseif type(d) == 'table' and d.item then out[#out + 1] = { item = d.item, perUnit = tonumber(d.perUnit) } end
+    end
+    return out
 end
+
+---How much control one unit of this drug builds on your own hex (nil = it doesn't).
+local function controlFor(item)
+    for _, d in ipairs(turfList()) do
+        if d.item == item then return d.perUnit or S('controlPerSale') end
+    end
+    if S('anyDrugCounts') then return S('controlPerSale') end
+    return nil
+end
+
+local function isTurfDrug(item) return controlFor(item) ~= nil end
 
 function Hexes.IsTurfDrug(item) return isTurfDrug(item) end
 
@@ -178,13 +194,14 @@ function Hexes.OnSale(key, sellerGangId, item, qty)
     if not h or not sellerGangId then return nil end
     if h.gangId == sellerGangId then
         local label = Hex.Label(h.q, h.r)
-        if not isTurfDrug(item) then
+        local per = controlFor(item)
+        if not per then
             local names = {}
-            for _, d in ipairs(S('turfDrugs') or {}) do names[#names + 1] = Bridge.ItemLabel(d) end
+            for _, d in ipairs(turfList()) do names[#names + 1] = Bridge.ItemLabel(d.item) end
             return { own = true, counted = false, label = label, needs = table.concat(names, ' or ') }
         end
         local before = h.control
-        setControl(h, h.control + S('controlPerSale') * qty)
+        setControl(h, h.control + per * qty)
         return { own = true, counted = true, label = label, gained = math.floor((h.control - before) * 10 + 0.5) / 10,
             control = math.floor(h.control) }
     end
@@ -263,7 +280,9 @@ function Hexes.TabletView(src)
         canExpand = Gangs.HasPermission(cid, 'expand_turf'), expandAt = S('expandAt'),
         cost = { money = cost.money or 0, account = cost.account or 'dirty', item = cost.item and Bridge.ItemLabel(cost.item) or nil, count = cost.count or 0 },
         decayPerHour = S('decayPerHour'), controlPerSale = S('controlPerSale'), decayOnlyOnline = S('decayOnlyOnline') ~= false,
-        turfDrugs = (function() local l = {} for _, d in ipairs(S('turfDrugs') or {}) do l[#l + 1] = Bridge.ItemLabel(d) end return l end)(),
+        turfDrugs = (function() local l = {} for _, d in ipairs(turfList()) do l[#l + 1] = Bridge.ItemLabel(d.item) end return l end)(),
+        -- Each turf drug and how much control a unit builds, for the Territory app
+        turfRates = (function() local l = {} for _, d in ipairs(turfList()) do l[#l + 1] = { label = Bridge.ItemLabel(d.item), perUnit = d.perUnit or S('controlPerSale') } end return l end)(),
         sprays = { used = used, slots = Hexes.SpraySlots(gang.id), every = S('sprayEvery'), main = Hexes.MainOf(gang.id) },
         balance = Ledger.GetBalance(gang.id, cost.account or 'dirty'),
     }
@@ -636,8 +655,9 @@ function Hexes.AdminSettings()
     local sellable = {}
     for _, it in ipairs(Drugs and Drugs.Items and Drugs.Items() or {}) do sellable[it.item] = true end
     out.turfDrugItems = {}
-    for _, d in ipairs(S('turfDrugs') or {}) do
-        out.turfDrugItems[#out.turfDrugItems + 1] = { name = d, label = Bridge.ItemLabel(d), exists = Bridge.ItemExists(d), sellable = sellable[d] == true }
+    for _, d in ipairs(turfList()) do
+        out.turfDrugItems[#out.turfDrugItems + 1] = { name = d.item, label = Bridge.ItemLabel(d.item), perUnit = d.perUnit,
+            exists = Bridge.ItemExists(d.item), sellable = sellable[d.item] == true }
     end
     local cost = S('expandCost') or {}
     out.expandItemLabel = cost.item and Bridge.ItemLabel(cost.item) or nil
@@ -650,10 +670,16 @@ end
 function Hexes.AdminSaveSettings(src, input)
     if type(input) ~= 'table' then return false, 'invalid' end
     local n = function(v, lo, hi, d) v = tonumber(v) return v and math.max(lo, math.min(hi, v)) or d end
-    local drugs = {}
+    local drugs, seen = {}, {}
     for _, d in ipairs(type(input.turfDrugs) == 'table' and input.turfDrugs or {}) do
-        if not Bridge.ItemExists(d) then return false, 'item_not_found' end
-        drugs[#drugs + 1] = d
+        -- { item, perUnit } (or a plain item name, which uses the default rate)
+        local item = type(d) == 'table' and d.item or d
+        if type(item) ~= 'string' or not Bridge.ItemExists(item) then return false, 'item_not_found' end
+        if not seen[item] then
+            seen[item] = true
+            local per = type(d) == 'table' and tonumber(d.perUnit) or nil
+            drugs[#drugs + 1] = { item = item, perUnit = per and n(per, 0.01, 100, nil) or nil }
+        end
     end
     if #drugs == 0 and input.anyDrugCounts ~= true then return false, 'hex_need_turf_drug' end
     local cost = type(input.expandCost) == 'table' and input.expandCost or {}

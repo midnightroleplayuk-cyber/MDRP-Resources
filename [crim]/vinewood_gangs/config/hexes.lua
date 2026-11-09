@@ -15,7 +15,9 @@ Config.Hexes = {
     protectCompound = true, -- compound hexes can drop to 0% but are never lost
 
     -- Control (0 to 100%)
-    turfDrugs      = { 'weed_og_kush' }, -- selling these on your own hex builds control (must match your item names)
+    -- Selling these on your own hex builds control (must match your item names). Each can have its own rate:
+    -- { item = 'weed_og_kush', perUnit = 0.5 }; a plain name uses controlPerSale. Also changeable in /gangadmin > Turf.
+    turfDrugs      = { 'weed_og_kush' },
     anyDrugCounts  = false,              -- true = any drug sold on your own hex builds control
     controlPerSale = 1.5,  -- % per unit of a turf drug sold on your own hex
     rivalLoss      = 2.0,  -- % a hex loses per unit of any drug a rival gang sells on it

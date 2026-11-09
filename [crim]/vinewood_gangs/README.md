@@ -153,6 +153,15 @@ time limit, cooldown and loot. Tick **Live** to make it appear in gangs' tablets
 Gangs see live heists in the tablet's **Heists** app (unlocked at Organisation). Rules shared by every heist
 (tools, loot types, truck, alarm timing) are in `config/heists.lua`.
 
+**Who can do it:** gangs only, or **anyone**. On a heist open to anyone, players with no gang can take it on: their
+crew is whoever with no gang is at the start with them (the crew size still applies), loot money goes to whoever
+grabs it (dirty or clean as set) instead of a treasury, a contact who wants paying takes it from the player's cash,
+and gang tiers, rank permissions, influence, reputation and police intel don't apply to them.
+
+**Picking spots on the map:** air drops (calling one in, and schedule spots) can be placed by clicking the map. In
+the heist builder, **Pick on map** takes you to the spot you click (landing on the ground) and fills it in, keeping
+the panel where it was; heights matter in heists, so fine-tune with Place in game or Where I stand.
+
 **How a heist starts:** press E at a marker on the start point, or **talk to a contact** standing there (set in the
 builder: their name, look and what they say). Either way the usual rules apply (tier, rank permission, crew nearby,
 cooldowns, police on duty).
@@ -217,7 +226,9 @@ tags, rackets, street dealing, street events, gang tiers and the maps all work o
 
 Dealers see what each sale did: "Davis (4, -7): +3% control (now 45%)", or which drug builds control if the one
 they sold doesn't. Turf settings warn you if a turf drug isn't a real item on your server or isn't on the Street
-dealing list. Tick **Any drug builds control** to count every drug instead of a chosen one.
+dealing list. Each turf drug has its own **% control per unit** (leave it blank for the default), so a premium
+strain can build turf faster than a cheap one. Tick **Any drug builds control** to count every other drug too, at
+the default rate.
 
 **Resizing hexes in game:** `/gangadmin` > Turf > **Hex size**. Enter the new size, choose whether existing turf
 keeps the same number of hexes or the same ground, and press Resize: it happens live for everyone. The size set in

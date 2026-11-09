@@ -127,6 +127,27 @@ local function staticData()
     }
 end
 
+---Teleports the player to x, y, landing on whatever's there (loads the area first). Returns where they ended up.
+function TeleportToGround(x, y, heading)
+    local ped = cache.ped
+    FreezeEntityPosition(ped, true)
+    local z
+    for _, h in ipairs({ 1000.0, 800.0, 600.0, 400.0, 250.0, 150.0, 100.0, 50.0, 25.0, 0.0 }) do
+        SetEntityCoordsNoOffset(ped, x, y, h, false, false, false)
+        RequestCollisionAtCoord(x, y, h)
+        local t = GetGameTimer()
+        while not HasCollisionLoadedAroundEntity(ped) and GetGameTimer() - t < 1500 do Wait(0) end
+        local found, gz = GetGroundZFor_3dCoord(x, y, h, false)
+        if found then z = gz break end
+    end
+    SetEntityCoords(ped, x, y, (z or 30.0) + 0.1, false, false, false, false)
+    if heading then SetEntityHeading(ped, heading) end
+    FreezeEntityPosition(ped, false)
+    Wait(300)
+    local c = GetEntityCoords(ped)
+    return { x = c.x, y = c.y, z = c.z, w = GetEntityHeading(ped) }
+end
+
 local function closeTablet()
     if not isOpen then return end
     isOpen = false
@@ -209,8 +230,13 @@ RegisterNUICallback('adminRequest', function(body, cb)
     if (body.action == 'gotoTag' or body.action == 'gotoSafehouse' or body.action == 'gotoContractSpot' or body.action == 'gotoRacketShop' or body.action == 'gotoPoint') and type(res) == 'table' then
         closeTablet()
         local heading = res.nx and GetHeadingFromVector_2d(-res.nx, -res.ny) or (res.w or 0.0)
-        SetEntityCoords(cache.ped, res.x, res.y, res.z - 0.9, false, false, false, false)
-        SetEntityHeading(cache.ped, heading)
+        if res.ground then
+            -- Picked on the map: no height known, so load the area and land on whatever's there
+            CreateThread(function() TeleportToGround(res.x, res.y, heading) end)
+        else
+            SetEntityCoords(cache.ped, res.x, res.y, res.z - 0.9, false, false, false, false)
+            SetEntityHeading(cache.ped, heading)
+        end
     end
 end)
 
@@ -260,6 +286,21 @@ RegisterNUICallback('placeNpc', function(data, cb)
         if mode == 'admin' then
             SetNuiFocus(true, true)
             SendNUIMessage({ action = 'adminPlaced', token = data.token, points = points })
+        end
+    end)
+end)
+
+RegisterNUICallback('goPicked', function(data, cb)
+    cb('ok')
+    if mode ~= 'admin' or type(data) ~= 'table' or not tonumber(data.x) or not tonumber(data.y) then return end
+    SetNuiFocus(false, false)
+    SendNUIMessage({ action = 'adminHide' })
+    CreateThread(function()
+        local ok, at = pcall(TeleportToGround, tonumber(data.x), tonumber(data.y))
+        Wait(400)
+        if mode == 'admin' then
+            SetNuiFocus(true, true)
+            SendNUIMessage({ action = 'adminPlaced', token = data.token, points = ok and { at } or nil })
         end
     end)
 end)

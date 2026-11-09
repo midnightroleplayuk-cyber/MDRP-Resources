@@ -1004,3 +1004,16 @@ input[type="time"], input[type="date"], input[type="datetime-local"] {
 /* Heist builder: start section */
 .heist-start-box { display: grid; gap: 4px; padding: 12px 14px; border: 1px solid var(--line); border-radius: 12px; background: var(--kerb); margin-bottom: 8px; }
 .heist-start-box .heist-edit-start { border: 0; padding: 0; background: none; }
+
+/* Fields that hold a picker or a list label themselves the same grey as the others; what's inside keeps its colours */
+div.field { display: grid; gap: 6px; font-size: 14px; color: var(--concrete); }
+:where(div.field) > * { color: var(--chalk); }
+
+/* Map spot picker (opens over the panel) */
+.mappick-overlay { position: absolute; inset: 0; z-index: 60; display: grid; place-items: center; background: rgba(8, 10, 12, 0.6); border-radius: inherit; }
+.mappick-panel { display: grid; gap: 10px; width: min(980px, 92%); padding: 18px 20px; border: 1px solid var(--line); border-radius: 16px; background: var(--kerb); box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5); }
+.mappick-map { width: 100%; height: auto; aspect-ratio: 16 / 9; max-height: 60vh; cursor: crosshair; border-radius: 10px; }
+
+/* Item pickers can shrink (long names trim with "…" instead of spilling under buttons beside them) */
+.picker, .pick-chosen { min-width: 0; }
+.turf-drug-row { flex-wrap: nowrap; align-items: flex-start; gap: 10px; }

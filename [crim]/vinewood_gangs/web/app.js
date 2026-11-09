@@ -1035,7 +1035,7 @@ function renderHexTerritory(v) {
     h('div', { class: 'hex-stats' },
       h('div', {}, h('div', { class: 'eyebrow', text: 'Turf' }), h('div', { class: 'big fig', text: `${mine.length} ${mine.length === 1 ? 'hex' : 'hexes'}` })),
       h('div', {}, h('div', { class: 'eyebrow', text: 'Tags' }), h('div', { class: 'big fig', text: `${sprays.used} of ${sprays.slots}` }))),
-    h('p', { class: 'hint', style: 'margin:0', text: `Sell ${joinList(v.turfDrugs, 'or')} on your turf to build control (+${v.controlPerSale}% each). Every hex loses ${v.decayPerHour}% an hour${v.decayOnlyOnline === false ? '' : ' while any of you are online'}, and rivals dealing on it cost you. Your first tag goes on your main hex, and you get another for every ${sprays.every} hexes.` }),
+    h('p', { class: 'hint', style: 'margin:0', text: `Sell ${v.turfRates && v.turfRates.length ? joinList(v.turfRates.map((r) => `${r.label} (+${r.perUnit}% each)`), 'or') : `${joinList(v.turfDrugs, 'or')} (+${v.controlPerSale}% each)`} on your turf to build control. Every hex loses ${v.decayPerHour}% an hour${v.decayOnlyOnline === false ? '' : ' while any of you are online'}, and rivals dealing on it cost you. Your first tag goes on your main hex, and you get another for every ${sprays.every} hexes.` }),
     h('div', { class: 'hex-list' }, rows.length ? rows : [h('p', { class: 'empty', text: 'Your gang has no turf yet. Staff set up your compound.' })]),
     h('h3', { style: 'margin:6px 0 0', text: 'Buy new ground' }),
     buyBox,
@@ -2325,7 +2325,7 @@ const Mock = {
           { key: 'cleaner', label: 'A cleaner', description: 'Someone who asks no questions. Expensive, but anyone can use them.', cut: 0.3, minutes: 30, min: 1000, limit: 25000, left: 25000 },
         ],
         washing: [{ id: 3, method: 'Your protected businesses', amountIn: 5000, amountOut: 4400, secondsLeft: 1820 }], done: [] });
-      case 'getTerritoryHex': return ok({ mode: 'hexes', expandAt: 100, decayPerHour: 4, controlPerSale: 1.5, turfDrugs: ['OG Kush'], canExpand: true, balance: 48250,
+      case 'getTerritoryHex': return ok({ mode: 'hexes', expandAt: 100, decayPerHour: 4, controlPerSale: 1.5, turfDrugs: ['OG Kush', 'Blue Dream'], turfRates: [{ label: 'OG Kush', perUnit: 0.5 }, { label: 'Blue Dream', perUnit: 1.5 }], canExpand: true, balance: 48250,
         cost: { money: 50000, account: 'dirty', item: 'OG Kush', count: 50 }, sprays: { used: 1, slots: 2, every: 3, main: 'h:4:-7' },
         hexes: [{ key: 'h:4:-7', q: 4, r: -7, label: 'Davis (4, -7)', mine: true, main: true, compound: true, control: 100, owner: { label: 'Grove Kings', colour: '#7B3FBF' } },
           { key: 'h:5:-7', q: 5, r: -7, label: 'Rancho (5, -7)', mine: true, compound: true, control: 62, owner: { label: 'Grove Kings', colour: '#7B3FBF' } },

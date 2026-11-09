@@ -473,19 +473,26 @@ async function renderTurfSettings() {
     return el;
   };
   v.expandCost = v.expandCost || { money: 0, account: 'dirty' };
-  const drugs = (v.turfDrugItems || []).map((d, i) => h('div', {},
-    h('div', { class: 'row', style: 'align-items:center' },
-      h('div', { style: 'flex:1;max-width:420px' }, itemPicker(d.name ? { item: d.name, label: d.label, image: d.image } : null, (it) => { if (it) { v.turfDrugItems[i] = { name: it.name, label: it.label, image: it.image, exists: true }; rerender(); } }, { allowClear: false, openNow: !d.name, emptyText: 'No item chosen yet' })),
-      h('button', { class: 'btn small danger', type: 'button', onclick: () => { v.turfDrugItems.splice(i, 1); rerender(); } }, 'Remove')),
+  const drugs = (v.turfDrugItems || []).map((d, i) => {
+    // This drug's own control per unit (blank = the default below)
+    const rate = h('input', { type: 'number', min: 0.01, max: 100, step: 'any', value: d.perUnit ?? '', placeholder: String(v.controlPerSale ?? ''), style: 'width:90px' });
+    rate.addEventListener('change', () => { d.perUnit = rate.value === '' ? null : Number(rate.value); });
+    return h('div', {},
+    h('div', { class: 'row turf-drug-row' },
+      h('div', { class: 'field', style: 'flex:1 1 auto;min-width:0;max-width:520px' }, i === 0 ? 'Drug' : '',
+        itemPicker(d.name ? { item: d.name, label: d.label, image: d.image } : null, (it) => { if (it) { v.turfDrugItems[i] = { name: it.name, label: it.label, image: it.image, exists: true, perUnit: d.perUnit }; rerender(); } }, { allowClear: false, openNow: !d.name, emptyText: 'No item chosen yet' })),
+      h('label', { class: 'field', style: 'width:140px;flex:none' }, i === 0 ? '% control per unit' : '', rate),
+      h('button', { class: 'btn small danger', type: 'button', style: 'align-self:end;margin-bottom:6px', onclick: () => { v.turfDrugItems.splice(i, 1); rerender(); } }, 'Remove')),
     d.name && d.exists === false ? h('p', { class: 'hint debit', style: 'margin:4px 0 0', text: `There's no item called "${d.name}" on your server, so nothing builds control. Use Change to pick your real one.` })
-      : (d.name && d.sellable === false ? h('p', { class: 'hint debit', style: 'margin:4px 0 0', text: `${d.label} isn't on the Street dealing list, so it can't be sold. Add it there.` }) : null)));
+      : (d.name && d.sellable === false ? h('p', { class: 'hint debit', style: 'margin:4px 0 0', text: `${d.label} isn't on the Street dealing list, so it can't be sold. Add it there.` }) : null));
+  });
   const anyDrug = h('input', { type: 'checkbox', checked: v.anyDrugCounts === true });
   anyDrug.addEventListener('change', () => { v.anyDrugCounts = anyDrug.checked; rerender(); });
   const accountSel = select([{ value: 'dirty', label: 'Dirty money' }, { value: 'clean', label: 'Clean money' }], v.expandCost.account || 'dirty');
   accountSel.addEventListener('change', () => { v.expandCost.account = accountSel.value; });
 
   const save = async () => {
-    const data = { ...v, turfDrugs: (v.turfDrugItems || []).map((d) => d.name).filter(Boolean) };
+    const data = { ...v, turfDrugs: (v.turfDrugItems || []).filter((d) => d.name).map((d) => ({ item: d.name, perUnit: d.perUnit ?? null })) };
     const r = await adminRequest('hexSettingsSave', data);
     if (!r.ok) return toast(r.error, true);
     admin.turfDraft = null;
@@ -498,12 +505,14 @@ async function renderTurfSettings() {
     h('p', { class: 'hint', style: 'margin-bottom:16px', text: `The map is split into hexes (${v.size} m). Gangs start with a compound you give them (open a gang in Gangs), build control by selling the turf drug there, and buy the ground next to a hex at full control. Rival turf stays hidden until a gang deals on it.` }),
     h('h3', { text: 'Turf drug' }),
     h('label', { class: 'toggle', style: 'margin:0 0 10px' }, anyDrug, ' Any drug builds control (not just the ones below)'),
-    h('p', { class: 'hint', style: 'margin:0 0 8px', text: v.anyDrugCounts ? 'Every drug on the Street dealing list builds control when sold on your own hex.' : 'Selling these on your own hex builds its control. (They also need to be on the Street dealing list so they can be sold.)' }),
-    v.anyDrugCounts ? null : h('div', { style: 'display:grid;gap:8px' }, drugs),
-    v.anyDrugCounts ? null : h('button', { class: 'btn small', type: 'button', style: 'margin-top:8px', onclick: () => { v.turfDrugItems = v.turfDrugItems || []; v.turfDrugItems.push({ name: null, label: null }); rerender(); } }, 'Add a turf drug'),
+    h('p', { class: 'hint', style: 'margin:0 0 8px', text: v.anyDrugCounts
+      ? 'Every drug builds control when sold on your own hex: the ones below at their own rate, any others at the default rate (under Control).'
+      : 'Selling these on your own hex builds its control, each at its own rate per unit (leave it blank to use the default under Control). They also need to be on the Street dealing list so they can be sold.' }),
+    h('div', { style: 'display:grid;gap:8px' }, drugs),
+    h('button', { class: 'btn small', type: 'button', style: 'margin-top:8px', onclick: () => { v.turfDrugItems = v.turfDrugItems || []; v.turfDrugItems.push({ name: null, label: null, perUnit: null }); rerender(); } }, 'Add a turf drug'),
     h('h3', { style: 'margin-top:22px', text: 'Control' }),
     h('div', { class: 'heist-settings' },
-      h('label', { class: 'field' }, '% per unit sold on own turf', num(v, 'controlPerSale', 0.1, 100)),
+      h('label', { class: 'field' }, 'Default % per unit (drugs without their own)', num(v, 'controlPerSale', 0.1, 100)),
       h('label', { class: 'field' }, '% lost per unit a rival sells', num(v, 'rivalLoss', 0, 100)),
       h('label', { class: 'field' }, '% every hex loses per hour', num(v, 'decayPerHour', 0, 100)),
       (() => { const c = h('input', { type: 'checkbox', checked: v.decayOnlyOnline !== false }); c.addEventListener('change', () => { v.decayOnlyOnline = c.checked; });
@@ -513,8 +522,10 @@ async function renderTurfSettings() {
     h('div', { class: 'heist-settings' },
       h('label', { class: 'field' }, 'A touching hex needs (%)', num(v, 'expandAt', 1, 100)),
       h('label', { class: 'field' }, 'Money', num(v.expandCost, 'money', 0, 100000000, 120)),
-      h('label', { class: 'field' }, 'From', accountSel),
-      h('div', { class: 'field', style: 'min-width:300px' }, 'Plus this item from their pockets',
+      h('label', { class: 'field' }, 'From', accountSel)),
+    // The item and how many of it, side by side on their own line
+    h('div', { class: 'heist-settings', style: 'flex-wrap:nowrap;align-items:flex-start' },
+      h('div', { class: 'field', style: 'flex:0 1 460px;min-width:0' }, 'Plus this item from their pockets',
         itemPicker(v.expandCost.item ? { item: v.expandCost.item, label: v.expandItemLabel } : null, (it) => { v.expandCost.item = it ? it.name : null; v.expandItemLabel = it ? it.label : null; }, { emptyText: 'No item needed' })),
       h('label', { class: 'field' }, 'How many', num(v.expandCost, 'count', 0, 10000))),
     h('h3', { style: 'margin-top:8px', text: 'Tags' }),
@@ -874,6 +885,10 @@ async function editAirdropSchedule(existing, meta) {
         s.spots.push({ x: r.data.x, y: r.data.y, z: r.data.z }); drawSpots();
       } }, 'Add where I\'m standing'),
       h('button', { class: 'btn small', type: 'button', onclick: async () => {
+        const spot = await mapPointPicker({ title: 'Add a drop spot', start: s.spots[s.spots.length - 1] });
+        if (spot) { s.spots.push({ x: spot.x, y: spot.y, z: 0 }); drawSpots(); }
+      } }, 'Pick on the map'),
+      h('button', { class: 'btn small', type: 'button', onclick: async () => {
         if (!IN_GAME) { s.spots.push({ x: 1700 + s.spots.length * 50, y: 3300, z: 40 }); return drawSpots(); }
         const r = await postNui('airdropWaypoint');
         const w = r && r.json ? await r.json() : null;
@@ -998,6 +1013,10 @@ async function renderAdminAirdrops() {
       h('div', { class: 'buttons' },
         h('button', { class: 'btn', type: 'button', onclick: hideModal }, 'Cancel'),
         h('button', { class: 'btn', type: 'button', onclick: async () => {
+          const spot = await mapPointPicker({ title: 'Where should the crate land?' });
+          if (spot) send(spot.x, spot.y);
+        } }, 'Pick on the map'),
+        h('button', { class: 'btn', type: 'button', onclick: async () => {
           if (!IN_GAME) return send(1700, 3300);
           const r = await postNui('airdropWaypoint');
           const w = r && r.json ? await r.json() : null;
@@ -1106,6 +1125,99 @@ window.addEventListener('message', (event) => {
   }
 });
 
+/* Pick a spot on the San Andreas map: opens over whatever's on screen, resolves to { x, y } or null */
+function mapPointPicker({ title = 'Pick a spot on the map', hint = 'Scroll to zoom, drag to move, click to drop a pin.', start } = {}) {
+  return new Promise((resolve) => {
+    const tm = state.static.tabletMap;
+    const map = svg('svg', { class: 'map has-picture mappick-map', role: 'img', 'aria-label': title });
+    if (tm && tm.image) {
+      const left = (0 - tm.offsetX) / tm.scaleX + (tm.nudgeX || 0);
+      const top = (0 - tm.offsetY) / tm.scaleY + (tm.nudgeY || 0);
+      map.append(svg('image', { href: tm.image, x: left, y: -top, width: tm.size / tm.scaleX, height: tm.size / Math.abs(tm.scaleY), preserveAspectRatio: 'none' }));
+    }
+    const pin = svg('g', { class: 'mappick-pin' });
+    map.append(pin);
+    let view = start ? { cx: start.x, cy: start.y, half: 900 } : { cx: 0, cy: 1500, half: 5200 };
+    let picked = null;
+    const aspect = () => { const r = map.getBoundingClientRect(); return r.height ? r.width / r.height : 1; };
+    const drawPin = () => {
+      if (!picked) { pin.replaceChildren(); return; }
+      const r = view.half * 0.018;
+      pin.replaceChildren(
+        svg('circle', { cx: picked.x, cy: -picked.y, r: r * 2.2, fill: 'rgba(229,72,77,0.25)' }),
+        svg('circle', { cx: picked.x, cy: -picked.y, r, fill: '#E5484D', stroke: '#ffffff', 'stroke-width': r * 0.35 }));
+    };
+    const apply = () => {
+      const hx = view.half * aspect();
+      map.setAttribute('viewBox', `${view.cx - hx} ${-view.cy - view.half} ${hx * 2} ${view.half * 2}`);
+      drawPin();
+    };
+    const toWorld = (e) => {
+      const r = map.getBoundingClientRect();
+      const fx = (e.clientX - r.left) / (r.width || 1), fy = (e.clientY - r.top) / (r.height || 1);
+      const hx = view.half * aspect();
+      return [view.cx - hx + fx * 2 * hx, view.cy + view.half - fy * 2 * view.half];
+    };
+    const where = h('span', { class: 'hint', style: 'margin:0', text: 'No spot picked yet.' });
+    const useBtn = h('button', { class: 'btn primary', type: 'button', disabled: true }, 'Use this spot');
+    let drag = null, dragged = false;
+    map.addEventListener('click', (e) => {
+      if (dragged) return;
+      const [x, y] = toWorld(e);
+      picked = { x: Math.round(x * 10) / 10, y: Math.round(y * 10) / 10 };
+      where.textContent = `${Math.round(picked.x)}, ${Math.round(picked.y)}${state.static.hexDistricts ? ` (${hexLabel(...hexFromCoords(picked.x, picked.y)).replace(/ \(.*/, '')})` : ''}`;
+      useBtn.disabled = false;
+      drawPin();
+    });
+    map.addEventListener('wheel', (e) => {
+      e.preventDefault();
+      const r = map.getBoundingClientRect();
+      const fx = (e.clientX - r.left) / (r.width || 1), fy = (e.clientY - r.top) / (r.height || 1);
+      const [wx, wy] = toWorld(e);
+      const half = Math.min(6000, Math.max(150, view.half * (e.deltaY > 0 ? 1.25 : 0.8)));
+      view = { cx: wx - (fx * 2 - 1) * half * aspect(), cy: wy + (fy * 2 - 1) * half, half };
+      apply();
+    }, { passive: false });
+    map.addEventListener('mousedown', (e) => { drag = { x: e.clientX, y: e.clientY, view: { ...view } }; dragged = false; });
+    const prevDrag = mapDragHandlers;
+    mapDragHandlers = {
+      move: (e) => {
+        if (!drag || !map.isConnected) return;
+        const r = map.getBoundingClientRect();
+        if (Math.abs(e.clientX - drag.x) + Math.abs(e.clientY - drag.y) > 4) dragged = true;
+        if (!dragged) return;
+        view = { cx: drag.view.cx - (e.clientX - drag.x) / (r.width || 1) * 2 * drag.view.half * aspect(), cy: drag.view.cy + (e.clientY - drag.y) / (r.height || 1) * 2 * drag.view.half, half: drag.view.half };
+        apply();
+      },
+      up: () => { drag = null; setTimeout(() => { dragged = false; }, 0); },
+    };
+    const overlay = h('div', { class: 'mappick-overlay' });
+    const finish = (result) => { mapDragHandlers = prevDrag; overlay.remove(); resolve(result); };
+    useBtn.addEventListener('click', () => finish(picked));
+    overlay.append(h('div', { class: 'mappick-panel', role: 'dialog', 'aria-label': title },
+      h('h2', { style: 'margin:0', text: title }),
+      h('p', { class: 'hint', style: 'margin:0', text: hint }),
+      map,
+      h('div', { class: 'row', style: 'align-items:center' }, where,
+        h('span', { style: 'margin-left:auto' }),
+        h('button', { class: 'btn', type: 'button', onclick: () => finish(null) }, 'Cancel'), useBtn)));
+    ($('device') || document.body).append(overlay);
+    requestAnimationFrame(apply);
+  });
+}
+
+/* Heist builder: pick a spot on the map and go there (the panel keeps its place and comes back with where you landed) */
+async function goToPicked(start) {
+  const spot = await mapPointPicker({ title: 'Pick a spot and go there', hint: 'You\'re taken to this spot and land on the ground; the panel comes back with it filled in. Then fine-tune it with Place in game or Where I stand.', start });
+  if (!spot) return null;
+  if (!IN_GAME) return { x: spot.x, y: spot.y, z: 30, w: 0 };
+  const token = `${Date.now()}${Math.random()}`;
+  return new Promise((resolve) => {
+    placeWaits[token] = (pts) => resolve(pts ? pts[0] : null);
+    postNui('goPicked', { token, x: spot.x, y: spot.y });
+  });
+}
+
 /* Heist builder: how the job starts (tablet, a contact at the start point, or either) */
 function startSection(d, meta, { here, goTo, point, rerender }) {
   d.startMode = d.startMode || 'tablet';
@@ -1133,13 +1245,20 @@ function startSection(d, meta, { here, goTo, point, rerender }) {
           const pts = await placeInGame({ model: d.startNpc.ped });
           if (pts) { d.start = pts[0]; toast('Placed.'); rerender(); }
         } }, 'Place in game') : null,
+        h('button', { class: 'btn small', type: 'button', onclick: async () => { const p = await goToPicked(d.start); if (p) { d.start = p; toast('You\'re there. Fine-tune it if you need to.'); rerender(); } } }, 'Pick on map'),
         h('button', { class: 'btn small', type: 'button', onclick: () => here((p) => { d.start = p; }) }, usesNpc ? 'Where I stand' : 'Set here'),
         h('button', { class: 'btn small', type: 'button', onclick: () => goTo(d.start) }, 'Go to'))),
     h('div', { class: 'heist-settings', style: 'margin:10px 0 0' },
       h('label', { class: 'field' }, 'How it starts', mode),
+      h('label', { class: 'field' }, 'Who can do it', (() => {
+        const who = select([{ value: 'gangs', label: 'Gangs only' }, { value: 'anyone', label: 'Anyone (in a gang or not)' }], d.openTo || 'gangs');
+        who.addEventListener('change', () => { d.openTo = who.value; rerender(); });
+        return who;
+      })()),
       usesNpc ? h('label', { class: 'field' }, 'Contact\'s name', name) : null),
     usesNpc ? h('div', { class: 'field' }, 'Who they are', pedPicker(d.startNpc.ped, (m) => { d.startNpc.ped = m; }, meta.peds || [])) : null,
-    usesNpc ? h('label', { class: 'field', style: 'margin-top:8px' }, 'What they say', say) : null);
+    usesNpc ? h('label', { class: 'field', style: 'margin-top:8px' }, 'What they say', say) : null,
+    d.openTo === 'anyone' ? h('p', { class: 'hint', style: 'margin:8px 0 0', text: 'Players with no gang can do it too: their crew is whoever with no gang is at the start with them, loot money goes to whoever grabs it, and gang tiers and rank permissions don\'t apply to them.' }) : null);
 }
 
 /* NPC picker: categories with pictures, search, or any custom model ------------------ */
@@ -1840,6 +1959,7 @@ function renderHeistEditor() {
               }
             } }, 'Place guards one by one')
             : null,
+          h('button', { class: 'btn small', type: 'button', onclick: async () => { const p = await goToPicked(s.x != null ? s : d.start); if (p) { Object.assign(s, p); toast('You\'re there. Fine-tune it if you need to.'); rerender(); } } }, 'Pick on map'),
           h('button', { class: 'btn small', type: 'button', onclick: () => here((p) => Object.assign(s, p)) },
             { truck: 'Truck starts here', talk: 'Where I stand', hostage: 'Where I stand', guards: 'Spread around me' }[s.type] || 'Set here'),
           h('button', { class: 'btn small', type: 'button', onclick: () => goTo(s) }, 'Go to')]),
@@ -2237,7 +2357,7 @@ const AdminMock = {
         { key: 'h:5:-7', q: 5, r: -7, gangId: 1, gang: 'Grove Kings', colour: '#7B3FBF', label: 'Rancho (5, -7)', control: 62 },
         { key: 'h:6:-8', q: 6, r: -8, gangId: 2, gang: 'Los Vagos', colour: '#E8C31E', label: 'Rancho (6, -8)', control: 40 }]);
       case 'hexResize': return ok({ from: 150, to: args[0], before: 3, after: args[1] === 'fill' ? 25 : 3 });
-      case 'hexSettings': return ok({ size: 150, configSize: 150, onResize: 'centre', turfDrugs: ['weed_og_kush'], turfDrugItems: [{ name: 'weed_og_kush', label: 'weed_og_kush', exists: false, sellable: false }], controlPerSale: 1.5, rivalLoss: 2, decayPerHour: 4, startControl: 10, expandAt: 100, sprayEvery: 3,
+      case 'hexSettings': return ok({ size: 150, configSize: 150, onResize: 'centre', turfDrugs: ['weed_og_kush'], turfDrugItems: [{ name: 'kq_weed_bag_og_kush', label: 'Weed baggie (OG Kush)', exists: true, sellable: true, perUnit: 0.5 }], controlPerSale: 1.5, rivalLoss: 2, decayPerHour: 4, startControl: 10, expandAt: 100, sprayEvery: 3,
         expandCost: { money: 50000, account: 'dirty', item: 'weed_og_kush', count: 50 }, expandItemLabel: 'OG Kush' });
       case 'customContracts': return ok({ types: [{ key: 'collect', label: 'Collect a debt' }, { key: 'courier', label: 'Courier run' }, { key: 'transport', label: 'Move a stolen car' }],
         difficulty: ['Low risk', 'Medium risk', 'High risk'], tiers: ['Street crew', 'Firm', 'Organisation', 'Syndicate'], gangs: [{ id: 1, label: 'Grove Kings' }, { id: 2, label: 'Los Vagos' }],
