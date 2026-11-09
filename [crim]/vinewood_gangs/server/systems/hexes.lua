@@ -9,7 +9,7 @@ local dirty = {}    -- control values to write back
 local warned = {}   -- warned[key] = true once the owner's been told it's running low
 local settings = {} -- the numbers staff can change in game (start from config/hexes.lua)
 
-local EDITABLE = { 'turfDrugs', 'anyDrugCounts', 'controlPerSale', 'rivalLoss', 'decayPerHour', 'startControl', 'expandAt', 'expandCost', 'sprayEvery' }
+local EDITABLE = { 'turfDrugs', 'anyDrugCounts', 'decayOnlyOnline', 'controlPerSale', 'rivalLoss', 'decayPerHour', 'startControl', 'expandAt', 'expandCost', 'sprayEvery' }
 
 local function now() return os.time() end
 local function S(name) if settings[name] ~= nil then return settings[name] end return cfg[name] end
@@ -260,7 +260,7 @@ function Hexes.TabletView(src)
         mode = 'hexes', hexes = Hexes.ViewFor(gang.id), options = Hexes.Options(gang.id),
         canExpand = Gangs.HasPermission(cid, 'expand_turf'), expandAt = S('expandAt'),
         cost = { money = cost.money or 0, account = cost.account or 'dirty', item = cost.item and Bridge.ItemLabel(cost.item) or nil, count = cost.count or 0 },
-        decayPerHour = S('decayPerHour'), controlPerSale = S('controlPerSale'),
+        decayPerHour = S('decayPerHour'), controlPerSale = S('controlPerSale'), decayOnlyOnline = S('decayOnlyOnline') ~= false,
         turfDrugs = (function() local l = {} for _, d in ipairs(S('turfDrugs') or {}) do l[#l + 1] = Bridge.ItemLabel(d) end return l end)(),
         sprays = { used = used, slots = Hexes.SpraySlots(gang.id), every = S('sprayEvery'), main = Hexes.MainOf(gang.id) },
         balance = Ledger.GetBalance(gang.id, cost.account or 'dirty'),
@@ -284,8 +284,14 @@ Hexes.Flush = flush
 
 local function tick()
     local loss = S('decayPerHour') / 60 -- runs every minute
+    local onlineOnly = S('decayOnlyOnline') ~= false
+    local online = {} -- online[gangId] = true/false, worked out once per tick
     local list = {}
-    for _, h in pairs(hexes) do list[#list + 1] = h end
+    for _, h in pairs(hexes) do
+        if onlineOnly and online[h.gangId] == nil then online[h.gangId] = Gangs.HasOnlineMember(h.gangId) == true end
+        -- A gang with nobody on doesn't lose control just for being offline
+        if not onlineOnly or online[h.gangId] then list[#list + 1] = h end
+    end
     for _, h in ipairs(list) do if hexes[h.key] then setControl(h, h.control - loss) end end
     flush()
 end
@@ -491,7 +497,7 @@ function Hexes.AdminSaveSettings(src, input)
     local item = cost.item and cost.item ~= '' and tostring(cost.item) or nil
     if item and not Bridge.ItemExists(item) then return false, 'item_not_found' end
     local new = {
-        turfDrugs = drugs, anyDrugCounts = input.anyDrugCounts == true,
+        turfDrugs = drugs, anyDrugCounts = input.anyDrugCounts == true, decayOnlyOnline = input.decayOnlyOnline ~= false,
         controlPerSale = n(input.controlPerSale, 0.1, 100, cfg.controlPerSale),
         rivalLoss = n(input.rivalLoss, 0, 100, cfg.rivalLoss),
         decayPerHour = n(input.decayPerHour, 0, 100, cfg.decayPerHour),

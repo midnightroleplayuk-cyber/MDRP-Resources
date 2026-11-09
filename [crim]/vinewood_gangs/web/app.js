@@ -1034,7 +1034,7 @@ function renderHexTerritory(v) {
     h('div', { class: 'hex-stats' },
       h('div', {}, h('div', { class: 'eyebrow', text: 'Turf' }), h('div', { class: 'big fig', text: `${mine.length} ${mine.length === 1 ? 'hex' : 'hexes'}` })),
       h('div', {}, h('div', { class: 'eyebrow', text: 'Tags' }), h('div', { class: 'big fig', text: `${sprays.used} of ${sprays.slots}` }))),
-    h('p', { class: 'hint', style: 'margin:0', text: `Sell ${joinList(v.turfDrugs, 'or')} on your turf to build control (+${v.controlPerSale}% each). Every hex loses ${v.decayPerHour}% an hour, and rivals dealing on it cost you. Your first tag goes on your main hex, and you get another for every ${sprays.every} hexes.` }),
+    h('p', { class: 'hint', style: 'margin:0', text: `Sell ${joinList(v.turfDrugs, 'or')} on your turf to build control (+${v.controlPerSale}% each). Every hex loses ${v.decayPerHour}% an hour${v.decayOnlyOnline === false ? '' : ' while any of you are online'}, and rivals dealing on it cost you. Your first tag goes on your main hex, and you get another for every ${sprays.every} hexes.` }),
     h('div', { class: 'hex-list' }, rows.length ? rows : [h('p', { class: 'empty', text: 'Your gang has no turf yet. Staff set up your compound.' })]),
     h('h3', { style: 'margin:6px 0 0', text: 'Buy new ground' }),
     buyBox,
