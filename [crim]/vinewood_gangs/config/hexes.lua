@@ -3,7 +3,7 @@
 -- Staff place each gang's starting hexes in game (/gangadmin > Gangs > a gang > Turf) and set the
 -- numbers below in game too (/gangadmin > Turf); this file is the starting point.
 Config.Hexes = {
-    size   = 50.0,                  -- metres from a hex's centre to a corner
+    size   = 150.0,                  -- metres from a hex's centre to a corner
     origin = { x = 0.0, y = 0.0 },   -- where the grid is anchored (moving it moves every hex: set it once)
 
     startHexes = 2,     -- hexes staff give a new gang (its compound); the first is the main hex
