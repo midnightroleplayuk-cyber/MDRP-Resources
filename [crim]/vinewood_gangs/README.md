@@ -96,6 +96,14 @@ they leave. Every shell safehouse shares one hidden spot under the map (`shellOr
 apart, so any number of gangs can use the same shell. List the shell models your server streams in
 `config/safehouses.lua` > `shells` (common free starter shells are listed; remove any you don't have).
 
+**MLO safehouses you walk into:** choose **An MLO you walk into** when setting one up. Stand outside the front door
+(where police breach), then at the stash, then aim at each of the building's doors and press E to add it (the door
+you're aiming at is outlined; Backspace undoes, Enter finishes). The script locks those doors itself in every
+player's game, so no door-lock resource is needed. Members with safehouse access press E at any of the doors to lock
+or unlock them all; they're locked by default, and while nobody owns the safehouse. The stash works where it stands.
+A police breach at the front door opens the doors (and the stash, for police) until the raid's open time is up,
+then they lock again. "An interior on the map, teleport in" and shells work as before.
+
 ## Air drops
 
 Staff call them in from `/gangadmin` > Street events > **Call in an air drop**: where they're standing or at

@@ -38,7 +38,16 @@ local function save(h)
         { h.gangId, h.paidUntil, json.encode(h.upgrades), h.breachedUntil, h.id })
 end
 
+---MLO safehouses you walk into: are the doors locked right now? Locked unless the owners unlocked them,
+---and always open while police have them breached. Nobody owns it: locked.
+local function isLocked(h)
+    if h.breachedUntil > os.time() then return false end
+    if not h.gangId then return true end
+    return h.upgrades.locked ~= false
+end
+
 ---Entrances (and interior spawn points, used to rescue anyone who relogs inside) for every client.
+---Walk-in MLO safehouses also share their doors, lock state and stash spot.
 local function publish()
     local list, now = {}, os.time()
     for _, h in pairs(houses) do
@@ -46,6 +55,9 @@ local function publish()
         list[#list + 1] = {
             id = h.id, label = h.label, entrance = h.entrance, spawn = h.spawn,
             gangId = h.gangId, owner = g and g.label or nil, breached = h.breachedUntil > now,
+            walkin = h.walkin or nil, doors = h.walkin and h.doors or nil,
+            locked = (h.walkin and isLocked(h)) == true, -- always true or false, never missing
+            stash = h.walkin and h.stash or nil,
         }
     end
     GlobalState.vg_safehouses = list
@@ -116,6 +128,7 @@ end
 function Safehouses.Enter(src, id)
     local h = houses[tonumber(id)]
     if not h then return false, 'invalid' end
+    if h.walkin then return false, 'invalid' end -- you walk in through its doors
     if inside[src] then return false, 'invalid' end
     if not near(src, h.entrance, 4.0) then return false, 'too_far' end
     local ok = mayUse(src, h)
@@ -134,8 +147,13 @@ function Safehouses.Leave(src)
     return true
 end
 
-function Safehouses.OpenStash(src)
+function Safehouses.OpenStash(src, id)
     local h = houses[inside[src] or -1]
+    -- A walk-in MLO safehouse: no instance, just stand at its stash
+    if not h and id then
+        local w = houses[tonumber(id)]
+        if w and w.walkin then h = w end
+    end
     if not h then return false, 'invalid' end
     if not near(src, h.stash, 3.0) then return false, 'too_far' end
     local ok, who = mayUse(src, h)
@@ -145,6 +163,41 @@ function Safehouses.OpenStash(src)
     end
     return openStash(src, h)
 end
+
+-------------------------------------------------------------------------------
+-- Doors of walk-in MLO safehouses: members with access lock and unlock them all from any of them
+-------------------------------------------------------------------------------
+
+function Safehouses.ToggleDoors(src, id)
+    local h = houses[tonumber(id)]
+    if not h or not h.walkin then return false, 'invalid' end
+    local close = near(src, h.entrance, 4.0)
+    for _, d in ipairs(h.doors or {}) do if near(src, d, 3.5) then close = true break end end
+    if not close then return false, 'too_far' end
+    local ok, who = mayUse(src, h)
+    if not ok or who ~= 'member' then return false, 'safehouse_locked' end
+    if h.breachedUntil > os.time() then return false, 'safehouse_doors_breached' end
+    h.upgrades.locked = not isLocked(h)
+    save(h)
+    publish()
+    Logger.Log(src, h.upgrades.locked and 'safehouse_locked' or 'safehouse_unlocked', ('safehouse %d'):format(h.id))
+    return true, h.upgrades.locked
+end
+
+-- When a raid's open time runs out, the doors lock again (everyone's game is told)
+CreateThread(function()
+    local wasOpen = {}
+    while true do
+        Wait(15000)
+        local t, changed = os.time(), false
+        for id, h in pairs(houses) do
+            local open = h.breachedUntil > t
+            if wasOpen[id] and not open then changed = true end
+            wasOpen[id] = open
+        end
+        if changed then publish() end
+    end
+end)
 
 -------------------------------------------------------------------------------
 -- Raids
@@ -368,9 +421,19 @@ function Safehouses.AdminCreate(src, data)
     local address = tostring(data.address or ''):gsub('[<>]', ''):match('^%s*(.-)%s*$'):sub(1, 128)
     if #label < 2 or #address < 3 then return false, 'invalid_label' end
     local points = {}
-    for _, k in ipairs({ 'entrance', 'spawn', 'stash', 'exit' }) do
+    local walkin = data.mode == 'walkin' and not data.shell
+    for _, k in ipairs(walkin and { 'entrance', 'stash' } or { 'entrance', 'spawn', 'stash', 'exit' }) do
         points[k] = validPoint(data[k])
         if not points[k] then return false, 'invalid' end
+    end
+    if walkin then
+        -- The MLO's doors: their model and where they are, so every player's game can lock them
+        points.mode, points.doors = 'walkin', {}
+        for _, d in ipairs(type(data.doors) == 'table' and data.doors or {}) do
+            local model, x, y, z = tonumber(d.model), tonumber(d.x), tonumber(d.y), tonumber(d.z)
+            if model and x and y and z and #points.doors < 16 then points.doors[#points.doors + 1] = { model = model, x = x, y = y, z = z } end
+        end
+        if #points.doors == 0 then return false, 'safehouse_need_door' end
     end
     if data.shell then
         if not shellDef(data.shell) then return false, 'safehouse_bad_shell' end
@@ -388,7 +451,8 @@ function Safehouses.AdminCreate(src, data)
         { label, address, json.encode(points), price, upkeep, Bridge.GetCitizenId(src) or 'console' })
     if not id then return false, 'db_error' end
     houses[id] = { id = id, label = label, address = address, price = price, upkeep = upkeep, gangId = nil, paidUntil = 0,
-        upgrades = {}, breachedUntil = 0, entrance = points.entrance, shell = points.shell }
+        upgrades = {}, breachedUntil = 0, entrance = points.entrance, shell = points.shell,
+        walkin = points.mode == 'walkin', doors = points.doors }
     houses[id].spawn, houses[id].stash, houses[id].exit = resolve(points)
     publish()
     Logger.Log(src, 'staff_safehouse_created', ('safehouse %d %s'):format(id, label))
@@ -477,13 +541,15 @@ function Safehouses.Load()
     for _, r in ipairs(MySQL.query.await('SELECT id, label, address, points, price, upkeep, gang_id, paid_until, upgrades, breached_until FROM vg_safehouses')) do
         local ok, pts = pcall(json.decode, r.points)
         local okU, ups = pcall(json.decode, r.upgrades or '{}')
-        if ok and pts and pts.entrance and pts.spawn and pts.stash and pts.exit then
+        local walkin = ok and pts and pts.mode == 'walkin'
+        if ok and pts and pts.entrance and pts.stash and (walkin or (pts.spawn and pts.exit)) then
             local h = {
                 id = r.id, label = r.label, address = r.address, price = r.price, upkeep = r.upkeep,
                 gangId = (r.gang_id and Gangs.Get(r.gang_id)) and r.gang_id or nil,
                 paidUntil = r.paid_until, upgrades = (okU and type(ups) == 'table') and ups or {},
                 breachedUntil = r.breached_until,
                 entrance = pts.entrance, shell = pts.shell,
+                walkin = walkin or nil, doors = walkin and pts.doors or nil,
             }
             h.spawn, h.stash, h.exit = resolve(pts)
             houses[h.id] = h

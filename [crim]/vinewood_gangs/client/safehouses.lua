@@ -58,9 +58,41 @@ function RemoveSafehouseShell()
     shellObject = nil
 end
 
-local function apply(list) houses = type(list) == 'table' and list or {} end
+-- Doors of walk-in MLO safehouses: added to the game's door system here and kept locked/unlocked to match the server
+local doorHashes = {} -- doorHashes[key] = true for each door we've added
+
+local function syncDoors()
+    local wanted = {}
+    for _, h in ipairs(houses) do
+        if h.walkin then
+            for i, d in ipairs(h.doors or {}) do
+                local key = ('vg_safehouse_%d_%d'):format(h.id, i)
+                local hash = GetHashKey(key)
+                wanted[key] = true
+                if not doorHashes[key] then
+                    AddDoorToSystem(hash, d.model, d.x, d.y, d.z, false, false, false)
+                    doorHashes[key] = true
+                end
+                DoorSystemSetDoorState(hash, h.locked and 1 or 0, false, false)
+            end
+        end
+    end
+    for key in pairs(doorHashes) do
+        if not wanted[key] then
+            local hash = GetHashKey(key)
+            DoorSystemSetDoorState(hash, 0, false, false)
+            RemoveDoorFromSystem(hash)
+            doorHashes[key] = nil
+        end
+    end
+end
+
+local function apply(list)
+    houses = type(list) == 'table' and list or {}
+    syncDoors()
+end
 apply(GlobalState.vg_safehouses)
-AddStateBagChangeHandler('vg_safehouses', 'global', function(_, _, value) apply(value) end)
+AddStateBagChangeHandler('vg_safehouses', 'global', function(_, _, value) SetTimeout(0, function() apply(value) end) end)
 
 local function hasAccess()
     local gang = GetPlayerGang()
@@ -161,7 +193,26 @@ CreateThread(function()
                 for _, h in ipairs(houses) do
                     local d = #(pos - v3(h.entrance))
                     if d < 25.0 then sleep = 250 end
-                    if d < 1.8 and h.gangId then
+                    -- Walk-in MLO safehouse: lock/unlock at any of its doors, and the stash where it stands
+                    if h.walkin and h.gangId and d < 60.0 then
+                        sleep = math.min(sleep, 250)
+                        local gang = hasAccess()
+                        local member = gang and gang.id == h.gangId
+                        local atDoor = d < 1.8
+                        for _, door in ipairs(h.doors or {}) do
+                            if #(pos - v3(door)) < 1.6 then atDoor = true break end
+                        end
+                        if member and atDoor and not h.breached then
+                            want, action, sleep = h.locked and 'safehouse_prompt_unlock' or 'safehouse_prompt_lock', { 'doors', h }, 0
+                            break
+                        elseif h.stash and #(pos - v3(h.stash)) < 1.5 and (member or (h.breached and isPolice())) then
+                            want, action, sleep = 'safehouse_prompt_stash', { 'stash', h }, 0
+                            break
+                        elseif d < 1.8 and isPolice() and not h.breached then
+                            want, action, sleep = 'safehouse_prompt_breach', { 'breach', h }, 0
+                            break
+                        end
+                    elseif d < 1.8 and h.gangId and not h.walkin then
                         local gang = hasAccess()
                         if gang and gang.id == h.gangId then
                             want, action = 'safehouse_prompt_enter', { 'enter', h }
@@ -188,6 +239,14 @@ CreateThread(function()
                 enter(action[2])
             elseif action[1] == 'breach' then
                 breach(action[2])
+            elseif action[1] == 'doors' then
+                local ok, nowLocked = lib.callback.await('vinewood_gangs:server:safehouseDoors', false, action[2].id)
+                if ok then notify(nowLocked and 'safehouse_doors_locked' or 'safehouse_doors_unlocked', 'success')
+                else notify(nowLocked or 'failed', 'error') end
+                Wait(500)
+            elseif action[1] == 'stash' then
+                local ok, err = lib.callback.await('vinewood_gangs:server:safehouseStash', false, action[2].id)
+                if not ok then notify(err or 'failed', 'error') end
             end
         end
         Wait(sleep)
@@ -215,6 +274,14 @@ CreateThread(function()
 end)
 
 AddEventHandler('onResourceStop', function(res)
+    if res == GetCurrentResourceName() then
+        -- Leave no doors locked behind
+        for key in pairs(doorHashes) do
+            local hash = GetHashKey(key)
+            DoorSystemSetDoorState(hash, 0, false, false)
+            RemoveDoorFromSystem(hash)
+        end
+    end
     if res ~= GetCurrentResourceName() then return end
     if prompt then lib.hideTextUI() end
     RemoveSafehouseShell()

@@ -269,7 +269,8 @@ RegisterNUICallback('setupSafehouse', function(data, cb)
     if mode ~= 'admin' then return end
     closeTablet()
     Wait(200)
-    StartSafehouseEditor(type(data) == 'table' and type(data.shell) == 'string' and data.shell or nil)
+    StartSafehouseEditor(type(data) == 'table' and type(data.shell) == 'string' and data.shell or nil,
+        type(data) == 'table' and data.mode == 'walkin' and 'walkin' or nil)
 end)
 
 -- Placing NPCs in the world from the staff panel: the panel hides (keeping its place), staff place the NPC,

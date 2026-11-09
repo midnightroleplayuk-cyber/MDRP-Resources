@@ -154,7 +154,8 @@ action('upgradeSafehouse', function(src, id, kind) return Safehouses.Upgrade(src
 -- Called by client/safehouses.lua
 action('safehouseEnter', function(src, id) return Safehouses.Enter(src, id) end, 1500)
 action('safehouseLeave', function(src) return Safehouses.Leave(src) end, 1500)
-action('safehouseStash', function(src) return Safehouses.OpenStash(src) end, 1000)
+action('safehouseStash', function(src, id) return Safehouses.OpenStash(src, id) end, 1000)
+action('safehouseDoors', function(src, id) return Safehouses.ToggleDoors(src, id) end, 1000)
 action('safehouseRaidStart', function(src, id) return Safehouses.RaidStart(src, id) end, 3000)
 action('safehouseRaidFinish', function(src, id) return Safehouses.RaidFinish(src, id) end, 1000)
 

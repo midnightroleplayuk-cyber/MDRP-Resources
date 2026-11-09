@@ -2125,7 +2125,7 @@ async function renderAdminSafehouses() {
     h('div', { class: 'section-head' },
       h('h2', {}, 'Safehouses ', h('span', { class: 'muted fig', text: res.data.length })),
       h('button', { class: 'btn primary', type: 'button', onclick: chooseSafehouseKind }, 'Set up a safehouse')),
-    h('p', { class: 'hint', style: 'margin-bottom:16px', text: 'Use an interior already on the map (an MLO or any building), or a shell from a shell pack, which is spawned only while someone is inside. Every safehouse gets its own instance, so several can share the same interior or shell.' }),
+    h('p', { class: 'hint', style: 'margin-bottom:16px', text: 'Use an MLO the gang walks into through its own locked doors, any building entered by teleporting into a private copy, or a shell from a shell pack (spawned only while someone is inside).' }),
     rows.length
       ? h('table', {},
         h('thead', {}, h('tr', {}, h('th', { text: 'Safehouse' }), h('th', { text: 'Owner' }), h('th', { class: 'num', text: 'Price' }), h('th', { class: 'num', text: 'Upkeep/day' }), h('th', {}))),
@@ -2137,15 +2137,18 @@ async function renderAdminSafehouses() {
 async function chooseSafehouseKind() {
   const res = await adminRequest('safehouseShells');
   const shells = res.ok ? res.data : [];
-  const start = (shell) => { hideModal(); $('device').hidden = true; postNui('setupSafehouse', shell ? { shell } : {}); };
+  const start = (shell, mode) => { hideModal(); $('device').hidden = true; postNui('setupSafehouse', shell ? { shell } : (mode ? { mode } : {})); };
   const pick = shells.length ? select(shells.map((x) => ({ value: x.model, label: `${x.label} (${x.model})` }))) : null;
   $('sheet').classList.add('wide');
   showModal(
     h('h2', { text: 'Set up a safehouse' }),
     h('div', { class: 'template-grid' },
+      h('button', { class: 'template', type: 'button', onclick: () => start(null, 'walkin') },
+        h('strong', { text: 'An MLO you walk into' }),
+        h('span', { class: 'hint', style: 'margin:0', text: 'The gang walks in through the building\'s real doors, which the script locks; members lock and unlock them at any door. Stand outside the front door (where police breach), then at the stash, then aim at each door and press E.' })),
       h('button', { class: 'template', type: 'button', onclick: () => start(null) },
-        h('strong', { text: 'An interior on the map' }),
-        h('span', { class: 'hint', style: 'margin:0', text: 'An MLO or building that\'s already in the world. Stand at the outside door, then the spawn, the stash and the inside door, pressing E at each.' })),
+        h('strong', { text: 'An interior on the map, teleport in' }),
+        h('span', { class: 'hint', style: 'margin:0', text: 'Any building already in the world, entered by pressing E at the door (its own private copy, so several safehouses can share one interior). Stand at the outside door, then the spawn, the stash and the inside door.' })),
       h('div', { class: 'template', style: 'cursor:default' },
         h('strong', { text: 'A shell' }),
         h('span', { class: 'hint', style: 'margin:0', text: 'A shell prop, spawned only while someone\'s inside. Mark the outside door, then you\'re put inside a private copy of the shell to mark the spawn, stash and inside door.' }),
