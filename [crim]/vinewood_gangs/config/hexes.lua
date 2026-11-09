@@ -3,7 +3,7 @@
 -- Staff place each gang's starting hexes in game (/gangadmin > Gangs > a gang > Turf) and set the
 -- numbers below in game too (/gangadmin > Turf); this file is the starting point.
 Config.Hexes = {
-    size   = 150.0,                  -- metres from a hex's centre to a corner
+    size   = 50.0,                  -- metres from a hex's centre to a corner
     origin = { x = 0.0, y = 0.0 },   -- where the grid is anchored (moving it moves every hex: set it once)
 
     startHexes = 2,     -- hexes staff give a new gang (its compound); the first is the main hex
@@ -20,7 +20,7 @@ Config.Hexes = {
     -- Expanding: buy a hex touching one of yours that's at expandAt % or more
     expandAt = 100.0,
     expandCost = {
-        money = 50000, account = 'dirty',            -- from the gang treasury
+        money = 50000, account = 'black',            -- from the gang treasury
         item = 'weed_og_kush', count = 50,            -- from the buyer's own pockets (false for none)
     },
 
