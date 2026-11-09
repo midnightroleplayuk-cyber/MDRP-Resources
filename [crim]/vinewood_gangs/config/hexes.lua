@@ -15,12 +15,13 @@ Config.Hexes = {
     controlPerSale = 1.5,  -- % per unit of a turf drug sold on your own hex
     rivalLoss      = 2.0,  -- % a hex loses per unit of any drug a rival gang sells on it
     decayPerHour   = 4.0,  -- % every hex loses per hour
+    decayOnlyOnline = true, -- only while at least one member of that gang is online (rivals dealing there still costs control)
     startControl   = 10.0, -- % a newly bought hex starts at
 
     -- Expanding: buy a hex touching one of yours that's at expandAt % or more
     expandAt = 100.0,
     expandCost = {
-        money = 50000, account = 'dirty',            -- from the gang treasury
+        money = 50000, account = 'black',            -- from the gang treasury
         item = 'weed_og_kush', count = 50,            -- from the buyer's own pockets (false for none)
     },
 

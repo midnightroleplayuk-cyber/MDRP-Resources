@@ -689,7 +689,7 @@ Config.plantations = {
 -- Obviously this system works perfectly fine, it's just a simple solution for easy looting
 Config.itemCollection = {
     {
-        enabled = true,
+        enabled = false,
         label = 'hydrochloric acid',
 
         model = 'tr_prop_meth_hcacid',
@@ -767,7 +767,7 @@ Config.itemCollection = {
         },
     },
     {
-        enabled = true,
+        enabled = false,
         label = 'gasoline',
 
         model = 'prop_jerrycan_01a',
@@ -825,7 +825,7 @@ Config.itemCollection = {
         },
     },
     {
-        enabled = true,
+        enabled = false,
         label = 'cement',
 
         model = 'prop_cons_cements01',
