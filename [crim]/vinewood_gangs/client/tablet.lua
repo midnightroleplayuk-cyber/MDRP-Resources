@@ -42,7 +42,7 @@ local ADMIN_ALLOWED = {
     auctions = true, auctionOpen = true, auctionCancel = true, setTier = true, adjustReputation = true,
     contractSpots = true, addContractSpot = true, deleteContractSpot = true, gotoContractSpot = true,
     addRacketShop = true, deleteRacketShop = true, gotoRacketShop = true,
-    hexGang = true, hexMap = true, hexResize = true, hexGive = true, hexRemove = true, hexControl = true, hexMain = true, hexSettings = true, hexSettingsSave = true,
+    hexGang = true, hexMap = true, hexResize = true, tagTiming = true, tagTimingSave = true, tagTimingReset = true, hexGive = true, hexRemove = true, hexControl = true, hexMain = true, hexSettings = true, hexSettingsSave = true,
     blackmarketSettings = true, blackmarketSave = true, blackmarketOpen = true, blackmarketReset = true,
     airdrops = true, airdropCancel = true, airdropAdminCall = true,
     airdropSchedules = true, airdropScheduleSave = true, airdropScheduleDelete = true, airdropScheduleToggle = true, airdropLoot = true, airdropLootSave = true, airdropLootReset = true,

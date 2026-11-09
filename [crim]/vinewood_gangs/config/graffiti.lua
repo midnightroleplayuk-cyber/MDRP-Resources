@@ -11,7 +11,7 @@ Config.Graffiti = {
     sprayTime    = 8000,      -- ms
     crossTime    = 4000,
     cleanTime    = 10000,
-    cooldown     = 120,       -- seconds between sprays per player
+    cooldown     = 120,       -- seconds between sprays per player (these four timings can be changed in game: /gangadmin > Tags in world)
 
     maxDistance  = 3.0,       -- how far from the wall you can spray
     surfaces     = { walls = true, floors = true, ceilings = false }, -- floors include ramps and steps

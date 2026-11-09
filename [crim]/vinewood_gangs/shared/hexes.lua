@@ -8,7 +8,7 @@ function Hex.Enabled() return true end -- territory is always hexes
 ---The grid in use: the server shares it (it can be resized in game); config/hexes.lua until then.
 function Hex.Grid()
     -- The server is the authority (its Config.Hexes is what the grid is); players' games follow what it shares
-    if IsDuplicityVersion() then return Config.Hexes end
+    if IsDuplicityVersion and IsDuplicityVersion() then return Config.Hexes end
     local g = GlobalState and GlobalState.vg_hex_grid
     if type(g) == 'table' and tonumber(g.size) and type(g.origin) == 'table' then return g end
     return Config.Hexes

@@ -106,7 +106,7 @@ async function renderAdminTab() {
   else if (admin.tab === 'informants') content = await renderAdminInformants();
   else if (admin.tab === 'auctions') content = admin.auctionTab === 'settings' ? await renderBlackmarketSettings() : await renderAdminAuctions();
   else if (admin.tab === 'reviews') content = await renderReviews();
-  else if (admin.tab === 'tags') content = await renderWorldTags();
+  else if (admin.tab === 'tags') content = h('div', {}, await tagTimingCard(), await renderWorldTags());
   if (id !== admin.renderId || !content) return;
   $('view').replaceChildren(content);
   hideRepeatedTitle();
@@ -1416,6 +1416,35 @@ function pedPicker(value, onPick, categories) {
   return wrap;
 }
 
+/* Tags in world: the tag timings (cooldown between sprays, and how long spraying, crossing out and cleaning take) */
+async function tagTimingCard() {
+  const res = await adminRequest('tagTiming');
+  if (!res.ok) return h('div', {});
+  const v = res.data;
+  const num = (key, min, max, step = 1) => {
+    const el = h('input', { type: 'number', min, max, step, value: v[key], style: 'width:90px' });
+    el.addEventListener('change', () => { v[key] = Number(el.value); });
+    return el;
+  };
+  const save = async () => {
+    const r = await adminRequest('tagTimingSave', { cooldown: v.cooldown, spray: v.spray, cross: v.cross, clean: v.clean });
+    if (!r.ok) return toast(r.error, true);
+    toast('Saved. It applies straight away for everyone.');
+    renderAdminTab();
+  };
+  return h('div', { class: 'heist-start-box', style: 'margin-bottom:18px' },
+    h('div', { class: 'row', style: 'align-items:center' },
+      h('div', { style: 'flex:1' }, h('strong', { text: 'Tag settings' }),
+        h('div', { class: 'hint', style: 'margin:0', text: 'How long players wait between sprays, and how long each job takes. Applies straight away for everyone.' })),
+      !v.fromConfig ? h('button', { class: 'btn small', type: 'button', onclick: async () => { if (await adminAct('tagTimingReset', [], 'Back to the config settings.')) renderAdminTab(); } }, 'Reset to config') : null,
+      h('button', { class: 'btn small primary', type: 'button', onclick: save }, 'Save')),
+    h('div', { class: 'heist-settings', style: 'margin:10px 0 0' },
+      h('label', { class: 'field' }, 'Wait between sprays (s, per player)', num('cooldown', 0, 86400, 5)),
+      h('label', { class: 'field' }, 'Spraying a tag takes (s)', num('spray', 1, 120, 0.5)),
+      h('label', { class: 'field' }, 'Crossing out a rival\'s tag takes (s)', num('cross', 1, 120, 0.5)),
+      h('label', { class: 'field' }, 'Cleaning a tag off takes (s)', num('clean', 1, 120, 0.5))));
+}
+
 /* Custom contracts --------------------------------------------------------- */
 
 const JOB_SPOTS = {
@@ -2459,6 +2488,8 @@ const AdminMock = {
         { key: 'h:5:-7', q: 5, r: -7, gangId: 1, gang: 'Grove Kings', colour: '#7B3FBF', label: 'Rancho (5, -7)', control: 62 },
         { key: 'h:6:-8', q: 6, r: -8, gangId: 2, gang: 'Los Vagos', colour: '#E8C31E', label: 'Rancho (6, -8)', control: 40 }]);
       case 'hexResize': return ok({ from: 150, to: args[0], before: 3, after: args[1] === 'fill' ? 25 : 3 });
+      case 'tagTiming': return ok({ cooldown: 120, spray: 8, cross: 4, clean: 10, fromConfig: true });
+      case 'tagTimingSave': return ok(args[0]);
       case 'hexSettings': return ok({ size: 150, configSize: 150, onResize: 'centre', mapEnabled: true, mapMinimap: false, mapShowTo: 'gangs', turfDrugs: ['weed_og_kush'], turfDrugItems: [{ name: 'kq_weed_bag_og_kush', label: 'Weed baggie (OG Kush)', exists: true, sellable: true, perUnit: 0.5 }], controlPerSale: 1.5, rivalLoss: 2, decayPerHour: 4, startControl: 10, expandAt: 100, sprayEvery: 3,
         expandCost: { money: 50000, account: 'dirty', item: 'weed_og_kush', count: 50 }, expandItemLabel: 'OG Kush' });
       case 'customContracts': return ok({ types: [{ key: 'collect', label: 'Collect a debt' }, { key: 'courier', label: 'Courier run' }, { key: 'transport', label: 'Move a stolen car' }],

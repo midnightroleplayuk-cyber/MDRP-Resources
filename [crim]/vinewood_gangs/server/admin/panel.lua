@@ -21,7 +21,7 @@ local ACTION_GROUP = {
     listGangs = 'view', gangDetail = 'view', auctions = 'view', director = 'view', agreements = 'view',
     drugItems = 'view', heists = 'view', contractSpots = 'view', enterprises = 'view', safehouses = 'view',
     safehouseShells = 'view', rackets = 'view', pendingDesigns = 'view', pendingLogos = 'view', listTags = 'view',
-    onlinePlayers = 'view', searchItems = 'view', airdrops = 'view', hexGang = 'view', hexSettings = 'view', hexMap = 'view',
+    onlinePlayers = 'view', searchItems = 'view', airdrops = 'view', hexGang = 'view', hexSettings = 'view', hexMap = 'view', tagTiming = 'view', tagTimingSave = 'tags', tagTimingReset = 'tags',
     hexGive = 'world', hexRemove = 'world', hexMain = 'world', hexControl = 'economy', hexSettingsSave = 'settings', hexResize = 'settings',
     customContracts = 'view', customContractSave = 'world', customContractDelete = 'world', customContractOffer = 'events',
     contractSettings = 'view', contractSettingsSave = 'settings', contractSettingsReset = 'settings',
@@ -264,6 +264,9 @@ admin('hexRemove', function(src, key) return Hexes.AdminRemove(src, key) end)
 admin('hexControl', function(src, key, value) return Hexes.AdminSetControl(src, key, value) end)
 admin('hexMain', function(src, key) return Hexes.AdminSetMain(src, key) end)
 admin('hexSettings', function() return Hexes.AdminSettings() end)
+admin('tagTiming', function() return Graffiti.AdminTiming() end)
+admin('tagTimingSave', function(src, data) return Graffiti.AdminSaveTiming(src, data) end)
+admin('tagTimingReset', function(src) return Graffiti.AdminResetTiming(src) end)
 admin('hexResize', function(src, size, mode) return Hexes.AdminResize(src, size, mode) end)
 admin('hexSettingsSave', function(src, data) return Hexes.AdminSaveSettings(src, data) end)
 

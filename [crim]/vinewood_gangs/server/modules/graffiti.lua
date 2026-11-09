@@ -124,7 +124,58 @@ end
 -- Loading and sync
 -------------------------------------------------------------------------------
 
+-------------------------------------------------------------------------------
+-- Tag timings staff change in game (/gangadmin > Tags in world): config/graffiti.lua until then
+-------------------------------------------------------------------------------
+
+local TIMING_DEFAULTS = { cooldown = cfg.cooldown, sprayTime = cfg.sprayTime, crossTime = cfg.crossTime, cleanTime = cfg.cleanTime }
+
+local function publishTiming()
+    -- Players' games time the spraying, crossing out and cleaning themselves, so they need these too
+    GlobalState.vg_graffiti_timing = { cooldown = cfg.cooldown, sprayTime = cfg.sprayTime, crossTime = cfg.crossTime, cleanTime = cfg.cleanTime }
+end
+
+local function applyTiming(t)
+    for k in pairs(TIMING_DEFAULTS) do if t[k] ~= nil then cfg[k] = t[k] end end
+    publishTiming()
+end
+
+function Graffiti.AdminTiming()
+    return { cooldown = cfg.cooldown, spray = cfg.sprayTime / 1000, cross = cfg.crossTime / 1000, clean = cfg.cleanTime / 1000,
+        fromConfig = cfg.cooldown == TIMING_DEFAULTS.cooldown and cfg.sprayTime == TIMING_DEFAULTS.sprayTime
+            and cfg.crossTime == TIMING_DEFAULTS.crossTime and cfg.cleanTime == TIMING_DEFAULTS.cleanTime }
+end
+
+function Graffiti.AdminSaveTiming(src, input)
+    if type(input) ~= 'table' then return false, 'invalid' end
+    local function secs(v, lo, hi, d) v = tonumber(v) return v and math.max(lo, math.min(hi, v)) or d end
+    local t = {
+        cooldown = math.floor(secs(input.cooldown, 0, 86400, cfg.cooldown)),
+        sprayTime = math.floor(secs(input.spray, 1, 120, cfg.sprayTime / 1000) * 1000),
+        crossTime = math.floor(secs(input.cross, 1, 120, cfg.crossTime / 1000) * 1000),
+        cleanTime = math.floor(secs(input.clean, 1, 120, cfg.cleanTime / 1000) * 1000),
+    }
+    applyTiming(t)
+    MySQL.insert.await("INSERT INTO vg_settings (`key`, value, updated_by) VALUES ('graffiti_timing', ?, ?) ON DUPLICATE KEY UPDATE value = VALUES(value), updated_by = VALUES(updated_by)",
+        { json.encode(t), Bridge.GetCitizenId(src) or 'console' })
+    Logger.Log(src, 'staff_tag_timing', ('tag cooldown %ds, spray %.1fs, cross %.1fs, clean %.1fs'):format(t.cooldown, t.sprayTime / 1000, t.crossTime / 1000, t.cleanTime / 1000))
+    return true, Graffiti.AdminTiming()
+end
+
+function Graffiti.AdminResetTiming(src)
+    applyTiming(TIMING_DEFAULTS)
+    MySQL.update.await("DELETE FROM vg_settings WHERE `key` = 'graffiti_timing'")
+    return true, Graffiti.AdminTiming()
+end
+
+local function loadTiming()
+    local raw = MySQL.scalar.await("SELECT value FROM vg_settings WHERE `key` = 'graffiti_timing'")
+    local ok, t = pcall(json.decode, raw or '')
+    if ok and type(t) == 'table' then applyTiming(t) else publishTiming() end
+end
+
 function Graffiti.Load()
+    loadTiming()
     tags, designs = {}, {}
 
     for _, d in ipairs(MySQL.query.await('SELECT id, gang_id, name, design, status FROM vg_tag_designs')) do

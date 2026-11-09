@@ -1,6 +1,16 @@
 if not Config.Modules.graffiti then return end
 
 local cfg = Config.Graffiti
+
+-- Spray, cross-out and clean times staff set in /gangadmin > Tags in world (config/graffiti.lua until then)
+local function followTiming(t)
+    if type(t) ~= 'table' then return end
+    for _, k in ipairs({ 'cooldown', 'sprayTime', 'crossTime', 'cleanTime' }) do
+        if tonumber(t[k]) then cfg[k] = tonumber(t[k]) end
+    end
+end
+followTiming(GlobalState.vg_graffiti_timing)
+AddStateBagChangeHandler('vg_graffiti_timing', 'global', function(_, _, value) followTiming(value) end)
 local RESOURCE = GetCurrentResourceName()
 local UP = vector3(0.0, 0.0, 1.0)
 
