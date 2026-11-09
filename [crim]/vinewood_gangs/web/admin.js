@@ -1206,6 +1206,45 @@ function mapPointPicker({ title = 'Pick a spot on the map', hint = 'Scroll to zo
   });
 }
 
+/* Heist builder: the heist's doors, picked in game */
+function pickDoorsInGame() {
+  if (!IN_GAME) return Promise.resolve([{ model: 1234567, x: 255.2, y: 223.9, z: 102.4 }, { model: 1234567, x: 252.1, y: 220.6, z: 106.9 }]);
+  const token = `${Date.now()}${Math.random()}`;
+  return new Promise((resolve) => {
+    placeWaits[token] = (pts) => resolve(pts && pts.length ? pts : null);
+    postNui('pickDoors', { token });
+  });
+}
+
+function doorsSection(d, { goTo, rerender }) {
+  d.doors = d.doors || [];
+  const rows = d.doors.map((door, i) => {
+    const name = h('input', { type: 'text', maxlength: 32, value: door.label || `Door ${i + 1}`, style: 'width:200px' });
+    name.addEventListener('input', () => { door.label = name.value; });
+    name.addEventListener('change', rerender); // the steps' "Opens these doors" use the new name
+    const used = (d.steps || []).filter((st) => (st.opens || []).includes(i + 1)).map((st) => st.label || 'a step');
+    return h('div', { class: 'row', style: 'align-items:center' },
+      h('span', { class: 'muted fig', style: 'width:22px', text: i + 1 }), name,
+      h('span', { class: used.length ? 'hint' : 'hint debit', style: 'margin:0;flex:1', text: used.length ? `Opened by: ${used.join(', ')}` : 'No step opens this yet, so it stays locked' }),
+      h('button', { class: 'btn small', type: 'button', onclick: () => goTo(door) }, 'Go to'),
+      h('button', { class: 'btn small danger', type: 'button', onclick: () => {
+        d.doors.splice(i, 1);
+        // Keep the steps pointing at the right doors
+        (d.steps || []).forEach((st) => { if (st.opens) st.opens = st.opens.filter((n) => n !== i + 1).map((n) => (n > i + 1 ? n - 1 : n)); });
+        rerender();
+      } }, 'Remove'));
+  });
+  return h('div', { class: 'heist-start-box', style: 'margin-top:4px' },
+    h('div', { class: 'row', style: 'align-items:center' },
+      h('div', { style: 'flex:1' }, h('strong', { text: 'Doors' }),
+        h('div', { class: 'hint', style: 'margin:0', text: 'Locked for everyone while the heist is on. Each step can open some of them when it\'s done (thermite the gate, hack the panel for the office, the inside man lets you in…). They lock again a minute after the job ends.' })),
+      h('button', { class: 'btn small primary', type: 'button', onclick: async () => {
+        const got = await pickDoorsInGame();
+        if (got) { got.forEach((x) => d.doors.push({ ...x, label: `Door ${d.doors.length + 1}` })); toast(`${got.length} ${got.length === 1 ? 'door' : 'doors'} added. Name them, then choose which step opens each.`); rerender(); }
+      } }, 'Add doors in game')),
+    rows.length ? h('div', { style: 'display:grid;gap:6px;margin-top:8px' }, rows) : null);
+}
+
 /* Heist builder: pick a spot on the map and go there (the panel keeps its place and comes back with where you landed) */
 async function goToPicked(start) {
   const spot = await mapPointPicker({ title: 'Pick a spot and go there', hint: 'You\'re taken to this spot and land on the ground; the panel comes back with it filled in. Then fine-tune it with Place in game or Where I stand.', start });
@@ -1931,8 +1970,20 @@ function renderHeistEditor() {
         h('label', { class: 'field' }, 'Accuracy (1-100)', num(s, 'accuracy', 1, 100, 80)),
         s.spots && s.spots.length ? h('span', {}) : h('label', { class: 'field' }, 'Spread out over (m)', num(s, 'radius', 2, 40, 80)));
     }
+    if ((d.doors || []).length) {
+      s.opens = s.opens || [];
+      extra.push(h('div', { class: 'field', style: 'flex:1 1 100%' }, 'Opens these doors when done',
+        h('div', { class: 'row', style: 'gap:14px' }, d.doors.map((door, di) => {
+          const box = h('input', { type: 'checkbox', checked: s.opens.includes(di + 1) });
+          box.addEventListener('change', () => {
+            s.opens = box.checked ? [...new Set([...s.opens, di + 1])] : s.opens.filter((n) => n !== di + 1);
+            rerender();
+          });
+          return h('label', { class: 'toggle' }, box, ` ${door.label || `Door ${di + 1}`}`);
+        }))));
+    }
     extra.push(h('label', { class: 'field' }, s.type === 'hostage' ? 'Alarm (if they comply)' : 'Alarm', pick(s, 'alert', ALERT_OPTIONS)));
-    if (s.type !== 'truck' && s.type !== 'loot' && s.type !== 'wait' && s.type !== 'guards') extra.push(h('label', { class: 'field' }, 'Door to unlock (optional)', text(s, 'doorId', 160, 'door-lock ID or name')));
+    if (s.type !== 'truck' && s.type !== 'loot' && s.type !== 'wait' && s.type !== 'guards') extra.push(h('label', { class: 'field' }, 'ox_doorlock / qb-doorlock door (optional)', text(s, 'doorId', 160, 'its door ID or name')));
 
     return h('div', { class: 'heist-edit-step' },
       h('div', { class: 'heist-edit-head' },
@@ -2003,6 +2054,7 @@ function renderHeistEditor() {
     h('h3', { style: 'margin-top:6px', text: x.label || 'New heist' }),
     settings,
     startSection(d, meta, { here, goTo, point, rerender }),
+    doorsSection(d, { goTo, rerender }),
     h('h3', { style: 'margin:22px 0 4px', text: 'Steps' }),
     h('p', { class: 'hint', style: 'margin:0 0 10px', text: 'Done in order. Loot steps next to each other can be grabbed at the same time by different crew. Place NPCs in game, or stand at each spot and press Set here.' }),
     steps.length ? h('div', { class: 'heist-edit-steps' }, steps) : h('p', { class: 'empty', text: 'No steps yet.' }),

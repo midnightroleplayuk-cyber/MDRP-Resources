@@ -67,6 +67,34 @@ local function runOf(src)
     for _, r in pairs(runs) do if not isGangCrew(r.gangId) and inRun(src, r) then return r end end
 end
 
+-------------------------------------------------------------------------------
+-- Heist doors: locked while the heist is enabled; a step opens the doors it's linked to; they lock again after
+-------------------------------------------------------------------------------
+
+local openDoors = {} -- openDoors[heistId][doorIndex] = true while open
+
+local function publishDoors()
+    local list = {}
+    for _, h in pairs(heists) do
+        if h.enabled then
+            for i, d in ipairs(h.data.doors or {}) do
+                list[#list + 1] = { h = h.id, i = i, model = d.model, x = d.x, y = d.y, z = d.z,
+                    locked = not (openDoors[h.id] and openDoors[h.id][i]) }
+            end
+        end
+    end
+    GlobalState.vg_heist_doors = list
+end
+
+---A step's done: open the doors it's linked to.
+local function openStepDoors(run, i)
+    local s = run.heist.data.steps[i]
+    if not s or type(s.opens) ~= 'table' or #s.opens == 0 then return end
+    openDoors[run.heist.id] = openDoors[run.heist.id] or {}
+    for _, d in ipairs(s.opens) do openDoors[run.heist.id][d] = true end
+    publishDoors()
+end
+
 local function publish()
     local starts = {}
     for _, h in pairs(heists) do
@@ -77,6 +105,7 @@ local function publish()
         end
     end
     GlobalState.vg_heist_starts = starts
+    publishDoors()
 end
 
 local function saveHeist(h)
@@ -268,6 +297,13 @@ end
 
 local function endRun(run, status, reason)
     runs[run.id], byHeist[run.heist.id], byGang[run.gangId] = nil, nil, nil
+    -- Doors lock again once the crew's had a chance to get out
+    if openDoors[run.heist.id] then
+        local hid = run.heist.id
+        SetTimeout((cfg.doorRelockSeconds or 60) * 1000, function()
+            if not byHeist[hid] then openDoors[hid] = nil publishDoors() end
+        end)
+    end
     if run.guards then SetTimeout(30000, function() removeGuards(run) end) end
     if run.truck and DoesEntityExist(run.truck) then
         local truck = run.truck
@@ -461,6 +497,7 @@ function Heists.FinishStep(src, runId, i, success)
     local tool = (s.item and s.item ~= '') and { item = s.item, consume = s.consume } or cfg.tools[s.type]
     if tool and tool.item and tool.consume then Bridge.RemoveItem(src, tool.item, 1) end
     if s.doorId and s.doorId ~= '' then Bridge.UnlockDoor(s.doorId) end
+    openStepDoors(run, i)
     if killed then alarm(run, 'loud', p) end
     if s.alert and s.alert ~= 'none' then alarm(run, s.alert, p) end
     local reward = s.type == 'loot' and payLoot(run, src, s) or nil
@@ -484,6 +521,7 @@ function Heists.HostageKilled(src, runId, i)
     if not ok or dist(pedPos(src), s) > cfg.npc.spawnDistance then return false end
     run.locks[i] = nil
     run.done[i] = true
+    openStepDoors(run, i)
     alarm(run, 'loud', s)
     if #availableSteps(run) == 0 then run.escaping = true end
     crewNotify(run, locale('heist_hostage_killed'), 'error')
@@ -563,6 +601,7 @@ local function tick()
                     end
                     if standing == 0 then
                         run.done[gi] = true
+                        openStepDoors(run, gi)
                         if gs.alert and gs.alert ~= 'none' then alarm(run, gs.alert, gs) end
                         if #availableSteps(run) == 0 then run.escaping = true end
                         crewNotify(run, locale('heist_guards_down'), 'success')
@@ -582,6 +621,7 @@ local function tick()
                     if driver == 0 or not DoesEntityExist(driver) or GetEntityHealth(driver) <= 0
                         or GetVehicleEngineHealth(veh) <= cfg.truck.stopHealth then
                         run.done[avail[1]] = true
+                        openStepDoors(run, avail[1])
                         pushRun(run)
                     end
                 end
@@ -641,7 +681,16 @@ local function cleanHeist(input)
         startMode = (input.startMode == 'npc' or input.startMode == 'both') and 'npc' or 'tablet',
         -- Who can do it: gangs only, or anyone (players with no gang too)
         openTo = input.openTo == 'anyone' and 'anyone' or 'gangs',
+        doors = {},
     }
+    -- The heist's own doors (locked while it's enabled; steps open them)
+    for _, d in ipairs(type(input.doors) == 'table' and input.doors or {}) do
+        local model, x, y, z = tonumber(d.model), tonumber(d.x), tonumber(d.y), tonumber(d.z)
+        if model and x and y and z and #data.doors < 20 then
+            local label = cleanText(d.label, 32)
+            data.doors[#data.doors + 1] = { model = model, x = x, y = y, z = z, label = #label > 0 and label or ('Door ' .. (#data.doors + 1)) }
+        end
+    end
     if data.startMode ~= 'tablet' then
         local n = type(input.startNpc) == 'table' and input.startNpc or {}
         local model = cleanText(n.ped, 32):lower()
@@ -659,6 +708,14 @@ local function cleanHeist(input)
             doorId = s.doorId and cleanText(s.doorId, 64) or nil,
         }
         if #step.label == 0 then step.label = VALID_TYPES[s.type].label end
+        -- Which of the heist's doors this step opens when it's done
+        if type(s.opens) == 'table' and #data.doors > 0 then
+            local seen = {}
+            for _, d in ipairs(s.opens) do
+                d = math.floor(tonumber(d) or 0)
+                if d >= 1 and d <= #data.doors and not seen[d] then seen[d] = true step.opens = step.opens or {} step.opens[#step.opens + 1] = d end
+            end
+        end
         if s.type == 'talk' or s.type == 'hostage' or s.type == 'guards' then
             local model = cleanText(s.ped, 32):lower()
             step.ped = model:match('^[%w_]+$') and model or (s.type == 'guards' and cfg.npc.guardPed or cfg.npc.ped)

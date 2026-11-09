@@ -170,6 +170,13 @@ and gang tiers, rank permissions, influence, reputation and police intel don't a
 the heist builder, **Pick on map** takes you to the spot you click (landing on the ground) and fills it in, keeping
 the panel where it was; heights matter in heists, so fine-tune with Place in game or Where I stand.
 
+**Doors:** add a heist's doors in game (aim at each door and press E), name them, then tick which doors each step
+opens when it's done: thermite the vault gate, hack the panel for the back office, the inside man lets you in, and
+so on (any step can also need an item, like a keycard). The doors are locked for everyone while the heist is
+enabled, stay open for the getaway, and lock again a minute after the run ends (`doorRelockSeconds`). The script
+locks them itself, so no door-lock resource is needed; the separate ox_doorlock / qb-doorlock field still works if
+you'd rather use one.
+
 **How a heist starts:** press E at a marker on the start point, or **talk to a contact** standing there (set in the
 builder: their name, look and what they say). Either way the usual rules apply (tier, rank permission, crew nearby,
 cooldowns, police on duty).

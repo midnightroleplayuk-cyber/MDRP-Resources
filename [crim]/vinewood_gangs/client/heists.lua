@@ -369,6 +369,36 @@ CreateThread(function()
 end)
 
 -------------------------------------------------------------------------------
+-- Heist doors: locked in everyone's game while the heist is enabled; open once the step linked to them is done
+-------------------------------------------------------------------------------
+
+local heistDoorKeys = {}
+
+local function syncHeistDoors(list)
+    local wanted = {}
+    for _, d in ipairs(type(list) == 'table' and list or {}) do
+        local key = ('vg_heist_%d_%d'):format(d.h, d.i)
+        local hash = GetHashKey(key)
+        wanted[key] = true
+        if not heistDoorKeys[key] then
+            AddDoorToSystem(hash, d.model, d.x, d.y, d.z, false, false, false)
+            heistDoorKeys[key] = true
+        end
+        DoorSystemSetDoorState(hash, d.locked and 1 or 0, false, false)
+    end
+    for key in pairs(heistDoorKeys) do
+        if not wanted[key] then
+            local hash = GetHashKey(key)
+            DoorSystemSetDoorState(hash, 0, false, false)
+            RemoveDoorFromSystem(hash)
+            heistDoorKeys[key] = nil
+        end
+    end
+end
+syncHeistDoors(GlobalState.vg_heist_doors)
+AddStateBagChangeHandler('vg_heist_doors', 'global', function(_, _, value) SetTimeout(0, function() syncHeistDoors(value) end) end)
+
+-------------------------------------------------------------------------------
 -- Contacts who start a heist (stand at its start point; the crew talks to them to begin)
 -------------------------------------------------------------------------------
 
@@ -500,6 +530,12 @@ AddEventHandler('onResourceStop', function(res)
     clearBlips()
     for i in pairs(npcs) do removeNpc(i) end
     for _, ped in pairs(contacts) do if DoesEntityExist(ped) then DeleteEntity(ped) end end
+    -- Leave no heist doors locked behind
+    for key in pairs(heistDoorKeys) do
+        local hash = GetHashKey(key)
+        DoorSystemSetDoorState(hash, 0, false, false)
+        RemoveDoorFromSystem(hash)
+    end
     if prompt then lib.hideTextUI() end
     if gameResult then SetNuiFocus(false, false) end
 end)

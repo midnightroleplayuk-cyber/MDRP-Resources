@@ -60,6 +60,8 @@ Config.Heists = {
     },
 
     -- Templates staff can start from. Positions are set in game.
+    doorRelockSeconds = 60, -- heist doors lock again this long after a run ends (so the crew can get out)
+
     -- NPCs for the NPC steps (defaults the builder starts with; each step can use its own)
     npc = {
         ped          = 'a_m_m_business_01',  -- talk / intimidate

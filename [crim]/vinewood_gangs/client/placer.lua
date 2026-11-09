@@ -97,3 +97,65 @@ function PlaceNpcs(opts)
     SetModelAsNoLongerNeeded(model)
     return result
 end
+
+-- Picking doors (aim at a door, E to add it)
+local function doorCamDirection()
+    local r = GetGameplayCamRot(2)
+    local x, z = math.rad(r.x), math.rad(r.z)
+    local n = math.abs(math.cos(x))
+    return vector3(-math.sin(z) * n, math.cos(z) * n, math.sin(x))
+end
+
+---The door (or other object) the staff member is aiming at, within reach.
+local function aimedObject()
+    local from = GetGameplayCamCoord()
+    local to = from + doorCamDirection() * 8.0
+    local ray = StartExpensiveSynchronousShapeTestLosProbe(from.x, from.y, from.z, to.x, to.y, to.z, 16, cache.ped, 7)
+    local _, hit, _, _, entity = GetShapeTestResult(ray)
+    if hit == 1 and entity and entity ~= 0 and GetEntityType(entity) == 3 then return entity end
+end
+
+---Aim at each door and press E to add it (safehouses and heists). Returns { model, x, y, z } for each, or nil if cancelled.
+function PickDoors()
+    local doors, outlined = {}, nil
+    local shown
+    while true do
+        DisableControlAction(0, 24, true) -- don't shoot
+        DisableControlAction(0, 25, true)
+        local ent = aimedObject()
+        if outlined and outlined ~= ent and DoesEntityExist(outlined) then SetEntityDrawOutline(outlined, false) end
+        if ent then
+            SetEntityDrawOutlineColor(91, 141, 239, 255)
+            SetEntityDrawOutline(ent, true)
+        end
+        outlined = ent
+        -- Mark the doors already added
+        for _, d in ipairs(doors) do
+            DrawMarker(28, d.x, d.y, d.z, 0, 0, 0, 0, 0, 0, 0.18, 0.18, 0.18, 95, 191, 122, 200, false, false, 2, false, nil, nil, false)
+        end
+        local help = locale('safehouse_editor_doors', #doors)
+        if help ~= shown then lib.showTextUI(help) shown = help end
+
+        if IsControlJustPressed(0, 38) then -- E
+            if ent then
+                local c = GetEntityCoords(ent)
+                local dup = false
+                for _, d in ipairs(doors) do if #(vector3(d.x, d.y, d.z) - c) < 0.3 then dup = true end end
+                if not dup and #doors < 16 then doors[#doors + 1] = { model = GetEntityModel(ent), x = c.x, y = c.y, z = c.z } end
+            else
+                lib.notify({ description = locale('safehouse_editor_not_a_door'), type = 'error' })
+            end
+        elseif IsControlJustPressed(0, 177) then -- Backspace: undo, or cancel when there's nothing to undo
+            if #doors > 0 then doors[#doors] = nil else break end
+        elseif IsControlJustPressed(0, 191) and #doors > 0 then -- Enter: done
+            if outlined and DoesEntityExist(outlined) then SetEntityDrawOutline(outlined, false) end
+            lib.hideTextUI()
+            return doors
+        end
+        Wait(0)
+    end
+    if outlined and DoesEntityExist(outlined) then SetEntityDrawOutline(outlined, false) end
+    lib.hideTextUI()
+    return nil
+end
+

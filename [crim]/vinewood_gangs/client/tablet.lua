@@ -291,6 +291,22 @@ RegisterNUICallback('placeNpc', function(data, cb)
     end)
 end)
 
+RegisterNUICallback('pickDoors', function(data, cb)
+    cb('ok')
+    if mode ~= 'admin' or type(data) ~= 'table' then return end
+    SetNuiFocus(false, false)
+    SendNUIMessage({ action = 'adminHide' })
+    CreateThread(function()
+        Wait(150)
+        local ok, doors = pcall(PickDoors)
+        if not ok then doors = nil end
+        if mode == 'admin' then
+            SetNuiFocus(true, true)
+            SendNUIMessage({ action = 'adminPlaced', token = data.token, points = doors })
+        end
+    end)
+end)
+
 RegisterNUICallback('goPicked', function(data, cb)
     cb('ok')
     if mode ~= 'admin' or type(data) ~= 'table' or not tonumber(data.x) or not tonumber(data.y) then return end
