@@ -11,10 +11,22 @@ local dirty = {}    -- control values to write back
 local warned = {}   -- warned[key] = true once the owner's been told it's running low
 local settings = {} -- the numbers staff can change in game (start from config/hexes.lua)
 
-local EDITABLE = { 'turfDrugs', 'anyDrugCounts', 'decayOnlyOnline', 'controlPerSale', 'rivalLoss', 'decayPerHour', 'startControl', 'expandAt', 'expandCost', 'sprayEvery' }
+local EDITABLE = { 'mapEnabled', 'mapMinimap', 'mapShowTo', 'turfDrugs', 'anyDrugCounts', 'decayOnlyOnline', 'controlPerSale', 'rivalLoss', 'decayPerHour', 'startControl', 'expandAt', 'expandCost', 'sprayEvery' }
 
 local function now() return os.time() end
-local function S(name) if settings[name] ~= nil then return settings[name] end return cfg[name] end
+-- Turf on the pause map: Config.Territory.map until staff change it in /gangadmin > Turf
+local mapCfg = (Config.Territory and Config.Territory.map) or {} -- copes with the map section missing from config
+local MAP_DEFAULTS = { mapEnabled = mapCfg.enabled ~= false, mapMinimap = mapCfg.minimap == true,
+    mapShowTo = mapCfg.showTo == 'everyone' and 'everyone' or 'gangs' }
+local function S(name)
+    if settings[name] ~= nil then return settings[name] end
+    if MAP_DEFAULTS[name] ~= nil then return MAP_DEFAULTS[name] end
+    return cfg[name]
+end
+
+local function publishMap()
+    GlobalState.vg_turf_map = { enabled = S('mapEnabled') == true, minimap = S('mapMinimap') == true, showTo = S('mapShowTo') }
+end
 
 function Hexes.Setting(name) return S(name) end
 
@@ -452,6 +464,7 @@ loadTurf = function()
     hexes, reveals = {}, {}
     local raw = MySQL.scalar.await("SELECT value FROM vg_settings WHERE `key` = 'hex_settings'")
     settings = raw and json.decode(raw) or {}
+    publishMap()
     for _, row in ipairs(MySQL.query.await('SELECT hex_key, gang_id, control, is_main, compound, claimed_at FROM vg_hexes') or {}) do
         local q, r = Hex.Parse(row.hex_key)
         if q then
@@ -686,6 +699,7 @@ function Hexes.AdminSaveSettings(src, input)
     local item = cost.item and cost.item ~= '' and tostring(cost.item) or nil
     if item and not Bridge.ItemExists(item) then return false, 'item_not_found' end
     local new = {
+        mapEnabled = input.mapEnabled ~= false, mapMinimap = input.mapMinimap == true, mapShowTo = input.mapShowTo == 'everyone' and 'everyone' or 'gangs',
         turfDrugs = drugs, anyDrugCounts = input.anyDrugCounts == true, decayOnlyOnline = input.decayOnlyOnline ~= false,
         controlPerSale = n(input.controlPerSale, 0.1, 100, cfg.controlPerSale),
         rivalLoss = n(input.rivalLoss, 0, 100, cfg.rivalLoss),
@@ -697,6 +711,7 @@ function Hexes.AdminSaveSettings(src, input)
             item = item, count = item and math.floor(n(cost.count, 1, 10000, 1)) or 0 },
     }
     settings = new
+    publishMap()
     MySQL.insert.await("INSERT INTO vg_settings (`key`, value, updated_by) VALUES ('hex_settings', ?, ?) ON DUPLICATE KEY UPDATE value = VALUES(value), updated_by = VALUES(updated_by)",
         { json.encode(new), Bridge.GetCitizenId(src) or 'console' })
     Logger.Log(src, 'staff_hex_settings', 'changed turf settings')

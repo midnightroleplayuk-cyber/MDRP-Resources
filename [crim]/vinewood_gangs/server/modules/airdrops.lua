@@ -8,7 +8,18 @@ local lastDrop = 0
 local nextId = 0
 
 -- The loot table staff edit in game (falls back to config/airdrops.lua)
-local lootTable, lootRolls = cfg.loot, cfg.rolls
+-- Named loot tables staff edit in game (the first is the default). Starts as the one in config/airdrops.lua.
+local lootTables, nextTableId = nil, 1
+local function configTables() return { { id = 1, name = 'Standard', rolls = cfg.rolls, loot = cfg.loot } } end
+lootTables = configTables()
+nextTableId = 2
+
+---The table to use: the one asked for, or the default (the first).
+local function tableFor(id)
+    id = tonumber(id)
+    if id then for _, t in ipairs(lootTables) do if t.id == id then return t end end end
+    return lootTables[1]
+end
 
 -- Seconds from the plane appearing to the crate being on the ground: the plane flies 1500 m to the drop point,
 -- then the crate falls from the plane's height. Worked out from config so the server and what players see agree.
@@ -177,13 +188,14 @@ function Airdrops.BeginOpen(src, id)
     return true, cfg.openTime
 end
 
-local function rollLoot()
+local function rollLoot(tableId)
+    local t = tableFor(tableId)
     local total = 0
-    for _, l in ipairs(lootTable) do total = total + (l.chance or 1) end
+    for _, l in ipairs(t.loot) do total = total + (l.chance or 1) end
     local picks = {}
-    for _ = 1, lootRolls do
+    for _ = 1, t.rolls do
         local r, acc = math.random() * total, 0
-        for _, l in ipairs(lootTable) do
+        for _, l in ipairs(t.loot) do
             acc = acc + (l.chance or 1)
             if r <= acc then picks[#picks + 1] = l break end
         end
@@ -203,7 +215,7 @@ function Airdrops.Open(src, id)
     d.state = 'opened'
     local gang, _, cid = Gangs.GetPlayerGang(src)
     local got = {}
-    for _, l in ipairs(d.contents or rollLoot()) do
+    for _, l in ipairs(d.contents or rollLoot(d.lootTable)) do
         local amount = d.contents and l.count or math.random(l.min or 1, math.max(l.min or 1, l.max or l.min or 1))
         if l.money then
             if gang then Ledger.Transact(gang.id, 'dirty', amount, 'airdrop_loot', { citizenid = cid })
@@ -307,30 +319,57 @@ local function cleanEntry(e, exact)
 end
 
 function Airdrops.AdminLoot()
-    local list = {}
-    for i, l in ipairs(lootTable) do
-        list[i] = { money = l.money == true, item = l.item, label = l.item and Bridge.ItemLabel(l.item) or nil, min = l.min, max = l.max, chance = l.chance }
+    local tables = {}
+    for _, t in ipairs(lootTables) do
+        local list = {}
+        for i, l in ipairs(t.loot) do
+            list[i] = { money = l.money == true, item = l.item, label = l.item and Bridge.ItemLabel(l.item) or nil, min = l.min, max = l.max, chance = l.chance }
+        end
+        tables[#tables + 1] = { id = t.id, name = t.name, rolls = t.rolls, loot = list }
     end
-    return { rolls = lootRolls, loot = list, fromConfig = lootTable == cfg.loot }
+    return { tables = tables, fromConfig = lootTables[1].loot == cfg.loot and #lootTables == 1 }
 end
 
-function Airdrops.AdminSaveLoot(src, input)
-    if type(input) ~= 'table' or type(input.loot) ~= 'table' or #input.loot == 0 or #input.loot > 40 then return false, 'airdrop_need_loot' end
-    local list = {}
-    for _, e in ipairs(input.loot) do
-        local clean, err = cleanEntry(e, false)
-        if not clean then return false, err or 'invalid' end
-        list[#list + 1] = clean
-    end
-    lootTable, lootRolls = list, math.max(1, math.min(20, math.floor(tonumber(input.rolls) or cfg.rolls)))
+---The loot tables, for the drop and schedule menus: { id, name }.
+function Airdrops.LootTableNames()
+    local out = {}
+    for _, t in ipairs(lootTables) do out[#out + 1] = { id = t.id, name = t.name } end
+    return out
+end
+
+local function storeTables(src)
     MySQL.insert.await("INSERT INTO vg_settings (`key`, value, updated_by) VALUES ('airdrop_loot', ?, ?) ON DUPLICATE KEY UPDATE value = VALUES(value), updated_by = VALUES(updated_by)",
-        { json.encode({ rolls = lootRolls, loot = lootTable }), Bridge.GetCitizenId(src) or 'console' })
-    Logger.Log(src, 'staff_airdrop_loot', ('saved the air drop loot table (%d entries, %d picks)'):format(#list, lootRolls))
+        { json.encode({ tables = lootTables, nextId = nextTableId }), src and Bridge.GetCitizenId(src) or 'console' })
+end
+
+---Saves every loot table at once. input.tables = { { id?, name, rolls, loot = { ... } } } (the first is the default).
+function Airdrops.AdminSaveLoot(src, input)
+    if type(input) ~= 'table' or type(input.tables) ~= 'table' or #input.tables == 0 then return false, 'airdrop_need_loot' end
+    if #input.tables > 20 then return false, 'invalid' end
+    local tables, usedIds = {}, {}
+    for _, t in ipairs(input.tables) do
+        if type(t) ~= 'table' or type(t.loot) ~= 'table' or #t.loot == 0 or #t.loot > 40 then return false, 'airdrop_need_loot' end
+        local list = {}
+        for _, e in ipairs(t.loot) do
+            local clean, err = cleanEntry(e, false)
+            if not clean then return false, err or 'invalid' end
+            list[#list + 1] = clean
+        end
+        local name = tostring(t.name or ''):gsub('[<>]', ''):match('^%s*(.-)%s*$'):sub(1, 32)
+        local id = tonumber(t.id)
+        if not id or usedIds[id] then id = nextTableId nextTableId = nextTableId + 1 end
+        usedIds[id] = true
+        if id >= nextTableId then nextTableId = id + 1 end
+        tables[#tables + 1] = { id = id, name = #name > 0 and name or ('Loot table ' .. id), rolls = math.max(1, math.min(20, math.floor(tonumber(t.rolls) or cfg.rolls))), loot = list }
+    end
+    lootTables = tables
+    storeTables(src)
+    Logger.Log(src, 'staff_airdrop_loot', ('saved %d air drop loot tables'):format(#tables))
     return true, Airdrops.AdminLoot()
 end
 
 function Airdrops.AdminResetLoot(src)
-    lootTable, lootRolls = cfg.loot, cfg.rolls
+    lootTables, nextTableId = configTables(), 2
     MySQL.update.await("DELETE FROM vg_settings WHERE `key` = 'airdrop_loot'")
     return true, Airdrops.AdminLoot()
 end
@@ -338,8 +377,12 @@ end
 function Airdrops.LoadLoot()
     local raw = MySQL.scalar.await("SELECT value FROM vg_settings WHERE `key` = 'airdrop_loot'")
     local ok, saved = pcall(json.decode, raw or '')
-    if ok and type(saved) == 'table' and type(saved.loot) == 'table' and #saved.loot > 0 then
-        lootTable, lootRolls = saved.loot, saved.rolls or cfg.rolls
+    if not ok or type(saved) ~= 'table' then return end
+    if type(saved.tables) == 'table' and #saved.tables > 0 then
+        lootTables, nextTableId = saved.tables, saved.nextId or (#saved.tables + 1)
+    elseif type(saved.loot) == 'table' and #saved.loot > 0 then
+        -- Saved before there were several tables: that one becomes "Standard"
+        lootTables, nextTableId = { { id = 1, name = 'Standard', rolls = saved.rolls or cfg.rolls, loot = saved.loot } }, 2
     end
 end
 
@@ -349,6 +392,7 @@ end
 function Airdrops.AdminCall(src, opts)
     opts = type(opts) == 'table' and opts or {}
     local x, y, minutes, contents = tonumber(opts.x), tonumber(opts.y), opts.minutes, opts.contents
+    local lootTableId = tonumber(opts.lootTable)
     -- Who can get it: all gangs, gangs of a tier and up, or one gang
     local w = type(opts.who) == 'table' and opts.who or {}
     local who = { kind = 'all' }
@@ -380,7 +424,8 @@ function Airdrops.AdminCall(src, opts)
     local t = now()
     local a, r = math.random() * math.pi * 2, math.random() * cfg.radius * 0.6
     local d = { id = nextId, gangId = gangId, x = x, y = y, cx = x + math.cos(a) * r, cy = y + math.sin(a) * r,
-        arriveAt = t + delay, landAt = t + delay + FALL_TIME, state = 'called', byStaff = true, contents = exact, who = who, staffSrc = src }
+        arriveAt = t + delay, landAt = t + delay + FALL_TIME, state = 'called', byStaff = true, contents = exact, who = who, staffSrc = src,
+        lootTable = (not exact and lootTableId) and tableFor(lootTableId).id or nil }
     drops[d.id] = d
     -- Tell the gangs it's for (an "all gangs" drop is found by its plane and search circle, like any other)
     local mins = math.max(1, math.ceil(delay / 60))
@@ -453,7 +498,7 @@ end
 local function fire(s)
     if #GetPlayers() < (s.minPlayers or 0) then return false, 'not enough players' end
     local spot = s.spots[math.random(#s.spots)]
-    local ok, err = Airdrops.AdminCall(nil, { x = spot.x, y = spot.y, minutes = s.delay, contents = s.contents, who = s.who })
+    local ok, err = Airdrops.AdminCall(nil, { x = spot.x, y = spot.y, minutes = s.delay, contents = s.contents, who = s.who, lootTable = s.lootTable })
     Logger.Log(nil, 'airdrop_scheduled', ('schedule "%s" %s at %.0f, %.0f%s'):format(s.name, ok and 'called a drop' or 'failed', spot.x, spot.y, ok and '' or (': ' .. tostring(err))))
     return ok, err
 end
@@ -522,6 +567,7 @@ local function cleanSchedule(input)
     elseif w.kind == 'everyone' then s.who = { kind = 'everyone' }
     else s.who = { kind = 'all' } end
     s.delay = math.floor(math.max(0, math.min(30, tonumber(input.delay) or 2)))
+    s.lootTable = tonumber(input.lootTable) -- which loot table (nil = the default)
     s.minPlayers = math.floor(math.max(0, math.min(200, tonumber(input.minPlayers) or 0)))
     if type(input.contents) == 'table' and #input.contents > 0 then
         s.contents = {}
@@ -548,7 +594,7 @@ function Airdrops.AdminSchedules()
         copy.gangLabel = g and g.label or nil
         list[#list + 1] = copy
     end
-    return { schedules = list, serverTime = os.date('%H:%M', t), serverNow = t }
+    return { schedules = list, serverTime = os.date('%H:%M', t), serverNow = t, lootTables = Airdrops.LootTableNames() }
 end
 
 function Airdrops.AdminSaveSchedule(src, input)

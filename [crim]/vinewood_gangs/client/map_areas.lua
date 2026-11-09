@@ -1,8 +1,14 @@
 -- Areas on the in-game map, filled in the owning gang's colour.
 -- GTA can only draw rectangles on the map, so each area is filled with small squares that follow its outline.
 
-local cfg = Config.Territory.map
-if not cfg.enabled then return end
+local cfg = Config.Territory.map or { enabled = true, showTo = 'gangs', alpha = 90, cellSize = 40.0, maxCells = 150, maxTotal = 900 }
+
+---On or off, the minimap, and who sees it: what staff set in /gangadmin > Turf (config until then).
+local function live()
+    local m = GlobalState.vg_turf_map
+    if type(m) ~= 'table' then return { enabled = cfg.enabled ~= false, minimap = cfg.minimap == true, showTo = cfg.showTo } end
+    return m
+end
 
 local blips = {} -- every blip we've made
 local lastKey    -- what was drawn last time, so we only redraw when something changes
@@ -47,7 +53,8 @@ local function clear()
 end
 
 local function shouldShow()
-    if cfg.showTo == 'everyone' then return true end
+    if not live().enabled then return false end -- staff turned turf off on the map
+    if live().showTo == 'everyone' then return true end
     return GetPlayerGang() ~= nil
 end
 
@@ -68,7 +75,7 @@ local function drawArea(key, zone, owner, budget)
     local area = (maxX - minX) * (maxY - minY)
     local size = math.max(cfg.cellSize, math.sqrt(area / (budget * 0.85))) -- headroom: a grid over a shape overshoots a little
 
-    local display = cfg.minimap and 2 or 3 -- 3 = main map only
+    local display = live().minimap and 2 or 3 -- 3 = main map only
     for x = minX + size / 2, maxX, size do
         for y = minY + size / 2, maxY, size do
             if Zones.PointInPolygon(pts, x, y) then
@@ -100,7 +107,7 @@ local function redraw()
     local show = shouldShow()
 
     -- Build a fingerprint of what we'd draw, and skip the work if nothing changed
-    local parts = { tostring(show) }
+    local parts = { tostring(show), tostring(live().minimap) }
     for key, zone in pairs(Config.Zones) do
         local o = owners[key]
         parts[#parts + 1] = ('%s:%d:%s:%s'):format(key, #zone.points, o and o.owner or '-', o and o.colour or '-')
@@ -125,6 +132,8 @@ end
 
 -- Redraw when ownership changes, areas are drawn or deleted, or we join or leave a gang
 AddEventHandler('vinewood_gangs:client:hexesUpdated', function() SetTimeout(250, redraw) end)
+-- Staff changed the map setting in /gangadmin > Turf
+AddStateBagChangeHandler('vg_turf_map', 'global', function() SetTimeout(250, redraw) end)
 AddEventHandler('vinewood_gangs:client:gangUpdated', function() SetTimeout(250, redraw) end)
 
 CreateThread(function()

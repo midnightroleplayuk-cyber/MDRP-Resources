@@ -531,6 +531,22 @@ async function renderTurfSettings() {
     h('h3', { style: 'margin-top:8px', text: 'Tags' }),
     h('div', { class: 'heist-settings' },
       h('label', { class: 'field' }, 'One extra tag for every … hexes', num(v, 'sprayEvery', 1, 50))),
+    h('h3', { style: 'margin-top:8px', text: 'Map' }),
+    (() => {
+      const on = h('input', { type: 'checkbox', checked: v.mapEnabled !== false });
+      const mini = h('input', { type: 'checkbox', checked: v.mapMinimap === true, disabled: v.mapEnabled === false });
+      const who = select([{ value: 'gangs', label: 'Gang members' }, { value: 'everyone', label: 'Everyone' }], v.mapShowTo || 'gangs');
+      who.disabled = v.mapEnabled === false;
+      on.addEventListener('change', () => { v.mapEnabled = on.checked; mini.disabled = !on.checked; who.disabled = !on.checked; });
+      mini.addEventListener('change', () => { v.mapMinimap = mini.checked; });
+      who.addEventListener('change', () => { v.mapShowTo = who.value; });
+      return h('div', {},
+        h('p', { class: 'hint', style: 'margin:0 0 8px', text: 'Turf shaded in each gang\'s colour on the pause map (players only ever see their own turf and rival turf their gang has found). Changes apply straight away for everyone.' }),
+        h('div', { class: 'row', style: 'align-items:center;gap:22px' },
+          h('label', { class: 'toggle' }, on, ' Show turf on the pause map'),
+          h('label', { class: 'toggle' }, mini, ' Also on the minimap'),
+          h('label', { class: 'field', style: 'flex-direction:row;align-items:center;gap:8px;display:flex' }, 'Who sees it', who)));
+    })(),
     hexSizeSection(v));
 }
 
@@ -767,40 +783,69 @@ const EVENT_NAMES = {
   crew: 'Outside crew', drop: 'Lost shipment', undercover: 'Undercover operation', hotwork: 'Hot work',
 };
 
-/* The usual air drop loot: each pick takes one entry by chance */
+/* Air drop loot tables: several named tables (the first is the default); each crate draws picks from one */
 async function editAirdropLoot() {
   const res = await adminRequest('airdropLoot');
   if (!res.ok) return toast(res.error, true);
   const v = res.data;
-  const rows = h('div', { style: 'display:grid;gap:8px;max-height:46vh;overflow-y:auto;padding-right:4px' });
-  const numIn = (obj, key, min, width = 90) => { const el = h('input', { type: 'number', min, value: obj[key], style: `width:${width}px` }); el.addEventListener('change', () => { obj[key] = Number(el.value); }); return el; };
-  const total = () => v.loot.reduce((n, l) => n + (Number(l.chance) || 0), 0) || 1;
-  const draw = () => rows.replaceChildren(...v.loot.map((l, i) => h('div', { class: 'loot-entry' },
-    l.money ? h('strong', { text: 'Money (£)' }) : itemPicker(l.item ? { item: l.item, label: l.label } : null, (it) => { l.item = it ? it.name : null; l.label = it ? it.label : null; }, { allowClear: false, openNow: !l.item, emptyText: 'No item chosen yet' }),
-    h('div', { class: 'loot-fields' },
-      h('label', { class: 'field' }, 'Min', numIn(l, 'min', 1, 90)),
-      h('label', { class: 'field' }, 'Max', numIn(l, 'max', 1, 90)),
-      h('label', { class: 'field' }, 'Weight', h('span', { class: 'row', style: 'flex-wrap:nowrap;align-items:center;gap:8px' }, numIn(l, 'chance', 1, 80), h('span', { class: 'muted', text: `about ${Math.round((l.chance || 0) / total() * 100)}% of picks` }))),
-      h('button', { class: 'btn small danger', type: 'button', style: 'margin-left:auto;align-self:end', onclick: () => { v.loot.splice(i, 1); draw(); } }, 'Remove')))));
+  let cur = 0;
+  const body = h('div', { style: 'display:grid;gap:10px' });
+  const numIn = (obj, key, min, width = 90) => { const el = h('input', { type: 'number', min, value: obj[key], style: `width:${width}px` }); el.addEventListener('change', () => { obj[key] = Number(el.value); draw(); }); return el; };
+
+  const draw = () => {
+    const t = v.tables[cur];
+    const total = t.loot.reduce((n, l) => n + (Number(l.chance) || 0), 0) || 1;
+    const name = h('input', { type: 'text', maxlength: 32, value: t.name, style: 'width:220px' });
+    name.addEventListener('input', () => { t.name = name.value; });
+    name.addEventListener('change', draw);
+    const tabs = h('div', { class: 'choices', role: 'radiogroup', style: 'flex-wrap:wrap' },
+      ...v.tables.map((x, i) => h('button', { type: 'button', role: 'radio', class: 'choice', 'aria-checked': String(i === cur), onclick: () => { cur = i; draw(); } }, `${x.name || 'Untitled'}${i === 0 ? ' (default)' : ''}`)),
+      h('button', { class: 'btn small', type: 'button', onclick: () => { v.tables.push({ name: `Loot table ${v.tables.length + 1}`, rolls: 3, loot: [{ money: true, min: 5000, max: 15000, chance: 20 }] }); cur = v.tables.length - 1; draw(); } }, '+ New table'));
+    const rows = h('div', { style: 'display:grid;gap:8px;max-height:38vh;overflow-y:auto;padding-right:4px' },
+      ...t.loot.map((l, i) => h('div', { class: 'loot-entry' },
+        l.money ? h('strong', { text: 'Money (£)' }) : itemPicker(l.item ? { item: l.item, label: l.label } : null, (it) => { l.item = it ? it.name : null; l.label = it ? it.label : null; }, { allowClear: false, openNow: !l.item, emptyText: 'No item chosen yet' }),
+        h('div', { class: 'loot-fields' },
+          h('label', { class: 'field' }, 'Min', numIn(l, 'min', 1, 90)),
+          h('label', { class: 'field' }, 'Max', numIn(l, 'max', 1, 90)),
+          h('label', { class: 'field' }, 'Weight', h('span', { class: 'row', style: 'flex-wrap:nowrap;align-items:center;gap:8px' }, numIn(l, 'chance', 1, 80), h('span', { class: 'muted', text: `about ${Math.round((l.chance || 0) / total * 100)}% of picks` }))),
+          h('button', { class: 'btn small danger', type: 'button', style: 'margin-left:auto;align-self:end', onclick: () => { t.loot.splice(i, 1); draw(); } }, 'Remove')))));
+    body.replaceChildren(
+      tabs,
+      h('div', { class: 'row', style: 'align-items:end' },
+        h('label', { class: 'field' }, 'Name', name),
+        h('label', { class: 'field' }, 'Picks per crate', numIn(t, 'rolls', 1, 80)),
+        h('span', { style: 'margin-left:auto' }),
+        cur > 0 ? h('button', { class: 'btn small', type: 'button', onclick: () => { v.tables.unshift(v.tables.splice(cur, 1)[0]); cur = 0; draw(); } }, 'Make default') : h('span', {}),
+        v.tables.length > 1 ? h('button', { class: 'btn small danger', type: 'button', onclick: () => { v.tables.splice(cur, 1); cur = 0; draw(); } }, 'Delete table') : h('span', {})),
+      rows,
+      h('div', { class: 'row' },
+        h('button', { class: 'btn small', type: 'button', onclick: () => { t.loot.push({ item: null, min: 1, max: 1, chance: 10 }); draw(); } }, 'Add an item'),
+        h('button', { class: 'btn small', type: 'button', onclick: () => { t.loot.push({ money: true, min: 5000, max: 15000, chance: 20 }); draw(); } }, 'Add money')));
+  };
   draw();
-  const rolls = h('input', { type: 'number', min: 1, max: 20, value: v.rolls, style: 'width:80px' });
   $('sheet').classList.add('wide');
   showModal(
-    h('h2', { text: 'Air drop loot' }),
-    h('p', { text: 'Every crate makes a number of picks from this list. Each pick takes one entry: the higher its weight, the likelier it is. Money goes to the opener\'s gang treasury (dirty), or as cash if they\'re not in a gang.' }),
-    h('label', { class: 'field' }, 'Picks per crate', rolls),
-    rows,
-    h('div', { class: 'row', style: 'margin-top:8px' },
-      h('button', { class: 'btn small', type: 'button', onclick: () => { v.loot.push({ item: null, min: 1, max: 1, chance: 10 }); draw(); } }, 'Add an item'),
-      h('button', { class: 'btn small', type: 'button', onclick: () => { v.loot.push({ money: true, min: 5000, max: 15000, chance: 20 }); draw(); } }, 'Add money')),
+    h('h2', { text: 'Air drop loot tables' }),
+    h('p', { text: 'Each crate makes a number of picks from one table; each pick takes one entry (the higher its weight, the likelier). Choose a table when calling a drop in or in a schedule; the default is used for anything else. Money goes to the opener\'s gang treasury (dirty), or as cash if they\'re not in a gang.' }),
+    body,
     h('div', { class: 'buttons' },
       !v.fromConfig ? h('button', { class: 'btn', type: 'button', style: 'margin-right:auto', onclick: async () => { if (await adminAct('airdropLootReset', [], 'Back to the config loot.')) hideModal(); } }, 'Reset to config') : null,
       h('button', { class: 'btn', type: 'button', onclick: hideModal }, 'Cancel'),
       h('button', { class: 'btn primary', type: 'button', onclick: async () => {
-        if (v.loot.some((l) => !l.money && !l.item)) return toast('Pick an item for every row, or remove it.', true);
-        const data = { rolls: Number(rolls.value), loot: v.loot.map((l) => (l.money ? { money: true, min: l.min, max: l.max, chance: l.chance } : { item: l.item, min: l.min, max: l.max, chance: l.chance })) };
-        if (await adminAct('airdropLootSave', [data], 'Loot saved. New crates use it straight away.')) hideModal();
+        for (const [i, t] of v.tables.entries()) {
+          if (!t.loot.length) { cur = i; draw(); return toast(`"${t.name}" needs at least one entry.`, true); }
+          if (t.loot.some((l) => !l.money && !l.item)) { cur = i; draw(); return toast('Pick an item for every row, or remove it.', true); }
+        }
+        const data = { tables: v.tables.map((t) => ({ id: t.id, name: t.name, rolls: Number(t.rolls), loot: t.loot.map((l) => (l.money ? { money: true, min: l.min, max: l.max, chance: l.chance } : { item: l.item, min: l.min, max: l.max, chance: l.chance })) })) };
+        if (await adminAct('airdropLootSave', [data], 'Loot tables saved. New crates use them straight away.')) hideModal();
       } }, 'Save')));
+}
+
+/* "What's in the crate" choices: each loot table, or exact contents */
+async function lootChoices() {
+  const r = await adminRequest('airdropLoot');
+  const tables = r.ok ? r.data.tables : [];
+  return [...tables.map((t, i) => ({ value: `t${t.id}`, label: `Random from "${t.name}"${i === 0 ? ' (default)' : ''}` })), { value: 'exact', label: 'Exactly what I choose' }];
 }
 
 /* Scheduled air drops */
@@ -907,7 +952,7 @@ async function editAirdropSchedule(existing, meta) {
   showWho();
   const delay = h('input', { type: 'number', min: 0, max: 30, value: s.delay ?? 2, style: 'width:80px' });
   const minPlayers = h('input', { type: 'number', min: 0, max: 200, value: s.minPlayers ?? 0, style: 'width:80px' });
-  const loot = select([{ value: 'usual', label: 'The usual loot' }, { value: 'exact', label: 'Exactly what I choose' }], s.contents ? 'exact' : 'usual');
+  const loot = select(await lootChoices(), s.contents ? 'exact' : (s.lootTable ? `t${s.lootTable}` : ''));
   s.contentsDraft = (s.contents || []).map((c) => ({ ...c }));
   const contentsBox = h('div', { style: 'display:grid;gap:8px' });
   const drawContents = () => {
@@ -932,6 +977,7 @@ async function editAirdropSchedule(existing, meta) {
       spots: s.spots, delay: Number(delay.value), minPlayers: Number(minPlayers.value),
       who: whoKind.value === 'tier' ? { kind: 'tier', tier: Number(whoTier.value) } : whoKind.value === 'gang' ? { kind: 'gang', gangId: Number(whoGang.value) } : { kind: whoKind.value },
       contents: loot.value === 'exact' ? s.contentsDraft.filter((c) => c.money || c.item).map((c) => (c.money ? { money: true, count: c.count } : { item: c.item, count: c.count })) : null,
+      lootTable: loot.value.startsWith('t') ? Number(loot.value.slice(1)) : null,
     };
     if (await adminAct('airdropScheduleSave', [data], existing ? 'Schedule saved.' : 'Schedule created.')) hideModal();
   };
@@ -988,7 +1034,7 @@ async function renderAdminAirdrops() {
       h('div', { class: 'row' },
         h('button', { class: 'btn small', type: 'button', onclick: () => { contents.push({ item: null, count: 1 }); drawContents(); } }, 'Add an item'),
         h('button', { class: 'btn small', type: 'button', onclick: () => { contents.push({ money: true, count: 10000 }); drawContents(); } }, 'Add money')));
-    const kind = select([{ value: 'usual', label: 'The usual loot (random from the loot table)' }, { value: 'exact', label: 'Choose exactly what\'s in it' }], 'usual');
+    const kind = select(await lootChoices(), '');
     kind.addEventListener('change', () => { contentsBox.hidden = kind.value !== 'exact'; if (kind.value === 'exact' && !contents.length) { contents.push({ item: null, count: 1 }); } drawContents(); });
     contentsBox.hidden = true;
     const send = async (x, y) => {
@@ -1000,7 +1046,8 @@ async function renderAdminAirdrops() {
       if (whoKind.value === 'gang' && !whoGang.value) return toast('There are no gangs to choose from yet.', true);
       const who = whoKind.value === 'tier' ? { kind: 'tier', tier: Number(whoTier.value) }
         : (whoKind.value === 'gang' ? { kind: 'gang', gangId: Number(whoGang.value) } : { kind: whoKind.value === 'everyone' ? 'everyone' : 'all' });
-      if (await adminAct('airdropAdminCall', [{ x: x ?? null, y: y ?? null, minutes: Number(minutes.value), contents: exact, who }], 'Air drop called in.')) { hideModal(); renderAdminTab(); }
+      const lootTable = kind.value.startsWith('t') ? Number(kind.value.slice(1)) : null;
+      if (await adminAct('airdropAdminCall', [{ x: x ?? null, y: y ?? null, minutes: Number(minutes.value), contents: exact, who, lootTable }], 'Air drop called in.')) { hideModal(); renderAdminTab(); }
     };
     $('sheet').classList.add('wide');
     showModal(
@@ -2412,7 +2459,7 @@ const AdminMock = {
         { key: 'h:5:-7', q: 5, r: -7, gangId: 1, gang: 'Grove Kings', colour: '#7B3FBF', label: 'Rancho (5, -7)', control: 62 },
         { key: 'h:6:-8', q: 6, r: -8, gangId: 2, gang: 'Los Vagos', colour: '#E8C31E', label: 'Rancho (6, -8)', control: 40 }]);
       case 'hexResize': return ok({ from: 150, to: args[0], before: 3, after: args[1] === 'fill' ? 25 : 3 });
-      case 'hexSettings': return ok({ size: 150, configSize: 150, onResize: 'centre', turfDrugs: ['weed_og_kush'], turfDrugItems: [{ name: 'kq_weed_bag_og_kush', label: 'Weed baggie (OG Kush)', exists: true, sellable: true, perUnit: 0.5 }], controlPerSale: 1.5, rivalLoss: 2, decayPerHour: 4, startControl: 10, expandAt: 100, sprayEvery: 3,
+      case 'hexSettings': return ok({ size: 150, configSize: 150, onResize: 'centre', mapEnabled: true, mapMinimap: false, mapShowTo: 'gangs', turfDrugs: ['weed_og_kush'], turfDrugItems: [{ name: 'kq_weed_bag_og_kush', label: 'Weed baggie (OG Kush)', exists: true, sellable: true, perUnit: 0.5 }], controlPerSale: 1.5, rivalLoss: 2, decayPerHour: 4, startControl: 10, expandAt: 100, sprayEvery: 3,
         expandCost: { money: 50000, account: 'dirty', item: 'weed_og_kush', count: 50 }, expandItemLabel: 'OG Kush' });
       case 'customContracts': return ok({ types: [{ key: 'collect', label: 'Collect a debt' }, { key: 'courier', label: 'Courier run' }, { key: 'transport', label: 'Move a stolen car' }],
         difficulty: ['Low risk', 'Medium risk', 'High risk'], tiers: ['Street crew', 'Firm', 'Organisation', 'Syndicate'], gangs: [{ id: 1, label: 'Grove Kings' }, { id: 2, label: 'Los Vagos' }],
@@ -2438,7 +2485,9 @@ const AdminMock = {
         { id: 1, name: 'Evening drops', enabled: true, kind: 'daily', times: ['18:00', '22:00'], spots: [{ x: 1700, y: 3300 }, { x: -500, y: 300 }], who: { kind: 'all' }, delay: 2, minPlayers: 6, nextIn: 7200 },
         { id: 2, name: 'Sandy regulars', enabled: false, kind: 'every', minutes: 180, spots: [{ x: 1700, y: 3300 }], who: { kind: 'everyone' }, delay: 1, minPlayers: 0 }] });
       case 'airdropScheduleSave': return ok(true);
-      case 'airdropLoot': return ok({ rolls: 4, fromConfig: true, loot: [{ money: true, min: 5000, max: 15000, chance: 40 }, { item: 'weapon_pistol', label: 'Pistol', min: 1, max: 1, chance: 15 }, { item: 'armour', label: 'Body armour', min: 1, max: 2, chance: 20 }, { item: 'goldbar', label: 'Gold bar', min: 1, max: 3, chance: 10 }] });
+      case 'airdropLoot': return ok({ fromConfig: false, tables: [
+        { id: 1, name: 'Standard', rolls: 4, loot: [{ money: true, min: 5000, max: 15000, chance: 40 }, { item: 'weapon_pistol', label: 'Pistol', min: 1, max: 1, chance: 15 }, { item: 'armour', label: 'Body armour', min: 1, max: 2, chance: 20 }, { item: 'goldbar', label: 'Gold bar', min: 1, max: 3, chance: 10 }] },
+        { id: 2, name: 'Weapons crate', rolls: 2, loot: [{ item: 'weapon_carbinerifle', label: 'Carbine rifle', min: 1, max: 1, chance: 10 }, { item: 'weapon_pistol', label: 'Pistol', min: 1, max: 2, chance: 30 }] }] });
       case 'airdropLootSave': return ok(args[0]);
       case 'gangCreation': return ok({ allow: true, cost: 50000, account: 'bank', fromConfig: true });
       case 'gangCreationSave': return ok(args[0]);

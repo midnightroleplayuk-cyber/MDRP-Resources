@@ -123,8 +123,10 @@ an approximate call when one lands. Staff can also see and cancel drops there.
 long until the plane arrives; a minimum number of players online; and the usual loot or exact contents. Each can
 be switched on and off. A drop that comes due while the server is off is skipped rather than fired late.
 
-**Loot:** the Loot button (Street events) edits the loot table every crate uses: items from the inventory search
-or money, each with a min, max and weight, plus how many picks a crate gets. It's saved and applies straight away
+**Loot tables:** the Loot button (Street events) manages as many named loot tables as you like (say "Standard",
+"Weapons crate", "Cash drop"): each has items from the inventory search or money, with a min, max and weight, plus
+how many picks a crate gets. Choose a table when calling a drop in or in a schedule; the first table is the default,
+used for gang-called drops and anything without a choice. It's saved and applies straight away
 (Reset to config brings back `config/airdrops.lua`). When calling a drop you can also **choose exactly what's in
 it** instead, which is good for events and prizes. Timings and who sees the search circle are in `config/airdrops.lua`. Set `playersCanCall = true` there to
 also give gangs an Air drop app on the tablet (ranks with "Call in air drops", paid from the treasury, with
@@ -253,6 +255,9 @@ game is kept across restarts until someone changes the size in `config/hexes.lua
 the script moves existing turf onto the new grid in the same place (`onResize`: `'centre'` keeps each gang's number
 of hexes, `'fill'` keeps the same ground as more, smaller hexes), along with control, main and compound hexes,
 found rival hexes and tags. The console says what it did.
+
+**Turf on the pause map** can be switched off (or put on the minimap too, or shown to everyone instead of just gang
+members) in `/gangadmin` > Turf > **Map**; it applies straight away. `Config.Territory.map` is the starting point.
 
 The turf drug, control rates, decay, expansion cost and tag rate are set in game in `/gangadmin` > **Turf**
 (`config/hexes.lua` is the starting point). The turf drug also needs to be on the Street dealing list.
