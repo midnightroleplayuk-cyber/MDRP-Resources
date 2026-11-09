@@ -46,7 +46,7 @@ const ADMIN_TABS = [
   { id: 'diplomacy', label: 'Diplomacy', icon: 'diplomacy', tint: '#8FB3FF' },
   { id: 'director', label: 'Street events', icon: 'bolt', tint: '#F0AD4E' },
   { id: 'informants', label: 'Informants', icon: 'phone', tint: '#A6AEB9' },
-  { id: 'auctions', label: 'Auctions', icon: 'market', tint: '#D592D2' },
+  { id: 'auctions', label: 'Black market', icon: 'market', tint: '#D592D2' },
   { id: 'reviews', label: 'Reviews', icon: 'check', tint: '#6CC070' },
   { id: 'tags', label: 'Tags in world', icon: 'tags', tint: '#E39A6B' },
   { id: 'staff', label: 'Staff access', icon: 'shield', tint: '#7AA2FF', needs: 'management' },
@@ -80,7 +80,7 @@ function renderAdminFrame() {
     ? 'Staff access. Some tools are management only. Every change is logged.'
     : 'Management. Every change here is logged.';
   if (admin.tab === 'home') {
-    showHome(visibleAdminApps().map((t) => appIcon(t, () => { admin.tab = t.id; admin.gangId = null; admin.heist = null; admin.drugDraft = null; admin.turfDraft = null; admin.job = null; admin.contractDraft = null; renderAdminFrame(); })));
+    showHome(visibleAdminApps().map((t) => appIcon(t, () => { admin.tab = t.id; admin.gangId = null; admin.heist = null; admin.drugDraft = null; admin.turfDraft = null; admin.job = null; admin.contractDraft = null; admin.bmDraft = null; admin.auctionTab = null; renderAdminFrame(); })));
     return;
   }
   showApp(ADMIN_TABS.find((t) => t.id === admin.tab).label);
@@ -104,7 +104,7 @@ async function renderAdminTab() {
   else if (admin.tab === 'diplomacy') content = await renderAdminDiplomacy();
   else if (admin.tab === 'director') content = h('div', {}, await renderAdminDirector(), await renderAdminAirdrops());
   else if (admin.tab === 'informants') content = await renderAdminInformants();
-  else if (admin.tab === 'auctions') content = await renderAdminAuctions();
+  else if (admin.tab === 'auctions') content = admin.auctionTab === 'settings' ? await renderBlackmarketSettings() : await renderAdminAuctions();
   else if (admin.tab === 'reviews') content = await renderReviews();
   else if (admin.tab === 'tags') content = await renderWorldTags();
   if (id !== admin.renderId || !content) return;
@@ -323,12 +323,142 @@ async function turfBlock(gang) {
       ? `${v.hexes.length} ${v.hexes.length === 1 ? 'hex' : 'hexes'}. ${left ? `Give them ${left} more for their starting compound.` : 'After the compound, they buy new ground themselves from the tablet.'}`
       : `They have no turf yet. Stand in the hex that should be their main compound and press the button, then do the same for the rest of their compound (${v.startHexes} hexes).` }),
     rows.length ? h('table', {}, h('tbody', {}, rows)) : null,
-    h('button', { class: 'btn primary', type: 'button', style: 'margin-top:10px', onclick: async () => {
-      const r = await adminRequest('hexGive', gang.id);
-      if (!r.ok) return toast(r.error, true);
-      toast(`Gave them ${r.data}.`);
-      renderAdminTab();
-    } }, 'Give them the hex I\'m standing in'));
+    h('div', { class: 'row', style: 'margin-top:10px' },
+      h('button', { class: 'btn primary', type: 'button', onclick: () => hexMapPicker(gang, v.hexes) }, 'Pick on the map'),
+      h('button', { class: 'btn', type: 'button', onclick: async () => {
+        const r = await adminRequest('hexGive', gang.id);
+        if (!r.ok) return toast(r.error, true);
+        toast(`Gave them ${r.data}.`);
+        renderAdminTab();
+      } }, 'Give them the hex I\'m standing in')));
+}
+
+/* Pick hexes on the map to give a gang (staff see every gang's turf here) */
+async function hexMapPicker(gang, theirs) {
+  const res = await adminRequest('hexMap');
+  if (!res.ok) return toast(res.error, true);
+  let claimed = res.data;
+  const byKey = () => Object.fromEntries(claimed.map((x) => [x.key, x]));
+  const R = state.static.hexSize || 150;
+  const tm = state.static.tabletMap;
+
+  const map = svg('svg', { class: 'map has-picture hex-picker', role: 'img', 'aria-label': 'Pick a hex' });
+  if (tm && tm.image) {
+    const left = (0 - tm.offsetX) / tm.scaleX + (tm.nudgeX || 0);
+    const top = (0 - tm.offsetY) / tm.scaleY + (tm.nudgeY || 0);
+    map.append(svg('image', { href: tm.image, x: left, y: -top, width: tm.size / tm.scaleX, height: tm.size / Math.abs(tm.scaleY), preserveAspectRatio: 'none' }));
+  }
+  const grid = svg('g', { class: 'hex-grid' });
+  const owned = svg('g', {});
+  const hover = svg('polygon', { class: 'hex-hover', points: '' });
+  const picked = svg('polygon', { class: 'hex-picked', points: '' });
+  map.append(grid, owned, hover, picked);
+  const pts = (q, r) => hexCorners(q, r).map(([x, y]) => `${x},${-y}`).join(' ');
+
+  const drawOwned = () => owned.replaceChildren(...claimed.map((x) => svg('polygon', {
+    points: pts(x.q, x.r), fill: x.colour, 'fill-opacity': x.gangId === gang.id ? 0.6 : 0.4,
+    stroke: x.gangId === gang.id ? '#ffffff' : '#1C2127', 'stroke-width': x.gangId === gang.id ? 2 : 1, 'vector-effect': 'non-scaling-stroke' })));
+
+  // Start on their turf, or Los Santos
+  const mine = claimed.filter((x) => x.gangId === gang.id);
+  let view = { cx: 0, cy: -900, half: 2200 };
+  if (mine.length) { const [cx, cy] = hexCentre(mine[0].q, mine[0].r); view = { cx, cy, half: 900 }; }
+  // The grid is only drawn zoomed in (otherwise it's thousands of hexes)
+  const drawGrid = () => {
+    if (view.half > 1600) { grid.replaceChildren(); return; }
+    const [q0, r0] = hexFromCoords(view.cx, view.cy);
+    const hx = view.half * aspect();
+    const n = Math.ceil(Math.max(hx, view.half) / (R * 1.4)) + 2;
+    const cells = [];
+    for (let dr = -n; dr <= n; dr += 1) for (let dq = -n - Math.ceil(n / 2); dq <= n + Math.ceil(n / 2); dq += 1) {
+      const q = q0 + dq, r = r0 + dr;
+      const [x, y] = hexCentre(q, r);
+      if (Math.abs(x - view.cx) < hx + R && Math.abs(y - view.cy) < view.half + R) cells.push(svg('polygon', { points: pts(q, r) }));
+    }
+    grid.replaceChildren(...cells);
+  };
+  // view.half is half the visible height; the width follows the map's real shape on screen
+  const aspect = () => { const r = map.getBoundingClientRect(); return r.height ? r.width / r.height : 1; };
+  const apply = () => {
+    const hx = view.half * aspect();
+    map.setAttribute('viewBox', `${view.cx - hx} ${-view.cy - view.half} ${hx * 2} ${view.half * 2}`);
+    drawGrid();
+  };
+  const toWorld = (e) => {
+    const r = map.getBoundingClientRect();
+    const fx = (e.clientX - r.left) / (r.width || 1), fy = (e.clientY - r.top) / (r.height || 1);
+    const hx = view.half * aspect();
+    return [view.cx - hx + fx * 2 * hx, view.cy + view.half - fy * 2 * view.half];
+  };
+
+  // Details of the picked hex and the Give button
+  const info = h('div', { class: 'hex-pick-info' });
+  let sel = null;
+  const showInfo = () => {
+    if (!sel) { info.replaceChildren(h('p', { class: 'hint', style: 'margin:0', text: 'Zoom in and click a hex. Your gang\'s hexes have a white outline; other colours are other gangs.' })); return; }
+    const owner = byKey()[`h:${sel[0]}:${sel[1]}`];
+    const label = owner ? owner.label : hexLabel(sel[0], sel[1]);
+    info.replaceChildren(...[
+      h('strong', { text: label }),
+      h('div', { class: 'hint', style: 'margin:2px 0 8px', text: owner
+        ? (owner.gangId === gang.id ? `Already theirs (${owner.control}% control${owner.main ? ', main hex' : ''}).` : `Held by ${owner.gang}. Remove it from them first if you want to move it.`)
+        : 'Free ground.' }),
+      !owner ? h('button', { class: 'btn primary', type: 'button', onclick: async () => {
+        const r = await adminRequest('hexGive', gang.id, sel[0], sel[1]);
+        if (!r.ok) return toast(r.error, true);
+        toast(`Gave ${gang.label} ${r.data}.`);
+        const again = await adminRequest('hexMap');
+        if (again.ok) claimed = again.data;
+        drawOwned(); showInfo();
+      } }, `Give ${gang.label} this hex`) : null].filter(Boolean));
+  };
+
+  let drag = null, dragged = false;
+  map.addEventListener('mousemove', (e) => {
+    if (drag) return;
+    const [x, y] = toWorld(e);
+    const [q, r] = hexFromCoords(x, y);
+    hover.setAttribute('points', pts(q, r));
+  });
+  map.addEventListener('mouseleave', () => hover.setAttribute('points', ''));
+  map.addEventListener('click', (e) => {
+    if (dragged) return;
+    const [x, y] = toWorld(e);
+    sel = hexFromCoords(x, y);
+    picked.setAttribute('points', pts(sel[0], sel[1]));
+    if (view.half > 1600) { const [cx, cy] = hexCentre(sel[0], sel[1]); view = { cx, cy, half: 900 }; apply(); }
+    showInfo();
+  });
+  map.addEventListener('wheel', (e) => {
+    e.preventDefault();
+    const r = map.getBoundingClientRect();
+    const fx = (e.clientX - r.left) / (r.width || 1), fy = (e.clientY - r.top) / (r.height || 1);
+    const [wx, wy] = toWorld(e);
+    const half = Math.min(6000, Math.max(300, view.half * (e.deltaY > 0 ? 1.25 : 0.8)));
+    view = { cx: wx - (fx * 2 - 1) * half * aspect(), cy: wy + (fy * 2 - 1) * half, half };
+    apply();
+  }, { passive: false });
+  map.addEventListener('mousedown', (e) => { drag = { x: e.clientX, y: e.clientY, view: { ...view } }; dragged = false; });
+  mapDragHandlers = {
+    move: (e) => {
+      if (!drag || !map.isConnected) return;
+      const r = map.getBoundingClientRect();
+      if (Math.abs(e.clientX - drag.x) + Math.abs(e.clientY - drag.y) > 4) dragged = true;
+      if (!dragged) return;
+      view = { cx: drag.view.cx - (e.clientX - drag.x) / (r.width || 1) * 2 * drag.view.half * aspect(), cy: drag.view.cy + (e.clientY - drag.y) / (r.height || 1) * 2 * drag.view.half, half: drag.view.half };
+      apply();
+    },
+    up: () => { drag = null; setTimeout(() => { dragged = false; }, 0); },
+  };
+
+  drawOwned(); showInfo();
+  $('sheet').classList.add('xwide');
+  showModal(
+    h('h2', { text: `Give ${gang.label} turf` }),
+    h('p', { class: 'hint', style: 'margin:0 0 10px', text: `Scroll to zoom, drag to move, click a hex. Their first ${theirs.length ? 'hexes were' : 'two hexes are'} their compound; the first is their main hex.` }),
+    h('div', { class: 'hex-pick' }, map, info),
+    h('div', { class: 'buttons' }, h('button', { class: 'btn primary', type: 'button', onclick: () => { hideModal(); renderAdminTab(); } }, 'Done')));
+  requestAnimationFrame(apply);
 }
 
 /* Turf settings */
@@ -343,9 +473,14 @@ async function renderTurfSettings() {
     return el;
   };
   v.expandCost = v.expandCost || { money: 0, account: 'dirty' };
-  const drugs = (v.turfDrugItems || []).map((d, i) => h('div', { class: 'row', style: 'align-items:center' },
-    h('div', { style: 'flex:1;max-width:420px' }, itemPicker({ item: d.name, label: d.label, image: d.image }, (it) => { if (it) { v.turfDrugItems[i] = { name: it.name, label: it.label, image: it.image }; } }, { allowClear: false })),
-    h('button', { class: 'btn small danger', type: 'button', onclick: () => { v.turfDrugItems.splice(i, 1); rerender(); } }, 'Remove')));
+  const drugs = (v.turfDrugItems || []).map((d, i) => h('div', {},
+    h('div', { class: 'row', style: 'align-items:center' },
+      h('div', { style: 'flex:1;max-width:420px' }, itemPicker(d.name ? { item: d.name, label: d.label, image: d.image } : null, (it) => { if (it) { v.turfDrugItems[i] = { name: it.name, label: it.label, image: it.image, exists: true }; rerender(); } }, { allowClear: false, openNow: !d.name, emptyText: 'No item chosen yet' })),
+      h('button', { class: 'btn small danger', type: 'button', onclick: () => { v.turfDrugItems.splice(i, 1); rerender(); } }, 'Remove')),
+    d.name && d.exists === false ? h('p', { class: 'hint debit', style: 'margin:4px 0 0', text: `There's no item called "${d.name}" on your server, so nothing builds control. Use Change to pick your real one.` })
+      : (d.name && d.sellable === false ? h('p', { class: 'hint debit', style: 'margin:4px 0 0', text: `${d.label} isn't on the Street dealing list, so it can't be sold. Add it there.` }) : null)));
+  const anyDrug = h('input', { type: 'checkbox', checked: v.anyDrugCounts === true });
+  anyDrug.addEventListener('change', () => { v.anyDrugCounts = anyDrug.checked; rerender(); });
   const accountSel = select([{ value: 'dirty', label: 'Dirty money' }, { value: 'clean', label: 'Clean money' }], v.expandCost.account || 'dirty');
   accountSel.addEventListener('change', () => { v.expandCost.account = accountSel.value; });
 
@@ -362,14 +497,17 @@ async function renderTurfSettings() {
     h('div', { class: 'section-head' }, h('h2', { text: 'Turf' }), h('button', { class: 'btn primary', type: 'button', onclick: save }, 'Save')),
     h('p', { class: 'hint', style: 'margin-bottom:16px', text: `The map is split into hexes (${v.size} m). Gangs start with a compound you give them (open a gang in Gangs), build control by selling the turf drug there, and buy the ground next to a hex at full control. Rival turf stays hidden until a gang deals on it.` }),
     h('h3', { text: 'Turf drug' }),
-    h('p', { class: 'hint', style: 'margin:0 0 8px', text: 'Selling these on your own hex builds its control. (They also need to be on the Street dealing list so they can be sold.)' }),
-    h('div', { style: 'display:grid;gap:8px' }, drugs),
-    h('button', { class: 'btn small', type: 'button', style: 'margin-top:8px', onclick: () => { v.turfDrugItems = v.turfDrugItems || []; v.turfDrugItems.push({ name: null, label: null }); rerender(); } }, 'Add a turf drug'),
+    h('label', { class: 'toggle', style: 'margin:0 0 10px' }, anyDrug, ' Any drug builds control (not just the ones below)'),
+    h('p', { class: 'hint', style: 'margin:0 0 8px', text: v.anyDrugCounts ? 'Every drug on the Street dealing list builds control when sold on your own hex.' : 'Selling these on your own hex builds its control. (They also need to be on the Street dealing list so they can be sold.)' }),
+    v.anyDrugCounts ? null : h('div', { style: 'display:grid;gap:8px' }, drugs),
+    v.anyDrugCounts ? null : h('button', { class: 'btn small', type: 'button', style: 'margin-top:8px', onclick: () => { v.turfDrugItems = v.turfDrugItems || []; v.turfDrugItems.push({ name: null, label: null }); rerender(); } }, 'Add a turf drug'),
     h('h3', { style: 'margin-top:22px', text: 'Control' }),
     h('div', { class: 'heist-settings' },
       h('label', { class: 'field' }, '% per unit sold on own turf', num(v, 'controlPerSale', 0.1, 100)),
       h('label', { class: 'field' }, '% lost per unit a rival sells', num(v, 'rivalLoss', 0, 100)),
       h('label', { class: 'field' }, '% every hex loses per hour', num(v, 'decayPerHour', 0, 100)),
+      (() => { const c = h('input', { type: 'checkbox', checked: v.decayOnlyOnline !== false }); c.addEventListener('change', () => { v.decayOnlyOnline = c.checked; });
+        return h('label', { class: 'toggle', style: 'align-self:end;padding-bottom:8px' }, c, ' Only while a member of that gang is online'); })(),
       h('label', { class: 'field' }, 'New hexes start at (%)', num(v, 'startControl', 0, 100))),
     h('h3', { style: 'margin-top:8px', text: 'Buying new ground' }),
     h('div', { class: 'heist-settings' },
@@ -406,6 +544,105 @@ async function openAddMember(gang, gradeOptions) {
 
 /* Auctions -------------------------------------------------------------- */
 
+function auctionTabs() {
+  const tab = admin.auctionTab || 'auctions';
+  return h('div', { class: 'choices', role: 'radiogroup', style: 'margin-bottom:16px' },
+    [['auctions', 'Auctions'], ['settings', 'Black market settings']].map(([key, label]) => h('button', {
+      type: 'button', role: 'radio', class: 'choice', 'aria-checked': String(tab === key),
+      onclick: () => { admin.auctionTab = key; admin.bmDraft = null; renderAdminTab(); },
+    }, label)));
+}
+
+/* Black market settings: contraband, lot types, timings (config/auctions.lua, changed in game) */
+async function renderBlackmarketSettings() {
+  if (!admin.bmDraft) {
+    const res = await adminRequest('blackmarketSettings');
+    if (!res.ok) return loadError(res);
+    admin.bmDraft = res.data;
+  }
+  const v = admin.bmDraft;
+  const rerender = () => renderAdminTab();
+  const num = (obj, key, min, max, width = 90, step = 'any') => {
+    const el = h('input', { type: 'number', min, max, step, value: obj[key] ?? '', style: `width:${width}px` });
+    el.addEventListener('change', () => { obj[key] = Number(el.value); });
+    return el;
+  };
+  const pct = (obj, key) => {
+    const el = h('input', { type: 'number', min: 0, max: 100, value: Math.round((obj[key] || 0) * 100), style: 'width:80px' });
+    el.addEventListener('change', () => { obj[key] = Math.max(0, Math.min(100, Number(el.value))) / 100; });
+    return el;
+  };
+  const range = (obj, key, label, width = 90) => {
+    const lo = h('input', { type: 'number', min: 0, value: obj[key][0], style: `width:${width}px` });
+    const hi = h('input', { type: 'number', min: 0, value: obj[key][1], style: `width:${width}px` });
+    lo.addEventListener('change', () => { obj[key][0] = Number(lo.value); });
+    hi.addEventListener('change', () => { obj[key][1] = Number(hi.value); });
+    return h('label', { class: 'field' }, label, h('span', { class: 'row', style: 'flex-wrap:nowrap;align-items:center;gap:6px' }, lo, h('span', { class: 'muted', text: 'to' }), hi));
+  };
+
+  const items = v.items.map((it, i) => h('div', { class: 'loot-entry' },
+    itemPicker(it.item ? { item: it.item, label: it.itemLabel || it.item } : null, (p) => { it.item = p ? p.name : null; it.itemLabel = p ? p.label : null; if (p && !it.label) { it.label = p.label; rerender(); } }, { allowClear: false, openNow: !it.item, emptyText: 'No item chosen yet' }),
+    h('div', { class: 'loot-fields' },
+      h('label', { class: 'field' }, 'Name on the lot', (() => { const t = h('input', { type: 'text', value: it.label || '', maxlength: 40, style: 'width:200px' }); t.addEventListener('input', () => { it.label = t.value; }); return t; })()),
+      h('label', { class: 'field' }, 'How many in the lot', num(it, 'count', 1, 1000, 90, 1)),
+      h('label', { class: 'field' }, 'Reserve price (£)', num(it, 'reserve', 100, 100000000, 120, 500)),
+      h('button', { class: 'btn small danger', type: 'button', style: 'margin-left:auto;align-self:end', onclick: () => { v.items.splice(i, 1); rerender(); } }, 'Remove'))));
+
+  const L = v.lots;
+  const lot = (title, desc, body) => h('div', { class: 'loot-entry' }, h('strong', { text: title }), h('div', { class: 'hint', style: 'margin:0', text: desc }), h('div', { class: 'loot-fields' }, body));
+
+  const save = async () => {
+    if (v.items.some((it) => !it.item)) return toast('Pick an item for every contraband row, or remove it.', true);
+    const r = await adminRequest('blackmarketSave', v);
+    if (!r.ok) return toast(r.error, true);
+    admin.bmDraft = r.data;
+    toast('Saved. The next auction uses these settings.');
+    rerender();
+  };
+
+  return h('div', {},
+    auctionTabs(),
+    h('div', { class: 'section-head' }, h('h2', { text: 'Black market settings' }),
+      h('div', { class: 'row' },
+        h('button', { class: 'btn small', type: 'button', onclick: () => confirmModal({ title: 'Go back to config/auctions.lua?', body: 'Your contraband list and settings here are replaced with the config ones.', confirmLabel: 'Reset', danger: true, onConfirm: async () => { const r = await adminRequest('blackmarketReset'); if (r.ok) { admin.bmDraft = r.data; toast('Back to the config settings.'); rerender(); } } }) }, 'Reset to config'),
+        h('button', { class: 'btn primary', type: 'button', onclick: save }, 'Save'))),
+    h('h3', { text: 'Contraband' }),
+    h('p', { class: 'hint', style: 'margin:0 0 8px', text: 'Items auctioned as lots. The winner collects them from a dead drop, and rival gangs may be tipped off where it is.' }),
+    items.length ? h('div', { style: 'display:grid;gap:8px' }, items) : h('p', { class: 'empty', text: 'No contraband yet, so item lots never come up.' }),
+    h('button', { class: 'btn small', type: 'button', style: 'margin-top:8px', onclick: () => { v.items.push({ item: null, label: '', count: 1, reserve: 10000 }); rerender(); } }, 'Add an item'),
+    h('h3', { style: 'margin-top:22px', text: 'Lot types' }),
+    h('p', { class: 'hint', style: 'margin:0 0 8px', text: 'How often each kind of lot comes up (a higher number is likelier, 0 turns it off).' }),
+    h('div', { style: 'display:grid;gap:8px' },
+      lot('Contraband', 'One of the items above.', [h('label', { class: 'field' }, 'How often', num(L.items, 'weight', 0, 100, 80, 1))]),
+      lot('Business supplies', 'Supplies for a gang business; the reserve is the amount times the supply cost times this.', [
+        h('label', { class: 'field' }, 'How often', num(L.supplies, 'weight', 0, 100, 80, 1)), range(L.supplies, 'amount', 'Amount', 80),
+        h('label', { class: 'field' }, 'Reserve per unit (×)', num(L.supplies, 'reservePerUnit', 0.01, 100, 80, 0.1))]),
+      lot('An exclusive contract', 'A one-off job paying several times the usual reward.', [
+        h('label', { class: 'field' }, 'How often', num(L.contract, 'weight', 0, 100, 80, 1)),
+        h('label', { class: 'field' }, 'Reward (× usual)', num(L.contract, 'rewardMultiplier', 1, 20, 80, 0.5)), range(L.contract, 'reserve', 'Reserve (£)', 100)]),
+      lot('A bent copper', 'Wipes some of the winning gang\'s heat.', [
+        h('label', { class: 'field' }, 'How often', num(L.copper, 'weight', 0, 100, 80, 1)),
+        h('label', { class: 'field' }, 'Heat wiped', num(L.copper, 'heat', 1, 1000, 80, 1)), range(L.copper, 'reserve', 'Reserve (£)', 100)]),
+      lot('Connections', 'Adds control to the winner\'s weakest hex.', [
+        h('label', { class: 'field' }, 'How often', num(L.connections, 'weight', 0, 100, 80, 1)),
+        h('label', { class: 'field' }, 'Control added (%)', num(L.connections, 'influence', 1, 100, 80, 1)), range(L.connections, 'reserve', 'Reserve (£)', 100)])),
+    h('h3', { style: 'margin-top:22px', text: 'Auctions' }),
+    h('div', { class: 'heist-settings' },
+      range(v, 'intervalMinutes', 'Time between auctions (min)', 70),
+      h('label', { class: 'field' }, 'Bidding lasts (min)', num(v, 'biddingMinutes', 2, 120, 80, 1)),
+      range(v, 'lotsPerAuction', 'Lots per auction', 60),
+      h('label', { class: 'field' }, 'Players online needed', num(v, 'minPlayers', 0, 200, 80, 1)),
+      h('label', { class: 'field' }, 'Each bid beats the last by (%)', pct(v, 'increment')),
+      h('label', { class: 'field' }, 'Late bids extend by (s)', num(v, 'antiSnipe', 0, 600, 80, 1)),
+      h('label', { class: 'field' }, 'Buy now (× reserve)', num(v, 'buyNowMultiplier', 1, 20, 80, 0.5))),
+    h('h3', { style: 'margin-top:8px', text: 'Dead drops' }),
+    h('div', { class: 'heist-settings' },
+      h('label', { class: 'field' }, 'Time to collect (min)', num(v, 'dropMinutes', 5, 240, 80, 1)),
+      h('label', { class: 'field' }, 'Rivals tipped off (%)', pct(v, 'tipChance')),
+      h('label', { class: 'field' }, 'Winner\'s head start (s)', num(v, 'headStart', 0, 1800, 80, 10)),
+      h('label', { class: 'field' }, 'Refund if nobody collects (%)', pct(v, 'unclaimedRefund'))));
+}
+
 async function renderAdminAuctions() {
   const res = await adminRequest('auctions');
   if (!res.ok) return loadError(res);
@@ -422,11 +659,26 @@ async function renderAdminAuctions() {
         confirmLabel: 'Cancel lot', danger: true, onConfirm: () => adminAct('auctionCancel', [l.id], 'Lot cancelled.'),
       }),
     }, 'Cancel'))));
+  const bm = await adminRequest('blackmarketSettings');
+  const on = bm.ok ? bm.data.enabled : true;
   return h('div', {},
+    auctionTabs(),
+    h('div', { class: 'heist-edit-start', style: 'margin-bottom:18px' },
+      h('div', {},
+        h('strong', { text: on ? 'The black market is open' : 'The black market is closed' }),
+        h('div', { class: 'hint', style: 'margin:0', text: on
+          ? 'Auctions run on their own, and gangs see the Black market app on their tablet.'
+          : 'No new auctions, and the Black market app is hidden from gang tablets. Anything already running finishes as normal.' })),
+      h('button', {
+        class: on ? 'btn small danger' : 'btn small primary', type: 'button',
+        onclick: () => (on
+          ? confirmModal({ title: 'Close the black market?', body: 'No new auctions start, and gangs lose the Black market app until you open it again. Auctions already running finish normally.', confirmLabel: 'Close it', danger: true, onConfirm: () => adminAct('blackmarketOpen', [false], 'The black market is closed.') })
+          : adminAct('blackmarketOpen', [true], 'The black market is open again.')),
+      }, on ? 'Close it' : 'Open it')),
     h('div', { class: 'section-head' },
       h('h2', {}, 'Auctions ', h('span', { class: 'muted fig', text: v.lots.length })),
       h('button', { class: 'btn primary', type: 'button', onclick: () => adminAct('auctionOpen', [], 'Auction opened.') }, 'Hold an auction now')),
-    h('p', { class: 'hint', style: 'margin-bottom:16px', text: `Next automatic auction in about ${v.nextIn} min. ${v.hasItems ? '' : 'No contraband items are set up in config/auctions.lua, so item lots never appear.'}` }),
+    h('p', { class: 'hint', style: 'margin-bottom:16px', text: `Next automatic auction in about ${v.nextIn} min. ${v.hasItems ? '' : 'No contraband items yet, so item lots never come up: add some in Black market settings.'}` }),
     rows.length
       ? h('table', {},
         h('thead', {}, h('tr', {}, h('th', { text: 'Lot' }), h('th', { text: 'Leading / won by' }), h('th', { class: 'num', text: 'Price' }), h('th', { class: 'num', text: 'Left' }), h('th', {}))),
@@ -1198,8 +1450,45 @@ function renderHeistEditor() {
           { placeholder: def ? `Search to replace ${def.label}…` : 'Search for a required item…', emptyText: def ? `${def.label} (default)` : 'Nothing needed' })));
       if (s.item) extra.push(h('label', { class: 'toggle', style: 'align-self:end;padding-bottom:8px' }, consume, ' Used up'));
     }
-    extra.push(h('label', { class: 'field' }, 'Alarm', pick(s, 'alert', ALERT_OPTIONS)));
-    if (s.type !== 'truck' && s.type !== 'loot' && s.type !== 'wait') extra.push(h('label', { class: 'field' }, 'Door to unlock (optional)', text(s, 'doorId', 160, 'door-lock ID or name')));
+    // NPC steps (fill in the defaults so staff can see them)
+    const npc = meta.npc || {};
+    if (s.type === 'talk' && s.pay == null) s.pay = 0;
+    if (s.type === 'guards') { if (s.count == null) s.count = 4; if (s.armour == null) s.armour = 50; if (s.accuracy == null) s.accuracy = 40; if (s.radius == null) s.radius = 10; }
+    if (s.type === 'talk' || s.type === 'hostage' || s.type === 'guards') {
+      extra.push(h('label', { class: 'field' }, s.type === 'guards' ? 'Guard model' : 'NPC model',
+        text(s, 'ped', 180, s.type === 'guards' ? (npc.guardPed || 's_m_m_security_01') : (npc.ped || 'a_m_m_business_01'))));
+    }
+    if (s.type === 'talk') {
+      const say = h('textarea', { rows: 2, maxlength: 200, placeholder: 'What they say, e.g. "The manager has the vault code. Get to him before he leaves."', style: 'width:100%' });
+      say.value = s.say || '';
+      say.addEventListener('input', () => { s.say = say.value; });
+      extra.push(h('label', { class: 'field', style: 'flex:1 1 100%' }, 'What they say', say));
+      extra.push(h('label', { class: 'field' }, 'They want paying (£, 0 = nothing)', num(s, 'pay', 0, 10000000, 120)));
+      const def = (meta.tools || {})[s.type];
+      extra.push(h('div', { class: 'field', style: 'min-width:280px' }, 'Needs (optional)',
+        itemPicker(s.item ? { item: s.item, label: s.itemLabel, image: s.itemImage } : null,
+          (it) => { s.item = it ? it.name : null; s.itemLabel = it ? it.label : null; s.itemImage = it ? it.image : null; if (it && s.consume == null) s.consume = true; rerender(); },
+          { placeholder: 'Search for an item they want…', emptyText: 'Nothing needed' })));
+      if (s.item) {
+        const consume = h('input', { type: 'checkbox', checked: s.consume === true });
+        consume.addEventListener('change', () => { s.consume = consume.checked; });
+        extra.push(h('label', { class: 'toggle', style: 'align-self:end;padding-bottom:8px' }, consume, ' They keep it'));
+      }
+    }
+    if (s.type === 'hostage') {
+      // A new step comes with 30 s (right for a hack); 8 s at gunpoint suits this better. Only set once.
+      if (!s.hostageSet) { if (s.time == null || s.time === 30 || s.time > 60) s.time = 8; s.hostageSet = true; }
+      extra.push(h('label', { class: 'field' }, 'Keep them at gunpoint for (s)', num(s, 'time', 3, 60)));
+    }
+    if (s.type === 'guards') {
+      extra.push(h('label', { class: 'field' }, 'How many', num(s, 'count', 1, 12, 70)),
+        h('label', { class: 'field' }, 'Weapon', text(s, 'weapon', 160, npc.guardWeapon || 'weapon_pistol')),
+        h('label', { class: 'field' }, 'Armour (0-100)', num(s, 'armour', 0, 100, 80)),
+        h('label', { class: 'field' }, 'Accuracy (1-100)', num(s, 'accuracy', 1, 100, 80)),
+        h('label', { class: 'field' }, 'Spread out over (m)', num(s, 'radius', 2, 40, 80)));
+    }
+    extra.push(h('label', { class: 'field' }, s.type === 'hostage' ? 'Alarm (if they comply)' : 'Alarm', pick(s, 'alert', ALERT_OPTIONS)));
+    if (s.type !== 'truck' && s.type !== 'loot' && s.type !== 'wait' && s.type !== 'guards') extra.push(h('label', { class: 'field' }, 'Door to unlock (optional)', text(s, 'doorId', 160, 'door-lock ID or name')));
 
     return h('div', { class: 'heist-edit-step' },
       h('div', { class: 'heist-edit-head' },
@@ -1208,7 +1497,8 @@ function renderHeistEditor() {
         text(s, 'label', 200, 'Label, e.g. Vault door'),
         h('span', { class: 'heist-pos' }, followsTruck(s) ? h('span', { class: 'muted', text: 'At the truck' }) : [
           h('span', { class: s.x != null ? 'fig' : 'debit', text: point(s) }),
-          h('button', { class: 'btn small', type: 'button', onclick: () => here((p) => Object.assign(s, p)) }, s.type === 'truck' ? 'Truck starts here' : 'Set here'),
+          h('button', { class: 'btn small', type: 'button', onclick: () => here((p) => Object.assign(s, p)) },
+            { truck: 'Truck starts here', talk: 'They stand here', hostage: 'They stand here', guards: 'Guards around here' }[s.type] || 'Set here'),
           h('button', { class: 'btn small', type: 'button', onclick: () => goTo(s) }, 'Go to')]),
         h('span', { class: 'heist-step-tools' },
           h('button', { class: 'btn small', type: 'button', title: 'Move up', onclick: () => move(i, -1) }, '↑'),
@@ -1588,7 +1878,9 @@ const AdminMock = {
       case 'agreements': return ok([{ id: 4, label: 'Trade agreement', status: 'active', a: 'Grove Kings', aColour: '#7B3FBF', b: 'East Side', bColour: '#3FA7D6', payment: 0, secondsLeft: 300000 }]);
       case 'heists': return ok({ defaultTier: 3, tools: { thermite: { item: 'thermite', label: 'Thermite', consume: true }, truck_doors: { item: 'thermite', label: 'Thermite', consume: true } }, tiers: ['Street crew', 'Firm', 'Organisation', 'Syndicate'],
         templates: [{ key: 'bank', label: 'Bank vault', steps: 5 }, { key: 'truck', label: 'Armoured truck', steps: 3 }, { key: 'store', label: 'Store robbery', steps: 3 }, { key: 'jewellery', label: 'Jewellery store', steps: 5 }, { key: 'custom', label: 'Custom heist', steps: 0 }],
-        stepTypes: [{ key: 'hack', label: 'Hack a panel', game: 'hack' }, { key: 'thermite', label: 'Thermite a door', game: 'thermite' }, { key: 'drill', label: 'Drill (vault or boxes)', game: 'drill' }, { key: 'loot', label: 'Grab loot' }, { key: 'wait', label: 'Wait (time lock)' }, { key: 'truck', label: 'Armoured truck: stop it' }, { key: 'truck_doors', label: 'Armoured truck: open the back', game: 'thermite' }],
+        stepTypes: [{ key: 'hack', label: 'Hack a panel', game: 'hack' }, { key: 'thermite', label: 'Thermite a door', game: 'thermite' }, { key: 'drill', label: 'Drill (vault or boxes)', game: 'drill' }, { key: 'loot', label: 'Grab loot' }, { key: 'wait', label: 'Wait (time lock)' }, { key: 'truck', label: 'Armoured truck: stop it' }, { key: 'truck_doors', label: 'Armoured truck: open the back', game: 'thermite' },
+          { key: 'talk', label: 'Talk to someone (NPC)' }, { key: 'guards', label: 'Deal with guards (NPCs)' }, { key: 'hostage', label: 'Intimidate someone (NPC)' }],
+        npc: { ped: 'a_m_m_business_01', guardPed: 's_m_m_security_01', guardWeapon: 'weapon_pistol' },
         lootTypes: [{ key: 'cash', label: 'Cash (to dirty treasury)' }, { key: 'goldbar', label: 'Gold bars (item)' }, { key: 'jewels', label: 'Jewellery (item)' }],
         heists: [{ id: 4, label: 'Fleeca, Great Ocean', kind: 'bank', enabled: true, cooldownLeft: 0, running: 'Grove Kings',
           data: { police: 4, crew: 3, cooldown: 120, timeLimit: 20, tier: 3, start: { x: -2957, y: 481, z: 15, w: 0 }, steps: [
@@ -1599,8 +1891,11 @@ const AdminMock = {
           { id: 6, label: 'Gruppe armoured truck', kind: 'truck', enabled: false, cooldownLeft: 1880, data: { police: 3, crew: 3, cooldown: 90, timeLimit: 15, steps: [{ type: 'truck', label: 'Stop the truck' }, { type: 'truck_doors', label: 'Rear doors' }, { type: 'loot', label: 'Cash bags', loot: { kind: 'money', account: 'dirty', min: 12000, max: 20000 } }] } }] });
       case 'safehouseShells': return ok([{ model: 'shell_v16low', label: 'Low-end apartment' }, { model: 'shell_trevor', label: 'Trevor\'s trailer' }, { model: 'shell_warehouse1', label: 'Warehouse' }]);
       case 'hexGang': return ok({ startHexes: 2, hexes: [{ key: 'h:4:-7', label: 'Davis (4, -7)', control: 100, main: true, compound: true }, { key: 'h:5:-7', label: 'Rancho (5, -7)', control: 62, compound: true }, { key: 'h:3:-6', label: 'Davis (3, -6)', control: 18 }] });
-      case 'hexGive': return ok('Davis (4, -8)');
-      case 'hexSettings': return ok({ size: 150, turfDrugs: ['weed_og_kush'], turfDrugItems: [{ name: 'weed_og_kush', label: 'OG Kush' }], controlPerSale: 1.5, rivalLoss: 2, decayPerHour: 4, startControl: 10, expandAt: 100, sprayEvery: 3,
+      case 'hexGive': return ok(args[1] != null ? `Hex (${args[1]}, ${args[2]})` : 'Davis (4, -8)');
+      case 'hexMap': return ok([{ key: 'h:4:-7', q: 4, r: -7, gangId: 1, gang: 'Grove Kings', colour: '#7B3FBF', label: 'Davis (4, -7)', control: 100, main: true },
+        { key: 'h:5:-7', q: 5, r: -7, gangId: 1, gang: 'Grove Kings', colour: '#7B3FBF', label: 'Rancho (5, -7)', control: 62 },
+        { key: 'h:6:-8', q: 6, r: -8, gangId: 2, gang: 'Los Vagos', colour: '#E8C31E', label: 'Rancho (6, -8)', control: 40 }]);
+      case 'hexSettings': return ok({ size: 150, turfDrugs: ['weed_og_kush'], turfDrugItems: [{ name: 'weed_og_kush', label: 'weed_og_kush', exists: false, sellable: false }], controlPerSale: 1.5, rivalLoss: 2, decayPerHour: 4, startControl: 10, expandAt: 100, sprayEvery: 3,
         expandCost: { money: 50000, account: 'dirty', item: 'weed_og_kush', count: 50 }, expandItemLabel: 'OG Kush' });
       case 'customContracts': return ok({ types: [{ key: 'collect', label: 'Collect a debt' }, { key: 'courier', label: 'Courier run' }, { key: 'transport', label: 'Move a stolen car' }],
         difficulty: ['Low risk', 'Medium risk', 'High risk'], tiers: ['Street crew', 'Firm', 'Organisation', 'Syndicate'], gangs: [{ id: 1, label: 'Grove Kings' }, { id: 2, label: 'Los Vagos' }],
@@ -1614,6 +1909,12 @@ const AdminMock = {
         templates: { courier: { title: 'Courier run', reward: 2500, account: 'dirty', timeLimit: 900 }, transport: { title: 'Move a stolen car', reward: 4000, account: 'dirty', timeLimit: 1200, vehicles: ['sultan', 'felon', 'baller'] }, collect: { title: 'Collect a debt', reward: 3000, account: 'dirty', timeLimit: 900, peds: ['a_m_m_business_01'], payChance: 0.55, fightChance: 0.35 } },
         contacts: [{ key: 'mags', label: 'Mags', templates: ['courier', 'collect'] }, { key: 'ray', label: 'Ray the Fence', templates: ['transport', 'courier'] }] });
       case 'contractSettingsSave': return ok(args[0]);
+      case 'blackmarketSettings': return ok({ enabled: true, intervalMinutes: [90, 180], biddingMinutes: 15, lotsPerAuction: [2, 3], minPlayers: 2, increment: 0.05, antiSnipe: 60, buyNowMultiplier: 2.5,
+        dropMinutes: 30, headStart: 120, tipChance: 0.35, unclaimedRefund: 0.5,
+        lots: { supplies: { weight: 3, amount: [150, 300], reservePerUnit: 0.6 }, contract: { weight: 2, rewardMultiplier: 2.5, reserve: [6000, 12000] }, copper: { weight: 2, heat: 40, reserve: [15000, 30000] }, connections: { weight: 2, influence: 15, reserve: [10000, 25000] }, items: { weight: 3 } },
+        items: [{ item: 'weapon_pistol50', itemLabel: 'Desert Eagle', label: 'Desert Eagle', count: 1, reserve: 20000 }] });
+      case 'blackmarketSave': return ok(args[0]);
+      case 'blackmarketOpen': return ok(true);
       case 'airdrops': return ok([{ id: 3, gang: 'Grove Kings', state: 'called', x: 1712, y: 3290, arrivesIn: 184 }]);
       case 'airdropAdminCall': return ok(true);
       case 'airdropLoot': return ok({ rolls: 4, fromConfig: true, loot: [{ money: true, min: 5000, max: 15000, chance: 40 }, { item: 'weapon_pistol', label: 'Pistol', min: 1, max: 1, chance: 15 }, { item: 'armour', label: 'Body armour', min: 1, max: 2, chance: 20 }, { item: 'goldbar', label: 'Gold bar', min: 1, max: 3, chance: 10 }] });
@@ -1657,6 +1958,6 @@ const AdminMock = {
 };
 
 if (!IN_GAME && location.search.includes('admin')) {
-  window.postMessage({ action: 'openAdmin', static: { currency: '£', nameMax: 24, hexMode: true, hexSize: 150, hexOrigin: { x: 0, y: 0 }, zones: [], permissions: [], fonts: [],
+  window.postMessage({ action: 'openAdmin', static: { currency: '£', nameMax: 24, hexMode: true, hexSize: 150, hexOrigin: { x: 0, y: 0 }, hexDistricts: [['Davis', 100, -1700], ['Strawberry', -150, -1400], ['Chamberlain Hills', -170, -1640], ['Rancho', 430, -1800], ['La Mesa', 800, -1100]], tabletMap: { image: 'images/map.jpg', size: 2048, scaleX: 0.16576, offsetX: 938.4, scaleY: -0.164, offsetY: 1382.4 }, zones: [], permissions: [], fonts: [],
     tiers: [{ label: 'Street crew', unlocks: [] }, { label: 'Firm', unlocks: [] }, { label: 'Organisation', unlocks: [] }, { label: 'Syndicate', unlocks: [] }] } }, '*');
 }

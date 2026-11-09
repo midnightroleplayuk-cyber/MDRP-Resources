@@ -21,7 +21,7 @@ local ACTION_GROUP = {
     listGangs = 'view', gangDetail = 'view', auctions = 'view', director = 'view', agreements = 'view',
     drugItems = 'view', heists = 'view', contractSpots = 'view', enterprises = 'view', safehouses = 'view',
     safehouseShells = 'view', rackets = 'view', pendingDesigns = 'view', pendingLogos = 'view', listTags = 'view',
-    onlinePlayers = 'view', searchItems = 'view', airdrops = 'view', hexGang = 'view', hexSettings = 'view',
+    onlinePlayers = 'view', searchItems = 'view', airdrops = 'view', hexGang = 'view', hexSettings = 'view', hexMap = 'view',
     hexGive = 'world', hexRemove = 'world', hexMain = 'world', hexControl = 'economy', hexSettingsSave = 'settings',
     customContracts = 'view', customContractSave = 'world', customContractDelete = 'world', customContractOffer = 'events',
     contractSettings = 'view', contractSettingsSave = 'settings', contractSettingsReset = 'settings',
@@ -36,6 +36,7 @@ local ACTION_GROUP = {
     addContractSpot = 'world', deleteContractSpot = 'world', closeEnterprise = 'world',
     heistCreate = 'world', heistSave = 'world', heistDelete = 'world', heistReset = 'world', heistStop = 'world', heistHere = 'world',
     directorStart = 'events', directorEnd = 'events', auctionOpen = 'events', auctionCancel = 'events', cancelAgreement = 'events',
+    blackmarketSettings = 'view', blackmarketSave = 'settings', blackmarketReset = 'settings', blackmarketOpen = 'events',
     airdropCancel = 'events', airdropAdminCall = 'events', airdropLoot = 'view', airdropLootSave = 'settings', airdropLootReset = 'settings',
     informants = 'informants', informantActive = 'informants',
     drugItemsSave = 'settings', drugItemsReset = 'settings',
@@ -256,12 +257,18 @@ admin('agreements', function() return Relations.AdminList() end)
 admin('cancelAgreement', function(src, id) return Relations.AdminCancel(src, id) end)
 
 admin('hexGang', function(_, gangId) return Hexes.AdminGang(gangId) end)
-admin('hexGive', function(src, gangId) return Hexes.AdminGive(src, gangId) end)
+admin('hexGive', function(src, gangId, q, r) return Hexes.AdminGive(src, gangId, q, r) end)
+admin('hexMap', function() return Hexes.AdminMap() end)
 admin('hexRemove', function(src, key) return Hexes.AdminRemove(src, key) end)
 admin('hexControl', function(src, key, value) return Hexes.AdminSetControl(src, key, value) end)
 admin('hexMain', function(src, key) return Hexes.AdminSetMain(src, key) end)
 admin('hexSettings', function() return Hexes.AdminSettings() end)
 admin('hexSettingsSave', function(src, data) return Hexes.AdminSaveSettings(src, data) end)
+
+admin('blackmarketSettings', function() return Auctions.AdminSettings() end)
+admin('blackmarketSave', function(src, data) return Auctions.AdminSaveSettings(src, data) end)
+admin('blackmarketOpen', function(src, on) return Auctions.AdminSetOpen(src, on) end)
+admin('blackmarketReset', function(src) return Auctions.AdminResetSettings(src) end)
 
 admin('airdrops', function() return Airdrops.AdminList() end)
 admin('airdropCancel', function(src, id) return Airdrops.AdminCancel(src, id) end)

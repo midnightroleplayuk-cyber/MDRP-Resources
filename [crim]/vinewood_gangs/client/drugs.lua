@@ -1,4 +1,5 @@
 if not Config.Drugs or not Config.Drugs.enabled then return end
+local turfHintAt -- when we last said which drug builds turf control
 
 local cfg = Config.Drugs
 local status = { canSell = false } -- from the server: can I deal here, and with what
@@ -82,7 +83,14 @@ local function deal(ped)
         lib.requestAnimDict(GIVE.dict)
         TaskPlayAnim(cache.ped, GIVE.dict, GIVE.clip, 8.0, -8.0, 1500, 49, 0, false, false, false)
         TaskPlayAnim(ped, GIVE.dict, 'givetake1_b', 8.0, -8.0, 1500, 49, 0, false, false, false)
-        notify('drugs_sold', 'success', res.qty, res.label, Utils.FormatMoney(res.paid))
+        notify(res.dirty and 'drugs_sold_dirty' or 'drugs_sold', 'success', res.qty, res.label, Utils.FormatMoney(res.paid))
+        local t = res.turf
+        if t and t.own and t.counted then
+            notify('drugs_turf_gain', 'success', t.label, t.gained, t.control)
+        elseif t and t.own and not t.counted and GetGameTimer() > (turfHintAt or 0) then
+            turfHintAt = GetGameTimer() + 300000 -- every 5 minutes at most
+            notify('drugs_turf_not_counted', 'inform', t.needs ~= '' and t.needs or '?')
+        end
         SetTimeout(1600, function() if DoesEntityExist(ped) then TaskWanderStandard(ped, 10.0, 10) end end)
     elseif res.result == 'declined' then
         notify('drugs_declined', 'inform')

@@ -70,6 +70,10 @@ Everything is done from the gang tablet: **F6**, `/gangtablet`, or an item (`Con
   it turns up on boards, and whether it can only be done once. "Offer now" puts it straight on a gang's board.
 - **Contract spots:** every pickup/drop-off, stolen-car and debtor spot. Add new ones where you're standing
   (they're used by new jobs straight away), go to any spot, and delete the ones added in game.
+- **Black market:** open or close the black market (closed: no new auctions, and the tablet app is hidden). The
+  Black market settings tab changes everything in `config/auctions.lua` in game: contraband items (from the inventory search,
+  with how many and a reserve price), how often each lot type comes up (0 turns it off) and their numbers, and the
+  auction and dead-drop timings. The "connections" lot adds control to the winner's weakest hex.
 - **Diplomacy:** every deal proposed or running; cancel any without penalty.
 - **Street events:** what the director is running (with the hidden details), start one now, or end one.
 - **Informants:** every CHIS code and the character behind it, tips given, money paid; cut anyone off.
@@ -143,6 +147,18 @@ time limit, cooldown and loot. Tick **Live** to make it appear in gangs' tablets
 Gangs see live heists in the tablet's **Heists** app (unlocked at Organisation). Rules shared by every heist
 (tools, loot types, truck, alarm timing) are in `config/heists.lua`.
 
+**NPC steps** can go anywhere in a heist, including first to start it off:
+
+- **Talk to someone:** an NPC stands at the spot; the crew walks up and presses E, and they say your line. They can
+  want paying (from the dirty treasury) or want an item. Good for an inside man or a fixer to kick the job off.
+- **Intimidate someone:** aim a weapon at them (within 12 m) until they comply, for as long as you set (8 s by
+  default). Killing them completes the step too, but sets off the loud alarm.
+- **Deal with guards:** armed NPCs spawn around the spot when the crew gets close (how many, model, weapon, armour,
+  accuracy and spread are set per step). Everyone fights the same guards; the step is done when they're all down.
+
+NPC defaults (models, talk time, aim distance, spawn distance) are in `config/heists.lua` under `npc`. The bank
+template now starts with an inside man and the bank manager.
+
 ## Street dealing
 
 Gang members carrying drugs can walk up to a pedestrian inside an area and press E to offer a deal. After a
@@ -167,10 +183,11 @@ Everything is in `config/drugs.lua`.
 San Andreas is split into a honeycomb of hexes (150 m by default), and the hexes a gang holds are its turf:
 tags, rackets, street dealing, street events, gang tiers and the maps all work on them.
 
-- **Starting turf:** staff give each gang its compound in game: `/gangadmin` > Gangs > the gang > **Turf**, stand in
-  a hex and press "Give them the hex I'm standing in" (twice by default). The first is the **main** hex.
+- **Starting turf:** staff give each gang its compound in game: `/gangadmin` > Gangs > the gang > **Turf**. Either
+  **Pick on the map** (zoom in, click a hex, give it; staff see every gang's turf there), or stand in a hex and
+  press "Give them the hex I'm standing in". Two hexes by default; the first is the **main** hex.
 - **Control (0 to 100%):** selling the **turf drug** (OG Kush by default) on your own hex builds its control. Every
-  hex loses some each hour, and a rival dealing on it costs you more. Other knocks cost control too: a rival
+  hex loses some each hour while at least one member of that gang is online (a setting in Turf), and a rival dealing on it costs you more. Other knocks cost control too: a rival
   crossing out your tag, police cleaning it, a safehouse raid, a failed heist, or a street-event crew. A hex at
   0% is lost, except the compound.
 - **Expanding:** once a hex reaches 100%, the ground touching it can be bought from the tablet's **Territory** app,
@@ -178,6 +195,10 @@ tags, rackets, street dealing, street events, gang tiers and the maps all work o
 - **Tags:** only on your own turf; the first must go on the main hex, and every 3 hexes unlocks another tag.
 - **Fog of war:** gangs only see their own hexes. A rival's hex shows up on your tablet and map once your gang deals
   on it (or tries to buy it). Nothing about unrevealed turf is ever sent to players' games.
+
+Dealers see what each sale did: "Davis (4, -7): +3% control (now 45%)", or which drug builds control if the one
+they sold doesn't. Turf settings warn you if a turf drug isn't a real item on your server or isn't on the Street
+dealing list. Tick **Any drug builds control** to count every drug instead of a chosen one.
 
 The turf drug, control rates, decay, expansion cost and tag rate are set in game in `/gangadmin` > **Turf**
 (`config/hexes.lua` is the starting point). The turf drug also needs to be on the Street dealing list.
@@ -351,7 +372,7 @@ anonymous ("another gang leads"). A bid in the last minute extends the lot by a 
 restart never loses anyone's money.
 
 Item lots only appear once you add items to `Config.Auctions.items`, using names from your own inventory.
-Staff can hold an auction on demand or cancel any lot (refunding the leader) from `/gangadmin` > Auctions.
+Staff can hold an auction on demand or cancel any lot (refunding the leader) from `/gangadmin` > Black market.
 
 ## Informants
 
@@ -468,3 +489,24 @@ shown in the tablet is inserted as text, never HTML. Staff callbacks re-check pe
 Territory is hexes only now; the area drawing tool and influence system are gone. Your old area data is left in
 the database but no longer used. To remove it, run `sql/optional_remove_old_areas.sql` (it's never run
 automatically). Give each gang its compound in `/gangadmin` > Gangs > the gang > Turf.
+
+## What you can edit
+
+The resource is protected by the Cfx asset escrow. These files are left open for you to edit:
+
+- `config/*.lua`: every setting (most can also be changed in game in `/gangadmin`)
+- `bridge/server/framework.lua`: framework, inventory and money hooks (for a custom framework or inventory)
+- `bridge/server/integrations.lua`: dispatch, MDT and door-lock hooks (for a different dispatch or MDT script)
+- `client/bridge.lua`: client-side framework and job hooks
+- `install/`: item definitions and images to add to your inventory
+- `locales/en.json`: every message players see (copy it to translate)
+- `sql/`: the database files
+- `web/`: the tablet's look (style.css) and images
+
+## Dirty money
+
+Street dealing pays the dealer in dirty money. How a player is given it is set by `Config.DirtyMoney` in
+`config/config.lua` (and `Bridge.AddDirtyMoney` in `bridge/server/framework.lua`, which you can edit):
+ESX uses the `black_money` account, ox_inventory gives `black_money` items (one per £1), and QBCore with
+qb-inventory gives a `markedbills` bag worth the amount. You can switch it to another item or account, or back to
+clean cash (`moneyType` in `config/drugs.lua`).

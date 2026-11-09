@@ -271,3 +271,42 @@ function Bridge.ItemLabel(name)
     for _, it in ipairs(Bridge.ListItems()) do if it.name == name then return it.label end end
     return name
 end
+
+---Gives a player dirty money, the way Config.DirtyMoney says (config/config.lua). Returns true if it went in.
+function Bridge.AddDirtyMoney(src, amount, reason)
+    amount = math.floor(tonumber(amount) or 0)
+    if amount <= 0 then return false end
+    local d = Config.DirtyMoney or { type = 'auto' }
+    local kind = d.type or 'auto'
+    if kind == 'auto' then
+        if framework == 'esx' then kind = 'account'
+        elseif oxInventory() then kind = 'item'
+        else kind = 'markedbills' end
+    end
+    if kind == 'cash' then return Bridge.AddMoney(src, 'cash', amount, reason) end
+    if kind == 'account' then
+        local player = getPlayer(src)
+        if not player then return false end
+        local account = d.account or 'black_money'
+        if framework == 'esx' then player.addAccountMoney(account, amount, reason) return true end
+        return player.Functions.AddMoney(account, amount, reason) ~= false
+    end
+    if kind == 'markedbills' then
+        local item = d.item or 'markedbills'
+        if oxInventory() then
+            if not exports.ox_inventory:CanCarryItem(src, item, 1) then return false end
+            return exports.ox_inventory:AddItem(src, item, 1, { worth = amount }) == true
+        end
+        local player = getPlayer(src)
+        if not player then return false end
+        if framework == 'esx' then player.addInventoryItem(item, 1) return true end
+        return player.Functions.AddItem(item, 1, false, { worth = amount }) ~= false
+    end
+    -- 'item': one per £1
+    local item = d.item or 'black_money'
+    if oxInventory() then
+        if not exports.ox_inventory:CanCarryItem(src, item, amount) then return false end
+        return exports.ox_inventory:AddItem(src, item, amount) == true
+    end
+    return Bridge.AddItem(src, item, amount)
+end

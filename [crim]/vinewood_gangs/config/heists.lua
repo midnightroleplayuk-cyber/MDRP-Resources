@@ -53,13 +53,29 @@ Config.Heists = {
         wait        = { label = 'Wait (time lock)' },
         truck       = { label = 'Armoured truck: stop it' },
         truck_doors = { label = 'Armoured truck: open the back', game = 'thermite', anim = { dict = 'anim@heists@ornate_bank@thermal_charge', clip = 'thermal_charge' } },
+        -- NPC steps
+        talk        = { label = 'Talk to someone (NPC)' },      -- walk up and press E; they say your line (can cost money or need an item)
+        guards      = { label = 'Deal with guards (NPCs)' },    -- armed NPCs spawn around the spot; done when they're all down
+        hostage     = { label = 'Intimidate someone (NPC)' },   -- aim at them until they comply; killing them sets off the loud alarm
     },
 
     -- Templates staff can start from. Positions are set in game.
+    -- NPCs for the NPC steps (defaults the builder starts with; each step can use its own)
+    npc = {
+        ped          = 'a_m_m_business_01',  -- talk / intimidate
+        guardPed     = 's_m_m_security_01',
+        guardWeapon  = 'weapon_pistol',
+        talkTime     = 4,     -- seconds the conversation takes
+        aimDistance  = 12.0,  -- how close you need to be to intimidate someone
+        spawnDistance = 120.0, -- NPCs appear when the crew gets this close
+    },
+
     templates = {
         bank = {
             label = 'Bank vault', police = 4, crew = 3, cooldown = 120, timeLimit = 20,
             steps = {
+                { type = 'talk', label = 'Inside man', ped = 'a_m_y_business_02', say = "Vault's on a time lock and the manager has the code. Get in there." },
+                { type = 'hostage', label = 'Bank manager', ped = 'a_m_m_business_01', time = 8 },
                 { type = 'hack', label = 'Security panel', difficulty = 2, alert = 'silent' },
                 { type = 'thermite', label = 'Inner gate', difficulty = 2, alert = 'loud' },
                 { type = 'drill', label = 'Vault door', difficulty = 3 },

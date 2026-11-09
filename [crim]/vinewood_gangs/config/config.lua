@@ -67,6 +67,17 @@ Config.Territory = {
     },
 }
 
+-- How a player is given dirty money (street dealing pays in it).
+--   'auto'        : ESX -> the black_money account; ox_inventory -> 'black_money' items (one per £1);
+--                   QBCore with qb-inventory -> one 'markedbills' bag worth the amount
+--   'item'        : `item` below, one per £1        'markedbills' : one `item` bag worth the amount
+--   'account'     : the `account` below              'cash'        : plain (clean) cash
+Config.DirtyMoney = {
+    type    = 'auto',
+    item    = nil,          -- e.g. 'black_money' or 'markedbills' (defaults to those)
+    account = 'black_money',
+}
+
 Config.Tablet = {
     keybind         = 'F6',         -- false to disable
     command         = 'gangtablet', -- false to disable

@@ -12,8 +12,9 @@ Config.Drugs = {
         { item = 'meth_bag', label = 'meth',    price = { 180, 260 }, max = 2 },
     },
 
-    -- Payment: 'cash' or 'bank' to the dealer. gangCut = share that goes to the gang's dirty treasury instead.
-    moneyType = 'cash',
+    -- Payment to the dealer: 'dirty' (the way Config.DirtyMoney in config/config.lua says), 'cash' or 'bank'.
+    -- gangCut = share that goes to the gang's dirty treasury instead.
+    moneyType = 'dirty',
     gangCut   = 0.0,
 
     -- Odds (0 to 1). Buyers are likelier on your own turf, less likely on a rival's.

@@ -10,10 +10,12 @@ Config.Hexes = {
     protectCompound = true, -- compound hexes can drop to 0% but are never lost
 
     -- Control (0 to 100%)
-    turfDrugs      = { 'weed_og_kush' }, -- selling these on your own hex builds control
+    turfDrugs      = { 'weed_og_kush' }, -- selling these on your own hex builds control (must match your item names)
+    anyDrugCounts  = false,              -- true = any drug sold on your own hex builds control
     controlPerSale = 1.5,  -- % per unit of a turf drug sold on your own hex
     rivalLoss      = 2.0,  -- % a hex loses per unit of any drug a rival gang sells on it
     decayPerHour   = 4.0,  -- % every hex loses per hour
+    decayOnlyOnline = true, -- only while at least one member of that gang is online (rivals dealing there still costs control)
     startControl   = 10.0, -- % a newly bought hex starts at
 
     -- Expanding: buy a hex touching one of yours that's at expandAt % or more

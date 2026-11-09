@@ -154,7 +154,9 @@ function Heists.RunView(run)
     for i, s in ipairs(run.heist.data.steps) do
         local p = stepPos(run, i)
         steps[i] = { i = i, type = s.type, label = s.label, done = run.done[i] == true, available = avail[i] == true,
-            busy = run.locks[i] ~= nil, x = p and p.x, y = p and p.y, z = p and p.z, w = p and p.w }
+            busy = run.locks[i] ~= nil, x = p and p.x, y = p and p.y, z = p and p.z, w = p and p.w,
+            ped = s.ped, time = s.type == 'hostage' and s.time or nil, pay = s.pay,
+            guards = run.guards and run.guards[i] or nil, guardsUp = run.guards and run.guards[i] ~= nil or nil }
     end
     local start = run.heist.data.start
     return {
@@ -186,8 +188,18 @@ local function alarm(run, level, pos)
     end
 end
 
+local function removeGuards(run)
+    for _, nets in pairs(run.guards or {}) do
+        for _, net in ipairs(nets) do
+            local ped = NetworkGetEntityFromNetworkId(net)
+            if ped ~= 0 and DoesEntityExist(ped) then DeleteEntity(ped) end
+        end
+    end
+end
+
 local function endRun(run, status, reason)
     runs[run.id], byHeist[run.heist.id], byGang[run.gangId] = nil, nil, nil
+    if run.guards then SetTimeout(30000, function() removeGuards(run) end) end
     if run.truck and DoesEntityExist(run.truck) then
         local truck = run.truck
         SetTimeout(60000, function() if DoesEntityExist(truck) then DeleteEntity(truck) end end) -- let the crew get clear first
@@ -279,10 +291,15 @@ function Heists.BeginStep(src, runId, i)
     for _, a in ipairs(availableSteps(run)) do if a == i then ok = true end end
     if not ok then return false, 'heist_not_yet' end
     if s.type == 'truck' then return false, 'heist_stop_truck' end
+    if s.type == 'guards' then return false, 'heist_take_out_guards' end
+    if s.type == 'talk' and (s.pay or 0) > 0 and Ledger.GetBalance(gang.id, 'dirty') < s.pay then
+        return false, 'heist_cant_pay', Utils.FormatMoney(s.pay)
+    end
     if run.locks[i] and run.locks[i].src ~= src then return false, 'heist_step_busy' end
     if run.failedAt[i] and now() - run.failedAt[i] < cfg.retryDelay then return false, 'heist_retry_wait' end
     local p = stepPos(run, i)
-    if not p or dist(pedPos(src), p) > cfg.stepRadius + 1.5 then return false, 'too_far' end
+    local reach = s.type == 'hostage' and cfg.npc.aimDistance or (cfg.stepRadius + 1.5)
+    if not p or dist(pedPos(src), p) > reach then return false, 'too_far' end
     local tool = (s.item and s.item ~= '') and { item = s.item, consume = s.consume } or cfg.tools[s.type]
     if tool and tool.item and not Bridge.HasItem(src, tool.item, 1) then return false, 'heist_need_item', s.itemLabel or Bridge.ItemLabel(tool.item) end
 
@@ -292,7 +309,8 @@ function Heists.BeginStep(src, runId, i)
     local def = cfg.minigames[GAMES[s.type] or ''] or {}
     return true, {
         game = GAMES[s.type], difficulty = s.difficulty or 2, time = s.time or def.time or 30,
-        duration = (s.type == 'loot' or s.type == 'wait') and (s.time or 10) or nil, type = s.type,
+        duration = (s.type == 'loot' or s.type == 'wait') and (s.time or 10)
+            or (s.type == 'talk' and cfg.npc.talkTime) or (s.type == 'hostage' and s.time) or nil, type = s.type,
     }
 end
 
@@ -320,12 +338,19 @@ function Heists.FinishStep(src, runId, i, success)
     run.locks[i] = nil
     local s = run.heist.data.steps[i]
 
-    -- Can't finish faster than the step allows (loot and waits are timed; minigames take a few seconds at least)
+    -- A hostage who gets killed: the step's done (nobody's left to stop you), but the loud alarm goes off
+    local killed = s.type == 'hostage' and success == 'killed'
+    if killed then success = true end
+    success = success == true
+
+    -- Can't finish faster than the step allows (loot, waits and NPC steps are timed; minigames take a few seconds)
     local elapsed = (GetGameTimer() - lock.at) / 1000
-    local minimum = (s.type == 'loot' or s.type == 'wait') and (s.time or 10) * 0.85 or 3
-    if success and elapsed < minimum then success = false end
+    local minimum = (s.type == 'loot' or s.type == 'wait') and (s.time or 10) * 0.85
+        or (s.type == 'talk' and cfg.npc.talkTime * 0.85) or (s.type == 'hostage' and (s.time or 8) * 0.85) or 3
+    if success and not killed and elapsed < minimum then success = false end
     local p = stepPos(run, i)
-    if success and (not p or dist(pedPos(src), p) > cfg.stepRadius + 2.5) then success = false end
+    local reach = s.type == 'hostage' and cfg.npc.aimDistance + 3 or (cfg.stepRadius + 2.5)
+    if success and (not p or dist(pedPos(src), p) > reach) then success = false end
 
     if not success then
         run.failedAt[i] = now()
@@ -334,16 +359,78 @@ function Heists.FinishStep(src, runId, i, success)
         return true, { result = 'failed' }
     end
 
+    if s.type == 'talk' and (s.pay or 0) > 0 and not Ledger.Transact(run.gangId, 'dirty', -s.pay, 'heist_bribe', { citizenid = cid, note = run.heist.label }) then
+        pushRun(run)
+        return false, 'heist_cant_pay', Utils.FormatMoney(s.pay)
+    end
     local tool = (s.item and s.item ~= '') and { item = s.item, consume = s.consume } or cfg.tools[s.type]
     if tool and tool.item and tool.consume then Bridge.RemoveItem(src, tool.item, 1) end
     if s.doorId and s.doorId ~= '' then Bridge.UnlockDoor(s.doorId) end
+    if killed then alarm(run, 'loud', p) end
     if s.alert and s.alert ~= 'none' then alarm(run, s.alert, p) end
     local reward = s.type == 'loot' and payLoot(run, src, s) or nil
     run.done[i] = true
 
     if #availableSteps(run) == 0 then run.escaping = true end
     pushRun(run)
-    return true, { result = 'done', reward = reward, escaping = run.escaping == true }
+    return true, { result = 'done', reward = reward, escaping = run.escaping == true,
+        say = s.type == 'talk' and s.say or nil, killed = killed or nil }
+end
+
+---The hostage was killed (maybe by someone who never started intimidating them). The step's done, loudly.
+function Heists.HostageKilled(src, runId, i)
+    local gang = Gangs.GetPlayerGang(src)
+    local run = runs[tonumber(runId)]
+    i = tonumber(i)
+    if not gang or not run or run.gangId ~= gang.id then return false end
+    local s = run.heist.data.steps[i]
+    if not s or s.type ~= 'hostage' or run.done[i] then return false end
+    local ok = false
+    for _, a in ipairs(availableSteps(run)) do if a == i then ok = true end end
+    if not ok or dist(pedPos(src), s) > cfg.npc.spawnDistance then return false end
+    run.locks[i] = nil
+    run.done[i] = true
+    alarm(run, 'loud', s)
+    if #availableSteps(run) == 0 then run.escaping = true end
+    Gangs.NotifyGang(run.gangId, locale('heist_hostage_killed'), 'error')
+    pushRun(run)
+    return true
+end
+
+---Guards: one crew member's game spawns them (shared NPCs) when the crew gets close, then reports their ids.
+function Heists.GuardsClaim(src, runId, i)
+    local gang = Gangs.GetPlayerGang(src)
+    local run = runs[tonumber(runId)]
+    i = tonumber(i)
+    if not gang or not run or run.gangId ~= gang.id then return false end
+    local s = run.heist.data.steps[i]
+    if not s or s.type ~= 'guards' or run.done[i] or (run.guards and run.guards[i]) then return false end
+    local ok = false
+    for _, a in ipairs(availableSteps(run)) do if a == i then ok = true end end
+    if not ok or dist(pedPos(src), s) > cfg.npc.spawnDistance + 20 then return false end
+    run.guardClaims = run.guardClaims or {}
+    local c = run.guardClaims[i]
+    if c and GetGameTimer() - c.at < 20000 then return false end -- someone's already spawning them
+    run.guardClaims[i] = { src = src, at = GetGameTimer() }
+    return true, { x = s.x, y = s.y, z = s.z, w = s.w or 0.0, count = s.count or 4, ped = s.ped or cfg.npc.guardPed,
+        weapon = s.weapon or cfg.npc.guardWeapon, armour = s.armour or 50, accuracy = s.accuracy or 40, radius = s.radius or 10 }
+end
+
+function Heists.GuardsSpawned(src, runId, i, nets)
+    local run = runs[tonumber(runId)]
+    i = tonumber(i)
+    if not run or not run.guardClaims or not run.guardClaims[i] or run.guardClaims[i].src ~= src or type(nets) ~= 'table' then return false end
+    local list = {}
+    for _, n in ipairs(nets) do
+        n = tonumber(n)
+        local ped = n and NetworkGetEntityFromNetworkId(n)
+        if ped and ped ~= 0 and DoesEntityExist(ped) and GetEntityType(ped) == 1 then list[#list + 1] = n end
+    end
+    if #list == 0 then run.guardClaims[i] = nil return false end
+    run.guards = run.guards or {}
+    run.guards[i] = list
+    pushRun(run)
+    return true
 end
 
 function Heists.Abandon(src)
@@ -371,8 +458,27 @@ local function tick()
             end
             if anyone and away then endRun(run, 'done') end
         else
-            -- Truck: done once it's stopped and either badly damaged or without a driver
+            -- Guards: done once every one of them is down
             local avail = availableSteps(run)
+            for _, gi in ipairs(avail) do
+                local gs = run.heist.data.steps[gi]
+                if gs.type == 'guards' and run.guards and run.guards[gi] then
+                    local standing = 0
+                    for _, n in ipairs(run.guards[gi]) do
+                        local ped = NetworkGetEntityFromNetworkId(n)
+                        if ped ~= 0 and DoesEntityExist(ped) and GetEntityHealth(ped) > 100 then standing = standing + 1 end
+                    end
+                    if standing == 0 then
+                        run.done[gi] = true
+                        if gs.alert and gs.alert ~= 'none' then alarm(run, gs.alert, gs) end
+                        if #availableSteps(run) == 0 then run.escaping = true end
+                        Gangs.NotifyGang(run.gangId, locale('heist_guards_down'), 'success')
+                        pushRun(run)
+                    end
+                end
+            end
+            -- Truck: done once it's stopped and either badly damaged or without a driver
+            avail = availableSteps(run)
             local s = avail[1] and run.heist.data.steps[avail[1]]
             if s and s.type == 'truck' then
                 local veh = run.truck
@@ -449,6 +555,23 @@ local function cleanHeist(input)
             doorId = s.doorId and cleanText(s.doorId, 64) or nil,
         }
         if #step.label == 0 then step.label = VALID_TYPES[s.type].label end
+        if s.type == 'talk' or s.type == 'hostage' or s.type == 'guards' then
+            local model = cleanText(s.ped, 32):lower()
+            step.ped = model:match('^[%w_]+$') and model or (s.type == 'guards' and cfg.npc.guardPed or cfg.npc.ped)
+        end
+        if s.type == 'talk' then
+            step.say = cleanText(s.say, 200)
+            step.pay = math.floor(cleanNumber(s.pay, 0, 10000000, 0))
+        elseif s.type == 'hostage' then
+            step.time = math.floor(cleanNumber(s.time, 3, 60, 8))
+        elseif s.type == 'guards' then
+            local weapon = cleanText(s.weapon, 40):lower()
+            step.weapon = weapon:match('^weapon_[%w_]+$') and weapon or cfg.npc.guardWeapon
+            step.count = math.floor(cleanNumber(s.count, 1, 12, 4))
+            step.armour = math.floor(cleanNumber(s.armour, 0, 100, 50))
+            step.accuracy = math.floor(cleanNumber(s.accuracy, 1, 100, 40))
+            step.radius = math.floor(cleanNumber(s.radius, 2, 40, 10))
+        end
         local p = cleanPoint(s)
         if p then step.x, step.y, step.z, step.w = p.x, p.y, p.z, p.w end
         if s.type == 'loot' then
@@ -511,7 +634,7 @@ function Heists.AdminList()
     for key, t in pairs(cfg.tools) do
         if t.item then tools[key] = { item = t.item, label = Bridge.ItemLabel(t.item), consume = t.consume == true } end
     end
-    return { heists = list, templates = templates, stepTypes = types, lootTypes = loot, tiers = tiers, tools = tools,
+    return { heists = list, templates = templates, stepTypes = types, lootTypes = loot, tiers = tiers, tools = tools, npc = cfg.npc,
         defaultTier = Progression.TierFor('heists') or 1 }
 end
 

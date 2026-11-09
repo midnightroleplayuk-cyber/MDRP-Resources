@@ -9,7 +9,7 @@ local dirty = {}    -- control values to write back
 local warned = {}   -- warned[key] = true once the owner's been told it's running low
 local settings = {} -- the numbers staff can change in game (start from config/hexes.lua)
 
-local EDITABLE = { 'turfDrugs', 'controlPerSale', 'rivalLoss', 'decayPerHour', 'startControl', 'expandAt', 'expandCost', 'sprayEvery' }
+local EDITABLE = { 'turfDrugs', 'anyDrugCounts', 'decayOnlyOnline', 'controlPerSale', 'rivalLoss', 'decayPerHour', 'startControl', 'expandAt', 'expandCost', 'sprayEvery' }
 
 local function now() return os.time() end
 local function S(name) if settings[name] ~= nil then return settings[name] end return cfg[name] end
@@ -153,22 +153,42 @@ end
 -------------------------------------------------------------------------------
 
 local function isTurfDrug(item)
+    if S('anyDrugCounts') then return true end
     for _, d in ipairs(S('turfDrugs') or {}) do if d == item then return true end end
     return false
 end
 
 function Hexes.IsTurfDrug(item) return isTurfDrug(item) end
 
+---Adds control to a gang's weakest hex (the black market's "connections" lot). Returns that hex's label.
+function Hexes.BoostWeakest(gangId, amount)
+    local weakest
+    for _, h in ipairs(owned(gangId)) do if not weakest or h.control < weakest.control then weakest = h end end
+    if not weakest then return nil end
+    setControl(weakest, weakest.control + amount)
+    return Hex.Label(weakest.q, weakest.r)
+end
+
 ---A sale on a hex. Own hex + turf drug builds control; a rival's sale costs the owner control and reveals the hex.
+---Returns what happened, for the dealer's message: { own, counted, label, gained, control } or { rival = true }.
 function Hexes.OnSale(key, sellerGangId, item, qty)
     local h = hexes[key]
-    if not h or not sellerGangId then return end
+    if not h or not sellerGangId then return nil end
     if h.gangId == sellerGangId then
-        if isTurfDrug(item) then setControl(h, h.control + S('controlPerSale') * qty) end
-    else
-        Hexes.Reveal(sellerGangId, key)
-        if hexes[key] then setControl(h, h.control - S('rivalLoss') * qty) end
+        local label = Hex.Label(h.q, h.r)
+        if not isTurfDrug(item) then
+            local names = {}
+            for _, d in ipairs(S('turfDrugs') or {}) do names[#names + 1] = Bridge.ItemLabel(d) end
+            return { own = true, counted = false, label = label, needs = table.concat(names, ' or ') }
+        end
+        local before = h.control
+        setControl(h, h.control + S('controlPerSale') * qty)
+        return { own = true, counted = true, label = label, gained = math.floor((h.control - before) * 10 + 0.5) / 10,
+            control = math.floor(h.control) }
     end
+    Hexes.Reveal(sellerGangId, key)
+    if hexes[key] then setControl(h, h.control - S('rivalLoss') * qty) end
+    return { rival = true }
 end
 
 -------------------------------------------------------------------------------
@@ -240,7 +260,7 @@ function Hexes.TabletView(src)
         mode = 'hexes', hexes = Hexes.ViewFor(gang.id), options = Hexes.Options(gang.id),
         canExpand = Gangs.HasPermission(cid, 'expand_turf'), expandAt = S('expandAt'),
         cost = { money = cost.money or 0, account = cost.account or 'dirty', item = cost.item and Bridge.ItemLabel(cost.item) or nil, count = cost.count or 0 },
-        decayPerHour = S('decayPerHour'), controlPerSale = S('controlPerSale'),
+        decayPerHour = S('decayPerHour'), controlPerSale = S('controlPerSale'), decayOnlyOnline = S('decayOnlyOnline') ~= false,
         turfDrugs = (function() local l = {} for _, d in ipairs(S('turfDrugs') or {}) do l[#l + 1] = Bridge.ItemLabel(d) end return l end)(),
         sprays = { used = used, slots = Hexes.SpraySlots(gang.id), every = S('sprayEvery'), main = Hexes.MainOf(gang.id) },
         balance = Ledger.GetBalance(gang.id, cost.account or 'dirty'),
@@ -264,8 +284,14 @@ Hexes.Flush = flush
 
 local function tick()
     local loss = S('decayPerHour') / 60 -- runs every minute
+    local onlineOnly = S('decayOnlyOnline') ~= false
+    local online = {} -- online[gangId] = true/false, worked out once per tick
     local list = {}
-    for _, h in pairs(hexes) do list[#list + 1] = h end
+    for _, h in pairs(hexes) do
+        if onlineOnly and online[h.gangId] == nil then online[h.gangId] = Gangs.HasOnlineMember(h.gangId) == true end
+        -- A gang with nobody on doesn't lose control just for being offline
+        if not onlineOnly or online[h.gangId] then list[#list + 1] = h end
+    end
     for _, h in ipairs(list) do if hexes[h.key] then setControl(h, h.control - loss) end end
     flush()
 end
@@ -368,12 +394,32 @@ function Hexes.AdminGang(gangId)
     return { hexes = list, startHexes = cfg.startHexes }
 end
 
----Gives a gang the hex the staff member is standing in. Their first hexes are the compound (the first is main).
-function Hexes.AdminGive(src, gangId)
+---Every claimed hex, for the staff map picker. Staff see all turf (players only see what their gang knows).
+function Hexes.AdminMap()
+    local out = {}
+    for key, h in pairs(hexes) do
+        local g = Gangs.Get(h.gangId)
+        out[#out + 1] = { key = key, q = h.q, r = h.r, gangId = h.gangId, label = Hex.Label(h.q, h.r),
+            gang = g and g.label or '?', colour = g and g.colour or '#888888', control = math.floor(h.control), main = h.main }
+    end
+    return out
+end
+
+---Gives a gang a hex: the one the staff member is standing in, or the one picked on the map (q, r).
+---Their first hexes are the compound (the first is main).
+function Hexes.AdminGive(src, gangId, q, r)
     gangId = tonumber(gangId)
     if not gangId or not Gangs.Get(gangId) then return false, 'invalid' end
-    local c = GetEntityCoords(GetPlayerPed(src))
-    local q, r = Hex.FromCoords(c.x, c.y)
+    q, r = tonumber(q), tonumber(r)
+    if q and r then
+        q, r = math.floor(q), math.floor(r)
+        -- Keep it on the map (roughly the playable area)
+        local x, y = Hex.Centre(q, r)
+        if math.abs(x) > 5000 or y < -4500 or y > 8500 then return false, 'invalid' end
+    else
+        local c = GetEntityCoords(GetPlayerPed(src))
+        q, r = Hex.FromCoords(c.x, c.y)
+    end
     local key = Hex.Key(q, r)
     local other = hexes[key]
     if other and other.gangId ~= gangId then
@@ -425,8 +471,13 @@ end
 function Hexes.AdminSettings()
     local out = {}
     for _, k in ipairs(EDITABLE) do out[k] = S(k) end
+    -- Flag turf drugs that can't build control: not a real item, or not on the Street dealing list
+    local sellable = {}
+    for _, it in ipairs(Drugs and Drugs.Items and Drugs.Items() or {}) do sellable[it.item] = true end
     out.turfDrugItems = {}
-    for _, d in ipairs(S('turfDrugs') or {}) do out.turfDrugItems[#out.turfDrugItems + 1] = { name = d, label = Bridge.ItemLabel(d) } end
+    for _, d in ipairs(S('turfDrugs') or {}) do
+        out.turfDrugItems[#out.turfDrugItems + 1] = { name = d, label = Bridge.ItemLabel(d), exists = Bridge.ItemExists(d), sellable = sellable[d] == true }
+    end
     local cost = S('expandCost') or {}
     out.expandItemLabel = cost.item and Bridge.ItemLabel(cost.item) or nil
     out.size = cfg.size
@@ -441,12 +492,12 @@ function Hexes.AdminSaveSettings(src, input)
         if not Bridge.ItemExists(d) then return false, 'item_not_found' end
         drugs[#drugs + 1] = d
     end
-    if #drugs == 0 then return false, 'hex_need_turf_drug' end
+    if #drugs == 0 and input.anyDrugCounts ~= true then return false, 'hex_need_turf_drug' end
     local cost = type(input.expandCost) == 'table' and input.expandCost or {}
     local item = cost.item and cost.item ~= '' and tostring(cost.item) or nil
     if item and not Bridge.ItemExists(item) then return false, 'item_not_found' end
     local new = {
-        turfDrugs = drugs,
+        turfDrugs = drugs, anyDrugCounts = input.anyDrugCounts == true, decayOnlyOnline = input.decayOnlyOnline ~= false,
         controlPerSale = n(input.controlPerSale, 0.1, 100, cfg.controlPerSale),
         rivalLoss = n(input.rivalLoss, 0, 100, cfg.rivalLoss),
         decayPerHour = n(input.decayPerHour, 0, 100, cfg.decayPerHour),

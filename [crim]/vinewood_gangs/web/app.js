@@ -161,7 +161,7 @@ function showModal(...content) {
 }
 function hideModal() {
   $('modal').hidden = true;
-  $('sheet').classList.remove('wide');
+  $('sheet').classList.remove('wide', 'xwide');
 }
 
 function confirmModal({ title, body, confirmLabel, danger, typeToConfirm, onConfirm }) {
@@ -896,6 +896,29 @@ function hexCentre(q, r) {
   const R = state.static.hexSize || 150;
   return [o.x + R * SQ3 * (q + r / 2), o.y + R * 1.5 * r];
 }
+// A hex's name, the same as the server's: the nearest district plus its grid reference
+function hexLabel(q, r) {
+  const [cx, cy] = hexCentre(q, r);
+  let best = 'Hex', bestD = Infinity;
+  for (const d of state.static.hexDistricts || []) {
+    const dd = (d[1] - cx) ** 2 + (d[2] - cy) ** 2;
+    if (dd < bestD) { best = d[0]; bestD = dd; }
+  }
+  return `${best} (${q}, ${r})`;
+}
+
+// Which hex a world position is in (the same maths as shared/hexes.lua)
+function hexFromCoords(x, y) {
+  const o = state.static.hexOrigin || { x: 0, y: 0 };
+  const R = state.static.hexSize || 150;
+  x -= o.x; y -= o.y;
+  const fq = (SQ3 / 3 * x - y / 3) / R, fr = (2 / 3 * y) / R, fs = -fq - fr;
+  let q = Math.round(fq), r = Math.round(fr); const s = Math.round(fs);
+  const dq = Math.abs(q - fq), dr = Math.abs(r - fr), ds = Math.abs(s - fs);
+  if (dq > dr && dq > ds) q = -r - s; else if (dr > ds) r = -q - s;
+  return [q, r];
+}
+
 function hexCorners(q, r) {
   const [cx, cy] = hexCentre(q, r);
   const R = state.static.hexSize || 150;
@@ -1011,7 +1034,7 @@ function renderHexTerritory(v) {
     h('div', { class: 'hex-stats' },
       h('div', {}, h('div', { class: 'eyebrow', text: 'Turf' }), h('div', { class: 'big fig', text: `${mine.length} ${mine.length === 1 ? 'hex' : 'hexes'}` })),
       h('div', {}, h('div', { class: 'eyebrow', text: 'Tags' }), h('div', { class: 'big fig', text: `${sprays.used} of ${sprays.slots}` }))),
-    h('p', { class: 'hint', style: 'margin:0', text: `Sell ${joinList(v.turfDrugs, 'or')} on your turf to build control (+${v.controlPerSale}% each). Every hex loses ${v.decayPerHour}% an hour, and rivals dealing on it cost you. Your first tag goes on your main hex, and you get another for every ${sprays.every} hexes.` }),
+    h('p', { class: 'hint', style: 'margin:0', text: `Sell ${joinList(v.turfDrugs, 'or')} on your turf to build control (+${v.controlPerSale}% each). Every hex loses ${v.decayPerHour}% an hour${v.decayOnlyOnline === false ? '' : ' while any of you are online'}, and rivals dealing on it cost you. Your first tag goes on your main hex, and you get another for every ${sprays.every} hexes.` }),
     h('div', { class: 'hex-list' }, rows.length ? rows : [h('p', { class: 'empty', text: 'Your gang has no turf yet. Staff set up your compound.' })]),
     h('h3', { style: 'margin:6px 0 0', text: 'Buy new ground' }),
     buyBox,

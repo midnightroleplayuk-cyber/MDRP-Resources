@@ -187,7 +187,12 @@ action('heistStart', function(src, id) return Heists.Start(src, id) end, 3000)
 action('heistAbandon', function(src) return Heists.Abandon(src) end, 3000)
 lib.callback.register('vinewood_gangs:server:heistStart', function(src, id) return Heists.Start(src, id) end)
 lib.callback.register('vinewood_gangs:server:heistBegin', function(src, runId, i) return Heists.BeginStep(src, runId, i) end)
-lib.callback.register('vinewood_gangs:server:heistFinish', function(src, runId, i, ok) return Heists.FinishStep(src, runId, i, ok == true) end)
+lib.callback.register('vinewood_gangs:server:heistFinish', function(src, runId, i, ok)
+    return Heists.FinishStep(src, runId, i, ok == 'killed' and 'killed' or ok == true)
+end)
+lib.callback.register('vinewood_gangs:server:heistHostageKilled', function(src, runId, i) return Heists.HostageKilled(src, runId, i) end)
+lib.callback.register('vinewood_gangs:server:heistGuardsClaim', function(src, runId, i) return Heists.GuardsClaim(src, runId, i) end)
+lib.callback.register('vinewood_gangs:server:heistGuardsSpawned', function(src, runId, i, nets) return Heists.GuardsSpawned(src, runId, i, nets) end)
 
 -- Street dealing (client/drugs.lua) ----------------------------------------
 

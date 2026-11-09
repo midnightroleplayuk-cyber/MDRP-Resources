@@ -56,6 +56,7 @@ local function areaOdds(gang, zone)
 end
 
 function Drugs.Sell(src)
+    local turf -- what this sale did to the hex it happened on (for the dealer's message)
     local why, gang, cid, zone = blocker(src)
     if why then return false, why end
 
@@ -105,7 +106,16 @@ function Drugs.Sell(src)
     local each = math.random(item.price[1], item.price[2]) * zoneValue * market * (1 - saturated * 0.5)
     local total = math.floor(each * qty)
     local cut = gang and math.floor(total * cfg.gangCut) or 0
-    if total - cut > 0 then Bridge.AddMoney(src, cfg.moneyType, total - cut, 'street-dealing') end
+    if total - cut > 0 then
+        local paid
+        if cfg.moneyType == 'dirty' then paid = Bridge.AddDirtyMoney(src, total - cut, 'street-dealing')
+        else paid = Bridge.AddMoney(src, cfg.moneyType, total - cut, 'street-dealing') end
+        if not paid then
+            -- Pockets full: give the drugs back rather than lose the money
+            Bridge.AddItem(src, item.item, qty)
+            return false, 'drugs_pockets_full'
+        end
+    end
     if cut > 0 then Ledger.Transact(gang.id, 'dirty', cut, 'street_dealing', { citizenid = cid, note = Zones.Label(zone) }) end
 
     ph.count = ph.count + 1
@@ -115,7 +125,7 @@ function Drugs.Sell(src)
         Activity.Record({ type = 'drug_sale', gangId = gang.id, citizenid = cid, zone = zone, coords = pos,
             multiplier = qty, targetGangId = rivalOwner, metadata = { item = item.item, qty = qty, paid = total } })
         -- Hex turf: the turf drug on your own hex builds control; dealing on a rival's costs them and reveals it
-        if zone and Hex.Enabled() then Hexes.OnSale(zone, gang.id, item.item, qty) end
+        if zone and Hex.Enabled() then turf = Hexes.OnSale(zone, gang.id, item.item, qty) end
     end
 
     -- Someone might ring it in, more so on a rival's patch (and during a crackdown)
@@ -132,7 +142,8 @@ function Drugs.Sell(src)
         end
     end
 
-    return true, { result = 'sold', label = item.label, qty = qty, paid = total - cut, area = zone and Zones.Label(zone) or nil }
+    return true, { result = 'sold', label = item.label, qty = qty, paid = total - cut, area = zone and Zones.Label(zone) or nil,
+        dirty = cfg.moneyType == 'dirty', turf = turf }
 end
 
 -------------------------------------------------------------------------------

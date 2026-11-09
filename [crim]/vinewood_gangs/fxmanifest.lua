@@ -2,10 +2,21 @@ fx_version 'cerulean'
 game 'gta5'
 lua54 'yes'
 
+-- Cfx asset escrow: these files stay readable so buyers can edit them; every other Lua file is encrypted.
+-- (Only Lua is encrypted; locales, SQL, the web files and images are always readable.)
+escrow_ignore {
+    'config/*.lua',                    -- every setting
+    'bridge/server/framework.lua',     -- framework, inventory and money hooks
+    'bridge/server/integrations.lua',  -- dispatch, MDT and door-lock hooks
+    'client/bridge.lua',               -- client-side framework/job hooks
+    'install/ox_inventory/items.lua',  -- item snippets to copy into your inventory
+    'install/qb-core/items.lua',
+}
+
 name 'vinewood_gangs'
 author 'Vinewood Studios'
 description 'Advanced gang, territory and organised crime system'
-version '3.6.0'
+version '3.9.2'
 
 ox_lib 'locale'
 
