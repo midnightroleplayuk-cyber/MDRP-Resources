@@ -44,6 +44,27 @@ function Bridge.GetName(src)
     return ('%s [%d]'):format(GetPlayerName(src) or 'Unknown', src)
 end
 
+function Bridge.AddMoney(src, account, amount, reason)
+    if amount <= 0 then return true end
+    if fw == 'qbx' then
+        local p = exports.qbx_core:GetPlayer(src)
+        return p and p.Functions.AddMoney(account, amount, reason)
+    elseif fw == 'qb' and QB then
+        local p = QB.Functions.GetPlayer(src)
+        return p and p.Functions.AddMoney(account, amount, reason)
+    elseif fw == 'esx' and ESX then
+        local p = ESX.GetPlayerFromId(src)
+        if p then p.addAccountMoney(account, amount, reason) return true end
+    end
+    return false
+end
+
+---@param jobs table job = minGrade
+function Bridge.HasJob(src, jobs)
+    local job, grade = Bridge.GetJob(src)
+    return job and jobs[job] ~= nil and grade >= jobs[job]
+end
+
 function Bridge.IsAdmin(src)
     return IsPlayerAceAllowed(src, Config.AdminAce)
 end

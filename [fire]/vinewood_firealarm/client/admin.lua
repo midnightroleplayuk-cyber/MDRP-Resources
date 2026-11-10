@@ -40,6 +40,10 @@ RegisterNUICallback('adminSounderTest', function(data, cb)
     cb({ ok = true, systems = relay('sounderTest', data.id) })
 end)
 
+RegisterNUICallback('adminMarkServiced', function(data, cb)
+    cb({ ok = true, systems = relay('markServiced', data.id) })
+end)
+
 RegisterNUICallback('adminReset', function(data, cb)
     cb({ ok = true, systems = relay('reset', data.id) })
 end)

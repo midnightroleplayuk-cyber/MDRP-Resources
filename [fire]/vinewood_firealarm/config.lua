@@ -95,6 +95,36 @@ Config.DetectorRange = 12.0          -- TriggerAtCoords export: max distance to 
 Config.EventLogSize = 50
 
 ---------------------------------------------------------------------
+-- Servicing (BS 5839-style periodic service). Systems come due every
+-- `interval` real days. An engineer from a service job starts a visit at
+-- the panel, tests every device in person, then signs it off at the panel
+-- and gets paid. Overdue systems slowly develop faults: faulty detectors
+-- don't detect, faulty sounders don't sound, faulty call points and
+-- sprinklers don't work.
+---------------------------------------------------------------------
+Config.Servicing = {
+    enabled = true,
+    jobs = { fire = 0 },          -- job = minimum grade. These jobs get level 2 at every panel.
+    interval = 14,                -- real days between services
+    dueSoon = 2,                  -- days before due that it shows "service due"
+    requiredPercent = 100,        -- % of devices that must be tested to sign off
+
+    payment = 250,                -- paid to the engineer on sign-off (0 to disable)
+    account = 'bank',
+    -- Optional: charge the business too. Runs on the server.
+    -- ChargeBusiness = function(system, amount) end,
+
+    notifyJobs = true,            -- notify on-duty service jobs when a system comes due
+    dispatchCall = true,          -- also send a low-priority job to your dispatch
+    command = 'fireservice',      -- opens the service schedule (service jobs and admins)
+
+    faults = { enabled = true, chancePerDay = 0.10 },  -- chance per device, per day overdue
+
+    -- Seconds to test each device type
+    times = { panel = 10, mcp = 6, detector = 8, sounder = 5, sprinkler = 7 },
+}
+
+---------------------------------------------------------------------
 -- Automatic detection: smoke detectors go off on their own when they
 -- sense fire or smoke. A detection has to be seen on `confirm` checks
 -- in a row (so a passing molotov flash doesn't set it off instantly).

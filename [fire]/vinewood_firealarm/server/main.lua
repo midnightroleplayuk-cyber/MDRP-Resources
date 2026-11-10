@@ -33,6 +33,7 @@ local function newState(sys)
         fire = false, zones = {}, active = {}, silenced = false, evacuate = false,
         test = false, testUntil = nil, disabled = sys.disabled, events = {},
         alarmAt = nil, alarmToken = 0, dispatched = false, sprinklers = {}, sprinklerToken = 0,
+        faults = sys.faults, service = nil,
     }
 end
 
@@ -50,6 +51,8 @@ local function defaults(sys)
     sys.disabled = sys.disabled or {}
     sys.devices = sys.devices or {}
     sys.nextId = sys.nextId or (#sys.devices + 1)
+    sys.lastService = tonumber(sys.lastService) or os.time()
+    sys.faults = sys.faults or {}
     return sys
 end
 
@@ -58,6 +61,7 @@ local function publicSystem(sys)
         id = sys.id, label = sys.label, job = sys.job, zones = sys.zones,
         tone = sys.tone, radius = sys.radius, devices = sys.devices,
         dispatch = sys.dispatch and Config.Dispatch.enabled, dispatchDelay = sys.dispatchDelay,
+        lastService = sys.lastService,
     }
 end
 
@@ -72,7 +76,9 @@ local function publicState(id, withActors)
         fire = st.fire, zones = st.zones, active = st.active, silenced = st.silenced,
         evacuate = st.evacuate, test = st.test, testSounding = st.testUntil ~= nil,
         disabled = st.disabled, events = events, alarmAt = st.alarmAt, dispatched = st.dispatched,
-        sprinklers = st.sprinklers, serverTime = os.time(),
+        sprinklers = st.sprinklers, faults = st.faults,
+        service = st.service and { src = st.service.src, name = st.service.name, tested = st.service.tested, total = st.service.total } or nil,
+        serverTime = os.time(),
     }
 end
 
@@ -128,6 +134,12 @@ local function GetAccess(src, sys)
         if fs and grade >= fs.minGrade then level = math.max(level, fs.level) end
         if Config.OwnerJobGetsLevel2 and sys.job ~= '' and job == sys.job and grade >= sys.jobGrade then
             level = math.max(level, 2)
+        end
+        local sv = Config.Servicing
+        if sv.enabled and sv.jobs[job] and grade >= sv.jobs[job] then
+            level = math.max(level, 2)
+            local st = States[sys.id]
+            if st and st.service and st.service.src == src then level = 3 end
         end
     end
     return level
@@ -283,7 +295,7 @@ local function ActivateSprinklers(id, detector)
     local dc = devCoords(detector)
     local added = {}
     for _, d in ipairs(sys.devices) do
-        if d.type == 'sprinkler' and d.zone == detector.zone and not contains(st.sprinklers, d.id)
+        if d.type == 'sprinkler' and d.zone == detector.zone and not contains(st.sprinklers, d.id) and not contains(st.faults, d.id)
             and (S.mode ~= 'radius' or #(devCoords(d) - dc) <= S.radius) then
             st.sprinklers[#st.sprinklers + 1] = d.id
             added[#added + 1] = d
@@ -399,7 +411,10 @@ lib.callback.register('vinewood_firealarm:openPanel', function(src, id)
     if not sys or not nearPanel(src, sys) then return false end
     local level = GetAccess(src, sys)
     touchSession(src, id)
-    return { level = level, state = publicState(id, level >= 3), system = publicSystem(sys) }
+    return {
+        level = level, state = publicState(id, level >= 3), system = publicSystem(sys),
+        servicer = Config.Servicing.enabled and Bridge.HasJob(src, Config.Servicing.jobs) or false, me = src,
+    }
 end)
 
 lib.callback.register('vinewood_firealarm:enterCode', function(src, id, code)
@@ -493,6 +508,49 @@ local Actions = {
         syncState(id)
         return true
     end },
+    serviceStart = { level = 2, fn = function(src, id)
+        if not Config.Servicing.enabled or not Bridge.HasJob(src, Config.Servicing.jobs) then return false, 'Engineers only' end
+        local sys, st = Systems[id], States[id]
+        if st.fire or st.evacuate then return false, 'Not during an alarm' end
+        if st.service then return false, ('%s is already servicing this system'):format(st.service.name) end
+        local total = 0
+        for _, d in ipairs(sys.devices) do total = total + 1 end
+        st.service = { src = src, name = Bridge.GetName(src), started = os.time(), tested = {}, total = total }
+        st.test, st.testUntil = true, nil
+        addEvent(id, 'Service visit started (test mode on)', st.service.name)
+        syncState(id)
+        return true
+    end },
+    serviceComplete = { level = 2, fn = function(src, id)
+        local sys, st = Systems[id], States[id]
+        local sv = st.service
+        if not sv or sv.src ~= src then return false, 'You haven\'t started a service here' end
+        local need = math.ceil(sv.total * Config.Servicing.requiredPercent / 100)
+        if #sv.tested < need then return false, ('Test more devices (%d of %d)'):format(#sv.tested, need) end
+        sys.lastService = os.time()
+        sys.dueNotified = nil
+        st.service, st.test, st.testUntil = nil, false, nil
+        persist(id)
+        addEvent(id, ('Service completed (%d/%d devices)'):format(#sv.tested, sv.total), sv.name)
+        syncState(id)
+        syncSystem(id)
+        local pay = Config.Servicing.payment or 0
+        if pay > 0 then
+            Bridge.AddMoney(src, Config.Servicing.account, pay, 'fire-alarm-service')
+            TriggerClientEvent('ox_lib:notify', src, { type = 'success', description = ('Service signed off. £%d paid.'):format(pay) })
+        end
+        if Config.Servicing.ChargeBusiness then pcall(Config.Servicing.ChargeBusiness, sys, pay) end
+        webhook('Fire alarm serviced', ('**%s** serviced by %s (%d/%d devices)'):format(sys.label, sv.name, #sv.tested, sv.total))
+        return true
+    end },
+    serviceAbandon = { level = 2, fn = function(src, id)
+        local st = States[id]
+        if not st.service or (st.service.src ~= src and not Bridge.IsAdmin(src)) then return false, 'No service to abandon' end
+        addEvent(id, 'Service visit abandoned', Bridge.GetName(src))
+        st.service, st.test, st.testUntil = nil, false, nil
+        syncState(id)
+        return true
+    end },
     logout = { level = 1, fn = function(src, id)
         if Sessions[src] then Sessions[src][id] = nil end
         return true
@@ -517,6 +575,11 @@ lib.callback.register('vinewood_firealarm:breakGlass', function(src, id, devId)
     local d = sys and getDevice(sys, devId)
     if not d or d.type ~= 'mcp' or not nearDevice(src, d) then return false, 'Too far away' end
     if contains(States[id].active, devId) then return false, 'Already activated' end
+    if contains(States[id].faults, devId) then
+        addEvent(id, ('Faulty call point used Z%02d %s'):format(d.zone, d.label), Bridge.GetName(src))
+        syncState(id)
+        return false, 'Nothing happens. The call point seems to be faulty.'
+    end
     if not States[id].test and not Bridge.IsAdmin(src) then
         local last = Cooldowns[src]
         if last and os.time() - last < Config.BreakGlassCooldown then return false, 'You need to wait before doing that again' end
@@ -685,6 +748,7 @@ lib.callback.register('vinewood_firealarm:admin:deleteDevice', function(src, id,
     end
     removeVal(States[id].active, devId)
     removeVal(States[id].sprinklers, devId)
+    removeVal(sys.faults, devId)
     persist(id)
     syncSystem(id)
     syncState(id)
@@ -716,13 +780,128 @@ end)
 lib.callback.register('vinewood_firealarm:isAdmin', function(src) return isAdmin(src) end)
 
 ---------------------------------------------------------------------
+-- Servicing
+---------------------------------------------------------------------
+local DAY = 86400
+
+local function serviceStatus(sys)
+    local due = sys.lastService + Config.Servicing.interval * DAY
+    local now = os.time()
+    if now >= due then return 'overdue', due end
+    if now >= due - Config.Servicing.dueSoon * DAY then return 'due', due end
+    return 'ok', due
+end
+
+lib.callback.register('vinewood_firealarm:serviceDevice', function(src, id, devId)
+    local sys = Systems[id]
+    local st = States[id]
+    local d = sys and getDevice(sys, devId)
+    if not d or not nearDevice(src, d, 4.0) then return false, 'Too far away' end
+    if not st.service or st.service.src ~= src then return false, 'Start a service visit at the panel first' end
+    if contains(st.service.tested, devId) then return false, 'Already tested' end
+    st.service.tested[#st.service.tested + 1] = devId
+    local wasFaulty = contains(sys.faults, devId)
+    if wasFaulty then removeVal(sys.faults, devId) persist(id) end
+    addEvent(id, ('%s Z%02d %s: %s'):format(wasFaulty and 'Repaired' or 'Tested', d.zone, d.label, TYPE_NAMES[d.type]), st.service.name)
+    if d.type ~= 'panel' and d.type ~= 'sprinkler' then SoundFor(id, 3) else syncState(id) end
+    return true, wasFaulty
+end)
+
+local function notifyServiceJobs(text)
+    for _, p in ipairs(GetPlayers()) do
+        local src = tonumber(p)
+        if Bridge.HasJob(src, Config.Servicing.jobs) then
+            TriggerClientEvent('ox_lib:notify', src, { title = 'Fire alarm servicing', description = text, type = 'inform', duration = 8000 })
+        end
+    end
+end
+
+local function panelOf(sys)
+    for _, d in ipairs(sys.devices) do if d.type == 'panel' then return d end end
+    return sys.devices[1]
+end
+
+-- Hourly: due notifications and faults on overdue systems
+CreateThread(function()
+    Wait(60000)
+    while true do
+        local sv = Config.Servicing
+        if sv.enabled then
+            local now = os.time()
+            for id, sys in pairs(Systems) do
+                local status, due = serviceStatus(sys)
+                if status ~= 'ok' and not sys.dueNotified then
+                    sys.dueNotified = true
+                    persist(id)
+                    if sv.notifyJobs then notifyServiceJobs(('%s is due a fire alarm service.'):format(sys.label)) end
+                    local p = panelOf(sys)
+                    if sv.dispatchCall and p and Config.Dispatch.enabled then
+                        Dispatch.SendCustom({
+                            code = 'FAS', title = 'Fire alarm service due', priority = 3,
+                            jobs = (function() local j = {} for k in pairs(sv.jobs) do j[#j + 1] = k end return j end)(),
+                            blip = { sprite = 446, colour = 47, scale = 0.9, flash = false, time = 600 },
+                            notes = false,
+                        }, {
+                            system = sys.label, coords = devCoords(p), location = p.location,
+                            description = ('%s: periodic fire alarm service due %s.'):format(sys.label, os.date('%d/%m', due)),
+                        })
+                    end
+                end
+                if status == 'overdue' and sv.faults.enabled and not (States[id] and States[id].service) then
+                    local chance = sv.faults.chancePerDay / 24
+                    local changed = false
+                    for _, d in ipairs(sys.devices) do
+                        if d.type ~= 'panel' and not contains(sys.faults, d.id) and math.random() < chance then
+                            sys.faults[#sys.faults + 1] = d.id
+                            addEvent(id, ('Fault Z%02d %s: %s'):format(d.zone, d.label, TYPE_NAMES[d.type]))
+                            changed = true
+                        end
+                    end
+                    if changed then persist(id) syncState(id) end
+                end
+            end
+        end
+        Wait(3600 * 1000)
+    end
+end)
+
+lib.callback.register('vinewood_firealarm:schedule', function(src)
+    if not (Bridge.IsAdmin(src) or (Config.Servicing.enabled and Bridge.HasJob(src, Config.Servicing.jobs))) then return false end
+    local list = {}
+    for id, sys in pairs(Systems) do
+        local status, due = serviceStatus(sys)
+        local p = panelOf(sys)
+        local st = States[id]
+        list[#list + 1] = {
+            id = id, label = sys.label, status = status, due = due, lastService = sys.lastService,
+            faults = #sys.faults, devices = #sys.devices, inService = st and st.service and st.service.name or nil,
+            street = p and p.location and p.location.street or nil, zone = p and p.location and p.location.zone or nil,
+            x = p and p.x, y = p and p.y,
+        }
+    end
+    table.sort(list, function(a, b) return a.due < b.due end)
+    return { systems = list, now = os.time() }
+end)
+
+lib.callback.register('vinewood_firealarm:admin:markServiced', function(src, id)
+    if not Bridge.IsAdmin(src) or not Systems[id] then return false end
+    local sys = Systems[id]
+    sys.lastService, sys.dueNotified, sys.faults = os.time(), nil, {}
+    States[id].faults = sys.faults
+    persist(id)
+    addEvent(id, 'Marked as serviced by admin', Bridge.GetName(src))
+    syncState(id) syncSystem(id)
+    return adminList()
+end)
+
+---------------------------------------------------------------------
 -- Automatic detection
 ---------------------------------------------------------------------
 local DetectCooldown = {} -- [src] = GetGameTimer of last report
 
 local function detectorCanTrigger(id, d)
     local st = States[id]
-    return st and not contains(st.active, d.id) and not contains(st.disabled, d.zone)
+    return st and not contains(st.active, d.id) and not contains(st.disabled, d.zone) and not contains(st.faults, d.id)
 end
 
 -- Reports from clients: GTA fires, explosions and smoke near a detector

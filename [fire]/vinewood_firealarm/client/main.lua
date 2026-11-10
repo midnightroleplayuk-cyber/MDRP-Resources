@@ -44,13 +44,45 @@ local function TestDevice(id, devId)
     if not ok then lib.notify({ type = 'error', description = msg or 'Test failed' }) end
 end
 
+local SERVICE_ANIMS = {
+    ceiling = { dict = 'amb@prop_human_movie_bulb@base', clip = 'base' },
+    wall = { dict = 'mini@repair', clip = 'fixing_a_ped' },
+}
+local SERVICE_LABELS = {
+    panel = 'Checking panel and batteries', mcp = 'Testing call point with key',
+    detector = 'Testing detector with smoke pole', sounder = 'Checking sounder output',
+    sprinkler = 'Inspecting sprinkler head',
+}
+
+local function isMyService(id)
+    local st = States[id]
+    return st and st.service and st.service.src == cache.serverId
+end
+
+local function ServiceDevice(id, d)
+    local secs = (Config.Servicing.times or {})[d.type] or 6
+    local anim = (d.type == 'detector' or d.type == 'sprinkler') and SERVICE_ANIMS.ceiling or SERVICE_ANIMS.wall
+    if not lib.progressBar({
+        duration = secs * 1000, label = SERVICE_LABELS[d.type] or 'Testing device',
+        canCancel = true, disable = { move = true, car = true, combat = true },
+        anim = anim,
+    }) then return end
+    local ok, res = lib.callback.await('vinewood_firealarm:serviceDevice', false, id, d.id)
+    if ok then
+        lib.notify({ type = 'success', description = res and ('%s repaired and tested'):format(d.label) or ('%s tested'):format(d.label) })
+    else
+        lib.notify({ type = 'error', description = res or 'Test failed' })
+    end
+end
+
 function OpenPanel(id)
     local data = lib.callback.await('vinewood_firealarm:openPanel', false, id)
     if not data then return lib.notify({ type = 'error', description = 'You can\'t reach the panel from here' }) end
     panelOpen = id
     EngineerOn[id] = data.level >= 3 or nil
     SetNuiFocus(true, true)
-    SendNUIMessage({ action = 'openPanel', system = data.system, state = data.state, level = data.level, maxZones = Config.MaxZones })
+    SendNUIMessage({ action = 'openPanel', system = data.system, state = data.state, level = data.level, maxZones = Config.MaxZones,
+        servicer = data.servicer, me = data.me, interval = Config.Servicing.interval, dueSoon = Config.Servicing.dueSoon })
 end
 
 ---------------------------------------------------------------------
@@ -89,10 +121,21 @@ local function buildTargets(id)
                   onSelect = function() TestDevice(id, d.id) end },
             }
         end
+        if Config.Servicing.enabled then
+            options = options or {}
+            options[#options + 1] = {
+                name = 'vfa_service', icon = 'fa-solid fa-screwdriver-wrench', label = 'Service device', distance = 2.5,
+                canInteract = function()
+                    return isMyService(id) and not contains(States[id].service.tested, d.id)
+                end,
+                onSelect = function() ServiceDevice(id, d) end,
+            }
+        end
         if options then
+            local radius = d.type == 'panel' and 0.6 or ((d.type == 'detector' or d.type == 'sprinkler') and 0.5 or 0.3)
             list[#list + 1] = exports.ox_target:addSphereZone({
                 coords = vec3(d.x, d.y, d.z),
-                radius = d.type == 'panel' and 0.6 or (d.type == 'detector' and 0.5 or 0.3),
+                radius = radius,
                 debug = Config.Debug,
                 options = options,
             })
@@ -178,9 +221,10 @@ CreateThread(function()
         for id, sys in pairs(Systems) do
             if IsSounding(id) then
                 local sources, anySounder = {}, false
+                local faults = States[id] and States[id].faults
                 for _, d in ipairs(sys.devices) do if d.type == 'sounder' then anySounder = true break end end
                 for _, d in ipairs(sys.devices) do
-                    if not anySounder or d.type == 'sounder' then sources[#sources + 1] = d end
+                    if (not anySounder or d.type == 'sounder') and not contains(faults, d.id) then sources[#sources + 1] = d end
                 end
                 for _, d in ipairs(sources) do
                     local dc = vec3(d.x, d.y, d.z)
@@ -437,4 +481,29 @@ end)
 AddEventHandler('onResourceStop', function(res)
     if res ~= GetCurrentResourceName() then return end
     for _, h in pairs(sprayFx) do StopParticleFxLooped(h, false) end
+end)
+
+---------------------------------------------------------------------
+-- Service schedule (service jobs and admins)
+---------------------------------------------------------------------
+if Config.Servicing.enabled then
+    RegisterCommand(Config.Servicing.command, function()
+        local data = lib.callback.await('vinewood_firealarm:schedule', false)
+        if not data then return lib.notify({ type = 'error', description = 'Only fire alarm engineers can see the service schedule' }) end
+        SetNuiFocus(true, true)
+        SendNUIMessage({ action = 'openSchedule', systems = data.systems, now = data.now })
+    end, false)
+end
+
+RegisterNUICallback('scheduleClose', function(_, cb)
+    SetNuiFocus(false, false)
+    cb('ok')
+end)
+
+RegisterNUICallback('scheduleWaypoint', function(data, cb)
+    if data.x and data.y then
+        SetNewWaypoint(data.x + 0.0, data.y + 0.0)
+        lib.notify({ type = 'inform', description = 'Waypoint set' })
+    end
+    cb('ok')
 end)
