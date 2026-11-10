@@ -377,7 +377,7 @@ Config.CharacterMenu = {
 --                 optional item shop available on character creation.
 -- ─────────────────────────────────────────────────────────────────────────
 Config.Misc = {
-    DefaultCharsAmount = 2,
+    DefaultCharsAmount = 3,
     AllowCharacterDelete = false,
     -- Character creator UI: "classic" | "modern"
     creatorPreset = "modern",
