@@ -521,7 +521,7 @@ lang['en'] = {
         sex = {
             label = 'Gender',
             description = 'Gender of the patient',
-            options = {'male', 'female', 'other', 'unknown'},
+            options = {'Male', 'Female', 'Other', 'Unknown'},
         },
         age = 'Age',
         agedesc = 'Age of the patient, leave blank if unknown',
