@@ -131,31 +131,19 @@ function Bridge.AddMoney(src, amount)
     end
 end
 
----Take money for a fee. Always succeeds on standalone (no economy).
----@return boolean paid
-function Bridge.RemoveMoney(src, amount, account)
-    if not amount or amount <= 0 or Bridge.Name == 'standalone' then return true end
-    local p = getPlayer(src)
-    if not p then return false end
-    account = account or 'bank'
-    if Bridge.Name == 'esx' then
-        account = account == 'cash' and 'money' or account
-        local acc = p.getAccount(account)
-        if not acc or acc.money < amount then return false end
-        p.removeAccountMoney(account, amount)
-        return true
-    end
-    if (p.PlayerData.money[account] or 0) < amount then return false end
-    return p.Functions.RemoveMoney(account, amount, 'goodciv-fee') ~= false
-end
-
 function Bridge.Revive(src)
-    if GoodCiv.DownMode() == 'goodciv' then
-        TriggerClientEvent('goodciv:client:revive', src)
-        return
-    end
     local fn = Config.Revive[Bridge.Name]
     if fn then fn(src) end
+end
+
+---Bring a patient round on scene with low health (after successful CPR).
+function Bridge.WakeUp(src)
+    local key = GetResourceState('osp_ambulance') == 'started' and 'osp' or Bridge.Name
+    local fn = Config.WakeUp and Config.WakeUp[key]
+    if not fn then return false end
+    fn(src)
+    TriggerClientEvent('goodciv:client:wakeHealth', src, Config.Treatment.CPR.WakeHealth)
+    return true
 end
 
 ---Server ids of every online player who is an on-duty medic.
@@ -168,4 +156,26 @@ function Bridge.GetOnDutyMedics()
     return medics
 end
 
-print(('^2[goodciv]^7 framework: %s, inventory: %s, down state: %s'):format(Bridge.Name, Bridge.Inventory, GoodCiv.DownMode()))
+local function useVinewoodDuty()
+    local v = Config.Dispatch.Vinewood
+    return v and v.Enabled and v.UseVinewoodDuty and started('vinewood-dispatch')
+end
+
+---Number of on-duty medics (vinewood-dispatch's ambulance service when bridged).
+function Bridge.CountOnDutyMedics()
+    if useVinewoodDuty() then
+        -- Not GetOnDutyCount: that also counts logged-in dispatchers.
+        local ok, count = pcall(function()
+            local n = 0
+            for _, id in ipairs(GetPlayers()) do
+                local service, onDuty = exports['vinewood-dispatch']:GetPlayerService(tonumber(id))
+                if service == 'ambulance' and onDuty then n = n + 1 end
+            end
+            return n
+        end)
+        if ok then return count end
+    end
+    return #Bridge.GetOnDutyMedics()
+end
+
+print(('^2[goodciv]^7 framework: %s, inventory: %s'):format(Bridge.Name, Bridge.Inventory))

@@ -26,11 +26,11 @@ local function rollCondition(src)
         conscious = true,
         breathing = true,
         bleeding = 'none', -- none | major | controlled
-        recovery = false,
     }
     if report.downed then
         state.conscious = false
-        state.breathing = math.random() >= Config.Conditions.NotBreathingChance
+        -- Cardiac arrest only at stage 2 (no signs of life). Last stand = breathing, can crawl.
+        state.breathing = report.stage ~= 2
         local chance = Config.Conditions.MajorBleedChance[report.damage or 'other'] or Config.Conditions.MajorBleedChance.other
         if math.random() < chance then state.bleeding = 'major' end
     end
@@ -118,6 +118,7 @@ function Incidents.Create(patient, origin)
         coords = coords,
         origin = origin,
         createdAt = now(),
+        stage = (Player(patient).state['goodciv:patient'] or {}).stage or 0,
         state = state,
         assessed = false,
         responders = {},
@@ -143,6 +144,7 @@ function Incidents.Close(inc, reason)
         TriggerClientEvent('goodciv:client:incidentClosed', src, inc.id, reason and L(reason))
     end
     TriggerClientEvent('goodciv:client:patientClosed', inc.patient, reason and L(reason))
+    if Incidents.OnClosed then Incidents.OnClosed(inc, reason) end
     GoodCiv.Debug(('incident %d closed (%s)'):format(inc.id, reason or 'none'))
 end
 
@@ -187,6 +189,7 @@ RegisterNetEvent('goodciv:server:accept', function(id)
     TriggerClientEvent('goodciv:client:accepted', src, view(inc, src))
     TriggerClientEvent('goodciv:client:toast', src, 'success', L('accepted'))
     TriggerClientEvent('goodciv:client:toast', inc.patient, 'info', L('responder_en_route', Bridge.GetName(src)))
+    if Incidents.OnAccepted then Incidents.OnAccepted(inc, src) end
 
     if inc.responderCount >= Config.Alerts.MaxResponders then
         dismissAlerts(inc, 'alert_filled')
@@ -218,6 +221,21 @@ CreateThread(function()
             local coords = pedCoords(inc.patient)
             if coords then inc.coords = coords end
 
+            -- Last stand -> stage 2 (or back) during the call: follow the real state.
+            if report and report.downed and report.stage and report.stage ~= inc.stage then
+                inc.stage = report.stage
+                local breathing = report.stage ~= 2
+                if inc.state.breathing ~= breathing then
+                    inc.state.breathing = breathing
+                    if not breathing then
+                        for r in pairs(inc.responders) do
+                            TriggerClientEvent('goodciv:client:toast', r, 'error', L('arrested'))
+                        end
+                    end
+                    Incidents.Sync(inc)
+                end
+            end
+
             if report and not report.downed and not inc.transport and not inc.handingOver then
                 -- Patient got up (revived by a medic, admin, or another script).
                 if inc.responderCount > 0 then Incidents.Reward(inc, Config.Rewards.Assist) end
@@ -225,7 +243,7 @@ CreateThread(function()
             elseif t - inc.createdAt > Config.Alerts.IncidentLifetime then
                 Incidents.Close(inc, 'alert_closed')
             elseif inc.responderCount == 0 then
-                medicsOnDuty = medicsOnDuty or #Bridge.GetOnDutyMedics()
+                medicsOnDuty = medicsOnDuty or Bridge.CountOnDutyMedics()
                 if medicsOnDuty >= Config.Medics.MinOnDuty then
                     Incidents.Close(inc, 'medic_took_over')
                 elseif Config.Alerts.RealertAfter > 0 and t - inc.lastAlert >= Config.Alerts.RealertAfter then

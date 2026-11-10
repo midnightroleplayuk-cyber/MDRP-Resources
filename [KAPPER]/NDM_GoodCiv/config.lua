@@ -28,8 +28,9 @@ Config.Medics = {
 -- GoodCiv carriers (the civilian volunteers)
 ---------------------------------------------------------------------------
 Config.Carriers = {
-    -- Command players use to sign up / sign off as a GoodCiv volunteer.
-    Command = 'goodcivsignup',
+    -- Command players use to sign up / sign off as a GoodCiv carrier.
+    -- Set to nil to only allow signing up at a sign-up ped (Config.SignupPeds).
+    Command = 'goodciv',
     -- Players with these jobs can never be carriers (they have their own dispatch).
     BlockedJobs = { 'police', 'sheriff', 'ambulance', 'ems', 'doctor', 'fire' },
     -- Optional item a carrier must hold to sign up and to receive alerts (nil = none).
@@ -40,6 +41,82 @@ Config.Carriers = {
     AcePermission = nil,
     -- Remember opt-in between sessions (stored in server KVP by identifier).
     Persist = true,
+}
+
+---------------------------------------------------------------------------
+-- GoodCiv training (quiz at the sign-up NPC before a player can go on duty)
+---------------------------------------------------------------------------
+-- Players talk to the sign-up NPC (hf1_npcs, target event: goodciv:client:toggleCarrier).
+-- Not certified yet -> they take the quiz. Pass -> certified for good and put on duty.
+-- Certified -> the NPC (or /goodciv) puts them on / off duty.
+Config.Training = {
+    Enabled = true,
+    -- Correct answers needed to pass (out of #Questions).
+    PassMark = 3,
+    -- Seconds a player must wait after failing before trying again.
+    RetryCooldown = 300,
+    -- answer = the number of the correct option (1 = first option).
+    -- Answers are checked on the server and never sent to players.
+    Questions = {
+        {
+            question = 'You find someone unresponsive and not breathing normally. What do you do first?',
+            options = {
+                'Put them in the recovery position and wait',
+                'Call for help and start CPR',
+                'Give them some water',
+                'Leave them and look for a medic',
+            },
+            answer = 2,
+        },
+        {
+            question = 'How fast should you do chest compressions during CPR?',
+            options = {
+                '30 to 50 per minute',
+                '60 to 80 per minute',
+                '100 to 120 per minute',
+                '150 to 180 per minute',
+            },
+            answer = 3,
+        },
+        {
+            question = 'Someone is bleeding heavily from their leg and it will not stop. What should you do?',
+            options = {
+                'Wash the wound with water',
+                'Remove their clothing and leave it uncovered',
+                'Apply a tourniquet above the wound',
+                'Ask them to walk it off',
+            },
+            answer = 3,
+        },
+    },
+}
+
+---------------------------------------------------------------------------
+-- Sign-up peds (talk to one of these to sign up / sign off as a carrier)
+---------------------------------------------------------------------------
+Config.SignupPeds = {
+    -- Off: the sign-up NPC is placed with hf1_npcs instead (target event: goodciv:client:toggleCarrier).
+    Enabled = false,
+    -- 'auto' | 'ox_target' | 'qb-target' | 'key'
+    -- 'auto' uses ox_target, then qb-target, then a "press E" prompt.
+    Interaction = 'ox_target',
+    -- How close (metres) the player must be to interact.
+    Distance = 2.5,
+    -- Peds spawn when a player is within this distance and despawn beyond it.
+    SpawnDistance = 60.0,
+    Locations = {
+        {
+            label = 'GoodCiv Volunteer desk',
+            model = `s_m_m_doctor_01`,
+            -- Where the ped stands (x, y, z, heading). Use the coords from where YOUR
+            -- character stands (e.g. /getcoords): the ped is placed 1m lower onto the floor.
+            coords = vector4(-305.35, -147.01, 40.24, 120.35),
+            scenario = 'WORLD_HUMAN_CLIPBOARD', -- nil = stand idle
+            blip = { sprite = 280, colour = 2, scale = 0.7 }, -- nil = no blip
+        },
+        -- Add more:
+        -- { label = 'GoodCiv - Sandy Shores', model = `s_f_y_scrubs_01`, coords = vector4(1839.0, 3673.0, 34.3, 210.0) },
+    },
 }
 
 ---------------------------------------------------------------------------
@@ -67,11 +144,10 @@ Config.Alerts = {
 -- Dispatch integration
 ---------------------------------------------------------------------------
 Config.Dispatch = {
-    -- Command a downed player uses to request a GoodCiv volunteer (/goodciv).
-    -- The call is also forwarded to your normal dispatch (Provider below). Volunteers
-    -- are alerted when fewer than Config.Medics.MinOnDuty medics are on duty.
-    -- Set Config.Medics.MinOnDuty = 999 to always alert volunteers.
-    Command = 'goodciv',
+    -- Command civilians use to request a medic. Goes through the normal
+    -- dispatch first, then falls back to GoodCiv carriers if no medics are on duty.
+    -- nil = no command (vinewood-dispatch's /111 is used instead, see Config.Dispatch.Vinewood).
+    Command = nil,
 
     -- Existing "call EMS" server events to piggyback on. When any of these fire,
     -- the call has already gone to your normal dispatch, so GoodCiv only performs
@@ -86,13 +162,34 @@ Config.Dispatch = {
     -- Leave at 0 if your death screen already has a "call EMS" button wired into ListenEvents.
     AutoAlertDelay = 0,
 
-    -- Where /goodciv calls are forwarded so real medics see them.
+    -- Where /medic calls are forwarded so real medics see them.
     -- 'builtin'      : GoodCiv shows its own alert + blip to on-duty medics
+    -- 'vinewood'     : vinewood-dispatch (injured_person preset)
     -- 'ps-dispatch'  : ps-dispatch (v2) server event
     -- 'cd_dispatch'  : cd_dispatch
     -- 'custom'       : call Config.Dispatch.Custom below
     -- 'none'         : don't forward
-    Provider = 'builtin',
+    Provider = 'vinewood',
+
+    -- vinewood-dispatch bridge (only active while vinewood-dispatch is running).
+    -- When vinewood raises one of these ambulance calls and no ambulance units are on duty,
+    -- GoodCiv alerts carriers for any downed player near the call.
+    Vinewood = {
+        Enabled = true,
+        Presets = {
+            'person_down',     -- automatic civilian down detection
+            'call_111',        -- /111
+            'injured_person',
+        },
+        -- Downed players within this distance (metres) of the call become GoodCiv patients.
+        -- Covers bystanders calling /111 for someone else.
+        PatientRadius = 30.0,
+        -- Count on-duty medics with vinewood's ambulance service (Config.Services in vinewood).
+        UseVinewoodDuty = true,
+        -- Post GoodCiv progress (volunteers alerted / responding / handed over) as call updates.
+        Notes = true,
+        NoteAuthor = 'GoodCiv',
+    },
 
     -- Used when Provider = 'custom'. Runs on the server.
     ---@param patient number server id of the caller
@@ -104,101 +201,13 @@ Config.Dispatch = {
 }
 
 ---------------------------------------------------------------------------
--- Down state (standalone)
----------------------------------------------------------------------------
--- GoodCiv can run its own "downed" state so it works without any ambulance script.
-Config.Down = {
-    -- 'auto'      : use GoodCiv's down state unless one of MedicalScripts is running
-    -- 'goodciv'   : always use GoodCiv's down state
-    -- 'framework' : never; your ambulance script handles death / last stand / revive
-    Mode = 'auto',
-    MedicalScripts = {
-        'qb-ambulancejob', 'qbx_medical', 'esx_ambulancejob', 'wasabi_ambulance',
-        'ars_ambulancejob', 'osp_ambulance', 'ak47_ambulancejob', 'ak47_qb_ambulancejob',
-        'p_ambulancejob', 'visn_are', 'brutal_ambulancejob',
-    },
-    -- Seconds before a downed player may respawn at the nearest hospital (0 = never).
-    RespawnAfter = 600,
-    -- Seconds to hold E to respawn.
-    RespawnHold = 3,
-    -- Charged on respawn if the player can afford it (framework servers only).
-    RespawnFee = 500,
-    -- Animations while down.
-    Anim = { dict = 'dead', clip = 'dead_a' },
-    VehicleAnim = { dict = 'random@crash_rescue@car_death@std_car', clip = 'loop' },
-}
-
----------------------------------------------------------------------------
--- Injured after being brought round
----------------------------------------------------------------------------
--- When a GoodCiv volunteer brings a patient round on scene, the patient's health is
--- held low until they check in at a hospital.
-Config.Injury = {
-    Enabled = true,
-    -- Health is capped at this percentage until check-in.
-    HealthPercent = 25,
-    -- Injured walk and no sprinting / jumping until check-in. Clipset = nil to skip.
-    Clipset = 'move_m@injured',
-    DisableSprint = true,
-    -- Set a GPS waypoint to the nearest check-in point when brought round.
-    Waypoint = true,
-    -- Remember the injury across reconnects (stored in server KVP by identifier).
-    Persist = true,
-}
-
----------------------------------------------------------------------------
--- Hospital check-in
----------------------------------------------------------------------------
-Config.CheckIn = {
-    -- 'goodciv'  : GoodCiv check-in points (Config.Hospitals + points made with /goodcivconfig)
-    -- 'external' : your hospital script. Its revive / heal events (ExternalEvents) or the
-    --              CheckIn export clear the injury. GoodCiv points are hidden.
-    -- 'both'     : either one clears the injury
-    Mode = 'both',
-    -- Use the hospitals in Config.Hospitals as check-in points as well as in-game ones.
-    UseConfigHospitals = true,
-    -- Metres from the point to check in.
-    Distance = 1.8,
-    -- Seconds the treatment takes.
-    Duration = 10,
-    -- Default fee (each point can override it). Framework servers only.
-    Fee = 250,
-    Account = 'bank',   -- qb/qbx: cash | bank, esx: money | bank
-    -- Map blips for check-in points: 'all' | 'custom' (only /goodcivconfig points) | 'none'
-    Blips = 'custom',
-    -- Handing a patient over at a hospital counts as checking them in.
-    HandoverCountsAsCheckIn = true,
-    -- Client events from your hospital script that mean "this player was treated".
-    -- Used when Mode is 'external' or 'both'. Ignored for ExternalGrace seconds after
-    -- a GoodCiv revive, since the revive itself may fire one of them.
-    ExternalEvents = {
-        'hospital:client:Revive',            -- qb-ambulancejob (check-in bed / EMS revive)
-        'qbx_medical:client:playerRevived',  -- qbx_medical
-        'esx_ambulancejob:revive',           -- esx_ambulancejob
-    },
-    ExternalGrace = 8,
-}
-
----------------------------------------------------------------------------
--- Admin
----------------------------------------------------------------------------
-Config.Admin = {
-    -- In-city check-in point creator.
-    Command = 'goodcivconfig',
-    -- Admin revive: /goodcivrevive [id]  (also clears the injury)
-    ReviveCommand = 'goodcivrevive',
-    -- Ace needed for both:  add_ace group.admin goodciv.admin allow
-    Ace = 'goodciv.admin',
-}
-
----------------------------------------------------------------------------
 -- Patient condition
 ---------------------------------------------------------------------------
 Config.Conditions = {
     -- Only life-threatening calls (unconscious, not breathing, major bleeding) go to carriers.
     LifeThreateningOnly = true,
-    -- Chance (0-1) a downed patient is in cardiac arrest (not breathing).
-    NotBreathingChance = 0.6,
+    -- Cardiac arrest (CPR needed) comes from the real downed state: only stage 2 / no signs
+    -- of life. Last stand patients are breathing and only need bleeding control.
     -- Chance (0-1) of major bleeding by the damage type that put the patient down.
     -- Damage types: bullet, explosive, melee, vehicle, fall, other
     MajorBleedChance = {
@@ -220,7 +229,7 @@ Config.Treatment = {
     Assess = { Duration = 3 },
     Tourniquet = {
         Duration = 6,
-        Item = 'tourniquet',   -- nil = no item needed
+        Item = '',   -- nil = no item needed
         ConsumeItem = true,
     },
     CPR = {
@@ -230,10 +239,11 @@ Config.Treatment = {
         TechniqueBonus = 0.55, -- added on top, scaled by compression quality (0-1)
         UntreatedBleedPenalty = 0.6, -- chance multiplier if major bleed not controlled
         Cooldown = 3,
+        -- Successful CPR brings the patient round on scene (see Config.WakeUp) instead of
+        -- leaving them down until hospital handover. They stay injured until they check in.
+        WakeOnSuccess = true,
+        WakeHealth = 120,      -- health after coming round (max 200, 100 = downed)
     },
-    RecoveryPosition = { Duration = 4 },
-    -- Bring a stable patient round on scene. They get up injured (Config.Injury).
-    BringRound = { Duration = 8 },
 }
 
 ---------------------------------------------------------------------------
@@ -254,8 +264,6 @@ Config.Transport = {
     BlockedClasses = { 8, 13, 14, 15, 16, 21 },
 }
 
--- Built-in hospitals. Patients are handed over inside `radius` of `coords`; `drop` is
--- the check-in desk. Add more in-game with /goodcivconfig. Optional `fee` per hospital.
 Config.Hospitals = {
     { label = 'Pillbox Hill Medical', coords = vector3(298.6, -584.5, 43.3), drop = vector4(307.6, -595.3, 43.3, 70.0), radius = 30.0 },
     { label = 'Mount Zonah Medical', coords = vector3(-449.7, -340.8, 34.5), drop = vector4(-448.5, -336.6, 34.5, 80.0), radius = 30.0 },
@@ -266,18 +274,37 @@ Config.Hospitals = {
 ---------------------------------------------------------------------------
 -- Revive on handover
 ---------------------------------------------------------------------------
--- How a patient is revived when brought round or handed over. Runs on the server.
--- Only used when Config.Down resolves to 'framework' (your ambulance script owns the
--- down state); otherwise GoodCiv's own revive is used.
+-- How a patient is revived once handed over at a hospital. Runs on the server.
 -- Defaults per framework are below; override if your ambulance script differs.
 Config.Revive = {
     qbcore = function(src) TriggerClientEvent('hospital:client:Revive', src) end,
     qbox = function(src)
-        -- qbx_medical; swap for your own if you use a different medical script
-        TriggerClientEvent('qbx_medical:client:playerRevived', src)
+        if GetResourceState('osp_ambulance') == 'started' then
+            -- osp_ambulance full revive (true = revive even if osp flags the injuries as unsurvivable)
+            TriggerClientEvent('hospital:client:Revive', src, true)
+        else
+            -- qbx_medical; swap for your own if you use a different medical script
+            TriggerClientEvent('qbx_medical:client:playerRevived', src)
+        end
     end,
     esx = function(src) TriggerClientEvent('esx_ambulancejob:revive', src) end,
-    standalone = function(src) TriggerClientEvent('goodciv:client:revive', src) end,
+    standalone = function(src) TriggerClientEvent('goodciv:client:standaloneRevive', src) end,
+}
+
+---------------------------------------------------------------------------
+-- Wake up after CPR
+---------------------------------------------------------------------------
+-- How a patient is brought round on scene after successful CPR (Config.Treatment.CPR.WakeOnSuccess).
+-- Health is then dropped to Config.Treatment.CPR.WakeHealth. 'osp' is used whenever
+-- osp_ambulance is running, whatever the framework.
+Config.WakeUp = {
+    -- osp partial revive: gets them up but keeps their wounds, and osp won't let health
+    -- go back up until they're treated or check in at a hospital.
+    osp = function(src) TriggerClientEvent('osp_ambulance:partialRevive', src, true) end,
+    qbcore = function(src) TriggerClientEvent('hospital:client:Revive', src) end,
+    qbox = function(src) TriggerClientEvent('qbx_medical:client:playerRevived', src) end,
+    esx = function(src) TriggerClientEvent('esx_ambulancejob:revive', src) end,
+    standalone = function(src) TriggerClientEvent('goodciv:client:standaloneRevive', src) end,
 }
 
 ---------------------------------------------------------------------------
@@ -287,6 +314,5 @@ Config.Rewards = {
     Enabled = true,
     Account = 'cash',   -- qb/qbx: cash | bank, esx: money | bank
     Handover = 350,     -- per responder on successful hospital handover
-    BringRound = 250,   -- per responder when the patient is brought round on scene
     Assist = 100,       -- per responder whose patient was revived on scene by others
 }

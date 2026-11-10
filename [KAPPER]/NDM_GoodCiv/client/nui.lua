@@ -53,6 +53,14 @@ RegisterNUICallback('cprResult', function(data, cb)
     if pendingCpr then pendingCpr:resolve({ quality = tonumber(data.quality) or 0.0 }) end
 end)
 
+-- Client event for NPC scripts (hf1_npcs target event): sign up / sign off as a carrier.
+local lastToggle = 0
+AddEventHandler('goodciv:client:toggleCarrier', function()
+    if GetGameTimer() - lastToggle < 1500 then return end
+    lastToggle = GetGameTimer()
+    TriggerServerEvent('goodciv:server:toggleCarrier')
+end)
+
 RegisterNetEvent('goodciv:client:toast', function(kind, text)
     Nui.Toast(kind, text)
 end)

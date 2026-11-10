@@ -1,4 +1,4 @@
--- Treatment panel: assess, tourniquet, CPR, recovery position, bring round, load / unload.
+-- Treatment panel: assess, tourniquet, CPR, load / unload.
 Treatment = {}
 
 local open = false
@@ -7,16 +7,12 @@ local busy = false
 local ANIMS = {
     assess = { dict = 'amb@medic@standing@kneel@base', clip = 'base' },
     tourniquet = { dict = 'amb@medic@standing@tendtodead@idle_a', clip = 'idle_a' },
-    recovery = { dict = 'amb@medic@standing@tendtodead@idle_a', clip = 'idle_a' },
     cpr = { dict = 'mini@cpr@char_a@cpr_str', clip = 'cpr_pumpchest' },
-    revive = { dict = 'amb@medic@standing@tendtodead@idle_a', clip = 'idle_a' },
 }
 
 local LABELS = {
     assess = 'Checking airway, breathing and circulation',
     tourniquet = 'Applying tourniquet',
-    recovery = 'Rolling into recovery position',
-    revive = 'Bringing the patient round',
 }
 
 function Treatment.IsOpen() return open end

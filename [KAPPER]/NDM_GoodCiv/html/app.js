@@ -80,8 +80,7 @@
         if (s.bleeding === 'major') return { text: 'Life-threatening bleeding. Apply a tourniquet first.', urgent: true, action: 'tourniquet' };
         if (!inc.assessed) return { text: 'Check the patient: are they responsive and breathing?', action: 'assess' };
         if (!s.breathing) return { text: 'Not breathing. Start CPR now and keep going until they breathe.', urgent: true, action: 'cpr' };
-        if (!s.conscious && !s.recovery) return { text: 'Breathing but unresponsive. Place them in the recovery position.', action: 'recovery' };
-        return { text: `Patient is stable. Bring them round, or load them into a vehicle and take them to ${inc.hospital || 'hospital'}.`, action: 'revive' };
+        return { text: `Patient is stable. Load them into a vehicle and get them to ${inc.hospital || 'hospital'}.`, action: 'load' };
     }
 
     /* Responder HUD -------------------------------------------------- */
@@ -123,7 +122,7 @@
         }
         const bleed = { none: ['None seen', 'good'], major: ['Catastrophic', 'bad'], controlled: ['Controlled', 'good'] }[s.bleeding];
         setVital('bleeding', bleed[0], bleed[1]);
-        setVital('position', inc.transport ? 'In vehicle' : s.recovery ? 'Recovery' : 'On back', s.recovery || inc.transport ? 'good' : '');
+        setVital('position', inc.transport ? 'In vehicle' : 'On back', inc.transport ? 'good' : '');
 
         const step = nextStep(inc);
         const advice = $('.advice');
@@ -134,8 +133,6 @@
             assess: !inc.transport,
             tourniquet: !inc.transport && s.bleeding === 'major',
             cpr: !inc.transport && inc.assessed && !s.breathing,
-            recovery: !inc.transport && inc.assessed && s.breathing && !s.conscious && !s.recovery,
-            revive: !inc.transport && inc.assessed && inc.stable,
             load: !inc.transport && inc.stable,
             unload: !!inc.transport,
         };
@@ -256,119 +253,10 @@
         if (e.code === 'Space' && cpr) {
             e.preventDefault();
             if (!e.repeat) compress();
-        } else if (e.key === 'Escape' && configOpen) {
-            post('cfgClose');
         } else if (e.key === 'Escape' && current && !cpr) {
             post('close');
         }
     });
-
-    /* Down card ------------------------------------------------------ */
-    function down(data) {
-        const el = $('#down');
-        if (!data) return el.classList.add('hidden');
-        el.classList.remove('hidden');
-        $('.down-title', el).textContent = data.title;
-        const hint = $('.down-hint', el);
-        hint.textContent = data.hint || '';
-        hint.classList.toggle('hidden', !data.hint);
-        const respawn = $('.down-respawn', el);
-        respawn.textContent = data.respawn || '';
-        respawn.classList.toggle('hidden', !data.respawn);
-        const hold = $('.down-hold', el);
-        hold.classList.toggle('hidden', !(data.hold > 0));
-        $('.fill', hold).style.width = `${Math.round((data.hold || 0) * 100)}%`;
-    }
-
-    /* Injury badge --------------------------------------------------- */
-    function injury(data) {
-        const el = $('#injury');
-        if (!data) return el.classList.add('hidden');
-        el.classList.remove('hidden');
-        $('.injury-title', el).textContent = data.title;
-        $('.injury-text', el).textContent = data.text;
-    }
-
-    /* Check-in point creator ------------------------------------------ */
-    let configOpen = false;
-    let configDefaults = { fee: 0, radius: 30 };
-
-    function config(data) {
-        const el = $('#config');
-        configOpen = !!data;
-        if (!data) return el.classList.add('hidden');
-        const wasHidden = el.classList.contains('hidden');
-        el.classList.remove('hidden');
-        configDefaults = data.defaults || configDefaults;
-        const form = $('.cfg-form', el);
-        $('.cfg-fee', el).classList.toggle('hidden', !data.economy);
-        if (wasHidden) {
-            form.label.value = '';
-            form.fee.value = configDefaults.fee;
-            form.radius.value = configDefaults.radius;
-        }
-
-        const list = $('.cfg-list', el);
-        if (!data.hospitals.length) {
-            list.innerHTML = '<div class="cfg-empty">No check-in points yet.</div>';
-            return;
-        }
-        list.innerHTML = data.hospitals.map((h) => `
-            <div class="cfg-row" data-id="${escapeHtml(h.id)}">
-                <div class="cfg-main">
-                    ${h.custom
-                        ? `<input class="cfg-label" value="${escapeHtml(h.label)}" maxlength="48">`
-                        : `<strong>${escapeHtml(h.label)}</strong><span class="cfg-badge">config.lua</span>`}
-                    <div class="cfg-meta">
-                        ${data.economy ? (h.custom
-                            ? `Fee $<input class="cfg-num cfg-rowfee" type="number" min="0" value="${h.fee ?? configDefaults.fee}">`
-                            : `Fee $${h.fee ?? configDefaults.fee}`) : ''}
-                        ${h.custom
-                            ? `Zone <input class="cfg-num cfg-radius" type="number" min="5" max="250" value="${h.radius}"> m`
-                            : `Zone ${h.radius} m`}
-                        &middot; ${h.distance} m away
-                    </div>
-                </div>
-                <div class="cfg-buttons">
-                    <button data-row="tp">Go to</button>
-                    ${h.custom ? `
-                        <button data-row="save">Save</button>
-                        <button data-row="move">Move here</button>
-                        <button data-row="remove" class="danger">Delete</button>` : ''}
-                </div>
-            </div>`).join('');
-    }
-
-    $('.cfg-form').addEventListener('submit', (e) => {
-        e.preventDefault();
-        const f = e.target;
-        post('cfgAdd', { label: f.label.value, fee: Number(f.fee.value), radius: Number(f.radius.value) });
-        f.label.value = '';
-    });
-
-    $('.cfg-list').addEventListener('click', (e) => {
-        const btn = e.target.closest('[data-row]');
-        if (!btn) return;
-        const row = btn.closest('.cfg-row');
-        const id = row.dataset.id;
-        const action = btn.dataset.row;
-        if (action === 'tp') post('cfgTeleport', { id });
-        else if (action === 'move') post('cfgMove', { id });
-        else if (action === 'remove') {
-            if (btn.dataset.confirm) post('cfgRemove', { id });
-            else { btn.dataset.confirm = '1'; btn.textContent = 'Confirm?'; }
-        } else if (action === 'save') {
-            const fee = $('.cfg-rowfee', row);
-            post('cfgUpdate', {
-                id,
-                label: $('.cfg-label', row).value,
-                fee: fee ? Number(fee.value) : configDefaults.fee,
-                radius: Number($('.cfg-radius', row).value),
-            });
-        }
-    });
-
-    $('[data-cfg="close"]').addEventListener('click', () => post('cfgClose'));
 
     /* Message router ------------------------------------------------- */
     const handlers = {
@@ -381,9 +269,6 @@
         progress,
         cpr: startCpr,
         cprCancel: stopCpr,
-        down,
-        injury,
-        config,
     };
 
     window.addEventListener('message', (e) => {

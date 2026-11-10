@@ -21,18 +21,6 @@
         <div class="patient-sub"></div>
     </div>
 
-    <div id="down" class="card hidden">
-        <div class="eyebrow"><span class="dot pulse danger"></span><span class="down-title"></span></div>
-        <div class="down-hint"></div>
-        <div class="down-respawn"></div>
-        <div class="bar down-hold"><div class="fill"></div></div>
-    </div>
-
-    <div id="injury" class="card hidden">
-        <div class="eyebrow"><span class="dot danger"></span><span class="injury-title"></span></div>
-        <div class="injury-text"></div>
-    </div>
-
     <div id="progress" class="hidden">
         <div class="progress-label"></div>
         <div class="bar"><div class="fill"></div></div>
@@ -61,8 +49,6 @@
                 <button data-action="assess"><b>Assess</b><small>Check airway, breathing, bleeding</small></button>
                 <button data-action="tourniquet"><b>Tourniquet</b><small>Stop major limb bleeding</small></button>
                 <button data-action="cpr"><b>CPR</b><small>Chest compressions, 100&ndash;120/min</small></button>
-                <button data-action="recovery"><b>Recovery position</b><small>Keep the airway open</small></button>
-                <button data-action="revive"><b>Bring round</b><small>Get a stable patient back on their feet</small></button>
                 <button data-action="load"><b>Load into vehicle</b><small class="load-sub">Nearest vehicle, to hospital</small></button>
                 <button data-action="unload"><b>Unload</b><small>Take patient out of the vehicle</small></button>
             </section>
@@ -83,29 +69,6 @@
                 </div>
                 <div class="bar"><div class="fill cpr-time"></div></div>
             </div>
-        </div>
-    </div>
-
-    <div id="config" class="hidden">
-        <div class="panel config-panel">
-            <header>
-                <div>
-                    <div class="eyebrow"><span class="dot"></span>GoodCiv config</div>
-                    <h1>Hospital check-in points</h1>
-                </div>
-                <button class="icon" data-cfg="close" title="Close (Esc)">&times;</button>
-            </header>
-
-            <p class="cfg-help">Stand where patients should check in (the desk or bed), then add a point. The zone radius is the area where volunteers can hand patients over.</p>
-
-            <form class="cfg-form">
-                <label>Name<input name="label" maxlength="48" placeholder="e.g. Pillbox Lower Reception" required></label>
-                <label class="cfg-fee">Fee $<input name="fee" type="number" min="0" step="1"></label>
-                <label>Zone radius (m)<input name="radius" type="number" min="5" max="250" step="1"></label>
-                <button type="submit" class="primary">Add at my position</button>
-            </form>
-
-            <div class="cfg-list"></div>
         </div>
     </div>
 

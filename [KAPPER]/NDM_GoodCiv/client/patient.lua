@@ -2,6 +2,7 @@
 -- in and out of vehicles by responders.
 
 local downed = false
+local stage = 0 -- 0 up, 1 last stand, 2 no signs of life
 local lastDamage = 'other'
 
 local VEHICLE_WEAPONS = {
@@ -29,7 +30,7 @@ AddEventHandler('gameEventTriggered', function(name, args)
 end)
 
 local function publish()
-    LocalPlayer.state:set('goodciv:patient', { downed = downed, damage = lastDamage }, true)
+    LocalPlayer.state:set('goodciv:patient', { downed = downed, stage = stage, damage = lastDamage }, true)
 end
 
 CreateThread(function()
@@ -37,12 +38,16 @@ CreateThread(function()
     local downedAt
     local autoSent = false
     while true do
-        local now = Bridge.IsDowned()
+        local nowStage = Bridge.DownedStage()
+        local now = nowStage > 0
         if now ~= downed then
             downed = now
             downedAt = now and GetGameTimer() or nil
             autoSent = false
             if not now then lastDamage = 'other' end
+        end
+        if nowStage ~= stage then
+            stage = nowStage
             publish()
         end
         if downed and not autoSent and Config.Dispatch.AutoAlertDelay > 0
@@ -70,26 +75,35 @@ if Bridge.Name == 'standalone' then
 end
 
 ---------------------------------------------------------------------------
+-- Woken by CPR: once the revive script has stood us up, drop health low.
+-- (osp_ambulance then keeps it from going back up until treated / checked in.)
+---------------------------------------------------------------------------
+RegisterNetEvent('goodciv:client:wakeHealth', function(health)
+    if GetInvokingResource() then return end
+    local deadline = GetGameTimer() + 10000
+    while Bridge.IsDowned() and GetGameTimer() < deadline do Wait(250) end
+    if Bridge.IsDowned() then return end
+    -- Let the revive script finish setting its own health first.
+    Wait(1000)
+    local ped = PlayerPedId()
+    health = math.max(101, math.floor(tonumber(health) or 120))
+    if GetEntityHealth(ped) > health then SetEntityHealth(ped, health) end
+end)
+
+---------------------------------------------------------------------------
 -- Status card
 ---------------------------------------------------------------------------
-Patient = {}
-local hasIncident = false
-
-function Patient.HasIncident() return hasIncident end
-
 RegisterNetEvent('goodciv:client:patientStatus', function(data)
-    hasIncident = true
     Nui.Send('patientStatus', data)
 end)
 
 RegisterNetEvent('goodciv:client:patientClosed', function(reason)
-    hasIncident = false
     Nui.Send('patientStatus', false)
     if reason then Nui.Toast('info', reason) end
 end)
 
 ---------------------------------------------------------------------------
--- Forward /goodciv to dispatch scripts that are fed from the caller's client
+-- Forward /medic to dispatch scripts that are fed from the caller's client
 ---------------------------------------------------------------------------
 RegisterNetEvent('goodciv:client:forwardDispatch', function(provider)
     if provider == 'ps-dispatch' and GetResourceState('ps-dispatch') == 'started' then
