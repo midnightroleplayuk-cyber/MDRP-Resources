@@ -66,6 +66,8 @@ Incidents.OnClosed = function(inc, reason)
         note(inc.id, L('vw_note_handover', inc.handedOverAt))
     elseif reason == 'resolved' then
         note(inc.id, L('vw_note_resolved'))
+    elseif reason == 'checked_in' then
+        note(inc.id, L('vw_note_checked_in'))
     elseif reason == 'alert_closed' and inc.responderCount > 0 then
         note(inc.id, L('vw_note_ended'))
     end

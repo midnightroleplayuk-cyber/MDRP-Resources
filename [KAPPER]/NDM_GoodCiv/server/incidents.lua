@@ -197,6 +197,13 @@ RegisterNetEvent('goodciv:server:accept', function(id)
     Incidents.Sync(inc)
 end)
 
+-- Patient checked in at a hospital themselves: cancel alerts and stand responders down.
+RegisterNetEvent('goodciv:server:checkedIn', function()
+    local inc = Incidents.GetByPatient(source)
+    if not inc or inc.handingOver then return end
+    Incidents.Close(inc, 'checked_in')
+end)
+
 RegisterNetEvent('goodciv:server:abandon', function()
     local inc = Incidents.GetResponding(source)
     if inc then Incidents.RemoveResponder(inc, source) end
