@@ -103,6 +103,17 @@ RegisterNetEvent('goodciv:client:patientClosed', function(reason)
 end)
 
 ---------------------------------------------------------------------------
+-- Checked in at hospital (osp_ambulance / qb-ambulancejob)
+---------------------------------------------------------------------------
+-- The server only sends SendToBed with isRevive = true once a check-in has
+-- gone through (check-in open, bed free), so the GoodCiv call is no longer needed.
+RegisterNetEvent('hospital:client:SendToBed', function(_, _, isRevive)
+    if not isRevive then return end
+    Nui.Send('patientStatus', false)
+    TriggerServerEvent('goodciv:server:checkedIn')
+end)
+
+---------------------------------------------------------------------------
 -- Forward /medic to dispatch scripts that are fed from the caller's client
 ---------------------------------------------------------------------------
 RegisterNetEvent('goodciv:client:forwardDispatch', function(provider)

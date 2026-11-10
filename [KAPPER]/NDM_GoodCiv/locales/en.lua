@@ -55,6 +55,7 @@ Locales.en = {
     reward = 'You received £%s for your help.',
     resolved = 'The patient has been revived. Call closed.',
     medic_took_over = 'A medic has taken over the call. Thank you.',
+    checked_in = 'The patient has checked in at hospital. Call closed.',
 
     help_treat = 'Press ~INPUT_%s~ to treat the patient',
     help_handover = 'Press ~INPUT_%s~ to hand over the patient',
@@ -66,6 +67,7 @@ Locales.en = {
     vw_note_responding = 'GoodCiv volunteer %s is responding.',
     vw_note_handover = 'Patient taken to %s by GoodCiv volunteers.',
     vw_note_resolved = 'Patient revived on scene.',
+    vw_note_checked_in = 'Patient checked in at hospital. GoodCiv call cancelled.',
     vw_note_ended = 'GoodCiv response ended.',
 
     signup_join = 'Sign up as a GoodCiv volunteer',
