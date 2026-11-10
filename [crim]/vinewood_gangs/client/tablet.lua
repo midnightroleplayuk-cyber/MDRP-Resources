@@ -43,6 +43,7 @@ local ADMIN_ALLOWED = {
     contractSpots = true, addContractSpot = true, deleteContractSpot = true, gotoContractSpot = true,
     addRacketShop = true, deleteRacketShop = true, gotoRacketShop = true,
     hexGang = true, hexMap = true, hexResize = true, heistLaptops = true, heistLaptopAdd = true, heistLaptopRemove = true,
+    heistLootTables = true, heistLootTablesSave = true,
     itemCount = true, itemGive = true, itemTake = true, packages = true, packageSave = true, packageDelete = true, packageSend = true, shopGet = true, shopSave = true, shopReset = true, tagTiming = true, tagTimingSave = true, tagTimingReset = true, hexGive = true, hexRemove = true, hexControl = true, hexMain = true, hexSettings = true, hexSettingsSave = true,
     blackmarketSettings = true, blackmarketSave = true, blackmarketOpen = true, blackmarketReset = true,
     airdrops = true, airdropCancel = true, airdropAdminCall = true,

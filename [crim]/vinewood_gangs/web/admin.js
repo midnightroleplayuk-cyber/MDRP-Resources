@@ -2033,6 +2033,66 @@ const ALERT_OPTIONS = [{ value: 'none', label: 'No alarm' }, { value: 'silent', 
 const DIFFICULTY = [{ value: 1, label: 'Easy' }, { value: 2, label: 'Medium' }, { value: 3, label: 'Hard' }];
 const point = (p) => (p && p.x != null ? `${Math.round(p.x)}, ${Math.round(p.y)}` : 'Not set');
 
+/* Heist loot tables: named tables every heist can use; a loot step draws its picks from one */
+function editHeistLootTables(after) {
+  const v = JSON.parse(JSON.stringify(admin.heistLootTables || []));
+  if (!v.length) v.push({ name: 'Vault', rolls: 3, loot: [{ money: true, account: 'dirty', min: 5000, max: 15000, chance: 40 }] });
+  let cur = 0;
+  const body = h('div', { style: 'display:grid;gap:10px' });
+  const numIn = (obj, key, min, width = 90) => { const el = h('input', { type: 'number', min, value: obj[key], style: `width:${width}px` }); el.addEventListener('change', () => { obj[key] = Number(el.value); draw(); }); return el; };
+  const draw = () => {
+    const t = v[cur];
+    const total = t.loot.reduce((n, e) => n + (Number(e.chance) || 0), 0) || 1;
+    const name = h('input', { type: 'text', maxlength: 32, value: t.name, style: 'width:220px' });
+    name.addEventListener('input', () => { t.name = name.value; });
+    name.addEventListener('change', draw);
+    const rows = h('div', { style: 'display:grid;gap:8px;max-height:38vh;overflow-y:auto;padding-right:4px' },
+      ...t.loot.map((e, i) => h('div', { class: 'loot-entry' },
+        e.money ? h('div', { class: 'row', style: 'align-items:center' }, h('strong', { text: 'Money (£)' }),
+          (() => { const a = select([{ value: 'dirty', label: 'Dirty' }, { value: 'clean', label: 'Clean' }], e.account || 'dirty'); a.addEventListener('change', () => { e.account = a.value; }); return a; })())
+          : itemPicker(e.item ? { item: e.item, label: e.label } : null, (it) => { e.item = it ? it.name : null; e.label = it ? it.label : null; }, { allowClear: false, openNow: !e.item, emptyText: 'No item chosen yet' }),
+        h('div', { class: 'loot-fields' },
+          h('label', { class: 'field' }, 'Min', numIn(e, 'min', 1)),
+          h('label', { class: 'field' }, 'Max', numIn(e, 'max', 1)),
+          h('label', { class: 'field' }, 'Weight', h('span', { class: 'row', style: 'flex-wrap:nowrap;align-items:center;gap:8px' }, numIn(e, 'chance', 1, 80), h('span', { class: 'muted', text: `about ${Math.round((e.chance || 0) / total * 100)}% of picks` }))),
+          h('button', { class: 'btn small danger', type: 'button', style: 'margin-left:auto;align-self:end', onclick: () => { t.loot.splice(i, 1); draw(); } }, 'Remove')))));
+    body.replaceChildren(
+      h('div', { class: 'choices', role: 'radiogroup', style: 'flex-wrap:wrap' },
+        ...v.map((x, i) => h('button', { type: 'button', role: 'radio', class: 'choice', 'aria-checked': String(i === cur), onclick: () => { cur = i; draw(); } }, x.name || 'Untitled')),
+        h('button', { class: 'btn small', type: 'button', onclick: () => { v.push({ name: `Loot table ${v.length + 1}`, rolls: 2, loot: [{ money: true, account: 'dirty', min: 1000, max: 3000, chance: 20 }] }); cur = v.length - 1; draw(); } }, '+ New table')),
+      h('div', { class: 'row', style: 'align-items:end' },
+        h('label', { class: 'field' }, 'Name', name),
+        h('label', { class: 'field' }, 'Picks per grab', numIn(t, 'rolls', 1, 80)),
+        h('span', { style: 'margin-left:auto' }),
+        v.length > 1 ? h('button', { class: 'btn small danger', type: 'button', onclick: () => { v.splice(cur, 1); cur = 0; draw(); } }, 'Delete table') : h('span', {})),
+      rows,
+      h('div', { class: 'row' },
+        h('button', { class: 'btn small', type: 'button', onclick: () => { t.loot.push({ item: null, min: 1, max: 1, chance: 10 }); draw(); } }, 'Add an item'),
+        h('button', { class: 'btn small', type: 'button', onclick: () => { t.loot.push({ money: true, account: 'dirty', min: 1000, max: 3000, chance: 20 }); draw(); } }, 'Add money')));
+  };
+  draw();
+  $('sheet').classList.add('wide');
+  showModal(
+    h('h2', { text: 'Heist loot tables' }),
+    h('p', { text: 'Shared by every heist: a Grab loot step set to "From a loot table" makes this many picks from the table it uses, each pick taking one entry (the higher its weight, the likelier). Money goes to the gang\'s treasury, or to whoever grabs it if their crew has no gang.' }),
+    body,
+    h('div', { class: 'buttons' },
+      h('button', { class: 'btn', type: 'button', onclick: hideModal }, 'Cancel'),
+      h('button', { class: 'btn primary', type: 'button', onclick: async () => {
+        for (const [i, t] of v.entries()) {
+          if (!t.loot.length) { cur = i; draw(); return toast(`"${t.name}" needs at least one entry.`, true); }
+          if (t.loot.some((e) => !e.money && !e.item)) { cur = i; draw(); return toast('Pick an item for every row, or remove it.', true); }
+        }
+        const data = v.map((t) => ({ id: t.id, name: t.name, rolls: Number(t.rolls), loot: t.loot.map((e) => (e.money ? { money: true, account: e.account || 'dirty', min: e.min, max: e.max, chance: e.chance } : { item: e.item, min: e.min, max: e.max, chance: e.chance })) }));
+        const r = await adminRequest('heistLootTablesSave', data);
+        if (!r.ok) return toast(r.error, true);
+        admin.heistLootTables = r.data;
+        hideModal();
+        toast('Loot tables saved. Heists using them pay out from the new contents straight away.');
+        if (after) after(); else renderAdminTab();
+      } }, 'Save')));
+}
+
 /* Heist laptops: staff place them around the map; anyone can use one to see the heist board */
 async function renderHeistLaptops() {
   const res = await adminRequest('heistLaptops');
@@ -2067,6 +2127,8 @@ async function renderHeistList() {
   const res = await adminRequest('heists');
   if (!res.ok) return loadError(res);
   admin.heistMeta = res.data;
+  const lt = await adminRequest('heistLootTables');
+  admin.heistLootTables = lt.ok ? lt.data : [];
   const { heists, templates } = res.data;
 
   const rows = heists.map((x) => h('tr', { class: 'clickable', onclick: () => { admin.heist = JSON.parse(JSON.stringify(x)); renderAdminTab(); } },
@@ -2091,7 +2153,10 @@ async function renderHeistList() {
     h('div', { class: 'buttons' }, h('button', { class: 'btn', type: 'button', onclick: hideModal }, 'Cancel')));
 
   return h('div', {},
-    h('div', { class: 'section-head' }, h('h2', { text: 'Heists' }), h('button', { class: 'btn primary', type: 'button', onclick: newHeist }, 'New heist')),
+    h('div', { class: 'section-head' }, h('h2', { text: 'Heists' }),
+      h('div', { class: 'row' },
+        h('button', { class: 'btn', type: 'button', onclick: () => editHeistLootTables() }, `Loot tables${admin.heistLootTables.length ? ` (${admin.heistLootTables.length})` : ''}`),
+        h('button', { class: 'btn primary', type: 'button', onclick: newHeist }, 'New heist'))),
     h('p', { class: 'hint', style: 'margin-bottom:16px', text: 'Heists you build here appear in gangs\' tablets once they\'re live. Gangs need to reach the Organisation tier first (config/progression.lua).' }),
     heists.length ? h('table', {}, h('tbody', {}, rows)) : h('p', { class: 'empty', text: 'No heists yet. Press New heist to build one.' }));
 }
@@ -2164,22 +2229,38 @@ function renderHeistEditor() {
       }
       s.loot = s.loot || { kind: 'money', account: 'dirty', min: 1000, max: 2000 };
       const l = s.loot;
-      const kind = select([{ value: 'money', label: 'Money to the treasury' }, { value: 'item', label: 'An item' }], l.kind);
+      const kind = select([{ value: 'money', label: 'Money to the treasury' }, { value: 'item', label: 'An item' }, { value: 'table', label: 'From a loot table' }], l.kind);
       kind.addEventListener('change', () => {
         l.kind = kind.value;
         // Amounts that suit the new kind: a handful of items, or a sensible sum of money
-        if (l.kind === 'item') { l.min = 1; l.max = 3; } else { l.account = l.account || 'dirty'; l.min = 1000; l.max = 2000; }
+        if (l.kind === 'item') { l.min = 1; l.max = 3; } else if (l.kind === 'money') { l.account = l.account || 'dirty'; l.min = 1000; l.max = 2000; }
+        else { l.table = l.table || ((admin.heistLootTables || [])[0] || {}).id || null; }
         rerender();
       });
       extra.push(h('label', { class: 'field' }, 'Loot', kind));
-      if (l.kind === 'money') {
+      if (l.kind === 'table') {
+        const tables = admin.heistLootTables || [];
+        if (!tables.length) {
+          extra.push(h('div', { class: 'field' }, 'Loot table', h('div', { class: 'row', style: 'align-items:center' },
+            h('span', { class: 'hint debit', style: 'margin:0', text: 'No loot tables yet.' }),
+            h('button', { class: 'btn small', type: 'button', onclick: () => editHeistLootTables(rerender) }, 'Make one'))));
+        } else {
+          const t = select(tables.map((x) => ({ value: x.id, label: `${x.name} (${x.rolls} ${x.rolls === 1 ? 'pick' : 'picks'})` })), l.table || tables[0].id);
+          if (!l.table) l.table = tables[0].id;
+          t.addEventListener('change', () => { l.table = Number(t.value); });
+          extra.push(h('label', { class: 'field' }, 'Loot table', t),
+            h('button', { class: 'btn small', type: 'button', style: 'align-self:end;margin-bottom:6px', onclick: () => editHeistLootTables(rerender) }, 'Edit loot tables'));
+        }
+      } else if (l.kind === 'money') {
         extra.push(h('label', { class: 'field' }, 'Into', pick(l, 'account', [{ value: 'dirty', label: 'Dirty money' }, { value: 'clean', label: 'Clean money' }])));
       } else {
         extra.push(h('div', { class: 'field', style: 'min-width:280px' }, 'Item', itemPicker(l.item ? { item: l.item, label: l.label, image: l.image } : null,
           (it) => { l.item = it ? it.name : null; l.label = it ? it.label : null; l.image = it ? it.image : null; }, { allowClear: false, emptyText: 'No item chosen yet' })));
       }
-      extra.push(h('label', { class: 'field' }, l.kind === 'money' ? 'Min (£)' : 'Min', num(l, 'min', 1, 10000000, 100)),
-        h('label', { class: 'field' }, l.kind === 'money' ? 'Max (£)' : 'Max', num(l, 'max', 1, 10000000, 100)));
+      if (l.kind !== 'table') {
+        extra.push(h('label', { class: 'field' }, l.kind === 'money' ? 'Min (£)' : 'Min', num(l, 'min', 1, 10000000, 100)),
+          h('label', { class: 'field' }, l.kind === 'money' ? 'Max (£)' : 'Max', num(l, 'max', 1, 10000000, 100)));
+      }
     }
     // Something the crew must carry for this step (otherwise the config default for the step type)
     if (type.game || s.type === 'wait') {
@@ -2735,6 +2816,8 @@ const AdminMock = {
       case 'itemCount': return ok(0);
       case 'itemGive': return ok(args[2]);
       case 'itemTake': return ok(0);
+      case 'heistLootTables': return ok([{ id: 1, name: 'Vault', rolls: 3, loot: [{ money: true, account: 'dirty', min: 5000, max: 15000, chance: 40 }, { item: 'goldbar', label: 'Gold bar', min: 1, max: 3, chance: 20 }, { item: 'diamond', label: 'Diamond', min: 1, max: 2, chance: 10 }] }]);
+      case 'heistLootTablesSave': return ok(args[0].map((t, i) => ({ ...t, id: t.id || i + 10 })));
       case 'heistLaptops': return ok([{ id: 1, label: 'Back of the Bahama Mamas', x: -1388.2, y: -586.4, z: 30.2, w: 120 }]);
       case 'heistLaptopAdd': return ok(true);
       case 'heistHere': return ok({ x: -2958.4, y: 482.1, z: 15.7, w: 88.2 });

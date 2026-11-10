@@ -186,6 +186,11 @@ enabled, stay open for the getaway, and lock again a minute after the run ends (
 locks them itself, so no door-lock resource is needed; the separate ox_doorlock / qb-doorlock field still works if
 you'd rather use one.
 
+**Loot tables:** the Loot tables button on the Heists page manages named tables shared by every heist ("Vault",
+"Jewellery case"…): items or money (dirty or clean), each with a min, max and weight, plus how many picks a grab
+makes. Set a Grab loot step to "From a loot table" and pick one; change the table once and every heist using it
+follows. Fixed loot (money or one item) still works as before.
+
 **Heist board:** the gang tablet's Heists app shows every heist with its requirements (Details): crew, police on
 duty, time limit, cooldown, gang tier, who can do it, how it starts, items to bring, money for contacts, the steps
 and the loot, plus whether the gang can do it right now and why not.

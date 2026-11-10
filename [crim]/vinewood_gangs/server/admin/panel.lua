@@ -23,7 +23,7 @@ local ACTION_GROUP = {
     safehouseShells = 'view', rackets = 'view', pendingDesigns = 'view', pendingLogos = 'view', listTags = 'view',
     onlinePlayers = 'view', searchItems = 'view', airdrops = 'view', hexGang = 'view', hexSettings = 'view', hexMap = 'view', tagTiming = 'view', tagTimingSave = 'tags', tagTimingReset = 'tags',
     hexGive = 'world', hexRemove = 'world', hexMain = 'world', hexControl = 'economy', hexSettingsSave = 'settings', hexResize = 'settings',
-    heistLaptops = 'view', heistLaptopAdd = 'world', heistLaptopRemove = 'world',
+    heistLaptops = 'view', heistLaptopAdd = 'world', heistLaptopRemove = 'world', heistLootTables = 'view', heistLootTablesSave = 'world',
     itemCount = 'view', itemGive = 'economy', itemTake = 'economy',
     packages = 'view', packageSave = 'economy', packageDelete = 'economy', packageSend = 'economy', shopGet = 'view', shopSave = 'settings', shopReset = 'settings',
     customContracts = 'view', customContractSave = 'world', customContractDelete = 'world', customContractOffer = 'events',
@@ -414,6 +414,8 @@ admin('shopGet', function() return Shop.AdminGet() end)
 admin('shopSave', function(src, data) return Shop.AdminSave(src, data) end)
 admin('shopReset', function(src) return Shop.AdminReset(src) end)
 
+admin('heistLootTables', function() return Heists.AdminLootTables() end)
+admin('heistLootTablesSave', function(src, data) return Heists.AdminSaveLootTables(src, data) end)
 admin('heistLaptops', function() return Heists.AdminLaptops() end)
 admin('heistLaptopAdd', function(src, p, label) return Heists.AdminAddLaptop(src, p, label) end)
 admin('heistLaptopRemove', function(src, id) return Heists.AdminRemoveLaptop(src, id) end)

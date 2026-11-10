@@ -137,6 +137,9 @@ local function work(s)
             lib.notify({ title = s.label, description = res.say, type = 'inform', duration = 10000 })
         elseif res.result == 'failed' then
             notify('heist_step_failed', 'error', cfg.retryDelay)
+        elseif res.reward and res.reward.list then
+            -- From a loot table: everything in one message
+            notify('heist_loot_list', 'success', #res.reward.list > 0 and table.concat(res.reward.list, ', ') or locale('heist_loot_nothing'))
         elseif res.reward and res.reward.money then
             notify('heist_loot_money', 'success', Utils.FormatMoney(res.reward.money))
         elseif res.reward and res.reward.item then

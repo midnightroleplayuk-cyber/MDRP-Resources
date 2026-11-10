@@ -13,10 +13,96 @@ local GAMES = { hack = 'hack', thermite = 'thermite', drill = 'drill', truck_doo
 
 local function now() return os.time() end
 
----Loot in its current form: { kind = 'money', account, min, max } or { kind = 'item', item, label, min, max }.
+-------------------------------------------------------------------------------
+-- Heist loot tables: named tables shared by every heist; a loot step can draw from one
+-------------------------------------------------------------------------------
+
+local lootTables, nextLootTableId = {}, 1
+
+local function lootTableById(id)
+    id = tonumber(id)
+    for _, t in ipairs(lootTables) do if t.id == id then return t end end
+end
+
+---Draws a table's picks: { money = { dirty = n, clean = n }, items = { [item] = count } }.
+local function rollLootTable(t)
+    local total = 0
+    for _, e in ipairs(t.loot) do total = total + (e.chance or 1) end
+    local out = { money = {}, items = {} }
+    for _ = 1, (t.rolls or 1) do
+        local r, acc = math.random() * total, 0
+        for _, e in ipairs(t.loot) do
+            acc = acc + (e.chance or 1)
+            if r <= acc then
+                local n = math.random(math.floor(e.min or 1), math.floor(math.max(e.min or 1, e.max or e.min or 1)))
+                if e.money then
+                    local acct = e.account == 'clean' and 'clean' or 'dirty'
+                    out.money[acct] = (out.money[acct] or 0) + n
+                else
+                    out.items[e.item] = (out.items[e.item] or 0) + n
+                end
+                break
+            end
+        end
+    end
+    return out
+end
+
+function Heists.LoadLootTables()
+    local raw = MySQL.scalar.await("SELECT value FROM vg_settings WHERE `key` = 'heist_loot_tables'")
+    local ok, data = pcall(json.decode, raw or '')
+    if ok and type(data) == 'table' then lootTables, nextLootTableId = data.tables or {}, data.nextId or 1 end
+end
+
+function Heists.AdminLootTables()
+    local out = {}
+    for _, t in ipairs(lootTables) do
+        local list = {}
+        for i, e in ipairs(t.loot) do
+            list[i] = { money = e.money == true, account = e.account, item = e.item, label = e.item and Bridge.ItemLabel(e.item) or nil, min = e.min, max = e.max, chance = e.chance }
+        end
+        out[#out + 1] = { id = t.id, name = t.name, rolls = t.rolls, loot = list }
+    end
+    return out
+end
+
+---Saves every heist loot table at once: { { id?, name, rolls, loot = { { money = true, account, min, max, chance } | { item, min, max, chance } } } }.
+function Heists.AdminSaveLootTables(src, input)
+    if type(input) ~= 'table' or #input > 30 then return false, 'invalid' end
+    local tables, used = {}, {}
+    for _, t in ipairs(input) do
+        if type(t) ~= 'table' or type(t.loot) ~= 'table' or #t.loot == 0 or #t.loot > 40 then return false, 'airdrop_need_loot' end
+        local list = {}
+        for _, e in ipairs(t.loot) do
+            local lo = math.floor(math.max(1, math.min(10000000, tonumber(e.min) or 1)))
+            local hi = math.floor(math.max(lo, math.min(10000000, tonumber(e.max) or lo)))
+            local chance = math.floor(math.max(1, math.min(1000, tonumber(e.chance) or 10)))
+            if e.money then
+                list[#list + 1] = { money = true, account = e.account == 'clean' and 'clean' or 'dirty', min = lo, max = hi, chance = chance }
+            else
+                if type(e.item) ~= 'string' or not Bridge.ItemExists(e.item) then return false, 'item_not_found' end
+                list[#list + 1] = { item = e.item, min = lo, max = math.min(hi, 500), chance = chance }
+            end
+        end
+        local name = tostring(t.name or ''):gsub('[<>]', ''):match('^%s*(.-)%s*$'):sub(1, 32)
+        local id = tonumber(t.id)
+        if not id or used[id] then id = nextLootTableId nextLootTableId = nextLootTableId + 1 end
+        used[id] = true
+        if id >= nextLootTableId then nextLootTableId = id + 1 end
+        tables[#tables + 1] = { id = id, name = #name > 0 and name or ('Loot table ' .. id), rolls = math.floor(math.max(1, math.min(20, tonumber(t.rolls) or 1))), loot = list }
+    end
+    lootTables = tables
+    MySQL.insert.await("INSERT INTO vg_settings (`key`, value, updated_by) VALUES ('heist_loot_tables', ?, ?) ON DUPLICATE KEY UPDATE value = VALUES(value), updated_by = VALUES(updated_by)",
+        { json.encode({ tables = lootTables, nextId = nextLootTableId }), Bridge.GetCitizenId(src) or 'console' })
+    Logger.Log(src, 'staff_heist_loot', ('saved %d heist loot tables'):format(#tables))
+    return true, Heists.AdminLootTables()
+end
+
+---Loot in its current form: { kind = 'money', account, min, max }, { kind = 'item', item, label, min, max }
+---or { kind = 'table', table = id } (a heist loot table).
 local function normaliseLoot(l)
     if type(l) ~= 'table' then return nil end
-    if l.kind == 'money' or l.kind == 'item' then return l end
+    if l.kind == 'money' or l.kind == 'item' or l.kind == 'table' then return l end
     local def = l.type and cfg.lootTypes[l.type]
     if not def then return nil end
     if def.kind == 'money' then return { kind = 'money', account = def.account or 'dirty', min = l.min, max = l.max } end
@@ -254,6 +340,17 @@ local function requirements(h)
         steps[#steps + 1] = (cfg.stepTypes[s.type] and cfg.stepTypes[s.type].label or s.type)
         if s.type == 'loot' and s.loot then
             if s.loot.kind == 'money' then loot.money = (loot.money or 0) + (s.loot.max or s.loot.min or 0)
+            elseif s.loot.kind == 'table' then
+                -- From a loot table: the most money a grab could give, and the items it can give
+                local t = lootTableById(s.loot.table)
+                if t then
+                    local maxMoney = 0
+                    for _, e in ipairs(t.loot) do
+                        if e.money then maxMoney = math.max(maxMoney, e.max or 0)
+                        elseif e.item then loot.items = loot.items or {} loot.items[Bridge.ItemLabel(e.item)] = true end
+                    end
+                    if maxMoney > 0 then loot.money = (loot.money or 0) + maxMoney * (t.rolls or 1) end
+                end
             elseif s.loot.item then loot.items = loot.items or {} loot.items[Bridge.ItemLabel(s.loot.item)] = true end
         end
     end
@@ -535,9 +632,33 @@ function Heists.BeginStep(src, runId, i)
     }
 end
 
+local function payMoney(run, src, account, amount)
+    if isGangCrew(run.gangId) then
+        Ledger.Transact(run.gangId, account or 'dirty', amount, 'heist', { note = run.heist.label })
+    elseif (account or 'dirty') == 'dirty' then
+        Bridge.AddDirtyMoney(src, amount, 'heist')
+    else
+        Bridge.AddMoney(src, 'cash', amount, 'heist')
+    end
+    run.loot = run.loot + amount
+end
+
 local function payLoot(run, src, s)
     local l = normaliseLoot(s.loot)
     if not l then return nil end
+    if l.kind == 'table' then
+        local t = lootTableById(l.table)
+        if not t then return nil end
+        local got = rollLootTable(t)
+        local list, money = {}, 0
+        for item, n in pairs(got.items) do
+            if Bridge.AddItem(src, item, n) then list[#list + 1] = ('%d x %s'):format(n, Bridge.ItemLabel(item)) end
+        end
+        table.sort(list)
+        for acct, n in pairs(got.money) do payMoney(run, src, acct, n) money = money + n end
+        if money > 0 then list[#list + 1] = Utils.FormatMoney(money) end
+        return { list = list, money = money > 0 and money or nil }
+    end
     local amount = math.random(math.floor(l.min or 1), math.floor(math.max(l.min or 1, l.max or l.min or 1)))
     if l.kind == 'money' then
         if isGangCrew(run.gangId) then
@@ -855,6 +976,9 @@ local function cleanHeist(input)
             elseif l.kind == 'item' then
                 if not Bridge.ItemExists(l.item) then return nil, 'item_not_found' end
                 step.loot = { kind = 'item', item = l.item, label = cleanText(l.label ~= '' and l.label or Bridge.ItemLabel(l.item), 40), min = lo, max = math.min(hi, 500) }
+            elseif l.kind == 'table' then
+                if not lootTableById(l.table) then return nil, 'heist_bad_loot' end
+                step.loot = { kind = 'table', table = tonumber(l.table) }
             else
                 return nil, 'heist_bad_loot'
             end

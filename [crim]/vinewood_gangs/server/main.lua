@@ -22,6 +22,7 @@ MySQL.ready(function()
         Airdrops.LoadLoot()
         Airdrops.LoadSchedules()
         Heists.LoadLaptops()
+        Heists.LoadLootTables()
         if Shop and Shop.Load then Shop.Load() end
 
         Influence.Start()
