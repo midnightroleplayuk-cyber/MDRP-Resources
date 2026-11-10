@@ -1,3 +1,4 @@
+-- The tablet's Shop. Staff can change all of this in game: /gangadmin > Shop (that overrides this file).
 Config.Shop = {
     enabled = true,
 

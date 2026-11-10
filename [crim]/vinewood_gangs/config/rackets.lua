@@ -2,9 +2,11 @@ Config.Rackets = {
     collectMinutes   = 60,   -- each business adds its income to what it owes this often
     maxOwedPeriods   = 3,    -- owed money stops building after this many periods
     lapsePeriods     = 6,    -- nobody collects for this long and the business stops paying
-    minInfluence     = 25,   -- influence your gang needs in the area before owners will listen
+    minInfluence     = 25,   -- influence your gang needs in the area before owners will listen (not used with hexes:
+                             -- shops on free ground or your own turf can always be approached; see the README)
     dropBelow        = 10,   -- below this the business drops your protection
     cooldownMinutes  = 60,   -- after a refusal, your gang can't ask that business again for this long
+    collectControl   = 5,    -- with hexes: each collection adds this much control to the hex the business is in
 
     -- Chance the owner agrees: base, plus influence, plus holding the area, plus leaning on them
     odds = {

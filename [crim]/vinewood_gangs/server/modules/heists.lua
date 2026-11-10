@@ -115,6 +115,58 @@ end
 
 function Heists.Get(id) return heists[tonumber(id)] end
 
+-------------------------------------------------------------------------------
+-- Heist laptops: staff place them around the map; anyone can use one to see the heist board
+-------------------------------------------------------------------------------
+
+local laptops, nextLaptopId = {}, 1
+
+local function publishLaptops() GlobalState.vg_heist_laptops = laptops end
+
+local function saveLaptops(src)
+    MySQL.insert.await("INSERT INTO vg_settings (`key`, value, updated_by) VALUES ('heist_laptops', ?, ?) ON DUPLICATE KEY UPDATE value = VALUES(value), updated_by = VALUES(updated_by)",
+        { json.encode({ nextId = nextLaptopId, list = laptops }), src and Bridge.GetCitizenId(src) or 'server' })
+    publishLaptops()
+end
+
+function Heists.LoadLaptops()
+    local raw = MySQL.scalar.await("SELECT value FROM vg_settings WHERE `key` = 'heist_laptops'")
+    local ok, data = pcall(json.decode, raw or '')
+    if ok and type(data) == 'table' then laptops, nextLaptopId = data.list or {}, data.nextId or 1 end
+    publishLaptops()
+end
+
+function Heists.AdminLaptops() return laptops end
+
+function Heists.AdminAddLaptop(src, p, label)
+    if type(p) ~= 'table' then return false, 'invalid' end
+    local x, y, z = tonumber(p.x), tonumber(p.y), tonumber(p.z)
+    if not x or not y or not z or #laptops >= 50 then return false, 'invalid' end
+    label = tostring(label or ''):gsub('[<>]', ''):match('^%s*(.-)%s*$'):sub(1, 32)
+    laptops[#laptops + 1] = { id = nextLaptopId, x = x, y = y, z = z, w = tonumber(p.w) or 0.0, label = #label > 0 and label or ('Laptop ' .. nextLaptopId),
+        model = cfg.laptopModel or 'prop_laptop_01a' }
+    nextLaptopId = nextLaptopId + 1
+    saveLaptops(src)
+    Logger.Log(src, 'staff_heist_laptop', ('placed heist laptop at %.0f, %.0f'):format(x, y))
+    return true
+end
+
+function Heists.AdminRemoveLaptop(src, id)
+    id = tonumber(id)
+    for i, l in ipairs(laptops) do
+        if l.id == id then table.remove(laptops, i) saveLaptops(src) return true end
+    end
+    return false, 'invalid'
+end
+
+---Using a laptop: you have to be at one.
+function Heists.LaptopBoard(src, id)
+    local l
+    for _, x in ipairs(laptops) do if x.id == tonumber(id) then l = x end end
+    if not l or dist(pedPos(src), l) > 3.0 then return nil, 'too_far' end
+    return Heists.Board(src)
+end
+
 function Heists.Load()
     heists = {}
     for _, r in ipairs(MySQL.query.await('SELECT id, label, kind, enabled, data, next_at FROM vg_heists')) do
@@ -189,6 +241,56 @@ local function startBlocker(h, gang, cid, src)
 end
 
 ---For the tablet's Heists app.
+---What a heist needs and involves, for the tablet's heist board and the laptops.
+local function requirements(h)
+    local d = h.data
+    local items, seenItem, steps, loot = {}, {}, {}, {}
+    for _, s in ipairs(d.steps or {}) do
+        local tool = (s.item and s.item ~= '') and s.item or (cfg.tools[s.type] and cfg.tools[s.type].item) or nil
+        if tool and not seenItem[tool] then
+            seenItem[tool] = true
+            items[#items + 1] = { item = tool, label = Bridge.ItemLabel(tool) }
+        end
+        steps[#steps + 1] = (cfg.stepTypes[s.type] and cfg.stepTypes[s.type].label or s.type)
+        if s.type == 'loot' and s.loot then
+            if s.loot.kind == 'money' then loot.money = (loot.money or 0) + (s.loot.max or s.loot.min or 0)
+            elseif s.loot.item then loot.items = loot.items or {} loot.items[Bridge.ItemLabel(s.loot.item)] = true end
+        end
+    end
+    local lootItems = {}
+    for name in pairs(loot.items or {}) do lootItems[#lootItems + 1] = name end
+    table.sort(lootItems)
+    local tierLabel = d.tier and Config.Progression.tiers[d.tier] and Config.Progression.tiers[d.tier].label or nil
+    return {
+        crew = d.crew or 1, police = d.police or 0, tier = tierLabel, timeLimit = d.timeLimit or 15, cooldown = d.cooldown,
+        openTo = d.openTo or 'gangs', startMode = d.startMode or 'tablet', contact = d.startNpc and d.startNpc.name or nil,
+        items = items, steps = steps, lootMoney = loot.money, lootItems = lootItems,
+        payments = (function() local n = 0 for _, s in ipairs(d.steps or {}) do if s.type == 'talk' then n = n + (s.pay or 0) end end return n end)(),
+    }
+end
+Heists.Requirements = requirements
+
+---The heist board on a laptop (anyone): every heist and whether this player could start it right now.
+function Heists.Board(src)
+    local gang, _, cid = Gangs.GetPlayerGang(src)
+    cid = cid or Bridge.GetCitizenId(src)
+    local list = {}
+    for _, h in pairs(heists) do
+        if h.enabled and h.data.start then
+            local why = startBlocker(h, gang, cid, nil)
+            local zone = Zones.FromCoords(vector3(h.data.start.x, h.data.start.y, h.data.start.z))
+            list[#list + 1] = { id = h.id, label = h.label, area = zone and Zones.Label(zone) or nil, x = h.data.start.x, y = h.data.start.y,
+                blocked = why, readyIn = why == 'heist_cooldown' and (h.nextAt - now()) or nil, req = requirements(h) }
+        end
+    end
+    table.sort(list, function(a, b)
+        -- What they can do first, then by name
+        if (a.blocked == nil) ~= (b.blocked == nil) then return a.blocked == nil end
+        return a.label < b.label
+    end)
+    return { heists = list, inGang = gang ~= nil }
+end
+
 function Heists.View(src)
     local gang, _, cid = Gangs.GetPlayerGang(src)
     if not gang then return nil, 'not_in_gang' end
@@ -202,7 +304,7 @@ function Heists.View(src)
                 id = h.id, label = h.label, kind = h.kind, area = zone and Zones.Label(zone) or nil,
                 crew = h.data.crew or 1, steps = #h.data.steps, cooldownMins = h.data.cooldown,
                 blocked = why, readyIn = why == 'heist_cooldown' and (h.nextAt - now()) or (why == 'heist_gang_cooldown' and (gangNext[gang.id] - now()) or nil),
-                x = h.data.start.x, y = h.data.start.y,
+                x = h.data.start.x, y = h.data.start.y, req = requirements(h),
             }
         end
     end

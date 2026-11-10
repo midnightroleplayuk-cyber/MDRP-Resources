@@ -79,6 +79,7 @@ read('getTreasury', function(src)
         canDeposit = Gangs.HasPermission(cid, 'treasury_deposit'),
         canWithdraw = Gangs.HasPermission(cid, 'treasury_withdraw'),
         cash = Bridge.GetMoney(src, 'cash'),
+        dirtyOnYou = Ledger.PocketDirty(src), -- dirty money the member is carrying (drug sales and so on)
         balances = canView and {
             clean = Ledger.GetBalance(gang.id, 'clean'),
             dirty = Ledger.GetBalance(gang.id, 'dirty'),
@@ -106,6 +107,15 @@ action('leave', function(src) return Gangs.Leave(src) end, 5000)
 action('disband', function(src) return Gangs.PlayerDisband(src) end, 5000)
 action('deposit', function(src, amount) return Ledger.Deposit(src, amount) end)
 action('withdraw', function(src, amount) return Ledger.Withdraw(src, amount) end)
+-- Opening the tablet: with requireItem, you have to be carrying the tablet item (whichever way you open it)
+lib.callback.register('vinewood_gangs:server:canOpenTablet', function(src)
+    local item = Config.Tablet.item
+    if not Config.Tablet.requireItem or not item then return true end
+    return Bridge.HasItem(src, item, 1) == true
+end)
+
+action('depositDirty', function(src, amount) return Ledger.DepositDirty(src, amount) end)
+action('withdrawDirty', function(src, amount) return Ledger.WithdrawDirty(src, amount) end)
 
 -- Graffiti --------------------------------------------------------------------
 
@@ -199,6 +209,7 @@ lib.callback.register('vinewood_gangs:server:heistFinish', function(src, runId, 
     return Heists.FinishStep(src, runId, i, ok == 'killed' and 'killed' or ok == true)
 end)
 lib.callback.register('vinewood_gangs:server:heistHostageKilled', function(src, runId, i) return Heists.HostageKilled(src, runId, i) end)
+lib.callback.register('vinewood_gangs:server:heistLaptop', function(src, id) return Heists.LaptopBoard(src, id) end)
 lib.callback.register('vinewood_gangs:server:heistGuardsClaim', function(src, runId, i) return Heists.GuardsClaim(src, runId, i) end)
 lib.callback.register('vinewood_gangs:server:heistGuardsSpawned', function(src, runId, i, nets) return Heists.GuardsSpawned(src, runId, i, nets) end)
 

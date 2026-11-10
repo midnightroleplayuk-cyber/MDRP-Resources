@@ -21,6 +21,8 @@ MySQL.ready(function()
         Drugs.Load()
         Airdrops.LoadLoot()
         Airdrops.LoadSchedules()
+        Heists.LoadLaptops()
+        if Shop and Shop.Load then Shop.Load() end
 
         Influence.Start()
         Heat.Start()

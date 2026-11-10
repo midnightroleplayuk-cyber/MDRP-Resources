@@ -23,6 +23,9 @@ local ACTION_GROUP = {
     safehouseShells = 'view', rackets = 'view', pendingDesigns = 'view', pendingLogos = 'view', listTags = 'view',
     onlinePlayers = 'view', searchItems = 'view', airdrops = 'view', hexGang = 'view', hexSettings = 'view', hexMap = 'view', tagTiming = 'view', tagTimingSave = 'tags', tagTimingReset = 'tags',
     hexGive = 'world', hexRemove = 'world', hexMain = 'world', hexControl = 'economy', hexSettingsSave = 'settings', hexResize = 'settings',
+    heistLaptops = 'view', heistLaptopAdd = 'world', heistLaptopRemove = 'world',
+    itemCount = 'view', itemGive = 'economy', itemTake = 'economy',
+    packages = 'view', packageSave = 'economy', packageDelete = 'economy', packageSend = 'economy', shopGet = 'view', shopSave = 'settings', shopReset = 'settings',
     customContracts = 'view', customContractSave = 'world', customContractDelete = 'world', customContractOffer = 'events',
     contractSettings = 'view', contractSettingsSave = 'settings', contractSettingsReset = 'settings',
     gotoTag = 'teleport', gotoSafehouse = 'teleport', gotoContractSpot = 'teleport', gotoRacketShop = 'teleport', gotoPoint = 'teleport',
@@ -296,6 +299,124 @@ admin('heistSave', function(src, id, data) return Heists.AdminSave(src, id, data
 admin('heistDelete', function(src, id) return Heists.AdminDelete(src, id) end)
 admin('heistReset', function(src, id) return Heists.AdminReset(src, id) end)
 admin('heistStop', function(src, id) return Heists.AdminStop(src, id) end)
+-- Items: give items to online players, or take them away
+local function itemTarget(target, item, count)
+    target = tonumber(target)
+    if not target or not GetPlayerName(target) then return nil, 'player_offline' end
+    if type(item) ~= 'string' or not Bridge.ItemExists(item) then return nil, 'item_not_found' end
+    count = math.floor(tonumber(count) or 1)
+    if count < 1 or count > 10000 then return nil, 'invalid_amount' end
+    return target, item, count
+end
+admin('itemCount', function(_, target, item)
+    target = tonumber(target)
+    if not target or not GetPlayerName(target) or type(item) ~= 'string' then return false, 'invalid' end
+    return Bridge.CountItem(target, item)
+end)
+admin('itemGive', function(src, target, item, count)
+    local t, it, n = itemTarget(target, item, count)
+    if not t then return false, it end
+    if not Bridge.AddItem(t, it, n) then return false, 'item_give_failed' end
+    Logger.Log(src, 'staff_item_give', ('gave %d x %s to %s (%d)'):format(n, it, GetPlayerName(t) or '?', t))
+    return Bridge.CountItem(t, it)
+end)
+admin('itemTake', function(src, target, item, count)
+    local t, it, n = itemTarget(target, item, count)
+    if not t then return false, it end
+    local has = Bridge.CountItem(t, it)
+    if has < n then return false, 'item_take_not_enough', has end
+    if not Bridge.RemoveItem(t, it, n) then return false, 'item_take_failed' end
+    Logger.Log(src, 'staff_item_take', ('took %d x %s from %s (%d)'):format(n, it, GetPlayerName(t) or '?', t))
+    return Bridge.CountItem(t, it)
+end)
+
+-- Item packages: premade kits (a starter kit, say) staff send to a player in one go
+local packages, nextPackageId = nil, 1
+local function loadPackages()
+    if packages then return end
+    local raw = MySQL.scalar.await("SELECT value FROM vg_settings WHERE `key` = 'item_packages'")
+    local ok, data = pcall(json.decode, raw or '')
+    if ok and type(data) == 'table' then packages, nextPackageId = data.list or {}, data.nextId or 1 else packages, nextPackageId = {}, 1 end
+end
+local function savePackages(src)
+    MySQL.insert.await("INSERT INTO vg_settings (`key`, value, updated_by) VALUES ('item_packages', ?, ?) ON DUPLICATE KEY UPDATE value = VALUES(value), updated_by = VALUES(updated_by)",
+        { json.encode({ nextId = nextPackageId, list = packages }), Bridge.GetCitizenId(src) or 'console' })
+end
+admin('packages', function()
+    loadPackages()
+    local out = {}
+    for _, p in ipairs(packages) do
+        local items = {}
+        for _, it in ipairs(p.items) do items[#items + 1] = { item = it.item, count = it.count, label = Bridge.ItemLabel(it.item), exists = Bridge.ItemExists(it.item) } end
+        out[#out + 1] = { id = p.id, name = p.name, cash = p.cash or 0, items = items }
+    end
+    return out
+end)
+admin('packageSave', function(src, input)
+    loadPackages()
+    if type(input) ~= 'table' or type(input.items) ~= 'table' then return false, 'invalid' end
+    local name = tostring(input.name or ''):gsub('[<>]', ''):match('^%s*(.-)%s*$'):sub(1, 40)
+    if #name < 2 then return false, 'invalid_label' end
+    local items = {}
+    for _, it in ipairs(input.items) do
+        if type(it) == 'table' and type(it.item) == 'string' then
+            if not Bridge.ItemExists(it.item) then return false, 'item_not_found' end
+            if #items < 30 then items[#items + 1] = { item = it.item, count = math.floor(math.max(1, math.min(10000, tonumber(it.count) or 1))) } end
+        end
+    end
+    local cash = math.floor(math.max(0, math.min(100000000, tonumber(input.cash) or 0)))
+    if #items == 0 and cash == 0 then return false, 'package_empty' end
+    local id = tonumber(input.id)
+    for _, p in ipairs(packages) do
+        if p.id == id then
+            p.name, p.items, p.cash = name, items, cash
+            savePackages(src)
+            return true
+        end
+    end
+    packages[#packages + 1] = { id = nextPackageId, name = name, items = items, cash = cash }
+    nextPackageId = nextPackageId + 1
+    savePackages(src)
+    Logger.Log(src, 'staff_package_saved', ('saved item package "%s"'):format(name))
+    return true
+end)
+admin('packageDelete', function(src, id)
+    loadPackages()
+    for i, p in ipairs(packages) do
+        if p.id == tonumber(id) then table.remove(packages, i) savePackages(src) return true end
+    end
+    return false, 'invalid'
+end)
+---Sends everything in a package to a player. Anything that won't go in (full pockets) is reported, the rest still goes.
+admin('packageSend', function(src, target, id)
+    loadPackages()
+    target = tonumber(target)
+    if not target or not GetPlayerName(target) then return false, 'player_offline' end
+    local pkg
+    for _, p in ipairs(packages) do if p.id == tonumber(id) then pkg = p end end
+    if not pkg then return false, 'invalid' end
+    local given, missed = {}, {}
+    for _, it in ipairs(pkg.items) do
+        local label = ('%d x %s'):format(it.count, Bridge.ItemLabel(it.item))
+        if Bridge.ItemExists(it.item) and Bridge.AddItem(target, it.item, it.count) then given[#given + 1] = label else missed[#missed + 1] = label end
+    end
+    if (pkg.cash or 0) > 0 then
+        local label = Utils.FormatMoney(pkg.cash) .. ' cash'
+        if Bridge.AddMoney(target, 'cash', pkg.cash, 'staff-package') then given[#given + 1] = label else missed[#missed + 1] = label end
+    end
+    Logger.Log(src, 'staff_package_sent', ('sent "%s" to %s (%d): %s%s'):format(pkg.name, GetPlayerName(target) or '?', target,
+        table.concat(given, ', '), #missed > 0 and (' | not given: ' .. table.concat(missed, ', ')) or ''))
+    if #given > 0 then Bridge.Notify(target, locale('package_received', pkg.name), 'success') end
+    return { given = given, missed = missed }
+end)
+
+admin('shopGet', function() return Shop.AdminGet() end)
+admin('shopSave', function(src, data) return Shop.AdminSave(src, data) end)
+admin('shopReset', function(src) return Shop.AdminReset(src) end)
+
+admin('heistLaptops', function() return Heists.AdminLaptops() end)
+admin('heistLaptopAdd', function(src, p, label) return Heists.AdminAddLaptop(src, p, label) end)
+admin('heistLaptopRemove', function(src, id) return Heists.AdminRemoveLaptop(src, id) end)
 admin('heistHere', function(src) return Heists.AdminHere(src) end)
 admin('gotoPoint', function(_, p)
     if type(p) ~= 'table' or not tonumber(p.x) then return false, 'invalid' end

@@ -15,7 +15,7 @@ end
 local ALLOWED = {
     getOverview = true, getMembers = true, getTerritory = true, getTreasury = true, getNearby = true, getTags = true,
     createGang = true, invite = true, kick = true, setGrade = true, transfer = true, editRank = true,
-    updateDetails = true, leave = true, disband = true, deposit = true, withdraw = true,
+    updateDetails = true, leave = true, disband = true, deposit = true, withdraw = true, depositDirty = true, withdrawDirty = true,
     submitDesign = true, deleteDesign = true, removeOwnTag = true,
     setLogo = true, getContracts = true, acceptContract = true, abandonContract = true,
     getRackets = true, dropRacket = true,
@@ -42,7 +42,8 @@ local ADMIN_ALLOWED = {
     auctions = true, auctionOpen = true, auctionCancel = true, setTier = true, adjustReputation = true,
     contractSpots = true, addContractSpot = true, deleteContractSpot = true, gotoContractSpot = true,
     addRacketShop = true, deleteRacketShop = true, gotoRacketShop = true,
-    hexGang = true, hexMap = true, hexResize = true, tagTiming = true, tagTimingSave = true, tagTimingReset = true, hexGive = true, hexRemove = true, hexControl = true, hexMain = true, hexSettings = true, hexSettingsSave = true,
+    hexGang = true, hexMap = true, hexResize = true, heistLaptops = true, heistLaptopAdd = true, heistLaptopRemove = true,
+    itemCount = true, itemGive = true, itemTake = true, packages = true, packageSave = true, packageDelete = true, packageSend = true, shopGet = true, shopSave = true, shopReset = true, tagTiming = true, tagTimingSave = true, tagTimingReset = true, hexGive = true, hexRemove = true, hexControl = true, hexMain = true, hexSettings = true, hexSettingsSave = true,
     blackmarketSettings = true, blackmarketSave = true, blackmarketOpen = true, blackmarketReset = true,
     airdrops = true, airdropCancel = true, airdropAdminCall = true,
     airdropSchedules = true, airdropScheduleSave = true, airdropScheduleDelete = true, airdropScheduleToggle = true, airdropLoot = true, airdropLootSave = true, airdropLootReset = true,
@@ -107,7 +108,7 @@ local function staticData()
         informants = Config.Modules.informants,
         auctions = Config.Modules.auctions and GlobalState.vg_blackmarket ~= false, -- staff can close the black market in game
         progression = Config.Progression.enabled,
-        shop = Config.Shop.enabled,
+        shop = Config.Shop.enabled and GlobalState.vg_shop_open ~= false, -- staff can close the shop in game
         tabletMap = Config.Territory.tabletMap,
         heists = Config.Heists.enabled,
         airdrops = Config.Airdrops.enabled and Config.Airdrops.playersCanCall == true, -- the gang tablet's Air drop app
@@ -159,6 +160,11 @@ end
 
 function OpenTablet()
     if isOpen or IsEntityDead(cache.ped) or IsPauseMenuActive() then return end
+    -- No tablet item on you, no tablet (the server checks your inventory)
+    if Config.Tablet.requireItem and Config.Tablet.item and not lib.callback.await('vinewood_gangs:server:canOpenTablet', false) then
+        lib.notify({ description = locale('tablet_need_item'), type = 'error' })
+        return
+    end
     local gang = RefreshPlayerGang()
     if not gang and not creationRules().allow then
         lib.notify({ description = locale('not_in_gang_staff_create'), type = 'error' })
@@ -193,6 +199,14 @@ end
 
 if Config.Tablet.command then
     RegisterCommand(Config.Tablet.command, OpenTablet, false)
+end
+
+---A heist laptop: shows the heist board (anyone can use one; staff place them around the map).
+function OpenHeistLaptop(board, label)
+    if isOpen or IsEntityDead(cache.ped) then return end
+    isOpen, mode = true, 'laptop'
+    SetNuiFocus(true, true)
+    SendNUIMessage({ action = 'openLaptop', board = board, label = label, static = staticData() })
 end
 
 RegisterNUICallback('close', function(_, cb)
@@ -282,7 +296,7 @@ RegisterNUICallback('placeNpc', function(data, cb)
     SendNUIMessage({ action = 'adminHide' })
     CreateThread(function()
         Wait(150)
-        local ok, points = pcall(PlaceNpcs, { model = data.model, multi = data.multi, max = data.max })
+        local ok, points = pcall(PlaceNpcs, { model = data.model, multi = data.multi, max = data.max, object = data.object })
         if not ok then points = nil end
         if mode == 'admin' then
             SetNuiFocus(true, true)

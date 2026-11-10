@@ -539,3 +539,58 @@ AddEventHandler('onResourceStop', function(res)
     if prompt then lib.hideTextUI() end
     if gameResult then SetNuiFocus(false, false) end
 end)
+
+-------------------------------------------------------------------------------
+-- Heist laptops (placed by staff): anyone walks up and presses E to see the heist board
+-------------------------------------------------------------------------------
+
+local laptopProps = {}
+
+CreateThread(function()
+    while true do
+        local sleep = 1500
+        local list = GlobalState.vg_heist_laptops or {}
+        local pos = GetEntityCoords(cache.ped)
+        local wanted = {}
+        for _, l in ipairs(list) do
+            local d = #(pos - vector3(l.x, l.y, l.z))
+            if d < 60.0 then
+                wanted[l.id] = true
+                if not (laptopProps[l.id] and DoesEntityExist(laptopProps[l.id])) then
+                    local model = lib.requestModel(l.model or cfg.laptopModel or 'prop_laptop_01a', 5000)
+                    if model then
+                        local obj = CreateObject(model, l.x, l.y, l.z, false, false, false)
+                        SetEntityHeading(obj, l.w or 0.0)
+                        FreezeEntityPosition(obj, true)
+                        SetModelAsNoLongerNeeded(model)
+                        laptopProps[l.id] = obj
+                    end
+                end
+                if d < 1.8 and not busy then
+                    sleep = 0
+                    setPrompt('heist_laptop_prompt')
+                    if IsControlJustPressed(0, 38) then
+                        setPrompt(nil)
+                        local board, err = lib.callback.await('vinewood_gangs:server:heistLaptop', false, l.id)
+                        if board then OpenHeistLaptop(board, locale('heist_laptop_title')) else notify(err or 'failed', 'error') end
+                        Wait(500)
+                    end
+                elseif d < 2.5 and prompt == 'heist_laptop_prompt' then
+                    setPrompt(nil)
+                end
+            end
+        end
+        for id, obj in pairs(laptopProps) do
+            if not wanted[id] then
+                if DoesEntityExist(obj) then DeleteEntity(obj) end
+                laptopProps[id] = nil
+            end
+        end
+        Wait(sleep)
+    end
+end)
+
+AddEventHandler('onResourceStop', function(res)
+    if res ~= GetCurrentResourceName() then return end
+    for _, obj in pairs(laptopProps) do if DoesEntityExist(obj) then DeleteEntity(obj) end end
+end)
