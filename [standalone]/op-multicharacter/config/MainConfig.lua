@@ -378,7 +378,7 @@ Config.CharacterMenu = {
 -- ─────────────────────────────────────────────────────────────────────────
 Config.Misc = {
     DefaultCharsAmount = 3,
-    AllowCharacterDelete = false,
+    AllowCharacterDelete = true,
     -- Character creator UI: "classic" | "modern"
     creatorPreset = "modern",
     -- Birthday field display (Intl.DateTimeFormat). Overrides locale file when set.
