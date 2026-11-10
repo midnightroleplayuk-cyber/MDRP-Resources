@@ -438,11 +438,6 @@ return {
         weight = 2500,
     },
 
-    ['painkillers'] = {
-        label = 'Painkillers',
-        weight = 400,
-    },
-
     ['firework1'] = {
         label = '2Brothers',
         weight = 1000,
@@ -1070,13 +1065,6 @@ return {
 		close = true,
 	},
 
-	['tourniquet'] = {
-		label = 'Tourniquet',
-		weight = 100,
-		stack = true,
-		close = true,
-	},
-
 	['gauze'] = {
 		label = 'Gauze',
 		weight = 50,
@@ -1140,13 +1128,6 @@ return {
 		close = true,
 	},
 
-	['painkillers'] = {
-		label = 'Painkillers',
-		weight = 50,
-		stack = true,
-		close = true,
-	},
-
 	['defibrillator'] = {
 		label = 'Defibrillator',
 		weight = 1000,
@@ -1158,13 +1139,6 @@ return {
 		label = 'Adrenaline Syringe',
 		weight = 100,
 		stack = true,
-		close = true,
-	},
-
-	['wheelchair'] = {
-		label = 'wheelchair',
-		weight = 2500,
-		stack = false,
 		close = true,
 	},
 
@@ -1187,13 +1161,6 @@ return {
 		weight = 500,
 		stack = true,
 		close = true,
-	},
-
-	['ecg'] = {
-		label = 'ECG Monitor',
-		weight = 1000,
-		stack = true,
-		close = false,
 	},
 
     -- TX EVIDENCE
@@ -2973,8 +2940,14 @@ return {
 
 ['elastic_bandage'] = {
     label = 'Elastic Bandage',
-    weight = 10,
+    weight = 50,
     stack = true,
+    close = true,
+    consume = 0,
+    description = 'Wrap up your wounds to slowly heal 10 HP',
+    client = {
+        export = 'osp_ambulance.useElasticBandage',
+    },
 },
 
 ['quick_clot'] = {
@@ -3167,12 +3140,78 @@ return {
     label = 'Prescription',
     weight = 10,
     stack = false,
+    close = true,
+    consume = 0,
+    description = 'A medical prescription to redeem at the pharmacy',
+},
+
+['prescription_pad'] = {
+    label = 'Prescription Pad',
+    weight = 80,
+    stack = false,
+    close = true,
+    consume = 0,
+    description = 'Used by MHS to issue prescriptions to nearby patients',
+},
+
+['glucose'] = {
+    label = 'Glucose Tablet',
+    weight = 10,
+    stack = true,
+    close = true,
+    consume = 0,
+    description = 'Used by MHS to revive patients who collapsed from hunger or thirst',
+},
+
+['txa'] = {
+    label = 'TXA',
+    weight = 30,
+    stack = true,
+    close = true,
+    consume = 0,
+    description = 'Tranexamic acid 1g. Used by MHS to slow major bleeding',
+},
+
+['atropine'] = {
+    label = 'Atropine',
+    weight = 20,
+    stack = true,
+    close = true,
+    consume = 0,
+    description = 'Atropine 600mcg. Used by MHS to raise a slow heart rate',
+},
+
+['amiodarone'] = {
+    label = 'Amiodarone',
+    weight = 30,
+    stack = true,
+    close = true,
+    consume = 0,
+    description = 'Amiodarone 300mg. Used by MHS to treat shockable heart rhythms',
+},
+
+['painkillers'] = {
+    label = 'Painkillers',
+    weight = 20,
+    stack = true,
+    close = true,
+    consume = 0,
+    description = 'Over-the-counter pain relief',
+    client = {
+        export = 'osp_ambulance.usePainkillers',
+    },
 },
 
 ['cough_syrup'] = {
     label = 'Cough Syrup',
-    weight = 100,
+    weight = 10,
     stack = true,
+    close = true,
+    consume = 0,
+    description = 'Used to treat coughs and respiratory infection',
+    client = {
+        export = 'osp_ambulance.usePrescriptionMedication',
+    },
 },
 
 ['paracetamol'] = {
@@ -3216,7 +3255,18 @@ return {
     weight = 2000,
     stack = false,
 },
-
+    ['bvm'] = {
+        label = 'BVM',
+        weight = 400,
+        stack = false,
+        close = true,
+        consume = 0,
+        description = 'Bag valve mask used to ventilate patients with low oxygen',
+        client = {
+            export = 'MDXBvm.useBvm',
+        },
+    },
+    
 -- CAR RENTAL 
 ['rental_paper'] = {
     label = 'Rental Paper',
