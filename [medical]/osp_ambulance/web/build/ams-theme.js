@@ -608,9 +608,9 @@
       if (raw.length === 0 || raw.length > 80) return;
       if (!/EMS/i.test(raw) || !/notify|press g/i.test(raw)) return;
       el.textContent = raw
-        .replace(/PRESS G TO NOTIFY EMS/ig, "/999a   ·   NOTIFY NHC")
-        .replace(/NOTIFY EMS/ig, "NOTIFY NHC")
-        .replace(/\bEMS\b/g, "NHC");
+        .replace(/PRESS G TO NOTIFY EMS/ig, "/111   ·   NOTIFY MHS    ")
+        .replace(/NOTIFY EMS/ig, "NOTIFY MHS")
+        .replace(/\bEMS\b/g, "MHS");
     });
 
     const emsText = [...overlay.querySelectorAll("div")].find((node) =>
