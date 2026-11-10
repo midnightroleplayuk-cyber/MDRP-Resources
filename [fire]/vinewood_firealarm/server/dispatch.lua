@@ -188,6 +188,18 @@ function Dispatch.Send(data)
     return id
 end
 
+-- A non-alarm job (e.g. service due). `over` overrides Config.Dispatch fields.
+function Dispatch.SendCustom(over, data)
+    if Config.Dispatch.Send then return end
+    local name, res = pick()
+    if not name or not data.coords then return end
+    local cfg = setmetatable(over, { __index = Config.Dispatch })
+    local loc = data.location
+    data.street = loc and loc.street and (loc.zone and ('%s, %s'):format(loc.street, loc.zone) or loc.street) or data.system
+    local ok, err = pcall(Adapters[name], res, data, cfg)
+    if not ok then print(('^1[vinewood_firealarm] %s job failed: %s^7'):format(name, err)) end
+end
+
 -- Notes and closing are vinewood-dispatch features
 function Dispatch.Note(alertId, text)
     if not alertId or not Config.Dispatch.notes or current ~= 'vinewood-dispatch' then return end

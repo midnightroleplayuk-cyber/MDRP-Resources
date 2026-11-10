@@ -49,6 +49,8 @@ const ADMIN_TABS = [
   { id: 'auctions', label: 'Black market', icon: 'market', tint: '#D592D2' },
   { id: 'reviews', label: 'Reviews', icon: 'check', tint: '#6CC070' },
   { id: 'tags', label: 'Tags in world', icon: 'tags', tint: '#E39A6B' },
+  { id: 'items', label: 'Items', icon: 'shop', tint: '#7CC4A4' },
+  { id: 'gangshop', label: 'Shop', icon: 'shop', tint: '#D7B46A' },
   { id: 'staff', label: 'Staff access', icon: 'shield', tint: '#7AA2FF', needs: 'management' },
 ];
 
@@ -80,7 +82,7 @@ function renderAdminFrame() {
     ? 'Staff access. Some tools are management only. Every change is logged.'
     : 'Management. Every change here is logged.';
   if (admin.tab === 'home') {
-    showHome(visibleAdminApps().map((t) => appIcon(t, () => { admin.tab = t.id; admin.gangId = null; admin.heist = null; admin.drugDraft = null; admin.turfDraft = null; admin.job = null; admin.contractDraft = null; admin.bmDraft = null; admin.auctionTab = null; renderAdminFrame(); })));
+    showHome(visibleAdminApps().map((t) => appIcon(t, () => { admin.tab = t.id; admin.gangId = null; admin.heist = null; admin.drugDraft = null; admin.turfDraft = null; admin.job = null; admin.contractDraft = null; admin.bmDraft = null; admin.auctionTab = null; admin.itemsDraft = null; admin.shopDraft = null; renderAdminFrame(); })));
     return;
   }
   showApp(ADMIN_TABS.find((t) => t.id === admin.tab).label);
@@ -96,10 +98,12 @@ async function renderAdminTab() {
   else if (admin.tab === 'safehouses') content = await renderAdminSafehouses();
   else if (admin.tab === 'enterprises') content = await renderAdminEnterprises();
   else if (admin.tab === 'spots') content = await renderAdminSpots();
-  else if (admin.tab === 'heists') content = admin.heist ? renderHeistEditor() : await renderHeistList();
+  else if (admin.tab === 'heists') content = admin.heist ? renderHeistEditor() : h('div', {}, await renderHeistList(), await renderHeistLaptops());
   else if (admin.tab === 'drugs') content = await renderAdminDrugs();
   else if (admin.tab === 'staff') content = await renderStaffAccess();
   else if (admin.tab === 'turf') content = await renderTurfSettings();
+  else if (admin.tab === 'items') content = await renderAdminItems();
+  else if (admin.tab === 'gangshop') content = await renderAdminShop();
   else if (admin.tab === 'jobs') content = admin.job ? renderJobEditor() : (admin.jobTab === 'standard' ? await renderContractSettings() : await renderJobList());
   else if (admin.tab === 'diplomacy') content = await renderAdminDiplomacy();
   else if (admin.tab === 'director') content = h('div', {}, await renderAdminDirector(), await renderAdminAirdrops(), await renderAirdropSchedules());
@@ -1147,7 +1151,7 @@ async function renderAdminDiplomacy() {
 /* Placing NPCs in the game: the panel steps aside, staff place the NPC, the panel comes back -------- */
 
 const placeWaits = {};
-function placeInGame({ model, multi = false, max = 1 }) {
+function placeInGame({ model, multi = false, max = 1, object = false }) {
   if (!IN_GAME) {
     // Browser preview: pretend some spots were placed
     const n = multi ? Math.min(max, 3) : 1;
@@ -1156,7 +1160,7 @@ function placeInGame({ model, multi = false, max = 1 }) {
   const token = `${Date.now()}${Math.random()}`;
   return new Promise((resolve) => {
     placeWaits[token] = resolve;
-    postNui('placeNpc', { token, model, multi, max });
+    postNui('placeNpc', { token, model, multi, max, object });
   });
 }
 window.addEventListener('message', (event) => {
@@ -1443,6 +1447,162 @@ async function tagTimingCard() {
       h('label', { class: 'field' }, 'Spraying a tag takes (s)', num('spray', 1, 120, 0.5)),
       h('label', { class: 'field' }, 'Crossing out a rival\'s tag takes (s)', num('cross', 1, 120, 0.5)),
       h('label', { class: 'field' }, 'Cleaning a tag off takes (s)', num('clean', 1, 120, 0.5))));
+}
+
+/* Shop: what gangs can buy from the tablet's Shop app */
+async function renderAdminShop() {
+  if (!admin.shopDraft) {
+    const res = await adminRequest('shopGet');
+    if (!res.ok) return loadError(res);
+    admin.shopDraft = res.data;
+  }
+  const v = admin.shopDraft;
+  const rerender = () => renderAdminTab();
+  const PAY = [{ value: 'cash', label: 'Their cash' }, { value: 'bank', label: 'Their bank' }, { value: 'clean', label: 'Gang treasury (clean)' }, { value: 'dirty', label: 'Gang treasury (dirty)' }];
+  const tiers = [{ value: '', label: 'Any tier' }, ...v.tiers.map((t, i) => ({ value: i + 1, label: `${t} and up` }))];
+  const perms = [{ value: '', label: 'Anyone in the gang' }, ...v.permissions.map((p) => ({ value: p.key, label: p.label }))];
+  const field = (label, el, style = '') => h('label', { class: 'field', style }, label, el);
+  const num = (obj, key, min, max, width = 110) => { const el = h('input', { type: 'number', min, max, value: obj[key] ?? '', style: `width:${width}px` }); el.addEventListener('change', () => { obj[key] = Number(el.value); }); return el; };
+  const txt = (obj, key, max, ph, width) => { const el = h('input', { type: 'text', maxlength: max, value: obj[key] || '', placeholder: ph, style: `width:${width}` }); el.addEventListener('input', () => { obj[key] = el.value; }); return el; };
+  const pick = (obj, key, options) => { const el = select(options, obj[key] ?? ''); el.addEventListener('change', () => { obj[key] = el.value === '' ? null : (/^\d+$/.test(el.value) ? Number(el.value) : el.value); }); return el; };
+
+  const cards = v.items.map((it, i) => h('div', { class: 'loot-entry' },
+    h('div', { class: 'row', style: 'align-items:center;flex-wrap:nowrap' },
+      h('div', { style: 'flex:1;min-width:0' }, itemPicker(it.item ? { item: it.item, label: it.itemLabel || it.item, image: it.image } : null,
+        (p) => { if (p) { it.item = p.name; it.itemLabel = p.label; if (p.image) it.image = p.image; if (!it.label) it.label = p.label; it.needs = null; rerender(); } },
+        { allowClear: false, openNow: !it.item, emptyText: 'No item chosen yet' })),
+      h('button', { class: 'btn small', type: 'button', title: 'Move up', disabled: i === 0, onclick: () => { v.items.splice(i - 1, 0, v.items.splice(i, 1)[0]); rerender(); } }, '↑'),
+      h('button', { class: 'btn small', type: 'button', title: 'Move down', disabled: i === v.items.length - 1, onclick: () => { v.items.splice(i + 1, 0, v.items.splice(i, 1)[0]); rerender(); } }, '↓'),
+      h('button', { class: 'btn small danger', type: 'button', onclick: () => { v.items.splice(i, 1); rerender(); } }, 'Remove')),
+    it.item && it.exists === false ? h('p', { class: 'hint debit', style: 'margin:0', text: `There's no item called "${it.item}" on your server. Use Change to pick your real one.` }) : null,
+    it.inUse === false ? h('p', { class: 'hint', style: 'margin:0', text: 'Hidden from the shop at the moment: the part of the script it belongs to is switched off.' }) : null,
+    h('div', { class: 'loot-fields' },
+      field('Name in the shop', txt(it, 'label', 40, 'e.g. Spray can', '200px')),
+      field('Price (£)', num(it, 'price', 0, 100000000)),
+      field('Paid from', pick(it, 'pay', PAY)),
+      field('Most per purchase', num(it, 'max', 1, 1000, 90)),
+      field('Gang tier needed', pick(it, 'tier', tiers)),
+      field('Rank permission needed', pick(it, 'permission', perms))),
+    field('Description', txt(it, 'description', 160, 'Shown under the item in the shop', '100%'), 'width:100%')));
+
+  const open = h('input', { type: 'checkbox', checked: v.enabled !== false });
+  open.addEventListener('change', () => { v.enabled = open.checked; });
+  const save = async () => {
+    if (v.items.some((it) => !it.item)) return toast('Pick an item for every row, or remove it.', true);
+    const data = { enabled: v.enabled !== false, items: v.items.map((it) => ({ item: it.item, label: it.label, price: it.price, pay: it.pay, max: it.max, description: it.description, image: it.image, tier: it.tier, permission: it.permission, needs: it.needs })) };
+    const r = await adminRequest('shopSave', data);
+    if (!r.ok) return toast(r.error, true);
+    admin.shopDraft = r.data;
+    toast('Shop saved. Gangs see the changes straight away.');
+    rerender();
+  };
+  return h('div', {},
+    h('div', { class: 'section-head' }, h('h2', { text: 'Shop' }),
+      h('div', { class: 'row' },
+        !v.fromConfig ? h('button', { class: 'btn small', type: 'button', onclick: () => confirmModal({ title: 'Go back to config/shop.lua?', body: 'Your shop items here are replaced with the config ones.', confirmLabel: 'Reset', danger: true, onConfirm: async () => { const r = await adminRequest('shopReset'); if (r.ok) { admin.shopDraft = r.data; toast('Back to the config shop.'); rerender(); } } }) }, 'Reset to config') : null,
+        h('button', { class: 'btn primary', type: 'button', onclick: save }, 'Save'))),
+    h('p', { class: 'hint', style: 'margin:0 0 12px', text: 'What gangs can buy from the Shop app on their tablet. Items go straight into the buyer\'s pockets. Paying from the gang treasury needs the "take money out" rank permission and shows in the gang\'s history.' }),
+    h('label', { class: 'toggle', style: 'margin-bottom:14px' }, open, ' Shop open (untick to hide the Shop app from gang tablets)'),
+    h('div', { style: 'display:grid;gap:10px' }, cards.length ? cards : [h('p', { class: 'empty', text: 'Nothing in the shop yet.' })]),
+    h('button', { class: 'btn small', type: 'button', style: 'margin-top:10px', onclick: () => { v.items.push({ item: null, label: '', price: 100, pay: 'cash', max: 1 }); rerender(); } }, 'Add an item'));
+}
+
+/* Items: give items to online players, or take them away */
+async function renderAdminItems() {
+  const res = await adminRequest('onlinePlayers');
+  if (!res.ok) return loadError(res);
+  const players = res.data || [];
+  const st = admin.itemsDraft || (admin.itemsDraft = { target: players[0] ? players[0].id : null, item: null, label: null, count: 1 });
+  const have = h('span', { class: 'hint', style: 'margin:0' });
+  const refresh = async () => {
+    if (!st.target || !st.item) { have.textContent = ''; return; }
+    const r = await adminRequest('itemCount', st.target, st.item);
+    have.textContent = r.ok ? `They're carrying ${r.data} x ${st.label || st.item}.` : '';
+  };
+  const who = select(players.map((p) => ({ value: p.id, label: `${p.name} (ID ${p.id})${p.gang ? ` · ${p.gang}` : ''}` })), st.target || '');
+  who.addEventListener('change', () => { st.target = Number(who.value); refresh(); });
+  const count = h('input', { type: 'number', min: 1, max: 10000, value: st.count, style: 'width:100px' });
+  count.addEventListener('change', () => { st.count = Math.max(1, Number(count.value) || 1); });
+  const run = async (action, done) => {
+    if (!st.target) return toast('Pick a player first.', true);
+    if (!st.item) return toast('Pick an item first.', true);
+    const r = await adminRequest(action, st.target, st.item, st.count);
+    if (!r.ok) return toast(r.error, true);
+    toast(done);
+    have.textContent = `They're carrying ${r.data} x ${st.label || st.item}.`;
+  };
+  setTimeout(refresh, 0);
+  return h('div', {},
+    h('div', { class: 'section-head' }, h('h2', { text: 'Items' })),
+    h('p', { class: 'hint', style: 'margin-bottom:16px', text: 'Give an online player any item (a gang tablet, say), or take items off them. Everything here is logged.' }),
+    players.length ? h('div', { style: 'display:grid;gap:14px;max-width:680px' },
+      h('label', { class: 'field' }, 'Player', who),
+      h('div', { class: 'field' }, 'Item', itemPicker(st.item ? { item: st.item, label: st.label } : null, (it) => { st.item = it ? it.name : null; st.label = it ? it.label : null; refresh(); }, { allowClear: false, emptyText: 'No item chosen yet' })),
+      h('div', { class: 'row', style: 'align-items:end;gap:10px' },
+        h('label', { class: 'field' }, 'How many', count),
+        h('button', { class: 'btn primary', type: 'button', onclick: () => run('itemGive', 'Given.') }, 'Give'),
+        h('button', { class: 'btn danger', type: 'button', onclick: () => run('itemTake', 'Taken.') }, 'Take')),
+      have) : h('p', { class: 'empty', text: 'Nobody else is online.' }),
+    await packagesSection(st, players));
+}
+
+/* Item packages: premade kits sent to the player picked above in one go */
+async function packagesSection(st, players) {
+  const res = await adminRequest('packages');
+  const list = res.ok ? res.data : [];
+  const who = () => players.find((p) => p.id === st.target);
+  const send = async (pkg) => {
+    const p = who();
+    if (!p) return toast('Pick a player first.', true);
+    const r = await adminRequest('packageSend', p.id, pkg.id);
+    if (!r.ok) return toast(r.error, true);
+    if (r.data.missed.length) {
+      showModal(h('h2', { text: `Sent "${pkg.name}" to ${p.name}, but not all of it` }),
+        h('p', { text: `Given: ${r.data.given.join(', ') || 'nothing'}.` }),
+        h('p', { class: 'debit', text: `Couldn't give: ${r.data.missed.join(', ')}. Their pockets may be full.` }),
+        h('div', { class: 'buttons' }, h('button', { class: 'btn primary', type: 'button', onclick: hideModal }, 'OK')));
+    } else toast(`Sent "${pkg.name}" to ${p.name}.`);
+  };
+  const rows = list.map((pkg) => h('tr', {},
+    h('td', {}, h('strong', { text: pkg.name }),
+      h('div', { class: 'hint', style: 'margin:0', text: [...pkg.items.map((it) => `${it.count} x ${it.label}`), pkg.cash ? `${money(pkg.cash)} cash` : null].filter(Boolean).join(', ') }),
+      pkg.items.some((it) => it.exists === false) ? h('div', { class: 'hint debit', style: 'margin:0', text: 'Has an item that no longer exists on your server.' }) : null),
+    h('td', { class: 'actions' },
+      h('button', { class: 'btn small primary', type: 'button', onclick: () => send(pkg) }, 'Send'),
+      h('button', { class: 'btn small', type: 'button', onclick: () => editPackage(JSON.parse(JSON.stringify(pkg))) }, 'Edit'),
+      h('button', { class: 'btn small danger', type: 'button', onclick: () => confirmModal({ title: `Delete "${pkg.name}"?`, body: 'The package is removed. Nothing already sent is affected.', confirmLabel: 'Delete', danger: true, onConfirm: () => adminAct('packageDelete', [pkg.id], 'Package deleted.') }) }, 'Delete'))));
+  return h('div', { style: 'margin-top:30px' },
+    h('div', { class: 'section-head' }, h('h3', { style: 'margin:0', text: 'Packages' }),
+      h('button', { class: 'btn small primary', type: 'button', onclick: () => editPackage(null) }, 'New package')),
+    h('p', { class: 'hint', style: 'margin:0 0 10px', text: 'Premade kits (a starter kit, say). Press Send to give everything in one to the player picked above.' }),
+    rows.length ? h('table', {}, h('tbody', {}, rows)) : h('p', { class: 'empty', text: 'No packages yet.' }));
+}
+
+function editPackage(pkg) {
+  const p = pkg || { name: '', cash: 0, items: [{ item: null, count: 1 }] };
+  const name = h('input', { type: 'text', maxlength: 40, value: p.name, placeholder: 'e.g. Starter kit', style: 'width:100%' });
+  const cash = h('input', { type: 'number', min: 0, value: p.cash || 0, style: 'width:140px' });
+  const rows = h('div', { style: 'display:grid;gap:8px;max-height:44vh;overflow-y:auto;padding-right:4px' });
+  const draw = () => rows.replaceChildren(...p.items.map((it, i) => h('div', { class: 'row', style: 'align-items:center;flex-wrap:nowrap' },
+    h('div', { style: 'flex:1;min-width:0' }, itemPicker(it.item ? { item: it.item, label: it.label } : null, (x) => { it.item = x ? x.name : null; it.label = x ? x.label : null; }, { allowClear: false, openNow: !it.item, emptyText: 'No item chosen yet' })),
+    (() => { const n = h('input', { type: 'number', min: 1, value: it.count || 1, style: 'width:90px' }); n.addEventListener('change', () => { it.count = Math.max(1, Number(n.value) || 1); }); return n; })(),
+    h('button', { class: 'btn small danger', type: 'button', onclick: () => { p.items.splice(i, 1); draw(); } }, 'Remove'))));
+  draw();
+  $('sheet').classList.add('wide');
+  showModal(
+    h('h2', { text: pkg ? `Edit "${pkg.name}"` : 'New package' }),
+    h('label', { class: 'field' }, 'Name', name),
+    h('div', { class: 'field', style: 'margin-top:10px' }, 'Items', rows),
+    h('button', { class: 'btn small', type: 'button', style: 'margin-top:8px;justify-self:start', onclick: () => { p.items.push({ item: null, count: 1 }); draw(); } }, 'Add an item'),
+    h('label', { class: 'field', style: 'margin-top:12px' }, 'Plus cash (optional)', cash),
+    h('div', { class: 'buttons' },
+      h('button', { class: 'btn', type: 'button', onclick: hideModal }, 'Cancel'),
+      h('button', { class: 'btn primary', type: 'button', onclick: async () => {
+        if (p.items.some((it) => !it.item)) return toast('Pick an item for every row, or remove it.', true);
+        const data = { id: p.id, name: name.value, cash: Number(cash.value) || 0, items: p.items.map((it) => ({ item: it.item, count: it.count || 1 })) };
+        if (await adminAct('packageSave', [data], 'Package saved.')) hideModal();
+      } }, 'Save')));
+  name.focus();
 }
 
 /* Custom contracts --------------------------------------------------------- */
@@ -1872,6 +2032,36 @@ async function renderAdminDrugs() {
 const ALERT_OPTIONS = [{ value: 'none', label: 'No alarm' }, { value: 'silent', label: 'Silent alarm' }, { value: 'loud', label: 'Loud alarm' }];
 const DIFFICULTY = [{ value: 1, label: 'Easy' }, { value: 2, label: 'Medium' }, { value: 3, label: 'Hard' }];
 const point = (p) => (p && p.x != null ? `${Math.round(p.x)}, ${Math.round(p.y)}` : 'Not set');
+
+/* Heist laptops: staff place them around the map; anyone can use one to see the heist board */
+async function renderHeistLaptops() {
+  const res = await adminRequest('heistLaptops');
+  if (!res.ok) return h('div', {});
+  const list = res.data || [];
+  const add = async () => {
+    const pts = await placeInGame({ model: 'prop_laptop_01a', object: true });
+    if (!pts) return;
+    const name = await new Promise((resolve) => {
+      const input = h('input', { type: 'text', maxlength: 32, placeholder: 'e.g. Back of the Bahama Mamas', style: 'width:100%' });
+      showModal(h('h2', { text: 'Name this laptop' }), h('p', { text: 'Only staff see the name; it helps you find it in this list.' }), input,
+        h('div', { class: 'buttons' },
+          h('button', { class: 'btn', type: 'button', onclick: () => { hideModal(); resolve(''); } }, 'Skip'),
+          h('button', { class: 'btn primary', type: 'button', onclick: () => { hideModal(); resolve(input.value); } }, 'Save')));
+      input.focus();
+    });
+    if (await adminAct('heistLaptopAdd', [pts[0], name], 'Laptop placed.')) renderAdminTab();
+  };
+  const rows = list.map((l) => h('tr', {},
+    h('td', {}, h('strong', { text: l.label }), h('div', { class: 'hint', style: 'margin:0', text: `${Math.round(l.x)}, ${Math.round(l.y)}` })),
+    h('td', { class: 'actions' },
+      h('button', { class: 'btn small', type: 'button', onclick: () => adminAct('gotoPoint', [l]) }, 'Go to'),
+      h('button', { class: 'btn small danger', type: 'button', onclick: () => confirmModal({ title: `Remove "${l.label}"?`, body: 'The laptop disappears from the world.', confirmLabel: 'Remove', danger: true, onConfirm: () => adminAct('heistLaptopRemove', [l.id], 'Laptop removed.') }) }, 'Remove'))));
+  return h('div', { style: 'margin-top:28px' },
+    h('div', { class: 'section-head' }, h('h3', { style: 'margin:0', text: 'Laptops' }),
+      h('button', { class: 'btn small primary', type: 'button', onclick: add }, 'Place a laptop in game')),
+    h('p', { class: 'hint', style: 'margin:0 0 10px', text: 'Laptops around the map where anyone (gang or not) can press E to see the heist board: what jobs there are, what each needs, and whether they can do it. Place one on a desk or table: it sits on whatever you aim at.' }),
+    rows.length ? h('table', {}, h('tbody', {}, rows)) : h('p', { class: 'empty', text: 'No laptops placed yet.' }));
+}
 
 async function renderHeistList() {
   const res = await adminRequest('heists');
@@ -2534,6 +2724,19 @@ const AdminMock = {
         items: [{ item: 'weed_bag', itemLabel: 'Bag of weed', label: 'weed', min: 90, max: 140, maxPer: 3, enterprise: 'weed', image: 'images/weed_bag.png' },
           { item: 'coke_bag', itemLabel: 'Bag of cocaine', label: 'cocaine', min: 240, max: 340, maxPer: 2, enterprise: 'coke', image: 'images/coke_bag.png' }] });
       case 'drugItemsSave': return ok({ fromConfig: false, businesses: [], items: args[0] });
+      case 'shopGet': return ok({ enabled: true, fromConfig: true, tiers: ['Street crew', 'Firm', 'Organisation', 'Syndicate'],
+        permissions: [{ key: 'treasury_withdraw', label: 'Take money out' }, { key: 'heists', label: 'Start heists' }],
+        items: [{ item: 'spraycan', itemLabel: 'Spray can', label: 'Spray can', price: 50, pay: 'cash', max: 10, description: 'One can sprays a tag or crosses out a rival\'s.', image: 'spraycan.png', needs: 'graffiti', inUse: true, exists: true },
+          { item: 'burner_phone', itemLabel: 'Burner phone', label: 'Burner phone', price: 500, pay: 'cash', max: 1, description: 'A cheap phone nobody can trace back to you.', needs: 'informants', inUse: true, exists: true }] });
+      case 'shopSave': return ok({ ...args[0], tiers: ['Street crew', 'Firm', 'Organisation', 'Syndicate'], permissions: [], fromConfig: false });
+      case 'packages': return ok([{ id: 1, name: 'Starter kit', cash: 2500, items: [{ item: 'gang_tablet', label: 'Gang tablet', count: 1 }, { item: 'spraycan', label: 'Spray can', count: 5 }, { item: 'burner_phone', label: 'Burner phone', count: 1 }] }]);
+      case 'packageSend': return ok({ given: ['1 x Gang tablet', '5 x Spray can', '1 x Burner phone', '£2,500 cash'], missed: [] });
+      case 'packageSave': return ok(true);
+      case 'itemCount': return ok(0);
+      case 'itemGive': return ok(args[2]);
+      case 'itemTake': return ok(0);
+      case 'heistLaptops': return ok([{ id: 1, label: 'Back of the Bahama Mamas', x: -1388.2, y: -586.4, z: 30.2, w: 120 }]);
+      case 'heistLaptopAdd': return ok(true);
       case 'heistHere': return ok({ x: -2958.4, y: 482.1, z: 15.7, w: 88.2 });
       case 'heistSave': return ok({ ...args[1], id: args[0], data: args[1], cooldownLeft: 0 });
       case 'contractSpots': return ok({ minRoute: 700, spots: {

@@ -87,6 +87,43 @@ function Ledger.Withdraw(src, amount)
     return true
 end
 
+---Dirty money from a member's pockets (drug sales and so on) into the dirty treasury.
+function Ledger.DepositDirty(src, amount)
+    local gang, _, cid = Gangs.GetPlayerGang(src)
+    if not gang then return false, 'not_in_gang' end
+    if not Gangs.HasPermission(cid, 'treasury_deposit') then return false, 'no_permission' end
+    amount = validAmount(amount)
+    if not amount then return false, 'invalid_amount' end
+    if not Bridge.RemoveDirtyMoney(src, amount, 'gang-deposit') then return false, 'insufficient_dirty' end
+    local ok, res = Ledger.Transact(gang.id, 'dirty', amount, 'deposit', { citizenid = cid })
+    if not ok then
+        Bridge.AddDirtyMoney(src, amount, 'gang-deposit-refund')
+        return false, res
+    end
+    Logger.Log(src, 'treasury_deposit_dirty', ('%s deposited %d dirty to gang %d'):format(cid, amount, gang.id))
+    return true
+end
+
+---Dirty money out of the treasury into a member's pockets (as dirty money).
+function Ledger.WithdrawDirty(src, amount)
+    local gang, _, cid = Gangs.GetPlayerGang(src)
+    if not gang then return false, 'not_in_gang' end
+    if not Gangs.HasPermission(cid, 'treasury_withdraw') then return false, 'no_permission' end
+    amount = validAmount(amount)
+    if not amount then return false, 'invalid_amount' end
+    local ok, res = Ledger.Transact(gang.id, 'dirty', -amount, 'withdrawal', { citizenid = cid })
+    if not ok then return false, res end
+    if not Bridge.AddDirtyMoney(src, amount, 'gang-withdrawal') then
+        Ledger.Transact(gang.id, 'dirty', amount, 'withdrawal_reversed', { citizenid = cid })
+        return false, 'drugs_pockets_full'
+    end
+    Logger.Log(src, 'treasury_withdraw_dirty', ('%s withdrew %d dirty from gang %d'):format(cid, amount, gang.id))
+    return true
+end
+
+---What the member carrying it has, for the Treasury screen.
+function Ledger.PocketDirty(src) return Bridge.GetDirtyMoney(src) or 0 end
+
 function Ledger.History(gangId, limit)
     return MySQL.query.await([[
         SELECT t.id, t.account, t.amount, t.type, UNIX_TIMESTAMP(t.created_at) AS ts,

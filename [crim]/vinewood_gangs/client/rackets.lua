@@ -61,8 +61,11 @@ end
 local function collect(b)
     busy = true
     if progress(cfg.collectTime, 'racket_collecting', COLLECT_ANIM) then
-        local ok, res = lib.callback.await('vinewood_gangs:server:racketCollect', false, b.key)
-        if ok then notify('racket_collected', 'success', Utils.FormatMoney(res)) else notify(res or 'failed', 'error') end
+        local ok, res, hex = lib.callback.await('vinewood_gangs:server:racketCollect', false, b.key)
+        if ok then
+            notify('racket_collected', 'success', Utils.FormatMoney(res))
+            if hex then notify('racket_collected_control', 'inform', hex.gained, hex.control) end
+        else notify(res or 'failed', 'error') end
     end
     busy = false
 end
@@ -89,6 +92,9 @@ local function openMenu(b)
         local why = info.blocked and locale(info.blocked, info.blocked == 'racket_cooldown' and info.cooldown or cfg.minInfluence)
         local status = info.protectedBy and locale('racket_menu_paying', info.protectedBy) or locale('racket_menu_unprotected')
         options[#options + 1] = { title = status, description = info.area and locale('racket_menu_area', info.area) or nil, icon = 'store', readOnly = true }
+        if info.freeGround and not info.blocked then
+            options[#options + 1] = { title = locale('racket_menu_free_ground'), description = locale('racket_menu_free_ground_desc', info.area or '?'), icon = 'map', readOnly = true }
+        end
         options[#options + 1] = {
             title = locale(info.protectedBy and 'racket_menu_takeover' or 'racket_menu_offer'),
             description = why or locale('racket_odds_' .. info.odds),

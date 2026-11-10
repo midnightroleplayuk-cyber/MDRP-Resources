@@ -80,7 +80,8 @@ function Bridge.AddMoney(src, moneyType, amount, reason)
 end
 
 function Bridge.Notify(src, message, notifyType)
-    TriggerClientEvent('ox_lib:notify', src, { description = message, type = notifyType or 'inform' })
+    TriggerClientEvent('ox_lib:notify', src, { description = message, type = notifyType or 'inform',
+        duration = Config.Notify and Config.Notify.duration or 7000 })
 end
 
 ---@return number|nil src of the online player with this citizen id
@@ -142,6 +143,19 @@ end
 
 local function oxInventory()
     return GetResourceState('ox_inventory') == 'started'
+end
+
+---How many of an item a player is carrying.
+function Bridge.CountItem(src, item)
+    if oxInventory() then return exports.ox_inventory:GetItemCount(src, item) or 0 end
+    local player = getPlayer(src)
+    if not player then return 0 end
+    if framework == 'esx' then
+        local inv = player.getInventoryItem(item)
+        return inv and (inv.count or 0) or 0
+    end
+    local found = player.Functions.GetItemByName(item)
+    return found and (found.amount or found.count or 0) or 0
 end
 
 function Bridge.HasItem(src, item, count)
@@ -309,4 +323,99 @@ function Bridge.AddDirtyMoney(src, amount, reason)
         return exports.ox_inventory:AddItem(src, item, amount) == true
     end
     return Bridge.AddItem(src, item, amount)
+end
+
+---How a player's dirty money is held, as Config.DirtyMoney says (resolving 'auto').
+local function dirtyKind()
+    local d = Config.DirtyMoney or { type = 'auto' }
+    local kind = d.type or 'auto'
+    if kind == 'auto' then
+        if framework == 'esx' then kind = 'account'
+        elseif oxInventory() then kind = 'item'
+        else kind = 'markedbills' end
+    end
+    return kind, d
+end
+
+---Marked-bill bags a player is carrying: { { slot, worth } } (QBCore / ox_inventory with worth metadata).
+local function billBags(src, item)
+    local bags = {}
+    if oxInventory() then
+        for _, slot in pairs(exports.ox_inventory:Search(src, 'slots', item) or {}) do
+            local worth = slot.metadata and tonumber(slot.metadata.worth) or 0
+            if worth > 0 then for _ = 1, (slot.count or 1) do bags[#bags + 1] = { slot = slot.slot, worth = worth } end end
+        end
+    else
+        local player = getPlayer(src)
+        for _, it in pairs(player and player.PlayerData and player.PlayerData.items or {}) do
+            if it.name == item then
+                local worth = it.info and tonumber(it.info.worth) or 0
+                if worth > 0 then for _ = 1, (it.amount or 1) do bags[#bags + 1] = { slot = it.slot, worth = worth } end end
+            end
+        end
+    end
+    return bags
+end
+
+---How much dirty money a player is carrying.
+function Bridge.GetDirtyMoney(src)
+    local kind, d = dirtyKind()
+    if kind == 'cash' then return Bridge.GetMoney(src, 'cash') or 0 end
+    if kind == 'account' then
+        local player = getPlayer(src)
+        if not player then return 0 end
+        local account = d.account or 'black_money'
+        if framework == 'esx' then local a = player.getAccount(account) return a and a.money or 0 end
+        return (player.PlayerData.money and player.PlayerData.money[account]) or 0
+    end
+    if kind == 'markedbills' then
+        local total = 0
+        for _, b in ipairs(billBags(src, d.item or 'markedbills')) do total = total + b.worth end
+        return total
+    end
+    local item = d.item or 'black_money'
+    if oxInventory() then return exports.ox_inventory:Search(src, 'count', item) or 0 end
+    local player = getPlayer(src)
+    if not player then return 0 end
+    if framework == 'esx' then local it = player.getInventoryItem(item) return it and it.count or 0 end
+    local it = player.Functions.GetItemByName(item)
+    return it and (it.amount or it.count) or 0
+end
+
+---Takes dirty money from a player. Marked-bill bags are taken whole, and a bag worth the change is given back.
+function Bridge.RemoveDirtyMoney(src, amount, reason)
+    amount = math.floor(tonumber(amount) or 0)
+    if amount <= 0 or Bridge.GetDirtyMoney(src) < amount then return false end
+    local kind, d = dirtyKind()
+    if kind == 'cash' then return Bridge.RemoveMoney(src, 'cash', amount, reason) end
+    if kind == 'account' then
+        local player = getPlayer(src)
+        if not player then return false end
+        local account = d.account or 'black_money'
+        if framework == 'esx' then player.removeAccountMoney(account, amount, reason) return true end
+        return player.Functions.RemoveMoney(account, amount, reason) ~= false
+    end
+    if kind == 'markedbills' then
+        local item = d.item or 'markedbills'
+        local bags = billBags(src, item)
+        table.sort(bags, function(a, b) return a.worth < b.worth end)
+        local taken = 0
+        for _, b in ipairs(bags) do
+            if taken >= amount then break end
+            local ok
+            if oxInventory() then ok = exports.ox_inventory:RemoveItem(src, item, 1, nil, b.slot)
+            else local player = getPlayer(src) ok = player and player.Functions.RemoveItem(item, 1, b.slot) end
+            if ok then taken = taken + b.worth end
+        end
+        if taken < amount then
+            -- Couldn't take enough (shouldn't happen): give back what was taken
+            if taken > 0 then Bridge.AddDirtyMoney(src, taken, 'refund') end
+            return false
+        end
+        if taken > amount then Bridge.AddDirtyMoney(src, taken - amount, 'change') end
+        return true
+    end
+    local item = d.item or 'black_money'
+    if oxInventory() then return exports.ox_inventory:RemoveItem(src, item, amount) == true end
+    return Bridge.RemoveItem(src, item, amount)
 end

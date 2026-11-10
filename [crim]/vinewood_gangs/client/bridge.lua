@@ -1,3 +1,12 @@
+-- Notifications from this resource stay on screen for Config.Notify.duration unless they set their own time
+do
+    local notify = lib.notify
+    lib.notify = function(data)
+        if type(data) == 'table' and not data.duration then data.duration = Config.Notify and Config.Notify.duration or 7000 end
+        return notify(data)
+    end
+end
+
 ClientBridge = {}
 
 local function started(res) return GetResourceState(res) == 'started' end

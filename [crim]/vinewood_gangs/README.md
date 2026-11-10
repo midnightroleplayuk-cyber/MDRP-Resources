@@ -68,6 +68,13 @@ Everything is done from the gang tablet: **F6**, `/gangtablet`, or an item (`Con
   collection), risk, time limit, fixed spots (set where you're standing) or random ones, and the reward: money,
   items (given to whoever completes it) and bonus reputation. Choose every gang or one, a minimum tier, how often
   it turns up on boards, and whether it can only be done once. "Offer now" puts it straight on a gang's board.
+- **Shop:** what gangs can buy from the tablet's Shop app: add items from the inventory search, set each one's name,
+  price, what it's paid from (the buyer's cash or bank, or the gang's clean or dirty treasury), most per purchase,
+  description, and the gang tier or rank permission needed; reorder or remove them; or close the shop. Applies
+  straight away; `config/shop.lua` is the starting point.
+- **Items:** give an online player any item (a gang tablet, say) or take items off them; logged. **Packages** are
+  premade kits (a starter kit, say: items plus optional cash) sent to the picked player in one click; anything that
+  won't fit is reported and the rest still goes.
 - **Contract spots:** every pickup/drop-off, stolen-car and debtor spot. Add new ones where you're standing
   (they're used by new jobs straight away), go to any spot, and delete the ones added in game.
 - **Black market:** open or close the black market (closed: no new auctions, and the tablet app is hidden). The
@@ -179,6 +186,13 @@ enabled, stay open for the getaway, and lock again a minute after the run ends (
 locks them itself, so no door-lock resource is needed; the separate ox_doorlock / qb-doorlock field still works if
 you'd rather use one.
 
+**Heist board:** the gang tablet's Heists app shows every heist with its requirements (Details): crew, police on
+duty, time limit, cooldown, gang tier, who can do it, how it starts, items to bring, money for contacts, the steps
+and the loot, plus whether the gang can do it right now and why not.
+
+**Heist laptops:** staff place laptops around the map (`/gangadmin` > Heists > Laptops > Place a laptop in game; it
+sits on the desk or table you aim at). Anyone, gang or not, presses E at one to see the same heist board.
+
 **How a heist starts:** press E at a marker on the start point, or **talk to a contact** standing there (set in the
 builder: their name, look and what they say). Either way the usual rules apply (tier, rank permission, crew nearby,
 cooldowns, police on duty).
@@ -255,6 +269,10 @@ game is kept across restarts until someone changes the size in `config/hexes.lua
 the script moves existing turf onto the new grid in the same place (`onResize`: `'centre'` keeps each gang's number
 of hexes, `'fill'` keeps the same ground as more, smaller hexes), along with control, main and compound hexes,
 found rival hexes and tags. The console says what it did.
+
+**Turf banner:** while you're on turf, a bar at the top of the screen says so ("YOUR TURF · Davis (4, -7)", a found
+rival's name, or "RIVAL TURF"); `Config.Territory.banner`. Notifications stay up for `Config.Notify.duration`
+(7 seconds by default).
 
 **Turf on the pause map** can be switched off (or put on the minimap too, or shown to everyone instead of just gang
 members) in `/gangadmin` > Turf > **Map**; it applies straight away. `Config.Territory.map` is the starting point.
@@ -569,3 +587,26 @@ Street dealing pays the dealer in dirty money. How a player is given it is set b
 ESX uses the `black_money` account, ox_inventory gives `black_money` items (one per £1), and QBCore with
 qb-inventory gives a `markedbills` bag worth the amount. You can switch it to another item or account, or back to
 clean cash (`moneyType` in `config/drugs.lua`).
+
+Members pay dirty money into the gang's **dirty treasury** from the tablet's Treasury app (Pay in > Dirty, with
+"All of it"), and can take it back out as dirty money (Take out > Dirty), with the same rank permissions as clean
+money. Marked-bill bags are taken whole and a bag worth the change is given back. `Bridge.GetDirtyMoney` and
+`Bridge.RemoveDirtyMoney` in `bridge/server/framework.lua` handle this and can be edited for other setups.
+
+## The tablet item
+
+By default you need to be carrying the tablet item (`gang_tablet`) to open the gang tablet at all, whether by using
+the item, F6 or `/gangtablet` (`Config.Tablet.requireItem`; set it to false to let anyone in a gang open it).
+Staff can hand out tablets from `/gangadmin` > Items.
+
+## Rackets with hexes
+
+Every business is in a hex, claimed or not. Once a gang unlocks rackets:
+- **A shop on free ground** (nobody's hex) can be approached; if the owner agrees to pay, **that hex becomes the
+  gang's turf** (starting at "new hexes start at" control). It doesn't need to touch their other turf.
+- **A shop on the gang's own turf** can be approached as before; control there improves the odds (no minimum).
+- **A shop on a rival's turf** can't be approached, and trying shows the gang that hex.
+- A racket lasts as long as the gang holds the hex it's in: let the hex's control run out and the racket goes too.
+- **Collecting** from a racket adds control to its hex (`collectControl`, 5% by default).
+- **Taking one over:** a rival gang sells in that hex to wear its control down; at 0% the hex is lost, and the rival
+  can lean on the shop as free ground to take the racket and the hex.

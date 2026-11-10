@@ -38,7 +38,8 @@ local function slimState(st)
         fire = st.fire, zones = st.zones, active = st.active, silenced = st.silenced,
         evacuate = st.evacuate, test = st.test, testSounding = st.testSounding,
         disabled = st.disabled, alarmAt = st.alarmAt, dispatched = st.dispatched,
-        sprinklers = st.sprinklers, serverTime = st.serverTime,
+        sprinklers = st.sprinklers, faults = st.faults, serverTime = st.serverTime,
+        service = st.service and { tested = st.service.tested, total = st.service.total, name = st.service.name } or nil,
     }
 end
 
@@ -61,13 +62,14 @@ CreateThread(function()
             local sys = Systems[bestId]
             local payload = {
                 action = 'screen',
-                system = { label = sys.label, zones = sys.zones, devices = sys.devices, dispatch = sys.dispatch, dispatchDelay = sys.dispatchDelay },
+                system = { label = sys.label, zones = sys.zones, devices = sys.devices, dispatch = sys.dispatch, dispatchDelay = sys.dispatchDelay,
+                    lastService = sys.lastService, interval = Config.Servicing.enabled and Config.Servicing.interval or nil },
                 state = slimState(States[bestId]),
             }
             local encoded = json.encode(payload)
             -- serverTime changes every sync, so hash without it
             local hash = bestId .. json.encode({ payload.system.label, payload.system.zones, payload.state.fire, payload.state.zones, payload.state.active,
-                payload.state.silenced, payload.state.evacuate, payload.state.test, payload.state.testSounding, payload.state.disabled, payload.state.dispatched, payload.state.sprinklers })
+                payload.state.silenced, payload.state.evacuate, payload.state.test, payload.state.testSounding, payload.state.disabled, payload.state.dispatched, payload.state.sprinklers, payload.state.faults, payload.state.service, payload.system.lastService })
             local t = GetGameTimer()
             if hash ~= lastHash or bestId ~= currentId or t - lastSend > 5000 then
                 SendDuiMessage(dui, encoded)

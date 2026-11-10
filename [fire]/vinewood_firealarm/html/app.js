@@ -121,7 +121,20 @@ const P = {
   open: false, sys: null, st: null, level: 1, maxZones: 8,
   screen: 'status', code: '', idx: 0, alarmIdx: 0,
   msg: null, msgUntil: 0, buzzerMuted: false, lamp: false, lastZones: 0, offset: 0, busy: false,
+  servicer: false, me: null, interval: 14, dueSoon: 2,
 };
+
+const DAY = 86400;
+function serviceState() {
+  if (!P.sys || !P.sys.lastService || !P.interval) return { status: 'ok' };
+  const due = P.sys.lastService + P.interval * DAY, now = nowS();
+  if (now >= due) return { status: 'overdue', due };
+  if (now >= due - P.dueSoon * DAY) return { status: 'due', due };
+  return { status: 'ok', due };
+}
+const fmtDay = ts => { const d = new Date(ts * 1000); return `${pad(d.getDate())}/${pad(d.getMonth() + 1)}/${d.getFullYear()}`; };
+const devName = id => { const d = arr(P.sys && P.sys.devices).find(x => x.id === id); return d ? `Z${pad(d.zone)} ${d.label}` : `Device ${id}`; };
+const myService = () => P.st && P.st.service && P.st.service.src === P.me;
 
 const zoneName = z => (P.sys && arr(P.sys.zones)[z - 1]) || `Zone ${z}`;
 const nowS = () => Date.now() / 1000 + P.offset;
@@ -133,6 +146,7 @@ const sounding = st => ((st.fire || st.evacuate) && !st.silenced) || st.testSoun
 function setState(st) {
   if (!st) return;
   st.zones = arr(st.zones); st.active = arr(st.active); st.disabled = arr(st.disabled); st.events = arr(st.events); st.sprinklers = arr(st.sprinklers);
+  st.faults = arr(st.faults); if (st.service) st.service.tested = arr(st.service.tested);
   if (st.serverTime) P.offset = st.serverTime - Date.now() / 1000;
   if (st.zones.length > P.lastZones) P.buzzerMuted = false;
   if (!st.fire && !st.evacuate) { P.buzzerMuted = false; P.alarmIdx = 0; }
@@ -163,6 +177,12 @@ function menuItems() {
     { k: 'sounders', t: 'Test sounders' },
   ];
   if (P.st && arr(P.st.sprinklers).length) it.unshift({ k: 'sprinklersOff', t: 'Shut off sprinklers' });
+  if (myService()) {
+    it.unshift({ k: 'serviceAbandon', t: 'Abandon service visit' });
+    it.unshift({ k: 'serviceComplete', t: `Sign off service (${P.st.service.tested.length}/${P.st.service.total})` });
+  } else if (P.servicer && P.st && !P.st.service && !P.st.fire) {
+    it.unshift({ k: 'serviceStart', t: 'Start service visit' });
+  }
   if (P.level >= 3) it.push({ k: 'test', t: P.st.test ? 'Turn test mode off' : 'Turn test mode on' });
   it.push({ k: 'exit', t: 'Exit access level' });
   return it;
@@ -172,7 +192,7 @@ function renderLeds() {
   const st = P.st, lamp = P.lamp;
   const fire = $('#led-fire'), fault = $('#led-fault');
   fire.className = 'led red' + (lamp || st.fire ? ' on' : '') + (!lamp && st.fire && !st.silenced ? ' flash' : '');
-  fault.className = 'led amber' + (lamp || st.disabled.length || st.test ? ' on' : '');
+  fault.className = 'led amber' + (lamp || st.disabled.length || st.test || st.faults.length || serviceState().status === 'overdue' ? ' on' : '');
   let html = '';
   for (let z = 1; z <= P.maxZones; z++) {
     let cls = 'led';
@@ -213,14 +233,27 @@ function lcdStatus() {
     body += `<div class="big ${st.silenced ? '' : 'blink'}">EVACUATE</div>`;
     body += `<div>${st.silenced ? 'Sounders silenced' : 'All sounders active'}</div>`;
     body += `<div class="dim">Reset to clear</div>`;
+  } else if (st.service) {
+    const sv = st.service;
+    body += `<div class="big">SERVICE</div>`;
+    body += `<div class="mid">${sv.tested.length} of ${sv.total} devices tested</div>`;
+    body += `<div class="line">Engineer: ${esc(sv.name)}</div>`;
+    body += `<div class="dim">${st.testSounding ? 'Sounders running' : 'Test mode, no fire service calls'}</div>`;
   } else if (st.testSounding && !st.test) {
     body += `<div class="center"><div class="big">SOUNDER TEST</div><div>Sounders running</div></div>`;
   } else if (st.test) {
     body += `<div class="big">TEST MODE</div>`;
     body += `<div>${st.testSounding ? 'Sounders running' : 'Activate devices to test'}</div>`;
     body += `<div class="dim">Fire service will not be called</div>`;
+  } else if (st.faults.length) {
+    body += `<div class="big blink">FAULT</div>`;
+    body += st.faults.slice(0, 3).map(id => `<div class="line">${esc(devName(id))}</div>`).join('');
+    if (st.faults.length > 3) body += `<div class="dim">and ${st.faults.length - 3} more</div>`;
+    body += `<div class="dim">Engineer service required</div>`;
   } else {
-    body += `<div class="center"><div class="mid">System normal</div><div class="big">${fmtClock(now)}</div><div class="dim">${fmtDate(now)}</div></div>`;
+    const sv = serviceState();
+    const note = sv.status === 'overdue' ? `<div class="mid blink">Service overdue</div>` : (sv.status === 'due' ? `<div>Service due ${fmtDay(sv.due)}</div>` : '');
+    body += `<div class="center"><div class="mid">System normal</div><div class="big">${fmtClock(now)}</div><div class="dim">${fmtDate(now)}</div>${note}</div>`;
   }
   if (st.disabled.length) body += `<div>Disabled: ${st.disabled.map(z => 'Z' + pad(z)).join(' ')}</div>`;
   return bar + `<div class="body">${body}</div>` + footer();
@@ -310,6 +343,9 @@ async function pick() {
     P.screen = 'events'; P.idx = 0;
   }
   else if (it.k === 'lamp') { lampTest(); return; }
+  else if (it.k === 'serviceStart') { const r = await action('serviceStart'); P.screen = 'status'; if (r && r.ok) flash('Service visit started'); return; }
+  else if (it.k === 'serviceComplete') { const r = await action('serviceComplete'); P.screen = 'status'; if (r && r.ok) flash('Service signed off'); return; }
+  else if (it.k === 'serviceAbandon') { const r = await action('serviceAbandon'); P.screen = 'status'; if (r && r.ok) flash('Service abandoned'); return; }
   else if (it.k === 'sprinklersOff') { const r = await action('sprinklersOff'); P.screen = 'status'; if (r && r.ok) flash('Sprinklers shut off'); return; }
   else if (it.k === 'sounders') { const r = await action('sounderTest'); P.screen = 'status'; if (r && r.ok) flash('Sounder test running'); return; }
   else if (it.k === 'test') { const r = await action('testMode'); P.screen = 'status'; if (r && r.ok) flash(P.st.test ? 'Test mode on' : 'Test mode off'); }
@@ -391,6 +427,7 @@ $('#keyswitch').addEventListener('click', async () => {
 
 function openPanel(d) {
   P.sys = d.system; P.level = d.level; P.maxZones = d.maxZones || 8;
+  P.servicer = !!d.servicer; P.me = d.me; if (d.interval) P.interval = d.interval; if (d.dueSoon !== undefined) P.dueSoon = d.dueSoon;
   P.screen = 'status'; P.code = ''; P.idx = 0; P.alarmIdx = 0; P.msg = null; P.lamp = false;
   P.lastZones = arr(d.state.zones).length;
   P.open = true;
@@ -550,8 +587,9 @@ function renderLive() {
         <div class="status"><span class="led ${ss.led}"></span>${ss.text}</div>
         ${zones.length ? `<div class="hint">In alarm: ${zones.map(z => `Z${z} ${esc(arr(s.zones)[z - 1] || '')}`).join(', ')}</div>` : ''}
         ${arr(st.sprinklers).length ? `<div class="hint" style="color:#7fb8ff">Sprinklers operating: ${arr(st.sprinklers).length} head(s)</div>` : ''}
+        <div class="hint">Last serviced ${s.lastService ? fmtDay(s.lastService) : 'never'}${arr(st.faults).length ? `, <b style="color:#ffc228">${arr(st.faults).length} fault(s)</b>` : ''}${st.service ? `, service in progress (${esc(st.service.name)})` : ''}</div>
         <div class="inline"><select id="l-zone">${zoneOptions(1, s)}</select><button class="btn" id="l-trigger">Trigger zone</button></div>
-        <div class="inline"><button class="btn" id="l-sounders">Test sounders</button><button class="btn danger" id="l-reset">Force reset</button><button class="btn ghost" id="l-refresh">Refresh</button></div>
+        <div class="inline"><button class="btn" id="l-sounders">Test sounders</button><button class="btn" id="l-serviced">Mark serviced</button><button class="btn danger" id="l-reset">Force reset</button><button class="btn ghost" id="l-refresh">Refresh</button></div>
         <p class="hint">Force reset clears everything, including call points still latched in alarm.</p>
       </div>
       <div class="box">
@@ -562,6 +600,10 @@ function renderLive() {
   $('#l-trigger').addEventListener('click', async () => {
     const r = await post('adminTrigger', { id: s.id, zone: +$('#l-zone').value });
     if (r && r.systems) { A.systems = arr(r.systems); renderList(); renderLive(); renderDevices(); toast('Zone triggered'); }
+  });
+  $('#l-serviced').addEventListener('click', async () => {
+    const r = await post('adminMarkServiced', { id: s.id });
+    if (r && r.systems) { A.systems = arr(r.systems); renderList(); renderLive(); toast('Marked as serviced, faults cleared'); }
   });
   $('#l-sounders').addEventListener('click', async () => {
     const r = await post('adminSounderTest', { id: s.id });
@@ -642,6 +684,47 @@ $('#adm-new').addEventListener('click', () => { A.sel = 'new'; renderAdmin(); })
 $('#adm-close').addEventListener('click', () => closeAdmin());
 
 /* =====================================================================
+   SERVICE SCHEDULE
+   ===================================================================== */
+const SCH = { open: false };
+function openSchedule(d) {
+  SCH.open = true;
+  const list = arr(d.systems), now = d.now;
+  const chip = s => s.inService ? ['amber on', 'In service'] : s.status === 'overdue' ? ['red on', 'Overdue'] : s.status === 'due' ? ['amber on', 'Due soon'] : ['green on', 'OK'];
+  const rel = ts => { const days = Math.round((ts - now) / DAY); return days === 0 ? 'today' : days > 0 ? `in ${days} day${days === 1 ? '' : 's'}` : `${-days} day${days === -1 ? '' : 's'} ago`; };
+  $('#schedule').innerHTML = `
+    <div class="adm sch">
+      <main class="adm-main">
+        <h2>Fire alarm service schedule</h2>
+        <p class="sub">${list.filter(s => s.status !== 'ok').length} due or overdue. Start a visit at the panel, test every device, then sign off at the panel.</p>
+        ${list.length ? `<table class="dev"><thead><tr><th></th><th>Premises</th><th>Location</th><th>Due</th><th>Last service</th><th>Faults</th><th></th></tr></thead><tbody>
+        ${list.map(s => { const c = chip(s); return `<tr>
+          <td><span class="type"><span class="led ${c[0]}"></span>${c[1]}</span></td>
+          <td>${esc(s.label)}<div class="tag">${s.devices} devices${s.inService ? `, ${esc(s.inService)}` : ''}</div></td>
+          <td>${esc(s.street || 'Unknown')}${s.zone ? `<div class="tag">${esc(s.zone)}</div>` : ''}</td>
+          <td>${fmtDay(s.due)}<div class="tag">${rel(s.due)}</div></td>
+          <td>${fmtDay(s.lastService)}</td>
+          <td>${s.faults ? `<b style="color:#ffc228">${s.faults}</b>` : '0'}</td>
+          <td class="ops">${s.x ? `<button class="btn sm" data-wp="${s.x},${s.y}">Set waypoint</button>` : ''}</td>
+        </tr>`; }).join('')}</tbody></table>` : '<p class="hint">No fire alarm systems set up yet.</p>'}
+        <div class="actions"><button class="btn ghost" id="sch-close">Close</button></div>
+      </main>
+    </div>`;
+  $('#schedule').classList.remove('hidden');
+  $('#sch-close').addEventListener('click', () => closeSchedule());
+  document.querySelectorAll('[data-wp]').forEach(b => b.addEventListener('click', () => {
+    const [x, y] = b.dataset.wp.split(',').map(Number);
+    post('scheduleWaypoint', { x, y }); closeSchedule();
+  }));
+}
+function closeSchedule() {
+  if (!SCH.open) return;
+  SCH.open = false;
+  $('#schedule').classList.add('hidden');
+  post('scheduleClose');
+}
+
+/* =====================================================================
    MESSAGES + KEYBOARD
    ===================================================================== */
 window.addEventListener('message', e => {
@@ -653,13 +736,14 @@ window.addEventListener('message', e => {
     case 'closePanel': closePanel(false); break;
     case 'sound': Snd.setAlarm(d.volume || 0, d.tone || 'bs_alternating'); break;
     case 'openAdmin': openAdmin(d); break;
+    case 'openSchedule': openSchedule(d); break;
     case 'adminShow': openAdmin(d); break;
     case 'adminHide': A.open = false; $('#admin').classList.add('hidden'); if (document.activeElement) document.activeElement.blur(); break;
   }
 });
 
 window.addEventListener('keydown', e => {
-  if (e.key === 'Escape') { if (P.open) closePanel(); else if (A.open) closeAdmin(); return; }
+  if (e.key === 'Escape') { if (P.open) closePanel(); else if (A.open) closeAdmin(); else if (SCH.open) closeSchedule(); return; }
   if (!P.open) return;
   const map = { Enter: 'ok', Backspace: 'back', ArrowUp: 'up', ArrowDown: 'down', ArrowLeft: 'left', ArrowRight: 'right' };
   const k = /^\d$/.test(e.key) ? e.key : map[e.key];

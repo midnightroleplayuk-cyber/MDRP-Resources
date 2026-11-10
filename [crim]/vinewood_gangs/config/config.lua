@@ -36,6 +36,9 @@ Config.Gangs = {
 }
 
 Config.Territory = {
+    -- A bar at the top of the screen for as long as you're on turf ("Your turf: Davis (4, -7)" / "Rival turf")
+    banner = true,
+
     -- A notification when a player walks into (or out of) an area
     enterNotice = {
         enabled  = true,
@@ -67,6 +70,11 @@ Config.Territory = {
     },
 }
 
+-- How long the script's notifications stay on screen (milliseconds). Ones that set their own time keep it.
+Config.Notify = {
+    duration = 7000,
+}
+
 -- How a player is given dirty money (street dealing pays in it).
 --   'auto'        : ESX -> the black_money account; ox_inventory -> 'black_money' items (one per £1);
 --                   QBCore with qb-inventory -> one 'markedbills' bag worth the amount
@@ -82,6 +90,7 @@ Config.Tablet = {
     keybind         = 'F6',         -- false to disable
     command         = 'gangtablet', -- false to disable
     item            = true,         -- true = the 'gang_tablet' item opens it, or another item name, or false for no item
+    requireItem     = true,         -- you must be carrying the item to open the tablet at all (F6 and the command too)
     showNearbyNames = false,        -- invite list shows character names instead of 'Person (ID)'
 }
 

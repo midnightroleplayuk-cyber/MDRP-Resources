@@ -191,6 +191,14 @@ local function isTurfDrug(item) return controlFor(item) ~= nil end
 function Hexes.IsTurfDrug(item) return isTurfDrug(item) end
 
 ---Adds control to a gang's weakest hex (the black market's "connections" lot). Returns that hex's label.
+---Adds control to one of the gang's hexes (a racket collection there, say). Returns the new control %.
+function Hexes.Boost(key, gangId, amount)
+    local h = hexes[key]
+    if not h or h.gangId ~= gangId or (tonumber(amount) or 0) <= 0 then return nil end
+    setControl(h, h.control + amount)
+    return h.control
+end
+
 function Hexes.BoostWeakest(gangId, amount)
     local weakest
     for _, h in ipairs(owned(gangId)) do if not weakest or h.control < weakest.control then weakest = h end end
@@ -507,14 +515,42 @@ local function tell(src, kind, message, ntype)
     Bridge.Notify(src, message, ntype)
 end
 
+local bannerOn = {} -- bannerOn[src] = the hex key their turf banner was last set for ('' = none)
+local banner = Config.Territory.banner ~= false -- the bar at the top of the screen while you're on turf
+
+---Tells a player's game what the turf banner should say (nothing on free ground). Only what they're allowed to
+---know: their own hexes by name, rival turf by gang only if their gang has found it.
+local function sendBanner(src, gang, h)
+    local key = h and h.key or ''
+    if bannerOn[src] == key then return end
+    bannerOn[src] = key
+    local info = nil
+    if h then
+        if gang and h.gangId == gang.id then
+            info = { own = true, label = Hex.Label(h.q, h.r), main = h.main or nil }
+        else
+            local known = gang and revealedTo(gang.id, h.key)
+            local g = known and Gangs.Get(h.gangId)
+            info = { rival = true, gang = g and g.label or nil, colour = g and g.colour or nil }
+        end
+    end
+    TriggerClientEvent('vinewood_gangs:client:turfBanner', src, info)
+end
+
 local function checkPlayer(src)
     local gang = Gangs.GetPlayerGang(src)
-    if notice.showTo ~= 'everyone' and not gang then standingOn[src] = nil return end
+    if notice.showTo ~= 'everyone' and not gang then
+        standingOn[src] = nil
+        if bannerOn[src] and bannerOn[src] ~= '' then bannerOn[src] = '' TriggerClientEvent('vinewood_gangs:client:turfBanner', src, nil) end
+        return
+    end
     local c = GetEntityCoords(GetPlayerPed(src))
     local h = hexes[Hex.Key(Hex.FromCoords(c.x, c.y))]
+    if banner then sendBanner(src, gang, h) end
     local owner = h and h.gangId or false
     local before = standingOn[src]
     standingOn[src] = owner
+    if not notice.enabled then return end
     if before == nil or before == owner then return end -- just joined, or still on the same gang's ground
 
     if not owner then
@@ -530,7 +566,7 @@ local function checkPlayer(src)
 end
 
 CreateThread(function()
-    if not notice.enabled then return end
+    if not notice.enabled and not banner then return end
     Wait(10000)
     while true do
         for _, id in ipairs(GetPlayers()) do
@@ -542,7 +578,8 @@ CreateThread(function()
     end
 end)
 
-AddEventHandler('playerDropped', function() standingOn[source], lastTold[source] = nil, nil end)
+AddEventHandler('playerDropped', function() standingOn[source], lastTold[source], bannerOn[source] = nil, nil, nil end)
+Hexes._revealedTo = function(g, k) return revealedTo(g, k) end -- for tests
 Hexes._checkPlayer = checkPlayer -- for tests
 
 -------------------------------------------------------------------------------
@@ -557,6 +594,25 @@ function Hexes.AdminGang(gangId)
     table.sort(list, function(a, b) return (a.main and 1 or 0) > (b.main and 1 or 0) or (a.main == b.main and a.label < b.label) end)
     return { hexes = list, startHexes = cfg.startHexes }
 end
+
+---The hex at a spot (claimed or not) and who holds it: key, ownerGangId (nil = free ground), label.
+function Hexes.At(coords)
+    local q, r = Hex.FromCoords(coords.x, coords.y)
+    local key = Hex.Key(q, r)
+    local h = hexes[key]
+    return key, h and h.gangId or nil, Hex.Label(q, r)
+end
+
+---A gang takes a free hex because a business in it agreed to pay them (rackets). Returns the hex's label.
+function Hexes.ClaimForRacket(key, gangId)
+    if hexes[key] then return nil end
+    claim(key, gangId, S('startControl'), false, false)
+    local h = hexes[key]
+    Gangs.NotifyGang(gangId, locale('hex_from_racket', Hex.Label(h.q, h.r)), 'success')
+    pushGang(gangId)
+    return Hex.Label(h.q, h.r)
+end
+
 
 ---Every claimed hex, for the staff map picker. Staff see all turf (players only see what their gang knows).
 function Hexes.AdminMap()

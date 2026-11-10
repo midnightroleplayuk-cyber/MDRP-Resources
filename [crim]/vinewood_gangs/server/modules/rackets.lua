@@ -6,9 +6,16 @@ for _, b in ipairs(cfg.businesses) do byKey[b.key] = b end
 
 local state = {}     -- state[key] = { gangId, owed, since, lastAccrual, lastCollected }
 local cooldowns = {} -- cooldowns[key][gangId] = os.time() it ends
+Rackets._cooldowns = cooldowns -- for tests
+function Rackets._state() return state end -- for tests
 
 local function period() return cfg.collectMinutes * 60 end
 local function zoneOf(b) return Zones.FromCoords(b.coords) end
+
+-- With hexes, every business is in a hex, claimed or not: a shop on free ground can be approached, and getting it
+-- to pay up makes that hex your turf. A shop on a rival's turf can't be approached.
+local function hexMode() return Hex and Hex.Enabled and Hex.Enabled() and Hexes and Hexes.At end
+local function hexAt(b) return Hexes.At(b.coords) end -- key, owner, label
 local function near(src, b, range) return #(GetEntityCoords(GetPlayerPed(src)) - b.coords) <= (range or 5.0) end
 
 local function save(key)
@@ -52,6 +59,17 @@ end
 ---Chance the owner agrees, and a word for how it looks.
 local function odds(gangId, b, intimidate)
     local o = cfg.odds
+    if hexMode() then
+        local key, owner = hexAt(b)
+        local p = o.base
+        if owner == gangId then p = p + o.influence * math.min(1.0, Influence.Get(key, gangId) / 100) + o.holdsArea end
+        if intimidate then p = p + o.intimidate end
+        local s = state[b.key]
+        -- Only counts while that gang still holds the hex (once they've lost it, nobody's protecting the shop)
+        if s and s.gangId ~= gangId and owner == s.gangId then p = p + o.rival end
+        p = math.max(o.min, math.min(o.max, p))
+        return p, p >= 0.6 and 'good' or (p >= 0.35 and 'fair' or 'slim')
+    end
     local zone = zoneOf(b)
     local influence = zone and Influence.Get(zone, gangId) or 0
     local p = o.base + o.influence * math.min(1.0, influence / 100) -- influence is the hex's control %
@@ -67,6 +85,13 @@ end
 ---Why this gang can't approach the business right now, if anything.
 local function blocker(gangId, b)
     if not Progression.Has(gangId, 'rackets') then return 'tier_locked' end
+    if hexMode() then
+        local key, owner = hexAt(b)
+        if owner and owner ~= gangId then return 'racket_rival_turf' end
+        local cd = cooldowns[b.key] and cooldowns[b.key][gangId]
+        if cd and cd > os.time() then return 'racket_cooldown' end
+        return nil
+    end
     local zone = zoneOf(b)
     if not zone then return 'racket_no_area' end
     local influence = Influence.Get(zone, gangId)
@@ -116,8 +141,11 @@ function Rackets.Info(src, key)
     local protector = s and Gangs.Get(s.gangId)
     local mine = s and s.gangId == gang.id
 
+    local hkey, howner, hlabel
+    if hexMode() then hkey, howner, hlabel = hexAt(b) end
     local info = {
-        key = key, label = b.label, area = zone and Zones.Label(zone) or nil,
+        key = key, label = b.label, area = hexMode() and hlabel or (zone and Zones.Label(zone) or nil),
+        freeGround = hexMode() and not howner or nil, -- getting this one to pay would make the hex your turf
         mine = mine, protectedBy = (not mine and protector) and protector.label or nil,
         income = b.income, minutes = cfg.collectMinutes,
     }
@@ -140,6 +168,7 @@ function Rackets.Offer(src, key, intimidate)
     local s = state[key]
     if s and s.gangId == gang.id then return false, 'racket_already_ours' end
     local blocked = blocker(gang.id, b)
+    if blocked == 'racket_rival_turf' then Hexes.Reveal(gang.id, (hexAt(b))) end
     if blocked then return false, blocked end
 
     local zone = zoneOf(b)
@@ -153,6 +182,12 @@ function Rackets.Offer(src, key, intimidate)
         local now = os.time()
         state[key] = { gangId = gang.id, owed = 0, since = now, lastAccrual = now, lastCollected = now }
         save(key)
+        -- A shop on free ground: its hex becomes the gang's turf
+        local tookHex
+        if hexMode() then
+            local hkey, owner = hexAt(b)
+            if not owner then tookHex = Hexes.ClaimForRacket(hkey, gang.id) end
+        end
 
         if rival then
             Activity.Record({ type = 'racket_takeover', gangId = gang.id, citizenid = cid, zone = zone, coords = b.coords, targetGangId = rival,
@@ -162,8 +197,8 @@ function Rackets.Offer(src, key, intimidate)
             Activity.Record({ type = 'racket_agreed', gangId = gang.id, citizenid = cid, zone = zone, coords = b.coords, metadata = { business = key } })
         end
         Gangs.NotifyGang(gang.id, locale('racket_new_gang', b.label), 'success')
-        Logger.Log(src, 'racket_agreed', ('%s got %s for gang %d%s'):format(cid, key, gang.id, rival and (' from ' .. rival) or ''))
-        return true, rival and 'taken_over' or 'agreed'
+        Logger.Log(src, 'racket_agreed', ('%s got %s for gang %d%s%s'):format(cid, key, gang.id, rival and (' from ' .. rival) or '', tookHex and (', taking hex ' .. tookHex) or ''))
+        return true, rival and 'taken_over' or 'agreed', tookHex
     end
 
     cooldowns[key] = cooldowns[key] or {}
@@ -191,7 +226,13 @@ function Rackets.Collect(src, key)
     Activity.Record({ type = 'racket_payment', gangId = gang.id, citizenid = cid, zone = zoneOf(b), coords = b.coords,
         multiplier = amount / b.income, metadata = { business = key, amount = amount } })
     policeReport(b, gang.id, 'Extortion (report)', 'Shop owner calls in after paying a gang for protection.', cfg.reportOnCollect)
-    return true, amount
+    -- Calling round to collect keeps the gang's grip on that hex
+    local control
+    if hexMode() and (cfg.collectControl or 0) > 0 then
+        local hkey, owner = hexAt(b)
+        if owner == gang.id then control = Hexes.Boost(hkey, gang.id, cfg.collectControl) end
+    end
+    return true, amount, control and { gained = cfg.collectControl, control = math.floor(control) } or nil
 end
 
 function Rackets.Drop(src, key)
@@ -214,14 +255,17 @@ function Rackets.GangView(src)
     for _, b in ipairs(cfg.businesses) do
         local s = accrue(b.key)
         local zone = zoneOf(b)
-        local entry = { key = b.key, label = b.label, area = zone and Zones.Label(zone) or nil, income = b.income, x = b.coords.x, y = b.coords.y }
+        local hkey, howner, hlabel
+        if hexMode() then hkey, howner, hlabel = hexAt(b) end
+        local entry = { key = b.key, label = b.label, area = hexMode() and hlabel or (zone and Zones.Label(zone) or nil), income = b.income, x = b.coords.x, y = b.coords.y }
         if s and s.gangId == gang.id then
             entry.owed = s.owed
             entry.full = s.owed >= b.income * cfg.maxOwedPeriods
             entry.lastCollected = now - s.lastCollected
             entry.lapsesIn = math.max(0, cfg.lapsePeriods * period() - (now - s.lastCollected))
             mine[#mine + 1] = entry
-        elseif zone and Influence.Get(zone, gang.id) >= cfg.minInfluence then
+        elseif (hexMode() and (howner == nil or howner == gang.id)) or (not hexMode() and zone and Influence.Get(zone, gang.id) >= cfg.minInfluence) then
+            entry.freeGround = hexMode() and howner == nil or nil
             local protector = s and Gangs.Get(s.gangId)
             entry.protectedBy = protector and protector.label or nil
             local _, word = odds(gang.id, b, false)
@@ -395,11 +439,16 @@ local function review()
             drop(key)
         elseif now - s.lastCollected > cfg.lapsePeriods * period() then
             drop(key, 'racket_lapsed')
+        elseif hexMode() then
+            -- With hexes: the racket lasts as long as the gang holds the hex it's in
+            local _, owner = hexAt(b)
+            if owner ~= s.gangId then drop(key, 'racket_lost_grip') end
         elseif not zone or Influence.Get(zone, s.gangId) < cfg.dropBelow then
             drop(key, 'racket_lost_grip')
         end
     end
 end
+Rackets._review = review -- for tests
 
 function Rackets.Start()
     if not Config.Modules.rackets then return end

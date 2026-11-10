@@ -730,21 +730,54 @@ async function renderTreasury() {
   const moves = [];
   const amountInput = () => h('input', { type: 'number', min: 1, max: state.static.maxTransaction, step: 1, inputmode: 'numeric', 'aria-label': 'Amount' });
 
+  // Clean or dirty: a little switch on each box
+  const moneyKind = (onChange) => {
+    let kind = 'clean';
+    const wrap = h('div', { class: 'choices money-kind', role: 'radiogroup' });
+    const draw = () => wrap.replaceChildren(...[['clean', 'Clean'], ['dirty', 'Dirty']].map(([k, label]) => h('button', {
+      type: 'button', role: 'radio', class: 'choice', 'aria-checked': String(kind === k), onclick: () => { kind = k; draw(); onChange(k); },
+    }, label)));
+    draw();
+    return wrap;
+  };
   if (t.canDeposit) {
     const amount = amountInput();
-    moves.push(h('div', {},
-      h('h3', { text: 'Pay in' }),
-      h('div', { class: 'row' }, amount,
-        h('button', { class: 'btn primary', type: 'button', onclick: () => act('deposit', [Number(amount.value)], 'Paid into the treasury.') }, 'Deposit')),
-      h('p', { class: 'hint', text: `You've got ${money(t.cash)} on you.` })));
+    let kind = 'clean';
+    const hint = h('p', { class: 'hint' });
+    const allBtn = h('button', { class: 'btn', type: 'button', hidden: true, onclick: () => { amount.value = t.dirtyOnYou || 0; } }, 'All of it');
+    const showHint = () => {
+      hint.textContent = kind === 'dirty'
+        ? `You're carrying ${money(t.dirtyOnYou || 0)} in dirty money (from street sales and the like). It goes into the dirty treasury.`
+        : `You've got ${money(t.cash)} on you.`;
+      allBtn.hidden = !(kind === 'dirty' && (t.dirtyOnYou || 0) > 0);
+    };
+    showHint();
+    moves.push(h('div', { class: 'move' },
+      h('div', { class: 'move-head' }, h('h3', { text: 'Pay in' }), moneyKind((k) => { kind = k; showHint(); })),
+      h('div', { class: 'move-row' }, amount, allBtn,
+        h('button', { class: 'btn primary', type: 'button', onclick: () => (kind === 'dirty'
+          ? act('depositDirty', [Number(amount.value)], 'Dirty money paid into the treasury.')
+          : act('deposit', [Number(amount.value)], 'Paid into the treasury.')) }, 'Deposit')),
+      hint));
   }
   if (t.canWithdraw) {
     const amount = amountInput();
-    moves.push(h('div', {},
-      h('h3', { text: 'Take out' }),
-      h('div', { class: 'row' }, amount,
-        h('button', { class: 'btn', type: 'button', onclick: () => act('withdraw', [Number(amount.value)], 'Taken from the treasury.') }, 'Withdraw')),
-      h('p', { class: 'hint', text: 'Comes out as cash. Every withdrawal is logged.' })));
+    let kind = 'clean';
+    const bal = () => (t.balances ? (kind === 'dirty' ? t.balances.dirty : t.balances.clean) : 0) || 0;
+    const hint = h('p', { class: 'hint' });
+    const allOut = h('button', { class: 'btn', type: 'button', onclick: () => { amount.value = bal(); } }, 'All of it');
+    const showOutHint = () => {
+      hint.textContent = `${kind === 'dirty' ? 'Comes out as dirty money' : 'Comes out as cash'}${t.balances ? ` (${money(bal())} in the ${kind} treasury)` : ''}. Every withdrawal is logged.`;
+      allOut.hidden = !t.balances || bal() <= 0;
+    };
+    showOutHint();
+    moves.push(h('div', { class: 'move' },
+      h('div', { class: 'move-head' }, h('h3', { text: 'Take out' }), moneyKind((k) => { kind = k; showOutHint(); })),
+      h('div', { class: 'move-row' }, amount, allOut,
+        h('button', { class: 'btn', type: 'button', onclick: () => (kind === 'dirty'
+          ? act('withdrawDirty', [Number(amount.value)], 'Dirty money taken from the treasury.')
+          : act('withdraw', [Number(amount.value)], 'Taken from the treasury.')) }, 'Withdraw')),
+      hint));
   }
   if (moves.length) parts.push(h('div', { class: 'moves' }, moves));
   if (lres && lres.ok && lres.data.canSee) parts.push(launderSection(lres.data));
@@ -1171,12 +1204,49 @@ async function renderAirdrop() {
 
 /* Heists ---------------------------------------------------------------- */
 
+/* One heist on the board: what it needs, how it starts, the loot, and whether you can do it right now */
+function heistCard(x, { showWaypoint = true } = {}) {
+  const r = x.req || {};
+  const open = h('div', { class: 'heist-req', hidden: true });
+  const fact = (label, value, bad) => h('div', { class: 'req-fact' }, h('span', { class: 'muted', text: label }), h('strong', { class: bad ? 'debit' : '', text: value }));
+  open.append(
+    h('div', { class: 'req-facts' },
+      fact('Crew', `${r.crew || 1} ${r.crew === 1 ? 'person' : 'people'}`),
+      fact('Police on duty', r.police ? `${r.police}+` : 'Any'),
+      fact('Time limit', `${r.timeLimit || 15} min`),
+      fact('Cooldown', r.cooldown ? `${r.cooldown} min` : 'None'),
+      r.tier ? fact('Gang tier', `${r.tier} or higher`) : null,
+      fact('Who can do it', r.openTo === 'anyone' ? 'Anyone' : 'Gangs only')),
+    h('div', { class: 'req-line' }, h('span', { class: 'muted', text: 'Starts' }),
+      h('span', { text: r.startMode === 'npc' ? `By talking to ${r.contact || 'a contact'} at the start point` : 'By pressing E at the start point' })),
+    h('div', { class: 'req-line' }, h('span', { class: 'muted', text: 'Bring' }),
+      (r.items && r.items.length) ? h('span', { class: 'req-items' }, ...r.items.map((it) => h('span', { class: 'badge muted', text: it.label })))
+        : h('span', { text: 'No special items' }),
+      r.payments ? h('span', { class: 'hint', style: 'margin:0 0 0 8px', text: `+ ${money(r.payments)} for the people you deal with` }) : null),
+    h('div', { class: 'req-line' }, h('span', { class: 'muted', text: 'The job' }), h('span', { text: (r.steps || []).join(' → ') || '—' })),
+    (r.lootMoney || (r.lootItems && r.lootItems.length)) ? h('div', { class: 'req-line' }, h('span', { class: 'muted', text: 'Loot' }),
+      h('span', { text: [r.lootMoney ? `up to ${money(r.lootMoney)}` : null, ...(r.lootItems || [])].filter(Boolean).join(', ') })) : null);
+  const more = h('button', { class: 'btn small', type: 'button', onclick: () => { open.hidden = !open.hidden; more.textContent = open.hidden ? 'Details' : 'Hide'; } }, 'Details');
+  return h('div', { class: 'heist-row heist-card' },
+    h('div', { class: 'heist-card-top' },
+      h('div', { style: 'flex:1;min-width:0' },
+        h('div', { style: 'font-weight:600', text: x.label }),
+        h('div', { class: 'hint', style: 'margin:0', text: `${x.area || 'No area'}  ·  ${r.crew || x.crew || 1} crew  ·  ${(r.steps || []).length || x.steps} steps${r.police ? `  ·  ${r.police}+ police` : ''}` }),
+        x.blocked ? h('div', { class: 'hint debit', style: 'margin:2px 0 0' }, HEIST_BLOCKED[x.blocked] || 'Not available right now.', x.readyIn ? h('span', {}, ' Ready in ', countdown(x.readyIn)) : null)
+          : h('div', { class: 'hint credit', style: 'margin:2px 0 0', text: 'Ready when you are.' })),
+      h('div', { class: 'row', style: 'flex-wrap:nowrap' }, more, showWaypoint ? waypointButton(x.x, x.y) : null)),
+    open);
+}
+
 const HEIST_BLOCKED = {
   heist_in_progress: 'Another crew is on this one right now.',
   heist_already_running: 'Your gang is already on a heist.',
   heist_cooldown: 'Still on lockdown after the last job.',
   heist_gang_cooldown: 'Your gang needs to lie low first.',
   heist_not_enough_police: 'Not enough police around to make it worth it.',
+  heist_gangs_only: 'Only gangs can take on this job.',
+  heist_unavailable: 'Not available right now.',
+  not_in_gang: 'Only gangs can take on this job.',
   tier_locked: 'Your gang isn\'t big enough for this yet.',
   no_permission: 'Your rank can\'t start heists.',
 };
@@ -1213,13 +1283,7 @@ async function renderHeists() {
     ? 'Get the crew together at the start point and press E there. Each job needs enough police on duty to be worth it.'
     : 'Someone with the right rank starts a heist; then anyone in the gang can help with the steps.' }));
   if (!v.heists.length) parts.push(h('p', { class: 'empty', text: 'No heists are set up on this server yet.' }));
-  parts.push(h('div', { class: 'heist-list' }, v.heists.map((x) => h('div', { class: 'heist-row' },
-    h('div', {},
-      h('div', { style: 'font-weight:600', text: x.label }),
-      h('div', { class: 'hint', style: 'margin:0', text: `${x.area || 'No area'}  ·  ${x.crew} crew  ·  ${x.steps} steps` }),
-      x.blocked ? h('div', { class: 'hint debit', style: 'margin:2px 0 0' }, HEIST_BLOCKED[x.blocked] || 'Not available right now.', x.readyIn ? h('span', {}, ' Ready in ', countdown(x.readyIn)) : null)
-        : h('div', { class: 'hint credit', style: 'margin:2px 0 0', text: 'Ready when you are.' })),
-    waypointButton(x.x, x.y)))));
+  parts.push(h('div', { class: 'heist-list' }, v.heists.map((x) => heistCard(x))));
   return h('div', {}, h('div', { class: 'section-head' }, h('h2', { text: 'Heists' })), ...parts);
 }
 
@@ -1309,6 +1373,7 @@ function waypointButton(x, y) {
 
 const ODDS_TEXT = { good: 'They look like they\'ll listen.', fair: 'Could go either way.', slim: 'They don\'t look scared of you yet.' };
 const BLOCKED_TEXT = {
+  racket_rival_turf: 'Another gang runs this area.',
   racket_cooldown: 'Turned you down recently.',
   racket_rival_stronger: 'The gang they pay has more pull here.',
 };
@@ -1322,7 +1387,9 @@ async function renderRackets() {
   const owedTotal = r.mine.reduce((sum, b) => sum + b.owed, 0);
   parts.push(h('p', { class: 'hint', style: 'margin-bottom:18px', text: r.mine.length
     ? `${r.mine.length} ${r.mine.length === 1 ? 'business pays' : 'businesses pay'} you. ${money(owedTotal)} is waiting to be collected. Each one adds its rate every ${r.minutes} minutes, up to ${r.maxPeriods} times over, and stops paying if nobody calls round.`
-    : `Nobody pays you yet. Build at least ${r.minInfluence} influence in an area, then walk into a shop there and talk business.` }));
+    : (state.static.hexMode
+      ? 'Nobody pays you yet. Walk into a shop on your turf, or on free ground nobody holds, and talk business. If a shop on free ground agrees to pay, its hex becomes your turf.'
+      : `Nobody pays you yet. Build at least ${r.minInfluence} influence in an area, then walk into a shop there and talk business.`) }));
 
   if (r.mine.length) {
     parts.push(h('table', {},
@@ -1347,14 +1414,15 @@ async function renderRackets() {
           }, 'Drop') : null))))));
   }
 
-  parts.push(h('h3', { style: 'margin-top:28px', text: 'Businesses in your areas' }));
+  parts.push(h('h3', { style: 'margin-top:28px', text: state.static.hexMode ? 'Businesses you can approach' : 'Businesses in your areas' }));
   if (!r.prospects.length) {
-    parts.push(h('p', { class: 'empty', text: 'No other businesses where your gang has enough pull. Grow your influence to open up more.' }));
+    parts.push(h('p', { class: 'empty', text: state.static.hexMode ? 'No businesses you can approach right now.' : 'No other businesses where your gang has enough pull. Grow your influence to open up more.' }));
   } else {
     parts.push(h('div', { class: 'offers' }, r.prospects.map((b) => h('div', { class: 'offer' },
       h('div', {},
         h('h3', { text: b.label }),
-        h('p', { class: 'hint', text: `${b.area}. ${b.protectedBy ? `Pays ${b.protectedBy}.` : 'Not paying anyone.'} ${BLOCKED_TEXT[b.blocked] || ODDS_TEXT[b.odds] || ''}` })),
+        h('p', { class: 'hint', text: `${b.area}. ${b.protectedBy ? `Pays ${b.protectedBy}.` : 'Not paying anyone.'} ${BLOCKED_TEXT[b.blocked] || ODDS_TEXT[b.odds] || ''}` }),
+        b.freeGround ? h('p', { class: 'hint credit', style: 'margin:2px 0 0', text: 'Free ground: get them paying and this hex becomes your turf.' }) : null),
       h('div', { class: 'pay' }, money(b.income), h('small', { text: `every ${r.minutes} min` })),
       waypointButton(b.x, b.y)))));
   }
@@ -2208,7 +2276,32 @@ function renderSettings() {
 
 window.addEventListener('message', (event) => {
   const msg = event.data || {};
+  if (msg.action === 'openLaptop') {
+    // A heist laptop: straight onto the heist board, laptop-shaped, no home screen
+    state.mode = 'laptop';
+    state.static = msg.static || state.static || {};
+    const device = $('device');
+    device.classList.add('laptop');
+    device.hidden = false;
+    $('home').hidden = true;
+    $('app').hidden = false;
+    $('back').hidden = true;
+    $('homebar').hidden = true;
+    $('status-title').textContent = msg.label || 'Laptop';
+    $('app-title').textContent = 'Heist board';
+    const b = msg.board || { heists: [] };
+    $('view').replaceChildren(h('div', {},
+      h('p', { class: 'hint', style: 'margin:0 0 14px', text: b.inGang
+        ? 'Jobs going around the city. Your gang can also see these on the tablet.'
+        : 'Jobs going around the city. Some are for gangs only; the rest anyone can take on with a crew.' }),
+      b.heists.length ? h('div', { class: 'heist-list' }, b.heists.map((x) => heistCard(x, { showWaypoint: true })))
+        : h('p', { class: 'empty', text: 'Nothing on the board right now.' })));
+    return;
+  }
   if (msg.action === 'open') {
+    $('device').classList.remove('laptop');
+    $('back').hidden = false;
+    $('homebar').hidden = false;
     state.mode = 'tablet';
     state.static = msg.static;
     state.gang = msg.gang || null;
@@ -2276,7 +2369,7 @@ const Mock = {
           { grade: 0, label: 'Associate', permissions: ['graffiti'] },
         ] });
       case 'getTerritory': return this.request('getTerritoryHex');
-      case 'getTreasury': return ok({ canView: true, canDeposit: true, canWithdraw: true, cash: 3400,
+      case 'getTreasury': return ok({ dirtyOnYou: 4350, canView: true, canDeposit: true, canWithdraw: true, cash: 3400,
         balances: { clean: 48250, dirty: 12900 },
         history: [
           { amount: 2500, type: 'deposit', account: 'clean', ts: now - 400, name: 'Kez Williams' },
@@ -2296,8 +2389,8 @@ const Mock = {
           { key: 'herr_kutz_davis', label: 'Herr Kutz, Davis', area: 'Davis', income: 300, owed: 300, full: false, lastCollected: 4100, lapsesIn: 2000, x: 136, y: -1708 },
         ],
         prospects: [
-          { key: 'discount_straw', label: 'Discount Store, Strawberry', area: 'Strawberry', income: 350, protectedBy: 'Los Vagos', odds: 'fair', blocked: 'racket_rival_stronger', x: 75, y: -1392 },
-          { key: '247_innocence', label: '24/7, Innocence Boulevard', area: 'Strawberry', income: 400, odds: 'good', x: 25, y: -1347 },
+          { key: 'discount_straw', label: 'Discount Store, Strawberry', area: 'Strawberry (1, -5)', income: 350, odds: 'good', x: 75, y: -1392 },
+          { key: '247_innocence', label: '24/7, Innocence Boulevard', area: 'La Puerta (-3, -4)', income: 400, odds: 'slim', freeGround: true, x: 25, y: -1347 },
         ] });
       case 'getSafehouses': return ok({ isBoss: true, max: 2, graceDays: 3,
         mine: [{ id: 1, label: 'The Lock-up', address: '14 Forum Drive', area: 'Davis', price: 75000, upkeep: 1500, x: -100, y: -1600, paidFor: 51000, breached: false, refund: 46000,
@@ -2344,14 +2437,10 @@ const Mock = {
         options: [{ key: 'h:4:-8', q: 4, r: -8, label: 'Davis (4, -8)' }, { key: 'h:3:-7', q: 3, r: -7, label: 'Chamberlain Hills (3, -7)' }, { key: 'h:5:-8', q: 5, r: -8, label: 'Rancho (5, -8)' }, { key: 'h:4:-6', q: 4, r: -6, label: 'Davis (4, -6)' }] });
       case 'getAirdrop': return ok({ canCall: true, cost: 25000, account: 'dirty', balance: 48250, waitFor: 0, busy: false, cooldownMins: 120,
         bounds: { minX: -3800, maxX: 4300, minY: -3700, maxY: 7800 }, active: null });
-      case 'getHeists': return ok({ canStart: true,
-        active: { id: 4, label: 'Fleeca, Great Ocean', endsAt: 812, alarm: 'silent', loot: 0, steps: [
-          { i: 1, label: 'Security panel', done: true }, { i: 2, label: 'Inner gate', available: true, busy: true },
-          { i: 3, label: 'Vault door' }, { i: 4, label: 'Cash trolley' }, { i: 5, label: 'Deposit boxes' }] },
-        heists: [
-          { id: 4, label: 'Fleeca, Great Ocean', area: 'Banham Canyon', crew: 3, steps: 5, blocked: 'heist_already_running', x: -2957, y: 481 },
-          { id: 6, label: 'Gruppe armoured truck', area: 'Downtown', crew: 3, steps: 3, blocked: 'heist_cooldown', readyIn: 1880, x: 150, y: -1040 },
-          { id: 7, label: 'Vangelico jewellery', area: 'Rockford Hills', crew: 2, steps: 5, x: -630, y: -236 }] });
+      case 'getHeists': return ok({ canStart: true, active: null, heists: [
+        { id: 1, label: 'Fleeca, Great Ocean', area: 'Banham Canyon (-20, 3)', x: -2957, y: 484, req: { crew: 3, police: 4, tier: 'Organisation', timeLimit: 20, cooldown: 120, openTo: 'gangs', startMode: 'npc', contact: 'Lester',
+          items: [{ item: 'thermite', label: 'Thermite' }, { item: 'laptop_hack', label: 'Hacking laptop' }], payments: 2000, steps: ['Talk to someone (NPC)', 'Hack a panel', 'Thermite a door', 'Grab loot', 'Grab loot'], lootMoney: 45000, lootItems: ['Gold bar'] } },
+        { id: 2, label: 'Corner shop, Grove Street', area: 'Davis (4, -7)', x: 100, y: -1700, blocked: 'heist_cooldown', readyIn: 1800, req: { crew: 1, police: 1, timeLimit: 10, cooldown: 60, openTo: 'anyone', startMode: 'tablet', items: [], steps: ['Intimidate someone (NPC)', 'Grab loot'], lootMoney: 4000, lootItems: [] } }] });
       case 'getShop': return ok({ cash: 1840, bank: 12500, canTreasury: true, clean: 48250, dirty: 12900, items: [
         { item: 'spraycan', label: 'Spray can', description: 'One can sprays a tag or crosses out a rival\'s.', price: 50, pay: 'cash', max: 10, image: 'spraycan.png' },
         { item: 'burner_phone', label: 'Burner phone', description: 'A cheap phone nobody can trace back to you.', price: 500, pay: 'cash', max: 1, image: 'burner_phone.png' },

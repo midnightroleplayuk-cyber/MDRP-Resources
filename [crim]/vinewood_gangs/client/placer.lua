@@ -38,14 +38,26 @@ end
 ---like a standing player's position), or nil if cancelled.
 function PlaceNpcs(opts)
     opts = opts or {}
+    local isObject = opts.object == true -- placing a prop (a heist laptop, say) rather than a person
     local name = opts.model
-    if not (name and IsModelInCdimage(GetHashKey(name)) and IsModelAPed(GetHashKey(name))) then name = 'a_m_m_business_01' end
+    local valid = name and IsModelInCdimage(GetHashKey(name)) and (isObject or IsModelAPed(GetHashKey(name)))
+    if not valid then name = isObject and 'prop_laptop_01a' or 'a_m_m_business_01' end
     local model = lib.requestModel(name, 10000)
     if not model then return nil end
     local multi = opts.multi == true
     local max = math.max(1, math.min(12, tonumber(opts.max) or 1))
+    -- People stand with their middle about 1 m up; props sit right on the surface
+    local lift = isObject and 0.0 or 1.0
 
-    local ghost = ghostPed(model, 160)
+    local ghost
+    if isObject then
+        ghost = CreateObject(model, 0.0, 0.0, 0.0, false, false, false)
+        SetEntityAlpha(ghost, 170, false)
+        SetEntityCollision(ghost, false, false)
+        FreezeEntityPosition(ghost, true)
+    else
+        ghost = ghostPed(model, 160)
+    end
     local placed, points = {}, {}
     local heading = (GetEntityHeading(cache.ped) + 180.0) % 360.0 -- facing you to start with
     local shown, result = nil, nil
@@ -58,7 +70,7 @@ function PlaceNpcs(opts)
         if IsDisabledControlJustPressed(0, 14) or IsDisabledControlJustPressed(0, 262) then heading = (heading - (fine and 2.0 or 15.0)) % 360.0 end
 
         local p = aimPoint(30.0)
-        SetEntityCoordsNoOffset(ghost, p.x, p.y, p.z + 1.0, false, false, false)
+        SetEntityCoordsNoOffset(ghost, p.x, p.y, p.z + lift, false, false, false)
         SetEntityHeading(ghost, heading)
         DrawMarker(25, p.x, p.y, p.z + 0.03, 0, 0, 0, 0, 0, 0, 0.9, 0.9, 0.9, 91, 141, 239, 160, false, false, 2, false, nil, nil, false)
         -- Which way they'll face
@@ -69,7 +81,7 @@ function PlaceNpcs(opts)
         if help ~= shown then lib.showTextUI(help) shown = help end
 
         if IsDisabledControlJustPressed(0, 38) then -- E
-            local point = { x = p.x, y = p.y, z = p.z + 1.0, w = heading }
+            local point = { x = p.x, y = p.y, z = p.z + lift, w = heading }
             if not multi then result = { point } break end
             points[#points + 1] = point
             local copy = ghostPed(model, 230)

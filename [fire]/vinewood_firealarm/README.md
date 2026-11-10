@@ -94,6 +94,20 @@ Setting up the model in Blender (Sollumz):
 
 Texture replacement applies to every copy of the model, so the screen always shows the panel **nearest** to you (within `Config.Screen.distance`). Two panels in sight of each other will show the same screen. Target-point panels don't have a screen.
 
+## Servicing
+
+Gives the fire job (or any jobs in `Config.Servicing.jobs`) regular RP work.
+
+1. Every `interval` real days (default 14) a system comes due. Service jobs on duty get a notification, and a low-priority **Fire alarm service due** job goes to your dispatch.
+2. `/fireservice` shows the schedule: every premises, when it's due, faults, and a waypoint button.
+3. At the panel, an engineer picks **Start service visit**. This puts the system into test mode, so nothing calls the fire service.
+4. They visit each device and use **Service device** (ox_target), with a progress bar and animation. Detectors are tested with a smoke pole, call points with the key, and so on. Sounders briefly sound on each test.
+5. Back at the panel, **Sign off service** marks it done, records it in the log and pays the engineer (`payment`).
+
+Overdue systems slowly develop faults (`faults.chancePerDay`). Faulty detectors don't detect, faulty sounders stay silent, faulty call points do nothing and faulty sprinklers don't operate. The panel shows FAULT with the device, the fault LED lights, and servicing that device repairs it. Admins can **Mark serviced** in the admin menu.
+
+Service jobs get level 2 at every panel, and level 3 during their own visit.
+
 ## Sprinklers
 
 Place sprinklers on the ceiling like any other device (`prop_vw_sprinkler`, streamed in `/stream`). They **only operate when a smoke detector in the same zone detects fire or smoke**: never from call points, admin triggers, detector tests or test mode.

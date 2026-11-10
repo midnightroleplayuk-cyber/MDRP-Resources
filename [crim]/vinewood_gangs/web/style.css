@@ -457,8 +457,15 @@ td.num { text-align: right; }
 .balance .amount { font-family: var(--figures); font-size: 30px; font-weight: 600; line-height: 1.1; }
 .balance .what { color: var(--concrete); font-size: 14px; }
 
-.moves { display: flex; gap: 32px; flex-wrap: wrap; margin-bottom: 28px; padding-bottom: 24px; border-bottom: 1px solid var(--line); }
+.moves { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 32px; margin-bottom: 28px; padding-bottom: 24px; border-bottom: 1px solid var(--line); }
 .moves input { width: 160px; }
+/* Pay in and Take out: the same layout side by side, so everything lines up */
+.move { display: grid; gap: 10px; align-content: start; }
+.move-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 36px; }
+.move-head h3 { margin: 0; }
+.move-row { display: flex; align-items: stretch; gap: 8px; }
+.move-row input { flex: 1 1 auto; min-width: 0; width: auto; }
+.move .hint { margin: 0; min-height: 2.6em; }
 
 /* Settings ---------------------------------------------------------------- */
 
@@ -1021,3 +1028,25 @@ div.field { display: grid; gap: 6px; font-size: 14px; color: var(--concrete); }
 /* Tags app: the gang's tag allowance (hexes) */
 .tag-allowance { display: flex; align-items: center; gap: 16px; padding: 12px 14px; margin: 4px 0 10px; border: 1px solid var(--line); border-radius: 12px; background: var(--kerb); }
 .tag-allowance .big { font-size: 22px; font-weight: 650; white-space: nowrap; }
+
+/* Treasury: clean / dirty switch */
+.money-kind .choice { padding: 4px 12px; font-size: 12px; }
+.move-row .btn { height: auto; }
+
+/* Heist board cards (tablet and laptop) */
+.heist-card { display: grid; grid-template-columns: 1fr; gap: 10px; align-items: stretch; }
+.heist-card-top { display: flex; align-items: center; gap: 12px; }
+.heist-req { display: grid; gap: 8px; padding: 12px 14px; border-radius: 10px; background: var(--asphalt); }
+.req-facts { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 8px 16px; }
+.req-fact { display: grid; gap: 2px; }
+.req-fact .muted { font-size: 12px; }
+.req-line { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; }
+.req-line > .muted:first-child { width: 70px; flex: none; font-size: 12px; }
+.req-items { display: flex; flex-wrap: wrap; gap: 6px; }
+
+/* The heist laptop: a wider screen on a laptop base */
+.device.laptop .bezel { border-radius: 16px 16px 6px 6px; padding: 14px 14px 18px; }
+.device.laptop .screen { width: min(1100px, 88vw); height: min(640px, 72vh); border-radius: 6px; }
+.device.laptop .camera { top: 6px; }
+.device.laptop .bezel::after { content: ''; position: absolute; left: -6%; right: -6%; bottom: -22px; height: 22px; border-radius: 0 0 18px 18px;
+  background: linear-gradient(180deg, #2A2D33, #141519); box-shadow: 0 18px 40px rgba(0, 0, 0, 0.55); }

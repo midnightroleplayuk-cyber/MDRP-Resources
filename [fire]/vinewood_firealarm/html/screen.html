@@ -46,7 +46,9 @@ function render() {
   const t = now();
   document.getElementById('label').textContent = sys.label;
   document.getElementById('clock').textContent = clock(t);
-  const zones = arr(st.zones), active = arr(st.active), disabled = arr(st.disabled);
+  const zones = arr(st.zones), active = arr(st.active), disabled = arr(st.disabled), faults = arr(st.faults);
+  const devName = id => { const d = arr(sys.devices).find(x => x.id === id); return d ? `Z${pad(d.zone)} ${d.label}` : `Device ${id}`; };
+  const overdue = sys.lastService && sys.interval && t >= sys.lastService + sys.interval * 86400;
   let body = '', foot = '';
 
   if (st.fire) {
@@ -62,16 +64,20 @@ function render() {
       const left = Math.max(0, Math.ceil((st.alarmAt + sys.dispatchDelay) - t));
       body += `<div class="line">${st.dispatched ? 'Fire service called' : `Calling fire service in ${left}s`}</div>`;
     }
+  } else if (st.service) {
+    body += `<div class="center"><div class="big">SERVICE</div><div class="mid">${arr(st.service.tested).length} of ${st.service.total} tested</div><div class="line">${esc(st.service.name)}</div></div>`;
   } else if (st.evacuate) {
     body += `<div class="center"><div class="big ${st.silenced ? '' : 'blink'}">EVACUATE</div><div>${st.silenced ? 'Sounders silenced' : 'All sounders active'}</div></div>`;
   } else if (st.testSounding && !st.test) {
     body += `<div class="center"><div class="big">SOUNDER TEST</div><div>Sounders running</div></div>`;
   } else if (st.test) {
     body += `<div class="center"><div class="big">TEST MODE</div><div>${st.testSounding ? 'Sounders running' : 'Walk test in progress'}</div></div>`;
+  } else if (faults.length) {
+    body += `<div class="center"><div class="big blink">FAULT</div>${faults.slice(0, 2).map(id => `<div class="line">${esc(devName(id))}</div>`).join('')}<div class="dim">Engineer service required</div></div>`;
   } else if (disabled.length) {
     body += `<div class="center"><div class="big blink">FAULT</div><div class="mid">Disablement</div><div class="line">${disabled.map(z => `Z${pad(z)} ${esc(zoneName(z))}`).join(', ')}</div></div>`;
   } else {
-    body += `<div class="center"><div class="mid">System normal</div><div class="big">${clock(t)}</div><div class="dim">${date(t)}</div></div>`;
+    body += `<div class="center"><div class="mid">System normal</div><div class="big">${clock(t)}</div><div class="dim">${date(t)}</div>${overdue ? '<div class="mid blink">Service overdue</div>' : ''}</div>`;
   }
 
   const faults = [];
