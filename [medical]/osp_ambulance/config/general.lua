@@ -16,7 +16,7 @@ Config.UseTarget = true -- Set to false if you don't want to use targetting at a
 Config.UseOxTarget = true
 Config.TargetName = false -- The name of the target resource (only needed if you use qb-target or qtarget)
 Config.Dispatch = "default" -- 'default', 'ps-dispatch', 'cd_dispatch', 'lb-phone', 'lb-tablet', 'piotreq_gmt' (aliases: ps, cd, cd_dispatch3d, gmt)
-Config.Banking = "default" -- 'default', 'okokBanking' (aliases: okok), 'wasabi_banking' (alias: wasabi), 'osp-banking' (aliases: osp, osp_banking), 'qs-banking' (aliases: qs, qs_banking)
+Config.Banking = "av_banking" -- 'default', 'okokBanking' (aliases: okok), 'wasabi_banking' (alias: wasabi), 'osp-banking' (aliases: osp, osp_banking), 'qs-banking' (aliases: qs, qs_banking)
 Config.DispatchNotifyButton = "G" -- Avoid G if cd_dispatch uses G for Respond; change this or the cd_dispatch respond key
 Config.UseXsound = false -- If set to false you'll use native audio, which is to be recommended to everyone who's got it working. 
 
@@ -50,7 +50,7 @@ Config.InteractionAnim = "gang_chatting_idle01"
 Config.JobBlips = false -- Whether or not ambulance personel can see eachother on the map.
 Config.MinimalDoctors = 5 -- How many players with the ambulance job to prevent the hospital check-in system from being used
 Config.DocCooldown = 1 -- Cooldown between doctor calls allowed, in minutes
-Config.AIHealTimer = 120 -- Time in bed before revive after check-in / respawn
+Config.AIHealTimer = 180 -- Time in bed before revive after check-in / respawn
 Config.WipeInventoryOnRespawn = true -- Enable or disable removing all the players items when they respawn at the hospital
 Config.ExcludeItems = {'iphone', 'anotheritem'}
 Config.Helicopter = "aeron" -- Helicopter model that players with the ambulance job can use
@@ -74,7 +74,7 @@ Config.DeathHealth = 200 -- MUST BE ABOVE ZERO 0, The health the player should h
 Config.XrayScreenTimeout = 10000 -- How long before the screen automatically shuts off after an xray
 Config.CodeBlueTimeout = 300 -- The time in seconds before a code blue is automatically cleared (0 = disabled)
 Config.BillCost = 0 -- Price that players are charged for using the hospital check-in system
-Config.WoundBills = false -- Wound-priced hospital bills. Off: check-in / respawn stay at Config.BillCost (free)
+Config.WoundBills = true -- Wound-priced hospital bills. Off: check-in / respawn stay at Config.BillCost (free)
 Config.WoundPrices = {
     ["abrasion"] = 15,
     ["avulsion"] = 50,

@@ -66,7 +66,7 @@ Config.ItemShop = { -- The stock resets every script restart but is synced to al
         category = "equipment",
     },
     {
-        label = "NHC MDT",
+        label = "MHS MDT",
         name = "nhc_mdt",
         price = 0,
         type = "item",

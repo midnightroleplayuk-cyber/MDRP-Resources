@@ -1,10 +1,10 @@
 Config = Config or {}
 
 Config.PrescriptionBranding = {
-    hospitalName = 'TNG Medical Center',
+    hospitalName = 'MHS Burton Hospital',
     hospitalAddress = '124 Decker Street, Northern England',
     hospitalPhone = 'Tel: Hospital in Phone',
-    hospitalCertId = 'NHC-7549',
+    hospitalCertId = 'MHS-7549',
 }
 
 Config.PrescriptionExpiryDays = 2
