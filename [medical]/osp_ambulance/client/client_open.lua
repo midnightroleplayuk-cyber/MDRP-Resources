@@ -2387,7 +2387,7 @@ function TriggerNuiAlertSound(sound, coords, distance)
         return
     end
 
-    local range = distance or Config.IncomingScreenSoundRange or 50.0
+    local range = distance or Config.IncomingScreenSoundRange or 35.0
     local pedCoords = GetEntityCoords(PlayerPedId())
     if #(pedCoords - coords) > range then
         return
@@ -2397,7 +2397,7 @@ function TriggerNuiAlertSound(sound, coords, distance)
     SendNUIMessage({
         action = 'playAlertSound',
         sound = sound,
-        volume = sound == 'codeblue' and 0.7 or 1.0,
+        volume = sound == 'codeblue' and 0.4 or 0.7,
     })
 end
 
