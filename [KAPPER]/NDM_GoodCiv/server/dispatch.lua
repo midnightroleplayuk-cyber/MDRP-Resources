@@ -1,4 +1,4 @@
--- Medic requests: forward to the normal dispatch, then fall back to GoodCiv carriers.
+-- GoodCiv requests (/goodciv): forward to the normal dispatch, then alert GoodCiv volunteers.
 Dispatch = {}
 
 local lastRequest = {} -- [src] = os.time()
@@ -11,8 +11,6 @@ local function forward(patient, coords)
         for _, medic in ipairs(Bridge.GetOnDutyMedics()) do
             TriggerClientEvent('goodciv:client:medicCall', medic, { coords = coords, message = message, patient = patient })
         end
-    elseif provider == 'vinewood' and GetResourceState('vinewood-dispatch') == 'started' then
-        exports['vinewood-dispatch']:SendPreset('injured_person', patient, { description = message })
     elseif provider == 'ps-dispatch' or provider == 'cd_dispatch' then
         -- Both are fed from the caller's client so street/zone info is correct.
         TriggerClientEvent('goodciv:client:forwardDispatch', patient, provider)
@@ -22,12 +20,9 @@ local function forward(patient, coords)
 end
 
 ---Handle a medic request from a patient.
----@param origin 'command'|'event'|'auto'|'export'|'dispatch'
----'dispatch' = raised by a bridged dispatch (vinewood): already sent, and the dispatch tells the caller itself.
+---@param origin 'command'|'event'|'auto'|'export'
 ---@return boolean alerted true if GoodCiv carriers were alerted
----@return table|nil incident
 function Dispatch.Request(patient, origin)
-    local quiet = origin == 'dispatch'
     local t = os.time()
     if Incidents.IsPatient(patient) then
         if origin == 'command' then
@@ -41,20 +36,27 @@ function Dispatch.Request(patient, origin)
 
     local ped = GetPlayerPed(patient)
     if ped == 0 then return false end
+
+    -- Someone typing /goodciv while on their feet: don't page medics or volunteers.
+    local downed = (Player(patient).state['goodciv:patient'] or {}).downed
+    if origin == 'command' and Config.Conditions.LifeThreateningOnly and not downed then
+        TriggerClientEvent('goodciv:client:toast', patient, 'info', L('medic_not_needed'))
+        return false
+    end
     local coords = GetEntityCoords(ped)
 
     -- Events we listen to have already gone through the server's own dispatch.
-    if origin ~= 'event' and not quiet then forward(patient, coords) end
+    if origin ~= 'event' then forward(patient, coords) end
 
-    local medics = Bridge.CountOnDutyMedics()
+    local medics = #Bridge.GetOnDutyMedics()
     if medics >= Config.Medics.MinOnDuty then
-        if not quiet then TriggerClientEvent('goodciv:client:toast', patient, 'info', L('medic_requested')) end
+        TriggerClientEvent('goodciv:client:toast', patient, 'info', L('medic_requested'))
         return false
     end
 
     local inc, reason = Incidents.Create(patient, origin)
     if not inc then
-        if reason == 'not_life_threatening' and not quiet then
+        if reason == 'not_life_threatening' then
             TriggerClientEvent('goodciv:client:toast', patient, 'info', L('medic_not_needed'))
         end
         return false
@@ -67,16 +69,13 @@ function Dispatch.Request(patient, origin)
         TriggerClientEvent('goodciv:client:toast', patient, 'info', L('medic_requested_goodciv'))
     end
     Incidents.Sync(inc)
-    inc.alertedCount = count
-    return true, inc
+    return true
 end
 
-if Config.Dispatch.Command then
-    RegisterCommand(Config.Dispatch.Command, function(src)
-        if src == 0 then return end
-        Dispatch.Request(src, 'command')
-    end, false)
-end
+RegisterCommand(Config.Dispatch.Command, function(src)
+    if src == 0 then return end
+    Dispatch.Request(src, 'command')
+end, false)
 
 RegisterNetEvent('goodciv:server:autoAlert', function()
     if Config.Dispatch.AutoAlertDelay <= 0 then return end
@@ -98,7 +97,7 @@ AddEventHandler('playerDropped', function()
 end)
 
 -- exports.ndm_goodciv:RequestMedic(src) from your own dispatch / death screen.
-exports('RequestMedic', function(src) return (Dispatch.Request(src, 'export')) end)
+exports('RequestMedic', function(src) return Dispatch.Request(src, 'export') end)
 -- Same as above, but for calls that already went through your dispatch.
-exports('MedicFallback', function(src) return (Dispatch.Request(src, 'event')) end)
-exports('GetOnDutyMedicCount', function() return Bridge.CountOnDutyMedics() end)
+exports('MedicFallback', function(src) return Dispatch.Request(src, 'event') end)
+exports('GetOnDutyMedicCount', function() return #Bridge.GetOnDutyMedics() end)

@@ -159,7 +159,7 @@ button.icon { width: 32px; height: 32px; padding: 0; font-size: 20px; line-heigh
 
 #patient {
     position: absolute;
-    bottom: 120px;
+    bottom: 160px;
     left: 50%;
     transform: translateX(-50%);
     width: 380px;
@@ -272,3 +272,90 @@ button.icon { width: 32px; height: 32px; padding: 0; font-size: 20px; line-heigh
 .cpr-stats span { display: block; font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; }
 .cpr-stats strong { display: block; font-size: 20px; margin-top: 4px; }
 #cpr .bar { width: 100%; }
+
+/* Down card ------------------------------------------------------------ */
+.dot.danger { background: var(--danger); }
+
+#down {
+    position: absolute;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 380px;
+    text-align: center;
+    border-top: 3px solid var(--danger);
+}
+#down .eyebrow { justify-content: center; color: var(--danger); font-size: 12px; }
+.down-hint { margin-top: 8px; font-size: 15px; font-weight: 600; }
+.down-respawn { margin-top: 6px; color: var(--muted); font-size: 13px; }
+.down-hold { margin-top: 10px; }
+.down-hold .fill { background: var(--danger); transition: width 0.25s linear; }
+
+/* Injury badge --------------------------------------------------------- */
+#injury {
+    position: absolute;
+    right: 24px;
+    bottom: 24px;
+    width: 280px;
+    border-left: 3px solid var(--danger);
+    padding: 10px 14px;
+}
+#injury .eyebrow { color: var(--danger); }
+.injury-text { margin-top: 6px; color: var(--muted); font-size: 13px; }
+
+/* Check-in point creator ----------------------------------------------- */
+#config {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding-right: 40px;
+    background: rgba(0, 0, 0, 0.15);
+}
+.config-panel { width: 520px; max-height: 86vh; display: flex; flex-direction: column; }
+.cfg-help { color: var(--muted); font-size: 13px; margin-top: 10px; line-height: 1.4; }
+
+input {
+    font-family: inherit;
+    font-size: 13px;
+    color: var(--text);
+    background: var(--bg-raised);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 7px 10px;
+    outline: none;
+    user-select: text;
+}
+input:focus { border-color: var(--accent); }
+
+.cfg-form {
+    display: grid;
+    grid-template-columns: 1fr 90px 120px;
+    gap: 8px;
+    margin-top: 14px;
+    align-items: end;
+}
+.cfg-form label { display: flex; flex-direction: column; gap: 4px; font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; }
+.cfg-form button { grid-column: 1 / -1; }
+
+.cfg-list { margin-top: 14px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; padding-right: 4px; }
+.cfg-empty { color: var(--muted); text-align: center; padding: 16px; }
+.cfg-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    background: var(--bg-raised);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 10px 12px;
+}
+.cfg-main { flex: 1; min-width: 0; }
+.cfg-main strong { font-size: 14px; }
+.cfg-label { width: 100%; }
+.cfg-badge { margin-left: 8px; font-size: 11px; color: var(--muted); border: 1px solid var(--line); border-radius: 999px; padding: 1px 7px; }
+.cfg-meta { margin-top: 6px; color: var(--muted); font-size: 12px; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.cfg-num { width: 70px; padding: 3px 6px; }
+.cfg-buttons { display: flex; flex-direction: column; gap: 4px; }
+.cfg-buttons button { padding: 5px 10px; font-size: 12px; }

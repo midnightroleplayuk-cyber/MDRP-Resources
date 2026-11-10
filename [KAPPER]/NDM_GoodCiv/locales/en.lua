@@ -1,25 +1,16 @@
 Locales = Locales or {}
 
 Locales.en = {
-    carrier_on = 'You are now a GoodCiv Volunteer. You will be alerted to emergencies when no medics are available.',
-    carrier_off = 'You are no longer a GoodCiv Volunteer.',
-    carrier_blocked_job = 'Emergency services can\'t sign up as GoodCiv carriers.',
-    carrier_no_item = 'You need a %s to sign up as a GoodCiv Volunteer.',
-    carrier_no_perm = 'You are not certified to be a GoodCiv Volunteer.',
-    carrier_not_certified = 'You need to pass the GoodCiv training at the volunteer desk first.',
-
-    training_title = 'GoodCiv volunteer training',
-    training_intro = 'GoodCiv volunteers help people in life-threatening emergencies when no medics are available.\n\nAnswer %s quick first aid questions. You need %s correct to pass.',
-    training_start = 'Start',
-    training_cancel = 'Not now',
-    training_passed = 'You passed the GoodCiv training (%s/%s). Welcome aboard!',
-    training_failed = 'You got %s/%s. You need %s to pass. Try again in %s minute(s).',
-    training_cooldown = 'You can retake the GoodCiv training in %s minute(s).',
+    carrier_on = 'You are now a GoodCiv volunteer. You will be alerted to emergencies when no medics are available.',
+    carrier_off = 'You are no longer a GoodCiv volunteer.',
+    carrier_blocked_job = 'Emergency services can\'t sign up as GoodCiv volunteers.',
+    carrier_no_item = 'You need a %s to sign up as a GoodCiv volunteer.',
+    carrier_no_perm = 'You are not certified to be a GoodCiv volunteer.',
 
     medic_requested = 'Your call has been passed to emergency services.',
     medic_requested_goodciv = 'No medics are available. Nearby GoodCiv volunteers have been alerted.',
     medic_none_available = 'No medics or GoodCiv volunteers are available right now.',
-    medic_not_needed = 'Your call has been logged. GoodCiv only responds to life-threatening emergencies.',
+    medic_not_needed = 'GoodCiv only responds when someone is down.',
     medic_cooldown = 'You already have an active call.',
 
     alert_title = 'GoodCiv emergency',
@@ -40,8 +31,7 @@ Locales.en = {
     tourniquet_done = 'Tourniquet applied. Major bleeding controlled.',
     cpr_success = 'You feel a pulse. The patient is breathing again.',
     cpr_fail = 'Still no pulse. Keep going.',
-    arrested = 'Your patient has stopped breathing! Start CPR.',
-    cpr_woken = 'You\'ve come round, but you\'re badly hurt. Get checked in at a hospital.',
+    recovery_done = 'Patient placed in the recovery position.',
     assess_done = 'Assessment complete.',
     not_stable = 'The patient must be breathing with bleeding controlled before you move them.',
     no_vehicle = 'No suitable vehicle nearby.',
@@ -61,15 +51,39 @@ Locales.en = {
 
     medic_alert = 'Medical call: %s',
 
-    vw_note_alerted = 'No ambulance units on duty. %s GoodCiv volunteer(s) alerted.',
-    vw_note_none = 'No ambulance units or GoodCiv volunteers available.',
-    vw_note_responding = 'GoodCiv volunteer %s is responding.',
-    vw_note_handover = 'Patient taken to %s by GoodCiv volunteers.',
-    vw_note_resolved = 'Patient revived on scene.',
-    vw_note_ended = 'GoodCiv response ended.',
+    -- Bring round
+    assess_first = 'Assess the patient first.',
+    not_stable_revive = 'The patient must be breathing with bleeding controlled before you bring them round.',
+    brought_round = 'The patient is coming round. Thank you for helping.',
+    brought_round_patient = 'A GoodCiv volunteer brought you round. You are badly hurt: check in at a hospital.',
 
-    signup_join = 'Sign up as a GoodCiv volunteer',
-    signup_leave = 'Sign off as a GoodCiv volunteer',
-    help_signup_join = 'Press ~INPUT_CONTEXT~ to sign up as a GoodCiv volunteer',
-    help_signup_leave = 'Press ~INPUT_CONTEXT~ to sign off as a GoodCiv volunteer',
+    -- Down state
+    down_title = 'You are unconscious',
+    down_hint = 'Type /%s to call a GoodCiv volunteer',
+    down_respawn_in = 'Respawn available in %s',
+    down_respawn_hold = 'Hold E to respawn at hospital%s',
+    respawn_fee = 'You were charged $%s for hospital treatment.',
+
+    -- Injury / check-in
+    injured_title = 'Injured',
+    injured_goto = 'Check in at %s to be treated.',
+    injured_external = 'Get to a hospital to be treated.',
+    help_checkin = 'Press ~INPUT_PICKUP~ to check in',
+    help_checkin_fee = 'Press ~INPUT_PICKUP~ to check in ($%s)',
+    checkin_progress = 'Being treated at %s',
+    checkin_not_needed = 'You don\'t need treatment.',
+    checkin_no_money = 'Treatment costs $%s. You can\'t afford it.',
+    checkin_done = 'You have been treated at %s.',
+    checkin_external = 'You have been treated. Your injuries are healed.',
+    too_far_checkin = 'Get closer to the check-in point.',
+
+    -- Admin
+    no_permission = 'You don\'t have permission to do that.',
+    no_player = 'No such player.',
+    cfg_need_label = 'Give the check-in point a name.',
+    cfg_builtin = 'Built-in hospitals are edited in config.lua.',
+    cfg_added = 'Check-in point "%s" added at your position.',
+    cfg_saved = 'Check-in point "%s" saved.',
+    cfg_moved = 'Check-in point "%s" moved to your position.',
+    cfg_removed = 'Check-in point "%s" removed.',
 }

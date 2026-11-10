@@ -25,11 +25,75 @@ function GoodCiv.InList(list, value)
     return false
 end
 
----Nearest configured hospital to a position.
+---------------------------------------------------------------------------
+-- Down state mode
+---------------------------------------------------------------------------
+local downMode
+
+---'goodciv' when GoodCiv runs its own down / revive, 'framework' when an ambulance script does.
+function GoodCiv.DownMode()
+    if downMode then return downMode end
+    local mode = Config.Down.Mode
+    if mode == 'auto' then
+        mode = 'goodciv'
+        for _, res in ipairs(Config.Down.MedicalScripts) do
+            if GetResourceState(res) == 'started' then
+                mode = 'framework'
+                break
+            end
+        end
+    end
+    downMode = mode
+    return mode
+end
+
+---------------------------------------------------------------------------
+-- Hospitals / check-in points
+---------------------------------------------------------------------------
+-- The server builds the list from Config.Hospitals plus points made with /goodcivconfig
+-- and publishes it in GlobalState as plain tables; both sides convert it here.
+GoodCiv.Hospitals = {}
+
+local function defaultHospitals()
+    local list = {}
+    for i, h in ipairs(Config.Hospitals) do
+        list[#list + 1] = {
+            id = 'cfg' .. i, label = h.label, custom = false,
+            coords = h.coords, drop = h.drop, radius = h.radius, fee = h.fee,
+        }
+    end
+    return list
+end
+
+function GoodCiv.SetHospitals(plain)
+    if type(plain) ~= 'table' or #plain == 0 then
+        GoodCiv.Hospitals = defaultHospitals()
+        return
+    end
+    local list = {}
+    for _, h in ipairs(plain) do
+        list[#list + 1] = {
+            id = h.id, label = h.label, custom = h.custom,
+            coords = vector3(h.x, h.y, h.z),
+            drop = vector4(h.dx, h.dy, h.dz, h.dh),
+            radius = h.radius, fee = h.fee,
+        }
+    end
+    GoodCiv.Hospitals = list
+end
+
+GoodCiv.SetHospitals(GlobalState['goodciv:hospitals'])
+
+function GoodCiv.GetHospital(id)
+    for _, h in ipairs(GoodCiv.Hospitals) do
+        if h.id == id then return h end
+    end
+end
+
+---Nearest hospital to a position.
 function GoodCiv.NearestHospital(coords)
     local best, bestDist
-    for i = 1, #Config.Hospitals do
-        local h = Config.Hospitals[i]
+    for _, h in ipairs(GoodCiv.Hospitals) do
         local d = #(coords - h.coords)
         if not bestDist or d < bestDist then
             best, bestDist = h, d
@@ -40,8 +104,7 @@ end
 
 ---Hospital whose zone contains the position, if any.
 function GoodCiv.HospitalAt(coords)
-    for i = 1, #Config.Hospitals do
-        local h = Config.Hospitals[i]
+    for _, h in ipairs(GoodCiv.Hospitals) do
         if #(coords - h.coords) <= h.radius then
             return h
         end

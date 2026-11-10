@@ -2,34 +2,123 @@
 
 Civilian first-responder volunteers for FiveM, inspired by real-world GoodSAM style apps.
 
-When a player calls for a medic, the call goes through your normal dispatch. If no medics are on duty, GoodCiv alerts nearby **GoodCiv carriers**: civilians who have signed up to respond to life-threatening emergencies (unconscious, not breathing, catastrophic bleeding). They respond as civilians, give first aid, and drive the patient to hospital.
+When a player is down they type **`/goodciv`**. Nearby **GoodCiv volunteers** (players who signed up) get an alert, drive to the patient, give first aid, and either **bring them round on scene** or drive them to hospital. A patient who was brought round stays badly hurt, with health held low, until they **check in at a hospital**.
 
-Works with **QBCore**, **QBox**, **ESX** and **standalone** through a small framework bridge. No other dependencies.
+Works **fully standalone** (GoodCiv runs its own down state, revive and hospital check-in), or alongside **QBCore**, **QBox**, **ESX** and their ambulance and hospital scripts. No dependencies.
 
 ## Features
 
-- Opt-in volunteers with `/goodciv` or by talking to a sign-up ped, remembered between sessions.
-- Alerts only fire when fewer than `Config.Medics.MinOnDuty` medics are on duty.
-- Hooks into existing "call EMS" events (qb-ambulancejob, esx_ambulancejob) or your own via export.
-- `/medic` command that forwards to the built-in medic alert, ps-dispatch, cd_dispatch, or your own function, then falls back to GoodCiv.
-- NUI alert card with accept / decline keys and a countdown, a status card for the patient, and a HUD for the responder.
+- `/goodciv` to request a volunteer while down. `/goodcivsignup` to volunteer.
+- **Own down state** when no ambulance script is running. You go down where you fall, stay down until help arrives, and can respawn at hospital after a timer. If an ambulance script is running, GoodCiv uses its death, last stand and revive instead.
+- Alerts with accept / decline keys and a countdown. Only volunteers within range are alerted, and only when fewer than `Config.Medics.MinOnDuty` medics are on duty.
 - Treatment panel:
   - **Assess**: check breathing before deciding what to do.
   - **Tourniquet**: controls catastrophic bleeding (optional item, consumed).
-  - **CPR**: a rhythm minigame. Compressions at 100 to 120 per minute give the best chance of getting the patient breathing again. Uncontrolled bleeding lowers the chance.
+  - **CPR**: a rhythm minigame. Compressions at 100 to 120 per minute give the best chance of getting the patient breathing again.
+  - **Recovery position** for patients who are breathing but unresponsive.
+  - **Bring round**: gets a stable patient back on their feet. They are left **injured**.
   - **Load into vehicle / unload** and **hand over at hospital**.
-- Safe transport: speed limit while the patient is onboard, and crashes can put a stable patient back into cardiac arrest.
+- **Injured state**: health capped (default 25%), injured walk, no sprinting, and other heals are clamped back down. A GPS waypoint is set to the nearest check-in point. It survives reconnects.
+- **Hospital check-in** in one of these ways:
+  - GoodCiv check-in points: the hospitals in `config.lua` plus any you place **in-city with `/goodcivconfig`**. Walk up, press **E**, pay the fee, get treated.
+  - Your server's hospital script: its revive / heal events or the `CheckIn` export clear the injury.
+- Safe transport: speed limit with a patient onboard, and crashes can put a stable patient back into cardiac arrest.
 - The server owns the patient's condition and checks distance and timing for every action.
-- Rewards for responders on handover, or a smaller amount if the patient is revived on scene by someone else.
+- Rewards for volunteers (framework servers).
 
 ## Install
 
-1. Put the folder in your resources as `ndm_goodciv` and add `ensure ndm_goodciv` **after** your framework, inventory and ambulance scripts.
-2. OneSync must be on (the server reads player positions).
-3. Review `config.lua`, in particular `Config.Medics.Jobs`, `Config.Dispatch` and `Config.Revive`.
-4. Add the `tourniquet` item if you keep `Config.Treatment.Tourniquet.Item` (or set it to `nil`).
+1. Put the folder in your resources as `ndm_goodciv` and add `ensure ndm_goodciv` **after** your framework, inventory, ambulance and hospital scripts (down-state detection checks which scripts are running at start).
+2. OneSync must be on.
+3. Give admins the creator / revive permission:
+   ```
+   add_ace group.admin goodciv.admin allow
+   ```
+4. Review `config.lua`, in particular `Config.Down`, `Config.CheckIn` and `Config.Medics`.
+5. Optionally add the `tourniquet` item (see below), or set `Config.Treatment.Tourniquet.Item = nil`.
 
-### Tourniquet item
+## How it works
+
+1. **Going down.** With `Config.Down.Mode = 'auto'`, GoodCiv handles the down state itself unless one of `Config.Down.MedicalScripts` is running. A downed player sees a card with `/goodciv` and a respawn timer (`Config.Down.RespawnAfter`, hold **E** to respawn at the nearest hospital).
+2. **Requesting.** The player types `/goodciv` (or your death screen triggers one of `Config.Dispatch.ListenEvents`, or calls the export). The call is forwarded to your dispatch. If not enough medics are on duty, volunteers within `Config.Alerts.Radius` are alerted. Set `Config.Medics.MinOnDuty = 999` to always alert volunteers.
+3. **Responding.** Up to `Config.Alerts.MaxResponders` volunteers accept, follow the GPS, and press **G** next to the patient to open the treatment panel. It always suggests the next step.
+4. **Bring round or transport.** Once the patient is breathing with bleeding controlled, a volunteer can:
+   - **Bring round** on scene. The patient gets up injured and must check in at a hospital.
+   - **Load** them into a vehicle and hand over at a hospital (**G** there). Handover revives the patient and counts as check-in (`Config.CheckIn.HandoverCountsAsCheckIn`).
+5. **Check-in.** The injured patient walks or is driven to a check-in point and presses **E**, or is treated by your hospital script.
+
+The call ends early if the patient is revived by someone else, a medic comes on duty before anyone accepts, the patient respawns or leaves, or `Config.Alerts.IncidentLifetime` runs out.
+
+## Check-in points (`/goodcivconfig`)
+
+1. Stand where patients should check in (the reception desk or a bed) and type `/goodcivconfig`.
+2. Enter a name, fee and zone radius, then click **Add at my position**. The zone radius is the area where volunteers can hand patients over.
+3. While the panel is open, nearby points are drawn in the world (green arrow = check-in spot, blue ring = handover zone). Each of your points can be renamed, re-priced, moved to your position, teleported to or deleted.
+
+Points are stored in server KVP, so they survive resource updates. Built-in hospitals from `Config.Hospitals` show as `config.lua` and are edited there. Set `Config.CheckIn.UseConfigHospitals = false` to use only your own points (the config ones remain a fallback while you have none).
+
+## Using your own hospital script
+
+Set `Config.CheckIn.Mode`:
+
+| Mode | Clears the injury |
+| --- | --- |
+| `'goodciv'` | GoodCiv check-in points only |
+| `'external'` | Your hospital script only. GoodCiv points are hidden. |
+| `'both'` (default) | Either |
+
+For external check-in, GoodCiv listens to the client events in `Config.CheckIn.ExternalEvents` (qb-ambulancejob, qbx_medical and esx_ambulancejob revive events by default). Add your script's "treated / revived" event there, or call an export from your script:
+
+```lua
+-- client, once the player has been treated
+exports.ndm_goodciv:CheckIn()
+
+-- server
+exports.ndm_goodciv:CheckIn(source)       -- clears the injury and heals
+exports.ndm_goodciv:CheckIn(source, false) -- clears the injury, your script heals
+```
+
+## Commands and keys
+
+| Command | Default key | Who | What it does |
+| --- | --- | --- | --- |
+| `/goodciv` | | Downed player | Request a GoodCiv volunteer |
+| `/goodcivsignup` | | Anyone | Sign up / sign off as a GoodCiv volunteer |
+| `/goodcivconfig` | | `goodciv.admin` | Open the in-city check-in point creator |
+| `/goodcivrevive [id]` | | `goodciv.admin` / console | Revive a player and clear their injury |
+| `goodciv_accept` | Page Up | Volunteer | Accept the newest alert |
+| `goodciv_decline` | Page Down | Volunteer | Decline the newest alert |
+| `goodciv_treat` | G | Volunteer | Open the treatment panel / hand over at hospital |
+| | E (hold) | Downed player | Respawn at hospital once the timer is up |
+| | E | Injured player | Check in at a GoodCiv check-in point |
+
+Key mappings can be changed in Settings > Key Bindings > FiveM. Command names are in `config.lua`. txAdmin's **Heal** also revives players from GoodCiv's down state.
+
+## Exports
+
+Server:
+
+```lua
+exports.ndm_goodciv:RequestMedic(source)        -- raise a request (forwards to dispatch, then volunteers)
+exports.ndm_goodciv:MedicFallback(source)       -- your dispatch already handled it; volunteer fallback only
+exports.ndm_goodciv:IsCarrier(source)           -- is a GoodCiv volunteer
+exports.ndm_goodciv:SetCarrier(source, true)    -- e.g. after a first-aid course
+exports.ndm_goodciv:GetOnDutyMedicCount()
+exports.ndm_goodciv:GetIncidentByPatient(source)
+exports.ndm_goodciv:CheckIn(source, heal)       -- clear injury (heal defaults to true)
+exports.ndm_goodciv:IsInjured(source)
+exports.ndm_goodciv:SetInjured(source)
+```
+
+Client:
+
+```lua
+exports.ndm_goodciv:IsDown()     -- in GoodCiv's down state
+exports.ndm_goodciv:IsInjured()
+exports.ndm_goodciv:CheckIn()    -- tell GoodCiv your hospital script treated the player
+```
+
+## Tourniquet item
 
 ox_inventory (`data/items.lua`):
 
@@ -49,68 +138,13 @@ ESX:
 INSERT INTO items (name, label, weight) VALUES ('tourniquet', 'Tourniquet', 1);
 ```
 
-## Training and the sign-up NPC
-
-Place an NPC with hf1_npcs and set its target event to `goodciv:client:toggleCarrier`. A player who isn't certified gets a short first aid quiz (`Config.Training`). The server marks the answers. If they pass, they are certified for good and put on duty. If they fail, they can retry after `RetryCooldown`. Certified players use the NPC or `/goodciv` to go on and off duty. Uncertified players can't use `/goodciv`.
-
-Admins (ace `goodciv.admin`, or the server console) can run `/goodcivcert [id] [on|off]` to certify or uncertify a player. Server exports: `IsCertified(src)`, `SetCertified(src, bool)`. Requires ox_lib.
-
-## Sign-up peds
-
-`Config.SignupPeds.Locations` places NPCs players can talk to in order to sign up or sign off as a carrier. Each entry takes a `model`, `coords` (vector4 of where a player would stand, the ped is dropped 1m onto the floor), an optional `scenario` and an optional map `blip`.
-
-Interaction uses ox_target, then qb-target, then a "Press E" prompt (`Interaction = 'auto'`). The server checks the player is next to the ped before toggling. Set `Config.Carriers.Command = nil` to make the peds the only way to sign up.
-
-## vinewood-dispatch
-
-With `Config.Dispatch.Vinewood.Enabled` and vinewood-dispatch running, GoodCiv listens for vinewood's ambulance calls (`person_down`, `call_111`, `injured_person` by default). If no players are on duty in vinewood's `ambulance` service, every downed player within `PatientRadius` of the call becomes a GoodCiv patient and carriers are alerted. GoodCiv posts its progress (volunteers alerted, who is responding, handover or revive) as updates on the vinewood call, so units and dispatchers can see them in the F9 log. `Provider = 'vinewood'` sends GoodCiv's own requests (the `RequestMedic` export) to vinewood as `injured_person`. `/medic` is off by default because `/111` does the same job.
-
-## How a call flows
-
-1. A player goes down and uses their death screen's "call EMS" (one of `Config.Dispatch.ListenEvents`), or types `/medic`, or your script calls the export.
-2. The call goes to your normal dispatch. If enough medics are on duty, that's the end of it.
-3. Otherwise GoodCiv creates an incident. The patient's condition is rolled from what put them down (gunshots are much more likely to cause catastrophic bleeding than a fall).
-4. Carriers within `Config.Alerts.Radius` get the alert. Up to `Config.Alerts.MaxResponders` can accept. Nobody accepting means a re-alert after `Config.Alerts.RealertAfter` seconds.
-5. Responders follow the GPS, press **G** (rebindable) near the patient, and work through the treatment panel. The panel always suggests the next step.
-6. Once breathing with bleeding controlled, they load the patient into a nearby vehicle and drive to the nearest hospital, then press **G** there to hand over. The patient is revived through `Config.Revive` for your framework.
-
-The incident ends early if the patient is revived by anyone else, a medic comes on duty before anyone accepted, the patient leaves, or `Config.Alerts.IncidentLifetime` runs out.
-
-## Commands and keys
-
-| Command | Default key | What it does |
-| --- | --- | --- |
-| `/goodciv` | | Sign up / sign off as a GoodCiv carrier |
-| `/medic` | | Request a medic |
-| `goodciv_accept` | Page Up | Accept the newest alert |
-| `goodciv_decline` | Page Down | Decline the newest alert |
-| `goodciv_treat` | G | Open the treatment panel / hand over at hospital |
-
-Keys can be rebound in Settings > Key Bindings > FiveM.
-
-## Exports (server)
-
-```lua
--- Raise a medic request from your own death screen / dispatch.
--- Forwards to Config.Dispatch.Provider, then falls back to GoodCiv.
-exports.ndm_goodciv:RequestMedic(source)
-
--- Your dispatch already handled the call; only run the "no medics" fallback.
-exports.ndm_goodciv:MedicFallback(source)
-
-exports.ndm_goodciv:IsCarrier(source)          -- boolean
-exports.ndm_goodciv:SetCarrier(source, true)   -- e.g. after a first-aid course
-exports.ndm_goodciv:GetOnDutyMedicCount()      -- number
-exports.ndm_goodciv:GetIncidentByPatient(source)
-```
-
 ## Framework notes
 
-- **QBCore / QBox**: medics are players whose `job.name` is in `Config.Medics.Jobs` with `job.onduty`. Downed state comes from `metadata.isdead` / `metadata.inlaststand`.
-- **ESX**: uses `job.onDuty` on ESX Legacy 1.10+. Older ESX has no duty, so any player with a medic job counts. Downed state comes from `esx:onPlayerDeath`.
-- **Standalone**: on-duty medics are players with the `goodciv.medic` ace. Handover uses a built-in revive.
-- **Revive**: the defaults in `Config.Revive` target qb-ambulancejob, qbx_medical and esx_ambulancejob. If you use a different ambulance script (wasabi, ars, etc.), change the function for your framework.
-- **Dispatch**: `ps-dispatch` uses its `InjuriedPerson` alert and `cd_dispatch` uses `AddNotification`, both sent from the caller's client. Use `Provider = 'custom'` for anything else.
+- **Standalone**: on-duty medics are players with the `goodciv.medic` ace. No fees or rewards (no economy). With spawnmanager, auto-respawn is paused while a player is down, so GoodCiv's respawn timer takes over.
+- **QBCore / QBox**: medics are players whose `job.name` is in `Config.Medics.Jobs` with `job.onduty`. With qb-ambulancejob / qbx_medical running, their down state is used.
+- **ESX**: uses `job.onDuty` on ESX Legacy 1.10+. Older ESX has no duty, so any player with a medic job counts.
+- **Revive**: when an ambulance script owns the down state, `Config.Revive` is used for your framework (qb-ambulancejob, qbx_medical and esx_ambulancejob by default). Change it for wasabi, ars, etc.
+- **Dispatch**: `ps-dispatch` uses its `InjuriedPerson` alert and `cd_dispatch` uses `AddNotification`. Use `Provider = 'custom'` for anything else.
 
 ## Locales
 

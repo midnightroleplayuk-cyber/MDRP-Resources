@@ -70,15 +70,47 @@ actions.cpr = {
         GoodCiv.Debug(('cpr quality %.2f chance %.2f'):format(quality, chance))
         if math.random() < chance then
             inc.state.breathing = true
-            -- Patient gets up; the incident closes as 'resolved' once their client reports it.
-            if T.CPR.WakeOnSuccess and Bridge.WakeUp(inc.patient) then
-                toast(inc.patient, 'warning', L('cpr_woken'))
-            end
             return 'success', L('cpr_success')
         end
         return 'warning', L('cpr_fail')
     end,
 }
+
+actions.recovery = {
+    duration = function() return T.RecoveryPosition.Duration end,
+    check = function(inc)
+        if not inc.state.breathing then return L('not_breathing') end
+    end,
+    apply = function(inc)
+        inc.state.recovery = true
+        return 'success', L('recovery_done')
+    end,
+}
+
+actions.revive = {
+    duration = function() return T.BringRound.Duration end,
+    check = function(inc)
+        if not inc.assessed then return L('assess_first') end
+        if not Incidents.IsStable(inc) then return L('not_stable_revive') end
+    end,
+    apply = function(inc)
+        inc.broughtRound = true
+        return 'success', L('brought_round')
+    end,
+}
+
+---Patient got up on scene: reward, close the call, revive, then hold them injured.
+local function bringRound(inc)
+    local patient = inc.patient
+    Incidents.Reward(inc, Config.Rewards.BringRound)
+    Incidents.Close(inc)
+    Bridge.Revive(patient)
+    toast(patient, 'success', L('brought_round_patient'))
+    -- Give framework revives a moment to restore full health before we cap it.
+    SetTimeout(1500, function()
+        if GetPlayerPed(patient) ~= 0 then Injury.Apply(patient, true) end
+    end)
+end
 
 RegisterNetEvent('goodciv:server:beginAction', function(name)
     local src = source
@@ -115,6 +147,7 @@ RegisterNetEvent('goodciv:server:completeAction', function(name, result)
     else
         local kind, msg = def.apply(inc, src, result)
         toast(src, kind, msg)
+        if inc.broughtRound then return bringRound(inc) end
     end
     Incidents.Sync(inc)
 end)
@@ -195,10 +228,18 @@ RegisterNetEvent('goodciv:server:handover', function()
     TriggerClientEvent('goodciv:client:handover', inc.patient, hospital.drop)
     SetTimeout(1500, function()
         Bridge.Revive(inc.patient)
+        local patient = inc.patient
+        SetTimeout(1500, function()
+            if GetPlayerPed(patient) == 0 then return end
+            if Config.CheckIn.HandoverCountsAsCheckIn then
+                Injury.Clear(patient, true)
+            else
+                Injury.Apply(patient, false)
+            end
+        end)
         toast(inc.patient, 'success', L('handover_patient', hospital.label))
         for r in pairs(inc.responders) do toast(r, 'success', L('handover_done', hospital.label)) end
         Incidents.Reward(inc, Config.Rewards.Handover)
-        inc.handedOverAt = hospital.label
         Incidents.Close(inc)
     end)
 end)
