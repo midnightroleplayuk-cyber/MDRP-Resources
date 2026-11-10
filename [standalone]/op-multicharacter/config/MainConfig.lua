@@ -377,8 +377,8 @@ Config.CharacterMenu = {
 --                 optional item shop available on character creation.
 -- ─────────────────────────────────────────────────────────────────────────
 Config.Misc = {
-    DefaultCharsAmount = 3,
-    AllowCharacterDelete = true,
+    DefaultCharsAmount = 2,
+    AllowCharacterDelete = false,
     -- Character creator UI: "classic" | "modern"
     creatorPreset = "modern",
     -- Birthday field display (Intl.DateTimeFormat). Overrides locale file when set.
