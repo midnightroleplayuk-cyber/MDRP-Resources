@@ -74,30 +74,37 @@ local function defaultGeo(hash, flip)
     }
 end
 
+--- Corners of the panel, laid out so the picture reads correctly from where the camera is
+--- (never mirrored, whichever side you look from). Also returns the centre.
 local function corners(s, g)
     local hr = math.rad(s.h or 0.0)
     local f = vec3(-math.sin(hr), math.cos(hr), 0.0)
     local r = vec3(math.cos(hr), math.sin(hr), 0.0)
     if g.flip then f, r = -f, -r end
     local c = vec3(s.x, s.y, s.z) + f * g.fwd + r * g.side + vec3(0.0, 0.0, g.up)
+    -- Seen from the +f side the viewer's left is +r; from the other side it's -r.
+    local cam = GetFinalRenderedCamCoord()
+    if ((cam.x - c.x) * f.x + (cam.y - c.y) * f.y) < 0 then r = -r end
     local hw, hh = r * (g.w / 2), vec3(0.0, 0.0, g.h / 2)
-    -- Seen from in front (looking back along f), the viewer's left is +r, so the image's left edge goes there.
-    return c + hw + hh, c - hw + hh, c + hw - hh, c - hw - hh -- top-left, top-right, bottom-left, bottom-right
+    return c + hw + hh, c - hw + hh, c + hw - hh, c - hw - hh, c -- top-left, top-right, bottom-left, bottom-right
 end
 
+-- Texture coordinates MUST be floats (0.0 / 1.0): whole numbers reach the game as ~0, which
+-- samples one corner pixel and paints the whole panel a single colour.
 local function poly(a, b, c, ua, va, ub, vb, uc, vc, txd, tex)
-    DrawSpritePoly(a.x, a.y, a.z, b.x, b.y, b.z, c.x, c.y, c.z, 255, 255, 255, 255, txd, tex, ua, va, 1.0, ub, vb, 1.0, uc, vc, 1.0)
+    DrawSpritePoly(a.x + 0.0, a.y + 0.0, a.z + 0.0, b.x + 0.0, b.y + 0.0, b.z + 0.0, c.x + 0.0, c.y + 0.0, c.z + 0.0,
+        255, 255, 255, 255, txd, tex, ua + 0.0, va + 0.0, 1.0, ub + 0.0, vb + 0.0, 1.0, uc + 0.0, vc + 0.0, 1.0)
 end
 
---- Two triangles each way round, so it shows whichever way the game culls them.
+--- Both windings, so it shows whichever way the game culls triangles.
 --- txd/tex default to the courtroom screen's browser.
 local function drawPanel(s, g, txd, tex)
     txd, tex = txd or TXD, tex or TEX
     local tl, tr, bl, br = corners(s, g)
-    poly(tl, bl, tr, 0, 0, 0, 1, 1, 0, txd, tex)
-    poly(tr, bl, br, 1, 0, 0, 1, 1, 1, txd, tex)
-    poly(tl, tr, bl, 0, 0, 1, 0, 0, 1, txd, tex)
-    poly(tr, br, bl, 1, 0, 1, 1, 0, 1, txd, tex)
+    poly(tl, bl, tr, 0.0, 0.0, 0.0, 1.0, 1.0, 0.0, txd, tex)
+    poly(tr, bl, br, 1.0, 0.0, 0.0, 1.0, 1.0, 1.0, txd, tex)
+    poly(tl, tr, bl, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, txd, tex)
+    poly(tr, br, bl, 1.0, 0.0, 1.0, 1.0, 0.0, 1.0, txd, tex)
 end
 
 --- Is a point in front of the TV (on its +forward side)?
@@ -302,26 +309,41 @@ function MoJScreens.Adjust(s, spawnModel, roomLabel, force)
     local g = s.geo and s.geo.w and not s.geoGuessed and { w = s.geo.w, h = s.geo.h, up = s.geo.up, side = s.geo.side, fwd = s.geo.fwd, flip = s.geo.flip }
     -- A saved fit on the far side from you (inside the wall): start again on your side.
     if not g or (g.flip == true) ~= mySide then g = defaultGeo(hash or 0, mySide) end
-    SendNUIMessage({ action = 'hint', text = '←/→ width · ↑/↓ height · hold Shift: move · scroll: in/out · F: other side · R: reset · E: save · Backspace: cancel' })
+    SendNUIMessage({ action = 'hint', text = 'W/A/S/D move · ←/→ width · ↑/↓ height · scroll or PgUp/PgDn: in/out · hold Ctrl: fine · F: other side · R: reset · E: save · Backspace: cancel' })
     local result
+    -- Keys used here, kept from moving or controlling the character while fitting.
+    local LOCK = { 14, 15, 16, 17, 21, 22, 23, 24, 25, 30, 31, 32, 33, 34, 35, 36, 37, 44, 45, 10, 11,
+        140, 141, 142, 172, 173, 174, 175, 261, 262 }
+    local P = IsDisabledControlPressed
     while true do
         Wait(0)
-        for _, c in ipairs({ 14, 15, 16, 17, 23, 24, 25, 37, 44, 45, 140, 141, 142, 172, 173, 174, 175, 261, 262 }) do DisableControlAction(0, c, true) end
-        local shift = IsControlPressed(0, 21)
-        local step = 0.004
-        if shift then
-            if IsDisabledControlPressed(0, 174) then g.side = g.side - step end
-            if IsDisabledControlPressed(0, 175) then g.side = g.side + step end
-            if IsDisabledControlPressed(0, 172) then g.up = g.up + step end
-            if IsDisabledControlPressed(0, 173) then g.up = g.up - step end
-        else
-            if IsDisabledControlPressed(0, 174) then g.w = math.max(0.1, g.w - step * 2) end
-            if IsDisabledControlPressed(0, 175) then g.w = g.w + step * 2 end
-            if IsDisabledControlPressed(0, 172) then g.h = g.h + step * 2 end
-            if IsDisabledControlPressed(0, 173) then g.h = math.max(0.1, g.h - step * 2) end
+        for _, c in ipairs(LOCK) do DisableControlAction(0, c, true) end
+        local step = P(0, 36) and 0.0015 or 0.005            -- Ctrl held: fine adjustment
+        -- Left/right as you see it: which way that is along the TV depends on the side you're on.
+        local hr = math.rad(s.h or 0.0)
+        local f = vec3(-math.sin(hr), math.cos(hr), 0.0)
+        if g.flip then f = -f end
+        local cam = GetFinalRenderedCamCoord()
+        local tvC = vec3(s.x, s.y, s.z)
+        local lr = (((cam.x - tvC.x) * f.x + (cam.y - tvC.y) * f.y) >= 0) and 1 or -1
+        -- Move: W/A/S/D, or Shift + arrows.
+        local shift = P(0, 21)
+        if P(0, 34) or (shift and P(0, 174)) then g.side = g.side + step * lr end
+        if P(0, 35) or (shift and P(0, 175)) then g.side = g.side - step * lr end
+        if P(0, 32) or (shift and P(0, 172)) then g.up = g.up + step end
+        if P(0, 33) or (shift and P(0, 173)) then g.up = g.up - step end
+        -- Size: arrows (without Shift).
+        if not shift then
+            if P(0, 174) then g.w = math.max(0.1, g.w - step * 2) end
+            if P(0, 175) then g.w = g.w + step * 2 end
+            if P(0, 172) then g.h = g.h + step * 2 end
+            if P(0, 173) then g.h = math.max(0.1, g.h - step * 2) end
         end
-        if IsDisabledControlJustPressed(0, 15) or IsDisabledControlJustPressed(0, 261) then g.fwd = g.fwd + 0.005 end
-        if IsDisabledControlJustPressed(0, 14) or IsDisabledControlJustPressed(0, 262) then g.fwd = g.fwd - 0.005 end
+        -- In/out: scroll a notch at a time, or hold Page Up / Page Down.
+        if IsDisabledControlJustPressed(0, 15) or IsDisabledControlJustPressed(0, 261) then g.fwd = g.fwd + 0.01 end
+        if IsDisabledControlJustPressed(0, 14) or IsDisabledControlJustPressed(0, 262) then g.fwd = g.fwd - 0.01 end
+        if P(0, 10) then g.fwd = g.fwd + step end
+        if P(0, 11) then g.fwd = g.fwd - step end
         if IsDisabledControlJustPressed(0, 23) then g = defaultGeo(hash or 0, not g.flip) end
         if IsDisabledControlJustPressed(0, 45) then g = defaultGeo(hash or 0, g.flip) end
         if TXD then drawPanel(s, g) end
@@ -357,9 +379,8 @@ RegisterCommand('mojscreens', function()
         print(('  browser: %s, texture: %s'):format(dui and (IsDuiAvailable(dui) and 'ready' or 'loading') or 'none', TXD or 'none'))
         for i, s in ipairs(screens) do
             local g = geoOf(s, vec3(r.centre.x, r.centre.y, r.centre.z))
-            print(('  screen %d "%s": %s, %s, picture %s side, you are %s it, %.1f m away'):format(i, s.label or '', s.mode or '?',
-                s.geoGuessed and 'NOT fitted (guess)' or 'fitted', g and (g.flip and 'back' or 'front') or '?',
-                inFront(s, here) == not (g and g.flip) and 'in front of' or 'BEHIND', #(here - vec3(s.x, s.y, s.z))))
+            print(('  screen %d "%s": %s, %s, %.2f x %.2f m, %.2f m out from the TV, %.1f m away'):format(i, s.label or '', s.mode or '?',
+                s.geoGuessed and 'NOT fitted (using a guess)' or 'fitted', g and g.w or 0, g and g.h or 0, g and g.fwd or 0, #(here - vec3(s.x, s.y, s.z))))
         end
     end
     lib.notify({ title = 'Screens', description = debugOn and 'Outlines on: yellow box = where the picture is. Details in F8.' or 'Outlines off.' })
