@@ -55,14 +55,22 @@ function Logs.Send(category, title, colour, fields)
     local url = webhookFor(category)
     if not url then return end
 
+    -- Discord rejects the whole message (HTTP 400) if any field name or value is empty.
     local embedFields = {}
     for i, f in ipairs(fields or {}) do
-        embedFields[i] = { name = f[1], value = tostring(f[2] or '-'):sub(1, 1024), inline = f[3] == true }
+        local name = tostring(f[1] or '')
+        local value = tostring(f[2] == nil and '' or f[2])
+        embedFields[i] = {
+            name = (name ~= '' and name or '-'):sub(1, 256),
+            value = (value ~= '' and value or '-'):sub(1, 1024),
+            inline = f[3] == true,
+        }
     end
     local queue = queues[url] or {}
     queues[url] = queue
+    GoodCiv.Debug(('log queued [%s] %s'):format(category, title))
     queue[#queue + 1] = {
-        title = title,
+        title = tostring(title):sub(1, 256),
         color = COLOURS[colour] or COLOURS.grey,
         fields = embedFields,
         footer = { text = ('GoodCiv | %s'):format(category) },
@@ -78,9 +86,10 @@ CreateThread(function()
             if #queue > 0 then
                 local batch = {}
                 for i = 1, math.min(10, #queue) do batch[i] = table.remove(queue, 1) end
-                PerformHttpRequest(url, function(status)
+                PerformHttpRequest(url, function(status, body, _, err)
                     if status ~= 200 and status ~= 204 then
-                        print(('^1[goodciv]^7 webhook failed (HTTP %s)'):format(tostring(status)))
+                        print(('^1[goodciv]^7 webhook failed (HTTP %s): %s'):format(
+                            tostring(status), tostring(err or body or 'no response')))
                     end
                 end, 'POST', json.encode({
                     username = cfg.Username or 'GoodCiv Logs',
@@ -93,7 +102,25 @@ CreateThread(function()
 end)
 
 CreateThread(function()
-    if cfg.Enabled and not webhookFor('incidents') then
+    if not cfg.Enabled then
+        print('^3[goodciv]^7 Discord logs are off (Config.Logs.Enabled = false).')
+    elseif not Webhooks then
+        print('^1[goodciv]^7 server/webhooks.lua did not load. Check it is in fxmanifest.lua server_scripts.')
+    elseif not webhookFor('incidents') then
         print('^3[goodciv]^7 Config.Logs is enabled but no webhook is set. Add your URL to server/webhooks.lua.')
+    else
+        print('^2[goodciv]^7 Discord logs enabled.')
     end
 end)
+
+-- Console / admin: /goodcivlogtest  sends one test log to every category's webhook.
+RegisterCommand('goodcivlogtest', function(src)
+    if src ~= 0 and not IsPlayerAceAllowed(src, 'goodciv.admin') then return end
+    for _, category in ipairs({ 'carriers', 'incidents', 'treatment', 'rewards', 'admin' }) do
+        Logs.Send(category, 'Test log', 'purple', {
+            { 'Category', category, true },
+            { 'Sent by', src == 0 and 'Server console' or Logs.Player(src), true },
+        })
+    end
+    print('^2[goodciv]^7 Test logs queued. Check Discord, or this console for a "webhook failed" error.')
+end, false)
