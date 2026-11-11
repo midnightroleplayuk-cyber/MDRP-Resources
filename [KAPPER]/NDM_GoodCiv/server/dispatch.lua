@@ -68,6 +68,14 @@ function Dispatch.Request(patient, origin)
     end
     Incidents.Sync(inc)
     inc.alertedCount = count
+    Logs.Send('incidents', ('Call #%d raised'):format(inc.id), count > 0 and 'red' or 'orange', {
+        { 'Patient', Logs.Player(patient) },
+        { 'Condition', table.concat(GoodCiv.ConditionTags(inc.state), ', '), true },
+        { 'Volunteers alerted', count, true },
+        { 'Source', origin, true },
+        { 'Location', Logs.Coords(coords) },
+        { 'Last hurt by', inc.attacker and Logs.Player(inc.attacker) or 'unknown / not a player' },
+    })
     return true, inc
 end
 

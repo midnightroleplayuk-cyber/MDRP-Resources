@@ -119,6 +119,8 @@ function Incidents.Create(patient, origin)
         origin = origin,
         createdAt = now(),
         stage = (Player(patient).state['goodciv:patient'] or {}).stage or 0,
+        attacker = (Player(patient).state['goodciv:patient'] or {}).attacker,
+        treated = {},
         state = state,
         assessed = false,
         responders = {},
@@ -145,6 +147,14 @@ function Incidents.Close(inc, reason)
     end
     TriggerClientEvent('goodciv:client:patientClosed', inc.patient, reason and L(reason))
     if Incidents.OnClosed then Incidents.OnClosed(inc, reason) end
+    local names = {}
+    for src in pairs(inc.responders) do names[#names + 1] = Logs.Player(src) end
+    Logs.Send('incidents', ('Call #%d closed'):format(inc.id), 'blue', {
+        { 'Patient', Logs.Player(inc.patient) },
+        { 'Outcome', inc.handedOverAt and ('Handed over at ' .. inc.handedOverAt) or reason or 'closed', true },
+        { 'Duration', ('%dm %02ds'):format((now() - inc.createdAt) // 60, (now() - inc.createdAt) % 60), true },
+        { 'Responders', #names > 0 and table.concat(names, '\n') or 'none' },
+    })
     GoodCiv.Debug(('incident %d closed (%s)'):format(inc.id, reason or 'none'))
 end
 
@@ -160,15 +170,11 @@ function Incidents.RemoveResponder(inc, src)
     end
     TriggerClientEvent('goodciv:client:incidentClosed', src, inc.id)
     TriggerClientEvent('goodciv:client:toast', inc.patient, 'warning', L('responder_dropped'))
+    Logs.Send('incidents', ('Responder left call #%d'):format(inc.id), 'orange', {
+        { 'Responder', Logs.Player(src) },
+        { 'Patient', Logs.Player(inc.patient) },
+    })
     Incidents.Sync(inc)
-end
-
-function Incidents.Reward(inc, amount)
-    if not Config.Rewards.Enabled or amount <= 0 then return end
-    for src in pairs(inc.responders) do
-        Bridge.AddMoney(src, amount)
-        TriggerClientEvent('goodciv:client:toast', src, 'success', L('reward', amount))
-    end
 end
 
 RegisterNetEvent('goodciv:server:accept', function(id)
@@ -190,6 +196,13 @@ RegisterNetEvent('goodciv:server:accept', function(id)
     TriggerClientEvent('goodciv:client:toast', src, 'success', L('accepted'))
     TriggerClientEvent('goodciv:client:toast', inc.patient, 'info', L('responder_en_route', Bridge.GetName(src)))
     if Incidents.OnAccepted then Incidents.OnAccepted(inc, src) end
+    local rc = pedCoords(src)
+    Logs.Send('incidents', ('Call #%d accepted'):format(inc.id), 'yellow', {
+        { 'Responder', Logs.Player(src) },
+        { 'Patient', Logs.Player(inc.patient) },
+        { 'Distance', rc and ('%dm'):format(math.floor(#(rc - inc.coords))) or '?', true },
+        { 'Responders', ('%d / %d'):format(inc.responderCount, Config.Alerts.MaxResponders), true },
+    })
 
     if inc.responderCount >= Config.Alerts.MaxResponders then
         dismissAlerts(inc, 'alert_filled')

@@ -326,4 +326,38 @@ Config.Rewards = {
     Account = 'cash',   -- qb/qbx: cash | bank, esx: money | bank
     Handover = 350,     -- per responder on successful hospital handover
     Assist = 100,       -- per responder whose patient was revived on scene by others
+
+    -- Stop volunteers farming rewards (e.g. two friends taking turns downing each other).
+    -- Withheld rewards are printed to the server console.
+    AntiFarm = {
+        -- Only pay responders who actually treated the patient (tourniquet, CPR, rouse
+        -- or driving them in). Accepting the call and waiting doesn't count.
+        RequireTreatment = true,
+        -- Never pay the player who injured the patient.
+        NoRewardIfAttacker = true,
+        -- Seconds before the same responder can be paid again for helping the same
+        -- person (by FiveM licence, so swapping characters doesn't reset it). 0 = off.
+        PairCooldown = 3600,
+        -- Max paid calls per responder per rolling hour. 0 = no limit.
+        MaxPerHour = 4,
+    },
+}
+
+---------------------------------------------------------------------------
+-- Discord logs
+---------------------------------------------------------------------------
+-- Webhook URLs go in server/webhooks.lua, which is server-only. Never put them in this
+-- file: config.lua is downloaded by every player.
+Config.Logs = {
+    Enabled = true,
+    Username = 'GoodCiv Logs',
+    Avatar = nil, -- image URL for the webhook avatar
+    -- Turn categories on / off.
+    Categories = {
+        carriers = true,   -- sign up / sign off, training pass / fail
+        incidents = true,  -- calls raised, accepted, abandoned, closed
+        treatment = true,  -- tourniquet, CPR, rouse, load, handover, crashes
+        rewards = true,    -- paid and withheld rewards
+        admin = true,      -- admin commands
+    },
 }

@@ -21,16 +21,32 @@ local function classifyDamage(weapon)
     return DAMAGE_TYPES[GetWeaponDamageType(weapon)] or 'other'
 end
 
+local lastAttacker -- server id of the last player who hurt us (no reward for them)
+
 -- Remember what last hurt us; frameworks that resurrect into last stand clear the cause of death.
 AddEventHandler('gameEventTriggered', function(name, args)
     if name ~= 'CEventNetworkEntityDamage' then return end
     if args[1] ~= PlayerPedId() then return end
     local weapon = args[7]
     if weapon and weapon ~= 0 then lastDamage = classifyDamage(weapon) end
+    local attacker = args[2]
+    if attacker and attacker ~= -1 and DoesEntityExist(attacker) then
+        -- Hit by a car: blame the driver.
+        if IsEntityAVehicle(attacker) then attacker = GetPedInVehicleSeat(attacker, -1) end
+        if attacker ~= 0 and attacker ~= PlayerPedId() and IsPedAPlayer(attacker) then
+            local sid = GetPlayerServerId(NetworkGetPlayerIndexFromPed(attacker))
+            if sid and sid > 0 and sid ~= lastAttacker then
+                lastAttacker = sid
+                if downed then
+                    LocalPlayer.state:set('goodciv:patient', { downed = downed, stage = stage, damage = lastDamage, attacker = lastAttacker }, true)
+                end
+            end
+        end
+    end
 end)
 
 local function publish()
-    LocalPlayer.state:set('goodciv:patient', { downed = downed, stage = stage, damage = lastDamage }, true)
+    LocalPlayer.state:set('goodciv:patient', { downed = downed, stage = stage, damage = lastDamage, attacker = lastAttacker }, true)
 end
 
 CreateThread(function()
@@ -44,7 +60,7 @@ CreateThread(function()
             downed = now
             downedAt = now and GetGameTimer() or nil
             autoSent = false
-            if not now then lastDamage = 'other' end
+            if not now then lastDamage, lastAttacker = 'other', nil end
         end
         if nowStage ~= stage then
             stage = nowStage
