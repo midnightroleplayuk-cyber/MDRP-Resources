@@ -45,6 +45,8 @@ Config.MDT = {
 -- Courts. kind = 'magistrates' or 'crown'. coords are used for the waypoint
 -- a defendant gets with their hearing notice.
 ---------------------------------------------------------------------------
+-- The starting list only: copied into the database the first time the resource starts.
+-- After that, create, rename and delete courts in game with /courtrooms → Courts.
 Config.Courts = {
     { id = 'lsmc', label = "Los Santos Magistrates' Court", kind = 'magistrates', coords = vec3(-545.0, -204.0, 38.2) },
     { id = 'lscc', label = 'Los Santos Crown Court', kind = 'crown', coords = vec3(-545.0, -204.0, 38.2) },
@@ -145,12 +147,26 @@ Config.Courtrooms = {
     },
     -- Who can put footage on the screens, from a laptop in that courtroom.
     ScreenRoles = { 'judge', 'clerk', 'cps', 'defence' },
-    -- What can be played: Medal clips, YouTube, and direct video files (.mp4/.webm/.mov) from these hosts.
-    -- Direct files are synced (late arrivals join at the right point) and get quieter with distance.
-    AllowMedal = true,
-    AllowYouTube = true,
-    VideoHosts = { 'fivemanage.com', 'r2.fivemanage.com', 'cdn.discordapp.com', 'media.discordapp.net', 'i.imgur.com' },
-    AllowAnyVideoHost = false,  -- true = any https link ending in .mp4/.webm/.mov
+    -- What can be played on the screens. Set any to false to switch it off. Add your own in server/videolinks.lua.
+    Providers = {
+        medal = true,         -- medal.tv clips and share links
+        youtube = true,       -- videos, shorts, live, youtu.be, with ?t= timestamps
+        twitch = true,        -- clips and past broadcasts (not live channels)
+        streamable = true,
+        vimeo = true,
+        dailymotion = true,
+        tiktok = true,        -- full tiktok.com/@user/video/... links
+        gdrive = true,        -- Google Drive files shared as "Anyone with the link"
+        dropbox = true,       -- Dropbox links to a video or image file
+        imgur = true,         -- single images and videos (not albums)
+        gyazo = true,
+        images = true,        -- photos and screenshots (.png .jpg .webp .gif) from any source above or VideoHosts
+    },
+    -- Direct video and image files (.mp4 .webm .mov / .png .jpg .webp .gif) are allowed from these hosts.
+    -- Direct video files are the best option: synced for everyone and quieter with distance.
+    VideoHosts = { 'fivemanage.com', 'cdn.discordapp.com', 'media.discordapp.net', 'i.imgur.com', 'files.catbox.moe',
+        'dl.dropboxusercontent.com', 'i.gyazo.com' },
+    AllowAnyVideoHost = false,  -- true = any https link to a video or image file
     ScreenResolution = { 1280, 720 },
     MaxPlayMinutes = 15,        -- screens go back to the court slate after this long
     ScreenVolume = 0.8,         -- direct video files: volume at the screen (fades out across the room)

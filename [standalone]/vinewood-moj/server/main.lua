@@ -72,7 +72,7 @@ H.init = function(src, a)
             offences = offences, warrantTypes = Warrants.Labels, orderKinds = Orders.Kinds, prisonKinds = Prison.Kinds,
             suspendUpTo = Config.Sentencing.SuspendUpTo, suspendDays = Config.Sentencing.SuspendOperationalDays,
             civil = (Config.Civil or {}).enabled ~= false, civilTypes = (Config.Civil or {}).Types, civilStatuses = Civil.Statuses,
-            civilOpenRoles = (Config.Civil or {}).OpenRoles, civilCourt = (Config.Civil or {}).Court,
+            civilOpenRoles = (Config.Civil or {}).OpenRoles, civilCourt = Courts.CivilDefault(),
             businesses = (Config.Civil or {}).Businesses == true,
             office = Config.Probation.Office.label, warnLimit = Config.Probation.WarningsBeforeBreach, autoCourt = Config.AutoCourt.enabled, mdt = MDT.Running(),
         },
@@ -495,7 +495,7 @@ end
 
 H.screenStatus = function(src, a)
     local r = Rooms.LaptopRoom(src)
-    return { room = r and r.label, screens = r and Rooms.HasScreens(r) or false, now = r and Rooms.NowShowing(r.id) or nil }
+    return { room = r and r.label, screens = r and Rooms.HasScreens(r) or false, now = r and Rooms.NowShowing(r.id) or nil, sources = VideoLinks.Names() }
 end
 
 H.screenPlay = function(src, a, d)
@@ -511,7 +511,7 @@ H.screenPlay = function(src, a, d)
     need(p, err)
     if owner then ownerLog(kind, owner, U.By(a), ('Exhibit "%s" shown on the screens in %s.'):format(p.label, r.label)) end
     Webhook.Send('evidence', ('Shown in court: %s'):format(p.label), p.url, {
-        { 'Courtroom', r.label }, { 'Case', owner and owner.ref }, { 'Source', p.kind }, { 'By', U.By(a) },
+        { 'Courtroom', r.label }, { 'Case', owner and owner.ref }, { 'Source', p.providerLabel }, { 'By', U.By(a) },
     }, 'purple')
     return { ok = true, now = p }
 end
@@ -538,11 +538,11 @@ H.addExhibit = function(_, a, d)
     need(label, 'Give the exhibit a name, e.g. "Exhibit PH/1: bodycam footage".')
     local list = c.exhibits or {}
     need(#list < 30, 'This has the most exhibits allowed.')
-    list[#list + 1] = { label = label, url = U.trim(d.url, 500), kind = v.kind, by = U.By(a), at = U.now() }
+    list[#list + 1] = { label = label, url = U.trim(d.url, 500), kind = v.provider, source = v.providerLabel, by = U.By(a), at = U.now() }
     MySQL.update.await(('UPDATE %s SET exhibits = ?, updated_at = ? WHERE id = ?'):format(kind == 'claim' and 'vw_moj_civil' or 'vw_moj_cases'),
         { U.encode(list), U.now(), c.id })
     ownerLog(kind, c, U.By(a), ('Video exhibit added: %s.'):format(label))
-    Webhook.Send('evidence', ('Exhibit added: %s'):format(label), U.trim(d.url, 500), { { kind == 'claim' and 'Claim' or 'Case', c.ref }, { 'Source', v.kind }, { 'By', U.By(a) } }, 'blue')
+    Webhook.Send('evidence', ('Exhibit added: %s'):format(label), U.trim(d.url, 500), { { kind == 'claim' and 'Claim' or 'Case', c.ref }, { 'Source', v.providerLabel }, { 'By', U.By(a) } }, 'blue')
     return { ok = true }
 end
 

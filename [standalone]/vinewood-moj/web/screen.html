@@ -14,7 +14,7 @@
     #slate .room { font-size: 8vh; font-weight: 700; margin: 1.4vh 0 2.4vh; }
     #slate .msg { font-size: 3.4vh; color: #b1b4b6; }
     #slate .clock { position: absolute; top: 3vh; right: 4vh; font-size: 3.4vh; color: #b1b4b6; }
-    video, iframe { width: 100%; height: 100%; border: 0; background: #000; object-fit: contain; }
+    video, iframe, img.layer { width: 100%; height: 100%; border: 0; background: #000; object-fit: contain; }
     #tag { position: absolute; left: 3vh; top: 3vh; background: rgba(11, 12, 12, .86); border-left: 1vh solid #ffdd00; padding: 1.4vh 2.4vh; font-size: 3vh;
         transition: opacity .8s; max-width: 70%; }
     #tag small { display: block; font-size: 2.2vh; color: #b1b4b6; margin-top: .4vh; letter-spacing: .08em; text-transform: uppercase; }
@@ -31,22 +31,23 @@
     <div class="msg" id="msg">No exhibit is being shown</div>
 </div>
 <video id="video" class="layer hidden" playsinline></video>
-<iframe id="frame" class="layer hidden" allow="autoplay; encrypted-media" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+<iframe id="frame" class="layer hidden" allow="autoplay; encrypted-media; fullscreen" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+<img id="image" class="layer hidden" alt="">
 <div id="tag" class="hidden"><small>Exhibit</small><span id="tagText"></span></div>
 
 <script>
     const $ = (id) => document.getElementById(id);
-    const video = $('video'), frame = $('frame');
-    let kind = null, tagTimer, volume = 0.8, ytReady = false;
+    const video = $('video'), frame = $('frame'), image = $('image');
+    let kind = null, control = null, tagTimer, volume = 0.8, ready = false;
 
     const pad = (n) => String(n).padStart(2, '0');
     setInterval(() => { const d = new Date(); $('clock').textContent = `${pad(d.getHours())}:${pad(d.getMinutes())}`; }, 1000);
 
     function slate(msg) {
-        kind = null;
+        kind = null; control = null;
         video.pause(); video.removeAttribute('src'); video.load();
-        frame.src = 'about:blank';
-        video.classList.add('hidden'); frame.classList.add('hidden'); $('tag').classList.add('hidden');
+        frame.src = 'about:blank'; image.removeAttribute('src');
+        video.classList.add('hidden'); frame.classList.add('hidden'); image.classList.add('hidden'); $('tag').classList.add('hidden');
         $('slate').classList.remove('hidden');
         $('msg').textContent = msg || 'No exhibit is being shown';
     }
@@ -58,42 +59,54 @@
         tagTimer = setTimeout(() => $('tag').classList.add('fade'), 6000);
     }
 
-    // YouTube's player listens for postMessage commands once loaded with enablejsapi=1.
-    function yt(func, args) {
-        try { frame.contentWindow.postMessage(JSON.stringify({ event: 'command', func, args: args || [] }), '*'); } catch (e) {}
+    // YouTube and Vimeo players accept volume commands over postMessage.
+    function command(vol) {
+        if (!ready || !frame.contentWindow) return;
+        try {
+            if (control === 'youtube') frame.contentWindow.postMessage(JSON.stringify({ event: 'command', func: 'setVolume', args: [Math.round(vol * 100)] }), '*');
+            else if (control === 'vimeo') frame.contentWindow.postMessage(JSON.stringify({ method: 'setVolume', value: vol }), '*');
+        } catch (e) {}
+    }
+
+    function showImage(src) {
+        video.pause(); video.classList.add('hidden'); frame.classList.add('hidden'); frame.src = 'about:blank';
+        image.classList.remove('hidden');
+        image.onerror = () => slate('This image could not be shown');
+        image.src = src;
     }
 
     function play(m) {
-        kind = m.kind;
+        kind = m.kind; control = m.control || null; ready = false;
         $('slate').classList.add('hidden');
         showTag(m.label);
-        const elapsed = Math.max(0, Number(m.elapsed) || 0);
+        // Where to start: the link's own timestamp plus how long the exhibit has been playing.
+        const start = Math.max(0, Math.floor((Number(m.offset) || 0) + (Number(m.elapsed) || 0)));
+        if (m.kind === 'image') { showImage(m.src); return; }
         if (m.kind === 'file') {
-            frame.classList.add('hidden'); frame.src = 'about:blank';
+            frame.classList.add('hidden'); frame.src = 'about:blank'; image.classList.add('hidden');
             video.classList.remove('hidden');
             video.src = m.src;
             video.volume = volume;
             video.onloadedmetadata = () => {
-                if (elapsed > 0 && elapsed < video.duration) video.currentTime = elapsed;
-                if (elapsed >= video.duration) { slate('End of exhibit'); return; }
+                if (start > 0 && start < video.duration) video.currentTime = start;
+                if (start >= video.duration) { slate('End of exhibit'); return; }
                 video.play().catch(() => { video.muted = true; video.play(); });
             };
             video.onended = () => slate('End of exhibit');
-            video.onerror = () => slate('This video could not be played');
-        } else {
-            video.pause(); video.classList.add('hidden');
-            let src = m.src;
-            if (m.kind === 'youtube') { src += `&enablejsapi=1&start=${Math.floor(elapsed)}`; ytReady = false; }
-            frame.classList.remove('hidden');
-            frame.src = src;
-            frame.onload = () => { if (m.kind === 'youtube') { ytReady = true; setTimeout(() => yt('setVolume', [Math.round(volume * 100)]), 800); } };
+            video.onerror = () => (m.fallback ? showImage(m.fallback) : slate('This video could not be played'));
+            return;
         }
+        // Embedded player from the site itself.
+        video.pause(); video.classList.add('hidden'); image.classList.add('hidden');
+        frame.classList.remove('hidden');
+        frame.src = String(m.src).replace('{start}', String(start));
+        frame.onload = () => { ready = true; setTimeout(() => command(volume), 900); };
     }
 
     function setVolume(v) {
         volume = Math.max(0, Math.min(1, Number(v) || 0));
         if (kind === 'file') video.volume = volume;
-        else if (kind === 'youtube' && ytReady) yt('setVolume', [Math.round(volume * 100)]);
+        else if (control) command(volume);
     }
 
     window.addEventListener('message', (e) => {

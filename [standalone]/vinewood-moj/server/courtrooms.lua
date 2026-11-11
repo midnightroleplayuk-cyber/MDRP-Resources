@@ -143,7 +143,10 @@ ADMIN.list = function()
     for i, m in ipairs(CR.ScreenModels or {}) do screens[#screens + 1] = { index = i, label = m.label or m.model } end
     local roles = {}
     for _, r in ipairs(CR.LaptopRoles or {}) do roles[#roles + 1] = { id = r, label = Config.Roles[r] and Config.Roles[r].label or r } end
-    return { rooms = Rooms.Public(), courts = Config.Courts, roles = roles, micReach = CR.MicReach, micRange = CR.MicRange,
+    local kinds = {}
+    for id, label in pairs(Courts.Kinds) do kinds[#kinds + 1] = { id = id, label = label } end
+    table.sort(kinds, function(a, b) return a.label < b.label end)
+    return { rooms = Rooms.Public(), courts = Courts.Public(), kinds = kinds, roles = roles, micReach = CR.MicReach, micRange = CR.MicRange,
         laptopProp = CR.LaptopProp, micProp = CR.MicProp, voice = GetResourceState('pma-voice') == 'started',
         target = GetResourceState('ox_target') == 'started', screens = screens }
 end
@@ -246,6 +249,10 @@ ADMIN.removePoint = function(_, d)
     return { ok = true }
 end
 
+ADMIN.courtCreate = function(src, d) return Courts.Create(src, d) end
+ADMIN.courtUpdate = function(src, d) return Courts.Update(src, d) end
+ADMIN.courtDelete = function(_, d) return Courts.Delete(d) end
+
 ADMIN.teleport = function(src, d)
     local r = Rooms.Get(d.id)
     if not r or not r.centre or not r.centre.x then return { error = 'Courtroom not found.' } end
@@ -263,11 +270,22 @@ lib.callback.register('vinewood-moj:server:roomsAdmin', function(src, action, da
     local before = data.id and Rooms.Get(data.id)
     local beforeLabel = before and before.label
     local beforePoint = before and data.index and before.points[tonumber(data.index) or 0]
+    local beforeCourt = data.courtId and U.court(data.courtId)
+    local beforeCourtLabel = beforeCourt and beforeCourt.label
     local ok, r = pcall(fn, src, data)
     if not ok then print('[vinewood-moj] courtrooms: ' .. tostring(r)) return { error = 'The request failed. Check the server console.' } end
     -- Log every change admins make to courtrooms.
     local WHAT = { create = 'Courtroom created', update = 'Courtroom edited', delete = 'Courtroom deleted',
         addPoint = 'Point placed', updatePoint = 'Point edited', removePoint = 'Point removed' }
+    local COURT = { courtCreate = 'Court created', courtUpdate = 'Court edited', courtDelete = 'Court deleted' }
+    if r and r.ok and COURT[action] then
+        local now = U.court(r.id or data.courtId)
+        Webhook.Send('courtrooms', ('%s: %s'):format(COURT[action], (now and now.label) or beforeCourtLabel or data.label or ''), nil, {
+            { 'Was', action == 'courtUpdate' and beforeCourtLabel ~= (now and now.label) and beforeCourtLabel or nil },
+            { 'Type', now and Courts.Kinds[now.kind] }, { 'Waypoint', data.here and 'Set to the admin\'s position' or nil },
+            { 'Admin', ('%s (%s)'):format(GetPlayerName(src) or '?', Bridge.GetName(src) or '?') },
+        }, action == 'courtDelete' and 'red' or 'blue')
+    end
     if r and r.ok and WHAT[action] then
         local room = Rooms.Get(r.id or data.id)
         local point = action == 'addPoint' and data.point or beforePoint
@@ -297,48 +315,8 @@ function Rooms.HasScreens(r)
     return false
 end
 
-local function hostOf(url) return (url:match('^https?://([^/:?#]+)') or ''):lower() end
-
-local function hostAllowed(host)
-    for _, h in ipairs(CR.VideoHosts or {}) do
-        h = h:lower()
-        if host == h or host:sub(-(#h + 1)) == '.' .. h then return true end
-    end
-    return false
-end
-
---- A link someone pasted: { kind = 'file'|'medal'|'youtube', src = what the screen loads } or nil, reason.
-function Rooms.ParseVideo(url)
-    url = U.trim(url, 500)
-    if not url then return nil, 'Paste a link to the footage.' end
-    if not url:match('^https://') then return nil, 'The link must start with https://' end
-    local host = hostOf(url)
-
-    if host == 'medal.tv' or host == 'www.medal.tv' then
-        if not CR.AllowMedal then return nil, 'Medal clips are switched off on this server.' end
-        local path = url:match('^https?://[^/]+(/[^?#]*)') or ''
-        -- /clip/<id>, /clips/<id>, /games/<game>/clips/<id>, /<lang>/games/<game>/clips/<id>, /users/<u>/clips/<id>,
-        -- each optionally followed by /<key> (needed for unlisted clips, so it's kept).
-        local id, key = path:match('/clips?/([%w_-]+)/?([%w_-]*)')
-        if key == '' then key = nil end
-        if not id then return nil, 'That does not look like a Medal clip link.' end
-        return { kind = 'medal', src = ('https://medal.tv/clip/%s%s?autoplay=1&muted=0&loop=0&cta=0'):format(id, key and ('/' .. key) or '') }
-    end
-
-    if host == 'youtube.com' or host == 'www.youtube.com' or host == 'm.youtube.com' or host == 'youtu.be' then
-        if not CR.AllowYouTube then return nil, 'YouTube links are switched off on this server.' end
-        local id = url:match('[?&]v=([%w_-]+)') or url:match('youtu%.be/([%w_-]+)') or url:match('/shorts/([%w_-]+)') or url:match('/embed/([%w_-]+)')
-        if not id then return nil, 'That does not look like a YouTube video link.' end
-        return { kind = 'youtube', id = id, src = ('https://www.youtube.com/embed/%s?autoplay=1&controls=0&rel=0&modestbranding=1&playsinline=1'):format(id) }
-    end
-
-    local file = (url:match('^[^?#]+') or ''):lower()
-    if file:match('%.mp4$') or file:match('%.webm$') or file:match('%.mov$') or file:match('%.m4v$') then
-        if CR.AllowAnyVideoHost or hostAllowed(host) then return { kind = 'file', src = url } end
-        return nil, ('Videos from %s are not allowed. Upload the clip to Medal or an allowed host.'):format(host)
-    end
-    return nil, 'Use a Medal clip, a YouTube video, or a direct link to a video file (.mp4, .webm).'
-end
+--- A link someone pasted: see server/videolinks.lua for the sites that work.
+function Rooms.ParseVideo(url) return VideoLinks.Parse(url) end
 
 local function broadcast() TriggerClientEvent('vinewood-moj:client:screens', -1, playing) end
 
@@ -349,7 +327,11 @@ function Rooms.NowShowing(roomId) return playing[roomId] end
 function Rooms.Play(roomId, url, label, by, ref)
     local v, err = Rooms.ParseVideo(url)
     if not v then return nil, err end
-    playing[roomId] = { kind = v.kind, src = v.src, id = v.id, url = url, label = U.trim(label, 80) or 'Exhibit', by = by, ref = ref, startedAt = os.time() }
+    playing[roomId] = {
+        kind = v.kind, src = v.src, provider = v.provider, providerLabel = v.providerLabel, offset = v.offset or 0, control = v.control,
+        fallback = v.fallback,
+        url = url, label = U.trim(label, 80) or 'Exhibit', by = by, ref = ref, startedAt = os.time(),
+    }
     broadcast()
     return playing[roomId]
 end

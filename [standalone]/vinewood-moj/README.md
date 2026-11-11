@@ -28,7 +28,7 @@ Multiframework: Qbox, QBCore and ESX (auto-detected). Requires **ox_lib**, **oxm
 | `/moj` | Judges, clerks, CPS, defence, probation, prison, police | The staff system. What you see depends on your role. |
 | `/mycase` | Anyone | Your court dates, fines (pay here), orders, unpaid work and appointments. |
 | `/unpaidwork` | Anyone with hours to do | Start or stop unpaid work at the nearest work site. |
-| `/courtrooms` | Server admins | Build courtrooms: place laptops, microphones, screens and the court custody desk. |
+| `/courtrooms` | Server admins | Create and rename courts, build courtrooms, and place laptops, microphones, screens and the court custody desk. |
 
 ## Roles
 
@@ -89,6 +89,18 @@ Add this to `ox_inventory/data/items.lua`:
 
 Using it opens the court system for staff (judges, clerks, CPS, defence, probation, prison, police) and the person's own justice account for everyone else. With `RequireTabletItem = true`, `/moj` only works while carrying it. Courtroom laptops always work. The item check runs on the server.
 
+## Courts
+
+Courts are managed in game: **`/courtrooms` → Courts**.
+
+- **Create** a court with a name and type: magistrates' court, Crown Court, or County Court (civil).
+- **Edit** any court: rename it or change its type. The new name shows everywhere straight away, including case pages, notices and listings.
+- **Waypoint:** set it to where you're standing. Defendants are sent there if the court has no courtroom yet; once it has one, they're sent to the courtroom.
+- **Civil default:** mark one County Court as the default for new civil claims.
+- **Delete** a court that nothing uses. If it has cases, listed hearings, claims or courtrooms, the editor tells you what, so you can rename it instead, or move its courtrooms to another court first (edit the courtroom and pick the new court).
+
+`Config.Courts` is only the starting list. It's copied into the database the first time the resource starts, and after that the in-game list is what counts, so edits in config won't override it. Case numbers still use `Config.CaseRefPrefix` by court type (`MC`, `T`, `CV`). Every court change is posted to the `courtrooms` webhook.
+
 ## Courtrooms
 
 Build real courtrooms in game, then run hearings in them.
@@ -136,18 +148,30 @@ Every screen in the room shows the same thing. Each showing of a saved exhibit i
 
 **Video exhibits:** cases and civil claims have a **Video exhibits** section. The judge, clerk, CPS or defence add a name and a link (for example "PH/1: bodycam" or "D/1: dashcam"), and then show it from any courtroom laptop.
 
-**Links that work:**
+**Links that work:** turn any of these off in `Config.Courtrooms.Providers`, and add your own sites in `server/videolinks.lua`, which is left unencrypted.
 
-| Link | How it plays |
-|---|---|
-| Medal clip (`medal.tv/games/.../clips/...`, `medal.tv/clips/...`, share links with a key) | Medal's own embedded player, with sound. |
-| YouTube (`youtube.com/watch?v=`, `youtu.be/`, shorts) | YouTube's embedded player. Joins at the right point for late arrivals, and gets quieter with distance. |
-| Direct video file (`.mp4`, `.webm`, `.mov`) from a host in `VideoHosts` (Fivemanage and Discord's CDN by default) | Best option: synced for everyone (people who walk in join at the right point), and gets quieter with distance from the screens. |
+| Source | Links | How it plays |
+|---|---|---|
+| Medal | clip links, share links (with key), embed links | Medal's player |
+| YouTube | `watch?v=`, `youtu.be/`, shorts, live, with `?t=` timestamps | YouTube's player. Starts at the timestamp, late arrivals join at the right point, quieter with distance |
+| Twitch | clips (`clips.twitch.tv/...`, `twitch.tv/<user>/clip/...`), past broadcasts (`twitch.tv/videos/...?t=`) | Twitch's player. Not live channels |
+| Streamable | `streamable.com/<id>` | Streamable's player |
+| Vimeo | `vimeo.com/<id>`, unlisted `vimeo.com/<id>/<hash>`, `#t=` timestamps | Vimeo's player. Late arrivals join at the right point, quieter with distance |
+| Dailymotion | `dailymotion.com/video/...`, `dai.ly/...`, `?start=` | Dailymotion's player. Late arrivals join at the right point |
+| TikTok | full `tiktok.com/@user/video/...` links (not short `vm.` links) | TikTok's player |
+| Google Drive | file links shared as "Anyone with the link" | Drive's player |
+| Dropbox | links to a video or image file | Played as a file: synced, quieter with distance |
+| Imgur | single images, `.gifv`/`.mp4` videos (not albums) | Image, or played as a file |
+| Gyazo | `gyazo.com/<id>` | Played as a file, falling back to the image |
+| Direct files | `.mp4 .webm .mov` videos and `.png .jpg .webp .gif` images from `VideoHosts` (Fivemanage, Discord CDN, Imgur, Catbox, Dropbox, Gyazo by default) | Video files are synced and quieter with distance. Images are shown full screen |
+
+**Photos as evidence:** image links (screenshots, CCTV stills, documents) show full screen with the exhibit name, just like videos.
 
 **Notes:**
 
 - The picture and sound only exist for people inside that courtroom. They start when you walk in and stop when you leave.
-- **Medal plays in Medal's own player**, so it can't be synced for latecomers (they start from the beginning) and plays at one volume inside the room. If you need exact sync, download the clip and use a direct file link.
+- **Sites' own players** (Medal, Twitch clips, Streamable, TikTok, Google Drive) can't be controlled from outside, so latecomers start from the beginning and the volume is the same across the room. YouTube, Vimeo and Dailymotion do better, and direct files best of all.
+- **Twitch** checks which page its player is embedded on. The screens identify themselves correctly, but Twitch occasionally refuses embeds on some setups. If a Twitch clip won't load, download it and use a direct file.
 - Screens go back to the slate after `MaxPlayMinutes`.
 - Screens using the same render target (`tvscreen` for the flat TVs) all show the same picture. That's how one exhibit appears on every TV in the room.
 - In-game browsers sometimes block sound until a page has been interacted with. If a clip plays silently on your server, use direct video files, which fall back to playing muted rather than not at all.
@@ -200,7 +224,7 @@ Bosses are taken from a character's main job, so with multi-job setups the boss 
 
 The claimant (or their solicitor) can withdraw or record a settlement at any point before judgment. Judges can strike a claim out. Solicitors only see claims where they act for one side, and can be assigned to either side by a clerk or judge.
 
-Add a County Court to `Config.Courts` (`kind = 'county'`; one is included) and set `Config.Civil.Court` to its id. It can share a courtroom with the criminal courts, since you pick the court when you list the hearing.
+Civil claims go to the County Court marked as the civil default in **`/courtrooms` → Courts** (or `Config.Civil.Court` until one is marked). It can share a courtroom with the criminal courts, since you pick the court when you list the hearing.
 
 ## Sentencing
 

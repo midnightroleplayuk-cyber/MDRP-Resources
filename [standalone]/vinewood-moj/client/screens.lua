@@ -104,13 +104,14 @@ CreateThread(function()
             if k ~= curKey then
                 curKey = k
                 if p then
-                    send({ action = 'play', kind = p.kind, src = p.src, label = p.label, elapsed = math.max(0, GetCloudTimeAsInt() - p.startedAt) })
+                    send({ action = 'play', kind = p.kind, src = p.src, label = p.label, control = p.control, fallback = p.fallback,
+                        offset = p.offset or 0, elapsed = math.max(0, GetCloudTimeAsInt() - p.startedAt) })
                 else
                     send({ action = 'slate', room = r.label, court = Config.CourtsName })
                 end
             end
             -- Volume falls off with distance from the nearest screen (direct files and YouTube).
-            if p and (p.kind == 'file' or p.kind == 'youtube') then
+            if p and (p.kind == 'file' or p.control) then
                 local here, best = GetEntityCoords(PlayerPedId()), 1e9
                 for _, s in ipairs(screens) do best = math.min(best, #(here - vec3(s.x, s.y, s.z))) end
                 local falloff = math.max(4.0, r.radius or 20.0)

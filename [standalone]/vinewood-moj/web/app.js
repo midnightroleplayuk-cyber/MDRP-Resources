@@ -928,8 +928,17 @@ VIEWS.rooms = async (p = {}) => {
     state.view = 'rooms';
     drawShell();
     const courtName = (id) => (r.courts || []).find((c) => c.id === id)?.label || id || '';
-    main.innerHTML = `<div class="head"><div><span class="caption">Server admin</span><h1>Courtrooms</h1></div>
-        <div class="actions"><button class="btn" id="rNew">New courtroom here</button></div></div>
+    const KIND_TAG = { magistrates: 'blue', crown: 'purple', county: 'green' };
+    main.innerHTML = `<div class="head"><div><span class="caption">Server admin</span><h1>Courts and courtrooms</h1></div></div>
+        <h2 style="margin-top:0">Courts</h2>
+        <p class="lead">The courts cases are heard in. Each court can have one or more courtrooms. A court's waypoint is where defendants are sent if it has no courtroom yet.</p>
+        <table><tr><th>Court</th><th>Type</th><th class="num">Courtrooms</th><th>Waypoint</th><th></th></tr>
+            ${(r.courts || []).map((c) => `<tr><td><strong>${esc(c.label)}</strong>${c.civilDefault ? ' ' + tag('Civil default', 'green') : ''}<div class="muted small">${esc(c.id)}</div></td>
+            <td>${tag(c.kindLabel || c.kind, KIND_TAG[c.kind] || '')}</td><td class="num">${c.rooms}</td>
+            <td>${c.hasCoords ? 'Set' : c.rooms ? '<span class="muted">Uses its courtroom</span>' : '<span class="muted">Not set</span>'}</td>
+            <td style="white-space:nowrap;text-align:right"><button class="btn secondary small" data-cedit="${esc(c.id)}">Edit</button> <button class="btn warning small" data-cdel="${esc(c.id)}">Delete</button></td></tr>`).join('')}</table>
+        <div class="btn-row" style="margin-bottom:8px"><button class="btn secondary" id="cNew">New court</button></div>
+        <div class="head" style="margin-top:28px;margin-bottom:10px"><h2 style="margin:0">Courtrooms</h2><div class="actions"><button class="btn" id="rNew">New courtroom here</button></div></div>
         <p class="lead">Stand in the middle of the room in game and create it. Then place laptops on the desks and microphones by the bench, witness box, dock and advocates' seats.</p>
         ${!r.voice ? '<div class="banner red"><strong>pma-voice is not running</strong>Microphones need pma-voice to carry voices across the room.</div>' : ''}
         ${!r.target ? '<div class="banner amber"><strong>ox_target is not running</strong>Laptops and microphones fall back to an E prompt.</div>' : ''}
@@ -939,6 +948,31 @@ VIEWS.rooms = async (p = {}) => {
             <td class="num">${(x.points || []).filter((q) => q.kind === 'mic').length}</td></tr>`).join('')}</table>`
             : '<p class="empty">No courtrooms yet.</p>'}`;
     $$('[data-room]').forEach((t) => (t.onclick = () => VIEWS.room({ id: Number(t.dataset.room) })));
+    const courtForm = (c) => {
+        const box = formModal(c ? `Edit ${c.label}` : 'New court', [
+            { id: 'label', label: 'Name', type: 'text', value: c ? c.label : '', placeholder: "e.g. Sandy Shores Magistrates' Court" },
+            { id: 'kind', label: 'Type', type: 'select', options: (r.kinds || []).map((k) => ({ value: k.id, label: k.label })), value: c ? c.kind : 'magistrates',
+              hint: "Magistrates' courts hear most criminal cases, the Crown Court serious ones, the County Court civil claims." },
+        ], c ? 'Save' : 'Create court', async (v) => {
+            const extra = { here: $('#cHere', box).checked, civilDefault: $('#cCivil', box).checked, clearCoords: $('#cClear', box) ? $('#cClear', box).checked : false };
+            const x = await roomsApi(c ? 'courtUpdate' : 'courtCreate', { courtId: c && c.id, ...v, ...extra }, true);
+            if (x.ok) { toast(c ? 'Court saved.' : 'Court created.'); VIEWS.rooms(); }
+            return x;
+        }, c && c.rooms ? `<p class="lead">${c.rooms} courtroom${c.rooms === 1 ? ' belongs' : 's belong'} to this court. Renaming it updates everywhere it's shown.</p>` : '');
+        $('#fErr', box).insertAdjacentHTML('beforebegin', `<div class="checks" style="margin-top:12px">
+            <label><input type="checkbox" id="cHere"> Set the court's waypoint to where I'm standing</label>
+            ${c && c.hasCoords ? '<label><input type="checkbox" id="cClear"> Remove the waypoint (use its courtroom instead)</label>' : ''}
+            <label><input type="checkbox" id="cCivil" ${c && c.civilDefault ? 'checked' : ''}> Default court for new civil claims (County Courts only)</label></div>`);
+    };
+    $('#cNew').onclick = () => courtForm(null);
+    $$('[data-cedit]').forEach((b) => (b.onclick = () => courtForm((r.courts || []).find((c) => c.id === b.dataset.cedit))));
+    $$('[data-cdel]').forEach((b) => (b.onclick = () => {
+        const c = (r.courts || []).find((x) => x.id === b.dataset.cdel);
+        confirmModal(`Delete ${c.label}? Only courts with no cases, hearings, claims or courtrooms can be deleted.`, async () => {
+            const x = await roomsApi('courtDelete', { courtId: c.id });
+            if (x.ok) { toast('Court deleted.'); VIEWS.rooms(); }
+        }, 'Delete court', true);
+    }));
     $('#rNew').onclick = () => formModal('New courtroom', [
         { id: 'label', label: 'Name', type: 'text', placeholder: 'e.g. Court 1' },
         { id: 'courtId', label: 'Court', type: 'select', options: r.courts.map((c) => ({ value: c.id, label: c.label })) },
@@ -1280,7 +1314,9 @@ VIEWS.claim = async (p) => {
 
 
 /* ---------- video exhibits and the courtroom screens ---------- */
-const VIDEO_KIND = { medal: 'Medal', youtube: 'YouTube', file: 'Video file' };
+const VIDEO_KIND = { medal: 'Medal', youtube: 'YouTube', twitch: 'Twitch', streamable: 'Streamable', vimeo: 'Vimeo', dailymotion: 'Dailymotion',
+    tiktok: 'TikTok', gdrive: 'Google Drive', dropbox: 'Dropbox', imgur: 'Imgur', gyazo: 'Gyazo', file: 'File' };
+const sourceOf = (x) => x.source || x.providerLabel || VIDEO_KIND[x.provider || x.kind] || 'Video';
 
 function exhibitsHtml(ownerKind, owner) {
     const list = owner.exhibits || [];
@@ -1288,7 +1324,7 @@ function exhibitsHtml(ownerKind, owner) {
     const onScreens = state.room && state.room.screens;
     return `<h2>Video exhibits</h2>
         ${list.length ? `<table><tr><th>Exhibit</th><th>Source</th><th>Added</th><th></th></tr>${list.map((x, i) => `<tr>
-            <td><strong>${esc(x.label)}</strong></td><td>${tag(VIDEO_KIND[x.kind] || 'Video', 'grey')}</td>
+            <td><strong>${esc(x.label)}</strong></td><td>${tag(sourceOf(x), 'grey')}</td>
             <td class="small muted">${esc(x.by || '')}<br>${fmtDate(x.at)}</td>
             <td style="white-space:nowrap;text-align:right">${onScreens ? `<button class="btn small" data-exshow="${i + 1}">Show on screens</button> ` : ''}
                 ${can('judge') || x.by ? `<button class="btn secondary small" data-exrm="${i + 1}">Remove</button>` : ''}</td></tr>`).join('')}</table>`
@@ -1300,7 +1336,7 @@ function exhibitsHtml(ownerKind, owner) {
 function bindExhibits(ownerKind, owner) {
     if ($('#exAdd')) $('#exAdd').onclick = () => formModal('Add a video exhibit', [
         { id: 'label', label: 'Exhibit name', type: 'text', placeholder: 'e.g. PH/1 bodycam, Dashcam from NB21, CCTV Legion Square' },
-        { id: 'url', label: 'Link', type: 'text', placeholder: 'https://medal.tv/games/gta-v/clips/...', hint: 'A Medal clip, a YouTube video, or a direct link to a video file.' },
+        { id: 'url', label: 'Link', type: 'text', placeholder: 'https://medal.tv/... or https://youtu.be/...', hint: 'Medal, YouTube, Twitch, Streamable, Vimeo, Dailymotion, TikTok, Google Drive, Dropbox, Imgur, Gyazo, or a direct video or image file.' },
     ], 'Add exhibit', async (v) => { const x = await api('addExhibit', { ownerKind, ownerId: owner.id, ...v }, true); if (x.ok) { toast('Exhibit added.'); refresh(); } return x; });
     $$('[data-exshow]').forEach((b) => (b.onclick = async () => {
         const x = await api('screenPlay', { ownerKind, ownerId: owner.id, index: Number(b.dataset.exshow) });
@@ -1317,15 +1353,15 @@ async function screensModal() {
     const owner = state.view === 'case' ? { kind: 'case', o: state.case } : state.view === 'claim' ? { kind: 'claim', o: state.claim } : null;
     const list = owner && owner.o ? owner.o.exhibits || [] : [];
     const box = openModal(`<h2>Screens: ${esc(st.room || '')}</h2>
-        <div class="panel" style="margin-bottom:14px">${st.now ? `<strong>Now showing:</strong> ${esc(st.now.label)} ${tag(VIDEO_KIND[st.now.kind] || 'Video', 'grey')}
+        <div class="panel" style="margin-bottom:14px">${st.now ? `<strong>Now showing:</strong> ${esc(st.now.label)} ${tag(sourceOf(st.now), 'grey')}
             <div class="muted small">${esc(st.now.by || '')} · started ${fmtTime(st.now.startedAt)}${st.now.ref ? ` · ${esc(st.now.ref)}` : ''}</div>
             <div class="btn-row"><button class="btn secondary small" id="sRe">Play from the start</button><button class="btn warning small" id="sStop">Stop</button></div>`
             : '<span class="muted">The screens are showing the court slate.</span>'}</div>
-        ${list.length ? `<h3>Exhibits on ${esc(owner.o.ref || 'this case')}</h3><table>${list.map((x, i) => `<tr><td><strong>${esc(x.label)}</strong> ${tag(VIDEO_KIND[x.kind] || 'Video', 'grey')}</td>
+        ${list.length ? `<h3>Exhibits on ${esc(owner.o.ref || 'this case')}</h3><table>${list.map((x, i) => `<tr><td><strong>${esc(x.label)}</strong> ${tag(sourceOf(x), 'grey')}</td>
             <td style="text-align:right"><button class="btn small" data-sx="${i + 1}">Show</button></td></tr>`).join('')}</table>` : ''}
         <h3 style="margin-top:16px">Play a link</h3>
         <label for="sLabel">Name</label><input type="text" id="sLabel" placeholder="e.g. Defence exhibit D/1">
-        <label for="sUrl">Link</label><div class="hint">Medal clip, YouTube video, or a direct video file. Only people in this courtroom see and hear it.</div>
+        <label for="sUrl">Link</label><div class="hint">${esc(st.sources || 'Medal, YouTube or a direct video file')}. Timestamps in YouTube, Twitch, Vimeo and Dailymotion links are kept. Only people in this courtroom see and hear it.</div>
         <input type="text" id="sUrl" placeholder="https://medal.tv/games/gta-v/clips/...">
         <div id="sErr"></div>
         <div class="btn-row"><button class="btn" id="sPlay">Show on screens</button><button class="btn secondary" id="sClose">Close</button></div>`);

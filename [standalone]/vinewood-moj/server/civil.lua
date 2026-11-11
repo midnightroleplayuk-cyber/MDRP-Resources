@@ -40,7 +40,7 @@ local function decode(c)
     c.exhibits = U.decode(c.exhibits)
     c.statusLabel = Civil.Statuses[c.status] or c.status
     c.typeLabel = Civil.TypeLabel(c.claim_type)
-    local court = U.court(c.hearing_court or CV.Court)
+    local court = U.court(c.hearing_court or Courts.CivilDefault())
     c.courtLabel = court and court.label or 'County Court'
     c.hearing_open = U.flag(c.hearing_open)
     c.ccj = U.flag(c.ccj)
@@ -198,7 +198,7 @@ function Civil.Issue(src, a, d, litigant)
         claimant_sol_cid, claimant_sol_name, amount, remedy, particulars, fee, status, response_due, hearing_court, log, created_at, updated_at)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'issued', ?, ?, ?, ?, ?)]],
         { ctype, pc.kind, claimant, pc.name, pd.kind, defendant, pd.name, a and a.cid or nil, a and a.name or nil, amount, remedy, particulars,
-          fee, due, CV.Court, U.encode({ { at = t, by = opener, text = ('Claim issued. Court fee %s paid.'):format(U.money(fee)) } }), t, t })
+          fee, due, Courts.CivilDefault(), U.encode({ { at = t, by = opener, text = ('Claim issued. Court fee %s paid.'):format(U.money(fee)) } }), t, t })
     local ref = ('%s%s/%05d'):format(Config.CaseRefPrefix.county or 'CV', os.date('%y'), id)
     MySQL.update.await('UPDATE vw_moj_civil SET ref = ? WHERE id = ?', { ref, id })
 
@@ -282,7 +282,7 @@ function Civil.List(c, at, courtId, by)
     if Civil.Closed[c.status] or c.status == 'judgment' then return { error = 'This claim has been decided.' } end
     at = tonumber(at)
     if not at or at < U.now() then return { error = 'Pick a date and time in the future.' } end
-    local court = U.court(courtId) and courtId or c.hearing_court or CV.Court
+    local court = U.court(courtId) and courtId or c.hearing_court or Courts.CivilDefault()
     set(c.id, { status = 'listed', hearing_at = at, hearing_court = court, hearing_open = 0 })
     local label = (U.court(court) or {}).label or 'County Court'
     log(c.id, by, ('Hearing listed for %s at %s.'):format(U.fmtDate(at), label))

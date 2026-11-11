@@ -5,7 +5,7 @@ lua54 'yes'
 name 'vinewood-moj'
 author 'Vinewood Studios'
 description 'Ministry of Justice: courts, sentencing, prison, probation, unpaid work, court bail and warrants. Courtrooms with laptops and microphones. Links with vinewood-mdt.'
-version '1.9.0'
+version '1.11.0'
 
 shared_scripts {
     '@ox_lib/init.lua',
@@ -30,7 +30,9 @@ server_scripts {
     'server/sentence.lua',
     'server/cases.lua',
     'server/autocourt.lua',
+    'server/videolinks.lua',
     'server/courtrooms.lua',
+    'server/courts.lua',
     'server/business.lua',
     'server/civil.lua',
     'server/main.lua'
@@ -68,5 +70,6 @@ escrow_ignore {
     'bridge/server.lua',       -- framework bridge, for custom frameworks
     'server/licences.lua',     -- driving licence adapters
     'server/prisons.lua',      -- prison script adapters (rcore, pickle, wasabi, your own)
-    'server/business.lua'      -- business accounts (banking scripts) and who counts as a business
+    'server/business.lua',     -- business accounts (banking scripts) and who counts as a business
+    'server/videolinks.lua'    -- which links play on courtroom screens (add your own sites)
 }
