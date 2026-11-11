@@ -133,6 +133,16 @@ Config.Courtrooms = {
     TargetRadius = 0.7,       -- size of the ox_target sphere on each laptop and microphone
     MicReach = 1.6,           -- stand or sit this close to a microphone for it to pick you up
     MicRange = nil,           -- how far a microphone carries (GTA units). nil = the room's radius
+    -- Courtroom speakers (PA). Someone at a live mic is heard by everyone in that courtroom through
+    -- its speakers, at a set volume, the way pma-voice plays radio. GTA's own distance fade doesn't
+    -- apply, so the back of the room hears as well as the front. Footage on the screens also plays
+    -- from the speakers. Place speakers in /courtrooms → the room → Place a speaker.
+    PA = true,
+    SpeakerProp = 'prop_speaker_02',
+    SpeakerVolume = 0.85,     -- volume right next to a speaker (0-1)
+    SpeakerRange = 12.0,      -- metres over which it fades from a speaker...
+    SpeakerMinVolume = 0.35,  -- ...down to this (anywhere in the room still hears it)
+    NoSpeakerVolume = 0.7,    -- a room with no speakers placed: everyone in it hears mics at this volume
     -- When a judge opens a hearing from a courtroom laptop, the defendant is sent to that room.
     WaypointToRoom = true,
 

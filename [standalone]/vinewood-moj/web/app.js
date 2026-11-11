@@ -918,7 +918,8 @@ const ICON = {
     mic: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>',
     custody: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="10" width="14" height="10" rx="1"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>',
 };
-const POINT_NAME = { laptop: 'Laptop', mic: 'Microphone', custody: 'Custody desk', screen: 'Screen' };
+const POINT_NAME = { laptop: 'Laptop', mic: 'Microphone', custody: 'Custody desk', screen: 'Screen', speaker: 'Speaker' };
+ICON.speaker = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="3" width="12" height="18" rx="2"/><circle cx="12" cy="14" r="3"/><circle cx="12" cy="7.5" r="1"/></svg>';
 ICON.screen = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="12" rx="1"/><path d="M8 20h8M12 16v4"/></svg>';
 
 VIEWS.rooms = async (p = {}) => {
@@ -1102,12 +1103,13 @@ VIEWS.room = async (p) => {
             <button class="btn" id="addLaptop"><span class="point-kind">${ICON.laptop} Place a laptop</span></button>
             <button class="btn" id="addMic"><span class="point-kind">${ICON.mic} Place a microphone</span></button>
             <button class="btn" id="addScreen"><span class="point-kind">${ICON.screen} Place a screen</span></button>
+            <button class="btn" id="addSpeaker"><span class="point-kind">${ICON.speaker} Place a speaker</span></button>
         </div>
         <p class="lead">Placing closes this screen. Pick something already in your MLO by aiming at it (it's outlined) and pressing <strong>E</strong>, or spawn a prop: aim, scroll to turn, <strong>↑/↓</strong> to raise or lower, <strong>E</strong> to place. <strong>Backspace</strong> cancels. Anyone within ${esc(String(r.micReach || 1.6))} m of a live microphone is heard across the room.</p>
         ${pts.length ? `<table><tr><th>Point</th><th>Name</th><th>Who</th><th>Prop</th><th></th></tr>${pts.map((q, i) => `<tr>
             <td><span class="point-kind">${ICON[q.kind] || ''} ${POINT_NAME[q.kind] || q.kind}</span></td>
             <td>${esc(q.label || '')}</td>
-            <td class="small">${q.kind === 'laptop' ? ((q.roles || []).length ? q.roles.map(roleName).map(esc).join(', ') : 'All court staff') : q.kind === 'custody' ? 'Police, prison officers and court staff book defendants in' : q.kind === 'screen' ? (q.mode === 'pick' ? (r.overlay ? `Map TV${q.geo ? ' · picture fitted' : ' · <strong>not fitted yet</strong>'}` : `Map TV · render target ${esc(q.target || 'tvscreen')}`) : esc(((r.screens || []).find((m) => m.index === (q.model || 1)) || {}).label || 'Screen')) : `Carries ${Math.round(q.range || r.micRange || room.radius)} m`}</td>
+            <td class="small">${q.kind === 'laptop' ? ((q.roles || []).length ? q.roles.map(roleName).map(esc).join(', ') : 'All court staff') : q.kind === 'custody' ? 'Police, prison officers and court staff book defendants in' : q.kind === 'speaker' ? 'Plays live microphones and evidence' : q.kind === 'screen' ? (q.mode === 'pick' ? (r.overlay ? `Map TV${q.geo ? ' · picture fitted' : ' · <strong>not fitted yet</strong>'}` : `Map TV · render target ${esc(q.target || 'tvscreen')}`) : esc(((r.screens || []).find((m) => m.index === (q.model || 1)) || {}).label || 'Screen')) : `Carries ${Math.round(q.range || r.micRange || room.radius)} m`}</td>
             <td>${q.mode === 'pick' ? tag('Map object', 'blue') : q.prop ? tag('Spawned', 'green') : '<span class="muted small">Marked spot</span>'}</td>
             <td style="white-space:nowrap;text-align:right">${q.kind === 'screen' && r.overlay ? `<button class="btn secondary small" data-padj="${i + 1}">Adjust picture</button> ` : ''}<button class="btn secondary small" data-ptp="${i + 1}">Go to</button> <button class="btn secondary small" data-pedit="${i + 1}">Edit</button> <button class="btn warning small" data-prm="${i + 1}">Remove</button></td></tr>`).join('')}</table>`
             : '<p class="empty">Nothing placed yet.</p>'}`;
@@ -1134,17 +1136,18 @@ VIEWS.room = async (p) => {
     }, 'Delete courtroom', true);
 
     const pointForm = (kind, existing, index) => {
-        const isLaptop = kind === 'laptop', isDesk = kind === 'custody', isScreen = kind === 'screen';
+        const isLaptop = kind === 'laptop', isDesk = kind === 'custody', isScreen = kind === 'screen', isSpeaker = kind === 'speaker';
         const cur = existing || {};
-        const thing = isLaptop ? 'a laptop' : isDesk ? 'the custody desk' : isScreen ? 'a screen' : 'a microphone';
-        const propName = isScreen ? 'TV' : isLaptop || isDesk ? 'laptop' : 'table microphone';
+        const thing = isLaptop ? 'a laptop' : isDesk ? 'the custody desk' : isScreen ? 'a screen' : isSpeaker ? 'a speaker' : 'a microphone';
+        const propName = isScreen ? 'TV' : isSpeaker ? 'speaker' : isLaptop || isDesk ? 'laptop' : 'table microphone';
         // How it's placed: spawn our prop, pick an object already in the MLO, or (not screens) just mark the spot.
         const modes = [
-            ['pick', `Use one already in the room`, `Aim at the ${isScreen ? 'TV' : isLaptop || isDesk ? 'laptop or computer' : 'microphone'} in your MLO. It is outlined; press E to choose it.`],
+            ['pick', `Use one already in the room`, `Aim at the ${isScreen ? 'TV' : isSpeaker ? 'speaker' : isLaptop || isDesk ? 'laptop or computer' : 'microphone'} in your MLO. It is outlined; press E to choose it.`],
             ['spawn', `Spawn a ${propName} prop`, isScreen ? 'Aim at the wall or a stand. A ghost shows where the TV will go.' : 'Aim at the desk. A ghost shows where it will go.'],
         ];
         if (!isScreen) modes.push(['spot', 'Just mark the spot', 'No prop. Use this where the furniture is part of the building and cannot be selected.']);
         const box = openModal(`<h2>${existing ? 'Edit' : 'Place'} ${thing}</h2>
+            ${isSpeaker ? '<p class="lead">The courtroom PA. Anyone at a live microphone, and any footage on the screens, is heard through the speakers: loudest next to one, and never fading to nothing anywhere in the room. Put them where the public gallery, jury and advocates sit.</p>' : ''}
             ${isDesk ? '<p class="lead">Defendants in custody, and in serious cases, are booked in here before their hearing. Put it in the court cells or custody suite. It can be anywhere in the building: it doesn\'t need to be inside this courtroom.</p>' : ''}
             ${isScreen ? `<p class="lead">A TV that shows video evidence played from a courtroom laptop. Every screen in this room shows the same exhibit${r.overlay ? '; TVs of the same model in other rooms are not affected' : ''}.</p>
                 ${r.overlay ? '<div class="inset small">After you place or pick it, you fit the picture to the TV: <strong>←/→</strong> width, <strong>↑/↓</strong> height, hold <strong>Shift</strong> to move it, scroll to bring it in or out, <strong>F</strong> if it\'s on the wrong side, <strong>E</strong> to save.</div>' : ''}` : ''}
@@ -1154,7 +1157,7 @@ VIEWS.room = async (p) => {
             ${isScreen && !existing ? `<div id="pSpawnOpts" class="hidden"><label for="pModel">TV model</label><select id="pModel">${(r.screens || []).map((m) => `<option value="${m.index}">${esc(m.label)}</option>`).join('')}</select></div>
                 <div id="pPickOpts" ${r.overlay ? 'style="display:none"' : ''}><label for="pTarget">Render target</label><div class="hint">Only needed for a custom TV model. Known TVs fill this in automatically. Most GTA TVs use <strong>tvscreen</strong>.</div>
                 <input type="text" id="pTarget" value="tvscreen"></div>` : ''}
-            <label for="pLabel">Name</label><input type="text" id="pLabel" value="${esc(cur.label || '')}" placeholder="${isLaptop ? "e.g. Judge's bench, Clerk, Prosecution, Defence" : isDesk ? 'e.g. Court custody suite' : isScreen ? 'e.g. Jury screen, Public gallery' : 'e.g. Bench, Witness box, Dock'}">
+            <label for="pLabel">Name</label><input type="text" id="pLabel" value="${esc(cur.label || '')}" placeholder="${isLaptop ? "e.g. Judge's bench, Clerk, Prosecution, Defence" : isDesk ? 'e.g. Court custody suite' : isScreen ? 'e.g. Jury screen, Public gallery' : isSpeaker ? 'e.g. Public gallery left, Jury box' : 'e.g. Bench, Witness box, Dock'}">
             ${isLaptop ? `<label>Who can use it</label><div class="hint">None ticked = all court staff.</div><div class="checks">${roles.map((x) => `<label><input type="checkbox" data-role="${esc(x.id)}" ${(cur.roles || []).includes(x.id) ? 'checked' : ''}> ${esc(x.label)}</label>`).join('')}</div>` : ''}
             ${kind === 'mic' ? `<label for="pRange">Carries (metres)</label><div class="hint">Empty = the room's size (${Math.round(room.radius)} m).</div><input type="number" id="pRange" min="3" value="${esc(cur.range || '')}">` : ''}
             <div id="pErr"></div><div class="btn-row"><button class="btn" id="pGo">${existing ? 'Save' : 'Place it'}</button><button class="btn secondary" id="pNo">Cancel</button></div>`);
@@ -1191,6 +1194,7 @@ VIEWS.room = async (p) => {
     $('#addLaptop').onclick = () => pointForm('laptop');
     $('#addMic').onclick = () => pointForm('mic');
     $('#addScreen').onclick = () => pointForm('screen');
+    $('#addSpeaker').onclick = () => pointForm('speaker');
     $$('[data-ptp]').forEach((b) => (b.onclick = async () => { const x = await roomsApi('teleport', { id: room.id, index: Number(b.dataset.ptp) }); if (x.ok) toast('Teleported.'); }));
     $$('[data-padj]').forEach((b) => (b.onclick = () => post('roomsAdjust', { id: room.id, index: Number(b.dataset.padj) })));
     $$('[data-pedit]').forEach((b) => (b.onclick = () => { const i = Number(b.dataset.pedit); pointForm(pts[i - 1].kind, pts[i - 1], i); }));

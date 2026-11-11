@@ -109,6 +109,17 @@ Build real courtrooms in game, then run hearings in them.
 2. **Place a laptop** on each desk: the judge's bench, clerk, prosecution and defence. Tick which roles can use each one (none ticked means all court staff). Laptops are ox_target points that open the court system. Optionally spawn a laptop prop if your MLO doesn't have one.
 3. **Place a microphone** at the bench, witness box, dock and advocates' seats. Anyone standing or sitting within `MicReach` (1.6 m) of a live microphone is heard across the whole room, using pma-voice's `overrideProximityRange`. When they step away, their voice goes back to normal. Microphones can spawn a desk microphone (`prop_table_mic_01`) for the bench, dock, witness box and advocates' tables. Aim the laser at the table top and it sits on the surface. A "Microphone live" badge shows while it's picking you up, and anyone can switch a microphone off for themselves through its ox_target option. Each microphone can have its own range; otherwise it uses the room's size.
 
+### Speakers (courtroom PA)
+
+Microphones play through the courtroom's **speakers**. Anyone at a live microphone is heard by everyone in that courtroom at a set volume, the same way pma-voice plays radio, so GTA's own distance fade doesn't apply. The judge hears the back of the room as clearly as the front. Footage on the screens comes out of the speakers too.
+
+- **Place speakers:** open the room in `/courtrooms` → **Place a speaker**. Spawn `prop_speaker_02` (`SpeakerProp`), pick speakers already in your MLO, or mark a spot. Put them where the public gallery, jury and advocates sit.
+- **Volume:** loudest next to a speaker (`SpeakerVolume`), fading over `SpeakerRange` metres down to `SpeakerMinVolume`, so it's still clearly heard anywhere in the room. A room with no speakers plays live mics at `NoSpeakerVolume` everywhere in it.
+- **Only in that room:** only people inside that courtroom (its drawn shape, or circle) hear it, and it stops as they leave.
+- **Turning it off:** `PA = false` goes back to the old behaviour, where the mic only widens your voice range and distance fade still applies.
+
+If someone at a mic is also on the radio with you, pma-voice and the PA both set their volume. The PA wins while they're live at the mic.
+
 ### Room areas: draw the shape
 
 Each courtroom has an **area**, which decides who's "in" that room for its screens, microphones and laptops. New rooms start as a circle from where you stood. For accurate rooms, open the room and use **Draw the room's shape**:

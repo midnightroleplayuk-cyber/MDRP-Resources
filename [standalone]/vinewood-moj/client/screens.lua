@@ -233,12 +233,17 @@ CreateThread(function()
                         send({ action = 'slate', room = r.label, court = r.courtLabel or Config.CourtsName })
                     end
                 end
-                -- Volume falls off with distance from the nearest screen.
+                -- Sound comes from the room's speakers if it has any, otherwise from the screens.
                 if p and (p.kind == 'file' or p.control) then
-                    local here, best = GetEntityCoords(PlayerPedId()), 1e9
-                    for _, s in ipairs(screens) do best = math.min(best, #(here - vec3(s.x, s.y, s.z))) end
-                    local falloff = math.max(4.0, r.radius or 20.0)
-                    send({ action = 'volume', v = (CR.ScreenVolume or 0.8) * math.max(0.15, 1.0 - best / falloff) })
+                    local here = GetEntityCoords(PlayerPedId())
+                    if MoJPA and #MoJPA.Speakers(r) > 0 then
+                        send({ action = 'volume', v = (CR.ScreenVolume or 0.8) * MoJPA.VolumeAt(r, here) / (CR.SpeakerVolume or 0.85) })
+                    else
+                        local best = 1e9
+                        for _, s in ipairs(screens) do best = math.min(best, #(here - vec3(s.x, s.y, s.z))) end
+                        local falloff = math.max(4.0, r.radius or 20.0)
+                        send({ action = 'volume', v = (CR.ScreenVolume or 0.8) * math.max(0.15, 1.0 - best / falloff) })
+                    end
                 end
                 Wait(500)
             else

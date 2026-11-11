@@ -19,6 +19,7 @@ local function propFor(p)
         local m = (CR.ScreenModels or {})[p.model or 1]
         return m and m.model
     end
+    if p.kind == 'speaker' then return CR.SpeakerProp or 'prop_speaker_02' end
     return p.kind == 'mic' and CR.MicProp or CR.LaptopProp
 end
 local function hasTarget() return GetResourceState('ox_target') == 'started' end
@@ -122,7 +123,7 @@ local function build()
                 end
             end
             local roomId, index = r.id, i
-            if p.kind == 'screen' then goto continue end
+            if p.kind == 'screen' or p.kind == 'speaker' then goto continue end
             local option
             if p.kind == 'laptop' then
                 option = { name = 'moj_laptop', icon = 'fas fa-laptop', label = p.label or 'Court laptop', onSelect = function() openLaptop(roomId, index) end }
@@ -168,6 +169,7 @@ end)
 
 AddEventHandler('onResourceStop', function(res)
     if res ~= GetCurrentResourceName() then return end
+    for id in pairs(overridden) do MumbleSetVolumeOverrideByServerId(id, -1.0) end
     clear()
     if activeMic and GetResourceState('pma-voice') == 'started' then exports['pma-voice']:clearProximityOverride() end
 end)
@@ -179,6 +181,7 @@ local function setMic(k, range, label)
     if k == activeMic then return end
     if GetResourceState('pma-voice') ~= 'started' then return end
     if k then
+        -- Range makes sure everyone in the room receives your voice; the PA (below) makes them hear it.
         exports['pma-voice']:overrideProximityRange(range + 0.0, true)
         SendNUIMessage({ action = 'mic', on = true, label = label })
     else
@@ -186,7 +189,86 @@ local function setMic(k, range, label)
         SendNUIMessage({ action = 'mic', on = false })
     end
     activeMic = k
+    if CR.PA ~= false then
+        local roomId = k and tonumber(tostring(k):match('^(%d+):'))
+        TriggerServerEvent('vinewood-moj:server:mic', roomId, k ~= nil)
+    end
 end
+
+---------------------------------------------------------------------------
+-- Courtroom PA: people live at a microphone are heard through the room's speakers.
+-- A volume override per talker (the way pma-voice plays radio), so GTA's own distance fade
+-- doesn't apply: the back of the room hears as well as the front.
+---------------------------------------------------------------------------
+MoJPA = {}
+local liveMics = {}       -- [roomId] = { src, ... }
+local overridden = {}     -- [serverId] = true while we're setting their volume
+
+RegisterNetEvent('vinewood-moj:client:liveMics', function(list)
+    liveMics = {}
+    for _, e in ipairs(list or {}) do liveMics[e.room] = e.srcs end
+end)
+
+local function speakersOf(r)
+    local out = {}
+    for _, p in ipairs(r.points or {}) do if p.kind == 'speaker' then out[#out + 1] = p end end
+    return out
+end
+MoJPA.Speakers = speakersOf
+
+--- Volume someone at pos hears the room's PA at: by distance to the nearest speaker, or the
+--- room-wide level if it has none. nil = not in this room.
+function MoJPA.VolumeAt(r, pos)
+    local sp = speakersOf(r)
+    if #sp == 0 then return CR.NoSpeakerVolume or 0.7 end
+    local best = math.huge
+    for _, p in ipairs(sp) do best = math.min(best, #(pos - vec3(p.x, p.y, p.z))) end
+    local top, low = CR.SpeakerVolume or 0.85, CR.SpeakerMinVolume or 0.35
+    local t = math.min(1.0, best / math.max(1.0, CR.SpeakerRange or 12.0))
+    return top - (top - low) * t
+end
+
+--- The courtroom you're in (drawn shapes first, then nearest centre).
+function MoJPA.RoomAt(pos)
+    local best, bestRank
+    for _, r in ipairs(rooms) do
+        if r.centre and r.centre.x and Zones.Contains(r, pos, Zones.IsPoly(r) and 0.5 or 3.0) then
+            local rank = Zones.Rank(r, pos)
+            if not bestRank or rank < bestRank then best, bestRank = r, rank end
+        end
+    end
+    return best
+end
+
+local function clearOverride(id)
+    MumbleSetVolumeOverrideByServerId(id, -1.0)
+    overridden[id] = nil
+end
+
+CreateThread(function()
+    Wait(3000)
+    for _, e in ipairs(lib.callback.await('vinewood-moj:server:liveMics', false) or {}) do liveMics[e.room] = e.srcs end
+    while true do
+        local active = {}
+        if CR.PA ~= false and GetResourceState('pma-voice') == 'started' then
+            local here = GetEntityCoords(PlayerPedId())
+            local r = MoJPA.RoomAt(here)
+            local me = GetPlayerServerId(PlayerId())
+            if r and liveMics[r.id] then
+                local vol = MoJPA.VolumeAt(r, here)
+                for _, id in ipairs(liveMics[r.id]) do
+                    if id ~= me then
+                        MumbleSetVolumeOverrideByServerId(id, vol + 0.0)
+                        active[id] = true
+                        overridden[id] = true
+                    end
+                end
+            end
+        end
+        for id in pairs(overridden) do if not active[id] then clearOverride(id) end end
+        Wait(next(active) and 250 or 750)
+    end
+end)
 
 CreateThread(function()
     while true do
@@ -251,7 +333,8 @@ local function place(kind, withProp, model)
     end
     local heading, lift = GetEntityHeading(PlayerPedId()), 0.0
     SendNUIMessage({ action = 'hint', text = ('Placing %s · aim at the spot · scroll to rotate · ↑/↓ raise or lower · E to place · Backspace to cancel')
-        :format(kind == 'laptop' and 'a laptop' or kind == 'custody' and 'the custody desk' or kind == 'screen' and 'a screen' or 'a microphone') })
+        :format(kind == 'laptop' and 'a laptop' or kind == 'custody' and 'the custody desk' or kind == 'screen' and 'a screen'
+            or kind == 'speaker' and 'a speaker' or 'a microphone') })
     local result
     while true do
         Wait(0)
@@ -323,7 +406,8 @@ end
 local function pick(kind)
     if placing then return nil end
     placing = true
-    local what = kind == 'screen' and 'the TV' or kind == 'laptop' and 'the laptop or computer' or kind == 'custody' and 'the custody desk computer' or 'the microphone'
+    local what = kind == 'screen' and 'the TV' or kind == 'laptop' and 'the laptop or computer' or kind == 'custody' and 'the custody desk computer'
+        or kind == 'speaker' and 'the speaker' or 'the microphone'
     local lit, result, lastHint
     while true do
         Wait(0)

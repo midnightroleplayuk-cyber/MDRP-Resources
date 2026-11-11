@@ -254,7 +254,7 @@ ADMIN.addPoint = function(_, d)
     local r = Rooms.Get(d.id)
     if not r then return { error = 'Courtroom not found.' } end
     local p = type(d.point) == 'table' and d.point or {}
-    if p.kind ~= 'laptop' and p.kind ~= 'mic' and p.kind ~= 'custody' and p.kind ~= 'screen' then return { error = 'Unknown point.' } end
+    if p.kind ~= 'laptop' and p.kind ~= 'mic' and p.kind ~= 'custody' and p.kind ~= 'screen' and p.kind ~= 'speaker' then return { error = 'Unknown point.' } end
     local x, y, z = tonumber(p.x), tonumber(p.y), tonumber(p.z)
     if not x or not y or not z then return { error = 'No position.' } end
     -- Custody desks can go anywhere in the building (the cells are rarely inside the courtroom).
@@ -287,7 +287,7 @@ ADMIN.addPoint = function(_, d)
         mapModel = mode == 'pick' and math.floor(tonumber(p.modelHash) or 0) or nil,
         target = mode == 'pick' and p.kind == 'screen' and target or nil,
         label = U.trim(p.label, 48) or (p.kind == 'laptop' and 'Court laptop' or p.kind == 'custody' and 'Court custody desk'
-            or p.kind == 'screen' and 'Screen' or 'Microphone'),
+            or p.kind == 'screen' and 'Screen' or p.kind == 'speaker' and 'Speaker' or 'Microphone'),
         model = p.kind == 'screen' and modelIndex or nil,
         geo = p.kind == 'screen' and Rooms.CleanGeo(p.geo) or nil,
         roles = p.kind == 'laptop' and cleanRoles(p.roles) or nil,
@@ -488,4 +488,49 @@ CreateThread(function()
         end
         if changed then broadcast() end
     end
+end)
+
+
+---------------------------------------------------------------------------
+-- Courtroom PA: who is live at a microphone in each room. Clients in the room play those people
+-- through the speakers (a volume override, like pma-voice radio), so distance doesn't fade them.
+---------------------------------------------------------------------------
+local live = {}   -- [roomId] = { [src] = true }
+
+local function liveList()
+    local out = {}
+    for roomId, set in pairs(live) do
+        local srcs = {}
+        for src in pairs(set) do srcs[#srcs + 1] = src end
+        if #srcs > 0 then out[#out + 1] = { room = roomId, srcs = srcs } end
+    end
+    return out
+end
+
+local function sendLive() TriggerClientEvent('vinewood-moj:client:liveMics', -1, liveList()) end
+
+local function dropLive(src)
+    local changed = false
+    for _, set in pairs(live) do
+        if set[src] then set[src] = nil changed = true end
+    end
+    return changed
+end
+
+RegisterNetEvent('vinewood-moj:server:mic', function(roomId, on)
+    local src = source
+    local changed = dropLive(src)
+    local r = on and Rooms.Get(roomId)
+    if r and Zones.Contains(r, GetEntityCoords(GetPlayerPed(src)), 3.0) then
+        live[r.id] = live[r.id] or {}
+        live[r.id][src] = true
+        changed = true
+    end
+    if changed then sendLive() end
+end)
+
+lib.callback.register('vinewood-moj:server:liveMics', function() return liveList() end)
+
+AddEventHandler('playerDropped', function()
+    if dropLive(source) then sendLive() end
 end)
