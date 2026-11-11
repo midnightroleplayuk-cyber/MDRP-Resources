@@ -1073,10 +1073,11 @@ VIEWS.room = async (p) => {
             if (isScreen && m === 'pick' && !/^[A-Za-z0-9_]+$/.test($('#pTarget', box).value.trim())) {
                 $('#pErr', box).innerHTML = '<p class="err">Enter a render target name (letters, numbers and _ only).</p>'; return;
             }
+            // Read everything from the form before closing it (closing empties the modal).
+            const model = isScreen && m === 'spawn' ? Number($('#pModel', box).value) : undefined;
+            const target = isScreen && m === 'pick' ? $('#pTarget', box).value.trim() : undefined;
             closeModal();
-            post('roomsPlace', { id: room.id, kind, mode: m, prop: m === 'spawn', ...data,
-                model: isScreen && m === 'spawn' ? Number($('#pModel', box).value) : undefined,
-                target: isScreen && m === 'pick' ? $('#pTarget', box).value.trim() : undefined });
+            post('roomsPlace', { id: room.id, kind, mode: m, prop: m === 'spawn', ...data, model, target });
         };
     };
     $('#addLaptop').onclick = () => pointForm('laptop');
