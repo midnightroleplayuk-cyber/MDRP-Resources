@@ -244,6 +244,14 @@ Config.Treatment = {
         WakeOnSuccess = true,
         WakeHealth = 120,      -- health after coming round (max 200, 100 = downed)
     },
+    -- Unconscious but breathing: talk to them, tap their shoulders, pain stimulus.
+    -- Success brings them round on scene (same as CPR: Config.WakeUp, injured until check-in).
+    Rouse = {
+        Duration = 8,
+        BaseChance = 0.3,       -- chance per attempt
+        PerAttemptBonus = 0.1,  -- added for each failed attempt, so persistence pays off
+        Cooldown = 3,
+    },
 }
 
 ---------------------------------------------------------------------------

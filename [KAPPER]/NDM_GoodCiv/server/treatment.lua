@@ -80,6 +80,40 @@ actions.cpr = {
     end,
 }
 
+---Shared checks for an unconscious-but-breathing patient.
+local function unconsciousCheck(inc)
+    if not inc.assessed then return L('assess_first') end
+    if inc.state.conscious then return L('is_conscious') end
+    if not inc.state.breathing then return L('not_breathing') end
+    if inc.state.bleeding == 'major' then return L('bleed_first') end
+end
+
+actions.rouse = {
+    duration = function() return T.Rouse.Duration end,
+    check = function(inc, src)
+        local err = unconsciousCheck(inc)
+        if err then return err end
+        local last = inc.lastRouse and inc.lastRouse[src]
+        if last and os.time() - last < T.Rouse.Cooldown then return L('busy') end
+    end,
+    apply = function(inc, src)
+        inc.lastRouse = inc.lastRouse or {}
+        inc.lastRouse[src] = os.time()
+        inc.rouseAttempts = (inc.rouseAttempts or 0) + 1
+        local chance = T.Rouse.BaseChance + T.Rouse.PerAttemptBonus * (inc.rouseAttempts - 1)
+        GoodCiv.Debug(('rouse attempt %d chance %.2f'):format(inc.rouseAttempts, chance))
+        if math.random() < chance then
+            inc.state.conscious = true
+            -- Patient gets up; the incident closes as 'resolved' once their client reports it.
+            if Bridge.WakeUp(inc.patient) then
+                toast(inc.patient, 'warning', L('cpr_woken'))
+            end
+            return 'success', L('rouse_success')
+        end
+        return 'warning', L('rouse_fail')
+    end,
+}
+
 RegisterNetEvent('goodciv:server:beginAction', function(name)
     local src = source
     local def = actions[name]
