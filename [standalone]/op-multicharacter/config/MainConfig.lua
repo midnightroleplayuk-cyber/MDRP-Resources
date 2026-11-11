@@ -293,6 +293,11 @@ Config.StarterItems = {
         },
         {
             type      = "item",
+            nameSpawn = "fishing_rod_basic",
+            quanity   = 1
+        },
+        {
+            type      = "item",
             nameSpawn = "Phone",
             quanity   = 1
         },
@@ -377,7 +382,7 @@ Config.CharacterMenu = {
 --                 optional item shop available on character creation.
 -- ─────────────────────────────────────────────────────────────────────────
 Config.Misc = {
-    DefaultCharsAmount = 2,
+    DefaultCharsAmount = 3,
     AllowCharacterDelete = false,
     -- Character creator UI: "classic" | "modern"
     creatorPreset = "modern",
