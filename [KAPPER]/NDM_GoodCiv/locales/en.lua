@@ -38,6 +38,7 @@ Locales.en = {
     is_breathing = 'The patient is breathing. CPR is not needed.',
     not_breathing = 'The patient is not breathing. Start CPR.',
     tourniquet_done = 'Tourniquet applied. Major bleeding controlled.',
+    bleeding_again = 'Your patient is bleeding heavily again! Control the bleeding.',
     cpr_success = 'You feel a pulse. The patient is breathing again.',
     cpr_fail = 'Still no pulse. Keep going.',
     arrested = 'Your patient has stopped breathing! Start CPR.',

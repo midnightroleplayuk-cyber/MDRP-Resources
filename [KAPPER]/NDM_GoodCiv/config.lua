@@ -208,6 +208,17 @@ Config.Conditions = {
     LifeThreateningOnly = true,
     -- Cardiac arrest (CPR needed) comes from the real downed state: only stage 2 / no signs
     -- of life. Last stand patients are breathing and only need bleeding control.
+    -- With osp_ambulance running, bleeding comes from osp's real wounds (below) and
+    -- MajorBleedChance is only used if osp has no data for the patient.
+    Osp = {
+        Enabled = true,
+        -- Total active osp bleeding that counts as major. osp per wound: pistol 0.1,
+        -- rifle 0.5, high calibre 0.7, shotgun 0.3, knife puncture 0.3, knife cut 0.05.
+        MajorBleedThreshold = 0.1,
+        -- Tourniquet on torso / head wounds (no limb to tie off) = direct pressure:
+        -- osp bleeding there is multiplied by this.
+        PressureFactor = 0.5,
+    },
     -- Chance (0-1) of major bleeding by the damage type that put the patient down.
     -- Damage types: bullet, explosive, melee, vehicle, fall, other
     MajorBleedChance = {

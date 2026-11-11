@@ -52,6 +52,10 @@ actions.tourniquet = {
             end
         end
         inc.state.bleeding = 'controlled'
+        -- osp: tourniquet the bleeding limbs / pressure on torso and head wounds for real.
+        if Incidents.OspBleeding(inc.patient) and Bridge.OspControlBleeding(inc.patient) then
+            inc.controlledBleed = Bridge.OspBleeding(inc.patient) or 0
+        end
         return 'success', L('tourniquet_done')
     end,
 }

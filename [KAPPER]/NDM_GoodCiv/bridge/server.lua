@@ -164,6 +164,56 @@ function Bridge.WakeUp(src, rescuer)
     return true
 end
 
+---------------------------------------------------------------------------
+-- osp_ambulance wounds: use osp's real per-body-part bleeding instead of a dice roll.
+---------------------------------------------------------------------------
+local LIMBS = { Rarm = true, Larm = true, Rleg = true, Lleg = true }
+
+local function ospBodyDamage(src)
+    if not started('osp_ambulance') then return nil end
+    local bd = Player(src).state.BodyDamage
+    if type(bd) ~= 'table' or type(bd.BodyPartDamage) ~= 'table' then return nil end
+    if type(bd.BodyPartDamage.Bleeding) ~= 'table' then return nil end
+    return bd
+end
+
+---Total active bleeding osp reports (limbs with a tourniquet don't count), or nil
+---if osp isn't running / has no data for the player.
+function Bridge.OspBleeding(src)
+    local bd = ospBodyDamage(src)
+    if not bd then return nil end
+    local tqs = bd.BodyPartDamage.appliedTourniquets or {}
+    local total = 0.0
+    for part, amount in pairs(bd.BodyPartDamage.Bleeding) do
+        if not (LIMBS[part] and tqs[part]) then total = total + (tonumber(amount) or 0) end
+    end
+    return total
+end
+
+---Control bleeding in osp: tourniquet every bleeding limb, and reduce torso / head
+---bleeding by direct pressure. Returns false if osp isn't handling wounds.
+function Bridge.OspControlBleeding(src)
+    local bd = ospBodyDamage(src)
+    if not bd then return false end
+    local bpd = bd.BodyPartDamage
+    bpd.appliedTourniquets = bpd.appliedTourniquets or {}
+    local pressure = Config.Conditions.Osp.PressureFactor or 0.5
+    for part, amount in pairs(bpd.Bleeding) do
+        amount = tonumber(amount) or 0
+        if amount > 0 then
+            if LIMBS[part] then
+                bpd.appliedTourniquets[part] = true
+            else
+                bpd.Bleeding[part] = amount * pressure
+            end
+        end
+    end
+    -- Same sync osp uses for server-side changes: state bag + push to the patient's client.
+    Player(src).state:set('BodyDamage', bd, true)
+    TriggerClientEvent('osp_ambulance:SaveDataCl', src, bd, true)
+    return true
+end
+
 ---Server ids of every online player who is an on-duty medic.
 function Bridge.GetOnDutyMedics()
     local medics = {}

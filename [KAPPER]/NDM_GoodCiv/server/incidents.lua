@@ -19,6 +19,12 @@ function Incidents.IsPatient(src) return byPatient[src] ~= nil end
 function Incidents.GetByPatient(src) return byPatient[src] and incidents[byPatient[src]] end
 function Incidents.GetResponding(src) return byResponder[src] and incidents[byResponder[src]] end
 
+---osp's active bleeding for src, or nil when osp wounds aren't in use.
+function Incidents.OspBleeding(src)
+    if not (Config.Conditions.Osp and Config.Conditions.Osp.Enabled) then return nil end
+    return Bridge.OspBleeding(src)
+end
+
 ---Roll the patient's starting condition from what their client reports.
 local function rollCondition(src)
     local report = Player(src).state['goodciv:patient'] or {}
@@ -31,8 +37,13 @@ local function rollCondition(src)
         state.conscious = false
         -- Cardiac arrest only at stage 2 (no signs of life). Last stand = breathing, can crawl.
         state.breathing = report.stage ~= 2
-        local chance = Config.Conditions.MajorBleedChance[report.damage or 'other'] or Config.Conditions.MajorBleedChance.other
-        if math.random() < chance then state.bleeding = 'major' end
+        local osp = Incidents.OspBleeding(src)
+        if osp then
+            if osp >= Config.Conditions.Osp.MajorBleedThreshold then state.bleeding = 'major' end
+        else
+            local chance = Config.Conditions.MajorBleedChance[report.damage or 'other'] or Config.Conditions.MajorBleedChance.other
+            if math.random() < chance then state.bleeding = 'major' end
+        end
     end
     return state
 end
@@ -254,6 +265,24 @@ CreateThread(function()
                     end
                     Incidents.Sync(inc)
                 end
+            end
+
+            -- Follow osp's real bleeding: new wounds start a major bleed again, and a bleed
+            -- treated through osp (by a medic or anyone else) counts as controlled.
+            local osp = Incidents.OspBleeding(inc.patient)
+            if osp then
+                local threshold = Config.Conditions.Osp.MajorBleedThreshold
+                local before = inc.state.bleeding
+                if before == 'major' and osp < threshold then
+                    inc.state.bleeding = 'controlled'
+                elseif before == 'none' and osp >= threshold
+                    or before == 'controlled' and osp >= (inc.controlledBleed or 0) + threshold then
+                    inc.state.bleeding = 'major'
+                    for r in pairs(inc.responders) do
+                        TriggerClientEvent('goodciv:client:toast', r, 'error', L('bleeding_again'))
+                    end
+                end
+                if inc.state.bleeding ~= before then Incidents.Sync(inc) end
             end
 
             if report and not report.downed and not inc.transport and not inc.handingOver then
