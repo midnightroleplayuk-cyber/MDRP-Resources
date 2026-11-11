@@ -63,8 +63,50 @@ local function toggleMic(roomId, index)
     lib.notify({ title = 'Microphone', description = muted[k] and 'Microphone off.' or 'Microphone on.', type = 'inform' })
 end
 
+local courtDesks = {}   -- custody desks that belong to a court (not a courtroom)
+
+local function openCourtDesk(courtId, index)
+    if MoJUI.IsOpen() then return end
+    local r = lib.callback.await('vinewood-moj:server:openCourtDesk', false, courtId, index)
+    if not r or r.error then
+        return lib.notify({ title = Config.CourtsName, description = r and r.error or 'The desk is not responding.', type = 'error' })
+    end
+    MoJUI.Open('custody', r.role, { device = (Config.UI and Config.UI.Device and Config.UI.Device.laptop) or 'laptop', room = r.room })
+end
+
+local function addTarget(c, option)
+    if hasTarget() then
+        zones[#zones + 1] = exports.ox_target:addSphereZone({ coords = c + vec3(0.0, 0.0, 0.15), radius = CR.TargetRadius or 0.7, debug = false, options = { option } })
+    else
+        points[#points + 1] = lib.points.new({
+            coords = c, distance = 1.5,
+            onEnter = function() lib.showTextUI('[E] ' .. option.label) end,
+            onExit = function() lib.hideTextUI() end,
+            nearby = function() if IsControlJustReleased(0, 38) then option.onSelect() end end,
+        })
+    end
+end
+
 local function build()
     clear()
+    for _, d in ipairs(courtDesks) do
+        local p = d.point
+        local c = vec3(p.x, p.y, p.z)
+        if p.prop then
+            local hash = loadModel(CR.LaptopProp)
+            if hash then
+                local e = CreateObjectNoOffset(hash, c.x, c.y, c.z, false, false, false)
+                SetEntityHeading(e, p.h or 0.0)
+                FreezeEntityPosition(e, true)
+                SetEntityInvincible(e, true)
+                SetModelAsNoLongerNeeded(hash)
+                props[#props + 1] = e
+            end
+        end
+        local courtId, index = d.courtId, d.index
+        addTarget(c, { name = 'moj_custody', icon = 'fas fa-user-lock', label = ('%s: custody desk'):format(d.court or 'Court'),
+            onSelect = function() openCourtDesk(courtId, index) end })
+    end
     for _, r in ipairs(rooms) do
         for i, p in ipairs(r.points or {}) do
             local c = vec3(p.x, p.y, p.z)
@@ -112,9 +154,15 @@ RegisterNetEvent('vinewood-moj:client:courtrooms', function(list)
     build()
 end)
 
+RegisterNetEvent('vinewood-moj:client:courtDesks', function(list)
+    courtDesks = list or {}
+    build()
+end)
+
 CreateThread(function()
     Wait(2000)
     rooms = lib.callback.await('vinewood-moj:server:courtrooms', false) or {}
+    courtDesks = lib.callback.await('vinewood-moj:server:courtDesks', false) or {}
     build()
 end)
 
@@ -351,6 +399,26 @@ RegisterNUICallback('roomsPlace', function(d, cb)
         end
         Wait(150)
         MoJUI.Open('rooms', nil, { roomId = d.id })
+    end)
+end)
+
+-- Placing a custody desk for a court (from the Courts list).
+RegisterNUICallback('deskPlace', function(d, cb)
+    cb('ok')
+    MoJUI.Suspend()
+    CreateThread(function()
+        local mode = (d.mode == 'pick' or d.mode == 'spot') and d.mode or 'spawn'
+        local at
+        if mode == 'pick' then at = pick('custody') else at = place('custody', mode == 'spawn') end
+        if at then
+            local point = { mode = mode, label = d.label }
+            for k, v in pairs(at) do point[k] = v end
+            local r = lib.callback.await('vinewood-moj:server:roomsAdmin', false, 'courtDeskAdd', { courtId = d.courtId, point = point })
+            if r and r.error then lib.notify({ title = 'Custody desk', description = r.error, type = 'error' })
+            else lib.notify({ title = 'Custody desk', description = 'Placed.', type = 'success' }) end
+        end
+        Wait(150)
+        MoJUI.Open('rooms', nil, {})
     end)
 end)
 

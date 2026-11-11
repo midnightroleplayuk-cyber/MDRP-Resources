@@ -19,6 +19,7 @@ function Rooms.Load()
     for _, r in ipairs(MySQL.query.await('SELECT * FROM vw_moj_courtrooms ORDER BY label ASC') or {}) do
         list[r.id] = decode(r)
     end
+    Rooms.loaded = true
 end
 
 function Rooms.Get(id) return list[tonumber(id) or 0] end
@@ -26,7 +27,9 @@ function Rooms.Get(id) return list[tonumber(id) or 0] end
 function Rooms.Public()
     local out = {}
     for _, r in pairs(list) do
-        out[#out + 1] = { id = r.id, label = r.label, court_id = r.court_id, centre = r.centre, radius = r.radius, points = r.points }
+        local court = U.court(r.court_id)
+        out[#out + 1] = { id = r.id, label = r.label, court_id = r.court_id, courtLabel = court and court.label or nil,
+            centre = r.centre, radius = r.radius, points = r.points }
     end
     table.sort(out, function(a, b) return a.label < b.label end)
     return out
@@ -34,6 +37,8 @@ end
 
 function Rooms.Broadcast()
     TriggerClientEvent('vinewood-moj:client:courtrooms', -1, Rooms.Public())
+    -- Listing boards show room and court names: refresh them now rather than on their next tick.
+    TriggerClientEvent('vinewood-moj:client:boardsRefresh', -1)
 end
 
 local function save(r)
@@ -63,6 +68,8 @@ function Rooms.ClearLaptop(src) laptopRoom[src], deskAt[src] = nil, nil end
 
 --- Does this court have a custody desk placed in any of its courtrooms?
 function Rooms.HasDesk(courtId)
+    local court = U.court(courtId)
+    if court and court.desks and #court.desks > 0 then return true end
     for _, r in pairs(list) do
         if r.court_id == courtId then
             for _, p in ipairs(r.points or {}) do if p.kind == 'custody' then return true end end
@@ -71,15 +78,22 @@ function Rooms.HasDesk(courtId)
     return false
 end
 
---- The custody desk this player is at: room, desk coords. Nil if they walked off.
+--- The custody desk this player is at: { court_id, label }, desk coords. Nil if they walked off.
+--- Works for court desks and for older desks placed in a courtroom.
 function Rooms.Desk(src)
     local d = deskAt[src]
     if not d then return nil end
-    local r = list[d.room]
-    if not r then return nil end
     local at = vec3(d.point.x, d.point.y, d.point.z)
     if #(GetEntityCoords(GetPlayerPed(src)) - at) > 6.0 then return nil end
-    return r, at
+    if d.court then
+        local c = U.court(d.court)
+        if not c then return nil end
+        return { court_id = c.id, label = d.label or c.label, courtLabel = c.label }, at
+    end
+    local r = list[d.room]
+    if not r then return nil end
+    local c = U.court(r.court_id)
+    return { court_id = r.court_id, label = r.label, courtLabel = c and c.label or r.label }, at
 end
 
 local function pos(src)
@@ -131,6 +145,19 @@ lib.callback.register('vinewood-moj:server:openDesk', function(src, roomId, inde
     deskAt[src] = { room = r.id, point = { x = p.x, y = p.y, z = p.z } }
     laptopRoom[src] = r.id
     return { role = a.role, room = r.label, roomId = r.id }
+end)
+
+lib.callback.register('vinewood-moj:server:openCourtDesk', function(src, courtId, index)
+    local c, p = Courts.Desk(courtId, index)
+    if not p then return { error = 'This custody desk is not set up.' } end
+    if #(GetEntityCoords(GetPlayerPed(src)) - vec3(p.x, p.y, p.z)) > 4.0 then return { error = 'You need to be at the desk.' } end
+    local a = U.Access(src)
+    local ok = false
+    for _, role in ipairs((Config.CustodyDesk or {}).Roles or {}) do if a and role == a.role then ok = true end end
+    if not ok then return { error = 'Only police, prison officers and court staff can use the custody desk.' } end
+    deskAt[src] = { court = c.id, label = ('%s · %s'):format(c.label, p.label or 'Custody suite'), point = { x = p.x, y = p.y, z = p.z } }
+    laptopRoom[src] = nil
+    return { role = a.role, room = ('%s · %s'):format(c.label, p.label or 'Custody suite') }
 end)
 
 AddEventHandler('playerDropped', function() laptopRoom[source], deskAt[source] = nil, nil end)
@@ -273,6 +300,15 @@ ADMIN.boardTeleport = function(src, d)
     return { ok = true }
 end
 
+ADMIN.courtDeskAdd = function(_, d) return Courts.AddDesk(d) end
+ADMIN.courtDeskRemove = function(_, d) return Courts.RemoveDesk(d) end
+ADMIN.courtDeskTeleport = function(src, d)
+    local _, p = Courts.Desk(d.courtId, d.index)
+    if not p then return { error = 'Desk not found.' } end
+    SetEntityCoords(GetPlayerPed(src), p.x, p.y, p.z, false, false, false, false)
+    return { ok = true }
+end
+
 ADMIN.courtCreate = function(src, d) return Courts.Create(src, d) end
 ADMIN.courtUpdate = function(src, d) return Courts.Update(src, d) end
 ADMIN.courtDelete = function(_, d) return Courts.Delete(d) end
@@ -308,14 +344,15 @@ lib.callback.register('vinewood-moj:server:roomsAdmin', function(src, action, da
             { 'Admin', ('%s (%s)'):format(GetPlayerName(src) or '?', Bridge.GetName(src) or '?') },
         }, action == 'boardRemove' and 'red' or 'blue')
     end
-    local COURT = { courtCreate = 'Court created', courtUpdate = 'Court edited', courtDelete = 'Court deleted' }
+    local COURT = { courtCreate = 'Court created', courtUpdate = 'Court edited', courtDelete = 'Court deleted',
+        courtDeskAdd = 'Custody desk placed', courtDeskRemove = 'Custody desk removed' }
     if r and r.ok and COURT[action] then
         local now = U.court(r.id or data.courtId)
         Webhook.Send('courtrooms', ('%s: %s'):format(COURT[action], (now and now.label) or beforeCourtLabel or data.label or ''), nil, {
             { 'Was', action == 'courtUpdate' and beforeCourtLabel ~= (now and now.label) and beforeCourtLabel or nil },
             { 'Type', now and Courts.Kinds[now.kind] }, { 'Waypoint', data.here and 'Set to the admin\'s position' or nil },
             { 'Admin', ('%s (%s)'):format(GetPlayerName(src) or '?', Bridge.GetName(src) or '?') },
-        }, action == 'courtDelete' and 'red' or 'blue')
+        }, (action == 'courtDelete' or action == 'courtDeskRemove') and 'red' or 'blue')
     end
     if r and r.ok and WHAT[action] then
         local room = Rooms.Get(r.id or data.id)

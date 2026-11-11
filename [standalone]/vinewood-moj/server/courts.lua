@@ -28,8 +28,13 @@ function Courts.Load()
     for _, r in ipairs(rows) do
         Config.Courts[#Config.Courts + 1] = {
             id = r.id, label = r.label, kind = r.kind, coords = toVec(U.decode(r.coords)), civilDefault = U.flag(r.civil_default),
+            desks = U.decode(r.desks),
         }
     end
+    -- Court names appear on courtroom screens, listing boards and custody desk labels: push the change
+    -- to everyone (once the rooms have loaded, so nobody is sent an empty list at start-up).
+    if Rooms and Rooms.loaded then Rooms.Broadcast() end
+    if Courts.BroadcastDesks then Courts.BroadcastDesks() end
 end
 
 --- The County Court civil claims go to unless the person issuing picks another.
@@ -47,11 +52,14 @@ function Courts.Public()
     local rooms, desks = {}, {}
     for _, r in ipairs(Rooms.Public()) do
         rooms[r.court_id] = (rooms[r.court_id] or 0) + 1
+        -- Desks placed in a courtroom before desks moved to the court still count.
         for _, p in ipairs(r.points or {}) do if p.kind == 'custody' then desks[r.court_id] = (desks[r.court_id] or 0) + 1 end end
     end
+    for _, c in ipairs(Config.Courts) do desks[c.id] = (desks[c.id] or 0) + #(c.desks or {}) end
     for _, c in ipairs(Config.Courts) do
         out[#out + 1] = { id = c.id, label = c.label, kind = c.kind, kindLabel = Courts.Kinds[c.kind] or c.kind,
-            hasCoords = c.coords ~= nil, civilDefault = c.civilDefault, rooms = rooms[c.id] or 0, desks = desks[c.id] or 0 }
+            hasCoords = c.coords ~= nil, civilDefault = c.civilDefault, rooms = rooms[c.id] or 0, desks = desks[c.id] or 0,
+            deskList = c.desks or {} }
     end
     return out
 end
@@ -130,7 +138,63 @@ function Courts.Delete(d)
     return { ok = true }
 end
 
+---------------------------------------------------------------------------
+-- Custody desks belong to the court (the building's custody suite), not a courtroom.
+---------------------------------------------------------------------------
+--- Every court desk, for clients to build their ox_target points: { courtId, court, index, label, point }
+function Courts.Desks()
+    local out = {}
+    for _, c in ipairs(Config.Courts) do
+        for i, d in ipairs(c.desks or {}) do
+            out[#out + 1] = { courtId = c.id, court = c.label, index = i, label = d.label, point = d }
+        end
+    end
+    return out
+end
+
+function Courts.BroadcastDesks() TriggerClientEvent('vinewood-moj:client:courtDesks', -1, Courts.Desks()) end
+lib.callback.register('vinewood-moj:server:courtDesks', function() return Courts.Desks() end)
+
+local function saveDesks(c)
+    MySQL.update.await('UPDATE vw_moj_courts SET desks = ?, updated_at = ? WHERE id = ?', { U.encode(c.desks or {}), U.now(), c.id })
+    Courts.Load()
+    Courts.BroadcastDesks()
+end
+
+function Courts.AddDesk(d)
+    local c = U.court(d.courtId)
+    if not c then return { error = 'Court not found.' } end
+    local p = type(d.point) == 'table' and d.point or {}
+    local x, y, z = tonumber(p.x), tonumber(p.y), tonumber(p.z)
+    if not x then return { error = 'No position.' } end
+    local mode = (p.mode == 'pick' or p.mode == 'spot') and p.mode or 'spawn'
+    c.desks = c.desks or {}
+    if #c.desks >= 10 then return { error = 'A court can have up to 10 custody desks.' } end
+    c.desks[#c.desks + 1] = {
+        x = x, y = y, z = z, h = tonumber(p.h) or 0.0, mode = mode, prop = mode == 'spawn',
+        mapModel = mode == 'pick' and math.floor(tonumber(p.modelHash) or 0) or nil,
+        label = U.trim(p.label, 48) or 'Court custody suite',
+    }
+    saveDesks(c)
+    return { ok = true }
+end
+
+function Courts.RemoveDesk(d)
+    local c = U.court(d.courtId)
+    local i = tonumber(d.index)
+    if not c or not i or not (c.desks or {})[i] then return { error = 'Desk not found.' } end
+    table.remove(c.desks, i)
+    saveDesks(c)
+    return { ok = true }
+end
+
+function Courts.Desk(courtId, index)
+    local c = U.court(courtId)
+    return c, c and (c.desks or {})[tonumber(index) or 0]
+end
+
 CreateThread(function()
     U.WaitReady()
     Courts.Load()
+    Courts.BroadcastDesks()
 end)

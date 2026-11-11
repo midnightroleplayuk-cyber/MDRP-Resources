@@ -937,10 +937,18 @@ VIEWS.rooms = async (p = {}) => {
         <table><tr><th>Court</th><th>Type</th><th class="num">Courtrooms</th><th>Custody desk</th><th>Waypoint</th><th></th></tr>
             ${(r.courts || []).map((c) => `<tr><td><strong>${esc(c.label)}</strong>${c.civilDefault ? ' ' + tag('Civil default', 'green') : ''}<div class="muted small">${esc(c.id)}</div></td>
             <td>${tag(c.kindLabel || c.kind, KIND_TAG[c.kind] || '')}</td><td class="num">${c.rooms}</td>
-            <td>${c.desks ? tag(c.desks === 1 ? 'Yes' : c.desks + ' desks', 'green') : c.kind === 'county' ? '<span class="muted">Not needed</span>' : '<span class="muted">None: open a courtroom → Place a custody desk</span>'}</td>
+            <td>${c.desks ? tag(c.desks === 1 ? '1 desk' : c.desks + ' desks', 'green') : c.kind === 'county' ? '<span class="muted">Not needed</span>' : '<span class="muted">None</span>'}
+                ${c.kind !== 'county' ? ` <button class="link small" data-cdesk="${esc(c.id)}">Place a desk</button>` : ''}</td>
             <td>${c.hasCoords ? 'Set' : c.rooms ? '<span class="muted">Uses its courtroom</span>' : '<span class="muted">Not set</span>'}</td>
             <td style="white-space:nowrap;text-align:right"><button class="btn secondary small" data-cedit="${esc(c.id)}">Edit</button> <button class="btn warning small" data-cdel="${esc(c.id)}">Delete</button></td></tr>`).join('')}</table>
         <div class="btn-row" style="margin-bottom:8px"><button class="btn secondary" id="cNew">New court</button></div>
+        ${(r.courts || []).some((c) => (c.deskList || []).length) ? `<h3 style="margin-top:18px">Custody desks</h3>
+            <p class="lead" style="margin-bottom:8px">One per court building's custody suite (or more for a big building). Defendants are booked in here and the officer picks their courtroom.</p>
+            <table><tr><th>Court</th><th>Desk</th><th>How</th><th></th></tr>${(r.courts || []).flatMap((c) => (c.deskList || []).map((d, i) => `<tr>
+                <td>${esc(c.label)}</td><td><strong>${esc(d.label || 'Custody suite')}</strong></td>
+                <td>${d.mode === 'pick' ? tag('Map object', 'blue') : d.prop ? tag('Spawned', 'green') : '<span class="muted small">Marked spot</span>'}</td>
+                <td style="white-space:nowrap;text-align:right"><button class="btn secondary small" data-dtp="${esc(c.id)}:${i + 1}">Go to</button>
+                    <button class="btn warning small" data-drm="${esc(c.id)}:${i + 1}">Remove</button></td></tr>`)).join('')}</table>` : ''}
         <div class="head" style="margin-top:28px;margin-bottom:10px"><h2 style="margin:0">Courtrooms</h2><div class="actions"><button class="btn" id="rNew">New courtroom here</button></div></div>
         <p class="lead">Stand in the middle of the room in game and create it. Then place laptops on the desks and microphones by the bench, witness box, dock and advocates' seats.</p>
         ${!r.voice ? '<div class="banner red"><strong>pma-voice is not running</strong>Microphones need pma-voice to carry voices across the room.</div>' : ''}
@@ -1020,6 +1028,32 @@ VIEWS.rooms = async (p = {}) => {
             <label><input type="checkbox" id="cCivil" ${c && c.civilDefault ? 'checked' : ''}> Default court for new civil claims (County Courts only)</label></div>`);
     };
     $('#cNew').onclick = () => courtForm(null);
+    $$('[data-cdesk]').forEach((b) => (b.onclick = () => {
+        const c = (r.courts || []).find((x) => x.id === b.dataset.cdesk);
+        const box = openModal(`<h2>Custody desk for ${esc(c.label)}</h2>
+            <p class="lead">Put it in the building's custody suite or cells. It can be anywhere in the building. Defendants who must be produced, and those in serious cases, are booked in here, and the officer chooses which courtroom they go to.</p>
+            <label for="dLabel">Name</label><input type="text" id="dLabel" placeholder="e.g. Custody suite, Cells (lower ground)">
+            <label>How to place it</label><div class="checks">
+                <label><input type="radio" name="dMode" value="pick" checked> <strong>Use a computer already there</strong> (aim at it, E to choose)</label>
+                <label><input type="radio" name="dMode" value="spawn"> <strong>Spawn a laptop prop</strong></label>
+                <label><input type="radio" name="dMode" value="spot"> <strong>Just mark the spot</strong></label></div>
+            <div class="btn-row"><button class="btn" id="dGo">Place it</button><button class="btn secondary" id="dNo">Cancel</button></div>`);
+        $('#dNo', box).onclick = closeModal;
+        $('#dGo', box).onclick = () => {
+            const label = $('#dLabel', box).value.trim();
+            const mode = ($('input[name=dMode]:checked', box) || {}).value || 'pick';
+            closeModal();
+            post('deskPlace', { courtId: c.id, label, mode });
+        };
+    }));
+    $$('[data-dtp]').forEach((b) => (b.onclick = async () => {
+        const [courtId, index] = b.dataset.dtp.split(':');
+        const x = await roomsApi('courtDeskTeleport', { courtId, index: Number(index) }); if (x.ok) toast('Teleported.');
+    }));
+    $$('[data-drm]').forEach((b) => (b.onclick = () => confirmModal('Remove this custody desk?', async () => {
+        const [courtId, index] = b.dataset.drm.split(':');
+        const x = await roomsApi('courtDeskRemove', { courtId, index: Number(index) }); if (x.ok) VIEWS.rooms();
+    }, 'Remove', true)));
     $$('[data-cedit]').forEach((b) => (b.onclick = () => courtForm((r.courts || []).find((c) => c.id === b.dataset.cedit))));
     $$('[data-cdel]').forEach((b) => (b.onclick = () => {
         const c = (r.courts || []).find((x) => x.id === b.dataset.cdel);
@@ -1054,7 +1088,6 @@ VIEWS.room = async (p) => {
         <div class="btn-row" style="margin:0 0 18px">
             <button class="btn" id="addLaptop"><span class="point-kind">${ICON.laptop} Place a laptop</span></button>
             <button class="btn" id="addMic"><span class="point-kind">${ICON.mic} Place a microphone</span></button>
-            <button class="btn" id="addDesk"><span class="point-kind">${ICON.custody} Place a custody desk</span></button>
             <button class="btn" id="addScreen"><span class="point-kind">${ICON.screen} Place a screen</span></button>
         </div>
         <p class="lead">Placing closes this screen. Pick something already in your MLO by aiming at it (it's outlined) and pressing <strong>E</strong>, or spawn a prop: aim, scroll to turn, <strong>↑/↓</strong> to raise or lower, <strong>E</strong> to place. <strong>Backspace</strong> cancels. Anyone within ${esc(String(r.micReach || 1.6))} m of a live microphone is heard across the room.</p>
@@ -1138,7 +1171,6 @@ VIEWS.room = async (p) => {
     };
     $('#addLaptop').onclick = () => pointForm('laptop');
     $('#addMic').onclick = () => pointForm('mic');
-    $('#addDesk').onclick = () => pointForm('custody');
     $('#addScreen').onclick = () => pointForm('screen');
     $$('[data-ptp]').forEach((b) => (b.onclick = async () => { const x = await roomsApi('teleport', { id: room.id, index: Number(b.dataset.ptp) }); if (x.ok) toast('Teleported.'); }));
     $$('[data-padj]').forEach((b) => (b.onclick = () => post('roomsAdjust', { id: room.id, index: Number(b.dataset.padj) })));
@@ -1155,15 +1187,16 @@ VIEWS.custody = async () => {
     if (r.error) return;
     drawShell();
     const pending = r.results.filter((x) => !x.booked_at);
-    main.innerHTML = `<div class="head"><div><span class="caption">${esc(r.room)}</span><h1>Court custody</h1></div>
+    main.innerHTML = `<div class="head"><div><span class="caption">${esc(r.room)}</span><h1>Court custody${r.court ? `: ${esc(r.court)}` : ''}</h1></div>
         <div class="actions"><button class="btn secondary small" id="cuRef">Refresh</button></div></div>
         <p class="lead">Defendants in custody, and in serious cases, must be booked in here before their hearing can go ahead. They need to be with you at the desk (within ${Math.round(r.range)} m).</p>
         <div class="stats" style="max-width:520px"><div class="stat ${pending.length ? 'red' : 'green'}"><div class="v">${pending.length}</div><div class="t">To book in</div></div>
             <div class="stat green"><div class="v">${r.results.length - pending.length}</div><div class="t">In court custody</div></div></div>
-        ${r.results.length ? `<table><tr><th>Time</th><th>Defendant</th><th>Why</th><th>Where they are</th><th>Status</th><th></th></tr>${r.results.map((x) => `<tr>
+        ${r.results.length ? `<table><tr><th>Time</th><th>Defendant</th><th>Why</th><th>Courtroom</th><th>Where they are</th><th>Status</th><th></th></tr>${r.results.map((x) => `<tr>
             <td><strong>${fmtTime(x.at)}</strong><br><span class="muted small">${esc(hType(x.type))}</span></td>
             <td><strong>${esc(x.name)}</strong><br><span class="muted small">${esc(x.ref)}</span><div class="small">${chargeList(x.charges)}</div></td>
             <td>${tag(x.need === 'custody' ? 'Produce from custody' : 'Surrender to court', x.need === 'custody' ? 'red' : 'amber')}<br><span class="muted small">${esc(x.custody || '')}</span></td>
+            <td>${x.room_id ? esc(((r.rooms || []).find((y) => y.id === x.room_id) || {}).label || '') : '<span class="muted">Not chosen</span>'}</td>
             <td>${!x.online ? '<span class="muted">Not in the city</span>' : x.distance <= r.range ? tag('At the desk', 'green') : `${x.distance} m away`}</td>
             <td>${x.booked_at ? `${tag('Booked in', 'green')}<div class="muted small">${fmtTime(x.booked_at)} · ${esc(x.booked_by || '')}</div>${x.notes ? `<div class="small">${esc(x.notes)}</div>` : ''}` : tag('Not booked in', 'grey')}</td>
             <td>${!x.booked_at ? `<button class="btn small" data-book="${x.id}" ${x.online && x.distance <= r.range ? '' : 'disabled'}>Book in</button>` : ''}</td></tr>`).join('')}</table>`
@@ -1171,10 +1204,13 @@ VIEWS.custody = async () => {
     $('#cuRef').onclick = () => VIEWS.custody();
     $$('[data-book]').forEach((b) => (b.onclick = () => {
         const x = r.results.find((y) => y.id === Number(b.dataset.book));
-        formModal(`Book in ${x.name}`, [
-            { id: 'notes', label: 'Notes', type: 'textarea', hint: 'Escort, risk, property held, medication. Seen by the judge.' },
-        ], 'Book in', async (v) => {
-            const res = await api('bookIn', { id: x.id, notes: v.notes }, true);
+        const fields = [];
+        if ((r.rooms || []).length) fields.push({ id: 'roomId', label: 'Courtroom', type: 'select', value: x.room_id || '',
+            hint: 'Where they will be heard. Shown on the listing boards and told to the judge.',
+            options: (x.room_id ? [] : [{ value: '', label: 'Choose a courtroom' }]).concat(r.rooms.map((y) => ({ value: y.id, label: y.label }))) });
+        fields.push({ id: 'notes', label: 'Notes', type: 'textarea', hint: 'Escort, risk, property held, medication. Seen by the judge.' });
+        formModal(`Book in ${x.name}`, fields, 'Book in', async (v) => {
+            const res = await api('bookIn', { id: x.id, notes: v.notes, roomId: v.roomId ? Number(v.roomId) : null }, true);
             if (res.ok) { toast(`${x.name} booked in. The judge has been told.`); VIEWS.custody(); }
             return res;
         }, `<p class="lead">${esc(x.ref)} · ${esc(hType(x.type))} at ${fmtTime(x.at)}</p>`);

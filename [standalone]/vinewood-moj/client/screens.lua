@@ -156,9 +156,12 @@ local function roomHere()
     end
 end
 
-local function stateKey(roomId)
-    local p = playing[roomId] or playing[tostring(roomId)]
-    return p and (roomId .. ':' .. p.startedAt .. ':' .. p.src) or (roomId .. ':slate'), p
+--- Changes whenever the screen needs redrawing: something new playing, or (on the slate)
+--- the room or court being renamed.
+local function stateKey(r)
+    local p = playing[r.id] or playing[tostring(r.id)]
+    if p then return r.id .. ':' .. p.startedAt .. ':' .. p.src, p end
+    return ('%s:slate:%s:%s'):format(r.id, r.label or '', r.courtLabel or ''), nil
 end
 
 RegisterNetEvent('vinewood-moj:client:screens', function(list) playing = list or {} end)
@@ -179,14 +182,14 @@ CreateThread(function()
                     curRoom, curKey = r.id, nil
                     releaseTargets()
                 end
-                local k, p = stateKey(r.id)
+                local k, p = stateKey(r)
                 if k ~= curKey then
                     curKey = k
                     if p then
                         send({ action = 'play', kind = p.kind, src = p.src, label = p.label, control = p.control, fallback = p.fallback,
                             offset = p.offset or 0, elapsed = math.max(0, GetCloudTimeAsInt() - p.startedAt) })
                     else
-                        send({ action = 'slate', room = r.label, court = Config.CourtsName })
+                        send({ action = 'slate', room = r.label, court = r.courtLabel or Config.CourtsName })
                     end
                 end
                 -- Volume falls off with distance from the nearest screen.

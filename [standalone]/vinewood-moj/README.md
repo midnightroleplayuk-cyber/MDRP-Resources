@@ -221,7 +221,7 @@ Businesses in civil cases are always shown by their full name, whatever the boar
 
 Defendants brought in by police, held on remand, or facing serious charges are booked in at a custody desk before their hearing.
 
-**Setup:** in `/courtrooms`, open any courtroom of that court and choose **Place a custody desk**. The desk can be **anywhere in the building**, usually the cells or custody suite; it doesn't have to be inside the courtroom. The Courts list shows which courts have a desk. A court only enforces booking in once it has one, so nothing changes until you place it. Staff working at a desk aren't blocked by `CourtRolesNeedLaptop`.
+**Setup:** custody desks belong to the **court**, not a courtroom. In **`/courtrooms` → Courts**, use **Place a desk** on the court. Put it in the building's custody suite or cells; it can be anywhere. A big building can have more than one. The **Custody desks** list under the courts shows them all, with **Go to** and **Remove**. A court only enforces booking in once it has a desk, so nothing changes until you place one. Staff at a desk aren't blocked by `CourtRolesNeedLaptop`. (Desks placed inside a courtroom by an earlier version still work, and count as that court's desks.)
 
 **Who has to be booked in** (`Config.CustodyDesk`):
 
@@ -231,7 +231,9 @@ Defendants brought in by police, held on remand, or facing serious charges are b
 | Serious case on bail: Crown Court, or any indictable-only charge (`Serious`) | Must **surrender to the custody of the court** at the desk. |
 | Anyone else | No change: they just attend. |
 
-**Booking in:** police, prison officers or court clerks (`Roles`) use the desk through ox_target. It opens on the laptop screen with today's list for that court, showing who needs booking in, why, and whether they're at the desk. The defendant must be within `BookInRange` (12 m). Booking in records the time, who did it and notes (escort, risk, property), and tells the judge.
+**Booking in:** police, prison officers or clerks (`Roles`) use the desk through ox_target. It opens on the laptop screen with today's list for that court: who needs booking in, why, their courtroom, and whether they're at the desk. The defendant must be within `BookInRange` (12 m).
+
+When booking someone in, the officer **chooses which courtroom they're going to**. It's pre-filled if the hearing already has one, and it's required when the court has courtrooms. Booking in records the time, the officer, the courtroom and notes (escort, risk, property). The courtroom is set on the hearing, so it shows on the listing boards. The judge is told which courtroom, and the defendant is told where they'll be taken.
 
 **Until they're booked in:**
 

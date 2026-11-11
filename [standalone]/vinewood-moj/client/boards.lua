@@ -54,6 +54,11 @@ local function start(b)
     live[b.id] = { dui = dui, txd = txd, tex = tex, nextFeed = 0 }
 end
 
+-- A room or court was renamed: fetch fresh lists for the boards in view straight away.
+RegisterNetEvent('vinewood-moj:client:boardsRefresh', function()
+    for _, l in pairs(live) do l.nextFeed = 0 end
+end)
+
 RegisterNetEvent('vinewood-moj:client:boards', function(list)
     boards = list or {}
     for id in pairs(live) do stop(id) end

@@ -320,11 +320,16 @@ H.custodyBoard = function(src, a)
                 id = h.id, case_id = h.case_id, ref = h.ref, name = h.subject_name, type = h.type, at = h.scheduled_at, status = h.status,
                 need = need, needLabel = Cases.ProductionLabels[need], custody = Cases.Custody[h.custody_status] or h.custody_status,
                 booked_at = h.booked_at, booked_by = h.booked_by, notes = h.booking_notes, charges = U.decode(h.charges),
-                online = s ~= nil, distance = dist and math.floor(dist + 0.5) or nil,
+                online = s ~= nil, distance = dist and math.floor(dist + 0.5) or nil, room_id = h.room_id,
             }
         end
     end
-    return { room = room.label, results = out, range = (Config.CustodyDesk or {}).BookInRange or 12.0, serverTime = U.now() }
+    -- The courtrooms of this court, for choosing where each defendant goes.
+    local rooms = {}
+    for _, r in ipairs(Rooms.Public()) do
+        if r.court_id == room.court_id then rooms[#rooms + 1] = { id = r.id, label = r.label } end
+    end
+    return { room = room.label, court = room.courtLabel, rooms = rooms, results = out, range = (Config.CustodyDesk or {}).BookInRange or 12.0, serverTime = U.now() }
 end
 
 H.bookIn = function(src, a, d)
@@ -339,16 +344,25 @@ H.bookIn = function(src, a, d)
     local range = (Config.CustodyDesk or {}).BookInRange or 12.0
     need(#(GetEntityCoords(GetPlayerPed(s)) - at) <= range, ('The defendant must be at the custody desk (within %d m).'):format(math.floor(range)))
     local notes = U.trim(d.notes, 600)
-    MySQL.update.await('UPDATE vw_moj_hearings SET booked_at = ?, booked_by = ?, booking_notes = ?, updated_at = ? WHERE id = ?',
-        { U.now(), U.By(a), notes, U.now(), h.id })
-    U.Log(c.id, U.By(a), ('Booked in at the %s custody desk.%s'):format(room.label, notes and (' ' .. notes) or ''))
+    -- Which courtroom they'll be heard in: chosen at the desk (must be a room of this court).
+    local courtroom = d.roomId and Rooms.Get(d.roomId)
+    if courtroom and courtroom.court_id ~= room.court_id then courtroom = nil end
+    if not courtroom and h.room_id then courtroom = Rooms.Get(h.room_id) end
+    local roomCount = 0
+    for _, r in ipairs(Rooms.Public()) do if r.court_id == room.court_id then roomCount = roomCount + 1 end end
+    need(courtroom or roomCount == 0, 'Choose which courtroom they are going to.')
+    MySQL.update.await('UPDATE vw_moj_hearings SET booked_at = ?, booked_by = ?, booking_notes = ?, room_id = ?, updated_at = ? WHERE id = ?',
+        { U.now(), U.By(a), notes, courtroom and courtroom.id or h.room_id, U.now(), h.id })
+    U.Log(c.id, U.By(a), ('Booked in at the %s custody desk%s.%s'):format(room.label, courtroom and (' for ' .. courtroom.label) or '', notes and (' ' .. notes) or ''))
     Webhook.Send('custody', ('Booked in: %s'):format(c.subject_name or c.cid), notes, {
         { 'Case', c.ref }, { 'Hearing', ('%s at %s'):format(Cases.HearingTypes[h.type] or h.type, U.fmtDate(h.scheduled_at)) },
-        { 'Why', Cases.ProductionLabels[Cases.NeedsProduction(c) or ''] }, { 'Desk', room.label }, { 'Booked in by', U.By(a) },
+        { 'Why', Cases.ProductionLabels[Cases.NeedsProduction(c) or ''] }, { 'Desk', room.label }, { 'Courtroom', courtroom and courtroom.label },
+        { 'Booked in by', U.By(a) },
     }, 'amber')
     if c.custody_status == 'at_large' then Cases.Save(c, { custody_status = 'police_custody' }) end
-    Bridge.Notify(s, ('You have been booked into the custody of the court (%s). Wait to be called.'):format(room.label), 'inform')
-    U.NotifyRole('judge', ('%s (%s) has been booked in at the %s custody desk.'):format(c.subject_name or '', c.ref or '', room.label))
+    Bridge.Notify(s, courtroom and ('You have been booked into the custody of the court. You will be taken to %s when your case is called.'):format(courtroom.label)
+        or 'You have been booked into the custody of the court. Wait to be called.', 'inform')
+    U.NotifyRole('judge', ('%s (%s) has been booked in%s.'):format(c.subject_name or '', c.ref or '', courtroom and (' for ' .. courtroom.label) or ''))
     return { ok = true }
 end
 
