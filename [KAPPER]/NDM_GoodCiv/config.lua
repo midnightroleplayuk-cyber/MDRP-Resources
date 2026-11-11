@@ -229,7 +229,7 @@ Config.Treatment = {
     Assess = { Duration = 3 },
     Tourniquet = {
         Duration = 6,
-        Item = '',   -- nil = no item needed
+        Item = nil,   -- nil or '' = no item needed
         ConsumeItem = true,
     },
     CPR = {

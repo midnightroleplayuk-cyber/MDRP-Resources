@@ -2,6 +2,8 @@
 -- then asks to complete. The server owns the patient state and validates both steps.
 
 local T = Config.Treatment
+-- Item = '' means no item needed, same as nil.
+if T.Tourniquet.Item == '' then T.Tourniquet.Item = nil end
 
 local function pedCoords(src)
     local ped = GetPlayerPed(src)
