@@ -305,7 +305,7 @@ Config.StarterItems = {
             type      = "money", -- money, bank
             nameSpawn = "",      -- leave blank
             quanity   = 5000
-        }
+        },
     }
 }
 
@@ -382,7 +382,7 @@ Config.CharacterMenu = {
 --                 optional item shop available on character creation.
 -- ─────────────────────────────────────────────────────────────────────────
 Config.Misc = {
-    DefaultCharsAmount = 3,
+    DefaultCharsAmount = 2,
     AllowCharacterDelete = false,
     -- Character creator UI: "classic" | "modern"
     creatorPreset = "modern",
