@@ -176,7 +176,9 @@ Every screen in the room shows the same thing. Each showing of a saved exhibit i
 - **R** to reset
 - **E** to save
 
-To re-fit a screen later, use **Adjust picture** on it in the editor.
+To re-fit a screen later, use **Adjust picture** on it in the editor. Stand in front of the TV when you fit it: the picture always starts on the side you're standing on. A yellow outline shows where the picture is while you fit it.
+
+**TV showing plain blue (or black)?** That's the TV model's own screen, which means the picture isn't on top of it, usually because it's on the wrong side of the TV. Stand in front of the TV, use **Adjust picture**, and press **E**. Type **`/mojscreens`** to outline every screen and board around you in yellow and print each one's state to the F8 console: whether it's fitted, which side the picture is on, and whether you're in front of it or behind it.
 
 **Each TV is independent.** The picture is drawn over the TVs you placed or picked and nothing else, so the same TV model can be used in as many courtrooms and courts as you like, each showing its own exhibit. (`ScreenRender = 'rendertarget'` switches back to the model's own screen texture. GTA ties that to the model, so every TV of that model in view shows the same thing. Only use it for a model that isn't used anywhere else.)
 

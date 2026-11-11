@@ -100,13 +100,34 @@ local function drawPanel(s, g, txd, tex)
     poly(tr, br, bl, 1, 0, 1, 1, 0, 1, txd, tex)
 end
 
-local function geoOf(s)
+--- Is a point in front of the TV (on its +forward side)?
+local function inFront(s, pos)
+    local hr = math.rad(s.h or 0.0)
+    local f = vec3(-math.sin(hr), math.cos(hr), 0.0)
+    return ((pos.x - s.x) * f.x + (pos.y - s.y) * f.y) >= 0
+end
+
+--- Screens that have never been fitted: put the picture on the side facing `towards`
+--- (the room's centre, or the viewer), since TV models don't agree on which way they face.
+local function geoOf(s, towards)
     if s.geo and s.geo.w then return s.geo end
     local hash = modelHash(s)
     if not hash then return nil end
-    s.geo = defaultGeo(hash, false)  -- older screens with no saved fit: use the guess
+    local flip = towards and not inFront(s, towards) or false
+    s.geo = defaultGeo(hash, flip)
+    s.geoGuessed = true
     return s.geo
 end
+
+local function outline(s, g, r, gg, b)
+    local tl, tr, bl, br = corners(s, g)
+    DrawLine(tl.x, tl.y, tl.z, tr.x, tr.y, tr.z, r, gg, b, 255)
+    DrawLine(tr.x, tr.y, tr.z, br.x, br.y, br.z, r, gg, b, 255)
+    DrawLine(br.x, br.y, br.z, bl.x, bl.y, bl.z, r, gg, b, 255)
+    DrawLine(bl.x, bl.y, bl.z, tl.x, tl.y, tl.z, r, gg, b, 255)
+end
+
+local debugOn = false
 
 ---------------------------------------------------------------------------
 -- Render-target mode (model-wide)
@@ -217,8 +238,11 @@ CreateThread(function()
             if r then
                 if OVERLAY then
                     for _, s in ipairs(screens) do
-                        local g = geoOf(s)
-                        if g then drawPanel(s, g) end
+                        local g = geoOf(s, r.centre and r.centre.x and vec3(r.centre.x, r.centre.y, r.centre.z) or GetEntityCoords(PlayerPedId()))
+                        if g then
+                            drawPanel(s, g)
+                            if debugOn then outline(s, g, 255, 221, 0) end
+                        end
                     end
                 else
                     local done = {}
@@ -273,8 +297,11 @@ function MoJScreens.Adjust(s, spawnModel, roomLabel, force)
             SetEntityCollision(prop, false, false)
         end
     end
-    local g = s.geo and s.geo.w and { w = s.geo.w, h = s.geo.h, up = s.geo.up, side = s.geo.side, fwd = s.geo.fwd, flip = s.geo.flip }
-        or defaultGeo(hash or 0, false)
+    -- Start the picture on the side of the TV you're standing on.
+    local mySide = not inFront(s, GetEntityCoords(PlayerPedId()))
+    local g = s.geo and s.geo.w and not s.geoGuessed and { w = s.geo.w, h = s.geo.h, up = s.geo.up, side = s.geo.side, fwd = s.geo.fwd, flip = s.geo.flip }
+    -- A saved fit on the far side from you (inside the wall): start again on your side.
+    if not g or (g.flip == true) ~= mySide then g = defaultGeo(hash or 0, mySide) end
     SendNUIMessage({ action = 'hint', text = '←/→ width · ↑/↓ height · hold Shift: move · scroll: in/out · F: other side · R: reset · E: save · Backspace: cancel' })
     local result
     while true do
@@ -298,6 +325,7 @@ function MoJScreens.Adjust(s, spawnModel, roomLabel, force)
         if IsDisabledControlJustPressed(0, 23) then g = defaultGeo(hash or 0, not g.flip) end
         if IsDisabledControlJustPressed(0, 45) then g = defaultGeo(hash or 0, g.flip) end
         if TXD then drawPanel(s, g) end
+        outline(s, g, 255, 221, 0)   -- always visible while fitting, even if the picture isn't
         if IsControlJustReleased(0, 38) then result = g break end
         if IsControlJustReleased(0, 177) or IsControlJustReleased(0, 200) then break end
     end
@@ -315,6 +343,27 @@ function MoJScreens.Overlay() return OVERLAY end
 -- Shared with client/boards.lua: listing boards are always drawn as panels.
 MoJScreens.DrawPanel = drawPanel
 MoJScreens.GeoOf = geoOf
+MoJScreens.Outline = outline
+MoJScreens.Debug = function() return debugOn end
+
+-- /mojscreens: outline every screen around you and print what each one is doing (F8 console).
+RegisterCommand('mojscreens', function()
+    debugOn = not debugOn
+    local here = GetEntityCoords(PlayerPedId())
+    local r, screens = roomHere()
+    print(('[vinewood-moj] screen debug %s. Mode: %s. In a courtroom with screens: %s.'):format(debugOn and 'ON' or 'OFF',
+        OVERLAY and 'overlay' or 'rendertarget', r and ('yes (' .. r.label .. ')') or 'no'))
+    if r then
+        print(('  browser: %s, texture: %s'):format(dui and (IsDuiAvailable(dui) and 'ready' or 'loading') or 'none', TXD or 'none'))
+        for i, s in ipairs(screens) do
+            local g = geoOf(s, vec3(r.centre.x, r.centre.y, r.centre.z))
+            print(('  screen %d "%s": %s, %s, picture %s side, you are %s it, %.1f m away'):format(i, s.label or '', s.mode or '?',
+                s.geoGuessed and 'NOT fitted (guess)' or 'fitted', g and (g.flip and 'back' or 'front') or '?',
+                inFront(s, here) == not (g and g.flip) and 'in front of' or 'BEHIND', #(here - vec3(s.x, s.y, s.z))))
+        end
+    end
+    lib.notify({ title = 'Screens', description = debugOn and 'Outlines on: yellow box = where the picture is. Details in F8.' or 'Outlines off.' })
+end, false)
 
 AddEventHandler('onResourceStop', function(res)
     if res ~= GetCurrentResourceName() then return end

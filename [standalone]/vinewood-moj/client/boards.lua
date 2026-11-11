@@ -112,8 +112,11 @@ CreateThread(function()
             for _, b in ipairs(boards) do
                 local l = live[b.id]
                 if l and b.point then
-                    local g = MoJScreens.GeoOf(b.point)
-                    if g then MoJScreens.DrawPanel(b.point, g, l.txd, l.tex) end
+                    local g = MoJScreens.GeoOf(b.point, GetEntityCoords(PlayerPedId()))
+                    if g then
+                        MoJScreens.DrawPanel(b.point, g, l.txd, l.tex)
+                        if MoJScreens.Debug() then MoJScreens.Outline(b.point, g, 0, 200, 255) end
+                    end
                 end
             end
             Wait(0)
