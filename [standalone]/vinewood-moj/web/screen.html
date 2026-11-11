@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<title>Court screen</title>
+<style>
+    html, body { margin: 0; width: 100%; height: 100%; background: #000; overflow: hidden; font-family: Arial, Helvetica, sans-serif; color: #fff; }
+    .layer { position: absolute; inset: 0; }
+    .hidden { display: none !important; }
+    #slate { background: #0b0c0c; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+    #slate::after { content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 2.2vh; background: #1d70b8; }
+    #slate svg { width: 11vh; height: 11vh; margin-bottom: 3vh; }
+    #slate .court { font-size: 4.6vh; font-weight: 700; letter-spacing: .02em; }
+    #slate .room { font-size: 8vh; font-weight: 700; margin: 1.4vh 0 2.4vh; }
+    #slate .msg { font-size: 3.4vh; color: #b1b4b6; }
+    #slate .clock { position: absolute; top: 3vh; right: 4vh; font-size: 3.4vh; color: #b1b4b6; }
+    video, iframe { width: 100%; height: 100%; border: 0; background: #000; object-fit: contain; }
+    #tag { position: absolute; left: 3vh; top: 3vh; background: rgba(11, 12, 12, .86); border-left: 1vh solid #ffdd00; padding: 1.4vh 2.4vh; font-size: 3vh;
+        transition: opacity .8s; max-width: 70%; }
+    #tag small { display: block; font-size: 2.2vh; color: #b1b4b6; margin-top: .4vh; letter-spacing: .08em; text-transform: uppercase; }
+    #tag.fade { opacity: 0; }
+</style>
+</head>
+<body>
+<div id="slate" class="layer">
+    <div class="clock" id="clock"></div>
+    <svg viewBox="0 0 48 48"><g fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M24 6v34M14 40h20M10 14h28M24 10l-2-4h4z"/><path d="M10 14l-6 13h12zM38 14l-6 13h12z"/><path d="M4 27a6 4 0 0 0 12 0M32 27a6 4 0 0 0 12 0"/></g></svg>
+    <div class="court" id="court">HM Courts &amp; Tribunals Service</div>
+    <div class="room" id="room">Court</div>
+    <div class="msg" id="msg">No exhibit is being shown</div>
+</div>
+<video id="video" class="layer hidden" playsinline></video>
+<iframe id="frame" class="layer hidden" allow="autoplay; encrypted-media" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+<div id="tag" class="hidden"><small>Exhibit</small><span id="tagText"></span></div>
+
+<script>
+    const $ = (id) => document.getElementById(id);
+    const video = $('video'), frame = $('frame');
+    let kind = null, tagTimer, volume = 0.8, ytReady = false;
+
+    const pad = (n) => String(n).padStart(2, '0');
+    setInterval(() => { const d = new Date(); $('clock').textContent = `${pad(d.getHours())}:${pad(d.getMinutes())}`; }, 1000);
+
+    function slate(msg) {
+        kind = null;
+        video.pause(); video.removeAttribute('src'); video.load();
+        frame.src = 'about:blank';
+        video.classList.add('hidden'); frame.classList.add('hidden'); $('tag').classList.add('hidden');
+        $('slate').classList.remove('hidden');
+        $('msg').textContent = msg || 'No exhibit is being shown';
+    }
+
+    function showTag(label) {
+        $('tagText').textContent = label || 'Exhibit';
+        $('tag').classList.remove('hidden', 'fade');
+        clearTimeout(tagTimer);
+        tagTimer = setTimeout(() => $('tag').classList.add('fade'), 6000);
+    }
+
+    // YouTube's player listens for postMessage commands once loaded with enablejsapi=1.
+    function yt(func, args) {
+        try { frame.contentWindow.postMessage(JSON.stringify({ event: 'command', func, args: args || [] }), '*'); } catch (e) {}
+    }
+
+    function play(m) {
+        kind = m.kind;
+        $('slate').classList.add('hidden');
+        showTag(m.label);
+        const elapsed = Math.max(0, Number(m.elapsed) || 0);
+        if (m.kind === 'file') {
+            frame.classList.add('hidden'); frame.src = 'about:blank';
+            video.classList.remove('hidden');
+            video.src = m.src;
+            video.volume = volume;
+            video.onloadedmetadata = () => {
+                if (elapsed > 0 && elapsed < video.duration) video.currentTime = elapsed;
+                if (elapsed >= video.duration) { slate('End of exhibit'); return; }
+                video.play().catch(() => { video.muted = true; video.play(); });
+            };
+            video.onended = () => slate('End of exhibit');
+            video.onerror = () => slate('This video could not be played');
+        } else {
+            video.pause(); video.classList.add('hidden');
+            let src = m.src;
+            if (m.kind === 'youtube') { src += `&enablejsapi=1&start=${Math.floor(elapsed)}`; ytReady = false; }
+            frame.classList.remove('hidden');
+            frame.src = src;
+            frame.onload = () => { if (m.kind === 'youtube') { ytReady = true; setTimeout(() => yt('setVolume', [Math.round(volume * 100)]), 800); } };
+        }
+    }
+
+    function setVolume(v) {
+        volume = Math.max(0, Math.min(1, Number(v) || 0));
+        if (kind === 'file') video.volume = volume;
+        else if (kind === 'youtube' && ytReady) yt('setVolume', [Math.round(volume * 100)]);
+    }
+
+    window.addEventListener('message', (e) => {
+        let m = e.data;
+        if (typeof m === 'string') { try { m = JSON.parse(m); } catch (err) { return; } }
+        if (!m || typeof m !== 'object' || !m.action) return;
+        if (m.action === 'slate') {
+            if (m.room) $('room').textContent = m.room;
+            if (m.court) $('court').textContent = m.court;
+            slate(m.msg);
+        } else if (m.action === 'play') {
+            play(m);
+        } else if (m.action === 'volume') {
+            setVolume(m.v);
+        }
+    });
+</script>
+</body>
+</html>

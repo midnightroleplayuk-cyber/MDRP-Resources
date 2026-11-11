@@ -4,8 +4,8 @@ lua54 'yes'
 
 name 'vinewood-moj'
 author 'Vinewood Studios'
-description 'Ministry of Justice: courts, sentencing, prison, probation, unpaid work, court bail and warrants. Links with vinewood-mdt.'
-version '1.2.0'
+description 'Ministry of Justice: courts, sentencing, prison, probation, unpaid work, court bail and warrants. Courtrooms with laptops and microphones. Links with vinewood-mdt.'
+version '1.9.0'
 
 shared_scripts {
     '@ox_lib/init.lua',
@@ -30,13 +30,18 @@ server_scripts {
     'server/sentence.lua',
     'server/cases.lua',
     'server/autocourt.lua',
+    'server/courtrooms.lua',
+    'server/business.lua',
+    'server/civil.lua',
     'server/main.lua'
 }
 
 client_scripts {
     'client/main.lua',
     'client/prison.lua',
-    'client/unpaidwork.lua'
+    'client/unpaidwork.lua',
+    'client/courtrooms.lua',
+    'client/screens.lua'
 }
 
 ui_page 'web/index.html'
@@ -44,7 +49,8 @@ ui_page 'web/index.html'
 files {
     'web/index.html',
     'web/style.css',
-    'web/app.js'
+    'web/app.js',
+    'web/screen.html'
 }
 
 dependencies {
@@ -61,7 +67,6 @@ escrow_ignore {
     'server/sv_config.lua',    -- Discord webhooks (server only)
     'bridge/server.lua',       -- framework bridge, for custom frameworks
     'server/licences.lua',     -- driving licence adapters
-    'server/prisons.lua'       -- prison script adapters (rcore, pickle, wasabi, your own)
+    'server/prisons.lua',      -- prison script adapters (rcore, pickle, wasabi, your own)
+    'server/business.lua'      -- business accounts (banking scripts) and who counts as a business
 }
-
-dependency '/assetpacks'
