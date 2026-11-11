@@ -32,7 +32,7 @@ Config.MaxPerHour = 5
 
 Config.Desk = {
     Enabled = true,
-    Coords = vec3(-344.76, -128.13, 38.71),
+    Coords = vec3(-307.55, -126.53, 40.36),
     Radius = 1.0, -- Size of the target zone around the desk vector
     Distance = 1.0, -- Maximum distance for selecting an option
     Debug = false, -- Set true to display the target zone while testing
