@@ -1,6 +1,14 @@
 -- Server-side framework bridge. Everything framework-specific on the server lives here.
 Bridge = {}
 
+-- No-op logger so gameplay never breaks if server/logs.lua is missing or fails to load.
+-- server/logs.lua replaces these with the real Discord logger.
+Logs = {
+    Send = function() end,
+    Player = function(src) return tostring(src) end,
+    Coords = function() return 'unknown' end,
+}
+
 local function started(res) return GetResourceState(res) == 'started' end
 
 local function detect()
@@ -189,3 +197,12 @@ function Bridge.CountOnDutyMedics()
 end
 
 print(('^2[goodciv]^7 framework: %s, inventory: %s'):format(Bridge.Name, Bridge.Inventory))
+
+-- Runs after every server script has loaded: if the real logger never replaced the stub,
+-- the server is using an old cached fxmanifest (run `refresh`) or logs.lua failed to load.
+CreateThread(function()
+    if not Logs.Ready then
+        print('^1[goodciv]^7 server/logs.lua is not loaded, so Discord logs are OFF. '
+            .. 'Run "refresh" then "ensure ' .. GetCurrentResourceName() .. '" in the console.')
+    end
+end)

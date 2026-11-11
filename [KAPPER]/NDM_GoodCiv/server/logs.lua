@@ -1,7 +1,7 @@
 -- Discord webhook logs. URLs live in server/webhooks.lua (server-only, never sent to clients).
 -- Categories: carriers, incidents, treatment, rewards, admin
 
-Logs = {}
+Logs = Logs or {}
 
 local cfg = Config.Logs or {}
 
@@ -124,3 +124,5 @@ RegisterCommand('goodcivlogtest', function(src)
     end
     print('^2[goodciv]^7 Test logs queued. Check Discord, or this console for a "webhook failed" error.')
 end, false)
+
+Logs.Ready = true
