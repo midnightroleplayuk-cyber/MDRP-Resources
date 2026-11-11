@@ -65,7 +65,7 @@ return {
     },
 },
 
-['gang_tablet'] = {
+    ['gang_tablet'] = {
     label = 'Gang tablet',
     weight = 500,
     stack = false,
@@ -5876,10 +5876,7 @@ return {
     stack = false,
     close = true,
     consume = 0,
-    client = { export = 'hf1_tv.useTelevision' }
+    client = { export = 'hf1_tv.useTelevision' },
     },
 
-},
-
-
-
+}

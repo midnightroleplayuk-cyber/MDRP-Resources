@@ -293,11 +293,6 @@ Config.StarterItems = {
         },
         {
             type      = "item",
-            nameSpawn = "fishing_rod_basic",
-            quanity   = 1
-        },
-        {
-            type      = "item",
             nameSpawn = "Phone",
             quanity   = 1
         },
@@ -305,7 +300,7 @@ Config.StarterItems = {
             type      = "money", -- money, bank
             nameSpawn = "",      -- leave blank
             quanity   = 5000
-        },
+        }
     }
 }
 
