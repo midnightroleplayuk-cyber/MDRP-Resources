@@ -137,11 +137,21 @@ function Bridge.Revive(src)
 end
 
 ---Bring a patient round on scene with low health (after successful CPR).
-function Bridge.WakeUp(src)
-    local key = GetResourceState('osp_ambulance') == 'started' and 'osp' or Bridge.Name
+---@param src number patient
+---@param rescuer number|nil responder who brought them round (plays osp's help-up scene with them)
+function Bridge.WakeUp(src, rescuer)
+    local osp = GetResourceState('osp_ambulance') == 'started'
+    local key = osp and 'osp' or Bridge.Name
     local fn = Config.WakeUp and Config.WakeUp[key]
     if not fn then return false end
     fn(src)
+    if osp and rescuer and Config.Treatment.HelpUpScene then
+        -- Same as osp's own CPR success: revive first, then start the scene on both sides.
+        SetTimeout(300, function()
+            TriggerClientEvent('osp_ambulance:CprHelpUpCl', rescuer, src, true)
+            TriggerClientEvent('osp_ambulance:CprHelpUpCl', src, rescuer, false)
+        end)
+    end
     TriggerClientEvent('goodciv:client:wakeHealth', src, Config.Treatment.CPR.WakeHealth)
     return true
 end

@@ -73,7 +73,7 @@ actions.cpr = {
         if math.random() < chance then
             inc.state.breathing = true
             -- Patient gets up; the incident closes as 'resolved' once their client reports it.
-            if T.CPR.WakeOnSuccess and Bridge.WakeUp(inc.patient) then
+            if T.CPR.WakeOnSuccess and Bridge.WakeUp(inc.patient, src) then
                 toast(inc.patient, 'warning', L('cpr_woken'))
             end
             return 'success', L('cpr_success')
@@ -107,7 +107,7 @@ actions.rouse = {
         if math.random() < chance then
             inc.state.conscious = true
             -- Patient gets up; the incident closes as 'resolved' once their client reports it.
-            if Bridge.WakeUp(inc.patient) then
+            if Bridge.WakeUp(inc.patient, src) then
                 toast(inc.patient, 'warning', L('cpr_woken'))
             end
             return 'success', L('rouse_success')

@@ -244,6 +244,9 @@ Config.Treatment = {
         WakeOnSuccess = true,
         WakeHealth = 120,      -- health after coming round (max 200, 100 = downed)
     },
+    -- When osp_ambulance is running, play its CPR "help up" scene (responder helps the
+    -- patient to their feet) after successful CPR or rousing.
+    HelpUpScene = true,
     -- Unconscious but breathing: talk to them, tap their shoulders, pain stimulus.
     -- Success brings them round on scene (same as CPR: Config.WakeUp, injured until check-in).
     Rouse = {
