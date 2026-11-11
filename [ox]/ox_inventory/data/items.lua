@@ -5707,7 +5707,7 @@ return {
     close = true,
     description = 'A rare coin used for currency',
 },
-},
+
 
 -- VINEWOOD PD JOB
 ['handcuffs'] = {
@@ -5879,6 +5879,7 @@ return {
     client = { export = 'hf1_tv.useTelevision' }
     },
 
+},
 
 
 
