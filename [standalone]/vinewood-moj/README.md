@@ -109,6 +109,23 @@ Build real courtrooms in game, then run hearings in them.
 2. **Place a laptop** on each desk: the judge's bench, clerk, prosecution and defence. Tick which roles can use each one (none ticked means all court staff). Laptops are ox_target points that open the court system. Optionally spawn a laptop prop if your MLO doesn't have one.
 3. **Place a microphone** at the bench, witness box, dock and advocates' seats. Anyone standing or sitting within `MicReach` (1.6 m) of a live microphone is heard across the whole room, using pma-voice's `overrideProximityRange`. When they step away, their voice goes back to normal. Microphones can spawn a desk microphone (`prop_table_mic_01`) for the bench, dock, witness box and advocates' tables. Aim the laser at the table top and it sits on the surface. A "Microphone live" badge shows while it's picking you up, and anyone can switch a microphone off for themselves through its ox_target option. Each microphone can have its own range; otherwise it uses the room's size.
 
+### Room areas: draw the shape
+
+Each courtroom has an **area**, which decides who's "in" that room for its screens, microphones and laptops. New rooms start as a circle from where you stood. For accurate rooms, open the room and use **Draw the room's shape**:
+
+- Aim at each **corner of the floor** and press **E**. The walls are drawn as you go, with a line to where you're aiming.
+- **Backspace** undoes the last corner.
+- **Page Up/Down** sets the ceiling height, so a room upstairs doesn't count as the one below it.
+- **Enter** saves (at least 3 corners). **G** cancels.
+
+L-shaped and irregular rooms work, with up to 40 corners. Neighbouring rooms are shown while you draw, so you can line the walls up with them. Rooms whose shapes share a wall don't count as overlapping.
+
+- **Show area** shows a room's area in the world (Backspace to go back).
+- **Show all room areas**, on the courtrooms list, shows every room: blue for drawn shapes, yellow for circles, red for any that overlap.
+- **Remove shape** goes back to the circle.
+
+The editor warns you about overlapping rooms. If anything you've placed ends up outside a newly drawn shape, you're told how many points so you can check them. Drawn shapes take priority over circles wherever the two overlap.
+
 Every point (laptop, microphone, custody desk, screen) can be placed three ways:
 
 | Option | What it does |
@@ -152,7 +169,7 @@ Every screen in the room shows the same thing. Each showing of a saved exhibit i
 
 | Source | Links | How it plays |
 |---|---|---|
-| Medal | clip links, share links (with key), embed links | Medal's player |
+| Medal | clip links, share links (with key), embed links | **The clip's own video file** (looked up from Medal when it's shown): no Medal player or cookie popup, synced, quieter with distance. Falls back to Medal's player if Medal won't give a file. `MedalDirect = false` always uses the player |
 | YouTube | `watch?v=`, `youtu.be/`, shorts, live, with `?t=` timestamps | YouTube's player. Starts at the timestamp, late arrivals join at the right point, quieter with distance |
 | Twitch | clips (`clips.twitch.tv/...`, `twitch.tv/<user>/clip/...`), past broadcasts (`twitch.tv/videos/...?t=`) | Twitch's player. Not live channels |
 | Streamable | `streamable.com/<id>` | Streamable's player |
@@ -188,9 +205,10 @@ To re-fit a screen later, use **Adjust picture** on it in the editor. Stand in f
 **Notes:**
 
 - The picture and sound only exist for people inside that courtroom. They start when you walk in and stop when you leave.
-- **Sites' own players** (Medal, Twitch clips, Streamable, TikTok, Google Drive) can't be controlled from outside, so latecomers start from the beginning and the volume is the same across the room. YouTube, Vimeo and Dailymotion do better, and direct files best of all.
+- **Sites' own players** (Twitch clips, Streamable, TikTok, Google Drive, and Medal only as a fallback) can't be controlled from outside, so latecomers start from the beginning and the volume is the same across the room. YouTube, Vimeo and Dailymotion do better, and direct files best of all.
 - **Twitch** checks which page its player is embedded on. The screens identify themselves correctly, but Twitch occasionally refuses embeds on some setups. If a Twitch clip won't load, download it and use a direct file.
 - Screens go back to the slate after `MaxPlayMinutes`.
+- **Neighbouring courtrooms:** draw each room's shape (see Room areas) so its area follows the walls. With circles, if two overlap, the room whose centre is nearest to you counts for its screens.
 - Screens using the same render target (`tvscreen` for the flat TVs) all show the same picture. That's how one exhibit appears on every TV in the room.
 - In-game browsers sometimes block sound until a page has been interacted with. If a clip plays silently on your server, use direct video files, which fall back to playing muted rather than not at all.
 

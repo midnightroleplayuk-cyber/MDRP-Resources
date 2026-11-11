@@ -153,6 +153,9 @@ Config.Courtrooms = {
     -- so only use it with a model that isn't used anywhere else.
     ScreenRender = 'overlay',
     -- What can be played on the screens. Set any to false to switch it off. Add your own in server/videolinks.lua.
+    -- Medal clips play as their direct video file (no Medal player, so no cookie popup; synced and
+    -- quieter with distance). false = always use Medal's own embedded player.
+    MedalDirect = true,
     Providers = {
         medal = true,         -- medal.tv clips and share links
         youtube = true,       -- videos, shorts, live, youtu.be, with ?t= timestamps

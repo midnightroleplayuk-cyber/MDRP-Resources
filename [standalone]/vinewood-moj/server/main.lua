@@ -500,7 +500,7 @@ local function screenRoom(src, a)
     local r = Rooms.LaptopRoom(src)
     need(r, 'Use a laptop in the courtroom to control its screens.')
     need(Rooms.HasScreens(r), ('%s has no screens set up.'):format(r.label))
-    need(r.centre and r.centre.x and #(GetEntityCoords(GetPlayerPed(src)) - vec3(r.centre.x, r.centre.y, r.centre.z)) <= r.radius + 10.0,
+    need(Zones.Contains(r, GetEntityCoords(GetPlayerPed(src)), 10.0),
         'You have left the courtroom.')
     return r
 end
@@ -799,7 +799,7 @@ end
 local function atLaptop(src)
     local r = Rooms.LaptopRoom(src)
     if not r or not r.centre or not r.centre.x then return false end
-    return #(GetEntityCoords(GetPlayerPed(src)) - vec3(r.centre.x, r.centre.y, r.centre.z)) <= r.radius + 10.0
+    return Zones.Contains(r, GetEntityCoords(GetPlayerPed(src)), 10.0)
 end
 
 local function hasTablet(src)

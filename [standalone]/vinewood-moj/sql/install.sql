@@ -60,7 +60,7 @@ CREATE TABLE IF NOT EXISTS vw_moj_warrants (
 ALTER TABLE vw_moj_custody ADD COLUMN IF NOT EXISTS unjail_pending TINYINT(1) NOT NULL DEFAULT 0;
 CREATE TABLE IF NOT EXISTS vw_moj_courtrooms (
     id INT AUTO_INCREMENT PRIMARY KEY, label VARCHAR(96) NOT NULL, court_id VARCHAR(16), centre LONGTEXT, radius FLOAT NOT NULL DEFAULT 20,
-    points LONGTEXT, created_by VARCHAR(96), created_at BIGINT NOT NULL, updated_at BIGINT NOT NULL
+    points LONGTEXT, shape LONGTEXT NULL, created_by VARCHAR(96), created_at BIGINT NOT NULL, updated_at BIGINT NOT NULL
 );
 ALTER TABLE vw_moj_hearings ADD COLUMN IF NOT EXISTS booked_at BIGINT NULL;
 ALTER TABLE vw_moj_hearings ADD COLUMN IF NOT EXISTS booked_by VARCHAR(96) NULL;
@@ -98,3 +98,4 @@ CREATE TABLE IF NOT EXISTS vw_moj_boards (
     point LONGTEXT NOT NULL, created_by VARCHAR(96), created_at BIGINT NOT NULL, updated_at BIGINT NOT NULL
 );
 ALTER TABLE vw_moj_courts ADD COLUMN IF NOT EXISTS desks LONGTEXT NULL;
+ALTER TABLE vw_moj_courtrooms ADD COLUMN IF NOT EXISTS shape LONGTEXT NULL;

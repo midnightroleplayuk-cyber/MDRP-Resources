@@ -196,7 +196,7 @@ CreateThread(function()
         local bestK, bestRange, bestLabel, bestD
         for _, r in ipairs(rooms) do
             local c = r.centre
-            if c and c.x and #(here - vec3(c.x, c.y, c.z)) <= r.radius + 10.0 then
+            if c and c.x and Zones.Contains(r, here, 10.0) then
                 sleep = 250
                 for i, p in ipairs(r.points or {}) do
                     if p.kind == 'mic' then
@@ -356,6 +356,143 @@ end
 
 -- Shared with client/boards.lua (listing boards use the same placing tools).
 MoJPlace = { place = function(...) return place(...) end, pick = function(...) return pick(...) end }
+
+---------------------------------------------------------------------------
+-- Room areas: drawing a room's shape, and showing areas in the world
+---------------------------------------------------------------------------
+local BLUE, YELLOW, RED = { 29, 112, 184 }, { 255, 221, 0 }, { 212, 53, 28 }
+
+local function wall(a, b, z1, z2, col, alpha)
+    -- both windings, so it shows from inside and outside
+    DrawPoly(a.x, a.y, z1, b.x, b.y, z1, b.x, b.y, z2, col[1], col[2], col[3], alpha)
+    DrawPoly(a.x, a.y, z1, b.x, b.y, z2, a.x, a.y, z2, col[1], col[2], col[3], alpha)
+    DrawPoly(b.x, b.y, z2, b.x, b.y, z1, a.x, a.y, z1, col[1], col[2], col[3], alpha)
+    DrawPoly(a.x, a.y, z2, b.x, b.y, z2, a.x, a.y, z1, col[1], col[2], col[3], alpha)
+    DrawLine(a.x, a.y, z1, b.x, b.y, z1, col[1], col[2], col[3], 255)
+    DrawLine(a.x, a.y, z2, b.x, b.y, z2, col[1], col[2], col[3], 255)
+    DrawLine(a.x, a.y, z1, a.x, a.y, z2, col[1], col[2], col[3], 255)
+end
+
+local function drawArea(r, col)
+    if Zones.IsPoly(r) then
+        local pts, s = r.shape.points, r.shape
+        for i = 1, #pts do wall(pts[i], pts[i % #pts + 1], s.minZ, s.maxZ, col, 45) end
+    elseif r.centre and r.centre.x then
+        local c, rad = r.centre, r.radius or 20.0
+        DrawMarker(1, c.x, c.y, c.z - 1.0, 0, 0, 0, 0, 0, 0, rad * 2.0, rad * 2.0, 4.0, col[1], col[2], col[3], 40, false, false, 2, false, nil, nil, false)
+        DrawMarker(25, c.x, c.y, c.z - 0.95, 0, 0, 0, 0, 0, 0, rad * 2.0, rad * 2.0, 1.0, col[1], col[2], col[3], 160, false, false, 2, false, nil, nil, false)
+    end
+    if r.centre and r.centre.x then
+        DrawMarker(28, r.centre.x, r.centre.y, r.centre.z, 0, 0, 0, 0, 0, 0, 0.12, 0.12, 0.12, col[1], col[2], col[3], 220, false, false, 2, false, nil, nil, false)
+    end
+end
+
+--- Show room areas in the world until Backspace (or 60 s). onlyId = one room, nil = every room.
+local function showAreas(onlyId)
+    placing = true
+    SendNUIMessage({ action = 'hint', text = (onlyId and 'Showing this room\'s area' or 'Showing every courtroom\'s area: blue = drawn shape, yellow = circle, red = overlapping')
+        .. ' · Backspace to go back' })
+    local until_ = GetGameTimer() + 60000
+    local overlapping = {}
+    for i = 1, #rooms do
+        for j = i + 1, #rooms do
+            if Zones.Overlap(rooms[i], rooms[j]) then overlapping[rooms[i].id], overlapping[rooms[j].id] = true, true end
+        end
+    end
+    while GetGameTimer() < until_ do
+        Wait(0)
+        for _, r in ipairs(rooms) do
+            if not onlyId or r.id == onlyId then
+                drawArea(r, overlapping[r.id] and RED or (Zones.IsPoly(r) and BLUE or YELLOW))
+            end
+        end
+        if IsControlJustReleased(0, 177) or IsControlJustReleased(0, 200) then break end
+    end
+    SendNUIMessage({ action = 'hint', text = false })
+    placing = false
+end
+
+--- Walk the room and drop a corner at each one. Returns a shape or nil if cancelled.
+local function drawShape(room)
+    if placing then return nil end
+    placing = true
+    local corners = {}
+    local ped = PlayerPedId()
+    local floorZ = GetEntityCoords(ped).z - 1.0
+    local height = (room and Zones.IsPoly(room)) and (room.shape.maxZ - room.shape.minZ) or 5.0
+    local others = {}
+    for _, r in ipairs(rooms) do if not room or r.id ~= room.id then others[#others + 1] = r end end
+    local result
+    while true do
+        Wait(0)
+        for _, c in ipairs({ 10, 11, 24, 25, 140, 141, 142, 177, 191, 200, 201, 202 }) do DisableControlAction(0, c, true) end
+        local at = aim()
+        local spot = at and vec3(at.x, at.y, at.z) or GetEntityCoords(ped) - vec3(0.0, 0.0, 1.0)
+        if #corners == 0 then floorZ = spot.z end
+        local z1, z2 = floorZ - 0.3, floorZ - 0.3 + height
+        if IsDisabledControlPressed(0, 10) then height = math.min(40.0, height + 0.03) end   -- Page Up
+        if IsDisabledControlPressed(0, 11) then height = math.max(1.6, height - 0.03) end    -- Page Down
+        -- neighbouring rooms, faintly, so you can line walls up with them
+        for _, r in ipairs(others) do drawArea(r, Zones.IsPoly(r) and BLUE or YELLOW) end
+        -- the shape so far, plus the edge to where you're aiming
+        for i = 1, #corners - 1 do wall(corners[i], corners[i + 1], z1, z2, YELLOW, 60) end
+        if #corners >= 1 then
+            wall(corners[#corners], spot, z1, z2, YELLOW, 35)
+            if #corners >= 2 then wall(spot, corners[1], z1, z2, YELLOW, 20) end
+        end
+        DrawMarker(28, spot.x, spot.y, spot.z, 0, 0, 0, 0, 0, 0, 0.1, 0.1, 0.1, 255, 221, 0, 230, false, false, 2, false, nil, nil, false)
+        DrawLine(spot.x, spot.y, z1, spot.x, spot.y, z2, 255, 221, 0, 255)
+        local hint = ('Drawing %s · aim at a floor corner, E to add it (%d so far) · Backspace: undo · Page Up/Down: ceiling height (%.1f m) · Enter: save · G: cancel')
+            :format(room and room.label or 'the room', #corners, height)
+        SendNUIMessage({ action = 'hint', text = hint })
+        if IsControlJustReleased(0, 38) then corners[#corners + 1] = vec3(spot.x, spot.y, spot.z) end
+        if IsDisabledControlJustReleased(0, 177) and #corners > 0 then table.remove(corners) end
+        if (IsDisabledControlJustReleased(0, 191) or IsDisabledControlJustReleased(0, 201)) then
+            if #corners >= 3 then
+                local pts = {}
+                for _, c in ipairs(corners) do pts[#pts + 1] = { x = c.x, y = c.y } end
+                result = { points = pts, minZ = z1, maxZ = z2 }
+                break
+            else
+                lib.notify({ title = 'Courtroom', description = 'Add at least 3 corners first.', type = 'error' })
+            end
+        end
+        if IsControlJustReleased(0, 47) then break end -- G
+    end
+    SendNUIMessage({ action = 'hint', text = false })
+    placing = false
+    return result
+end
+
+RegisterNUICallback('roomsShape', function(d, cb)
+    cb('ok')
+    local room
+    for _, r in ipairs(rooms) do if r.id == tonumber(d.id) then room = r end end
+    MoJUI.Suspend()
+    CreateThread(function()
+        local shape = drawShape(room)
+        if shape then
+            local r = lib.callback.await('vinewood-moj:server:roomsAdmin', false, 'setShape', { id = tonumber(d.id), shape = shape })
+            if r and r.error then lib.notify({ title = 'Courtroom', description = r.error, type = 'error' })
+            else
+                lib.notify({ title = 'Courtroom', description = (r and r.outside or 0) > 0
+                    and ('Shape saved. %d point(s) are outside the new walls: check them.'):format(r.outside) or 'Shape saved.', type = (r and r.outside or 0) > 0 and 'warning' or 'success' })
+            end
+        end
+        Wait(150)
+        MoJUI.Open('rooms', nil, { roomId = tonumber(d.id) })
+    end)
+end)
+
+RegisterNUICallback('roomsShowArea', function(d, cb)
+    cb('ok')
+    MoJUI.Suspend()
+    CreateThread(function()
+        showAreas(tonumber(d.id))
+        Wait(150)
+        MoJUI.Open('rooms', nil, { roomId = tonumber(d.id) })
+    end)
+end)
 
 ---------------------------------------------------------------------------
 -- Editor (/courtrooms): the NUI talks to the server through here.

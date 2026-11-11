@@ -93,7 +93,12 @@
                 video.play().catch(() => { video.muted = true; video.play(); });
             };
             video.onended = () => slate('End of exhibit');
-            video.onerror = () => (m.fallback ? showImage(m.fallback) : slate('This video could not be played'));
+            video.onerror = () => {
+                if (m.fallback) return showImage(m.fallback);
+                // e.g. Medal wouldn't give a direct file: use the site's own player instead.
+                if (m.fallbackEmbed) return play({ ...m, kind: 'embed', src: m.fallbackEmbed, fallbackEmbed: null });
+                slate('This video could not be played');
+            };
             return;
         }
         // Embedded player from the site itself.

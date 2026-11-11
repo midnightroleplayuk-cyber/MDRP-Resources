@@ -55,7 +55,7 @@ VideoLinks.Providers = {
             local id, key = path(url):match('/clips?/([%w_-]+)/?([%w_-]*)')
             if not id then return nil, 'That does not look like a Medal clip link.' end
             if key == '' then key = nil end
-            return { kind = 'embed', src = ('https://medal.tv/clip/%s%s?autoplay=1&muted=0&loop=0&cta=0'):format(id, key and ('/' .. key) or '') }
+            return { kind = 'embed', id = id, src = ('https://medal.tv/clip/%s%s?autoplay=1&muted=0&loop=0&cta=0'):format(id, key and ('/' .. key) or '') }
         end,
     },
     {
@@ -224,4 +224,45 @@ function VideoLinks.Names()
     end
     out[#out + 1] = 'a direct video or image file'
     return table.concat(out, ', ')
+end
+
+
+---------------------------------------------------------------------------
+-- Medal: play the clip's own video file instead of Medal's player.
+-- Medal's player shows a cookie-consent popup that can't be clicked from the screen. Its public
+-- content API gives the clip's direct MP4 (the same thing yt-dlp and Discord use), which plays
+-- like any other video file: no popup, synced for late arrivals, quieter with distance.
+---------------------------------------------------------------------------
+local function httpGet(url, headers, timeoutMs)
+    local p, done = promise.new(), false
+    PerformHttpRequest(url, function(status, body, hdrs)
+        if done then return end
+        done = true
+        p:resolve({ status = status, body = body, headers = hdrs })
+    end, 'GET', '', headers or {})
+    SetTimeout(timeoutMs or 6000, function()
+        if done then return end
+        done = true
+        p:resolve({ status = 0 })
+    end)
+    return Citizen.Await(p)
+end
+
+--- Called when something is about to be shown. Returns what to actually play.
+function VideoLinks.Resolve(v)
+    if not v or v.provider ~= 'medal' or not v.id or (Config.Courtrooms or {}).MedalDirect == false then return v end
+    local api = ('https://medal.tv/api/content/%s'):format(v.id)
+    local r = httpGet(api, { ['Accept'] = 'application/json', ['User-Agent'] = 'Mozilla/5.0 (vinewood-moj court screens)' })
+    if r.status == 200 and type(r.body) == 'string' then
+        local ok, data = pcall(json.decode, r.body)
+        local mp4 = ok and type(data) == 'table' and data.contentUrl
+        if type(mp4) == 'string' and mp4:match('^https://') and not mp4:find('privacy-protected-guest', 1, true) then
+            return { kind = 'file', src = mp4, provider = 'medal', providerLabel = 'Medal', offset = v.offset or 0, fallbackEmbed = v.src }
+        end
+    elseif r.status == 404 then
+        return nil, 'Medal says that clip does not exist (or it is private).'
+    end
+    -- No public file: Medal's "social video" link redirects to the MP4, and the screen follows it.
+    -- If that fails too, the screen falls back to Medal's own player.
+    return { kind = 'file', src = api .. '/socialVideoUrl', provider = 'medal', providerLabel = 'Medal', offset = v.offset or 0, fallbackEmbed = v.src }
 end

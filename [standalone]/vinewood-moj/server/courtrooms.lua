@@ -11,6 +11,13 @@ local function decode(r)
     r.centre = U.decode(r.centre)
     r.points = U.decode(r.points)
     r.radius = tonumber(r.radius) or 20.0
+    -- A drawn shape decides the centre and size; the circle is kept underneath as the fallback.
+    local shape = U.decode(r.shape)
+    r.shape = shape and shape.type == 'poly' and shape or nil
+    if r.shape then
+        r.circle = { centre = r.centre, radius = r.radius }
+        r.centre, r.radius = Zones.Fit(r.shape)
+    end
     return r
 end
 
@@ -29,7 +36,8 @@ function Rooms.Public()
     for _, r in pairs(list) do
         local court = U.court(r.court_id)
         out[#out + 1] = { id = r.id, label = r.label, court_id = r.court_id, courtLabel = court and court.label or nil,
-            centre = r.centre, radius = r.radius, points = r.points }
+            centre = r.centre, radius = r.radius, points = r.points, shape = r.shape,
+            circle = r.circle and { radius = r.circle.radius } or nil }
     end
     table.sort(out, function(a, b) return a.label < b.label end)
     return out
@@ -42,8 +50,11 @@ function Rooms.Broadcast()
 end
 
 local function save(r)
-    MySQL.update.await('UPDATE vw_moj_courtrooms SET label = ?, court_id = ?, centre = ?, radius = ?, points = ?, updated_at = ? WHERE id = ?',
-        { r.label, r.court_id, U.encode(r.centre), r.radius, U.encode(r.points), U.now(), r.id })
+    -- With a drawn shape, the stored centre/radius stay as the old circle (used again if the shape is removed).
+    local centre, radius = r.centre, r.radius
+    if r.shape and r.circle then centre, radius = r.circle.centre, r.circle.radius end
+    MySQL.update.await('UPDATE vw_moj_courtrooms SET label = ?, court_id = ?, centre = ?, radius = ?, points = ?, shape = ?, updated_at = ? WHERE id = ?',
+        { r.label, r.court_id, U.encode(centre), radius, U.encode(r.points), r.shape and U.encode(r.shape) or nil, U.now(), r.id })
     Rooms.Broadcast()
 end
 
@@ -184,7 +195,20 @@ ADMIN.list = function()
     table.sort(kinds, function(a, b) return a.label < b.label end)
     local styles = {}
     for id, label in pairs(Boards.NameStyles) do styles[#styles + 1] = { id = id, label = label } end
-    return { rooms = Rooms.Public(), courts = Courts.Public(), kinds = kinds, roles = roles, boards = Boards.Public(), nameStyles = styles, micReach = CR.MicReach, micRange = CR.MicRange,
+    -- Courtrooms whose areas overlap: screens and microphones go by the nearest centre, but it's
+    -- better to size rooms so they don't.
+    local overlaps, pub = {}, Rooms.Public()
+    for i = 1, #pub do
+        for j = i + 1, #pub do
+            local a, b = pub[i], pub[j]
+            if a.centre and a.centre.x and b.centre and b.centre.x and Zones.Overlap(a, b) then
+                local d = #(vec3(a.centre.x, a.centre.y, a.centre.z) - vec3(b.centre.x, b.centre.y, b.centre.z))
+                overlaps[#overlaps + 1] = { a = a.label, b = b.label, apart = math.floor(d * 10) / 10, aId = a.id, bId = b.id,
+                    shapes = (a.shape and 1 or 0) + (b.shape and 1 or 0) }
+            end
+        end
+    end
+    return { overlaps = overlaps, rooms = pub, courts = Courts.Public(), kinds = kinds, roles = roles, boards = Boards.Public(), nameStyles = styles, micReach = CR.MicReach, micRange = CR.MicRange,
         laptopProp = CR.LaptopProp, micProp = CR.MicProp, voice = GetResourceState('pma-voice') == 'started',
         target = GetResourceState('ox_target') == 'started', screens = screens, overlay = (CR.ScreenRender or 'overlay') ~= 'rendertarget' }
 end
@@ -206,8 +230,13 @@ ADMIN.update = function(src, d)
     if not r then return { error = 'Courtroom not found.' } end
     r.label = U.trim(d.label, 96) or r.label
     if U.court(d.courtId) then r.court_id = d.courtId end
-    if d.radius then r.radius = math.max(5.0, math.min(150.0, tonumber(d.radius) or r.radius)) end
-    if d.recentre then r.centre = pos(src) end
+    if r.shape and r.circle then
+        if d.radius then r.circle.radius = math.max(3.0, math.min(150.0, tonumber(d.radius) or r.circle.radius)) end
+        if d.recentre then r.circle.centre = pos(src) end
+    else
+        if d.radius then r.radius = math.max(3.0, math.min(150.0, tonumber(d.radius) or r.radius)) end
+        if d.recentre then r.centre = pos(src) end
+    end
     save(r)
     return { ok = true }
 end
@@ -229,7 +258,7 @@ ADMIN.addPoint = function(_, d)
     local x, y, z = tonumber(p.x), tonumber(p.y), tonumber(p.z)
     if not x or not y or not z then return { error = 'No position.' } end
     -- Custody desks can go anywhere in the building (the cells are rarely inside the courtroom).
-    if p.kind ~= 'custody' and r.centre and r.centre.x and #(vec3(x, y, z) - vec3(r.centre.x, r.centre.y, r.centre.z)) > r.radius + 5.0 then
+    if p.kind ~= 'custody' and not Zones.Contains(r, vec3(x, y, z), 3.0) then
         return { error = 'That spot is outside the courtroom. Move the centre or make the room bigger.' }
     end
     -- mode: 'spawn' (we spawn the prop), 'pick' (an object already in the map was selected), 'spot' (just a position)
@@ -313,6 +342,33 @@ ADMIN.courtCreate = function(src, d) return Courts.Create(src, d) end
 ADMIN.courtUpdate = function(src, d) return Courts.Update(src, d) end
 ADMIN.courtDelete = function(_, d) return Courts.Delete(d) end
 
+--- Draw the room's real shape (walls and ceiling). shape = { points = { {x,y}... }, minZ, maxZ }
+ADMIN.setShape = function(_, d)
+    local r = Rooms.Get(d.id)
+    if not r then return { error = 'Courtroom not found.' } end
+    local shape, err = Zones.Clean(d.shape)
+    if not shape then return { error = err } end
+    if not r.circle then r.circle = { centre = r.centre, radius = r.radius } end
+    r.shape = shape
+    r.centre, r.radius = Zones.Fit(shape)
+    save(r)
+    -- Points that are now outside the room still work, but tell the admin.
+    local outside = 0
+    for _, p in ipairs(r.points or {}) do
+        if p.kind ~= 'custody' and not Zones.Contains(r, vec3(p.x, p.y, p.z), 1.0) then outside = outside + 1 end
+    end
+    return { ok = true, outside = outside }
+end
+
+ADMIN.clearShape = function(_, d)
+    local r = Rooms.Get(d.id)
+    if not r then return { error = 'Courtroom not found.' } end
+    if r.circle then r.centre, r.radius = r.circle.centre, r.circle.radius end
+    r.shape, r.circle = nil, nil
+    save(r)
+    return { ok = true }
+end
+
 ADMIN.teleport = function(src, d)
     local r = Rooms.Get(d.id)
     if not r or not r.centre or not r.centre.x then return { error = 'Courtroom not found.' } end
@@ -336,7 +392,8 @@ lib.callback.register('vinewood-moj:server:roomsAdmin', function(src, action, da
     if not ok then print('[vinewood-moj] courtrooms: ' .. tostring(r)) return { error = 'The request failed. Check the server console.' } end
     -- Log every change admins make to courtrooms.
     local WHAT = { create = 'Courtroom created', update = 'Courtroom edited', delete = 'Courtroom deleted',
-        addPoint = 'Point placed', updatePoint = 'Point edited', removePoint = 'Point removed' }
+        addPoint = 'Point placed', updatePoint = 'Point edited', removePoint = 'Point removed',
+        setShape = 'Room shape drawn', clearShape = 'Room shape removed' }
     local BOARD = { boardAdd = 'Listing board placed', boardUpdate = 'Listing board edited', boardRemove = 'Listing board removed' }
     if r and r.ok and BOARD[action] then
         local b = Boards.Get(r.id or data.boardId)
@@ -395,9 +452,11 @@ function Rooms.NowShowing(roomId) return playing[roomId] end
 function Rooms.Play(roomId, url, label, by, ref)
     local v, err = Rooms.ParseVideo(url)
     if not v then return nil, err end
+    v, err = VideoLinks.Resolve(v)
+    if not v then return nil, err end
     playing[roomId] = {
         kind = v.kind, src = v.src, provider = v.provider, providerLabel = v.providerLabel, offset = v.offset or 0, control = v.control,
-        fallback = v.fallback,
+        fallback = v.fallback, fallbackEmbed = v.fallbackEmbed,
         url = url, label = U.trim(label, 80) or 'Exhibit', by = by, ref = ref, startedAt = os.time(),
     }
     broadcast()

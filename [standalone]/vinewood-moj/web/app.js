@@ -949,13 +949,16 @@ VIEWS.rooms = async (p = {}) => {
                 <td>${d.mode === 'pick' ? tag('Map object', 'blue') : d.prop ? tag('Spawned', 'green') : '<span class="muted small">Marked spot</span>'}</td>
                 <td style="white-space:nowrap;text-align:right"><button class="btn secondary small" data-dtp="${esc(c.id)}:${i + 1}">Go to</button>
                     <button class="btn warning small" data-drm="${esc(c.id)}:${i + 1}">Remove</button></td></tr>`)).join('')}</table>` : ''}
-        <div class="head" style="margin-top:28px;margin-bottom:10px"><h2 style="margin:0">Courtrooms</h2><div class="actions"><button class="btn" id="rNew">New courtroom here</button></div></div>
+        <div class="head" style="margin-top:28px;margin-bottom:10px"><h2 style="margin:0">Courtrooms</h2><div class="actions"><button class="btn secondary" id="rShowAll">Show all room areas</button><button class="btn" id="rNew">New courtroom here</button></div></div>
+        ${(r.overlaps || []).map((o) => `<div class="banner amber"><strong>${esc(o.a)} and ${esc(o.b)} overlap</strong>${o.shapes < 2
+            ? "At least one of them is still a circle. Open each room and use <b>Draw the room's shape</b> so its area follows the walls."
+            : 'Their drawn shapes cross. Open one and redraw it so the walls line up.'} Until then, screens and microphones in the overlap use whichever room is the better match.</div>`).join('')}
         <p class="lead">Stand in the middle of the room in game and create it. Then place laptops on the desks and microphones by the bench, witness box, dock and advocates' seats.</p>
         ${!r.voice ? '<div class="banner red"><strong>pma-voice is not running</strong>Microphones need pma-voice to carry voices across the room.</div>' : ''}
         ${!r.target ? '<div class="banner amber"><strong>ox_target is not running</strong>Laptops and microphones fall back to an E prompt.</div>' : ''}
-        ${r.rooms.length ? `<table><tr><th>Courtroom</th><th>Court</th><th class="num">Size</th><th class="num">Laptops</th><th class="num">Microphones</th></tr>
+        ${r.rooms.length ? `<table><tr><th>Courtroom</th><th>Court</th><th>Area</th><th class="num">Laptops</th><th class="num">Microphones</th></tr>
             ${r.rooms.map((x) => `<tr class="click" data-room="${x.id}"><td><strong>${esc(x.label)}</strong></td><td>${esc(courtName(x.court_id))}</td>
-            <td class="num">${Math.round(x.radius)} m</td><td class="num">${(x.points || []).filter((q) => q.kind === 'laptop').length}</td>
+            <td>${x.shape ? tag(`Shape · ${x.shape.points.length} corners`, 'green') : tag(`Circle · ${Math.round(x.radius)} m`, 'amber')}</td><td class="num">${(x.points || []).filter((q) => q.kind === 'laptop').length}</td>
             <td class="num">${(x.points || []).filter((q) => q.kind === 'mic').length}</td></tr>`).join('')}</table>`
             : '<p class="empty">No courtrooms yet.</p>'}
         <div class="head" style="margin-top:28px;margin-bottom:10px"><h2 style="margin:0">Listing boards</h2><div class="actions"><button class="btn" id="bNew">Place a listing board</button></div></div>
@@ -969,6 +972,7 @@ VIEWS.rooms = async (p = {}) => {
                 <button class="btn secondary small" data-bedit="${b.id}">Edit</button> <button class="btn warning small" data-brm="${b.id}">Remove</button></td></tr>`).join('')}</table>`
             : '<p class="empty">No listing boards yet.</p>'}`;
     $$('[data-room]').forEach((t) => (t.onclick = () => VIEWS.room({ id: Number(t.dataset.room) })));
+    $('#rShowAll').onclick = () => post('roomsShowArea', {});
     const boardForm = (b) => {
         const courtChecks = (r.courts || []).map((c) => `<label><input type="checkbox" data-bcourt="${esc(c.id)}" ${b && (b.courts || []).includes(c.id) ? 'checked' : ''}> ${esc(c.label)}</label>`).join('');
         const box = openModal(`<h2>${b ? 'Edit listing board' : 'Place a listing board'}</h2>
@@ -1068,7 +1072,7 @@ VIEWS.rooms = async (p = {}) => {
         { id: 'radius', label: 'Size (metres from the centre)', type: 'number', value: 18, min: 5, hint: 'Should cover the whole room. Microphones carry this far unless you set their own range.' },
     ], 'Create here', async (v) => {
         const x = await roomsApi('create', v, true);
-        if (x.ok) { toast('Courtroom created at your position.'); VIEWS.room({ id: x.id }); }
+        if (x.ok) { toast("Courtroom created. Now draw the room's shape so its area follows the walls."); state.rooms = await roomsApi('list'); VIEWS.room({ id: x.id }); }
         return x;
     }, '<p class="lead">Your current position becomes the centre of the room.</p>');
 };
@@ -1085,6 +1089,15 @@ VIEWS.room = async (p) => {
     const pts = room.points || [];
     main.innerHTML = `<div class="head"><div><span class="caption"><button class="link" id="rBack">Courtrooms</button> · ${esc((r.courts || []).find((c) => c.id === room.court_id)?.label || '')}</span><h1>${esc(room.label)}</h1></div>
         <div class="actions"><button class="btn secondary small" id="rTp">Teleport to centre</button><button class="btn secondary small" id="rEdit">Edit</button><button class="btn warning small" id="rDel">Delete</button></div></div>
+        <div class="panel" style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+            <div style="flex:1;min-width:260px"><strong>Area:</strong> ${room.shape
+                ? `drawn shape, ${room.shape.points.length} corners, ${(room.shape.maxZ - room.shape.minZ).toFixed(1)} m tall`
+                : `circle, ${Math.round(room.radius)} m from the centre <span class="muted small">(draw the shape so it follows the walls)</span>`}</div>
+            <button class="btn small" id="rShape">${room.shape ? 'Redraw the shape' : "Draw the room's shape"}</button>
+            <button class="btn secondary small" id="rArea">Show area</button>
+            ${room.shape ? '<button class="btn secondary small" id="rNoShape">Remove shape</button>' : ''}
+        </div>
+        <p class="small muted" style="margin-top:-6px">Drawing: aim at each corner of the floor and press <strong>E</strong>, <strong>Backspace</strong> undoes the last corner, <strong>Page Up/Down</strong> sets the ceiling height, <strong>Enter</strong> saves, <strong>G</strong> cancels. Neighbouring rooms are shown so you can line the walls up.</p>
         <div class="btn-row" style="margin:0 0 18px">
             <button class="btn" id="addLaptop"><span class="point-kind">${ICON.laptop} Place a laptop</span></button>
             <button class="btn" id="addMic"><span class="point-kind">${ICON.mic} Place a microphone</span></button>
@@ -1102,11 +1115,17 @@ VIEWS.room = async (p) => {
     const reload = async () => { state.rooms = await roomsApi('list'); VIEWS.room({ id: room.id }); };
     $('#rBack').onclick = () => VIEWS.rooms();
     $('#rTp').onclick = async () => { const x = await roomsApi('teleport', { id: room.id }); if (x.ok) toast('Teleported.'); };
+    $('#rShape').onclick = () => post('roomsShape', { id: room.id });
+    $('#rArea').onclick = () => post('roomsShowArea', { id: room.id });
+    if ($('#rNoShape')) $('#rNoShape').onclick = () => confirmModal("Remove this room's shape and go back to the circle?", async () => {
+        const x = await roomsApi('clearShape', { id: room.id }); if (x.ok) reload();
+    }, 'Remove shape', true);
     $('#rEdit').onclick = () => {
         const box = formModal('Edit courtroom', [
             { id: 'label', label: 'Name', type: 'text', value: room.label },
             { id: 'courtId', label: 'Court', type: 'select', options: r.courts.map((c) => ({ value: c.id, label: c.label })), value: room.court_id },
-            { id: 'radius', label: 'Size (metres from the centre)', type: 'number', value: Math.round(room.radius), min: 5 },
+            { id: 'radius', label: room.shape ? 'Circle size (only used if you remove the drawn shape)' : 'Size (metres from the centre)', type: 'number',
+              value: Math.round(room.shape ? ((room.circle || {}).radius || room.radius) : room.radius), min: 3, hint: room.shape ? '' : "Better: close this and use Draw the room's shape." },
         ], 'Save', async (v) => { const x = await roomsApi('update', { id: room.id, ...v, recentre: $('#recentre', box).checked }, true); if (x.ok) reload(); return x; });
         $('#fErr', box).insertAdjacentHTML('beforebegin', '<div class="checks"><label><input type="checkbox" id="recentre"> Move the centre to where I am standing</label></div>');
     };

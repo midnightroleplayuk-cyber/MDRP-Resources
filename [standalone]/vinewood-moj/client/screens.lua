@@ -172,16 +172,29 @@ end
 ---------------------------------------------------------------------------
 -- Which room you're in, and what it's showing
 ---------------------------------------------------------------------------
-local function roomHere()
+--- The courtroom you're in: of every room whose circle you're inside, the one whose centre is
+--- closest (neighbouring rooms' circles often overlap). Nil if that room has no screens.
+local function roomsAround()
     local here = GetEntityCoords(PlayerPedId())
+    local inside = {}
     for _, r in ipairs(MoJRooms and MoJRooms() or {}) do
         local c = r.centre
-        if c and c.x and #(here - vec3(c.x, c.y, c.z)) <= (r.radius or 20.0) + 3.0 then
-            local screens = {}
-            for _, p in ipairs(r.points or {}) do if p.kind == 'screen' then screens[#screens + 1] = p end end
-            if #screens > 0 then return r, screens end
+        -- Drawn shapes: you have to be inside the walls (a little leeway for doorways). Circles: as before.
+        if c and c.x and Zones.Contains(r, here, Zones.IsPoly(r) and 0.5 or 3.0) then
+            inside[#inside + 1] = { room = r, d = #(here - vec3(c.x, c.y, c.z)), rank = Zones.Rank(r, here) }
         end
     end
+    table.sort(inside, function(a, b) return a.rank < b.rank end)
+    return inside
+end
+
+local function roomHere()
+    local inside = roomsAround()
+    local r = inside[1] and inside[1].room
+    if not r then return nil end
+    local screens = {}
+    for _, p in ipairs(r.points or {}) do if p.kind == 'screen' then screens[#screens + 1] = p end end
+    if #screens > 0 then return r, screens end
 end
 
 --- Changes whenever the screen needs redrawing: something new playing, or (on the slate)
@@ -214,7 +227,7 @@ CreateThread(function()
                 if k ~= curKey then
                     curKey = k
                     if p then
-                        send({ action = 'play', kind = p.kind, src = p.src, label = p.label, control = p.control, fallback = p.fallback,
+                        send({ action = 'play', kind = p.kind, src = p.src, label = p.label, control = p.control, fallback = p.fallback, fallbackEmbed = p.fallbackEmbed,
                             offset = p.offset or 0, elapsed = math.max(0, GetCloudTimeAsInt() - p.startedAt) })
                     else
                         send({ action = 'slate', room = r.label, court = r.courtLabel or Config.CourtsName })
@@ -373,8 +386,17 @@ RegisterCommand('mojscreens', function()
     debugOn = not debugOn
     local here = GetEntityCoords(PlayerPedId())
     local r, screens = roomHere()
-    print(('[vinewood-moj] screen debug %s. Mode: %s. In a courtroom with screens: %s.'):format(debugOn and 'ON' or 'OFF',
-        OVERLAY and 'overlay' or 'rendertarget', r and ('yes (' .. r.label .. ')') or 'no'))
+    print(('[vinewood-moj] screen debug %s. Mode: %s. Showing screens for: %s.'):format(debugOn and 'ON' or 'OFF',
+        OVERLAY and 'overlay' or 'rendertarget', r and r.label or 'none'))
+    local around = roomsAround()
+    if #around > 1 then
+        print('  You are inside more than one courtroom\'s area (they overlap). Using the nearest centre:')
+        for i, x in ipairs(around) do
+            print(('    %s%s: %s, centre %.1f m away'):format(i == 1 and '> ' or '  ', x.room.label,
+                Zones.IsPoly(x.room) and ('drawn shape, ' .. #x.room.shape.points .. ' corners') or ('circle, ' .. math.floor(x.room.radius or 0) .. ' m'), x.d))
+        end
+        print('  Draw each room\'s shape in /courtrooms → the room → Draw the room\'s shape, so their areas follow the walls.')
+    end
     if r then
         print(('  browser: %s, texture: %s'):format(dui and (IsDuiAvailable(dui) and 'ready' or 'loading') or 'none', TXD or 'none'))
         for i, s in ipairs(screens) do
