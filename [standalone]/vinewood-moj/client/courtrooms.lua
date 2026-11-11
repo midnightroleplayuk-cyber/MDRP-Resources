@@ -306,6 +306,9 @@ local function pick(kind)
     return result
 end
 
+-- Shared with client/boards.lua (listing boards use the same placing tools).
+MoJPlace = { place = function(...) return place(...) end, pick = function(...) return pick(...) end }
+
 ---------------------------------------------------------------------------
 -- Editor (/courtrooms): the NUI talks to the server through here.
 ---------------------------------------------------------------------------
@@ -335,9 +338,38 @@ RegisterNUICallback('roomsPlace', function(d, cb)
             local point = { kind = d.kind, mode = mode, prop = mode == 'spawn', label = d.label, roles = d.roles, range = d.range,
                 model = tonumber(d.model), target = d.target }
             for k, v in pairs(at) do point[k] = v end
+            -- Screens: fit the picture to this TV before saving (overlay mode).
+            if d.kind == 'screen' and MoJScreens and MoJScreens.Overlay() then
+                local m = (CR.ScreenModels or {})[point.model or 1]
+                local roomLabel
+                for _, r in ipairs(rooms) do if r.id == d.id then roomLabel = r.label end end
+                point.geo = MoJScreens.Adjust(point, mode == 'spawn' and m and m.model or nil, roomLabel)
+            end
             local r = lib.callback.await('vinewood-moj:server:roomsAdmin', false, 'addPoint', { id = d.id, point = point })
             if r and r.error then lib.notify({ title = 'Courtroom', description = r.error, type = 'error' })
             else lib.notify({ title = 'Courtroom', description = 'Placed.', type = 'success' }) end
+        end
+        Wait(150)
+        MoJUI.Open('rooms', nil, { roomId = d.id })
+    end)
+end)
+
+-- Re-fit the picture on a screen that's already placed.
+RegisterNUICallback('roomsAdjust', function(d, cb)
+    cb('ok')
+    local room, point
+    for _, r in ipairs(rooms) do if r.id == d.id then room = r end end
+    point = room and room.points[tonumber(d.index) or 0]
+    if not point or point.kind ~= 'screen' then return end
+    MoJUI.Suspend()
+    CreateThread(function()
+        local copy = {}
+        for k, v in pairs(point) do copy[k] = v end
+        local geo = MoJScreens.Adjust(copy, nil, room.label)
+        if geo then
+            local r = lib.callback.await('vinewood-moj:server:roomsAdmin', false, 'updatePoint', { id = d.id, index = tonumber(d.index), geo = geo })
+            if r and r.error then lib.notify({ title = 'Courtroom', description = r.error, type = 'error' })
+            else lib.notify({ title = 'Courtroom', description = 'Screen fitted.', type = 'success' }) end
         end
         Wait(150)
         MoJUI.Open('rooms', nil, { roomId = d.id })

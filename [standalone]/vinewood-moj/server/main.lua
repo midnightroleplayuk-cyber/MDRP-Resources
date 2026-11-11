@@ -73,6 +73,11 @@ H.init = function(src, a)
             suspendUpTo = Config.Sentencing.SuspendUpTo, suspendDays = Config.Sentencing.SuspendOperationalDays,
             civil = (Config.Civil or {}).enabled ~= false, civilTypes = (Config.Civil or {}).Types, civilStatuses = Civil.Statuses,
             civilOpenRoles = (Config.Civil or {}).OpenRoles, civilCourt = Courts.CivilDefault(),
+            rooms = (function()
+                local out = {}
+                for _, r in ipairs(Rooms.Public()) do out[#out + 1] = { id = r.id, label = r.label, court_id = r.court_id } end
+                return out
+            end)(),
             businesses = (Config.Civil or {}).Businesses == true,
             office = Config.Probation.Office.label, warnLimit = Config.Probation.WarningsBeforeBreach, autoCourt = Config.AutoCourt.enabled, mdt = MDT.Running(),
         },
@@ -207,7 +212,10 @@ H.listHearing = function(_, a, d)
     local at = tonumber(d.at)
     need(at and at > U.now(), 'Pick a date and time in the future.')
     local courtId = U.court(d.courtId) and d.courtId or c.court_id
-    Cases.List(c, d.type, at, courtId, nil, true)
+    local hid = Cases.List(c, d.type, at, courtId, nil, true)
+    -- Optional courtroom, shown on listing boards. Must belong to the court it's listed at.
+    local room = d.roomId and Rooms.Get(d.roomId)
+    if room and room.court_id == courtId then MySQL.update.await('UPDATE vw_moj_hearings SET room_id = ? WHERE id = ?', { room.id, hid }) end
     return { ok = true }
 end
 
@@ -225,6 +233,9 @@ H.openHearing = function(src, a, d)
     need(h and h.status == 'listed', 'This hearing is not waiting to be heard.')
     Cases.OpenHearing(h, a)
     local c = Cases.Get(h.case_id)
+    -- Opened from a courtroom laptop: that's the room it's in (listing boards show it).
+    local here = Rooms.LaptopRoom(src)
+    if here then MySQL.update.await('UPDATE vw_moj_hearings SET room_id = ? WHERE id = ?', { here.id, h.id }) end
     -- Opened from a courtroom laptop: the defendant (and their solicitor) are pointed to that room.
     local room = Config.Courtrooms and Config.Courtrooms.WaypointToRoom and Rooms.LaptopRoom(src)
     local where = room and room.label or c.courtLabel
@@ -419,7 +430,7 @@ H.civilNote = function(_, a, d)
     return { ok = true }
 end
 
-H.civilListHearing = function(_, a, d) return Civil.List(civilOrError(a, d.id), d.at, d.courtId, U.By(a)) end
+H.civilListHearing = function(_, a, d) return Civil.List(civilOrError(a, d.id), d.at, d.courtId, U.By(a), d.roomId) end
 
 H.civilAssign = function(_, a, d)
     local c = civilOrError(a, d.id)
@@ -804,7 +815,9 @@ lib.callback.register('vinewood-moj:server:request', function(src, action, data)
     local fn, allowed = H[action], PERMS[action]
     if not fn or not allowed then return { error = 'Unknown request.' } end
     if not allowed[a.role] then return { error = "Your role can't do that." } end
-    if needsLaptop(a) and not atLaptop(src) then return { error = 'Use a laptop in a courtroom to open the court system.' } end
+    -- Working at a court custody desk counts, even though the cells are usually outside the courtroom.
+    local atDesk = (action == 'custodyBoard' or action == 'bookIn' or action == 'init') and Rooms.Desk(src) ~= nil
+    if needsLaptop(a) and not atLaptop(src) and not atDesk then return { error = 'Use a laptop in a courtroom to open the court system.' } end
     data = type(data) == 'table' and data or {}
     local ok, result = pcall(fn, src, a, data)
     if not ok then

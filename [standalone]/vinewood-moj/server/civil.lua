@@ -278,12 +278,14 @@ end
 ---------------------------------------------------------------------------
 -- Hearings
 ---------------------------------------------------------------------------
-function Civil.List(c, at, courtId, by)
+function Civil.List(c, at, courtId, by, roomId)
     if Civil.Closed[c.status] or c.status == 'judgment' then return { error = 'This claim has been decided.' } end
     at = tonumber(at)
     if not at or at < U.now() then return { error = 'Pick a date and time in the future.' } end
     local court = U.court(courtId) and courtId or c.hearing_court or Courts.CivilDefault()
+    local room = roomId and Rooms.Get(roomId)
     set(c.id, { status = 'listed', hearing_at = at, hearing_court = court, hearing_open = 0 })
+    MySQL.update.await('UPDATE vw_moj_civil SET hearing_room = ? WHERE id = ?', { room and room.court_id == court and room.id or nil, c.id })
     local label = (U.court(court) or {}).label or 'County Court'
     log(c.id, by, ('Hearing listed for %s at %s.'):format(U.fmtDate(at), label))
     Webhook.Send('civil', ('Listed: %s v %s'):format(c.claimant_name or '', c.defendant_name or ''), nil, { { 'Claim', c.ref }, { 'When', U.fmtDate(at) }, { 'Court', label }, { 'By', by } }, 'blue')
@@ -296,6 +298,7 @@ function Civil.OpenHearing(c, a, src)
     if c.status ~= 'listed' and c.status ~= 'defended' and c.status ~= 'issued' then return { error = 'There is no hearing to open.' } end
     set(c.id, { hearing_open = 1, judge_name = a.name, status = c.status == 'issued' and 'issued' or 'listed' })
     local room = Rooms.LaptopRoom(src)
+    if room then MySQL.update.await('UPDATE vw_moj_civil SET hearing_room = ? WHERE id = ?', { room.id, c.id }) end
     log(c.id, U.By(a), ('Hearing opened%s.'):format(room and (' in ' .. room.label) or ''))
     Webhook.Send('civil', ('Hearing opened: %s v %s'):format(c.claimant_name or '', c.defendant_name or ''), nil, { { 'Claim', c.ref }, { 'Where', room and room.label }, { 'Judge', U.By(a) } }, 'blue')
     local where = room and room.label or c.courtLabel

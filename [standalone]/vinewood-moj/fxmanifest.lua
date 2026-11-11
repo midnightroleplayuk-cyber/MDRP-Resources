@@ -5,7 +5,7 @@ lua54 'yes'
 name 'vinewood-moj'
 author 'Vinewood Studios'
 description 'Ministry of Justice: courts, sentencing, prison, probation, unpaid work, court bail and warrants. Courtrooms with laptops and microphones. Links with vinewood-mdt.'
-version '1.11.0'
+version '1.13.0'
 
 shared_scripts {
     '@ox_lib/init.lua',
@@ -33,6 +33,7 @@ server_scripts {
     'server/videolinks.lua',
     'server/courtrooms.lua',
     'server/courts.lua',
+    'server/boards.lua',
     'server/business.lua',
     'server/civil.lua',
     'server/main.lua'
@@ -43,7 +44,8 @@ client_scripts {
     'client/prison.lua',
     'client/unpaidwork.lua',
     'client/courtrooms.lua',
-    'client/screens.lua'
+    'client/screens.lua',
+    'client/boards.lua'
 }
 
 ui_page 'web/index.html'
@@ -52,7 +54,8 @@ files {
     'web/index.html',
     'web/style.css',
     'web/app.js',
-    'web/screen.html'
+    'web/screen.html',
+    'web/board.html'
 }
 
 dependencies {

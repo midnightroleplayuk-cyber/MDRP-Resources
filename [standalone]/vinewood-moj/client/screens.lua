@@ -1,9 +1,16 @@
--- Courtroom screens: a browser (DUI) running web/screen.html, drawn onto the TV props' render
--- targets. Created only while you're inside a courtroom that has screens, so footage (and its
--- sound) is only seen and heard in that room.
+-- Courtroom screens: a browser (DUI) running web/screen.html, shown on the courtroom's TVs.
+-- Created only while you're inside a courtroom that has screens, so footage (and its sound)
+-- is only seen and heard in that room.
+--
+-- Config.Courtrooms.ScreenRender:
+--   'overlay'      (default) the picture is drawn as a panel over each TV you placed or picked.
+--                  Only those TVs show it, so the same model can be used in any number of rooms.
+--   'rendertarget' the TV model's own screen texture is replaced. GTA ties this to the model, so
+--                  every TV of that model in view shows the same thing. Only for one room per model.
 local CR = Config.Courtrooms or {}
 if CR.enabled == false then return end
 
+local OVERLAY = (CR.ScreenRender or 'overlay') ~= 'rendertarget'
 local PAGE = ('https://cfx-nui-%s/web/screen.html'):format(GetCurrentResourceName())
 local TXD, TEX            -- texture names for the current browser instance
 local serial = 0
@@ -11,7 +18,8 @@ local serial = 0
 local playing = {}      -- [roomId] = what's showing (from the server)
 local dui
 local curRoom, curKey
-local targets = {}      -- [targetName] = render target id
+local adjusting = false
+local targets = {}      -- [targetName] = render target id (rendertarget mode)
 
 local function send(msg) if dui then SendDuiMessage(dui, json.encode(msg)) end end
 
@@ -33,11 +41,79 @@ local function destroyDui()
     dui, curKey = nil, nil
 end
 
-local linked = {}   -- [modelHash] = true once linked
+local function modelHash(s)
+    if s.mode == 'pick' and s.mapModel then return s.mapModel end
+    local m = (CR.ScreenModels or {})[s.model or 1]
+    return m and joaat(m.model)
+end
 
---- model: a model name, or a hash (a TV picked from the MLO). Several models can share one target.
-local function renderTarget(name, model)
-    local hash = type(model) == 'number' and model or joaat(model)
+---------------------------------------------------------------------------
+-- Overlay geometry: a panel in front of the TV, relative to its position and heading.
+-- geo = { w, h, up, side, fwd, flip } in metres.
+---------------------------------------------------------------------------
+local dimsCache = {}
+
+local function dims(hash)
+    if dimsCache[hash] then return dimsCache[hash][1], dimsCache[hash][2] end
+    if not hash or hash == 0 or not IsModelInCdimage(hash) then return vec3(-0.6, -0.05, 0.0), vec3(0.6, 0.05, 0.7) end
+    RequestModel(hash)
+    local t = GetGameTimer() + 3000
+    while not HasModelLoaded(hash) and GetGameTimer() < t do Wait(10) end
+    local mn, mx = GetModelDimensions(hash)
+    dimsCache[hash] = { mn, mx }
+    return mn, mx
+end
+
+--- A best guess from the model's size: the front face, a little inset.
+local function defaultGeo(hash, flip)
+    local mn, mx = dims(hash)
+    return {
+        w = math.max(0.2, (mx.x - mn.x) * 0.92), h = math.max(0.15, (mx.z - mn.z) * 0.86),
+        up = (mn.z + mx.z) / 2, side = (mn.x + mx.x) / 2 * (flip and -1 or 1),
+        fwd = flip and (-mn.y + 0.012) or (mx.y + 0.012), flip = flip == true,
+    }
+end
+
+local function corners(s, g)
+    local hr = math.rad(s.h or 0.0)
+    local f = vec3(-math.sin(hr), math.cos(hr), 0.0)
+    local r = vec3(math.cos(hr), math.sin(hr), 0.0)
+    if g.flip then f, r = -f, -r end
+    local c = vec3(s.x, s.y, s.z) + f * g.fwd + r * g.side + vec3(0.0, 0.0, g.up)
+    local hw, hh = r * (g.w / 2), vec3(0.0, 0.0, g.h / 2)
+    -- Seen from in front (looking back along f), the viewer's left is +r, so the image's left edge goes there.
+    return c + hw + hh, c - hw + hh, c + hw - hh, c - hw - hh -- top-left, top-right, bottom-left, bottom-right
+end
+
+local function poly(a, b, c, ua, va, ub, vb, uc, vc, txd, tex)
+    DrawSpritePoly(a.x, a.y, a.z, b.x, b.y, b.z, c.x, c.y, c.z, 255, 255, 255, 255, txd, tex, ua, va, 1.0, ub, vb, 1.0, uc, vc, 1.0)
+end
+
+--- Two triangles each way round, so it shows whichever way the game culls them.
+--- txd/tex default to the courtroom screen's browser.
+local function drawPanel(s, g, txd, tex)
+    txd, tex = txd or TXD, tex or TEX
+    local tl, tr, bl, br = corners(s, g)
+    poly(tl, bl, tr, 0, 0, 0, 1, 1, 0, txd, tex)
+    poly(tr, bl, br, 1, 0, 0, 1, 1, 1, txd, tex)
+    poly(tl, tr, bl, 0, 0, 1, 0, 0, 1, txd, tex)
+    poly(tr, br, bl, 1, 0, 1, 1, 0, 1, txd, tex)
+end
+
+local function geoOf(s)
+    if s.geo and s.geo.w then return s.geo end
+    local hash = modelHash(s)
+    if not hash then return nil end
+    s.geo = defaultGeo(hash, false)  -- older screens with no saved fit: use the guess
+    return s.geo
+end
+
+---------------------------------------------------------------------------
+-- Render-target mode (model-wide)
+---------------------------------------------------------------------------
+local linked = {}
+
+local function renderTarget(name, hash)
     if not targets[name] then
         if not IsNamedRendertargetRegistered(name) then RegisterNamedRendertarget(name, false) end
         targets[name] = GetNamedRendertargetRenderId(name)
@@ -49,14 +125,13 @@ local function renderTarget(name, model)
     return targets[name]
 end
 
---- The render target and model of a screen point, placed or picked from the map.
-local function screenOf(s)
+local function targetOf(s)
     if s.mode == 'pick' and s.mapModel then
         local m = s.model and (CR.ScreenModels or {})[s.model]
-        return s.target or (m and m.target) or 'tvscreen', s.mapModel
+        return s.target or (m and m.target) or 'tvscreen'
     end
     local m = (CR.ScreenModels or {})[s.model or 1]
-    if m then return m.target, m.model end
+    return m and m.target
 end
 
 local function releaseTargets()
@@ -66,7 +141,9 @@ local function releaseTargets()
     targets, linked = {}, {}
 end
 
---- The courtroom with screens you're standing in, and its screen points.
+---------------------------------------------------------------------------
+-- Which room you're in, and what it's showing
+---------------------------------------------------------------------------
 local function roomHere()
     local here = GetEntityCoords(PlayerPedId())
     for _, r in ipairs(MoJRooms and MoJRooms() or {}) do
@@ -90,73 +167,151 @@ CreateThread(function()
     playing = lib.callback.await('vinewood-moj:server:screens', false) or {}
 end)
 
--- Room changes, what's playing, and volume.
 CreateThread(function()
     while true do
-        local r, screens = roomHere()
-        if r then
-            ensureDui()
-            if curRoom ~= r.id then
-                curRoom, curKey = r.id, nil
-                releaseTargets()
-            end
-            local k, p = stateKey(r.id)
-            if k ~= curKey then
-                curKey = k
-                if p then
-                    send({ action = 'play', kind = p.kind, src = p.src, label = p.label, control = p.control, fallback = p.fallback,
-                        offset = p.offset or 0, elapsed = math.max(0, GetCloudTimeAsInt() - p.startedAt) })
-                else
-                    send({ action = 'slate', room = r.label, court = Config.CourtsName })
-                end
-            end
-            -- Volume falls off with distance from the nearest screen (direct files and YouTube).
-            if p and (p.kind == 'file' or p.control) then
-                local here, best = GetEntityCoords(PlayerPedId()), 1e9
-                for _, s in ipairs(screens) do best = math.min(best, #(here - vec3(s.x, s.y, s.z))) end
-                local falloff = math.max(4.0, r.radius or 20.0)
-                send({ action = 'volume', v = (CR.ScreenVolume or 0.8) * math.max(0.15, 1.0 - best / falloff) })
-            end
+        if adjusting then
             Wait(500)
         else
-            if dui then destroyDui() releaseTargets() end
-            curRoom = nil
-            Wait(1000)
+            local r, screens = roomHere()
+            if r then
+                ensureDui()
+                if curRoom ~= r.id then
+                    curRoom, curKey = r.id, nil
+                    releaseTargets()
+                end
+                local k, p = stateKey(r.id)
+                if k ~= curKey then
+                    curKey = k
+                    if p then
+                        send({ action = 'play', kind = p.kind, src = p.src, label = p.label, control = p.control, fallback = p.fallback,
+                            offset = p.offset or 0, elapsed = math.max(0, GetCloudTimeAsInt() - p.startedAt) })
+                    else
+                        send({ action = 'slate', room = r.label, court = Config.CourtsName })
+                    end
+                end
+                -- Volume falls off with distance from the nearest screen.
+                if p and (p.kind == 'file' or p.control) then
+                    local here, best = GetEntityCoords(PlayerPedId()), 1e9
+                    for _, s in ipairs(screens) do best = math.min(best, #(here - vec3(s.x, s.y, s.z))) end
+                    local falloff = math.max(4.0, r.radius or 20.0)
+                    send({ action = 'volume', v = (CR.ScreenVolume or 0.8) * math.max(0.15, 1.0 - best / falloff) })
+                end
+                Wait(500)
+            else
+                if dui then destroyDui() releaseTargets() end
+                curRoom = nil
+                Wait(1000)
+            end
         end
     end
 end)
 
--- Draw the browser onto every screen model used in the room, every frame.
+-- Draw every frame.
 CreateThread(function()
     while true do
-        if dui and curRoom and TXD then
+        if dui and curRoom and TXD and not adjusting then
             local r, screens = roomHere()
             if r then
-                local done = {}
-                for _, s in ipairs(screens) do
-                    local target, model = screenOf(s)
-                    if target and not done[target] then
-                        done[target] = true
-                        local id = renderTarget(target, model)
-                        -- Link every other model in the room that uses this target too.
-                        for _, o in ipairs(screens) do
-                            local t2, m2 = screenOf(o)
-                            if t2 == target and m2 ~= model then renderTarget(t2, m2) end
+                if OVERLAY then
+                    for _, s in ipairs(screens) do
+                        local g = geoOf(s)
+                        if g then drawPanel(s, g) end
+                    end
+                else
+                    local done = {}
+                    for _, s in ipairs(screens) do
+                        local target, hash = targetOf(s), modelHash(s)
+                        if target and hash and not done[target] then
+                            done[target] = true
+                            local id = renderTarget(target, hash)
+                            for _, o in ipairs(screens) do
+                                local h2 = modelHash(o)
+                                if targetOf(o) == target and h2 and h2 ~= hash then renderTarget(target, h2) end
+                            end
+                            SetTextRenderId(id)
+                            SetScriptGfxDrawOrder(4)
+                            SetScriptGfxDrawBehindPausemenu(true)
+                            DrawSprite(TXD, TEX, 0.5, 0.5, 1.0, 1.0, 0.0, 255, 255, 255, 255)
+                            SetTextRenderId(GetDefaultScriptRendertargetRenderId())
                         end
-                        SetTextRenderId(id)
-                        SetScriptGfxDrawOrder(4)
-                        SetScriptGfxDrawBehindPausemenu(true)
-                        DrawSprite(TXD, TEX, 0.5, 0.5, 1.0, 1.0, 0.0, 255, 255, 255, 255)
-                        SetTextRenderId(GetDefaultScriptRendertargetRenderId())
                     end
                 end
             end
             Wait(0)
         else
-            Wait(500)
+            Wait(250)
         end
     end
 end)
+
+---------------------------------------------------------------------------
+-- Fitting the picture to a TV (admins, from /courtrooms)
+---------------------------------------------------------------------------
+MoJScreens = {}
+
+--- s = { x, y, z, h, mode, model, mapModel, geo? }. spawnModel = show a temporary TV prop while fitting.
+--- Returns the fitted geo, or nil if cancelled.
+function MoJScreens.Adjust(s, spawnModel, roomLabel, force)
+    if not OVERLAY and not force then return nil end
+    adjusting = true
+    ensureDui()
+    send({ action = 'slate', room = roomLabel or 'Court', court = Config.CourtsName, msg = 'Fit this picture to the screen' })
+    local hash = modelHash(s)
+    local prop
+    if spawnModel then
+        local mh = joaat(spawnModel)
+        if IsModelInCdimage(mh) then
+            RequestModel(mh)
+            local t = GetGameTimer() + 3000
+            while not HasModelLoaded(mh) and GetGameTimer() < t do Wait(10) end
+            prop = CreateObjectNoOffset(mh, s.x, s.y, s.z, false, false, false)
+            SetEntityHeading(prop, s.h or 0.0)
+            FreezeEntityPosition(prop, true)
+            SetEntityCollision(prop, false, false)
+        end
+    end
+    local g = s.geo and s.geo.w and { w = s.geo.w, h = s.geo.h, up = s.geo.up, side = s.geo.side, fwd = s.geo.fwd, flip = s.geo.flip }
+        or defaultGeo(hash or 0, false)
+    SendNUIMessage({ action = 'hint', text = '←/→ width · ↑/↓ height · hold Shift: move · scroll: in/out · F: other side · R: reset · E: save · Backspace: cancel' })
+    local result
+    while true do
+        Wait(0)
+        for _, c in ipairs({ 14, 15, 16, 17, 23, 24, 25, 37, 44, 45, 140, 141, 142, 172, 173, 174, 175, 261, 262 }) do DisableControlAction(0, c, true) end
+        local shift = IsControlPressed(0, 21)
+        local step = 0.004
+        if shift then
+            if IsDisabledControlPressed(0, 174) then g.side = g.side - step end
+            if IsDisabledControlPressed(0, 175) then g.side = g.side + step end
+            if IsDisabledControlPressed(0, 172) then g.up = g.up + step end
+            if IsDisabledControlPressed(0, 173) then g.up = g.up - step end
+        else
+            if IsDisabledControlPressed(0, 174) then g.w = math.max(0.1, g.w - step * 2) end
+            if IsDisabledControlPressed(0, 175) then g.w = g.w + step * 2 end
+            if IsDisabledControlPressed(0, 172) then g.h = g.h + step * 2 end
+            if IsDisabledControlPressed(0, 173) then g.h = math.max(0.1, g.h - step * 2) end
+        end
+        if IsDisabledControlJustPressed(0, 15) or IsDisabledControlJustPressed(0, 261) then g.fwd = g.fwd + 0.005 end
+        if IsDisabledControlJustPressed(0, 14) or IsDisabledControlJustPressed(0, 262) then g.fwd = g.fwd - 0.005 end
+        if IsDisabledControlJustPressed(0, 23) then g = defaultGeo(hash or 0, not g.flip) end
+        if IsDisabledControlJustPressed(0, 45) then g = defaultGeo(hash or 0, g.flip) end
+        if TXD then drawPanel(s, g) end
+        if IsControlJustReleased(0, 38) then result = g break end
+        if IsControlJustReleased(0, 177) or IsControlJustReleased(0, 200) then break end
+    end
+    if prop and DoesEntityExist(prop) then DeleteEntity(prop) end
+    SendNUIMessage({ action = 'hint', text = false })
+    adjusting, curKey = false, nil
+    if result then
+        for k, v in pairs(result) do if type(v) == 'number' then result[k] = math.floor(v * 1000 + 0.5) / 1000 end end
+    end
+    return result
+end
+
+function MoJScreens.Overlay() return OVERLAY end
+
+-- Shared with client/boards.lua: listing boards are always drawn as panels.
+MoJScreens.DrawPanel = drawPanel
+MoJScreens.GeoOf = geoOf
 
 AddEventHandler('onResourceStop', function(res)
     if res ~= GetCurrentResourceName() then return end

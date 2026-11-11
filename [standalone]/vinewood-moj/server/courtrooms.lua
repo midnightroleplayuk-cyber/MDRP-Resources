@@ -88,6 +88,15 @@ local function pos(src)
 end
 
 local COURT_ROLES = { judge = true, clerk = true, cps = true, defence = true }
+
+--- A screen's fitted picture: size and offset from the TV, in metres.
+function Rooms.CleanGeo(g)
+    if type(g) ~= 'table' then return nil end
+    local function n(v, lo, hi) v = tonumber(v) if not v then return nil end return math.max(lo, math.min(hi, v)) end
+    local out = { w = n(g.w, 0.1, 20), h = n(g.h, 0.1, 12), up = n(g.up, -5, 10), side = n(g.side, -10, 10), fwd = n(g.fwd, -5, 5), flip = g.flip == true }
+    if not (out.w and out.h and out.up and out.side and out.fwd) then return nil end
+    return out
+end
 Rooms.CourtRoles = COURT_ROLES
 
 ---------------------------------------------------------------------------
@@ -146,9 +155,11 @@ ADMIN.list = function()
     local kinds = {}
     for id, label in pairs(Courts.Kinds) do kinds[#kinds + 1] = { id = id, label = label } end
     table.sort(kinds, function(a, b) return a.label < b.label end)
-    return { rooms = Rooms.Public(), courts = Courts.Public(), kinds = kinds, roles = roles, micReach = CR.MicReach, micRange = CR.MicRange,
+    local styles = {}
+    for id, label in pairs(Boards.NameStyles) do styles[#styles + 1] = { id = id, label = label } end
+    return { rooms = Rooms.Public(), courts = Courts.Public(), kinds = kinds, roles = roles, boards = Boards.Public(), nameStyles = styles, micReach = CR.MicReach, micRange = CR.MicRange,
         laptopProp = CR.LaptopProp, micProp = CR.MicProp, voice = GetResourceState('pma-voice') == 'started',
-        target = GetResourceState('ox_target') == 'started', screens = screens }
+        target = GetResourceState('ox_target') == 'started', screens = screens, overlay = (CR.ScreenRender or 'overlay') ~= 'rendertarget' }
 end
 
 ADMIN.create = function(src, d)
@@ -190,7 +201,8 @@ ADMIN.addPoint = function(_, d)
     if p.kind ~= 'laptop' and p.kind ~= 'mic' and p.kind ~= 'custody' and p.kind ~= 'screen' then return { error = 'Unknown point.' } end
     local x, y, z = tonumber(p.x), tonumber(p.y), tonumber(p.z)
     if not x or not y or not z then return { error = 'No position.' } end
-    if r.centre and r.centre.x and #(vec3(x, y, z) - vec3(r.centre.x, r.centre.y, r.centre.z)) > r.radius + 5.0 then
+    -- Custody desks can go anywhere in the building (the cells are rarely inside the courtroom).
+    if p.kind ~= 'custody' and r.centre and r.centre.x and #(vec3(x, y, z) - vec3(r.centre.x, r.centre.y, r.centre.z)) > r.radius + 5.0 then
         return { error = 'That spot is outside the courtroom. Move the centre or make the room bigger.' }
     end
     -- mode: 'spawn' (we spawn the prop), 'pick' (an object already in the map was selected), 'spot' (just a position)
@@ -221,6 +233,7 @@ ADMIN.addPoint = function(_, d)
         label = U.trim(p.label, 48) or (p.kind == 'laptop' and 'Court laptop' or p.kind == 'custody' and 'Court custody desk'
             or p.kind == 'screen' and 'Screen' or 'Microphone'),
         model = p.kind == 'screen' and modelIndex or nil,
+        geo = p.kind == 'screen' and Rooms.CleanGeo(p.geo) or nil,
         roles = p.kind == 'laptop' and cleanRoles(p.roles) or nil,
         range = p.kind == 'mic' and tonumber(p.range) or nil,
     }
@@ -235,6 +248,7 @@ ADMIN.updatePoint = function(_, d)
     if d.label then p.label = U.trim(d.label, 48) or p.label end
     if d.roles and p.kind == 'laptop' then p.roles = cleanRoles(d.roles) end
     if d.range ~= nil and p.kind == 'mic' then p.range = type(d.range) == 'number' and math.max(3.0, d.range) or nil end
+    if d.geo and p.kind == 'screen' then p.geo = Rooms.CleanGeo(d.geo) or p.geo end
     if d.prop ~= nil and p.kind ~= 'screen' and p.mode ~= 'pick' then p.prop = d.prop == true; p.mode = p.prop and 'spawn' or 'spot' end
     save(r)
     return { ok = true }
@@ -246,6 +260,16 @@ ADMIN.removePoint = function(_, d)
     if not r or not i or not r.points[i] then return { error = 'Point not found.' } end
     table.remove(r.points, i)
     save(r)
+    return { ok = true }
+end
+
+ADMIN.boardAdd = function(src, d) return Boards.Add(src, d) end
+ADMIN.boardUpdate = function(_, d) return Boards.Update(d) end
+ADMIN.boardRemove = function(_, d) return Boards.Remove(d) end
+ADMIN.boardTeleport = function(src, d)
+    local b = Boards.Get(d.boardId)
+    if not b or not b.point or not b.point.x then return { error = 'Board not found.' } end
+    SetEntityCoords(GetPlayerPed(src), b.point.x, b.point.y, b.point.z, false, false, false, false)
     return { ok = true }
 end
 
@@ -277,6 +301,13 @@ lib.callback.register('vinewood-moj:server:roomsAdmin', function(src, action, da
     -- Log every change admins make to courtrooms.
     local WHAT = { create = 'Courtroom created', update = 'Courtroom edited', delete = 'Courtroom deleted',
         addPoint = 'Point placed', updatePoint = 'Point edited', removePoint = 'Point removed' }
+    local BOARD = { boardAdd = 'Listing board placed', boardUpdate = 'Listing board edited', boardRemove = 'Listing board removed' }
+    if r and r.ok and BOARD[action] then
+        local b = Boards.Get(r.id or data.boardId)
+        Webhook.Send('courtrooms', ('%s: %s'):format(BOARD[action], (b and b.label) or data.label or ''), nil, {
+            { 'Admin', ('%s (%s)'):format(GetPlayerName(src) or '?', Bridge.GetName(src) or '?') },
+        }, action == 'boardRemove' and 'red' or 'blue')
+    end
     local COURT = { courtCreate = 'Court created', courtUpdate = 'Court edited', courtDelete = 'Court deleted' }
     if r and r.ok and COURT[action] then
         local now = U.court(r.id or data.courtId)

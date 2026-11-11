@@ -147,6 +147,11 @@ Config.Courtrooms = {
     },
     -- Who can put footage on the screens, from a laptop in that courtroom.
     ScreenRoles = { 'judge', 'clerk', 'cps', 'defence' },
+    -- 'overlay' (default): the picture is drawn over each TV you place or pick, so only those TVs show it and the
+    -- same model works in any number of rooms. After placing a screen you fit the picture to it.
+    -- 'rendertarget': uses the model's own screen texture. GTA applies that to EVERY TV of that model in view,
+    -- so only use it with a model that isn't used anywhere else.
+    ScreenRender = 'overlay',
     -- What can be played on the screens. Set any to false to switch it off. Add your own in server/videolinks.lua.
     Providers = {
         medal = true,         -- medal.tv clips and share links

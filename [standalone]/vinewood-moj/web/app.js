@@ -229,7 +229,7 @@ function hearingsTable(rows, showCase = true) {
             const late = h.status === 'listed' && h.scheduled_at < (state.serverTime || now()) - 600;
             return `<tr class="click" data-case="${h.case_id}"><td><strong>${fmtTime(h.scheduled_at)}</strong><br><span class="muted small">${fmtDate(h.scheduled_at, false)}</span></td>
             ${showCase ? `<td>${esc(h.ref)}</td><td><span class="dot ${h.online ? 'on' : ''}" title="${h.online ? 'In the city' : 'Not in the city'}"></span>${esc(h.subject_name)}<br><span class="muted small">${chargeList(h.charges)}</span></td>` : ''}
-            <td>${esc(hType(h.type))}</td><td>${esc(courtLabel(h.court_id))}</td><td>${custodyTag(h.custody_status)}</td>
+            <td>${esc(hType(h.type))}</td><td>${esc(courtLabel(h.court_id))}${h.room_id ? `<div class="muted small">${esc(((state.cfg.rooms || []).find((x) => x.id === h.room_id) || {}).label || '')}</div>` : ''}</td><td>${custodyTag(h.custody_status)}</td>
             <td>${h.status === 'open' ? tag(h.auto ? 'Auto court' : 'In court', 'green') : late ? tag('Waiting', 'red') : ''}</td></tr>`;
         }).join('')}</table></div>`;
 }
@@ -421,9 +421,11 @@ function listModal(c) {
     formModal('List a hearing', [
         { id: 'type', label: 'Hearing', type: 'select', options: Object.entries(state.cfg.hearingTypes).map(([value, label]) => ({ value, label })), value: c.status === 'awaiting_trial' ? 'trial' : c.status === 'awaiting_sentence' ? 'sentence' : 'mention' },
         { id: 'courtId', label: 'Court', type: 'select', options: state.cfg.courts.map((x) => ({ value: x.id, label: x.label })), value: c.court_id },
+        { id: 'roomId', label: 'Courtroom', type: 'select', hint: 'Shown on listing boards. Must be a courtroom of the court above. Set automatically when a judge opens the hearing from a courtroom laptop.',
+          options: [{ value: '', label: 'Not decided yet' }].concat((state.cfg.rooms || []).map((x) => ({ value: x.id, label: `${x.label} (${courtLabel(x.court_id)})` }))) },
         { id: 'at', label: 'Date and time', type: 'datetime', value: now() + 3600 },
     ], 'List hearing', async (v) => {
-        const x = await api('listHearing', { id: c.id, ...v }, true); if (x.ok) { toast('Listed. The defendant has been notified.'); refresh(); } return x;
+        const x = await api('listHearing', { id: c.id, ...v, roomId: v.roomId ? Number(v.roomId) : null }, true); if (x.ok) { toast('Listed. The defendant has been notified.'); refresh(); } return x;
     });
 }
 
@@ -932,9 +934,10 @@ VIEWS.rooms = async (p = {}) => {
     main.innerHTML = `<div class="head"><div><span class="caption">Server admin</span><h1>Courts and courtrooms</h1></div></div>
         <h2 style="margin-top:0">Courts</h2>
         <p class="lead">The courts cases are heard in. Each court can have one or more courtrooms. A court's waypoint is where defendants are sent if it has no courtroom yet.</p>
-        <table><tr><th>Court</th><th>Type</th><th class="num">Courtrooms</th><th>Waypoint</th><th></th></tr>
+        <table><tr><th>Court</th><th>Type</th><th class="num">Courtrooms</th><th>Custody desk</th><th>Waypoint</th><th></th></tr>
             ${(r.courts || []).map((c) => `<tr><td><strong>${esc(c.label)}</strong>${c.civilDefault ? ' ' + tag('Civil default', 'green') : ''}<div class="muted small">${esc(c.id)}</div></td>
             <td>${tag(c.kindLabel || c.kind, KIND_TAG[c.kind] || '')}</td><td class="num">${c.rooms}</td>
+            <td>${c.desks ? tag(c.desks === 1 ? 'Yes' : c.desks + ' desks', 'green') : c.kind === 'county' ? '<span class="muted">Not needed</span>' : '<span class="muted">None: open a courtroom → Place a custody desk</span>'}</td>
             <td>${c.hasCoords ? 'Set' : c.rooms ? '<span class="muted">Uses its courtroom</span>' : '<span class="muted">Not set</span>'}</td>
             <td style="white-space:nowrap;text-align:right"><button class="btn secondary small" data-cedit="${esc(c.id)}">Edit</button> <button class="btn warning small" data-cdel="${esc(c.id)}">Delete</button></td></tr>`).join('')}</table>
         <div class="btn-row" style="margin-bottom:8px"><button class="btn secondary" id="cNew">New court</button></div>
@@ -946,8 +949,60 @@ VIEWS.rooms = async (p = {}) => {
             ${r.rooms.map((x) => `<tr class="click" data-room="${x.id}"><td><strong>${esc(x.label)}</strong></td><td>${esc(courtName(x.court_id))}</td>
             <td class="num">${Math.round(x.radius)} m</td><td class="num">${(x.points || []).filter((q) => q.kind === 'laptop').length}</td>
             <td class="num">${(x.points || []).filter((q) => q.kind === 'mic').length}</td></tr>`).join('')}</table>`
-            : '<p class="empty">No courtrooms yet.</p>'}`;
+            : '<p class="empty">No courtrooms yet.</p>'}
+        <div class="head" style="margin-top:28px;margin-bottom:10px"><h2 style="margin:0">Listing boards</h2><div class="actions"><button class="btn" id="bNew">Place a listing board</button></div></div>
+        <p class="lead">TVs in hallways and foyers showing today's list: time, courtroom, case, hearing and whether it's in court now.</p>
+        ${(r.boards || []).length ? `<table><tr><th>Board</th><th>Shows</th><th>Names</th><th>Picture</th><th></th></tr>${r.boards.map((b) => `<tr>
+            <td><strong>${esc(b.label)}</strong><div class="muted small">${b.point && b.point.mode === 'pick' ? 'TV in the map' : 'Spawned TV'}</div></td>
+            <td class="small">${(b.courts || []).length ? b.courts.map(courtName).map(esc).join('<br>') : 'All courts'}</td>
+            <td class="small">${esc(((r.nameStyles || []).find((x) => x.id === b.names) || {}).label || b.names)}</td>
+            <td>${b.point && b.point.geo ? tag('Fitted', 'green') : tag('Not fitted', 'amber')}</td>
+            <td style="white-space:nowrap;text-align:right"><button class="btn secondary small" data-badj="${b.id}">Adjust picture</button> <button class="btn secondary small" data-btp="${b.id}">Go to</button>
+                <button class="btn secondary small" data-bedit="${b.id}">Edit</button> <button class="btn warning small" data-brm="${b.id}">Remove</button></td></tr>`).join('')}</table>`
+            : '<p class="empty">No listing boards yet.</p>'}`;
     $$('[data-room]').forEach((t) => (t.onclick = () => VIEWS.room({ id: Number(t.dataset.room) })));
+    const boardForm = (b) => {
+        const courtChecks = (r.courts || []).map((c) => `<label><input type="checkbox" data-bcourt="${esc(c.id)}" ${b && (b.courts || []).includes(c.id) ? 'checked' : ''}> ${esc(c.label)}</label>`).join('');
+        const box = openModal(`<h2>${b ? 'Edit listing board' : 'Place a listing board'}</h2>
+            <label for="bLabel">Name</label><input type="text" id="bLabel" value="${esc(b ? b.label : '')}" placeholder="e.g. Ground floor foyer, Crown Court corridor">
+            <label>Courts it shows</label><div class="hint">None ticked = every court.</div><div class="checks">${courtChecks}</div>
+            <label for="bNames">Defendant names</label><select id="bNames">${(r.nameStyles || []).map((x) => `<option value="${esc(x.id)}" ${(b ? b.names : 'full') === x.id ? 'selected' : ''}>${esc(x.label)}</option>`).join('')}</select>
+            <div class="hint">Businesses in civil cases are always shown in full.</div>
+            ${b ? '' : `<label>How to place it</label><div class="checks">
+                <label><input type="radio" name="bMode" value="pick" checked> <strong>Use a TV already in the building</strong> (aim at it, E to choose)</label>
+                <label><input type="radio" name="bMode" value="spawn"> <strong>Spawn a TV</strong></label></div>
+                <div id="bModelWrap" class="hidden"><label for="bModel">TV model</label><select id="bModel">${(r.screens || []).map((m) => `<option value="${m.index}">${esc(m.label)}</option>`).join('')}</select></div>
+                <div class="inset small">Then fit the list to the screen: <strong>←/→</strong> width, <strong>↑/↓</strong> height, <strong>Shift</strong> to move, scroll in or out, <strong>F</strong> other side, <strong>E</strong> to save.</div>`}
+            <div id="bErr"></div><div class="btn-row"><button class="btn" id="bGo">${b ? 'Save' : 'Select it in the building'}</button><button class="btn secondary" id="bNo">Cancel</button></div>`);
+        $$('input[name=bMode]', box).forEach((x) => (x.onchange = () => {
+            const spawn = ($('input[name=bMode]:checked', box) || {}).value === 'spawn';
+            $('#bModelWrap', box).classList.toggle('hidden', !spawn);
+            $('#bGo', box).textContent = spawn ? 'Place it' : 'Select it in the building';
+        }));
+        $('#bNo', box).onclick = closeModal;
+        $('#bGo', box).onclick = async () => {
+            const label = $('#bLabel', box).value.trim();
+            if (!label) { $('#bErr', box).innerHTML = '<p class="err">Give the board a name.</p>'; return; }
+            const courts = $$('[data-bcourt]', box).filter((x) => x.checked).map((x) => x.dataset.bcourt);
+            const names = $('#bNames', box).value;
+            if (b) {
+                const x = await roomsApi('boardUpdate', { boardId: b.id, label, courts, names }, true);
+                if (x.error) { $('#bErr', box).innerHTML = `<p class="err">${esc(x.error)}</p>`; return; }
+                closeModal(); VIEWS.rooms(); return;
+            }
+            const mode = ($('input[name=bMode]:checked', box) || {}).value || 'pick';
+            const model = Number($('#bModel', box).value);
+            closeModal();
+            post('boardPlace', { label, courts, names, mode, model });
+        };
+    };
+    $('#bNew').onclick = () => boardForm(null);
+    $$('[data-bedit]').forEach((x) => (x.onclick = () => boardForm((r.boards || []).find((b) => b.id === Number(x.dataset.bedit)))));
+    $$('[data-badj]').forEach((x) => (x.onclick = () => post('boardAdjust', { boardId: Number(x.dataset.badj) })));
+    $$('[data-btp]').forEach((x) => (x.onclick = async () => { const y = await roomsApi('boardTeleport', { boardId: Number(x.dataset.btp) }); if (y.ok) toast('Teleported.'); }));
+    $$('[data-brm]').forEach((x) => (x.onclick = () => confirmModal('Remove this listing board?', async () => {
+        const y = await roomsApi('boardRemove', { boardId: Number(x.dataset.brm) }); if (y.ok) VIEWS.rooms();
+    }, 'Remove', true)));
     const courtForm = (c) => {
         const box = formModal(c ? `Edit ${c.label}` : 'New court', [
             { id: 'label', label: 'Name', type: 'text', value: c ? c.label : '', placeholder: "e.g. Sandy Shores Magistrates' Court" },
@@ -1002,13 +1057,13 @@ VIEWS.room = async (p) => {
             <button class="btn" id="addDesk"><span class="point-kind">${ICON.custody} Place a custody desk</span></button>
             <button class="btn" id="addScreen"><span class="point-kind">${ICON.screen} Place a screen</span></button>
         </div>
-        <p class="lead">Placing closes this screen. Pick something already in your MLO by aiming at it (it's outlined) and pressing <strong>E</strong>, or spawn a prop: aim, scroll to turn, <strong>↑/↓</strong> to raise or lower, <strong>E</strong> to place. <strong>Backspace</strong> cancels. Anyone within ${esc(String(r.micReach))} m of a live microphone is heard across the room.</p>
+        <p class="lead">Placing closes this screen. Pick something already in your MLO by aiming at it (it's outlined) and pressing <strong>E</strong>, or spawn a prop: aim, scroll to turn, <strong>↑/↓</strong> to raise or lower, <strong>E</strong> to place. <strong>Backspace</strong> cancels. Anyone within ${esc(String(r.micReach || 1.6))} m of a live microphone is heard across the room.</p>
         ${pts.length ? `<table><tr><th>Point</th><th>Name</th><th>Who</th><th>Prop</th><th></th></tr>${pts.map((q, i) => `<tr>
             <td><span class="point-kind">${ICON[q.kind] || ''} ${POINT_NAME[q.kind] || q.kind}</span></td>
             <td>${esc(q.label || '')}</td>
-            <td class="small">${q.kind === 'laptop' ? ((q.roles || []).length ? q.roles.map(roleName).map(esc).join(', ') : 'All court staff') : q.kind === 'custody' ? 'Police, prison officers and court staff book defendants in' : q.kind === 'screen' ? (q.mode === 'pick' ? `Map TV · render target ${esc(q.target || 'tvscreen')}` : esc(((r.screens || []).find((m) => m.index === (q.model || 1)) || {}).label || 'Screen')) : `Carries ${Math.round(q.range || r.micRange || room.radius)} m`}</td>
+            <td class="small">${q.kind === 'laptop' ? ((q.roles || []).length ? q.roles.map(roleName).map(esc).join(', ') : 'All court staff') : q.kind === 'custody' ? 'Police, prison officers and court staff book defendants in' : q.kind === 'screen' ? (q.mode === 'pick' ? (r.overlay ? `Map TV${q.geo ? ' · picture fitted' : ' · <strong>not fitted yet</strong>'}` : `Map TV · render target ${esc(q.target || 'tvscreen')}`) : esc(((r.screens || []).find((m) => m.index === (q.model || 1)) || {}).label || 'Screen')) : `Carries ${Math.round(q.range || r.micRange || room.radius)} m`}</td>
             <td>${q.mode === 'pick' ? tag('Map object', 'blue') : q.prop ? tag('Spawned', 'green') : '<span class="muted small">Marked spot</span>'}</td>
-            <td style="white-space:nowrap;text-align:right"><button class="btn secondary small" data-ptp="${i + 1}">Go to</button> <button class="btn secondary small" data-pedit="${i + 1}">Edit</button> <button class="btn warning small" data-prm="${i + 1}">Remove</button></td></tr>`).join('')}</table>`
+            <td style="white-space:nowrap;text-align:right">${q.kind === 'screen' && r.overlay ? `<button class="btn secondary small" data-padj="${i + 1}">Adjust picture</button> ` : ''}<button class="btn secondary small" data-ptp="${i + 1}">Go to</button> <button class="btn secondary small" data-pedit="${i + 1}">Edit</button> <button class="btn warning small" data-prm="${i + 1}">Remove</button></td></tr>`).join('')}</table>`
             : '<p class="empty">Nothing placed yet.</p>'}`;
 
     const reload = async () => { state.rooms = await roomsApi('list'); VIEWS.room({ id: room.id }); };
@@ -1038,13 +1093,14 @@ VIEWS.room = async (p) => {
         ];
         if (!isScreen) modes.push(['spot', 'Just mark the spot', 'No prop. Use this where the furniture is part of the building and cannot be selected.']);
         const box = openModal(`<h2>${existing ? 'Edit' : 'Place'} ${thing}</h2>
-            ${isDesk ? '<p class="lead">Defendants in custody, and in serious cases, are booked in here before their hearing. Put it in the court cells or custody suite.</p>' : ''}
-            ${isScreen ? '<p class="lead">A TV that shows video evidence played from a courtroom laptop. Every screen in the room shows the same exhibit.</p>' : ''}
+            ${isDesk ? '<p class="lead">Defendants in custody, and in serious cases, are booked in here before their hearing. Put it in the court cells or custody suite. It can be anywhere in the building: it doesn\'t need to be inside this courtroom.</p>' : ''}
+            ${isScreen ? `<p class="lead">A TV that shows video evidence played from a courtroom laptop. Every screen in this room shows the same exhibit${r.overlay ? '; TVs of the same model in other rooms are not affected' : ''}.</p>
+                ${r.overlay ? '<div class="inset small">After you place or pick it, you fit the picture to the TV: <strong>←/→</strong> width, <strong>↑/↓</strong> height, hold <strong>Shift</strong> to move it, scroll to bring it in or out, <strong>F</strong> if it\'s on the wrong side, <strong>E</strong> to save.</div>' : ''}` : ''}
             ${existing ? `<p class="small muted">${cur.mode === 'pick' ? 'Uses an object in the map' : cur.prop ? 'Spawned prop' : 'Marked spot'}. To change how it's placed, remove it and place it again.</p>` : `
             <label>How to place it</label>
             <div class="checks">${modes.map(([v, l, h], i) => `<label style="align-items:flex-start"><input type="radio" name="pMode" value="${v}" ${i === 0 ? 'checked' : ''} style="margin-top:2px"><span><strong>${l}</strong><br><span class="hint" style="margin:0">${h}</span></span></label>`).join('')}</div>`}
             ${isScreen && !existing ? `<div id="pSpawnOpts" class="hidden"><label for="pModel">TV model</label><select id="pModel">${(r.screens || []).map((m) => `<option value="${m.index}">${esc(m.label)}</option>`).join('')}</select></div>
-                <div id="pPickOpts"><label for="pTarget">Render target</label><div class="hint">Only needed for a custom TV model. Known TVs fill this in automatically. Most GTA TVs use <strong>tvscreen</strong>.</div>
+                <div id="pPickOpts" ${r.overlay ? 'style="display:none"' : ''}><label for="pTarget">Render target</label><div class="hint">Only needed for a custom TV model. Known TVs fill this in automatically. Most GTA TVs use <strong>tvscreen</strong>.</div>
                 <input type="text" id="pTarget" value="tvscreen"></div>` : ''}
             <label for="pLabel">Name</label><input type="text" id="pLabel" value="${esc(cur.label || '')}" placeholder="${isLaptop ? "e.g. Judge's bench, Clerk, Prosecution, Defence" : isDesk ? 'e.g. Court custody suite' : isScreen ? 'e.g. Jury screen, Public gallery' : 'e.g. Bench, Witness box, Dock'}">
             ${isLaptop ? `<label>Who can use it</label><div class="hint">None ticked = all court staff.</div><div class="checks">${roles.map((x) => `<label><input type="checkbox" data-role="${esc(x.id)}" ${(cur.roles || []).includes(x.id) ? 'checked' : ''}> ${esc(x.label)}</label>`).join('')}</div>` : ''}
@@ -1070,7 +1126,7 @@ VIEWS.room = async (p) => {
                 closeModal(); reload(); return;
             }
             const m = mode();
-            if (isScreen && m === 'pick' && !/^[A-Za-z0-9_]+$/.test($('#pTarget', box).value.trim())) {
+            if (isScreen && m === 'pick' && !r.overlay && !/^[A-Za-z0-9_]+$/.test($('#pTarget', box).value.trim())) {
                 $('#pErr', box).innerHTML = '<p class="err">Enter a render target name (letters, numbers and _ only).</p>'; return;
             }
             // Read everything from the form before closing it (closing empties the modal).
@@ -1085,6 +1141,7 @@ VIEWS.room = async (p) => {
     $('#addDesk').onclick = () => pointForm('custody');
     $('#addScreen').onclick = () => pointForm('screen');
     $$('[data-ptp]').forEach((b) => (b.onclick = async () => { const x = await roomsApi('teleport', { id: room.id, index: Number(b.dataset.ptp) }); if (x.ok) toast('Teleported.'); }));
+    $$('[data-padj]').forEach((b) => (b.onclick = () => post('roomsAdjust', { id: room.id, index: Number(b.dataset.padj) })));
     $$('[data-pedit]').forEach((b) => (b.onclick = () => { const i = Number(b.dataset.pedit); pointForm(pts[i - 1].kind, pts[i - 1], i); }));
     $$('[data-prm]').forEach((b) => (b.onclick = () => confirmModal('Remove this point?', async () => {
         const x = await roomsApi('removePoint', { id: room.id, index: Number(b.dataset.prm) }); if (x.ok) reload();
@@ -1287,8 +1344,10 @@ VIEWS.claim = async (p) => {
     const on = (id, fn) => { if ($(id)) $(id).onclick = fn; };
     on('#cvList', () => formModal('List a hearing', [
         { id: 'courtId', label: 'Court', type: 'select', options: (state.cfg.courts || []).map((x) => ({ value: x.id, label: x.label })), value: c.hearing_court || state.cfg.civilCourt },
+        { id: 'roomId', label: 'Courtroom', type: 'select', hint: 'Shown on listing boards.',
+          options: [{ value: '', label: 'Not decided yet' }].concat((state.cfg.rooms || []).map((x) => ({ value: x.id, label: `${x.label} (${courtLabel(x.court_id)})` }))) },
         { id: 'at', label: 'Date and time', type: 'datetime', value: now() + 3600 },
-    ], 'List hearing', async (v) => done('Listed. Both parties have been told.')(await api('civilListHearing', { id: c.id, ...v }, true))));
+    ], 'List hearing', async (v) => done('Listed. Both parties have been told.')(await api('civilListHearing', { id: c.id, ...v, roomId: v.roomId ? Number(v.roomId) : null }, true))));
     on('#cvSol', () => formModal('Solicitors', [
         { id: 'side', label: 'Acting for', type: 'select', options: [{ value: 'defendant', label: 'The defendant' }, { value: 'claimant', label: 'The claimant' }] },
         { id: 'cid', label: "Solicitor's citizen ID", type: 'text', hint: 'Leave empty to remove the solicitor.' },

@@ -14,7 +14,7 @@ CREATE TABLE IF NOT EXISTS vw_moj_hearings (
     id INT AUTO_INCREMENT PRIMARY KEY, case_id INT NOT NULL, cid VARCHAR(64) NOT NULL, type VARCHAR(16) NOT NULL,
     court_id VARCHAR(16), scheduled_at BIGINT NOT NULL, status VARCHAR(16) NOT NULL DEFAULT 'listed',
     order_id INT NULL, judge_name VARCHAR(96), judge_cid VARCHAR(64), auto TINYINT(1) NOT NULL DEFAULT 0, result TEXT,
-    reminded INT NOT NULL DEFAULT 0, booked_at BIGINT NULL, booked_by VARCHAR(96) NULL, booking_notes TEXT NULL,
+    reminded INT NOT NULL DEFAULT 0, room_id INT NULL, booked_at BIGINT NULL, booked_by VARCHAR(96) NULL, booking_notes TEXT NULL,
     created_at BIGINT NOT NULL, updated_at BIGINT NOT NULL,
     INDEX idx_case (case_id), INDEX idx_status (status, scheduled_at), INDEX idx_cid (cid)
 );
@@ -72,7 +72,7 @@ CREATE TABLE IF NOT EXISTS vw_moj_civil (
     claimant_sol_cid VARCHAR(64), claimant_sol_name VARCHAR(96), defendant_sol_cid VARCHAR(64), defendant_sol_name VARCHAR(96),
     amount INT NOT NULL DEFAULT 0, remedy VARCHAR(255), particulars TEXT, fee INT NOT NULL DEFAULT 0,
     status VARCHAR(24) NOT NULL DEFAULT 'issued', response LONGTEXT, response_due BIGINT NULL,
-    hearing_at BIGINT NULL, hearing_court VARCHAR(16), hearing_open TINYINT(1) NOT NULL DEFAULT 0, judge_name VARCHAR(96),
+    hearing_at BIGINT NULL, hearing_court VARCHAR(16), hearing_room INT NULL, hearing_open TINYINT(1) NOT NULL DEFAULT 0, judge_name VARCHAR(96),
     judgment LONGTEXT, judgment_due BIGINT NULL, total_due INT NOT NULL DEFAULT 0, paid INT NOT NULL DEFAULT 0,
     ccj TINYINT(1) NOT NULL DEFAULT 0, log LONGTEXT, exhibits LONGTEXT NULL, created_at BIGINT NOT NULL, updated_at BIGINT NOT NULL, closed_at BIGINT NULL,
     INDEX idx_claimant (claimant_cid), INDEX idx_defendant (defendant_cid), INDEX idx_status (status),
@@ -90,4 +90,10 @@ CREATE TABLE IF NOT EXISTS vw_moj_courts (
     id VARCHAR(16) PRIMARY KEY, label VARCHAR(96) NOT NULL, kind VARCHAR(16) NOT NULL DEFAULT 'magistrates',
     coords LONGTEXT, civil_default TINYINT(1) NOT NULL DEFAULT 0, sort INT NOT NULL DEFAULT 0,
     created_at BIGINT NOT NULL, updated_at BIGINT NOT NULL
+);
+ALTER TABLE vw_moj_hearings ADD COLUMN IF NOT EXISTS room_id INT NULL;
+ALTER TABLE vw_moj_civil ADD COLUMN IF NOT EXISTS hearing_room INT NULL;
+CREATE TABLE IF NOT EXISTS vw_moj_boards (
+    id INT AUTO_INCREMENT PRIMARY KEY, label VARCHAR(96) NOT NULL, courts LONGTEXT, names VARCHAR(12) NOT NULL DEFAULT 'full',
+    point LONGTEXT NOT NULL, created_by VARCHAR(96), created_at BIGINT NOT NULL, updated_at BIGINT NOT NULL
 );

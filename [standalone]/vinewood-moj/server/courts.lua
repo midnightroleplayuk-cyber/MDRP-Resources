@@ -44,11 +44,14 @@ end
 --- For the UI: courts with their coords as plain tables and how many rooms each has.
 function Courts.Public()
     local out = {}
-    local rooms = {}
-    for _, r in ipairs(Rooms.Public()) do rooms[r.court_id] = (rooms[r.court_id] or 0) + 1 end
+    local rooms, desks = {}, {}
+    for _, r in ipairs(Rooms.Public()) do
+        rooms[r.court_id] = (rooms[r.court_id] or 0) + 1
+        for _, p in ipairs(r.points or {}) do if p.kind == 'custody' then desks[r.court_id] = (desks[r.court_id] or 0) + 1 end end
+    end
     for _, c in ipairs(Config.Courts) do
         out[#out + 1] = { id = c.id, label = c.label, kind = c.kind, kindLabel = Courts.Kinds[c.kind] or c.kind,
-            hasCoords = c.coords ~= nil, civilDefault = c.civilDefault, rooms = rooms[c.id] or 0 }
+            hasCoords = c.coords ~= nil, civilDefault = c.civilDefault, rooms = rooms[c.id] or 0, desks = desks[c.id] or 0 }
     end
     return out
 end

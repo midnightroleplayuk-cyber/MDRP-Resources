@@ -167,6 +167,19 @@ Every screen in the room shows the same thing. Each showing of a saved exhibit i
 
 **Photos as evidence:** image links (screenshots, CCTV stills, documents) show full screen with the exhibit name, just like videos.
 
+**Fitting the picture:** after you place or pick a screen, a live preview appears on the TV. Fit it to the screen:
+
+- **←/→** width, **↑/↓** height
+- hold **Shift** with the arrows to move it
+- **scroll** to bring it in or out
+- **F** if it's on the wrong side of the TV
+- **R** to reset
+- **E** to save
+
+To re-fit a screen later, use **Adjust picture** on it in the editor.
+
+**Each TV is independent.** The picture is drawn over the TVs you placed or picked and nothing else, so the same TV model can be used in as many courtrooms and courts as you like, each showing its own exhibit. (`ScreenRender = 'rendertarget'` switches back to the model's own screen texture. GTA ties that to the model, so every TV of that model in view shows the same thing. Only use it for a model that isn't used anywhere else.)
+
 **Notes:**
 
 - The picture and sound only exist for people inside that courtroom. They start when you walk in and stop when you leave.
@@ -176,11 +189,39 @@ Every screen in the room shows the same thing. Each showing of a saved exhibit i
 - Screens using the same render target (`tvscreen` for the flat TVs) all show the same picture. That's how one exhibit appears on every TV in the room.
 - In-game browsers sometimes block sound until a page has been interacted with. If a clip plays silently on your server, use direct video files, which fall back to playing muted rather than not at all.
 
+## Listing boards
+
+TVs for hallways and foyers that show the day's court list, like the screens outside real courtrooms.
+
+**Placing one:** go to **`/courtrooms` → Listing boards → Place a listing board**.
+
+1. Give it a name, such as "Ground floor foyer".
+2. Tick which courts it shows. None ticked means every court.
+3. Choose how defendant names appear: full names, surnames only, or initials.
+4. Pick a TV that's already in the building, or spawn one.
+5. Fit the list to the screen, the same way as courtroom screens.
+
+Boards aren't tied to a courtroom, so they can go anywhere. Use **Adjust picture**, **Edit**, **Go to** and **Remove** to manage them later.
+
+**What it shows:** today's hearings in time order:
+
+- the time
+- the courtroom
+- the case: "R v Danny Walsh", or "Paddy's Car Parts v Lewis Carter" for civil claims
+- the hearing type
+- a live status: **Waiting**, **In court** (pulsing), **Adjourned**, **Concluded** or **Did not attend**.
+
+Finished hearings stay on the board for an hour, faded. Long lists page through every 10 seconds. A board showing several courts adds the court name under each courtroom. The board refreshes every 20 seconds while anyone is near it. Up to three nearby boards are drawn at once, and they're only drawn when someone is close.
+
+**Courtrooms on the list:** clerks and judges can choose the courtroom when listing a hearing (criminal or civil). When a judge opens a hearing from a courtroom laptop, that room is recorded automatically. Until either happens, the board shows *To be confirmed*. The court lists in `/moj` show the courtroom too.
+
+Businesses in civil cases are always shown by their full name, whatever the board's name setting.
+
 ## Court custody desk
 
 Defendants brought in by police, held on remand, or facing serious charges are booked in at a custody desk before their hearing.
 
-**Setup:** in `/courtrooms`, open the courtroom and choose **Place a custody desk** (in the court cells or custody suite). A court only enforces booking in once it has a desk, so nothing changes until you place one.
+**Setup:** in `/courtrooms`, open any courtroom of that court and choose **Place a custody desk**. The desk can be **anywhere in the building**, usually the cells or custody suite; it doesn't have to be inside the courtroom. The Courts list shows which courts have a desk. A court only enforces booking in once it has one, so nothing changes until you place it. Staff working at a desk aren't blocked by `CourtRolesNeedLaptop`.
 
 **Who has to be booked in** (`Config.CustodyDesk`):
 
