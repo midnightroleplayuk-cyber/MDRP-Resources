@@ -8,11 +8,13 @@ local ANIMS = {
     assess = { dict = 'amb@medic@standing@kneel@base', clip = 'base' },
     tourniquet = { dict = 'amb@medic@standing@tendtodead@idle_a', clip = 'idle_a' },
     cpr = { dict = 'mini@cpr@char_a@cpr_str', clip = 'cpr_pumpchest' },
+    rouse = { dict = 'amb@medic@standing@kneel@base', clip = 'base' },
 }
 
 local LABELS = {
     assess = 'Checking airway, breathing and circulation',
     tourniquet = 'Applying tourniquet',
+    rouse = 'Talking to the patient and tapping their shoulders',
 }
 
 function Treatment.IsOpen() return open end

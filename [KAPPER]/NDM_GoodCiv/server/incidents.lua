@@ -19,6 +19,12 @@ function Incidents.IsPatient(src) return byPatient[src] ~= nil end
 function Incidents.GetByPatient(src) return byPatient[src] and incidents[byPatient[src]] end
 function Incidents.GetResponding(src) return byResponder[src] and incidents[byResponder[src]] end
 
+---osp's active bleeding for src, or nil when osp wounds aren't in use.
+function Incidents.OspBleeding(src)
+    if not (Config.Conditions.Osp and Config.Conditions.Osp.Enabled) then return nil end
+    return Bridge.OspBleeding(src)
+end
+
 ---Roll the patient's starting condition from what their client reports.
 local function rollCondition(src)
     local report = Player(src).state['goodciv:patient'] or {}
@@ -31,8 +37,13 @@ local function rollCondition(src)
         state.conscious = false
         -- Cardiac arrest only at stage 2 (no signs of life). Last stand = breathing, can crawl.
         state.breathing = report.stage ~= 2
-        local chance = Config.Conditions.MajorBleedChance[report.damage or 'other'] or Config.Conditions.MajorBleedChance.other
-        if math.random() < chance then state.bleeding = 'major' end
+        local osp = Incidents.OspBleeding(src)
+        if osp then
+            if osp >= Config.Conditions.Osp.MajorBleedThreshold then state.bleeding = 'major' end
+        else
+            local chance = Config.Conditions.MajorBleedChance[report.damage or 'other'] or Config.Conditions.MajorBleedChance.other
+            if math.random() < chance then state.bleeding = 'major' end
+        end
     end
     return state
 end
@@ -119,6 +130,8 @@ function Incidents.Create(patient, origin)
         origin = origin,
         createdAt = now(),
         stage = (Player(patient).state['goodciv:patient'] or {}).stage or 0,
+        attacker = (Player(patient).state['goodciv:patient'] or {}).attacker,
+        treated = {},
         state = state,
         assessed = false,
         responders = {},
@@ -145,6 +158,14 @@ function Incidents.Close(inc, reason)
     end
     TriggerClientEvent('goodciv:client:patientClosed', inc.patient, reason and L(reason))
     if Incidents.OnClosed then Incidents.OnClosed(inc, reason) end
+    local names = {}
+    for src in pairs(inc.responders) do names[#names + 1] = Logs.Player(src) end
+    Logs.Send('incidents', ('Call #%d closed'):format(inc.id), 'blue', {
+        { 'Patient', Logs.Player(inc.patient) },
+        { 'Outcome', inc.handedOverAt and ('Handed over at ' .. inc.handedOverAt) or reason or 'closed', true },
+        { 'Duration', ('%dm %02ds'):format((now() - inc.createdAt) // 60, (now() - inc.createdAt) % 60), true },
+        { 'Responders', #names > 0 and table.concat(names, '\n') or 'none' },
+    })
     GoodCiv.Debug(('incident %d closed (%s)'):format(inc.id, reason or 'none'))
 end
 
@@ -160,15 +181,11 @@ function Incidents.RemoveResponder(inc, src)
     end
     TriggerClientEvent('goodciv:client:incidentClosed', src, inc.id)
     TriggerClientEvent('goodciv:client:toast', inc.patient, 'warning', L('responder_dropped'))
+    Logs.Send('incidents', ('Responder left call #%d'):format(inc.id), 'orange', {
+        { 'Responder', Logs.Player(src) },
+        { 'Patient', Logs.Player(inc.patient) },
+    })
     Incidents.Sync(inc)
-end
-
-function Incidents.Reward(inc, amount)
-    if not Config.Rewards.Enabled or amount <= 0 then return end
-    for src in pairs(inc.responders) do
-        Bridge.AddMoney(src, amount)
-        TriggerClientEvent('goodciv:client:toast', src, 'success', L('reward', amount))
-    end
 end
 
 RegisterNetEvent('goodciv:server:accept', function(id)
@@ -190,6 +207,13 @@ RegisterNetEvent('goodciv:server:accept', function(id)
     TriggerClientEvent('goodciv:client:toast', src, 'success', L('accepted'))
     TriggerClientEvent('goodciv:client:toast', inc.patient, 'info', L('responder_en_route', Bridge.GetName(src)))
     if Incidents.OnAccepted then Incidents.OnAccepted(inc, src) end
+    local rc = pedCoords(src)
+    Logs.Send('incidents', ('Call #%d accepted'):format(inc.id), 'yellow', {
+        { 'Responder', Logs.Player(src) },
+        { 'Patient', Logs.Player(inc.patient) },
+        { 'Distance', rc and ('%dm'):format(math.floor(#(rc - inc.coords))) or '?', true },
+        { 'Responders', ('%d / %d'):format(inc.responderCount, Config.Alerts.MaxResponders), true },
+    })
 
     if inc.responderCount >= Config.Alerts.MaxResponders then
         dismissAlerts(inc, 'alert_filled')
@@ -241,6 +265,24 @@ CreateThread(function()
                     end
                     Incidents.Sync(inc)
                 end
+            end
+
+            -- Follow osp's real bleeding: new wounds start a major bleed again, and a bleed
+            -- treated through osp (by a medic or anyone else) counts as controlled.
+            local osp = Incidents.OspBleeding(inc.patient)
+            if osp then
+                local threshold = Config.Conditions.Osp.MajorBleedThreshold
+                local before = inc.state.bleeding
+                if before == 'major' and osp < threshold then
+                    inc.state.bleeding = 'controlled'
+                elseif before == 'none' and osp >= threshold
+                    or before == 'controlled' and osp >= (inc.controlledBleed or 0) + threshold then
+                    inc.state.bleeding = 'major'
+                    for r in pairs(inc.responders) do
+                        TriggerClientEvent('goodciv:client:toast', r, 'error', L('bleeding_again'))
+                    end
+                end
+                if inc.state.bleeding ~= before then Incidents.Sync(inc) end
             end
 
             if report and not report.downed and not inc.transport and not inc.handingOver then

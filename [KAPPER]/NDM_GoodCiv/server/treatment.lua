@@ -2,6 +2,8 @@
 -- then asks to complete. The server owns the patient state and validates both steps.
 
 local T = Config.Treatment
+-- Item = '' means no item needed, same as nil.
+if T.Tourniquet.Item == '' then T.Tourniquet.Item = nil end
 
 local function pedCoords(src)
     local ped = GetPlayerPed(src)
@@ -50,6 +52,10 @@ actions.tourniquet = {
             end
         end
         inc.state.bleeding = 'controlled'
+        -- osp: tourniquet the bleeding limbs / pressure on torso and head wounds for real.
+        if Incidents.OspBleeding(inc.patient) and Bridge.OspControlBleeding(inc.patient) then
+            inc.controlledBleed = Bridge.OspBleeding(inc.patient) or 0
+        end
         return 'success', L('tourniquet_done')
     end,
 }
@@ -71,12 +77,46 @@ actions.cpr = {
         if math.random() < chance then
             inc.state.breathing = true
             -- Patient gets up; the incident closes as 'resolved' once their client reports it.
-            if T.CPR.WakeOnSuccess and Bridge.WakeUp(inc.patient) then
+            if T.CPR.WakeOnSuccess and Bridge.WakeUp(inc.patient, src) then
                 toast(inc.patient, 'warning', L('cpr_woken'))
             end
             return 'success', L('cpr_success')
         end
         return 'warning', L('cpr_fail')
+    end,
+}
+
+---Shared checks for an unconscious-but-breathing patient.
+local function unconsciousCheck(inc)
+    if not inc.assessed then return L('assess_first') end
+    if inc.state.conscious then return L('is_conscious') end
+    if not inc.state.breathing then return L('not_breathing') end
+    if inc.state.bleeding == 'major' then return L('bleed_first') end
+end
+
+actions.rouse = {
+    duration = function() return T.Rouse.Duration end,
+    check = function(inc, src)
+        local err = unconsciousCheck(inc)
+        if err then return err end
+        local last = inc.lastRouse and inc.lastRouse[src]
+        if last and os.time() - last < T.Rouse.Cooldown then return L('busy') end
+    end,
+    apply = function(inc, src)
+        inc.lastRouse = inc.lastRouse or {}
+        inc.lastRouse[src] = os.time()
+        inc.rouseAttempts = (inc.rouseAttempts or 0) + 1
+        local chance = T.Rouse.BaseChance + T.Rouse.PerAttemptBonus * (inc.rouseAttempts - 1)
+        GoodCiv.Debug(('rouse attempt %d chance %.2f'):format(inc.rouseAttempts, chance))
+        if math.random() < chance then
+            inc.state.conscious = true
+            -- Patient gets up; the incident closes as 'resolved' once their client reports it.
+            if Bridge.WakeUp(inc.patient, src) then
+                toast(inc.patient, 'warning', L('cpr_woken'))
+            end
+            return 'success', L('rouse_success')
+        end
+        return 'warning', L('rouse_fail')
     end,
 }
 
@@ -113,8 +153,23 @@ RegisterNetEvent('goodciv:server:completeAction', function(name, result)
     if err then
         toast(src, 'error', err)
     else
+        -- Any real treatment attempt (not just assessing) earns a share of the reward.
+        if name ~= 'assess' then Incidents.MarkTreated(inc, src) end
         local kind, msg = def.apply(inc, src, result)
         toast(src, kind, msg)
+        if name ~= 'assess' then
+            local fields = {
+                { 'Responder', Logs.Player(src) },
+                { 'Patient', Logs.Player(inc.patient) },
+                { 'Result', msg },
+            }
+            if name == 'cpr' then
+                local q = tonumber(type(result) == 'table' and result.quality) or 0
+                fields[#fields + 1] = { 'CPR quality', ('%d%%'):format(math.floor(q * 100)), true }
+            end
+            Logs.Send('treatment', ('Call #%d: %s'):format(inc.id, name),
+                kind == 'success' and 'green' or kind == 'error' and 'red' or 'yellow', fields)
+        end
     end
     Incidents.Sync(inc)
 end)
@@ -142,8 +197,15 @@ RegisterNetEvent('goodciv:server:load', function(netId)
     end
     local hospital = GoodCiv.NearestHospital(GetEntityCoords(veh))
     inc.transport = { vehicle = netId, driver = src, hospital = hospital }
+    Incidents.MarkTreated(inc, src)
     TriggerClientEvent('goodciv:client:enterVehicle', inc.patient, netId)
     toast(src, 'success', L('loaded', hospital.label))
+    Logs.Send('treatment', ('Call #%d: patient loaded'):format(inc.id), 'blue', {
+        { 'Driver', Logs.Player(src) },
+        { 'Patient', Logs.Player(inc.patient) },
+        { 'Heading to', hospital.label, true },
+        { 'Location', Logs.Coords(pedCoords(src)), true },
+    })
     Incidents.Sync(inc)
 end)
 
@@ -179,6 +241,11 @@ RegisterNetEvent('goodciv:server:crash', function()
         inc.state.breathing = false
     end
     for r in pairs(inc.responders) do toast(r, 'error', L('crash')) end
+    Logs.Send('treatment', ('Call #%d: crash with patient onboard'):format(inc.id), 'red', {
+        { 'Driver', Logs.Player(src) },
+        { 'Patient', Logs.Player(inc.patient) },
+        { 'Patient arrested', inc.state.breathing and 'no' or 'yes', true },
+    })
     Incidents.Sync(inc)
 end)
 

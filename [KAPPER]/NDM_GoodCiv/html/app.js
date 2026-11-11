@@ -80,6 +80,7 @@
         if (s.bleeding === 'major') return { text: 'Life-threatening bleeding. Apply a tourniquet first.', urgent: true, action: 'tourniquet' };
         if (!inc.assessed) return { text: 'Check the patient: are they responsive and breathing?', action: 'assess' };
         if (!s.breathing) return { text: 'Not breathing. Start CPR now and keep going until they breathe.', urgent: true, action: 'cpr' };
+        if (!s.conscious) return { text: `Unresponsive but breathing. Try to rouse them: talk loudly, tap their shoulders. Or load them and get them to ${inc.hospital || 'hospital'}.`, action: 'rouse' };
         return { text: `Patient is stable. Load them into a vehicle and get them to ${inc.hospital || 'hospital'}.`, action: 'load' };
     }
 
@@ -133,6 +134,7 @@
             assess: !inc.transport,
             tourniquet: !inc.transport && s.bleeding === 'major',
             cpr: !inc.transport && inc.assessed && !s.breathing,
+            rouse: !inc.transport && inc.assessed && s.breathing && !s.conscious && s.bleeding !== 'major',
             load: !inc.transport && inc.stable,
             unload: !!inc.transport,
         };

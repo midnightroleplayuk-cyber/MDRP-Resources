@@ -88,6 +88,7 @@ function Carriers.Toggle(src)
     if Carriers.IsCarrier(src) then
         Carriers.Set(src, false)
         TriggerClientEvent('goodciv:client:toast', src, 'info', L('carrier_off'))
+        Logs.Send('carriers', 'Volunteer signed off', 'grey', { { 'Player', Logs.Player(src) } })
         return
     end
     local reason = Carriers.Ineligible(src)
@@ -97,6 +98,7 @@ function Carriers.Toggle(src)
     end
     Carriers.Set(src, true)
     TriggerClientEvent('goodciv:client:toast', src, 'success', L('carrier_on'))
+    Logs.Send('carriers', 'Volunteer signed up', 'green', { { 'Player', Logs.Player(src) } })
 end
 
 if Config.Carriers.Command then
@@ -154,6 +156,12 @@ RegisterNetEvent('goodciv:server:submitTraining', function(answers)
         if tonumber(answers[i]) == q.answer then score = score + 1 end
     end
 
+    Logs.Send('carriers', score >= Config.Training.PassMark and 'Training passed' or 'Training failed',
+        score >= Config.Training.PassMark and 'green' or 'orange', {
+            { 'Player', Logs.Player(src) },
+            { 'Score', ('%d / %d (pass mark %d)'):format(score, #questions, Config.Training.PassMark) },
+        })
+
     if score >= Config.Training.PassMark then
         Carriers.SetCertified(src, true)
         TriggerClientEvent('goodciv:client:toast', src, 'success', L('training_passed', score, #questions))
@@ -183,6 +191,10 @@ RegisterCommand('goodcivcert', function(src, args)
     end
     local on = args[2] ~= 'off'
     Carriers.SetCertified(target, on)
+    Logs.Send('admin', on and 'Certification granted' or 'Certification removed', 'purple', {
+        { 'Admin', src == 0 and 'Server console' or Logs.Player(src) },
+        { 'Target', Logs.Player(target) },
+    })
     local msg = ('%s is %s GoodCiv certified.'):format(Bridge.GetName(target), on and 'now' or 'no longer')
     if src == 0 then print(msg) else TriggerClientEvent('goodciv:client:toast', src, 'success', msg) end
 end, false)

@@ -30,8 +30,11 @@ dependencies {
 
 server_scripts {
     'bridge/server.lua',
+    'server/webhooks.lua',
+    'server/logs.lua',
     'server/carriers.lua',
     'server/incidents.lua',
+    'server/rewards.lua',
     'server/treatment.lua',
     'server/dispatch.lua',
     'server/vinewood.lua',

@@ -65,7 +65,7 @@ return {
     },
 },
 
-['gang_tablet'] = {
+    ['gang_tablet'] = {
     label = 'Gang tablet',
     weight = 500,
     stack = false,
@@ -5700,6 +5700,14 @@ return {
     close = true,
     description = 'Used to craft a hatchet',
 },
+['kp_coin'] = {
+    label = 'KP Coin',
+    weight = 10,
+    stack = true,
+    close = true,
+    description = 'A rare coin used for currency',
+},
+
 
 -- VINEWOOD PD JOB
 ['handcuffs'] = {
@@ -5868,9 +5876,7 @@ return {
     stack = false,
     close = true,
     consume = 0,
-    client = { export = 'hf1_tv.useTelevision' }
+    client = { export = 'hf1_tv.useTelevision' },
     },
-
-
 
 }
