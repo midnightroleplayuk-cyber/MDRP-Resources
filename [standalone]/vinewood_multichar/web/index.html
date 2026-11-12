@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+    <meta charset="UTF-8">
+    <title>Vinewood Multicharacter</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Big+Shoulders+Display:wght@500;700;800&family=Cinzel:wght@600;700&family=Figtree:wght@400;500;600;700&family=Oswald:wght@500;600&family=Playfair+Display:wght@600;700&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- ───────────── Character selection ───────────── -->
+<section id="select" class="screen" hidden>
+    <div class="vignette" aria-hidden="true"></div>
+
+    <div class="bar bar-top">
+        <div class="brand" id="brand"></div>
+        <div class="slots-meter" id="slotsMeter"></div>
+    </div>
+
+    <div class="frame" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+
+    <svg class="tether" id="tether" aria-hidden="true"><polyline id="tetherLine" /><circle id="tetherDot" r="4" /></svg>
+    <article class="info" id="info" hidden></article>
+
+    <div class="side">
+        <nav class="roster" id="roster" aria-label="Characters"></nav>
+        <p class="nav-hint"><kbd>↑</kbd><kbd>↓</kbd> browse <kbd>Enter</kbd> play</p>
+    </div>
+
+    <div class="bar bar-bottom">
+        <div class="detail" id="detail"></div>
+        <div class="actions" id="actions"></div>
+    </div>
+
+    <aside class="create" id="create" hidden>
+        <h2>New character</h2>
+        <p class="sub" id="createSlot"></p>
+        <form id="createForm" autocomplete="off" novalidate>
+            <div class="row2">
+                <label>First name<input name="firstname" maxlength="16" required></label>
+                <label>Last name<input name="lastname" maxlength="16" required></label>
+            </div>
+            <label>Date of birth<input name="dob" type="date" required></label>
+            <fieldset class="seg">
+                <legend>Gender</legend>
+                <label><input type="radio" name="gender" value="male" checked><span>Male</span></label>
+                <label><input type="radio" name="gender" value="female"><span>Female</span></label>
+            </fieldset>
+            <label>Nationality<select name="nationality" id="nationality"></select></label>
+            <p class="err" id="createErr" role="alert"></p>
+            <div class="form-actions">
+                <button type="button" class="btn ghost" id="createCancel">Cancel</button>
+                <button type="submit" class="btn primary">Create character</button>
+            </div>
+        </form>
+    </aside>
+</section>
+
+<!-- Delete confirmation -->
+<div class="modal" id="deleteModal" hidden>
+    <div class="modal-card" role="dialog" aria-labelledby="delTitle">
+        <h3 id="delTitle">Delete character</h3>
+        <p id="delText"></p>
+        <label id="delConfirmWrap">Type the full name to confirm<input id="delConfirm" autocomplete="off"></label>
+        <div class="form-actions">
+            <button class="btn ghost" id="delCancel">Keep character</button>
+            <button class="btn danger" id="delGo" disabled>Delete for good</button>
+        </div>
+    </div>
+</div>
+
+<!-- ───────────── Admin ───────────── -->
+<section id="admin" class="admin" hidden>
+    <aside class="admin-nav">
+        <div class="admin-brand" id="adminBrand"></div>
+        <nav class="tabs" role="tablist">
+            <button data-tab="scenes" class="on">Scenes</button>
+            <button data-tab="slots">Slots</button>
+            <button data-tab="players">Players</button>
+            <button data-tab="discord">Discord</button>
+            <button data-tab="appearance">Appearance</button>
+        </nav>
+        <p class="admin-fw" id="adminFw"></p>
+    </aside>
+    <div class="admin-main">
+        <header class="admin-head">
+            <h2 id="adminTitle">Scenes</h2>
+            <button class="icon-btn" id="adminClose" aria-label="Close">✕</button>
+        </header>
+        <div class="admin-body" id="adminBody"></div>
+    </div>
+</section>
+
+<!-- ───────────── Scene editor ───────────── -->
+<section id="editor" class="editor" hidden>
+    <header class="ed-head">
+        <div class="ed-title">
+            <span class="ed-kicker">Scene editor <span class="ed-id" id="edId"></span></span>
+            <input id="edName" class="ed-name" maxlength="48" aria-label="Scene name">
+        </div>
+        <button class="btn primary small" data-op="save">Save</button>
+    </header>
+    <nav class="ed-tabs" id="edTabs"></nav>
+    <div class="ed-body" id="edBody"></div>
+    <footer class="ed-foot">
+        <button class="btn ghost" data-op="playIntro">Play path</button>
+        <button class="btn ghost" data-op="preview">Preview all</button>
+        <button class="btn ghost" data-op="exit">Exit</button>
+    </footer>
+</section>
+
+<div class="hints" id="hints" hidden></div>
+
+<div class="picker" id="picker" hidden>
+    <div class="sv" id="pickSv"><i class="knob" id="pickSvKnob"></i></div>
+    <div class="hue" id="pickHue"><i class="knob" id="pickHueKnob"></i></div>
+    <div class="pick-row">
+        <span class="pick-chip" id="pickChip"></span>
+        <input id="pickHex" maxlength="7" spellcheck="false" aria-label="Hex colour">
+    </div>
+    <div class="pick-swatches" id="pickSwatches"></div>
+</div>
+
+<div class="loading" id="loading" hidden><span class="spin"></span><span id="loadingText"></span></div>
+<div class="toasts" id="toasts" aria-live="polite"></div>
+
+<script src="app.js"></script>
+</body>
+</html>
