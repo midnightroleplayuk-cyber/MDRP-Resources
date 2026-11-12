@@ -143,12 +143,14 @@ Config.Hospitals = {
             icon = 61,
             color = 6,
             scale = 0.8,
-            coords = vector3(-267.9306, 6318.0181, 32.4452), -- TODO: placeholder (pharmacy position), raycast a proper spot
+            coords = vector3(-251.83, 6314.68, 32.44), -- TODO: placeholder (pharmacy position), raycast a proper spot
         },
-        checking = {vector4(-253.05, 6324.81, 32.45, 215.52)
-    },
-        duty = {vector4(-255.76, 6332.22, 32.45, 38.03)
-    },
+        checking = {
+            vector4(-253.05, 6324.81, 32.45, 215.52)
+        },
+        duty = {
+            vector4(-255.76, 6332.22, 32.45, 38.03)
+        },
         helicopter = {},
         shop = {
             vector3(-257.9102, 6338.9126, 32.4071),
