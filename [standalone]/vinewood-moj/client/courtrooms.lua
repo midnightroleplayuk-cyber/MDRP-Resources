@@ -240,6 +240,81 @@ function MoJPA.RoomAt(pos)
     return best
 end
 
+---------------------------------------------------------------------------
+-- /mojpa: test the courtroom PA. Shows what the speakers are doing, marks mics and speakers,
+-- and plays a chime from each speaker so you can check where they are.
+---------------------------------------------------------------------------
+local paTest = false
+
+local function nameOf(serverId)
+    local p = GetPlayerFromServerId(serverId)
+    return (p ~= -1 and GetPlayerName(p)) or ('ID ' .. serverId)
+end
+
+local function chimeSpeakers(r)
+    CreateThread(function()
+        for i, sp in ipairs(speakersOf(r)) do
+            if not paTest then return end
+            PlaySoundFromCoord(-1, 'SELECT', sp.x + 0.0, sp.y + 0.0, sp.z + 0.0, 'HUD_FRONTEND_DEFAULT_SOUNDSET', false, 25, false)
+            lib.notify({ title = 'Speaker test', description = ('Chime from speaker %d: %s'):format(i, sp.label or 'Speaker'), duration = 1500 })
+            Wait(1600)
+        end
+    end)
+end
+
+RegisterCommand('mojpa', function()
+    paTest = not paTest
+    if not paTest then SendNUIMessage({ action = 'hint', text = false }) return end
+    local here = GetEntityCoords(PlayerPedId())
+    local r = MoJPA.RoomAt(here)
+    if r then chimeSpeakers(r) end
+    CreateThread(function()
+        local tick = 0
+        while paTest do
+            local pos = GetEntityCoords(PlayerPedId())
+            local room = MoJPA.RoomAt(pos)
+            local me = GetPlayerServerId(PlayerId())
+            local lines = {}
+            if not room then
+                lines[#lines + 1] = 'Speaker test: you are not inside a courtroom.'
+            else
+                local sp = speakersOf(room)
+                local nearest
+                for _, s in ipairs(sp) do
+                    local d = #(pos - vec3(s.x, s.y, s.z))
+                    nearest = (not nearest or d < nearest) and d or nearest
+                end
+                local talkers, iAmLive = {}, false
+                for _, id in ipairs(liveMics[room.id] or {}) do
+                    if id == me then iAmLive = true else talkers[#talkers + 1] = nameOf(id) end
+                end
+                lines[#lines + 1] = ('%s · %s · PA %s · pma-voice %s'):format(room.label,
+                    #sp > 0 and (#sp .. ' speaker(s), nearest ' .. ('%.1f m'):format(nearest)) or 'no speakers (room-wide volume)',
+                    CR.PA ~= false and 'on' or 'OFF', GetResourceState('pma-voice') == 'started' and 'running' or 'NOT RUNNING')
+                lines[#lines + 1] = ('You: %s · Live at mics: %s · You hear them at %d%%'):format(
+                    iAmLive and 'LIVE at a mic (others hear you through the speakers)' or (activeMic and 'at a mic' or 'not at a mic'),
+                    #talkers > 0 and table.concat(talkers, ', ') or 'nobody else',
+                    math.floor(MoJPA.VolumeAt(room, pos) * 100 + 0.5))
+                -- mark mics (green when live) and speakers (with their full-volume ring)
+                for i, p in ipairs(room.points or {}) do
+                    if p.kind == 'mic' then
+                        local live = activeMic == key(room.id, i)
+                        DrawMarker(28, p.x, p.y, p.z + 0.25, 0, 0, 0, 0, 0, 0, 0.12, 0.12, 0.12, live and 0 or 255, live and 200 or 221, live and 80 or 0, 220, false, false, 2, false, nil, nil, false)
+                        DrawMarker(1, p.x, p.y, p.z - 1.0, 0, 0, 0, 0, 0, 0, (CR.MicReach or 1.6) * 2, (CR.MicReach or 1.6) * 2, 0.08, 255, 221, 0, 80, false, false, 2, false, nil, nil, false)
+                    elseif p.kind == 'speaker' then
+                        DrawMarker(28, p.x, p.y, p.z + 0.35, 0, 0, 0, 0, 0, 0, 0.14, 0.14, 0.14, 29, 112, 184, 230, false, false, 2, false, nil, nil, false)
+                        local rr = math.min(CR.SpeakerRange or 12.0, 30.0) * 0.5
+                        DrawMarker(25, p.x, p.y, (Zones.IsPoly(room) and room.shape.minZ or p.z - 1.0) + 0.3, 0, 0, 0, 0, 0, 0, rr * 2, rr * 2, 1.0, 29, 112, 184, 90, false, false, 2, false, nil, nil, false)
+                    end
+                end
+            end
+            tick = tick + 1
+            if tick % 15 == 1 then SendNUIMessage({ action = 'hint', text = table.concat(lines, '  |  ') .. '  ·  /mojpa to stop' }) end
+            Wait(0)
+        end
+    end)
+end, false)
+
 local function clearOverride(id)
     MumbleSetVolumeOverrideByServerId(id, -1.0)
     overridden[id] = nil

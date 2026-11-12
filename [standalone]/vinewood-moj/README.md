@@ -120,6 +120,14 @@ Microphones play through the courtroom's **speakers**. Anyone at a live micropho
 
 If someone at a mic is also on the radio with you, pma-voice and the PA both set their volume. The PA wins while they're live at the mic.
 
+**Testing it: `/mojpa`.** pma-voice never plays your own voice back to you, so you can't hear yourself through the speakers. `/mojpa` (a toggle) shows what the PA is doing instead:
+
+- a live readout: the room, whether **you** are live at a mic, who else is live, the volume you hear them at, and the nearest speaker
+- markers on every microphone (yellow, green while you're live, with the 1.6 m pickup ring) and every speaker (blue, with its full-volume ring)
+- a chime played from each speaker in turn when you start it, so you can check where they are on your own.
+
+To test the voice path, use two people or a second account: one stands at a mic until the readout says **LIVE**, the other walks to the back of the room. Their readout should show the first person under "Live at mics" with a volume of at least 35%.
+
 ### Room areas: draw the shape
 
 Each courtroom has an **area**, which decides who's "in" that room for its screens, microphones and laptops. New rooms start as a circle from where you stood. For accurate rooms, open the room and use **Draw the room's shape**:
