@@ -282,7 +282,7 @@ Config.vendors = {
         },
     },
         ["seed_store2"] = {
-        coords = vector3(-1146.90, -485.42, 49.15),
+        coords = vector3(280.8, 205.02, 103.37),
         heading = 250.0,
         model = "g_m_y_ballasout_01",
         idleAnim = {
