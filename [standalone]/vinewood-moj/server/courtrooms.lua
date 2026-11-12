@@ -79,8 +79,7 @@ function Rooms.ClearLaptop(src) laptopRoom[src], deskAt[src] = nil, nil end
 
 --- Does this court have a custody desk placed in any of its courtrooms?
 function Rooms.HasDesk(courtId)
-    local court = U.court(courtId)
-    if court and court.desks and #court.desks > 0 then return true end
+    if Courts.HasDeskFor(courtId, 'custody') then return true end
     for _, r in pairs(list) do
         if r.court_id == courtId then
             for _, p in ipairs(r.points or {}) do if p.kind == 'custody' then return true end end
@@ -99,12 +98,12 @@ function Rooms.Desk(src)
     if d.court then
         local c = U.court(d.court)
         if not c then return nil end
-        return { court_id = c.id, label = d.label or c.label, courtLabel = c.label }, at
+        return { court_id = c.id, label = d.label or c.label, courtLabel = c.label, serves = d.serves or { c.id }, kind = d.kind or 'custody' }, at
     end
     local r = list[d.room]
     if not r then return nil end
     local c = U.court(r.court_id)
-    return { court_id = r.court_id, label = r.label, courtLabel = c and c.label or r.label }, at
+    return { court_id = r.court_id, label = r.label, courtLabel = c and c.label or r.label, serves = { r.court_id }, kind = 'custody' }, at
 end
 
 local function pos(src)
@@ -163,12 +162,27 @@ lib.callback.register('vinewood-moj:server:openCourtDesk', function(src, courtId
     if not p then return { error = 'This custody desk is not set up.' } end
     if #(GetEntityCoords(GetPlayerPed(src)) - vec3(p.x, p.y, p.z)) > 4.0 then return { error = 'You need to be at the desk.' } end
     local a = U.Access(src)
+    local kind = p.kind or 'custody'
+    local roles = kind == 'front' and ((Config.FrontDesk or {}).Roles or { 'clerk', 'judge' }) or ((Config.CustodyDesk or {}).Roles or {})
     local ok = false
-    for _, role in ipairs((Config.CustodyDesk or {}).Roles or {}) do if a and role == a.role then ok = true end end
-    if not ok then return { error = 'Only police, prison officers and court staff can use the custody desk.' } end
-    deskAt[src] = { court = c.id, label = ('%s · %s'):format(c.label, p.label or 'Custody suite'), point = { x = p.x, y = p.y, z = p.z } }
+    for _, role in ipairs(roles) do if a and role == a.role then ok = true end end
+    if not ok then
+        return { error = kind == 'front' and 'The front desk system is for court staff. Use "Check in for my hearing" instead.'
+            or 'Only police, prison officers and court staff can use the custody desk.' }
+    end
+    local label = ('%s · %s'):format(c.label, p.label or (kind == 'front' and 'Front desk' or 'Custody suite'))
+    deskAt[src] = { court = c.id, label = label, point = { x = p.x, y = p.y, z = p.z }, serves = Courts.Serves(c, p), kind = kind }
     laptopRoom[src] = nil
-    return { role = a.role, room = ('%s · %s'):format(c.label, p.label or 'Custody suite') }
+    return { role = a.role, room = label, kind = kind }
+end)
+
+-- Anyone: check yourself in for your hearing at a front desk.
+lib.callback.register('vinewood-moj:server:selfCheckIn', function(src, courtId, index)
+    if (Config.FrontDesk or {}).enabled == false then return { error = 'The front desk is closed.' } end
+    local c, p = Courts.Desk(courtId, index)
+    if not p or (p.kind or 'custody') ~= 'front' then return { error = 'This desk is not a front desk.' } end
+    if #(GetEntityCoords(GetPlayerPed(src)) - vec3(p.x, p.y, p.z)) > 4.0 then return { error = 'You need to be at the desk.' } end
+    return FrontDesk.SelfCheckIn(src, Courts.Serves(c, p))
 end)
 
 AddEventHandler('playerDropped', function() laptopRoom[source], deskAt[source] = nil, nil end)

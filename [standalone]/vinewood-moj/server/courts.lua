@@ -59,7 +59,7 @@ function Courts.Public()
     for _, c in ipairs(Config.Courts) do
         out[#out + 1] = { id = c.id, label = c.label, kind = c.kind, kindLabel = Courts.Kinds[c.kind] or c.kind,
             hasCoords = c.coords ~= nil, civilDefault = c.civilDefault, rooms = rooms[c.id] or 0, desks = desks[c.id] or 0,
-            deskList = c.desks or {} }
+            deskList = c.desks or {}, hasCustody = Courts.HasDeskFor(c.id, 'custody'), hasFront = Courts.HasDeskFor(c.id, 'front') }
     end
     return out
 end
@@ -146,7 +146,7 @@ function Courts.Desks()
     local out = {}
     for _, c in ipairs(Config.Courts) do
         for i, d in ipairs(c.desks or {}) do
-            out[#out + 1] = { courtId = c.id, court = c.label, index = i, label = d.label, point = d }
+            out[#out + 1] = { courtId = c.id, court = c.label, index = i, label = d.label, point = d, kind = d.kind or 'custody', serves = Courts.Serves(c, d) }
         end
     end
     return out
@@ -168,12 +168,18 @@ function Courts.AddDesk(d)
     local x, y, z = tonumber(p.x), tonumber(p.y), tonumber(p.z)
     if not x then return { error = 'No position.' } end
     local mode = (p.mode == 'pick' or p.mode == 'spot') and p.mode or 'spawn'
+    local kind = d.kind == 'front' and 'front' or 'custody'
+    -- Other courts this desk also handles (e.g. one custody suite for the magistrates' and Crown Court).
+    local also = {}
+    for _, id in ipairs(type(d.serves) == 'table' and d.serves or {}) do
+        if id ~= c.id and U.court(id) then also[#also + 1] = id end
+    end
     c.desks = c.desks or {}
-    if #c.desks >= 10 then return { error = 'A court can have up to 10 custody desks.' } end
+    if #c.desks >= 10 then return { error = 'A court can have up to 10 desks.' } end
     c.desks[#c.desks + 1] = {
-        x = x, y = y, z = z, h = tonumber(p.h) or 0.0, mode = mode, prop = mode == 'spawn',
+        x = x, y = y, z = z, h = tonumber(p.h) or 0.0, mode = mode, prop = mode == 'spawn', kind = kind, also = also,
         mapModel = mode == 'pick' and math.floor(tonumber(p.modelHash) or 0) or nil,
-        label = U.trim(p.label, 48) or 'Court custody suite',
+        label = U.trim(p.label, 48) or (kind == 'front' and 'Front desk' or 'Court custody suite'),
     }
     saveDesks(c)
     return { ok = true }
@@ -186,6 +192,25 @@ function Courts.RemoveDesk(d)
     table.remove(c.desks, i)
     saveDesks(c)
     return { ok = true }
+end
+
+--- Every court a desk handles: its own court plus any it was set to also serve.
+function Courts.Serves(c, d)
+    local out = { c.id }
+    for _, id in ipairs(d.also or {}) do if U.court(id) then out[#out + 1] = id end end
+    return out
+end
+
+--- Is there a desk of this kind (custody / front) that handles courtId?
+function Courts.HasDeskFor(courtId, kind)
+    for _, c in ipairs(Config.Courts) do
+        for _, d in ipairs(c.desks or {}) do
+            if (d.kind or 'custody') == kind then
+                for _, id in ipairs(Courts.Serves(c, d)) do if id == courtId then return true end end
+            end
+        end
+    end
+    return false
 end
 
 function Courts.Desk(courtId, index)

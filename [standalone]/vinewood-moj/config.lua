@@ -220,6 +220,18 @@ Config.CustodyDesk = {
 }
 
 ---------------------------------------------------------------------------
+-- Front desk (reception): for everyone not coming from custody. People on bail and the parties to
+-- civil claims check in for their hearing; court staff see who has arrived. Placed in
+-- /courtrooms → Courts → Place a desk → Front desk.
+---------------------------------------------------------------------------
+Config.FrontDesk = {
+    enabled = true,
+    Roles = { 'clerk', 'judge' },   -- who can open the front desk system (anyone can check themselves in)
+    CheckInBefore = 120,            -- minutes before a hearing you can check in
+    CheckInAfter = 60,              -- ...and up to this long after its listed time
+}
+
+---------------------------------------------------------------------------
 -- Civil claims (County Court): one person takes another to court for money, property,
 -- a broken agreement or an injunction. Solicitors issue them for their clients.
 ---------------------------------------------------------------------------

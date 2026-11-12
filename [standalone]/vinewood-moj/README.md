@@ -290,7 +290,7 @@ Businesses in civil cases are always shown by their full name, whatever the boar
 
 Defendants brought in by police, held on remand, or facing serious charges are booked in at a custody desk before their hearing.
 
-**Setup:** custody desks belong to the **court**, not a courtroom. In **`/courtrooms` → Courts**, use **Place a desk** on the court. Put it in the building's custody suite or cells; it can be anywhere. A big building can have more than one. The **Custody desks** list under the courts shows them all, with **Go to** and **Remove**. A court only enforces booking in once it has a desk, so nothing changes until you place one. Staff at a desk aren't blocked by `CourtRolesNeedLaptop`. (Desks placed inside a courtroom by an earlier version still work, and count as that court's desks.)
+**Setup:** custody desks belong to the **court**, not a courtroom. In **`/courtrooms` → Courts**, use **Place a desk** → **Custody desk** on the court, and tick *Also handles cases for* to let one custody suite serve several courts (for example the magistrates' and Crown Court in one building). Put it in the building's custody suite or cells; it can be anywhere. A big building can have more than one. The **Custody desks** list under the courts shows them all, with **Go to** and **Remove**. A court only enforces booking in once a custody desk handles it. If a case needs producing but its court has none, the case page warns you. Staff at a desk aren't blocked by `CourtRolesNeedLaptop`. (Desks placed inside a courtroom by an earlier version still work, and count as that court's desks.)
 
 **Who has to be booked in** (`Config.CustodyDesk`):
 
@@ -299,6 +299,8 @@ Defendants brought in by police, held on remand, or facing serious charges are b
 | In police custody or remanded (`RequireFor`) | Must be **produced from custody**. Police or prison officers bring them to the desk. |
 | Serious case on bail: Crown Court, or any indictable-only charge (`Serious`) | Must **surrender to the custody of the court** at the desk. |
 | Anyone else | No change: they just attend. |
+
+**When a hearing is listed:** for a defendant in custody, police and prison are told to produce them at the custody desk, with the time. A bailed defendant in a serious case is told to surrender at the custody desk by then.
 
 **Booking in:** police, prison officers or clerks (`Roles`) use the desk through ox_target. It opens on the laptop screen with today's list for that court: who needs booking in, why, their courtroom, and whether they're at the desk. The defendant must be within `BookInRange` (12 m).
 
@@ -309,6 +311,25 @@ When booking someone in, the officer **chooses which courtroom they're going to*
 - The judge can't mark them present. The hearing panel says why, and for prisoners suggests adjourning instead of issuing a warrant.
 - The auto court waits. Police and prison staff get a "not produced" reminder every `NotProducedAlertMinutes`.
 - A bailed defendant in a serious case who hasn't surrendered `SurrenderMinutes` after their hearing time is treated as failing to surrender, and a warrant is issued. People in custody never get a warrant for not being produced.
+
+## Front desk (reception)
+
+A front desk is where everyone **not** coming from custody checks in for court: people on bail, and both parties to civil claims.
+
+**Setup:** in `/courtrooms` → Courts, use **Place a desk** → **Front desk**, and put it in the entrance. Like custody desks, one desk can **handle several courts** in the same building, so tick the others under *Also handles cases for*.
+
+**Checking in:** a player walks up and uses **Check in for my hearing** (ox_target). It finds their hearings in the next 2 hours (or up to 1 hour late), checks them in, and tells them which courtroom to go to. Anyone who should be at the custody desk instead is told so. Business bosses check in for their business's claims.
+
+**Front desk system** (clerks and judges, via the desk's second ox_target option): today's list for the courts the desk handles, with who has checked in and when, who is coming from custody, and a **Check in** button for people who report to you in person. Civil claims show the claimant and defendant separately.
+
+When someone checks in:
+
+- the judge is told
+- the case log records it
+- the judge's attendance step shows "Checked in at the front desk 17:42"
+- the listing boards show **Arrived**.
+
+Defendants on bail are told to check in at the front desk when their hearing is listed. `Config.FrontDesk` sets who can use the desk system and the check-in window.
 
 ## Civil claims (County Court)
 

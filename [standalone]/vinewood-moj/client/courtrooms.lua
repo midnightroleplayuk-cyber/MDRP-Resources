@@ -73,20 +73,35 @@ local function openCourtDesk(courtId, index)
     if not r or r.error then
         return lib.notify({ title = Config.CourtsName, description = r and r.error or 'The desk is not responding.', type = 'error' })
     end
-    MoJUI.Open('custody', r.role, { device = (Config.UI and Config.UI.Device and Config.UI.Device.laptop) or 'laptop', room = r.room })
+    MoJUI.Open(r.kind == 'front' and 'front' or 'custody', r.role, { device = (Config.UI and Config.UI.Device and Config.UI.Device.laptop) or 'laptop', room = r.room })
 end
 
+--- One option, or a list of options (the first gets E, the second G without ox_target).
 local function addTarget(c, option)
+    local opts = option[1] and option or { option }
     if hasTarget() then
-        zones[#zones + 1] = exports.ox_target:addSphereZone({ coords = c + vec3(0.0, 0.0, 0.15), radius = CR.TargetRadius or 0.7, debug = false, options = { option } })
+        zones[#zones + 1] = exports.ox_target:addSphereZone({ coords = c + vec3(0.0, 0.0, 0.15), radius = CR.TargetRadius or 0.7, debug = false, options = opts })
     else
+        local keys = { 38, 47 }
+        local text = {}
+        for i, o in ipairs(opts) do if keys[i] then text[#text + 1] = ('[%s] %s'):format(i == 1 and 'E' or 'G', o.label) end end
         points[#points + 1] = lib.points.new({
             coords = c, distance = 1.5,
-            onEnter = function() lib.showTextUI('[E] ' .. option.label) end,
+            onEnter = function() lib.showTextUI(table.concat(text, '  ')) end,
             onExit = function() lib.hideTextUI() end,
-            nearby = function() if IsControlJustReleased(0, 38) then option.onSelect() end end,
+            nearby = function()
+                for i, o in ipairs(opts) do if keys[i] and IsControlJustReleased(0, keys[i]) then o.onSelect() end end
+            end,
         })
     end
+end
+
+local function selfCheckIn(courtId, index)
+    local r = lib.callback.await('vinewood-moj:server:selfCheckIn', false, courtId, index)
+    if not r or r.error then
+        return lib.notify({ title = 'Front desk', description = r and r.error or 'The desk is not responding.', type = 'error' })
+    end
+    for _, n in ipairs(r.notes or {}) do lib.notify({ title = 'Front desk', description = n, type = r.ok and 'success' or 'inform', duration = 8000 }) end
 end
 
 local function build()
@@ -106,8 +121,16 @@ local function build()
             end
         end
         local courtId, index = d.courtId, d.index
-        addTarget(c, { name = 'moj_custody', icon = 'fas fa-user-lock', label = ('%s: custody desk'):format(d.court or 'Court'),
-            onSelect = function() openCourtDesk(courtId, index) end })
+        if (d.kind or 'custody') == 'front' then
+            addTarget(c, {
+                { name = 'moj_checkin', icon = 'fas fa-clipboard-check', label = 'Check in for my hearing', onSelect = function() selfCheckIn(courtId, index) end },
+                { name = 'moj_front', icon = 'fas fa-desktop', label = ('%s: front desk system'):format(d.court or 'Court'),
+                  onSelect = function() openCourtDesk(courtId, index) end },
+            })
+        else
+            addTarget(c, { name = 'moj_custody', icon = 'fas fa-user-lock', label = ('%s: custody desk'):format(d.court or 'Court'),
+                onSelect = function() openCourtDesk(courtId, index) end })
+        end
     end
     for _, r in ipairs(rooms) do
         for i, p in ipairs(r.points or {}) do
@@ -729,7 +752,7 @@ RegisterNUICallback('deskPlace', function(d, cb)
         if at then
             local point = { mode = mode, label = d.label }
             for k, v in pairs(at) do point[k] = v end
-            local r = lib.callback.await('vinewood-moj:server:roomsAdmin', false, 'courtDeskAdd', { courtId = d.courtId, point = point })
+            local r = lib.callback.await('vinewood-moj:server:roomsAdmin', false, 'courtDeskAdd', { courtId = d.courtId, point = point, kind = d.kind, serves = d.serves })
             if r and r.error then lib.notify({ title = 'Custody desk', description = r.error, type = 'error' })
             else lib.notify({ title = 'Custody desk', description = 'Placed.', type = 'success' }) end
         end

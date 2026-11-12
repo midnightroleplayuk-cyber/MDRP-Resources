@@ -74,12 +74,13 @@ function Boards.Feed(b)
     local rows = {}
     local recent = U.now() - 3600   -- finished hearings stay on the board for an hour
 
-    for _, h in ipairs(MySQL.query.await([[SELECT h.id, h.type, h.court_id, h.scheduled_at, h.status, h.room_id, h.updated_at, h.booked_at,
+    for _, h in ipairs(MySQL.query.await([[SELECT h.id, h.type, h.court_id, h.scheduled_at, h.status, h.room_id, h.updated_at, h.booked_at, h.checked_in_at,
             c.ref, c.subject_name FROM vw_moj_hearings h JOIN vw_moj_cases c ON c.id = h.case_id
         WHERE h.scheduled_at BETWEEN ? AND ? AND (h.status IN ('listed', 'open') OR (h.status IN ('done', 'adjourned', 'fta') AND h.updated_at >= ?))
         ORDER BY h.scheduled_at ASC LIMIT 120]], { from, to, recent }) or {}) do
         if inCourts(h.court_id) then
             local st = STATUS[h.status] or { h.status, 'wait' }
+            if h.status == 'listed' and (h.checked_in_at or h.booked_at) then st = { 'Arrived', 'arr' } end
             local court = U.court(h.court_id)
             rows[#rows + 1] = {
                 at = h.scheduled_at, ref = h.ref, title = 'R v ' .. styled(h.subject_name, b.names),
@@ -91,7 +92,7 @@ function Boards.Feed(b)
 
     if Config.Civil and Config.Civil.enabled ~= false then
         for _, c in ipairs(MySQL.query.await([[SELECT id, ref, claimant_name, claimant_kind, defendant_name, defendant_kind, hearing_at, hearing_court,
-                hearing_room, hearing_open, status FROM vw_moj_civil WHERE hearing_at BETWEEN ? AND ? AND status IN ('listed', 'defended', 'issued')
+                hearing_room, hearing_open, status, checkins FROM vw_moj_civil WHERE hearing_at BETWEEN ? AND ? AND status IN ('listed', 'defended', 'issued')
             ORDER BY hearing_at ASC LIMIT 60]], { from, to }) or {}) do
             if inCourts(c.hearing_court) then
                 local open = U.flag(c.hearing_open)
@@ -100,7 +101,8 @@ function Boards.Feed(b)
                     at = c.hearing_at, ref = c.ref,
                     title = ('%s v %s'):format(styled(c.claimant_name, b.names, c.claimant_kind == 'business'), styled(c.defendant_name, b.names, c.defendant_kind == 'business')),
                     hearing = 'Civil hearing', court = court and court.label or '', room = c.hearing_room and roomName[c.hearing_room] or nil,
-                    status = open and 'In court' or 'Waiting', tone = open and 'live' or 'wait',
+                    status = open and 'In court' or (next(U.decode(c.checkins)) and 'Arrived' or 'Waiting'),
+                    tone = open and 'live' or (next(U.decode(c.checkins)) and 'arr' or 'wait'),
                 }
             end
         end

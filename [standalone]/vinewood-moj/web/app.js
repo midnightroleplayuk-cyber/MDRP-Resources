@@ -124,8 +124,8 @@ function drawShell() {
         $('#nav').classList.add('hidden');
         return;
     }
-    if (state.mode === 'custody') {
-        $('#svcSub').textContent = 'Court custody';
+    if (state.mode === 'custody' || state.mode === 'front') {
+        $('#svcSub').textContent = state.mode === 'front' ? 'Front desk' : 'Court custody';
         $('#who').innerHTML = `<strong>${esc(state.me?.name || '')}</strong>${esc(state.me?.label || '')}`;
         $('#nav').classList.add('hidden');
         return;
@@ -162,6 +162,11 @@ window.addEventListener('message', async (e) => {
         if (m.mode === 'portal') {
             state.view = 'portal';
             await VIEWS.portal();
+        } else if (m.mode === 'front') {
+            const r = await api('init');
+            if (r.error) return close();
+            state.me = r.me; state.cfg = r.cfg; state.view = 'front';
+            await VIEWS.front();
         } else if (m.mode === 'custody') {
             const r = await api('init');
             if (r.error) return close();
@@ -362,6 +367,7 @@ VIEWS.case = async (p) => {
         </div></div>
         ${activeWarrants.map((w) => `<div class="banner red"><strong>${esc(state.cfg.warrantTypes?.[w.type] || w.type)}</strong>${esc(w.reason || '')} <span class="muted">(${fmtDate(w.created_at)})</span></div>`).join('')}
         ${c.custodyNow ? `<div class="banner amber"><strong>In custody: ${esc(state.cfg.prisonKinds?.[c.custodyNow.kind] || c.custodyNow.kind)}</strong>${c.custodyNow.kind === 'remand' ? 'Held on remand until the court decides.' : `${Math.max(0, c.custodyNow.release_minutes - c.custodyNow.served_minutes)} minutes left before release.`}</div>` : ''}
+        ${c.noDesk ? `<div class="banner amber"><b>No custody desk at ${esc(c.courtLabel)}</b><br>This defendant should be ${c.custody_status === 'police_custody' || c.custody_status === 'remand' ? 'produced from custody' : 'surrendering to the court'}, but this court has no custody desk, so booking in is skipped. An admin can add one in /courtrooms → Courts → Place a desk (or let another court's desk serve this court).</div>` : ''}
         ${open ? hearingPanel(c, open) : ''}
         ${!open && next ? `<div class="panel"><h3>Next hearing</h3><p style="margin:0"><strong>${esc(hType(next.type))}</strong> on ${fmtDate(next.scheduled_at)} at ${esc(courtLabel(next.court_id))}</p>
             ${next.scheduled_at < now() - 60 ? `<p class="muted small">Due. ${state.cfg.autoCourt ? 'The auto court will take it if no judge opens it.' : ''}</p>` : ''}
@@ -475,7 +481,7 @@ function hearingPanel(c, h) {
 
     return `<div class="panel hearing"><h2>${esc(hType(h.type))}: in court</h2>
         <p class="muted" style="margin-top:-4px">${esc(c.courtLabel)} · opened by ${esc(h.judge_name || '')} · defendant ${c.online ? 'in the city' : '<strong>not in the city</strong>'}</p>
-        ${step('Attendance', `${c.production ? (h.booked_at
+        ${step('Attendance', `${h.checked_in_at ? `<p class="small" style="margin:2px 0 6px">${tag('Checked in', 'blue')} at the front desk ${fmtTime(h.checked_in_at)}${h.checked_in_by ? ` · ${esc(h.checked_in_by)}` : ''}</p>` : ''}${c.production ? (h.booked_at
                 ? `<p class="small" style="margin:2px 0 6px">${tag('Booked in', 'green')} at the court custody desk ${fmtTime(h.booked_at)} by ${esc(h.booked_by || '')}${h.booking_notes ? ` · ${esc(h.booking_notes)}` : ''}</p>`
                 : `<div class="inset" style="margin:4px 0 8px"><strong>${esc(c.productionLabel)}.</strong> Not booked in yet. They must be booked in at the court custody desk before they can be marked present.</div>`) : ''}
             <div class="btn-row" style="margin-top:4px"><button class="btn secondary small" id="hPresent" ${c.production && !h.booked_at ? 'disabled' : ''}>Defendant present</button>
@@ -956,18 +962,21 @@ VIEWS.rooms = async (p = {}) => {
     main.innerHTML = `<div class="head"><div><span class="caption">Server admin</span><h1>Courts and courtrooms</h1></div></div>
         <h2 style="margin-top:0">Courts</h2>
         <p class="lead">The courts cases are heard in. Each court can have one or more courtrooms. A court's waypoint is where defendants are sent if it has no courtroom yet.</p>
-        <table><tr><th>Court</th><th>Type</th><th class="num">Courtrooms</th><th>Custody desk</th><th>Waypoint</th><th></th></tr>
+        <table><tr><th>Court</th><th>Type</th><th class="num">Courtrooms</th><th>Desks</th><th>Waypoint</th><th></th></tr>
             ${(r.courts || []).map((c) => `<tr><td><strong>${esc(c.label)}</strong>${c.civilDefault ? ' ' + tag('Civil default', 'green') : ''}<div class="muted small">${esc(c.id)}</div></td>
             <td>${tag(c.kindLabel || c.kind, KIND_TAG[c.kind] || '')}</td><td class="num">${c.rooms}</td>
-            <td>${c.desks ? tag(c.desks === 1 ? '1 desk' : c.desks + ' desks', 'green') : c.kind === 'county' ? '<span class="muted">Not needed</span>' : '<span class="muted">None</span>'}
-                ${c.kind !== 'county' ? ` <button class="link small" data-cdesk="${esc(c.id)}">Place a desk</button>` : ''}</td>
+            <td>${c.kind === 'county' ? (c.hasFront ? tag('Front desk', 'blue') : '<span class="muted">No front desk</span>')
+                : `${c.hasCustody ? tag('Custody', 'purple') : '<span class="muted">No custody desk</span>'} ${c.hasFront ? tag('Front', 'blue') : ''}`}
+                 <button class="link small" data-cdesk="${esc(c.id)}">Place a desk</button></td>
             <td>${c.hasCoords ? 'Set' : c.rooms ? '<span class="muted">Uses its courtroom</span>' : '<span class="muted">Not set</span>'}</td>
             <td style="white-space:nowrap;text-align:right"><button class="btn secondary small" data-cedit="${esc(c.id)}">Edit</button> <button class="btn warning small" data-cdel="${esc(c.id)}">Delete</button></td></tr>`).join('')}</table>
         <div class="btn-row" style="margin-bottom:8px"><button class="btn secondary" id="cNew">New court</button></div>
-        ${(r.courts || []).some((c) => (c.deskList || []).length) ? `<h3 style="margin-top:18px">Custody desks</h3>
-            <p class="lead" style="margin-bottom:8px">One per court building's custody suite (or more for a big building). Defendants are booked in here and the officer picks their courtroom.</p>
-            <table><tr><th>Court</th><th>Desk</th><th>How</th><th></th></tr>${(r.courts || []).flatMap((c) => (c.deskList || []).map((d, i) => `<tr>
+        ${(r.courts || []).some((c) => (c.deskList || []).length) ? `<h3 style="margin-top:18px">Desks</h3>
+            <p class="lead" style="margin-bottom:8px">Custody desks book in defendants from custody and in serious cases. Front desks check in everyone else. One desk can handle several courts in the same building.</p>
+            <table><tr><th>Court</th><th>Desk</th><th>Type</th><th>Also handles</th><th>How</th><th></th></tr>${(r.courts || []).flatMap((c) => (c.deskList || []).map((d, i) => `<tr>
                 <td>${esc(c.label)}</td><td><strong>${esc(d.label || 'Custody suite')}</strong></td>
+                <td>${(d.kind || 'custody') === 'front' ? tag('Front desk', 'blue') : tag('Custody desk', 'purple')}</td>
+                <td class="small">${(d.also || []).map((id) => esc(((r.courts || []).find((x) => x.id === id) || {}).label || id)).join('<br>') || '<span class="muted">Only this court</span>'}</td>
                 <td>${d.mode === 'pick' ? tag('Map object', 'blue') : d.prop ? tag('Spawned', 'green') : '<span class="muted small">Marked spot</span>'}</td>
                 <td style="white-space:nowrap;text-align:right"><button class="btn secondary small" data-dtp="${esc(c.id)}:${i + 1}">Go to</button>
                     <button class="btn warning small" data-drm="${esc(c.id)}:${i + 1}">Remove</button></td></tr>`)).join('')}</table>` : ''}
@@ -1056,9 +1065,15 @@ VIEWS.rooms = async (p = {}) => {
     $('#cNew').onclick = () => courtForm(null);
     $$('[data-cdesk]').forEach((b) => (b.onclick = () => {
         const c = (r.courts || []).find((x) => x.id === b.dataset.cdesk);
-        const box = openModal(`<h2>Custody desk for ${esc(c.label)}</h2>
-            <p class="lead">Put it in the building's custody suite or cells. It can be anywhere in the building. Defendants who must be produced, and those in serious cases, are booked in here, and the officer chooses which courtroom they go to.</p>
-            <label for="dLabel">Name</label><input type="text" id="dLabel" placeholder="e.g. Custody suite, Cells (lower ground)">
+        const others = (r.courts || []).filter((x) => x.id !== c.id);
+        const box = openModal(`<h2>Place a desk for ${esc(c.label)}</h2>
+            <label>Type of desk</label><div class="checks">
+                <label style="align-items:flex-start"><input type="radio" name="dKind" value="custody" checked style="margin-top:2px"><span><strong>Custody desk</strong><br><span class="hint" style="margin:0">In the cells or custody suite. Defendants in custody, and in serious cases, are booked in here and given their courtroom.</span></span></label>
+                <label style="align-items:flex-start"><input type="radio" name="dKind" value="front" style="margin-top:2px"><span><strong>Front desk (reception)</strong><br><span class="hint" style="margin:0">In the entrance. People on bail and civil parties check in for their hearing; clerks see who has arrived.</span></span></label>
+            </div>
+            ${others.length ? `<label>Also handles cases for</label><div class="hint">Tick other courts in the same building, so one desk serves them all.</div>
+                <div class="checks">${others.map((x) => `<label><input type="checkbox" data-dserve="${esc(x.id)}"> ${esc(x.label)}</label>`).join('')}</div>` : ''}
+            <label for="dLabel">Name</label><input type="text" id="dLabel" placeholder="e.g. Custody suite, Main reception">
             <label>How to place it</label><div class="checks">
                 <label><input type="radio" name="dMode" value="pick" checked> <strong>Use a computer already there</strong> (aim at it, E to choose)</label>
                 <label><input type="radio" name="dMode" value="spawn"> <strong>Spawn a laptop prop</strong></label>
@@ -1068,8 +1083,10 @@ VIEWS.rooms = async (p = {}) => {
         $('#dGo', box).onclick = () => {
             const label = $('#dLabel', box).value.trim();
             const mode = ($('input[name=dMode]:checked', box) || {}).value || 'pick';
+            const kind = ($('input[name=dKind]:checked', box) || {}).value || 'custody';
+            const serves = $$('[data-dserve]', box).filter((x) => x.checked).map((x) => x.dataset.dserve);
             closeModal();
-            post('deskPlace', { courtId: c.id, label, mode });
+            post('deskPlace', { courtId: c.id, label, mode, kind, serves });
         };
     }));
     $$('[data-dtp]').forEach((b) => (b.onclick = async () => {
@@ -1249,9 +1266,9 @@ VIEWS.custody = async () => {
     $$('[data-book]').forEach((b) => (b.onclick = () => {
         const x = r.results.find((y) => y.id === Number(b.dataset.book));
         const fields = [];
-        if ((r.rooms || []).length) fields.push({ id: 'roomId', label: 'Courtroom', type: 'select', value: x.room_id || '',
+        if ((r.rooms || []).filter((y) => !x.court_id || y.court_id === x.court_id).length) fields.push({ id: 'roomId', label: 'Courtroom', type: 'select', value: x.room_id || '',
             hint: 'Where they will be heard. Shown on the listing boards and told to the judge.',
-            options: (x.room_id ? [] : [{ value: '', label: 'Choose a courtroom' }]).concat(r.rooms.map((y) => ({ value: y.id, label: y.label }))) });
+            options: (x.room_id ? [] : [{ value: '', label: 'Choose a courtroom' }]).concat(r.rooms.filter((y) => !x.court_id || y.court_id === x.court_id).map((y) => ({ value: y.id, label: y.label }))) });
         fields.push({ id: 'notes', label: 'Notes', type: 'textarea', hint: 'Escort, risk, property held, medication. Seen by the judge.' });
         formModal(`Book in ${x.name}`, fields, 'Book in', async (v) => {
             const res = await api('bookIn', { id: x.id, notes: v.notes, roomId: v.roomId ? Number(v.roomId) : null }, true);
@@ -1609,3 +1626,37 @@ function playChime(volume, pan) {
         });
     } catch (e) { /* no audio available */ }
 }
+
+
+/* ---------- front desk (reception) ---------- */
+VIEWS.front = async () => {
+    const r = await api('frontBoard');
+    if (r.error) return;
+    drawShell();
+    const status = (at, by) => `${tag('Checked in', 'blue')}<div class="muted small">${fmtTime(at)}${by ? ' · ' + esc(by) : ''}</div>`;
+    const rows = r.rows || [];
+    const arrived = rows.filter((x) => x.checkedInAt || x.bookedAt || (x.checkins && Object.keys(x.checkins).length)).length;
+    main.innerHTML = `<div class="head"><div><span class="caption">${esc(r.room)}</span><h1>Front desk</h1></div>
+        <div class="actions"><button class="btn secondary small" id="fdRef">Refresh</button></div></div>
+        <p class="lead">Today's hearings. People check themselves in here ("Check in for my hearing"), or check them in below when they report to you. Defendants in custody, and in serious cases, go to the custody desk instead.</p>
+        <div class="stats" style="max-width:520px"><div class="stat"><div class="v">${rows.length}</div><div class="t">Listed today</div></div>
+            <div class="stat green"><div class="v">${arrived}</div><div class="t">Arrived</div></div></div>
+        ${rows.length ? `<table><tr><th>Time</th><th>Case</th><th>Courtroom</th><th>Arrival</th></tr>${rows.map((x) => `<tr>
+            <td><strong>${fmtTime(x.at)}</strong><div class="muted small">${esc(x.hearing)}</div></td>
+            <td><strong>${esc(x.title)}</strong><div class="muted small">${esc(x.ref || '')}${x.court ? ' · ' + esc(x.court) : ''}</div></td>
+            <td>${x.room ? esc(x.room) : '<span class="muted">To be confirmed</span>'}${x.open ? ' ' + tag('In court', 'green') : ''}</td>
+            <td>${x.kind === 'claim'
+                ? ['claimant', 'defendant'].map((side) => `<div style="margin-bottom:6px"><span class="small">${side === 'claimant' ? 'Claimant' : 'Defendant'}: ${esc(x[side] || '')}</span><br>${x.checkins && x.checkins[side]
+                    ? status(x.checkins[side].at, x.checkins[side].by)
+                    : `<button class="btn small" data-fci="claim:${x.id}:${side}">Check in</button>`}</div>`).join('')
+                : x.custodyDesk ? `${tag(x.custodyDesk === 'custody' ? 'From custody' : 'Surrender', 'purple')}<div class="muted small">${x.bookedAt ? 'Booked in at the custody desk ' + fmtTime(x.bookedAt) : 'Goes to the custody desk'}</div>`
+                : x.checkedInAt ? status(x.checkedInAt, x.checkedInBy)
+                : `<button class="btn small" data-fci="case:${x.id}">Check in</button>${x.online ? '' : '<div class="muted small">Not in the city</div>'}`}</td></tr>`).join('')}</table>`
+            : '<p class="empty">No hearings listed for today.</p>'}`;
+    $('#fdRef').onclick = () => VIEWS.front();
+    $$('[data-fci]').forEach((b) => (b.onclick = async () => {
+        const [kind, id, side] = b.dataset.fci.split(':');
+        const x = await api('frontCheckIn', { kind, id: Number(id), side });
+        if (x.ok) { toast('Checked in. The judge has been told.'); VIEWS.front(); }
+    }));
+};

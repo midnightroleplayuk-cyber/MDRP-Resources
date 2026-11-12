@@ -24,6 +24,7 @@ local PERMS = {
     orderNote = { probation = true }, creditHours = { probation = true }, completeOrder = { probation = true, judge = true },
     fines = COURT, writeOffFine = { judge = true },
     custodyBoard = { police = true, prison = true, clerk = true, judge = true }, bookIn = { police = true, prison = true, clerk = true },
+    frontBoard = { clerk = true, judge = true }, frontCheckIn = { clerk = true, judge = true },
     civilList = { judge = true, clerk = true, defence = true }, civilGet = { judge = true, clerk = true, defence = true },
     civilIssue = { defence = true }, civilRespond = { defence = true }, civilNote = { judge = true, clerk = true, defence = true },
     civilListHearing = COURT, civilAssign = COURT, civilOpen = { judge = true }, civilJudge = { judge = true },
@@ -156,6 +157,9 @@ H.getCase = function(_, a, d)
     c.custodyNow = Prison.Active(c.cid)
     c.production = Cases.NeedsProduction(c)
     c.productionLabel = c.production and Cases.ProductionLabels[c.production] or nil
+    -- Should be produced, but the court has no custody desk to do it at.
+    local rule = Cases.ProductionRule(c)
+    c.noDesk = rule ~= nil and c.production == nil and not Cases.Closed[c.status] and (Config.CustodyDesk or {}).enabled ~= false
     c.online = Bridge.GetSource(c.cid) ~= nil
     if a.role ~= 'police' then c.statements = MDT.Statements(c.record_id) end
     if c.status == 'awaiting_sentence' and a.role ~= 'police' then
@@ -308,10 +312,12 @@ end
 
 H.custodyBoard = function(src, a)
     local room, at = deskOrError(src)
-    local rows = MySQL.query.await([[SELECT h.*, c.ref, c.subject_name, c.custody_status, c.court_kind, c.charges, c.court_id AS case_court
+    local serves = room.serves or { room.court_id }
+    local rows = MySQL.query.await(([[SELECT h.*, c.ref, c.subject_name, c.custody_status, c.court_kind, c.charges, c.court_id AS case_court
         FROM vw_moj_hearings h JOIN vw_moj_cases c ON c.id = h.case_id
-        WHERE h.status IN ('listed', 'open') AND c.court_id = ? AND h.scheduled_at BETWEEN ? AND ? ORDER BY h.scheduled_at ASC]],
-        { room.court_id, U.now() - 8 * 3600, U.now() + 18 * 3600 }) or {}
+        WHERE h.status IN ('listed', 'open') AND c.court_id IN (%s) AND h.scheduled_at BETWEEN ? AND ? ORDER BY h.scheduled_at ASC]])
+        :format(string.rep('?', #serves, ',')), (function() local a2 = {} for _, x in ipairs(serves) do a2[#a2 + 1] = x end
+            a2[#a2 + 1] = U.now() - 8 * 3600; a2[#a2 + 1] = U.now() + 18 * 3600 return a2 end)()) or {}
     local out = {}
     for _, h in ipairs(rows) do
         local c = Cases.Get(h.case_id)
@@ -323,14 +329,16 @@ H.custodyBoard = function(src, a)
                 id = h.id, case_id = h.case_id, ref = h.ref, name = h.subject_name, type = h.type, at = h.scheduled_at, status = h.status,
                 need = need, needLabel = Cases.ProductionLabels[need], custody = Cases.Custody[h.custody_status] or h.custody_status,
                 booked_at = h.booked_at, booked_by = h.booked_by, notes = h.booking_notes, charges = U.decode(h.charges),
-                online = s ~= nil, distance = dist and math.floor(dist + 0.5) or nil, room_id = h.room_id,
+                online = s ~= nil, distance = dist and math.floor(dist + 0.5) or nil, room_id = h.room_id, court_id = h.case_court,
+                courtLabel = (U.court(h.case_court) or {}).label,
             }
         end
     end
     -- The courtrooms of this court, for choosing where each defendant goes.
-    local rooms = {}
+    local rooms, servesSet = {}, {}
+    for _, x in ipairs(serves) do servesSet[x] = true end
     for _, r in ipairs(Rooms.Public()) do
-        if r.court_id == room.court_id then rooms[#rooms + 1] = { id = r.id, label = r.label } end
+        if servesSet[r.court_id] then rooms[#rooms + 1] = { id = r.id, label = r.label, court_id = r.court_id } end
     end
     return { room = room.label, court = room.courtLabel, rooms = rooms, results = out, range = (Config.CustodyDesk or {}).BookInRange or 12.0, serverTime = U.now() }
 end
@@ -341,7 +349,9 @@ H.bookIn = function(src, a, d)
     need(h and (h.status == 'listed' or h.status == 'open'), 'This hearing is not waiting to be heard.')
     need(not h.booked_at, 'Already booked in.')
     local c = Cases.Get(h.case_id)
-    need(c.court_id == room.court_id, 'This defendant is listed at a different court.')
+    local servesThis = false
+    for _, x in ipairs(room.serves or { room.court_id }) do if x == c.court_id then servesThis = true end end
+    need(servesThis, 'This defendant is listed at a court this desk does not handle.')
     local s = Bridge.GetSource(c.cid)
     need(s, 'The defendant is not in the city.')
     local range = (Config.CustodyDesk or {}).BookInRange or 12.0
@@ -349,10 +359,10 @@ H.bookIn = function(src, a, d)
     local notes = U.trim(d.notes, 600)
     -- Which courtroom they'll be heard in: chosen at the desk (must be a room of this court).
     local courtroom = d.roomId and Rooms.Get(d.roomId)
-    if courtroom and courtroom.court_id ~= room.court_id then courtroom = nil end
+    if courtroom and courtroom.court_id ~= c.court_id then courtroom = nil end
     if not courtroom and h.room_id then courtroom = Rooms.Get(h.room_id) end
     local roomCount = 0
-    for _, r in ipairs(Rooms.Public()) do if r.court_id == room.court_id then roomCount = roomCount + 1 end end
+    for _, r in ipairs(Rooms.Public()) do if r.court_id == c.court_id then roomCount = roomCount + 1 end end
     need(courtroom or roomCount == 0, 'Choose which courtroom they are going to.')
     MySQL.update.await('UPDATE vw_moj_hearings SET booked_at = ?, booked_by = ?, booking_notes = ?, room_id = ?, updated_at = ? WHERE id = ?',
         { U.now(), U.By(a), notes, courtroom and courtroom.id or h.room_id, U.now(), h.id })
@@ -367,6 +377,25 @@ H.bookIn = function(src, a, d)
         or 'You have been booked into the custody of the court. Wait to be called.', 'inform')
     U.NotifyRole('judge', ('%s (%s) has been booked in%s.'):format(c.subject_name or '', c.ref or '', courtroom and (' for ' .. courtroom.label) or ''))
     return { ok = true }
+end
+
+---------------------------------------------------------------------------
+-- Front desk (reception)
+---------------------------------------------------------------------------
+local function frontDeskOrError(src)
+    local r = Rooms.Desk(src)
+    need(r and r.kind == 'front', 'Use the court front desk to do this.')
+    return r
+end
+
+H.frontBoard = function(src)
+    local desk = frontDeskOrError(src)
+    return { room = desk.label, court = desk.courtLabel, rows = FrontDesk.Today(desk.serves or { desk.court_id }), serverTime = U.now() }
+end
+
+H.frontCheckIn = function(src, a, d)
+    frontDeskOrError(src)
+    return FrontDesk.StaffCheckIn(d.kind, tonumber(d.id), d.side, U.By(a))
 end
 
 ---------------------------------------------------------------------------
@@ -860,7 +889,7 @@ lib.callback.register('vinewood-moj:server:request', function(src, action, data)
     if not fn or not allowed then return { error = 'Unknown request.' } end
     if not allowed[a.role] then return { error = "Your role can't do that." } end
     -- Working at a court custody desk counts, even though the cells are usually outside the courtroom.
-    local atDesk = (action == 'custodyBoard' or action == 'bookIn' or action == 'init') and Rooms.Desk(src) ~= nil
+    local atDesk = (action == 'custodyBoard' or action == 'bookIn' or action == 'frontBoard' or action == 'frontCheckIn' or action == 'init') and Rooms.Desk(src) ~= nil
     if needsLaptop(a) and not atLaptop(src) and not atDesk then return { error = 'Use a laptop in a courtroom to open the court system.' } end
     data = type(data) == 'table' and data or {}
     local ok, result = pcall(fn, src, a, data)

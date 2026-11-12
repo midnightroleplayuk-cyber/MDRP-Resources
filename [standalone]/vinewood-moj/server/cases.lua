@@ -164,6 +164,20 @@ function Cases.List(case, htype, earliest, courtId, orderId, exact)
     if case.custody_status == 'bail' or case.custody_status == 'court_bail' then
         MDT.CourtBail(case.cid, case.subject_name, case.ref, chargeNames(case), case.bail_conditions, at, court.label)
     end
+    -- Where to go on the day: produced at the custody desk, surrender there, or check in at the front desk.
+    local probe = { court_id = courtId, court_kind = case.court_kind, custody_status = case.custody_status, charges = case.charges }
+    local need = Cases.NeedsProduction(probe)
+    local when = os.date('%H:%M on %d/%m', at)
+    if need == 'custody' then
+        local msg = ('%s (%s) must be produced at the %s custody desk for their %s at %s.'):format(case.subject_name or '', case.ref or '',
+            court.label, (Cases.HearingTypes[htype] or htype):lower(), when)
+        for _, role in ipairs((Config.CustodyDesk or {}).Roles or {}) do U.NotifyRole(role, msg, 'warning') end
+        U.NotifyCid(case.cid, ('You will be taken to the %s custody desk before your hearing.'):format(court.label))
+    elseif need == 'serious' then
+        U.NotifyCid(case.cid, ('You must surrender at the %s custody desk before %s. Failing to surrender is an offence.'):format(court.label, when), 'error')
+    elseif Courts.HasDeskFor(courtId, 'front') then
+        U.NotifyCid(case.cid, ('On the day, check in at the %s front desk before %s.'):format(court.label, when))
+    end
     return id, at
 end
 
@@ -451,14 +465,20 @@ local function isSerious(c)
 end
 
 --- 'custody' (police custody or remand: must be produced), 'serious' (on bail: must surrender), or nil.
-function Cases.NeedsProduction(c)
+--- What the rules say, whether or not the court has a desk: 'custody', 'serious' or nil.
+function Cases.ProductionRule(c)
     local CD = Config.CustodyDesk or {}
     if CD.enabled == false or not c then return nil end
-    -- Only where the court actually has a desk to book them in at.
-    if not Rooms.HasDesk(c.court_id) then return nil end
     if (CD.RequireFor or {})[c.custody_status] then return 'custody' end
     if CD.Serious and isSerious(c) and c.custody_status ~= 'custody' then return 'serious' end
     return nil
+end
+
+--- 'custody' (police custody or remand: must be produced), 'serious' (on bail: must surrender), or nil.
+--- Only where the court has a custody desk to book them in at (its own, or one that serves it).
+function Cases.NeedsProduction(c)
+    if not c or not Rooms.HasDesk(c.court_id) then return nil end
+    return Cases.ProductionRule(c)
 end
 
 Cases.ProductionLabels = {
