@@ -5721,8 +5721,8 @@ return {
     close = true,
     description = 'Random USB.',
 },
-['usb_black'] = {
-    label = 'Black USB',
+['usb_green'] = {
+    label = 'Green USB',
     weight = 50,
     stack = false,
     close = true,
