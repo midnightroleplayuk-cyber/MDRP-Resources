@@ -259,6 +259,10 @@ function Safehouses.RaidFinish(src, id)
     if not near(src, h.entrance, 4.0) then return false, 'too_far' end
 
     h.breachedUntil = os.time() + cfg.raid.openMinutes * 60
+    do
+        local g = h.gangId and Gangs.Get(h.gangId)
+        Logger.Log(src, 'safehouse_breached', ('Police breached %s (%s)%s'):format(h.label, h.address or '?', g and (', held by ' .. g.label) or ''))
+    end
     save(h)
     publish()
 

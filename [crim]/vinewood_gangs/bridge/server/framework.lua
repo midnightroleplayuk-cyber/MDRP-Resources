@@ -133,6 +133,15 @@ function Bridge.GetJob(src)
     return player.PlayerData.job and player.PlayerData.job.name
 end
 
+---On duty in their job? (QBCore / Qbox have an on-duty flag; ESX has none, so anyone in the job counts.)
+function Bridge.IsOnDuty(src)
+    local player = getPlayer(src)
+    if not player then return false end
+    if framework == 'esx' then return true end
+    local job = player.PlayerData.job
+    return job ~= nil and job.onduty ~= false
+end
+
 function Bridge.GetJobGrade(src)
     local player = getPlayer(src)
     if not player then return 0 end
