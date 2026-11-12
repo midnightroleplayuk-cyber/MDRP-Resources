@@ -287,7 +287,7 @@ Config.weedTypes = {
         -- (Players are able to add water as soon as the level drops below 50%)
         -- After this time, the plant will immediately start losing health. Treat this as the max time between watering
         -- Recommended minimum of 3 minutes
-        wateringTime = 18,
+        wateringTime = 9,
 
         -- The amount of health plants will lose per second when the soil fully dries out (max health = 100)
         -- Plants will also halt growing without any water
