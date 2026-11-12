@@ -27,8 +27,8 @@ Config.SwitchCooldown = 60        -- seconds
     values saved from the in-game admin menu take priority.
 ───────────────────────────────────────────────────────────── ]]
 Config.Slots = {
-    Base  = 3,        -- everyone gets this many
-    Max   = 10,       -- hard cap, nobody can go above this
+    Base  = 2,        -- everyone gets this many
+    Max   = 2,       -- hard cap, nobody can go above this
     Stack = true,     -- true: bonuses add together. false: only the biggest bonus counts
     ShowLocked = 2,   -- how many locked slots to show after the last unlocked one (0 hides them)
     LockExcess = true -- characters sitting in slots above someone's allowance can't be played until they regain the slots
