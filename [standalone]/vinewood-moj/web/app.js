@@ -878,7 +878,12 @@ VIEWS.portal = async () => {
                     ${c.status === 'judgment' && payer !== c.side ? `<div class="small">${money(Math.max(0, c.total_due - c.paid))} still owed to ${c.forBusiness ? esc(c.forBusiness) : 'you'} · due ${fmtDate(c.judgment_due, false)}</div>` : ''}</td>
                 <td style="white-space:nowrap;text-align:right">${due ? `<button class="btn small" data-cresp="${c.id}">Respond</button>` : ''}
                     ${owe ? `<button class="btn small" data-cpay="${c.id}" data-owe="${owe}">Pay ${money(owe)}</button>` : ''}
-                    ${c.side === 'claimant' && ['issued', 'defended', 'listed'].includes(c.status) ? `<button class="btn secondary small" data-cend="${c.id}">Withdraw or settle</button>` : ''}</td></tr>`;
+                    ${['issued', 'defended', 'listed'].includes(c.status) ? (c.settlement
+                        ? (c.settlement.side === c.side
+                            ? `<div class="small muted" style="margin-bottom:4px">Settlement proposed: waiting for the other side</div><button class="btn secondary small" data-sans="${c.id}" data-ok="0">Cancel proposal</button>`
+                            : `<div class="small" style="margin-bottom:4px;max-width:340px;white-space:normal;text-align:left"><strong>Settlement offered:</strong> ${esc(c.settlement.terms)}${c.settlement.amount ? ` · ${money(c.settlement.amount)} to the claimant` : ''}</div>
+                               <button class="btn small" data-sans="${c.id}" data-ok="1">Accept</button> <button class="btn warning small" data-sans="${c.id}" data-ok="0">Decline</button>`)
+                        : `<button class="btn secondary small" data-sprop="${c.id}">Propose settlement</button>${c.side === 'claimant' ? ` <button class="btn secondary small" data-cend="${c.id}">Withdraw claim</button>` : ''}`) : ''}</td></tr>`;
             }).join('')}</table>` : '<p class="empty">No civil claims.</p>'}` : ''}
 
         <h2>Your cases</h2>
@@ -896,10 +901,17 @@ VIEWS.portal = async () => {
         { id: 'amount', label: `Amount (up to ${money(Number(b.dataset.owe))})`, type: 'number', value: Number(b.dataset.owe), min: 1 },
     ], 'Pay', async (v) => { const x = await portalApi('civilPay', { id: Number(b.dataset.cpay), amount: v.amount }); if (x.ok) { toast(x.satisfied ? 'Paid in full. The judgment is satisfied.' : 'Payment made.'); VIEWS.portal(); } return x; },
         '<p class="lead">The money goes straight to the other party. Paying in full stops a CCJ being registered, or marks it satisfied.</p>')));
-    $$('[data-cend]').forEach((b) => (b.onclick = () => formModal('Withdraw or settle', [
-        { id: 'status', label: 'Outcome', type: 'select', options: [{ value: 'settled', label: "We've settled it between us" }, { value: 'withdrawn', label: 'Withdraw my claim' }] },
-        { id: 'reason', label: 'Note', type: 'text' },
-    ], 'Confirm', async (v) => { const x = await portalApi('civilEnd', { id: Number(b.dataset.cend), ...v }); if (x.ok) { toast('Done.'); VIEWS.portal(); } return x; })));
+    $$('[data-cend]').forEach((b) => (b.onclick = () => formModal('Withdraw your claim', [
+        { id: 'reason', label: 'Reason (optional)', type: 'text' },
+    ], 'Withdraw claim', async (v) => { const x = await portalApi('civilEnd', { id: Number(b.dataset.cend), status: 'withdrawn', reason: v.reason }); if (x.ok) { toast('Claim withdrawn.'); VIEWS.portal(); } return x; },
+        '<p class="lead">This ends the claim. To settle with the other side instead, use Propose settlement: they have to accept it.</p>')));
+    $$('[data-sprop]').forEach((b) => (b.onclick = () => settleModal((x) => portalApi('civilSettle', { id: Number(b.dataset.sprop), ...x }), () => VIEWS.portal())));
+    $$('[data-sans]').forEach((b) => (b.onclick = () => {
+        const accept = b.dataset.ok === '1';
+        confirmModal(accept ? 'Accept this settlement? If it includes a payment, it becomes a court order to pay.' : 'Decline (or cancel) this settlement proposal?', async () => {
+            const x = await portalApi('civilSettleAnswer', { id: Number(b.dataset.sans), accept }); if (x.ok) { toast(accept ? 'Settlement accepted.' : 'Done.'); VIEWS.portal(); }
+        }, accept ? 'Accept settlement' : 'Confirm', !accept);
+    }));
     if ($('#pIssue')) $('#pIssue').onclick = () => issueClaimModal((x) => portalApi('civilIssue', x), (q, kind) => portalApi('searchPeople', { q, kind }), (x) => portalApi('civilFee', x), () => VIEWS.portal(),
         { inPerson: r.cfg.litigantInPerson, business: r.cfg.businessCanIssue ? r.business : null });
     $$('[data-pay]').forEach((b) => (b.onclick = () => confirmModal(`Pay ${b.textContent.replace('Pay ', '')} from your bank account?`, async () => {
@@ -1365,7 +1377,9 @@ VIEWS.claim = async (p) => {
             ${judge && civilOpen(c) && !c.hearing_open ? '<button class="btn small" id="cvOpen">Open hearing</button>' : ''}
             ${side === 'defendant' && c.status === 'issued' ? '<button class="btn small" id="cvResp">Respond to claim</button>' : ''}
             ${(side === 'claimant' || judge) && overdue ? '<button class="btn secondary small" id="cvDef">Judgment in default</button>' : ''}
-            ${side === 'claimant' && civilOpen(c) ? '<button class="btn secondary small" id="cvWd">Withdraw or settle</button>' : ''}
+            ${side && civilOpen(c) && !c.settlement ? '<button class="btn secondary small" id="cvSettle">Propose settlement</button>' : ''}
+            ${side === 'claimant' && civilOpen(c) ? '<button class="btn secondary small" id="cvWd">Withdraw claim</button>' : ''}
+            ${judge && civilOpen(c) ? '<button class="btn secondary small" id="cvRecord">Record settlement</button>' : ''}
             ${judge && civilOpen(c) ? '<button class="btn warning small" id="cvStrike">Strike out</button>' : ''}
             <button class="btn secondary small" id="cvNote">Add note</button>
         </div></div>
@@ -1381,6 +1395,10 @@ VIEWS.claim = async (p) => {
                 <div class="grid2"><div><label for="jAt">Next hearing</label><input type="datetime-local" id="jAt"></div><div><label for="jWhy">Reason</label><input type="text" id="jWhy"></div></div>
                 <div class="btn-row"><button class="btn secondary small" id="jAdj">Adjourn</button></div></div>
         </div>` : ''}
+        ${c.settlement && civilOpen(c) ? `<div class="banner amber"><b>Settlement proposed by the ${esc(c.settlement.side)}</b><br>${esc(c.settlement.terms)}${c.settlement.amount ? ` · <b>${money(c.settlement.amount)}</b> to the claimant` : ''}
+            <div class="muted small">${esc(c.settlement.by || '')} · ${fmtDate(c.settlement.at)}</div>
+            ${side && side !== c.settlement.side ? '<div class="btn-row"><button class="btn small" id="stAccept">Accept for my client</button><button class="btn warning small" id="stDecline">Decline</button></div>'
+              : side === c.settlement.side ? '<div class="btn-row"><button class="btn secondary small" id="stDecline">Cancel proposal</button></div>' : ''}</div>` : ''}
         ${c.status === 'issued' ? `<div class="banner ${overdue ? 'red' : ''}"><strong>${overdue ? 'Response overdue' : 'Waiting for the defendant to respond'}</strong>Response due ${fmtDate(c.response_due)}.${overdue ? ' Judgment in default can be entered.' : ''}</div>` : ''}
         ${c.status === 'listed' && c.hearing_at && !c.hearing_open ? `<div class="panel"><h3>Hearing</h3><p style="margin:0">${fmtDate(c.hearing_at)} at ${esc(c.courtLabel)}</p></div>` : ''}
         ${j.at ? `<div class="panel"><h3>Judgment</h3><p style="margin:0"><strong>${j.forParty === 'claimant' ? 'For the claimant' : 'For the defendant'}</strong>${j.how ? ` (${esc(j.how)})` : ''}
@@ -1424,10 +1442,14 @@ VIEWS.claim = async (p) => {
         { id: 'text', label: 'Defence, or a note with the admission', type: 'textarea', hint: 'Why the claim is disputed. Admitting enters judgment for the claimant.' },
     ], 'Submit response', async (v) => done('Response filed.')(await api('civilRespond', { id: c.id, ...v }, true))));
     on('#cvDef', () => confirmModal(`Enter judgment in default for ${civilAmount(c).replace(/<[^>]+>/g, '')}? The defendant has not responded.`, async () => done('Judgment entered.')(await api('civilDefault', { id: c.id })), 'Enter judgment'));
-    on('#cvWd', () => formModal('Withdraw or settle', [
-        { id: 'status', label: 'Outcome', type: 'select', options: [{ value: 'settled', label: 'Settled between the parties' }, { value: 'withdrawn', label: 'Withdraw the claim' }] },
-        { id: 'reason', label: 'Note', type: 'text' },
-    ], 'Confirm', async (v) => done('Done.')(await api('civilEnd', { id: c.id, ...v }, true))));
+    on('#cvWd', () => formModal('Withdraw the claim', [{ id: 'reason', label: 'Reason (optional)', type: 'text' }], 'Withdraw claim',
+        async (v) => done('Claim withdrawn.')(await api('civilEnd', { id: c.id, status: 'withdrawn', reason: v.reason }, true))));
+    on('#cvSettle', () => settleModal((x) => api('civilSettle', { id: c.id, ...x }, true), refresh));
+    on('#stAccept', () => confirmModal('Accept this settlement for your client?', async () => done('Settlement accepted.')(await api('civilSettleAnswer', { id: c.id, accept: true })), 'Accept'));
+    on('#stDecline', async () => done('Done.')(await api('civilSettleAnswer', { id: c.id, accept: false })));
+    on('#cvRecord', () => formModal('Record a settlement', [{ id: 'reason', label: 'Agreed terms', type: 'textarea' }], 'Record settlement',
+        async (v) => done('Recorded as settled.')(await api('civilEnd', { id: c.id, status: 'settled', reason: v.reason }, true)),
+        '<p class="lead">For when both parties tell the court they have settled. Use this as the judge; otherwise the parties propose and accept a settlement themselves.</p>'));
     on('#cvStrike', () => formModal('Strike out the claim', [{ id: 'reason', label: 'Reason', type: 'textarea' }], 'Strike out',
         async (v) => done('Struck out.')(await api('civilEnd', { id: c.id, status: 'struck_out', reason: v.reason }, true))));
     on('#cvNote', () => formModal('Add a note', [{ id: 'text', label: 'Note', type: 'textarea' }], 'Add note', async (v) => done('Added.')(await api('civilNote', { id: c.id, text: v.text }, true))));
@@ -1544,4 +1566,15 @@ function interviewsHtml(c) {
             <td style="text-align:right">${onScreens ? `<button class="btn small" data-ivshow="${x.id}">Show on screens</button>` : ''}</td></tr>`).join('')}</table>
             ${!onScreens ? '<p class="small muted">Open this case from a courtroom laptop to play an interview on its screens.</p>' : ''}`
             : '<p class="empty">No recorded interviews found for this defendant.</p>'}`;
+}
+
+
+/* ---------- settling a civil claim out of court (both sides must agree) ---------- */
+function settleModal(send, done) {
+    formModal('Propose a settlement', [
+        { id: 'terms', label: 'What has been agreed', type: 'textarea', hint: 'e.g. "Defendant returns the car and pays £1,500 by Friday; claimant drops the claim."' },
+        { id: 'amount', label: `Amount the defendant pays the claimant (${esc(state.cfg.currency || '£')})`, type: 'number', value: 0, min: 0,
+          hint: '0 if no money changes hands. If there is a sum, accepting it makes it a court order to pay (paid through /mycase).' },
+    ], 'Send proposal', async (v) => { const x = await send({ terms: v.terms, amount: v.amount }); if (x.ok) { toast('Proposal sent. The other side has to accept it.'); done(); } return x; },
+    '<p class="lead">Settling ends the claim on agreed terms. Nothing changes until the other side accepts.</p>');
 }

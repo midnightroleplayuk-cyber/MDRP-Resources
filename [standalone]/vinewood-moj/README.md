@@ -334,7 +334,12 @@ Either side of a claim can be **a person or a business**, so you can have person
 
 Bosses are taken from a character's main job, so with multi-job setups the boss has to be on that business's job at the time.
 
-The claimant (or their solicitor) can withdraw or record a settlement at any point before judgment. Judges can strike a claim out. Solicitors only see claims where they act for one side, and can be assigned to either side by a clerk or judge.
+**Settling out of court** takes both sides. Either party (or their solicitor) can **Propose settlement** with the agreed terms and, optionally, an amount the defendant pays the claimant. The other side is notified and chooses **Accept** or **Decline**; nothing changes until they accept, and the proposer can cancel it before then.
+
+- Accepted **with an amount:** it becomes a **judgment by consent**. It's paid through `/mycase` like any judgment, and a CCJ is registered if it's unpaid.
+- Accepted **with no money:** the claim is closed as **Settled**, with the terms on record.
+
+**Withdrawing** is one-sided: only the claimant (or their solicitor) can drop their own claim. A **judge** can also **Record settlement** when both parties tell the court they've settled, or strike the claim out. Judges can strike a claim out. Solicitors only see claims where they act for one side, and can be assigned to either side by a clerk or judge.
 
 Civil claims go to the County Court marked as the civil default in **`/courtrooms` → Courts** (or `Config.Civil.Court` until one is marked). It can share a courtroom with the criminal courts, since you pick the court when you list the hearing.
 

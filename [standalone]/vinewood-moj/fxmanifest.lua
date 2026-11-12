@@ -5,7 +5,7 @@ lua54 'yes'
 name 'vinewood-moj'
 author 'Vinewood Studios'
 description 'Ministry of Justice: courts, sentencing, prison, probation, unpaid work, court bail and warrants. Courtrooms with laptops and microphones. Links with vinewood-mdt.'
-version '1.17.0'
+version '1.18.0'
 
 shared_scripts {
     '@ox_lib/init.lua',

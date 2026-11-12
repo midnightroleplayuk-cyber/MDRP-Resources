@@ -38,6 +38,8 @@ local function decode(c)
     c.judgment = U.decode(c.judgment)
     c.log = U.decode(c.log)
     c.exhibits = U.decode(c.exhibits)
+    local st = U.decode(c.settlement)
+    c.settlement = st.at and st or nil
     c.statusLabel = Civil.Statuses[c.status] or c.status
     c.typeLabel = Civil.TypeLabel(c.claim_type)
     local court = U.court(c.hearing_court or Courts.CivilDefault())
@@ -435,3 +437,58 @@ CreateThread(function()
         Wait(300000)
     end
 end)
+
+
+---------------------------------------------------------------------------
+-- Settling out of court: one side proposes terms, the other side has to accept.
+-- Accepted with money to pay = judgment by consent (paid through /mycase like any judgment).
+-- Accepted with nothing to pay = settled, with the agreed terms on record.
+---------------------------------------------------------------------------
+local function otherSide(side) return side == 'claimant' and 'defendant' or 'claimant' end
+
+function Civil.ProposeSettlement(c, side, terms, amount, by)
+    if Civil.Closed[c.status] or c.status == 'judgment' then return { error = 'This claim has already been decided.' } end
+    terms = U.trim(terms, 1500)
+    if not terms or #terms < 10 then return { error = 'Set out what you have agreed (the terms).' } end
+    amount = U.int(amount, 0, 100000000)
+    local proposal = { side = side, terms = terms, amount = amount, by = by, at = U.now() }
+    set(c.id, { settlement = proposal })
+    log(c.id, by, ('Settlement proposed by the %s%s: %s'):format(side, amount > 0 and (' (' .. U.money(amount) .. ' to be paid to the claimant)') or '', terms))
+    local other = otherSide(side)
+    tellParty(c[other .. '_kind'], c[other .. '_cid'], ('%s: the %s has proposed a settlement. Accept or decline it in /%s.')
+        :format(c.ref or '', side, Config.PortalCommand), 'warning')
+    if c[other .. '_sol_cid'] then U.NotifyCid(c[other .. '_sol_cid'], ('%s: settlement proposed by the %s.'):format(c.ref or '', side)) end
+    Webhook.Send('civil', ('Settlement proposed: %s v %s'):format(c.claimant_name or '', c.defendant_name or ''), terms,
+        { { 'Claim', c.ref }, { 'By', by }, { 'To pay', amount > 0 and U.money(amount) or 'Nothing' } }, 'blue')
+    return { ok = true }
+end
+
+--- side = who is answering. accept = true/false. Only the other side to the proposer can accept.
+function Civil.AnswerSettlement(c, side, accept, by)
+    local p = c.settlement
+    if not p then return { error = 'There is no settlement proposal on this claim.' } end
+    if Civil.Closed[c.status] or c.status == 'judgment' then return { error = 'This claim has already been decided.' } end
+    if p.side == side then
+        if accept then return { error = 'The other side has to accept your proposal.' } end
+        set(c.id, { settlement = {} })
+        log(c.id, by, 'Settlement proposal withdrawn.')
+        return { ok = true }
+    end
+    if not accept then
+        set(c.id, { settlement = {} })
+        log(c.id, by, ('Settlement proposal from the %s declined.'):format(p.side))
+        tellParty(c[p.side .. '_kind'], c[p.side .. '_cid'], ('%s: your settlement proposal was declined.'):format(c.ref or ''), 'error')
+        return { ok = true }
+    end
+    log(c.id, by, ('Settlement accepted by the %s. Agreed terms: %s'):format(side, p.terms))
+    if (p.amount or 0) > 0 then
+        -- A consent order: the agreed sum is payable like any judgment.
+        giveJudgment(Civil.Get(c.id), 'claimant', p.amount, 0, p.terms, 'by consent', by)
+    else
+        set(c.id, { status = 'settled', hearing_open = 0, closed_at = U.now() })
+        tellParties(c, ('%s: settled by agreement. Terms: %s'):format(c.ref or '', p.terms))
+        Webhook.Send('civil', ('Settled: %s v %s'):format(c.claimant_name or '', c.defendant_name or ''), p.terms, { { 'Claim', c.ref } }, 'green')
+    end
+    set(c.id, { settlement = {} })
+    return { ok = true }
+end

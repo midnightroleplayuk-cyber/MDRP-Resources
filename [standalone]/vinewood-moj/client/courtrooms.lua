@@ -7,6 +7,7 @@ local rooms = {}
 local zones, points, props = {}, {}, {}
 local muted = {}            -- [roomId..':'..index] = true when this player switched a mic off
 local activeMic = nil       -- key of the mic currently carrying our voice
+local overridden = {}       -- [serverId] = true while the PA is setting their volume (declared up here: the stop handler uses it)
 local placing = false
 
 local function key(roomId, i) return roomId .. ':' .. i end
@@ -202,7 +203,6 @@ end
 ---------------------------------------------------------------------------
 MoJPA = {}
 local liveMics = {}       -- [roomId] = { src, ... }
-local overridden = {}     -- [serverId] = true while we're setting their volume
 
 RegisterNetEvent('vinewood-moj:client:liveMics', function(list)
     liveMics = {}

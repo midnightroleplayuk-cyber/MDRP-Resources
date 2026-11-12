@@ -28,6 +28,7 @@ local PERMS = {
     civilIssue = { defence = true }, civilRespond = { defence = true }, civilNote = { judge = true, clerk = true, defence = true },
     civilListHearing = COURT, civilAssign = COURT, civilOpen = { judge = true }, civilJudge = { judge = true },
     civilAdjourn = { judge = true }, civilEnd = { judge = true, defence = true }, civilDefault = { judge = true, defence = true },
+    civilSettle = { defence = true }, civilSettleAnswer = { defence = true },
     civilFee = { defence = true }, searchParties = { judge = true, clerk = true, defence = true },
     screenStatus = { judge = true, clerk = true, cps = true, defence = true },
     screenPlay = { judge = true, clerk = true, cps = true, defence = true },
@@ -477,12 +478,24 @@ H.civilEnd = function(_, a, d)
     local c = civilOrError(a, d.id)
     local status = d.status
     if a.role == 'defence' then
-        need(c.mySide == 'claimant', 'Only the claimant\'s solicitor can withdraw or settle the claim.')
-        need(status == 'withdrawn' or status == 'settled', 'Choose withdraw or settle.')
+        need(c.mySide == 'claimant', 'Only the claimant\'s solicitor can withdraw the claim.')
+        need(status == 'withdrawn', 'A settlement has to be agreed by both sides: propose it instead.')
     else
         need(status == 'struck_out' or status == 'dismissed' or status == 'settled' or status == 'withdrawn', 'Choose an outcome.')
     end
     return Civil.End(c, status, U.trim(d.reason, 500), U.By(a))
+end
+
+H.civilSettle = function(_, a, d)
+    local c = civilOrError(a, d.id)
+    need(c.mySide, 'You do not act in this claim.')
+    return Civil.ProposeSettlement(c, c.mySide, d.terms, d.amount, U.By(a))
+end
+
+H.civilSettleAnswer = function(_, a, d)
+    local c = civilOrError(a, d.id)
+    need(c.mySide, 'You do not act in this claim.')
+    return Civil.AnswerSettlement(c, c.mySide, d.accept == true, U.By(a))
 end
 
 H.civilDefault = function(_, a, d)
@@ -894,7 +907,7 @@ lib.callback.register('vinewood-moj:server:portal', function(src, action, data)
     data = type(data) == 'table' and data or {}
     if action == 'pay' then return Fines.Pay(src, data.id) end
     -- Civil claims: the defendant responds and pays here; the claimant can withdraw or settle.
-    if action == 'civilPay' or action == 'civilRespond' or action == 'civilEnd' then
+    if action == 'civilPay' or action == 'civilRespond' or action == 'civilEnd' or action == 'civilSettle' or action == 'civilSettleAnswer' then
         local c = Civil.Get(data.id)
         if not c then return { error = 'Claim not found.' } end
         if action == 'civilPay' then return Civil.Pay(src, c, data.amount) end
@@ -906,9 +919,15 @@ lib.callback.register('vinewood-moj:server:portal', function(src, action, data)
             if not Civil.IsParty(c, 'defendant', cid, src) then return { error = 'Only the defendant can respond to this claim.' } end
             return Civil.Respond(c, data.kind, data.text, who('defendant'))
         end
-        if not Civil.IsParty(c, 'claimant', cid, src) then return { error = 'Only the claimant can withdraw or settle the claim.' } end
-        if data.status ~= 'withdrawn' and data.status ~= 'settled' then return { error = 'Choose withdraw or settle.' } end
-        return Civil.End(c, data.status, U.trim(data.reason, 500), who('claimant'))
+        -- Which side this player is on (as the person, or as a boss of the business).
+        local side = Civil.IsParty(c, 'claimant', cid, src) and 'claimant' or (Civil.IsParty(c, 'defendant', cid, src) and 'defendant') or nil
+        if not side then return { error = 'You are not a party to this claim.' } end
+        if action == 'civilSettle' then return Civil.ProposeSettlement(c, side, data.terms, data.amount, who(side)) end
+        if action == 'civilSettleAnswer' then return Civil.AnswerSettlement(c, side, data.accept == true, who(side)) end
+        -- Only the claimant can drop their own claim; settling needs both sides (above).
+        if side ~= 'claimant' then return { error = 'Only the claimant can withdraw the claim.' } end
+        if data.status ~= 'withdrawn' then return { error = 'A settlement has to be agreed by both sides: propose it instead.' } end
+        return Civil.End(c, 'withdrawn', U.trim(data.reason, 500), who('claimant'))
     end
     if action == 'civilFee' then return { fee = Civil.Fee(data.type, data.amount) } end
     local CVc = Config.Civil or {}
