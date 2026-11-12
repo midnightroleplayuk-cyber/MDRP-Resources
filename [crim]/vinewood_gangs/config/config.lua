@@ -146,7 +146,21 @@ Config.Logos = {
 
 -- Your other Vinewood resources. Set either to false to turn the link off.
 Config.Integrations = {
-    dispatch = 'vinewood-dispatch',
+    -- Your dispatch script. 'auto' uses the first of these that's running:
+    -- 'vinewood-dispatch', 'ps-dispatch', 'cd_dispatch', 'rcore_dispatch', 'qs-dispatch', 'core_dispatch', 'lb-tablet'.
+    -- Or name one of them, 'custom' (write your own in bridge/server/integrations.lua), or false for none.
+    dispatch = 'auto',
+
+    -- Which jobs count as police (alerts go to these; on-duty police are counted from these when your dispatch
+    -- script can't say how many are on duty)
+    policeJobs = { 'police', 'sheriff', 'bcso', 'sasp', 'lspd' },
+    -- ps-dispatch sends to job TYPES rather than job names
+    psDispatchJobs = { 'leo' },
+    -- ps-dispatch picks the blip by a code name from its own config (Config.Blips); one it ships with by default
+    psDispatchCodeName = 'susactivity',
+    -- Map blip for dispatch scripts that take one here
+    blip = { sprite = 161, colour = 1, scale = 1.2 },
+
     mdt      = 'vinewood-mdt',
 
     -- Who intelligence reports appear to come from on the MDT

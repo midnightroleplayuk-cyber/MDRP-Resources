@@ -141,6 +141,9 @@ local function lose(key, reason)
     MySQL.update('DELETE FROM vg_hex_reveals WHERE hex_key = ?', { key })
     rebuildZones()
     Gangs.NotifyGang(h.gangId, locale(reason or 'hex_lost', Hex.Label(h.q, h.r)), 'error')
+    local g = Gangs.Get(h.gangId)
+    Logger.Log(nil, 'hex_lost', ('%s lost %s (%s)'):format(g and g.label or ('gang ' .. tostring(h.gangId)), Hex.Label(h.q, h.r),
+        reason == 'hex_lost' and 'its control ran out' or tostring(reason or 'lost')))
     for _, gid in ipairs(watching) do pushGang(gid) end
 end
 

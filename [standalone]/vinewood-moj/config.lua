@@ -1,7 +1,7 @@
 Config = {}
 
 -- 'auto', 'qbx', 'qb' or 'esx'
-Config.Framework = 'qbx'
+Config.Framework = 'auto'
 
 -- Name shown on the system header and in notifications.
 Config.ServiceName = 'Ministry of Justice'
@@ -19,14 +19,14 @@ Config.PortalCommand = 'mycase' -- anyone: their own hearings, fines, orders and
 ---------------------------------------------------------------------------
 Config.Roles = {
     judge     = { jobs = { judge = 0, magistrate = 0 }, supervisor = 0, label = 'Judiciary' },
-    clerk     = { jobs = { court = 0, clerk = 0 },      supervisor = 2, label = 'Court clerk' },
-    cps       = { jobs = { cps = 0, police = 4 },       supervisor = 2, label = 'Crown Prosecution Service' },
+    clerk     = { jobs = { court = 0, clerk = 0 },     supervisor = 2, label = 'Court clerk' },
+    cps       = { jobs = { cps = 0 },                  supervisor = 2, label = 'Crown Prosecution Service' },
     defence   = { jobs = { lawyer = 0, solicitor = 0 }, supervisor = 99, label = 'Defence solicitor' },
-    probation = { jobs = { probation = 0 },             supervisor = 2, label = 'Probation Service' },
-    prison    = { jobs = { prison = 0, doc = 0 },       supervisor = 2, label = 'HM Prison Service' },
-    police    = { jobs = { police = 0, sheriff = 0 },   supervisor = 3, label = 'Police (read only)' },
+    probation = { jobs = { probation = 0 },            supervisor = 2, label = 'Probation Service' },
+    prison    = { jobs = { prison = 0, doc = 0 },      supervisor = 2, label = 'HM Prison Service' },
+    police    = { jobs = { police = 0, sheriff = 0 },  supervisor = 3, label = 'Police' },
 }
-Config.RequireOnDuty = true
+Config.RequireOnDuty = false
 
 ---------------------------------------------------------------------------
 -- vinewood-mdt link. Switches on by itself when the MDT is running.
@@ -42,15 +42,28 @@ Config.MDT = {
 }
 
 ---------------------------------------------------------------------------
+-- vinewood-interviews: interview recordings for a case can be played on courtroom screens
+-- (every speaker's audio and the CCTV, in sync). Read-only; switches on by itself when running.
+---------------------------------------------------------------------------
+Config.Interviews = {
+    enabled = true,
+    resource = 'vinewood-interviews',
+}
+
+---------------------------------------------------------------------------
 -- Courts. kind = 'magistrates' or 'crown'. coords are used for the waypoint
 -- a defendant gets with their hearing notice.
 ---------------------------------------------------------------------------
+-- The starting list only: copied into the database the first time the resource starts.
+-- After that, create, rename and delete courts in game with /courtrooms → Courts.
 Config.Courts = {
     { id = 'lsmc', label = "Los Santos Magistrates' Court", kind = 'magistrates', coords = vec3(-545.0, -204.0, 38.2) },
     { id = 'lscc', label = 'Los Santos Crown Court', kind = 'crown', coords = vec3(-545.0, -204.0, 38.2) },
+    -- Civil claims are heard in the County Court.
+    { id = 'lscounty', label = 'Los Santos County Court', kind = 'county', coords = vec3(-545.0, -204.0, 38.2) },
 }
 
-Config.CaseRefPrefix = { magistrates = 'MC', crown = 'T' }
+Config.CaseRefPrefix = { magistrates = 'MC', crown = 'T', county = 'CV' }
 
 Config.Listing = {
     -- Courts sit between these hours (server time, 24h). Hearings are listed into the next sitting.
@@ -83,6 +96,189 @@ Config.AutoCourt = {
     NotGuilty = 'convict',
     TrialWaitHours = 72,
     BreachAction = 'extra_hours', -- community order breach with no judge: 'extra_hours' or 'resentence'
+}
+
+---------------------------------------------------------------------------
+-- Look of the system: what device it opens on.
+-- 'tablet' = handheld tablet (your character holds one), 'laptop' = laptop screen and keyboard,
+-- 'none' = plain window.
+---------------------------------------------------------------------------
+Config.UI = {
+    Device = {
+        staff = 'tablet',     -- /moj and the tablet item
+        portal = 'tablet',    -- /mycase
+        laptop = 'laptop',    -- courtroom laptops
+    },
+    TabletAnim = true,        -- hold a tablet while /moj or /mycase is open
+    TabletProp = 'prop_cs_tablet',
+
+    -- Optional ox_inventory item that opens the system. Add it to ox_inventory/data/items.lua:
+    --   ['moj_tablet'] = { label = 'Justice tablet', weight = 600, stack = false, close = true,
+    --       client = { export = 'vinewood-moj.useTablet' } },
+    -- Staff get the court system, everyone else gets their own justice account.
+    TabletItem = 'moj_tablet',  -- false = no item
+    RequireTabletItem = false,  -- true = /moj only works while carrying the item (courtroom laptops always work)
+}
+
+---------------------------------------------------------------------------
+-- Courtrooms: built in game with /courtrooms. Laptops open the system for court staff,
+-- microphones carry voices across the room (pma-voice).
+---------------------------------------------------------------------------
+Config.Courtrooms = {
+    enabled = true,
+    AdminCommand = 'courtrooms',
+    -- Any of these aces can build courtrooms. 'command' is what qbx/qb give admins by default.
+    AdminAces = { 'vinewood-moj.admin', 'command' },
+    -- true = the roles in LaptopOnlyRoles can only open the system from a courtroom laptop.
+    -- false = everyone can use /moj anywhere, as well as the laptops.
+    CourtRolesNeedLaptop = false,
+    -- Only these roles are tied to the courtroom. Everyone else (defence solicitors, CPS, police,
+    -- probation, prison) keeps /moj wherever they are to check cases, hearings and warrants.
+    LaptopOnlyRoles = { 'judge', 'clerk' },
+    -- Roles a new laptop can be set to. A laptop with none ticked is open to all of these.
+    LaptopRoles = { 'judge', 'clerk', 'cps', 'defence' },
+    LaptopProp = 'prop_laptop_01a',
+    MicProp = 'prop_table_mic_01', -- desk microphone for the bench, dock, witness box and advocates' tables
+    TargetRadius = 0.7,       -- size of the ox_target sphere on each laptop and microphone
+    MicReach = 1.6,           -- stand or sit this close to a microphone for it to pick you up
+    MicRange = nil,           -- how far a microphone carries (GTA units). nil = the room's radius
+    -- Courtroom speakers (PA). Someone at a live mic is heard by everyone in that courtroom through
+    -- its speakers, at a set volume, the way pma-voice plays radio. GTA's own distance fade doesn't
+    -- apply, so the back of the room hears as well as the front. Footage on the screens also plays
+    -- from the speakers. Place speakers in /courtrooms → the room → Place a speaker.
+    PA = true,
+    SpeakerProp = 'prop_speaker_02',
+    SpeakerVolume = 0.6,      -- volume right next to a speaker (0-1)
+    SpeakerRange = 12.0,      -- metres over which it fades from a speaker...
+    SpeakerMinVolume = 0.25,  -- ...down to this (anywhere in the room still hears it)
+    NoSpeakerVolume = 0.5,    -- a room with no speakers placed: everyone in it hears mics at this volume
+    -- Someone at a mic is silenced for people outside their courtroom (its drawn shape), unless
+    -- they're standing within this many metres of them (normal talking through a doorway).
+    KeepMicsInRoom = true,
+    MicLeakDistance = 6.0,
+    -- Who can turn a courtroom's speakers up or down from a laptop in that room (the Sound button).
+    VolumeRoles = { 'judge', 'clerk' },
+    -- When a judge opens a hearing from a courtroom laptop, the defendant is sent to that room.
+    WaypointToRoom = true,
+
+    -- TV screens for showing video evidence. Placed in /courtrooms ("Place a screen").
+    -- target = the model's render target. Screens using the same target show the same picture,
+    -- which is what you want: everything in one courtroom shows the exhibit being played.
+    ScreenModels = {
+        { model = 'prop_tv_flat_01', target = 'tvscreen', label = 'Flat screen TV (large)' },
+        { model = 'prop_tv_flat_michael', target = 'tvscreen', label = 'Flat screen TV (wall)' },
+        { model = 'prop_trev_tv_01', target = 'tvscreen', label = 'Flat screen TV (small)' },
+        { model = 'prop_huge_display_01', target = 'big_disp', label = 'Large display' },
+    },
+    -- Who can put footage on the screens, from a laptop in that courtroom.
+    ScreenRoles = { 'judge', 'clerk', 'cps', 'defence' },
+    -- 'overlay' (default): the picture is drawn over each TV you place or pick, so only those TVs show it and the
+    -- same model works in any number of rooms. After placing a screen you fit the picture to it.
+    -- 'rendertarget': uses the model's own screen texture. GTA applies that to EVERY TV of that model in view,
+    -- so only use it with a model that isn't used anywhere else.
+    ScreenRender = 'overlay',
+    -- What can be played on the screens. Set any to false to switch it off. Add your own in server/videolinks.lua.
+    -- Medal clips play as their direct video file (no Medal player, so no cookie popup; synced and
+    -- quieter with distance). false = always use Medal's own embedded player.
+    MedalDirect = true,
+    Providers = {
+        medal = true,         -- medal.tv clips and share links
+        youtube = true,       -- videos, shorts, live, youtu.be, with ?t= timestamps
+        twitch = true,        -- clips and past broadcasts (not live channels)
+        streamable = true,
+        vimeo = true,
+        dailymotion = true,
+        tiktok = true,        -- full tiktok.com/@user/video/... links
+        gdrive = true,        -- Google Drive files shared as "Anyone with the link"
+        dropbox = true,       -- Dropbox links to a video or image file
+        imgur = true,         -- single images and videos (not albums)
+        gyazo = true,
+        images = true,        -- photos and screenshots (.png .jpg .webp .gif) from any source above or VideoHosts
+    },
+    -- Direct video and image files (.mp4 .webm .mov / .png .jpg .webp .gif) are allowed from these hosts.
+    -- Direct video files are the best option: synced for everyone and quieter with distance.
+    VideoHosts = { 'fivemanage.com', 'cdn.discordapp.com', 'media.discordapp.net', 'i.imgur.com', 'files.catbox.moe',
+        'dl.dropboxusercontent.com', 'i.gyazo.com' },
+    AllowAnyVideoHost = false,  -- true = any https link to a video or image file
+    ScreenResolution = { 1280, 720 },
+    MaxPlayMinutes = 15,        -- screens go back to the court slate after this long
+    ScreenVolume = 0.8,         -- direct video files: volume at the screen (fades out across the room)
+}
+
+---------------------------------------------------------------------------
+-- Court custody desk: defendants who must be produced are booked in at a desk placed in a
+-- courtroom (/courtrooms, "Place a custody desk") before their hearing can go ahead.
+---------------------------------------------------------------------------
+Config.CustodyDesk = {
+    enabled = true,
+    Roles = { 'police', 'prison', 'clerk' },     -- who can book defendants in
+    -- Always produced through the desk when the defendant is:
+    RequireFor = { police_custody = true, remand = true },
+    -- Also serious cases (Crown Court, or any indictable-only charge), even when on bail: they
+    -- surrender to the custody of the court at the desk.
+    Serious = true,
+    BookInRange = 12.0,          -- the defendant has to be this close to the desk
+    -- Bailed defendants in serious cases who haven't surrendered this long after their hearing
+    -- time: failed to surrender, warrant issued. People in custody are never given a warrant,
+    -- police and prison are told they haven't been produced instead.
+    SurrenderMinutes = 30,
+    NotProducedAlertMinutes = 10,
+}
+
+---------------------------------------------------------------------------
+-- Front desk (reception): for everyone not coming from custody. People on bail and the parties to
+-- civil claims check in for their hearing; court staff see who has arrived. Placed in
+-- /courtrooms → Courts → Place a desk → Front desk.
+---------------------------------------------------------------------------
+Config.FrontDesk = {
+    enabled = true,
+    Roles = { 'clerk', 'judge' },   -- who can open the front desk system (anyone can check themselves in)
+    CheckInBefore = 120,            -- minutes before a hearing you can check in
+    CheckInAfter = 60,              -- ...and up to this long after its listed time
+}
+
+---------------------------------------------------------------------------
+-- Civil claims (County Court): one person takes another to court for money, property,
+-- a broken agreement or an injunction. Solicitors issue them for their clients.
+---------------------------------------------------------------------------
+Config.Civil = {
+    enabled = true,
+    OpenRoles = { 'defence' },        -- who can issue a claim for a client
+    AllowLitigantInPerson = true,     -- anyone can take someone to court themselves from /mycase (false = solicitors only)
+    Court = 'lscounty',               -- court id from Config.Courts
+    Types = {
+        { id = 'debt', label = 'Money owed (debt)' },
+        { id = 'damages', label = 'Damages for loss or injury' },
+        { id = 'contract', label = 'Breach of contract' },
+        { id = 'property', label = 'Property or possession' },
+        { id = 'injunction', label = 'Injunction (an order to stop someone doing something)' },
+        { id = 'other', label = 'Other' },
+    },
+    -- Court fee for issuing, paid by whoever issues the claim. Banded on the amount claimed.
+    Fees = {
+        { upTo = 300, fee = 35 }, { upTo = 1000, fee = 70 }, { upTo = 5000, fee = 205 },
+        { upTo = 10000, fee = 455 }, { upTo = 100000, pct = 5 }, { pct = 5, max = 10000 },
+    },
+    NonMoneyFee = 332,                -- claims for something other than money (injunction, property)
+    ResponseDays = 3,                 -- real days the defendant has to respond
+    AutoDefaultJudgment = true,       -- no response by then: judgment for the claimant automatically
+    PayDays = 7,                      -- real days to pay a judgment
+    -- Unpaid after PayDays: a County Court Judgment (CCJ) is registered and shown on the MDT.
+    RegisterCCJ = true,
+    Account = 'bank',
+
+    -- Businesses as claimants or defendants. A business is a job on your framework; its bosses
+    -- (isboss grades) act for it from /mycase, and its money is the business (society) account.
+    Businesses = true,
+    BusinessesCanIssue = true,        -- bosses can take people or other businesses to court for their business
+    -- 'auto' finds Renewed-Banking, okokBanking, wasabi_banking, qb-banking, qb-management or esx_addonaccount.
+    BusinessBank = 'auto',
+    -- Jobs that aren't businesses (can't sue or be sued as a business). Public services are left out,
+    -- so a police or court boss brings claims as themselves, not "for the police".
+    ExcludeBusinesses = { 'unemployed', 'police', 'sheriff', 'bcso', 'lspd', 'sasp', 'state', 'ambulance', 'ems', 'fire',
+        'judge', 'magistrate', 'court', 'clerk', 'cps', 'lawyer', 'solicitor', 'probation', 'prison', 'doc' },
+    -- Businesses that aren't jobs (e.g. a company account in your banking script): { id = 'account name', label = 'Name' }
+    ExtraBusinesses = {},
 }
 
 ---------------------------------------------------------------------------

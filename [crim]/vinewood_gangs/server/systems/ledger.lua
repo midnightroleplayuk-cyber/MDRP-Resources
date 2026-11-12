@@ -38,6 +38,9 @@ function Ledger.Transact(gangId, account, amount, txType, opts)
 
     if flagged then
         TriggerEvent('vinewood_gangs:server:transactionFlagged', gangId, txId, account, amount, txType)
+        local g = Gangs and Gangs.Get and Gangs.Get(gangId)
+        Logger.Log(nil, 'ledger_flagged', ('Large %s movement for %s: %s%s (%s)'):format(account, g and g.label or ('gang ' .. tostring(gangId)),
+            amount < 0 and '-' or '+', Utils.FormatMoney(math.abs(amount)), tostring(txType)))
     end
 
     return true, balance

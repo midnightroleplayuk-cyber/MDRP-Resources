@@ -222,6 +222,7 @@ function Rackets.Collect(src, key)
 
     s.owed, s.lastCollected = 0, os.time()
     save(key)
+    Logger.Log(src, 'racket_collected', ('%s collected %s from %s for %s'):format(cid, Utils.FormatMoney(amount), b.label, gang.label or ('gang ' .. gang.id)))
     Progression.Count(gang.id, 'racket_income', amount)
     Activity.Record({ type = 'racket_payment', gangId = gang.id, citizenid = cid, zone = zoneOf(b), coords = b.coords,
         multiplier = amount / b.income, metadata = { business = key, amount = amount } })

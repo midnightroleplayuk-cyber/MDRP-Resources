@@ -102,15 +102,15 @@ function fieldHtml(f) {
 
 /* ---------- shell ---------- */
 const NAV = {
-    judge: ['dashboard', 'list', 'cases', 'warrants', 'prison', 'probation', 'fines'],
-    clerk: ['dashboard', 'list', 'cases', 'warrants', 'prison', 'fines'],
+    judge: ['dashboard', 'list', 'cases', 'civil', 'warrants', 'prison', 'probation', 'fines'],
+    clerk: ['dashboard', 'list', 'cases', 'civil', 'warrants', 'prison', 'fines'],
     cps: ['dashboard', 'list', 'cases', 'warrants'],
-    defence: ['dashboard', 'list', 'cases', 'warrants'],
+    defence: ['dashboard', 'list', 'cases', 'civil', 'warrants'],
     probation: ['dashboard', 'probation', 'cases', 'prison', 'warrants'],
     prison: ['dashboard', 'prison', 'warrants'],
     police: ['dashboard', 'list', 'cases', 'warrants', 'prison'],
 };
-const NAV_LABEL = { dashboard: 'Overview', list: 'Court lists', cases: 'Cases', warrants: 'Warrants', prison: 'Prison', probation: 'Probation', fines: 'Fines' };
+const NAV_LABEL = { dashboard: 'Overview', list: 'Court lists', cases: 'Cases', civil: 'Civil claims', warrants: 'Warrants', prison: 'Prison', probation: 'Probation', fines: 'Fines' };
 const VIEWS = {};
 
 function can(...roles) { return state.me && roles.includes(state.me.role); }
@@ -124,10 +124,24 @@ function drawShell() {
         $('#nav').classList.add('hidden');
         return;
     }
+    if (state.mode === 'custody' || state.mode === 'front') {
+        $('#svcSub').textContent = state.mode === 'front' ? 'Front desk' : 'Court custody';
+        $('#who').innerHTML = `<strong>${esc(state.me?.name || '')}</strong>${esc(state.me?.label || '')}`;
+        $('#nav').classList.add('hidden');
+        return;
+    }
+    if (state.mode === 'rooms') {
+        $('#svcSub').textContent = 'Courtroom setup';
+        $('#who').innerHTML = '<strong>Server admin</strong>';
+        $('#nav').classList.add('hidden');
+        return;
+    }
     $('#nav').classList.remove('hidden');
-    $('#who').innerHTML = `<strong>${esc(state.me.name)}</strong>${esc(state.me.label)}`;
-    const items = NAV[state.me.role] || ['dashboard'];
-    $('#nav').innerHTML = items.map((v) => `<button data-nav="${v}" class="${state.view === v || (state.view === 'case' && v === 'cases') || (state.view === 'order' && v === 'probation') ? 'active' : ''}">${NAV_LABEL[v]}</button>`).join('');
+    $('#who').innerHTML = `${state.room && state.room.canVolume ? '<button class="btn secondary small" id="volBtn" style="margin-right:8px;vertical-align:middle">Sound</button>' : ''}${state.room && state.room.screens ? '<button class="btn small" id="scrBtn" style="margin-right:14px;vertical-align:middle">Screens</button>' : ''}<span style="display:inline-block;vertical-align:middle"><strong>${esc(state.me.name)}</strong>${esc(state.me.label)}</span>`;
+    if ($('#scrBtn')) $('#scrBtn').onclick = () => screensModal();
+    if ($('#volBtn')) $('#volBtn').onclick = () => volumeModal();
+    const items = (NAV[state.me.role] || ['dashboard']).filter((v) => v !== 'civil' || state.cfg.civil);
+    $('#nav').innerHTML = items.map((v) => `<button data-nav="${v}" class="${state.view === v || (state.view === 'case' && v === 'cases') || (state.view === 'order' && v === 'probation') || (state.view === 'claim' && v === 'civil') ? 'active' : ''}">${NAV_LABEL[v]}</button>`).join('');
     $$('#nav [data-nav]').forEach((b) => (b.onclick = () => go(b.dataset.nav)));
 }
 
@@ -145,23 +159,62 @@ window.addEventListener('message', async (e) => {
     const m = e.data || {};
     if (m.action === 'open') {
         state.mode = m.mode;
-        $('#app').classList.remove('hidden');
+        showDevice(m.device || 'none', m.extra || {});
         if (m.mode === 'portal') {
             state.view = 'portal';
             await VIEWS.portal();
+        } else if (m.mode === 'front') {
+            const r = await api('init');
+            if (r.error) return close();
+            state.me = r.me; state.cfg = r.cfg; state.view = 'front';
+            await VIEWS.front();
+        } else if (m.mode === 'custody') {
+            const r = await api('init');
+            if (r.error) return close();
+            state.me = r.me;
+            state.cfg = r.cfg;
+            state.view = 'custody';
+            await VIEWS.custody();
+        } else if (m.mode === 'rooms') {
+            state.view = 'rooms';
+            await VIEWS.rooms({ open: m.extra && m.extra.roomId });
         } else {
             const r = await api('init');
             if (r.error) return close();
             state.me = r.me;
             state.cfg = r.cfg;
+            state.room = r.room || null;
             go(state.me.role === 'prison' ? 'prison' : state.me.role === 'probation' ? 'probation' : 'dashboard');
         }
+    } else if (m.action === 'mic') {
+        $('#micBadge').classList.toggle('hidden', !m.on);
+        if (m.on) $('#micLabel').textContent = m.label || '';
+    } else if (m.action === 'chime') {
+        playChime(Number(m.volume) || 0.7, Number(m.pan) || 0);
+    } else if (m.action === 'hint') {
+        $('#hint').classList.toggle('hidden', !m.text);
+        if (m.text) $('#hint').textContent = m.text;
     } else if (m.action === 'close') {
-        $('#app').classList.add('hidden');
+        hideDevice();
         closeModal();
     }
 });
-function close() { post('close'); $('#app').classList.add('hidden'); closeModal(); }
+function close() { post('close'); hideDevice(); closeModal(); }
+
+/* Device frame: tablet for /moj and /mycase, laptop in a courtroom, none for the editor. */
+let clockTimer;
+function showDevice(kind, extra) {
+    const dev = $('#device');
+    dev.className = `device ${['tablet', 'laptop'].includes(kind) ? kind : 'none'}`;
+    $('#sbLeft').textContent = kind === 'laptop'
+        ? `${extra.room ? extra.room + ' · ' : ''}${state.cfg.courtsName || 'HM Courts & Tribunals Service'} secure laptop`
+        : `${state.cfg.serviceName || 'Ministry of Justice'} · Secure`;
+    const tick = () => { const d = new Date(); $('#sbTime').textContent = `${pad(d.getHours())}:${pad(d.getMinutes())}`; };
+    tick();
+    clearInterval(clockTimer);
+    clockTimer = setInterval(tick, 15000);
+}
+function hideDevice() { $('#device').classList.add('hidden'); clearInterval(clockTimer); }
 $('#closeBtn').onclick = close;
 document.addEventListener('keydown', (e) => {
     if (e.key !== 'Escape') return;
@@ -184,7 +237,7 @@ function hearingsTable(rows, showCase = true) {
             const late = h.status === 'listed' && h.scheduled_at < (state.serverTime || now()) - 600;
             return `<tr class="click" data-case="${h.case_id}"><td><strong>${fmtTime(h.scheduled_at)}</strong><br><span class="muted small">${fmtDate(h.scheduled_at, false)}</span></td>
             ${showCase ? `<td>${esc(h.ref)}</td><td><span class="dot ${h.online ? 'on' : ''}" title="${h.online ? 'In the city' : 'Not in the city'}"></span>${esc(h.subject_name)}<br><span class="muted small">${chargeList(h.charges)}</span></td>` : ''}
-            <td>${esc(hType(h.type))}</td><td>${esc(courtLabel(h.court_id))}</td><td>${custodyTag(h.custody_status)}</td>
+            <td>${esc(hType(h.type))}</td><td>${esc(courtLabel(h.court_id))}${h.room_id ? `<div class="muted small">${esc(((state.cfg.rooms || []).find((x) => x.id === h.room_id) || {}).label || '')}</div>` : ''}</td><td>${custodyTag(h.custody_status)}</td>
             <td>${h.status === 'open' ? tag(h.auto ? 'Auto court' : 'In court', 'green') : late ? tag('Waiting', 'red') : ''}</td></tr>`;
         }).join('')}</table></div>`;
 }
@@ -315,6 +368,7 @@ VIEWS.case = async (p) => {
         </div></div>
         ${activeWarrants.map((w) => `<div class="banner red"><strong>${esc(state.cfg.warrantTypes?.[w.type] || w.type)}</strong>${esc(w.reason || '')} <span class="muted">(${fmtDate(w.created_at)})</span></div>`).join('')}
         ${c.custodyNow ? `<div class="banner amber"><strong>In custody: ${esc(state.cfg.prisonKinds?.[c.custodyNow.kind] || c.custodyNow.kind)}</strong>${c.custodyNow.kind === 'remand' ? 'Held on remand until the court decides.' : `${Math.max(0, c.custodyNow.release_minutes - c.custodyNow.served_minutes)} minutes left before release.`}</div>` : ''}
+        ${c.noDesk ? `<div class="banner amber"><b>No custody desk at ${esc(c.courtLabel)}</b><br>This defendant should be ${c.custody_status === 'police_custody' || c.custody_status === 'remand' ? 'produced from custody' : 'surrendering to the court'}, but this court has no custody desk, so booking in is skipped. An admin can add one in /courtrooms → Courts → Place a desk (or let another court's desk serve this court).</div>` : ''}
         ${open ? hearingPanel(c, open) : ''}
         ${!open && next ? `<div class="panel"><h3>Next hearing</h3><p style="margin:0"><strong>${esc(hType(next.type))}</strong> on ${fmtDate(next.scheduled_at)} at ${esc(courtLabel(next.court_id))}</p>
             ${next.scheduled_at < now() - 60 ? `<p class="muted small">Due. ${state.cfg.autoCourt ? 'The auto court will take it if no judge opens it.' : ''}</p>` : ''}
@@ -327,6 +381,9 @@ VIEWS.case = async (p) => {
             ${c.summary && c.log ? `<h2>Case summary</h2><div class="inset" style="white-space:pre-wrap">${esc(c.summary)}</div>` : ''}
             ${(c.evidence || []).length ? `<h2>Evidence</h2><table><tr><th>Type</th><th>Detail</th></tr>${c.evidence.map((e) => `<tr><td>${esc(e.type)}</td><td>${esc(e.detail)}</td></tr>`).join('')}</table>` : ''}
             ${(c.statements || []).length ? `<h2>Witness statements (MG11)</h2>${c.statements.map((s) => `<div class="statement"><strong>${esc(s.maker_name)}</strong> <span class="muted small">${esc(s.kind)}${s.occupation ? `, ${esc(s.occupation)}` : ''} · signed ${fmtDate(s.signed_at)}</span><br>${esc(s.body)}</div>`).join('')}` : ''}
+            ${historyHtml(c)}
+            ${exhibitsHtml('case', c)}
+            ${interviewsHtml(c)}
             ${c.sentences.length ? `<h2>Sentence</h2>${c.sentences.map((s) => `<div class="panel"><strong>${esc(s.summary)}</strong><p class="muted small" style="margin:6px 0 0">${s.auto ? 'Auto court' : esc(s.passed_by)} · ${fmtDate(s.created_at)}</p>${s.components?.remarks ? `<div class="inset">${esc(s.components.remarks)}</div>` : ''}</div>`).join('')}` : ''}
             ${c.orders.length ? `<h2>Orders</h2>${ordersTable(c.orders)}` : ''}
             ${c.fines.length ? `<h2>Financial orders</h2>${finesTable(c.fines)}` : ''}
@@ -362,6 +419,12 @@ VIEWS.case = async (p) => {
     if ($('#aWd')) $('#aWd').onclick = () => withdrawModal(c);
     if ($('#aGuide')) $('#aGuide').onclick = () => sentenceModal(c, null);
     if (open) bindHearing(c, open);
+    bindExhibits('case', c);
+    $$('[data-case-link]').forEach((b) => (b.onclick = () => go('case', { id: Number(b.dataset.caseLink) })));
+    $$('[data-ivshow]').forEach((b) => (b.onclick = async () => {
+        const x = await api('screenPlay', { ownerKind: 'case', ownerId: c.id, interviewId: Number(b.dataset.ivshow) });
+        if (x.ok) toast('Playing the interview on the screens.');
+    }));
 };
 
 function hearingStatus(h) {
@@ -374,9 +437,11 @@ function listModal(c) {
     formModal('List a hearing', [
         { id: 'type', label: 'Hearing', type: 'select', options: Object.entries(state.cfg.hearingTypes).map(([value, label]) => ({ value, label })), value: c.status === 'awaiting_trial' ? 'trial' : c.status === 'awaiting_sentence' ? 'sentence' : 'mention' },
         { id: 'courtId', label: 'Court', type: 'select', options: state.cfg.courts.map((x) => ({ value: x.id, label: x.label })), value: c.court_id },
+        { id: 'roomId', label: 'Courtroom', type: 'select', hint: 'Shown on listing boards. Must be a courtroom of the court above. Set automatically when a judge opens the hearing from a courtroom laptop.',
+          options: [{ value: '', label: 'Not decided yet' }].concat((state.cfg.rooms || []).map((x) => ({ value: x.id, label: `${x.label} (${courtLabel(x.court_id)})` }))) },
         { id: 'at', label: 'Date and time', type: 'datetime', value: now() + 3600 },
     ], 'List hearing', async (v) => {
-        const x = await api('listHearing', { id: c.id, ...v }, true); if (x.ok) { toast('Listed. The defendant has been notified.'); refresh(); } return x;
+        const x = await api('listHearing', { id: c.id, ...v, roomId: v.roomId ? Number(v.roomId) : null }, true); if (x.ok) { toast('Listed. The defendant has been notified.'); refresh(); } return x;
     });
 }
 
@@ -417,7 +482,11 @@ function hearingPanel(c, h) {
 
     return `<div class="panel hearing"><h2>${esc(hType(h.type))}: in court</h2>
         <p class="muted" style="margin-top:-4px">${esc(c.courtLabel)} · opened by ${esc(h.judge_name || '')} · defendant ${c.online ? 'in the city' : '<strong>not in the city</strong>'}</p>
-        ${step('Attendance', `<div class="btn-row" style="margin-top:4px"><button class="btn secondary small" id="hPresent">Defendant present</button><button class="btn warning small" id="hFta">Failed to appear (warrant)</button></div>`)}
+        ${step('Attendance', `${h.checked_in_at ? `<p class="small" style="margin:2px 0 6px">${tag('Checked in', 'blue')} at the front desk ${fmtTime(h.checked_in_at)}${h.checked_in_by ? ` · ${esc(h.checked_in_by)}` : ''}</p>` : ''}${c.production ? (h.booked_at
+                ? `<p class="small" style="margin:2px 0 6px">${tag('Booked in', 'green')} at the court custody desk ${fmtTime(h.booked_at)} by ${esc(h.booked_by || '')}${h.booking_notes ? ` · ${esc(h.booking_notes)}` : ''}</p>`
+                : `<div class="inset" style="margin:4px 0 8px"><strong>${esc(c.productionLabel)}.</strong> Not booked in yet. They must be booked in at the court custody desk before they can be marked present.</div>`) : ''}
+            <div class="btn-row" style="margin-top:4px"><button class="btn secondary small" id="hPresent" ${c.production && !h.booked_at ? 'disabled' : ''}>Defendant present</button>
+            ${c.production === 'custody' && !h.booked_at ? '<span class="muted small">In custody: if they can\'t be produced, adjourn below.</span>' : '<button class="btn warning small" id="hFta">Failed to appear (warrant)</button>'}</div>`)}
         ${needPlea.length ? step('Pleas', `${needPlea.map((ch) => { const i = c.charges.indexOf(ch) + 1; return `<div class="inline-input" style="margin:6px 0"><span>${esc(ch.offence)}</span>
             <select data-plea="${i}"><option value="">Choose</option><option value="guilty">Guilty</option><option value="not_guilty">Not guilty</option></select></div>`; }).join('')}
             <div class="btn-row"><button class="btn small" id="hPlea">Enter pleas</button></div>`) : ''}
@@ -803,12 +872,57 @@ VIEWS.portal = async () => {
         ${owed.length ? `<p>You owe <strong>${money(owed.reduce((s, f) => s + f.amount, 0))}</strong>. Unpaid fines go up and can lead to a warrant.</p>` : ''}
         ${finesTable(r.fines || [], 'portal')}
 
+        ${(r.civil || []).length || r.cfg.litigantInPerson || r.cfg.businessCanIssue ? `<h2>Civil claims</h2>
+            ${r.cfg.litigantInPerson || r.cfg.businessCanIssue ? '<div class="btn-row" style="margin:0 0 10px"><button class="btn secondary small" id="pIssue">Take someone to court</button></div>' : ''}
+            ${(r.civil || []).length ? `<table><tr><th>Claim</th><th>Parties</th><th>Status</th><th></th></tr>${r.civil.map((c) => {
+                const payer = (c.judgment && c.judgment.payer) || 'defendant';
+                const owe = c.status === 'judgment' && payer === c.side ? Math.max(0, c.total_due - c.paid) : 0;
+                const due = c.status === 'issued' && c.side === 'defendant';
+                return `<tr><td><strong>${esc(c.ref)}</strong><br><span class="muted small">${esc(c.typeLabel || '')}</span></td>
+                <td>${partyName(c, 'claimant')} <span class="muted">v</span> ${partyName(c, 'defendant')}<div class="small muted">${c.forBusiness ? `${esc(c.forBusiness)} is the ${c.side}` : `You are the ${c.side}`}</div></td>
+                <td>${tag(c.statusLabel || c.status, CIVIL_TAG[c.status] || '')}${c.ccj ? ' ' + tag('CCJ', 'red') : ''}
+                    ${due ? `<div class="small"><strong>Respond by ${fmtDate(c.response_due)}</strong></div>` : ''}
+                    ${c.status === 'listed' && c.hearing_at ? `<div class="small">Hearing ${fmtDate(c.hearing_at)}</div>` : ''}
+                    ${c.judgment && c.judgment.order ? `<div class="small">Order: ${esc(c.judgment.order)}</div>` : ''}
+                    ${c.status === 'judgment' && payer !== c.side ? `<div class="small">${money(Math.max(0, c.total_due - c.paid))} still owed to ${c.forBusiness ? esc(c.forBusiness) : 'you'} · due ${fmtDate(c.judgment_due, false)}</div>` : ''}</td>
+                <td style="white-space:nowrap;text-align:right">${due ? `<button class="btn small" data-cresp="${c.id}">Respond</button>` : ''}
+                    ${owe ? `<button class="btn small" data-cpay="${c.id}" data-owe="${owe}">Pay ${money(owe)}</button>` : ''}
+                    ${['issued', 'defended', 'listed'].includes(c.status) ? (c.settlement
+                        ? (c.settlement.side === c.side
+                            ? `<div class="small muted" style="margin-bottom:4px">Settlement proposed: waiting for the other side</div><button class="btn secondary small" data-sans="${c.id}" data-ok="0">Cancel proposal</button>`
+                            : `<div class="small" style="margin-bottom:4px;max-width:340px;white-space:normal;text-align:left"><strong>Settlement offered:</strong> ${esc(c.settlement.terms)}${c.settlement.amount ? ` · ${money(c.settlement.amount)} to the claimant` : ''}</div>
+                               <button class="btn small" data-sans="${c.id}" data-ok="1">Accept</button> <button class="btn warning small" data-sans="${c.id}" data-ok="0">Decline</button>`)
+                        : `<button class="btn secondary small" data-sprop="${c.id}">Propose settlement</button>${c.side === 'claimant' ? ` <button class="btn secondary small" data-cend="${c.id}">Withdraw claim</button>` : ''}`) : ''}</td></tr>`;
+            }).join('')}</table>` : '<p class="empty">No civil claims.</p>'}` : ''}
+
         <h2>Your cases</h2>
         ${cases.length ? `<table><tr><th>Case</th><th>Charges</th><th>Status</th></tr>${cases.map((c) => `<tr><td><strong>${esc(c.ref)}</strong><br><span class="muted small">${esc(c.courtLabel || '')}</span></td>
             <td class="small">${chargeList(c.charges)}</td><td>${tag(r.cfg.statuses?.[c.status] || c.status, STATUS_TAG[c.status] || '')}${c.solicitor_name ? `<div class="small muted">Solicitor: ${esc(c.solicitor_name)}</div>` : ''}</td></tr>`).join('')}</table>`
             : '<p class="empty">You have no court cases.</p>'}`;
 
     $('#pRef').onclick = () => VIEWS.portal();
+    $$('[data-cresp]').forEach((b) => (b.onclick = () => formModal('Respond to the claim', [
+        { id: 'kind', label: 'Your response', type: 'select', options: [{ value: 'defend', label: 'I dispute the claim (defend it)' }, { value: 'admit', label: 'I admit the whole claim' }] },
+        { id: 'text', label: 'Why you dispute it, or a note with your admission', type: 'textarea' },
+    ], 'Send response', async (v) => { const x = await portalApi('civilRespond', { id: Number(b.dataset.cresp), ...v }); if (x.ok) { toast('Response sent to the court.'); VIEWS.portal(); } return x; },
+        '<p class="lead">If you admit it, judgment is entered against you and you will need to pay. If you defend it, the court will list a hearing.</p>')));
+    $$('[data-cpay]').forEach((b) => (b.onclick = () => formModal('Pay a County Court judgment', [
+        { id: 'amount', label: `Amount (up to ${money(Number(b.dataset.owe))})`, type: 'number', value: Number(b.dataset.owe), min: 1 },
+    ], 'Pay', async (v) => { const x = await portalApi('civilPay', { id: Number(b.dataset.cpay), amount: v.amount }); if (x.ok) { toast(x.satisfied ? 'Paid in full. The judgment is satisfied.' : 'Payment made.'); VIEWS.portal(); } return x; },
+        '<p class="lead">The money goes straight to the other party. Paying in full stops a CCJ being registered, or marks it satisfied.</p>')));
+    $$('[data-cend]').forEach((b) => (b.onclick = () => formModal('Withdraw your claim', [
+        { id: 'reason', label: 'Reason (optional)', type: 'text' },
+    ], 'Withdraw claim', async (v) => { const x = await portalApi('civilEnd', { id: Number(b.dataset.cend), status: 'withdrawn', reason: v.reason }); if (x.ok) { toast('Claim withdrawn.'); VIEWS.portal(); } return x; },
+        '<p class="lead">This ends the claim. To settle with the other side instead, use Propose settlement: they have to accept it.</p>')));
+    $$('[data-sprop]').forEach((b) => (b.onclick = () => settleModal((x) => portalApi('civilSettle', { id: Number(b.dataset.sprop), ...x }), () => VIEWS.portal())));
+    $$('[data-sans]').forEach((b) => (b.onclick = () => {
+        const accept = b.dataset.ok === '1';
+        confirmModal(accept ? 'Accept this settlement? If it includes a payment, it becomes a court order to pay.' : 'Decline (or cancel) this settlement proposal?', async () => {
+            const x = await portalApi('civilSettleAnswer', { id: Number(b.dataset.sans), accept }); if (x.ok) { toast(accept ? 'Settlement accepted.' : 'Done.'); VIEWS.portal(); }
+        }, accept ? 'Accept settlement' : 'Confirm', !accept);
+    }));
+    if ($('#pIssue')) $('#pIssue').onclick = () => issueClaimModal((x) => portalApi('civilIssue', x), (q, kind) => portalApi('searchPeople', { q, kind }), (x) => portalApi('civilFee', x), () => VIEWS.portal(),
+        { inPerson: r.cfg.litigantInPerson, business: r.cfg.businessCanIssue ? r.business : null });
     $$('[data-pay]').forEach((b) => (b.onclick = () => confirmModal(`Pay ${b.textContent.replace('Pay ', '')} from your bank account?`, async () => {
         const x = await portalApi('pay', { id: Number(b.dataset.pay) }); if (x.ok) { toast('Paid. Thank you.'); VIEWS.portal(); }
     }, 'Pay now')));
@@ -819,3 +933,757 @@ VIEWS.portal = async () => {
     $$('[data-site-wp]').forEach((b) => (b.onclick = () => { portalApi('waypoint', { site: Number(b.dataset.siteWp) }); toast('Waypoint set.'); }));
     $$('[data-site]').forEach((b) => (b.onclick = () => post('startWork', { site: Number(b.dataset.site) })));
 };
+
+
+/* ---------- courtroom setup (/courtrooms, admins) ---------- */
+async function roomsApi(action, data = {}, quiet = false) {
+    const r = (await post('rooms', { action, data })) || {};
+    if (r.error && !quiet) toast(r.error, true);
+    return r;
+}
+const ICON = {
+    laptop: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="11" rx="1"/><path d="M2 19h20"/></svg>',
+    mic: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>',
+    custody: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="10" width="14" height="10" rx="1"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>',
+};
+const POINT_NAME = { laptop: 'Laptop', mic: 'Microphone', custody: 'Custody desk', screen: 'Screen', speaker: 'Speaker' };
+ICON.speaker = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="3" width="12" height="18" rx="2"/><circle cx="12" cy="14" r="3"/><circle cx="12" cy="7.5" r="1"/></svg>';
+ICON.screen = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="12" rx="1"/><path d="M8 20h8M12 16v4"/></svg>';
+
+VIEWS.rooms = async (p = {}) => {
+    const r = await roomsApi('list');
+    if (r.error) return close();
+    state.rooms = r;
+    state.cfg = Object.assign({}, state.cfg, { courts: r.courts });
+    if (p.open) return VIEWS.room({ id: p.open });
+    state.view = 'rooms';
+    drawShell();
+    const courtName = (id) => (r.courts || []).find((c) => c.id === id)?.label || id || '';
+    const KIND_TAG = { magistrates: 'blue', crown: 'purple', county: 'green' };
+    main.innerHTML = `<div class="head"><div><span class="caption">Server admin</span><h1>Courts and courtrooms</h1></div></div>
+        <h2 style="margin-top:0">Courts</h2>
+        <p class="lead">The courts cases are heard in. Each court can have one or more courtrooms. A court's waypoint is where defendants are sent if it has no courtroom yet.</p>
+        <table><tr><th>Court</th><th>Type</th><th class="num">Courtrooms</th><th>Desks</th><th>Waypoint</th><th></th></tr>
+            ${(r.courts || []).map((c) => `<tr><td><strong>${esc(c.label)}</strong>${c.civilDefault ? ' ' + tag('Civil default', 'green') : ''}<div class="muted small">${esc(c.id)}</div></td>
+            <td>${tag(c.kindLabel || c.kind, KIND_TAG[c.kind] || '')}</td><td class="num">${c.rooms}</td>
+            <td>${c.kind === 'county' ? (c.hasFront ? tag('Front desk', 'blue') : '<span class="muted">No front desk</span>')
+                : `${c.hasCustody ? tag('Custody', 'purple') : '<span class="muted">No custody desk</span>'} ${c.hasFront ? tag('Front', 'blue') : ''}`}
+                 <button class="link small" data-cdesk="${esc(c.id)}">Place a desk</button></td>
+            <td>${c.hasCoords ? 'Set' : c.rooms ? '<span class="muted">Uses its courtroom</span>' : '<span class="muted">Not set</span>'}</td>
+            <td style="white-space:nowrap;text-align:right"><button class="btn secondary small" data-cedit="${esc(c.id)}">Edit</button> <button class="btn warning small" data-cdel="${esc(c.id)}">Delete</button></td></tr>`).join('')}</table>
+        <div class="btn-row" style="margin-bottom:8px"><button class="btn secondary" id="cNew">New court</button></div>
+        ${(r.courts || []).some((c) => (c.deskList || []).length) ? `<h3 style="margin-top:18px">Desks</h3>
+            <p class="lead" style="margin-bottom:8px">Custody desks book in defendants from custody and in serious cases. Front desks check in everyone else. One desk can handle several courts in the same building.</p>
+            <table><tr><th>Court</th><th>Desk</th><th>Type</th><th>Also handles</th><th>How</th><th></th></tr>${(r.courts || []).flatMap((c) => (c.deskList || []).map((d, i) => `<tr>
+                <td>${esc(c.label)}</td><td><strong>${esc(d.label || 'Custody suite')}</strong></td>
+                <td>${(d.kind || 'custody') === 'front' ? tag('Front desk', 'blue') : tag('Custody desk', 'purple')}</td>
+                <td class="small">${(d.also || []).map((id) => esc(((r.courts || []).find((x) => x.id === id) || {}).label || id)).join('<br>') || '<span class="muted">Only this court</span>'}</td>
+                <td>${d.mode === 'pick' ? tag('Map object', 'blue') : d.prop ? tag('Spawned', 'green') : '<span class="muted small">Marked spot</span>'}</td>
+                <td style="white-space:nowrap;text-align:right"><button class="btn secondary small" data-dtp="${esc(c.id)}:${i + 1}">Go to</button>
+                    <button class="btn warning small" data-drm="${esc(c.id)}:${i + 1}">Remove</button></td></tr>`)).join('')}</table>` : ''}
+        <div class="head" style="margin-top:28px;margin-bottom:10px"><h2 style="margin:0">Courtrooms</h2><div class="actions"><button class="btn secondary" id="rShowAll">Show all room areas</button><button class="btn" id="rNew">New courtroom here</button></div></div>
+        ${(r.overlaps || []).map((o) => `<div class="banner amber"><strong>${esc(o.a)} and ${esc(o.b)} overlap</strong>${o.shapes < 2
+            ? "At least one of them is still a circle. Open each room and use <b>Draw the room's shape</b> so its area follows the walls."
+            : 'Their drawn shapes cross. Open one and redraw it so the walls line up.'} Until then, screens and microphones in the overlap use whichever room is the better match.</div>`).join('')}
+        <p class="lead">Stand in the middle of the room in game and create it. Then place laptops on the desks and microphones by the bench, witness box, dock and advocates' seats.</p>
+        ${!r.voice ? '<div class="banner red"><strong>pma-voice is not running</strong>Microphones need pma-voice to carry voices across the room.</div>' : ''}
+        ${!r.target ? '<div class="banner amber"><strong>ox_target is not running</strong>Laptops and microphones fall back to an E prompt.</div>' : ''}
+        ${r.rooms.length ? `<table><tr><th>Courtroom</th><th>Court</th><th>Area</th><th class="num">Laptops</th><th class="num">Microphones</th></tr>
+            ${r.rooms.map((x) => `<tr class="click" data-room="${x.id}"><td><strong>${esc(x.label)}</strong></td><td>${esc(courtName(x.court_id))}</td>
+            <td>${x.shape ? tag(`Shape · ${x.shape.points.length} corners`, 'green') : tag(`Circle · ${Math.round(x.radius)} m`, 'amber')}</td><td class="num">${(x.points || []).filter((q) => q.kind === 'laptop').length}</td>
+            <td class="num">${(x.points || []).filter((q) => q.kind === 'mic').length}</td></tr>`).join('')}</table>`
+            : '<p class="empty">No courtrooms yet.</p>'}
+        <div class="head" style="margin-top:28px;margin-bottom:10px"><h2 style="margin:0">Listing boards</h2><div class="actions"><button class="btn" id="bNew">Place a listing board</button></div></div>
+        <p class="lead">TVs in hallways and foyers showing today's list: time, courtroom, case, hearing and whether it's in court now.</p>
+        ${(r.boards || []).length ? `<table><tr><th>Board</th><th>Shows</th><th>Names</th><th>Picture</th><th></th></tr>${r.boards.map((b) => `<tr>
+            <td><strong>${esc(b.label)}</strong><div class="muted small">${b.point && b.point.mode === 'pick' ? 'TV in the map' : 'Spawned TV'}</div></td>
+            <td class="small">${(b.courts || []).length ? b.courts.map(courtName).map(esc).join('<br>') : 'All courts'}</td>
+            <td class="small">${esc(((r.nameStyles || []).find((x) => x.id === b.names) || {}).label || b.names)}</td>
+            <td>${b.point && b.point.geo ? tag('Fitted', 'green') : tag('Not fitted', 'amber')}</td>
+            <td style="white-space:nowrap;text-align:right"><button class="btn secondary small" data-badj="${b.id}">Adjust picture</button> <button class="btn secondary small" data-btp="${b.id}">Go to</button>
+                <button class="btn secondary small" data-bedit="${b.id}">Edit</button> <button class="btn warning small" data-brm="${b.id}">Remove</button></td></tr>`).join('')}</table>`
+            : '<p class="empty">No listing boards yet.</p>'}`;
+    $$('[data-room]').forEach((t) => (t.onclick = () => VIEWS.room({ id: Number(t.dataset.room) })));
+    $('#rShowAll').onclick = () => post('roomsShowArea', {});
+    const boardForm = (b) => {
+        const courtChecks = (r.courts || []).map((c) => `<label><input type="checkbox" data-bcourt="${esc(c.id)}" ${b && (b.courts || []).includes(c.id) ? 'checked' : ''}> ${esc(c.label)}</label>`).join('');
+        const box = openModal(`<h2>${b ? 'Edit listing board' : 'Place a listing board'}</h2>
+            <label for="bLabel">Name</label><input type="text" id="bLabel" value="${esc(b ? b.label : '')}" placeholder="e.g. Ground floor foyer, Crown Court corridor">
+            <label>Courts it shows</label><div class="hint">None ticked = every court.</div><div class="checks">${courtChecks}</div>
+            <label for="bNames">Defendant names</label><select id="bNames">${(r.nameStyles || []).map((x) => `<option value="${esc(x.id)}" ${(b ? b.names : 'full') === x.id ? 'selected' : ''}>${esc(x.label)}</option>`).join('')}</select>
+            <div class="hint">Businesses in civil cases are always shown in full.</div>
+            ${b ? '' : `<label>How to place it</label><div class="checks">
+                <label><input type="radio" name="bMode" value="pick" checked> <strong>Use a TV already in the building</strong> (aim at it, E to choose)</label>
+                <label><input type="radio" name="bMode" value="spawn"> <strong>Spawn a TV</strong></label></div>
+                <div id="bModelWrap" class="hidden"><label for="bModel">TV model</label><select id="bModel">${(r.screens || []).map((m) => `<option value="${m.index}">${esc(m.label)}</option>`).join('')}</select></div>
+                <div class="inset small">Then fit the list to the screen: <strong>←/→</strong> width, <strong>↑/↓</strong> height, <strong>Shift</strong> to move, scroll in or out, <strong>F</strong> other side, <strong>E</strong> to save.</div>`}
+            <div id="bErr"></div><div class="btn-row"><button class="btn" id="bGo">${b ? 'Save' : 'Select it in the building'}</button><button class="btn secondary" id="bNo">Cancel</button></div>`);
+        $$('input[name=bMode]', box).forEach((x) => (x.onchange = () => {
+            const spawn = ($('input[name=bMode]:checked', box) || {}).value === 'spawn';
+            $('#bModelWrap', box).classList.toggle('hidden', !spawn);
+            $('#bGo', box).textContent = spawn ? 'Place it' : 'Select it in the building';
+        }));
+        $('#bNo', box).onclick = closeModal;
+        $('#bGo', box).onclick = async () => {
+            const label = $('#bLabel', box).value.trim();
+            if (!label) { $('#bErr', box).innerHTML = '<p class="err">Give the board a name.</p>'; return; }
+            const courts = $$('[data-bcourt]', box).filter((x) => x.checked).map((x) => x.dataset.bcourt);
+            const names = $('#bNames', box).value;
+            if (b) {
+                const x = await roomsApi('boardUpdate', { boardId: b.id, label, courts, names }, true);
+                if (x.error) { $('#bErr', box).innerHTML = `<p class="err">${esc(x.error)}</p>`; return; }
+                closeModal(); VIEWS.rooms(); return;
+            }
+            const mode = ($('input[name=bMode]:checked', box) || {}).value || 'pick';
+            const model = Number($('#bModel', box).value);
+            closeModal();
+            post('boardPlace', { label, courts, names, mode, model });
+        };
+    };
+    $('#bNew').onclick = () => boardForm(null);
+    $$('[data-bedit]').forEach((x) => (x.onclick = () => boardForm((r.boards || []).find((b) => b.id === Number(x.dataset.bedit)))));
+    $$('[data-badj]').forEach((x) => (x.onclick = () => post('boardAdjust', { boardId: Number(x.dataset.badj) })));
+    $$('[data-btp]').forEach((x) => (x.onclick = async () => { const y = await roomsApi('boardTeleport', { boardId: Number(x.dataset.btp) }); if (y.ok) toast('Teleported.'); }));
+    $$('[data-brm]').forEach((x) => (x.onclick = () => confirmModal('Remove this listing board?', async () => {
+        const y = await roomsApi('boardRemove', { boardId: Number(x.dataset.brm) }); if (y.ok) VIEWS.rooms();
+    }, 'Remove', true)));
+    const courtForm = (c) => {
+        const box = formModal(c ? `Edit ${c.label}` : 'New court', [
+            { id: 'label', label: 'Name', type: 'text', value: c ? c.label : '', placeholder: "e.g. Sandy Shores Magistrates' Court" },
+            { id: 'kind', label: 'Type', type: 'select', options: (r.kinds || []).map((k) => ({ value: k.id, label: k.label })), value: c ? c.kind : 'magistrates',
+              hint: "Magistrates' courts hear most criminal cases, the Crown Court serious ones, the County Court civil claims." },
+        ], c ? 'Save' : 'Create court', async (v) => {
+            const extra = { here: $('#cHere', box).checked, civilDefault: $('#cCivil', box).checked, clearCoords: $('#cClear', box) ? $('#cClear', box).checked : false };
+            const x = await roomsApi(c ? 'courtUpdate' : 'courtCreate', { courtId: c && c.id, ...v, ...extra }, true);
+            if (x.ok) { toast(c ? 'Court saved.' : 'Court created.'); VIEWS.rooms(); }
+            return x;
+        }, c && c.rooms ? `<p class="lead">${c.rooms} courtroom${c.rooms === 1 ? ' belongs' : 's belong'} to this court. Renaming it updates everywhere it's shown.</p>` : '');
+        $('#fErr', box).insertAdjacentHTML('beforebegin', `<div class="checks" style="margin-top:12px">
+            <label><input type="checkbox" id="cHere"> Set the court's waypoint to where I'm standing</label>
+            ${c && c.hasCoords ? '<label><input type="checkbox" id="cClear"> Remove the waypoint (use its courtroom instead)</label>' : ''}
+            <label><input type="checkbox" id="cCivil" ${c && c.civilDefault ? 'checked' : ''}> Default court for new civil claims (County Courts only)</label></div>`);
+    };
+    $('#cNew').onclick = () => courtForm(null);
+    $$('[data-cdesk]').forEach((b) => (b.onclick = () => {
+        const c = (r.courts || []).find((x) => x.id === b.dataset.cdesk);
+        const others = (r.courts || []).filter((x) => x.id !== c.id);
+        const box = openModal(`<h2>Place a desk for ${esc(c.label)}</h2>
+            <label>Type of desk</label><div class="checks">
+                <label style="align-items:flex-start"><input type="radio" name="dKind" value="custody" checked style="margin-top:2px"><span><strong>Custody desk</strong><br><span class="hint" style="margin:0">In the cells or custody suite. Defendants in custody, and in serious cases, are booked in here and given their courtroom.</span></span></label>
+                <label style="align-items:flex-start"><input type="radio" name="dKind" value="front" style="margin-top:2px"><span><strong>Front desk (reception)</strong><br><span class="hint" style="margin:0">In the entrance. People on bail and civil parties check in for their hearing; clerks see who has arrived.</span></span></label>
+            </div>
+            ${others.length ? `<label>Also handles cases for</label><div class="hint">Tick other courts in the same building, so one desk serves them all.</div>
+                <div class="checks">${others.map((x) => `<label><input type="checkbox" data-dserve="${esc(x.id)}"> ${esc(x.label)}</label>`).join('')}</div>` : ''}
+            <label for="dLabel">Name</label><input type="text" id="dLabel" placeholder="e.g. Custody suite, Main reception">
+            <label>How to place it</label><div class="checks">
+                <label><input type="radio" name="dMode" value="pick" checked> <strong>Use a computer already there</strong> (aim at it, E to choose)</label>
+                <label><input type="radio" name="dMode" value="spawn"> <strong>Spawn a laptop prop</strong></label>
+                <label><input type="radio" name="dMode" value="spot"> <strong>Just mark the spot</strong></label></div>
+            <div class="btn-row"><button class="btn" id="dGo">Place it</button><button class="btn secondary" id="dNo">Cancel</button></div>`);
+        $('#dNo', box).onclick = closeModal;
+        $('#dGo', box).onclick = () => {
+            const label = $('#dLabel', box).value.trim();
+            const mode = ($('input[name=dMode]:checked', box) || {}).value || 'pick';
+            const kind = ($('input[name=dKind]:checked', box) || {}).value || 'custody';
+            const serves = $$('[data-dserve]', box).filter((x) => x.checked).map((x) => x.dataset.dserve);
+            closeModal();
+            post('deskPlace', { courtId: c.id, label, mode, kind, serves });
+        };
+    }));
+    $$('[data-dtp]').forEach((b) => (b.onclick = async () => {
+        const [courtId, index] = b.dataset.dtp.split(':');
+        const x = await roomsApi('courtDeskTeleport', { courtId, index: Number(index) }); if (x.ok) toast('Teleported.');
+    }));
+    $$('[data-drm]').forEach((b) => (b.onclick = () => confirmModal('Remove this custody desk?', async () => {
+        const [courtId, index] = b.dataset.drm.split(':');
+        const x = await roomsApi('courtDeskRemove', { courtId, index: Number(index) }); if (x.ok) VIEWS.rooms();
+    }, 'Remove', true)));
+    $$('[data-cedit]').forEach((b) => (b.onclick = () => courtForm((r.courts || []).find((c) => c.id === b.dataset.cedit))));
+    $$('[data-cdel]').forEach((b) => (b.onclick = () => {
+        const c = (r.courts || []).find((x) => x.id === b.dataset.cdel);
+        confirmModal(`Delete ${c.label}? Only courts with no cases, hearings, claims or courtrooms can be deleted.`, async () => {
+            const x = await roomsApi('courtDelete', { courtId: c.id });
+            if (x.ok) { toast('Court deleted.'); VIEWS.rooms(); }
+        }, 'Delete court', true);
+    }));
+    $('#rNew').onclick = () => formModal('New courtroom', [
+        { id: 'label', label: 'Name', type: 'text', placeholder: 'e.g. Court 1' },
+        { id: 'courtId', label: 'Court', type: 'select', options: r.courts.map((c) => ({ value: c.id, label: c.label })) },
+        { id: 'radius', label: 'Size (metres from the centre)', type: 'number', value: 18, min: 5, hint: 'Should cover the whole room. Microphones carry this far unless you set their own range.' },
+    ], 'Create here', async (v) => {
+        const x = await roomsApi('create', v, true);
+        if (x.ok) { toast("Courtroom created. Now draw the room's shape so its area follows the walls."); state.rooms = await roomsApi('list'); VIEWS.room({ id: x.id }); }
+        return x;
+    }, '<p class="lead">Your current position becomes the centre of the room.</p>');
+};
+
+VIEWS.room = async (p) => {
+    const r = state.rooms && state.rooms.rooms ? state.rooms : await roomsApi('list');
+    let room = (r.rooms || []).find((x) => x.id === p.id);
+    if (!room) { const fresh = await roomsApi('list'); state.rooms = fresh; room = fresh.rooms.find((x) => x.id === p.id); }
+    if (!room) return VIEWS.rooms();
+    state.view = 'room';
+    drawShell();
+    const roles = r.roles || [];
+    const roleName = (id) => roles.find((x) => x.id === id)?.label || id;
+    const pts = room.points || [];
+    main.innerHTML = `<div class="head"><div><span class="caption"><button class="link" id="rBack">Courtrooms</button> · ${esc((r.courts || []).find((c) => c.id === room.court_id)?.label || '')}</span><h1>${esc(room.label)}</h1></div>
+        <div class="actions"><button class="btn secondary small" id="rTp">Teleport to centre</button><button class="btn secondary small" id="rEdit">Edit</button><button class="btn warning small" id="rDel">Delete</button></div></div>
+        <div class="panel" style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+            <div style="flex:1;min-width:260px"><strong>Area:</strong> ${room.shape
+                ? `drawn shape, ${room.shape.points.length} corners, ${(room.shape.maxZ - room.shape.minZ).toFixed(1)} m tall`
+                : `circle, ${Math.round(room.radius)} m from the centre <span class="muted small">(draw the shape so it follows the walls)</span>`}</div>
+            <button class="btn small" id="rShape">${room.shape ? 'Redraw the shape' : "Draw the room's shape"}</button>
+            <button class="btn secondary small" id="rArea">Show area</button>
+            ${room.shape ? '<button class="btn secondary small" id="rNoShape">Remove shape</button>' : ''}
+        </div>
+        <p class="small muted" style="margin-top:-6px">Drawing: aim at each corner of the floor and press <strong>E</strong>, <strong>Backspace</strong> undoes the last corner, <strong>Page Up/Down</strong> sets the ceiling height, <strong>Enter</strong> saves, <strong>G</strong> cancels. Neighbouring rooms are shown so you can line the walls up.</p>
+        <div class="btn-row" style="margin:0 0 18px">
+            <button class="btn" id="addLaptop"><span class="point-kind">${ICON.laptop} Place a laptop</span></button>
+            <button class="btn" id="addMic"><span class="point-kind">${ICON.mic} Place a microphone</span></button>
+            <button class="btn" id="addScreen"><span class="point-kind">${ICON.screen} Place a screen</span></button>
+            <button class="btn" id="addSpeaker"><span class="point-kind">${ICON.speaker} Place a speaker</span></button>
+        </div>
+        <p class="lead">Placing closes this screen. Pick something already in your MLO by aiming at it (it's outlined) and pressing <strong>E</strong>, or spawn a prop: aim, scroll to turn, <strong>↑/↓</strong> to raise or lower, <strong>E</strong> to place. <strong>Backspace</strong> cancels. Anyone within ${esc(String(r.micReach || 1.6))} m of a live microphone is heard across the room.</p>
+        ${pts.length ? `<table><tr><th>Point</th><th>Name</th><th>Who</th><th>Prop</th><th></th></tr>${pts.map((q, i) => `<tr>
+            <td><span class="point-kind">${ICON[q.kind] || ''} ${POINT_NAME[q.kind] || q.kind}</span></td>
+            <td>${esc(q.label || '')}</td>
+            <td class="small">${q.kind === 'laptop' ? ((q.roles || []).length ? q.roles.map(roleName).map(esc).join(', ') : 'All court staff') : q.kind === 'custody' ? 'Police, prison officers and court staff book defendants in' : q.kind === 'speaker' ? 'Plays live microphones and evidence' : q.kind === 'screen' ? (q.mode === 'pick' ? (r.overlay ? `Map TV${q.geo ? ' · picture fitted' : ' · <strong>not fitted yet</strong>'}` : `Map TV · render target ${esc(q.target || 'tvscreen')}`) : esc(((r.screens || []).find((m) => m.index === (q.model || 1)) || {}).label || 'Screen')) : `Carries ${Math.round(q.range || r.micRange || room.radius)} m`}</td>
+            <td>${q.mode === 'pick' ? tag('Map object', 'blue') : q.prop ? tag('Spawned', 'green') : '<span class="muted small">Marked spot</span>'}</td>
+            <td style="white-space:nowrap;text-align:right">${q.kind === 'screen' && r.overlay ? `<button class="btn secondary small" data-padj="${i + 1}">Adjust picture</button> ` : ''}<button class="btn secondary small" data-ptp="${i + 1}">Go to</button> <button class="btn secondary small" data-pedit="${i + 1}">Edit</button> <button class="btn warning small" data-prm="${i + 1}">Remove</button></td></tr>`).join('')}</table>`
+            : '<p class="empty">Nothing placed yet.</p>'}`;
+
+    const reload = async () => { state.rooms = await roomsApi('list'); VIEWS.room({ id: room.id }); };
+    $('#rBack').onclick = () => VIEWS.rooms();
+    $('#rTp').onclick = async () => { const x = await roomsApi('teleport', { id: room.id }); if (x.ok) toast('Teleported.'); };
+    $('#rShape').onclick = () => post('roomsShape', { id: room.id });
+    $('#rArea').onclick = () => post('roomsShowArea', { id: room.id });
+    if ($('#rNoShape')) $('#rNoShape').onclick = () => confirmModal("Remove this room's shape and go back to the circle?", async () => {
+        const x = await roomsApi('clearShape', { id: room.id }); if (x.ok) reload();
+    }, 'Remove shape', true);
+    $('#rEdit').onclick = () => {
+        const box = formModal('Edit courtroom', [
+            { id: 'label', label: 'Name', type: 'text', value: room.label },
+            { id: 'courtId', label: 'Court', type: 'select', options: r.courts.map((c) => ({ value: c.id, label: c.label })), value: room.court_id },
+            { id: 'radius', label: room.shape ? 'Circle size (only used if you remove the drawn shape)' : 'Size (metres from the centre)', type: 'number',
+              value: Math.round(room.shape ? ((room.circle || {}).radius || room.radius) : room.radius), min: 3, hint: room.shape ? '' : "Better: close this and use Draw the room's shape." },
+        ], 'Save', async (v) => { const x = await roomsApi('update', { id: room.id, ...v, recentre: $('#recentre', box).checked }, true); if (x.ok) reload(); return x; });
+        $('#fErr', box).insertAdjacentHTML('beforebegin', '<div class="checks"><label><input type="checkbox" id="recentre"> Move the centre to where I am standing</label></div>');
+    };
+    $('#rDel').onclick = () => confirmModal(`Delete ${room.label} and everything placed in it?`, async () => {
+        const x = await roomsApi('delete', { id: room.id }); if (x.ok) { state.rooms = null; VIEWS.rooms(); }
+    }, 'Delete courtroom', true);
+
+    const pointForm = (kind, existing, index) => {
+        const isLaptop = kind === 'laptop', isDesk = kind === 'custody', isScreen = kind === 'screen', isSpeaker = kind === 'speaker';
+        const cur = existing || {};
+        const thing = isLaptop ? 'a laptop' : isDesk ? 'the custody desk' : isScreen ? 'a screen' : isSpeaker ? 'a speaker' : 'a microphone';
+        const propName = isScreen ? 'TV' : isSpeaker ? 'speaker' : isLaptop || isDesk ? 'laptop' : 'table microphone';
+        // How it's placed: spawn our prop, pick an object already in the MLO, or (not screens) just mark the spot.
+        const modes = [
+            ['pick', `Use one already in the room`, `Aim at the ${isScreen ? 'TV' : isSpeaker ? 'speaker' : isLaptop || isDesk ? 'laptop or computer' : 'microphone'} in your MLO. It is outlined; press E to choose it.`],
+            ['spawn', `Spawn a ${propName} prop`, isScreen ? 'Aim at the wall or a stand. A ghost shows where the TV will go.' : 'Aim at the desk. A ghost shows where it will go.'],
+        ];
+        if (!isScreen) modes.push(['spot', 'Just mark the spot', 'No prop. Use this where the furniture is part of the building and cannot be selected.']);
+        const box = openModal(`<h2>${existing ? 'Edit' : 'Place'} ${thing}</h2>
+            ${isSpeaker ? '<p class="lead">The courtroom PA. Anyone at a live microphone, and any footage on the screens, is heard through the speakers: loudest next to one, and never fading to nothing anywhere in the room. Put them where the public gallery, jury and advocates sit.</p>' : ''}
+            ${isDesk ? '<p class="lead">Defendants in custody, and in serious cases, are booked in here before their hearing. Put it in the court cells or custody suite. It can be anywhere in the building: it doesn\'t need to be inside this courtroom.</p>' : ''}
+            ${isScreen ? `<p class="lead">A TV that shows video evidence played from a courtroom laptop. Every screen in this room shows the same exhibit${r.overlay ? '; TVs of the same model in other rooms are not affected' : ''}.</p>
+                ${r.overlay ? '<div class="inset small">After you place or pick it, you fit the picture to the TV: <strong>←/→</strong> width, <strong>↑/↓</strong> height, hold <strong>Shift</strong> to move it, scroll to bring it in or out, <strong>F</strong> if it\'s on the wrong side, <strong>E</strong> to save.</div>' : ''}` : ''}
+            ${existing ? `<p class="small muted">${cur.mode === 'pick' ? 'Uses an object in the map' : cur.prop ? 'Spawned prop' : 'Marked spot'}. To change how it's placed, remove it and place it again.</p>` : `
+            <label>How to place it</label>
+            <div class="checks">${modes.map(([v, l, h], i) => `<label style="align-items:flex-start"><input type="radio" name="pMode" value="${v}" ${i === 0 ? 'checked' : ''} style="margin-top:2px"><span><strong>${l}</strong><br><span class="hint" style="margin:0">${h}</span></span></label>`).join('')}</div>`}
+            ${isScreen && !existing ? `<div id="pSpawnOpts" class="hidden"><label for="pModel">TV model</label><select id="pModel">${(r.screens || []).map((m) => `<option value="${m.index}">${esc(m.label)}</option>`).join('')}</select></div>
+                <div id="pPickOpts" ${r.overlay ? 'style="display:none"' : ''}><label for="pTarget">Render target</label><div class="hint">Only needed for a custom TV model. Known TVs fill this in automatically. Most GTA TVs use <strong>tvscreen</strong>.</div>
+                <input type="text" id="pTarget" value="tvscreen"></div>` : ''}
+            <label for="pLabel">Name</label><input type="text" id="pLabel" value="${esc(cur.label || '')}" placeholder="${isLaptop ? "e.g. Judge's bench, Clerk, Prosecution, Defence" : isDesk ? 'e.g. Court custody suite' : isScreen ? 'e.g. Jury screen, Public gallery' : isSpeaker ? 'e.g. Public gallery left, Jury box' : 'e.g. Bench, Witness box, Dock'}">
+            ${isLaptop ? `<label>Who can use it</label><div class="hint">None ticked = all court staff.</div><div class="checks">${roles.map((x) => `<label><input type="checkbox" data-role="${esc(x.id)}" ${(cur.roles || []).includes(x.id) ? 'checked' : ''}> ${esc(x.label)}</label>`).join('')}</div>` : ''}
+            ${kind === 'mic' ? `<label for="pRange">Carries (metres)</label><div class="hint">Empty = the room's size (${Math.round(room.radius)} m).</div><input type="number" id="pRange" min="3" value="${esc(cur.range || '')}">` : ''}
+            <div id="pErr"></div><div class="btn-row"><button class="btn" id="pGo">${existing ? 'Save' : 'Place it'}</button><button class="btn secondary" id="pNo">Cancel</button></div>`);
+        const mode = () => (($('input[name=pMode]:checked', box) || {}).value) || 'pick';
+        $$('input[name=pMode]', box).forEach((x) => (x.onchange = () => {
+            if ($('#pSpawnOpts', box)) $('#pSpawnOpts', box).classList.toggle('hidden', mode() !== 'spawn');
+            if ($('#pPickOpts', box)) $('#pPickOpts', box).classList.toggle('hidden', mode() !== 'pick');
+            $('#pGo', box).textContent = mode() === 'pick' ? 'Select it in the room' : 'Place it';
+        }));
+        if (!existing) $('#pGo', box).textContent = 'Select it in the room';
+        $('#pNo', box).onclick = closeModal;
+        $('#pGo', box).onclick = async () => {
+            const data = {
+                label: $('#pLabel', box).value.trim(),
+                roles: isLaptop ? $$('[data-role]', box).filter((x) => x.checked).map((x) => x.dataset.role) : undefined,
+                range: kind === 'mic' && $('#pRange', box).value ? Number($('#pRange', box).value) : undefined,
+            };
+            if (existing) {
+                const x = await roomsApi('updatePoint', { id: room.id, index, ...data, range: kind === 'mic' ? (data.range ?? false) : undefined }, true);
+                if (x.error) { $('#pErr', box).innerHTML = `<p class="err">${esc(x.error)}</p>`; return; }
+                closeModal(); reload(); return;
+            }
+            const m = mode();
+            if (isScreen && m === 'pick' && !r.overlay && !/^[A-Za-z0-9_]+$/.test($('#pTarget', box).value.trim())) {
+                $('#pErr', box).innerHTML = '<p class="err">Enter a render target name (letters, numbers and _ only).</p>'; return;
+            }
+            // Read everything from the form before closing it (closing empties the modal).
+            const model = isScreen && m === 'spawn' ? Number($('#pModel', box).value) : undefined;
+            const target = isScreen && m === 'pick' ? $('#pTarget', box).value.trim() : undefined;
+            closeModal();
+            post('roomsPlace', { id: room.id, kind, mode: m, prop: m === 'spawn', ...data, model, target });
+        };
+    };
+    $('#addLaptop').onclick = () => pointForm('laptop');
+    $('#addMic').onclick = () => pointForm('mic');
+    $('#addScreen').onclick = () => pointForm('screen');
+    $('#addSpeaker').onclick = () => pointForm('speaker');
+    $$('[data-ptp]').forEach((b) => (b.onclick = async () => { const x = await roomsApi('teleport', { id: room.id, index: Number(b.dataset.ptp) }); if (x.ok) toast('Teleported.'); }));
+    $$('[data-padj]').forEach((b) => (b.onclick = () => post('roomsAdjust', { id: room.id, index: Number(b.dataset.padj) })));
+    $$('[data-pedit]').forEach((b) => (b.onclick = () => { const i = Number(b.dataset.pedit); pointForm(pts[i - 1].kind, pts[i - 1], i); }));
+    $$('[data-prm]').forEach((b) => (b.onclick = () => confirmModal('Remove this point?', async () => {
+        const x = await roomsApi('removePoint', { id: room.id, index: Number(b.dataset.prm) }); if (x.ok) reload();
+    }, 'Remove', true)));
+};
+
+
+/* ---------- court custody desk ---------- */
+VIEWS.custody = async () => {
+    const r = await api('custodyBoard');
+    if (r.error) return;
+    drawShell();
+    const pending = r.results.filter((x) => !x.booked_at);
+    main.innerHTML = `<div class="head"><div><span class="caption">${esc(r.room)}</span><h1>Court custody${r.court ? `: ${esc(r.court)}` : ''}</h1></div>
+        <div class="actions"><button class="btn secondary small" id="cuRef">Refresh</button></div></div>
+        <p class="lead">Defendants in custody, and in serious cases, must be booked in here before their hearing can go ahead. They need to be with you at the desk (within ${Math.round(r.range)} m).</p>
+        <div class="stats" style="max-width:520px"><div class="stat ${pending.length ? 'red' : 'green'}"><div class="v">${pending.length}</div><div class="t">To book in</div></div>
+            <div class="stat green"><div class="v">${r.results.length - pending.length}</div><div class="t">In court custody</div></div></div>
+        ${r.results.length ? `<table><tr><th>Time</th><th>Defendant</th><th>Why</th><th>Courtroom</th><th>Where they are</th><th>Status</th><th></th></tr>${r.results.map((x) => `<tr>
+            <td><strong>${fmtTime(x.at)}</strong><br><span class="muted small">${esc(hType(x.type))}</span></td>
+            <td><strong>${esc(x.name)}</strong><br><span class="muted small">${esc(x.ref)}</span><div class="small">${chargeList(x.charges)}</div></td>
+            <td>${tag(x.need === 'custody' ? 'Produce from custody' : 'Surrender to court', x.need === 'custody' ? 'red' : 'amber')}<br><span class="muted small">${esc(x.custody || '')}</span></td>
+            <td>${x.room_id ? esc(((r.rooms || []).find((y) => y.id === x.room_id) || {}).label || '') : '<span class="muted">Not chosen</span>'}</td>
+            <td>${!x.online ? '<span class="muted">Not in the city</span>' : x.distance <= r.range ? tag('At the desk', 'green') : `${x.distance} m away`}</td>
+            <td>${x.booked_at ? `${tag('Booked in', 'green')}<div class="muted small">${fmtTime(x.booked_at)} · ${esc(x.booked_by || '')}</div>${x.notes ? `<div class="small">${esc(x.notes)}</div>` : ''}` : tag('Not booked in', 'grey')}</td>
+            <td>${!x.booked_at ? `<button class="btn small" data-book="${x.id}" ${x.online && x.distance <= r.range ? '' : 'disabled'}>Book in</button>` : ''}</td></tr>`).join('')}</table>`
+            : '<p class="empty">No one due at this court needs booking in.</p>'}`;
+    $('#cuRef').onclick = () => VIEWS.custody();
+    $$('[data-book]').forEach((b) => (b.onclick = () => {
+        const x = r.results.find((y) => y.id === Number(b.dataset.book));
+        const fields = [];
+        if ((r.rooms || []).filter((y) => !x.court_id || y.court_id === x.court_id).length) fields.push({ id: 'roomId', label: 'Courtroom', type: 'select', value: x.room_id || '',
+            hint: 'Where they will be heard. Shown on the listing boards and told to the judge.',
+            options: (x.room_id ? [] : [{ value: '', label: 'Choose a courtroom' }]).concat(r.rooms.filter((y) => !x.court_id || y.court_id === x.court_id).map((y) => ({ value: y.id, label: y.label }))) });
+        fields.push({ id: 'notes', label: 'Notes', type: 'textarea', hint: 'Escort, risk, property held, medication. Seen by the judge.' });
+        formModal(`Book in ${x.name}`, fields, 'Book in', async (v) => {
+            const res = await api('bookIn', { id: x.id, notes: v.notes, roomId: v.roomId ? Number(v.roomId) : null }, true);
+            if (res.ok) { toast(`${x.name} booked in. The judge has been told.`); VIEWS.custody(); }
+            return res;
+        }, `<p class="lead">${esc(x.ref)} · ${esc(hType(x.type))} at ${fmtTime(x.at)}</p>`);
+    }));
+};
+
+/* ---------- civil claims (County Court) ---------- */
+const CIVIL_TAG = { issued: 'blue', defended: 'purple', listed: 'purple', judgment: 'amber', satisfied: 'green', order: 'green', dismissed: 'grey', withdrawn: 'grey', settled: 'green', struck_out: 'grey' };
+const civilStatus = (c) => tag(c.statusLabel || c.status, CIVIL_TAG[c.status] || '');
+const civilAmount = (c) => (c.amount > 0 ? money(c.amount) : esc(c.remedy || ''));
+const civilOpen = (c) => ['issued', 'defended', 'listed'].includes(c.status);
+
+VIEWS.civil = async (p = {}) => {
+    const status = p.status || 'open';
+    const r = await api('civilList', { status, q: p.q || '' });
+    if (r.error) return;
+    const canIssue = (state.cfg.civilOpenRoles || []).includes(state.me.role);
+    main.innerHTML = `<div class="head"><div><span class="caption">County Court${state.me.role === 'defence' ? ' · claims you act in' : ''}</span><h1>Civil claims</h1></div>
+        <div class="actions">${canIssue ? '<button class="btn" id="cvNew">Issue a claim</button>' : ''}</div></div>
+        <div class="toolbar">
+            <div style="flex:1"><label for="cvQ">Search</label><input type="text" id="cvQ" value="${esc(p.q || '')}" placeholder="Claim number or party name"></div>
+            <div class="seg">${[['open', 'Open'], ['closed', 'Concluded'], ['all', 'All']].map(([k, l]) => `<button data-cs="${k}" class="${k === status ? 'on' : ''}">${l}</button>`).join('')}</div>
+        </div>
+        ${r.results.length ? `<table><tr><th>Claim</th><th>Parties</th><th>Type</th><th class="num">Claimed</th><th>Next</th><th>Status</th></tr>${r.results.map((c) => `<tr class="click" data-claim="${c.id}">
+            <td><strong>${esc(c.ref)}</strong><br><span class="muted small">${fmtDate(c.created_at, false)}</span></td>
+            <td>${partyName(c, 'claimant')} <span class="muted">v</span> ${partyName(c, 'defendant')}</td><td class="small">${esc(c.typeLabel)}</td>
+            <td class="num">${civilAmount(c)}</td>
+            <td class="small">${c.status === 'issued' ? `Response due ${fmtDate(c.response_due)}` : c.status === 'listed' && c.hearing_at ? `Hearing ${fmtDate(c.hearing_at)}` : c.status === 'defended' ? 'Needs a hearing date' : ''}</td>
+            <td>${civilStatus(c)}${c.ccj ? ' ' + tag('CCJ', 'red') : ''}${c.hearing_open ? ' ' + tag('In court', 'green') : ''}</td></tr>`).join('')}</table>`
+            : '<p class="empty">No claims.</p>'}`;
+    let t;
+    $('#cvQ').oninput = (e) => { clearTimeout(t); t = setTimeout(() => go('civil', { status, q: e.target.value }).then(() => { const i = $('#cvQ'); i.focus(); i.setSelectionRange(i.value.length, i.value.length); }), 350); };
+    $$('[data-cs]').forEach((b) => (b.onclick = () => go('civil', { status: b.dataset.cs, q: p.q })));
+    $$('[data-claim]').forEach((b) => (b.onclick = () => go('claim', { id: Number(b.dataset.claim) })));
+    if ($('#cvNew')) $('#cvNew').onclick = () => issueClaimModal((x) => api('civilIssue', x, true), (q, kind) => api('searchParties', { q, kind }, true), (x) => api('civilFee', x, true), (id) => go('claim', { id }));
+};
+
+/** Shared by staff (solicitor) and the public portal.
+ *  opts.inPerson = issuing for yourself; opts.business = { id, name } when a boss can issue for their business. */
+function issueClaimModal(send, search, feeFn, done, opts = {}) {
+    const parties = { claimant: { kind: 'person', id: null }, defendant: { kind: 'person', id: null } };
+    const types = state.cfg.civilTypes || [];
+    const biz = state.cfg.businesses;
+    const kindSeg = (side) => biz ? `<div class="seg" style="margin-bottom:6px" data-kseg="${side}"><button data-k="person" class="on">A person</button><button data-k="business">A business</button></div>` : '';
+    const portal = opts.inPerson || opts.business;
+    const claimantBlock = !portal
+        ? `<label>Claimant (your client)</label>${kindSeg('claimant')}<input type="text" id="ppC" placeholder="Search by name"><div class="results" id="ppCRes"></div>`
+        : `<label for="asWho">Bringing the claim</label><select id="asWho">${opts.inPerson ? '<option value="me">You, in person</option>' : ''}${opts.business ? `<option value="biz">${esc(opts.business.name)} (your business)</option>` : ''}</select>`;
+    const box = openModal(`<h2>Issue a County Court claim</h2>
+        <p class="lead" id="cLead"></p>
+        ${claimantBlock}
+        <label>Defendant (who the claim is against)</label>${kindSeg('defendant')}<input type="text" id="ppD" placeholder="Search by name"><div class="results" id="ppDRes"></div>
+        <div class="grid2"><div><label for="cType">Type of claim</label><select id="cType">${types.map((x) => `<option value="${esc(x.id)}">${esc(x.label)}</option>`).join('')}</select></div>
+        <div><label for="cAmt">Amount claimed (${esc(state.cfg.currency || '£')})</label><input type="number" id="cAmt" min="0" value="0"><div class="hint">0 if you're not claiming money.</div></div></div>
+        <label for="cRem">Order you want the court to make</label><div class="hint">For injunctions and property claims, e.g. "Return the vehicle", "Stop contacting the claimant".</div><input type="text" id="cRem">
+        <label for="cPart">Particulars of claim</label><div class="hint">What happened, when, and why the defendant owes it.</div><textarea id="cPart" style="min-height:120px"></textarea>
+        <p id="cFee" class="small"></p><div id="cErr"></div>
+        <div class="btn-row"><button class="btn" id="cGo">Issue claim and pay fee</button><button class="btn secondary" id="cNo">Cancel</button></div>`, true);
+    const lead = () => {
+        const asBiz = portal && $('#asWho', box) && $('#asWho', box).value === 'biz';
+        $('#cLead', box).textContent = !portal ? 'You are issuing this claim on behalf of your client. The court fee comes out of your account.'
+            : asBiz ? `You are bringing this claim for ${opts.business.name}. The court fee comes out of the business account.`
+            : 'You are bringing this claim yourself. The court fee comes out of your bank account.';
+    };
+    lead();
+    if ($('#asWho', box)) $('#asWho', box).onchange = lead;
+    const picker = (side, input, out) => {
+        let t;
+        const run = async () => {
+            const v = $(input, box).value.trim();
+            if (v.length < 2) { $(out, box).innerHTML = ''; return; }
+            const r = await search(v, parties[side].kind);
+            $(out, box).innerHTML = (r.results || []).map((p) => `<button data-cid="${esc(p.cid)}" data-name="${esc(p.name)}">${esc(p.name)} <span class="muted small">${parties[side].kind === 'business' ? 'Business' : esc(p.cid)}</span></button>`).join('') || '<p class="empty" style="padding:8px">None found.</p>';
+            $$('button', $(out, box)).forEach((b) => (b.onclick = () => { parties[side].id = b.dataset.cid; $(out, box).innerHTML = ''; $(input, box).value = b.dataset.name; }));
+        };
+        $(input, box).oninput = () => { parties[side].id = null; clearTimeout(t); t = setTimeout(run, 300); };
+        const seg = $(`[data-kseg="${side}"]`, box);
+        if (seg) $$('button', seg).forEach((b) => (b.onclick = () => {
+            $$('button', seg).forEach((x) => x.classList.toggle('on', x === b));
+            parties[side].kind = b.dataset.k; parties[side].id = null;
+            $(input, box).value = ''; $(out, box).innerHTML = '';
+            $(input, box).placeholder = b.dataset.k === 'business' ? 'Search businesses' : 'Search by name';
+        }));
+    };
+    if (!portal) picker('claimant', '#ppC', '#ppCRes');
+    picker('defendant', '#ppD', '#ppDRes');
+    const fee = async () => { const r = await feeFn({ type: $('#cType', box).value, amount: Number($('#cAmt', box).value) }); $('#cFee', box).innerHTML = `Court fee: <strong>${money(r.fee || 0)}</strong>`; };
+    $('#cType', box).onchange = fee; $('#cAmt', box).oninput = fee; fee();
+    $('#cNo', box).onclick = closeModal;
+    $('#cGo', box).onclick = async () => {
+        $('#cGo', box).disabled = true;
+        const r = await send({
+            claimant: parties.claimant.id, claimantKind: parties.claimant.kind,
+            defendant: parties.defendant.id, defendantKind: parties.defendant.kind,
+            asBusiness: portal && $('#asWho', box) && $('#asWho', box).value === 'biz',
+            type: $('#cType', box).value, amount: Number($('#cAmt', box).value), remedy: $('#cRem', box).value, particulars: $('#cPart', box).value,
+        });
+        $('#cGo', box).disabled = false;
+        if (r.error) { $('#cErr', box).innerHTML = `<p class="err">${esc(r.error)}</p>`; return; }
+        closeModal(); toast('Claim issued and served on the defendant.'); done(r.id);
+    };
+}
+
+const partyName = (c, side) => `${esc(c[side + '_name'])}${c[side + '_kind'] === 'business' ? ' ' + tag('Business', 'grey') : ''}`;
+
+VIEWS.claim = async (p) => {
+    const r = await api('civilGet', { id: p.id });
+    if (r.error) return go('civil');
+    const c = r.claim;
+    state.claim = c;
+    const side = c.mySide;
+    const judge = can('judge'), court = can('judge', 'clerk');
+    const decided = c.status === 'judgment' || !civilOpen(c);
+    const j = c.judgment || {};
+    const owed = Math.max(0, (c.total_due || 0) - (c.paid || 0));
+    const overdue = c.status === 'issued' && c.response_due < now();
+    main.innerHTML = `<div class="head"><div><span class="caption">${esc(c.courtLabel)} · ${esc(c.ref)}${side ? ` · you act for the ${side}` : ''}</span>
+            <h1>${esc(c.claimant_name)} <span class="muted" style="font-weight:400">v</span> ${esc(c.defendant_name)}</h1>
+            <div class="chips" style="margin-top:8px">${civilStatus(c)} ${c.ccj ? tag('CCJ registered', 'red') : ''} ${c.hearing_open ? tag('In court', 'green') : ''}</div></div>
+        <div class="actions">
+            ${court && civilOpen(c) ? '<button class="btn secondary small" id="cvList">List hearing</button><button class="btn secondary small" id="cvSol">Solicitors</button>' : ''}
+            ${judge && civilOpen(c) && !c.hearing_open ? '<button class="btn small" id="cvOpen">Open hearing</button>' : ''}
+            ${side === 'defendant' && c.status === 'issued' ? '<button class="btn small" id="cvResp">Respond to claim</button>' : ''}
+            ${(side === 'claimant' || judge) && overdue ? '<button class="btn secondary small" id="cvDef">Judgment in default</button>' : ''}
+            ${side && civilOpen(c) && !c.settlement ? '<button class="btn secondary small" id="cvSettle">Propose settlement</button>' : ''}
+            ${side === 'claimant' && civilOpen(c) ? '<button class="btn secondary small" id="cvWd">Withdraw claim</button>' : ''}
+            ${judge && civilOpen(c) ? '<button class="btn secondary small" id="cvRecord">Record settlement</button>' : ''}
+            ${judge && civilOpen(c) ? '<button class="btn warning small" id="cvStrike">Strike out</button>' : ''}
+            <button class="btn secondary small" id="cvNote">Add note</button>
+        </div></div>
+        ${c.hearing_open && judge ? `<div class="panel hearing"><h2>Hearing: in court</h2>
+            <p class="muted" style="margin-top:-4px">Claimant ${c.claimantOnline ? 'in the city' : '<strong>not in the city</strong>'}${c.claimant_kind === 'business' ? ' (a boss)' : ''} · Defendant ${c.defendantOnline ? 'in the city' : '<strong>not in the city</strong>'}${c.defendant_kind === 'business' ? ' (a boss)' : ''}</p>
+            <div class="step"><h3><span class="num">1</span>Judgment</h3>
+                <div class="grid3"><div><label for="jFor">Judgment for</label><select id="jFor"><option value="claimant">The claimant</option><option value="defendant">The defendant (claim dismissed)</option></select></div>
+                <div><label for="jAmt">Amount awarded</label><input type="number" id="jAmt" min="0" value="${c.amount || 0}"></div>
+                <div><label for="jCosts">Costs</label><input type="number" id="jCosts" min="0" value="${c.fee || 0}"><div class="hint">Paid by the losing side.</div></div></div>
+                <label for="jOrder">Order (optional)</label><div class="hint">An injunction or other order.${c.defendant_kind === 'business' ? ' The business\'s bosses are told.' : " It is added to the defendant's MDT record so police can enforce it."}</div><input type="text" id="jOrder" value="${esc(c.amount > 0 ? '' : c.remedy || '')}">
+                <div class="btn-row"><button class="btn" id="jGo">Give judgment</button></div></div>
+            <div class="step"><h3><span class="num">2</span>Adjourn</h3>
+                <div class="grid2"><div><label for="jAt">Next hearing</label><input type="datetime-local" id="jAt"></div><div><label for="jWhy">Reason</label><input type="text" id="jWhy"></div></div>
+                <div class="btn-row"><button class="btn secondary small" id="jAdj">Adjourn</button></div></div>
+        </div>` : ''}
+        ${c.settlement && civilOpen(c) ? `<div class="banner amber"><b>Settlement proposed by the ${esc(c.settlement.side)}</b><br>${esc(c.settlement.terms)}${c.settlement.amount ? ` · <b>${money(c.settlement.amount)}</b> to the claimant` : ''}
+            <div class="muted small">${esc(c.settlement.by || '')} · ${fmtDate(c.settlement.at)}</div>
+            ${side && side !== c.settlement.side ? '<div class="btn-row"><button class="btn small" id="stAccept">Accept for my client</button><button class="btn warning small" id="stDecline">Decline</button></div>'
+              : side === c.settlement.side ? '<div class="btn-row"><button class="btn secondary small" id="stDecline">Cancel proposal</button></div>' : ''}</div>` : ''}
+        ${c.status === 'issued' ? `<div class="banner ${overdue ? 'red' : ''}"><strong>${overdue ? 'Response overdue' : 'Waiting for the defendant to respond'}</strong>Response due ${fmtDate(c.response_due)}.${overdue ? ' Judgment in default can be entered.' : ''}</div>` : ''}
+        ${c.status === 'listed' && c.hearing_at && !c.hearing_open ? `<div class="panel"><h3>Hearing</h3><p style="margin:0">${fmtDate(c.hearing_at)} at ${esc(c.courtLabel)}</p></div>` : ''}
+        ${j.at ? `<div class="panel"><h3>Judgment</h3><p style="margin:0"><strong>${j.forParty === 'claimant' ? 'For the claimant' : 'For the defendant'}</strong>${j.how ? ` (${esc(j.how)})` : ''}
+            ${j.amount ? ` · ${money(j.amount)}` : ''}${j.costs ? ` · costs ${money(j.costs)}` : ''}</p>${j.order ? `<div class="inset">${esc(j.order)}</div>` : ''}
+            ${c.total_due ? `<p class="small">${j.payer === 'claimant' ? 'Claimant' : 'Defendant'} to pay ${money(c.total_due)} by ${fmtDate(c.judgment_due, false)} · paid ${money(c.paid)} · ${owed ? `${money(owed)} outstanding` : 'paid in full'}</p>` : ''}
+            <p class="muted small" style="margin:6px 0 0">${esc(j.by || '')} · ${fmtDate(j.at)}</p></div>` : ''}
+        <div class="cols"><div>
+            <h2>Particulars of claim</h2><div class="inset" style="white-space:pre-wrap">${esc(c.particulars || '')}</div>
+            ${c.remedy ? `<p><strong>Order sought:</strong> ${esc(c.remedy)}</p>` : ''}
+            ${c.response && c.response.kind ? `<h2>${c.response.kind === 'admit' ? 'Admission' : 'Defence'}</h2><div class="inset" style="white-space:pre-wrap">${esc(c.response.text || (c.response.kind === 'admit' ? 'The defendant admits the claim.' : ''))}</div>
+                <p class="muted small">${esc(c.response.by || '')} · ${fmtDate(c.response.at)}</p>` : ''}
+            ${exhibitsHtml('claim', c)}
+        </div><div>
+            <h2>Details</h2>
+            <dl class="summary">
+                <dt>Type</dt><dd>${esc(c.typeLabel)}</dd>
+                <dt>Claimed</dt><dd>${civilAmount(c)}</dd>
+                <dt>Claimant</dt><dd>${partyName(c, 'claimant')}<div class="muted small">${c.claimant_sol_name ? `Solicitor: ${esc(c.claimant_sol_name)}` : c.claimant_kind === 'business' ? 'Represented by its bosses' : 'In person'}</div></dd>
+                <dt>Defendant</dt><dd>${partyName(c, 'defendant')}<div class="muted small">${c.defendant_sol_name ? `Solicitor: ${esc(c.defendant_sol_name)}` : c.defendant_kind === 'business' ? 'Represented by its bosses' : 'Unrepresented'}</div></dd>
+                <dt>Court fee</dt><dd>${money(c.fee)}</dd>
+                <dt>Issued</dt><dd>${fmtDate(c.created_at)}</dd>
+            </dl>
+            <h2>Claim log</h2><ul class="log">${(c.log || []).slice().reverse().map((l) => `<li><div class="meta">${fmtDate(l.at)} · ${esc(l.by)}</div>${esc(l.text)}</li>`).join('')}</ul>
+        </div></div>`;
+
+    const done = (msg) => (x) => { if (x.ok) { toast(msg); refresh(); } return x; };
+    const on = (id, fn) => { if ($(id)) $(id).onclick = fn; };
+    on('#cvList', () => formModal('List a hearing', [
+        { id: 'courtId', label: 'Court', type: 'select', options: (state.cfg.courts || []).map((x) => ({ value: x.id, label: x.label })), value: c.hearing_court || state.cfg.civilCourt },
+        { id: 'roomId', label: 'Courtroom', type: 'select', hint: 'Shown on listing boards.',
+          options: [{ value: '', label: 'Not decided yet' }].concat((state.cfg.rooms || []).map((x) => ({ value: x.id, label: `${x.label} (${courtLabel(x.court_id)})` }))) },
+        { id: 'at', label: 'Date and time', type: 'datetime', value: now() + 3600 },
+    ], 'List hearing', async (v) => done('Listed. Both parties have been told.')(await api('civilListHearing', { id: c.id, ...v, roomId: v.roomId ? Number(v.roomId) : null }, true))));
+    on('#cvSol', () => formModal('Solicitors', [
+        { id: 'side', label: 'Acting for', type: 'select', options: [{ value: 'defendant', label: 'The defendant' }, { value: 'claimant', label: 'The claimant' }] },
+        { id: 'cid', label: "Solicitor's citizen ID", type: 'text', hint: 'Leave empty to remove the solicitor.' },
+    ], 'Save', async (v) => done('Saved.')(await api('civilAssign', { id: c.id, ...v }, true))));
+    on('#cvOpen', async () => done('Hearing opened. The parties have been told.')(await api('civilOpen', { id: c.id })));
+    on('#cvResp', () => formModal('Respond to the claim', [
+        { id: 'kind', label: 'Response', type: 'select', options: [{ value: 'defend', label: 'Defend the claim' }, { value: 'admit', label: 'Admit the whole claim' }] },
+        { id: 'text', label: 'Defence, or a note with the admission', type: 'textarea', hint: 'Why the claim is disputed. Admitting enters judgment for the claimant.' },
+    ], 'Submit response', async (v) => done('Response filed.')(await api('civilRespond', { id: c.id, ...v }, true))));
+    on('#cvDef', () => confirmModal(`Enter judgment in default for ${civilAmount(c).replace(/<[^>]+>/g, '')}? The defendant has not responded.`, async () => done('Judgment entered.')(await api('civilDefault', { id: c.id })), 'Enter judgment'));
+    on('#cvWd', () => formModal('Withdraw the claim', [{ id: 'reason', label: 'Reason (optional)', type: 'text' }], 'Withdraw claim',
+        async (v) => done('Claim withdrawn.')(await api('civilEnd', { id: c.id, status: 'withdrawn', reason: v.reason }, true))));
+    on('#cvSettle', () => settleModal((x) => api('civilSettle', { id: c.id, ...x }, true), refresh));
+    on('#stAccept', () => confirmModal('Accept this settlement for your client?', async () => done('Settlement accepted.')(await api('civilSettleAnswer', { id: c.id, accept: true })), 'Accept'));
+    on('#stDecline', async () => done('Done.')(await api('civilSettleAnswer', { id: c.id, accept: false })));
+    on('#cvRecord', () => formModal('Record a settlement', [{ id: 'reason', label: 'Agreed terms', type: 'textarea' }], 'Record settlement',
+        async (v) => done('Recorded as settled.')(await api('civilEnd', { id: c.id, status: 'settled', reason: v.reason }, true)),
+        '<p class="lead">For when both parties tell the court they have settled. Use this as the judge; otherwise the parties propose and accept a settlement themselves.</p>'));
+    on('#cvStrike', () => formModal('Strike out the claim', [{ id: 'reason', label: 'Reason', type: 'textarea' }], 'Strike out',
+        async (v) => done('Struck out.')(await api('civilEnd', { id: c.id, status: 'struck_out', reason: v.reason }, true))));
+    on('#cvNote', () => formModal('Add a note', [{ id: 'text', label: 'Note', type: 'textarea' }], 'Add note', async (v) => done('Added.')(await api('civilNote', { id: c.id, text: v.text }, true))));
+    on('#jGo', async () => done('Judgment given. The parties have been told.')(await api('civilJudge', {
+        id: c.id, forParty: $('#jFor').value, amount: Number($('#jAmt').value), costs: Number($('#jCosts').value), order: $('#jOrder').value,
+    })));
+    bindExhibits('claim', c);
+    on('#jAdj', async () => done('Adjourned.')(await api('civilAdjourn', { id: c.id, at: fromInput($('#jAt').value), reason: $('#jWhy').value })));
+};
+
+
+/* ---------- video exhibits and the courtroom screens ---------- */
+const VIDEO_KIND = { medal: 'Medal', youtube: 'YouTube', twitch: 'Twitch', streamable: 'Streamable', vimeo: 'Vimeo', dailymotion: 'Dailymotion',
+    tiktok: 'TikTok', gdrive: 'Google Drive', dropbox: 'Dropbox', imgur: 'Imgur', gyazo: 'Gyazo', file: 'File' };
+const sourceOf = (x) => x.source || x.providerLabel || VIDEO_KIND[x.provider || x.kind] || 'Video';
+
+function exhibitsHtml(ownerKind, owner) {
+    const list = owner.exhibits || [];
+    const canAdd = can('judge', 'clerk', 'cps', 'defence');
+    const onScreens = state.room && state.room.screens;
+    return `<h2>Video exhibits</h2>
+        ${list.length ? `<table><tr><th>Exhibit</th><th>Source</th><th>Added</th><th></th></tr>${list.map((x, i) => `<tr>
+            <td><strong>${esc(x.label)}</strong></td><td>${tag(sourceOf(x), 'grey')}</td>
+            <td class="small muted">${esc(x.by || '')}<br>${fmtDate(x.at)}</td>
+            <td style="white-space:nowrap;text-align:right">${onScreens ? `<button class="btn small" data-exshow="${i + 1}">Show on screens</button> ` : ''}
+                ${can('judge') || x.by ? `<button class="btn secondary small" data-exrm="${i + 1}">Remove</button>` : ''}</td></tr>`).join('')}</table>`
+            : '<p class="empty">No video exhibits.</p>'}
+        ${!onScreens && list.length ? '<p class="small muted">Open this from a courtroom laptop to show exhibits on its screens.</p>' : ''}
+        ${canAdd ? `<div class="btn-row" style="margin-top:8px"><button class="btn secondary small" id="exAdd">Add a video exhibit</button></div>` : ''}`;
+}
+
+function bindExhibits(ownerKind, owner) {
+    if ($('#exAdd')) $('#exAdd').onclick = () => formModal('Add a video exhibit', [
+        { id: 'label', label: 'Exhibit name', type: 'text', placeholder: 'e.g. PH/1 bodycam, Dashcam from NB21, CCTV Legion Square' },
+        { id: 'url', label: 'Link', type: 'text', placeholder: 'https://medal.tv/... or https://youtu.be/...', hint: 'Medal, YouTube, Twitch, Streamable, Vimeo, Dailymotion, TikTok, Google Drive, Dropbox, Imgur, Gyazo, or a direct video or image file.' },
+    ], 'Add exhibit', async (v) => { const x = await api('addExhibit', { ownerKind, ownerId: owner.id, ...v }, true); if (x.ok) { toast('Exhibit added.'); refresh(); } return x; });
+    $$('[data-exshow]').forEach((b) => (b.onclick = async () => {
+        const x = await api('screenPlay', { ownerKind, ownerId: owner.id, index: Number(b.dataset.exshow) });
+        if (x.ok) toast(`Now showing: ${x.now.label}`);
+    }));
+    $$('[data-exrm]').forEach((b) => (b.onclick = () => confirmModal('Remove this exhibit from the case?', async () => {
+        const x = await api('removeExhibit', { ownerKind, ownerId: owner.id, index: Number(b.dataset.exrm) }); if (x.ok) refresh();
+    }, 'Remove', true)));
+}
+
+async function screensModal() {
+    const st = await api('screenStatus');
+    if (st.error) return;
+    const owner = state.view === 'case' ? { kind: 'case', o: state.case } : state.view === 'claim' ? { kind: 'claim', o: state.claim } : null;
+    const list = owner && owner.o ? owner.o.exhibits || [] : [];
+    const box = openModal(`<h2>Screens: ${esc(st.room || '')}</h2>
+        <div class="panel" style="margin-bottom:14px">${st.now ? `<strong>Now showing:</strong> ${esc(st.now.label)} ${tag(sourceOf(st.now), 'grey')}
+            <div class="muted small">${esc(st.now.by || '')} · started ${fmtTime(st.now.startedAt)}${st.now.ref ? ` · ${esc(st.now.ref)}` : ''}</div>
+            <div class="btn-row"><button class="btn secondary small" id="sRe">Play from the start</button><button class="btn warning small" id="sStop">Stop</button></div>`
+            : '<span class="muted">The screens are showing the court slate.</span>'}</div>
+        ${list.length ? `<h3>Exhibits on ${esc(owner.o.ref || 'this case')}</h3><table>${list.map((x, i) => `<tr><td><strong>${esc(x.label)}</strong> ${tag(sourceOf(x), 'grey')}</td>
+            <td style="text-align:right"><button class="btn small" data-sx="${i + 1}">Show</button></td></tr>`).join('')}</table>` : ''}
+        <h3 style="margin-top:16px">Play a link</h3>
+        <label for="sLabel">Name</label><input type="text" id="sLabel" placeholder="e.g. Defence exhibit D/1">
+        <label for="sUrl">Link</label><div class="hint">${esc(st.sources || 'Medal, YouTube or a direct video file')}. Timestamps in YouTube, Twitch, Vimeo and Dailymotion links are kept. Only people in this courtroom see and hear it.</div>
+        <input type="text" id="sUrl" placeholder="https://medal.tv/games/gta-v/clips/...">
+        <div id="sErr"></div>
+        <div class="btn-row"><button class="btn" id="sPlay">Show on screens</button><button class="btn secondary" id="sClose">Close</button></div>`);
+    const after = (msg) => (x) => { if (x.ok) { toast(msg); closeModal(); } else if (x.error) $('#sErr', box).innerHTML = `<p class="err">${esc(x.error)}</p>`; };
+    $('#sClose', box).onclick = closeModal;
+    $('#sPlay', box).onclick = async () => after('Now showing on the screens.')(await api('screenPlay', { url: $('#sUrl', box).value, label: $('#sLabel', box).value }, true));
+    if ($('#sRe', box)) $('#sRe', box).onclick = async () => after('Playing from the start.')(await api('screenRestart', {}, true));
+    if ($('#sStop', box)) $('#sStop', box).onclick = async () => after('Screens back to the court slate.')(await api('screenStop', {}, true));
+    $$('[data-sx]', box).forEach((b) => (b.onclick = async () => after('Now showing on the screens.')(await api('screenPlay', { ownerKind: owner.kind, ownerId: owner.o.id, index: Number(b.dataset.sx) }, true))));
+}
+
+
+/* ---------- defendant's history and interviews (case page) ---------- */
+const msDate = (t) => fmtDate(t > 1e11 ? Math.floor(t / 1000) : t);
+const durText = (ms) => { const m = Math.round((ms || 0) / 60000); return m < 1 ? 'under a minute' : `${m} min`; };
+
+function historyHtml(c) {
+    const h = c.history;
+    if (!h) return '';
+    const facts = [];
+    facts.push(h.previous ? `<strong>${h.previous}</strong> previous conviction${h.previous === 1 ? '' : 's'}` : 'No previous convictions');
+    if (h.custody) facts.push(`<strong>in custody</strong> (${esc(h.custody.kind)})`);
+    if (h.orders.length) facts.push(`<strong>${h.orders.length}</strong> live order${h.orders.length === 1 ? '' : 's'}`);
+    if (h.warrants.length) facts.push(`<strong style="color:var(--red)">${h.warrants.length} active warrant${h.warrants.length === 1 ? '' : 's'}</strong>`);
+    if (h.finesOwed) facts.push(`<strong>${money(h.finesOwed)}</strong> court fines owed`);
+    if (h.ccjs.length) facts.push(`<strong>${h.ccjs.length}</strong> unpaid CCJ${h.ccjs.length === 1 ? '' : 's'}`);
+    const sect = (title, body) => `<details class="hist"><summary>${title}</summary><div style="padding-top:8px">${body}</div></details>`;
+    return `<h2>Defendant's history</h2>
+        <div class="panel" style="margin-bottom:10px">${facts.join(' · ')}</div>
+        ${h.cases.length ? sect(`Court cases (${h.cases.length})`, `<table><tr><th>Case</th><th>Charges</th><th>Outcome</th></tr>${h.cases.map((x) => `<tr>
+            <td><button class="link" data-case-link="${x.id}">${esc(x.ref)}</button><div class="muted small">${esc(x.court)} · ${fmtDate(x.at, false)}</div></td>
+            <td class="small">${(x.convicted.length ? x.convicted : x.charges).map(esc).join('<br>')}${x.convicted.length ? '' : ''}</td>
+            <td>${tag(x.statusLabel, STATUS_TAG[x.status] || '')}${x.sentence ? `<div class="small">${esc(x.sentence)}</div><div class="muted small">${esc(x.sentencedBy || '')}</div>` : ''}</td></tr>`).join('')}</table>`) : ''}
+        ${h.records.length ? sect(`Police records (${h.records.length})`, `<table><tr><th>Date</th><th>Offences</th><th>Outcome</th></tr>${h.records.map((x) => `<tr>
+            <td>${fmtDate(x.at, false)}<div class="muted small">${esc(x.ref || '')}${x.thisCase ? ' · this case' : ''}</div></td>
+            <td class="small">${x.offences.map(esc).join('<br>') || '<span class="muted">None recorded</span>'}</td>
+            <td>${esc(x.outcome || '')}<div class="muted small">${esc(x.officer || '')}</div></td></tr>`).join('')}</table>`) : ''}
+        ${h.orders.length ? sect(`Live orders (${h.orders.length})`, `<table><tr><th>Order</th><th>Requirements</th><th>Warnings</th></tr>${h.orders.map((o) => `<tr>
+            <td><strong>${esc(o.kind)}</strong><div class="muted small">${esc(o.ref || '')}${o.officer ? ' · ' + esc(o.officer) : ''}</div></td>
+            <td class="small">${o.requirements.map(esc).join('<br>') || ''}${o.hours ? `<div>${o.done}/${o.hours} hours unpaid work</div>` : ''}</td><td>${o.warnings || 0}</td></tr>`).join('')}</table>`) : ''}
+        ${h.warrants.length ? sect(`Active warrants (${h.warrants.length})`, `<ul class="log">${h.warrants.map((w) => `<li><strong>${esc(w.type)}</strong><div class="small">${esc(w.reason || '')}</div><div class="meta">${esc(w.by || '')} · ${fmtDate(w.at)}</div></li>`).join('')}</ul>`) : ''}
+        ${h.ccjs.length ? sect(`Unpaid CCJs (${h.ccjs.length})`, `<ul class="log">${h.ccjs.map((x) => `<li>${esc(x.ref)}: ${money(x.owed)} owed to ${esc(x.to)}</li>`).join('')}</ul>`) : ''}`;
+}
+
+function interviewsHtml(c) {
+    if (!c.interviews) return '';
+    const list = c.interviews;
+    const onScreens = state.room && state.room.screens && can('judge', 'clerk', 'cps', 'defence');
+    return `<h2>Interviews</h2>
+        ${list.length ? `<table><tr><th>Recorded</th><th>Interviewee</th><th>Length</th><th></th></tr>${list.map((x) => `<tr>
+            <td>${msDate(x.startedAt)}<div class="muted small">${esc(x.room || '')}${x.caseRef ? ' · ' + esc(x.caseRef) : ''}</div></td>
+            <td><strong>${esc(x.interviewee || '')}</strong>${x.matched ? ' ' + tag('This case', 'green') : ''}<div class="muted small">${esc(x.officer || '')}${x.solicitor ? ' · solicitor ' + esc(x.solicitor) : ''}</div></td>
+            <td>${durText(x.duration)}</td>
+            <td style="text-align:right">${onScreens ? `<button class="btn small" data-ivshow="${x.id}">Show on screens</button>` : ''}</td></tr>`).join('')}</table>
+            ${!onScreens ? '<p class="small muted">Open this case from a courtroom laptop to play an interview on its screens.</p>' : ''}`
+            : '<p class="empty">No recorded interviews found for this defendant.</p>'}`;
+}
+
+
+/* ---------- settling a civil claim out of court (both sides must agree) ---------- */
+function settleModal(send, done) {
+    formModal('Propose a settlement', [
+        { id: 'terms', label: 'What has been agreed', type: 'textarea', hint: 'e.g. "Defendant returns the car and pays £1,500 by Friday; claimant drops the claim."' },
+        { id: 'amount', label: `Amount the defendant pays the claimant (${esc(state.cfg.currency || '£')})`, type: 'number', value: 0, min: 0,
+          hint: '0 if no money changes hands. If there is a sum, accepting it makes it a court order to pay (paid through /mycase).' },
+    ], 'Send proposal', async (v) => { const x = await send({ terms: v.terms, amount: v.amount }); if (x.ok) { toast('Proposal sent. The other side has to accept it.'); done(); } return x; },
+    '<p class="lead">Settling ends the claim on agreed terms. Nothing changes until the other side accepts.</p>');
+}
+
+
+/* Speaker test chime: a two-note tone made in the browser, so it needs no sound files. */
+let chimeCtx;
+function playChime(volume, pan) {
+    try {
+        chimeCtx = chimeCtx || new (window.AudioContext || window.webkitAudioContext)();
+        if (chimeCtx.state === 'suspended') chimeCtx.resume();
+        const t0 = chimeCtx.currentTime + 0.02;
+        const out = chimeCtx.createGain();
+        out.gain.value = Math.max(0, Math.min(1, volume));
+        let node = out;
+        if (chimeCtx.createStereoPanner) {
+            const p = chimeCtx.createStereoPanner();
+            p.pan.value = Math.max(-1, Math.min(1, pan));
+            out.connect(p); node = p;
+        }
+        node.connect(chimeCtx.destination);
+        [[880, 0], [1318.5, 0.18]].forEach(([freq, at]) => {
+            const o = chimeCtx.createOscillator(), g = chimeCtx.createGain();
+            o.type = 'sine'; o.frequency.value = freq;
+            g.gain.setValueAtTime(0.0001, t0 + at);
+            g.gain.exponentialRampToValueAtTime(0.6, t0 + at + 0.02);
+            g.gain.exponentialRampToValueAtTime(0.0001, t0 + at + 0.55);
+            o.connect(g); g.connect(out);
+            o.start(t0 + at); o.stop(t0 + at + 0.6);
+        });
+    } catch (e) { /* no audio available */ }
+}
+
+
+/* ---------- front desk (reception) ---------- */
+VIEWS.front = async () => {
+    const r = await api('frontBoard');
+    if (r.error) return;
+    drawShell();
+    const status = (at, by) => `${tag('Checked in', 'blue')}<div class="muted small">${fmtTime(at)}${by ? ' · ' + esc(by) : ''}</div>`;
+    const rows = r.rows || [];
+    const arrived = rows.filter((x) => x.checkedInAt || x.bookedAt || (x.checkins && Object.keys(x.checkins).length)).length;
+    main.innerHTML = `<div class="head"><div><span class="caption">${esc(r.room)}</span><h1>Front desk</h1></div>
+        <div class="actions"><button class="btn secondary small" id="fdRef">Refresh</button></div></div>
+        <p class="lead">Today's hearings. People check themselves in here ("Check in for my hearing"), or check them in below when they report to you. Defendants in custody, and in serious cases, go to the custody desk instead.</p>
+        <div class="stats" style="max-width:520px"><div class="stat"><div class="v">${rows.length}</div><div class="t">Listed today</div></div>
+            <div class="stat green"><div class="v">${arrived}</div><div class="t">Arrived</div></div></div>
+        ${rows.length ? `<table><tr><th>Time</th><th>Case</th><th>Courtroom</th><th>Arrival</th></tr>${rows.map((x) => `<tr>
+            <td><strong>${fmtTime(x.at)}</strong><div class="muted small">${esc(x.hearing)}</div></td>
+            <td><strong>${esc(x.title)}</strong><div class="muted small">${esc(x.ref || '')}${x.court ? ' · ' + esc(x.court) : ''}</div></td>
+            <td>${x.room ? esc(x.room) : '<span class="muted">To be confirmed</span>'}${x.open ? ' ' + tag('In court', 'green') : ''}</td>
+            <td>${x.kind === 'claim'
+                ? ['claimant', 'defendant'].map((side) => `<div style="margin-bottom:6px"><span class="small">${side === 'claimant' ? 'Claimant' : 'Defendant'}: ${esc(x[side] || '')}</span><br>${x.checkins && x.checkins[side]
+                    ? status(x.checkins[side].at, x.checkins[side].by)
+                    : `<button class="btn small" data-fci="claim:${x.id}:${side}">Check in</button>`}</div>`).join('')
+                : x.custodyDesk ? `${tag(x.custodyDesk === 'custody' ? 'From custody' : 'Surrender', 'purple')}<div class="muted small">${x.bookedAt ? 'Booked in at the custody desk ' + fmtTime(x.bookedAt) : 'Goes to the custody desk'}</div>`
+                : x.checkedInAt ? status(x.checkedInAt, x.checkedInBy)
+                : `<button class="btn small" data-fci="case:${x.id}">Check in</button>${x.online ? '' : '<div class="muted small">Not in the city</div>'}`}</td></tr>`).join('')}</table>`
+            : '<p class="empty">No hearings listed for today.</p>'}`;
+    $('#fdRef').onclick = () => VIEWS.front();
+    $$('[data-fci]').forEach((b) => (b.onclick = async () => {
+        const [kind, id, side] = b.dataset.fci.split(':');
+        const x = await api('frontCheckIn', { kind, id: Number(id), side });
+        if (x.ok) { toast('Checked in. The judge has been told.'); VIEWS.front(); }
+    }));
+};
+
+
+/* ---------- courtroom sound (speakers volume) ---------- */
+async function volumeModal() {
+    const st = await api('paVolume', {});
+    if (st.error) return;
+    let pct = Math.round((st.volume ?? 1) * 100);
+    const box = openModal(`<h2>Sound: ${esc(st.room || '')}</h2>
+        <p class="lead">Volume of this courtroom's speakers, for the microphones and for footage on the screens. Changes apply to everyone in the room straight away and stay until changed.</p>
+        <div style="display:flex;align-items:center;gap:14px;margin:18px 0 6px">
+            <input type="range" id="volR" min="0" max="150" step="5" value="${pct}" style="flex:1;accent-color:#1d70b8">
+            <strong id="volV" style="min-width:64px;font-size:20px;text-align:right">${pct}%</strong></div>
+        <div class="hint">100% is the normal level. Above 100% boosts quiet rooms.</div>
+        <div class="btn-row">${[[0, 'Mute'], [50, '50%'], [75, '75%'], [100, '100%'], [125, '125%']].map(([v, l]) => `<button class="btn secondary small" data-vq="${v}">${l}</button>`).join('')}</div>
+        <div class="btn-row"><button class="btn secondary" id="volClose">Close</button></div>`);
+    let timer;
+    const apply = (v) => {
+        pct = v; $('#volV', box).textContent = v === 0 ? 'Muted' : `${v}%`; $('#volR', box).value = v;
+        clearTimeout(timer);
+        timer = setTimeout(async () => { const x = await api('paVolume', { volume: v / 100 }); if (x.ok) toast(v === 0 ? 'Courtroom speakers muted.' : `Courtroom volume: ${v}%`); }, 250);
+    };
+    $('#volR', box).oninput = (e) => apply(Number(e.target.value));
+    $$('[data-vq]', box).forEach((b) => (b.onclick = () => apply(Number(b.dataset.vq))));
+    $('#volClose', box).onclick = closeModal;
+    if (pct === 0) $('#volV', box).textContent = 'Muted';
+}

@@ -208,6 +208,17 @@ Config.Conditions = {
     LifeThreateningOnly = true,
     -- Cardiac arrest (CPR needed) comes from the real downed state: only stage 2 / no signs
     -- of life. Last stand patients are breathing and only need bleeding control.
+    -- With osp_ambulance running, bleeding comes from osp's real wounds (below) and
+    -- MajorBleedChance is only used if osp has no data for the patient.
+    Osp = {
+        Enabled = true,
+        -- Total active osp bleeding that counts as major. osp per wound: pistol 0.1,
+        -- rifle 0.5, high calibre 0.7, shotgun 0.3, knife puncture 0.3, knife cut 0.05.
+        MajorBleedThreshold = 0.1,
+        -- Tourniquet on torso / head wounds (no limb to tie off) = direct pressure:
+        -- osp bleeding there is multiplied by this.
+        PressureFactor = 0.5,
+    },
     -- Chance (0-1) of major bleeding by the damage type that put the patient down.
     -- Damage types: bullet, explosive, melee, vehicle, fall, other
     MajorBleedChance = {
@@ -326,4 +337,38 @@ Config.Rewards = {
     Account = 'cash',   -- qb/qbx: cash | bank, esx: money | bank
     Handover = 350,     -- per responder on successful hospital handover
     Assist = 100,       -- per responder whose patient was revived on scene by others
+
+    -- Stop volunteers farming rewards (e.g. two friends taking turns downing each other).
+    -- Withheld rewards are printed to the server console.
+    AntiFarm = {
+        -- Only pay responders who actually treated the patient (tourniquet, CPR, rouse
+        -- or driving them in). Accepting the call and waiting doesn't count.
+        RequireTreatment = true,
+        -- Never pay the player who injured the patient.
+        NoRewardIfAttacker = true,
+        -- Seconds before the same responder can be paid again for helping the same
+        -- person (by FiveM licence, so swapping characters doesn't reset it). 0 = off.
+        PairCooldown = 3600,
+        -- Max paid calls per responder per rolling hour. 0 = no limit.
+        MaxPerHour = 4,
+    },
+}
+
+---------------------------------------------------------------------------
+-- Discord logs
+---------------------------------------------------------------------------
+-- Webhook URLs go in server/webhooks.lua, which is server-only. Never put them in this
+-- file: config.lua is downloaded by every player.
+Config.Logs = {
+    Enabled = true,
+    Username = 'GoodCiv Logs',
+    Avatar = nil, -- image URL for the webhook avatar
+    -- Turn categories on / off.
+    Categories = {
+        carriers = true,   -- sign up / sign off, training pass / fail
+        incidents = true,  -- calls raised, accepted, abandoned, closed
+        treatment = true,  -- tourniquet, CPR, rouse, load, handover, crashes
+        rewards = true,    -- paid and withheld rewards
+        admin = true,      -- admin commands
+    },
 }

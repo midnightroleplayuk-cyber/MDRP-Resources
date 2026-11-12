@@ -6,6 +6,7 @@ lua54 'yes'
 -- (Only Lua is encrypted; locales, SQL, the web files and images are always readable.)
 escrow_ignore {
     'config/*.lua',                    -- every setting
+    'config/server/*.lua',             -- server-only settings (webhooks)
     'bridge/server/framework.lua',     -- framework, inventory and money hooks
     'bridge/server/integrations.lua',  -- dispatch, MDT and door-lock hooks
     'client/bridge.lua',               -- client-side framework/job hooks
@@ -16,7 +17,7 @@ escrow_ignore {
 name 'vinewood_gangs'
 author 'Vinewood Studios'
 description 'Advanced gang, territory and organised crime system'
-version '3.24.0'
+version '3.26.1'
 
 ox_lib 'locale'
 
@@ -49,6 +50,7 @@ shared_scripts {
 
 server_scripts {
     '@oxmysql/lib/MySQL.lua',
+    'config/server/webhooks.lua',      -- server only: never sent to players' games
     'bridge/server/framework.lua',
     'bridge/server/integrations.lua',
     'server/core/logger.lua',

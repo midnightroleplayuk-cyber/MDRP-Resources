@@ -52,6 +52,10 @@ actions.tourniquet = {
             end
         end
         inc.state.bleeding = 'controlled'
+        -- osp: tourniquet the bleeding limbs / pressure on torso and head wounds for real.
+        if Incidents.OspBleeding(inc.patient) and Bridge.OspControlBleeding(inc.patient) then
+            inc.controlledBleed = Bridge.OspBleeding(inc.patient) or 0
+        end
         return 'success', L('tourniquet_done')
     end,
 }
@@ -149,8 +153,23 @@ RegisterNetEvent('goodciv:server:completeAction', function(name, result)
     if err then
         toast(src, 'error', err)
     else
+        -- Any real treatment attempt (not just assessing) earns a share of the reward.
+        if name ~= 'assess' then Incidents.MarkTreated(inc, src) end
         local kind, msg = def.apply(inc, src, result)
         toast(src, kind, msg)
+        if name ~= 'assess' then
+            local fields = {
+                { 'Responder', Logs.Player(src) },
+                { 'Patient', Logs.Player(inc.patient) },
+                { 'Result', msg },
+            }
+            if name == 'cpr' then
+                local q = tonumber(type(result) == 'table' and result.quality) or 0
+                fields[#fields + 1] = { 'CPR quality', ('%d%%'):format(math.floor(q * 100)), true }
+            end
+            Logs.Send('treatment', ('Call #%d: %s'):format(inc.id, name),
+                kind == 'success' and 'green' or kind == 'error' and 'red' or 'yellow', fields)
+        end
     end
     Incidents.Sync(inc)
 end)
@@ -178,8 +197,15 @@ RegisterNetEvent('goodciv:server:load', function(netId)
     end
     local hospital = GoodCiv.NearestHospital(GetEntityCoords(veh))
     inc.transport = { vehicle = netId, driver = src, hospital = hospital }
+    Incidents.MarkTreated(inc, src)
     TriggerClientEvent('goodciv:client:enterVehicle', inc.patient, netId)
     toast(src, 'success', L('loaded', hospital.label))
+    Logs.Send('treatment', ('Call #%d: patient loaded'):format(inc.id), 'blue', {
+        { 'Driver', Logs.Player(src) },
+        { 'Patient', Logs.Player(inc.patient) },
+        { 'Heading to', hospital.label, true },
+        { 'Location', Logs.Coords(pedCoords(src)), true },
+    })
     Incidents.Sync(inc)
 end)
 
@@ -215,6 +241,11 @@ RegisterNetEvent('goodciv:server:crash', function()
         inc.state.breathing = false
     end
     for r in pairs(inc.responders) do toast(r, 'error', L('crash')) end
+    Logs.Send('treatment', ('Call #%d: crash with patient onboard'):format(inc.id), 'red', {
+        { 'Driver', Logs.Player(src) },
+        { 'Patient', Logs.Player(inc.patient) },
+        { 'Patient arrested', inc.state.breathing and 'no' or 'yes', true },
+    })
     Incidents.Sync(inc)
 end)
 

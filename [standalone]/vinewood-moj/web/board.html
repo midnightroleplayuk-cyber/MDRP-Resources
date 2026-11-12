@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<title>Court list</title>
+<style>
+    html, body { margin: 0; width: 100%; height: 100%; overflow: hidden; background: #0b0c0c; color: #fff; font-family: Arial, Helvetica, sans-serif; }
+    .board { position: absolute; inset: 0; display: flex; flex-direction: column; }
+    header { display: flex; align-items: center; gap: 2.4vh; padding: 2.6vh 3.6vh 2.2vh; border-bottom: 1vh solid #1d70b8; }
+    header svg { width: 6.6vh; height: 6.6vh; flex-shrink: 0; }
+    .titles { flex: 1; min-width: 0; }
+    .svc { font-size: 2.6vh; color: #b1b4b6; letter-spacing: .02em; }
+    .title { font-size: 5vh; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .when { text-align: right; }
+    .clock { font-size: 5.4vh; font-weight: 700; }
+    .date { font-size: 2.6vh; color: #b1b4b6; }
+    .sub { display: flex; justify-content: space-between; padding: 1.4vh 3.6vh; background: #1d1f21; font-size: 2.5vh; color: #d0d2d3; }
+    table { width: 100%; border-collapse: collapse; }
+    .rows { flex: 1; padding: 0 3.6vh; overflow: hidden; }
+    th { text-align: left; font-size: 2.3vh; font-weight: 700; color: #b1b4b6; text-transform: uppercase; letter-spacing: .08em; padding: 1.6vh 1.6vh 1.2vh 0; border-bottom: .3vh solid #505a5f; }
+    td { padding: 1.55vh 1.6vh 1.55vh 0; border-bottom: .25vh solid #2a2d2f; font-size: 3.1vh; vertical-align: middle; }
+    td.time { font-weight: 700; width: 9%; font-variant-numeric: tabular-nums; }
+    td.room { width: 19%; }
+    td.room small, td.case small { display: block; font-size: 2.1vh; color: #9ea3a6; margin-top: .3vh; }
+    td.case { font-weight: 700; }
+    td.hearing { width: 18%; color: #d0d2d3; }
+    td.status { width: 15%; text-align: right; padding-right: 0; }
+    .tbc { color: #9ea3a6; font-style: italic; }
+    .chip { display: inline-block; padding: .7vh 1.5vh .6vh; font-size: 2.3vh; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; white-space: nowrap; }
+    .wait { background: #383f43; color: #fff; }
+    .live { background: #00703c; color: #fff; }
+    .live::before { content: ''; display: inline-block; width: 1.3vh; height: 1.3vh; border-radius: 50%; background: #fff; margin-right: 1vh; vertical-align: .1vh; animation: pulse 1.4s infinite; }
+    .adj { background: #4c2c92; color: #fff; }
+    .arr { background: #1d70b8; color: #fff; }
+    .done { background: transparent; color: #9ea3a6; border: .25vh solid #505a5f; }
+    .warn { background: #d4351c; color: #fff; }
+    tr.past td { opacity: .55; }
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: .25; } }
+    .empty { padding: 12vh 0; text-align: center; font-size: 3.6vh; color: #9ea3a6; }
+    footer { display: flex; justify-content: space-between; align-items: center; padding: 1.6vh 3.6vh; background: #ffdd00; color: #0b0c0c; font-size: 2.6vh; font-weight: 700; }
+    .page { font-weight: 400; }
+</style>
+</head>
+<body>
+<div class="board">
+    <header>
+        <svg viewBox="0 0 48 48"><g fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M24 6v34M14 40h20M10 14h28M24 10l-2-4h4z"/><path d="M10 14l-6 13h12zM38 14l-6 13h12z"/><path d="M4 27a6 4 0 0 0 12 0M32 27a6 4 0 0 0 12 0"/></g></svg>
+        <div class="titles"><div class="svc" id="svc">HM Courts &amp; Tribunals Service</div><div class="title" id="title">Daily court list</div></div>
+        <div class="when"><div class="clock" id="clock">--:--</div><div class="date" id="date"></div></div>
+    </header>
+    <div class="sub"><span>Today's hearings</span><span id="count"></span></div>
+    <div class="rows"><table><thead><tr><th>Time</th><th>Courtroom</th><th>Case</th><th>Hearing</th><th style="text-align:right">Status</th></tr></thead>
+        <tbody id="rows"></tbody></table><div class="empty" id="empty" style="display:none">No hearings are listed for today.</div></div>
+    <footer><span>Please wait to be called. Phones on silent in court.</span><span class="page" id="page"></span></footer>
+</div>
+<script>
+    const $ = (id) => document.getElementById(id);
+    const esc = (v) => String(v ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+    const pad = (n) => String(n).padStart(2, '0');
+    const PER_PAGE = 7, PAGE_SECONDS = 10;
+    let feed = { rows: [] }, page = 0, offset = 0;
+
+    const now = () => Math.floor(Date.now() / 1000) + offset;
+    function tick() {
+        const d = new Date(now() * 1000);
+        $('clock').textContent = `${pad(d.getHours())}:${pad(d.getMinutes())}`;
+        $('date').textContent = d.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' });
+    }
+    setInterval(tick, 1000); tick();
+
+    function render() {
+        const rows = feed.rows || [];
+        const pages = Math.max(1, Math.ceil(rows.length / PER_PAGE));
+        if (page >= pages) page = 0;
+        const slice = rows.slice(page * PER_PAGE, page * PER_PAGE + PER_PAGE);
+        $('empty').style.display = rows.length ? 'none' : 'block';
+        $('rows').innerHTML = slice.map((r) => {
+            const d = new Date(r.at * 1000);
+            const past = r.tone === 'done' || r.tone === 'adj';
+            return `<tr class="${past ? 'past' : ''}"><td class="time">${pad(d.getHours())}:${pad(d.getMinutes())}</td>
+                <td class="room">${r.room ? esc(r.room) : '<span class="tbc">To be confirmed</span>'}${feed.multi ? `<small>${esc(r.court)}</small>` : ''}</td>
+                <td class="case">${esc(r.title)}<small>${esc(r.ref)}</small></td>
+                <td class="hearing">${esc(r.hearing)}</td>
+                <td class="status"><span class="chip ${esc(r.tone)}">${esc(r.status)}</span></td></tr>`;
+        }).join('');
+        const live = rows.filter((r) => r.tone === 'live').length;
+        $('count').textContent = rows.length ? `${rows.length} listed${live ? ` · ${live} in court now` : ''}` : '';
+        $('page').textContent = pages > 1 ? `Page ${page + 1} of ${pages}` : '';
+    }
+    setInterval(() => { page += 1; render(); }, PAGE_SECONDS * 1000);
+
+    window.addEventListener('message', (e) => {
+        let m = e.data;
+        if (typeof m === 'string') { try { m = JSON.parse(m); } catch (err) { return; } }
+        if (!m || m.action !== 'feed') return;
+        feed = m;
+        offset = Number(m.serverOffset) || 0;
+        if (m.title) $('title').textContent = m.title;
+        if (m.courtsName) $('svc').textContent = m.courtsName;
+        render();
+    });
+</script>
+</body>
+</html>

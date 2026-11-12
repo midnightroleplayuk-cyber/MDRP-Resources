@@ -615,3 +615,30 @@ Every business is in a hex, claimed or not. Once a gang unlocks rackets:
 - **Collecting** from a racket adds control to its hex (`collectControl`, 5% by default).
 - **Taking one over:** a rival gang sells in that hex to wear its control down; at 0% the hex is lost, and the rival
   can lean on the shop as free ground to take the racket and the hex.
+
+## Discord webhooks
+
+`config/server/webhooks.lua` (server only: never sent to players' games). Paste a Discord webhook URL into any of
+the channels (staff, gangs, money, turf, rackets, heists, events, police), plus an optional `everything` webhook that
+gets the lot. Leave a channel '' to switch it off. To keep URLs out of the file, use `'convar:name'` and
+`set name "https://discord.com/api/webhooks/..."` in server.cfg. Messages are Discord embeds with the player's
+character name, server ID and Discord/licence identifiers (never their IP), queued so busy moments don't hit
+Discord's rate limit. `ignore` lists events you don't want sent. ox_lib's logger keeps working alongside.
+
+## Dispatch
+
+`Config.Integrations.dispatch` in `config/config.lua`. `'auto'` (the default) uses the first of these that's running:
+**vinewood-dispatch, ps-dispatch, cd_dispatch, rcore_dispatch, qs-dispatch, core_dispatch, lb-tablet**. Or name one,
+set `'custom'` and fill in `Bridge.Dispatch.CustomAlert` in `bridge/server/integrations.lua`, or `false` for none.
+`policeJobs` lists the jobs alerts go to; when your dispatch can't say how many police are on duty, the script counts
+on-duty players in those jobs from your framework. For ps-dispatch, `psDispatchJobs` (job types, e.g. 'leo') and
+`psDispatchCodeName` (a code name from ps-dispatch's Config.Blips) set where alerts go and their blip.
+
+## Exports for other resources
+
+```lua
+exports.vinewood_gangs:GetPlayerGang(source)          -- online player
+exports.vinewood_gangs:GetCharacterGang(citizenid)    -- any character, online or not
+exports.vinewood_gangs:GetCharacterGangs({ cid1, cid2 }) -- batch: { [cid] = { id, name, label, colour, logo, grade, rank } }
+```
+`logo` is only returned once staff have approved it. vinewood_multichar uses `GetCharacterGangs` to show each character's gang on the selection screen.
