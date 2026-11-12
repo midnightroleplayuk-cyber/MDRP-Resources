@@ -143,7 +143,7 @@ Config.Hospitals = {
             icon = 61,
             color = 6,
             scale = 0.8,
-            coords = vector3(-251.83, 6314.68, 32.44), -- TODO: placeholder (pharmacy position), raycast a proper spot
+            coords = vector3(-250.86, 6313.62, 32.43), -- TODO: placeholder (pharmacy position), raycast a proper spot
         },
         checking = {
             vector4(-253.05, 6324.81, 32.45, 215.52)
