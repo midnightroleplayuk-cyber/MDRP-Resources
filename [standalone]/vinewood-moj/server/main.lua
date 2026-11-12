@@ -160,6 +160,8 @@ H.getCase = function(_, a, d)
     if c.status == 'awaiting_sentence' and a.role ~= 'police' then
         c.guide = Sentence.Guide(Cases.Convicted(c), { previous = Sentence.Previous(c.cid, c.id), plea = Cases.PleaId(c), courtKind = c.court_kind })
     end
+    c.history = History.For(c.cid, c.id, c.record_id)
+    c.interviews = Interviews.ForCase(c)
     if a.role == 'police' then c.log, c.evidence = nil, nil end
     return { case = c, serverTime = U.now() }
 end
@@ -526,6 +528,21 @@ end
 H.screenPlay = function(src, a, d)
     local r = screenRoom(src, a)
     local url, label, kind, owner = d.url, d.label, nil, nil
+    -- An interview recording from vinewood-interviews, linked to this case.
+    if d.interviewId then
+        kind, owner = exhibitOwner(a, 'case', d.ownerId)
+        local linked = false
+        for _, s in ipairs(Interviews.ForCase(owner) or {}) do if s.id == tonumber(d.interviewId) then linked = true end end
+        need(linked, 'That interview is not linked to this case.')
+        local session = Interviews.Get(d.interviewId)
+        need(session and #session.tracks > 0, 'That interview has no playable recordings yet (uploads may still be processing).')
+        local p = Rooms.PlayInterview(r.id, session, U.By(a), owner.ref)
+        ownerLog(kind, owner, U.By(a), ('Interview of %s (%s) played in %s.'):format(session.interviewee or '?', U.fmtDate(session.startedAt and math.floor(session.startedAt / (session.startedAt > 1e11 and 1000 or 1)) or 0), r.label))
+        Webhook.Send('evidence', ('Interview played in court: %s'):format(session.interviewee or '?'), nil, {
+            { 'Courtroom', r.label }, { 'Case', owner.ref }, { 'Interview ref', session.caseRef }, { 'By', U.By(a) },
+        }, 'purple')
+        return { ok = true, now = p }
+    end
     if d.ownerKind and d.ownerId then
         kind, owner = exhibitOwner(a, d.ownerKind, d.ownerId)
         local ex = owner.exhibits[tonumber(d.index) or 0]

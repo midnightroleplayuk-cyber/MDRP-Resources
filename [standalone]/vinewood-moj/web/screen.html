@@ -19,6 +19,22 @@
         transition: opacity .8s; max-width: 70%; }
     #tag small { display: block; font-size: 2.2vh; color: #b1b4b6; margin-top: .4vh; letter-spacing: .08em; text-transform: uppercase; }
     #tag.fade { opacity: 0; }
+    /* Interview playback */
+    #iv { background: #0b0c0c; }
+    #iv video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; background: #000; }
+    #ivCard { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: center; padding: 0 9vh; }
+    #ivCard .k { font-size: 2.6vh; letter-spacing: .14em; text-transform: uppercase; color: #ffdd00; font-weight: 700; }
+    #ivCard .who { font-size: 7vh; font-weight: 700; margin: 1.2vh 0 2.4vh; }
+    #ivCard dl { display: grid; grid-template-columns: 22vh 1fr; gap: 1.1vh 2vh; font-size: 3vh; margin: 0; }
+    #ivCard dt { color: #9ea3a6; }
+    #ivCard dd { margin: 0; }
+    #ivBar { position: absolute; left: 0; right: 0; bottom: 0; background: rgba(11,12,12,.92); padding: 1.8vh 3vh 2.2vh; border-top: .6vh solid #1d70b8; }
+    #ivSpeakers { display: flex; flex-wrap: wrap; gap: 1.2vh; margin-bottom: 1.6vh; }
+    .spk { font-size: 2.5vh; padding: .7vh 1.6vh; background: #2a2d2f; color: #b1b4b6; border-left: .6vh solid #505a5f; }
+    .spk.on { background: #00703c; color: #fff; border-left-color: #fff; }
+    #ivProg { display: flex; align-items: center; gap: 2vh; font-size: 2.6vh; font-variant-numeric: tabular-nums; }
+    #ivTrack { flex: 1; height: 1vh; background: #383f43; }
+    #ivFill { height: 100%; width: 0; background: #ffdd00; }
 </style>
 </head>
 <body>
@@ -33,6 +49,11 @@
 <video id="video" class="layer hidden" playsinline></video>
 <iframe id="frame" class="layer hidden" allow="autoplay; encrypted-media; fullscreen" referrerpolicy="strict-origin-when-cross-origin"></iframe>
 <img id="image" class="layer hidden" alt="">
+<div id="iv" class="layer hidden">
+    <video id="ivVideo" muted playsinline class="hidden"></video>
+    <div id="ivCard"><div class="k">Interview under caution · recording</div><div class="who" id="ivWho"></div><dl id="ivMeta"></dl></div>
+    <div id="ivBar"><div id="ivSpeakers"></div><div id="ivProg"><span id="ivNow">00:00</span><div id="ivTrack"><div id="ivFill"></div></div><span id="ivTotal">00:00</span></div></div>
+</div>
 <div id="tag" class="hidden"><small>Exhibit</small><span id="tagText"></span></div>
 
 <script>
@@ -45,6 +66,7 @@
 
     function slate(msg) {
         kind = null; control = null;
+        stopInterview();
         video.pause(); video.removeAttribute('src'); video.load();
         frame.src = 'about:blank'; image.removeAttribute('src');
         video.classList.add('hidden'); frame.classList.add('hidden'); image.classList.add('hidden'); $('tag').classList.add('hidden');
@@ -75,7 +97,73 @@
         image.src = src;
     }
 
+    /* ---------- interviews: every speaker's track + CCTV against one clock ---------- */
+    let iv = null;
+    const clock = (ms) => { const s = Math.max(0, Math.floor(ms / 1000)); return `${pad(Math.floor(s / 60))}:${pad(s % 60)}`; };
+    function stopInterview() {
+        if (!iv) return;
+        cancelAnimationFrame(iv.raf);
+        iv.audio.forEach(({ el }) => { el.pause(); el.removeAttribute('src'); el.load(); });
+        if (iv.video) { iv.video.el.pause(); iv.video.el.removeAttribute('src'); iv.video.el.load(); }
+        iv = null;
+        $('iv').classList.add('hidden');
+    }
+    function playInterview(m) {
+        stopInterview();
+        video.pause(); video.classList.add('hidden'); frame.classList.add('hidden'); frame.src = 'about:blank'; image.classList.add('hidden');
+        $('slate').classList.add('hidden');
+        const tracks = (m.tracks || []).filter((t) => t.url);
+        const meta = m.meta || {};
+        const total = Math.max(Number(m.total) || 0, ...tracks.map((t) => t.offset + (t.duration || 0)), 1000);
+        $('ivWho').textContent = meta.interviewee || 'Interview';
+        const rows = [['Recorded', meta.when], ['Interview room', meta.room], ['Officer', meta.officer], ['Solicitor', meta.solicitor], ['Reference', meta.caseRef]];
+        $('ivMeta').innerHTML = rows.filter((r) => r[1]).map(([k, v]) => `<dt>${k}</dt><dd>${String(v).replace(/[<>&]/g, '')}</dd>`).join('');
+        const speakers = [...new Set(tracks.filter((t) => t.kind !== 'video').map((t) => t.speaker || 'Unknown'))];
+        $('ivSpeakers').innerHTML = speakers.map((sp, i) => `<span class="spk" data-sp="${i}">${String(sp).replace(/[<>&]/g, '')}</span>`).join('');
+        $('ivTotal').textContent = clock(total);
+        const vt = tracks.find((t) => t.kind === 'video');
+        const vEl = $('ivVideo');
+        vEl.classList.toggle('hidden', !vt);
+        $('ivCard').classList.toggle('hidden', !!vt);
+        iv = {
+            total, base: performance.now() - (Number(m.elapsed) || 0) * 1000,
+            audio: tracks.filter((t) => t.kind !== 'video').map((t) => {
+                const el = new Audio(); el.preload = 'auto'; el.src = t.url; el.volume = volume;
+                el.addEventListener('loadedmetadata', () => { if (!t.duration && isFinite(el.duration)) t.duration = el.duration * 1000; });
+                return { t, el, sp: speakers.indexOf(t.speaker || 'Unknown') };
+            }),
+            video: vt ? { t: vt, el: vEl } : null,
+        };
+        if (vt) vEl.src = vt.url;
+        $('iv').classList.remove('hidden');
+        showTag(m.label);
+        const sync = ({ t, el }) => {
+            const local = iv.now - t.offset;
+            const len = t.duration || (isFinite(el.duration) ? el.duration * 1000 : 0);
+            const inside = local >= 0 && (len === 0 || local < len);
+            if (!inside) { if (!el.paused) el.pause(); return false; }
+            if (Math.abs(el.currentTime * 1000 - local) > 400) el.currentTime = local / 1000;
+            if (el.paused) el.play().catch(() => {});
+            return !el.paused;
+        };
+        const loop = () => {
+            if (!iv) return;
+            iv.now = performance.now() - iv.base;
+            if (iv.now >= iv.total) { stopInterview(); slate('End of interview'); return; }
+            const talking = new Set();
+            iv.audio.forEach((a) => { if (sync(a)) talking.add(a.sp); });
+            if (iv.video) sync(iv.video);
+            document.querySelectorAll('.spk').forEach((e) => e.classList.toggle('on', talking.has(Number(e.dataset.sp))));
+            $('ivNow').textContent = clock(iv.now);
+            $('ivFill').style.width = `${Math.min(100, (iv.now / iv.total) * 100)}%`;
+            iv.raf = requestAnimationFrame(loop);
+        };
+        iv.raf = requestAnimationFrame(loop);
+    }
+
     function play(m) {
+        if (m.kind === 'interview') { kind = 'interview'; control = null; return playInterview(m); }
+        stopInterview();
         kind = m.kind; control = m.control || null; ready = false;
         $('slate').classList.add('hidden');
         showTag(m.label);
@@ -111,6 +199,7 @@
     function setVolume(v) {
         volume = Math.max(0, Math.min(1, Number(v) || 0));
         if (kind === 'file') video.volume = volume;
+        else if (kind === 'interview' && iv) iv.audio.forEach(({ el }) => { el.volume = volume; });
         else if (control) command(volume);
     }
 

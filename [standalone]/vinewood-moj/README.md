@@ -223,6 +223,33 @@ To re-fit a screen later, use **Adjust picture** on it in the editor. Stand in f
 - Screens using the same render target (`tvscreen` for the flat TVs) all show the same picture. That's how one exhibit appears on every TV in the room.
 - In-game browsers sometimes block sound until a page has been interacted with. If a clip plays silently on your server, use direct video files, which fall back to playing muted rather than not at all.
 
+## Interviews and defendant history
+
+### Playing interviews in court (vinewood-interviews)
+
+When `vinewood-interviews` is running, a case's page lists the defendant's recorded interviews. They're found by citizen ID, by name, and by the case's own references (the case number, custody reference and MDT record), and ones recorded for this case are tagged **This case**.
+
+At a courtroom laptop, press **Show on screens** next to an interview. Every screen in the courtroom plays it:
+
+- each speaker's audio, kept in step on one clock, through the speakers
+- the CCTV video if one was recorded; otherwise a card with the interviewee, date, interview room, officer, solicitor and reference
+- the names of the people speaking, lit up as each one talks
+- a progress bar.
+
+People who walk in late join at the right point. Each playing is written to the case log and the `evidence` webhook. The link is read-only, so nothing in the interview system is changed. `Config.Interviews` sets the resource name, or turns it off.
+
+### Defendant's history
+
+Every case page has a **Defendant's history** section, starting with a one-line summary: previous convictions, whether they're in custody, live orders, active warrants, court fines owed and unpaid CCJs. Below that, expandable lists show:
+
+- **Court cases:** every other case with its charges (or convictions), outcome and sentence, and a link to open it.
+- **Police records:** MDT custody records with offences, outcome and officer. The one this case came from is marked.
+- **Live orders:** community orders, suspended sentences and licences, with requirements, unpaid work and warnings.
+- **Active warrants:** court and police warrants.
+- **Unpaid CCJs:** who they're owed to and how much.
+
+Defence solicitors only see history on their own clients' cases.
+
 ## Listing boards
 
 TVs for hallways and foyers that show the day's court list, like the screens outside real courtrooms.
@@ -279,7 +306,7 @@ When booking someone in, the officer **chooses which courtroom they're going to*
 
 One person takes another to court for money owed, damages, a broken agreement, property or an injunction.
 
-1. **Issue.** A defence solicitor (`Config.Civil.OpenRoles`) opens **Civil claims → Issue a claim**. They pick the claimant (their client) and the defendant, the type, the amount, any order wanted, and the particulars of claim. The court fee (`Fees`, banded on the amount) comes out of the solicitor's account. With `AllowLitigantInPerson = true`, people can also issue their own claims from `/mycase`.
+1. **Issue.** A defence solicitor (`Config.Civil.OpenRoles`) opens **Civil claims → Issue a claim**. They pick the claimant (their client) and the defendant, the type, the amount, any order wanted, and the particulars of claim. The court fee (`Fees`, banded on the amount) comes out of the solicitor's account. **Anyone** can also take someone to court themselves from `/mycase` → **Take someone to court**, without a solicitor (`AllowLitigantInPerson`, on by default). The court fee comes from their bank.
 2. **Serve.** The defendant is told straight away and has `ResponseDays` to respond, from `/mycase` or through a solicitor.
 3. **Respond.**
    - **Admit:** judgment for the claimant.
@@ -292,7 +319,7 @@ One person takes another to court for money owed, damages, a broken agreement, p
 
 Either side of a claim can be **a person or a business**, so you can have person v person, person v business, business v person, or business v business.
 
-- **A business is a job** on your framework (for example `mechanic`, `paddys`). Change which jobs count with `ExcludeBusinesses`, and add non-job company accounts with `ExtraBusinesses`.
+- **A business is a job** on your framework (for example `mechanic`, `paddys`). Public services (police, sheriff, ambulance, fire, prison and the court jobs) don't count as businesses by default, so their bosses bring claims as themselves. Change which jobs count with `ExcludeBusinesses`, and add non-job company accounts with `ExtraBusinesses`.
 - **Its bosses act for it.** Anyone on a boss grade (`isboss` on qb/qbx, `boss` on ESX) sees the business's claims in `/mycase`. They can take a person or another business to court for the business (`BusinessesCanIssue`), and respond, pay or settle on its behalf. Solicitors can still act for a business as well: pick "A business" on the claim form.
 - **Its money is the business (society) account.** Court fees for claims a boss brings, judgments the business pays, and judgments paid to the business all go through it. Payments into a business work even when none of its staff are online. `BusinessBank = 'auto'` finds Renewed-Banking (what qbx_management uses), okokBanking, wasabi_banking, qb-banking, qb-management or esx_addonaccount. Add others in `server/business.lua`, which is left unencrypted.
 - **Notices go to the business's bosses** who are in the city. CCJs and injunctions against a business are logged on the claim and sent to its bosses; MDT notes are only written for people.

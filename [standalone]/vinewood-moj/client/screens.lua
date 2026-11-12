@@ -228,13 +228,14 @@ CreateThread(function()
                     curKey = k
                     if p then
                         send({ action = 'play', kind = p.kind, src = p.src, label = p.label, control = p.control, fallback = p.fallback, fallbackEmbed = p.fallbackEmbed,
+                            tracks = p.tracks, total = p.total, meta = p.meta,
                             offset = p.offset or 0, elapsed = math.max(0, GetCloudTimeAsInt() - p.startedAt) })
                     else
                         send({ action = 'slate', room = r.label, court = r.courtLabel or Config.CourtsName })
                     end
                 end
                 -- Sound comes from the room's speakers if it has any, otherwise from the screens.
-                if p and (p.kind == 'file' or p.control) then
+                if p and (p.kind == 'file' or p.kind == 'interview' or p.control) then
                     local here = GetEntityCoords(PlayerPedId())
                     if MoJPA and #MoJPA.Speakers(r) > 0 then
                         send({ action = 'volume', v = (CR.ScreenVolume or 0.8) * MoJPA.VolumeAt(r, here) / (CR.SpeakerVolume or 0.85) })

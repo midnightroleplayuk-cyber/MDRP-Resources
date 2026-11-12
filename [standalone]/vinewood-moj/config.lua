@@ -42,6 +42,15 @@ Config.MDT = {
 }
 
 ---------------------------------------------------------------------------
+-- vinewood-interviews: interview recordings for a case can be played on courtroom screens
+-- (every speaker's audio and the CCTV, in sync). Read-only; switches on by itself when running.
+---------------------------------------------------------------------------
+Config.Interviews = {
+    enabled = true,
+    resource = 'vinewood-interviews',
+}
+
+---------------------------------------------------------------------------
 -- Courts. kind = 'magistrates' or 'crown'. coords are used for the waypoint
 -- a defendant gets with their hearing notice.
 ---------------------------------------------------------------------------
@@ -217,7 +226,7 @@ Config.CustodyDesk = {
 Config.Civil = {
     enabled = true,
     OpenRoles = { 'defence' },        -- who can issue a claim for a client
-    AllowLitigantInPerson = false,    -- true = anyone can issue their own claim from /mycase
+    AllowLitigantInPerson = true,     -- anyone can take someone to court themselves from /mycase (false = solicitors only)
     Court = 'lscounty',               -- court id from Config.Courts
     Types = {
         { id = 'debt', label = 'Money owed (debt)' },
@@ -246,8 +255,10 @@ Config.Civil = {
     BusinessesCanIssue = true,        -- bosses can take people or other businesses to court for their business
     -- 'auto' finds Renewed-Banking, okokBanking, wasabi_banking, qb-banking, qb-management or esx_addonaccount.
     BusinessBank = 'auto',
-    -- Jobs that aren't businesses you can sue or that can sue.
-    ExcludeBusinesses = { 'unemployed' },
+    -- Jobs that aren't businesses (can't sue or be sued as a business). Public services are left out,
+    -- so a police or court boss brings claims as themselves, not "for the police".
+    ExcludeBusinesses = { 'unemployed', 'police', 'sheriff', 'bcso', 'lspd', 'sasp', 'state', 'ambulance', 'ems', 'fire',
+        'judge', 'magistrate', 'court', 'clerk', 'cps', 'lawyer', 'solicitor', 'probation', 'prison', 'doc' },
     -- Businesses that aren't jobs (e.g. a company account in your banking script): { id = 'account name', label = 'Name' }
     ExtraBusinesses = {},
 }

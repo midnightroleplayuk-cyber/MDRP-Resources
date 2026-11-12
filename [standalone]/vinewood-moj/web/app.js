@@ -372,7 +372,9 @@ VIEWS.case = async (p) => {
             ${c.summary && c.log ? `<h2>Case summary</h2><div class="inset" style="white-space:pre-wrap">${esc(c.summary)}</div>` : ''}
             ${(c.evidence || []).length ? `<h2>Evidence</h2><table><tr><th>Type</th><th>Detail</th></tr>${c.evidence.map((e) => `<tr><td>${esc(e.type)}</td><td>${esc(e.detail)}</td></tr>`).join('')}</table>` : ''}
             ${(c.statements || []).length ? `<h2>Witness statements (MG11)</h2>${c.statements.map((s) => `<div class="statement"><strong>${esc(s.maker_name)}</strong> <span class="muted small">${esc(s.kind)}${s.occupation ? `, ${esc(s.occupation)}` : ''} · signed ${fmtDate(s.signed_at)}</span><br>${esc(s.body)}</div>`).join('')}` : ''}
+            ${historyHtml(c)}
             ${exhibitsHtml('case', c)}
+            ${interviewsHtml(c)}
             ${c.sentences.length ? `<h2>Sentence</h2>${c.sentences.map((s) => `<div class="panel"><strong>${esc(s.summary)}</strong><p class="muted small" style="margin:6px 0 0">${s.auto ? 'Auto court' : esc(s.passed_by)} · ${fmtDate(s.created_at)}</p>${s.components?.remarks ? `<div class="inset">${esc(s.components.remarks)}</div>` : ''}</div>`).join('')}` : ''}
             ${c.orders.length ? `<h2>Orders</h2>${ordersTable(c.orders)}` : ''}
             ${c.fines.length ? `<h2>Financial orders</h2>${finesTable(c.fines)}` : ''}
@@ -409,6 +411,11 @@ VIEWS.case = async (p) => {
     if ($('#aGuide')) $('#aGuide').onclick = () => sentenceModal(c, null);
     if (open) bindHearing(c, open);
     bindExhibits('case', c);
+    $$('[data-case-link]').forEach((b) => (b.onclick = () => go('case', { id: Number(b.dataset.caseLink) })));
+    $$('[data-ivshow]').forEach((b) => (b.onclick = async () => {
+        const x = await api('screenPlay', { ownerKind: 'case', ownerId: c.id, interviewId: Number(b.dataset.ivshow) });
+        if (x.ok) toast('Playing the interview on the screens.');
+    }));
 };
 
 function hearingStatus(h) {
@@ -1490,4 +1497,51 @@ async function screensModal() {
     if ($('#sRe', box)) $('#sRe', box).onclick = async () => after('Playing from the start.')(await api('screenRestart', {}, true));
     if ($('#sStop', box)) $('#sStop', box).onclick = async () => after('Screens back to the court slate.')(await api('screenStop', {}, true));
     $$('[data-sx]', box).forEach((b) => (b.onclick = async () => after('Now showing on the screens.')(await api('screenPlay', { ownerKind: owner.kind, ownerId: owner.o.id, index: Number(b.dataset.sx) }, true))));
+}
+
+
+/* ---------- defendant's history and interviews (case page) ---------- */
+const msDate = (t) => fmtDate(t > 1e11 ? Math.floor(t / 1000) : t);
+const durText = (ms) => { const m = Math.round((ms || 0) / 60000); return m < 1 ? 'under a minute' : `${m} min`; };
+
+function historyHtml(c) {
+    const h = c.history;
+    if (!h) return '';
+    const facts = [];
+    facts.push(h.previous ? `<strong>${h.previous}</strong> previous conviction${h.previous === 1 ? '' : 's'}` : 'No previous convictions');
+    if (h.custody) facts.push(`<strong>in custody</strong> (${esc(h.custody.kind)})`);
+    if (h.orders.length) facts.push(`<strong>${h.orders.length}</strong> live order${h.orders.length === 1 ? '' : 's'}`);
+    if (h.warrants.length) facts.push(`<strong style="color:var(--red)">${h.warrants.length} active warrant${h.warrants.length === 1 ? '' : 's'}</strong>`);
+    if (h.finesOwed) facts.push(`<strong>${money(h.finesOwed)}</strong> court fines owed`);
+    if (h.ccjs.length) facts.push(`<strong>${h.ccjs.length}</strong> unpaid CCJ${h.ccjs.length === 1 ? '' : 's'}`);
+    const sect = (title, body) => `<details class="hist"><summary>${title}</summary><div style="padding-top:8px">${body}</div></details>`;
+    return `<h2>Defendant's history</h2>
+        <div class="panel" style="margin-bottom:10px">${facts.join(' · ')}</div>
+        ${h.cases.length ? sect(`Court cases (${h.cases.length})`, `<table><tr><th>Case</th><th>Charges</th><th>Outcome</th></tr>${h.cases.map((x) => `<tr>
+            <td><button class="link" data-case-link="${x.id}">${esc(x.ref)}</button><div class="muted small">${esc(x.court)} · ${fmtDate(x.at, false)}</div></td>
+            <td class="small">${(x.convicted.length ? x.convicted : x.charges).map(esc).join('<br>')}${x.convicted.length ? '' : ''}</td>
+            <td>${tag(x.statusLabel, STATUS_TAG[x.status] || '')}${x.sentence ? `<div class="small">${esc(x.sentence)}</div><div class="muted small">${esc(x.sentencedBy || '')}</div>` : ''}</td></tr>`).join('')}</table>`) : ''}
+        ${h.records.length ? sect(`Police records (${h.records.length})`, `<table><tr><th>Date</th><th>Offences</th><th>Outcome</th></tr>${h.records.map((x) => `<tr>
+            <td>${fmtDate(x.at, false)}<div class="muted small">${esc(x.ref || '')}${x.thisCase ? ' · this case' : ''}</div></td>
+            <td class="small">${x.offences.map(esc).join('<br>') || '<span class="muted">None recorded</span>'}</td>
+            <td>${esc(x.outcome || '')}<div class="muted small">${esc(x.officer || '')}</div></td></tr>`).join('')}</table>`) : ''}
+        ${h.orders.length ? sect(`Live orders (${h.orders.length})`, `<table><tr><th>Order</th><th>Requirements</th><th>Warnings</th></tr>${h.orders.map((o) => `<tr>
+            <td><strong>${esc(o.kind)}</strong><div class="muted small">${esc(o.ref || '')}${o.officer ? ' · ' + esc(o.officer) : ''}</div></td>
+            <td class="small">${o.requirements.map(esc).join('<br>') || ''}${o.hours ? `<div>${o.done}/${o.hours} hours unpaid work</div>` : ''}</td><td>${o.warnings || 0}</td></tr>`).join('')}</table>`) : ''}
+        ${h.warrants.length ? sect(`Active warrants (${h.warrants.length})`, `<ul class="log">${h.warrants.map((w) => `<li><strong>${esc(w.type)}</strong><div class="small">${esc(w.reason || '')}</div><div class="meta">${esc(w.by || '')} · ${fmtDate(w.at)}</div></li>`).join('')}</ul>`) : ''}
+        ${h.ccjs.length ? sect(`Unpaid CCJs (${h.ccjs.length})`, `<ul class="log">${h.ccjs.map((x) => `<li>${esc(x.ref)}: ${money(x.owed)} owed to ${esc(x.to)}</li>`).join('')}</ul>`) : ''}`;
+}
+
+function interviewsHtml(c) {
+    if (!c.interviews) return '';
+    const list = c.interviews;
+    const onScreens = state.room && state.room.screens && can('judge', 'clerk', 'cps', 'defence');
+    return `<h2>Interviews</h2>
+        ${list.length ? `<table><tr><th>Recorded</th><th>Interviewee</th><th>Length</th><th></th></tr>${list.map((x) => `<tr>
+            <td>${msDate(x.startedAt)}<div class="muted small">${esc(x.room || '')}${x.caseRef ? ' · ' + esc(x.caseRef) : ''}</div></td>
+            <td><strong>${esc(x.interviewee || '')}</strong>${x.matched ? ' ' + tag('This case', 'green') : ''}<div class="muted small">${esc(x.officer || '')}${x.solicitor ? ' · solicitor ' + esc(x.solicitor) : ''}</div></td>
+            <td>${durText(x.duration)}</td>
+            <td style="text-align:right">${onScreens ? `<button class="btn small" data-ivshow="${x.id}">Show on screens</button>` : ''}</td></tr>`).join('')}</table>
+            ${!onScreens ? '<p class="small muted">Open this case from a courtroom laptop to play an interview on its screens.</p>' : ''}`
+            : '<p class="empty">No recorded interviews found for this defendant.</p>'}`;
 }

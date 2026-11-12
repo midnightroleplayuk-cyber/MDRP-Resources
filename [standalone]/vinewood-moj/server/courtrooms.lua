@@ -463,6 +463,21 @@ function Rooms.Play(roomId, url, label, by, ref)
     return playing[roomId]
 end
 
+--- An interview: every speaker's audio and the CCTV video, kept in step on the screens.
+function Rooms.PlayInterview(roomId, session, by, ref)
+    local started = session.startedAt or 0
+    if started > 1e11 then started = math.floor(started / 1000) end -- stored in ms by some versions
+    playing[roomId] = {
+        kind = 'interview', src = 'interview:' .. session.id, provider = 'interview', providerLabel = 'Interview recording',
+        label = ('Interview: %s'):format(session.interviewee or 'unknown'), by = by, ref = ref, startedAt = os.time(), offset = 0,
+        tracks = session.tracks, total = session.total,
+        meta = { interviewee = session.interviewee, officer = session.officer, solicitor = session.solicitor, room = session.room,
+            caseRef = session.caseRef, when = started > 0 and os.date('%d/%m/%Y %H:%M', started) or nil },
+    }
+    broadcast()
+    return playing[roomId]
+end
+
 function Rooms.Restart(roomId)
     local p = playing[roomId]
     if not p then return false end

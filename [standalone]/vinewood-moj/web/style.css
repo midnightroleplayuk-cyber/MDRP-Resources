@@ -183,3 +183,7 @@ textarea { min-height: 70px; resize: vertical; }
 .point-kind svg { width: 18px; height: 18px; }
 
 .banner b { font-weight: 700; }
+
+details.hist { border: 1px solid var(--line); margin-bottom: 8px; padding: 8px 12px; }
+details.hist summary { cursor: pointer; font-weight: 700; color: var(--blue); }
+details.hist[open] summary { color: var(--text); }
