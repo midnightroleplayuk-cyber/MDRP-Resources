@@ -12,7 +12,7 @@ Config.StationaryECGProp = 'v_med_cor_ceilingmonitor' -- The prop used for the s
 
 Config.Hospitals = {
     {
-        label = "Hospital",
+        label = "Burton Hospital",
         blip = {
             enable = true,
             icon = 61,
@@ -40,7 +40,6 @@ Config.Hospitals = {
             vector3(-344.1620, -103.3250, 38.6600), --Resus
             vector3(-338.6257, -174.4952, 38.3936), --Garage
             vector3(-332.2993, -146.5459, 40.1600), --Ward 1
-            vector3(-257.9102, 6338.9126, 32.4071), --Paleto
         },
 
         elevator = {
@@ -62,7 +61,6 @@ Config.Hospitals = {
         stash = {
             vector3(-345.4592, -157.5180, 38.9611),
             vector3(-338.7900, -151.6216, 38.9490),
-            vector3(-263.0877, 6343.9976, 32.6824), --Paleto
         },
 
         bloodstorage = {
@@ -93,7 +91,6 @@ Config.Hospitals = {
 
         pharmacy = {
             vector4(-316.4900, -133.9500, 40.2400, 242.4000), --DONE
-            vector4(-267.9306, 6318.0181, 32.4452, 229.8135),
         },
 
         beds = {
@@ -136,7 +133,46 @@ Config.Hospitals = {
         cloakroom = {
             vector3(-344.0894, -160.0056, 38.9464),
             vector3(-341.5859, -150.6040, 39.0560),
-            vector3(-265.3901, 6343.8438, 32.6363), --Paleto
+        },
+    },
+
+    {
+        label = "Paleto Hospital",
+        blip = {
+            enable = true,
+            icon = 61,
+            color = 6,
+            scale = 0.8,
+            coords = vector3(-267.9306, 6318.0181, 32.4452), -- TODO: placeholder (pharmacy position), raycast a proper spot
+        },
+        checking = {vector4(-253.05, 6324.81, 32.45, 215.52)
+    },
+        duty = {vector4(-255.76, 6332.22, 32.45, 38.03)
+    },
+        helicopter = {},
+        shop = {
+            vector3(-257.9102, 6338.9126, 32.4071),
+        },
+        elevator = {},
+        stash = {
+            vector3(-263.0877, 6343.9976, 32.6824),
+        },
+        bloodstorage = {},
+        donation = {},
+        bloodanalysis = {},
+        pharmacy = {
+            vector4(-267.9306, 6318.0181, 32.4452, 229.8135),
+        },
+        beds = {},
+        Xray = {},
+        IncomingScreenPos = {},
+        IncomingScreenSoundPos = {},
+        StationaryECG = {},
+
+        -- Following actions only support integration for default esx
+        boss = {},
+        cloakroom = {
+            vector3(-265.3901, 6343.8438, 32.6363),
         },
     },
 }
