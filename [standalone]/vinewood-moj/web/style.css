@@ -7,10 +7,44 @@
 * { box-sizing: border-box; }
 html, body { margin: 0; height: 100%; background: transparent; font-family: Arial, Helvetica, sans-serif; color: var(--text); font-size: 15px; }
 .hidden { display: none !important; }
-#app {
-    position: fixed; inset: 5vh 6vw; background: var(--white); display: flex; flex-direction: column;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, .55); border-top: 0; overflow: hidden;
-}
+/* ---------- device frames ---------- */
+.device { position: fixed; inset: 5vh 6vw; display: flex; flex-direction: column; }
+.device .lid { flex: 1; min-height: 0; display: flex; flex-direction: column; position: relative; }
+.device .screen { flex: 1; min-height: 0; position: relative; display: flex; flex-direction: column; overflow: hidden; background: var(--white); }
+.device .cam, .device .base, .device .statusbar { display: none; }
+#app { flex: 1; min-height: 0; background: var(--white); display: flex; flex-direction: column; overflow: hidden; }
+.device.none .screen { box-shadow: 0 20px 60px rgba(0, 0, 0, .55); }
+
+.statusbar { background: var(--black); color: #e8e8e8; font-size: 12px; height: 24px; padding: 0 16px; align-items: center; justify-content: space-between; flex-shrink: 0; letter-spacing: .2px; }
+.sb-right { display: inline-flex; align-items: center; gap: 8px; }
+.sb-ico { width: 14px; height: 14px; }
+.sb-batt { width: 22px; height: 11px; border: 1.5px solid #e8e8e8; border-radius: 3px; padding: 1px; position: relative; }
+.sb-batt::after { content: ''; position: absolute; right: -4px; top: 2.5px; width: 2px; height: 4px; background: #e8e8e8; border-radius: 0 1px 1px 0; }
+.sb-batt span { display: block; height: 100%; width: 78%; background: #e8e8e8; border-radius: 1px; }
+
+/* Tablet: thick rounded bezel, front camera, status bar */
+.device.tablet { inset: 4.5vh 9vw; }
+.device.tablet .lid { background: linear-gradient(145deg, #2b2c30, #121214 60%); border-radius: 40px; padding: 24px;
+    box-shadow: 0 0 0 2px #45464b, 0 0 0 3px #0c0c0d, 0 34px 90px rgba(0, 0, 0, .65), inset 0 0 0 1px rgba(255, 255, 255, .06); }
+.device.tablet .cam { display: block; position: absolute; top: 9px; left: 50%; transform: translateX(-50%); width: 8px; height: 8px; border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, #4a6a8e, #0d1520 70%); box-shadow: 0 0 0 1.5px #1f2024; }
+.device.tablet .screen { border-radius: 16px; }
+.device.tablet .statusbar { display: flex; }
+
+/* Laptop: slim screen bezel with webcam, aluminium keyboard base below */
+.device.laptop { inset: 3vh 11vw 5vh; }
+.device.laptop .lid { background: linear-gradient(#25272b, #17181b); border-radius: 18px 18px 6px 6px; padding: 26px 20px 20px;
+    box-shadow: 0 0 0 1.5px #3c3e43, inset 0 0 0 1px rgba(255, 255, 255, .05); }
+.device.laptop .cam { display: block; position: absolute; top: 9px; left: 50%; transform: translateX(-50%); width: 7px; height: 7px; border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, #3f566f, #0b1118 70%); box-shadow: 0 0 0 1.5px #2b2d31; }
+.device.laptop .cam::after { content: ''; position: absolute; left: 13px; top: 2px; width: 3px; height: 3px; border-radius: 50%; background: #1d6b3a; }
+.device.laptop .screen { border-radius: 3px; }
+.device.laptop .statusbar { display: flex; background: #1d1f22; height: 26px; }
+.device.laptop .base { display: block; flex-shrink: 0; height: 24px; margin: 0 -6.5%; position: relative;
+    background: linear-gradient(#dcdfe3 0%, #b8bcc2 35%, #8d9298 100%); border-radius: 3px 3px 26px 26px / 3px 3px 18px 18px;
+    box-shadow: 0 26px 60px rgba(0, 0, 0, .6), inset 0 1px 0 rgba(255, 255, 255, .7); }
+.device.laptop .notch { width: 15%; height: 8px; margin: 0 auto; background: linear-gradient(#9da1a7, #7e8389); border-radius: 0 0 10px 10px; }
+
 .bar { background: var(--black); color: #fff; display: flex; align-items: center; padding: 10px 18px; gap: 18px; border-bottom: 8px solid var(--blue); }
 .brand { display: flex; align-items: center; gap: 12px; font-weight: 700; font-size: 20px; letter-spacing: .2px; }
 .brand .sub { font-weight: 400; font-size: 13px; color: #c9c9c9; }
@@ -136,3 +170,16 @@ textarea { min-height: 70px; resize: vertical; }
 .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
 .chip { background: var(--grey); padding: 4px 8px; border: 1px solid var(--line); font-size: 13px; }
 .chip button { background: none; border: 0; cursor: pointer; font-weight: 700; margin-left: 4px; }
+
+/* Courtroom microphone badge and placement hint (shown over the game, NUI closed) */
+.mic-badge { position: fixed; right: 2.2vw; bottom: 22vh; display: flex; align-items: center; gap: 10px; background: var(--black); color: #fff;
+    padding: 9px 14px 9px 12px; border-left: 6px solid var(--green); font-size: 13px; line-height: 1.3; box-shadow: 0 6px 20px rgba(0,0,0,.4); }
+.mic-badge #micLabel { color: #c9c9c9; }
+.live-dot { width: 11px; height: 11px; border-radius: 50%; background: #e03a2f; box-shadow: 0 0 0 0 rgba(224,58,47,.7); animation: livepulse 1.6s infinite; flex-shrink: 0; }
+@keyframes livepulse { 0% { box-shadow: 0 0 0 0 rgba(224,58,47,.7); } 70% { box-shadow: 0 0 0 9px rgba(224,58,47,0); } 100% { box-shadow: 0 0 0 0 rgba(224,58,47,0); } }
+.hint-bar { position: fixed; left: 50%; bottom: 6vh; transform: translateX(-50%); background: var(--black); color: #fff; padding: 11px 18px;
+    border-top: 4px solid var(--yellow); font-size: 14px; max-width: 90vw; text-align: center; }
+.point-kind { display: inline-flex; align-items: center; gap: 6px; font-weight: 700; }
+.point-kind svg { width: 18px; height: 18px; }
+
+.banner b { font-weight: 700; }

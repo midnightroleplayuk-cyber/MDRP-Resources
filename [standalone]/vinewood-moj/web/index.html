@@ -6,17 +6,30 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div id="app" class="hidden">
-        <header class="bar">
-            <div class="brand"><span id="crest"></span><div><div id="svcName">Ministry of Justice</div><div id="svcSub" class="sub"></div></div></div>
-            <div class="who" id="who"></div>
-            <button class="close" id="closeBtn" aria-label="Close">&times;</button>
-        </header>
-        <nav class="nav" id="nav"></nav>
-        <main id="main"></main>
+    <div id="device" class="device none hidden">
+        <div class="lid">
+            <div class="cam"></div>
+            <div class="screen">
+                <div class="statusbar" id="statusbar"><span id="sbLeft"></span><span class="sb-right"><span id="sbTime"></span>
+                    <svg viewBox="0 0 24 24" class="sb-ico"><path d="M2 9a15 15 0 0 1 20 0M5 12.5a10 10 0 0 1 14 0M8.5 16a5 5 0 0 1 7 0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="19.5" r="1.4" fill="currentColor"/></svg>
+                    <span class="sb-batt"><span></span></span></span></div>
+                <div id="app">
+                    <header class="bar">
+                        <div class="brand"><span id="crest"></span><div><div id="svcName">Ministry of Justice</div><div id="svcSub" class="sub"></div></div></div>
+                        <div class="who" id="who"></div>
+                        <button class="close" id="closeBtn" aria-label="Close">&times;</button>
+                    </header>
+                    <nav class="nav" id="nav"></nav>
+                    <main id="main"></main>
+                </div>
+            </div>
+        </div>
+        <div class="base"><div class="notch"></div></div>
     </div>
     <div id="modal" class="modal hidden"><div class="box" role="dialog" aria-modal="true"></div></div>
     <div id="toast" class="toast hidden"></div>
+    <div id="micBadge" class="mic-badge hidden"><span class="live-dot"></span><span><strong>Microphone live</strong><br><span id="micLabel"></span></span></div>
+    <div id="hint" class="hint-bar hidden"></div>
     <script src="app.js"></script>
 </body>
 </html>

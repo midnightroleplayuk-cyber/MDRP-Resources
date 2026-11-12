@@ -92,7 +92,7 @@ function Bridge.GetJob(src)
         local x = ESX.GetPlayerFromId(src)
         if not x then return nil end
         return { name = x.job.name, label = x.job.label, grade = x.job.grade, gradeLabel = x.job.grade_label, onduty = true,
-            callsign = dispatchCallsign(src) }
+            isboss = x.job.grade_name == 'boss', callsign = dispatchCallsign(src) }
     end
     local p = qbPlayer(src)
     if not p then return nil end
@@ -101,7 +101,7 @@ function Bridge.GetJob(src)
     local gradeLabel = type(j.grade) == 'table' and j.grade.name or tostring(grade)
     return {
         name = j.name, label = j.label, grade = grade, gradeLabel = gradeLabel,
-        onduty = j.onduty ~= false,
+        onduty = j.onduty ~= false, isboss = j.isboss == true,
         callsign = dispatchCallsign(src) or (p.PlayerData.metadata and p.PlayerData.metadata.callsign),
     }
 end
@@ -329,6 +329,36 @@ function Bridge.RemoveMoney(src, account, amount, reason)
     local p = qbPlayer(src)
     if not p then return false end
     return p.Functions.RemoveMoney(account, amount, reason) ~= false
+end
+
+--- Every job on the server: { { name, label }, ... }
+function Bridge.GetJobs()
+    local f, out = Bridge.Framework(), {}
+    local jobs
+    if f == 'qbx' then
+        local ok, j = pcall(function() return exports.qbx_core:GetJobs() end)
+        jobs = ok and j or {}
+    elseif f == 'qb' then
+        jobs = QBCore.Shared.Jobs or {}
+    elseif f == 'esx' then
+        for _, r in ipairs(MySQL.query.await('SELECT name, label FROM jobs') or {}) do out[#out + 1] = { name = r.name, label = r.label } end
+        return out
+    end
+    for name, j in pairs(jobs or {}) do out[#out + 1] = { name = name, label = j.label or name } end
+    return out
+end
+
+--- Pays money to an online player. Returns true on success.
+function Bridge.AddMoney(src, account, amount, reason)
+    if Bridge.Framework() == 'esx' then
+        local x = ESX.GetPlayerFromId(src)
+        if not x then return false end
+        if account == 'cash' then x.addMoney(amount, reason) else x.addAccountMoney(account, amount, reason) end
+        return true
+    end
+    local p = qbPlayer(src)
+    if not p then return false end
+    return p.Functions.AddMoney(account, amount, reason) ~= false
 end
 
 --- Job of a character who may be offline: { name, grade } or nil.
