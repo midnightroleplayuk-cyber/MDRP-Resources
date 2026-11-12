@@ -183,6 +183,8 @@ window.addEventListener('message', async (e) => {
     } else if (m.action === 'mic') {
         $('#micBadge').classList.toggle('hidden', !m.on);
         if (m.on) $('#micLabel').textContent = m.label || '';
+    } else if (m.action === 'chime') {
+        playChime(Number(m.volume) || 0.7, Number(m.pan) || 0);
     } else if (m.action === 'hint') {
         $('#hint').classList.toggle('hidden', !m.text);
         if (m.text) $('#hint').textContent = m.text;
@@ -1577,4 +1579,33 @@ function settleModal(send, done) {
           hint: '0 if no money changes hands. If there is a sum, accepting it makes it a court order to pay (paid through /mycase).' },
     ], 'Send proposal', async (v) => { const x = await send({ terms: v.terms, amount: v.amount }); if (x.ok) { toast('Proposal sent. The other side has to accept it.'); done(); } return x; },
     '<p class="lead">Settling ends the claim on agreed terms. Nothing changes until the other side accepts.</p>');
+}
+
+
+/* Speaker test chime: a two-note tone made in the browser, so it needs no sound files. */
+let chimeCtx;
+function playChime(volume, pan) {
+    try {
+        chimeCtx = chimeCtx || new (window.AudioContext || window.webkitAudioContext)();
+        if (chimeCtx.state === 'suspended') chimeCtx.resume();
+        const t0 = chimeCtx.currentTime + 0.02;
+        const out = chimeCtx.createGain();
+        out.gain.value = Math.max(0, Math.min(1, volume));
+        let node = out;
+        if (chimeCtx.createStereoPanner) {
+            const p = chimeCtx.createStereoPanner();
+            p.pan.value = Math.max(-1, Math.min(1, pan));
+            out.connect(p); node = p;
+        }
+        node.connect(chimeCtx.destination);
+        [[880, 0], [1318.5, 0.18]].forEach(([freq, at]) => {
+            const o = chimeCtx.createOscillator(), g = chimeCtx.createGain();
+            o.type = 'sine'; o.frequency.value = freq;
+            g.gain.setValueAtTime(0.0001, t0 + at);
+            g.gain.exponentialRampToValueAtTime(0.6, t0 + at + 0.02);
+            g.gain.exponentialRampToValueAtTime(0.0001, t0 + at + 0.55);
+            o.connect(g); g.connect(out);
+            o.start(t0 + at); o.stop(t0 + at + 0.6);
+        });
+    } catch (e) { /* no audio available */ }
 }

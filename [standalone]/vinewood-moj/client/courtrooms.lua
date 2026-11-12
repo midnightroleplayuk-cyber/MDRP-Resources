@@ -251,13 +251,32 @@ local function nameOf(serverId)
     return (p ~= -1 and GetPlayerName(p)) or ('ID ' .. serverId)
 end
 
+--- A chime from each speaker in turn, played through the MoJ's own interface (GTA's sounds don't play
+--- reliably at a position): louder the closer that speaker is, and panned towards it.
 local function chimeSpeakers(r)
+    local list = speakersOf(r)
+    if #list == 0 then
+        lib.notify({ title = 'Speaker test', description = ('%s has no speakers placed, so mics play at one volume across the room.'):format(r.label), type = 'warning' })
+        return
+    end
     CreateThread(function()
-        for i, sp in ipairs(speakersOf(r)) do
+        for i, sp in ipairs(list) do
             if not paTest then return end
-            PlaySoundFromCoord(-1, 'SELECT', sp.x + 0.0, sp.y + 0.0, sp.z + 0.0, 'HUD_FRONTEND_DEFAULT_SOUNDSET', false, 25, false)
-            lib.notify({ title = 'Speaker test', description = ('Chime from speaker %d: %s'):format(i, sp.label or 'Speaker'), duration = 1500 })
-            Wait(1600)
+            local pos = GetEntityCoords(PlayerPedId())
+            local to = vec3(sp.x, sp.y, sp.z) - pos
+            local d = #to
+            -- left/right: compare the direction to the speaker with where the camera is facing
+            local cr = GetGameplayCamRot(2)
+            local yaw = math.rad(cr.z)
+            local fx, fy = -math.sin(yaw), math.cos(yaw)
+            local rx, ry = fy, -fx
+            local len = math.max(0.001, math.sqrt(to.x * to.x + to.y * to.y))
+            local pan = (to.x * rx + to.y * ry) / len
+            local top, low = CR.SpeakerVolume or 0.85, CR.SpeakerMinVolume or 0.35
+            local vol = top - (top - low) * math.min(1.0, d / math.max(1.0, CR.SpeakerRange or 12.0))
+            SendNUIMessage({ action = 'chime', volume = vol, pan = pan })
+            lib.notify({ title = 'Speaker test', description = ('Chime from speaker %d of %d: %s (%.1f m away)'):format(i, #list, sp.label or 'Speaker', d), duration = 1800 })
+            Wait(1900)
         end
     end)
 end
@@ -267,7 +286,8 @@ RegisterCommand('mojpa', function()
     if not paTest then SendNUIMessage({ action = 'hint', text = false }) return end
     local here = GetEntityCoords(PlayerPedId())
     local r = MoJPA.RoomAt(here)
-    if r then chimeSpeakers(r) end
+    if r then chimeSpeakers(r)
+    else lib.notify({ title = 'Speaker test', description = 'You are not inside a courtroom. Stand in one and run /mojpa again.', type = 'warning' }) end
     CreateThread(function()
         local tick = 0
         while paTest do

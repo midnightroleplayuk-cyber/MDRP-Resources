@@ -124,7 +124,7 @@ If someone at a mic is also on the radio with you, pma-voice and the PA both set
 
 - a live readout: the room, whether **you** are live at a mic, who else is live, the volume you hear them at, and the nearest speaker
 - markers on every microphone (yellow, green while you're live, with the 1.6 m pickup ring) and every speaker (blue, with its full-volume ring)
-- a chime played from each speaker in turn when you start it, so you can check where they are on your own.
+- a two-note chime from each speaker in turn when you start it, louder the nearer that speaker is and panned left or right towards it, so you can check where they are on your own. It tells you if the room has no speakers, or if you are not inside a courtroom.
 
 To test the voice path, use two people or a second account: one stands at a mic until the readout says **LIVE**, the other walks to the back of the room. Their readout should show the first person under "Live at mics" with a volume of at least 35%.
 
