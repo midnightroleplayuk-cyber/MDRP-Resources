@@ -5707,6 +5707,28 @@ return {
     close = true,
     description = 'A rare coin used for currency',
 },
+['usb_blue'] = {
+    label = 'Blue USB',
+    weight = 50,
+    stack = false,
+    close = true,
+    description = 'Random USB.',
+},
+['usb_red'] = {
+    label = 'Red USB',
+    weight = 50,
+    stack = false,
+    close = true,
+    description = 'Random USB.',
+},
+['usb_black'] = {
+    label = 'Black USB',
+    weight = 50,
+    stack = false,
+    close = true,
+    description = 'Random USB.',
+},
+
 
 
 -- VINEWOOD PD JOB
