@@ -11,6 +11,7 @@ local function decode(r)
     r.centre = U.decode(r.centre)
     r.points = U.decode(r.points)
     r.radius = tonumber(r.radius) or 20.0
+    r.pa_volume = tonumber(r.pa_volume) or 1.0
     -- A drawn shape decides the centre and size; the circle is kept underneath as the fallback.
     local shape = U.decode(r.shape)
     r.shape = shape and shape.type == 'poly' and shape or nil
@@ -37,7 +38,7 @@ function Rooms.Public()
         local court = U.court(r.court_id)
         out[#out + 1] = { id = r.id, label = r.label, court_id = r.court_id, courtLabel = court and court.label or nil,
             centre = r.centre, radius = r.radius, points = r.points, shape = r.shape,
-            circle = r.circle and { radius = r.circle.radius } or nil }
+            circle = r.circle and { radius = r.circle.radius } or nil, paVolume = r.pa_volume or 1.0 }
     end
     table.sort(out, function(a, b) return a.label < b.label end)
     return out
@@ -563,3 +564,14 @@ lib.callback.register('vinewood-moj:server:liveMics', function() return liveList
 AddEventHandler('playerDropped', function()
     if dropLive(source) then sendLive() end
 end)
+
+
+--- Turn a courtroom's speakers up or down (0 = muted, 1 = normal, up to 1.5). Everyone in the room hears it straight away.
+function Rooms.SetVolume(roomId, v)
+    local r = Rooms.Get(roomId)
+    if not r then return false end
+    r.pa_volume = math.max(0.0, math.min(1.5, tonumber(v) or 1.0))
+    MySQL.update.await('UPDATE vw_moj_courtrooms SET pa_volume = ? WHERE id = ?', { r.pa_volume, r.id })
+    Rooms.Broadcast()
+    return true
+end

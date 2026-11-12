@@ -24,6 +24,7 @@ local PERMS = {
     orderNote = { probation = true }, creditHours = { probation = true }, completeOrder = { probation = true, judge = true },
     fines = COURT, writeOffFine = { judge = true },
     custodyBoard = { police = true, prison = true, clerk = true, judge = true }, bookIn = { police = true, prison = true, clerk = true },
+    paVolume = { judge = true, clerk = true },
     frontBoard = { clerk = true, judge = true }, frontCheckIn = { clerk = true, judge = true },
     civilList = { judge = true, clerk = true, defence = true }, civilGet = { judge = true, clerk = true, defence = true },
     civilIssue = { defence = true }, civilRespond = { defence = true }, civilNote = { judge = true, clerk = true, defence = true },
@@ -65,7 +66,11 @@ H.init = function(src, a)
     local room = Rooms.LaptopRoom(src)
     return {
         me = { name = a.name, role = a.role, label = a.label, supervisor = a.supervisor, cid = a.cid },
-        room = room and { id = room.id, label = room.label, screens = Rooms.HasScreens(room) } or nil,
+        room = room and { id = room.id, label = room.label, screens = Rooms.HasScreens(room), volume = room.pa_volume or 1.0,
+            canVolume = (function()
+                for _, role in ipairs((Config.Courtrooms or {}).VolumeRoles or { 'judge', 'clerk' }) do if role == a.role then return true end end
+                return false
+            end)() } or nil,
         cfg = {
             serviceName = Config.ServiceName, courtsName = Config.CourtsName, crest = Config.Crest, currency = Config.Fines.Currency,
             courts = Config.Courts, hearingTypes = Cases.HearingTypes, statuses = Cases.Statuses, custody = Cases.Custody,
@@ -560,6 +565,21 @@ end
 
 local function ownerLog(kind, c, by, text)
     if kind == 'claim' then Civil.Log(c.id, by, text) else U.Log(c.id, by, text) end
+end
+
+--- The Sound button: turn this courtroom's speakers up or down.
+H.paVolume = function(src, a, d)
+    local ok = false
+    for _, role in ipairs((Config.Courtrooms or {}).VolumeRoles or { 'judge', 'clerk' }) do if role == a.role then ok = true end end
+    need(ok, 'Your role cannot change the courtroom volume.')
+    local r = Rooms.LaptopRoom(src)
+    need(r, 'Use a laptop in the courtroom to change its volume.')
+    need(Zones.Contains(r, GetEntityCoords(GetPlayerPed(src)), 10.0), 'You have left the courtroom.')
+    if d.volume ~= nil then
+        Rooms.SetVolume(r.id, d.volume)
+    end
+    local now = Rooms.Get(r.id)
+    return { ok = true, room = now.label, volume = now.pa_volume or 1.0 }
 end
 
 H.screenStatus = function(src, a)

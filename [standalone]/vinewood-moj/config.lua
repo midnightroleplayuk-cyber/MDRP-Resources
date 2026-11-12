@@ -148,10 +148,16 @@ Config.Courtrooms = {
     -- from the speakers. Place speakers in /courtrooms → the room → Place a speaker.
     PA = true,
     SpeakerProp = 'prop_speaker_02',
-    SpeakerVolume = 0.85,     -- volume right next to a speaker (0-1)
+    SpeakerVolume = 0.6,      -- volume right next to a speaker (0-1)
     SpeakerRange = 12.0,      -- metres over which it fades from a speaker...
-    SpeakerMinVolume = 0.35,  -- ...down to this (anywhere in the room still hears it)
-    NoSpeakerVolume = 0.7,    -- a room with no speakers placed: everyone in it hears mics at this volume
+    SpeakerMinVolume = 0.25,  -- ...down to this (anywhere in the room still hears it)
+    NoSpeakerVolume = 0.5,    -- a room with no speakers placed: everyone in it hears mics at this volume
+    -- Someone at a mic is silenced for people outside their courtroom (its drawn shape), unless
+    -- they're standing within this many metres of them (normal talking through a doorway).
+    KeepMicsInRoom = true,
+    MicLeakDistance = 6.0,
+    -- Who can turn a courtroom's speakers up or down from a laptop in that room (the Sound button).
+    VolumeRoles = { 'judge', 'clerk' },
     -- When a judge opens a hearing from a courtroom laptop, the defendant is sent to that room.
     WaypointToRoom = true,
 

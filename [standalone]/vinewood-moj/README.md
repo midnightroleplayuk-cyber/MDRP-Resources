@@ -114,8 +114,9 @@ Build real courtrooms in game, then run hearings in them.
 Microphones play through the courtroom's **speakers**. Anyone at a live microphone is heard by everyone in that courtroom at a set volume, the same way pma-voice plays radio, so GTA's own distance fade doesn't apply. The judge hears the back of the room as clearly as the front. Footage on the screens comes out of the speakers too.
 
 - **Place speakers:** open the room in `/courtrooms` → **Place a speaker**. Spawn `prop_speaker_02` (`SpeakerProp`), pick speakers already in your MLO, or mark a spot. Put them where the public gallery, jury and advocates sit.
-- **Volume:** loudest next to a speaker (`SpeakerVolume`), fading over `SpeakerRange` metres down to `SpeakerMinVolume`, so it's still clearly heard anywhere in the room. A room with no speakers plays live mics at `NoSpeakerVolume` everywhere in it.
-- **Only in that room:** only people inside that courtroom (its drawn shape, or circle) hear it, and it stops as they leave.
+- **Volume:** loudest next to a speaker (`SpeakerVolume`, 60%), fading over `SpeakerRange` metres down to `SpeakerMinVolume` (25%), so it's still clearly heard anywhere in the room. A room with no speakers plays live mics at `NoSpeakerVolume` everywhere in it.
+- **Only in that room:** only people inside that courtroom (its drawn shape, or circle) hear it, and it stops as they leave. Someone at a mic is also **silenced for everyone outside their courtroom**, including the room next door and the corridor, unless they're standing within `MicLeakDistance` (6 m) of them, so normal talking through a doorway still works (`KeepMicsInRoom`). Draw each room's shape for this to follow the walls exactly.
+- **Sound button:** on a courtroom laptop, judges and clerks (`VolumeRoles`) get **Sound** in the header. It has a slider and Mute / 50% / 75% / 100% / 125% buttons for that room's speakers, covering both the mics and the footage on the screens. It's saved per courtroom and applies to everyone in the room straight away.
 - **Turning it off:** `PA = false` goes back to the old behaviour, where the mic only widens your voice range and distance fade still applies.
 
 If someone at a mic is also on the radio with you, pma-voice and the PA both set their volume. The PA wins while they're live at the mic.

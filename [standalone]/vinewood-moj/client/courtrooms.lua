@@ -242,13 +242,14 @@ MoJPA.Speakers = speakersOf
 --- Volume someone at pos hears the room's PA at: by distance to the nearest speaker, or the
 --- room-wide level if it has none. nil = not in this room.
 function MoJPA.VolumeAt(r, pos)
+    local room = math.max(0.0, tonumber(r.paVolume) or 1.0)   -- the room's own Sound setting
     local sp = speakersOf(r)
-    if #sp == 0 then return CR.NoSpeakerVolume or 0.7 end
+    if #sp == 0 then return math.min(1.0, (CR.NoSpeakerVolume or 0.5) * room) end
     local best = math.huge
     for _, p in ipairs(sp) do best = math.min(best, #(pos - vec3(p.x, p.y, p.z))) end
-    local top, low = CR.SpeakerVolume or 0.85, CR.SpeakerMinVolume or 0.35
+    local top, low = CR.SpeakerVolume or 0.6, CR.SpeakerMinVolume or 0.25
     local t = math.min(1.0, best / math.max(1.0, CR.SpeakerRange or 12.0))
-    return top - (top - low) * t
+    return math.min(1.0, (top - (top - low) * t) * room)
 end
 
 --- The courtroom you're in (drawn shapes first, then nearest centre).
@@ -379,6 +380,27 @@ CreateThread(function()
                         MumbleSetVolumeOverrideByServerId(id, vol + 0.0)
                         active[id] = true
                         overridden[id] = true
+                    end
+                end
+            end
+            -- Mics in other courtrooms: their widened voice mustn't reach this room (or the corridor).
+            -- Silence them, unless you're standing right next to the person.
+            if CR.KeepMicsInRoom ~= false then
+                local near = CR.MicLeakDistance or 6.0
+                for roomId, srcs in pairs(liveMics) do
+                    if not r or roomId ~= r.id then
+                        for _, id in ipairs(srcs) do
+                            if id ~= me and not active[id] then
+                                local ply = GetPlayerFromServerId(id)
+                                local ped = ply ~= -1 and GetPlayerPed(ply) or 0
+                                local d = (ped ~= 0 and DoesEntityExist(ped)) and #(here - GetEntityCoords(ped)) or math.huge
+                                if d > near then
+                                    MumbleSetVolumeOverrideByServerId(id, 0.0)
+                                    active[id] = true
+                                    overridden[id] = true
+                                end
+                            end
+                        end
                     end
                 end
             end

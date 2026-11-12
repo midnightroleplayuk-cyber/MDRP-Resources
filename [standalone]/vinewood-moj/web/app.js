@@ -137,8 +137,9 @@ function drawShell() {
         return;
     }
     $('#nav').classList.remove('hidden');
-    $('#who').innerHTML = `${state.room && state.room.screens ? '<button class="btn small" id="scrBtn" style="margin-right:14px;vertical-align:middle">Screens</button>' : ''}<span style="display:inline-block;vertical-align:middle"><strong>${esc(state.me.name)}</strong>${esc(state.me.label)}</span>`;
+    $('#who').innerHTML = `${state.room && state.room.canVolume ? '<button class="btn secondary small" id="volBtn" style="margin-right:8px;vertical-align:middle">Sound</button>' : ''}${state.room && state.room.screens ? '<button class="btn small" id="scrBtn" style="margin-right:14px;vertical-align:middle">Screens</button>' : ''}<span style="display:inline-block;vertical-align:middle"><strong>${esc(state.me.name)}</strong>${esc(state.me.label)}</span>`;
     if ($('#scrBtn')) $('#scrBtn').onclick = () => screensModal();
+    if ($('#volBtn')) $('#volBtn').onclick = () => volumeModal();
     const items = (NAV[state.me.role] || ['dashboard']).filter((v) => v !== 'civil' || state.cfg.civil);
     $('#nav').innerHTML = items.map((v) => `<button data-nav="${v}" class="${state.view === v || (state.view === 'case' && v === 'cases') || (state.view === 'order' && v === 'probation') || (state.view === 'claim' && v === 'civil') ? 'active' : ''}">${NAV_LABEL[v]}</button>`).join('');
     $$('#nav [data-nav]').forEach((b) => (b.onclick = () => go(b.dataset.nav)));
@@ -1660,3 +1661,29 @@ VIEWS.front = async () => {
         if (x.ok) { toast('Checked in. The judge has been told.'); VIEWS.front(); }
     }));
 };
+
+
+/* ---------- courtroom sound (speakers volume) ---------- */
+async function volumeModal() {
+    const st = await api('paVolume', {});
+    if (st.error) return;
+    let pct = Math.round((st.volume ?? 1) * 100);
+    const box = openModal(`<h2>Sound: ${esc(st.room || '')}</h2>
+        <p class="lead">Volume of this courtroom's speakers, for the microphones and for footage on the screens. Changes apply to everyone in the room straight away and stay until changed.</p>
+        <div style="display:flex;align-items:center;gap:14px;margin:18px 0 6px">
+            <input type="range" id="volR" min="0" max="150" step="5" value="${pct}" style="flex:1;accent-color:#1d70b8">
+            <strong id="volV" style="min-width:64px;font-size:20px;text-align:right">${pct}%</strong></div>
+        <div class="hint">100% is the normal level. Above 100% boosts quiet rooms.</div>
+        <div class="btn-row">${[[0, 'Mute'], [50, '50%'], [75, '75%'], [100, '100%'], [125, '125%']].map(([v, l]) => `<button class="btn secondary small" data-vq="${v}">${l}</button>`).join('')}</div>
+        <div class="btn-row"><button class="btn secondary" id="volClose">Close</button></div>`);
+    let timer;
+    const apply = (v) => {
+        pct = v; $('#volV', box).textContent = v === 0 ? 'Muted' : `${v}%`; $('#volR', box).value = v;
+        clearTimeout(timer);
+        timer = setTimeout(async () => { const x = await api('paVolume', { volume: v / 100 }); if (x.ok) toast(v === 0 ? 'Courtroom speakers muted.' : `Courtroom volume: ${v}%`); }, 250);
+    };
+    $('#volR', box).oninput = (e) => apply(Number(e.target.value));
+    $$('[data-vq]', box).forEach((b) => (b.onclick = () => apply(Number(b.dataset.vq))));
+    $('#volClose', box).onclick = closeModal;
+    if (pct === 0) $('#volV', box).textContent = 'Muted';
+}

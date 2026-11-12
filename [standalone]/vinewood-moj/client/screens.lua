@@ -238,12 +238,12 @@ CreateThread(function()
                 if p and (p.kind == 'file' or p.kind == 'interview' or p.control) then
                     local here = GetEntityCoords(PlayerPedId())
                     if MoJPA and #MoJPA.Speakers(r) > 0 then
-                        send({ action = 'volume', v = (CR.ScreenVolume or 0.8) * MoJPA.VolumeAt(r, here) / (CR.SpeakerVolume or 0.85) })
+                        send({ action = 'volume', v = math.min(1.0, (CR.ScreenVolume or 0.8) * MoJPA.VolumeAt(r, here) / (CR.SpeakerVolume or 0.6)) })
                     else
                         local best = 1e9
                         for _, s in ipairs(screens) do best = math.min(best, #(here - vec3(s.x, s.y, s.z))) end
                         local falloff = math.max(4.0, r.radius or 20.0)
-                        send({ action = 'volume', v = (CR.ScreenVolume or 0.8) * math.max(0.15, 1.0 - best / falloff) })
+                        send({ action = 'volume', v = math.min(1.0, (CR.ScreenVolume or 0.8) * math.max(0.15, 1.0 - best / falloff) * (tonumber(r.paVolume) or 1.0)) })
                     end
                 end
                 Wait(500)
