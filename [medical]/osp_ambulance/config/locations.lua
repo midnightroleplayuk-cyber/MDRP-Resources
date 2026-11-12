@@ -151,25 +151,45 @@ Config.Hospitals = {
         duty = {
             vector4(-255.76, 6332.22, 32.45, 38.03)
         },
-        helicopter = {},
+        helicopter = {
+
+        },
         shop = {
             vector3(-257.9102, 6338.9126, 32.4071),
         },
-        elevator = {},
+        elevator = {
+
+        },
         stash = {
             vector3(-263.0877, 6343.9976, 32.6824),
         },
-        bloodstorage = {},
-        donation = {},
-        bloodanalysis = {},
+        bloodstorage = {
+
+        },
+        donation = {
+
+        },
+        bloodanalysis = {
+
+        },
         pharmacy = {
             vector4(-267.9306, 6318.0181, 32.4452, 229.8135),
         },
-        beds = {},
-        Xray = {},
-        IncomingScreenPos = {},
-        IncomingScreenSoundPos = {},
-        StationaryECG = {},
+        beds = {
+
+        },
+        Xray = {
+
+        },
+        IncomingScreenPos = {
+
+        },
+        IncomingScreenSoundPos = {
+
+        },
+        StationaryECG = {
+            
+        },
 
         -- Following actions only support integration for default esx
         boss = {},
