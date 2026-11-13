@@ -25,6 +25,7 @@ local Models = {
     }
 }, -- RHS PD VINEWOOD PRISON CELL
     [`wcc_ex_prop_offchair_exec_01`] = { sit = { type = 'chair', seats = {[1] = vector4(0.0, 0.05, -0.1, 180.0)} } }, --CHAIRS IN COURT
+    [`wcc_jury_chair`]               = { sit = { type = 'chair', seats = {[1] = vector4(0.0, 0.05, -0.1, 180.0)} } }, --CHAIRS IN COURT - JURY
     [-1159885154] = { sit = { type = 'chair2', seats = {[1] = vector4(0.0, 0.0, 0.5, 180.0)} } }, -- LGModsWoodenChair
     [826023884] = { sit = { type = 'chair2', seats = {[1] = vector4(0.0, 0.0, 0.5, 180.0)} } }, -- prop_chair_06
     [1037469683] = { sit = { type = 'chair2', seats = {[1] = vector4(0.0, 0.05, 0.4, 180.0)} } }, -- prop_off_chair_05
