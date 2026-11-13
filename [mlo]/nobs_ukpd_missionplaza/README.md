@@ -2,7 +2,7 @@
 
 A British police station at Mission Plaza (Hawick), Los Santos: interior MLO, exterior shell and site works, vehicle
 gates, entrance and garage doors, armoury display and map fixes, all in ONE resource: `nobs_ukpd_missionplaza`.
-Version 1.2.2 (2026-10-20).
+Version 1.2.3 (2026-11-11).
 
 ## What is in the folder
 
@@ -24,7 +24,7 @@ Version 1.2.2 (2026-10-20).
    `.fxap`. Some FTP programs skip files whose name starts with a dot or damage them in text mode. Upload in
    binary mode and check that `.fxap` is there.
 3. Add `ensure nobs_ukpd_missionplaza` to server.cfg (all lines: `install/docs/server.cfg.example`). Game build
-   3258 or newer, on a current recommended server artifact.
+   2545 or newer, on a current recommended server artifact.
 4. Restart the server and watch the server console and F8. A good start shows no yellow or red lines from
    `nobs_ukpd_missionplaza`. A yellow line that names `config.lua` means a mistake in your settings: see "Settings"
    below. A note that one of the station's texture dictionaries is large (about 30 MiB) is expected.

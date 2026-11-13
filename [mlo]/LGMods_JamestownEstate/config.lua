@@ -6,8 +6,12 @@ Config = {}
 Config.DisableAIVehicles = true
 
 -- true = flat and house windows cannot be seen through from outside (interiors are not drawn from the street - big FPS gain).
--- false = see-through windows, every flat in view is drawn.
+-- false = see-through windows, every flat in view is drawn and every floor of Brunel / Cromwell House stays furnished.
+-- We advise keeping this true for the best performance and to avoid object-limit crashes around the estate.
 Config.OneWayWindows = true
+
+-- true = flats and houses come furnished. false = unfurnished: kitchen, bathroom and ceiling lights only (best performance).
+Config.Furnished = false
 
 -- street names shown on the HUD for the estate roads
 Config.StreetNames = {

@@ -1,7 +1,7 @@
-# Mission Plaza UK Police Station 1.2.2 - install guide (NO BS SCRIPTS)
+# Mission Plaza UK Police Station 1.2.3 - install guide (NO BS SCRIPTS)
 
-One resource: `nobs_ukpd_missionplaza`. Tested game build 3258 (newer builds are fine). Version 1.2.2,
-2026-10-20. Paths in this guide are inside the `nobs_ukpd_missionplaza` folder.
+One resource: `nobs_ukpd_missionplaza`. Game build 2545 or newer (tested on 3258). Version 1.2.3,
+2026-11-11. Paths in this guide are inside the `nobs_ukpd_missionplaza` folder.
 
 ## Install
 
@@ -11,7 +11,7 @@ One resource: `nobs_ukpd_missionplaza`. Tested game build 3258 (newer builds are
    into your server `resources` folder. Keep the hidden `.fxap` file next to `fxmanifest.lua`; without it the
    escrowed files cannot be read. Upload in binary mode (some FTP programs skip or damage dot-files).
 3. Add the lines from `install/docs/server.cfg.example` to your server.cfg. Keep exactly one `sv_enforceGameBuild`
-   line (3258 or newer). The station needs one ensure line:
+   line (2545 or newer). The station needs one ensure line:
 
    ```
    ensure nobs_ukpd_missionplaza
@@ -169,9 +169,9 @@ on them.
 
 ## Props frozen in place
 
-The station freezes each map object listed in `scripts/data/site_data.lua` (`MPStaticProps`, 1435 entries, 408 models).
+The station freezes each map object listed in `scripts/data/site_data.lua` (`MPStaticProps`, 1433 entries, 407 models).
 It matches by model and position (within 0.5 m), and only freezes local map objects, never networked or mission
-entities. 693 of the entries are dynamic GTA props (167 models, listed in the appendix): chairs, monitors, gym kit and
+entities. 691 of the entries are dynamic GTA props (166 models, listed in the appendix): chairs, monitors, gym kit and
 clutter that would otherwise move when bumped.
 
 ## Appendix: dynamic props frozen in place
@@ -183,23 +183,17 @@ clutter that would otherwise move when bumped.
 | `bkr_prop_duffel_bag_01a` | 4 |  |
 | `bkr_prop_fakeid_desklamp_01a` | 1 |  |
 | `bkr_prop_gunlocker_01a` | 1 |  |
+| `ex_prop_adv_case` | 1 |  |
 | `ex_prop_offchair_exec_01` | 10 |  |
 | `gr_prop_gr_target_04b` | 1 |  |
 | `h4_prop_battle_analoguemixer_01a` | 1 |  |
+| `h4_prop_h4_files_paper_01a` | 2 |  |
 | `hei_heist_stn_benchshort` | 1 |  |
 | `hei_prop_bank_cctv_02` | 6 | yes |
 | `hei_prop_heist_off_chair` | 4 |  |
 | `imp_prop_impexp_tape_01` | 1 |  |
 | `imp_prop_impexp_tyre_01c` | 3 |  |
-| `m23_1_prop_m31_plasticcrate_01a` | 3 |  |
 | `m23_2_prop_m32_bucket_mop_01a` | 2 |  |
-| `m23_2_prop_m32_folder_01a` | 2 |  |
-| `m23_2_prop_m32_folder_01b` | 1 |  |
-| `m23_2_prop_m32_plasticbarrier_01a` | 2 |  |
-| `m23_2_prop_m32_safe_01a` | 1 |  |
-| `m23_2_prop_m32_vestcrate_02a` | 1 | yes |
-| `m24_1_prop_m41_exerciseball_01a` | 1 |  |
-| `m24_1_prop_m41_server_01a` | 2 |  |
 | `p_amb_coffeecup_01` | 7 |  |
 | `p_cs_beverly_lanyard_s` | 1 |  |
 | `p_cs_cuffs_02_s` | 1 |  |
@@ -227,7 +221,7 @@ clutter that would otherwise move when bumped.
 | `prop_cs_binder_01` | 2 |  |
 | `prop_cs_cardbox_01` | 8 |  |
 | `prop_cs_cuffs_01` | 1 |  |
-| `prop_cs_documents_01` | 16 |  |
+| `prop_cs_documents_01` | 17 |  |
 | `prop_cs_duffel_01` | 11 |  |
 | `prop_cs_hand_radio` | 9 |  |
 | `prop_cs_heist_bag_02` | 1 |  |
@@ -269,8 +263,10 @@ clutter that would otherwise move when bumped.
 | `prop_off_chair_05` | 33 |  |
 | `prop_pap_camera_01` | 1 |  |
 | `prop_paper_bag_01` | 2 |  |
+| `prop_paper_box_01` | 2 |  |
 | `prop_paper_box_02` | 3 |  |
 | `prop_plant_int_03a` | 1 | yes |
+| `prop_plas_barier_01a` | 2 |  |
 | `prop_player_gasmask` | 1 |  |
 | `prop_podium_mic` | 1 |  |
 | `prop_police_radio_main` | 11 |  |
@@ -286,6 +282,7 @@ clutter that would otherwise move when bumped.
 | `prop_safety_glasses` | 1 |  |
 | `prop_skip_rope_01` | 1 |  |
 | `prop_studio_light_02` | 1 |  |
+| `prop_swiss_ball_01` | 1 | yes |
 | `prop_table_mic_01` | 7 |  |
 | `prop_tea_trolly` | 1 |  |
 | `prop_tool_box_02` | 2 |  |
@@ -310,6 +307,7 @@ clutter that would otherwise move when bumped.
 | `sf_prop_sf_helmet_01a` | 3 |  |
 | `sf_prop_sf_speaker_wall_01a` | 1 | yes |
 | `sf_prop_sf_table_office_01a` | 19 |  |
+| `sf_prop_v_43_safe_s_bk_01a` | 1 |  |
 | `tr_prop_tr_chair_01a` | 30 |  |
 | `tr_prop_tr_clipboard_sh_01a` | 1 |  |
 | `v_corp_bk_chair3` | 3 |  |
@@ -321,11 +319,13 @@ clutter that would otherwise move when bumped.
 | `v_med_bed1` | 1 |  |
 | `v_med_cor_medstool` | 2 |  |
 | `v_med_flask` | 1 | yes |
+| `v_med_testtubes` | 1 | yes |
 | `v_res_binder` | 2 | yes |
 | `v_res_desktidy` | 1 | yes |
 | `v_res_filebox01` | 11 |  |
 | `v_res_mountedprojector` | 2 | yes |
 | `v_res_paperfolders` | 1 |  |
+| `v_res_smallplasticbox` | 1 |  |
 | `v_res_tre_sofa` | 1 |  |
 | `v_ret_gc_bin` | 2 |  |
 | `v_ret_gc_folder1` | 2 |  |
@@ -338,7 +338,6 @@ clutter that would otherwise move when bumped.
 | `v_serv_tc_bin1_` | 1 |  |
 | `v_serv_wetfloorsn` | 1 |  |
 | `vw_prop_vw_key_cabinet_01a` | 2 |  |
-| `xm3_prop_xm3_rack_vial_01a` | 1 |  |
 | `xm_prop_x17_bag_01a` | 8 |  |
 | `xm_prop_x17_bag_med_01a` | 1 |  |
 | `xm_prop_x17_coffee_jug` | 3 |  |

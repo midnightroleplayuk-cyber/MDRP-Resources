@@ -5,9 +5,9 @@ game 'gta5'
 this_is_a_map 'yes'
 author 'NO BS SCRIPTS'
 description 'Mission Plaza UK police station MLO (NO BS SCRIPTS)'
-version '1.2.2'
+version '1.2.3'
 lua54 'yes'
-dependency '/gameBuild:3258'
+dependency '/gameBuild:2545'
 dependency '/assetpacks'
 
 -- Map data (exterior and roof, then the interior) and the texture dictionary parents

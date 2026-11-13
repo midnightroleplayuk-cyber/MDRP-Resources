@@ -1,5 +1,20 @@
 # Changelog - Mission Plaza UK Police Station (NO BS SCRIPTS)
 
+## 1.2.3 (2026-11-11)
+
+- Runs on older servers: the minimum game build is now 2545 (The Contract), down from 3258. Servers on
+  3258 or newer need nothing new.
+- The few GTA props that came from newer game updates are replaced in the same spots by props from game build
+  2545 or older: the evidence store safe (now a black safe), the forensics test-tube rack, the storage
+  boxes in the armouries and the firearms kit room, the case files in the sergeants' office and CID, the training
+  room's PPE case (now a dark green flight case), the gym's exercise ball and the two intelligence office comms
+  racks (the same size, without lit LEDs). The garage barriers and the command desk are the identical older models.
+  Nothing else changed.
+- Updating from 1.2.2, 1.2.1 or 1.2.0: replace the folder as usual and set your settings again in the new
+  `config.lua` (no new settings). If you edited the branding dictionary, import your edited textures into the NEW
+  `stream/branding/nobs_ukpd_branding.ytd`. The edited GTA files in `stream/vanilla/` did not change. Updating from
+  1.1.x: back up all four 1.1.x settings files first, then follow `install/docs/INSTALL.md`, "Updating".
+
 ## 1.2.2 (2026-10-20)
 
 - The rank lettering on the three reserved parking bays in the police yard (COMMISSIONER, SUPERINTENDENT and INSPECTOR

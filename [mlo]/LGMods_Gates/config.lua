@@ -13,13 +13,12 @@ Config.Framework = {
 -- ─── ACCESS ──────────────────────────────────────────────────────────────────
 
 Config.Access = {
-    usePinCodes  = false,   -- true = keypad gates ask for a PIN before opening
+    usePinCodes  = true,   -- true = keypad gates ask for a PIN before opening
     requiredItem = nil,     -- "warrant_card" = player must carry this item to interact
     stationCodes = {        -- PIN code per station (shared by all gates in that station)
-        ["Alta"]            = "1234",
-        ["Sinners"]         = "1326",
-        ["Sinners_CarPark"] = "1326",
-	    ["ChadwellHeath"]   = "1234",
+        ["Sinners"]         = "1234",
+        ["Sinners_CarPark"] = "1234",
+        ["Opscomplex"] = "1234",
     },
 }
 
@@ -49,10 +48,10 @@ Config.Interaction = {
 -- ─── BEHAVIOUR ───────────────────────────────────────────────────────────────
 
 Config.Behaviour = {
-    autoClose = 15,   -- false = disabled | number = seconds before gate auto-closes
+    autoClose = 10,   -- false = disabled | number = seconds before gate auto-closes
 
     autoOpen = {
-        enabled  = false,             -- true = gates auto-open when a player enters their inside zone
+        enabled  = true,             -- true = gates auto-open when a player enters their inside zone
         radius   = 4.0,              -- detection radius in metres
         interval = 1500,             -- how often proximity is checked (milliseconds)
         jobCheck = false,            -- true = restrict to jobs listed below | false = any player
