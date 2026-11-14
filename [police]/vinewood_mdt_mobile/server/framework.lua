@@ -1,5 +1,5 @@
 -- Normalises Qbox / QBCore / ESX into one officer shape:
--- { source, citizenid, name, job, jobLabel, grade, gradeName, onDuty, callsign, isPolice }
+-- { source, citizenid, name, job, jobLabel, grade, gradeName, onDuty, callsign }
 
 Framework = {}
 
@@ -17,7 +17,7 @@ if fw == 'qbcore' then QBCore = exports['qb-core']:GetCoreObject() end
 if fw == 'esx' then ESX = exports.es_extended:getSharedObject() end
 
 local function isPoliceJob(name, jobType)
-    return Config.PoliceJobs[name] == true or jobType == 'leo'
+    return jobType == 'leo' or name == 'police'
 end
 
 local function fromQB(p)
@@ -67,29 +67,6 @@ function Framework.GetByCitizenId(cid)
     if fw == 'qbox' then return fromQB(exports.qbx_core:GetPlayerByCitizenId(cid)) end
     if fw == 'qbcore' then return fromQB(QBCore.Functions.GetPlayerByCitizenId(cid)) end
     if fw == 'esx' then return fromESX(ESX.GetPlayerFromIdentifier(cid)) end
-end
-
-function Framework.GetOnlinePolice()
-    local list = {}
-    for _, src in ipairs(GetPlayers()) do
-        local o = Framework.GetPlayer(tonumber(src))
-        if o and o.isPolice then list[#list + 1] = o end
-    end
-    return list
-end
-
--- Job of a character who is not in the city (used for read-only access checks)
-function Framework.GetOfflineJob(cid)
-    if fw == 'esx' then
-        local row = MySQL.single.await('SELECT job, job_grade FROM users WHERE identifier = ?', { cid })
-        if not row then return nil end
-        return { job = row.job, grade = tonumber(row.job_grade) or 0, isPolice = isPoliceJob(row.job, nil) }
-    end
-    local row = MySQL.single.await('SELECT job FROM players WHERE citizenid = ?', { cid })
-    if not row then return nil end
-    local job = Util.DecodeJson(row.job) or {}
-    local grade = job.grade or {}
-    return { job = job.name, grade = tonumber(grade.level) or 0, isPolice = isPoliceJob(job.name, job.type) }
 end
 
 if not fw or fw == 'auto' then

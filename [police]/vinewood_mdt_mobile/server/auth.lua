@@ -14,18 +14,13 @@ function Auth.Load()
     print(('[vinewood_mdt_mobile] %d linked phone(s) loaded'):format(#rows))
 end
 
-function Auth.CreateCode(officer)
-    -- One live code per officer
+function Auth.CreateCode(player)
     for code, p in pairs(pending) do
-        if p.citizenid == officer.citizenid then pending[code] = nil end
+        if p.citizenid == player.citizenid then pending[code] = nil end
     end
     local code
     repeat code = Util.RandomCode() until not pending[code]
-    pending[code] = {
-        citizenid = officer.citizenid,
-        name = officer.name,
-        expires = os.time() + Config.Pairing.codeLifetime,
-    }
+    pending[code] = { citizenid = player.citizenid, name = player.name, expires = os.time() + Config.Pairing.codeLifetime }
     return code
 end
 
@@ -45,7 +40,7 @@ function Auth.Pair(code, device, ip)
     local p = pending[code]
     if not p or p.expires < os.time() then
         pending[code] = nil
-        return nil, 'That code is wrong or has expired. Run /' .. Config.Commands.link .. ' in the city for a new one.'
+        return nil, 'That code is wrong or has expired. Type /' .. Config.Commands.link .. ' in the city for a new one.'
     end
     pending[code] = nil
 
@@ -56,9 +51,8 @@ function Auth.Pair(code, device, ip)
 
     local token = Util.RandomHex(64)
     tokens[token] = { citizenid = p.citizenid, name = p.name, device = device, lastUsed = os.time() }
-    MySQL.insert.await([[
-        INSERT INTO vinewood_mdt_mobile_tokens (token, citizenid, name, device) VALUES (?, ?, ?, ?)
-    ]], { token, p.citizenid, p.name, device })
+    MySQL.insert.await('INSERT INTO vinewood_mdt_mobile_tokens (token, citizenid, name, device) VALUES (?, ?, ?, ?)',
+        { token, p.citizenid, p.name, device })
     return token, p
 end
 
@@ -71,67 +65,41 @@ end
 function Auth.RevokeAll(cid)
     local n = 0
     for t, d in pairs(tokens) do
-        if d.citizenid == cid then tokens[t] = nil n = n + 1 end
+        if d.citizenid == cid then tokens[t] = nil; n = n + 1 end
     end
     MySQL.query('DELETE FROM vinewood_mdt_mobile_tokens WHERE citizenid = ?', { cid })
     return n
 end
 
---[[
-    Returns officer, mode ('live' | 'readonly') or nil, status, message
-]]
+--- Returns { src, citizenid, name, role, token } or nil, status, message
 function Auth.Authorize(header)
     local token = header and header:match('^Bearer%s+(%x+)$')
     local t = token and tokens[token]
-    if not t then return nil, 401, 'This phone is no longer linked. Pair it again.' end
+    if not t then return nil, 401, 'This phone is no longer linked. Link it again.' end
 
     if (os.time() - (t.lastUsed or 0)) > Config.TokenIdleDays * 86400 then
         Auth.Revoke(token)
-        return nil, 401, 'Signed out after being unused. Pair it again.'
+        return nil, 401, 'Signed out after not being used for a while. Link it again.'
     end
-
-    if not Util.RateLimit('req:' .. token, Config.Access.requestsPerMin) then
-        return nil, 429, 'Too many requests. Slow down for a moment.'
+    if not Util.RateLimit('req:' .. token, Config.RequestsPerMin) then
+        return nil, 429, 'Too many requests. Wait a moment.'
     end
-
-    -- Only write last_used occasionally
     if os.time() - (t.lastUsed or 0) > 300 then
         MySQL.update('UPDATE vinewood_mdt_mobile_tokens SET last_used = NOW() WHERE token = ?', { token })
     end
     t.lastUsed = os.time()
 
-    local online = Framework.GetByCitizenId(t.citizenid)
-    if online then
-        if not online.isPolice then
-            Auth.RevokeAll(t.citizenid)
-            return nil, 401, 'This character is no longer police. The phone has been unlinked.'
-        end
-        if Config.Access.requireOnDuty and not online.onDuty then
-            return nil, 403, 'Go on duty in the city to use the MDT.'
-        end
-        online.token = token
-        return online, 'live'
+    local player = Framework.GetByCitizenId(t.citizenid)
+    if not player then
+        return nil, 403, 'You need to be in the city to use the MDT.'
     end
-
-    local job = Framework.GetOfflineJob(t.citizenid)
-    if not job or not job.isPolice then
-        Auth.RevokeAll(t.citizenid)
-        return nil, 401, 'This character is no longer police. The phone has been unlinked.'
+    local role = exports[Config.MDTResource]:MobileAccess(player.source)
+    if not role then
+        return nil, 403, 'You don’t have MDT access right now. Check you’re on duty.'
     end
-
-    if not Config.Access.requireInCity then
-        return { citizenid = t.citizenid, name = t.name, grade = job.grade, isPolice = true, token = token }, 'readonly'
-    end
-
-    local ro = Config.Access.offlineReadOnly
-    if ro.enabled and job.grade >= ro.minGrade then
-        return { citizenid = t.citizenid, name = t.name, grade = job.grade, isPolice = true, token = token }, 'readonly'
-    end
-
-    return nil, 403, 'You need to be in the city to use the MDT.'
+    return { src = player.source, citizenid = t.citizenid, name = player.name, role = role, token = token }
 end
 
--- Expire old codes
 CreateThread(function()
     while true do
         Wait(30000)

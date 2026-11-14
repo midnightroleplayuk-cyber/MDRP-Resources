@@ -98,6 +98,28 @@ local function enrich(action, res)
     return res
 end
 
+-- Vinewood MDT Mobile: the phone app asks the officer's game for the same extras the tablet gets.
+lib.callback.register('vinewood-mdt:client:mobileEnrich', function(action, res)
+    local ok, out = pcall(enrich, action, res)
+    return ok and out or res
+end)
+
+lib.callback.register('vinewood-mdt:client:mobileLocation', function()
+    local c = GetEntityCoords(PlayerPedId())
+    return { location = streetAt({ x = c.x, y = c.y, z = c.z }), coords = { x = c.x, y = c.y, z = c.z } }
+end)
+
+RegisterNetEvent('vinewood-mdt:client:mobileWaypoint', function(x, y)
+    SetNewWaypoint(x + 0.0, y + 0.0)
+    lib.notify({ title = 'MDT', description = 'Waypoint set from your phone.', type = 'success' })
+end)
+
+RegisterNetEvent('vinewood-mdt:client:mobileRespond', function(data)
+    if GetResourceState('vinewood-dispatch') == 'started' and data and tonumber(data.id) then
+        exports['vinewood-dispatch']:Respond(tonumber(data.id), { coords = data.coords, unitSrc = data.unitSrc })
+    end
+end)
+
 RegisterNUICallback('request', function(body, cb)
     local action, data = body.action, body.data
     local res = lib.callback.await('vinewood-mdt:server:request', false, action, data)

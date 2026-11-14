@@ -3882,6 +3882,62 @@ exports('Request', function(src, action, data)
     return handleRequest(src, action, type(data) == 'table' and data or {})
 end)
 
+---------------------------------------------------------------------------
+-- Vinewood MDT Mobile (vinewood_mdt_mobile): the phone app runs this tablet's own UI,
+-- so every action goes through handleRequest with the same permissions, audit and webhooks.
+---------------------------------------------------------------------------
+-- Actions that need the officer at the tablet in-world (camera, inventory) stay in-game only.
+local MOBILE_BLOCKED = { mugshotStart = true, evidenceOpen = true }
+
+-- Ask the officer's game client for something, without hanging if they don't answer.
+local function mobileClient(src, name, timeoutMs, ...)
+    local p, done = promise.new(), false
+    lib.callback(name, src, function(r)
+        if not done then done = true; p:resolve(r) end
+    end, ...)
+    SetTimeout(timeoutMs, function()
+        if not done then done = true; p:resolve(nil) end
+    end)
+    return Citizen.Await(p)
+end
+
+--- Role the player gets on the MDT ('police' | 'cps' | 'defence'), or nil.
+exports('MobileAccess', function(src)
+    src = tonumber(src)
+    if not src or not GetPlayerName(src) then return nil end
+    local job = access(src)
+    return job and job.role or nil
+end)
+
+--- Run any tablet action for a player from the phone app. Returns what the tablet would get,
+--- including the client-side extras (vehicle model names, street names).
+exports('MobileRequest', function(src, action, data)
+    src = tonumber(src)
+    if not src or not GetPlayerName(src) then return { error = 'You need to be in the city to use the MDT.' } end
+    if type(action) ~= 'string' or not H[action] then return { error = 'Unknown request.' } end
+    if MOBILE_BLOCKED[action] then return { error = 'That can only be done on the MDT in the city.' } end
+    local res = handleRequest(src, action, type(data) == 'table' and data or {})
+    if type(res) == 'table' and not res.error then
+        res = mobileClient(src, 'vinewood-mdt:client:mobileEnrich', 4000, action, res) or res
+    end
+    return res
+end)
+
+--- Where the player is standing (used by the app when creating incidents).
+exports('MobileLocation', function(src)
+    return mobileClient(tonumber(src), 'vinewood-mdt:client:mobileLocation', 3000) or {}
+end)
+
+--- Set a waypoint in the player's game from the app.
+exports('MobileWaypoint', function(src, x, y)
+    if tonumber(x) and tonumber(y) then TriggerClientEvent('vinewood-mdt:client:mobileWaypoint', src, tonumber(x), tonumber(y)) end
+end)
+
+--- Attach the player to a vinewood-dispatch call from the app.
+exports('MobileRespond', function(src, data)
+    if type(data) == 'table' and tonumber(data.id) then TriggerClientEvent('vinewood-mdt:client:mobileRespond', src, data) end
+end)
+
 --- The lists the MDT's own forms use, so other resources can build matching forms.
 exports('GetFormOptions', function()
     return {

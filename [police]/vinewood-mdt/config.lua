@@ -1,7 +1,7 @@
 Config = {}
 
 -- 'auto', 'qbx', 'qb' or 'esx'
-Config.Framework = 'qbx'
+Config.Framework = 'auto'
 
 -- Force name shown on the MDT header and bail notices.
 Config.ForceName = 'Midnight Police Constabulary'
@@ -115,8 +115,8 @@ Config.Interviews = {
 Config.CPS = {
     enabled = true,
     -- Jobs that act as CPS lawyers. job = minimum grade. They only see the CPS section and interviews.
-    jobs = { cps = 0, police = 4 },
-    RequireOnDuty = true,
+    jobs = { cps = 0 },
+    RequireOnDuty = false,
     -- Police can only NFA a case themselves before it is sent to the CPS.
     -- true lets police NFA a case that is still awaiting a CPS decision (it is withdrawn).
     PoliceCanWithdraw = true,
@@ -137,7 +137,10 @@ Config.CPS = {
 -- Custody and bail
 ---------------------------------------------------------------------------
 Config.Stations = {
-    'Vinewood Police Station',
+    'Mission Row Police Station',
+    'Vespucci Police Station',
+    'Davis Police Station',
+    'Sandy Shores Police Station',
     'Paleto Bay Police Station',
 }
 
@@ -253,7 +256,7 @@ Config.Offences = {
 Config.Defence = {
     enabled = true,
     jobs = { lawyer = 0, solicitor = 0 },
-    RequireOnDuty = true,
+    RequireOnDuty = false,
     -- What the solicitor sees on top of the officer's written disclosure.
     ShowOffences = true,      -- offences the client was arrested for
     ShowNarrative = false,    -- the officer's full circumstances of arrest (usually withheld pre-interview)
@@ -298,7 +301,7 @@ Config.ANPR = {
     -- Who can run in-car ANPR. job = minimum grade.
     Jobs = { police = 0, sheriff = 0 },
     -- Vehicles fitted with ANPR (spawn names). Empty table = every emergency-class vehicle.
-    Vehicles = { 'sr6pd', 'sr3pd', 'sen5tourpd', 'strcoupepd', 'rhinea19xpd', 'tailstmk', 'taurionpd', 'clubrpd' },
+    Vehicles = { 'police', 'police2', 'police3', 'police4', 'policeb', 'fbi2' },
     -- Turn on automatically when an officer gets into a fitted vehicle. /anpr toggles it.
     AutoStart = true,
     Command = 'anpr',
@@ -308,7 +311,7 @@ Config.ANPR = {
     -- In-game setup: fit vehicles with ANPR and place roadside cameras.
     -- Allowed for police at ManageGrade or above, or anyone with the ace 'vinewood-mdt.anpradmin'.
     AdminCommand = 'anpradmin',
-    ManageGrade = 10,
+    ManageGrade = 3,
     CameraProp = 'prop_cctv_pole_02',   -- pole spawned at cameras placed in game. false = no prop -- drag the ANPR strip and alert to where you want them (saved per player)
 
     Range = 30.0,                 -- metres in front of and behind the car
@@ -383,7 +386,7 @@ Config.Audit = {
         'Warrant / wanted check', 'Intelligence development', 'Missing person', 'Victim / witness contact', 'Other',
     },
     -- Minimum grade to read the audit log and a record's access history.
-    ViewGrade = 9,
+    ViewGrade = 3,
     -- How long log entries are kept (days). 0 = forever.
     KeepDays = 90,
 }
@@ -418,8 +421,8 @@ Config.Custody = {
 Config.Mugshot = {
     enabled = true,
     MaxDistance = 4.0,
-    Encoding = 'png',
-    Quality = 0.90,              -- lower = smaller upload
+    Encoding = 'jpg',
+    Quality = 0.75,              -- lower = smaller upload
     Camera = { Distance = 0.75, HeightOffset = 0.02, Fov = 28.0 },
 }
 
@@ -582,7 +585,7 @@ Config.Evidence = {
     enabled = true,              -- switches itself off if no supported inventory is running
     -- 'auto', 'ox_inventory', 'qb-inventory' (2.x), 'qs-inventory', 'ps-inventory', 'lj-inventory',
     -- 'qb-inventory-old' (before 2.0), or your own from server/inventory.lua
-    Inventory = 'ox_inventory',
+    Inventory = 'auto',
     Slots = 30,
     MaxWeight = 100000,
     SeizeDistance = 4.0,         -- officer must be this close to the suspect to seize
@@ -618,7 +621,7 @@ Config.WarrantTypes = {
     { id = 'fa46',    label = 'Search warrant (s.46 Firearms Act)' },
 }
 -- Minimum grade to record a warrant on the system.
-Config.WarrantGrade = 9
+Config.WarrantGrade = 0
 
 -- Markers that put the HIGH RISK badge on a person.
 Config.HighRiskMarkers = { Violent = true, Weapons = true, Escaper = true, Wanted = true }

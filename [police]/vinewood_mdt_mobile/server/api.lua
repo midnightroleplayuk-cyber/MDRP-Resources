@@ -1,33 +1,36 @@
 Api = { routes = {} }
 
-local VERSION = GetResourceMetadata(GetCurrentResourceName(), 'version', 0) or '1.0.0'
+local VERSION = GetResourceMetadata(GetCurrentResourceName(), 'version', 0) or '2.0.0'
+local MDT = Config.MDTResource
 
 local function forceName()
     return Config.ForceName or GetConvar('sv_projectName', GetConvar('sv_hostname', 'Police'))
 end
 
-local function audit(officer, action, detail)
-    if not Config.Audit then return end
-    MySQL.insert('INSERT INTO vinewood_mdt_mobile_audit (citizenid, name, action, detail) VALUES (?, ?, ?, ?)',
-        { officer.citizenid, officer.name, action, detail and Util.Clamp(detail, 200) or nil })
-end
-
-local function officerOut(o, mode)
-    return {
-        citizenid = o.citizenid, name = o.name, callsign = o.callsign,
-        grade = o.grade, gradeName = o.gradeName, job = o.jobLabel or o.job,
-        mode = mode,
-    }
-end
+local function mdt() return exports[MDT] end
 
 local function route(method, pattern, opts, fn)
-    Api.routes[#Api.routes + 1] = { method = method, pattern = '^' .. pattern .. '$', auth = opts.auth, write = opts.write, fn = fn }
+    Api.routes[#Api.routes + 1] = { method = method, pattern = '^' .. pattern .. '$', auth = opts.auth, fn = fn }
+end
+
+-- The MDT's own web files, sent to the app so phones always run the same UI version as the server
+local uiCache
+local function loadUi()
+    local version = GetResourceMetadata(MDT, 'version', 0) or '0'
+    if uiCache and uiCache.version == version then return uiCache end
+    local html = LoadResourceFile(MDT, 'web/index.html')
+    local css  = LoadResourceFile(MDT, 'web/style.css')
+    local js   = LoadResourceFile(MDT, 'web/app.js')
+    if not html or not css or not js then return nil end
+    uiCache = { version = version, html = html, css = css, js = js }
+    return uiCache
 end
 
 -- Public -----------------------------------------------------------------
 
 route('GET', '/api/ping', {}, function()
-    return 200, { app = 'vinewood_mdt_mobile', version = VERSION, force = forceName() }
+    return 200, { app = 'vinewood_mdt_mobile', version = VERSION, force = forceName(),
+        mdt = GetResourceState(MDT) == 'started' }
 end)
 
 route('POST', '/api/pair', {}, function(ctx)
@@ -40,94 +43,74 @@ route('POST', '/api/pair', {}, function(ctx)
     return 200, { token = token, name = p.name, force = forceName() }
 end)
 
+-- MDT images (crest etc.) referenced as nui:// paths. Images only.
+local IMAGE_TYPES = { png = 'image/png', jpg = 'image/jpeg', jpeg = 'image/jpeg', webp = 'image/webp', svg = 'image/svg+xml', gif = 'image/gif' }
+route('GET', '/asset', {}, function(ctx)
+    local path = tostring(ctx.query.path or '')
+    local ext = path:match('%.(%w+)$')
+    if path:find('%.%.') or not ext or not IMAGE_TYPES[ext:lower()] then return 404, { error = 'Not found' } end
+    local data = LoadResourceFile(MDT, path)
+    if not data then return 404, { error = 'Not found' } end
+    return 200, data, IMAGE_TYPES[ext:lower()]
+end)
+
 -- Signed in --------------------------------------------------------------
 
 route('GET', '/api/me', { auth = true }, function(ctx)
-    return 200, officerOut(ctx.officer, ctx.mode)
+    return 200, { name = ctx.user.name, role = ctx.user.role, force = forceName() }
 end)
 
-route('POST', '/api/unpair', { auth = true }, function(ctx)
-    Auth.Revoke(ctx.officer.token)
+-- Works even when out of the city, so a phone can always sign itself out
+route('POST', '/api/unpair', {}, function(ctx)
+    local h = ctx.headers['Authorization'] or ctx.headers['authorization']
+    local token = h and h:match('^Bearer%s+(%x+)$')
+    if token then Auth.Revoke(token) end
     return 200, { ok = true }
 end)
 
-route('GET', '/api/people', { auth = true }, function(ctx)
-    local q = Util.Clamp(ctx.query.q, 60)
-    if #q < 2 then return 400, { error = 'Type at least 2 characters.' } end
-    audit(ctx.officer, 'person_search', q)
-    return 200, { results = Adapter.SearchPeople(q) }
+route('GET', '/api/ui', { auth = true }, function(ctx)
+    local ui = loadUi()
+    if not ui then return 503, { error = 'The MDT files could not be loaded. Is ' .. MDT .. ' started?' } end
+    if ctx.query.v == ui.version then return 200, { version = ui.version, same = true } end
+    return 200, ui
 end)
 
-route('GET', '/api/people/([%w%-_:]+)', { auth = true }, function(ctx, cid)
-    local p = Adapter.GetProfile(cid)
-    if not p then return 404, { error = 'No record found for that person.' } end
-    audit(ctx.officer, 'person_view', cid)
-    return 200, p
-end)
-
-route('GET', '/api/vehicles', { auth = true }, function(ctx)
-    local plate = Util.Clamp(ctx.query.plate, 10):gsub('%s', ''):upper()
-    if #plate < 2 then return 400, { error = 'Type at least 2 characters of the plate.' } end
-    audit(ctx.officer, 'vehicle_search', plate)
-    return 200, { results = Adapter.SearchVehicle(plate) }
-end)
-
-route('GET', '/api/warrants', { auth = true }, function()
-    return 200, { results = Adapter.GetWarrants() }
-end)
-
-route('GET', '/api/bolos', { auth = true }, function()
-    return 200, { results = Adapter.GetBolos() }
-end)
-
-route('POST', '/api/bolos', { auth = true, write = true }, function(ctx)
+-- Every MDT action: same permission checks, audit and webhooks as the tablet
+route('POST', '/api/mdt', { auth = true }, function(ctx)
     local b = ctx.body or {}
-    local data = {
-        kind    = b.kind == 'vehicle' and 'vehicle' or 'person',
-        title   = Util.Clamp(b.title, 80),
-        details = Util.Clamp(b.details, 1000),
-        plate   = b.kind == 'vehicle' and Util.Clamp(b.plate, 10):upper() or nil,
-    }
-    if #data.title < 3 then return 400, { error = 'Give the BOLO a short title.' } end
-    if data.kind == 'vehicle' and (not data.plate or #data.plate < 2) then
-        return 400, { error = 'Add the plate for a vehicle BOLO.' }
-    end
-    local bolo, err = Adapter.CreateBolo(data, ctx.officer)
-    if not bolo then return 500, { error = err or 'The BOLO could not be saved.' } end
-    audit(ctx.officer, 'bolo_create', data.title)
-    TriggerEvent('vinewood_mdt_mobile:boloCreated', bolo, ctx.officer)
-    return 200, bolo
+    if type(b.action) ~= 'string' then return 400, { error = 'Unknown request.' } end
+    return 200, mdt():MobileRequest(ctx.user.src, b.action, type(b.data) == 'table' and b.data or {}) or {}
 end)
 
-route('GET', '/api/units', { auth = true }, function()
-    local out = {}
-    for _, o in ipairs(Framework.GetOnlinePolice()) do
-        out[#out + 1] = { name = o.name, callsign = o.callsign, gradeName = o.gradeName, onDuty = o.onDuty }
-    end
-    table.sort(out, function(a, b)
-        if a.onDuty ~= b.onDuty then return a.onDuty end
-        return (a.callsign or a.name) < (b.callsign or b.name)
-    end)
-    return 200, { results = out }
+route('POST', '/api/location', { auth = true }, function(ctx)
+    return 200, mdt():MobileLocation(ctx.user.src) or {}
+end)
+
+route('POST', '/api/waypoint', { auth = true }, function(ctx)
+    local b = ctx.body or {}
+    mdt():MobileWaypoint(ctx.user.src, b.x, b.y)
+    return 200, { ok = true }
+end)
+
+route('POST', '/api/respond', { auth = true }, function(ctx)
+    mdt():MobileRespond(ctx.user.src, ctx.body or {})
+    return 200, { ok = true }
 end)
 
 -- Dispatcher -------------------------------------------------------------
 
 function Api.Handle(ctx)
     for _, r in ipairs(Api.routes) do
-        if r.method == ctx.method then
-            local caps = { ctx.path:match(r.pattern) }
-            if #caps > 0 or ctx.path:match(r.pattern) then
-                if r.auth then
-                    local officer, mode, msg = Auth.Authorize(ctx.headers['Authorization'] or ctx.headers['authorization'])
-                    if not officer then return mode, { error = msg } end
-                    if r.write and mode ~= 'live' then
-                        return 403, { error = 'Read-only access. Be in the city and on duty to make changes.' }
-                    end
-                    ctx.officer, ctx.mode = officer, mode
+        if r.method == ctx.method and ctx.path:match(r.pattern) then
+            if r.auth then
+                if GetResourceState(MDT) ~= 'started' then
+                    return 503, { error = 'The MDT isn’t running on the server right now.' }
                 end
-                return r.fn(ctx, table.unpack(caps))
+                local user, status, msg = Auth.Authorize(ctx.headers['Authorization'] or ctx.headers['authorization'])
+                if not user then return status, { error = msg } end
+                ctx.user = user
             end
+            return r.fn(ctx)
         end
     end
     return 404, { error = 'Not found' }

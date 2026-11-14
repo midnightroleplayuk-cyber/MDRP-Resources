@@ -4,11 +4,12 @@ local CORS = {
     ['Access-Control-Allow-Methods'] = 'GET, POST, OPTIONS',
 }
 
-local function send(res, status, data)
-    local headers = { ['Content-Type'] = 'application/json' }
+local function send(res, status, data, contentType)
+    local headers = { ['Content-Type'] = contentType or 'application/json' }
     for k, v in pairs(CORS) do headers[k] = v end
+    if contentType then headers['Cache-Control'] = 'public, max-age=86400' end
     res.writeHead(status, headers)
-    res.send(json.encode(data or {}))
+    res.send(contentType and data or json.encode(data or {}))
 end
 
 local function handle(req, res, rawBody)
@@ -22,12 +23,12 @@ local function handle(req, res, rawBody)
             ip      = Util.IpOf(req.address),
             body    = Util.DecodeJson(rawBody),
         }
-        local ok, status, data = pcall(Api.Handle, ctx)
+        local ok, status, data, contentType = pcall(Api.Handle, ctx)
         if not ok then
             print(('^1[vinewood_mdt_mobile] %s %s failed: %s^0'):format(ctx.method, ctx.path, status))
             return send(res, 500, { error = 'Server error. Check the server console.' })
         end
-        send(res, status, data)
+        send(res, status, data, contentType)
     end)
 end
 
@@ -43,8 +44,6 @@ SetHttpHandler(function(req, res)
     end
 end)
 
--- Database ---------------------------------------------------------------
-
 MySQL.ready(function()
     MySQL.query.await([[
         CREATE TABLE IF NOT EXISTS vinewood_mdt_mobile_tokens (
@@ -57,57 +56,35 @@ MySQL.ready(function()
             INDEX (citizenid)
         )
     ]])
-    MySQL.query.await([[
-        CREATE TABLE IF NOT EXISTS vinewood_mdt_mobile_bolos (
-            id          INT AUTO_INCREMENT PRIMARY KEY,
-            kind        VARCHAR(10) NOT NULL DEFAULT 'person',
-            title       VARCHAR(80) NOT NULL,
-            details     TEXT,
-            plate       VARCHAR(10),
-            created_by  VARCHAR(120),
-            created_cid VARCHAR(64),
-            active      TINYINT(1) NOT NULL DEFAULT 1,
-            created_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        )
-    ]])
-    MySQL.query.await([[
-        CREATE TABLE IF NOT EXISTS vinewood_mdt_mobile_audit (
-            id         INT AUTO_INCREMENT PRIMARY KEY,
-            citizenid  VARCHAR(64),
-            name       VARCHAR(100),
-            action     VARCHAR(32),
-            detail     VARCHAR(200),
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            INDEX (citizenid)
-        )
-    ]])
     Auth.Load()
     print(('[vinewood_mdt_mobile] API ready at http://<server-ip>:%s/%s/api'):format(
         GetConvar('netPort', '30120'), GetCurrentResourceName()))
 end)
 
--- Commands ---------------------------------------------------------------
-
 RegisterCommand(Config.Commands.link, function(src)
     if src == 0 then return end
-    local o = Framework.GetPlayer(src)
-    if not o or not o.isPolice then
-        return Util.Notify(src, 'Only police can link the MDT app.', 'error')
+    local player = Framework.GetPlayer(src)
+    if not player then return end
+    if GetResourceState(Config.MDTResource) ~= 'started' then
+        return Util.Notify(src, 'The MDT isn’t running on this server.', 'error')
     end
-    local code = Auth.CreateCode(o)
+    if not exports[Config.MDTResource]:MobileAccess(src) then
+        return Util.Notify(src, 'You need MDT access to link the app. Check you’re on duty.', 'error')
+    end
+    local code = Auth.CreateCode(player)
     Util.Notify(src, ('Your pairing code is %s. Enter it in the MDT app within %d seconds.')
         :format(code, Config.Pairing.codeLifetime), 'success')
 end, false)
 
 RegisterCommand(Config.Commands.unlink, function(src)
     if src == 0 then return end
-    local o = Framework.GetPlayer(src)
-    if not o then return end
-    local n = Auth.RevokeAll(o.citizenid)
+    local player = Framework.GetPlayer(src)
+    if not player then return end
+    local n = Auth.RevokeAll(player.citizenid)
     Util.Notify(src, n > 0 and ('Signed out %d phone(s).'):format(n) or 'No phones are linked to this character.', 'inform')
 end, false)
 
--- Server owners can sign anyone out from the console: mdtmobile_revoke <citizenid>
+-- Console: mdtmobile_revoke <citizenid>
 RegisterCommand('mdtmobile_revoke', function(src, args)
     if src ~= 0 or not args[1] then return end
     print(('[vinewood_mdt_mobile] Revoked %d phone(s) for %s'):format(Auth.RevokeAll(args[1]), args[1]))
