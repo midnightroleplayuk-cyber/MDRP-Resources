@@ -5,7 +5,7 @@ this_is_a_map 'yes'
 
 authors 'LGMods'
 description 'Bridstow Courts Int + Exterior'
-version '4.0.0'
+version '4.0.3'
 
 data_file 'SCALEFORM_DLC_FILE' 'stream/minimap/int915664316.gfx'
 data_file 'SCALEFORM_DLC_FILE' 'stream/minimap/int2118847047.gfx'
