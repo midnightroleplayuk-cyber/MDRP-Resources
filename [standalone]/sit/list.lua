@@ -725,7 +725,7 @@ local Models = {
         lay = { type = 'bed', teleportIn = true, seats = {[1] = vector4(0.0, 0.0, 0.5, 180.0)} }
     }, -- v_med_bed2
     [`rtx_paleto_hospital_djn_sempre_interior_surgery`] = {
-        lay = { type = 'bed', teleportIn = true, seats = {[1] = vector4(0.0, 0.0, -0.95, 160.0)} }
+        lay = { type = 'bed', teleportIn = true, seats = {[1] = vector4(0.0, 0.0, -0.95, 0.0)} }
     }, -- Paleto Surgery Bed
     [-1091386327] = {
         sit = { type = 'chair2', teleportIn = true, seats = {[1] = vector4(-0.25, 0.0, 0.2, 90.0), [2] = vector4(0.25, 0.0, 0.2, 270.0)} },
