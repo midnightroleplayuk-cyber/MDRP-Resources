@@ -5728,8 +5728,27 @@ return {
     close = true,
     description = 'Random USB.',
 },
-
-
+['aluminium_filings'] = {
+    label = 'Aluminium Filings',
+    weight = 50,
+    stack = false,
+    close = true,
+    description = 'Used to craft Thermite.',
+},
+['rust_filings'] = {
+    label = 'Rust Filings',
+    weight = 50,
+    stack = false,
+    close = true,
+    description = 'Used to craft Thermite.',
+},
+['wood'] = {
+    label = 'Wood',
+    weight = 50,
+    stack = false,
+    close = true,
+    description = 'Used to craft various items.',
+},
 
 -- VINEWOOD PD JOB
 ['handcuffs'] = {
