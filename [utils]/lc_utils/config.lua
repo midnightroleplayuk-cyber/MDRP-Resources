@@ -1,6 +1,6 @@
 Config = Config or {}
 
-Config.framework = "QBCore"						-- [ESX|QBCore] Your framework
+Config.framework = "QBCore"						-- [ESX|QBCore|Qbox|Standalone] Your framework
 
 Config.ESX_settings = {							-- (ESX Only) ESX settings
 	['is_updated'] = true,						-- Set to false if your ESX uses the getSharedObject event (usually for ESX versions older than 1.9.0)
@@ -11,20 +11,20 @@ Config.ESX_settings = {							-- (ESX Only) ESX settings
 Config.locale = "en"							-- Set the file language [en/br/de/es/fr/no/fr/zh-cn/ja]
 
 Config.format = {
-	['currency'] = 'GBP',						-- This is the currency format, so that your currency symbol appears correctly [Examples: BRL, USD, EUR] (Currency codes: https://taxsummaries.pwc.com/glossary/currency-codes)
-	['location'] = 'en-GB'						-- This is the location of your country, to format the decimal places according to your standard [Examples: pt-BR, en-US] (Language codes: http://www.lingoes.net/en/translator/langcode.htm)
+	['currency'] = 'USD',						-- This is the currency format, so that your currency symbol appears correctly [Examples: BRL, USD, EUR] (Currency codes: https://taxsummaries.pwc.com/glossary/currency-codes)
+	['location'] = 'en-US'						-- This is the location of your country, to format the decimal places according to your standard [Examples: pt-BR, en-US] (Language codes: http://www.lingoes.net/en/translator/langcode.htm)
 }
 
 -- Here, you can easily switch between the available script compatibilities.
 -- The "default" option will use the framework's default script
 -- ATTENTION: If you set it to "other," it's necessary to configure the script inside the custom_scripts folder in the respective file. See: https://docs.lixeirocharmoso.com/utils/adding_your_exports
 Config.custom_scripts_compatibility = {
-	['fuel'] = "lc_fuel",						-- [lc_fuel|ox_fuel|ti_fuel|ps-fuel|sna-fuel|cdn-fuel|LegacyFuel|okokGasStation|default|other] Fuel script Compatibility
-	['inventory'] = "ox_inventory",					-- [ox_inventory|qs-inventory|ps-inventory|tgiann-inventory|default|other] Inventory script Compatibility
-	['keys'] = "Renewed",						-- [qs-vehiclekeys|cd_garage|jaksam|wasabi_carlock|MrNewbVehicleKeys|tgiann-hotwire|Renewed|okokGarage|default|other] Keys script Compatibility
+	['fuel'] = "default",						-- [lc_fuel|ox_fuel|ti_fuel|ps-fuel|sna-fuel|cdn-fuel|LegacyFuel|okokGasStation|default|other] Fuel script Compatibility
+	['inventory'] = "default",					-- [ox_inventory|qs-inventory|ps-inventory|tgiann-inventory|default|other] Inventory script Compatibility
+	['keys'] = "default",						-- [qs-vehiclekeys|cd_garage|jaksam|wasabi_carlock|MrNewbVehicleKeys|tgiann-hotwire|Renewed|okokGarage|default|other] Keys script Compatibility
 	['mdt'] = "default",						-- [ps-mdt|redutzu-mdt|lb-tablet|default|other] MDT script Compatibility (to log weapon serial)
-	['target'] = "ox_target",					-- [qb-target|ox_target|disabled|other] Target script Compatibility (disabled will use markers)
-	['notification'] = "ox_lib",				-- [okokNotify|qbcore|ox_lib|default|other] Notification script Compatibility
+	['target'] = "disabled",					-- [qb-target|ox_target|disabled|other] Target script Compatibility (disabled will use markers)
+	['notification'] = "default",				-- [okokNotify|qbcore|qbox|ox_lib|default|other] Notification script Compatibility
 	['progress_bar'] = "default",				-- [default|other] Progress Bar script Compatibility
 }
 

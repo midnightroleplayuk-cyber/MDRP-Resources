@@ -11,14 +11,19 @@ client_scripts {
 	"custom_scripts/client/*.lua",
 	"frameworks/qbcore/client.lua",
 	"frameworks/esx/client.lua",
+	"frameworks/qbox/client.lua",
+	"frameworks/standalone/client.lua",
 }
 
 server_scripts {
 	"@mysql-async/lib/MySQL.lua",
 	"functions/server/*.lua",
+	"functions/server/*.js",
 	"custom_scripts/server/*.lua",
 	"frameworks/qbcore/server.lua",
 	"frameworks/esx/server.lua",
+	"frameworks/qbox/server.lua",
+	"frameworks/standalone/server.lua",
 }
 
 shared_scripts {
