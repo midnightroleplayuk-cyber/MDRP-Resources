@@ -303,7 +303,7 @@ Config.Nui = {
         -- "https://cfx-nui-core_inventory/html/img",                    -- core_inventory
         -- "https://cfx-nui-inventory/web/dist/assets/items",            -- inventory
         -- Standard inventories
-        -- "https://cfx-nui-ox_inventory/web/images",                    -- ox_inventory
+        "https://cfx-nui-ox_inventory/web/images",                    -- ox_inventory
         -- "https://cfx-nui-qb-inventory/html/images",                   -- qb-inventory
         -- "https://cfx-nui-esx_addoninventory/web/images",              -- esx_addoninventory
         "https://cdn.sky-systems.net/items",
@@ -318,7 +318,7 @@ Config.Nui = {
         -- "https://cfx-nui-core_inventory/html/img",                    -- core_inventory
         -- "https://cfx-nui-inventory/web/dist/assets/items",            -- inventory
         -- Standard inventories
-        -- "https://cfx-nui-ox_inventory/web/images",                    -- ox_inventory
+        "https://cfx-nui-ox_inventory/web/images",                    -- ox_inventory
         -- "https://cfx-nui-qb-inventory/html/images",                   -- qb-inventory
         -- "https://cfx-nui-esx_addoninventory/web/images",              -- esx_addoninventory
         "https://cdn.sky-systems.net/weapons",
@@ -1123,7 +1123,7 @@ Config.Chat = {
 }
 
 Config.DarkChat = {
-    enabled = true,
+    enabled = false,
     allowedGroups = { "crime", "police" },
     policeRequiredResource = "sky_crimesystem",
     usernameMinLength = 3,
@@ -1131,7 +1131,7 @@ Config.DarkChat = {
 }
 
 Config.HeliCam = {
-    enabled = true,
+    enabled = false,
     requireOnDuty = false,
     allowedJobs = { "police", "ambulance" },
     models = { "polmav" },
@@ -1248,7 +1248,7 @@ Config.JobPlayerInteractions = {
 }
 
 Config.PoliceCuffs = {
-    enabled = true,
+    enabled = false,
     requireItem = true,
     item = "handcuffs",
     consumeItem = true,
@@ -1785,7 +1785,7 @@ Config.Interactions = {
 }
 
 Config.StationBlip = {
-    enabled = true,
+    enabled = false,
     name = "Station",
     useStationName = true,
     useBlipPrefix = true,
@@ -1815,7 +1815,7 @@ Config.Cloakroom = {
     -- illenium: force illenium-appearance outfit menu
     -- custom: force the custom hook below
     -- disabled: disable wardrobe interactions
-    backend = "auto",
+    backend = "op-clothing",
 
     custom = {
         -- Optional resource name. If set, the wardrobe is only available when this resource is started.
@@ -2022,7 +2022,7 @@ Config.Storage = {
 
 -- Shared identity-card presentation. Editable artwork and styles: config/documents/.
 Config.PlayerIdentityCard = {
-    enabled = true, -- Sky identity, license and service document actions/exports.
+    enabled = false, -- Sky identity, license and service document actions/exports.
     serviceEnabled = true, -- Disable only employment service cards while keeping identity/licenses.
     position = "right", -- left, center, right, or custom
     x = 75, -- Card centre as a percentage of screen width; used for custom placement.
@@ -2119,7 +2119,7 @@ Config.JobRadial = {
 }
 
 Config.Panic = {
-    enabled = true,
+    enabled = false,
     -- Exact job keys allowed to use/see panic. Add custom service jobs explicitly; nil or {} denies access.
     allowedJobs = { "police", "ambulance", "fire" },
     -- Optional per-sender visibility groups. The key is the job that triggers
