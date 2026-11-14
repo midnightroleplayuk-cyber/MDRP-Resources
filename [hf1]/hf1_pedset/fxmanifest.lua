@@ -2,10 +2,13 @@ fx_version 'cerulean'
 game 'gta5'
 lua54 'yes'
 
-author 'HF1'
-description 'Admin-only /pedchange - OP Clothing'
-version '1.0.0'
+description 'QBox admin ped set'
 
-server_scripts { 'server.lua' }
+shared_script '@ox_lib/init.lua'
+client_script 'client.lua'
+server_script 'server.lua'
 
-dependencies { 'op-clothing' }
+dependencies {
+    'ox_lib',
+    'op-clothing'
+}

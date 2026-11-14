@@ -1,19 +1,24 @@
-# Admin Ped Change (QBox / op-clothing)
+# admin-pedchange (QBox / op-clothing)
 
-## Installation
-1. Put `admin-pedchange` in your server's resources folder.
-2. Make sure `op-clothing` starts first.
-3. Add `ensure admin-pedchange` after `ensure op-clothing` in server.cfg.
-4. Make sure your administrators inherit the ACE principal `group.admin`.
-   Example (replace with your actual license):
-   `add_principal identifier.license:YOUR_LICENSE_HERE group.admin`
+## Install
+1. Place the `admin-pedchange` folder in your server's resources directory.
+2. Add this line to `server.cfg` (outside of Lua files):
 
-## Usage
-An admin types `/pedchange 12` to open the character creator on player 12's screen.
-Model changes are enabled, and op-clothing custom ped permission is granted to the target before opening.
+   add_ace group.admin admin-pedchange.use allow
+
+3. Ensure your QBox admins are actually assigned to the `group.admin` ACE principal (e.g. QBox's existing ACE setup). This script does not assign admins.
+4. Start resources in this order:
+
+   ensure ox_lib
+   ensure op-clothing
+   ensure admin-pedchange
+
+5. Restart the server and run `/pedchange 12` (replace 12 with an online server ID).
 
 ## Notes
-- QBox-compatible: uses FiveM ACE group permissions and op-clothing server exports.
-- This grants custom ped permission through op-clothing, which may remain after the editor closes. The documentation does not specify its lifetime. If you want temporary access, a separate cleanup strategy must be tested against your version of op-clothing.
-- Requires custom ped models to be installed/configured in op-clothing.
-- The command uses the built-in chat notification event. If your chat resource is disabled, notifications may not display; the command still runs.
+- Only players with the ACE permission `admin-pedchange.use` can use this command. The supplied ACE line grants it to `group.admin`.
+- The target receives custom ped permission, then the op-clothing creator opens with `allowModelChange = true`.
+- Custom ped permission is NOT automatically revoked after the menu closes. This is intentional for testing; remove manually with the documented `RevokeCustomPedPermission(target)` export if needed.
+- A successful export call means it was requested, not that the target client necessarily displayed the menu.
+- If it fails, check the **server console** for `[admin-pedchange]` lines. The F8 console is not where server-side Lua errors are printed.
+- `chat:addMessage` is not used anywhere in this version.
