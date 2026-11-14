@@ -328,7 +328,10 @@ Config.Helicopters = {
         offset = vector3(0.0, 3.45, -0.65)
     },
     [`hems`] = {
-        offset = vector3(0.0, 3.45, -0.65)
+        offset = vector3(0.0, 3.45, -0.65),
+        labels = { -- Liveries
+            [0] = "Midnight Health Service - HEMS", -- 0 is default
+        }
     },
     -- Higgins Helitours Maverick
     [`maverick2`] = {
