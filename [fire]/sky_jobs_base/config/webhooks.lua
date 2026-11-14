@@ -14,7 +14,7 @@ Webhooks = {
         }
     },
     fivemanage = {
-        apiKey = "", -- Example: "YOUR_MEDIA_API_KEY"
+        apiKey = "SwMM3lrxnKw7NLKKc6nuqFudyV1jmr8L", -- Example: "YOUR_MEDIA_API_KEY"
         baseUrl = "https://api.fivemanage.com/api/v3/file",
         timeoutMs = 10000
     },
