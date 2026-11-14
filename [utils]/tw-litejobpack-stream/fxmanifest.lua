@@ -29,7 +29,7 @@ files {
     'metas/utillitruck/carvariations.meta',
 
     'metas/forklift/vehicles.meta',
-    'metas/forklift/carcols.meta',
+   -- 'metas/forklift/carcols.meta',
     'metas/forklift/carvariations.meta',
 
     -- Baskul
