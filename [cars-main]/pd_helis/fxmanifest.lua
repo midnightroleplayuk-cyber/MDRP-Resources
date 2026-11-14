@@ -7,9 +7,9 @@ version '1.1.0'
 
 files {
 
-	'data/**/handling.meta',
+--	'data/**/handling.meta',
 	'data/**/vehicles.meta',
-	'data/**/carcols.meta',
+--	'data/**/carcols.meta',
 	'data/**/carvariations.meta',
 
 

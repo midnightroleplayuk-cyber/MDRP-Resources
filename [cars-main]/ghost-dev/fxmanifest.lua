@@ -6,7 +6,7 @@ author 'GXD'
 description 'Vehicles'
 
 files {
-  'data/**/carcols.meta',
+ -- 'data/**/carcols.meta',
   'data/**/handling.meta',
   'data/**/vehicles.meta',
   'data/**/carvariations.meta'
