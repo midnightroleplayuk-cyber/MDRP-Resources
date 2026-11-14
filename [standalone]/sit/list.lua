@@ -34,7 +34,7 @@ local Models = {
     [867556671] = { sit = { type = 'chair', seats = {[1] = vector4(0.0, 0.0, 0.5, 180.0)} } }, -- v_club_officechair
     [2064599526] = { sit = { type = 'chair2', seats = {[1] = vector4(0.0, 0.05, 0.5, 180.0)} } }, -- prop_chair_04a
     [-741944541] = { sit = { type = 'chair2', seats = {[1] = vector4(0.0, 0.1, 0.5, 180.0)} } }, -- prop_table_03_chr
-    [-171943901] = { sit = { type = 'chair2', seats = {[1] = vector4(1.0, 0.1, 0.0, 180.0)} } }, -- v_serv_ct_chair02
+    [-171943901] = { sit = { type = 'chair2', seats = {[1] = vector4(0.0, 0.0, 0.0, 180.0)} } }, -- v_serv_ct_chair02
     [607684038] = { sit = { type = 'chair2', seats = {[1] = vector4(0.0, 0.0, 0.35, 180.0)} } }, -- v_ret_fh_chair01
     [-109356459] = { sit = { type = 'chair2', seats = {[1] = vector4(0.0, 0.05, 0.5, 180.0)} } }, -- v_corp_offchair
     [`xm_prop_x17_corp_offchair`] = { sit = { type = 'chair2', seats = {[1] = vector4(0.0, 0.05, 0.0, 180.0)} } },
