@@ -27,7 +27,7 @@ local Models = {
     [`wcc_ex_prop_offchair_exec_01`] = { sit = { type = 'chair', seats = {[1] = vector4(0.0, 0.05, -0.1, 180.0)} } }, --CHAIRS IN COURT
     [`wcc_jury_chair`] = { sit = { type = 'chair', seats = {[1] = vector4(0.0, 0.05, -0.1, 180.0)} } }, --CHAIRS IN COURT - JURY
     [`wcc_h4_int_04_desk_chair`] = { sit = { type = 'chair', seats = {[1] = vector4(0.0, 0.05, -0.1, 180.0)} } }, --CHAIRS IN COURT - JUDGE
-    [`rtx_paleto_hospital_djn_sempre_interior_seat_small`] = { sit = { type = 'chair2', seats = {[1] = vector4(0.0, 0.0, 0.5, 180.0)} } }, -- Paleto Medical Center Chairs
+    [`rtx_paleto_hospital_djn_sempre_interior_seat_small`] = { sit = { type = 'chair2', seats = {[1] = vector4(0.0, 0.0, 0.0, 180.0)} } }, -- Paleto Medical Center Chairs
     [-1159885154] = { sit = { type = 'chair2', seats = {[1] = vector4(0.0, 0.0, 0.5, 180.0)} } }, -- LGModsWoodenChair
     [826023884] = { sit = { type = 'chair2', seats = {[1] = vector4(0.0, 0.0, 0.5, 180.0)} } }, -- prop_chair_06
     [1037469683] = { sit = { type = 'chair2', seats = {[1] = vector4(0.0, 0.05, 0.4, 180.0)} } }, -- prop_off_chair_05
