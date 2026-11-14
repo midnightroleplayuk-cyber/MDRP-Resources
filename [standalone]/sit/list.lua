@@ -34,7 +34,7 @@ local Models = {
     [867556671] = { sit = { type = 'chair', seats = {[1] = vector4(0.0, 0.0, 0.5, 180.0)} } }, -- v_club_officechair
     [2064599526] = { sit = { type = 'chair2', seats = {[1] = vector4(0.0, 0.05, 0.5, 180.0)} } }, -- prop_chair_04a
     [-741944541] = { sit = { type = 'chair2', seats = {[1] = vector4(0.0, 0.1, 0.5, 180.0)} } }, -- prop_table_03_chr
-    [-171943901] = { sit = { type = 'chair2', seats = {[1] = vector4(0.0, 0.1, 2.0, 180.0)} } }, -- v_serv_ct_chair02
+    [-171943901] = { sit = { type = 'chair2', seats = {[1] = vector4(0.0, 0.1, 0.0, 180.0)} } }, -- v_serv_ct_chair02
     [607684038] = { sit = { type = 'chair2', seats = {[1] = vector4(0.0, 0.0, 0.35, 180.0)} } }, -- v_ret_fh_chair01
     [-109356459] = { sit = { type = 'chair2', seats = {[1] = vector4(0.0, 0.05, 0.5, 180.0)} } }, -- v_corp_offchair
     [`xm_prop_x17_corp_offchair`] = { sit = { type = 'chair2', seats = {[1] = vector4(0.0, 0.05, 0.0, 180.0)} } },
@@ -311,13 +311,12 @@ local Models = {
     [1355718178] = { sit = { type = 'chair2', seats = {[1] = vector4(0.0, 0.05, 0.40, 180.0)} } }, -- prop_waiting_seat_01
     [589738836] = { sit = { type = 'chair2', seats = {[1] = vector4(0.0, 0.05, 0.36, 180.0)} } }, -- v_corp_bk_chair3
     [-109356459] = { sit = { type = 'chair2', seats = {[1] = vector4(0.0, 0.05, 0.44, 180.0)} } }, -- v_corp_offchair (already in your list)
-    [-171943901] = { sit = { type = 'chair2', seats = {[1] = vector4(0.0, 0.05, 0.42, 180.0)} } }, -- v_serv_ct_chair02 (already in your list)
 
     -- Additional benches and seating
     [-1867871609] = { sit = { type = 'chair2', seats = {[1] = vector4(0.0, 0.05, 0.45, 180.0)} } }, -- hei_heist_stn_benchshort
     [1007470258] = { sit = { type = 'chair2', seats = {[1] = vector4(0.0, 0.05, 0.45, 180.0)} } }, -- nobs_ukpd_slatbench_atlas
     [1427480666] = { sit = { type = 'chair2', seats = {[1] = vector4(0.0, 0.05, 0.45, 180.0)} } }, -- v_res_fh_benchlong
-    [4123023395] = { sit = { type = 'chair2', seats = {[1] = vector4(0.0, 0.05, 0.42, 180.0)} } }, -- v_serv_ct_chair02
+
 
 
     -- Stools --
