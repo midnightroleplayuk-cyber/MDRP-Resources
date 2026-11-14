@@ -400,7 +400,7 @@
   "heist_needs_steps": "Add at least one step before enabling it.",
   "heist_needs_positions": "Every step needs a position before enabling it.",
   "heist_truck_first": "Truck steps only work when the heist starts with 'Armoured truck: stop it'.",
-  "heist_bad_steps": "Something's wrong with the steps.",
+  "heist_bad_steps": "One of the steps isn't a step type the script knows. Remove it and add it again.",
   "heist_bad_loot": "A loot step has no loot type.",
   "safehouse_shell_missing": "The shell '%s' isn't on this server. Is your shell pack started?",
   "safehouse_bad_shell": "That shell isn't in config/safehouses.lua, or a point was outside it.",
@@ -518,5 +518,6 @@
   "racket_menu_free_ground_desc": "Nobody runs %s. Get them paying and it becomes your turf.",
   "racket_collected_control": "Being seen here keeps your grip: +%s%% control (now %s%%).",
   "heist_loot_list": "You grabbed: %s.",
-  "heist_loot_nothing": "nothing worth taking"
+  "heist_loot_nothing": "nothing worth taking",
+  "heist_too_many_steps": "A heist can have up to %s steps (this one has %s). Raise maxSteps in config/heists.lua for more."
 }

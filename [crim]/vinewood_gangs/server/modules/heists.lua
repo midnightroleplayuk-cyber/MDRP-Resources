@@ -920,7 +920,9 @@ local function cleanHeist(input)
         local name = cleanText(n.name, 32)
         data.startNpc = { ped = model:match('^[%w_]+$') and model or cfg.npc.ped, name = #name > 0 and name or 'The contact', say = cleanText(n.say, 200) }
     end
-    if type(input.steps) ~= 'table' or #input.steps > 20 then return nil, 'heist_bad_steps' end
+    if type(input.steps) ~= 'table' then return nil, 'heist_bad_steps' end
+    local maxSteps = cfg.maxSteps or 40
+    if #input.steps > maxSteps then return nil, 'heist_too_many_steps', maxSteps, #input.steps end
     for _, s in ipairs(input.steps) do
         if type(s) ~= 'table' or not VALID_TYPES[s.type] then return nil, 'heist_bad_steps' end
         local step = {
@@ -1036,7 +1038,7 @@ function Heists.AdminList()
         for _, p in ipairs(c.peds or {}) do list2[#list2 + 1] = { model = p[1], label = p[2] or p[1] } end
         peds[#peds + 1] = { category = c.category, peds = list2 }
     end
-    return { heists = list, templates = templates, stepTypes = types, lootTypes = loot, tiers = tiers, tools = tools, npc = cfg.npc, peds = peds,
+    return { heists = list, templates = templates, stepTypes = types, maxSteps = cfg.maxSteps or 40, lootTypes = loot, tiers = tiers, tools = tools, npc = cfg.npc, peds = peds,
         defaultTier = Progression.TierFor('heists') or 1 }
 end
 
@@ -1061,8 +1063,8 @@ function Heists.AdminSave(src, id, input)
     local h = heists[tonumber(id)]
     if not h then return false, 'invalid' end
     if byHeist[h.id] then return false, 'heist_in_progress' end
-    local clean, err = cleanHeist(input)
-    if not clean then return false, err end
+    local clean, err, a, b = cleanHeist(input)
+    if not clean then return false, err, a, b end
     h.label, h.kind, h.enabled, h.data = clean.label, clean.kind ~= '' and clean.kind or h.kind, clean.enabled, clean.data
     saveHeist(h)
     publish()
