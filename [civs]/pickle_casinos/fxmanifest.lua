@@ -14,7 +14,7 @@ files {
 	"nui/audio/**/*.*",
 	"nui/assets/**/*.*",
 	"nui/debug.js",
-	"components/**/*.*",
+--	"components/**/*.*",
 }
 
 shared_scripts {
