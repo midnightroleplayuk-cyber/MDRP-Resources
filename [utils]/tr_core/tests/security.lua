@@ -100,8 +100,8 @@ do
     T.exports.es_extended = { getSharedObject = function()
         return { GetExtendedPlayers = function() return {} end, GetPlayerFromId = function() end }
     end }
-    T.boot('server', { es_extended = 'started', ox_inventory = 'started', ox_target = 'started' },
-        { ['tr:webhook'] = 'https://discord.test/hook', ['tr:webhook:money'] = 'https://discord.test/money' })
+    T.boot('server', { es_extended = 'started', ox_inventory = 'started', ox_target = 'started' })
+    T.serverConfig = { webhooks = { default = 'https://discord.test/hook', money = 'https://discord.test/money' } }
     T.ownExports = {}
 
     local posts, bodies = {}, {}

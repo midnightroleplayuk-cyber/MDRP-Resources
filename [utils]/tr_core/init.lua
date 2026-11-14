@@ -62,8 +62,12 @@ local function loadChunk(path)
     return fn
 end
 
--- Supported third-party systems, in detection order. Override with convars,
--- e.g. `setr tr:framework esx` (must be setr so clients can read it).
+-- The server's settings: tr_core/config.lua (its secrets are in server_config.lua, which only tr_core reads).
+local config = loadChunk('config.lua')
+config = config and config() or {}
+if type(config) ~= 'table' then error('^1[tr_core] config.lua must return a table^0', 0) end
+
+-- Supported third-party systems, in detection order. config.lua picks one by name (framework = 'esx').
 -- qbx_core and ox_target `provide` qb-core / qb-target, so they must be checked first.
 local providers = {
     framework = {
@@ -123,12 +127,6 @@ local fallbacks = {
     keys = 'none',
     fuel = 'none',
     dispatch = 'none',
-    target = 'ox_target',
-}
-
--- What a kind uses when its convar isn't set ('auto': the first provider found). The target is tr_core's
--- own interaction unless the server picks one: `setr tr:target ox_target` (or qb_target, or auto).
-local defaults = {
     target = 'tr_core',
 }
 
@@ -147,9 +145,13 @@ local function system(kind)
     local list = providers[kind]
     if not list then error(('unknown system kind "%s"'):format(kind), 2) end
 
-    local forced = GetConvar(('tr:%s'):format(kind), defaults[kind] or 'auto')
+    local forced = tostring(config[kind] or 'auto')
 
     if forced ~= 'auto' then
+        -- The resource's own name works too ('qb-target', 'es_extended').
+        for i = 1, #list do
+            if list[i].resource == forced then forced = list[i].name end
+        end
         detected[kind] = forced
         return forced
     end
@@ -183,6 +185,7 @@ local TR = {
     context = context,
     version = GetResourceMetadata(CORE, 'version', 0),
     system = system,
+    config = config,
 }
 
 local bridgeShared = {}

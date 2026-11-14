@@ -4,7 +4,7 @@ T = {
     context = 'server',
     resource = 'tr_example',
     timer = 0,
-    convars = { ['tr:locale'] = 'en' },
+    convars = {},
     resources = { tr_core = 'started' },
     exports = { tr_core = { discord = function() end } },
     handlers = {},
@@ -32,11 +32,13 @@ function T.done(file)
 end
 
 ---Fresh TR instance for a context and set of started resources.
-function T.boot(context, resources, convars)
+---`config`: what tr_core/config.lua returns for this boot (the real file when nil).
+function T.boot(context, resources, convars, config)
     T.context = context
     T.resources = resources
     T.resources.tr_core = 'started'
-    T.convars = convars or { ['tr:locale'] = 'en' }
+    T.convars = convars or {}
+    T.config = config
     T.handlers, T.fired, T.clientEvents, T.serverEvents = {}, {}, {}, {}
     TR = nil
     load(LoadResourceFile('tr_core', 'init.lua'), '@init.lua')()
@@ -68,6 +70,16 @@ function type(v)
 end
 
 -- runtime
+local loadFile = LoadResourceFile
+function LoadResourceFile(resource, name)
+    if resource == 'tr_core' and name == 'config.lua' and T.config then return 'return __config()' end
+    if resource == 'tr_core' and name == 'server_config.lua' and T.serverConfig then return 'return __serverConfig()' end
+    if resource == 'tr_core' and name == 'server_config.lua' and T.serverConfig then return 'return __serverConfig()' end
+    return loadFile(resource, name)
+end
+function __config() return T.config end
+function __serverConfig() return T.serverConfig end
+function __serverConfig() return T.serverConfig end
 function GetCurrentResourceName() return T.resource end
 function IsDuplicityVersion() return T.context == 'server' end
 function GetResourceState(name) return T.resources[name] or 'missing' end

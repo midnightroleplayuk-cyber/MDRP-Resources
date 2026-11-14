@@ -4,8 +4,10 @@ local QBCore = exports['qb-core']:GetCoreObject()
 
 local bridge = {}
 
--- QBCore stores dirty money as the markedbills item, so 'dirty' has no account by default.
 local accounts = { cash = 'cash', bank = 'bank' }
+
+---QBCore's dirty money is markedbills bags, each with its worth in the info.
+bridge.dirtyItem = { name = 'markedbills', worth = 'worth' }
 
 local function getPlayerData(src)
     local player = QBCore.Functions.GetPlayer(src)

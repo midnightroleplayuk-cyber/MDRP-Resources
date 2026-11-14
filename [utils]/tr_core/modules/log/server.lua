@@ -7,8 +7,8 @@ local log = ...
 ---@field color? integer
 ---@field fields? { name: string, value: string, inline?: boolean }[]
 
----Queues a Discord embed for the webhook set with `set tr:webhook:<channel> "url"`
----(falls back to `tr:webhook`). Use `set`, not `setr`, so the URL never reaches clients.
+---Queues a Discord embed for the channel's webhook in tr_core/server_config.lua (webhooks.<channel>,
+---else webhooks.default).
 ---@param channel string e.g. 'money', 'admin', 'security'
 ---@param embed TRDiscordEmbed
 function log.discord(channel, embed)

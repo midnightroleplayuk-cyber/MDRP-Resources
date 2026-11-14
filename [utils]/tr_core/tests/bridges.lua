@@ -59,6 +59,7 @@ local function mockQBCore(data)
             water = { name = 'water', label = 'Water', weight = 500, unique = false },
             weed = { name = 'weed', label = 'Weed', weight = 10, unique = false },
             phone = { name = 'phone', label = 'Phone', weight = 700, unique = true },
+            markedbills = { name = 'markedbills', label = 'Marked Bills', weight = 1000, unique = false },
         } },
     }
 
@@ -85,7 +86,6 @@ local function testPlayerServer(label)
     check(label .. ' addMoney', p.addMoney(1, 'bank', 50) and p.getMoney(1, 'bank') == 1050)
     check(label .. ' removeMoney', p.removeMoney(1, 'cash', 40) and p.getMoney(1, 'cash') == 60)
     check(label .. ' removeMoney insufficient', not p.removeMoney(1, 'cash', 1000) and p.getMoney(1, 'cash') == 60)
-    check(label .. ' dirty unsupported', p.getMoney(1, 'dirty') == 0 and p.addMoney(1, 'dirty', 5) == false)
     check(label .. ' offline player', p.getMoney(2, 'cash') == 0 and not p.isLoaded(2) and p.getJob(2) == nil)
     check(label .. ' getPlayers', #p.getPlayers() == 1 and p.getPlayers()[1] == 1)
     check(label .. ' getSource', p.getSource('ABC123') == 1 and p.getSource('nope') == nil)
@@ -111,9 +111,9 @@ do
 
     testPlayerServer('qb')
 
-    T.convars['tr:account:dirty'] = 'crypto'
-    check('qb dirty mapped by convar', TR.player.getMoney(1, 'dirty') == 5)
-    T.convars['tr:account:dirty'] = nil
+    TR.config.accounts = { dirty = 'crypto' }
+    check('qb dirty mapped by config.lua', TR.player.getMoney(1, 'dirty') == 5)
+    TR.config.accounts = { dirty = 'auto' }
 
     -- lifecycle: tr_core registers the events once; player 1 is already loaded at that point
     TR.player.bridge.registerEvents()
@@ -162,6 +162,17 @@ do
         OpenInventory = function(_, src, id, stashData) invCalls[#invCalls + 1] = { 'open', id, stashData } end,
         CloseInventory = function(_, src) invCalls[#invCalls + 1] = { 'close', src } end,
     }
+
+    slots[7] = { name = 'markedbills', amount = 2, slot = 7, info = { worth = 300 } }
+    slots[8] = { name = 'markedbills', amount = 1, slot = 8, info = { worth = 150 } }
+    check('qb dirty money: markedbills by worth', TR.player.getMoney(1, 'dirty') == 750)
+    check('qb dirty pay: whole bags, the change in one', TR.player.removeMoney(1, 'dirty', 400) and slots[7].amount == 0
+        and invCalls[1][1] == 'remove' and invCalls[1][3] == 2 and invCalls[1][4] == 7
+        and invCalls[2][1] == 'add' and invCalls[2][2] == 'markedbills' and invCalls[2][3] == 1 and invCalls[2][4].worth == 200)
+    invCalls = {}
+    check('qb dirty pay short: nothing taken', not TR.player.removeMoney(1, 'dirty', 1000) and #invCalls == 0)
+    check('qb dirty add: one bag worth it', TR.player.addMoney(1, 'dirty', 80) and invCalls[1][3] == 1 and invCalls[1][4].worth == 80)
+    slots[7], slots[8], invCalls = nil, nil, {}
 
     local inv = TR.inventory
     check('qbinv count', inv.getCount(1, 'water') == 3 and inv.getCount(1, 'weed') == 7)
@@ -261,11 +272,27 @@ do
     }
     T.usable = {}
 
+    local blackMoney, oxCalls = 120, {}
+    T.exports.ox_inventory = {
+        GetItemCount = function(_, src, item) return item == 'black_money' and blackMoney or 0 end,
+        AddItem = function(_, src, item, count) oxCalls[#oxCalls + 1] = { 'add', item, count }; return true end,
+        RemoveItem = function(_, src, item, count)
+            oxCalls[#oxCalls + 1] = { 'remove', item, count }
+            blackMoney = blackMoney - count
+            return true
+        end,
+    }
+
     -- qbx_core `provide`s qb-core, so both can look started; Qbox must win.
     T.boot('server', { qbx_core = 'started', ['qb-core'] = 'started', ox_inventory = 'started' })
     check('qbx detected first', TR.system('framework') == 'qbx')
 
     testPlayerServer('qbx')
+
+    check('qbx dirty money: the black_money item', TR.player.getMoney(1, 'dirty') == 120)
+    check('qbx dirty pay', TR.player.removeMoney(1, 'dirty', 20) and blackMoney == 100 and oxCalls[1][2] == 'black_money')
+    check('qbx dirty pay short', not TR.player.removeMoney(1, 'dirty', 500) and #oxCalls == 1)
+    check('qbx dirty add', TR.player.addMoney(1, 'dirty', 5) and oxCalls[2][1] == 'add' and oxCalls[2][3] == 5)
 
     -- Item use: ox_inventory calls Qbox's usable item with the used slot.
     local used
@@ -336,8 +363,7 @@ do
     mockQBCore(data)
     LocalPlayer.state.isLoggedIn = true
 
-    -- tr_core's own interaction is the target unless the server picks one
-    T.boot('client', { ['qb-core'] = 'started', ['qb-inventory'] = 'started', ['qb-target'] = 'started' }, { ['tr:locale'] = 'en', ['tr:target'] = 'qb_target' })
+    T.boot('client', { ['qb-core'] = 'started', ['qb-inventory'] = 'started', ['qb-target'] = 'started' })
     local p = TR.player
     check('qb client job', p.getJob().grade == 2 and p.hasJob('police'))
     check('qb client gang', p.hasGang({ ballas = 3 }))
@@ -493,8 +519,8 @@ do
         T.exports[resource] = nil
     end
 
-    T.boot('server', { es_extended = 'started', ox_inventory = 'started', ['qb-vehiclekeys'] = 'started' }, { ['tr:keys'] = 'wasabi_carlock' })
-    check('keys convar override', TR.system('keys') == 'wasabi_carlock')
+    T.boot('server', { es_extended = 'started', ox_inventory = 'started', ['qb-vehiclekeys'] = 'started' }, nil, { keys = 'wasabi_carlock' })
+    check('keys set in config.lua', TR.system('keys') == 'wasabi_carlock')
 end
 
 ---------------------------------------------------------------------------------------------------
@@ -606,8 +632,8 @@ do
         T.exports[resource] = nil
     end
 
-    T.boot('server', { es_extended = 'started', ox_inventory = 'started', ox_fuel = 'started' }, { ['tr:fuel'] = 'legacyfuel' })
-    check('fuel convar override', TR.system('fuel') == 'legacyfuel')
+    T.boot('server', { es_extended = 'started', ox_inventory = 'started', ox_fuel = 'started' }, nil, { fuel = 'legacyfuel' })
+    check('fuel set in config.lua', TR.system('fuel') == 'legacyfuel')
 end
 
 ---------------------------------------------------------------------------------------------------
@@ -618,10 +644,10 @@ do
     -- 1: police on duty, 2: police off duty, 3: mechanic on duty
     local jobs = { { 'police', true }, { 'police', false }, { 'mechanic', true } }
     local asked
-    local function boot(started, convars)
+    local function boot(started, config)
         local resources = { es_extended = 'started', ox_inventory = 'started' }
         for name, state in pairs(started) do resources[name] = state end
-        T.boot('server', resources, convars)
+        T.boot('server', resources, nil, config)
         rawset(TR, 'player', {
             getPlayers = function() return { 1, 2, 3 } end,
             hasJob = function(src, filter, requireDuty)
@@ -779,8 +805,31 @@ do
     check('dispatch: installed but not started yet', TR.system('dispatch') == 'ps_dispatch')
     boot({ ['lb-tablet'] = 'started', origen_police = 'started', ['ps-dispatch'] = 'started' })
     check('dispatch: dispatch script over an MDT', TR.system('dispatch') == 'ps_dispatch')
-    boot({ ['ps-dispatch'] = 'started' }, { ['tr:dispatch'] = 'none' })
-    check('dispatch convar override', TR.system('dispatch') == 'none')
+    boot({ ['ps-dispatch'] = 'started' }, { dispatch = 'none' })
+    check('dispatch set in config.lua', TR.system('dispatch') == 'none')
+end
+
+---------------------------------------------------------------------------------------------------
+-- Settings: tr_core/config.lua
+---------------------------------------------------------------------------------------------------
+
+do
+    local started = { es_extended = 'started', ox_inventory = 'started', ox_target = 'started' }
+
+    T.boot('client', started)
+    check('config.lua as shipped: everything found', TR.system('target') == 'ox_target' and TR.system('framework') == 'esx'
+        and TR.config.locale == 'en' and TR.config.logLevel == 'info' and TR.config.accounts.dirty == 'auto')
+    T.boot('client', { es_extended = 'started', ox_inventory = 'started' })
+    check('auto without a target script: tr_core\'s own', TR.system('target') == 'tr_core')
+
+    T.boot('client', started, nil, { target = 'tr_core' })
+    check('config.lua picks tr_core\'s own over ox_target', TR.system('target') == 'tr_core')
+    T.boot('client', { ['qb-core'] = 'started', ['qb-inventory'] = 'started' }, nil, { target = 'qb-target', framework = 'es_extended' })
+    check('config.lua takes resource names', TR.system('target') == 'qb_target' and TR.system('framework') == 'esx')
+    T.boot('client', started, { ['tr:target'] = 'qb_target' }, {})
+    check('convars are not read', TR.system('target') == 'ox_target')
+    T.boot('client', started, nil, {})
+    check('missing from config.lua: auto', TR.system('target') == 'ox_target' and TR.system('framework') == 'esx')
 end
 
 T.done('bridges')

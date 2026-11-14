@@ -14,10 +14,24 @@ local TRIES = 2       -- sends per embed when Discord or the network fails (5xx,
 
 local hooks = {} ---@type table<string, { list: table[], busy: boolean, dropped: integer }>
 
+-- server_config.lua isn't in the manifest's files, so players' games never get it.
+local serverConfig = LoadResourceFile('tr_core', 'server_config.lua')
+serverConfig = serverConfig and load(serverConfig, '@@tr_core/server_config.lua')() or {}
+local webhooks = type(serverConfig.webhooks) == 'table' and serverConfig.webhooks or {}
+
 local function webhookUrl(channel)
-    local url = GetConvar(('tr:webhook:%s'):format(channel), '')
-    if url == '' then url = GetConvar('tr:webhook', '') end
-    return url ~= '' and url or nil
+    local url = webhooks[channel]
+    if type(url) ~= 'string' or url == '' then url = webhooks.default end
+    return type(url) == 'string' and url ~= '' and url or nil
+end
+
+-- Before 1.7.0 these were server.cfg convars; they aren't read any more, so say where they went.
+for _, name in ipairs({ 'locale', 'loglevel', 'framework', 'inventory', 'target', 'keys', 'fuel', 'dispatch',
+    'account:cash', 'account:bank', 'account:dirty', 'webhook' }) do
+    if GetConvar('tr:' .. name, '') ~= '' then
+        TR.log.warn('tr:%s in server.cfg is no longer read: set it in tr_core/%s', name,
+            name == 'webhook' and 'server_config.lua' or 'config.lua')
+    end
 end
 
 ---Cuts text to `max` characters (Discord counts characters, not bytes).

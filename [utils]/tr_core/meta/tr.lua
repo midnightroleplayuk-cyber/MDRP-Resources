@@ -8,6 +8,7 @@
 ---@field version string tr_core version
 ---@field system fun(kind: 'framework' | 'inventory' | 'target' | 'keys' | 'fuel' | 'dispatch'): string detected provider name
 ---@field bridge fun(kind: 'framework' | 'inventory' | 'target' | 'keys' | 'fuel' | 'dispatch'): table internal: raw provider bridge
+---@field config table tr_core/config.lua as the server has it
 ---@field utils TRUtils shared
 ---@field log TRLog shared (log.discord is server only)
 ---@field validate TRValidate shared

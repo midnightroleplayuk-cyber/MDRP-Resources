@@ -5,19 +5,16 @@ local check = T.check
 
 T.resource = 'tr_example'
 T.boot('client', {})
-check('target: tr_core by default', TR.system('target') == 'tr_core')
+check('target: tr_core with none installed', TR.system('target') == 'tr_core')
 
 T.boot('client', { ox_target = 'started' })
-check('target: tr_core even with ox_target installed', TR.system('target') == 'tr_core')
+check('target: auto finds ox_target', TR.system('target') == 'ox_target')
 
-T.boot('client', { ox_target = 'started' }, { ['tr:locale'] = 'en', ['tr:target'] = 'ox_target' })
-check('target: ox_target when set', TR.system('target') == 'ox_target')
-
-T.boot('client', { ['qb-target'] = 'started' }, { ['tr:locale'] = 'en', ['tr:target'] = 'auto' })
+T.boot('client', { ['qb-target'] = 'started' })
 check('target: auto finds qb-target', TR.system('target') == 'qb_target')
 
-T.boot('client', {}, { ['tr:locale'] = 'en', ['tr:target'] = 'auto' })
-check('target: auto with none installed is tr_core', TR.system('target') == 'tr_core')
+T.boot('client', { ox_target = 'started' }, nil, { target = 'tr_core' })
+check('target: tr_core when set, ox_target or not', TR.system('target') == 'tr_core')
 
 -- A small world -------------------------------------------------------------------------------------
 

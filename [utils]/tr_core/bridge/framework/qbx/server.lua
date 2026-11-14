@@ -4,8 +4,10 @@ local qbx = exports.qbx_core
 
 local bridge = {}
 
--- Qbox has no dirty money account by default; map one with `setr tr:account:dirty "<type>"`.
 local accounts = { cash = 'cash', bank = 'bank' }
+
+---Qbox has no dirty money account: it's ox_inventory's black_money item, one per dollar.
+bridge.dirtyItem = { name = 'black_money' }
 
 local function getPlayerData(src)
     local player = qbx:GetPlayer(src)

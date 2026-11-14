@@ -4,13 +4,14 @@
 local shared = {}
 
 ---Resolves a TR account name to the framework's account name.
----Override per server with `setr tr:account:<name> "<framework account>"`, e.g. tr:account:dirty "blackmoney".
+---Set per server in tr_core/config.lua (accounts = { dirty = 'blackmoney' }); 'auto' is the framework's own.
 ---@param defaults table<string, string?>
 ---@param name TRAccount
 ---@return string?
 function shared.account(defaults, name)
-    local override = GetConvar(('tr:account:%s'):format(name), '')
-    if override ~= '' then return override end
+    local accounts = TR.config.accounts
+    local set = type(accounts) == 'table' and accounts[name]
+    if type(set) == 'string' and set ~= '' and set ~= 'auto' then return set end
     return defaults[name]
 end
 

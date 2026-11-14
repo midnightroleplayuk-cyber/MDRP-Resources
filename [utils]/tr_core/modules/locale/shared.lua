@@ -1,6 +1,6 @@
 --[[
     Per-resource translations loaded from the calling resource's locales/<lang>.json.
-    The language is set with `setr tr:locale "en"`; missing keys fall back to en.json.
+    The language is set in tr_core/config.lua (locale = 'en'); missing keys fall back to en.json.
     Nested JSON objects are flattened to dot keys: { "garage": { "title": "x" } } -> "garage.title".
     Remember to add 'locales/*.json' to the resource's `files` so clients can read them.
 ]]
@@ -9,7 +9,7 @@
 local locale = {}
 
 local resource = GetCurrentResourceName()
-local language = GetConvar('tr:locale', 'en')
+local language = tostring(TR.config.locale or 'en')
 local strings
 
 local function flatten(source, prefix, target)

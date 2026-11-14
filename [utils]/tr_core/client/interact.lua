@@ -1,6 +1,6 @@
 --[[
-    tr_core's own interaction: what TR.target uses unless the server picks another target script
-    (setr tr:target ox_target / qb_target). It runs once, here in tr_core; every resource reaches it
+    tr_core's own interaction: what TR.target uses when the server runs no other target script (or picks
+    it: target = 'tr_core' in config.lua). It runs once, here in tr_core; every resource reaches it
     through bridge/target/tr_core with the same ox_target-format options.
 
     Walk up to something and look at it. What a script put in the world (its props, peds and zones) shows

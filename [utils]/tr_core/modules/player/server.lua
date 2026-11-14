@@ -13,6 +13,57 @@ local function isValidAmount(amount)
     return math.type(amount) == 'integer' and amount > 0
 end
 
+---An account set for 'dirty' in config.lua wins over the framework's item.
+---@return { name: string, worth?: string }?
+local function dirtyItem(account)
+    if account ~= 'dirty' or not bridge.dirtyItem then return end
+    local set = type(TR.config.accounts) == 'table' and TR.config.accounts.dirty
+    if type(set) == 'string' and set ~= '' and set ~= 'auto' then return end
+    return bridge.dirtyItem
+end
+
+local function bagWorth(dirty, slot)
+    return math.floor(tonumber(slot.metadata[dirty.worth]) or 0)
+end
+
+local function countItemMoney(src, dirty)
+    if not dirty.worth then return TR.inventory.getCount(src, dirty.name) end
+
+    local total = 0
+    for _, slot in ipairs(TR.inventory.getSlots(src, dirty.name)) do
+        total = total + slot.count * bagWorth(dirty, slot)
+    end
+    return total
+end
+
+local function addItemMoney(src, dirty, amount)
+    if not dirty.worth then return TR.inventory.addItem(src, dirty.name, amount) == true end
+    return TR.inventory.addItem(src, dirty.name, 1, { [dirty.worth] = amount }) == true
+end
+
+-- Bags go whole, so what is paid over comes back as one bag of the change.
+local function removeItemMoney(src, dirty, amount)
+    if not dirty.worth then return TR.inventory.removeItem(src, dirty.name, amount) end
+
+    local taken, paid = {}, 0
+    for _, slot in ipairs(TR.inventory.getSlots(src, dirty.name)) do
+        if paid >= amount then break end
+        local worth = bagWorth(dirty, slot)
+        if worth > 0 then
+            local bags = math.min(slot.count, (amount - paid + worth - 1) // worth)
+            if not TR.inventory.removeItem(src, dirty.name, bags, nil, slot.slot) then
+                for _, back in ipairs(taken) do TR.inventory.addItem(src, dirty.name, back.bags, back.metadata) end
+                return false
+            end
+            taken[#taken + 1] = { bags = bags, metadata = slot.metadata }
+            paid = paid + bags * worth
+        end
+    end
+
+    if paid > amount then addItemMoney(src, dirty, paid - amount) end
+    return true
+end
+
 ---@param src integer
 ---@return boolean
 function player.isLoaded(src) return bridge.isLoaded(src) end
@@ -64,6 +115,8 @@ end
 ---@return integer
 function player.getMoney(src, account)
     assert(shared.accounts[account], ('invalid account "%s"'):format(account))
+    local dirty = dirtyItem(account)
+    if dirty then return countItemMoney(src, dirty) end
     return bridge.getMoney(src, account) or 0
 end
 
@@ -88,6 +141,8 @@ function player.addMoney(src, account, amount, reason)
         return false
     end
 
+    local dirty = dirtyItem(account)
+    if dirty then return addItemMoney(src, dirty, amount) end
     return bridge.addMoney(src, account, amount, reason or TR.resource)
 end
 
@@ -107,6 +162,8 @@ function player.removeMoney(src, account, amount, reason)
 
     if not player.canAfford(src, account, amount) then return false end
 
+    local dirty = dirtyItem(account)
+    if dirty then return removeItemMoney(src, dirty, amount) end
     return bridge.removeMoney(src, account, amount, reason or TR.resource)
 end
 
