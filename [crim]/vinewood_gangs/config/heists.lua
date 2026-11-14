@@ -60,6 +60,7 @@ Config.Heists = {
     },
 
     -- Templates staff can start from. Positions are set in game.
+    maxSteps = 40,          -- the most steps one heist can have
     doorRelockSeconds = 60,
     laptopModel = 'prop_laptop_01a', -- heist laptops staff place (/gangadmin > Heists > Laptops) -- heist doors lock again this long after a run ends (so the crew can get out)
 

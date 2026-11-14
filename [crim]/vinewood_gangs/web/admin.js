@@ -2369,11 +2369,14 @@ function renderHeistEditor() {
   });
 
   const addType = select(typeOptions, 'hack');
+  const maxSteps = meta.maxSteps || 40;
+  const full = d.steps.length >= maxSteps;
   const add = h('div', { class: 'row', style: 'align-items:center;margin-top:10px' },
     addType,
     h('button', {
-      class: 'btn small', type: 'button',
+      class: 'btn small', type: 'button', disabled: full,
       onclick: () => {
+        if (d.steps.length >= maxSteps) return toast(`A heist can have up to ${maxSteps} steps.`, true);
         const t = addType.value;
         const game = ((meta.stepTypes || []).find((x) => x.key === t) || {}).game;
         const step = { type: t, label: '', difficulty: 2, alert: 'none', time: game ? 30 : (t === 'wait' ? 60 : 15) };
@@ -2381,7 +2384,10 @@ function renderHeistEditor() {
         d.steps.push(step);
         rerender();
       },
-    }, 'Add step'));
+    }, 'Add step'),
+    h('span', { class: full ? 'hint debit' : 'hint', style: 'margin:0', text: full
+      ? `${d.steps.length} of ${maxSteps} steps: that's the most (maxSteps in config/heists.lua).`
+      : `${d.steps.length} of ${maxSteps} steps` }));
 
   const save = async () => {
     const r = await adminRequest('heistSave', x.id, { label: x.label, kind: x.kind, enabled: x.enabled, ...d });

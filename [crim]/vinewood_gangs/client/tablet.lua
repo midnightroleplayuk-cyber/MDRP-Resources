@@ -221,9 +221,15 @@ local function forward(prefix, allowed, body, cb)
         return cb({ ok = false, error = locale('invalid') })
     end
     local args = type(body.args) == 'table' and body.args or {}
-    local res, extra = lib.callback.await(prefix .. action, false, args[1], args[2], args[3], args[4], args[5], args[6])
+    local res, extra, d1, d2 = lib.callback.await(prefix .. action, false, args[1], args[2], args[3], args[4], args[5], args[6])
     if res == nil or res == false then
-        cb({ ok = false, error = locale(extra or 'failed') })
+        -- Errors can come with details (a limit, an amount...) that fill in the message
+        local msg = locale(extra or 'failed')
+        if d1 ~= nil then
+            local ok, filled = pcall(locale, extra or 'failed', d1, d2)
+            if ok and filled then msg = filled end
+        end
+        cb({ ok = false, error = msg })
         return res
     end
     -- Server functions return either the result, or true plus the result (e.g. true, heist). Pass the result on.
