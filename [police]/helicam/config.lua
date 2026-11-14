@@ -327,6 +327,9 @@ Config.Helicopters = {
     [`maverick`] = {
         offset = vector3(0.0, 3.45, -0.65)
     },
+    [`hems`] = {
+        offset = vector3(0.0, 3.45, -0.65)
+    },
     -- Higgins Helitours Maverick
     [`maverick2`] = {
         offset = vector3(0.0, 3.45, -0.65),

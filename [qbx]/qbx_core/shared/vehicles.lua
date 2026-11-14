@@ -3996,6 +3996,15 @@ return {
         type = 'heli',
         hash = `maverick`,
     },
+    hems = {
+        name = 'MHS HEMS',
+        brand = 'MHS',
+        model = 'hems',
+        price = 700000,
+        category = 'helicopters',
+        type = 'heli',
+        hash = `hems`,
+    },
     menacer = {
         name = 'Menacer',
         brand = 'HVY',
