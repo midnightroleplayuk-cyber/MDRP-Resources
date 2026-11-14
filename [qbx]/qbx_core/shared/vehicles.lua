@@ -9643,5 +9643,14 @@ return {
         type = 'automobile',
         hash = `straferhems`,
     },
+     impermark = {
+        name = 'Imper Marked',
+        brand = 'Imper',
+        model = 'impermark',
+        price = 140000,
+        category = 'sports',
+        type = 'automobile',
+        hash = `impermark`,
+    },
 
 }
