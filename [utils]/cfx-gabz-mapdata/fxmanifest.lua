@@ -13,7 +13,7 @@ dependencies {
 
 files {
     'gabz_timecycle_mods1.xml',
-    'cfx-gabz-mapdata_cache_y.dat'
+   -- 'cfx-gabz-mapdata_cache_y.dat'
 }
 
 data_file 'TIMECYCLEMOD_FILE' 'gabz_timecycle_mods1.xml'
