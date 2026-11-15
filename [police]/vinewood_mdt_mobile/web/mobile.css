@@ -1,0 +1,98 @@
+/* Vinewood MDT Mobile – fits the MDT tablet UI to phones, tablets and desktop browsers.
+   Loaded after the MDT's own style.css. */
+
+html, body { background: var(--bg) !important; overscroll-behavior: none; -webkit-tap-highlight-color: transparent; }
+#tablet {
+    inset: 0 !important; margin: 0 !important; width: 100% !important; height: 100% !important;
+    max-width: none !important; max-height: none !important; transform: none !important;
+    border: 0 !important; border-radius: 0 !important; box-shadow: none !important;
+    padding: env(safe-area-inset-top, 0px) env(safe-area-inset-right, 0px) 0 env(safe-area-inset-left, 0px);
+}
+.anpr-hud, .anpr-alert, .layout-bar { display: none !important; }
+main { -webkit-overflow-scrolling: touch; }
+
+/* Header */
+.brand { min-width: 0; gap: 8px; }
+.brand .force { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.vm-burger { display: none; background: transparent; border: 1px solid var(--line); color: var(--text);
+    width: 38px; height: 38px; border-radius: 6px; flex: none; place-items: center; cursor: pointer; }
+.vm-burger svg { width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; }
+
+/* ---------- Desktop browsers: full window, keep the clock and system status ---------- */
+@media (min-width: 1100px) and (min-height: 600px) {
+    main { padding-bottom: 32px; }
+}
+
+/* ---------- Tablets, landscape phones, small windows ---------- */
+@media (max-width: 1099px) {
+    .topbar { gap: 12px; padding: 8px 12px; }
+    .topbar .system, .topbar .clock { display: none; }
+    #closeBtn { width: 38px; height: 38px; flex: none; }
+    input, select, textarea { font-size: 16px; }
+    main { padding: 14px 14px calc(26px + env(safe-area-inset-bottom, 0px)); }
+    .modal-card { width: min(680px, calc(100vw - 24px)); }
+}
+@media (min-width: 760px) and (max-width: 1099px) {
+    .side { width: 176px; padding: 10px 8px; }
+    .side button { padding: 9px 10px; gap: 10px; }
+    .grid4 { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+    .grid3 { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+    main [style*="grid-template-columns:300px"] { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important; }
+    .form-row[style*="repeat(5"] { grid-template-columns: repeat(3, minmax(0, 1fr)) !important; }
+}
+@media (max-height: 500px) {
+    .topbar { padding: 6px 12px; }
+    .officer .duty { display: none; }
+}
+
+/* ---------- Phones in portrait, narrow windows: drawer nav, single column ---------- */
+@media (max-width: 759px) {
+    .vm-burger { display: grid; }
+    .side {
+        position: fixed; top: 0; bottom: 0; left: 0; z-index: 30;
+        width: min(290px, 82vw); transform: translateX(-102%); transition: transform .2s ease;
+        padding: calc(14px + env(safe-area-inset-top, 0px)) 10px calc(14px + env(safe-area-inset-bottom, 0px)) calc(10px + env(safe-area-inset-left, 0px));
+        box-shadow: 10px 0 40px rgba(0, 0, 0, .5); overflow-y: auto;
+    }
+    .side button { padding: 12px; font-size: 15px; }
+    body.vm-nav-open .side { transform: none; }
+    .vm-scrim { position: fixed; inset: 0; z-index: 29; background: rgba(2, 8, 20, .6); display: none; }
+    body.vm-nav-open .vm-scrim { display: block; }
+
+    .topbar { gap: 8px; }
+    .brand { flex: 1 1 auto; }
+    .brand .crest { display: none; }
+    .brand .force { font-size: 15px; }
+    .officer { gap: 8px; font-size: 12px; min-width: 0; }
+    .officer #officerName, .officer .duty { display: none; }
+    .purpose { flex: none; max-width: 34vw; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+    h1 { font-size: 18px; }
+    .page-head { flex-wrap: wrap; gap: 10px; }
+    .page-head .grow { flex-basis: 100%; order: -1; }
+    .who h1 { font-size: 23px; }
+    .who h1 .vrm { font-size: 24px; }
+
+    .grid2, .grid3 { grid-template-columns: minmax(0, 1fr) !important; }
+    .grid4 { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+    .form-row { grid-template-columns: minmax(0, 1fr) !important; }
+    main [style*="grid-template-columns:300px"] { grid-template-columns: minmax(0, 1fr) !important; }
+    .kv, .panel .kv { grid-template-columns: minmax(92px, 38%) minmax(0, 1fr) !important; font-size: 14px; }
+    .form-actions { flex-wrap: wrap; }
+    .form-actions .btn { flex: 1 1 auto; justify-content: center; }
+    .row { grid-template-columns: minmax(0, 1fr) auto !important; }
+    .purpose-grid { grid-template-columns: minmax(0, 1fr); }
+
+    /* Wide tables scroll sideways inside their panel instead of squashing */
+    .panel, .table-wrap { overflow-x: auto; }
+    .panel table { min-width: 540px; }
+    td, th { white-space: nowrap; }
+    td b, td .muted { white-space: normal; }
+
+    .modal { place-items: end center; }
+    .modal-card {
+        width: 100% !important; max-height: 92vh; border-radius: 14px 14px 0 0;
+        padding: 18px 16px calc(18px + env(safe-area-inset-bottom, 0px));
+    }
+}
+@media (prefers-reduced-motion: reduce) { .side { transition: none; } }

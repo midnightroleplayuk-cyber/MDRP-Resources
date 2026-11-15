@@ -1,6 +1,6 @@
 Api = { routes = {} }
 
-local VERSION = GetResourceMetadata(GetCurrentResourceName(), 'version', 0) or '2.0.0'
+local VERSION = GetResourceMetadata(GetCurrentResourceName(), 'version', 0) or '2.1.0'
 local MDT = Config.MDTResource
 
 local function forceName()
@@ -13,7 +13,7 @@ local function route(method, pattern, opts, fn)
     Api.routes[#Api.routes + 1] = { method = method, pattern = '^' .. pattern .. '$', auth = opts.auth, fn = fn }
 end
 
--- The MDT's own web files, sent to the app so phones always run the same UI version as the server
+-- The MDT's own web files, sent to the app so devices always run the same UI version as the server
 local uiCache
 local function loadUi()
     local version = GetResourceMetadata(MDT, 'version', 0) or '0'
@@ -30,17 +30,25 @@ end
 
 route('GET', '/api/ping', {}, function()
     return 200, { app = 'vinewood_mdt_mobile', version = VERSION, force = forceName(),
-        mdt = GetResourceState(MDT) == 'started' }
+        mdt = GetResourceState(MDT) == 'started', link = Config.Commands.link }
 end)
 
-route('POST', '/api/pair', {}, function(ctx)
-    local code = Util.Trim(tostring(ctx.body and ctx.body.code or '')):gsub('%D', '')
-    local device = Util.Clamp(ctx.body and ctx.body.device or 'Android phone', 60)
-    if #code ~= 6 then return 400, { error = 'Enter the 6-digit code from /' .. Config.Commands.link .. '.' } end
-    local token, p = Auth.Pair(code, device, ctx.ip)
-    if not token then return 401, { error = p } end
-    print(('[vinewood_mdt_mobile] %s (%s) linked a phone: %s'):format(p.name, p.citizenid, device))
-    return 200, { token = token, name = p.name, force = forceName() }
+-- Device asks for a sign-in code to show the officer
+route('POST', '/api/pair/start', {}, function(ctx)
+    local device = Util.Clamp(ctx.body and ctx.body.device or 'Unknown device', 60)
+    local r, err = Auth.Start(ctx.ip, device)
+    if not r then return 429, { error = err } end
+    return 200, { id = r.id, code = r.code, expires = r.expires, force = forceName(), link = Config.Commands.link }
+end)
+
+-- Device checks whether the officer has typed the code in game yet
+route('POST', '/api/pair/poll', {}, function(ctx)
+    local id = tostring(ctx.body and ctx.body.id or '')
+    if not id:match('^%x+$') then return 400, { error = 'Bad request.' } end
+    local token, name = Auth.Poll(id)
+    if token == 'waiting' then return 200, { status = 'waiting' } end
+    if token == 'expired' then return 200, { status = 'expired' } end
+    return 200, { status = 'linked', token = token, name = name, force = forceName() }
 end)
 
 -- MDT images (crest etc.) referenced as nui:// paths. Images only.
@@ -54,18 +62,18 @@ route('GET', '/asset', {}, function(ctx)
     return 200, data, IMAGE_TYPES[ext:lower()]
 end)
 
--- Signed in --------------------------------------------------------------
-
-route('GET', '/api/me', { auth = true }, function(ctx)
-    return 200, { name = ctx.user.name, role = ctx.user.role, force = forceName() }
-end)
-
--- Works even when out of the city, so a phone can always sign itself out
+-- Works even when out of the city, so a device can always sign itself out
 route('POST', '/api/unpair', {}, function(ctx)
     local h = ctx.headers['Authorization'] or ctx.headers['authorization']
     local token = h and h:match('^Bearer%s+(%x+)$')
     if token then Auth.Revoke(token) end
     return 200, { ok = true }
+end)
+
+-- Signed in --------------------------------------------------------------
+
+route('GET', '/api/me', { auth = true }, function(ctx)
+    return 200, { name = ctx.user.name, role = ctx.user.role, force = forceName() }
 end)
 
 route('GET', '/api/ui', { auth = true }, function(ctx)
@@ -97,6 +105,24 @@ route('POST', '/api/respond', { auth = true }, function(ctx)
     return 200, { ok = true }
 end)
 
+-- Website ------------------------------------------------------------------
+
+local WEB_TYPES = { html = 'text/html; charset=utf-8', css = 'text/css; charset=utf-8', js = 'text/javascript; charset=utf-8',
+    png = 'image/png', svg = 'image/svg+xml', ico = 'image/x-icon', webmanifest = 'application/manifest+json' }
+local RES = GetCurrentResourceName()
+
+local function webFile(name)
+    if not Config.Website then return 404, { error = 'The MDT website is turned off on this server.' } end
+    if name == '' then name = 'index.html' end
+    local ext = name:match('%.([%w]+)$')
+    if not ext or name:find('%.%.') or not name:match('^[%w%-_%.]+$') or not WEB_TYPES[ext] then
+        return 404, { error = 'Not found' }
+    end
+    local data = LoadResourceFile(RES, 'web/' .. name)
+    if not data then return 404, { error = 'Not found' } end
+    return 200, data, WEB_TYPES[ext]
+end
+
 -- Dispatcher -------------------------------------------------------------
 
 function Api.Handle(ctx)
@@ -112,6 +138,10 @@ function Api.Handle(ctx)
             end
             return r.fn(ctx)
         end
+    end
+    if ctx.method == 'GET' then
+        local name = ctx.path:match('^/([^/]*)$')
+        if name then return webFile(name) end
     end
     return 404, { error = 'Not found' }
 end

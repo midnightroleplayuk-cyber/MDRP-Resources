@@ -1,7 +1,15 @@
+--[[
+    Sign-in works the other way round to most apps, so it's safe on stream:
+      1. The app or website asks for a code and shows it (anyone can see it, it's useless on its own).
+      2. The officer types /mdtlink <code> in the city.
+      3. Only the device that asked for the code receives the sign-in, using a secret it never shows.
+]]
+
 Auth = {}
 
-local pending = {} -- code -> { citizenid, name, expires }
-local tokens  = {} -- token -> { citizenid, name, device, lastUsed }
+local requests = {} -- secret id -> { code, expires, device, token?, name? }
+local byCode   = {} -- code -> secret id
+local tokens   = {} -- token -> { citizenid, name, device, lastUsed }
 
 function Auth.Load()
     local rows = MySQL.query.await([[
@@ -11,17 +19,26 @@ function Auth.Load()
     for _, r in ipairs(rows) do
         tokens[r.token] = { citizenid = r.citizenid, name = r.name, device = r.device, lastUsed = r.last_used }
     end
-    print(('[vinewood_mdt_mobile] %d linked phone(s) loaded'):format(#rows))
+    print(('[vinewood_mdt_mobile] %d linked device(s) loaded'):format(#rows))
 end
 
-function Auth.CreateCode(player)
-    for code, p in pairs(pending) do
-        if p.citizenid == player.citizenid then pending[code] = nil end
+local function dropRequest(id)
+    local r = requests[id]
+    if r then byCode[r.code] = nil end
+    requests[id] = nil
+end
+
+--- A device asks to sign in. Returns { id, code, expires } or nil, error
+function Auth.Start(ip, device)
+    if not Util.RateLimit('start:' .. ip, Config.Pairing.startsPerMin) then
+        return nil, 'Too many attempts. Wait a minute and try again.'
     end
     local code
-    repeat code = Util.RandomCode() until not pending[code]
-    pending[code] = { citizenid = player.citizenid, name = player.name, expires = os.time() + Config.Pairing.codeLifetime }
-    return code
+    repeat code = Util.RandomCode() until not byCode[code]
+    local id = Util.RandomHex(48)
+    requests[id] = { code = code, expires = os.time() + Config.Pairing.codeLifetime, device = device }
+    byCode[code] = id
+    return { id = id, code = code, expires = Config.Pairing.codeLifetime }
 end
 
 local function devicesFor(cid)
@@ -33,27 +50,44 @@ local function devicesFor(cid)
     return list
 end
 
-function Auth.Pair(code, device, ip)
-    if not Util.RateLimit('pair:' .. ip, Config.Pairing.attemptsPerMin) then
-        return nil, 'Too many attempts. Wait a minute and try again.'
+--- The officer approves a code in game. Returns device label or nil, error
+function Auth.Approve(code, player)
+    if not Util.RateLimit('approve:' .. player.citizenid, 6) then
+        return nil, 'Too many attempts. Wait a minute.'
     end
-    local p = pending[code]
-    if not p or p.expires < os.time() then
-        pending[code] = nil
-        return nil, 'That code is wrong or has expired. Type /' .. Config.Commands.link .. ' in the city for a new one.'
+    local id = byCode[code]
+    local r = id and requests[id]
+    if not r or r.expires < os.time() or r.token then
+        return nil, 'That code is wrong or has run out. Get a new one from the app or website.'
     end
-    pending[code] = nil
 
-    local existing = devicesFor(p.citizenid)
+    local existing = devicesFor(player.citizenid)
     while #existing >= Config.Pairing.maxDevices do
         Auth.Revoke(table.remove(existing, 1).token)
     end
 
     local token = Util.RandomHex(64)
-    tokens[token] = { citizenid = p.citizenid, name = p.name, device = device, lastUsed = os.time() }
+    tokens[token] = { citizenid = player.citizenid, name = player.name, device = r.device, lastUsed = os.time() }
     MySQL.insert.await('INSERT INTO vinewood_mdt_mobile_tokens (token, citizenid, name, device) VALUES (?, ?, ?, ?)',
-        { token, p.citizenid, p.name, device })
-    return token, p
+        { token, player.citizenid, player.name, r.device })
+    r.token, r.name = token, player.name
+    r.expires = os.time() + 60 -- device has a minute to collect it
+    byCode[code] = nil
+    return r.device
+end
+
+--- The device checks whether its code has been approved yet.
+--- Returns 'waiting' | 'expired' | token, name
+function Auth.Poll(id)
+    local r = requests[id]
+    if not r or r.expires < os.time() then
+        dropRequest(id)
+        return 'expired'
+    end
+    if not r.token then return 'waiting' end
+    local token, name = r.token, r.name
+    dropRequest(id)
+    return token, name
 end
 
 function Auth.Revoke(token)
@@ -75,11 +109,11 @@ end
 function Auth.Authorize(header)
     local token = header and header:match('^Bearer%s+(%x+)$')
     local t = token and tokens[token]
-    if not t then return nil, 401, 'This phone is no longer linked. Link it again.' end
+    if not t then return nil, 401, 'This device is no longer linked. Sign in again.' end
 
     if (os.time() - (t.lastUsed or 0)) > Config.TokenIdleDays * 86400 then
         Auth.Revoke(token)
-        return nil, 401, 'Signed out after not being used for a while. Link it again.'
+        return nil, 401, 'Signed out after not being used for a while. Sign in again.'
     end
     if not Util.RateLimit('req:' .. token, Config.RequestsPerMin) then
         return nil, 429, 'Too many requests. Wait a moment.'
@@ -104,8 +138,8 @@ CreateThread(function()
     while true do
         Wait(30000)
         local now = os.time()
-        for code, p in pairs(pending) do
-            if p.expires < now then pending[code] = nil end
+        for id, r in pairs(requests) do
+            if r.expires < now then dropRequest(id) end
         end
     end
 end)

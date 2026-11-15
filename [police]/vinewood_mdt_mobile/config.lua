@@ -6,26 +6,30 @@ Config.Framework = 'auto'
 -- Name of the MDT resource folder.
 Config.MDTResource = 'vinewood-mdt'
 
--- Shown on the app's sign-in screen. Leave nil to use sv_projectName.
+-- Shown on the sign-in screen. Leave nil to use sv_projectName.
 Config.ForceName = nil
+
+-- Website: officers open https://<your-server>/vinewood_mdt_mobile/ in any browser.
+-- Set false to only allow the Android app.
+Config.Website = true
 
 -- In-game commands
 Config.Commands = {
-    link   = 'mdtlink',   -- shows a 6-digit pairing code
-    unlink = 'mdtunlink', -- signs out every phone linked to this character
+    link   = 'mdtlink',   -- /mdtlink 123456 approves the code shown on the app or website
+    unlink = 'mdtunlink', -- signs out every phone and browser linked to this character
 }
 
--- Notification style for the pairing code: 'ox_lib' | 'qb' | 'esx' | 'chat'
+-- Notification style: 'ox_lib' | 'qb' | 'esx' | 'chat'
 Config.Notify = 'ox_lib'
 
 Config.Pairing = {
-    codeLifetime   = 120, -- seconds a pairing code stays valid
-    maxDevices     = 3,   -- phones per character; the oldest is signed out when exceeded
-    attemptsPerMin = 5,   -- failed pairing attempts allowed per IP per minute
+    codeLifetime = 180, -- seconds a sign-in code shown on the app or website stays valid
+    maxDevices   = 3,   -- phones/browsers per character; the oldest is signed out when exceeded
+    startsPerMin = 6,   -- sign-in codes each IP can request per minute
 }
 
--- Requests per minute per phone. The MDT makes several requests per page.
+-- Requests per minute per device. The MDT makes several requests per page.
 Config.RequestsPerMin = 240
 
--- How long a linked phone stays signed in without being used (days).
+-- How long a linked device stays signed in without being used (days).
 Config.TokenIdleDays = 14

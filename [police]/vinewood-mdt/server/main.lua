@@ -3883,7 +3883,7 @@ exports('Request', function(src, action, data)
 end)
 
 ---------------------------------------------------------------------------
--- Vinewood MDT Mobile (vinewood_mdt_mobile): the phone app runs this tablet's own UI,
+-- Vinewood MDT Mobile (vinewood_mdt_mobile): the phone app and website run this tablet's own UI,
 -- so every action goes through handleRequest with the same permissions, audit and webhooks.
 ---------------------------------------------------------------------------
 -- Actions that need the officer at the tablet in-world (camera, inventory) stay in-game only.
@@ -3909,7 +3909,7 @@ exports('MobileAccess', function(src)
     return job and job.role or nil
 end)
 
---- Run any tablet action for a player from the phone app. Returns what the tablet would get,
+--- Run any tablet action for a player from the app or website. Returns what the tablet would get,
 --- including the client-side extras (vehicle model names, street names).
 exports('MobileRequest', function(src, action, data)
     src = tonumber(src)
@@ -3923,17 +3923,17 @@ exports('MobileRequest', function(src, action, data)
     return res
 end)
 
---- Where the player is standing (used by the app when creating incidents).
+--- Where the player is standing (used when creating incidents).
 exports('MobileLocation', function(src)
     return mobileClient(tonumber(src), 'vinewood-mdt:client:mobileLocation', 3000) or {}
 end)
 
---- Set a waypoint in the player's game from the app.
+--- Set a waypoint in the player's game.
 exports('MobileWaypoint', function(src, x, y)
     if tonumber(x) and tonumber(y) then TriggerClientEvent('vinewood-mdt:client:mobileWaypoint', src, tonumber(x), tonumber(y)) end
 end)
 
---- Attach the player to a vinewood-dispatch call from the app.
+--- Attach the player to a vinewood-dispatch call.
 exports('MobileRespond', function(src, data)
     if type(data) == 'table' and tonumber(data.id) then TriggerClientEvent('vinewood-mdt:client:mobileRespond', src, data) end
 end)

@@ -98,7 +98,7 @@ local function enrich(action, res)
     return res
 end
 
--- Vinewood MDT Mobile: the phone app asks the officer's game for the same extras the tablet gets.
+-- Vinewood MDT Mobile: the app and website ask the officer's game for the same extras the tablet gets.
 lib.callback.register('vinewood-mdt:client:mobileEnrich', function(action, res)
     local ok, out = pcall(enrich, action, res)
     return ok and out or res
@@ -111,7 +111,7 @@ end)
 
 RegisterNetEvent('vinewood-mdt:client:mobileWaypoint', function(x, y)
     SetNewWaypoint(x + 0.0, y + 0.0)
-    lib.notify({ title = 'MDT', description = 'Waypoint set from your phone.', type = 'success' })
+    lib.notify({ title = 'MDT', description = 'Waypoint set from the MDT app.', type = 'success' })
 end)
 
 RegisterNetEvent('vinewood-mdt:client:mobileRespond', function(data)

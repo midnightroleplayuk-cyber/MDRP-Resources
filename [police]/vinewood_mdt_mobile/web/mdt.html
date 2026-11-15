@@ -1,0 +1,288 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#071625">
+<meta name="referrer" content="no-referrer">
+<title>MDT</title>
+<link rel="icon" href="logo.png">
+<link rel="manifest" href="manifest.webmanifest">
+<style>
+html,body{margin:0;height:100%;background:#071625;color:#EAF0FA;font:15px/1.45 Roboto,"Segoe UI",system-ui,sans-serif}
+.vm-overlay{position:fixed;inset:0;z-index:60;background:#071625;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:24px;text-align:center}
+.vm-overlay[hidden]{display:none}
+.vm-batten{position:fixed;top:0;left:0;right:0;height:12px;background:
+  repeating-linear-gradient(90deg,#FFD21F 0 24px,#1E5BD7 24px 48px) top/100% 50% no-repeat,
+  repeating-linear-gradient(90deg,#1E5BD7 0 24px,#FFD21F 24px 48px) bottom/100% 50% no-repeat;margin-top:env(safe-area-inset-top,0px)}
+.vm-logo{width:88px;height:88px;border-radius:20px}
+.vm-spin{width:28px;height:28px;border:3px solid #183A6E;border-top-color:#FFD21F;border-radius:50%;animation:vmr .8s linear infinite}
+@keyframes vmr{to{transform:rotate(360deg)}}
+.vm-title{font:700 22px/1.2 "sans-serif-condensed","Roboto Condensed",system-ui,sans-serif;margin:0}
+.vm-msg{color:#8FA3C4;max-width:420px;margin:0}
+.vm-btn{border:0;border-radius:10px;padding:13px 18px;font:600 15px/1 inherit;background:#FFD21F;color:#1A1400;min-width:220px;cursor:pointer}
+.vm-btn.ghost{background:transparent;border:1px solid #2A4C80;color:#EAF0FA}
+.vm-btn.danger{background:transparent;border:1px solid #E2332E;color:#FF8A86}
+.vm-btn[hidden]{display:none}
+.vm-sheet{position:fixed;inset:0;z-index:70;background:rgba(2,8,20,.65);display:flex;align-items:flex-end;justify-content:center}
+.vm-sheet[hidden]{display:none}
+.vm-sheet .card{background:#0B2147;border:1px solid #183A6E;border-radius:16px 16px 0 0;width:100%;max-width:520px;padding:20px 18px calc(20px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:10px}
+@media (min-width:760px){.vm-sheet{align-items:center}.vm-sheet .card{border-radius:16px}}
+.vm-sheet .card .vm-btn{width:100%}
+.vm-sheet dl{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;margin:0 0 8px;font-size:14px}
+.vm-sheet dt{color:#8FA3C4}.vm-sheet dd{margin:0;word-break:break-all}
+.vm-toggle{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:10px 0;border-top:1px solid #183A6E;border-bottom:1px solid #183A6E;margin-bottom:6px;font-size:14px;cursor:pointer}
+.vm-toggle small{display:block;color:#8FA3C4;font-size:12px}
+.vm-toggle input{width:20px;height:20px;accent-color:#FFD21F;flex:none}
+@media (prefers-reduced-motion:reduce){.vm-spin{animation-duration:2s}}
+</style>
+</head>
+<body>
+
+<div id="vmBoot" class="vm-overlay">
+  <div class="vm-batten"></div>
+  <img class="vm-logo" src="logo.png" alt="">
+  <div class="vm-spin" aria-label="Loading"></div>
+  <p class="vm-msg" id="vmBootMsg">Opening the MDT…</p>
+</div>
+
+<div id="vmGate" class="vm-overlay" hidden>
+  <div class="vm-batten"></div>
+  <img class="vm-logo" src="logo.png" alt="">
+  <p class="vm-title" id="vmGateTitle">MDT not available</p>
+  <p class="vm-msg" id="vmGateMsg"></p>
+  <button class="vm-btn" id="vmRetry">Try again</button>
+  <button class="vm-btn ghost" data-vm-menu>Settings</button>
+</div>
+
+<div id="vmMenu" class="vm-sheet" hidden>
+  <div class="card" role="dialog" aria-labelledby="vmMenuTitle">
+    <p class="vm-title" id="vmMenuTitle" style="font-size:19px">This device</p>
+    <dl><dt>Signed in as</dt><dd id="vmWho">—</dd><dt>Server</dt><dd id="vmServer">—</dd></dl>
+    <label class="vm-toggle"><span>Streamer mode<small>Hides the server address on this screen</small></span><input type="checkbox" id="vmStream"></label>
+    <button class="vm-btn ghost" id="vmReload">Reload the MDT</button>
+    <button class="vm-btn ghost" id="vmChange">Use a different server</button>
+    <button class="vm-btn danger" id="vmSignOut">Sign out</button>
+    <button class="vm-btn ghost" id="vmMenuClose">Close</button>
+  </div>
+</div>
+
+<script>
+(() => {
+  'use strict';
+  const RES = 'vinewood-mdt';
+  const BRIDGE = 'vinewood_mdt_mobile';
+  const store = {
+    get: (k) => { try { return localStorage.getItem('vmdt.' + k); } catch { return null; } },
+    set: (k, v) => { try { v == null ? localStorage.removeItem('vmdt.' + k) : localStorage.setItem('vmdt.' + k, v); } catch {} },
+  };
+  const webMatch = location.pathname.match(/^(.*?)\/vinewood_mdt_mobile\//);
+  const WEB = !!webMatch && /^https?:$/.test(location.protocol);
+  const server = WEB ? location.origin + webMatch[1] : store.get('server');
+  const token = store.get('token');
+  if (!server || !token) { location.replace('index.html'); return; }
+
+  const el = (id) => document.getElementById(id);
+  const realFetch = window.fetch.bind(window);
+  let mdtLoaded = false;
+
+  // ---- Bridge calls --------------------------------------------------------
+  async function bridge(path, { method = 'GET', body } = {}) {
+    const headers = { 'Content-Type': 'application/json', Authorization: 'Bearer ' + token };
+    let res;
+    try {
+      res = await Promise.race([
+        realFetch(`${server}/${BRIDGE}${path}`, { method, headers, body: body ? JSON.stringify(body) : undefined }),
+        new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), 20000)),
+      ]);
+    } catch {
+      return { status: 0, data: { error: 'Couldn’t reach the server. Check your connection.' } };
+    }
+    let data = {};
+    try { data = await res.json(); } catch {}
+    if (res.status === 401) { signOutLocal(data.error); return { status: 401, data }; }
+    if (res.status === 403 || res.status === 503) showGate('MDT not available', data.error);
+    return { status: res.status, data };
+  }
+
+  function signOutLocal(msg) {
+    store.set('token', null);
+    location.replace('index.html' + (msg ? '?msg=' + encodeURIComponent(msg) : ''));
+  }
+
+  function showGate(title, msg) {
+    el('vmGateTitle').textContent = title;
+    el('vmGateMsg').textContent = msg || '';
+    el('vmBoot').hidden = true;
+    el('vmGate').hidden = false;
+  }
+
+  // ---- NUI shim: the MDT talks to "https://vinewood-mdt/…", we answer from the server ----
+  window.GetParentResourceName = () => RES;
+  const json = (o) => new Response(JSON.stringify(o ?? {}), { status: 200, headers: { 'Content-Type': 'application/json' } });
+
+  window.fetch = async (input, init = {}) => {
+    const url = typeof input === 'string' ? input : input.url;
+    const m = /^https:\/\/vinewood-mdt\/(\w+)/.exec(url);
+    if (!m) return realFetch(input, init);
+    let body = {};
+    try { body = JSON.parse(init.body || '{}'); } catch {}
+    switch (m[1]) {
+      case 'request':         return json((await bridge('/api/mdt', { method: 'POST', body: { action: body.action, data: body.data } })).data);
+      case 'location':        return json((await bridge('/api/location', { method: 'POST', body: {} })).data);
+      case 'waypoint':        await bridge('/api/waypoint', { method: 'POST', body }); return json(true);
+      case 'dispatchRespond': await bridge('/api/respond', { method: 'POST', body }); return json(true);
+      case 'close':           openMenu(); return json(true);
+      case 'mugshot':         return json({ error: 'Take custody photos on the MDT in the city.' });
+      case 'openEvidence':    return json({ error: 'Open evidence bags on the MDT in the city.' });
+      default:                return json({});
+    }
+  };
+
+  // Images the MDT references as nui:// paths come from the server instead
+  const NUI_IMG = /^(?:nui:\/\/|https:\/\/cfx-nui-)vinewood-mdt\/(.+)$/;
+  function fixImg(img) {
+    const m = NUI_IMG.exec(img.getAttribute('src') || '');
+    if (m) img.src = `${server}/${BRIDGE}/asset?path=${encodeURIComponent(m[1])}`;
+  }
+  new MutationObserver((list) => {
+    for (const rec of list) {
+      if (rec.type === 'attributes') { fixImg(rec.target); continue; }
+      for (const n of rec.addedNodes) {
+        if (n.nodeType !== 1) continue;
+        if (n.tagName === 'IMG') fixImg(n);
+        n.querySelectorAll?.('img').forEach(fixImg);
+      }
+    }
+  }).observe(document.documentElement, { childList: true, subtree: true, attributes: true, attributeFilter: ['src'] });
+
+  // ---- Load the MDT -------------------------------------------------------
+  async function getUi() {
+    let cached = null;
+    try { cached = JSON.parse(store.get('ui') || 'null'); } catch {}
+    const r = await bridge('/api/ui' + (cached ? '?v=' + encodeURIComponent(cached.version) : ''));
+    if (r.status !== 200) return null;
+    if (r.data.same && cached) return cached;
+    if (r.data.js) store.set('ui', JSON.stringify(r.data));
+    return r.data.js ? r.data : null;
+  }
+
+  function mount(ui) {
+    const doc = new DOMParser().parseFromString(ui.html, 'text/html');
+    doc.querySelectorAll('head link[href*="fonts.g"]').forEach((l) => document.head.appendChild(document.importNode(l, true)));
+
+    const style = document.createElement('style');
+    style.textContent = ui.css;
+    document.head.appendChild(style);
+    const mobile = document.createElement('link');
+    mobile.rel = 'stylesheet'; mobile.href = 'mobile.css';
+    document.head.appendChild(mobile);
+
+    doc.body.querySelectorAll('script').forEach((s) => s.remove());
+    const frag = document.createDocumentFragment();
+    [...doc.body.childNodes].forEach((n) => frag.appendChild(document.importNode(n, true)));
+    document.body.insertBefore(frag, el('vmBoot'));
+
+    // Drawer button and backdrop for the nav on narrow screens
+    const burger = document.createElement('button');
+    burger.className = 'vm-burger'; burger.setAttribute('aria-label', 'Menu');
+    burger.innerHTML = '<svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg>';
+    burger.addEventListener('click', () => document.body.classList.add('vm-nav-open'));
+    document.querySelector('.topbar').prepend(burger);
+    const scrim = document.createElement('div');
+    scrim.className = 'vm-scrim';
+    scrim.addEventListener('click', closeNav);
+    document.body.appendChild(scrim);
+    document.getElementById('nav').addEventListener('click', (e) => { if (e.target.closest('button')) closeNav(); });
+
+    const close = document.getElementById('closeBtn');
+    if (close) { close.title = 'Settings'; close.setAttribute('aria-label', 'Settings'); }
+
+    const script = document.createElement('script');
+    script.textContent = ui.js + '\n//# sourceURL=vinewood-mdt-app.js';
+    document.body.appendChild(script);
+    mdtLoaded = true;
+  }
+
+  function closeNav() { document.body.classList.remove('vm-nav-open'); }
+
+  function openMdt() {
+    window.postMessage({ action: 'open' }, '*');
+    const wait = setInterval(() => {
+      const t = document.getElementById('tablet');
+      if (t && !t.classList.contains('hidden')) { clearInterval(wait); el('vmBoot').hidden = true; }
+    }, 100);
+    setTimeout(() => clearInterval(wait), 15000);
+  }
+
+  async function start() {
+    el('vmGate').hidden = true;
+    el('vmBoot').hidden = false;
+    el('vmBootMsg').textContent = 'Opening the MDT…';
+    const me = await bridge('/api/me');
+    if (me.status !== 200) { if (me.status === 0) showGate('Can’t reach the server', me.data.error); return; }
+    el('vmWho').textContent = me.data.name || '—';
+    if (me.data.force) document.title = `${me.data.force} MDT`;
+    if (!mdtLoaded) {
+      el('vmBootMsg').textContent = 'Loading the MDT…';
+      const ui = await getUi();
+      if (!ui) return;
+      mount(ui);
+    }
+    openMdt();
+  }
+
+  // ---- Settings sheet -------------------------------------------------------
+  const streamer = () => store.get('streamer') === '1';
+  function openMenu() {
+    el('vmServer').textContent = streamer() ? 'Hidden (streamer mode)' : server;
+    el('vmStream').checked = streamer();
+    el('vmMenu').hidden = false;
+  }
+  function closeMenu() { el('vmMenu').hidden = true; }
+  el('vmMenuTitle').textContent = WEB ? 'This browser' : 'This phone';
+  el('vmChange').hidden = WEB;
+  el('vmStream').onchange = (e) => { store.set('streamer', e.target.checked ? '1' : null); openMenu(); };
+  document.querySelectorAll('[data-vm-menu]').forEach((b) => b.addEventListener('click', openMenu));
+  el('vmMenuClose').onclick = closeMenu;
+  el('vmMenu').addEventListener('click', (e) => { if (e.target === el('vmMenu')) closeMenu(); });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !el('vmMenu').hidden) { e.stopImmediatePropagation(); closeMenu(); } }, true);
+  el('vmRetry').onclick = start;
+  el('vmReload').onclick = () => { store.set('ui', null); location.reload(); };
+  el('vmChange').onclick = () => { store.set('token', null); store.set('server', null); store.set('ui', null); location.replace('index.html'); };
+  el('vmSignOut').onclick = async () => {
+    try { await realFetch(`${server}/${BRIDGE}/api/unpair`, { method: 'POST', headers: { Authorization: 'Bearer ' + token } }); } catch {}
+    signOutLocal('Signed out.');
+  };
+
+  // ---- Back button (Android, or the browser's back) -----------------------
+  const BACK_ARROW = 'M10 6l-6 6 6 6';
+  history.pushState({ vm: 1 }, '');
+  window.addEventListener('popstate', () => {
+    const modal = document.getElementById('modal');
+    let handled = true;
+    if (!el('vmMenu').hidden) closeMenu();
+    else if (document.body.classList.contains('vm-nav-open')) closeNav();
+    else if (modal && !modal.classList.contains('hidden')) {
+      document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+    } else {
+      const back = [...document.querySelectorAll('#main .page-head button')].find((b) => b.innerHTML.includes(BACK_ARROW));
+      const home = document.querySelector('#nav button[data-view="home"]');
+      if (back) back.click();
+      else if (home && !home.classList.contains('active')) home.click();
+      else handled = false;
+    }
+    if (handled) history.pushState({ vm: 1 }, ''); // otherwise the next press leaves
+  });
+
+  // ---- Keep it fresh ------------------------------------------------------
+  setInterval(() => { if (mdtLoaded && !document.hidden) window.postMessage({ action: 'callsChanged' }, '*'); }, 20000);
+  document.addEventListener('visibilitychange', () => {
+    if (!document.hidden && mdtLoaded) bridge('/api/me').then((r) => { if (r.status === 200) { el('vmGate').hidden = true; window.postMessage({ action: 'open' }, '*'); } });
+  });
+
+  start();
+})();
+</script>
+</body>
+</html>

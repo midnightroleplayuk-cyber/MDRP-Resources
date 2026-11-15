@@ -4,8 +4,8 @@ lua54 'yes'
 
 name 'vinewood_mdt_mobile'
 author 'Vinewood Studios'
-description 'Runs the full Vinewood MDT on the Vinewood MDT Android app'
-version '2.0.0'
+description 'Runs the full Vinewood MDT on phones (Android app) and in any web browser'
+version '2.1.0'
 
 shared_script 'config.lua'
 

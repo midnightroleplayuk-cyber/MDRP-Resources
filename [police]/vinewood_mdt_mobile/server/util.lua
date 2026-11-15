@@ -22,15 +22,13 @@ function Util.UrlDecode(s)
     return (s:gsub('%%(%x%x)', function(h) return string.char(tonumber(h, 16)) end))
 end
 
--- '/api/person?q=john' -> '/api/person', { q = 'john' }
+-- '/api/x?q=john' -> '/api/x', { q = 'john' }
 function Util.ParsePath(path)
     local p, qs = path:match('^([^?]*)%??(.*)$')
     local query = {}
     for k, v in qs:gmatch('([^&=]+)=?([^&]*)') do
         query[Util.UrlDecode(k)] = Util.UrlDecode(v)
     end
-    p = p:gsub('/+$', '')
-    if p == '' then p = '/' end
     return p, query
 end
 
@@ -60,18 +58,18 @@ function Util.Notify(src, message, kind)
     local mode = Config.Notify
     if mode == 'ox_lib' then
         TriggerClientEvent('ox_lib:notify', src, {
-            title = 'MDT mobile', description = message, type = kind or 'inform', duration = 20000,
+            title = 'MDT app', description = message, type = kind or 'inform', duration = 8000,
         })
     elseif mode == 'qb' then
-        TriggerClientEvent('QBCore:Notify', src, message, kind or 'primary', 20000)
+        TriggerClientEvent('QBCore:Notify', src, message, kind or 'primary', 8000)
     elseif mode == 'esx' then
         TriggerClientEvent('esx:showNotification', src, message)
     else
-        TriggerClientEvent('chat:addMessage', src, { args = { 'MDT mobile', message } })
+        TriggerClientEvent('chat:addMessage', src, { args = { 'MDT app', message } })
     end
 end
 
--- Simple sliding one-minute counter
+-- Counter per key per minute
 local buckets = {}
 function Util.RateLimit(key, limit)
     local now = os.time()
