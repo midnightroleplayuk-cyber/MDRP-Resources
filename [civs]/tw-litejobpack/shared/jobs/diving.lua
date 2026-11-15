@@ -60,6 +60,12 @@ local DivingJob = {
             { item = "blueprint_spikey_bat", count = 1, chance = 5 },
             { item = "blueprint_tactical_hatchet",     count = 1, chance = 5 },
             { item = "ali_pole",     count = 1, chance = 15 },
+            { item = "rusty_chain",     count = 1, chance = 15 },
+            { item = "rusty_scrap",     count = 1, chance = 15 },
+             { item = "rolex",     count = 1, chance = 15 },
+            { item = "diamond_ring",     count = 1, chance = 15 },
+            { item = "binoculars",     count = 1, chance = 15 },
+            { item = "expensive_sneakers",     count = 1, chance = 15 },
         },
     },
 
