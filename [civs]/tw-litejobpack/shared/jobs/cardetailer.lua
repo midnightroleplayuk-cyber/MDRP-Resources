@@ -48,11 +48,12 @@ local CarDetailerJob = {
     },
 
     missioncompletedItems = {
-        giveItemPlayer = false, -- true = give items on job complete | false = no items given
+        giveItemPlayer = true, -- true = give items on job complete | false = no items given
         dropMode = "weightedPool", -- "weightedPool" = pick one item by chance weight | "perItem" = each item rolls independently
         itemList = {
-            { item = "sandwich",     count = 1, chance = 50 },
-            { item = "water_bottle", count = 1, chance = 30 },
+            { item = "glass",     count = 1, chance = 5 },
+            { item = "gsr_cloth", count = 1, chance = 5 },
+            { item = "lockpick", count = 1, chance = 5 },
         },
     },
 }
@@ -387,16 +388,16 @@ CarDetailerJob.clothes = {
         helmet_2 = 0,
     },
     female = {
-        tshirt_1 = 59,
+        tshirt_1 = 57,
         tshirt_2 = 1,
         torso_1 = 412,
         torso_2 = 0,
         decals_1 = 0,
         decals_2 = 0,
         arms = 88,
-        pants_1 = 102,
+        pants_1 = 30,
         pants_2 = 0,
-        shoes_1 = 60,
+        shoes_1 = 24,
         shoes_2 = 10,
         chain_1 = -1,
         chain_2 = 0,
