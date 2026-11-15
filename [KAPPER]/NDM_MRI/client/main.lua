@@ -169,7 +169,8 @@ local function startTableMotion(id)
             return
         end
         carrier, carrierScanner = ent, id
-        SetEntityVisible(carrier, false, false)
+        -- visible in debug so an onlooker can see whether the box itself moves
+        SetEntityVisible(carrier, Config.Debug == true, false)
         SetEntityCollision(carrier, false, false)
         SetEntityCoordsNoOffset(carrier, start.x, start.y, start.z, false, false, false)
         SetEntityHeading(carrier, s.table.w)
