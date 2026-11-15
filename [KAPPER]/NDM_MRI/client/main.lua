@@ -7,10 +7,17 @@ local function notify(msg, kind)
     lib.notify({ title = 'MRI', description = msg, type = kind or 'inform' })
 end
 
--- No collision / no ragdoll while the table carries the patient through the scanner model
-local function setGhost(ped, on)
-    SetEntityCollision(ped, not on, not on)
-    SetPedCanRagdoll(ped, not on)
+-- Invisible object the patient is attached to while the table moves. Moving the ped itself
+-- (SetEntityCoords every frame) cancels its animation and leaves it in a T-pose.
+local carrier = nil
+local CARRIER_MODEL = `prop_cs_cardbox_01`
+
+local function removeCarrier(ped)
+    if not carrier then return end
+    DetachEntity(ped, true, false)
+    if DoesEntityExist(carrier) then DeleteEntity(carrier) end
+    carrier = nil
+    SetPedCanRagdoll(ped, true)
 end
 
 local function ospIsDead()
@@ -39,7 +46,7 @@ local function getUp()
     lyingOn = nil
     moveToken = moveToken + 1
     local ped = cache.ped
-    setGhost(ped, false)
+    removeCarrier(ped)
     FreezeEntityPosition(ped, false)
     if not ospIsDead() then
         ClearPedTasks(ped)
@@ -99,57 +106,63 @@ end)
 -- Table movement (slides the patient in / out of the bore)
 ---------------------------------------------------------------------------
 
--- Smoothly moves the ped between two points. Returns false if interrupted.
-local function slide(ped, from, to, ms, token, heading)
+local carrierHome = nil -- where the carrier started (patient's spot on the table)
+
+-- Smoothly moves the carrier between two points. Returns false if interrupted.
+local function slide(from, to, ms, token)
     local start = GetGameTimer()
-    local nextPoseCheck = start + 500
     while true do
-        if token ~= moveToken then return false end
+        if token ~= moveToken or not carrier then return false end
         local p = math.min((GetGameTimer() - start) / ms, 1.0)
         local e = p * p * (3.0 - 2.0 * p) -- ease in / out
         local pos = from + (to - from) * e
-        SetEntityCoordsNoOffset(ped, pos.x, pos.y, pos.z, false, false, false)
-        SetEntityHeading(ped, heading)
-        -- keep the lying pose if anything knocked it off (throttled: re-tasking every frame
-        -- restarts the anim before it can start, which leaves the ped in a T-pose)
-        if GetGameTimer() >= nextPoseCheck then
-            nextPoseCheck = GetGameTimer() + 500
-            if not IsEntityPlayingAnim(ped, Config.LieAnim.dict, Config.LieAnim.clip, 3) then
-                playLie(ped)
-            end
-        end
+        SetEntityCoordsNoOffset(carrier, pos.x, pos.y, pos.z, false, false, false)
         if p >= 1.0 then return true end
         Wait(0)
     end
 end
 
-local function tableHome(s)
-    return vector3(s.table.x, s.table.y, s.table.z + 0.02)
-end
-
 local function startTableMotion(id)
     local s = Config.Scanners[id]
-    if not s or not s.bore or lyingOn ~= id or ospIsDead() then return end
+    if not s or not s.bore or lyingOn ~= id or ospIsDead() or carrier then return end
     moveToken = moveToken + 1
     local token = moveToken
     local m = Config.TableMotion
     CreateThread(function()
         local ped = cache.ped
-        local home = tableHome(s)
-        local bore = vector3(s.bore.x, s.bore.y, home.z)
-        local dir = home - bore
+        local start = GetEntityCoords(ped)
+
+        lib.requestModel(CARRIER_MODEL)
+        carrier = CreateObject(CARRIER_MODEL, start.x, start.y, start.z, true, false, false)
+        SetModelAsNoLongerNeeded(CARRIER_MODEL)
+        if not carrier or carrier == 0 then carrier = nil return end
+        SetEntityVisible(carrier, false, false)
+        SetEntityCollision(carrier, false, false)
+        SetEntityCoordsNoOffset(carrier, start.x, start.y, start.z, false, false, false)
+        SetEntityHeading(carrier, s.table.w)
+        FreezeEntityPosition(carrier, true)
+        carrierHome = start
+
+        SetPedCanRagdoll(ped, false)
+        FreezeEntityPosition(ped, false)
+        AttachEntityToEntity(ped, carrier, 0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, false, false, false, false, 2, true)
+        playLie(ped)
+
+        -- the slide is the table -> bore offset applied to wherever the patient actually lies
+        local delta = vector3(s.bore.x - s.table.x, s.bore.y - s.table.y, 0.0)
+        local inside = start + delta
+        local dir = -delta
         local len = #dir
         if len > 0.001 then dir = dir / len end
 
-        setGhost(ped, true)
-        if not slide(ped, GetEntityCoords(ped), bore, m.slideTime, token, s.table.w) then return end
+        if not slide(start, inside, m.slideTime, token) then return end
 
-        local pos, out = bore, false
+        local pos, out = inside, false
         while token == moveToken and lyingOn == id and (m.shuffle or 0) > 0 do
             Wait(m.pause)
             out = not out
-            local target = out and (bore + dir * m.shuffle) or bore
-            if not slide(ped, pos, target, m.shuffleTime, token, s.table.w) then return end
+            local target = out and (inside + dir * m.shuffle) or inside
+            if not slide(pos, target, m.shuffleTime, token) then return end
             pos = target
         end
     end)
@@ -159,11 +172,17 @@ local function stopTableMotion(id)
     moveToken = moveToken + 1
     local token = moveToken
     local s = Config.Scanners[id]
-    if not s or not s.bore or lyingOn ~= id or ospIsDead() then return end
+    if not s or not carrier or lyingOn ~= id then return end
     CreateThread(function()
         local ped = cache.ped
-        if slide(ped, GetEntityCoords(ped), tableHome(s), Config.TableMotion.slideTime, token, s.table.w) then
-            setGhost(ped, false)
+        if not slide(GetEntityCoords(carrier), carrierHome, Config.TableMotion.slideTime, token) then return end
+        removeCarrier(ped)
+        if lyingOn == id and not ospIsDead() then
+            local t = s.table
+            SetEntityCoords(ped, t.x, t.y, t.z + 0.02, false, false, false, false)
+            SetEntityHeading(ped, t.w)
+            playLie(ped)
+            FreezeEntityPosition(ped, true)
         end
     end)
 end
@@ -370,5 +389,6 @@ end, false)
 
 AddEventHandler('onResourceStop', function(res)
     if res ~= GetCurrentResourceName() then return end
-    if lyingOn then setGhost(cache.ped, false) FreezeEntityPosition(cache.ped, false) ClearPedTasks(cache.ped) lib.hideTextUI() end
+    removeCarrier(cache.ped)
+    if lyingOn then FreezeEntityPosition(cache.ped, false) ClearPedTasks(cache.ped) lib.hideTextUI() end
 end)
