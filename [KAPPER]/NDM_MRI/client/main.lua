@@ -1,6 +1,7 @@
 local lyingOn = nil          -- scanner id we are lying on
 local scanning = false       -- this client is running a scan as the medic
 local activeSounds = {}      -- [scannerId] = true while that scanner is running
+local moveToken = 0          -- bumped to cancel any table movement in progress
 
 local function notify(msg, kind)
     lib.notify({ title = 'MRI', description = msg, type = kind or 'inform' })
@@ -30,6 +31,7 @@ local function getUp()
     if not lyingOn then return end
     local id = lyingOn
     lyingOn = nil
+    moveToken = moveToken + 1
     local ped = cache.ped
     FreezeEntityPosition(ped, false)
     if not ospIsDead() then
@@ -86,12 +88,75 @@ RegisterNetEvent('NDM_MRI:client:getUp', function()
     getUp()
 end)
 
+---------------------------------------------------------------------------
+-- Table movement (slides the patient in / out of the bore)
+---------------------------------------------------------------------------
+
+-- Smoothly moves the ped between two points. Returns false if interrupted.
+local function slide(ped, from, to, ms, token, heading)
+    local start = GetGameTimer()
+    while true do
+        if token ~= moveToken then return false end
+        local p = math.min((GetGameTimer() - start) / ms, 1.0)
+        local e = p * p * (3.0 - 2.0 * p) -- ease in / out
+        local pos = from + (to - from) * e
+        SetEntityCoordsNoOffset(ped, pos.x, pos.y, pos.z, false, false, false)
+        SetEntityHeading(ped, heading)
+        if p >= 1.0 then return true end
+        Wait(0)
+    end
+end
+
+local function tableHome(s)
+    return vector3(s.table.x, s.table.y, s.table.z + 0.02)
+end
+
+local function startTableMotion(id)
+    local s = Config.Scanners[id]
+    if not s or not s.bore or lyingOn ~= id or ospIsDead() then return end
+    moveToken = moveToken + 1
+    local token = moveToken
+    local m = Config.TableMotion
+    CreateThread(function()
+        local ped = cache.ped
+        local home = tableHome(s)
+        local bore = vector3(s.bore.x, s.bore.y, home.z)
+        local dir = home - bore
+        local len = #dir
+        if len > 0.001 then dir = dir / len end
+
+        if not slide(ped, GetEntityCoords(ped), bore, m.slideTime, token, s.table.w) then return end
+
+        local pos, out = bore, false
+        while token == moveToken and lyingOn == id and (m.shuffle or 0) > 0 do
+            Wait(m.pause)
+            out = not out
+            local target = out and (bore + dir * m.shuffle) or bore
+            if not slide(ped, pos, target, m.shuffleTime, token, s.table.w) then return end
+            pos = target
+        end
+    end)
+end
+
+local function stopTableMotion(id)
+    moveToken = moveToken + 1
+    local token = moveToken
+    local s = Config.Scanners[id]
+    if not s or not s.bore or lyingOn ~= id or ospIsDead() then return end
+    CreateThread(function()
+        local ped = cache.ped
+        slide(ped, GetEntityCoords(ped), tableHome(s), Config.TableMotion.slideTime, token, s.table.w)
+    end)
+end
+
 RegisterNetEvent('NDM_MRI:client:holdStill', function(id, duration)
     if duration and duration > 0 then
         notify('MRI scan in progress, hold still...', 'inform')
         FreezeEntityPosition(cache.ped, true)
-    elseif lyingOn ~= id then
-        FreezeEntityPosition(cache.ped, false)
+        startTableMotion(id)
+    else
+        stopTableMotion(id)
+        if lyingOn ~= id then FreezeEntityPosition(cache.ped, false) end
     end
 end)
 

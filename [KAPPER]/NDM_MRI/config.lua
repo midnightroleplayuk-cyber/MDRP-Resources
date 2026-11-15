@@ -19,7 +19,18 @@ Config.Scanners = {
         label = 'Burton MRI',
         table = vector4(-324.27, -108.85, 39.74, 72.29),
         console = vector3(-329.19, -105.1, 38.74),
+        -- optional: point inside the scanner bore the table slides the patient to during a scan.
+        -- Only x / y are used (the table height is kept). Leave nil for no table movement.
+        -- bore = vector3(-325.70, -109.30, 39.74),
     },
+}
+
+-- Table movement during a scan (only for scanners with a `bore` set)
+Config.TableMotion = {
+    slideTime = 3000,   -- ms to slide in at the start / out at the end
+    shuffle = 0.35,     -- metres the table moves back and forth while scanning (0 = stay still)
+    shuffleTime = 1800, -- ms for each back / forth move
+    pause = 1500,       -- ms to sit still between moves
 }
 
 Config.ScanDuration = 20000        -- ms the scan takes (progress bar length)
