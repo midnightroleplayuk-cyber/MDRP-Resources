@@ -47,11 +47,10 @@ local PowerlinesJob = {
     },
 
     missioncompletedItems = {
-        giveItemPlayer = false, -- true = give items on job complete | false = no items given
+        giveItemPlayer = true, -- true = give items on job complete | false = no items given
         dropMode = "weightedPool", -- "weightedPool" = pick one item by chance weight | "perItem" = each item rolls independently
         itemList = {
-            { item = "sandwich",     count = 1, chance = 50 },
-            { item = "water_bottle", count = 1, chance = 30 },
+            { item = "lockpick",     count = 1, chance = 50 },
         },
     },
 
@@ -279,20 +278,20 @@ local PowerlinesJob = {
             helmet_2 = 0,
         },
         female = {
-            tshirt_1 = 15,
+            tshirt_1 = 219,
             tshirt_2 = 0,
-            torso_1 = 300,
+            torso_1 = 382,
             torso_2 = 0,
             decals_1 = 0,
             decals_2 = 0,
-            arms = 0,
-            pants_1 = 99,
+            arms = 232,
+            pants_1 = 141,
             pants_2 = 0,
             shoes_1 = 52,
             shoes_2 = 0,
             chain_1 = -1,
             chain_2 = 0,
-            helmet_1 = 39,
+            helmet_1 = 174,
             helmet_2 = 0,
         },
     },

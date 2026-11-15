@@ -45,11 +45,23 @@ local WarehouseJob = {
     },
 
     missioncompletedItems = {
-        giveItemPlayer = false, -- true = give items on job complete | false = no items given
+        giveItemPlayer = true, -- true = give items on job complete | false = no items given
         dropMode = "weightedPool", -- "weightedPool" = pick one item by chance weight | "perItem" = each item rolls independently
         itemList = {
-            { item = "sandwich",     count = 1, chance = 50 },
-            { item = "water_bottle", count = 1, chance = 30 },
+            { item = "blueprint_kitchen_knife",     count = 1, chance = 5 },
+            { item = "blueprint_sledgehammer", count = 1, chance = 5 },
+            { item = "blueprint_spiked_knuckles", count = 1, chance = 5 },
+            { item = "blueprint_spikey_bat", count = 1, chance = 30 },
+            { item = "blueprint_tactical_hatchet",     count = 1, chance = 5 },
+            { item = "sledgehammer_handle", count = 1, chance = 30 },
+            { item = "knife_handle",     count = 1, chance = 10 },
+            { item = "hatchet_handle", count = 1, chance = 10 },
+            { item = "rolex",     count = 1, chance = 20 },
+            { item = "goldchain",     count = 1, chance = 20 },
+            { item = "binoculars", count = 1, chance = 20 },
+            { item = "diamond_ring",     count = 1, chance = 20 },
+            { item = "expensive_sneakers", count = 1, chance = 20 },
+            { item = "lighter", count = 1, chance = 20 },
         },
     },
 

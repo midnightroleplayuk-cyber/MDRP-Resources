@@ -48,11 +48,11 @@ local LandscapingJob = {
     },
 
     missioncompletedItems = {
-        giveItemPlayer = false, -- true = give items on job complete | false = no items given
+        giveItemPlayer = true, -- true = give items on job complete | false = no items given
         dropMode = "weightedPool", -- "weightedPool" = pick one item by chance weight | "perItem" = each item rolls independently
         itemList = {
-            { item = "sandwich",     count = 1, chance = 50 },
-            { item = "water_bottle", count = 1, chance = 30 },
+            { item = "wood",     count = 1, chance = 50 },
+            { item = "kq_weed_fertilizer_speed", count = 1, chance = 20 },
         },
     },
 
@@ -493,20 +493,20 @@ local LandscapingJob = {
             helmet_2 = 0,
         },
         female = {
-            tshirt_1 = 15,
+            tshirt_1 = 0,
             tshirt_2 = 0,
-            torso_1 = 59,
+            torso_1 = 118,
             torso_2 = 2,
             decals_1 = 0,
             decals_2 = 0,
-            arms = 0,
-            pants_1 = 30,
+            arms = 82,
+            pants_1 = 101,
             pants_2 = 0,
             shoes_1 = 55,
             shoes_2 = 0,
             chain_1 = -1,
             chain_2 = 0,
-            helmet_1 = -1,
+            helmet_1 = 0,
             helmet_2 = 0,
         },
     },

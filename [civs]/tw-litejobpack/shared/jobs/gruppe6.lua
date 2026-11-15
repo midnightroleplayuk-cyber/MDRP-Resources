@@ -39,11 +39,16 @@ local Gruppe6Job = {
     },
 
     missioncompletedItems = {
-        giveItemPlayer = false,    -- true = give items on job complete | false = no items given
+        giveItemPlayer = true,    -- true = give items on job complete | false = no items given
         dropMode = "weightedPool", -- "weightedPool" = pick one item by chance weight | "perItem" = each item rolls independently
         itemList = {
-            { item = "sandwich",     count = 1, chance = 50 },
-            { item = "water_bottle", count = 1, chance = 30 },
+            { item = "usb_blue",     count = 1, chance = 5 },
+            { item = "usb_red", count = 1, chance = 5 },
+            { item = "usb_green", count = 1, chance = 5 },
+            { item = "rolex",     count = 1, chance = 20 },
+            { item = "goldchain",     count = 1, chance = 20 },
+            { item = "binoculars", count = 1, chance = 20 },
+            { item = "diamond_ring",     count = 1, chance = 20 },
         },
     },
 

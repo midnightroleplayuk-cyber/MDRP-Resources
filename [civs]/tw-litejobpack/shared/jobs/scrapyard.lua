@@ -46,11 +46,18 @@ local ScrapyardJob = {
     },
 
     missioncompletedItems = {
-        giveItemPlayer = false, -- true = give items on job complete | false = no items given
+        giveItemPlayer = true, -- true = give items on job complete | false = no items given
         dropMode = "weightedPool", -- "weightedPool" = pick one item by chance weight | "perItem" = each item rolls independently
         itemList = {
-            { item = "sandwich",     count = 1, chance = 50 },
-            { item = "water_bottle", count = 1, chance = 30 },
+        { item = "metalscrap",     count = 1, chance = 15 },
+        { item = "steel", count = 1, chance = 15 },
+        { item = "plastic",     count = 1, chance = 15 },
+	    { item = "iron",     count = 1, chance = 15 },
+	    { item = "rubber",     count = 1, chance = 15 },
+	    { item = "aluminium",     count = 1, chance = 15 },
+	    { item = "batnails",     count = 1, chance = 15 },
+        { item = "rusty_chain", count = 1, chance = 25 },
+        { item = "rusty_scrap",     count = 1, chance = 25 },
         },
     },
 

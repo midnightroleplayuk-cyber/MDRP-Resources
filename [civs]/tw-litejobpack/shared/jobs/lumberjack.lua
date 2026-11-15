@@ -46,11 +46,13 @@ local LumberjackJob = {
     },
 
     missioncompletedItems = {
-        giveItemPlayer = false,    -- true = give items on job complete | false = no items given
+        giveItemPlayer = true,    -- true = give items on job complete | false = no items given
         dropMode = "weightedPool", -- "weightedPool" = pick one item by chance weight | "perItem" = each item rolls independently
         itemList = {
-            { item = "sandwich",     count = 1, chance = 50 },
-            { item = "water_bottle", count = 1, chance = 30 },
+            { item = "wood",     count = 1, chance = 50 },
+            { item = "kq_weed_fertilizer_yield", count = 1, chance = 20 },
+            { item = "sledgehammer_handle", count = 1, chance = 30 },
+            { item = "hatchet_handle", count = 1, chance = 10 },
         },
     },
 
