@@ -18,13 +18,14 @@ Config.Enable_Ace_Permissions = false                 -- server/s_functions.lua
 Config.Enable_ESX_Permissions = false                 -- client/c_functions.lua & server/s_functions.lua
 Config.Enable_QBCore_Permissions = {
     Check_By_Job = true,                              -- client/c_functions.lua & server/s_functions.lua
-    Check_By_Permissions = true,                      -- server/s_functions.lua
+    Check_By_Permissions = false,                      -- server/s_functions.lua
 }
 
 Config.PermissionRoles = {
     'police',
     'ambulance',
     'fire',
+    'gov',
 }
 
 --====================== REQUIRED ITEM ======================--
@@ -137,8 +138,8 @@ Config.Stretch = {
     -- A player driving into tape faster than Speed tears it down for everybody. Slower,
     -- the tape stretches and lets them through. Needs Enabled and Vehicles above.
     Tear = {
-        Enabled = true,
-        Speed = 96.56,   -- km/h
+        Enabled = false,
+        Speed = 50.0,   -- km/h
     },
 }
 
@@ -206,7 +207,8 @@ Config.AnchorTapeHeight = nil       -- fixed tie height above the ground in metr
 
 -- One model per legend so different tapes can show different styles at once.
 -- Set enabled = false to hide a style from placing and restyling. Saved tapes in a hidden style switch to the first enabled one.
--- The designs live in tools/tape_styles.py. Rebuild with tools/build_tape.py, then add a line here.
+-- A style's look is the texture "tape_diffuse" in stream/<model>.ytd, which you can replace with your own.
+-- color fills the style's box in the panel until its picture has loaded. The README has the steps under "Your own tape".
 Config.Textures = {
     -- General
     { id = 'police', label = 'Police line', model = 'ns_tape_police', enabled = false, color = { r = 245, g = 206, b = 20 } },
@@ -277,4 +279,12 @@ Config.Textures = {
     { id = 'plain_bluewhite', label = 'Plain blue/white', model = 'ns_tape_plain_bluewhite', enabled = true, color = { r = 30, g = 76, b = 158 } },
     { id = 'plain_redwhite_blocks', label = 'Plain red/white blocks', model = 'ns_tape_plain_redwhite_blocks', enabled = true, color = { r = 210, g = 31, b = 40 } },
     { id = 'plain_yellow', label = 'Plain yellow', model = 'ns_tape_plain_yellow', enabled = true, color = { r = 245, g = 206, b = 20 } },
+
+    -- Your own tapes: five blank slots, off until you fill them. Put your texture in stream/ns_tape_custom_1.ytd
+    -- and your picture in html/tapes/custom_1.jpg, then set the label, the colour and enabled = true.
+    { id = 'custom_1', label = 'Kapper Crashed', model = 'ns_tape_custom_1', enabled = true, color = { r = 127, g = 53, b = 203 } }, --Kapper Tape
+    { id = 'custom_2', label = 'Custom 2', model = 'ns_tape_custom_2', enabled = false, color = { r = 243, g = 243, b = 239 } },
+    { id = 'custom_3', label = 'Custom 3', model = 'ns_tape_custom_3', enabled = false, color = { r = 243, g = 243, b = 239 } },
+    { id = 'custom_4', label = 'Custom 4', model = 'ns_tape_custom_4', enabled = false, color = { r = 243, g = 243, b = 239 } },
+    { id = 'custom_5', label = 'Custom 5', model = 'ns_tape_custom_5', enabled = false, color = { r = 243, g = 243, b = 239 } },
 }

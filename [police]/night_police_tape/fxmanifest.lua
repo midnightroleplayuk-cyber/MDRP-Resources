@@ -3,7 +3,7 @@ games { 'gta5' }
 
 author 'Nights Software'
 description 'Hang police tape between two anchor points'
-version '1.1.0'
+version '1.1.1'
 lua54 'yes'
 
 shared_scripts {
