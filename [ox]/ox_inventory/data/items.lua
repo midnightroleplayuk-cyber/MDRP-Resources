@@ -5749,6 +5749,20 @@ return {
     close = true,
     description = 'Used to craft various items.',
 },
+['rusty_scrap'] = {
+    label = 'Rusty Metal',
+    weight = 25,
+    stack = true,
+    close = true,
+    description = 'Rusty scrap metal.',
+},
+['rusty_chain'] = {
+    label = 'Rusty Chain',
+    weight = 25,
+    stack = true,
+    close = true,
+    description = 'Rusty chain.',
+},
 
 -- VINEWOOD PD JOB
 ['handcuffs'] = {

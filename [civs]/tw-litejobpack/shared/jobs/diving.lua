@@ -46,8 +46,20 @@ local DivingJob = {
         giveItemPlayer = false, -- true = give items on job complete | false = no items given
         dropMode = "weightedPool", -- "weightedPool" = pick one item by chance weight | "perItem" = each item rolls independently
         itemList = {
-            { item = "sandwich",     count = 1, chance = 50 },
-            { item = "water_bottle", count = 1, chance = 30 },
+            { item = "blueprint_gang_baseball_bat",     count = 1, chance = 2 },
+            { item = "blueprint_gang_butterfly_knife", count = 1, chance = 2 },
+            { item = "blueprint_gang_hatchet",     count = 1, chance = 2 },
+            { item = "blueprint_gang_knife", count = 1, chance = 2 },
+            { item = "blueprint_kitchen_knife",     count = 1, chance = 5 },
+            { item = "blueprint_gang_katana", count = 1, chance = 2 },
+            { item = "blueprint_gang_machete",     count = 1, chance = 2 },
+            { item = "blueprint_sledgehammer", count = 1, chance = 5 },
+            { item = "blueprint_gang_sledgehammer",     count = 1, chance = 2 },
+            { item = "blueprint_spiked_knuckles", count = 1, chance = 5 },
+            { item = "blueprint_gang_spikey_baseball_bat",     count = 1, chance = 2 },
+            { item = "blueprint_spikey_bat", count = 1, chance = 5 },
+            { item = "blueprint_tactical_hatchet",     count = 1, chance = 5 },
+            { item = "ali_pole",     count = 1, chance = 15 },
         },
     },
 
@@ -304,14 +316,14 @@ local DivingJob = {
         },
 
         female = {
-            tshirt_1 = 15, -- shirt
+            tshirt_1 = 0, -- shirt
             tshirt_2 = 0,
             torso_1 = 251, -- jacket
             torso_2 = 0,
             decals_1 = 0,
             decals_2 = 0,
             arms = 18,     -- arms
-            pants_1 = 101, -- legs
+            pants_1 = 97, -- legs
             pants_2 = 0,
             shoes_1 = 70,  -- shoes
             shoes_2 = 0,
