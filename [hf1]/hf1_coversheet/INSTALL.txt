@@ -33,3 +33,9 @@ ensure hf1_coversheet
 
 No /coversheet command, no qb-core, ESX, qb-inventory or server.lua.
 The folder name must remain hf1_coversheet for the item export to work.
+
+OX_LIB TEXT UI UPDATE
+---------------------
+Requires ox_lib. Ensure ox_lib starts before hf1_coversheet.
+When the cover sheet is held, ox_lib displays: Press X to put Sheet away
+The text disappears when X is pressed, the player dies, enters a vehicle, or the resource stops.

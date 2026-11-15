@@ -3,6 +3,14 @@
 local animDict, animClip, modelName = 'mdx@holdtarp', 'mdx_clip', 'mdx_tarp'
 local coverSheetEntity = nil
 local holding = false
+local textUiVisible = false
+
+local function hideCoverSheetText()
+    if textUiVisible then
+        lib.hideTextUI()
+        textUiVisible = false
+    end
+end
 
 local function loadAnimation(dict)
     RequestAnimDict(dict)
@@ -19,6 +27,7 @@ end
 local function putAway()
     if not holding and not coverSheetEntity then return end
     holding = false
+    hideCoverSheetText()
     local ped = PlayerPedId()
     StopAnimTask(ped, animDict, animClip, 1.0)
     if coverSheetEntity and DoesEntityExist(coverSheetEntity) then
@@ -48,6 +57,8 @@ local function holdCoverSheet()
     holding = true
     AttachEntityToEntity(obj, ped, GetPedBoneIndex(ped, 23553), -0.05, 0.3, 0.0, 180.0, 90.0, 0.0, true, false, false, false, 0, true)
     TaskPlayAnim(ped, animDict, animClip, 8.0, -8.0, -1, 49, 0.0, false, false, false)
+    lib.showTextUI('Press X to put Sheet away', { position = 'right-center', icon = 'hand' })
+    textUiVisible = true
 end
 
 -- ox_inventory invokes this export when the player uses cover_sheet.
