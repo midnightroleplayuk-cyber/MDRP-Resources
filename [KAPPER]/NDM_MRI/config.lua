@@ -27,7 +27,7 @@ Config.Scanners = {
 
 -- Table movement during a scan (only for scanners with a `bore` set)
 Config.TableMotion = {
-    slideTime = 20000,   -- ms to slide in at the start / out at the end
+    slideTime = 4000,   -- ms to slide in at the start / out at the end
     shuffle = 0.35,     -- metres the table moves back and forth while scanning (0 = stay still)
     shuffleTime = 1800, -- ms for each back / forth move
     pause = 1500,       -- ms to sit still between moves

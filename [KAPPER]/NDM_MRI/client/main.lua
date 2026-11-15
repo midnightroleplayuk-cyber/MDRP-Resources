@@ -102,6 +102,7 @@ end)
 -- Smoothly moves the ped between two points. Returns false if interrupted.
 local function slide(ped, from, to, ms, token, heading)
     local start = GetGameTimer()
+    local nextPoseCheck = start + 500
     while true do
         if token ~= moveToken then return false end
         local p = math.min((GetGameTimer() - start) / ms, 1.0)
@@ -109,9 +110,13 @@ local function slide(ped, from, to, ms, token, heading)
         local pos = from + (to - from) * e
         SetEntityCoordsNoOffset(ped, pos.x, pos.y, pos.z, false, false, false)
         SetEntityHeading(ped, heading)
-        -- keep the lying pose if anything knocked it off
-        if not ospIsDead() and not IsEntityPlayingAnim(ped, Config.LieAnim.dict, Config.LieAnim.clip, 3) then
-            TaskPlayAnim(ped, Config.LieAnim.dict, Config.LieAnim.clip, 1000.0, 1.0, -1, 1, 0, false, false, false)
+        -- keep the lying pose if anything knocked it off (throttled: re-tasking every frame
+        -- restarts the anim before it can start, which leaves the ped in a T-pose)
+        if GetGameTimer() >= nextPoseCheck then
+            nextPoseCheck = GetGameTimer() + 500
+            if not IsEntityPlayingAnim(ped, Config.LieAnim.dict, Config.LieAnim.clip, 3) then
+                playLie(ped)
+            end
         end
         if p >= 1.0 then return true end
         Wait(0)
