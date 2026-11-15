@@ -46,11 +46,11 @@ local DeliveryJob = {
     },
 
     missioncompletedItems = {
-        giveItemPlayer = false, -- true = give items on job complete | false = no items given
+        giveItemPlayer = true, -- true = give items on job complete | false = no items given
         dropMode = "weightedPool", -- "weightedPool" = pick one item by chance weight | "perItem" = each item rolls independently
         itemList = {
-            { item = "sandwich",     count = 1, chance = 50 },
-            { item = "water_bottle", count = 1, chance = 30 },
+            { item = "expensive_sneakers",     count = 1, chance = 20 },
+            { item = "diamond_ring", count = 1, chance = 20 },
         },
     },
 
@@ -243,20 +243,20 @@ local DeliveryJob = {
             helmet_2 = 0,
         },
         female = {
-            tshirt_1 = 15,
+            tshirt_1 = 0,
             tshirt_2 = 0,
-            torso_1 = 251,
+            torso_1 = 250,
             torso_2 = 3,
             decals_1 = 0,
             decals_2 = 0,
-            arms = 1,
-            pants_1 = 99,
+            arms = 14,
+            pants_1 = 34,
             pants_2 = 0,
-            shoes_1 = 12,
+            shoes_1 = 115,
             shoes_2 = 0,
             chain_1 = -1,
             chain_2 = 0,
-            helmet_1 = 141,
+            helmet_1 = 114,
             helmet_2 = 0,
         },
     },
