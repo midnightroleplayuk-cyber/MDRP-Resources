@@ -140,14 +140,22 @@ local carrierHome = nil -- where the carrier started (patient's spot on the tabl
 -- Smoothly moves the carrier between two points. Returns false if interrupted.
 local function slide(from, to, ms, token)
     local start = GetGameTimer()
+    local last = from
     while true do
         if token ~= moveToken or not carrier then return false end
         local p = math.min((GetGameTimer() - start) / ms, 1.0)
         local e = p * p * (3.0 - 2.0 * p) -- ease in / out
         local pos = from + (to - from) * e
         SetEntityCoordsNoOffset(carrier, pos.x, pos.y, pos.z, false, false, false)
-        SetEntityVelocity(carrier, 0.0, 0.0, 0.0)
-        if p >= 1.0 then return true end
+        -- real velocity (not zero): other clients predict the object's position from it
+        local dt = GetFrameTime()
+        local v = dt > 0 and (pos - last) / dt or vector3(0.0, 0.0, 0.0)
+        SetEntityVelocity(carrier, v.x, v.y, v.z)
+        last = pos
+        if p >= 1.0 then
+            SetEntityVelocity(carrier, 0.0, 0.0, 0.0)
+            return true
+        end
         Wait(0)
     end
 end
@@ -171,7 +179,10 @@ local function startTableMotion(id)
         carrier, carrierScanner = ent, id
         -- visible in debug so an onlooker can see whether the box itself moves
         SetEntityVisible(carrier, Config.Debug == true, false)
-        SetEntityCollision(carrier, false, false)
+        -- no collision but KEEP physics: other clients don't apply position updates to an
+        -- object whose physics is switched off
+        SetEntityCollision(carrier, false, true)
+        ActivatePhysics(carrier)
         SetEntityCoordsNoOffset(carrier, start.x, start.y, start.z, false, false, false)
         SetEntityHeading(carrier, s.table.w)
         -- NOT frozen: other clients ignore network position updates for frozen objects, so the
