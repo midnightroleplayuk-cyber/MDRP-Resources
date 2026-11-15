@@ -176,9 +176,16 @@ local function startTableMotion(id)
             TriggerServerEvent('NDM_MRI:server:removeCarrier', id)
             return
         end
-        carrier, carrierScanner = ent, id
+        carrier, carrierScanner, carrierHome = ent, id, start
         -- visible in debug so an onlooker can see whether the box itself moves
         SetEntityVisible(carrier, Config.Debug == true, false)
+        -- let the "hidden" state reach other players before the box comes up from under the floor
+        Wait(300)
+        if token ~= moveToken or lyingOn ~= id then
+            carrier, carrierScanner = nil, nil
+            TriggerServerEvent('NDM_MRI:server:removeCarrier', id)
+            return
+        end
         -- no collision but KEEP physics: other clients don't apply position updates to an
         -- object whose physics is switched off
         SetEntityCollision(carrier, false, true)
@@ -191,13 +198,19 @@ local function startTableMotion(id)
         -- hold its position every frame for the whole scan.
         FreezeEntityPosition(carrier, false)
         SetEntityHasGravity(carrier, false)
-        carrierHome = start
+
+        -- hold the box at the patient until its new position has reached other players;
+        -- attaching earlier makes them see the patient pulled under the floor for a moment
+        if not slide(start, start, 400, token) then return end
 
         SetPedCanRagdoll(ped, false)
-        FreezeEntityPosition(ped, false)
         -- isPed = true, otherwise GTA rotates the attached ped
         AttachEntityToEntity(ped, carrier, 0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, false, false, false, true, 2, true)
-        playLie(ped)
+        FreezeEntityPosition(ped, false) -- after attaching, so they never drop for a frame
+        -- only restart the pose if it was lost; restarting a running anim makes it flash
+        if not IsEntityPlayingAnim(ped, Config.LieAnim.dict, Config.LieAnim.clip, 3) then
+            playLie(ped)
+        end
 
         -- the slide is the table -> bore offset applied to wherever the patient actually lies
         local delta = vector3(s.bore.x - s.table.x, s.bore.y - s.table.y, 0.0)
