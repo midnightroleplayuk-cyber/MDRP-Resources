@@ -269,11 +269,26 @@ lib.callback.register('NDM_MRI:server:finishScan', function(src, id, completed)
     return true, report
 end)
 
+-- OSP stage 1 = last stand (downed), stage 2 = dead
+local function isDowned(src)
+    local state = Player(src).state
+    local bd = state.BodyDamage
+    if type(bd) == 'table' and (bd.isDead == true or bd.inLastStand == true) then return true end
+    return state.isDead == true
+end
+
+local function deny(src, msg)
+    TriggerClientEvent('ox_lib:notify', src, { title = 'MRI', type = 'error', description = msg })
+end
+
 RegisterNetEvent('NDM_MRI:server:layPatient', function(id, target)
     local src = source
     local s = scanner(id)
     target = tonumber(target)
     if not s or not target or not isMedic(src) then return end
+    if Config.BlockDowned and isDowned(target) then
+        return deny(src, 'The patient must be stabilised (not downed or dead) before an MRI')
+    end
     if Occupant[id] and GetPlayerPed(Occupant[id]) ~= 0 then
         return TriggerClientEvent('ox_lib:notify', src, { type = 'error', description = 'The MRI table is already occupied' })
     end
@@ -287,6 +302,9 @@ RegisterNetEvent('NDM_MRI:server:selfLie', function(id)
     local src = source
     local s = scanner(id)
     if not s or distTo(src, s.table) > 4.0 then return end
+    if Config.BlockDowned and isDowned(src) then
+        return deny(src, 'You can\'t use the MRI while downed or dead')
+    end
     if Occupant[id] and Occupant[id] ~= src and GetPlayerPed(Occupant[id]) ~= 0 then
         return TriggerClientEvent('ox_lib:notify', src, { type = 'error', description = 'The MRI table is already occupied' })
     end
