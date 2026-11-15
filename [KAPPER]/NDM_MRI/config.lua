@@ -51,4 +51,4 @@ Config.ConfirmFractures = true
 Config.LieAnim = { dict = 'anim@gangops@morgue@table@', clip = 'body_search' }
 
 -- Debug: draws the table / console zones
-Config.Debug = false
+Config.Debug = true
