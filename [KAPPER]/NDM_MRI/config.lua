@@ -21,13 +21,13 @@ Config.Scanners = {
         console = vector3(-329.19, -105.1, 38.74),
         -- optional: point inside the scanner bore the table slides the patient to during a scan.
         -- Only x / y are used (the table height is kept). Leave nil for no table movement.
-        bore = vector3(-323.64, -109.29, 39.64),
+        bore = vector3(-323.64, -105.1, 38.74),
     },
 }
 
 -- Table movement during a scan (only for scanners with a `bore` set)
 Config.TableMotion = {
-    slideTime = 3000,   -- ms to slide in at the start / out at the end
+    slideTime = 20000,   -- ms to slide in at the start / out at the end
     shuffle = 0.35,     -- metres the table moves back and forth while scanning (0 = stay still)
     shuffleTime = 1800, -- ms for each back / forth move
     pause = 1500,       -- ms to sit still between moves
@@ -40,8 +40,8 @@ Config.LayPatientRange = 4.0       -- how close the patient must be to the medic
 
 -- Sound
 Config.SoundFile = 'sounds/mri_scan.ogg'
-Config.SoundVolume = 0.6           -- 0.0 - 1.0 at the table
-Config.SoundRange = 20.0           -- metres; volume fades out to nothing at this distance
+Config.SoundVolume = 0.3           -- 0.0 - 1.0 at the table
+Config.SoundRange = 15.00           -- metres; volume fades out to nothing at this distance
 
 -- Mark fractures found by the MRI as imaged in OSP (same as the OSP X-ray does), so medics can
 -- go straight to splint / cast without an X-ray.

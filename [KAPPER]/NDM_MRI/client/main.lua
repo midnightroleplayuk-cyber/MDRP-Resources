@@ -7,6 +7,12 @@ local function notify(msg, kind)
     lib.notify({ title = 'MRI', description = msg, type = kind or 'inform' })
 end
 
+-- No collision / no ragdoll while the table carries the patient through the scanner model
+local function setGhost(ped, on)
+    SetEntityCollision(ped, not on, not on)
+    SetPedCanRagdoll(ped, not on)
+end
+
 local function ospIsDead()
     local ok, dead = pcall(function() return exports.osp_ambulance:isDead() end)
     return ok and dead == true
@@ -33,6 +39,7 @@ local function getUp()
     lyingOn = nil
     moveToken = moveToken + 1
     local ped = cache.ped
+    setGhost(ped, false)
     FreezeEntityPosition(ped, false)
     if not ospIsDead() then
         ClearPedTasks(ped)
@@ -102,6 +109,10 @@ local function slide(ped, from, to, ms, token, heading)
         local pos = from + (to - from) * e
         SetEntityCoordsNoOffset(ped, pos.x, pos.y, pos.z, false, false, false)
         SetEntityHeading(ped, heading)
+        -- keep the lying pose if anything knocked it off
+        if not ospIsDead() and not IsEntityPlayingAnim(ped, Config.LieAnim.dict, Config.LieAnim.clip, 3) then
+            TaskPlayAnim(ped, Config.LieAnim.dict, Config.LieAnim.clip, 1000.0, 1.0, -1, 1, 0, false, false, false)
+        end
         if p >= 1.0 then return true end
         Wait(0)
     end
@@ -125,6 +136,7 @@ local function startTableMotion(id)
         local len = #dir
         if len > 0.001 then dir = dir / len end
 
+        setGhost(ped, true)
         if not slide(ped, GetEntityCoords(ped), bore, m.slideTime, token, s.table.w) then return end
 
         local pos, out = bore, false
@@ -145,7 +157,9 @@ local function stopTableMotion(id)
     if not s or not s.bore or lyingOn ~= id or ospIsDead() then return end
     CreateThread(function()
         local ped = cache.ped
-        slide(ped, GetEntityCoords(ped), tableHome(s), Config.TableMotion.slideTime, token, s.table.w)
+        if slide(ped, GetEntityCoords(ped), tableHome(s), Config.TableMotion.slideTime, token, s.table.w) then
+            setGhost(ped, false)
+        end
     end)
 end
 
@@ -351,5 +365,5 @@ end, false)
 
 AddEventHandler('onResourceStop', function(res)
     if res ~= GetCurrentResourceName() then return end
-    if lyingOn then FreezeEntityPosition(cache.ped, false) ClearPedTasks(cache.ped) lib.hideTextUI() end
+    if lyingOn then setGhost(cache.ped, false) FreezeEntityPosition(cache.ped, false) ClearPedTasks(cache.ped) lib.hideTextUI() end
 end)
