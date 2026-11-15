@@ -331,7 +331,8 @@ lib.callback.register('NDM_MRI:server:createCarrier', function(src, id)
     if not c then return false end
     -- Not frozen here: a server-set freeze sticks for other clients, and they then ignore the
     -- position updates, so the patient never moves on their screens.
-    local ent = CreateObjectNoOffset(CARRIER_MODEL, c.x, c.y, c.z, true, true, false)
+    -- spawned well below the floor so nobody sees it before the patient's client hides it
+    local ent = CreateObjectNoOffset(CARRIER_MODEL, c.x, c.y, c.z - 10.0, true, true, false)
     local timeout = GetGameTimer() + 3000
     while not DoesEntityExist(ent) do
         if GetGameTimer() > timeout then return false end

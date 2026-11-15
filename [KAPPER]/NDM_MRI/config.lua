@@ -17,11 +17,11 @@ Config.RequireOnDuty = true
 Config.Scanners = {
     {
         label = 'Burton MRI',
-        table = vector4(-324.28, -108.84, 38.45, 71.23),
+        table = vector4(-324.28, -108.84, 38.75, 71.23),
         console = vector3(-329.19, -105.1, 38.74),
         -- optional: point inside the scanner bore the table slides the patient to during a scan.
         -- Only x / y are used (the table height is kept). Leave nil for no table movement.
-        bore = vector3(-322.86, -109.32, 38.45),
+        bore = vector3(-322.86, -109.32, 38.75),
     },
 }
 

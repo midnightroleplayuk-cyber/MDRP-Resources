@@ -184,7 +184,8 @@ local function startTableMotion(id)
         SetEntityCollision(carrier, false, true)
         ActivatePhysics(carrier)
         SetEntityCoordsNoOffset(carrier, start.x, start.y, start.z, false, false, false)
-        SetEntityHeading(carrier, s.table.w)
+        -- match the patient's actual heading so attaching doesn't turn them
+        SetEntityRotation(carrier, 0.0, 0.0, GetEntityHeading(ped), 2, true)
         -- NOT frozen: other clients ignore network position updates for frozen objects, so the
         -- patient (attached to it) would never move on their screens. No gravity instead, and we
         -- hold its position every frame for the whole scan.
@@ -194,7 +195,8 @@ local function startTableMotion(id)
 
         SetPedCanRagdoll(ped, false)
         FreezeEntityPosition(ped, false)
-        AttachEntityToEntity(ped, carrier, 0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, false, false, false, false, 2, true)
+        -- isPed = true, otherwise GTA rotates the attached ped
+        AttachEntityToEntity(ped, carrier, 0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, false, false, false, true, 2, true)
         playLie(ped)
 
         -- the slide is the table -> bore offset applied to wherever the patient actually lies
