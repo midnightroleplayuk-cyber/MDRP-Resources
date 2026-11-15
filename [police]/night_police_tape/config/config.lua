@@ -282,7 +282,7 @@ Config.Textures = {
 
     -- Your own tapes: five blank slots, off until you fill them. Put your texture in stream/ns_tape_custom_1.ytd
     -- and your picture in html/tapes/custom_1.jpg, then set the label, the colour and enabled = true.
-    { id = 'custom_1', label = 'Custom 1', model = 'ns_tape_custom_1', enabled = false, color = { r = 243, g = 243, b = 239 } },
+    { id = 'custom_1', label = 'Kapper Crashed', model = 'ns_tape_custom_1', enabled = true, color = { r = 127, g = 53, b = 203 } }, --Kapper Tape
     { id = 'custom_2', label = 'Custom 2', model = 'ns_tape_custom_2', enabled = false, color = { r = 243, g = 243, b = 239 } },
     { id = 'custom_3', label = 'Custom 3', model = 'ns_tape_custom_3', enabled = false, color = { r = 243, g = 243, b = 239 } },
     { id = 'custom_4', label = 'Custom 4', model = 'ns_tape_custom_4', enabled = false, color = { r = 243, g = 243, b = 239 } },
