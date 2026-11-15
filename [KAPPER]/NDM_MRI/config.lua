@@ -17,7 +17,7 @@ Config.RequireOnDuty = true
 Config.Scanners = {
     {
         label = 'Burton MRI',
-        table = vector4(-324.33, -108.89, 39.74, 247.61),
+        table = vector4(-324.27, -108.85, 39.74, 72.29),
         console = vector3(-329.19, -105.1, 38.74),
     },
 }
