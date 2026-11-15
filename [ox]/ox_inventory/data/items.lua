@@ -5920,4 +5920,18 @@ return {
     client = { export = 'hf1_tv.useTelevision' },
     },
 
+
+    -- Coversheet Convert
+    ['cover_sheet'] = {
+    label = 'Cover Sheet',
+    weight = 100,
+    stack = false,
+    close = true,
+    consume = 0,
+    description = 'A sheet for Privacy.',
+    client = {
+        export = 'hf1_coversheet.useCoverSheet'
+    }
+},
+
 }

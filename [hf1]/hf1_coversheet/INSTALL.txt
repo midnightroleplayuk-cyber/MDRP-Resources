@@ -1,0 +1,35 @@
+hf1_coversheet - QBOX + OX_INVENTORY ONLY
+==========================================
+
+1. Install this hf1_coversheet folder in your server resources.
+2. Add this item to ox_inventory/data/items.lua:
+
+['cover_sheet'] = {
+    label = 'Cover Sheet',
+    weight = 1000,
+    stack = false,
+    close = true,
+    consume = 0,
+    description = 'Hold a cover sheet and press X to put it away.',
+    client = {
+        export = 'hf1_coversheet.useCoverSheet'
+    }
+},
+
+3. In server.cfg, ensure qbx_core and ox_inventory are started before
+   hf1_coversheet. For example:
+
+ensure qbx_core
+ensure ox_inventory
+ensure hf1_coversheet
+
+   (Keep your other required dependencies and normal server.cfg order.)
+
+4. Restart ox_inventory after adding the item (or restart the server),
+   then ensure hf1_coversheet is started.
+5. Give yourself a cover_sheet through your usual admin item-giving tool.
+   Use it in ox_inventory to hold the original prop/animation. Press X to
+   stop and put it away. The item stays in your inventory.
+
+No /coversheet command, no qb-core, ESX, qb-inventory or server.lua.
+The folder name must remain hf1_coversheet for the item export to work.
