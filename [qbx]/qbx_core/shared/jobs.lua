@@ -200,45 +200,45 @@ return {
         grades = {
             -- Firefighter Team
             [0] = {
-                name = 'Trainee Firefighter',
-                payment = 300
-            },
-            [1] = {
                 name = 'Firefighter',
                 payment = 450
             },
+            [1] = {
+                name = 'Leading Firefighter',
+                payment = 470
+            },           
             -- Bronze Command
             [2] = {
-                name = 'Crew Manager',
+                name = 'Sub Officer',
                 payment = 600
             },
             [3] = {
-                name = 'Watch Manager',
+                name = 'Station Officer',
                 payment = 630
             },
             -- Silver Command
             [4] = {
-                name = 'Station Manager',
+                name = 'Group Manager',
                 payment = 660
             },
             [5] = {
-                name = 'Group Manager',
+                name = 'Area Manager',
                 payment = 690
             },
             -- Gold Command
-            [7] = {
+            [6] = {
                 name = 'Assistant Chief Fire Officer',
                 isboss = true,
                 bankAuth = true,
                 payment = 700
             },
-            [8] = {
+            [7] = {
                 name = 'Deputy Chief Fire Officer',
                 isboss = true,
                 bankAuth = true,
                 payment = 710
             },
-            [9] = {
+            [8] = {
                 name = 'Chief Fire Officer',
                 isboss = true,
                 bankAuth = true,

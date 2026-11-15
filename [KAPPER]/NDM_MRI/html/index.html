@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>NDM_MRI</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <audio id="mri-audio" loop preload="auto"></audio>
+
+    <div id="report" class="hidden">
+        <header>
+            <div>
+                <div class="title">MRI Scan Report</div>
+                <div class="sub" id="r-scanner"></div>
+            </div>
+            <button id="r-close" title="Close">&times;</button>
+        </header>
+
+        <section class="meta">
+            <div><span>Patient</span><b id="r-patient"></b></div>
+            <div><span>Scanned by</span><b id="r-medic"></b></div>
+            <div><span>Date</span><b id="r-time"></b></div>
+            <div><span>Status</span><b id="r-state"></b></div>
+        </section>
+
+        <section class="vitals" id="r-vitals"></section>
+
+        <div class="body">
+            <div class="figure">
+                <div class="scan">
+                    <img src="img/body_mri.jpg" alt="">
+                    <svg viewBox="0 0 400 1281" preserveAspectRatio="none" id="r-figure">
+                        <defs><filter id="soft" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="14"/></filter></defs>
+                        <g filter="url(#soft)">
+                            <polygon data-part="Head" points="140,20 265,20 265,130 240,192 165,192 140,130"/>
+                            <polygon data-part="Torso" points="100,196 300,196 300,520 294,580 200,660 106,580 100,520"/>
+                            <polygon data-part="Rarm" points="0,190 98,196 104,300 99,520 64,570 64,760 0,760"/>
+                            <polygon data-part="Larm" points="400,190 302,196 296,300 301,520 336,570 336,760 400,760"/>
+                            <polygon data-part="Rleg" points="68,580 106,582 200,662 200,1281 68,1281"/>
+                            <polygon data-part="Lleg" points="332,580 294,582 200,662 200,1281 332,1281"/>
+                        </g>
+                    </svg>
+                    <span class="side r">R</span><span class="side l">L</span>
+                </div>
+                <div class="legend"><i class="s0"></i>Clear <i class="s1"></i>Minor <i class="s2"></i>Moderate <i class="s3"></i>Severe</div>
+            </div>
+            <div class="regions" id="r-regions"></div>
+        </div>
+
+        <section class="impression">
+            <h3>Impression</h3>
+            <ul id="r-impressions"></ul>
+            <div id="r-conditions"></div>
+        </section>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
