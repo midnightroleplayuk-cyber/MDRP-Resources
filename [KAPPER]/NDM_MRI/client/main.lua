@@ -146,6 +146,7 @@ local function slide(from, to, ms, token)
         local e = p * p * (3.0 - 2.0 * p) -- ease in / out
         local pos = from + (to - from) * e
         SetEntityCoordsNoOffset(carrier, pos.x, pos.y, pos.z, false, false, false)
+        SetEntityVelocity(carrier, 0.0, 0.0, 0.0)
         if p >= 1.0 then return true end
         Wait(0)
     end
@@ -172,7 +173,11 @@ local function startTableMotion(id)
         SetEntityCollision(carrier, false, false)
         SetEntityCoordsNoOffset(carrier, start.x, start.y, start.z, false, false, false)
         SetEntityHeading(carrier, s.table.w)
-        FreezeEntityPosition(carrier, true)
+        -- NOT frozen: other clients ignore network position updates for frozen objects, so the
+        -- patient (attached to it) would never move on their screens. No gravity instead, and we
+        -- hold its position every frame for the whole scan.
+        FreezeEntityPosition(carrier, false)
+        SetEntityHasGravity(carrier, false)
         carrierHome = start
 
         SetPedCanRagdoll(ped, false)
@@ -191,11 +196,15 @@ local function startTableMotion(id)
 
         local pos, out = inside, false
         while token == moveToken and lyingOn == id and (m.shuffle or 0) > 0 do
-            Wait(m.pause)
+            if not slide(pos, pos, m.pause, token) then return end -- hold still
             out = not out
             local target = out and (inside + dir * m.shuffle) or inside
             if not slide(pos, target, m.shuffleTime, token) then return end
             pos = target
+        end
+        -- no shuffle: just hold it inside until the scan ends
+        while token == moveToken and lyingOn == id do
+            if not slide(pos, pos, 1000, token) then return end
         end
     end)
 end
