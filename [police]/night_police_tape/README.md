@@ -2,7 +2,7 @@
 
 **Hang police tape between any two points: walls, poles, trees or posts on open ground. Tape sags, moves in the wind and gives way when people and vehicles push into it.**
 
----
+----
 
 ## ✨ Features
 
@@ -12,6 +12,7 @@
 - **Posts on open ground**: aim at the ground and a post goes there, with the tape tied near its top. Walls, fences, poles and trees take the tape directly
 - **Green and red markers** show at a glance whether a spot will work
 - **50 styles**: police, fire, crime scene, caution and plain tapes, with wording for many countries. Switch any of them off in the config
+- **Your own tapes**: five blank styles to put your own design on, and every included tape's texture can be replaced
 
 ### 🌬️ Alive, not static
 - **Sag** that scales with the length of the tape
@@ -113,6 +114,21 @@ Add the item to your inventory yourself. The config shows the line to add for ea
 
 ### Styles
 Each style in `Config.Textures` can be switched off with `enabled = false`. Hidden styles cannot be placed or picked when restyling, and saved tapes in a hidden style switch to the first enabled one.
+
+### Your own tape
+Every style's look is one texture, `tape_diffuse`, in that style's own file: `stream/ns_tape_<id>.ytd`. These files are not locked, so you can put your own design on any tape.
+
+The resource comes with five blank styles for this, `custom_1` to `custom_5`, so you do not have to give up one of the included tapes:
+
+1. Open `stream/ns_tape_custom_1.ytd` in a texture editor such as OpenIV or CodeWalker.
+2. Replace the texture `tape_diffuse` with your own image and save. Keep the name `tape_diffuse`.
+3. Replace `html/tapes/custom_1.jpg` with a picture of your tape (768 × 96 pixels). It is shown in the panel while placing.
+4. In `Config.Textures`, give `custom_1` your `label` and set `enabled = true`.
+5. Restart the server.
+
+The image is 1024 × 128 pixels and shows one metre of tape. It repeats along the tape, so its left and right edges have to meet. Wording reads the right way round from both sides of the tape.
+
+To change one of the included tapes instead, do steps 1 to 3 on its own files, for example `stream/ns_tape_police.ytd` and `html/tapes/police.jpg`.
 
 ### Panel colour
 ```lua
@@ -243,3 +259,4 @@ exports['night_police_tape']:RemoveTape(id)
 ## 🤝 Support
 
 - **Store:** [nights-software.com](https://store.nights-software.com)
+- **Support:** [support.nights-software.com](https://support.nights-software.com)

@@ -123,92 +123,68 @@ return {
                 payment = 500
             },
             [5] = {
+                name = 'Doctor',
+                payment = 500
+            },
+            [6] = {
                 name = 'Advanced Paramedic',
                 payment = 510
             },
-            [6] = {
-                name = 'Doctor',
-                payment = 520
-            },
             [7] = {
-                name = 'HEMS - Crit Care Paramedic',
-                isboss = false,
-                bankAuth = false,
-                payment = 530
+                name = 'Surgeon',
+                payment = 510
             },
             [8] = {
-                name = 'HART - Advanced Paramedic',
-                isboss = false,
-                bankAuth = false,
+                name = 'Critical Care Paramedic',
                 payment = 530
             },
             [9] = {
-                name = 'HEMS - Crit Care Doctor',
-                isboss = false,
-                bankAuth = false,
+                name = 'Critical Care Doctor',
                 payment = 540
             },
             [10] = {
-                name = 'HART - Crit Care Doctor',
-                isboss = false,
-                bankAuth = false,
-                payment = 540
+                name = 'SORT Team Lead',
+                payment = 560
             },
             [11] = {
-                name = 'HART Team Lead',
-                isboss = false,
-                bankAuth = false,
+                name = 'Ambulance Team Lead',
                 payment = 560
             },
             [12] = {
-                name = 'HEMS Team Lead',
-                isboss = false,
-                bankAuth = false,
+                name = 'Clinical Team Lead',
                 payment = 560
-            },
+            },            
             [13] = {
-                name = 'Ambulance Team Lead',
-                isboss = false,
-                bankAuth = false,
-                payment = 560
-            },
-            [14] = {
-                name = 'Training & Development',
-                isboss = false,
-                bankAuth = false,
-                payment = 570
-            },
-            [15] = {
                 name = 'Hospital Operations Manager',
                 isboss = false,
                 bankAuth = false,
                 payment = 570
             },
-            [16] = {
+            [14] = {
                 name = 'Ambulance Operations Manager',
                 isboss = false,
                 bankAuth = false,
                 payment = 570
             },
-            [17] = {
-                name = 'Human Resources',
+            [15] = {
+                name = 'Specialist Operations Manager',
                 isboss = false,
                 bankAuth = false,
-                payment = 640
-            },
-            [18] = {
+                payment = 570
+            },           
+            [16] = {
                 name = 'Director of Operations',
                 isboss = true,
                 bankAuth = false,
                 payment = 700
             },
-            [19] = {
+            [17] = {
                 name = 'Deputy Chief Medicial Officer',
                 isboss = true,
                 bankAuth = true,
                 payment = 710
             },
-            [20] = {
+            [18] = {
                 name = 'Chief Medical Officer',
                 isboss = true,
                 bankAuth = true,
@@ -224,45 +200,45 @@ return {
         grades = {
             -- Firefighter Team
             [0] = {
-                name = 'Trainee Firefighter',
-                payment = 300
-            },
-            [1] = {
                 name = 'Firefighter',
                 payment = 450
             },
+            [1] = {
+                name = 'Leading Firefighter',
+                payment = 470
+            },           
             -- Bronze Command
             [2] = {
-                name = 'Crew Manager',
+                name = 'Sub Officer',
                 payment = 600
             },
             [3] = {
-                name = 'Watch Manager',
+                name = 'Station Officer',
                 payment = 630
             },
             -- Silver Command
             [4] = {
-                name = 'Station Manager',
+                name = 'Group Manager',
                 payment = 660
             },
             [5] = {
-                name = 'Group Manager',
+                name = 'Area Manager',
                 payment = 690
             },
             -- Gold Command
-            [7] = {
+            [6] = {
                 name = 'Assistant Chief Fire Officer',
                 isboss = true,
                 bankAuth = true,
                 payment = 700
             },
-            [8] = {
+            [7] = {
                 name = 'Deputy Chief Fire Officer',
                 isboss = true,
                 bankAuth = true,
                 payment = 710
             },
-            [9] = {
+            [8] = {
                 name = 'Chief Fire Officer',
                 isboss = true,
                 bankAuth = true,

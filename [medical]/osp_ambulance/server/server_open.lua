@@ -913,12 +913,31 @@ local function GetAttendingActivityStatus(coords)
     return 'available'
 end
 
-function FormatAttendingName(lastname)
-    lastname = tostring(lastname or ''):gsub('^%s+', ''):gsub('%s+$', '')
-    if lastname == '' then
-        return 'Dr. Unknown'
+-- Full character name ("John Smith"), no title. Either part may be missing.
+function FormatAttendingName(firstname, lastname)
+    local function clean(s) return (tostring(s or ''):gsub('^%s+', ''):gsub('%s+$', '')) end
+    local name = clean(clean(firstname) .. ' ' .. clean(lastname))
+    if name == '' then
+        return 'Unknown'
     end
-    return 'Dr. ' .. lastname
+    return name
+end
+
+-- ESX-style player object -> first, last (falls back to the full name as one string)
+local function GetEsxNames(sourcePlayer)
+    local first, last
+    if sourcePlayer.get then
+        first = sourcePlayer.get('firstName') or sourcePlayer.get('firstname')
+        last = sourcePlayer.get('lastName') or sourcePlayer.get('lastname')
+    end
+    if (not first or first == '') and (not last or last == '') then
+        local full = sourcePlayer.name
+        if sourcePlayer.getName then
+            full = sourcePlayer.getName()
+        end
+        return full, nil
+    end
+    return first, last
 end
 
 function GetIncomingParamedicName(src)
@@ -930,21 +949,10 @@ function GetIncomingParamedicName(src)
     local fw = GetActiveFramework()
     if fw == 'qb' or fw == 'qbox' then
         local charinfo = sourcePlayer.PlayerData and sourcePlayer.PlayerData.charinfo or {}
-        return FormatAttendingName(charinfo.lastname)
+        return FormatAttendingName(charinfo.firstname, charinfo.lastname)
     end
 
-    local lastname = nil
-    if sourcePlayer.get then
-        lastname = sourcePlayer.get('lastName') or sourcePlayer.get('lastname')
-    end
-    if not lastname or lastname == '' then
-        local full = sourcePlayer.name
-        if sourcePlayer.getName then
-            full = sourcePlayer.getName()
-        end
-        lastname = tostring(full or ''):match('(%S+)$') or full
-    end
-    return FormatAttendingName(lastname)
+    return FormatAttendingName(GetEsxNames(sourcePlayer))
 end
 
 function UpdateAttendingRoster()
@@ -966,7 +974,7 @@ function UpdateAttendingRoster()
                         if job.name == jobName then
                             local charinfo = sourcePlayer.PlayerData.charinfo or {}
                             staff[#staff + 1] = {
-                                name = FormatAttendingName(charinfo.lastname),
+                                name = FormatAttendingName(charinfo.firstname, charinfo.lastname),
                                 grade = (job.grade and job.grade.name) or 'EMS',
                                 onduty = job.onduty == true,
                                 status = activity,
@@ -982,19 +990,8 @@ function UpdateAttendingRoster()
                     for _, jobName in pairs(Config.AmbulanceJobs) do
                         if job.name == jobName then
                             local src = tonumber(v)
-                            local lastname = nil
-                            if sourcePlayer.get then
-                                lastname = sourcePlayer.get('lastName') or sourcePlayer.get('lastname')
-                            end
-                            if not lastname or lastname == '' then
-                                local full = sourcePlayer.name
-                                if sourcePlayer.getName then
-                                    full = sourcePlayer.getName()
-                                end
-                                lastname = tostring(full or ''):match('(%S+)$') or full
-                            end
                             staff[#staff + 1] = {
-                                name = FormatAttendingName(lastname),
+                                name = FormatAttendingName(GetEsxNames(sourcePlayer)),
                                 grade = job.grade_label or 'EMS',
                                 onduty = src ~= nil and Doctors[src] == true,
                                 status = activity,
