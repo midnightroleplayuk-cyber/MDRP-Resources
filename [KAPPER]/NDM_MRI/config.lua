@@ -17,7 +17,7 @@ Config.RequireOnDuty = true
 Config.Scanners = {
     {
         label = 'Burton MRI',
-        table = vector4(-324.28, -108.84, 39.74, 71.23),
+        table = vector4(-324.28, -108.84, 39.69, 71.23),
         console = vector3(-329.19, -105.1, 38.74),
         -- optional: point inside the scanner bore the table slides the patient to during a scan.
         -- Only x / y are used (the table height is kept). Leave nil for no table movement.
@@ -51,4 +51,4 @@ Config.ConfirmFractures = true
 Config.LieAnim = { dict = 'anim@gangops@morgue@table@', clip = 'body_search' }
 
 -- Debug: draws the table / console zones
-Config.Debug = true
+Config.Debug = false
