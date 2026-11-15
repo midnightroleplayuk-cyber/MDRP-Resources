@@ -46,11 +46,18 @@ local function holdCoverSheet()
     loadAnimation(animDict)
     local hash = loadModel(modelName)
     local coords = GetEntityCoords(ped)
-    local obj = CreateObject(hash, coords.x, coords.y, coords.z, false, false, false)
+    -- Spawn a networked mission object so nearby players see the attached sheet.
+    local obj = CreateObject(hash, coords.x, coords.y, coords.z, true, true, false)
     SetModelAsNoLongerNeeded(hash)
     if not DoesEntityExist(obj) then
         RemoveAnimDict(animDict)
         return
+    end
+
+    -- Register replication before attaching to the player ped.
+    local netId = NetworkGetNetworkIdFromEntity(obj)
+    if netId ~= 0 then
+        SetNetworkIdExistsOnAllMachines(netId, true)
     end
 
     coverSheetEntity = obj

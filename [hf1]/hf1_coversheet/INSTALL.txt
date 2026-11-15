@@ -39,3 +39,8 @@ OX_LIB TEXT UI UPDATE
 Requires ox_lib. Ensure ox_lib starts before hf1_coversheet.
 When the cover sheet is held, ox_lib displays: Press X to put Sheet away
 The text disappears when X is pressed, the player dies, enters a vehicle, or the resource stops.
+
+NETWORK VISIBILITY FIX
+----------------------
+The sheet is now created as a networked entity so other players can see it.
+Test with two players near each other. The model must stream to both clients.
