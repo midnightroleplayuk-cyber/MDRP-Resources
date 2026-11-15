@@ -24,15 +24,20 @@ end
 -- Asks the server for the carrier and takes control of it. Returns the entity or nil.
 local function getCarrier(id)
     local netId = lib.callback.await('NDM_MRI:server:createCarrier', false, id)
+    if Config.Debug then print('[NDM_MRI] carrier netId from server:', netId) end
     if not netId then return nil end
     local timeout = GetGameTimer() + 3000
     while not NetworkDoesNetworkIdExist(netId) or not NetworkDoesEntityExistWithNetworkId(netId) do
-        if GetGameTimer() > timeout then return nil end
+        if GetGameTimer() > timeout then
+            if Config.Debug then print('[NDM_MRI] carrier never arrived on this client') end
+            return nil
+        end
         Wait(0)
     end
     local ent = NetworkGetEntityFromNetworkId(netId)
     while not NetworkHasControlOfEntity(ent) do
         if GetGameTimer() > timeout then
+            if Config.Debug then print('[NDM_MRI] could not get control of the carrier') end
             TriggerServerEvent('NDM_MRI:server:removeCarrier', id)
             return nil
         end
@@ -40,6 +45,7 @@ local function getCarrier(id)
         Wait(0)
     end
     SetNetworkIdCanMigrate(netId, false)
+    if Config.Debug then print('[NDM_MRI] got control of carrier', ent) end
     return ent
 end
 
@@ -202,13 +208,15 @@ local function stopTableMotion(id)
     CreateThread(function()
         local ped = cache.ped
         if not slide(GetEntityCoords(carrier), carrierHome, Config.TableMotion.slideTime, token) then return end
+        local home = carrierHome
         removeCarrier(ped)
-        if lyingOn == id and not ospIsDead() then
-            local t = s.table
-            SetEntityCoords(ped, t.x, t.y, t.z + 0.02, false, false, false, false)
-            SetEntityHeading(ped, t.w)
-            playLie(ped)
+        if lyingOn == id then
+            -- back to the exact spot they were lying in before the slide (not the raw table
+            -- point, which is the drop-in height and leaves them floating once frozen)
             FreezeEntityPosition(ped, true)
+            SetEntityCoordsNoOffset(ped, home.x, home.y, home.z, false, false, false)
+            SetEntityHeading(ped, s.table.w)
+            playLie(ped)
         end
     end)
 end

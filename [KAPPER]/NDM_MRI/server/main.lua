@@ -340,6 +340,21 @@ lib.callback.register('NDM_MRI:server:createCarrier', function(src, id)
     local entry = { entity = ent, patient = src }
     Carriers[id] = entry
 
+    if Config.Debug then
+        print(('[NDM_MRI] carrier created ent=%s net=%s owner=%s patient=%s'):format(
+            ent, NetworkGetNetworkIdFromEntity(ent), NetworkGetEntityOwner(ent), src))
+        CreateThread(function()
+            local ped = GetPlayerPed(src)
+            while Carriers[id] == entry do
+                local pc = GetEntityCoords(ped)
+                local cc = DoesEntityExist(ent) and GetEntityCoords(ent) or vector3(0, 0, 0)
+                print(('[NDM_MRI] server sees patient %.2f %.2f | carrier %.2f %.2f owner=%s'):format(
+                    pc.x, pc.y, cc.x, cc.y, DoesEntityExist(ent) and NetworkGetEntityOwner(ent) or -1))
+                Wait(1000)
+            end
+        end)
+    end
+
     -- Failsafe: never leave one behind
     local m = Config.TableMotion
     SetTimeout(Config.ScanDuration + (m.slideTime or 0) * 2 + 20000, function()
