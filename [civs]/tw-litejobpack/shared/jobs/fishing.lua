@@ -52,11 +52,14 @@ local FishingJob = {
     },
 
     missioncompletedItems = {
-        giveItemPlayer = false,    -- true = give items on job complete | false = no items given
+        giveItemPlayer = true,    -- true = give items on job complete | false = no items given
         dropMode = "weightedPool", -- "weightedPool" = pick one item by chance weight | "perItem" = each item rolls independently
         itemList = {
-            { item = "sandwich",     count = 1, chance = 50 },
-            { item = "water_bottle", count = 1, chance = 30 },
+            { item = "rusty_chain",     count = 1, chance = 30 },
+            { item = "rusty_scrap", count = 1, chance = 30 },
+            { item = "lighter",     count = 1, chance = 30 },
+            { item = "walking_stick", count = 1, chance = 30 },
+            { item = "panties",     count = 1, chance = 30 },
         },
     },
 
