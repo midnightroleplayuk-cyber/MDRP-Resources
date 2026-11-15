@@ -45,11 +45,11 @@ local FarmerJob = {
     },
 
     missioncompletedItems = {
-        giveItemPlayer = false, -- true = give items on job complete | false = no items given
+        giveItemPlayer = true, -- true = give items on job complete | false = no items given
         dropMode = "weightedPool", -- "weightedPool" = pick one item by chance weight | "perItem" = each item rolls independently
         itemList = {
-            { item = "sandwich",     count = 1, chance = 50 },
-            { item = "water_bottle", count = 1, chance = 30 },
+            { item = "kq_weed_fertilizer_yield",     count = 1, chance = 50 },
+            { item = "watering_can", count = 1, chance = 30 },
         },
     },
 
@@ -642,20 +642,20 @@ FarmerJob.clothes = {
         helmet_2 = 1,
     },
     female = {
-        tshirt_1 = 36,
+        tshirt_1 = 20,
         tshirt_2 = 1,
-        torso_1 = 9,
+        torso_1 = 364,
         torso_2 = 6,
         decals_1 = 0,
         decals_2 = 0,
-        arms = 0,
-        pants_1 = 92,
+        arms = 4,
+        pants_1 = 4,
         pants_2 = 2,
-        shoes_1 = 12,
+        shoes_1 = 38,
         shoes_2 = 0,
         chain_1 = -1,
         chain_2 = 0,
-        helmet_1 = 141,
+        helmet_1 = 54,
         helmet_2 = 6,
     },
 }
