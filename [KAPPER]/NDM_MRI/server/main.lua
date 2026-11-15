@@ -322,9 +322,10 @@ local function deleteCarrier(id)
 end
 
 lib.callback.register('NDM_MRI:server:createCarrier', function(src, id)
+    -- Made when the patient lies down (the attach blink is hidden in that teleport) and kept
+    -- until they leave the table.
     local s = scanner(id)
-    local job = Busy[id]
-    if not s or not s.bore or not job or job.patient ~= src then return false end
+    if not s or not s.bore or Occupant[id] ~= src then return false end
     deleteCarrier(id)
 
     local c = pedCoords(src)
@@ -348,19 +349,25 @@ lib.callback.register('NDM_MRI:server:createCarrier', function(src, id)
         CreateThread(function()
             local ped = GetPlayerPed(src)
             while Carriers[id] == entry do
-                local pc = GetEntityCoords(ped)
-                local cc = DoesEntityExist(ent) and GetEntityCoords(ent) or vector3(0, 0, 0)
-                print(('[NDM_MRI] server sees patient %.2f %.2f | carrier %.2f %.2f owner=%s'):format(
-                    pc.x, pc.y, cc.x, cc.y, DoesEntityExist(ent) and NetworkGetEntityOwner(ent) or -1))
+                if Busy[id] then
+                    local pc = GetEntityCoords(ped)
+                    local cc = DoesEntityExist(ent) and GetEntityCoords(ent) or vector3(0, 0, 0)
+                    print(('[NDM_MRI] server sees patient %.2f %.2f | carrier %.2f %.2f owner=%s'):format(
+                        pc.x, pc.y, cc.x, cc.y, DoesEntityExist(ent) and NetworkGetEntityOwner(ent) or -1))
+                end
                 Wait(1000)
             end
         end)
     end
 
-    -- Failsafe: never leave one behind
-    local m = Config.TableMotion
-    SetTimeout(Config.ScanDuration + (m.slideTime or 0) * 2 + 20000, function()
-        if Carriers[id] == entry then deleteCarrier(id) end
+    -- Failsafe: never leave one behind once the patient is off the table / gone
+    CreateThread(function()
+        while Carriers[id] == entry do
+            Wait(2000)
+            if Carriers[id] == entry and (Occupant[id] ~= src or GetPlayerPed(src) == 0) then
+                deleteCarrier(id)
+            end
+        end
     end)
     return NetworkGetNetworkIdFromEntity(ent)
 end)

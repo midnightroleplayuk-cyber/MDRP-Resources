@@ -12,6 +12,7 @@ end
 -- The object is created by the server so other players see it (and the patient moving with it).
 local carrier = nil
 local carrierScanner = nil
+local prepareCarrier, attachPatient -- defined in the table movement section below
 
 local function removeCarrier(ped)
     if not carrier then return end
@@ -96,6 +97,12 @@ RegisterNetEvent('NDM_MRI:client:lieDown', function(id)
     DoScreenFadeOut(400)
     while not IsScreenFadedOut() do Wait(50) end
 
+    -- table carrier (for the scan movement) is set up first, while the screen is dark
+    local ent = nil
+    if s.bore and not ospIsDead() then
+        ent = prepareCarrier(id, vector3(t.x, t.y, t.z + 0.02), t.w)
+    end
+
     if IsPedInAnyVehicle(ped, false) then TaskLeaveAnyVehicle(ped, 0, 16) Wait(800) end
     DetachEntity(ped, true, false)
     SetEntityCoords(ped, t.x, t.y, t.z + 0.02, false, false, false, false)
@@ -104,6 +111,10 @@ RegisterNetEvent('NDM_MRI:client:lieDown', function(id)
     Wait(300)
     FreezeEntityPosition(ped, true)
     lyingOn = id
+
+    -- attach to the table carrier as they land, hidden inside this teleport (attaching later
+    -- makes the patient blink for other players)
+    attachPatient(id, ent)
 
     DoScreenFadeIn(400)
     lib.showTextUI('[X] Get off the MRI table')
@@ -133,19 +144,29 @@ end)
 
 ---------------------------------------------------------------------------
 -- Table movement (slides the patient in / out of the bore)
+--
+-- The patient is attached to the carrier when they LIE DOWN, not when the scan starts:
+-- attaching makes the ped blink for other players, and lying down is already a teleport
+-- that hides it. The scan then only moves the carrier.
 ---------------------------------------------------------------------------
-
-local carrierHome = nil -- where the carrier started (patient's spot on the table)
+local carrierHome = nil    -- patient's spot on the table
+local carrierPos = nil     -- where the carrier should be right now
+local carrierMoving = false
 
 -- Smoothly moves the carrier between two points. Returns false if interrupted.
 local function slide(from, to, ms, token)
     local start = GetGameTimer()
     local last = from
+    carrierMoving = true
     while true do
-        if token ~= moveToken or not carrier then return false end
+        if token ~= moveToken or not carrier then
+            carrierMoving = false
+            return false
+        end
         local p = math.min((GetGameTimer() - start) / ms, 1.0)
         local e = p * p * (3.0 - 2.0 * p) -- ease in / out
         local pos = from + (to - from) * e
+        carrierPos = pos
         SetEntityCoordsNoOffset(carrier, pos.x, pos.y, pos.z, false, false, false)
         -- real velocity (not zero): other clients predict the object's position from it
         local dt = GetFrameTime()
@@ -154,84 +175,96 @@ local function slide(from, to, ms, token)
         last = pos
         if p >= 1.0 then
             SetEntityVelocity(carrier, 0.0, 0.0, 0.0)
+            carrierMoving = false
             return true
         end
         Wait(0)
     end
 end
 
+-- Step 1, from lieDown BEFORE the teleport (screen faded): get the carrier and park it hidden
+-- at the table, so it is already in place on everyone's screen when the patient lands.
+prepareCarrier = function(id, at, heading)
+    local ent = getCarrier(id)
+    if not ent then return nil end
+    carrier, carrierScanner, carrierHome, carrierPos = ent, id, at, at
+    -- visible in debug so an onlooker can see whether the box itself moves
+    SetEntityVisible(carrier, Config.Debug == true, false)
+    -- let the "hidden" state reach other players before the box comes up from under the floor
+    Wait(300)
+    if carrier ~= ent then return nil end
+
+    -- no collision but KEEP physics: other clients don't apply position updates to an object
+    -- whose physics is switched off. Not frozen either (same reason); no gravity instead and
+    -- the keeper thread below holds it in place.
+    SetEntityCollision(carrier, false, true)
+    ActivatePhysics(carrier)
+    SetEntityCoordsNoOffset(carrier, at.x, at.y, at.z, false, false, false)
+    SetEntityRotation(carrier, 0.0, 0.0, heading, 2, true)
+    FreezeEntityPosition(carrier, false)
+    SetEntityHasGravity(carrier, false)
+
+    -- keeper: holds the carrier still whenever it isn't sliding
+    CreateThread(function()
+        while carrier == ent do
+            if not carrierMoving and carrierPos then
+                SetEntityCoordsNoOffset(carrier, carrierPos.x, carrierPos.y, carrierPos.z, false, false, false)
+                SetEntityVelocity(carrier, 0.0, 0.0, 0.0)
+            end
+            Wait(0)
+        end
+    end)
+
+    -- let the new position reach other players before the patient is attached
+    Wait(400)
+    if carrier ~= ent then return nil end
+    return ent
+end
+
+-- Step 2, right after the teleport: attach the patient where they actually settled.
+attachPatient = function(id, ent)
+    if not ent or carrier ~= ent or lyingOn ~= id then return end
+    local ped = cache.ped
+    local start = GetEntityCoords(ped)
+    carrierHome, carrierPos = start, start
+    SetEntityCoordsNoOffset(carrier, start.x, start.y, start.z, false, false, false)
+    -- match the patient's actual heading so attaching doesn't turn them
+    SetEntityRotation(carrier, 0.0, 0.0, GetEntityHeading(ped), 2, true)
+
+    SetPedCanRagdoll(ped, false)
+    -- isPed = true, otherwise GTA rotates the attached ped
+    AttachEntityToEntity(ped, carrier, 0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, false, false, false, true, 2, true)
+    FreezeEntityPosition(ped, false) -- after attaching, so they never drop for a frame
+    -- only restart the pose if it was lost; restarting a running anim makes it flash
+    if not IsEntityPlayingAnim(ped, Config.LieAnim.dict, Config.LieAnim.clip, 3) then
+        playLie(ped)
+    end
+end
+
 local function startTableMotion(id)
     local s = Config.Scanners[id]
-    if not s or not s.bore or lyingOn ~= id or ospIsDead() or carrier then return end
+    if not s or not s.bore or not carrier or carrierScanner ~= id or lyingOn ~= id then return end
     moveToken = moveToken + 1
     local token = moveToken
     local m = Config.TableMotion
     CreateThread(function()
-        local ped = cache.ped
-        local start = GetEntityCoords(ped)
-
-        local ent = getCarrier(id)
-        if not ent then return end
-        if token ~= moveToken or lyingOn ~= id then
-            TriggerServerEvent('NDM_MRI:server:removeCarrier', id)
-            return
-        end
-        carrier, carrierScanner, carrierHome = ent, id, start
-        -- visible in debug so an onlooker can see whether the box itself moves
-        SetEntityVisible(carrier, Config.Debug == true, false)
-        -- let the "hidden" state reach other players before the box comes up from under the floor
-        Wait(300)
-        if token ~= moveToken or lyingOn ~= id then
-            carrier, carrierScanner = nil, nil
-            TriggerServerEvent('NDM_MRI:server:removeCarrier', id)
-            return
-        end
-        -- no collision but KEEP physics: other clients don't apply position updates to an
-        -- object whose physics is switched off
-        SetEntityCollision(carrier, false, true)
-        ActivatePhysics(carrier)
-        SetEntityCoordsNoOffset(carrier, start.x, start.y, start.z, false, false, false)
-        -- match the patient's actual heading so attaching doesn't turn them
-        SetEntityRotation(carrier, 0.0, 0.0, GetEntityHeading(ped), 2, true)
-        -- NOT frozen: other clients ignore network position updates for frozen objects, so the
-        -- patient (attached to it) would never move on their screens. No gravity instead, and we
-        -- hold its position every frame for the whole scan.
-        FreezeEntityPosition(carrier, false)
-        SetEntityHasGravity(carrier, false)
-
-        -- hold the box at the patient until its new position has reached other players;
-        -- attaching earlier makes them see the patient pulled under the floor for a moment
-        if not slide(start, start, 400, token) then return end
-
-        SetPedCanRagdoll(ped, false)
-        -- isPed = true, otherwise GTA rotates the attached ped
-        AttachEntityToEntity(ped, carrier, 0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, false, false, false, true, 2, true)
-        FreezeEntityPosition(ped, false) -- after attaching, so they never drop for a frame
-        -- only restart the pose if it was lost; restarting a running anim makes it flash
-        if not IsEntityPlayingAnim(ped, Config.LieAnim.dict, Config.LieAnim.clip, 3) then
-            playLie(ped)
-        end
-
         -- the slide is the table -> bore offset applied to wherever the patient actually lies
         local delta = vector3(s.bore.x - s.table.x, s.bore.y - s.table.y, 0.0)
-        local inside = start + delta
+        local inside = carrierHome + delta
         local dir = -delta
         local len = #dir
         if len > 0.001 then dir = dir / len end
 
-        if not slide(start, inside, m.slideTime, token) then return end
+        if not slide(carrierPos, inside, m.slideTime, token) then return end
 
         local pos, out = inside, false
         while token == moveToken and lyingOn == id and (m.shuffle or 0) > 0 do
-            if not slide(pos, pos, m.pause, token) then return end -- hold still
+            Wait(m.pause) -- keeper holds it still
+            if token ~= moveToken then return end
             out = not out
             local target = out and (inside + dir * m.shuffle) or inside
             if not slide(pos, target, m.shuffleTime, token) then return end
             pos = target
-        end
-        -- no shuffle: just hold it inside until the scan ends
-        while token == moveToken and lyingOn == id do
-            if not slide(pos, pos, 1000, token) then return end
         end
     end)
 end
@@ -239,28 +272,17 @@ end
 local function stopTableMotion(id)
     moveToken = moveToken + 1
     local token = moveToken
-    local s = Config.Scanners[id]
-    if not s or not carrier or lyingOn ~= id then return end
+    if not carrier or carrierScanner ~= id or lyingOn ~= id then return end
     CreateThread(function()
-        local ped = cache.ped
-        if not slide(GetEntityCoords(carrier), carrierHome, Config.TableMotion.slideTime, token) then return end
-        local home = carrierHome
-        removeCarrier(ped)
-        if lyingOn == id then
-            -- back to the exact spot they were lying in before the slide (not the raw table
-            -- point, which is the drop-in height and leaves them floating once frozen)
-            FreezeEntityPosition(ped, true)
-            SetEntityCoordsNoOffset(ped, home.x, home.y, home.z, false, false, false)
-            SetEntityHeading(ped, s.table.w)
-            playLie(ped)
-        end
+        slide(carrierPos, carrierHome, Config.TableMotion.slideTime, token)
     end)
 end
 
 RegisterNetEvent('NDM_MRI:client:holdStill', function(id, duration)
     if duration and duration > 0 then
         notify('MRI scan in progress, hold still...', 'inform')
-        FreezeEntityPosition(cache.ped, true)
+        -- an attached ped must not be frozen or it won't follow the carrier
+        if not carrier then FreezeEntityPosition(cache.ped, true) end
         startTableMotion(id)
     else
         stopTableMotion(id)
