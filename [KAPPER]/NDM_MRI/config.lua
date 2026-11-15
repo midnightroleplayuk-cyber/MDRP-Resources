@@ -21,7 +21,7 @@ Config.Scanners = {
         console = vector3(-329.19, -105.1, 38.74),
         -- optional: point inside the scanner bore the table slides the patient to during a scan.
         -- Only x / y are used (the table height is kept). Leave nil for no table movement.
-        -- bore = vector3(-325.70, -109.30, 39.74),
+        bore = vector4(-323.64, -109.29),
     },
 }
 
