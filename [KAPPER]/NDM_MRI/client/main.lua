@@ -9,15 +9,38 @@ end
 
 -- Invisible object the patient is attached to while the table moves. Moving the ped itself
 -- (SetEntityCoords every frame) cancels its animation and leaves it in a T-pose.
+-- The object is created by the server so other players see it (and the patient moving with it).
 local carrier = nil
-local CARRIER_MODEL = `prop_cs_cardbox_01`
+local carrierScanner = nil
 
 local function removeCarrier(ped)
     if not carrier then return end
     DetachEntity(ped, true, false)
-    if DoesEntityExist(carrier) then DeleteEntity(carrier) end
-    carrier = nil
+    TriggerServerEvent('NDM_MRI:server:removeCarrier', carrierScanner)
+    carrier, carrierScanner = nil, nil
     SetPedCanRagdoll(ped, true)
+end
+
+-- Asks the server for the carrier and takes control of it. Returns the entity or nil.
+local function getCarrier(id)
+    local netId = lib.callback.await('NDM_MRI:server:createCarrier', false, id)
+    if not netId then return nil end
+    local timeout = GetGameTimer() + 3000
+    while not NetworkDoesNetworkIdExist(netId) or not NetworkDoesEntityExistWithNetworkId(netId) do
+        if GetGameTimer() > timeout then return nil end
+        Wait(0)
+    end
+    local ent = NetworkGetEntityFromNetworkId(netId)
+    while not NetworkHasControlOfEntity(ent) do
+        if GetGameTimer() > timeout then
+            TriggerServerEvent('NDM_MRI:server:removeCarrier', id)
+            return nil
+        end
+        NetworkRequestControlOfEntity(ent)
+        Wait(0)
+    end
+    SetNetworkIdCanMigrate(netId, false)
+    return ent
 end
 
 local function ospIsDead()
@@ -132,10 +155,13 @@ local function startTableMotion(id)
         local ped = cache.ped
         local start = GetEntityCoords(ped)
 
-        lib.requestModel(CARRIER_MODEL)
-        carrier = CreateObject(CARRIER_MODEL, start.x, start.y, start.z, true, false, false)
-        SetModelAsNoLongerNeeded(CARRIER_MODEL)
-        if not carrier or carrier == 0 then carrier = nil return end
+        local ent = getCarrier(id)
+        if not ent then return end
+        if token ~= moveToken or lyingOn ~= id then
+            TriggerServerEvent('NDM_MRI:server:removeCarrier', id)
+            return
+        end
+        carrier, carrierScanner = ent, id
         SetEntityVisible(carrier, false, false)
         SetEntityCollision(carrier, false, false)
         SetEntityCoordsNoOffset(carrier, start.x, start.y, start.z, false, false, false)

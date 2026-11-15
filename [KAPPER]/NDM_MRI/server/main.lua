@@ -307,8 +307,62 @@ RegisterNetEvent('NDM_MRI:server:leftTable', function(id)
     if Occupant[id] == source then Occupant[id] = nil end
 end)
 
+---------------------------------------------------------------------------
+-- Table carrier: hidden object the patient is attached to while the table moves.
+-- Created server side so it exists for everyone (client-made entities can be blocked).
+---------------------------------------------------------------------------
+local Carriers = {} -- [scannerId] = { entity, patient }
+local CARRIER_MODEL = `prop_cs_cardbox_01`
+
+local function deleteCarrier(id)
+    local c = Carriers[id]
+    if not c then return end
+    Carriers[id] = nil
+    if DoesEntityExist(c.entity) then DeleteEntity(c.entity) end
+end
+
+lib.callback.register('NDM_MRI:server:createCarrier', function(src, id)
+    local s = scanner(id)
+    local job = Busy[id]
+    if not s or not s.bore or not job or job.patient ~= src then return false end
+    deleteCarrier(id)
+
+    local c = pedCoords(src)
+    if not c then return false end
+    local ent = CreateObjectNoOffset(CARRIER_MODEL, c.x, c.y, c.z - 2.0, true, true, false)
+    local timeout = GetGameTimer() + 3000
+    while not DoesEntityExist(ent) do
+        if GetGameTimer() > timeout then return false end
+        Wait(0)
+    end
+    FreezeEntityPosition(ent, true)
+    SetEntityHeading(ent, s.table.w)
+    local entry = { entity = ent, patient = src }
+    Carriers[id] = entry
+
+    -- Failsafe: never leave one behind
+    local m = Config.TableMotion
+    SetTimeout(Config.ScanDuration + (m.slideTime or 0) * 2 + 20000, function()
+        if Carriers[id] == entry then deleteCarrier(id) end
+    end)
+    return NetworkGetNetworkIdFromEntity(ent)
+end)
+
+RegisterNetEvent('NDM_MRI:server:removeCarrier', function(id)
+    local c = Carriers[id]
+    if c and c.patient == source then deleteCarrier(id) end
+end)
+
+AddEventHandler('onResourceStop', function(res)
+    if res ~= GetCurrentResourceName() then return end
+    for id in pairs(Carriers) do deleteCarrier(id) end
+end)
+
 AddEventHandler('playerDropped', function()
     local src = source
+    for id, c in pairs(Carriers) do
+        if c.patient == src then deleteCarrier(id) end
+    end
     for id, occ in pairs(Occupant) do
         if occ == src then Occupant[id] = nil end
     end
