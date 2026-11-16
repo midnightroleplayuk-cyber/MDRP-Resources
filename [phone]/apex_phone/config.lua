@@ -367,8 +367,8 @@ Config.SlateBuds = {
 -- ------------------------------------------------------------
 -- Number / SIM
 -- ------------------------------------------------------------
-Config.NumberFormat        = '#########'   -- '#' = random digit (used when the character has no number or when swapping SIM)
-Config.NumberPrefix        = '07'           -- prefix shown BEFORE the number (e.g. '+351' -> "+351 555-1234"). Visual only:
+Config.NumberFormat        = '07#########'   -- '#' = random digit (used when the character has no number or when swapping SIM)
+Config.NumberPrefix        = nil           -- prefix shown BEFORE the number (e.g. '+351' -> "+351 555-1234"). Visual only:
                                           -- numbers are still stored without it; dialling with or without the prefix calls the same number
 Config.SyncNumberToCharInfo = true        -- writes the number to the framework (QB/QBox: charinfo.phone; ESX: users.phone_number)
 Config.AllowSimSwap        = true         -- Settings > SIM > Swap SIM (generates a new number)
