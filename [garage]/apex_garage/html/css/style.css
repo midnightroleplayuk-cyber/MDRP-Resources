@@ -1,0 +1,1136 @@
+/* ============================================================
+   apex_garage — Apex design system (same language as
+   apex_dealerships / apex_bossmenu: strict Config.theme palette,
+   flat buttons, status pills, no glow gradients)
+   ------------------------------------------------------------
+   brand #1F5EFF  bg #0A0A0B  card #1A1A1B  border #1F1F21
+   ============================================================ */
+:root {
+    --brand-500: #1F5EFF;
+    --brand-600: #0048F0;
+    --brand-400: #5C7AFF;
+    --brand-300: #859BFF;
+    --brand-a06: rgba(31,94,255,.06);
+    --brand-a10: rgba(31,94,255,.10);
+    --brand-a15: rgba(31,94,255,.15);
+    --brand-a25: rgba(31,94,255,.25);
+    --brand-a40: rgba(31,94,255,.40);
+    /* Foreground for anything painted ON the brand colour. applyTheme flips it to
+       near-black when the picked brand is light, so labels never vanish. */
+    --brand-ink: #fff;
+
+    --bg          : #0A0A0B;
+    --bg-card     : #1A1A1B;
+    --bg-raised   : #232325;
+    --bg-sidebar  : #131314;
+    /* translucent surface for the in-world floating panels (garage list/detail,
+       textui, placer, preview dock). Themed alongside the ramp by applyTheme —
+       it must NOT stay near-black or a light preset leaves near-black text on it. */
+    --bg-glass    : rgba(15,15,17,.94);
+    --border      : #1F1F21;
+    --border-hi   : #2A2A2D;
+
+    --surface-3 : #232325;
+    --surface-4 : #2A2A2D;
+    --line-3    : #38383C;
+    --line-4    : #4D4D52;
+
+    --text-1 : #F4F4F5;
+    --text-2 : rgba(244,244,245,.72);
+    --text-3 : rgba(244,244,245,.55);
+    --text-4 : rgba(244,244,245,.38);
+
+    /* -rgb holds the bare channels of the matching solid so borders, glows and
+       gradient stops can take their own alpha off it. applyTheme() overwrites
+       all four groups together; these are the pre-theme defaults. */
+    --info    : #4E9CE5;  --info-a  : rgba(78,156,229,.12);  --info-rgb  : 78,156,229;
+    --green   : #34C77B;  --green-a : rgba(52,199,123,.12);  --green-rgb : 52,199,123;
+    --yellow  : #E5A93C;  --yellow-a: rgba(229,169,60,.12);  --yellow-rgb: 229,169,60;
+    --red     : #E5564B;  --red-a   : rgba(229,86,75,.12);   --red-rgb   : 229,86,75;
+
+    --s-1: 4px;  --s-2: 8px;  --s-3: 10px; --s-4: 14px;
+    --s-5: 18px; --s-6: 22px; --s-8: 28px;
+
+    --fs-xs: 10.5px; --fs-sm: 11.5px; --fs-base: 13px;
+    --fs-md: 14px;   --fs-lg: 16px;   --fs-xl: 19px;
+    --fs-2xl: 22px;  --fs-3xl: 28px;
+
+    --r-1: 4px;  --r-2: 6px;  --r-3: 8px;
+    --r-4: 10px; --r-5: 14px; --r-6: 18px;
+
+    /* Chrome that has to invert with the background: on a dark UI these are
+       white washes, on a light one applyTheme rewrites them to black ones.
+       They MUST stay custom properties — literals in rule bodies are
+       unreachable from the theme pane and leave half the UI in the old skin. */
+    --hairline  : rgba(255,255,255,.045);   /* row separators               */
+    --inset-rim : rgba(255,255,255,.03);    /* 1px inner rim on raised cards */
+    --hover-wash: rgba(255,255,255,.016);   /* row hover feedback           */
+    --gloss     : rgba(255,255,255,.06);    /* thumbnail sheen              */
+    --shadow-rgb: 0,0,0;
+    --shadow-a1 : .40; --shadow-a2: .50; --shadow-a3: .60; --shadow-a4: .70;
+
+    --shadow-sm: 0 2px 8px rgba(var(--shadow-rgb),var(--shadow-a1));
+    --shadow-md: 0 6px 18px rgba(var(--shadow-rgb),var(--shadow-a2));
+    --shadow-lg: 0 16px 40px rgba(var(--shadow-rgb),var(--shadow-a3));
+    --shadow-xl: 0 28px 70px rgba(var(--shadow-rgb),var(--shadow-a4));
+
+    --ease-base: cubic-bezier(.22,.61,.36,1);
+    --ease-emph: cubic-bezier(.16,1,.3,1);
+    --dur-fast: 120ms; --dur-base: 200ms; --dur-slow: 320ms;
+
+    accent-color: var(--brand-500);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0 }
+[hidden] { display: none !important }
+
+/* Scroll chaining is never wanted here. Every scrollable thing in this UI is an
+   inner area inside a fixed panel, so when the wheel reaches the end of one the
+   browser hands the remaining scroll to whatever sits behind it — reading, from
+   the player's side, as the whole interface lurching while they scroll a
+   dropdown. `contain` stops the hand-off at the element's own boundary.
+
+   Declared once, on everything that scrolls, rather than per component: the same
+   bug otherwise comes back with the next list somebody adds. */
+.dd-menu, .veh-list, .pick-list, .modal-body, .mg-nav, .mg-pane,
+.ed-spawn-list, .sr-right, .adm-theme-left { overscroll-behavior: contain }
+html, body {
+    width: 100vw; height: 100vh; overflow: hidden;
+    background: transparent; color: var(--text-1);
+    font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    font-size: var(--fs-base); line-height: 1.45;
+    font-variant-numeric: tabular-nums;
+    -webkit-font-smoothing: antialiased;
+    user-select: none; letter-spacing: -.005em;
+}
+.mono { font-family: 'JetBrains Mono', 'SF Mono', Consolas, monospace; font-feature-settings: 'tnum' }
+button { font: inherit; cursor: pointer; border: 0; background: none; color: inherit; padding: 0 }
+input, select, textarea { font: inherit; color: inherit; outline: none }
+::-webkit-scrollbar { width: 6px; height: 6px }
+::-webkit-scrollbar-track { background: transparent }
+::-webkit-scrollbar-thumb { background: var(--border-hi); border-radius: 8px }
+::-webkit-scrollbar-thumb:hover { background: var(--line-3) }
+
+@keyframes fadeIn  { from { opacity: 0 } to { opacity: 1 } }
+@keyframes scaleIn { from { opacity: 0; transform: scale(.97) translateY(8px) } to { opacity: 1; transform: none } }
+@keyframes slideIn { from { opacity: 0; transform: translateX(12px) } to { opacity: 1; transform: none } }
+@keyframes slideUp { from { opacity: 0; transform: translateY(10px) } to { opacity: 1; transform: none } }
+@keyframes barFill { from { width: 0 } }
+
+.wordmark { font-weight: 900; font-size: 11.5px; letter-spacing: .14em; text-transform: uppercase }
+.wm-accent { color: var(--brand-400) }
+.eyebrow { font-size: 9px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--text-3) }
+.sec-title {
+    font-size: 10px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+    color: var(--text-3); margin: var(--s-4) 0 var(--s-2);
+    display: flex; align-items: center; gap: 10px;
+}
+.sec-title::after { content: ''; flex: 1; height: 1px; background: var(--border-hi) }
+.muted { color: var(--text-3); font-size: var(--fs-sm) }
+
+/* ============ BUTTONS / INPUTS ============ */
+.btn {
+    display: inline-flex; align-items: center; gap: 8px; justify-content: center;
+    padding: 8px 13px; border-radius: var(--r-2);
+    font-size: var(--fs-base); font-weight: 600;
+    transition: background var(--dur-fast), border-color var(--dur-fast), color var(--dur-fast);
+    border: 1px solid transparent; white-space: nowrap; line-height: 1;
+}
+.btn:disabled { opacity: .4; cursor: not-allowed }
+/* A button waiting on Lua. :disabled above already dims it, but dimmed alone
+   reads as "unavailable"; a turning icon reads as "working". Set by actionBtn()
+   for the life of the request — a take-out can spend seconds streaming a vehicle
+   model, and silence over that window is what had people clicking again. */
+.btn.is-busy { cursor: progress }
+.btn.is-busy i { animation: apxSpin .7s linear infinite }
+@keyframes apxSpin { to { transform: rotate(360deg) } }
+/* .btn is nowrap by design. A label built from a reason plus a lot name is the
+   one case that can outgrow the column, so let THAT label ellipsise instead of
+   widening the panel. */
+.btn.btn-truncate { max-width: 100%; min-width: 0 }
+.btn.btn-truncate i { flex: none }
+.btn.btn-truncate span { min-width: 0; overflow: hidden; text-overflow: ellipsis }
+.btn-primary {
+    background: var(--brand-500); color: var(--brand-ink); border-color: var(--brand-600);
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,.08), 0 4px 14px var(--brand-a25);
+}
+.btn-primary:hover:not(:disabled) { background: var(--brand-600); box-shadow: inset 0 0 0 1px rgba(255,255,255,.08), 0 6px 18px var(--brand-a40) }
+.btn-primary:active { transform: translateY(1px) }
+.btn-ghost { background: var(--bg-raised); color: var(--text-1); border-color: var(--border-hi) }
+.btn-ghost:hover { background: var(--surface-4); border-color: var(--line-3) }
+.btn-danger { background: var(--red); color: #fff; border-color: var(--red) }
+.btn-danger:hover { filter: brightness(1.08) }
+.btn-sm { padding: 6px 11px; font-size: var(--fs-sm) }
+.btn-lg { padding: 12px 20px; font-size: var(--fs-md) }
+.btn-block { width: 100% }
+
+.icon-btn {
+    width: 30px; height: 30px; display: inline-flex; align-items: center; justify-content: center;
+    border-radius: var(--r-2); color: var(--text-3);
+    transition: background var(--dur-fast), color var(--dur-fast);
+}
+.icon-btn:hover { color: var(--text-1); background: var(--bg-raised) }
+
+input[type="text"], input[type="number"] {
+    width: 100%;
+    background: var(--bg-raised); border: 1px solid var(--border-hi);
+    border-radius: var(--r-2); padding: 9px 11px;
+    font-size: var(--fs-base); color: var(--text-1);
+    transition: border-color var(--dur-fast), box-shadow var(--dur-fast);
+}
+input:focus { border-color: var(--brand-500); box-shadow: 0 0 0 2px var(--brand-a15) }
+input::placeholder { color: var(--text-4) }
+
+/* segmented control */
+.seg {
+    display: flex; gap: 3px; background: var(--bg-raised);
+    border: 1px solid var(--border-hi); border-radius: var(--r-2); padding: 3px;
+}
+.seg button {
+    flex: 1; height: 30px; border-radius: var(--r-1);
+    color: var(--text-3); font-weight: 600; font-size: var(--fs-sm);
+    transition: background var(--dur-fast), color var(--dur-fast);
+    padding: 0 8px; white-space: nowrap;
+}
+.seg button:hover { color: var(--text-1) }
+.seg button.active { background: var(--brand-500); color: var(--brand-ink) }
+
+/* badges */
+.badge {
+    display: inline-flex; align-items: center; gap: 5px; padding: 2px 8px; border-radius: 999px;
+    font-size: 10px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase;
+    border: 1px solid transparent;
+}
+.badge-green  { background: var(--green-a);  color: var(--green);  border-color: rgba(var(--green-rgb),.25) }
+.badge-red    { background: var(--red-a);    color: var(--red);    border-color: rgba(var(--red-rgb),.25) }
+.badge-yellow { background: var(--yellow-a); color: var(--yellow); border-color: rgba(var(--yellow-rgb),.25) }
+.badge-blue   { background: var(--info-a);   color: var(--info);   border-color: rgba(78,156,229,.25) }
+
+/* ============ 3D WORLD MARKER ============ */
+#world-3d-icon { position: fixed; left: 0; top: 0; pointer-events: none; z-index: 6900; will-change: transform, left, top }
+.w3d-bubble { display: flex; flex-direction: column; align-items: center; gap: 6px; filter: drop-shadow(0 6px 14px rgba(0,0,0,.55)) }
+.w3d-icon {
+    width: 46px; height: 46px; border-radius: 50%;
+    background: var(--brand-500); color: var(--brand-ink);
+    display: flex; align-items: center; justify-content: center;
+    border: 2px solid rgba(255,255,255,.18); font-size: 17px; position: relative;
+}
+.w3d-icon::before {
+    content: ''; position: absolute; inset: -8px; border-radius: 50%;
+    border: 1.5px solid var(--brand-a40); animation: w3dHalo 1.8s ease-out infinite;
+}
+@keyframes w3dHalo { 0% { transform: scale(.85); opacity: .9 } 100% { transform: scale(1.45); opacity: 0 } }
+/* in-world pill: the surface has to track the theme like every other glass
+   panel — pinning it near-black left --text-1 (near-black on light presets)
+   invisible on it, the same half-themed trap fixed for #textui .tui-key.
+   Ink is owned solely by .w3d-text/.w3d-key, so no color here. */
+.w3d-label {
+    display: inline-flex; align-items: center; gap: 7px; font-size: 11px; font-weight: 700;
+    padding: 3px 10px 3px 4px; background: var(--bg-glass);
+    border: 1px solid var(--border-hi); border-radius: 999px; white-space: nowrap;
+}
+.w3d-key {
+    background: var(--brand-500); color: var(--brand-ink); font-family: 'JetBrains Mono', ui-monospace, 'SF Mono', Consolas, monospace; font-weight: 800;
+    font-size: 10px; padding: 3px 8px; border-radius: 999px; line-height: 1;
+}
+.w3d-text { font-size: 11px; font-weight: 700; color: var(--text-1) }
+
+/* ============ TOASTS ============ */
+#toasts {
+    position: fixed; top: var(--s-4); right: var(--s-4);
+    display: flex; flex-direction: column; gap: var(--s-2);
+    z-index: 9000; width: 320px; pointer-events: none;
+}
+.toast {
+    display: flex; gap: var(--s-3); align-items: flex-start;
+    background: var(--bg-card); border: 1px solid var(--border-hi);
+    border-left: 3px solid var(--brand-500); border-radius: var(--r-3);
+    padding: var(--s-3) var(--s-4); box-shadow: var(--shadow-lg);
+    animation: slideIn var(--dur-base) var(--ease-emph);
+}
+.toast.success { border-left-color: var(--green) }
+.toast.error   { border-left-color: var(--red) }
+.toast.warning { border-left-color: var(--yellow) }
+.toast .t-ico  { font-size: 14px; margin-top: 1px }
+.toast.success .t-ico { color: var(--green) }
+.toast.error   .t-ico { color: var(--red) }
+.toast.info    .t-ico { color: var(--brand-400) }
+.toast .t-title { font-weight: 700; font-size: var(--fs-sm) }
+.toast .t-msg   { color: var(--text-2); font-size: var(--fs-sm); line-height: 1.45 }
+.toast.leaving  { opacity: 0; transform: translateX(12px); transition: all var(--dur-base) var(--ease-base) }
+
+/* ============ TOOLTIP ============ */
+#tooltip {
+    position: fixed; z-index: 9900; pointer-events: none;
+    background: var(--bg-card); border: 1px solid var(--border-hi);
+    border-radius: var(--r-2); padding: 5px 9px;
+    font-size: var(--fs-xs); color: var(--text-2); box-shadow: var(--shadow-md);
+    opacity: 0; transition: opacity var(--dur-fast);
+}
+#tooltip.show { opacity: 1 }
+
+/* ============ PANEL ============ */
+.panel {
+    background: var(--bg-glass); border: 1px solid var(--border-hi);
+    border-radius: var(--r-5); box-shadow: var(--shadow-xl), inset 0 0 0 1px var(--inset-rim);
+}
+
+/* ============ GARAGE SCREEN ============ */
+#garage {
+    position: fixed; inset: 0;
+    background:
+        radial-gradient(120% 90% at 0% 50%, rgba(0,0,0,.55), transparent 40%),
+        radial-gradient(120% 90% at 100% 50%, rgba(0,0,0,.55), transparent 40%);
+    animation: fadeIn var(--dur-base) var(--ease-base);
+}
+
+.sr-top {
+    position: absolute; top: 0; left: 0; right: 0;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: var(--s-4) var(--s-5); pointer-events: none;
+}
+.sr-top > * { pointer-events: auto }
+.sr-brand {
+    display: flex; align-items: center; gap: 11px; width: 324px;
+    background: var(--bg-glass); border: 1px solid var(--border-hi);
+    border-radius: var(--r-3); padding: 6px 16px 6px 6px;
+    box-shadow: var(--shadow-md), inset 0 0 0 1px var(--inset-rim);
+}
+.sr-mark {
+    width: 40px; height: 40px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; color: var(--brand-ink); background: var(--brand-500);
+    border: 1px solid var(--brand-600); border-radius: var(--r-3);
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,.10), 0 4px 14px var(--brand-a40);
+}
+.sr-brand-text { display: flex; flex-direction: column; min-width: 0 }
+.sr-dealer { font-size: 10px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--text-3); margin-top: 2px; white-space: nowrap }
+.sr-top-right { display: flex; gap: 6px; align-items: stretch; width: 336px }
+.sr-leave {
+    flex: 1; height: 52px; align-self: stretch;
+    background: var(--bg-glass); border-color: var(--border-hi); border-radius: var(--r-3);
+    font-size: var(--fs-sm); padding: 0 14px;
+    box-shadow: var(--shadow-md), inset 0 0 0 1px var(--inset-rim);
+}
+.sr-leave:hover { background: var(--red-a); border-color: var(--red); color: var(--red) }
+
+.money-row { display: flex; gap: 6px; margin-bottom: var(--s-3) }
+.money-row .money-chip { flex: 1 }
+.money-chip {
+    display: flex; flex-direction: column; justify-content: center; gap: 3px;
+    padding: 10px 13px; background: var(--bg-card);
+    border: 1px solid var(--border-hi); border-radius: var(--r-3);
+}
+.money-chip .csp-eyebrow { font-size: 9px; text-transform: uppercase; letter-spacing: .12em; color: var(--text-3); font-weight: 700; display: flex; align-items: center; gap: 5px }
+.money-chip .csp-eyebrow i { font-size: 9px; color: var(--brand-400) }
+.money-chip .csp-value { font-size: var(--fs-md); font-weight: 700; line-height: 1.1; color: var(--text-1) }
+
+.sr-left {
+    position: absolute; top: 76px; bottom: var(--s-5); left: var(--s-5);
+    width: 324px; display: flex; flex-direction: column; padding: var(--s-3);
+    animation: slideUp var(--dur-slow) var(--ease-emph);
+}
+.search-wrap { position: relative; margin-bottom: var(--s-3) }
+.search-wrap i { position: absolute; left: 11px; top: 50%; transform: translateY(-50%); color: var(--text-4); font-size: 11px }
+.search-wrap input { width: 100%; padding-left: 32px }
+
+.filter-row { display: flex; flex-direction: column; gap: 6px; margin-bottom: var(--s-2) }
+.dd { position: relative; width: 100% }
+.dd-btn {
+    width: 100%; display: flex; align-items: center; gap: 9px; padding: 8px 10px;
+    background: var(--bg-raised); border: 1px solid var(--border-hi); border-radius: var(--r-2);
+    font-size: var(--fs-sm); font-weight: 600; color: var(--text-1); text-align: left;
+    transition: border-color var(--dur-fast), box-shadow var(--dur-fast);
+}
+.dd-btn:hover { border-color: var(--line-3) }
+.dd.open .dd-btn { border-color: var(--brand-500); box-shadow: 0 0 0 2px var(--brand-a15) }
+.dd-ico { font-size: 10px; color: var(--brand-400); width: 12px; text-align: center }
+.dd-label { flex: 1; text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis }
+.dd-caret { font-size: 9px; color: var(--text-3); transition: transform var(--dur-fast) }
+.dd.open .dd-caret { transform: rotate(180deg); color: var(--brand-400) }
+.dd-menu {
+    position: absolute; top: calc(100% + 5px); left: 0; right: 0; z-index: 60;
+    background: var(--bg-raised); border: 1px solid var(--border-hi); border-radius: var(--r-3);
+    box-shadow: var(--shadow-lg), inset 0 0 0 1px var(--inset-rim);
+    padding: 4px; max-height: 148px; overflow-y: auto;
+    display: flex; flex-direction: column; gap: 2px; animation: slideUp var(--dur-fast) var(--ease-emph);
+}
+/* Opened upward when there is no room below. A .dd inside a scrolling container
+   (the impound form's time picker sits near the bottom of .modal-body) would
+   otherwise have its menu CLIPPED by that container, not merely run off-screen.
+   ddPlace() in app.js decides, and also sets an inline max-height for the space
+   actually available — this pair of rules only moves the anchor. */
+.dd.up .dd-menu { top: auto; bottom: calc(100% + 5px) }
+.dd-item {
+    width: 100%; display: flex; align-items: center; gap: 8px; padding: 8px 10px; border-radius: var(--r-2);
+    font-size: var(--fs-sm); font-weight: 600; color: var(--text-2); text-align: left;
+    transition: background var(--dur-fast), color var(--dur-fast);
+}
+.dd-item:hover { background: var(--surface-4); color: var(--text-1) }
+.dd-item.active { background: var(--brand-a10); color: var(--brand-300) }
+.dd-item.active::after { content: '\f00c'; font-family: 'Font Awesome 6 Free'; font-weight: 900; font-size: 9px; margin-left: auto }
+
+.veh-count { font-size: 9.5px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--text-4); margin: 4px 2px 6px }
+.veh-list { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 6px; padding-right: 6px; margin-right: -6px }
+.veh-card {
+    display: flex; gap: var(--s-3); align-items: center;
+    background: var(--bg-card); border: 1px solid transparent; border-radius: var(--r-3); padding: 7px;
+    cursor: pointer; transition: background var(--dur-fast), border-color var(--dur-fast), transform var(--dur-fast);
+}
+.veh-card:hover { background: var(--bg-raised); border-color: var(--border-hi); transform: translateX(2px) }
+.veh-card.oos { opacity: .6 }
+.veh-card.active { background: var(--brand-a06); border-color: var(--brand-a40); box-shadow: inset 2px 0 0 var(--brand-500) }
+.veh-thumb {
+    width: 62px; height: 44px; border-radius: var(--r-2);
+    background: var(--bg-raised); border: 1px solid var(--border);
+    overflow: hidden; flex-shrink: 0; display: grid; place-items: center; position: relative;
+}
+.veh-thumb .mono-fallback { font-weight: 900; font-size: var(--fs-md); color: var(--brand-400); letter-spacing: .05em }
+.veh-thumb img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; padding: 4px }
+.veh-thumb.has-img .mono-fallback { display: none }
+/* the car render sits over a soft top-light sheen */
+.veh-thumb::after { content: ''; position: absolute; inset: 0; background: linear-gradient(160deg, var(--gloss) 0%, transparent 45%); pointer-events: none }
+
+/* big hero image at the top of the detail panel */
+.det-hero { width: 100%; height: 152px; border-radius: var(--r-4); margin-bottom: var(--s-4); background: var(--bg-raised); border: 1px solid var(--border-hi) }
+.det-hero img { padding: 12px }
+.det-hero .mono-fallback { font-size: var(--fs-3xl) }
+.veh-info { flex: 1; min-width: 0 }
+.veh-brand { font-size: 9.5px; color: var(--text-3); font-weight: 700; letter-spacing: .08em; text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis }
+.veh-name { font-weight: 700; font-size: var(--fs-base); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1.25 }
+.veh-plate { font-size: var(--fs-xs); color: var(--text-3); font-family: 'JetBrains Mono', monospace; margin-top: 1px }
+.veh-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; margin-right: 3px }
+.veh-dot.stored { background: var(--green); box-shadow: 0 0 6px rgba(var(--green-rgb),.6) }
+.veh-dot.out    { background: var(--yellow); box-shadow: 0 0 6px rgba(var(--yellow-rgb),.6) }
+.veh-dot.impound{ background: var(--red); box-shadow: 0 0 6px rgba(var(--red-rgb),.6) }
+
+.sr-right {
+    position: absolute; top: 76px; right: var(--s-5); width: 336px;
+    max-height: calc(100vh - 76px - var(--s-5)); display: flex; flex-direction: column;
+    padding: var(--s-4); overflow-y: auto; animation: slideIn var(--dur-slow) var(--ease-emph);
+}
+.det-brand { font-size: 10px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; color: var(--brand-400) }
+.det-name { font-size: var(--fs-2xl); font-weight: 800; line-height: 1.2; margin: 2px 0 var(--s-3); letter-spacing: -.015em }
+.d-plate-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap }
+.plate-chip {
+    font-size: var(--fs-sm); font-weight: 700; letter-spacing: .12em;
+    padding: 4px 10px; background: var(--brand-a06); border: 1px solid var(--brand-a25);
+    border-radius: var(--r-2); color: var(--brand-300);
+}
+.d-nick { display: flex; align-items: center; gap: 7px; margin-top: 8px; font-size: var(--fs-sm); color: var(--text-2) }
+.d-nick i { color: var(--brand-400); font-size: 11px }
+
+.det-stats { margin-top: var(--s-4); display: flex; flex-direction: column; gap: var(--s-2) }
+.stat-row { display: flex; align-items: center; gap: var(--s-3) }
+.stat-label { width: 96px; font-size: 9.5px; font-weight: 700; color: var(--text-3); text-transform: uppercase; letter-spacing: .08em; display: flex; align-items: center; gap: 6px }
+.stat-label i { color: var(--brand-400); font-size: 10px; width: 12px; text-align: center }
+.stat-bar { flex: 1; height: 6px; background: var(--bg-raised); border-radius: 3px; overflow: hidden; box-shadow: inset 0 1px 2px rgba(0,0,0,.4) }
+.stat-fill { height: 100%; border-radius: 3px; background: linear-gradient(90deg, var(--brand-600), var(--brand-400)); animation: barFill .7s var(--ease-emph) }
+/* the dark stop is the same colour at low alpha over the track rather than a
+   frozen hex, so both ends of the ramp follow the theme */
+.stat-fill.warn { background: linear-gradient(90deg, rgba(var(--yellow-rgb),.5), var(--yellow)) }
+.stat-fill.bad  { background: linear-gradient(90deg, rgba(var(--red-rgb),.5), var(--red)) }
+.stat-val { width: 40px; text-align: right; font-size: var(--fs-xs); color: var(--text-2); font-family: 'JetBrains Mono', monospace }
+
+.d-impound { margin-top: var(--s-3) }
+.imp-line { display: flex; justify-content: space-between; gap: 12px; padding: 5px 0; font-size: var(--fs-sm) }
+.imp-line span:first-child { color: var(--text-3) }
+.imp-line span:last-child { color: var(--text-1); font-weight: 600; text-align: right }
+/* the two verdict lines (may collect / police only) borrow the status palette so
+   the readout agrees with the badge above it, at channel alpha rather than a
+   frozen hex — the theme can be flipped to a light background */
+.imp-line .imp-ok   { color: var(--green) }
+.imp-line .imp-lock { color: var(--red) }
+/* The officer types the reason free-hand (server caps it at 255 chars), so it is
+   the one value here that can be a sentence rather than a word. Let it wrap
+   inside its own column instead of pushing the label off the panel — the panel
+   keeps its size. */
+.imp-line .imp-reason { min-width: 0; overflow-wrap: anywhere }
+
+/* Officer roster: the left rail groups the impound by owner, so "which players
+   are holding cars here" is legible before any card is clicked. */
+.veh-group {
+    display: flex; align-items: center; gap: 8px;
+    padding: 12px 4px 6px; margin-top: 2px;
+    font-size: var(--fs-xs); font-weight: 800; letter-spacing: .08em; text-transform: uppercase;
+    color: var(--text-3); border-top: 1px solid var(--hairline);
+}
+.veh-group:first-child { border-top: 0; padding-top: 4px }
+.veh-group i { color: var(--brand-400); font-size: 11px }
+.veh-group .vg-name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
+.veh-group .chip {
+    background: var(--brand-a15); border: 1px solid var(--brand-a40);
+    color: var(--brand-300); border-radius: 999px; padding: 1px 7px; font-size: 10px; letter-spacing: 0;
+}
+
+.det-actions { margin-top: var(--s-5); display: flex; flex-direction: column; gap: 6px }
+.det-actions .btn { width: 100% }
+
+.g-empty {
+    position: absolute; top: 76px; bottom: var(--s-5); left: 342px; right: 342px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px;
+    color: var(--text-4); text-align: center;
+}
+.g-empty i { font-size: 46px; color: var(--surface-4) }
+.g-empty span { font-size: var(--fs-md); font-weight: 600; color: var(--text-3); max-width: 260px }
+
+/* ============ MODALS ============ */
+.overlay {
+    position: fixed; inset: 0; z-index: 9800; background: rgba(0,0,0,.55);
+    display: grid; place-items: center; animation: fadeIn var(--dur-base) var(--ease-base);
+}
+.modal {
+    width: 440px; max-height: 84vh; display: flex; flex-direction: column;
+    background: var(--bg); border: 1px solid var(--border-hi); border-radius: var(--r-6);
+    box-shadow: var(--shadow-xl), inset 0 0 0 1px var(--inset-rim);
+    animation: scaleIn 280ms var(--ease-emph) both; overflow: hidden; position: relative;
+}
+.modal::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, transparent, var(--brand-500), transparent); opacity: .8 }
+.modal-sm { width: 384px }
+.modal-head { display: flex; justify-content: space-between; align-items: flex-start; padding: var(--s-5) var(--s-6) var(--s-3) }
+.modal-title { font-size: var(--fs-xl); font-weight: 800; margin-top: 2px }
+.modal-body { padding: 0 var(--s-6) var(--s-4); overflow-y: auto }
+.modal-foot { display: flex; gap: var(--s-2); justify-content: flex-end; padding: var(--s-4) var(--s-6) var(--s-5); border-top: 1px solid var(--border) }
+.modal-foot .btn-primary, .modal-foot .btn-danger { flex: 1 }
+
+.co-price-row { display: flex; justify-content: space-between; align-items: center; padding: var(--s-4) 0 2px; font-size: var(--fs-sm); font-weight: 600 }
+.co-price-row .mono { font-size: var(--fs-lg); font-weight: 700; color: var(--brand-300) }
+
+.pick-list { display: flex; flex-direction: column; gap: 4px; max-height: 220px; overflow-y: auto }
+.pick-item {
+    display: flex; justify-content: space-between; align-items: center;
+    background: var(--bg-card); border: 1px solid transparent; border-radius: var(--r-2);
+    padding: 9px 11px; cursor: pointer; font-size: var(--fs-sm); font-weight: 600;
+    transition: background var(--dur-fast), border-color var(--dur-fast);
+}
+.pick-item:hover { background: var(--bg-raised); border-color: var(--border-hi) }
+.pick-item.active { border-color: var(--brand-a40); background: var(--brand-a06); box-shadow: inset 2px 0 0 var(--brand-500) }
+.pick-item .pid { color: var(--text-3); font-family: 'JetBrains Mono', monospace; font-size: var(--fs-xs) }
+
+.im-veh { display: flex; align-items: center; gap: 9px; padding: 10px 12px; background: var(--bg-card); border: 1px solid var(--border-hi); border-radius: var(--r-3); font-weight: 700; font-size: var(--fs-md) }
+.im-veh i { color: var(--brand-400) }
+.im-veh .plate-chip { margin-left: auto }
+
+/* The retrievable switch sits in a one-row .set-list so it reads as the same
+   control the parking pane uses, rather than a bespoke checkbox. */
+.im-toggle { margin-top: var(--s-4) }
+/* Progressive disclosure: time + cost only exist once the owner is allowed to
+   collect at all. Animating the reveal keeps the modal from jumping. */
+.im-reveal { animation: imReveal var(--dur-base) var(--ease-emph) both }
+@keyframes imReveal { from { opacity: 0; transform: translateY(-4px) } to { opacity: 1; transform: none } }
+
+/* ============ in-script TextUI ============
+   Round brand badge holding the icon + a sentence with the key as a white
+   inline chip. Placement comes from Config.textui.position, applied as a
+   tui-right / tui-left / tui-top / tui-bottom class by showTui(). */
+#textui {
+    position: fixed; z-index: 6800; pointer-events: none;
+    display: inline-flex; align-items: center; gap: 10px;
+    padding: 7px 16px 7px 7px;
+    background: var(--bg-glass); border: 1px solid var(--border-hi);
+    border-radius: var(--r-2);              /* rectangular card, not a pill */
+    box-shadow: var(--shadow-lg), inset 0 0 0 1px var(--inset-rim);
+}
+#textui .tui-badge {
+    position: relative;                     /* anchors the hold-progress outline */
+    flex: 0 0 auto; width: 30px; height: 30px; border-radius: var(--r-1);
+    display: inline-flex; align-items: center; justify-content: center;
+    background: var(--brand-500); color: var(--brand-ink);
+    box-shadow: 0 2px 10px var(--brand-a40);
+}
+#textui .tui-badge i { color: var(--brand-ink); font-size: 13px; line-height: 1 }
+
+/* hold-to-interact: the outline fills clockwise over the brand tile. The rect
+   is pathLength-normalised to 100, so dashoffset IS "100 minus percent". */
+#textui .tui-ring {
+    position: absolute; inset: 0; width: 100%; height: 100%;
+    overflow: visible; pointer-events: none; opacity: 0;
+    transition: opacity var(--dur-fast, .12s) linear;
+}
+#textui .tui-ring rect {
+    fill: none; stroke: var(--brand-ink, #fff); stroke-width: 2.5; stroke-linecap: round;
+    stroke-dasharray: 100; stroke-dashoffset: 100;
+    /* the Lua side throttles updates to ~2% steps; this smooths them out */
+    transition: stroke-dashoffset .1s linear;
+}
+#textui .tui-ring.on { opacity: 1 }
+#textui .tui-text { font-size: 13px; font-weight: 700; color: var(--text-1); white-space: nowrap }
+/* the key chip: inverted ink, reads as a physical keycap inside the sentence.
+   BOTH halves have to follow the theme — pinning the chip to white while the
+   text tracked --bg gave white-on-white (invisible key) on any light preset. */
+#textui .tui-key {
+    display: inline-block; background: var(--text-1, #fff); color: var(--bg, #111);
+    font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: 11px;
+    line-height: 1; padding: 4px 7px; border-radius: var(--r-1, 4px);
+    margin: 0 1px; vertical-align: baseline;
+}
+
+/* --- placement + a slide-in that reads naturally for each edge --- */
+@keyframes tuiIn      { from { opacity: 0; transform: translateX(28px) } to { opacity: 1; transform: none } }
+/* the positioned variants have to keep their own centring transform in the to-state */
+@keyframes tuiInCX    { from { opacity: 0; transform: translateX(calc(-50% + 28px)) } to { opacity: 1; transform: translateX(-50%) } }
+@keyframes tuiInCY    { from { opacity: 0; transform: translateY(-50%) translateX(28px) } to { opacity: 1; transform: translateY(-50%) } }
+@keyframes tuiInCYL   { from { opacity: 0; transform: translateY(-50%) translateX(-28px) } to { opacity: 1; transform: translateY(-50%) } }
+
+/* hugged to the edge rather than floating a few percent off it */
+#textui.tui-right  { top: 50%; right: 14px; left: auto; bottom: auto; transform: translateY(-50%) }
+#textui.tui-left   { top: 50%; left: 14px; right: auto; bottom: auto; transform: translateY(-50%) }
+#textui.tui-top    { top: 7%; left: 50%; right: auto; bottom: auto; transform: translateX(-50%) }
+#textui.tui-bottom { bottom: 9%; left: 50%; right: auto; top: auto; transform: translateX(-50%) }
+
+#textui.tui-in            { animation: tuiIn    var(--dur-base) var(--ease-emph) }
+#textui.tui-in.tui-right  { animation: tuiInCY  var(--dur-base) var(--ease-emph) }
+#textui.tui-in.tui-left   { animation: tuiInCYL var(--dur-base) var(--ease-emph) }
+#textui.tui-in.tui-top,
+#textui.tui-in.tui-bottom { animation: tuiInCX  var(--dur-base) var(--ease-emph) }
+
+/* ============ placer help ============ */
+#placer { position: fixed; bottom: 6%; left: 50%; transform: translateX(-50%); z-index: 9700; pointer-events: none }
+.placer-panel {
+    background: var(--bg-glass); border: 1px solid var(--border-hi);
+    border-radius: var(--r-4); padding: 12px 18px; text-align: center;
+    box-shadow: var(--shadow-lg), inset 0 0 0 1px var(--inset-rim);
+    animation: slideUp var(--dur-base) var(--ease-emph);
+}
+.placer-title { font-size: var(--fs-md); font-weight: 800; margin-bottom: 8px }
+.placer-keys { display: flex; gap: 16px; justify-content: center }
+.placer-keys > span { display: inline-flex; align-items: center; gap: 6px; font-size: var(--fs-sm); color: var(--text-3); font-weight: 600 }
+.placer-keys .pk {
+    background: var(--surface-3); border: 1px solid var(--border-hi); color: var(--text-1);
+    font-family: 'JetBrains Mono', ui-monospace, 'SF Mono', Consolas, monospace; font-weight: 700; font-size: 10px; padding: 3px 8px; border-radius: var(--r-1);
+}
+
+/* ============ financing + mileage ============ */
+.d-fin { display: flex; align-items: center; gap: 8px; margin-top: 10px; padding: 8px 11px;
+    background: var(--yellow-a); border: 1px solid rgba(var(--yellow-rgb),.25); border-radius: var(--r-3);
+    font-size: var(--fs-sm); color: var(--yellow); font-weight: 600 }
+.d-fin i { font-size: 12px }
+.d-fin .fin-owed { margin-left: auto; font-family: 'JetBrains Mono', ui-monospace, 'SF Mono', Consolas, monospace; font-weight: 700 }
+.d-meta { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px }
+.meta-chip { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px;
+    background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--r-2);
+    font-size: var(--fs-xs); color: var(--text-2); font-weight: 600 }
+.meta-chip i { color: var(--brand-400); font-size: 10px }
+.veh-fin { color: var(--yellow); font-size: 10px; margin-left: 4px }
+
+/* ============================================================
+   ADMIN PANEL — bossmenu-style rail shell
+   ============================================================ */
+/* The two rail panels share .mg-shell but each needs its own full-screen
+   overlay. #boss had none at all, so /garagemempresa rendered its shell in the
+   normal document flow — pinned to the top-left corner with no backdrop. Easy to
+   miss precisely because the shell itself looked right. */
+#admin, #boss { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center;
+    background: rgba(0,0,0,.45); animation: fadeIn var(--dur-base) var(--ease-base) }
+.mg-shell {
+    width: min(1180px, 94vw); height: min(760px, 90vh);
+    background: var(--bg); border: 1px solid var(--border); border-radius: var(--r-6);
+    box-shadow: var(--shadow-xl), inset 0 0 0 1px var(--inset-rim);
+    display: grid; grid-template-columns: 220px 1fr; overflow: hidden;
+    animation: scaleIn 280ms var(--ease-emph) both;
+    transition: grid-template-columns var(--dur-base) var(--ease-emph);
+}
+.mg-rail { background: var(--bg-sidebar); border-right: 1px solid var(--border);
+    display: flex; flex-direction: column; padding: 8px; gap: 4px; overflow: hidden }
+.mg-mark { display: flex; align-items: center; gap: 10px; margin: 4px 4px 8px }
+.mg-mark i { width: 40px; height: 40px; flex-shrink: 0; display: flex; align-items: center; justify-content: center;
+    font-size: 16px; color: var(--brand-ink); background: var(--brand-500); border: 1px solid var(--brand-600); border-radius: var(--r-3);
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,.10), 0 4px 14px var(--brand-a40) }
+.mg-mark-text { font-size: 12px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; white-space: nowrap }
+.mg-mark-text em { font-style: normal; color: var(--brand-300) }
+.mg-dealer { margin: 0 2px var(--s-2); padding: 8px 10px; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--r-3) }
+.mg-dealer-name { font-weight: 800; font-size: var(--fs-sm) }
+.mg-dealer-role { font-size: 9px; color: var(--brand-300); font-weight: 700; letter-spacing: .1em; text-transform: uppercase; margin-top: 2px }
+.mg-nav { display: flex; flex-direction: column; gap: 2px; flex: 1; overflow-y: auto }
+.mg-nav::-webkit-scrollbar { display: none }
+.mg-nav button { position: relative; width: 100%; height: 38px; display: flex; align-items: center; gap: 12px;
+    padding: 0 10px; border-radius: var(--r-2); color: var(--text-3); font-size: var(--fs-sm); font-weight: 600;
+    transition: background var(--dur-fast), color var(--dur-fast); white-space: nowrap; text-align: left }
+.mg-nav button i { flex-shrink: 0; width: 20px; text-align: center; font-size: 14px }
+.mg-nav button span { flex: 1; text-align: left }
+.mg-nav button:hover { background: var(--bg-raised); color: var(--text-1) }
+.mg-nav button.active { background: var(--brand-a10); color: var(--text-1); box-shadow: inset 2px 0 0 var(--brand-500) }
+.mg-nav button.active i { color: var(--brand-400) }
+.mg-rail-foot { margin-top: auto; padding-top: 8px; border-top: 1px solid var(--border); display: flex; flex-direction: column; gap: 8px }
+.mg-rail-foot-actions { display: grid; grid-template-columns: 1fr auto; gap: 6px }
+.mg-side-collapse { display: inline-flex; align-items: center; justify-content: center; gap: 7px; padding: 9px 12px;
+    border-radius: var(--r-2); color: var(--text-3); background: var(--bg-card); border: 1px solid var(--border);
+    font-size: 12px; font-weight: 600; white-space: nowrap;
+    transition: background var(--dur-fast), color var(--dur-fast), border-color var(--dur-fast) }
+.mg-side-collapse:hover { background: var(--bg-raised); color: var(--text-1); border-color: var(--border-hi) }
+.mg-side-collapse i { font-size: 11px; transition: transform var(--dur-base) }
+.mg-shell.rail-collapsed .mg-side-collapse i { transform: rotate(180deg) }
+.mg-signout-btn { display: inline-flex; align-items: center; justify-content: center; padding: 9px 12px; border-radius: var(--r-2);
+    color: var(--text-3); background: var(--bg-card); border: 1px solid var(--border); font-size: 12px;
+    transition: background var(--dur-fast), color var(--dur-fast), border-color var(--dur-fast) }
+.mg-signout-btn:hover { color: var(--red); background: rgba(var(--red-rgb),.08); border-color: rgba(var(--red-rgb),.30) }
+/* The admin panel runs wider than the base shell, matching apex_dealerships'
+   /dealerships panel exactly (its style.css:1232). Same specificity as the
+   .mg-shell rule above, so this only wins by coming after it — do not move it.
+   Scoped to .adm-shell on purpose: #boss (/garagemempresa) carries .boss-shell
+   and stays at the base size, which is how the reference resource behaves too. */
+.adm-shell { width: min(1320px, 96vw); height: min(800px, 92vh) }
+
+.mg-shell.rail-collapsed { grid-template-columns: 62px 1fr }
+.mg-shell.rail-collapsed .mg-side-collapse span, .mg-shell.rail-collapsed .mg-mark-text,
+.mg-shell.rail-collapsed .mg-dealer, .mg-shell.rail-collapsed .mg-nav button span { display: none }
+.mg-shell.rail-collapsed .mg-side-collapse { padding: 9px 6px }
+.mg-shell.rail-collapsed .mg-rail-foot-actions { grid-template-columns: 1fr }
+.mg-shell.rail-collapsed .mg-signout-btn { padding: 9px 6px }
+.mg-shell.rail-collapsed .mg-nav button { justify-content: center; padding: 0 }
+.mg-shell.rail-collapsed .mg-mark { justify-content: center }
+
+.mg-main { display: grid; grid-template-rows: 48px 1fr; min-height: 0; min-width: 0; background: var(--bg) }
+.mg-topbar { display: flex; align-items: center; justify-content: space-between; padding: 0 var(--s-5); border-bottom: 1px solid var(--border) }
+.mg-tab-left { display: flex; align-items: center; gap: 10px }
+.mg-tab-icon { width: 26px; height: 26px; border-radius: var(--r-2); background: var(--brand-a10); color: var(--brand-400);
+    display: flex; align-items: center; justify-content: center; border: 1px solid var(--brand-a25); font-size: 11px }
+.mg-title { font-size: var(--fs-md); font-weight: 700; letter-spacing: -.01em; line-height: 1.1 }
+.mg-topbar-right { display: flex; align-items: center; gap: 8px }
+.mg-pane { overflow-y: auto; padding: var(--s-4) var(--s-5); display: flex; flex-direction: column; gap: var(--s-3);
+    min-height: 0; animation: fadeIn 200ms var(--ease-base) both }
+
+.tiles { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--s-2) }
+.tile { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--r-3); padding: var(--s-3) var(--s-4) }
+.tile-label { font-size: 9px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--text-3) }
+.tile-val { font-size: var(--fs-2xl); font-weight: 700; margin-top: 3px; line-height: 1.15 }
+
+/* garage rows in the admin list */
+.adm-row { display: flex; align-items: center; gap: var(--s-3); background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: var(--r-3); padding: 11px 13px; transition: border-color var(--dur-fast), background var(--dur-fast) }
+.adm-row:hover { border-color: var(--border-hi); background: var(--bg-raised) }
+.adm-row-ico { width: 36px; height: 36px; border-radius: var(--r-2); flex-shrink: 0; display: grid; place-items: center;
+    background: var(--brand-a10); color: var(--brand-400); border: 1px solid var(--brand-a25); font-size: 14px }
+.adm-row-main { flex: 1; min-width: 0 }
+.adm-row-title { font-weight: 700; font-size: var(--fs-base) }
+.adm-row-sub { font-size: var(--fs-xs); color: var(--text-3); margin-top: 2px }
+.adm-row-actions { display: flex; gap: 6px }
+
+/* ============================================================
+   GARAGE EDITOR (wide modal)
+   ============================================================ */
+.modal-xl { width: min(760px, 94vw); max-height: 88vh }
+.modal-xl .modal-body { display: flex; flex-direction: column; gap: var(--s-2) }
+.ed-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-3) var(--s-4) }
+.ed-field { display: flex; flex-direction: column; gap: 5px }
+.ed-field.full { grid-column: 1 / -1 }
+.ed-field > label { font-size: 10px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--text-3) }
+.ed-place { display: flex; align-items: center; gap: 10px; background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: var(--r-3); padding: 10px 12px }
+.ed-place-ico { width: 32px; height: 32px; border-radius: var(--r-2); display: grid; place-items: center;
+    background: var(--brand-a10); color: var(--brand-400); border: 1px solid var(--brand-a25); flex-shrink: 0 }
+.ed-place-txt { flex: 1; min-width: 0 }
+.ed-place-title { font-weight: 700; font-size: var(--fs-sm) }
+.ed-place-sub { font-size: var(--fs-xs); color: var(--text-3); margin-top: 1px }
+.ed-place-sub.set { color: var(--green) }
+.ed-veh-list { display: flex; flex-direction: column; gap: 5px }
+.ed-veh { display: flex; align-items: center; gap: 10px; background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: var(--r-2); padding: 8px 10px; font-size: var(--fs-sm) }
+.ed-veh .evn { font-weight: 700 }
+.ed-veh .evm { color: var(--text-3); font-family: 'JetBrains Mono', monospace; font-size: var(--fs-xs) }
+/* evs is now the label sitting beside the stepper, not the right-hand value,
+   so it no longer claims the free space — the actions wrapper does. */
+.ed-veh .evs { color: var(--text-3); font-weight: 700; font-size: 10px; letter-spacing: .08em; text-transform: uppercase }
+.ed-veh .evg { color: var(--text-3); font-size: var(--fs-xs) }
+.ed-veh .stock-step button { width: 20px; height: 20px }
+.ed-veh .stock-step span { min-width: 22px }
+.ed-owners { display: flex; flex-wrap: wrap; gap: 5px }
+.ed-owner-chip { display: inline-flex; align-items: center; gap: 6px; padding: 4px 8px 4px 10px; background: var(--brand-a06);
+    border: 1px solid var(--brand-a25); border-radius: 999px; font-size: var(--fs-xs); color: var(--brand-300); font-weight: 600 }
+.ed-owner-chip i { cursor: pointer; color: var(--text-3) }
+.ed-owner-chip i:hover { color: var(--red) }
+.hint { font-size: var(--fs-xs); color: var(--text-4) }
+
+/* centred empty state with an emoji */
+.empty-state {
+    flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 8px; text-align: center; padding: 40px 20px; min-height: 260px;
+}
+.empty-ico { font-size: 42px; line-height: 1; color: var(--line-4); margin-bottom: 4px }
+.empty-title { font-size: var(--fs-lg); font-weight: 800; color: var(--text-2) }
+.empty-sub { font-size: var(--fs-sm); color: var(--text-4); max-width: 320px; line-height: 1.5 }
+
+/* ============================================================
+   PREMIUM GARAGE EDITOR
+   ============================================================ */
+.modal-xl { width: min(820px, 95vw); max-height: 90vh }
+.modal-xl .modal-head { padding: var(--s-5) var(--s-6) var(--s-4); border-bottom: 1px solid var(--border); align-items: center }
+.ed-head-l { display: flex; align-items: center; gap: 12px }
+.ed-head-ico {
+    width: 40px; height: 40px; border-radius: var(--r-3); display: grid; place-items: center; flex-shrink: 0;
+    background: var(--brand-500); color: var(--brand-ink); border: 1px solid var(--brand-600); font-size: 16px;
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,.10), 0 4px 14px var(--brand-a40);
+}
+.modal-xl .modal-body { padding: var(--s-5) var(--s-6); display: flex; flex-direction: column; gap: var(--s-5) }
+
+.ed-sec { display: flex; flex-direction: column; gap: var(--s-3) }
+.ed-sec-head {
+    display: flex; align-items: center; gap: 8px; font-size: 10px; font-weight: 800;
+    letter-spacing: .12em; text-transform: uppercase; color: var(--text-3);
+}
+.ed-sec-head i { color: var(--brand-400); font-size: 11px }
+.ed-sec-head::after { content: ''; flex: 1; height: 1px; background: var(--border) }
+
+.ed-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-3) var(--s-4) }
+.ed-field > label { font-size: 9.5px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: var(--text-4) }
+.ed-field input { height: 40px }
+
+.ed-cards { display: flex; flex-direction: column; gap: 8px }
+.ed-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--r-4);
+    overflow: hidden; transition: border-color var(--dur-fast) }
+.ed-card:hover { border-color: var(--border-hi) }
+.ed-card-row { display: flex; align-items: center; gap: 12px; padding: 12px 14px }
+.ed-card-ico { width: 38px; height: 38px; border-radius: var(--r-3); display: grid; place-items: center; flex-shrink: 0;
+    background: var(--brand-a10); color: var(--brand-400); border: 1px solid var(--brand-a25); font-size: 15px }
+.ed-card-body { flex: 1; min-width: 0 }
+.ed-card-title { font-weight: 700; font-size: var(--fs-base) }
+.ed-card-sub { font-size: var(--fs-xs); color: var(--text-3); margin-top: 2px }
+.ed-card-actions { display: flex; align-items: center; gap: 6px; flex-shrink: 0 }
+.ed-card-actions .seg { padding: 2px }
+.ed-card-actions .seg button { height: 26px; font-size: 10.5px }
+
+.chip { display: inline-flex; align-items: center; gap: 5px; padding: 3px 9px; border-radius: 999px;
+    font-size: 9.5px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase;
+    background: var(--bg-raised); color: var(--text-4); border: 1px solid var(--border-hi); white-space: nowrap }
+.chip-ok { background: var(--green-a); color: var(--green); border-color: rgba(var(--green-rgb),.28) }
+
+.icon-action { width: 30px; height: 30px; border-radius: var(--r-2); display: grid; place-items: center;
+    background: var(--bg-raised); border: 1px solid var(--border-hi); color: var(--text-3); font-size: 11px;
+    transition: background var(--dur-fast), color var(--dur-fast), border-color var(--dur-fast) }
+.icon-action:hover { background: var(--surface-4); color: var(--text-1); border-color: var(--line-3) }
+.icon-action.brand:hover { color: var(--brand-300); border-color: var(--brand-a40); background: var(--brand-a10) }
+.icon-action.danger:hover { color: var(--red); border-color: rgba(var(--red-rgb),.35); background: var(--red-a) }
+
+.ed-spawn-list { border-top: 1px solid var(--border); display: flex; flex-direction: column; max-height: 196px; overflow-y: auto }
+.ed-spawn { display: flex; align-items: center; gap: 10px; padding: 8px 14px; border-bottom: 1px solid var(--hairline) }
+.ed-spawn:last-child { border-bottom: 0 }
+.ed-spawn:hover { background: var(--bg-raised) }
+.ed-spawn-n { width: 22px; height: 22px; border-radius: 6px; display: grid; place-items: center; flex-shrink: 0;
+    background: var(--brand-a10); color: var(--brand-300); border: 1px solid var(--brand-a25); font-size: 10px; font-weight: 800 }
+.ed-spawn-co { flex: 1; color: var(--text-2); font-size: var(--fs-xs); white-space: nowrap; overflow: hidden; text-overflow: ellipsis }
+.ed-spawn-h { color: var(--text-4); font-size: var(--fs-xs); width: 48px; text-align: right }
+
+.modal-xl .modal-foot { justify-content: space-between; padding: var(--s-4) var(--s-6) var(--s-5) }
+.ed-foot-r { display: flex; gap: var(--s-2) }
+.modal-xl .modal-foot .btn-primary { flex: 0 0 auto; min-width: 156px }
+.btn-danger-ghost { background: transparent; border-color: rgba(var(--red-rgb),.30); color: var(--red) }
+.btn-danger-ghost:hover { background: var(--red-a); border-color: var(--red) }
+
+/* ============================================================
+   SETTINGS ROWS + SWITCHES  (parking pane)
+   A boolean is a switch, not a full-width two-button bar — the old segs gave
+   every option the same visual weight and swamped the panel.
+   ============================================================ */
+.set-list { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--r-4); overflow: hidden }
+.set-row {
+    display: flex; align-items: center; gap: 16px; padding: 13px 15px;
+    border-bottom: 1px solid var(--hairline);
+    transition: background var(--dur-fast);
+}
+.set-row:last-child { border-bottom: 0 }
+.set-row:hover { background: var(--hover-wash) }
+.set-txt { flex: 1; min-width: 0 }
+.set-label { font-weight: 600; font-size: var(--fs-base); color: var(--text-1) }
+.set-desc { font-size: var(--fs-xs); color: var(--text-4); margin-top: 2px; line-height: 1.45 }
+.set-ctl { flex-shrink: 0; display: flex; align-items: center; gap: 8px }
+.set-ctl .seg { padding: 2px; width: 258px }
+.set-ctl .seg button { height: 26px; font-size: 11px }
+.set-ctl input[type="number"], .set-ctl input[type="text"] { height: 32px; padding: 6px 10px }
+.set-num { width: 84px; text-align: right }
+.set-unit { font-size: var(--fs-xs); color: var(--text-4); min-width: 12px }
+.set-wide { width: 258px }
+
+/* compact colour picker used by the Aparência pane (swatch + live hex) */
+.colour-pick { display: flex; align-items: center; gap: 10px }
+.colour-pick input[type="color"] {
+    width: 46px; height: 32px; padding: 0; cursor: pointer;
+    background: var(--bg-raised); border: 1px solid var(--border-hi);
+    border-radius: var(--r-2); flex-shrink: 0;
+    transition: border-color var(--dur-fast);
+}
+.colour-pick input[type="color"]:hover { border-color: var(--line-3) }
+/* the native swatch keeps its own inset padding in CEF — strip it so the
+   control reads as one solid chip of the picked colour */
+.colour-pick input[type="color"]::-webkit-color-swatch-wrapper { padding: 2px }
+.colour-pick input[type="color"]::-webkit-color-swatch { border: 0; border-radius: var(--r-1) }
+.colour-pick .mono {
+    font-family: 'JetBrains Mono', monospace; font-size: var(--fs-xs);
+    color: var(--text-3); letter-spacing: .06em; min-width: 66px;
+}
+
+.switch {
+    position: relative; width: 44px; height: 24px; border-radius: 999px; flex-shrink: 0;
+    background: var(--surface-4); border: 1px solid var(--border-hi); cursor: pointer;
+    transition: background var(--dur-fast), border-color var(--dur-fast);
+}
+.switch::after {
+    content: ''; position: absolute; top: 2px; left: 2px; width: 18px; height: 18px; border-radius: 50%;
+    background: var(--text-3);
+    transition: transform var(--dur-base) var(--ease-emph), background var(--dur-fast);
+}
+.switch:hover { border-color: var(--line-3) }
+.switch.on { background: var(--brand-500); border-color: var(--brand-600); box-shadow: 0 2px 10px var(--brand-a25) }
+.switch.on::after { transform: translateX(20px); background: var(--brand-ink) }
+
+/* compact empty state for inside a section */
+.empty-state.compact { min-height: 140px; padding: 24px 20px; gap: 6px }
+.empty-state.compact .empty-ico { font-size: 30px }
+.empty-state.compact .empty-title { font-size: var(--fs-md) }
+
+/* pane footer that holds a save action */
+.pane-foot {
+    display: flex; justify-content: flex-end; align-items: center; gap: 10px;
+    padding-top: var(--s-4); margin-top: 2px; border-top: 1px solid var(--border);
+}
+.pane-foot .foot-note { margin-right: auto; font-size: var(--fs-xs); color: var(--text-4) }
+
+/* ============ APPEARANCE PANE (server-wide theme) ============ */
+/* Every rule below paints from the themeable custom properties only. A literal
+   colour here would survive a re-skin and leave a patch of the pane in the old
+   palette — which is exactly what this pane exists to prove cannot happen. */
+
+/* The two columns scroll independently, so the pane itself must NOT scroll for
+   this view (the class is toggled per-view in renderAdmList). */
+#adm-pane.pane-fill { overflow: hidden }
+
+/* A solid, bordered box with a small uppercase caption and no divider rule —
+   the section primitive the rest of the RecordKit admin panels share. */
+.mg-section-card {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: var(--r-3); padding: var(--s-3) var(--s-4);
+}
+.chart-title {
+    font-size: 10px; font-weight: 700; letter-spacing: .08em;
+    text-transform: uppercase; color: var(--text-3); margin-bottom: var(--s-3);
+}
+
+.adm-theme {
+    flex: 1; min-height: 0;
+    display: grid; grid-template-columns: minmax(360px, .95fr) 1.05fr;
+    gap: var(--s-4);
+}
+.adm-theme-left {
+    display: flex; flex-direction: column; gap: var(--s-3);
+    min-height: 0; overflow-y: auto; padding-right: 4px;
+}
+.adm-theme-left .mg-section-card { flex-shrink: 0 }
+.adm-theme-right { display: flex; flex-direction: column; min-height: 0 }
+.adm-theme-right .theme-demo { flex: 1; min-height: 0 }
+
+.theme-actions { display: flex; gap: 8px; margin-top: auto; padding-top: var(--s-2) }
+.theme-actions .btn { flex: 1; justify-content: center }
+
+/* Each colour is its own inset box inside the CORES card: picker on the left,
+   label over the hex readout, swatch strip pushed to the right edge. */
+.theme-row {
+    display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+    background: var(--bg-raised); border: 1px solid var(--hairline);
+    border-radius: var(--r-3); padding: 8px 10px;
+}
+.theme-row + .theme-row { margin-top: var(--s-2) }
+.mg-section-card .hint { margin-top: var(--s-2) }
+
+.theme-pick {
+    display: flex; align-items: center; gap: 12px;
+    cursor: pointer; min-width: 160px;
+}
+.theme-pick input[type="color"] {
+    width: 42px; height: 42px; flex-shrink: 0;
+    background: transparent; border: 1px solid var(--line-3);
+    border-radius: var(--r-3); padding: 3px; cursor: pointer;
+}
+.theme-pick input[type="color"]::-webkit-color-swatch-wrapper { padding: 0 }
+.theme-pick input[type="color"]::-webkit-color-swatch { border: 0; border-radius: 5px }
+.theme-pick .tp-name { font-weight: 700; font-size: var(--fs-sm) }
+.theme-pick .tp-hex { font-size: var(--fs-xs); color: var(--text-4); letter-spacing: .06em }
+
+/* curated swatches — pushed to the right edge of their row */
+.color-presets { display: flex; gap: 6px; flex-wrap: wrap; margin-left: auto }
+.color-preset {
+    width: 24px; height: 24px; border-radius: 50%;
+    border: 2px solid transparent;
+    box-shadow: inset 0 0 0 1px var(--gloss);
+    transition: transform var(--dur-fast) var(--ease-base), border-color var(--dur-fast) var(--ease-base);
+}
+.color-preset:hover { transform: scale(1.12) }
+.color-preset.active { border-color: var(--text-1); box-shadow: 0 0 0 2px var(--brand-a40) }
+
+.theme-presets { display: flex; flex-wrap: wrap; gap: 8px }
+.theme-preset {
+    display: flex; align-items: center; gap: 9px;
+    padding: 7px 12px 7px 8px;
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: 999px; color: var(--text-3);
+    font-size: var(--fs-sm); font-weight: 600;
+    transition: background var(--dur-fast) var(--ease-base), border-color var(--dur-fast) var(--ease-base), color var(--dur-fast) var(--ease-base);
+}
+.theme-preset:hover { color: var(--text-1); border-color: var(--line-3) }
+.theme-preset.active { border-color: var(--brand-500); background: var(--brand-a10); color: var(--text-1) }
+/* the ring shows the preset background with its accent as the dot inside */
+.theme-preset .tpv {
+    width: 26px; height: 26px; flex-shrink: 0; border-radius: 50%;
+    border: 1px solid var(--line-3);
+    display: flex; align-items: center; justify-content: center;
+}
+.theme-preset .tpv span { width: 12px; height: 12px; border-radius: 50%; display: block }
+
+/* ---- live preview card: archetypes the pane itself does not show ---- */
+.theme-demo {
+    display: grid; grid-template-columns: 54px 1fr;
+    border: 1px solid var(--border); border-radius: var(--r-4);
+    overflow: hidden; background: var(--bg);
+}
+.theme-demo-rail {
+    background: var(--bg-sidebar); border-right: 1px solid var(--border);
+    padding: 12px 10px; display: flex; flex-direction: column; gap: 8px; align-items: center;
+}
+.theme-demo-rail .td-mark {
+    width: 32px; height: 32px; border-radius: var(--r-3);
+    background: var(--brand-500); color: var(--brand-ink);
+    display: flex; align-items: center; justify-content: center; font-size: 13px;
+}
+.theme-demo-rail .td-line { width: 26px; height: 8px; border-radius: 4px; background: var(--surface-3) }
+.theme-demo-rail .td-line.active { background: var(--brand-a40) }
+
+.theme-demo-body { padding: 12px 14px; display: flex; flex-direction: column; gap: 10px; min-height: 0 }
+.theme-demo-top { display: flex; align-items: center; gap: 10px }
+.theme-demo-top .td-chip {
+    width: 28px; height: 28px; border-radius: var(--r-2); flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--brand-a15); color: var(--brand-300);
+    border: 1px solid var(--brand-a25); font-size: 12px;
+}
+.theme-demo-top .td-title { font-size: var(--fs-md); font-weight: 700; line-height: 1.1 }
+/* the accent badge variant only exists for the preview — the rest of the UI
+   uses the status colours, which are not themeable */
+.badge-brand { background: var(--brand-a15); color: var(--brand-300); border-color: var(--brand-a25) }
+
+.theme-demo-kpis { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-2) }
+.theme-demo-kpis .td-kpi {
+    display: flex; align-items: center; gap: 10px;
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: var(--r-3); padding: 9px 11px; min-width: 0;
+}
+.theme-demo-kpis .td-kpi.accent { background: var(--brand-a06); border-color: var(--brand-a25) }
+.theme-demo-kpis .td-kpi-ic {
+    width: 28px; height: 28px; flex-shrink: 0; border-radius: var(--r-2);
+    display: flex; align-items: center; justify-content: center; font-size: 11px;
+    background: var(--surface-3); color: var(--text-3); border: 1px solid var(--border-hi);
+}
+.theme-demo-kpis .td-kpi.accent .td-kpi-ic { background: var(--brand-a15); color: var(--brand-300); border-color: var(--brand-a40) }
+.theme-demo-kpis .td-kpi-label { font-size: 9px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--text-3) }
+.theme-demo-kpis .td-kpi-val { font-size: var(--fs-lg); font-weight: 700; line-height: 1.15; color: var(--text-1) }
+
+.theme-demo-bars {
+    flex: 1; min-height: 60px;
+    display: flex; align-items: flex-end; gap: 6px;
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: var(--r-3); padding: 10px;
+}
+.theme-demo-bars .cbar { flex: 1; height: 100%; display: flex; align-items: flex-end }
+.theme-demo-bars .cbar-fill {
+    width: 100%; border-radius: 4px 4px 0 0;
+    background: linear-gradient(180deg, var(--brand-500), var(--brand-a25));
+}
+
+.theme-demo-row {
+    display: flex; align-items: center; gap: 10px;
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: var(--r-3); padding: 8px 10px;
+}
+.theme-demo-row .tdr-thumb {
+    width: 46px; height: 30px; flex-shrink: 0; border-radius: var(--r-2);
+    display: flex; align-items: center; justify-content: center;
+    background: var(--surface-3); color: var(--text-3);
+    border: 1px solid var(--border-hi);
+}
+.theme-demo-row .tdr-name { font-weight: 700; font-size: var(--fs-sm) }
+.theme-demo-row .tdr-sub { font-size: 9.5px; color: var(--text-4) }
+.theme-demo-row .tdr-state { margin-left: auto; font-weight: 700; font-size: var(--fs-xs); color: var(--brand-300) }
+
+.theme-demo-btns { display: flex; align-items: center; gap: 8px; flex-wrap: wrap }
+.theme-demo-btns .td-input {
+    flex: 1; min-width: 100px; height: 30px; width: auto;
+    background: var(--bg-raised); border: 1px solid var(--border-hi);
+    border-radius: var(--r-2); padding: 0 10px;
+    font-size: var(--fs-sm); color: var(--text-4); pointer-events: none;
+}
+
+/* parked-vehicle rows */
+.pk-row { display: flex; align-items: center; gap: 12px; padding: 10px 14px; border-bottom: 1px solid var(--hairline) }
+.pk-row:last-child { border-bottom: 0 }
+.pk-row:hover { background: var(--bg-raised) }
+.pk-row-main { flex: 1; min-width: 0 }
+.pk-row-top { display: flex; align-items: center; gap: 8px }
+.pk-row-sub { font-size: var(--fs-xs); color: var(--text-4); margin-top: 2px; font-family: 'JetBrains Mono', monospace }
+
+/* parking pane tab strip — Parking / No parking / Settings.
+   Reuses the shared .seg segmented control (see line 160); this class only adds
+   the top-of-pane placement. No colours here on purpose: every paint comes from
+   .seg, so the tabs follow applyTheme() like the rest of the pane. It wraps the
+   element seg() emits:  <div class="pk-tabs">{seg(...)}</div>  — seg() owns its
+   own class, so the placement lives on the wrapper rather than fighting it. */
+.pk-tabs { flex-shrink: 0; max-width: 100%; margin-bottom: var(--s-4) }
+/* .seg button is flex:1 + nowrap; without min-width:0 a long label sets the
+   flex base and pushes the strip wider than the pane, scrolling the body
+   sideways. Clip inside the button instead — the pane body keeps its own scroll. */
+.pk-tabs button { min-width: 0; overflow: hidden; text-overflow: ellipsis }
+
+/* stock stepper (boss panel) */
+.stock-step { display: inline-flex; align-items: center; gap: 4px; background: var(--bg-raised);
+    border: 1px solid var(--border-hi); border-radius: var(--r-2); padding: 2px }
+.stock-step button { width: 24px; height: 24px; border-radius: var(--r-1); color: var(--text-2); font-weight: 800; font-size: 14px;
+    transition: background var(--dur-fast), color var(--dur-fast) }
+.stock-step button:hover { background: var(--surface-4); color: var(--text-1) }
+.stock-step span { min-width: 28px; text-align: center; font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: var(--fs-sm) }
+.boss-badge { display: inline-flex; align-items: center; gap: 5px; padding: 2px 8px; border-radius: 999px;
+    font-size: 10px; font-weight: 700; background: var(--brand-a10); color: var(--brand-300); border: 1px solid var(--brand-a25) }
+
+/* ============================================================
+   PREVIEW CAMERA DOCK
+   Sits in the transparent gap between .sr-left and .sr-right, over the live
+   3D preview. Fixed (not inside #garage) so it keeps its own stacking context;
+   visibility is driven from JS by observing #garage[hidden].
+   ============================================================ */
+.pv-dock {
+    position: fixed; bottom: var(--s-5); left: 50%; transform: translateX(-50%);
+    z-index: 9600;
+    display: flex; align-items: center; gap: 2px;
+    background: var(--bg-glass);
+    border: 1px solid var(--border-hi);
+    border-radius: 999px;
+    padding: 4px;
+    box-shadow: var(--shadow-lg), inset 0 0 0 1px var(--inset-rim);
+    animation: fadeIn var(--dur-base) var(--ease-base);
+}
+.pv-dock[hidden] { display: none }
+.pv-btn {
+    width: 34px; height: 34px;
+    display: grid; place-items: center;
+    border: 0; background: transparent; cursor: pointer;
+    border-radius: 999px;
+    color: var(--text-3); font-size: 12px;
+    transition: background var(--dur-fast), color var(--dur-fast);
+}
+.pv-btn:hover { background: var(--bg-raised); color: var(--text-1) }
+.pv-btn.active { background: var(--brand-a15); color: var(--brand-300); box-shadow: inset 0 0 0 1px var(--brand-a40) }
+.pv-sep { width: 1px; height: 16px; background: var(--border-hi); margin: 0 4px }
+
+/* ---- parking admin (Estacionamento) ---- */
+#park-body .pk-head-act { margin-left: auto; }
+#park-body .pk-ident {
+    font-family: ui-monospace, "SFMono-Regular", Menlo, monospace;
+    font-size: var(--fs-xs, 11px);
+    color: var(--text-3);
+    word-break: break-all;
+}
+#park-body .pk-coords {
+    font-family: ui-monospace, "SFMono-Regular", Menlo, monospace;
+    font-size: var(--fs-xs, 11px);
+    color: var(--text-4);
+}
+#park-body .pk-hint {
+    color: var(--text-4);
+    font-size: var(--fs-xs, 11px);
+    padding: var(--s-2) 0 0;
+}
