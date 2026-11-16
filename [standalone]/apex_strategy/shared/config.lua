@@ -16,7 +16,7 @@ Config = Config or {}
 
 -- Comandos de desenvolvimento (/wb, /wbcal). Podes desligar em
 -- produção: o quadro em si continua a funcionar.
-Config.debug = false
+Config.debug = true
 
 -- Permissão ACE para os comandos de admin (colocar/apagar quadros).
 -- false = qualquer um com Config.debug. Para trancar:
