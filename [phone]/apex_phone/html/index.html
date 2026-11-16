@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>apex_phone · PearOS 27 / Nova UI 9</title>
+<link rel="stylesheet" href="css/tokens.css?v=135">
+<link rel="stylesheet" href="css/system.css?v=135">
+<link rel="stylesheet" href="css/shell.css?v=135">
+<link rel="stylesheet" href="css/ui.css?v=135">
+<link rel="stylesheet" href="css/apps.css?v=135">
+<link rel="stylesheet" href="css/app-wallet.css?v=135">
+<link rel="stylesheet" href="css/app-social.css?v=135"><link rel="stylesheet" href="css/app-social-dm.css?v=135"><link rel="stylesheet" href="css/app-stories.css?v=135"><link rel="stylesheet" href="css/app-airdrop.css?v=135"><link rel="stylesheet" href="css/app-aichat.css?v=135"><link rel="stylesheet" href="css/app-facecall.css?v=135"><link rel="stylesheet" href="css/app-photoedit.css?v=135">
+<link rel="stylesheet" href="css/app-store.css?v=135">
+<link rel="stylesheet" href="css/app-marketplace.css?v=135">
+<link rel="stylesheet" href="css/app-onion.css?v=135">
+<link rel="stylesheet" href="css/app-garage.css?v=135">
+<link rel="stylesheet" href="css/app-match.css?v=135"><link rel="stylesheet" href="css/app-messages.css?v=135"><link rel="stylesheet" href="css/app-groups.css?v=135"><link rel="stylesheet" href="css/app-mail.css?v=135"><link rel="stylesheet" href="css/app-darkchat.css?v=135"><link rel="stylesheet" href="css/app-recado.css?v=135"><link rel="stylesheet" href="css/app-recado-chat.css?v=135"><link rel="stylesheet" href="css/app-recado-people.css?v=135"><link rel="stylesheet" href="css/app-recado-extras.css?v=135"><link rel="stylesheet" href="css/app-recado-updates.css?v=135"><link rel="stylesheet" href="css/app-recado-calls.css?v=135">
+<link rel="stylesheet" href="css/app-music.css?v=135">
+<link rel="stylesheet" href="css/app-eats.css?v=135">
+<link rel="stylesheet" href="css/app-games.css?v=135">
+<!-- 1.5.0: jogos de acao e de tabuleiro (depois do app-games.css da casca) e as apps novas -->
+<link rel="stylesheet" href="css/app-games-classic.css?v=135"><link rel="stylesheet" href="css/app-games-action.css?v=135"><link rel="stylesheet" href="css/app-games-action2.css?v=135"><link rel="stylesheet" href="css/app-games-board.css?v=135"><link rel="stylesheet" href="css/app-games-puzzle.css?v=135">
+<link rel="stylesheet" href="css/app-stocks.css?v=135"><link rel="stylesheet" href="css/app-translate.css?v=135"><link rel="stylesheet" href="css/app-voicememos.css?v=135">
+<link rel="stylesheet" href="css/app-fitness.css?v=135"><link rel="stylesheet" href="css/app-journal.css?v=135"><link rel="stylesheet" href="css/app-tips.css?v=135">
+<link rel="stylesheet" href="css/notify.css?v=135">
+<link rel="stylesheet" href="css/control.css?v=135">
+<link rel="stylesheet" href="css/lock.css?v=135">
+<link rel="stylesheet" href="css/lockgallery.css?v=135">
+<link rel="stylesheet" href="css/lockeditor.css?v=135">
+<link rel="stylesheet" href="css/vera.css?v=135">
+<link rel="stylesheet" href="css/motion.css?v=135"><link rel="stylesheet" href="css/liquid27.css?v=135"><link rel="stylesheet" href="css/glass27.css?v=135"><link rel="stylesheet" href="css/pear27-kit.css?v=135">
+<link rel="stylesheet" href="css/homecustom.css?v=135">
+<!-- ANDROID (NOVA S26 Ultra / Nova UI 9): so atuam com body.os-android; carregam DEPOIS de tudo para ganharem aos empates -->
+<link rel="stylesheet" href="css/oneui-fonts.css?v=135"> <link rel="stylesheet" href="css/oneui-tokens.css?v=135"> <link rel="stylesheet" href="css/oneui-sysui.css?v=135"> <link rel="stylesheet" href="css/oneui-lock.css?v=135"> <link rel="stylesheet" href="css/oneui-home.css?v=135"><link rel="stylesheet" href="css/oneui-widgets.css?v=135"> <link rel="stylesheet" href="css/oneui-panel.css?v=135"> <link rel="stylesheet" href="css/oneui-extras.css?v=135"> <link rel="stylesheet" href="css/oneui-ui.css?v=135"> <link rel="stylesheet" href="css/oneui-apps1.css?v=135"> <link rel="stylesheet" href="css/oneui-apps2.css?v=135"> <link rel="stylesheet" href="css/oneui-apps3.css?v=135"><link rel="stylesheet" href="css/earbuds.css?v=135"><link rel="stylesheet" href="css/app-capps.css?v=135"><link rel="stylesheet" href="css/ovkit.css?v=135"><link rel="stylesheet" href="css/admin.css?v=135"><link rel="stylesheet" href="css/shop.css?v=135"><link rel="stylesheet" href="css/app-esim.css?v=135"><link rel="stylesheet" href="css/app-psim.css?v=135"><link rel="stylesheet" href="css/app-radio.css?v=135"><link rel="stylesheet" href="css/app-cshare.css?v=135">
+<!-- ronda 2 (MEDIA): HUD do vídeo da Câmara e leitor de vídeo da galeria, nos dois sistemas; depois dos oneui-* para ganhar aos empates -->
+<link rel="stylesheet" href="css/app-camrec.css?v=135">
+</head>
+<!-- `boot`: até o system.js dizer se estamos no jogo, o fundo fica TRANSPARENTE e o aparelho
+     invisível. Sem isto o NUI pintava 1920×1080 de #0B0B0F por cima do jogo durante todo o
+     arranque (o body só fica transparente com a classe `fivem`, posta em JS) e o telemóvel
+     aparecia um instante no canto antes de a animação de subir começar. -->
+<body class="boot">
+
+<div class="stage">
+  <div class="device frame-orange">
+    <div class="bezel">
+      <div class="screen locked" id="screen">
+        <div class="wallpaper custom"></div>
+        <div class="wallpaper wallpaper-lock custom"></div>
+        <div class="torch-glow"></div>
+        <div class="island"><div class="cam"></div></div>
+
+        <div class="statusbar">
+          <span class="sb-time" id="sbTime">9:41</span>
+          <span class="sb-right"></span>
+        </div>
+
+        <div class="layer" id="lock"></div>
+        <div class="layer" id="home"></div>
+        <div id="apps"></div>
+        <div id="setup"></div>
+        <div class="home-bar" id="homeBar"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="controls">
+  <button class="btn" id="btnLock">Bloquear</button>
+  <button class="btn" id="btnTheme">Claro / Escuro</button>
+  <span>PIN <code>1225</code></span>
+  <span>F7 switcher · F8 notificações · F9 Control Center · Esc fechar</span>
+  <span>PearPhone 18 Pro · 440 × 956 pt · PearOS 27</span>
+</div>
+
+<script src="js/store.js?v=135"></script>
+<script src="js/bridge.js?v=135"></script>
+<!-- localdb.js (38 KB) é o servidor de mentira do browser. DENTRO DO JOGO nunca é usado:
+     o bridge.js só lhe chama quando `!inFiveM`, e todos os `LocalDB.register(...)` das apps
+     estão guardados por `if (window.LocalDB && ...)`. Por isso só se carrega fora do jogo:
+     são 38 KB a menos para descarregar e analisar no arranque de CADA jogador.
+     document.write é de propósito: mantém a ORDEM de carregamento (tem de vir antes das apps). -->
+<script>if (typeof GetParentResourceName !== 'function') document.write('<scr' + 'ipt src="js/localdb.js?v=135"><\/scr' + 'ipt>');</script>
+<script src="js/sound.js?v=135"></script>
+<script src="js/wallpapers.js?v=135"></script>
+<script src="js/wallpapers27.js?v=135"></script>
+<script src="js/icons.js?v=135"></script>
+<script src="js/icons-android.js?v=135"></script>
+<script src="js/ui.js?v=135"></script>
+<script src="js/locales.js?v=135"></script>
+<script src="js/i18n.js?v=135"></script>
+<script src="js/i18n-en.js?v=135"></script>
+<script src="js/system.js?v=135"></script>
+<script src="js/shell/glass.js?v=135"></script>
+<script src="js/shell/notify.js?v=135"></script>
+<script src="js/shell/island.js?v=135"></script>
+<script src="js/shell/lock.js?v=135"></script>
+<script src="js/shell/lockgallery.js?v=135"></script>
+<script src="js/shell/lockeditor.js?v=135"></script>
+<script src="js/shell/widgets.js?v=135"></script>
+<script src="js/shell/home.js?v=135"></script>
+<script src="js/shell/homecustom.js?v=135"></script>
+<script src="js/shell/control.js?v=135"></script>
+<script src="js/shell/switcher.js?v=135"></script>
+<script src="js/shell/gestures.js?v=135"></script><script src="js/shell/dragscroll.js?v=135"></script>
+<script src="js/shell/keyboard.js?v=135"></script>
+<script src="js/shell/faceid.js?v=135"></script><script src="js/shell/setup.js?v=135"></script>
+<script src="js/shell/vera.js?v=135"></script><script src="js/shell/veravoice.js?v=135"></script>
+<script src="js/shell/permissions.js?v=135"></script>
+<script src="js/shell/posedit.js?v=135"></script>
+<script src="js/overlay.js?v=135"></script>
+<script src="js/admin.js?v=135"></script>
+<script src="js/shop.js?v=135"></script>
+<script src="js/shopviewer.js?v=135"></script>
+<script src="js/shell/hardware.js?v=135"></script>
+<!-- Android: barra de estado/navegacao/ilha (SysUI), painel rapido (QuickPanel), gaveta de apps e Edge (Drawer/EdgePanel) -->
+<script src="js/shell/android-sysui.js?v=135"></script><script src="js/shell/android-panel.js?v=135"></script><script src="js/shell/android-drawer.js?v=135"></script>
+<script src="js/apps/settings.js?v=135"></script>
+<script src="js/apps/clock.js?v=135"></script>
+<script src="js/apps/calculator.js?v=135"></script>
+<script src="js/apps/notes.js?v=135"></script>
+<script src="js/apps/calendar.js?v=135"></script>
+<script src="js/apps/phone.js?v=135"></script>
+<script src="js/apps/voicemsg.js?v=135"></script><script src="js/apps/groups.js?v=135"></script><script src="js/apps/messages.js?v=135"></script>
+<script src="js/apps/weather.js?v=135"></script>
+<!-- 1.5.0: apps novas (Bolsa, Tradutor, Gravador, Fitness, Diario, Dicas). O Gravador precisa do voicemsg.js e do phone.js (Contacts), ja carregados acima. -->
+<script src="js/apps/stocks.js?v=135"></script><script src="js/apps/translate.js?v=135"></script><script src="js/apps/voicememos.js?v=135"></script>
+<script src="js/apps/fitness.js?v=135"></script><script src="js/apps/journal.js?v=135"></script><script src="js/apps/tips.js?v=135"></script>
+<!-- ronda 2 (MEDIA): limites por telemóvel, microfone, envio ao ritmo do servidor, duração do webm e /rectest (Câmara, Gravador, mensagens de voz) -->
+<script src="js/recorder-core.js?v=135"></script>
+<!-- motor do visor da Câmara (vista do jogo dentro de uma <canvas>): TEM de vir antes de apps/photos.js -->
+<script src="js/gamerender.js?v=135"></script>
+<!-- a câmara em si (visor, cameraMode, disparo): partilhada pela app Câmara e pelo Instashot -->
+<script src="js/camview.js?v=135"></script>
+<script src="js/apps/photos.js?v=135"></script><script src="js/apps/airdrop.js?v=135"></script>
+<script src="js/apps/contactshare.js?v=135"></script><script src="js/apps/photoedit.js?v=135"></script><script src="js/apps/aichat.js?v=135"></script><script src="js/apps/facecall.js?v=135"></script>
+<script src="js/apps/safari.js?v=135"></script>
+<script src="js/apps/music.js?v=135"></script>
+<script src="js/apps/mail.js?v=135"></script>
+<script src="js/apps/maps.js?v=135"></script>
+<script src="js/apps/store.js?v=135"></script>
+<script src="js/apps/wallet.js?v=135"></script>
+<script src="js/apps/billing.js?v=135"></script>
+<script src="js/apps/services.js?v=135"></script>
+<script src="js/apps/stories.js?v=135"></script>
+<script src="js/apps/instants.js?v=135"></script><script src="js/apps/social-dm.js?v=135"></script><script src="js/apps/social.js?v=135"></script>
+<script src="js/apps/darkchat.js?v=135"></script>
+<script src="js/apps/misc.js?v=135"></script>
+<script src="js/apps/marketplace.js?v=135"></script>
+<script src="js/apps/onion.js?v=135"></script>
+<script src="js/apps/eats.js?v=135"></script>
+<!-- Arcade: a casca (games.js) TEM de vir antes dos jogos de acao e de tabuleiro, que se registam nela com Arcade.game -->
+<script src="js/apps/games.js?v=135"></script>
+<script src="js/apps/games-classic.js?v=135"></script><script src="js/apps/games-action.js?v=135"></script><script src="js/apps/games-action2.js?v=135"></script><script src="js/apps/games-board.js?v=135"></script><script src="js/apps/games-puzzle.js?v=135"></script>
+<script src="js/apps/crypto.js?v=135"></script>
+<script src="js/apps/garage.js?v=135"></script>
+<script src="js/apps/match.js?v=135"></script><script src="js/apps/recado-extras.js?v=135"></script><script src="js/apps/recado-people.js?v=135"></script><script src="js/apps/recado-updates.js?v=135"></script><script src="js/apps/recado-calls.js?v=135"></script><script src="js/apps/recado-chat.js?v=135"></script><script src="js/apps/recado.js?v=135"></script>
+<script src="js/qr.js?v=135"></script>
+<script src="js/apps/esim.js?v=135"></script>
+<script src="js/apps/psim.js?v=135"></script>
+<script src="js/apps/capps.js?v=135"></script>
+<script src="js/apps/radio.js?v=135"></script>
+<script src="js/apps/thirdparty.js?v=135"></script>
+<script src="js/main.js?v=135"></script>
+</body>
+</html>

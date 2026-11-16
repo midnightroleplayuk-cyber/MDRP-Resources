@@ -1,0 +1,89 @@
+/* ---------- Control Center, sliders, HUD de volume e botões físicos - carregado depois de shell.css/system.css ---------- */
+
+/* ===== Grelha PearOS 17: 4 colunas × 88.5 px, gap 14, dentro de 396 px (margens 22) ===== */
+#cc{ display:flex; flex-direction:column; overflow:hidden }
+.cc-panel{
+  width:100%; height:100%; min-height:0; box-sizing:border-box; margin:0;
+  padding:calc(var(--statusbar-h) + 10px) 22px calc(var(--safe-bottom) + 24px);
+  display:grid; grid-template-columns:repeat(4,88.5px); grid-auto-rows:88.5px; gap:14px; justify-content:center; align-content:start;
+  overflow-y:auto; overflow-x:hidden; overscroll-behavior:contain; scrollbar-width:none;
+}
+.cc-panel::-webkit-scrollbar{ display:none }
+/* módulos em Liquid Glass (PearOS 26): translúcidos com reflexo diagonal e aresta especular, não quadrados cinzentos chapados */
+.cc-mod,.cc-tile,.cc-slider{ min-width:0; min-height:0; border-radius:26px; background:linear-gradient(155deg,rgba(255,255,255,.17) 0%,rgba(255,255,255,.06) 45%,rgba(255,255,255,.03) 100%), rgba(58,58,66,.4); border:.5px solid rgba(255,255,255,.2); box-shadow:inset 0 1px 0 rgba(255,255,255,.26), inset 0 -.5px 0 rgba(255,255,255,.06), 0 4px 14px rgba(0,0,0,.14) }
+.cc-tile.on{ background:linear-gradient(155deg,rgba(255,255,255,.35) 0%,rgba(255,255,255,.2) 100%), rgba(255,255,255,.55) }
+.cc-mod{ grid-column:span 2; grid-row:span 2; padding:14px }
+.cc-mod.conn{ display:grid; grid-template-columns:1fr 1fr; grid-template-rows:1fr 1fr; gap:12px; place-items:center }
+.cc-round{ width:64px; height:64px; border-radius:50%; background:rgba(255,255,255,.14); transition:background .25s, transform .2s var(--spring) }
+.cc-round svg{ width:28px; height:28px } .cc-round:active{ transform:scale(.9); transition:transform .08s }
+.cc-mod.music{ display:flex; flex-direction:column; justify-content:space-between; padding:16px 16px 14px }
+.cc-mod.music .row{ display:flex; align-items:center; gap:10px; min-width:0 } .cc-mod.music .meta{ min-width:0; flex:1 }
+.cc-mod.music .art{ width:48px; height:48px; border-radius:11px; flex:none; box-shadow:0 2px 8px rgba(0,0,0,.25) }
+.cc-mod.music .t{ font-size:var(--t-subhead); font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis } .cc-mod.music .a{ font-size:var(--t-cap1); opacity:.7; white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+/* capa: background-image escrito pelo control.js (imagem real por cima, gradiente da faixa por baixo); sem música fica um quadrado de vidro */
+.cc-mod.music .art{ background-color:rgba(255,255,255,.14); background-size:cover; background-position:center; background-repeat:no-repeat }
+/* progresso: o enchimento é um scaleX (só transform anima); a barra tem uma zona de toque maior para o seek */
+.cc-prog{ display:flex; flex-direction:column; gap:3px; padding:0 2px }
+.cc-bar{ position:relative; height:14px; display:flex; align-items:center; cursor:pointer; touch-action:none }
+.cc-bar::before{ content:''; position:absolute; left:0; right:0; top:5px; height:4px; border-radius:2px; background:rgba(255,255,255,.22) }
+.cc-bar i{ position:absolute; left:0; right:0; top:5px; height:4px; border-radius:2px; background:#fff; transform-origin:0 50%; transform:scaleX(0); transition:transform 1s linear }
+.cc-times{ display:flex; justify-content:space-between; font-size:10px; line-height:11px; color:rgba(255,255,255,.62); font-variant-numeric:tabular-nums; min-height:11px }
+.cc-mod.music.noprog .cc-prog{ opacity:.35 } .cc-mod.music.noprog .cc-bar{ cursor:default }
+.cc-mod.music .ctl{ display:flex; justify-content:space-around; align-items:center; padding:0 4px }
+.cc-mod.music .ctl > div{ display:flex; align-items:center; justify-content:center; cursor:pointer; transition:transform .2s var(--spring) } .cc-mod.music .ctl > div:active{ transform:scale(.88); transition:transform .08s }
+.cc-mod.music .ctl svg{ width:30px; height:30px } .cc-mod.music .ctl .play svg{ width:40px; height:40px }
+.cc-tile{ transition:background .25s, transform .2s var(--spring), color .25s } .cc-tile:active{ transform:scale(.92); transition:transform .08s }
+.cc-tile svg{ width:32px; height:32px }
+/* Foco ligado: o glifo ganha a cor do modo (PearOS) - Não incomodar índigo, Trabalho azul-petróleo, Dormir ciano */
+.cc-tile.focus.on.f-dnd{ color:#5E5CE6 } .cc-tile.focus.on.f-work{ color:#1E9EB5 } .cc-tile.focus.on.f-sleep{ color:#0A84FF }
+.cc-tile.silent.on{ color:#FF453A }
+.cc-tile.wide{ grid-column:span 2; padding:0 18px; gap:14px } .cc-tile.wide svg{ width:28px; height:28px } .cc-tile.wide span{ white-space:nowrap; overflow:hidden; text-overflow:ellipsis; min-width:0 }
+.cc-edit{ grid-column:span 4; padding-top:4px; color:rgba(255,255,255,.62) }
+
+/* ===== Sliders verticais (brilho / volume): 2 linhas de altura, enchimento a partir de baixo, ícone dentro ===== */
+.cc-slider{
+  grid-row:span 2; overflow:hidden; position:relative; cursor:ns-resize; touch-action:none; user-select:none;
+  transform-origin:50% 100%; transition:transform .35s var(--spring);   /* sem border-radius na transição (regra CEF; o raio nunca muda) */
+}
+.cc-slider.drag{ transform:scale(1.05); transition:transform .25s var(--spring) }
+.cc-slider .fill{ position:absolute; left:0; right:0; bottom:0; height:0; background:#fff; overflow:hidden; transition:height .35s var(--spring) }
+.cc-slider.drag .fill{ transition:none }
+.cc-slider .ic{ position:absolute; left:50%; bottom:18px; transform:translateX(-50%); width:30px; height:30px; display:flex; align-items:center; justify-content:center; pointer-events:none; z-index:2 }
+.cc-slider .ic.base{ color:rgba(255,255,255,.62) }
+.cc-slider .fill .ic{ color:rgba(60,60,67,.55); z-index:3 }
+.cc-slider .ic svg,.cc-slider svg{ position:static; transform:none; left:auto; bottom:auto; mix-blend-mode:normal; color:inherit; width:28px; height:28px; transition:transform .3s var(--spring) }
+/* sol mais pequeno com pouco brilho: por scale (regra CEF - antes animava width/height) */
+.cc-slider.sl-bright.lo .ic svg{ transform:scale(.714) }
+/* classes genéricas .vol/.bright de apps.css (Música) não se aplicam aqui */
+.cc-slider{ width:auto; margin:0; display:block }
+
+/* ===== Brilho: overlay preto sobre todo o ecrã (opacidade = (1 − brilho) × .85) ===== */
+.bright-ov{ position:absolute; inset:0; z-index:400; background:#000; opacity:0; pointer-events:none; transition:opacity .12s ease-out; border-radius:57px }
+
+/* ===== Botões físicos: alinhados com os recortes da moldura ===== */
+.hw-btn{ position:absolute; width:5px; border-radius:2.5px; cursor:pointer; z-index:1; transition:transform .12s var(--spring); box-shadow:0 0 0 .5px rgba(0,0,0,.35), inset 0 .5px 0 rgba(255,255,255,.35) }   /* só transform anima (regra CEF): a sombra do :active muda de uma vez */
+.hw-btn::after{ display:none }
+.hw-btn::before{ content:''; position:absolute; top:-6px; bottom:-6px; left:-9px; right:-8px } /* zona de toque maior, sem tocar no ecrã */
+.hw-btn.left{ left:-5px } .hw-btn.right{ right:-5px }
+.hw-btn.action{ top:199px; height:44px } .hw-btn.vol-up{ top:269px; height:76px } .hw-btn.vol-down{ top:359px; height:76px }
+.hw-btn.power{ top:324px; height:132px } .hw-btn.camera-ctl{ top:669px; height:80px }
+.hw-btn.left:active,.hw-btn.left.pressed{ transform:translateX(2px); box-shadow:inset 1.5px 0 2px rgba(0,0,0,.55), 0 0 0 .5px rgba(0,0,0,.35), inset 0 0 0 9px rgba(0,0,0,.14) }   /* sem filter na carcaça: escurece com sombra interior */
+.hw-btn.right:active,.hw-btn.right.pressed{ transform:translateX(-2px); box-shadow:inset -1.5px 0 2px rgba(0,0,0,.55), 0 0 0 .5px rgba(0,0,0,.35), inset 0 0 0 9px rgba(0,0,0,.14) }
+
+/* ===== HUD de volume: cápsula vertical junto aos botões de volume (PearOS 17) ===== */
+.vol-hud{
+  position:absolute; left:10px; top:226px; width:40px; height:250px; border-radius:20px; z-index:330; overflow:hidden; pointer-events:none;
+  background:rgba(58,58,62,.62); border:.5px solid rgba(255,255,255,.16); box-shadow:0 8px 24px rgba(0,0,0,.28), inset 0 .5px 0 rgba(255,255,255,.12);
+  backdrop-filter:blur(24px) saturate(160%); -webkit-backdrop-filter:blur(24px) saturate(160%);
+  opacity:0; transform:translateX(-26px) scale(.7); transform-origin:0 50%; transition:opacity .2s ease-out, transform .3s var(--ios);   /* saídas desaceleradas (PearOS), nunca ease-in */
+}
+.vol-hud.in{ opacity:1; width:40px; transform:none; transition:opacity .2s ease-out, transform .45s var(--spring) }
+.vol-hud .fill{ position:absolute; left:0; right:0; bottom:0; height:0; background:#fff; overflow:hidden; transition:height .2s var(--ease) }
+.vol-hud .ic{ position:absolute; left:50%; bottom:13px; transform:translateX(-50%); width:22px; height:22px; display:flex; align-items:center; justify-content:center; color:rgba(255,255,255,.7); mix-blend-mode:normal }
+.vol-hud .fill .ic{ color:rgba(60,60,67,.6) }
+.vol-hud .ic svg{ width:22px; height:22px }
+
+/* ===== HUD de silêncio / Wallet: pílula por baixo da ilha ===== */
+.hw-hud{ top:62px; padding:9px 16px 9px 13px; border-radius:22px; gap:9px; background:var(--material); border:.5px solid var(--glass-border); box-shadow:0 10px 30px rgba(0,0,0,.28), inset 0 .5px 0 rgba(255,255,255,.25); transform:translate(-50%,-26px) scale(.85); transition:opacity .2s ease-out, transform .3s var(--ios) }
+.hw-hud.in{ transform:translate(-50%,0) scale(1); transition:opacity .2s ease-out, transform .45s var(--spring) }
+.hw-hud svg{ width:22px; height:22px } .hw-hud.silent{ color:var(--red) }

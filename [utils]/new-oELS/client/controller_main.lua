@@ -346,6 +346,33 @@ function MainController.CheckVehicleStates()
 			end
 		end
 	end
+
+	local ped = PlayerPedId()
+	local entering = GetVehiclePedIsTryingToEnter(ped)
+	if entering ~= 0 then
+		EnteringVehicle, EnteredAt = entering, nil
+	elseif EnteringVehicle and not EnteredAt then
+		EnteredAt = CurrentGameTime
+	elseif EnteredAt and CurrentGameTime - EnteredAt > 1000 then
+		EnteringVehicle, EnteredAt = nil, nil
+	end
+
+	for k, v in pairs(EnabledVehicles) do
+		local data = SavedVehicles[k]
+		if data then
+			if Config.Debug and data.sirens.Handle and data.sirens.LooseId ~= data.sirens.Handle and HasSoundFinished(data.sirens.Handle) then
+				data.sirens.LooseId = data.sirens.Handle
+				MainController.DebugPrint("[Watch] siren id=" .. data.sirens.Handle .. " came loose. inVehicle=" .. tostring(GetVehiclePedIsIn(ped, false) == v) .. " entering=" .. tostring(entering ~= 0) .. " paused=" .. tostring(v == EnteringVehicle))
+			end
+
+			if v == EnteringVehicle then
+				SoundsController.StopAll(data)
+			else
+				if data.sirens.State ~= 0 and not data.sirens.Handle then SoundsController.ChangeSirenTone(data) end
+				if data.dualSiren.State ~= 0 and not data.dualSiren.Handle then SoundsController.ChangeSecondSirenTone(data) end
+			end
+		end
+	end
 end
 
 function MainController.VehicleLeftScope(netId)

@@ -1,0 +1,54 @@
+/* ---------- AirShare (pacote AD) ----------
+   Folhas montadas pelo UI.sheet (fundo var(--bg) do sistema, claro e escuro): nada de backdrop-filter,
+   color-mix, clip-path ou filter (regras do CEF); só transform/opacity animam (o radar e o anel de envio). */
+
+/* ----- folha de partilha ----- */
+.ad-share{ padding:0 16px 8px }
+.ad-top{ display:flex; align-items:center; gap:12px; padding:2px 4px 6px }
+.ad-photo{ width:56px; height:56px; border-radius:12px; flex:none; background-color:var(--gray5); background-size:cover; background-position:center; box-shadow:0 1px 4px rgba(0,0,0,.14) }
+.ad-topt{ display:flex; flex-direction:column; gap:2px; min-width:0 }
+.ad-topt b{ font-size:var(--t-headline); font-weight:600; color:var(--label) }
+.ad-topt span{ font-size:var(--t-foot); color:var(--label2) }
+
+/* radar: três anéis a crescer por transform+opacity (uma camada composta cada), o meu avatar ao centro */
+.ad-radar{ position:relative; width:200px; height:200px; margin:6px auto 2px; flex:none }
+.ad-radar i{ position:absolute; inset:0; border-radius:50%; border:1.5px solid var(--blue); opacity:0; transform:scale(.2); will-change:transform,opacity; animation:ad-ring 2.4s cubic-bezier(.2,.6,.4,1) infinite }
+.ad-radar i:nth-child(2){ animation-delay:.8s } .ad-radar i:nth-child(3){ animation-delay:1.6s }
+.ad-radar .ad-center{ position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); padding:4px; border-radius:50%; background:var(--bg2); box-shadow:0 2px 10px rgba(0,0,0,.16) }
+@keyframes ad-ring{ 0%{ transform:scale(.2); opacity:.9 } 70%{ opacity:.25 } 100%{ transform:scale(1); opacity:0 } }
+/* com gente encontrada o radar encolhe para dar lugar à lista (sem animar altura: só o transform) */
+.ad-share.ad-found .ad-radar{ width:120px; height:120px; margin:0 auto }
+.ad-hint{ text-align:center; font-size:var(--t-foot); color:var(--label2); padding:4px 0 10px }
+
+/* pessoas por perto: avatar grande, nome e a linha de estado por baixo */
+.ad-people{ display:flex; flex-wrap:wrap; justify-content:center; gap:16px 10px; padding:2px 0 8px; min-height:10px }
+.ad-person{ width:100px; text-align:center; cursor:pointer; -webkit-tap-highlight-color:transparent }
+.ad-person .ad-av{ position:relative; width:68px; height:68px; margin:0 auto 6px }
+.ad-person .ad-av .avatar{ width:68px; height:68px; font-size:26px }
+/* anel a rodar enquanto "A enviar…": pseudo-elemento próprio, roda por transform */
+.ad-person .ad-av::after{ content:''; position:absolute; inset:-5px; border-radius:50%; border:2.5px solid var(--blue); border-top-color:transparent; opacity:0; will-change:transform }
+.ad-person.busy .ad-av::after{ opacity:1; animation:spin 1s linear infinite }
+.ad-person.sent .ad-av::after{ opacity:1; border-color:var(--green); animation:none }
+.ad-person.fail .ad-av::after{ opacity:1; border-color:var(--red); animation:none }
+.ad-person .ad-name{ font-size:var(--t-cap2); font-weight:500; color:var(--label); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; padding:0 2px }
+.ad-person .ad-st{ font-size:12px; color:var(--blue); min-height:15px; margin-top:1px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+.ad-person.sent .ad-st{ color:var(--green) } .ad-person.fail .ad-st{ color:var(--red) }
+.ad-person:active .ad-av{ transform:scale(.94); transition:transform .08s }
+
+/* ----- folha de receção ----- */
+.ad-recv{ padding:0 20px 8px }
+.ad-from{ display:flex; align-items:center; gap:12px; padding:2px 0 10px }
+.ad-who{ display:flex; flex-direction:column; min-width:0 }
+.ad-who b{ font-size:var(--t-headline); font-weight:600; color:var(--label); white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+.ad-who span{ font-size:var(--t-foot); color:var(--label2) }
+.ad-big{ width:100%; height:300px; border-radius:18px; background-color:var(--gray5); background-size:cover; background-position:center; box-shadow:0 2px 12px rgba(0,0,0,.14) }
+.ad-note{ text-align:center; font-size:var(--t-foot); color:var(--label2); padding:12px 0 4px }
+.ad-btns{ display:flex; gap:12px } .ad-btns .btn-p{ flex:1; margin:8px 0 0 }
+
+/* ----- Definições › Geral › AirShare ----- */
+.ad-hero{ display:flex; flex-direction:column; align-items:center; text-align:center; padding:18px 28px 6px; gap:6px }
+.ad-hero-ic{ width:78px; height:78px; border-radius:22px; background:var(--blue); color:#fff; display:flex; align-items:center; justify-content:center; margin-bottom:4px }
+.ad-hero-ic .gl{ width:44px; height:44px; stroke-width:1.8 }
+.ad-hero b{ font-size:var(--t-title2); font-weight:700; color:var(--label) }
+.ad-hero span{ font-size:var(--t-foot); color:var(--label2); line-height:1.35 }
+.ad-page .li-value{ color:var(--blue); font-weight:600 }   /* o ✓ da opção escolhida, azul como no PearOS */

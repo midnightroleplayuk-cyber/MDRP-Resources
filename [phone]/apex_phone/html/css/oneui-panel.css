@@ -1,0 +1,586 @@
+/* ============================================================
+   NOVA UI 8.5 (Android): PAINEL RAPIDO, NOTIFICACAO FLUTUANTE E CARTOES DE NOTIFICACAO
+   Dono: pacote D (shell/android-panel.js, shell/notify.js, shell/control.js).
+   Tudo dentro de body.os-android: o PearOS nao muda um pixel.
+
+   Desenho: o kit da One UI 8.5 (Figma 3010:2142 definicoes rapidas e 989:22754 notificacoes, 451x978 passados para
+   440x956): vidro escuro rgba(23,23,26,.3) com contorno 1px rgba(255,255,255,.2), pilulas de raio 50, mosaicos 88 e
+   199x88, circulos 56 com ligado #D5D5D5 e desligado rgba(180,180,180,.2), sliders verticais 88x300, cartao da musica
+   408x180 raio 36, notificacoes em pilula de 86 com o circulo de 56 a esquerda. O tema claro e o espelho (vidro claro).
+
+   Regras do CEF do FiveM aplicadas aqui:
+   - sem backdrop-filter nem filter (pintam preto): o "vidro" do painel e a copia pre-desfocada do fundo
+     (--wp-blur2 / --wp-lock-blur2, escritas no #screen pelo system.js) debaixo de um veu do tema;
+   - so transform e opacity tem transicoes; o preenchimento dos sliders muda a altura sem transicao (como os do CC);
+   - sem color-mix(): as cores do cartao da musica vem ja calculadas do JS (--qp-m1/--qp-m2);
+   - hover so com cor; nada anima em loop; as entradas (qp-new) correm uma vez e a classe sai no fim.
+   Prefixos: qp- (painel), ahn- (notificacao flutuante), aln (cartao de notificacao Nova UI, gerado pelo notify.js).
+   ============================================================ */
+
+/* o painel e a flutuante so existem no Android; no Android o CC, o Centro de notificacoes e o banner do PearOS nunca aparecem */
+body:not(.os-android) #qp,body:not(.os-android) .ahn-card{ display:none!important }
+body.os-android #cc,body.os-android #nc,body.os-android .nbanner{ display:none!important }
+
+/* ---------- cores do painel (escuro = o kit; claro = o espelho) ---------- */
+body.os-android:not(.dark){
+  --qp-veil:rgba(244,244,248,.6); --qp-shell:rgba(255,255,255,.5); --qp-shell-hi:rgba(255,255,255,.72); --qp-line:rgba(255,255,255,.72);
+  --qp-tx:rgba(0,0,0,.87); --qp-tx2:rgba(0,0,0,.58); --qp-tx3:rgba(0,0,0,.5);
+  --qp-off:rgba(0,0,0,.07); --qp-off-hov:rgba(0,0,0,.12); --qp-off-tx:rgba(0,0,0,.8);
+  --qp-on:#3A3A3F; --qp-on-hov:#2E2E33; --qp-on-tx:#fff;
+  --qp-track:rgba(0,0,0,.08); --qp-fill:linear-gradient(180deg,#56565C,#36363B); --qp-fill-tx:#fff;
+  --qp-acc:#2F6FE4; --qp-sh:0 2px 10px rgba(0,0,0,.04); --qp-peek:rgba(255,255,255,.5); --qp-grab:rgba(0,0,0,.36);
+  --qp-live:linear-gradient(-89.72deg,rgba(255,255,255,.42) 31%,#fff 118%);
+  /* contorno de vidro da Nova UI 8.5: fio claro em cima, fio escuro em baixo e um aro fino a toda a volta (so box-shadow) */
+  --qp-rim:inset 0 1px 0 rgba(255,255,255,.9), inset 0 -1px 0 rgba(0,0,0,.06), inset 0 0 0 1px rgba(255,255,255,.55);
+  --qp-rim-hi:inset 0 1px 0 #fff, inset 0 -1px 0 rgba(0,0,0,.07), inset 0 0 0 1px rgba(255,255,255,.7);
+  --aln-lock:rgba(252,252,255,.74); --aln-lock-line:rgba(255,255,255,.7); --aln-lock-press:rgba(255,255,255,.92); --aln-lock-tx:rgba(0,0,0,.87); --aln-lock-tx2:rgba(0,0,0,.58); --aln-lock-tx3:rgba(0,0,0,.5);
+  --ahn-bg:#FCFCFF; --ahn-line:rgba(0,0,0,.06); --aln-ring:#F2F2F6;
+}
+body.os-android.dark{
+  --qp-veil:rgba(23,23,26,.46); --qp-shell:rgba(23,23,26,.3); --qp-shell-hi:rgba(23,23,26,.46); --qp-line:rgba(255,255,255,.2);
+  --qp-tx:#EFEEF2; --qp-tx2:#CFCCCF; --qp-tx3:#D5D5D5;
+  --qp-off:rgba(180,180,180,.2); --qp-off-hov:rgba(180,180,180,.3); --qp-off-tx:#EFEEF2;
+  --qp-on:#D5D5D5; --qp-on-hov:#E2E2E2; --qp-on-tx:#1D1D20;
+  --qp-track:rgba(185,185,185,.2); --qp-fill:linear-gradient(180deg,#E4E4E4,#C6C4C3); --qp-fill-tx:#3F3F3F;
+  --qp-acc:#8DB6FF; --qp-sh:none; --qp-peek:rgba(23,23,26,.34); --qp-grab:rgba(255,255,255,.6);
+  --qp-live:linear-gradient(-89.72deg,rgba(23,23,26,.3) 31%,#000 118%);
+  --qp-rim:inset 0 1px 0 rgba(255,255,255,.26), inset 0 -1px 0 rgba(0,0,0,.38), inset 0 0 0 1px rgba(255,255,255,.1);
+  --qp-rim-hi:inset 0 1px 0 rgba(255,255,255,.34), inset 0 -1px 0 rgba(0,0,0,.4), inset 0 0 0 1px rgba(255,255,255,.16);
+  --aln-lock:rgba(23,23,26,.52); --aln-lock-line:rgba(255,255,255,.14); --aln-lock-press:rgba(40,40,44,.66); --aln-lock-tx:#EFEEF2; --aln-lock-tx2:#CFCCCF; --aln-lock-tx3:#D5D5D5;
+  --ahn-bg:#1E1E22; --ahn-line:rgba(255,255,255,.12); --aln-ring:#2A2A2E;
+}
+/* barra de estado por cima do painel claro: escura (o painel e que esta por baixo, nao o fundo). A hora (e os chips e
+   icones a esquerda) desaparecem: o painel mostra a hora no cabecalho, como a Nova UI */
+body.os-android:not(.dark) .screen.qp-open .statusbar{ color:rgba(0,0,0,.86) }
+body.os-android .statusbar .sb-time,body.os-android .statusbar > .asb-chips,body.os-android .statusbar > .asb-notifs{ transition:opacity .2s ease-out }
+body.os-android .screen.qp-open .statusbar .sb-time,body.os-android .screen.qp-open .statusbar > .asb-chips,body.os-android .screen.qp-open .statusbar > .asb-notifs{ opacity:0; pointer-events:none }
+
+/* ============================================================
+   CAMADAS DO PAINEL
+   ============================================================ */
+body.os-android #qp{ position:absolute; inset:0; z-index:125; border-radius:inherit; overflow:hidden; visibility:hidden; pointer-events:none; color:var(--qp-tx);
+  -webkit-user-select:none; user-select:none; font-feature-settings:"tnum" 0 }
+body.os-android #qp.on{ visibility:visible }
+body.os-android #qp.in{ pointer-events:auto }
+body.os-android #qp .qp-hide{ display:none!important }
+body.os-android #qp .qp-bg{ position:absolute; inset:0; border-radius:inherit; pointer-events:none; opacity:0; transition:opacity .28s ease-out;
+  background:linear-gradient(var(--qp-veil),var(--qp-veil)), var(--wp-blur2,var(--wp-blur,#141418)) center/cover no-repeat }
+body.os-android .screen.locked #qp .qp-bg{ background-image:linear-gradient(var(--qp-veil),var(--qp-veil)), var(--wp-lock-blur2,var(--wp-blur2,var(--wp-blur,#141418))) }
+body.os-android #qp.in .qp-bg{ opacity:1; transition:opacity .32s ease-out }
+body.os-android #qp .qp-slide{ position:absolute; inset:0; opacity:0; transform:translateY(-64px); transition:transform .3s var(--ou-curve,ease), opacity .22s ease-in }
+body.os-android #qp.in .qp-slide{ opacity:1; transform:none; transition:transform .46s var(--ou-curve-out,ease-out), opacity .26s ease-out }
+body.os-android #qp.pulling .qp-bg,body.os-android #qp.pulling .qp-slide,body.os-android #qp.qp-dragging .qp-bg,body.os-android #qp.qp-dragging .qp-slide{ transition:none }
+body.os-android #qp .qp-track{ position:absolute; top:0; bottom:0; left:0; width:880px; transition:transform .42s var(--ou-curve-out,ease-out) }
+body.os-android #qp .qp-track.qp-noanim,body.os-android #qp.qp-dragging .qp-track{ transition:none }
+body.os-android #qp .qp-page{ position:absolute; top:0; bottom:0; width:440px }
+body.os-android #qp .qp-pn{ left:0 } body.os-android #qp .qp-pq{ left:440px }
+body.os-android #qp .qp-scroll{ position:absolute; inset:0; overflow-x:hidden; overflow-y:auto; overscroll-behavior:contain; scrollbar-width:none; padding:50px 16px 84px }
+body.os-android #qp .qp-scroll::-webkit-scrollbar{ display:none }
+/* o conteudo que sobe esbate-se por baixo da barra de estado (os icones continuam a ler-se) */
+body.os-android #qp .qp-scroll{ -webkit-mask-image:linear-gradient(180deg,transparent 0,transparent 34px,#000 54px); mask-image:linear-gradient(180deg,transparent 0,transparent 34px,#000 54px) }
+/* e o que desce por baixo da barra de 3 botoes (transparente por cima do painel) esbate-se antes dos botoes: sem isto os
+   controlos da musica ficavam desenhados por baixo de Recentes / Inicio / Voltar. Bloqueado nao ha barra. */
+body.os-android[data-nav="buttons"]:not(.landscape) .screen:not(.locked) #qp .qp-scroll{
+  -webkit-mask-image:linear-gradient(180deg,transparent 0,transparent 34px,#000 54px,#000 calc(100% - 64px),transparent calc(100% - 46px)); mask-image:linear-gradient(180deg,transparent 0,transparent 34px,#000 54px,#000 calc(100% - 64px),transparent calc(100% - 46px)) }
+/* pega no fim do conteudo de cada pagina (tocar fecha; arrastar para cima no fim do conteudo tambem): 50x4 a .6 */
+body.os-android #qp .qp-handle{ position:relative; width:50px; height:4px; margin:22px auto 0; border-radius:2px; background:var(--qp-grab); cursor:pointer }
+body.os-android #qp .qp-handle::before{ content:''; position:absolute; inset:-14px -24px }
+body.os-android #qp.qp-editing .qp-handle{ display:none }
+
+/* ---------- cabecalho (os dois paineis): hora 26/700 e data 18/500 na mesma linha; editar / desligar / Definicoes ---------- */
+body.os-android #qp .qp-top{ display:flex; align-items:center; justify-content:space-between; gap:10px; height:44px; padding:0 2px 0 10px; margin:6px 0 12px }
+body.os-android #qp .qp-clock{ flex:1; display:flex; align-items:baseline; gap:10px; min-width:0; white-space:nowrap }
+body.os-android #qp .qp-time{ flex:none; font-family:var(--font); font-size:26px; font-weight:700; line-height:1; letter-spacing:.26px; font-variant-numeric:tabular-nums }
+body.os-android #qp .qp-date{ min-width:0; overflow:hidden; text-overflow:ellipsis; font-size:18px; font-weight:500; line-height:1.1; letter-spacing:.18px; color:var(--qp-tx) }
+body.os-android #qp .qp-acts{ display:flex; gap:2px; flex:none }   /* juntos: a data "Seg, 9 de novembro" tem de caber inteira ao lado */
+body.os-android #qp .qp-ab{ width:40px; height:40px; border-radius:50%; display:flex; align-items:center; justify-content:center; color:var(--qp-tx); cursor:pointer; transition:background-color .15s, border-radius .15s var(--ou-curve,ease) }
+body.os-android #qp .qp-ab:hover{ background:var(--qp-off) }
+body.os-android #qp .qp-ab:active{ background:var(--qp-off-hov); border-radius:12px }   /* Material 3 Expressive: o circulo vira quadrado arredondado ao premir */
+body.os-android #qp .qp-ab svg{ width:24px; height:24px }
+body.os-android #qp .qp-ebar{ display:none; flex:1; align-items:center; justify-content:space-between; height:44px }
+body.os-android #qp .qp-ebar b{ font-family:var(--font-display); font-size:20px; font-weight:600 }
+body.os-android #qp .qp-ebar span{ font-size:15px; font-weight:600; height:40px; padding:0 16px; border-radius:20px; display:flex; align-items:center; cursor:pointer; background:var(--qp-shell); box-shadow:var(--qp-rim) }
+body.os-android #qp .qp-ebar span:hover{ background:var(--qp-shell-hi) }
+body.os-android #qp .qp-ebar .qp-e-done{ background:var(--qp-on); color:var(--qp-on-tx); box-shadow:none }
+body.os-android #qp .qp-ebar .qp-e-done:hover{ background:var(--qp-on-hov) }
+body.os-android #qp.qp-editing .qp-qtop .qp-clock,body.os-android #qp.qp-editing .qp-qtop .qp-acts{ display:none }
+body.os-android #qp.qp-editing .qp-ebar{ display:flex }
+
+/* ---------- seccoes e rotulos ("Notificacoes em direto", "Outras notificacoes": 14/400) ---------- */
+body.os-android #qp .qp-label{ font-size:14px; font-weight:400; color:var(--qp-tx); padding:0 10px; margin:2px 0 10px }
+/* cabecalho da seccao com "Limpar" a direita (Nova UI 8.5): o rotulo fica como esta, o botao e texto 14/600 */
+body.os-android #qp .qp-lrow{ display:flex; align-items:center; justify-content:space-between; gap:10px }
+body.os-android #qp .qp-lrow .qp-label{ margin-bottom:10px }
+body.os-android #qp .qp-lclear{ flex:none; margin:2px 4px 10px 0; padding:4px 10px; border-radius:14px; font-size:14px; font-weight:600; color:var(--qp-tx); cursor:pointer; transition:background-color .15s }
+body.os-android #qp .qp-lclear:hover{ background:var(--qp-off) }
+body.os-android #qp .qp-sec + .qp-sec{ margin-top:16px }
+body.os-android #qp .qp-live{ display:flex; flex-direction:column; gap:10px }
+body.os-android #qp .qp-groups{ display:flex; flex-direction:column; gap:10px }
+body.os-android #qp .qp-empty{ padding:120px 20px 40px; text-align:center; font-size:17px; font-weight:500; color:var(--qp-tx2) }
+body.os-android #qp .qp-foot{ display:flex; align-items:center; justify-content:space-between; gap:10px; margin-top:16px }
+body.os-android #qp .qp-nset,body.os-android #qp .qp-clear{ height:40px; padding:0 18px; border-radius:20px; display:flex; align-items:center; font-size:14px; font-weight:600; color:var(--qp-tx);
+  background:var(--qp-shell); box-shadow:var(--qp-rim); cursor:pointer; transition:background-color .15s }
+body.os-android #qp .qp-nset:hover,body.os-android #qp .qp-clear:hover{ background:var(--qp-shell-hi) }
+
+/* entradas: so na primeira vez que o no aparece (a classe sai no animationend) */
+body.os-android #qp .qp-new{ animation:qpIn .42s var(--ou-curve-out,ease-out) both }
+@keyframes qpIn{ from{ opacity:0; transform:translateY(-10px) } to{ opacity:1; transform:none } }
+body.os-android #qp .qp-fly{ transform:translateX(112%)!important; opacity:0; transition:transform .3s var(--ou-curve,ease), opacity .24s }
+body.os-android #qp .qp-swiping{ transition:none!important }
+
+/* ============================================================
+   CARTAO DE NOTIFICACAO NOVA UI (.ncard.aln): painel, ecra bloqueado e flutuante
+   [circulo 56: icone da app ou foto com selo] [titulo + hora / texto] [miniatura] [contagem] [seta]
+   ============================================================ */
+body.os-android .aln{ display:block; text-align:left; color:var(--qp-tx) }
+body.os-android .aln .n-main{ display:flex; align-items:center; gap:12px; min-width:0 }
+body.os-android .aln .n-lead{ position:relative; width:56px; height:56px; flex:none }
+body.os-android .aln .n-lead .n-ic{ width:100%; height:100%; margin:0; border-radius:50%; overflow:hidden; background:transparent; box-shadow:none; isolation:auto; transform:none }
+body.os-android .aln .n-lead .n-ic svg,body.os-android .aln .n-lead .n-ic img{ width:100%; height:100%; display:block; border-radius:0 }
+body.os-android .aln .n-lead .n-icimg{ display:block; width:100%; height:100%; border-radius:50%; background-size:cover; background-position:center }
+body.os-android .aln .n-person{ width:100%; height:100% }
+body.os-android .aln .n-person .avatar{ width:100%; height:100%; border-radius:50%; font-size:20px; font-weight:600; display:flex; align-items:center; justify-content:center; color:#fff; overflow:hidden; background-size:cover; background-position:center }
+body.os-android .aln .n-badge{ position:absolute; right:-2px; bottom:-2px; width:22px; height:22px; border-radius:50%; overflow:hidden; box-shadow:0 0 0 2px var(--aln-ring) }
+body.os-android .aln .n-badge svg{ width:100%; height:100%; display:block }
+body.os-android .aln .n-body{ flex:1; min-width:0; padding:0 }
+body.os-android .aln .n-tl{ display:flex; align-items:baseline; gap:8px; min-width:0 }
+body.os-android .aln .n-title{ flex:0 1 auto; min-width:0; margin:0; font-size:15px; font-weight:600; line-height:1.3; letter-spacing:0; color:var(--qp-tx); white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+body.os-android .aln .n-time{ display:block; flex:none; margin:0; padding:0; font-size:12px; font-weight:400; color:var(--qp-tx3); opacity:1; white-space:nowrap }
+body.os-android .aln .n-msg{ margin-top:2px; font-size:14px; line-height:1.36; letter-spacing:0; color:var(--qp-tx2); opacity:1; display:-webkit-box; -webkit-line-clamp:1; -webkit-box-orient:vertical; overflow:hidden; word-break:break-word }
+body.os-android .aln .n-msg:empty{ display:none }
+body.os-android .aln .n-thumb{ position:static; flex:none; width:48px; height:48px; border-radius:14px; background-color:rgba(128,128,128,.25); background-size:cover; background-position:center; background-repeat:no-repeat }
+body.os-android .aln.has-img{ min-height:0 }
+body.os-android .aln.has-img .n-body{ padding-right:0 }
+body.os-android .aln .n-count{ display:block; position:static; flex:none; padding:0 2px; border-radius:0; background:none; font-size:15px; font-weight:400; color:var(--qp-tx3); font-variant-numeric:tabular-nums }
+/* acoes: pilulas por baixo do texto (alinhadas com ele) */
+body.os-android .aln .n-acts{ display:none; flex-wrap:wrap; gap:8px; margin:10px 0 0 68px }
+body.os-android .aln .n-act{ height:34px; padding:0 16px; border-radius:17px; display:flex; align-items:center; font-size:13.5px; font-weight:600; color:var(--qp-tx); background:var(--qp-off); border:none; box-shadow:none; cursor:pointer; transition:background-color .15s }
+body.os-android .aln .n-act:hover{ background:var(--qp-off-hov) }
+/* seta de expandir (painel e flutuante): 16 a .8, sem fundo */
+body.os-android .aln .qp-exp,body.os-android .aln .ahn-exp{ flex:none; width:32px; height:32px; margin:0 -8px 0 -2px; border-radius:50%; background:transparent; color:var(--qp-tx); opacity:.8; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:transform .3s var(--ou-curve-out,ease-out), background-color .15s }
+body.os-android .aln .qp-exp:hover,body.os-android .aln .ahn-exp:hover{ background:var(--qp-off) }
+body.os-android .aln .qp-exp svg,body.os-android .aln .ahn-exp svg{ width:18px; height:18px }
+
+/* ---------- cartoes do painel: pilula 86 de vidro (G1) ---------- */
+body.os-android #qp .qp-grp{ position:relative; touch-action:pan-y }
+body.os-android #qp .qp-items{ display:flex; flex-direction:column; gap:8px }
+body.os-android #qp .qp-nc{ position:relative; touch-action:pan-y; cursor:pointer; border-radius:43px }
+body.os-android #qp .qp-nc .ncard.aln{ display:flex; flex-direction:column; justify-content:center; min-height:86px; padding:15px 20px 15px 15px; border-radius:43px;
+  background:var(--qp-shell); box-shadow:var(--qp-rim), var(--qp-sh); transition:background-color .15s }
+body.os-android #qp .qp-nc:hover .ncard.aln{ background:var(--qp-shell-hi) }
+body.os-android #qp .qp-nc.qp-press .ncard.aln{ background:var(--qp-shell-hi) }
+body.os-android #qp .qp-nc:not(.can-exp) .qp-exp{ display:none }
+body.os-android #qp .qp-nc.open .ncard.aln{ border-radius:32px }
+body.os-android #qp .qp-nc.open .n-main{ align-items:flex-start }
+body.os-android #qp .qp-nc.open .qp-exp{ transform:rotate(180deg) }
+body.os-android #qp .qp-nc.open .n-acts,body.os-android #qp .qp-grp.multi.open .qp-nc .n-acts{ display:flex }
+body.os-android #qp .qp-nc.open .n-msg,body.os-android #qp .qp-grp.multi.open .qp-nc .n-msg{ -webkit-line-clamp:8 }
+body.os-android #qp .qp-nc.open .n-thumb{ width:72px; height:72px; border-radius:16px }
+/* varias da mesma app: fechado mostra a mais recente com a contagem a direita e a folha de baixo a espreitar (como a
+   "Stack notification" do kit); aberto mostra o cabecalho da app e todas, cada uma na sua pilula */
+body.os-android #qp .qp-gh{ display:none; cursor:pointer; touch-action:pan-y }
+body.os-android #qp .qp-gic{ width:20px; height:20px; flex:none; border-radius:50%; overflow:hidden }
+body.os-android #qp .qp-gic svg{ width:100%; height:100%; display:block }
+body.os-android #qp .qp-gname{ font-weight:600; color:var(--qp-tx); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; min-width:0 }
+body.os-android #qp .qp-gcount{ min-width:20px; height:20px; padding:0 6px; border-radius:10px; background:var(--qp-off); color:var(--qp-tx); font-size:11.5px; font-weight:700; display:inline-flex; align-items:center; justify-content:center; flex:none }
+body.os-android #qp .qp-gtime{ white-space:nowrap; flex:none } body.os-android #qp .qp-gtime::before{ content:'\00B7'; margin-right:6px }
+body.os-android #qp .qp-gexp{ margin-left:auto; width:32px; height:32px; flex:none; border-radius:50%; color:var(--qp-tx); opacity:.8; display:flex; align-items:center; justify-content:center; transition:transform .3s var(--ou-curve-out,ease-out), background-color .15s }
+body.os-android #qp .qp-gh:hover .qp-gexp{ background:var(--qp-off) }
+body.os-android #qp .qp-gexp svg{ width:18px; height:18px }
+body.os-android #qp .qp-grp.multi .qp-nc .qp-exp{ display:none }
+body.os-android #qp .qp-grp.multi:not(.open){ margin-bottom:6px }
+body.os-android #qp .qp-grp.multi:not(.open)::after{ content:''; position:absolute; left:40px; right:40px; top:100%; height:6px; border-radius:0 0 22px 22px; background:var(--qp-peek); box-shadow:inset 0 -1px 0 var(--qp-line), inset 1px 0 0 var(--qp-line), inset -1px 0 0 var(--qp-line); pointer-events:none }
+body.os-android #qp .qp-grp.multi:not(.open) .qp-nc:not(:first-child){ display:none }
+body.os-android #qp .qp-grp.multi:not(.open) .qp-gh{ display:flex; position:absolute; top:0; right:0; bottom:0; z-index:2; align-items:center; gap:4px; padding:0 14px 0 10px; border-radius:0 43px 43px 0 }
+body.os-android #qp .qp-grp.multi:not(.open) .qp-gh .qp-gic,body.os-android #qp .qp-grp.multi:not(.open) .qp-gh .qp-gname,body.os-android #qp .qp-grp.multi:not(.open) .qp-gh .qp-gtime{ display:none }
+body.os-android #qp .qp-grp.multi:not(.open) .qp-gcount{ min-width:0; height:auto; padding:0 2px; background:none; color:var(--qp-tx3); font-size:15px; font-weight:400 }
+body.os-android #qp .qp-grp.multi:not(.open) .qp-gexp{ margin-left:0 }
+body.os-android #qp .qp-grp.multi:not(.open) .qp-nc .n-main{ padding-right:58px }
+body.os-android #qp .qp-grp.multi:not(.open) .qp-nc .n-thumb{ display:none }
+body.os-android #qp .qp-grp.multi.open .qp-gh{ display:flex; align-items:center; gap:8px; padding:0 4px 8px 12px; font-size:13px; color:var(--qp-tx2) }
+body.os-android #qp .qp-grp.multi.open .qp-gexp{ transform:rotate(180deg) }
+
+/* ---------- notificacoes em direto (chamada, temporizador, navegacao, atividades): pilula 86 com o degradado do kit ---------- */
+body.os-android #qp .qp-lc{ position:relative; display:flex; align-items:center; gap:14px; min-height:86px; padding:12px 16px 12px 15px; border-radius:43px; background:var(--qp-live); box-shadow:var(--qp-rim); cursor:pointer; overflow:hidden; transition:box-shadow .15s }
+body.os-android #qp .qp-lc:hover{ box-shadow:var(--qp-rim), inset 0 0 0 100px rgba(128,128,128,.08) }
+body.os-android #qp .qp-lc-ic{ width:56px; height:56px; flex:none; border-radius:50%; display:flex; align-items:center; justify-content:center; color:#fff; background:#5B5B63; overflow:hidden }
+body.os-android #qp .qp-lc-ic svg{ width:26px; height:26px }
+body.os-android #qp .qp-lc-ic.qp-lc-app{ background:transparent }
+body.os-android #qp .qp-lc-ic.qp-lc-app svg{ width:100%; height:100% }
+body.os-android #qp .qp-lc.k-call .qp-lc-ic{ background:var(--ou-live,#0FCF6E) }
+body.os-android #qp .qp-lc.k-timer .qp-lc-ic{ background:#FF8A1F }
+body.os-android #qp .qp-lc.k-nav .qp-lc-ic{ background:#0C8FAE }
+body.os-android #qp .qp-lc-tx{ flex:1; min-width:0; display:flex; flex-direction:column; gap:3px }
+body.os-android #qp .qp-lc-tx b{ font-size:20px; font-weight:600; line-height:1.2; color:var(--qp-tx); white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+body.os-android #qp .qp-lc-tx span{ font-size:14px; line-height:1.3; color:var(--qp-tx2); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; font-variant-numeric:tabular-nums }
+body.os-android #qp .qp-lc-acts{ display:flex; gap:10px; flex:none }
+body.os-android #qp .qp-lc-b{ width:52px; height:52px; border-radius:50%; display:flex; align-items:center; justify-content:center; background:var(--qp-off); color:var(--qp-off-tx); cursor:pointer; transition:background-color .15s }
+body.os-android #qp .qp-lc-b:hover{ background:var(--qp-off-hov) }
+body.os-android #qp .qp-lc-b.red{ background:#F2453D; color:#fff } body.os-android #qp .qp-lc-b.red:hover{ background:#DE3B33 }
+body.os-android #qp .qp-lc-b svg{ width:22px; height:22px }
+body.os-android #qp .qp-lc-prog{ display:none; position:absolute; left:86px; right:30px; bottom:11px; height:3px; border-radius:2px; background:var(--qp-off); overflow:hidden }
+body.os-android #qp .qp-lc.has-prog .qp-lc-prog{ display:block }
+body.os-android #qp .qp-lc-prog i{ display:block; width:100%; height:100%; background:var(--ou-live,#0FCF6E); transform-origin:0 50%; transform:scaleX(0); transition:transform .5s var(--ou-curve,ease) }
+
+/* ---------- cartao do leitor de musica (408 x 180, raio 36; o mesmo modulo do CC: .t .a .art .cc-bar .ctl) ----------
+   A capa (ou o degradado das cores dela) cobre o cartao inteiro com um veu escuro por cima; sem nada a tocar fica o vidro. */
+body.os-android #qp .qp-media{ position:relative; overflow:hidden; height:180px; border-radius:36px; padding:15px 24px 10px; display:flex; flex-direction:column; justify-content:space-between;
+  background:linear-gradient(135deg,var(--qp-m1,#4A4A50),var(--qp-m2,#232327)); color:#fff }
+body.os-android #qp .qp-media.qp-mempty{ background:var(--qp-shell); box-shadow:var(--qp-rim), var(--qp-sh); color:var(--qp-tx) }
+/* a tocar: a capa leva o mesmo fio de luz em cima e a aresta escura em baixo (le-se como uma peca do mesmo vidro) */
+body.os-android #qp .qp-media:not(.qp-mempty){ box-shadow:inset 0 1px 0 rgba(255,255,255,.28), inset 0 -1px 0 rgba(0,0,0,.3), inset 0 0 0 1px rgba(255,255,255,.1) }
+body.os-android #qp .qp-media > .art{ position:absolute; inset:0; border-radius:inherit; background-size:cover; background-position:center; background-repeat:no-repeat; pointer-events:none }
+body.os-android #qp .qp-mveil{ position:absolute; inset:0; border-radius:inherit; pointer-events:none; background:linear-gradient(180deg,rgba(0,0,0,.22),rgba(0,0,0,.52)) }
+body.os-android #qp .qp-media.qp-mempty > .art,body.os-android #qp .qp-media.qp-mempty .qp-mveil{ display:none }
+body.os-android #qp .qp-media > .qp-mh,body.os-android #qp .qp-media > .qp-mrow,body.os-android #qp .qp-media > .cc-prog,body.os-android #qp .qp-media > .ctl{ position:relative }
+body.os-android #qp .qp-mh{ display:flex; align-items:center; gap:6px; height:24px; font-size:12px; letter-spacing:.24px }
+body.os-android #qp .qp-mapp{ width:16px; height:16px; border-radius:50%; overflow:hidden; flex:none } body.os-android #qp .qp-mapp svg{ width:100%; height:100%; display:block }
+body.os-android #qp .qp-mname{ font-weight:400 }
+body.os-android #qp .qp-mout{ margin-left:auto; display:flex; align-items:center; gap:4px; height:22px; padding:0 9px 0 7px; border-radius:11px; background:rgba(0,0,0,.2); font-size:10.5px; white-space:nowrap; max-width:60%; overflow:hidden; cursor:default }
+body.os-android #qp .qp-media.qp-mempty .qp-mout{ background:var(--qp-off) }
+body.os-android #qp .qp-mout i{ display:flex; width:14px; height:14px; flex:none } body.os-android #qp .qp-mout i svg{ width:14px; height:14px }
+body.os-android #qp .qp-mout b{ font-weight:500; overflow:hidden; text-overflow:ellipsis }
+body.os-android #qp .qp-mrow{ display:flex; align-items:center; gap:14px }
+body.os-android #qp .qp-mrow .meta{ flex:1; min-width:0; display:flex; flex-direction:column; gap:2px }
+body.os-android #qp .qp-mrow .t{ font-size:15px; font-weight:600; line-height:1.25; letter-spacing:.2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+body.os-android #qp .qp-mrow .a{ font-size:12.5px; line-height:1.3; letter-spacing:.2px; opacity:.75; white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+body.os-android #qp .qp-media .cc-prog{ gap:2px; padding:0 }
+body.os-android #qp .qp-media .cc-bar{ height:18px }
+body.os-android #qp .qp-media .cc-bar::before{ top:5px; height:8px; border-radius:4px; background:currentColor; opacity:.3 }
+body.os-android #qp .qp-media .cc-bar i{ top:5px; height:8px; border-radius:4px; background:currentColor; opacity:.82 }
+body.os-android #qp .qp-mthumb{ position:absolute; left:0; right:0; top:0; bottom:0; pointer-events:none; transform:translateX(0); transition:transform 1s linear }
+body.os-android #qp .qp-mthumb::before{ content:''; position:absolute; left:-8px; top:1px; width:16px; height:16px; border-radius:50%; background:#E9E9EA; box-shadow:0 0 0 .6px rgba(106,107,115,.29), 0 1px 3px rgba(0,0,0,.25) }
+body.os-android #qp .qp-media.qp-mempty .qp-mthumb,body.os-android #qp .qp-media.noprog .qp-mthumb{ display:none }
+body.os-android #qp .qp-media .cc-times{ font-size:10px; line-height:12px; letter-spacing:.2px; color:inherit; opacity:.75 }
+body.os-android #qp .qp-media.noprog .cc-prog{ opacity:.4 }
+body.os-android #qp .qp-media .ctl{ display:flex; align-items:center; justify-content:center; gap:18px }
+body.os-android #qp .qp-media .ctl > div{ width:36px; height:36px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:background-color .15s }
+body.os-android #qp .qp-media .ctl > div:hover{ background:rgba(128,128,128,.22) }
+body.os-android #qp .qp-media .ctl svg{ width:24px; height:24px }
+body.os-android #qp .qp-media .ctl .play svg{ width:26px; height:26px }
+body.os-android #qp .qp-media .qp-mshuf{ opacity:.6 } body.os-android #qp .qp-media .qp-mshuf.on{ opacity:1 }
+body.os-android #qp .qp-media .qp-mshuf svg,body.os-android #qp .qp-media .qp-mopen svg{ width:21px; height:21px }
+
+/* ============================================================
+   DEFINICOES RAPIDAS: grelha de 4 colunas (88 x 88, espaco 18). O lugar de cada botao (linha, coluna, largura 1 ou 2) vem do
+   android-panel.js (pack) escrito em grid-area; os sliders e o cartao dos redondos tem lugar fixo.
+   ============================================================ */
+body.os-android #qp .qp-tbig{ display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); grid-template-rows:88px auto 88px 88px 88px; gap:18px; margin-bottom:18px }
+body.os-android #qp .qp-tbig > .qp-rcard{ grid-area:2/1/3/5; margin:0 }
+body.os-android #qp .qp-tbig > .qp-vs[data-k="brightness"]{ grid-area:3/1/6/2 }
+body.os-android #qp .qp-tbig > .qp-vs[data-k="volume"]{ grid-area:3/2/6/3 }
+/* casca de vidro comum (mosaicos, cartao dos redondos, sliders): tinta + contorno claro em cima / escuro em baixo */
+body.os-android #qp .qp-t.qp-big,body.os-android #qp .qp-t.qp-rnd,body.os-android #qp .qp-rcard,body.os-android #qp .qp-vs{ background:var(--qp-shell); box-shadow:var(--qp-rim), var(--qp-sh) }
+body.os-android #qp .qp-t.qp-big:hover,body.os-android #qp .qp-t.qp-rnd:hover{ box-shadow:var(--qp-rim-hi), var(--qp-sh) }
+body.os-android #qp .qp-t{ position:relative; min-width:0; cursor:pointer; -webkit-tap-highlight-color:transparent }
+body.os-android #qp .qp-ti{ width:56px; height:56px; flex:none; border-radius:50%; display:flex; align-items:center; justify-content:center; background:var(--qp-off); color:var(--qp-off-tx); transition:background-color .18s, color .18s, border-radius .15s var(--ou-curve,ease) }
+body.os-android #qp .qp-ti svg{ width:26px; height:26px }
+body.os-android #qp .qp-t:hover .qp-ti{ background:var(--qp-off-hov) }
+/* premir: o circulo passa a quadrado arredondado por 150 ms (Material 3 Expressive, so nos controlos pequenos) */
+body.os-android #qp:not(.qp-editing) .qp-t:active .qp-ti,body.os-android #qp .qp-vsb:active{ border-radius:16px }
+body.os-android #qp .qp-t.on .qp-ti{ background:var(--qp-on); color:var(--qp-on-tx) }
+body.os-android #qp .qp-t.on:hover .qp-ti{ background:var(--qp-on-hov) }
+/* quadrado 88: so o circulo */
+body.os-android #qp .qp-t.qp-sq{ display:flex; align-items:center; justify-content:center; border-radius:50px }
+body.os-android #qp .qp-t.qp-sq .qp-tx{ display:none }
+/* meio (2 colunas): circulo + titulo 16/600 + subtitulo 14/400 */
+body.os-android #qp .qp-t.qp-half{ display:flex; align-items:center; gap:10px; padding:0 12px 0 16px; border-radius:50px }
+body.os-android #qp .qp-t.qp-half .qp-tx{ flex:1; min-width:0; display:flex; flex-direction:column; gap:1px }
+body.os-android #qp .qp-t.qp-half .qp-tl{ font-size:16px; font-weight:600; line-height:20px; letter-spacing:-.1px; color:var(--qp-tx); white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+body.os-android #qp .qp-t.qp-half .qp-ts{ font-size:14px; line-height:18px; color:var(--qp-tx2); white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+/* cartao dos redondos: quatro por linha (cada um numa casca 88), a pega por baixo abre as outras linhas */
+body.os-android #qp .qp-rcard{ position:relative; border-radius:50px; padding:20px 18px 26px }
+body.os-android #qp .qp-trnd,body.os-android #qp .qp-avail{ position:relative; display:grid; grid-template-columns:repeat(4,88px); justify-content:space-between; row-gap:14px; min-height:88px }
+body.os-android #qp .qp-t.qp-rnd{ width:88px; height:88px; border-radius:50%; display:flex; align-items:center; justify-content:center }
+body.os-android #qp .qp-t.qp-rnd .qp-tx{ display:none }
+body.os-android #qp .qp-rcard.qp-short .qp-trnd > .qp-t:nth-child(n+5){ display:none }
+body.os-android #qp .qp-more{ position:absolute; left:50%; bottom:10px; width:50px; height:4px; margin-left:-25px; border-radius:2px; background:var(--qp-grab); cursor:pointer; transition:background-color .15s }
+body.os-android #qp .qp-more:hover{ background:var(--qp-tx) }
+body.os-android #qp .qp-more::before{ content:''; position:absolute; left:-30px; right:-30px; top:-12px; bottom:-8px }
+body.os-android #qp .qp-rcard.qp-one .qp-more{ display:none }
+body.os-android #qp .qp-rcard.qp-one{ padding-bottom:20px }
+/* sliders verticais 88 x 300: calha + preenchimento claro com o icone no topo; circulo por baixo (modo escuro / silencio) */
+body.os-android #qp .qp-vs{ display:flex; flex-direction:column; align-items:center; gap:10px; padding:18px; border-radius:50px; min-width:0 }
+body.os-android #qp .qp-sl{ position:relative; flex:1; width:100%; min-height:0; border-radius:28px; background:var(--qp-track); overflow:hidden; cursor:pointer; touch-action:none }
+body.os-android #qp .qp-slf{ position:absolute; left:0; right:0; bottom:0; height:40%; min-height:52px; border-radius:28px; background:var(--qp-fill) }
+body.os-android #qp .qp-sli{ position:absolute; left:0; right:0; top:0; height:52px; display:flex; align-items:center; justify-content:center; color:var(--qp-fill-tx); pointer-events:none }
+body.os-android #qp .qp-sli svg{ width:26px; height:26px }
+body.os-android #qp .qp-vsb{ width:52px; height:52px; flex:none; border-radius:50%; display:flex; align-items:center; justify-content:center; background:var(--qp-off); color:var(--qp-off-tx); cursor:pointer; transition:background-color .18s, color .18s, border-radius .15s var(--ou-curve,ease) }
+body.os-android #qp .qp-vsb:hover{ background:var(--qp-off-hov) }
+body.os-android #qp .qp-vsb.on{ background:var(--qp-on); color:var(--qp-on-tx) }
+body.os-android #qp .qp-vsb.on:hover{ background:var(--qp-on-hov) }
+body.os-android #qp .qp-vsb svg{ width:24px; height:24px }
+body.os-android #qp .qp-media-q{ margin-top:0 }
+/* cartoes de baixo (Nova UI 8.5): saida de som e dispositivos, dois meios de 76 em vidro com o circulo de 44 e duas linhas */
+body.os-android #qp .qp-cards{ display:grid; grid-template-columns:1fr 1fr; gap:18px; margin-top:18px }
+body.os-android #qp .qp-cd{ display:flex; align-items:center; gap:10px; height:76px; padding:0 14px 0 12px; border-radius:38px; cursor:pointer; min-width:0;
+  background:var(--qp-shell); box-shadow:var(--qp-rim), var(--qp-sh); transition:background-color .15s }
+body.os-android #qp .qp-cd:hover{ background:var(--qp-shell-hi) }
+body.os-android #qp .qp-cd-ic{ width:44px; height:44px; flex:none; border-radius:50%; display:flex; align-items:center; justify-content:center; background:var(--qp-off); color:var(--qp-off-tx) }
+body.os-android #qp .qp-cd.on .qp-cd-ic{ background:var(--qp-on); color:var(--qp-on-tx) }
+body.os-android #qp .qp-cd-ic svg{ width:22px; height:22px }
+body.os-android #qp .qp-cd-tx{ flex:1; min-width:0; display:flex; flex-direction:column; gap:1px }
+body.os-android #qp .qp-cd-tx span{ font-size:12.5px; line-height:16px; color:var(--qp-tx2); white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+body.os-android #qp .qp-cd-tx b{ font-size:14.5px; font-weight:600; line-height:18px; color:var(--qp-tx); white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+/* edicao dos botoes: a grelha fica onde esta (os sliders esbatidos e parados), cada botao mostra o nome */
+body.os-android #qp .qp-ehint,body.os-android #qp .qp-availw{ display:none }
+body.os-android #qp.qp-editing .qp-ehint{ display:block; font-size:13.5px; line-height:1.4; color:var(--qp-tx2); padding:0 12px 14px; margin-top:-4px }
+body.os-android #qp.qp-editing .qp-availw{ display:block; margin-top:4px }
+body.os-android #qp.qp-editing .qp-media-q,body.os-android #qp.qp-editing .qp-cards{ display:none }
+/* pega de redimensionar (so em edicao, so nos lugares grandes): pilula vertical de 4 x 28 na aresta direita, por cima do contorno */
+body.os-android #qp .qp-rz{ display:none }
+body.os-android #qp.qp-editing .qp-t.qp-big .qp-rz{ display:block; position:absolute; right:-3px; top:50%; width:6px; height:30px; margin-top:-15px; border-radius:3px; z-index:3; cursor:ew-resize;
+  background:var(--qp-tx); box-shadow:0 0 0 2px var(--qp-shell-hi); opacity:.72; transition:opacity .15s }
+body.os-android #qp.qp-editing .qp-t.qp-big .qp-rz::before{ content:''; position:absolute; left:-14px; right:-14px; top:-10px; bottom:-10px }   /* area de toque de 34 */
+body.os-android #qp.qp-editing .qp-t.qp-big:hover .qp-rz,body.os-android #qp .qp-t.qp-rzing .qp-rz{ opacity:1 }
+body.os-android #qp .qp-t.qp-rzing{ box-shadow:var(--qp-rim-hi), 0 0 0 2px var(--qp-acc) }
+body.os-android #qp.qp-editing .qp-vs{ opacity:.38; pointer-events:none }
+body.os-android #qp.qp-editing .qp-rcard.qp-short .qp-trnd > .qp-t:nth-child(n+5){ display:flex }
+body.os-android #qp.qp-editing .qp-more{ display:none }
+body.os-android #qp.qp-editing .qp-rcard{ padding-bottom:20px }
+body.os-android #qp .qp-availw.qp-none .qp-rcard{ min-height:60px }
+body.os-android #qp.qp-editing .qp-t.qp-sq,body.os-android #qp.qp-editing .qp-t.qp-rnd{ flex-direction:column; gap:3px; padding-top:2px }
+body.os-android #qp.qp-editing .qp-t.qp-sq .qp-ti,body.os-android #qp.qp-editing .qp-t.qp-rnd .qp-ti{ width:40px; height:40px }
+body.os-android #qp.qp-editing .qp-t.qp-sq .qp-ti svg,body.os-android #qp.qp-editing .qp-t.qp-rnd .qp-ti svg{ width:21px; height:21px }
+body.os-android #qp.qp-editing .qp-t.qp-sq .qp-tx,body.os-android #qp.qp-editing .qp-t.qp-rnd .qp-tx{ display:block; max-width:78px; text-align:center }
+/* uma palavra comprida nunca se parte a meio: so quebra entre palavras, ate duas linhas */
+body.os-android #qp.qp-editing .qp-t.qp-sq .qp-tl,body.os-android #qp.qp-editing .qp-t.qp-rnd .qp-tl{ display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; font-size:10.5px; font-weight:500; line-height:12px; color:var(--qp-tx); word-break:normal; overflow-wrap:normal }
+body.os-android #qp.qp-editing .qp-t.qp-sq .qp-ts,body.os-android #qp.qp-editing .qp-t.qp-rnd .qp-ts{ display:none }
+body.os-android #qp .qp-tb{ display:none }
+body.os-android #qp.qp-editing .qp-tb{ display:block; position:absolute; top:2px; right:2px; width:22px; height:22px; border-radius:50%; background:#F2453D; box-shadow:0 0 0 2px var(--qp-shell-hi); z-index:2; pointer-events:none }
+body.os-android #qp.qp-editing .qp-tb::before,body.os-android #qp.qp-editing .qp-avail .qp-tb::after{ content:''; position:absolute; left:6px; right:6px; top:10px; height:2px; border-radius:1px; background:#fff }
+body.os-android #qp.qp-editing .qp-avail .qp-tb{ background:#2DBE60 }
+body.os-android #qp.qp-editing .qp-avail .qp-tb::after{ left:10px; right:10px; top:6px; bottom:6px; height:auto; width:2px }
+body.os-android #qp.qp-editing .qp-t.qp-half .qp-tb{ right:10px; top:-2px }
+body.os-android #qp.qp-editing .qp-t.qp-rnd,body.os-android #qp.qp-editing .qp-t.qp-sq,body.os-android #qp.qp-editing .qp-t.qp-half{ cursor:grab }
+/* na edicao os botoes ficam neutros: o que conta e o lugar, nao o estado */
+body.os-android #qp.qp-editing .qp-t.on .qp-ti,body.os-android #qp.qp-editing .qp-t.on:hover .qp-ti{ background:var(--qp-off); color:var(--qp-off-tx) }
+body.os-android #qp .qp-t.qp-lift{ z-index:5; cursor:grabbing; opacity:.92 }
+body.os-android #qp .qp-t.qp-lift{ box-shadow:var(--qp-rim-hi), 0 12px 28px rgba(0,0,0,.26) }
+body.os-android #qp.qp-tdrag .qp-scroll{ overflow-y:hidden }
+
+/* ============================================================
+   NOTIFICACAO FLUTUANTE (heads-up, telemovel desbloqueado): a mesma pilula, opaca por cima das apps
+   ============================================================ */
+body.os-android .ahn-card{ position:absolute; top:46px; left:10px; right:10px; z-index:336; opacity:0; transform:translateY(-130%); transition:transform .46s var(--ou-curve-out,ease-out), opacity .24s ease-out;
+  touch-action:none; -webkit-user-select:none; user-select:none; cursor:pointer }
+body.os-android .ahn-card.in{ opacity:1; transform:none }
+body.os-android .ahn-card.out{ opacity:0; transform:translateY(-130%); transition:transform .38s var(--ou-curve,ease), opacity .3s ease-in }
+body.os-android .ahn-card.out-fast{ opacity:0; transform:translateY(-60%); transition:transform .22s ease-in, opacity .18s ease-in }
+body.os-android .ahn-card.drag{ transition:none }
+body.os-android .ahn-card .ncard.aln{ display:flex; flex-direction:column; justify-content:center; min-height:80px; padding:12px 18px 12px 12px; border-radius:40px; background:var(--ahn-bg); box-shadow:0 10px 30px rgba(0,0,0,.24), inset 0 0 0 1px var(--ahn-line) }
+body.os-android .ahn-card .n-lead{ width:56px; height:56px }
+body.os-android .ahn-card .n-acts{ display:flex; margin:8px 0 2px 68px }
+body.os-android .ahn-card.open .ncard.aln{ border-radius:32px }
+body.os-android .ahn-card.open .n-main{ align-items:flex-start }
+body.os-android .ahn-card.open .n-msg{ -webkit-line-clamp:8 }
+body.os-android .ahn-card.open .ahn-exp{ transform:rotate(180deg) }
+body.os-android .ahn-card.open .n-thumb{ width:72px; height:72px; border-radius:16px }
+
+/* ============================================================
+   ECRA BLOQUEADO: os cartoes do Notify.renderLock no desenho Nova UI (pilula de vidro, circulo 48).
+   O lugar e o tamanho da caixa .lock-notifs sao do pacote B (oneui-lock.css); aqui so os cartoes.
+   Os seletores levam #lock para ganharem as regras do PearOS (#lock .notif-card .ncard, liquid27.css).
+   ============================================================ */
+/* Android 17: cartoes translucidos (o fundo passa por baixo, a tinta segue o tema) com o fio de luz em cima e a aresta escura em baixo */
+body.os-android #lock .lock-notifs .notif-card .ncard.aln{ display:flex; flex-direction:column; justify-content:center; gap:0; min-height:72px; padding:10px 18px 10px 12px; border:none; border-radius:36px;
+  background:var(--aln-lock); color:var(--aln-lock-tx); box-shadow:inset 0 1px 0 var(--aln-lock-line), inset 0 -1px 0 rgba(0,0,0,.08), inset 0 0 0 1px rgba(255,255,255,.35), 0 6px 18px rgba(0,0,0,.12) }
+body.os-android.dark #lock .lock-notifs .notif-card .ncard.aln{ background:var(--aln-lock); box-shadow:inset 0 1px 0 var(--aln-lock-line), inset 0 -1px 0 rgba(0,0,0,.3), inset 0 0 0 1px rgba(255,255,255,.06), 0 6px 18px rgba(0,0,0,.22) }
+body.os-android #lock .lock-notifs .notif-card.press .ncard.aln,body.os-android.dark #lock .lock-notifs .notif-card.press .ncard.aln{ background:var(--aln-lock-press); transform:none }
+body.os-android #lock .lock-notifs .aln .n-lead{ width:48px; height:48px }
+body.os-android #lock .lock-notifs .aln .n-person .avatar{ font-size:17px }
+body.os-android #lock .lock-notifs .aln .n-badge{ width:20px; height:20px }
+body.os-android #lock .lock-notifs .aln,body.os-android #lock .lock-notifs .aln .n-title{ color:var(--aln-lock-tx) }
+body.os-android #lock .lock-notifs .aln .n-msg{ color:var(--aln-lock-tx2); -webkit-line-clamp:2 }
+body.os-android #lock .lock-notifs .aln .n-time,body.os-android #lock .lock-notifs .aln .n-count{ color:var(--aln-lock-tx3) }
+/* compacto: as acoes ficam no cartao expandido (toque longo), como a Nova UI faz no ecra bloqueado */
+body.os-android #lock .lock-notifs .aln .n-acts{ display:none }
+body.os-android #lock .lock-notifs .notif-card{ border-radius:36px }
+body.os-android #lock .lock-notifs .nstack .peek{ border-radius:30px; border:none; background:var(--aln-lock); opacity:.62; box-shadow:inset 0 0 0 1px var(--aln-lock-line) }
+body.os-android #lock .lock-notifs .nstack .peek2{ opacity:.4 }
+/* cabecalhos dos grupos na lista aberta: nome da app em branco sobre o fundo; "Limpar" em pilula escura */
+body.os-android #lock .lock-notifs .nhead{ font-size:13.5px; font-weight:600; padding:2px 6px 0 }
+body.os-android #lock .lock-notifs .nh-x,body.os-android #lock .lock-notifs .nh-less{ background:rgba(20,20,24,.42); border:none; box-shadow:none; color:#fff }
+body.os-android #lock .lock-notifs .nh-x.arm{ background:rgba(20,20,24,.6) }
+/* rodape da lista aberta (pilha/contagem abertas): so "Limpar tudo", centrado no fim da coluna */
+body.os-android #lock .lock-notifs .nhead.aln-foot{ justify-content:center; padding:6px 0 2px; text-shadow:none }
+body.os-android #lock .lock-notifs .aln-clear{ height:36px; padding:0 18px; border-radius:18px; display:flex; align-items:center; background:rgba(20,20,24,.42); box-shadow:inset 0 0 0 1px rgba(255,255,255,.14); color:#fff; font-size:13.5px; font-weight:600; cursor:pointer; pointer-events:auto }
+body.os-android #lock .lock-notifs .aln-clear:hover{ background:rgba(20,20,24,.6) }
+/* "so icones" (modo Contagem): os icones das apps numa pilula de vidro e o total */
+body.os-android #lock .lock-notifs .ncount.aln-count{ height:46px; padding:0 8px; gap:6px; border-radius:23px; background:rgba(18,18,22,.46); border:none; box-shadow:inset 0 0 0 1px rgba(255,255,255,.14), 0 6px 16px rgba(0,0,0,.16); text-shadow:none }
+body.os-android #lock .lock-notifs .ncount.aln-count:hover{ background:rgba(18,18,22,.58) }
+body.os-android #lock .lock-notifs .aln-ic{ display:block; width:30px; height:30px; border-radius:50%; overflow:hidden; flex:none }
+body.os-android #lock .lock-notifs .aln-ic svg{ width:100%; height:100%; display:block }
+body.os-android #lock .lock-notifs .aln-more{ font-size:13px; font-weight:600; color:#fff; padding:0 2px }
+body.os-android #lock .lock-notifs .aln-n{ min-width:26px; height:26px; padding:0 8px; border-radius:13px; background:#fff; color:#000; font-size:13px; font-weight:700; display:flex; align-items:center; justify-content:center; margin-left:2px }
+
+/* ---------- cartao expandido do ecra bloqueado (toque longo) e aviso do Notify, no desenho Nova UI ---------- */
+body.os-android .n-x,body.os-android.dark .n-x{ border-radius:32px; background:var(--ahn-bg); color:var(--qp-tx); border:none; box-shadow:0 20px 50px rgba(0,0,0,.3), inset 0 0 0 1px var(--ahn-line) }
+body.os-android .n-x .n-ic,body.os-android .n-x .n-ic svg{ border-radius:50% }
+body.os-android .n-xact,body.os-android.dark .n-xact{ border-radius:22px; background:var(--qp-off); border:none; box-shadow:none; color:var(--qp-tx) }
+body.os-android .n-xact.danger{ color:#F2453D }
+body.os-android .n-toast,body.os-android.dark .n-toast{ bottom:96px; padding:12px 20px; border-radius:999px; background:var(--ou-toast,#F1F1F3); color:var(--ou-toast-tx,rgba(0,0,0,.87)); font-size:14px; font-weight:500; box-shadow:0 6px 20px rgba(0,0,0,.18) }
+
+/* ---------- Reduzir movimento: o painel so desvanece ---------- */
+body.os-android[data-motion="reduced"] #qp .qp-slide,body.os-android[data-motion="reduced"] #qp.in .qp-slide{ transform:none; transition:opacity .16s ease-out }
+body.os-android[data-motion="reduced"] #qp .qp-track{ transition-duration:.16s }
+body.os-android[data-motion="reduced"] #qp .qp-new{ animation:none }
+body.os-android[data-motion="reduced"] .ahn-card,body.os-android[data-motion="reduced"] .ahn-card.out{ transition:opacity .16s ease-out }
+
+/* ============================================================
+   NOVA Fold8 (body.form-fold, 2026-10-02): o painel rapido no ecra de fora (670) e no de dentro (1340)
+   FECHADO: as duas paginas tem a largura do ecra e desliza-se entre elas como no telemovel. ABERTO: as duas ficam a vista ao
+   mesmo tempo, notificacoes na metade esquerda e definicoes rapidas na direita (android-panel.js: a faixa nao desliza e o
+   arrasto na horizontal fica parado). O conteudo de cada pagina numa coluna ao centro: as notificacoes com 560 e as
+   definicoes rapidas com a largura do telemovel (408), para os mosaicos continuarem quadrados. A hora so aparece uma vez
+   (na metade das notificacoes). O mosaico "Abrir ecra" / "Fechar ecra" (.qp-fold) so existe aqui.
+   ============================================================ */
+body.os-android #qp .qp-foldw{ display:none }
+body.os-android.form-fold #qp .qp-foldw{ display:block; margin:0 0 18px }
+body.os-android.form-fold #qp.qp-editing .qp-foldw{ display:none }
+body.os-android.form-fold #qp .qp-track{ width:calc(var(--screen-w) * 2) }
+body.os-android.form-fold #qp .qp-page{ width:var(--screen-w) }
+body.os-android.form-fold #qp .qp-pq{ left:var(--screen-w) }
+/* FECHADO (spec_fold 3.2): as duas paginas numa coluna de 560 (os mosaicos em pilula esticam, os redondos ficam com 88 e mais
+   espaco entre eles); o cabecalho cabe sempre inteiro */
+body.os-android.form-fold #qp .qp-scroll{ padding-left:55px; padding-right:55px }
+/* ABERTO (spec_fold 3.1, 2026-10-03; muda o contrato do ANDROID.md 5b): UM cartao de vidro de cada vez (#qp.qp-card,
+   android-panel.js placeCard), notificacoes 504 e definicoes rapidas 456 (os mosaicos continuam quadrados), em cima a 56, a
+   esquerda / ao centro / a direita conforme o sitio onde o dedo comecou; a altura e a do conteudo ate 16 acima da barra. A
+   volta continua a ver-se a home ou a app com um veu leve (sem o desfoque do ecra inteiro); a barra de estado fica por cima. */
+body.os-android.form-fold.fold-open:not(.dark){ --qp-card:rgba(255,255,255,.45); --qp-cline:rgba(255,255,255,.35) }
+body.os-android.form-fold.fold-open.dark{ --qp-card:rgba(20,20,24,.48); --qp-cline:rgba(255,255,255,.12) }
+/* por cima de uma app o que esta por tras do cartao e a app (nao ha desfoque dela): a tinta fica quase opaca, sem a cor do fundo */
+body.os-android.form-fold.fold-open:not(.dark) .screen.app-open #qp{ --qp-card:rgba(250,250,252,.88) }
+body.os-android.form-fold.fold-open.dark .screen.app-open #qp{ --qp-card:rgba(26,26,30,.9) }
+body.os-android.form-fold.fold-open #qp .qp-bg,body.os-android.form-fold.fold-open .screen.locked #qp .qp-bg{ background:rgba(0,0,0,.1) }
+body.os-android.form-fold.fold-open.dark #qp .qp-bg,body.os-android.form-fold.fold-open.dark .screen.locked #qp .qp-bg{ background:rgba(0,0,0,.28) }
+body.os-android.form-fold.fold-open #qp .qp-slide{ inset:auto; left:var(--qp-cx,418px); top:56px; width:var(--qp-cw,504px); max-height:calc(100% - 72px - var(--ou-nav,0px)); display:flex; flex-direction:column; border-radius:36px; overflow:hidden;
+  background:linear-gradient(var(--qp-card),var(--qp-card)), var(--wp-blur2,var(--wp-blur,#141418)) no-repeat; background-size:auto, var(--screen-w) 956px; background-position:0 0, calc(-1 * var(--qp-cx,418px)) -56px;
+  box-shadow:inset 0 0 0 1px var(--qp-cline), 0 16px 48px rgba(0,0,0,.22) }
+body.os-android.form-fold.fold-open .screen.locked #qp .qp-slide{ background-image:linear-gradient(var(--qp-card),var(--qp-card)), var(--wp-lock-blur2,var(--wp-blur2,var(--wp-blur,#141418))) }
+body.os-android.form-fold.fold-open #qp .qp-slide.qp-swap{ opacity:0!important; transition:opacity .12s ease-in }
+body.os-android.form-fold.fold-open #qp .qp-track{ position:relative; top:auto; bottom:auto; width:100%; flex:0 1 auto; min-height:0; display:flex; flex-direction:column; transform:none!important; transition:none }
+body.os-android.form-fold.fold-open #qp .qp-page{ position:relative; top:auto; bottom:auto; left:0; width:100%; flex:0 1 auto; min-height:0; display:flex; flex-direction:column }
+body.os-android.form-fold.fold-open #qp:not(.qp-on-qs) .qp-pq,body.os-android.form-fold.fold-open #qp.qp-on-qs .qp-pn{ display:none }
+/* o que rola esbate-se nas margens de dentro do cartão (24 em cima, 20 em baixo), em vez de ser cortado rente à aresta redonda; sem
+   nada a rolar essas margens estão vazias e nada muda */
+body.os-android.form-fold.fold-open #qp .qp-scroll,body.os-android[data-nav="buttons"]:not(.landscape).form-fold.fold-open .screen:not(.locked) #qp .qp-scroll{ position:relative; inset:auto; flex:0 1 auto; min-height:0; padding:24px 24px 20px;
+  -webkit-mask-image:linear-gradient(180deg,transparent 0,#000 20px,#000 calc(100% - 20px),transparent 100%); mask-image:linear-gradient(180deg,transparent 0,#000 20px,#000 calc(100% - 20px),transparent 100%) }
+/* cabecalho nos DOIS cartoes: hora 30/700 + data 17/400 ("09:30 Sex, 2 de outubro"), inteiro mesmo ao lado dos tres botoes */
+body.os-android.form-fold.fold-open #qp .qp-top{ margin:0 0 14px; padding:0 0 0 6px; gap:6px }
+body.os-android.form-fold.fold-open #qp .qp-clock{ gap:10px }
+body.os-android.form-fold.fold-open #qp .qp-acts{ gap:0 }
+body.os-android.form-fold.fold-open #qp .qp-time{ font-size:30px }
+body.os-android.form-fold.fold-open #qp .qp-date{ font-size:17px; font-weight:400; letter-spacing:0 }
+body.os-android.form-fold.fold-open #qp .qp-empty{ padding:56px 20px 36px }
+body.os-android.form-fold.fold-open #qp .qp-handle{ margin-top:18px }
+/* o mosaico: pilula com o circulo e o texto, a largura da coluna */
+body.os-android #qp .qp-fold{ display:flex; align-items:center; gap:12px; height:76px; padding:0 18px 0 10px; border-radius:50px; cursor:pointer;
+  background:var(--qp-shell); box-shadow:var(--qp-rim), var(--qp-sh); -webkit-tap-highlight-color:transparent }
+body.os-android #qp .qp-fold-ic{ width:56px; height:56px; flex:none; border-radius:50%; display:flex; align-items:center; justify-content:center; background:var(--qp-on); color:var(--qp-on-tx); transition:background-color .18s }
+body.os-android #qp .qp-fold:hover .qp-fold-ic{ background:var(--qp-on-hov) }
+body.os-android #qp .qp-fold-ic svg{ width:26px; height:26px }
+body.os-android #qp .qp-fold-tx{ flex:1; min-width:0; display:flex; flex-direction:column; gap:1px }
+body.os-android #qp .qp-fold-tx b{ font-size:16px; font-weight:600; line-height:20px; letter-spacing:-.1px; color:var(--qp-tx); white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+body.os-android #qp .qp-fold-tx span{ font-size:14px; line-height:18px; color:var(--qp-tx2); white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+/* notificacao flutuante: no ecra de dentro fica ao centro em cima com a largura de um telemovel (456, spec_fold 3.3) */
+body.os-android.form-fold.fold-open .ahn-card{ left:calc(50% - 228px); right:calc(50% - 228px) }
+body.os-android.form-fold .n-toast{ max-width:420px }
+
+/* ============================================================
+   NOVA UI 9 (One UI 9 / Android 17, ronda 2 de 11 nov 2026): o painel rapido redesenhado
+   O que mudou no sistema real (SamMobile, Android Authority, Engadget, SamUpdater, 9to5Google; ver reports/NOVA.md):
+   - os botoes perdem o contorno grosso e o icone deixa de estar "num circulo dentro do circulo": o botao inteiro e a peca,
+     cinzento translucido desligado e com a cor ativa a encher o botao todo quando ligado (azul dos controlos ativados);
+   - os sliders de brilho e volume ficam mais grossos e sem a almofada a volta; o Modo escuro e o Modo de som saem de dentro
+     deles e passam a botoes proprios, maiores, alinhados com a grelha;
+   - o cartao dos redondos deixa de ser um contentor: os botoes ficam soltos na grelha;
+   - o leitor de musica: titulo ao centro, anterior / reproduzir / seguinte em circulos, barra maior com a onda colorida pela
+     capa na parte ja tocada (desenhada parada: nada anima em ciclo).
+   So muda o desenho: os nos, as classes de estado e as acoes sao os mesmos (android-panel.js). Sem filter, sem backdrop-filter,
+   sem color-mix; as cores vem prontas (a onda: --qp-wv escrita pelo JS a partir da capa).
+   ============================================================ */
+body.os-android:not(.dark){ --qp-tile:rgba(255,255,255,.62); --qp-tile-hov:rgba(255,255,255,.8); --qp-tile-tx:rgba(0,0,0,.84); --qp-tile-tx2:rgba(0,0,0,.56);
+  --qp-tile-sh:0 1px 2px rgba(0,0,0,.05); --qp-tile-on:var(--ou-switch,#3E7BFA); --qp-tile-on-hov:#346CE6 }
+body.os-android.dark{ --qp-tile:rgba(255,255,255,.13); --qp-tile-hov:rgba(255,255,255,.19); --qp-tile-tx:#F2F1F5; --qp-tile-tx2:rgba(242,241,245,.66);
+  --qp-tile-sh:none; --qp-tile-on:var(--ou-switch,#3E7BFA); --qp-tile-on-hov:#4D88FF }
+/* ---- botoes (quadrados 88, meios 2x1 e redondos): a peca inteira, sem aro e sem circulo de dentro ---- */
+body.os-android #qp .qp-t.qp-big,body.os-android #qp .qp-t.qp-rnd{ background:var(--qp-tile); box-shadow:var(--qp-tile-sh); color:var(--qp-tile-tx); transition:background-color .18s }
+body.os-android #qp .qp-t.qp-big:hover,body.os-android #qp .qp-t.qp-rnd:hover{ background:var(--qp-tile-hov); box-shadow:var(--qp-tile-sh) }
+body.os-android #qp .qp-t .qp-ti,body.os-android #qp .qp-t:hover .qp-ti,body.os-android #qp .qp-t.on .qp-ti,body.os-android #qp .qp-t.on:hover .qp-ti{ background:transparent; color:inherit }
+body.os-android #qp .qp-t.qp-sq .qp-ti svg,body.os-android #qp .qp-t.qp-rnd .qp-ti svg{ width:28px; height:28px }
+body.os-android #qp .qp-t.on.qp-big,body.os-android #qp .qp-t.on.qp-rnd{ background:var(--qp-tile-on); color:#fff; box-shadow:none }
+body.os-android #qp .qp-t.on.qp-big:hover,body.os-android #qp .qp-t.on.qp-rnd:hover{ background:var(--qp-tile-on-hov) }
+/* meio 2x1: o icone fica sem circulo, encostado a esquerda; ligado o texto passa a branco */
+body.os-android #qp .qp-t.qp-half{ gap:4px; padding:0 14px 0 8px }
+body.os-android #qp .qp-t.qp-half .qp-ti svg{ width:26px; height:26px }
+body.os-android #qp .qp-t.qp-half .qp-tl{ color:inherit }
+body.os-android #qp .qp-t.qp-half .qp-ts{ color:var(--qp-tile-tx2) }
+body.os-android #qp .qp-t.on.qp-half .qp-ts{ color:rgba(255,255,255,.84) }
+/* premir: o circulo passa a quadrado arredondado (Material 3 Expressive), sem transicao de forma (so a cor anima) */
+body.os-android #qp:not(.qp-editing) .qp-t.qp-sq:active,body.os-android #qp:not(.qp-editing) .qp-t.qp-rnd:active{ border-radius:28px }
+body.os-android #qp:not(.qp-editing) .qp-t:active .qp-ti{ border-radius:50% }
+/* na edicao os botoes ficam neutros (o que conta e o lugar) */
+body.os-android #qp.qp-editing .qp-t.on.qp-big,body.os-android #qp.qp-editing .qp-t.on.qp-rnd{ background:var(--qp-tile); color:var(--qp-tile-tx) }
+body.os-android #qp.qp-editing .qp-t.on.qp-half .qp-ts{ color:var(--qp-tile-tx2) }
+body.os-android #qp.qp-editing .qp-t .qp-ti,body.os-android #qp.qp-editing .qp-t.on .qp-ti,body.os-android #qp.qp-editing .qp-t.on:hover .qp-ti{ background:transparent; color:inherit }
+body.os-android #qp .qp-t.qp-lift{ box-shadow:0 12px 28px rgba(0,0,0,.26) }
+body.os-android #qp .qp-t.qp-rzing{ box-shadow:0 0 0 2px var(--qp-acc) }
+body.os-android #qp.qp-editing .qp-t.qp-big .qp-rz{ box-shadow:0 0 0 2px var(--qp-tile-hov) }
+/* ---- os redondos soltos: o cartao deixa de ser contentor (a pega continua por baixo da primeira linha) ---- */
+body.os-android #qp .qp-rcard{ background:transparent; box-shadow:none; border-radius:0; padding:0 0 22px }
+body.os-android #qp .qp-rcard.qp-one,body.os-android #qp.qp-editing .qp-rcard{ padding-bottom:0 }
+body.os-android #qp .qp-more{ bottom:4px }
+body.os-android #qp .qp-availw .qp-rcard{ min-height:88px }
+/* ---- sliders: calha grossa da largura da coluna (88), sem almofada; o botao do modo escuro / do som e um botao proprio de 88
+   por baixo, alinhado com a ultima linha da grelha ---- */
+body.os-android #qp .qp-vs{ background:transparent; box-shadow:none; padding:0; border-radius:0; gap:18px }
+body.os-android #qp .qp-sl{ border-radius:44px; background:var(--qp-tile); box-shadow:var(--qp-tile-sh) }
+body.os-android #qp .qp-slf{ min-height:64px; border-radius:44px }
+body.os-android #qp .qp-sli{ height:64px }
+body.os-android #qp .qp-sli svg{ width:28px; height:28px }
+body.os-android #qp .qp-vsb{ width:88px; height:88px; background:var(--qp-tile); color:var(--qp-tile-tx); box-shadow:var(--qp-tile-sh) }
+body.os-android #qp .qp-vsb:hover{ background:var(--qp-tile-hov) }
+body.os-android #qp .qp-vsb.on{ background:var(--qp-tile-on); color:#fff; box-shadow:none }
+body.os-android #qp .qp-vsb.on:hover{ background:var(--qp-tile-on-hov) }
+body.os-android #qp .qp-vsb svg{ width:28px; height:28px }
+body.os-android #qp .qp-vsb:active{ border-radius:28px }
+/* ---- cartoes de baixo e mosaico do dobravel: a mesma peca sem aro ---- */
+body.os-android #qp .qp-cd,body.os-android #qp .qp-fold{ background:var(--qp-tile); box-shadow:var(--qp-tile-sh) }
+body.os-android #qp .qp-cd:hover{ background:var(--qp-tile-hov) }
+body.os-android #qp .qp-cd-ic{ background:transparent; color:var(--qp-tile-tx) }
+body.os-android #qp .qp-cd.on .qp-cd-ic{ background:var(--qp-tile-on); color:#fff }
+body.os-android #qp .qp-fold-ic{ background:var(--qp-tile-on); color:#fff }
+/* ---- leitor de musica ---- */
+body.os-android #qp .qp-media.qp-mempty{ background:var(--qp-tile); box-shadow:var(--qp-tile-sh) }
+body.os-android #qp .qp-media.qp-mempty .qp-mout{ background:var(--qp-tile-hov) }
+body.os-android #qp .qp-mrow{ justify-content:center; text-align:center }
+body.os-android #qp .qp-mrow .meta{ align-items:center }
+body.os-android #qp .qp-mrow .t{ font-size:16px; max-width:100% }
+body.os-android #qp .qp-media .ctl{ gap:12px }
+body.os-android #qp .qp-media .ctl > div{ width:40px; height:40px }
+body.os-android #qp .qp-media .ctl .prev,body.os-android #qp .qp-media .ctl .next{ width:46px; height:46px; background:rgba(255,255,255,.18) }
+body.os-android #qp .qp-media .ctl .play{ width:52px; height:52px; background:#fff; color:#141418 }
+body.os-android #qp .qp-media .ctl .prev:hover,body.os-android #qp .qp-media .ctl .next:hover{ background:rgba(255,255,255,.28) }
+body.os-android #qp .qp-media .ctl .play:hover{ background:#EDEDF0 }
+body.os-android #qp .qp-media .ctl .prev svg,body.os-android #qp .qp-media .ctl .next svg{ width:22px; height:22px }
+body.os-android #qp .qp-media .ctl .play svg{ width:24px; height:24px }
+body.os-android #qp .qp-media.qp-mempty .ctl .prev,body.os-android #qp .qp-media.qp-mempty .ctl .next{ background:var(--qp-tile-hov) }
+body.os-android #qp .qp-media.qp-mempty .ctl .play{ background:var(--qp-tile-tx); color:var(--qp-shell-hi) }
+body.os-android.dark #qp .qp-media.qp-mempty .ctl .play{ color:#141418 }
+/* barra: a parte tocada e uma onda com a cor da capa (.qp-wv), o resto uma linha lisa (.qp-wr). As duas cortam-se por
+   translacoes opostas (caixa que anda + conteudo que volta), por isso nada muda de tamanho e a onda nunca se deforma */
+body.os-android #qp .qp-media .cc-bar{ height:20px }
+body.os-android #qp .qp-wv,body.os-android #qp .qp-wr{ position:absolute; left:0; right:0; top:0; bottom:0; overflow:hidden; pointer-events:none; transition:transform 1s linear }
+body.os-android #qp .qp-wv > b,body.os-android #qp .qp-wr > b{ position:absolute; left:0; right:0; top:0; bottom:0; transition:transform 1s linear }
+body.os-android #qp .qp-wv > b{ background:var(--qp-wv,#fff);
+  -webkit-mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='12' viewBox='0 0 20 12'%3E%3Cpath d='M0 6Q5 1.6 10 6T20 6' fill='none' stroke='%23000' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E");
+  -webkit-mask-repeat:repeat-x; -webkit-mask-position:0 50%; -webkit-mask-size:20px 12px;
+  mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='12' viewBox='0 0 20 12'%3E%3Cpath d='M0 6Q5 1.6 10 6T20 6' fill='none' stroke='%23000' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E");
+  mask-repeat:repeat-x; mask-position:0 50%; mask-size:20px 12px }
+body.os-android #qp .qp-wr > b::before{ content:''; position:absolute; left:0; right:0; top:8px; height:4px; border-radius:2px; background:currentColor; opacity:.3 }
+body.os-android #qp .qp-media:not(.qp-mempty):not(.noprog) .cc-bar::before,body.os-android #qp .qp-media:not(.qp-mempty):not(.noprog) .cc-bar i{ opacity:0 }
+body.os-android #qp .qp-media.qp-mempty .qp-wv,body.os-android #qp .qp-media.qp-mempty .qp-wr,body.os-android #qp .qp-media.noprog .qp-wv,body.os-android #qp .qp-media.noprog .qp-wr{ display:none }
+body.os-android #qp .qp-mthumb::before{ top:2px }
+body.os-android #qp .qp-media:not(.qp-mempty) .qp-mthumb::before{ width:6px; left:-3px; top:0; height:20px; border-radius:3px; background:#fff; box-shadow:0 1px 3px rgba(0,0,0,.3) }

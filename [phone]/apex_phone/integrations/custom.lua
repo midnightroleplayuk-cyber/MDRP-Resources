@@ -1,0 +1,181 @@
+-- ============================================================================================
+-- apex_phone · YOUR OWN INTEGRATIONS (this file is OPEN: edit it freely, it is never encrypted)
+-- ============================================================================================
+-- Use this file when your server runs a garage / bank / housing / billing / society / dispatch script that the phone does not
+-- support out of the box. Fill in ONLY the categories you need; leave the others as `nil`.
+--
+-- How it is picked:
+--   Config.Integrations.<category> = 'auto'    -> your adapter here wins over the known resources
+--   Config.Integrations.<category> = 'custom'  -> only your adapter (or one registered by another resource)
+--   Config.Integrations.<category> = 'builtin' -> this file is ignored for that category
+-- If one of your functions throws an error, the phone prints ONE warning in the server console and uses
+-- its built-in behaviour for that call, so a bug here never breaks the app.
+--
+-- Arguments you always get:
+--   src = the player's server id
+--   cid = the character identifier the phone uses (citizenid on QBCore/QBox, identifier on ESX)
+-- Everything runs on the SERVER. You can call any export with exports['your_resource']:Function(...).
+-- Wrap calls to other resources in pcall if they can be stopped while the phone runs.
+--
+-- Another resource can also register an adapter at runtime (no edit here needed):
+--   exports.apex_phone:RegisterIntegration('garage', { list = function(src, cid) ... end })
+-- Console command `phoneintegrations` shows which adapter is active for each category.
+-- ============================================================================================
+local Custom = {}
+
+-- --------------------------------------------------------------------------------------------
+-- GARAGE  (Garage app). Required: list. Optional: detail, track, takeOut, putBack.
+-- Delivery ("Request Delivery", Config.GarageDelivery): the phone checks with `list` that the vehicle is in a garage,
+-- then marks it OUT and creates it next to the player. Without takeOut it writes the framework column (ESX
+-- owned_vehicles.stored = 0, QBCore/QBox player_vehicles.state = 0); give takeOut/putBack when your garage keeps
+-- its "in the garage" state somewhere else (otherwise the delivery is refused rather than risking a duplicate).
+-- --------------------------------------------------------------------------------------------
+-- Custom.garage = {
+--     -- every vehicle of the player
+--     list = function(src, cid)
+--         local rows = MySQL.query.await('SELECT plate, model, garage, state, fuel FROM my_vehicles WHERE owner = ?', { cid }) or {}
+--         local out = {}
+--         for _, r in ipairs(rows) do
+--             out[#out + 1] = {
+--                 plate  = r.plate,                 -- required
+--                 model  = r.model,                 -- spawn name, e.g. 'sultanrs'
+--                 label  = nil,                     -- optional display name ('Sultan RS')
+--                 garage = r.garage,                -- garage id or name shown in the app
+--                 state  = r.state,                 -- 'garage' | 'out' | 'impound' (also 1 / 0 / 2 or true / false)
+--                 fuel   = r.fuel,                  -- 0-100 (optional)
+--                 engine = nil, body = nil,         -- 0-1000 (optional)
+--                 coords = nil,                     -- { x = , y = , z = } of the garage, for the GPS button
+--             }
+--         end
+--         return out
+--     end,
+--     -- optional: engine/body/mileage for the detail screen (else the values from list are used)
+--     detail = function(src, cid, plate) return { engine = 1000, body = 1000, mileage = 1200 } end,
+--     -- optional: where the vehicle is when the player cannot see it ({ x, y, z } or nil)
+--     track = function(src, cid, plate) return nil end,
+--     -- optional (delivery): mark the vehicle as OUT of your garage. Return true ONLY when it was in the garage and is
+--     -- now out (do it in one conditional UPDATE, so two requests can never both win). The phone then charges the fee
+--     -- and spawns it; if that fails, putBack is called to file it back into the garage.
+--     takeOut = function(src, cid, plate)
+--         return (MySQL.update.await('UPDATE my_vehicles SET state = 0 WHERE owner = ? AND plate = ? AND state = 1', { cid, plate }) or 0) == 1
+--     end,
+--     putBack = function(src, cid, plate)
+--         return (MySQL.update.await('UPDATE my_vehicles SET state = 1 WHERE owner = ? AND plate = ? AND state = 0', { cid, plate }) or 0) == 1
+--     end,
+-- }
+
+-- --------------------------------------------------------------------------------------------
+-- BANK  (Wallet app). All functions optional; give the ones your bank has.
+-- --------------------------------------------------------------------------------------------
+-- Custom.bank = {
+--     -- balance shown in the Wallet (nil = the framework bank money)
+--     balance = function(src, cid) return exports['my_bank']:GetBalance(cid) end,
+--     -- account data: iban/account number, savings, frozen, noAccount (true = "open an account at the bank")
+--     info = function(src, cid) return { iban = 'MB123456', savings = 0, frozen = false } end,
+--     -- statement rows, newest first: amount is SIGNED (negative = money out), created in ms or seconds
+--     history = function(src, cid)
+--         return { { id = 1, description = 'Salary', amount = 1500, created = os.time() } }
+--     end,
+--     -- the bank moves the money itself. Return true, or false + 'funds' | 'target' | 'frozen' | 'amount'.
+--     -- Return nil to let the phone move the framework bank money (then `record` is called for both sides).
+--     transfer = function(src, cid, toCid, amount, note, toNumber)
+--         return nil
+--     end,
+--     -- the phone moved framework money: store the movement in your bank's statement. Return true when stored
+--     -- (with `history` too, the phone then does not keep its own copy, so nothing shows twice)
+--     record = function(cid, description, amount, src) return false end,
+-- }
+
+-- --------------------------------------------------------------------------------------------
+-- HOUSING  (Home app). Required: list. Optional: lock, giveKey, removeKey.
+-- --------------------------------------------------------------------------------------------
+-- Custom.housing = {
+--     -- houses the player OWNS or has a KEY to
+--     list = function(src, cid)
+--         return {
+--             {
+--                 id = 'house_12',                         -- required, unique, used by lock/giveKey/removeKey
+--                 label = '12 Grove Street',
+--                 owner = true,                            -- true = the player owns it
+--                 ownerCid = nil,                          -- for keyed houses: the owner's cid (name is looked up)
+--                 coords = { x = 0.0, y = 0.0, z = 0.0 },  -- door, for the GPS button
+--                 garage = nil,                            -- { x, y, z } of the house garage (optional)
+--                 locked = true,                           -- nil = the phone remembers what it last set
+--                 tier = 1,                                -- 1 apartment, 3 house, 5 mansion (only the icon text)
+--                 keyholders = { { cid = 'ABC123' } },     -- only for owned houses (names/numbers are filled in)
+--             },
+--         }
+--     end,
+--     -- lock or unlock (locked = true/false). Return true, or false + 'nokey'
+--     lock = function(src, cid, houseId, locked) return true end,
+--     -- give a key to an ONLINE player (targetSrc) / remove a key (targetCid). Return true or false + reason
+--     giveKey = function(src, cid, houseId, targetSrc, targetCid) return false end,
+--     removeKey = function(src, cid, houseId, targetCid) return false end,
+-- }
+
+-- --------------------------------------------------------------------------------------------
+-- BILLING  (Bills app). Required: list. Optional: pay, create, sent, refuse, cancel.
+-- The phone's own bills always stay in the app; yours are shown next to them.
+-- --------------------------------------------------------------------------------------------
+-- Custom.billing = {
+--     -- bills the player RECEIVED (pending and history)
+--     list = function(src, cid)
+--         return { { id = 7, sender_name = 'LSPD', society = 'police', amount = 250, reason = 'Speeding',
+--                    status = 'pending', created = os.time() } }   -- status: pending | paid | refused | cancelled
+--     end,
+--     -- pay bill `billId` (your own id). Return true, or false + 'funds' | 'invalid'
+--     pay = function(src, cid, billId) return false, 'invalid' end,
+--     -- a player issued a bill in the app (already validated: amount, cap, society rank, cooldown).
+--     -- Return true, false + reason, or nil to keep it as a phone bill. opts = { society, senderName, toSrc }
+--     create = function(src, cid, toCid, amount, reason, opts) return nil end,
+--     -- bills the player SENT: { id, toCid, amount, reason, status, created }
+--     sent = function(src, cid) return {} end,
+--     refuse = function(src, cid, billId) return false end,
+--     cancel = function(src, cid, billId) return false end,
+-- }
+
+-- --------------------------------------------------------------------------------------------
+-- SOCIETY  (company / job accounts: bills issued on behalf of a company, job apps billing, police fines,
+-- Eats restaurant payouts). All three functions required. `job` is the job name ('police', 'mechanic', ...).
+-- Return false (or nil) from add/remove when the money did NOT move; never move it twice.
+-- --------------------------------------------------------------------------------------------
+-- Custom.society = {
+--     balance = function(job) return exports['my_bank']:GetSocietyBalance(job) end,
+--     add     = function(job, amount, reason) return exports['my_bank']:AddSocietyMoney(job, amount, reason) == true end,
+--     remove  = function(job, amount, reason) return exports['my_bank']:RemoveSocietyMoney(job, amount, reason) == true end,
+-- }
+
+-- --------------------------------------------------------------------------------------------
+-- DISPATCH  (a request in the Services app to a job listed in Config.Integrations.dispatchJobs ALSO becomes
+-- an alert in your dispatch / MDT). Required: alert.
+--   data = { id, service, label, job, jobs = { 'police', 'sheriff' }, caller, phone, cid, message,
+--            coords = { x, y, z }, street?, code }
+-- Return true when your dispatch took the alert. With Config.Integrations.dispatchOnly = true the phones are only
+-- notified when this returns false (or errors).
+-- --------------------------------------------------------------------------------------------
+-- Custom.dispatch = {
+--     alert = function(src, data)
+--         TriggerEvent('my_dispatch:server:newCall', {
+--             title = data.label, message = data.message, caller = data.caller, phone = data.phone,
+--             coords = data.coords, jobs = data.jobs, code = data.code,
+--         })
+--         return true
+--     end,
+-- }
+
+-- --------------------------------------------------------------------------------------------
+-- NUMBER  (1.1.8: your server already has phone numbers for its characters - another phone script, a SIM database,
+-- a column of your own). Required: assign. Called ONCE, when a character sets the phone up for the first time.
+-- Return the number as text in your Config.NumberFormat (e.g. '555-0123'), or nil to let the phone choose (it then takes
+-- the framework's charinfo phone, else a random number). A number already used by another phone account is refused and the
+-- phone falls back to its own choice (one warning in the console). To change a number LATER use
+-- exports['apex_phone']:SetNumber(citizenid, '555-0123', 'my_system'), and listen to the server events
+-- 'apex_phone:accountCreated' (cid, number, src) and 'apex_phone:numberChanged' (cid, old, new, by) to keep your side in sync.
+-- --------------------------------------------------------------------------------------------
+-- Custom.number = {
+--     assign = function(cid, src)
+--         return MySQL.scalar.await('SELECT phone FROM my_phone_numbers WHERE owner = ? LIMIT 1', { cid })
+--     end,
+-- }
+
+CustomIntegrations = Custom

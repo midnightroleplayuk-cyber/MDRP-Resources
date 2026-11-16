@@ -1,0 +1,313 @@
+/* ============================================================
+   EDITOR DO ECRÃ BLOQUEADO - PearOS 27 (1.4.0) · lockeditor.js (window.LockEditor)
+   Carregado depois do lockgallery.css (ganha-lhe os empates) e ANTES do liquid27.css: o kit de vidro (.lg27 ...) ganha os empates
+   a este ficheiro, por isso onde uma peça minha leva classes do kit e precisa de outra posição/tamanho o seletor daqui é mais
+   específico (ex.: #lock .lke-more, .lke-sheet .lke-globe). Nunca se redefinem as regras .lg27*: só se usam as variáveis dele
+   (--lg27-bg, --lg27-ring...) e se dá tamanho/lugar às peças.
+   Medidas DENTRO do #lock em px do ecrã a tamanho real (o cartão está escalado a .84 no editor: tudo encolhe com ele).
+   Regras do CEF 103: só transform/opacity animam; sem filter/backdrop-filter próprios (o vidro é o do kit); sem color-mix,
+   sem clip-path, sem calc() dentro de rgba().
+   ============================================================ */
+
+/* ---------- molduras do modo Personalizar (captura 3): data e hora com molduras PRÓPRIAS, finas e largas ----------
+   A galeria desenhava uma moldura só (outline) à volta da data + hora, justa à largura dos dígitos. No PearOS 27 são duas, com a
+   mesma largura (quase a do ecrã): a da data é uma pílula baixa, a da hora abraça os dígitos e leva a pega no canto. As duas são
+   ::before/::after do .lock-clockwrap (o relógio tem scaleY: um contorno nele ficava esticado).
+   Telemóvel apenas (o Fold e o relógio compacto ficam com a moldura única da galeria + a pega no canto dela). */
+body:not(.form-fold):not([data-clock="compact"]) .screen.lsg-edit #lock .lock-clockwrap{ left:20px; right:20px; width:auto; margin:0; padding:5px 0 0; outline:none; border-radius:0; box-sizing:border-box }
+body:not(.form-fold):not([data-clock="compact"]) .screen.lsg-edit #lock:not([data-clockpos="middle"]) .lock-clockwrap{ top:76px }
+body:not(.form-fold):not([data-clock="compact"]) .screen.lsg-edit #lock[data-clockalign="left"] .lock-clockwrap{ padding-left:18px }
+body:not(.form-fold):not([data-clock="compact"]) .screen.lsg-edit #lock[data-clockalign="right"] .lock-clockwrap{ padding-right:18px }
+body:not(.form-fold):not([data-clock="compact"]) .screen.lsg-edit #lock .lock-clockwrap::before,
+body:not(.form-fold):not([data-clock="compact"]) .screen.lsg-edit #lock .lock-clockwrap::after{ content:''; position:absolute; left:0; right:0; box-sizing:border-box; border:1.25px solid rgba(255,255,255,.55); pointer-events:none; transition:opacity .2s }
+body:not(.form-fold):not([data-clock="compact"]) .screen.lsg-edit #lock .lock-clockwrap::before{ top:0; height:32px; border-radius:16px }
+body:not(.form-fold):not([data-clock="compact"]) .screen.lsg-edit #lock .lock-clockwrap::after{ top:37px; bottom:0; border-radius:22px }
+/* a moldura da hora acaba 12 px abaixo da TINTA dos dígitos, a qualquer tamanho: a caixa do relógio mede .8em mas os dígitos
+   (scaleY 1.18 × --clock-sy, origem no topo) pintam até ~.956em × sy. A margem em em é a do próprio relógio (o .wide de 5
+   caracteres tem outra base), por isso a moldura e a pega seguem a pré-visualização ao vivo sem uma linha de JS. */
+/* 1.4.1: com outro sistema de numeração o fundo da tinta é o da tabela do lock.css (--num-b, antes dos esticões; o ocidental é o ,81 de
+   sempre: ,81 × 1,18 = ,956), e o esticão desse sistema (--num-sy) entra na conta: a moldura abraça os dígitos em todos os sistemas */
+body:not(.form-fold):not([data-clock="compact"]) .screen.lsg-edit #lock .lock-clockwrap .lock-clock{ margin-bottom:calc(var(--num-b,.81) * 1.18em * var(--clock-sy,1) * var(--num-sy,1) - .8em + 12px) }
+/* moldura dos widgets: a mesma linha fina, raio 22, alinhada com a da hora (400 px de largura visível) e logo por baixo dela. O que a moldura
+   da hora encolhe num sistema de algarismos mais baixos a dos widgets sobe (188,8 = 160 px × 1,18, o relógio .wide de 24 h), senão ficava um buraco */
+.screen.lsg-edit #lock .lock-widgets{ margin-top:calc(30px + (var(--num-b,.81) * var(--num-sy,1) - .81) * 188.8px * var(--clock-kx,1) * var(--clock-sy,1)); outline:1.25px solid rgba(255,255,255,.55); outline-offset:6px; border-radius:22px }
+.screen.lsg-edit #lock .lock-widgets.lkw-row{ min-width:386px }
+/* vazia: "⊕ ADICIONAR WIDGETS" (o texto vem do data-empty que a galeria escreve, traduzido; o círculo com + é desenhado aqui) */
+.screen.lsg-edit #lock .lock-widgets:empty{ min-height:66px; min-width:386px; gap:7px; justify-content:center; align-items:center }
+.screen.lsg-edit #lock .lock-widgets:empty::before{ font-size:13px; font-weight:600; letter-spacing:.6px; color:rgba(255,255,255,.82); text-shadow:0 1px 6px rgba(0,0,0,.25) }
+.screen.lsg-edit #lock .lock-widgets:empty::after{ content:''; order:-1; flex:none; width:16px; height:16px; border-radius:50%;
+  background:linear-gradient(rgba(40,40,46,.72),rgba(40,40,46,.72)) center/8px 2px no-repeat, linear-gradient(rgba(40,40,46,.72),rgba(40,40,46,.72)) center/2px 8px no-repeat, rgba(255,255,255,.82) }
+/* os controlos já não levam moldura: cada um ganha o "menos" e um lado vazio mostra o "+" tracejado */
+.screen.lsg-edit #lock .lock-shortcuts{ outline:none }
+.screen.lsg-edit #lock .ls-btn{ position:relative; overflow:visible }
+.screen.lsg-edit #lock .ls-btn > .ls-rm{ display:flex; left:-5px; top:-5px }
+.screen.lsg-edit #lock .ls-btn.none{ visibility:visible; background:transparent; border:1.5px dashed rgba(255,255,255,.72); box-shadow:none }
+.screen.lsg-edit #lock .ls-btn.none > .ls-rm{ display:none }
+.screen.lsg-edit #lock .ls-btn.none::before,.screen.lsg-edit #lock .ls-btn.none::after{ content:''; position:absolute; left:50%; top:50%; width:18px; height:2.5px; margin:-1.25px 0 0 -9px; border-radius:2px; background:rgba(255,255,255,.92) }
+.screen.lsg-edit #lock .ls-btn.none::after{ transform:rotate(90deg) }
+/* o "menos" dos widgets: o claro do PearOS 27 (era escuro com aro) - mesmo desenho do .lg27-badge do kit */
+.screen.lsg-edit #lock .lkw-rm{ width:22px; height:22px; left:-6px; top:-6px; background:rgba(242,242,247,.94); box-shadow:0 1px 4px rgba(0,0,0,.35), inset 0 0 0 .5px rgba(0,0,0,.1) }
+.screen.lsg-edit #lock .lkw-rm::before{ background:#3A3A3C }
+.screen.lsg-edit #lock .lkw-r .lkw-rm{ left:-8px }
+
+/* ---------- a pega do tamanho da hora ("⌟", captura 3) ----------
+   Arco grosso na cor da hora, concêntrico com o canto da moldura e por fora dela; caixa de 44 (alvo de toque) com o desenho no
+   canto superior esquerdo. Escala (só transform) ao premir, a partir do centro do canto. */
+.lke-handle{ position:absolute; right:-14px; bottom:-14px; width:44px; height:44px; z-index:4; pointer-events:auto; touch-action:none; cursor:nwse-resize;
+  color:rgba(var(--clock-rgb,255,255,255),.86); transform-origin:8px 8px; transition:transform .24s cubic-bezier(.3,1.35,.5,1) }
+.lke-handle svg{ position:absolute; left:0; top:0; width:44px; height:44px; overflow:visible; fill:none; stroke-linecap:round; stroke-linejoin:round; pointer-events:none }
+.lke-handle .lke-ha{ stroke:currentColor; stroke-width:8 }
+.lke-handle .lke-hb{ stroke:rgba(255,255,255,.6); stroke-width:1.6; transform:translate(-1.4px,-1.4px) }
+.lke-handle.pressed{ transform:scale(1.14); transition:transform .1s ease-out }
+body[data-clock="compact"] .lke-handle{ display:none }
+/* a arrastar a pega: os outros contornos esbatem-se (só a hora interessa) */
+.screen.lke-sizing #lock .lock-clockwrap::before,.screen.lke-sizing #lock .lock-widgets{ opacity:.35 }
+
+/* ---------- linha de baixo do editor (dentro do cartão) ---------- */
+.lke-row{ display:none; position:absolute; left:0; top:0; right:0; bottom:0; z-index:6; pointer-events:none; transition:opacity .2s }
+.screen.lsg-edit #lock .lke-row{ display:block }
+#lock .lke-thumb{ position:absolute; left:46px; bottom:120px; width:48px; height:48px; border-radius:11px; background:#2C2C2E center/cover no-repeat; box-shadow:0 0 0 1.5px rgba(255,255,255,.88), 0 4px 14px rgba(0,0,0,.32); pointer-events:auto; cursor:default; transition:transform .2s }
+#lock .lke-thumb:active{ transform:scale(.94) }
+#lock .lke-more{ position:absolute; right:46px; bottom:122px; width:44px; height:44px; border-radius:50%; display:flex; align-items:center; justify-content:center; pointer-events:auto }
+#lock .lke-more svg{ width:24px; height:24px; stroke-width:2.6 }
+/* estilo de fotografia: rótulo + pontos numa cápsula, entre a lanterna e a câmara (captura 3/6) */
+#lock .lke-style{ position:absolute; left:50%; bottom:40px; height:62px; transform:translateX(-50%); display:none; flex-direction:column; align-items:center; justify-content:center; gap:9px; pointer-events:auto; cursor:default; transition:transform .25s cubic-bezier(.3,1.35,.5,1) }
+#lock .lke-style.on{ display:flex }
+.lke-sl{ font-size:17px; font-weight:600; color:#fff; white-space:nowrap; text-shadow:0 1px 8px rgba(0,0,0,.4) }
+.lke-sl.lke-inr{ animation:lkeInR .38s cubic-bezier(.2,.9,.3,1) } .lke-sl.lke-inl{ animation:lkeInL .38s cubic-bezier(.2,.9,.3,1) }
+@keyframes lkeInR{ from{ transform:translateX(26px); opacity:0 } to{ transform:none; opacity:1 } }
+@keyframes lkeInL{ from{ transform:translateX(-26px); opacity:0 } to{ transform:none; opacity:1 } }
+.lke-dots{ display:flex; align-items:center; gap:10px; height:22px; padding:0 13px; border-radius:11px; background:rgba(28,28,30,.36); box-shadow:inset 0 0 0 .5px rgba(255,255,255,.2), 0 2px 10px rgba(0,0,0,.18) }
+.lke-dots i{ width:7px; height:7px; border-radius:50%; background:rgba(255,255,255,.42) }
+.lke-dots i.on{ background:#fff }
+/* dica "Arrasta para enquadrar" (o "Pinch to Crop" da captura 3): ao centro do cartão, sem fundo, 2 s ao abrir o editor numa foto (lockeditor.js) */
+.lke-crophint{ position:absolute; left:50%; top:61%; display:flex; align-items:center; gap:7px; padding:6px 13px; border-radius:16px; font-size:17px; font-weight:600; color:#fff; white-space:nowrap; text-shadow:0 1px 8px rgba(0,0,0,.45); background:rgba(0,0,0,.14); pointer-events:none; opacity:0; transform:translate(-50%,6px); transition:opacity .25s, transform .25s }
+.lke-crophint.on{ opacity:1; transform:translate(-50%,0) }
+.lke-crophint svg{ flex:none; width:17px; height:17px }
+.screen.lke-sh-fc .lke-crophint,.screen.lke-sh-aw .lke-crophint,.screen.lke-sh-ct .lke-crophint{ opacity:0 }
+/* com uma folha do editor aberta, só fica à vista o que ela edita (capturas 4 e 5): sai a linha de baixo, o Cancelar/Concluído e as
+   molduras dos outros elementos */
+.screen.lke-sh-fc #lock .lke-row,.screen.lke-sh-aw #lock .lke-row,.screen.lke-sh-ct #lock .lke-row{ opacity:0; pointer-events:none }
+.screen.lke-sh-fc .lsg-ui,.screen.lke-sh-aw .lsg-ui{ opacity:0; pointer-events:none; transition:opacity .2s }
+.screen.lke-sh-fc #lock .lock-clockwrap::before,.screen.lke-sh-aw #lock .lock-clockwrap::before,.screen.lke-sh-aw #lock .lock-clockwrap::after{ opacity:0 }
+.screen.lke-sh-fc #lock .lock-widgets,.screen.lke-sh-fc #lock .lock-shortcuts{ opacity:0; pointer-events:none }
+.screen.lke-sh-aw #lock .lke-handle{ opacity:0; pointer-events:none }
+
+/* ---------- PearPhone Fold (fechado 670, aberto 1340): a geometria própria das molduras (1.4.1) ----------
+   Até aqui o Fold ficava com a moldura única da galeria e o relógio de lá (240-252 px com esticão de 1,4): a data riscava o topo dos dígitos
+   (margin-bottom:-27px do lock.css) e a moldura não tinha nada a ver com a do telemóvel. Agora é a mesma receita, com as contas do Fold. Medidas em
+   px do cartão (a .74 / .66 da galeria; é por isso que tudo aqui é maior do que no telemóvel, que está a .84):
+     · moldura da data 0..43, folga de 6, moldura da hora de 49 até 12 px abaixo da tinta (o ::before e o ::after do .lock-clockwrap);
+     · a tinta começa .13em abaixo do topo do relógio (.11em × 1,4/1,18) e acaba a --num-b × 1,4em: a margem da data e a do relógio saem daí, a
+       qualquer tamanho (--clock-sy) e sistema de numeração;
+     · a linha de widgets fica 20 px abaixo da moldura da hora. A conta: .lock-top mede 1,12em×sy + 60 e tem 56 de margem, a moldura acaba em
+       52 + 73 + 1,007em×sy, logo margem = 29 − ,113em×sy (o --lk-fs é o em do relógio; aqui estamos noutro elemento).
+   Fechado a coluna é a de conteúdo (12 .. 670 − barra − 12); aberto 800 px ao centro. Os atalhos seguem na coluna da barra. */
+body.os-ios.form-fold:not([data-clock="compact"]) #screen.lsg-edit #lock:not(.nc-scroll) .lock-clockwrap{ left:12px; right:calc(var(--rail-w) + 12px); width:auto; margin:0; padding:6px 0 0; outline:none; border-radius:0; box-sizing:border-box }
+body.os-ios.form-fold.fold-open:not([data-clock="compact"]) #screen.lsg-edit #lock:not(.nc-scroll) .lock-clockwrap{ left:calc(50% - 400px); right:calc(50% - 400px) }
+body.os-ios.form-fold:not([data-clock="compact"]) #screen.lsg-edit #lock:not(.nc-scroll):not([data-clockpos="middle"]) .lock-clockwrap{ top:52px }
+body.os-ios.form-fold:not([data-clock="compact"]) #screen.lsg-edit #lock[data-clockpos="middle"]:not(.nc-scroll) .lock-clockwrap{ top:246px }
+body.os-ios.form-fold:not([data-clock="compact"]) #screen.lsg-edit #lock[data-clockalign="left"]:not(.nc-scroll) .lock-clockwrap{ padding-left:30px }
+body.os-ios.form-fold:not([data-clock="compact"]) #screen.lsg-edit #lock[data-clockalign="right"]:not(.nc-scroll) .lock-clockwrap{ padding-right:30px }
+body.os-ios.form-fold:not([data-clock="compact"]) #screen.lsg-edit #lock:not(.nc-scroll) .lock-clockwrap::before,
+body.os-ios.form-fold:not([data-clock="compact"]) #screen.lsg-edit #lock:not(.nc-scroll) .lock-clockwrap::after{ content:''; position:absolute; left:0; right:0; box-sizing:border-box; border:2px solid rgba(255,255,255,.55); pointer-events:none; transition:opacity .2s }
+body.os-ios.form-fold:not([data-clock="compact"]) #screen.lsg-edit #lock:not(.nc-scroll) .lock-clockwrap::before{ top:0; height:43px; border-radius:22px }
+body.os-ios.form-fold:not([data-clock="compact"]) #screen.lsg-edit #lock:not(.nc-scroll) .lock-clockwrap::after{ top:49px; bottom:0; border-radius:30px }
+body.os-ios.form-fold:not([data-clock="compact"]) #screen.lsg-edit #lock:not(.nc-scroll) .lock-date{ margin-bottom:calc(24px - var(--lk-fs) * .13 * var(--clock-sy,1)) }
+body.os-ios.form-fold:not([data-clock="compact"]) #screen.lsg-edit #lock:not(.nc-scroll) .lock-clockwrap .lock-clock{ margin-bottom:calc(var(--num-b,.81) * 1.4em * var(--clock-sy,1) * var(--num-sy,1) - .8em + 12px) }
+body.os-ios.form-fold:not([data-clock="compact"]) #screen.lsg-edit #lock:not(.nc-scroll) .lock-widgets{ margin-top:calc(29px - var(--lk-fs) * .113 * var(--clock-sy,1) + (var(--num-b,.81) * var(--num-sy,1) - .81) * var(--lk-fs) * 1.4 * var(--clock-sy,1)); outline-width:2px }
+body.os-ios.form-fold.fold-closed .screen.lsg-edit #lock .lock-widgets.lkw-row{ min-width:512px } body.os-ios.form-fold.fold-open .screen.lsg-edit #lock .lock-widgets.lkw-row{ min-width:788px }
+body.os-ios.form-fold.fold-closed .screen.lsg-edit #lock .lock-widgets:empty{ min-width:512px } body.os-ios.form-fold.fold-open .screen.lsg-edit #lock .lock-widgets:empty{ min-width:788px }
+body.os-ios.form-fold .screen.lsg-edit #lock .lock-widgets:empty::before{ font-size:19px; letter-spacing:.8px }
+body.os-ios.form-fold .screen.lsg-edit #lock .lock-widgets:empty::after{ width:24px; height:24px; background-size:12px 3px, 3px 12px, auto }
+/* a pega na mesma escala visual da do telemóvel: 44 × ,84 / ,74 = 50, no canto da moldura da hora */
+body.os-ios.form-fold .screen.lsg-edit #lock .lke-handle{ width:52px; height:52px; right:-17px; bottom:-17px; transform-origin:9px 9px }
+body.os-ios.form-fold .screen.lsg-edit #lock .lke-handle svg{ width:52px; height:52px }
+/* os "menos": 22 px a ,84 dão 18,5; aqui 26 px chegam ao mesmo no ecrã, com o traço a acompanhar */
+body.os-ios.form-fold .screen.lsg-edit #lock .ls-btn > .ls-rm,body.os-ios.form-fold .screen.lsg-edit #lock .lkw-rm{ width:26px; height:26px; left:-7px; top:-7px }
+body.os-ios.form-fold .screen.lsg-edit #lock .ls-btn > .ls-rm::before,body.os-ios.form-fold .screen.lsg-edit #lock .lkw-rm::before{ width:12px; height:3px }
+/* linha de baixo: a mesma disposição do telemóvel na coluna das molduras (no Fold os controlos não estão ali: empilham-se na barra). A miniatura e o "…"
+   nas pontas e, por baixo, o estilo de fotografia ao centro dessa coluna */
+body.os-ios.form-fold #lock .lke-thumb{ left:calc(12px + 24px); bottom:150px; width:60px; height:60px; border-radius:14px }
+body.os-ios.form-fold #lock .lke-more{ right:calc(var(--rail-w) + 12px + 24px); bottom:152px; width:56px; height:56px }
+body.os-ios.form-fold.fold-open #lock .lke-thumb{ left:calc(50% - 400px + 24px) }
+body.os-ios.form-fold.fold-open #lock .lke-more{ right:calc(50% - 400px + 24px) }
+body.os-ios.form-fold #lock .lke-more svg{ width:30px; height:30px }
+body.os-ios.form-fold #lock .lke-style{ bottom:46px; height:84px; gap:12px }
+body.os-ios.form-fold.fold-closed #lock .lke-style{ left:calc((100% - var(--rail-w)) / 2) }
+body.os-ios.form-fold #lock .lke-sl{ font-size:22px }
+body.os-ios.form-fold #lock .lke-dots{ height:28px; gap:13px; padding:0 16px; border-radius:14px }
+body.os-ios.form-fold #lock .lke-dots i{ width:9px; height:9px }
+body.os-ios.form-fold #lock .lke-crophint{ font-size:22px; gap:9px; padding:8px 16px; border-radius:20px; top:62% }
+body.os-ios.form-fold #lock .lke-crophint svg{ width:22px; height:22px }
+body.os-ios.form-fold.fold-closed #lock .lke-crophint{ left:calc((100% - var(--rail-w)) / 2) }
+
+/* ---------- folhas do editor com o kit (Fonte e cor, Adicionar widgets, Controlos) ----------
+   .lg27 põe position:relative; a folha é absoluta (ui.css) - repõe-se aqui. O fundo pré-desfocado escuro da galeria sai: o vidro
+   é o do kit (no browser backdrop-filter; no jogo a cópia do --wp-lock-blur alinhada por --gx/--gy, data-lgpos + on-lock). */
+.sheet-wrap.lke-sheet .sheet{ position:absolute }
+.sheet-wrap.lke-sheet .sheet.lg27{ background-image:none; background-color:var(--lg27-bg); box-shadow:0 -6px 36px rgba(0,0,0,.26), var(--lg27-ring) }
+body.fivem .sheet-wrap.lke-sheet .sheet.lg27[data-lgpos]{ background-color:transparent }
+.sheet-wrap.lke-sheet .sheet-head b{ font-weight:600 }
+.sheet-wrap.lke-sheet .sh-r.lg27{ width:30px; height:30px; top:4px }
+.sheet-wrap.lke-sheet .sh-r.lg27 svg{ width:14px; height:14px; stroke-width:2.6 }
+/* tons: claro sobre fundos claros (texto escuro), escuro sobre os escuros */
+.sheet-wrap.lke-sheet.lke-light{ --lke-ink:#1C1C1E; --lke-ink2:rgba(60,60,67,.62); --lke-track:rgba(28,28,30,.85); --lke-sep:rgba(60,60,67,.14); --lke-field:rgba(118,118,128,.14); --lke-tile:rgba(40,40,46,.42) }
+.sheet-wrap.lke-sheet.lke-dark{ --lke-ink:#fff; --lke-ink2:rgba(235,235,245,.6); --lke-track:rgba(255,255,255,.42); --lke-sep:rgba(255,255,255,.12); --lke-field:rgba(118,118,128,.26); --lke-tile:rgba(255,255,255,.1) }
+.sheet-wrap.lke-sheet.lke-light .sheet{ color:#1C1C1E; --label:#1C1C1E; --label2:rgba(60,60,67,.62); --label3:rgba(60,60,67,.32); --label4:rgba(60,60,67,.2); --sep:rgba(60,60,67,.16); --fill3:rgba(118,118,128,.14) }
+.sheet-wrap.lke-sheet.lke-light .sheet-head b{ color:#1C1C1E }
+.sheet-wrap.lke-sheet.lke-light .grabber{ background:rgba(60,60,67,.26) }
+.sheet-wrap.lke-sheet.lke-light .sh-r.lg27.clear{ --lg27-bg:rgba(120,120,128,.16); color:rgba(60,60,67,.72) }
+/* tom ESCURO sem a classe .dk do kit (o apps.css tem um .dk global - tecla do marcador, 80×80 redonda - que encolhia a folha):
+   as mesmas tintas escuras do kit, pelas variáveis dele (browser: --lg-ad; jogo: --lg-mdf, ou --lg-ad por cima da cópia desfocada) */
+.sheet-wrap.lke-sheet.lke-dark .sheet.lg27.regular{ --lg27-bg:rgba(30,30,32,var(--lg-ad)); color:#fff }
+body.fivem .sheet-wrap.lke-sheet.lke-dark .sheet.lg27.regular{ --lg27-bg:rgba(30,30,32,var(--lg-mdf)) }
+body.fivem .sheet-wrap.lke-sheet.lke-dark .sheet.lg27.regular[data-lgpos]{ --lg27-bg:rgba(30,30,32,var(--lg-ad)) }
+.sheet-wrap.lke-sheet.lke-dark .sh-r.lg27.clear,.sheet-wrap.lke-sheet.lke-dark .lke-globe.lg27.clear{ --lg27-bg:rgba(0,0,0,.24); color:rgba(255,255,255,.9) }
+body.fivem .sheet-wrap.lke-sheet.lke-dark .sh-r.lg27.clear,body.fivem .sheet-wrap.lke-sheet.lke-dark .lke-globe.lg27.clear{ --lg27-bg:rgba(0,0,0,.32) }
+.sheet-wrap.lke-sheet.lke-light .group-footer{ color:rgba(60,60,67,.55) }
+/* pesquisa (widgets/controlos): cápsula de vidro claro com a lupa; vazia, texto e lupa ao centro */
+.sheet-wrap.lke-sheet .search.lke-search{ margin:2px 16px 12px; height:38px; border-radius:19px; padding:0 12px; justify-content:center; background:var(--lke-field); color:var(--lke-ink2); box-shadow:none }
+.sheet-wrap.lke-sheet .search.lke-search svg{ width:18px; height:18px }
+.sheet-wrap.lke-sheet .search.lke-search input{ flex:0 1 auto; min-width:0; font-size:16px; color:var(--lke-ink) }
+.sheet-wrap.lke-sheet .search.lke-search input::placeholder{ color:var(--lke-ink2) }
+.sheet-wrap.lke-sheet .search.lke-search.has,.sheet-wrap.lke-sheet .search.lke-search:focus-within,.sheet-wrap.lke-sheet .search.lke-search.kb-on{ justify-content:flex-start }
+.sheet-wrap.lke-sheet .search.lke-search.has input,.sheet-wrap.lke-sheet .search.lke-search:focus-within input,.sheet-wrap.lke-sheet .search.lke-search.kb-on input{ flex:1 }
+.lke-hide{ display:none!important }
+
+/* ---------- "Fonte e cor": cartão de vidro a flutuar (captura 4) ----------
+   12 px das margens do ecrã, raio 30 em cima e o do canto do ecrã em baixo, no máximo 46 % da altura: o cartão do ecrã fica
+   todo à vista por cima. Entra por baixo (transform); o temporizador da wsheet garante o .in. */
+.sheet-wrap.lke-sheet.lke-fc .sheet{ left:12px; right:12px; bottom:12px; width:auto; height:auto; max-height:46%; border-radius:30px 30px 46px 46px; transform:translateY(calc(100% + 28px)) }
+.sheet-wrap.lke-sheet.lke-fc.in .sheet{ transform:translateY(var(--kb-shift,0px)) }
+/* Fold: na coluna de conteúdo, com a mesma largura máxima das folhas do sistema (ui.css) - os 12 px de cima atiravam o cartão para cima da barra direita */
+body.form-fold .sheet-wrap.lke-sheet.lke-fc .sheet{ border-radius:30px }
+body.os-ios.form-fold .sheet-wrap.lke-sheet.lke-fc .sheet{ left:max(12px,calc(50% - var(--rail-w) / 2 - 277px)); right:max(calc(var(--rail-w) + 12px),calc(50% + var(--rail-w) / 2 - 277px)) }
+.sheet-wrap.lke-sheet.lke-fc .grabber{ display:none }
+.sheet-wrap.lke-sheet.lke-fc .sheet-head{ min-height:44px; padding:14px 60px 4px }
+.sheet-wrap.lke-sheet.lke-fc .sheet-head b{ font-size:16px }
+.sheet-wrap.lke-sheet.lke-fc .sh-r.lg27{ top:11px; right:14px }
+.sheet-wrap.lke-sheet.lke-fc .sheet .content{ padding-bottom:16px }
+.sheet-wrap.lke-sheet .lke-globe{ position:absolute; left:14px; top:11px; width:30px; height:30px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:default }
+.sheet-wrap.lke-sheet.lke-light .lke-globe.lg27.clear{ --lg27-bg:rgba(120,120,128,.16); color:rgba(60,60,67,.72) }
+.lke-globe svg{ width:18px; height:18px; stroke-width:1.8 }
+.lke-fcb{ padding:0; color:var(--lke-ink) }
+/* (A) fontes: uma fila que rola; a escolhida com o contorno azul do sistema (raio 13), as outras sem nada; só o "12" */
+.lke-fonts{ display:flex; gap:12px; padding:10px 14px 8px; overflow-x:auto; overscroll-behavior:contain; scrollbar-width:none; scroll-snap-type:x proximity; scroll-padding:0 14px }   /* scroll-padding: sem ela o encaixe puxava a 1.ª célula para a borda do cartão */
+.lke-fonts::-webkit-scrollbar{ display:none }
+.lke-f{ flex:none; width:68px; height:60px; border-radius:13px; display:flex; align-items:center; justify-content:center; box-shadow:inset 0 0 0 2px transparent; cursor:default; scroll-snap-align:start; transition:transform .2s }
+.lke-f:active{ transform:scale(.94) }
+.lke-f.on{ box-shadow:inset 0 0 0 2px #0A84FF }
+.lke-f b{ font-size:42px; line-height:1; letter-spacing:-1px; color:var(--lke-ink); white-space:nowrap; pointer-events:none }
+/* barras (peso, matiz, tom): trilho .tr + polegar i; touch-action none (o arrastar-para-rolar do rato fica de fora) */
+.lke-bar{ position:relative; height:28px; touch-action:none; cursor:default }
+.lke-bar .lke-tr{ position:absolute; left:0; right:0; display:block; pointer-events:none }
+.lke-bar > i{ position:absolute; left:0; pointer-events:none; box-sizing:border-box }
+/* (B) peso: trilho fino escuro (claro no tom escuro) e um polegar branco em pílula, como na captura */
+.lke-wt{ padding:16px 28px 10px }
+.lke-wt.lke-off{ height:0; padding:0; opacity:0; overflow:hidden; pointer-events:none }
+.lke-wbar .lke-tr{ top:11px; height:5px; border-radius:3px; background:var(--lke-track) }
+.lke-wbar > i{ top:4px; width:34px; height:20px; border-radius:10px; background:#fff; box-shadow:0 1px 6px rgba(0,0,0,.28), 0 0 0 .5px rgba(0,0,0,.08) }
+.lke-hr{ height:1px; margin:12px 0 12px; background:var(--lke-sep) }
+/* (C) cores: bolas de 30 px numa fila que rola; a escolhida com um aro da própria cor separado por uma folga */
+.lke-sw{ display:flex; gap:14px; padding:4px 18px 2px; overflow-x:auto; overscroll-behavior:contain; scrollbar-width:none }
+.lke-sw::-webkit-scrollbar{ display:none }
+.lke-c{ flex:none; width:40px; height:40px; border-radius:50%; padding:5px; box-sizing:border-box; box-shadow:inset 0 0 0 2px transparent; cursor:default; transition:transform .2s }
+.lke-c:active{ transform:scale(.9) }
+.lke-c i{ display:block; width:100%; height:100%; border-radius:50%; box-shadow:inset 0 0 0 .5px rgba(0,0,0,.16) }
+.lke-c.on{ box-shadow:inset 0 0 0 2.5px var(--sw,#fff) }
+.lke-c.lke-rb i{ background:conic-gradient(from 0deg,#FF453A,#FF9F0A,#FFD60A,#30D158,#64D2FF,#0A84FF,#BF5AF2,#FF375F,#FF453A) }
+/* (D) matiz (só com o arco-íris) e tom: trilho de 12 px; polegar de 28 com aro branco e a cor resultante */
+.lke-hue{ display:none; padding:12px 26px 0 } .lke-hue.on{ display:block }
+.lke-tone{ padding:16px 26px 6px }
+.lke-hbar .lke-tr,.lke-tbar .lke-tr{ top:8px; height:12px; border-radius:6px; box-shadow:inset 0 0 0 .5px rgba(0,0,0,.12) }
+.lke-hbar .lke-tr{ background:linear-gradient(90deg,#FF0000,#FFFF00 16.7%,#00FF00 33.3%,#00FFFF 50%,#0000FF 66.7%,#FF00FF 83.3%,#FF0000) }
+.lke-hbar > i,.lke-tbar > i{ top:0; width:28px; height:28px; border-radius:50%; border:3px solid #fff; background:#fff; box-shadow:0 2px 7px rgba(0,0,0,.3) }
+/* (E) Vidro | Sólido: a pílula fundida do kit, pequena e ao centro */
+.lke-segw{ display:flex; justify-content:center; padding:18px 0 4px }
+.lke-fcb .lke-seg.lg27-group > *{ height:26px; padding:0 13px; font-size:12.5px; font-weight:600 }
+.sheet-wrap.lke-sheet.lke-light .lke-seg.lg27.clear{ --lg27-bg:rgba(120,120,128,.14); color:#1C1C1E; box-shadow:inset 0 0 0 .5px rgba(0,0,0,.06) }
+.sheet-wrap.lke-sheet.lke-dark .lke-seg.lg27.clear{ --lg27-bg:rgba(118,118,128,.24); color:#fff }
+.sheet-wrap.lke-sheet.lke-dark .lke-seg.lg27-group > .on{ background:rgba(255,255,255,.24); color:#fff; box-shadow:inset 0 .5px 0 rgba(255,255,255,.3) }
+
+/* ---------- "Adicionar widgets" (captura 5) ---------- */
+.sheet-wrap.lke-sheet.lke-aw .sheet{ height:520px; max-height:56%; border-radius:36px 36px 0 0 }
+body.form-fold .sheet-wrap.lke-sheet.lke-aw .sheet{ border-radius:36px }
+.sheet-wrap.lke-sheet.lke-aw .sheet-head b{ font-size:17px; font-weight:700 }
+.lke-awb{ padding-top:0 }
+.lke-sec{ padding-bottom:6px }
+.lke-sect{ font-size:13px; font-weight:600; letter-spacing:.4px; text-transform:uppercase; color:var(--lke-ink2); padding:4px 22px 9px }
+.lke-asec .lke-sect{ font-size:17px; font-weight:700; letter-spacing:0; text-transform:none; color:var(--lke-ink); padding:16px 22px 10px }
+.lke-awb .lsg-aw-grid{ gap:12px; padding:0 18px }
+/* quadrados de vidro ESCURO translúcido com o widget verdadeiro (branco) e o ícone da app no canto (como no PearOS 27) */
+.lke-awb .lsg-aw-t{ height:92px; border-radius:22px; background:var(--lke-tile); box-shadow:inset 0 0 0 .5px rgba(255,255,255,.14), inset 0 1px 0 rgba(255,255,255,.12) }
+.sheet-wrap.lke-sheet.lke-light .lke-awb .lsg-aw-t{ background:rgba(40,40,46,.42) }
+.lke-awb .lsg-aw-t.on{ box-shadow:inset 0 0 0 2px rgba(255,255,255,.8) }
+.lke-awb .lsg-aw-ck{ top:6px; right:6px; width:20px; height:20px }
+.lke-abadge{ position:absolute; right:-5px; bottom:-5px; width:24px; height:24px; border-radius:7px; pointer-events:none; box-shadow:0 1px 5px rgba(0,0,0,.32) }
+.lke-abadge .tile,.lke-abadge .tile.img{ --tile:24px; width:24px; height:24px; border-radius:7px; margin:0; box-shadow:none }
+.lke-abadge .tile > svg{ width:24px; height:24px }
+.lke-hrow{ display:flex; gap:12px; padding:2px 18px 8px; overflow-x:auto; overscroll-behavior:contain; scrollbar-width:none }
+.lke-hrow::-webkit-scrollbar{ display:none }
+.lke-hrow .lsg-aw-t{ flex:none } .lke-hrow .lsg-aw-t.c{ width:92px } .lke-hrow .lsg-aw-t.r{ width:196px }
+.lke-awb .lsg-aw-foot{ padding:12px 30px 0 }
+
+/* ---------- Controlos (captura 6): folha escura alta, pesquisa, grelha de círculos com o nome por baixo ---------- */
+.sheet-wrap.lke-sheet.lke-ct .sheet{ top:58px; height:auto; max-height:none; border-radius:36px 36px 0 0 }
+/* a galeria de controlos é sempre a folha escura e densa da captura 6 (lê-se por cima de qualquer fundo) */
+.sheet-wrap.lke-sheet.lke-ct.lke-dark .sheet.lg27.regular{ --lg27-bg:rgba(28,28,30,.8) }
+body.fivem .sheet-wrap.lke-sheet.lke-ct.lke-dark .sheet.lg27.regular,body.fivem .sheet-wrap.lke-sheet.lke-ct.lke-dark .sheet.lg27.regular[data-lgpos]{ --lg27-bg:rgba(28,28,30,.86) }
+body.form-fold .sheet-wrap.lke-sheet.lke-ct .sheet{ border-radius:36px }
+.lke-ctb{ padding-top:0 }
+.lke-cgrid{ display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:16px 4px; padding:6px 12px 18px }
+.lke-ctl{ display:flex; flex-direction:column; align-items:center; gap:7px; min-width:0; cursor:default }
+.lke-cc{ position:relative; width:56px; height:56px; border-radius:50%; display:flex; align-items:center; justify-content:center; color:#fff; background:rgba(255,255,255,.1); box-shadow:var(--lg27-ring-clear); transition:transform .2s }
+.lke-ctl:active .lke-cc{ transform:scale(.92) }
+.lke-cc svg{ width:24px; height:24px }
+.lke-cc.lke-none{ background:transparent; box-shadow:none; border:1.5px dashed rgba(255,255,255,.5); box-sizing:border-box }
+.lke-cc .tile,.lke-cc .tile.img{ --tile:32px; width:32px; height:32px; border-radius:9px; margin:0; box-shadow:none }
+.lke-cc .tile > svg{ width:32px; height:32px }
+.lke-ctl > span{ font-size:11px; line-height:1.2; color:rgba(255,255,255,.78); text-align:center; max-width:84px; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; word-break:break-word }
+.lke-ck{ position:absolute; right:-3px; top:-3px; width:21px; height:21px; border-radius:50%; display:flex; align-items:center; justify-content:center; background:#0A84FF; color:#fff; box-shadow:0 0 0 2px rgba(28,28,30,.92); opacity:0; transform:scale(.6); transition:opacity .2s, transform .25s cubic-bezier(.3,1.35,.5,1) }
+.lke-ck svg{ width:11px; height:11px; stroke-width:3.4 }
+.lke-ctl.on .lke-ck{ opacity:1; transform:none }
+.lke-ctl.on .lke-cc{ background:rgba(255,255,255,.24) }
+.lke-sect2{ display:flex; align-items:center; gap:9px; margin:4px 18px 0; padding:16px 0 10px; border-top:.5px solid rgba(255,255,255,.12); font-size:15px; font-weight:600; color:#fff }
+.lke-sic{ flex:none; width:24px; height:24px; border-radius:7px; display:flex; align-items:center; justify-content:center; color:#fff; background:linear-gradient(160deg,#5AC8FA,#0A84FF) }
+.lke-sic svg{ width:14px; height:14px; stroke-width:2.4 }
+/* o selo de cada secção (na captura 6 é o ícone da app dona): a cor do mosaico correspondente do Centro de controlo */
+.lke-cs-net .lke-sic{ background:linear-gradient(160deg,#5AC8FA,#34A7F0) }
+.lke-cs-display .lke-sic{ background:linear-gradient(160deg,#8E8E93,#5C5C61) }
+.lke-cs-focus .lke-sic{ background:linear-gradient(160deg,#7D7AFF,#5E5CE6) }
+.lke-cs-ambient .lke-sic{ background:linear-gradient(160deg,#FF6B81,#FF375F) }
+
+/* ---------- folhas dos fundos novos (Emoji, Cor, Astronomia, Aleatórias): folhas claras do sistema, como o seletor ---------- */
+.sheet-wrap.lke-pick .content{ overflow-y:auto; overscroll-behavior:contain; scrollbar-width:none }
+.sheet-wrap.lke-pick .content::-webkit-scrollbar{ display:none }
+.lke-pk{ padding:2px 0 8px }
+.lke-pk-top{ display:flex; gap:16px; align-items:center; padding:6px 20px 6px }
+.lke-pk-top.c{ justify-content:center }
+.lke-pk-side{ flex:1; min-width:0; display:flex; flex-direction:column; gap:8px }
+.lke-picked{ display:flex; flex-wrap:wrap; gap:6px; min-height:44px }
+.lke-picked span,.lke-em{ font-family:'Segoe UI Emoji','Apple Color Emoji','Noto Color Emoji',sans-serif; display:flex; align-items:center; justify-content:center; cursor:default }
+.lke-picked span{ width:44px; height:44px; border-radius:12px; font-size:28px; background:var(--fill3) }
+.lke-pk-hint{ font-size:13px; color:var(--label2) }
+.lke-pk-sec{ padding:6px 0 4px }
+.lke-pk-t{ font-size:13px; font-weight:600; letter-spacing:.3px; text-transform:uppercase; color:var(--label2); padding:10px 20px 8px }
+.lke-pk-seg{ margin:12px 20px 4px }
+.lke-pk-cols{ display:flex; flex-wrap:wrap; gap:10px; padding:0 18px }
+.lke-pk-col{ width:36px; height:36px; border-radius:50%; padding:4px; box-sizing:border-box; box-shadow:inset 0 0 0 2px transparent; cursor:default }
+.lke-pk-col i{ display:block; width:100%; height:100%; border-radius:50%; box-shadow:inset 0 0 0 .5px rgba(0,0,0,.18) }
+.lke-pk-col.on{ box-shadow:inset 0 0 0 2px var(--blue) }
+.lke-emo{ display:grid; grid-template-columns:repeat(auto-fill,minmax(48px,1fr)); gap:2px; padding:0 14px }
+.lke-em{ height:48px; border-radius:12px; font-size:30px; transition:transform .2s }
+.lke-em:active{ transform:scale(.88) }
+.lke-em.on{ background:rgba(10,132,255,.16); box-shadow:inset 0 0 0 2px var(--blue) }
+.lke-em.shake{ animation:lsgShake .4s var(--curve) }
+.lke-pk .lsg-wpi.on .lsg-wp{ box-shadow:0 0 0 3px var(--blue), 0 6px 18px rgba(0,0,0,.2) }
+.lke-pk-hue{ margin:6px 24px 0 }
+.lke-pk-hue .lke-tr{ top:8px; height:12px; border-radius:6px; background:linear-gradient(90deg,#FF0000,#FFFF00 16.7%,#00FF00 33.3%,#00FFFF 50%,#0000FF 66.7%,#FF00FF 83.3%,#FF0000) }
+.lke-pk-hue > i{ top:0; width:28px; height:28px; border-radius:50%; border:3px solid #fff; box-shadow:0 2px 7px rgba(0,0,0,.3) }
+.lke-astro{ display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); justify-items:center; gap:18px 10px; padding:10px 20px 24px }
+.lke-pk-empty .empty{ padding:20px 30px 10px }
+.sheet-wrap.lke-pick .lke-use{ margin:10px 20px 14px }

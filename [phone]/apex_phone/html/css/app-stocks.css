@@ -1,0 +1,174 @@
+/* ============================================================
+   BOLSA (apps/stocks.js) · prefixo .stk-
+   PearOS primeiro; Nova UI atrás de body.os-android no fim. Regras do CEF: sem backdrop-filter, sem filter,
+   sem color-mix, sem :has, sem aspect-ratio; só transform/opacity animam; hover só com cor.
+   ============================================================ */
+.stk .content{ padding-bottom:calc(var(--safe-bottom) + 24px) }
+.stk-foot{ font-size:var(--t-foot); color:var(--label2); line-height:1.4; padding:14px 32px 6px; text-align:center }
+.stk-sec{ font-size:var(--t-foot); color:var(--label2); text-transform:uppercase; letter-spacing:.3px; padding:22px 32px 7px }
+.stk-none{ display:flex; flex-direction:column } .stk-none[hidden]{ display:none }
+
+/* pílula da variação (verde / vermelha, texto branco, números tabulares) */
+.stk-pill{ display:inline-flex; align-items:center; justify-content:center; min-width:74px; padding:3px 8px; border-radius:7px; font-size:13px; font-weight:600; font-style:normal; color:#fff; background:var(--gray); font-variant-numeric:tabular-nums; white-space:nowrap }
+.stk-pill.up{ background:var(--green) } .stk-pill.dn{ background:var(--red) }
+
+/* ---------- Mercado ---------- */
+.stk-idx{ display:flex; align-items:center; justify-content:space-between; gap:12px; margin:4px 16px 12px; padding:14px 16px 12px; border-radius:16px; background:var(--bg2); box-shadow:inset 0 0 0 .5px var(--sep) }
+.stk-idx-l{ display:flex; flex-direction:column; gap:2px; min-width:0 }
+.stk-idx-t{ font-size:var(--t-cap2); font-weight:700; letter-spacing:.6px; color:var(--label2) }
+.stk-idx-v{ font-size:30px; font-weight:700; letter-spacing:-.6px; font-variant-numeric:tabular-nums; line-height:1.05 }
+.stk-idx-l .stk-pill{ align-self:flex-start; margin-top:4px }
+.stk-idx-l small{ font-size:var(--t-cap2); color:var(--label2); margin-top:4px }
+.stk-idx-g{ width:132px; height:54px; flex:none; display:block }
+.stk-chips{ margin:0 0 4px }
+.stk-rows{ margin:6px 16px 0; background:var(--bg2); border-radius:16px; overflow:hidden; box-shadow:inset 0 0 0 .5px var(--sep) }
+.stk-row{ display:flex; align-items:center; gap:12px; min-height:66px; padding:10px 16px; position:relative; cursor:pointer; contain:layout paint }
+.stk-row + .stk-row::before{ content:''; position:absolute; left:16px; right:0; top:0; height:.5px; background:var(--sep) }
+.stk-row:active{ background:var(--fill4) }
+.stk-sym{ flex:1; min-width:0; display:flex; flex-direction:column; gap:2px }
+.stk-sym b{ font-size:var(--t-headline); font-weight:700; letter-spacing:-.2px; display:flex; align-items:center; gap:6px }
+.stk-row.stk-fav .stk-sym b::after{ content:''; width:6px; height:6px; border-radius:50%; background:var(--yellow); flex:none }
+.stk-sym span{ font-size:var(--t-cap1); color:var(--label2); white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+.stk-sp{ width:76px; height:30px; flex:none; display:block }
+.stk-px{ display:flex; flex-direction:column; align-items:flex-end; gap:5px; flex:none; min-width:92px }
+.stk-px b{ font-size:var(--t-subhead); font-weight:600; font-variant-numeric:tabular-nums }
+
+/* ---------- Detalhe ---------- */
+.stk-head{ padding:4px 20px 0 }
+.stk-hname{ font-size:var(--t-subhead); color:var(--label2); font-weight:500 }
+.stk-hprice{ display:flex; align-items:baseline; gap:10px; margin-top:2px }
+.stk-hprice b{ font-size:36px; font-weight:700; letter-spacing:-.8px; font-variant-numeric:tabular-nums; line-height:1.1 }
+.stk-hsub{ display:flex; gap:8px; margin-top:4px; font-size:var(--t-subhead); font-weight:600 }
+.stk-hsub .stk-hwhen{ color:var(--label2); font-weight:400 }
+.stk-head.up .stk-hchg{ color:var(--green) } .stk-head.dn .stk-hchg{ color:var(--red) }
+.stk-segw .seg{ margin:12px 16px 6px }
+.stk-chart{ position:relative; margin:4px 16px 0; height:230px; touch-action:none; cursor:crosshair }
+.stk-chart canvas{ width:100%; height:100%; display:block }
+.stk-scrub{ position:absolute; inset:0; pointer-events:none; opacity:0; transition:opacity .15s }
+.stk-scrub.on{ opacity:1 }
+.stk-scrub-l{ position:absolute; left:0; top:0; width:1px; height:206px; background:var(--label2); will-change:transform }
+.stk-scrub-lb{ position:absolute; left:0; top:-4px; width:150px; padding:3px 0; border-radius:8px; background:var(--label); color:var(--bg); font-size:12px; font-weight:600; text-align:center; font-variant-numeric:tabular-nums; will-change:transform }
+.stk-stats,.stk-pos-g{ display:grid; grid-template-columns:1fr 1fr; column-gap:16px; margin:14px 16px 0; padding:4px 16px; border-radius:16px; background:var(--bg2); box-shadow:inset 0 0 0 .5px var(--sep) }
+.stk-stat{ display:flex; align-items:center; justify-content:space-between; gap:8px; min-height:40px; padding:6px 0; position:relative }
+.stk-stat span{ font-size:var(--t-foot); color:var(--label2); white-space:nowrap }
+.stk-stat b{ font-size:var(--t-foot); font-weight:600; font-variant-numeric:tabular-nums; white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+.stk-stat b.up{ color:var(--green) } .stk-stat b.dn{ color:var(--red) }
+.stk-stat:nth-child(n+3)::before{ content:''; position:absolute; left:0; right:0; top:0; height:.5px; background:var(--sep) }
+.stk-pos{ margin-top:4px }
+.stk-pos-t{ font-size:var(--t-foot); color:var(--label2); text-transform:uppercase; letter-spacing:.3px; padding:18px 32px 0 }
+.stk-pos-g{ margin-top:8px }
+.stk-btns{ display:flex; gap:10px; margin:16px 16px 0 }
+.stk-btns .btn-p{ flex:1; margin:0; height:48px; font-size:var(--t-callout) }
+.stk-btns .stk-buy{ background:var(--green) }
+.stk-btns .stk-sell{ background:var(--fill3); color:var(--label) }
+.stk-btns .stk-sell.dis{ opacity:.45; pointer-events:auto }
+.stk-star.on{ color:var(--yellow) } .stk-star.on svg{ fill:currentColor }
+.stk-alist,.stk-nlist{ margin:0 16px; background:var(--bg2); border-radius:16px; overflow:hidden; box-shadow:inset 0 0 0 .5px var(--sep) }
+.stk-nlist:empty,.stk-alist:empty{ display:none }
+.stk-aitem{ display:flex; align-items:center; gap:12px; min-height:48px; padding:8px 16px; position:relative }
+.stk-aitem + .stk-aitem::before{ content:''; position:absolute; left:16px; right:0; top:0; height:.5px; background:var(--sep) }
+.stk-abell{ display:flex; color:var(--orange) }
+.stk-aitem b{ flex:1; min-width:0; font-size:var(--t-subhead); font-weight:500 }
+.stk-adel{ display:flex; width:30px; height:30px; border-radius:50%; align-items:center; justify-content:center; color:var(--label2); cursor:pointer; font-style:normal }
+.stk-adel:active{ color:var(--red) }
+.stk-nitem{ padding:12px 16px; position:relative; cursor:pointer }
+.stk-nitem + .stk-nitem::before{ content:''; position:absolute; left:16px; right:0; top:0; height:.5px; background:var(--sep) }
+.stk-ntop{ display:flex; align-items:center; gap:8px }
+.stk-ntop .stk-pill{ min-width:0; padding:2px 7px; font-size:12px }
+.stk-nsym{ font-style:normal; font-size:12px; font-weight:700; letter-spacing:.5px; color:var(--label2) }
+.stk-ntime{ margin-left:auto; font-size:var(--t-cap2); color:var(--label2) }
+.stk-ntitle{ display:block; margin-top:6px; font-size:var(--t-subhead); font-weight:600; line-height:1.3 }
+.stk-newsv .stk-nlist{ margin-top:4px }
+
+/* ---------- Folha de compra / venda ---------- */
+.stk-trade{ padding:6px 20px 10px }
+.stk-trow{ display:flex; align-items:center; justify-content:space-between; min-height:40px; font-size:var(--t-subhead); color:var(--label2) }
+.stk-trow b{ color:var(--label); font-weight:600; font-variant-numeric:tabular-nums }
+.stk-ttot{ border-top:.5px solid var(--sep); margin-top:4px; padding-top:6px }
+.stk-ttot span,.stk-ttot b{ font-size:var(--t-headline); font-weight:700; color:var(--label) }
+.stk-trade.over .stk-ttv{ color:var(--red) }
+.stk-qty{ display:flex; align-items:center; justify-content:center; gap:14px; padding:12px 0 6px }
+.stk-qb{ width:46px; height:46px; border-radius:50%; background:var(--fill3); color:var(--label); display:flex; align-items:center; justify-content:center; cursor:pointer }
+.stk-qb:active{ background:var(--fill2) }
+.stk-qin{ width:120px; text-align:center; font-size:34px; font-weight:700; letter-spacing:-.6px; border:none; background:none; color:var(--label); outline:none; font-family:inherit; font-variant-numeric:tabular-nums; -moz-appearance:textfield }
+.stk-qin::-webkit-inner-spin-button,.stk-qin::-webkit-outer-spin-button{ -webkit-appearance:none; margin:0 }
+.stk-tmax{ text-align:center; color:var(--blue); font-size:var(--t-subhead); font-weight:500; padding:0 0 10px; cursor:pointer }
+.stk-tbank{ text-align:center; font-size:var(--t-cap1); color:var(--label2); padding-top:10px; line-height:1.35 }
+.stk-alsheet{ padding:4px 0 10px }
+
+/* ---------- Carteira ---------- */
+.stk-pf-hero{ margin:4px 16px 0; padding:18px 18px 14px; border-radius:16px; background:var(--bg2); box-shadow:inset 0 0 0 .5px var(--sep); display:flex; flex-direction:column; gap:4px }
+.stk-pf-hero > span{ font-size:var(--t-cap1); color:var(--label2); text-transform:uppercase; letter-spacing:.4px }
+.stk-pf-v{ font-size:36px; font-weight:700; letter-spacing:-.8px; font-variant-numeric:tabular-nums; line-height:1.1 }
+.stk-pf-hero > .stk-pill{ align-self:flex-start; margin-top:2px }
+.stk-pf-rows{ display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:12px; padding-top:12px; border-top:.5px solid var(--sep) }
+.stk-pf-rows > div{ display:flex; flex-direction:column; gap:2px }
+.stk-pf-rows span{ font-size:var(--t-cap2); color:var(--label2) }
+.stk-pf-rows b{ font-size:var(--t-subhead); font-weight:600; font-variant-numeric:tabular-nums }
+.stk-pf-pos .stk-row{ min-height:60px }
+.stk-trades{ margin:0 16px; background:var(--bg2); border-radius:16px; overflow:hidden; box-shadow:inset 0 0 0 .5px var(--sep) }
+.stk-trades:empty{ display:none }
+.stk-titem{ display:flex; align-items:center; gap:12px; min-height:60px; padding:8px 16px; position:relative }
+.stk-titem + .stk-titem::before{ content:''; position:absolute; left:64px; right:0; top:0; height:.5px; background:var(--sep) }
+.stk-tic{ width:36px; height:36px; border-radius:50%; display:flex; align-items:center; justify-content:center; flex:none; background:var(--fill3); color:var(--label) }
+.stk-titem.buy .stk-tic{ background:rgba(48,209,88,.16); color:var(--green) } .stk-titem.sell .stk-tic{ background:rgba(255,69,58,.16); color:var(--red) }
+.stk-tb{ flex:1; min-width:0; display:flex; flex-direction:column; gap:2px }
+.stk-tb b{ font-size:var(--t-subhead); font-weight:600 } .stk-tb span{ font-size:var(--t-cap2); color:var(--label2); white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+.stk-tv{ display:flex; flex-direction:column; align-items:flex-end; gap:2px; flex:none }
+.stk-tv b{ font-size:var(--t-subhead); font-weight:600; font-variant-numeric:tabular-nums } .stk-tv span{ font-size:var(--t-cap2); color:var(--label2) }
+.stk-titem.sell .stk-tv b{ color:var(--green) }
+
+/* ---------- Widget (índice LSX) ---------- */
+.stk-w{ position:absolute; inset:0; box-sizing:border-box; padding:14px 15px 13px; display:flex; flex-direction:column; background:#000; color:#fff }
+.stk-w-h{ display:flex; align-items:baseline; gap:6px; min-width:0 }
+.stk-w-h b{ font-size:19px; font-weight:700; letter-spacing:-.2px; line-height:22px }
+.stk-w-h span{ font-size:12px; color:rgba(235,235,245,.6); white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+.stk-w-c{ display:block; margin-top:4px; font-style:normal; font-size:12.5px; font-weight:600; line-height:15px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; font-variant-numeric:tabular-nums }
+.stk-w.up .stk-w-c{ color:#30D158 } .stk-w.dn .stk-w-c{ color:#FF453A }
+.stk-wg{ display:block; width:100%; height:40px; margin-top:auto }
+.stk-wg .l{ fill:none; stroke:#30D158; stroke-width:2 } .stk-w.dn .stk-wg .l{ stroke:#FF453A }
+.stk-wg .a{ fill:#30D158; opacity:.16 } .stk-w.dn .stk-wg .a{ fill:#FF453A }
+.stk-wg .b{ fill:none; stroke:rgba(255,255,255,.25); stroke-width:1 }
+.stk-w-p{ display:block; margin-top:6px; font-size:24px; font-weight:700; letter-spacing:-.5px; line-height:26px; text-align:right; font-variant-numeric:tabular-nums }
+.stk-w.s42{ flex-direction:row; gap:14px }
+.stk-w.s42 .stk-w-l{ flex:1; min-width:0; display:flex; flex-direction:column }
+.stk-w.s42 .stk-w-r{ flex:none; width:168px; display:flex; flex-direction:column; justify-content:center; gap:8px; border-left:.5px solid rgba(255,255,255,.14); padding-left:14px }
+.stk-w.s42 .stk-w-p{ text-align:left } .stk-w.s42 .stk-wg{ height:44px }
+.stk-w-row{ display:flex; align-items:center; gap:6px; font-size:13px; font-variant-numeric:tabular-nums }
+.stk-w-row b{ font-weight:700; width:44px } .stk-w-row span{ flex:1; color:rgba(235,235,245,.7); white-space:nowrap; overflow:hidden; text-overflow:ellipsis } .stk-w-row em{ font-style:normal; font-weight:600 }
+.stk-w-row.up em{ color:#30D158 } .stk-w-row.dn em{ color:#FF453A }
+.stk-w-none{ font-size:13px; color:rgba(235,235,245,.6) }
+
+/* ============================================================
+   NOVA UI (Android): superfícies de cantos 26, pílulas tintadas, números no tipo de letra de ecrã
+   ============================================================ */
+body.os-android .stk-idx,body.os-android .stk-rows,body.os-android .stk-stats,body.os-android .stk-pos-g,body.os-android .stk-alist,body.os-android .stk-nlist,body.os-android .stk-pf-hero,body.os-android .stk-trades{ border-radius:var(--ou-r-card,26px); background:var(--ou-surface); box-shadow:var(--ou-shadow-1) }
+body.os-android .stk-idx,body.os-android .stk-rows,body.os-android .stk-pf-hero,body.os-android .stk-trades,body.os-android .stk-alist,body.os-android .stk-nlist,body.os-android .stk-stats,body.os-android .stk-pos-g,body.os-android .stk-chart,body.os-android .stk-btns{ margin-left:12px; margin-right:12px }
+body.os-android .stk-idx-v,body.os-android .stk-hprice b,body.os-android .stk-pf-v,body.os-android .stk-qin,body.os-android .stk-w-p{ font-family:var(--font-display); font-weight:600; letter-spacing:0 }
+body.os-android .stk-pill{ border-radius:9px; background:var(--fill3); color:var(--label) }
+body.os-android .stk-pill.up{ color:#1A9E50; background:rgba(45,190,96,.14) } body.os-android .stk-pill.dn{ color:#E5392F; background:rgba(242,69,61,.12) }
+body.os-android.dark .stk-pill.up{ color:#4CD483 } body.os-android.dark .stk-pill.dn{ color:#FF6A62 }
+body.os-android .stk-sec,body.os-android .stk-pos-t{ text-transform:none; letter-spacing:0; font-weight:500; padding-left:30px; padding-right:30px }
+body.os-android .stk-foot{ padding-left:30px; padding-right:30px }
+body.os-android .stk-row{ padding:12px 20px } body.os-android .stk-row + .stk-row::before{ left:20px }
+body.os-android .stk-row:active{ background:var(--ou-surface2) }
+body.os-android .stk-nitem,body.os-android .stk-aitem{ padding-left:20px; padding-right:20px } body.os-android .stk-nitem + .stk-nitem::before,body.os-android .stk-aitem + .stk-aitem::before{ left:20px }
+body.os-android .stk-head{ padding:0 24px; text-align:center }
+body.os-android .stk-hprice,body.os-android .stk-hsub{ justify-content:center }
+body.os-android .stk-segw .seg{ margin:14px 12px 4px; border-radius:999px; padding:3px } body.os-android .stk-segw .seg div.on{ border-radius:999px }
+body.os-android .stk-btns .btn-p{ border-radius:999px; height:52px }
+body.os-android .stk-btns .stk-sell{ background:var(--ou-surface2) }
+body.os-android .stk-qb{ background:var(--ou-surface2) }
+body.os-android .stk-tmax{ color:var(--ou-blue,#3E7BFA) }
+body.os-android .stk-ttot{ border-top-color:var(--sep) }
+body.os-android .stk-scrub-lb{ border-radius:999px }
+body.os-android .stk-w{ background:transparent; color:inherit; padding:16px 18px 15px }
+body.os-android .stk-w-h b{ font-size:17px; font-weight:600 } body.os-android .stk-w-h span{ color:var(--label2) }
+body.os-android .stk-w-c{ align-self:flex-start; margin-top:6px; padding:2px 8px; border-radius:9px; font-size:12px }
+body.os-android .stk-w.up .stk-w-c{ color:#1A9E50; background:rgba(45,190,96,.14) } body.os-android .stk-w.dn .stk-w-c{ color:#E5392F; background:rgba(242,69,61,.12) }
+body.os-android.dark .stk-w.up .stk-w-c{ color:#4CD483 } body.os-android.dark .stk-w.dn .stk-w-c{ color:#FF6A62 }
+body.os-android .stk-wg .l{ stroke:#2DBE60 } body.os-android .stk-w.dn .stk-wg .l{ stroke:#F2453D } body.os-android .stk-wg .a{ fill:#2DBE60 } body.os-android .stk-w.dn .stk-wg .a{ fill:#F2453D }
+body.os-android .stk-wg .b{ stroke:rgba(128,128,140,.4) }
+body.os-android .stk-w-row span{ color:var(--label2) } body.os-android .stk-w.s42 .stk-w-r{ border-left-color:var(--sep) }
+body.os-android .stk-w-row.up em{ color:#1A9E50 } body.os-android .stk-w-row.dn em{ color:#E5392F }
+body.os-android.dark .stk-w-row.up em{ color:#4CD483 } body.os-android.dark .stk-w-row.dn em{ color:#FF6A62 }

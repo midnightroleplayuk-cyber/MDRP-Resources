@@ -1,0 +1,546 @@
+/* ============================================================
+   SISTEMA - dispositivo, wallpaper, status bar, Dynamic Island,
+   janelas de app. (Lock/Home/CC/NC/etc. em shell.css)
+   ============================================================ */
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{
+  font-family:var(--font); background:#0B0B0F; color:#fff;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  gap:20px; padding:20px 16px; overflow:hidden; user-select:none;
+  -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
+}
+img{max-width:100%;display:block}
+input,textarea,select,button{font-family:inherit}
+
+/* ---------- Escala: `zoom` re-renderiza à resolução nativa (sem blur) ---------- */
+.stage{ zoom:var(--scale); transition:opacity .3s, transform .45s var(--ease) }
+
+/* ---------- ARRANQUE: nada pintado por cima do jogo ----------
+   O index.html abre com <body class="boot"> e o system.js tira a classe no init(), depois de
+   decidir `fivem`/`hidden`. Só `background` e `visibility` (nenhum dos dois anima), por isso não
+   há transição a começar do sítio errado quando a classe sai. */
+body.boot{ background:transparent }
+body.boot .stage{ visibility:hidden }
+/* ---------- FiveM: fundo transparente, canto inferior direito (Config.Offset → --phone-right / --phone-bottom, para não colidir com o HUD) ---------- */
+body.fivem{ background:transparent; justify-content:flex-end; align-items:flex-end; padding:0 var(--phone-right,24px) var(--phone-bottom,16px) 0; gap:0 }
+/* ---------- Cursor: dentro do aparelho fica sempre a seta normal - nunca a "mão" do browser nem o I-beam por cima de botões e campos (pedido do utilizador;
+   o ponto de toque que seguia o rato foi retirado a pedido) ---------- */
+.device,.device *{ cursor:default!important }
+.touch-dot{ display:none!important }
+/* arrastar uma lista com o rato (shell/dragscroll.js): sem selecionar texto pelo caminho */
+/* PERFUI (2026-10-05): era `body.ds-dragging #screen *`, que refazia o estilo de TODOS os nos do ecra no inicio e no fim de cada
+   arrasto (21 ms com o CPU a 1/4). O body ja e user-select:none e tudo o herda; so estes elementos voltam a pedir texto selecionavel
+   (procurar user-select:text no css/ ao acrescentar outro), por isso so eles precisam de ser travados durante o arrasto. */
+body.ds-dragging #screen, body.ds-dragging #screen :is(.aic-b, .rcx-docview-body, .rcp-code, .igdm-b-txt, input, textarea, [contenteditable]){ -webkit-user-select:none!important; user-select:none!important }
+body.fivem .controls{ display:none }
+/* abrir/fechar no jogo: o telemóvel SOBE de fora do ecrã (curva PearOS, .55 s) e ao fechar desce (.42 s) - só transform, sem fade (pedido do utilizador) */
+/* abrir/fechar no jogo por KEYFRAMES (não por transition): o CEF pode não ter pintado o estado escondido há muito, e uma transition
+   a partir de um estado não pintado começa já no fim - a animação reinicia sempre que a classe .enter/.leave é posta */
+body.fivem .stage{ transition:none; will-change:transform }
+/* escondido: logo abaixo do ecrã (não a 118 %): a camada fica perto da viewport e o Chromium mantém-na rasterizada → ao abrir não há que redesenhar tudo (era o "travado" no /phone) */
+body.fivem.hidden .stage{ transform:translateY(calc(100% + 40px)); pointer-events:none }
+/* ESPREITAR: chega uma notificação com o telemóvel fechado e ele sobe só o suficiente para se ler o banner, depois desce sozinho.
+   O telemóvel continua "fechado" (mantém .hidden e não apanha toques); só o transform é substituído - daí a especificidade maior. */
+/* ⚠️ E O QUE FALTAVA: o ui.css tem `.hidden{ display:none!important }` para uso geral, e ao
+   guardar o telemóvel é o PRÓPRIO <body> que leva a classe `hidden` - ou seja, a página
+   inteira deixava de ser desenhada. O espreitar punha as classes e o --pk-h certos, mas não
+   havia nada para mostrar: in-game NUNCA se via o telemóvel subir com uma notificação.
+   `body.hidden.pk` tem mais especificidade (0,2,1) que `.hidden` (0,1,0), por isso ganha aos
+   dois !important. O aparelho continua sem apanhar toques - isso vem do pointer-events acima. */
+body.hidden.pk{ display:flex!important }
+/* subir e descer com curvas DIFERENTES, como o PearOS: a subida é longa e trava devagar no
+   fim; a descida é mais curta e acelera a sair. Com a mesma curva nos dois sentidos o
+   movimento lia-se mecânico. */
+body.fivem.pk .stage{ transition:transform .58s cubic-bezier(.17,.84,.26,1) }
+body.fivem.pk:not(.pk-up) .stage{ transition:transform .40s cubic-bezier(.45,0,.75,.35) }
+body.fivem.pk.pk-up .stage{ transform:translateY(calc(100% - var(--pk-h,260px))) }
+body.fivem .stage.enter{ animation:stageIn .6s cubic-bezier(.22,1,.36,1) both }
+body.fivem .stage.leave{ animation:stageOut .42s cubic-bezier(.4,0,.8,.55) both; pointer-events:none }
+@keyframes stageIn{ from{ transform:translateY(calc(100% + 40px)) } to{ transform:none } }
+@keyframes stageOut{ from{ transform:none } to{ transform:translateY(calc(100% + 40px)) } }
+body.fivem.vera-only .stage{ opacity:0; pointer-events:none }
+body.shot .stage{ opacity:0!important; transition:none }
+
+/* ---------- Moldura (PearPhone 18 Pro: alumínio 4 px + bezel preto uniforme 6 px + ecrã) ----------
+   raios concêntricos: moldura 67 → bezel 63 → ecrã 57. O bezel preto é o que separa visualmente o ecrã do telemóvel (pedido do utilizador:
+   com a moldura e o fundo ambos laranja "parecia tudo ligado"). O anel SVG (.frame-ring) repinta as duas faixas POR CIMA do ecrã. */
+.device{
+  position:relative; padding:4px; border-radius:67px;
+  background:linear-gradient(160deg,#B8BCC4,#6E7278 45%,#9EA2A8);
+  box-shadow:0 30px 70px -20px rgba(0,0,0,.75), 0 0 0 .5px rgba(0,0,0,.4), inset 0 0 0 .5px rgba(255,255,255,.35);
+}
+.device{ --f1:#B8BCC4; --f2:#6E7278; --f3:#7A7E85; --f4:#9EA2A8 }
+/* Cosmic Orange real: laranja queimado/cobre, NÃO néon - o anel SVG ainda lhe soma um reflexo diagonal (frameSheen) e laterais mais escuras (frameSide) */
+.device.frame-orange{ --f1:#EFA062; --f2:#CD6520; --f3:#A54A14; --f4:#DE8A44; background:linear-gradient(160deg,#EFA062 0%,#CD6520 40%,#A54A14 70%,#DE8A44 100%) }
+.device.frame-black{ --f1:#3A3A3F; --f2:#141416; --f3:#1A1A1D; --f4:#2C2C31; background:linear-gradient(160deg,#3A3A3F,#141416 45%,#2C2C31) }
+.device.frame-silver{ --f1:#F0F0F2; --f2:#B9BCC2; --f3:#C4C7CC; --f4:#E4E5E8; background:linear-gradient(160deg,#F0F0F2,#B9BCC2 45%,#E4E5E8) }
+.device.frame-blue{ --f1:#4A6FA8; --f2:#1E3A66; --f3:#284A7A; --f4:#3B5C92; background:linear-gradient(160deg,#4A6FA8,#1E3A66 45%,#3B5C92) }
+.device.frame-white{ --f1:#FFFFFF; --f2:#D9DADE; --f3:#E3E4E8; --f4:#F5F5F7; background:linear-gradient(160deg,#FFFFFF,#D9DADE 45%,#F5F5F7) }
+.device.frame-wine{ --f1:#9B4A61; --f2:#4A1526; --f3:#5E1F33; --f4:#7C3549; background:linear-gradient(160deg,#9B4A61,#4A1526 45%,#7C3549) }   /* PearPhone 18 Pro Max bordô */
+.bezel{ padding:6px; border-radius:63px; background:#000 }
+/* Anel da moldura POR CIMA do ecrã (SVG inserido por System.init): um anel de 4 px (raio exterior 61, interior 57) com o mesmo gradiente da moldura.
+   Cobre qualquer pixel que uma camada composta deixe escapar para a faixa da moldura (o CEF recorta cantos arredondados com ligeiras
+   diferenças entre camadas) - assim nunca há cunhas pretas nos cantos, aconteça o que acontecer por baixo. Vetorial: exato a qualquer zoom. */
+.frame-ring{ position:absolute; inset:0; width:100%; height:100%; z-index:6; pointer-events:none; display:block; overflow:visible }
+.frame-ring .s1{ stop-color:var(--f1) } .frame-ring .s2{ stop-color:var(--f2) } .frame-ring .s3{ stop-color:var(--f3) } .frame-ring .s4{ stop-color:var(--f4) }
+.frame-ring .rim{ stroke:rgba(255,255,255,.28); stroke-width:.5 }
+.frame-ring .bz{ fill:#000 }                               /* faixa do bezel (63 → 57) */
+.frame-ring .glass{ stroke:rgba(255,255,255,.08); stroke-width:.75 }   /* aresta do vidro */
+.frame-ring .seam{ stroke:rgba(0,0,0,.35); stroke-width:.6 }           /* junta entre o alumínio e o bezel: linha escura finíssima */
+.frame-ring .shade{ fill:none; stroke:#000 }                            /* sombra exterior muito subtil em 3 traços vetoriais (sem filter, sem box-shadow: no CEF apareciam como retângulo escuro) */
+
+/* ============================================================
+   DOBRÁVEIS (contrato v2, 2026-10-01): o PearPhone Fold (fold-*) e o NOVA (flip-*) abrem como um LIVRO
+   FECHADO (.fold-closed): aparelho 690×976 com o ecrã de fora 670×956. ABERTO (.fold-open): aparelho 1360×976, ecrã 1340×956.
+   O .stage tem sempre a largura do aparelho ABERTO e encosta o aparelho à direita: abrir cresce para a esquerda e a aresta direita
+   (o canto do ecrã do jogo) nunca mexe; a escala também não muda (system.js applyScale conta sempre com o aberto).
+   Tudo debaixo de .form-fold: os telemóveis normais não mudam um píxel. A moldura do PearPhone é o anel SVG (system.js
+   ringFold); a do NOVA é a do SysUI (android-sysui.js, oneui-sysui.css). O raio do ecrã do PearPhone Fold vive em --scr-r
+   (quatro cantos: fechado 6 / 74 / 74 / 6, aberto 54) e todas as camadas de ecrã inteiro o seguem (motion.css).
+   ============================================================ */
+body.form-fold .stage{ position:relative; display:flex; justify-content:flex-end; align-items:flex-end; width:calc(var(--fold-ow) + 20px) }
+/* cores tiradas das fotografias do produto: Night Sky (azul-noite acetinado) e Star White (branco com aro prateado) */
+.device.frame-fold-night{ --f1:#7D95BA; --f2:#22395E; --f3:#2D4670; --f4:#56719A; background:linear-gradient(160deg,#7D95BA,#22395E 45%,#56719A) }
+.device.frame-fold-star{ --f1:#FFFFFF; --f2:#BEC3CA; --f3:#CDD1D7; --f4:#EDEFF2; background:linear-gradient(160deg,#FFFFFF,#BEC3CA 45%,#EDEFF2) }
+.device.frame-fold-night .hw-btn{ background:linear-gradient(90deg,#13233D,#5A77A2 45%,#13233D) }
+.device.frame-fold-star .hw-btn{ background:linear-gradient(90deg,#999DA5,#F4F5F7 45%,#999DA5) }
+/* raios: carcaça, bezel e ecrã (os mesmos do anel SVG) */
+body.os-ios.form-fold{ --scr-tl:6px; --scr-tr:74px; --scr-br:74px; --scr-bl:6px }
+body.os-ios.form-fold.fold-open{ --scr-tl:54px; --scr-tr:54px; --scr-br:54px; --scr-bl:54px }
+body.os-ios.form-fold{ --scr-r:var(--scr-tl) var(--scr-tr) var(--scr-br) var(--scr-bl) }
+body.os-ios.form-fold.fold-open{ --scr-r:var(--scr-tl) var(--scr-tr) var(--scr-br) var(--scr-bl) }
+.device.form-fold.os-ios{ border-radius:16px 84px 84px 16px }
+.device.form-fold.os-ios .bezel{ border-radius:12px 80px 80px 12px }
+.device.form-fold.os-ios.fold-open{ border-radius:64px }
+.device.form-fold.os-ios.fold-open .bezel{ border-radius:60px }
+body.os-ios.form-fold .screen{ border-radius:var(--scr-r) }
+/* lombada (fechado) e marcas da dobradiça (aberto), no anel SVG */
+.frf-ring .fs-gap{ stroke:rgba(0,0,0,.5); stroke-width:1 }
+.frf-ring .fs-hi{ fill:rgba(255,255,255,.4) }
+.device.frame-fold-star .frf-ring .fs-hi{ fill:rgba(255,255,255,.85) }
+.frf-ring .hn{ fill:#0E1117; stroke:rgba(0,0,0,.4); stroke-width:.5 }
+.frf-ring .hn-l{ stroke:rgba(255,255,255,.28); stroke-width:.7 }
+.frf-ring .hg{ stroke:rgba(0,0,0,.55); stroke-width:1 }
+/* botões do PearPhone Fold: na aresta de CIMA (Ação, volume +, volume −) e a lateral na aresta direita, todos na metade de trás
+   (a que nunca mexe): medidos da aresta direita valem para fechado e aberto. O Controlo de câmara não existe neste aparelho. */
+.device.form-fold.os-ios .hw-btn.camera-ctl{ display:none }
+.device.form-fold.os-ios .hw-btn.action,.device.form-fold.os-ios .hw-btn.vol-up,.device.form-fold.os-ios .hw-btn.vol-down{ left:auto; top:-5px; height:6px; border-radius:2.5px }
+.device.form-fold.os-ios .hw-btn.action{ right:394px; width:34px }
+.device.form-fold.os-ios .hw-btn.vol-up{ right:306px; width:74px }
+.device.form-fold.os-ios .hw-btn.vol-down{ right:224px; width:74px }
+.device.form-fold.os-ios .hw-btn.power{ top:300px; height:96px }
+.device.form-fold.os-ios .hw-btn.action:active,.device.form-fold.os-ios .hw-btn.vol-up:active,.device.form-fold.os-ios .hw-btn.vol-down:active{ transform:translateY(2px) }
+.device.frame-fold-night.os-ios .hw-btn.action,.device.frame-fold-night.os-ios .hw-btn.vol-up,.device.frame-fold-night.os-ios .hw-btn.vol-down{ background:linear-gradient(180deg,#13233D,#5A77A2 45%,#13233D) }
+.device.frame-fold-star.os-ios .hw-btn.action,.device.frame-fold-star.os-ios .hw-btn.vol-up,.device.frame-fold-star.os-ios .hw-btn.vol-down{ background:linear-gradient(180deg,#999DA5,#F4F5F7 45%,#999DA5) }
+/* HUD do volume do PearPhone Fold: a cápsula do PearOS DEITADA, por baixo das teclas de cima. A carga (branca) entra da esquerda
+   por translateX e o ícone dela anda ao contrário para ficar parado (hardware.js); só transform e opacity */
+body.os-ios.form-fold .vol-hud{ left:auto; right:197px; top:12px; width:210px; height:40px; border-radius:20px; transform:translateY(-16px) scale(.8); transform-origin:50% 0 }
+body.os-ios.form-fold .vol-hud.in{ width:210px; transform:none }
+body.os-ios.form-fold .vol-hud .fill{ top:0; height:100%!important; transform:translateX(-100%); transition:transform .2s var(--ease) }
+body.os-ios.form-fold .vol-hud .ic{ left:12px; top:9px; bottom:auto; transform:none }
+body.os-ios.form-fold .vol-hud .fill .ic{ transform:translateX(210px); transition:transform .2s var(--ease) }
+/* pílula do modo de silêncio (sem ilha): no topo, ao centro da zona de conteúdo (à esquerda da barra direita) */
+body.os-ios.form-fold .hw-hud{ top:26px; left:calc(50% - var(--rail-w) / 2) }
+/* a zona do gesto do indicador (z 360, por cima de tudo) para antes da barra direita: um toque no fundo do botão de pesquisa
+   ou de uma ação da app nunca fecha a app nem abre o alternador */
+body.os-ios.form-fold .hb-zone{ right:var(--rail-w) }
+
+/* ---------- câmara: um furo REDONDO (o .island fica só a câmara; as atividades vão para a barra direita, island.js) ----------
+   PearPhone Fold FECHADO (referências 13 e 15): no topo da coluna da barra direita, centrada no eixo dela (--rail-x, tokens.css),
+   44 px a 32 px do topo (Duo); a pilha de estado (Rail, liquid27.css) deixa-lhe o lugar. ABERTO não há câmara nenhuma no ecrã de
+   dentro (pedido do dono). O NOVA usa o furo do S26 (oneui-sysui.css). */
+body.os-ios.form-fold .island,body.os-ios.form-fold .island.isl-ready{ left:auto; right:calc(var(--rail-x) - 22px); top:32px; transform:none; width:44px!important; height:44px!important; border-radius:50%; background:#000;
+  overflow:hidden; pointer-events:none; cursor:default; z-index:450; box-shadow:0 0 0 1px rgba(255,255,255,.035) }
+body.os-ios.form-fold.fold-open .island,body.os-ios.form-fold.fold-open .island.isl-ready{ display:none }
+body.os-ios.form-fold .island > :not(.cam){ display:none!important }
+body.os-ios.form-fold .island .cam{ left:50%; top:50%; width:17px; height:17px; margin:-8.5px 0 0 -8.5px }
+
+/* ---------- animação de abrir/fechar (system.js: foldBegin / faSet / faEnd) ----------
+   O próprio aparelho, fechado, é a frente da folha: roda à volta da dobradiça e some de costas depois dos 90°. O .frig (no .stage,
+   por trás do aparelho) tem a largura do aparelho aberto: a metade direita do ecrã de dentro (por baixo) e a face de dentro da
+   folha (a metade esquerda, com rotateY a partir da dobradiça). Só transform e opacity, sempre em linha (system.js). */
+.device.fold-anim{ -webkit-backface-visibility:hidden; backface-visibility:hidden; will-change:transform, opacity }
+.device.fold-anim > .hw-btn,.device.fold-anim > .fold-grip{ opacity:0 }
+body.fivem .device.fold-anim{ box-shadow:none }
+.fold-shade{ position:absolute; inset:0; z-index:8; pointer-events:none; background:#000; opacity:0; border-radius:inherit }
+.frig{ position:absolute; right:0; top:0; z-index:0; width:calc(var(--fold-ow) + 20px); height:976px; pointer-events:none; --frig-r:64px; --frig-sr:54px }
+.frig.os-android{ --frig-r:32px; --frig-sr:22px }
+.frig-p{ position:absolute; top:0; left:50%; width:50%; height:100%; background:linear-gradient(160deg,var(--f1),var(--f2) 45%,var(--f4)); -webkit-backface-visibility:hidden; backface-visibility:hidden }
+.frig-r{ border-radius:0 var(--frig-r) var(--frig-r) 0 }
+.frig-l{ border-radius:var(--frig-r) 0 0 var(--frig-r); transform-origin:0 50% }
+.frig-s{ position:absolute; top:4px; bottom:4px; background:#000; overflow:hidden }
+.frig-r .frig-s{ left:0; right:4px; border-radius:0 calc(var(--frig-r) - 4px) calc(var(--frig-r) - 4px) 0 }
+.frig-l .frig-s{ left:4px; right:0; border-radius:calc(var(--frig-r) - 4px) 0 0 calc(var(--frig-r) - 4px) }
+.frig-s i{ position:absolute; top:6px; bottom:6px; overflow:hidden; background:#101114 }
+.frig-r .frig-s i{ left:0; right:6px; border-radius:0 var(--frig-sr) var(--frig-sr) 0 }
+.frig-l .frig-s i{ left:6px; right:0; border-radius:var(--frig-sr) 0 0 var(--frig-sr) }
+.frig-s u{ position:absolute; top:0; bottom:0; left:0; width:var(--fold-ow); text-decoration:none }
+.frig-r .frig-s u{ left:calc(-1 * var(--fold-cw)) }
+.frig-k{ position:absolute; inset:0; border-radius:inherit; background:#000; opacity:0 }
+/* marcas da dobradiça no .frig (a meio, em cima e em baixo), como no aparelho aberto */
+.frig-r::before,.frig-r::after{ content:''; position:absolute; left:-6px; width:12px; height:5.4px; border-radius:1.6px; background:#0E1117; z-index:1 }
+.frig-r::before{ top:-1.6px } .frig-r::after{ bottom:-1.6px }
+/* a PEGA: 36 px à volta da aresta esquerda (26 por fora + os 10 da moldura); a marca na lombada só se vê fechado */
+.fold-grip{ position:absolute; left:-26px; top:72px; bottom:72px; width:36px; z-index:9; touch-action:none }
+.fold-grip i{ position:absolute; left:23px; top:50%; width:4px; height:58px; margin-top:-29px; border-radius:2px; background:rgba(255,255,255,.5);
+  box-shadow:0 0 0 .5px rgba(0,0,0,.4); opacity:0; transition:opacity .25s ease-out, background-color .2s ease-out; pointer-events:none }
+.device.fold-closed > .fold-grip i{ opacity:1 }
+.fold-grip:hover i{ background:rgba(255,255,255,.88) }
+.device.frame-fold-star > .fold-grip i{ background:rgba(120,126,136,.6); box-shadow:0 0 0 .5px rgba(255,255,255,.6) }
+.device.frame-fold-star > .fold-grip:hover i{ background:rgba(80,86,96,.85) }
+/* nunca uma barra de scroll de browser dentro do ecrã (o scroll é por toque/roda, como no PearOS) */
+.screen ::-webkit-scrollbar{ width:0; height:0; display:none } .screen *{ scrollbar-width:none }
+.screen{
+  position:relative; width:var(--screen-w); height:var(--screen-h);
+  border-radius:57px; overflow:hidden; background:transparent; isolation:isolate;
+  /* SEM fundo preto e SEM clip-path: no CEF (zoom) o recorte arredondado das camadas compostas não bate certo com o fundo,
+     e o preto aparecia nos cantos / como quadrado atrás do telemóvel. Cada camada de ecrã inteiro tem o seu próprio raio (motion.css);
+     o que ficar a descoberto mostra a moldura, nunca preto. Ecrã desligado = .screen-off. Sem transição de filter: nunca há filter no ecrã inteiro. */
+}
+/* no jogo: sem sombra projetada à volta do aparelho (numa página NUI transparente o CEF pode compô-la como um retângulo escuro atrás do telemóvel) */
+body.fivem .device{ box-shadow:inset 0 0 0 .5px rgba(255,255,255,.35) }
+
+/* ---------- PAISAGEM (System.rotate, 2026-09-19): o aparelho deita-se para a esquerda (ilha à esquerda, obturador à direita) ----------
+   Só transform (composto na GPU). No jogo o aparelho vive no canto inferior direito: rodado à volta do centro sairia 258 px pela
+   direita e ficaria no ar - o translate devolve-o ao canto (as contas: caixa 460×976 → (460−976)/2 = −258 em x, +258 em y). */
+.device{ transition:transform .5s var(--spring2,cubic-bezier(.2,.9,.25,1)) }
+.device.landscape{ transform:rotate(-90deg) }
+body.fivem .device.landscape{ transform:translate(-258px,258px) rotate(-90deg) }
+/* a janela da app que SABE rodar (App.define landscape:true) roda ao contrário e passa a 956×440 - fica direita e larga */
+.app-window.ls,.app-window.ls.open{ inset:auto; left:-258px; top:258px; width:956px; height:440px; transform:rotate(90deg); --statusbar-h:16px; --safe-bottom:14px }
+.app-window.ls.closing{ transform:rotate(90deg) scale(.6); opacity:0 }
+/* barra de estado escondida (como no iPhone deitado); indicador na aresta de BAIXO do ecrã deitado (= aresta esquerda do retrato) */
+body.landscape .statusbar{ opacity:0 }
+body.landscape .home-bar{ left:8px; top:50%; bottom:auto; margin:-2.75px 0 0 -73px; transform:rotate(90deg); transition:none }
+body.landscape .hb-zone{ right:auto; top:0; bottom:0; width:30px; height:auto }
+/* Câmara deitada (landscape:'hold'): a janela fica como está; só os ÍCONES rodam para ficarem direitos, como no iPhone */
+body.landscape .cam-app .cam-top > div svg,body.landscape .cam-app .cam-flip svg,body.landscape .cam-app .cam-thumb,body.landscape .cam-app .cam-zoom span,body.landscape .cam-app .cam-count{ transform:rotate(90deg) }
+body.landscape .cam-app .cam-top > div svg,body.landscape .cam-app .cam-flip svg,body.landscape .cam-app .cam-zoom span{ transition:transform .4s var(--spring2,ease) }
+
+/* ---------- SERVIDOR SEM RESPOSTA (system.js waitScreen) ----------
+   Em vez de um ecrã vazio quando o `account.get` falha: diz o que se passa e volta a tentar sozinho. */
+.boot-wait{ position:absolute; inset:0; z-index:400; display:flex; align-items:center; justify-content:center; padding:0 30px;
+  background:rgba(0,0,0,.72); border-radius:57px; color:#fff; text-align:center }
+.boot-wait .bw-box{ display:flex; flex-direction:column; align-items:center; gap:9px; max-width:300px }
+.boot-wait b{ font-size:19px; font-weight:600; margin-top:4px }
+.boot-wait span{ font-size:15px; color:rgba(235,235,245,.7); line-height:1.35 }
+.boot-wait .bw-err{ font-size:12px; font-style:normal; color:rgba(235,235,245,.45); min-height:14px }
+.boot-wait .bw-sp{ width:30px; height:30px; border-radius:50%; border:2.5px solid rgba(255,255,255,.22); border-top-color:#fff; animation:bwSpin .9s linear infinite }
+@keyframes bwSpin{ to{ transform:rotate(360deg) } }
+.boot-wait .bw-btn{ margin-top:8px; height:44px; padding:0 22px; display:flex; align-items:center; border-radius:22px; background:#0A84FF; color:#fff; font-size:16px; font-weight:600; cursor:pointer }
+.boot-wait .bw-btn:active{ transform:scale(.96) }
+
+/* ---------- Botões físicos (ação, volume, lateral) ---------- */
+/* peças físicas integradas na carcaça: 4 px de largura, saem 3 px, arestas escuras e um fio de luz no meio; cor por moldura */
+.hw-btn{ position:absolute; width:4px; border-radius:1.5px; background:linear-gradient(90deg,rgba(0,0,0,.35),rgba(255,255,255,.08) 45%,rgba(0,0,0,.45)); cursor:pointer; z-index:1; transition:transform .08s; box-shadow:0 0 0 .5px rgba(0,0,0,.45) }
+.hw-btn::after{ content:''; position:absolute; inset:0; background:inherit; filter:brightness(.9) }
+.hw-btn.left{ left:-3px } .hw-btn.right{ right:-3px }
+/* botoes um pouco mais salientes para se verem melhor (pedido do dono, 2026-10-01): 6 px de largura, 5 px para fora da moldura */
+.hw-btn{ width:6px; border-radius:2.5px; box-shadow:0 0 0 .5px rgba(0,0,0,.5), 0 1px 2px rgba(0,0,0,.35) }
+.hw-btn.left{ left:-5px } .hw-btn.right{ right:-5px }
+.hw-btn.action{ top:178px; height:36px } .hw-btn.vol-up{ top:238px; height:66px } .hw-btn.vol-down{ top:316px; height:66px } .hw-btn.power{ top:268px; height:104px }
+.hw-btn.camera-ctl{ top:610px; height:70px }
+.hw-btn.left:active{ transform:translateX(2px) } .hw-btn.right:active{ transform:translateX(-2px) }
+.device.frame-orange .hw-btn{ background:linear-gradient(90deg,#7A360E,#DE8A44 45%,#7A360E) } .device.frame-black .hw-btn{ background:linear-gradient(90deg,#0B0B0C,#3A3A3F 45%,#0B0B0C) }
+.device.frame-silver .hw-btn,.device.frame-white .hw-btn{ background:linear-gradient(90deg,#8E9096,#F2F2F4 45%,#8E9096) } .device.frame-blue .hw-btn{ background:linear-gradient(90deg,#132A50,#4A6FA8 45%,#132A50) }
+.device.frame-wine .hw-btn{ background:linear-gradient(90deg,#3A0F1D,#9B4A61 45%,#3A0F1D) }
+/* HUD de volume (PearOS): pílula vertical junto aos botões */
+.vol-hud{ position:absolute; left:14px; top:230px; width:8px; height:150px; border-radius:10px; background:rgba(120,120,128,.45); backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px); z-index:330; overflow:hidden; opacity:0; transform:translateX(-14px); transition:opacity .25s, transform .35s var(--spring), width .25s var(--spring); pointer-events:none }
+.vol-hud.in{ opacity:1; transform:none; width:16px }
+.vol-hud .fill{ position:absolute; left:0; right:0; bottom:0; background:#fff; transition:height .15s ease-out }
+.vol-hud .ic{ position:absolute; left:50%; bottom:6px; transform:translateX(-50%); width:10px; height:10px; color:#8E8E93; mix-blend-mode:difference }
+/* HUD de modo silêncio / power (pílula por baixo da ilha) */
+.hw-hud{ position:absolute; top:60px; left:50%; transform:translate(-50%,-30px) scale(.9); z-index:330; padding:10px 16px; border-radius:22px; background:var(--material); color:var(--label); backdrop-filter:blur(30px); -webkit-backdrop-filter:blur(30px);
+  box-shadow:0 10px 30px rgba(0,0,0,.25); display:flex; align-items:center; gap:10px; font-size:var(--t-subhead); font-weight:600; opacity:0; transition:opacity .25s, transform .4s var(--spring); pointer-events:none; white-space:nowrap }
+.hw-hud.in{ opacity:1; transform:translate(-50%,0) scale(1) } .hw-hud svg{ width:20px; height:20px } .hw-hud.silent{ color:var(--red) }
+/* ecrã desligado */
+/* z 361: por cima das zonas de gesto (.hb-zone 360) - com o ecrã apagado nenhum swipe chega aos gestos; o próprio véu acorda ao toque (hardware.js) */
+.screen-off{ position:absolute; inset:0; z-index:361; background:#000; opacity:0; pointer-events:none; transition:opacity .28s var(--curve), background .6s ease-out; border-radius:57px }   /* acordar: .28 s */
+.screen-off.in{ opacity:1; pointer-events:auto; transition:opacity .16s ease-in, background .6s ease-out }   /* apagar: .16 s */
+/* Always-On Display: o véu passa de preto a 70 % e o ecrã bloqueado sobe por cima dele (só o relógio/data a .85 e as notificações a .45; atalhos e indicador escondidos) */
+.screen-off.aod{ background:rgba(0,0,0,.88) }   /* .72 lia-se como "ecrã meio aceso"; a .88 fica mesmo um Always-On esbatido */
+.screen.aod #lock{ z-index:342 } .screen.aod .lock-clockwrap{ opacity:.85 } .screen.aod .lock-p1{ opacity:.45; pointer-events:none } .screen.aod .lock-p2{ opacity:0; pointer-events:none }
+.screen.aod .lock-shortcuts,.screen.aod .lock-widgets{ opacity:0 } .screen.aod .statusbar{ opacity:.5 } .screen.aod .home-bar{ opacity:0 }
+/* deslizar para desligar */
+.power-off{ position:absolute; inset:0; z-index:345; background:rgba(0,0,0,.55); backdrop-filter:blur(30px); -webkit-backdrop-filter:blur(30px); display:flex; flex-direction:column; align-items:center; opacity:0; pointer-events:none; transition:opacity .3s }
+.power-off.in{ opacity:1; pointer-events:auto }
+.po-slider{ margin-top:110px; width:320px; height:74px; border-radius:37px; background:rgba(255,255,255,.14); border:.5px solid rgba(255,255,255,.2); position:relative; display:flex; align-items:center; justify-content:center; color:rgba(255,255,255,.85); font-size:var(--t-headline); font-weight:600; touch-action:none; overflow:hidden }
+.po-slider .knob{ position:absolute; left:4px; top:4px; width:66px; height:66px; border-radius:50%; background:var(--red); display:flex; align-items:center; justify-content:center; color:#fff; box-shadow:0 4px 14px rgba(0,0,0,.35); cursor:grab }
+.po-slider .knob svg{ width:30px; height:30px }
+.po-cancel{ position:absolute; bottom:calc(var(--safe-bottom) + 30px); width:70px; height:70px; border-radius:50%; background:rgba(255,255,255,.18); display:flex; align-items:center; justify-content:center; color:#fff; cursor:pointer }
+.po-cancel svg{ width:30px; height:30px } .po-lbl{ color:#fff; font-size:var(--t-foot); position:absolute; bottom:calc(var(--safe-bottom) + 6px) }
+
+/* ---------- Wallpapers ---------- */
+.wallpaper{ position:absolute; inset:0; z-index:0; background-size:cover; background-position:center;
+  transition:filter .5s var(--ease), transform .5s var(--ease), opacity .3s }
+.wallpaper.wp-bronze,.wallpaper.wp-blue,.wallpaper.wp-purple,.wallpaper.wp-green,.wallpaper.wp-mono,.wallpaper.wp-orange,.wallpaper.wp-pink{ background-image:none }
+/* (o brilho ::after com filter:blur(34px) foi removido: era uma camada 170 % maior que o ecrã com filter - o padrão exato do retângulo preto no CEF) */
+.wallpaper::after{ display:none }
+/* PearPhone Fold (Duo, 2026-10-03): a "lavagem" do Duo por cima do fundo do ecrã principal e do bloqueado (escurece o topo e o
+   fundo): a hora, o anel, as etiquetas, a dock, a pesquisa e os atalhos ficam BRANCOS em qualquer fundo. Gradiente simples, sem filter.
+   O vidro da barra (liquid27.css) pinta a mesma lavagem por baixo da tinta, no sítio de cada peça */
+body.os-ios.form-fold .wallpaper::after{ content:''; display:block; position:absolute; inset:0; pointer-events:none; background:var(--fold-wash) }
+body.os-ios.form-fold{ --fold-wash:linear-gradient(rgba(0,0,0,.34),rgba(0,0,0,.04) 40%,rgba(0,0,0,.36)) }
+.wallpaper.wp-bronze{ background:
+  radial-gradient(120% 85% at 22% 8%,#D9B489 0%,transparent 52%), radial-gradient(95% 70% at 88% 22%,#8A6647 0%,transparent 58%),
+  radial-gradient(130% 90% at 12% 62%,#6B5B7A 0%,transparent 55%), radial-gradient(150% 100% at 55% 108%,#2E2A44 0%,transparent 68%),
+  linear-gradient(158deg,#7A5F44 0%,#3B3350 52%,#14121C 100%) }
+.wallpaper.wp-blue{ background:
+  radial-gradient(110% 80% at 18% 10%,#5AB8FF 0%,transparent 55%), radial-gradient(100% 80% at 85% 30%,#1D4ED8 0%,transparent 60%),
+  radial-gradient(140% 100% at 50% 110%,#0B1230 0%,transparent 70%), linear-gradient(160deg,#2563EB 0%,#0F1E5A 55%,#06091C 100%) }
+.wallpaper.wp-purple{ background:
+  radial-gradient(110% 80% at 20% 12%,#F09CFF 0%,transparent 55%), radial-gradient(100% 80% at 85% 28%,#7C3AED 0%,transparent 60%),
+  radial-gradient(140% 100% at 50% 110%,#1E0B3A 0%,transparent 70%), linear-gradient(160deg,#A855F7 0%,#3B1466 55%,#0E0618 100%) }
+.wallpaper.wp-green{ background:
+  radial-gradient(110% 80% at 22% 10%,#9AF0B2 0%,transparent 55%), radial-gradient(100% 80% at 85% 30%,#0E9F6E 0%,transparent 60%),
+  radial-gradient(140% 100% at 50% 110%,#052E1E 0%,transparent 70%), linear-gradient(160deg,#16A34A 0%,#0B3D2A 55%,#04110B 100%) }
+.wallpaper.wp-orange{ background:
+  radial-gradient(110% 80% at 25% 12%,#FFD08A 0%,transparent 55%), radial-gradient(100% 80% at 85% 30%,#F2620F 0%,transparent 60%),
+  radial-gradient(140% 100% at 50% 110%,#3A1404 0%,transparent 70%), linear-gradient(160deg,#FF8A2B 0%,#8F2D06 55%,#1A0802 100%) }
+.wallpaper.wp-pink{ background:
+  radial-gradient(110% 80% at 22% 10%,#FFC2E0 0%,transparent 55%), radial-gradient(100% 80% at 85% 30%,#E11D74 0%,transparent 60%),
+  radial-gradient(140% 100% at 50% 110%,#3A0A22 0%,transparent 70%), linear-gradient(160deg,#F472B6 0%,#7A1140 55%,#170413 100%) }
+.wallpaper.wp-mono{ background:
+  radial-gradient(120% 90% at 20% 10%,#5C5C66 0%,transparent 55%), radial-gradient(130% 100% at 60% 110%,#0A0A0D 0%,transparent 70%),
+  linear-gradient(160deg,#3C3C44 0%,#17171B 55%,#050506 100%) }
+/* Wallpaper desfocado com app aberta: cópia ESTÁTICA já desfocada (.wallpaper-blur, criada em System.init) que só cruza opacidade -
+   animar filter:blur no wallpaper inteiro re-desfocava 440×956 px a cada frame (engasgava no CEF). */
+.wallpaper-blur{ position:absolute; inset:0; z-index:0; border-radius:57px; pointer-events:none; opacity:0; transition:opacity .45s var(--ios);
+  background:linear-gradient(rgba(0,0,0,.3),rgba(0,0,0,.3)), var(--wp-blur,var(--wp,#1C1C1E)) center/cover no-repeat }   /* imagem já desfocada (System.makeBlur) - sem filter */
+.screen.app-open .wallpaper-blur{ opacity:1 }
+.wallpaper-lock{ z-index:1 } .screen:not(.locked) .wallpaper-lock{ opacity:0; pointer-events:none }
+/* MODO CÂMARA: o fundo e o borrão que pintam por trás da app saem do caminho (a app é preta e cobre
+   o ecrã todo - sem isto pagava-se um borrão a mais por frame com o visor a correr a 60 fps).
+   ⚠️ O ECRÃ E O BEZEL DEIXARAM DE FICAR TRANSPARENTES: o visor já não é um buraco até ao mundo, é uma
+   <canvas> com a vista do jogo (js/gamerender.js). O telemóvel tem de ser VISÍVEL enquanto se
+   fotografa - com as regras antigas o aparelho inteiro (e a faixa do bezel) desaparecia. */
+.screen.camera-mode .wallpaper,.screen.camera-mode .wallpaper-blur,.screen.camera-mode #home,.screen.camera-mode #lock,.screen.camera-mode .wallpaper-lock{ opacity:0!important; visibility:hidden }
+.screen.camera-mode .app-window,.screen.camera-mode .app-window > .nav-stack{ background:transparent }
+.screen.brightness{ }
+
+/* ---------- Status bar ---------- */
+/* Status bar PearOS 17/26: hora 17px semibold à esquerda, sinal · Wi-Fi · bateria à direita */
+.statusbar{
+  position:absolute; inset:0 0 auto 0; z-index:310; height:var(--statusbar-h); pointer-events:none;
+  display:flex; align-items:center; justify-content:space-between; padding:0 30px 9px 36px;   /* centro a y=29,5 = centro da ilha (top 11 + 37/2) */
+  font-size:16px; font-weight:600; letter-spacing:-.1px; color:#fff; transition:color .25s, opacity .25s;   /* 15 pt na viewport 402 ≈ 16 px em 440 */
+}
+.statusbar > *{ pointer-events:none }
+.screen.setup-mode .statusbar{ color:var(--label) } .screen.setup-mode.hello-bg .statusbar{ color:#fff }   /* ecrã "olá": fundo colorido, barra branca */
+.screen.light-sb .statusbar{ color:#000 }
+.screen.hide-sb .statusbar{ opacity:0 }
+.sb-time{ min-width:60px; font-variant-numeric:tabular-nums; display:flex; align-items:center; gap:6px }
+.sb-time .ind{ display:inline-block; width:7px; height:7px; border-radius:50% }
+/* a data curta que ia ao lado da hora no PearPhone Fold aberto deixou de se ver: no dobrável não há barra de estado em cima */
+.sb-date{ display:none }
+/* PearPhone Fold: NÃO há barra de estado em cima. A hora, o estado (Wi-Fi ou rede, bateria), a privacidade e as atividades
+   vivem na barra direita (system.js Rail, liquid27.css). O #sbTime continua a ser escrito (há quem o leia), só não se vê. */
+body.os-ios.form-fold .statusbar{ display:none }
+.sb-priv{ display:block; width:7px; height:7px; border-radius:50%; background:#30D158; flex:none; margin-right:1px }
+.sb-priv.mic{ background:#FF9F0A }
+/* cartão da atividade (toque longo num círculo da barra direita) e chamada recebida: material do PearOS (sem desfoque no
+   jogo). O cartão abre ao lado da barra, à altura do círculo (--alc-y, island.js); a chamada ao centro da zona de conteúdo */
+body.os-ios.form-fold .alc-scrim{ display:block; position:absolute; inset:0; z-index:322; border-radius:var(--scr-r); background:rgba(0,0,0,.18); opacity:0; transition:opacity .22s ease-out }
+body.os-ios.form-fold .alc-scrim.alc-in{ opacity:1 }
+body.os-ios.form-fold .alc-card{ display:flex; flex-direction:column; gap:14px; position:absolute; left:auto; right:calc(var(--rail-w) + 4px); top:var(--alc-y,150px); width:420px; z-index:323; padding:18px 18px 16px; border-radius:30px;
+  background:rgba(250,250,252,.96); color:#000; box-shadow:0 12px 34px rgba(0,0,0,.24), inset 0 0 0 .5px rgba(255,255,255,.3); opacity:0; transform:translateX(14px); transition:opacity .2s ease-out, transform .34s var(--curve) }
+body.os-ios.form-fold.dark .alc-card,body.os-ios.form-fold.dark .alc-inc{ background:rgba(36,36,38,.96); color:#fff }
+body.os-ios.form-fold .alc-card.alc-in{ opacity:1; transform:none }
+body.os-ios.form-fold .alc-inc{ display:flex; flex-direction:column; gap:14px; position:absolute; left:calc(50% - var(--rail-w) / 2 - 230px); right:calc(50% + var(--rail-w) / 2 - 230px); top:22px; z-index:326; padding:16px 16px 14px; border-radius:30px;
+  background:rgba(250,250,252,.96); color:#000; box-shadow:0 14px 38px rgba(0,0,0,.3), inset 0 0 0 .5px rgba(255,255,255,.3); cursor:pointer; opacity:0; transform:translateY(-22px); transition:opacity .22s ease-out, transform .38s var(--curve) }
+body.os-ios.form-fold .alc-inc.alc-in{ opacity:1; transform:none }
+body.os-ios.form-fold .alc-inc.alc-out{ opacity:0; transform:translateY(-22px); transition:opacity .18s ease-in, transform .24s ease-in; pointer-events:none }
+body.os-ios.form-fold.dark .alc-open,body.os-ios.form-fold.dark .alc-b:not(.alc-end):not(.alc-dec):not(.alc-ans):not(.alc-pri):not(.alc-on){ background:rgba(255,255,255,.12) }
+body.os-ios.form-fold.dark .alc-prog{ background:rgba(255,255,255,.16) }
+.sb-right{ display:flex; align-items:center; gap:7px; margin-left:auto; position:relative }
+.sb-right svg{ display:block }
+.sb-right .sb-line{ display:none }   /* o traço por baixo dos ícones foi retirado (revisão 2026-09-08: "sem linhas estranhas por baixo") */
+.sb-right .sb-pct{ font-size:12px; font-weight:600; margin-right:-2px }
+
+/* ---------- Dynamic Island ---------- */
+.island{
+  position:absolute; z-index:320; top:11px; left:50%; transform:translateX(-50%);
+  width:125px; height:37px; background:#000; border-radius:19px; color:#fff;                    /* PearPhone 18 Pro: ≈125×37 pt a 11 pt do topo */
+  /* sem transição de tamanho: no CEF só transform/opacity animam - a forma muda pelas peças do island.js */
+  overflow:hidden; cursor:pointer; display:flex; align-items:center;   /* preto absoluto, sem contorno nem sombra */
+}
+/* Câmara frontal à DIREITA da ilha (PearPhone 18 Pro). A lente é HARDWARE: não pode mexer-se NEM desaparecer em nenhum modo.
+   Por isso NÃO se ancora a uma borda da ilha (`right`/`left`): a borda desloca-se durante a animação de largura e a lente viajava com ela
+   (queixa in-game: "a câmara mexe ao carregar no mute"). Ancora-se ao CENTRO - a ilha está sempre centrada no ecrã (left:50% + translateX(-50%)),
+   logo o seu centro é sempre x=220 - e a distância ao centro é constante: 220 + 41,5 = 261,5 (a mesma posição de sempre).
+   O topo também é fixo (13,5 px) para a lente não descer quando a ilha cresce em altura. */
+.island .cam{
+  position:absolute; left:50%; right:auto; margin-left:41.5px; top:13.5px; transform:none; width:10px; height:10px; border-radius:50%;
+  background:radial-gradient(circle at 40% 38%,#1B2230 0%,#090C12 48%,#000 74%);
+  box-shadow:inset 0 0 0 1px #0E1116, inset 0 0 3px rgba(80,110,160,.32);
+}
+.island .cam::after{ content:''; position:absolute; left:2.5px; top:2px; width:2.5px; height:2px; border-radius:50%; background:rgba(120,160,255,.32); filter:blur(.4px) }
+/* no jogo, ZERO filter: o reflexo da lente vive dentro da ilha, que muda de tamanho (e repinta) a cada notificação, HUD de volume ou
+   música. O mesmo ponto esbatido faz-se com um gradiente radial numa caixa .6 px maior de cada lado - igual a esta escala, sem filtro. */
+body.fivem .island .cam::after{ left:1.9px; top:1.4px; width:3.7px; height:3.2px; border-radius:0; filter:none;
+  background:radial-gradient(closest-side,rgba(120,160,255,.32) 50%,rgba(120,160,255,0)) }
+.island .dot{ position:absolute; left:14px; top:50%; transform:translateY(-50%); width:8px; height:8px; border-radius:50%; display:none }
+.island.rec-cam .dot{ display:block; background:#30D158 }   /* indicadores de privacidade planos (sem brilho), como no PearOS */
+.island.rec-mic .dot{ display:block; background:#FF9F0A }
+.island .live{ position:absolute; inset:0; display:none; align-items:center; padding:0 14px 0 12px; gap:10px; font-size:var(--t-foot); font-weight:600 }
+.island.active{ width:232px; height:38px }
+.island.active .live{ display:flex; padding-right:84px }   /* o conteúdo pára ANTES da lente (261,5) em vez de a esconder */
+.island.expanded{ width:376px; height:150px; border-radius:40px; cursor:default }
+.island.expanded .live{ display:none }
+/* Face Key (desbloqueio): a ilha alarga um pouco, mostra o glifo do Face Key a "reconhecer" e volta - micro-animação subtil, sem scanner */
+.island.faceid{ width:150px; height:42px } .island.faceid .live{ display:flex; justify-content:center; padding:0; color:#fff }
+.island.faceid .live svg{ width:22px; height:22px; animation:faceScan .65s var(--curve) both } @keyframes faceScan{ 0%{ opacity:0; transform:scale(.6) } 35%{ opacity:1; transform:scale(1.04) } 70%{ transform:scale(1) } 100%{ opacity:1; transform:scale(1) } }
+.island .big{ position:absolute; inset:0; display:none; flex-direction:column; padding:30px 22px 18px; gap:10px }   /* 30 no topo: a primeira linha passa por baixo da lente (que fica visível) */
+.island.expanded .big{ display:flex }
+.island .art{ width:26px; height:26px; border-radius:6px; flex:none }
+.island .bars{ display:flex; gap:2px; align-items:flex-end; height:16px; margin-left:auto }
+/* as 4 barrinhas: animam `transform`, nunca `height` - animar altura é LAYOUT a cada frame
+   (e estas barras existem no estado compacto, logo tocavam o ciclo de layout durante toda a
+   música). É o mesmo padrão do equalizador da app Música (app-music.css: scaleY + origem em baixo). */
+.island .bars i{ width:3px; height:16px; transform-origin:50% 100%; background:var(--art,var(--pink)); border-radius:2px; animation:bar .9s ease-in-out infinite alternate }   /* --art = cor da capa (island.js) */
+.island .bars i:nth-child(2){ animation-delay:.15s } .island .bars i:nth-child(3){ animation-delay:.3s } .island .bars i:nth-child(4){ animation-delay:.45s }
+@keyframes bar{ from{ transform:scaleY(.25) } to{ transform:scaleY(1) } }
+.island .grow{ flex:1; min-width:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+/* Música (pedido 2026-09-16): barras à DIREITA da lente (a lente está a 157,5 px da borda esquerda da ilha ativa; sobram ~60 px)
+   e o título em carrossel quando não cabe - vai e volta com transform (regra CEF: nada de animar width/scroll). */
+.island.music.active .live{ padding-right:84px }
+.island.music .bars{ position:absolute; right:15px; top:50%; transform:translateY(-50%); margin-left:0 }
+.island .grow.mq{ text-overflow:clip; -webkit-mask:linear-gradient(90deg,transparent 0,#000 6px,#000 calc(100% - 6px),transparent 100%); mask:linear-gradient(90deg,transparent 0,#000 6px,#000 calc(100% - 6px),transparent 100%) }
+.island .grow.mq .mq-in{ display:inline-block; will-change:transform }
+.island .grow.mq.on .mq-in{ animation:islMq var(--mq-t,6s) ease-in-out infinite alternate }
+@keyframes islMq{ 0%,12%{ transform:translateX(0) } 88%,100%{ transform:translateX(calc(-1 * var(--mq-d,0px))) } }
+body[data-motion="reduced"] .island .grow.mq.on .mq-in{ animation:none }
+.island .ctl{ display:flex; justify-content:center; gap:34px; margin-top:auto } .island .ctl svg{ width:30px; height:30px; cursor:pointer }
+.island .ctl .play svg{ width:36px; height:36px }
+.island .end{ width:36px; height:36px; border-radius:50%; background:var(--red); display:flex; align-items:center; justify-content:center; margin-left:auto; flex:none }
+.island .end svg{ width:18px; height:18px } .island .ans{ background:var(--green); margin-left:6px }
+.island .av{ width:28px; height:28px; border-radius:50%; background:linear-gradient(160deg,#9AA0AA,#5E6470); display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:600; flex:none }
+.island .tm{ font-variant-numeric:tabular-nums; color:var(--green); margin-left:auto }
+.island.timer .tm{ color:var(--orange) }
+.island .n-ic{ width:26px; height:26px; border-radius:7px; overflow:hidden; flex:none } .island .n-ic svg{ width:100%; height:100% }
+.island .n-t{ font-size:var(--t-cap1); opacity:.6; font-weight:500 } .island .n-m{ font-size:var(--t-foot); font-weight:600 }
+/* ---------- Instalar da AppShop: anel de progresso na ilha (PearOS 17+) ----------
+   O texto e o ícone ficam à esquerda da lente; o anel entra a seguir. Sem filtros: é dentro do ecrã, mas a regra do CEF vale na mesma. */
+.island .dl-ring{ position:relative; width:22px; height:22px; flex:none; display:flex; align-items:center; justify-content:center; color:var(--blue) }
+.island .dl-ring svg{ width:22px; height:22px; transform:rotate(-90deg) }
+.island .dl-ring circle{ fill:none; stroke-width:2.2 }
+.island .dl-ring circle.bg{ stroke:rgba(255,255,255,.34) }
+.island .dl-ring circle.fg{ stroke:#0A84FF; stroke-linecap:round; stroke-dasharray:50.27; transition:stroke-dashoffset .12s linear }
+.island .dl-ring i{ position:absolute; width:5px; height:5px; border-radius:1.4px; background:#0A84FF }
+.island .dl-ring.ok{ color:var(--green) } .island .dl-ring.ok svg{ width:17px; height:17px; transform:none; stroke-width:2.6 }
+/* HUD na ilha (PearOS 17+): silêncio/toque - ícone à esquerda, texto a seguir, a câmara (à direita) fica no seu sítio */
+/* a ilha ESTICA simetricamente mas a câmara fica exatamente no mesmo ponto do ecrã (x = 261,5): ícone e texto ficam à esquerda dela */
+.island.hud{ width:224px; height:37px }   /* 108→332: não toca nos ícones da direita (≥ 352) */
+/* (a lente já está ancorada ao centro do ecrã na regra .island .cam - nenhum modo precisa de a reposicionar) */
+.island.hud .live{ justify-content:flex-start; padding:0 78px 0 12px; gap:8px }   /* ícone + texto à esquerda da câmara */
+/* a ilha alargada (240 px, 100→340) não chega aos ícones da direita (≥ 352 px): ficam visíveis (pedido do utilizador) */
+.statusbar .sb-right{ transition:opacity .2s }
+.island .hud-ic{ width:34px; height:24px; border-radius:8px; display:flex; align-items:center; justify-content:center; color:#fff; flex:none; transition:background .25s }
+.island .hud-ic svg{ width:16px; height:16px } .island .hud-ic.silent{ background:#FF453A }
+.island .hud-tx{ font-size:12.5px; font-weight:600; letter-spacing:-.1px; white-space:nowrap } .island .hud-tx.silent{ color:#FF453A }
+.island.hud .live > *{ animation:hudIn .4s var(--spring) both } @keyframes hudIn{ from{ opacity:0; transform:scale(.6) } to{ opacity:1; transform:none } }
+/* (o antigo .island.bump escalava a caixa inteira, lente incluída: o salto agora é só da forma, .isl-bump-a/b no notify.css) */
+
+/* ---------- Camadas ---------- */
+.layer{ position:absolute; inset:0; z-index:10 }
+
+/* ---------- Home indicator ---------- */
+.home-bar{   /* PearOS: 134×5 pt na viewport 402 → 146×5.5 em 440; branco em fundo escuro, preto em interface clara (.light-sb) */
+  position:absolute; bottom:9px; left:50%; transform:translateX(-50%); width:146px; height:5.5px; border-radius:3px;
+  background:rgba(255,255,255,.92); z-index:95; pointer-events:none; transition:background .25s, opacity .25s;
+}
+.screen.light-sb .home-bar{ background:rgba(0,0,0,.85) }
+/* o indicador FICA visível no modo câmara (como no PearOS): era a única forma de sair da Câmara aberta a partir do ecrã bloqueado */
+.screen.hide-hb .home-bar{ opacity:0 }
+.screen.camera-mode .home-bar{ background:rgba(255,255,255,.92) }
+/* zonas de gesto: indicador (baixo), borda esquerda (voltar), topo (Centro de controlo / Notificações) */
+/* zona do indicador POR CIMA de tudo (Centro de Controlo, Notificações, switcher, folhas…): é sempre utilizável para fechar o que estiver aberto (pedido do utilizador) */
+.hb-zone{ position:absolute; left:0; right:0; bottom:0; height:30px; z-index:360; touch-action:none; cursor:pointer }
+/* ecrã apagado (.screen-off.in, hardware.js): system.js põe .scr-off no ecrã (o CEF não tem :has()) */
+.home-bar{ z-index:355 } .screen.scr-off .home-bar{ opacity:0 }
+/* PearPhone Fold (Duo): 230 / 380 no bloqueado (referências 9 e 10), o centro a 20 px do fundo, a branco .75. Nas apps e no ecrã
+   principal NÃO há indicador (referências 15 e 16): só no bloqueado, no assistente e na câmara; o gesto continua no .hb-zone */
+body.os-ios.form-fold .home-bar{ width:208px; height:8px; border-radius:4px; bottom:16px; background:rgba(255,255,255,.75) }
+body.os-ios.form-fold .screen.light-sb .home-bar{ background:rgba(0,0,0,.6) }
+body.os-ios.form-fold .screen.locked .home-bar{ width:230px }
+body.os-ios.form-fold.fold-open .screen.locked .home-bar{ width:380px }
+body.os-ios.form-fold .screen:not(.locked):not(.setup-mode):not(.camera-mode) .home-bar{ opacity:0 }
+/* feedback ao tocar no indicador: o system.js (hbWire) põe o indicador a seguir à zona de gesto, para esta regra o apanhar */
+.hb-zone:active ~ .home-bar{ transform:translateX(-50%) scaleX(1.08); opacity:.8 }
+.edge-zone{ position:absolute; left:0; top:var(--statusbar-h); bottom:60px; width:22px; z-index:93; touch-action:none }
+.top-zone{ position:absolute; left:0; right:0; top:0; height:var(--statusbar-h); z-index:81; touch-action:none; cursor:grab }
+.top-zone .tz-l,.top-zone .tz-r{ position:absolute; top:0; bottom:0 } .top-zone .tz-l{ left:0; width:60% } .top-zone .tz-r{ right:0; width:40% }
+
+/* ---------- APP WINDOWS (multitasking: janelas mantidas em memória) ---------- */
+#apps{ position:absolute; inset:0; z-index:50; pointer-events:none }
+/* abertura: o ícone "cresce" até ao ecrã (curva PearOS), fecho: encolhe de volta para o ícone */
+.app-window{
+  position:absolute; inset:0; background:var(--bg); color:var(--label);
+  border-radius:57px; overflow:hidden; pointer-events:auto; transform-origin:center; opacity:0;
+  transition:transform .5s cubic-bezier(.2,.9,.25,1), opacity .22s ease-out;   /* raio FIXO: animar border-radius repintava a janela inteira em cada frame (só transform/opacity são compostos na GPU) */
+}
+/* sem !important: o gesto do indicador escreve o transform inline enquanto arrasta (o inline ganha a esta regra; ao largar limpa-se) */
+.app-window.open{ transform:translateY(var(--kb-shift,0px)); opacity:1; border-radius:57px; transition:transform .5s cubic-bezier(.2,.9,.25,1), opacity .18s ease-out }
+.app-window.closing{ opacity:0; pointer-events:none; transition:transform .38s cubic-bezier(.4,0,.6,1), opacity .3s ease-in .08s }
+.app-window.closing,.app-window.dragging,.app-window.settle{ will-change:transform }
+.tile.launch{ transform:scale(1.12)!important; filter:brightness(1.08); transition:transform .18s cubic-bezier(.2,.9,.25,1), filter .18s }
+.app-window.bg{ display:none }
+.app-window.dragging{ transition:none; border-radius:40px }
+.app-window.external{ background:#000 }
+.app-window.external iframe{ position:absolute; inset:0; width:100%; height:100%; border:none; background:var(--bg) }
+.app-window[data-app="camera"]{ background:transparent }
+
+/* ---------- Night Shift (Definições › Ecrã e brilho) ----------
+   Véu âmbar translúcido por cima de tudo o que é ecrã, logo abaixo do brilho (.bright-ov z 400).
+   Sem filter nem mix-blend-mode (regras do CEF): só cor translúcida e opacity a animar. No visor da
+   câmara / Face Key (buraco até ao jogo) desaparece, senão tingia o mundo. */
+.nightshift-ov{ position:absolute; inset:0; z-index:399; background:rgba(255,138,20,.13); opacity:0; pointer-events:none; transition:opacity .8s ease-out; border-radius:57px }
+.nightshift-ov.on{ opacity:1 }
+body.see-through .nightshift-ov,.screen.camera-mode .nightshift-ov{ opacity:0; transition:none }
+
+/* ---------- Controlos (só no browser) ---------- */
+.controls{ display:flex; align-items:center; gap:12px; font-size:13px; color:rgba(235,235,245,.6); flex-wrap:wrap; justify-content:center }
+.controls .btn{ padding:9px 16px; border-radius:11px; background:#1C1C1E; border:.5px solid #38383A; color:#fff; font-size:13px; font-weight:500; cursor:pointer }
+.controls .btn:hover{ background:#2C2C2E }
+.controls code{ font-family:var(--font-mono); background:#1C1C1E; border:.5px solid #38383A; padding:3px 9px; border-radius:7px; color:#30D158; font-size:12.5px; letter-spacing:1.5px }
+
+/* ============================================================
+   POSIÇÃO NA MÃO (/phonepos, js/shell/posedit.js): painel do admin à esquerda do ecrã do jogo, fora do telemóvel.
+   Escuro e sólido (sem backdrop-filter: no CEF fica preto); só opacity/transform animam; o hover só muda a cor.
+   ============================================================ */
+.hpe{ position:fixed; left:36px; top:50%; z-index:9000; width:372px; box-sizing:border-box; padding:16px 16px 14px; border-radius:22px;
+  background:rgba(18,18,22,.94); color:#F2F2F5; font:13px/1.35 Inter,-apple-system,'Segoe UI',sans-serif; box-shadow:0 18px 48px rgba(0,0,0,.45),0 0 0 1px rgba(255,255,255,.08);
+  opacity:0; pointer-events:none; transform:translate(-14px,-50%); transition:opacity .2s ease-out,transform .24s ease-out; user-select:none }
+.hpe.in{ opacity:1; pointer-events:auto; transform:translate(0,-50%) }
+.hpe button{ font:inherit; color:inherit; border:0; cursor:pointer }
+.hpe-hd{ display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:10px }
+.hpe-t{ display:block; font-size:16px; font-weight:700 } .hpe-sub{ display:block; color:#9C9CA6; font-size:12px; margin-top:2px }
+.hpe-x{ width:30px; height:30px; border-radius:50%; background:rgba(255,255,255,.08); font-size:13px; transition:background-color .15s }
+.hpe-x:hover{ background:rgba(255,255,255,.16) }
+.hpe-sec{ padding:8px 0; border-top:1px solid rgba(255,255,255,.07) }
+.hpe-st{ display:block; font-size:11px; font-weight:700; letter-spacing:.4px; text-transform:uppercase; color:#8E8E99; margin-bottom:6px }
+.hpe-st i{ font-style:normal; text-transform:none; letter-spacing:0 }
+.hpe-row{ display:flex; align-items:center; gap:6px; padding:3px 6px; margin:0 -6px; border-radius:10px; transition:background-color .15s }
+.hpe-row.on{ background:rgba(10,132,255,.16) }
+.hpe-row b{ width:14px; font-weight:700; color:#C7C7D0 }
+.hpe-b{ width:26px; height:26px; border-radius:8px; background:rgba(255,255,255,.08); font-size:15px; font-weight:600; transition:background-color .15s }
+.hpe-b:hover{ background:rgba(255,255,255,.16) }
+.hpe-sl{ flex:1; min-width:0; accent-color:#0A84FF }
+.hpe-num{ width:74px; height:26px; box-sizing:border-box; padding:0 7px; border-radius:8px; border:1px solid rgba(255,255,255,.12); background:rgba(0,0,0,.35); color:#fff; font:12px/1 ui-monospace,Consolas,monospace; text-align:right }
+.hpe-num:focus{ outline:none; border-color:#0A84FF }
+.hpe-line{ display:flex; align-items:center; justify-content:space-between; gap:10px } .hpe-line .hpe-st{ margin:0 }
+.hpe-seg{ display:flex; gap:2px; padding:2px; border-radius:10px; background:rgba(255,255,255,.06) }
+.hpe-seg button{ padding:5px 9px; border-radius:8px; background:transparent; font-size:12px; font-weight:600; color:#B8B8C2; transition:background-color .15s,color .15s }
+.hpe-seg button:hover{ color:#fff } .hpe-seg button.on{ background:#0A84FF; color:#fff }
+.hpe-chk{ display:flex; align-items:center; gap:8px; padding:8px 0 4px; border-top:1px solid rgba(255,255,255,.07); cursor:pointer; color:#D8D8E0 }
+.hpe-hint{ color:#7E7E8A; font-size:11.5px; padding:4px 0 10px }
+.hpe-ft{ display:flex; gap:8px }
+.hpe-ft button{ flex:1; height:36px; border-radius:12px; background:rgba(255,255,255,.08); font-weight:600; transition:background-color .15s }
+.hpe-ft button:hover{ background:rgba(255,255,255,.15) }
+.hpe-ft .hpe-pri{ background:#0A84FF } .hpe-ft .hpe-pri:hover{ background:#2391FF }
+/* "Esconder o ecrã do telemóvel": vê-se a mão e o telemóvel 3D; o painel continua */
+body.hpe-hide .stage{ opacity:0; pointer-events:none }
+/* camadas de ecrã inteiro fora do telemóvel (js/overlay.js): o painel admin e a loja aparecem com o telemóvel guardado */
+body.hidden.ov-on{ display:block!important }
+body.hidden.ov-on .stage{ display:none!important }

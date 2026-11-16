@@ -3,7 +3,7 @@ SoundsController = {}
 RegisterNetEvent("oELS:toggleSirens")
 
 AddEventHandler("oELS:toggleSirens", function(player, vehicle, state)
-    MainController.DebugPrint("[ToggleSirens] Request from " .. player .. " to change sirens to " .. tostring(state))
+    MainController.DebugPrint("[ToggleSirens] Request from " .. player .. " to change sirens on vehicle " .. tostring(vehicle) .. " to " .. tostring(state))
 
     vehicleData = MainController.GetVehicleData(vehicle)
 
@@ -36,11 +36,22 @@ AddEventHandler("oELS:toggleBullhorn", function(player, vehicle, state)
     SoundsController.ChangeBullhornState(vehicleData)
 end)
 
+function SoundsController.StopAll(vehicleData)
+    for _, sound in pairs({vehicleData.sirens, vehicleData.dualSiren, vehicleData.bullhorn}) do
+        if sound.Handle then
+            StopSound(sound.Handle)
+            ReleaseSoundId(sound.Handle)
+            sound.Handle = nil
+        end
+    end
+end
+
 function SoundsController.ChangeSirenTone(vehicleData)
     if not vehicleData.entity then return end
 
     if vehicleData.sirens.Handle then
-        MainController.DebugPrint("[ChangeSirenTone] Removing old siren tone that is stored.")
+        -- debug
+        MainController.DebugPrint("[ChangeSirenTone] Removing old siren tone that is stored. id=" .. tostring(vehicleData.sirens.Handle) .. " finished=" .. tostring(HasSoundFinished(vehicleData.sirens.Handle)))
         StopSound(vehicleData.sirens.Handle)
         ReleaseSoundId(vehicleData.sirens.Handle)
         vehicleData.sirens.Handle = nil
@@ -52,7 +63,7 @@ function SoundsController.ChangeSirenTone(vehicleData)
 
     if not elsData then
         MainController.DebugPrint("[ChangeSirenTone] Ending Siren Change due to not being able to find ELS data for " .. vehicleData.networkedId)
-        vehicleData.sirens.state = 0
+        vehicleData.sirens.State = 0
         return
     end
 
@@ -78,7 +89,7 @@ function SoundsController.ChangeSirenTone(vehicleData)
 
     vehicleData.sirens.Handle = GetSoundId()
 	PlaySoundFromEntity(vehicleData.sirens.Handle, soundData.soundFile, vehicleData.entity, soundData.soundPack, 0, 0)
-    MainController.DebugPrint("[ChangeSirenTone] Created Siren sound for " .. vehicleData.networkedId)
+    MainController.DebugPrint("[ChangeSirenTone] Created Siren sound for " .. vehicleData.networkedId .. " id=" .. tostring(vehicleData.sirens.Handle))
 end
 
 function SoundsController.ChangeSecondSirenTone(vehicleData)
@@ -97,7 +108,7 @@ function SoundsController.ChangeSecondSirenTone(vehicleData)
 
     if not elsData then
         MainController.DebugPrint("[ChangeSecondSirenTone] Ending Siren Change due to not being able to find ELS data for " .. vehicleData.networkedId)
-        vehicleData.dualSiren.state = 0
+        vehicleData.dualSiren.State = 0
         return
     end
 
@@ -142,7 +153,7 @@ function SoundsController.ChangeBullhornState(vehicleData)
 
     if not elsData then
         MainController.DebugPrint("[ChangeBullhornState] Ending Bullhorn due to not being able to find ELS data for " .. vehicleData.networkedId)
-        vehicleData.bullhorn.state = 0
+        vehicleData.bullhorn.State = 0
         return
     end
 

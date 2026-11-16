@@ -1,0 +1,571 @@
+/* ---------- Social polish (Instashot / Tweeter / Reels) ---------- */
+.vbadge{ display:inline-flex; align-items:center; justify-content:center; width:15px; height:15px; border-radius:50%; background:#1D9BF0; color:#fff; font-size:10px; font-weight:800; vertical-align:middle; margin-left:3px; line-height:1 }
+.ig-wordmark{ font-family:'Inter',cursive; font-size:24px; font-weight:800; letter-spacing:-.8px; font-style:italic; padding-right:4px }   /* o italico sintetico sai da caixa do .nb-title (overflow:hidden) e o 't' ficava cortado */
+.ig-loc{ font-size:var(--t-cap1); color:var(--label2); margin-top:-1px }
+.ig-img{ position:relative } .ig-burst{ position:absolute; left:50%; top:50%; width:110px; height:110px; margin:-55px 0 0 -55px; color:#fff; filter:drop-shadow(0 4px 16px rgba(0,0,0,.45)); animation:burst .9s cubic-bezier(.2,.9,.25,1) forwards; pointer-events:none }
+.ig-burst svg{ width:100%; height:100% } @keyframes burst{ 0%{ transform:scale(.3); opacity:0 } 25%{ transform:scale(1.15); opacity:1 } 70%{ transform:scale(1); opacity:1 } 100%{ transform:scale(1.4); opacity:0 } }
+body.fivem .ig-burst{ filter:none }   /* regra do CEF: zero filter no jogo - a sombra era um drop-shadow re-rasterizado em cada frame da animacao */
+.ig-actions svg{ transition:transform .3s var(--spring) } .ig-actions .liked svg{ animation:likepop .4s var(--spring) } @keyframes likepop{ 50%{ transform:scale(1.35) } }
+.tab .avatar.xs{ width:26px; height:26px; font-size:11px; border:1.5px solid var(--label2) } .tab.on .avatar.xs{ border-color:var(--label) }
+.reel .rside .pf{ position:relative } .reel .rside .pf .plus{ position:absolute; left:50%; bottom:-6px; transform:translateX(-50%); width:20px; height:20px; border-radius:50%; background:#FE2C55; color:#fff; display:flex; align-items:center; justify-content:center; font-size:14px; font-weight:800; line-height:1; border:2px solid #000 }
+.reel .rside .bm.on{ color:#FFD60A } .reel .lk.liked svg{ animation:likepop .4s var(--spring) }
+/* CEF: zero filter no jogo - a sombra dos seis icones de cada reel sai; o veu do .rv::after garante o contraste */
+body.fivem .reel .rside svg{ filter:none }
+/* contentor do feed: cresce para o estado vazio (flex:1) e o spinner poderem centrar-se */
+.feed{ display:flex; flex-direction:column; flex:1 0 auto } .feed > .spinner{ margin:auto }
+.tw-prof-wrap{ display:block }   /* invólucro do perfil do Tweeter (faixa + ficha), para o UI.el não perder a segunda metade */
+/* Criar conta (Instashot / Tweeter / Reels): o conteúdo é curto e centra-se no espaço livre.
+   As margens automáticas centram quando cabe e resolvem a 0 quando não cabe - ao contrário de justify-content,
+   que num contentor com scroll cortaria o topo. */
+.soc-signup .content > .profile{ margin-top:auto }
+.soc-signup .content > .group-footer:last-child{ margin-bottom:auto }
+.soc-signup .profile{ padding:8px 0 18px }
+/* as animações só correm no reel visível (.play, ligado por IntersectionObserver em social.js) */
+.reel .rv,.reel .disc{ animation:none!important }
+.reel.play .rv{ animation:kb 12s ease-in-out infinite alternate!important }
+.reel.play .disc{ animation:spin 4s linear infinite!important }
+.reel .disc{ position:absolute; right:16px; bottom:calc(var(--safe-bottom) + 8px); width:50px; height:50px; border-radius:50%; background:conic-gradient(#333,#111 30%,#444 60%,#111); display:flex; align-items:center; justify-content:center; animation:spin 4s linear infinite; z-index:2; box-shadow:0 4px 12px rgba(0,0,0,.5) } .reel .disc .avatar{ width:26px; height:26px; font-size:10px }
+.reel .rbot .snd{ margin-right:60px } .reel .rbot p.long{ -webkit-line-clamp:unset }
+.reel .rbot p{ display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; cursor:pointer }
+/* estado vazio dos Reels: o .empty partilhado pinta com --label (preto no tema claro) e o fundo aqui e sempre preto */
+.reel > .empty{ height:100%; padding:40px 40px 120px; color:rgba(255,255,255,.7) } .reel > .empty b{ color:#fff } .reel > .empty svg{ color:rgba(255,255,255,.45) }
+.ig-cmt-row{ display:flex; gap:10px; padding:8px 16px; align-items:flex-start } .ig-cmt-row .lk{ margin-left:auto; color:var(--label3); cursor:pointer } .ig-cmt-row .lk.on{ color:var(--red) } .ig-cmt-row .lk svg{ width:20px; height:20px }
+
+/* =====================================================================
+   INSTASHOT - stories, comentários com respostas, explorar, perfil
+   Sem filter/backdrop-filter: só transform e opacity animam (regra do CEF).
+   ===================================================================== */
+
+/* sentinela do scroll infinito */
+.ig-sent { height: 28px; }
+.ig-sent.on { background: no-repeat center / 18px 18px; }
+.ig-sent.on::after { content: ''; display: block; width: 18px; height: 18px; margin: 5px auto; border-radius: 50%; border: 2px solid var(--fill3); border-top-color: var(--label3); animation: igSpin .7s linear infinite; }
+@keyframes igSpin { to { transform: rotate(360deg); } }
+
+/* bolha "a tua story" com o + */
+/* anel 76 + intervalo 6 + rotulo ~18 + respiro */ .ig-stories { min-height: 112px; }
+.story.own .ring { position: relative; }
+.story.own .plus { position: absolute; right: 0; bottom: 0; width: 24px; height: 24px; border-radius: 50%; background: var(--accent); color: #fff; display: flex; align-items: center; justify-content: center; border: 2px solid var(--bg); }
+
+/* ---------- comentários ---------- */
+/* sem teto próprio na lista (era max-height:46vh): o compositor passou para o fundo da folha (UI.sheet `foot`, 4 nov 2026) e quem
+   rola é o .content da folha, limitado pelo max-height dela - a lista usa a altura toda e o campo de escrever nunca sai da vista */
+.ig-cmts-sheet .cl { min-height: 0; }
+.ig-cmt-row { display: flex; gap: 10px; padding: 9px 16px; align-items: flex-start; }
+.ig-cmt-row.reply { padding-left: 56px; }   /* alinha com o texto do comentario-pai: 16 + avatar 30 + intervalo 10 */
+.ig-cmt-row.reply .avatar { width: 24px; height: 24px; font-size: 10px; }
+.ig-cmt-row .bd { flex: 1; min-width: 0; }
+.ig-cmt-row .tx { font: 400 16px/1.4 var(--font); color: var(--label); }
+.ig-cmt-row .tx b { font-weight: 600; cursor: pointer; }
+.ig-cmt-row .mt { display: flex; gap: 14px; margin-top: 6px; font: 600 13px/1.1 var(--font); color: var(--label3); }
+.ig-cmt-row .mt .rep, .ig-cmt-row .mt .del { cursor: pointer; }
+.ig-cmt-row .mt .del { color: var(--red); }
+.ig-cmt-row .lk { color: var(--label3); padding: 8px 6px; margin-top: -6px; margin-right: -4px; }   /* alvo 32x36 sem esticar a linha */
+.ig-cmt-row .lk.on { color: var(--red); }
+.ig-cmt-comp { position: relative; }
+.ig-cmt-comp .rt { display: none; position: absolute; top: -20px; left: 16px; font: 600 13px/1 var(--font); color: var(--label3); }
+.ig-cmt-comp .rt.on { display: block; }
+
+/* ---------- visualizador de stories ---------- */
+.story-view { position: absolute; inset: 0; z-index: 200; background: #000; overflow: hidden; border-radius: 57px; }
+.story-view.out { opacity: 0; transition: opacity .2s var(--ease); }
+.story-view .sv-img { position: absolute; inset: 0; background: #111 center/cover no-repeat; }
+.story-view .sv-txt { position: absolute; transform: translate(-50%, -50%); max-width: 84%; text-align: center; font: 700 28px/1.2 var(--font); color: #fff; text-shadow: 0 2px 10px rgba(0,0,0,.45); word-break: break-word; }
+.story-view .sv-bars { position: absolute; top: calc(var(--statusbar-h) + 6px); left: 10px; right: 10px; display: flex; gap: 4px; z-index: 4; }
+.story-view .sv-bars .b { flex: 1; height: 2.5px; border-radius: 2px; background: rgba(255,255,255,.32); overflow: hidden; }
+.story-view .sv-bars .b.done { background: #fff; }
+.story-view .sv-bars .b span { display: block; height: 100%; width: 0; background: #fff; }
+.story-view .sv-bars .b span.run { animation: svRun 5.2s linear forwards; }
+@keyframes svRun { to { width: 100%; } }
+.story-view.paused .sv-bars .b span.run { animation-play-state: paused; }
+.story-view .sv-top { position: absolute; top: calc(var(--statusbar-h) + 16px); left: 12px; right: 12px; display: flex; align-items: center; gap: 10px; z-index: 5; }
+.story-view .sv-top .who { display: flex; align-items: center; gap: 8px; flex: 1; min-width: 0; color: #fff; }
+.story-view .sv-top .who b { font: 600 14px/1 var(--font); cursor: pointer; }
+.story-view .sv-top .who .tm { font: 500 12px/1 var(--font); opacity: .7; }
+.story-view .sv-top .who .lo { display: inline-flex; align-items: center; gap: 3px; font: 500 11px/1 var(--font); opacity: .8; }
+.story-view .sv-top .cl { color: #fff; padding: 4px; }
+.story-view .sv-tap { position: absolute; top: 0; bottom: 92px; width: 38%; z-index: 3; }
+.story-view .sv-tap.l { left: 0; }
+.story-view .sv-tap.r { right: 0; width: 62%; }
+.story-view .sv-foot { position: absolute; left: 12px; right: 12px; bottom: 26px; display: flex; align-items: center; gap: 10px; z-index: 5; }
+.story-view .sv-foot .rp { flex: 1; height: 42px; border-radius: 21px; border: 1.2px solid rgba(255,255,255,.5); background: transparent; color: #fff; padding: 0 16px; font: 400 14px/1 var(--font); outline: none; }
+.story-view .sv-foot .rp::placeholder { color: rgba(255,255,255,.7); }
+.story-view .sv-foot .hb, .story-view .sv-foot .sd { color: #fff; padding: 6px; }
+.story-view .sv-foot .hb.on { color: #FF375F; }
+.story-view.is-mine .sv-foot { display: none; }
+.story-view .sv-own { display: none; position: absolute; left: 12px; right: 12px; bottom: 26px; align-items: center; justify-content: space-between; z-index: 5; color: #fff; }
+.story-view.is-mine .sv-own { display: flex; }
+.story-view .sv-own .vw { display: inline-flex; align-items: center; gap: 6px; font: 600 13px/1 var(--font); padding: 10px 14px; border-radius: 20px; background: rgba(0,0,0,.4); }
+.story-view .sv-own .dl { padding: 10px; border-radius: 50%; background: rgba(0,0,0,.4); color: #FF453A; }
+
+/* ---------- criar story ---------- */
+.sc-wrap .sc-canvas { position: relative; height: 300px; border-radius: 16px; overflow: hidden; background: #111 center/cover no-repeat; margin: -4px -4px 14px; }
+.sc-wrap .sc-txt { position: absolute; transform: translate(-50%, -50%); min-width: 40px; max-width: 86%; text-align: center; font: 700 28px/1.2 var(--font); color: #fff; text-shadow: 0 2px 10px rgba(0,0,0,.45); outline: none; padding: 4px 8px; cursor: move; }
+.sc-wrap .sc-txt:empty::before { content: 'Escreve aqui'; opacity: .6; }
+.sc-tools .row { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+.sc-tools .row .lbl { font: 600 13px/1 var(--font); color: var(--label2); width: 70px; }
+.sc-tools .row input[type=range] { flex: 1; }
+.sc-tools .cols { flex-wrap: wrap; }
+.sc-tools .cols .c { width: 28px; height: 28px; border-radius: 50%; border: 2px solid var(--sep); }
+.sc-tools .cols .c.on { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* ---------- explorar ---------- */
+.ig-recent-h { display: flex; align-items: baseline; justify-content: space-between; padding: 14px 16px 4px; }
+.ig-recent-h b { font: 600 15px/1 var(--font); color: var(--label); }
+.ig-recent-h .clr { font: 600 13px/1 var(--font); color: var(--accent); }
+.ig-grid.varied { grid-auto-flow: dense; }
+.ig-grid.varied .big { grid-row: span 2; aspect-ratio: 1/2; align-self: stretch; }   /* peca alta 1x2 como os reels no Explorar do Instagram */
+
+/* ---------- perfil ---------- */
+.ig-profile .stats > div { cursor: pointer; }
+.ig-profile .bio .priv { display: inline-flex; align-items: center; gap: 4px; margin-left: 8px; font: 600 13px/1 var(--font); color: var(--label3); }
+.ig-profile .bio .ws { color: var(--accent); cursor: pointer; }
+.ig-ptabs { display: flex; border-top: .5px solid var(--sep); margin-top: 8px; }
+.ig-ptabs .pt { flex: 1; display: flex; align-items: center; justify-content: center; height: 44px; color: var(--label3); border-bottom: 1.5px solid transparent; }
+.ig-ptabs .pt.on { color: var(--label); border-bottom-color: var(--label); }
+.ig-ptabs .pt svg { width: 26px; height: 26px; }   /* separadores do perfil como no Instagram (24 @390 -> 26 @440); o atributo do g() perde para qualquer regra CSS */
+.ig-edit-av { text-align: center; padding: 4px 0 14px; }
+.ig-edit-av .avatar { margin: 0 auto 8px; }
+.ig-edit-av span { display: block; font: 500 13px/1 var(--font); color: var(--label3); }
+/* ⚠️ `min-height` NÃO é anulado por `height` - são propriedades diferentes e o min-height
+   ganha sempre no cálculo final. Se o .pill-btn base levar min-height, esta variante pequena
+   tem de o repor explicitamente, senão os botões "Seguir" das listas de pessoas crescem todos. */
+.pill-btn.sm { height: 34px; min-height: 34px; padding: 0 15px; font-size: 14px; flex: 0 0 auto; }
+/* foto de perfil: o avatar grande é agora tocável (foto da galeria ou cor) */
+.ig-edit-av .pvwrap, .soc-signup .pvwrap { display: flex; justify-content: center; margin-bottom: 8px; }
+.ig-edit-av .pvwrap .avatar, .soc-signup .pvwrap .avatar { cursor: pointer; }
+.sc-tools .sc-swap { display: inline-flex; align-items: center; gap: 7px; padding: 9px 14px; margin-bottom: 12px; border-radius: 16px; background: var(--fill3); color: var(--label); font: 600 13px/1 var(--font); }
+.sc-tools .sc-swap:active { background: var(--fill2); }
+
+/* ---------- amigos próximos ---------- */
+.ig-note { padding: 10px 18px 14px; color: var(--label2); font: 500 13px/1.45 var(--font); }
+.cf-tick { width: 24px; height: 24px; border-radius: 12px; border: 1.5px solid var(--sep); color: transparent; display: flex; align-items: center; justify-content: center; flex: 0 0 auto; }   /* sem transicao de cor: so transform/opacity animam no CEF */
+.cf-tick.on { background: #30D158; border-color: #30D158; color: #fff; }
+
+/* =====================================================================
+   INSTANTS - a fotografia do momento (Instashot › Mensagens)
+   Prefixo .ins-* (novo e único: nenhum outro ficheiro o usa).
+   Regras de CEF deste projeto: zero backdrop-filter, zero filter em camadas
+   grandes, só transform/opacity animam, e toda a camada de ecrã inteiro leva
+   o raio de 57 px do ecrã.
+   ===================================================================== */
+.ins-layer { position: absolute; inset: 0; z-index: 210; background: #000; color: #fff; overflow: hidden; border-radius: 57px; opacity: 0; transition: opacity .2s var(--ease); }
+.ins-layer.in { opacity: 1; }
+.ins-view { position: absolute; inset: 0; }
+/* o visor é o CamView em modo 'bare': o CSS do anfitrião é que o dimensiona (camview.js:98) */
+.ins-view .cam-app.cam-bare { z-index: 1; }
+.ins-view .cam-bare .viewfinder .cam-gl { top: 0; transform: none; height: 100%; max-height: none; object-fit: cover; }
+.ins-photo { position: absolute; inset: 0; background: #000 center/cover no-repeat; }
+.ins-shade { position: absolute; left: 0; right: 0; top: 0; height: 160px; pointer-events: none;
+  background: linear-gradient(180deg, rgba(0,0,0,.55), rgba(0,0,0,0)); }
+
+/* barra de cima: × à esquerda, o nome ao centro, uma ação à direita */
+.ins-top { position: absolute; top: calc(var(--statusbar-h) + 4px); left: 12px; right: 12px; display: flex; align-items: center; gap: 8px; z-index: 6; }
+.ins-ttl { flex: 1; text-align: center; font: 700 17px/1 var(--font); letter-spacing: .2px; }
+.ins-layer .b { width: 42px; height: 42px; border-radius: 21px; display: flex; align-items: center; justify-content: center; color: #fff; flex: 0 0 auto; background: rgba(0,0,0,.38); }
+.ins-layer .b:active { background: rgba(0,0,0,.62); transform: scale(.92); }
+.ins-layer .b.off { opacity: .55; }
+.ins-hint { position: absolute; left: 24px; right: 24px; top: calc(var(--statusbar-h) + 56px); text-align: center; z-index: 5;
+  font: 600 13px/1.3 var(--font); color: rgba(255,255,255,.82); text-shadow: 0 1px 6px rgba(0,0,0,.5); pointer-events: none; }
+
+/* obturador, igual ao da câmara do telemóvel */
+.ins-bot { position: absolute; left: 0; right: 0; bottom: calc(var(--safe-bottom, 22px) + 18px); display: flex; align-items: center; justify-content: center; z-index: 6; }
+.ins-shut { width: 86px; height: 86px; border-radius: 43px; border: 5px solid #fff; display: flex; align-items: center; justify-content: center; }
+.ins-shut > div { width: 68px; height: 68px; border-radius: 34px; background: #fff; transition: transform .12s var(--ease); }
+.ins-shut:active > div { transform: scale(.88); }
+.ins-flip { position: absolute; right: 30px; width: 44px; height: 44px; border-radius: 22px; background: rgba(0,0,0,.38); display: flex; align-items: center; justify-content: center; }
+.ins-flip:active { transform: scale(.9) rotate(-40deg); }
+
+/* texto por cima da fotografia (a única coisa que se pode acrescentar) */
+.ins-txt { position: absolute; left: 18px; right: 18px; transform: translateY(-50%); text-align: center; z-index: 5; touch-action: none; }
+.ins-txt span { display: inline-block; max-width: 100%; font: 800 30px/1.2 var(--font); color: #fff;
+  text-shadow: 0 2px 10px rgba(0,0,0,.55); word-break: break-word; }
+
+/* para quem vai */
+.ins-send { position: absolute; left: 0; right: 0; bottom: 0; padding: 40px 16px calc(var(--safe-bottom, 22px) + 16px); z-index: 6;
+  background: linear-gradient(180deg, rgba(0,0,0,0), rgba(0,0,0,.72) 42%, rgba(0,0,0,.88)); }
+.ins-who { text-align: center; font: 600 14px/1 var(--font); color: rgba(255,255,255,.75); margin-bottom: 12px; }
+.ins-opts { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.ins-opts .o { min-height: 92px; border-radius: 18px; background: rgba(255,255,255,.14); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; padding: 10px 8px; text-align: center; }
+.ins-opts .o:active { background: rgba(255,255,255,.26); transform: scale(.97); }
+.ins-opts .o b { font: 700 15px/1.2 var(--font); }
+.ins-opts .o span { font: 500 12px/1.2 var(--font); color: rgba(255,255,255,.7); }
+.ins-opts .o.cf { background: rgba(48,209,88,.22); } .ins-opts .o.cf:active { background: rgba(48,209,88,.34); }
+.ins-busy { position: absolute; inset: 0; z-index: 8; display: none; align-items: center; justify-content: center; flex-direction: column; gap: 12px; background: rgba(0,0,0,.5); font: 600 15px/1 var(--font); }
+.ins-compose.busy .ins-busy { display: flex; }
+.ins-busy .sp { width: 30px; height: 30px; border-radius: 50%; border: 3px solid rgba(255,255,255,.25); border-top-color: #fff; animation: insSpin .8s linear infinite; }
+@keyframes insSpin { to { transform: rotate(360deg) } }
+
+/* ---------- VISUALIZADOR: uma vez e nunca mais ----------
+   Desenho da referência do utilizador (Instagram › Instants): fundo preto, a fotografia num
+   recorte irregular, o autor por baixo, o cacho de reações e o campo de resposta. */
+.ins-viewer { background: #000; display: flex; flex-direction: column; }
+.ins-vtop { display: flex; align-items: center; gap: 8px; padding: calc(var(--statusbar-h) + 6px) 14px 6px; flex: none; z-index: 6; }
+.ins-vtop .sp { flex: 1; }
+.ins-viewer .b { background: rgba(255,255,255,.12); }
+.ins-viewer .b:active { background: rgba(255,255,255,.24); }
+
+/* o "blob": um recorte com cantos desiguais, como o do Instagram. É só border-radius (o CEF não
+   perdoa clip-path no ecrã, e uma máscara SVG aqui seria uma superfície a mais). */
+.ins-blobwrap { flex: 1; min-height: 0; display: flex; align-items: stretch; justify-content: center; padding: 4px 14px 0; }
+/* cantos GRANDES e desiguais: é isso que dá o ar de recorte à mão da referência. A fotografia
+   enche o espaço que sobra entre a barra de cima e o autor. */
+.ins-blob { position: relative; width: 100%; overflow: hidden; background: #121214;
+  border-radius: 78px 94px 86px 98px / 86px 78px 98px 90px; }
+.ins-blob .ins-photo { position: absolute; inset: 0; background: #121214 center/cover no-repeat; }
+.ins-blob .ins-txt { left: 14px; right: 14px; }
+
+/* quem enviou */
+.ins-by { flex: none; display: flex; align-items: center; gap: 8px; padding: 14px 22px 2px; }
+.ins-by .av .avatar { width: 30px; height: 30px; font-size: 12px; }
+.ins-by b { font: 700 15px/1 var(--font); color: #fff; }
+.ins-by .ago { font: 500 14px/1 var(--font); color: rgba(255,255,255,.55); }
+.ins-by .dot { width: 9px; height: 9px; border-radius: 5px; background: #30D158; }
+
+/* o cacho de reações */
+/* duas fileiras desencontradas, como na referência: 😂 ❤️ + em cima, 😮 👏 em baixo e à direita */
+.ins-react { flex: none; display: flex; flex-direction: column; align-items: center; gap: 9px; padding: 14px 20px 10px; }
+.ins-react .rr { display: flex; align-items: center; gap: 13px; }
+.ins-react .rr.off { transform: translateX(26px); }
+.ins-react .rr.off .r { width: 46px; height: 46px; border-radius: 23px; font-size: 22px; }
+.ins-react .r { width: 54px; height: 54px; border-radius: 27px; background: #1C1C1E; display: flex; align-items: center; justify-content: center;
+  font-size: 26px; line-height: 1; }
+.ins-react .r:active { transform: scale(.9); background: #2C2C2E; }
+.ins-react .r.on { background: #3A3A3C; box-shadow: 0 0 0 2px rgba(255,255,255,.5) inset; }
+.ins-react .r.more { font: 300 30px/1 var(--font); color: #fff; }
+
+/* responder */
+.ins-reply { flex: none; display: flex; align-items: center; gap: 8px; margin: 0 16px calc(var(--safe-bottom, 22px) + 12px);
+  padding: 6px 6px 6px 18px; border-radius: 26px; border: 1px solid rgba(255,255,255,.22); }
+.ins-reply input { flex: 1; min-width: 0; background: none; border: 0; outline: none; color: #fff; font: 500 15px/1.2 var(--font); height: 38px; }
+.ins-reply input::placeholder { color: rgba(255,255,255,.5); }
+.ins-reply .go { width: 38px; height: 38px; border-radius: 19px; background: var(--blue); color: #fff; display: flex; align-items: center; justify-content: center; flex: none; }
+.ins-reply .go:active { transform: scale(.92); }
+
+.ins-load { position: absolute; inset: 0; display: none; align-items: center; justify-content: center; z-index: 6; }
+.ins-viewer.loading .ins-load { display: flex; }
+.ins-load .sp { width: 26px; height: 26px; border-radius: 50%; border: 3px solid rgba(255,255,255,.25); border-top-color: #fff; animation: insSpin .8s linear infinite; }
+
+/* ---------- A PILHA, no canto inferior direito das Mensagens ----------
+   Um cartão com a palavra INSTANTS ao alto (como na referência) e outro espreitando por trás.
+   Fica acima da barra de separadores, que nesta vista continua visível. */
+/* ---------- Mensagens vazias (Direct do Instagram) ----------
+   Sem ícone: título, uma linha a explicar e o botão azul. O min-height centra o bloco no espaço
+   livre - o .content não é flex, por isso sem ele encostava ao topo (o mesmo truque do .mk-list). */
+.ig-dm-empty { min-height: 600px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; padding: 0 44px; text-align: center; }
+.ig-dm-empty b { font: 700 23px/1.2 var(--font); color: var(--label); }
+.ig-dm-empty span { font: 400 15px/1.45 var(--font); color: var(--label2); max-width: 300px; }
+.ig-dm-empty .go { margin-top: 8px; height: 44px; padding: 0 20px; border-radius: 12px; background: var(--blue); color: #fff;
+  display: flex; align-items: center; font: 600 16px/1 var(--font); }
+.ig-dm-empty .go:active { transform: scale(.96); }
+/* SEM fotografia lá dentro (pedido do utilizador): é o cartão com a palavra e a câmara, e mais
+   generoso - 108x122 em vez de 84x92, que no jogo ficava pequeno de mais para o polegar. */
+.ins-pile { position: absolute; right: 16px; bottom: calc(var(--safe-bottom, 22px) + 76px); width: 108px; height: 122px; z-index: 30; }
+.ins-pile .back { position: absolute; right: 4px; top: 8px; width: 100px; height: 112px; border-radius: 26px; background: #2C2C2E;
+  transform: rotate(6deg); opacity: .55; }
+.ins-pile .card { position: absolute; inset: 0; border-radius: 28px; overflow: hidden; background: linear-gradient(150deg, #833AB4, #FD1D1D 55%, #FCAF45);
+  border: 2.5px solid rgba(255,255,255,.92); transition: transform .18s var(--ease); }
+/* a palavra ao alto, na borda esquerda - é a assinatura da pilha */
+.ins-pile .word { position: absolute; left: 6px; top: 50%; transform: translateY(-50%) rotate(180deg); writing-mode: vertical-rl;
+  font: 800 16px/1 var(--font); letter-spacing: 1.8px; color: #fff; text-shadow: 0 1px 4px rgba(0,0,0,.5); }
+.ins-pile .cam { position: absolute; right: 9px; bottom: 9px; width: 32px; height: 32px; border-radius: 16px; background: rgba(0,0,0,.45);
+  display: flex; align-items: center; justify-content: center; color: #fff; }
+.ins-pile:active .card { transform: scale(.94); }
+.ins-pile .n { position: absolute; left: -6px; top: -6px; min-width: 24px; height: 24px; border-radius: 12px; background: var(--blue); color: #fff;
+  font: 700 13px/24px var(--font); text-align: center; display: none; padding: 0 7px; border: 2px solid var(--bg); }
+.ins-pile.has .n { display: block; }
+.ins-pile.has .card { border-color: #0A84FF; }
+
+/* Dobráveis: os Instants são fotos verticais (câmara, envio e visualizador) e os Reels vídeos verticais: ficam numa coluna de
+   440 ao centro, com o resto do ecrã a preto, como nos tablets (no PearPhone Fold a coluna dos Instants é a de liquid27.css, ao
+   centro da zona do conteúdo) */
+body.form-fold .ins-layer { left: calc(50% - 220px); right: calc(50% - 220px); border-radius: 0; box-shadow: 0 0 0 720px #000; }
+body.form-fold .reels { left: calc(50% - 220px); right: calc(50% - 220px); }
+body.form-fold .reels-back { left: calc(50% - 213px); }
+body.form-fold .reels-cam { right: calc(50% - 213px); }
+/* a pilha dos Instants fica no canto da vista das Mensagens (regra de base: no PearPhone Fold a vista já acaba na barra direita);
+   no NOVA Fold8 aberto, no canto da coluna de leitura das Mensagens (ui.css --fold-col), por baixo do botão de escrever */
+body.os-android.form-fold.fold-open .ins-pile { right: calc(50% - var(--fold-col) / 2 + 16px); }
+/* Instashot no dobrável aberto: o feed é uma grelha de cartões em duas colunas numa coluna de 1100 (na de leitura cada foto tinha
+   820 de lado e não cabia no ecrã); as grelhas de fotos do Explorar e do perfil ganham colunas (cinco aberto, quatro fechado) */
+body.form-fold.fold-open .app-window[data-app="instashot"] .nav-stack:not(.split) > .view{ --fold-col:1100px }
+body.form-fold.fold-open .app-window[data-app="instashot"] .view > .content > .feed{ display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:20px; align-items:start; padding:4px 12px 0 }
+body.form-fold.fold-open .app-window[data-app="instashot"] .view > .content > .feed > :not(.ig-post){ grid-column:1 / -1 }
+body.form-fold.fold-open .app-window[data-app="instashot"] .view > .content > .feed > .ig-post{ min-width:0; padding:6px 0 12px; border:0; border-radius:22px; overflow:hidden; background:var(--bg2,var(--bg)); box-shadow:0 1px 3px rgba(0,0,0,.08) }
+body.dark.form-fold.fold-open .app-window[data-app="instashot"] .view > .content > .feed > .ig-post{ background:#1C1C1E; box-shadow:none }
+body.form-fold.fold-open .app-window[data-app="instashot"] .ig-profile{ width:100%; box-sizing:border-box; max-width:760px; margin-left:auto; margin-right:auto }   /* width: no .content (flex) as margens automáticas encolhiam-no à largura do texto */
+body.form-fold .app-window[data-app="instashot"] .ig-grid{ grid-template-columns:repeat(4,1fr) }
+body.form-fold.fold-open .app-window[data-app="instashot"] .ig-grid{ grid-template-columns:repeat(5,1fr) }
+/* NOVA Fold8 aberto: os separadores estão na barra lateral, por isso o botão de escrever do Tweeter desce para o canto da coluna */
+body.os-android.form-fold.fold-open .app-window.tb-vis[data-app="twix"] .nav-stack:not(.split) > .view > .fab{ bottom:calc(var(--safe-bottom) + 24px + var(--taskbar-h, 0px)) }
+/* dobrável aberto: o formulário de criar conta é curto, fica num cartão de 520 ao centro (os campos e o botão não esticam a 820) */
+body.form-fold.fold-open .app-window .nav-stack:not(.split) > .view.soc-signup > .content { padding-left: calc(50% - 260px); padding-right: calc(50% - 260px); }
+
+/* =====================================================================
+   TWEETER = X (5 nov 2026, "deixa o Twitter X exatamente igual ao original")
+   Prefixo .x-* (novo e único). É uma app de TERCEIROS: igual no PearOS e no Android, por isso as cores são as do X e não os tokens do
+   sistema (--bg cinzento do PearOS, --blue = a cor de destaque das Definições). Os tokens redefinem-se NA JANELA e nas folhas (que vivem
+   no #screen, fora dela, e por isso levam .x-sh): tudo o que é genérico (UI.empty, listas, spinner) herda o preto/branco do X sem mais regras.
+   Regras do CEF: sem filter, backdrop-filter, color-mix, :has nem clip-path; só transform/opacity animam.
+   Especificidade: este ficheiro carrega ANTES do liquid27.css e do motion.css, por isso a barra leva `.view.x-v > .navbar ...` (0,5,0),
+   acima de `body.dark.fivem .nb-btn:not(.glass)` (0,4,1), e a barra de baixo `.app-window[data-app] > .tabbar.plain .tb-pill` (0,5,0).
+   ===================================================================== */
+.app-window[data-app="twix"],.sheet-wrap.x-sh,.as-wrap.x-sh{ --x-bg:#FFFFFF; --x-tx:#0F1419; --x-tx2:#536471; --x-line:#EFF3F4; --x-line2:#CFD9DE; --x-press:rgba(15,20,25,.06); --x-pill:#0F1419; --x-pill-tx:#FFFFFF; --x-off:#CFD9DE; --x-off-tx:#FFFFFF;
+  --bg:#FFFFFF; --bg2:#FFFFFF; --bg3:#F7F9F9; --label:#0F1419; --label2:#536471; --label3:rgba(83,100,119,.65); --sep:#EFF3F4; --sep-opaque:#EFF3F4; --fill3:#EFF3F4; --blue:#1D9BF0; --material:#FFFFFF }
+body.dark .app-window[data-app="twix"],body.dark .sheet-wrap.x-sh,body.dark .as-wrap.x-sh{ --x-bg:#000000; --x-tx:#E7E9EA; --x-tx2:#71767B; --x-line:#2F3336; --x-line2:#536471; --x-press:rgba(231,233,234,.1); --x-pill:#EFF3F4; --x-pill-tx:#0F1419; --x-off:#2F3336; --x-off-tx:#71767B;
+  --bg:#000000; --bg2:#000000; --bg3:#16181C; --label:#E7E9EA; --label2:#71767B; --label3:rgba(113,118,123,.65); --sep:#2F3336; --sep-opaque:#2F3336; --fill3:#202327; --material:#000000 }
+/* as DMs (social-dm.js) dentro do Tweeter: o mesmo ecrã, com a paleta do X */
+.app-window[data-app="twix"] .view.igdm,.app-window[data-app="twix"] .view.igdm-th{ --igdm-bg:var(--x-bg); --igdm-tx:var(--x-tx); --igdm-tx2:var(--x-tx2); --igdm-line:var(--x-line); --igdm-them:var(--fill3); --igdm-pill:var(--fill3); --igdm-me:#1D9BF0; --igdm-press:var(--x-press) }
+
+/* ---------- barra de cima: sem vidro, sem filete a desvanecer ---------- */
+.view.x-v{ background:var(--x-bg); color:var(--x-tx) }
+.view.x-v > .navbar{ padding-left:14px; padding-right:14px; background:var(--x-bg) }
+.view.x-v > .navbar.solid{ background:var(--x-bg); -webkit-backdrop-filter:none; backdrop-filter:none; box-shadow:none }
+.view.x-v > .navbar.solid::after{ content:none; display:none }
+.view.x-v > .navbar .nb-left,.view.x-v > .navbar .nb-right{ flex:none; min-width:36px; gap:0; color:var(--x-tx) }
+/* opacity: o setRoot (ui.js) tira o .show-title às raízes dos separadores ("as raízes não o mostram") e a marca do X ficava invisível */
+.view.x-v > .navbar .nb-title{ opacity:1; color:var(--x-tx); font-size:17px; font-weight:800 }
+.view.x-v > .navbar .nb-back,.view.x-v > .navbar .nb-btn:not(.glass){ display:flex; align-items:center; justify-content:center; width:36px; min-width:36px; height:36px; padding:0; margin:0; border:0; border-radius:50%; background:transparent; box-shadow:none; color:var(--x-tx) }
+.view.x-v > .navbar .nb-back span{ display:none }
+.view.x-v > .navbar .nb-back svg{ width:22px; height:22px; margin:0 }
+.view.x-v > .navbar .nb-btn:not(.glass) svg{ width:22px; height:22px }
+.view.x-v > .navbar .nb-back:active,.view.x-v > .navbar .nb-btn:not(.glass):active{ opacity:.45; transform:none; background:transparent }
+.view.x-v > .navbar .nb-btn.x-me .avatar{ width:32px; height:32px; font-size:13px }
+.view.x-home > .navbar .nb-title,.view.x-signup > .navbar .nb-title{ width:26px; height:26px; max-width:none; overflow:visible; line-height:0 }
+.view.x-home > .navbar .nb-title svg,.view.x-signup > .navbar .nb-title svg{ width:26px; height:26px; display:block }
+.view.x-home > .navbar .nb-right{ color:var(--x-tx2) }
+.view.x-thread > .navbar{ box-shadow:0 1px 0 var(--x-line) }
+.view.x-v > .content{ padding-bottom:calc(var(--safe-bottom) + 20px) }
+.app-window.plain-tabbar .view.x-v > .content.has-tabbar{ padding-bottom:calc(66px + var(--safe-bottom)) }
+.view.x-thread > .content{ padding-bottom:0 }
+/* teclado no fio: a janela não sobe (a variável que o place() escreve deixa de valer) e a vista encolhe até às teclas, com o seu fundo por baixo enquanto elas sobem */
+.app-window.x-nolift,.view.x-thread.x-kb{ --kb-shift:0px!important }
+.view.x-thread.x-kb{ bottom:var(--x-kb-h,0px) } .view.x-thread.x-kb > .x-rbar{ padding-bottom:8px }
+.view.x-thread.x-kb::after{ content:''; position:absolute; left:0; right:0; top:100%; height:var(--x-kb-h,0px); background:var(--x-bg); pointer-events:none }
+
+/* ---------- barra de baixo: só glifos, o ativo a cheio ---------- */
+.app-window[data-app="twix"] > .tabbar.plain .tb-pill{ background:var(--x-bg); border-top:1px solid var(--x-line) }
+.app-window[data-app="twix"] > .tabbar.plain .tab,.app-window[data-app="twix"] > .tabbar.plain .tab.on{ color:var(--x-tx) }
+.app-window[data-app="twix"] > .tabbar.plain .tb-badge{ background:#1D9BF0 }
+.x-tbi{ position:relative; width:26px; height:26px }
+.x-tbi i{ position:absolute; left:0; top:0; display:block; width:26px; height:26px }
+.tabbar.plain .tab .x-tbi svg{ width:26px; height:26px; display:block; animation:none }
+.x-tbi .x-f,.tab.on .x-tbi .x-o{ opacity:0 } .tab.on .x-tbi .x-f{ opacity:1 }
+
+/* ---------- separadores "Para ti · A seguir": sublinhado azul de 4 px à largura do texto ---------- */
+.x-tabs{ position:sticky; top:0; z-index:4; display:flex; height:46px; background:var(--x-bg); box-shadow:0 1px 0 var(--x-line) }
+.x-tab{ flex:1 1 0; min-width:0; display:flex; align-items:stretch; justify-content:center; font-size:15px; font-weight:500; color:var(--x-tx2); cursor:pointer }
+.x-tab span{ position:relative; display:flex; align-items:center; white-space:nowrap }
+.x-tab.on{ font-weight:700; color:var(--x-tx) }
+.x-tab.on span::after{ content:''; position:absolute; left:0; right:0; bottom:0; height:4px; border-radius:2px; background:#1D9BF0 }
+.x-tab:active{ background:var(--x-press) }
+.x-ptabs .x-tab{ flex:1 1 auto; padding:0 8px; font-size:14px }
+.x-feed,.x-pfeed,.x-res{ flex:1 0 auto; display:flex; flex-direction:column; min-width:0 }
+
+/* ---------- publicação ---------- */
+.x-post{ display:grid; grid-template-columns:40px minmax(0,1fr); column-gap:12px; padding:12px 16px 4px; background:var(--x-bg); box-shadow:inset 0 -1px 0 var(--x-line); cursor:pointer }
+.x-rp{ grid-column:1 / -1; display:flex; align-items:center; gap:12px; margin-bottom:4px; font-size:13px; font-weight:700; line-height:16px; color:var(--x-tx2) }
+.x-rp svg{ width:16px; height:16px; margin-left:24px; flex:none } .x-rp span{ white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+.x-av{ grid-column:1; cursor:pointer } .x-av .avatar{ width:40px; height:40px; font-size:16px }
+.x-bd{ grid-column:2; min-width:0 }
+.x-hd{ display:flex; align-items:center; min-width:0; height:20px; font-size:15px; line-height:20px; white-space:nowrap }
+.x-nm{ flex:0 1 auto; min-width:0; font-weight:700; color:var(--x-tx); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; cursor:pointer }
+.x-hn{ flex:0 1 auto; min-width:0; margin-left:4px; font-weight:400; color:var(--x-tx2); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; cursor:pointer }
+.x-dot{ flex:none; margin:0 4px; color:var(--x-tx2) } .x-tm{ flex:none; color:var(--x-tx2) }
+.x-more{ flex:none; margin:-8px -8px -8px auto; width:36px; height:36px; display:flex; align-items:center; justify-content:center; color:var(--x-tx2); cursor:pointer } .x-more svg{ width:18px; height:18px }
+.x-vb{ flex:none; display:inline-flex; width:18px; height:18px; margin-left:2px; color:#1D9BF0; background:radial-gradient(circle,#fff 38%,rgba(255,255,255,0) 40%) } .x-vb svg{ width:18px; height:18px; display:block }
+.x-tx{ margin-top:1px; font-size:15px; line-height:20px; color:var(--x-tx); white-space:pre-wrap; overflow-wrap:anywhere; user-select:text; -webkit-user-select:text }
+.x-tx .hashtag,.x-pbio .hashtag,.x-ubio .hashtag{ color:#1D9BF0; cursor:pointer }
+.x-md{ margin-top:10px; aspect-ratio:16/10; border-radius:16px; box-shadow:inset 0 0 0 1px var(--x-line); background-color:var(--bg3); background-size:cover; background-position:center; background-repeat:no-repeat }
+.x-loc{ display:flex; align-items:center; gap:4px; margin-top:6px; font-size:13px; line-height:18px; color:#1D9BF0 } .x-loc svg{ width:15px; height:15px; flex:none }
+.x-qt{ margin-top:10px; padding:10px 12px 12px; border-radius:16px; box-shadow:inset 0 0 0 1px var(--x-line); cursor:pointer; overflow:hidden }
+.x-qh{ display:flex; align-items:center; min-width:0; font-size:14px; line-height:20px; white-space:nowrap } .x-qh .avatar{ width:20px; height:20px; font-size:9px; margin-right:6px }
+.x-qt .x-tx{ font-size:14px; line-height:19px } .x-qt .x-md{ border-radius:12px }
+.x-ac{ display:flex; align-items:center; height:36px; margin-top:2px; font-size:13px; color:var(--x-tx2) }
+.x-a{ flex:1 1 0; min-width:0; display:flex; align-items:center; gap:4px; height:36px; cursor:pointer }
+.x-a svg{ flex:none; width:19px; height:19px } .x-a:active{ opacity:.55 }
+.x-ar{ flex:none; display:flex; align-items:center; gap:14px } .x-ar .x-a{ flex:none }
+.x-a.lk.on{ color:#F91880 } .x-a.lk.on svg{ animation:likepop .4s var(--spring) } .x-a.rt.on{ color:#00BA7C } .x-a.bm.on{ color:#1D9BF0 }
+/* no fio: cabeçalho por cima, texto a toda a largura, hora e ações entre dois filetes */
+.x-post.x-detail{ display:block; padding:12px 16px 0; cursor:default }
+.x-dh{ display:flex; align-items:center; gap:12px; min-width:0 }
+.x-who{ flex:1 1 auto; min-width:0; display:flex; flex-wrap:wrap; align-items:center; font-size:15px; line-height:20px } .x-who .x-hn{ flex:1 0 100%; margin-left:0 } .x-dh .x-more{ margin:-8px -8px -8px 0 }
+.x-detail .x-bd{ margin-top:10px } .x-detail .x-tx{ font-size:17px; line-height:24px }
+.x-dt{ margin-top:12px; padding-bottom:12px; font-size:15px; line-height:20px; color:var(--x-tx2); box-shadow:0 1px 0 var(--x-line) }
+.x-detail .x-ac{ height:46px; margin-top:0 } .x-detail .x-a svg{ width:22px; height:22px }
+
+/* ---------- botão de escrever ---------- */
+.fab.x-fab{ right:16px; bottom:calc(var(--safe-bottom) + 74px); width:56px; height:56px; background:#1D9BF0; color:#fff; box-shadow:0 2px 10px rgba(0,0,0,.35) } .fab.x-fab svg{ width:26px; height:26px }
+.fab.x-fab:active{ transform:scale(.94) }
+
+/* ---------- pílulas ---------- */
+.x-pill{ flex:none; display:flex; align-items:center; justify-content:center; height:34px; padding:0 16px; border-radius:17px; font-size:14px; font-weight:700; white-space:nowrap; cursor:pointer }
+.x-pill.sol{ background:var(--x-pill); color:var(--x-pill-tx) } .x-pill.ol{ background:transparent; color:var(--x-tx); box-shadow:inset 0 0 0 1px var(--x-line2) } .x-pill:active{ opacity:.7 }
+
+/* ---------- compositor: ecrã inteiro nos telemóveis; nos dobráveis fica a folha centrada de sempre ----------
+   height e não top: a folha continua presa em baixo e o teclado sobe-a pelo caminho normal (keyboard.js place → .kb-tall + --kb-shift).
+   O place() encolhe-a até 110 px do topo (é o limite dele para folhas); aqui devolvem-se esses 110 para ela ir até ao topo do ecrã. */
+.sheet-wrap.x-sh .sheet{ background:var(--x-bg); color:var(--x-tx) }
+.sheet-wrap.x-sh .sheet-head{ color:#1D9BF0 } .sheet-wrap.x-sh .sheet-head b{ color:var(--x-tx); font-weight:800 }
+.sheet-wrap.x-edit-sh .sheet-head .sh-l{ font-size:16px; color:var(--x-tx); cursor:pointer }
+.sheet-wrap.x-edit-sh .sheet-head .sh-r{ display:flex; align-items:center; height:34px; padding:0 16px; border-radius:17px; background:var(--x-pill); color:var(--x-pill-tx); font-size:15px; font-weight:700; cursor:pointer }
+.sheet-wrap.x-sh .group{ background:var(--bg3) }
+body:not(.form-fold) .sheet-wrap.x-compose .sheet{ height:100%; max-height:100%; border-radius:57px; box-shadow:none }
+body:not(.form-fold) .sheet-wrap.x-compose .sheet.kb-tall{ max-height:calc(var(--kb-max) + 110px)!important; border-radius:57px 57px 0 0 }
+.sheet-wrap.x-compose .grabber{ display:none }
+/* sem arrasto: de ecrã inteiro não há para onde arrastar e um arrasto de 140 px fechava a folha sem perguntar (o UI.sheet só ouve a pega e o cabeçalho) */
+.sheet-wrap.x-compose .sheet-head{ pointer-events:none } .sheet-wrap.x-compose .sheet-head .sh-l,.sheet-wrap.x-compose .sheet-head .sh-r{ pointer-events:auto }
+.sheet-wrap.x-compose.posting .sheet-head .sh-l{ opacity:.4 }
+.sheet-wrap.x-compose .sheet-head{ flex:none; padding:14px 16px 8px }
+body:not(.form-fold) .sheet-wrap.x-compose .sheet-head{ padding-top:calc(var(--statusbar-h) + 2px) }
+.sheet-wrap.x-compose .sheet-head .sh-l{ font-size:16px; color:var(--x-tx); cursor:pointer }
+.sheet-wrap.x-compose .sheet-head .sh-r{ display:flex; align-items:center; height:34px; padding:0 16px; border-radius:17px; background:#1D9BF0; color:#fff; font-size:15px; font-weight:700; cursor:pointer }
+.sheet-wrap.x-compose .sheet-head .sh-r.off{ background:var(--x-off); color:var(--x-off-tx) }
+.sheet-wrap.x-compose .sheet > .content{ flex:1 1 auto; min-height:0; overflow-y:auto; padding-bottom:12px }
+.x-cmp-rp{ padding:2px 16px 8px 68px; font-size:15px; line-height:20px; color:var(--x-tx2) } .x-cmp-rp::first-letter{ text-transform:uppercase } .x-cmp-rp .x-at{ color:#1D9BF0 }
+.x-cmp-row{ display:flex; gap:12px; padding:4px 16px 0 } .x-cmp-row .avatar{ width:40px; height:40px; font-size:16px; flex:none }
+.x-cmp-row textarea{ flex:1 1 auto; min-width:0; padding:7px 0 0; font-size:19px; line-height:25px; color:var(--x-tx); overflow:hidden } .x-cmp-row textarea::placeholder{ color:var(--x-tx2) }
+/* o ui.css apaga o placeholder de qualquer campo com foco (:focus e .kb-on, com !important). Aqui o campo abre JÁ com o foco, por isso o «O que está a acontecer?» nunca se via: no X ele fica até se escrever */
+.x-cmp-row textarea:focus::placeholder,.x-cmp-row textarea.kb-on::placeholder,.x-rbar .x-rin:focus::placeholder,.x-rbar .x-rin.kb-on::placeholder{ color:var(--x-tx2)!important }
+.x-cmp-ph{ display:none; position:relative; margin:10px 16px 0 68px; aspect-ratio:16/10; border-radius:16px; background-color:var(--bg3); background-size:cover; background-position:center; background-repeat:no-repeat } .x-cmp-ph.on{ display:block }
+.x-cmp-x,.x-cmp-locx{ display:flex; align-items:center; justify-content:center; cursor:pointer }
+.x-cmp-x{ position:absolute; right:8px; top:8px; width:30px; height:30px; border-radius:50%; background:rgba(15,20,25,.75); color:#fff } .x-cmp-x svg{ width:17px; height:17px }
+.x-cmp-qt{ padding:0 16px 0 68px }
+.x-cmp-loc{ display:none; align-items:center; gap:6px; margin:10px 16px 0 68px; font-size:14px; font-weight:600; color:#1D9BF0 } .x-cmp-loc.on{ display:flex } .x-cmp-locx{ width:24px; height:24px; color:var(--x-tx2) } .x-cmp-locx svg{ width:15px; height:15px }
+.x-cmp-foot{ background:var(--x-bg); padding-bottom:var(--safe-bottom) }
+.sheet.kb-tall .x-cmp-foot,body.form-fold .x-cmp-foot{ padding-bottom:0 }   /* dobráveis: a folha flutua, não toca na zona segura */
+.x-cmp-who{ display:flex; align-items:center; gap:6px; padding:8px 16px; font-size:14px; font-weight:600; color:#1D9BF0; box-shadow:0 1px 0 var(--x-line) } .x-cmp-who svg{ width:16px; height:16px; flex:none }
+.x-emo{ display:none; gap:2px; padding:6px 10px 0; overflow-x:auto; scrollbar-width:none } .x-emo::-webkit-scrollbar{ display:none } .x-cmp-foot.emo .x-emo{ display:flex }
+.x-emo span{ flex:none; width:38px; height:38px; display:flex; align-items:center; justify-content:center; font-size:24px; line-height:1; cursor:pointer }
+.x-cmp-bar{ display:flex; align-items:center; gap:2px; padding:4px 12px 4px 6px }
+.x-t{ flex:none; width:42px; height:42px; display:flex; align-items:center; justify-content:center; color:#1D9BF0; cursor:pointer } .x-t svg{ width:22px; height:22px } .x-t.off{ opacity:.4 } .x-t:active{ opacity:.55 }
+.x-cnt{ position:relative; flex:none; margin-left:auto; width:30px; height:30px }
+.x-cnt svg{ position:absolute; left:0; top:0; width:30px; height:30px; transform:rotate(-90deg) }
+.x-cnt circle{ fill:none; stroke-width:2.2 } .x-cnt-bg{ stroke:var(--x-line) } .x-cnt-fg{ stroke:#1D9BF0; stroke-linecap:round; stroke-dasharray:0 62.83 }
+.x-cnt b{ position:absolute; left:-6px; right:-6px; top:0; height:30px; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:500; color:var(--x-tx2) }
+.x-cnt.warn .x-cnt-fg{ stroke:#FFD400 } .x-cnt.over .x-cnt-fg,.x-cnt.over .x-cnt-bg{ stroke:#F4212E } .x-cnt.over b{ color:#F4212E }
+
+/* ---------- fio: a caixa de resposta presa em baixo (vista .full: a barra de separadores não está) ---------- */
+.x-replies{ flex:1 0 auto; display:flex; flex-direction:column; min-width:0 }
+.x-rbar{ flex:none; display:flex; align-items:center; gap:10px; padding:8px 12px calc(var(--safe-bottom,20px) + 6px); background:var(--x-bg); box-shadow:0 -1px 0 var(--x-line) }
+.x-rbar .avatar{ width:30px; height:30px; font-size:12px; flex:none }
+.x-rin{ flex:1 1 auto; width:0; min-width:0; height:38px; padding:0; margin:0; border:0; outline:none; background:transparent; font:inherit; font-size:16px; color:var(--x-tx) } .x-rin::placeholder{ color:var(--x-tx2) }
+.x-rsend{ flex:none; display:flex; align-items:center; height:34px; padding:0 14px; border-radius:17px; background:#1D9BF0; color:#fff; font-size:14px; font-weight:700; cursor:pointer } .x-rsend.off,.x-rsend.busy{ opacity:.5 }
+
+/* ---------- perfil: a capa vai até ao topo do ecrã e a seta flutua nela num círculo ---------- */
+.view.x-prof-v > .navbar,.view.x-prof-v > .navbar.solid{ position:absolute; left:0; right:0; top:0; background:transparent; pointer-events:none }
+.view.x-prof-v > .navbar > *{ pointer-events:auto }
+.view.x-prof-v > .navbar .nb-back{ background:rgba(0,0,0,.55); color:#fff }
+/* a capa sai de cena: barra sólida, e com o nome já fora do ecrã o título aparece (nome + publicações) */
+.view.x-prof-v > .navbar .nb-title{ opacity:0; display:flex; flex-direction:column; align-items:center; gap:1px; font-size:15px; line-height:18px } .view.x-prof-v > .navbar .nb-title > b{ font-weight:800 } .view.x-prof-v > .navbar .nb-title > span{ font-size:12px; line-height:14px; font-weight:400; color:var(--x-tx2) }
+.view.x-prof-v > .navbar.x-solid{ background:var(--x-bg); pointer-events:auto }
+.view.x-prof-v > .navbar.x-solid .nb-back{ background:transparent; color:var(--x-tx) }
+.view.x-prof-v > .navbar.x-solid.x-named .nb-title{ opacity:1 }
+.view.x-prof-v > .content{ padding-top:0 }
+.x-banner{ height:calc(var(--statusbar-h) + 84px); background-color:#333639 }
+.x-ph{ position:relative; display:flow-root; padding:0 16px 12px }   /* flow-root: a margem negativa do avatar colapsava pelo .x-ph e levava o botão para cima da capa */
+.x-pav{ margin-top:-40px; width:88px; height:88px; position:relative } .x-pav .avatar{ width:80px; height:80px; font-size:30px; box-sizing:content-box; border:4px solid var(--x-bg) }
+.x-pbtns{ position:absolute; right:16px; top:12px; display:flex; gap:8px }
+.x-pnm{ display:flex; align-items:center; margin-top:8px; font-size:21px; line-height:26px; font-weight:800; color:var(--x-tx); overflow-wrap:anywhere } .x-pnm .x-vb{ width:21px; height:21px; margin-left:4px } .x-pnm .x-vb svg{ width:21px; height:21px }
+.x-phd{ font-size:15px; line-height:20px; color:var(--x-tx2) }
+.x-pbio{ margin-top:10px; font-size:15px; line-height:20px; color:var(--x-tx); white-space:pre-wrap; overflow-wrap:anywhere }
+.x-pmeta{ margin-top:10px; font-size:14px; line-height:18px; color:var(--x-tx2) } .x-ws{ display:inline-flex; align-items:center; gap:4px; cursor:pointer } .x-ws svg{ width:16px; height:16px } .x-ws a{ color:#1D9BF0 }
+.x-pst{ display:flex; gap:18px; margin-top:10px; font-size:14px; line-height:18px; color:var(--x-tx2) } .x-pst > span{ cursor:pointer } .x-pst b{ font-weight:700; color:var(--x-tx) }
+.x-ptabs{ top:calc(var(--statusbar-h) + var(--navbar-h)) }   /* presos por baixo da barra sólida do perfil */
+.x-pill.x-pmore{ width:34px; padding:0 } .x-pmore svg{ width:18px; height:18px }
+.x-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:2px } .x-gi{ aspect-ratio:1/1; background-color:var(--bg3); background-size:cover; background-position:center; cursor:pointer }
+
+/* ---------- pesquisa: o campo vive na barra, tendências por baixo ---------- */
+.view.x-search > .navbar{ gap:10px }
+.view.x-search > .navbar .nb-right{ display:none }
+.view.x-search > .navbar .nb-title{ display:none }
+.view.x-v > .navbar .search{ flex:1 1 auto; min-width:0; margin:0; height:38px; padding:0 12px; border-radius:19px; background:var(--fill3); color:var(--x-tx2) }
+.view.x-v > .navbar .search svg{ width:18px; height:18px } .view.x-v > .navbar .search input{ font-size:15px; color:var(--x-tx) } .view.x-v > .navbar .search input::placeholder{ color:var(--x-tx2) }
+.x-sh-h{ padding:14px 16px 8px; font-size:19px; line-height:24px; font-weight:800; color:var(--x-tx) }
+.x-tr{ padding:10px 16px; cursor:pointer } .x-tr:active{ background:var(--x-press) }
+.x-tr-s,.x-tr-n{ font-size:13px; line-height:16px; color:var(--x-tx2) } .x-tr b{ display:block; margin:2px 0; font-size:15px; line-height:20px; font-weight:700; color:var(--x-tx); overflow:hidden; text-overflow:ellipsis; white-space:nowrap }
+.x-tr-none{ padding:6px 16px 16px; font-size:15px; color:var(--x-tx2) }
+.x-urow{ display:flex; align-items:flex-start; gap:12px; padding:12px 16px; cursor:pointer } .x-urow:active{ background:var(--x-press) } .x-urow .avatar{ width:40px; height:40px; font-size:16px }
+.x-ub{ flex:1 1 auto; min-width:0 } .x-un{ display:flex; align-items:center; min-width:0; font-size:15px; line-height:20px; color:var(--x-tx) } .x-un b{ font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+.x-ub .x-hn{ display:block; margin-left:0; font-size:15px; line-height:20px } .x-ubio{ margin-top:4px; font-size:14px; line-height:19px; color:var(--x-tx); overflow-wrap:anywhere }
+
+/* ---------- notificações ---------- */
+.x-nrow{ display:flex; gap:12px; padding:12px 16px; box-shadow:inset 0 -1px 0 var(--x-line); cursor:pointer }
+.x-nic{ flex:none; width:32px; display:flex; justify-content:flex-end; color:#1D9BF0 } .x-nic svg{ width:26px; height:26px } .x-nic.like{ color:#F91880 } .x-nic.repost,.x-nic.quote{ color:#00BA7C }
+.x-nbd{ flex:1 1 auto; min-width:0; display:flex; align-items:center; gap:10px } .x-ntx{ flex:1 1 auto; min-width:0; font-size:15px; line-height:20px; color:var(--x-tx); overflow-wrap:anywhere } .x-ntx b{ font-weight:700 } .x-nbd .x-tm{ font-size:14px }
+
+/* ---------- Repostar · Citar: as linhas do X, em vez dos botões azuis centrados ---------- */
+.as-wrap.x-as .as-group{ background:var(--x-bg); border:0; box-shadow:0 0 0 1px var(--x-line) }
+.as-wrap.x-as .as-btn{ display:flex; align-items:center; gap:14px; padding:15px 18px; text-align:left; font-size:17px; font-weight:700; color:var(--x-tx) } .as-wrap.x-as .as-btn svg{ width:22px; height:22px; flex:none } .as-wrap.x-as .as-btn + .as-btn{ border-top:0 }
+.as-wrap.x-as .as-btn.cancel{ justify-content:center; font-size:16px; color:var(--x-tx) } .as-wrap.x-as .as-btn.danger{ color:#F4212E }
+body.fivem .as-wrap.x-as .as-group{ background:var(--x-bg) }
+
+/* ---------- criar conta e editar perfil ---------- */
+.view.x-signup > .content{ padding-bottom:12px }
+.x-su{ padding:10px 28px 0 } .x-su-t{ font-size:30px; line-height:36px; font-weight:800; letter-spacing:-.3px; color:var(--x-tx) }
+.x-su-av,.x-eav{ display:flex; flex-direction:column; align-items:center; gap:8px; padding:22px 0 14px; font-size:13px; color:var(--x-tx2) } .x-su-av .avatar,.x-eav .avatar{ width:88px; height:88px; font-size:32px; cursor:pointer }
+.x-fld{ position:relative; margin-top:12px; padding:8px 10px 6px; border-radius:6px; box-shadow:inset 0 0 0 1px var(--x-line2) }
+.x-fld label{ display:block; font-size:13px; line-height:16px; color:var(--x-tx2) }
+.x-fld input,.x-fld textarea{ display:block; width:100%; min-width:0; padding:2px 0 0; margin:0; border:0; outline:none; background:transparent; font:inherit; font-size:17px; line-height:23px; color:var(--x-tx); resize:none } .x-fld textarea{ min-height:68px } .x-fld input::placeholder,.x-fld textarea::placeholder{ color:var(--x-tx2) }
+.x-fld.kb-on,.x-fld:focus-within{ box-shadow:inset 0 0 0 2px #1D9BF0 }
+.x-su-un{ display:flex; align-items:center; font-size:17px; color:var(--x-tx2) } .x-su-un span{ flex:none; margin-right:1px }
+.x-su-f{ margin-top:12px; font-size:13px; line-height:18px; color:var(--x-tx2) }
+.x-su-go{ display:flex; align-items:center; justify-content:center; height:50px; margin-top:18px; border-radius:25px; background:var(--x-pill); color:var(--x-pill-tx); font-size:17px; font-weight:700; cursor:pointer } .x-su-go.off,.x-su-go.busy{ opacity:.5 }
+.x-edit{ padding:0 16px 8px }
+
+/* ---------- dobráveis: a caixa de resposta acompanha a coluna de leitura ---------- */
+body.form-fold.fold-open .app-window .nav-stack:not(.split) > .view > .x-rbar{ padding-left:max(12px,calc(50% - var(--fold-col) / 2 + 12px)); padding-right:max(12px,calc(50% - var(--fold-col) / 2 + 12px)) }
+body.os-android.form-fold.fold-open .view.x-thread > .x-rbar{ padding-bottom:calc(var(--safe-bottom,20px) + 6px + var(--taskbar-h,0px)) }
+
+/* ---------- VÍDEOS NAS REDES (12 nov 2026, social.js SV) ----------
+   A caixa da capa (`.sv-host`: .ig-img, .x-md, .reel .rv, .sv-img das stories, pré-visualizações) recebe o <video> e uma camada
+   com o play, o anel da descida, a duração e o som. Só transform e opacity animam; nada de filter nem backdrop-filter; o botão
+   do play é escuro e translúcido (nunca um fundo claro). Os anfitriões já posicionados mantêm a posição deles. */
+.sv-host{ overflow:hidden }
+.ig-img.sv-host,.x-md.sv-host,.x-cmp-ph.sv-host,.sv-tile{ position:relative }
+.sv-host > video.sv-v{ position:absolute; top:0; left:0; width:100%; height:100%; object-fit:cover; background:#000; display:block }
+.sv-ov{ position:absolute; top:0; left:0; right:0; bottom:0; z-index:2; pointer-events:none; color:#fff }
+.sv-pl{ position:absolute; left:50%; top:50%; width:64px; height:64px; margin:-32px 0 0 -32px; border-radius:50%; background:rgba(0,0,0,.48); box-shadow:inset 0 0 0 1px rgba(255,255,255,.22); display:flex; align-items:center; justify-content:center; pointer-events:auto; cursor:pointer; transition:opacity .2s ease, transform .25s var(--spring,ease) }
+.sv-pl svg{ width:26px; height:26px; margin-left:3px }
+.sv-pl:active{ background:rgba(0,0,0,.62) }
+.sv-host.sv-playing .sv-pl,.sv-host.sv-loading .sv-pl,.sv-host.sv-error .sv-pl{ opacity:0; transform:scale(.82); pointer-events:none }
+.sv-ld{ position:absolute; left:50%; top:50%; width:58px; height:58px; margin:-29px 0 0 -29px; opacity:0; transform:scale(.9); transition:opacity .2s ease, transform .2s ease; display:flex; align-items:center; justify-content:center }
+.sv-host.sv-loading .sv-ld{ opacity:1; transform:none }
+.sv-ld svg{ position:absolute; top:0; left:0; width:100%; height:100%; transform:rotate(-90deg) }
+.sv-ld circle{ fill:none; stroke-width:3 }
+.sv-ld .sv-rb{ stroke:rgba(255,255,255,.28) }
+.sv-ld .sv-rf{ stroke:#fff; stroke-linecap:round; stroke-dasharray:94.25; stroke-dashoffset:94.25 }
+.sv-ld b{ position:relative; font-size:11px; font-weight:700; font-variant-numeric:tabular-nums; text-shadow:0 1px 3px rgba(0,0,0,.6) }
+.sv-host.sv-loading .sv-ld::before{ content:''; position:absolute; top:0; left:0; right:0; bottom:0; border-radius:50%; background:rgba(0,0,0,.42) }
+.sv-du{ position:absolute; right:10px; bottom:10px; padding:3px 8px; border-radius:10px; background:rgba(0,0,0,.5); font-size:12px; font-weight:600; font-variant-numeric:tabular-nums; transition:opacity .2s ease }
+.sv-host.sv-playing .sv-du{ opacity:0 }
+.sv-mu{ position:absolute; right:10px; bottom:10px; width:32px; height:32px; border-radius:16px; background:rgba(0,0,0,.5); display:flex; align-items:center; justify-content:center; pointer-events:auto; cursor:pointer; opacity:0; transform:scale(.85); transition:opacity .2s ease, transform .2s ease }
+.sv-mu svg{ width:17px; height:17px }
+.sv-host.sv-playing .sv-mu,.sv-host.sv-paused .sv-mu{ opacity:1; transform:none }
+.sv-host:not(.sv-playing):not(.sv-paused) .sv-mu{ pointer-events:none }
+.sv-er{ position:absolute; left:16px; right:16px; top:50%; transform:translateY(-50%); text-align:center; font-size:13px; font-weight:600; text-shadow:0 1px 4px rgba(0,0,0,.7); opacity:0; transition:opacity .2s ease }
+.sv-host.sv-error .sv-er{ opacity:1 }
+.sv-host.sv-error::after{ content:''; position:absolute; top:0; left:0; right:0; bottom:0; z-index:1; background:rgba(0,0,0,.45); pointer-events:none }
+/* capa estática (compositor, citações do Tweeter): só o play e a duração */
+.sv-static .sv-pl{ pointer-events:none }
+.sv-static.sv-small .sv-pl{ width:44px; height:44px; margin:-22px 0 0 -22px }
+.sv-static.sv-small .sv-pl svg{ width:18px; height:18px; margin-left:2px }
+.sv-static.sv-small .sv-du{ right:6px; bottom:6px; font-size:11px; padding:2px 6px }
+/* story: sem botões (o toque é do visualizador), só o anel enquanto desce */
+.sv-host.sv-bare .sv-pl,.sv-host.sv-bare .sv-du,.sv-host.sv-bare .sv-mu{ display:none }
+/* Reels: sem duração; o som fica em cima à direita, por baixo da câmara, longe da coluna de ações */
+.sv-host.sv-reel .sv-du{ display:none }
+.sv-host.sv-reel .sv-mu{ top:calc(var(--statusbar-h) + 50px); bottom:auto; right:12px; width:36px; height:36px; border-radius:18px }
+.reel.is-vid .rv{ animation:none!important; transform:none }
+.reel.is-vid .rv > video.sv-v{ z-index:0 }
+.reel.is-vid .rv::after{ z-index:1 }
+/* Tweeter: a caixa do vídeo é mais alta do que a das fotografias (um vídeo do telemóvel é vertical). Largura e altura explícitas:
+   com as duas definidas a proporção 16/10 da .x-md deixa de mandar (sem mexer em aspect-ratio) */
+.x-md.x-vid{ width:100%; height:330px; background-color:#000 }
+.x-md .sv-pl{ width:56px; height:56px; margin:-28px 0 0 -28px }
+/* marca de vídeo nas grelhas (Explorar, perfil, guardados, Media do Tweeter) */
+.sv-tb{ position:absolute; right:6px; top:6px; display:flex; align-items:center; gap:3px; color:#fff; font-size:11px; font-weight:700; font-variant-numeric:tabular-nums; text-shadow:0 1px 3px rgba(0,0,0,.75); pointer-events:none }
+.sv-tb svg{ width:12px; height:12px; display:block }
+.sv-tb b{ font-weight:700 }
+.ig-grid .sv-tile,.x-grid .sv-tile{ position:relative }
+body.fivem .sv-pl,body.fivem .sv-mu,body.fivem .sv-du{ box-shadow:none }

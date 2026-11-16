@@ -1,0 +1,61 @@
+/* ===================== JOGOS DE AÇÃO A - apex_phone 1.5.0 =====================
+   Só o que o Planar (.ggl-), as Rochas (.grk-), o Corredor (.grn-) e o Salto (.ghp-) acrescentam à
+   casca do app-games.css, mais as cápsulas do HUD partilhadas por estes quatro (.ga-). Sem filter,
+   sem backdrop-filter, sem sombras animadas: só transform e opacity mexem (o manípulo do joystick).
+   Pong, Hóquei, Corte e Torre têm o seu app-games-action2.css.
+   ============================================================================= */
+
+/* a tela dos jogos de ação: o abanão é um transform curto na própria tela */
+.ga-cv { background: #000; will-change: transform; max-width: 100%; max-height: 100%; }
+/* o Salto tem pad + barra de personagens: o pad encolhe um pouco para a tela ficar maior */
+.gm-hop .ghp-pad { zoom: .86; }
+.gm-hop .gm-opts { margin-top: 6px; }
+
+/* ---------- cápsulas do HUD (meio): glifo SVG + número; o texto fixo vai em <em> (traduzível) ---------- */
+.ga-mid { display: inline-flex; align-items: center; justify-content: center; gap: 6px; flex-wrap: wrap; }
+.ga-cap { display: inline-flex; align-items: center; gap: 5px; padding: 7px 10px; border-radius: 15px; background: rgba(255,255,255,.09); box-shadow: inset 0 1px 0 rgba(255,255,255,.08); color: rgba(255,255,255,.82); font: 700 15px/1 var(--font); white-space: nowrap; font-variant-numeric: tabular-nums; }
+.ga-mid { flex-wrap: nowrap; }
+.grk-lives .gm-hearts { gap: 2px; }
+.grk-lives .gm-hearts i svg { width: 17px; height: 17px; }
+.grk-wave svg { color: rgba(255,255,255,.7); }
+.ga-cap em { font-style: normal; font-weight: 600; color: rgba(255,255,255,.55); }
+.ga-cap b { color: #fff; font-weight: 800; }
+.ga-cap svg { width: 16px; height: 16px; flex: 0 0 auto; }
+.ga-cap i { display: inline-flex; }
+.ga-cap i svg { width: 16px; height: 16px; }
+.ga-cap.off { display: none; }
+.ga-coin { display: inline-block; width: 14px; height: 14px; border-radius: 7px; background: #FFD60A; box-shadow: inset 0 0 0 3px #FFB800, inset 0 -2px 0 rgba(0,0,0,.18); }
+.gm-hearts + .ga-cap, .grk-lives { display: inline-flex; align-items: center; }
+.grk-mult b { color: #FFD60A; }
+.grk-bonus { background: rgba(94,92,230,.35); }
+.grn-bonus { background: rgba(0,199,190,.3); }
+.ggl-medal em { color: #fff; }
+
+/* ---------- Rochas: joystick à esquerda, hiperespaço, acelerar e disparar à direita ---------- */
+.grk-ctl { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 0 4px; }
+.grk-stick { position: relative; width: 120px; height: 120px; border-radius: 60px; background: radial-gradient(circle at 50% 40%, rgba(255,255,255,.12), rgba(255,255,255,.05) 70%); box-shadow: inset 0 0 0 2px rgba(255,255,255,.12), inset 0 2px 6px rgba(0,0,0,.35); touch-action: none; flex: 0 0 auto; user-select: none; }
+.grk-stick::before { content: ''; position: absolute; left: 50%; top: 50%; width: 10px; height: 10px; margin: -5px 0 0 -5px; border-radius: 5px; background: rgba(255,255,255,.18); }
+.grk-knob { position: absolute; left: 50%; top: 50%; width: 56px; height: 56px; margin: -28px 0 0 -28px; border-radius: 28px; background: linear-gradient(180deg, rgba(255,255,255,.3), rgba(255,255,255,.14)); box-shadow: inset 0 1px 0 rgba(255,255,255,.4), 0 4px 12px rgba(0,0,0,.4); pointer-events: none; }
+.grk-btns { display: flex; align-items: center; gap: 10px; }
+.grk-btns .gb { width: 72px; height: 72px; max-width: none; flex: 0 0 auto; border-radius: 36px; box-shadow: inset 0 1px 0 rgba(255,255,255,.14); }
+.grk-btns .gb.grk-hyper { width: 56px; height: 56px; border-radius: 28px; background: rgba(90,200,250,.22); color: #BFEFFF; }
+.grk-btns .gb.grk-hyper.off { opacity: .35; pointer-events: none; }
+.grk-btns .gb.grk-fire { background: var(--gm, #5E5CE6); box-shadow: inset 0 1px 0 rgba(255,255,255,.3), 0 4px 14px rgba(94,92,230,.35); }
+.grk-btns .gb svg { width: 30px; height: 30px; }
+.grk-btns .gb.grk-hyper svg { width: 24px; height: 24px; }
+
+/* ---------- Planar: botão largo com glifo + rótulo ---------- */
+.gb.ggl-flap { min-width: 180px; }
+
+/* ---------- deitado (.app-window.ls): a coluna de comandos tem 150 de largura ---------- */
+.app-window.ls .grk-ctl { flex-direction: column; padding: 0; gap: 12px; }
+.app-window.ls .grk-btns { flex-direction: column; gap: 8px; }
+.app-window.ls .grk-btns .gb { width: 60px; height: 60px; }
+.app-window.ls .gb.ggl-flap { min-width: 0; width: 140px; padding: 0 10px; font-size: 14px; }
+.app-window.ls .ghp-pad { zoom: .85; }
+/* deitado, a barra de opções do shell (.gm-opts, 150 de largura) não cabe numa linha: rótulo em cima, segmentos a quebrar */
+.app-window.ls .gm-glide .gm-opt-row, .app-window.ls .gm-hop .gm-opt-row { flex-direction: column; align-items: stretch; gap: 4px; }
+.app-window.ls .gm-glide .gm-opt-row .ol, .app-window.ls .gm-hop .gm-opt-row .ol { text-align: center; }
+.app-window.ls .gm-glide .gm-seg, .app-window.ls .gm-hop .gm-seg { flex-wrap: wrap; justify-content: center; }
+.app-window.ls .gm-glide .gm-seg > div, .app-window.ls .gm-hop .gm-seg > div { padding: 7px 9px; font-size: 13px; }
+.app-window.ls .ga-mid { gap: 4px; flex-wrap: wrap; }

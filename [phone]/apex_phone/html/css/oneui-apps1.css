@@ -1,0 +1,522 @@
+/* ============================================================
+   NOVA UI 8.5 · F1b COMUNICAÇÃO: Telefone, Contactos, ecrãs de chamada, Mensagens, Videochamada
+   ------------------------------------------------------------
+   Só atua com body.os-android: o PearOS não muda um pixel.
+   Prefixos próprios: aph- (telefone e contactos), amsg- (mensagens), afc- (videochamada). As classes que
+   o PearOS também usa (.msg-*, .msl-*, .bubble, .composer, .vmsg-*, .grp-*) só são tocadas debaixo de
+   body.os-android E da vista das Mensagens (.msg-view) ou dos ecrãs dos grupos: as conversas das apps de
+   terceiros (Zapp, Instashot, Match, Dark Chat) ficam iguais nos dois sistemas.
+   CEF do FiveM: nada de backdrop-filter nem filter, nada de color-mix(), nada de :has(); só transform e
+   opacity animam; hover só com cor; nada pisca num re-render e nada anima em ciclo.
+   ============================================================ */
+
+/* ============================================================
+   COMUM
+   ============================================================ */
+body.os-android .aph-hidden{ display:none!important }
+body.os-android .aph-lt-sub{ display:block; margin-top:6px; font-family:var(--font); font-size:15px; font-weight:400; letter-spacing:0; line-height:1.3; color:var(--label2) }
+/* com subtítulo, o título grande da zona de leitura empilha título e subtítulo */
+body.os-android .view > .content > .large-title.aph-lt2{ flex-direction:column }
+
+/* cartões e cabeçalhos de secção (os mesmos raios e superfícies da Nova UI) */
+body.os-android .aph-sec{ padding:18px 30px 8px; font-size:14px; font-weight:500; color:var(--label2) }
+body.os-android .aph-card{ position:relative; margin:0 14px 6px; border-radius:var(--ou-r-card,26px); background:var(--ou-surface); overflow:hidden }
+
+/* avatares redondos (iniciais com o gradiente da paleta, ou foto por cima) */
+body.os-android .aph-av{ display:flex; align-items:center; justify-content:center; flex:none; border-radius:50%; color:#fff; font-weight:500; overflow:hidden; background-size:cover; background-position:center }
+body.os-android .aph-av.s40{ width:40px; height:40px; font-size:15px }
+body.os-android .aph-av.s44{ width:44px; height:44px; font-size:16px }
+body.os-android .aph-av.s56{ width:56px; height:56px; font-size:21px }
+body.os-android .aph-av.s96{ width:96px; height:96px; font-size:36px }
+body.os-android .aph-av.s120{ width:120px; height:120px; font-size:44px }
+body.os-android .aph-av.aph-anon,body.os-android .avatar.aph-anon{ background:#B4BFD0!important; color:#fff }
+body.os-android.dark .aph-av.aph-anon,body.os-android.dark .avatar.aph-anon{ background:#4A5366!important }
+body.os-android .aph-anon svg{ width:58%; height:58%; stroke-width:1.8 }
+
+/* linhas (Recentes, Contactos): a frente desliza por cima das cores de Chamar (direita) e Mensagem (esquerda) */
+body.os-android .aph-row{ position:relative; overflow:hidden }
+body.os-android .aph-row-fg{ position:relative; z-index:1; display:flex; align-items:center; gap:14px; min-height:64px; padding:10px 18px; background:var(--ou-surface); cursor:pointer; touch-action:pan-y; transition:transform .3s var(--ou-curve-out), background .15s }
+body.os-android .aph-row-fg:hover{ background:var(--ou-surface2) }
+body.os-android .aph-rb{ flex:1; min-width:0; display:flex; flex-direction:column; gap:3px }
+body.os-android .aph-rb b{ font-size:17px; font-weight:500; color:var(--label); overflow:hidden; text-overflow:ellipsis; white-space:nowrap }
+body.os-android .aph-rb > span{ font-size:14px; color:var(--label2); overflow:hidden; text-overflow:ellipsis; white-space:nowrap }
+body.os-android .aph-rt{ flex:none; align-self:flex-start; margin-top:4px; font-size:13px; color:var(--label2); font-variant-numeric:tabular-nums }
+body.os-android .aph-blk{ display:flex; color:var(--red); opacity:.85 }
+body.os-android .aph-sw{ position:absolute; inset:0; display:none; align-items:center; gap:10px; padding:0 26px; color:#fff; font-size:15px; font-weight:600 }
+body.os-android .aph-sw-r{ justify-content:flex-start; background:var(--green) }
+body.os-android .aph-sw-l{ justify-content:flex-end; background:var(--ou-blue,#3E7BFA) }
+body.os-android .aph-row.to-r .aph-sw-r,body.os-android .aph-row.to-l .aph-sw-l{ display:flex }
+body.os-android .aph-sw svg{ transition:transform .2s var(--ou-curve-out) }
+body.os-android .aph-row.armed .aph-sw svg{ transform:scale(1.18) }
+
+/* tipo de chamada: recebida azul, efetuada verde, perdida e recusada vermelho */
+body.os-android .aph-meta{ display:flex; align-items:center; gap:4px; min-width:0 }
+body.os-android .aph-meta em{ font-style:normal; overflow:hidden; text-overflow:ellipsis; white-space:nowrap }
+body.os-android .aph-ct{ display:flex; flex:none; color:var(--label2) }
+body.os-android .aph-ct[data-k="in"]{ color:var(--ou-blue,#3E7BFA) }
+body.os-android .aph-ct[data-k="out"]{ color:var(--green) }
+body.os-android .aph-ct[data-k="miss"],body.os-android .aph-ct[data-k="rej"]{ color:var(--red) }
+body.os-android .aph-rrow.is-miss .aph-rb b{ color:var(--red) }
+
+/* ações por baixo de uma linha aberta (Chamar · Mensagem · Videochamada · Detalhes) */
+body.os-android .aph-acts{ display:none; justify-content:space-between; gap:6px; padding:0 22px 14px 76px; background:var(--ou-surface) }
+body.os-android .aph-row.open .aph-acts{ display:flex; animation:aphFade .22s var(--ou-curve) both }
+body.os-android .aph-act{ display:flex; flex-direction:column; align-items:center; gap:6px; min-width:58px; font-size:12px; color:var(--label2); cursor:pointer }
+body.os-android .aph-act i{ display:flex; align-items:center; justify-content:center; width:44px; height:44px; border-radius:50%; background:var(--ou-surface2); color:var(--label); transition:background .15s }
+body.os-android .aph-act:hover i{ background:var(--fill2) }
+body.os-android .aph-act:nth-child(1) i,body.os-android .aph-act:nth-child(3) i{ color:var(--green) }
+body.os-android .aph-act:nth-child(2) i{ color:var(--ou-blue,#3E7BFA) }
+@keyframes aphFade{ from{ opacity:0 } to{ opacity:1 } }
+
+/* ============================================================
+   TELEFONE · TECLADO
+   ============================================================ */
+body.os-android .aph-kp-view .content{ overflow:hidden }
+body.os-android .aph-kp{ position:absolute; inset:0; display:flex; flex-direction:column; padding:0 0 calc(var(--safe-bottom,20px) + 92px) }
+body.os-android .aph-kp-top{ position:relative; flex:1; min-height:0; display:flex; flex-direction:column; align-items:center; justify-content:flex-end; padding:0 18px 12px }
+body.os-android .aph-kp-num{ order:1; max-width:100%; min-height:50px; font-family:var(--font-display); font-size:40px; font-weight:400; letter-spacing:1px; line-height:50px; color:var(--label); text-align:center; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; font-variant-numeric:tabular-nums; cursor:default }
+body.os-android .aph-kp-num[data-len="l"]{ font-size:33px } body.os-android .aph-kp-num[data-len="xl"]{ font-size:27px; letter-spacing:.5px }
+body.os-android .aph-kp-add{ order:2; min-height:22px; margin-top:4px; font-size:15px; font-weight:500; color:var(--blue); cursor:pointer }
+body.os-android .aph-kp-add:empty{ visibility:hidden }
+body.os-android .aph-kp-sug{ order:3; width:100%; min-height:60px; margin-top:14px; display:flex; align-items:flex-end }
+body.os-android .aph-kp-sg{ display:flex; align-items:center; gap:12px; width:100%; padding:9px 12px 9px 10px; border-radius:24px; background:var(--ou-surface); cursor:pointer; transition:background .15s }
+body.os-android .aph-kp-sg:hover{ background:var(--ou-surface2) }
+body.os-android .aph-kp-sgb{ flex:1; min-width:0; display:flex; flex-direction:column; gap:2px }
+body.os-android .aph-kp-sgb b{ font-size:16px; font-weight:500; color:var(--label); overflow:hidden; text-overflow:ellipsis; white-space:nowrap }
+body.os-android .aph-kp-sgb span{ font-size:13px; color:var(--label2); font-variant-numeric:tabular-nums }
+body.os-android .aph-kp-sgb em{ font-style:normal; color:var(--blue); font-weight:600 }
+body.os-android .aph-kp-cnt{ flex:none; padding:6px 12px; border-radius:999px; background:var(--fill3); font-size:13px; font-weight:600; color:var(--label); transition:background .15s }
+body.os-android .aph-kp-cnt:hover{ background:var(--fill2) }
+body.os-android .aph-kp-more{ position:absolute; left:18px; right:18px; bottom:84px; z-index:4; display:none; flex-direction:column; padding:6px 0; border-radius:24px; background:var(--ou-surface); box-shadow:0 12px 34px rgba(0,0,0,.16) }
+body.os-android .aph-kp-more.open{ display:flex; animation:aphFade .18s var(--ou-curve) both }
+body.os-android .aph-kp-mi{ display:flex; align-items:center; gap:12px; padding:8px 16px; cursor:pointer; transition:background .15s }
+body.os-android .aph-kp-mi:hover{ background:var(--ou-surface2) }
+body.os-android .aph-kp-keys{ display:grid; grid-template-columns:repeat(3,1fr); grid-auto-rows:70px; padding:0 34px }
+body.os-android .aph-key{ position:relative; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:1px; cursor:pointer; color:var(--label); user-select:none }
+body.os-android .aph-key::before{ content:''; position:absolute; left:50%; top:50%; width:66px; height:66px; margin:-33px 0 0 -33px; border-radius:50%; background:var(--fill3); opacity:0; transition:opacity .15s }
+body.os-android .aph-key:hover::before{ opacity:.7 } body.os-android .aph-key:active::before{ opacity:1; background:var(--fill2) }
+body.os-android .aph-key b{ position:relative; font-family:var(--font-display); font-size:34px; font-weight:400; line-height:1 }
+body.os-android .aph-key span{ position:relative; min-height:14px; font-size:12px; font-weight:500; letter-spacing:.6px; color:var(--label2); line-height:14px }
+body.os-android .aph-kp-acts{ display:grid; grid-template-columns:repeat(3,1fr); align-items:center; justify-items:center; height:84px; padding:0 34px; margin-top:6px }
+body.os-android .aph-kp-call{ width:68px; height:68px; border-radius:50%; display:flex; align-items:center; justify-content:center; background:var(--green); color:#fff; cursor:pointer; box-shadow:0 6px 16px rgba(45,190,96,.28); transition:background .15s }
+body.os-android .aph-kp-call:hover{ background:#28AB56 }
+body.os-android .aph-kp-side{ width:52px; height:52px; border-radius:50%; display:flex; align-items:center; justify-content:center; color:var(--label2); cursor:pointer; transition:background .15s, opacity .15s }
+body.os-android .aph-kp-side:hover{ background:var(--fill3) }
+body.os-android .aph-kp:not(.has-num) .aph-kp-del{ opacity:0; pointer-events:none }
+/* NOVA Fold8 (fechado 670, aberto 1340): o teclado fica com a largura de um telemóvel ao centro, como o marcador da Nova UI num
+   ecrã grande (esticado, os números ficavam nas pontas do ecrã) */
+body.os-android.form-fold .aph-kp{ padding-left:max(0px,calc(50% - 230px)); padding-right:max(0px,calc(50% - 230px)) }
+/* dobrável ABERTO (os dois sistemas; as regras do teclado do PearOS também ficam aqui, o apps.css não é deste grupo): os Recentes à
+   esquerda do teclado (phone.js phoneKpSide), com a largura da lista das duas colunas (--split-l); o teclado fica ao centro do resto.
+   Nova UI: a coluna leva a barra compacta das listas em duas colunas (64, título 22/700 à esquerda) e não tem linha a separar;
+   PearOS: a linha fina do Duo à direita da lista */
+.view.kp-duo > .view.kp-side{ right:auto; width:var(--split-l); z-index:3; transform:none; filter:none; transition:none }
+body.os-android.form-fold .view.kp-duo > .kp-side > .navbar{ height:calc(var(--statusbar-h) + 64px) }
+body.os-android.form-fold .view.kp-duo > .kp-side > .navbar .nb-title{ opacity:1; font-size:22px; font-weight:700; letter-spacing:-.1px }
+body.os-android.form-fold .view.kp-duo > .kp-side > .content > .large-title{ display:none }
+body.os-android.form-fold .view.kp-duo .aph-kp{ left:var(--split-l); padding-left:max(0px,calc((100% - var(--split-l)) / 2 - 230px)); padding-right:max(0px,calc((100% - var(--split-l)) / 2 - 230px)) }
+body.os-ios.form-fold .view.kp-duo > .kp-side{ box-shadow:.5px 0 0 var(--sep) }
+body.os-ios.form-fold .view.kp-duo .dial{ left:var(--split-l) }
+
+/* ============================================================
+   TELEFONE · RECENTES e CONTACTOS
+   ============================================================ */
+body.os-android .aph-rec{ padding-bottom:8px }
+body.os-android .aph-rec-view .aph-chips{ padding:2px 14px 6px }
+body.os-android .aph-rec .empty,body.os-android .aph-clist .empty{ padding-top:60px }
+body.os-android .aph-clist{ position:relative; padding-bottom:8px }
+/* lista vazia: o holder estica (Recentes pelo UI.empty, Contactos pelo .aph-isempty do phone.js) e o aviso fica ao centro do
+   espaco livre; o cartao "Contactos bloqueados" desce para o fundo. Os 60 px de cima ja nao sao precisos */
+body.os-android .content > .aph-clist.aph-isempty{ flex:1 0 auto; display:flex; flex-direction:column }
+body.os-android .aph-clist.aph-isempty > *{ flex-shrink:0 }
+body.os-android .aph-clist.aph-isempty > .empty,body.os-android .aph-rec.ui-isempty > .empty{ flex:1 0 auto; padding-top:40px }
+body.os-android .aph-me{ margin:6px 14px 4px }
+body.os-android .aph-me .aph-row-fg{ min-height:84px; padding:14px 16px 14px 18px }
+body.os-android .aph-me .aph-rb b{ font-size:19px; font-weight:600 }
+body.os-android .aph-blkcard{ margin-top:22px }
+body.os-android .aph-blkcard .aph-row-fg{ min-height:58px }
+body.os-android .aph-blkcard em{ font-style:normal; font-size:15px; color:var(--label2) }
+body.os-android .aph-ic{ display:flex; align-items:center; justify-content:center; width:40px; height:40px; flex:none; border-radius:50%; background:var(--ou-surface2); color:var(--label2) }
+/* índice de letras à direita (só as que existem) */
+body.os-android .aph-idx{ position:absolute; right:0; top:52%; z-index:6; display:flex; flex-direction:column; align-items:center; gap:1px; transform:translateY(-50%) }
+body.os-android .aph-idx span{ width:14px; font-size:10px; font-weight:600; line-height:15px; text-align:center; color:var(--label2); cursor:pointer; transition:color .15s }
+body.os-android .aph-idx span:hover{ color:var(--blue) }
+/* NOVA Fold8 aberto, vista de uma coluna (o separador Contactos do Telefone): o índice acompanha a lista na coluna de leitura em vez
+   de ficar na aresta do ecrã (--fold-gut, ui.css); nas duas colunas (app Contactos) já está encostado à lista */
+body.os-android.form-fold.fold-open .nav-stack:not(.split) > .view.aph-ct-view > .aph-idx{ right:max(0px,calc(var(--fold-gut,0px) - 14px)) }
+
+/* ============================================================
+   FICHA DO CONTACTO
+   ============================================================ */
+body.os-android .aph-cd{ padding:6px 0 8px }
+body.os-android .aph-cd-hero{ display:flex; flex-direction:column; align-items:center; padding:18px 24px 22px; text-align:center }
+body.os-android .aph-cd-name{ margin-top:18px; max-width:100%; font-family:var(--font-display); font-size:30px; font-weight:500; line-height:1.2; color:var(--label); word-break:break-word }
+body.os-android .aph-cd-tag{ margin-top:10px; padding:4px 12px; border-radius:999px; background:rgba(242,69,61,.12); color:var(--red); font-size:13px; font-weight:500 }
+body.os-android .aph-cd-tag.me{ background:var(--fill3); color:var(--label2) }
+body.os-android .aph-cd-acts{ display:flex; justify-content:center; gap:30px; padding:0 20px 24px }
+body.os-android .aph-rbtn{ display:flex; flex-direction:column; align-items:center; gap:8px; min-width:74px; cursor:pointer; font-size:13px; color:var(--label2) }
+body.os-android .aph-rbtn i{ display:flex; align-items:center; justify-content:center; width:58px; height:58px; border-radius:50%; background:var(--ou-surface); box-shadow:var(--ou-shadow-card); transition:background .15s }
+body.os-android .aph-rbtn:hover i{ background:var(--ou-surface2) }
+body.os-android .aph-rbtn[data-k="call"] i,body.os-android .aph-rbtn[data-k="vid"] i{ color:var(--green) }
+body.os-android .aph-rbtn[data-k="msg"] i{ color:var(--ou-blue,#3E7BFA) }
+body.os-android .aph-cd-card{ margin:0 14px 10px }
+body.os-android .aph-cd-line{ display:flex; align-items:center; gap:6px; min-height:66px; padding:12px 12px 12px 22px; cursor:pointer; transition:background .15s }
+body.os-android .aph-cd-line:hover{ background:var(--ou-surface2) }
+body.os-android .aph-cd-lt{ flex:1; min-width:0; display:flex; flex-direction:column; gap:3px }
+body.os-android .aph-cd-lt span{ font-size:13px; color:var(--label2) }
+body.os-android .aph-cd-lt b{ font-size:17px; font-weight:400; color:var(--label); white-space:pre-wrap; word-break:break-word }
+body.os-android .aph-cd-lt b.ph,body.os-android .aph-cd-lt b.lnk{ color:var(--blue); font-weight:500 }
+body.os-android .aph-cd-ib{ display:flex; align-items:center; justify-content:center; width:44px; height:44px; flex:none; border-radius:50%; color:var(--ou-blue,#3E7BFA); transition:background .15s }
+body.os-android .aph-cd-ib[data-k="vid"]{ color:var(--green) }
+body.os-android .aph-cd-ib[data-k="cp"]{ color:var(--label2) }
+body.os-android .aph-cd-ib:hover{ background:var(--fill3) }
+body.os-android .aph-hrow{ display:flex; align-items:center; gap:14px; padding:12px 20px }
+body.os-android .aph-hrow .aph-rb b{ font-size:15px }
+body.os-android .aph-hrow .aph-rb span{ font-size:13px }
+body.os-android .aph-hrow.is-miss .aph-rb b{ color:var(--red) }
+body.os-android .aph-hrow em{ flex:none; font-style:normal; font-size:13px; color:var(--label2) }
+/* barra de ações em baixo (Favorito · Editar · Partilhar · Mais), como na ficha da Nova UI */
+body.os-android .aph-has-bbar > .content{ padding-bottom:calc(var(--safe-bottom,20px) + 92px) }
+body.os-android .aph-bbar{ position:absolute; left:0; right:0; bottom:0; z-index:6; display:flex; justify-content:space-around; padding:6px 10px calc(var(--safe-bottom,20px) + 6px); background:var(--bg) }
+body.os-android .aph-bb{ display:flex; flex-direction:column; align-items:center; gap:4px; min-width:70px; padding:8px 6px; border-radius:18px; font-size:12px; font-weight:500; color:var(--label); cursor:pointer; transition:background .15s }
+body.os-android .aph-bb:hover{ background:var(--fill3) }
+body.os-android .aph-bb[data-k="fav"].on svg{ color:#F5A524 }
+body.os-android .aph-bb[data-k="blk"].on{ color:var(--red) }
+
+/* ============================================================
+   ECRÃ DA CHAMADA (voz)
+   O fundo segue o tema (claro ou escuro) com a cor do avatar misturada em JS (variáveis --aph-l1, --aph-l2, --aph-d1, --aph-d2).
+   ============================================================ */
+body.os-android .aph-call,body.os-android .aph-inc{ position:absolute; inset:0; z-index:150; display:flex; flex-direction:column; align-items:center; overflow:hidden; border-radius:inherit; color:var(--label);
+  background:linear-gradient(180deg,var(--aph-l1,#E9EEF6) 0%,var(--aph-l2,#F3F4F7) 55%,#F5F5F7 100%); --aph-bot:30px }
+body.os-android.dark .aph-call,body.os-android.dark .aph-inc{ background:linear-gradient(180deg,var(--aph-d1,#1B2230) 0%,var(--aph-d2,#08090C) 58%,#010102 100%) }
+/* barra de 3 botoes (a de origem; sem o atributo conta como botoes) por baixo, menos no ecra bloqueado, onde ela nao aparece */
+body.os-android:not([data-nav="gesture"]):not(.landscape) #screen:not(.locked) .aph-call,body.os-android:not([data-nav="gesture"]):not(.landscape) #screen:not(.locked) .aph-inc{ --aph-bot:calc(var(--nav-h,48px) + 16px) }
+body.os-android .aph-call{ animation:aphUp .34s var(--ou-curve-out) both }
+@keyframes aphUp{ from{ opacity:0; transform:translateY(26px) } to{ opacity:1; transform:none } }
+body.os-android .aph-c-top{ align-self:stretch; display:flex; align-items:center; height:calc(var(--statusbar-h) + 46px); padding:var(--statusbar-h) 12px 0 }
+body.os-android .aph-c-min{ display:flex; align-items:center; justify-content:center; width:44px; height:44px; border-radius:50%; color:var(--label2); cursor:pointer; transition:background .15s }
+body.os-android .aph-c-min:hover{ background:var(--fill3) }
+body.os-android .aph-c-head{ display:flex; flex-direction:column; align-items:center; margin-top:14px; padding:0 28px; text-align:center }
+body.os-android .aph-c-name{ max-width:100%; font-family:var(--font-display); font-size:34px; font-weight:500; line-height:1.18; overflow:hidden; text-overflow:ellipsis; white-space:nowrap }
+body.os-android .aph-c-num{ margin-top:6px; font-size:15px; color:var(--label2) }
+body.os-android .aph-c-num:empty{ display:none }
+body.os-android .aph-c-stat{ margin-top:10px; font-size:17px; color:var(--label2); font-variant-numeric:tabular-nums }
+body.os-android .aph-c-stat::first-letter{ text-transform:uppercase }
+body.os-android .aph-call.connected .aph-c-stat{ color:var(--green); font-weight:500 }
+body.os-android .aph-c-muted{ display:none; align-items:center; gap:5px; margin-top:10px; padding:4px 11px; border-radius:999px; background:rgba(242,69,61,.13); color:var(--red); font-size:13px; font-weight:500 }
+body.os-android .aph-call.muted .aph-c-muted{ display:inline-flex }
+body.os-android .aph-c-mid{ flex:1; min-height:0; width:100%; display:flex; flex-direction:column; align-items:center; justify-content:center }
+body.os-android .aph-c-avw{ position:relative; width:156px; height:156px }
+body.os-android .aph-c-avw::after{ content:''; position:absolute; inset:-9px; border-radius:50%; border:3px solid var(--green); opacity:0; transition:opacity .2s }
+body.os-android .aph-call.talk-peer .aph-c-avw::after{ opacity:.9 }
+body.os-android .aph-c-av{ width:156px; height:156px; font-size:58px; font-weight:500; color:#fff; box-shadow:0 14px 36px rgba(0,0,0,.14) }
+body.os-android .aph-c-av.aph-anon svg{ width:56%; height:56% }
+body.os-android .aph-c-grid{ display:grid; grid-template-columns:repeat(3,1fr); row-gap:20px; width:100%; max-width:392px; padding:0 16px; margin-bottom:28px }
+body.os-android .aph-cb{ display:flex; flex-direction:column; align-items:center; gap:8px; cursor:pointer; font-size:13px; color:var(--label2); text-align:center }
+body.os-android .aph-cb i{ display:flex; align-items:center; justify-content:center; width:64px; height:64px; border-radius:50%; color:var(--label); background:rgba(255,255,255,.55); transition:background .15s, color .15s }
+body.os-android.dark .aph-cb i{ background:rgba(255,255,255,.08) }
+body.os-android .aph-cb:hover i{ background:rgba(255,255,255,.85) }
+body.os-android.dark .aph-cb:hover i{ background:rgba(255,255,255,.16) }
+body.os-android .aph-cb.on i,body.os-android.dark .aph-cb.on i{ background:var(--blue); color:#fff }
+body.os-android .aph-cb.on span{ color:var(--label) }
+body.os-android .aph-c-endw{ display:flex; justify-content:center; margin-bottom:var(--aph-bot) }
+body.os-android .aph-c-end{ display:flex; align-items:center; justify-content:center; width:74px; height:74px; border-radius:50%; background:var(--red); color:#fff; cursor:pointer; box-shadow:0 8px 22px rgba(242,69,61,.3); transition:background .15s }
+body.os-android .aph-c-end:hover{ background:#DE3A32 }
+body.os-android .aph-call.ended .aph-c-grid{ opacity:.4; pointer-events:none }
+/* teclado durante a chamada: no lugar do avatar e dos botões */
+body.os-android .aph-c-kp{ display:none; flex-direction:column; align-items:center; width:100%; padding:0 34px }
+body.os-android .aph-call.kp-open .aph-c-kp{ display:flex }
+body.os-android .aph-call.kp-open .aph-c-avw,body.os-android .aph-call.kp-open .aph-c-grid{ display:none }
+body.os-android .aph-c-kpn{ min-height:42px; margin-bottom:10px; font-family:var(--font-display); font-size:32px; letter-spacing:1px; color:var(--label); font-variant-numeric:tabular-nums }
+body.os-android .aph-c-keys{ display:grid; grid-template-columns:repeat(3,1fr); grid-auto-rows:70px; width:100%; max-width:340px }
+body.os-android .aph-c-kph{ margin:14px 0 18px; padding:8px 16px; border-radius:999px; font-size:15px; font-weight:500; color:var(--blue); cursor:pointer; transition:background .15s }
+body.os-android .aph-c-kph:hover{ background:var(--fill3) }
+/* fim sem resposta: as ações ficam no lugar dos botões */
+body.os-android .aph-call.endcard .aph-c-grid,body.os-android .aph-call.endcard .aph-c-endw{ visibility:hidden }
+body.os-android .aph-c-endbar{ position:absolute; left:0; right:0; bottom:var(--aph-bot,30px); z-index:5; display:flex; justify-content:center; gap:30px; opacity:0; transform:translateY(14px); transition:opacity .25s var(--ou-curve), transform .32s var(--ou-curve-out) }
+body.os-android .aph-c-endbar.in{ opacity:1; transform:none }
+body.os-android .aph-c-endbar > div{ display:flex; flex-direction:column; align-items:center; gap:8px; min-width:84px; cursor:pointer; font-size:13px; color:var(--label2) }
+body.os-android .aph-c-endbar i{ display:flex; align-items:center; justify-content:center; width:64px; height:64px; border-radius:50%; background:var(--ou-surface); color:var(--label); box-shadow:var(--ou-shadow-card); transition:background .15s }
+body.os-android .aph-c-endbar [data-x="again"] i{ background:var(--green); color:#fff }
+body.os-android .aph-c-endbar [data-x="msg"] i{ background:var(--ou-blue,#3E7BFA); color:#fff }
+body.os-android .aph-c-endbar [data-x="close"]:hover i{ background:var(--ou-surface2) }
+
+/* ============================================================
+   CHAMADA RECEBIDA (ecrã inteiro): arrastar o círculo verde atende, o vermelho recusa
+   ============================================================ */
+body.os-android .aph-inc{ opacity:0; transform:translateY(30px); transition:opacity .28s var(--ou-curve), transform .42s var(--ou-curve-out) }
+body.os-android .aph-inc.in{ opacity:1; transform:none }
+body.os-android .aph-inc.done{ pointer-events:none }
+body.os-android .aph-i-head{ display:flex; flex-direction:column; align-items:center; margin-top:calc(var(--statusbar-h) + 62px); padding:0 26px; text-align:center }
+body.os-android .aph-i-lbl{ display:inline-flex; align-items:center; gap:7px; font-size:15px; font-weight:500; color:var(--label2) }
+body.os-android .aph-i-name{ max-width:100%; margin-top:14px; font-family:var(--font-display); font-size:36px; font-weight:500; line-height:1.15; overflow:hidden; text-overflow:ellipsis; white-space:nowrap }
+body.os-android .aph-i-num{ margin-top:7px; font-size:15px; color:var(--label2) }
+body.os-android .aph-i-num:empty{ display:none }
+body.os-android .aph-i-mid{ flex:1; min-height:0; display:flex; align-items:center; justify-content:center }
+body.os-android .aph-i-av{ width:150px; height:150px; font-size:56px; box-shadow:0 14px 36px rgba(0,0,0,.14) }
+body.os-android .aph-i-ctl{ position:relative; display:flex; align-items:center; justify-content:space-between; width:100%; padding:0 50px; margin-bottom:34px }
+body.os-android .aph-i-b{ position:relative; width:78px; height:78px; flex:none; transition:opacity .2s }
+body.os-android .aph-i-b[data-k="acc"]{ color:var(--green) }
+body.os-android .aph-i-b[data-k="dec"]{ color:var(--red) }
+body.os-android .aph-i-halo{ position:absolute; inset:-14px; border-radius:50%; background:currentColor; opacity:.16; transition:transform .35s var(--ou-curve-out), opacity .3s }
+body.os-android .aph-i-knob{ position:absolute; inset:0; z-index:1; display:flex; align-items:center; justify-content:center; border-radius:50%; color:#fff; cursor:grab; touch-action:none; transition:transform .38s var(--ou-curve-out), background .15s }
+body.os-android .aph-i-b[data-k="acc"] .aph-i-knob{ background:var(--green); box-shadow:0 8px 22px rgba(45,190,96,.32) }
+body.os-android .aph-i-b[data-k="dec"] .aph-i-knob{ background:var(--red); box-shadow:0 8px 22px rgba(242,69,61,.3) }
+body.os-android .aph-i-b[data-k="acc"] .aph-i-knob:hover{ background:#28AB56 }
+body.os-android .aph-i-b[data-k="dec"] .aph-i-knob:hover{ background:#DE3A32 }
+body.os-android .aph-i-b.drag .aph-i-knob,body.os-android .aph-i-b.drag .aph-i-halo{ transition:none; cursor:grabbing }
+body.os-android .aph-i-hint{ font-size:13px; color:var(--label3); transition:opacity .2s }
+body.os-android .aph-inc.drag-acc .aph-i-b[data-k="dec"],body.os-android .aph-inc.drag-dec .aph-i-b[data-k="acc"],body.os-android .aph-inc.drag-acc .aph-i-hint,body.os-android .aph-inc.drag-dec .aph-i-hint{ opacity:.2 }
+body.os-android .aph-i-msg{ display:inline-flex; align-items:center; gap:8px; margin-bottom:var(--aph-bot); padding:12px 22px; border-radius:999px; background:var(--ou-surface); color:var(--label); font-size:15px; font-weight:500; cursor:pointer; box-shadow:var(--ou-shadow-card); transition:background .15s }
+body.os-android .aph-i-msg:hover{ background:var(--ou-surface2) }
+body.os-android .aph-i-msg svg{ color:var(--ou-blue,#3E7BFA) }
+
+/* reduzir movimento: os ecrãs aparecem sem deslizar */
+body.os-android[data-motion="reduced"] .aph-call,body.os-android[data-motion="reduced"] .aph-row.open .aph-acts{ animation:none }
+body.os-android[data-motion="reduced"] .aph-inc{ transform:none }
+
+/* ============================================================
+   MENSAGENS · LISTA (separadores Conversas e Contactos, botão flutuante de escrever)
+   ============================================================ */
+body.os-android .amsg-card{ margin:4px 14px 8px; padding-bottom:0; border-radius:var(--ou-r-card,26px); background:var(--ou-surface); overflow:hidden }
+body.os-android .amsg-card .msl-row{ background:var(--ou-surface) }
+body.os-android .amsg-card .msl-main{ min-height:78px; gap:14px; padding:12px 18px; background:var(--ou-surface); transition:transform .3s var(--ou-curve-out), background .15s }
+body.os-android .amsg-card .msl-main:hover,body.os-android .amsg-card .msl-main:active{ background:var(--ou-surface2) }
+body.os-android .amsg-card .msl-main::after{ display:none }
+body.os-android .amsg-card .msl-dot{ display:none!important }
+body.os-android .amsg-card .msl-av .avatar{ width:50px; height:50px; font-size:19px }
+body.os-android .amsg-card .msl-on{ border-color:var(--ou-surface) }
+body.os-android .amsg-card .msl-body{ gap:3px }
+body.os-android .amsg-card .msl-top b{ font-size:17px; font-weight:500 }
+body.os-android .amsg-card .msl-row.is-unread .msl-top b{ font-weight:700 }
+body.os-android .amsg-card .msl-time{ align-self:flex-start; margin-top:2px; font-size:13px; color:var(--label2) }
+body.os-android .amsg-card .msl-row.is-unread .msl-time{ color:var(--label) }
+body.os-android .amsg-card .msl-sub{ font-size:15px; -webkit-line-clamp:1 }
+body.os-android .amsg-card .msl-row.is-unread .msl-sub{ padding-right:38px; color:var(--label); font-weight:500 }
+body.os-android .amsg-pin{ display:flex; color:var(--label3) } body.os-android .amsg-pin svg{ width:14px; height:14px }
+body.os-android .amsg-badge{ position:absolute; right:18px; bottom:15px; z-index:2; min-width:22px; height:22px; padding:0 7px; border-radius:11px; background:var(--orange,#FF8A1F); color:#fff; font-size:12px; font-weight:700; line-height:22px; text-align:center; box-sizing:border-box }
+body.os-android .amsg-card .msl-acts .pin{ background:var(--ou-blue,#3E7BFA) }
+body.os-android .amsg-card .msl-acts .mute{ background:#8C8C92 }
+/* FAB (Material 3 Expressive / Nova UI 8.5): quadrado arredondado de 60, fio de luz em cima e sombra em duas camadas; ao premir fica mais
+   redondo e encolhe um pouco (so transform e border-radius, 150 ms) */
+body.os-android .amsg-fab{ position:absolute; right:20px; bottom:calc(var(--safe-bottom,20px) + 96px); z-index:8; display:flex; align-items:center; justify-content:center; width:60px; height:60px; border-radius:18px; background:var(--blue); color:#fff; cursor:pointer;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.22), 0 2px 6px rgba(0,0,0,.1), 0 8px 22px rgba(62,123,250,.32); transition:opacity .15s, transform .3s var(--ou-curve-out), border-radius .15s var(--ou-curve), background-color .15s }
+body.os-android .amsg-fab:hover{ background:#2F6BEA }   /* hover so muda a cor (regra do dono) */
+body.os-android .amsg-fab:active{ transform:scale(.94); border-radius:30px }
+/* NOVA Fold8: com os separadores na barra lateral (aberto, --tb-space 0) o FAB desce para 20 acima do fundo; fechado fica onde
+   estava (por cima da pilula). Com a barra de tarefas flutuante em cima (--taskbar-h) sobe o que ela tapa */
+body.os-android.form-fold .amsg-fab{ bottom:calc(var(--tb-space,76px) + var(--safe-bottom,20px) + 20px + var(--taskbar-h,0px)) }
+body.os-android .amsg-ct{ padding-bottom:8px }
+
+/* ============================================================
+   MENSAGENS · CONVERSA (bolhas Nova UI: enviadas na cor do tema com texto branco, recebidas em cinzento)
+   ============================================================ */
+body.os-android .msg-view.amsg-conv{ background:var(--ou-surface) }
+body.os-android.dark .msg-view.amsg-conv{ background:var(--bg) }
+/* cabeçalho: seta, avatar e nome à esquerda (com o estado por baixo), ligar e vídeo à direita */
+body.os-android .msg-view.amsg-conv .navbar,body.os-android .msg-view.amsg-conv .navbar.solid{ align-items:center; background:var(--ou-surface); box-shadow:none }
+body.os-android.dark .msg-view.amsg-conv .navbar,body.os-android.dark .msg-view.amsg-conv .navbar.solid{ background:var(--bg) }
+body.os-android .msg-view.amsg-conv > .navbar::after{ content:none; display:none }
+body.os-android .msg-view.amsg-conv .navbar .nb-left,body.os-android .msg-view.amsg-conv .navbar .nb-right{ margin-top:0 }
+/* o título é a cabeça da conversa (toca-se para abrir o contacto ou o grupo): na barra da Nova UI fica a seguir à seta */
+body.os-android .msg-view.amsg-conv .nb-title{ max-width:none; opacity:1; pointer-events:auto; overflow:visible }
+body.os-android .msg-view.amsg-conv .msg-head{ flex-direction:row; align-items:center; gap:11px; max-width:100% }
+body.os-android .msg-view.amsg-conv .msg-hav .avatar{ width:38px; height:38px; font-size:14px }
+body.os-android .msg-view.amsg-conv .msg-htx{ align-items:flex-start; max-width:168px; line-height:1.2 }
+body.os-android .msg-view.amsg-conv .msg-htx b{ max-width:168px; font-size:17px; font-weight:600 }
+body.os-android .msg-view.amsg-conv .msg-htx b::after{ content:none }
+body.os-android .msg-view.amsg-conv .msg-htx small{ max-width:168px; margin-top:1px; font-size:12.5px }
+/* faixa da mensagem fixada: cartão em pílula por baixo do cabeçalho */
+body.os-android .msg-view.amsg-conv .msg-pinbar{ margin:2px 12px 4px; padding:8px 8px 8px 14px; border:none; border-radius:18px; background:var(--ou-surface2) }
+body.os-android .msg-view.amsg-conv .msg-pinbar .pb-ic,body.os-android .msg-view.amsg-conv .msg-pinbar .pb-tx b{ color:var(--blue) }
+/* fio da conversa */
+body.os-android .msg-view.amsg-conv .msg-thread{ gap:0; padding:6px 14px 14px }
+body.os-android .msg-view.amsg-conv .msg-row{ margin-top:10px; max-width:76% }
+body.os-android .msg-view.amsg-conv .msg-row.amsg-cont{ margin-top:3px }
+body.os-android .msg-view.amsg-conv .msg-row.sys{ margin:12px 0 4px; max-width:86% }
+body.os-android .msg-view.amsg-conv .msg-sys{ padding:5px 12px; border-radius:999px; background:var(--ou-surface2); font-size:12.5px }
+body.os-android .msg-view.amsg-conv .day-sep{ padding:18px 0 6px; font-size:13px; font-weight:500; color:var(--label2) }
+body.os-android .msg-view.amsg-conv .msg-from{ margin:0 12px 3px; font-size:12.5px; font-weight:500; color:var(--label2) }
+/* grupos: o avatar de quem escreveu à esquerda da primeira bolha de cada sequência */
+body.os-android .msg-view.amsg-grp .msg-row.them{ padding-left:42px }
+body.os-android .msg-view.amsg-grp .msg-row.them > .amsg-gav{ position:absolute; left:0; top:19px; width:32px; height:32px; font-size:12px }
+/* bolhas */
+body.os-android .msg-view.amsg-conv .bubble{ max-width:100%; padding:10px 15px; border-radius:20px; font-size:16px; line-height:1.36; overflow:visible }
+body.os-android .msg-view.amsg-conv .bubble.me{ background:var(--blue); color:#fff; border-bottom-right-radius:20px }
+body.os-android .msg-view.amsg-conv .bubble.them{ background:#ECECF0; color:var(--label); border-bottom-left-radius:20px }
+body.os-android.dark .msg-view.amsg-conv .bubble.them{ background:#2A2A2F }
+body.os-android .msg-view.amsg-conv .amsg-tm{ position:absolute; bottom:1px; white-space:nowrap; font-size:11px; font-weight:400; font-style:normal; line-height:14px; color:var(--label3); pointer-events:none; font-variant-numeric:tabular-nums }
+body.os-android .msg-view.amsg-conv .bubble.me > .amsg-tm{ right:calc(100% + 8px) }
+body.os-android .msg-view.amsg-conv .bubble.them > .amsg-tm{ left:calc(100% + 8px) }
+body.os-android .msg-view.amsg-conv .msg-row.amsg-notm .amsg-tm{ display:none }
+body.os-android .msg-view.amsg-conv .bubble.img{ padding:0; background:transparent }
+body.os-android .msg-view.amsg-conv .bubble.img .pic{ width:232px; height:232px; border-radius:20px; background-color:var(--ou-surface2) }
+body.os-android .msg-view.amsg-conv .bubble.loc{ width:252px; padding:0 }
+body.os-android .msg-view.amsg-conv .bubble.loc .mapmini{ height:128px; border-radius:20px 20px 0 0 }
+body.os-android .msg-view.amsg-conv .bubble.loc .lt{ padding:10px 15px 12px; font-size:15px; font-weight:600 }
+body.os-android .msg-view.amsg-conv .bubble.ct{ min-width:214px; gap:12px; padding:12px 15px }
+body.os-android .msg-view.amsg-conv .bubble.ct .avatar{ width:42px; height:42px; font-size:16px }
+body.os-android .msg-view.amsg-conv .bubble.app{ min-width:210px; gap:12px; padding:12px 15px }
+body.os-android .msg-view.amsg-conv .bubble.app .tile{ border-radius:14px }
+body.os-android .msg-view.amsg-conv .bubble.audio{ min-width:232px; padding:8px 12px 8px 8px }
+body.os-android .msg-view.amsg-conv .bubble.deleted{ background:transparent; border:1px solid var(--sep-opaque); color:var(--label2) }
+body.os-android .msg-view.amsg-conv .bubble .reply{ border-left-width:3px; border-radius:2px }
+/* leitor de voz dentro da bolha: botão redondo, ondas na cor do texto */
+body.os-android .msg-view.amsg-conv .vmsg-btn{ width:38px; height:38px; background:rgba(255,255,255,.24) }
+body.os-android .msg-view.amsg-conv .bubble.them .vmsg-btn{ background:var(--blue); color:#fff }
+body.os-android .msg-view.amsg-conv .vmsg-btn svg{ width:20px; height:20px; margin:-10px 0 0 -10px }
+body.os-android .msg-view.amsg-conv .vmsg-rate{ border-radius:999px }
+/* citação, reações, editada, estado */
+body.os-android .msg-view.amsg-conv .msg-qo{ margin:4px 2px 3px; padding:6px 12px; border:none; border-radius:16px; background:var(--ou-surface2) }
+body.os-android .msg-view.amsg-conv .msg-qo svg{ color:var(--blue) }
+body.os-android .msg-view.amsg-conv .msg-reacts{ margin-top:-6px; padding:0 10px }
+body.os-android .msg-view.amsg-conv .msg-rc{ height:26px; padding:0 8px; border:none; border-radius:13px; background:var(--ou-surface); box-shadow:0 2px 8px rgba(0,0,0,.14) }
+body.os-android.dark .msg-view.amsg-conv .msg-rc{ background:#2A2A2F }
+body.os-android .msg-view.amsg-conv .msg-rc.mine{ background:var(--blue); color:#fff }
+body.os-android .msg-view.amsg-conv .msg-edited,body.os-android .msg-view.amsg-conv .msg-status{ margin:3px 6px 0; font-size:11.5px; font-weight:500; color:var(--label3) }
+body.os-android .msg-view.amsg-conv .msg-fail{ margin:4px 6px }
+body.os-android .msg-view.amsg-conv .msg-typing .msg-dots{ border-radius:20px; background:#ECECF0 }
+body.os-android.dark .msg-view.amsg-conv .msg-typing .msg-dots{ background:#2A2A2F }
+body.os-android .msg-view.amsg-conv .msg-more{ border-radius:999px; background:var(--ou-surface2) }
+body.os-android .msg-view.amsg-conv .msg-sk i{ border-radius:20px; background:var(--ou-surface2) }
+/* barra de escrita: + (anexos), campo em pílula, microfone ou enviar redondo */
+body.os-android .msg-view .composer.amsg-comp{ align-items:center; gap:8px; padding:8px 10px calc(var(--safe-bottom,20px) + 8px); border-top:none; background:var(--ou-surface); box-shadow:none }
+body.os-android.dark .msg-view .composer.amsg-comp{ background:var(--bg) }
+body.os-android .composer.amsg-comp .plus{ width:44px; height:44px; background:transparent; color:var(--label2); transition:background .15s }
+body.os-android .composer.amsg-comp .plus:hover{ background:var(--ou-surface2) }
+body.os-android .composer.amsg-comp input{ height:46px; padding:0 18px; border:none; border-radius:23px; background:var(--ou-surface2); font-size:16px }
+body.os-android .composer.amsg-comp .mic{ width:46px; height:46px; background:var(--ou-surface2); color:var(--label); transition:background .15s }
+body.os-android .composer.amsg-comp .mic:hover{ background:var(--fill2) }
+body.os-android .composer.amsg-comp .send{ width:46px; height:46px; background:var(--blue) }
+body.os-android .composer.amsg-comp .replying{ margin:0 0 4px; padding:8px 8px 8px 12px; border-radius:18px; background:var(--ou-surface2) }
+body.os-android .composer.amsg-comp .replying .rq{ border-left-color:var(--blue) }
+body.os-android .composer.amsg-comp .replying .cancel{ display:flex; align-items:center; justify-content:center; width:30px; height:30px; padding:0; border-radius:50%; color:var(--label2) }
+body.os-android .composer.amsg-comp .vmsg-rec-mid{ height:46px; border:none; border-radius:23px; background:var(--ou-surface2) }
+body.os-android .composer.amsg-comp .vmsg-rec-hint,body.os-android .composer.amsg-comp .vmsg-rec-msg{ background:var(--ou-surface2) }
+body.os-android .composer.amsg-comp .vmsg-rec-x,body.os-android .composer.amsg-comp .vmsg-rec-play{ background:var(--ou-surface2) }
+body.os-android .composer.amsg-comp .msg-left{ padding:12px 0 }
+/* NOVA Fold8 aberto com a barra de tarefas flutuante à vista (--taskbar-h, android-sysui.js): o campo sobe a altura dela */
+body.os-android.form-fold.fold-open .msg-view .composer.amsg-comp{ padding-bottom:calc(var(--safe-bottom,20px) + 8px + var(--taskbar-h,0px)) }
+/* folha Anexar: círculos coloridos */
+body.os-android .amsg-attach{ gap:4px; padding:16px 10px 20px }
+body.os-android .amsg-attach > div{ gap:8px; padding:6px 0; background:none; cursor:pointer }
+body.os-android .amsg-attach > div > i{ display:flex; align-items:center; justify-content:center; width:56px; height:56px; border-radius:50%; color:#fff; transition:opacity .15s }
+body.os-android .amsg-attach > div:hover > i{ opacity:.88 }
+body.os-android .amsg-attach > div > i svg{ width:26px; height:26px; margin:0; color:#fff }
+body.os-android .amsg-attach > div > div{ font-size:12.5px; color:var(--label) }
+body.os-android .amsg-attach .ph > i{ background:var(--pink,#F5476E) }
+body.os-android .amsg-attach .cam > i{ background:var(--purple,#9B5CF2) }
+body.os-android .amsg-attach .loc > i{ background:var(--green) }
+body.os-android .amsg-attach .ct > i{ background:var(--orange,#FF8A1F) }
+body.os-android .amsg-attach .ap > i{ background:var(--ou-blue,#3E7BFA) }
+/* fila de reações do menu de contexto: pílula */
+body.os-android .msg-rbar{ padding:6px 8px; border-radius:999px; background:var(--ou-surface); box-shadow:0 10px 30px rgba(0,0,0,.18) }
+body.os-android.dark .msg-rbar{ background:#232327 }
+body.os-android .msg-rbar span.on{ background:var(--fill3) }
+/* câmara e visor por cima da conversa: os cantos do ecrã do aparelho */
+body.os-android .ou-app > .msg-cam{ border-radius:inherit }   /* so a das Mensagens: o Zapp e o Instashot usam a mesma classe e ficam como no PearOS */
+/* ============================================================
+   VIDEOCHAMADA (sempre escura: é vídeo). O outro em ecrã inteiro, a tua imagem num cartão r20
+   arrastável, a barra de controlos em pílula que se esconde sozinha com a chamada ligada.
+   ============================================================ */
+body.os-android .afc-call{ position:absolute; inset:0; z-index:150; overflow:hidden; border-radius:inherit; background:#0A0B0E; color:#fff; --afc-bot:22px; --aph-bot:var(--afc-bot); animation:aphUp .34s var(--ou-curve-out) both }
+body.os-android:not([data-nav="gesture"]):not(.landscape) #screen:not(.locked) .afc-call{ --afc-bot:calc(var(--nav-h,48px) + 12px) }
+body.os-android .afc-remote{ position:absolute; inset:0 }
+body.os-android .afc-poster{ position:absolute; inset:0; background-size:cover; background-position:center }
+body.os-android .afc-shade{ position:absolute; inset:0; background:linear-gradient(180deg,rgba(0,0,0,.42) 0%,rgba(0,0,0,0) 24%,rgba(0,0,0,0) 64%,rgba(0,0,0,.5) 100%) }
+/* o VÍDEO do outro (facecall.js videoLink): canvas criado uma vez, por cima do poster e por baixo da sombra */
+body.os-android .afc-rv{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; opacity:0; transition:opacity .35s var(--ou-curve); pointer-events:none; background:#000 }
+body.os-android .afc-call.rv-on .afc-rv{ opacity:1 }
+body.os-android .afc-call.rv-on .afc-center{ opacity:0 }
+body.os-android .afc-rv-st{ position:absolute; left:50%; top:66%; z-index:2; display:flex; align-items:center; gap:7px; padding:8px 16px; border-radius:999px; background:rgba(0,0,0,.5); color:rgba(255,255,255,.92); font-size:14px; font-weight:500; white-space:nowrap; opacity:0; transform:translateX(-50%); transition:opacity .3s var(--ou-curve); pointer-events:none }
+body.os-android .afc-rv-st svg{ width:15px; height:15px }
+body.os-android .afc-call.rv-paused .afc-rv-st{ opacity:1 }
+body.os-android .afc-call.ended .afc-rv-st{ opacity:0 }
+body.os-android .afc-center{ position:absolute; left:0; right:0; top:31%; display:flex; flex-direction:column; align-items:center; gap:16px; transition:opacity .3s var(--ou-curve) }
+body.os-android .afc-bigav{ width:136px; height:136px; font-size:50px; font-weight:500; color:#fff; box-shadow:0 0 0 3px rgba(255,255,255,.7), 0 14px 36px rgba(0,0,0,.3) }
+body.os-android .afc-call.talk-peer .afc-bigav{ box-shadow:0 0 0 4px rgba(61,208,111,.95), 0 14px 36px rgba(0,0,0,.3) }
+body.os-android .afc-bigst{ font-size:16px; font-weight:500; color:rgba(255,255,255,.88); text-shadow:0 1px 6px rgba(0,0,0,.35) }
+body.os-android .afc-bigst::first-letter{ text-transform:uppercase }
+body.os-android .afc-call.connected .afc-bigst{ display:none }
+body.os-android .afc-call.has-photo .afc-center{ opacity:0 }
+body.os-android .afc-top{ position:absolute; left:0; right:0; top:0; z-index:4; display:flex; align-items:center; gap:8px; padding:calc(var(--statusbar-h) + 4px) 12px 0; transition:opacity .3s var(--ou-curve) }
+body.os-android .afc-ib{ display:flex; align-items:center; justify-content:center; width:44px; height:44px; flex:none; border-radius:50%; background:rgba(0,0,0,.3); color:#fff; cursor:pointer; transition:background .15s }
+body.os-android .afc-ib:hover{ background:rgba(0,0,0,.45) }
+body.os-android .afc-who{ flex:1; min-width:0; display:flex; flex-direction:column; align-items:center; gap:2px; cursor:pointer; text-shadow:0 1px 6px rgba(0,0,0,.35) }
+body.os-android .afc-who b{ max-width:100%; font-size:18px; font-weight:600; overflow:hidden; text-overflow:ellipsis; white-space:nowrap }
+body.os-android .afc-who span{ display:inline-flex; align-items:center; gap:6px; font-size:13px; color:rgba(255,255,255,.82); font-variant-numeric:tabular-nums }
+body.os-android .afc-who em{ font-style:normal } body.os-android .afc-who em::first-letter{ text-transform:uppercase }
+body.os-android .afc-dot{ display:none; width:7px; height:7px; border-radius:50%; background:#3DD06F }
+body.os-android .afc-call.connected .afc-dot{ display:block }
+/* o meu cartão */
+body.os-android .afc-self{ position:absolute; right:14px; top:108px; z-index:5; width:112px; height:152px; border-radius:20px; overflow:hidden; background:#1C1D22; box-shadow:0 10px 26px rgba(0,0,0,.45), 0 0 0 1px rgba(255,255,255,.14); touch-action:none; cursor:grab }
+body.os-android .afc-self.drag{ cursor:grabbing }
+body.os-android .afc-call.talk-me .afc-self{ box-shadow:0 10px 26px rgba(0,0,0,.45), 0 0 0 2.5px rgba(61,208,111,.95) }
+body.os-android .afc-self-v{ position:absolute; inset:0 }
+body.os-android .afc-self-v .cam-app.cam-bare{ position:absolute; inset:0; background:#000 }
+body.os-android .afc-self-v .viewfinder{ position:absolute; inset:0 }
+body.os-android .afc-self-v .cam-gl,body.os-android .afc-self-v .scene{ width:100%!important; height:100%!important; top:0!important; transform:none; object-fit:cover }
+body.os-android .afc-self-off{ position:absolute; inset:0; display:none; flex-direction:column; align-items:center; justify-content:center; gap:8px; font-size:11px; color:rgba(255,255,255,.72); background:#1C1D22; text-align:center }
+body.os-android .afc-me{ width:54px; height:54px; font-size:19px; font-weight:600; color:#fff }
+body.os-android .afc-call.self-off .afc-self-off{ display:flex } body.os-android .afc-call.self-off .afc-self-v{ visibility:hidden }
+body.os-android .afc-self-mute{ position:absolute; left:7px; bottom:7px; z-index:2; display:none; align-items:center; justify-content:center; width:24px; height:24px; border-radius:50%; background:rgba(0,0,0,.55); color:#fff }
+body.os-android .afc-call.muted .afc-self-mute{ display:flex }
+/* barra de controlos em pílula */
+body.os-android .afc-ctl{ position:absolute; left:50%; bottom:var(--afc-bot); z-index:6; display:flex; align-items:center; gap:10px; padding:10px 12px; border-radius:999px; background:rgba(28,29,34,.88); box-shadow:0 0 0 1px rgba(255,255,255,.1), 0 12px 30px rgba(0,0,0,.35); transform:translateX(-50%); transition:opacity .3s var(--ou-curve), transform .32s var(--ou-curve-out) }
+body.os-android .afc-b{ cursor:pointer }
+body.os-android .afc-b i{ display:flex; align-items:center; justify-content:center; width:56px; height:56px; border-radius:50%; background:rgba(255,255,255,.12); color:#fff; transition:background .15s, color .15s }
+body.os-android .afc-b:hover i{ background:rgba(255,255,255,.2) }
+body.os-android .afc-b[data-act="mute"].on i,body.os-android .afc-b[data-act="spk"].on i,body.os-android .afc-b[data-act="cam"]:not(.on) i{ background:#fff; color:#111 }
+body.os-android .afc-b.afc-end i{ width:64px; height:64px; background:var(--red) }
+body.os-android .afc-b.afc-end:hover i{ background:#DE3A32 }
+body.os-android .afc-call.hud-off .afc-ctl{ opacity:0; transform:translate(-50%,24px); pointer-events:none }
+body.os-android .afc-call.hud-off .afc-top{ opacity:0; pointer-events:none }
+body.os-android .afc-call.ended .afc-ctl{ opacity:.4; pointer-events:none }
+body.os-android .afc-call.endcard .afc-ctl,body.os-android .afc-call.endcard .afc-self{ visibility:hidden }
+body.os-android .afc-call .aph-c-endbar > div{ color:rgba(255,255,255,.85) }
+body.os-android .afc-call .aph-c-endbar [data-x="close"] i{ background:rgba(255,255,255,.16); color:#fff }
+body.os-android .afc-flash{ position:absolute; inset:0; z-index:9; background:#fff; opacity:0; pointer-events:none }
+body.os-android .afc-flash.go{ animation:afcFlash .35s ease-out }
+@keyframes afcFlash{ 0%{ opacity:.85 } 100%{ opacity:0 } }
+
+/* ecrã inicial da app (escuro, como a chamada) */
+body.os-android .afc-home{ --bg:#010102; --bg2:#17171A; --label:rgba(255,255,255,.92); --label2:rgba(255,255,255,.6); --label3:rgba(255,255,255,.38);
+  --ou-surface:#17171A; --ou-surface2:#232327; --fill:rgba(255,255,255,.14); --fill2:rgba(255,255,255,.11); --fill3:rgba(255,255,255,.08); --sep:rgba(255,255,255,.1); --sep-opaque:#2E2E33; --material:rgba(23,23,26,.86);
+  background:#010102; color:var(--label) }
+body.os-android .afc-hero{ display:flex; gap:10px; padding:6px 14px 8px }
+body.os-android .afc-hero > div{ display:flex; align-items:center; justify-content:center; gap:9px; height:56px; border-radius:999px; font-size:16px; font-weight:600; cursor:pointer; transition:opacity .15s, background .15s }
+body.os-android .afc-new{ flex:1.25; background:var(--green); color:#fff }
+body.os-android .afc-new:hover{ opacity:.9 }
+body.os-android .afc-link{ flex:1; background:var(--ou-surface); color:var(--label) }
+body.os-android .afc-link:hover{ background:var(--ou-surface2) }
+body.os-android .afc-recents{ padding-bottom:8px }
+body.os-android .afc-empty{ display:flex; flex-direction:column; align-items:center; gap:6px; padding:70px 40px; text-align:center }
+body.os-android .afc-empty b{ font-size:19px; font-weight:600; color:var(--label) }
+body.os-android .afc-empty span{ font-size:14px; color:var(--label2) }
+body.os-android .afc-rbtn{ display:flex; align-items:center; justify-content:center; width:40px; height:40px; flex:none; border-radius:50%; color:var(--label2); cursor:pointer; transition:background .15s }
+body.os-android .afc-rbtn:hover{ background:var(--fill3) }
+body.os-android .afc-rbtn[data-k="v"]{ color:var(--green) }
+body.os-android .afc-pick{ margin:8px 14px 4px }
+body.os-android .afc-ic{ background:var(--green); color:#fff }
+body.os-android[data-motion="reduced"] .afc-call{ animation:none }
+/* ============================================================
+   GRUPOS (Informações do grupo, Novo grupo, Adicionar membros): só a apresentação
+   ============================================================ */
+body.os-android .ou-app .grp-info .grp-hero{ padding:12px 24px 10px }
+body.os-android .ou-app .grp-info .grp-hero-av{ margin-bottom:16px }
+body.os-android .ou-app .grp-info .avatar.grp-av.lg{ width:112px; height:112px }
+body.os-android .ou-app .grp-info .grp-hero-title{ font-family:var(--font-display); font-size:27px; font-weight:600; letter-spacing:0 }
+body.os-android .ou-app .grp-info .grp-hero-title svg{ color:var(--label2) }
+body.os-android .ou-app .grp-info .grp-hero-sub{ margin-top:5px; font-size:14px }
+body.os-android .ou-app .grp-info .grp-role.admin{ padding:3px 10px; border-radius:999px; background:var(--fill3); color:var(--blue); font-size:12.5px }
+/* seletor de membros: as fichas escolhidas não voltam a animar a cada toque (nada pisca); só nas folhas do sistema (.ou-sheet), o Zapp fica como no PearOS */
+body.os-android .ou-sheet .grp-chip{ animation:none; height:34px; padding:0 6px 0 14px; border-radius:999px; background:var(--ou-surface2) }
+body.os-android .ou-sheet .grp-chip i{ background:var(--fill2) }
+body.os-android .ou-sheet .grp-check{ border:2px solid var(--label3) }
+body.os-android .ou-sheet .grp-check::after{ inset:-2px; transform:none; transition:opacity .15s }
+body.os-android .ou-sheet .grp-av-pick .grp-av{ background:var(--ou-surface2) }
+body.os-android .ou-sheet .grp-new-head .group{ border-radius:24px }
+body.os-android .ou-sheet .grp-new-note{ padding:6px 30px 0 108px }
+/* atendida no ecrã inteiro: entra no lugar do ecrã da chamada recebida, sem deslizar */
+body.os-android .aph-call.aph-still,body.os-android .afc-call.aph-still{ animation:none }

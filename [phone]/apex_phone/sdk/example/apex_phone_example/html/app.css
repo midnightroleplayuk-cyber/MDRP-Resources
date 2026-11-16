@@ -1,0 +1,15 @@
+/* Taxi Rank: styles of this app only. Everything that looks like the phone comes from apexphone-ui.css. */
+
+/* ride rows: avatar with the requester's initials, pickup, "to ..." line, optional note; time and status on the right */
+.ride .ap-li-label{ font-weight:500 }
+.ride .ride-note{ color:var(--label3) }
+.ride .ride-note:empty{ display:none }
+.ride.taken .ap-avatar{ background:var(--fill2); color:var(--label2) }
+.ride.mine .ap-avatar{ background:var(--blue); color:#fff }
+.ride-right{ display:flex; flex-direction:column; align-items:flex-end; gap:5px; flex:none; margin-left:auto }
+.ride-time{ font-size:var(--t-cap2); color:var(--label3); white-space:nowrap }
+.compact .ride .ride-note{ display:none }
+
+/* a new ride lands with a short entry motion (transform and opacity only) */
+.ride.ap-new{ animation:rideIn .35s var(--spring) both }
+@keyframes rideIn{ from{ opacity:0; transform:translateY(-6px) } to{ opacity:1; transform:none } }

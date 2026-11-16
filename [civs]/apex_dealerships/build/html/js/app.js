@@ -2369,7 +2369,7 @@ function renderAdmTheme(pane) {
 }
 
 // ── Stands: list + live GTA map (same Leaflet setup as apex_bossmenu) ──
-const ADM_MAP_TILE = 'https://www.gtamap.xyz/mapStyles/styleAtlas/{z}/{x}/{y}.jpg';
+const ADM_MAP_TILE = 'https://www.gtamap.xyz/mapStyles/styleSatelite/{z}/{x}/{y}.jpg';
 const ADM_CX = 117.3, ADM_CY = 172.8, ADM_SX = 0.02072, ADM_SY = 0.0205;
 
 function ensureAdmMap() {

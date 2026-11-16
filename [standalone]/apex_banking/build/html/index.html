@@ -1,0 +1,1682 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Banking</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous">
+    <link rel="stylesheet" href="css/style.css?v=1">
+</head>
+<body>
+
+<!-- ─── Notification fallback ──────────────────────────── -->
+<div id="notify-container" class="notify-container pos-top-right" aria-live="polite"></div>
+
+<!-- ═══════════════════════════════════════════════════════
+     LOADING SCREEN
+     ═══════════════════════════════════════════════════════ -->
+<div id="loading-overlay" class="solid-overlay" hidden>
+    <div class="loading-panel">
+        <div class="loading-aura" aria-hidden="true"></div>
+        <div class="loading-mark"><i class="fa-solid fa-building-columns"></i></div>
+        <div class="loading-wm"><span id="loading-wm-first"></span> <span class="wm-accent" id="loading-wm-second">BANKING</span></div>
+        <div class="loading-track"><div class="loading-fill" id="loader-bar-fill"></div></div>
+        <div class="loading-status" id="loader-fp-status" data-i18n="ld_loader_status">Connecting</div>
+    </div>
+</div>
+
+<!-- ─── In-world icon ─────────────────────────────────── -->
+<div id="world-icon" hidden>
+    <div class="world-icon-circle">
+        <i id="world-icon-i" class="fa-solid fa-building-columns"></i>
+    </div>
+    <div class="world-icon-helper">
+        <span class="world-icon-key">E</span>
+        <span id="world-icon-label" data-i18n="ld_world_label">Interact</span>
+    </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     ONBOARDING
+     ═══════════════════════════════════════════════════════ -->
+<div id="onb-overlay" class="solid-overlay" hidden>
+    <div class="onb-panel">
+        <aside class="onb-side">
+            <div class="onb-side-aura" aria-hidden="true"></div>
+            <div class="onb-side-mark">
+                <span class="onb-mark-ic"><i class="fa-solid fa-building-columns"></i></span>
+                <span data-i18n="onb_side_brand">Bank</span>
+            </div>
+
+            <!-- the card that "gets issued" as the steps progress -->
+            <div class="onb-card-stage" aria-hidden="true">
+                <div class="dcard onb-card">
+                    <div class="dcard-texture"></div>
+                    <div class="dcard-sheen"></div>
+                    <div class="dcard-top">
+                        <div class="dcard-brand">DEBIT</div>
+                        <i class="fa-solid fa-wifi dcard-wifi"></i>
+                    </div>
+                    <div class="dcard-chip"></div>
+                    <div class="dcard-number">••••&nbsp;&nbsp;••••&nbsp;&nbsp;••••&nbsp;&nbsp;••••</div>
+                    <div class="dcard-foot">
+                        <div><small data-i18n="js_card_holder">Card holder</small><strong id="onb-card-name">—</strong></div>
+                        <div class="dcard-network"><span></span><span></span></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="onb-progress">
+                <div class="onb-pstep active" data-pstep="welcome">
+                    <span class="onb-pnum">1</span>
+                    <div><strong data-i18n="onb_p1_title">Welcome</strong><small data-i18n="onb_p1_sub">Open your account</small></div>
+                </div>
+                <div class="onb-pline"></div>
+                <div class="onb-pstep" data-pstep="pin">
+                    <span class="onb-pnum">2</span>
+                    <div><strong data-i18n="onb_p2_title">Security PIN</strong><small data-i18n="onb_p2_sub">Pick a 4-digit code</small></div>
+                </div>
+                <div class="onb-pline"></div>
+                <div class="onb-pstep" data-pstep="fingerprint">
+                    <span class="onb-pnum">3</span>
+                    <div><strong data-i18n="onb_p3_title">Biometric scan</strong><small data-i18n="onb_p3_sub">Verify your identity</small></div>
+                </div>
+                <div class="onb-pline"></div>
+                <div class="onb-pstep" data-pstep="success">
+                    <span class="onb-pnum">4</span>
+                    <div><strong data-i18n="onb_p4_title">All set</strong><small data-i18n="onb_p4_sub">Card issued</small></div>
+                </div>
+            </div>
+
+            <div class="onb-side-foot">
+                <i class="fa-solid fa-shield-halved"></i>
+                <span data-i18n-html="onb_side_foot">Your data is encrypted and<br>stored on the secure ledger.</span>
+            </div>
+        </aside>
+
+        <main class="onb-main">
+            <button class="onb-close" id="onb-close-x" hidden><i class="fa-solid fa-xmark"></i></button>
+
+            <!-- STEP 1 — Welcome -->
+            <section class="onb-step" data-step="welcome">
+                <div class="onb-eyebrow" data-i18n="onb_w_eyebrow">New customer</div>
+                <h1 class="onb-title" data-i18n="onb_w_title">Open your account</h1>
+                <p class="onb-sub" data-i18n="onb_w_sub">It takes less than a minute. You'll pick a 4-digit PIN, scan your fingerprint, and walk out with your first Debit Card.</p>
+
+                <div class="onb-feats">
+                    <div class="onb-feat">
+                        <span class="onb-feat-ic"><i class="fa-solid fa-bolt"></i></span>
+                        <div><strong data-i18n="onb_feat1_title">Instant IBAN</strong><span data-i18n="onb_feat1_sub">Personal IBAN issued the moment you finish.</span></div>
+                    </div>
+                    <div class="onb-feat">
+                        <span class="onb-feat-ic"><i class="fa-solid fa-credit-card"></i></span>
+                        <div><strong data-i18n="onb_feat2_title">Free debit card</strong><span data-i18n="onb_feat2_sub">Debit Card delivered on the spot.</span></div>
+                    </div>
+                    <div class="onb-feat">
+                        <span class="onb-feat-ic"><i class="fa-solid fa-chart-line"></i></span>
+                        <div><strong data-i18n="onb_feat3_title">Full toolkit</strong><span data-i18n="onb_feat3_sub">Transfers, savings, loans &amp; business.</span></div>
+                    </div>
+                </div>
+
+                <div class="onb-actions">
+                    <button class="btn btn-primary btn-lg" id="onb-go">
+                        <span data-i18n="onb_go">Open my account</span> <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
+            </section>
+
+            <!-- STEP 2 — PIN -->
+            <section class="onb-step" data-step="pin" hidden>
+                <div class="onb-eyebrow" data-i18n="onb_pin_eyebrow">Security · step 2 of 4</div>
+                <h1 class="onb-title" data-i18n="onb_pin_title">Choose your PIN</h1>
+                <p class="onb-sub" data-i18n="onb_pin_sub">You'll enter this PIN every time you operate an ATM. Don't share it with anyone.</p>
+
+                <div class="onb-pin-wrap">
+                    <div class="pin-row big" id="onb-pin-row">
+                        <span class="pin-dot"></span><span class="pin-dot"></span>
+                        <span class="pin-dot"></span><span class="pin-dot"></span>
+                    </div>
+                    <div class="numpad" id="onb-numpad">
+                        <button data-k="1"><b>1</b><small></small></button>
+                        <button data-k="2"><b>2</b><small>ABC</small></button>
+                        <button data-k="3"><b>3</b><small>DEF</small></button>
+                        <button data-k="4"><b>4</b><small>GHI</small></button>
+                        <button data-k="5"><b>5</b><small>JKL</small></button>
+                        <button data-k="6"><b>6</b><small>MNO</small></button>
+                        <button data-k="7"><b>7</b><small>PQRS</small></button>
+                        <button data-k="8"><b>8</b><small>TUV</small></button>
+                        <button data-k="9"><b>9</b><small>WXYZ</small></button>
+                        <button data-k="C" class="key-fn"><i class="fa-solid fa-trash-can"></i></button>
+                        <button data-k="0"><b>0</b><small></small></button>
+                        <button data-k="←" class="key-fn"><i class="fa-solid fa-delete-left"></i></button>
+                    </div>
+                </div>
+
+                <div class="onb-actions split">
+                    <button class="btn btn-ghost" id="onb-back" data-i18n="onb_back">Back</button>
+                    <button class="btn btn-primary" id="onb-confirm-pin" disabled>
+                        <span data-i18n="onb_continue">Continue</span> <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
+            </section>
+
+            <!-- STEP 3 — Fingerprint -->
+            <section class="onb-step center" data-step="fingerprint" hidden>
+                <div class="onb-eyebrow" data-i18n="onb_fp_eyebrow">Identity · step 3 of 4</div>
+                <h1 class="onb-title" data-i18n="onb_fp_title">Place your finger on the scanner</h1>
+                <p class="onb-sub" data-i18n="onb_fp_sub">Click the fingerprint below to start the biometric capture.</p>
+
+                <button class="fp-scanner" id="fp-scanner" type="button" aria-label="Scan fingerprint" data-i18n-aria="fp_scan_aria">
+                    <div class="fp-ring"></div>
+                    <div class="fp-ring fp-ring-2"></div>
+                    <span class="fp-beam"></span>
+                    <svg class="fp-print" viewBox="0 0 64 64">
+                        <g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                            <path d="M16 38c0-9 7-16 16-16s16 7 16 16"/>
+                            <path d="M20 42c0-7 5-12 12-12s12 5 12 12"/>
+                            <path d="M24 46c0-4 4-8 8-8s8 4 8 8"/>
+                            <path d="M28 50c0-2 2-4 4-4s4 2 4 4"/>
+                            <path d="M14 30c4-8 11-12 18-12"/>
+                            <path d="M50 30c-3-6-9-11-18-12"/>
+                            <path d="M18 24c4-4 9-6 14-6"/>
+                        </g>
+                    </svg>
+                </button>
+
+                <div class="fp-status" id="fp-status" data-i18n="onb_fp_status">Click the scanner to begin</div>
+                <div class="fp-progress"><div class="fp-progress-fill" id="fp-progress-fill"></div></div>
+
+                <label class="privacy-toggle" id="privacy-toggle">
+                    <input type="checkbox" id="privacy-checkbox">
+                    <span class="privacy-track"><span class="privacy-thumb"></span></span>
+                    <span class="privacy-text">
+                        <strong data-i18n="onb_privacy_title">Privacy mode</strong>
+                        <small data-i18n="onb_privacy_sub">Hide account balances when the dashboard opens</small>
+                    </span>
+                </label>
+            </section>
+
+            <!-- STEP 4 — Success -->
+            <section class="onb-step center" data-step="success" hidden>
+                <div class="onb-success-mark"><i class="fa-solid fa-check"></i></div>
+                <div class="onb-eyebrow success" data-i18n="onb_done_eyebrow">Account opened</div>
+                <h1 class="onb-title" data-i18n="onb_done_title">Welcome aboard.</h1>
+                <p class="onb-sub" data-i18n="onb_done_sub">Your account is open. Your debit card is already in your inventory.</p>
+
+                <div class="onb-summary">
+                    <div><span data-i18n="onb_done_iban">Your IBAN</span><strong id="onb-summary-iban">—</strong></div>
+                    <div><span data-i18n="onb_done_holder">Card holder</span><strong id="onb-summary-name">—</strong></div>
+                </div>
+
+                <button class="btn btn-primary btn-lg" id="onb-finish">
+                    <span data-i18n="onb_done_enter">Enter dashboard</span> <i class="fa-solid fa-arrow-right"></i>
+                </button>
+            </section>
+        </main>
+    </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     BANK MAIN
+     ═══════════════════════════════════════════════════════ -->
+<div id="bank-overlay" class="solid-overlay" hidden>
+    <div class="bank-shell" data-size="l">
+        <div class="shell-aura" aria-hidden="true"></div>
+
+        <!-- In-shell biometric loader -->
+        <div id="bank-loader" class="bank-loader">
+            <div class="bl-panel">
+                <span class="bl-mark"><i class="fa-solid fa-building-columns"></i></span>
+                <span class="bl-name" id="bl-name" data-i18n="top_eyebrow">Banking</span>
+                <div class="bl-track"><div class="bl-fill" id="bl-fill"></div></div>
+                <span class="bl-status" id="bank-loader-status" data-i18n="ld_bank_status">Loading accounts</span>
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <aside class="bank-sidebar">
+            <div class="bank-brand">
+                <div class="bank-brand-mark"><i class="fa-solid fa-building-columns"></i></div>
+                <div class="bank-brand-text">
+                    <span class="bank-brand-name"><span id="wm-first"></span>&nbsp;<span class="wm-accent" id="wm-second">BANKING</span></span>
+                    <span class="bank-brand-sub" id="bank-name">Pacific Standard</span>
+                </div>
+            </div>
+
+            <div class="bank-id-card">
+                <div class="bid-avatar" id="bid-avatar">—</div>
+                <div class="bid-text">
+                    <div class="bid-row">
+                        <span class="bid-eyebrow" data-i18n="id_account_holder">Account Holder</span>
+                        <span class="bid-online"><i class="fa-solid fa-circle"></i> <span data-i18n="id_online">Online</span></span>
+                    </div>
+                    <span class="bid-name" id="bid-name">—</span>
+                    <code class="bid-iban" id="bid-iban">AP•• •••• ••••</code>
+                </div>
+                <div class="bid-mini">
+                    <span><i class="fa-solid fa-wallet"></i> <strong id="bid-cash">$0</strong></span>
+                    <span><i class="fa-solid fa-piggy-bank"></i> <strong id="bid-savings">$0</strong></span>
+                </div>
+            </div>
+
+            <nav class="bank-nav" id="bank-nav">
+                <div class="nav-group" data-i18n="v2_nav_banking">Banking</div>
+                <button class="nav-item active" data-tab="overview">
+                    <i class="fa-solid fa-house-chimney"></i><span data-i18n="ui_overview">Overview</span>
+                </button>
+                <button class="nav-item" data-tab="transfer">
+                    <i class="fa-solid fa-paper-plane"></i><span data-i18n="ui_transfer">Transfer</span>
+                </button>
+                <button class="nav-item" data-tab="cards">
+                    <i class="fa-solid fa-credit-card"></i><span data-i18n="ui_cards">Cards</span>
+                </button>
+                <button class="nav-item" data-tab="history">
+                    <i class="fa-solid fa-clock-rotate-left"></i><span data-i18n="ui_history">History</span>
+                </button>
+
+                <div class="nav-group" data-i18n="v2_nav_wealth">Wealth</div>
+                <button class="nav-item" data-tab="savings">
+                    <i class="fa-solid fa-piggy-bank"></i><span data-i18n="ui_savings">Savings</span>
+                </button>
+                <button class="nav-item" data-tab="loans">
+                    <i class="fa-solid fa-hand-holding-dollar"></i><span data-i18n="ui_loans">Loans</span>
+                </button>
+                <button class="nav-item" data-tab="vehicles" id="nav-vehicles" hidden>
+                    <i class="fa-solid fa-car"></i><span data-i18n="nav_vehicles">Vehicles</span>
+                    <span class="nav-badge" id="nav-vehicles-badge">0</span>
+                </button>
+
+                <div class="nav-group" data-i18n="v2_nav_business">Business</div>
+                <button class="nav-item" data-tab="society">
+                    <i class="fa-solid fa-briefcase"></i><span data-i18n="ui_society">Business</span>
+                    <span class="nav-badge" id="nav-society-badge">0</span>
+                </button>
+                <button class="nav-item" data-tab="billing" id="nav-billing" hidden>
+                    <i class="fa-solid fa-file-invoice-dollar"></i><span data-i18n="nav_billing">Billing</span>
+                    <span class="nav-badge" id="nav-billing-badge">0</span>
+                </button>
+                <button class="nav-item" data-tab="settings">
+                    <i class="fa-solid fa-sliders"></i><span data-i18n="ui_settings">Settings</span>
+                </button>
+            </nav>
+            <button class="bank-exit" id="bank-close">
+                <i class="fa-solid fa-right-from-bracket"></i> <span data-i18n="nav_sign_out">Sign out</span>
+            </button>
+        </aside>
+
+        <!-- Main -->
+        <main class="bank-main">
+            <header class="bank-topbar">
+                <div class="bank-topbar-left">
+                    <div class="bank-tab-eyebrow" id="bank-tab-eyebrow" data-i18n="top_eyebrow">Banking</div>
+                    <div class="bank-tab-title" id="bank-tab-title" data-i18n="top_title_overview">Overview</div>
+                </div>
+                <div class="bank-topbar-right">
+                    <div class="bank-search">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <input id="bank-search" placeholder="Search transactions, IBANs…" spellcheck="false" data-i18n-ph="top_search_ph">
+                    </div>
+                    <div class="bank-clock"><i class="fa-regular fa-clock"></i><span id="bank-clock">--:--</span></div>
+                    <button class="icon-btn" id="bank-refresh" title="Refresh" data-i18n-title="top_refresh"><i class="fa-solid fa-rotate"></i></button>
+                </div>
+            </header>
+
+            <section class="bank-body" id="bank-body">
+
+                <!-- ─── OVERVIEW ───────────────────────── -->
+                <div class="pane" data-pane="overview" hidden>
+                    <div class="ov-top">
+                        <!-- Hero balance -->
+                        <div class="hero-card">
+                            <div class="hero-glow"></div>
+                            <div class="hero-top">
+                                <div>
+                                    <span class="hero-greet" id="hero-greet">—</span>
+                                    <span class="hero-eyebrow" data-i18n="ov_total_wealth">Total wealth</span>
+                                </div>
+                                <button class="icon-btn ghost" id="overview-eye" title="Hide/show" data-i18n-title="ov_hide_show"><i class="fa-solid fa-eye"></i></button>
+                            </div>
+                            <div class="hero-balance-row">
+                                <div class="hero-balance" id="hero-balance">$0</div>
+                                <span class="hero-delta" id="hero-delta">—</span>
+                            </div>
+
+                            <div class="alloc">
+                                <div class="alloc-bar">
+                                    <span class="alloc-seg bank" id="alloc-bank"></span>
+                                    <span class="alloc-seg cash" id="alloc-cash"></span>
+                                    <span class="alloc-seg savings" id="alloc-savings"></span>
+                                </div>
+                                <div class="hero-row">
+                                    <div class="hero-pill bank">
+                                        <span class="dot"></span>
+                                        <span data-i18n="ov_pill_bank">Bank</span>
+                                        <strong id="hero-bank">$0</strong>
+                                    </div>
+                                    <div class="hero-pill cash">
+                                        <span class="dot"></span>
+                                        <span data-i18n="ov_pill_cash">Cash</span>
+                                        <strong id="hero-cash">$0</strong>
+                                    </div>
+                                    <div class="hero-pill savings">
+                                        <span class="dot"></span>
+                                        <span data-i18n="ov_pill_savings">Savings</span>
+                                        <strong id="hero-savings">$0</strong>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="quick-strip">
+                                <button class="quick-tile" data-quick="deposit">
+                                    <span class="quick-tile-icon"><i class="fa-solid fa-arrow-down"></i></span>
+                                    <strong data-i18n="ui_deposit">Deposit</strong>
+                                    <small data-i18n="ov_quick_deposit_sub">Cash → Bank</small>
+                                </button>
+                                <button class="quick-tile" data-quick="withdraw">
+                                    <span class="quick-tile-icon"><i class="fa-solid fa-arrow-up"></i></span>
+                                    <strong data-i18n="ui_withdraw">Withdraw</strong>
+                                    <small data-i18n="ov_quick_withdraw_sub">Bank → Cash</small>
+                                </button>
+                                <button class="quick-tile primary" data-quick="transfer">
+                                    <span class="quick-tile-icon"><i class="fa-solid fa-paper-plane"></i></span>
+                                    <strong data-i18n="ov_quick_send">Send</strong>
+                                    <small data-i18n="ov_quick_send_sub">To any IBAN</small>
+                                </button>
+                                <button class="quick-tile" data-quick="card">
+                                    <span class="quick-tile-icon"><i class="fa-solid fa-credit-card"></i></span>
+                                    <strong data-i18n="ov_quick_card">New card</strong>
+                                    <small data-i18n="ov_quick_card_sub">Issue debit card</small>
+                                </button>
+                            </div>
+
+                            <div class="hero-foot">
+                                <div class="hero-iban">
+                                    <span data-i18n="ov_iban">IBAN</span>
+                                    <code id="hero-iban">AP•• •••• ••••</code>
+                                    <button class="icon-btn ghost sm" id="hero-copy" title="Copy" data-i18n-title="ov_copy"><i class="fa-regular fa-copy"></i></button>
+                                </div>
+                                <span class="hero-tag" id="hero-tag"><i class="fa-solid fa-circle-check"></i> <span data-i18n="ov_up_to_date">Up to date</span></span>
+                            </div>
+                        </div>
+
+                        <!-- Primary card + KPIs -->
+                        <div class="ov-side">
+                            <div class="ov-card-slot">
+                                <div class="ov-card" id="ov-card"></div>
+                                <div class="ov-card-meta" id="ov-card-meta"></div>
+                            </div>
+                            <div class="kpi-stack">
+                                <div class="kpi-card">
+                                    <div class="kpi-ic in"><i class="fa-solid fa-arrow-down"></i></div>
+                                    <div class="kpi-body">
+                                        <span data-i18n="ov_kpi_income">Income · 7d</span>
+                                        <strong id="kpi-in">$0</strong>
+                                        <small id="kpi-in-delta">0 transactions</small>
+                                    </div>
+                                </div>
+                                <div class="kpi-card">
+                                    <div class="kpi-ic out"><i class="fa-solid fa-arrow-up"></i></div>
+                                    <div class="kpi-body">
+                                        <span data-i18n="ov_kpi_expenses">Expenses · 7d</span>
+                                        <strong id="kpi-out">$0</strong>
+                                        <small id="kpi-out-delta">0 transactions</small>
+                                    </div>
+                                </div>
+                                <div class="kpi-card">
+                                    <div class="kpi-ic atm"><i class="fa-solid fa-credit-card"></i></div>
+                                    <div class="kpi-body">
+                                        <span data-i18n="ov_kpi_atm">ATM withdrawals · 7d</span>
+                                        <strong id="kpi-atm">$0</strong>
+                                        <small id="kpi-atm-delta">0 sessions</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="overview-mid">
+                        <div class="card chart-card">
+                            <div class="section-head">
+                                <div>
+                                    <h3 data-i18n="ov_cashflow">Net cashflow</h3>
+                                    <span class="muted" data-i18n="ov_cashflow_sub">Last 7 days · income − expense</span>
+                                </div>
+                                <div class="chart-legend">
+                                    <span class="lg in"><i></i><span data-i18n="v2_income">Income</span></span>
+                                    <span class="lg out"><i></i><span data-i18n="v2_expenses">Expenses</span></span>
+                                </div>
+                            </div>
+                            <div class="chart-wrap">
+                                <svg id="chart-flow" class="chart-flow" preserveAspectRatio="none"></svg>
+                            </div>
+                        </div>
+
+                        <div class="card breakdown-card">
+                            <div class="section-head">
+                                <h3 data-i18n="ov_spending">Spending breakdown</h3>
+                                <span class="chip" data-i18n="ov_7d">7d</span>
+                            </div>
+                            <div class="breakdown" id="breakdown"></div>
+                        </div>
+                    </div>
+
+                    <div class="card overview-recent">
+                        <div class="section-head">
+                            <h3 data-i18n="ov_recent">Recent activity</h3>
+                            <button class="btn btn-ghost btn-sm" data-jump-tab="history"><span data-i18n="ov_see_all">See all</span> <i class="fa-solid fa-arrow-right"></i></button>
+                        </div>
+                        <div class="tx-list" id="overview-tx"></div>
+                    </div>
+                </div>
+
+                <!-- ─── TRANSFER ─────────────────── -->
+                <div class="pane" data-pane="transfer" hidden>
+                    <div class="transfer-grid">
+                        <div class="card transfer-card">
+                            <div class="section-head">
+                                <div>
+                                    <h3 data-i18n="ui_send_money">Send money</h3>
+                                    <span class="muted" data-i18n="tr_send_desc">Send instantly to any IBAN, personal or business account.</span>
+                                </div>
+                            </div>
+
+                            <div class="tstep">
+                                <span class="tstep-n">1</span>
+                                <div class="form-row">
+                                    <label data-i18n="tr_from">From</label>
+                                    <select class="apex-input" id="tx-from"></select>
+                                </div>
+                            </div>
+                            <div class="tstep">
+                                <span class="tstep-n">2</span>
+                                <div class="form-row">
+                                    <label data-i18n="tr_to_iban">To · IBAN</label>
+                                    <div class="input-ic">
+                                        <i class="fa-solid fa-building-columns"></i>
+                                        <input class="apex-input mono" id="tx-to" placeholder="AP 0123 4567 8901" spellcheck="false">
+                                    </div>
+                                    <div class="tx-resolve" id="tx-resolve" hidden>
+                                        <i class="fa-solid fa-circle-check"></i>
+                                        <span id="tx-resolve-name">—</span>
+                                        <small id="tx-resolve-label">—</small>
+                                    </div>
+                                    <div class="tx-resolve bad" id="tx-resolve-bad" hidden>
+                                        <i class="fa-solid fa-circle-xmark"></i>
+                                        <span data-i18n="tr_iban_not_found">IBAN not found</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tstep">
+                                <span class="tstep-n">3</span>
+                                <div class="form-row">
+                                    <label data-i18n="ui_amount">Amount</label>
+                                    <div class="amount-input big">
+                                        <span class="amount-symbol">$</span>
+                                        <input type="number" min="1" class="apex-input mono" id="tx-amount" placeholder="0">
+                                    </div>
+                                    <div class="amount-presets">
+                                        <button data-add="50">+50</button>
+                                        <button data-add="100">+100</button>
+                                        <button data-add="500">+500</button>
+                                        <button data-add="1000">+1,000</button>
+                                        <button data-add="5000">+5,000</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tstep last">
+                                <span class="tstep-n">4</span>
+                                <div class="form-row">
+                                    <label data-i18n="ui_reason">Reason</label>
+                                    <input class="apex-input" id="tx-reason" maxlength="60" placeholder="e.g. Rent, business, gift…" data-i18n-ph="tr_reason_ph">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="transfer-side">
+                            <!-- live transfer receipt -->
+                            <div class="card tx-preview">
+                                <div class="txp-head">
+                                    <span class="eyebrow" data-i18n="v2_review">Review</span>
+                                    <span class="chip"><i class="fa-solid fa-bolt"></i> <span data-i18n="tr_info1_title">Instant settlement</span></span>
+                                </div>
+                                <div class="txp-party">
+                                    <div class="txp-avatar" id="txp-avatar"><i class="fa-solid fa-user"></i></div>
+                                    <div>
+                                        <small data-i18n="v2_recipient">Recipient</small>
+                                        <strong id="txp-name">—</strong>
+                                        <code id="txp-iban">—</code>
+                                    </div>
+                                </div>
+                                <div class="txp-amount">
+                                    <small data-i18n="v2_you_send">You send</small>
+                                    <strong id="txp-amount">$0</strong>
+                                </div>
+                                <div class="tx-summary" id="tx-summary">
+                                    <div><span data-i18n="ui_amount">Amount</span><strong id="ts-amount">$0</strong></div>
+                                    <div><span data-i18n="tr_fee">Fee</span><strong id="ts-fee">$0</strong></div>
+                                    <div class="total"><span data-i18n="tr_total_debited">Total debited</span><strong id="ts-total">$0</strong></div>
+                                </div>
+                                <button class="btn btn-primary btn-block btn-lg" id="tx-send" disabled>
+                                    <i class="fa-solid fa-paper-plane"></i> <span data-i18n="tr_send_transfer">Send transfer</span>
+                                </button>
+                            </div>
+
+                            <div class="card transfer-recipients">
+                                <div class="section-head">
+                                    <div>
+                                        <h3 data-i18n="tr_recipients">Recent recipients</h3>
+                                        <span class="muted" data-i18n="tr_recipients_desc">Tap to fill in the IBAN automatically.</span>
+                                    </div>
+                                </div>
+                                <div class="contact-list" id="contact-list"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ─── CARDS ────────────────────── -->
+                <div class="pane" data-pane="cards" hidden>
+                    <div class="pane-head">
+                        <div>
+                            <h3 data-i18n="cd_title">Your debit cards</h3>
+                            <span class="muted" data-i18n="cd_desc">Issue or freeze cards linked to your main account.</span>
+                        </div>
+                        <button class="btn btn-primary" id="card-issue">
+                            <i class="fa-solid fa-plus"></i> <span data-i18n="cd_issue">Issue new card</span>
+                        </button>
+                    </div>
+                    <div class="card-stack" id="card-stack"></div>
+
+                    <div class="benefit-strip">
+                        <div class="benefit">
+                            <span class="benefit-ic"><i class="fa-solid fa-snowflake"></i></span>
+                            <div><strong data-i18n="cd_ben1_title">Freeze in one tap</strong><small data-i18n="cd_ben1_sub">Lock a lost card instantly and unfreeze whenever you like.</small></div>
+                        </div>
+                        <div class="benefit">
+                            <span class="benefit-ic"><i class="fa-solid fa-building-columns"></i></span>
+                            <div><strong data-i18n="cd_ben2_title">Linked to your account</strong><small data-i18n="cd_ben2_sub">Every card draws straight from your main balance.</small></div>
+                        </div>
+                        <div class="benefit">
+                            <span class="benefit-ic"><i class="fa-solid fa-money-bill-wave"></i></span>
+                            <div><strong data-i18n="cd_ben3_title">Use at any ATM</strong><small data-i18n="cd_ben3_sub">Withdraw and deposit cash across the city.</small></div>
+                        </div>
+                        <div class="benefit">
+                            <span class="benefit-ic"><i class="fa-solid fa-clock-rotate-left"></i></span>
+                            <div><strong data-i18n="cd_ben4_title">Tracked spending</strong><small data-i18n="cd_ben4_sub">Every payment shows up in your transaction history.</small></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ─── SAVINGS ──────────────────── -->
+                <div class="pane" data-pane="savings" hidden>
+                    <div class="savings-hero">
+                        <div class="savings-hero-glow"></div>
+                        <div class="savings-main">
+                            <div class="savings-eyebrow" data-i18n="sav_eyebrow">Savings Pot</div>
+                            <div class="savings-amount" id="savings-balance">$0</div>
+                            <div class="savings-stats">
+                                <div><span data-i18n="sav_tick">Tick</span><strong id="savings-tick">60 min</strong></div>
+                                <div><span data-i18n="sav_lockin">Lock-in</span><strong id="savings-lockin">180 min</strong></div>
+                                <div><span data-i18n="sav_status">Status</span><strong id="savings-status">Idle</strong></div>
+                            </div>
+                        </div>
+                        <div class="savings-apy-ring">
+                            <svg viewBox="0 0 120 120">
+                                <circle class="ring-bg" cx="60" cy="60" r="50"></circle>
+                                <circle class="ring-fill" cx="60" cy="60" r="50"></circle>
+                            </svg>
+                            <div class="ring-label">
+                                <strong id="savings-apy">—</strong>
+                                <span data-i18n="sav_apy">APY</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="savings-projection">
+                        <div><span data-i18n="sav_proj_day">Est. interest · 24h</span><strong id="savings-proj-day">$0</strong><i class="proj-bar" style="--h:30%"></i></div>
+                        <div><span data-i18n="sav_proj_week">Est. interest · 7 days</span><strong id="savings-proj-week">$0</strong><i class="proj-bar" style="--h:60%"></i></div>
+                        <div><span data-i18n="sav_proj_month">Est. interest · 30 days</span><strong id="savings-proj-month">$0</strong><i class="proj-bar" style="--h:100%"></i></div>
+                    </div>
+
+                    <div class="two-col">
+                        <div class="card">
+                            <h3 data-i18n="sav_movein_title">Move money in</h3>
+                            <p class="muted" data-i18n="sav_movein_desc">Pulls from your main account.</p>
+                            <div class="form-row">
+                                <label data-i18n="ui_amount">Amount</label>
+                                <div class="amount-input">
+                                    <span class="amount-symbol">$</span>
+                                    <input type="number" min="1" class="apex-input mono" id="savings-amount" placeholder="0">
+                                </div>
+                                <div class="amount-presets">
+                                    <button data-savings-add="100">+100</button>
+                                    <button data-savings-add="500">+500</button>
+                                    <button data-savings-add="1000">+1,000</button>
+                                    <button data-savings-add="5000">+5,000</button>
+                                </div>
+                            </div>
+                            <button class="btn btn-primary btn-block" id="savings-deposit">
+                                <i class="fa-solid fa-arrow-down"></i> <span data-i18n="sav_move_in">Move in</span>
+                            </button>
+                        </div>
+
+                        <div class="card savings-close-card">
+                            <h3 data-i18n="sav_close_title">Close pot</h3>
+                            <p class="muted" data-i18n="sav_close_desc">Withdraw everything back to your main account. Early closure (before lock-in) charges a small penalty.</p>
+                            <div class="savings-close-foot">
+                                <div class="savings-warn" id="savings-warn" hidden>
+                                    <i class="fa-solid fa-triangle-exclamation"></i>
+                                    <span data-i18n="sav_close_warn">Closing now will charge an early-close penalty.</span>
+                                </div>
+                                <button class="btn btn-ghost btn-block" id="savings-close">
+                                    <i class="fa-solid fa-rotate-left"></i> <span data-i18n="sav_close_btn">Close pot</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="benefit-strip three">
+                        <div class="benefit">
+                            <span class="benefit-ic"><i class="fa-solid fa-arrows-rotate"></i></span>
+                            <div><strong data-i18n="sav_ben1_title">Compounds every tick</strong><small data-i18n="sav_ben1_sub">Interest is credited on every tick, automatically.</small></div>
+                        </div>
+                        <div class="benefit">
+                            <span class="benefit-ic"><i class="fa-solid fa-lock"></i></span>
+                            <div><strong data-i18n="sav_ben2_title">Lock-in protects your rate</strong><small data-i18n="sav_ben2_sub">Keep funds past the lock-in window to avoid an early-close penalty.</small></div>
+                        </div>
+                        <div class="benefit">
+                            <span class="benefit-ic"><i class="fa-solid fa-wallet"></i></span>
+                            <div><strong data-i18n="sav_ben3_title">Withdraw anytime</strong><small data-i18n="sav_ben3_sub">Close the pot whenever you need the cash back.</small></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ─── LOANS ───────────────────── -->
+                <div class="pane" data-pane="loans" hidden>
+                    <div class="loan-hero" id="loan-hero">
+                        <div class="loan-hero-glow"></div>
+                        <div class="loan-hero-eyebrow" data-i18n="ln_eyebrow">Personal Loan</div>
+                        <div class="loan-hero-title" id="loan-hero-title" data-i18n="ln_no_active">No active loan</div>
+                        <div class="loan-hero-bar"><div class="loan-hero-fill" id="loan-hero-fill"></div></div>
+                        <div class="loan-hero-meta" id="loan-hero-meta"><span data-i18n="ln_meta_interest">Interest</span> <strong id="loan-interest-pct">5%</strong> · <span data-i18n="ln_meta_term">Term</span> <strong id="loan-term-days">7</strong> <span data-i18n="ln_meta_days">days</span></div>
+                    </div>
+
+                    <div class="loan-grid">
+                        <div class="loan-main">
+                            <div class="card" id="loan-no" hidden>
+                                <h3 data-i18n="ln_apply_title">Apply for a personal loan</h3>
+                                <p class="muted" data-i18n="ln_apply_desc">Funds land in your main account instantly. Flat interest on issuance.</p>
+                                <div class="form-row">
+                                    <label data-i18n="ui_amount">Amount</label>
+                                    <div class="amount-input big">
+                                        <span class="amount-symbol">$</span>
+                                        <input type="number" min="1" class="apex-input mono" id="loan-amount" placeholder="0">
+                                    </div>
+                                    <div class="amount-presets">
+                                        <button data-loan-add="1000">+1,000</button>
+                                        <button data-loan-add="5000">+5,000</button>
+                                        <button data-loan-add="10000">+10,000</button>
+                                        <button data-loan-add="50000">+50,000</button>
+                                    </div>
+                                </div>
+                                <div class="loan-summary" id="loan-summary">
+                                    <div><span data-i18n="ln_principal">Principal</span><strong id="ls-amount">$0</strong></div>
+                                    <div><span data-i18n="ln_interest">Interest</span><strong id="ls-interest">$0</strong></div>
+                                    <div class="total"><span data-i18n="ln_total_repay">Total repay</span><strong id="ls-total">$0</strong></div>
+                                </div>
+                                <button class="btn btn-primary btn-block" id="loan-take">
+                                    <i class="fa-solid fa-hand-holding-dollar"></i> <span data-i18n="ln_apply_now">Apply now</span>
+                                </button>
+                            </div>
+
+                            <div class="card" id="loan-active" hidden>
+                                <h3 data-i18n="ln_repay_title">Repay your loan</h3>
+                                <div class="loan-stats">
+                                    <div><span data-i18n="ln_principal">Principal</span><strong id="loan-stat-amount">$0</strong></div>
+                                    <div><span data-i18n="ln_interest">Interest</span><strong id="loan-stat-interest">$0</strong></div>
+                                    <div><span data-i18n="ln_remaining">Remaining</span><strong id="loan-stat-remaining">$0</strong></div>
+                                    <div><span data-i18n="ln_due">Due</span><strong id="loan-stat-due">—</strong></div>
+                                </div>
+                                <div class="form-row">
+                                    <label data-i18n="ln_repay_amount">Repay amount</label>
+                                    <div class="amount-input">
+                                        <span class="amount-symbol">$</span>
+                                        <input type="number" min="1" class="apex-input mono" id="loan-repay-amount" placeholder="0">
+                                    </div>
+                                    <div class="amount-presets">
+                                        <button data-repay-pct="25">25%</button>
+                                        <button data-repay-pct="50">50%</button>
+                                        <button data-repay-pct="100" data-i18n="ln_full_amount">Full amount</button>
+                                    </div>
+                                </div>
+                                <button class="btn btn-primary btn-block" id="loan-repay">
+                                    <i class="fa-solid fa-arrow-up"></i> <span data-i18n="ln_repay_btn">Repay</span>
+                                </button>
+                                <div class="info-note loan-repay-note">
+                                    <i class="fa-solid fa-circle-info"></i>
+                                    <span data-i18n="ln_repay_note">Pay more than the minimum to clear your loan early and stop interest building.</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card loan-side">
+                            <h3 data-i18n="ln_credit_title">Credit standing</h3>
+                            <div class="loan-credit">
+                                <div class="loan-credit-gauge">
+                                    <svg class="loan-gauge-svg" viewBox="0 0 120 62">
+                                        <defs>
+                                            <linearGradient id="loan-gauge-grad" x1="0" y1="1" x2="1" y2="0">
+                                                <stop offset="0%" stop-color="var(--brand-600)"/>
+                                                <stop offset="100%" stop-color="var(--brand-300)"/>
+                                            </linearGradient>
+                                        </defs>
+                                        <path class="loan-gauge-bg"   d="M14 56 A 46 46 0 0 1 106 56"/>
+                                        <path class="loan-gauge-fill" id="loan-credit-arc" d="M14 56 A 46 46 0 0 1 106 56"/>
+                                    </svg>
+                                    <div class="loan-credit-score" id="loan-credit-score">—</div>
+                                </div>
+                                <span class="loan-credit-tier" id="loan-credit-tier" data-i18n="ln_no_score">No score yet</span>
+                                <div class="loan-credit-scale"><span data-i18n="ln_poor">Poor</span><span data-i18n="ln_excellent">Excellent</span></div>
+                            </div>
+                            <div class="loan-side-rows">
+                                <div><span data-i18n="ln_side_rate">Interest rate</span><strong id="loan-side-interest">—</strong></div>
+                                <div><span data-i18n="ln_side_term">Loan term</span><strong id="loan-side-term">—</strong></div>
+                                <div><span data-i18n="ln_side_status">Status</span><strong id="loan-side-status">—</strong></div>
+                            </div>
+                            <div class="info-note">
+                                <i class="fa-solid fa-circle-info"></i>
+                                <span data-i18n="ln_side_note">Repay on time to build your score and unlock larger loans.</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="benefit-strip three">
+                        <div class="benefit">
+                            <span class="benefit-ic"><i class="fa-solid fa-bolt"></i></span>
+                            <div><strong data-i18n="ln_ben1_title">Instant funds</strong><small data-i18n="ln_ben1_sub">Approved cash lands in your account instantly.</small></div>
+                        </div>
+                        <div class="benefit">
+                            <span class="benefit-ic"><i class="fa-solid fa-percent"></i></span>
+                            <div><strong data-i18n="ln_ben2_title">Flat interest</strong><small data-i18n="ln_ben2_sub">Interest is fixed when the loan is issued.</small></div>
+                        </div>
+                        <div class="benefit">
+                            <span class="benefit-ic"><i class="fa-solid fa-arrow-trend-up"></i></span>
+                            <div><strong data-i18n="ln_ben3_title">Builds your score</strong><small data-i18n="ln_ben3_sub">On-time repayments raise your credit standing.</small></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ─── BUSINESS ─────────────────── -->
+                <div class="pane" data-pane="society" hidden>
+                    <div class="biz-section" id="biz-section" hidden>
+                        <div class="pane-head">
+                            <div>
+                                <h3 data-i18n="biz_title">Business accounts</h3>
+                                <span class="muted" data-i18n="biz_desc">Manage your company's treasury and payroll.</span>
+                            </div>
+                        </div>
+                        <div class="biz-list" id="biz-list"></div>
+                    </div>
+
+                    <div id="sub-section">
+                    <div class="pane-head">
+                        <div>
+                            <h3 data-i18n="sub_title">Shared sub-accounts</h3>
+                            <span class="muted" data-i18n="sub_desc">Pool funds with friends, family or crew.</span>
+                        </div>
+                        <button class="btn btn-primary" id="sub-new">
+                            <i class="fa-solid fa-plus"></i> <span data-i18n="sub_new">New sub account</span>
+                        </button>
+                    </div>
+                    <div class="sub-list" id="sub-list"></div>
+
+                    <div class="benefit-strip">
+                        <div class="benefit">
+                            <span class="benefit-ic"><i class="fa-solid fa-users"></i></span>
+                            <div><strong data-i18n="sub_ben1_title">Pooled funds</strong><small data-i18n="sub_ben1_sub">Everyone you add can pay into one shared balance.</small></div>
+                        </div>
+                        <div class="benefit">
+                            <span class="benefit-ic"><i class="fa-solid fa-user-shield"></i></span>
+                            <div><strong data-i18n="sub_ben2_title">Per-partner permissions</strong><small data-i18n="sub_ben2_sub">Decide who can view, deposit, withdraw or manage.</small></div>
+                        </div>
+                        <div class="benefit">
+                            <span class="benefit-ic"><i class="fa-solid fa-gauge-high"></i></span>
+                            <div><strong data-i18n="sub_ben3_title">Daily limits</strong><small data-i18n="sub_ben3_sub">Cap how much each partner can move every day.</small></div>
+                        </div>
+                        <div class="benefit">
+                            <span class="benefit-ic"><i class="fa-solid fa-clock-rotate-left"></i></span>
+                            <div><strong data-i18n="sub_ben4_title">Full audit trail</strong><small data-i18n="sub_ben4_sub">Every movement shows up in the account history.</small></div>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+
+                <!-- ─── BILLING (optional: apex_billing) ─── -->
+                <div class="pane" data-pane="billing" hidden>
+                    <div class="billing-shell">
+                        <div class="billing-summary">
+                            <div class="billing-kpi">
+                                <span class="billing-kpi-ic"><i class="fa-solid fa-user"></i></span>
+                                <span data-i18n="bill_personal_due">Personal due</span>
+                                <strong id="billing-personal-due">$0</strong>
+                                <small id="billing-personal-count">0 pending</small>
+                            </div>
+                            <div class="billing-kpi">
+                                <span class="billing-kpi-ic"><i class="fa-solid fa-briefcase"></i></span>
+                                <span data-i18n="bill_society_due">Society due</span>
+                                <strong id="billing-society-due">$0</strong>
+                                <small id="billing-society-count" data-i18n="bill_boss_only">Boss access only</small>
+                            </div>
+                            <div class="billing-kpi">
+                                <span class="billing-kpi-ic"><i class="fa-solid fa-paper-plane"></i></span>
+                                <span data-i18n="bill_company_sent">Company sent</span>
+                                <strong id="billing-sent-count">0 invoices</strong>
+                                <small id="billing-job-label" data-i18n="bill_integration">Billing integration</small>
+                            </div>
+                        </div>
+
+                        <section class="card billing-section">
+                            <div class="section-head">
+                                <div>
+                                    <h3 data-i18n="bill_your_title">Your invoices</h3>
+                                    <span class="muted" data-i18n="bill_your_desc">Pay or decline invoices addressed to you.</span>
+                                </div>
+                            </div>
+                            <div class="billing-list" id="billing-personal-list"></div>
+                        </section>
+
+                        <section class="card billing-section" id="billing-society-section" hidden>
+                            <div class="section-head">
+                                <div>
+                                    <h3 data-i18n="bill_society_title">Society invoices to pay</h3>
+                                    <span class="muted" data-i18n="bill_society_desc">Bosses can settle invoices from company treasury.</span>
+                                </div>
+                            </div>
+                            <div class="billing-list" id="billing-society-list"></div>
+                        </section>
+
+                        <section class="card billing-section" id="billing-sent-section" hidden>
+                            <div class="section-head">
+                                <div>
+                                    <h3 data-i18n="bill_sent_title">Sent by company</h3>
+                                    <span class="muted" data-i18n="bill_sent_desc">Read-only history of invoices issued in the company name.</span>
+                                </div>
+                            </div>
+                            <div class="billing-list" id="billing-sent-list"></div>
+                        </section>
+
+                        <div class="benefit-strip">
+                            <div class="benefit">
+                                <span class="benefit-ic"><i class="fa-solid fa-credit-card"></i></span>
+                                <div><strong data-i18n="bill_info1_title">Pay or decline</strong><small data-i18n="bill_info1_sub">Settle an invoice straight from your bank, or turn it down.</small></div>
+                            </div>
+                            <div class="benefit">
+                                <span class="benefit-ic"><i class="fa-solid fa-clock"></i></span>
+                                <div><strong data-i18n="bill_info2_title">Due dates tracked</strong><small data-i18n="bill_info2_sub">Overdue invoices are flagged so nothing slips past you.</small></div>
+                            </div>
+                            <div class="benefit">
+                                <span class="benefit-ic"><i class="fa-solid fa-briefcase"></i></span>
+                                <div><strong data-i18n="bill_info3_title">Company treasury</strong><small data-i18n="bill_info3_sub">Bosses can clear society invoices from the business balance.</small></div>
+                            </div>
+                            <div class="benefit">
+                                <span class="benefit-ic"><i class="fa-solid fa-folder-open"></i></span>
+                                <div><strong data-i18n="bill_info4_title">Kept on record</strong><small data-i18n="bill_info4_sub">Paid and declined invoices stay here for your history.</small></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ─── VEHICLES (apex_dealerships financing) ─── -->
+                <div class="pane" data-pane="vehicles" hidden>
+                    <div class="pane-head">
+                        <div>
+                            <h3 data-i18n="vf_title">Vehicle financing</h3>
+                            <span class="muted"><span id="vf-count"></span></span>
+                        </div>
+                    </div>
+                    <div id="vf-summary" class="vf-summary" hidden></div>
+                    <div id="vf-list" class="vf-list"></div>
+                </div>
+
+                <!-- ─── HISTORY ───────────────────── -->
+                <div class="pane" data-pane="history" hidden>
+                    <div class="card history-card">
+                        <div class="section-head">
+                            <div>
+                                <h3 data-i18n="hist_title">Transaction history</h3>
+                                <span class="muted" id="history-count">0 transactions</span>
+                            </div>
+                            <div class="history-filter" id="history-filter">
+                                <button class="hf-pill active" data-kind="" data-i18n="hist_all">All</button>
+                                <button class="hf-pill" data-kind="deposit" data-i18n="hist_deposits">Deposits</button>
+                                <button class="hf-pill" data-kind="withdraw" data-i18n="hist_withdrawals">Withdrawals</button>
+                                <button class="hf-pill" data-kind="transfer" data-i18n="hist_transfers">Transfers</button>
+                                <button class="hf-pill" data-kind="atm" data-i18n="hist_atm">ATM</button>
+                                <button class="hf-pill" data-kind="billing" id="hf-billing" hidden data-i18n="hist_billing">Billing</button>
+                                <button class="hf-pill" data-kind="fee" data-i18n="hist_fees">Fees</button>
+                            </div>
+                        </div>
+                        <div class="tx-list dense" id="tx-list"></div>
+                    </div>
+                </div>
+
+                <!-- ─── SETTINGS ──────────────────── -->
+                <div class="pane" data-pane="settings" hidden>
+                    <div class="two-col">
+                        <div class="card settings-group">
+                            <h3 data-i18n="set_security">Security</h3>
+                            <div class="setting-row">
+                                <span class="setting-ic"><i class="fa-solid fa-key"></i></span>
+                                <div>
+                                    <strong data-i18n="set_change_pin">Change PIN</strong>
+                                    <span class="muted" data-i18n="set_change_pin_desc">Required for ATM operations.</span>
+                                </div>
+                                <button class="btn btn-ghost btn-sm" id="set-pin"><span data-i18n="set_change">Change</span></button>
+                            </div>
+                            <div class="setting-row">
+                                <span class="setting-ic"><i class="fa-solid fa-rotate"></i></span>
+                                <div>
+                                    <strong data-i18n="set_rotate_iban">Rotate IBAN</strong>
+                                    <span class="muted" id="rotate-iban-fee" data-i18n="set_rotate_iban_desc">Issues a new IBAN.</span>
+                                </div>
+                                <button class="btn btn-ghost btn-sm" id="set-iban"><span data-i18n="set_rotate">Rotate</span></button>
+                            </div>
+                            <div class="setting-row">
+                                <span class="setting-ic"><i class="fa-solid fa-eye-slash"></i></span>
+                                <div>
+                                    <strong data-i18n="set_privacy">Privacy mode</strong>
+                                    <span class="muted" data-i18n="set_privacy_desc">Always hide balances and money values for this character.</span>
+                                </div>
+                                <label class="apex-switch">
+                                    <input type="checkbox" id="set-privacy">
+                                    <span class="apex-switch-track"><span class="apex-switch-thumb"></span></span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="card settings-group">
+                            <h3 data-i18n="set_account">Account</h3>
+                            <div class="setting-row">
+                                <span class="setting-ic"><i class="fa-solid fa-user"></i></span>
+                                <div>
+                                    <strong data-i18n="set_account_holder">Account holder</strong>
+                                    <span class="muted" id="set-holder">—</span>
+                                </div>
+                            </div>
+                            <div class="setting-row">
+                                <span class="setting-ic"><i class="fa-solid fa-building-columns"></i></span>
+                                <div>
+                                    <strong data-i18n="set_your_iban">Your IBAN</strong>
+                                    <span class="muted" data-i18n="set_your_iban_desc">Share this to receive transfers.</span>
+                                </div>
+                                <code class="iban-chip" id="set-iban-display">AP•• •••• ••••</code>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Appearance (personal) -->
+                    <div class="card settings-appearance settings-group">
+                        <div class="section-head">
+                            <div>
+                                <h3 data-i18n="set_appearance">Appearance</h3>
+                                <span class="muted" data-i18n="set_appearance_desc">Personalise how the bank looks just for you.</span>
+                            </div>
+                            <button class="btn btn-ghost btn-sm" id="theme-reset-personal">
+                                <i class="fa-solid fa-rotate-left"></i> <span data-i18n="set_reset">Reset</span>
+                            </button>
+                        </div>
+
+                        <div class="appearance-grid">
+                            <div class="appearance-block">
+                                <div class="setting-row">
+                                    <span class="setting-ic"><i class="fa-solid fa-palette"></i></span>
+                                    <div>
+                                        <strong data-i18n="set_brand_colour">Brand colour</strong>
+                                        <span class="muted" data-i18n="set_brand_colour_desc">Affects buttons, accents and active states.</span>
+                                    </div>
+                                    <div class="color-pick">
+                                        <label class="color-swatch-big"><input type="hidden" id="theme-color-input" value="#1F5EFF"></label>
+                                        <code class="iban-chip" id="theme-color-hex">#1F5EFF</code>
+                                    </div>
+                                </div>
+                                <div class="color-presets" id="theme-presets"></div>
+                            </div>
+
+                            <div class="appearance-block">
+                                <div class="setting-row">
+                                    <span class="setting-ic"><i class="fa-solid fa-fill-drip"></i></span>
+                                    <div>
+                                        <strong data-i18n="set_bg_colour">Background colour</strong>
+                                        <span class="muted" data-i18n="set_bg_colour_desc">Sets the dark base tone of the whole bank.</span>
+                                    </div>
+                                    <div class="color-pick">
+                                        <label class="color-swatch-big"><input type="hidden" id="theme-bg-input" value="#131314"></label>
+                                        <code class="iban-chip" id="theme-bg-hex">#131314</code>
+                                    </div>
+                                </div>
+                                <div class="color-presets" id="theme-bg-presets"></div>
+                            </div>
+                        </div>
+
+                        <div class="setting-row">
+                            <span class="setting-ic"><i class="fa-solid fa-up-right-and-down-left-from-center"></i></span>
+                            <div>
+                                <strong data-i18n="set_iface_size">Interface size</strong>
+                                <span class="muted" data-i18n="set_iface_size_desc">Scale the whole bank panel up or down.</span>
+                            </div>
+                            <div class="size-grid" id="size-grid">
+                                <button data-size="s" class="size-btn"><i class="fa-regular fa-window-minimize"></i><span data-i18n="set_size_small">Small</span></button>
+                                <button data-size="m" class="size-btn"><i class="fa-regular fa-window-restore"></i><span data-i18n="set_size_medium">Medium</span></button>
+                                <button data-size="l" class="size-btn active"><i class="fa-regular fa-window-maximize"></i><span data-i18n="set_size_large">Large</span></button>
+                                <button data-size="full" class="size-btn"><i class="fa-solid fa-expand"></i><span data-i18n="set_size_full">Fullscreen</span></button>
+                            </div>
+                        </div>
+
+                        <div class="info-note">
+                            <i class="fa-solid fa-circle-info"></i>
+                            <span data-i18n="set_appearance_note">Your colour and size preferences are saved to this character and restored every time you open the bank.</span>
+                        </div>
+                    </div>
+
+                    <!-- Admin appearance (broadcast) -->
+                    <div class="card admin-only settings-group" id="admin-appearance" hidden>
+                        <div class="section-head">
+                            <div>
+                                <h3 data-i18n="set_admin_title">Admin · Broadcast appearance</h3>
+                                <span class="muted" data-i18n="set_admin_desc">Changes here apply to every player on the server.</span>
+                            </div>
+                            <span class="badge badge-admin"><i class="fa-solid fa-shield-halved"></i> <span data-i18n="set_admin_only">Admin only</span></span>
+                        </div>
+
+                        <div class="setting-row">
+                            <span class="setting-ic"><i class="fa-solid fa-tower-broadcast"></i></span>
+                            <div>
+                                <strong data-i18n="set_admin_mode">Admin mode</strong>
+                                <span class="muted" data-i18n="set_admin_mode_desc">While on, the colour below replaces every player's accent — panel, ATM and world markers. Turn it off and everyone gets their own colour back.</span>
+                            </div>
+                            <div class="admin-mode-switch">
+                                <span class="muted" id="admin-mode-state" data-i18n="set_admin_mode_off">Off</span>
+                                <label class="apex-switch">
+                                    <input type="checkbox" id="admin-mode-toggle">
+                                    <span class="apex-switch-track"><span class="apex-switch-thumb"></span></span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="setting-row admin-colour-row">
+                            <span class="setting-ic"><i class="fa-solid fa-palette"></i></span>
+                            <div>
+                                <strong data-i18n="set_server_brand">Server brand colour</strong>
+                                <span class="muted" data-i18n="set_server_brand_desc">Applied to every player the moment you broadcast it.</span>
+                            </div>
+                            <div class="color-pick">
+                                <label class="color-swatch-big"><input type="hidden" id="theme-admin-color-input" value="#1F5EFF"></label>
+                                <code class="iban-chip" id="theme-admin-color-hex">#1F5EFF</code>
+                            </div>
+                        </div>
+
+                        <div class="color-presets" id="theme-admin-presets"></div>
+
+                        <div class="admin-actions">
+                            <button class="btn btn-ghost" id="theme-admin-reset">
+                                <i class="fa-solid fa-rotate-left"></i> <span data-i18n="set_reset_default">Reset to default</span>
+                            </button>
+                            <button class="btn btn-primary" id="theme-admin-broadcast">
+                                <i class="fa-solid fa-bullhorn"></i> <span data-i18n="set_broadcast">Broadcast to all players</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     ATM (classic, Config.useDuiAtm = false) — terminal
+     ═══════════════════════════════════════════════════════ -->
+<div id="atm-overlay" class="atm-overlay" hidden>
+  <div class="atm-device">
+   <div class="atm-terminal">
+    <div class="atm-topbar">
+        <div class="atm-topbar-brand">
+            <div class="atm-topbar-mark"><i class="fa-solid fa-building-columns"></i></div>
+            <div class="atm-topbar-text">
+                <strong data-i18n="atm_brand">ATM</strong>
+                <small data-i18n="atm_brand_sub">Secure banking terminal</small>
+            </div>
+        </div>
+        <div class="atm-topbar-right">
+            <span class="atm-status-dot"></span>
+            <span class="atm-time" id="atm-time">--:--</span>
+            <button class="close-btn" id="atm-side-cancel" title="Close (Esc)" data-i18n-title="atm_close">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+    </div>
+
+    <div class="atm-stage">
+        <!-- PIN ENTRY -->
+        <div class="atm-state" data-state="pin">
+            <div class="atm-split">
+                <div class="atm-split-left">
+                    <div class="dcard atm-card-lg">
+                        <div class="dcard-texture"></div>
+                        <div class="dcard-sheen"></div>
+                        <div class="dcard-top">
+                            <div class="dcard-brand">DEBIT</div>
+                            <i class="fa-solid fa-wifi dcard-wifi"></i>
+                        </div>
+                        <div class="dcard-chip"></div>
+                        <div class="dcard-number mono" id="atm-card-iban">AP•• •••• ••••</div>
+                        <div class="dcard-foot">
+                            <div><small data-i18n="atm_card_holder">Card holder</small><strong id="atm-card-owner">—</strong></div>
+                            <div class="ta-r"><small data-i18n="atm_serial">Serial</small><strong id="atm-card-serial" class="mono">•••••</strong></div>
+                        </div>
+                    </div>
+
+                    <div class="atm-info-pills">
+                        <div class="atm-info-pill"><i class="fa-solid fa-lock"></i><span><span data-i18n="atm_up_to">Up to</span> <strong id="atm-pin-tries">3</strong> <span data-i18n="atm_attempts">attempts</span></span></div>
+                    </div>
+                </div>
+
+                <div class="atm-split-right">
+                    <div class="atm-status-row">
+                        <h2 data-i18n="atm_welcome">Welcome</h2>
+                        <span data-i18n="atm_enter_pin">Enter your 4-digit PIN to continue</span>
+                    </div>
+                    <div class="pin-row big" id="atm-pin-row">
+                        <span class="pin-dot"></span><span class="pin-dot"></span>
+                        <span class="pin-dot"></span><span class="pin-dot"></span>
+                    </div>
+                    <div class="numpad" id="atm-numpad">
+                        <button data-k="1"><b>1</b><small></small></button>
+                        <button data-k="2"><b>2</b><small>ABC</small></button>
+                        <button data-k="3"><b>3</b><small>DEF</small></button>
+                        <button data-k="4"><b>4</b><small>GHI</small></button>
+                        <button data-k="5"><b>5</b><small>JKL</small></button>
+                        <button data-k="6"><b>6</b><small>MNO</small></button>
+                        <button data-k="7"><b>7</b><small>PQRS</small></button>
+                        <button data-k="8"><b>8</b><small>TUV</small></button>
+                        <button data-k="9"><b>9</b><small>WXYZ</small></button>
+                        <button data-k="C" class="key-fn"><i class="fa-solid fa-trash-can"></i></button>
+                        <button data-k="0"><b>0</b><small></small></button>
+                        <button data-k="←" class="key-fn"><i class="fa-solid fa-delete-left"></i></button>
+                    </div>
+                    <button class="btn btn-ghost btn-sm atm-cancel-link" id="atm-cancel"><i class="fa-solid fa-eject"></i> <span data-i18n="atm_eject">Eject card</span></button>
+                </div>
+            </div>
+        </div>
+
+        <!-- MAIN -->
+        <div class="atm-state" data-state="menu" hidden>
+            <div class="atm-main">
+                <div class="atm-hero">
+                    <div class="atm-hero-left">
+                        <span class="atm-hero-label" data-i18n="atm_available">Available balance</span>
+                        <div class="atm-balance" id="atm-balance">$0</div>
+                        <div class="atm-hero-meta">
+                            <span><i class="fa-solid fa-user"></i> <span id="atm-greeting-name">—</span></span>
+                            <span class="atm-hero-divider"></span>
+                            <code class="mono" id="atm-iban-foot">AP•• •••• ••••</code>
+                        </div>
+                    </div>
+                    <div class="atm-hero-right">
+                        <button class="icon-btn ghost" id="atm-eye" title="Hide / show balance" data-i18n-title="atm_hide_show_balance"><i class="fa-solid fa-eye"></i></button>
+                        <button class="btn btn-ghost btn-sm" id="atm-eject-btn"><i class="fa-solid fa-eject"></i> <span data-i18n="atm_eject">Eject card</span></button>
+                    </div>
+                </div>
+
+                <div class="atm-ops">
+                    <section class="atm-op">
+                        <header class="atm-op-head">
+                            <div class="atm-op-icon out"><i class="fa-solid fa-arrow-up"></i></div>
+                            <div><strong data-i18n="atm_withdraw_title">Withdraw cash</strong><small data-i18n="atm_withdraw_sub">Bank → Cash</small></div>
+                        </header>
+                        <div class="atm-quick">
+                            <button class="atm-quick-btn" data-w-amount="20">$20</button>
+                            <button class="atm-quick-btn" data-w-amount="50">$50</button>
+                            <button class="atm-quick-btn" data-w-amount="100">$100</button>
+                            <button class="atm-quick-btn" data-w-amount="200">$200</button>
+                            <button class="atm-quick-btn" data-w-amount="500">$500</button>
+                            <button class="atm-quick-btn" data-w-amount="1000">$1,000</button>
+                        </div>
+                        <div class="amount-input">
+                            <span class="amount-symbol">$</span>
+                            <input id="atm-w-amount" type="number" class="apex-input mono" placeholder="Custom amount" data-i18n-ph="atm_custom_amount">
+                        </div>
+                        <button class="btn btn-primary btn-block" id="atm-w-go"><i class="fa-solid fa-money-bill-wave"></i> <span data-i18n="atm_withdraw_btn">Withdraw</span></button>
+                    </section>
+
+                    <section class="atm-op">
+                        <header class="atm-op-head">
+                            <div class="atm-op-icon in"><i class="fa-solid fa-arrow-down"></i></div>
+                            <div><strong data-i18n="atm_deposit_title">Deposit cash</strong><small data-i18n="atm_deposit_sub">Cash → Bank</small></div>
+                        </header>
+                        <div class="atm-quick">
+                            <button class="atm-quick-btn" data-d-amount="20">$20</button>
+                            <button class="atm-quick-btn" data-d-amount="50">$50</button>
+                            <button class="atm-quick-btn" data-d-amount="100">$100</button>
+                            <button class="atm-quick-btn" data-d-amount="200">$200</button>
+                            <button class="atm-quick-btn" data-d-amount="500">$500</button>
+                            <button class="atm-quick-btn" data-d-amount="1000">$1,000</button>
+                        </div>
+                        <div class="amount-input">
+                            <span class="amount-symbol">$</span>
+                            <input id="atm-d-amount" type="number" class="apex-input mono" placeholder="Custom amount" data-i18n-ph="atm_custom_amount">
+                        </div>
+                        <button class="btn btn-primary btn-block" id="atm-d-go"><i class="fa-solid fa-arrow-down"></i> <span data-i18n="atm_deposit_btn">Deposit</span></button>
+                    </section>
+
+                    <section class="atm-op atm-statement">
+                        <header class="atm-op-head">
+                            <div class="atm-op-icon atm"><i class="fa-solid fa-receipt"></i></div>
+                            <div><strong data-i18n="atm_recent_title">Recent ATM activity</strong><small data-i18n="atm_recent_sub">Last withdrawals &amp; deposits on this card</small></div>
+                        </header>
+                        <div class="atm-receipt" id="atm-receipt"></div>
+                        <div class="atm-info-strip">
+                            <div class="atm-info-cell"><span data-i18n="atm_cap_label">Per-transaction cap</span><strong id="atm-cap">$50,000</strong></div>
+                            <div class="atm-info-cell"><span data-i18n="atm_daily_label">Daily ATM limit</span><strong id="atm-daily-cap">$100,000</strong></div>
+                            <div class="atm-info-cell"><span data-i18n="atm_fee_label">ATM fee</span><strong id="atm-fee-display">$0</strong></div>
+                            <div class="atm-info-cell"><span data-i18n="atm_session_label">Session</span><strong class="ok" data-i18n="atm_secure">Secure</strong></div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+
+        <!-- ERROR -->
+        <div class="atm-state atm-state-error" data-state="error" hidden>
+            <div class="atm-error-mark"><i class="fa-solid fa-triangle-exclamation"></i></div>
+            <h2 data-i18n="atm_error_title">Transaction failed</h2>
+            <p id="atm-error-msg" data-i18n="atm_error_msg">Something went wrong.</p>
+            <button class="btn btn-primary btn-lg" id="atm-error-back">
+                <i class="fa-solid fa-arrow-left"></i> <span data-i18n="atm_try_again">Try again</span>
+            </button>
+        </div>
+    </div>
+   </div>
+   <div class="atm-hardware" aria-hidden="true">
+       <span class="atm-slot card"><i></i></span>
+       <span class="atm-slot cash"><i></i></span>
+   </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     ATM PLACER — admin ghost-placement controls
+     ═══════════════════════════════════════════════════════ -->
+<div id="atmplacer" class="atmplacer" hidden>
+    <div class="atmplacer-head">
+        <span class="atmplacer-ic"><i class="fa-solid fa-credit-card"></i></span>
+        <div class="atmplacer-title">
+            <strong data-i18n="ap_title">ATM Placement</strong>
+            <small data-i18n="ap_sub">Aim with the camera, drop it anywhere</small>
+        </div>
+        <code class="atmplacer-model" id="atmplacer-model">—</code>
+    </div>
+    <div class="atmplacer-keys">
+        <div class="ap-key"><span class="ap-kbd">Scroll</span> <span data-i18n="ap_rotate">Rotate</span></div>
+        <div class="ap-key"><span class="ap-kbd">Shift+Scroll</span> <span data-i18n="ap_depth">Depth</span></div>
+        <div class="ap-key"><span class="ap-kbd">◀ ▶</span> <span data-i18n="ap_model">Model</span></div>
+        <div class="ap-key"><span class="ap-kbd">▲ ▼</span> <span data-i18n="ap_height">Height</span></div>
+        <div class="ap-key ok"><span class="ap-kbd">E</span> <span data-i18n="ap_place">Place</span></div>
+        <div class="ap-key bad"><span class="ap-kbd">X</span> <span data-i18n="ap_cancel">Cancel</span></div>
+    </div>
+</div>
+
+<!-- Fingerprint world overlay -->
+<div id="fp-world" class="fp-world" hidden>
+    <div class="fp-world-card">
+        <div class="fp-world-icon"><i class="fa-solid fa-fingerprint"></i></div>
+        <div class="fp-world-text">
+            <div class="fp-world-label" data-i18n="fp_scanning">Scanning fingerprint…</div>
+            <div class="fp-world-bar"><div class="fp-world-fill" id="fp-world-fill"></div></div>
+        </div>
+    </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     /bankadmin — admin control panel
+     Dashboard · Features · Accounts · ATM machines · Appearance.
+     Opened from Lua (adminOpen); every action is re-checked server-side.
+     ═══════════════════════════════════════════════════════════ -->
+<div id="admin-overlay" class="solid-overlay" hidden>
+    <div class="adm-shell">
+        <aside class="adm-rail">
+            <div class="adm-brand">
+                <span class="adm-brand-mark"><i class="fa-solid fa-shield-halved"></i></span>
+                <div class="adm-brand-text">
+                    <span class="adm-brand-eyebrow" data-i18n="adm_eyebrow">Administration</span>
+                    <span class="adm-brand-title" data-i18n="adm_title">Bank control</span>
+                </div>
+            </div>
+            <nav class="adm-nav">
+                <button class="adm-nav-item active" data-atab="dash">
+                    <i class="fa-solid fa-gauge-high"></i><span data-i18n="adm_tab_dash">Dashboard</span>
+                </button>
+                <button class="adm-nav-item" data-atab="features">
+                    <i class="fa-solid fa-toggle-on"></i><span data-i18n="adm_tab_features">Features</span>
+                    <span class="nav-badge warn" id="adm-features-off" data-empty="true">0</span>
+                </button>
+                <button class="adm-nav-item" data-atab="accounts">
+                    <i class="fa-solid fa-users"></i><span data-i18n="adm_tab_accounts">Accounts</span>
+                </button>
+                <button class="adm-nav-item" data-atab="treasuries">
+                    <i class="fa-solid fa-briefcase"></i><span data-i18n="adm_tab_treasuries">Treasuries</span>
+                </button>
+                <button class="adm-nav-item" data-atab="loans">
+                    <i class="fa-solid fa-hand-holding-dollar"></i><span data-i18n="adm_tab_loans">Loans</span>
+                    <span class="nav-badge warn" id="adm-loan-overdue" data-empty="true">0</span>
+                </button>
+                <button class="adm-nav-item" data-atab="atms">
+                    <i class="fa-solid fa-money-check-dollar"></i><span data-i18n="adm_tab_atms">ATM machines</span>
+                    <span class="nav-badge" id="adm-atm-count" data-empty="true">0</span>
+                </button>
+                <button class="adm-nav-item" data-atab="ledger">
+                    <i class="fa-solid fa-receipt"></i><span data-i18n="adm_tab_ledger">Ledger</span>
+                </button>
+                <button class="adm-nav-item" data-atab="audit">
+                    <i class="fa-solid fa-clipboard-list"></i><span data-i18n="adm_tab_audit">Audit</span>
+                </button>
+                <button class="adm-nav-item" data-atab="look">
+                    <i class="fa-solid fa-palette"></i><span data-i18n="adm_tab_look">Appearance</span>
+                </button>
+            </nav>
+            <div class="adm-rail-foot">
+                <div class="adm-mode" id="adm-mode">
+                    <span class="adm-mode-dot"></span>
+                    <span class="adm-mode-label" data-i18n="adm_look_status">Server look</span>
+                    <b id="adm-mode-value" data-i18n="adm_look_off">Off</b>
+                </div>
+                <button class="btn btn-ghost btn-block" id="adm-close">
+                    <i class="fa-solid fa-right-from-bracket"></i> <span data-i18n="adm_close">Close panel</span>
+                </button>
+            </div>
+        </aside>
+
+        <main class="adm-main">
+            <header class="adm-top">
+                <div class="adm-top-left">
+                    <span class="adm-top-eyebrow" data-i18n="adm_eyebrow">Administration</span>
+                    <span class="adm-top-title" id="adm-top-title" data-i18n="adm_tab_dash">Dashboard</span>
+                </div>
+                <div class="adm-top-right">
+                    <span class="adm-chip" id="adm-chip-online"><i class="fa-solid fa-circle-dot"></i><b>0</b><span data-i18n="adm_k_online">online</span></span>
+                    <button class="btn btn-ghost btn-sm" id="adm-refresh">
+                        <i class="fa-solid fa-rotate"></i> <span data-i18n="adm_refresh">Refresh</span>
+                    </button>
+                    <button class="adm-x" id="adm-x" aria-label="Close"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+            </header>
+
+            <div class="adm-body">
+                <!-- Dashboard -->
+                <section class="adm-pane" data-apane="dash">
+                    <div class="adm-kpis" id="adm-kpis"></div>
+                    <div class="adm-cols">
+                        <div class="card adm-card">
+                            <div class="adm-card-head">
+                                <h3 data-i18n="adm_recent">Latest movements</h3>
+                                <span class="muted" data-i18n="adm_recent_sub">Every account, newest first.</span>
+                            </div>
+                            <div class="adm-recent" id="adm-recent"></div>
+                        </div>
+                        <div class="card adm-card">
+                            <div class="adm-card-head">
+                                <h3 data-i18n="adm_status">Server status</h3>
+                                <span class="muted" data-i18n="adm_status_sub">What every player is getting right now.</span>
+                            </div>
+                            <div class="adm-status-list" id="adm-status-list"></div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Features -->
+                <section class="adm-pane" data-apane="features" hidden>
+                    <div class="adm-hint">
+                        <i class="fa-solid fa-circle-info"></i>
+                        <span data-i18n="adm_f_intro">Switches apply to every player immediately and survive restarts. A module that is off hides in the bank and the server refuses its requests.</span>
+                    </div>
+                    <div class="adm-feature-list" id="adm-feature-list"></div>
+                </section>
+
+                <!-- Accounts -->
+                <section class="adm-pane" data-apane="accounts" hidden>
+                    <div class="adm-search">
+                        <div class="input-ic adm-search-field">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                            <input class="apex-input" id="adm-acc-q" type="text" autocomplete="off" spellcheck="false" placeholder="Name, IBAN or identifier" data-i18n-ph="adm_acc_search_ph">
+                        </div>
+                        <div class="adm-seg" id="adm-acc-filter" data-value="all">
+                            <button type="button" class="on" data-v="all" data-i18n="adm_filter_all">All</button>
+                            <button type="button" data-v="frozen" data-i18n="adm_filter_frozen">Frozen</button>
+                            <button type="button" data-v="locked" data-i18n="adm_filter_locked">Locked</button>
+                            <button type="button" data-v="online" data-i18n="adm_filter_online">Online</button>
+                        </div>
+                        <span class="muted" id="adm-acc-summary"></span>
+                    </div>
+                    <div class="adm-tbl" id="adm-acc-list"></div>
+                    <div class="adm-pager" id="adm-acc-pager" hidden>
+                        <button class="btn btn-sm btn-ghost" id="adm-acc-prev"><i class="fa-solid fa-chevron-left"></i> <span data-i18n="adm_page_prev">Previous</span></button>
+                        <span class="muted" id="adm-acc-count"></span>
+                        <button class="btn btn-sm btn-ghost" id="adm-acc-next"><span data-i18n="adm_page_next">Next</span> <i class="fa-solid fa-chevron-right"></i></button>
+                    </div>
+                </section>
+
+                <!-- Treasuries -->
+                <section class="adm-pane" data-apane="treasuries" hidden>
+                    <div class="adm-hint">
+                        <i class="fa-solid fa-circle-info"></i>
+                        <span data-i18n="adm_biz_hint">Every job has a treasury, whether or not anyone holds the job right now. Adjusting funds mirrors the change into the framework society account, exactly like a boss deposit would.</span>
+                    </div>
+                    <div class="adm-search">
+                        <div class="input-ic adm-search-field">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                            <input class="apex-input" id="adm-biz-q" type="text" autocomplete="off" spellcheck="false" placeholder="Job name or label" data-i18n-ph="adm_biz_search_ph">
+                        </div>
+                        <button class="btn btn-primary" id="adm-payroll">
+                            <i class="fa-solid fa-money-bill-transfer"></i> <span data-i18n="adm_biz_payroll">Run payroll now</span>
+                        </button>
+                        <span class="muted" id="adm-biz-summary"></span>
+                    </div>
+                    <div class="adm-list" id="adm-biz-table"></div>
+                </section>
+
+                <!-- Loans -->
+                <section class="adm-pane" data-apane="loans" hidden>
+                    <div class="adm-search">
+                        <div class="adm-seg" id="adm-loan-scope" data-value="active">
+                            <button type="button" class="on" data-v="active"><i class="fa-solid fa-hourglass-half"></i><span data-i18n="adm_loan_scope_active">Active</span></button>
+                            <button type="button" data-v="closed"><i class="fa-solid fa-circle-check"></i><span data-i18n="adm_loan_scope_closed">Closed</span></button>
+                        </div>
+                        <span class="muted" id="adm-loan-summary"></span>
+                    </div>
+                    <div class="adm-tbl" id="adm-loan-table"></div>
+                </section>
+
+                <!-- ATMs -->
+                <section class="adm-pane" data-apane="atms" hidden>
+                    <div class="adm-hint">
+                        <i class="fa-solid fa-circle-info"></i>
+                        <span data-i18n="adm_atm_hint">Machines placed here are stored on the server and spawn for every player. Placing one opens a ghost prop you position in the world.</span>
+                    </div>
+                    <div class="adm-toolbar">
+                        <button class="btn btn-primary" id="adm-atm-place">
+                            <i class="fa-solid fa-plus"></i> <span data-i18n="adm_atm_place">Place ATM</span>
+                        </button>
+                        <button class="btn btn-ghost" id="adm-atm-calib-buttons" data-i18n-title="adm_atm_calib_hint" title="Stand next to an ATM first">
+                            <i class="fa-solid fa-crosshairs"></i> <span data-i18n="adm_atm_calib_buttons">Calibrate buttons</span>
+                        </button>
+                        <button class="btn btn-ghost" id="adm-atm-calib-screen" data-i18n-title="adm_atm_calib_hint" title="Stand next to an ATM first">
+                            <i class="fa-solid fa-vector-square"></i> <span data-i18n="adm_atm_calib_screen">Calibrate screen</span>
+                        </button>
+                        <span class="muted" id="adm-atm-summary"></span>
+                    </div>
+                    <div class="adm-list" id="adm-atm-list"></div>
+                </section>
+
+                <!-- Ledger -->
+                <section class="adm-pane" data-apane="ledger" hidden>
+                    <div class="adm-search">
+                        <div class="input-ic adm-search-field">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                            <input class="apex-input" id="adm-ledger-q" type="text" autocomplete="off" spellcheck="false" placeholder="IBAN, label or actor" data-i18n-ph="adm_ledger_search_ph">
+                        </div>
+                        <span class="muted" id="adm-ledger-summary"></span>
+                    </div>
+                    <div class="adm-pills" id="adm-ledger-kinds"></div>
+                    <div class="adm-tbl" id="adm-ledger-table"></div>
+                    <div class="adm-pager" id="adm-ledger-pager" hidden>
+                        <button class="btn btn-sm btn-ghost" id="adm-ledger-prev"><i class="fa-solid fa-chevron-left"></i> <span data-i18n="adm_page_prev">Previous</span></button>
+                        <span class="muted" id="adm-ledger-count"></span>
+                        <button class="btn btn-sm btn-ghost" id="adm-ledger-next"><span data-i18n="adm_page_next">Next</span> <i class="fa-solid fa-chevron-right"></i></button>
+                    </div>
+                </section>
+
+                <!-- Audit -->
+                <section class="adm-pane" data-apane="audit" hidden>
+                    <div class="adm-hint">
+                        <i class="fa-solid fa-circle-info"></i>
+                        <span data-i18n="adm_audit_hint">Every staff action taken through this panel, newest first. The log is written server-side and cannot be edited from here.</span>
+                    </div>
+                    <div class="adm-toolbar">
+                        <span class="muted" id="adm-audit-summary"></span>
+                    </div>
+                    <div class="adm-tbl" id="adm-audit-table"></div>
+                </section>
+
+                <!-- Appearance -->
+                <section class="adm-pane" data-apane="look" hidden>
+                    <div class="card adm-card" id="adm-look-card">
+                        <div class="adm-card-head">
+                            <div>
+                                <h3 data-i18n="adm_theme_title">Bank themes</h3>
+                                <span class="muted" data-i18n="adm_theme_desc">Ten complete looks — colours, type and shape. Pick one, then tune the two colours below if you want. Applies to every player.</span>
+                            </div>
+                            <span class="badge badge-admin"><i class="fa-solid fa-shield-halved"></i> <span data-i18n="set_admin_only">Admin only</span></span>
+                        </div>
+                        <div class="adm-card-head adm-sub-head">
+                            <div>
+                                <h3 data-i18n="adm_layout_title">Layout</h3>
+                                <span class="muted" data-i18n="adm_layout_desc">Where things sit — navigation, balance, card, activity. Any layout works with any theme.</span>
+                            </div>
+                        </div>
+                        <div class="adm-layout-grid" id="adm-layout-grid"></div>
+                        <div class="adm-card-head adm-sub-head">
+                            <div>
+                                <h3 data-i18n="adm_theme_sub">Theme</h3>
+                                <span class="muted" data-i18n="adm_theme_sub_desc">Colours, type and shape.</span>
+                            </div>
+                        </div>
+                        <div class="adm-theme-grid" id="adm-theme-grid"></div>
+
+                        <div class="adm-colour-grid">
+                            <div class="setting-row adm-row admin-colour-row">
+                                <span class="setting-ic"><i class="fa-solid fa-droplet"></i></span>
+                                <div>
+                                    <strong data-i18n="adm_brand">Brand colour</strong>
+                                    <span class="muted" data-i18n="adm_brand_desc">Accents, buttons and the ATM screen highlights.</span>
+                                </div>
+                                <div class="color-pick">
+                                    <label class="color-swatch-big"><input type="hidden" id="adm-brand-input" value="#1F5EFF"></label>
+                                    <code class="iban-chip" id="adm-brand-hex">#1F5EFF</code>
+                                </div>
+                            </div>
+                            <div class="setting-row adm-row admin-colour-row">
+                                <span class="setting-ic"><i class="fa-solid fa-fill-drip"></i></span>
+                                <div>
+                                    <strong data-i18n="adm_bg">Background colour</strong>
+                                    <span class="muted" data-i18n="adm_bg_desc">The surface behind everything — panel and ATM screen.</span>
+                                </div>
+                                <div class="color-pick">
+                                    <label class="color-swatch-big"><input type="hidden" id="adm-bg-input" value="#131314"></label>
+                                    <code class="iban-chip" id="adm-bg-hex">#131314</code>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="adm-presets-grid">
+                            <div class="color-presets adm-presets" id="adm-brand-presets"></div>
+                            <div class="color-presets adm-presets" id="adm-bg-presets"></div>
+                        </div>
+
+                        <div class="adm-preview">
+                            <div class="adm-prev" id="adm-prev-atm">
+                                <span class="adm-prev-tag" data-i18n="adm_prev_atm">ATM screen</span>
+                                <span class="adm-prev-pill"></span>
+                                <span class="adm-prev-line"></span>
+                                <span class="adm-prev-line short"></span>
+                            </div>
+                            <div class="adm-prev" id="adm-prev-panel">
+                                <span class="adm-prev-tag" data-i18n="adm_prev_panel">Bank panel</span>
+                                <span class="adm-prev-row"><span class="adm-prev-chip"></span><span class="adm-prev-line"></span></span>
+                                <span class="adm-prev-line short"></span>
+                            </div>
+                        </div>
+
+                        <div class="adm-actions">
+                            <span class="muted adm-actions-note" data-i18n="adm_look_note">The panel previews the theme as you pick it; nothing reaches players until you apply.</span>
+                            <button class="btn btn-ghost" id="adm-bg-clear">
+                                <i class="fa-solid fa-eraser"></i> <span data-i18n="adm_bg_clear">Default background</span>
+                            </button>
+                            <button class="btn btn-ghost" id="adm-look-reset">
+                                <i class="fa-solid fa-rotate-left"></i> <span data-i18n="set_reset_default">Reset to default</span>
+                            </button>
+                            <button class="btn btn-primary" id="adm-look-apply">
+                                <i class="fa-solid fa-bullhorn"></i> <span data-i18n="adm_apply">Apply to everyone</span>
+                            </button>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+
+        <!-- Account detail drawer (Accounts pane). Slides over the main
+             column; every action re-checks staff rights server-side. -->
+        <div class="adm-drawer" id="adm-drawer" hidden>
+            <header class="adm-drawer-top">
+                <div class="adm-drawer-id">
+                    <strong id="adm-drawer-name">—</strong>
+                    <span class="mono" id="adm-drawer-iban"></span>
+                </div>
+                <span class="adm-tag" id="adm-drawer-state"></span>
+                <button class="adm-x" id="adm-drawer-close" aria-label="Close"><i class="fa-solid fa-xmark"></i></button>
+            </header>
+            <div class="adm-drawer-body" id="adm-drawer-body"></div>
+        </div>
+    </div>
+</div>
+
+<!-- /bankshowcase: name of the preset on screen while the reel runs -->
+<div id="theme-showcase-badge" class="theme-showcase-badge" hidden></div>
+
+<!-- Confirm / prompt -->
+<div id="alert-overlay" class="solid-overlay dialog-overlay" hidden>
+    <div class="alert-panel">
+        <span class="alert-ic"><i class="fa-solid fa-circle-exclamation"></i></span>
+        <div id="alert-title" class="alert-title" data-i18n="al_confirm_title">Confirm</div>
+        <div id="alert-content" class="alert-content"></div>
+        <div class="alert-actions">
+            <button class="btn btn-ghost"   data-action="alert-no" data-i18n="al_cancel">Cancel</button>
+            <button class="btn btn-primary" data-action="alert-yes" data-i18n="al_confirm">Confirm</button>
+        </div>
+    </div>
+</div>
+
+<div id="input-overlay" class="solid-overlay dialog-overlay" hidden>
+    <div class="input-panel">
+        <div class="menu-head">
+            <div id="input-title" class="menu-title" data-i18n="al_input_title">Input</div>
+            <button class="close-btn" data-action="input-cancel"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div id="input-fields" class="input-fields"></div>
+        <div class="input-actions">
+            <button class="btn btn-ghost"   data-action="input-cancel" data-i18n="al_cancel">Cancel</button>
+            <button class="btn btn-primary" data-action="input-submit" data-i18n="al_confirm">Confirm</button>
+        </div>
+    </div>
+</div>
+
+<script src="js/app.js?v=1"></script>
+</body>
+</html>

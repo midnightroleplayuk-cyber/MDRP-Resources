@@ -1,0 +1,161 @@
+/* Dark Chat - estilos próprios (a estrutura é a original: salas → sala; separadores Salas e Identidade).
+   Carrega DEPOIS do apps.css: as regras antigas .dc / .dc-room de lá ficam sobrepostas aqui, sem as editar.
+   Identidade: escuro "anónimo", acento verde #7CFF9B, monoespaçado só nos pormenores (alcunhas, horas, nomes de sala).
+   CEF do FiveM: nenhum desfoque novo (nem no elemento nem por trás dele), só transform/opacity animam, cores só em rgba/hex. */
+
+/* ---------- Paleta (janela da app e camadas abertas a partir dela) ---------- */
+/* .dc-ov vai nas folhas, alertas, menus e toasts que o UI monta no #screen, fora da janela */
+.dc, .dc-ov{
+  --dc-acc:#7CFF9B; --dc-acc-ink:#03140A; --dc-acc-soft:rgba(124,255,155,.11); --dc-acc-line:rgba(124,255,155,.34);
+  --dc-ink:#ECECEF; --dc-ink2:rgba(236,236,239,.62); --dc-ink3:rgba(236,236,239,.46); --dc-ink4:rgba(236,236,239,.18);
+  --dc-card:#131317; --dc-card2:#1B1B21; --dc-line:rgba(255,255,255,.07);
+  --dc-tile:linear-gradient(155deg,#22502F,#11291B); --dc-tile-off:#1C1C23;
+  --bg:#0A0A0C; --bg2:var(--dc-card); --label:var(--dc-ink); --label2:var(--dc-ink2); --label3:var(--dc-ink3); --label4:var(--dc-ink4);
+  --sep:var(--dc-line); --sep-opaque:#27272E; --blue:var(--dc-acc); --red:#FF6B6B;
+  --fill:rgba(255,255,255,.16); --fill2:rgba(255,255,255,.13); --fill3:rgba(255,255,255,.075); --fill4:rgba(255,255,255,.05);
+  --material:rgba(22,22,27,.97); --glass:rgba(26,26,32,.9); --glass-border:rgba(255,255,255,.1) }
+
+/* tons das alcunhas (classe .dc-cN calculada a partir do nome): todos da família do verde do acento,
+   para distinguir quem fala sem trazer outras cores para a identidade da app */
+.dc-c0{ --dc-tone:#7CFF9B } .dc-c1{ --dc-tone:#5EE6CF } .dc-c2{ --dc-tone:#C2F27E } .dc-c3{ --dc-tone:#A9F2C8 } .dc-c4{ --dc-tone:#4FD69C } .dc-c5{ --dc-tone:#E0F5A4 }
+
+/* ---------- Base ---------- */
+.dc .view{ background:var(--bg) }
+.dc .navbar.solid{ background:rgba(10,10,12,.88); box-shadow:0 .5px 0 var(--dc-line) }
+body.fivem .dc .navbar.solid{ background:rgba(10,10,12,.97) }   /* no jogo não há desfoque por trás: quase opaca */
+.dc .large-title{ letter-spacing:-.6px }
+.dc .group{ background:var(--dc-card); border-radius:16px; box-shadow:inset 0 0 0 .5px var(--dc-line) }
+.dc .group-header{ font-family:var(--font-mono); font-size:12.5px; font-weight:500; letter-spacing:.14em; color:var(--dc-ink3); padding:26px 32px 9px }
+/* os rodapés levam os avisos honestos (palavra-passe, encriptação): contraste ≥ 4.5:1, não podem ficar apagados */
+.dc .group-footer{ font-size:13.5px; line-height:1.45; color:rgba(236,236,239,.54); padding:10px 32px 4px }
+.dc .li:active:not(.static){ background:rgba(255,255,255,.05) }
+/* botões redondos da barra (+ e ampulheta): 44 px de alvo */
+/* a transição do ui.css também anima o background: aqui só o transform (a ampulheta muda de fundo ao ligar) */
+.dc .nb-btn.glass{ background:var(--fill3); color:var(--dc-acc); box-shadow:inset 0 0 0 .5px rgba(255,255,255,.08); transition:transform var(--motion-normal) var(--spring) }
+.dc .nb-btn.glass svg{ width:24px; height:24px }
+.dc .nb-btn.glass:active{ background:var(--fill2) }
+.dc .tab.on{ background:var(--dc-acc-soft) }
+
+/* ---------- Estados vazios (Sem salas, Sala vazia, Sem acesso) ---------- */
+.dc .empty{ padding:48px 44px 84px; gap:4px }
+/* glifo de 42 px dentro de um disco verde-escuro de 86 px com aro fino: o disco é uma sombra interior (o fundo de um <svg> não pinta em todo o lado) */
+.dc .empty svg{ box-sizing:border-box; width:86px; height:86px; padding:22px; margin:0 0 12px; color:var(--dc-acc); border-radius:50%; overflow:visible;
+  box-shadow:inset 0 0 0 43px rgba(124,255,155,.07), 0 0 0 1px rgba(124,255,155,.2) }
+/* "Sem salas" vive no contentor da lista, com as salas públicas logo a seguir: mais compacto para elas ficarem à vista */
+.dc .content > div > .empty{ flex:0 0 auto; padding:34px 44px 14px }
+.dc .empty b{ font-size:21px; font-weight:700; letter-spacing:-.3px; color:var(--dc-ink) }
+.dc .empty span{ font-size:15px; line-height:1.45; color:var(--dc-ink2); max-width:300px }
+
+/* ---------- Salas ---------- */
+/* alcunha atual: pílula discreta por baixo do título */
+.dc-who{ align-self:flex-start; display:flex; align-items:center; gap:9px; margin:0 16px 2px; padding:8px 14px 8px 12px; border-radius:14px;
+  background:rgba(255,255,255,.035); box-shadow:inset 0 0 0 .5px var(--dc-line); font-family:var(--font-mono); font-size:13px; line-height:1.35; color:var(--dc-ink2) }
+.dc-who b{ color:var(--dc-acc); font-weight:600 }
+.dc-dot{ width:7px; height:7px; border-radius:50%; background:var(--dc-acc); box-shadow:0 0 0 3px rgba(124,255,155,.16); flex:none }
+
+.dc .li.dc-row, .dc .li.dc-pub{ min-height:72px; padding:12px 16px; gap:14px }
+.dc .li.dc-row + .li::before, .dc .li.dc-pub + .li::before{ left:74px }
+.dc .dc-row .li-icon, .dc .dc-pub .li-icon{ width:44px; height:44px; border-radius:13px; box-shadow:inset 0 0 0 .5px rgba(124,255,155,.24) }
+.dc .dc-pub .li-icon{ box-shadow:inset 0 0 0 .5px rgba(255,255,255,.08) }
+.dc .dc-row .li-icon svg, .dc .dc-pub .li-icon svg{ width:22px; height:22px }
+.dc .dc-row .li-label, .dc .dc-pub .li-label{ font-size:17px; font-weight:600; letter-spacing:-.1px; color:var(--dc-ink) }
+.dc .dc-pub .li-label{ color:rgba(236,236,239,.86) }
+.dc .dc-row .li-sub, .dc .dc-pub .li-sub{ font-size:14.5px; margin-top:3px; color:var(--dc-ink2) }
+.dc-by{ font-family:var(--font-mono); font-size:14px; color:var(--dc-tone,var(--dc-acc)); opacity:.9 }
+/* direita da linha: hora em cima, contagem em baixo */
+.dc .dc-row .li-value{ align-self:stretch; display:flex; flex-direction:column; align-items:flex-end; justify-content:center; gap:7px; margin-left:6px }
+.dc-when{ font-family:var(--font-mono); font-size:13px; line-height:1; color:var(--dc-ink3) }
+.dc-count{ min-width:25px; height:21px; padding:0 7px; border-radius:11px; display:flex; align-items:center; justify-content:center;
+  background:rgba(255,255,255,.07); color:var(--dc-ink2); font-family:var(--font-mono); font-size:12.5px; font-weight:600; line-height:1 }
+.dc-when:empty, .dc-count:empty{ display:none }
+/* salas públicas: "Entrar" como cápsula (a linha inteira continua a ser o alvo) */
+.dc .dc-pub .li-value{ height:32px; padding:0 15px; border-radius:16px; display:flex; align-items:center; margin-left:6px;
+  background:var(--dc-acc-soft); box-shadow:inset 0 0 0 .5px var(--dc-acc-line); color:var(--dc-acc); font-size:14.5px; font-weight:600 }
+
+/* ---------- Sala ---------- */
+.dc-room{ font-family:var(--font) }   /* o apps.css punha a sala inteira em monoespaçado; agora só os pormenores */
+.dc-room .nb-back{ font-size:17px }
+.dc-room .nb-title{ font-family:var(--font-mono); font-size:17px; font-weight:600; letter-spacing:-.2px; max-width:230px }
+.dc-hash{ color:var(--dc-acc); margin-right:1px }
+.dc .nb-btn.dc-ttl{ color:var(--dc-ink2) }
+.dc .nb-btn.dc-ttl svg{ width:22px; height:22px }
+.dc .nb-btn.dc-ttl.on{ background:var(--dc-acc-soft); color:var(--dc-acc); box-shadow:inset 0 0 0 1px var(--dc-acc-line) }
+
+.dc .thread{ gap:0; padding:12px 14px 16px }
+.dc .bubble{ font-family:var(--font); font-size:17px; line-height:1.34; max-width:78%; padding:8px 12px 7px; border-radius:20px; margin-top:12px; cursor:default; transition:opacity .6s ease }
+.dc .bubble:first-child{ margin-top:0 }
+.dc .bubble.cont{ margin-top:3px }
+.dc .bubble.them{ background:var(--dc-card2); color:var(--dc-ink); border-bottom-left-radius:6px; box-shadow:inset 0 0 0 .5px rgba(255,255,255,.06) }
+.dc .bubble.them.cont{ border-top-left-radius:6px }
+.dc .bubble.me{ background:linear-gradient(160deg,#1F4B31,#163824); color:#DAFFE4; border-bottom-right-radius:6px; box-shadow:inset 0 0 0 .5px rgba(124,255,155,.2) }
+.dc .bubble.me.cont{ border-top-right-radius:6px }
+/* alcunha: só na primeira mensagem de cada grupo e nunca nas minhas */
+.dc .bubble .anon{ display:block; font-family:var(--font-mono); font-size:13.5px; font-weight:600; line-height:1.3; color:var(--dc-tone,var(--dc-acc)); margin:0 0 2px }
+.dc .bubble.me .anon, .dc .bubble.cont .anon{ display:none }
+/* hora (e ampulheta das temporárias) encostada ao fim do texto, à direita */
+.dc .dc-meta{ float:right; display:inline-flex; align-items:center; gap:6px; margin:8px -2px -3px 10px; font-family:var(--font-mono); font-size:12.5px; line-height:14px; color:var(--dc-ink3); white-space:nowrap; pointer-events:none }
+.dc .bubble.me .dc-meta{ color:rgba(218,255,228,.5) }
+.dc .dc-meta .ttl{ display:inline-flex; align-items:center; gap:3px; font-size:12.5px; opacity:1; color:var(--dc-acc) }
+.dc .dc-meta .ttl svg{ width:12px; height:12px; stroke-width:2.4 }
+.dc .dc-meta:empty{ display:none }
+/* imagens */
+.dc .bubble.img{ padding:4px }
+.dc .bubble.img .anon{ margin:3px 8px 5px }
+.dc .bubble.img .pic{ width:224px; height:224px; border-radius:16px; background-color:#16161B }
+.dc .bubble.them.img .pic{ border-bottom-left-radius:4px } .dc .bubble.me.img .pic{ border-bottom-right-radius:4px }
+.dc .bubble.img .dc-meta{ position:absolute; right:11px; bottom:11px; float:none; margin:0; padding:3px 8px; border-radius:10px; background:rgba(0,0,0,.58); color:rgba(255,255,255,.92) }
+
+/* compositor */
+.dc .composer{ background:rgba(10,10,12,.94); border-top:.5px solid var(--dc-line); padding:10px 14px calc(var(--safe-bottom) + 6px); gap:10px }
+.dc .composer input{ height:44px; border-radius:22px; background:#141418; border:.5px solid rgba(255,255,255,.1); color:var(--dc-ink); padding:0 16px; font-family:var(--font); font-size:17px }
+.dc .composer input::placeholder{ font-family:var(--font-mono); font-size:14.5px; color:var(--dc-ink3) }
+.dc .composer input:focus{ border-color:rgba(124,255,155,.38) }
+.dc .composer .plus{ background:rgba(255,255,255,.07); color:var(--dc-ink2); box-shadow:inset 0 0 0 .5px rgba(255,255,255,.06) }
+.dc .composer .plus svg{ width:23px; height:23px }
+.dc .composer .send{ background:var(--dc-acc); color:var(--dc-acc-ink); transition:transform var(--motion-normal) var(--spring), opacity var(--motion-normal) }
+.dc .composer .send svg{ width:23px; height:23px; stroke-width:2.6 }
+.dc .composer .plus{ transition:transform var(--motion-normal) var(--spring) }
+.dc .composer .send:active, .dc .composer .plus:active{ transform:scale(.9); transition:transform .06s }
+/* campo vazio: enviar fica em contorno (o toque já não fazia nada); com texto passa a verde cheio */
+.dc .composer input:placeholder-shown + .send{ background:var(--dc-acc-soft); color:var(--dc-acc); box-shadow:inset 0 0 0 .5px var(--dc-acc-line) }
+
+/* ---------- Identidade (Sobre) ---------- */
+/* cartão: ícone grande à esquerda, "IDENTIDADE" por cima e a alcunha em destaque por baixo */
+.dc .li.dc-idrow{ display:grid; grid-template-columns:auto 1fr; column-gap:16px; row-gap:2px; align-items:center; min-height:98px; padding:18px;
+  background:linear-gradient(120deg,rgba(124,255,155,.10),rgba(124,255,155,0) 64%) }
+.dc .dc-idrow .li-icon{ grid-row:1 / span 2; width:60px; height:60px; border-radius:50%; box-shadow:inset 0 0 0 1px rgba(124,255,155,.3), 0 0 0 5px rgba(124,255,155,.06) }
+.dc .dc-idrow .li-icon svg{ width:30px; height:30px }
+.dc .dc-idrow .li-body{ grid-column:2; align-self:end }
+.dc .dc-idrow .li-label{ font-family:var(--font-mono); font-size:12.5px; font-weight:500; letter-spacing:.14em; text-transform:uppercase; color:var(--dc-ink3) }
+.dc .dc-idrow .li-value{ grid-column:2; align-self:start; justify-self:start; margin-left:0; max-width:100%; overflow:hidden; text-overflow:ellipsis;
+  font-family:var(--font-mono); font-size:23px; font-weight:600; letter-spacing:-.3px; color:var(--dc-acc) }
+.dc .li.dc-idrow + .li::before{ left:0 }
+.dc .li.dc-info{ min-height:56px; gap:13px }
+.dc .li.dc-info + .li::before{ left:61px }
+.dc .dc-info .li-icon{ width:32px; height:32px; border-radius:9px; box-shadow:inset 0 0 0 .5px rgba(255,255,255,.07) }
+.dc .dc-info .li-icon svg{ width:18px; height:18px }
+.dc .dc-info .li-label{ font-size:17px }
+.dc .dc-info .li-value{ font-size:15.5px; color:var(--dc-ink2) }
+.dc .li.dc-newid{ min-height:56px; background:var(--dc-acc-soft); color:var(--dc-acc) }
+.dc .li.dc-newid .li-label{ font-size:17px; font-weight:600 }
+.dc .li.dc-newid:active:not(.static){ background:rgba(124,255,155,.18) }
+
+/* ---------- Camadas abertas a partir do Dark Chat (#screen) ---------- */
+.overlay.dc-ov, .sheet-wrap.dc-ov{ background:rgba(0,0,0,.55) }
+.dc-ov .alert{ background:var(--material); color:var(--dc-ink); border:.5px solid rgba(255,255,255,.1); box-shadow:0 24px 60px rgba(0,0,0,.6) }
+.dc-ov .alert-title{ color:var(--dc-ink) }
+.dc-ov .alert-msg{ color:var(--dc-ink2) }
+.dc-ov .alert input{ height:44px; border-radius:12px; background:#0C0C0F; border:.5px solid rgba(255,255,255,.12); color:var(--dc-ink); font-family:var(--font-mono); font-size:16px; padding:0 12px }
+.dc-ov .alert input::placeholder{ color:var(--dc-ink3) }
+.dc-ov .alert input:focus{ border-color:rgba(124,255,155,.45) }
+.dc-ov .alert-btns div{ min-height:48px; display:flex; align-items:center; justify-content:center }
+.dc-ov .alert-btns div:active{ background:rgba(255,255,255,.06) }
+.dc-ov .sheet{ background:#0E0E11; box-shadow:0 -12px 40px rgba(0,0,0,.55), inset 0 .5px 0 rgba(255,255,255,.08) }
+.dc-ov .sheet .sheet-head b{ color:var(--dc-ink) }
+.dc-ov .group{ background:var(--dc-card); border-radius:16px; box-shadow:inset 0 0 0 .5px var(--dc-line) }
+.dc-ov .li{ min-height:54px; color:var(--dc-ink) }
+.dc-ov .li:active:not(.static){ background:rgba(255,255,255,.05) }
+.dc-ov .li-value{ color:var(--dc-acc); font-weight:700 }
+.ctx-wrap.dc-ov .ctx{ border:.5px solid rgba(255,255,255,.08); box-shadow:0 18px 44px rgba(0,0,0,.55) }
+.ctx-wrap.dc-ov .ctx div{ min-height:48px }
+.toast.dc-ov{ color:var(--dc-ink); border-color:rgba(255,255,255,.1) }

@@ -1,0 +1,277 @@
+/* ============================================================
+   MOTION - curvas e molas PearOS 17/26 para tudo o que se toca ou arrasta.
+   Carregado em último: sobrepõe as transições de shell/ui/system.
+   Curvas: --ios (UIKit "easeInOut" de navegação), --spring (mola com leve ressalto)
+   ============================================================ */
+:root{ --ios:cubic-bezier(.32,.72,0,1); --ios-out:cubic-bezier(.2,.9,.25,1); --spring2:cubic-bezier(.34,1.35,.4,1) }
+
+/* ---------- Home: ícones ---------- */
+.hi{ transition:translate .45s var(--spring), transform .3s var(--spring), opacity .25s }   /* posição por translate (composited), não left/top */
+.hi .tile{ transition:transform .32s var(--spring), filter .25s ease-out, opacity .25s }
+.hi:active .tile,.hi.pressed .tile{ transform:scale(.93); filter:brightness(.72); transition:transform .1s ease-out, filter .1s ease-out }   /* PearOS: ícone pressionado encolhe a .92-.95 */
+/* sombra do ícone em arrasto: box-shadow no tile (rasterizada uma vez) em vez de filter:drop-shadow no .hi (re-rasterizado em cada frame do arrasto) */
+.hi.dragging{ transition:transform .28s var(--spring), translate 0s, opacity .2s; filter:none }
+.hi.dragging .tile{ transform:none; filter:none; box-shadow:0 18px 28px rgba(0,0,0,.45) } .hi.dragging .wg{ box-shadow:0 18px 28px rgba(0,0,0,.4) }
+/* o ícone tocado "abre" para a app: cresce e desvanece enquanto a janela nasce */
+.tile.launch{ transform:scale(1.45)!important; opacity:0; filter:brightness(1.1); transition:transform .42s var(--ios-out), opacity .28s ease-in .06s, filter .2s }
+/* páginas: seguem o dedo sem transição, assentam com mola */
+.pages{ transition:transform .5s var(--spring2) }
+.pages.drag{ transition:none }
+.dots span,.page-dots span{ transition:background .25s, transform .3s var(--spring) }
+/* home ao abrir uma app: afasta-se (zoom para dentro) como no PearOS; ao fechar, volta com mola */
+#home{ transition:opacity .32s var(--ios-out), transform .5s var(--spring2) }
+.screen.app-open #home{ transform:scale(1.14); opacity:0; transition:opacity .24s ease-in, transform .45s var(--ios) }
+#home.nt{ transition:none!important }
+.wallpaper{ transition:opacity .3s }                       /* sem animar filter no wallpaper (ver .wallpaper-blur em system.css) */
+.wallpaper.par{ transition:opacity .3s, transform .38s var(--ease) }   /* paralaxe (home.js par): instantâneo a seguir o dedo, com curva ao assentar numa página */
+
+/* ---------- Janelas de app: nascem do ícone, morrem no ícone (tempos PearOS ≈ .45 s / .42 s) ---------- */
+.app-window{ transition:transform var(--motion-app) var(--ios), opacity .18s ease-out }
+.app-window.open{ transition:transform var(--motion-app) var(--ios), opacity .14s ease-out }
+/* PearOS: a superfície da app cresce do ícone desde o 1.º frame, mas o CONTEÚDO só aparece nos últimos ~35 % da abertura; ao fechar desaparece primeiro */
+.app-window > .nav-stack{ opacity:0; transition:opacity .12s ease-in }
+.app-window.open > .nav-stack{ opacity:1; transition:opacity .16s ease-out .28s }
+.app-window.dragging > .nav-stack,.app-window.settle > .nav-stack{ opacity:1; transition:none }
+.app-window.closing{ opacity:0; transition:transform .42s var(--ios), opacity .16s ease-in .24s }   /* encolhe até ao ícone, só desvanece no fim (raio fixo 57: x.62 = raio do cartão do switcher) */
+.app-window.dragging{ transition:none; box-shadow:0 30px 70px rgba(0,0,0,.45) }
+.app-window.settle{ transition:transform .55s var(--spring2) }
+
+/* ---------- Navegação (push/pop com paralaxe) ---------- */
+.view{ transition:transform .52s var(--ios), filter .52s var(--ios), opacity .3s }
+.view.behind{ transform:translateX(-30%); filter:brightness(.86) }
+/* PearPhone Fold (Duo "push"): 380 ms com a curva do Duo e a vista de baixo recua 26 % */
+body.os-ios.form-fold:not([data-motion="reduced"]) .view:not(.swiping):not(.v-swap){ transition:transform .38s cubic-bezier(.25,.85,.28,1), filter .38s cubic-bezier(.25,.85,.28,1), opacity .3s }
+body.os-ios.form-fold:not([data-motion="reduced"]) .view.behind{ transform:translateX(-26%) }
+/* a sombra da vista que sai no gesto de voltar é FIXA e vive aqui: o gestures.js escrevia-a em
+   linha a cada frame (box-shadow de 30 px numa camada de ecrã inteiro = repintar a sombra toda,
+   60×/s) e o que se via era o gesto "agarrado". Agora o JS só escreve o transform. */
+.view.swiping{ transition:none; box-shadow:-12px 0 30px rgba(0,0,0,.12) }
+.view.enter,.view.leave{ box-shadow:-12px 0 30px rgba(0,0,0,.14) }
+
+/* ---------- Toques ---------- */
+.li:active:not(.static){ background:var(--fill4); transition:background .05s }
+.li{ transition:background .3s ease-out }
+.btn-p,.prominentButton,.systemButton,.destructiveButton{ transition:transform .28s var(--spring2), filter .2s } .btn-p:active,.prominentButton:active,.systemButton:active,.destructiveButton:active{ transform:scale(.96); filter:brightness(.88); transition:transform .08s, filter .08s }
+.pill-btn:active{ transform:scale(.93); transition:transform .08s }
+.tab:active{ transform:scale(.9); transition:transform .08s } .tab{ transition:background .25s, color .25s, transform .3s var(--spring2) }
+.key,.kb-key{ transition:background .3s ease-out, transform .25s var(--spring2) }
+.toggle span::after{ transition:transform .3s var(--spring2), width .2s }
+.toggle:active span::after{ width:32px }
+.toggle input:checked + span:active::after{ transform:translateX(15px) }
+
+/* ---------- Folhas, alertas, menus ---------- */
+.sheet{ transition:transform var(--motion-sheet) var(--spring2) }
+.sheet-wrap{ transition:opacity .3s ease-out }
+.sheet-wrap.closing .sheet{ transition:transform .32s var(--ios) }
+/* alerta do sistema: entra de .94 + desfoque + transparente para nítido (spec 2026-09-08); no jogo sem o desfoque (regra CEF) */
+.alert{ transform:scale(.94); opacity:0; filter:blur(6px); transition:transform .38s var(--spring2), opacity .2s ease-out, filter .3s ease-out }
+.overlay.in .alert{ transform:scale(1); opacity:1; filter:none }
+body.fivem .alert{ filter:none }
+.as-group{ transform:translateY(80px); opacity:0; transition:transform .45s var(--spring2), opacity .2s }
+.overlay.in .as-group,.sheet-wrap.in .as-group,.as-wrap.in .as-group{ transform:none; opacity:1 }
+.ctx{ transform:scale(.96); opacity:0; transition:transform var(--motion-medium) var(--spring2), opacity var(--motion-normal) var(--curve) }   /* menus: opacidade + escala .96 → 1 */
+.ctx-wrap.in .ctx{ transform:scale(1); opacity:1 }
+.ctx-wrap{ transition:opacity .25s ease-out }
+.ctx-preview{ transition:transform .38s var(--spring2) }
+.banner{ transition:transform .55s var(--spring2), opacity .25s }
+.toast{ transition:transform .45s var(--spring2), opacity .25s }
+
+/* ---------- Control Center / Notificações: descem do topo com mola ---------- */
+#cc{ transition:opacity .3s ease-out }
+#cc .cc-panel{ transform:translateY(-36px) scale(.94); transform-origin:82% 0; transition:transform .3s var(--ios) }   /* fechar: curva PearOS curta (sem ressalto debaixo de uma camada a desvanecer) */
+#cc.in .cc-panel{ transform:none; transition:transform .55s var(--spring2) }
+#cc.pulling,#nc.pulling{ transition:none }
+#cc.pulling .cc-panel,#nc.pulling .nc-list,#nc.pulling .nc-head{ transition:none }
+#nc{ transition:opacity .3s ease-out }
+#nc .nc-list{ transform:translateY(-40px); transition:transform .3s var(--ios) }
+#nc.in .nc-list{ transform:none; transition:transform .55s var(--spring2) }
+#nc .nc-head{ transition:transform .5s var(--spring2) }
+
+/* ---------- App Switcher ---------- */
+#switcher{ transition:opacity .28s ease-out }
+#switcher .sw-track{ transform:translateY(40px) scale(.92); transition:transform .55s var(--spring2) }
+#switcher.in .sw-track{ transform:none }
+#switcher.hand .sw-track{ transform:none; transition:none }          /* vindo do gesto: o cartão já nasce no sítio certo */
+.sw-item{ transition:transform .45s var(--spring2), opacity .3s }
+.sw-item.up{ transform:translateY(-130%)!important; opacity:0!important; transition:transform .38s var(--ios), opacity .3s }
+.sw-card{ transition:transform .5s var(--spring2) } .sw-item:not(.drag) .sw-card:active{ transform:scale(.97); transition:transform .12s }
+/* ícone "recebe" a janela que encolhe para ele ao fechar */
+.tile.land{ animation:tileLand .55s var(--spring2) both }
+@keyframes tileLand{ 0%{ transform:scale(.7); opacity:.4 } 60%{ transform:scale(1.06); opacity:1 } 100%{ transform:scale(1); opacity:1 } }
+
+/* ---------- Teclado, Vera, pastas ---------- */
+#kb{ transition:transform .32s var(--ios), visibility .32s }   /* teclado: 300-350 ms */
+.folder-open{ transition:transform .45s var(--spring2), opacity .25s }
+.folder-wrap{ transition:opacity .3s ease-out, backdrop-filter .3s }
+
+/* ---------- Cantos: cada camada de ecrã inteiro leva o raio do ecrã (57px). Assim, mesmo que o CEF não recorte uma camada
+   composta (opacidade/transform/backdrop-filter), nunca aparece um canto quadrado nem um quadrado preto atrás do telemóvel. ---------- */
+#lock,.lock-p1,.lock-p2,#home,#cc,#nc,#switcher,#vera,#setup,.sheet-wrap,.overlay,.ctx-wrap,.as-wrap,.n-xwrap,.power-off,.screen-off,.bright-ov,.vera-scrim,.vera-edge,.wallpaper,.wallpaper-lock,.folder-wrap,.folder-overlay,.spot,.spotlight,.kb-wrap,.perm-wrap,.incoming,.call-screen,.ft-screen,.viewer,.story-view,.reader,.player,#apps,.app-window.open{ border-radius:57px }
+.app-window.open{ border-radius:57px!important }
+#apps,.wallpaper,.wallpaper-lock,.wallpaper-blur,.lock-p2,#setup,.call-screen,.ft-screen,.viewer,.player,.story-view{ overflow:hidden }
+/* PearPhone Fold (contrato v2): o ecrã tem outros cantos (fechado 6 / 74 / 74 / 6, aberto 54, em --scr-r, system.css) e TODAS as
+   camadas de ecrã inteiro os seguem, senão os cantos pequenos da esquerda mostravam o bezel por trás de uma camada a 57.
+   Só no dobrável do PearOS: o NOVA usa o --ou-r-screen (oneui-sysui.css) e os telemóveis normais ficam nos 57. */
+body.os-ios.form-fold #lock,body.os-ios.form-fold .lock-p1,body.os-ios.form-fold .lock-p2,body.os-ios.form-fold #home,body.os-ios.form-fold #cc,body.os-ios.form-fold #nc,body.os-ios.form-fold #switcher,
+body.os-ios.form-fold #vera,body.os-ios.form-fold #setup,body.os-ios.form-fold .sheet-wrap,body.os-ios.form-fold .overlay,body.os-ios.form-fold .ctx-wrap,body.os-ios.form-fold .as-wrap,body.os-ios.form-fold .n-xwrap,
+body.os-ios.form-fold .power-off,body.os-ios.form-fold .screen-off,body.os-ios.form-fold .bright-ov,body.os-ios.form-fold .vera-scrim,body.os-ios.form-fold .vera-edge,body.os-ios.form-fold .vera-edge::before,
+body.os-ios.form-fold .vera-edge::after,body.os-ios.form-fold .wallpaper,body.os-ios.form-fold .wallpaper-lock,body.os-ios.form-fold .wallpaper-blur,body.os-ios.form-fold .folder-wrap,body.os-ios.form-fold .folder-overlay,
+body.os-ios.form-fold .spot,body.os-ios.form-fold .spotlight,body.os-ios.form-fold .kb-wrap,body.os-ios.form-fold .perm-wrap,body.os-ios.form-fold .boot-wait,body.os-ios.form-fold .nightshift-ov,
+body.os-ios.form-fold .sel-back,body.os-ios.form-fold .stp,body.os-ios.form-fold .gsearch,body.os-ios.form-fold .lsg-dim,body.os-ios.form-fold .lsg-ask,body.os-ios.form-fold #apps,
+body.os-ios.form-fold .incoming,body.os-ios.form-fold .call-screen,body.os-ios.form-fold .ft-screen,body.os-ios.form-fold .viewer,body.os-ios.form-fold .story-view,body.os-ios.form-fold .reader,body.os-ios.form-fold .player,
+body.os-ios.form-fold .msg-cam,body.os-ios.form-fold .mt-match,body.os-ios.form-fold .rcc-call,body.os-ios.form-fold .rcc-rs,body.os-ios.form-fold .rcp-lockpad,body.os-ios.form-fold .rcp-viewer,body.os-ios.form-fold .pe,
+body.os-ios.form-fold .rcb-viewer,body.os-ios.form-fold .rcb-mc,body.os-ios.form-fold .rcu-viewer,body.os-ios.form-fold .rcu-comp,body.os-ios.form-fold .rcu-cam,body.os-ios.form-fold .rcu-imgview,
+body.os-ios.form-fold .fc,body.os-ios.form-fold .fc .fc-flash,body.os-ios.form-fold .st-ed,body.os-ios.form-fold .ig-add,body.os-ios.form-fold .ins-layer{ border-radius:var(--scr-r) }
+body.os-ios.form-fold .app-window,body.os-ios.form-fold .app-window.open{ border-radius:var(--scr-r)!important }
+body.os-ios.form-fold #kb{ border-radius:0 0 var(--scr-br) var(--scr-bl) }
+/* a cópia do fundo da dock no dobrável: o glass27.css usa --lg-sw = var(--screen-w), por isso já tem o tamanho certo (regra antiga retirada em 1.5.0) */
+
+/* ---------- Desempenho no jogo (CEF): ZERO backdrop-filter (1.5.0) ----------
+   Até 1.4.1 as teclas do código, os cartões de notificação, os widgets e os botões do bloqueado ainda levavam um backdrop-filter
+   pequeno em jogo. Em 1.5.0 todas estas peças são vidro `.lg` (glass27.css): a cópia pré-desfocada do wallpaper por baixo faz o
+   papel do desfoque sem custo por frame, e o glass27.css desliga qualquer backdrop-filter em body.fivem. */
+body.fivem .key,body.fivem .notif-card .ncard,body.fivem .nstack .peek,body.fivem .nbanner .ncard,body.fivem .lw,body.fivem .ls-btn,body.fivem .nh-x,body.fivem .nh-less,body.fivem .n-bb,body.fivem .n-act{ backdrop-filter:none; -webkit-backdrop-filter:none }
+/* Camadas de ecrã inteiro com fundo desfocado - NO JOGO sem backdrop-filter: no CEF (página transparente + zoom) a leitura do fundo
+   fora do arco do ecrã vem preta e pintava cunhas pretas nos cantos. Em vez disso cada camada desenha por baixo (::before, z-index:-1)
+   uma cópia do wallpaper (var(--wp) / var(--wp-lock), escritas por System.wpStyle) desfocada com filter:blur + a sua tinta (--tint).
+   A cópia é maior que o ecrã (inset -40) e a camada corta-a (overflow:hidden + raio 57 acima). No browser mantém-se o backdrop-filter real. */
+body.fivem #cc,body.fivem #nc,body.fivem #switcher,body.fivem .power-off,body.fivem .n-xwrap,body.fivem .folder-overlay,body.fivem .spot,body.fivem .ctx-wrap{
+  backdrop-filter:none; -webkit-backdrop-filter:none; background:transparent; overflow:hidden }
+/* a cópia desfocada só existe enquanto a camada está aberta (.in) e NUNCA sai dos limites do ecrã (inset:0): no CEF uma superfície com filter
+   maior que o ecrã é composta com fundo preto - era o retângulo preto atrás do telemóvel */
+body.fivem #cc.in::before,body.fivem #nc.in::before,body.fivem #switcher.in::before,body.fivem .power-off.in::before,body.fivem .n-xwrap.in::before,body.fivem .folder-overlay.in::before,body.fivem .spot.in::before,body.fivem .ctx-wrap.in::before{
+  content:''; position:absolute; inset:0; z-index:-1; pointer-events:none; border-radius:57px;
+  background:linear-gradient(var(--tint,rgba(0,0,0,.3)),var(--tint,rgba(0,0,0,.3))), var(--wp-blur,var(--wp,#1C1C1E)) center/cover no-repeat }   /* imagem pré-desfocada, sem filter */
+body.os-ios.fivem.form-fold #cc.in::before,body.os-ios.fivem.form-fold #nc.in::before,body.os-ios.fivem.form-fold #switcher.in::before,body.os-ios.fivem.form-fold .power-off.in::before,body.os-ios.fivem.form-fold .n-xwrap.in::before,
+body.os-ios.fivem.form-fold .folder-overlay.in::before,body.os-ios.fivem.form-fold .spot.in::before,body.os-ios.fivem.form-fold .ctx-wrap.in::before,body.os-ios.fivem.form-fold .gsearch.in::before,body.os-ios.fivem.form-fold .gsearch.pulling::before{ border-radius:var(--scr-r) }
+body.fivem .screen.locked #cc.in::before,body.fivem .screen.locked #nc.in::before,body.fivem .screen.locked .n-xwrap.in::before{
+  background-image:linear-gradient(var(--tint,rgba(0,0,0,.3)),var(--tint,rgba(0,0,0,.3))), var(--wp-lock-blur,var(--wp-blur,var(--wp,#1C1C1E))) }
+/* ⚠️ COM UMA APP ABERTA O FUNDO NÃO É O WALLPAPER - é a própria app.
+   A cópia desfocada existe para quando estas camadas abrem sobre o ecrã inicial ou o bloqueado;
+   por cima de uma app, pintá-la fazia o ecrã SALTAR para o fundo do telemóvel (era o que se via ao
+   tocar nos três pontinhos do Marketplace, e acontecia em qualquer app). Aqui fica só a tinta: no
+   CEF não há desfoque possível, mas o que está por trás continua a ser a app. */
+body.fivem .screen.app-open #cc.in::before,body.fivem .screen.app-open #nc.in::before,
+body.fivem .screen.app-open .n-xwrap.in::before,body.fivem .screen.app-open .ctx-wrap.in::before{
+  background:var(--tint,rgba(0,0,0,.3)) }
+/* outras camadas com filter que saíam do ecrã no jogo: vistas "atrás" na navegação (translateX −28 % + brightness) */
+body.fivem .view.behind{ filter:none }
+/* teclas do código: 10 backdrop-filters em simultâneo pesavam no CEF; o fundo já é a cópia desfocada, basta vidro translúcido */
+body.fivem .key{ backdrop-filter:none; -webkit-backdrop-filter:none; background:rgba(255,255,255,.2) }
+body.fivem .key:active,body.fivem .key.pressed{ background:rgba(255,255,255,.55) }
+body.fivem .view.behind::after{ content:''; position:absolute; inset:0; background:rgba(0,0,0,.16); pointer-events:none; opacity:var(--behind,1); z-index:50 }
+body.dark.fivem .view.behind::after{ background:rgba(0,0,0,.35) }
+/* barra de navegação sólida: sem backdrop-filter no jogo (toca nos cantos superiores do ecrã) */
+body.fivem .navbar.solid{ backdrop-filter:none; -webkit-backdrop-filter:none; background:var(--bg) }
+body.fivem #cc{ --tint:rgba(0,0,0,.30) } body.fivem #nc{ --tint:rgba(0,0,0,.34) } body.fivem #switcher{ --tint:rgba(0,0,0,.22) } body.fivem .power-off{ --tint:rgba(0,0,0,.6) }
+body.fivem .n-xwrap{ --tint:rgba(0,0,0,.34) } body.fivem .folder-overlay{ --tint:rgba(0,0,0,.4) } body.fivem .spot{ --tint:rgba(0,0,0,.36) } body.fivem .ctx-wrap{ --tint:rgba(0,0,0,.3) }
+body.fivem .overlay{ backdrop-filter:none; -webkit-backdrop-filter:none }
+/* ⚠️ AQUI ESTAVA A ÚLTIMA SOBRA DA "allowlist" de backdrop-filter, retirada na ronda de
+   desempenho de 2026-09-08. A regra ligava o backdrop em .vera-sheet, .alert, .ctx,
+   .as-group, .tb-pill e .tab-search; todas menos a .vera-sheet voltaram a ser desligadas
+   mais abaixo com !important, por isso ela ficou a ser o ÚNICO backdrop-filter vivo dentro
+   do jogo - e a .vera-sheet está sempre no DOM, logo era um readback permanente.
+   Medido com html/_perf.html: "backdrop=1" em TODOS os ecrãs, sempre a mesma .vera-sheet.
+   A regra inteira foi removida; a .vera-sheet entrou na lista de desligar mais abaixo e
+   fica com o material opaco (--material é .95 em body.fivem), como a .alert e a .ctx. */
+/* Vera: a auréola (::before) era uma camada de ECRÃ INTEIRO com filter:blur + gradiente cónico animado a cada frame - no CEF isso é uma superfície oversize composta a preto e re-rasterizada 60×/s. No jogo fica um anel largo estático e translúcido; só o anel fino (::after) roda. */
+body.fivem .vera-edge::before,body.fivem .vera-edge.listening::before{ filter:none; animation:none; padding:11px; opacity:.3 }
+body.fivem .app-window,body.fivem .pages{ will-change:transform }   /* sem will-change nos 29 ícones: eram 29 camadas de GPU permanentes; o Chromium promove-os sozinho durante a animação */
+
+/* ---------- Ilha dinâmica ----------
+   A forma já não anima width/height/border-radius (regra do CEF): são peças movidas só com transform
+   (island.js + notify.css). A transição de tamanho que vivia aqui era código morto, neutralizado lá. */
+
+/* ========== DESEMPENHO NO JOGO (CEF) - "100 % fluido" ==========
+   backdrop-filter é a operação mais cara do CEF: cada superfície relê e desfoca o que está por baixo em TODOS os frames em que algo mexe.
+   No jogo desligam-se em todas as superfícies numerosas ou animadas (notificações, widgets, botões, pastas, dock, folhas, alertas…) e
+   compensa-se com fundos translúcidos mais opacos. Os únicos "vidros" reais que ficam são as cópias pré-desfocadas do wallpaper (imagens).
+   Os ícones perdem o filtro SVG de profundidade (re-rasterizado a cada frame das animações da home). */
+body.fivem{ --material:rgba(255,255,255,.95); --glass:rgba(255,255,255,.8); --glass-border:rgba(255,255,255,.7) }
+body.dark.fivem{ --material:rgba(28,28,30,.95); --glass:rgba(44,44,48,.88); --glass-border:rgba(255,255,255,.14) }
+body.fivem .notif-card .ncard,body.fivem #lock .notif-card .ncard,body.fivem .nstack .peek,body.fivem .nbanner .ncard,body.fivem .nh-x,body.fivem .nh-less,body.fivem .n-bb,body.fivem .n-act,body.fivem .n-x,body.fivem .n-xact,
+body.fivem .lw,body.fivem .ls-btn,body.fivem .hi.folder .tile,body.fivem .wg.glass,body.fivem .edit-bar div,body.fivem .vera-card,body.fivem .vera-orb::after,
+body.fivem .earbuds-card,body.fivem .n-toast,body.fivem .hw-hud,body.fivem .vol-hud,body.fivem .sw-all,body.fivem .search-pill,body.fivem .folder-box,body.fivem .composer,
+body.fivem .banner,body.fivem .call-banner,body.fivem .vera-edge::before,body.fivem .navbar.solid,body.fivem .key,body.fivem .cc-mod,body.fivem .cc-tile,body.fivem .cc-slider,body.fivem .spot .lib-tile,body.fivem .spot .search{
+  backdrop-filter:none!important; -webkit-backdrop-filter:none!important }
+/* NO JOGO: ZERO backdrop-filter (revisão de desempenho 2026-09-08 - "travado, não está smooth"). Cada backdrop-filter relê e desfoca o que está por
+   baixo em todos os frames em que algo mexe; no CEF isso é o que engasga as animações. O "vidro" faz-se com: (a) a cópia PRÉ-DESFOCADA do wallpaper
+   (--wp-blur, imagem estática) por baixo do dock, e (b) materiais translúcidos mais opacos nas restantes superfícies. */
+body.fivem .dock,body.fivem .tb-pill,body.fivem .tab-search,body.fivem .alert,body.fivem .as-group,body.fivem .ctx,body.fivem .vera-sheet,body.fivem .glass,body.fivem .glassButton,body.fivem .circularGlassButton,body.fivem #kb,body.fivem .nb-btn.glass,body.fivem .wx-bottombar{ backdrop-filter:none!important; -webkit-backdrop-filter:none!important }
+.wx-bottombar{ background:rgba(0,0,0,.18); backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px) } body.fivem .wx-bottombar{ background:rgba(0,0,0,.38) }   /* barra da Meteorologia: fora do jogo tem vidro, dentro fica opaca */
+body.fivem .dock{ isolation:isolate; background:transparent; overflow:hidden }
+/* 1.5.0: a cópia pré-desfocada do fundo por baixo da dock (e de todas as peças de vidro sobre o fundo) vive agora no glass27.css
+   (.lg-wp, posicionada pelo glass.js com --gx/--gy); a regra antiga body.fivem .dock::before saiu daqui. */
+body.fivem .tb-pill,body.fivem .tab-search,body.fivem .glass,body.fivem .glassButton,body.fivem .circularGlassButton{ background:var(--glass) }
+body.fivem #kb{ background:rgba(214,217,222,.98) } body.dark.fivem #kb{ background:rgba(40,40,43,.98) }
+body.fivem .alert,body.fivem .as-group,body.fivem .ctx,body.fivem .vera-sheet,body.fivem .toast{ background:var(--material) }
+body.fivem .wallpaper,body.fivem .wallpaper-lock{ will-change:transform }   /* camadas próprias: a paralaxe e as transições nunca repintam o JPEG de 1320×2868 */
+/* pressões sem `filter` no jogo (cada filter é uma superfície nova a meio de uma animação): escurece com opacidade */
+body.fivem .hi:active .tile,body.fivem .hi.pressed .tile{ filter:none; opacity:.72 } body.fivem .tile.launch{ filter:none }
+body.fivem .btn-p:active,body.fivem .prominentButton:active,body.fivem .systemButton:active,body.fivem .destructiveButton:active{ filter:none; opacity:.85 }
+body.fivem .btn-round:active{ filter:none; opacity:.8 } body.fivem .hi .tile{ transition:transform .28s var(--spring), opacity .12s }
+/* superfícies de app que ainda tinham backdrop-filter no jogo (cartões de meteorologia ×6, barra do Surf, mini-player, pesquisa do mapa, barra do FaceCall, toast) */
+body.fivem .wx-card,body.fivem .urlbar-wrap,body.fivem .mini,body.fivem .map-search,body.fivem .ft-bar,body.fivem .toast{ backdrop-filter:none!important; -webkit-backdrop-filter:none!important }
+body.fivem .wx-card{ background:rgba(255,255,255,.2) } body.fivem .ft-bar{ background:rgba(60,60,64,.75) } body.fivem .toast{ background:var(--material) }
+body.fivem .vera-orb::before{ filter:none; animation:none; opacity:.35; inset:-3px }   /* auréola do orb: sem blur a rodar 60×/s no jogo */
+body.fivem .spot .lib-tile{ background:rgba(255,255,255,.3) }
+body.fivem .notif-card .ncard,body.fivem #lock .notif-card .ncard{ background:rgba(255,255,255,.3) } body.dark.fivem .notif-card .ncard,body.dark.fivem #lock .notif-card .ncard{ background:rgba(40,40,40,.66) }
+body.fivem .nstack .peek{ background:rgba(255,255,255,.34) } body.dark.fivem .nstack .peek{ background:rgba(40,40,40,.6) }
+body.fivem .nh-x,body.fivem .nh-less,body.fivem .n-bb,body.fivem .n-act,body.fivem .n-xact{ background:rgba(255,255,255,.3) } body.fivem .n-bb.n-clr{ background:rgba(255,69,58,.7) }
+body.fivem .n-x{ background:rgba(255,255,255,.4) } body.dark.fivem .n-x{ background:rgba(44,44,46,.9) }
+body.fivem .lw,body.fivem .ls-btn{ background:rgba(255,255,255,.24) } body.fivem .ls-btn.on{ background:#fff }
+body.fivem .hi.folder .tile{ background:rgba(255,255,255,.34) } body.fivem .folder-box{ background:rgba(255,255,255,.3) }
+body.fivem .wg.glass{ background:rgba(255,255,255,.3) } body.fivem .edit-bar div{ background:rgba(255,255,255,.3) } body.fivem .edit-bar .done{ background:#fff }
+body.fivem .search-pill{ background:rgba(255,255,255,.26) } body.fivem .sw-all{ background:rgba(255,255,255,.26) }
+body.fivem .vol-hud{ background:rgba(58,58,62,.88) }
+body.fivem svg [filter]{ filter:none }                                   /* ícones Liquid Glass: sem o filtro SVG de profundidade no jogo */
+/* will-change SÓ enquanto anima (não em cada vista/folha/cartão retido nas 7 janelas em memória) */
+body.fivem #home,body.fivem #lock,body.fivem .lock-p1,body.fivem .lock-p2,body.fivem #cc .cc-panel,body.fivem #nc .nc-list,body.fivem #switcher.in .sw-item,body.fivem .sheet-wrap.in .sheet,body.fivem .view.enter,body.fivem .view.leave,body.fivem .view.swiping,body.fivem .view.behind{ will-change:transform, opacity }
+
+/* ========== REDUZIR MOVIMENTO (Definições › Ecrã e brilho → body[data-motion="reduced"]) ==========
+   Menos deslocação e nada de mola: as janelas, as vistas e as camadas do sistema passam a aparecer por
+   OPACIDADE e as poucas deslocações que ficam (folhas, teclado, subir o telemóvel) ficam curtas.
+   ⚠️ As durações NUNCA vão a 0: vários fluxos esperam o fim da animação por setTimeout (fecho da janela
+   520 ms, descer o telemóvel 430 ms, UI.pop 420 ms, espreitar 580 ms) e um `transitionend` que não chega
+   deixava estados a meio. Curto e sem atraso chega. Só transform/opacity, como sempre (regra CEF).
+   Fica tudo DEPOIS das regras acima e com a especificidade do atributo no <body> para ganhar a elas. */
+body[data-motion="reduced"] *,body[data-motion="reduced"] *::before,body[data-motion="reduced"] *::after{ transition-delay:0s!important; animation-delay:0s!important }
+/* janelas de app: sem crescer do ícone (o system.js deixa de pôr o transform) - só desvanecem */
+body[data-motion="reduced"] .app-window,body[data-motion="reduced"] .app-window.open,body[data-motion="reduced"] .app-window.closing{ transition:opacity .16s ease-out!important }
+body[data-motion="reduced"] .app-window > .nav-stack,body[data-motion="reduced"] .app-window.open > .nav-stack{ transition:opacity .12s ease-out!important }
+body[data-motion="reduced"] .app-window.dragging,body[data-motion="reduced"] .app-window.dragging > .nav-stack{ transition:none!important }   /* o gesto continua a seguir o dedo */
+body[data-motion="reduced"] .app-window.settle{ transition:transform .2s ease-out, opacity .16s!important }
+body[data-motion="reduced"] .tile.launch{ transform:none!important; opacity:1; transition:none!important }
+body[data-motion="reduced"] .tile.land{ animation:none }
+/* home: não "afunda" ao abrir uma app */
+body[data-motion="reduced"] .screen.app-open #home{ transform:none }
+body[data-motion="reduced"] #home{ transition:opacity .16s ease-out!important }
+body[data-motion="reduced"] .pages{ transition:transform .22s ease-out }
+body[data-motion="reduced"] .pages.drag{ transition:none }
+/* navegação: a vista nova aparece por cima (fade) em vez de deslizar; a de trás não se desloca */
+body[data-motion="reduced"] .view.enter,body[data-motion="reduced"] .view.leave{ transform:none; opacity:0; box-shadow:none }
+body[data-motion="reduced"] .view.behind{ transform:none }
+body[data-motion="reduced"] .view{ transition:opacity .18s ease-out!important }
+body[data-motion="reduced"] .view.swiping{ transition:none!important }
+body[data-motion="reduced"] .view.tab-in .content,body[data-motion="reduced"] .tab.on svg{ animation:none }
+/* folhas, alertas, menus, banners: sem mola e curtos */
+body[data-motion="reduced"] .sheet,body[data-motion="reduced"] .sheet-wrap.closing .sheet{ transition:transform .2s ease-out!important }
+body[data-motion="reduced"] .alert{ transform:none; transition:opacity .15s ease-out!important }
+body[data-motion="reduced"] .as-group{ transform:none; transition:opacity .15s ease-out!important }
+body[data-motion="reduced"] .ctx{ transform:none; transition:opacity .15s ease-out!important }
+body[data-motion="reduced"] .ctx-preview{ transition:none!important }
+body[data-motion="reduced"] .banner,body[data-motion="reduced"] .toast{ transition:transform .2s ease-out, opacity .2s!important }
+/* Centro de controlo, notificações, alternador, pastas, teclado */
+body[data-motion="reduced"] #cc .cc-panel,body[data-motion="reduced"] #nc .nc-list,body[data-motion="reduced"] #nc .nc-head,body[data-motion="reduced"] #switcher .sw-track{ transform:none; transition:none!important }
+body[data-motion="reduced"] #cc,body[data-motion="reduced"] #nc,body[data-motion="reduced"] #switcher{ transition:opacity .16s ease-out!important }
+body[data-motion="reduced"] #cc.pulling,body[data-motion="reduced"] #nc.pulling{ transition:none!important }
+body[data-motion="reduced"] .sw-item,body[data-motion="reduced"] .sw-card{ transition:transform .2s ease-out, opacity .2s!important }
+body[data-motion="reduced"] .folder-open{ transition:transform .2s ease-out, opacity .16s!important }
+body[data-motion="reduced"] #kb{ transition:transform .16s ease-out, visibility .16s!important }
+body[data-motion="reduced"] .island .isl-shape i{ transition-duration:.18s!important }   /* a caixa da ilha não transiciona; as peças da forma (só transform) mudam mais depressa */
+/* subir/descer o telemóvel no jogo e espreitar notificações: continua a subir (é o que diz que abriu), mas rápido */
+body[data-motion="reduced"].fivem .stage.enter{ animation-duration:.22s }
+body[data-motion="reduced"].fivem .stage.leave{ animation-duration:.2s }
+body[data-motion="reduced"].fivem.pk .stage,body[data-motion="reduced"].fivem.pk:not(.pk-up) .stage{ transition:transform .22s ease-out }
+/* enfeites que rodam/pulsam sem transmitir estado: parados (o spinner de carregar e o toque de chamada ficam - dizem alguma coisa) */
+body[data-motion="reduced"] .vera-edge::before,body[data-motion="reduced"] .vera-edge::after,body[data-motion="reduced"] .vera-orb,body[data-motion="reduced"] .vera-orb::before,body[data-motion="reduced"] .skeleton{ animation:none }

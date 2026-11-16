@@ -1,0 +1,450 @@
+/* ============================================================
+   NOVA UI 8.5 · SYSUI (pacote A): moldura do NOVA S26 Ultra, camara
+   furada, barra de estado, barra de navegacao, chips das atividades,
+   cartoes da chamada recebida e da atividade expandida, painel de
+   volume, menu de energia e Always On Display.
+   Tudo atras de body.os-android: o PearOS nao muda um pixel. Os
+   elementos novos (anb-, asb-, alc-, avol-, apw-, aod-) existem nos
+   dois sistemas mas so se desenham no Android.
+   Regras do CEF: sem backdrop-filter, sem filter, sem color-mix, sem
+   :has; so transform e opacity animam; o vidro e a copia pre-desfocada
+   do fundo (var(--wp-blur) / var(--wp-blur2) no #screen).
+   ============================================================ */
+
+/* ---------- Raio do ecra Nova UI ----------
+   --ou-r-screen: os cantos do ecra (40, o "frame" do kit da One UI 8.5). --ou-r-scrb: os cantos de BAIXO das camadas
+   de ecra inteiro; dentro do #apps com a barra de 3 botoes passa a 0 (a janela acaba em cima da barra, nao no canto). */
+body.os-android{ --ou-r-screen:40px; --ou-r-scrb:40px }
+body.os-android[data-nav="buttons"]:not(.landscape) #apps{ --ou-r-scrb:0px; --safe-bottom:8px }
+
+/* ---------- MOLDURA: metal plano 3 px + bisel preto 7 px + ecra 440x956 em (10,10); raios 50 > 47 > 40 ---------- */
+body.os-android .device{ padding:3px; border-radius:50px }
+body.os-android .bezel{ padding:7px; border-radius:47px }
+body.os-android .screen{ border-radius:var(--ou-r-screen) }
+body.fivem.os-android .device{ box-shadow:inset 0 0 0 .5px rgba(255,255,255,.28) }
+/* cores tiradas das fotografias dos aparelhos (inventory_images/s26_*.png): luz em cima a esquerda, sombra em baixo */
+.device.frame-s26-black{ --f1:#80858C; --f2:#3C4046; --f3:#25282D; --f4:#5A5F66; background:linear-gradient(160deg,#80858C,#3C4046 38%,#25282D 72%,#5A5F66) }
+.device.frame-s26-white{ --f1:#F8F8F7; --f2:#CFD0D0; --f3:#B7B9BA; --f4:#E5E6E6; background:linear-gradient(160deg,#F8F8F7,#CFD0D0 38%,#B7B9BA 72%,#E5E6E6) }
+.device.frame-s26-violet{ --f1:#AEADC6; --f2:#6B6C8E; --f3:#4F4D6A; --f4:#8889A7; background:linear-gradient(160deg,#AEADC6,#6B6C8E 38%,#4F4D6A 72%,#8889A7) }
+.device.frame-s26-sky{ --f1:#E4EBF0; --f2:#AFBFCA; --f3:#93A5B1; --f4:#CBD7DE; background:linear-gradient(160deg,#E4EBF0,#AFBFCA 38%,#93A5B1 72%,#CBD7DE) }
+/* aresta polida entre o metal e o bisel (o chanfro que apanha a luz) */
+.frame-ring.asb-ring .asb-chamfer{ stroke:rgba(255,255,255,.2); stroke-width:.6 }
+.frame-ring.asb-ring .rim{ stroke:rgba(255,255,255,.3); stroke-width:.5 }
+.device.frame-s26-white .frame-ring.asb-ring .rim,.device.frame-s26-sky .frame-ring.asb-ring .rim{ stroke:rgba(255,255,255,.7) }
+.device.frame-s26-white .frame-ring.asb-ring .asb-chamfer,.device.frame-s26-sky .frame-ring.asb-ring .asb-chamfer{ stroke:rgba(0,0,0,.12) }
+
+/* ---------- Botoes fisicos: volume (uma tecla basculante) e tecla lateral, os dois do lado DIREITO ----------
+   Os mesmos elementos do hardware.js (.vol-up/.vol-down/.power): so mudam de sitio. O Acao e o Controlo de camara do
+   PearPhone nao existem no S26. */
+body.os-android .hw-btn.action,body.os-android .hw-btn.camera-ctl{ display:none }
+body.os-android .hw-btn::after{ display:none }
+/* um pouco mais salientes para se verem melhor (pedido do dono, 2026-10-01): 5,5 px de largura, 4,5 px para fora */
+body.os-android .hw-btn{ width:5.5px; box-shadow:0 0 0 .5px rgba(0,0,0,.45), 0 1px 2px rgba(0,0,0,.3) }
+body.os-android .hw-btn.vol-up{ left:auto; right:-4.5px; top:206px; height:66px; border-radius:2.5px 2.5px .5px .5px }
+body.os-android .hw-btn.vol-down{ left:auto; right:-4.5px; top:272.6px; height:66px; border-radius:.5px .5px 2.5px 2.5px }
+body.os-android .hw-btn.power{ right:-4.5px; top:374px; height:74px; border-radius:2.5px }
+body.os-android .hw-btn.vol-up:active,body.os-android .hw-btn.vol-down:active,body.os-android .hw-btn.power:active{ transform:translateX(-2px) }
+.device.frame-s26-black .hw-btn{ background:linear-gradient(90deg,#1C1F23,#6E737A 45%,#1C1F23) }
+.device.frame-s26-white .hw-btn{ background:linear-gradient(90deg,#9A9C9E,#F4F4F3 45%,#9A9C9E) }
+.device.frame-s26-violet .hw-btn{ background:linear-gradient(90deg,#3B3A52,#9A99B6 45%,#3B3A52) }
+.device.frame-s26-sky .hw-btn{ background:linear-gradient(90deg,#7A8A95,#DDE6EC 45%,#7A8A95) }
+
+/* ---------- NOVA dobravel (molduras flip-*, contrato v2 de 2026-10-01): abre como um LIVRO ----------
+   FECHADO (body.fold-closed): aparelho 690x976, ecra de fora 670x956, raios 34 > 30 > 24, camara furada em cima AO MEIO.
+   ABERTO (body.fold-open): aparelho 1360x976, ecra 1340x956, raios 32 > 28 > 22, camara furada em cima a 72 % da largura e as
+   marcas da dobradica a meio das arestas de cima e de baixo (SysUI.foldRing). Sem vinco. --ou-r-screen segue o estado e todas
+   as camadas de ecra inteiro vao atras. Tudo atras de .form-fold / .frame-flip-*: o S26 e o PearPhone nao mudam. */
+body.os-android.form-fold{ --ou-r-screen:24px; --ou-r-scrb:24px }
+body.os-android.form-fold.fold-open{ --ou-r-screen:22px; --ou-r-scrb:22px }
+body.os-android .device.form-fold{ padding:4px; border-radius:34px }
+body.os-android .device.form-fold .bezel{ padding:6px; border-radius:30px }
+body.os-android .device.form-fold.fold-open{ border-radius:32px }
+body.os-android .device.form-fold.fold-open .bezel{ border-radius:28px }
+/* camara (o .island): fechado fica ao meio (como no S26); aberto em cima a 72 % (centro 965) */
+body.os-android.form-fold.fold-open .island,body.os-android.form-fold.fold-open .island.isl-ready{ left:958px; transform:none }
+/* cartoes por cima do ecra (atividade, chamada recebida): a largura de um telemovel, nunca a do ecra largo */
+body.os-android.form-fold .alc-card{ right:auto; width:416px }
+body.os-android.form-fold .alc-inc{ left:calc(50% - 220px); right:calc(50% - 220px) }
+/* barra de 3 botoes (spec_fold 2.1): FECHADO espalhados como num telemovel (celulas de 181, centros a 23 / 50 / 77 %); ABERTO
+   (4 out) ao CENTRO como fechado (3 x 72); so com a barra de tarefas de uma app (.anb-tbon) passam para a DIREITA, com ela a esquerda */
+body.os-android.form-fold.fold-closed .anb.anb-on{ padding:0 64px }
+body.os-android.form-fold.fold-open .anb.anb-on{ padding:0; justify-content:center }
+body.os-android.form-fold.fold-open .anb.anb-on.anb-tbon{ padding:0 20px 0 16px; justify-content:flex-end }
+body.os-android.form-fold.fold-open .anb .anb-btn{ flex:none; width:72px }
+/* cores das renders do aparelho e das texturas dos modelos (flip_*_color.png): aluminio claro e acetinado, luz em cima a
+   esquerda; --hg1/--hg2/--hg3 = tampas da dobradica (corpo, sombra, reflexo) */
+.device.frame-flip-lavender{ --f1:#ECE7F7; --f2:#C9BFE2; --f3:#AA9ECD; --f4:#DCD4EE; --hg1:#A397C7; --hg2:#5C5283; --hg3:#DDD5F0; background:linear-gradient(160deg,#ECE7F7,#C9BFE2 38%,#AA9ECD 72%,#DCD4EE) }
+.device.frame-flip-grey{ --f1:#A9AEB4; --f2:#696E75; --f3:#4A4F55; --f4:#888D94; --hg1:#595E65; --hg2:#202326; --hg3:#9AA0A7; background:linear-gradient(160deg,#A9AEB4,#696E75 38%,#4A4F55 72%,#888D94) }
+.device.frame-flip-cream{ --f1:#F8F4E8; --f2:#E0D8C3; --f3:#C9BEA3; --f4:#EEE8D6; --hg1:#B8AC8F; --hg2:#776C52; --hg3:#EEE6D2; background:linear-gradient(160deg,#F8F4E8,#E0D8C3 38%,#C9BEA3 72%,#EEE8D6) }
+.device.frame-flip-pistachio{ --f1:#ECF2E1; --f2:#CAD5B6; --f3:#ADBA95; --f4:#DDE6CC; --hg1:#9EAB85; --hg2:#5B6746; --hg3:#E0E8D2; background:linear-gradient(160deg,#ECF2E1,#CAD5B6 38%,#ADBA95 72%,#DDE6CC) }
+.frame-ring.asf-ring .h1{ stop-color:var(--hg1) } .frame-ring.asf-ring .h2{ stop-color:var(--hg2) } .frame-ring.asf-ring .h3{ stop-color:var(--hg3) }
+/* aresta exterior com mais luz (acetinado), o chanfro, e o labio do bisel (a borda que protege o ecra dobravel) */
+.frame-ring.asf-ring .rim{ stroke:rgba(255,255,255,.62); stroke-width:.6 }
+.frame-ring.asf-ring .asb-chamfer{ stroke:rgba(255,255,255,.3); stroke-width:.6 }
+.device.frame-flip-grey .frame-ring.asf-ring .rim{ stroke:rgba(255,255,255,.34) } .device.frame-flip-grey .frame-ring.asf-ring .asb-chamfer{ stroke:rgba(255,255,255,.16) }
+.frame-ring.asf-ring .asf-lip{ stroke:rgba(255,255,255,.07); stroke-width:.8 }
+/* dobradica (aberto): a moldura acaba dos dois lados da tampa (fio escuro) */
+.frame-ring.asf-ring .asf-gap{ stroke:rgba(0,0,0,.34); stroke-width:.8 }
+/* teclas do lado DIREITO (volume basculante e a tecla lateral com o leitor de impressao), na metade de tras, que nunca mexe:
+   as mesmas do S26 (fechado e aberto) */
+.device.frame-flip-lavender .hw-btn{ background:linear-gradient(90deg,#8C80B4,#F0EBFA 45%,#8C80B4) }
+.device.frame-flip-grey .hw-btn{ background:linear-gradient(90deg,#3B3F45,#B6BBC1 45%,#3B3F45) }
+.device.frame-flip-cream .hw-btn{ background:linear-gradient(90deg,#A59A7E,#FBF8EF 45%,#A59A7E) }
+.device.frame-flip-pistachio .hw-btn{ background:linear-gradient(90deg,#8C9974,#F1F6E8 45%,#8C9974) }
+/* a pega (system.js): no NOVA nao ha lombada a mostra, a marca fica na aresta de metal da esquerda */
+body.os-android .fold-grip i{ left:25px; width:3px; margin-left:0 }
+.device.frame-flip-cream > .fold-grip i,.device.frame-flip-pistachio > .fold-grip i,.device.frame-flip-lavender > .fold-grip i{ background:rgba(90,90,100,.5); box-shadow:0 0 0 .5px rgba(255,255,255,.6) }
+.device.frame-flip-cream > .fold-grip:hover i,.device.frame-flip-pistachio > .fold-grip:hover i,.device.frame-flip-lavender > .fold-grip:hover i{ background:rgba(60,60,70,.8) }
+
+/* ---------- Camara furada no lugar da Dynamic Island ----------
+   O elemento .island continua a existir (a API do Island e a mesma): no Android e so o furo, sem pecas nem conteudo. */
+body.os-android .island,body.os-android .island.isl-ready{ top:17px; width:14px!important; height:14px!important; border-radius:50%; background:#000; overflow:hidden; pointer-events:none; cursor:default; box-shadow:0 0 0 1px rgba(255,255,255,.035);
+  z-index:450 }   /* o furo é hardware: fica por cima de tudo o que o ecrã desenhar (cartões flutuantes, painéis, véus) */
+body.os-android .island > :not(.cam){ display:none!important }
+body.os-android .island .cam{ left:3px; top:3px; margin:0; width:8px; height:8px }
+
+/* ---------- Cantos das camadas de ecra inteiro (o raio do ecra Nova UI em vez dos 57 do PearPhone) ----------
+   Cada camada leva o raio do ecra porque o CEF nem sempre recorta as camadas compostas pelo .screen (motion.css). */
+body.os-android #lock,body.os-android .lock-p1,body.os-android .lock-p2,body.os-android #home,body.os-android #cc,body.os-android #nc,body.os-android #switcher,body.os-android #vera,body.os-android #setup,
+body.os-android .sheet-wrap,body.os-android .overlay,body.os-android .ctx-wrap,body.os-android .as-wrap,body.os-android .n-xwrap,body.os-android .power-off,body.os-android .screen-off,body.os-android .bright-ov,
+body.os-android .vera-scrim,body.os-android .vera-edge,body.os-android .vera-edge::before,body.os-android .vera-edge::after,body.os-android .wallpaper,body.os-android .wallpaper-lock,body.os-android .wallpaper-blur,
+body.os-android .folder-wrap,body.os-android .folder-overlay,body.os-android .spot,body.os-android .spotlight,body.os-android .kb-wrap,body.os-android .perm-wrap,body.os-android .boot-wait,body.os-android .nightshift-ov,
+body.os-android .sel-back,body.os-android .stp,body.os-android .gsearch,body.os-android .lsg-dim,body.os-android .lsg-ask{ border-radius:var(--ou-r-screen) }
+body.os-android.fivem #cc.in::before,body.os-android.fivem #nc.in::before,body.os-android.fivem #switcher.in::before,body.os-android.fivem .power-off.in::before,body.os-android.fivem .n-xwrap.in::before,
+body.os-android.fivem .folder-overlay.in::before,body.os-android.fivem .spot.in::before,body.os-android.fivem .ctx-wrap.in::before,body.os-android.fivem .gsearch.in::before,body.os-android.fivem .gsearch.pulling::before{ border-radius:var(--ou-r-screen) }
+/* janelas das apps e as camadas de ecra inteiro das apps: dentro do #apps os cantos de baixo seguem --ou-r-scrb */
+body.os-android #apps{ border-radius:var(--ou-r-screen) var(--ou-r-screen) var(--ou-r-scrb) var(--ou-r-scrb) }
+body.os-android .app-window,body.os-android .app-window.open{ border-radius:var(--ou-r-screen) var(--ou-r-screen) var(--ou-r-scrb) var(--ou-r-scrb)!important }
+body.os-android .incoming,body.os-android .call-screen,body.os-android .ft-screen,body.os-android .viewer,body.os-android .story-view,body.os-android .reader,body.os-android .player,
+body.os-android .msg-cam,body.os-android .mt-match,body.os-android .rcc-call,body.os-android .rcc-rs,body.os-android .rcp-lockpad,body.os-android .rcp-viewer,body.os-android .pe,
+body.os-android .rcb-viewer,body.os-android .rcb-mc,body.os-android .rcu-viewer,body.os-android .rcu-comp,body.os-android .rcu-cam,body.os-android .rcu-imgview,body.os-android .fc,body.os-android .fc .fc-flash,
+body.os-android .st-ed,body.os-android .ig-add,body.os-android .ins-layer{ border-radius:var(--ou-r-screen) var(--ou-r-screen) var(--ou-r-scrb) var(--ou-r-scrb) }
+/* o fecho da janela encolhe-a ate ao icone a partir do centro do ecra (478): com a janela 48 px mais baixa a origem
+   desce para o mesmo centro e a janela continua a cair em cima do icone */
+body.os-android[data-nav="buttons"]:not(.landscape) #apps > .app-window{ transform-origin:50% calc(50% + 24px)!important }
+
+/* ---------- Coisas do PearOS que nao existem no Android ---------- */
+body.os-android .home-bar,body.os-android .vol-hud,body.os-android .hw-hud,body.os-android .power-off{ display:none!important }
+
+/* ---------- BARRA DE ESTADO (48 px) ---------- */
+body.os-android .statusbar{ height:var(--statusbar-h); padding:0 20px 0 26px; justify-content:flex-start; gap:0; font-family:var(--font); font-size:15px; font-weight:600; letter-spacing:.15px }
+body.os-android .statusbar .sb-time{ min-width:0; flex:none; gap:0; font-size:15px; font-weight:600; font-variant-numeric:tabular-nums; letter-spacing:.2px }
+body.os-android .statusbar .sb-right{ gap:6px; margin-left:auto; height:16px }
+/* fundo claro por tras (ecra bloqueado com #lock.als-lt, home com fundo claro em cima): icones escuros (SysUI.paintSb) */
+body.os-android .statusbar.asb-dark{ color:rgba(0,0,0,.86) }
+body.os-android .statusbar.asb-light{ color:#fff }   /* videochamada: sempre branca, mesmo com uma app clara por baixo (.light-sb) */
+body.os-android .statusbar .sb-right svg{ display:block; flex:none }
+body.os-android .statusbar .asb-ic{ width:16px; height:16px }
+body.os-android .statusbar .asb-net{ font-size:11px; font-weight:700; letter-spacing:.2px; margin-right:-3px; line-height:1 }
+.asb-priv{ width:7px; height:7px; border-radius:50%; background:#0FCF6E; flex:none; margin-right:1px }
+.asb-chips,.asb-notifs{ display:none }
+body.os-android .statusbar > .asb-chips{ display:flex; align-items:center; gap:5px; margin-left:8px; pointer-events:none; max-width:170px }
+body.os-android .statusbar > .asb-notifs{ display:flex; align-items:center; gap:6px; margin-left:8px; pointer-events:none }
+body.os-android .statusbar > .asb-chips:empty,body.os-android .statusbar > .asb-notifs:empty{ margin-left:0 }
+body.os-android .screen.locked .statusbar > .asb-notifs{ display:none }
+.asb-ni{ display:flex; width:15px; height:15px; flex:none; opacity:.92 }
+.asb-ni-g{ display:flex } .asb-ni-g svg{ width:100%; height:100%; stroke-width:2.2 }
+.asb-ni-l{ display:flex; align-items:center; justify-content:center; box-sizing:border-box; border-radius:4.5px; border:1.6px solid currentColor; font-weight:700; line-height:1 }
+.asb-more{ width:4px; height:4px; border-radius:50%; background:currentColor; flex:none; opacity:.9 }
+
+/* ---------- CHIPS DAS ATIVIDADES ("Live notifications" na barra de estado) ---------- */
+.alc-chip{ display:flex; align-items:center; gap:4px; height:22px; padding:0 8px 0 6px; border-radius:11px; flex:none; max-width:104px; color:#fff; background:#2A2A2F;
+  font-size:12px; font-weight:600; letter-spacing:.1px; white-space:nowrap; font-variant-numeric:tabular-nums; pointer-events:auto; cursor:pointer; transform-origin:0 50% }
+body.os-android .asb-chips .alc-chip{ pointer-events:auto }
+.alc-chip .asi{ width:12px; height:12px; flex:none }
+.alc-chip .alc-t{ font-weight:600; overflow:hidden; text-overflow:ellipsis; min-width:0 }
+/* titulo da musica em carrossel (island.js mqFit): sem reticencias, desliza so quando nao cabe, com as pontas esbatidas */
+.alc-chip.alc-music{ max-width:124px }
+.alc-chip .alc-t.alc-mq{ text-overflow:clip; white-space:nowrap }
+.alc-chip .alc-mq .alc-mqi{ display:inline-block; white-space:nowrap }
+.alc-chip .alc-mq.on{ -webkit-mask:linear-gradient(90deg,transparent 0,#000 5px,#000 calc(100% - 5px),transparent 100%); mask:linear-gradient(90deg,transparent 0,#000 5px,#000 calc(100% - 5px),transparent 100%) }
+.alc-chip .alc-mq.on .alc-mqi{ will-change:transform; animation:islMq var(--mq-t,6s) ease-in-out infinite alternate }
+body[data-motion="reduced"] .alc-chip .alc-mq.on .alc-mqi{ animation:none }
+.alc-chip:active{ background-color:#3A3A40 }
+.alc-chip.alc-call{ background:#0FCF6E } .alc-chip.alc-call:active{ background:#0CB861 }
+.alc-chip.alc-timer{ background:#F07A12 } .alc-chip.alc-timer:active{ background:#DB6E0F }
+.alc-chip.alc-nav{ background:#0C8FAE } .alc-chip.alc-nav:active{ background:#0A7E99 }
+.alc-chip .alc-art{ width:16px; height:16px; margin-left:-2px; border-radius:50%; flex:none; background-size:cover; background-position:center; background-repeat:no-repeat }
+.alc-chip .alc-ic{ width:16px; height:16px; margin-left:-2px; border-radius:5px; overflow:hidden; flex:none; display:flex }
+.alc-ic svg,.alc-ic .n-icimg,.alc-ic .n-glyph{ width:100%; height:100% }
+.alc-ic .n-icimg{ display:block; background-size:cover; background-position:center }
+.alc-ic .n-glyph{ display:flex; align-items:center; justify-content:center; background:#3A3A3C; color:#fff } .alc-ic .n-glyph svg{ width:62%; height:62% }
+.alc-chip .alc-ring{ width:14px; height:14px; flex:none; transform:rotate(-90deg) }
+.alc-ring circle{ fill:none; stroke-width:2.2 } .alc-ring .alc-rbg{ stroke:rgba(255,255,255,.28) } .alc-ring .alc-rfg{ stroke:#fff; stroke-linecap:round; stroke-dasharray:34.56; transition:stroke-dashoffset .2s linear }
+.alc-chip .alc-ok{ width:14px; height:14px; color:#0FCF6E }
+/* sem espaco ate a camara: o chip fica so com o icone (o SysUI.fitLeft mede e decide) */
+.alc-chip.alc-tight{ max-width:72px }
+.alc-chip.alc-compact{ padding:0 7px } .alc-chip.alc-compact .alc-t{ display:none } .alc-chip.alc-compact .alc-art,.alc-chip.alc-compact .alc-ic{ margin-left:0 }
+.alc-chip.alc-in{ animation:alcIn .34s var(--ou-curve-out,cubic-bezier(.22,.25,0,1)) both }
+.alc-chip.alc-out{ opacity:0; transform:scale(.6); transition:opacity .18s ease-in, transform .2s ease-in; pointer-events:none }
+@keyframes alcIn{ from{ opacity:0; transform:scale(.6) } to{ opacity:1; transform:none } }
+
+/* ---------- CARTAO DA ATIVIDADE (toque longo num chip) ---------- */
+.alc-scrim,.alc-card,.alc-inc{ display:none }
+body.os-android .alc-scrim{ display:block; position:absolute; inset:0; z-index:322; border-radius:var(--ou-r-screen); background:rgba(0,0,0,.2); opacity:0; transition:opacity .22s ease-out }
+body.os-android .alc-scrim.alc-in{ opacity:1 }
+body.os-android .alc-card{ display:flex; flex-direction:column; gap:14px; position:absolute; left:12px; right:12px; top:52px; z-index:323; padding:18px 18px 16px; border-radius:26px;
+  background:rgba(252,252,255,.94); color:rgba(0,0,0,.87); box-shadow:inset 0 1px 0 rgba(255,255,255,.8), 0 10px 32px rgba(0,0,0,.22); opacity:0; transform:translateY(-14px); transition:opacity .2s ease-out, transform .34s var(--ou-curve-out,cubic-bezier(.22,.25,0,1)) }
+body.os-android.dark .alc-card{ background:rgba(30,30,34,.94); color:rgba(255,255,255,.92); box-shadow:inset 0 1px 0 rgba(255,255,255,.1), 0 10px 32px rgba(0,0,0,.5) }
+body.os-android .alc-card.alc-in{ opacity:1; transform:none }
+.alc-row{ display:flex; align-items:center; gap:14px; min-width:0 }
+.alc-av{ width:46px; height:46px; border-radius:50%; flex:none; display:flex; align-items:center; justify-content:center; color:#fff; font-size:17px; font-weight:600 }
+.alc-art2{ width:52px; height:52px; border-radius:14px; flex:none; background-size:cover; background-position:center }
+.alc-badge{ width:46px; height:46px; border-radius:50%; flex:none; display:flex; align-items:center; justify-content:center; color:#fff }
+.alc-badge .asi{ width:24px; height:24px } .alc-badge.alc-timer{ background:#F07A12 } .alc-badge.alc-nav{ background:#0C8FAE }
+.alc-card .alc-ic2{ width:46px; height:46px; border-radius:14px; overflow:hidden; flex:none; display:flex }
+.alc-ic2 svg,.alc-ic2 .n-icimg,.alc-ic2 .n-glyph{ width:100%; height:100% } .alc-ic2 .n-icimg{ display:block; background-size:cover; background-position:center }
+.alc-ic2 .n-glyph{ display:flex; align-items:center; justify-content:center; background:#3A3A3C; color:#fff } .alc-ic2 .n-glyph svg{ width:60%; height:60% }
+.alc-tx{ flex:1; min-width:0; display:flex; flex-direction:column; gap:2px }
+.alc-name{ font-family:var(--font-display,var(--font)); font-size:18px; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+.alc-sub{ font-size:14px; font-weight:400; opacity:.62; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; font-variant-numeric:tabular-nums }
+.alc-big{ font-family:var(--font-display,var(--font)); font-size:30px; font-weight:600; font-variant-numeric:tabular-nums; flex:none; letter-spacing:-.3px }
+.alc-big.alc-timer{ color:#F07A12 }
+.alc-open{ width:40px; height:40px; border-radius:50%; flex:none; display:flex; align-items:center; justify-content:center; cursor:pointer; background:rgba(0,0,0,.06) }
+body.os-android.dark .alc-open{ background:rgba(255,255,255,.1) }
+.alc-open .asi{ width:18px; height:18px }
+.alc-prog{ height:4px; border-radius:2px; overflow:hidden; background:rgba(0,0,0,.1) } body.os-android.dark .alc-prog{ background:rgba(255,255,255,.16) }
+.alc-prog i{ display:block; width:100%; height:100%; border-radius:2px; background:var(--ou-blue,#3E7BFA); transform-origin:0 50%; transform:scaleX(0); transition:transform .5s linear }
+.alc-acts{ display:flex; gap:10px }
+.alc-b{ flex:1; height:46px; border-radius:23px; display:flex; align-items:center; justify-content:center; gap:7px; font-size:14px; font-weight:600; cursor:pointer;
+  background:rgba(0,0,0,.06); color:inherit; transition:background-color .15s ease-out, color .15s ease-out; white-space:nowrap; padding:0 10px; min-width:0 }
+body.os-android.dark .alc-b{ background:rgba(255,255,255,.1) }
+.alc-b .asi{ width:19px; height:19px; flex:none }
+.alc-b:active{ background:rgba(0,0,0,.12) } body.os-android.dark .alc-b:active{ background:rgba(255,255,255,.18) }
+.alc-b.alc-on,body.os-android.dark .alc-b.alc-on{ background:var(--ou-blue,#3E7BFA); color:#fff }
+.alc-b.alc-end,body.os-android.dark .alc-b.alc-end,.alc-b.alc-dec,body.os-android.dark .alc-b.alc-dec{ background:#F2453D; color:#fff }
+.alc-b.alc-ans,body.os-android.dark .alc-b.alc-ans{ background:#0FCF6E; color:#fff }
+.alc-b.alc-pri,body.os-android.dark .alc-b.alc-pri{ background:var(--ou-blue,#3E7BFA); color:#fff }
+.alc-b.alc-end:active,.alc-b.alc-dec:active{ background:#D93A33 } .alc-b.alc-ans:active{ background:#0CB861 } .alc-b.alc-pri:active,.alc-b.alc-on:active{ background:#326BE0 }
+.alc-media{ display:flex; align-items:center; justify-content:center; gap:34px }
+.alc-media > div{ width:48px; height:48px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer }
+.alc-media > div:active{ background:rgba(0,0,0,.08) } body.os-android.dark .alc-media > div:active{ background:rgba(255,255,255,.12) }
+.alc-media .asi{ width:26px; height:26px } .alc-media .alc-play{ background:var(--ou-blue,#3E7BFA); color:#fff } .alc-media .alc-play:active{ background:#326BE0 }
+.alc-foot{ display:flex; align-items:center; justify-content:space-between; gap:10px; font-size:14px }
+.alc-foot > span{ opacity:.62; white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+.alc-foot .alc-b{ flex:none; padding:0 20px }
+
+/* ---------- CHAMADA RECEBIDA: cartao flutuante no topo (heads-up da Nova UI) ---------- */
+body.os-android .alc-inc{ display:flex; flex-direction:column; gap:14px; position:absolute; left:10px; right:10px; top:10px; z-index:326; padding:16px 16px 14px; border-radius:28px;
+  background:#FCFCFF; color:rgba(0,0,0,.87); box-shadow:0 12px 36px rgba(0,0,0,.28); cursor:pointer; opacity:0; transform:translateY(-22px);
+  transition:opacity .22s ease-out, transform .38s var(--ou-curve-out,cubic-bezier(.22,.25,0,1)) }
+body.os-android.dark .alc-inc{ background:#17171A; color:rgba(255,255,255,.92); box-shadow:0 12px 36px rgba(0,0,0,.55) }
+body.os-android .alc-inc.alc-in{ opacity:1; transform:none }
+body.os-android .alc-inc.alc-out{ opacity:0; transform:translateY(-22px); transition:opacity .18s ease-in, transform .24s ease-in; pointer-events:none }
+.alc-inc .alc-av{ width:52px; height:52px; font-size:19px }
+.alc-inc .alc-sub{ display:flex; align-items:center; gap:5px; opacity:.66 } .alc-inc .alc-sub .asi{ width:14px; height:14px; flex:none }
+.alc-inc .alc-b{ height:48px; border-radius:24px; font-size:15px }
+.alc-inc .alc-b .asi{ width:21px; height:21px }
+
+/* ---------- BARRA DE NAVEGACAO ---------- */
+.anb,.anb-pill,.anb-edge,.anb-arrow{ display:none }
+body.os-android .anb.anb-on{ display:flex; position:absolute; left:0; right:0; bottom:0; height:var(--nav-h,48px); z-index:300; padding:0 22px; align-items:stretch; justify-content:space-around;
+  color:rgba(255,255,255,.92); background-color:transparent; border-radius:0 0 var(--ou-r-screen) var(--ou-r-screen); pointer-events:none;
+  transition:background-color .2s ease-out, color .2s ease-out }
+body.os-android .anb.anb-dk{ color:rgba(0,0,0,.72) }
+.anb-btn{ position:relative; flex:1; display:flex; align-items:center; justify-content:center; pointer-events:auto; cursor:pointer }
+.anb-btn::before{ content:''; position:absolute; left:50%; top:50%; width:44px; height:44px; margin:-22px 0 0 -22px; border-radius:50%; background:rgba(255,255,255,.16); opacity:0; transition:opacity .2s ease-out, border-radius .15s var(--ou-curve,ease) }
+.anb.anb-dk .anb-btn::before{ background:rgba(0,0,0,.09) }
+.anb-btn:active::before{ opacity:1; border-radius:14px; transition:border-radius .15s var(--ou-curve,ease) }   /* Material 3 Expressive: o circulo vira quadrado arredondado ao premir */
+.anb-btn .asi{ position:relative; width:22px; height:22px }
+.anb-recents .asi{ stroke-width:1.8 } .anb-home .asi{ stroke-width:1.9 } .anb-back .asi{ stroke-width:2 }
+.anb .anb-recents{ order:1 } .anb .anb-home{ order:2 } .anb .anb-back{ order:3 }
+.anb[data-order="back-home-recents"] .anb-recents{ order:3 } .anb[data-order="back-home-recents"] .anb-back{ order:1 }
+.anb .anb-i-kb{ display:none } .anb.anb-kb .anb-i-kb{ display:block } .anb.anb-kb .anb-i-back{ display:none }
+/* gestos: so a pega 134x5 por cima do conteudo */
+body.os-android .anb-pill.anb-on{ display:block; position:absolute; left:50%; bottom:8px; width:134px; height:5px; margin-left:-67px; border-radius:2.5px; z-index:300; pointer-events:none;
+  background:rgba(255,255,255,.66); transition:background-color .2s ease-out }
+body.os-android .anb-pill.anb-dk{ background:rgba(0,0,0,.46) }
+body.os-android.landscape .anb-pill.anb-on{ left:8px; top:50%; bottom:auto; margin:-2.5px 0 0 -67px; transform:rotate(90deg); transition:none }
+/* gestos com o teclado aberto: seta para baixo à direita da pega, na faixa de 24 px que o teclado deixa em baixo (oneui-extras.css) */
+.anb-kbh{ display:none }
+body.os-android .anb-kbh.anb-on{ display:flex; position:absolute; right:14px; bottom:0; width:48px; height:26px; z-index:301; align-items:center; justify-content:center; cursor:pointer; color:rgba(0,0,0,.62); transition:color .15s }
+body.os-android.dark .anb-kbh.anb-on{ color:rgba(255,255,255,.72) }
+body.os-android .anb-kbh .asi{ width:20px; height:20px; stroke-width:2.2 }
+body.os-android .anb-kbh:hover{ color:var(--ou-blue) }
+/* geometria do contrato (docs/ANDROID.md 4b): com 3 botoes o #apps acaba 48 px acima do fundo; a pega do PearOS e a
+   borda de voltar nao existem nesse modo (o Voltar e o botao) */
+body.os-android[data-nav="buttons"]:not(.landscape) #apps{ bottom:var(--nav-h,48px) }
+body.os-android[data-nav="buttons"]:not(.landscape) .hb-zone,body.os-android[data-nav="buttons"] .edge-zone{ pointer-events:none }
+/* modo gestos: Voltar a deslizar das DUAS bordas; a direita salta a pega do painel Edge (y 280 a 440) */
+body.os-android[data-nav="gesture"] .edge-zone{ bottom:36px; width:20px }
+body.os-android[data-nav="gesture"] .anb-edge{ display:block; position:absolute; right:0; width:20px; z-index:93; touch-action:none }
+body.os-android[data-nav="gesture"] .anb-edge.anb-r1{ top:var(--statusbar-h); height:calc(280px - var(--statusbar-h)) }
+body.os-android[data-nav="gesture"] .anb-edge.anb-r2{ top:440px; bottom:36px }
+body.os-android[data-nav="gesture"] .anb-edge.anb-r1.anb-full{ height:auto; bottom:36px } body.os-android[data-nav="gesture"] .anb-edge.anb-r2.anb-full{ display:none }
+body.os-android.landscape .anb-edge{ display:none }
+/* seta do Voltar que segue o dedo (como na Nova UI): bolha escura com a seta, entra pela borda e acende ao passar o limite */
+body.os-android .anb-arrow{ display:flex; position:absolute; top:0; width:38px; height:38px; margin-top:-19px; z-index:330; border-radius:50%; align-items:center; justify-content:center;
+  background:rgba(28,28,32,.86); color:#fff; pointer-events:none; opacity:0; transition:opacity .16s ease-out, transform .2s ease-out, background-color .15s ease-out, color .15s ease-out }
+body.os-android .anb-arrow.anb-l{ left:-38px } body.os-android .anb-arrow.anb-r{ right:-38px }
+body.os-android .anb-arrow.anb-on{ opacity:1; transition:background-color .15s ease-out, color .15s ease-out }
+body.os-android .anb-arrow.anb-go{ background:#fff; color:#000 }
+body.os-android .anb-arrow .asi{ width:20px; height:20px; stroke-width:2.4 }
+body.os-android .anb-arrow.anb-r .asi{ transform:scaleX(-1) }
+
+/* ---------- NOVA Fold8: pega dos gestos com 30 % do lado mais curto (fechado 210, aberto 286); sai enquanto a barra flutuante esta em cima ---------- */
+body.os-android.form-fold:not(.landscape) .anb-pill.anb-on{ width:210px; margin-left:-105px; transition:background-color .2s ease-out, opacity .16s ease-out }
+body.os-android.form-fold.fold-open:not(.landscape) .anb-pill.anb-on{ width:286px; margin-left:-143px }
+body.os-android .anb-pill.anb-on.anb-tbup{ opacity:0 }
+
+/* ---------- BARRA DE TAREFAS do NOVA Fold8 aberto (android-sysui.js, spec_fold 1) ----------
+   Com botoes: o grupo de apps vive na barra de 48 px, centrado no espaco livre a esquerda dos botoes (x 16 a 1104): "Todas
+   as apps" (celula 44, glifo 20 na cor da barra a .72) + dock + fio 1 x 20 + 2 recentes; icones 32 em celulas de 46. Entra e
+   sai so com opacidade (150 ms). Com gestos: botao redondo 56 + pilula 56 (raio 28) com icones 36 a 52 de passo, 16 acima
+   do fundo, opaca (por tras esta a app, nao o fundo de ecra); entra a subir 24 px em 220 ms, sai em 160 ms. */
+body{ --taskbar-h:0px }
+.anb-tb,.atb,.atp-w{ display:none }
+body.os-android.form-fold.fold-open .anb > .anb-tb{ display:flex; position:absolute; left:16px; right:236px; top:0; bottom:0; align-items:center; justify-content:center; opacity:0; pointer-events:none; transition:opacity .15s ease-out }
+body.os-android.form-fold.fold-open .anb.anb-tbon > .anb-tb{ opacity:1 }
+body.os-android.form-fold.fold-open .anb.anb-tbon > .anb-tb > *{ pointer-events:auto }
+.anb-tba{ width:44px; height:44px; flex:none; display:flex; align-items:center; justify-content:center; border-radius:50%; cursor:pointer; opacity:.72; transition:background-color .15s ease-out }
+.anb-tba .asi{ width:20px; height:20px }
+.anb-tba:hover{ background-color:rgba(255,255,255,.1) } .anb.anb-dk .anb-tba:hover{ background-color:rgba(0,0,0,.06) }
+.tb-pin,.tb-rec{ display:flex; align-items:center }
+.tb-pin:empty,.tb-rec:empty{ display:none }
+.anb-tb .tb-ic{ width:46px; height:46px; flex:none; display:flex; align-items:center; justify-content:center; cursor:pointer; -webkit-tap-highlight-color:transparent }
+.anb-tb .tb-ic .tile{ width:32px; height:32px; flex:none; transition:opacity .12s ease-out }
+.tb-ic:active .tile{ opacity:.7 }
+.anb-tb .tb-div{ flex:none; width:1px; height:20px; margin:0 6px; background:rgba(255,255,255,.18) }
+.anb.anb-dk .anb-tb .tb-div{ background:rgba(0,0,0,.14) }
+.anb-tb.tb-norec .tb-div,.atb.tb-norec .tb-div{ display:none }
+/* gestos: a barra flutuante */
+body.os-android.form-fold.fold-open .atb{ display:flex; position:absolute; left:0; right:0; bottom:16px; height:56px; justify-content:center; z-index:362; pointer-events:none }
+.atb-in{ display:flex; align-items:center; gap:12px; opacity:0; transform:translateY(24px); transition:opacity .16s ease-in, transform .16s ease-in }
+.atb.atb-up .atb-in{ opacity:1; transform:none; pointer-events:auto; transition:opacity .22s ease-out, transform .22s var(--ou-curve-out,cubic-bezier(.22,.25,0,1)) }
+.atb-apps,.atb-pill{ background:rgba(248,248,250,.94); box-shadow:inset 0 0 0 1px rgba(0,0,0,.06), 0 6px 24px rgba(0,0,0,.16); color:rgba(0,0,0,.72) }
+body.os-android.dark .atb-apps,body.os-android.dark .atb-pill{ background:rgba(38,38,42,.94); box-shadow:inset 0 0 0 1px rgba(255,255,255,.08), 0 6px 24px rgba(0,0,0,.5); color:rgba(255,255,255,.86) }
+.atb-apps{ width:56px; height:56px; flex:none; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:background-color .15s ease-out }
+.atb-apps .asi{ width:22px; height:22px }
+.atb-apps:hover{ background:rgba(236,236,240,.96) } body.os-android.dark .atb-apps:hover{ background:rgba(52,52,58,.96) }
+.atb-pill{ height:56px; display:flex; align-items:center; padding:0 10px; border-radius:28px; box-sizing:border-box }
+.atb .tb-ic{ width:52px; height:56px; flex:none; display:flex; align-items:center; justify-content:center; cursor:pointer; -webkit-tap-highlight-color:transparent }
+.atb .tb-ic .tile{ width:36px; height:36px; flex:none; transition:opacity .12s ease-out }
+.atb .tb-div{ flex:none; width:1px; height:28px; margin:0 6px; background:rgba(0,0,0,.12) }
+body.os-android.dark .atb .tb-div{ background:rgba(255,255,255,.16) }
+body[data-motion="reduced"] .atb-in,body[data-motion="reduced"] .atb.atb-up .atb-in{ transform:none; transition:opacity .16s ease-out }
+
+/* ---------- PAINEL "Todas as apps" da barra de tarefas: cartao de vidro (copia pre-desfocada do fundo + tinta + aro + sombra),
+   760 de largura, 8 colunas (icone 56 e nome de uma linha), pesquisa em pilula de 48 em baixo; 12 acima da barra ou da pilula */
+body.os-android.form-fold.fold-open .atp-w{ position:absolute; inset:0; z-index:299; pointer-events:none }
+body.os-android.form-fold.fold-open .atp-w.on{ display:block; pointer-events:auto }
+.atp{ position:absolute; left:calc(50% - 380px); width:760px; bottom:calc(var(--nav-h,48px) + 12px); max-height:calc(100% - 56px - var(--nav-h,48px) - 12px); box-sizing:border-box;
+  display:flex; flex-direction:column; gap:16px; padding:24px; border-radius:32px; color:rgba(0,0,0,.87);
+  background:linear-gradient(rgba(255,255,255,.72),rgba(255,255,255,.72)), var(--wp-blur2,var(--wp-blur,#E9E9EE)) center/cover no-repeat;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.6), 0 16px 48px rgba(0,0,0,.24);
+  opacity:0; transform:translateY(18px); transform-origin:50% 100%; transition:opacity .16s ease-in, transform .18s ease-in }
+.atp-w.atp-g-mode .atp{ bottom:84px; max-height:calc(100% - 56px - 84px) }
+body.os-android.dark .atp{ color:rgba(255,255,255,.92); background-image:linear-gradient(rgba(24,24,28,.72),rgba(24,24,28,.72)), var(--wp-blur2,var(--wp-blur,#1B1B1F)); box-shadow:inset 0 0 0 1px rgba(255,255,255,.12), 0 16px 48px rgba(0,0,0,.4) }
+.atp-w.in .atp{ opacity:1; transform:none; transition:opacity .2s ease-out, transform .26s var(--ou-curve-out,cubic-bezier(.22,.25,0,1)) }
+.atp-g{ display:grid; grid-template-columns:repeat(8,minmax(0,1fr)); row-gap:18px; overflow-y:auto; overflow-x:hidden; scrollbar-width:none; min-height:0 }
+.atp-g::-webkit-scrollbar{ display:none }
+.atp-it{ display:flex; flex-direction:column; align-items:center; gap:6px; min-width:0; cursor:pointer; -webkit-tap-highlight-color:transparent }
+.atp-it .tile{ width:56px; height:56px; flex:none; transition:opacity .12s ease-out }
+.atp-it:active .tile{ opacity:.7 }
+.atp-it span{ max-width:100%; font-size:12px; font-weight:500; line-height:15px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; color:inherit }
+.atp-it.atp-hide{ display:none }
+.atp-none{ display:none; padding:28px 0; text-align:center; font-size:15px; font-weight:500; opacity:.6 }
+.atp.atp-empty .atp-none{ display:block }
+.atp-s{ flex:none; height:48px; border-radius:24px; display:flex; align-items:center; gap:10px; padding:0 18px; cursor:text; background:rgba(255,255,255,.66); box-shadow:inset 0 0 0 1px rgba(0,0,0,.05); color:rgba(0,0,0,.6) }
+body.os-android.dark .atp-s{ background:rgba(255,255,255,.1); box-shadow:inset 0 0 0 1px rgba(255,255,255,.08); color:rgba(255,255,255,.7) }
+.atp-s .asi{ width:20px; height:20px; flex:none }
+.atp-q{ flex:1; min-width:0; height:100%; border:0; outline:0; background:transparent; font:inherit; font-size:16px; font-weight:500; color:rgba(0,0,0,.87) }
+body.os-android.dark .atp-q{ color:rgba(255,255,255,.92) }
+.atp-q::placeholder{ color:inherit; opacity:.62 }
+body[data-motion="reduced"] .atp,body[data-motion="reduced"] .atp-w.in .atp{ transform:none }
+/* teclado aberto pela pesquisa do painel (android-sysui.js atpKb, --atp-kb): o cartão sobe por transform até ficar 12 acima das
+   teclas e encolhe o que for preciso (o topo nunca passa dos 56); o teclado fica por cima do véu do painel para as teclas
+   apanharem os toques (no z 250 de sempre o véu, 299, tapava-o e um toque numa tecla fechava o painel) */
+body.os-android.form-fold.fold-open .atp-w.in.atp-kb .atp{ transform:translateY(calc(-1 * var(--atp-kb,0px))); max-height:calc(100% - 56px - var(--nav-h,48px) - 12px - var(--atp-kb,0px)) }
+body.os-android.form-fold.fold-open .atp-w.atp-g-mode.in.atp-kb .atp{ max-height:calc(100% - 56px - 84px - var(--atp-kb,0px)) }
+body.os-android.form-fold.fold-open.atp-open #kb{ z-index:300 }
+
+/* ---------- PAINEL DE VOLUME Nova UI (junto as teclas, a direita) ---------- */
+.avol{ display:none }
+body.os-android .avol{ display:block; position:absolute; right:12px; top:118px; z-index:340; opacity:0; transform:translateX(18px); pointer-events:none;
+  transition:opacity .2s ease-out, transform .34s var(--ou-curve-out,cubic-bezier(.22,.25,0,1)) }
+body.os-android .avol.avol-in{ opacity:1; transform:none; pointer-events:auto }
+/* Android 17: painel translucido. Por cima do ecra principal ou do bloqueado o vidro e a copia pre-desfocada do fundo, alinhada com o
+   sitio do painel (right 12, top 118: o x da copia e a largura do ecra menos 12 menos a largura do painel) com um veu do tema e um
+   fio de luz em cima; por cima de uma app nao ha desfoque possivel e a superficie fica quase opaca */
+body.os-android{ --avol-veil:rgba(250,250,253,.72); --avol-line:rgba(255,255,255,.85); --avol-solid:rgba(252,252,255,.96) }
+body.os-android.dark{ --avol-veil:rgba(26,26,30,.64); --avol-line:rgba(255,255,255,.12); --avol-solid:rgba(26,26,30,.96) }
+.avol-mini,.avol-full{ border-radius:34px; color:rgba(0,0,0,.87); box-shadow:inset 0 1px 0 var(--avol-line), inset 0 0 0 1px rgba(255,255,255,.3), 0 8px 28px rgba(0,0,0,.22);
+  background:linear-gradient(var(--avol-veil),var(--avol-veil)), var(--wp-blur2,var(--wp-blur,#FCFCFF)) no-repeat; background-size:auto, var(--screen-w,440px) 956px }
+.avol-mini{ background-position:0 0, calc(76px - var(--screen-w,440px)) -118px }
+.avol-full{ background-position:0 0, calc(280px - var(--screen-w,440px)) -118px }
+body.os-android.dark .avol-mini,body.os-android.dark .avol-full{ color:rgba(255,255,255,.92); box-shadow:inset 0 1px 0 var(--avol-line), inset 0 0 0 1px rgba(255,255,255,.06), 0 8px 28px rgba(0,0,0,.5) }
+body.os-android .screen.locked .avol-mini,body.os-android .screen.locked .avol-full{ background-image:linear-gradient(var(--avol-veil),var(--avol-veil)), var(--wp-lock-blur2,var(--wp-lock-blur,var(--wp-blur2,#FCFCFF))) }
+body.os-android .screen.app-open .avol-mini,body.os-android .screen.app-open .avol-full{ background:var(--avol-solid) }
+.avol-mini{ display:flex; flex-direction:column; align-items:center; gap:10px; width:64px; padding:10px }
+.avol-full{ display:none; flex-direction:column; gap:14px; padding:18px 14px 14px; width:268px }
+.avol.avol-x .avol-mini{ display:none } .avol.avol-x .avol-full{ display:flex; animation:avolX .26s ease-out both }
+@keyframes avolX{ from{ opacity:0 } to{ opacity:1 } }
+.avol-mode,.avol-more{ width:44px; height:44px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; flex:none; background:rgba(0,0,0,.06); transition:background-color .15s }
+body.os-android.dark .avol-mode,body.os-android.dark .avol-more{ background:rgba(255,255,255,.1) }
+.avol-mode:active,.avol-more:active{ background:rgba(0,0,0,.12) } body.os-android.dark .avol-mode:active,body.os-android.dark .avol-more:active{ background:rgba(255,255,255,.18) }
+.avol-mode.avol-vib{ background:var(--ou-blue,#3E7BFA); color:#fff } body.os-android.dark .avol-mode.avol-vib{ background:var(--ou-blue,#3E7BFA) }
+.avol-mode .asi,.avol-more .asi{ width:22px; height:22px }
+.avol-track{ position:relative; width:44px; height:176px; border-radius:22px; overflow:hidden; flex:none; cursor:pointer; touch-action:none; background:rgba(0,0,0,.08) }
+body.os-android.dark .avol-track{ background:rgba(255,255,255,.12) }
+.avol-fill{ position:absolute; left:0; right:0; top:0; height:100%; border-radius:22px; background:var(--ou-slider,#387AFF); transform:translateY(132px); transition:transform .12s ease-out; will-change:transform }
+.avol-track.avol-drag .avol-fill{ transition:none }
+.avol-ic{ position:absolute; left:0; right:0; bottom:0; height:44px; display:flex; align-items:center; justify-content:center; color:#fff; pointer-events:none }
+.avol-track.avol-zero .avol-ic{ color:inherit; opacity:.6 }
+.avol-ic .asi{ width:20px; height:20px }
+.avol-num{ position:absolute; left:0; right:0; top:10px; text-align:center; font-size:12px; font-weight:600; font-variant-numeric:tabular-nums; opacity:.7; pointer-events:none }
+.avol-cols{ display:flex; justify-content:space-between; gap:4px }
+.avol-col{ display:flex; flex-direction:column; align-items:center; gap:8px; flex:1; min-width:0 }
+.avol-lbl{ font-size:11.5px; font-weight:500; opacity:.72; text-align:center; white-space:nowrap; max-width:100%; overflow:hidden; text-overflow:ellipsis }
+.avol-foot{ display:flex; align-items:center; justify-content:space-between; gap:8px }
+.avol-mode2{ height:38px; padding:0 14px 0 10px; border-radius:19px; display:flex; align-items:center; gap:6px; font-size:13px; font-weight:600; cursor:pointer; background:rgba(0,0,0,.06) }
+body.os-android.dark .avol-mode2{ background:rgba(255,255,255,.1) }
+.avol-mode2 .asi{ width:18px; height:18px }
+.avol-set{ height:38px; padding:0 12px; display:flex; align-items:center; font-size:14px; font-weight:600; color:var(--ou-blue,#3E7BFA); cursor:pointer; border-radius:19px }
+.avol-set:active,.avol-mode2:active{ background:rgba(0,0,0,.1) } body.os-android.dark .avol-set:active,body.os-android.dark .avol-mode2:active{ background:rgba(255,255,255,.16) }
+
+/* ---------- MENU DE ENERGIA Nova UI ---------- */
+.apw{ display:none }
+body.os-android .apw{ display:flex; position:absolute; inset:0; z-index:345; flex-direction:column; align-items:center; justify-content:center; gap:34px; border-radius:var(--ou-r-screen);
+  background:rgba(0,0,0,.42); color:#fff; opacity:0; pointer-events:none; transition:opacity .24s ease-out; overflow:hidden }
+/* vidro: copia pre-desfocada do fundo (sem backdrop-filter); com uma app aberta so a tinta, que o fundo e a app */
+body.os-android .apw::before{ content:''; position:absolute; inset:0; z-index:-1; border-radius:inherit; pointer-events:none;
+  background:linear-gradient(rgba(0,0,0,.34),rgba(0,0,0,.34)), var(--wp-blur2,var(--wp-blur,#141416)) center/cover no-repeat }
+body.os-android .screen.locked .apw::before{ background-image:linear-gradient(rgba(0,0,0,.34),rgba(0,0,0,.34)), var(--wp-lock-blur,var(--wp-blur2,var(--wp-blur,#141416))) }
+body.os-android .screen.app-open .apw{ background:rgba(0,0,0,.86) }   /* sem desfoque: a .74 o texto da app lia-se por baixo das legendas dos botoes */ body.os-android .screen.app-open .apw::before{ background:none }
+body.os-android .apw.apw-in{ opacity:1; pointer-events:auto }
+.apw-row{ display:flex; gap:20px; margin-top:-40px }
+.apw-b{ width:96px; display:flex; flex-direction:column; align-items:center; gap:12px; cursor:pointer; transition:transform .3s var(--ou-curve-out,cubic-bezier(.22,.25,0,1)), opacity .2s ease-out }
+.apw-b i{ width:76px; height:76px; border-radius:50%; display:flex; align-items:center; justify-content:center; color:#fff; box-shadow:inset 0 1px 0 rgba(255,255,255,.28), 0 8px 22px rgba(0,0,0,.22); transition:background-color .15s, border-radius .15s var(--ou-curve,ease) }
+.apw-b:active i{ border-radius:24px }   /* morphing ao premir */
+.apw-b i .asi{ width:32px; height:32px; stroke-width:2.1 }
+.apw-b.apw-off i{ background:#F2453D } .apw-b.apw-off:active i{ background:#D93A33 }
+.apw-b.apw-rst i{ background:#2DBE60 } .apw-b.apw-rst:active i{ background:#26A653 }
+.apw-b.apw-sos i{ background:#FF8A1F } .apw-b.apw-sos:active i{ background:#E57A16 }
+.apw-b span{ font-size:14px; font-weight:500; text-align:center; line-height:1.25; color:rgba(255,255,255,.92) }
+.apw-msg{ height:20px; margin-top:-16px; font-size:15px; font-weight:500; color:rgba(255,255,255,.86); opacity:0; transition:opacity .2s ease-out }
+.apw.apw-cf-off .apw-msg,.apw.apw-cf-rst .apw-msg{ opacity:1 }
+.apw.apw-cf-off .apw-rst,.apw.apw-cf-off .apw-sos,.apw.apw-cf-rst .apw-off,.apw.apw-cf-rst .apw-sos{ opacity:0; pointer-events:none }
+.apw.apw-cf-off .apw-off{ transform:translateX(116px) }
+.apw-set{ position:absolute; left:0; right:0; bottom:calc(var(--safe-bottom,20px) + 44px); display:flex; justify-content:center }
+.apw-set span{ height:40px; padding:0 18px; border-radius:20px; display:flex; align-items:center; gap:8px; font-size:14px; font-weight:500; color:rgba(255,255,255,.9); background:rgba(255,255,255,.14); box-shadow:inset 0 1px 0 rgba(255,255,255,.22), inset 0 -1px 0 rgba(0,0,0,.2); cursor:pointer }
+.apw-set span:active{ background:rgba(255,255,255,.24) }
+.apw-set .asi{ width:17px; height:17px }
+/* reiniciar: o ecra apaga e aparece a marca enquanto "arranca" */
+.aod-boot{ display:none }
+body.os-android .screen-off.aod-booting .aod-boot{ display:flex; position:absolute; inset:0; flex-direction:column; align-items:center; justify-content:center; gap:10px; color:#fff; animation:aodBoot .5s ease-out both }
+@keyframes aodBoot{ from{ opacity:0 } to{ opacity:1 } }
+.aod-boot b{ font-family:var(--font-display,var(--font)); font-size:38px; font-weight:600; letter-spacing:6px; margin-right:-6px }
+.aod-boot span{ font-size:13px; font-weight:500; letter-spacing:1.5px; opacity:.55 }
+body.os-android .screen-off.aod-booting .aod-wrap{ display:none }
+
+/* ---------- ALWAYS ON DISPLAY Nova UI: preto puro, relogio grande e fino, data, bateria e icones das notificacoes ---------- */
+.aod-wrap{ display:none }
+body.os-android .screen-off.aod{ background:#000 }
+body.os-android .screen-off.aod .aod-wrap{ display:flex; flex-direction:column; align-items:center; position:absolute; left:0; right:0; top:236px; color:#fff; pointer-events:none }
+.aod-clock{ font-family:var(--font-clock,var(--font)); font-size:92px; font-weight:400; line-height:1; letter-spacing:-1.5px; font-variant-numeric:tabular-nums; color:rgba(255,255,255,.94) }
+.aod-date{ margin-top:14px; font-size:16px; font-weight:500; color:rgba(255,255,255,.72) }
+.aod-batt{ margin-top:12px; display:flex; align-items:center; gap:7px; font-size:13px; font-weight:600; color:rgba(255,255,255,.62); font-variant-numeric:tabular-nums }
+.aod-batt .asb-batt{ color:rgba(255,255,255,.9) }
+.aod-notifs{ margin-top:26px; display:flex; gap:14px; color:rgba(255,255,255,.78) }
+.aod-notifs .asb-ni{ width:20px; height:20px }

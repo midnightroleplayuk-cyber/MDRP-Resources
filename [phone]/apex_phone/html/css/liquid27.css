@@ -1,0 +1,708 @@
+/* ============================================================
+   PearOS 27 - Liquid Glass revisto (Apple, 14 set 2026). Carregado em ÚLTIMO (depois de motion.css): só afina o que já existe.
+   O que o PearOS 27 mudou no material e está aqui:
+     1. ARESTA ESCURECIDA à volta de cada peça de vidro + REFLEXOS ESPECULARES mais brilhantes (--lg-ring).
+     2. DIFUSÃO: o vidro tinge mais o que tem por baixo (legibilidade) - e passa a ser AFINÁVEL:
+        Definições › Ecrã e brilho › Liquid Glass, de ultra-transparente a totalmente tingido. O cursor (0..100)
+        vira alfas pré-calculados no System.apply(): --lg-a (vidro claro sobre o fundo), --lg-ad (vidro escuro),
+        --lg-m/--lg-md (material das barras/menus claro/escuro), --lg-tint (tinta). ⚠️ Nunca calc() dentro de rgba()
+        nem color-mix(): o CEF do FiveM não os faz (ver fivem-nui-color-mix-transparent).
+     3. "Barra uniforme" quando o conteúdo rola por baixo das barras flutuantes: o material da barra de navegação
+        já não acaba numa linha - desvanece 22 px por cima do conteúdo (.navbar.solid::after).
+     4. ÍCONES mais definidos, em camadas: reflexo no topo + aresta escura fina (.hi .tile::after) - só CSS, por
+        isso funciona também no jogo, onde o filtro SVG de profundidade está desligado (motion.css).
+     5. Relógio COMPACTO do ecrã bloqueado (body[data-clock="compact"]): a hora pequena ao lado da data e dos
+        widgets, no topo; o fundo aparece inteiro.
+     6. Siri/Vera: o contorno luminoso a toda a volta saiu - o orbe rodopia na Dynamic Island (vera.js) e a
+        folha fica compacta (sem orbe repetido no cabeçalho).
+     7. Spotlight = "Pesquisar ou perguntar": a primeira linha dos resultados manda a frase à Vera (.gs-ask).
+   Regras do CEF mantidas: nada de filter/backdrop-filter novos (os que existem ficam desligados em body.fivem pelo
+   motion.css), só transform/opacity animam, sem color-mix, sem clip-path.
+   ============================================================ */
+:root{
+  --lg-t:.5; --lg-a:.41; --lg-ad:.49; --lg-tint:.275; --lg-m:.73; --lg-md:.72; --lg-mf:.89; --lg-mdf:.90;
+  /* aresta escura + reflexo (PearOS 27): o mesmo anel em todas as peças de vidro claras */
+  --lg-edge:rgba(0,0,0,.12); --lg-spec:rgba(255,255,255,.70); --lg-spec2:rgba(255,255,255,.16);
+  --lg-ring:inset 0 1px 0 var(--lg-spec), inset 0 -1px 0 var(--lg-spec2), inset 0 0 0 .5px var(--lg-edge);
+  --lg-drop:0 8px 24px rgba(0,0,0,.16);
+  --lg-r-group:26px;   /* listas agrupadas: cantos concêntricos (PearOS 26/27) */
+}
+body.dark{ --lg-edge:rgba(0,0,0,.42); --lg-spec:rgba(255,255,255,.30); --lg-spec2:rgba(255,255,255,.05) }
+
+/* ---------- 2. material afinável - vidro CLARO por cima do fundo de ecrã (dock, pílulas, botões do bloqueado, pastas, notificações) ---------- */
+.dock{ background:rgba(255,255,255,var(--lg-a)); box-shadow:var(--lg-drop), var(--lg-ring); border-color:rgba(255,255,255,.26) }
+.dock.over{ background:rgba(255,255,255,.34) }
+.search-pill,.ls-btn,.wg.glass,.hi.folder .tile,.folder-box,.edit-bar div,.sw-all,.spot .lib-tile{ background-color:rgba(255,255,255,var(--lg-a)); box-shadow:var(--lg-drop), var(--lg-ring) }
+/* widgets do ecrã bloqueado: no PearPhone NÃO são pílulas de vidro - são glifos "vibrantes" brancos com um fundo quase
+   impercetível (revisão 2026-09-16: "o glass está demasiado forte"). Sem sombra, sem aresta escura; ligeiramente
+   mais abaixo do relógio. Não seguem o cursor Liquid Glass de propósito: na Apple estes mantêm-se assim. */
+.lock-widgets{ margin-top:10px }
+.lw{ background-color:rgba(255,255,255,.09); border:.5px solid rgba(255,255,255,.10); box-shadow:inset 0 .5px 0 rgba(255,255,255,.14); color:rgba(255,255,255,.94); text-shadow:0 1px 4px rgba(0,0,0,.22) }
+.lw svg{ opacity:.94 }
+body.fivem .lw{ background-color:rgba(255,255,255,.12) }
+.ls-btn.on{ background:#fff }
+.notif-card .ncard,#lock .notif-card .ncard,.nstack .peek,.nh-x,.nh-less,.n-bb,.n-act,.n-x{ background-color:rgba(255,255,255,var(--lg-a)); box-shadow:var(--lg-drop), var(--lg-ring) }
+.n-bb.n-clr{ background-color:rgba(255,69,58,.72) }
+body.dark .notif-card .ncard,body.dark #lock .notif-card .ncard,body.dark .nstack .peek,body.dark .n-x{ background-color:rgba(44,44,48,var(--lg-ad)) }
+/* teclado do código (bloqueado): teclas de vidro com aresta */
+.key{ background:rgba(255,255,255,var(--lg-a)); box-shadow:var(--lg-ring) }
+/* Centro de controlo: mosaicos de vidro escuro com a mesma aresta; a tinta acompanha o cursor */
+.cc-mod,.cc-tile,.cc-slider{ background:linear-gradient(155deg,rgba(255,255,255,.16) 0%,rgba(255,255,255,.05) 45%,rgba(255,255,255,.02) 100%), rgba(58,58,66,var(--lg-ad)); box-shadow:inset 0 1px 0 rgba(255,255,255,.34), inset 0 -1px 0 rgba(255,255,255,.05), inset 0 0 0 .5px rgba(0,0,0,.28), 0 6px 18px rgba(0,0,0,.18) }
+.cc-tile.on{ background:linear-gradient(155deg,rgba(255,255,255,.4) 0%,rgba(255,255,255,.22) 100%), rgba(255,255,255,.6); box-shadow:inset 0 1px 0 rgba(255,255,255,.8), inset 0 0 0 .5px rgba(0,0,0,.08), 0 6px 18px rgba(0,0,0,.14) }
+/* Spotlight: barra e grupos com a mesma tinta */
+.gsearch .search{ background:rgba(255,255,255,var(--lg-a)); box-shadow:var(--lg-ring) }
+.gsearch .group{ background:rgba(255,255,255,var(--lg-tint)) }
+
+/* ---------- 2b. material das apps (barras flutuantes, botões de vidro, menus, alertas): claro/escuro, e no jogo mais opaco ---------- */
+.tb-pill,.tab.tab-search,.nb-btn.glass{ background:rgba(255,255,255,var(--lg-m)); border-color:rgba(255,255,255,.55); box-shadow:0 10px 30px rgba(0,0,0,.20), var(--lg-ring) }
+.nb-btn.glass{ border:.5px solid rgba(255,255,255,.55); box-shadow:0 4px 14px rgba(0,0,0,.14), var(--lg-ring) }
+.tab.tab-search.on{ background:rgba(255,255,255,var(--lg-m)) }
+.alert,.ctx,.as-group,.vera-sheet,.toast,.hw-hud{ background:rgba(255,255,255,var(--lg-m)); box-shadow:0 20px 50px rgba(0,0,0,.25), var(--lg-ring) }
+.ctx{ border-radius:26px }
+body.dark .tb-pill,body.dark .tab.tab-search,body.dark .nb-btn.glass,body.dark .tab.tab-search.on{ background:rgba(36,36,40,var(--lg-md)); border-color:rgba(255,255,255,.14) }
+body.dark .alert,body.dark .ctx,body.dark .as-group,body.dark .vera-sheet,body.dark .toast,body.dark .hw-hud{ background:rgba(28,28,30,var(--lg-md)) }
+/* no jogo não há desfoque por baixo (motion.css desliga o backdrop-filter): o material tem de ser mais opaco para o texto se ler */
+body.fivem .tb-pill,body.fivem .tab.tab-search,body.fivem .nb-btn.glass,body.fivem .tab.tab-search.on{ background:rgba(255,255,255,var(--lg-mf)) }
+body.fivem .alert,body.fivem .ctx,body.fivem .as-group,body.fivem .vera-sheet,body.fivem .toast,body.fivem .hw-hud{ background:rgba(255,255,255,var(--lg-mf)) }
+body.dark.fivem .tb-pill,body.dark.fivem .tab.tab-search,body.dark.fivem .nb-btn.glass,body.dark.fivem .tab.tab-search.on{ background:rgba(36,36,40,var(--lg-mdf)) }
+body.dark.fivem .alert,body.dark.fivem .ctx,body.dark.fivem .as-group,body.dark.fivem .vera-sheet,body.dark.fivem .toast,body.dark.fivem .hw-hud{ background:rgba(28,28,30,var(--lg-mdf)) }
+/* dock no jogo (1.5.0): o material vive no glass27.css (.dock.lg.lg-wp, cópia do fundo alinhada pelo glass.js); as regras antigas saíram */
+body.fivem .search-pill,body.fivem .ls-btn,body.fivem .wg.glass,body.fivem .hi.folder .tile,body.fivem .folder-box,body.fivem .edit-bar div,body.fivem .sw-all,body.fivem .spot .lib-tile,body.fivem .key{ background-color:rgba(255,255,255,var(--lg-a)) }
+body.fivem .ls-btn.on,body.fivem .edit-bar .done{ background:#fff }
+body.fivem .notif-card .ncard,body.fivem #lock .notif-card .ncard,body.fivem .nstack .peek,body.fivem .nh-x,body.fivem .nh-less,body.fivem .n-bb,body.fivem .n-act,body.fivem .n-x{ background-color:rgba(255,255,255,var(--lg-a)) }
+body.fivem .n-bb.n-clr{ background-color:rgba(255,69,58,.72) }
+body.dark.fivem .notif-card .ncard,body.dark.fivem #lock .notif-card .ncard,body.dark.fivem .nstack .peek,body.dark.fivem .n-x{ background-color:rgba(44,44,48,var(--lg-ad)) }
+
+/* ---------- NOTIFICAÇÕES IGUAIS AO iPHONE (2026-09-19, capturas do utilizador) ----------
+   Cartão branco fosco com texto PRETO (título a negrito, mensagem normal, hora cinzenta), ícone de 42 px, cantos 24, e SEM a
+   linha "MENSAGENS" em maiúsculas (o iOS identifica a app pelo ícone). No jogo não há desfoque por baixo → mais opaco.
+   Vale para o ecrã bloqueado, o Centro de notificações, o banner e o cartão expandido. As regras acima (vidro fino
+   branco com texto branco) ficam para o resto; estas ganham por virem depois com os mesmos seletores. */
+.notif-card .ncard,#lock .notif-card .ncard,body.fivem .notif-card .ncard,body.fivem #lock .notif-card .ncard{ background-color:rgba(255,255,255,.66); color:#000; border:none; border-radius:24px; padding:11px 14px 12px 12px; gap:12px; box-shadow:0 8px 24px rgba(0,0,0,.14), inset 0 0 0 .5px rgba(255,255,255,.6) }
+body.fivem .notif-card .ncard,body.fivem #lock .notif-card .ncard{ background-color:rgba(255,255,255,.86) }
+body.dark .notif-card .ncard,body.dark #lock .notif-card .ncard{ background-color:rgba(44,44,48,.62); color:#fff; box-shadow:0 8px 24px rgba(0,0,0,.28), inset 0 0 0 .5px rgba(255,255,255,.12) }
+body.dark.fivem .notif-card .ncard,body.dark.fivem #lock .notif-card .ncard{ background-color:rgba(44,44,48,.92) }
+.notif-card.press .ncard,body.fivem .notif-card.press .ncard{ background-color:rgba(255,255,255,.82) } body.dark .notif-card.press .ncard,body.dark.fivem .notif-card.press .ncard{ background-color:rgba(64,64,68,.9) }
+/* as que espreitam por trás na pilha: o mesmo material, um pouco mais leve */
+.nstack .peek,body.fivem .nstack .peek{ background-color:rgba(255,255,255,.5); border:none; border-radius:24px; box-shadow:0 4px 14px rgba(0,0,0,.10), inset 0 0 0 .5px rgba(255,255,255,.55) }
+body.fivem .nstack .peek{ background-color:rgba(255,255,255,.64) }
+body.dark .nstack .peek,body.dark.fivem .nstack .peek{ background-color:rgba(44,44,48,.6) }
+.notif-card .n-app,.nbanner .n-app{ display:none }
+.notif-card .n-ic,.nbanner .n-ic{ width:42px; height:42px; border-radius:10px }
+.notif-card .n-ic svg,.notif-card .n-ic img,.nbanner .n-ic svg,.nbanner .n-ic img{ border-radius:10px }
+.notif-card .n-title,.nbanner .n-title{ font-size:17px; font-weight:600; line-height:1.24; margin-top:0; letter-spacing:-.2px }
+.notif-card .n-msg,.nbanner .n-msg{ font-size:17px; line-height:1.24; opacity:1; -webkit-line-clamp:3; letter-spacing:-.2px }
+body.dark .notif-card .n-msg{ opacity:.9 }
+.notif-card .n-time{ font-size:14px; color:rgba(60,60,67,.6); opacity:1; padding-top:2px } body.dark .notif-card .n-time{ color:rgba(235,235,245,.6) }
+/* sem botões de ação DENTRO do cartão (o iPhone só os mostra ao manter premido - cartão expandido, .n-xact) */
+.notif-card .n-acts{ display:none }
+.notif-card .n-act,body.fivem .notif-card .n-act{ background:rgba(0,0,0,.06); border:none; color:#007AFF; box-shadow:none }
+body.dark .notif-card .n-act,body.dark.fivem .notif-card .n-act{ background:rgba(255,255,255,.14); color:#fff }
+/* cartão expandido (manter premido): o mesmo material claro, texto preto */
+.n-x,body.fivem .n-x{ background-color:rgba(255,255,255,.8); color:#000; border:none; box-shadow:0 20px 50px rgba(0,0,0,.3), inset 0 0 0 .5px rgba(255,255,255,.6) }
+body.fivem .n-x{ background-color:rgba(255,255,255,.94) }
+body.dark .n-x,body.dark.fivem .n-x{ background-color:rgba(44,44,48,.94); color:#fff }
+.n-x .n-xapp{ opacity:.6 } .n-x .n-xtime{ opacity:.6 }
+.n-xact,body.fivem .n-xact{ background:rgba(0,0,0,.06); border:none; color:#007AFF; box-shadow:none } .n-xact.danger,body.fivem .n-xact.danger{ color:#FF3B30 }
+body.dark .n-xact,body.dark.fivem .n-xact{ background:rgba(255,255,255,.14); color:#fff }
+/* conversa: foto/iniciais do contacto em círculo com o ícone da app em selo (notify.js icHtml) */
+.n-ic.av,.nbanner .n-ic.av{ overflow:visible; border-radius:0; background:transparent }
+.n-avwrap{ position:relative; width:42px; height:42px }
+.n-avwrap .avatar{ width:42px; height:42px; font-size:16px; border-radius:50%; margin:0 }
+.n-avwrap .n-badge{ position:absolute; right:-5px; bottom:-4px; width:20px; height:20px; border-radius:6px; overflow:hidden; box-shadow:0 0 0 2px rgba(255,255,255,.96); background:#fff }
+body.dark .n-avwrap .n-badge{ box-shadow:0 0 0 2px #2C2C30 }
+.n-avwrap .n-badge svg{ width:100%; height:100%; display:block; border-radius:0 }
+
+/* ---------- 2c. botões da barra de navegação em vidro (PearOS 26/27): texto em cápsula, ícone em círculo, "anterior" = círculo só com a seta ---------- */
+.nb-btn:not(.glass){ height:40px; min-width:40px; padding:0 14px; margin:0; border-radius:20px; background:rgba(255,255,255,var(--lg-m)); border:.5px solid rgba(255,255,255,.55); box-shadow:0 4px 14px rgba(0,0,0,.10), var(--lg-ring); font-size:var(--t-callout); transition:transform var(--motion-normal) var(--spring), opacity .15s }
+.nb-btn.nb-ico:not(.glass){ width:40px; padding:0 }   /* só glifo (ui.js navBtn põe .nb-ico; o CEF não tem :has()) */
+.nb-btn:not(.glass) svg{ width:24px; height:24px }
+.nb-btn:not(.glass):active{ opacity:1; transform:scale(.94) }
+.nb-btn.dis{ opacity:.4 }
+.nb-back{ width:40px; min-width:40px; height:40px; padding:0; margin:0; justify-content:center; border-radius:50%; background:rgba(255,255,255,var(--lg-m)); border:.5px solid rgba(255,255,255,.55); box-shadow:0 4px 14px rgba(0,0,0,.10), var(--lg-ring); transition:transform var(--motion-normal) var(--spring), opacity .15s }
+.nb-back span{ display:none } .nb-back svg{ width:24px; height:24px; margin-left:-2px }
+.nb-back:active{ opacity:1; transform:scale(.94) }
+.nb-left,.nb-right{ gap:8px }
+body.dark .nb-btn:not(.glass),body.dark .nb-back{ background:rgba(36,36,40,var(--lg-md)); border-color:rgba(255,255,255,.14) }
+body.fivem .nb-btn:not(.glass),body.fivem .nb-back{ background:rgba(255,255,255,var(--lg-mf)) }
+body.dark.fivem .nb-btn:not(.glass),body.dark.fivem .nb-back{ background:rgba(36,36,40,var(--lg-mdf)) }
+/* barras transparentes (por cima de fotos/mapas) e apps de tema escuro (Darkchat .dc, Jogos .gm, Onion): vidro escuro, não claro */
+.navbar.transparent .nb-btn:not(.glass),.navbar.transparent .nb-back,.dc .nb-btn:not(.glass),.dc .nb-back,.view.gm .nb-btn:not(.glass),.view.gm .nb-back,.onion .nb-btn:not(.glass),.onion .nb-back{ background:rgba(20,20,24,.42); border-color:rgba(255,255,255,.18); box-shadow:inset 0 1px 0 rgba(255,255,255,.22), inset 0 0 0 .5px rgba(0,0,0,.3) }
+
+/* ---------- 3. barra uniforme: o material desvanece por cima do conteúdo em vez de acabar numa linha ---------- */
+.navbar.solid{ box-shadow:none }
+.navbar.solid::after{ content:''; position:absolute; left:0; right:0; top:100%; height:22px; pointer-events:none; z-index:-1;
+  background:linear-gradient(180deg, var(--material), rgba(255,255,255,0)) }
+body.dark .navbar.solid::after{ background:linear-gradient(180deg, var(--material), rgba(28,28,30,0)) }
+body.fivem .navbar.solid::after{ background:linear-gradient(180deg, var(--bg), rgba(255,255,255,0)) }
+body.dark.fivem .navbar.solid::after{ background:linear-gradient(180deg, var(--bg), rgba(0,0,0,0)) }
+
+/* ---------- 4. ícones mais definidos: camada de vidro por cima de cada ícone (reflexo no topo + aresta fina) ---------- */
+.hi .tile::after,.dock .tile::after,.gs-app .tile::after{ content:''; position:absolute; inset:0; pointer-events:none; z-index:2;
+  border-radius:var(--icon-r);
+  background:linear-gradient(180deg, rgba(255,255,255,.26) 0%, rgba(255,255,255,.07) 34%, rgba(255,255,255,0) 58%, rgba(0,0,0,.05) 100%);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.55), inset 0 -1px 0 rgba(0,0,0,.10), inset 0 0 0 .5px rgba(0,0,0,.10);
+  -webkit-mask:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><path d='M30 0h40c18 0 30 12 30 30v40c0 18-12 30-30 30H30C12 100 0 88 0 70V30C0 12 12 0 30 0z'/></svg>") center/100% 100% no-repeat;
+  mask:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><path d='M30 0h40c18 0 30 12 30 30v40c0 18-12 30-30 30H30C12 100 0 88 0 70V30C0 12 12 0 30 0z'/></svg>") center/100% 100% no-repeat }
+.hi.folder .tile::after{ display:none }   /* a pasta já é vidro */
+.hi .tile .badge{ z-index:3 }
+
+/* ---------- listas agrupadas com cantos concêntricos (26) e controlos em cápsula ---------- */
+.group{ border-radius:var(--lg-r-group) }
+.card{ border-radius:22px }
+.seg{ border-radius:20px; padding:3px } .seg div{ border-radius:17px }
+.sheet{ border-radius:40px 40px 0 0 }
+.alert{ border-radius:30px }
+
+/* ---------- 5. relógio compacto do ecrã bloqueado (Definições › Ecrã bloqueado › Relógio compacto) ----------
+   O MESMO arranjo serve `#lock.nc-scroll` (notify.js, 2026-09-20): uma pilha aberta em lista que não cabe entre o relógio e os
+   atalhos fazia os cartões passar POR BAIXO dos dígitos (cortados pela máscara). Como no PearOS, quando a lista precisa de
+   espaço o relógio encolhe para o topo e a caixa cresce (top 160); ao fechar a lista volta o relógio grande. */
+body[data-clock="compact"] .lock-clockwrap,#lock.nc-scroll .lock-clockwrap{ top:66px; left:22px; right:22px; display:flex; flex-direction:row; align-items:center; justify-content:flex-start; gap:8px; text-align:left; transform-origin:50% 50% }
+body[data-clock="compact"] .lock-face,#lock.nc-scroll .lock-face{ order:1; margin:0; height:auto }
+body[data-clock="compact"] .lock-date,#lock.nc-scroll .lock-date{ order:2; flex:1; margin:0; height:auto; font-size:17px; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+body[data-clock="compact"] .lock-clock,body[data-clock="compact"] .lock-clock.wide,#lock.nc-scroll .lock-clock,#lock.nc-scroll .lock-clock.wide{ order:3; font-family:var(--font); font-stretch:normal; font-size:34px; font-weight:700; letter-spacing:-.8px; line-height:1; height:auto; padding:0; transform:none; font-variant-numeric:tabular-nums }
+body[data-clock="compact"] .lock-clock .d,body[data-clock="compact"] .lock-clock .c,#lock.nc-scroll .lock-clock .d,#lock.nc-scroll .lock-clock .c{ padding:10px 4px; margin:-10px -4px }
+body[data-clock="compact"] .lock-clock .d .n.out,#lock.nc-scroll .lock-clock .d .n.out{ left:4px; top:10px }
+body[data-clock="compact"] .lock-clock .n,#lock.nc-scroll .lock-clock .n{ color:rgb(var(--clock-rgb,255,255,255)); background:none; -webkit-background-clip:border-box; background-clip:border-box; text-shadow:0 1px 8px rgba(0,0,0,.28) }
+body[data-clock="compact"] .lock-top,#lock.nc-scroll .lock-top{ margin-top:66px; height:46px }
+body[data-clock="compact"] .lock-widgets,#lock.nc-scroll .lock-widgets{ justify-content:flex-start; padding-left:22px }
+body[data-clock="compact"] .lock-notifs,#lock.nc-scroll .lock-notifs,body[data-clocksize] #lock.nc-scroll .lock-notifs{ top:160px }
+/* com a lista a rolar, o cartão que sai por cima esbate-se ao longo de 90 px (não fica meio cortado a direito) */
+#lock.nc-scroll .lock-notifs{ -webkit-mask-image:linear-gradient(180deg, transparent 0, #000 90px, #000 100%); mask-image:linear-gradient(180deg, transparent 0, #000 90px, #000 100%) }
+body[data-clock="compact"] #lock.pin .lock-clockwrap{ transform:translateY(-24px) }
+
+/* ---------- 6. Vera compacta: o orbe está na ilha; o cabeçalho da folha fica só com o nome ---------- */
+#vera.orb-island .vera-head .vera-orb{ display:none }
+#vera.orb-island .vera-sheet{ left:14px; right:14px; border-radius:30px }
+.island .n-icimg{ border-radius:50% }
+.island.activity .n-ic .n-icimg{ background-size:cover }
+
+/* ---------- 7. "Pesquisar ou perguntar": linha da Vera no topo dos resultados ---------- */
+.gs-ask{ display:flex; align-items:center; gap:12px; margin:2px 16px 14px; padding:11px 12px 11px 12px; border-radius:24px; cursor:pointer; color:#fff;
+  background:rgba(255,255,255,var(--lg-a)); box-shadow:var(--lg-ring); transition:transform .18s var(--spring) }
+.gs-ask:active{ transform:scale(.98) }
+.gs-ask-orb{ width:34px; height:34px; border-radius:50%; flex:none; background:radial-gradient(circle at 35% 30%,#FFD6E8 0%,#FF5E8A 35%,#7D7AFF 62%,#5AC8FA 85%,#34C759 100%); box-shadow:inset 0 0 0 .5px rgba(255,255,255,.55), 0 4px 12px rgba(125,122,255,.35) }
+.gs-ask-t{ flex:1; min-width:0; display:flex; flex-direction:column; gap:1px }
+.gs-ask-t b{ font-size:var(--t-subhead); font-weight:600 } .gs-ask-t span{ font-size:var(--t-foot); color:rgba(255,255,255,.75); white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+.gs-ask > svg{ flex:none; color:rgba(255,255,255,.6) }
+
+/* ---------- Definições › Ecrã e brilho › Liquid Glass (cursor com pré-visualização) ---------- */
+.lg-group{ padding:0; overflow:hidden }
+.lg-pv{ position:relative; height:96px; display:flex; align-items:center; justify-content:center; overflow:hidden }
+.lg-pv-bg{ position:absolute; inset:0; background:linear-gradient(120deg,#FF9F0A 0%,#FF375F 30%,#BF5AF2 55%,#0A84FF 80%,#30D158 100%) }
+.lg-pv-bg::after{ content:''; position:absolute; inset:0; background:repeating-linear-gradient(135deg, rgba(255,255,255,.22) 0 14px, rgba(255,255,255,0) 14px 34px) }
+.lg-pv-pill{ position:relative; display:flex; align-items:center; gap:8px; height:44px; padding:0 18px; border-radius:22px; color:#111; font-size:var(--t-subhead); font-weight:600;
+  background:rgba(255,255,255,var(--lg-a)); box-shadow:var(--lg-drop), var(--lg-ring); backdrop-filter:blur(14px) saturate(160%); -webkit-backdrop-filter:blur(14px) saturate(160%) }
+body.fivem .lg-pv-pill{ backdrop-filter:none; -webkit-backdrop-filter:none }
+.lg-row{ display:flex; align-items:center; gap:10px; padding:12px 16px }
+.lg-lbl{ font-size:var(--t-foot); color:var(--label2); flex:none }
+
+/* ---------- APPS DE TEMA ESCURO (Onion, Cripto, Dark Chat) - 2026-09-18 ----------
+   As regras acima pintam a barra de separadores, os botões de vidro, os alertas e os menus com BRANCO fixo
+   (rgba(255,255,255,var(--lg-m))), por cima do --glass/--material escuro que cada uma destas apps define. Resultado
+   no jogo: barra branca com os rótulos claros (invisíveis) e o alerta 'Entrar numa sala' claro com texto verde.
+   Aqui devolve-se a cada app o seu material. 'html body' / 'html body.fivem' só para ganhar às regras de cima. */
+html body .onion .tb-pill,html body .onion .tab.tab-search,html body .onion .tab.tab-search.on,html body .onion .nb-btn.glass,html body .cy .tb-pill,html body .cy .tab.tab-search,html body .cy .tab.tab-search.on,html body .cy .nb-btn.glass,html body .dc .tb-pill,html body .dc .tab.tab-search,html body .dc .tab.tab-search.on,html body .dc .nb-btn.glass,html body .dc-ov .tb-pill,html body .dc-ov .tab.tab-search,html body .dc-ov .tab.tab-search.on,html body .dc-ov .nb-btn.glass,html body.fivem .onion .tb-pill,html body.fivem .onion .tab.tab-search,html body.fivem .onion .tab.tab-search.on,html body.fivem .onion .nb-btn.glass,html body.fivem .cy .tb-pill,html body.fivem .cy .tab.tab-search,html body.fivem .cy .tab.tab-search.on,html body.fivem .cy .nb-btn.glass,html body.fivem .dc .tb-pill,html body.fivem .dc .tab.tab-search,html body.fivem .dc .tab.tab-search.on,html body.fivem .dc .nb-btn.glass,html body.fivem .dc-ov .tb-pill,html body.fivem .dc-ov .tab.tab-search,html body.fivem .dc-ov .tab.tab-search.on,html body.fivem .dc-ov .nb-btn.glass{ background:var(--glass); border-color:var(--glass-border); box-shadow:0 10px 30px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,.08) }
+html body .onion .alert,html body .onion .ctx,html body .onion .as-group,html body .onion .toast,html body .onion .sheet,html body .cy .alert,html body .cy .ctx,html body .cy .as-group,html body .cy .toast,html body .cy .sheet,html body .dc .alert,html body .dc .ctx,html body .dc .as-group,html body .dc .toast,html body .dc .sheet,html body .dc-ov .alert,html body .dc-ov .ctx,html body .dc-ov .as-group,html body .dc-ov .toast,html body .dc-ov .sheet,html body.fivem .onion .alert,html body.fivem .onion .ctx,html body.fivem .onion .as-group,html body.fivem .onion .toast,html body.fivem .onion .sheet,html body.fivem .cy .alert,html body.fivem .cy .ctx,html body.fivem .cy .as-group,html body.fivem .cy .toast,html body.fivem .cy .sheet,html body.fivem .dc .alert,html body.fivem .dc .ctx,html body.fivem .dc .as-group,html body.fivem .dc .toast,html body.fivem .dc .sheet,html body.fivem .dc-ov .alert,html body.fivem .dc-ov .ctx,html body.fivem .dc-ov .as-group,html body.fivem .dc-ov .toast,html body.fivem .dc-ov .sheet{ background:var(--material,rgba(22,22,27,.97)); color:var(--label); box-shadow:0 20px 50px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.06) }
+
+/* ============================================================
+   CENTRO DE CONTROLO - Liquid Glass do PearOS 26 (2026-09-20, "o mais parecido possível com o iPhone")
+   O que muda: (1) o FUNDO deixa de ser uma tinta com a app/wallpaper visível por trás - no browser é um backdrop-filter forte;
+   no jogo é a cópia PRÉ-DESFOCADA pesada do wallpaper (--wp-blur2, system.js makeBlur) com tinta escura, também por cima de
+   uma app (uma app nítida a ler-se através dos mosaicos era o pior dos dois mundos; com este desfoque é só cor).
+   (2) cada peça é vidro: reflexo no canto superior esquerdo, brilho no inferior direito, aro claro fino, aresta especular no
+   topo, sombra funda - tudo gradientes e box-shadow (regras do CEF: sem filter/backdrop no jogo). (3) botão de desligar no
+   canto superior direito (PearOS 18+). Regras do CEF: só transform/opacity animam; nada de color-mix.
+   ============================================================ */
+#cc{ background:rgba(0,0,0,.28); backdrop-filter:blur(58px) saturate(170%) brightness(.85); -webkit-backdrop-filter:blur(58px) saturate(170%) brightness(.85) }
+body.fivem #cc{ --tint:rgba(0,0,0,.40) }
+body.fivem #cc.in::before{ background:linear-gradient(var(--tint,rgba(0,0,0,.4)),var(--tint,rgba(0,0,0,.4))), var(--wp-blur2,var(--wp-blur,var(--wp,#1C1C1E))) center/cover no-repeat }
+body.fivem .screen.locked #cc.in::before{ background-image:linear-gradient(var(--tint,rgba(0,0,0,.4)),var(--tint,rgba(0,0,0,.4))), var(--wp-lock-blur2,var(--wp-lock-blur,var(--wp-blur2,var(--wp,#1C1C1E)))) }
+body.fivem .screen.app-open #cc.in::before{ background:linear-gradient(rgba(0,0,0,.46),rgba(0,0,0,.46)), var(--wp-blur2,var(--wp-blur,var(--wp,#1C1C1E))) center/cover no-repeat }
+/* grelha: começa mais abaixo (o botão de desligar vive na faixa de cima), raio grande como no PearOS 26 */
+.cc-panel{ padding-top:calc(var(--statusbar-h) + 56px) }
+.cc-power{ position:absolute; top:calc(var(--statusbar-h) + 6px); right:22px; width:40px; height:40px; border-radius:50%; display:flex; align-items:center; justify-content:center; color:#fff; cursor:pointer; z-index:2; transition:transform .2s var(--spring) }
+.cc-power svg{ width:20px; height:20px } .cc-power:active{ transform:scale(.9); transition:transform .08s }
+/* ---- o vidro ---- */
+.cc-mod,.cc-tile,.cc-slider,.cc-power{
+  border-radius:30px; border:none;
+  background:
+    radial-gradient(130% 85% at 14% 0%, rgba(255,255,255,.30) 0%, rgba(255,255,255,.10) 30%, rgba(255,255,255,0) 52%),
+    radial-gradient(85% 70% at 100% 110%, rgba(255,255,255,.16) 0%, rgba(255,255,255,0) 55%),
+    linear-gradient(160deg, rgba(255,255,255,.10) 0%, rgba(255,255,255,.03) 50%, rgba(255,255,255,.07) 100%),
+    rgba(118,118,132,.26);
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.22), inset 0 1.5px 0 rgba(255,255,255,.55), inset 0 -1px 0 rgba(255,255,255,.08), inset 1px 0 0 rgba(255,255,255,.10), 0 12px 32px rgba(0,0,0,.30);
+  backdrop-filter:blur(22px) saturate(180%); -webkit-backdrop-filter:blur(22px) saturate(180%) }
+.cc-power{ border-radius:50% }
+body.fivem .cc-power{ backdrop-filter:none!important; -webkit-backdrop-filter:none!important }   /* regra do jogo: zero backdrop-filter (o motion.css já desliga os mosaicos) */
+body.dark #cc .cc-mod,body.dark #cc .cc-tile,body.dark #cc .cc-slider,body.dark #cc .cc-power{ background-color:rgba(70,70,80,.34) }
+/* no jogo o vidro é o wallpaper pré-desfocado a passar por baixo: o material fica um pouco mais denso para os glifos lerem-se */
+body.fivem .cc-mod,body.fivem .cc-tile,body.fivem .cc-slider,body.fivem .cc-power{ background-color:rgba(118,118,132,.34) }
+/* mosaico ligado: vidro branco com o glifo escuro (Lanterna, Áudio…) */
+.cc-tile.on{ color:#000; background:radial-gradient(120% 80% at 14% 0%, rgba(255,255,255,1) 0%, rgba(255,255,255,0) 55%), linear-gradient(160deg, rgba(255,255,255,.96) 0%, rgba(232,232,240,.94) 100%); box-shadow:inset 0 0 0 1px rgba(255,255,255,.9), inset 0 -1px 0 rgba(0,0,0,.06), 0 12px 32px rgba(0,0,0,.22) }
+.cc-tile.focus.on{ color:#5E5CE6 } .cc-tile.silent.on{ color:#FF453A }
+/* os quatro redondos das ligações: vidro; ligados enchem-se com a cor e ganham um reflexo no topo (o mesmo do PearOS 26) */
+.cc-round{ width:64px; height:64px; background:radial-gradient(120% 90% at 20% 0%, rgba(255,255,255,.24) 0%, rgba(255,255,255,0) 55%), rgba(255,255,255,.12); box-shadow:inset 0 0 0 .5px rgba(255,255,255,.22), inset 0 1px 0 rgba(255,255,255,.35) }
+.cc-round.on.orange,.cc-round.on.green,.cc-round.on.blue{ box-shadow:inset 0 0 0 .5px rgba(255,255,255,.35), inset 0 1.5px 0 rgba(255,255,255,.55), 0 6px 16px rgba(0,0,0,.22); background-image:radial-gradient(120% 90% at 22% 0%, rgba(255,255,255,.45) 0%, rgba(255,255,255,0) 55%) }
+.cc-round.on.orange{ background-color:#FF9F0A } .cc-round.on.green{ background-color:#30D158 } .cc-round.on.blue{ background-color:#0A84FF }
+/* sliders: o enchimento branco tem um reflexo no topo; o glifo fica dentro */
+.cc-slider .fill{ background:linear-gradient(180deg, #fff 0%, #F2F2F7 100%); box-shadow:inset 0 1px 0 rgba(255,255,255,1) }
+.cc-slider .fill .ic{ color:rgba(60,60,67,.6) }
+/* módulo de música: a capa com aro de vidro; o play maior */
+.cc-mod.music .art{ box-shadow:0 4px 12px rgba(0,0,0,.35), inset 0 0 0 .5px rgba(255,255,255,.25) }
+.cc-mod.music .ctl .play svg{ width:42px; height:42px }
+.cc-edit{ text-shadow:0 1px 4px rgba(0,0,0,.3); font-size:var(--t-cap1); font-weight:500 }
+
+/* ============================================================
+   PEARPHONE FOLD ABERTO (body.form-fold): o PearOS num ecrã LARGO de 880×956, como num tablet (2026-10-01)
+   O ecrã principal mostra duas páginas lado a lado (home.js) com a dock ao centro (--dock-x, tokens.css). As camadas do sistema
+   não se esticam pelos 880 px: o Centro de controlo é um painel de 440 à DIREITA (de onde se puxa), as notificações, os banners,
+   a pesquisa, o assistente e a Vera ficam numa coluna centrada, a Biblioteca de Apps passa a 4 colunas, o alternador mostra
+   cartões largos e o teclado tem teclas largas. Tudo debaixo de body.form-fold: os telemóveis normais não mudam um píxel.
+   Fica aqui, no fim da última folha do PearOS, para ganhar às regras de notify/control/lock/vera/motion sem !important.
+   ============================================================ */
+/* dock no jogo no dobrável: o glass27.css usa --lg-sw = var(--screen-w) (regra antiga retirada em 1.5.0) */
+/* arrastar um ícone: o que transborda da página da esquerda iria parar à da direita (à vista), por isso desvanece (home.js applyPreview) */
+body.form-fold #home .hi.pv-out{ opacity:0!important }
+/* inscrição do Face Key em painel (Definições): título, anel e botões numa coluna de 500 ao centro */
+body.form-fold .fid-modal{ padding-left:calc(50% - 250px); padding-right:calc(50% - 250px) }
+/* Biblioteca de Apps: ecrã inteiro com 4 colunas de categorias; a pesquisa e as listas numa coluna de 560 ao centro */
+body.form-fold .spot .spot-bar{ padding-left:calc(50% - 280px); padding-right:calc(50% - 280px) }
+body.form-fold .spot .lib{ grid-template-columns:repeat(4,1fr); gap:26px 24px; padding:8px 44px 150px }
+body.form-fold .spot .res > .list,body.form-fold .spot .res > .lib-back,body.form-fold .spot .res > .lib-empty{ max-width:560px; margin-left:auto; margin-right:auto }
+/* pesquisa global (puxar para baixo na home) */
+body.form-fold .gsearch .gs-bar{ padding-left:calc(50% - 280px); padding-right:calc(50% - 280px) }
+body.form-fold .gsearch .gs-res > *{ max-width:560px; margin-left:auto; margin-right:auto }
+/* Centro de controlo: um painel de 440 encostado à direita (o desfoque continua a cobrir o ecrã todo) */
+body.form-fold .cc-panel{ width:440px; margin-left:auto }
+/* notificações (centro, ecrã bloqueado, "A tocar", banner, cartão expandido, banner de chamada): coluna de 500 ao centro */
+body.form-fold .nc-list,body.form-fold .lock-notifs{ padding-left:calc(50% - 250px); padding-right:calc(50% - 250px) }
+body.form-fold .lock-np,body.form-fold .nbanner,body.form-fold .n-x,body.form-fold .call-banner{ left:calc(50% - 250px); right:calc(50% - 250px) }
+/* Vera: a folha fica numa coluna de 520 ao centro */
+body.form-fold #vera .vera-sheet{ left:calc(50% - 260px); right:calc(50% - 260px) }
+/* assistente inicial: o conteúdo de cada passo numa coluna de 500 ao centro (o "olá" continua a ocupar o ecrã todo) */
+body.form-fold #setup .stp:not(.hello-step){ padding-left:calc(50% - 250px); padding-right:calc(50% - 250px) }
+/* chamada recebida: botões à distância de um telemóvel, não nas pontas do ecrã largo */
+body.form-fold .incoming .ic-btns,body.form-fold .incoming .ic-mini{ max-width:460px }
+body.form-fold .incoming .ic-slide{ width:376px }
+/* PearPhone Fold: o nome, o avatar e os botões ao centro da zona do conteúdo, como no ecrã da chamada (apps.css .call-screen): ao
+   atender nada salta para o lado. O fundo continua a cobrir o ecrã todo */
+body.os-ios.form-fold .incoming{ padding-right:var(--rail-w) }
+/* alternador de apps: cartões a 50 % do ecrã largo (440×478) com a janela viva lá dentro, a atual ao centro */
+body.form-fold .sw-track{ padding:0 220px; scroll-padding:0 220px; gap:30px }
+body.form-fold .sw-card{ width:440px; height:478px; border-radius:29px }
+body.form-fold .sw-lbl{ width:440px }
+body.form-fold .sw-card .app-window.in-card{ width:880px; height:956px; transform:scale(.5)!important }
+/* teclado: as teclas crescem até encherem a largura (fila de cima: 10 × 78 + 9 × 8 = 852), como num tablet */
+body.form-fold #kb{ padding:10px 14px calc(var(--safe-bottom) + 6px) }
+body.form-fold .kb-row{ gap:8px; margin-bottom:10px }
+body.form-fold .kb-key{ flex:1 1 0; min-width:0; max-width:78px; height:52px; font-size:25px; border-radius:7px }
+body.form-fold .kb-key.fn,body.form-fold .kb-key.abc{ flex:1.45 1 0; max-width:116px; font-size:17px }
+body.form-fold .kb-key.space{ flex:6 1 0; max-width:440px; font-size:16px }
+body.form-fold .kb-key.ret{ flex:2 1 0; max-width:160px; min-width:0; font-size:17px }
+
+/* ============================================================
+   PearPhone Fold: barra direita (2026-10-02, referências 13 a 16 do dono)
+   A coluna de sistema à DIREITA do ecrã, nos dois estados (fechado 670, aberto 1340), só no PearOS (body.os-ios.form-fold).
+   Em cima a pilha de estado (o lugar da câmara, só fechado; a hora; o anel com o Wi-Fi ou a rede e a bateria como anel),
+   por baixo os indicadores e as atividades em círculos de vidro. Na home a dock vertical (a 52 % da altura) e o botão de
+   pesquisa em baixo; numa app os botões dela (voltar e grupos por baixo do estado, separadores a meio, ações em baixo).
+   Nada do que se lê ou toca fica por baixo da barra: --rail-w (tokens.css) é a largura a deixar livre. O FUNDO das apps continua
+   por baixo dela (ui.css, fundo de ponta a ponta), como no Duo. JS: system.js (Rail).
+   VIDRO sem backdrop-filter nem filter (regra do CEF): uma tinta, um aro fino, uma sombra suave. Sobre o fundo do ecrã a
+   peça pinta dentro dela a cópia PRÉ-DESFOCADA do fundo (--wp-blur / --wp-lock-blur) no sítio exato onde está (--gx/--gy,
+   medidos pelo Rail): parece vidro e no jogo é só uma imagem. Sobre uma app é a tinta (por baixo passa o fundo da própria app).
+   TOM: fundo escuro (de origem) = texto branco; fundo claro (data-wp-tone="light", medido no system.js) = texto escuro e
+   tinta branca; numa app segue o tema dela (.light-sb). Azul é a única cor de interação. Só transform e opacity animam.
+   ============================================================ */
+.rail,.rail-apps,.rl-home{ display:none }
+body.os-ios.form-fold .rail{ display:flex }
+body.os-ios.form-fold .rail-apps,body.os-ios.form-fold .rl-home{ display:block }
+
+/* ---------- tom (texto, tinta, aro, reflexo, sombra) por contexto ---------- */
+/* Duo (2026-10-03): sobre o fundo do ecrã (home e bloqueado) o vidro é sempre o mesmo: tinta branca .18 + aro de .5 px + luz de
+   1 px no topo, SEM sombra por fora (a dock, a pesquisa, as atividades e os atalhos assentam no fundo). O fundo leva a "lavagem"
+   do Duo (system.css .wallpaper::after), por isso o texto e os glifos ficam BRANCOS também em fundos claros */
+.rail,.rl-home{ --rl-fg:#fff; --rl-blue:#0A84FF; --rl-tint:rgba(255,255,255,.18); --rl-rim:rgba(255,255,255,.22); --rl-spec:rgba(255,255,255,.35); --rl-drop:0 0 0 transparent; --rl-hov:rgba(255,255,255,.12);
+  --rl-wp:var(--wp-blur,var(--wp,#1C1C1E)) }
+/* bloqueado: SEMPRE branco, como o texto do ecrã bloqueado (referências 9 e 10), com uma auréola escura muito leve no anel
+   (.rl-halo, como a sombra da data) */
+.rail[data-st="lock"]{ --rl-wp:var(--wp-lock-blur,var(--wp-lock,var(--wp-blur,#1C1C1E))) }
+.rail[data-st="app"],.rail-apps{ --rl-fg:#fff; --rl-blue:#0A84FF; --rl-tint:rgba(46,46,50,.84); --rl-rim:rgba(255,255,255,.14); --rl-spec:rgba(255,255,255,.16); --rl-drop:0 4px 14px rgba(0,0,0,.34); --rl-hov:rgba(255,255,255,.1) }
+/* sobre apps claras: o vidro branco com a aresta do Duo (1 px de sombra curta + contorno de .5 px), sem sombra difusa */
+.screen.light-sb .rail[data-st="app"],.rail-apps .rl-app.rl-lt{ --rl-fg:#000; --rl-blue:#007AFF; --rl-tint:rgba(255,255,255,.9); --rl-rim:rgba(0,0,0,.08); --rl-spec:#fff; --rl-drop:0 1px 2px rgba(0,0,0,.08); --rl-hov:rgba(0,0,0,.05) }
+/* camada da app a ecrã inteiro (visualizador, editor, story): o tom vem da cor DELA (ui.js railSync, Rail spec.tone), não do tema */
+body #screen .rail.rl-dk[data-st="app"]{ --rl-fg:#fff; --rl-blue:#0A84FF; --rl-tint:rgba(46,46,50,.84); --rl-rim:rgba(255,255,255,.14); --rl-spec:rgba(255,255,255,.16); --rl-drop:0 4px 14px rgba(0,0,0,.34); --rl-hov:rgba(255,255,255,.1) }
+body #screen .rail.rl-lk[data-st="app"]{ --rl-fg:#000; --rl-blue:#007AFF; --rl-tint:rgba(255,255,255,.9); --rl-rim:rgba(0,0,0,.08); --rl-spec:#fff; --rl-drop:0 1px 2px rgba(0,0,0,.08); --rl-hov:rgba(0,0,0,.05) }
+/* assistente inicial (a cor do texto do ecrã) e camadas escuras por cima (Centro de controlo, notificações, alternador, chamada) */
+body #screen.setup-mode .rail[data-st]{ --rl-fg:var(--label) } body #screen.setup-mode.hello-bg .rail[data-st]{ --rl-fg:#fff }
+body #screen .rail.rl-ov[data-st]{ --rl-fg:#fff; --rl-tint:rgba(255,255,255,.16); --rl-rim:rgba(255,255,255,.24); --rl-spec:rgba(255,255,255,.3) }
+
+/* ---------- o vidro (.rl-g): tinta + fundo pré-desfocado no sítio da peça; aro fino; sombra suave ---------- */
+body.os-ios.form-fold .rl-g{ background:linear-gradient(var(--rl-tint),var(--rl-tint)),var(--fold-wash,linear-gradient(transparent,transparent)),var(--rl-wp); background-repeat:no-repeat;
+  background-size:auto,var(--screen-w) 956px,var(--screen-w) 956px;
+  background-position:0 0,calc(-1 * var(--gx,0px)) calc(-1 * var(--gy,0px)),calc(-1 * var(--gx,0px)) calc(-1 * var(--gy,0px)); box-shadow:inset 0 0 0 .5px var(--rl-rim),inset 0 1px 0 var(--rl-spec),var(--rl-drop) }
+body.os-ios.form-fold .rail[data-st="app"] .rl-g,body.os-ios.form-fold .rail-apps .rl-g{ background:var(--rl-tint) }
+body.os-ios.form-fold .rail.rl-ov .rl-g{ background:var(--rl-tint) }
+/* vidro para as apps (barras e pílulas flutuantes dentro do conteúdo, ex.: a pesquisa no fundo da lista): material quase opaco */
+body.os-ios.form-fold .fold-glass{ background:rgba(255,255,255,.94); box-shadow:inset 0 0 0 .5px rgba(0,0,0,.08),inset 0 1px 0 #fff,0 4px 14px rgba(0,0,0,.1) }
+body.os-ios.form-fold.dark .fold-glass{ background:rgba(40,40,44,.94); box-shadow:inset 0 0 0 .5px rgba(255,255,255,.14),inset 0 1px 0 rgba(255,255,255,.14),0 4px 14px rgba(0,0,0,.34) }
+
+/* ---------- pilha de estado (.rail, z 312): no eixo da coluna, a 32 px do topo (34 aberto). Duo: câmara de 44, hora de 21 px,
+   anel de 62 × 73 (o arco com ~48) ---------- */
+body.os-ios.form-fold .rail{ flex-direction:column; align-items:center; position:absolute; top:0; right:var(--rail-r); width:var(--rail-cw); z-index:312; padding-top:32px;
+  pointer-events:none; color:var(--rl-fg); transition:color .25s, opacity .25s }
+body.os-ios.form-fold.fold-open .rail{ padding-top:34px }
+.rl-cam{ display:block; flex:none; width:44px; height:44px; margin-bottom:12px }   /* o lugar da câmara (o .island, system.css) */
+body.fold-open .rl-cam{ display:none }
+.rl-time{ flex:none; height:24px; font-size:21px; line-height:24px; font-weight:600; letter-spacing:-.2px; font-variant-numeric:tabular-nums; white-space:nowrap; pointer-events:auto; cursor:pointer; transition:opacity .25s ease-out }
+.rl-ring{ flex:none; width:62px; height:73px; margin-top:8px; pointer-events:auto; cursor:pointer }
+/* bloqueado já há o relógio grande (referências 9 e 10): a hora desvanece e o anel sobe para debaixo da câmara. O lugar da hora
+   fica reservado e o anel sobe por transform: ao desbloquear nada salta, só desliza */
+.rl-ring,.rl-ind,.rl-acts{ transition:transform .42s var(--curve,cubic-bezier(.2,.8,.2,1)) }
+.rail[data-st="lock"] .rl-time{ opacity:0; pointer-events:none }
+.rail[data-st="lock"] .rl-ring,.rail[data-st="lock"] .rl-ind,.rail[data-st="lock"] .rl-acts{ transform:translateY(-32px) }
+/* com o Centro de notificações aberto (.rl-nc, system.js ovSync) também: ele tem o relógio grande dele */
+.rail.rl-nc .rl-time{ opacity:0; pointer-events:none }
+.rail.rl-nc .rl-ring,.rail.rl-nc .rl-ind,.rail.rl-nc .rl-acts{ transform:translateY(-32px) }
+/* Spotlight aberto (#home.gs-on, home.js): o véu da pesquisa cobre também a pilha de estado (Duo, spec_duo 3.6), só por opacidade */
+body.os-ios.form-fold #home.gs-on ~ .rail{ opacity:.4 }
+.rl-ring svg{ display:block; width:62px; height:73px }
+.rl-ring .rl-halo{ display:none } .rail[data-st="lock"] .rl-ring .rl-halo{ display:inline }
+/* assistente inicial: a hora vê-se (como a barra de estado do PearOS) e o anel fica sem auréola (fundo liso) */
+body #screen.setup-mode .rail[data-st] .rl-time{ opacity:1 } body #screen.setup-mode .rail[data-st] .rl-halo{ display:none }
+body #screen.setup-mode .rail[data-st] .rl-ring,body #screen.setup-mode .rail[data-st] .rl-ind,body #screen.setup-mode .rail[data-st] .rl-acts{ transform:none }
+.rl-ind{ flex:none; display:flex; align-items:center; justify-content:center; gap:8px; height:20px; margin-top:8px }
+.rl-ind:empty{ display:none }
+.rl-ind svg{ width:18px; height:18px }
+.rl-priv{ display:block; width:9px; height:9px; border-radius:50%; background:#30D158 } .rl-priv.mic{ background:#FF9F0A }
+.rl-vpn{ font-size:11px; font-weight:700; line-height:14px; padding:0 3px; border:1.2px solid currentColor; border-radius:4px }
+.rl-acts{ flex:none; display:flex; flex-direction:column; align-items:center; gap:8px; margin-top:10px }
+.rl-acts:empty{ display:none }
+.screen.aod .rail{ opacity:.5 } .screen.aod .rail .rl-acts{ opacity:0 }
+
+/* ---------- atividades: círculos de vidro de 52 px (island.js). Chamada verde, navegação azul, música com a capa ---------- */
+body.os-ios.form-fold .rl-acts .alc-chip{ position:relative; flex:none; width:52px; height:52px; max-width:none; padding:0; gap:0; border-radius:50%; justify-content:center;
+  color:var(--rl-fg); font-size:0; transform-origin:50% 50%; overflow:visible; pointer-events:auto }
+body.os-ios.form-fold .rl-acts .alc-chip svg.gl{ width:24px; height:24px }
+body.os-ios.form-fold .rl-acts .alc-chip.alc-call{ background:#30D158; color:#fff; box-shadow:inset 0 1px 0 rgba(255,255,255,.35),0 4px 12px rgba(0,0,0,.2) }
+body.os-ios.form-fold .rl-acts .alc-chip.alc-nav{ background:var(--rl-blue); color:#fff; box-shadow:inset 0 1px 0 rgba(255,255,255,.35),0 4px 12px rgba(0,0,0,.2) }
+body.os-ios.form-fold .rl-acts .alc-chip.alc-timer{ color:#FF9F0A }
+body.os-ios.form-fold .rl-acts .alc-chip .alc-art{ position:absolute; inset:4px; width:auto; height:auto; margin:0; border-radius:50% }
+body.os-ios.form-fold .rl-acts .alc-chip .alc-ic{ width:30px; height:30px; margin:0; border-radius:8px }
+.rl-aring{ position:absolute; inset:0; width:52px; height:52px; transform:rotate(-90deg); pointer-events:none }
+.rl-aring circle{ fill:none; stroke-width:2.6 } .rl-aring .alc-rbg{ stroke:rgba(127,127,127,.3) } .rl-aring .alc-rfg{ stroke:var(--rl-blue); stroke-linecap:round; transition:stroke-dashoffset .2s linear }
+.rl-aok{ position:absolute; right:-2px; bottom:-2px; width:18px; height:18px; border-radius:50%; background:#30D158; color:#fff; display:flex; align-items:center; justify-content:center }
+.rl-aok svg{ width:11px; height:11px }
+
+/* ---------- botões das apps (.rail-apps, z 96): voltar e grupos em cima, separadores a meio, ações em baixo ---------- */
+body.os-ios.form-fold .rail-apps{ position:absolute; top:0; bottom:0; right:var(--rail-r); width:var(--rail-cw); z-index:96; pointer-events:none; color:var(--rl-fg) }
+.rl-app{ position:absolute; inset:0; opacity:0; visibility:hidden; transform:translateX(12px); color:var(--rl-fg); pointer-events:none;
+  transition:opacity .16s ease-in, transform .22s ease-in, visibility 0s linear .22s }
+.rl-app.on{ opacity:1; visibility:visible; transform:none; transition:opacity .24s ease-out .1s, transform .4s var(--curve) .1s, visibility 0s }
+/* Duo: círculos de 64 (pílulas de 64 de largura), 16 entre pílulas, o grupo de baixo a 40 do fundo (o "escrever" fica longe do
+   indicador). As mesmas medidas estão em Rail.metrics (system.js) para o ui.js railFit */
+.rl-top,.rl-bot{ position:absolute; left:0; right:0; display:flex; flex-direction:column; align-items:center; gap:16px }
+/* os botões de cima começam por baixo da pilha de estado (--rl-top, system.js): por transform, para descerem a deslizar quando
+   aparece uma atividade em vez de saltarem */
+.rl-top{ top:0; transform:translateY(var(--rl-top,209px)); transition:transform .4s var(--curve,cubic-bezier(.2,.8,.2,1)) } .rl-bot{ bottom:40px }
+.rl-mid{ position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; padding-top:38px }   /* centro a 52 % da altura (956 × 0,52) */
+/* Música (3 out, imagens 19/20 do dono): o leitor ocupa o fundo do ecrã e os comandos de tocar da barra ficavam por cima dele.
+   Separadores e comandos passam a um bloco só, ao centro (182 a 774), e o fundo fica livre para o leitor */
+.rail-apps .rl-app[data-app="music"] .rl-mid{ justify-content:flex-start; padding-top:182px }
+.rail-apps .rl-app[data-app="music"] .rl-bot{ bottom:auto; top:582px }
+/* fechado a câmara empurra a hora e o anel para baixo: o bloco começa mais abaixo e acaba antes do leitor (820) */
+body.os-ios.form-fold:not(.fold-open) .rail-apps .rl-app[data-app="music"] .rl-mid{ padding-top:226px }
+body.os-ios.form-fold:not(.fold-open) .rail-apps .rl-app[data-app="music"] .rl-bot{ top:622px }
+.rl-p{ flex:none; display:flex; flex-direction:column; align-items:center; width:64px; border-radius:32px; pointer-events:auto }
+.rl-pb{ position:relative; flex:none; width:64px; height:64px; border-radius:32px; display:flex; align-items:center; justify-content:center; color:inherit; cursor:pointer; transition:background-color .15s, color .2s, opacity .2s }
+.rl-pb:hover,.rl-pb:active{ background-color:var(--rl-hov) }
+.rl-pb svg{ width:26px; height:26px }
+.rl-pb.on{ color:var(--rl-blue) } .rl-tabs .rl-pb.on{ background-color:var(--rl-hov) }
+.rl-pb.dis{ opacity:.32; pointer-events:none }
+.rl-pb[data-tint="blue"]{ color:var(--rl-blue) } .rl-pb[data-tint="red"]{ color:#FF453A } .rl-pb[data-tint="green"]{ color:#30D158 } .rl-pb[data-tint="orange"]{ color:#FF9F0A }
+.rl-tx{ font-size:12px; font-weight:700; letter-spacing:-.2px }
+.rl-bd{ position:absolute; top:10px; right:10px; min-width:18px; height:18px; padding:0 5px; border-radius:9px; background:#FF3B30; color:#fff; font-size:11px; font-weight:700; font-style:normal; line-height:18px; text-align:center; pointer-events:none }
+.rl-bd.dot{ min-width:10px; width:10px; height:10px; padding:0; top:14px; right:14px }
+
+/* ---------- ecrã principal (.rl-home, dentro do #home): dock vertical a 52 % da altura e pesquisa em baixo ---------- */
+body.os-ios.form-fold .rl-home{ position:absolute; top:0; bottom:0; right:var(--rail-r); width:var(--rail-cw); z-index:6; pointer-events:none; color:var(--rl-fg) }
+.rl-dwrap{ position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; padding-top:38px; pointer-events:none }
+/* Duo: 96 de largura, ícones de 68, 16 entre eles, 14 de margem, cantos de 38; 4 apps = 96 × 348 */
+body.os-ios.form-fold #home .rl-dock{ position:relative; top:auto; left:auto; right:auto; bottom:auto; width:96px; height:auto; flex:none; display:flex; flex-direction:column; align-items:center; gap:16px; padding:14px 0; margin:0;
+  border:none; border-radius:38px; transform:none; overflow:visible; pointer-events:auto; --icon:68px }
+body.os-ios.form-fold #home .rl-dock::before{ display:none }
+body.os-ios.form-fold #home .rl-dock .hi{ position:relative; left:auto; top:auto; translate:none; width:68px; opacity:1; transform:none; animation:none!important }
+body.os-ios.form-fold #home .rl-dock .tile{ width:68px; height:68px }
+body.os-ios.form-fold #home .rl-dock .app-name,body.os-ios.form-fold #home .rl-dock .rm{ display:none }
+/* modo de edição: os ícones da dock da barra também levam o "−" (no canto do ícone de 54, como nas páginas) */
+body.os-ios.form-fold #home.edit .rl-dock .hi.removable .rm{ display:flex; top:-6px; left:-6px }
+/* a faixa de cima (.top-zone, 68 px: puxar as notificações e o Centro de controlo) não apanha toques enquanto a barra de edição,
+   a pesquisa ou a Biblioteca estão à vista: sem barra de estado, os botões e os campos delas ficam nessa faixa (a hora e o anel
+   da barra direita continuam a abrir as notificações e o Centro de controlo) */
+body.os-ios.form-fold #home.edit ~ .top-zone,body.os-ios.form-fold #screen.hm-dim:not(.app-open) > .top-zone{ pointer-events:none }
+body.os-ios.form-fold .rl-search{ position:absolute; left:50%; bottom:26px; width:66px; height:66px; margin-left:-33px; border-radius:50%; display:flex; align-items:center; justify-content:center;
+  color:var(--rl-fg); pointer-events:auto; cursor:pointer; transition:background-color .15s }
+.rl-search svg{ width:26px; height:26px } .rl-search.rl-none{ display:none }
+
+/* ---------- entrar e sair (grupos e botões novos / que saem): só transform e opacity; movimento reduzido = só opacity ---------- */
+.rl-in{ animation:rlIn .34s var(--curve,cubic-bezier(.2,.8,.2,1)) both }
+@keyframes rlIn{ from{ opacity:0; transform:scale(.8) } to{ opacity:1; transform:none } }
+.rl-out{ opacity:0!important; transform:scale(.8); transition:opacity .16s ease-in, transform .2s ease-in; pointer-events:none!important }
+@keyframes rlFade{ from{ opacity:0 } to{ opacity:1 } }
+body[data-motion="reduced"] .rl-in{ animation-name:rlFade }
+body[data-motion="reduced"] .rl-out,body[data-motion="reduced"] .rl-app,body[data-motion="reduced"] .rl-app.on{ transform:none }
+body[data-motion="reduced"] .rl-app.on{ transition:opacity .16s ease-out, visibility 0s }
+body[data-motion="reduced"] .rl-top,body[data-motion="reduced"] .rl-ring,body[data-motion="reduced"] .rl-ind,body[data-motion="reduced"] .rl-acts{ transition:none }
+
+/* ---------- o resto do sistema fica à ESQUERDA da barra (zona de conteúdo: 0 até --screen-w menos --rail-w) ---------- */
+body.os-ios.form-fold .cc-panel{ margin-right:var(--rail-w) }
+body.os-ios.form-fold .cc-power{ right:calc(var(--rail-w) + 22px) }
+body.os-ios.form-fold .nc-list{ padding-left:calc(50% - var(--rail-w) / 2 - 250px); padding-right:calc(50% + var(--rail-w) / 2 - 250px) }
+body.os-ios.form-fold .nbanner,body.os-ios.form-fold .banner,body.os-ios.form-fold .call-banner,body.os-ios.form-fold .n-x{ left:calc(50% - var(--rail-w) / 2 - 250px); right:calc(50% + var(--rail-w) / 2 - 250px) }
+body.os-ios.form-fold .nbanner,body.os-ios.form-fold .banner{ top:22px }   /* sem barra de estado em cima: o banner sobe */
+body.os-ios.form-fold #vera .vera-sheet{ left:calc(50% - var(--rail-w) / 2 - 260px); right:calc(50% + var(--rail-w) / 2 - 260px) }
+body.os-ios.form-fold #setup .stp:not(.hello-step){ padding-left:calc(50% - var(--rail-w) / 2 - 250px); padding-right:calc(50% + var(--rail-w) / 2 - 250px) }
+body.os-ios.form-fold .toast{ left:calc(50% - var(--rail-w) / 2) }
+
+/* ============================================================
+   PearPhone Fold: SUPERFÍCIES DO SISTEMA (2026-10-02, referências 13 a 16 e o Duo)
+   O que se abre por cima (Centro de controlo, notificações, alternador, teclado, pesquisa, Biblioteca de Apps, avisos de
+   permissão, auriculares, Face Key) fica na ZONA DE CONTEÚDO, à esquerda da barra: o centro é 50% menos --rail-w / 2.
+   Fechado (670) e aberto (1340). Os telemóveis normais e o Android não mudam (body.os-ios.form-fold; o --sw-k do alternador
+   é dos dois dobráveis). Vidro sem backdrop-filter nem filter; só transform e opacity animam.
+   ============================================================ */
+body.os-ios.form-fold{ --fx-col:520px } body.os-ios.form-fold.fold-open{ --fx-col:600px }   /* colunas da pesquisa e da Biblioteca */
+
+/* ---------- Centro de controlo ----------
+   Fechado: a grelha ao centro da zona de conteúdo (o Duo no ecrã de fora); aberto: o painel de 492 encostado à barra (o Duo
+   largo). Duo (2026-10-03): mosaicos maiores (100 = 88,5 × 1,13, com 16 entre eles, grelha de 448; o Duo tem 111 mas só 5 filas
+   e as nossas 7 têm de caber nos 956), por cima uma fila com o "+" (editar) à esquerda e o desligar à direita, círculos de 59,
+   21 acima da grelha. O conteúdo dos mosaicos cresce por zoom (nítido no CEF); os sliders e a música (contas com o retângulo
+   do ponteiro) crescem à mão */
+body.os-ios.form-fold .cc-panel{ padding-top:126px; grid-template-columns:repeat(4,100px); grid-auto-rows:100px; gap:16px }
+body.os-ios.form-fold.fold-open .cc-panel{ padding-top:132px; width:492px }
+body.os-ios.form-fold.fold-closed .cc-panel{ width:auto; margin-left:0 }
+body.os-ios.form-fold .cc-panel > .cc-mod.conn,body.os-ios.form-fold .cc-panel > .cc-tile{ zoom:1.13 }
+body.os-ios.form-fold .cc-mod.conn .cc-round{ width:72px; height:72px } body.os-ios.form-fold .cc-mod.conn .cc-round svg{ width:30px; height:30px }
+body.os-ios.form-fold #cc .cc-slider,body.os-ios.form-fold #cc .cc-mod.music{ border-radius:34px }
+body.os-ios.form-fold .cc-slider .ic{ bottom:20px; width:34px; height:34px } body.os-ios.form-fold .cc-slider .ic svg{ width:32px; height:32px }
+body.os-ios.form-fold .cc-mod.music{ padding:18px 18px 16px }
+body.os-ios.form-fold .cc-mod.music .row{ gap:11px } body.os-ios.form-fold .cc-mod.music .art{ width:54px; height:54px; border-radius:12px }
+body.os-ios.form-fold .cc-mod.music .t{ font-size:18px } body.os-ios.form-fold .cc-mod.music .a{ font-size:14px }
+body.os-ios.form-fold .cc-times{ font-size:11px; line-height:12px; min-height:12px }
+body.os-ios.form-fold .cc-mod.music .ctl svg{ width:34px; height:34px } body.os-ios.form-fold .cc-mod.music .ctl .play svg{ width:46px; height:46px }
+/* o texto "Editar controlos" dá lugar ao "+" da fila de cima (control.js .cc-plus) */
+body.os-ios.form-fold .cc-panel .cc-edit{ display:none }
+.cc-plus{ display:none }
+body.os-ios.form-fold .cc-power,body.os-ios.form-fold .cc-plus{ top:46px; width:59px; height:59px }
+body.os-ios.form-fold.fold-open .cc-power,body.os-ios.form-fold.fold-open .cc-plus{ top:52px }
+body.os-ios.form-fold .cc-power svg,body.os-ios.form-fold .cc-plus svg{ width:26px; height:26px }
+/* nos cantos de cima da grelha (448 = 4 × 100 + 3 × 16): fechado ao centro da zona de conteúdo, aberto no painel de 492 encostado
+   à barra (22 de margem de cada lado) */
+body.os-ios.form-fold.fold-closed .cc-power{ right:calc((var(--screen-w) + var(--rail-w)) / 2 - 224px) }
+body.os-ios.form-fold.fold-closed .cc-plus{ left:calc((var(--screen-w) - var(--rail-w)) / 2 - 224px) }
+body.os-ios.form-fold.fold-open .cc-power{ right:calc(var(--rail-w) + 22px) }
+body.os-ios.form-fold.fold-open .cc-plus{ left:calc(var(--screen-w) - var(--rail-w) - 470px) }
+body.os-ios.form-fold .cc-plus{ position:absolute; z-index:2; display:flex; align-items:center; justify-content:center; border-radius:50%; color:#fff; cursor:pointer; transition:transform .2s var(--spring);
+  background:radial-gradient(130% 85% at 14% 0%, rgba(255,255,255,.30) 0%, rgba(255,255,255,.10) 30%, rgba(255,255,255,0) 52%), radial-gradient(85% 70% at 100% 110%, rgba(255,255,255,.16) 0%, rgba(255,255,255,0) 55%), linear-gradient(160deg, rgba(255,255,255,.10) 0%, rgba(255,255,255,.03) 50%, rgba(255,255,255,.07) 100%), rgba(118,118,132,.26);
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.22), inset 0 1.5px 0 rgba(255,255,255,.55), inset 0 -1px 0 rgba(255,255,255,.08), inset 1px 0 0 rgba(255,255,255,.10), 0 12px 32px rgba(0,0,0,.30) }
+body.os-ios.form-fold.dark #cc .cc-plus{ background-color:rgba(70,70,80,.34) } body.os-ios.form-fold.fivem .cc-plus{ background-color:rgba(118,118,132,.34) }
+body.os-ios.form-fold .cc-plus:active{ transform:scale(.9); transition:transform .08s }
+/* a rede por baixo do anel (system.js netPaint): só com o Centro de controlo aberto; os indicadores e as atividades cedem-lhe o lugar.
+   Fora do fluxo (a coluna não cresce, os botões das apps não se mexem) */
+.rl-net{ display:none }
+body.os-ios.form-fold .rl-net{ position:absolute; left:0; right:0; top:199px; display:flex; flex-direction:column; align-items:center; gap:3px; pointer-events:none;
+  opacity:0; transform:translateY(-6px); transition:opacity .2s ease-out, transform .32s var(--curve,cubic-bezier(.2,.8,.2,1)) }
+body.os-ios.form-fold.fold-open .rl-net{ top:145px }
+/* Centro de controlo por cima do bloqueado: a linha da hora volta (com a bateria) e o anel desce para o sítio dele */
+body.os-ios.form-fold #screen.cc-on .rail[data-st="lock"] .rl-time{ opacity:1 }
+body.os-ios.form-fold #screen.cc-on .rail[data-st="lock"] .rl-ring{ transform:none }
+.rl-netg{ display:flex; width:20px; height:20px } .rl-netg svg{ width:20px; height:20px }
+.rl-netn{ max-width:96px; font-size:13px; line-height:16px; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+body.os-ios.form-fold #screen.cc-on .rail .rl-net{ opacity:1; transform:none }
+body.os-ios.form-fold #screen.cc-on .rail .rl-ind,body.os-ios.form-fold #screen.cc-on .rail .rl-acts{ visibility:hidden }
+body.os-ios.form-fold[data-motion="reduced"] .rl-net{ transform:none }
+/* aberto, o anel da barra mostra a CARGA (a pílula do Duo) em vez do Wi-Fi e da rede; a hora já dá a percentagem (system.js).
+   control.js põe #screen.cc-on; o anel é refeito pelo Rail.paint, por isso a pílula é um ::after e o resto só desvanece */
+body.os-ios.form-fold .rail .rl-ring{ position:relative }
+body.os-ios.form-fold .rail .rl-ring::after{ content:''; position:absolute; left:16.9px; top:26px; width:28.2px; height:12.6px; border-radius:6.3px; background:currentColor; pointer-events:none;
+  opacity:0; transform:scale(.5); transition:opacity .2s ease-out, transform .32s var(--curve,cubic-bezier(.2,.8,.2,1)) }
+body.os-ios.form-fold .rail .rl-ring svg > path:not([stroke-opacity]):not([stroke-dasharray]),body.os-ios.form-fold .rail .rl-ring svg > text,body.os-ios.form-fold .rail .rl-ring svg > g:not(.rl-halo){ transition:opacity .2s ease-out }
+body.os-ios.form-fold #screen.cc-on .rail .rl-ring::after{ opacity:1; transform:none }
+body.os-ios.form-fold #screen.cc-on .rail .rl-ring svg > path:not([stroke-opacity]):not([stroke-dasharray]),body.os-ios.form-fold #screen.cc-on .rail .rl-ring svg > text,body.os-ios.form-fold #screen.cc-on .rail .rl-ring svg > g:not(.rl-halo){ opacity:0 }
+body.os-ios.form-fold #screen.cc-on .rail .rl-ring .rl-halo{ display:none }
+body.os-ios.form-fold[data-motion="reduced"] .rail .rl-ring::after{ transform:none }
+
+/* ---------- Centro de notificações e avisos do Notify ---------- */
+body.os-ios.form-fold .nc-head{ padding-right:var(--rail-w) }
+body.os-ios.form-fold .n-toast{ left:calc(50% - var(--rail-w) / 2) }
+/* Duo (2026-10-03): a coluna fechada é a zona de conteúdo menos 20 de cada lado (508), aberta 600 ao centro; o banner 520 / 600.
+   Cartões de vidro com cantos de 38, margens 21/28, título e texto de 22, a hora a 17; cabeçalhos em maiúsculas pequenas a .6
+   com o "x" de vidro de 38 */
+body.os-ios.form-fold{ --nc-col:508px; --nb-col:520px } body.os-ios.form-fold.fold-open{ --nc-col:600px; --nb-col:600px }
+body.os-ios.form-fold .nc-list{ padding-left:calc(50% - var(--rail-w) / 2 - var(--nc-col) / 2); padding-right:calc(50% + var(--rail-w) / 2 - var(--nc-col) / 2) }
+body.os-ios.form-fold .nbanner,body.os-ios.form-fold .banner,body.os-ios.form-fold .call-banner,body.os-ios.form-fold .n-x{ left:calc(50% - var(--rail-w) / 2 - var(--nb-col) / 2); right:calc(50% + var(--rail-w) / 2 - var(--nb-col) / 2) }
+body.os-ios.form-fold .nc-head .d{ font-size:20px; font-weight:600 } body.os-ios.form-fold .nc-head .t{ font-size:84px; font-weight:600; letter-spacing:-2px }
+body.os-ios.form-fold .notif-card .ncard,body.os-ios.form-fold #lock .notif-card .ncard,body.os-ios.form-fold .nbanner .ncard{ border-radius:38px; padding:21px 28px 21px 21px; gap:16px }
+body.os-ios.form-fold .notif-card,body.os-ios.form-fold .nstack .peek{ border-radius:38px }
+body.os-ios.form-fold .notif-card .n-title,body.os-ios.form-fold .nbanner .n-title{ font-size:22px; line-height:1.24 }
+body.os-ios.form-fold .notif-card .n-msg,body.os-ios.form-fold .nbanner .n-msg{ font-size:22px; line-height:1.24 }
+body.os-ios.form-fold .notif-card .n-time,body.os-ios.form-fold .nbanner .n-time{ font-size:17px }
+body.os-ios.form-fold .notif-card .n-ic,body.os-ios.form-fold .nbanner .n-ic,body.os-ios.form-fold .n-avwrap,body.os-ios.form-fold .n-avwrap .avatar{ width:48px; height:48px }
+body.os-ios.form-fold .notif-card .n-ic,body.os-ios.form-fold .nbanner .n-ic,body.os-ios.form-fold .notif-card .n-ic svg,body.os-ios.form-fold .notif-card .n-ic img,body.os-ios.form-fold .nbanner .n-ic svg,body.os-ios.form-fold .nbanner .n-ic img{ border-radius:11px }
+body.os-ios.form-fold .notif-card .n-ic.av,body.os-ios.form-fold .nbanner .n-ic.av{ border-radius:0 }
+body.os-ios.form-fold .n-avwrap .avatar{ font-size:18px }
+body.os-ios.form-fold .n-x{ border-radius:38px; padding:21px 28px 24px }
+body.os-ios.form-fold .nbanner{ transition:transform .55s var(--spring), opacity .28s }
+body.os-ios.form-fold .nhead .nh-name,body.os-ios.form-fold .nhead.nh-top .nh-name{ font-size:19px; font-weight:600; letter-spacing:.3px; text-transform:uppercase; color:rgba(255,255,255,.6); text-shadow:none }
+body.os-ios.form-fold .nh-x,body.os-ios.form-fold .nh-x .nh-xi{ width:38px; height:38px } body.os-ios.form-fold .nh-x{ border-radius:19px; font-size:16px }
+body.os-ios.form-fold .nh-x .nh-xi svg{ width:17px; height:17px }
+body.os-ios.form-fold .nh-x.arm{ width:92px } body.os-ios.form-fold .nh-x.arm.all{ width:124px }
+body.os-ios.form-fold .nh-less{ height:38px; border-radius:19px; padding:0 16px; font-size:16px }
+
+/* ---------- Alternador de apps ----------
+   O cartão tem a forma do ecrã (fechado 670×956 a .6 = 402×574; aberto 1340×956 a .5 = 670×478), a app atual ao centro da zona
+   de conteúdo; a janela viva entra com zoom (nítida no CEF, nunca scale). switcher.js usa a mesma escala para o gesto. */
+body.form-fold{ --sw-k:.6 } body.form-fold.fold-open{ --sw-k:.5 }
+body.os-ios.form-fold #switcher .sw-track{ right:var(--rail-w); gap:28px; padding:0 calc((var(--screen-w) - var(--rail-w) - var(--screen-w) * var(--sw-k)) / 2); scroll-padding:0 calc((var(--screen-w) - var(--rail-w) - var(--screen-w) * var(--sw-k)) / 2) }
+body.os-ios.form-fold #switcher .sw-card{ width:calc(var(--screen-w) * var(--sw-k)); height:calc(956px * var(--sw-k)); border-radius:42px }
+body.os-ios.form-fold #switcher .sw-lbl{ width:calc(var(--screen-w) * var(--sw-k)) }
+/* Duo: por cima de cada cartão o ícone de 38 e o nome a 21 semibold; sem "x" nem "Fechar tudo" (fecha-se arrastando o cartão para cima) */
+body.os-ios.form-fold #switcher .sw-item{ gap:14px }
+body.os-ios.form-fold #switcher .sw-lbl{ gap:12px; height:42px; font-size:21px; font-weight:600; letter-spacing:-.3px }
+body.os-ios.form-fold #switcher .sw-lbl .tile{ width:38px; height:38px; border-radius:9px }
+body.os-ios.form-fold #switcher .sw-x,body.os-ios.form-fold #switcher .sw-all{ display:none }
+body.os-ios.form-fold #switcher .sw-card .app-window.in-card{ width:var(--screen-w); height:956px; transform:none!important; zoom:var(--sw-k); border-radius:0!important }
+body.os-ios.form-fold #switcher .sw-all{ left:calc(50% - var(--rail-w) / 2) }
+
+/* ---------- Teclado: na zona de conteúdo (a barra fica à vista, com os botões da app ao lado das teclas) ---------- */
+body.os-ios.form-fold #kb{ right:var(--rail-w); border-radius:0 0 0 var(--scr-bl) }
+/* o teclado sobe só a vista (ou a camada) dona do campo (keyboard.js, .kb-lift): a janela, a barra e a outra coluna ficam quietas.
+   A pesquisa presa ao fundo da lista (duas colunas) não sobe: a lista acaba no teclado (.kb-short) e o título fica no sítio */
+body.os-ios.form-fold .app-window .nav-stack > .view.kb-lift,body.os-ios.form-fold .app-window > .kb-lift{ transform:translateY(var(--kb-shift,0px))!important; transition:transform .5s cubic-bezier(.2,.9,.25,1)!important }
+body.os-ios.form-fold .app-window .nav-stack.split > .view.kb-short:first-child{ bottom:var(--kb-h,0px) }
+body.os-ios.form-fold.fold-closed .kb-key{ height:50px }
+
+/* ---------- Pesquisa (o botão redondo da barra) e Biblioteca de Apps: uma coluna ao centro da zona de conteúdo ---------- */
+body.os-ios.form-fold .gsearch .gs-bar,body.os-ios.form-fold .spot .spot-bar{ padding-top:30px; padding-left:calc(50% - var(--rail-w) / 2 - var(--fx-col) / 2); padding-right:calc(50% + var(--rail-w) / 2 - var(--fx-col) / 2) }
+body.os-ios.form-fold .gsearch .gs-res,body.os-ios.form-fold .spot .res{ padding-right:var(--rail-w) }
+body.os-ios.form-fold .gsearch .gs-res > *{ max-width:var(--fx-col) }
+body.os-ios.form-fold .gsearch .gs-res > .gs-ask{ max-width:calc(var(--fx-col) - 32px) }
+body.os-ios.form-fold .spot .res > .list,body.os-ios.form-fold .spot .res > .lib-back,body.os-ios.form-fold .spot .res > .lib-empty{ max-width:var(--fx-col) }
+/* Duo: a camada escurece mais (scrimDeep), o campo a 90 do topo com 62 de altura, texto de 24 e cantos de 21; as sugestões de
+   apps em filas (ícone de 62, nome de 26, cantos de 21) que sobem ao entrar, 22 ms umas depois das outras */
+body.os-ios.form-fold .gsearch{ background:rgba(18,18,20,.5) }
+body.os-ios.form-fold .gsearch .gs-bar{ padding-top:90px; gap:8px }
+body.os-ios.form-fold .gsearch .search{ height:62px; border-radius:21px; padding:0 21px; gap:14px; background-color:rgba(255,255,255,.22) }
+body.os-ios.form-fold .gsearch .search svg{ width:30px; height:30px } body.os-ios.form-fold .gsearch .search input{ font-size:24px }
+body.os-ios.form-fold .gsearch .gs-cancel{ font-size:21px; font-weight:500 }
+body.os-ios.form-fold .gsearch .gs-hint{ padding:28px 30px; font-size:20px }
+body.os-ios.form-fold .gsearch .gs-sect .group-header{ padding-left:12px; font-size:19px; font-weight:600; text-transform:uppercase; letter-spacing:.3px; color:rgba(255,255,255,.6) }
+body.os-ios.form-fold .gsearch .gs-apps{ grid-template-columns:1fr; gap:0; padding:4px 0 8px; justify-items:stretch }
+body.os-ios.form-fold .gsearch .gs-app{ flex-direction:row; width:auto; gap:21px; padding:12px 10px; border-radius:21px; transition:background-color .15s }
+body.os-ios.form-fold .gsearch .gs-app:hover{ background-color:rgba(255,255,255,.12) }
+body.os-ios.form-fold .gsearch .gs-app .tile{ width:62px; height:62px }
+body.os-ios.form-fold .gsearch .gs-app span{ max-width:none; font-size:26px; font-weight:500; text-shadow:none }
+body.os-ios.form-fold .gsearch.in .gs-app{ animation:gsRise .3s cubic-bezier(.2,.9,.3,1) both }
+body.os-ios.form-fold .gsearch.in .gs-app:nth-child(2){ animation-delay:22ms } body.os-ios.form-fold .gsearch.in .gs-app:nth-child(3){ animation-delay:44ms }
+body.os-ios.form-fold .gsearch.in .gs-app:nth-child(4){ animation-delay:66ms } body.os-ios.form-fold .gsearch.in .gs-app:nth-child(5){ animation-delay:88ms }
+body.os-ios.form-fold .gsearch.in .gs-app:nth-child(6){ animation-delay:110ms } body.os-ios.form-fold .gsearch.in .gs-app:nth-child(7){ animation-delay:132ms }
+body.os-ios.form-fold .gsearch.in .gs-app:nth-child(n+8){ animation-delay:154ms }
+@keyframes gsRise{ from{ opacity:0; transform:translateY(14px) } to{ opacity:1; transform:none } }
+body.os-ios.form-fold[data-motion="reduced"] .gsearch.in .gs-app{ animation-name:rlFade }
+body.os-ios.form-fold.fold-closed .spot .lib{ grid-template-columns:repeat(3,1fr); gap:22px 18px; padding:8px 26px 150px }
+body.os-ios.form-fold.fold-open .spot .lib{ grid-template-columns:repeat(5,1fr); gap:26px 24px; padding:8px 44px 150px }
+
+/* ---------- Assistente inicial: o "olá" (a palavra, a dica e o botão de informação) também na zona de conteúdo ---------- */
+body.os-ios.form-fold #setup .stp.hello-step{ padding-right:var(--rail-w) }
+body.os-ios.form-fold #setup .hello-hint{ right:var(--rail-w) }
+body.os-ios.form-fold #setup .hello-info{ right:calc(var(--rail-w) + 22px) }
+
+/* ---------- Pedidos de permissão, auriculares e Face Key: ao centro da zona de conteúdo ---------- */
+body.os-ios.form-fold .overlay.perm-ov{ padding-right:var(--rail-w) }
+body.os-ios.form-fold .earbuds-card{ left:calc(50% - var(--rail-w) / 2) }
+body.os-ios.form-fold .fid-modal{ padding-left:calc(50% - var(--rail-w) / 2 - 250px); padding-right:calc(50% + var(--rail-w) / 2 - 250px); z-index:311 }   /* por baixo da pilha de estado da barra (312): a hora e o anel continuam à vista */
+
+/* ---------- Camadas a ecrã inteiro DENTRO da janela de uma app (visualizador, editor, leitor, câmara...) ----------
+   Vão até à aresta direita, por baixo da barra (ui.css, fundo de ponta a ponta): o conteúdo delas acaba antes da coluna e o fundo
+   continua. Os quatro cantos são os do ecrã (--scr-r, motion.css) */
+/* camadas VERTICAIS, com a geometria do telemóvel (440 × 956): uma coluna de 440 ao centro da ZONA DO CONTEÚDO, sem cantos, e preto à
+   volta (a sombra cobre as duas laterais e a coluna da barra). Instashot: o editor da story, o "Adicionar à story", o visualizador
+   de stories e os Instants; Zapp: o estado (ver, escrever, câmara) e o envio de fotos; a câmara das conversas (Mensagens, Zapp,
+   Instashot). O 50% das regras de cada app é metade da janela inteira (passava por baixo da barra) */
+body.os-ios.form-fold .app-window > .st-ed,body.os-ios.form-fold .app-window > .ig-add,body.os-ios.form-fold .app-window > .story-view,
+body.os-ios.form-fold .app-window > .ins-layer,body.os-ios.form-fold .app-window > .rcu-viewer,body.os-ios.form-fold .app-window > .rcu-comp,
+body.os-ios.form-fold .app-window > .rcu-cam,body.os-ios.form-fold .app-window > .rcb-mc,body.os-ios.form-fold .app-window > .msg-cam{
+  left:calc((var(--screen-w) - var(--rail-w)) / 2 - 220px); right:calc(var(--rail-w) + (var(--screen-w) - var(--rail-w)) / 2 - 220px); border-radius:0; box-shadow:0 0 0 720px #000 }
+body.os-ios.form-fold .app-window > .rcb-mc{ box-shadow:0 0 0 720px #0B0B0F }
+/* duas colunas (aberto): a câmara das conversas abre por cima da conversa e continua por baixo da barra (a lista fica à vista) */
+body.os-ios.form-fold .app-window.split-on > .msg-cam{ left:var(--split-l); right:0; border-right:var(--rail-w) solid transparent; background-origin:border-box; box-shadow:none }
+/* ============================================================
+   PearOS 27 - KIT LIQUID GLASS (1.4.0). O mesmo modelo do sistema da Apple (UIGlassEffect, o que o expo-glass-effect embrulha):
+     · dois materiais: REGULAR (fosco, tingido, legível: painéis, folhas, cartões, pílulas) e CLEAR (muito mais transparente, para
+       peças que vivem por cima de fotografias/fundos: botões do ecrã bloqueado, a pega do relógio, emblemas);
+     · tintColor: uma lavagem de cor translúcida por cima de qualquer dos dois (.tint + --lg27-tint-rgb "r,g,b");
+     · isInteractive: ao toque a peça encolhe e volta com mola (.int; só transform anima);
+     · GlassContainer/spacing: peças de vidro coladas FUNDEM-SE numa só (.lg27-group: UMA pílula de vidro com segmentos lá dentro).
+   Classes: .lg27 + .regular | .clear [+ .tint] [+ .int] [+ .lg27-dk (força o tom escuro; NÃO .dk, que é a tecla redonda do marcador em apps.css) | .lt (força o claro)] [+ .on-lock];
+   .lg27-group (segmentos; .on = escolhido), .lg27-badge (o "menos" de tirar), .lg27-plus (o "+" tracejado de um lugar vazio).
+   NO BROWSER há backdrop-filter verdadeiro. NO JOGO (body.fivem) não há backdrop-filter nenhum (pinta preto e é a operação mais cara
+   do CEF): o vidro é a cópia PRÉ-DESFOCADA do fundo (--wp-blur no principal, --wp-lock-blur no bloqueado, escritas já em endereço
+   absoluto pelo System.makeBlur) pintada num ::before com a tinta por cima. Só as peças com [data-lgpos] levam essa cópia, alinhada
+   com o que está por baixo através de --gx/--gy (posição da peça no ecrã, medida em JS: LockEditor.glassPos); as outras ficam com
+   a tinta mais opaca (--lg-mf/--lg-mdf, nunca abaixo de .80). isolation:isolate dá a cada peça o seu contexto de empilhamento:
+   sem isso o ::before de z-index -1 ia para trás do fundo do pai. Regras de sempre: sem color-mix, sem calc() dentro de rgba(),
+   sem filter, sem clip-path; só transform/opacity animam.
+   ============================================================ */
+:root{ --lg27-r:22px; --lg27-tint-rgb:10,132,255;
+  --lg27-ring:inset 0 1px 0 rgba(255,255,255,.42), inset 0 -1px 0 rgba(255,255,255,.08), inset 0 0 0 .5px rgba(255,255,255,.22);
+  --lg27-ring-clear:inset 0 1px 0 rgba(255,255,255,.62), inset 0 -.5px 0 rgba(255,255,255,.18), inset 0 0 0 .5px rgba(255,255,255,.34);
+  --lg27-drop:0 6px 22px rgba(0,0,0,.18) }
+.lg27{ position:relative; isolation:isolate; border-radius:var(--lg27-r); box-shadow:var(--lg27-drop), var(--lg27-ring) }
+.lg27.regular{ --lg27-bg:rgba(255,255,255,var(--lg-a)); background-color:var(--lg27-bg); color:#1C1C1E; -webkit-backdrop-filter:blur(22px) saturate(180%); backdrop-filter:blur(22px) saturate(180%) }
+body.dark .lg27.regular:not(.lt),.lg27.regular.lg27-dk{ --lg27-bg:rgba(30,30,32,var(--lg-ad)); color:#fff }
+.lg27.clear{ --lg27-bg:rgba(255,255,255,.16); background-color:var(--lg27-bg); color:#fff; box-shadow:0 4px 14px rgba(0,0,0,.16), var(--lg27-ring-clear); -webkit-backdrop-filter:blur(8px) saturate(150%); backdrop-filter:blur(8px) saturate(150%) }
+body.dark .lg27.clear:not(.lt),.lg27.clear.lg27-dk{ --lg27-bg:rgba(0,0,0,.24) }
+.lg27.tint::after{ content:''; position:absolute; inset:0; z-index:-1; border-radius:inherit; pointer-events:none; background:rgba(var(--lg27-tint-rgb),var(--lg-tint)) }
+.lg27.int{ cursor:default; transition:transform .24s cubic-bezier(.3,1.35,.5,1) }
+.lg27.int:active,.lg27.int.pressed{ transform:scale(.95); transition:transform .08s ease-out }
+/* GlassContainer: uma pílula; os segmentos não têm vidro próprio (fundiram-se), o escolhido é uma pastilha clara */
+.lg27-group{ display:inline-flex; align-items:center; padding:3px; border-radius:999px; gap:0 }
+.lg27-group > *{ position:relative; display:flex; align-items:center; justify-content:center; height:30px; padding:0 16px; border-radius:999px; font-size:14px; font-weight:600; color:inherit; white-space:nowrap; cursor:default; transition:transform .2s }
+.lg27-group > *:active{ transform:scale(.96) }
+.lg27-group > .on{ background:rgba(255,255,255,.92); color:#111; box-shadow:0 1px 5px rgba(0,0,0,.14) }
+body.dark .lg27-group:not(.lt) > .on,.lg27-group.lg27-dk > .on{ background:rgba(255,255,255,.22); color:#fff; box-shadow:inset 0 .5px 0 rgba(255,255,255,.3) }
+.lg27-group > * + *::before{ content:''; position:absolute; left:0; top:28%; bottom:28%; width:1px; background:rgba(128,128,128,.28) }
+.lg27-group > .on::before,.lg27-group > .on + *::before{ display:none }
+/* o "menos" (tirar um widget / um controlo) e o "+" de um lugar vazio, como no editor do ecrã bloqueado do PearOS 27 */
+.lg27-badge{ position:absolute; z-index:6; width:22px; height:22px; border-radius:50%; display:flex; align-items:center; justify-content:center; background:rgba(242,242,247,.94); box-shadow:0 1px 4px rgba(0,0,0,.35), inset 0 0 0 .5px rgba(0,0,0,.1); cursor:default }
+.lg27-badge::before{ content:''; width:10px; height:2.5px; border-radius:2px; background:#3A3A3C }
+.lg27-plus{ position:relative; border-radius:50%; border:1.5px dashed rgba(255,255,255,.72); box-sizing:border-box; display:flex; align-items:center; justify-content:center }
+.lg27-plus::before,.lg27-plus::after{ content:''; position:absolute; width:18px; height:2.5px; border-radius:2px; background:rgba(255,255,255,.92) }
+.lg27-plus::after{ transform:rotate(90deg) }
+/* NO JOGO: nada de backdrop-filter; tinta mais opaca; com [data-lgpos] a cópia pré-desfocada alinhada por --gx/--gy */
+body.fivem .lg27{ -webkit-backdrop-filter:none!important; backdrop-filter:none!important }
+body.fivem .lg27.regular{ --lg27-bg:rgba(255,255,255,var(--lg-mf)) }
+body.fivem.dark .lg27.regular:not(.lt),body.fivem .lg27.regular.lg27-dk{ --lg27-bg:rgba(30,30,32,var(--lg-mdf)) }
+body.fivem .lg27.clear{ --lg27-bg:rgba(255,255,255,.22) }
+body.fivem.dark .lg27.clear:not(.lt),body.fivem .lg27.clear.lg27-dk{ --lg27-bg:rgba(0,0,0,.32) }
+body.fivem .lg27[data-lgpos]{ background-color:transparent }
+body.fivem .lg27[data-lgpos].regular{ --lg27-bg:rgba(255,255,255,var(--lg-a)) }
+body.fivem.dark .lg27[data-lgpos].regular:not(.lt),body.fivem .lg27[data-lgpos].regular.lg27-dk{ --lg27-bg:rgba(30,30,32,var(--lg-ad)) }
+body.fivem .lg27[data-lgpos]::before{ content:''; position:absolute; inset:0; z-index:-1; border-radius:inherit; pointer-events:none; background-repeat:no-repeat;
+  background-image:linear-gradient(var(--lg27-bg),var(--lg27-bg)), var(--lg27-src,var(--wp-blur,none)); background-size:auto, var(--lg27-sw,440px) 956px;
+  background-position:0 0, calc(-1 * var(--gx,0px)) calc(-1 * var(--gy,0px)) }
+.lg27.on-lock{ --lg27-src:var(--wp-lock-blur,var(--wp-blur,none)) }
+body.form-fold .lg27{ --lg27-sw:var(--screen-w) }
+body.fivem .screen.app-open .lg27[data-lgpos]::before{ background-image:linear-gradient(var(--lg27-bg),var(--lg27-bg)) }   /* por cima de uma app a cópia mostraria o fundo de ecrã: só a tinta */
+
+/* ---------- O kit nas peças que já existiam (galeria do ecrã bloqueado, botões do ecrã bloqueado) ----------
+   PearOS 27: "Personalizar", o "+" redondo, o Foco, "Cancelar" e "Concluído" são vidro (o "+" deixou de ser azul, o Concluído também);
+   a lanterna e a câmara do ecrã bloqueado são vidro CLEAR com um véu escuro (leem-se em fundos claros e escuros). Carregado depois do
+   lockgallery.css e do motion.css: ganha os empates. */
+.lsg-custom,.lsg-add,.lsg-focus,.lsg-cancel,.screen.lsg-edit .lsg-custom,.screen.lsg-home .lsg-custom{ color:#fff; background:rgba(255,255,255,.15); border:none; box-shadow:0 8px 24px rgba(0,0,0,.24), var(--lg27-ring-clear) }
+body.fivem .lsg-custom,body.fivem .lsg-add,body.fivem .lsg-focus,body.fivem .lsg-cancel,body.fivem .screen.lsg-edit .lsg-custom,body.fivem .screen.lsg-home .lsg-custom{ background:rgba(255,255,255,.22) }
+.ls-btn,body.fivem .ls-btn{ background-color:rgba(18,18,22,.34); box-shadow:0 4px 16px rgba(0,0,0,.18), var(--lg27-ring-clear) }
+.ls-btn.on,body.fivem .ls-btn.on{ background:#fff; color:#000 }

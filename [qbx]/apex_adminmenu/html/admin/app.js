@@ -1587,7 +1587,7 @@ const CENTER_X = 117.3, CENTER_Y = 172.8, SCALE_X = 0.02072, SCALE_Y = 0.0205;
 //   • github.com/dexyfex     — additional GTA tile sets mirrored on jsDelivr
 const MAP_STYLES = {
     atlas: {
-        urls: ['https://www.gtamap.xyz/mapStyles/styleAtlas/{z}/{x}/{y}.jpg']
+        urls: ['https://www.gtamap.xyz/mapStyles/styleSatelite/{z}/{x}/{y}.jpg']
     },
     satellite: {
         urls: [
@@ -1604,7 +1604,7 @@ const MAP_STYLES = {
     // Pure-filter variants of Atlas — guaranteed to work because they
     // re-use the Atlas tileset and only change the visual look.
     dark: {
-        urls: ['https://www.gtamap.xyz/mapStyles/styleAtlas/{z}/{x}/{y}.jpg'],
+        urls: ['https://www.gtamap.xyz/mapStyles/styleSatelite/{z}/{x}/{y}.jpg'],
         filter: 'invert(0.92) hue-rotate(180deg) saturate(0.85) brightness(0.95)'
     }
 };

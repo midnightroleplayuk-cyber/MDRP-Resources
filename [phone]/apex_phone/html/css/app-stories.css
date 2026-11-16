@@ -1,0 +1,344 @@
+/* =====================================================================
+   STORIES - editor e visualizador (Instashot)
+   Regras de CEF: zero backdrop-filter, zero filter em camadas grandes,
+   zero color-mix. Só transform/opacity animam.
+   ===================================================================== */
+
+/* ---------- tipos de letra dos elementos de texto ---------- */
+.f-normal { font-family: var(--font); font-weight: 600; }
+.f-bold { font-family: var(--font); font-weight: 800; letter-spacing: -.5px; }
+.f-modern { font-family: Bahnschrift, 'Arial Narrow', var(--font); font-weight: 600; font-stretch: 80%; text-transform: uppercase; letter-spacing: .5px; }
+.f-classic { font-family: Georgia, 'Times New Roman', serif; font-weight: 600; }
+.f-type { font-family: var(--font-mono, 'Courier New', monospace); font-weight: 500; }
+.f-neon { font-family: var(--font); font-weight: 700; text-shadow: 0 0 6px currentColor, 0 0 14px currentColor; }
+.f-script { font-family: MonteCarlo, cursive; font-weight: 400; }
+.f-wide { font-family: var(--font); font-weight: 700; letter-spacing: 4px; text-transform: uppercase; }
+
+/* ---------- editor ---------- */
+.st-ed { position: absolute; inset: 0; z-index: 210; background: #000; overflow: hidden; border-radius: 57px; }
+.st-canvas { position: absolute; left: 0; right: 0; top: 0; bottom: 0; background: #111 center/cover no-repeat; overflow: hidden; touch-action: none; }
+.st-draw { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 2; pointer-events: none; }
+.st-ed.drawing .st-draw { pointer-events: auto; }
+/* a desenhar, as camadas deixam de apanhar o rato - senão o traço partia-se em cima delas */
+.st-ed.drawing .st-layers { pointer-events: none; }
+.st-layers { position: absolute; inset: 0; z-index: 3; }
+.st-hint { position: absolute; left: 0; right: 0; top: 46%; text-align: center; color: rgba(255,255,255,.72); font: 500 15px/1.4 var(--font); z-index: 1; pointer-events: none; }
+.st-hint b { font-weight: 800; }
+
+/* camadas */
+.st-layer { position: absolute; z-index: 4; cursor: grab; user-select: none; touch-action: none; }
+.st-layer:active { cursor: grabbing; }
+.st-layer.sel > .st-in { outline: 1.5px dashed rgba(255,255,255,.8); outline-offset: 6px; }
+.st-layer.over-trash { opacity: .5; }
+.st-in { display: inline-block; max-width: 360px; }
+.st-txt { padding: 4px 10px; border-radius: 8px; line-height: 1.22; white-space: pre-wrap; word-break: break-word; text-shadow: 0 1px 6px rgba(0,0,0,.35); }
+.st-txt.has-bg { opacity: 1; text-shadow: none; }
+.st-emo { line-height: 1; text-shadow: 0 2px 8px rgba(0,0,0,.3); }
+.st-chip { display: inline-flex; align-items: center; gap: 5px; padding: 7px 13px; border-radius: 10px; background: #fff; color: #111; font: 700 15px/1 var(--font); }
+.st-chip.k-mention { background: rgba(0,0,0,.55); color: #fff; }
+.st-chip.k-hashtag { background: rgba(0,0,0,.55); color: #fff; }
+.st-chip.k-time { background: rgba(0,0,0,.45); color: #fff; }
+.st-music { display: inline-flex; align-items: center; gap: 9px; padding: 7px 12px 7px 7px; border-radius: 12px; background: #fff; color: #111; }
+.st-music .ar { width: 30px; height: 30px; border-radius: 7px; display: flex; align-items: center; justify-content: center; color: #fff; flex: 0 0 auto; }
+.st-music .tx b { display: block; font: 700 13px/1.2 var(--font); }
+.st-music .tx span { font: 500 11px/1.2 var(--font); opacity: .62; }
+.st-music.s1 { background: rgba(0,0,0,.55); color: #fff; padding: 7px 13px; gap: 6px; font: 700 14px/1 var(--font); }
+.st-music.s3 { padding: 10px 16px 10px 10px; }
+.st-music.s3 .ar { width: 44px; height: 44px; border-radius: 9px; }
+.st-music.s3 .tx b { font-size: 15px; }
+.st-card { padding: 14px 16px; border-radius: 14px; background: rgba(255,255,255,.94); color: #111; min-width: 200px; text-align: center; }
+.st-card .q { font: 700 15px/1.3 var(--font); margin-bottom: 10px; }
+.st-card .opts { display: flex; gap: 8px; }
+.st-card .opts span { flex: 1; padding: 8px; border-radius: 9px; background: rgba(0,0,0,.06); font: 600 13px/1 var(--font); }
+.st-card .ans { padding: 8px; border-radius: 9px; background: rgba(0,0,0,.06); font: 500 12px/1 var(--font); opacity: .6; }
+
+/* barra de cima */
+.st-top { position: absolute; top: calc(var(--statusbar-h) + 6px); left: 10px; right: 10px; display: flex; align-items: center; gap: 6px; z-index: 12; }
+.st-top .sp { flex: 1; }
+.st-top { transition: opacity .18s; }
+.st-top .b { width: 44px; height: 44px; border-radius: 50%; background: rgba(0,0,0,.4); color: #fff; display: flex; align-items: center; justify-content: center; }
+.st-top .b svg { width: 25px; height: 25px; }
+.st-top .b b { font: 800 18px/1 var(--font); }
+.st-top .b:active { background: rgba(0,0,0,.55); transform: scale(.94); }
+
+/* barra do elemento selecionado */
+/* fica POR BAIXO DA BARRA DE CIMA, não em baixo: em baixo tapava qualquer sticker
+   colocado no fundo da story (e é lá que se põe a música, como no Instagram) */
+.st-sel { position: absolute; left: 50%; transform: translateX(-50%) translateY(-10px); top: calc(var(--statusbar-h) + 54px); display: flex; gap: 8px; padding: 6px; border-radius: 22px; background: rgba(0,0,0,.5); z-index: 13; opacity: 0; pointer-events: none; transition: opacity .18s var(--ease), transform .22s var(--ease); }
+.st-sel.in { opacity: 1; pointer-events: auto; transform: translateX(-50%); }
+.st-sel .s { width: 40px; height: 40px; border-radius: 20px; background: rgba(255,255,255,.14); color: #fff; display: flex; align-items: center; justify-content: center; }
+.st-sel .s:active { background: rgba(255,255,255,.3); }
+
+/* caixote */
+.st-trash { position: absolute; left: 50%; bottom: 96px; transform: translateX(-50%) scale(.8); width: 54px; height: 54px; border-radius: 27px; background: rgba(0,0,0,.55); color: #fff; display: flex; align-items: center; justify-content: center; z-index: 14; opacity: 0; transition: opacity .18s var(--ease), transform .22s var(--spring), background .15s; pointer-events: none; }
+.st-trash.in { opacity: 1; transform: translateX(-50%) scale(1); }
+.st-trash.hot { background: #FF453A; transform: translateX(-50%) scale(1.18); }
+
+/* publicar */
+.st-bottom { position: absolute; left: 12px; right: 12px; bottom: 26px; display: flex; gap: 8px; z-index: 12; transition: opacity .18s; }
+.st-bottom .pub { flex: 1; height: 46px; border-radius: 23px; background: rgba(0,0,0,.5); color: #fff; display: flex; align-items: center; justify-content: center; gap: 8px; font: 600 14px/1 var(--font); }
+.st-bottom .pub .av .avatar { width: 26px; height: 26px; font-size: 10px; }
+.st-bottom .pub:active { background: rgba(0,0,0,.72); transform: scale(.98); }
+.st-bottom .pub.cf { background: rgba(48,209,88,.9); flex: 0 0 auto; padding: 0 16px; }
+.st-busy { position: absolute; inset: 0; background: rgba(0,0,0,.5); display: none; align-items: center; justify-content: center; flex-direction: column; gap: 12px; z-index: 20; color: #fff; font: 600 14px/1 var(--font); }
+.st-ed.busy .st-busy { display: flex; }
+.st-busy .sp { width: 26px; height: 26px; border-radius: 50%; border: 2.5px solid rgba(255,255,255,.25); border-top-color: #fff; animation: stSpin .8s linear infinite; }
+@keyframes stSpin { to { transform: rotate(360deg); } }
+
+/* ---------- editor de texto ---------- */
+.st-text-ov { position: absolute; inset: 0; z-index: 30; background: rgba(0,0,0,.62); display: flex; flex-direction: column; }
+.st-text-ov .tt { display: flex; justify-content: space-between; padding: calc(var(--statusbar-h) + 10px) 16px 0; color: #fff; font: 600 15px/1 var(--font); }
+.st-text-ov .area { flex: 1; display: flex; align-items: center; padding: 0 20px; }
+.st-text-ov .ta { width: 100%; background: transparent; border: 0; outline: none; resize: none; color: #fff; text-align: center; font-size: 30px; line-height: 1.25; max-height: 40vh; }
+.st-text-ov .ta.has-bg { border-radius: 10px; padding: 6px 10px; }
+.st-text-ov .tools { padding: 0 12px calc(var(--safe-bottom, 22px) + 10px); }
+.st-text-ov .row { display: flex; gap: 8px; align-items: center; overflow-x: auto; padding: 8px 0; scrollbar-width: none; }
+.st-text-ov .row::-webkit-scrollbar { display: none; }
+.st-text-ov .f { flex: 0 0 auto; min-width: 42px; height: 34px; padding: 0 10px; border-radius: 17px; background: rgba(255,255,255,.14); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 15px; }
+.st-text-ov .f.on { background: #fff; color: #111; }
+.st-text-ov .c { flex: 0 0 auto; width: 28px; height: 28px; border-radius: 50%; border: 2px solid rgba(255,255,255,.55); }
+.st-text-ov .c.on { outline: 2px solid #fff; outline-offset: 2px; }
+.st-text-ov .c.cust { display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,.18); color: #fff; }
+.st-text-ov .ctl { gap: 12px; }
+.st-text-ov .ctl .al, .st-text-ov .ctl .bgb { width: 36px; height: 36px; border-radius: 18px; background: rgba(255,255,255,.14); color: #fff; display: flex; align-items: center; justify-content: center; flex: 0 0 auto; }
+.st-text-ov .ctl .sz { flex: 1; }
+
+/* ---------- painéis (stickers, música) ---------- */
+.st-panel { position: absolute; inset: 0; z-index: 30; background: rgba(0,0,0,.5); display: flex; flex-direction: column; justify-content: flex-end; }
+.st-panel > .ph, .st-panel > .sb, .st-panel > .body { background: var(--bg2); }
+.st-panel .ph { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px 10px; border-radius: 20px 20px 0 0; color: var(--label); font: 700 16px/1 var(--font); }
+.st-panel .ph .cl, .st-panel .ph .cl2, .st-panel .ph .ok { color: var(--accent); font: 600 15px/1 var(--font); }
+.st-panel .ph .cl { color: var(--label3); }
+.st-panel .sb { padding: 0 12px 6px; }
+.st-panel .body { max-height: 46vh; overflow-y: auto; padding: 0 12px calc(var(--safe-bottom, 22px) + 10px); }
+.st-panel.tall .body { max-height: 62vh; }
+.st-panel .sh { font: 600 12px/1 var(--font); color: var(--label3); text-transform: uppercase; letter-spacing: .05em; padding: 12px 4px 8px; }
+.sgrid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+.sg { display: flex; align-items: center; gap: 10px; padding: 14px 12px; border-radius: 14px; background: var(--bg); color: var(--label); font: 600 14px/1 var(--font); }
+.sg:active { background: var(--fill4); }
+.egrid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; padding-top: 4px; }
+.egrid span { display: flex; align-items: center; justify-content: center; height: 46px; font-size: 28px; border-radius: 10px; }
+.egrid span:active { background: var(--fill4); }
+.mrow { display: flex; align-items: center; gap: 12px; padding: 9px 6px; }
+.mrow:active { background: var(--fill4); border-radius: 12px; }
+.mrow .ar { width: 44px; height: 44px; border-radius: 9px; display: flex; align-items: center; justify-content: center; color: #fff; flex: 0 0 auto; }
+.mrow .tx { flex: 1; min-width: 0; }
+.mrow .tx b { display: block; font: 600 15px/1.2 var(--font); color: var(--label); }
+.mrow .tx span { font: 500 12px/1.2 var(--font); color: var(--label3); }
+.mrow .pv { width: 32px; height: 32px; border-radius: 16px; background: var(--fill3); color: var(--label); display: flex; align-items: center; justify-content: center; }
+
+/* timeline da música */
+.st-panel.trim .tprev { display: flex; justify-content: center; padding: 18px 0 14px; position: relative; height: 72px; }
+.st-panel.trim .tprev .st-layer { position: static; transform: none !important; }
+.st-panel.trim .styles { display: flex; gap: 8px; justify-content: center; padding-bottom: 14px; }
+.st-panel.trim .styles span { padding: 7px 12px; border-radius: 14px; background: var(--fill3); color: var(--label2); font: 600 12px/1 var(--font); }
+.st-panel.trim .styles span.on { background: var(--accent); color: #fff; }
+.st-panel.trim .wave { position: relative; height: 64px; border-radius: 12px; background: var(--fill4); overflow: hidden; touch-action: none; }
+.st-panel.trim .bars { position: absolute; inset: 0; display: flex; align-items: center; gap: 2px; padding: 0 4px; }
+.st-panel.trim .bars i { flex: 1; background: var(--gray3); border-radius: 2px; }
+.st-panel.trim .win { position: absolute; top: 0; bottom: 0; border: 2.5px solid var(--accent); border-radius: 10px; background: rgba(10,132,255,.18); }
+.st-panel.trim .tinfo { display: flex; justify-content: space-between; padding: 8px 4px 0; font: 600 12px/1 var(--font); color: var(--label3); }
+
+/* fundos */
+.st-bgs { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+.st-bgs span { height: 64px; border-radius: 12px; }
+.st-bgs span:active { transform: scale(.95); }
+
+/* ---------- desenhar ---------- */
+/* a desenhar: as barras do editor (Aa/stickers/…, seleção, "O teu Story") ESCONDEM-SE - ficavam por baixo da paleta
+   e dos botões de desenho e viam-se as duas camadas ao mesmo tempo (queixa in-game 2026-09-19) */
+.st-ed.drawing .st-top, .st-ed.drawing .st-sel, .st-ed.drawing .st-bottom, .st-ed.drawing .st-hint, .st-ed.drawing .st-trash { opacity: 0 !important; pointer-events: none !important; }
+.st-draw-ov { position: absolute; left: 0; right: 0; top: 0; bottom: 0; z-index: 25; pointer-events: none; }
+.st-draw-ov .dt { position: absolute; top: calc(var(--statusbar-h) + 6px); left: 10px; right: 10px; display: flex; align-items: center; justify-content: space-between; pointer-events: auto; }
+.st-draw-ov .dt .cl2 { color: #fff; font: 700 16px/1 var(--font); height: 44px; padding: 0 18px; display: flex; align-items: center; border-radius: 22px; background: rgba(0,0,0,.45); }
+.st-draw-ov .dt .cl2:active { background: rgba(0,0,0,.65); transform: scale(.96); }
+.st-draw-ov .tools { display: flex; gap: 8px; }
+.st-draw-ov .tools > div { width: 44px; height: 44px; border-radius: 22px; background: rgba(0,0,0,.45); color: #fff; display: flex; align-items: center; justify-content: center; }
+.st-draw-ov .tools > div svg { width: 24px; height: 24px; }
+.st-draw-ov .tools > div:active { background: rgba(0,0,0,.65); transform: scale(.94); }
+.st-draw-ov .tools > div.on { background: #fff; color: #111; }
+/* paleta + espessura: uma faixa escura em baixo, como no Instagram */
+.st-draw-ov .db { position: absolute; left: 0; right: 0; bottom: 0; padding: 14px 16px calc(var(--safe-bottom, 20px) + 10px); pointer-events: auto; background: linear-gradient(180deg, rgba(0,0,0,0), rgba(0,0,0,.6) 40%); }
+.st-draw-ov .cols { display: flex; gap: 10px; overflow-x: auto; padding: 4px 2px 14px; scrollbar-width: none; }
+.st-draw-ov .cols::-webkit-scrollbar { display: none; }
+.st-draw-ov .cols .c { flex: 0 0 auto; width: 36px; height: 36px; border-radius: 50%; border: 2.5px solid rgba(255,255,255,.7); box-shadow: 0 1px 4px rgba(0,0,0,.4); cursor: pointer; }
+.st-draw-ov .cols .c.on { outline: 2.5px solid #fff; outline-offset: 3px; }
+.st-draw-ov .w { width: 100%; height: 34px; -webkit-appearance: none; appearance: none; background: transparent; margin: 0; }
+.st-draw-ov .w::-webkit-slider-runnable-track { height: 6px; border-radius: 3px; background: rgba(255,255,255,.35); }
+.st-draw-ov .w::-webkit-slider-thumb { -webkit-appearance: none; width: 28px; height: 28px; border-radius: 50%; background: #fff; margin-top: -11px; box-shadow: 0 1px 5px rgba(0,0,0,.4); }
+
+/* ---------- visualizador novo (camadas + desenho) ---------- */
+.story-view.sv2 .sv-draw { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 2; pointer-events: none; }
+.story-view.sv2 .sv-layers { position: absolute; inset: 0; z-index: 5; pointer-events: none; }
+.story-view.sv2 .sv-layers .st-layer { pointer-events: none; cursor: default; }
+/* só menções e hashtags recebem o rato - o resto deixa passar para as zonas de toque */
+.story-view.sv2 .sv-layers .st-layer.st-mention, .story-view.sv2 .sv-layers .st-layer.st-hashtag,
+.story-view.sv2 .sv-layers .st-layer.st-poll, .story-view.sv2 .sv-layers .st-layer.st-question { pointer-events: auto; }
+.story-view.sv2 .sv-layers .st-layer.st-mention, .story-view.sv2 .sv-layers .st-layer.st-hashtag { cursor: pointer; }
+.story-view.sv2 .sv-bars .b span { width: 100%; transform: scaleX(0); transform-origin: 0 50%; }
+.story-view.sv2 .sv-bars .b.done span { transform: scaleX(1); }
+/* transform, não width: animar width faz layout+paint em CADA frame durante a story inteira */
+.story-view.sv2 .sv-bars .b span.run { animation: svRunX var(--dur, 5s) linear forwards; }
+@keyframes svRunX { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+/* manter carregado congela mesmo a barra - antes ela continuava a correr durante a pausa */
+.story-view.sv2.paused .sv-bars .b span.run { animation-play-state: paused; }
+.story-view.sv2 .sv-top .mo { color: #fff; padding: 4px; }
+.story-view.sv2 .sv-tap { z-index: 4; }
+.story-view.sv2 .sv-foot, .story-view.sv2 .sv-own { z-index: 7; }
+.story-view.sv2 .sv-top { z-index: 8; }
+
+/* ---------- no jogo ---------- */
+body.fivem .st-sel, body.fivem .st-trash { transition: opacity .16s linear; }
+body.fivem .st-layer { will-change: transform; }
+
+/* ---------- resultados da sondagem e resposta da pergunta (visualizador) ---------- */
+.st-card .opts span { position: relative; overflow: hidden; }
+/* a barra é um ::before com transform: no CEF animar width custa layout a cada frame */
+.st-card .opts span.res { text-align: left; padding: 8px 10px; }
+.st-card .opts span.res::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: var(--p, 0%); background: rgba(10,132,255,.18); }
+.st-card .opts span.res.me::before { background: rgba(10,132,255,.34); }
+.st-card .opts span.res b { position: relative; font-weight: 800; margin-right: 6px; }
+.st-card .opts span.res > span { position: relative; font-weight: 600; }
+.st-card .opts span.me { box-shadow: inset 0 0 0 1.5px #0A84FF; }
+.st-card .ans.done { opacity: 1; font-weight: 600; color: #0A84FF; }
+
+/* =====================================================================
+   "ADICIONAR À STORY" - o ecrã do Instagram (galeria + câmara)
+   A galeria e a câmara vivem as duas no mesmo contentor e trocam-se com
+   transform+opacity (nunca display), para o CEF não repor layout.
+   ===================================================================== */
+.ig-add { position: absolute; inset: 0; z-index: 205; background: #000; overflow: hidden; border-radius: 57px; color: #fff; opacity: 0; transition: opacity .22s var(--ease); }
+.ig-add.in { opacity: 1; }
+
+/* ---------- galeria ---------- */
+/* transform/opacity são escritos em linha pelo gesto (setReveal); estas transições só
+   entram quando o dedo LARGA - durante o arrasto a classe .pulling desliga-as. */
+.ig-add .iga-gal { position: absolute; inset: 0; display: flex; flex-direction: column; background: #0B0B0D; z-index: 2;
+  transition: transform .42s var(--ios), opacity .3s var(--ease); }
+.ig-add.pulling .iga-gal, .ig-add.pulling .iga-cam { transition: none; }
+.ig-add.cam .iga-gal { pointer-events: none; }
+/* Medido na referência do Instagram (1080 px) e convertido com k=440/1080: a barra de topo
+   tem o centro a 80pt do topo do ecrã e os glifos a 22 (×) e 27 (roda dentada). */
+.igg-top { flex: none; display: flex; align-items: center; gap: 8px; padding: calc(var(--statusbar-h) + 6px) 13px 12px; }
+.igg-top .tt { flex: 1; text-align: center; font: 700 20px/1 var(--font); }
+.ig-add .b { width: 42px; height: 42px; border-radius: 21px; display: flex; align-items: center; justify-content: center; color: #fff; flex: 0 0 auto; }
+.ig-add .b:active { background: rgba(255,255,255,.16); transform: scale(.92); }
+/* dentro da câmara os botões do topo levam disco escuro - sobre o jogo, branco sobre branco não se via */
+.iga-cam .b { background: rgba(0,0,0,.38); }
+.iga-cam .b svg { stroke-width: 2.3; }
+.iga-cam .b:active { background: rgba(0,0,0,.62); }
+.igg-body { flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: none; touch-action: pan-y; }
+.igg-body::-webkit-scrollbar { display: none; }
+
+/* a dica do puxar: só aparece durante o gesto */
+.igg-pull { display: flex; align-items: center; justify-content: center; gap: 8px; height: 0; opacity: 0; overflow: hidden;
+  color: rgba(255,255,255,.72); font: 600 13px/1 var(--font); transition: height .2s var(--ease), opacity .2s var(--ease); }
+.ig-add.pulling .igg-pull { height: 46px; opacity: 1; }
+.ig-add.ready .igg-pull { color: #fff; }
+.ig-add.ready .igg-pull svg { transform: scale(1.15); }
+.igg-pull svg { transition: transform .2s var(--spring); }
+
+/* três cartões grandes */
+/* cartão 326x227 e espaço 32 no Instagram -> 133x92 e 13 aqui; margem lateral 13 -> 5 */
+.igg-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 13px; padding: 4px 5px 16px; }
+.igg-cards .c { height: 92px; border-radius: 16px; background: #1C1C1F; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 9px; font: 600 14px/1 var(--font); }
+.igg-cards .c:active { background: #2A2A2E; transform: scale(.97); }
+.igg-cards .c .ic { width: 36px; height: 36px; border-radius: 18px; display: flex; align-items: center; justify-content: center; }
+.igg-cards .c.t .ic { background: linear-gradient(150deg, #FF375F, #FF9F0A); }
+.igg-cards .c.m .ic { background: linear-gradient(150deg, #BF5AF2, #0A84FF); }
+.igg-cards .c.g .ic { background: linear-gradient(150deg, #30D158, #00C7BE); }
+
+/* linha "Recentes / Selecionar": 102 de altura no IG -> 41,5; pílula 235x~90 -> 96x37 */
+.igg-bar { display: flex; align-items: center; justify-content: space-between; height: 42px; padding: 0 14px 0 21px; margin-bottom: 9px; }
+.igg-bar .rec { display: flex; align-items: center; gap: 6px; font: 700 21px/1 var(--font); }
+.igg-bar .sel { display: flex; align-items: center; justify-content: center; gap: 7px; min-width: 96px; height: 37px; padding: 0 15px; border-radius: 19px; background: #1C1C1F; font: 600 14px/1 var(--font); }
+.igg-bar .sel.on { background: #0A84FF; }
+.igg-bar .sel:active { transform: scale(.95); }
+
+/* grelha de 3 colunas, como o Instagram */
+/* célula 355x631 no Instagram = 9:16, com 7 px de intervalo -> 3 aqui */
+.igg-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3px; padding: 0 0 120px; }
+.igg-grid .gp { position: relative; aspect-ratio: 9 / 16; background: #151518 center/cover no-repeat; }
+.igg-grid .gp:active { opacity: .8; }
+.igg-grid .gp.gcam { display: flex; align-items: center; justify-content: center; background: #1C1C1F; color: #fff; }
+.ig-add.picking .igg-grid .gp:not(.gcam)::after { content: ''; position: absolute; right: 8px; top: 8px; width: 22px; height: 22px; border-radius: 11px; border: 2px solid rgba(255,255,255,.9); }
+.ig-add.picking .igg-grid .gp.on::after { background: #0A84FF; border-color: #0A84FF; }
+.igg-grid .gnone { grid-column: 1 / -1; padding: 46px 24px; text-align: center; color: rgba(255,255,255,.6); font: 500 14px/1.4 var(--font); }
+
+.igg-next { position: absolute; left: 14px; right: 14px; bottom: calc(var(--safe-bottom, 22px) + 12px); height: 50px; border-radius: 25px; background: #0A84FF;
+  display: flex; align-items: center; justify-content: center; gap: 8px; font: 700 16px/1 var(--font); z-index: 4;
+  transform: translateY(90px); opacity: 0; pointer-events: none; transition: transform .3s var(--spring), opacity .2s; }
+.igg-next.in { transform: none; opacity: 1; pointer-events: auto; }
+.igg-next.busy { opacity: .6; pointer-events: none; }
+.igg-next .n { min-width: 22px; height: 22px; border-radius: 11px; background: rgba(255,255,255,.28); display: flex; align-items: center; justify-content: center; font-size: 13px; }
+
+/* ---------- câmara ---------- */
+.ig-add .iga-cam { position: absolute; inset: 0; z-index: 1; background: #000; display: flex; align-items: center; justify-content: center;
+  transform-origin: 50% 42%; opacity: 0; pointer-events: none;
+  transition: opacity .3s var(--ease), transform .42s var(--ios); }
+.ig-add.cam .iga-cam { pointer-events: auto; }
+/* O visor é A CÂMARA DO TELEMÓVEL (js/camview.js, chrome 'bare'): o mesmo canvas com a vista
+   do jogo, o mesmo cameraMode do Lua e o mesmo disparo da app Câmara - só que a encher o ecrã
+   inteiro, como no Instagram. O rácio do buffer é o do ecrã (ver stories.js), por isso o
+   `cover` não corta nada: o que se vê é exatamente o que sai. */
+.iga-cam .cam-app.cam-bare { z-index: 1; }
+.iga-cam .cam-bare .viewfinder .cam-gl { top: 0; transform: none; height: 100%; max-height: none; object-fit: cover; }
+
+/* véu escuro no topo e em baixo: é o que o Instagram faz para os ícones brancos se lerem
+   sobre qualquer imagem. Gradiente simples - nada de filter, que o CEF não perdoa. */
+.iga-cam::before { content: ''; position: absolute; left: 0; right: 0; top: 0; height: 190px; z-index: 5; pointer-events: none;
+  background: linear-gradient(180deg, rgba(0,0,0,.55), rgba(0,0,0,.22) 55%, rgba(0,0,0,0)); }
+.igc-top { position: absolute; top: calc(var(--statusbar-h) + 4px); left: 12px; right: 12px; display: flex; align-items: center; gap: 6px; z-index: 6; }
+.igc-top .sp { flex: 1; }
+.igc-top .b.fl.off { opacity: .55; }
+
+/* a coluna de opções à esquerda, como no Instagram */
+.igc-rail { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; gap: 22px; z-index: 6; }
+.igc-rail .r { display: flex; align-items: center; gap: 13px; color: #fff; font: 700 17px/1 var(--font);
+  text-shadow: 0 1px 3px rgba(0,0,0,.85), 0 2px 12px rgba(0,0,0,.6); }
+/* os glifos são de traço fino: sem um contorno escuro desaparecem sobre céu claro */
+.igc-rail .r svg { filter: none; stroke-width: 2.4; }
+.igc-rail .r::before { content: ''; position: absolute; left: -12px; right: -14px; top: -8px; bottom: -8px; z-index: -1;
+  border-radius: 22px; background: rgba(0,0,0,.34); }
+.igc-rail .r { position: relative; z-index: 0; }
+.igc-rail .r b { font: 800 27px/1 var(--font); width: 30px; text-align: center; }
+.igc-rail .r svg { width: 26px; height: 26px; }
+.igc-rail .r:active { opacity: .6; }
+.igc-rail .dn { justify-content: center; opacity: .8; }
+.igc-rail .dn svg { width: 26px; height: 26px; }
+
+.igc-bot { position: absolute; left: 0; right: 0; bottom: 0; padding: 0 0 calc(var(--safe-bottom, 22px) + 6px); z-index: 6;
+  background: linear-gradient(180deg, rgba(0,0,0,0), rgba(0,0,0,.55) 42%); }
+.igc-strip { display: flex; gap: 8px; padding: 10px 14px 12px; overflow-x: auto; scrollbar-width: none; }
+.igc-strip::-webkit-scrollbar { display: none; }
+.igc-strip .th { width: 58px; height: 58px; border-radius: 29px; flex: 0 0 auto; background: #222 center/cover no-repeat; border: 1.5px solid rgba(255,255,255,.5); }
+.igc-strip .th:active { transform: scale(.92); }
+.igc-row { display: flex; align-items: center; justify-content: space-between; padding: 0 26px; }
+/* miniatura da galeria 102 px -> 42; virar 66 -> 27 */
+.igc-gal { width: 42px; height: 42px; border-radius: 10px; background: #222 center/cover no-repeat; border: 1.5px solid rgba(255,255,255,.7); }
+/* obturador 228 px no Instagram -> 93; as miniaturas ao lado 143 -> 58 */
+.igc-shut { width: 93px; height: 93px; border-radius: 47px; border: 5px solid #fff; display: flex; align-items: center; justify-content: center; }
+.igc-shut > div { width: 74px; height: 74px; border-radius: 37px; background: #fff; transition: transform .12s var(--ease); }
+.igc-shut:active > div { transform: scale(.88); }
+.igc-flip { width: 42px; height: 42px; border-radius: 21px; display: flex; align-items: center; justify-content: center; color: #fff; }
+.igc-flip:active { transform: scale(.9) rotate(-40deg); }
+.igc-modes { display: flex; align-items: center; justify-content: center; gap: 26px; padding: 14px 0 4px; }
+.igc-modes span { font: 700 12px/1 var(--font); letter-spacing: 1.3px; color: rgba(255,255,255,.55); }
+.igc-modes span.on { color: #fff; }
+.igc-modes span:active { opacity: .6; }
+
+/* ---------- PearPhone Fold aberto (880) ----------
+   Uma story é vertical (9:16, a tela de desenho tem 440×956): o editor, o "Adicionar à story" e o visualizador ficam numa
+   coluna de 440 ao centro e o resto do ecrã a preto (a sombra larga pinta as laterais), como nos tablets. Assim o desenho,
+   os autocolantes e a foto têm a mesma geometria do telemóvel. */
+body.form-fold .st-ed, body.form-fold .ig-add, body.form-fold .story-view { left: calc(50% - 220px); right: calc(50% - 220px); border-radius: 0; box-shadow: 0 0 0 440px #000; }
+/* ---------- VÍDEO NAS STORIES (12 nov 2026) ----------
+   Editor: o vídeo toca sem som por baixo do desenho e das camadas (a capa fica no fundo até ele arrancar).
+   Visualizador: a barra da story à vista fica parada (.sv-wait) enquanto o vídeo desce; o anel do social.js mostra a percentagem.
+   Galeria do "Adicionar à story": os vídeos levam a duração no canto (a tira da câmara, redonda, só o glifo). */
+.st-canvas > video.st-vid { position: absolute; left: 0; top: 0; width: 100%; height: 100%; object-fit: cover; z-index: 1; pointer-events: none; background: transparent; }
+.story-view.sv2.sv-wait .sv-bars .b span.run { animation-play-state: paused; }
+.story-view .sv-img.sv-host > video.sv-v { z-index: 0; }
+.story-view .sv-img .sv-ov { z-index: 1; }
+.igc-strip .th { position: relative; }
+.igc-strip .th .cr-vbadge { right: auto; bottom: auto; left: 50%; top: 50%; transform: translate(-50%, -50%); font-size: 0; gap: 0; }

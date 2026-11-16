@@ -1,0 +1,238 @@
+/* ===================== MENSAGENS (Fase 2, pacote M3) =====================
+   A base (.thread, .bubble, .composer, .day-sep, .attach-row, .viewer) continua no apps.css, porque é
+   partilhada com as DMs do Instashot/Tweeter, o Match e o Dark Chat. Tudo o que é novo aqui tem prefixo
+   msl- (lista), msg- (conversa) ou mc- (câmara), ou fica debaixo de .msg-view - nada disto muda as
+   conversas das outras apps.
+   Regras do CEF do FiveM: sem filter nem backdrop-filter, só transform/opacity animam, sem color-mix,
+   camadas de ecrã inteiro com border-radius 57. */
+
+/* ---------- lista: conversas fixadas (grelha no topo, como no PearOS) ---------- */
+.msl-pins{ display:grid; grid-template-columns:repeat(3,1fr); gap:16px 6px; padding:6px 14px 16px }
+.msl-pin{ position:relative; display:flex; flex-direction:column; align-items:center; gap:6px; min-width:0; cursor:pointer }
+.msl-pin:active{ opacity:.6 }
+.msl-pav{ position:relative }
+.msl-pin .avatar{ width:78px; height:78px; font-size:30px }
+.msl-pin b{ max-width:100%; font-size:var(--t-foot); font-weight:500; color:var(--label2); overflow:hidden; text-overflow:ellipsis; white-space:nowrap }
+.msl-pin.is-unread b{ color:var(--label); font-weight:600 }
+.msl-pin.is-unread .msl-pav::before{ content:''; position:absolute; left:-2px; top:4px; z-index:2; width:16px; height:16px; border-radius:50%; background:var(--blue); border:2.5px solid var(--bg); box-sizing:border-box }
+.msl-pin.is-muted .msl-pav::after{ content:''; position:absolute; left:2px; bottom:4px; z-index:2; width:14px; height:14px; border-radius:50%; background:var(--gray); border:2.5px solid var(--bg) }
+.msl-pin .msl-on{ right:3px; bottom:3px; width:19px; height:19px }
+
+/* ---------- lista: linhas com deslize para a esquerda ---------- */
+.msl-list{ padding-bottom:10px }
+.msl-row{ position:relative; overflow:hidden; background:var(--bg) }
+/* escondidas fora do deslize: o :active da linha é translúcido e um toque deixava ver as cores por baixo */
+.msl-acts{ position:absolute; top:0; right:0; bottom:0; width:222px; display:flex; visibility:hidden }
+.msl-row.open .msl-acts,.msl-row.drag .msl-acts{ visibility:visible }
+.msl-acts .a{ flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px; color:#fff; font-size:var(--t-cap1); font-weight:500; cursor:pointer }
+.msl-acts .a svg{ width:22px; height:22px }
+.msl-acts .a:active{ opacity:.7 }
+.msl-acts .pin{ background:var(--orange) }
+.msl-acts .mute{ background:var(--indigo) }
+.msl-acts .del{ background:var(--red) }
+/* só o transform anima (o deslize); touch-action deixa o scroll vertical da lista ao browser */
+.msl-main{ position:relative; z-index:1; display:flex; align-items:center; gap:12px; min-height:76px; padding:9px 16px 9px 22px; background:var(--bg); cursor:pointer; touch-action:pan-y; transition:transform .3s var(--spring) }
+.msl-main:active{ background:var(--fill4) }
+.msl-main::after{ content:''; position:absolute; left:86px; right:0; bottom:0; height:.5px; background:var(--sep) }
+.msl-row:last-child .msl-main::after{ display:none }
+.msl-dot{ position:absolute; left:7px; top:50%; width:10px; height:10px; margin-top:-5px; border-radius:50%; background:var(--blue); display:none }
+.msl-row.is-unread .msl-dot{ display:block }
+.msl-av{ position:relative; flex:none }
+.msl-av .avatar{ width:52px; height:52px; font-size:20px }
+.msl-on{ position:absolute; right:0; bottom:0; z-index:2; width:15px; height:15px; border-radius:50%; background:var(--green); border:2.5px solid var(--bg); box-sizing:border-box; display:none }
+.msl-row.online .msl-on,.msl-pin.online .msl-on{ display:block }
+.msl-body{ flex:1; min-width:0; display:flex; flex-direction:column; gap:2px }
+.msl-top{ display:flex; align-items:baseline; gap:8px }
+.msl-top b{ flex:1; min-width:0; font-size:var(--t-body); font-weight:600; overflow:hidden; text-overflow:ellipsis; white-space:nowrap }
+.msl-time{ flex:none; display:flex; align-items:center; gap:4px; font-size:var(--t-subhead); color:var(--label2) }
+.msl-mute{ display:flex; color:var(--label3) }
+.msl-mute svg{ width:14px; height:14px }
+.msl-sub{ font-size:var(--t-subhead); line-height:1.32; color:var(--label2); overflow:hidden; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; word-break:break-word }
+.msl-row.is-unread .msl-sub{ color:var(--label) }
+/* ✓ enviada · ✓✓ entregue · ✓✓ azul lida */
+.msl-tick{ width:17px; height:11px; margin-right:3px; vertical-align:-1px; fill:none; stroke:var(--label3); stroke-width:1.7; stroke-linecap:round; stroke-linejoin:round }
+.msl-tick.one{ width:12px }
+.msl-tick.read{ stroke:var(--blue) }
+
+/* avatar de grupo: ícone de pessoas sobre o gradiente; com fotografia (media) o ícone sai */
+.avatar.msg-gav{ background:linear-gradient(160deg,#A9AEB8,#6E737D); background-size:cover; background-position:center; color:#fff }
+.avatar.msg-gav svg{ width:52%; height:52% }
+.avatar.msg-gav.has-img svg{ display:none }
+
+/* ---------- conversa: cabeçalho ---------- */
+/* o título passa a ser tocável (abre o contacto/grupo): com 196 px não tapa o "‹ Mensagens" nem os botões da direita */
+.msg-view .nb-title{ pointer-events:auto; max-width:196px; overflow:visible }
+/* cabeçalho da conversa como no iMessage (2026-09-19): foto ao centro, nome pequeno por baixo com a seta, estado por baixo do nome.
+   A barra fica mais alta (a vista é flex em coluna: o conteúdo acompanha sozinho). */
+.msg-view .navbar{ height:calc(var(--statusbar-h) + 74px); align-items:flex-start } .msg-view .navbar .nb-left,.msg-view .navbar .nb-right{ margin-top:8px }
+.msg-view .nb-title{ top:calc(var(--statusbar-h) + 36px) }
+.msg-head{ display:flex; flex-direction:column; align-items:center; gap:3px; max-width:210px; cursor:pointer }
+.msg-head:active{ opacity:.6 }
+.msg-hav{ flex:none; display:flex }
+.msg-hav .avatar{ width:40px; height:40px; font-size:15px }
+.msg-htx{ min-width:0; max-width:210px; display:flex; flex-direction:column; align-items:center; line-height:1.15 }
+.msg-htx b{ font-size:12px; font-weight:500; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:200px }
+.msg-htx b::after{ content:' ›'; color:var(--label3); font-weight:400 }
+.msg-htx small{ font-size:10.5px; font-weight:400; color:var(--label2); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:200px }
+.msg-htx small:empty{ display:none }
+
+/* ---------- faixa da mensagem fixada ---------- */
+.msg-pinbar{ position:relative; z-index:4; flex:none; display:flex; align-items:center; gap:10px; padding:7px 10px 7px 14px; background:var(--bg2); border-bottom:.5px solid var(--sep) }
+.msg-pinbar .pb-ic{ display:flex; color:var(--orange); cursor:pointer }
+.msg-pinbar .pb-ic svg{ width:18px; height:18px }
+.msg-pinbar .pb-tx{ flex:1; min-width:0; display:flex; flex-direction:column; cursor:pointer }
+.msg-pinbar .pb-tx b{ font-size:var(--t-cap1); font-weight:600; color:var(--orange) }
+.msg-pinbar .pb-tx span{ font-size:var(--t-foot); color:var(--label); overflow:hidden; text-overflow:ellipsis; white-space:nowrap }
+.msg-pinbar .pb-x{ display:flex; padding:6px; color:var(--label3); cursor:pointer }
+.msg-pinbar .pb-x svg{ width:16px; height:16px }
+
+/* ---------- conversa: linhas ---------- */
+.msg-thread{ gap:2px }
+.msg-view .msg-row{ position:relative; display:flex; flex-direction:column; max-width:78% }
+.msg-view .msg-row.me{ align-self:flex-end; align-items:flex-end }
+.msg-view .msg-row.them{ align-self:flex-start; align-items:flex-start }
+.msg-view .msg-row > .bubble{ max-width:100% }
+.msg-view .msg-row.sys{ align-self:center; align-items:center; max-width:86%; margin:6px 0 }
+.msg-sys{ padding:4px 11px; border-radius:11px; background:var(--fill4); font-size:var(--t-cap1); color:var(--label2); text-align:center }
+.msg-from{ margin:6px 12px 1px; font-size:var(--t-cap1); color:var(--label2) }
+.msg-edited{ margin:1px 8px 0; font-size:var(--t-cap2); color:var(--label3) }
+.msg-status{ margin:2px 6px 4px; font-size:var(--t-cap2); font-weight:500; color:var(--label2) }
+/* citação da mensagem respondida: fora da bolha, tocável (salta para a original) */
+.msg-qo{ display:flex; align-items:center; gap:6px; max-width:100%; margin:4px 4px 2px; padding:5px 10px; border-radius:14px; background:var(--fill4); border:.5px solid var(--sep); font-size:var(--t-foot); color:var(--label2); cursor:pointer; box-sizing:border-box }
+.msg-qo:active{ opacity:.6 }
+.msg-qo svg{ flex:none; width:14px; height:14px }
+.msg-qo > div{ min-width:0; display:flex; flex-direction:column }
+.msg-qo b{ font-size:var(--t-cap2); font-weight:600; color:var(--label) }
+.msg-qo span{ overflow:hidden; text-overflow:ellipsis; white-space:nowrap }
+/* reações por baixo da bolha */
+.msg-reacts{ position:relative; z-index:1; display:flex; flex-wrap:wrap; gap:4px; margin-top:-7px; padding:0 8px }
+.msg-rc{ display:inline-flex; align-items:center; gap:3px; height:24px; padding:0 7px; border-radius:12px; background:var(--bg2); border:1px solid var(--sep-opaque); box-shadow:0 1px 3px rgba(0,0,0,.12); font-size:14px; color:var(--label2); cursor:pointer; box-sizing:border-box }
+.msg-rc:active{ transform:scale(.92) }
+.msg-rc.mine{ border-color:var(--blue); background:rgba(0,122,255,.14); color:var(--blue) }
+/* apagada para todos */
+.msg-view .bubble.deleted{ display:flex; align-items:center; gap:6px; background:transparent; color:var(--label2); border:1px dashed var(--sep-opaque); font-style:italic }
+.msg-view .bubble.deleted svg{ flex:none; width:16px; height:16px }
+/* imagem com mediaId: esqueleto a pulsar (só opacidade) até descer; falhou = tocar para tentar outra vez */
+.msg-view .bubble.img .pic.loading{ background-color:var(--fill3); animation:skPulse 1.1s ease-in-out infinite alternate }
+.msg-view .bubble.img .pic.failed{ position:relative; background-color:var(--fill3) }
+.msg-view .bubble.img .pic.failed::after{ content:'Toca para tentar de novo'; position:absolute; left:0; right:0; top:50%; margin-top:-9px; text-align:center; font-size:var(--t-foot); color:var(--label2) }
+.viewer .vimg > div.msg-loading{ background-color:#1C1C1E; animation:skPulse 1.1s ease-in-out infinite alternate }
+/* áudio: o leitor é do M4 (VoiceMsg.player); sem ele fica só a descrição */
+.msg-view .bubble.audio{ min-width:200px; padding:6px 10px }
+.msg-audio.na{ display:flex; align-items:center; gap:8px; padding:4px 2px; font-size:var(--t-subhead) }
+.msg-audio.na svg{ flex:none; width:20px; height:20px }
+/* saltar para uma mensagem: um pequeno "pulo" da bolha */
+.msg-row.flash > .bubble{ animation:msgFlash .9s var(--ease) }
+@keyframes msgFlash{ 0%{ transform:scale(1) } 25%{ transform:scale(1.06) } 55%{ transform:scale(.98) } 100%{ transform:scale(1) } }
+body[data-motion="reduced"] .msg-row.flash > .bubble{ animation:none }
+
+/* envio de media a decorrer */
+.msg-row.pending .bubble{ opacity:.9 }
+.msg-prog{ position:absolute; left:14px; right:14px; bottom:14px; height:5px; border-radius:3px; background:rgba(0,0,0,.42); overflow:hidden }
+.msg-prog i{ display:block; width:100%; height:100%; background:#fff; transform:scaleX(0); transform-origin:left center; transition:transform .2s linear }
+.msg-view .bubble.audio .msg-prog{ position:static; margin:6px 2px 2px; background:rgba(255,255,255,.3) }
+.msg-row.failed .msg-prog{ display:none }
+.msg-row.failed .bubble{ opacity:.6 }
+.msg-fail{ display:flex; align-items:center; gap:5px; margin:3px 6px; font-size:var(--t-cap1); color:var(--red); cursor:pointer }
+.msg-fail svg{ width:15px; height:15px }
+
+/* carregar mais (topo) e esqueleto da primeira página */
+.msg-more{ align-self:center; display:flex; align-items:center; gap:8px; margin:4px 0 8px; padding:6px 14px; border-radius:14px; background:var(--fill4); font-size:var(--t-foot); color:var(--blue); cursor:pointer }
+.msg-more .spinner{ display:none; width:14px; height:14px; margin:0 }
+.msg-more.loading .spinner{ display:block }
+.msg-more.loading span{ color:var(--label2) }
+.msg-sk{ display:flex; flex-direction:column; gap:10px; padding:10px 0; animation:skPulse 1.1s ease-in-out infinite alternate }
+.msg-sk i{ display:block; width:58%; height:36px; border-radius:18px; background:var(--fill3) }
+.msg-sk i.me{ align-self:flex-end; width:44% }
+.msg-sk i.w{ width:64% }
+
+/* "a escrever…": a bolha entra por escala/opacidade e os pontos saltam só com transform */
+.msg-typing{ align-self:flex-start; display:flex; flex-direction:column; align-items:flex-start; gap:2px; margin-top:2px; opacity:0; transform:scale(.7); transform-origin:left bottom; transition:opacity .2s var(--ease), transform .25s var(--spring) }
+.msg-typing.in{ opacity:1; transform:none }
+.msg-typing small{ margin-left:12px; font-size:var(--t-cap2); color:var(--label2) }
+.msg-typing small:empty{ display:none }
+.msg-typing .msg-dots{ display:flex; gap:5px; padding:13px 15px; border-radius:20px; border-bottom-left-radius:5px; background:var(--fill3) }
+.msg-typing .msg-dots i{ width:8px; height:8px; border-radius:50%; background:var(--label2); opacity:.4; animation:msgDot 1.2s ease-in-out infinite }
+.msg-typing .msg-dots i:nth-child(2){ animation-delay:.16s }
+.msg-typing .msg-dots i:nth-child(3){ animation-delay:.32s }
+@keyframes msgDot{ 0%,60%,100%{ transform:translateY(0); opacity:.4 } 30%{ transform:translateY(-4px); opacity:1 } }
+body[data-motion="reduced"] .msg-typing .msg-dots i{ animation:none; opacity:.7 }
+
+/* ---------- menu de contexto: fila de reações por cima ---------- */
+.msg-rbar{ position:absolute; display:flex; gap:2px; padding:5px 6px; border-radius:26px; background:var(--material); box-shadow:0 8px 24px rgba(0,0,0,.22); opacity:0; transform:scale(.9); transition:transform var(--motion-medium) var(--spring2), opacity var(--motion-normal) var(--curve) }
+.ctx-wrap.in .msg-rbar{ opacity:1; transform:none }
+.msg-rbar span{ width:42px; height:42px; display:flex; align-items:center; justify-content:center; border-radius:50%; font-size:26px; cursor:pointer; transition:transform .15s var(--ease) }
+.msg-rbar span:active{ transform:scale(1.25) }
+.msg-rbar span.on{ background:rgba(0,122,255,.18) }
+body[data-motion="reduced"] .msg-rbar{ transform:none; transition:opacity .15s ease-out }
+
+/* ---------- campo de escrita ---------- */
+.msg-composer .mic{ width:44px; height:44px; flex:none; display:flex; align-items:center; justify-content:center; border-radius:50%; color:var(--label2); cursor:pointer }
+.msg-composer .mic svg{ width:24px; height:24px }
+.msg-composer .mic:active{ opacity:.5 }
+.msg-composer .mic.na{ opacity:.4 }
+/* microfone com o campo vazio, seta de enviar com texto (PearOS) */
+.msg-composer.has-text .mic{ display:none }
+.msg-composer:not(.has-text) .send{ display:none }
+.msg-composer .replying{ align-items:center; gap:10px; padding:2px 6px 4px; box-sizing:border-box }
+.msg-composer .replying .rq{ flex:1; min-width:0; display:flex; flex-direction:column; padding-left:8px; border-left:3px solid var(--blue) }
+.msg-composer .replying .rq b{ font-size:var(--t-cap1); font-weight:600; color:var(--blue) }
+.msg-composer .replying .rq > span{ color:var(--label2); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; cursor:default }
+.msg-composer .replying.edit .rq{ border-left-color:var(--orange) }
+.msg-composer .replying.edit .rq b{ color:var(--orange) }
+.msg-composer .replying .cancel{ flex:none; padding:6px }
+.msg-rec{ display:none; width:100% }
+.msg-composer.recording > :not(.msg-rec){ display:none!important }
+.msg-composer.recording .msg-rec{ display:block }
+.msg-left{ width:100%; padding:10px 0; text-align:center; font-size:var(--t-foot); color:var(--label2) }
+.msg-composer.left > :not(.msg-left){ display:none!important }
+
+/* folha Anexar: 5 opções numa linha (o .attach-row antigo aplicava o cartão também ao rótulo de dentro) */
+.msg-attach{ display:grid; grid-template-columns:repeat(5,1fr); gap:8px; padding:14px 12px }
+.msg-attach > div{ display:flex; flex-direction:column; align-items:center; gap:4px; padding:12px 0 10px }
+.msg-attach > div > div{ padding:0; border-radius:0; background:none; font-size:var(--t-cap2) }
+.msg-attach > div svg{ margin-bottom:0 }
+.msg-attach > div:active{ opacity:.6 }
+
+/* ---------- câmara dentro das Mensagens (CamView 'bare') ---------- */
+.msg-cam{ position:absolute; inset:0; z-index:210; overflow:hidden; border-radius:57px; background:#000; color:#fff; opacity:0; transition:opacity .2s var(--ease) }
+.msg-cam.in{ opacity:1 }
+.msg-cam .mc-view{ position:absolute; inset:0 }
+.msg-cam .mc-view .cam-app.cam-bare{ z-index:1 }
+.msg-cam .mc-view .cam-bare .viewfinder .cam-gl{ top:0; transform:none; height:100%; max-height:none; object-fit:cover }
+.msg-cam .mc-still{ position:absolute; inset:0; z-index:3; display:none; background-color:#000; background-size:cover; background-position:center }
+.msg-cam.shot .mc-still{ display:block }
+.msg-cam .mc-top{ position:absolute; top:calc(var(--statusbar-h) + 4px); left:14px; right:14px; z-index:6; display:flex; align-items:center; gap:8px }
+.msg-cam .mc-ttl{ flex:1; min-width:0; text-align:center; font-size:17px; font-weight:600; overflow:hidden; text-overflow:ellipsis; white-space:nowrap }
+.msg-cam .b{ flex:none; width:42px; height:42px; display:flex; align-items:center; justify-content:center; border-radius:21px; background:rgba(0,0,0,.4); color:#fff; cursor:pointer }
+.msg-cam .b:active{ transform:scale(.92) }
+.msg-cam .b.off{ opacity:.55 }
+.msg-cam.shot .b.fl{ visibility:hidden }
+.msg-cam .mc-bot{ position:absolute; left:0; right:0; bottom:calc(var(--safe-bottom, 22px) + 18px); z-index:6; height:86px; display:flex; align-items:center; justify-content:center }
+.msg-cam .mc-shut{ width:86px; height:86px; display:flex; align-items:center; justify-content:center; border-radius:43px; border:5px solid #fff; box-sizing:border-box; cursor:pointer }
+.msg-cam .mc-shut > div{ width:66px; height:66px; border-radius:33px; background:#fff; transition:transform .12s var(--ease) }
+.msg-cam .mc-shut:active > div{ transform:scale(.88) }
+.msg-cam .mc-flip{ position:absolute; right:32px; width:46px; height:46px; display:flex; align-items:center; justify-content:center; border-radius:23px; background:rgba(0,0,0,.4); cursor:pointer }
+.msg-cam .mc-flip:active{ transform:scale(.9) }
+.msg-cam .mc-retake{ position:absolute; left:28px; display:none; padding:10px 14px; border-radius:20px; background:rgba(0,0,0,.45); font-size:var(--t-body); font-weight:500; cursor:pointer }
+.msg-cam .mc-send{ position:absolute; right:28px; display:none; width:58px; height:58px; align-items:center; justify-content:center; border-radius:50%; background:var(--blue); color:#fff; cursor:pointer }
+.msg-cam .mc-send svg{ width:30px; height:30px }
+.msg-cam .mc-send:active{ transform:scale(.92) }
+.msg-cam.shot .mc-shut,.msg-cam.shot .mc-flip{ display:none }
+.msg-cam.shot .mc-retake{ display:block }
+.msg-cam.shot .mc-send{ display:flex }
+
+/* PearPhone Fold (lista | conversa, ui.js UI.split): a conversa aberta à direita fica marcada na lista com a cápsula cinzenta do
+   Duo (a das Definições: fill, cantos de 18), recolhida 6 px dos lados num ::before por cima do fundo opaco da linha (as ações do
+   deslize estão por baixo dela); o texto e o ponto ficam com as cores de sempre. As fixadas em cima ganham um aro azul. O NOVA tem
+   o cinzento dele (oneui-ui.css) */
+body.os-ios.form-fold .nav-stack.split > .view:first-child .msl-main.split-sel::before{ content:''; position:absolute; top:2px; bottom:2px; left:6px; right:6px; z-index:-1; border-radius:18px; background:var(--fill); pointer-events:none }
+body.os-ios.form-fold .nav-stack.split > .view:first-child .msl-main.split-sel .msl-dot{ left:9px }
+body.form-fold .nav-stack.split > .view:first-child .msl-main.split-sel::after{ display:none }
+body.form-fold .nav-stack.split > .view:first-child .msl-pin.split-sel .avatar{ box-shadow:0 0 0 3px var(--bg), 0 0 0 6px var(--blue) }
+body.form-fold .nav-stack.split > .view:first-child .msl-pin.split-sel b{ color:var(--blue) }
+/* a câmara das conversas (Mensagens, Zapp, Instashot) é vertical: com duas colunas abre por cima da conversa (a lista continua à
+   vista); numa coluna só fica com 440 ao centro e o resto a preto (no PearPhone Fold as duas regras são as de liquid27.css, que
+   acabam na barra direita) */
+body.form-fold .msg-cam{ left:calc(50% - 220px); right:calc(50% - 220px); border-radius:0; box-shadow:0 0 0 720px #000 }
+body.form-fold .app-window.split-on > .msg-cam{ left:var(--split-l); right:0; box-shadow:none }   /* a lista tem --split-l (520 no NOVA): com 440 a câmara tapava-lhe 80 px */

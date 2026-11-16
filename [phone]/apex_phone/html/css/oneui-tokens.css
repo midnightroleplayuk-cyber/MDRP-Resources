@@ -1,0 +1,98 @@
+/* ============================================================
+   NOVA UI 8.5 (telemovel Android "NOVA S26 Ultra"): TOKENS BASE
+   Inspirados no One UI 8.5 (One UI Design Kit, Figma). Todos dentro de
+   body.os-android: o PearPhone (iOS) nao muda nada.
+
+   Regras herdadas do tokens.css que valem aqui tambem:
+   · os alias semanticos (--system-background, --label-primary...) TEM de
+     ser repetidos em cada contexto que redefina --bg/--label/--sep, senao
+     ficam presos ao valor resolvido no :root;
+   · body.dark e body.os-android tem a mesma especificidade: o claro vai em
+     body.os-android:not(.dark) e o escuro em body.os-android.dark, senao o
+     claro ganhava ao escuro so por esta folha vir depois.
+   ============================================================ */
+body.os-android{
+  /* ---- Geometria (o ecra continua 440x956: todas as apps foram desenhadas para ele) ---- */
+  --statusbar-h:48px;             /* barra de estado Nova UI (camara furada, sem ilha) */
+  --navbar-h:56px;                /* barra de app Nova UI (titulo pequeno + botoes) */
+  --safe-bottom:20px;             /* modo gestos; o SysUI muda para a barra de 3 botoes (data-nav) */
+  --nav-h:48px;                   /* altura da barra de navegacao de 3 botoes */
+
+  /* ---- Tipografia ---- */
+  --font-display:'Outfit','Inter',-apple-system,'Segoe UI',Roboto,sans-serif;   /* titulos grandes e relogio (geometrica, como a Sharp Sans) */
+  --font-clock:'Outfit','Inter',sans-serif;
+  --t-large:34px; --t-title1:28px; --t-title2:22px; --t-title3:20px;
+  --t-headline:18px; --t-body:17px; --t-callout:16px; --t-subhead:15px; --t-foot:14px; --t-cap1:13px; --t-cap2:12px;
+
+  /* ---- Formas (escala de raios Nova UI) ---- */
+  --ou-r-micro:8px; --ou-r-btn:18px; --ou-r-card:26px; --ou-r-dialog:28px; --ou-r-menu:26px; --ou-r-sheet:28px; --ou-r-panel:40px; --ou-r-pill:999px;
+  --ou-gap:16px; --ou-pad:20px;
+
+  /* ---- Cores de sistema Nova UI ---- */
+  --ou-blue:#3E7BFA; --ou-switch:#3E7BFA; --ou-slider:#387AFF; --ou-live:#0FCF6E;
+  --ou-ai-a:#64E9E3; --ou-ai-b:#9FFAC7; --ou-ai-grad:linear-gradient(90deg,rgba(102,161,243,.4),rgba(34,201,166,.4));
+  --red:#F2453D; --orange:#FF8A1F; --yellow:#FFC400; --green:#2DBE60; --mint:#1FC7B4; --teal:#11A9C0; --cyan:#21B6E8;
+  --indigo:#5866F2; --purple:#9B5CF2; --pink:#F5476E; --brown:#A47A5A;
+  --sys-blue:#3E7BFA;
+
+  /* ---- Vidro (no jogo nao ha backdrop-filter: o motion.css troca o desfoque pelas copias pre-desfocadas do fundo) ---- */
+  --ou-glass:rgba(23,23,26,.30); --ou-glass-md:rgba(23,23,26,.60); --ou-glass-weak:rgba(55,55,55,.30);
+  --ou-glass-line:rgba(255,255,255,.20); --ou-glass-line-weak:rgba(255,255,255,.10);
+  --ou-tile-off:rgba(180,180,180,.20); --ou-tile-on:#D5D5D5;
+  --ou-shadow-card:0 4px 17px rgba(0,0,0,.08);
+  --ou-curve:cubic-bezier(.2,.6,.4,1);             /* curva das transicoes Nova UI */
+  --ou-curve-out:cubic-bezier(.22,.25,0,1);
+}
+
+/* ---- Claro ---- */
+body.os-android:not(.dark){
+  --label:rgba(0,0,0,.87); --label2:rgba(0,0,0,.60); --label3:rgba(0,0,0,.38); --label4:rgba(0,0,0,.18);
+  --label2-strong:rgba(0,0,0,.72);
+  /* superficie #F7F7F7 por tras dos cartoes #FCFCFF (One UI 8.5: Near White / Container Light) */
+  --bg:#F7F7F7; --bg2:#FCFCFF; --bg3:#ECECF0;
+  --fill:rgba(0,0,0,.10); --fill2:rgba(0,0,0,.08); --fill3:rgba(0,0,0,.06); --fill4:rgba(0,0,0,.04);
+  --sep:rgba(0,0,0,.10); --sep-opaque:#E4E4E4; --sep-subtle:rgba(0,0,0,.08);
+  --gray:#8C8C92; --gray2:#A9A9AF; --gray3:#C6C6CC; --gray4:#D7D7DC; --gray5:#E6E6EA; --gray6:#F1F1F4;
+  --material:rgba(252,252,255,.86); --glass:rgba(252,252,255,.62); --glass-border:rgba(255,255,255,.6);
+  --ou-surface:#FCFCFF; --ou-surface2:#F1F1F3; --ou-on-surface:#000; --ou-chip:#FCFCFF;
+  --ou-toast:#F1F1F3; --ou-toast-tx:rgba(0,0,0,.87);
+  --ou-shadow-1:0 1px 3px rgba(0,0,0,.08);        /* cartoes no claro (no escuro nao ha sombra) */
+  --system-background:var(--bg); --secondary-system-background:var(--bg2);
+  --system-grouped-background:var(--bg); --secondary-system-grouped-background:var(--bg2);
+  --label-primary:var(--label); --label-secondary:var(--label2); --label-tertiary:var(--label3);
+  --separator:var(--sep); --system-blue:var(--blue); --system-green:var(--green); --system-red:var(--red);
+  --system-fill:var(--fill); --secondary-system-fill:var(--fill2); --tertiary-system-fill:var(--fill3);
+}
+
+/* ---- Escuro ---- */
+body.os-android.dark{
+  --label:rgba(255,255,255,.92); --label2:rgba(255,255,255,.60); --label3:rgba(255,255,255,.38); --label4:rgba(255,255,255,.16);
+  --label2-strong:rgba(255,255,255,.74);
+  --bg:#010102; --bg2:#17171A; --bg3:#232327;
+  --fill:rgba(255,255,255,.14); --fill2:rgba(255,255,255,.11); --fill3:rgba(255,255,255,.08); --fill4:rgba(255,255,255,.05);
+  --sep:rgba(255,255,255,.10); --sep-opaque:#2E2E33; --sep-subtle:rgba(255,255,255,.07);
+  --gray:#8E8E94; --gray2:#6A6A70; --gray3:#4A4A50; --gray4:#38383D; --gray5:#2A2A2F; --gray6:#1C1C20;
+  --material:rgba(23,23,26,.86); --glass:rgba(23,23,26,.62); --glass-border:rgba(255,255,255,.12);
+  --ou-surface:#17171A; --ou-surface2:#232327; --ou-on-surface:#fff; --ou-chip:#17171A;
+  --ou-toast:#010102; --ou-toast-tx:rgba(255,255,255,.92);
+  --ou-shadow-1:none;
+  --red:#FF5A52; --orange:#FF9A3D; --green:#3DD06F;
+  --system-background:var(--bg); --secondary-system-background:var(--bg2);
+  --system-grouped-background:var(--bg); --secondary-system-grouped-background:var(--bg2);
+  --label-primary:var(--label); --label-secondary:var(--label2); --label-tertiary:var(--label3);
+  --separator:var(--sep); --system-blue:var(--blue); --system-green:var(--green); --system-red:var(--red);
+  --system-fill:var(--fill); --secondary-system-fill:var(--fill2); --tertiary-system-fill:var(--fill3);
+}
+
+/* ---- NOVA Fold8 (dobravel) ----
+   --ou-split-sel: linha escolhida na lista das duas colunas (cinzento neutro da One UI em ecra grande, nunca azul).
+   --taskbar-h: o que a barra de tarefas tapa por cima da janela da app (o android-sysui.js escreve-o no body: 72 com a barra
+   flutuante em cima, 0 com botoes). Se so a classe estiver posta (body.atb-up), vale a altura da flutuante. */
+body.os-android{ --ou-split-sel:rgba(0,0,0,.055) }
+body.os-android.dark{ --ou-split-sel:rgba(255,255,255,.09) }
+body.os-android.form-fold.fold-open.atb-up{ --taskbar-h:72px }
+
+/* Tamanho de texto (Definicoes > Ecra): a mesma escala, um furo abaixo do PearOS como na Nova UI */
+body.os-android[data-text="small"]{ --t-body:15px; --t-headline:16px; --t-subhead:14px; --t-foot:13px; }
+body.os-android[data-text="medium"]{ --t-body:18px; --t-headline:19px; --t-subhead:16px; --t-foot:15px; }
+body.os-android[data-text="large"]{ --t-body:19px; --t-headline:20px; --t-subhead:17px; --t-foot:16px; }

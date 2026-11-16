@@ -1,0 +1,202 @@
+/* ============================================================
+   NOTIFICAÇÕES (PearOS 17) - cartões de vidro, cabeçalhos com "x → Limpar",
+   swipe (Opções/Limpar), stacks no lock screen, cartão expandido,
+   banner drop-in, toast. Carregado depois de shell.css (sobrepõe).
+   ============================================================ */
+
+/* ---------- listas ---------- */
+.lock-notifs{ left:0; right:0; padding:6px 14px 0; overflow-x:hidden; gap:8px }
+.nc-list{ overflow-x:hidden; gap:8px; padding-top:20px }
+.ngroup{ display:flex; flex-direction:column; gap:8px }
+
+/* ---------- cabeçalhos ---------- */
+.nhead,.lock-notifs .nhead{ display:flex; align-items:center; justify-content:flex-start; gap:8px; padding:4px 4px 0; font-size:var(--t-subhead); font-weight:600; color:#fff; opacity:1; text-shadow:0 1px 6px rgba(0,0,0,.25); transition:opacity .25s, transform .3s var(--ease) }
+.nhead .nh-name{ flex:1; min-width:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; font-weight:600 }
+.nhead.nh-top{ padding:2px 4px 4px } .nhead.nh-top .nh-name{ font-size:var(--t-title2); font-weight:700; letter-spacing:-.3px }
+.nhead.fly{ opacity:0; transform:translateX(40px) }
+.nh-less,.nh-x{ height:30px; border-radius:15px; background:rgba(255,255,255,.22); backdrop-filter:blur(20px) saturate(160%); -webkit-backdrop-filter:blur(20px) saturate(160%); border:.5px solid rgba(255,255,255,.22);
+  display:flex; align-items:center; justify-content:center; font-size:var(--t-foot); font-weight:600; color:#fff; cursor:pointer; text-shadow:none; flex:none; transition:transform .25s var(--spring), background .2s }
+.nh-less{ padding:0 12px } .nh-less:active,.nh-x:active{ transform:scale(.94); background:rgba(255,255,255,.34) }
+.nh-x{ position:relative; width:30px; overflow:hidden; transition:background .2s, transform .25s var(--spring) }   /* a largura muda sem transição (regra do CEF); o "Limpar" entra por opacity/transform */
+.nh-x .nh-xi{ display:flex; width:30px; height:30px; align-items:center; justify-content:center; flex:none; font-style:normal; transition:opacity .15s, transform .3s var(--spring) } .nh-x .nh-xi svg{ width:15px; height:15px; stroke-width:2.6 }
+.nh-x .nh-xl{ position:absolute; inset:0; display:flex; align-items:center; justify-content:center; white-space:nowrap; opacity:0; transform:scale(.7); transition:opacity .2s, transform .35s var(--spring) }
+.nh-x.arm{ width:74px; background:rgba(255,255,255,.34) } .nh-x.arm.all{ width:100px }
+.nh-x.arm .nh-xi{ opacity:0; transform:scale(.4) } .nh-x.arm .nh-xl{ opacity:1; transform:none }
+body.dark .nh-less,body.dark .nh-x{ background:rgba(40,40,40,.55); border-color:rgba(255,255,255,.14) } body.dark .nh-x.arm{ background:rgba(90,90,90,.7) }
+
+/* ---------- cartão ---------- */
+.notif-card{ position:relative; border-radius:20px; overflow:visible; touch-action:pan-y; user-select:none; -webkit-user-select:none; animation:none; transition:transform .38s var(--ease), opacity .3s }   /* sem height/margin: apagar faz FLIP por transform (notify.js → collapse) */
+.notif-card .ncard,#lock .notif-card .ncard{ position:relative; z-index:2; display:flex; gap:11px; align-items:flex-start; padding:12px 14px 12px 12px; border-radius:20px; color:#fff; cursor:pointer;
+  background:rgba(255,255,255,.22); backdrop-filter:blur(30px) saturate(160%); -webkit-backdrop-filter:blur(30px) saturate(160%); border:.5px solid rgba(255,255,255,.24);
+  box-shadow:0 6px 20px rgba(0,0,0,.10); transform:none; transition:transform .45s var(--spring), opacity .22s, background .15s }   /* sem will-change permanente nem filter (perf CEF) */
+body.dark .notif-card .ncard,body.dark #lock .notif-card .ncard{ background:rgba(40,40,40,.55); border-color:rgba(255,255,255,.12); box-shadow:0 6px 20px rgba(0,0,0,.25) }
+.notif-card.press .ncard{ transform:scale(.975); background:rgba(255,255,255,.3); transition:transform .12s ease-out, background .12s } body.dark .notif-card.press .ncard{ background:rgba(60,60,60,.6) }
+.notif-card.dragging .ncard,.notif-card.press .ncard{ will-change:transform }
+.notif-card.dragging .ncard{ transition:none }
+.notif-card.fly-x .ncard{ opacity:0; transition:transform .25s var(--ease), opacity .2s }
+.notif-card.gone{ overflow:hidden; pointer-events:none }
+.notif-card.fly,.nstack.fly{ transform:translateX(110%); opacity:0; transition:transform .38s var(--ease), opacity .3s }
+.notif-card.new{ animation:nin .5s var(--spring) both } @keyframes nin{ from{ opacity:0; transform:translateY(var(--nin-y,-15px)) scale(.98) } to{ opacity:1; transform:none } }   /* entra do topo com mola: -15 px, .98, transparente → normal */
+/* ícone: 38px, sem badge nem sombra, cantos redondos sem cortes */
+.notif-card .n-ic,.nbanner .n-ic,.n-x .n-ic{ width:38px; height:38px; flex:none; border-radius:9.5px; overflow:hidden; background:transparent; box-shadow:none; isolation:isolate; transform:translateZ(0) }
+.notif-card .n-ic svg,.notif-card .n-ic img,.nbanner .n-ic svg,.nbanner .n-ic img,.n-x .n-ic svg,.n-x .n-ic img{ width:100%; height:100%; display:block; border-radius:9.5px; object-fit:cover }
+.notif-card .n-body{ min-width:0; flex:1; padding-top:1px }
+.notif-card .n-app,.nbanner .n-app{ font-size:var(--t-cap1); font-weight:600; letter-spacing:.2px; opacity:.72; text-transform:uppercase; line-height:1.2 }
+.notif-card .n-title,.nbanner .n-title{ font-size:var(--t-subhead); font-weight:600; line-height:1.3; margin-top:1px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+.notif-card .n-msg,.nbanner .n-msg{ font-size:var(--t-subhead); opacity:.92; line-height:1.3; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; word-break:break-word }
+.notif-card .n-time,.nbanner .n-time{ margin-left:auto; font-size:var(--t-cap1); opacity:.7; flex:none; padding-top:1px }
+.notif-card .n-acts{ display:flex; gap:8px; margin-top:10px }
+.notif-card .n-act{ padding:7px 16px; border-radius:15px; background:rgba(255,255,255,.22); border:.5px solid rgba(255,255,255,.18); font-size:var(--t-subhead); font-weight:600; cursor:pointer; transition:transform .2s var(--spring), background .2s }
+.notif-card .n-act:active{ transform:scale(.94); background:rgba(255,255,255,.35) }
+.notif-card .n-del,.notif-card .n-count{ display:none }
+/* botões por trás (swipe para a esquerda) */
+.notif-card .n-behind{ position:absolute; top:0; bottom:0; right:0; display:flex; gap:8px; z-index:1; opacity:var(--nx,0); pointer-events:none; transition:opacity .25s }
+.notif-card.dragging .n-behind{ transition:none } .notif-card.open .n-behind{ pointer-events:auto }
+.n-behind,.notif-card .n-behind,.notif-card.open .n-behind{ display:none!important }   /* pedido do utilizador: sem botões "Opções/Limpar" - arrastar para o lado apaga */
+.n-bb{ width:78px; border-radius:20px; display:flex; align-items:center; justify-content:center; font-size:var(--t-subhead); font-weight:600; color:#fff; cursor:pointer;
+  background:rgba(120,120,128,.5); backdrop-filter:blur(30px) saturate(160%); -webkit-backdrop-filter:blur(30px) saturate(160%); border:.5px solid rgba(255,255,255,.2);
+  transform:scale(calc(.7 + .3 * var(--nx,0))); transition:transform .3s var(--spring), background .15s }
+.notif-card.dragging .n-bb{ transition:background .15s }
+.n-bb.n-clr{ background:rgba(255,69,58,.58) } .n-bb:active{ filter:brightness(.85) }
+
+/* ---------- stack (lock screen) ---------- */
+.nstack{ position:relative; padding-bottom:16px; transition:transform .38s var(--ease), opacity .3s } .nstack.p1{ padding-bottom:8px } .nstack.p0{ padding-bottom:0 }
+.nstack > .notif-card{ position:relative; z-index:2 }
+.nstack .peek{ position:absolute; left:0; right:0; border-radius:20px; pointer-events:none; background:rgba(255,255,255,.26); backdrop-filter:blur(30px) saturate(160%); -webkit-backdrop-filter:blur(30px) saturate(160%); border:.5px solid rgba(255,255,255,.3); box-shadow:0 4px 14px rgba(0,0,0,.12); transition:transform .38s var(--spring) }
+.nstack .peek1{ top:8px; bottom:0; z-index:1; transform:scaleX(.96) } .nstack.p2 .peek1{ bottom:8px }
+.nstack .peek2{ top:16px; bottom:0; z-index:0; transform:scaleX(.92); opacity:.8 }
+.nstack > .notif-card .ncard{ box-shadow:0 8px 22px rgba(0,0,0,.16) }
+body.dark .nstack .peek{ background:rgba(40,40,40,.5); border-color:rgba(255,255,255,.1) }
+.nstack.gone{ overflow:hidden; pointer-events:none }
+
+/* ---------- cartão expandido (long press) ---------- */
+.n-xwrap{ position:absolute; inset:0; z-index:186; background:rgba(0,0,0,.28); backdrop-filter:blur(24px) saturate(140%); -webkit-backdrop-filter:blur(24px) saturate(140%); opacity:0; transition:opacity .25s }
+.n-xwrap.in{ opacity:1 }
+.n-x{ position:absolute; left:14px; right:14px; border-radius:24px; padding:14px 16px 16px; color:#fff; background:rgba(255,255,255,.26); backdrop-filter:blur(30px) saturate(160%); -webkit-backdrop-filter:blur(30px) saturate(160%);
+  border:.5px solid rgba(255,255,255,.3); box-shadow:0 20px 50px rgba(0,0,0,.35); transform:scale(.94); opacity:0 }
+body.dark .n-x{ background:rgba(44,44,46,.7); border-color:rgba(255,255,255,.14) }
+.n-xwrap.in .n-x{ animation:nhap .5s var(--spring) forwards }
+@keyframes nhap{ 0%{ transform:scale(.94); opacity:0 } 55%{ transform:scale(1.03); opacity:1 } 100%{ transform:scale(1); opacity:1 } }
+.n-xhead{ display:flex; align-items:center; gap:10px }
+.n-xapp{ flex:1; font-size:var(--t-cap1); font-weight:600; text-transform:uppercase; letter-spacing:.2px; opacity:.75 } .n-xtime{ font-size:var(--t-cap1); opacity:.7; font-style:normal }
+.n-xbody{ cursor:pointer } .n-xtitle{ font-size:var(--t-headline); font-weight:600; margin-top:12px; line-height:1.25 }
+.n-xmsg{ font-size:var(--t-subhead); line-height:1.35; margin-top:3px; max-height:300px; overflow-y:auto; scrollbar-width:none; opacity:.95; word-break:break-word } .n-xmsg::-webkit-scrollbar{ display:none }
+.n-xacts{ display:flex; flex-direction:column; gap:6px; margin-top:14px }
+.n-xact{ height:44px; border-radius:14px; background:rgba(255,255,255,.22); border:.5px solid rgba(255,255,255,.18); display:flex; align-items:center; justify-content:center; gap:8px; font-size:var(--t-callout); font-weight:600; cursor:pointer; transition:transform .2s var(--spring), background .2s }
+.n-xact:active{ transform:scale(.96); background:rgba(255,255,255,.34) } .n-xact.danger{ color:#FF6B6E } .n-xact svg{ width:18px; height:18px }
+
+/* ---------- banner (drop-in, desbloqueado) ---------- */
+.nbanner{ position:absolute; top:58px; left:12px; right:12px; z-index:335; transform:translateY(-120px); opacity:0; transition:transform .5s var(--spring), opacity .28s; touch-action:none; user-select:none; -webkit-user-select:none }
+.nbanner.in{ transform:none; opacity:1 } .nbanner.out{ transform:translateY(-120px); opacity:0; transition:transform .38s var(--ease), opacity .25s }
+.nbanner .ncard{ display:flex; gap:11px; align-items:flex-start; padding:12px 14px 12px 12px; border-radius:22px; background:var(--material); color:var(--label); cursor:pointer;
+  backdrop-filter:blur(30px) saturate(160%); -webkit-backdrop-filter:blur(30px) saturate(160%); border:.5px solid var(--glass-border); box-shadow:0 12px 34px rgba(0,0,0,.28) }
+.nbanner .n-body{ min-width:0; flex:1; padding-top:1px } .nbanner .n-app,.nbanner .n-time{ color:var(--label2); opacity:1 } .nbanner .n-msg{ color:var(--label); opacity:.85 }
+
+/* ---------- toast ---------- */
+.n-toast{ position:absolute; left:50%; bottom:120px; transform:translateX(-50%) translateY(12px); z-index:336; max-width:350px; padding:10px 18px; border-radius:20px; background:var(--material); color:var(--label); font-size:var(--t-subhead); font-weight:500; text-align:center; line-height:1.3;
+  backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px); box-shadow:0 8px 24px rgba(0,0,0,.25); opacity:0; transition:opacity .25s, transform .4s var(--spring); pointer-events:none }
+.n-toast.in{ opacity:1; transform:translateX(-50%) }
+.nc-empty{ text-align:center; margin-top:60px; font-size:var(--t-title3); font-weight:600; opacity:.6 }
+/* centro de notificacoes vazio: o aviso e o unico filho da lista (coluna flex) e fica ao centro do espaco livre por baixo
+   da hora, um pouco acima do meio */
+.nc-list > .nc-empty:only-child{ margin-top:auto; margin-bottom:auto; padding-bottom:64px }
+/* lock screen (PearOS 17): sem título "Centro de notificações" - só os grupos com o seu "x" */
+.lock-notifs .nhead.nh-top{ display:none }
+
+/* ---------- imagens das notificações (contrato 5.4): ícone por URL, miniatura e imagem grande ----------
+   As imagens entram SEMPRE por CSSOM (notify.js → paint); aqui só tamanhos e recorte. Sem filter. */
+.n-ic .n-icimg{ display:block; width:100%; height:100%; border-radius:inherit; background-color:rgba(120,120,128,.35); background-size:cover; background-position:center; background-repeat:no-repeat }
+.notif-card .n-msg:empty,.nbanner .n-msg:empty{ display:none }   /* pré-visualização escondida: fica só "Notificação" */
+.nbanner .ncard{ position:relative }
+/* a miniatura fica no canto inferior direito, por baixo da hora; o texto recua para não passar por baixo dela */
+.notif-card .ncard.has-img,.nbanner .ncard.has-img{ min-height:84px }
+.notif-card .ncard.has-img .n-body,.nbanner .ncard.has-img .n-body{ padding-right:50px }
+.n-thumb{ position:absolute; right:14px; bottom:12px; width:42px; height:42px; border-radius:9px; pointer-events:none; background-color:rgba(120,120,128,.3); background-size:cover; background-position:center; background-repeat:no-repeat }
+.n-ximg{ height:200px; margin-top:12px; border-radius:14px; background-color:rgba(120,120,128,.25); background-size:cover; background-position:center; background-repeat:no-repeat }
+
+/* ============================================================
+   DYNAMIC ISLAND - várias atividades e forma animada só por transform
+   ------------------------------------------------------------
+   Estas regras sobrepõem-se às de system.css e motion.css (que animavam width/height/border-radius):
+   o seletor leva `body` à frente para ganhar em especificidade seja qual for a ordem dos ficheiros.
+   A silhueta preta são as 6 peças de .isl-shape (island.js → shapeTo); a caixa .island muda de tamanho
+   SEM transição e fica transparente - serve para o toque e para dispor o conteúdo.
+   ⚠️ Os tamanhos abaixo TÊM de coincidir com a tabela GEO do island.js.
+   ============================================================ */
+body .island{ width:125px; height:37px; transition:none; animation:none }
+body .island.isl-ready{ background:transparent; border-radius:0; overflow:visible }   /* só depois do Island.init: antes disso não há peças e a pílula preta de system.css continua a ver-se */
+body .island.active{ width:232px; height:38px }
+body .island.active.two{ width:190px }
+body .island.expanded{ width:376px; height:150px }
+body .island.expanded.isl-inc{ height:96px }   /* chamada a tocar: GEO.inc */
+body .island.faceid{ width:150px; height:42px }
+body .island.hud{ width:224px; height:37px }
+body .island.bump{ animation:none }   /* o salto antigo escalava a lente com a ilha; agora é só a forma que salta (.isl-bump-a/b) */
+/* salto e entrada do conteúdo: dois nomes de keyframes iguais para o island.js os poder reiniciar sem reflow */
+body .island .isl-shape.isl-bump-a{ animation:islBumpA .5s var(--spring) } body .island .isl-shape.isl-bump-b{ animation:islBumpB .5s var(--spring) }
+@keyframes islBumpA{ 0%{ transform:scale(1) } 40%{ transform:scale(1.06) } 100%{ transform:scale(1) } }
+@keyframes islBumpB{ 0%{ transform:scale(1) } 40%{ transform:scale(1.06) } 100%{ transform:scale(1) } }
+body .island .live.isl-in-a,body .island .big.isl-in-a{ animation:islInA .42s ease-out both } body .island .live.isl-in-b,body .island .big.isl-in-b{ animation:islInB .42s ease-out both }
+@keyframes islInA{ 0%{ opacity:0 } 30%{ opacity:0 } 100%{ opacity:1 } }
+@keyframes islInB{ 0%{ opacity:0 } 30%{ opacity:0 } 100%{ opacity:1 } }
+body .island.noanim .isl-shape,body .island.noanim .live,body .island.noanim .big{ animation:none }
+body .island .isl-shape{ position:absolute; left:50%; top:0; width:0; height:0; pointer-events:none }
+body .island .isl-shape i{ position:absolute; left:0; top:0; background:#000; transform-origin:0 0; transition:transform .42s var(--curve) }
+body .island .isl-shape .h,body .island .isl-shape .v{ width:400px; height:160px }   /* base maior que qualquer estado: as escalas ficam ≤ 1 */
+body .island .isl-shape .c{ width:80px; height:80px; border-radius:50% }
+body .island.noanim .isl-shape i,body .island.noanim .isl-bub{ transition:none }
+/* com a bolha, a pílula encolhe para 125→315 */
+body .island.two .live{ padding-right:60px }
+
+/* ---------- bolha da segunda atividade ----------
+   Fica à ESQUERDA da pílula (92→120): medido no ecrã, os ícones da direita começam em x = 330 (sinal) e a
+   bolha à direita tapava-os - o utilizador pediu que a ilha nunca os escondesse. A hora acaba antes dos 92. */
+body .island .isl-bub{ position:absolute; left:50%; top:5px; width:28px; height:28px; margin-left:-14px; border-radius:50%; background:#000; color:#fff; overflow:hidden;
+  display:flex; align-items:center; justify-content:center; opacity:0; pointer-events:none; transform:translateX(-70px) scale(.3); transition:transform .42s var(--curve), opacity .22s }
+body .island.two .isl-bub{ opacity:1; pointer-events:auto; transform:translateX(-114px) }   /* centro em 220 − 114 = 106 */
+body .island .isl-bub .bub-ic{ display:flex; align-items:center; justify-content:center; width:100%; height:100% }
+body .island .isl-bub .bub-ic svg{ width:15px; height:15px }
+body .island .isl-bub .bub-ic.call{ color:var(--green) } body .island .isl-bub .bub-ic.timer{ color:var(--orange) } body .island .isl-bub .bub-ic.nav{ color:#0A84FF }
+body .island .isl-bub .bub-art{ width:20px; height:20px; border-radius:5px; background-size:cover; background-position:center; background-repeat:no-repeat }
+body .island .isl-bub .n-ic{ width:18px; height:18px; border-radius:5px }
+body .island .isl-bub .dl-ring{ width:22px; height:22px }
+body .island .isl-bub .bub-ring{ position:absolute; inset:2px; width:auto; height:auto }
+body .island .isl-bub .bub-ring svg{ width:24px; height:24px }
+body .island .isl-bub .bub-ring i{ display:none }
+
+/* ---------- conteúdo ---------- */
+body .island .art{ background-size:cover; background-position:center; background-repeat:no-repeat }
+body .island .big .art{ width:52px; height:52px; border-radius:10px }
+body .island .big .av.isl-av{ width:44px; height:44px; font-size:16px }
+body .island .isl-name{ font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+body .island .isl-name.isl-big{ font-size:24px; font-weight:700; font-variant-numeric:tabular-nums }
+body .island .isl-sub{ font-size:var(--t-foot); opacity:.62; white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+body .island .n-ic .n-glyph{ display:flex; width:100%; height:100%; align-items:center; justify-content:center; background:#3A3A3C; color:#fff }
+body .island .n-ic .n-glyph svg{ width:60%; height:60% }
+body .island .big .n-ic{ width:44px; height:44px; border-radius:11px }
+/* progresso (música e Live Activities): scaleX a partir da esquerda - nunca width */
+body .island .isl-prog{ height:4px; margin-top:6px; border-radius:2px; background:rgba(255,255,255,.22); overflow:hidden }
+body .island .isl-prog i{ display:block; width:100%; height:100%; background:rgba(255,255,255,.85); transform-origin:0 50%; transform:scaleX(0); transition:transform .9s linear }
+body .island .isl-prog.act i{ background:var(--green); transition:transform .5s var(--curve) }
+/* chamada recebida: atender/rejeitar grandes na ilha expandida */
+body .island.isl-inc .big .end{ width:44px; height:44px }
+body .island.isl-inc .big .end svg{ width:21px; height:21px }
+body .island.isl-inc .big .end.ans{ margin-left:10px }
+body .island.isl-inc.active .live .tm{ animation:islPulse 1.1s ease-in-out infinite alternate }
+@keyframes islPulse{ from{ opacity:1 } to{ opacity:.45 } }
+/* navegação */
+body .island .nav-ic{ width:26px; height:26px; border-radius:50%; background:#0A84FF; color:#fff; display:flex; align-items:center; justify-content:center; flex:none }
+body .island .nav-ic svg{ width:16px; height:16px; stroke-width:2.6 }
+body .island .big .nav-ic{ width:44px; height:44px } body .island .big .nav-ic svg{ width:24px; height:24px }
+body .island.nav .tm{ color:#64D2FF }
+/* Live Activities */
+body .island.activity .live .tm{ color:#fff; opacity:.8 }
+body .island .dl-ring.act circle.fg{ stroke:var(--green); transition:none }
+body .island .dl-ring.act i{ display:none }
+body .island .act-eta-big{ font-size:20px; font-weight:600; font-variant-numeric:tabular-nums; flex:none; color:var(--green) }
+body .island .act-foot{ display:flex; align-items:center; justify-content:space-between; gap:10px; margin-top:auto; font-size:var(--t-foot); opacity:.9 }
+body .island .act-foot span:first-child{ opacity:.65; white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+/* Instalar da AppShop (2026-09-18): o anel fica À DIREITA da lente, no espaço livre da ilha (232 px, lente a +41,5 do centro).
+   Antes ficava no fim do conteúdo, e o conteúdo acaba antes da lente (padding-right 84 para o texto não passar por baixo
+   dela) - o anel desenhava-se EM CIMA da câmara. */
+body .island.dl .live > .dl-ring{ position:absolute; right:13px; top:50%; margin-top:-11px }

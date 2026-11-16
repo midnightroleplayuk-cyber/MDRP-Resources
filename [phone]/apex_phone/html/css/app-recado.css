@@ -1,0 +1,228 @@
+/* ===================== ZAPP (id interno: recado) - base visual e lista de conversas (pacote RA) =====================
+   Contrato: docs/ARQUITETURA.md §9. Design próprio: acento VERDE inspirado no WhatsApp (teal #128C7E → verde #25D366;
+   "lidas" em azul-claro #34B7F1), claro e escuro pelos tokens do projeto (--bg, --bg2, --label, --sep…).
+   Nome visível "Zapp"; o id 'recado' (App.define, tabelas, prefixos .rc-) NÃO muda.
+   Classes BASE partilhadas pelos 6 pacotes do Recado (prefixo .rc-): tokens --rc-*, .rc-btn, .rc-chip(s), .rc-badge,
+   .rc-tick, .rc-av, .rc-sec, .rc-note, .rc-empty, .rc-card, .rc-ic, .rc-sheet, .rc-ctx.
+   Regras do CEF do FiveM: sem filter/backdrop-filter, sem color-mix, sem clip-path; só transform/opacity animam.
+   Os tokens vivem em :root/body.dark (e não na janela) porque folhas, alertas e menus montam-se no #screen, fora dela. */
+
+:root{
+  --rc-a1:#128C7E; --rc-a2:#25D366;
+  --rc-grad:linear-gradient(135deg,#128C7E 0%,#1FB56A 55%,#25D366 100%);
+  --rc-accent:#128C7E;          /* texto e ícones de destaque */
+  --rc-accent2:#0F9D6B;         /* segundo tom (ligações) com contraste em fundo claro */
+  --rc-read:#34B7F1;            /* visto de "lida": o azul-claro clássico dos dois traços */
+  --rc-tint:rgba(18,140,126,.10);
+  --rc-tint2:rgba(37,211,102,.14);
+  --rc-list-bg:#FFFFFF;
+  --rc-card:#FFFFFF;
+  --rc-shadow:0 10px 24px -14px rgba(6,78,59,.45);
+  /* peças repetidas nos 6 pacotes, num sítio só (antes eram rgba(18,140,126,…) escritos à mão em cada ficheiro) */
+  --rc-ring:rgba(18,140,126,.55);              /* anel à volta do meu avatar */
+  --rc-glow:0 6px 18px rgba(18,140,126,.3);    /* realce por baixo das peças em gradiente */
+  /* métricas da lista: as mesmas das Mensagens (avatar 52, linha 76) para as duas apps lerem igual */
+  --rc-av:52px; --rc-row-h:76px; --rc-row-sep:81px;
+  /* deslizar uma conversa: cores fixas (texto branco por cima) nos dois temas */
+  --rc-sw-read:#34B7F1; --rc-sw-pin:#22C55E; --rc-sw-arch:#0B7A6B;
+}
+/* integração: os 6 pacotes leem estes tokens (--rcb-*, --rcp-*, --rcx-*, --rcu-*, --rcc-* apontam para eles), por isso
+   o acento é o MESMO em todos os ecrãs; no escuro o verde #25D366 tem contraste AA sobre preto (o teal #128C7E não) */
+body.dark{
+  --rc-accent:#25D366; --rc-accent2:#25D366; --rc-read:#53BDEB;
+  --rc-tint:rgba(37,211,102,.16); --rc-tint2:rgba(37,211,102,.12);
+  --rc-list-bg:#000000; --rc-card:#1C1C1E;
+  --rc-shadow:0 10px 24px -14px rgba(0,0,0,.8);
+  --rc-ring:rgba(37,211,102,.6); --rc-glow:0 6px 18px rgba(0,0,0,.5);
+}
+
+/* ---------- peças base ---------- */
+.rc-gl{ display:block; width:20px; height:20px }
+.rc-ic{ display:flex; align-items:center; justify-content:center; flex:none }
+.rc-btn{ height:42px; padding:0 20px; border-radius:21px; display:inline-flex; align-items:center; justify-content:center; gap:8px; font-size:var(--t-callout); font-weight:600; background:var(--fill3); color:var(--label); cursor:pointer; white-space:nowrap; transition:transform var(--motion-fast) var(--curve), opacity var(--motion-fast) }
+.rc-btn:active{ transform:scale(.96); opacity:.85 }
+.rc-btn.primary{ background:var(--rc-grad); color:#fff; box-shadow:var(--rc-shadow) }
+.rc-btn.ghost{ background:transparent; color:var(--rc-accent); box-shadow:inset 0 0 0 1.5px var(--rc-accent) }
+.rc-btn.sm{ height:32px; padding:0 14px; border-radius:16px; font-size:var(--t-foot) }
+.rc-btn svg{ width:18px; height:18px }
+.rc-chips{ display:flex; gap:8px; padding:2px 16px 12px; overflow-x:auto; overflow-y:hidden; scrollbar-width:none }
+.rc-chips::-webkit-scrollbar{ display:none }
+.rc-chip{ flex:none; height:32px; padding:0 15px; display:flex; align-items:center; border-radius:16px; background:var(--fill3); color:var(--label); font-size:var(--t-foot); font-weight:600; cursor:pointer; transition:transform var(--motion-fast) var(--curve) }
+.rc-chip:active{ transform:scale(.95) }
+.rc-chip.on{ background:var(--rc-grad); color:#fff }
+.rc-badge{ min-width:22px; height:22px; padding:0 7px; border-radius:11px; box-sizing:border-box; display:flex; align-items:center; justify-content:center; background:var(--rc-grad); color:#fff; font-size:var(--t-cap2); font-weight:700; font-variant-numeric:tabular-nums; line-height:1 }
+.rc-badge.dot{ min-width:14px; width:14px; height:14px; padding:0; border-radius:7px }
+.rc-tick{ display:inline-block; width:18px; height:11px; margin-right:4px; vertical-align:-1px; fill:none; stroke:var(--label3); stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round }
+.rc-tick.one{ width:12px }
+.rc-tick.read{ stroke:var(--rc-read) }
+.rc-av{ flex:none }
+.rc-av.has-img{ background-size:cover!important; background-position:center!important }
+.rc-av svg{ width:48%; height:48% }
+.rc-sec{ padding:16px 20px 6px; font-size:var(--t-cap1); font-weight:700; letter-spacing:.5px; text-transform:uppercase; color:var(--label2) }
+.rc-note{ padding:10px 20px; font-size:var(--t-foot); line-height:1.4; color:var(--label2) }
+.rc-note.top{ text-align:center; padding:2px 30px 12px }
+.rc-card{ margin:0 16px 14px; border-radius:18px; background:var(--rc-card); overflow:hidden }
+.rc-foot{ padding:20px 34px 8px; text-align:center; font-size:var(--t-cap1); line-height:1.4; color:var(--label3) }
+
+/* ---------- estado vazio ---------- */
+.rc-empty{ display:flex; flex-direction:column; align-items:center; text-align:center; padding:44px 34px 36px; gap:6px }
+.rc-empty-art{ display:flex; align-items:center; justify-content:center; margin-bottom:8px }
+.rc-empty-art.big{ width:176px; height:138px; margin-bottom:14px }
+.rc-empty-art.big svg{ width:100%; height:100% }
+.rc-empty-ic{ width:68px; height:68px; border-radius:22px; background:var(--rc-tint); color:var(--rc-accent); display:flex; align-items:center; justify-content:center }
+.rc-empty-ic svg{ width:32px; height:32px; margin:0 }
+.rc-empty b{ font-size:var(--t-title3); font-weight:700; letter-spacing:-.3px; color:var(--label) }
+.rc-empty span{ max-width:310px; font-size:var(--t-subhead); line-height:1.42; color:var(--label2) }
+.rc-empty-btns{ display:flex; flex-wrap:wrap; justify-content:center; gap:10px; margin-top:18px }
+.rc-empty-btns:empty{ display:none }
+.ui-isempty > .rc-empty{ padding-top:24px }   /* sozinho na lista (UI.emptyFit): ao centro do espaco livre, sem o empurrao de cima */
+
+/* ---------- janela e vista da lista ---------- */
+.rc-list-view{ background:var(--rc-list-bg) }
+.rc-list-view .navbar.solid{ background:var(--rc-list-bg) }
+.rc-list-view .large-title{ font-weight:800; letter-spacing:-.7px }
+.rc-nb-me{ display:flex; align-items:center; padding-left:4px }
+.rc-me-av.avatar{ width:34px; height:34px; font-size:var(--t-cap2); font-weight:600; box-shadow:0 0 0 2px var(--rc-list-bg), 0 0 0 3.5px var(--rc-ring) }
+.rc-nb-new svg{ color:var(--rc-accent) }
+.rc-top{ padding-top:2px }
+.rc-search{ margin:2px 16px 10px }
+.rc-body{ min-height:200px }
+
+/* linha "Arquivadas" */
+.rc-archrow{ position:relative; display:flex; align-items:center; gap:16px; height:50px; padding:0 20px 0 32px; color:var(--label); cursor:pointer }
+.rc-archrow:active{ background:var(--fill4) }
+.rc-archrow .rc-ic{ width:24px; height:24px; color:var(--rc-accent) }
+.rc-archrow .rc-ic svg{ width:23px; height:23px }
+.rc-archrow b{ flex:1; font-size:var(--t-body); font-weight:600 }
+.rc-archrow .rc-count{ font-size:var(--t-foot); font-weight:600; color:var(--label2) }
+.rc-archrow.has-unread .rc-count{ color:var(--rc-accent) }
+/* o separador começa onde começa o texto (32 + 24 do ícone + 16 do intervalo), como nas listas do sistema */
+.rc-archrow::after{ content:''; position:absolute; left:72px; right:0; bottom:0; height:.5px; background:var(--sep) }
+
+/* ---------- uma conversa na lista ---------- */
+.rc-row{ position:relative; overflow:hidden; background:var(--rc-list-bg) }
+.rc-acts{ position:absolute; top:0; bottom:0; width:150px; display:flex; visibility:hidden }
+.rc-acts.l{ left:0 }
+.rc-acts.r{ right:0 }
+.rc-row.drag-l .rc-acts.l,.rc-row.open-l .rc-acts.l,.rc-row.drag-r .rc-acts.r,.rc-row.open-r .rc-acts.r{ visibility:visible }
+.rc-acts .a{ flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:5px; color:#fff; font-size:var(--t-cap2); font-weight:600; cursor:pointer }
+.rc-acts .a svg{ width:23px; height:23px }
+.rc-acts .a:active{ opacity:.75 }
+.rc-acts .read{ background:var(--rc-sw-read) }
+.rc-acts .pin{ background:var(--rc-sw-pin) }
+.rc-acts .more{ background:var(--gray) }
+.rc-acts .arch{ background:var(--rc-sw-arch) }
+.rc-main{ position:relative; z-index:1; display:flex; align-items:center; gap:13px; min-height:var(--rc-row-h); padding:0 16px; background:var(--rc-list-bg); cursor:pointer; touch-action:pan-y; transition:transform .32s var(--spring) }
+.rc-main:active{ background:var(--fill4) }
+.rc-main::after{ content:''; position:absolute; left:var(--rc-row-sep); right:0; bottom:0; height:.5px; background:var(--sep) }
+.rc-rows > .rc-row:last-child .rc-main::after{ display:none }
+.rc-avw{ position:relative; flex:none; width:var(--rc-av); height:var(--rc-av) }
+.rc-avw .avatar{ width:var(--rc-av); height:var(--rc-av); font-size:20px; font-weight:600 }
+.rc-on{ position:absolute; right:0; bottom:0; z-index:2; width:15px; height:15px; box-sizing:border-box; border-radius:50%; background:var(--green); border:2.5px solid var(--rc-list-bg); display:none }
+.rc-row.online .rc-on{ display:block }
+.rc-ttl{ position:absolute; left:-3px; bottom:-3px; z-index:2; width:23px; height:23px; box-sizing:border-box; border-radius:50%; background:var(--rc-list-bg); color:var(--rc-accent); display:none; padding:2.5px }
+.rc-ttl svg{ width:18px; height:18px }
+.rc-row.ttl .rc-ttl{ display:block }
+.rc-mid{ flex:1; min-width:0; display:flex; flex-direction:column; gap:2px; padding:9px 0 }
+.rc-l1{ display:flex; align-items:baseline; gap:8px }
+.rc-name{ flex:1; min-width:0; overflow:hidden; white-space:nowrap; text-overflow:ellipsis; font-size:var(--t-body); font-weight:600; letter-spacing:-.2px; color:var(--label) }
+.rc-time{ flex:none; font-size:var(--t-cap1); color:var(--label2); font-variant-numeric:tabular-nums }
+.rc-row.is-unread .rc-time{ color:var(--rc-accent); font-weight:600 }
+.rc-row.is-unread.is-muted .rc-time{ color:var(--label2) }
+.rc-l2{ display:flex; align-items:flex-start; gap:8px }
+/* sem min-height: a linha cresce com o texto e encolhe com uma pré-visualização de uma linha - é o
+   comportamento das Mensagens (linha de 76 px com uma linha, ~83 com duas), em vez de todas com 86 */
+.rc-prev{ flex:1; min-width:0; font-size:var(--t-subhead); line-height:1.32; color:var(--label2); overflow:hidden; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; word-break:break-word }
+.rc-prev.act{ color:var(--rc-accent); font-weight:500 }
+.rc-prev.muted{ color:var(--label3) }
+.rc-prev .rc-gl{ display:inline-block; width:14px; height:14px; margin-right:4px; vertical-align:-2px }
+.rc-who{ color:var(--label); font-weight:500 }
+.rc-flags{ flex:none; display:flex; align-items:center; gap:6px; padding-top:3px }
+.rc-f{ display:flex; color:var(--label3) }
+.rc-f svg{ width:16px; height:16px }
+.rc-f.pin svg{ width:15px; height:15px }
+.rc-row.is-muted .rc-badge{ background:var(--gray2) }
+body.dark .rc-row.is-muted .rc-badge{ background:var(--gray3) }
+
+/* ---------- pesquisa ---------- */
+.rc-crow,.rc-mres{ position:relative; display:flex; align-items:center; gap:12px; min-height:62px; padding:6px 16px; cursor:pointer }
+.rc-crow:active,.rc-mres:active{ background:var(--fill4) }
+.rc-crow::after,.rc-mres::after{ content:''; position:absolute; left:72px; right:0; bottom:0; height:.5px; background:var(--sep) }
+.rc-crow .avatar,.rc-mres .avatar{ width:44px; height:44px; font-size:17px; font-weight:600 }
+.rc-cb,.rc-mb{ flex:1; min-width:0; display:flex; flex-direction:column; gap:2px }
+.rc-cb b{ font-size:var(--t-body); font-weight:600; color:var(--label); overflow:hidden; white-space:nowrap; text-overflow:ellipsis }
+.rc-cb span{ font-size:var(--t-foot); color:var(--label2); overflow:hidden; white-space:nowrap; text-overflow:ellipsis }
+.rc-mb .rc-name{ font-size:var(--t-callout) }
+.rc-snip{ font-size:var(--t-foot); line-height:1.35; color:var(--label2); overflow:hidden; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; word-break:break-word }
+.rc-snip mark{ background:var(--rc-tint2); color:var(--label); border-radius:4px; padding:0 2px }
+.rc-crow.write .rc-ic{ width:44px; height:44px; border-radius:50%; background:var(--rc-grad); color:#fff }
+.rc-crow.write .rc-ic svg{ width:20px; height:20px }
+
+/* ---------- folha "Nova conversa" ---------- */
+.rc-sheet .sheet-head b{ font-weight:700 }
+.rc-new .search{ margin:4px 16px 10px }
+.rc-new-acts{ margin:0 16px 6px; border-radius:16px; background:var(--rc-card); overflow:hidden }
+body:not(.dark) .rc-new-acts{ background:var(--bg2) }
+.rc-new-act{ position:relative; display:flex; align-items:center; gap:14px; height:56px; padding:0 14px; cursor:pointer; color:var(--label) }
+.rc-new-act:active{ background:var(--fill4) }
+.rc-new-act + .rc-new-act::before{ content:''; position:absolute; left:64px; right:0; top:0; height:.5px; background:var(--sep) }
+.rc-new-act .rc-ic{ width:38px; height:38px; border-radius:50%; background:var(--rc-grad); color:#fff }
+.rc-new-act .rc-ic svg{ width:19px; height:19px }
+.rc-new-act span{ font-size:var(--t-body); font-weight:500 }
+.rc-new-list{ padding-bottom:10px }
+.rc-new-list .rc-crow::after{ left:72px }
+
+/* ---------- definições ---------- */
+.rc-set-view{ background:var(--bg) }
+.rc-me-card{ display:flex; align-items:center; gap:14px; margin:6px 16px 22px; padding:14px 14px 14px 16px; border-radius:20px; background:var(--bg2); cursor:pointer; transition:transform var(--motion-fast) var(--curve) }
+.rc-me-card:active{ transform:scale(.985) }
+.rc-me-card .avatar{ width:64px; height:64px; font-size:24px; font-weight:600; box-shadow:0 0 0 2.5px var(--bg2), 0 0 0 4.5px var(--rc-ring) }
+.rc-me-b{ flex:1; min-width:0; display:flex; flex-direction:column; gap:2px }
+.rc-me-b b{ font-size:var(--t-title3); font-weight:700; letter-spacing:-.3px; color:var(--label); overflow:hidden; white-space:nowrap; text-overflow:ellipsis }
+.rc-me-b span{ font-size:var(--t-subhead); color:var(--label2); overflow:hidden; white-space:nowrap; text-overflow:ellipsis }
+.rc-me-b em{ font-style:normal; font-size:var(--t-foot); color:var(--rc-accent); font-variant-numeric:tabular-nums }
+.rc-chev{ display:flex; color:var(--label3) }
+.rc-chev svg{ width:18px; height:18px }
+.rc-set-view .li-icon .rc-gl{ width:22px; height:22px }
+
+/* ---------- mensagens com estrela ---------- */
+.rc-star-view{ background:var(--rc-list-bg) }
+.rc-star{ position:relative; padding:12px 16px; cursor:pointer }
+.rc-star:active{ background:var(--fill4) }
+.rc-star::after{ content:''; position:absolute; left:16px; right:0; bottom:0; height:.5px; background:var(--sep) }
+.rc-star-h{ display:flex; align-items:center; gap:8px }
+.rc-star-h .avatar{ width:26px; height:26px; font-size:11px; font-weight:600 }
+.rc-star-h b{ flex:1; min-width:0; font-size:var(--t-foot); font-weight:600; color:var(--label); overflow:hidden; white-space:nowrap; text-overflow:ellipsis }
+.rc-bub{ display:inline-flex; align-items:flex-end; gap:8px; max-width:84%; margin:8px 0 0 34px; padding:9px 12px; border-radius:18px 18px 18px 6px; background:var(--fill3); color:var(--label); font-size:var(--t-subhead); line-height:1.35; word-break:break-word }
+.rc-bub.mine{ border-radius:18px 18px 6px 18px; background:var(--rc-tint) }
+.rc-bub-s{ display:flex; flex:none; color:var(--orange) }
+.rc-bub-s svg{ width:13px; height:13px }
+
+/* ---------- sobre ---------- */
+.rc-about{ padding:0 18px 12px }
+.rc-about-hero{ display:flex; flex-direction:column; align-items:center; text-align:center; gap:4px; padding:10px 10px 18px }
+.rc-about-hero .tile{ width:76px; height:76px; border-radius:22.37%; overflow:hidden; margin-bottom:8px; box-shadow:var(--rc-shadow) }
+.rc-about-hero .tile svg{ width:100%; height:100%; display:block }
+.rc-about-hero b{ font-size:var(--t-title2); font-weight:800; letter-spacing:-.4px; color:var(--label) }
+.rc-about-hero span{ font-size:var(--t-subhead); color:var(--label2); max-width:300px; line-height:1.4 }
+.rc-about-list{ border-radius:18px; background:var(--rc-card); overflow:hidden }
+body:not(.dark) .rc-about-list{ background:var(--bg2) }
+.rc-about-it{ position:relative; display:flex; flex-direction:column; gap:3px; padding:12px 16px }
+.rc-about-it + .rc-about-it::before{ content:''; position:absolute; left:16px; right:0; top:0; height:.5px; background:var(--sep) }
+.rc-about-it b{ font-size:var(--t-callout); font-weight:600; color:var(--label) }
+.rc-about-it span{ font-size:var(--t-foot); line-height:1.4; color:var(--label2) }
+
+/* ---------- no jogo: sem sombras grandes ----------
+   O CEF compõe cada sombra numa camada à parte; as apps já polidas (app-recado-extras, app-store)
+   deixam só os contornos finos em body.fivem. Como TODOS os pacotes do Recado usam --rc-shadow /
+   --rc-glow, apagar os dois tokens aqui chega para os seis ficheiros. Fica depois de body.dark
+   para ganhar no tema escuro (mesma especificidade, vence o último). */
+body.fivem{ --rc-shadow:none; --rc-glow:none }
+
+/* ---------- acento do Recado nos controlos do sistema dentro da app ---------- */
+.rc-app .tab.on{ color:var(--rc-accent) }
+.rc-app .tab .tb-badge{ background:var(--rc-a1) }
+.rc-app .nb-back,.rc-app .nb-btn{ color:var(--rc-accent) }
+.rc-sheet .sh-r,.rc-sheet .sh-l{ color:var(--rc-accent) }
+/* PearPhone Fold (lista | conversa, ui.js UI.split): a conversa aberta à direita fica com o tom verde do Zapp na lista */
+body.form-fold .nav-stack.split > .view:first-child .rc-main.split-sel{ background:linear-gradient(var(--rc-tint),var(--rc-tint)),var(--rc-list-bg) }   /* opaco: as ações do deslize estão por baixo */

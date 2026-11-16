@@ -1,0 +1,205 @@
+/* ============================================================
+   PearOS 27.2 · componentes do sistema com as medidas do sistema real (ronda 2, 11 nov 2026).
+   Carregado DEPOIS do glass27.css (o material) e ANTES dos oneui-*.css. Tudo atrás de body.os-ios: a Nova UI não muda.
+   Fontes e números: D:\ApexPhoneWork2\research\PEAR.md (HIG da Apple, sessões WWDC25/WWDC26, kit de interface 27.0.2, MacStories 27).
+   O que está aqui (a classe vem do ui.js quando o componente precisa de saber o que é):
+     · barra de separadores .tb27: mais baixa e mais larga (a ~22 px das margens e do fundo), pesquisa DENTRO da pílula (27),
+       rótulos 11 Semibold, glifos monocromáticos e o selecionado tingido sobre a cápsula
+     · botões da barra de navegação 44 px, monocromáticos; a ação principal (.bold) é a cápsula tingida
+     · alertas 300 px, raio 34, texto à esquerda, botões em cápsula de 48
+     · lista de ações .as27: um cartão de vidro com cápsulas (ao centro, ou nascida do sítio tocado: .anch)
+     · menus: glifo antes do rótulo, sem linhas, linhas de 48
+     · folhas .sh27: cantos 36 em cima e concêntricos com o ecrã em baixo, X e visto em círculos de vidro
+     · Centro de controlo: controlos 1x1 em círculo, sliders em cápsula, "+" e desligar em cima
+     · listas: cabeçalhos em frase normal, linhas de 52; Definições com a pesquisa a flutuar em baixo
+     · teclado: folha arredondada, teclas mais redondas, teclas de sistema da mesma cor
+   Regras do CEF: zero backdrop-filter em body.fivem, só transform/opacity animam, sem color-mix, :has(), clip-path ou aspect-ratio.
+   ============================================================ */
+
+/* ---------- glifos desenhados por máscara (X, visto) ---------- */
+body.os-ios{
+  --p27-x:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.6' stroke-linecap='round'><path d='M6 6l12 12M18 6L6 18'/></svg>");
+  --p27-ok:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.7' stroke-linecap='round' stroke-linejoin='round'><path d='M4.5 12.5l5 5L19.5 7'/></svg>");
+  --p27-cap:rgba(120,120,128,.16);      /* fundo das cápsulas de botão sobre vidro claro (fill, não outro vidro) */
+  --p27-cap-on:rgba(120,120,128,.26);
+  --p27-sel:rgba(0,0,0,.075);           /* cápsula do separador selecionado */
+}
+body.os-ios.dark{ --p27-cap:rgba(120,120,128,.30); --p27-cap-on:rgba(120,120,128,.44); --p27-sel:rgba(0,0,0,.30) }   /* 27: no escuro o selecionado é MAIS ESCURO */
+
+/* ============================================================ BARRA DE SEPARADORES ============================================================ */
+/* kit 27: controlo 54 + vidro 4 maior a toda a volta (62); a cápsula fica a ~21-25 pt das margens e do fundo; 5 separadores ocupam a largura */
+html body.os-ios .tabbar.tb27{ bottom:21px; padding:0 21px; gap:12px }
+html body.os-ios.os-ios .tabbar.tb27 .tb-pill.lg{ --lg-r:31px; padding:4px; gap:0; min-width:0 }
+html body.os-ios .tabbar.tb27 .tab{ height:54px; min-width:0; width:88px; flex:none; padding:0 4px; gap:1px; border-radius:27px; color:var(--label); font-size:11px; font-weight:600; letter-spacing:0 }
+html body.os-ios .tabbar.tb27.tb-5 .tb-pill.lg{ flex:1 1 auto }
+html body.os-ios .tabbar.tb27.tb-5 .tab{ width:auto; flex:1 1 0 }
+html body.os-ios .tabbar.tb27 .tab svg{ width:27px; height:27px }
+html body.os-ios .tabbar.tb27 .tab span{ max-width:100%; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; line-height:13px }
+html body.os-ios .tabbar.tb27 .tab.on{ color:var(--blue) }
+html body.os-ios .tabbar.tb27 .tb-pill.has-ind .tab.on{ background:transparent }
+html body.os-ios .tabbar.tb27 .tab:active{ opacity:1 }
+html body.os-ios .tabbar.tb27 .tb-ind{ top:4px; height:54px; border-radius:27px; background:var(--p27-sel) }
+html body.os-ios .tabbar.tb27 .tab .tb-badge{ top:3px; right:calc(50% - 26px) }
+html body.os-ios .tabbar.tb27 .tab .tb-badge.dot{ top:7px; right:calc(50% - 18px) }
+/* separador em destaque (t.prominent): o círculo de 62 ao lado, à mesma altura da pílula */
+html body.os-ios .tabbar.tb27 .tab.tab-search{ width:62px; min-width:62px; height:62px }
+/* ao rolar para baixo encolhe como um bloco, mais perto do fundo (o kit minimizado: 40 de controlo, 32 de baixo) */
+html body.os-ios .tabbar.tb27.compact{ transform:scale(.86) }   /* encolhe para o fundo sem descer: a aresta de baixo fica nos 21 px, acima do indicador de casa */
+/* apps de tema escuro: os glifos não selecionados ficam claros sobre o vidro escuro delas */
+html body.os-ios .onion .tabbar.tb27 .tab:not(.on),html body.os-ios .cy .tabbar.tb27 .tab:not(.on),html body.os-ios .dc .tabbar.tb27 .tab:not(.on),html body.os-ios .view.gm ~ .tabbar.tb27 .tab:not(.on){ color:rgba(255,255,255,.86) }
+
+/* ============================================================ BARRA DE NAVEGAÇÃO ============================================================ */
+/* botões de vidro 44×44 (kit: linha de controlos 44, margens 16); glifos e texto MONOCROMÁTICOS; uma só ação tingida (.bold) */
+html body.os-ios .nb-btn.lg:not(.glass),html body.os-ios .nb-back.lg{ height:44px; min-width:44px; --lg-r:22px }
+html body.os-ios .nb-btn.lg.nb-ico:not(.glass),html body.os-ios .nb-back.lg{ width:44px; padding:0 }
+html body.os-ios .nb-back.lg{ --lg-r:50% }
+html body.os-ios .nb-btn.lg:not(.glass){ padding:0 16px; font-size:17px; font-weight:500; letter-spacing:-.2px }
+html body.os-ios .nb-btn.lg:not(.glass) svg,html body.os-ios .nb-back.lg svg{ width:24px; height:24px }
+html body.os-ios.os-ios .navbar .nb-btn.lg,html body.os-ios.os-ios .navbar .nb-back.lg{ color:var(--label) }
+html body.os-ios.os-ios .navbar .nb-btn.lg.bold:not(.glass){ --lg-f:var(--blue); color:#fff; font-weight:600 }
+html body.os-ios.os-ios .navbar .nb-btn.lg.bold:not(.glass)::before{ background-image:var(--lg-lens) }
+html body.os-ios .nb-left,html body.os-ios .nb-right{ gap:10px }
+/* título em linha: 17 Semibold ao centro (kit) */
+html body.os-ios .nb-title{ font-size:17px; font-weight:600; letter-spacing:-.4px }
+
+/* ============================================================ LISTAS ============================================================ */
+/* 26/27: cabeçalhos em frase normal (já não em MAIÚSCULAS) e maiores; linhas de 52 */
+html body.os-ios .group-header{ text-transform:none; letter-spacing:-.1px; font-size:15px; font-weight:600; padding:22px 32px 8px }
+html body.os-ios .li{ min-height:52px }
+
+/* ============================================================ DEFINIÇÕES: pesquisa em baixo ============================================================ */
+/* HIG (Search fields): "Place search at the bottom if there's room... Settings, where it's the only item". O campo passa para o fim do
+   conteúdo e fica PRESO ao fundo enquanto se rola (sticky): flutua por cima da lista como uma barra de vidro. Só no telemóvel normal. */
+html body.os-ios:not(.form-fold) .app-window[data-app="settings"] .nav-stack > .view:first-child > .content > .search{ order:2; position:sticky; bottom:30px; z-index:6; height:48px; border-radius:24px; margin:14px 22px 0; padding:0 12px 0 16px;
+  background:rgba(255,255,255,.80); color:var(--label2); box-shadow:0 6px 24px rgba(0,0,0,.14), inset 0 1px 0 rgba(255,255,255,.75), inset 0 0 0 .5px rgba(0,0,0,.12) }
+html body.os-ios.fivem:not(.form-fold) .app-window[data-app="settings"] .nav-stack > .view:first-child > .content > .search{ background:rgb(250,250,252) }   /* opaco no jogo (sem desfoque por baixo, a .98 ainda se liam as linhas através) */
+html body.os-ios:not(.fivem):not(.form-fold) .app-window[data-app="settings"] .nav-stack > .view:first-child > .content > .search{ -webkit-backdrop-filter:blur(20px) saturate(160%); backdrop-filter:blur(20px) saturate(160%) }
+html body.os-ios.dark:not(.form-fold) .app-window[data-app="settings"] .nav-stack > .view:first-child > .content > .search{ background:rgba(58,58,64,.82); box-shadow:0 6px 24px rgba(0,0,0,.4), inset 0 1px 0 rgba(255,255,255,.18), inset 0 0 0 .5px rgba(0,0,0,.42) }
+html body.os-ios.dark.fivem:not(.form-fold) .app-window[data-app="settings"] .nav-stack > .view:first-child > .content > .search{ background:rgb(52,52,58) }
+html body.os-ios:not(.form-fold) .app-window[data-app="settings"] .nav-stack > .view:first-child > .content{ padding-bottom:34px }
+html body.os-ios:not(.form-fold) .app-window[data-app="settings"] .nav-stack > .view:first-child > .content > .large-title{ padding-bottom:14px }
+html body.os-ios:not(.form-fold) .app-window[data-app="settings"] .nav-stack > .view:first-child > .content > .search:focus-within{ box-shadow:0 6px 24px rgba(0,0,0,.14), 0 0 0 2px var(--blue) }
+
+/* Definições › Ecrã e brilho › Aparência › Liquid Glass: o cursor sozinho na linha e as três marcas por baixo (27: Mais transparente,
+   Predefinido, Mais tingido; o cursor não prende em nenhuma) */
+html body.os-ios .lg-row.lg-row27{ padding:14px 16px 2px }
+html body.os-ios .lg-marks{ display:flex; justify-content:space-between; align-items:center; padding:0 16px 13px; gap:8px }
+html body.os-ios .lg-marks .lg-lbl{ font-size:13px; color:var(--label2) }
+html body.os-ios .lg-marks .lg-lbl:nth-child(2){ text-align:center }
+
+/* ============================================================ ALERTAS ============================================================ */
+/* kit 27: 300 de largura, raio 34, margem 14; título e mensagem à esquerda e mais fortes (WWDC25); botões em cápsula de 48, 8 entre eles */
+html body.os-ios.os-ios .overlay:not(.perm-ov):not(.ou-dlg) .alert.lg{ width:300px; --lg-r:34px; border-radius:34px; text-align:left }
+/* no jogo não há desfoque do que está por baixo: o alerta é quase opaco (a .89 o texto da app lia-se através dele) */
+html body.os-ios.os-ios.fivem .overlay:not(.ou-dlg):not(.onion):not(.cy):not(.dc):not(.dc-ov) .alert.lg{ --lg-f:rgba(250,250,252,.97) }
+html body.os-ios.os-ios.dark.fivem .overlay:not(.ou-dlg):not(.onion):not(.cy):not(.dc):not(.dc-ov) .alert.lg{ --lg-f:rgba(46,46,52,.97) }
+html body.os-ios .overlay:not(.perm-ov):not(.ou-dlg) .alert-body{ padding:22px 22px 18px }
+html body.os-ios .overlay:not(.perm-ov):not(.ou-dlg) .alert-title{ font-size:18px; font-weight:700; letter-spacing:-.3px; line-height:1.25 }
+html body.os-ios .overlay:not(.perm-ov):not(.ou-dlg) .alert-msg{ font-size:15px; line-height:1.36; margin-top:6px; color:var(--label); opacity:.82 }
+html body.os-ios .overlay:not(.perm-ov):not(.ou-dlg) .alert input{ height:48px; border-radius:24px; border:none; background:var(--p27-cap); padding:0 18px; margin-top:16px; font-size:17px }
+html body.os-ios .overlay:not(.perm-ov):not(.ou-dlg) .alert-btns{ border-top:none; padding:0 14px 14px; gap:8px }
+html body.os-ios .overlay:not(.perm-ov):not(.ou-dlg) .alert-btns > div{ flex:1 1 0; min-width:0; height:48px; padding:0 14px; display:flex; align-items:center; justify-content:center; border-radius:24px; border:none!important;
+  background:var(--p27-cap); color:var(--label); font-size:17px; font-weight:500; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; transition:transform .16s var(--curve), background .15s }
+html body.os-ios .overlay:not(.perm-ov):not(.ou-dlg) .alert-btns > div:active{ background:var(--p27-cap-on); transform:scale(.97) }
+html body.os-ios .overlay:not(.perm-ov):not(.ou-dlg) .alert-btns > div.bold{ background:var(--blue); color:#fff; font-weight:600 }
+html body.os-ios .overlay:not(.perm-ov):not(.ou-dlg) .alert-btns > div.danger{ color:var(--red); font-weight:600 }
+html body.os-ios .overlay:not(.perm-ov):not(.ou-dlg) .alert-btns > div.bold.danger{ background:var(--red); color:#fff }
+html body.os-ios .overlay:not(.perm-ov):not(.ou-dlg) .alert-btns.stack{ flex-direction:column }
+html body.os-ios .overlay:not(.perm-ov):not(.ou-dlg) .alert-btns.stack.rev{ flex-direction:column-reverse }
+html body.os-ios .overlay:not(.perm-ov):not(.ou-dlg) .alert-btns.stack > div{ flex:none }
+/* temas de apps escuras: as cápsulas ficam claras sobre o material delas */
+html body.os-ios .onion .alert-btns > div,html body.os-ios .cy .alert-btns > div,html body.os-ios .dc .alert-btns > div,html body.os-ios .dc-ov .alert-btns > div{ background:rgba(255,255,255,.10) }
+
+/* ============================================================ LISTA DE AÇÕES (.as27) ============================================================ */
+/* WWDC25: deixou de subir do fundo; nasce do controlo que a chamou (ancorada não tem Cancelar: tocar fora cancela). Sem origem: ao centro. */
+html body.os-ios .as-wrap.as27{ justify-content:center; align-items:center; padding:0; background:rgba(0,0,0,.28) }
+html body.os-ios .as-wrap.as27.anch{ display:block; background:rgba(0,0,0,.12) }
+html body.os-ios.os-ios .as-wrap.as27 .as-group{ margin:0; width:300px; border-radius:34px; padding:15px; display:flex; flex-direction:column; gap:8px; overflow:hidden;
+  transform:scale(.9); opacity:0; transition:transform .38s cubic-bezier(.3,1.25,.4,1), opacity .2s ease-out }
+html body.os-ios.os-ios .as-wrap.as27.in .as-group{ transform:scale(1); opacity:1 }
+/* no jogo não há desfoque por baixo: o cartão é quase opaco (as fotos e as linhas da grelha liam-se através dele) */
+html body.os-ios.os-ios.fivem .as-wrap.as27:not(.onion):not(.cy):not(.dc):not(.dc-ov) .as-group{ background:radial-gradient(130% 90% at 10% 0%, rgba(255,255,255,.5) 0%, rgba(255,255,255,0) 56%), rgba(246,246,249,.97) }
+html body.os-ios.os-ios.dark.fivem .as-wrap.as27:not(.onion):not(.cy):not(.dc):not(.dc-ov) .as-group{ background:radial-gradient(130% 90% at 10% 0%, rgba(255,255,255,.10) 0%, rgba(255,255,255,0) 56%), rgba(44,44,50,.97) }
+html body.os-ios.os-ios .as-wrap.as27.anch .as-group.main{ position:absolute; transform-origin:var(--ox,50%) var(--oy,0px); transform:scale(.5) }
+html body.os-ios.os-ios .as-wrap.as27.anch.in .as-group.main{ transform:scale(1) }
+html body.os-ios .as-wrap.as27.anch .as-cgrp{ display:none }
+html body.os-ios.os-ios .as-wrap.as27 .as-group.main::before{ display:none }
+html body.os-ios .as-wrap.as27 .as-title{ padding:2px 8px 4px; border:none; text-align:center; font-size:14px; line-height:1.3; color:var(--label2) }
+html body.os-ios .as-wrap.as27 .as-btn{ height:52px; padding:0 18px; border:none!important; border-radius:26px; display:flex; align-items:center; justify-content:center; gap:8px; flex:none;
+  background:var(--p27-cap); color:var(--label); font-size:17px; font-weight:500; text-align:center; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; transition:transform .16s var(--curve), background .15s }
+html body.os-ios .as-wrap.as27 .as-btn svg{ flex:none; width:20px; height:20px }
+html body.os-ios .as-wrap.as27 .as-btn:active{ background:var(--p27-cap-on); transform:scale(.97) }
+html body.os-ios .as-wrap.as27 .as-btn.danger{ color:var(--red) }
+html body.os-ios .as-wrap.as27 .as-btn.bold{ font-weight:600 }
+html body.os-ios .as-wrap.as27 .as-btn.cancel{ background:transparent; font-weight:600; margin-top:-2px }
+html body.os-ios .as-wrap.as27 .as-btn.cancel:active{ background:var(--p27-cap) }
+html body.os-ios[data-motion="reduced"] .as-wrap.as27 .as-group{ transform:none }
+
+/* ============================================================ MENUS DE CONTEXTO ============================================================ */
+/* 26/27: glifo ANTES do rótulo, alinhado à esquerda; sem linhas entre os itens; mais redondo e espaçado; 27: aresta escura que o faz flutuar */
+html body.os-ios .ctx-wrap:not(.ou-ctx) .ctx.lg{ width:262px; padding:8px 0; --lg-r:30px; --lg-rim:rgba(0,0,0,.22) }
+html body.os-ios.dark .ctx-wrap:not(.ou-ctx) .ctx.lg{ --lg-rim:rgba(0,0,0,.5) }
+html body.os-ios.os-ios.fivem .ctx-wrap:not(.ou-ctx):not(.onion):not(.cy):not(.dc):not(.dc-ov) .ctx.lg{ --lg-f:rgba(250,250,252,.96) }
+html body.os-ios.os-ios.dark.fivem .ctx-wrap:not(.ou-ctx):not(.onion):not(.cy):not(.dc):not(.dc-ov) .ctx.lg{ --lg-f:rgba(50,50,56,.96) }
+html body.os-ios .ctx-wrap:not(.ou-ctx) .ctx > div{ flex-direction:row-reverse; justify-content:flex-end; gap:14px; height:48px; padding:0 20px 0 18px; font-size:17px; border:none!important; position:relative; z-index:1 }
+html body.os-ios .ctx-wrap:not(.ou-ctx) .ctx > div > span{ flex:1 1 auto; min-width:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+html body.os-ios .ctx-wrap:not(.ou-ctx) .ctx > div > svg{ flex:none; width:22px; height:22px }
+html body.os-ios .ctx-wrap:not(.ou-ctx) .ctx > div.no-ic{ padding-left:54px }
+html body.os-ios .ctx-wrap:not(.ou-ctx) .ctx > div:active{ background:var(--p27-cap) }
+
+/* ============================================================ FOLHAS (.sh27) ============================================================ */
+/* kit 27: margem 6 no detent médio; raio 36 em cima e concêntrico com o ecrã em baixo (57 - 6 = 51); barra da folha 54;
+   Fechar = X num círculo de vidro, Concluído = visto num círculo tingido (MacStories 26) */
+html body.os-ios.os-ios .sh27 .sheet.lg{ left:6px; right:6px; bottom:6px; border-radius:36px 36px 51px 51px }
+html body.os-ios .sh27 .sheet .grabber{ width:36px; height:5px; margin:6px auto 0 }
+html body.os-ios .sh27 .sheet .sheet-head{ display:grid; grid-template-columns:1fr auto 1fr; align-items:center; min-height:56px; padding:4px 12px 6px; gap:8px }
+html body.os-ios .sh27 .sheet .sheet-head > b{ font-size:17px; font-weight:600; letter-spacing:-.4px; text-align:center; max-width:220px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+html body.os-ios .sh27 .sheet .sh-l{ justify-self:start } html body.os-ios .sh27 .sheet .sh-r{ justify-self:end }
+html body.os-ios .sh27 .sheet .sh-l:empty,html body.os-ios .sh27 .sheet .sh-r:empty{ display:block; width:44px; height:44px }
+html body.os-ios .sh27 .sh-x,html body.os-ios .sh27 .sh-ok{ position:relative; width:44px; height:44px; border-radius:50%; font-size:0; color:transparent; cursor:pointer; flex:none;
+  background:var(--p27-cap); box-shadow:inset 0 1px 0 rgba(255,255,255,.55), inset 0 0 0 .5px rgba(0,0,0,.10); transition:transform .16s var(--curve) }
+html body.os-ios.dark .sh27 .sh-x{ box-shadow:inset 0 1px 0 rgba(255,255,255,.14), inset 0 0 0 .5px rgba(0,0,0,.4) }
+html body.os-ios .sh27 .sh-ok{ background:var(--blue); box-shadow:inset 0 1px 0 rgba(255,255,255,.35), 0 4px 12px rgba(0,0,0,.14) }
+html body.os-ios .sh27 .sh-x::before,html body.os-ios .sh27 .sh-ok::before{ content:''; position:absolute; left:50%; top:50%; width:18px; height:18px; margin:-9px 0 0 -9px; background:var(--label);
+  -webkit-mask:var(--p27-x) center/100% 100% no-repeat; mask:var(--p27-x) center/100% 100% no-repeat }
+html body.os-ios .sh27 .sh-ok::before{ width:20px; height:20px; margin:-10px 0 0 -10px; background:#fff; -webkit-mask-image:var(--p27-ok); mask-image:var(--p27-ok) }
+html body.os-ios .sh27 .sh-t{ height:40px; padding:0 16px; border-radius:20px; display:flex; align-items:center; justify-content:center; background:var(--p27-cap); color:var(--label); font-size:16px; font-weight:600; white-space:nowrap; cursor:pointer; transition:transform .16s var(--curve) }
+html body.os-ios .sh27 .sh-t.sh-pro{ background:var(--blue); color:#fff }
+html body.os-ios .sh27 .sh-x:active,html body.os-ios .sh27 .sh-ok:active,html body.os-ios .sh27 .sh-t:active{ transform:scale(.94) }
+/* folhas de apps de tema escuro: as cápsulas claras sobre o material delas */
+html body.os-ios .onion .sh-x,html body.os-ios .cy .sh-x,html body.os-ios .dc .sh-x,html body.os-ios .dc-ov .sh-x,html body.os-ios .onion .sh-t:not(.sh-pro),html body.os-ios .cy .sh-t:not(.sh-pro),html body.os-ios .dc .sh-t:not(.sh-pro),html body.os-ios .dc-ov .sh-t:not(.sh-pro){ background:rgba(255,255,255,.12) }
+
+/* ============================================================ CENTRO DE CONTROLO ============================================================ */
+/* iOS 18+ (mantido no 26/27): controlos 1x1 CIRCULARES, sliders em cápsula, módulos 2x2 arredondados; "+" em cima à esquerda e desligar à direita */
+html body.os-ios:not(.form-fold) #cc .cc-power,html body.os-ios:not(.form-fold) #cc .cc-plus{ position:absolute; top:calc(var(--statusbar-h) + 4px); width:44px; height:44px; border-radius:50%; display:flex; align-items:center; justify-content:center; color:#fff; z-index:3; cursor:pointer }
+html body.os-ios:not(.form-fold) #cc .cc-power{ right:24px } html body.os-ios:not(.form-fold) #cc .cc-plus{ left:24px }
+html body.os-ios:not(.form-fold) #cc .cc-power svg,html body.os-ios:not(.form-fold) #cc .cc-plus svg{ width:21px; height:21px }
+html body.os-ios:not(.form-fold) #cc .cc-edit{ display:none }
+html body.os-ios #cc .cc-tile:not(.wide){ border-radius:50% }
+html body.os-ios #cc .cc-tile.wide{ border-radius:44.25px }
+html body.os-ios #cc .cc-slider{ border-radius:44.25px }
+html body.os-ios #cc .cc-mod{ border-radius:38px }
+html body.os-ios #cc .cc-tile svg{ width:30px; height:30px }
+
+/* ============================================================ BANNER ============================================================ */
+/* 27 (MacStories): os banners entram "a partir do canto superior esquerdo"; só transform/opacity, com mola */
+html body.os-ios .nbanner{ transform-origin:12% 0; transform:translate(-56px,-110px) scale(.86) }
+html body.os-ios .nbanner.in{ transform:none }
+html body.os-ios .nbanner.out{ transform:translate(-40px,-120px) scale(.9) }
+html body.os-ios[data-motion="reduced"] .nbanner,html body.os-ios[data-motion="reduced"] .nbanner.out{ transform:none }
+
+/* ============================================================ TECLADO ============================================================ */
+/* 26/27: a folha do teclado tem os cantos de cima arredondados; teclas mais redondas e espaçadas, letras mais fortes; as teclas de sistema
+   (maiúsculas, apagar, 123, emoji, enter) têm a MESMA cor das letras; o enter só é azul quando é uma ação (Pesquisar, Enviar, Ir) */
+html body.os-ios:not(.form-fold) #kb{ border-radius:28px 28px 57px 57px; padding-top:10px }
+html body.os-ios .kb-key{ border-radius:9px; height:44px; font-size:24px; font-weight:500 }
+html body.os-ios .kb-row{ gap:6px; margin-bottom:12px }
+html body.os-ios .kb-key.fn,html body.os-ios .kb-key.ret:not(.act){ background:rgba(255,255,255,.82); color:#000; font-size:16px; font-weight:500 }
+html body.os-ios.fivem .kb-key,html body.os-ios.fivem .kb-key.fn,html body.os-ios.fivem .kb-key.ret:not(.act){ background:#fff }
+html body.os-ios.dark .kb-key.fn,html body.os-ios.dark .kb-key.ret:not(.act){ background:rgba(255,255,255,.22); color:#fff }
+html body.os-ios.dark.fivem .kb-key,html body.os-ios.dark.fivem .kb-key.fn,html body.os-ios.dark.fivem .kb-key.ret:not(.act){ background:#5C5C61 }
+html body.os-ios .kb-key.fn:active,html body.os-ios .kb-key.fn.pressed{ background:rgba(255,255,255,.55) }
+html body.os-ios.dark .kb-key.fn:active,html body.os-ios.dark .kb-key.fn.pressed{ background:rgba(255,255,255,.4) }
+html body.os-ios .kb-key.ret{ font-size:16px; padding:0 12px }
+html body.os-ios .kb-key.ret.act{ font-weight:600 }
+html body.os-ios .kb-key.space{ font-size:16px; font-weight:500 }

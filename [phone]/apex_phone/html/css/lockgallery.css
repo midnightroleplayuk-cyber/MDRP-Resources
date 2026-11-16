@@ -1,0 +1,456 @@
+/* ---------- Galeria do ecrã bloqueado (long press) - carregado depois de lock.css ---------- */
+.lsg-root{ position:absolute; inset:0; pointer-events:none }   /* contentor (NÃO confundir com a classe de estado .screen.lsg). SEM stacking context: os filhos ordenam-se com o #lock (z 60): véu 58 · cartões laterais 59 · botões 62 (barra de estado 310 e ilha 320 ficam por cima, como no PearOS) */
+/* véu: escurece e "desfoca" o que fica atrás - imagem pré-desfocada do wallpaper (sem filter) + tinta .44 */
+.lsg-dim{ position:absolute; inset:0; z-index:58; border-radius:57px; opacity:0; pointer-events:none; transition:opacity .4s var(--curve); background:linear-gradient(rgba(0,0,0,.56),rgba(0,0,0,.56)), var(--wp-lock-blur,var(--wp-blur,#000)) center/cover no-repeat }
+.screen.lsg .lsg-dim{ opacity:1; pointer-events:auto } .screen.lsg-closing .lsg-dim{ opacity:0 }
+/* o próprio #lock encolhe para cartão (mesmo elemento): cópia do wallpaper por baixo (o wallpaper real é um irmão, fica atrás do véu).
+   O cartão É o ecrã reduzido: leva o raio do ecrã (57 → 40 a .70), como no PearPhone.
+   PearOS 27 (1.4.0, medido na captura do iOS 26): .70 (308×669) e CENTRADO na vertical (144..813) - por cima fica a etiqueta COLEÇÕES
+   (95..113, abaixo da ilha), por baixo os pontos (830) e o Personalizar + "+" (856..912). Os vizinhos têm o MESMO tamanho, a 336 px
+   (lockgallery.js SP0): já não encolhem nem crescem com o arrasto. Antes: .84 a −26 px, vizinhos a .74 que cresciam até .84. */
+.screen.lsg #lock{ border-radius:57px; overflow:hidden; transform-origin:50% 50%; pointer-events:auto; will-change:transform; box-shadow:0 24px 64px rgba(0,0,0,.5);
+  transform:translate(var(--lsg-dx,0px), var(--lsg-dy,0px)) scale(.7); transition:transform .45s var(--curve), opacity .3s }   /* o raio é o do ecrã: não muda, logo não anima (regra CEF: só transform/opacity) */
+.screen.lsg.lsg-drag #lock{ transition:none }                         /* a seguir o dedo: sem transição */
+.screen.lsg.lsg-anim #lock{ transition:transform .38s var(--curve), border-radius .45s var(--curve) }
+.screen.lsg-closing #lock{ border-radius:57px; overflow:hidden; transition:transform .4s var(--curve) }   /* a voltar a ecrã inteiro: curva física, sem a mola do lock normal; mantém os cantos até ocupar o ecrã */
+.screen.lsg #lock::before,.screen.lsg-closing #lock::before{ content:''; position:absolute; inset:0; z-index:0; background:var(--lsg-lock,var(--wp-lock,var(--wp,#000))) var(--lsg-lock-pos,center)/var(--lsg-lock-size,cover) no-repeat }   /* --lsg-lock: o fundo do ecrã com endereço ABSOLUTO (lockgallery.js paintLockCard) - o url relativo do --wp-lock resolvia contra css/ e o cartão ficava transparente */
+/* contorno fino a toda a volta do cartão atual (PearPhone): sem ele o cartão confundia-se com o véu (é o mesmo wallpaper, escurecido). Só a opacidade anima; some no modo Personalizar.
+   PearOS 27: um fio translúcido (a borda do vidro do iOS 26), já não a moldura branca a .9 do PearOS 17 - a captura não tem moldura nenhuma */
+.screen.lsg #lock::after,.screen.lsg-closing #lock::after{ content:''; position:absolute; inset:0; z-index:5; border-radius:57px; border:2.5px solid rgba(255,255,255,.34); pointer-events:none; opacity:0; transition:opacity .25s }
+.screen.lsg #lock::after{ opacity:1 } .screen.lsg-edit #lock::after{ opacity:0 }
+.screen.lsg #lock .lock-p1{ z-index:1 } .screen.lsg #lock .lock-clockwrap{ z-index:3 }
+/* ⚠️ CEF: um `clip-path` DENTRO de um elemento com transform:scale é calculado no espaço
+   errado - os dígitos do relógio ficavam do tamanho original (a transbordar o cartão) e o
+   bordo do recorte pintava uma RISCA horizontal a meio do relógio ao entrar na galeria.
+   Era aqui que se desligava o recorte só para a galeria. Desde 2026-09-16 já não há
+   clip-path nenhum: o recorte dos dígitos do relógio passou a overflow:hidden com a caixa
+   esticada por padding (lock.css, .lock-clock .d/.c), que o CEF calcula no espaço certo -
+   por isso esta exceção deixou de ser necessária e saiu. O mesmo risco existia no ecrã
+   bloqueado normal (lockWake e o .82 do teclado do código também escalam o relógio). */
+/* a dica "Deslize para cima para abrir" não tem sentido a personalizar e ficava por baixo
+   do botão Personalizar, com os dois textos sobrepostos */
+.screen.lsg .lock-hint,.screen.lsg .lock-face{ opacity:0; pointer-events:none; transition:opacity .2s }
+/* na galeria o cartão mostra o ecrã "limpo" (relógio, widgets, controlos) - como o PearOS. O "A tocar"
+   (lock.css, .lock-np) é conteúdo do momento como as notificações e sai com elas: além de sujar a
+   pré-visualização, os botões dele apanhavam os toques do arrasto entre ecrãs bloqueados. */
+.screen.lsg .lock-notifs,.screen.lsg .lock-np{ opacity:0; pointer-events:none; transition:opacity .25s }
+/* ⚠️ 1.4.0 (revisão): o shell.css liga outra vez os FILHOS (.lock-notifs > *{pointer-events:auto}) - as notificações invisíveis
+   comiam os toques no editor (tocar em "Adicionar widgets" abria a notificação → o teclado do código aparecia DENTRO do cartão
+   e a ação da notificação ficava pendente para o próximo desbloqueio). Na galeria nada lá dentro recebe toques. */
+.screen.lsg .lock-notifs *,.screen.lsg .lock-np *,.screen.lsg-closing .lock-notifs *,.screen.lsg-closing .lock-np *{ pointer-events:none!important }
+/* Modo Personalizar (PearPhone): "Cancelar" (vidro, esquerda) e "Concluído" (AZUL, direita) EM CIMA, 36 px de altura, na linha
+   62..98 (14 px abaixo da ilha); o cartão desce para 112..915 (.84, +36 px): 14 px abaixo dos botões e 26 px acima do indicador.
+   Antes (.88, −24 px) o topo do cartão ficava debaixo da ilha e o "OK" em baixo tocava no fundo do cartão. */
+.screen.lsg-edit #lock{ transform:translate(0,36px) scale(.84) }
+/* o editor do ecrã principal usa a MESMA linha de cima (Cancelar / Concluído) */
+.screen.lsg-edit .lsg-ui,.screen.lsg-home .lsg-ui{ top:62px; bottom:auto; flex-direction:row; justify-content:space-between; align-items:center; padding:0 20px; gap:0 }
+.screen.lsg-edit .lsg-row,.screen.lsg-home .lsg-row{ width:auto; height:36px }
+.lsg-cancel{ display:none; height:36px; padding:0 16px; border-radius:18px; align-items:center; font-size:17px; font-weight:600 } .screen.lsg-edit .lsg-cancel,.screen.lsg-home .lsg-cancel{ display:flex } .lsg-cancel:active{ transform:scale(.96) }
+.screen.lsg-edit .lsg-custom,.screen.lsg-home .lsg-custom{ height:36px; min-width:0; padding:0 16px; border-radius:18px; font-size:17px; background:var(--blue); border-color:transparent; box-shadow:0 4px 14px rgba(0,0,0,.25) }
+.screen.lsg-edit .lsg-row::before,.screen.lsg-home .lsg-row::before{ display:none }   /* o gémeo invisível do "+" só existe na galeria (ver .lsg-row) */
+body.fivem .lsg-cancel{ backdrop-filter:none; -webkit-backdrop-filter:none; background:rgba(255,255,255,.26) }
+.screen.lsg-remove #lock{ transform:translate(var(--lsg-dx,0px),-70px) scale(.63); opacity:0; transition:transform .3s var(--curve), opacity .25s }
+#lock:not(.gone) .lock-depth{ position:absolute; inset:0; z-index:4; pointer-events:none; background:var(--depth) center/cover no-repeat }   /* profundidade: sujeito PNG à frente do relógio, só quando o fundo o traz */
+/* cartões laterais (previews estáticas): o MESMO tamanho do atual (PearOS 27: .70), parcialmente visíveis, menos brilhantes */
+.lsg-sides{ position:absolute; inset:0; z-index:59; pointer-events:none }
+.lsg-side{ position:absolute; left:0; top:0; width:440px; height:956px; border-radius:57px; overflow:hidden; pointer-events:auto; opacity:.72; transform-origin:50% 50%; cursor:default;
+  transform:translate(calc(var(--pos) + var(--lsg-dx,0px)), 0px) scale(.7); transition:transform .38s var(--curve), opacity .3s; box-shadow:0 20px 50px rgba(0,0,0,.35) }
+.screen.lsg-drag .lsg-side{ transition:opacity .3s } .screen.lsg-closing .lsg-side,.screen.lsg-edit .lsg-side,.screen.lsg-pick .lsg-side,.screen.lsg-home .lsg-side{ opacity:0; pointer-events:none }
+.lsg-card{ position:absolute; inset:0; border-radius:57px; background:#1C1C1E center/cover no-repeat }   /* o fundo vem por background-image (lockgallery.js paintBg): o tamanho/posição ficam aqui */
+.lsg-mock{ position:absolute; left:0; right:0; top:56px; display:flex; flex-direction:column; align-items:center; pointer-events:none }
+/* cartões laterais e miniaturas: o mesmo alinhamento/posição/estilo do relógio que o #lock (lock.css, atributos data-clock*) */
+.lsg-mock[data-clockalign="left"]{ align-items:flex-start; padding-left:30px } .lsg-mock[data-clockalign="right"]{ align-items:flex-end; padding-right:30px }
+.lsg-mock[data-clockpos="middle"]{ top:290px }
+.lsg-mock[data-clockstyle="solid"] .lock-clock .n{ background:none; color:rgb(var(--clock-rgb,255,255,255)) }
+.lsg-mock[data-clockstyle="outline"] .lock-clock .n{ background:none; color:transparent; -webkit-text-stroke:2.5px rgba(var(--clock-rgb,255,255,255),.95) }
+/* a mesma fonte e os mesmos apertos horizontais do lock.css (Arial estática no contorno; arredondada/mono encostadas a um lado).
+   data-clockfont vem do mock(); o font-family inline da arredondada é vencido pelo !important só neste estilo, como no #lock */
+/* 1.4.0: o esticão vertical do tamanho contínuo (--clock-sy, escrito no PRÓPRIO .lsg-mock pelo lockgallery.js mock(): as variáveis do
+   documentElement são as do ecrã atual) multiplica o 1.18 de sempre; a largura vem do font-size inline */
+.lsg-mock .lock-clock{ transform:scaleY(calc(1.18 * var(--clock-sy,1) * var(--num-sy,1))); transform-origin:50% 0 }
+.lsg-mock[data-clockstyle="outline"]:not([data-clockfont="mono"]) .lock-clock{ transform:scale(.8,calc(1.18 * var(--clock-sy,1) * var(--num-sy,1))) }
+/* a Arial do contorno só com algarismos ocidentais (não tem os outros; no #lock a regra dos sistemas de numeração também ganha ao contorno) */
+.lsg-mock[data-clockstyle="outline"][data-numerals="latn"]:not([data-clockfont="mono"]) .lock-clock{ font-family:Arial,'Segoe UI',sans-serif!important; font-stretch:normal }
+/* a Myanmar Text desenha os algarismos mais em baixo (o mesmo acerto do lock.css no #lock) */
+.lsg-mock[data-numerals] .lock-clock .d,.lsg-mock[data-numerals] .lock-clock .c{ top:var(--num-dy,0px) }   /* 1.4.1: a descida por sistema de numeração (tabela no fim do lock.css) */
+.lsg-mock[data-clockfont="rounded"][data-clockalign="left"] .lock-clock,.lsg-mock[data-clockfont="rounded"][data-clockalign="right"] .lock-clock,
+.lsg-mock[data-clockfont="mono"][data-clockalign="left"] .lock-clock,.lsg-mock[data-clockfont="mono"][data-clockalign="right"] .lock-clock{ transform:scale(.8,calc(1.18 * var(--clock-sy,1) * var(--num-sy,1))) }
+.lsg-mock[data-clockalign="left"] .lock-clock{ transform-origin:0 0 } .lsg-mock[data-clockalign="right"] .lock-clock{ transform-origin:100% 0 }
+.lsg-mock .lock-face{ margin-bottom:4px } .lsg-mock .lock-date{ margin-bottom:4px } .lsg-mock .lock-widgets{ display:flex; gap:8px; margin-top:18px; height:30px } .lsg-mock .lw{ width:30px; justify-content:center; padding:0 }   /* 18 (era 30): os widgets do cartão vizinho ficavam 12 px mais abaixo do que no cartão real */
+/* botões: Personalizar (cápsula) centrado debaixo do cartão e o "+" redondo logo à DIREITA dele (PearOS 27: 196×56 e 56 px, 18 px entre
+   os dois - como na captura do iOS 26), acima do indicador; entram com atraso depois do cartão assentar. (O Foco vive dentro do cartão - ver .lsg-focus.) */
+.lsg-ui{ position:absolute; left:0; right:0; bottom:44px; z-index:62; display:flex; flex-direction:column; align-items:center; gap:14px; opacity:0; transform:translateY(8px); transition:opacity .3s var(--curve) .28s, transform .3s var(--curve) .28s; pointer-events:none }
+.screen.lsg .lsg-ui{ opacity:1; transform:none; pointer-events:auto }
+.screen.lsg-closing .lsg-ui,.screen.lsg-remove .lsg-ui,.lsg-trash.show ~ .lsg-ui{ opacity:0; transition:opacity .15s; pointer-events:none }   /* o caixote toma o lugar do Personalizar (PearPhone): a linha de botões some enquanto ele está visível */
+.screen.lsg.lsg-drag .lsg-focus{ opacity:0; transition:opacity .15s }   /* a arrastar, Personalizar e + ficam quietos; só a pílula de Foco, que pertence ao cartão em movimento, se esconde */
+/* a cápsula fica CENTRADA e o "+" à direita: um gémeo invisível do "+" à esquerda (::before, a mesma largura) equilibra a linha,
+   sem medir o texto traduzido do Personalizar */
+.lsg-row{ position:relative; width:100%; height:56px; display:flex; align-items:center; justify-content:center; gap:18px }
+.lsg-row::before{ content:''; flex:none; width:56px; height:1px; pointer-events:none }
+.lsg-custom,.lsg-add,.lsg-focus,.lsg-cancel{ color:#fff; background:rgba(255,255,255,.18); border:.5px solid rgba(255,255,255,.28); box-shadow:inset 0 .5px 0 rgba(255,255,255,.35), 0 8px 24px rgba(0,0,0,.22); backdrop-filter:blur(20px) saturate(160%); -webkit-backdrop-filter:blur(20px) saturate(160%); cursor:default; transition:transform .25s var(--spring), opacity .2s }
+.lsg-custom{ flex:none; height:56px; min-width:196px; padding:0 28px; border-radius:28px; box-sizing:border-box; display:flex; align-items:center; justify-content:center; font-size:18px; font-weight:600; white-space:nowrap } .lsg-custom:active{ transform:scale(.96) } .lsg-custom.dim{ opacity:.5 }
+/* no cartão "Adicionar novo" (#screen.lsg-adding) o Personalizar some mas guarda o lugar: o "+" não salta */
+.lsg-custom.hide{ opacity:0; pointer-events:none }
+/* PearOS 27: por baixo do cartão "Adicionar novo" não há botões (o próprio cartão é o "+"); o "+" redondo sozinho à direita lia-se como um botão perdido */
+.screen.lsg-adding .lsg-add{ opacity:0; pointer-events:none }
+/* "+" redondo do PearOS 27: 56 px ao lado do Personalizar (o material de vidro é do kit, liquid27.css; deixou de ser azul) */
+.lsg-add{ position:relative; flex:none; width:56px; height:56px; border-radius:50%; display:flex; align-items:center; justify-content:center } .lsg-add svg{ width:26px; height:26px; stroke-width:2.4 }
+.lsg-add.pop{ animation:lsgPop .4s var(--spring) } @keyframes lsgPop{ 0%{ transform:scale(1) } 35%{ transform:scale(.92) } 100%{ transform:scale(1) } }
+/* ⚠️ display:none, NÃO opacity:0. Com opacity o botão continuava a ocupar os 32 px dele
+   (mais os 14 do gap), a barra ficava com 90 px de altura no modo de edição e o topo dela
+   subia até y=844 - mesmo por cima dos atalhos da lanterna/câmara, que acabam em 892.
+   Era isto o "botões em cima de texto". A colapsar, a barra passa a ter só a linha OK. */
+.lsg-add.hide,.lsg-focus.hide{ display:none }
+/* Foco: vive DENTRO do #lock (encolhe e arrasta com o cartão, como no PearPhone), centrado na linha dos atalhos (bottom 51).
+   Medidas x1/.70 (PearOS 27, cartão a .70) para ler ~31 px / 15 px no cartão. Antes ficava na barra de baixo, a cavalo do fundo do cartão. */
+.lsg-focus{ position:absolute; left:50%; bottom:51px; z-index:6; transform:translateX(-50%); height:44px; padding:0 20px 0 14px; border-radius:22px; display:flex; align-items:center; gap:8px; font-size:22px; font-weight:600; opacity:0; visibility:hidden; transition:opacity .3s var(--curve) .28s, visibility 0s .6s, transform .25s var(--spring) }
+.lsg-focus svg{ width:22px; height:22px } .lsg-focus:active{ transform:translateX(-50%) scale(.95) }
+.screen.lsg .lsg-focus{ opacity:1; visibility:visible; transition:opacity .3s var(--curve) .28s, transform .25s var(--spring) }
+.screen.lsg-closing .lsg-focus,.screen.lsg-remove .lsg-focus{ opacity:0; transition:opacity .15s }
+/* apagar: swipe ↑ no cartão sobe-o e mostra o caixote (vermelho do sistema); confirma-se antes de apagar */
+.lsg-trash{ position:absolute; left:50%; bottom:56px; transform:translate(-50%,10px); width:52px; height:52px; border-radius:50%; background:var(--red); color:#fff; display:flex; align-items:center; justify-content:center; z-index:62; opacity:0; pointer-events:none; transition:opacity .2s, transform .3s var(--spring); box-shadow:0 8px 24px rgba(0,0,0,.3); cursor:default }
+.lsg-trash svg{ width:22px; height:22px } .lsg-trash.show{ opacity:1; pointer-events:auto; transform:translate(-50%,0) }
+/* editar: contornos suaves (material, não o outline azul do browser) só nos elementos editáveis */
+.screen.lsg-edit .lock-clockwrap{ pointer-events:auto }
+/* ⚠️ mas SÓ o contentor. Cada dígito (.d/.n) tem `height:1em` sobre uma line-height maior
+   que o relógio, por isso a caixa dele é ~166 px contra os 133 do relógio e desce 18 px
+   para dentro do cabeçalho das notificações. Com o relógio tocável no modo de edição,
+   essa caixa roubava os toques do "Mail" - medido com _shot.html#lock&lsg&lsgedit&overlap.
+   O dígito não precisa de receber toques nenhuns: quem os trata é o .lock-clockwrap. */
+.screen.lsg-edit .lock-clock,.screen.lsg-edit .lock-clock .d,.screen.lsg-edit .lock-clock .n{ pointer-events:none }
+.screen.lsg-edit .lock-clockwrap,.screen.lsg-edit .lock-widgets,.screen.lsg-edit .lock-shortcuts{ outline:1.25px solid rgba(255,255,255,.5); outline-offset:8px; border-radius:16px }
+/* Moldura do relógio (PearPhone: abraça a data + hora, não a largura toda). O .lock-clockwrap ia de borda a borda - os lados da
+   moldura ficavam FORA do cartão, cortados - e acabava 20 px acima do fundo dos dígitos (scaleY 1.18 sobre uma caixa de .8em),
+   por isso riscava a hora. Agora: largura do conteúdo, centrada; o cadeado (invisível na galeria) sai do fluxo e o topo desce os
+   mesmos 26 px, para a data e a hora NÃO se mexerem; a caixa do relógio passa a .944em (= .8em x 1.18) e acaba onde os dígitos
+   acabam. Sem transição de 	op aqui, senão via-se um solavanco a entrar/sair. */
+.screen.lsg .lock-clockwrap{ transition:none }
+.screen.lsg-edit .lock-face{ display:none }
+/* ⚠️ a moldura segue a CAIXA, mas os dígitos pintam para fora dela: o relógio de vidro tem scaleY e cada .d mede 1em
+   numa caixa de .8em - medido, a tinta ia 34 px (escalados) abaixo do fundo da caixa e a linha da moldura riscava o "22:49".
+   A folga em baixo (42 px) empurra a moldura para lá dos dígitos; o max-content mantém-na justa aos lados, como no PearPhone. */
+.screen.lsg-edit .lock-clockwrap{ top:82px; left:0; right:0; width:max-content; margin:0 auto; padding:2px 12px 66px; outline-offset:4px; border-radius:28px }
+.screen.lsg-edit .lock-widgets{ margin-top:56px; outline-offset:4px }   /* sem esta descida as duas molduras sobrepunham-se */
+/* Moldura dos widgets vazia: mais larga e com a etiqueta "ADICIONAR WIDGETS" (attr(data-empty), escrito pelo lockgallery.js) */
+.screen.lsg-edit .lock-widgets:empty{ min-height:30px; min-width:220px; justify-content:center; align-items:center }
+.screen.lsg-edit .lock-widgets:empty::before{ content:attr(data-empty); font-size:12px; font-weight:600; letter-spacing:.4px; text-transform:uppercase; color:rgba(255,255,255,.85) }
+/* painéis (folhas): previews visuais do relógio, widgets e controlos em cartões, fundos em grelha */
+.lsg-panel{ padding:4px 0 8px } .lsg-sect{ font-size:var(--t-foot); color:var(--label2); text-transform:uppercase; letter-spacing:.3px; padding:14px 20px 8px }
+.lsg-opts{ display:flex; gap:10px; padding:0 16px; overflow-x:auto; scrollbar-width:none } .lsg-opts::-webkit-scrollbar{ display:none }
+.lsg-opt{ flex:none; width:96px; display:flex; flex-direction:column; align-items:center; gap:6px; cursor:default; font-size:var(--t-cap1); color:var(--label2) } .lsg-opt.on{ color:var(--label) }
+.lsg-opt .lsg-pv{ width:96px; height:64px; border-radius:14px; background:#1C1C1E; color:#fff; display:flex; align-items:center; justify-content:center; font-size:28px; font-weight:600; font-family:'Bahnschrift','Arial Narrow',Inter,sans-serif; font-stretch:75%; letter-spacing:-.5px; box-shadow:0 0 0 .5px var(--sep); transition:box-shadow .2s }
+.lsg-opt.on .lsg-pv{ box-shadow:0 0 0 2.5px var(--blue) }
+.lsg-colors{ display:flex; gap:10px; padding:0 16px; flex-wrap:wrap } .lsg-colors div{ width:34px; height:34px; border-radius:50%; cursor:default; box-shadow:0 0 0 .5px rgba(0,0,0,.15); transition:transform .2s var(--spring), box-shadow .2s } .lsg-colors div.on{ box-shadow:0 0 0 2.5px var(--bg), 0 0 0 4.5px var(--blue) } .lsg-colors div:active{ transform:scale(.9) }
+.lsg-wgrid{ display:grid; grid-template-columns:repeat(3,1fr); gap:10px; padding:0 16px }
+.lsg-wcard{ position:relative; background:var(--bg2); border-radius:16px; padding:14px 8px 12px; display:flex; flex-direction:column; align-items:center; gap:8px; font-size:var(--t-cap1); color:var(--label); text-align:center; cursor:default; box-shadow:0 0 0 .5px var(--sep); transition:box-shadow .2s, transform .2s var(--spring) } .lsg-wcard:active{ transform:scale(.96) }
+.lsg-wcard .lsg-wic{ width:40px; height:40px; border-radius:12px; background:var(--fill3); display:flex; align-items:center; justify-content:center; color:var(--blue) }
+.lsg-wcard i{ position:absolute; top:8px; right:8px; width:18px; height:18px; border-radius:50%; background:var(--blue); color:#fff; display:none; align-items:center; justify-content:center } .lsg-wcard i svg{ stroke-width:3 }
+.lsg-wcard.on{ box-shadow:0 0 0 2px var(--blue) } .lsg-wcard.on i{ display:flex }
+/* ---------- "Adicionar novo fundo" (PearOS 17): categorias em círculo, depois secções com miniaturas na proporção do ecrã
+   (112×243 = 440×956 reduzido) e o relógio do ecrã bloqueado por cima de cada uma. Espaço generoso, nada apertado. ---------- */
+.lsg-picker{ padding:0 0 6px }
+.lsg-cats{ display:flex; gap:0; padding:10px 10px 4px; overflow-x:auto; scrollbar-width:none } .lsg-cats::-webkit-scrollbar{ display:none }
+.lsg-cat{ flex:none; width:80px; display:flex; flex-direction:column; align-items:center; gap:7px; font-size:11.5px; font-weight:500; color:var(--label); cursor:default; white-space:nowrap }
+.lsg-cat-c{ width:58px; height:58px; border-radius:50%; display:flex; align-items:center; justify-content:center; color:#fff; background:#8E8E93 center/cover no-repeat; box-shadow:inset 0 0 0 .5px rgba(255,255,255,.22), 0 3px 10px rgba(0,0,0,.12); transition:transform .22s var(--spring) }
+.lsg-cat-c svg{ width:26px; height:26px; stroke-width:2.1 } .lsg-cat:active .lsg-cat-c{ transform:scale(.92) }
+.lsg-psec{ padding-top:16px }
+.lsg-ptitle{ font-size:20px; font-weight:700; letter-spacing:-.35px; color:var(--label); padding:4px 20px 12px }
+.lsg-prow{ display:flex; gap:14px; padding:8px 20px 26px; margin:-8px 0 -18px; overflow-x:auto; scrollbar-width:none; scroll-snap-type:x proximity; scroll-padding:0 20px } .lsg-prow::-webkit-scrollbar{ display:none }   /* overflow-x:auto recorta também em y: a sombra das miniaturas (6 + 18 px) precisa de folga, e as margens negativas mantêm o espaçamento entre secções */
+.lsg-wpi{ flex:none; width:112px; display:flex; flex-direction:column; align-items:center; gap:8px; cursor:default; scroll-snap-align:start }
+.lsg-wp{ position:relative; width:112px; height:243px; border-radius:22px; overflow:hidden; background:#2C2C2E center/cover no-repeat; box-shadow:0 0 0 .5px rgba(0,0,0,.08), 0 6px 18px rgba(0,0,0,.16); transition:transform .25s var(--spring) }
+.lsg-wpi:active .lsg-wp{ transform:scale(.96) }
+.lsg-wp-t{ position:absolute; left:0; right:0; top:20px; display:flex; flex-direction:column; align-items:center; color:#fff; text-shadow:0 1px 6px rgba(0,0,0,.25); pointer-events:none }
+.lsg-wp-t span{ font-size:8.5px; font-weight:600; letter-spacing:.1px; opacity:.94; white-space:nowrap }
+.lsg-wp-t b{ margin-top:1px; font-size:39px; line-height:1; font-weight:600; font-family:'Bahnschrift','Arial Narrow',Inter,-apple-system,sans-serif; font-stretch:75%; letter-spacing:-1px }   /* a letra do relógio do lock (lock.css .lock-clock) */
+.lsg-wp-n{ max-width:112px; font-size:12px; font-weight:500; color:var(--label2); white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+.lsg-wpi.more .lsg-wp{ background:var(--fill3); box-shadow:inset 0 0 0 .5px var(--sep) }
+.lsg-wp-add{ position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px; color:var(--blue); font-size:13px; font-weight:600; text-align:center; padding:0 10px }
+.lsg-wp-add svg{ width:30px; height:30px }
+.lsg-pfoot{ text-align:center; padding:18px 32px 4px }
+/* ---------- Imagem por link / colada (1.1.4): campo + Colar, pré-visualização na proporção do ecrã, botão ---------- */
+.lsg-link{ padding:12px 16px 4px }
+.lsg-link-row{ display:flex; gap:8px; align-items:center }
+.lsg-link-in{ flex:1; min-width:0; height:40px; border-radius:12px; border:.5px solid var(--sep); background:var(--fill3); color:var(--label); font:inherit; font-size:14px; padding:0 12px; outline:none }
+.lsg-link-in:focus{ box-shadow:0 0 0 2px var(--blue) }
+.lsg-link-paste{ flex:none; height:40px; padding:0 12px; border-radius:12px; background:var(--fill3); color:var(--blue); display:flex; align-items:center; gap:6px; font-size:14px; font-weight:600; cursor:default } .lsg-link-paste svg{ width:18px; height:18px } .lsg-link-paste:active{ opacity:.6 }
+.lsg-link-pv{ position:relative; margin:14px auto 0; width:124px; height:269px; border-radius:24px; overflow:hidden; background:var(--fill3); box-shadow:inset 0 0 0 .5px var(--sep); display:flex; align-items:center; justify-content:center }
+.lsg-link-img{ position:absolute; inset:0; background:center/cover no-repeat; opacity:0; transition:opacity .25s } .lsg-link-img.has{ opacity:1 }
+.lsg-link-msg{ position:relative; padding:0 12px; text-align:center; font-size:12px; line-height:1.3; color:var(--label2) } .lsg-link-msg.bad{ color:var(--red) }
+.lsg-link-use{ margin:16px 0 0 } .lsg-link-use.dis{ opacity:.4; pointer-events:none }
+.lsg-link-foot{ text-align:center; padding:12px 8px 2px }
+.lsg-set-add.lsg-set-link{ font-size:15px; height:46px }
+/* feedback do long press no lock: aos 150 ms um encolher quase impercetível; ao ativar, .993 → 1 e logo a transição para a galeria */
+#lock.press-hint{ transform:scale(.995); transition:transform .15s var(--curve) }
+#lock.press-pop{ animation:lockPop .16s var(--curve) } @keyframes lockPop{ 0%{ transform:scale(.993) } 100%{ transform:scale(1) } }
+
+/* ============ OS DOIS ECRÃS (Personalizar) - PearOS 17+ ============
+   O ecrã bloqueado é o PRÓPRIO #lock, que encolhe para .4 (176×382) e vai para a esquerda (centro x 120); o ecrã principal é o
+   .lsg-hcard (cópia da home, lockgallery.js) com a mesma medida à direita (centro x 320): 24 px entre os dois, 32 px às bordas.
+   Centro vertical 460 → cartões 269..651 e legendas a 664; o grupo inteiro fica centrado no ecrã. Só transform/opacity animam. */
+.screen.lsg-pick #lock{ transform:translate(-100px,-18px) scale(.4) }
+.screen.lsg-pick #lock::after{ border-color:rgba(255,255,255,.42) }   /* 2,5 px a .4 = 1 px: o contorno fino e translúcido dos cartões do PearPhone */
+.screen.lsg-pick .lsg-ui{ opacity:0; transform:translateY(8px); pointer-events:none; transition:opacity .15s, transform .15s }
+.screen.lsg-pick .lsg-focus,.screen.lsg-home .lsg-focus{ opacity:0; pointer-events:none; transition:opacity .15s }
+/* no editor do principal o bloqueado desvanece onde está (fica por baixo do cartão principal, que cresce) */
+.screen.lsg-home #lock{ opacity:0; pointer-events:none; transform:translate(-100px,-18px) scale(.4) }
+.screen.lsg-home #lock::after{ opacity:0 }
+.lsg-duo{ position:absolute; inset:0; z-index:61; pointer-events:none }   /* acima do #lock (60), abaixo dos botões (62) */
+.lsg-hcard{ position:absolute; left:0; top:0; width:440px; height:956px; border-radius:57px; overflow:hidden; background:#1C1C1E }
+.lsg-hbg{ position:absolute; inset:0; border-radius:57px; background:#1C1C1E center/cover no-repeat }
+.lsg-hmock{ position:absolute; inset:0 }
+.lsg-duo > .lsg-hcard{ opacity:0; pointer-events:none; cursor:default; transform-origin:50% 50%; box-shadow:0 24px 64px rgba(0,0,0,.5);
+  transform:translate(100px,-18px) scale(.34); transition:transform .45s var(--curve), opacity .25s }
+.lsg-duo > .lsg-hcard::after{ content:''; position:absolute; inset:0; z-index:5; border-radius:57px; border:2.5px solid rgba(255,255,255,.42); pointer-events:none }
+.screen.lsg-pick .lsg-duo > .lsg-hcard{ opacity:1; pointer-events:auto; transform:translate(100px,-18px) scale(.4); transition:transform .45s var(--curve) .04s, opacity .3s .04s }
+/* editor do principal: .75 (330×717), topo em 112 como o editor do bloqueado; em baixo sobram 26 px até à barra de opções */
+.screen.lsg-home .lsg-duo > .lsg-hcard{ opacity:1; pointer-events:auto; transform:translate(0,-7.5px) scale(.75) }   /* recebe o toque (não faz nada): um toque na pré-visualização não pode cair no véu por baixo */
+.screen.lsg-home .lsg-duo > .lsg-hcard::after{ border-color:rgba(255,255,255,.16) }
+/* paleta aberta (Cor / Gradiente): .66 (290×631) e 52 px acima - acaba em 742, 36 px antes da paleta (778); o topo (110) fica abaixo do Cancelar/Concluído (98) */
+.screen.lsg-home.lsg-hpanel-on .lsg-duo > .lsg-hcard{ transform:translate(0,-52px) scale(.66) }
+.lsg-lbl{ position:absolute; top:664px; width:176px; text-align:center; font-size:15px; line-height:20px; font-weight:600; letter-spacing:-.2px; color:#fff; text-shadow:0 1px 8px rgba(0,0,0,.35); cursor:default;
+  opacity:0; transform:translateY(6px); pointer-events:none; transition:opacity .15s, transform .3s var(--curve) }
+.lsg-lbl.l{ left:32px } .lsg-lbl.r{ left:232px }
+.screen.lsg-pick .lsg-lbl{ opacity:1; transform:none; pointer-events:auto; transition:opacity .3s .16s, transform .4s var(--curve) .16s }
+/* cópia da home dentro dos cartões: tudo parado e visível (os .hi da home real nascem a opacity 0 e só aparecem com #home.in) */
+.lsg-hicons{ position:absolute; inset:0; pointer-events:none }
+.lsg-hicons .hi{ opacity:1!important; transform:none!important; animation:none!important; transition:none!important }
+.lsg-hicons .tile,.lsg-hicons .wg{ transition:none!important; animation:none!important }
+.lsg-hicons .rm,.lsg-hicons .edit-bar{ display:none!important }
+.lsg-hicons.nolabels .app-name{ visibility:hidden }
+.lsg-hicons .pages{ transform:none; transition:none }
+/* sem backdrop-filter numa cópia reduzida (seria desfocar por baixo de uma camada com transform, a cada frame): materiais translúcidos */
+.lsg-hicons *{ backdrop-filter:none!important; -webkit-backdrop-filter:none!important }
+.lsg-hicons .dock{ background:rgba(255,255,255,.2) } .lsg-hicons .search-pill{ background:rgba(255,255,255,.24) } .lsg-hicons .hi.folder .tile{ background:rgba(255,255,255,.3) } .lsg-hicons .wg.glass{ background:rgba(255,255,255,.26) }
+body.fivem .lsg-hicons .dock{ background:rgba(255,255,255,.2) } body.fivem .lsg-hicons .dock::before{ display:none }   /* o ::before do jogo pinta o --wp-blur da home ATUAL: no cartão tem de se ver o fundo do rascunho */
+/* ⚠️ o recorte dos dígitos dentro de uma escala (ver o topo deste ficheiro) - nas miniaturas também se desliga */
+.lsg-thumb .lock-clock .d,.lsg-thumb .lock-clock .c{ clip-path:none }
+/* a pergunta do par abre COM o editor do bloqueado ativo: as regras .screen.lsg-edit .lock-widgets (moldura, "ADICIONAR WIDGETS", margem de 56 px)
+   e .lock-face (display:none) apanhavam também a miniatura - via-se uma cápsula vazia debaixo da hora. O cadeado some, como nos cartões da galeria. */
+.screen .lsg-thumb .lsg-mock .lock-widgets{ margin-top:18px; outline:none; min-width:0 } .screen .lsg-thumb .lsg-mock .lock-widgets::before{ content:none }
+.screen .lsg-thumb .lsg-mock .lock-face{ display:flex; opacity:0 }
+
+/* ============ EDITOR DO ECRÃ PRINCIPAL: barra de opções (Par · Cor · Gradiente · Fotos · Desfocar) ============
+   Círculos de 50 px com legenda de 12 px, a 30 px do fundo (acima do indicador); a escolhida leva o anel branco do PearPhone. */
+.lsg-hbar{ position:absolute; left:0; right:0; bottom:30px; z-index:62; display:flex; justify-content:center; gap:8px; opacity:0; transform:translateY(18px); pointer-events:none; transition:opacity .15s, transform .3s var(--curve) }
+.screen.lsg-home .lsg-hbar{ opacity:1; transform:none; pointer-events:auto; transition:opacity .3s .14s, transform .45s var(--curve) .14s }
+.lsg-hopt{ width:68px; display:flex; flex-direction:column; align-items:center; gap:7px; color:#fff; font-size:12px; line-height:15px; font-weight:600; text-shadow:0 1px 6px rgba(0,0,0,.35); cursor:default; transition:opacity .2s }
+.lsg-hc{ position:relative; width:50px; height:50px; border-radius:50%; display:flex; align-items:center; justify-content:center; overflow:hidden; color:#fff;
+  background:rgba(255,255,255,.18) center/cover no-repeat; border:.5px solid rgba(255,255,255,.3); box-shadow:inset 0 .5px 0 rgba(255,255,255,.35), 0 6px 16px rgba(0,0,0,.28);
+  backdrop-filter:blur(20px) saturate(160%); -webkit-backdrop-filter:blur(20px) saturate(160%); transition:transform .25s var(--spring) }
+.lsg-hc svg{ width:22px; height:22px; stroke-width:2.1 }
+.lsg-hopt:active .lsg-hc{ transform:scale(.9) }
+.lsg-hopt.on .lsg-hc{ border-color:transparent; box-shadow:0 0 0 2px rgba(0,0,0,.45), 0 0 0 4.5px #fff, 0 6px 16px rgba(0,0,0,.28) }
+.lsg-hopt.k-photo.has .lsg-hc svg{ opacity:0 }   /* com uma foto escolhida o círculo mostra-a */
+.lsg-hopt.k-blur.on .lsg-hc{ background:#fff; color:#000 }
+.lsg-hopt.off{ opacity:.35; pointer-events:none }   /* cores e gradientes já são suaves: não há o que desfocar */
+/* paleta (Cor / Gradiente): cápsula de vidro por cima da barra, rola na horizontal */
+.lsg-hpanel{ position:absolute; left:22px; right:22px; bottom:118px; z-index:63; height:60px; border-radius:30px; display:flex; align-items:center; gap:12px; padding:0 14px; overflow-x:auto; scrollbar-width:none;
+  background:rgba(38,38,42,.55); border:.5px solid rgba(255,255,255,.2); box-shadow:inset 0 .5px 0 rgba(255,255,255,.25), 0 14px 40px rgba(0,0,0,.35);
+  backdrop-filter:blur(26px) saturate(170%); -webkit-backdrop-filter:blur(26px) saturate(170%); opacity:0; transform:translateY(12px) scale(.96); pointer-events:none; transition:opacity .18s, transform .32s var(--spring) }
+.lsg-hpanel::-webkit-scrollbar{ display:none }
+.lsg-hpanel.show{ opacity:1; transform:none; pointer-events:auto }
+.lsg-hpanel b{ flex:none; width:36px; height:36px; border-radius:50%; background:#333 center/cover no-repeat; box-shadow:inset 0 0 0 .5px rgba(255,255,255,.28); cursor:default; transition:transform .2s var(--spring) }
+.lsg-hpanel b:active{ transform:scale(.88) }
+.lsg-hpanel b.on{ box-shadow:0 0 0 2px rgba(30,30,32,.9), 0 0 0 4.5px #fff }
+
+/* ============ "Definir como par de fundos" / "Personalizar ecrã principal" (Concluído num ecrã novo) ============ */
+.lsg-ask{ position:absolute; inset:0; z-index:64; border-radius:57px; background:rgba(0,0,0,.34); opacity:0; pointer-events:none; transition:opacity .22s }
+.lsg-ask.show{ opacity:1; pointer-events:auto }
+.lsg-ask-card{ position:absolute; left:14px; right:14px; bottom:22px; padding:24px 18px 18px; border-radius:38px; color:#fff;
+  background:rgba(46,46,50,.62); border:.5px solid rgba(255,255,255,.18); box-shadow:inset 0 .5px 0 rgba(255,255,255,.22), 0 24px 70px rgba(0,0,0,.5);
+  backdrop-filter:blur(34px) saturate(170%); -webkit-backdrop-filter:blur(34px) saturate(170%); transform:translateY(60px); transition:transform .5s var(--spring) }
+.lsg-ask.show .lsg-ask-card{ transform:none }
+.lsg-ask-pv{ display:flex; justify-content:center; gap:20px; margin-bottom:22px }
+.lsg-ask-pv .lsg-thumb{ box-shadow:0 10px 30px rgba(0,0,0,.4) }
+.lsg-ask-b{ height:54px; border-radius:27px; display:flex; align-items:center; justify-content:center; font-size:17px; font-weight:600; background:rgba(255,255,255,.16); cursor:default; transition:transform .2s var(--spring) }
+.lsg-ask-b + .lsg-ask-b{ margin-top:10px } .lsg-ask-b:active{ transform:scale(.97) }
+.lsg-ask-b.k-pair{ background:var(--blue) }
+
+/* ============ miniaturas estáticas (Definições › Fundo, pergunta do par) ============ */
+.lsg-thumb{ position:relative; flex:none; overflow:hidden; background:#1C1C1E; cursor:default; transition:transform .25s var(--spring) }
+.lsg-thumb::after{ content:''; position:absolute; inset:0; z-index:9; border-radius:inherit; box-shadow:inset 0 0 0 .5px rgba(255,255,255,.22); pointer-events:none }
+.lsg-thumb-in{ position:absolute; left:0; top:0; width:440px; height:956px; transform-origin:0 0; pointer-events:none }
+.lsg-thumb .lsg-card,.lsg-thumb .lsg-hcard,.lsg-thumb .lsg-hbg{ border-radius:0 }   /* quem recorta é a caixa reduzida */
+
+/* ============ Definições › Fundo (PearOS 17): o par atual lado a lado, Personalizar por baixo de cada, + Adicionar novo fundo ============ */
+.lsg-set{ margin:18px 16px 0; background:var(--bg2); border-radius:26px; overflow:hidden }
+.lsg-set-car{ display:flex; overflow-x:auto; scroll-snap-type:x mandatory; scrollbar-width:none } .lsg-set-car::-webkit-scrollbar{ display:none }
+.lsg-set-page{ flex:none; width:100%; scroll-snap-align:center; display:flex; flex-direction:column; align-items:center; padding:16px 0 14px }
+.lsg-set-state{ height:22px; margin-bottom:10px; display:flex; align-items:center; gap:5px; font-size:13px; font-weight:600; color:var(--label2); text-transform:uppercase; letter-spacing:.3px }
+.lsg-set-state svg{ width:14px; height:14px; stroke-width:3 }
+.lsg-set-state.use{ text-transform:none; letter-spacing:0; font-size:15px; color:var(--blue); cursor:default } .lsg-set-state.use:active{ opacity:.55 }
+.lsg-set-pair{ display:flex; justify-content:center; gap:26px }
+.lsg-set-col{ display:flex; flex-direction:column; align-items:center; gap:14px }
+.lsg-set-col .lsg-thumb{ box-shadow:0 10px 26px rgba(0,0,0,.18) } .lsg-set-col .lsg-thumb:active{ transform:scale(.97) }
+.lsg-set-cap{ margin-top:-6px; font-size:12px; font-weight:500; color:var(--label2) }
+.lsg-set-btn{ height:34px; padding:0 18px; border-radius:17px; display:flex; align-items:center; background:var(--fill3); color:var(--blue); font-size:15px; font-weight:600; cursor:default; transition:transform .2s var(--spring) }
+.lsg-set-btn:active{ transform:scale(.95); opacity:.7 }
+.lsg-set-dots{ display:flex; justify-content:center; gap:8px; padding:0 0 14px } .lsg-set-dots span{ width:7px; height:7px; border-radius:50%; background:var(--fill2,rgba(120,120,128,.3)); transition:opacity .2s } .lsg-set-dots span.on{ background:var(--label) }
+.lsg-set-add{ height:52px; border-top:.5px solid var(--sep); display:flex; align-items:center; justify-content:center; gap:6px; color:var(--blue); font-size:17px; cursor:default }
+.lsg-set-add svg{ width:20px; height:20px; stroke-width:2.4 } .lsg-set-add:active{ background:var(--fill3) }
+
+/* ============ PearPhone Fold (body.os-ios.form-fold): fechado 670×956 e aberto 1340×956, com a barra à direita ============
+   O cartão atual fica ao centro da ZONA DE CONTEÚDO (--lsg-cx: metade da barra para a esquerda) e encolhe para --lsg-k; os
+   vizinhos (cartões do ecrã inteiro) ficam a --lsg-ks, a spOf() px do centro (lockgallery.js). Nos dois ecrãs (Personalizar) o
+   bloqueado e o principal ficam lado a lado a --lsg-kp, com as legendas por baixo; no editor do principal o cartão a --lsg-kh.
+   Os botões (Personalizar, +, Cancelar / Concluído, a barra e a paleta do principal) também ficam na zona de conteúdo, longe
+   da barra. A galeria só existe no PearOS: os telemóveis normais e o NOVA não mudam. */
+/* 1.4.1: --lsg-ke (cartão no editor) .66/.55 → .74/.66: com as molduras próprias (lockeditor.css) o cartão mede 496×707 fechado e 884×631 aberto e
+   ainda sobra a linha do Cancelar/Concluído em cima (--lsg-ey = o que o cartão sobe com a folha "Adicionar widgets" aberta: a linha de widgets fica à vista) */
+body.os-ios.form-fold.fold-closed{ --lsg-k:.66; --lsg-ks:.56; --lsg-ke:.74; --lsg-ey:-66px; --lsg-kp:.38; --lsg-kh:.7; --lsg-khp:.62; --lsg-px1:-187.3px; --lsg-px2:91.3px; --lsg-lt:655px; --lsg-ll:20.4px; --lsg-lr:299px }
+body.os-ios.form-fold.fold-open{ --lsg-k:.5; --lsg-ks:.42; --lsg-ke:.66; --lsg-ey:-74px; --lsg-kp:.4; --lsg-kh:.62; --lsg-khp:.55; --lsg-px1:-338px; --lsg-px2:230px; --lsg-lt:664px; --lsg-ll:64px; --lsg-lr:632px }
+body.os-ios.form-fold{ --lsg-cx:calc(var(--rail-w) / -2) }
+body.os-ios.form-fold .screen.lsg #lock{ transform:translate(calc(var(--lsg-cx) + var(--lsg-dx,0px)), calc(-26px + var(--lsg-dy,0px))) scale(calc(var(--lsg-k) - (var(--lsg-k) - var(--lsg-ks)) * var(--lsg-ap,0))) }
+body.os-ios.form-fold .lsg-side{ width:var(--screen-w); transform:translate(calc(var(--lsg-cx) + var(--pos) + var(--lsg-dx,0px)), -26px) scale(calc(var(--lsg-ks) + (var(--lsg-k) - var(--lsg-ks)) * var(--lsg-p,0))) }
+body.os-ios.form-fold .screen.lsg-edit #lock{ transform:translate(var(--lsg-cx),36px) scale(var(--lsg-ke)) }
+body.os-ios.form-fold .screen.lsg-edit.lke-sh-aw #lock{ transform:translate(var(--lsg-cx),var(--lsg-ey)) scale(var(--lsg-ke)) }
+body.os-ios.form-fold .screen.lsg-remove #lock{ transform:translate(calc(var(--lsg-cx) + var(--lsg-dx,0px)),-70px) scale(calc(var(--lsg-k) - .06)) }
+body.os-ios.form-fold .screen.lsg-pick #lock,body.os-ios.form-fold .screen.lsg-home #lock{ transform:translate(var(--lsg-px1),-18px) scale(var(--lsg-kp)) }
+body.os-ios.form-fold .lsg-duo > .lsg-hcard{ width:var(--screen-w); transform:translate(var(--lsg-px2),-18px) scale(calc(var(--lsg-kp) - .06)) }
+body.os-ios.form-fold .screen.lsg-pick .lsg-duo > .lsg-hcard{ transform:translate(var(--lsg-px2),-18px) scale(var(--lsg-kp)) }
+body.os-ios.form-fold .screen.lsg-home .lsg-duo > .lsg-hcard{ transform:translate(var(--lsg-cx),-7.5px) scale(var(--lsg-kh)) }
+body.os-ios.form-fold .screen.lsg-home.lsg-hpanel-on .lsg-duo > .lsg-hcard{ transform:translate(var(--lsg-cx),-52px) scale(var(--lsg-khp)) }
+/* os cartões do dobrável levam o raio do ecrã dele (fechado 6/74/74/6, aberto 54) */
+body.os-ios.form-fold .screen.lsg #lock,body.os-ios.form-fold .screen.lsg-closing #lock,body.os-ios.form-fold .screen.lsg #lock::after,body.os-ios.form-fold .screen.lsg-closing #lock::after,
+body.os-ios.form-fold .lsg-side,body.os-ios.form-fold .lsg-card,body.os-ios.form-fold .lsg-hcard,body.os-ios.form-fold .lsg-hbg,body.os-ios.form-fold .lsg-duo > .lsg-hcard::after{ border-radius:var(--scr-r) }
+body.os-ios.form-fold .lsg-lbl{ top:var(--lsg-lt); width:calc(var(--screen-w) * var(--lsg-kp)) }
+body.os-ios.form-fold .lsg-lbl.l{ left:var(--lsg-ll) } body.os-ios.form-fold .lsg-lbl.r{ left:var(--lsg-lr) }
+/* botões e barras na zona de conteúdo */
+body.os-ios.form-fold .lsg-ui,body.os-ios.form-fold .lsg-hbar{ right:var(--rail-w) }
+body.os-ios.form-fold .lsg-trash{ left:calc(50% - var(--rail-w) / 2) }
+body.os-ios.form-fold .lsg-hpanel,body.os-ios.form-fold .lsg-ask-card{ left:calc(50% - var(--rail-w) / 2 - 250px); right:calc(50% + var(--rail-w) / 2 - 250px) }
+body.os-ios.form-fold .lsg-ask,body.os-ios.form-fold .lsg-dim{ border-radius:var(--scr-r) }
+body.form-fold .lsg-thumb .lsg-hicons .dock{ left:18.5px }   /* miniaturas de 440: a dock da cópia volta à posição do telemóvel normal */
+/* a cópia da home no dobrável (lockgallery.js homeClone leva as medidas e as classes do #home): as mesmas regras da grelha, dos
+   pontos e da dock vertical da barra direita que o shell.css e o liquid27.css dão ao #home. O vidro da dock é só a tinta (a cópia
+   desfocada do fundo é a do fundo ATUAL, não a do rascunho) */
+body.form-fold .lsg-hicons.hm-fold .pages{ top:var(--hm-top) }
+body.form-fold .lsg-hicons.hm-fold .app-name{ max-width:calc(var(--icon) + var(--gap-x) - 10px) }
+body.os-ios.form-fold .lsg-hicons.hm-fold .hi.folder .tile{ grid-template-columns:repeat(3,20px); grid-auto-rows:20px; gap:5px; padding:7px; align-content:center }
+body.os-ios.form-fold .lsg-hicons.hm-fold .hi.folder .tile .mini{ width:20px; height:20px; border-radius:5.5px }
+body.os-ios.form-fold .lsg-hicons.hm-fold .hi.widget .wg{ zoom:1.21; height:calc((var(--icon) * 2 + var(--gap-x)) / 1.21) }
+body.os-ios.form-fold .lsg-hicons.hm-fold .hi.widget.w4x4 .wg{ height:calc((var(--row-step) * 2 + var(--icon) * 2 + var(--gap-x)) / 1.21) }
+body.os-ios.form-fold .lsg-hicons .page-dots{ top:var(--hm-dots-y); left:calc(var(--hm-cwid) / 2) }
+body.os-ios.form-fold .lsg-hicons .dock.rl-dock{ position:relative; top:auto; left:auto; right:auto; bottom:auto; width:72px; height:auto; flex:none; display:flex; flex-direction:column; align-items:center; gap:14px; padding:9px 0; margin:0;
+  border:none; border-radius:28px; transform:none; overflow:visible; --icon:54px }
+body.os-ios.form-fold .lsg-hicons .dock.rl-dock::before{ display:none }
+body.os-ios.form-fold .lsg-hicons .rl-dock .hi{ position:relative; left:auto; top:auto; translate:none; width:54px }
+body.os-ios.form-fold .lsg-hicons .rl-dock .tile{ width:54px; height:54px }
+body.os-ios.form-fold .lsg-hicons .rl-dock .app-name,body.os-ios.form-fold .lsg-hicons .rl-dock .rm{ display:none }
+body.os-ios.form-fold .lsg-hicons .rl-g{ background:rgba(255,255,255,.22); box-shadow:inset 0 0 0 .5px rgba(255,255,255,.34),0 6px 18px rgba(0,0,0,.12) }
+
+/* jogo: sem backdrop-filter (materiais opacos) */
+body.fivem .lsg-custom,body.fivem .lsg-add,body.fivem .lsg-focus,body.fivem .lsg-cancel{ backdrop-filter:none; -webkit-backdrop-filter:none; background:rgba(255,255,255,.26) }   /* PearOS 27: o "+" deixou de ser azul (o vidro é do kit, liquid27.css) */
+body.fivem .lsg-hc{ backdrop-filter:none; -webkit-backdrop-filter:none; background-color:rgba(255,255,255,.26) } body.fivem .lsg-hopt.k-blur.on .lsg-hc{ background:#fff }
+body.fivem .lsg-hpanel{ backdrop-filter:none; -webkit-backdrop-filter:none; background:rgba(34,34,38,.94) }
+body.fivem .lsg-ask-card{ backdrop-filter:none; -webkit-backdrop-filter:none; background:rgba(36,36,40,.96) }
+/* ============ EDITOR DO BLOQUEADO (PearOS 17): widgets na linha, "Adicionar widgets" e "Fonte e cor" ============
+   Folhas ESCURAS (vidro: cópia pré-desfocada do fundo + tinta; nada de backdrop-filter) mais baixas do que o ecrã: o cartão
+   continua à vista por cima com as escolhas ao vivo. O invólucro não apanha toques (o "menos" dos widgets no cartão continua
+   tocável) e não escurece nada. Só transform/opacity animam. */
+/* linha de widgets no modo Personalizar: moldura para os 4 lugares; cada widget posto leva o "menos" (escuro com aro, não claro) */
+.screen.lsg-edit #lock .lock-widgets.lkw-row{ height:66px; min-width:312px }
+.screen.lsg-edit #lock .lkw-rm{ display:flex; position:absolute; left:-7px; top:-7px; z-index:2; width:24px; height:24px; border-radius:50%; align-items:center; justify-content:center; background:#2C2C2E; box-shadow:0 0 0 1.5px rgba(255,255,255,.75), 0 2px 6px rgba(0,0,0,.35); cursor:default }
+.screen.lsg-edit #lock .lkw-rm::before{ content:''; width:10px; height:2.5px; border-radius:2px; background:#fff }
+.screen.lsg-edit #lock .lkw-r .lkw-rm{ left:-12px }
+.lsg-mock .lock-widgets.lkw-row{ height:66px; gap:12px; justify-content:center; align-items:center }
+.sheet-wrap.lsg-ws{ background:transparent; pointer-events:none }
+.sheet-wrap.lsg-ws .sheet{ pointer-events:auto; height:478px; max-height:52%; border-radius:38px 38px 0 0; color:#fff;
+  --label:#fff; --label2:rgba(235,235,245,.6); --label3:rgba(235,235,245,.3); --label4:rgba(235,235,245,.2); --sep:rgba(84,84,88,.55); --bg:#1C1C1E; --bg2:#2C2C2E; --fill3:rgba(118,118,128,.24);
+  background:linear-gradient(rgba(22,22,26,.8),rgba(22,22,26,.8)), var(--wp-lock-blur, var(--wp-blur, #1C1C1E)) center bottom / cover no-repeat;
+  box-shadow:0 -12px 40px rgba(0,0,0,.42), inset 0 .5px 0 rgba(255,255,255,.14) }
+body.form-fold .sheet-wrap.lsg-ws .sheet{ border-radius:38px }
+.lsg-ws .sheet .content{ flex:1; min-height:0; overflow-y:auto; overscroll-behavior:contain; scrollbar-width:none; padding-bottom:30px } .lsg-ws .sheet .content::-webkit-scrollbar{ display:none }
+.lsg-ws .grabber{ background:rgba(255,255,255,.28) }
+.lsg-ws .sheet-head{ position:relative; justify-content:center; min-height:38px; padding:2px 60px 6px }
+.lsg-ws .sheet-head b{ font-size:17px; font-weight:600; color:#fff; white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+.lsg-ws .sh-l{ display:none }
+.lsg-ws .sh-r{ position:absolute; right:16px; top:2px; width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; color:rgba(255,255,255,.85); background:rgba(0,0,0,.3); box-shadow:inset 0 0 0 .5px rgba(255,255,255,.18); cursor:default; transition:color .2s }
+.lsg-ws .sh-r:hover{ color:#fff } .lsg-ws .sh-r svg{ stroke-width:2.6 }
+.lsg-ws .lsg-sect{ color:rgba(235,235,245,.6); font-size:13px; font-weight:600; letter-spacing:.5px; padding:14px 22px 9px }
+.lsg-ws .group-footer{ color:rgba(235,235,245,.5) }
+.lsg-ws .lsg-opt .lsg-pv{ background:rgba(0,0,0,.32); box-shadow:inset 0 0 0 .5px rgba(255,255,255,.14) }
+.lsg-ws .lsg-opt.on .lsg-pv{ box-shadow:inset 0 0 0 2px #fff }
+/* "Adicionar widgets": grelha de 4 colunas (redondo 1, retangular 2), quadrados de vidro escuro, visto azul nos que estão na linha */
+.lsg-aw-grid{ display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); grid-auto-flow:row dense; gap:10px; padding:0 16px }
+.lsg-aw-t{ position:relative; height:92px; border-radius:22px; display:flex; align-items:center; justify-content:center; background:rgba(255,255,255,.07); box-shadow:inset 0 0 0 .5px rgba(255,255,255,.1); cursor:default; transition:opacity .2s, transform .25s var(--spring) }
+.lsg-aw-t.r{ grid-column:span 2 }
+.lsg-aw-t:active{ transform:scale(.96) }
+.lsg-aw-t.on{ box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.55) }
+.lsg-aw-t.full{ opacity:.38 }
+.lsg-aw-t.shake{ animation:lsgShake .4s var(--curve) }
+@keyframes lsgShake{ 0%,100%{ transform:none } 20%{ transform:translateX(-6px) } 40%{ transform:translateX(5px) } 60%{ transform:translateX(-3px) } 80%{ transform:translateX(2px) } }
+.lsg-aw-pv{ --clock-rgb:255,255,255; pointer-events:none }
+.lsg-aw-pv .lkw{ text-shadow:none }
+.lsg-aw-ck{ position:absolute; top:7px; right:7px; width:18px; height:18px; border-radius:50%; display:flex; align-items:center; justify-content:center; background:#0A84FF; color:#fff; opacity:0; transform:scale(.6); transition:opacity .2s, transform .3s var(--spring) }
+.lsg-aw-ck svg{ stroke-width:3.2 } .lsg-aw-t.on .lsg-aw-ck{ opacity:1; transform:none }
+.lsg-aw-foot{ text-align:center; padding:14px 30px 0 }
+/* "Fonte e cor": círculos de cor (o arco-íris abre o seletor), grelha de 3 colunas com "12" em cada fonte e a barra do peso */
+.lsg-fc-sw{ display:flex; justify-content:space-between; padding:2px 20px 4px }
+.lsg-fc-c{ flex:none; width:32px; height:32px; border-radius:50%; padding:3px; box-sizing:border-box; box-shadow:inset 0 0 0 2px transparent; cursor:default; transition:box-shadow .2s }
+.lsg-fc-c i{ display:block; width:100%; height:100%; border-radius:50%; box-shadow:inset 0 0 0 .5px rgba(0,0,0,.22) }
+.lsg-fc-c.on{ box-shadow:inset 0 0 0 2px #fff }
+.lsg-fc-c.rb i{ background:conic-gradient(from 0deg,#FF453A,#FF9F0A,#FFD60A,#30D158,#64D2FF,#0A84FF,#BF5AF2,#FF375F,#FF453A) }
+.lsg-fc-pk{ display:none; flex-direction:column; gap:14px; padding:12px 22px 4px }
+.lsg-fc-pk.on{ display:flex }
+.lsg-fc-bar{ position:relative; height:26px; border-radius:13px; touch-action:none; cursor:default }
+.lsg-fc-bar.hue{ background:linear-gradient(90deg,#FF0000,#FFFF00 16.7%,#00FF00 33.3%,#00FFFF 50%,#0000FF 66.7%,#FF00FF 83.3%,#FF0000) }
+.lsg-fc-bar i{ position:absolute; left:0; top:0; width:26px; height:26px; border-radius:50%; box-sizing:border-box; border:3px solid #fff; background:#fff; box-shadow:0 2px 6px rgba(0,0,0,.35); pointer-events:none }
+.lsg-fc-grid{ display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px; padding:0 16px }
+.lsg-ws .lsg-opt.lsg-fc-f{ position:relative; width:auto; height:64px; gap:0; border-radius:18px; flex-direction:row; justify-content:center; align-items:center; color:#fff; background:rgba(0,0,0,0); transition:background-color .2s }
+.lsg-fc-f b{ font-size:40px; line-height:1; letter-spacing:-1px; color:#fff; pointer-events:none }
+.lsg-ws .lsg-opt.lsg-fc-f.on{ background:rgba(0,0,0,.36); box-shadow:inset 0 0 0 .5px rgba(255,255,255,.16) }
+.lsg-fc-fn{ position:absolute; width:1px; height:1px; overflow:hidden; white-space:nowrap; opacity:0; pointer-events:none }
+.lsg-fc-w{ display:flex; align-items:center; gap:14px; padding:16px 24px 2px }
+.lsg-fc-w.off{ display:none }
+.lsg-fc-w span{ flex:none; color:#fff; line-height:1 } .lsg-fc-w .a{ font-size:13px; font-weight:300 } .lsg-fc-w .b{ font-size:22px; font-weight:800 }
+.lsg-fc-bar.wt{ flex:1; border-radius:0 }
+.lsg-fc-bar.wt::before{ content:''; position:absolute; left:0; right:0; top:11px; height:4px; border-radius:2px; background:rgba(255,255,255,.3) }
+.lsg-fc-bar.wt i{ border:none }
+
+/* ============ PearOS 27 (1.4.0): etiqueta COLEÇÕES / ADICIONAR NOVO, pontos e o cartão "Adicionar novo" (captura do iOS 26) ============
+   Etiqueta pequena em maiúsculas (o texto vem traduzido do JS; as maiúsculas são daqui) 31 px acima do cartão; pontos 17 px abaixo dele
+   (um por ecrã + o do "Adicionar novo"). Só na galeria: somem no editor, nos dois ecrãs, a fechar, a apagar e com o caixote à vista. */
+.lsg-top{ position:absolute; left:0; right:0; top:95px; z-index:62; height:18px; padding:0 40px; box-sizing:border-box; text-align:center; font-size:13px; line-height:18px; font-weight:600; letter-spacing:.8px; text-transform:uppercase;
+  color:rgba(255,255,255,.8); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; text-shadow:0 1px 6px rgba(0,0,0,.3); pointer-events:none; opacity:0; transition:opacity .25s }
+.lsg-dots{ position:absolute; left:0; right:0; top:830px; z-index:62; height:8px; display:flex; justify-content:center; align-items:center; gap:12px; overflow:hidden; pointer-events:none; opacity:0; transition:opacity .25s }
+.lsg-dots i{ flex:none; width:8px; height:8px; border-radius:50%; background:rgba(255,255,255,.35) } .lsg-dots i.on{ background:#fff }
+.screen.lsg .lsg-top,.screen.lsg .lsg-dots{ opacity:1 }
+.screen.lsg-edit .lsg-top,.screen.lsg-pick .lsg-top,.screen.lsg-home .lsg-top,.screen.lsg-closing .lsg-top,.screen.lsg-remove .lsg-top,
+.screen.lsg-edit .lsg-dots,.screen.lsg-pick .lsg-dots,.screen.lsg-home .lsg-dots,.screen.lsg-closing .lsg-dots,.screen.lsg-remove .lsg-dots,.lsg-trash.show ~ .lsg-dots{ opacity:0; transition:opacity .15s }
+/* o cartão "Adicionar novo" (um .lsg-side a mais, índice n): preto, data + hora em vidro cinzento (--clock-rgb 150,150,155 no mock) e
+   um "+" de vidro CLEAR ao centro (84 px no cartão = ~59 px à vista a .70, como na captura). Sem data-lgpos: vive dentro de um cartão
+   escalado, fica com a tinta simples do kit. Toques: lockgallery.js bindDrag (ao lado → vem para o centro; ao centro → seletor). */
+.lsg-card.lsg-addin{ background:#0b0b0c; box-shadow:inset 0 0 0 2.5px rgba(255,255,255,.1) }
+.lsg-addin .lsg-mock .lock-date{ color:rgba(235,235,240,.92) }
+.lsg-addin .lsg-plus{ position:absolute; left:50%; top:50%; z-index:2; width:84px; height:84px; margin:-42px 0 0 -42px; border-radius:50%; display:flex; align-items:center; justify-content:center; color:#fff }
+.lsg-addin .lsg-plus svg{ width:40px; height:40px; stroke-width:2.2 }
+/* #screen.lsg-adding (NÃO .lsg-add: é a classe do botão "+"): o ecrã atual foi para o lugar do vizinho da esquerda (--lsg-dx = −SP)
+   e escurece como ele; o cartão de adicionar, ao centro, acende. O contorno branco do cartão atual sai (já não é ele o do centro). */
+.screen.lsg-adding #lock{ opacity:.72 }
+.screen.lsg-adding #lock::after{ opacity:0 }
+.screen.lsg-adding .lsg-addcard{ opacity:1 }
+.screen.lsg-adding .lsg-addcard .lsg-addin{ box-shadow:inset 0 0 0 2.5px rgba(255,255,255,.2) }
+/* ícones grandes do "Personalizar" do principal (homecustom.js → #home.hm-large): a cópia da home nos cartões também (homeClone copia a classe) */
+.lsg-hicons.hm-large{ --tile:calc(var(--icon) * 1.17) }
+.lsg-hicons.hm-large .app-name{ visibility:hidden }
+/* PearPhone Fold: o cartão não mudou (fechado .66 a −26 px: 136..768; aberto .5: 213..691) - a etiqueta e os pontos seguem-no, na zona
+   de conteúdo (à esquerda da barra) */
+body.os-ios.form-fold.fold-closed{ --lsg-tt:99px; --lsg-dt:784px }
+body.os-ios.form-fold.fold-open{ --lsg-tt:176px; --lsg-dt:708px }
+body.os-ios.form-fold .lsg-top{ top:var(--lsg-tt,99px); right:var(--rail-w) }
+body.os-ios.form-fold .lsg-dots{ top:var(--lsg-dt,784px); right:var(--rail-w) }
+/* PearPhone Fold: os cartões laterais (e o "Adicionar novo") e as miniaturas largas das Definições (.lsg-thumb.fold) têm a largura do ecrã
+   do dobrável - o relógio deles segue o do #lock lá (lock.css --lk-fs): fechado 240 × kx com TETO de 250 px (o resto cresce só na vertical,
+   senão "09:30" fugia para a barra), aberto 252 × kx, esticão 1,4 × sy, arredondada/mono fechadas × .92. Ganha ao font-size inline do mock
+   (o do telemóvel); kx/sy são os do PRÓPRIO cartão (variáveis no .lsg-mock). As miniaturas de 440 (pergunta do par) ficam com as do telemóvel. */
+body.os-ios.form-fold.fold-closed .lsg-side .lsg-mock .lock-clock,body.os-ios.form-fold.fold-closed .lsg-thumb.fold .lsg-mock .lock-clock{ font-size:min(calc(240px * var(--clock-kx,1)), 250px)!important; letter-spacing:-2px }
+body.os-ios.form-fold.fold-closed .lsg-side .lsg-mock[data-clockfont="rounded"] .lock-clock,body.os-ios.form-fold.fold-closed .lsg-thumb.fold .lsg-mock[data-clockfont="rounded"] .lock-clock,
+body.os-ios.form-fold.fold-closed .lsg-side .lsg-mock[data-clockfont="mono"] .lock-clock,body.os-ios.form-fold.fold-closed .lsg-thumb.fold .lsg-mock[data-clockfont="mono"] .lock-clock{ font-size:calc(min(calc(240px * var(--clock-kx,1)), 250px) * .92)!important }
+body.os-ios.form-fold.fold-open .lsg-side .lsg-mock .lock-clock,body.os-ios.form-fold.fold-open .lsg-thumb.fold .lsg-mock .lock-clock{ font-size:calc(252px * var(--clock-kx,1))!important; letter-spacing:-2px }
+body.os-ios.form-fold .lsg-side .lsg-mock .lock-clock,body.os-ios.form-fold .lsg-thumb.fold .lsg-mock .lock-clock{ transform:scaleY(calc(1.4 * var(--clock-sy,1) * var(--num-sy,1))) }
+body.os-ios.form-fold .lsg-side .lsg-mock[data-clockstyle="outline"]:not([data-clockfont="mono"]) .lock-clock,body.os-ios.form-fold .lsg-thumb.fold .lsg-mock[data-clockstyle="outline"]:not([data-clockfont="mono"]) .lock-clock,
+body.os-ios.form-fold .lsg-side .lsg-mock[data-clockfont="rounded"][data-clockalign="left"] .lock-clock,body.os-ios.form-fold .lsg-side .lsg-mock[data-clockfont="rounded"][data-clockalign="right"] .lock-clock,
+body.os-ios.form-fold .lsg-side .lsg-mock[data-clockfont="mono"][data-clockalign="left"] .lock-clock,body.os-ios.form-fold .lsg-side .lsg-mock[data-clockfont="mono"][data-clockalign="right"] .lock-clock,
+body.os-ios.form-fold .lsg-thumb.fold .lsg-mock[data-clockfont="rounded"][data-clockalign="left"] .lock-clock,body.os-ios.form-fold .lsg-thumb.fold .lsg-mock[data-clockfont="rounded"][data-clockalign="right"] .lock-clock,
+body.os-ios.form-fold .lsg-thumb.fold .lsg-mock[data-clockfont="mono"][data-clockalign="left"] .lock-clock,body.os-ios.form-fold .lsg-thumb.fold .lsg-mock[data-clockfont="mono"][data-clockalign="right"] .lock-clock{ transform:scale(.8,calc(1.4 * var(--clock-sy,1) * var(--num-sy,1))) }

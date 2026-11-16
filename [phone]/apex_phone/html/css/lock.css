@@ -1,0 +1,491 @@
+/* ---------- Lock screen, teclado do código PIN, relógio animado, setup - carregado depois de shell.css ---------- */
+
+/* ===== Desbloqueio: o ecrã bloqueado sobe, cresce e desvanece com mola (PearOS) ===== */
+#lock{ transition:opacity .42s var(--ease), transform .55s var(--spring), filter .45s var(--ease) }
+#lock.out{ opacity:0; transform:translateY(-9%) scale(1.08); filter:blur(12px); pointer-events:none }
+.lock-p1{ transition:opacity .3s var(--ease), transform .45s var(--spring); will-change:transform }
+#lock.pin .lock-p1{ opacity:0; transform:translateY(-6%) scale(1.04); pointer-events:none }
+.lock-top{ margin-top:74px; height:124px; flex:none }                 /* espaçador: o relógio vive em .lock-clockwrap */
+
+/* ===== Relógio (fora do p1: sai com transform/opacity quando o teclado abre) =====
+   Regra CEF (revisão 2026-09-15): só transform e opacity animam. Antes o relógio ENCOLHIA por font-size (176 → 22 px) e a
+   caixa descia por `top` - reflow do texto a cada frame. Agora o relógio grande desvanece e sobe (transform) e o pequeno é
+   um elemento próprio do teclado (.pc-clock), que entra com o .lock-p2. */
+.lock-clockwrap{ position:absolute; left:0; right:0; top:74px; z-index:3; text-align:center; pointer-events:none; transform-origin:50% 0;
+  transition:transform .45s var(--spring), opacity .3s }
+.lock-clockwrap.wake{ animation:lockWake .55s var(--spring) both }
+@keyframes lockWake{ from{ opacity:0; transform:scale(1.15) } to{ opacity:1; transform:scale(1) } }
+.lock-clock{ display:flex; justify-content:center; align-items:flex-start; font-size:96px; line-height:1; letter-spacing:-3px; height:1em }
+/* ⚠️ CEF (regra do projeto, e o caso documentado em lockgallery.css:19): NADA de clip-path no ecrã - dentro de
+   um transform:scale o recorte é calculado no espaço errado e o bordo pinta uma RISCA a meio do relógio. Aqui
+   havia mesmo um scale por cima destes spans (o .lock-clock tem scaleY(1.18) e o .lock-clockwrap escala no
+   lockWake, a cada acordar, e em .82 quando o teclado do código abre). O MESMO recorte faz-se com
+   overflow:hidden numa caixa esticada por padding + margem negativa: geometria idêntica ao inset(-40px -10px)
+   de antes (a caixa cresce 40 px em cima/baixo e 10 px dos lados, a margem devolve o espaço) e sem clip-path.
+   `box-sizing:content-box` porque o padding não pode comer o 1em de altura; os dígitos absolutos (.n.out)
+   contam a partir da caixa de padding, por isso o topo/esquerda são os 40/10 px. */
+.lock-clock .d,.lock-clock .c{ position:relative; display:inline-block; box-sizing:content-box; height:1em; overflow:hidden; padding:40px 10px; margin:-40px -10px }
+.lock-clock .d .n{ display:inline-block; transition:transform .35s var(--spring), opacity .28s ease-out; will-change:transform }
+.lock-clock .d .n.in{ transform:translateY(48%); opacity:0 }
+.lock-clock .d .n.out{ position:absolute; left:10px; top:40px; transform:translateY(-48%); opacity:0 }
+.lock-date{ transition:opacity .28s var(--ease), transform .4s var(--spring); height:1.3em }
+#lock.pin .lock-clockwrap{ opacity:0; transform:translateY(-34px) scale(.82) }
+#lock.pin .lock-date{ opacity:0; transform:translateY(-10px) }
+/* relógio pequeno do teclado do código: vive no .lock-p2 (entra e sai com ele, só opacity/transform) */
+.pc-clock{ position:absolute; left:0; right:0; top:64px; text-align:center; font-size:22px; line-height:26px; font-weight:600; letter-spacing:-.3px; color:#fff; text-shadow:0 1px 6px rgba(0,0,0,.22); pointer-events:none; font-variant-numeric:tabular-nums }
+
+/* ===== Código: relógio pequeno no topo, "Introduzir código" + 4 pontos, teclado centrado no espaço restante, Emergência/Cancelar em baixo ===== */
+.lock-p2{ display:flex; flex-direction:column; align-items:stretch; justify-content:flex-start; padding:0; transform:translateY(7%) scale(.98); opacity:0;
+  transition:transform .5s var(--spring), opacity .32s var(--ease); background:transparent; backdrop-filter:none; -webkit-backdrop-filter:none; isolation:isolate }
+/* Fundo do código: cópia do wallpaper do lock (var(--wp-lock), escrita por System.wpStyle) desfocada com filter:blur + tinta escura.
+   NÃO usar backdrop-filter aqui: no CEF do FiveM (página transparente + zoom) a leitura do fundo fora do arco do ecrã vem PRETA e
+   pintava cunhas pretas nos cantos entre a moldura e o ecrã. A cópia é maior que o ecrã (inset -48) para o desfoque não esbater as bordas. */
+/* imagem já desfocada (System.makeBlur → var(--wp-lock-blur)); SEM filter: no CEF a superfície de um blur é ~40 px maior que o elemento e é composta a preto */
+#lock.pin .lock-p2::before{ content:''; position:absolute; inset:0; z-index:-1; pointer-events:none;
+  background:linear-gradient(rgba(0,0,0,.22),rgba(0,0,0,.22)), var(--wp-lock-blur, var(--wp-blur, var(--wp-lock, #1C1C1E))) center/cover no-repeat }
+body.fivem #lock.out{ filter:none }
+#lock.gone{ visibility:hidden; transform:none!important; filter:none!important; transition:none!important }   /* depois de desbloquear: sem superfície composta oversize */
+#lock.pin .lock-p2{ transform:none; opacity:1 }
+/* escondido, o teclado fica DENTRO do ecrã (translateY 7 %) - não pode apanhar toques, senão engole a lanterna/câmara e o swipe */
+.lock-p2{ pointer-events:none } #lock.pin .lock-p2{ pointer-events:auto }
+.pc-head{ flex:none; display:flex; flex-direction:column; align-items:center; padding-top:184px }
+.pc-label{ font-size:20px; font-weight:500; letter-spacing:-.2px; color:rgba(255,255,255,.95); text-shadow:0 1px 6px rgba(0,0,0,.18); transition:color .2s; width:100%; text-align:center; line-height:24px }
+.pc-label.err{ color:#FF453A }
+.dots{ display:flex; gap:22px; margin:20px auto 0; width:auto; height:15px; align-items:center; justify-content:center }
+.dot{ width:13px; height:13px; border-radius:50%; border:1.5px solid rgba(255,255,255,.92); background:transparent; box-sizing:border-box;
+  transition:background .18s ease-out, transform .35s var(--spring), border-color .2s }
+.dot.on{ background:#fff }
+.dot.pop{ animation:dotPop .38s var(--spring) }
+@keyframes dotPop{ 0%{ transform:scale(.7) } 55%{ transform:scale(1.32) } 100%{ transform:scale(1) } }
+.dots.err .dot{ border-color:#FF453A } .dots.err .dot.on{ background:#FF453A }
+.dots.shake{ animation:shake .5s cubic-bezier(.36,.07,.19,.97) }
+.pc-pad{ flex:1; min-height:0; display:flex; align-items:center; justify-content:center }
+.keypad{ margin:0; display:grid; grid-template-columns:repeat(3,76px); grid-auto-rows:76px; gap:24px; width:276px; justify-content:center }
+.key{ width:76px; height:76px; border-radius:50%; background:rgba(255,255,255,.14); border:.5px solid rgba(255,255,255,.2); color:#fff;
+  /* o fundo da tecla é a cópia do wallpaper já desfocada/saturada (.lock-p2::before) → sem saturar outra vez, senão viram discos laranja */
+  box-shadow:inset 0 .5px 0 rgba(255,255,255,.3); backdrop-filter:blur(18px) saturate(110%); -webkit-backdrop-filter:blur(18px) saturate(110%);
+  display:flex; flex-direction:column; align-items:center; justify-content:center; cursor:pointer; user-select:none; -webkit-tap-highlight-color:transparent;
+  transition:background .45s ease-out, transform .35s var(--spring) }
+.key .num{ font-size:34px; font-weight:400; line-height:1; letter-spacing:-.5px }
+.key .abc{ font-size:10px; font-weight:600; letter-spacing:1.8px; margin-top:3px; line-height:12px; color:rgba(255,255,255,.9) }
+.key:active,.key.pressed{ background:rgba(255,255,255,.55); transform:scale(.92); transition:background .04s, transform .08s }
+.key[data-n="0"]{ grid-column:2 } /* o 0 sozinho no meio da última linha; as antigas células .blank ficavam visíveis no jogo (body.fivem .key com backdrop-filter) */
+.lock-bottom{ position:static; flex:none; display:flex; justify-content:space-between; align-items:center; padding:0 46px 48px; font-size:17px; font-weight:400; color:#fff; text-shadow:0 1px 6px rgba(0,0,0,.18) }
+.lock-bottom span{ cursor:pointer; padding:6px 2px; transition:opacity .2s, transform .25s var(--spring) } .lock-bottom span:active{ opacity:.5; transform:scale(.96) }
+
+/* ===== Setup: teclado do código (tamanho novo) ===== */
+.stp .keypad{ margin:22px auto 0 }
+.stp .keypad .key:active,.stp .keypad .key.pressed{ background:var(--fill) }
+
+/* ===== Setup: passo Avatar - pré-visualização ao vivo + grelha de cores com anel branco e visto ===== */
+.stp .av-preview{ display:flex; flex-direction:column; align-items:center; gap:4px; margin:4px 0 22px }
+.stp .av-preview .avatar{ width:128px; height:128px; font-size:50px; font-weight:600; letter-spacing:-1px; margin-bottom:8px;
+  box-shadow:0 12px 32px rgba(0,0,0,.18), inset 0 0 0 .5px rgba(255,255,255,.35); transition:background .35s }
+.stp .av-preview .avatar.pop{ animation:avPop .45s var(--spring) }
+@keyframes avPop{ 0%{ transform:scale(.86) } 60%{ transform:scale(1.06) } 100%{ transform:scale(1) } }
+.stp .av-preview .nm{ font-size:var(--t-headline); font-weight:600 } .stp .av-preview .hn{ font-size:var(--t-foot); color:var(--label2) }
+.stp .avatars{ display:grid; grid-template-columns:repeat(4,64px); gap:18px 22px; justify-content:center; margin-top:6px }
+.stp .avatars .av{ width:64px; height:64px; border-radius:50%; border:none; cursor:pointer; position:relative; display:flex; align-items:center; justify-content:center; color:#fff;
+  box-shadow:0 0 0 0 transparent, 0 4px 12px rgba(0,0,0,.12); transition:transform .4s var(--spring), box-shadow .3s var(--spring); -webkit-tap-highlight-color:transparent }
+.stp .avatars .av::before{ content:''; position:absolute; inset:4px; border-radius:50%; border:3px solid #fff; opacity:0; transform:scale(.8); transition:opacity .2s, transform .4s var(--spring) }
+.stp .avatars .av svg{ width:24px; height:24px; opacity:0; transform:scale(.4); transition:opacity .2s, transform .4s var(--spring); filter:drop-shadow(0 1px 2px rgba(0,0,0,.35)); position:relative }
+.stp .avatars .av:active{ transform:scale(.9) }
+.stp .avatars .av.on{ transform:scale(1.1); box-shadow:0 0 0 2px var(--label3), 0 6px 16px rgba(0,0,0,.18) }
+.stp .avatars .av.on::before,.stp .avatars .av.on svg{ opacity:1; transform:scale(1) }
+.stp .av-later{ text-align:center; font-size:var(--t-foot); color:var(--label2); margin-top:18px; line-height:1.35 }
+
+/* ===== PearPhone 18 / PearOS 26: data por cima, hora enorme em Liquid Glass, notificações em baixo, atalhos em vidro ===== */
+.lock-clockwrap{ display:flex; flex-direction:column-reverse; align-items:center; top:56px; gap:0 }
+.lock-date{ font-size:17px; font-weight:600; letter-spacing:0; color:rgba(255,255,255,.96); margin:0 0 4px; height:auto; text-shadow:0 1px 10px rgba(0,0,0,.28) }
+/* Relógio PearOS 26 (referência: foto do 17 Pro): dígitos ALTOS e estreitos, em vidro - o wallpaper vê-se através deles, com um gradiente
+   claro por dentro e uma aresta luminosa fina. Sem filter/blur (regra CEF): a "refração" é color:transparent + gradiente recortado
+   pelo texto (background-clip:text) + -webkit-text-stroke. Fonte condensada do Windows (Bahnschrift, variável) com Inter esticado
+   como recurso; a altura extra vem de scaleY (origem no topo, não mexe na data). */
+/* revisão 2026-09-08: o relógio ocupava metade do ecrã e ficava cinzento - passa a 176 px (PearOS 26: grande mas não gigante), menos esticado e mais branco */
+/* ===== 1.4.0 (PearOS 27): TAMANHO CONTÍNUO do relógio (a pega do editor, lockeditor.js) =====
+   Três variáveis no :root, escritas pelo System.apply a partir de state.clockScale (e ao vivo pelo Lock.previewScale durante o
+   arrasto): --clock-k = o tamanho pedido (0,72 … 1,75; 1 = os 176 px de sempre), --clock-kx = a parte que cresce em LARGURA
+   (min(k, 1,15): acima disso "22:18" já não cabe nos 440 px) e --clock-sy = o resto, que vira ESTICÃO VERTICAL (k / 1,15, nunca
+   abaixo de 1): os dígitos ficam mais ALTOS e estreitos, como na foto do iOS 27. kx × sy = k sempre, por isso a altura da tinta é
+   166 px × k (166 = 176 × ,8em × 1,18) e é dela que saem a altura reservada (.lock-top) e o topo das notificações - antes eram
+   três tabelas por body[data-clocksize] (pequeno/normal/grande); o atributo continua escrito (só serve de peso nos seletores).
+   Sem transição de font-size (regra CEF): o arrasto reescreve as variáveis no máximo uma vez por frame e só o relógio refaz. */
+:root{ --clock-k:1; --clock-kx:1; --clock-sy:1 }
+.lock-clock{ font-family:'Bahnschrift','Arial Narrow',Inter,-apple-system,'Segoe UI',sans-serif; font-stretch:75%; font-size:calc(176px * var(--clock-kx)); font-weight:600; letter-spacing:-1.5px; line-height:1; height:.8em;
+  text-shadow:none; transform:scaleY(calc(1.18 * var(--clock-sy) * var(--num-sy,1))); transform-origin:50% 0; padding-top:.01em; transition:none }   /* dígitos altos e estreitos (PearOS 26); sem transição de font-size (regra CEF): ao abrir o código quem anima é o .lock-clockwrap */
+.lock-clock.wide{ font-size:calc(160px * var(--clock-kx)); letter-spacing:-4px }   /* "23:53": cinco caracteres têm de caber nos 440 px */
+/* vidro: o fundo vê-se através dos dígitos (branco a ~55 %), gradiente vertical suave + luz diagonal larga. SEM -webkit-text-stroke: a fonte
+   variável tem contornos sobrepostos e o contorno desenhava linhas DENTRO dos dígitos (o "1" com riscas). */
+.lock-clock .n{ color:transparent;
+  background:linear-gradient(112deg, rgba(255,255,255,.26) 0%, rgba(255,255,255,0) 58%),
+             linear-gradient(180deg, rgba(255,255,255,.66) 0%, rgba(255,255,255,.52) 38%, rgba(255,255,255,.44) 64%, rgba(255,255,255,.58) 100%);
+  -webkit-background-clip:text; background-clip:text }
+.lock-top{ margin-top:56px; height:calc(166px * var(--clock-kx) * var(--clock-sy) + 44px) }   /* data (26) + relógio esticado (166 × k visíveis) + folga; k = 1 → 210 px, como sempre */
+.lock-widgets{ margin-top:0; height:30px }
+/* widgets pequenos e integrados (não "pílulas enormes"): 30 px, 13 px semibold, glifo 14 px */
+.lw{ height:30px; border-radius:15px; padding:0 9px; gap:5px; font-size:13px } .lw svg{ width:14px; height:14px }
+/* notificações EM BAIXO (pedido 2026-09-08, como o PearOS 16+): ancoradas por cima dos atalhos e a crescer para cima; column-reverse põe o grupo mais recente
+   junto ao fundo e mantém o scroll a funcionar (scrollTop 0 = fundo); nunca sobem além da fila de widgets (top 312) */
+/* AO MEIO do ecrã (pedido do utilizador 2026-09-09: estavam demasiado em baixo).
+   O bloco é column-reverse ancorado no FUNDO da caixa, por isso é o `bottom` que manda onde os cartões
+   aparecem; o `top` só define até onde podem crescer antes de começarem a rolar.
+   ⚠️ REGRESSÃO CORRIGIDA (2026-09-11): ao arranjar o corte com muitas mensagens baixei o `bottom` de 330
+   para 200. Como o bloco está ancorado em BAIXO, isso não se via com a caixa cheia - mas bastava dispensar
+   as notificações de cima para as que sobravam caírem para o fundo do ecrã ("começaram a descer até lá
+   baixo de novo"). O `bottom` volta aos 330; o `top` fica nos 270 (mais alto do que os 300 originais) para
+   manter a folga que resolveu o corte: dá uma caixa de 956−270−330 = 356 px, o suficiente para três cartões
+   e dois cabeçalhos de grupo sem cortar o de cima, e o resto rola. */
+/* ===== 2026-09-19: EM BAIXO, como no iOS 16+ (capturas do iPhone enviadas pelo utilizador) =====
+   A caixa continua column-reverse ancorada no FUNDO: `bottom` = 16 px acima dos atalhos (lanterna/câmara, 52 px a 44 px
+   do fundo) e `top` só limita até onde a lista pode crescer antes de rolar. Fechada (pilha/contagem) só se vê a pilha;
+   aberta, a lista sobe até 270 px e rola. Com o cartão "A tocar" (.has-np) sobe para cima dele. */
+/* 2026-10-04 (pedido do dono, "mais para cima"): no PearOS as notificações ficam logo por BAIXO do relógio, não no fundo.
+   NÃO com justify-content:flex-end: com a lista aberta e cheia o excesso ia para baixo, sem rolar, e a mais recente ficava
+   cortada (teste "muitas notificacoes"). Um espaçador (::before = o 1.º item = o de BAIXO no column-reverse) come o espaço
+   livre e encosta tudo ao topo; quando a lista não cabe encolhe a 0 e rola como antes. */
+/* 1.4.0: o topo segue a altura da tinta do relógio (166 × k + 104; k = 1 → os 270 de sempre) */
+.lock-notifs{ top:calc(166px * var(--clock-kx) * var(--clock-sy) + 104px); bottom:196px; max-height:none; padding:14px 14px 0; overflow-y:auto; overscroll-behavior:contain; flex-direction:column-reverse; justify-content:flex-start; scrollbar-width:none }
+body.os-ios .lock-notifs::before{ content:''; flex:1 1 0; min-height:0; margin-top:-8px }
+#lock.has-np .lock-notifs,body[data-clocksize] #lock.has-np .lock-notifs{ bottom:232px }
+/* cápsula "3 notificações" (modo Contagem) */
+.lock-notifs .ncount{ align-self:center; display:inline-flex; align-items:center; gap:7px; height:34px; padding:0 14px; border-radius:17px; background:rgba(255,255,255,.22); border:.5px solid rgba(255,255,255,.28); color:#fff; font-size:14px; font-weight:600; text-shadow:0 1px 4px rgba(0,0,0,.25); box-shadow:0 6px 16px rgba(0,0,0,.18); cursor:pointer; margin-bottom:2px }
+.lock-notifs .ncount:active{ background:rgba(255,255,255,.34) }
+body.dark .lock-notifs .ncount{ background:rgba(40,40,40,.55); border-color:rgba(255,255,255,.14) }
+/* pilha única fechada: sem cabeçalho de app; aberta a partir da pilha/contagem mostra "Centro de notificações" + Limpar tudo */
+.lock-notifs.collapsed .ngroup.nall{ padding-top:0 }
+.lock-notifs.xopen .nhead.nh-top{ display:flex }
+.lock-notifs::-webkit-scrollbar{ display:none }
+/* MUITAS NOTIFICAÇÕES: o PearPhone não CORTA a lista a direito - as de cima esbatem-se ao
+   chegar ao topo da caixa e continua a poder rolar-se. Aqui é uma máscara em gradiente
+   (a mesma técnica já usada na lista de idiomas do assistente); não é filter nem
+   backdrop-filter, por isso não viola as regras de CEF deste projeto. */
+.lock-notifs{ -webkit-mask-image:linear-gradient(180deg, transparent 0, #000 14px, #000 100%);
+              mask-image:linear-gradient(180deg, transparent 0, #000 14px, #000 100%) }
+#lock .notif-card.new{ --nin-y:24px }   /* entram de BAIXO (sobem 24 px), como no PearOS */
+.lock-hint{ display:none }
+.lock-shortcuts{ left:44px; right:44px; bottom:44px }
+.ls-btn{ width:52px; height:52px; background:rgba(255,255,255,.18); border:.5px solid rgba(255,255,255,.24); box-shadow:inset 0 .5px 0 rgba(255,255,255,.35), 0 6px 16px rgba(0,0,0,.18); transition:background .25s, transform var(--motion-medium) var(--spring) }
+.ls-btn:active,.ls-btn.press{ transform:scale(.92); background:rgba(255,255,255,.3) }
+.ls-btn.on{ background:#fff; color:#000 }
+/* código: teclado e botões maiores (o telemóvel é reduzido no jogo) */
+.pc-head{ padding-top:150px } .pc-label{ font-size:22px; font-weight:500 } .dots{ gap:24px; margin-top:22px } .dot{ width:14px; height:14px }
+/* 6 dígitos: pontos ligeiramente menores e mais juntos, como no PearPhone */
+#lock .dots.six{ gap:19px } #lock .dots.six .dot{ width:12px; height:12px }
+.keypad{ grid-template-columns:repeat(3,84px); grid-auto-rows:84px; gap:24px; width:300px }
+.key{ width:84px; height:84px; background:rgba(255,255,255,.17) } .key .num{ font-size:38px } .key .abc{ font-size:11px; letter-spacing:2px; margin-top:2px }
+.lock-bottom{ font-size:18px; font-weight:500; padding:0 42px 42px }
+
+/* ===== revisão 2026-09-08 ===== */
+/* Face Key (69): cadeado por cima da data; ao desbloquear abre e sobe */
+.lock-face{ height:22px; display:flex; justify-content:center; align-items:center; color:#fff; opacity:.92; margin-bottom:4px; transition:transform .35s var(--spring), opacity .3s } .lock-face svg{ width:17px; height:17px } .lock-face.open{ transform:translateY(-3px) scale(1.12); opacity:0 }
+#lock.pin .lock-face{ opacity:0 }
+.lock-face.scan{ animation:faceScanLock .55s var(--curve) both } @keyframes faceScanLock{ 0%{ transform:scale(1) } 40%{ transform:scale(1.18) } 100%{ transform:scale(1.06) } }   /* reconhecimento subtil, sem scanner */
+/* código correto (17): pontos acendem, o teclado desvanece/encolhe antes da transição para a home */
+.dots.ok .dot{ background:#fff; border-color:#fff; transform:scale(1.15); transition:transform .25s var(--spring), background .15s }
+#lock.ok .lock-p2{ transform:scale(.92); opacity:0; transition:transform .35s var(--ease), opacity .25s }
+.key .abc{ min-height:12px }   /* o "1" (sem letras) alinha com os outros números */
+/* ===== personalização do relógio (galeria do ecrã bloqueado): tamanho, peso e cor =====
+   1.4.0: as tabelas pequeno/normal/grande (150/176/200 px, .lock-top 190/210/236, notificações 280/270/326) deram lugar às
+   fórmulas em --clock-kx/--clock-sy (ver o .lock-clock acima). O "pequeno = 280" das notificações era um número antigo (maior
+   do que o normal!): a fórmula manda. As contas antigas com clockSize leem-se como k = ,85 / 1 / 1,14 (System.clockK). */
+body[data-clockweight="light"] .lock-clock{ font-weight:300 } body[data-clockweight="bold"] .lock-clock{ font-weight:800 }
+/* Cor do relógio nos dígitos em vidro. NUNCA usar color-mix() aqui: o CEF do FiveM não a conhece, a declaração inteira fica
+   inválida e - como os dígitos são `color:transparent` + background-clip:text - o RELÓGIO DESAPARECE (bug in-game 2026-09-08).
+   Solução portável: `--clock-rgb` guarda só os componentes ("255,255,255"), escritos por System.apply() a partir de state.clockColor. */
+.lock-clock .n{ background-image:linear-gradient(112deg, rgba(255,255,255,.26) 0%, rgba(255,255,255,0) 58%),
+  linear-gradient(180deg, rgba(var(--clock-rgb,255,255,255),.66) 0%, rgba(var(--clock-rgb,255,255,255),.52) 38%, rgba(var(--clock-rgb,255,255,255),.44) 64%, rgba(var(--clock-rgb,255,255,255),.58) 100%) }
+.ls-btn.none{ visibility:hidden }
+/* 1.4.0 (PearOS 27): cada atalho leva o "menos" de tirar (.ls-rm, o .lg27-badge do kit) - escondido fora do editor (o
+   lockeditor.css mostra-o em modo de edição, com mais peso). Peso .ls-btn > .ls-rm (0,2,0) para ganhar ao display:flex do
+   .lg27-badge (liquid27.css carrega depois). O botão passa a position:relative para o emblema se posicionar no canto; o
+   offsetLeft do próprio botão (medido pela barra do Fold) não muda com isso. */
+.ls-btn{ position:relative }
+.ls-btn > .ls-rm{ display:none }
+/* "Abrir app" (controlo app:<id>): o ícone da app (Icons.tileBox) dentro do círculo de vidro, 30 px com o canto do PearOS */
+.ls-btn > .tile.ls-app{ width:30px; height:30px; border-radius:9px; flex:none; box-shadow:none; pointer-events:none }
+body.os-ios.form-fold #lock .ls-btn > .tile.ls-app{ width:36px; height:36px; border-radius:10px }
+/* ===== Face Key reconhecido (2026-09-09) ===== */
+/* O cadeado ABRE e fica visível (é o sinal do PearPhone de que já estás autenticado) e só então aparece a dica de deslizar. */
+.lock-face.ok{ animation:faceOk .5s var(--spring) both } @keyframes faceOk{ 0%{ transform:scale(.82); opacity:.5 } 55%{ transform:scale(1.14) } 100%{ transform:scale(1); opacity:.95 } }
+#lock.faceok .lock-hint{ display:block; position:absolute; left:0; right:0; bottom:34px; text-align:center; font-size:14px; font-weight:500; color:rgba(255,255,255,.8); text-shadow:0 1px 6px rgba(0,0,0,.3); animation:hintIn .45s var(--curve) both; pointer-events:none }
+@keyframes hintIn{ from{ opacity:0; transform:translateY(6px) } to{ opacity:1; transform:none } }
+.screen.aod #lock.faceok .lock-hint{ display:none }
+
+/* ===== ESPREITAR: com o telemóvel guardado, mostra-se SÓ a notificação que chegou =====
+   Com a lista cheia, o cartão novo fica lá em baixo (y≈568..656) e o aparelho teria de
+   subir quase todo para lá chegar - foi isso que o utilizador viu: subia uns 190 px e não
+   se via mensagem nenhuma. Como o PearPhone: enquanto se espreita, as outras somem e a nova
+   encosta-se ao TOPO da caixa (em column-reverse, isso é justify-content:flex-end).
+   As classes .nw-card/.nw-group são postas pelo notify.js; o :has() não serve, o CEF não o tem. */
+.screen.peek1 .lock-notifs{ justify-content:flex-end; overflow:hidden; -webkit-mask-image:none; mask-image:none }
+.screen.peek1 .lock-notifs .ngroup{ display:none }
+.screen.peek1 .lock-notifs .ngroup.nw-group{ display:block }
+.screen.peek1 .lock-notifs .ngroup.nw-group .nhead{ display:none }
+.screen.peek1 .lock-notifs .ngroup.nw-group .notif-card{ display:none }
+.screen.peek1 .lock-notifs .ngroup.nw-group .notif-card.nw-card{ display:block }
+/* cartões soltos (grupos de um só) - não vivem dentro de .ngroup */
+.screen.peek1 .lock-notifs > .notif-card{ display:none }
+.screen.peek1 .lock-notifs > .notif-card.nw-card{ display:block }
+.screen.peek1 .lock-notifs .nstack .peek{ display:none } .screen.peek1 .lock-notifs .nstack{ padding-bottom:0 }   /* a espreitar: só o cartão novo, sem as que espreitam por trás */
+/* modo Contagem: a cápsula sobe com o resto (é o único elemento que há) e o cabeçalho do centro não aparece a meio do espreitar */
+.screen.peek1 .lock-notifs .nhead{ display:none }
+
+/* ===== "A tocar" (MEDIA-13): o módulo de música do Centro de controlo, entre as notificações e os atalhos =====
+   O módulo é o mesmo elemento (.cc-mod.music do control.css, que carrega antes deste ficheiro); aqui só muda a
+   forma: em vez do quadrado de 2×2 da grelha do CC, uma faixa - capa + título em cima, progresso em baixo e os
+   três botões à direita. Sem faixa a tocar o lock.js não cria nada (o .lock-np fica sem .on, logo escondido).
+   Fica na folga entre as notificações (bottom 300) e os atalhos (bottom 44, 52 px de altura): não tapa nenhum. */
+.lock-np{ position:absolute; left:14px; right:14px; bottom:124px; display:none }
+.lock-np.on{ display:block }
+.lock-np .cc-mod.music{ display:grid; grid-template-columns:minmax(0,1fr) auto; grid-template-rows:auto auto; align-items:center; gap:6px 12px;
+  padding:13px 16px; border-radius:24px; box-shadow:inset 0 1px 0 rgba(255,255,255,.26), 0 8px 22px rgba(0,0,0,.22) }
+.lock-np .cc-mod.music .row{ grid-column:1; grid-row:1 }
+.lock-np .cc-mod.music .cc-prog{ grid-column:1; grid-row:2 }
+.lock-np .cc-mod.music .ctl{ grid-column:2; grid-row:1 / span 2; gap:14px; padding:0 }
+.lock-np .cc-mod.music .art{ width:52px; height:52px; border-radius:12px }
+.lock-np .cc-mod.music .t{ font-size:16px; font-weight:600 } .lock-np .cc-mod.music .a{ font-size:13px }
+.lock-np .cc-mod.music .ctl svg{ width:26px; height:26px } .lock-np .cc-mod.music .ctl .play svg{ width:34px; height:34px }
+/* a tocar com o teclado do código aberto: o cartão sai com o resto do .lock-p1 (opacity/transform) */
+/* ⚠️ com o relógio AO MEIO as notificações vão até 128 px do fundo (ver a regra data-clockpos="middle" mais
+   abaixo) e o cartão ficava POR CIMA delas. Com o cartão no ar (o lock.js põe .has-np no #lock) as notificações
+   sobem o suficiente para o cartão caber por baixo. O CEF não tem :has(), daí a classe. */
+#lock.has-np[data-clockpos="middle"] .lock-notifs,body[data-clocksize] #lock.has-np[data-clockpos="middle"] .lock-notifs{ bottom:232px }
+
+/* ===== Código bloqueado pelo servidor (demasiadas tentativas): teclado apagado com contagem na etiqueta ===== */
+#lock.cool .keypad{ opacity:.32; pointer-events:none; transition:opacity .3s }
+#lock.cool .dots{ opacity:.4 }
+
+/* ===== Relógio: alinhamento, posição e estilo (galeria › Personalizar › Relógio; atributos escritos por Lock.applyClock) =====
+   Nada disto anima: são posições fixas por atributo (sem transição de top/left). */
+#lock[data-clockalign="left"] .lock-clockwrap{ align-items:flex-start; padding-left:30px }
+#lock[data-clockalign="right"] .lock-clockwrap{ align-items:flex-end; padding-right:30px }
+#lock[data-clockalign="left"] .lock-p1{ align-items:flex-start; padding-left:30px; box-sizing:border-box }
+#lock[data-clockalign="right"] .lock-p1{ align-items:flex-end; padding-right:30px; box-sizing:border-box }
+#lock[data-clockalign="left"] .lock-shortcuts,#lock[data-clockalign="right"] .lock-shortcuts{ left:44px; right:44px }
+/* a meio do ecrã: o relógio desce 234 px e as notificações passam para baixo dele (a caixa continua a rolar) */
+#lock[data-clockpos="middle"] .lock-clockwrap{ top:290px }
+/* 1.4.0: as mesmas fórmulas do topo, com o relógio 234 px mais abaixo (k = 1 → 444 / 540, os números de sempre) */
+#lock[data-clockpos="middle"] .lock-top{ height:calc(166px * var(--clock-kx) * var(--clock-sy) + 278px) }
+#lock[data-clockpos="middle"] .lock-notifs,body[data-clocksize] #lock[data-clockpos="middle"] .lock-notifs{ top:calc(166px * var(--clock-kx) * var(--clock-sy) + 374px); bottom:196px }
+/* sólido: cor cheia (a do relógio), sem o vidro */
+#lock[data-clockstyle="solid"] .lock-clock .n{ background:none; color:rgb(var(--clock-rgb,255,255,255)); text-shadow:0 1px 14px rgba(0,0,0,.18) }
+/* contorno: -webkit-text-stroke. A Bahnschrift é VARIÁVEL e o contorno riscava linhas dentro dos dígitos (ver acima). A Inter do projeto
+   (fonts/Inter-var-*.woff2, que também é a "arredondada") é variável e riscava da mesma maneira (o pé do "1", o "5"). A Arial é ESTÁTICA
+   (sem contornos sobrepostos) e existe em todos os Windows, por isso é a do contorno; a mono fica com a sua. */
+#lock[data-clockstyle="outline"] .lock-clock .n{ background:none; color:transparent; -webkit-text-stroke:2.5px rgba(var(--clock-rgb,255,255,255),.95) }
+body:not([data-clockfont="mono"]) #lock[data-clockstyle="outline"] .lock-clock{ font-family:Arial,'Segoe UI',sans-serif; font-stretch:normal }
+/* a Arial é muito mais larga do que a Bahnschrift condensada ("15:49" grande: 446 px contra 356) e o contorno saía do ecrã, sobretudo
+   alinhado a um lado. Aperta-se na horizontal por um transform ESTÁTICO (não anima), como o scaleY(1.18) de sempre. */
+/* 1.4.0: o esticão vertical do tamanho contínuo (--clock-sy) multiplica também aqui (o aperto horizontal de ,8 não muda) */
+body:not([data-clockfont="mono"]) #lock[data-clockstyle="outline"] .lock-clock{ transform:scale(.8,calc(1.18 * var(--clock-sy) * var(--num-sy,1))) }
+/* arredondada e mono também medem 437-500 px: encostadas a um lado (com a margem de 30 px) cortavam o último dígito */
+body[data-clockfont="rounded"] #lock[data-clockalign="left"] .lock-clock,body[data-clockfont="rounded"] #lock[data-clockalign="right"] .lock-clock,
+body[data-clockfont="mono"] #lock[data-clockalign="left"] .lock-clock,body[data-clockfont="mono"] #lock[data-clockalign="right"] .lock-clock{ transform:scale(.8,calc(1.18 * var(--clock-sy) * var(--num-sy,1))) }
+/* o aperto parte do lado alinhado, para o relógio ficar encostado à margem */
+#lock[data-clockalign="left"] .lock-clock{ transform-origin:0 0 } #lock[data-clockalign="right"] .lock-clock{ transform-origin:100% 0 }
+
+/* ===== PEARPHONE FOLD (contrato v2): o ecrã bloqueado nos dois estados, como nas referências do dono =====
+   FECHADO (imagem 9, 670×956): a data e o relógio ALTO ficam na zona da esquerda (a coluna da direita é da câmara, do widget
+   redondo e dos atalhos), a lanterna e a câmara EMPILHADAS em baixo à direita, o widget redondo por baixo da câmara do ecrã.
+   ABERTO (imagem 10, 1340×956): a data e o relógio ao centro em cima, o widget redondo em cima à direita, os atalhos empilhados
+   em baixo à direita e as notificações numa coluna de 500 ao centro. --lk-fs é o tamanho do relógio (segue o tamanho escolhido
+   na galeria). Tudo debaixo de body.os-ios.form-fold: o PearPhone 18 não muda um píxel. */
+/* Duo (2026-10-03): numerais ALTOS e estreitos com ~240 / 250 px de altura (fechado / aberto): no dobrável o esticão vertical passa
+   de 1,18 a 1,4 (o aperto horizontal de .8 das variantes largas continua) e a fonte é a que cabe na zona de conteúdo fechada
+   ("09:30" com ~490 nos 548). A altura reservada e o topo das notificações seguem o esticão (.8em × 1,4 = 1,12em). A data de 26
+   semibold com o centro a ~72 do topo e os dígitos a começar a ~110 */
+/* 1.4.0: as três predefinições (206/240/250 fechado, 218/252/272 aberto) passam a 240 / 252 × --clock-kx, com o resto do tamanho
+   (--clock-sy) no esticão vertical (1,4 × sy) e em todas as alturas derivadas (.8em × 1,4 × sy = 1,12em × sy). Fechado a largura
+   para a esquerda da barra é de 548 px e "09:30" mede ~490 a 240 px: o tamanho de letra fica limitado a 250 px (o "grande" de
+   antes, ~510 px) e o que passar disso cresce só na vertical - nunca há dígitos a fugir para a barra. Aberto há largura de sobra. */
+body.os-ios.form-fold.fold-closed{ --lk-fs:min(calc(240px * var(--clock-kx)), 250px) } body.os-ios.form-fold.fold-open{ --lk-fs:calc(252px * var(--clock-kx)) }
+/* (o relógio compacto e a lista aberta que precisa de espaço, liquid27.css secção 5, continuam a valer: ficam de fora daqui) */
+body.os-ios.form-fold:not([data-clock="compact"]) #lock:not(.nc-scroll) .lock-clock,body.os-ios.form-fold:not([data-clock="compact"]) #lock:not(.nc-scroll) .lock-clock.wide{ font-size:var(--lk-fs); letter-spacing:-2px }
+body.os-ios.form-fold:not([data-clock="compact"]) #lock:not(.nc-scroll) .lock-clock{ transform:scaleY(calc(1.4 * var(--clock-sy) * var(--num-sy,1))) }
+body.os-ios.form-fold:not([data-clock="compact"]):not([data-clockfont="mono"]) #lock[data-clockstyle="outline"]:not(.nc-scroll) .lock-clock,
+body.os-ios.form-fold[data-clockfont="rounded"]:not([data-clock="compact"]) #lock[data-clockalign="left"]:not(.nc-scroll) .lock-clock,
+body.os-ios.form-fold[data-clockfont="rounded"]:not([data-clock="compact"]) #lock[data-clockalign="right"]:not(.nc-scroll) .lock-clock,
+body.os-ios.form-fold[data-clockfont="mono"]:not([data-clock="compact"]) #lock[data-clockalign="left"]:not(.nc-scroll) .lock-clock,
+body.os-ios.form-fold[data-clockfont="mono"]:not([data-clock="compact"]) #lock[data-clockalign="right"]:not(.nc-scroll) .lock-clock{ transform:scale(.8,calc(1.4 * var(--clock-sy) * var(--num-sy,1))) }
+/* arredondada e mono são mais largas: fechado, encostadas a um lado, o primeiro dígito saía do ecrã */
+body.os-ios.form-fold.fold-closed[data-clockfont="rounded"]:not([data-clock="compact"]) #lock:not(.nc-scroll) .lock-clock,body.os-ios.form-fold.fold-closed[data-clockfont="rounded"]:not([data-clock="compact"]) #lock:not(.nc-scroll) .lock-clock.wide,
+body.os-ios.form-fold.fold-closed[data-clockfont="mono"]:not([data-clock="compact"]) #lock:not(.nc-scroll) .lock-clock,body.os-ios.form-fold.fold-closed[data-clockfont="mono"]:not([data-clock="compact"]) #lock:not(.nc-scroll) .lock-clock.wide{ font-size:calc(var(--lk-fs) * .92) }
+body.os-ios.form-fold:not([data-clock="compact"]) #lock:not(.nc-scroll) .lock-top{ height:calc(var(--lk-fs) * 1.12 * var(--clock-sy) + 60px) }
+body.os-ios.form-fold:not([data-clock="compact"]) #lock:not(.nc-scroll) .lock-date{ font-size:26px; font-weight:600; line-height:31px; margin-bottom:-27px }
+body.os-ios.form-fold:not([data-clock="compact"]) #lock:not(.nc-scroll) .lock-clockwrap{ top:30px }
+/* galeria em Personalizar (lockgallery.css): o cadeado sai do fluxo e o topo desce os mesmos 26 (a data e a hora não se mexem); a
+   moldura desce para lá da tinta dos dígitos (o esticão de 1,4 pinta .32em abaixo da caixa) */
+/* 1.4.1: as molduras do editor no Fold (data e hora separadas, top, folgas) vivem no lockeditor.css, como as do telemóvel */
+/* tinta do relógio do Duo (clockInk): branco .92 em cima a .45 em baixo, sem a luz diagonal (lia-se mal em fundos claros), e a
+   auréola (bloom) por baixo: uma cópia de cada algarismo (o data-c do slot, lock.js) só com text-shadow, atrás dos dígitos (o
+   text-shadow no próprio dígito recortado pintava por cima do gradiente). Só no relógio de vidro (o sólido e o contorno ficam) */
+body.os-ios.form-fold:not([data-clock="compact"]) #lock:not(.nc-scroll):not([data-clockstyle="solid"]):not([data-clockstyle="outline"]) .lock-clock .n{
+  background-image:linear-gradient(180deg, rgba(var(--clock-rgb,255,255,255),.92) 0%, rgba(var(--clock-rgb,255,255,255),.45) 100%) }
+body.os-ios.form-fold:not([data-clock="compact"]) #lock:not(.nc-scroll) .lock-clock .d,body.os-ios.form-fold:not([data-clock="compact"]) #lock:not(.nc-scroll) .lock-clock .c{ padding:40px 26px; margin:-40px -26px }
+body.os-ios.form-fold:not([data-clock="compact"]) #lock:not(.nc-scroll) .lock-clock .d .n.out{ left:26px }
+body.os-ios.form-fold:not([data-clock="compact"]) #lock:not(.nc-scroll):not([data-clockstyle="solid"]):not([data-clockstyle="outline"]) .lock-clock .d::before,
+body.os-ios.form-fold:not([data-clock="compact"]) #lock:not(.nc-scroll):not([data-clockstyle="solid"]):not([data-clockstyle="outline"]) .lock-clock .c::before{
+  content:attr(data-c); position:absolute; left:26px; top:40px; z-index:-1; color:transparent; text-shadow:0 5px 24px rgba(20,20,40,.35); pointer-events:none }
+/* fechado: a coluna do relógio acaba antes da barra direita (câmara, anel de estado e atalhos vivem nela, --rail-w) */
+body.os-ios.form-fold.fold-closed #lock .lock-clockwrap{ padding-right:var(--rail-w) }
+/* 1.4.1: e a linha de widgets por baixo da hora: centrava-se no ecrã inteiro, 61 px à direita dos dígitos, a meter-se na coluna da barra */
+body.os-ios.form-fold.fold-closed #lock .lock-p1{ padding-right:var(--rail-w); box-sizing:border-box }
+/* o teclado do código também: a hora pequena, "Introduzir código", os pontos, as teclas e Emergência / Cancelar ao centro da
+   mesma zona (subir o relógio já não puxa nada para a barra); o fundo desfocado (::before) continua a tapar o ecrã inteiro */
+body.os-ios.form-fold.fold-closed #lock .lock-p2{ padding-right:var(--rail-w) }
+body.os-ios.form-fold.fold-closed #lock .pc-clock{ right:var(--rail-w) }
+body.os-ios.form-fold.fold-closed #lock[data-clockalign="left"] .lock-clockwrap{ padding-left:34px }
+body.os-ios.form-fold.fold-closed #lock[data-clockalign="right"] .lock-clockwrap{ padding-right:calc(var(--rail-w) + 12px) }
+/* notificações e "A tocar": fechado à esquerda da coluna dos atalhos; aberto numa coluna de 500 ao centro. Ficam por baixo do relógio */
+body.os-ios.form-fold:not([data-clock="compact"]) #lock:not(.nc-scroll) .lock-notifs{ top:calc(var(--lk-fs) * 1.12 * var(--clock-sy) + 168px) }
+body.os-ios.form-fold #lock .lock-notifs,body.os-ios.form-fold #lock[data-clockpos] .lock-notifs{ bottom:44px }
+body.os-ios.form-fold #lock.has-np .lock-notifs,body.os-ios.form-fold #lock.has-np[data-clockpos] .lock-notifs{ bottom:162px }
+body.os-ios.form-fold.fold-closed #lock .lock-notifs{ padding-left:20px; padding-right:calc(var(--rail-w) + 10px) }
+body.os-ios.form-fold.fold-open #lock .lock-notifs{ padding-left:calc(50% - 300px); padding-right:calc(50% - 300px) }   /* Duo: coluna de 600 */
+body.os-ios.form-fold #lock .lock-np{ bottom:44px }
+body.os-ios.form-fold.fold-closed #lock .lock-np{ left:20px; right:calc(var(--rail-w) + 10px) }
+body.os-ios.form-fold.fold-open #lock .lock-np{ left:calc(50% - 300px); right:calc(50% - 300px) }
+/* relógio a meio do ecrã (galeria): desce, e as notificações ficam por baixo dele */
+body.os-ios.form-fold:not([data-clock="compact"]) #lock[data-clockpos="middle"]:not(.nc-scroll) .lock-clockwrap{ top:250px }
+body.os-ios.form-fold:not([data-clock="compact"]) #lock[data-clockpos="middle"]:not(.nc-scroll) .lock-top{ height:calc(var(--lk-fs) * 1.12 * var(--clock-sy) + 254px) }
+body.os-ios.form-fold:not([data-clock="compact"]) #lock[data-clockpos="middle"]:not(.nc-scroll) .lock-notifs{ top:calc(var(--lk-fs) * 1.12 * var(--clock-sy) + 362px) }
+/* atalhos: EMPILHADOS em baixo à direita, no eixo da barra direita (lanterna em cima, câmara em baixo; referências 9 e 10) */
+/* Duo: círculos de 64 no eixo (o passo de 95 mantém-se: 64 + 31 fechado, 64 + 29 aberto) */
+body.os-ios.form-fold #lock .lock-shortcuts,body.os-ios.form-fold #lock[data-clockalign] .lock-shortcuts{ left:auto; right:calc(var(--rail-x) - 32px); bottom:62px; width:64px; flex-direction:column; justify-content:flex-end; gap:31px }
+body.os-ios.form-fold.fold-open #lock .lock-shortcuts,body.os-ios.form-fold.fold-open #lock[data-clockalign] .lock-shortcuts{ bottom:58px; gap:29px }
+body.os-ios.form-fold #lock .ls-btn{ width:64px; height:64px } body.os-ios.form-fold #lock .ls-btn svg{ width:28px; height:28px }
+/* atalhos em vidro como a barra: a cópia desfocada do fundo do bloqueado no sítio de cada botão (--gx/--gy, system.js Rail), com a
+   lavagem do Duo e a tinta branca .18, aro e luz de 1 px, sem sombra por fora; lanterna acesa continua branca */
+body.os-ios.form-fold #lock .ls-btn{ border:none; background:linear-gradient(rgba(255,255,255,.18),rgba(255,255,255,.18)),var(--fold-wash,linear-gradient(transparent,transparent)),var(--wp-lock-blur,var(--wp-lock,#1C1C1E));
+  background-repeat:no-repeat; background-size:auto,var(--screen-w) 956px,var(--screen-w) 956px;
+  background-position:0 0,calc(-1 * var(--gx,0px)) calc(-1 * var(--gy,0px)),calc(-1 * var(--gx,0px)) calc(-1 * var(--gy,0px));
+  box-shadow:inset 0 0 0 .5px rgba(255,255,255,.22),inset 0 1px 0 rgba(255,255,255,.35) }
+body.os-ios.form-fold #screen #lock .ls-btn.on{ background:#fff }
+/* o widget redondo antigo (lock.js .lock-ring) deu lugar ao ANEL DE ESTADO da barra direita, que também se vê bloqueado */
+.lock-ring{ display:none }
+/* teclado do código: "Emergência" e "Cancelar" à distância de um telemóvel, nunca nas pontas do ecrã largo */
+body.os-ios.form-fold #lock .lock-bottom{ padding-left:calc(50% - 178px); padding-right:calc(50% - 178px) }
+/* 4 out (pedido do dono): as notificacoes do ecra bloqueado acabavam a 112 px do fundo, coladas a lanterna/camara; como no PearOS real ficam um cartao acima desses botoes (bottom 196) */
+
+/* ===== WIDGETS DO ECRÃ BLOQUEADO (PearOS 17; lock.js LKW, galeria › Personalizar › Adicionar widgets) =====
+   Linha de 4 lugares por baixo da hora: redondo 66×66 (1 lugar), retangular 144×66 (2 lugares), 12 px entre eles.
+   Monocromáticos na cor da hora (--clock-rgb, escrita pelo System; nos cartões da galeria vem inline), como no PearPhone.
+   Os redondos têm o disco translúcido; os retangulares só texto. Sem backdrop-filter. Nada anima a não ser o sair com a lista. */
+#lock .lock-widgets.lkw-row{ flex:none; gap:12px; align-items:center; justify-content:center; transition:opacity .2s, transform .3s var(--curve) }
+#lock.lkw-on .lock-widgets.lkw-row{ height:66px }
+.lkw{ position:relative; flex:none; height:66px; color:rgb(var(--clock-rgb,255,255,255)); text-shadow:0 1px 6px rgba(0,0,0,.22); cursor:default; -webkit-tap-highlight-color:transparent }
+.lkw-c{ width:66px; border-radius:50%; background:rgba(255,255,255,.16); box-shadow:inset 0 0 0 .5px rgba(255,255,255,.14) }
+.lkw-r{ width:144px }
+.lkw-in{ position:absolute; inset:0 }
+.lkw-g{ position:absolute; left:0; top:0; width:66px; height:66px; overflow:visible }
+.lkw-g circle{ fill:none; stroke:currentColor; stroke-width:5; stroke-linecap:round }
+.lkw-g .t{ opacity:.3 } .lkw-g .d{ fill:currentColor; stroke:rgba(0,0,0,.28); stroke-width:1.5 }
+.lkw-m{ position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:1px }
+.lkw-m svg{ width:19px; height:19px; stroke-width:2.2 }
+.lkw-m b{ font-size:13px; font-weight:700; line-height:15px; letter-spacing:-.2px; font-variant-numeric:tabular-nums; white-space:nowrap }
+.lkw-m b.big{ font-size:17px; line-height:19px; margin-top:-4px }
+.lkw-k-weather .lkw-m{ gap:0; margin-top:-3px } .lkw-k-weather .lkw-m svg{ width:14px; height:14px } .lkw-k-weather .lkw-m b{ font-size:18px; line-height:20px }
+.lkw-lo,.lkw-hi{ position:absolute; bottom:3px; font-size:9.5px; font-weight:700; line-height:11px; opacity:.85 } .lkw-lo{ left:13px } .lkw-hi{ right:12px }
+.lkw-b{ position:absolute; left:0; right:0; bottom:4px; display:flex; justify-content:center } .lkw-b svg{ width:13px; height:13px; stroke-width:2.4 }
+.lkw-day{ gap:0 } .lkw-day span{ font-size:11px; font-weight:700; line-height:13px; text-transform:uppercase; letter-spacing:.3px; opacity:.85 } .lkw-day b{ font-size:26px; font-weight:600; line-height:28px }
+.lkw-r .lkw-in{ display:flex; flex-direction:column; justify-content:center; gap:1px; min-width:0; text-align:left }
+.lkw-h{ display:flex; align-items:center; gap:4px; height:16px; font-size:11.5px; font-weight:700; letter-spacing:.3px; text-transform:uppercase; opacity:.78; white-space:nowrap; overflow:hidden }
+.lkw-h svg{ flex:none; width:13px; height:13px; stroke-width:2.4 } .lkw-h span{ overflow:hidden; text-overflow:ellipsis }
+.lkw-r b{ font-size:15px; font-weight:700; line-height:19px; letter-spacing:-.2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+.lkw-s{ font-size:14px; font-weight:500; line-height:18px; opacity:.78; white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+.lkw-rm{ display:none }
+/* 1.4.0 (PearOS 27): widgets de contagem (Mensagens, Notas, Temporizador: glifo + número) e o Mail como no iOS (número grande,
+   "novos" pequeno, envelope em baixo). Mesma tinta (--clock-rgb) e mesmo disco dos outros redondos. */
+.lkw-cnt b{ font-size:15px; line-height:17px } .lkw-cnt b.off{ opacity:.7 }
+.lkw-u{ font-size:10px; font-weight:700; line-height:12px; letter-spacing:.1px; opacity:.85; white-space:nowrap; max-width:56px; overflow:hidden; text-overflow:ellipsis }
+.lkw-k-mail .lkw-m{ gap:0; margin-top:-9px } .lkw-k-mail .lkw-m b{ font-size:20px; line-height:22px }
+.lkw-k-mail .lkw-b{ bottom:6px } .lkw-k-mail .lkw-b svg{ width:14px; height:14px; stroke-width:2.2 }
+/* com a lista de notificações aberta (relógio compacto) a linha sai, como no PearPhone */
+#lock.nc-scroll .lock-widgets.lkw-row{ opacity:0; pointer-events:none; transform:translateY(-14px) }
+/* as notificações começam por baixo da linha de widgets (66 px em vez da faixa de 30): o topo da caixa desce o que a linha cresce
+   (= .lock-top + 134 em qualquer tamanho: 1.4.0 → 166 × k + 178, e ao meio + 412; k = 1 → 344 / 578 como antes). O relógio
+   compacto e a lista aberta (nc-scroll) ignoram o tamanho e ficam fixos. */
+body[data-clocksize] #lock.lkw-on .lock-notifs{ top:calc(166px * var(--clock-kx) * var(--clock-sy) + 178px) }
+body[data-clocksize] #lock.lkw-on[data-clockpos="middle"] .lock-notifs{ top:calc(166px * var(--clock-kx) * var(--clock-sy) + 412px) }
+body[data-clock="compact"][data-clocksize] #lock.lkw-on .lock-notifs{ top:190px }
+body[data-clocksize] #lock.lkw-on.nc-scroll .lock-notifs{ top:160px }
+body.os-ios.form-fold:not([data-clock="compact"]) #lock.lkw-on:not(.nc-scroll) .lock-notifs{ top:calc(var(--lk-fs) * 1.12 * var(--clock-sy) + 194px) }
+body.os-ios.form-fold:not([data-clock="compact"]) #lock.lkw-on[data-clockpos="middle"]:not(.nc-scroll) .lock-notifs{ top:calc(var(--lk-fs) * 1.12 * var(--clock-sy) + 388px) }
+
+/* ===== FONTES DA HORA (galeria › Fonte e cor; lockgallery.js FONTS tem as mesmas, para as amostras e os cartões) =====
+   Depois das regras do peso antigo (data-clockweight): nas fontes novas manda o peso da própria fonte (ou o da barra). O relógio
+   compacto e o contorno continuam com as regras deles (mais fortes). O fator de tamanho vai nos dígitos (em), para a hora caber. */
+body[data-clockfont="wide"] .lock-clock{ font-stretch:normal; font-weight:500; letter-spacing:-3px }
+body[data-clockfont="geo"] .lock-clock{ font-family:'Outfit',Inter,sans-serif; font-stretch:normal; font-weight:600; letter-spacing:-3px }
+body[data-clockfont="heavy"] .lock-clock{ font-family:'Outfit',Inter,sans-serif; font-stretch:normal; font-weight:900; letter-spacing:-3px }
+body[data-clockfont="serif"] .lock-clock{ font-family:Cambria,'Times New Roman',serif; font-stretch:normal; font-weight:400; letter-spacing:-3px }
+body[data-clockfont="italic"] .lock-clock{ font-family:'Times New Roman',Times,serif; font-stretch:normal; font-style:italic; font-weight:400; letter-spacing:-3px }
+body[data-clockfont="script"] .lock-clock{ font-family:'MonteCarlo',cursive; font-stretch:normal; font-weight:400; letter-spacing:0 }
+body[data-clockfont="poster"] .lock-clock{ font-family:Impact,'Arial Narrow',sans-serif; font-stretch:normal; font-weight:400; letter-spacing:-1px }
+body[data-clockfont="block"] .lock-clock{ font-family:'Arial Black',Arial,sans-serif; font-stretch:normal; font-weight:900; letter-spacing:-4px }
+body[data-clockfont="geo"]:not([data-clock="compact"]) #lock:not(.nc-scroll) .lock-clock .d,body[data-clockfont="geo"]:not([data-clock="compact"]) #lock:not(.nc-scroll) .lock-clock .c{ font-size:.95em }
+body[data-clockfont="heavy"]:not([data-clock="compact"]) #lock:not(.nc-scroll) .lock-clock .d,body[data-clockfont="heavy"]:not([data-clock="compact"]) #lock:not(.nc-scroll) .lock-clock .c{ font-size:.9em }
+body[data-clockfont="serif"]:not([data-clock="compact"]) #lock:not(.nc-scroll) .lock-clock .d,body[data-clockfont="serif"]:not([data-clock="compact"]) #lock:not(.nc-scroll) .lock-clock .c{ font-size:.94em }
+body[data-clockfont="block"]:not([data-clock="compact"]) #lock:not(.nc-scroll) .lock-clock .d,body[data-clockfont="block"]:not([data-clock="compact"]) #lock:not(.nc-scroll) .lock-clock .c{ font-size:.78em }
+/* peso exato (barra de "Fonte e cor" nas fontes variáveis): System.apply escreve --clock-wght e body[data-clockwght="1"] */
+body[data-clockwght="1"]:not([data-clock="compact"]) #lock:not(.nc-scroll) .lock-clock{ font-weight:var(--clock-wght,600) }
+
+/* ===== 1.4.0 (PearOS 27): SISTEMAS DE NUMERAÇÃO (Fonte e cor › globo; lock.js NUMERALS / clockText) =====
+   A Bahnschrift (e as outras fontes da hora) só têm algarismos ocidentais: com outro sistema o relógio do #lock passa para as fontes
+   do Windows do jogo que os têm (Nirmala UI: indianos; Leelawadee UI: tailandês/laosiano; Khmer UI; Microsoft Himalaya: tibetano;
+   Myanmar Text; YaHei: chinês; Segoe UI: árabe e persa), sem o aperto de 75 %. Só no #lock (os cartões da galeria tratam dos
+   deles): body[data-numerals] é do ecrã atual e não pode mudar a letra dos algarismos ocidentais de um cartão vizinho. Mais peso
+   do que as fontes (body[data-clockfont]) e do que o contorno (que forçava Arial, sem estes algarismos). */
+body[data-numerals]:not([data-numerals="latn"]) #lock .lock-clock,body[data-numerals]:not([data-numerals="latn"]) #lock .lock-clock.wide{
+  font-family:'Segoe UI','Nirmala UI','Leelawadee UI','Khmer UI','Lao UI','Microsoft Himalaya','Myanmar Text','Microsoft YaHei',sans-serif; font-stretch:normal; font-style:normal; letter-spacing:-2px }
+/* LARGURA: estes algarismos são bem mais largos do que os da Bahnschrift condensada (o chinês é quadrado: "二三:五三" a 184 px media
+   ~760 px e saía do ecrã). Fator por sistema nos dígitos (em, como o das fontes), medido nas fontes do Windows: a largura do
+   algarismo MAIS largo de cada sistema × 4 + os dois pontos cabe na mesma largura que "88:88" ocidental - cabe nos 440 px em
+   qualquer tamanho (k até 1,75, o kx pára em 1,15). Os dois pontos levam o mesmo fator (do tamanho dos dígitos, senão eram enormes
+   ao lado deles) e tudo fica centrado na caixa do relógio; o relógio compacto e a lista aberta ficam como estão (34 px, sem problema de largura). */
+/* ALTURA: a Segoe UI / Nirmala têm o ascendente maior do que a Bahnschrift e, com line-height 1, a linha de base ficava a ~.91em
+   (a da Bahnschrift está a ~.81em): os dois pontos e os dígitos desciam ~.1em e tocavam na linha de widgets. line-height .8 põe a
+   linha de base no mesmo sítio da hora ocidental (medido em todos os sistemas, k = 1 e 1,75) */
+body[data-numerals]:not([data-numerals="latn"]):not([data-clock="compact"]) #lock:not(.nc-scroll) .lock-clock{ align-items:center; line-height:.8 }
+body[data-numerals="arab"]:not([data-clock="compact"]) #lock:not(.nc-scroll) .lock-clock .d,body[data-numerals="arab"]:not([data-clock="compact"]) #lock:not(.nc-scroll) .lock-clock .c,body[data-numerals="arabext"]:not([data-clock="compact"]) #lock:not(.nc-scroll) .lock-clock .d,body[data-numerals="arabext"]:not([data-clock="compact"]) #lock:not(.nc-scroll) .lock-clock .c{ font-size:.83em }
+body[data-numerals="deva"]:not([data-clock="compact"]) #lock:not(.nc-scroll) .lock-clock .d,body[data-numerals="deva"]:not([data-clock="compact"]) #lock:not(.nc-scroll) .lock-clock .c{ font-size:.72em }
+body[data-numerals="beng"]:not([data-clock="compact"]) #lock:not(.nc-scroll) .lock-clock .d,body[data-numerals="beng"]:not([data-clock="compact"]) #lock:not(.nc-scroll) .lock-clock .c{ font-size:.58em }
+body[data-numerals="guru"]:not([data-clock="compact"]) #lock:not(.nc-scroll) .lock-clock .d,body[data-numerals="guru"]:not([data-clock="compact"]) #lock:not(.nc-scroll) .lock-clock .c{ font-size:.8em }
+body[data-numerals="gujr"]:not([data-clock="compact"]) #lock:not(.nc-scroll) .lock-clock .d,body[data-numerals="gujr"]:not([data-clock="compact"]) #lock:not(.nc-scroll) .lock-clock .c{ font-size:.71em }
+body[data-numerals="taml"]:not([data-clock="compact"]) #lock:not(.nc-scroll) .lock-clock .d,body[data-numerals="taml"]:not([data-clock="compact"]) #lock:not(.nc-scroll) .lock-clock .c{ font-size:.48em }
+body[data-numerals="telu"]:not([data-clock="compact"]) #lock:not(.nc-scroll) .lock-clock .d,body[data-numerals="telu"]:not([data-clock="compact"]) #lock:not(.nc-scroll) .lock-clock .c{ font-size:.59em }
+body[data-numerals="knda"]:not([data-clock="compact"]) #lock:not(.nc-scroll) .lock-clock .d,body[data-numerals="knda"]:not([data-clock="compact"]) #lock:not(.nc-scroll) .lock-clock .c{ font-size:.63em }
+body[data-numerals="mlym"]:not([data-clock="compact"]) #lock:not(.nc-scroll) .lock-clock .d,body[data-numerals="mlym"]:not([data-clock="compact"]) #lock:not(.nc-scroll) .lock-clock .c{ font-size:.52em }
+body[data-numerals="thai"]:not([data-clock="compact"]) #lock:not(.nc-scroll) .lock-clock .d,body[data-numerals="thai"]:not([data-clock="compact"]) #lock:not(.nc-scroll) .lock-clock .c{ font-size:.56em }
+body[data-numerals="laoo"]:not([data-clock="compact"]) #lock:not(.nc-scroll) .lock-clock .d,body[data-numerals="laoo"]:not([data-clock="compact"]) #lock:not(.nc-scroll) .lock-clock .c{ font-size:.55em }
+body[data-numerals="khmr"]:not([data-clock="compact"]) #lock:not(.nc-scroll) .lock-clock .d,body[data-numerals="khmr"]:not([data-clock="compact"]) #lock:not(.nc-scroll) .lock-clock .c{ font-size:.61em }
+body[data-numerals="tibt"]:not([data-clock="compact"]) #lock:not(.nc-scroll) .lock-clock .d,body[data-numerals="tibt"]:not([data-clock="compact"]) #lock:not(.nc-scroll) .lock-clock .c{ font-size:.68em }
+body[data-numerals="mymr"]:not([data-clock="compact"]) #lock:not(.nc-scroll) .lock-clock .d,body[data-numerals="mymr"]:not([data-clock="compact"]) #lock:not(.nc-scroll) .lock-clock .c{ font-size:.8em }
+body[data-numerals="hanidec"]:not([data-clock="compact"]) #lock:not(.nc-scroll) .lock-clock .d,body[data-numerals="hanidec"]:not([data-clock="compact"]) #lock:not(.nc-scroll) .lock-clock .c{ font-size:.49em }
+/* 1.4.1: MÉTRICAS VERTICAIS por sistema. Cada fonte do Windows desenha os algarismos a uma altura diferente e bem mais baixos do que a
+   Bahnschrift esticada (Telugu: tinta de ~70 px contra os 136 do ocidental, a começar 28 px mais abaixo), por isso a moldura do editor
+   ficava com a hora lá dentro a meio e um vazio em baixo. Três números, medidos na TINTA dos dez algarismos de cada sistema (tests/
+   numerals_dev.js + numerals_table.js, a regenerar se mudarem as fontes ou os fatores de largura):
+     --num-sy  esticão vertical extra (o mesmo aspeto alto e estreito do ocidental; no máximo 1,35 para um algarismo redondo não virar
+               outro desenho; a birmanesa é mais alta do que o ocidental e encolhe: fator de largura ,8 no lock.js e no lock.css + ,85 aqui);
+     --num-dy  descida/subida dos dígitos, em em do PRÓPRIO dígito (o top resolve-se no .d, cujo tamanho é o fator de largura): o topo da
+               tinta fica à mesma altura do ocidental (.11em abaixo do topo do relógio), logo a data fica à mesma distância em todos;
+     --num-b   fundo da tinta, em em do RELÓGIO e antes dos esticões: é daqui que sai o fim da moldura da hora (lockeditor.css).
+   Definidas no #lock (sistema do ecrã atual) e em cada .lsg-mock (o sistema DESSE cartão). */
+body[data-numerals]:not([data-numerals="latn"]):not([data-clock="compact"]) #lock:not(.nc-scroll) .lock-clock .d,body[data-numerals]:not([data-numerals="latn"]):not([data-clock="compact"]) #lock:not(.nc-scroll) .lock-clock .c{ top:var(--num-dy,0px) }
+body[data-numerals="arab"] #lock,.lsg-mock[data-numerals="arab"]{ --num-sy:1.187; --num-dy:.005em; --num-b:.679 }
+body[data-numerals="arabext"] #lock,.lsg-mock[data-numerals="arabext"]{ --num-sy:1.187; --num-dy:.005em; --num-b:.679 }
+body[data-numerals="deva"] #lock,.lsg-mock[data-numerals="deva"]{ --num-sy:1.187; --num-dy:-.065em; --num-b:.684 }
+body[data-numerals="beng"] #lock,.lsg-mock[data-numerals="beng"]{ --num-sy:1.35; --num-dy:-.183em; --num-b:.499 }
+body[data-numerals="guru"] #lock,.lsg-mock[data-numerals="guru"]{ --num-sy:1.065; --num-dy:.064em; --num-b:.762 }
+body[data-numerals="gujr"] #lock,.lsg-mock[data-numerals="gujr"]{ --num-sy:1.35; --num-dy:-.079em; --num-b:.583 }
+body[data-numerals="taml"] #lock,.lsg-mock[data-numerals="taml"]{ --num-sy:1.267; --num-dy:-.122em; --num-b:.631 }
+body[data-numerals="telu"] #lock,.lsg-mock[data-numerals="telu"]{ --num-sy:1.35; --num-dy:-.259em; --num-b:.452 }
+body[data-numerals="knda"] #lock,.lsg-mock[data-numerals="knda"]{ --num-sy:1.35; --num-dy:-.252em; --num-b:.452 }
+body[data-numerals="mlym"] #lock,.lsg-mock[data-numerals="mlym"]{ --num-sy:1.14; --num-dy:.038em; --num-b:.718 }
+body[data-numerals="thai"] #lock,.lsg-mock[data-numerals="thai"]{ --num-sy:1.35; --num-dy:-.186em; --num-b:.48 }
+body[data-numerals="laoo"] #lock,.lsg-mock[data-numerals="laoo"]{ --num-sy:1.2; --num-dy:-.067em; --num-b:.682 }
+body[data-numerals="khmr"] #lock,.lsg-mock[data-numerals="khmr"]{ --num-sy:1.35; --num-dy:-.081em; --num-b:.555 }
+body[data-numerals="tibt"] #lock,.lsg-mock[data-numerals="tibt"]{ --num-sy:1.35; --num-dy:-.092em; --num-b:.597 }
+body[data-numerals="mymr"] #lock,.lsg-mock[data-numerals="mymr"]{ --num-sy:.851; --num-dy:.052em; --num-b:.947 }
+body[data-numerals="hanidec"] #lock,.lsg-mock[data-numerals="hanidec"]{ --num-sy:1.35; --num-dy:-.168em; --num-b:.536 }
