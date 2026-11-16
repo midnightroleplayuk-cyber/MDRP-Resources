@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="utf-8">
+<title>Apex Strategy</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div id="app" hidden>
+
+    <!-- ── Barra de cima ─────────────────────────────────── -->
+    <header class="bar">
+        <div class="brand">
+            <!-- SVG embutido: dentro do NUI não se depende de fontes
+                 de ícones nem de ficheiros externos. -->
+            <span class="mark" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="none"
+                     stroke="currentColor" stroke-width="1.9"
+                     stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="2.5" y="3.5" width="19" height="14" rx="1.6"/>
+                    <path d="M12 17.5v3M8.5 20.5h7"/>
+                    <path d="M6.5 13.6l3.6-3.6 2.2 2.2 4-4"/>
+                    <path d="M13.5 6.2h2.8v2.8"/>
+                </svg>
+            </span>
+            <div class="titles">
+                <span class="eyebrow">Apex Strategy</span>
+                <span class="name" id="board-name">Quadro</span>
+            </div>
+        </div>
+
+        <div class="modes" role="tablist">
+            <button class="mode is-on" data-mode="draw">Quadro</button>
+            <button class="mode" data-mode="map">Mapa</button>
+        </div>
+
+        <!-- Fundo do quadro (só no modo quadro) -->
+        <div class="group" id="bg-group">
+            <span class="glabel">Fundo</span>
+            <button class="chip is-on" data-bg="white">Branco</button>
+            <button class="chip" data-bg="grid">Grelha</button>
+            <button class="chip" data-bg="dark">Escuro</button>
+        </div>
+
+        <!-- Enquadramento do mapa (só no modo mapa) -->
+        <div class="group" id="map-group" hidden>
+            <span class="glabel">Zona</span>
+            <!-- Dropdown próprio. O <select> nativo abre uma lista
+                 desenhada pelo sistema, que não aceita estilo nenhum
+                 dentro do CEF. -->
+            <div class="dd" id="preset" data-placeholder="Enquadrar">
+                <button class="dd-btn" type="button">
+                    <span class="dd-label">Enquadrar</span>
+                    <svg class="dd-arrow" viewBox="0 0 10 6" width="10" height="6" aria-hidden="true">
+                        <path d="M1 1l4 4 4-4" fill="none" stroke="currentColor"
+                              stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </button>
+                <div class="dd-list" hidden></div>
+            </div>
+            <button class="chip" id="zoom-out" title="Afastar">&minus;</button>
+            <span class="zoomval" id="zoomval">4.0</span>
+            <button class="chip" id="zoom-in" title="Aproximar">+</button>
+            <button class="chip" id="btn-here" title="Centrar onde estou">Onde estou</button>
+            <button class="chip" id="btn-wp" title="Centrar no waypoint">Waypoint</button>
+        </div>
+
+        <div class="spacer"></div>
+
+        <div class="who" id="who"></div>
+        <button class="btn ghost" id="btn-lock" hidden title="Congela o quadro durante uma operação">Trancar</button>
+        <button class="btn ghost" id="btn-rename" hidden>Nome</button>
+        <button class="btn ghost" id="btn-undo">Anular <kbd>Ctrl+Z</kbd></button>
+        <button class="btn ghost" id="btn-clear">Limpar</button>
+        <button class="btn" id="btn-close">Fechar <kbd>ESC</kbd></button>
+    </header>
+
+    <div class="body">
+
+        <!-- ── Ferramentas ───────────────────────────────── -->
+        <!-- Ícones em SVG desenhado. Nada de glifos de texto nem de
+             emoji: cada tipo de letra desenha-os à sua maneira e no
+             CEF muitos saem como emoji a cores. -->
+        <aside class="rail" id="rail">
+            <button class="tool" data-tool="select" title="Seleccionar e arrastar (S)">
+                <svg viewBox="0 0 24 24"><path d="M12 3v18M3 12h18"/><path d="M12 3l-3 3M12 3l3 3M12 21l-3-3M12 21l3-3M3 12l3-3M3 12l3 3M21 12l-3-3M21 12l-3 3"/></svg>
+                <em>Mexer</em>
+            </button>
+            <div class="rail-sep"></div>
+            <button class="tool is-on" data-tool="pen" title="Marcador (1)">
+                <svg viewBox="0 0 24 24"><path d="M4 20l1-4.5L15.5 5a2.1 2.1 0 013 3L8 18.5 4 20z"/><path d="M13.5 7l3 3"/></svg>
+                <em>Marcador</em>
+            </button>
+            <button class="tool" data-tool="line" title="Linha (2)">
+                <svg viewBox="0 0 24 24"><path d="M4.5 19.5L19.5 4.5"/><circle cx="4.5" cy="19.5" r="2"/><circle cx="19.5" cy="4.5" r="2"/></svg>
+                <em>Linha</em>
+            </button>
+            <button class="tool" data-tool="arrow" title="Seta (3)">
+                <svg viewBox="0 0 24 24"><path d="M4 20L18 6"/><path d="M11 5h8v8" /></svg>
+                <em>Seta</em>
+            </button>
+            <button class="tool" data-tool="rect" title="Rectângulo (4)">
+                <svg viewBox="0 0 24 24"><rect x="3.5" y="5.5" width="17" height="13" rx="1.5"/></svg>
+                <em>Rect.</em>
+            </button>
+            <button class="tool" data-tool="ellipse" title="Círculo (5)">
+                <svg viewBox="0 0 24 24"><ellipse cx="12" cy="12" rx="8.5" ry="7"/></svg>
+                <em>Círculo</em>
+            </button>
+            <button class="tool" data-tool="text" title="Texto (6)">
+                <svg viewBox="0 0 24 24"><path d="M5 6.5V4.5h14v2M12 4.5v15M8.5 19.5h7"/></svg>
+                <em>Texto</em>
+            </button>
+            <button class="tool" data-tool="icon" title="Marcador táctico (7)">
+                <svg viewBox="0 0 24 24"><path d="M12 21s6.5-6 6.5-11a6.5 6.5 0 10-13 0C5.5 15 12 21 12 21z"/><circle cx="12" cy="10" r="2.4"/></svg>
+                <em>Marcador</em>
+            </button>
+            <button class="tool" data-tool="ruler" title="Medir distância (9)">
+                <svg viewBox="0 0 24 24"><path d="M3 12h18"/><path d="M6 8.5v7M12 9.5v5M18 8.5v7"/><path d="M3 9v6M21 9v6"/></svg>
+                <em>Medir</em>
+            </button>
+            <button class="tool" data-tool="erase" title="Apagar (0)">
+                <svg viewBox="0 0 24 24"><path d="M8.5 19.5H20"/><path d="M15.5 4.8l4 4a1.6 1.6 0 010 2.3l-7.2 7.2H7.6l-3.1-3.1a1.6 1.6 0 010-2.3l8.7-8.1a1.6 1.6 0 012.3 0z"/><path d="M8.2 9.6l6.2 6.2"/></svg>
+                <em>Apagar</em>
+            </button>
+            <div class="rail-sep" data-map-only hidden></div>
+            <button class="tool" data-tool="pan" data-map-only hidden title="Arrastar o mapa (P)">
+                <svg viewBox="0 0 24 24"><path d="M9 11V5.6a1.6 1.6 0 013.2 0V11m0-1.2a1.6 1.6 0 113.2 0V11m0-.6a1.6 1.6 0 113.2 0v4.2c0 3.3-2.4 5.9-5.6 5.9h-1.4c-1.4 0-2.4-.5-3.3-1.5l-3.4-4a1.6 1.6 0 012.4-2.1L9 14.6V8.4a1.6 1.6 0 10-.1 0"/></svg>
+                <em>Mapa</em>
+            </button>
+            <button class="tool" data-tool="area" data-map-only hidden title="Enquadrar uma área (A)">
+                <svg viewBox="0 0 24 24"><path d="M4 8.5V4.5h4M20 8.5V4.5h-4M4 15.5v4h4M20 15.5v4h-4"/><rect x="8.5" y="8.5" width="7" height="7" rx="1"/></svg>
+                <em>Área</em>
+            </button>
+        </aside>
+
+        <!-- ── Quadro ────────────────────────────────────── -->
+        <main class="stage" id="stage">
+            <div class="frame" id="frame">
+                <canvas id="board"></canvas>
+                <div class="hint" id="hint"></div>
+                <!-- Editor de texto directamente sobre o quadro: sem
+                     caixa, sem fundo, com a cor e o tamanho reais. -->
+                <div class="textbox" id="textbox" hidden>
+                    <input type="text" id="textinput" maxlength="120" spellcheck="false">
+                    <span class="caret-hint">Enter grava · Esc cancela</span>
+                </div>
+            </div>
+            <div class="readonly" id="readonly" hidden>
+                Só podes ver este quadro. Não tens serviço para escrever.
+            </div>
+            <div class="locked-note" id="locked" hidden>
+                Quadro trancado por um superior. Só ele lhe pode mexer.
+            </div>
+        </main>
+
+        <!-- ── Opções ────────────────────────────────────── -->
+        <aside class="panel">
+            <section>
+                <h4>Cor</h4>
+                <div class="colors" id="colors"></div>
+            </section>
+
+            <section id="sec-width">
+                <h4>Espessura</h4>
+                <div class="widths" id="widths"></div>
+            </section>
+
+            <section id="sec-text" hidden>
+                <h4>Tamanho do texto</h4>
+                <div class="sizes" id="sizes"></div>
+                <label class="switch" style="margin-top:10px">
+                    <input type="checkbox" id="text-outline">
+                    <span>Contorno por trás</span>
+                </label>
+                <p class="muted">Desligado = texto pelado. Liga se estiveres a escrever por cima do mapa.</p>
+            </section>
+
+            <section id="sec-icons" hidden>
+                <h4>Marcadores</h4>
+                <div class="icongroups" id="icons"></div>
+                <label class="field" style="margin-top:12px">
+                    <span>Etiqueta</span>
+                    <input type="text" id="icon-label" maxlength="40" placeholder="ex.: Alfa-1">
+                </label>
+            </section>
+
+            <section id="sec-select" hidden>
+                <h4>Seleccionado</h4>
+                <p class="muted" id="sel-info">Clica num desenho para o agarrar.</p>
+                <div class="selrow">
+                    <button class="chip" id="btn-front" title="Trazer para a frente">Frente</button>
+                    <button class="chip" id="btn-back" title="Enviar para trás">Trás</button>
+                    <button class="chip" id="btn-dup" title="Duplicar (Ctrl+D)">Duplicar</button>
+                </div>
+                <button class="btn ghost" id="btn-del" style="margin-top:9px;width:100%;justify-content:center">
+                    Apagar <kbd>DEL</kbd>
+                </button>
+            </section>
+
+            <section id="sec-units" hidden>
+                <h4>Agentes ao vivo</h4>
+                <label class="switch">
+                    <input type="checkbox" id="units-on" checked>
+                    <span>Mostrar no mapa</span>
+                </label>
+                <p class="muted" id="units-count">-</p>
+            </section>
+
+            <section id="sec-admin" hidden>
+                <h4>Administração</h4>
+                <button class="chip" id="btn-new" style="width:100%;text-align:center">
+                    Pousar outro quadro
+                </button>
+                <button class="chip danger" id="btn-delboard" style="width:100%;text-align:center;margin-top:6px">
+                    Apagar este quadro
+                </button>
+                <p class="muted">Também há <code>/wb</code> e <code>/wbdel</code>.</p>
+            </section>
+
+            <section>
+                <h4>Atalhos</h4>
+                <ul class="keys">
+                    <li><kbd>S</kbd><span>mexer / arrastar</span></li>
+                    <li><kbd>1</kbd>-<kbd>8</kbd><span>ferramentas</span></li>
+                    <li><kbd>DEL</kbd><span>apagar o seleccionado</span></li>
+                    <li><kbd>Ctrl</kbd>+<kbd>Z</kbd><span>anular o meu último</span></li>
+                    <li><kbd>Roda</kbd><span>zoom (no mapa)</span></li>
+                    <li><kbd>Espaço</kbd><span>arrastar o mapa</span></li>
+                    <li><kbd>ESC</kbd><span>fechar</span></li>
+                </ul>
+            </section>
+
+            <div class="foot">
+                <div id="count"></div>
+                <div id="foot"></div>
+            </div>
+        </aside>
+    </div>
+</div>
+
+<div id="toast"></div>
+
+<!-- Caixa de diálogo própria. O window.prompt/confirm do CEF abre uma
+     janela do browser com o endereço cfx-nui-... à mostra, que não
+     tem nada a ver com o jogo. -->
+<div id="modal" hidden>
+    <div class="modal-card">
+        <h3 id="modal-title"></h3>
+        <p id="modal-text"></p>
+        <input type="text" id="modal-input" maxlength="48" hidden spellcheck="false">
+        <div class="modal-actions">
+            <button class="btn ghost" id="modal-cancel">Cancelar</button>
+            <button class="btn" id="modal-ok">Confirmar</button>
+        </div>
+    </div>
+</div>
+
+<script src="js/board.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
