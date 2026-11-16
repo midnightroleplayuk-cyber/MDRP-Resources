@@ -55,7 +55,7 @@ Config.providers = {
     --   'custom'      = Integrations.OnPrompt (your own)
     --   'none'        = no prompt
     -- Customise it fully in shared/integrations.lua.
-    textui    = 'ox_lib',
+    textui    = 'none',
 
     -- Inventory provider for the apex_atm_card item metadata.
     -- ox_inventory is strongly recommended — it lets the card
