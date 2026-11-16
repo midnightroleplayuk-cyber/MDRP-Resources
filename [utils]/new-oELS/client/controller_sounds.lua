@@ -3,7 +3,7 @@ SoundsController = {}
 RegisterNetEvent("oELS:toggleSirens")
 
 AddEventHandler("oELS:toggleSirens", function(player, vehicle, state)
-    MainController.DebugPrint("[ToggleSirens] Request from " .. player .. " to change sirens to " .. tostring(state))
+    MainController.DebugPrint("[ToggleSirens] Request from " .. player .. " to change sirens on vehicle " .. tostring(vehicle) .. " to " .. tostring(state))
 
     vehicleData = MainController.GetVehicleData(vehicle)
 
