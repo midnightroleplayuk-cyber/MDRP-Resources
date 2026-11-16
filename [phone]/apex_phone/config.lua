@@ -1585,7 +1585,7 @@ Config.Shop = {
           } },
         { id = 'slate_buds', name = 'NOVA Buds 4 Pro', brand = 'NOVA', os = 'Bluetooth', categories = { 'audio' }, price = 229,
           tagline = 'Connect to any phone via Bluetooth.',  -- EN: Connect to any phone via Bluetooth.
-          features = { 'Charging case', 'Active noise cancellation', 'MMusic just for you, with your phone in your pocket', 'Hands-free calls' },  -- EN: Charging case | Active noise cancellation | Music just for you, with your phone in your pocket | Hands-free calls
+          features = { 'Charging case', 'Active noise cancellation', 'Music just for you, with your phone in your pocket', 'Hands-free calls' },  -- EN: Charging case | Active noise cancellation | Music just for you, with your phone in your pocket | Hands-free calls
           specs = { battery = '28 h', audio = 'ANC' },
           usage = 'Use the item to put them in, then connect them in Settings > Bluetooth.',  -- EN: Use the item to put them in, then connect them in Settings > Bluetooth.
           viewer = { kind = 'buds', yaw = -0.35, pitch = 0.32, revision = 'nova-all-black-20261112' },
@@ -1860,15 +1860,15 @@ Config.PhysicalSim = {
 if Config.PhysicalSim.enabled == true and Config.PhysicalSim.shopProduct ~= false and type(Config.Shop) == 'table' and type(Config.Shop.products) == 'table' then
     Config.Shop.products[#Config.Shop.products + 1] = {
         -- (texts in Portuguese like the other products: they are translation keys, the shop NUI translates them)
-        id = 'sim_card', name = 'Cartão SIM Apex Mobile', brand = 'Apex Mobile', os = 'SIM', categories = { 'acessorios' },  -- EN: Apex Mobile SIM Card
+        id = 'sim_card', name = 'SIM Midnight Mobile', brand = 'Midnight Mobile', os = 'SIM', categories = { 'acessorios' },  -- EN: Apex Mobile SIM Card
         price = Config.PhysicalSim.shopPrice or 50,
-        tagline = 'Um número novo num cartão. Mete-o em qualquer telemóvel.',  -- EN: A new number on a card. Put it in any phone.
-        features = { 'Um número de telefone novo', 'Serve em todos os PearPhone e NOVA', 'Muda-o de telemóvel e o número vai com ele' },  -- EN: A new phone number | Fits every PearPhone and NOVA | Move it to another phone and the number goes with it
+        tagline = 'A new number on a card. Put it in any phone.',  -- EN: A new number on a card. Put it in any phone.
+        features = { 'A new phone number', 'Fits every PearPhone and NOVA', 'Move it to another phone and the number goes with it' },  -- EN: A new phone number | Fits every PearPhone and NOVA | Move it to another phone and the number goes with it
         specs = { network = '5G' },
-        usage = 'Usa o cartão no inventário para o meteres no telemóvel que tens na mão.',  -- EN: Use the card from your inventory to put it in the phone in your hand.
+        usage = 'Use the card from your inventory to put it in the phone in your hand.',  -- EN: Use the card from your inventory to put it in the phone in your hand.
         viewer = { kind = 'card', yaw = -0.45, pitch = 0.18 },
         variants = {
-            { item = Config.PhysicalSim.item or 'sim_card', color = 'Apex Mobile', swatch = '#1F5EFF', image = 'nui://apex_phone/inventory_images/sim_card.png' },
+            { item = Config.PhysicalSim.item or 'sim_card', color = 'Midnight Mobile', swatch = '#9a1fff', image = 'nui://apex_phone/inventory_images/sim_card.png' },
         },
     }
 end
