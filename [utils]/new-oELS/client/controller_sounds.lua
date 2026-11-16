@@ -36,17 +36,6 @@ AddEventHandler("oELS:toggleBullhorn", function(player, vehicle, state)
     SoundsController.ChangeBullhornState(vehicleData)
 end)
 
--- stops every sound on the vehicle but keeps the states, so they can be restarted
-function SoundsController.StopAll(vehicleData)
-    for _, sound in pairs({vehicleData.sirens, vehicleData.dualSiren, vehicleData.bullhorn}) do
-        if sound.Handle then
-            StopSound(sound.Handle)
-            ReleaseSoundId(sound.Handle)
-            sound.Handle = nil
-        end
-    end
-end
-
 function SoundsController.ChangeSirenTone(vehicleData)
     if not vehicleData.entity then return end
 
