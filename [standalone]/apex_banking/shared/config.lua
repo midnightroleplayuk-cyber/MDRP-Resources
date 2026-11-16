@@ -135,7 +135,7 @@ Config.showcaseCommand = false
 -- ─── Interaction ──────────────────────────────────────────
 -- 'target'  = look-at + on-screen interaction (eye)
 -- 'textui'  = proximity + key press
-Config.interaction       = 'textui'
+Config.interaction       = 'target'
 Config.textUIKey         = 38      -- E
 Config.textUIDistance    = 2.0
 Config.targetMaxDistance = 3.5
@@ -346,9 +346,9 @@ Config.blips = {
 Config.banks = {
     {
         id         = 'pacific',
-        label      = 'Pacific Standard',
+        label      = 'Legion Square',
         ped        = { model = 'ig_bankman', coords = vec4(149.17, -1042.81, 29.37, 338.56) },
-        marker     = vec3(149.91, -1040.74, 29.374),
+        marker     = vec3(103.51, -1096.49, 28.65),
         blip       = true,
     },
     {
