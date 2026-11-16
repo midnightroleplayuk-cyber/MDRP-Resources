@@ -6098,6 +6098,14 @@ return {
     description = 'A printed invoice. Inspect it to view details and pay.',
 },
 
-
+-- PAWN SHOP 
+['pawn_shipment_box'] = {
+   label = 'Shipment Box',
+   weight = 5000,
+   stack = false,
+   close = true,
+   consume = 0,
+   description = 'A sealed shipment box. Deliver it to the truck.',
+},
 
 }
