@@ -40,7 +40,8 @@ function SoundsController.ChangeSirenTone(vehicleData)
     if not vehicleData.entity then return end
 
     if vehicleData.sirens.Handle then
-        MainController.DebugPrint("[ChangeSirenTone] Removing old siren tone that is stored.")
+        -- debug
+        MainController.DebugPrint("[ChangeSirenTone] Removing old siren tone that is stored. id=" .. tostring(vehicleData.sirens.Handle) .. " finished=" .. tostring(HasSoundFinished(vehicleData.sirens.Handle)))
         StopSound(vehicleData.sirens.Handle)
         ReleaseSoundId(vehicleData.sirens.Handle)
         vehicleData.sirens.Handle = nil
@@ -78,7 +79,7 @@ function SoundsController.ChangeSirenTone(vehicleData)
 
     vehicleData.sirens.Handle = GetSoundId()
 	PlaySoundFromEntity(vehicleData.sirens.Handle, soundData.soundFile, vehicleData.entity, soundData.soundPack, 0, 0)
-    MainController.DebugPrint("[ChangeSirenTone] Created Siren sound for " .. vehicleData.networkedId)
+    MainController.DebugPrint("[ChangeSirenTone] Created Siren sound for " .. vehicleData.networkedId .. " id=" .. tostring(vehicleData.sirens.Handle))
 end
 
 function SoundsController.ChangeSecondSirenTone(vehicleData)
