@@ -32,7 +32,7 @@ Config.debug    = false         -- prints Utils.Debug lines
 -- any command on most servers, and /dvdb deletes a vehicle from the database.
 Config.adminAce = 'apex_garage.admin'   -- IsPlayerAceAllowed(src, ace)
 
-Config.currency = { symbol = '$', position = 'before' }   -- 'before' -> $1,000 · 'after' -> 1,000$
+Config.currency = { symbol = '£', position = 'before' }   -- 'before' -> $1,000 · 'after' -> 1,000$
 
 Config.notify = {
     title    = 'Apex Garage',
@@ -537,13 +537,13 @@ Config.garages = {
     -- ---- Job garage (society owned vehicles) -------------------------------
     -- Mission Row PD: the fenced car park behind the station.
     police = {
-        label = 'LSPD Garage', type = 'job', class = 'car',
+        label = 'Police Garage', type = 'job', class = 'car',
         job = { 'police' }, minGrade = 0,
         vehiclesType = 'owned',            -- society vehicles stored in the table
-        access = vector3(462.83, -1019.52, 28.10),
+        access = vec3(357.19, -336.81, 45.94),
         spawns = {
-            vector4(446.16, -1025.79, 28.23, 6.59),
-            vector4(448.16, -1017.41, 28.56, 90.65),
+            vec4(355.62, -332.63, 45.94, 244.78),
+            vec4(356.8, -330.31, 45.94, 250.34),
         },
     },
 
