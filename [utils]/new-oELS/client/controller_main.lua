@@ -346,6 +346,22 @@ function MainController.CheckVehicleStates()
 			end
 		end
 	end
+
+	local ped = PlayerPedId()
+	local busyVehicle = GetVehiclePedIsTryingToEnter(ped)
+	if busyVehicle == 0 and GetIsTaskActive(ped, 2) then busyVehicle = GetVehiclePedIsIn(ped, false) end -- task 2 = exiting vehicle
+
+	for k, v in pairs(EnabledVehicles) do
+		local data = SavedVehicles[k]
+		if data then
+			if v == busyVehicle then
+				SoundsController.StopAll(data)
+			else
+				if data.sirens.State ~= 0 and not data.sirens.Handle then SoundsController.ChangeSirenTone(data) end
+				if data.dualSiren.State ~= 0 and not data.dualSiren.Handle then SoundsController.ChangeSecondSirenTone(data) end
+			end
+		end
+	end
 end
 
 function MainController.VehicleLeftScope(netId)
