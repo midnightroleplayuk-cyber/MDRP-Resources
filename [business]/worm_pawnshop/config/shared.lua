@@ -10,7 +10,7 @@ return {
     locale = 'en',
     debug = false,
 
-    currency = { symbol = '$', locale = 'en-US' },
+    currency = { symbol = '£', locale = 'en-US' },
 
     -- Who can open dev mode (ace permission or framework group)
     admin = {
