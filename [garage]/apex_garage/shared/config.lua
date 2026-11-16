@@ -535,17 +535,7 @@ Config.garages = {
     },
 
     -- ---- Job garage (society owned vehicles) -------------------------------
-    -- Mission Row PD: the fenced car park behind the station.
-    police = {
-        label = 'Police Garage', type = 'job', class = 'car',
-        job = { 'police' }, minGrade = 0,
-        vehiclesType = 'owned',            -- society vehicles stored in the table
-        access = vec3(357.19, -336.81, 45.94),
-        spawns = {
-            vec4(355.62, -332.63, 45.94, 244.78),
-            vec4(356.8, -330.31, 45.94, 250.34),
-        },
-    },
+
 
     -- ---- Job garage (fixed spawner list, no DB) ----------------------------
     -- Pillbox Hill Medical Center: the ambulance bay on the lower car park.
