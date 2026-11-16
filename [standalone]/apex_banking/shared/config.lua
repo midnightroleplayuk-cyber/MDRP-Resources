@@ -347,7 +347,7 @@ Config.banks = {
     {
         id         = 'pacific',
         label      = 'Legion Square',
-        ped        = { model = 'ig_bankman', coords = vec4(103.51, -1096.49, 28.65, 239.93) },
+        ped        = { model = 'ig_bankman', coords = vec4(103.51, -1096.49, 29.65, 239.93) },
         marker     = vec3(103.51, -1096.49, 28.65),
         blip       = true,
     },
