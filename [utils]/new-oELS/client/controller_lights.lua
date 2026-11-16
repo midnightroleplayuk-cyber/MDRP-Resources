@@ -210,6 +210,14 @@ function LightsController.ProcessLights()
         SetVehicleAutoRepairDisabled(vehicleData.entity, true)
 		SetVehicleHasMutedSirens(vehicleData.entity, true)
 
+        local driver = GetPedInVehicleSeat(vehicleData.entity, -1)
+        if driver ~= vehicleData.lastDriver then
+            vehicleData.lastDriver = driver
+            if IsVehicleSirenOn(vehicleData.entity) then
+                SetVehicleSiren(vehicleData.entity, false)
+            end
+        end
+
         if not MainController.isVehicleNonELS(vehicleData.entity) then
             if not SavedVehicles[netId].elsData then
                 local elsData = StoredConfigs[GetEntityModel(vehicleData.entity)]
