@@ -21,7 +21,7 @@ Config.debug = true
 -- Permissão ACE para os comandos de admin (colocar/apagar quadros).
 -- false = qualquer um com Config.debug. Para trancar:
 --     add_ace group.admin apex_strategy.admin allow
-Config.ace = true
+Config.ace = false
 
 -- 'auto' | 'esx' | 'qb' | 'qbx'
 Config.framework = 'qbx'
