@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>ATM</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap">
+    <link rel="stylesheet" href="style.css?v=1">
+</head>
+<body>
+    <!-- The DUI texture IS this page. #screen is the part of the texture the
+         prop actually shows (calibrated per model: SET_LAYOUT.frame). -->
+    <div id="screen" class="screen">
+        <div class="bg" aria-hidden="true">
+            <div class="bg-base"></div>
+            <div class="bg-glow"></div>
+            <div class="bg-grid"></div>
+        </div>
+
+        <!-- bank band -->
+        <div id="topbar" class="topbar">
+            <div class="brand">
+                <div class="brand-mark"><svg data-icon="landmark"></svg></div>
+                <div class="brand-word"><strong id="brand-name"></strong><span>BANK</span></div>
+            </div>
+            <div class="topbar-title" id="topbar-title"></div>
+            <div class="topbar-meta">
+                <span id="date">--/--/----</span>
+                <b id="clock">--:--</b>
+            </div>
+        </div>
+
+        <div id="keys" class="keys"></div>
+        <div id="stage" class="stage"></div>
+
+        <!-- status line -->
+        <div class="statusbar">
+            <div class="status-hint"><span class="status-led"></span><span id="hint"></span></div>
+            <div class="status-right">
+                <span id="terminal" class="mono"></span>
+            </div>
+        </div>
+
+        <div id="processing" class="processing" hidden>
+            <div class="proc-ring">
+                <svg viewBox="0 0 120 120">
+                    <circle class="proc-track" cx="60" cy="60" r="52"></circle>
+                    <circle class="proc-arc"   cx="60" cy="60" r="52"></circle>
+                </svg>
+                <div class="proc-icon"><svg data-icon="landmark"></svg></div>
+            </div>
+            <h2 id="proc-label">Please wait</h2>
+            <p id="proc-sub" class="proc-sub"></p>
+            <div id="proc-bar" class="proc-bar" hidden>
+                <div id="proc-fill" class="proc-fill"></div>
+                <span id="proc-pct" class="proc-pct">0%</span>
+            </div>
+        </div>
+
+        <div id="toast" class="toast" hidden>
+            <span class="toast-dot"></span>
+            <span id="toast-msg"></span>
+        </div>
+
+        <!-- calibration overlay (/apexatmcalibrate) -->
+        <div id="calib" class="calib" hidden></div>
+
+        <!-- display physics: LCD sub-pixels, vignette, glass reflection -->
+        <div class="lcd" aria-hidden="true"></div>
+        <div class="vignette" aria-hidden="true"></div>
+        <div class="glare" aria-hidden="true"></div>
+    </div>
+
+    <div id="devbar" class="devbar" hidden></div>
+
+    <script src="app.js?v=1"></script>
+</body>
+</html>

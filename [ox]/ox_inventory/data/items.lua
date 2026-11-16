@@ -6075,4 +6075,29 @@ return {
     },
 
 
+-- APEX BANKING
+    ['apex_atm_card'] = { 
+    label = 'Debit Card', 
+    weight = 20,
+     stack = false, 
+     close = true 
+    },
+    ['apex_atm_receipt'] = {
+    label = 'ATM Receipt',
+    weight = 10, 
+    stack = false, 
+    close = true,
+    server = { export = 'apex_banking.use_atm_receipt' } 
+},
+-- APEX BILLING
+['apex_invoice'] = {
+    label       = 'Invoice',
+    weight      = 25,
+    stack       = true,
+    close       = true,
+    description = 'A printed invoice. Inspect it to view details and pay.',
+},
+
+
+
 }

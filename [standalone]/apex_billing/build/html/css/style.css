@@ -1,0 +1,772 @@
+/* ════════════════════════════════════════════════════════════
+   APEX BILLING — compact, billing-first UI
+   Same brand palette as Apex Banking, own layout language.
+   ════════════════════════════════════════════════════════════ */
+
+:root {
+    --brand-50:  #EBEFFF;
+    --brand-100: #D6DEFF;
+    --brand-200: #ADBDFF;
+    --brand-300: #859BFF;
+    --brand-400: #5C7AFF;
+    --brand-500: #1F5EFF;
+    --brand-600: #0048F0;
+    --brand-700: #003BC4;
+    --brand-800: #002F99;
+    --brand-900: #00226E;
+    --brand-a05: rgba(31,94,255,.05);
+    --brand-a08: rgba(31,94,255,.08);
+    --brand-a12: rgba(31,94,255,.12);
+    --brand-a18: rgba(31,94,255,.18);
+    --brand-a25: rgba(31,94,255,.25);
+    --brand-a40: rgba(31,94,255,.40);
+    --surface-0: #0A0A0B; --surface-1: #131314; --surface-2: #1A1A1B;
+    --surface-3: #232325; --surface-4: #2D2D30;
+    --line-1: #1F1F21; --line-2: #2A2A2D; --line-3: #3A3A3E;
+    --text-1: #F4F4F5; --text-2: #A8A8AD; --text-3: #7C7C82; --text-4: #565659;
+    --r-2: 6px; --r-3: 10px; --r-4: 14px; --r-5: 18px;
+    --shadow-xl: 0 24px 60px rgba(0,0,0,.55);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0 }
+html, body { height: 100%; background: transparent; color: var(--text-1); font: 500 13px/1.4 'Inter', system-ui, sans-serif }
+button { font: inherit; cursor: pointer; border: 0; background: none; color: inherit; padding: 0 }
+input, textarea { font: inherit; color: inherit; outline: none }
+::-webkit-scrollbar { width: 6px; height: 6px }
+::-webkit-scrollbar-thumb { background: var(--line-3); border-radius: 8px }
+::-webkit-scrollbar-thumb:hover { background: #4D4D52 }
+
+/* ════════════════════════════════════════════════════════════
+   POSITION CLASSES
+   The overlay uses align-items/justify-content to place the
+   panel — settings UI flips these via data attributes.
+   ════════════════════════════════════════════════════════════ */
+.solid-overlay { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; padding: 28px; z-index: 8000 }
+.solid-overlay[hidden] { display: none !important }
+.solid-overlay[data-pos="top-left"]      { align-items: flex-start; justify-content: flex-start }
+.solid-overlay[data-pos="top-center"]    { align-items: flex-start; justify-content: center }
+.solid-overlay[data-pos="top-right"]     { align-items: flex-start; justify-content: flex-end }
+.solid-overlay[data-pos="middle-left"]   { align-items: center;     justify-content: flex-start }
+.solid-overlay[data-pos="center"]        { align-items: center;     justify-content: center }
+.solid-overlay[data-pos="middle-right"]  { align-items: center;     justify-content: flex-end }
+.solid-overlay[data-pos="bottom-left"]   { align-items: flex-end;   justify-content: flex-start }
+.solid-overlay[data-pos="bottom-center"] { align-items: flex-end;   justify-content: center }
+.solid-overlay[data-pos="bottom-right"]  { align-items: flex-end;   justify-content: flex-end }
+
+/* ════════════════════════════════════════════════════════════
+   NOTIFICATIONS
+   ════════════════════════════════════════════════════════════ */
+.notify-container { position: fixed; top: 24px; right: 24px; z-index: 9000; display: flex; flex-direction: column; gap: 8px; pointer-events: none }
+.notify-card {
+    background: var(--surface-2); border: 1px solid var(--line-2); border-radius: var(--r-3);
+    padding: 10px 14px 10px 30px; min-width: 240px; max-width: 360px; position: relative;
+    box-shadow: var(--shadow-xl); pointer-events: auto;
+    animation: scaleIn 240ms cubic-bezier(.16,1,.3,1) both;
+}
+.notify-card.info, .notify-card.success { --_c: var(--brand-400) }
+.notify-card.warning { --_c: var(--brand-300) }
+.notify-card.error   { --_c: var(--brand-700) }
+.notify-card::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 2px; background: var(--_c, var(--brand-500)) }
+.notify-card strong  { display: block; font-weight: 700 }
+.notify-card small   { display: block; color: var(--text-3); margin-top: 2px }
+
+/* ════════════════════════════════════════════════════════════
+   BUTTONS / INPUTS
+   ════════════════════════════════════════════════════════════ */
+.btn { display: inline-flex; align-items: center; gap: 6px; justify-content: center;
+       padding: 8px 14px; border-radius: var(--r-2);
+       font-size: 12.5px; font-weight: 600;
+       border: 1px solid transparent; transition: all .15s; }
+.btn-sm { padding: 5px 10px; font-size: 11.5px }
+.btn-primary { background: var(--brand-500); color: #fff; border-color: var(--brand-500) }
+.btn-primary:hover { background: var(--brand-400); border-color: var(--brand-400) }
+.btn-ghost   { background: var(--surface-3); color: var(--text-1); border-color: var(--line-2) }
+.btn-ghost:hover { background: var(--surface-4); border-color: var(--line-3) }
+.btn-danger  { background: var(--surface-3); color: var(--text-2); border-color: var(--line-2) }
+.btn-danger:hover { background: var(--brand-a08); color: var(--brand-300); border-color: var(--brand-a40) }
+.btn-block { width: 100% }
+.btn:disabled { opacity: .5; pointer-events: none }
+
+.bp-icon {
+    width: 30px; height: 30px; display: inline-flex; align-items: center; justify-content: center;
+    border-radius: var(--r-2); color: var(--text-3); background: transparent;
+    transition: all .15s;
+}
+.bp-icon:hover { color: var(--text-1); background: var(--surface-3) }
+
+.apex-input {
+    width: 100%; background: var(--surface-3); border: 1px solid var(--line-2);
+    border-radius: var(--r-2); padding: 8px 12px; color: var(--text-1);
+    font-size: 12.5px; transition: border-color .15s, background .15s;
+}
+.apex-input:focus { border-color: var(--brand-500); background: var(--surface-2) }
+textarea.apex-input { resize: vertical; min-height: 50px; font-family: inherit }
+
+.iban-chip {
+    font-family: 'JetBrains Mono'; background: var(--brand-a08); color: var(--brand-300);
+    border: 1px solid var(--brand-a25); padding: 3px 8px; border-radius: var(--r-2);
+    font-size: 11px; letter-spacing: .04em;
+}
+
+/* ════════════════════════════════════════════════════════════
+   PANEL SHELL
+   ════════════════════════════════════════════════════════════ */
+#billing-overlay { background: transparent }
+.bp {
+    width: min(820px, 94vw);
+    height: min(760px, 94vh);
+    background: var(--surface-1); border: 1px solid var(--line-2);
+    border-radius: var(--r-5); box-shadow: var(--shadow-xl);
+    display: grid; grid-template-rows: auto auto minmax(0, 1fr) auto;
+    overflow: hidden;
+    animation: scaleIn 280ms cubic-bezier(.16,1,.3,1) both;
+}
+
+.bp-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 16px;
+    background: var(--surface-2); border-bottom: 1px solid var(--line-1);
+}
+.bp-brand { display: flex; align-items: center; gap: 10px }
+.bp-brand-mark {
+    width: 36px; height: 36px; border-radius: var(--r-3);
+    background: var(--brand-500); color: #fff;
+    display: flex; align-items: center; justify-content: center; font-size: 14px;
+}
+.bp-brand-text strong { display: block; font-weight: 900; letter-spacing: .04em; text-transform: uppercase; font-size: 13px; line-height: 1 }
+.bp-brand-text .wm-accent { color: var(--brand-400) }
+.bp-brand-text small { display: block; color: var(--text-3); font-size: 10.5px; margin-top: 3px }
+.bp-header-right { display: flex; align-items: center; gap: 6px }
+.bp-pill {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 4px 9px; border-radius: 999px;
+    background: var(--brand-a12); color: var(--brand-300);
+    border: 1px solid var(--brand-a25);
+    font-size: 10.5px; font-weight: 700;
+}
+.bp-pill i { font-size: 9px }
+
+.bp-tabs {
+    display: flex; align-items: center;
+    padding: 6px;
+    background: var(--surface-2); border-bottom: 1px solid var(--line-1);
+    gap: 2px;
+}
+.bp-tab {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 7px 12px; border-radius: var(--r-2);
+    color: var(--text-3); font-size: 11.5px; font-weight: 600;
+    transition: all .15s; white-space: nowrap;
+}
+.bp-tab i { font-size: 10px }
+.bp-tab[hidden] { display: none !important }
+.bp-tab:hover { color: var(--text-1); background: var(--surface-3) }
+.bp-tab.active { background: var(--brand-a12); color: var(--brand-300) }
+.bp-tab-badge {
+    background: var(--surface-3); color: var(--text-3);
+    border-radius: 999px; padding: 1px 7px; font-size: 9.5px; font-weight: 700;
+}
+.bp-tab.active .bp-tab-badge { background: var(--brand-500); color: #fff }
+.bp-tab-badge[data-empty="true"], .bp-tab-badge:empty { display: none }
+
+.bp-body { overflow-y: auto; padding: 12px 16px; background: var(--surface-1); min-height: 0 }
+.pane { display: flex; flex-direction: column; gap: 10px; animation: fadeIn 180ms ease-out both; min-height: 100% }
+.pane[hidden] { display: none !important }
+
+/* New (composer) pane — fill the body height so the empty space
+   below the form is absorbed by the Notes textarea instead of
+   sitting as a dead zone above the footer. */
+.pane[data-pane="new"] { display: flex; flex-direction: column }
+.pane[data-pane="new"] > .bp-section:last-of-type { flex: 1; min-height: 0 }
+.pane[data-pane="new"] > .bp-section:last-of-type textarea {
+    flex: 1; min-height: 60px; height: 100%;
+}
+
+/* ════════════════════════════════════════════════════════════
+   COMPOSER SECTIONS
+   ════════════════════════════════════════════════════════════ */
+.bp-section { display: flex; flex-direction: column; gap: 8px }
+.bp-section-head { display: flex; align-items: center; gap: 8px; padding: 2px 2px 4px }
+.bp-section-head i { color: var(--brand-400); font-size: 11px; width: 14px; text-align: center }
+.bp-section-head h3 { font-size: 10.5px; color: var(--text-3); font-weight: 700; text-transform: uppercase; letter-spacing: .12em }
+.bp-section-head h3 small { color: var(--text-4); font-weight: 500; text-transform: none; letter-spacing: 0; margin-left: 4px }
+.bp-section-act {
+    margin-left: auto; display: inline-flex; align-items: center; gap: 4px;
+    color: var(--brand-300); font-size: 10.5px; font-weight: 700;
+    padding: 3px 8px; border-radius: var(--r-2);
+    background: var(--brand-a08); border: 1px solid var(--brand-a25);
+    transition: all .15s;
+}
+.bp-section-act:hover { background: var(--brand-a12); color: var(--brand-300) }
+
+.issuer-card {
+    display: flex; align-items: center; gap: 12px;
+    padding: 10px 12px;
+    background: var(--brand-a08); border: 1px solid var(--brand-a25);
+    border-radius: var(--r-3);
+}
+.issuer-ic {
+    width: 34px; height: 34px; border-radius: var(--r-2);
+    background: var(--brand-500); color: #fff;
+    display: flex; align-items: center; justify-content: center; font-size: 13px;
+}
+.issuer-meta strong { display: block; font-weight: 700; font-size: 13px; color: var(--text-1) }
+.issuer-meta small  { display: block; color: var(--text-3); font-size: 11px; margin-top: 2px }
+
+.bp-recipient-tabs {
+    display: grid; grid-template-columns: 1fr 1fr;
+    padding: 3px; background: var(--surface-3); border: 1px solid var(--line-2);
+    border-radius: var(--r-2); gap: 2px;
+}
+.bp-recipient-tabs[hidden] { display: none !important }
+.rx-tab, .ia-tab {
+    padding: 7px 10px; border-radius: 5px;
+    color: var(--text-3); font-weight: 600; font-size: 11.5px;
+    display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+    transition: all .15s;
+}
+.rx-tab[hidden], .ia-tab[hidden] { display: none !important }
+.rx-tab i, .ia-tab i { font-size: 10px }
+.rx-tab:hover, .ia-tab:hover { color: var(--text-1) }
+.rx-tab.active, .ia-tab.active { background: var(--brand-500); color: #fff }
+/* "Bill as" switch (Society / Personal), above the issuer card. */
+#issue-as-tabs { margin-bottom: 8px }
+select.apex-input { padding: 8px 12px }
+
+/* Pay-by-reference card on the Invoices tab. */
+.ref-pay-card {
+    padding: 12px;
+    background: var(--surface-2); border: 1px solid var(--line-2);
+    border-radius: var(--r-3);
+    display: flex; flex-direction: column; gap: 6px;
+}
+.ref-pay-row { display: grid; grid-template-columns: 16px 1fr auto; gap: 10px; align-items: center }
+.ref-pay-row i { color: var(--brand-400); font-size: 14px }
+.ref-hint { color: var(--text-3); font-size: 10.5px; padding-left: 26px }
+.bp-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px }
+.bp-field label { display: block; font-size: 9.5px; color: var(--text-3); text-transform: uppercase; letter-spacing: .08em; font-weight: 700; margin-bottom: 4px }
+
+/* Line items */
+.li-table { display: flex; flex-direction: column; gap: 4px }
+.li-row {
+    display: grid; grid-template-columns: 1fr 64px 108px 28px;
+    gap: 4px; align-items: center;
+}
+.li-row .apex-input { padding: 7px 10px; font-size: 12px }
+.li-money {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+.li-money span {
+    position: absolute;
+    left: 10px;
+    color: var(--text-3);
+    font-family: 'JetBrains Mono';
+    font-size: 11px;
+    font-weight: 800;
+    line-height: 1;
+    pointer-events: none;
+    z-index: 1;
+}
+.li-money .apex-input {
+    padding-left: 24px;
+    font-family: 'JetBrains Mono';
+    font-weight: 700;
+}
+.li-money.is-after span {
+    left: auto;
+    right: 10px;
+}
+.li-money.is-after .apex-input {
+    padding-left: 10px;
+    padding-right: 24px;
+    text-align: right;
+}
+.li-row .li-del {
+    width: 28px; height: 32px; border-radius: var(--r-2);
+    background: var(--surface-3); color: var(--text-3);
+    display: flex; align-items: center; justify-content: center;
+    border: 1px solid var(--line-2); transition: all .15s;
+}
+.li-row .li-del:hover { background: var(--brand-a08); color: var(--brand-300); border-color: var(--brand-a40) }
+.qa-row { display: flex; gap: 4px; flex-wrap: wrap; margin-top: 4px }
+.qa-pill {
+    padding: 4px 10px; border-radius: 999px;
+    background: var(--surface-3); border: 1px solid var(--line-2);
+    color: var(--text-2); font-size: 10.5px; font-weight: 600;
+    transition: all .15s;
+}
+.qa-pill:hover { background: var(--brand-a12); border-color: var(--brand-500); color: var(--brand-300) }
+
+/* ════════════════════════════════════════════════════════════
+   FOOTER (totals + actions) — fixed at the bottom of the panel,
+   OUTSIDE the scroll area so it never collides with the form.
+   ════════════════════════════════════════════════════════════ */
+.bp-footer {
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px 16px;
+    background: var(--surface-2); border-top: 1px solid var(--line-1);
+}
+.bp-footer[hidden] { display: none !important }
+.bp-totals { display: flex; gap: 16px; align-items: baseline; flex: 1 }
+.bp-totals > span { display: flex; flex-direction: column; gap: 1px; min-width: 0 }
+.bp-totals > span small { font-size: 9.5px; color: var(--text-3); letter-spacing: .08em; text-transform: uppercase; font-weight: 700 }
+.bp-totals > span small em { font-style: normal; color: var(--text-4); margin-left: 2px }
+.bp-totals > span strong { font-family: 'JetBrains Mono'; font-weight: 700; font-size: 13px }
+.bp-totals .grand strong { font-size: 18px; color: var(--brand-300); letter-spacing: -.01em }
+.bp-actions { display: flex; gap: 6px }
+
+/* ════════════════════════════════════════════════════════════
+   LISTS
+   ════════════════════════════════════════════════════════════ */
+.bp-list-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 2px }
+.bp-list-head h3 { font-size: 12.5px; font-weight: 800 }
+.bp-count { font-size: 10.5px; color: var(--text-3); padding: 3px 9px; border-radius: 999px; background: var(--surface-3); border: 1px solid var(--line-2) }
+
+.inv-list { display: flex; flex-direction: column; gap: 5px }
+.inv-row {
+    display: grid; grid-template-columns: 30px 1fr auto auto;
+    gap: 10px; align-items: center;
+    padding: 9px 12px;
+    background: var(--surface-2); border: 1px solid var(--line-2);
+    border-radius: var(--r-3); transition: all .15s;
+    cursor: pointer;
+}
+.inv-row:hover { background: var(--surface-3); border-color: var(--brand-a40) }
+.inv-ic {
+    width: 30px; height: 30px; border-radius: 7px;
+    background: var(--brand-a12); color: var(--brand-400);
+    display: flex; align-items: center; justify-content: center;
+    border: 1px solid var(--brand-a25); font-size: 11px;
+}
+.inv-meta strong { display: block; font-weight: 700; font-size: 12.5px }
+.inv-meta small  { display: block; font-size: 10.5px; color: var(--text-3); margin-top: 1px }
+.inv-meta code   { font-family: 'JetBrains Mono'; color: var(--text-3); font-size: 10.5px }
+.inv-amount { font-family: 'JetBrains Mono'; font-weight: 800; font-size: 13px }
+.inv-status {
+    padding: 3px 8px; border-radius: 999px; font-size: 9px; font-weight: 800;
+    letter-spacing: .08em; text-transform: uppercase;
+}
+.inv-status.sent     { background: var(--brand-a12); color: var(--brand-300); border: 1px solid var(--brand-a25) }
+.inv-status.paid     { background: var(--brand-a18); color: var(--brand-300); border: 1px solid var(--brand-a40) }
+.inv-status.declined { background: var(--surface-3); color: var(--text-3); border: 1px solid var(--line-2) }
+.inv-status.expired  { background: var(--surface-3); color: var(--text-3); border: 1px solid var(--line-2) }
+.inv-status.cancelled{ background: var(--surface-3); color: var(--text-4); border: 1px solid var(--line-2) }
+.inv-empty { color: var(--text-3); text-align: center; padding: 28px; font-size: 12px; font-style: italic }
+
+/* Inline row actions (Pay / View / Decline). Rows expand to a
+   wider grid when actions are present. */
+.inv-row.has-actions { grid-template-columns: 30px 1fr auto auto auto }
+.inv-actions { display: inline-flex; gap: 4px }
+.inv-actions .btn { padding: 5px 9px; font-size: 11px; gap: 4px }
+.inv-actions .btn i { font-size: 10px }
+
+/* ════════════════════════════════════════════════════════════
+   OVERVIEW
+   ════════════════════════════════════════════════════════════ */
+.ov-grid {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr 1fr 1fr;
+    gap: 8px;
+}
+.ov-hero {
+    grid-row: 1; grid-column: 1;
+    padding: 14px 16px;
+    background: linear-gradient(135deg, var(--brand-700) 0%, var(--brand-500) 100%);
+    color: #fff; border-radius: var(--r-4);
+    display: flex; flex-direction: column; gap: 4px;
+    position: relative; overflow: hidden;
+}
+.ov-hero::after {
+    content: ''; position: absolute; right: -40px; top: -40px;
+    width: 140px; height: 140px; border-radius: 50%;
+    background: rgba(255,255,255,.07);
+}
+.ov-hero small { font-size: 9.5px; letter-spacing: .14em; text-transform: uppercase; font-weight: 700; opacity: .85 }
+.ov-amount { font-size: 28px; font-weight: 900; letter-spacing: -.02em; line-height: 1; margin: 4px 0 6px; font-variant-numeric: tabular-nums }
+.ov-hero-sub { display: flex; gap: 14px; font-size: 11px; opacity: .9 }
+.ov-hero-sub em { font-style: normal; font-weight: 800; margin: 0 2px }
+
+.ov-tile {
+    padding: 12px 14px;
+    background: var(--surface-2); border: 1px solid var(--line-2); border-radius: var(--r-3);
+    display: flex; flex-direction: column; gap: 4px;
+}
+.ov-tile small { font-size: 9px; letter-spacing: .14em; text-transform: uppercase; color: var(--text-3); font-weight: 700 }
+.ov-tile strong { font-family: 'JetBrains Mono'; font-weight: 800; font-size: 17px; color: var(--text-1) }
+.ov-tile.soc { background: var(--brand-a08); border-color: var(--brand-a25) }
+.ov-tile.soc strong { color: var(--brand-300) }
+
+/* ════════════════════════════════════════════════════════════
+   SOCIETY
+   ════════════════════════════════════════════════════════════ */
+.bp-society { display: flex; flex-direction: column; gap: 12px }
+.bp-society-card {
+    background: var(--surface-2); border: 1px solid var(--line-2);
+    border-radius: var(--r-4); padding: 14px;
+}
+.bp-society-card small { font-size: 9.5px; color: var(--text-3); letter-spacing: .12em; text-transform: uppercase; font-weight: 700 }
+.bp-society-treasury { font-size: 28px; font-weight: 900; letter-spacing: -.02em; line-height: 1; margin: 6px 0 12px; font-variant-numeric: tabular-nums }
+.bp-society-kpis { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 6px }
+.bp-society-kpis > div { padding: 8px 10px; background: var(--surface-3); border: 1px solid var(--line-2); border-radius: 8px }
+.bp-society-kpis small { display: block; font-size: 8.5px; color: var(--text-3); letter-spacing: .08em; text-transform: uppercase; font-weight: 700 }
+.bp-society-kpis strong { display: block; font-family: 'JetBrains Mono'; font-weight: 800; font-size: 12px; margin-top: 3px }
+
+/* ════════════════════════════════════════════════════════════
+   INVOICE PAPER (modal)
+   ════════════════════════════════════════════════════════════ */
+#invoice-overlay { position: fixed; inset: 0; z-index: 9500; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,.62) }
+#invoice-overlay[hidden] { display: none }
+.invoice-modal {
+    width: min(580px, 92vw); max-height: 92vh;
+    background: var(--surface-1); border: 1px solid var(--line-2); border-radius: var(--r-5);
+    box-shadow: var(--shadow-xl); display: flex; flex-direction: column;
+    animation: scaleIn 240ms cubic-bezier(.16,1,.3,1) both;
+    overflow: hidden;
+}
+.im-top { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; background: var(--surface-2); border-bottom: 1px solid var(--line-2) }
+.im-top .im-eyebrow { font-size: 10px; font-weight: 800; letter-spacing: .18em; color: var(--text-3); text-transform: uppercase }
+.invoice-modal .paper { margin: 16px; overflow-y: auto; max-height: 68vh }
+.im-actions { display: flex; gap: 6px; justify-content: flex-end; padding: 12px 16px; background: var(--surface-2); border-top: 1px solid var(--line-2) }
+.im-actions:empty { display: none }
+
+/* ────────────────────────────────────────────────────────────
+   PAPER — realistic invoice
+   ──────────────────────────────────────────────────────────── */
+.paper {
+    background:
+        repeating-linear-gradient(0deg,
+            transparent 0, transparent 26px,
+            rgba(0,0,0,.018) 26px, rgba(0,0,0,.018) 27px),
+        radial-gradient(120% 80% at 0% 0%, rgba(0,0,0,.04), transparent 60%),
+        #FCFCF8;
+    color: #1a1a1d;
+    border-radius: 6px;
+    padding: 28px 28px 18px;
+    font-family: 'Inter', sans-serif; position: relative; overflow: hidden;
+    border: 1px solid #e3e3dd;
+    box-shadow:
+        0 28px 56px -20px rgba(0,0,0,.55),
+        0 6px 16px -4px rgba(0,0,0,.35),
+        inset 0 1px 0 rgba(255,255,255,.6);
+}
+/* Brand stripe across the top + light watermark on bottom-right */
+.paper::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px;
+    background: linear-gradient(90deg, var(--brand-700), var(--brand-500), var(--brand-400));
+}
+.paper::after {
+    content: 'APEX'; position: absolute;
+    right: -20px; bottom: -40px;
+    font-family: 'Inter', sans-serif; font-weight: 900; font-size: 130px;
+    letter-spacing: -.04em; color: rgba(31,94,255,.045);
+    pointer-events: none; user-select: none;
+}
+
+/* Status stamp — absolute so it can overlap the header */
+.paper-stamp {
+    position: absolute; top: 22px; right: 28px;
+    padding: 6px 12px;
+    font-weight: 800; font-size: 11px; letter-spacing: .22em;
+    border: 2px solid var(--brand-500); color: var(--brand-500);
+    border-radius: 4px; transform: rotate(4deg);
+    background: rgba(255,255,255,.6); z-index: 2;
+}
+.paper-stamp:empty, .paper-stamp.draft { display: none }
+.paper-stamp.paid     { color: #2e8a55; border-color: #2e8a55 }
+.paper-stamp.declined { color: #b94a3f; border-color: #b94a3f }
+.paper-stamp.expired  { color: #b9763f; border-color: #b9763f }
+
+/* ── Top: issuer block + invoice ref block ── */
+.paper-top {
+    display: grid; grid-template-columns: 1fr auto;
+    gap: 22px; align-items: flex-start;
+    padding-bottom: 16px; border-bottom: 1px solid #e3e3dd;
+    margin-bottom: 18px; position: relative; z-index: 1;
+}
+.paper-issuer { display: flex; gap: 12px; align-items: flex-start }
+.paper-logo {
+    width: 42px; height: 42px; border-radius: 8px;
+    background: linear-gradient(135deg, var(--brand-700), var(--brand-500));
+    color: #fff; display: flex; align-items: center; justify-content: center;
+    font-size: 17px; flex-shrink: 0;
+    box-shadow: 0 4px 10px -2px rgba(31,94,255,.5);
+}
+.paper-issuer-meta strong { display: block; font-size: 15px; font-weight: 800; letter-spacing: -.01em; color: #111 }
+.paper-issuer-meta small {
+    display: block; font-size: 10px; color: #8a8a90;
+    letter-spacing: .12em; text-transform: uppercase; margin-top: 3px;
+}
+
+.paper-ref { text-align: right; min-width: 200px }
+.paper-eyebrow {
+    font-size: 11px; font-weight: 700; letter-spacing: .24em;
+    text-transform: uppercase; color: var(--brand-500);
+}
+.paper-number {
+    font-family: 'JetBrains Mono'; font-size: 15px; font-weight: 700;
+    color: #1a1a1d; margin-top: 3px; letter-spacing: .06em;
+}
+.paper-dl {
+    margin-top: 10px;
+    display: flex; flex-direction: column; gap: 3px;
+    font-size: 11px;
+}
+.paper-dl > div { display: flex; justify-content: flex-end; gap: 12px }
+.paper-dl dt { color: #8a8a90; font-weight: 600 }
+.paper-dl dd { font-weight: 700; font-family: 'JetBrains Mono'; color: #1a1a1d }
+
+/* ── Billed to block ── */
+.paper-block-title {
+    font-size: 9px; font-weight: 800; letter-spacing: .22em;
+    text-transform: uppercase; color: #8a8a90; margin-bottom: 4px;
+}
+.paper-billto {
+    margin-bottom: 16px; position: relative; z-index: 1;
+}
+.paper-billto strong { display: block; font-size: 14px; font-weight: 800; color: #1a1a1d; letter-spacing: -.01em }
+.paper-billto small {
+    display: block; font-size: 10px; color: #8a8a90;
+    letter-spacing: .12em; margin-top: 2px;
+}
+
+/* ── Items table — looks like a real invoice ── */
+.paper-items { position: relative; z-index: 1 }
+.paper-items table {
+    width: 100%; border-collapse: collapse; font-size: 12px;
+}
+.paper-items thead th {
+    text-align: left; padding: 8px 6px;
+    font-size: 9px; font-weight: 800; letter-spacing: .18em;
+    text-transform: uppercase; color: #8a8a90;
+    border-bottom: 1.5px solid #1a1a1d;
+}
+.paper-items thead th.num { text-align: right }
+.paper-items tbody td {
+    padding: 9px 6px;
+    border-bottom: 1px solid #ececea;
+    color: #1a1a1d;
+}
+.paper-items tbody td.num { text-align: right; font-family: 'JetBrains Mono' }
+.paper-items tbody td.bold { font-weight: 700 }
+.paper-items tbody tr:nth-child(even) td { background: rgba(0,0,0,.018) }
+
+/* ── Totals ── */
+.paper-totals {
+    margin-top: 14px;
+    display: flex; flex-direction: column; gap: 4px;
+    align-items: flex-end; position: relative; z-index: 1;
+}
+.paper-totals > div { display: flex; gap: 18px; align-items: baseline; font-size: 11px; color: #6b6b71 }
+.paper-totals > div strong { color: #1a1a1d; font-family: 'JetBrains Mono'; font-weight: 700; min-width: 100px; text-align: right }
+.paper-totals .grand {
+    margin-top: 4px; padding: 10px 14px;
+    background: var(--brand-500); color: #fff;
+    border-radius: 6px;
+    font-size: 12px; gap: 24px;
+}
+.paper-totals .grand span { color: rgba(255,255,255,.8); font-weight: 700; letter-spacing: .12em; text-transform: uppercase; font-size: 10px }
+.paper-totals .grand strong { color: #fff; font-size: 18px; min-width: 120px; letter-spacing: -.01em }
+
+/* ── Footer: notes + signature ── */
+.paper-foot {
+    margin-top: 22px; padding-top: 14px; border-top: 1px solid #e3e3dd;
+    display: grid; grid-template-columns: 1fr auto; gap: 18px;
+    align-items: flex-end; font-size: 11px; color: #6b6b71;
+    position: relative; z-index: 1;
+}
+.paper-notes p { line-height: 1.5; color: #6b6b71 }
+
+/* Realistic hand-written signature */
+.paper-sig { text-align: center; min-width: 200px }
+.paper-sig .sig-name {
+    display: block;
+    font-family: 'Caveat', 'Brush Script MT', cursive;
+    font-size: 36px; color: #1a1a1d; line-height: 1;
+    transform: rotate(-4deg); margin-bottom: -4px;
+}
+.paper-sig .sig-line { display: block; height: 1px; background: #1a1a1d; margin: 6px 0 4px }
+.paper-sig small { display: block; font-size: 8.5px; letter-spacing: .14em; text-transform: uppercase; color: #8a8a90 }
+
+/* Bottom bar — generated-by line */
+.paper-bottom {
+    margin-top: 18px; padding-top: 10px;
+    border-top: 1px dashed #d6d6d2;
+    display: flex; justify-content: space-between;
+    font-size: 9px; color: #b0b0b6; letter-spacing: .14em; text-transform: uppercase;
+    position: relative; z-index: 1;
+}
+.paper-bottom-ref { font-family: 'JetBrains Mono'; letter-spacing: .06em }
+
+/* ════════════════════════════════════════════════════════════
+   SETTINGS POPOVER — color presets + position picker
+   ════════════════════════════════════════════════════════════ */
+#settings-overlay { position: fixed; inset: 0; z-index: 9600; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,.45) }
+#settings-overlay[hidden] { display: none }
+.settings-pop {
+    width: min(380px, 92vw);
+    background: var(--surface-1); border: 1px solid var(--line-2); border-radius: var(--r-4);
+    box-shadow: var(--shadow-xl); padding: 16px;
+    display: flex; flex-direction: column; gap: 16px;
+    animation: scaleIn 220ms cubic-bezier(.16,1,.3,1) both;
+}
+.settings-pop header { display: flex; align-items: center; justify-content: space-between }
+.settings-pop header strong { font-size: 13px; font-weight: 800 }
+.settings-row { display: flex; flex-direction: column; gap: 8px }
+.settings-row label { font-size: 9.5px; color: var(--text-3); text-transform: uppercase; letter-spacing: .08em; font-weight: 700 }
+
+.color-pick { display: inline-flex; align-items: center; gap: 10px }
+.color-swatch {
+    width: 32px; height: 32px; border-radius: var(--r-2);
+    background: var(--brand-500); border: 1px solid var(--line-3);
+    position: relative; overflow: hidden; cursor: pointer;
+}
+.color-swatch input[type="color"] {
+    position: absolute; inset: 0; width: 100%; height: 100%;
+    opacity: 0; cursor: pointer; border: 0; background: transparent;
+}
+.color-presets { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px }
+.preset-swatch {
+    width: 24px; height: 24px; border-radius: 6px;
+    background: var(--_c); border: 1.5px solid transparent;
+    transition: transform .12s, border-color .12s; cursor: pointer;
+}
+.preset-swatch:hover { transform: scale(1.08); border-color: rgba(255,255,255,.3) }
+.preset-swatch.active { border-color: var(--text-1) }
+
+.pos-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 4px; padding: 4px; background: var(--surface-3); border: 1px solid var(--line-2); border-radius: var(--r-2);
+}
+.pos-btn {
+    aspect-ratio: 1; display: flex; align-items: center; justify-content: center;
+    border-radius: 5px; color: var(--text-3); font-size: 11px;
+    background: transparent; transition: all .15s;
+}
+.pos-btn:hover { color: var(--text-1); background: var(--surface-4) }
+.pos-btn.active { background: var(--brand-500); color: #fff }
+
+/* ════════════════════════════════════════════════════════════
+   CONFIRM / PROMPT
+   ════════════════════════════════════════════════════════════ */
+#dialog-overlay { position: fixed; inset: 0; z-index: 9700; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,.55) }
+#dialog-overlay[hidden] { display: none }
+.dialog {
+    width: min(380px, 92vw);
+    background: var(--surface-1); border: 1px solid var(--line-2); border-radius: var(--r-4);
+    box-shadow: var(--shadow-xl); padding: 16px;
+    display: flex; flex-direction: column; gap: 10px;
+    animation: scaleIn 220ms cubic-bezier(.16,1,.3,1) both;
+}
+.dialog header strong { font-size: 13px; font-weight: 800 }
+.dialog p { color: var(--text-2); font-size: 12px; line-height: 1.5 }
+.dialog footer { display: flex; gap: 6px; justify-content: flex-end }
+
+@keyframes fadeIn  { from { opacity: 0 } to { opacity: 1 } }
+@keyframes scaleIn { from { opacity: 0; transform: scale(.96) translateY(8px) } to { opacity: 1; transform: none } }
+
+/* ════════════════════════════════════════════════════════════
+   ADMIN PANEL (/billingadmin)
+   Same shell + tokens as the player panel, wider body so the
+   result tables breathe. No backdrop-filter anywhere — CEF
+   composites those boxes to opaque black in-game.
+   ════════════════════════════════════════════════════════════ */
+#admin-overlay { background: transparent; z-index: 8100 }
+.bp-admin { width: min(1060px, 96vw); height: min(800px, 94vh) }
+.bp-admin .bp-brand-text strong { letter-spacing: .06em }
+.ad-mark { background: var(--brand-600) }
+
+.apane { display: flex; flex-direction: column; gap: 10px; animation: fadeIn 180ms ease-out both; min-height: 100% }
+.apane[hidden] { display: none !important }
+
+/* ─── Status chips (overview) ─── */
+.ad-chips { display: flex; flex-wrap: wrap; gap: 6px }
+.ad-chip {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 5px 10px; border-radius: 999px;
+    background: var(--surface-2); border: 1px solid var(--line-2);
+    font-size: 10.5px; font-weight: 700; color: var(--text-2);
+    transition: all .15s;
+}
+.ad-chip:hover { border-color: var(--brand-a40); color: var(--text-1) }
+.ad-chip b { font-family: 'JetBrains Mono'; color: var(--text-1); font-size: 11.5px }
+
+/* ─── Generic data table ─── */
+.ad-table { display: flex; flex-direction: column; gap: 4px }
+.ad-tr {
+    display: grid; gap: 10px; align-items: center;
+    padding: 9px 12px;
+    background: var(--surface-2); border: 1px solid var(--line-2);
+    border-radius: var(--r-3);
+    grid-template-columns: 1fr repeat(4, minmax(80px, auto));
+}
+.ad-tr.head {
+    background: transparent; border-color: transparent; padding: 2px 12px;
+    font-size: 9px; letter-spacing: .12em; text-transform: uppercase;
+    color: var(--text-3); font-weight: 700;
+}
+.ad-tr strong { font-weight: 700; font-size: 12.5px }
+.ad-tr small  { display: block; font-size: 10.5px; color: var(--text-3); margin-top: 1px }
+.ad-num { font-family: 'JetBrains Mono'; font-size: 12px; text-align: right; font-variant-numeric: tabular-nums }
+.ad-num.pos { color: var(--brand-300) }
+.ad-empty { color: var(--text-3); text-align: center; padding: 26px; font-size: 12px; font-style: italic }
+
+/* ─── Filters ─── */
+.ad-filters { display: grid; grid-template-columns: 1fr 150px 170px; gap: 8px }
+.ad-search { position: relative }
+.ad-search i {
+    position: absolute; left: 11px; top: 50%; transform: translateY(-50%);
+    color: var(--text-4); font-size: 11px; pointer-events: none;
+}
+.ad-search .apex-input { padding-left: 30px }
+
+/* ─── Result rows ─── */
+.inv-row.ad-row { grid-template-columns: 30px 1fr auto auto auto; cursor: pointer }
+.ad-row .inv-meta small em { font-style: normal; color: var(--text-2) }
+.ad-acts { display: inline-flex; gap: 3px }
+.ad-act {
+    width: 26px; height: 26px; border-radius: var(--r-2);
+    display: inline-flex; align-items: center; justify-content: center;
+    background: var(--surface-3); border: 1px solid var(--line-2);
+    color: var(--text-3); font-size: 10.5px; transition: all .15s;
+}
+.ad-act:hover { color: var(--brand-300); border-color: var(--brand-a40); background: var(--brand-a08) }
+.ad-act.danger:hover { color: #fff; background: var(--brand-600); border-color: var(--brand-600) }
+
+/* The results list owns the scrolling so the filters and the pager
+   stay pinned — otherwise 25 rows push "Next page" off-screen. */
+.apane[data-apane="invoices"] { min-height: 100%; height: 100% }
+.apane[data-apane="invoices"] #ad-list { flex: 1; min-height: 0; overflow-y: auto; padding-right: 2px }
+
+/* ─── Pager ─── */
+.ad-pager {
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+    padding: 4px 0 2px; color: var(--text-3); font-size: 11px; font-weight: 600;
+}
+.ad-pager .btn:disabled { opacity: .35 }
+
+/* ─── Tools ─── */
+.ad-tool {
+    display: flex; align-items: center; justify-content: space-between; gap: 14px;
+    padding: 12px 14px;
+    background: var(--surface-2); border: 1px solid var(--line-2); border-radius: var(--r-3);
+}
+.ad-tool-meta strong { display: flex; align-items: center; gap: 8px; font-size: 12.5px; font-weight: 700 }
+.ad-tool-meta strong i { color: var(--brand-400); font-size: 11px; width: 14px; text-align: center }
+.ad-tool-meta small { display: block; color: var(--text-3); font-size: 11px; line-height: 1.5; margin-top: 4px; max-width: 620px }
+.ad-tool-meta small em { font-style: normal; color: var(--brand-300); font-weight: 600 }
+.ad-tool-meta small code { font-family: 'JetBrains Mono'; font-size: 10.5px; color: var(--text-2) }
+.ad-tool-act { display: flex; align-items: center; gap: 6px; flex-shrink: 0 }
+.ad-tool-act .apex-input { width: 74px; text-align: center }
+.ad-unit { font-size: 11px; color: var(--text-3); font-weight: 600 }
+.ad-tool .btn { flex-shrink: 0 }
+
+.ad-note {
+    display: flex; align-items: flex-start; gap: 10px;
+    padding: 11px 14px; margin-top: 2px;
+    background: var(--brand-a08); border: 1px solid var(--brand-a25); border-radius: var(--r-3);
+    color: var(--text-2); font-size: 11.5px; line-height: 1.5;
+}
+.ad-note i { color: var(--brand-300); font-size: 12px; margin-top: 1px }
+.ad-note strong { color: var(--text-1); font-weight: 700 }
