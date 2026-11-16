@@ -1,0 +1,236 @@
+/* ============================================================
+   RECADO - EXTRAS (pacote RD): sondagens, eventos, stickers, emoji, GIF, documentos, texto formatado.
+   Prefixo .rcx-. Acento do Recado: índigo #128C7E → ciano #25D366. Claro/escuro pelos tokens do projeto.
+   CEF do FiveM: sem filter/backdrop-filter, sem color-mix; só transform e opacity animam.
+   ============================================================ */
+/* integração: tokens do RD ligados aos base do Recado (app-recado.css), redeclarados no escuro */
+:root{ --rcx-a:var(--rc-a1,#128C7E); --rcx-b:var(--rc-a2,#25D366); --rcx-ink:var(--rc-accent,#128C7E); --rcx-soft:var(--rc-tint,rgba(18,140,126,.10)); --rcx-soft2:var(--rc-tint2,rgba(37,211,102,.12)); --rcx-grad:var(--rc-grad,linear-gradient(135deg,#128C7E,#25D366)) }
+body.dark{ --rcx-ink:var(--rc-accent,#25D366); --rcx-soft:var(--rc-tint,rgba(37,211,102,.16)); --rcx-soft2:var(--rc-tint2,rgba(83,189,235,.14)) }
+
+/* ---------- a bolha que recebe um cartão/sticker/GIF perde o fundo: o cartão É a bolha ---------- */
+.rcx-host{ background:none!important; padding:0!important; box-shadow:none!important; border:0!important; overflow:visible!important }
+.rcx-host::before, .rcx-host::after{ display:none!important }
+
+/* ---------- cartão base ---------- */
+.rcx-card{ width:292px; max-width:100%; box-sizing:border-box; background:var(--bg2); color:var(--label); border-radius:20px; padding:14px 14px 10px; text-align:left;
+  box-shadow:0 1px 2px rgba(0,0,0,.06), 0 6px 18px rgba(0,0,0,.07), inset 0 0 0 .5px var(--sep); font-size:var(--t-subhead); line-height:1.3; position:relative }
+body.dark .rcx-card{ box-shadow:inset 0 0 0 .5px rgba(255,255,255,.08) }
+.rcx-kicker{ display:flex; align-items:center; gap:5px; font-size:12px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--rcx-ink) }
+.rcx-kicker .gl{ width:14px; height:14px; stroke-width:2.4 }
+.rcx-link{ appearance:none; border:0; background:none; font:inherit; color:var(--rcx-ink); font-weight:600; font-size:var(--t-foot); padding:6px 2px; cursor:pointer }
+.rcx-muted{ color:var(--label2) }
+.rcx-pad{ padding:14px 4px }
+.rcx-gone{ opacity:.8 } .rcx-gone .rcx-poll-hint, .rcx-gone .rcx-ev-when{ color:var(--label2); font-style:italic }
+.rcx-card button{ -webkit-tap-highlight-color:transparent }
+
+/* ---------- sondagem ---------- */
+.rcx-poll-q{ font-size:var(--t-body); font-weight:700; margin:6px 0 2px; word-break:break-word }
+.rcx-poll-hint{ font-size:var(--t-cap2); color:var(--label2); margin-bottom:10px }
+.rcx-opts{ display:flex; flex-direction:column; gap:7px }
+.rcx-sk{ height:40px; border-radius:12px; background:var(--fill4) }
+.rcx-opt{ appearance:none; border:0; font:inherit; color:inherit; text-align:left; position:relative; display:grid; grid-template-columns:22px 1fr auto; align-items:center; column-gap:10px; row-gap:6px;
+  padding:9px 10px 10px; border-radius:13px; background:var(--fill4); cursor:pointer; transition:transform var(--motion-fast) var(--curve) }
+.rcx-opt:active{ transform:scale(.98) }
+.rcx-mark{ width:22px; height:22px; border-radius:50%; box-shadow:inset 0 0 0 2px var(--label3); display:flex; align-items:center; justify-content:center; color:#fff }
+.rcx-opt.multi .rcx-mark{ border-radius:7px }
+.rcx-mark .gl{ width:12px; height:12px; stroke-width:3.4; opacity:0; transform:scale(.4); transition:opacity var(--motion-fast), transform var(--motion-normal) var(--spring) }
+.rcx-opt.on .rcx-mark{ background:var(--rcx-grad); box-shadow:none }
+.rcx-opt.on .rcx-mark .gl{ opacity:1; transform:none }
+.rcx-otxt{ font-size:var(--t-subhead); font-weight:500; word-break:break-word }
+.rcx-opt.on .rcx-otxt{ font-weight:600 }
+.rcx-ocount{ font-size:var(--t-foot); font-weight:700; color:var(--label2); font-variant-numeric:tabular-nums; min-width:14px; text-align:right }
+.rcx-opt.lead .rcx-ocount{ color:var(--rcx-ink) }
+.rcx-bar{ grid-column:2 / 4; height:6px; border-radius:3px; background:var(--fill3); overflow:hidden; position:relative }
+/* a barra cheia está sempre lá; só a escala muda (transform) - nada de width a animar */
+.rcx-bar i{ position:absolute; inset:0; border-radius:3px; background:var(--rcx-grad); transform-origin:0 50%; transform:scaleX(0); transition:transform .5s var(--curve-soft) }
+.rcx-opt:not(.lead) .rcx-bar i{ opacity:.55 }
+.rcx-card.busy .rcx-opt{ pointer-events:none }
+.rcx-poll-foot{ display:flex; align-items:center; justify-content:space-between; gap:8px; margin-top:10px; padding-top:8px; border-top:.5px solid var(--sep); font-size:var(--t-cap2); color:var(--label2); min-height:30px }
+.rcx-more{ padding:4px 6px; color:var(--label2) } .rcx-more .gl{ width:18px; height:18px }
+
+/* ---------- evento ---------- */
+.rcx-ev-top{ display:flex; gap:12px; align-items:center }
+.rcx-ev-date{ flex:none; width:54px; height:58px; border-radius:15px; background:var(--rcx-grad); color:#fff; display:flex; flex-direction:column; align-items:center; justify-content:center; box-shadow:var(--rc-glow) }
+.rcx-ev-date b{ font-size:24px; line-height:1; font-weight:800; font-variant-numeric:tabular-nums }
+.rcx-ev-date span{ font-size:11px; font-weight:700; letter-spacing:.08em; margin-top:3px; opacity:.92 }
+.rcx-ev-main{ min-width:0; flex:1 }
+.rcx-ev-title{ font-size:var(--t-body); font-weight:700; margin-top:2px; word-break:break-word }
+.rcx-ev-when{ font-size:var(--t-foot); color:var(--label2); margin-top:2px }
+.rcx-ev-desc{ font-size:var(--t-foot); color:var(--label); margin:10px 0 0; word-break:break-word; max-height:120px; overflow:hidden }
+.rcx-ev-loc{ display:flex; align-items:center; gap:8px; margin-top:10px; padding:8px 10px; border-radius:12px; background:var(--rcx-soft2) }
+.rcx-ev-loc .rcx-tic{ color:var(--rcx-b); display:flex } .rcx-ev-loc .gl{ width:16px; height:16px }
+.rcx-ev-locname{ flex:1; min-width:0; font-size:var(--t-foot); font-weight:600; line-height:1.25; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; word-break:break-word }
+.rcx-ev-loc .rcx-link{ padding:2px 0; font-size:var(--t-cap2) }
+.rcx-rsvp{ display:grid; grid-template-columns:repeat(3,1fr); gap:6px; margin-top:10px }
+.rcx-rs{ appearance:none; border:0; font:inherit; display:flex; align-items:center; justify-content:center; gap:5px; padding:9px 4px; border-radius:12px; background:var(--fill4); color:var(--label); font-size:var(--t-foot); font-weight:600; cursor:pointer; transition:transform var(--motion-fast) var(--curve) }
+.rcx-rs:active{ transform:scale(.96) }
+.rcx-rs b{ font-weight:700; color:var(--label2); font-variant-numeric:tabular-nums }
+.rcx-rs-ic{ display:flex } .rcx-rs-ic .gl{ width:13px; height:13px; stroke-width:3 }
+.rcx-rs.on{ color:#fff } .rcx-rs.on b{ color:rgba(255,255,255,.85) }
+.rcx-rs.on.rs-yes{ background:var(--rcx-grad) }
+.rcx-rs.on.rs-maybe{ background:var(--orange) }
+.rcx-rs.on.rs-no{ background:var(--gray) }
+.rcx-rs[disabled]{ opacity:.45; cursor:default }
+.rcx-event.rcx-cancel .rcx-ev-date{ background:var(--gray3); box-shadow:none }
+.rcx-event.rcx-cancel .rcx-ev-title{ text-decoration:line-through; color:var(--label2) }
+.rcx-event.rcx-cancel .rcx-ev-when{ color:var(--red); font-weight:600 }
+.rcx-event.rcx-past .rcx-ev-date{ opacity:.6 }
+
+/* ---------- documento ---------- */
+.rcx-doc-top{ display:flex; gap:12px; align-items:center; cursor:pointer }
+.rcx-doc-ic{ flex:none; width:48px; height:56px; border-radius:13px; background:var(--rcx-grad); display:flex; align-items:center; justify-content:center; box-shadow:var(--rc-glow) }
+.rcx-doc-ic svg{ width:26px; height:31px }
+.rcx-doc-main{ min-width:0; flex:1 }
+.rcx-doc-title{ font-size:var(--t-body); font-weight:700; margin-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+.rcx-doc-meta{ font-size:var(--t-cap2); color:var(--label2); margin-top:2px }
+.rcx-doc-prev{ margin-top:10px; padding:10px 12px; border-radius:12px; background:var(--fill4); font-size:var(--t-foot); color:var(--label2); white-space:pre-wrap; word-break:break-word; max-height:88px; overflow:hidden; line-height:1.35 }
+.rcx-docview{ padding:6px 20px 30px; color:var(--label) }
+.rcx-docview-h{ font-size:var(--t-title2); font-weight:800; line-height:1.15; word-break:break-word }
+.rcx-docview-meta{ font-size:var(--t-foot); color:var(--label2); margin:6px 0 16px; padding-bottom:14px; border-bottom:.5px solid var(--sep) }
+.rcx-docview-body{ font-size:var(--t-body); line-height:1.5; word-break:break-word; user-select:text }
+.rcx-docacts{ display:flex; gap:10px; margin-top:22px }
+.rcx-btn{ appearance:none; border:0; font:inherit; flex:1; display:flex; align-items:center; justify-content:center; gap:7px; padding:12px; border-radius:14px; background:var(--rcx-soft); color:var(--rcx-ink); font-weight:600; cursor:pointer }
+.rcx-btn .gl{ width:16px; height:16px }
+
+/* ---------- texto formatado (formatText) - funciona dentro de qualquer bolha (usa a cor do texto) ---------- */
+.rcx-code{ margin:6px 0; padding:9px 11px; border-radius:10px; background:rgba(127,127,140,.16); font-family:var(--font-mono); font-size:.86em; line-height:1.4; white-space:pre-wrap; word-break:break-word; overflow:hidden }
+.rcx-icode{ padding:1px 5px; border-radius:6px; background:rgba(127,127,140,.18); font-family:var(--font-mono); font-size:.88em }
+.rcx-quote{ margin:4px 0; padding:2px 0 2px 10px; border-left:3px solid currentColor; opacity:.82 }
+.rcx-list{ margin:4px 0; padding-left:1.35em }
+.rcx-list li{ margin:1px 0 }
+.rcx-url{ text-decoration:underline; text-underline-offset:2px; word-break:break-all }
+.rcx-fmt b, .rcx-fmt strong{ font-weight:700 }
+
+/* ---------- sticker ---------- */
+.rcx-sticker{ width:136px; height:136px; display:block }
+.rcx-sticker .rcx-svg{ width:100%; height:100%; display:block; overflow:visible }
+.rcx-sticker.missing{ width:96px; height:96px; border-radius:24px; background:var(--fill4); color:var(--label3); display:flex; align-items:center; justify-content:center }
+.rcx-host-sticker .rcx-sticker{ transform-origin:50% 100% }
+
+/* ---------- GIF ---------- */
+.rcx-gif{ position:relative; width:100%; aspect-ratio:var(--ar,1.4); border-radius:16px; overflow:hidden; background:var(--fill4); max-width:100% }
+.rcx-gif.big{ max-width:240px; box-shadow:inset 0 0 0 .5px var(--sep) }
+.rcx-gif-ph{ position:absolute; inset:0; background:linear-gradient(135deg,rgba(18,140,126,.18),rgba(37,211,102,.18)) }
+.rcx-gif img{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; opacity:0; transition:opacity var(--motion-normal) }
+.rcx-gif.ok img{ opacity:1 } .rcx-gif.ok .rcx-gif-ph{ opacity:0 }
+.rcx-gif.fail .rcx-gif-ph::after{ content:'GIF indisponível'; position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-size:var(--t-cap2); color:var(--label2) }
+.rcx-gif-tag{ position:absolute; left:8px; bottom:8px; padding:2px 6px; border-radius:6px; background:rgba(0,0,0,.55); color:#fff; font-size:10px; font-weight:800; letter-spacing:.06em }
+.rcx-gif.pick{ cursor:pointer; margin-bottom:8px; transition:transform var(--motion-fast) var(--curve) } .rcx-gif.pick:active{ transform:scale(.97) }
+
+/* ---------- folhas do Recado ---------- */
+.rcx-sheet .sheet{ max-height:90% }
+.rcx-sheet-tall .sheet{ height:86% }
+.rcx-sheet .sheet-head .sh-r.rcx-dis{ color:var(--label3) }
+.rcx-sheet .sheet-head{ color:var(--rcx-ink) }
+.rcx-sheet .sheet-head .sh-r{ font-weight:600 }
+.rcx-foot-note{ font-size:var(--t-cap2); color:var(--label2); text-align:center; padding:12px 24px 6px; line-height:1.35 }
+.rcx-pill{ appearance:none; border:0; font:inherit; flex:none; padding:7px 13px; border-radius:18px; background:var(--fill3); color:var(--label); font-size:var(--t-foot); font-weight:600; cursor:pointer; transition:transform var(--motion-fast) var(--curve) }
+.rcx-pill:active{ transform:scale(.96) }
+.rcx-pill.on{ background:var(--rcx-grad); color:#fff }
+
+/* stickers */
+.rcx-stp-tabs{ display:flex; gap:8px; padding:4px 16px 10px; overflow-x:auto; scrollbar-width:none } .rcx-stp-tabs::-webkit-scrollbar{ display:none }
+.rcx-stp-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:6px; padding:4px 12px }
+.rcx-stp-cell{ appearance:none; border:0; font:inherit; background:none; color:var(--label2); display:flex; flex-direction:column; align-items:center; gap:2px; padding:6px 0 4px; border-radius:16px; cursor:pointer; transition:transform var(--motion-fast) var(--spring) }
+.rcx-stp-cell:active{ transform:scale(.9) }
+.rcx-stp-cell .rcx-sticker{ width:84px; height:84px }
+.rcx-stp-cell span{ font-size:11px; font-weight:500; max-width:92px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+
+/* emoji */
+.rcx-emoji{ display:flex; flex-direction:column; height:318px; background:var(--bg2); color:var(--label); border-radius:18px; overflow:hidden }
+.rcx-sheet .rcx-emoji{ height:520px; background:none; border-radius:0 }
+.rcx-em-search{ display:flex; align-items:center; gap:7px; margin:10px 12px 6px; padding:0 10px; height:36px; border-radius:11px; background:var(--fill3); color:var(--label2) }
+.rcx-em-search .gl{ flex:none }
+.rcx-em-search input{ flex:1; min-width:0; border:0; outline:0; background:none; font:inherit; font-size:var(--t-subhead); color:var(--label) }
+.rcx-em-clr{ display:none; width:18px; height:18px; border-radius:50%; background:var(--label3); color:var(--bg2); align-items:center; justify-content:center; cursor:pointer }
+.rcx-emoji.has-q .rcx-em-clr{ display:flex }
+.rcx-em-tabs{ display:flex; gap:2px; padding:0 8px 4px; overflow-x:auto; scrollbar-width:none; border-bottom:.5px solid var(--sep) } .rcx-em-tabs::-webkit-scrollbar{ display:none }
+.rcx-em-tab{ appearance:none; border:0; background:none; font-size:19px; width:38px; height:34px; flex:none; border-radius:10px; display:flex; align-items:center; justify-content:center; color:var(--label2); cursor:pointer; opacity:.6; transition:opacity var(--motion-fast) }
+.rcx-em-tab.on{ opacity:1; background:var(--rcx-soft) } .rcx-em-tab .gl{ width:18px; height:18px }
+.rcx-em-grid{ flex:1; overflow-y:auto; padding:2px 8px 12px; scrollbar-width:none; position:relative } .rcx-em-grid::-webkit-scrollbar{ display:none }
+.rcx-em-h{ font-size:12px; font-weight:700; color:var(--label2); text-transform:uppercase; letter-spacing:.05em; padding:10px 6px 4px }
+.rcx-em-cells{ display:grid; grid-template-columns:repeat(8,1fr) }
+.rcx-em-cell{ appearance:none; border:0; background:none; font-size:26px; line-height:1; height:44px; border-radius:10px; cursor:pointer; font-family:'Segoe UI Emoji','Apple Color Emoji','Noto Color Emoji',sans-serif; transition:transform var(--motion-fast) var(--spring) }
+.rcx-em-cell:active{ transform:scale(1.25) }
+.rcx-em-none{ padding:40px 20px; text-align:center; color:var(--label2); font-size:var(--t-foot) }
+
+/* GIF picker */
+.rcx-gif-search{ display:flex; align-items:center; gap:7px; margin:4px 16px 12px; padding:0 10px; height:38px; border-radius:11px; background:var(--fill3); color:var(--label2) }
+.rcx-gif-search input{ flex:1; min-width:0; border:0; outline:0; background:none; font:inherit; font-size:var(--t-subhead); color:var(--label) }
+.rcx-gif-grid{ display:grid; grid-template-columns:1fr 1fr; gap:8px; padding:0 16px; align-items:start; min-height:120px; transition:opacity var(--motion-normal) }
+.rcx-gif-grid.loading{ opacity:.4 }
+.rcx-off{ padding:18px 24px 10px; text-align:center; color:var(--label) }
+.rcx-off-ic{ width:74px; height:74px; margin:6px auto 14px; border-radius:22px; background:var(--rcx-grad); color:#fff; display:flex; align-items:center; justify-content:center; box-shadow:var(--rc-glow) }
+.rcx-off-ic .gl{ width:34px; height:34px }
+.rcx-off b{ display:block; font-size:var(--t-title3); font-weight:700; margin-bottom:8px }
+.rcx-off p{ font-size:var(--t-foot); color:var(--label2); line-height:1.45; margin:0 0 14px }
+.rcx-off-how{ text-align:left; background:var(--bg2); border-radius:16px; padding:6px 14px; margin:4px 0 16px }
+.rcx-off-how div{ display:flex; gap:10px; align-items:flex-start; padding:9px 0; font-size:var(--t-foot); line-height:1.4 }
+.rcx-off-how div + div{ border-top:.5px solid var(--sep) }
+.rcx-off-how i{ flex:none; font-style:normal; width:22px; height:22px; border-radius:50%; background:var(--rcx-soft); color:var(--rcx-ink); font-weight:700; font-size:12px; display:flex; align-items:center; justify-content:center; margin-top:-1px }
+.rcx-off-how code, .rcx-off p code{ font-family:var(--font-mono); font-size:.9em; padding:1px 5px; border-radius:5px; background:var(--fill3) }
+
+/* ---------- formulários (sondagem, evento, documento) ---------- */
+.rcx-form{ padding:0 16px 10px; color:var(--label) }
+.rcx-hero{ display:flex; gap:12px; align-items:center; padding:4px 4px 14px }
+.rcx-hero-ic{ flex:none; width:46px; height:46px; border-radius:14px; background:var(--rcx-grad); color:#fff; display:flex; align-items:center; justify-content:center; box-shadow:var(--rc-glow) }
+.rcx-hero-ic .gl{ width:24px; height:24px }
+.rcx-hero b{ display:block; font-size:var(--t-headline); font-weight:700 }
+.rcx-hero span{ display:block; font-size:var(--t-foot); color:var(--label2); margin-top:1px }
+.rcx-card-in{ background:var(--bg2); border-radius:16px; padding:4px 14px; margin-bottom:6px }
+.rcx-sec-h{ display:flex; justify-content:space-between; align-items:baseline; gap:10px; padding:14px 4px 6px; font-size:var(--t-cap2); font-weight:600; color:var(--label2); text-transform:uppercase; letter-spacing:.03em }
+.rcx-count{ flex:none; white-space:nowrap; text-transform:none; font-variant-numeric:tabular-nums; font-weight:500 } .rcx-count.warn{ color:var(--orange) }
+.rcx-fmt-hint{ min-width:0; text-transform:none; letter-spacing:0; font-weight:500; font-size:12px; line-height:1.35 }
+.rcx-q, .rcx-in{ display:block; width:100%; box-sizing:border-box; border:0; outline:0; background:none; font:inherit; color:var(--label); resize:none; padding:11px 0; font-size:var(--t-body) }
+.rcx-q{ font-weight:600 }
+.rcx-in + .rcx-in{ border-top:.5px solid var(--sep) }
+.rcx-desc, .rcx-dbody{ font-size:var(--t-subhead); line-height:1.4 }
+.rcx-dbody{ min-height:190px }
+.rcx-q::placeholder, .rcx-in::placeholder, .rcx-opt-in input::placeholder{ color:var(--label3) }
+.rcx-opt-in{ display:flex; align-items:center; gap:10px; min-height:46px }
+.rcx-opt-in + .rcx-opt-in{ border-top:.5px solid var(--sep) }
+.rcx-dot{ flex:none; width:18px; height:18px; border-radius:50%; box-shadow:inset 0 0 0 2px var(--label3) }
+.rcx-opt-in input{ flex:1; min-width:0; border:0; outline:0; background:none; font:inherit; font-size:var(--t-body); color:var(--label); padding:10px 0 }
+.rcx-x{ appearance:none; border:0; flex:none; width:22px; height:22px; border-radius:50%; background:var(--fill3); color:var(--label2); display:flex; align-items:center; justify-content:center; cursor:pointer; padding:0 }
+.rcx-x .gl{ width:11px; height:11px; stroke-width:3 }
+.rcx-trow, .rcx-row{ display:flex; align-items:center; gap:10px; min-height:48px; width:100% }
+.rcx-trow + .rcx-trow{ border-top:.5px solid var(--sep) }
+.rcx-row{ appearance:none; border:0; background:none; font:inherit; color:var(--label); padding:0; text-align:left; cursor:pointer }
+.rcx-time{ border-top:.5px solid var(--sep); cursor:default }
+.rcx-tic{ flex:none; width:28px; height:28px; border-radius:8px; background:var(--rcx-soft); color:var(--rcx-ink); display:flex; align-items:center; justify-content:center }
+.rcx-tl{ flex:1; font-size:var(--t-body) }
+.rcx-val{ color:var(--rcx-ink); font-size:var(--t-subhead); font-weight:600 }
+.rcx-row.open .rcx-val{ color:var(--label) }
+.rcx-picker{ padding:6px 0; gap:4px; align-items:center }
+.rcx-picker select{ font-size:19px; padding:6px 6px; background:var(--fill4); border-radius:9px }
+.rcx-picker span{ font-size:19px; font-weight:600 }
+.rcx-cal{ padding:0 0 8px }
+.rcx-cal .cal-head{ padding:4px 2px } .rcx-cal .cal-head b{ color:var(--label); font-size:var(--t-headline) } .rcx-cal .cal-head span{ color:var(--rcx-ink); font-size:var(--t-title2); padding:2px 12px }
+.rcx-cal .cal-dow, .rcx-cal .cal-grid{ padding-left:0; padding-right:0 }
+.rcx-cal .cal-day{ width:36px; font-size:var(--t-subhead) }
+.rcx-cal .cal-day.rcx-past{ cursor:default }
+.rcx-cal .cal-day.rcx-today{ color:var(--rcx-ink); font-weight:700 }
+.rcx-cal .cal-day.rcx-sel{ background:var(--rcx-grad); color:#fff; font-weight:700 }
+.rcx-locbox{ padding:10px 14px }
+.rcx-locseg{ display:flex; gap:8px }
+.rcx-locbody:not(:empty){ margin-top:10px }
+.rcx-locnote{ display:flex; gap:8px; align-items:flex-start; font-size:var(--t-foot); color:var(--label2); padding:4px 0 2px }
+.rcx-locnote .gl{ flex:none; width:15px; height:15px; color:var(--rcx-b); margin-top:1px }
+.rcx-loclabel{ border-top:.5px solid var(--sep); margin-top:6px }
+.rcx-pois{ display:flex; flex-wrap:wrap; gap:6px; max-height:176px; overflow-y:auto; scrollbar-width:none }
+.rcx-poi{ appearance:none; border:0; font:inherit; display:flex; align-items:center; gap:6px; padding:6px 10px; border-radius:14px; background:var(--fill4); color:var(--label); font-size:var(--t-cap1); cursor:pointer }
+.rcx-poi.on{ background:var(--rcx-soft); box-shadow:inset 0 0 0 1.5px var(--rcx-a); color:var(--rcx-ink); font-weight:600 }
+.rcx-poi-dot{ width:8px; height:8px; border-radius:50%; background:var(--rcx-a) }
+.rcx-rem{ display:flex; flex-wrap:wrap; gap:8px; padding:2px 2px 4px }
+.rcx-tabs2{ display:flex; gap:8px; padding:0 2px 10px }
+.rcx-pane .empty{ padding-top:30px }
+.rcx-pane .list{ margin:0 -16px }   /* as listas do sistema já trazem a margem lateral; o formulário também */
+
+/* votos / respostas */
+.rcx-voters-q{ padding:4px 20px 2px; font-size:var(--t-headline); font-weight:700; color:var(--label) }
+.rcx-sheet .rcx-muted .li-label{ color:var(--label2) }
+
+/* no jogo (body.fivem) as sombras grandes custam: fica só o contorno fino.
+   As peças em gradiente (data do evento, ícone do documento, herói, GIF offline) já não precisam de
+   regra própria: usam --rc-glow, que o app-recado.css apaga em body.fivem. */
+body.fivem .rcx-card{ box-shadow:inset 0 0 0 .5px var(--sep) }

@@ -1,0 +1,595 @@
+/* ===================== APPS DE TRABALHO (html/js/apps/capps.js), 2026-10-03 =====================
+   Prefixo cap-. A janela (.cap-win) recebe a cor da app em variaveis (capps.js paint): --cap-acc (cor pura), --cap-tx-l/-d
+   (para texto e glifos no claro e no escuro), --cap-soft-l/-d (fundo suave), --cap-ink (texto sobre a cor), --cap-g1/-g2
+   (o degrade do icone). O --blue do sistema passa a ser a cor da app dentro da janela: botoes, voltar, interruptores e
+   ligacoes ficam com a cor da app, como a "tint color" das apps a serio. Sem color-mix (o CEF nao o tem).
+   So transform/opacity animam; nada em ciclo. */
+.cap-win{ --cap-tx:var(--cap-tx-l, var(--accent)); --cap-soft:var(--cap-soft-l, var(--fill3)); --blue:var(--cap-tx) }
+body.dark .cap-win{ --cap-tx:var(--cap-tx-d, var(--accent)); --cap-soft:var(--cap-soft-d, var(--fill3)) }
+.cap-win :where(input, textarea, select){ font:inherit; color:var(--label) }
+
+/* ---------- cabecalho ---------- */
+.cap-eyebrow{ display:flex; align-items:center; gap:8px; padding:4px 20px 0; min-width:0; font-size:13px; letter-spacing:.2px; color:var(--label2) }
+.cap-eyebrow > span:not(.cap-mini){ font-weight:700; text-transform:uppercase; letter-spacing:.6px; color:var(--cap-tx); white-space:nowrap }
+.cap-eyebrow > i{ font-style:normal; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; min-width:0 }
+.cap-eyebrow > i::before{ content:'·'; margin-right:6px; color:var(--label3) }
+.cap-view .large-title{ padding-top:0 }
+.cap-mini{ display:inline-flex; flex:none; align-items:center; justify-content:center; border-radius:27%; box-shadow:inset 0 0 0 .5px rgba(255,255,255,.25) }
+.cap-mini svg{ stroke-width:2.2 }
+.cap-side{ margin:2px 16px 12px }
+/* PearOS escuro: o segmento escolhido em cinzento claro (no preto o --bg2 quase nao se distingue do fundo) */
+body.dark:not(.os-android) .cap-win .seg div.on{ background:#636366; box-shadow:0 3px 8px rgba(0,0,0,.3) }
+.cap-note{ display:flex; align-items:flex-start; gap:8px; padding:8px 22px 4px; font-size:13.5px; line-height:1.35; color:var(--label2) }
+.cap-note svg{ flex:none; width:16px; height:16px; margin-top:1px; color:var(--label3) }
+.cap-intro{ padding:0 22px 14px; font-size:15px; line-height:1.42; color:var(--label2); white-space:pre-wrap }
+.cap-sec{ padding:24px 22px 9px; font-size:20px; font-weight:700; letter-spacing:-.25px; color:var(--label) }
+.cap-body{ display:flex; flex-direction:column }
+.cap-body > *{ flex-shrink:0 }
+
+/* ---------- listas ---------- */
+.cap-search{ margin-top:0 }
+.cap-chips{ padding:4px 16px 12px }
+.cap-chips span.on{ background:var(--cap-acc); color:var(--cap-ink) }
+.cap-list{ display:flex; flex-direction:column }
+.cap-rows{ border-radius:16px }
+.cap-row{ display:flex; align-items:flex-start; gap:12px; padding:13px 16px 13px 14px; position:relative; cursor:pointer; color:var(--label); transition:background .2s ease-out }
+.cap-row:active{ background:var(--fill4); transition:background .04s }
+.cap-row + .cap-row::before{ content:''; position:absolute; top:0; left:48px; right:0; height:.5px; background:var(--sep) }
+.cap-row.split-sel{ background:var(--cap-soft) }
+.cap-dot{ flex:none; width:10px; height:10px; border-radius:50%; margin:7px 7px 0 7px; background:var(--c) }
+.cap-row-m{ flex:1; min-width:0 }
+.cap-row-t{ display:flex; align-items:baseline; gap:10px; min-width:0 }
+.cap-row-t b{ flex:1; min-width:0; font-size:16.5px; font-weight:600; letter-spacing:-.15px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+.cap-row-t b em{ font-style:normal; font-weight:500; color:var(--label2) }
+.cap-row-time{ flex:none; font-size:13px; color:var(--label2); font-variant-numeric:tabular-nums }
+.cap-row-p{ margin-top:2px; font-size:14.5px; line-height:1.36; color:var(--label2); display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden }
+.cap-row-x{ display:flex; flex-wrap:wrap; align-items:center; gap:6px 8px; margin-top:8px; min-width:0 }
+.cap-row-x:empty{ display:none }
+.cap-row-w{ font-size:13px; color:var(--label2); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:150px }
+.cap-row-w.anon{ font-style:italic }
+.cap-row-a{ display:inline-flex; align-items:center; gap:3px; font-size:13px; color:var(--label2) }
+.cap-row-a svg{ width:12px; height:12px }
+.cap-row.closed .cap-row-t b{ color:var(--label2) }
+.cap-pill{ display:inline-flex; align-items:center; height:22px; padding:0 9px; border-radius:11px; font-size:12.5px; font-weight:600; letter-spacing:.1px; color:var(--c); background:var(--cb); white-space:nowrap }
+.cap-pill.tap{ cursor:pointer; height:26px; padding:0 11px; border-radius:13px; font-size:13.5px }
+.cap-pill.tap::after{ content:''; width:5px; height:5px; margin:-3px 0 0 7px; border-right:1.6px solid currentColor; border-bottom:1.6px solid currentColor; transform:rotate(45deg) }
+.cap-tile{ flex:none; width:36px; height:36px; border-radius:11px; display:flex; align-items:center; justify-content:center; background:var(--cb, var(--cap-soft)); color:var(--c, var(--cap-tx)) }
+.cap-tile svg{ width:20px; height:20px }
+.cap-row .cap-tile ~ .cap-row-m, .cap-row .cap-time ~ .cap-row-m{ padding-top:1px }
+.cap-time{ flex:none; width:52px; display:flex; flex-direction:column; align-items:flex-start; padding-top:1px }
+.cap-time b{ font-size:17px; font-weight:700; letter-spacing:-.3px; font-variant-numeric:tabular-nums; color:var(--label) }
+.cap-time span{ font-size:11.5px; color:var(--label2); white-space:nowrap }
+.cap-row .cap-av{ flex:none; width:36px; height:36px; font-size:14px }
+.cap-plate-ic{ flex:none; margin-top:4px; min-width:62px; height:24px; padding:0 6px 0 11px; border-radius:5px; display:flex; align-items:center; justify-content:center; background:#fff; color:#111; box-shadow:inset 0 0 0 1.5px #1c1c1e, inset 7px 0 0 #2457D6; font:700 11.5px/1 var(--font-mono); letter-spacing:1.2px; white-space:nowrap }
+.cap-more-btn{ align-self:center; margin:12px auto 2px; padding:9px 18px; border-radius:18px; background:var(--cap-soft); color:var(--cap-tx); font-size:15px; font-weight:600; cursor:pointer }
+.cap-more-btn[hidden]{ display:none }
+.cap-empty .empty{ padding:36px 40px 40px; flex:none }
+.cap-empty .empty svg{ width:52px; height:52px }
+.cap-empty .empty b{ font-size:20px }
+
+/* ---------- formularios ---------- */
+.cap-form{ margin-top:0 }
+.cap-formbox + .cap-opts, .cap-formbox + .cap-form, .cap-opts + .cap-form{ margin-top:18px }
+.cap-opts{ margin-top:18px }
+.cap-f{ display:block; padding:10px 16px 11px; position:relative; transition:transform .3s var(--spring) }
+.cap-f + .cap-f::before{ content:''; position:absolute; top:0; left:16px; right:0; height:.5px; background:var(--sep) }
+.cap-f-l{ font-size:13px; font-weight:500; color:var(--label2); margin-bottom:4px }
+.cap-f-l em{ font-style:normal; color:var(--red); margin-left:3px }
+.cap-f-in{ position:relative; display:flex; align-items:center; min-height:26px }
+.cap-in{ flex:1; min-width:0; border:none; background:none; outline:none; font-size:17px; padding:0 }
+.cap-in::placeholder, .cap-ta::placeholder{ color:var(--label3) }
+.cap-ta{ font-size:17px; min-height:26px; padding:0 }
+.cap-win select.cap-sel{ -webkit-appearance:none; appearance:none; flex:1; min-width:0; border:none; border-radius:0; background:none; outline:none; font-size:17px; font-weight:400; padding:0 26px 0 0; text-align:left; text-align-last:left; color:var(--label); cursor:pointer }
+.cap-win select.cap-sel.ph{ color:var(--label3) }
+.cap-sel-ic{ position:absolute; right:0; top:50%; margin-top:-8px; color:var(--label3); pointer-events:none; display:flex }
+.cap-f-row{ display:flex; align-items:center; gap:12px }
+.cap-f-row .cap-f-l{ flex:1; margin:0; font-size:17px; font-weight:400; color:var(--label) }
+.cap-f-row .cap-f-in{ flex:none }
+.cap-date{ display:flex; align-items:center; gap:8px; font-size:17px; cursor:pointer; color:var(--label) }
+.cap-date svg{ width:18px; height:18px; color:var(--cap-tx) }
+.cap-date.ph{ color:var(--label3) }
+.cap-in.cap-plate, .cap-plate-v{ flex:none; width:150px; padding:5px 10px 5px 18px; border-radius:6px; background:#fff; color:#111; box-shadow:inset 0 0 0 1.5px #1c1c1e, inset 9px 0 0 #2457D6; font:700 18px/1.2 var(--font-mono); letter-spacing:3px; text-transform:uppercase; text-align:center }
+.cap-plate-v{ display:inline-block; width:auto; font-size:15px; padding:3px 9px 3px 16px; letter-spacing:2px }
+.cap-f.cap-err{ animation:capShake .42s cubic-bezier(.36,.07,.19,.97) }
+@keyframes capShake{ 0%,100%{ transform:none } 20%{ transform:translateX(-7px) } 40%{ transform:translateX(6px) } 60%{ transform:translateX(-4px) } 80%{ transform:translateX(2px) } }
+.cap-cta{ margin:20px 16px 6px; background:var(--cap-acc); color:var(--cap-ink) }
+.cap-cta.dis{ opacity:.38; pointer-events:none }
+.cap-cta svg{ width:22px; height:22px }
+.cap-cta.cap-big{ height:58px; border-radius:29px; font-size:19px; gap:9px }
+
+/* ---------- detalhe ---------- */
+.cap-dh{ padding:6px 20px 2px }
+.cap-dh-top{ display:flex; align-items:center; gap:10px; min-width:0 }
+.cap-dh-as{ display:inline-flex; align-items:center; gap:4px; font-size:13px; color:var(--label2); min-width:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+.cap-dh-as svg{ width:13px; height:13px; flex:none }
+.cap-dh-id{ margin-left:auto; font-size:13px; color:var(--label3); font-variant-numeric:tabular-nums }
+.cap-dh-t{ margin:12px 0 4px; font-size:27px; font-weight:700; letter-spacing:-.5px; line-height:1.15; word-break:break-word }
+.cap-dh-m{ font-size:14.5px; color:var(--label2) }
+.cap-tags{ display:flex; flex-wrap:wrap; gap:6px; margin-top:12px }
+.cap-tag{ display:inline-flex; align-items:center; height:24px; padding:0 10px; border-radius:12px; font-size:13px; font-weight:600; color:var(--c); background:var(--cb); white-space:nowrap }
+.cap-tagpick{ display:flex; flex-wrap:wrap; gap:8px; padding:0 16px }
+.cap-tagpick .cap-tag{ height:32px; padding:0 14px; border-radius:16px; cursor:pointer; font-size:14.5px; transition:background .2s, color .2s }
+.cap-tagpick .cap-tag.on{ background:var(--c); color:#fff }
+.cap-acts{ display:grid; grid-template-columns:repeat(4, 1fr); gap:8px; padding:16px 16px 4px }
+.cap-acts.n1{ grid-template-columns:1fr } .cap-acts.n2{ grid-template-columns:repeat(2, 1fr) } .cap-acts.n3{ grid-template-columns:repeat(3, 1fr) } .cap-acts.n5{ grid-template-columns:repeat(5, 1fr) }
+.cap-act{ display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px; min-width:0; height:62px; border-radius:15px; background:var(--bg2); color:var(--cap-tx); cursor:pointer; transition:background .2s ease-out }
+.cap-act i{ display:flex; font-style:normal } .cap-act svg{ width:22px; height:22px }
+.cap-act span{ font-size:12.5px; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:92% }
+.cap-act:active{ background:var(--fill3) }
+.cap-act.on{ background:var(--cap-acc); color:var(--cap-ink) }
+.cap-act.danger{ color:var(--red) }
+.cap-act.dis{ opacity:.35; pointer-events:none }
+.cap-acts.n1 .cap-act{ flex-direction:row; height:50px; gap:8px } .cap-acts.n1 .cap-act span{ font-size:16px }
+.cap-dsecs{ display:flex; flex-direction:column; gap:12px; padding-top:16px }
+.cap-dsecs:empty{ display:none }
+.cap-kvs{ margin-top:0 }
+.cap-kvs + .cap-kvs{ margin-top:0 }
+.cap-kv{ padding:10px 16px 11px; position:relative }
+.cap-kv + .cap-kv::before{ content:''; position:absolute; top:0; left:16px; right:0; height:.5px; background:var(--sep) }
+.cap-kv > span{ display:block; font-size:13px; color:var(--label2); margin-bottom:3px }
+.cap-kv > b{ display:block; font-size:16.5px; font-weight:500; line-height:1.4; white-space:pre-wrap; word-break:break-word; color:var(--label) }
+.cap-kv > b.cap-plate-v{ display:inline-block }
+.cap-photo{ margin:0 16px; border-radius:16px; overflow:hidden; background:var(--fill3) }
+.cap-photo img{ display:block; width:100%; max-height:320px; object-fit:cover }
+.cap-loc{ display:flex; align-items:center; gap:12px; margin:0 16px; padding:13px 16px; border-radius:16px; background:var(--bg2) }
+.cap-loc > i{ flex:none; width:42px; height:42px; border-radius:50%; display:flex; align-items:center; justify-content:center; background:var(--cap-soft); color:var(--cap-tx) }
+.cap-loc b{ display:block; font-size:15.5px; font-weight:600 } .cap-loc span{ display:block; font-size:13.5px; color:var(--label2); margin-top:2px; font-variant-numeric:tabular-nums } .cap-loc em{ font-style:normal }
+
+/* marcacao: o dia num bloco de calendario */
+.cap-when{ display:flex; align-items:center; gap:14px; margin:0 16px; padding:14px 16px; border-radius:18px; background:var(--bg2) }
+.cap-when-d{ flex:none; width:58px; height:62px; border-radius:14px; overflow:hidden; display:flex; flex-direction:column; background:var(--bg); box-shadow:inset 0 0 0 .5px var(--sep) }
+.cap-when-d span{ height:20px; display:flex; align-items:center; justify-content:center; background:var(--cap-acc); color:var(--cap-ink); font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.6px }
+.cap-when-d b{ flex:1; display:flex; align-items:center; justify-content:center; font-size:25px; font-weight:700; letter-spacing:-.5px; font-variant-numeric:tabular-nums }
+.cap-when-b{ min-width:0 }
+.cap-when-b b{ display:block; font-size:16.5px; font-weight:600 }
+.cap-when-b span{ display:block; margin-top:2px; font-size:15px; color:var(--label2); font-variant-numeric:tabular-nums }
+.cap-when-b em{ display:block; margin-top:2px; font-style:normal; font-size:13.5px; font-weight:600; color:var(--cap-tx) }
+
+/* separadores com nomes compridos: uma linha so */
+.cap-win > .tabbar .tab span{ white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:100% }
+
+/* ---------- conversa ---------- */
+.cap-thread{ display:flex; flex-direction:column; gap:8px; padding:0 16px }
+.cap-thread-empty{ padding:16px 6px; font-size:14.5px; color:var(--label3); text-align:center }
+.cap-msg{ align-self:flex-start; max-width:86%; padding:9px 13px 10px; border-radius:18px 18px 18px 6px; background:var(--bg2) }
+.cap-msg.me{ align-self:flex-end; border-radius:18px 18px 6px 18px; background:var(--cap-acc); color:var(--cap-ink) }
+.cap-msg.priv{ background:rgba(255,196,0,.16); box-shadow:inset 0 0 0 1px rgba(214,160,0,.35); color:var(--label) }
+.cap-msg.priv.me{ background:rgba(255,196,0,.22) }
+.cap-msg-h{ display:flex; align-items:center; gap:4px; flex-wrap:wrap; font-size:12px; color:var(--label2); margin-bottom:3px }
+.cap-msg-h svg{ width:12px; height:12px }
+.cap-msg-h b{ font-weight:600; color:var(--label) }
+.cap-msg-h b + span::before{ content:'·'; margin-right:4px }
+.cap-msg.me:not(.priv) .cap-msg-h, .cap-msg.me:not(.priv) .cap-msg-h b{ color:inherit; opacity:.82 }
+.cap-msg-t{ font-size:15.5px; line-height:1.38; white-space:pre-wrap; word-break:break-word }
+.cap-comp{ margin:14px 16px 0 }
+.cap-comp .seg{ margin:0 0 8px }
+.cap-comp-r{ display:flex; align-items:flex-end; gap:8px; padding:6px 6px 6px 15px; border-radius:22px; background:var(--bg2); box-shadow:inset 0 0 0 .5px var(--sep) }
+.cap-comp.priv .cap-comp-r{ background:rgba(255,196,0,.14); box-shadow:inset 0 0 0 1px rgba(214,160,0,.35) }
+.cap-comp textarea{ flex:1; min-height:30px; max-height:140px; padding:5px 0; font-size:16px; line-height:1.3 }
+.cap-send{ flex:none; width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; background:var(--fill3); color:var(--label3); cursor:pointer; transition:background .2s, color .2s, opacity .2s }
+.cap-send.on{ background:var(--cap-acc); color:var(--cap-ink) }
+.cap-send.busy{ opacity:.45; pointer-events:none }
+.cap-send svg{ width:19px; height:19px; stroke-width:2.6 }
+
+/* ---------- marcacoes ---------- */
+.cap-days{ display:flex; gap:8px; padding:2px 16px 8px; overflow-x:auto; scrollbar-width:none; scroll-behavior:smooth }
+.cap-days::-webkit-scrollbar{ display:none }
+.cap-day{ flex:none; width:58px; height:76px; border-radius:18px; background:var(--bg2); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:1px; cursor:pointer; transition:background .2s, color .2s }
+.cap-day span{ font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.4px; color:var(--label2) }
+.cap-day b{ font-size:22px; font-weight:700; letter-spacing:-.4px; font-variant-numeric:tabular-nums }
+.cap-day i{ font-style:normal; font-size:11px; color:var(--label3) }
+.cap-day.on{ background:var(--cap-acc); color:var(--cap-ink) }
+.cap-day.on span, .cap-day.on i{ color:inherit; opacity:.8 }
+.cap-day.off{ opacity:.35; cursor:default }
+.cap-slots{ display:grid; grid-template-columns:repeat(4, 1fr); gap:8px; padding:2px 16px }
+.cap-slots .spinner{ grid-column:1 / -1; margin:14px auto }
+.cap-slots .cap-thread-empty{ grid-column:1 / -1 }
+.cap-slot{ height:42px; border-radius:13px; background:var(--bg2); display:flex; align-items:center; justify-content:center; font-size:15.5px; font-weight:600; font-variant-numeric:tabular-nums; cursor:pointer; transition:background .2s, color .2s }
+.cap-slot.on{ background:var(--cap-acc); color:var(--cap-ink) }
+.cap-slot.full{ color:var(--label3); text-decoration:line-through; cursor:default; background:var(--fill4) }
+.cap-svcs .cap-svc{ display:flex; align-items:center; gap:13px; padding:12px 16px; position:relative; cursor:pointer }
+.cap-svc + .cap-svc::before{ content:''; position:absolute; top:0; left:51px; right:0; height:.5px; background:var(--sep) }
+.cap-svc-r{ flex:none; width:22px; height:22px; border-radius:50%; box-shadow:inset 0 0 0 2px var(--label3); display:flex; align-items:center; justify-content:center; transition:box-shadow .2s }
+.cap-svc-r::after{ content:''; width:10px; height:10px; border-radius:50%; background:var(--cap-acc); transform:scale(0); transition:transform .25s var(--spring) }
+.cap-svc.on .cap-svc-r{ box-shadow:inset 0 0 0 2px var(--cap-acc) }
+.cap-svc.on .cap-svc-r::after{ transform:scale(1) }
+.cap-svc-b b{ display:block; font-size:16.5px; font-weight:600 } .cap-svc-b span{ display:block; font-size:13px; color:var(--label2); margin-top:1px }
+.cap-book .cap-form{ margin-top:16px }
+.cap-sum{ margin-top:18px; text-align:center; font-size:14.5px; color:var(--label2); font-variant-numeric:tabular-nums }
+.cap-book .cap-cta{ margin-top:10px }
+
+/* ---------- pedidos (dispatch) ---------- */
+.cap-types{ display:grid; grid-template-columns:repeat(2, 1fr); gap:10px; padding:0 16px }
+.cap-types.n3{ grid-template-columns:repeat(3, 1fr) } .cap-types.n1{ grid-template-columns:1fr }
+.cap-type{ display:flex; flex-direction:column; align-items:center; justify-content:center; gap:9px; height:104px; border-radius:20px; background:var(--bg2); cursor:pointer; transition:box-shadow .2s, background .2s }
+.cap-type i{ width:46px; height:46px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-style:normal; background:var(--fill3); color:var(--label); transition:background .2s, color .2s }
+.cap-type span{ font-size:15px; font-weight:600; text-align:center; padding:0 6px; line-height:1.15 }
+.cap-type.on{ box-shadow:inset 0 0 0 2px var(--cap-acc); background:var(--cap-soft) }
+.cap-type.on i{ background:var(--cap-acc); color:var(--cap-ink) }
+.cap-req .cap-form{ margin-top:14px }
+.cap-req[hidden], .cap-live[hidden]{ display:none }
+.cap-live{ margin:2px 16px 0; padding:26px 20px 14px; border-radius:26px; background:var(--bg2); text-align:center; display:flex; flex-direction:column; align-items:center }
+.cap-live-ic{ width:76px; height:76px; border-radius:50%; display:flex; align-items:center; justify-content:center; color:#fff; background:var(--c); box-shadow:0 0 0 8px var(--cb, var(--cap-soft)) }
+.cap-live-ic svg{ width:34px; height:34px }
+.cap-live-t{ margin-top:18px; font-size:23px; font-weight:700; letter-spacing:-.35px }
+.cap-live-s{ margin-top:4px; font-size:15.5px; color:var(--label2); line-height:1.35 }
+.cap-steps{ display:flex; gap:6px; width:100%; margin-top:22px }
+.cap-steps span{ flex:1; height:5px; border-radius:3px; background:var(--fill3) }
+.cap-steps span.on{ background:var(--cap-acc) }
+.cap-live-lb{ display:flex; justify-content:space-between; width:100%; margin-top:7px; font-size:12px; color:var(--label2) }
+.cap-live-m{ margin-top:14px; font-size:13px; color:var(--label3) }
+.cap-live-x{ margin-top:12px; padding:10px 18px; border-radius:18px; color:var(--red); font-size:16px; font-weight:600; cursor:pointer }
+.cap-live-x:active{ background:var(--fill4) }
+
+/* ---------- comunicados ---------- */
+.cap-feed{ background:none; border-radius:0; overflow:visible; display:flex; flex-direction:column; gap:12px }
+.cap-feed .cap-post{ flex-direction:column; align-items:stretch; gap:0; padding:0; border-radius:20px; background:var(--bg2); overflow:hidden }
+.cap-feed .cap-post::before{ display:none }
+.cap-post-img{ aspect-ratio:16 / 9; background:var(--fill3); overflow:hidden }
+.cap-post-img img{ display:block; width:100%; height:100%; object-fit:cover }
+.cap-post-img.big{ margin:4px 16px 0; border-radius:18px }
+.cap-post-b{ padding:14px 16px 15px }
+.cap-post-pin{ display:flex; align-items:center; gap:4px; margin-bottom:6px; font-size:12px; font-weight:700; letter-spacing:.5px; text-transform:uppercase; color:var(--cap-tx) }
+.cap-post-pin svg{ width:13px; height:13px }
+.cap-post-t{ font-size:19px; font-weight:700; letter-spacing:-.3px; line-height:1.22 }
+.cap-post-p{ margin-top:6px; font-size:15px; line-height:1.42; color:var(--label2); display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden }
+.cap-post-m{ margin-top:10px; font-size:13px; color:var(--label3) }
+.cap-post.split-sel{ box-shadow:inset 0 0 0 2px var(--cap-acc) }
+.cap-article{ padding-bottom:12px }
+.cap-art-h{ display:flex; align-items:center; gap:10px; padding:16px 20px 2px }
+.cap-art-h b{ display:block; font-size:15px; font-weight:600 } .cap-art-h span{ display:block; font-size:13px; color:var(--label2) }
+.cap-art-h em{ margin-left:auto; display:inline-flex; align-items:center; gap:3px; font-style:normal; font-size:12.5px; font-weight:600; color:var(--cap-tx) }
+.cap-art-h em svg{ width:13px; height:13px }
+.cap-article h2{ margin:10px 0 0; padding:0 20px; font-size:27px; font-weight:800; letter-spacing:-.6px; line-height:1.15 }
+.cap-art-b{ padding:12px 20px 0; font-size:17px; line-height:1.55; white-space:pre-wrap; word-break:break-word }
+.cap-compose .cap-in-t{ font-size:19px; font-weight:700 }
+.cap-compose .list{ margin-top:16px }
+
+/* ---------- equipa ---------- */
+.cap-roster-sum{ display:grid; grid-template-columns:repeat(3, 1fr); gap:10px; padding:0 16px 14px }
+.cap-stat{ padding:12px 14px 11px; border-radius:18px; background:var(--bg2) }
+.cap-stat b{ display:block; font-size:28px; font-weight:700; letter-spacing:-.6px; color:var(--cap-tx); font-variant-numeric:tabular-nums; line-height:1.1 }
+.cap-stat span{ display:block; margin-top:2px; font-size:12.5px; color:var(--label2) }
+.cap-stat.off b{ color:var(--label2) } .cap-stat.all b{ color:var(--label) }
+.cap-mate{ align-items:center; cursor:default }
+.cap-mate .cap-row-p{ display:flex; align-items:center; gap:6px; margin-top:1px }
+.cap-duty{ flex:none; width:8px; height:8px; border-radius:50%; background:var(--green) }
+.cap-mate.off .cap-duty{ background:var(--gray3) }
+.cap-mate.off .cap-row-t b{ color:var(--label2) }
+.cap-mate-a{ display:flex; gap:8px; flex:none }
+.cap-mate-a i{ width:36px; height:36px; border-radius:50%; display:flex; align-items:center; justify-content:center; background:var(--cap-soft); color:var(--cap-tx); cursor:pointer; font-style:normal }
+.cap-mate-a i:active{ background:var(--fill2) }
+
+/* ---------- pagina (info) ---------- */
+.cap-info{ display:flex; flex-direction:column; gap:12px; padding:0 16px }
+.cap-hero{ border-radius:22px; overflow:hidden; background:var(--fill3); aspect-ratio:16 / 8 }
+.cap-hero img{ display:block; width:100%; height:100%; object-fit:cover }
+.cap-hero.art{ position:relative; aspect-ratio:auto; height:156px; background:linear-gradient(135deg, var(--cap-g1), var(--cap-g2)); color:#fff }
+.cap-hero-g{ position:absolute; inset:0; background:radial-gradient(120% 90% at 0% 0%, rgba(255,255,255,.26), rgba(255,255,255,0) 60%) }
+.cap-hero-ic{ position:absolute; right:-18px; bottom:-30px; color:rgba(255,255,255,.17); display:flex }
+.cap-hero-ic svg{ width:170px; height:170px; stroke-width:1.6 }
+.cap-hero-tx{ position:absolute; left:20px; right:120px; bottom:17px }
+.cap-hero-tx b{ display:block; font-size:26px; font-weight:800; letter-spacing:-.5px; line-height:1.1 }
+.cap-hero-tx span{ display:block; margin-top:3px; font-size:14.5px; opacity:.86 }
+.cap-card{ padding:15px 16px; border-radius:20px; background:var(--bg2) }
+.cap-card-h{ display:flex; align-items:center; gap:8px; font-size:16.5px; font-weight:700; letter-spacing:-.2px }
+.cap-card-h em{ margin-left:auto; font-style:normal; font-size:12.5px; font-weight:600; padding:3px 9px; border-radius:11px; white-space:nowrap }
+.cap-card-h em.open{ color:var(--green); background:rgba(52,199,89,.14) } .cap-card-h em.shut{ color:var(--red); background:rgba(255,56,60,.12) }
+.cap-card-x{ margin-top:4px; font-size:15px; line-height:1.45; color:var(--label2); white-space:pre-wrap; word-break:break-word }
+.cap-card > .cap-card-x:first-child{ margin-top:0; color:var(--label) }
+.cap-card-f{ margin-top:10px; font-size:13.5px; color:var(--label2) }
+.cap-hours{ margin-top:8px }
+.cap-hours > div{ display:flex; justify-content:space-between; gap:10px; padding:7px 0; font-size:15px; position:relative }
+.cap-hours > div + div::before{ content:''; position:absolute; top:0; left:0; right:0; height:.5px; background:var(--sep) }
+.cap-hours span{ color:var(--label2) } .cap-hours b{ font-weight:500; font-variant-numeric:tabular-nums }
+.cap-hours .today span, .cap-hours .today b{ color:var(--cap-tx); font-weight:700 }
+.cap-locc{ display:flex; gap:14px; align-items:center }
+.cap-map{ flex:none; width:86px; height:86px; border-radius:16px; position:relative; display:flex; align-items:center; justify-content:center; color:var(--cap-tx); overflow:hidden;
+  background:linear-gradient(90deg, transparent 47%, rgba(255,255,255,.75) 47%, rgba(255,255,255,.75) 53%, transparent 53%), linear-gradient(0deg, transparent 31%, rgba(255,255,255,.6) 31%, rgba(255,255,255,.6) 36%, transparent 36%), linear-gradient(135deg, var(--cap-soft), var(--fill3)) }
+body.dark .cap-map{ background:linear-gradient(90deg, transparent 47%, rgba(255,255,255,.1) 47%, rgba(255,255,255,.1) 53%, transparent 53%), linear-gradient(0deg, transparent 31%, rgba(255,255,255,.08) 31%, rgba(255,255,255,.08) 36%, transparent 36%), linear-gradient(135deg, var(--cap-soft), var(--fill3)) }
+.cap-map i{ display:flex; font-style:normal } .cap-map svg{ width:28px; height:28px; stroke-width:2.2 }
+.cap-locc-b{ min-width:0; flex:1 }
+.cap-mini-btn{ display:inline-flex; align-items:center; gap:6px; margin-top:10px; padding:7px 13px; border-radius:16px; background:var(--cap-soft); color:var(--cap-tx); font-size:14px; font-weight:600; cursor:pointer }
+.cap-mini-btn svg{ width:15px; height:15px }
+.cap-contact, .cap-link{ display:flex; align-items:center; gap:13px; cursor:default }
+.cap-link{ cursor:pointer }
+.cap-contact > i, .cap-link > i{ flex:none; width:42px; height:42px; border-radius:50%; display:flex; align-items:center; justify-content:center; background:var(--cap-soft); color:var(--cap-tx); font-style:normal }
+.cap-contact > div, .cap-link > div{ flex:1; min-width:0 }
+.cap-contact .cap-card-x{ margin-top:1px; font-variant-numeric:tabular-nums }
+.cap-contact-a{ display:flex; gap:8px; flex:none }
+.cap-contact-a span{ width:38px; height:38px; border-radius:50%; display:flex; align-items:center; justify-content:center; background:var(--fill3); color:var(--label); cursor:pointer }
+.cap-contact-a span.on{ background:var(--cap-acc); color:var(--cap-ink) }
+.cap-imgc{ padding:0; overflow:hidden }
+.cap-imgc img{ display:block; width:100%; max-height:280px; object-fit:cover }
+.cap-imgc-c{ padding:10px 16px 12px; font-size:13.5px; color:var(--label2) }
+.cap-callbtn{ margin:6px 0 0; gap:8px }
+
+/* ---------- "Mais" ---------- */
+.cap-more-li .cap-tile{ width:32px; height:32px; border-radius:9px }
+
+/* ---------- folhas: calendario, remarcar ---------- */
+.cap-cal{ padding:6px 16px 18px }
+.cap-cal-h{ display:flex; align-items:center; justify-content:space-between; padding:4px 4px 12px }
+.cap-cal-h b{ font-size:18px; font-weight:700 }
+.cap-cal-nav{ display:flex; gap:6px }
+.cap-cal-nav i{ width:34px; height:34px; border-radius:50%; display:flex; align-items:center; justify-content:center; color:var(--blue); background:var(--fill3); cursor:pointer; font-style:normal }
+.cap-cal-nav svg{ width:18px; height:18px }
+.cap-cal-wd, .cap-cal-g{ display:grid; grid-template-columns:repeat(7, 1fr); gap:4px; text-align:center }
+.cap-cal-wd span{ font-size:12px; font-weight:600; color:var(--label3); padding-bottom:6px }
+.cap-cal-g span{ height:42px; display:flex; align-items:center; justify-content:center; border-radius:21px; font-size:17px; cursor:pointer; font-variant-numeric:tabular-nums }
+.cap-cal-g span.x{ cursor:default }
+.cap-cal-g span.td{ color:var(--blue); font-weight:700 }
+.cap-cal-g span.on{ background:var(--blue); color:#fff; font-weight:700 }
+.cap-resch{ padding:10px 0 18px }
+.cap-resch .cap-day{ background:var(--fill3) }
+.cap-resch .cap-day.on{ background:var(--blue); color:#fff }
+.cap-resch .cap-slot{ background:var(--fill3) }
+.cap-resch .cap-slot.on{ background:var(--blue); color:#fff }
+.cap-resch .cap-slots{ margin-top:10px }
+
+/* ---------- Nova UI (Android) ----------
+   A janela leva .ou-app (capps.js): barras, listas e separadores Nova UI. Aqui so se acerta o que e nosso:
+   cartoes com os raios da Nova UI, titulos de secao mais leves e sem a sombra/aro do PearOS. */
+body.os-android .cap-win .cap-rows, body.os-android .cap-win .cap-form, body.os-android .cap-win .cap-kvs, body.os-android .cap-win .cap-svcs{ border-radius:var(--ou-r-card, 26px) }
+body.os-android .cap-win .cap-sec{ padding:22px 26px 8px; font-size:15px; font-weight:700; letter-spacing:0; color:var(--cap-tx) }
+body.os-android .cap-win .cap-row{ padding:14px 20px 14px 18px }
+body.os-android .cap-win .cap-row + .cap-row::before{ left:20px; right:20px }
+body.os-android .cap-win .cap-f{ padding:12px 22px 13px }
+body.os-android .cap-win .cap-f + .cap-f::before{ left:22px; right:22px }
+body.os-android .cap-win .cap-kv{ padding:12px 22px 13px }
+body.os-android .cap-win .cap-kv + .cap-kv::before{ left:22px; right:22px }
+body.os-android .cap-win .cap-intro{ padding:0 26px 14px }
+body.os-android .cap-win .cap-note{ padding:8px 26px 4px }
+body.os-android .cap-win .cap-dh{ padding:4px 24px 2px }
+body.os-android .cap-win .cap-dh-t{ font-family:var(--font-display); font-weight:600; font-size:28px }
+body.os-android .cap-win .cap-act, body.os-android .cap-win .cap-type, body.os-android .cap-win .cap-card, body.os-android .cap-win .cap-live, body.os-android .cap-win .cap-stat, body.os-android .cap-win .cap-feed .cap-post{ border-radius:var(--ou-r-card, 26px) }
+body.os-android .cap-win .cap-act{ height:66px }
+body.os-android .cap-win .cap-pill{ border-radius:8px; height:24px }
+body.os-android .cap-win .cap-pill.tap{ border-radius:10px }
+body.os-android .cap-win .cap-cta{ border-radius:var(--ou-r-pill, 999px); height:52px; font-size:17px }
+body.os-android .cap-win .cap-chips span{ border-radius:10px }
+body.os-android .cap-win .cap-day{ border-radius:20px }
+body.os-android .cap-win .cap-slot{ border-radius:14px }
+body.os-android .cap-win .cap-hero{ border-radius:var(--ou-r-card, 26px) }
+body.os-android .cap-win .cap-hero-tx b{ font-family:var(--font-display); font-weight:700 }
+body.os-android .cap-win .cap-side{ margin:0 22px 14px }
+body.os-android .cap-win .cap-msg{ border-radius:20px 20px 20px 8px }
+body.os-android .cap-win .cap-msg.me{ border-radius:20px 20px 8px 20px }
+body.os-android .cap-win .cap-comp-r{ border-radius:26px }
+body.os-android .cap-win .cap-article h2{ font-family:var(--font-display); font-weight:700 }
+body.os-android .cap-win .cap-live-t, body.os-android .cap-win .cap-stat b, body.os-android .cap-win .cap-day b{ font-family:var(--font-display) }
+body.os-android .cap-win .large-title small{ color:var(--label2) }
+
+/* ---------- dobraveis abertos: a largura e usada ---------- */
+/* sem lista | detalhe (pagina, equipa, pedido rapido): duas colunas de cartoes */
+body.form-fold.fold-open .cap-win:not(.split-on) .cap-info{ display:grid; grid-template-columns:1fr 1fr; align-items:start }
+body.form-fold.fold-open .cap-win:not(.split-on) .cap-info > .cap-hero, body.form-fold.fold-open .cap-win:not(.split-on) .cap-info > .cap-callbtn{ grid-column:1 / -1 }
+body.form-fold.fold-open .cap-win:not(.split-on) .cap-info > .cap-hero.art{ height:200px }
+body.form-fold.fold-open .cap-win:not(.split-on) .cap-roster-sum{ grid-template-columns:repeat(3, minmax(0, 220px)) }
+body.form-fold.fold-open .cap-win:not(.split-on) .cap-req, body.form-fold.fold-open .cap-win:not(.split-on) .cap-live{ max-width:620px; width:100%; align-self:center }
+body.form-fold.fold-open .cap-win:not(.split-on) .cap-types{ grid-template-columns:repeat(4, 1fr) }
+body.form-fold.fold-open .cap-win.split-on .cap-slots{ grid-template-columns:repeat(4, 1fr) }
+
+/* estado vazio ao CENTRO da area livre (pedido do dono, 3 out): o corpo e a lista crescem ate ao fundo da vista
+   (acima da barra de separadores, que e o padding-bottom do .content) e o vazio centra-se nesse espaco */
+.cap-view > .content{ flex-direction:column }
+.cap-view > .content > .cap-body{ flex:1 0 auto }
+.cap-body > .cap-list{ flex:1 0 auto }
+.cap-list > .cap-empty:not(:empty){ flex:1 0 auto; display:flex; flex-direction:column; align-items:center; justify-content:center }
+/* =====================================================================================================================
+   v2 (3 out): campos novos, catalogo/encomendas, faturacao, servico. Mesmas regras: so cor e transform/opacity animam,
+   nada em ciclo, tudo dentro de .cap-win (as folhas vivem fora da janela: .cap-sheet).
+   ===================================================================================================================== */
+
+/* ---------- campos v2 ---------- */
+.cap-formwrap{ display:flex; flex-direction:column }
+.cap-formwrap > .cap-form + .cap-form{ margin-top:18px }
+.cap-formwrap > .cap-form[hidden], .cap-f[hidden], .cap-fsec[hidden]{ display:none }
+.cap-f.cap-first::before{ display:none }
+.cap-fsec{ padding:20px 32px 7px; font-size:13px; line-height:1.3; color:var(--label2) }
+.cap-fsec b{ display:block; font-weight:600; text-transform:uppercase; letter-spacing:.5px }
+.cap-fsec span{ display:block; margin-top:2px; text-transform:none; letter-spacing:0 }
+.cap-formwrap > .cap-fsec:first-child, .cap-kvwrap > .cap-fsec:first-child{ padding-top:2px }
+.cap-f-help{ margin-top:5px; font-size:12.5px; line-height:1.35; color:var(--label3) }
+.cap-f-stack .cap-f-in{ display:block }
+.cap-f-info{ display:flex; gap:10px; align-items:flex-start }
+.cap-f-info > i{ flex:none; display:flex; margin-top:1px; color:var(--cap-tx); font-style:normal }
+.cap-f-info b{ display:block; font-size:15px; font-weight:600; color:var(--label) }
+.cap-f-info span{ display:block; margin-top:2px; font-size:14px; line-height:1.4; color:var(--label2); white-space:pre-wrap }
+.cap-f.cap-reveal{ animation:capReveal .28s ease-out }
+@keyframes capReveal{ from{ opacity:0; transform:translateY(-6px) } to{ opacity:1; transform:none } }
+/* escolha multipla: fichas com o visto */
+.cap-ms{ display:flex; flex-wrap:wrap; gap:7px; padding:3px 0 2px }
+.cap-ms span{ display:inline-flex; align-items:center; gap:0; height:32px; padding:0 13px; border-radius:16px; background:var(--fill3); color:var(--label); font-size:15px; cursor:pointer; transition:background .2s, color .2s }
+.cap-ms span i{ display:inline-flex; width:0; overflow:hidden; opacity:0; font-style:normal; transition:opacity .2s }
+.cap-ms span.on{ background:var(--cap-acc); color:var(--cap-ink) }
+.cap-ms span.on i{ width:17px; opacity:1 }
+.cap-ms span i svg{ width:13px; height:13px; stroke-width:3 }
+/* estrelas */
+.cap-stars{ display:flex; gap:4px }
+.cap-stars i{ display:flex; font-style:normal; color:var(--label3); cursor:pointer; transition:color .15s }
+.cap-stars i.on{ color:#FFB300 }
+.cap-stars svg{ width:26px; height:26px }
+/* foto: miniatura + ligacao + galeria */
+.cap-ph{ display:flex; gap:12px; align-items:center; padding-top:3px }
+.cap-ph-img{ flex:none; width:64px; height:64px; border-radius:12px; overflow:hidden; display:flex; align-items:center; justify-content:center; background:var(--fill3); color:var(--label3) }
+.cap-ph-img img{ width:100%; height:100%; object-fit:cover; display:block }
+.cap-ph-b{ flex:1; min-width:0; display:flex; flex-direction:column; align-items:flex-start; gap:8px }
+.cap-ph-b .cap-in{ width:100%; font-size:16px }
+.cap-ph-b .cap-mini-btn{ margin-top:0 }
+/* hora: duas colunas */
+.cap-tp{ padding:4px 16px 18px }
+.cap-tp-big{ text-align:center; padding:2px 0 12px }
+.cap-tp-big b{ font-size:44px; font-weight:300; letter-spacing:-1px; font-variant-numeric:tabular-nums }
+.cap-tp-cols{ display:grid; grid-template-columns:1fr 1fr; gap:10px }
+.cap-tp-c{ height:212px; overflow-y:auto; scrollbar-width:none; border-radius:16px; background:var(--fill4); padding:6px; display:grid; grid-template-columns:repeat(3, 1fr); gap:4px; align-content:start }
+.cap-tp-c::-webkit-scrollbar{ display:none }
+.cap-tp-c span{ height:38px; border-radius:11px; display:flex; align-items:center; justify-content:center; font-size:16px; font-variant-numeric:tabular-nums; cursor:pointer; transition:background .15s, color .15s }
+.cap-tp-c span.on{ background:var(--blue); color:#fff; font-weight:600 }
+/* valores v2 no detalhe */
+.cap-kvwrap{ display:flex; flex-direction:column }
+.cap-kvwrap > .cap-kvs + .cap-fsec{ padding-top:18px }
+.cap-msv{ display:flex; flex-wrap:wrap; gap:5px; padding-top:2px }
+.cap-msv i{ font-style:normal; font-size:14px; font-weight:600; padding:3px 10px; border-radius:11px; background:var(--cap-soft); color:var(--cap-tx) }
+.cap-starv{ display:inline-flex; gap:2px; color:#FFB300; vertical-align:-3px }
+.cap-starv svg{ width:17px; height:17px }
+.cap-phv{ display:block; width:132px; height:132px; border-radius:14px; overflow:hidden; background:var(--fill3); margin-top:3px }
+.cap-phv img{ width:100%; height:100%; object-fit:cover; display:block }
+.cap-urlv{ color:var(--cap-tx); cursor:pointer; word-break:break-all }
+
+/* ---------- catalogo ---------- */
+.cap-menu{ display:flex; flex-direction:column }
+.cap-sec.cap-msec{ padding-top:20px }
+.cap-menu > .cap-mis:first-child{ margin-top:2px }
+.cap-mi{ display:flex; gap:14px; padding:14px 14px 14px 16px; position:relative; cursor:pointer }
+.cap-mi + .cap-mi::before{ content:''; position:absolute; top:0; left:16px; right:0; height:.5px; background:var(--sep) }
+.cap-mi-b{ flex:1; min-width:0; display:flex; flex-direction:column }
+.cap-mi-b b{ font-size:16.5px; font-weight:600; letter-spacing:-.15px; line-height:1.25 }
+.cap-mi-b span{ margin-top:3px; font-size:14px; line-height:1.38; color:var(--label2); display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden }
+.cap-mi-b em{ margin-top:auto; padding-top:8px; font-style:normal; font-size:15.5px; font-weight:600; color:var(--label); font-variant-numeric:tabular-nums }
+.cap-mi-b em i{ font-style:normal; margin-left:8px; font-size:12.5px; font-weight:700; padding:2px 8px; border-radius:9px; color:var(--label2); background:var(--fill3) }
+.cap-mi-r{ flex:none; position:relative; width:92px; height:92px }
+.cap-mi-img{ width:92px; height:92px; border-radius:16px; overflow:hidden; background:var(--fill3) }
+.cap-mi-img img{ width:100%; height:100%; object-fit:cover; display:block }
+.cap-mi-img.art{ display:flex; align-items:center; justify-content:center; color:#fff; background:linear-gradient(150deg, var(--cap-g1), var(--cap-g2)) }
+.cap-mi-img.art svg{ width:34px; height:34px; stroke-width:1.9; opacity:.92 }
+.cap-mi.off{ cursor:default }
+.cap-mi.off .cap-mi-b b, .cap-mi.off .cap-mi-b em{ color:var(--label3) }
+.cap-mi.off .cap-mi-img{ opacity:.45 }
+/* + e - por cima da imagem: so o "+" ate haver unidades; depois a pilula inteira */
+.cap-qty{ position:absolute; right:-6px; bottom:-6px; height:34px; display:flex; align-items:center; border-radius:17px; background:var(--bg2); box-shadow:0 2px 10px rgba(0,0,0,.16), inset 0 0 0 .5px var(--sep); color:var(--cap-tx) }
+.cap-qty i{ width:34px; height:34px; display:flex; align-items:center; justify-content:center; font-style:normal; cursor:pointer }
+.cap-qty i svg{ stroke-width:2.6 }
+.cap-qty b{ min-width:18px; text-align:center; font-size:15px; font-weight:700; font-variant-numeric:tabular-nums; color:var(--label) }
+.cap-qty:not(.on) .m, .cap-qty:not(.on) b{ display:none }
+.cap-qty.on{ background:var(--cap-acc); color:var(--cap-ink) }
+.cap-qty.on b{ color:var(--cap-ink) }
+/* barra do carrinho: cola ao fundo (por cima dos separadores) enquanto houver lista por baixo */
+.cap-cartbar{ position:sticky; bottom:14px; z-index:3; margin:18px 16px 0; height:56px; border-radius:28px; padding:0 20px 0 10px; display:flex; align-items:center; gap:12px; background:var(--cap-acc); color:var(--cap-ink); box-shadow:0 10px 26px rgba(0,0,0,.24); cursor:pointer; animation:capBarIn .32s var(--spring, ease-out) }
+.cap-cartbar[hidden]{ display:none }
+@keyframes capBarIn{ from{ opacity:0; transform:translateY(16px) } to{ opacity:1; transform:none } }
+.cap-cb-n{ min-width:36px; height:36px; border-radius:18px; padding:0 8px; display:flex; align-items:center; justify-content:center; background:rgba(255,255,255,.22); font-size:16px; font-weight:700; font-variant-numeric:tabular-nums }
+.cap-cartbar b{ flex:1; font-size:17px; font-weight:600 }
+.cap-cb-t{ font-size:17px; font-weight:700; font-variant-numeric:tabular-nums }
+/* linhas da encomenda (detalhe e folha) */
+.cap-lines{ margin-top:0 }
+.cap-ln{ display:flex; align-items:center; gap:12px; padding:12px 16px; position:relative; font-size:16px }
+.cap-ln + .cap-ln::before{ content:''; position:absolute; top:0; left:16px; right:0; height:.5px; background:var(--sep) }
+.cap-ln > b{ flex:1; min-width:0; font-weight:500; white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+.cap-ln > em{ flex:none; font-style:normal; font-variant-numeric:tabular-nums; color:var(--label2) }
+.cap-ln-q{ flex:none; min-width:30px; font-weight:700; color:var(--cap-tx); font-variant-numeric:tabular-nums }
+.cap-ln-tot > b{ font-weight:700 }
+.cap-ln-tot > em{ font-size:18px; font-weight:700; color:var(--label) }
+.cap-ln-tot > span{ min-width:30px }
+.cap-step{ flex:none; display:flex; align-items:center; height:30px; border-radius:15px; background:var(--fill3) }
+.cap-step i{ width:30px; height:30px; display:flex; align-items:center; justify-content:center; font-style:normal; color:var(--cap-tx); cursor:pointer }
+.cap-step b{ min-width:16px; text-align:center; font-size:14.5px; font-variant-numeric:tabular-nums }
+.cap-cart{ padding:4px 0 22px }
+.cap-cart .cap-opts{ margin-top:18px }
+.cap-cart-foot{ padding-top:12px }
+.cap-row-tot{ margin-left:auto; font-size:14.5px; font-weight:700; font-variant-numeric:tabular-nums; color:var(--label) }
+
+/* ---------- faturacao ---------- */
+.cap-newbill{ display:flex; align-items:center; gap:14px; margin:0 16px 14px; padding:14px 16px; border-radius:20px; background:var(--bg2); cursor:pointer; transition:background .2s }
+.cap-newbill:active{ background:var(--fill3) }
+.cap-newbill > i{ flex:none; width:46px; height:46px; border-radius:14px; display:flex; align-items:center; justify-content:center; background:var(--cap-acc); color:var(--cap-ink); font-style:normal }
+.cap-newbill > div{ flex:1; min-width:0 }
+.cap-newbill b{ display:block; font-size:17px; font-weight:700; letter-spacing:-.2px }
+.cap-newbill span{ display:block; margin-top:1px; font-size:13.5px; color:var(--label2) }
+.cap-newbill > em{ flex:none; width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; background:var(--cap-soft); color:var(--cap-tx); font-style:normal }
+.cap-billf{ padding:4px 0 22px }
+.cap-billf .cap-side{ margin:4px 16px 12px }
+.cap-near{ min-height:64px; display:flex; flex-direction:column }
+.cap-near .spinner{ margin:20px auto }
+.cap-near-e{ display:flex; flex-direction:column; align-items:center; gap:6px; padding:14px 28px; text-align:center; font-size:14.5px; line-height:1.4; color:var(--label2) }
+.cap-near-e svg{ width:24px; height:24px; color:var(--label3) }
+.cap-near-e b{ color:var(--cap-tx); font-weight:600; cursor:pointer }
+.cap-np{ align-items:center }
+.cap-np .cap-row-p{ margin-top:0; font-variant-numeric:tabular-nums }
+.cap-np-r{ flex:none; width:24px; height:24px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-style:normal; box-shadow:inset 0 0 0 2px var(--label3); color:transparent; transition:background .2s, box-shadow .2s, color .2s }
+.cap-np-r svg{ width:14px; height:14px; stroke-width:3 }
+.cap-np.on .cap-np-r{ background:var(--cap-acc); box-shadow:none; color:var(--cap-ink) }
+.cap-amt{ display:flex; align-items:baseline; gap:6px }
+.cap-amt .cap-in{ font-size:30px; font-weight:700; letter-spacing:-.6px; font-variant-numeric:tabular-nums }
+.cap-amt span{ font-size:22px; font-weight:600; color:var(--label2) }
+.cap-presets{ display:flex; gap:8px; overflow-x:auto; scrollbar-width:none; padding:0 16px 12px }
+.cap-presets::-webkit-scrollbar{ display:none }
+.cap-presets span{ flex:none; display:flex; flex-direction:column; justify-content:center; padding:8px 14px; border-radius:16px; background:var(--bg2); cursor:pointer; box-shadow:inset 0 0 0 1px var(--sep); transition:background .2s, box-shadow .2s }
+.cap-presets span b{ font-size:14px; font-weight:600; white-space:nowrap }
+.cap-presets span i{ font-style:normal; font-size:13px; color:var(--label2); font-variant-numeric:tabular-nums }
+.cap-presets span.on{ box-shadow:inset 0 0 0 2px var(--cap-acc); background:var(--cap-soft) }
+.cap-amount{ margin:0 16px; padding:18px 18px 16px; border-radius:20px; background:var(--bg2); display:flex; flex-direction:column; align-items:flex-start }
+.cap-amount span{ font-size:13px; color:var(--label2) }
+.cap-amount b{ margin-top:2px; font-size:38px; font-weight:700; letter-spacing:-1px; font-variant-numeric:tabular-nums; line-height:1.1 }
+.cap-amount em{ margin-top:6px; font-style:normal; font-size:13px; font-weight:600; color:var(--cap-tx) }
+
+/* ---------- servico ---------- */
+.cap-dc{ margin:2px 16px 14px; padding:24px 20px 18px; border-radius:26px; background:var(--bg2); display:flex; flex-direction:column; align-items:center; text-align:center }
+.cap-dc-ic{ width:74px; height:74px; border-radius:50%; display:flex; align-items:center; justify-content:center; background:var(--fill3); color:var(--label2); transition:background .3s, color .3s, box-shadow .3s }
+.cap-dc-ic svg{ width:32px; height:32px }
+.cap-dc.on .cap-dc-ic{ background:var(--green); color:#fff; box-shadow:0 0 0 8px rgba(52,199,89,.16) }
+.cap-dc-t{ margin-top:16px; font-size:24px; font-weight:700; letter-spacing:-.4px }
+.cap-dc.on .cap-dc-t{ color:var(--green) }
+.cap-dc-s{ margin-top:3px; min-height:20px; font-size:15px; color:var(--label2); font-variant-numeric:tabular-nums }
+.cap-dc .cap-dc-btn{ align-self:stretch; margin:18px 0 0 }
+.cap-dc .cap-dc-btn[hidden]{ display:none }
+.cap-dc .cap-dc-btn.off{ background:var(--fill3); color:var(--red) }
+.cap-dc-ro{ display:flex; align-items:center; gap:7px; margin-top:14px; font-size:13.5px; color:var(--label2) }
+.cap-dc-ro[hidden]{ display:none }
+.cap-dc-ro svg{ width:15px; height:15px; color:var(--label3) }
+.cap-dc-dot{ flex:none; width:8px; height:8px; border-radius:50%; background:var(--green) }
+.cap-since{ margin-left:auto; padding-left:8px; font-size:13px; color:var(--label3); white-space:nowrap; font-variant-numeric:tabular-nums }
+.cap-shift{ cursor:default; align-items:center }
+.cap-shift .cap-row-p{ font-variant-numeric:tabular-nums }
+.cap-dc ~ .cap-thread-empty{ padding:8px 16px 4px }
+.cap-body > .cap-thread-empty[hidden], .cap-body > .group[hidden], .cap-body > .cap-sec[hidden]{ display:none }
+
+/* ---------- Nova UI ---------- */
+body.os-android .cap-win .cap-mis, body.os-android .cap-win .cap-lines, body.os-android .cap-sheet .cap-lines{ border-radius:var(--ou-r-card, 26px) }
+body.os-android .cap-win .cap-mi{ padding:16px 18px 16px 20px }
+body.os-android .cap-win .cap-mi + .cap-mi::before{ left:20px; right:20px }
+body.os-android .cap-win .cap-mi-img{ border-radius:20px }
+body.os-android .cap-win .cap-cartbar{ border-radius:var(--ou-r-pill, 999px); height:60px }
+body.os-android .cap-win .cap-newbill, body.os-android .cap-win .cap-dc, body.os-android .cap-win .cap-amount{ border-radius:var(--ou-r-card, 26px) }
+body.os-android .cap-win .cap-dc-t, body.os-android .cap-win .cap-amount b, body.os-android .cap-win .cap-cb-t{ font-family:var(--font-display) }
+body.os-android .cap-win .cap-fsec, body.os-android .cap-sheet .cap-fsec{ padding:20px 26px 8px; color:var(--cap-tx) }
+body.os-android .cap-win .cap-fsec b, body.os-android .cap-sheet .cap-fsec b{ text-transform:none; letter-spacing:0; font-size:15px; font-weight:700 }
+body.os-android .cap-win .cap-ms span{ border-radius:10px }
+body.os-android .cap-win .cap-presets span{ border-radius:14px }
+body.os-android .cap-win .cap-ln, body.os-android .cap-sheet .cap-ln{ padding:13px 22px }
+body.os-android .cap-win .cap-ln + .cap-ln::before, body.os-android .cap-sheet .cap-ln + .cap-ln::before{ left:22px; right:22px }
+
+/* ---------- dobraveis abertos ---------- */
+/* o menu em duas colunas de cartoes (cada artigo o seu cartao) e o servico ao lado dos numeros */
+body.form-fold.fold-open .cap-win:not(.split-on) .cap-menu{ display:grid; grid-template-columns:1fr 1fr; column-gap:14px; padding:0 16px; align-items:start }
+body.form-fold.fold-open .cap-win:not(.split-on) .cap-menu > .cap-msec{ grid-column:1 / -1; padding-left:6px }
+body.form-fold.fold-open .cap-win:not(.split-on) .cap-menu > .cap-mis{ grid-column:1 / -1; margin:0; background:none; box-shadow:none; border-radius:0; overflow:visible; display:grid; grid-template-columns:1fr 1fr; gap:12px }
+body.form-fold.fold-open .cap-win:not(.split-on) .cap-menu .cap-mi{ border-radius:20px; background:var(--bg2) }
+body.form-fold.fold-open .cap-win:not(.split-on) .cap-menu .cap-mi::before{ display:none }
+body.form-fold.fold-open .cap-win:not(.split-on) .cap-cartbar{ max-width:560px; width:calc(100% - 32px); align-self:center }
+body.form-fold.fold-open .cap-win:not(.split-on) .cap-v-duty .cap-body{ display:grid; grid-template-columns:minmax(0, 1fr) minmax(0, 1fr); column-gap:16px; align-content:start; padding:0 16px }
+body.form-fold.fold-open .cap-win:not(.split-on) .cap-v-duty .cap-body > *{ grid-column:2 }
+body.form-fold.fold-open .cap-win:not(.split-on) .cap-v-duty .cap-body > .cap-dc{ grid-column:1; grid-row:1 / span 6; align-self:start; margin:2px 0 14px }
+body.form-fold.fold-open .cap-win:not(.split-on) .cap-v-duty .cap-body > .cap-roster-sum{ padding:0 0 14px }
+body.form-fold.fold-open .cap-win:not(.split-on) .cap-v-duty .cap-body > .group{ margin-left:0; margin-right:0 }
+body.form-fold.fold-open .cap-win:not(.split-on) .cap-v-duty .cap-body > .cap-sec{ padding-left:6px }
+body.form-fold.fold-open .cap-win:not(.split-on) .cap-v-duty .cap-body > .cap-sec:first-of-type{ padding-top:2px }
+
+/* folhas com a cor da app (capps.js tint): o mesmo que a janela */
+.cap-tint{ --cap-tx:var(--cap-tx-l, var(--accent)); --cap-soft:var(--cap-soft-l, var(--fill3)); --blue:var(--cap-tx) }
+body.dark .cap-tint{ --cap-tx:var(--cap-tx-d, var(--accent)); --cap-soft:var(--cap-soft-d, var(--fill3)) }
+.cap-tint :where(input, textarea, select){ font:inherit; color:var(--label) }
+
+/* Nova UI dentro das folhas da app (vivem fora da janela): os mesmos raios e margens das listas da janela */
+body.os-android .cap-sheet .cap-sec{ padding:20px 26px 8px; font-size:15px; font-weight:700; letter-spacing:0; color:var(--cap-tx) }
+body.os-android .cap-sheet .cap-form, body.os-android .cap-sheet .cap-rows{ border-radius:var(--ou-r-card, 26px) }
+body.os-android .cap-sheet .cap-f{ padding:12px 22px 13px }
+body.os-android .cap-sheet .cap-f + .cap-f::before{ left:22px; right:22px }
+body.os-android .cap-sheet .cap-row{ padding:14px 20px 14px 18px }
+body.os-android .cap-sheet .cap-row + .cap-row::before{ left:20px; right:20px }
+body.os-android .cap-win .cap-fsec span, body.os-android .cap-sheet .cap-fsec span{ color:var(--label2); font-size:13px }
+body.dark:not(.os-android) .cap-tint .seg div.on{ background:#636366; box-shadow:0 3px 8px rgba(0,0,0,.3) }
+.cap-eyebrow{ padding-right:var(--cap-eb-pr, 20px) }
+body.form-fold.fold-open .cap-eyebrow{ padding-right:20px }
+.cap-mate .cap-row-p > span:not(.cap-since){ min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap }
+.cap-since{ flex:none }

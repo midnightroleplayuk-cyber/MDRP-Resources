@@ -1,0 +1,303 @@
+/* ---------- MÚSICA - o MESMO design da app Música do apex_carplay (.vm-*, html/style.css do CarLink), em retrato 440×956 ----------
+   Mesmas cores (--vm-*), raios, pesos e componentes; os tamanhos de texto sobem ~20 % porque o telemóvel é reduzido no jogo.
+   Sem backdrop-filter e sem filter em camadas grandes (regra CEF): a capa desfocada que tinge a app é uma IMAGEM pré-renderizada. */
+.vm{ --vm-red:#ff2d55; --vm-txt:#ffffff; --vm-dim:#aeaeb2; --vm-faint:#8e8e93; --vm-surf:rgba(255,255,255,.055); --vm-surf2:rgba(255,255,255,.105); --vm-line:rgba(255,255,255,.09); --vm-ink:#1c1c1e; --vm-ink2:#2c2c2e;
+  position:absolute; inset:0; overflow:hidden; display:flex; flex-direction:column; color:var(--vm-txt); background:var(--vm-ink); font-feature-settings:'ss01' 1 }
+/* modo claro do CarLink: a mesma forma, o mesmo vermelho, a tinta passa a papel */
+body:not(.dark) .vm{ --vm-txt:#101114; --vm-dim:#48484a; --vm-faint:#8e8e93; --vm-surf:rgba(10,12,20,.045); --vm-surf2:rgba(10,12,20,.085); --vm-line:rgba(10,12,20,.10); --vm-ink:#f2f2f7; --vm-ink2:#ffffff }
+/* O iframe do YouTube que toca a música (music.js: host()): DENTRO do ecrã, inteiro, a 1 % de opacidade - como o #ytHost do
+   apex_carplay (style.css dele). Historial 2026-09-16: 1) tentou-se pô-lo fora da viewport (bottom:100%, caixa 4×3) para o
+   Chromium não compor 200×113 px de vídeo por cima da NUI; o iframe de 300×150 saía por baixo da caixa e aparecia no canto
+   superior esquerdo do jogo (queixa) - e ERA esse pedaço visível que mantinha o player vivo; 2) recortado (overflow:hidden) e
+   a -40px, sem interseção com a viewport, o Chromium marca o iframe cross-origin como escondido (render/timers a 1 Hz, vídeo
+   desligado): o player do YouTube arranca devagar/mudo, o pump vê "toca mas sem som", reconstrói (rebuild) e retoma já a meio
+   → "o início da música fica cortado". A 200×113 o YouTube escolhe 144p/240p e o custo de compor a 1 % é ínfimo.
+   Canto superior esquerdo: não sobrepõe o telemóvel (inferior direito) nem o minimapa; pointer-events:none não apanha toques.
+   NUNCA display:none / visibility:hidden / opacity:0 / tamanho 0 / fora do ecrã / recortado: qualquer um deles é motivo
+   para o Chromium estrangular o player. */
+#ytHost{ position:fixed; left:0; top:0; width:200px; height:113px; overflow:hidden; opacity:.01; pointer-events:none; z-index:0 }
+#ytHost iframe{ display:block; width:200px; height:113px; border:0 }
+.vm-bg{ position:absolute; inset:-24px; z-index:0; background-size:cover; background-position:center; opacity:.34; transition:opacity .5s }
+body:not(.dark) .vm-bg{ opacity:.30 }
+.vm-veil{ position:absolute; inset:0; z-index:1; background:radial-gradient(120% 80% at 20% 0%,rgba(28,28,32,.42),rgba(28,28,32,.93) 62%),linear-gradient(180deg,rgba(28,28,32,.55),rgba(28,28,32,.97)) }
+body:not(.dark) .vm-veil{ background:radial-gradient(120% 80% at 20% 0%,rgba(248,249,253,.55),rgba(244,246,250,.93) 62%),linear-gradient(180deg,rgba(248,249,253,.62),rgba(244,246,250,.97)) }
+.vm-top,.vm-rail,.vm-body,.vm-bar,.vm-full{ position:relative; z-index:3 } .vm-top{ z-index:6 }   /* as sugestões (.vm-sugg) têm de ficar POR CIMA do corpo */
+.vm button{ -webkit-tap-highlight-color:transparent; user-select:none }
+.vm svg{ width:1em; height:1em }
+
+/* ── topo: voltar · campo de pesquisa ESTÁTICO · onde toca ── */
+.vm-top{ flex:none; display:flex; align-items:center; gap:10px; padding:calc(var(--statusbar-h) + 6px) 16px 8px }
+.vm-topback{ width:42px; height:42px; flex:none; border-radius:50%; border:1px solid var(--vm-line); background:rgba(0,0,0,.3); color:var(--vm-dim); display:grid; place-items:center; cursor:pointer; padding:0; font-size:17px }
+.vm-topback[hidden]{ display:none } body:not(.dark) .vm-topback{ background:rgba(255,255,255,.78) }
+.vm-searchwrap{ position:relative; flex:1; min-width:0 }
+.vm-search{ display:flex; align-items:center; gap:10px; padding:10px 14px; border-radius:999px; background:rgba(0,0,0,.42); border:1px solid var(--vm-line); color:var(--vm-faint); font-size:16px; transition:border-color .14s, background .14s }
+.vm-search:focus-within{ border-color:rgba(255,255,255,.32); background:rgba(0,0,0,.6) }
+body:not(.dark) .vm-search{ background:rgba(255,255,255,.86) } body:not(.dark) .vm-search:focus-within{ background:#fff; border-color:rgba(10,12,20,.28) }
+.vm-search svg{ flex:none; font-size:22px }
+.vm-search input{ flex:1; min-width:0; border:0; background:transparent; outline:none; color:var(--vm-txt); font-family:inherit; font-size:17px; font-weight:600 }
+.vm-search input::placeholder{ color:var(--vm-faint); font-weight:600 }
+.vm-qx{ width:22px; height:22px; flex:none; border:0; border-radius:50%; background:var(--vm-surf2); color:var(--vm-dim); display:none; place-items:center; cursor:pointer; padding:0; font-size:13px } .vm-qx.on{ display:grid }
+.vm-sugg{ position:absolute; top:calc(100% + 6px); left:0; right:0; z-index:40; border-radius:14px; padding:5px; overflow:hidden; background:#1c1c1e; border:1px solid rgba(255,255,255,.13); box-shadow:0 20px 48px rgba(0,0,0,.66); display:none }
+.vm-sugg.on{ display:block } body:not(.dark) .vm-sugg{ background:#fff; border-color:rgba(10,12,20,.12); box-shadow:0 22px 54px rgba(30,45,80,.2) }
+.vm-suggitem{ display:flex; align-items:center; gap:10px; width:100%; padding:10px 12px; border:0; border-radius:9px; background:transparent; color:var(--vm-dim); font-family:inherit; font-size:15px; font-weight:600; cursor:pointer; text-align:left }
+.vm-suggitem svg{ flex:none; opacity:.6; font-size:20px } .vm-suggitem:active{ background:var(--vm-surf2); color:var(--vm-txt) }
+.vm-where{ flex:none; display:inline-flex; align-items:center; gap:6px; padding:8px 12px; border-radius:999px; background:rgba(0,0,0,.34); border:1px solid var(--vm-line); font-size:12px; font-weight:700; letter-spacing:.01em; color:var(--vm-dim); white-space:nowrap }
+.vm-where svg{ font-size:18px } body:not(.dark) .vm-where{ background:rgba(255,255,255,.78) }
+.vm-where.warn{ color:#ffcf8b; border-color:rgba(255,190,110,.36); background:rgba(255,170,60,.1) }
+.vm-where.on{ color:#a9f0c6; border-color:rgba(90,230,150,.24); background:rgba(60,220,130,.08) }
+
+/* ── rail (a coluna esquerda do CarLink, deitada em retrato) ── */
+.vm-rail{ flex:none; display:flex; align-items:center; gap:4px; padding:6px 12px 10px; overflow-x:auto; overflow-y:hidden; scrollbar-width:none; border-bottom:1px solid var(--vm-line); background:linear-gradient(180deg,rgba(0,0,0,.30),rgba(0,0,0,.14)) }
+.vm-rail::-webkit-scrollbar{ display:none }
+body:not(.dark) .vm-rail{ background:linear-gradient(180deg,rgba(255,255,255,.72),rgba(255,255,255,.40)) }
+.vm-brand{ display:flex; align-items:center; gap:8px; padding:0 8px 0 4px; flex:none }
+.vm-logo{ width:26px; height:26px; border-radius:50%; background:var(--vm-red); display:grid; place-items:center; color:#fff; flex:none; font-size:12px; box-shadow:0 3px 12px rgba(255,10,60,.42) }
+.vm-brandtext{ font-size:17px; font-weight:800; letter-spacing:-.035em }
+.vm-nav{ display:flex; gap:2px; flex:none }
+/* Os 6 destinos precisavam de ~900 px numa faixa de 440: só se viam dois e meio e "Gostos", "Histórico" e "Carro" ficavam sempre fora do ecrã.
+   Em coluna (ícone por cima do rótulo) cada botão fica com ~62 px e os seis cabem; o wordmark dá lugar ao logótipo. */
+/* 6 colunas iguais em ~204 px dao 34 px cada: com icones legiveis os rotulos cortavam. Passa a deslizar na horizontal, o que tambem resolve o corte que ja existia. */ .vm-nav{ display:flex; flex:1; min-width:0; gap:4px; overflow-x:auto; scrollbar-width:none } .vm-nav::-webkit-scrollbar{ display:none }
+.vm-navbtn{ display:flex; flex:0 0 auto; min-width:60px; flex-direction:column; align-items:center; justify-content:center; gap:4px; padding:8px 4px; border-radius:10px; border:0; background:transparent; color:var(--vm-dim); font-family:inherit; font-size:12px; font-weight:700; cursor:pointer; white-space:nowrap; transition:background .13s, color .13s }
+.vm-brandtext{ display:none }
+.vm-navbtn svg{ flex:none; font-size:24px } .vm-navbtn:active{ background:var(--vm-surf) } .vm-navbtn.on{ background:var(--vm-surf2); color:var(--vm-txt) } .vm-navbtn.on svg{ color:var(--vm-red) }
+.vm-railsep{ width:1px; height:26px; background:var(--vm-line); margin:0 8px; flex:none }
+.vm-newpl{ display:flex; align-items:center; gap:8px; flex:none; padding:8px 12px; border-radius:10px; border:1px dashed rgba(255,255,255,.17); background:transparent; color:var(--vm-dim); font-family:inherit; font-size:13.5px; font-weight:700; cursor:pointer; white-space:nowrap }
+.vm-newpl svg{ font-size:15px } body:not(.dark) .vm-newpl{ border-color:rgba(10,12,20,.22) }
+.vm-pls{ display:flex; gap:4px; flex:none; margin-left:4px }
+/* ---------- aproximação à Música do iOS (2026-09-19) ----------
+   A app é um leitor do TubeMusic e partilha o esqueleto com o rádio do carro, por isso a NAVEGAÇÃO fica onde está - o que muda
+   é a pele: separadores em cápsula (segmentos do iOS) em vez de botões de canal, e o mini-player numa linha só, mais baixo. */
+.vm-rail{ gap:8px; padding:4px 14px 8px; border-bottom:none; background:none }
+.vm-brand{ display:none }
+.vm-railsep{ display:none }
+.vm-navbtn{ flex-direction:row; gap:6px; min-width:0; padding:7px 14px; border-radius:18px; background:rgba(255,255,255,.08); font-size:13.5px; font-weight:600 }
+.vm-navbtn svg{ font-size:16px }
+.vm-navbtn.on,.vm-navbtn.on svg{ background:#FA2D48; color:#fff }   /* o separador ativo é uma cápsula cheia (a regra antiga pintava só o ícone de vermelho) */
+.vm-navbtn.on svg{ background:none }
+.vm-newpl{ padding:7px 12px; border-radius:18px; border:1px solid rgba(255,255,255,.14); font-size:13px }
+/* mini-player: uma linha, como no iOS (o tempo e a barra ficam finos por baixo; o ecrã inteiro mantém tudo) */
+.vm-bar{ gap:2px; padding:8px 14px calc(var(--safe-bottom) + 2px) }
+.vm-bar .vm-tbtns{ gap:10px } .vm-bar .vm-shuf,.vm-bar .vm-rep{ display:none }
+.vm-bar .vm-seekrow{ margin-top:2px } .vm-bar .vm-t{ font-size:10.5px; opacity:.6 }
+/* o título da secção não se parte ("Ouvir agora" ficava em duas linhas com o subtítulo ao lado): o subtítulo desce para baixo dele */
+.vm-head{ flex-wrap:wrap; gap:2px 12px }
+.vm-headtitle{ white-space:nowrap; flex:0 0 100%; font-size:26px; letter-spacing:-.6px }
+.vm-headsub{ flex:1 1 auto }
+/* os 3 separadores + "Nova playlist" não cabiam numa linha: o botão fica só com o + (o rótulo volta em ecrãs largos, no carro) */
+.vm-newpl span{ display:none } .vm-newpl{ padding:7px 11px }
+.vm-plbtn{ display:flex; align-items:center; gap:8px; padding:5px 8px; border-radius:9px; border:0; background:transparent; color:var(--vm-dim); font-family:inherit; cursor:pointer; text-align:left; flex:none; max-width:180px }
+.vm-plbtn.on{ background:var(--vm-surf2); color:var(--vm-txt) }
+.vm-plart{ width:30px; height:30px; border-radius:6px; flex:none; background-size:cover; background-position:center; display:grid; place-items:center; color:rgba(255,255,255,.85); font-size:13px }
+.vm-plmeta{ display:flex; flex-direction:column; gap:1px; min-width:0 }
+.vm-plname{ font-size:13px; font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis } .vm-plcount{ font-size:11px; font-weight:600; color:var(--vm-faint) }
+
+/* ── corpo ── */
+.vm-body{ flex:1; min-height:0; overflow-y:auto; overflow-x:hidden; padding:4px 16px 24px; scrollbar-width:none; overscroll-behavior:contain } .vm-body::-webkit-scrollbar{ display:none }
+.vm-head{ display:flex; align-items:center; gap:12px; margin:20px 0 12px } .vm-head:first-child{ margin-top:8px }
+.vm-headtitle{ font-size:22px; font-weight:800; letter-spacing:-.035em } .vm-headsub{ font-size:13px; font-weight:600; color:var(--vm-faint) } .vm-headspring{ flex:1 }
+.vm-cards{ display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px 14px }
+.vm-card{ border:0; background:transparent; padding:0; cursor:pointer; display:flex; flex-direction:column; gap:9px; text-align:left; font-family:inherit; min-width:0; color:inherit }
+.vm-cardart{ position:relative; width:100%; aspect-ratio:1/1; border-radius:12px; background-size:cover; background-position:center; overflow:hidden; box-shadow:0 8px 22px rgba(0,0,0,.42); transition:transform .18s var(--spring) }
+.vm-card.round .vm-cardart{ border-radius:50% } .vm-card:active .vm-cardart{ transform:scale(.97) }
+.vm-cardplay{ position:absolute; right:8px; bottom:8px; width:44px; height:44px; border-radius:50%; border:0; background:var(--vm-red); color:#fff; display:grid; place-items:center; cursor:pointer; padding:0; font-size:15px; box-shadow:0 6px 18px rgba(0,0,0,.5) }
+.vm-cardtitle{ font-size:17px; font-weight:700; color:var(--vm-txt); line-height:1.3; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden }
+.vm-cardsub{ font-size:14px; font-weight:600; color:var(--vm-faint); white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+.vm-list{ display:flex; flex-direction:column }
+.vm-row{ display:grid; grid-template-columns:22px 46px minmax(0,1fr) auto auto; align-items:center; gap:11px; padding:7px 8px; border-radius:10px; border:0; background:transparent; cursor:pointer; font-family:inherit; text-align:left; color:var(--vm-txt); width:100%; transition:background .13s }
+/* Gostos / Biblioteca / Histórico (até 60) / playlists sem limite: cada linha são ~9 nós, 2 SVGs e uma capa REMOTA do YouTube.
+   content-visibility:auto - as linhas fora do ecrã não são estilizadas, medidas nem pintadas (e as capas só se pedem ao chegar perto),
+   como a AppShop (app-store.css). 60 px = capa 46 + 2×7 de padding: com o `auto` o scroll não salta. Só nas linhas: nada nelas sai
+   da caixa (o menu ⋮ vive na raiz da app) e o contentor e o scroller continuam medidos. Nos cartões NÃO: a sombra da capa seria cortada. */
+.vm-row{ content-visibility:auto; contain-intrinsic-size:auto 60px }
+.vm-row:active{ background:var(--vm-surf) } .vm-row.on{ background:var(--vm-surf2) }
+.vm-rowidx{ font-size:13px; font-weight:700; color:var(--vm-faint); text-align:right; font-variant-numeric:tabular-nums }
+.vm-rowart{ width:46px; height:46px; border-radius:7px; background-size:cover; background-position:center }
+.vm-rowmid{ display:flex; flex-direction:column; gap:2px; min-width:0 }
+.vm-rowtitle{ font-size:17px; font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis } .vm-row.on .vm-rowtitle{ color:var(--vm-red) }
+.vm-rowsub{ font-size:14px; font-weight:600; color:var(--vm-faint); white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+.vm-rowlen{ font-size:13px; font-weight:600; color:var(--vm-faint); font-variant-numeric:tabular-nums } .vm-row.movable .vm-rowlen{ display:none }
+.vm-rowbtns{ display:flex; align-items:center; gap:2px }
+.vm-rowbtn{ width:44px; height:44px; border-radius:50%; border:0; background:transparent; color:var(--vm-faint); display:grid; place-items:center; cursor:pointer; padding:0; font-size:16px } .vm-rowbtn:active{ color:var(--vm-txt); background:var(--vm-surf2) }
+.vm-rowbtn.lit{ color:var(--vm-red) } .vm-rowbtn.lit svg{ fill:currentColor }
+/* faixa que o YouTube recusou embeber nesta sessão (music.js DEAD): capa e texto esbatidos, os botões (gosto, ⋮) ficam como estão.
+   Só opacidade, numa camada pequena: nada de filter (CEF). O mesmo no desenho Nova UI (.amus-row, vem do mk() com vm- → amus-). */
+.vm-row.dead .vm-rowart,.vm-row.dead .vm-rowmid,.vm-row.dead .vm-rowlen,
+body.os-android .amus-row.dead .amus-rowart,body.os-android .amus-row.dead .amus-rowmid,body.os-android .amus-row.dead .amus-rowlen{ opacity:.42 }
+/* o pequeno equalizador que marca a linha que está a sair pelas colunas */
+.vm-eq{ display:flex; align-items:flex-end; gap:2px; height:13px; justify-content:flex-end }   /* alinhado com os números das outras linhas, que são text-align:right */
+.vm-eq i{ width:2.5px; border-radius:1px; background:var(--vm-red); transform-origin:bottom; animation:vm-eq 900ms ease-in-out infinite }
+.vm-eq i:nth-child(1){ height:6px; animation-delay:-200ms } .vm-eq i:nth-child(2){ height:12px; animation-delay:-560ms } .vm-eq i:nth-child(3){ height:8px; animation-delay:-80ms }
+.vm-eq.paused i{ animation-play-state:paused; opacity:.55 }
+@keyframes vm-eq{ 0%,100%{ transform:scaleY(.35) } 50%{ transform:scaleY(1) } }
+/* cabeçalho grande de playlist / álbum / gostos */
+.vm-phead{ display:grid; grid-template-columns:150px minmax(0,1fr); gap:16px; align-items:end; margin:8px 0 20px }
+.vm-pheadart{ width:150px; height:150px; border-radius:14px; background-size:cover; background-position:center; box-shadow:0 16px 40px rgba(0,0,0,.55); display:grid; place-items:center; color:rgba(255,255,255,.9); font-size:44px }
+.vm-pheadmeta{ display:flex; flex-direction:column; gap:6px; min-width:0; padding-bottom:3px }
+.vm-pkind{ font-size:11px; font-weight:800; letter-spacing:.13em; text-transform:uppercase; color:var(--vm-dim) }
+.vm-ptitle{ font-size:28px; font-weight:800; letter-spacing:-.045em; line-height:1.06; overflow-wrap:anywhere } .vm-ptitle.long{ font-size:21px }
+.vm-pnote{ font-size:13px; font-weight:600; color:var(--vm-dim); line-height:1.45 } .vm-pstats{ font-size:12.5px; font-weight:650; color:var(--vm-faint) }
+.vm-pbtns{ grid-column:1 / -1; display:flex; flex-wrap:wrap; gap:8px; margin-top:2px }
+.vm-btn{ display:inline-flex; align-items:center; gap:8px; padding:10px 16px; border-radius:999px; border:1px solid transparent; background:var(--vm-red); color:#fff; font-family:inherit; font-size:14px; font-weight:750; cursor:pointer; white-space:nowrap; transition:transform .12s }
+.vm-btn svg{ font-size:20px } .vm-btn:active{ transform:scale(.96) }
+.vm-btn.ghost{ background:transparent; border-color:rgba(255,255,255,.2); color:var(--vm-txt) } body:not(.dark) .vm-btn.ghost{ border-color:rgba(10,12,20,.2) }
+.vm-btn.sm{ padding:8px 14px; font-size:14px } .vm-btn.icon{ padding:9px; border-radius:50% }
+.vm-chips{ display:flex; flex-wrap:nowrap; gap:8px; margin:6px 0 4px; overflow-x:auto; scrollbar-width:none } .vm-chips::-webkit-scrollbar{ display:none }
+.vm-chip{ flex:none; padding:8px 14px; border-radius:999px; border:1px solid var(--vm-line); background:var(--vm-surf); color:var(--vm-dim); font-family:inherit; font-size:13.5px; font-weight:700; cursor:pointer }
+.vm-chip.on{ background:#fff; color:#0a0a0d; border-color:#fff } body:not(.dark) .vm-chip.on{ background:#000; color:#fff; border-color:#000 }
+.vm-body > .vm-empty{ min-height:380px }   /* o .vm-body é um bloco, por isso o justify-content:center do estado vazio não tinha efeito */
+.vm-fullpane .vm-empty{ padding:20px 16px; gap:6px } .vm-fullpane .vm-emptyic{ width:44px; height:44px; font-size:19px }
+.vm-fullfrom{ max-width:100%; white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+/* especificidade DUPLA de proposito: a regra .vm-tb mais abaixo tem a mesma forca e vinha depois, por isso esta linha era codigo morto e prev/next/shuf/rep saiam todos ao mesmo tamanho. */ .vm-tb.vm-prev,.vm-tb.vm-next{ font-size:27px } .vm-tb.vm-shuf,.vm-tb.vm-rep{ font-size:22px }   /* a regra .vm svg{width:1em} anula os tamanhos pedidos no JS: a hierarquia repõe-se aqui */
+.vm-empty{ display:flex; flex-direction:column; align-items:center; justify-content:center; gap:9px; padding:54px 20px; text-align:center }
+.vm-emptyic{ width:58px; height:58px; border-radius:50%; background:var(--vm-surf2); display:grid; place-items:center; color:var(--vm-faint); font-size:24px }
+.vm-emptytitle{ font-size:17px; font-weight:750; color:var(--vm-txt) } .vm-emptytext{ font-size:13.5px; font-weight:600; color:var(--vm-faint); max-width:320px; line-height:1.55 }
+.vm-ld{ display:flex; flex-direction:column; align-items:center; gap:10px; padding:44px 0; color:var(--vm-faint); font-size:13.5px; font-weight:600 }
+.vm-ld .spinner{ margin:0; border-color:rgba(255,255,255,.16); border-top-color:var(--vm-red) }
+.vm-ld.slim{ flex-direction:row; justify-content:center; gap:8px; padding:6px 0 10px; font-size:13px } .vm-ld.slim .spinner{ width:16px; height:16px }   /* pesquisa ao vivo: linha fina por cima dos resultados anteriores */
+.vm-note{ display:flex; align-items:flex-start; gap:10px; padding:12px 14px; border-radius:13px; margin:8px 0 14px; background:rgba(255,170,60,.09); border:1px solid rgba(255,190,110,.26); color:#ffd9a6; font-size:13px; font-weight:600; line-height:1.5 }
+.vm-note svg{ flex:none; margin-top:2px; font-size:15px }
+.vm-note.bad{ background:rgba(255,70,70,.09); border-color:rgba(255,120,120,.28); color:#ffb4b4 } .vm-note.ok{ background:rgba(60,220,130,.08); border-color:rgba(90,230,150,.24); color:#a9f0c6 }
+body:not(.dark) .vm-note{ color:#8a5a12 } body:not(.dark) .vm-note.bad{ color:#a12a2a } body:not(.dark) .vm-note.ok{ color:#1d7a46 }
+/* "Carro": os dois destinos do som */
+.vm-dest{ display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:8px }
+.vm-destbtn{ display:flex; flex-direction:column; align-items:flex-start; gap:10px; padding:16px; border-radius:16px; border:1px solid var(--vm-line); background:var(--vm-surf); color:var(--vm-txt); font-family:inherit; text-align:left; cursor:pointer; font-size:22px }
+.vm-destbtn.on{ border-color:var(--vm-red); background:rgba(255,45,85,.12) } .vm-destbtn.on svg{ color:var(--vm-red) } .vm-destbtn[disabled]{ opacity:.45 }
+.vm-destbtn b{ font-size:15px; font-weight:750 } .vm-destbtn span{ font-size:12.5px; font-weight:600; color:var(--vm-faint); line-height:1.4 }
+
+/* ── barra de reprodução - sempre visível, por cima do indicador ── */
+.vm-bar{ flex:none; display:flex; flex-direction:column; gap:4px; padding:10px 16px calc(var(--safe-bottom) + 4px); border-top:1px solid var(--vm-line); background:linear-gradient(180deg,rgba(12,12,16,.93),rgba(8,8,11,.99)) }
+body:not(.dark) .vm-bar{ background:linear-gradient(180deg,rgba(255,255,255,.94),rgba(255,255,255,.99)) }
+.vm-bl{ display:flex; align-items:center; gap:12px; min-width:0 }
+.vm-cover{ position:relative; width:54px; height:54px; flex:none; border-radius:9px; border:1px solid var(--vm-line); padding:0; cursor:pointer; background-size:cover; background-position:center; overflow:hidden; font-size:15px }
+.vm-coverup{ position:absolute; inset:0; display:grid; place-items:center; background:rgba(0,0,0,.45); color:#fff; opacity:0; transition:opacity .14s } .vm-cover:active .vm-coverup{ opacity:1 }
+.vm-btext{ display:flex; flex-direction:column; gap:2px; min-width:0; flex:1 }
+.vm-btitle{ border:0; background:transparent; padding:0; cursor:pointer; text-align:left; font-family:inherit; font-size:16px; font-weight:750; color:var(--vm-txt); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:100% }
+.vm-bsub{ font-size:13px; font-weight:600; color:var(--vm-faint); white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+.vm-like{ width:36px; height:36px; flex:none; border-radius:50%; border:0; background:transparent; color:var(--vm-faint); display:grid; place-items:center; cursor:pointer; padding:0; font-size:17px; transition:color .13s }
+.vm-like.on{ color:var(--vm-red) } .vm-like.on svg{ fill:currentColor }
+.vm-bm{ display:flex; flex-direction:column; align-items:center; gap:2px; min-width:0 }
+.vm-tbtns{ display:flex; align-items:center; gap:10px }
+.vm-tb{ width:42px; height:42px; border-radius:50%; border:0; background:transparent; color:var(--vm-dim); display:grid; place-items:center; cursor:pointer; padding:0; font-size:22px; transition:color .13s, background .13s }
+.vm-tb:active{ color:var(--vm-txt); background:var(--vm-surf) } .vm-tb.on{ color:var(--vm-red) } .vm-tb[disabled]{ opacity:.32 }
+.vm-play{ width:56px; height:56px; border-radius:50%; border:0; background:#fff; color:#0a0a0d; display:grid; place-items:center; cursor:pointer; margin:0 4px; padding:0; font-size:28px; transition:transform .12s }
+.vm-play:active{ transform:scale(.94) } body:not(.dark) .vm-play{ background:#000; color:#fff }
+.vm-seekrow{ display:flex; align-items:center; gap:10px; width:100% }
+.vm-t{ font-size:12px; font-weight:650; color:var(--vm-faint); width:38px; font-variant-numeric:tabular-nums } .vm-t:last-child{ text-align:right }
+/* zona de toque de 22 px; só a pista de 3 px é pintada */
+.vm-seek{ flex:1; height:22px; display:flex; align-items:center; cursor:pointer; touch-action:none }
+.vm-seektrack{ position:relative; width:100%; height:3px; border-radius:2px; background:rgba(255,255,255,.17); transition:height .12s } body:not(.dark) .vm-seektrack{ background:rgba(10,12,20,.15) }
+.vm-seekfill{ position:absolute; left:0; top:0; bottom:0; width:0; border-radius:2px; background:#fff } body:not(.dark) .vm-seekfill{ background:#000 }
+.vm-seekdot{ position:absolute; top:50%; left:0; width:12px; height:12px; margin-left:-6px; border-radius:50%; background:#fff; transform:translateY(-50%) scale(0); transition:transform .12s } body:not(.dark) .vm-seekdot{ background:#000 }
+.vm-seek.grabbing .vm-seektrack{ height:5px } .vm-seek.grabbing .vm-seekdot{ transform:translateY(-50%) scale(1) } .vm-seek.grabbing .vm-seekfill{ background:var(--vm-red) }
+.vm-ctx{ font-size:11px; font-weight:750; letter-spacing:.05em; text-transform:uppercase; color:var(--vm-faint); padding:6px 11px; border-radius:999px; background:var(--vm-surf); border:1px solid var(--vm-line); max-width:180px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+.vm-vol{ display:flex; align-items:center; gap:8px }
+.vm-vol input[type=range]{ width:120px; height:3px; -webkit-appearance:none; appearance:none; border-radius:2px; background:rgba(255,255,255,.2); outline:none; cursor:pointer; margin:0 } body:not(.dark) .vm-vol input[type=range]{ background:rgba(10,12,20,.2) }
+.vm-vol input[type=range]::-webkit-slider-thumb{ -webkit-appearance:none; appearance:none; width:14px; height:14px; border-radius:50%; background:#fff; cursor:pointer } body:not(.dark) .vm-vol input[type=range]::-webkit-slider-thumb{ background:#000 }
+.vol-val{ font-size:12px; font-weight:650; color:var(--vm-faint); width:24px; text-align:right; font-variant-numeric:tabular-nums }
+
+/* ── player de ecrã inteiro - substitui o conteúdo por cima, a barra fica viva por baixo ── */
+.vm-full{ position:absolute; left:0; right:0; top:0; bottom:var(--vm-barh,178px); z-index:8; display:none; overflow:hidden; background:var(--vm-ink) }
+.vm-full.on{ display:block; animation:vl-in .26s cubic-bezier(.2,.8,.2,1) }
+@keyframes vl-in{ from{ opacity:0; transform:translateY(18px) } to{ opacity:1; transform:none } }
+.vm-fullbg{ position:absolute; inset:-24px; background-size:cover; background-position:center; opacity:.48 }
+.vm-fullveil{ position:absolute; inset:0; background:linear-gradient(180deg,rgba(28,28,32,.62),rgba(28,28,32,.95)) }
+body:not(.dark) .vm-fullveil{ background:linear-gradient(180deg,rgba(246,248,252,.72),rgba(244,246,250,.96)) }
+.vm-collapse{ position:absolute; top:calc(var(--statusbar-h) + 8px); left:16px; z-index:3; width:42px; height:42px; border-radius:50%; border:1px solid var(--vm-line); background:rgba(0,0,0,.4); color:var(--vm-dim); display:grid; place-items:center; cursor:pointer; padding:0; font-size:18px }
+body:not(.dark) .vm-collapse{ background:rgba(255,255,255,.78) }
+.vm-fullgrid{ position:relative; z-index:2; height:100%; display:flex; flex-direction:column; gap:14px; padding:calc(var(--statusbar-h) + 54px) 22px 12px }
+.vm-fullleft{ display:flex; flex-direction:column; gap:14px; align-items:center; flex:none }
+.vm-fullart{ width:240px; height:240px; border-radius:16px; flex:none; background-size:cover; background-position:center; box-shadow:0 26px 64px rgba(0,0,0,.62); cursor:pointer }
+.vm-fullmeta{ display:flex; flex-direction:column; gap:5px; align-items:center; text-align:center; max-width:100% }
+.vm-fulltitle{ font-size:24px; font-weight:800; letter-spacing:-.04em; line-height:1.14; overflow-wrap:anywhere } .vm-fullartist{ font-size:16px; font-weight:650; color:var(--vm-dim) }
+.vm-fullfrom{ font-size:11.5px; font-weight:700; letter-spacing:.05em; text-transform:uppercase; color:var(--vm-faint) }
+.vm-fullrow{ display:flex; align-items:center; justify-content:space-between; gap:10px; width:100% }
+.vm-fullright{ display:flex; flex-direction:column; gap:10px; min-height:0; flex:1 }
+.vm-fulltabs{ display:flex; gap:6px; flex:none }
+.vm-fulltab{ padding:8px 15px; border-radius:999px; border:1px solid var(--vm-line); background:transparent; color:var(--vm-dim); font-family:inherit; font-size:13.5px; font-weight:700; cursor:pointer }
+.vm-fulltab.on{ background:#fff; color:#0a0a0d; border-color:#fff } body:not(.dark) .vm-fulltab.on{ background:#000; color:#fff; border-color:#000 }
+.vm-fullpane{ flex:1; min-height:0; overflow-y:auto; scrollbar-width:none } .vm-fullpane::-webkit-scrollbar{ display:none }
+.vm-lyrics{ font-size:16px; font-weight:650; line-height:1.85; color:var(--vm-dim); white-space:pre-wrap; padding:4px 2px 18px } .vm-lyricsrc{ font-size:11.5px; font-weight:650; color:var(--vm-faint); margin-top:14px }
+
+/* ── menu ⋮ e diálogos (dentro da app: escalam e cortam com o telemóvel) ── */
+.vm-menu{ position:absolute; z-index:90; min-width:236px; max-width:calc(100% - 16px); max-height:400px; overflow-y:auto; padding:5px; border-radius:13px; background:#1c1c1e; border:1px solid rgba(255,255,255,.13); box-shadow:0 22px 54px rgba(0,0,0,.7); animation:vl-in .18s cubic-bezier(.2,.8,.2,1); scrollbar-width:none }
+body:not(.dark) .vm-menu{ background:#fff; border-color:rgba(10,12,20,.12); box-shadow:0 22px 54px rgba(30,45,80,.2) }
+.vm-menu button{ display:flex; align-items:center; gap:11px; width:100%; padding:11px 12px; border:0; border-radius:9px; background:transparent; color:#e5e5ea; font-family:inherit; font-size:15px; font-weight:650; cursor:pointer; text-align:left }
+body:not(.dark) .vm-menu button{ color:#1c1c1e }
+.vm-menu button svg{ flex:none; opacity:.78; font-size:22px } .vm-menu button:active{ background:rgba(255,255,255,.09) } .vm-menu button.danger,.vm-menu button.danger svg{ color:#ff8f8f }
+.vm-menusep{ padding:9px 12px 4px; font-size:10.5px; font-weight:800; letter-spacing:.1em; text-transform:uppercase; color:#636366 }
+.vm-menusep:empty{ padding:0; margin:4px 8px; height:1px; background:rgba(255,255,255,.1) }
+.vm-dlg-ov{ position:absolute; inset:0; z-index:95; display:grid; place-items:center; background:rgba(4,4,7,.74); padding:20px } body:not(.dark) .vm-dlg-ov{ background:rgba(226,231,240,.72) }
+.vm-dlg{ width:100%; max-width:380px; padding:22px; border-radius:20px; background:#1c1c1e; border:1px solid rgba(255,255,255,.12); box-shadow:0 26px 64px rgba(0,0,0,.7); display:flex; flex-direction:column; gap:13px; animation:vl-in .2s cubic-bezier(.2,.8,.2,1) }
+body:not(.dark) .vm-dlg{ background:#fff; border-color:rgba(10,12,20,.12) }
+.vm-dlgtitle{ font-size:18px; font-weight:800; color:#fff; letter-spacing:-.025em } body:not(.dark) .vm-dlgtitle{ color:var(--vm-txt) }
+.vm-dlgtext{ font-size:13.5px; font-weight:600; color:var(--vm-dim); line-height:1.55; margin-top:-5px }
+.vm-dlgfield{ display:flex; flex-direction:column; gap:6px } .vm-dlgfield > span{ font-size:11px; font-weight:750; letter-spacing:.08em; text-transform:uppercase; color:#8e8e93 }
+.vm-dlgfield input,.vm-dlgfield textarea{ padding:12px 14px; border-radius:12px; border:1px solid rgba(255,255,255,.14); background:rgba(255,255,255,.06); color:#fff; font-family:inherit; font-size:15px; font-weight:600; outline:none; resize:none }
+body:not(.dark) .vm-dlgfield input,body:not(.dark) .vm-dlgfield textarea{ background:rgba(10,12,20,.05); color:var(--vm-txt); border-color:rgba(10,12,20,.14) }
+.vm-dlgfield input:focus,.vm-dlgfield textarea:focus{ border-color:rgba(255,255,255,.4) }
+.vm-swatches{ display:flex; flex-wrap:wrap; gap:8px } .vm-swatch{ width:34px; height:34px; border-radius:9px; border:2px solid transparent; cursor:pointer; padding:0 } .vm-swatch.on{ border-color:#fff } body:not(.dark) .vm-swatch.on{ border-color:#000 }
+.vm-dlgrow{ display:flex; justify-content:flex-end; gap:9px; margin-top:3px }
+
+/* ── Dobráveis (contrato v2): margens de tablet, quatro capas por linha (seis aberto), a barra de reprodução numa linha só
+   (com aleatório e repetir, que no telemóvel não cabem). ABERTO o reprodutor fica em duas metades ao centro: capa e volume à
+   esquerda, a fila e a letra à direita; FECHADO (574 / 670) fica como no telemóvel. No PearPhone Fold o conteúdo acaba antes
+   da barra direita e o fundo, a barra de cima e o leitor continuam por baixo dela (ui.css, fundo de ponta a ponta). O telemóvel
+   normal fica igual. ── */
+body.form-fold .vm-top,body.form-fold .vm-rail{ padding-left:28px; padding-right:28px }
+body.form-fold .vm-body{ padding-left:28px; padding-right:28px }
+body.form-fold .vm-cards{ grid-template-columns:repeat(4,minmax(0,1fr)); gap:22px 18px }
+body.form-fold.fold-open .vm-cards{ grid-template-columns:repeat(6,minmax(0,1fr)) }
+body.form-fold .vm-dest{ grid-template-columns:repeat(2,minmax(0,300px)) }
+body.form-fold .vm-phead{ grid-template-columns:190px minmax(0,1fr); gap:22px }
+body.form-fold .vm-pheadart{ width:190px; height:190px }
+body.form-fold .vm-bar{ flex-direction:row; align-items:center; gap:22px; padding:10px 28px calc(var(--safe-bottom) + 6px) }
+body.form-fold .vm-bar .vm-bl{ width:220px; flex:none }
+body.form-fold.fold-open .vm-bar .vm-bl{ width:310px }
+body.form-fold .vm-bar .vm-bm{ flex:1; min-width:0 }
+body.form-fold .vm-bar .vm-shuf,body.form-fold .vm-bar .vm-rep{ display:grid }
+body.form-fold.fold-open .vm-fullgrid{ flex-direction:row; justify-content:center; gap:0; padding:calc(var(--statusbar-h) + 54px) 0 16px }
+body.form-fold.fold-open .vm-fullleft{ width:500px; flex:none; justify-content:center; gap:18px; padding:0 50px 24px }
+body.form-fold.fold-open .vm-fullart{ width:340px; height:340px }
+body.form-fold.fold-open .vm-fullright{ width:520px; flex:none; padding:0 26px 0 22px }
+/* PearPhone Fold: os destinos (Início, Pesquisar...), o voltar das páginas e os controlos (anterior, reproduzir, seguinte) estão na
+   barra direita (music.js railMu); em cima ficam a pesquisa, a nova playlist e as playlists. A barra de baixo fica numa linha: a
+   faixa (capa, título, gosto, fila) com mais espaço (fechado o título já não fica com 3 letras) e o tempo entre o aleatório e o
+   repetir */
+body.os-ios.form-fold .vm-rail .vm-nav,body.os-ios.form-fold .vm-rail .vm-railsep,body.os-ios.form-fold .vm .vm-topback,body.os-ios.form-fold .vm .vm-collapse{ display:none }
+body.os-ios.form-fold .vm-bar .vm-prev,body.os-ios.form-fold .vm-bar .vm-play,body.os-ios.form-fold .vm-bar .vm-next{ display:none }
+body.os-ios.form-fold .vm-bar .vm-bl{ width:auto; flex:1.3 1 0; min-width:0 }
+/* PearPhone Fold FECHADO: com o zoom do conteúdo a barra tem a largura de um telemóvel e a linha do tempo espremia o título até
+   desaparecer: fica a capa, o título e a fila (a linha do tempo está no leitor grande) */
+body.os-ios.form-fold:not(.fold-open) .vm-bar .vm-bm{ display:none }
+body.os-ios.form-fold .vm-bar .vm-bm{ flex:1 1 0; flex-direction:row; align-items:center; gap:6px }
+body.os-ios.form-fold .vm-bar .vm-tbtns{ display:contents }
+body.os-ios.form-fold .vm-bar .vm-seekrow{ order:1; flex:1; min-width:0; margin-top:0 }
+body.os-ios.form-fold .vm-bar .vm-rep{ order:2 }
+/* fechado (574 de conteúdo) o tempo precisa do espaço: o aleatório e o repetir saem, como no telemóvel */
+body.os-ios.form-fold.fold-closed .vm-bar .vm-shuf,body.os-ios.form-fold.fold-closed .vm-bar .vm-rep{ display:none }
+/* PearPhone Fold: o leitor de ecrã inteiro (.fb-x, ui.css) recorta o que tem dentro e a capa desfocada e o véu (absolute) ficavam
+   presos à caixa de padding, a acabar na barra. Em vez da borda da barra leva um padding da mesma largura: a capa e o véu vão até
+   à aresta por baixo da barra e a grelha do leitor fica com a largura de antes */
+body.os-ios.form-fold .app-window > .nav-stack:not(.split) > .vm > .vm-full.fb-x,
+body.os-ios.form-fold .app-window > .nav-stack.split > .vm:not(:first-child) > .vm-full.fb-x{ border-right:0; padding-right:var(--rail-w) }
+/* NOVA Fold8 aberto (Nova UI, amus-; as regras de base vivem no oneui-apps3.css, que carrega depois: aqui vai mais específico):
+   a app numa coluna de 1100 (na de 820 as prateleiras cortavam à terceira capa e parecia um telemóvel ao centro), as capas
+   maiores, os destinos e as listas em duas colunas e o mini-leitor numa pílula de 640 ao centro */
+body.os-android.form-fold.fold-open .view.amus{ --fold-col:1100px }
+body.os-android.form-fold.fold-open .view.amus .amus-card,body.os-android.form-fold.fold-open .view.amus .amus-cardart{ width:164px }
+body.os-android.form-fold.fold-open .view.amus .amus-cardart{ height:164px }
+body.os-android.form-fold.fold-open .view.amus .amus-dest{ grid-template-columns:repeat(3,minmax(0,1fr)) }
+body.os-android.form-fold.fold-open .view.amus .amus-mini{ left:calc(50% - 320px); right:calc(50% - 320px); bottom:calc(var(--safe-bottom) + 10px + var(--taskbar-h, 0px)) }
+/* leitor de ecrã inteiro aberto: capa à esquerda e a faixa, o tempo e os controlos à direita, como nos tablets */
+body.os-android.form-fold.fold-open .view.amus .amus-fin{ display:grid; grid-template-columns:420px 440px; grid-template-rows:auto minmax(0,1fr) auto auto auto auto auto auto minmax(0,1fr); column-gap:64px; justify-content:center; padding-left:24px; padding-right:24px }
+body.os-android.form-fold.fold-open .view.amus .amus-fin > *{ grid-column:2; min-width:0 }
+body.os-android.form-fold.fold-open .view.amus .amus-fin > .amus-ftop{ grid-column:1 / -1; grid-row:1 }
+body.os-android.form-fold.fold-open .view.amus .amus-fin > .amus-fart{ grid-column:1; grid-row:2 / -1; align-self:center; width:420px; max-height:none; margin:0 }
+body.os-android.form-fold.fold-open .view.amus .amus-fin > .amus-fmeta{ grid-row:3 }
+body.os-android.form-fold.fold-open .view.amus .amus-fin > .amus-seek{ grid-row:4 }
+body.os-android.form-fold.fold-open .view.amus .amus-fin > .amus-times{ grid-row:5 }
+body.os-android.form-fold.fold-open .view.amus .amus-fin > .amus-ctl{ grid-row:6 }
+body.os-android.form-fold.fold-open .view.amus .amus-fin > .amus-vol{ grid-row:7 }
+body.os-android.form-fold.fold-open .view.amus .amus-fin > .amus-fbot{ grid-row:8; margin-top:0; padding-top:22px }
+/* o painel A seguir / Letra: uma folha de 600 ao centro (de ponta a ponta tinha 1340) */
+body.os-android.form-fold.fold-open .view.amus .amus-pane{ left:calc(50% - 300px); right:calc(50% - 300px) }

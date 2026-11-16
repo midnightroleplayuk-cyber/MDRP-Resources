@@ -1,0 +1,114 @@
+/* Fase 2 (pacote M6): Mail - linhas com swipe, rascunhos, anexos e compor.
+   O resto do Mail (.mail-row .prev, .mail-body, .mail-meta, .mail-actions) continua em apps.css.
+   Regras do CEF: nada de filter/backdrop-filter, só transform e opacity animam, sem color-mix. */
+
+/* ---------- Linha com ações escondidas (swipe) ---------- */
+.mail-sw{ position:relative; overflow:hidden }
+/* cada linha vive dentro do seu invólucro, por isso o separador do ui.css (.li + .li) deixou de se aplicar */
+.mail-sw + .mail-sw::before{ content:''; position:absolute; left:16px; right:0; top:0; height:.5px; background:var(--sep); z-index:2 }
+/* a linha tem de ser OPACA: o fundo translúcido do :active deixava ver as cores das ações por baixo do texto */
+.mail-sw > .li.mail-row{ position:relative; z-index:1; background:var(--bg2); transition:none; touch-action:pan-y }
+.mail-sw > .li.mail-row:active:not(.static){ background:var(--bg2); box-shadow:inset 0 0 0 999px var(--fill4) }
+.mail-sw > .li.mail-row.sw-anim{ transition:transform .3s var(--ease) }
+.mail-sw.mail-gone{ opacity:0; transition:opacity .2s ease-out }
+
+.mail-sw-l,.mail-sw-r{ position:absolute; top:0; bottom:0; left:0; right:0; display:flex; opacity:0 }
+.mail-sw-l{ justify-content:flex-start } .mail-sw-r{ justify-content:flex-end }
+.mail-sw.sw-left .mail-sw-l,.mail-sw.sw-right .mail-sw-r{ opacity:1 }
+/* o fundo da camada tem a cor da ação da ponta: num swipe completo é ela que "cresce" */
+.mail-sw-l.c-read,.mail-sw-r.c-inbox{ background:var(--blue) } .mail-sw-r.c-archive{ background:#AF52DE } .mail-sw-r.c-trash{ background:var(--red) }
+.mail-sw-a{ width:88px; flex:none; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px; color:#fff; font-size:var(--t-cap1); font-weight:600; cursor:pointer }
+.mail-sw-a svg{ width:22px; height:22px }
+.mail-sw-a.read,.mail-sw-a.inbox{ background:var(--blue) } .mail-sw-a.flag{ background:var(--orange) } .mail-sw-a.archive{ background:#AF52DE } .mail-sw-a.trash{ background:var(--red) }
+.mail-sw.sw-full .mail-sw-r .mail-sw-a:not(:last-child){ opacity:0 }
+
+/* a lista ocupa o resto do ecrã (como o <div> sem classe de antes, ver ui.css): o "Sem mensagens" fica ao centro */
+.mail-list{ flex:1 0 auto; display:flex; flex-direction:column }
+.mail-list > *{ flex-shrink:0 }
+
+/* ---------- Conteúdo da linha ---------- */
+/* avatar com as iniciais: só no PearPhone Fold (referência 16); nos outros aparelhos não ocupa espaço */
+.mail-row .mr-av{ display:none }
+body.os-ios.form-fold .mail-row .mr-av{ display:block; flex:none; align-self:flex-start; margin-top:3px }
+body.os-ios.form-fold .mail-row .mr-av .avatar{ width:40px; height:40px; font-size:15px }
+body.os-ios.form-fold .mail-sw + .mail-sw::before{ left:69px }
+.mail-row .mr-top{ display:flex; align-items:center; justify-content:space-between; gap:8px }
+.mail-row .mr-who{ display:flex; align-items:center; gap:8px; min-width:0; overflow:hidden }
+.mail-row .mr-name{ overflow:hidden; text-overflow:ellipsis; white-space:nowrap }
+.mail-row .mr-draft{ color:var(--red); flex:none }
+.mail-row .mr-meta{ display:flex; align-items:center; gap:4px; flex:none; color:var(--label2); font-size:var(--t-foot); font-weight:400 }
+.mail-row .mr-meta svg{ width:14px; height:14px; display:block }
+.mail-row .mr-flag{ color:var(--orange) }
+.mail-row .mr-subj{ font-weight:400; margin-top:1px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+
+.mail-more{ display:flex; align-items:center; justify-content:center; gap:8px; min-height:20px; padding:14px 16px 24px; color:var(--label2); font-size:var(--t-subhead); text-align:center; cursor:pointer }
+.mail-more .spinner{ margin:0; width:16px; height:16px }
+.mail-err{ display:flex; flex-direction:column; align-items:center; gap:6px; padding:60px 32px; text-align:center; color:var(--label2); font-size:var(--t-subhead) }
+.mail-err b{ color:var(--label); font-size:var(--t-title3) }
+.mail-err .pill-btn{ margin-top:8px }
+
+/* ---------- Email aberto ---------- */
+.mail-meta .mm-who{ flex:1; min-width:0 }
+.mail-meta .mm-who > div{ overflow:hidden; text-overflow:ellipsis; white-space:nowrap }
+.mail-meta .mm-flag{ display:none; color:var(--orange); align-self:flex-start }
+.mail-meta .mm-flag svg{ width:20px; height:20px; display:block }
+.mail-meta.flagged .mm-flag{ display:block }
+.mail-actions .fl.on{ color:var(--orange) }
+
+.mail-atts{ display:flex; flex-direction:column; gap:10px; padding:4px 20px 24px }
+.mail-atts-h{ display:flex; align-items:center; gap:6px; color:var(--label2); font-size:var(--t-foot); text-transform:uppercase; letter-spacing:.3px }
+.mail-atts-h svg{ width:14px; height:14px }
+.mail-att{ display:flex; align-items:center; gap:12px; padding:10px 12px; border-radius:14px; background:var(--fill4); cursor:pointer; min-width:0 }
+.mail-att:active{ opacity:.7 }
+/* prefixo ma-: .photo, .map e .rm são classes globais de outras apps (grelha das Fotos, Mapas, ecrã principal) */
+.mail-att .ma-cap{ display:flex; flex-direction:column; min-width:0; flex:1 1 auto }
+.mail-att .ma-cap b,.mail-att .ma-cap span{ overflow:hidden; text-overflow:ellipsis; white-space:nowrap }
+.mail-att .ma-go{ color:var(--blue); flex:none; display:flex }
+.mail-att .ma-go svg{ width:20px; height:20px }
+.mail-att.ma-photo{ flex-direction:column; align-items:stretch; padding:0; overflow:hidden; gap:0 }
+.mail-att.ma-photo .ma-ph{ height:200px; background-color:var(--fill3); background-size:cover; background-position:center; background-repeat:no-repeat }
+.mail-att.ma-photo .ma-cap{ padding:8px 12px }
+.mail-att.ma-loading .ma-ph{ opacity:.5 }
+.mail-att.ma-failed .ma-ph{ opacity:.35 }
+.mail-att.ma-loc .ma-map{ width:52px; height:52px; border-radius:10px; flex:none; background:linear-gradient(135deg,#BFE3A6,#A9D3F2); color:#FF3B30; display:flex; align-items:center; justify-content:center }
+.mail-att.ma-loc .ma-map svg{ width:26px; height:26px }
+.mail-att.ma-au .ma-pl{ width:40px; height:40px; border-radius:50%; flex:none; background:var(--blue); color:#fff; display:flex; align-items:center; justify-content:center }
+.mail-att.ma-au .ma-pl svg{ width:20px; height:20px }
+.mail-att.ma-au .ma-pl.ma-busy{ opacity:.5 }
+
+/* ---------- Compor ---------- */
+.mail-compose .mc-k{ width:70px; flex:none }
+.mail-compose .mc-atts{ display:flex; gap:8px; overflow-x:auto; padding:12px 16px 0; scrollbar-width:none }
+.mail-compose .mc-atts::-webkit-scrollbar{ display:none }
+.mail-compose .mc-atts.mc-none{ display:none }
+.mc-chip{ flex:none; display:flex; align-items:center; gap:8px; max-width:230px; padding:6px 8px 6px 6px; border-radius:12px; background:var(--bg2) }
+.mc-chip .mc-th{ width:40px; height:40px; border-radius:8px; flex:none; background-color:var(--fill3); background-size:cover; background-position:center; color:var(--blue); display:flex; align-items:center; justify-content:center }
+.mc-chip .mc-th svg{ width:22px; height:22px }
+.mc-chip .mc-tx{ display:flex; flex-direction:column; min-width:0; font-size:var(--t-foot) }
+.mc-chip .mc-tx b,.mc-chip .mc-tx span{ overflow:hidden; text-overflow:ellipsis; white-space:nowrap }
+.mc-chip .mc-tx span{ color:var(--label2) }
+.mc-chip .mc-rm{ width:22px; height:22px; border-radius:50%; flex:none; background:var(--fill3); color:var(--label2); display:flex; align-items:center; justify-content:center; cursor:pointer }
+.mc-chip .mc-rm svg{ width:12px; height:12px }
+.mail-compose .mc-bodyg{ margin-top:12px; padding:12px }
+.mail-compose .mc-bodyg .ta{ min-height:200px }
+.mail-compose .mc-tools{ display:flex; align-items:center; justify-content:space-between; border-top:.5px solid var(--sep); padding-top:8px; margin-top:6px }
+.mail-compose .mc-clip{ display:flex; align-items:center; gap:6px; color:var(--blue); cursor:pointer; font-size:var(--t-subhead); font-weight:500 }
+.mail-compose .mc-clip svg{ width:20px; height:20px }
+/* a enviar: o botão fica apagado e não aceita segundo toque (o envio real é do servidor) */
+.sheet-wrap.mc-busy .sh-r{ opacity:.45; pointer-events:none }
+
+/* ---------- PearPhone Fold (referências 15 e 16): as ações estão na barra direita (mail.js v.rail) ----------
+   O email aberto começa pelo remetente (avatar, nome, para quem, data) com uma linha por baixo, depois o assunto a negrito e o
+   corpo; a barra de ações de baixo sai. Só no dobrável do PearOS: os outros aparelhos ficam iguais. */
+body.os-ios.form-fold .mail-actions{ display:none }
+body.os-ios.form-fold .mail-meta{ display:flex; flex-direction:column; padding:4px 24px 0; border-bottom:none }
+body.os-ios.form-fold .mail-meta .from{ order:-1; margin:0; padding:0 0 12px; border-bottom:.5px solid var(--sep) }
+body.os-ios.form-fold .mail-meta .subj{ margin:16px 0 4px; font-size:var(--t-title3); font-weight:700; letter-spacing:-.2px }
+body.os-ios.form-fold .mail-body{ padding:10px 24px 18px }
+body.os-ios.form-fold .mail-atts{ padding:4px 24px 24px }
+body.os-ios.form-fold .mail-att.ma-photo .ma-ph{ height:300px }
+/* a foto de um anexo aberta: fechar e guardar estão na barra direita (mail.js) */
+body.os-ios.form-fold .app-window[data-app="mail"] > .viewer > .vbar{ visibility:hidden; pointer-events:none }
+/* NOVA Fold8: o FAB de escrever (oneui-apps3.css) sobe o que a barra de tarefas flutuante tapa quando está em cima (--taskbar-h,
+   android-sysui.js); com botões ela já está na barra de navegação e fica 0 */
+body.os-android.form-fold .amail-fab{ bottom:calc(var(--safe-bottom) + 20px + var(--taskbar-h,0px)) }

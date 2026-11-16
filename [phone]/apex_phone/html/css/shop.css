@@ -1,0 +1,220 @@
+/* ============================================================
+   LOJA DE TELEMÓVEIS (js/shop.js, js/shopviewer.js), 2026-10-03; JANELA de vidro por cima do jogo desde 11 nov 2026
+   Linguagem do Apex Inventory: as peças vêm do css/ovkit.css (.ovk-win, .ovk-head, .ovk-tray, .ovk-tile, .ovk-cell,
+   .ovk-btn, .ovk-chip, .ovk-seg, .ovk-tag, .ovk-key, .ovk-empty); aqui só a montagem da loja. Prefixo único: xs-.
+   TODAS as cores vêm dos tokens --k-* (o OvTheme escreve os do painel em body .xs-root): marca, fundo e vidro mudam no
+   painel › Aparência sem tocar neste ficheiro. As cores que sobram são as dos próprios produtos (amostras das cores).
+   Desenho a 1920×1080: a janela tem 1480×840 e o shop.js escala-a com `zoom`; o .ovk-layer centra-a com flex.
+   Regras do CEF (Chromium 103): sem backdrop-filter, filter, color-mix, :has, aspect-ratio; caixas de imagem dentro de
+   <button> com altura fixa em px; só transform/opacity animam; sem box-shadow inset em peças pequenas e redondas
+   (bordas); sem luz a seguir o rato. Botões escuros com contorno (nada de fundos claros).
+   ============================================================ */
+.xs-root{
+  position:fixed; top:0; right:0; bottom:0; left:0; z-index:2100;
+  pointer-events:none;
+  font-size:14px; line-height:1.4; text-align:left;
+  user-select:none; cursor:default;
+}
+.xs-root[hidden], .xs-root [hidden]{ display:none!important }
+:where(.xs-root) :where(button,h1,h2,p,ol,ul,li,figure){ margin:0; padding:0; border:0; background:none; font:inherit; color:inherit; text-align:inherit; letter-spacing:inherit; list-style:none; box-shadow:none; outline:none; -webkit-appearance:none; appearance:none }
+:where(.xs-root) :where(button){ cursor:pointer }
+:where(.xs-root) :where(img){ -webkit-user-drag:none }
+/* ícones de traço: só a classe (as peças do ovkit acertam o tamanho com .ovk-btn svg, .ovk-chip svg, ...) */
+.xs-i{ width:18px; height:18px; fill:none; stroke:currentColor; stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; flex:none; display:block }
+
+/* ---------------------------------------------------------------- janela */
+.xs-layer{ z-index:0 }
+.xs-win{ width:1480px; height:840px; display:flex; flex-direction:column }
+
+/* cabeçalho: insígnia, nome da loja, estado; carteira e fechar à direita */
+.xs-head{ flex:none; height:76px; padding:0 18px 0 18px; gap:13px }
+.xs-hd{ min-width:0; display:flex; flex-direction:column; gap:5px }
+.xs-title{ max-width:620px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+.xs-sub{ display:flex; align-items:center; gap:8px; white-space:nowrap }
+.xs-dot{ width:3px; height:3px; border-radius:50%; background:var(--k-t4); flex:none }
+.xs-admin{ height:20px; margin-left:4px; padding:0 7px }
+.xs-admin .xs-i{ width:11px; height:11px }
+.xs-hr{ margin-left:auto; display:flex; align-items:center; gap:8px; flex:none }
+.xs-wallet{ display:flex; gap:8px }
+.xs-wc{ display:flex; align-items:center; gap:10px; height:44px; padding:0 15px 0 8px }
+.xs-wc-ic{ width:28px; height:28px; flex:none; border-radius:7px; display:flex; align-items:center; justify-content:center; color:var(--k-acc-txt); background:rgba(var(--k-acc-rgb), .1); border:1px solid rgba(var(--k-acc-rgb), .32) }
+.xs-wc.cash .xs-wc-ic{ color:var(--k-ok); background:rgba(var(--k-ok-rgb), .1); border-color:rgba(var(--k-ok-rgb), .32) }
+.xs-wc-ic .xs-i{ width:15px; height:15px }
+.xs-wc-b{ min-width:0 }
+.xs-wc .v{ font-size:14px; margin-top:1px }
+.xs-wc .v.na{ color:var(--k-t4) }
+.xs-close{ height:44px; margin-left:4px; padding:0 9px 0 8px }
+
+/* ---------------------------------------------------------------- corpo: principal | ficha */
+.xs-body{ flex:1; min-height:0; display:grid; grid-template-columns:minmax(0, 1fr) 396px; border-radius:0 0 var(--k-pr) var(--k-pr) }
+.xs-main{ position:relative; min-width:0; min-height:0; display:flex; flex-direction:column; padding:16px 18px 18px }
+.xs-cats{ flex:none; display:flex; gap:6px; margin-bottom:14px; overflow:hidden }
+.xs-chip svg.xs-i{ width:15px; height:15px }
+.xs-cols{ flex:1; min-height:0; display:grid; grid-template-columns:344px minmax(0, 1fr); gap:16px }
+
+/* catálogo: mosaicos num tabuleiro rebaixado */
+.xs-shelf{ min-height:0; overflow-y:auto; overflow-x:hidden; padding:10px;
+  background:linear-gradient(180deg, rgba(var(--k-bg-rgb), .34), rgba(var(--k-bg-rgb), .5)) }
+.xs-grid{ display:grid; grid-template-columns:1fr 1fr; grid-auto-rows:158px; gap:10px }
+.xs-tile{ position:relative; display:flex; flex-direction:column; align-items:stretch; min-width:0; padding:8px 11px 10px; text-align:left; overflow:hidden; cursor:pointer }
+.xs-tile:focus-visible{ outline:none; box-shadow:inset 0 0 0 1.5px var(--k-acc), 0 0 0 3px rgba(var(--k-acc-rgb), .22) }
+.xs-t-img{ position:relative; flex:none; height:80px; margin-top:8px; display:flex; align-items:center; justify-content:center; pointer-events:none }
+.xs-t-img img{ width:100%; height:80px; object-fit:contain; display:block }
+.xs-t-img .xs-glyph{ width:40px; height:64px }
+.xs-tile.soon .xs-t-img{ opacity:.42 }
+.xs-t-top{ position:absolute; top:8px; left:8px; right:8px; z-index:1; display:flex; align-items:center; gap:4px; pointer-events:none }
+.xs-t-gap{ flex:1 }
+.xs-t-top.both .xs-t-own{ width:20px; padding:0; justify-content:center }
+.xs-t-top.both .xs-t-own > span{ display:none }
+.xs-tile .ovk-tag{ height:18px; padding:0 6px; gap:4px; border-radius:5px; font-size:9px; letter-spacing:.08em }
+.xs-tile .ovk-tag .xs-i{ width:10px; height:10px; stroke-width:2.2 }
+.xs-t-name{ margin-top:auto; font-size:12.5px; font-weight:700; line-height:1.25; letter-spacing:-.005em; color:var(--k-t2); display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; transition:color var(--k-fast) var(--k-ease) }
+.xs-tile:hover .xs-t-name, .xs-tile.on .xs-t-name{ color:var(--k-t1) }
+.xs-t-row{ flex:none; display:flex; align-items:center; gap:6px; height:18px; margin-top:5px }
+.xs-t-price{ display:flex; align-items:baseline; gap:5px; min-width:0; white-space:nowrap }
+.xs-t-from{ font-family:var(--k-mono); font-size:8.5px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--k-t4) }
+.xs-t-v{ font-family:var(--k-mono); font-size:12.5px; font-weight:700; letter-spacing:0; color:var(--k-acc-txt) }
+.xs-t-dots{ margin-left:auto; display:flex; align-items:center; gap:3px; flex:none }
+.xs-t-dots i{ width:8px; height:8px; border-radius:50%; border:1px solid rgba(255, 255, 255, .3) }
+.xs-t-dots b{ margin-left:1px; font-family:var(--k-mono); font-size:9px; font-weight:500; color:var(--k-t4) }
+
+/* palco: tabuleiro rebaixado com cantos grandes, luz da marca e anel no chão; o canvas do 3D fica por cima */
+.xs-show{ min-width:0; min-height:0; display:flex; flex-direction:column }
+.xs-stage{ position:relative; flex:1; min-height:0; overflow:hidden; isolation:isolate; border-radius:14px;
+  background:linear-gradient(180deg, rgba(var(--k-bg-rgb), .5), rgba(var(--k-bg-rgb), .78) 70%, rgba(0, 0, 0, .3)) }
+.xs-glow{ position:absolute; left:50%; top:45%; width:640px; height:640px; margin:-320px 0 0 -320px; border-radius:50%; z-index:0; pointer-events:none;
+  background:radial-gradient(closest-side, rgba(var(--k-acc-rgb), .3), rgba(var(--k-acc-rgb), .1) 50%, rgba(var(--k-acc-rgb), 0)) }
+.xs-ring{ position:absolute; left:50%; bottom:64px; width:320px; height:50px; margin-left:-160px; border-radius:50%; z-index:0; pointer-events:none;
+  border:1px solid rgba(var(--k-acc-rgb), .5); background:radial-gradient(closest-side, rgba(var(--k-acc-rgb), .2), rgba(var(--k-acc-rgb), 0)); transition:opacity .4s ease }
+.xs-ring::after{ content:''; position:absolute; top:9px; bottom:9px; left:19%; right:19%; border-radius:50%; border:1px solid rgba(var(--k-acc-rgb), .24) }
+.xs-stage.gl-on .xs-ring{ opacity:0 }
+.xs-gl{ position:absolute; top:0; left:0; width:100%; height:100%; display:block; z-index:1; cursor:grab; opacity:0; transition:opacity .45s ease }
+.xs-gl.grabbing{ cursor:grabbing }
+.xs-stage.gl-on .xs-gl{ opacity:1 }
+.xs-fb{ position:absolute; top:0; right:0; bottom:0; left:0; z-index:1; display:flex; align-items:center; justify-content:center; pointer-events:none; transition:opacity .4s ease }
+.xs-stage.gl-on .xs-fb{ opacity:0 }
+.xs-fb-pic{ margin-top:-46px; display:flex; align-items:center; justify-content:center }
+.xs-fb img{ width:360px; height:360px; object-fit:contain; display:block }
+.xs-fb .xs-glyph{ width:150px; height:250px }
+/* cantos grandes do palco: a classe .lg do ovkit NÃO serve aqui (o Liquid Glass do telemóvel, glass27.css, pinta
+   qualquer .lg de vidro branco com body.os-ios); esta é a mesma medida com outro nome */
+.xs-root .ovk-corners.xs-ck{ --ck:16px; --cc:rgba(var(--k-ink-rgb), .26); top:10px; left:10px; right:10px; bottom:10px; z-index:2 }
+.xs-st-tags{ position:absolute; top:22px; left:24px; z-index:3; display:flex; align-items:center; gap:6px; pointer-events:none }
+.xs-st-tags .ovk-tag.mute{ color:var(--k-t2); background:rgba(var(--k-bg-rgb), .6) }
+.xs-st-nav{ position:absolute; top:19px; right:21px; z-index:3; display:flex; gap:6px }
+.xs-load{ position:absolute; left:50%; bottom:24px; width:180px; margin-left:-90px; z-index:3; opacity:0; transition:opacity .25s ease }
+.xs-load.on{ opacity:1 }
+.xs-load > i{ transform:scaleX(0); transition:transform .25s ease-out }
+
+/* por baixo do palco: cores em mosaicos pequenos e as ferramentas do visor */
+.xs-ctl{ flex:none; display:flex; align-items:center; gap:12px; margin-top:12px; height:42px }
+.xs-colors{ flex:1; min-width:0; display:flex; align-items:center; gap:6px; overflow:hidden }
+.xs-sw{ position:relative; flex:none; display:flex; align-items:center; gap:9px; height:40px; padding:0 13px 0 10px; min-width:0; font-size:12.5px; font-weight:600; color:var(--k-t2); cursor:pointer; transition:color var(--k-fast) var(--k-ease), background-color var(--k-fast) var(--k-ease), box-shadow var(--k-fast) var(--k-ease) }
+.xs-sw:hover, .xs-sw.on{ color:var(--k-t1) }
+.xs-sw-dot{ position:relative; width:18px; height:18px; flex:none; border-radius:50%; border:1px solid rgba(255, 255, 255, .3) }
+.xs-sw-n{ max-width:120px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+.xs-sw.soon{ color:var(--k-t3) }
+.xs-sw.soon .xs-sw-dot{ opacity:.4 }
+.xs-sw.soon .xs-sw-dot::after{ content:''; position:absolute; left:-3px; right:-3px; top:50%; height:1px; margin-top:-.5px; background:rgba(var(--k-ink-rgb), .7); transform:rotate(-45deg) }
+.xs-sw-own{ position:absolute; top:5px; right:5px; width:6px; height:6px; border-radius:50%; background:var(--k-ok) }
+.xs-colors.many .xs-sw:not(.on) .xs-sw-n{ display:none }
+.xs-colors.many .xs-sw:not(.on){ padding:0 10px }
+.xs-tools{ flex:none; display:flex; align-items:center; gap:6px }
+
+/* teclas de ajuda: pequenas e discretas */
+.xs-keys{ flex:none; display:flex; align-items:center; justify-content:center; gap:22px; height:22px; margin-top:10px; font-size:11.5px; color:var(--k-t3); white-space:nowrap }
+.xs-k{ display:inline-flex; align-items:center; gap:7px }
+.xs-k .ovk-key{ height:19px; min-width:22px; padding:0 6px; font-size:9.5px; color:var(--k-t2) }
+.xs-keys.no-gl .xs-k-gl{ display:none }
+
+/* catálogo vazio: ocupa a janela toda, ao centro */
+.xs-root.is-empty .xs-body{ grid-template-columns:minmax(0, 1fr) }
+.xs-root.is-empty .xs-detail, .xs-root.is-empty .xs-cols, .xs-root.is-empty .xs-cats{ display:none }
+.xs-empty{ flex:1; border-radius:14px;
+  background:linear-gradient(180deg, rgba(var(--k-bg-rgb), .4), rgba(var(--k-bg-rgb), .62)) }
+.xs-empty .ic{ width:60px; height:60px }
+.xs-empty .ic .xs-i{ width:24px; height:24px }
+.xs-empty b{ font-size:15px }
+
+/* ---------------------------------------------------------------- ficha do produto (direita) */
+.xs-detail{ position:relative; min-width:0; min-height:0; display:flex; flex-direction:column; border-left:1px solid var(--k-l1); border-radius:0 0 var(--k-pr) 0;
+  background:linear-gradient(180deg, rgba(var(--k-bg-rgb), .18), rgba(var(--k-bg-rgb), .34)) }
+.xs-d-scroll{ flex:1; min-height:0; overflow-y:auto; overflow-x:hidden; padding:22px 22px 14px }
+.xs-name{ font-size:28px; font-weight:800; line-height:1.1; letter-spacing:-.03em; padding-bottom:2px; color:var(--k-t1);
+  background:linear-gradient(180deg, var(--k-t1), rgba(var(--k-ink-rgb), .72)); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent }
+.xs-name.long{ font-size:24px }
+.xs-tagline{ margin-top:8px; font-size:13px; line-height:1.5; color:var(--k-t3) }
+.xs-specs-w{ margin-top:22px }
+.xs-specs{ display:grid; grid-template-columns:1fr 1fr; gap:6px; margin-top:11px }
+.xs-spec .v{ font-size:15px; letter-spacing:-.01em }
+.xs-feats-w{ margin-top:22px }
+.xs-feats{ margin-top:6px }
+.xs-feat{ display:flex; align-items:flex-start; gap:10px; padding:8px 0; border-bottom:1px solid var(--k-l1); font-size:13px; line-height:1.45; color:var(--k-t2) }
+.xs-feat:last-child{ border-bottom:0 }
+.xs-feat .xs-i{ width:15px; height:15px; margin-top:2px; stroke-width:2.2; color:var(--k-acc-txt) }
+.xs-usage{ display:flex; gap:10px; margin-top:14px; padding:11px 12px; border-radius:var(--k-r); background:rgba(0, 0, 0, .18); border:1px solid var(--k-l1); font-size:12px; line-height:1.5; color:var(--k-t3) }
+.xs-usage .xs-i{ width:16px; height:16px; margin-top:1px; color:var(--k-acc-txt) }
+
+/* pé fixo: preço, pagamento, comprar */
+.xs-foot{ flex:none; padding:15px 22px 16px; border-top:1px solid var(--k-l1); background:linear-gradient(180deg, rgba(0, 0, 0, .06), rgba(0, 0, 0, .16)); border-radius:0 0 var(--k-pr) 0 }
+.xs-price-row{ display:flex; align-items:flex-end; justify-content:space-between; gap:12px }
+.xs-price-b{ display:flex; flex-direction:column; gap:5px; min-width:0 }
+.xs-price-k{ font-family:var(--k-mono); font-size:9.5px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:var(--k-t4) }
+.xs-price{ font-family:var(--k-mono); font-size:30px; font-weight:700; line-height:1; letter-spacing:-.02em; color:var(--k-t1); white-space:nowrap }
+.xs-own{ flex:none; margin-bottom:2px }
+.xs-own-n{ letter-spacing:0 }
+.xs-pay{ display:flex; width:100%; margin-top:14px }
+.xs-pay > button{ height:36px; gap:7px; padding:0 10px }
+.xs-pay-l{ white-space:nowrap }
+.xs-pay-v{ font-family:var(--k-mono); font-size:11px; font-weight:500; letter-spacing:0; color:var(--k-t4); white-space:nowrap }
+.xs-pay > button.on .xs-pay-v{ color:var(--k-t3) }
+.xs-pay > button.low .xs-pay-v{ color:var(--k-warn) }
+.xs-pay.one > button{ cursor:default }
+
+/* comprar: botão principal (escuro com contorno da marca) que enche por transform enquanto se mantém premido */
+.xs-hold{ position:relative; isolation:isolate; overflow:hidden; width:100%; height:56px; margin-top:10px; padding:0 12px 0 11px; justify-content:flex-start; gap:12px; text-align:left }
+.xs-hold-fill{ position:absolute; top:1px; left:1px; bottom:1px; width:calc(100% - 2px); z-index:-1; border-radius:8px; pointer-events:none; transform-origin:0 50%; transform:scaleX(0);
+  background:linear-gradient(90deg, rgba(var(--k-acc-rgb), .08), rgba(var(--k-acc-rgb), .36)); transition:transform .22s ease-out }
+.xs-hold.on .xs-hold-fill{ transform:scaleX(1); transition:transform .8s linear }
+.xs-hold.full .xs-hold-fill{ transform:scaleX(1); transition:none }
+.xs-hold .xs-hold-ic{ position:relative; width:34px; height:34px; margin-left:0; border-radius:8px }
+.xs-hold-ic .xs-i{ position:absolute; top:8px; left:8px; width:18px; height:18px; transition:opacity .2s ease, transform .2s ease }
+.xs-hold-ic .b{ opacity:0; transform:translateY(4px) }
+.xs-hold-txt{ flex:1; min-width:0; display:flex; flex-direction:column; gap:4px }
+.xs-hold-label{ font-size:14px; font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+.xs-hold-sub{ font-family:var(--k-mono); font-size:9.5px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--k-t3); white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+.xs-hold.wrap .xs-hold-sub{ display:none }
+.xs-hold.wrap .xs-hold-label{ white-space:normal; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; font-size:13.5px; line-height:1.22 }
+.xs-hold-key{ flex:none; transition:opacity var(--k-fast) var(--k-ease), color var(--k-fast) var(--k-ease), border-color var(--k-fast) var(--k-ease) }
+.xs-hold.confirm .xs-hold-key{ color:var(--k-acc-txt); border-color:rgba(var(--k-acc-rgb), .75) }
+.xs-hold.full .xs-hold-key, .xs-hold.done .xs-hold-key, .xs-hold.blocked .xs-hold-key{ opacity:0 }
+/* bloqueado (sem saldo, sem framework): continua a receber o premir para abanar */
+.xs-hold.blocked, .xs-hold.blocked:hover{ color:var(--k-t3); cursor:default;
+  background:linear-gradient(180deg, rgba(var(--k-ink-rgb), .05), rgba(var(--k-ink-rgb), .02) 60%, rgba(0, 0, 0, .14));
+  box-shadow:inset 0 1px 0 rgba(255, 255, 255, .06), inset 0 0 0 1px var(--k-l2), 0 1px 0 rgba(0, 0, 0, .3) }
+.xs-hold.blocked .ovk-ic, .xs-hold.blocked:hover .ovk-ic{ color:var(--k-t4); background:rgba(var(--k-bg-rgb), .55) }
+.xs-hold.blocked .xs-hold-sub{ color:var(--k-t4) }
+.xs-hold.soon .xs-hold-label{ color:var(--k-warn) }
+/* comprado */
+.xs-hold.done, .xs-hold.done:hover{ color:var(--k-ok);
+  background:linear-gradient(180deg, rgba(var(--k-ok-rgb), .14), rgba(var(--k-ok-rgb), .05) 60%, rgba(0, 0, 0, .14));
+  box-shadow:inset 0 1px 0 rgba(255, 255, 255, .1), inset 0 0 0 1px rgba(var(--k-ok-rgb), .78), 0 1px 0 rgba(0, 0, 0, .3) }
+.xs-hold.done .xs-hold-fill{ transform:scaleX(1); transition:none; background:linear-gradient(90deg, rgba(var(--k-ok-rgb), .05), rgba(var(--k-ok-rgb), .2)) }
+.xs-hold.done .ovk-ic, .xs-hold.done:hover .ovk-ic{ color:var(--k-ok) }
+.xs-hold.done .xs-hold-ic .a{ opacity:0; transform:translateY(-4px) }
+.xs-hold.done .xs-hold-ic .b{ opacity:1; transform:none }
+.xs-hold.done .xs-hold-sub{ color:rgba(var(--k-ok-rgb), .8) }
+/* erro: abanão curto e contorno vermelho */
+.xs-hold.err, .xs-hold.err:hover{ animation:xs-shake .42s cubic-bezier(.36, .07, .19, .97) both; box-shadow:inset 0 1px 0 rgba(255, 255, 255, .08), inset 0 0 0 1px rgba(var(--k-bad-rgb), .85), 0 1px 0 rgba(0, 0, 0, .3) }
+.xs-note{ min-height:18px; margin-top:10px; font-size:12px; line-height:1.45; text-align:center; color:var(--k-t3) }
+.xs-note.ok{ color:var(--k-ok) }
+.xs-note.warn{ color:var(--k-warn) }
+.xs-note.err{ color:var(--k-bad) }
+
+/* ---------------------------------------------------------------- troca de produto / cor (uma vez, só transform e opacity) */
+.xs-swap{ animation:xs-swap .36s var(--k-emph) both }
+.xs-tick{ animation:xs-fade .3s ease both }
+@keyframes xs-fade{ from{ opacity:0 } to{ opacity:1 } }
+@keyframes xs-swap{ from{ opacity:0; transform:translateY(8px) } to{ opacity:1; transform:none } }
+@keyframes xs-shake{ 10%, 90%{ transform:translateX(-1px) } 20%, 80%{ transform:translateX(3px) } 30%, 50%, 70%{ transform:translateX(-5px) } 40%, 60%{ transform:translateX(5px) } }
+body[data-motion="reduced"] .xs-root *, body[data-motion="reduced"] .xs-root{ animation-duration:.01s!important; animation-delay:0s!important }

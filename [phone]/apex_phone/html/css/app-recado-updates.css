@@ -1,0 +1,490 @@
+/* ============================================================
+   RECADO · Atualizações, Canais e Comunidades (pacote RE) - prefixo .rcu-
+   Acento próprio do Recado: índigo #128C7E → ciano #25D366. Claro/escuro pelos tokens (--bg, --bg2, --label…).
+   Regras do CEF do FiveM: nada de backdrop-filter/filter/color-mix/clip-path; só transform e opacity animam;
+   camadas de ecrã inteiro com border-radius 57px (o recorte do ecrã do telemóvel).
+   ============================================================ */
+/* tokens com prefixo próprio (as folhas e os ecrãs inteiros vivem fora da vista, por isso ficam no :root) */
+/* integração: tokens do RE ligados aos base do Recado (app-recado.css); redeclarados em body.dark porque uma variável
+   resolve-se onde é declarada (senão ficava com o valor claro do :root) */
+:root{ --rcu-a:var(--rc-a1,#128C7E); --rcu-b:var(--rc-a2,#25D366); --rcu-grad:var(--rc-grad,linear-gradient(135deg,#128C7E,#25D366)); --rcu-soft:var(--rc-tint,rgba(18,140,126,.10)); --rcu-ink:var(--rc-accent,#128C7E) }
+body.dark{ --rcu-soft:var(--rc-tint,rgba(37,211,102,.16)); --rcu-ink:var(--rc-accent,#25D366) }
+.rcu-root .content{ background:var(--bg) }
+.rcu-body{ display:flex; flex-direction:column; padding:0 0 24px }
+.rcu-sec{ margin:6px 0 10px }
+.rcu-sec-h{ display:flex; align-items:center; justify-content:space-between; padding:10px 20px 8px }
+.rcu-sec-h h3{ margin:0; min-width:0; font-size:var(--t-title2); font-weight:700; letter-spacing:-.3px; color:var(--label); overflow:hidden; text-overflow:ellipsis; white-space:nowrap }
+.rcu-iconbtn{ width:34px; height:34px; border-radius:17px; display:flex; align-items:center; justify-content:center; background:var(--fill3); color:var(--label); cursor:pointer }
+.rcu-iconbtn svg{ width:20px; height:20px }
+.rcu-iconbtn:active{ transform:scale(.92) }
+.rcu-link{ font-size:var(--t-subhead); font-weight:600; color:var(--rcu-ink); cursor:pointer; padding:6px 0 6px 12px }
+.rcu-note{ margin:4px 20px 8px; font-size:var(--t-foot); line-height:1.4; color:var(--label2) }
+.rcu-note.small{ font-size:var(--t-cap2) }
+.rcu-note.err{ color:var(--red) }
+.rcu-note b{ color:var(--label); font-weight:600 }
+.rcu-btn{ display:inline-flex; align-items:center; justify-content:center; gap:6px; height:40px; padding:0 18px; border-radius:20px; background:var(--rcu-grad); color:#fff; font-size:var(--t-subhead); font-weight:600; cursor:pointer; flex:none; transition:transform var(--motion-fast) var(--curve), opacity var(--motion-fast) }
+.rcu-btn svg{ width:18px; height:18px }
+.rcu-btn:active{ transform:scale(.96) }
+.rcu-btn.sm{ height:30px; padding:0 14px; border-radius:15px; font-size:var(--t-foot) }
+.rcu-btn.wide{ display:flex; margin:14px 20px; height:48px; border-radius:14px; font-size:var(--t-body) }
+.rcu-btn.ghost{ background:var(--rcu-soft); color:var(--rcu-ink) }
+.rcu-btn.on{ background:var(--fill3); color:var(--label2) }
+.rcu-btn.busy{ opacity:.5; pointer-events:none }
+.rcu-badge{ min-width:20px; height:20px; padding:0 6px; border-radius:10px; background:var(--rcu-grad); color:#fff; font-size:12px; font-weight:700; display:inline-flex; align-items:center; justify-content:center; box-sizing:border-box }
+.rcu-bell{ color:var(--rcu-ink); display:inline-flex }
+.rcu-bell svg{ width:12px; height:12px }
+.rcu-verif{ display:inline-flex; align-items:center; justify-content:center; width:15px; height:15px; margin-left:5px; border-radius:50%; background:var(--rcu-grad); color:#fff; vertical-align:middle; flex:none }
+.rcu-verif svg{ width:9px; height:9px; stroke-width:3.4 }
+.rcu-tag{ margin-left:6px; padding:1px 6px; border-radius:6px; background:var(--rcu-soft); color:var(--rcu-ink); font-size:11px; font-weight:600; flex:none }
+.rcu-spin{ display:none; width:18px; height:18px; border-radius:50%; border:2.5px solid rgba(255,255,255,.35); border-top-color:#fff; animation:rcuSpin .8s linear infinite }
+@keyframes rcuSpin{ to{ transform:rotate(360deg) } }
+.rcu-danger .li-label{ color:var(--red) }
+.rcu-checkmark{ color:var(--rcu-ink) }
+.rcu-checkmark svg{ width:18px; height:18px; stroke-width:3 }
+
+/* ---------- avatares e anéis ---------- */
+.rcu-av{ width:100%; height:100%; border-radius:50%; display:flex; align-items:center; justify-content:center; color:#fff; font-weight:600; font-size:15px; background-size:cover; background-position:center; overflow:hidden; box-sizing:border-box }
+.rcu-av svg{ width:55%; height:55% }
+.rcu-av.sq{ border-radius:28% }
+.rcu-av.has-img{ color:transparent }
+.rcu-av.has-img svg{ opacity:0 }
+.rcu-av.xl{ font-size:34px }
+.rcu-loading{ opacity:.85 }
+.rcu-ring{ position:relative; width:58px; height:58px; padding:2.5px; border-radius:50%; background:var(--rcu-grad); box-sizing:border-box; flex:none }
+.rcu-ring.seen{ background:var(--gray3) }
+body.dark .rcu-ring.seen{ background:var(--gray2) }
+.rcu-ring-in{ width:100%; height:100%; border-radius:50%; padding:2.5px; background:var(--bg2); box-sizing:border-box; overflow:hidden }
+.rcu-ring-in > *{ border-radius:50% }
+.rcu-ring.sm{ width:40px; height:40px; padding:2px }
+.rcu-ring.sm .rcu-ring-in{ padding:1.5px }
+.rcu-plus{ position:absolute; right:-2px; bottom:-2px; width:22px; height:22px; border-radius:50%; background:var(--rcu-grad); color:#fff; border:2.5px solid var(--bg2); display:flex; align-items:center; justify-content:center; box-sizing:border-box }
+.rcu-plus svg{ width:12px; height:12px; stroke-width:3.2 }
+
+/* ---------- fundos e letras dos estados (chaves do servidor) ---------- */
+.rcu-bg-indigo{ background:linear-gradient(160deg,#22C55E,#065F46) }
+.rcu-bg-aurora{ background:linear-gradient(160deg,#128C7E,#25D366) }
+.rcu-bg-ciano{ background:linear-gradient(160deg,#22D3EE,#075E54) }
+.rcu-bg-oceano{ background:linear-gradient(160deg,#0EA5E9,#1E3A8A) }
+.rcu-bg-menta{ background:linear-gradient(160deg,#34D399,#0F766E) }
+.rcu-bg-ambar{ background:linear-gradient(160deg,#FBBF24,#D97706) }
+.rcu-bg-coral{ background:linear-gradient(160deg,#FB7185,#EA580C) }
+.rcu-bg-rosa{ background:linear-gradient(160deg,#F472B6,#BE185D) }
+.rcu-bg-ameixa{ background:linear-gradient(160deg,#8B5CF6,#9D174D) }
+.rcu-bg-grafite{ background:linear-gradient(160deg,#4B5563,#111827) }
+/* letras com o prefixo do pacote: um .f-bold solto colidia com o .f-bold do app-stories.css (as Histórias
+   ficavam em maiúsculas ou o estado perdia as maiúsculas, conforme a ordem de carregamento das folhas) */
+.rcu-f-sans{ font-family:var(--font); font-weight:600 }
+.rcu-f-serif{ font-family:Georgia,'Times New Roman',serif; font-weight:500; font-style:italic }
+.rcu-f-round{ font-family:var(--font-rounded); font-weight:700 }
+.rcu-f-bold{ font-family:var(--font); font-weight:800; text-transform:uppercase; letter-spacing:.2px }
+.rcu-f-mono{ font-family:var(--font-mono); font-weight:600 }
+
+/* ---------- O meu estado ---------- */
+.rcu-me{ display:flex; align-items:center; gap:14px; margin:0 16px; padding:12px 14px; border-radius:18px; background:var(--bg2); cursor:pointer }
+.rcu-me:active{ opacity:.8 }
+.rcu-me-av{ position:relative; width:58px; height:58px; flex:none }
+.rcu-me-av > .rcu-av{ width:58px; height:58px; font-size:20px }
+.rcu-me-thumb{ width:100%; height:100%; border-radius:50%; background-size:cover; background-position:center; display:flex; align-items:center; justify-content:center; overflow:hidden }
+.rcu-me-thumb .rcu-thumb-t{ font-size:7px; -webkit-line-clamp:3; padding:4px }
+.rcu-me-thumb .rcu-thumb-i svg{ width:20px; height:20px }
+.rcu-me-t{ flex:1; min-width:0; display:flex; flex-direction:column; gap:2px }
+.rcu-me-t b{ font-size:var(--t-body); font-weight:600; color:var(--label) }
+.rcu-me-t span{ font-size:var(--t-foot); color:var(--label2); white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+.rcu-me-b{ width:38px; height:38px; border-radius:19px; flex:none; display:flex; align-items:center; justify-content:center; background:var(--rcu-soft); color:var(--rcu-ink) }
+.rcu-me-b svg{ width:20px; height:20px }
+.rcu-me-b:active{ transform:scale(.92) }
+
+/* ---------- cartões dos estados ---------- */
+.rcu-strip-w{ margin-top:14px }
+/* mesma legenda de secção do resto do Recado (.rc-sec) e do sistema (.group-header) */
+.rcu-strip-h{ padding:0 20px 8px; font-size:var(--t-cap1); font-weight:700; text-transform:uppercase; letter-spacing:.5px; color:var(--label2) }
+.rcu-strip-h:empty{ display:none }
+.rcu-strip{ display:flex; gap:10px; overflow-x:auto; overflow-y:hidden; padding:0 16px 4px; scrollbar-width:none }
+.rcu-strip::-webkit-scrollbar{ display:none }
+.rcu-card{ position:relative; flex:none; width:102px; height:164px; border-radius:18px; overflow:hidden; background:var(--gray5); cursor:pointer; transition:transform var(--motion-fast) var(--curve) }
+.rcu-card:active{ transform:scale(.96) }
+.rcu-card-bg{ position:absolute; inset:0; background-size:cover; background-position:center; display:flex; align-items:center; justify-content:center; background-color:#1F2937 }
+.rcu-card-shade{ position:absolute; inset:0; background:linear-gradient(180deg,rgba(0,0,0,.28) 0%,rgba(0,0,0,0) 34%,rgba(0,0,0,0) 58%,rgba(0,0,0,.55) 100%) }
+.rcu-card-av{ position:absolute; left:8px; top:8px }
+.rcu-card-av .rcu-ring-in{ background:#fff }
+.rcu-card-n{ position:absolute; left:9px; right:9px; bottom:9px; color:#fff; font-size:var(--t-cap2); font-weight:600; line-height:1.2; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden }
+.rcu-card.seen .rcu-card-bg{ opacity:.78 }
+.rcu-card-at{ position:absolute; right:8px; top:10px; width:22px; height:22px; border-radius:11px; background:#fff; color:var(--rcu-a); display:flex; align-items:center; justify-content:center }
+.rcu-card-at svg{ width:13px; height:13px; stroke-width:2.6 }
+.rcu-thumb-t{ padding:10px 8px; color:#fff; font-size:11px; line-height:1.25; text-align:center; display:-webkit-box; -webkit-line-clamp:5; -webkit-box-orient:vertical; overflow:hidden; word-break:break-word }
+.rcu-card .rcu-thumb-t{ -webkit-line-clamp:4; margin:18px 0 34px; padding:0 9px }
+.rcu-thumb-i{ color:#fff; display:flex }
+.rcu-thumb-i svg{ width:34px; height:34px }
+.rcu-thumb-s{ width:64px; height:64px }
+.rcu-thumb-s .rcu-stk-emo{ font-size:44px }
+.rcu-muted-t{ display:flex; align-items:center; justify-content:space-between; margin:14px 16px 0; padding:10px 14px; border-radius:14px; background:var(--bg2); color:var(--label2); font-size:var(--t-subhead); cursor:pointer }
+.rcu-muted-t svg{ width:16px; height:16px }
+
+/* ---------- linhas de canais ---------- */
+.rcu-chlist{ margin:0 16px; border-radius:18px; background:var(--bg2); overflow:hidden }
+.rcu-chrow{ position:relative; display:flex; align-items:center; gap:12px; padding:11px 14px; cursor:pointer }
+.rcu-chrow + .rcu-chrow::before{ content:''; position:absolute; left:74px; right:0; top:0; height:.5px; background:var(--sep) }
+.rcu-chrow:active{ background:var(--fill4) }
+.rcu-chrow-av{ width:48px; height:48px; flex:none }
+.rcu-chrow-av .rcu-av{ border-radius:30%; font-size:17px }
+.rcu-chrow-b{ flex:1; min-width:0 }
+.rcu-chrow-n{ display:flex; align-items:center; min-width:0 }
+.rcu-chrow-n b{ font-size:var(--t-body); font-weight:600; color:var(--label); white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+.rcu-chrow-p{ margin-top:2px; font-size:var(--t-foot); color:var(--label2); white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+.rcu-chrow-r{ display:flex; flex-direction:column; align-items:flex-end; gap:5px; flex:none }
+.rcu-chrow-r .t{ font-size:var(--t-cap2); color:var(--label2) }
+.rcu-chrow.dir .rcu-chrow-r{ display:none }
+.rcu-sug .rcu-sgc{ flex:none; width:132px; padding:14px 10px 12px; border-radius:18px; background:var(--bg2); display:flex; flex-direction:column; align-items:center; gap:3px; text-align:center; cursor:pointer; box-sizing:border-box }
+.rcu-sgc-av{ width:60px; height:60px; margin-bottom:6px }
+.rcu-sgc-av .rcu-av{ border-radius:30%; font-size:21px }
+.rcu-sgc b{ font-size:var(--t-foot); font-weight:600; color:var(--label); max-width:100%; display:flex; align-items:center; justify-content:center; min-width:0 }
+/* o ellipsis tem de viver no filho: num contentor flex o text-overflow não se aplica */
+.rcu-sgc-nm{ min-width:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+.rcu-sgc > span{ font-size:12px; color:var(--label2); margin-bottom:8px }
+.rcu-acts{ display:flex; gap:10px; margin:14px 16px 0 }
+.rcu-act{ flex:1; display:flex; align-items:center; justify-content:center; gap:8px; height:46px; border-radius:14px; background:var(--rcu-soft); color:var(--rcu-ink); font-size:var(--t-subhead); font-weight:600; cursor:pointer }
+.rcu-act svg{ width:18px; height:18px }
+.rcu-act:active{ transform:scale(.97) }
+
+/* ---------- autocolantes ---------- */
+.rcu-stk{ display:flex; align-items:center; justify-content:center }
+.rcu-stk-emo{ font-size:120px; line-height:1; font-family:'Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',sans-serif }
+.rcu-stkgrid{ padding:6px 14px 20px }
+.rcu-stkgrid-h{ margin:12px 4px 8px; font-size:var(--t-cap1); font-weight:700; text-transform:uppercase; letter-spacing:.5px; color:var(--label2) }
+.rcu-stkgrid-g{ display:grid; grid-template-columns:repeat(4,1fr); gap:8px }
+.rcu-stkgrid-c{ height:86px; border-radius:16px; background:var(--fill4); cursor:pointer }
+.rcu-stkgrid-c .rcu-stk-emo{ font-size:46px }
+.rcu-stkgrid-c:active{ transform:scale(.94) }
+
+/* ---------- seletor de contactos e privacidade ---------- */
+.rcu-pick-n{ padding:8px 20px 2px; font-size:var(--t-cap2); color:var(--label2) }
+.rcu-priv-h{ padding:14px 20px 4px; font-size:var(--t-foot); color:var(--label2) }
+.rcu-priv-f{ padding:0 20px 20px; font-size:var(--t-cap2); line-height:1.4; color:var(--label2) }
+.rcu-li-av{ background:transparent !important; overflow:visible }
+.rcu-li-av .rcu-av{ width:36px; height:36px; font-size:13px }
+
+/* ---------- leitor de áudio compacto ---------- */
+.rcu-ap{ display:flex; align-items:center; gap:10px; min-width:220px; padding:4px 2px }
+.rcu-ap-btn{ position:relative; width:38px; height:38px; flex:none; border-radius:50%; background:var(--rcu-grad); color:#fff; display:flex; align-items:center; justify-content:center; cursor:pointer }
+.rcu-ap-btn svg{ width:18px; height:18px; fill:currentColor }
+.rcu-ap-btn svg + svg{ display:none }
+.rcu-ap.is-playing .rcu-ap-btn svg:first-child{ display:none }
+.rcu-ap.is-playing .rcu-ap-btn svg + svg{ display:block }
+.rcu-ap.is-loading .rcu-ap-btn svg{ opacity:0 }
+.rcu-ap.is-loading .rcu-spin{ display:block; position:absolute }
+.rcu-ap-w{ position:relative; flex:1; height:30px; overflow:hidden }
+.rcu-ap-bars{ position:absolute; inset:0; display:flex; align-items:center; gap:2px }
+.rcu-ap-bars i{ flex:1; height:100%; border-radius:2px; background:var(--label3); transform-origin:50% 50% }
+.rcu-ap-rev{ position:absolute; inset:0; overflow:hidden }
+.rcu-ap-rev .rcu-ap-bars i{ background:var(--rcu-a) }
+.rcu-ap-t{ flex:none; min-width:38px; font-size:var(--t-cap2); color:var(--label2); font-variant-numeric:tabular-nums }
+.rcu-ap.is-error .rcu-ap-t{ color:var(--red) }
+.rcu-ap.big{ width:300px; padding:12px 16px; border-radius:30px; background:rgba(0,0,0,.28) }
+.rcu-ap.big .rcu-ap-btn{ width:48px; height:48px; background:#fff; color:#111827 }
+.rcu-ap.big .rcu-ap-bars i{ background:rgba(255,255,255,.4) }
+.rcu-ap.big .rcu-ap-rev .rcu-ap-bars i{ background:#fff }
+.rcu-ap.big .rcu-ap-t{ color:#fff }
+
+/* ============================================================
+   VISUALIZADOR (ecrã inteiro)
+   ============================================================ */
+.rcu-viewer{ position:absolute; inset:0; z-index:230; border-radius:57px; overflow:hidden; background:#000; color:#fff; opacity:0; transform:scale(.96); transition:opacity .22s var(--curve), transform .26s var(--curve); touch-action:none; user-select:none }
+.rcu-viewer.in{ opacity:1; transform:none }
+.rcu-v-stage{ position:absolute; inset:0; display:flex; align-items:center; justify-content:center }
+.rcu-v-text{ max-width:360px; padding:0 34px; text-align:center; color:#fff; line-height:1.22; white-space:pre-wrap; word-break:break-word; text-shadow:0 1px 12px rgba(0,0,0,.18) }
+.rcu-v-text.s-xl{ font-size:40px } .rcu-v-text.s-lg{ font-size:32px } .rcu-v-text.s-md{ font-size:25px } .rcu-v-text.s-sm{ font-size:19px }
+.rcu-v-img{ position:absolute; inset:0; background-size:contain; background-position:center; background-repeat:no-repeat }
+.rcu-v-img.rcu-loading::after{ content:''; position:absolute; left:50%; top:50%; width:32px; height:32px; margin:-16px 0 0 -16px; border-radius:50%; border:3px solid rgba(255,255,255,.25); border-top-color:#fff; animation:rcuSpin .8s linear infinite }
+.rcu-v-audio{ display:flex; flex-direction:column; align-items:center; gap:28px }
+.rcu-v-mic{ width:118px; height:118px; border-radius:50%; background:rgba(255,255,255,.16); display:flex; align-items:center; justify-content:center; color:#fff }
+.rcu-v-stk{ width:260px; height:260px }
+.rcu-v-stk .rcu-stk-emo{ font-size:170px }
+.rcu-v-top{ position:absolute; left:0; right:0; top:0; z-index:4; padding:calc(var(--statusbar-h) - 8px) 12px 30px; background:linear-gradient(180deg,rgba(0,0,0,.45),rgba(0,0,0,0)) }
+.rcu-v-bars{ display:flex; gap:4px; padding:0 6px }
+.rcu-v-bar{ flex:1; height:3px; border-radius:2px; background:rgba(255,255,255,.35); overflow:hidden }
+.rcu-v-bar i{ display:block; width:100%; height:100%; background:#fff; transform-origin:0 50%; transform:scaleX(0) }
+.rcu-v-head{ display:flex; align-items:center; gap:10px; margin-top:10px }
+.rcu-v-x,.rcu-v-more{ width:40px; height:40px; display:flex; align-items:center; justify-content:center; cursor:pointer; flex:none }
+.rcu-v-av{ width:40px; height:40px; flex:none }
+.rcu-v-av .rcu-av{ font-size:14px }
+.rcu-v-who{ flex:1; min-width:0; display:flex; flex-direction:column }
+.rcu-v-who b{ font-size:var(--t-callout); font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+.rcu-v-who span{ font-size:var(--t-cap2); opacity:.8 }
+.rcu-v-cap{ position:absolute; left:0; right:0; bottom:128px; z-index:3; padding:14px 26px; text-align:center; font-size:var(--t-body); line-height:1.35; color:#fff; background:rgba(0,0,0,.42); opacity:0; transition:opacity .2s }
+.rcu-v-cap.on{ opacity:1 }
+.rcu-v-foot{ position:absolute; left:0; right:0; bottom:0; z-index:5; padding:16px 16px calc(var(--safe-bottom) + 18px); background:linear-gradient(0deg,rgba(0,0,0,.5),rgba(0,0,0,0)); display:flex; flex-direction:column; gap:10px }
+.rcu-v-reply{ display:flex; align-items:center; gap:10px }
+.rcu-v-reply input{ flex:1; min-width:0; height:46px; padding:0 18px; border-radius:23px; border:1.5px solid rgba(255,255,255,.55); background:rgba(0,0,0,.22); color:#fff; font:inherit; font-size:var(--t-body); outline:none }
+.rcu-v-reply input::placeholder{ color:rgba(255,255,255,.8) }
+.rcu-v-send{ display:none; width:46px; height:46px; border-radius:50%; background:var(--rcu-grad); color:#fff; align-items:center; justify-content:center; cursor:pointer; flex:none }
+.rcu-v-send.busy{ opacity:.5 }
+.rcu-v-reply.typing .rcu-v-send{ display:flex }
+.rcu-v-reply.typing .rcu-v-like{ display:none }
+.rcu-v-like{ width:46px; height:46px; display:flex; align-items:center; justify-content:center; color:#fff; cursor:pointer; flex:none }
+.rcu-v-like.on{ color:var(--pink) }
+.rcu-v-like.on svg{ fill:currentColor }
+.rcu-v-like.pop{ animation:rcuPop .34s var(--spring) }
+@keyframes rcuPop{ 40%{ transform:scale(1.28) } 100%{ transform:scale(1) } }
+.rcu-v-views{ align-self:center; display:flex; align-items:center; gap:8px; padding:10px 18px; border-radius:22px; background:rgba(0,0,0,.35); font-size:var(--t-subhead); font-weight:600; cursor:pointer }
+.rcu-v-reshare{ align-self:center; display:flex; align-items:center; gap:6px; padding:8px 14px; border-radius:18px; background:#fff; color:#065F46; font-size:var(--t-foot); font-weight:600; cursor:pointer }
+.rcu-v-reshare.busy{ opacity:.6 }
+.rcu-v-pause{ position:absolute; left:50%; top:50%; z-index:6; width:76px; height:76px; margin:-38px 0 0 -38px; border-radius:50%; background:rgba(0,0,0,.42); display:flex; align-items:center; justify-content:center; opacity:0; transform:scale(.8); transition:opacity .15s, transform .15s; pointer-events:none }
+.rcu-v-pause svg{ fill:#fff }
+.rcu-viewer.is-paused .rcu-v-pause{ opacity:1; transform:none }
+.rcu-viewer.is-paused .rcu-v-top,.rcu-viewer.is-paused .rcu-v-foot{ opacity:.35; transition:opacity .15s }
+.rcu-viewers-h{ padding:12px 20px 0; font-size:var(--t-cap2); color:var(--label2) }
+.rcu-liked{ color:var(--pink); display:flex }
+.rcu-liked svg{ fill:currentColor }
+
+/* ============================================================
+   COMPOSITOR DE ESTADO
+   ============================================================ */
+.rcu-comp{ position:absolute; inset:0; z-index:235; border-radius:57px; overflow:hidden; color:#fff; opacity:0; transform:translateY(24px); transition:opacity .24s var(--curve), transform .3s var(--curve) }
+.rcu-comp.in{ opacity:1; transform:none }
+.rcu-comp[data-mode="photo"]{ background:#05060A }
+.rcu-c-stage{ position:absolute; inset:0; display:flex; align-items:center; justify-content:center }
+.rcu-c-top{ position:absolute; left:0; right:0; top:calc(var(--statusbar-h) + 2px); z-index:4; display:flex; align-items:center; gap:8px; padding:0 16px }
+.rcu-c-sp{ flex:1 }
+.rcu-c-b{ width:44px; height:44px; border-radius:22px; background:rgba(0,0,0,.28); display:flex; align-items:center; justify-content:center; cursor:pointer; flex:none }
+.rcu-c-b:active{ transform:scale(.92) }
+.rcu-c-b.font span{ font-size:19px; font-weight:700 }
+.rcu-c-b.pal i{ width:22px; height:22px; border-radius:50%; border:2.5px solid #fff; box-sizing:border-box }
+.rcu-c-ta{ width:360px; height:420px; padding:0 20px; border:0; outline:none; resize:none; background:transparent; color:#fff; text-align:center; line-height:1.22; caret-color:#fff; display:flex }
+.rcu-c-ta::placeholder{ color:rgba(255,255,255,.62) }
+.rcu-c-ta.s-xl{ font-size:40px; padding-top:150px } .rcu-c-ta.s-lg{ font-size:32px; padding-top:120px } .rcu-c-ta.s-md{ font-size:25px; padding-top:80px } .rcu-c-ta.s-sm{ font-size:19px; padding-top:40px }
+.rcu-c-img{ position:absolute; inset:0; background-size:contain; background-position:center; background-repeat:no-repeat }
+.rcu-c-change{ position:absolute; left:50%; top:calc(var(--statusbar-h) + 62px); transform:translateX(-50%); z-index:3; display:flex; align-items:center; gap:6px; padding:8px 14px; border-radius:18px; background:rgba(0,0,0,.45); font-size:var(--t-foot); cursor:pointer }
+.rcu-c-pick{ display:flex; flex-wrap:wrap; justify-content:center; gap:14px; max-width:320px }
+.rcu-c-pick p{ width:100%; margin:8px 0 0; text-align:center; font-size:var(--t-subhead); color:rgba(255,255,255,.72) }
+.rcu-c-pbtn{ width:140px; height:128px; border-radius:24px; background:rgba(255,255,255,.1); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px; font-size:var(--t-subhead); font-weight:600; cursor:pointer }
+.rcu-c-pbtn:active{ transform:scale(.96) }
+.rcu-c-pick .rcu-c-pbtn.gal{ background:linear-gradient(150deg,rgba(18,140,126,.5),rgba(37,211,102,.35)) }
+.rcu-c-voice{ display:flex; flex-direction:column; align-items:center; gap:10px; max-width:330px; text-align:center }
+.rcu-c-voice b{ font-size:var(--t-title2); font-weight:700 }
+.rcu-c-voice p{ margin:0 0 6px; font-size:var(--t-subhead); line-height:1.4; color:rgba(255,255,255,.8) }
+.rcu-c-mic{ width:128px; height:128px; border-radius:50%; background:rgba(255,255,255,.2); display:flex; align-items:center; justify-content:center; cursor:pointer; transition:transform .15s }
+.rcu-c-mic:active{ transform:scale(.94) }
+.rcu-c-voice.off .rcu-c-mic{ opacity:.45; cursor:default }
+.rcu-c-voice.recording .rcu-c-mic{ display:none }
+.rcu-c-rec{ width:360px }
+.rcu-c-rec .vmsg-rec{ background:rgba(0,0,0,.35); border-radius:28px; color:#fff }
+.rcu-c-stkbox{ display:flex; align-items:center; justify-content:center; cursor:pointer }
+.rcu-c-stk{ width:260px; height:260px }
+.rcu-c-stk .rcu-stk-emo{ font-size:170px }
+.rcu-c-cap{ position:absolute; left:16px; right:16px; bottom:calc(var(--safe-bottom) + 130px); z-index:4; display:none }
+.rcu-comp.has-cap .rcu-c-cap{ display:block }
+.rcu-c-cap input{ width:100%; height:46px; padding:0 18px; box-sizing:border-box; border-radius:23px; border:0; outline:none; background:rgba(255,255,255,.14); color:#fff; font:inherit; font-size:var(--t-body) }
+.rcu-c-cap input::placeholder{ color:rgba(255,255,255,.7) }
+.rcu-c-bot{ position:absolute; left:16px; right:16px; bottom:calc(var(--safe-bottom) + 62px); z-index:4; display:flex; align-items:center; gap:8px }
+.rcu-c-chip{ display:flex; align-items:center; gap:6px; height:38px; padding:0 12px; border-radius:19px; background:rgba(0,0,0,.32); font-size:var(--t-foot); font-weight:600; cursor:pointer; min-width:0 }
+.rcu-c-chip span{ white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:150px }
+.rcu-c-chip.ment.on{ background:#fff; color:#065F46 }
+.rcu-c-chip svg{ flex:none }
+.rcu-c-send{ position:relative; margin-left:auto; width:56px; height:56px; border-radius:50%; background:#fff; color:#065F46; display:flex; align-items:center; justify-content:center; cursor:pointer; flex:none; transition:opacity .15s, transform .15s }
+.rcu-c-send:active{ transform:scale(.92) }
+.rcu-c-send.off{ opacity:.55 }
+.rcu-c-send .rcu-spin{ position:absolute; border-color:rgba(55,48,163,.25); border-top-color:#065F46 }
+.rcu-c-send.busy svg{ opacity:0 }
+.rcu-c-send.busy .rcu-spin{ display:block }
+.rcu-c-modes{ position:absolute; left:0; right:0; bottom:calc(var(--safe-bottom) + 12px); z-index:4; display:flex; justify-content:center; gap:6px }
+.rcu-c-modes span{ padding:7px 13px; border-radius:16px; font-size:var(--t-foot); font-weight:600; color:rgba(255,255,255,.72); cursor:pointer }
+.rcu-c-modes span.on{ background:rgba(255,255,255,.22); color:#fff }
+
+/* ---------- câmara ---------- */
+.rcu-cam{ position:absolute; inset:0; z-index:240; overflow:hidden; border-radius:57px; background:#000; color:#fff; opacity:0; transition:opacity .2s var(--ease) }
+.rcu-cam.in{ opacity:1 }
+.rcu-cam-view{ position:absolute; inset:0 }
+.rcu-cam-view .cam-app.cam-bare{ z-index:1 }
+.rcu-cam-view .cam-bare .viewfinder .cam-gl{ top:0; transform:none; height:100%; max-height:none; object-fit:cover }
+.rcu-cam-still{ position:absolute; inset:0; z-index:3; display:none; background-color:#000; background-size:cover; background-position:center }
+.rcu-cam.shot .rcu-cam-still{ display:block }
+.rcu-cam-top{ position:absolute; top:calc(var(--statusbar-h) + 4px); left:14px; right:14px; z-index:6; display:flex; align-items:center; gap:8px }
+.rcu-cam-ttl{ flex:1; min-width:0; text-align:center; font-size:var(--t-callout); font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+.rcu-cam-b{ flex:none; width:42px; height:42px; display:flex; align-items:center; justify-content:center; border-radius:21px; background:rgba(0,0,0,.4); cursor:pointer }
+.rcu-cam-b.off{ opacity:.55 }
+.rcu-cam.shot .rcu-cam-b.fl{ visibility:hidden }
+.rcu-cam-bot{ position:absolute; left:0; right:0; bottom:calc(var(--safe-bottom) + 18px); z-index:6; height:86px; display:flex; align-items:center; justify-content:center }
+.rcu-cam-shut{ width:86px; height:86px; display:flex; align-items:center; justify-content:center; border-radius:43px; border:5px solid #fff; box-sizing:border-box; cursor:pointer }
+.rcu-cam-shut > div{ width:66px; height:66px; border-radius:33px; background:#fff; transition:transform .12s var(--ease) }
+.rcu-cam-shut:active > div{ transform:scale(.88) }
+.rcu-cam-flip{ position:absolute; right:32px; width:46px; height:46px; display:flex; align-items:center; justify-content:center; border-radius:23px; background:rgba(0,0,0,.4); cursor:pointer }
+.rcu-cam-retake{ position:absolute; left:28px; display:none; padding:10px 14px; border-radius:20px; background:rgba(0,0,0,.45); font-size:var(--t-body); font-weight:500; cursor:pointer }
+.rcu-cam-use{ position:absolute; right:28px; display:none; width:58px; height:58px; align-items:center; justify-content:center; border-radius:50%; background:var(--rcu-grad); cursor:pointer }
+.rcu-cam-use svg{ width:28px; height:28px; stroke-width:3 }
+.rcu-cam.shot .rcu-cam-shut,.rcu-cam.shot .rcu-cam-flip{ display:none }
+.rcu-cam.shot .rcu-cam-retake{ display:block }
+.rcu-cam.shot .rcu-cam-use{ display:flex }
+
+/* ============================================================
+   CANAL (vista de difusão)
+   ============================================================ */
+.rcu-chv .content{ background:var(--bg); padding-bottom:calc(var(--safe-bottom) + 96px) }
+.rcu-chv .navbar{ background:var(--bg2); box-shadow:0 .5px 0 var(--sep) }
+body.fivem .rcu-chv .navbar{ backdrop-filter:none; -webkit-backdrop-filter:none }
+.rcu-chv .nb-title{ opacity:1; pointer-events:auto; max-width:260px; overflow:visible }
+.rcu-chv-head{ display:flex; align-items:center; gap:9px; cursor:pointer }
+.rcu-chv-av{ width:34px; height:34px; flex:none }
+.rcu-chv-av .rcu-av{ border-radius:30%; font-size:13px }
+.rcu-chv-t{ display:flex; flex-direction:column; align-items:flex-start; min-width:0; line-height:1.15 }
+.rcu-chv-t b{ font-size:var(--t-subhead); font-weight:600; max-width:180px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+.rcu-chv-n{ display:flex; align-items:center; min-width:0 }
+.rcu-chv-t span{ font-size:12px; font-weight:400; color:var(--label2) }
+.rcu-feed{ display:flex; flex-direction:column; gap:2px; padding:10px 0 6px }
+.rcu-older{ align-self:center; margin:6px 0 10px; padding:8px 14px; border-radius:16px; background:var(--bg2); color:var(--rcu-ink); font-size:var(--t-foot); font-weight:600; cursor:pointer }
+.rcu-day{ display:flex; justify-content:center; margin:10px 0 8px }
+.rcu-day span{ padding:4px 12px; border-radius:12px; background:var(--bg2); color:var(--label2); font-size:12px; font-weight:600; box-shadow:0 1px 2px rgba(0,0,0,.05) }
+.rcu-post{ position:relative; display:flex; flex-wrap:wrap; align-items:flex-end; gap:6px; padding:3px 16px }
+.rcu-post-card{ max-width:330px; min-width:120px; padding:10px 12px 6px; border-radius:6px 20px 20px 20px; background:var(--bg2); color:var(--label); box-shadow:0 1px 2px rgba(0,0,0,.06) }
+.rcu-post-card.has-img{ padding:4px 4px 6px; width:300px }
+.rcu-post-card.is-stk{ background:transparent; box-shadow:none; padding:0 }
+.rcu-post-body{ display:flex; flex-direction:column; gap:6px }
+.rcu-post-txt{ font-size:var(--t-body); line-height:1.36; white-space:pre-wrap; word-break:break-word }
+.rcu-post-card.has-img .rcu-post-txt{ padding:2px 8px 0 }
+/* foto do canal: quadrada e INTEIRA (contain), como o Marketplace e o Onion - a caixa de 300 px de
+   altura com `cover` cortava as fotos verticais e as panorâmicas pelo meio */
+/* `cover` e não `contain`: isto é a foto de uma publicação num feed, não a foto de um anúncio. Com
+   `contain` as fotos que não são quadradas ficavam com faixas cinzentas dos dois lados. O quadrado
+   sem cortar é para os anúncios do Onion e do Marketplace, onde é preciso ver a peça inteira. */
+.rcu-post-img{ width:100%; max-width:100%; aspect-ratio:1 / 1; border-radius:16px; background-color:var(--fill4); background-size:cover; background-repeat:no-repeat; background-position:center; cursor:zoom-in }
+.rcu-post-stk{ width:150px; height:150px }
+.rcu-post-stk .rcu-stk-emo{ font-size:104px }
+.rcu-post-meta{ display:flex; justify-content:flex-end; margin-top:3px }
+.rcu-post-meta .t{ font-size:11px; color:var(--label2) }
+.rcu-post-card.has-img .rcu-post-meta{ padding-right:8px }
+.rcu-post-side{ width:32px; height:32px; border-radius:16px; background:var(--bg2); color:var(--label2); display:flex; align-items:center; justify-content:center; cursor:pointer; flex:none; margin-bottom:2px }
+.rcu-post-side:active{ transform:scale(.9) }
+.rcu-post-reacts{ flex-basis:100%; display:flex; gap:4px; margin:-8px 0 4px 8px; position:relative; z-index:1 }
+.rcu-post-reacts span{ display:flex; align-items:center; gap:3px; height:26px; padding:0 8px; border-radius:13px; background:var(--bg2); border:1.5px solid var(--bg); font-size:var(--t-foot); cursor:pointer }
+.rcu-post-reacts span em{ font-style:normal; font-size:12px; font-weight:600; color:var(--label2) }
+.rcu-post-reacts span.mine{ background:var(--rcu-soft) }
+.rcu-post-reacts span.mine em{ color:var(--rcu-ink) }
+/* sondagem */
+.rcu-poll{ width:290px; max-width:100%; display:flex; flex-direction:column; gap:6px }
+.rcu-poll-q{ font-size:var(--t-body); font-weight:600; line-height:1.3 }
+.rcu-poll-s{ font-size:12px; color:var(--label2); margin-bottom:2px }
+.rcu-poll-opt{ display:flex; align-items:center; gap:10px; padding:6px 0; cursor:pointer }
+.rcu-poll-c{ width:22px; height:22px; border-radius:50%; border:2px solid var(--label3); display:flex; align-items:center; justify-content:center; color:transparent; flex:none; box-sizing:border-box }
+.rcu-poll-opt.on .rcu-poll-c{ background:var(--rcu-grad); border-color:transparent; color:#fff }
+.rcu-poll-c svg{ width:12px; height:12px; stroke-width:3.4 }
+.rcu-poll-m{ flex:1; min-width:0 }
+.rcu-poll-l{ display:flex; justify-content:space-between; gap:8px; font-size:var(--t-subhead) }
+.rcu-poll-l em{ font-style:normal; color:var(--label2); font-size:var(--t-cap2); font-variant-numeric:tabular-nums }
+.rcu-poll-bar{ margin-top:6px; height:6px; border-radius:3px; background:var(--fill3); overflow:hidden }
+.rcu-poll-bar i{ display:block; height:100%; border-radius:3px; background:var(--rcu-grad); transform-origin:0 50%; transition:transform .35s var(--curve) }
+.rcu-poll-f{ margin-top:2px; font-size:12px; color:var(--label2) }
+/* reações */
+.rcu-react-shield{ position:absolute; inset:0; z-index:260 }
+.rcu-react-pop{ position:absolute; left:16px; right:16px; z-index:261; display:flex; flex-direction:column; align-items:flex-start; gap:6px; opacity:0; transform:translateY(8px) scale(.96); transition:opacity .16s, transform .2s var(--spring); pointer-events:none }
+.rcu-react-pop.in{ opacity:1; transform:none; pointer-events:auto }
+.rcu-react-row{ display:flex; gap:2px; padding:6px 8px; border-radius:28px; background:var(--bg2); box-shadow:0 10px 30px rgba(0,0,0,.18) }
+.rcu-react-row span{ width:42px; height:42px; display:flex; align-items:center; justify-content:center; border-radius:21px; font-size:27px; cursor:pointer; transition:transform .12s }
+.rcu-react-row span:active{ transform:scale(1.25) }
+.rcu-react-row span.on{ background:var(--rcu-soft) }
+.rcu-react-del{ display:flex; align-items:center; gap:8px; padding:10px 14px; border-radius:16px; background:var(--bg2); color:var(--red); font-size:var(--t-subhead); box-shadow:0 10px 30px rgba(0,0,0,.15); cursor:pointer }
+/* barras de baixo */
+.rcu-chv-bar{ position:absolute; left:0; right:0; bottom:0; z-index:6; padding:8px 12px calc(var(--safe-bottom) + 8px); background:var(--bg2); box-shadow:0 -.5px 0 var(--sep) }
+.rcu-cbar{ display:flex; align-items:flex-end; gap:8px }
+.rcu-chv-bar.recording .rcu-cbar{ display:none }
+.rcu-cbar-b{ width:40px; height:40px; border-radius:20px; display:flex; align-items:center; justify-content:center; color:var(--rcu-ink); cursor:pointer; flex:none }
+/* sem transition de background: no CEF só transform/opacity animam (repintar a cor a cada frame custa) */
+.rcu-cbar-b.send{ background:var(--fill3); color:var(--label3) }
+.rcu-cbar-b.send.on{ background:var(--rcu-grad); color:#fff }
+.rcu-cbar-b.busy{ opacity:.5 }
+.rcu-cbar-in{ flex:1; min-width:0; padding:8px 14px; border-radius:20px; background:var(--fill4); border:.5px solid var(--sep) }
+.rcu-cbar-in textarea{ width:100%; border:0; outline:none; resize:none; background:transparent; color:var(--label); font:inherit; font-size:var(--t-body); line-height:1.3; height:24px; max-height:120px; display:block }
+.rcu-cbar-rec .vmsg-rec{ margin:0 }
+.rcu-fbar{ display:flex; justify-content:center }
+.rcu-fbar .rcu-btn.wide{ flex:1; margin:0 }
+.rcu-fbar-b{ display:flex; align-items:center; gap:8px; height:44px; padding:0 18px; border-radius:22px; background:var(--fill4); color:var(--label2); font-size:var(--t-subhead); font-weight:600; cursor:pointer }
+.rcu-fbar-b.on{ background:var(--rcu-soft); color:var(--rcu-ink) }
+.rcu-chv-empty{ margin:60px 40px 0; display:flex; flex-direction:column; align-items:center; text-align:center; gap:8px }
+.ui-isempty > .rcu-chv-empty{ margin-top:0 }   /* canal sem publicacoes: ao centro do espaco livre (UI.emptyFit) */
+.rcu-chv-empty-av{ width:88px; height:88px; margin-bottom:6px }
+.rcu-chv-empty-av .rcu-av{ border-radius:30%; font-size:30px }
+.rcu-chv-empty b{ font-size:var(--t-title3); font-weight:700; color:var(--label) }
+.rcu-chv-empty p{ margin:0; font-size:var(--t-subhead); line-height:1.4; color:var(--label2) }
+
+/* ---------- formulários, sondagem, visualizador de imagem ---------- */
+.rcu-field{ margin:8px 16px; padding:10px 14px; border-radius:14px; background:var(--bg2) }
+.rcu-field label{ display:block; margin-bottom:4px; font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.3px; color:var(--label2) }
+.rcu-field input,.rcu-field textarea{ width:100%; border:0; outline:none; background:transparent; color:var(--label); font:inherit; font-size:var(--t-body); resize:none; padding:0 }
+.rcu-lbl{ display:block; margin:14px 20px 0; font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.3px; color:var(--label2) }
+.rcu-pollc{ padding:6px 0 24px }
+.rcu-pollc-opts .rcu-field{ padding:12px 14px }
+.rcu-pollc-add{ display:flex; align-items:center; gap:8px; margin:6px 20px 8px; color:var(--rcu-ink); font-size:var(--t-subhead); font-weight:600; cursor:pointer }
+.rcu-imgview{ position:absolute; inset:0; z-index:270; border-radius:57px; overflow:hidden; background:#000; opacity:0; transition:opacity .2s }
+.rcu-imgview.in{ opacity:1 }
+.rcu-imgview-i{ position:absolute; inset:0; background-size:contain; background-position:center; background-repeat:no-repeat }
+.rcu-imgview-x{ position:absolute; top:calc(var(--statusbar-h) + 4px); left:16px; width:42px; height:42px; border-radius:21px; background:rgba(255,255,255,.16); color:#fff; display:flex; align-items:center; justify-content:center }
+.rcu-imgview-c{ position:absolute; left:0; right:0; bottom:0; padding:18px 24px calc(var(--safe-bottom) + 20px); color:#fff; font-size:var(--t-body); text-align:center; background:linear-gradient(0deg,rgba(0,0,0,.6),rgba(0,0,0,0)) }
+.rcu-imgview-c:empty{ display:none }
+
+/* ---------- informação (canal / comunidade) ---------- */
+.rcu-hero{ display:flex; flex-direction:column; align-items:center; text-align:center; margin:4px 16px 14px; padding:22px 18px 16px; border-radius:22px; background:var(--bg2) }
+.rcu-hero-av{ width:104px; height:104px; margin-bottom:10px }
+.rcu-hero-av .rcu-av{ border-radius:30%; font-size:38px }
+.rcu-hero-av.sq .rcu-av{ border-radius:28% }
+.rcu-hero h2{ margin:0; max-width:100%; display:flex; align-items:center; justify-content:center; font-size:var(--t-title2); font-weight:700; letter-spacing:-.3px; color:var(--label); word-break:break-word }
+.rcu-hero-s{ margin-top:3px; font-size:var(--t-foot); color:var(--label2) }
+.rcu-hero-d{ margin-top:10px; font-size:var(--t-subhead); line-height:1.4; color:var(--label); white-space:pre-wrap; word-break:break-word }
+.rcu-hero-d:empty{ display:none }
+.rcu-hero-acts{ display:flex; gap:8px; width:100%; margin-top:16px }
+.rcu-hact{ flex:1; display:flex; flex-direction:column; align-items:center; gap:4px; padding:10px 4px 8px; border-radius:14px; background:var(--rcu-soft); color:var(--rcu-ink); font-size:12px; font-weight:600; cursor:pointer }
+.rcu-hact:active{ transform:scale(.96) }
+.rcu-form .rcu-body{ padding-top:6px }
+.rcu-form-av{ display:flex; flex-direction:column; align-items:center; gap:8px; margin:6px 0 10px; cursor:pointer }
+.rcu-form-av span{ color:var(--rcu-ink); font-size:var(--t-subhead); font-weight:600 }
+.rcu-form-img{ width:104px; height:104px; border-radius:30%; background:var(--rcu-grad); background-size:cover; background-position:center; color:#fff; display:flex; align-items:center; justify-content:center }
+.rcu-form-av.sq .rcu-form-img{ border-radius:28% }
+.rcu-form.busy .rcu-btn.go{ opacity:.5; pointer-events:none }
+
+/* ============================================================
+   COMUNIDADES
+   ============================================================ */
+.rcu-cmhero{ display:flex; flex-direction:column; align-items:center; text-align:center; gap:6px; margin:6px 16px 16px; padding:18px 20px 20px; border-radius:22px; background:var(--bg2) }
+.rcu-cmhero-art .rcu-art{ width:170px; height:116px; display:block }
+.rcu-cmhero-t b{ display:block; font-size:var(--t-title3); font-weight:700; letter-spacing:-.2px; color:var(--label) }
+.rcu-cmhero-t p{ margin:6px 0 10px; font-size:var(--t-subhead); line-height:1.4; color:var(--label2) }
+.rcu-cmhero.compact{ flex-direction:row; text-align:left; gap:12px; padding:12px 14px }
+.rcu-cmhero.compact .rcu-cmhero-art .rcu-art{ width:64px; height:44px }
+.rcu-cmhero.compact .rcu-cmhero-t{ flex:1; min-width:0 }
+.rcu-cmhero.compact .rcu-cmhero-t b{ font-size:var(--t-subhead) }
+.rcu-cmhero.compact .rcu-cmhero-t p{ display:none }
+.rcu-cmhero.compact .rcu-btn{ height:34px; padding:0 12px; font-size:var(--t-foot) }
+.rcu-cm{ margin:0 16px 14px; border-radius:20px; background:var(--bg2); overflow:hidden }
+.rcu-cm.flat{ margin-bottom:12px }
+.rcu-cm-h{ display:flex; align-items:center; gap:12px; padding:14px; cursor:pointer; color:var(--label3) }
+.rcu-cm-h:active{ background:var(--fill4) }
+.rcu-cm-av{ width:52px; height:52px; flex:none }
+.rcu-cm-av .rcu-av{ font-size:19px }
+.rcu-cm-t{ flex:1; min-width:0; display:flex; flex-direction:column; gap:2px }
+.rcu-cm-t b{ font-size:var(--t-body); font-weight:700; color:var(--label); white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+.rcu-cm-t span{ font-size:var(--t-cap2); color:var(--label2) }
+.rcu-cm-sh{ padding:12px 16px 2px; font-size:var(--t-cap1); font-weight:700; text-transform:uppercase; letter-spacing:.5px; color:var(--label2) }
+.rcu-cm-row{ position:relative; display:flex; align-items:center; gap:12px; padding:10px 14px; cursor:pointer }
+.rcu-cm-row::before{ content:''; position:absolute; left:66px; right:0; top:0; height:.5px; background:var(--sep) }
+.rcu-cm.flat .rcu-cm-rows > .rcu-cm-row:first-child::before{ display:none }
+.rcu-cm-row:active{ background:var(--fill4) }
+.rcu-cm-ic{ width:40px; height:40px; border-radius:12px; background:var(--rcu-grad); color:#fff; display:flex; align-items:center; justify-content:center; flex:none }
+.rcu-cm-ic svg{ width:20px; height:20px }
+.rcu-cm-gav{ width:40px; height:40px; flex:none }
+.rcu-cm-gav .rcu-av{ font-size:14px }
+.rcu-cm-rb{ flex:1; min-width:0; display:flex; flex-direction:column; gap:1px }
+.rcu-cm-rb b{ font-size:var(--t-body); font-weight:600; color:var(--label); white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+.rcu-cm-rb span{ font-size:var(--t-foot); color:var(--label2); white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+.rcu-cm-rr{ display:flex; flex-direction:column; align-items:flex-end; gap:4px; flex:none }
+.rcu-cm-rr .t{ font-size:12px; color:var(--label2) }
+.rcu-cm-row.out b{ color:var(--label2) }
+.rcu-cm-row.out .rcu-cm-gav{ opacity:.6 }
+.rcu-cm-more{ position:relative; display:flex; align-items:center; gap:12px; padding:12px 14px 12px 26px; color:var(--rcu-ink); font-size:var(--t-subhead); font-weight:600; cursor:pointer }
+.rcu-cm-more::before{ content:''; position:absolute; left:66px; right:0; top:0; height:.5px; background:var(--sep) }
+.rcu-cm-more svg{ width:16px; height:16px }
+
+/* body.fivem: o CEF do jogo não tem desfoque - nada neste ficheiro usa backdrop-filter; a barra do
+   canal fica sólida (ver a regra do .rcu-chv .navbar lá em cima). As camadas de ecrã inteiro não têm
+   box-shadow nenhuma, por isso a regra que as apagava aqui foi retirada: não fazia nada. */
+
+/* Dobráveis: o estado, o ecrã de escrever um estado e a câmara são verticais e ficam numa coluna de 440 ao centro, com o resto a
+   preto (a sombra larga pinta as laterais), como nos tablets; a foto aberta (.rcu-imgview) usa o ecrã todo. No PearPhone Fold a
+   coluna é a de liquid27.css, ao centro da zona do conteúdo */
+body.form-fold .rcu-viewer,body.form-fold .rcu-comp,body.form-fold .rcu-cam{ left:calc(50% - 220px); right:calc(50% - 220px); border-radius:0; box-shadow:0 0 0 720px #000 }

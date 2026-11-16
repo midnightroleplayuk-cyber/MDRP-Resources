@@ -1,0 +1,536 @@
+/* ============================================================
+   NOVA UI 8.5 (Android): RECENTES, TECLADO, ASSISTENTE INICIAL, VERA,
+   PERMISSOES E AURICULARES. So atua com body.os-android: o PearOS nao muda.
+
+   Regras do CEF que valem aqui (ver motion.css):
+   · nada de backdrop-filter nem filter: o vidro e a copia pre-desfocada do
+     fundo (var(--wp-blur) no #screen) por baixo de uma camada translucida;
+   · so transform e opacity animam; nada de enfeites em loop;
+   · camadas de ecra inteiro herdam o raio do #screen (border-radius:inherit),
+     porque o CEF nem sempre recorta uma camada composta.
+   Prefixos: ars- (recentes), akb- (teclado), asu- (assistente), ave- (Vera),
+   aperm- (permissoes), abud- (auriculares).
+   ============================================================ */
+
+/* ============================================================
+   1. RECENTES (#switcher.ars)
+   ============================================================ */
+body.os-android #switcher{ --ars-nav:var(--nav-h,48px); border-radius:inherit; overflow:hidden; background:transparent; backdrop-filter:none; -webkit-backdrop-filter:none; transition:opacity .26s var(--ou-curve-out) }
+body.os-android[data-nav="gesture"] #switcher{ --ars-nav:0px }
+/* fundo: o wallpaper ja desfocado + um veu escuro (o mesmo no browser e no jogo) */
+body.os-android #switcher.ars::before,body.os-android.fivem #switcher.ars::before{ content:''; position:absolute; inset:0; z-index:-1; pointer-events:none; border-radius:inherit;
+  background:linear-gradient(rgba(8,9,12,.5),rgba(8,9,12,.5)), var(--wp-blur,#15161A) center/cover no-repeat }
+body.os-android #switcher .sw-track{ inset:var(--statusbar-h,48px) 0 calc(var(--ars-nav) + 78px) 0; gap:20px; padding:0 66px; scroll-padding:0 66px; align-items:center; transform:scale(.94); opacity:.4; transition:transform .42s var(--ou-curve-out), opacity .26s var(--ou-curve-out) }
+body.os-android #switcher.in .sw-track{ transform:none; opacity:1 }
+body.os-android #switcher.hand .sw-track{ transform:none; opacity:1; transition:none }
+body.os-android #switcher .sw-item{ position:relative; align-items:center; gap:14px; padding-top:0; transition:transform .4s var(--ou-curve-out), opacity .28s }
+body.os-android #switcher .sw-item.drag{ transition:none }
+body.os-android #switcher .sw-item.up{ transform:translateY(-120%)!important; opacity:0!important; transition:transform .34s var(--ou-curve), opacity .26s }
+body.os-android #switcher .sw-item.slide{ transform:translateX(-80px); opacity:0 }
+/* icone + nome ao centro, por cima do cartao; tocar abre o menu da app */
+body.os-android #switcher .sw-lbl{ width:auto; max-width:300px; justify-content:center; gap:8px; height:34px; padding:0 12px 0 4px; border-radius:999px; color:#fff; font-family:var(--font-display); font-size:15px; font-weight:600; letter-spacing:.1px; text-shadow:0 1px 3px rgba(0,0,0,.3); cursor:pointer; transition:background .15s, opacity .25s }
+body.os-android #switcher .sw-lbl:active{ background:rgba(255,255,255,.14) }
+body.os-android #switcher .sw-lbl .tile{ width:28px; height:28px; border-radius:30%; box-shadow:none; overflow:hidden }
+body.os-android #switcher .sw-lbl .tile svg{ width:100%; height:100%; display:block }
+body.os-android #switcher .ars-lock{ display:none; width:18px; height:18px; color:#fff; opacity:.9; flex:none }
+body.os-android #switcher .ars-lock svg{ width:16px; height:16px }
+body.os-android #switcher .sw-item.kept .ars-lock{ display:flex; align-items:center; justify-content:center }
+/* cartao: 70 % da largura, raio 28; a janela viva entra com zoom (nitido no CEF) e sem o raio do PearPhone */
+body.os-android #switcher .sw-card{ width:308px; height:calc(var(--ars-wh,956px) * .7); border-radius:28px; box-shadow:0 16px 38px rgba(0,0,0,.34); transition:transform .45s var(--ou-curve-out) }
+body.os-android #switcher .sw-card .app-window.in-card{ transform:none!important; zoom:.7; width:440px; height:var(--ars-wh,956px); border-radius:0!important }
+body.os-android #switcher .sw-ph{ background:var(--bg2) }
+body.os-android #switcher .sw-ph .tile{ width:84px; height:84px; border-radius:30% }
+body.os-android #switcher .sw-empty{ pointer-events:none; color:rgba(255,255,255,.84); font-family:var(--font-display); font-size:18px; font-weight:500; letter-spacing:.1px }
+/* "Fechar tudo": pilula em baixo ao centro */
+body.os-android #switcher .sw-all,body.os-android.fivem #switcher .sw-all{ bottom:calc(var(--ars-nav) + 22px); height:42px; padding:0 24px; border-radius:999px; background:rgba(255,255,255,.17); border:1px solid rgba(255,255,255,.16); box-shadow:none; backdrop-filter:none; -webkit-backdrop-filter:none;
+  color:#fff; font-family:var(--font-display); font-size:15px; font-weight:600; letter-spacing:.1px; transform:translateX(-50%); transition:background .15s, opacity .25s }
+body.os-android #switcher .sw-all:active{ background:rgba(255,255,255,.3); transform:translateX(-50%) }
+/* menu do icone (Informacoes da app / Manter aberta) */
+body.os-android .ars-menu{ position:absolute; left:50%; top:42px; z-index:4; min-width:220px; padding:6px 0; border-radius:24px; background:var(--ou-surface); color:var(--label);
+  box-shadow:0 10px 30px rgba(0,0,0,.28); opacity:0; transform:translate(-50%,-6px); transition:opacity .16s var(--ou-curve), transform .2s var(--ou-curve-out) }
+body.os-android .ars-menu.in{ opacity:1; transform:translate(-50%,0) }
+body.os-android .ars-mi{ min-height:48px; display:flex; align-items:center; padding:0 22px; font-size:16px; font-weight:400; white-space:nowrap; cursor:pointer; transition:background .12s }
+body.os-android .ars-mi:active{ background:var(--fill3) }
+body.os-android.dark .ars-menu{ background:var(--ou-surface2) }
+
+/* ============================================================
+   2. TECLADO NOVA (#kb.akb)
+   ============================================================ */
+body.os-android #kb.akb{ --akb-nav:var(--nav-h,48px); --akb-bg:#F0F0F2; --akb-key:#FFFFFF; --akb-fn:#E1E2E7; --akb-press:#D3D4DA; --akb-tx:#141416; --akb-tx2:#64646B; --akb-hint:#9A9AA2; --akb-tog:#C4C4CA;
+  position:absolute; left:0; right:0; bottom:var(--akb-nav); z-index:250; padding:0 0 8px; border-radius:0; background:var(--akb-bg); color:var(--akb-tx); box-shadow:0 -.5px 0 rgba(0,0,0,.08);
+  backdrop-filter:none; -webkit-backdrop-filter:none; font-family:'Inter',-apple-system,'Segoe UI',Roboto,sans-serif;
+  transform:translateY(calc(100% + var(--akb-nav))); visibility:hidden; transition:transform .3s var(--ou-curve-out), visibility .3s; user-select:none; touch-action:none }
+body.os-android.dark #kb.akb{ --akb-bg:#1E1E1E; --akb-key:#3A3A3C; --akb-fn:#2C2C2F; --akb-press:#515155; --akb-tx:#F2F2F4; --akb-tx2:#A3A3AA; --akb-hint:#86868D; --akb-tog:#5C5C62; background:var(--akb-bg); box-shadow:0 -.5px 0 rgba(255,255,255,.05) }
+/* sem barra de 3 botoes por baixo (modo gestos, assistente inicial, ecra bloqueado): o teclado desce ao fundo do ecra */
+body.os-android[data-nav="gesture"] #kb.akb,body.os-android #kb.akb.nonav{ --akb-nav:0px; padding-bottom:24px; border-bottom-left-radius:inherit; border-bottom-right-radius:inherit }
+body.os-android #kb.akb.in{ transform:none; visibility:visible }
+/* no assistente inicial (#setup, z 300) o teclado tem de ficar por cima dele; ali a barra de navegacao nao aparece */
+body.os-android .screen.setup-mode #kb.akb{ z-index:310 }
+/* barra de ferramentas */
+body.os-android #kb.akb .akb-bar{ display:flex; align-items:center; gap:2px; height:46px; padding:0 8px }
+body.os-android #kb.akb .akb-tb{ width:46px; height:40px; border-radius:20px; display:flex; align-items:center; justify-content:center; color:var(--akb-tx2); cursor:pointer; transition:background .12s, color .12s }
+body.os-android #kb.akb .akb-tb svg{ width:23px; height:23px }
+body.os-android #kb.akb .akb-tb:active{ background:var(--akb-fn) }
+body.os-android #kb.akb .akb-tb.on{ color:var(--ou-blue) }
+body.os-android #kb.akb .akb-gap{ flex:1 }
+/* teclas */
+body.os-android #kb.akb .akb-main{ display:flex; flex-direction:column; gap:9px; padding:2px 5px 0 }
+body.os-android #kb.akb .akb-row{ display:flex; justify-content:center; gap:5px }
+body.os-android #kb.akb .akb-row.akb-r2{ padding:0 19px }
+body.os-android #kb.akb .akb-key{ position:relative; flex:1 1 0; min-width:0; height:46px; border-radius:10px; background:var(--akb-key); color:var(--akb-tx);
+  display:flex; align-items:center; justify-content:center; font-size:22px; font-weight:400; line-height:1; cursor:pointer; transition:background .08s }
+body.os-android #kb.akb .akb-key.fn{ background:var(--akb-fn); font-size:15px; font-weight:500 }
+body.os-android #kb.akb .akb-key.wide{ flex:1.48 1 0 }
+body.os-android #kb.akb .akb-key.space{ flex:4.6 1 0 }
+body.os-android #kb.akb .akb-key.pressed,body.os-android #kb.akb .akb-key:active{ background:var(--akb-press) }
+body.os-android #kb.akb .akb-key svg{ width:23px; height:23px }
+body.os-android #kb.akb .akb-key sub{ position:absolute; top:4px; right:5px; font-size:10px; line-height:1; font-weight:500; color:var(--akb-hint); pointer-events:none }
+body.os-android #kb.akb.up .akb-key.ltr .akb-ch{ text-transform:uppercase }
+body.os-android #kb.akb .akb-spl{ font-size:13px; font-weight:500; color:var(--akb-tx2); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; padding:0 6px }
+body.os-android #kb.akb .akb-key.ret.act{ background:var(--ou-blue); color:#fff }
+body.os-android #kb.akb .akb-key.ret.act:active,body.os-android #kb.akb .akb-key.ret.act.pressed{ background:#2F68E0 }
+body.os-android #kb.akb .akb-key.shift i{ display:flex }
+body.os-android #kb.akb .akb-key.shift .s1,body.os-android #kb.akb .akb-key.shift .s2,body.os-android #kb.akb .akb-key.shift.on .s0,body.os-android #kb.akb .akb-key.shift.caps .s0,body.os-android #kb.akb .akb-key.shift.caps .s1{ display:none }
+body.os-android #kb.akb .akb-key.shift.on .s1,body.os-android #kb.akb .akb-key.shift.caps .s2{ display:flex }
+body.os-android #kb.akb .akb-key.shift.on,body.os-android #kb.akb .akb-key.shift.caps{ color:var(--ou-blue) }
+body.os-android #kb.akb .akb-row.akb-nums .akb-key{ height:40px; font-size:19px }
+body.os-android #kb.akb .akb-row.akb-numpad .akb-key{ height:50px; font-size:24px }
+body.os-android #kb.akb .akb-row.akb-numpad .akb-key:last-child{ background:var(--akb-fn) }
+body.os-android #kb.akb .akb-row.akb-numpad .akb-key.ret.act{ background:var(--ou-blue) }
+body.os-android #kb.akb .akb-row.akb-numpad .akb-key:last-child .akb-ch{ font-size:22px }
+/* pre-visualizacao da tecla e acentos do toque longo */
+body.os-android #kb.akb .akb-pop{ position:absolute; left:50%; bottom:calc(100% + 6px); transform:translateX(-50%); min-width:46px; height:54px; padding:0 8px; border-radius:12px; background:var(--akb-key); color:var(--akb-tx);
+  font-size:30px; display:flex; align-items:center; justify-content:center; box-shadow:0 4px 16px rgba(0,0,0,.2); pointer-events:none; z-index:5 }
+body.os-android #kb.akb .akb-alt{ position:absolute; bottom:calc(100% + 6px); left:0; z-index:6; display:flex; gap:2px; padding:4px; border-radius:14px; background:var(--akb-key); box-shadow:0 6px 20px rgba(0,0,0,.24); pointer-events:none }
+body.os-android #kb.akb .akb-alt span{ width:36px; height:44px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:22px; color:var(--akb-tx) }
+body.os-android #kb.akb .akb-alt span.on{ background:var(--ou-blue); color:#fff }
+/* paineis (emoji, area de transferencia, definicoes): cobrem a zona das teclas, que fica no sitio */
+body.os-android #kb.akb .akb-panel{ position:absolute; left:0; right:0; top:46px; bottom:8px; display:none; flex-direction:column; padding:0 8px }
+body.os-android[data-nav="gesture"] #kb.akb .akb-panel,body.os-android #kb.akb.nonav .akb-panel{ bottom:24px }
+body.os-android #kb.akb.panel .akb-panel{ display:flex }
+body.os-android #kb.akb.panel .akb-main{ visibility:hidden }
+body.os-android #kb.akb .akb-emo{ flex:1; min-height:0; overflow-y:auto; display:grid; grid-template-columns:repeat(8,1fr); align-content:start; gap:2px }
+body.os-android #kb.akb .akb-emo span{ height:44px; display:flex; align-items:center; justify-content:center; font-size:26px; border-radius:10px; cursor:pointer }
+body.os-android #kb.akb .akb-emo span:active{ background:var(--akb-fn) }
+body.os-android #kb.akb .akb-pfoot{ display:flex; justify-content:space-between; gap:8px; padding-top:6px }
+body.os-android #kb.akb .akb-pfoot .akb-key{ flex:0 0 78px; height:42px }
+body.os-android #kb.akb .akb-ph{ display:flex; align-items:center; justify-content:space-between; height:36px; padding:0 6px; font-size:14px; color:var(--akb-tx) }
+body.os-android #kb.akb .akb-ph b{ font-weight:600 }
+body.os-android #kb.akb .akb-clr{ color:var(--ou-blue); font-weight:500; cursor:pointer; padding:6px 0 6px 10px }
+body.os-android #kb.akb .akb-clips{ flex:1; min-height:0; overflow-y:auto; display:grid; grid-template-columns:1fr 1fr; gap:8px; align-content:start; padding:2px 0 4px }
+body.os-android #kb.akb .akb-clip{ background:var(--akb-key); border-radius:14px; padding:10px 12px; font-size:13px; line-height:1.35; color:var(--akb-tx); max-height:78px; overflow:hidden;
+  display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; word-break:break-word; cursor:pointer; transition:background .1s }
+body.os-android #kb.akb .akb-clip:active{ background:var(--akb-press) }
+body.os-android #kb.akb .akb-empty{ grid-column:1/-1; text-align:center; color:var(--akb-tx2); font-size:14px; line-height:1.4; padding:44px 24px }
+body.os-android #kb.akb .akb-sets{ display:flex; flex-direction:column; background:var(--akb-key); border-radius:20px; padding:4px 0; margin-top:4px }
+body.os-android #kb.akb .akb-set{ display:flex; align-items:center; justify-content:space-between; gap:12px; min-height:50px; padding:0 18px; font-size:15px; color:var(--akb-tx); cursor:pointer }
+body.os-android #kb.akb .akb-tog{ position:relative; flex:none; width:40px; height:22px; border-radius:11px; background:var(--akb-tog); transition:background .18s }
+body.os-android #kb.akb .akb-tog i{ position:absolute; top:3px; left:3px; width:16px; height:16px; border-radius:50%; background:#fff; transition:transform .2s var(--ou-curve-out) }
+body.os-android #kb.akb .akb-set.on .akb-tog{ background:var(--ou-switch) }
+body.os-android #kb.akb .akb-set.on .akb-tog i{ transform:translateX(18px) }
+
+/* ============================================================
+   3. VERA (#vera.ave): cartao de respostas em vidro + barra flutuante com o gradiente de IA
+   ============================================================ */
+body.os-android #vera.ave{ --ave-nav:var(--nav-h,48px); --ave-glass:rgba(250,250,253,.93); --ave-line:rgba(255,255,255,.75); --ave-bar:#FCFCFF; --ave-chip:rgba(0,0,0,.05); border-radius:inherit }
+body.os-android.dark #vera.ave{ --ave-glass:rgba(27,27,31,.9); --ave-line:rgba(255,255,255,.1); --ave-bar:#1C1C20; --ave-chip:rgba(255,255,255,.07) }
+body.os-android[data-nav="gesture"] #vera.ave,body.os-android #vera.ave.ave-nonav{ --ave-nav:14px }
+body.os-android .vera-edge{ display:none }
+/* fundo: veu escuro; sobre o ecra principal ou o bloqueado leva a copia desfocada do fundo (desfoque + veu, como a Nova UI) */
+body.os-android #vera.ave .vera-scrim{ border-radius:inherit; background:rgba(0,0,0,.3) }
+body.os-android .screen:not(.app-open) #vera.ave .vera-scrim{ background:linear-gradient(rgba(0,0,0,.26),rgba(0,0,0,.26)), var(--wp-blur,rgba(0,0,0,.3)) center/cover no-repeat }
+body.os-android .screen.locked #vera.ave .vera-scrim{ background:linear-gradient(rgba(0,0,0,.3),rgba(0,0,0,.3)), var(--wp-lock-blur,var(--wp-blur,rgba(0,0,0,.3))) center/cover no-repeat }
+body.os-android #vera.ave .vera-sheet,body.os-android.fivem #vera.ave .vera-sheet,body.os-android.dark.fivem #vera.ave .vera-sheet{ left:12px; right:12px; bottom:calc(var(--vera-kb) + var(--ave-nav) + 12px);
+  max-height:calc(100% - var(--statusbar-h,48px) - 22px - var(--vera-kb) - var(--ave-nav)); gap:10px; padding:0; border:0; border-radius:0; background:transparent; box-shadow:none; backdrop-filter:none; -webkit-backdrop-filter:none;
+  transform:translateY(calc(100% + 90px)); opacity:0; transition:transform .36s var(--ou-curve-out), opacity .2s }
+body.os-android #vera.ave.in .vera-sheet{ transform:none; opacity:1; transition:transform .46s var(--ou-curve-out), opacity .2s }
+body.os-android #vera.ave.kb .vera-sheet{ padding-bottom:0 }
+body.os-android #vera.ave .ave-card{ display:flex; flex-direction:column; flex:0 1 auto; min-height:0; padding:14px 14px 4px; border-radius:28px; background:var(--ave-glass); border:1px solid var(--ave-line); box-shadow:0 18px 44px rgba(0,0,0,.2); color:var(--label) }
+/* cabeca: marca da Vera (anel com o gradiente de IA, estatico), nome, estado, indicador de voz e fechar */
+body.os-android #vera.ave .vera-head{ gap:10px; padding:0 2px 10px; cursor:grab }
+body.os-android #vera.ave .vera-head .vera-orb{ display:block; width:28px; height:28px; border-radius:50%; background:linear-gradient(135deg,#64E9E3,#7FC9F5 50%,#9FFAC7); animation:none; box-shadow:none }
+body.os-android #vera.ave .vera-head .vera-orb::before{ display:none }
+body.os-android #vera.ave .vera-head .vera-orb::after{ inset:6px; background:var(--ave-glass); backdrop-filter:none; -webkit-backdrop-filter:none; animation:none; transition:none }
+body.os-android.dark #vera.ave .vera-head .vera-orb::after{ background:#1E1E22 }
+body.os-android:not(.dark) #vera.ave .vera-head .vera-orb::after{ background:#FBFBFD }
+body.os-android #vera.ave.listening .vera-head .vera-orb::after{ inset:9px; animation:none }
+body.os-android #vera.ave .vera-name{ font-family:var(--font-display); font-size:18px; font-weight:600; letter-spacing:0 }
+body.os-android #vera.ave .vera-status{ font-family:'Inter',sans-serif; font-size:13px; font-weight:500 }
+body.os-android #vera.ave .vera-x{ width:34px; height:34px; background:var(--ave-chip); color:var(--label2) }
+body.os-android #vera.ave .vera-x:active{ transform:none; background:var(--fill2) }
+body.os-android #vera.ave .vera-vu{ border-radius:999px; background:var(--ave-chip) }
+body.os-android #vera.ave .vera-vu[data-st="speech"]{ color:#06302E; background:linear-gradient(100deg,#64E9E3,#9FFAC7) }
+body.os-android #vera.ave .vera-vu[data-st="think"]{ color:var(--ou-blue) }
+/* conversa */
+body.os-android #vera.ave .vera-log{ gap:10px; padding:2px 2px 8px }
+body.os-android #vera.ave .vera-msg{ font-size:16px; line-height:1.4 }
+body.os-android #vera.ave .vera-msg.vera{ padding:2px 4px; letter-spacing:0 }
+body.os-android #vera.ave .vera-msg.user{ padding:10px 15px; border-radius:22px 22px 6px 22px; background:var(--ou-blue); color:#fff; font-weight:500 }
+body.os-android #vera.ave .vera-card,body.os-android.fivem #vera.ave .vera-card{ border-radius:22px; border:0; background:var(--ave-chip); box-shadow:none; padding:14px; backdrop-filter:none; -webkit-backdrop-filter:none }
+body.os-android #vera.ave .vera-card.vwx{ padding:0; overflow:hidden }
+body.os-android #vera.ave .vera-wx{ padding:16px 20px; font-family:var(--font-display) }
+body.os-android #vera.ave .vera-card.tap:active{ transform:none; background:var(--fill2) }
+body.os-android #vera.ave .vera-tile{ border-radius:30%; box-shadow:none }
+body.os-android #vera.ave .vera-body .t{ font-family:var(--font-display); letter-spacing:0 }
+body.os-android #vera.ave .vera-body .t.big{ font-family:var(--font-display); font-weight:500; letter-spacing:-.2px }
+body.os-android #vera.ave .vera-btn{ height:40px; border-radius:999px; background:var(--ave-bar); color:var(--ou-blue); font-weight:600 }
+body.os-android.dark #vera.ave .vera-btn{ background:rgba(255,255,255,.09) }
+body.os-android #vera.ave .vera-btn.primary{ background:var(--ou-blue); color:#fff }
+body.os-android #vera.ave .vera-btn.danger{ color:var(--red) }
+body.os-android #vera.ave .vera-btn:active{ transform:none; opacity:.75 }
+body.os-android #vera.ave .vera-bubble{ background:var(--ou-blue); border-radius:20px 20px 6px 20px }
+body.os-android #vera.ave .vera-money>div{ border-radius:16px; background:var(--ave-bar) }
+body.os-android.dark #vera.ave .vera-money>div{ background:rgba(255,255,255,.06) }
+/* sugestoes em pilulas com contorno */
+body.os-android #vera.ave .vera-chips{ padding:6px 2px 10px }
+body.os-android #vera.ave .vera-chips span{ padding:8px 14px; border-radius:999px; background:transparent; border:1px solid var(--sep); color:var(--label); font-size:14px; font-weight:500 }
+body.os-android #vera.ave .vera-chips span:active{ transform:none; background:var(--ave-chip) }
+/* barra flutuante: borda com o gradiente de IA (so neste momento de IA), campo e botao do microfone/enviar */
+body.os-android #vera.ave .vera-in{ flex:none; height:58px; gap:8px; padding:0 7px 0 20px; border-radius:999px; border:1.5px solid transparent;
+  background:linear-gradient(var(--ave-bar),var(--ave-bar)) padding-box, linear-gradient(100deg,#64E9E3,#7FC9F5 48%,#9FFAC7) border-box; box-shadow:0 12px 30px rgba(0,0,0,.2) }
+body.os-android #vera.ave.listening .vera-in{ border-width:2px; padding-left:19.5px }
+body.os-android #vera.ave .vera-in input,body.os-android #vera.ave .vera-in input:focus{ height:100%; padding:0; border:0; border-radius:0; background:transparent; font-size:16px; color:var(--label) }
+body.os-android #vera.ave .vera-in input::placeholder{ color:var(--label3) }
+body.os-android #vera.ave .vera-send{ width:44px; height:44px; color:#06302E; background:linear-gradient(135deg,#64E9E3,#9FFAC7); box-shadow:none; transition:opacity .15s }
+body.os-android #vera.ave .vera-send:active{ transform:none; opacity:.8 }
+body.os-android #vera.ave.listening .vera-send{ animation:none; background:var(--ou-blue); color:#fff }
+
+/* ============================================================
+   4. PERMISSOES (UI.alert com cls aperm-ov): dialogo em baixo
+   ============================================================ */
+body.os-android .overlay.aperm-ov{ --aperm-nav:var(--nav-h,48px); align-items:flex-end; background:rgba(0,0,0,.42); backdrop-filter:none; -webkit-backdrop-filter:none; border-radius:inherit; padding:0 12px calc(var(--aperm-nav) + 12px) }
+body.os-android[data-nav="gesture"] .overlay.aperm-ov,body.os-android .overlay.aperm-ov.aperm-nonav{ --aperm-nav:16px }
+body.os-android .overlay.aperm-ov .alert,body.os-android.fivem .overlay.aperm-ov .alert,body.os-android.dark .overlay.aperm-ov .alert{ width:100%; max-width:416px; border-radius:28px; border:0; background:var(--ou-surface); color:var(--label); box-shadow:0 16px 40px rgba(0,0,0,.25);
+  backdrop-filter:none; -webkit-backdrop-filter:none; text-align:center; transform:translateY(40px); opacity:0; transition:transform .32s var(--ou-curve-out), opacity .2s }
+body.os-android .overlay.aperm-ov.in .alert{ transform:none; opacity:1 }
+body.os-android .overlay.aperm-ov .alert-body{ padding:26px 24px 6px; display:flex; flex-direction:column; align-items:center }
+body.os-android .overlay.aperm-ov .alert-title:empty{ display:none }
+body.os-android .aperm-app{ position:relative; width:52px; height:52px; margin-bottom:16px }
+body.os-android .aperm-app .tile{ width:52px; height:52px; border-radius:30%; overflow:hidden; box-shadow:none }
+body.os-android .aperm-app .tile svg{ width:100%; height:100%; display:block }
+body.os-android .aperm-k{ position:absolute; right:-7px; bottom:-5px; width:26px; height:26px; border-radius:50%; background:var(--ou-blue); color:#fff; display:flex; align-items:center; justify-content:center; box-shadow:0 0 0 3px var(--ou-surface) }
+body.os-android .aperm-k svg{ width:15px; height:15px }
+body.os-android .aperm-q{ font-family:var(--font-display); font-size:19px; font-weight:500; line-height:1.34; letter-spacing:0; color:var(--label); max-width:330px; overflow-wrap:anywhere }
+body.os-android .aperm-q b{ font-weight:700 }
+body.os-android .overlay.aperm-ov .alert-btns{ border-top:0; flex-direction:column; gap:8px; padding:20px 16px 16px }
+body.os-android .overlay.aperm-ov .alert-btns > div{ flex:none; min-height:52px; padding:0 16px; display:flex; align-items:center; justify-content:center; border:0; border-radius:18px; background:var(--ou-surface2);
+  color:var(--ou-blue); font-size:16px; font-weight:600; transition:background .12s }
+body.os-android .overlay.aperm-ov .alert-btns > div + div{ border:0 }
+body.os-android .overlay.aperm-ov .alert-btns > div:active{ background:var(--fill2) }
+/* aviso simples (localizacao desligada): titulo + texto + OK a azul */
+body.os-android .overlay.aperm-info .alert-body{ align-items:stretch; text-align:left; padding:24px 24px 4px }
+body.os-android .overlay.aperm-info .alert-title{ font-family:var(--font-display); font-size:20px; font-weight:600; letter-spacing:0 }
+body.os-android .overlay.aperm-info .alert-msg{ font-size:15px; line-height:1.42; color:var(--label2); margin-top:10px }
+body.os-android .overlay.aperm-info .alert-btns{ flex-direction:row; justify-content:flex-end; padding:14px 12px 14px }
+body.os-android .overlay.aperm-info .alert-btns > div{ flex:none; min-height:44px; padding:0 22px; background:transparent }
+
+/* ============================================================
+   5. AURICULARES (.abud-card): pop-up de ligacao em baixo
+   ============================================================ */
+body.os-android .abud-card{ --abud-nav:var(--nav-h,48px); position:absolute; left:12px; right:12px; bottom:calc(var(--abud-nav) + 12px); z-index:170; padding:18px 20px 16px; border-radius:28px;
+  background:var(--ou-surface); color:var(--label); box-shadow:0 18px 44px rgba(0,0,0,.28); transform:translateY(calc(100% + 80px)); transition:transform .42s var(--ou-curve-out) }
+body.os-android[data-nav="gesture"] .abud-card,body.os-android .abud-card.abud-nonav{ --abud-nav:16px }
+body.os-android .abud-card.in{ transform:none }
+body.os-android .abud-top{ display:flex; align-items:flex-start; justify-content:space-between; gap:12px }
+body.os-android .abud-tt{ display:flex; flex-direction:column; gap:3px; min-width:0 }
+body.os-android .abud-tt span{ font-size:13px; font-weight:500; color:var(--label2) }
+body.os-android .abud-tt b{ font-family:var(--font-display); font-size:21px; font-weight:600; letter-spacing:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+body.os-android .abud-x{ flex:none; width:34px; height:34px; margin:-4px -6px 0 0; border-radius:50%; display:flex; align-items:center; justify-content:center; color:var(--label2); cursor:pointer; transition:background .12s }
+body.os-android .abud-x:active{ background:var(--fill3) }
+body.os-android .abud-x svg{ width:18px; height:18px }
+/* os auriculares (feijao com a parte de toque) e a caixa (oval com tampa), so com gradientes */
+body.os-android .abud-art{ display:flex; align-items:center; justify-content:center; gap:22px; height:118px; margin:10px 0 6px }
+body.os-android .abud-art i{ display:block; position:relative }
+body.os-android .abud-bud{ width:46px; height:60px; border-radius:24px 24px 22px 26px; background:radial-gradient(circle at 34% 30%,#5A5D66,#26282E 62%,#17181C); box-shadow:0 8px 16px rgba(0,0,0,.25) }
+body.os-android .abud-bud.r{ border-radius:24px 24px 26px 22px }
+body.os-android .abud-bud > i{ position:absolute; left:11px; top:12px; width:24px; height:30px; border-radius:12px; background:linear-gradient(160deg,rgba(255,255,255,.18),rgba(255,255,255,.03)) }
+body.os-android .abud-case{ width:96px; height:84px; border-radius:30px 30px 34px 34px; background:linear-gradient(180deg,#45474F 0,#2B2D33 45%,#1D1E23 100%); box-shadow:0 10px 22px rgba(0,0,0,.28) }
+body.os-android .abud-case > i{ position:absolute; left:10px; right:10px; top:30px; height:2px; border-radius:1px; background:rgba(255,255,255,.14) }
+body.os-android .abud-case::after{ content:''; position:absolute; left:50%; bottom:12px; width:5px; height:5px; margin-left:-2.5px; border-radius:50%; background:#3DD06F }
+body.os-android.dark .abud-bud{ background:radial-gradient(circle at 34% 30%,#6A6D77,#33363D 62%,#222428) }
+body.os-android.dark .abud-case{ background:linear-gradient(180deg,#53565F 0,#373940 45%,#26282D 100%) }
+/* bateria de cada um */
+body.os-android .abud-bat{ display:grid; grid-template-columns:repeat(3,1fr); gap:6px; margin:4px 0 16px }
+body.os-android .abud-bi{ display:flex; flex-direction:column; align-items:center; gap:5px }
+body.os-android .abud-b{ position:relative; width:30px; height:14px; border-radius:4px; border:1.5px solid var(--label3); padding:1.5px; display:block }
+body.os-android .abud-b::after{ content:''; position:absolute; right:-4px; top:3.5px; width:2px; height:4px; border-radius:0 1px 1px 0; background:var(--label3) }
+body.os-android .abud-b i{ display:block; height:100%; border-radius:2px; background:var(--ou-live) }
+body.os-android .abud-b.low i{ background:var(--red) }
+body.os-android .abud-bi em{ font-style:normal; font-size:12px; color:var(--label2) }
+body.os-android .abud-bi b{ font-family:var(--font-display); font-size:16px; font-weight:600 }
+body.os-android .abud-card .btn-p.abud-btn{ margin:0!important; height:50px; border-radius:999px; background:var(--ou-blue); color:#fff; font-size:16px; font-weight:600; box-shadow:none }
+body.os-android .abud-card .btn-p.abud-btn.gray{ background:var(--ou-surface2); color:var(--label) }
+body.os-android .abud-hint{ margin-top:12px; font-size:12.5px; line-height:1.38; color:var(--label2); text-align:center; padding:0 6px }
+
+/* ============================================================
+   6. ASSISTENTE INICIAL (#setup.asu): "Bem-vindo!" + passos centrados e barra Anterior / Seguinte
+   Escala e componentes do sistema de design Nova UI 8.5: titulo 28/700 (letra de titulos), texto 16/400,
+   contentores #FCFCFF / #17171A com raio 26, campos contornados com raio 18 e rotulo flutuante,
+   interruptor 40x22, botoes de opcao 24 com ponto de 12, teclado do PIN igual ao do ecra bloqueado.
+   ============================================================ */
+/* a barra de navegacao do sistema nao aparece no assistente (SysUI): a barra Anterior / Seguinte assenta no fundo */
+body.os-android #setup.asu{ --asu-nav:12px;
+  --asu-bg:#F5F5F7; --asu-card:#FCFCFF; --asu-tx:#1D1D1F; --asu-tx2:#575757; --asu-tx3:#6E6E73;
+  --asu-line:#E4E4E4; --asu-ctl:#8C8C92; --asu-sep:rgba(0,0,0,.08); --asu-shadow:0 1px 3px rgba(0,0,0,.06);
+  --asu-sw-off:#C7C7CC; --asu-sw-on:#0381FE; --asu-press:rgba(0,0,0,.06); --asu-dis-bg:#EBEBEB; --asu-dis-tx:#858585;
+  --asu-ok:#2E7D32; --asu-err:#D32F2F;
+  border-radius:inherit; background:var(--asu-bg); color:var(--asu-tx) }
+body.os-android.dark #setup.asu{
+  --asu-bg:#010102; --asu-card:#17171A; --asu-tx:#FAFAFA; --asu-tx2:rgba(255,255,255,.62); --asu-tx3:rgba(255,255,255,.45);
+  --asu-line:rgba(255,255,255,.15); --asu-ctl:rgba(255,255,255,.5); --asu-sep:rgba(255,255,255,.08); --asu-shadow:none;
+  --asu-sw-off:rgba(255,255,255,.24); --asu-press:rgba(255,255,255,.1); --asu-dis-bg:rgba(255,255,255,.12); --asu-dis-tx:rgba(255,255,255,.38);
+  --asu-ok:#4CD07D; --asu-err:#FF6B6B }
+body.os-android #setup.asu .stp{ border-radius:inherit; background:var(--asu-bg); color:var(--asu-tx); padding:calc(var(--statusbar-h,48px) + 24px) 24px calc(var(--asu-nav) + 84px) }
+body.os-android #setup.asu .stp.finishing{ background:transparent }
+/* barra de estado no assistente: segue o tema do proprio assistente. O setup.js poe .light-sb (texto preto) ao arrancar e o
+   system.js so a tira ao mudar de tema, por isso com o tema escuro logo no arranque a hora e os icones ficavam pretos no preto */
+body.os-android:not(.dark) .screen.setup-mode .statusbar{ color:rgba(0,0,0,.86) }
+body.os-android.dark .screen.setup-mode .statusbar{ color:#fff }
+/* cabecalho CENTRADO (pedido do dono, 2026-10-01): glifo azul de 48, titulo 28/700 e texto 16/400 ao meio */
+body.os-android #setup.asu .stp .hero{ display:flex; justify-content:center; margin:0 }
+body.os-android #setup.asu .stp .hero svg{ width:48px; height:48px; color:var(--ou-blue); stroke-width:1.6 }
+body.os-android #setup.asu .stp h1{ margin:0; text-align:center; font-family:var(--font-display); font-size:28px; font-weight:700; letter-spacing:0; line-height:34px; color:var(--asu-tx) }
+body.os-android #setup.asu .stp .hero + h1{ margin-top:16px }
+body.os-android #setup.asu .stp .sub{ margin:8px auto 0; max-width:352px; text-align:center; font-size:16px; font-weight:400; line-height:22px; color:var(--asu-tx2) }
+/* 4 px de folga a volta: as sombras dos cartoes nao ficam cortadas pelo scroll do corpo */
+body.os-android #setup.asu .stp .body{ margin:24px -4px 0; padding:4px }
+body.os-android #setup.asu .stp .body::before,body.os-android #setup.asu .stp .body::after{ display:none }
+/* CADA PASSO E UM BLOCO CENTRADO NA VERTICAL (pedido do dono, 2026-10-01: "centralizar"): glifo, titulo, texto, conteudo
+   e links ficam juntos, com o espaco livre repartido por cima e por baixo do bloco (um pouco mais em baixo: centro otico).
+   O corpo deixa de esticar (flex:0 1 auto) e so encolhe, com scroll, quando o conteudo nao cabe; os espacadores sao
+   ::before/::after do passo, que encolhem a zero nesse caso. Com o teclado aberto o bloco centra-se no espaco por cima dele. */
+body.os-android #setup.asu .stp:not(.asu-welcome)::before,body.os-android #setup.asu .stp:not(.asu-welcome)::after{ content:''; display:block; flex:1 1 0; min-height:0 }
+body.os-android #setup.asu .stp:not(.asu-welcome)::after{ flex-grow:1.25 }
+body.os-android #setup.asu .stp:not(.asu-welcome) .body{ flex:0 1 auto; min-height:0; justify-content:flex-start }
+/* links do passo (Opcoes de PIN, Configurar mais tarde): botao de texto azul 16/500 com area de toque de 44 */
+body.os-android #setup.asu .stp .foot{ padding-top:12px; gap:0; align-items:center }
+body.os-android #setup.asu .stp .foot .link,body.os-android #setup.asu .stp .link{ display:flex; align-items:center; justify-content:center; align-self:center; min-height:44px; padding:0 18px; border-radius:22px;
+  color:var(--ou-blue); font-size:16px; font-weight:500; line-height:20px; transition:background-color .12s }
+body.os-android #setup.asu .stp .link:active{ opacity:1; background:var(--asu-press) }
+/* barra de baixo: Anterior (texto) a esquerda, Seguinte (pilula azul) a direita */
+body.os-android #setup.asu .asu-nav{ position:absolute; left:0; right:0; bottom:var(--asu-nav); height:76px; padding:0 20px 0 12px; display:flex; align-items:center; justify-content:space-between; z-index:3; transition:opacity .3s var(--ou-curve) }
+body.os-android #setup.asu .stp.finishing .asu-nav{ opacity:0 }
+/* teclado aberto: a barra sobe para cima dele (so transform, ao ritmo do teclado) e o passo ganha folga para o conteudo */
+body.os-android #setup.asu .asu-nav{ transform:none; transition:transform .3s var(--ou-curve-out), opacity .3s var(--ou-curve) }
+body.os-android #setup.asu.kbup .asu-nav{ transform:translateY(calc(-1 * var(--asu-kb,0px) + var(--asu-nav) - 4px)) }
+body.os-android #setup.asu.kbup .stp{ padding-bottom:calc(var(--asu-kb,0px) + 80px) }
+body.os-android #setup.asu .asu-l,body.os-android #setup.asu .asu-r{ display:flex; align-items:center }
+body.os-android #setup.asu .asu-nav .st-back{ position:static; height:48px; min-width:0; padding:0 18px 0 8px; gap:2px; border-radius:24px; color:var(--asu-tx); font-family:var(--font); font-size:16px; font-weight:500; letter-spacing:0; transition:background-color .12s }
+body.os-android #setup.asu .asu-nav .st-back:active{ opacity:1; background:var(--asu-press) }
+body.os-android #setup.asu .asu-nav .st-back svg{ width:22px; height:22px; stroke-width:2 }
+/* botao principal: pilula azul de 48 (rotulo na letra do corpo, 16/600); desativado = cinzento do sistema, nao transparente */
+body.os-android #setup.asu .asu-nav .btn-p{ margin:0; width:auto; min-width:128px; height:48px; padding:0 28px; border-radius:24px; display:flex; align-items:center; justify-content:center;
+  background:var(--ou-blue); color:#fff; font-family:var(--font); font-size:16px; font-weight:600; letter-spacing:0; box-shadow:none; transition:background-color .2s, color .2s, opacity .15s }
+body.os-android #setup.asu .asu-nav .btn-p:active{ transform:none; filter:none; opacity:.85 }
+body.os-android #setup.asu .asu-nav .btn-p.dim{ opacity:1; background:var(--asu-dis-bg); color:var(--asu-dis-tx); pointer-events:none }
+/* "Bem-vindo!": 48/700, idioma numa pilula contornada e o botao redondo azul de 64 (sombra neutra de botao flutuante) */
+body.os-android #setup.asu .stp.asu-welcome{ padding:0 }
+body.os-android #setup.asu .stp.asu-welcome .body{ flex:1; margin:0; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:0 28px 150px }
+body.os-android #setup.asu .asu-hi{ font-family:var(--font-display); font-size:48px; font-weight:700; letter-spacing:0; line-height:56px; color:var(--asu-tx); text-align:center; overflow-wrap:anywhere }
+body.os-android #setup.asu .asu-lang{ margin-top:24px; height:48px; padding:0 18px 0 16px; display:inline-flex; align-items:center; gap:8px; border-radius:999px; background:var(--asu-card); box-shadow:inset 0 0 0 1px var(--asu-line);
+  color:var(--asu-tx); font-size:16px; font-weight:500; cursor:pointer; transition:background-color .12s }
+body.os-android #setup.asu .asu-lang:active{ background:var(--asu-press) }
+body.os-android #setup.asu .asu-lang svg{ width:20px; height:20px; color:var(--asu-tx2); flex:none }
+body.os-android #setup.asu .asu-lang svg:last-child{ width:16px; height:16px }
+body.os-android #setup.asu .asu-start{ position:absolute; left:50%; bottom:calc(var(--asu-nav) + 44px); transform:translateX(-50%); display:flex; flex-direction:column; align-items:center; gap:10px }
+body.os-android #setup.asu .asu-go{ width:64px; height:64px; border-radius:50%; background:var(--ou-blue); color:#fff; display:flex; align-items:center; justify-content:center; cursor:pointer; box-shadow:0 6px 16px rgba(0,0,0,.15); transition:opacity .15s }
+body.os-android #setup.asu .asu-go:active{ opacity:.85 }
+body.os-android #setup.asu .asu-go svg{ width:26px; height:26px }
+body.os-android #setup.asu .asu-start span{ font-size:14px; font-weight:500; color:var(--asu-tx2) }
+body.os-android #setup.asu .asu-info{ position:absolute; right:16px; top:calc(var(--statusbar-h,48px) + 8px); width:40px; height:40px; border-radius:50%; display:flex; align-items:center; justify-content:center; color:var(--asu-tx2); cursor:pointer; transition:background-color .12s }
+body.os-android #setup.asu .asu-info:active{ background:var(--asu-press) }
+body.os-android #setup.asu .asu-info svg{ width:22px; height:22px }
+/* listas em cartao (idioma, notificacoes, Vera): contentor raio 26, linhas de 60 com texto 17/500 e divisorias de 1 px */
+body.os-android #setup.asu .stp .list .group{ max-width:none; margin-left:0; margin-right:0; border-radius:26px; background:var(--asu-card); box-shadow:var(--asu-shadow); overflow:hidden }
+body.os-android #setup.asu .stp .list .group + .group,body.os-android #setup.asu .stp .list .group-footer + .group{ margin-top:16px }
+body.os-android #setup.asu .stp .list .li{ min-height:60px; padding:12px 20px 12px 24px; gap:16px; font-size:17px; font-weight:500; color:var(--asu-tx); background:transparent }
+body.os-android #setup.asu .stp .list .li:active:not(.static){ background:var(--asu-press) }
+body.os-android #setup.asu .stp .list .li + .li::before{ left:24px; right:24px; height:1px; background:var(--asu-sep) }
+body.os-android #setup.asu .stp .list .li-value{ font-size:15px; font-weight:400; color:var(--asu-tx2) }
+body.os-android #setup.asu .stp .list .li-chev{ display:none }
+body.os-android #setup.asu .stp .list .group-header,body.os-android #setup.asu .stp .list .group-footer{ text-align:center; max-width:none; margin:0; padding-left:24px; padding-right:24px }
+body.os-android #setup.asu .stp .list .group-header{ padding-top:20px; padding-bottom:8px; font-size:14px; font-weight:600; letter-spacing:0; text-transform:none; color:var(--asu-tx2) }
+body.os-android #setup.asu .stp .list .group-footer{ padding-top:12px; padding-bottom:0; font-size:14px; line-height:20px; color:var(--asu-tx2) }
+/* interruptor do sistema: pista 40x22 em pilula, azul #0381FE ligado, botao branco de 16 */
+body.os-android #setup.asu .stp .toggle{ width:40px; height:22px }
+body.os-android #setup.asu .stp .toggle span{ border-radius:11px; background:var(--asu-sw-off); transition:background-color .2s ease-out }
+body.os-android #setup.asu .stp .toggle span::after{ top:3px; left:3px; width:16px; height:16px; box-shadow:0 1px 2px rgba(0,0,0,.2); transition:transform .22s var(--ou-curve-out) }
+body.os-android #setup.asu .stp .toggle input:checked + span{ background:var(--asu-sw-on) }
+body.os-android #setup.asu .stp .toggle input:checked + span::after,
+body.os-android #setup.asu .stp .toggle input:checked + span:active::after{ transform:translateX(18px) }
+body.os-android #setup.asu .stp .toggle:active span::after{ width:16px }
+/* Idioma: lista de uma linha, o escolhido a azul */
+/* o corpo do idioma tem a mascara de desvanecimento do scroll (18 px em cima, 28 em baixo): o padding acompanha-a, senao a primeira linha ficava esbatida */
+body.os-android #setup.asu .stp.lang-step .body{ margin-top:6px; padding:18px 4px 26px }
+body.os-android #setup.asu .stp.lang-step .list .group{ max-width:none; margin:0 }
+body.os-android #setup.asu .stp.lang-step .li{ justify-content:flex-start; text-align:left; min-height:56px; padding:8px 24px; font-weight:400 }
+body.os-android #setup.asu .stp.lang-step .li .li-body{ flex:1; text-align:left }
+body.os-android #setup.asu .stp.lang-step .li.lang-on .li-label{ color:var(--ou-blue); font-weight:600 }
+body.os-android #setup.asu .stp .st-more{ margin:12px auto 0; padding:10px 18px; border-radius:22px; color:var(--ou-blue); font-size:16px; font-weight:500 }
+/* Imagem de fundo: o corpo vai de borda a borda do ecra (o carrossel de 440 centra-se nele e os cartoes das pontas espreitam) */
+body.os-android #setup.asu .stp.wp-step .body{ margin:24px -24px 0; padding:4px 24px }
+body.os-android #setup.asu .stp.wp-step .opt.wp-car .o .pv{ border-radius:26px }
+body.os-android #setup.asu .stp.wp-step .opt.wp-car .o.on .pv{ box-shadow:0 0 0 3px var(--asu-bg), 0 0 0 5px var(--ou-blue), inset 0 0 0 1px var(--asu-line) }
+body.os-android #setup.asu .stp.wp-step .opt.wp-car .o .lb{ font-size:14px; color:var(--asu-tx2) }
+body.os-android #setup.asu .stp.wp-step .opt.wp-car .o.on .lb{ color:var(--ou-blue) }
+/* mini-ecras (Aparencia, Imagem de fundo, Claro ou escuro): a ilha passa a camara furada */
+body.os-android #setup.asu .ap-isl{ width:9px; height:9px; border-radius:50%; top:9px }
+body.os-android #setup.asu .ap-mock{ border-radius:26px }
+body.os-android #setup.asu .stp .opt .o .pv .pv-isl{ width:7px; height:7px; border-radius:50%; left:50%; margin-left:-3.5px; transform:none }
+/* BOTAO DE OPCAO do sistema (24, aro de 2, ponto azul de 12): Aparencia, Claro ou escuro e Reconhecimento facial.
+   Um so pseudo-elemento: o ponto e um gradiente radial, sem filhos novos no DOM */
+body.os-android #setup.asu .ap-opt .check,
+body.os-android #setup.asu .stp.th-step .opt .o::after,body.os-android #setup.asu .stp .opt.fid .o::after{ width:24px; height:24px; border-radius:50%; border:2px solid var(--asu-ctl); box-sizing:border-box; background:transparent;
+  transition:border-color .15s ease-out, background-color .15s ease-out }
+body.os-android #setup.asu .ap-opt.on .check,
+body.os-android #setup.asu .stp.th-step .opt .o.on::after,body.os-android #setup.asu .stp .opt.fid .o.on::after{ border-color:var(--ou-blue); background:radial-gradient(circle, var(--ou-blue) 0, var(--ou-blue) 5.5px, transparent 6.5px) }
+body.os-android #setup.asu .ap-opt .check svg{ display:none }
+body.os-android #setup.asu .stp.th-step .opt .o::after,body.os-android #setup.asu .stp .opt.fid .o::after{ content:''; display:block; flex:none; margin:12px auto 0 }
+/* Aparencia: as tres opcoes num contentor de raio 26 */
+body.os-android #setup.asu .ap-opts{ width:100%; max-width:none; margin-top:24px; padding:12px 8px; border-radius:26px; background:var(--asu-card); box-shadow:var(--asu-shadow) }
+body.os-android #setup.asu .ap-opt{ gap:10px; padding:6px 0; min-height:0; font-size:15px; font-weight:400; color:var(--asu-tx2) }
+body.os-android #setup.asu .ap-opt.on{ color:var(--asu-tx); font-weight:500 }
+/* Claro ou escuro: os mini-ecras com a camara furada, as cores e a lista em cartao da Nova UI; contorno fino (o escuro
+   desaparecia no fundo preto) e a escolha marcada pelo botao de opcao por baixo do nome, sem aro azul */
+body.os-android #setup.asu .th-face{ background:#F5F5F7 }
+body.os-android #setup.asu .th-face.dark{ background:#010102 }
+body.os-android #setup.asu .th-face .th-sb{ width:8px; height:8px; border-radius:50%; top:9px }
+body.os-android #setup.asu .th-face .th-list{ border-radius:12px; background:#FCFCFF; box-shadow:none }
+body.os-android #setup.asu .th-face.dark .th-list{ background:#17171A }
+body.os-android #setup.asu .th-face .th-list i::before{ border-radius:50%; background:var(--ou-blue) }
+body.os-android #setup.asu .th-face .th-list i:nth-child(2)::before{ background:#2DBE60 }
+body.os-android #setup.asu .th-face .th-list i:nth-child(3)::before{ background:#FF8A1F }
+body.os-android #setup.asu .stp.th-step .opt{ gap:12px; flex-wrap:nowrap }
+body.os-android #setup.asu .stp.th-step .opt .o{ width:116px }
+body.os-android #setup.asu .stp.th-step .opt .o .pv{ height:240px; border-radius:22px }
+body.os-android #setup.asu .stp.th-step .opt .o .lb{ margin-top:12px; font-size:15px; font-weight:500; color:var(--asu-tx) }
+/* contorno POR CIMA dos mini-ecras (o .th-face tapava um inset no proprio .pv): reaproveita o ::after do selo de visto */
+body.os-android #setup.asu .stp.th-step .opt .o .pv::after,body.os-android #setup.asu .stp .opt.fid .o .pv::after{ content:''; position:absolute; inset:0; right:0; bottom:0; width:auto; height:auto; z-index:3;
+  border-radius:inherit; background:none; box-shadow:inset 0 0 0 1px var(--asu-line); opacity:1; transform:none; pointer-events:none }
+body.os-android #setup.asu .stp.th-step .opt .o .pv,body.os-android #setup.asu .stp.th-step .opt .o.on .pv{ box-shadow:none }
+/* Reconhecimento facial: duas pre-visualizacoes, nome, legenda e botao de opcao (sem cartao a volta, como Claro ou escuro) */
+body.os-android #setup.asu .stp .opt.fid{ gap:16px; align-items:stretch; flex-wrap:nowrap }
+body.os-android #setup.asu .stp .opt.fid .o{ width:168px; padding:0; border-radius:0; background:transparent; box-shadow:none; align-items:center }
+body.os-android #setup.asu .stp .opt.fid .o.on,body.os-android #setup.asu .stp .opt.fid .o:active{ box-shadow:none; transform:none }
+body.os-android #setup.asu .stp .opt.fid .o .pv,body.os-android #setup.asu .stp .opt.fid .o.on .pv{ width:100%; height:212px; border-radius:26px; background:#17171A; box-shadow:none }
+body.os-android #setup.asu .stp .opt.fid .o .lb{ margin-top:12px; font-size:16px; font-weight:500; color:var(--asu-tx) }
+body.os-android #setup.asu .stp .opt.fid .o .lb2{ margin-top:2px; min-height:36px; font-size:13px; line-height:18px; color:var(--asu-tx2) }
+body.os-android #setup.asu .stp .opt.fid .o::after{ margin-top:10px }
+body.os-android #setup.asu .stp .opt.fid .o .pv::after{ box-shadow:inset 0 0 0 1px rgba(255,255,255,.08) }
+/* mini-ecra "So PIN" com o teclado da Nova UI: campo sublinhado com os pontos ja escritos e digitos sem circulos
+   (os 9 <i> do setup.js numeram-se por contador de CSS: nada muda no DOM partilhado com o PearOS) */
+body.os-android #setup.asu .stp .opt.fid .fid-mock.pin{ gap:18px }
+body.os-android #setup.asu .stp .opt.fid .fid-dots,body.os-android #setup.asu .stp .opt.fid .fid-dots.six{ position:relative; width:108px; height:22px; gap:8px; justify-content:center; align-items:center }
+body.os-android #setup.asu .stp .opt.fid .fid-dots::after{ content:''; position:absolute; left:0; right:0; bottom:0; height:1.5px; border-radius:1px; background:var(--ou-blue) }
+body.os-android #setup.asu .stp .opt.fid .fid-dots i{ display:none; width:8px; height:8px; background:#fff; box-shadow:none }
+body.os-android #setup.asu .stp .opt.fid .fid-dots i:nth-child(-n+2){ display:block }
+body.os-android #setup.asu .stp .opt.fid .fid-keys{ counter-reset:asuk; grid-template-columns:repeat(3,30px); gap:8px 14px }
+body.os-android #setup.asu .stp .opt.fid .fid-keys i{ width:30px; height:24px; border-radius:0; background:none; display:flex; align-items:center; justify-content:center;
+  font-style:normal; font-family:var(--font-display); font-size:17px; font-weight:400; color:#fff }
+body.os-android #setup.asu .stp .opt.fid .fid-keys i::before{ counter-increment:asuk; content:counter(asuk) }
+body.os-android #setup.asu .stp .opt.fid .fid-mock .fid-lb{ font-size:14px; font-weight:500 }
+/* Avatar: pre-visualizacao de 96 e as cores num contentor de raio 26 (6 x 2), aro azul com folga no escolhido */
+body.os-android #setup.asu .stp .av-preview{ margin:0 0 20px; gap:0 }
+body.os-android #setup.asu .stp .av-preview .avatar{ width:96px; height:96px; margin:0; font-size:36px; font-weight:600; letter-spacing:0; box-shadow:none }
+body.os-android #setup.asu .stp .av-preview .nm{ margin-top:12px; font-size:20px; font-weight:600; letter-spacing:0; color:var(--asu-tx) }
+body.os-android #setup.asu .stp .av-preview .hn{ margin-top:2px; font-size:14px; color:var(--asu-tx2) }
+body.os-android #setup.asu .stp .avatars{ grid-template-columns:repeat(6,44px); gap:16px 14px; justify-content:center; margin:0; padding:20px 16px;
+  border-radius:26px; background:var(--asu-card); box-shadow:var(--asu-shadow) }
+body.os-android #setup.asu .stp .avatars .av,body.os-android #setup.asu .stp .avatars .av.on{ width:44px; height:44px; border:none; transform:none }
+body.os-android #setup.asu .stp .avatars .av{ box-shadow:none; transition:box-shadow .2s var(--ou-curve) }
+body.os-android #setup.asu .stp .avatars .av.on{ box-shadow:0 0 0 2px var(--asu-card), 0 0 0 4px var(--ou-blue) }
+body.os-android #setup.asu .stp .avatars .av::before{ display:none }
+body.os-android #setup.asu .stp .avatars .av svg{ width:18px; height:18px; filter:none }
+body.os-android #setup.asu .av-later{ max-width:340px; margin-top:16px; font-size:14px; line-height:20px; color:var(--asu-tx2) }
+/* CAMPOS DE TEXTO do sistema: retangulo arredondado (18) contornado de 1,5 px, rotulo flutuante de 12 (setup.js decorateA),
+   texto 17, azul com foco, vermelho com erro; a ajuda por baixo fica alinhada com o texto do campo. Contorno POR DENTRO
+   (inset): por fora era cortado pelas bordas do corpo com scroll */
+body.os-android #setup.asu .st-field{ max-width:none; margin:0; height:60px }
+body.os-android #setup.asu .stp .st-input{ max-width:none; height:60px; border-radius:18px; padding:24px 48px 8px 16px; background:var(--asu-card); box-shadow:inset 0 0 0 1.5px var(--asu-line);
+  color:var(--asu-tx); caret-color:var(--ou-blue); font-size:17px; line-height:22px; transition:box-shadow .15s ease-out }
+body.os-android #setup.asu .st-field .st-input{ padding-left:34px }
+body.os-android #setup.asu .stp .st-input:focus,body.os-android #setup.asu .stp .st-input.kb-on{ box-shadow:inset 0 0 0 2px var(--ou-blue) }
+body.os-android #setup.asu .st-field.asu-bad .st-input{ box-shadow:inset 0 0 0 2px var(--asu-err) }
+body.os-android #setup.asu .stp .st-input::placeholder{ color:var(--asu-tx3) }
+body.os-android #setup.asu .stp.acc-step:not(.dev-step) .st-input::placeholder{ color:transparent }
+body.os-android #setup.asu .st-field .st-at{ left:16px; top:27px; font-size:17px; line-height:22px; color:var(--asu-tx2) }
+body.os-android #setup.asu .st-field .asu-flab{ position:absolute; left:16px; top:9px; font-size:12px; font-weight:500; line-height:16px; color:var(--asu-tx2); pointer-events:none; transition:color .15s ease-out }
+body.os-android #setup.asu .st-field .st-input:focus ~ .asu-flab,body.os-android #setup.asu .st-field .st-input.kb-on ~ .asu-flab{ color:var(--ou-blue) }
+body.os-android #setup.asu .st-field.asu-bad .asu-flab{ color:var(--asu-err) }
+body.os-android #setup.asu .st-clear{ right:12px; color:var(--asu-tx3) }
+body.os-android #setup.asu .stp .st-err{ margin-top:6px; min-height:18px; padding:0 16px; text-align:left; font-size:13px; line-height:18px }
+body.os-android #setup.asu .stp .st-err.ok{ color:var(--asu-ok) } body.os-android #setup.asu .stp .st-err.bad{ color:var(--asu-err) } body.os-android #setup.asu .stp .st-err.wait{ color:var(--asu-tx2) }
+body.os-android #setup.asu .stp.acc-step .body,body.os-android #setup.asu .stp.sim-step .body,body.os-android #setup.asu .stp.fidopt-step .body,
+body.os-android #setup.asu .stp.done-step .body,body.os-android #setup.asu .stp.fid-step .body{ padding:4px }
+body.os-android #setup.asu .stp.fid-step .body{ margin-top:24px }
+/* Registar o rosto: circulo da camara de 196 e, a volta, um anel de progresso de 4 px feito dos 32 tracos do faceid.js
+   deitados na tangente (18 x 4, com 4 px de intervalo): parece o arco continuo da Nova UI e continua a acender so os
+   angulos que o jogo cobre. --fid-r e o raio que o faceid.js usa para os colocar */
+body.os-android #setup.asu .fid-enroll{ --fid-r:112px; width:264px; height:264px; margin:4px auto 0 }
+body.os-android #setup.asu .fid-ticks i{ width:18px; height:4px; margin:-2px 0 0 -9px; border-radius:2px; background:var(--asu-sw-off); box-shadow:none }
+body.os-android #setup.asu .fid-ticks i.on,body.os-android #setup.asu .fid-enroll.ok .fid-ticks i{ background:var(--ou-blue); box-shadow:none; opacity:1 }
+body.os-android #setup.asu .fid-enroll .fid-ticks i.now{ background:var(--ou-blue); box-shadow:none; opacity:.55 }
+body.os-android #setup.asu .fid-frame{ width:196px; height:196px; margin:-98px 0 0 -98px }
+body.os-android #setup.asu .fid-frame .fid-glyph svg{ width:80px; height:80px }
+/* cartoes (numero de telefone, resumo final): contentor raio 26, rotulo 16/400 a esquerda e valor 16/500 a direita */
+body.os-android #setup.asu .stp .st-card,body.os-android #setup.asu .stp .st-card.sim,body.os-android.dark #setup.asu .stp .st-card.sim{ width:100%; max-width:none; margin:0; border:none; border-radius:26px;
+  background:var(--asu-card); box-shadow:var(--asu-shadow); padding:4px 20px; align-items:stretch }
+body.os-android #setup.asu .stp .st-card.sim{ padding:24px 20px 4px }
+body.os-android #setup.asu .stp .st-card.sim .sim-chip,body.os-android #setup.asu .stp .st-card.sim .sim-num{ align-self:center }
+body.os-android #setup.asu .stp .sim-num{ margin-bottom:12px; font-family:var(--font-display); font-size:28px; font-weight:600; letter-spacing:.3px; line-height:34px; color:var(--asu-tx) }
+body.os-android #setup.asu .stp .sim-row,body.os-android #setup.asu .stp .st-card.sim .sim-row{ flex-direction:row; align-items:center; justify-content:space-between; gap:16px; min-height:52px; padding:0; text-align:left }
+body.os-android #setup.asu .stp .sim-row + .sim-row::before{ left:0; right:0; height:1px; background:var(--asu-sep) }
+body.os-android #setup.asu .stp .sim-row span{ flex:none; font-size:16px; font-weight:400; letter-spacing:0; text-transform:none; color:var(--asu-tx2) }
+body.os-android #setup.asu .stp .sim-row b{ min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; text-align:right; font-size:16px; font-weight:500; letter-spacing:0; color:var(--asu-tx) }
+body.os-android #setup.asu .stp .sim-row .fid-shot{ margin:0 0 0 auto }
+/* PIN, como o teclado do ecra bloqueado: campo com sublinhado azul onde os pontos aparecem a medida que se escreve,
+   teclado 3 x 4 sem circulos (digito 32 na letra de titulos, letras 10,5 por baixo), circulo de toque so ao carregar
+   e a tecla de apagar a direita do 0. Tudo junto logo abaixo do texto: o bloco inteiro centra-se na vertical */
+body.os-android #setup.asu .stp.pin-step .body{ display:flex; flex-direction:column; margin-top:20px }
+body.os-android #setup.asu .stp .pin-dots{ position:relative; width:248px; height:48px; margin:0 auto; gap:16px; justify-content:center; align-items:center; flex:none }
+body.os-android #setup.asu .stp .pin-dots.six{ gap:13px }
+body.os-android #setup.asu .stp .pin-dots::after{ content:''; position:absolute; left:0; right:0; bottom:0; height:2px; border-radius:1px; background:var(--ou-blue) }
+body.os-android #setup.asu .stp .pin-dots .dot,body.os-android #setup.asu .stp .pin-dots.six .dot{ display:none; width:13px; height:13px; border:none; border-radius:50%; background:var(--asu-tx); box-shadow:none; transform:none }
+body.os-android #setup.asu .stp .pin-dots .dot.on{ display:block }
+body.os-android #setup.asu .stp .pin-dots .dot.pop{ animation:asuDot .22s var(--ou-curve-out) }
+@keyframes asuDot{ from{ transform:scale(.3); opacity:0 } to{ transform:none; opacity:1 } }
+body.os-android #setup.asu .stp .pin-dots.shake .dot,body.os-android #setup.asu .stp .pin-dots.shake::after{ background:var(--asu-err) }
+body.os-android #setup.asu .stp .pc-label{ margin:8px 0 4px; min-height:20px; text-align:center; font-size:14px; font-weight:400; line-height:20px; color:var(--asu-tx2) }
+body.os-android #setup.asu .stp .pc-label.err{ color:var(--asu-err) }
+body.os-android #setup.asu .stp .keypad{ grid-template-columns:repeat(3,104px); grid-auto-rows:72px; gap:4px 12px; width:336px; margin:0 auto; flex:none }
+body.os-android #setup.asu .stp.pin-step .foot{ padding-top:8px }
+body.os-android #setup.asu .stp .keypad .key,body.os-android #setup.asu .stp .keypad .key:active,body.os-android #setup.asu .stp .keypad .key.press,body.os-android #setup.asu .stp .keypad .key.pressed{
+  position:relative; width:104px; height:72px; padding-top:12px; border-radius:0; display:flex; flex-direction:column; align-items:center; justify-content:flex-start;
+  background:transparent; color:var(--asu-tx); box-shadow:none; transform:none; cursor:pointer; -webkit-tap-highlight-color:transparent }
+/* toque: um circulo aparece por tras do digito (so opacity/transform; em repouso a tecla nao tem circulo) */
+body.os-android #setup.asu .stp .keypad .key::before{ content:''; position:absolute; left:50%; top:50%; width:68px; height:68px; margin:-34px 0 0 -34px; border-radius:50%; background:var(--asu-press);
+  opacity:0; transform:scale(.82); transition:opacity .3s var(--ou-curve), transform .3s var(--ou-curve-out); pointer-events:none }
+body.os-android #setup.asu .stp .keypad .key:active::before,body.os-android #setup.asu .stp .keypad .key.press::before,body.os-android #setup.asu .stp .keypad .key.pressed::before{ opacity:1; transform:none; transition:opacity .05s, transform .1s }
+body.os-android #setup.asu .stp .keypad .key .num{ position:relative; font-family:var(--font-display); font-size:32px; font-weight:400; line-height:36px; letter-spacing:0 }
+body.os-android #setup.asu .stp .keypad .key .abc{ display:block; position:relative; margin:0; min-height:13px; font-size:10.5px; font-weight:600; letter-spacing:1.6px; line-height:13px; color:var(--asu-tx2) }
+body.os-android #setup.asu .stp .keypad .asu-del,body.os-android #setup.asu .stp .keypad .asu-del:active{ padding-top:0; justify-content:center; color:var(--asu-tx2) }
+body.os-android #setup.asu .stp .keypad .asu-del svg{ position:relative; width:28px; height:28px }
+body.os-android #setup.asu .stp .foot .link.st-del{ display:none }
+
+/* ============================================================
+   7. NOVA Fold8 (body.form-fold, 2026-10-02): os mesmos ecras no ecra de fora (670) e no de dentro (1340), como a Nova UI
+   dos dobraveis. Tudo atras de body.os-android.form-fold: o S26 e o PearPhone nao mudam.
+   ============================================================ */
+/* Recentes: o cartao tem a forma do ecra (fechado .6 = 402 de largura, aberto .5 = 670; --sw-k no liquid27.css) e a janela
+   viva entra com o mesmo zoom; a app atual fica ao centro */
+body.os-android.form-fold #switcher .sw-track{ gap:24px; padding:0 calc((var(--screen-w) - var(--screen-w) * var(--sw-k)) / 2); scroll-padding:0 calc((var(--screen-w) - var(--screen-w) * var(--sw-k)) / 2) }
+body.os-android.form-fold #switcher .sw-card{ width:calc(var(--screen-w) * var(--sw-k)); height:calc(var(--ars-wh,956px) * var(--sw-k)) }
+body.os-android.form-fold #switcher .sw-card .app-window.in-card{ zoom:var(--sw-k); width:var(--screen-w) }
+/* teclado: no ecra de dentro as teclas ficam numa coluna de 880 ao centro (a barra de ferramentas e os paineis tambem) */
+body.os-android.form-fold.fold-open #kb.akb .akb-main{ padding-left:calc(50% - 440px); padding-right:calc(50% - 440px) }
+body.os-android.form-fold.fold-open #kb.akb .akb-bar{ padding-left:calc(50% - 448px); padding-right:calc(50% - 448px) }
+body.os-android.form-fold.fold-open #kb.akb .akb-panel{ left:calc(50% - 448px); right:calc(50% - 448px) }
+body.os-android.form-fold.fold-open #kb.akb .akb-emo{ grid-template-columns:repeat(12,1fr) }
+/* Vera, auriculares e pedidos de permissao: no ecra de dentro ficam ao centro com a largura de um telemovel largo */
+html body.os-android.form-fold.fold-open #vera.ave .vera-sheet{ left:calc(50% - 320px); right:calc(50% - 320px) }
+body.os-android.form-fold.fold-open .abud-card{ left:calc(50% - 300px); right:calc(50% - 300px) }
+/* assistente inicial: cada passo numa coluna de 500 ao centro e a barra Anterior / Seguinte com 560 */
+body.os-android.form-fold #setup.asu .stp:not(.asu-welcome){ padding-left:calc(50% - 250px); padding-right:calc(50% - 250px) }
+body.os-android.form-fold #setup.asu .asu-nav{ left:calc(50% - 280px); right:calc(50% - 280px) }
+/* Face Key (Reconhecimento facial nas Definicoes): a coluna de 500 ao centro */
+body.os-android.form-fold .fid-modal{ padding-left:calc(50% - 250px); padding-right:calc(50% - 250px) }

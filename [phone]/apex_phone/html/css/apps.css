@@ -1,0 +1,704 @@
+/* ============================================================
+   ESTILOS ESPECÍFICOS DAS APPS
+   ============================================================ */
+
+/* ---------- Definições ---------- */
+.profile{ display:flex; align-items:center; gap:14px; padding:12px 16px }
+.profile .name{ font-size:var(--t-title3); font-weight:500 } .profile .sub{ font-size:var(--t-foot); color:var(--label2) }
+/* seletor de fundos (PearOS): 2 colunas, pré-visualização com relógio, nome por baixo, atual com anel azul e visto */
+.wp-grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:18px 16px; padding:6px 20px 12px }
+.wp-item{ display:flex; flex-direction:column; align-items:center; gap:8px; cursor:pointer }
+.wp-thumb{ width:100%; aspect-ratio:9/19.5; border-radius:24px; position:relative; overflow:hidden; background:#333; background-size:cover; background-position:center; box-shadow:0 8px 22px rgba(0,0,0,.18); transition:transform .3s var(--spring), box-shadow .25s }
+.wp-item:active .wp-thumb{ transform:scale(.97) }
+.wp-item.on .wp-thumb{ box-shadow:0 0 0 3px var(--bg), 0 0 0 6px var(--blue), 0 8px 22px rgba(0,0,0,.18) }
+.wp-thumb .wp-clock{ position:absolute; top:14%; left:0; right:0; text-align:center; color:#fff; font-size:34px; font-weight:600; letter-spacing:-1px; text-shadow:0 2px 10px rgba(0,0,0,.3) }
+.wp-thumb .wp-ph{ position:absolute; inset:0; display:flex; align-items:center; justify-content:center; color:var(--label2) }
+.wp-thumb .wp-check{ position:absolute; right:8px; bottom:8px; width:24px; height:24px; border-radius:50%; background:var(--blue); color:#fff; display:none; align-items:center; justify-content:center; box-shadow:0 2px 6px rgba(0,0,0,.3) } .wp-thumb .wp-check svg{ width:12px; height:12px }
+.wp-item.on .wp-check{ display:flex }
+.wp-name{ font-size:var(--t-foot); color:var(--label); font-weight:500; text-align:center }
+.wp-thumb .wallpaper{ position:absolute; inset:0 } .wp-thumb .wallpaper::after{ display:none }
+.about-hero{ text-align:center; padding:20px } .about-hero .dev{ font-size:var(--t-title2); font-weight:600 }
+/* num cartão como o resto das Definições (era a única secção solta) e com 44 px de alvo de toque */
+.accent-row{ display:flex; gap:12px; padding:16px; margin:0 16px; background:var(--bg2); border-radius:12px; flex-wrap:wrap; justify-content:center }
+.accent-row div{ width:44px; height:44px; border-radius:50%; cursor:pointer; border:3px solid transparent; box-shadow:0 0 0 1px var(--sep) } .accent-row div.on{ border-color:var(--label) }
+
+/* ---------- Calculadora ---------- */
+.calc{ position:absolute; inset:0; background:#000; color:#fff; display:flex; flex-direction:column; justify-content:flex-end; padding:0 18px calc(var(--safe-bottom) + 8px) }
+.calc-display{ text-align:right; font-size:84px; font-weight:300; letter-spacing:-1px; padding:0 8px 8px; line-height:1.1; white-space:nowrap; overflow:hidden; font-variant-numeric:tabular-nums }
+.calc-display.small{ font-size:56px } .calc-display.tiny{ font-size:40px }
+.calc-keys{ display:grid; grid-template-columns:repeat(4,1fr); gap:12px }
+/* teclas PearOS: círculos perfeitos, pressão = tom mais claro da própria cor (sem filter), zero em pílula com o dígito sobre o 1.º círculo */
+.calc{ --calc-num:#333336; --calc-fn:#A5A5A5; --calc-op:#FF9F0A }
+.ck{ aspect-ratio:1; border-radius:50%; background:var(--calc-num); display:flex; align-items:center; justify-content:center; font-size:34px; font-weight:400; cursor:pointer; transition:background .08s, transform .12s var(--spring) }
+.ck:active{ background:#737373; transform:scale(.96) } .ck.fn{ background:var(--calc-fn); color:#000; font-size:30px } .ck.fn:active{ background:#D9D9D9 } .ck.op{ background:var(--calc-op); font-size:38px } .ck.op:active{ background:#FCC78E } .ck.op.on{ background:#fff; color:var(--calc-op) }
+.ck.zero{ aspect-ratio:auto; grid-column:span 2; border-radius:999px; justify-content:flex-start; padding-left:calc(46px - .5em) }
+/* teclas científicas e a marca "Rad": só com o dobrável ABERTO (calculator.js) */
+.calc-sci,.calc-rad{ display:none }
+/* dobrável FECHADO: a calculadora de sempre, com a largura de um telemóvel ao centro (esticadas a 574/670 as teclas ficavam enormes) */
+body.form-fold .calc{ align-items:center }
+body.form-fold .calc-display,body.form-fold .calc-keys{ width:100%; max-width:404px }
+/* dobrável ABERTO: o visor ocupa a largura toda; à esquerda as teclas científicas e à direita as de sempre, com o mesmo tamanho de
+   um telemóvel. As linhas das duas metades alinham-se (a grelha estica a científica à altura da outra). */
+body.form-fold.fold-open .calc{ display:grid; grid-template-columns:440px 440px; grid-template-rows:1fr auto auto; align-content:end; justify-content:center; align-items:stretch; padding:0 0 calc(var(--safe-bottom) + 8px) }
+body.form-fold.fold-open .calc-rad{ grid-column:1 / -1; grid-row:1; align-self:end; justify-self:start; margin:0 0 6px 40px; font-size:17px; font-weight:500; color:rgba(255,255,255,.55); visibility:hidden }
+body.form-fold.fold-open .calc-rad.on{ visibility:visible }
+body.form-fold.fold-open .calc-rad{ display:block }
+body.form-fold.fold-open .calc-display{ grid-column:1 / -1; grid-row:2; max-width:none; padding:0 30px 10px; font-size:96px }
+body.form-fold.fold-open .calc-display.small{ font-size:72px } body.form-fold.fold-open .calc-display.tiny{ font-size:52px }
+body.form-fold.fold-open .calc-sci{ display:grid; grid-row:3; grid-column:1; grid-template-columns:repeat(5,1fr); grid-template-rows:repeat(5,1fr); gap:12px 14px; padding:0 20px 0 26px; align-items:center }
+body.form-fold.fold-open .calc-keys{ grid-row:3; grid-column:2; max-width:none; padding:0 22px 0 18px }
+.calc-sci .ck{ background:#1F1F21; font-size:21px; font-weight:500; letter-spacing:-.2px }
+.calc-sci .ck:active{ background:#4A4A4D }
+.calc-sci .ck.mr.on,.calc-sci .ck.bin.on{ background:#5A5A5E }
+
+/* ---------- Relógio ---------- */
+.clock-big{ text-align:center; font-size:76px; font-weight:200; letter-spacing:-1px; padding:40px 0 16px; font-variant-numeric:tabular-nums; color:var(--label) }
+.clock-ctl{ display:flex; justify-content:space-between; padding:0 24px; margin-bottom:12px }
+.cbtn{ width:93px; height:93px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:var(--t-body); cursor:pointer; border:2px solid transparent; position:relative }
+.cbtn::after{ content:''; position:absolute; inset:2px; border-radius:50%; border:2px solid var(--bg) }
+.cbtn.gray{ background:#3A3A3C; color:#fff } .cbtn.green{ background:#1B4D2C; color:#30D158 } .cbtn.red{ background:#4D1B1B; color:#FF453A }
+body:not(.dark) .cbtn.gray{ background:#E5E5EA; color:#000 }
+/* tema claro: os botões do Relógio do iOS são verde/vermelho CLAROS com o texto na cor (os escuros são os do modo escuro) */
+body:not(.dark) .cbtn.green{ background:#D5F2DC; color:#1E9E3E } body:not(.dark) .cbtn.red{ background:#FCDAD7; color:#E02B20 }
+.laps .li{ font-variant-numeric:tabular-nums } .tz-time{ font-size:var(--t-large); font-weight:300; color:var(--label) } .alarm-time{ font-size:52px; font-weight:300; letter-spacing:-1px }
+
+/* ---------- Telefone ---------- */
+.dial{ position:absolute; inset:0; display:flex; flex-direction:column; justify-content:flex-end; padding-bottom:calc(var(--safe-bottom) + 96px) }
+.dial-num{ text-align:center; font-size:40px; font-weight:300; height:60px; letter-spacing:.5px; color:var(--label); font-variant-numeric:tabular-nums }
+.dial-hint{ text-align:center; color:var(--blue); font-size:var(--t-subhead); height:22px }
+.dial-keys{ display:grid; grid-template-columns:repeat(3,80px); gap:14px 26px; justify-content:center; margin-top:10px }
+.dk{ width:80px; height:80px; border-radius:50%; background:var(--fill3); display:flex; flex-direction:column; align-items:center; justify-content:center; cursor:pointer; color:var(--label) }
+.dk:active{ background:var(--fill) } .dk .num{ font-size:34px; font-weight:400; line-height:1 } .dk .abc{ font-size:13px; font-weight:600; letter-spacing:1px; color:var(--label2) }
+.dial-actions{ display:grid; grid-template-columns:repeat(3,80px); gap:26px; justify-content:center; margin-top:14px; align-items:center }
+.call-btn{ width:80px; height:80px; border-radius:50%; background:var(--green); display:flex; align-items:center; justify-content:center; color:#fff; cursor:pointer; justify-self:center }
+.call-btn svg{ width:34px; height:34px } .call-btn.end{ background:var(--red) }
+.del-btn{ justify-self:center; color:var(--label2); cursor:pointer } .del-btn svg{ width:30px; height:30px }
+.call-screen{ position:absolute; inset:0; z-index:150; display:flex; flex-direction:column; align-items:center; color:#fff; border-radius:57px; overflow:hidden;
+  /* ⚠️ SEM color-mix() (2026-09-17): as cores já escurecidas vêm do phone.js em --t1/--t2. O color-mix estava DENTRO de
+     var() dos gradientes - quando a substituição falha no CEF o valor cai para o INICIAL (transparente) e o fallback da
+     linha anterior não salva: o ecrã de chamada ficava a mostrar a app que estava atrás (queixa in-game). */
+  background:radial-gradient(90% 55% at 50% 24%,var(--t1,#2F333D) 0%,transparent 70%), radial-gradient(120% 80% at 50% 100%,var(--t2,#2B2E33) 0%,transparent 70%), linear-gradient(180deg,#1C1F26,#0A0B0F) }
+.call-screen .cs-name{ font-size:var(--t-large); font-weight:500; margin-top:120px }
+.call-screen .cs-status{ font-size:var(--t-title3); color:rgba(255,255,255,.7); margin-top:6px; font-variant-numeric:tabular-nums }
+.cs-avatar{ width:120px; height:120px; border-radius:50%; margin-top:30px; background:linear-gradient(160deg,#9AA0AA,#5E6470); display:flex; align-items:center; justify-content:center; font-size:44px; overflow:hidden }
+/* avatar com anéis (a tocar) e aro verde (o outro a falar) - chamada de voz e recebida partilham isto (2026-09-19) */
+.cs-avwrap{ position:relative; margin-top:30px; width:136px; height:136px; display:flex; align-items:center; justify-content:center }
+.cs-avwrap .cs-avatar{ margin-top:0; position:relative; z-index:2; box-shadow:0 18px 44px rgba(0,0,0,.35), 0 0 0 5px rgba(48,209,88,0) }
+.talk-peer .cs-avwrap .cs-avatar{ box-shadow:0 18px 44px rgba(0,0,0,.35), 0 0 0 5px rgba(48,209,88,.85) }
+.cs-rings{ position:absolute; left:8px; top:8px; width:120px; height:120px; pointer-events:none; z-index:1 }
+.cs-rings i{ position:absolute; inset:0; border-radius:50%; border:2px solid rgba(255,255,255,.5); opacity:0 }
+@keyframes fcRing{ 0%{ opacity:.7; transform:scale(1) } 100%{ opacity:0; transform:scale(1.9) } }
+.ringing .cs-rings i,.incoming .cs-rings i{ animation:fcRing 2.4s ease-out infinite } .ringing .cs-rings i:nth-child(2),.incoming .cs-rings i:nth-child(2){ animation-delay:.8s } .ringing .cs-rings i:nth-child(3),.incoming .cs-rings i:nth-child(3){ animation-delay:1.6s }
+/* "Silenciado" por baixo da saída de áudio; só com o microfone cortado */
+.cs-muted{ display:none; align-items:center; gap:5px; margin-top:8px; padding:4px 10px; border-radius:999px; background:rgba(255,59,48,.22); color:#FFB4AE; font-size:var(--t-cap1); position:relative; z-index:2 }
+.muted .cs-muted{ display:inline-flex }
+/* cartão de fim (não atendeu / ocupado / recusou): Ligar novamente · Mensagem · Fechar */
+.cs-endcard{ position:absolute; left:24px; right:24px; bottom:calc(var(--safe-bottom,20px) + 40px); z-index:6; padding:18px 16px 14px; border-radius:26px; background:rgba(28,28,30,.92); color:#fff; text-align:center; box-shadow:0 20px 50px rgba(0,0,0,.45); opacity:0; transform:translateY(20px); transition:opacity .25s, transform .35s var(--spring2,ease) }
+.cs-endcard.in{ opacity:1; transform:none }
+.cs-endcard b{ display:block; font-size:19px; font-weight:600 } .cs-endcard > span{ display:block; font-size:14px; color:rgba(235,235,245,.6); margin-top:3px }
+.cs-endbtns{ display:flex; justify-content:center; gap:26px; margin-top:16px }
+.cs-endbtns > div{ display:flex; flex-direction:column; align-items:center; gap:7px; font-size:12px; color:rgba(255,255,255,.9); cursor:pointer }
+.cs-endbtns > div > svg{ width:52px; height:52px; padding:14px; border-radius:50%; background:rgba(120,120,128,.36) }
+.cs-endbtns .again > svg{ background:#30D158; color:#fff } .cs-endbtns .close > svg{ background:rgba(255,69,58,.85) }
+.ended .cs-actions,.ended .ft-bar,.ended .fc-ctl,.ended .fc-shot,.ended .fc-self{ opacity:.35; pointer-events:none }
+.endcard .cs-actions,.endcard .ft-bar,.endcard .fc-ctl,.endcard .fc-shot,.endcard .fc-self,.endcard .fc-center{ opacity:0 }
+.cs-avatar img{ width:100%; height:100%; object-fit:cover }
+.cs-actions{ display:grid; grid-template-columns:repeat(3,84px); gap:22px 30px; margin-top:auto; margin-bottom:40px }
+.cs-btn{ display:flex; flex-direction:column; align-items:center; gap:8px; font-size:var(--t-foot); color:rgba(255,255,255,.85); cursor:pointer }
+.cs-btn div{ width:76px; height:76px; border-radius:50%; background:rgba(255,255,255,.18); display:flex; align-items:center; justify-content:center }
+.cs-btn div svg{ width:32px; height:32px } .cs-btn div.on{ background:#fff; color:#000 } .cs-btn div.end{ background:var(--red) } .cs-btn.end-wrap{ grid-column:2 }
+.cs-keypad{ position:absolute; inset:0; background:rgba(0,0,0,.6); display:flex; flex-direction:column; justify-content:center; align-items:center; z-index:2 }
+.cs-keypad .dial-keys .dk{ background:rgba(255,255,255,.14); color:#fff } .cs-keypad .dial-keys .dk .abc{ color:rgba(255,255,255,.7) }
+.fav-row{ display:flex; gap:18px; padding:8px 16px 4px; overflow-x:auto }
+
+/* ---------- Mensagens ---------- */
+/* conversas ANCORADAS EM BAIXO, como no PearOS Mensagens e no Signal: com poucas bolhas ficavam coladas ao topo e meio ecrã vazio até ao compositor.
+   `flex:1 0 auto` (e não justify-content no pai) porque quando o histórico passa da altura o espaço livre é 0 e o topo continua alcançável. */
+.thread{ display:flex; flex-direction:column; justify-content:flex-end; flex:1 0 auto; gap:3px; padding:8px 16px 12px }
+.bubble{ max-width:74%; padding:8px 13px; border-radius:20px; font-size:var(--t-body); line-height:1.3; word-wrap:break-word; position:relative; cursor:pointer }
+.bubble.me{ align-self:flex-end; background:var(--blue); color:#fff; border-bottom-right-radius:5px }
+.bubble.them{ align-self:flex-start; background:var(--fill3); color:var(--label); border-bottom-left-radius:5px }
+.bubble.img{ padding:3px; overflow:hidden } .bubble.img .pic{ width:220px; height:220px; border-radius:16px; background-size:cover; background-position:center }
+.bubble.loc{ padding:0; overflow:hidden; width:240px } .bubble.loc .mapmini{ height:120px; background:linear-gradient(135deg,#BFE3A6,#A9D3F2); position:relative } .bubble.loc .mapmini svg{ position:absolute; left:50%; top:50%; width:26px; height:34px; transform:translate(-50%,-90%) }
+.bubble.loc .lt{ padding:8px 12px; font-size:var(--t-subhead); font-weight:600 }
+.bubble.ct{ display:flex; align-items:center; gap:10px; min-width:200px } .bubble.ct .avatar{ width:36px; height:36px; font-size:14px }
+/* app partilhada (Partilhar app na Home): ícone com tamanho no CSS (o do .tile por omissão é o da Home) */
+.bubble.app{ display:flex; align-items:center; gap:10px; min-width:190px } .bubble.app .tile{ width:44px; height:44px; flex:none; border-radius:10px; box-shadow:none } .bubble.app .ab{ font-size:var(--t-foot); opacity:.75 }
+.bubble .reply{ border-left:3px solid rgba(255,255,255,.5); padding-left:8px; opacity:.75; font-size:var(--t-foot); margin-bottom:4px }
+.bubble.them .reply{ border-left-color:var(--label3) }
+.bubble .tm{ display:block; font-size:13px; opacity:.6; margin-top:2px; text-align:right }
+.msg-status{ align-self:flex-end; font-size:var(--t-cap1); color:var(--label2); margin-top:-1px; padding-right:4px }
+.day-sep{ text-align:center; font-size:var(--t-cap1); color:var(--label2); padding:10px 0 4px }
+.composer{ display:flex; align-items:flex-end; gap:10px; padding:8px 12px calc(var(--safe-bottom) + 6px); background:var(--material); backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px); border-top:.5px solid var(--sep); flex:none; flex-wrap:wrap }
+/* Barra de escrita: Mensagens, DMs e comentários do Instashot, Match, Dark Chat.
+   A seta de enviar estava a 18 px = ~11 px reais, e é o botão mais premido do telemóvel.
+   ⚠️ O input TEM de subir junto: o .composer é align-items:flex-end, por isso com o campo
+   a 36 e os discos a 44 os botões ficavam 8 px acima da linha do texto. */
+.composer input{ flex:1; height:44px; border-radius:22px; border:.5px solid var(--sep-opaque); background:var(--bg2); padding:0 14px; font:inherit; color:var(--label); outline:none; min-width:120px }
+.composer .send{ width:44px; height:44px; border-radius:50%; background:var(--blue); color:#fff; display:flex; align-items:center; justify-content:center; cursor:pointer; flex:none } .composer .send svg{ width:24px; height:24px }
+.composer .plus{ width:44px; height:44px; border-radius:50%; background:var(--fill3); color:var(--label2); display:flex; align-items:center; justify-content:center; flex:none; cursor:pointer } .composer .plus svg{ width:26px; height:26px }
+.composer .replying{ width:100%; font-size:var(--t-foot); color:var(--label2); display:flex; justify-content:space-between; padding:0 6px } .composer .replying span:last-child{ color:var(--blue); cursor:pointer }
+.unread{ width:10px; height:10px; border-radius:50%; background:var(--blue); flex:none }
+.attach-row{ display:flex; gap:12px; padding:14px 16px } .attach-row div{ flex:1; background:var(--bg2); border-radius:14px; padding:14px 0; text-align:center; font-size:var(--t-cap1); color:var(--label); cursor:pointer }
+.attach-row div svg{ width:26px; height:26px; color:var(--blue); margin-bottom:4px }
+
+/* ---------- Meteorologia ---------- */
+.wx{ position:absolute; inset:0; color:#fff; overflow-y:auto; scrollbar-width:none; padding-bottom:120px } .wx::-webkit-scrollbar{ display:none }
+.wx.sunny{ background:linear-gradient(180deg,#3F8FE8 0%,#7DBBF5 60%,#A9D3F8 100%) } .wx.cloudy{ background:linear-gradient(180deg,#5B6B80 0%,#8797AB 60%,#A6B3C4 100%) }
+.wx.rain{ background:linear-gradient(180deg,#2C3E55 0%,#4B6178 60%,#5E7590 100%) } .wx.night{ background:linear-gradient(180deg,#0B1530 0%,#1C2B54 60%,#2E3F6E 100%) }
+/* tipos de tempo do jogo que não existiam na app inventada */
+.wx.storm{ background:linear-gradient(180deg,#1E2636 0%,#3A4658 60%,#4E5B70 100%) } .wx.snow{ background:linear-gradient(180deg,#7FA3C7 0%,#B9CFE3 60%,#DCE7F1 100%) } .wx.fog{ background:linear-gradient(180deg,#7C8794 0%,#A5AEB8 60%,#C2C8CF 100%) }
+.wx.snow .wx-card,.wx.fog .wx-card{ background:rgba(0,0,0,.12); border-color:rgba(255,255,255,.35) } body.fivem .wx.snow .wx-card,body.fivem .wx.fog .wx-card{ background:rgba(0,0,0,.18) }
+.wx-now{ display:flex; align-items:center; gap:14px } .wx-now svg{ width:44px; height:44px; flex:none } .wx-now b{ display:block; font-size:var(--t-title3); font-weight:600 } .wx-now span{ font-size:var(--t-foot); opacity:.85 }
+.wx-note{ margin:14px 16px 0; font-size:var(--t-cap1); opacity:.75; line-height:1.35 }
+.wx-hero{ text-align:center; padding-top:calc(var(--statusbar-h) + 30px) }
+.wx-hero .city{ font-size:var(--t-large); font-weight:400 } .wx-hero .temp{ font-size:96px; font-weight:200; letter-spacing:-3px; line-height:1 }
+.wx-hero .cond{ font-size:var(--t-title3); font-weight:500 } .wx-hero .hl{ font-size:var(--t-title3); font-weight:500; opacity:.9 }
+.wx-card{ margin:14px 16px 0; background:rgba(255,255,255,.14); border:.5px solid rgba(255,255,255,.18); border-radius:16px; padding:12px 14px; backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px) }
+.wx-card .t{ font-size:var(--t-foot); font-weight:600; opacity:.7; text-transform:uppercase; display:flex; gap:6px; align-items:center; margin-bottom:8px }
+.wx-hourly{ display:flex; gap:6px; overflow-x:auto; scrollbar-width:none } .wx-hourly::-webkit-scrollbar{ display:none }
+.wx-h{ display:flex; flex-direction:column; align-items:center; gap:6px; min-width:54px; font-size:var(--t-subhead); font-weight:500 } .wx-h svg{ width:26px; height:26px }
+.wx-day{ display:flex; align-items:center; gap:12px; padding:8px 0; border-top:.5px solid rgba(255,255,255,.18); font-size:var(--t-body) } .wx-day:first-child{ border-top:none } .wx-day .d{ width:48px } .wx-day svg{ width:24px; height:24px }
+.wx-bar{ flex:1; height:5px; border-radius:3px; background:rgba(0,0,0,.2); position:relative; margin:0 6px } .wx-bar span{ position:absolute; top:0; bottom:0; border-radius:3px; background:linear-gradient(90deg,#5AC8FA,#FFD60A,#FF9F0A) }
+.wx-grid{ display:grid; grid-template-columns:1fr 1fr; gap:12px; padding:0 16px; margin-top:14px } .wx-grid .wx-card{ margin:0; aspect-ratio:1 } .wx-grid .big{ font-size:var(--t-large); font-weight:400 }
+
+/* ---------- Fotos / Câmara ---------- */
+.photo-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:2px; padding:0 0 12px }
+.photo{ aspect-ratio:1; cursor:pointer; position:relative; background:#333; background-size:cover; background-position:center }
+.photo .fav{ position:absolute; left:6px; bottom:6px; color:#fff; width:17px; height:17px; filter:drop-shadow(0 1px 2px rgba(0,0,0,.6)) }
+/* No jogo, cada drop-shadow é uma camada de filtro - e há UM por foto favorita, por isso
+   uma galeria com 30 favoritos criava 30 camadas. O contraste faz-se com um disco escuro
+   por trás; a margem negativa anula o padding, logo a geometria da grelha não muda. */
+body.fivem .photo .fav{ filter:none; background:rgba(0,0,0,.34); border-radius:50%; padding:2px; margin:-2px }
+/* display:none por omissão - o círculo é criado sempre em photos.js e sem isto TODAS as miniaturas tinham um anel branco no canto (o JS só lhe mexe no style inline ao entrar em seleção) */
+.photo .sel{ display:none; position:absolute; right:6px; top:6px; width:22px; height:22px; border-radius:50%; border:1.5px solid #fff; background:rgba(0,0,0,.3) } .photo.on .sel{ background:var(--blue) }
+.viewer{ position:absolute; inset:0; background:#000; z-index:60; display:flex; flex-direction:column; touch-action:pan-y }
+.viewer .vimg{ flex:1; display:flex; align-items:center; justify-content:center; overflow:hidden; min-height:0; position:relative } .viewer .vimg > div{ width:100%; height:100%; background-size:contain; background-repeat:no-repeat; background-position:center }
+/* vídeo da galeria (1.1.4): o <video> cobre a capa quando o webm chega; nos dois sistemas */
+.viewer .vimg video.pv-video, body.os-android .agal-pv-img video.pv-video{ position:absolute; inset:0; width:100%; height:100%; object-fit:contain; background:#000; z-index:1; outline:none }
+.viewer .vbar{ display:flex; justify-content:space-around; padding:12px 8px calc(var(--safe-bottom) + 8px); color:#0A84FF; background:rgba(0,0,0,.55); transition:opacity .22s } .viewer .vbar svg{ width:26px; height:26px } .viewer .vbar div{ cursor:pointer }
+.viewer .vbar .fav.on{ color:#FF375F }
+/* visualizador de fotos (photos.js): barra de cima escura sem faixa clara, data com a hora por baixo; `bare` = só a foto */
+.viewer .pv-top{ background:rgba(0,0,0,.55); color:#fff; transition:opacity .22s }
+.viewer .pv-top::after{ display:none!important }
+.viewer .pv-title{ display:flex; flex-direction:column; align-items:center; gap:1px; color:#fff; opacity:1 } .viewer .pv-title b{ font-size:16px; font-weight:600 } .viewer .pv-title i{ font-size:12px; font-style:normal; opacity:.7 }
+.viewer.bare .pv-top,.viewer.bare .vbar{ opacity:0; pointer-events:none }
+/* 4 out (pedido do dono, "muito difícil de ler"): no tema claro os botões do visualizador apanhavam o vidro CLARO do
+   liquid27 com o texto branco por cima. O visualizador é sempre preto: vidro ESCURO com texto branco em qualquer tema
+   (seletores mais fortes que os body.dark.fivem .nb-btn do liquid27) */
+body .app-window .viewer .pv-top .nb-btn:not(.glass),body .app-window .viewer .pv-top .nb-left .nb-back{ background:rgba(58,58,62,.82); border-color:rgba(255,255,255,.16); color:#fff!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.12), 0 4px 14px rgba(0,0,0,.35) }
+body .app-window .viewer .pv-top .nb-btn:not(.glass):active,body .app-window .viewer .pv-top .nb-left .nb-back:active{ background:rgba(78,78,84,.9) }
+body .app-window .viewer .pv-top .nb-btn svg,body .app-window .viewer .pv-top .nb-back svg{ color:#fff }
+body .app-window .viewer .pv-top .pe-open{ font-size:16px; font-weight:600; letter-spacing:-.2px }
+.cam-app{ position:absolute; inset:0; background:#000; color:#fff; display:flex; flex-direction:column }
+/* O visor DEIXOU de ser um buraco: é uma <canvas> com a vista do jogo (js/gamerender.js). Por isso a
+   app volta a ser opaca também no jogo - antes `body.fivem .cam-app{background:transparent}` tornava
+   o telemóvel INTEIRO transparente para se ver o mundo por trás. */
+.cam-top{ height:calc(var(--statusbar-h) + 40px); display:flex; align-items:flex-end; justify-content:space-between; padding:0 22px 8px; font-size:var(--t-subhead); font-weight:600; color:#FFD60A }
+.cam-top div{ cursor:pointer } .cam-top .off{ color:#fff; opacity:.8 }
+.viewfinder{ flex:1; position:relative; overflow:hidden; background:#000 }
+/* O VISOR É A FOTO: o buffer da canvas tem exatamente o rácio da fotografia (3/4, ou 16/9 no PANO)
+   e a caixa CSS TEM de ter o mesmo - o `aspect-ratio` é posto pelo JS quando o modo muda. Se os
+   rácios divergirem o CEF estica o buffer e o que se vê deixa de ser o que sai. O object-fit é só
+   a rede de segurança para o caso de o max-height entrar em ação num visor muito baixo. */
+.viewfinder .cam-gl{ position:absolute; left:0; right:0; top:50%; transform:translateY(-50%); display:block; width:100%; max-height:100%; object-fit:contain; background:#000 }
+.viewfinder .scene{ position:absolute; inset:0; animation:drift 14s ease-in-out infinite alternate } body.fivem .viewfinder .scene{ display:none }
+@keyframes drift{ from{ transform:scale(1.05) translate(-2%,0) } to{ transform:scale(1.12) translate(2%,-2%) } }
+.viewfinder .flash{ position:absolute; inset:0; background:#fff; opacity:0; pointer-events:none } .viewfinder .flash.go{ animation:flash .35s ease-out } @keyframes flash{ 0%{opacity:.9} 100%{opacity:0} }
+.viewfinder .grid9{ position:absolute; inset:0; background-image:linear-gradient(rgba(255,255,255,.25) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.25) 1px,transparent 1px); background-size:33.33% 33.33%; pointer-events:none; display:none }
+.viewfinder.grid .grid9{ display:block }
+.cam-count{ position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-size:120px; font-weight:200; text-shadow:0 4px 20px rgba(0,0,0,.5); pointer-events:none }
+.cam-zoom{ display:flex; align-items:center; justify-content:center; gap:10px; padding:8px 0 }   /* sem align-items os círculos de 38 px encostavam ao topo do ativo, de 44 */
+.cam-zoom span{ width:38px; height:38px; border-radius:50%; background:rgba(0,0,0,.45); display:flex; align-items:center; justify-content:center; font-size:var(--t-foot); font-weight:600; cursor:pointer; color:#fff } .cam-zoom span.on{ color:#FFD60A; width:44px; height:44px }
+.cam-modes{ display:flex; justify-content:center; gap:22px; padding:8px 0 6px; font-size:var(--t-foot); font-weight:600; letter-spacing:.5px; color:rgba(255,255,255,.6) } .cam-modes .on{ color:#FFD60A } .cam-modes span{ cursor:pointer }
+.cam-bar{ display:flex; align-items:center; justify-content:space-between; padding:6px 34px calc(var(--safe-bottom) + 14px) }
+.shutter{ width:76px; height:76px; border-radius:50%; border:4px solid #fff; padding:3px; cursor:pointer } .shutter div{ width:100%; height:100%; border-radius:50%; background:#fff; transition:transform .1s, background .2s, border-radius .2s }
+.shutter:active div{ transform:scale(.85) } .shutter.rec div{ background:var(--red) } .shutter.recording div{ background:var(--red); border-radius:8px; transform:scale(.55) }
+.cam-thumb{ width:46px; height:46px; border-radius:8px; background:#333; border:1.5px solid rgba(255,255,255,.4); background-size:cover; background-position:center; cursor:pointer }
+.cam-flip{ width:46px; height:46px; border-radius:50%; background:rgba(255,255,255,.2); display:flex; align-items:center; justify-content:center; cursor:pointer } .cam-flip svg{ width:24px; height:24px }
+.rec-time{ position:absolute; top:calc(var(--statusbar-h) + 8px); left:50%; transform:translateX(-50%); background:var(--red); color:#fff; padding:3px 10px; border-radius:8px; font-size:var(--t-foot); font-weight:600; font-variant-numeric:tabular-nums }
+
+/* ---------- Surf ---------- */
+.web{ position:absolute; inset:0; display:flex; flex-direction:column; background:var(--bg2) }
+.web-frame{ flex:1; border:none; width:100%; background:#fff }
+.start{ flex:1; overflow-y:auto; padding-top:calc(var(--statusbar-h) + 10px) }
+.fav-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:14px 8px; padding:8px 20px }
+.fav{ display:flex; flex-direction:column; align-items:center; gap:6px; font-size:var(--t-cap1); color:var(--label); cursor:pointer; text-align:center }
+.fav .fi{ width:60px; height:60px; border-radius:14px; display:flex; align-items:center; justify-content:center; color:#fff; font-size:30px; font-weight:700; box-shadow:0 2px 8px rgba(0,0,0,.15) }
+.urlbar-wrap{ padding:8px 12px calc(var(--safe-bottom) + 8px); background:var(--material); backdrop-filter:blur(24px); -webkit-backdrop-filter:blur(24px); border-top:.5px solid var(--sep); flex:none }
+.urlbar{ height:44px; border-radius:22px; background:var(--fill3); display:flex; align-items:center; padding:0 14px; gap:8px; color:var(--label2) }
+.urlbar input{ flex:1; border:none; background:none; font:inherit; font-size:var(--t-body); color:var(--label); outline:none; text-align:center; min-width:0 } .urlbar svg{ width:22px; height:22px; flex:none }
+.web-tools{ display:flex; justify-content:space-around; padding-top:2px; color:var(--blue) } .web-tools svg{ width:27px; height:27px } .web-tools .dis{ color:var(--label3) } .web-tools div{ cursor:pointer }
+/* alvo de toque de 44 px nas barras de ferramentas (Surf, Mail, visualizador de Fotos): antes o alvo era o próprio glifo de 24 px */
+.web-tools div,.mail-actions div,.viewer .vbar div{ min-width:44px; height:44px; display:flex; align-items:center; justify-content:center }
+
+/* ---------- Música / Podcasts ---------- */
+/* (o antigo ecrã Now Playing `.np` saiu: nenhum JS o criava e o nome colidia com a classe de estado do #lock) */
+.progress{ width:100%; height:6px; border-radius:3px; background:rgba(255,255,255,.25); margin-top:22px; position:relative; cursor:pointer } .progress span{ position:absolute; left:0; top:0; bottom:0; border-radius:3px; background:rgba(255,255,255,.85) }
+.vol{ width:100%; margin-top:30px; display:flex; align-items:center; gap:10px } .vol svg{ width:16px; height:16px; opacity:.6 } .vol .progress{ margin:0 }
+.mini{ position:absolute; left:14px; right:14px; bottom:calc(var(--safe-bottom) + 84px); z-index:30; height:58px; border-radius:16px; background:var(--material); backdrop-filter:blur(30px); -webkit-backdrop-filter:blur(30px);
+  box-shadow:0 8px 30px rgba(0,0,0,.25); display:flex; align-items:center; gap:12px; padding:0 12px; cursor:pointer; color:var(--label); border:.5px solid var(--glass-border) }
+.mini .art{ width:40px; height:40px; border-radius:8px; flex:none } .mini .mt{ margin:0; flex:1; font-size:var(--t-subhead); font-weight:500; white-space:nowrap; overflow:hidden; text-overflow:ellipsis } .mini svg{ width:26px; height:26px }
+.album-grid{ display:grid; grid-template-columns:1fr 1fr; gap:16px; padding:8px 16px }
+.album{ cursor:pointer } .album .art{ width:100%; aspect-ratio:1; border-radius:10px; box-shadow:0 4px 12px rgba(0,0,0,.2) }
+.album .t{ font-size:var(--t-subhead); margin-top:6px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis } .album .a{ font-size:var(--t-foot); color:var(--label2) }
+.art{ background:linear-gradient(135deg,var(--c1,#888),var(--c2,#333)) }
+
+/* ---------- Mail ---------- */
+.mail-row .li-body .li-label{ font-weight:600 } .mail-row .prev{ font-size:var(--t-subhead); color:var(--label2); white-space:normal; line-height:1.3; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden }
+.mail-body{ padding:16px 20px; font-size:var(--t-body); line-height:1.5; white-space:pre-wrap }
+.mail-meta{ padding:14px 20px; border-bottom:.5px solid var(--sep) } .mail-meta .subj{ font-size:var(--t-title2); font-weight:600 } .mail-meta .from{ display:flex; gap:12px; align-items:center; margin-top:12px }
+.mail-actions{ display:flex; justify-content:space-around; padding:2px 0 calc(var(--safe-bottom) + 6px); border-top:.5px solid var(--sep); color:var(--blue); background:var(--material) } .mail-actions svg{ width:28px; height:28px } .mail-actions div{ cursor:pointer }
+
+/* ---------- Mapas ---------- */
+.map{ position:absolute; inset:0; overflow:hidden; background:#DCE3EC; cursor:grab; touch-action:none } body.dark .map,.map.dark{ background:#141a22 }
+.map:active{ cursor:grabbing }
+.tm-world{ position:absolute; left:0; top:0; transform-origin:0 0; will-change:transform }
+.tm-world img{ position:absolute; width:256px; height:256px; pointer-events:none; user-select:none; -webkit-user-drag:none }
+.map.dark .tm-world img{ filter:invert(.9) hue-rotate(180deg) saturate(.55) brightness(.95) }
+.tm-world svg.tm-route{ position:absolute; left:0; top:0; overflow:visible; pointer-events:none }
+.tm-pins{ position:absolute; left:0; top:0 }
+.tm-pins .map-pin{ margin:0; transform-origin:50% 100% }
+.tm-world .map-me{ transform-origin:center }
+.tm-nofetch{ position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); background:var(--material); color:var(--label); padding:10px 16px; border-radius:14px; font-size:var(--t-foot); z-index:5 }
+.map-canvas{ position:absolute; left:0; top:0; will-change:transform; transform-origin:0 0 }
+.map-canvas.img{ background-size:100% 100%; background-repeat:no-repeat }
+.map-canvas .park{ position:absolute; border-radius:40px; background:#BFE3A6 } body.dark .map-canvas .park{ background:#2B3F2A }
+.map-canvas .water{ position:absolute; border-radius:60px; background:#A9D3F2 } body.dark .map-canvas .water{ background:#1E3550 }
+.map-canvas .road{ position:absolute; background:#fff; box-shadow:0 0 0 1px #D9DDD4 } body.dark .map-canvas .road{ background:#3A404B; box-shadow:0 0 0 1px #2A2F38 }
+.map-canvas .road.h{ height:14px; left:0; right:0 } .map-canvas .road.v{ width:14px; top:0; bottom:0 }
+.map-canvas .road.main{ background:#FCE8A8; box-shadow:0 0 0 1px #E6C96E } body.dark .map-canvas .road.main{ background:#6B5B2C; box-shadow:0 0 0 1px #4B4020 }
+.map-canvas .road.main.h{ height:22px } .map-canvas .road.main.v{ width:22px }
+.map-canvas .lbl{ position:absolute; font-size:11px; font-weight:600; color:#5C6660; white-space:nowrap } body.dark .map-canvas .lbl{ color:#9AA3AE }
+.map-pin{ position:absolute; width:34px; height:44px; margin:-44px 0 0 -17px; cursor:pointer } .map-pin svg{ width:100%; height:100%; filter:drop-shadow(0 3px 4px rgba(0,0,0,.35)) }
+.map-pin.wp svg path{ fill:#BF5AF2 }
+.map-me{ position:absolute; width:24px; height:24px; border-radius:50%; background:#0A84FF; border:4px solid #fff; margin:-12px 0 0 -12px; box-shadow:0 0 0 9px rgba(10,132,255,.25); z-index:3 }
+.map-me::after{ content:''; position:absolute; left:50%; top:-18px; width:0; height:0; border:9px solid transparent; border-bottom:13px solid #0A84FF; transform:translateX(-50%) }
+.map-search{ position:absolute; left:14px; right:14px; bottom:calc(var(--safe-bottom) + 12px); z-index:10; background:var(--material); backdrop-filter:blur(24px); -webkit-backdrop-filter:blur(24px); border-radius:20px; padding:12px 14px;
+  box-shadow:0 10px 30px rgba(0,0,0,.25); color:var(--label); border:.5px solid var(--glass-border) } .map-search .search{ margin:0 }
+.map-card{ margin-top:10px; display:flex; align-items:center; gap:12px } .map-card .pill-btn{ margin-left:auto }
+.map-top{ position:absolute; top:calc(var(--statusbar-h) + 6px); right:14px; z-index:10; display:flex; flex-direction:column; gap:8px }
+.map-top div{ width:44px; height:44px; border-radius:11px; background:var(--material); display:flex; align-items:center; justify-content:center; color:var(--blue); box-shadow:0 4px 12px rgba(0,0,0,.15); cursor:pointer } .map-top svg{ width:26px; height:26px }
+.map-top div.on{ background:var(--blue); color:#fff }
+
+/* ---------- Encontrar (Find My) - desenho do PearOS 26: mapa a toda a altura, folha com barra de separadores flutuante ---------- */
+.fm{ position:absolute; inset:0; overflow:hidden }
+.fm-mapwrap{ position:absolute; inset:0 } .fm-mapwrap .map{ inset:0 }
+/* controlos do mapa: um grupo vertical de vidro no canto superior direito (como o Mapas do PearOS) */
+.fm-top{ position:absolute; top:calc(var(--statusbar-h) + 6px); right:14px; z-index:10; display:flex; flex-direction:column; background:var(--material); border-radius:12px; box-shadow:0 4px 14px rgba(0,0,0,.18); border:.5px solid var(--glass-border); overflow:hidden }
+.fm-top div{ width:44px; height:44px; display:flex; align-items:center; justify-content:center; color:var(--blue); cursor:pointer } .fm-top div + div{ border-top:.5px solid var(--sep) } .fm-top svg{ width:23px; height:23px }
+.fm-top div.on{ color:var(--blue) } .fm-top div:not(.on).loc{ color:var(--label2) }
+/* a folha (44 % do ecrã), com a barra de separadores a flutuar por cima do fundo dela */
+.fm-sheet{ position:absolute; left:0; right:0; bottom:0; height:46%; background:var(--material); border-radius:28px 28px 0 0; box-shadow:0 -8px 30px rgba(0,0,0,.18); display:flex; flex-direction:column; z-index:12; color:var(--label); backdrop-filter:blur(24px) saturate(160%); -webkit-backdrop-filter:blur(24px) saturate(160%) }
+body.fivem .fm-sheet{ backdrop-filter:none!important; -webkit-backdrop-filter:none!important }   /* no jogo o --material já é quase opaco (regra: zero backdrop-filter) */
+.fm-sheet .grabber{ width:36px; height:5px; border-radius:3px; background:var(--fill2); margin:8px auto 2px; flex:none }
+.fm-head{ display:flex; align-items:center; gap:8px; padding:4px 20px 6px; flex:none; min-height:44px } .fm-head b{ font-size:26px; font-weight:700; letter-spacing:-.4px; flex:1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis } .fm-head b.sm{ font-size:17px; text-align:center }
+.fm-back{ width:34px; height:34px; border-radius:50%; background:var(--fill3); color:var(--label); display:flex; align-items:center; justify-content:center; cursor:pointer; flex:none } .fm-back svg{ width:20px; height:20px }
+.fm-head b.sm + .fm-add,.fm-head .fm-back + b{ margin-right:34px }
+.fm-add{ width:32px; height:32px; border-radius:50%; background:var(--fill3); color:var(--blue); display:flex; align-items:center; justify-content:center; cursor:pointer; flex:none } .fm-add svg{ width:20px; height:20px }
+.fm-body{ flex:1; min-height:0; overflow-y:auto; scrollbar-width:none; padding-bottom:calc(var(--safe-bottom) + 84px) } .fm-body::-webkit-scrollbar{ display:none }
+.fm-body .group{ margin:6px 16px 4px }
+.fm-tabs{ bottom:calc(var(--safe-bottom) + 8px) } .fm-tabs .tb-pill{ pointer-events:auto }
+.fm-hdr{ padding:12px 20px 4px; font-size:var(--t-cap1); font-weight:600; color:var(--label2); text-transform:uppercase; letter-spacing:.3px }
+.fm-empty{ padding:18px 24px; text-align:center; color:var(--label2); font-size:var(--t-foot); line-height:1.4 } .fm-empty b{ display:block; color:var(--label); font-size:var(--t-body); margin-bottom:4px }
+/* folha so com o aviso (maps.js marca o corpo com .fm-isempty): o aviso fica ao centro do espaco livre da folha */
+.fm-body.fm-isempty{ display:flex; flex-direction:column }
+.fm-body.fm-isempty > .fm-empty{ flex:1 0 auto; display:flex; flex-direction:column; justify-content:center; padding-bottom:30px }
+/* linha: avatar 44, nome, estado; à direita "agora" (PearOS) */
+.fm-row{ display:flex; align-items:center; gap:12px; padding:9px 20px; cursor:pointer } .fm-row:active{ background:var(--fill4) }
+.fm-av .avatar{ width:44px; height:44px; font-size:16px }
+.fm-devav{ width:44px; height:44px; border-radius:50%; background:var(--fill3); color:var(--label); display:flex; align-items:center; justify-content:center } .fm-devav.big{ width:88px; height:88px; background:var(--fill3) } .fm-devav.big svg{ width:40px; height:40px }
+.fm-rb{ flex:1; min-width:0 } .fm-rb b{ display:block; font-size:var(--t-body); font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis } .fm-rb span{ font-size:var(--t-foot); color:var(--label2); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; display:block }
+.fm-rt{ font-size:var(--t-foot); color:var(--label2); flex:none }
+.fm-btns{ display:flex; gap:6px; flex:none } .fm-btns .pill-btn{ padding:6px 12px; font-size:var(--t-foot) }
+/* detalhe: avatar grande, três botões em vidro (Mensagem · Ligar · Direções) */
+.fm-det{ padding:6px 20px 8px }
+.fm-hero{ display:flex; flex-direction:column; align-items:center; text-align:center; gap:2px; padding:4px 0 14px } .fm-hero .avatar{ width:88px; height:88px; font-size:32px; margin-bottom:8px } .fm-hero b{ font-size:var(--t-title3); font-weight:700 } .fm-hero span{ font-size:var(--t-foot); color:var(--label2) }
+.fm-dacts{ display:flex; gap:10px } .fm-dact{ flex:1; background:var(--fill3); border-radius:14px; padding:12px 6px 10px; display:flex; flex-direction:column; align-items:center; gap:6px; color:var(--blue); font-size:var(--t-cap1); font-weight:600; cursor:pointer; transition:transform .15s var(--spring) } .fm-dact svg{ width:26px; height:26px } .fm-dact:active{ transform:scale(.95) } .fm-dact.dis{ color:var(--label3) }
+/* pino: avatar com aro branco e cauda; o selecionado ganha aro azul */
+.fm-pin{ width:auto; height:auto; margin:0; display:flex; flex-direction:column; align-items:center } .fm-pin .avatar{ width:40px; height:40px; font-size:15px; border:3px solid #fff; box-shadow:0 3px 10px rgba(0,0,0,.35) }
+.fm-pin .fm-tail{ display:block; width:0; height:0; margin-top:-3px; border:7px solid transparent; border-top:9px solid #fff; border-bottom:0; filter:drop-shadow(0 2px 2px rgba(0,0,0,.25)) }
+.fm-pin.sel .avatar{ border-color:var(--blue) } .fm-pin.sel .fm-tail{ border-top-color:var(--blue) }
+body.fivem .fm-pin .fm-tail{ filter:none }
+.tm-pins .fm-pin{ transform-origin:50% 100% }
+/* ---------- Bolsa / Health ---------- */
+.spark{ width:74px; height:30px } .spark path{ fill:none; stroke-width:1.6 }
+.chg{ min-width:74px; text-align:center; padding:5px 0; border-radius:6px; color:#fff; font-size:var(--t-subhead); font-weight:600; font-variant-numeric:tabular-nums } .chg.up{ background:var(--green) } .chg.down{ background:var(--red) }
+.bigchart{ width:100%; height:200px } .bigchart path{ fill:none; stroke-width:2 }
+.bars{ display:flex; align-items:flex-end; gap:6px; height:120px; padding-top:10px } .bars div{ flex:1; background:var(--orange); border-radius:4px 4px 0 0; min-height:4px; position:relative }
+.bars div span{ position:absolute; bottom:-18px; left:0; right:0; text-align:center; font-size:10px; color:var(--label2) }
+
+/* ---------- Calendário ---------- */
+.cal-head{ display:flex; align-items:flex-end; justify-content:space-between; padding:0 16px 10px 20px }
+.cal-head .cal-ttl{ display:flex; flex-direction:column } .cal-head .cal-ttl i{ font-style:normal; font-size:15px; font-weight:600; color:var(--red); line-height:1.2 } .cal-head b{ font-size:34px; font-weight:700; letter-spacing:-.6px; line-height:1.1; color:var(--label) }
+.cal-head .cal-nav{ display:flex; gap:10px; padding-bottom:3px } .cal-head .cal-nav span{ width:36px; height:36px; border-radius:50%; background:var(--fill3); color:var(--red); display:flex; align-items:center; justify-content:center; cursor:pointer; transition:transform .12s }
+.cal-head .cal-nav span:active{ transform:scale(.9) }
+.cal-dow{ display:grid; grid-template-columns:repeat(7,1fr); text-align:center; font-size:var(--t-cap1); font-weight:600; color:var(--label2); padding:0 10px 6px; border-bottom:.5px solid var(--sep); margin-bottom:4px }
+.cal-grid{ display:grid; grid-template-columns:repeat(7,1fr); padding:4px 10px; row-gap:6px }
+.cal-day{ width:44px; font-size:20px; aspect-ratio:1; display:flex; flex-direction:column; align-items:center; justify-content:center; font-size:var(--t-body); border-radius:50%; cursor:pointer; position:relative; margin:0 auto; width:40px }
+.cal-day.dim{ color:var(--label3) } .cal-day.today{ background:var(--red); color:#fff; font-weight:600 } .cal-day.sel:not(.today){ background:var(--fill3) }
+.cal-day.has-ev::after{ content:''; position:absolute; bottom:4px; width:5px; height:5px; border-radius:50%; background:var(--label2) } .cal-day.today.has-ev::after{ background:#fff }
+.ev-dot{ width:10px; height:10px; border-radius:50%; flex:none }
+
+/* ---------- Notas / Lembretes ---------- */
+/* min-height em vez de flex:1 - o pai (.content) é um bloco, logo o flex:1 era inerte e o editor ficava com a altura natural do textarea (2 linhas) */
+/* Notas como no iOS: título a negrito, excerto a cinzento, barra de baixo com a contagem e o lápis (amarelo das Notas) */
+.notes-list .li-label{ font-weight:600 } .notes-list .li{ min-height:58px }
+.notes-view .content{ padding-bottom:90px }
+.notes-bar{ position:absolute; left:0; right:0; bottom:0; z-index:4; height:calc(var(--safe-bottom,20px) + 50px); padding:0 18px var(--safe-bottom,20px); box-sizing:border-box; display:flex; align-items:center; justify-content:center; background:var(--material); border-top:.5px solid var(--sep) }
+.notes-bar .cnt{ font-size:var(--t-cap1); color:var(--label) } .notes-bar .new{ position:absolute; right:14px; top:3px; width:44px; height:44px; display:flex; align-items:center; justify-content:center; color:#E0A800; cursor:pointer }
+.notes-bar .new:active{ opacity:.5 }
+.note-editor .ta::first-line{ font-weight:700; font-size:22px }
+.note-editor{ min-height:100%; box-sizing:border-box; padding:6px 20px 40px; display:flex; flex-direction:column } .note-editor .ta{ flex:1 } .note-editor .date{ text-align:center; font-size:var(--t-cap1); color:var(--label2); padding:4px 0 10px }
+.rl-icon{ width:37px; height:37px; border-radius:50%; display:flex; align-items:center; justify-content:center; color:#fff } .rl-icon svg{ width:25px; height:25px }
+.rl-grid{ display:grid; grid-template-columns:1fr 1fr; gap:12px; padding:8px 16px }
+/* grelha em vez de float: o float vinha depois do ícone (uma caixa de bloco) e o contador caía para a linha do título em vez de ficar ao lado do ícone */
+.rl-tile{ background:var(--bg2); border-radius:14px; padding:12px; cursor:pointer; display:grid; grid-template-columns:1fr auto; align-items:center; row-gap:8px }
+.rl-tile .n{ font-size:var(--t-title2); font-weight:700; float:none; justify-self:end }
+.rl-tile .t{ font-size:var(--t-callout); font-weight:600; color:var(--label2); margin-top:0; grid-column:1 / -1 } .done .li-label{ color:var(--label3); text-decoration:line-through }
+
+/* ---------- Casa (qb-houses) / Garagem ---------- */
+/* os "acessórios" (.acc-grid/.acc) saíram com a app-brinquedo (2026-09-20); fica o cabeçalho da casa e as ações */
+.hs-hero{ margin-top:14px; text-align:center; padding:22px 16px 18px }
+.hs-ic{ width:64px; height:64px; border-radius:50%; margin:0 auto 10px; background:var(--green); color:#fff; display:flex; align-items:center; justify-content:center } .hs-ic.locked{ background:var(--orange) } .hs-ic svg{ width:30px; height:30px }
+.hs-name{ font-size:var(--t-title2); font-weight:700 } .hs-sub{ font-size:var(--t-foot); color:var(--label2); margin-top:2px }
+.hs-st{ display:inline-block; margin-top:10px; font-size:var(--t-cap1); font-weight:600; padding:3px 10px; border-radius:8px } .hs-st.locked{ background:rgba(255,159,10,.18); color:var(--orange) } .hs-st.open{ background:rgba(48,209,88,.18); color:var(--green) }
+.hs-acts{ margin-top:12px }
+.veh-card{ margin:0 16px 12px; background:var(--bg2); border-radius:16px; padding:14px; display:flex; gap:14px; align-items:center }
+.veh-card .vi{ width:54px; height:54px; border-radius:14px; background:var(--fill3); display:flex; align-items:center; justify-content:center; color:var(--blue) } .veh-card .vi svg{ width:28px; height:28px }
+.veh-card .plate{ font-family:var(--font-mono); background:var(--fill3); padding:2px 8px; border-radius:6px; font-size:var(--t-foot); letter-spacing:1px }
+.veh-card .st{ font-size:var(--t-cap1); font-weight:600; padding:3px 8px; border-radius:8px; color:#fff } .veh-card .st.in{ background:var(--green) } .veh-card .st.out{ background:var(--orange) } .veh-card .st.imp{ background:var(--red) }
+
+/* ---------- Wallet / Banking ---------- */
+.wstack{ padding:8px 16px; display:flex; flex-direction:column }
+.wcard{ height:190px; border-radius:16px; padding:18px; color:#fff; position:relative; box-shadow:0 10px 30px rgba(0,0,0,.25); margin-top:-120px; cursor:pointer; transition:transform .3s var(--spring); background:linear-gradient(135deg,var(--c1),var(--c2)) }
+.wcard:first-child{ margin-top:0 } .wcard .wn{ font-size:var(--t-headline); font-weight:600 } .wcard .wb{ position:absolute; bottom:18px; left:18px; font-size:var(--t-title1); font-weight:500 }
+.wcard .wt{ position:absolute; bottom:18px; right:18px; font-size:var(--t-foot); opacity:.85; letter-spacing:1px } .wcard .chip{ position:absolute; top:18px; right:18px; width:40px; height:28px; border-radius:6px; background:linear-gradient(135deg,#F5D67A,#C89B3C) }
+.bank-hero{ margin:6px 16px 0; border-radius:20px; padding:20px; color:#fff; background:linear-gradient(135deg,#1B7F4C,#0B3D24); box-shadow:0 10px 30px rgba(0,0,0,.25) }
+.bank-hero .bal{ font-size:var(--t-large); font-weight:600; margin-top:4px } .bank-hero .lb{ font-size:var(--t-foot); opacity:.8; text-transform:uppercase; font-weight:600 }
+.bank-actions{ display:flex; gap:10px; padding:14px 16px 0 } .bank-actions div{ flex:1; background:var(--bg2); border-radius:14px; padding:12px 0; text-align:center; font-size:var(--t-cap1); cursor:pointer; color:var(--label) }
+.bank-actions div svg{ width:24px; height:24px; color:var(--blue); margin-bottom:4px }
+.bill{ margin:0 16px 12px; background:var(--bg2); border-radius:16px; padding:14px; display:flex; gap:12px; align-items:center }
+.bill .bi{ width:44px; height:44px; border-radius:12px; display:flex; align-items:center; justify-content:center; color:#fff; flex:none } .bill .bi svg{ width:28px; height:28px }
+.bill .bt{ font-size:var(--t-body); font-weight:600 } .bill .bs{ font-size:var(--t-foot); color:var(--label2) } .bill .ba{ margin-left:auto; text-align:right; font-weight:600; font-size:var(--t-headline) }
+.bill .st{ font-size:var(--t-cap1); font-weight:600; padding:2px 8px; border-radius:8px; display:inline-block; margin-top:2px } .bill .st.pending{ background:rgba(255,159,10,.18); color:var(--orange) } .bill .st.paid{ background:rgba(48,209,88,.18); color:var(--green) } .bill .st.refused{ background:rgba(255,69,58,.18); color:var(--red) } .bill .st.cancelled{ background:var(--fill3); color:var(--label2) }
+
+/* ---------- Services ---------- */
+.svc-grid{ display:grid; grid-template-columns:1fr 1fr; gap:12px; padding:8px 16px }
+.svc{ border-radius:18px; padding:16px; color:#fff; cursor:pointer; min-height:126px; display:flex; flex-direction:column; justify-content:space-between; box-shadow:0 6px 16px rgba(0,0,0,.2) }
+.svc svg{ width:42px; height:42px } .svc b{ font-size:var(--t-headline) } .svc .n{ font-size:var(--t-cap1); opacity:.85 }
+.req{ margin:0 16px 12px; background:var(--bg2); border-radius:16px; padding:14px } .req .rt{ display:flex; justify-content:space-between; align-items:center; font-size:var(--t-body); font-weight:600 } .req .rd{ font-size:var(--t-subhead); color:var(--label2); margin-top:4px; line-height:1.35 }
+.req .st{ font-size:var(--t-cap1); font-weight:600; padding:2px 8px; border-radius:8px } .req .st.pending{ background:rgba(255,159,10,.18); color:var(--orange) } .req .st.accepted{ background:rgba(48,209,88,.18); color:var(--green) } .req .st.done{ background:var(--fill3); color:var(--label2) } .req .st.cancelled{ background:rgba(255,69,58,.18); color:var(--red) }
+.req .ra{ display:flex; gap:8px; margin-top:10px }
+
+/* ---------- Social: Instashot ---------- */
+.stories{ display:flex; gap:14px; padding:10px 14px; overflow-x:auto; scrollbar-width:none } .stories::-webkit-scrollbar{ display:none }
+/* A bolha das stories: o anel foi para 76 px (o Instagram usa ~72-76) e a célula para 88, que
+   é a largura de que "O teu Story" precisa a 14 px - estava em 66 e o rótulo saía cortado
+   como "O teu St…" por causa do text-overflow:ellipsis logo abaixo. */
+.story{ display:flex; flex-direction:column; align-items:center; gap:6px; font-size:var(--t-cap1); flex:none; cursor:pointer; width:88px }
+.story .ring{ width:76px; height:76px; border-radius:50%; padding:3px; background:linear-gradient(45deg,#F9CE34,#EE2A7B,#6228D7) } .story .ring.seen{ background:var(--sep-opaque) }
+.story .ring .avatar{ width:100%; height:100%; border:3px solid var(--bg); font-size:25px }
+.story span{ max-width:88px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap }
+.ig-post{ padding:6px 0 10px; border-bottom:.5px solid var(--sep) }
+.ig-head{ display:flex; align-items:center; gap:10px; padding:6px 14px } .ig-head b{ font-size:var(--t-subhead) } .ig-head .muted{ font-size:var(--t-cap1) } .ig-head .more{ width:44px; height:44px; margin:-7px -12px -7px auto; display:flex; align-items:center; justify-content:center; color:var(--label); cursor:pointer } .ig-head .more svg{ width:24px; height:24px } .ig-head .avatar{ width:32px; height:32px; font-size:13px }   /* Instagram: avatar 32, "..." 24 */
+.ig-img{ width:100%; aspect-ratio:1; background-size:cover; background-position:center; background-color:var(--fill3) }
+/* alvos de 44 px (eram caixas de 26 px, do tamanho do glifo). Os paddings compensam para as margens óticas ficarem iguais às de antes. */
+.ig-actions{ display:flex; gap:2px; padding:2px 5px 0; align-items:center } .ig-actions > div{ width:44px; height:44px; display:flex; align-items:center; justify-content:center; cursor:pointer }
+.ig-actions svg{ width:26px; height:26px; cursor:pointer } .ig-actions .liked{ color:var(--red) } .ig-actions .bm{ margin-left:auto }
+.ig-likes{ padding:0 14px; font-size:var(--t-subhead); font-weight:600 } .ig-cap{ padding:2px 14px; font-size:var(--t-subhead); line-height:1.35 } .ig-cap b{ margin-right:6px } .ig-cmts{ padding:2px 14px; font-size:var(--t-subhead); color:var(--label2); cursor:pointer } .ig-time{ padding:2px 14px; font-size:var(--t-cap1); color:var(--label2) }
+.ig-profile{ padding:12px 16px } .ig-profile .top{ display:flex; align-items:center; gap:22px } .ig-profile .stats{ display:flex; gap:22px; flex:1; justify-content:space-around; text-align:center } .ig-profile .stats b{ display:block; font-size:var(--t-headline) } .ig-profile .stats span{ font-size:var(--t-foot); color:var(--label2) }
+.ig-profile .bio{ margin-top:10px; font-size:var(--t-subhead); line-height:1.35 } .ig-profile .btns{ display:flex; gap:8px; margin-top:12px } .ig-profile .btns .pill-btn{ flex:1 }
+.ig-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:2px } .ig-grid div{ aspect-ratio:1; background-size:cover; background-position:center; background-color:var(--fill3); cursor:pointer }
+.hashtag{ color:var(--blue) }
+.story-view{ position:absolute; inset:0; z-index:70; background:#000; display:flex; flex-direction:column; color:#fff }
+.story-view .sv-img{ flex:1; background-size:cover; background-position:center } .story-view .sv-top{ position:absolute; top:calc(var(--statusbar-h) + 4px); left:14px; right:14px; display:flex; align-items:center; gap:10px }
+.story-view .sv-bar{ position:absolute; top:var(--statusbar-h); left:10px; right:10px; height:3px; background:rgba(255,255,255,.35); border-radius:2px; overflow:hidden } .story-view .sv-bar span{ display:block; height:100%; background:#fff; width:0; animation:sv 5s linear forwards } @keyframes sv{ to{ width:100% } }
+
+/* ---------- Social: Tweeter ---------- */
+.tw-post{ display:flex; flex-wrap:wrap; gap:10px; padding:12px 14px; border-bottom:.5px solid var(--sep); cursor:pointer }   /* wrap: a etiqueta de repost ocupa a linha toda (grid-column não fazia nada num flex) */
+.tw-post .tw-body{ flex:1; min-width:0 } .tw-post .tw-h{ display:flex; gap:6px; align-items:baseline; font-size:var(--t-subhead) } .tw-post .tw-h b{ white-space:nowrap; overflow:hidden; text-overflow:ellipsis } .tw-post .tw-h .muted{ font-size:var(--t-foot); white-space:nowrap }
+.tw-post .tw-t{ font-size:var(--t-body); line-height:1.35; margin-top:2px; white-space:pre-wrap; word-wrap:break-word } .tw-post .tw-img{ margin-top:8px; border-radius:14px; aspect-ratio:16/10; background-size:cover; background-position:center; background-color:var(--fill3) }
+.tw-post .tw-a{ display:flex; justify-content:space-between; margin-top:8px; color:var(--label2); font-size:var(--t-foot); padding-right:30px } .tw-post .tw-a div{ display:flex; align-items:center; gap:5px; cursor:pointer; min-height:44px; padding:0 8px; margin:-11px -8px }   /* alvo de 44 px sem mexer na geometria visivel: o padding e a margem negativa anulam-se */ .tw-post .tw-a svg{ width:22px; height:22px }
+.tw-post .tw-a .liked{ color:var(--pink) } .tw-post .rp-lbl{ flex-basis:100%; font-size:var(--t-foot); color:var(--label2); margin:0 0 2px 50px; padding:0; display:flex; gap:6px; align-items:center }   /* 50 = avatar 40 + gap 10 */ .tw-post .rp-lbl svg{ width:14px; height:14px }
+.fab{ position:absolute; right:18px; bottom:calc(var(--safe-bottom) + 90px); width:56px; height:56px; border-radius:50%; background:var(--blue); color:#fff; display:flex; align-items:center; justify-content:center; box-shadow:0 8px 20px rgba(0,0,0,.3); cursor:pointer; z-index:25 } .fab svg{ width:26px; height:26px }
+.compose-box{ padding:12px 16px; display:flex; gap:10px } .compose-box textarea{ min-height:120px }
+.tw-profile-hero{ height:120px; background:linear-gradient(135deg,var(--c1,#1D9BF0),var(--c2,#0A2E7A)) } .tw-profile{ padding:0 16px 12px; position:relative } .tw-profile .avatar{ margin-top:-40px; border:4px solid var(--bg); width:84px; height:84px; font-size:30px }
+.tw-profile .pill-btn{ position:absolute; right:16px; top:52px }   /* 52 = 40 (margem negativa do avatar, que colapsa para o .tw-profile) + 12 abaixo da capa: o botao fica na linha do avatar, sobre o fundo da pagina, como no X */
+.tw-profile .nm{ font-size:var(--t-title3); font-weight:700; margin-top:6px } .tw-profile .hd{ color:var(--label2); font-size:var(--t-subhead) } .tw-profile .bio{ margin-top:8px; font-size:var(--t-subhead); line-height:1.35 } .tw-profile .ff{ margin-top:8px; font-size:var(--t-subhead); color:var(--label2); display:flex; gap:16px } .tw-profile .ff b{ color:var(--label) }
+
+/* ---------- Contactos como no iOS (phone.js contactsView): lista corrida, letra fixa, "O meu cartão" grande, índice A-Z ---------- */
+.ct-view,.ct-view .content{ background:var(--bg2) }
+.ct-list .list .group{ margin:0; border-radius:0; background:transparent; overflow:visible }
+.ct-list .group-header{ position:sticky; top:0; z-index:2; padding:3px 20px; margin:0; font-size:15px; font-weight:700; color:var(--label); text-transform:none; letter-spacing:0; background:var(--bg2); border-bottom:.5px solid var(--sep) }
+.ct-list .li{ padding:6px 34px 6px 20px; min-height:52px } .ct-list .li-label{ font-weight:500 }
+.ct-list .li + .li::before,.ct-list .li.has-big + .li::before{ left:73px; right:0 }
+.ct-list .ct-me{ padding:4px 0 8px; border-bottom:.5px solid var(--sep); margin-bottom:2px }
+.ct-list .ct-me .avatar{ width:62px; height:62px; font-size:23px } .ct-list .ct-me .li{ min-height:78px; gap:15px }
+.ct-list .ct-me .li-label{ font-size:20px; font-weight:600; letter-spacing:-.2px } .ct-list .ct-me .li-sub{ font-size:14px }
+.ct-list .ct-blocked .group{ margin:18px 16px 28px; border-radius:12px; background:var(--bg); overflow:hidden }   /* "Contactos bloqueados" continua a ser um cartão, no fim */
+.ct-list .ct-blocked .li{ padding:7px 16px }
+.ct-index{ position:absolute; right:2px; top:50%; transform:translateY(-42%); z-index:5; display:flex; flex-direction:column; align-items:center; gap:1px; padding:4px 0 }
+.ct-index span{ width:18px; text-align:center; font-size:11px; font-weight:600; line-height:14px; color:var(--blue); cursor:pointer }
+.ct-index span:active{ transform:scale(1.5) }
+
+/* ---------- Social: Reels ---------- */
+/* camada de ecrã inteiro DENTRO do Instashot (a app Reels separada foi retirada): por cima da barra de separadores */
+.reels-lay{ position:absolute; inset:0; z-index:80; background:#000; opacity:0; transform:translateY(24px); transition:opacity .22s ease-out, transform .3s var(--curve,ease) }
+.reels-lay.in{ opacity:1; transform:none }
+.reels-back{ position:absolute; left:7px; top:calc(var(--statusbar-h) - 7px); width:44px; height:44px; display:flex; align-items:center; justify-content:center; z-index:3; color:#fff; cursor:pointer }
+.reels-back svg{ width:24px; height:24px; filter:drop-shadow(0 1px 4px rgba(0,0,0,.6)) }
+.reels{ position:absolute; inset:0; background:#000; overflow-y:auto; scroll-snap-type:y mandatory; scrollbar-width:none; color:#fff } .reels::-webkit-scrollbar{ display:none }
+.reel{ height:100%; scroll-snap-align:start; position:relative; overflow:hidden }
+.reel .rv{ position:absolute; inset:0; background-size:cover; background-position:center; animation:kb 12s ease-in-out infinite alternate } @keyframes kb{ from{ transform:scale(1) } to{ transform:scale(1.15) translate(2%,-2%) } }
+.reel .rv::after{ content:''; position:absolute; inset:0; background:linear-gradient(180deg,rgba(0,0,0,.25),transparent 28%,transparent 46%,rgba(0,0,0,.68)) }
+/* Os Reels NÃO têm tab bar (social.js monta o ecrã à mão), mas a camada inferior estava a reservar os ~90 px dela e flutuava a 124 px do fundo.
+   Descidos 76 px, mantendo as folgas internas: disco 8 px abaixo da coluna, e tudo alinhado ao mesmo var(--safe-bottom). */
+.reel .rside{ position:absolute; right:12px; bottom:calc(var(--safe-bottom) + 66px); display:flex; flex-direction:column; gap:20px; align-items:center; z-index:2 }
+.reel .rside div{ display:flex; flex-direction:column; align-items:center; gap:4px; font-size:var(--t-cap1); font-weight:600; cursor:pointer; text-shadow:0 1px 4px rgba(0,0,0,.6) } .reel .rside svg{ width:32px; height:32px; filter:drop-shadow(0 1px 4px rgba(0,0,0,.6)) } .reel .rside .liked{ color:var(--red) }
+.reel .rside .avatar{ width:46px; height:46px; border:2px solid #fff; font-size:16px }
+.reel .rbot{ position:absolute; left:14px; right:80px; bottom:calc(var(--safe-bottom) + 14px); z-index:2; text-shadow:0 1px 4px rgba(0,0,0,.6) } .reel .rbot b{ font-size:var(--t-headline) } .reel .rbot p{ font-size:var(--t-subhead); margin-top:4px; line-height:1.35 }
+.reel .rbot .snd{ display:flex; align-items:center; gap:6px; font-size:var(--t-foot); margin-top:8px; opacity:.9 } .reel .rbot .snd svg{ width:14px; height:14px }
+.reels-top{ position:absolute; top:calc(var(--statusbar-h) + 4px); left:0; right:0; z-index:3; display:flex; justify-content:center; gap:22px; font-size:var(--t-headline); font-weight:600; color:rgba(255,255,255,.6); text-shadow:0 1px 4px rgba(0,0,0,.6) } .reels-top span{ cursor:pointer; padding:12px 6px; margin:-12px -6px } .reels-top .on{ color:#fff }   /* alvo de 45 px; o texto nao sai do sitio */
+.reels-cam{ position:absolute; right:7px; top:calc(var(--statusbar-h) - 7px); width:44px; height:44px; display:flex; align-items:center; justify-content:center; z-index:3; color:#fff; cursor:pointer } .reels-cam svg{ width:26px; height:26px }   /* caixa de 44 centrada no mesmo ponto */
+
+/* ---------- Dark Chat ---------- */
+/* --glass e --glass-border TÊM de estar aqui: é o que a barra de separadores flutuante e o círculo de pesquisa usam, e dentro do
+   jogo o body.fivem define-os a BRANCO a 80 %. Sem os substituir, a barra ficava um borrão branco com os rótulos claros por cima. */
+.dc{ --bg:#0B0B0D; --bg2:#151518; --label:#E6E6E6; --label2:rgba(230,230,230,.6); --label3:rgba(230,230,230,.36); --sep:rgba(255,255,255,.1); --sep-opaque:#232329;
+  --blue:#7CFF9B; --fill2:rgba(255,255,255,.14); --fill3:rgba(255,255,255,.08); --material:rgba(20,20,22,.92);
+  --glass:rgba(28,28,34,.88); --glass-border:rgba(255,255,255,.14) }
+.dc .view,.dc .navbar.solid{ background:var(--bg) } .dc .navbar.solid{ background:rgba(11,11,13,.85) }
+.dc .bubble.me{ background:#1F3D2A; color:#C9FFD6 } .dc .bubble.them{ background:#1C1C22; color:#E6E6E6 } .dc .bubble{ font-family:var(--font-mono); font-size:17px }
+.dc .composer{ background:rgba(11,11,13,.9) } .dc .composer input{ background:#151518; color:#E6E6E6; border-color:rgba(255,255,255,.12) } .dc .composer .send{ background:#7CFF9B; color:#000 }
+.dc-room{ font-family:var(--font-mono) } .dc .anon{ font-size:var(--t-cap1); color:#7CFF9B; font-family:var(--font-mono); margin-bottom:2px } .dc .ttl{ font-size:13px; opacity:.5; font-family:var(--font-mono) }
+
+/* ---------- Livros / TV / Loja ---------- */
+.shelf{ display:grid; grid-template-columns:repeat(3,1fr); gap:16px 12px; padding:8px 16px }
+.book{ cursor:pointer } .book .cover{ aspect-ratio:2/3; border-radius:6px; box-shadow:0 6px 14px rgba(0,0,0,.25); display:flex; align-items:flex-end; padding:8px; color:#fff; font-size:var(--t-foot); font-weight:600; background:linear-gradient(160deg,var(--c1),var(--c2)) }
+.book .bt{ font-size:var(--t-foot); margin-top:6px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis } .book .ba{ font-size:var(--t-cap1); color:var(--label2) }
+.reader{ position:absolute; inset:0; background:#FAF6EE; color:#2B2620; display:flex; flex-direction:column; z-index:60 } body.dark .reader{ background:#141414; color:#D8D2C6 }
+.reader .page{ flex:1; padding:20px 26px; font-family:Georgia,'Times New Roman',serif; font-size:19px; line-height:1.6; overflow:hidden }
+.reader .pg-bar{ display:flex; justify-content:space-between; align-items:center; padding:10px 20px calc(var(--safe-bottom) + 8px); font-size:var(--t-foot); color:var(--label2) } .reader .pg-bar span{ color:var(--blue); cursor:pointer; padding:6px 10px }
+.poster-grid{ display:grid; grid-template-columns:1fr 1fr; gap:14px; padding:8px 16px }
+.poster{ aspect-ratio:16/10; border-radius:12px; background:linear-gradient(135deg,var(--c1),var(--c2)); cursor:pointer; display:flex; align-items:flex-end; padding:10px; color:#fff; font-weight:600; font-size:var(--t-subhead); box-shadow:0 6px 16px rgba(0,0,0,.25); text-shadow:0 1px 3px rgba(0,0,0,.5) }
+.poster.wide{ grid-column:span 2; aspect-ratio:16/9 }
+.player{ position:absolute; inset:0; background:#000; z-index:60; display:flex; flex-direction:column; justify-content:center; color:#fff }
+.player .scene{ height:56%; background:linear-gradient(135deg,var(--c1),var(--c2)); display:flex; align-items:center; justify-content:center; font-size:var(--t-title1); font-weight:600 }
+.player .pctl{ display:flex; align-items:center; justify-content:center; gap:50px; margin-top:26px } .player .pctl svg{ width:40px; height:40px; cursor:pointer } .player .progress{ margin:20px 26px 0; width:auto }
+.today-card{ margin:0 16px 16px; border-radius:18px; height:220px; background:linear-gradient(160deg,var(--c1),var(--c2)); color:#fff; padding:16px; display:flex; flex-direction:column; justify-content:flex-end; box-shadow:0 8px 24px rgba(0,0,0,.2); cursor:pointer }
+.today-card .k{ font-size:var(--t-foot); font-weight:600; text-transform:uppercase; opacity:.8 } .today-card .h{ font-size:var(--t-title1); font-weight:700; line-height:1.1 }
+
+/* ---------- Jogos ---------- */
+.ttt{ display:grid; grid-template-columns:repeat(3,96px); gap:8px; justify-content:center; padding:20px 0 }
+.cell{ width:96px; height:96px; border-radius:16px; background:var(--bg2); display:flex; align-items:center; justify-content:center; font-size:48px; font-weight:600; cursor:pointer } .cell.x{ color:var(--blue) } .cell.o{ color:var(--red) }
+.score{ display:flex; justify-content:center; gap:30px; font-size:var(--t-headline); padding:8px 0 }
+
+/* ---------- Tradutor ---------- */
+.tr-box{ margin:8px 16px; background:var(--bg2); border-radius:14px; padding:14px; min-height:120px } .tr-box .lang{ font-size:var(--t-foot); font-weight:600; color:var(--blue); margin-bottom:6px }
+.tr-box .ta{ min-height:80px } .tr-box .out{ font-size:var(--t-title3); line-height:1.4; min-height:60px } .tr-swap{ display:flex; justify-content:center; padding:4px } .tr-swap svg{ width:26px; height:26px; color:var(--blue); cursor:pointer }
+
+/* ---------- FaceCall ---------- */
+.ft-screen{ position:absolute; inset:0; z-index:150; background:linear-gradient(160deg,#33404F,#0E141C); color:#fff; display:flex; flex-direction:column; align-items:center }
+.ft-remote{ position:absolute; inset:0; background:radial-gradient(60% 50% at 50% 40%,#5D6B7C,#1A2028) }
+.ft-self{ position:absolute; top:calc(var(--statusbar-h) + 10px); right:16px; width:110px; height:150px; border-radius:14px; background:linear-gradient(160deg,#7B8794,#2E3742); box-shadow:0 8px 24px rgba(0,0,0,.4); z-index:2 }
+.ft-name{ position:relative; z-index:2; margin-top:calc(var(--statusbar-h) + 20px); font-size:var(--t-title2); font-weight:600; text-shadow:0 2px 8px rgba(0,0,0,.5) } .ft-status{ position:relative; z-index:2; opacity:.8; margin-top:4px; font-variant-numeric:tabular-nums }
+.ft-bar{ position:absolute; bottom:calc(var(--safe-bottom) + 10px); left:14px; right:14px; z-index:2; display:flex; justify-content:space-around; padding:14px; border-radius:30px; background:rgba(255,255,255,.14); backdrop-filter:blur(24px); -webkit-backdrop-filter:blur(24px); border:.5px solid rgba(255,255,255,.18) }
+.ft-bar div{ width:56px; height:56px; border-radius:50%; background:rgba(255,255,255,.2); display:flex; align-items:center; justify-content:center; cursor:pointer } .ft-bar div svg{ width:26px; height:26px } .ft-bar div.end{ background:var(--red) } .ft-bar div.on{ background:#fff; color:#000 }
+
+/* ---------- News ---------- */
+.news-hero{ margin:0 16px 14px; border-radius:16px; overflow:hidden; background:var(--bg2); cursor:pointer } .news-hero .img{ height:200px; background:linear-gradient(135deg,var(--c1),var(--c2)) } .news-hero .nb{ padding:12px 14px 14px }
+.news-hero .cat{ font-size:var(--t-cap1); font-weight:700; color:var(--red); text-transform:uppercase } .news-hero .h{ font-size:var(--t-title3); font-weight:700; line-height:1.2; margin-top:4px }
+.news-row{ display:flex; gap:12px; padding:12px 16px; border-top:.5px solid var(--sep); cursor:pointer } .news-row .img{ width:90px; height:90px; border-radius:10px; flex:none; background:linear-gradient(135deg,var(--c1),var(--c2)) }
+.news-row .cat{ font-size:var(--t-cap1); font-weight:700; color:var(--label2); text-transform:uppercase } .news-row .h{ font-size:var(--t-callout); font-weight:600; line-height:1.25; margin-top:3px }
+.article{ padding:0 20px 30px; font-size:var(--t-body); line-height:1.55 } .article h1{ font-size:var(--t-title1); line-height:1.15; margin:8px 0 12px } .article .img{ height:220px; border-radius:14px; background:linear-gradient(135deg,var(--c1),var(--c2)); margin-bottom:14px }
+
+/* ---------- AppShop ---------- */
+.store-row .get{ margin-left:auto }
+.app-hero{ display:flex; gap:16px; padding:12px 16px; align-items:center } .app-hero .tile{ width:110px; height:110px; flex:none } .app-hero .an{ font-size:var(--t-title3); font-weight:600 } .app-hero .ac{ color:var(--label2); font-size:var(--t-subhead) }
+.screens{ display:flex; gap:10px; padding:8px 16px; overflow-x:auto; scrollbar-width:none } .screens div{ flex:none; width:180px; aspect-ratio:9/19; border-radius:16px; background:linear-gradient(160deg,var(--c1),var(--c2)) }
+
+/* ---------- Câmara: três controlos e um caminho de volta ----------
+   Com o rato a apontar a câmara do jogo, acertar em botões pequenos era o difícil: as teclas
+   fazem o trabalho e esta barra existe só para as dizer. */
+.cam-back{ display:flex; align-items:center; justify-content:center; width:44px; height:44px; margin-right:auto;
+  border-radius:50%; background:rgba(255,255,255,.16); color:#fff; cursor:pointer }
+.cam-back svg{ width:20px; height:20px }
+.cam-back:active{ background:rgba(255,255,255,.3) }
+/* controlos de cima como na Câmara do iOS: círculos de vidro escuro bem espaçados (estavam todos colados no canto);
+   ligado = ícone amarelo, desligado = branco */
+.cam-top{ gap:12px; align-items:center; padding-top:var(--statusbar-h); padding-bottom:6px; height:calc(var(--statusbar-h) + 52px); box-sizing:border-box }
+.cam-top > div:not(.cam-back){ width:38px; height:38px; border-radius:50%; background:rgba(255,255,255,.13); display:flex; align-items:center; justify-content:center; flex:none; transition:background .15s, transform .12s }
+.cam-top > div:not(.cam-back):active{ transform:scale(.92); background:rgba(255,255,255,.26) }
+.cam-top > div:not(.cam-back) svg{ width:21px; height:21px }
+.cam-top > div:not(.cam-back):not(.off){ background:rgba(255,214,10,.18) }
+.cam-top .off{ opacity:1 }
+
+/* ---------- Apontar arrastando + controlos translúcidos ao meio do ecrã ----------
+   .camshot-layer cobre o ECRÃ INTEIRO (fora do aparelho) e existe só enquanto a app Câmara está
+   aberta. Fica por BAIXO do telemóvel - `body.camshot-on .stage` sobe-o para z-index:3 - para que
+   nenhum botão do aparelho deixe de receber cliques.
+   ⚠️ Sem backdrop-filter: no CEF do FiveM a caixa sairia PRETA opaca. A transparência é só rgba.
+   ⚠️ O nome NÃO pode ser `.cam-hud`: já existe (shell.css, painel antigo de ecrã inteiro) com
+      `inset:0` e `pointer-events:none` - herdava-se os dois e a barra ficava esticada e sem
+      cliques (era o rato a acertar na camada de arrasto por baixo). */
+.camshot-layer{ position:fixed; inset:0; z-index:1 }
+body.camshot-on .stage{ position:relative; z-index:3 }
+.camshot-drag{ position:absolute; inset:0; cursor:grab; touch-action:none }
+body.camshot-aim .camshot-drag{ cursor:grabbing }
+/* ---------- A DICA DE ARRASTAR (só na 1.ª vez) ----------
+   Nem um botão, nem texto: no ecrã não há nada que dispare - a fotografia é só no botão redondo do
+   telemóvel. A dica é um ponto macio AO CENTRO DO VISOR (camview.js hintShow) que desliza para o
+   lado e volta, 3 ciclos, sobre um rasto ténue. `pointer-events:none` para nunca roubar o arrasto;
+   o JS tira-a ao primeiro pointerdown no visor ou no animationend.
+   ⚠️ Só transform/opacity nos keyframes: um filter/blur animado no CEF custa um repaint por frame.
+   `forwards` para ficar invisível no fim dos ciclos (senão voltava a opaca até o JS a tirar). */
+.cam-hint{ position:absolute; inset:0; display:flex; align-items:center; justify-content:center; pointer-events:none; z-index:3; transition:opacity .22s }
+.cam-hint.gone{ opacity:0 }
+.cam-hint::before{ content:''; position:absolute; left:50%; top:50%; width:132px; height:6px; margin:-3px 0 0 -66px; border-radius:3px; background:rgba(255,255,255,.22) }
+.cam-hint-dot{ position:relative; width:52px; height:52px; border-radius:50%; background:rgba(255,255,255,.3); border:2px solid rgba(255,255,255,.8); box-shadow:0 2px 14px rgba(0,0,0,.35); animation:camHintDrag 1.5s ease-in-out 3 forwards }
+.cam-hint-dot::after{ content:''; position:absolute; left:50%; top:50%; width:16px; height:16px; margin:-8px 0 0 -8px; border-radius:50%; background:#fff }
+@keyframes camHintDrag{ 0%{ transform:translateX(-36px) scale(.8); opacity:0 } 10%{ transform:translateX(-36px) scale(1); opacity:1 } 50%{ transform:translateX(36px) scale(1); opacity:1 } 90%{ transform:translateX(-36px) scale(1); opacity:1 } 100%{ transform:translateX(-36px) scale(.8); opacity:0 } }
+
+/* ---------- DIAGONAL: o slider fino ao fundo do visor ----------
+   Vive DENTRO do visor, logo por cima da fila de zoom: abrir/fechar não mexe na altura do visor
+   nem no enquadramento, e sendo HTML por cima do canvas nunca entra na foto. Fundo só rgba
+   (sem backdrop-filter, que no CEF sai preto opaco). O botão que o abre é o `.tilt` do .cam-top. */
+.cam-tilt{ position:absolute; left:14px; right:14px; bottom:10px; z-index:3; display:flex; align-items:center; gap:8px; padding:6px 12px; border-radius:16px; background:rgba(0,0,0,.45); font-size:var(--t-cap2); font-weight:600; color:rgba(255,255,255,.7); font-variant-numeric:tabular-nums }
+.cam-tilt.hidden{ display:none }
+.cam-tilt input[type=range]{ flex:1; min-width:0; height:24px; margin:0; accent-color:#FFD60A; cursor:pointer }
+.cam-tilt .cam-tilt-val{ min-width:38px; text-align:right; color:#FFD60A }
+.cam-top .tilt svg{ width:24px; height:24px }
+
+/* ============================================================
+   DOBRÁVEIS (contrato v2, 2026-10-02): as apps nos ecrãs de 670 (fechado) e 1340 (aberto). A coluna de leitura (--fold-col, só
+   aberto), as duas colunas lista | detalhe (UI.split) e a barra direita do PearPhone Fold vivem no ui.css; aqui fica o que cada
+   app precisa a mais. Tudo debaixo de body.form-fold: os telemóveis normais não mudam.
+   ============================================================ */
+/* Meteorologia: o céu ocupa o ecrã todo; aberto, os cartões ficam na coluna; os seis indicadores passam a três por linha. No
+   PearPhone Fold o mapa e o atualizar estão na barra direita (weather.js) e a barra de baixo fica só com a hora da medição */
+/* (o céu e a barra de baixo são raízes da pilha: no PearPhone Fold a percentagem conta a largura toda, com a borda da barra
+   direita, ui.css; o meio da zona de conteúdo é (100% - --rail-w) / 2, que no NOVA, com --rail-w a 0, é o 50% de sempre) */
+body.form-fold.fold-open .wx{ padding-left:calc((100% - var(--rail-w)) / 2 - var(--fold-col) / 2); padding-right:calc((100% - var(--rail-w)) / 2 - var(--fold-col) / 2) }
+body.form-fold .wx-grid{ grid-template-columns:repeat(3,minmax(0,1fr)) }
+/* PearPhone Fold fechado: com o zoom do conteúdo (1,45) a zona fica com a largura de um telemóvel, por isso dois por linha como no
+   PearPhone 18 (três já não cabiam e o terceiro passava por baixo da barra direita) */
+body.os-ios.form-fold:not(.fold-open) .wx-grid{ grid-template-columns:repeat(2,minmax(0,1fr)) }
+body.form-fold.fold-open .wx-bottombar{ padding-left:calc((100% - var(--rail-w)) / 2 - var(--fold-col) / 2 + 22px)!important; padding-right:calc((100% - var(--rail-w)) / 2 - var(--fold-col) / 2 + 22px)!important }
+body.os-ios.form-fold .wx-bottombar{ justify-content:center!important }
+body.os-ios.form-fold .wx-bottombar .mapb,body.os-ios.form-fold .wx-bottombar .refresh{ display:none }
+/* Fotos: a grelha vai de ponta a ponta (como num tablet): quatro fotos por linha fechado, sete aberto; os álbuns em três / cinco */
+body.form-fold.fold-open .app-window[data-app="photos"] .nav-stack:not(.split) > .view > .content{ padding-left:0; padding-right:0 }
+body.os-android.form-fold.fold-open .app-window[data-app="photos"] .nav-stack:not(.split) > .view > .navbar{ padding-left:6px; padding-right:6px }
+body.form-fold .photo-grid{ grid-template-columns:repeat(4,1fr) }
+body.form-fold.fold-open .photo-grid{ grid-template-columns:repeat(7,1fr) }
+body.form-fold .album-grid{ grid-template-columns:repeat(3,1fr); gap:22px 18px; padding:8px 24px }
+body.form-fold.fold-open .album-grid{ grid-template-columns:repeat(5,1fr) }
+/* o visualizador de uma foto no PearPhone Fold: os botões estão na barra direita (photos.js), só a data fica em cima */
+body.os-ios.form-fold .app-window[data-app="photos"] > .viewer .pv-top .nb-back,body.os-ios.form-fold .app-window[data-app="photos"] > .viewer .pv-top .nb-btn,
+body.os-ios.form-fold .app-window[data-app="photos"] > .viewer > .vbar{ visibility:hidden; pointer-events:none }
+/* Surf: aberto, a página inicial e a barra do endereço na coluna; os favoritos em seis por linha */
+body.form-fold.fold-open .start{ padding-left:calc(50% - var(--fold-col) / 2); padding-right:calc(50% - var(--fold-col) / 2) }
+body.form-fold .fav-grid{ grid-template-columns:repeat(6,1fr) }
+body.form-fold.fold-open .urlbar-wrap{ padding-left:calc(50% - var(--fold-col) / 2 + 12px); padding-right:calc(50% - var(--fold-col) / 2 + 12px) }
+/* PearPhone Fold: retroceder, avançar, partilhar, marcador e separadores estão na barra direita (safari.js); em baixo fica o endereço */
+body.os-ios.form-fold .web-tools{ display:none }
+/* Mapas: o cartão da pesquisa flutua à esquerda, com a largura de um telemóvel; o mapa fica todo à vista */
+body.form-fold .map-search{ right:auto; width:420px }
+/* PearPhone Fold fechado: com o zoom do conteúdo (1,45) os 420 passavam por baixo da barra direita; o cartão vai de margem a margem
+   da zona do conteúdo (a raiz do mapa tem a borda transparente da barra, por isso o right conta a partir da aresta da zona) */
+body.os-ios.form-fold:not(.fold-open) .map-search{ right:14px; width:auto }
+/* PearPhone Fold: localizar, camadas, aproximar, afastar e guardar local estão na barra direita (maps.js) */
+body.os-ios.form-fold .map-top{ display:none }
+/* Encontrar (PearPhone Fold): os separadores, o voltar, o "+" e os botões do mapa estão na barra direita (maps.js); a folha deixa de
+   reservar o espaço da pílula de baixo e o título do detalhe fica à esquerda, como os outros */
+body.os-ios.form-fold .fm-tabs,body.os-ios.form-fold .fm-top,body.os-ios.form-fold .fm-head .fm-back,body.os-ios.form-fold .fm-head .fm-add{ display:none }
+body.os-ios.form-fold .fm-body{ padding-bottom:calc(var(--safe-bottom) + 16px) }
+body.os-ios.form-fold .fm-head b.sm{ font-size:22px; text-align:left; margin-right:0 }
+/* Encontrar: aberto, a folha passa a painel à esquerda (altura toda) e o centro do mapa fica na parte que se vê; fechado é como
+   no telemóvel (a folha em baixo) */
+body.form-fold.fold-open .fm-sheet{ left:12px; right:auto; top:calc(var(--statusbar-h) + 8px); bottom:12px; width:404px; height:auto; border-radius:30px }
+body.form-fold.fold-open .fm-mapwrap{ right:-428px }
+/* Contactos (dentro do Telefone, numa coluna só): o índice A a Z acompanha a coluna */
+body.form-fold.fold-open .nav-stack:not(.split) > .ct-view > .ct-index{ right:calc(50% - var(--fold-col) / 2) }
+/* apps de outros resources (iframe, thirdparty.js): foram feitas para 440 de largura e não sabem do dobrável, por isso ficam com
+   a largura de um telemóvel ao centro da zona do conteúdo, como as apps de telemóvel num tablet */
+body.form-fold .app-window.external iframe{ left:calc(50% - var(--rail-w) / 2 - 220px); right:auto; width:440px }
+/* 1.1.8: RegisterApp({ wide = true }) = a app sabe dispor-se em largura: no dobrável leva a zona do conteúdo toda (menos o
+   carril do PearOS) e recebe o tamanho real pelo 'init' / 'size' (thirdparty.js) e pelo resize da própria janela */
+body.form-fold .app-window.external.ext-wide iframe{ left:0; right:auto; width:calc(100% - var(--rail-w)) }   /* replaced element: left+right não estica, a largura tem de ser dita */
+/* SDK 1.5.0: campo "procurador" do teclado do telemóvel para um campo dentro do iframe (thirdparty.js extKeyboard). Invisível mas
+   focável; fica no topo da janela para o keyboard.js não a subir (o fundo dele está muito acima do teclado). */
+.app-window.external .ext-kb{ position:absolute; left:16px; top:80px; width:1px; height:1px; margin:0; padding:0; border:0; opacity:0; background:transparent; color:transparent; pointer-events:none; z-index:0; outline:none; box-shadow:none }
+/* barras de escrever das conversas (Dark Chat, Match, comentários): aberto, na coluna; nas duas colunas ficam como no telemóvel */
+body.form-fold.fold-open .app-window .nav-stack:not(.split) > .view > .composer{ padding-left:calc(50% - var(--fold-col) / 2 + 12px); padding-right:calc(50% - var(--fold-col) / 2 + 12px) }
+/* lista | detalhe (UI.split): a fatura aberta ganha um aro azul; no Dark Chat a sala aberta fica com o verde da app, discreto */
+body.form-fold .nav-stack.split > .view:first-child .bill.split-sel{ box-shadow:0 0 0 2px var(--blue) }
+body.os-ios.form-fold .nav-stack.split > .view:first-child .bill.split-sel{ box-shadow:none; background:var(--fill); border-radius:18px }   /* PearPhone Fold: a cápsula cinzenta do Duo */
+body.form-fold .dc .nav-stack.split > .view:first-child .li.split-sel{ background:rgba(124,255,155,.14) }
+/* Tweeter: aberto, o botão de escrever fica no canto da coluna (no PearPhone Fold está na barra direita, social.js) */
+body.form-fold.fold-open .nav-stack:not(.split) > .view > .fab{ right:calc(50% - var(--fold-col) / 2 + 18px) }
+body.os-ios.form-fold .view > .fab{ display:none }
+/* Notas (PearPhone Fold): o lápis está na barra direita (notes.js); a barra de baixo fica só com a contagem, numa pílula de vidro.
+   Com a lista ao lado da nota (aberto) a pílula sai e o fundo fica para a pesquisa. A pílula fica à altura do botão de baixo da
+   barra direita (centro a 72 do fundo), longe do indicador; o conteúdo reserva-lhe o espaço */
+body.os-ios.form-fold .notes-view > .content{ padding-bottom:112px }
+body.os-ios.form-fold .notes-bar{ left:50%; right:auto; bottom:53px; transform:translateX(-50%); height:38px; padding:0 18px; border-radius:19px; border-top:none;
+  background:rgba(255,255,255,.94); box-shadow:inset 0 0 0 .5px rgba(0,0,0,.08),0 4px 14px rgba(0,0,0,.1) }
+body.os-ios.form-fold.dark .notes-bar{ background:rgba(40,40,44,.94); box-shadow:inset 0 0 0 .5px rgba(255,255,255,.14),0 4px 14px rgba(0,0,0,.34) }
+body.os-ios.form-fold .notes-bar .new{ display:none }
+body.os-ios.form-fold .nav-stack.split > .view:first-child > .notes-bar{ display:none }
+/* Serviços: três cartões por linha */
+body.form-fold .svc-grid{ grid-template-columns:repeat(3,1fr) }
+/* Lembretes: as quatro listas inteligentes numa linha */
+body.form-fold .rl-grid{ grid-template-columns:repeat(4,1fr) }
+/* Relógio: cronómetro e temporizador com os dígitos maiores e os dois botões juntos ao centro (não nas pontas da coluna) */
+body.form-fold .clock-big{ font-size:120px; padding:64px 0 24px }
+body.form-fold .clock-ctl{ width:100%; max-width:460px; margin-left:auto; margin-right:auto }
+body.form-fold .app-window[data-app="clock"] .picker{ padding:56px 0 28px }
+/* ecrã da chamada (por cima de tudo, no #screen): o fundo cobre o ecrã inteiro mas o nome, os botões e o cartão de fim ficam na
+   zona do conteúdo, à esquerda da barra direita do PearPhone Fold (a pilha de estado continua por cima, na coluna) */
+body.os-ios.form-fold .call-screen{ padding-right:var(--rail-w) }
+body.form-fold .cs-endcard{ left:max(24px,calc(50% - var(--rail-w) / 2 - 240px)); right:max(calc(var(--rail-w) + 24px),calc(50% + var(--rail-w) / 2 - 240px)) }
+/* FaceCall (chamada, por cima de tudo): os controlos ficam juntos ao centro da zona do conteúdo, não espalhados pelo ecrã largo */
+body.os-ios.form-fold .fc .fc-center,body.os-ios.form-fold .fc .fc-poster-name{ right:var(--rail-w) }
+body.os-ios.form-fold .fc .fc-self{ right:calc(var(--rail-w) + 16px) }
+body.form-fold .fc .fc-ctl{ left:calc(50% - var(--rail-w) / 2 - 220px); right:calc(50% + var(--rail-w) / 2 - 220px) }
+body.form-fold .fc .fc-top{ left:max(16px,calc(50% - var(--rail-w) / 2 - 320px)); right:max(calc(var(--rail-w) + 16px),calc(50% + var(--rail-w) / 2 - 320px)) }
+/* Definições › Fundo: no dobrável as miniaturas (settings.js, classe .fold) mostram o ecrã do estado atual inteiro (--fold-w de
+   largura: 670 fechado, 1340 aberto). Sem o body.form-fold à frente para a miniatura ficar certa enquanto a página se repinta
+   depois de trocar de aparelho; a dock ganha à regra das miniaturas de 440 do lockgallery.css. */
+.lsg-thumb.fold .lsg-thumb-in,.lsg-thumb.fold .lsg-hcard{ width:var(--fold-w,880px) }
+body .lsg-set .lsg-thumb.fold .lsg-hicons .dock{ left:calc((var(--fold-w,880px) - var(--dock-w,403px)) / 2) }
+
+/* ---------- Dobráveis, 2.ª passagem (2026-10-03): ecrãs grandes como num tablet ----------
+   Definições (PearPhone Fold aberto, Duo, spec_duo 25): a lista da esquerda é uma barra lateral de DESTINOS, não uma lista de
+   telemóvel: sem cartões e sem setas, linhas de 61, 21 de ar entre os grupos e a linha aberta numa cápsula cinzenta de cantos 28
+   (abre logo em "Geral", settings.js). A conta continua no cartão de cima. */
+body.os-ios.form-fold .app-window[data-app="settings"] .nav-stack.split > .view:first-child .list > .group{ background:none; box-shadow:none; border-radius:0; overflow:visible; margin-left:10px; margin-right:10px }
+body.os-ios.form-fold .app-window[data-app="settings"] .nav-stack.split > .view:first-child .list > .group + .group{ margin-top:21px }
+body.os-ios.form-fold .app-window[data-app="settings"] .nav-stack.split > .view:first-child .list .li{ min-height:61px; padding-left:16px; padding-right:16px; border-radius:28px }
+body.os-ios.form-fold .app-window[data-app="settings"] .nav-stack.split > .view:first-child .list .li::before,
+body.os-ios.form-fold .app-window[data-app="settings"] .nav-stack.split > .view:first-child .list .li-chev{ display:none }
+body.os-ios.form-fold .app-window[data-app="settings"] .nav-stack.split > .view:first-child .list .li.split-sel{ background:var(--fill); border-radius:28px }
+body.os-ios.form-fold .app-window[data-app="settings"] .nav-stack.split > .view:first-child .list .li:hover:not(.split-sel){ background:var(--fill4,rgba(120,120,128,.08)) }
+/* Calendário aberto (PearPhone Fold): o mês à esquerda e o dia escolhido à direita, os dois à vista (sem coluna de telemóvel no meio
+   nem meio ecrã vazio por baixo). As classes cal-v / cal-today / cal-daylist só existem para isto (calendar.js) */
+body.os-ios.form-fold.fold-open .view.cal-v{ --fold-col:1120px }
+body.os-ios.form-fold.fold-open .cal-v > .content{ display:grid; grid-template-columns:minmax(0,1fr) 400px; grid-template-rows:auto auto auto 1fr; column-gap:32px; align-items:start; align-content:start }
+body.os-ios.form-fold.fold-open .cal-v > .content > .cal-head{ grid-column:1; grid-row:1 }
+body.os-ios.form-fold.fold-open .cal-v > .content > .cal-dow{ grid-column:1; grid-row:2 }
+body.os-ios.form-fold.fold-open .cal-v > .content > .cal-grid{ grid-column:1; grid-row:3; row-gap:22px; padding-top:12px; padding-bottom:12px }
+body.os-ios.form-fold.fold-open .cal-v > .content > .cal-grid .cal-day{ width:48px; font-size:21px }
+body.os-ios.form-fold.fold-open .cal-v > .content > .cal-today{ grid-column:1; grid-row:4 }
+body.os-ios.form-fold.fold-open .cal-v > .content > .cal-daylist{ grid-column:2; grid-row:1 / 5; padding-top:52px }
+/* Mapas aberto (PearPhone Fold): o cartão da pesquisa sobe para o canto de cima à esquerda, como nos mapas de um ecrã grande; os
+   resultados crescem para baixo e o teclado nunca o tapa */
+body.os-ios.form-fold.fold-open .map-search{ top:20px; bottom:auto; left:20px; width:400px; max-height:calc(100% - 40px); overflow-y:auto }
+
+
+/* Contactos sem nenhum contacto (4 out): o aviso ocupa o espaco livre e fica ao centro (por baixo do "O meu cartao") */
+.ct-view .content{ display:flex; flex-direction:column }
+.ct-view .content > .ct-list.ct-isempty{ flex:1 0 auto; display:flex; flex-direction:column }
+.ct-list.ct-isempty > .empty{ flex:1 0 auto; display:flex; flex-direction:column; align-items:center; justify-content:center; padding-bottom:12% }

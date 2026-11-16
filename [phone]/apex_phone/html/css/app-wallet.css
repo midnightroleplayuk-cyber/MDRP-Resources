@@ -1,0 +1,58 @@
+/* ---------- Wallet ---------- */
+.wl-card{ position:relative; margin:4px 16px 14px; height:238px; border-radius:22px; perspective:900px; transform-style:preserve-3d; transition:transform .35s var(--spring); cursor:pointer; -webkit-tap-highlight-color:transparent }
+.wl-card.slide{ flex:none; width:372px; margin:6px 16px; scroll-snap-align:center }
+/* pilha (PearOS Wallet, spec 40): os cartões de trás espreitam 44 px acima do principal, ligeiramente mais pequenos - profundidade subtil, só transform */
+.wl-stack{ position:relative; margin:4px 16px 14px; height:calc(238px + 44px * (var(--n,1) - 1)) }
+.wl-stack .wl-card{ position:absolute; left:0; right:0; margin:0; top:calc(44px * var(--i,0)); z-index:calc(var(--i,0) + 1); transform:scale(calc(1 - (var(--n,1) - 1 - var(--i,0)) * .025)); transform-origin:50% 100%; transition:transform .45s var(--spring), top .45s var(--spring) }
+.wl-stack .wl-card:active{ transform:scale(.985) }
+.wl-face{ position:absolute; inset:0; border-radius:22px; padding:20px; color:#fff; backface-visibility:hidden; -webkit-backface-visibility:hidden; overflow:hidden;
+  background:linear-gradient(135deg,var(--c1) 0%,var(--c2) 55%,var(--c3) 100%); box-shadow:0 18px 40px rgba(0,0,0,.28), inset 0 .5px 0 rgba(255,255,255,.35); transition:transform .6s cubic-bezier(.2,.9,.25,1) }
+.wl-face.back{ transform:rotateY(180deg) } .wl-card.flip .front{ transform:rotateY(180deg) } .wl-card.flip .back{ transform:rotateY(360deg) }
+.wl-row{ display:flex; justify-content:space-between; align-items:center } .wl-row.bottom{ position:absolute; left:20px; right:20px; bottom:18px }
+.wl-type{ font-size:var(--t-cap1); font-weight:700; letter-spacing:2px; opacity:.85 } .wl-bank{ font-size:var(--t-title3); font-weight:800; letter-spacing:-.5px; font-style:italic }
+.wl-chip{ width:44px; height:32px; border-radius:7px; margin-top:26px; background:linear-gradient(135deg,#F8E3A0,#C9A24A 60%,#E9D08A); box-shadow:inset 0 0 0 1px rgba(0,0,0,.15) }
+.wl-chip::after{ content:''; position:absolute; margin:8px 0 0 6px; width:32px; height:16px; border:1px solid rgba(0,0,0,.2); border-radius:3px }
+.wl-num{ margin-top:22px; font-size:19px; letter-spacing:2px; font-variant-numeric:tabular-nums; text-shadow:0 1px 2px rgba(0,0,0,.3) } .wl-num b{ letter-spacing:3px }
+/* IBAN a sério (AP + 10 dígitos em grupos de 4) cabe na largura do cartão; sem IBAN não se inventa número nenhum */
+.wl-num b{ font-size:16px; letter-spacing:1.5px; white-space:nowrap } .wl-noiban{ font-size:14px; letter-spacing:.5px; opacity:.8; font-weight:500 }
+.wl-warn{ margin:12px 16px 0; padding:12px 14px; border-radius:14px; background:rgba(255,69,58,.14); color:var(--red); font-size:var(--t-foot); font-weight:500; display:flex; gap:10px; align-items:center } .wl-warn svg{ width:18px; height:18px; flex:none }
+.wl-holder{ font-size:var(--t-foot); font-weight:600; letter-spacing:1px; text-transform:uppercase; opacity:.95 } .wl-exp{ font-size:var(--t-foot); font-variant-numeric:tabular-nums; opacity:.85 }
+.wl-shine{ position:absolute; inset:0; pointer-events:none; background:radial-gradient(circle at 30% 20%, rgba(255,255,255,.22), transparent 45%) }
+.wl-strip{ height:44px; background:#111; margin:14px -20px 0 } .wl-cvv{ margin-top:18px; background:#fff; color:#000; border-radius:6px; padding:8px 12px; display:flex; justify-content:space-between; font-family:var(--font-mono) } .wl-cvv span{ opacity:.6 }
+.wl-balance{ margin:0 16px; background:var(--bg2); border-radius:18px; padding:16px 18px; display:flex; align-items:center; justify-content:space-between; box-shadow:0 1px 0 var(--sep) }
+.wl-lbl{ font-size:var(--t-subhead); color:var(--label2); font-weight:500 } .wl-bal{ font-size:var(--t-title1); font-weight:700; margin-top:2px; letter-spacing:-.5px } .wl-sub{ font-size:var(--t-foot); color:var(--label2); margin-top:2px }
+.wl-send{ background:var(--label); color:var(--bg); padding:11px 22px; border-radius:22px; font-weight:600; cursor:pointer; transition:transform .2s var(--spring) } .wl-send:active{ transform:scale(.94) }
+.wl-actions{ display:flex; gap:10px; margin:12px 16px 0 } .wl-actions .a{ flex:1; background:var(--bg2); border-radius:16px; padding:12px 0 10px; display:flex; flex-direction:column; align-items:center; gap:6px; font-size:var(--t-cap1); font-weight:500; cursor:pointer; color:var(--label); transition:transform .2s var(--spring) }
+.wl-actions .a svg{ width:24px; height:24px; color:var(--blue) } .wl-actions .a:active{ transform:scale(.94) }
+.wl-head{ display:flex; justify-content:space-between; align-items:center; padding:22px 20px 8px } .wl-head b{ font-size:var(--t-title3); font-weight:700 } .wl-head span{ color:var(--blue); font-size:var(--t-subhead); font-weight:500; display:flex; align-items:center; gap:2px; cursor:pointer }
+.wl-list{ margin:0 16px; background:var(--bg2); border-radius:16px; overflow:hidden }
+.wl-tx{ display:flex; align-items:center; gap:12px; padding:12px 14px; position:relative } .wl-tx + .wl-tx::before{ content:''; position:absolute; left:64px; right:0; top:0; height:.5px; background:var(--sep) }
+.wl-ti{ width:40px; height:40px; border-radius:50%; display:flex; align-items:center; justify-content:center; color:#fff; font-weight:600; flex:none }
+.wl-tb{ flex:1; min-width:0 } .wl-tb b{ display:block; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis } .wl-tb span{ font-size:var(--t-foot); color:var(--label2) }
+.wl-ta{ font-weight:700; font-variant-numeric:tabular-nums } .wl-ta.in{ color:var(--green) } .wl-ta.out{ color:var(--red) }
+.wl-carousel{ display:flex; overflow-x:auto; scroll-snap-type:x mandatory; scrollbar-width:none; padding:6px 0 } .wl-carousel::-webkit-scrollbar{ display:none }
+.wl-dots{ display:flex; justify-content:center; gap:6px; padding:6px 0 10px } .wl-dots span{ width:6px; height:6px; border-radius:50%; background:var(--label4) } .wl-dots span.on{ background:var(--label) }
+.wl-who{ padding:8px 16px } .wl-whoin{ display:flex; align-items:center; gap:10px; background:var(--bg2); border-radius:14px; padding:0 12px; height:50px; color:var(--label2) } .wl-whoin input{ flex:1; border:none; background:none; font:inherit; font-size:var(--t-body); color:var(--label); outline:none } .wl-whoin .pick{ color:var(--blue); cursor:pointer } .wl-whoin svg{ width:22px; height:22px }
+.wl-amt{ text-align:center; padding:10px 16px 0 } .wl-amtv{ font-size:56px; font-weight:700; letter-spacing:-1px; font-variant-numeric:tabular-nums; transition:color .2s } .wl-amtv .cur{ font-size:30px; opacity:.5; margin-right:6px } .wl-amtv.over{ color:var(--red) }
+.wl-chips{ display:flex; justify-content:center; gap:8px; margin:12px 0 } .wl-chips span{ padding:7px 14px; border-radius:16px; background:var(--fill3); font-size:var(--t-subhead); font-weight:600; cursor:pointer }
+.wl-pad{ display:grid; grid-template-columns:repeat(3,1fr); gap:8px 20px; max-width:300px; margin:0 auto } .wl-pad .k{ height:54px; display:flex; align-items:center; justify-content:center; font-size:28px; font-weight:400; border-radius:14px; cursor:pointer; transition:background .25s, transform .15s var(--spring) } .wl-pad .k:active{ background:var(--fill3); transform:scale(.94) } .wl-pad .k.blank{ cursor:default }
+.wl-confirm{ text-align:center; padding:6px 16px 10px } .wl-cavatar{ display:flex; justify-content:center; margin-bottom:8px } .wl-cname{ font-size:var(--t-title3); font-weight:600 } .wl-cnum{ color:var(--label2); font-size:var(--t-subhead) } .wl-camt{ font-size:40px; font-weight:700; margin:10px 0 2px } .wl-cnote{ color:var(--label2); font-style:italic }
+.wl-success{ position:absolute; inset:0; z-index:80; background:linear-gradient(160deg,#34C759,#1B8F3E); color:#fff; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px; opacity:0; transition:opacity .3s } .wl-success.in{ opacity:1 }
+.wl-check{ width:120px; height:120px; margin-bottom:10px } .wl-check svg{ width:100%; height:100% } .wl-check .c{ stroke-dasharray:176; stroke-dashoffset:176; animation:draw .6s ease-out forwards } .wl-check .p{ stroke-dasharray:40; stroke-dashoffset:40; animation:draw .35s ease-out .5s forwards } @keyframes draw{ to{ stroke-dashoffset:0 } }
+.wl-stitle{ font-size:var(--t-large); font-weight:700 } .wl-ssub{ font-size:var(--t-body); opacity:.9; margin-bottom:14px }
+/* PearPhone Fold aberto (wallet.js .wl-home): os cartões numa coluna à esquerda, com a largura de um cartão (no ecrã de 1212 ficavam
+   esticados a 730), e o saldo, as ações e as transações à direita. O título grande ocupa as duas */
+body.os-ios.form-fold.fold-open .view.wl-home{ --fold-col:1120px }
+body.os-ios.form-fold.fold-open .wl-home > .content{ display:grid; grid-template-columns:460px minmax(0,1fr); column-gap:12px; align-content:start; align-items:start }
+body.os-ios.form-fold.fold-open .wl-home > .content > *{ grid-column:2 }
+body.os-ios.form-fold.fold-open .wl-home > .content > .large-title{ grid-column:1 / -1 }
+body.os-ios.form-fold.fold-open .wl-home > .content > .wl-stack{ grid-column:1; grid-row:2 / span 8; margin-top:4px }
+body.os-ios.form-fold.fold-open .wl-home > .content > .wl-head{ padding-top:20px }
+/* Cartões (PearPhone Fold): a sombra dos cartões ganha espaço por cima e por baixo (o carrossel cortava-a numa faixa cinzenta de
+   arestas duras; as margens negativas devolvem o espaço). Aberto, o carrossel vai de uma ponta à outra da zona do conteúdo com o
+   primeiro cartão na coluna (o seguinte já não é cortado a meio do ecrã) e a folga do fim deixa o último cartão chegar ao início da
+   coluna (a 760 com dois cartões o segundo nunca ficava escolhido). 404 = cartão de 372 + as margens de 16 */
+body.os-ios.form-fold .wl-carousel{ padding-top:36px; padding-bottom:56px; margin-top:-30px; margin-bottom:-50px }
+body.os-ios.form-fold.fold-open .wl-carousel{ --wl-g:max(0px,calc((var(--screen-w) - var(--rail-w) - var(--fold-col)) / 2)); margin-left:calc(-1 * var(--wl-g)); margin-right:calc(-1 * var(--wl-g));
+  padding-left:var(--wl-g); padding-right:calc(100% + var(--wl-g) - 404px); scroll-padding-left:calc(var(--wl-g) + 16px) }
+body.os-ios.form-fold.fold-open .wl-carousel > .wl-card.slide{ scroll-snap-align:start }

@@ -1,0 +1,13 @@
+/* Tipos de letra do Android (Nova UI). So atua com body.os-android.
+   Outfit VARIAVEL (pesos 100 a 900 num so ficheiro por alfabeto), SIL Open Font License 1.1 (fonts/Outfit-OFL.txt).
+   E a letra geometrica dos titulos grandes e do relogio da Nova UI (--font-display e --font-clock no oneui-tokens.css);
+   o corpo do texto continua a Inter (tokens.css).
+   Partida por unicode-range como a Inter: o browser so descarrega o ficheiro do alfabeto que aparece no ecra.
+   Um @font-face so declara a familia: nada e descarregado enquanto nenhuma regra usar 'Outfit', e so as regras
+   em body.os-android a usam, por isso o PearOS nao muda nem carrega nada daqui.
+   Ficheiros: html/fonts/Outfit-var-latin.woff2 (A a Z, acentos do portugues, numeros, pontuacao, euro) e
+   html/fonts/Outfit-var-latin-ext.woff2 (restantes letras latinas). */
+@font-face{ font-family:'Outfit'; font-style:normal; font-weight:100 900; font-display:swap; src:url('../fonts/Outfit-var-latin.woff2') format('woff2');
+  unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD }
+@font-face{ font-family:'Outfit'; font-style:normal; font-weight:100 900; font-display:swap; src:url('../fonts/Outfit-var-latin-ext.woff2') format('woff2');
+  unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF }

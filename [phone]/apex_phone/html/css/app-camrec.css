@@ -1,0 +1,89 @@
+/* ============================================================
+   CÂMARA: GRAVAÇÃO DE VÍDEO + LEITOR DE VÍDEO DA GALERIA (ronda 2 de 1.5.0, agente MEDIA)
+   Prefixos .cr- (HUD do vídeo no visor, js/camview.js) e .vpl- (leitor da galeria, window.VideoPlayer em apps/photos.js).
+   PearOS primeiro; Nova UI atrás de body.os-android. Regras do CEF: sem backdrop-filter, sem filter, sem color-mix, sem
+   :has, sem aspect-ratio; só transform e opacity animam; centrar sem left:50% (o zoom do aparelho descentra-o no CEF).
+   ============================================================ */
+
+/* ---------- HUD do vídeo: "máx. 0:45" antes de gravar; pílula vermelha com o tempo, o que falta e a barra a gravar ---------- */
+.cr-hud{ position:absolute; top:10px; left:0; right:0; z-index:4; display:flex; flex-direction:column; align-items:center; gap:5px; pointer-events:none }
+.cr-hud.hidden{ display:none }
+.cr-pill{ display:none; align-items:center; gap:6px; height:28px; padding:0 12px; border-radius:8px; background:#FF3B30; color:#fff; font-size:16px; font-weight:600; font-variant-numeric:tabular-nums; letter-spacing:.2px }
+.cr-dot{ display:none; width:8px; height:8px; border-radius:50% }
+.cr-left{ display:block; padding:3px 10px; border-radius:999px; background:rgba(0,0,0,.45); color:rgba(255,255,255,.92); font-size:12.5px; font-weight:600; font-variant-numeric:tabular-nums }
+.cr-bar{ display:none; width:110px; height:3px; border-radius:2px; overflow:hidden; background:rgba(255,255,255,.28) }
+.cr-bar i{ display:block; width:100%; height:100%; background:#FF3B30; transform-origin:0 50%; transform:scaleX(0); will-change:transform }
+.cr-hud.cr-on .cr-pill{ display:flex } .cr-hud.cr-on .cr-bar{ display:block }
+.cr-hud.cr-on .cr-left{ background:transparent; padding:0; font-size:12px; color:rgba(255,255,255,.88) }
+.cr-hud.cr-end .cr-left{ color:#FF6961; font-weight:700 }
+.cr-hud.cr-paused .cr-pill{ background:rgba(60,60,67,.85) }
+
+/* ---------- chip do microfone (só no modo VÍDEO) e envio em curso ---------- */
+.cr-mic,.cr-up{ position:absolute; top:10px; z-index:4; display:flex; align-items:center; gap:5px; height:26px; padding:0 10px; border-radius:999px; background:rgba(0,0,0,.5); color:#fff; font-size:12px; font-weight:600; white-space:nowrap }
+.cr-mic{ right:10px; cursor:pointer }
+.cr-mic.hidden,.cr-up.hidden{ display:none }
+.cr-mic-ic{ display:flex } .cr-mic-ic svg{ width:15px; height:15px }
+.cr-mic[data-st="off"],.cr-mic[data-st="error"],.cr-mic[data-st="denied"]{ color:#FFB4AE }
+.cr-mic[data-st="asking"]{ color:rgba(255,255,255,.75) }
+.cr-up{ left:10px }
+.cr-up-dot{ width:7px; height:7px; border-radius:50%; background:#30D158 }
+/* a gravar: o chip do microfone e o do envio saem de cima do tempo (ficam só o tempo e o que falta) */
+.cam-app.cr-recording .cr-mic{ display:none }
+/* REC3: vídeo sem permissão neste servidor (ou desligado): o miolo do obturador apaga-se e o HUD diz "Vídeo indisponível";
+   tocar no obturador explica porquê. Só opacidade, sem preenchimentos claros */
+.cam-app .shutter.cr-locked > div,.acam-shutter.cr-locked > div{ opacity:.32; transition:opacity .2s }
+.cr-hud.cr-locked .cr-left{ color:#FFB4AE }
+
+/* ---------- grelha da galeria (PearOS): a duração do vídeo no canto, com um triângulo em SVG ---------- */
+.cr-vbadge{ position:absolute; right:6px; bottom:5px; display:flex; align-items:center; gap:3px; color:#fff; font-size:11px; font-weight:600; font-variant-numeric:tabular-nums; text-shadow:0 1px 3px rgba(0,0,0,.8) }
+.cr-vbadge svg{ display:block }
+
+/* ---------- Nova UI: a pílula é escura com o ponto vermelho (câmara do NOVA), pausa ao lado do obturador ---------- */
+body.os-android .cr-hud{ top:14px }
+body.os-android .cr-pill{ background:rgba(0,0,0,.5); border-radius:999px; font-size:15px; height:30px; padding:0 14px }
+body.os-android .cr-dot{ display:block; background:#F2453D }
+body.os-android .cr-hud.cr-paused .cr-dot{ background:#fff }
+body.os-android .cr-hud.cr-paused .cr-pill{ background:rgba(0,0,0,.5) }
+body.os-android .cr-bar i{ background:#F2453D }
+body.os-android .acam-bar{ position:relative }
+.cr-pause{ display:none }
+body.os-android .cr-pause{ position:absolute; left:38px; top:50%; margin-top:-26px; width:52px; height:52px; border-radius:50%; background:rgba(255,255,255,.18); align-items:center; justify-content:center; gap:5px; cursor:pointer }
+body.os-android .cr-pause i{ display:block; width:5px; height:18px; border-radius:2px; background:#fff }
+body.os-android .cr-pause.cr-paused i{ display:none }
+body.os-android .cr-pause.cr-paused::after{ content:''; width:18px; height:18px; border-radius:50%; background:#F2453D }
+body.os-android .acam.acam-recording .cr-pause{ display:flex }
+body.os-android .cr-pause:active{ background:rgba(255,255,255,.3) }
+body.os-android.form-fold.fold-open .cr-pause{ left:22px; top:auto; bottom:0; margin-top:0 }
+
+/* ============================================================
+   LEITOR DE VÍDEO DA GALERIA (.vpl): sobre a capa, com barra própria
+   ============================================================ */
+.vpl{ position:absolute; inset:0; z-index:2; display:flex; flex-direction:column }
+.vpl-v{ flex:1; min-height:0; width:100%; height:100%; object-fit:contain; background:transparent; outline:none; opacity:0; transition:opacity .2s }
+.vpl.ready .vpl-v{ opacity:1 }
+.vpl-load{ position:absolute; left:0; right:0; top:0; bottom:64px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px; pointer-events:none; color:#fff }
+.vpl-load.hidden{ display:none }
+.vpl-spin{ width:30px; height:30px; border-radius:50%; border:3px solid rgba(255,255,255,.28); border-top-color:#fff; animation:spin .8s linear infinite }
+.vpl.vpl-err .vpl-spin{ display:none }
+.vpl-pct{ font-size:13px; font-weight:600; font-variant-numeric:tabular-nums; text-shadow:0 1px 4px rgba(0,0,0,.7); text-align:center; padding:0 24px }
+.vpl-bar{ flex:none; display:flex; align-items:center; gap:10px; margin:0 12px 10px; padding:0 12px; height:48px; border-radius:24px; background:rgba(28,28,30,.78); color:#fff; box-shadow:inset 0 0 0 .5px rgba(255,255,255,.14), 0 4px 18px rgba(0,0,0,.28); transition:opacity .22s }
+body:not(.fivem) .vpl-bar{ backdrop-filter:blur(20px) saturate(160%); -webkit-backdrop-filter:blur(20px) saturate(160%) }
+.vpl-pp,.vpl-snd{ flex:none; width:34px; height:34px; display:flex; align-items:center; justify-content:center; border-radius:50%; cursor:pointer }
+.vpl-pp:active,.vpl-snd:active{ background:rgba(255,255,255,.16) }
+.vpl-cur,.vpl-dur{ flex:none; min-width:34px; font-size:12px; font-weight:600; font-variant-numeric:tabular-nums; color:rgba(255,255,255,.88) }
+.vpl-dur{ text-align:right }
+.vpl-track{ position:relative; flex:1; height:28px; cursor:pointer; touch-action:none }
+.vpl-rail,.vpl-fill{ position:absolute; left:0; right:0; top:12px; height:4px; border-radius:2px }
+.vpl-rail{ background:rgba(255,255,255,.28) }
+.vpl-fill{ background:#fff; transform-origin:0 50%; transform:scaleX(0); will-change:transform }
+.vpl-knob{ position:absolute; left:-7px; top:7px; width:14px; height:14px; border-radius:50%; background:#fff; box-shadow:0 1px 4px rgba(0,0,0,.35); will-change:transform }
+.vpl.seeking .vpl-knob{ box-shadow:0 0 0 6px rgba(255,255,255,.2), 0 1px 4px rgba(0,0,0,.35) }
+.viewer.bare .vpl-bar{ opacity:0; pointer-events:none }
+
+/* Nova UI: a barra assenta por cima da barra de ações da Galeria e segue o tema */
+body.os-android .vpl-bar{ position:absolute; left:0; right:0; bottom:calc(var(--safe-bottom, 0px) + 76px); margin:0 16px; border-radius:var(--ou-r-pill, 999px) }
+body.os-android .agal-pv.bare .vpl-bar{ opacity:0; pointer-events:none }
+body.os-android .vpl-load{ color:var(--label) }
+body.os-android .agal-pv.bare .vpl-load{ color:#fff }
+body.os-android .vpl-spin{ border-color:rgba(127,127,127,.3); border-top-color:var(--label) }
+body.os-android .vpl-fill,body.os-android .vpl-knob{ background:#fff }

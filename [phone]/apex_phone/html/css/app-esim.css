@@ -1,0 +1,345 @@
+/* ============================================================
+   ESIM (js/apps/esim.js) - linhas, leitor de código QR e folha de ativação. Prefixo esm-.
+   PearOS por omissão; Nova UI atrás de body.os-android. Regras do CEF: sem backdrop-filter, sem filter em superfícies
+   grandes, sem color-mix, sem :has; só transform e opacity animam; nada em ciclo (o anel do bloqueio corre UMA vez).
+   ============================================================ */
+
+/* ---------- emblema da linha ---------- */
+.esm-tag{ display:inline-flex; align-items:center; justify-content:center; flex:none; position:relative; background:var(--esm-c,#0A84FF); color:#fff; font-family:var(--font); font-weight:700; line-height:1; vertical-align:middle; letter-spacing:0 }
+.esm-tag > b{ font-weight:700 }
+.esm-tag.esm-xs{ width:15px; height:15px; border-radius:4px; font-size:9.5px }
+.esm-tag.esm-sm{ width:20px; height:20px; border-radius:5.5px; font-size:11.5px }
+.esm-tag.esm-md{ width:37px; height:37px; border-radius:9px; font-size:18px }
+.esm-tag.esm-lg{ width:68px; height:68px; border-radius:17px; font-size:33px; box-shadow:0 6px 18px rgba(0,0,0,.14) }
+/* Nova UI: o cartão SIM (canto cortado) com o número do slot */
+.esm-tag.esm-tag-a{ background:none; color:var(--esm-c,#3E7BFA); border-radius:0; box-shadow:none }
+.esm-tag.esm-tag-a svg{ position:absolute; inset:0; width:100%!important; height:100%!important; display:block }
+.esm-tag.esm-tag-a > b{ position:relative; color:#fff; margin-top:9% }
+.esm-tag-a.esm-xs{ width:15px; height:15px; font-size:8px }
+.esm-tag-a.esm-sm{ width:20px; height:20px; font-size:10px }
+.esm-tag-a.esm-md{ width:34px; height:34px; font-size:14px }
+.esm-tag-a.esm-lg{ width:66px; height:66px; font-size:26px }
+.li-icon .esm-li-tag, .li-icon .esm-add-ic{ display:flex; align-items:center; justify-content:center; width:100%; height:100% }
+.li-icon .esm-tag svg{ width:100%; height:100% }
+
+/* notificações (notify.js): "[T] Trabalho" ao lado do nome da app */
+.esm-ntag{ display:inline-flex; align-items:center; gap:4px; font-weight:500; color:var(--label2); vertical-align:-2px; white-space:nowrap }
+.esm-ntag > span:last-child{ font-size:.94em }
+/* PearOS: à frente do título ("[T] Trabalho · Mia"); Nova UI: à frente do título na linha do título e da hora */
+.n-title .esm-ntag{ margin-right:5px; font-weight:500 }
+.n-title .esm-ntag::after, .n-tl .esm-ntag::after{ content:'·'; margin-left:1px; color:var(--label3) }
+body.os-android .n-tl .esm-ntag{ margin:0 5px 0 0; flex:none }
+.n-xapp .esm-ntag{ font-size:14px; margin-left:6px }
+.n-xapp .esm-ntag::before{ content:'·'; margin-right:2px; color:var(--label3) }
+
+/* chamada recebida (phone.js): "[T] Para Trabalho" por baixo do estado */
+.esm-ctag{ display:flex; align-items:center; justify-content:center; gap:7px; margin-top:10px; color:rgba(255,255,255,.88); font-size:15px; font-weight:500 }
+.esm-ctag .esm-tag:not(.esm-tag-a){ box-shadow:0 1px 4px rgba(0,0,0,.18) }
+body.os-android .aph-i-head .esm-ctag{ margin-top:12px; font-size:15px; color:inherit; opacity:.8 }
+
+/* barra de estado (system.js renderStatus): "Sem SIM" no lugar das barras do sinal, como no PearPhone sem cartão */
+.esm-sb-nosim{ font-size:14px; font-weight:600; letter-spacing:-.1px; white-space:nowrap; margin-right:1px }
+
+/* ---------- utilitário: esconder ganha a qualquer display ---------- */
+.esm-off{ display:none!important }
+
+/* ---------- "Sem SIM" + seletor de linha (Mensagens, Telefone, Zapp) ---------- */
+.esm-mount{ padding:0 16px }
+.esm-mount.esm-empty{ display:none }
+.esm-nosim{ display:flex; align-items:center; gap:12px; margin:10px 0 6px; padding:12px 12px 12px 14px; background:var(--fill4); border-radius:14px; color:var(--label) }
+body.dark .esm-nosim{ background:var(--bg2) }
+.esm-ns-ic{ width:38px; height:38px; flex:none; border-radius:50%; display:flex; align-items:center; justify-content:center; background:rgba(255,59,48,.12); color:var(--red) }
+.esm-ns-ic svg{ width:21px; height:21px }
+.esm-ns-tx{ flex:1; min-width:0 }
+.esm-ns-tx b{ display:block; font-size:var(--t-subhead); font-weight:600; line-height:1.25 }
+.esm-ns-tx span{ display:block; font-size:13.5px; color:var(--label2); line-height:1.3; margin-top:1px }
+.esm-ns-btn{ flex:none; height:32px; padding:0 14px; border-radius:16px; display:flex; align-items:center; background:var(--blue); color:#fff; font-size:14.5px; font-weight:600; cursor:pointer; transition:opacity var(--motion-fast) }
+.esm-ns-btn:active{ opacity:.7 }
+.esm-lbar{ display:flex; margin:8px 0 4px }
+.esm-lb{ display:inline-flex; align-items:center; gap:7px; height:32px; padding:0 11px 0 6px; border-radius:16px; background:var(--fill4); color:var(--label); font-size:15px; cursor:pointer; position:relative; max-width:100%; transition:background var(--motion-fast) }
+body.dark .esm-lb{ background:var(--bg2) }
+.esm-lb:hover{ background:var(--fill3) }
+.esm-lb-lab{ font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:140px }
+.esm-lb-num{ color:var(--label2); white-space:nowrap }
+.esm-lb-chev{ display:flex; color:var(--label3) } .esm-lb-chev svg{ width:13px; height:13px }
+.esm-lb-dot{ position:absolute; top:-2px; right:-2px; width:10px; height:10px; border-radius:50%; background:var(--blue); box-shadow:0 0 0 2px var(--bg) }
+/* teclado do Telefone: por cima do conteúdo, no espaço vazio do topo */
+.esm-mount.esm-float{ position:absolute; left:0; right:0; top:calc(var(--statusbar-h) + 2px); z-index:6; display:flex; flex-direction:column; align-items:center; pointer-events:none }
+.esm-mount.esm-float > *{ pointer-events:auto }
+.esm-mount.esm-float .esm-lbar{ justify-content:center; margin-top:4px }
+.esm-mount.esm-float .esm-nosim{ align-self:stretch }
+/* Nova UI: cartões r26, pílula azul tonal */
+body.os-android .esm-mount{ padding:0 12px }
+body.os-android .esm-nosim{ background:var(--bg2); border-radius:var(--ou-r-card,26px); padding:14px 14px 14px 16px; box-shadow:var(--ou-shadow-1,none) }
+body.os-android .esm-ns-btn{ background:var(--ou-blue,#3E7BFA); height:36px; border-radius:18px; padding:0 16px }
+body.os-android .esm-lb{ background:var(--bg2); height:34px; border-radius:17px; box-shadow:var(--ou-shadow-1,none) }
+body.os-android .esm-lb-dot{ background:var(--ou-blue,#3E7BFA) }
+
+/* ---------- Definições ---------- */
+body:not(.os-android) .esm-page{ padding-top:12px; padding-bottom:30px }
+.esm-page .group-footer + .list, .esm-page .group-footer + .esm-lhero{ margin-top:16px }
+.esm-page .list + .list{ margin-top:22px }
+body.os-android .esm-page .list + .list{ margin-top:12px }
+/* Nova UI: o título grande já diz a etiqueta; no cabeçalho da linha fica o cartão SIM e o número */
+body.os-android .esm-lhero-line > b{ display:none }
+body.os-android .esm-lhero-line{ padding-top:4px }
+.esm-page .esm-add .li-label{ color:var(--blue) }
+.esm-add-ic{ color:var(--blue) } .esm-add-ic svg{ width:24px!important; height:24px!important }
+.esm-def{ color:var(--label2); font-size:var(--t-body); white-space:nowrap; margin-left:auto }
+.esm-lines.esm-nolines .esm-add{ min-height:52px }
+.esm-hero{ margin:16px 16px 0; padding:24px 20px 20px; background:var(--bg2); border-radius:12px; display:flex; flex-direction:column; align-items:center; text-align:center; gap:4px }
+.esm-hero-ic{ width:60px; height:60px; border-radius:15px; display:flex; align-items:center; justify-content:center; background:var(--gray); color:#fff; margin-bottom:8px }
+.esm-hero-ic svg{ width:34px; height:34px }
+.esm-hero > b{ font-size:var(--t-title3); font-weight:700; letter-spacing:-.2px }
+.esm-hero > span{ font-size:var(--t-subhead); color:var(--label2); line-height:1.38; max-width:320px }
+.esm-hero-btn{ margin-top:14px; height:46px; padding:0 24px; border-radius:23px; display:inline-flex; align-items:center; gap:9px; background:var(--blue); color:#fff; font-size:var(--t-body); font-weight:600; cursor:pointer; transition:opacity var(--motion-fast) }
+.esm-hero-btn:active{ opacity:.75 }
+.esm-hero-btn svg{ width:20px; height:20px }
+.esm-lhero{ display:flex; flex-direction:column; align-items:center; gap:3px; padding:22px 16px 8px; text-align:center }
+.esm-lhero .esm-lh-tag{ margin-bottom:10px; display:flex }
+.esm-lhero > b{ font-size:var(--t-title2); font-weight:700; letter-spacing:-.3px; color:var(--label) }
+.esm-lhero > span{ font-size:var(--t-subhead); color:var(--label2) }
+.esm-lh-def{ margin-top:8px; font-style:normal; font-size:13px; font-weight:600; color:var(--blue); background:rgba(10,132,255,.12); height:24px; padding:0 10px; border-radius:12px; display:inline-flex; align-items:center }
+.esm-lhero-sm{ padding:18px 16px 0 }
+.esm-lhero-sm > b{ font-size:var(--t-title3) }
+.esm-iccid .li-value{ font-size:var(--t-subhead) }
+.esm-hero + .list{ margin-top:22px }
+.esm-chk{ display:flex; color:var(--blue) } .esm-chk svg{ width:23px; height:23px }
+.esm-swatches{ display:flex; justify-content:space-between; padding:16px 18px }
+.esm-sw{ width:38px; height:38px; border-radius:50%; background:var(--esm-c); position:relative; cursor:pointer; flex:none }
+.esm-sw > i{ position:absolute; inset:-5px; border-radius:50%; border:2.5px solid var(--esm-c); opacity:0; transition:opacity var(--motion-fast) }
+.esm-sw.esm-sel > i{ opacity:1 }
+/* Nova UI: valores e "Predefinida" em azul, como os valores da Nova UI */
+body.os-android .esm-def{ color:var(--ou-blue,#3E7BFA); font-size:var(--t-subhead); font-weight:500 }
+body.os-android .esm-hero{ margin:8px 0 0; border-radius:var(--ou-r-card,26px); box-shadow:var(--ou-shadow-1,none) }
+body.os-android .esm-hero-ic{ border-radius:50%; background:var(--fill2); color:var(--label2) }
+body.os-android .esm-hero-btn{ background:var(--ou-blue,#3E7BFA); border-radius:22px; height:44px }
+body.os-android .esm-lh-def{ color:var(--ou-blue,#3E7BFA); background:rgba(62,123,250,.12) }
+body.os-android .esm-page .esm-add .li-label, body.os-android .esm-add-ic{ color:var(--ou-blue,#3E7BFA) }
+
+/* ============================================================
+   LEITOR (camada no #screen, por cima das apps; z 180: folhas 190, alertas 200, toasts 310, barra de estado 310)
+   ============================================================ */
+.esm-scan{ position:absolute; inset:0; z-index:180; background:#000; overflow:hidden; color:#fff; font-family:var(--font);
+  transform:translateY(100%); transition:transform .5s var(--ease) }
+.esm-scan.esm-in{ transform:none }
+.esm-scan.esm-out{ transform:translateY(100%); transition:transform .36s var(--curve) }
+.screen.esm-on .statusbar{ color:#fff!important }
+.screen.esm-on .home-bar{ background:#fff!important }
+/* o visor: o CamView 'bare' a ocupar o ecrã todo (a vista do jogo em cover); a cena falsa do CamView não se usa */
+.esm-vf{ position:absolute; inset:0 }
+.esm-vf .cam-app.cam-bare{ position:absolute; inset:0; background:#000 }
+.esm-vf .viewfinder{ position:absolute; inset:0; border-radius:0; overflow:hidden; background:#000 }
+.esm-vf .cam-gl{ position:absolute; left:0; top:0; width:100%; height:100%; max-height:none; transform:none; object-fit:cover }
+.esm-vf .scene, .esm-vf .grid9, .esm-vf .cam-hint{ display:none!important }
+
+/* cena de demonstração (só fora do jogo): o cartão eSIM na mão, com o código QR verdadeiro */
+.esm-mock{ position:absolute; inset:0; overflow:hidden;
+  background:radial-gradient(42% 30% at 18% 22%, rgba(255,196,120,.28), transparent 70%), radial-gradient(36% 26% at 86% 70%, rgba(110,160,255,.22), transparent 70%),
+    radial-gradient(120% 90% at 50% 40%, #3b3f46 0%, #202329 52%, #0b0c0f 100%) }
+.esm-desk{ position:absolute; left:-20%; right:-20%; bottom:-6%; height:38%; background:linear-gradient(180deg, rgba(60,48,38,.0), rgba(60,48,38,.55) 30%, #1a1511); }
+.esm-hold{ position:absolute; left:50%; top:44%; width:300px; height:189px; margin:-95px 0 0 -150px; transform:perspective(900px) rotateX(9deg) rotateY(-12deg) rotateZ(-5deg) }
+.esm-card{ position:absolute; inset:0; border-radius:13px; display:flex; gap:14px; padding:16px 16px 14px 18px; color:#fff;
+  background:linear-gradient(140deg, #232834 0%, #121620 55%, #0b0e15 100%); box-shadow:0 34px 60px rgba(0,0,0,.6), 0 0 0 1px rgba(255,255,255,.08) inset, 0 1px 0 rgba(255,255,255,.18) inset }
+.esm-card-l{ flex:1; display:flex; flex-direction:column; min-width:0 }
+.esm-card-brand{ display:flex; align-items:center; gap:7px; font-size:13px; letter-spacing:.2px }
+.esm-card-brand i{ width:16px; height:16px; border-radius:50%; background:radial-gradient(circle at 35% 35%, #6FA0FF, #1F5EFF 60%, #0B2A8A) }
+.esm-card-brand b{ font-weight:700 }
+.esm-card-esim{ margin-top:auto; font-size:36px; font-weight:800; letter-spacing:-1px; line-height:1 }
+.esm-card-iccid{ margin-top:8px; font-size:8.5px; letter-spacing:.6px; color:rgba(255,255,255,.55); font-variant-numeric:tabular-nums; white-space:nowrap }
+.esm-card-qr{ width:128px; height:128px; flex:none; align-self:center; background:#fff; border-radius:9px; padding:5px; box-sizing:border-box }
+.esm-card-qr svg{ display:block; width:100%; height:100% }
+.esm-qrph{ width:100%; height:100%; display:grid; grid-template-columns:repeat(7,1fr); gap:2px }
+.esm-qrph i{ background:#e8e8e8 } .esm-qrph i.esm-on{ background:#111 }
+
+/* scrims para o texto se ler por cima de qualquer cena do jogo */
+.esm-top{ position:absolute; left:0; right:0; top:0; z-index:4; height:calc(var(--statusbar-h) + 58px); padding:var(--statusbar-h) 16px 0; box-sizing:border-box;
+  display:flex; align-items:center; justify-content:space-between; background:linear-gradient(rgba(0,0,0,.55), rgba(0,0,0,0)) }
+.esm-x, .esm-torch{ width:40px; height:40px; border-radius:50%; display:flex; align-items:center; justify-content:center; background:rgba(40,40,44,.62); color:#fff; cursor:pointer; box-shadow:0 0 0 .5px rgba(255,255,255,.18) inset; transition:background var(--motion-fast), color var(--motion-fast) }
+.esm-x svg{ width:17px; height:17px } .esm-torch svg{ width:19px; height:19px }
+.esm-x:hover, .esm-torch:hover{ background:rgba(70,70,76,.72) }
+.esm-torch.esm-sel{ background:#fff; color:#000 }
+.esm-title{ font-size:17px; font-weight:600; letter-spacing:-.2px; text-shadow:0 1px 6px rgba(0,0,0,.35) }
+
+/* moldura: quatro cantos; ao bloquear saltam para o código (transform) e o amarelo entra por opacidade */
+.esm-frame{ position:absolute; left:50%; top:44%; width:256px; height:256px; margin:-128px 0 0 -128px; z-index:3; pointer-events:none }
+.esm-c{ position:absolute; width:34px; height:34px; transition:transform .46s var(--spring), opacity .3s }
+.esm-c::before, .esm-c > b{ content:''; position:absolute; inset:0; border:4px solid #fff; box-sizing:border-box }
+.esm-c > b{ border-color:#FFD60A; opacity:0; transition:opacity .22s }
+.esm-c.esm-tl{ left:0; top:0 } .esm-c.esm-tr{ right:0; top:0 } .esm-c.esm-bl{ left:0; bottom:0 } .esm-c.esm-br{ right:0; bottom:0 }
+.esm-c.esm-tl::before, .esm-c.esm-tl > b{ border-right:0; border-bottom:0; border-top-left-radius:16px }
+.esm-c.esm-tr::before, .esm-c.esm-tr > b{ border-left:0; border-bottom:0; border-top-right-radius:16px }
+.esm-c.esm-bl::before, .esm-c.esm-bl > b{ border-right:0; border-top:0; border-bottom-left-radius:16px }
+.esm-c.esm-br::before, .esm-c.esm-br > b{ border-left:0; border-top:0; border-bottom-right-radius:16px }
+.esm-scan:not(.esm-ready) .esm-c{ opacity:0 }
+.esm-scan:not(.esm-ready) .esm-c.esm-tl{ transform:translate(-18px,-18px) } .esm-scan:not(.esm-ready) .esm-c.esm-tr{ transform:translate(18px,-18px) }
+.esm-scan:not(.esm-ready) .esm-c.esm-bl{ transform:translate(-18px,18px) } .esm-scan:not(.esm-ready) .esm-c.esm-br{ transform:translate(18px,18px) }
+.esm-frame.esm-lockon .esm-c > b{ opacity:1 }
+.esm-frame.esm-lockon .esm-c{ transition:transform .42s cubic-bezier(.3,1.35,.5,1) }
+/* o anel que sai do código no instante do bloqueio (uma vez) */
+.esm-pulse{ position:absolute; z-index:3; border:3px solid #FFD60A; border-radius:18px; opacity:0; pointer-events:none; box-sizing:border-box }
+.esm-pulse.esm-run{ animation:esm-pulse .8s var(--curve) .12s 1 both }
+@keyframes esm-pulse{ 0%{ opacity:.95; transform:scale(.96) } 100%{ opacity:0; transform:scale(1.22) } }
+
+.esm-hint{ position:absolute; left:24px; right:24px; top:calc(44% + 152px); z-index:4; text-align:center; transition:opacity .25s }
+.esm-hint b{ display:block; font-size:19px; font-weight:600; letter-spacing:-.2px; text-shadow:0 1px 8px rgba(0,0,0,.45) }
+.esm-hint span{ display:block; margin-top:4px; font-size:14.5px; color:rgba(255,255,255,.8); text-shadow:0 1px 8px rgba(0,0,0,.45) }
+.esm-scan::after{ content:''; position:absolute; left:0; right:0; bottom:0; height:38%; z-index:2; pointer-events:none; background:linear-gradient(rgba(0,0,0,0), rgba(0,0,0,.5)) }
+/* a pílula da operadora (amarela no PearOS, como quando a Câmara reconhece um código) */
+.esm-found{ position:absolute; left:50%; top:60%; z-index:4; height:30px; padding:0 13px 0 9px; border-radius:15px; display:flex; align-items:center; gap:6px; white-space:nowrap;
+  background:#FFD60A; color:#000; font-size:14px; font-weight:600; opacity:0; transform:translate(-50%, 8px); transition:opacity .25s .18s, transform .38s var(--spring) .18s; pointer-events:none }
+.esm-found-ic{ display:flex } .esm-found-ic svg{ width:16px; height:16px }
+.esm-scan.esm-locked .esm-found{ opacity:1; transform:translate(-50%, 0) }
+.esm-scan.esm-sheeton .esm-hint, .esm-scan.esm-sheeton .esm-found{ opacity:0; transition:opacity .2s }
+
+/* ---------- folha de ativação ---------- */
+.esm-act{ position:absolute; inset:0; z-index:6; display:flex; align-items:flex-end; justify-content:center; pointer-events:none }
+.esm-act::before{ content:''; position:absolute; inset:0; background:#000; opacity:0; transition:opacity .35s }
+.esm-act.esm-in{ pointer-events:auto }
+.esm-act.esm-in::before{ opacity:.4 }
+.esm-act-in{ position:relative; width:calc(100% - 16px); max-width:432px; margin:0 8px 8px; box-sizing:border-box; padding:8px 20px 18px; border-radius:38px; background:var(--bg); color:var(--label);
+  transform:translateY(110%); transition:transform .52s var(--ease); box-shadow:0 -6px 30px rgba(0,0,0,.25) }
+body.dark .esm-act-in{ background:var(--bg2); --esm-chipbg:var(--bg3) }
+.esm-act.esm-in .esm-act-in{ transform:none }
+.esm-grab{ width:36px; height:5px; border-radius:3px; background:var(--label3); margin:0 auto 14px }
+.esm-act-ic{ position:relative; width:64px; height:64px; margin:0 auto; border-radius:16px; background:var(--green); color:#fff; box-shadow:0 6px 16px rgba(52,199,89,.28) }
+.esm-act-ic > span{ position:absolute; inset:0; display:flex; align-items:center; justify-content:center; transition:opacity .25s, transform .4s var(--spring) }
+.esm-act-ic svg{ width:32px; height:32px }
+.esm-ic-b{ opacity:0; transform:scale(.6) }
+.esm-act.esm-done .esm-ic-a{ opacity:0; transform:scale(.6) }
+.esm-act.esm-done .esm-ic-b{ opacity:1; transform:none }
+.esm-act-t{ margin-top:14px; text-align:center; font-size:var(--t-title2); font-weight:700; letter-spacing:-.4px }
+.esm-act-s{ margin-top:3px; text-align:center; font-size:var(--t-subhead); color:var(--label2); line-height:1.35 }
+.esm-act-card{ margin-top:18px; background:var(--bg2); border-radius:14px; overflow:hidden }
+body.dark .esm-act-card{ background:var(--bg3) }
+.esm-kv{ display:flex; align-items:center; justify-content:space-between; gap:12px; min-height:46px; padding:0 16px; font-size:var(--t-body); position:relative }
+.esm-kv + .esm-kv::before{ content:''; position:absolute; left:16px; right:0; top:0; height:.5px; background:var(--sep) }
+.esm-kv > span{ color:var(--label) }
+.esm-kv > b{ font-weight:400; color:var(--label2); display:flex; align-items:center; gap:7px; min-width:0; white-space:nowrap }
+.esm-kv-line > b{ color:var(--label); font-weight:500 }
+.esm-mono{ font-size:var(--t-subhead) }
+.esm-pick{ transition:opacity .2s }
+.esm-sec{ margin:18px 4px 8px; font-size:var(--t-foot); color:var(--label2); text-transform:uppercase; letter-spacing:.3px }
+.esm-chips{ display:flex; flex-wrap:wrap; gap:8px }
+.esm-chip{ height:36px; padding:0 15px; border-radius:18px; display:inline-flex; align-items:center; gap:6px; background:var(--esm-chipbg,var(--bg2)); color:var(--label); font-size:15.5px; font-weight:500; cursor:pointer; box-shadow:0 0 0 .5px var(--sep) inset; transition:background var(--motion-fast), color var(--motion-fast) }
+.esm-chip svg{ width:13px; height:13px }
+.esm-chip.esm-sel{ background:var(--blue); color:#fff; box-shadow:none }
+.esm-chip > span{ max-width:120px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap }
+.esm-dots{ display:flex; gap:14px; margin:14px 4px 0 }
+.esm-dot{ width:28px; height:28px; border-radius:50%; background:var(--esm-c); position:relative; cursor:pointer; flex:none }
+.esm-dot > i{ position:absolute; inset:-5px; border-radius:50%; border:2.5px solid var(--esm-c); opacity:0; transition:opacity var(--motion-fast) }
+.esm-dot.esm-sel > i{ opacity:1 }
+.esm-defrow{ margin-top:16px; display:flex; align-items:center; justify-content:space-between; gap:12px; min-height:50px; padding:0 14px 0 16px; background:var(--bg2); border-radius:14px; font-size:var(--t-body) }
+body.dark .esm-defrow{ background:var(--bg3) }
+.esm-btns{ display:flex; flex-direction:column-reverse; gap:6px; margin-top:20px }
+.esm-btn{ height:52px; border-radius:26px; display:flex; align-items:center; justify-content:center; gap:10px; font-size:var(--t-body); font-weight:600; cursor:pointer; transition:opacity var(--motion-fast), background var(--motion-fast) }
+.esm-go{ background:var(--blue); color:#fff }
+.esm-go:active{ opacity:.8 }
+.esm-cancel{ height:44px; color:var(--blue); font-weight:500 }
+.esm-spin{ display:none; width:18px; height:18px; border-radius:50%; border:2.5px solid rgba(255,255,255,.35); border-top-color:#fff; box-sizing:border-box; animation:esm-spin .8s linear infinite }
+@keyframes esm-spin{ to{ transform:rotate(360deg) } }
+.esm-act.esm-busy .esm-spin{ display:block }
+.esm-act.esm-busy .esm-pick{ opacity:.45; pointer-events:none }
+.esm-act.esm-busy .esm-cancel{ opacity:.4; pointer-events:none }
+.esm-act.esm-done .esm-pick, .esm-act.esm-done .esm-cancel{ display:none }
+.esm-act.esm-done .esm-go{ background:var(--fill3); color:var(--blue) }
+
+/* PearPhone Fold / NOVA Fold8: a folha e o texto ficam ao centro, com a largura de um telemóvel */
+body.form-fold .esm-act-in{ margin-bottom:16px }
+/* PearPhone Fold (barra direita de vidro em todos os ecrãs, --rail-w): o visor continua a ocupar tudo, mas os comandos, a moldura
+   e a folha centram-se na zona à esquerda da barra, para a lanterna não ficar por baixo do anel de estado */
+body.os-ios.form-fold .esm-scan{ --esm-rw:var(--rail-w,0px) }
+.esm-scan .esm-top, .esm-scan .esm-act, .esm-scan .esm-hint{ margin-right:var(--esm-rw,0px) }
+.esm-scan .esm-frame{ margin-left:calc(-128px - var(--esm-rw,0px) / 2) }
+.esm-scan .esm-found{ margin-left:calc(var(--esm-rw,0px) / -2) }
+.esm-scan .esm-hold{ margin-left:calc(-150px - var(--esm-rw,0px) / 2) }
+
+/* ============================================================
+   NOVA UI: leitor à Android (seta de voltar, título à esquerda, fundo escurecido fora do quadro, cantos azuis no bloqueio)
+   e a folha como um diálogo One UI (r28, título à esquerda, botões de texto lado a lado)
+   ============================================================ */
+.esm-scan.esm-a{ transform:translateY(6%); opacity:0; transition:transform .38s var(--ou-curve-out,var(--ease)), opacity .25s }
+.esm-scan.esm-a.esm-in{ transform:none; opacity:1 }
+.esm-scan.esm-a.esm-out{ transform:translateY(6%); opacity:0 }
+.esm-a .esm-top{ justify-content:flex-start; gap:6px; padding-left:8px; height:calc(var(--statusbar-h) + 60px) }
+.esm-a .esm-x{ background:none; box-shadow:none; width:44px; height:44px }
+.esm-a .esm-x svg{ width:24px; height:24px }
+.esm-a .esm-title{ font-family:var(--font-display,var(--font)); font-size:20px; font-weight:600; flex:1 }
+.esm-a .esm-torch{ background:rgba(0,0,0,.35); margin-right:8px }
+.esm-a .esm-c::before, .esm-a .esm-c > b{ border-width:3.5px }
+.esm-a .esm-c > b{ border-color:#5B93FF }
+.esm-a .esm-pulse{ border-color:#5B93FF }
+.esm-a .esm-found{ background:#fff; color:#111 }
+.esm-a .esm-found-ic{ color:var(--ou-blue,#3E7BFA) }
+.esm-a .esm-act-in{ --esm-chipbg:var(--bg); border-radius:var(--ou-r-dialog,28px); margin:0 12px 14px; width:calc(100% - 24px); padding:24px 20px 10px; background:var(--bg2); box-shadow:0 8px 30px rgba(0,0,0,.25) }
+body.os-android.dark .esm-a .esm-act-in{ background:var(--bg3); --esm-chipbg:var(--bg2) }
+.esm-a .esm-grab{ display:none }
+.esm-a .esm-act-ic{ margin:0; width:52px; height:52px; border-radius:50%; background:rgba(45,190,96,.14); color:var(--green); box-shadow:none }
+.esm-a .esm-act-ic svg{ width:26px; height:26px }
+.esm-a.esm-scan .esm-act.esm-done .esm-act-ic{ background:var(--green); color:#fff }
+.esm-a .esm-act-t{ text-align:left; font-family:var(--font-display,var(--font)); font-size:22px; font-weight:600; letter-spacing:-.2px; margin-top:16px }
+.esm-a .esm-act-s{ text-align:left }
+.esm-a .esm-act-card{ background:var(--bg); border-radius:20px }
+body.os-android.dark .esm-a .esm-act-card{ background:var(--bg2) }
+.esm-a .esm-kv > span{ color:var(--label2); font-size:var(--t-subhead) }
+.esm-a .esm-kv > b{ color:var(--label); font-weight:500 }
+.esm-a .esm-sec{ text-transform:none; letter-spacing:0; font-size:var(--t-subhead); font-weight:600; color:var(--label); margin:18px 2px 10px }
+.esm-a .esm-chip{ box-shadow:none; border-radius:18px; padding:0 12px; font-size:15px }
+.esm-a .esm-chips{ gap:6px }
+
+.esm-a .esm-chip.esm-sel{ background:var(--ou-blue,#3E7BFA) }
+.esm-a .esm-defrow{ background:var(--bg); border-radius:20px }
+body.os-android.dark .esm-a .esm-defrow{ background:var(--bg2) }
+.esm-a .esm-btns{ flex-direction:row; gap:0; margin-top:14px; position:relative }
+.esm-a .esm-btns::after{ content:''; position:absolute; left:50%; top:14px; bottom:14px; width:1px; background:var(--sep) }
+.esm-a .esm-btn{ flex:1; height:52px; border-radius:26px; background:none; color:var(--label); font-weight:600; font-size:var(--t-body) }
+.esm-a .esm-go{ color:var(--ou-blue,#3E7BFA) }
+.esm-a .esm-btn:hover{ background:var(--fill4) }
+.esm-a .esm-spin{ border-color:rgba(62,123,250,.3); border-top-color:var(--ou-blue,#3E7BFA) }
+.esm-a .esm-act.esm-done .esm-btns::after{ display:none }
+.esm-a .esm-act.esm-done .esm-go{ background:none; color:var(--ou-blue,#3E7BFA) }
+
+/* ============================================================
+   MODO 'desk' (por omissão, Config.Sim.scan.view): o cartão aparece DENTRO do visor, grande e nítido, com o código QR
+   já no meio da moldura, por cima da vista do jogo escurecida. Sem arrastar e sem medidas fora do telemóvel.
+   ============================================================ */
+.esm-deskmode .esm-vf{ opacity:.35 }
+.esm-deskmode .esm-mock{ background:radial-gradient(90% 70% at 50% 44%, rgba(0,0,0,.15), rgba(0,0,0,.55)) }
+.esm-deskmode .esm-desk{ display:none }
+/* o código (lado direito do cartão: centro a 220 px dos 300) fica no centro da moldura (44% da altura) */
+.esm-deskmode .esm-hold{ left:50%; top:44%; margin:-94.5px 0 0 calc(-220px - var(--esm-rw,0px) / 2); transform-origin:220px 94.5px;
+  transform:perspective(900px) scale(1.3) rotateX(6deg) rotateY(-8deg) rotateZ(-2deg);
+  animation:esmRaise .55s cubic-bezier(.2,.9,.25,1) both }
+@keyframes esmRaise{ from{ opacity:0; transform:perspective(900px) translateY(120px) scale(1.2) rotateX(24deg) rotateY(-8deg) rotateZ(-6deg) } }
+.esm-card-sheen{ position:absolute; inset:0; border-radius:inherit; pointer-events:none;
+  background:linear-gradient(115deg, rgba(255,255,255,0) 30%, rgba(255,255,255,.10) 44%, rgba(160,200,255,.12) 50%, rgba(255,255,255,0) 62%) }
+.esm-card-num{ margin-top:6px; font-size:12px; font-weight:600; letter-spacing:.4px; color:rgba(255,255,255,.8); font-variant-numeric:tabular-nums }
+/* ============================================================
+   ASSISTENTE DE CONFIGURAÇÃO (js/shell/setup.js, passo 4) com o SIM obrigatório: "Usar um cartão eSIM" ou "Continuar sem SIM"
+   ============================================================ */
+/* centrado na coluna do assistente em todos os aparelhos (margens automaticas; antes encostava a esquerda no PearPhone) */
+.st-simopts{ display:flex; flex-direction:column; gap:12px; width:100%; max-width:344px; margin:18px auto 0; align-self:center; box-sizing:border-box }
+.st-simopt{ display:flex; align-items:center; gap:14px; padding:15px 16px; border-radius:16px; background:var(--secondary-system-grouped-background,#fff);
+  cursor:pointer; box-shadow:inset 0 0 0 1.5px transparent; transition:box-shadow var(--motion-fast,.12s), opacity var(--motion-fast,.12s) }
+.st-simopt.on{ box-shadow:inset 0 0 0 2px var(--system-blue,#0A84FF) }
+.st-simopt.off{ opacity:.48; cursor:default }
+.st-simic{ width:42px; height:42px; border-radius:12px; display:grid; place-items:center; flex:none; color:#fff; background:var(--system-blue,#0A84FF) }
+.st-simic svg{ width:22px; height:22px }
+.st-simopt[data-sim="none"] .st-simic{ background:#8E8E93 }
+.st-simtx{ flex:1; min-width:0; display:flex; flex-direction:column; gap:3px; text-align:left }
+.st-simtx b{ font-size:16px; font-weight:600; color:var(--label-primary,#000); letter-spacing:-.2px }
+.st-simtx span{ font-size:13px; line-height:1.3; color:var(--label-secondary,rgba(60,60,67,.6)) }
+.st-simtx em.st-simok{ align-self:flex-start; display:inline-flex; align-items:center; gap:4px; font-style:normal; font-size:11.5px; font-weight:600; color:#30d158; border:1px solid rgba(48,209,88,.45); border-radius:999px; padding:2px 8px 2px 6px }
+.st-simtx em.st-simok svg{ width:12px; height:12px; flex:none }
+.st-chk{ width:24px; height:24px; border-radius:50%; box-sizing:border-box; border:2px solid rgba(60,60,67,.3); display:grid; place-items:center; flex:none; color:#fff;
+  transition:background var(--motion-fast,.12s), border-color var(--motion-fast,.12s) }
+.st-chk svg{ width:14px; height:14px; stroke-width:3; opacity:0 }
+.st-simopt.on .st-chk{ background:var(--system-blue,#0A84FF); border-color:var(--system-blue,#0A84FF) }
+.st-simopt.on .st-chk svg{ opacity:1 }
+body.dark .st-chk{ border-color:rgba(235,235,245,.3) }
+/* Nova UI: cartões redondos do assistente e o azul da Nova */
+body.os-android #setup.asu .st-simopts{ max-width:440px; margin-top:24px }   /* sem teto esticava pelo ecra inteiro no NOVA Fold8 aberto */
+body.os-android #setup.asu .st-simopt{ border-radius:26px; padding:16px 18px; background:var(--asu-card,#fff); box-shadow:var(--asu-shadow,none) }
+body.os-android #setup.asu .st-simopt.on{ box-shadow:var(--asu-shadow,none), inset 0 0 0 2px #3E7BFA }
+body.os-android #setup.asu .st-simic{ border-radius:50%; background:#3E7BFA }
+body.os-android #setup.asu .st-simopt.on .st-chk{ background:#3E7BFA; border-color:#3E7BFA }body.os-android #setup.asu .st-simopt[data-sim="none"] .st-simic{ background:#8E8E93 }

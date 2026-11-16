@@ -1,0 +1,139 @@
+/* ============================================================
+   GRAVADOR (apps/voicememos.js) · prefixo .vmm-
+   PearOS primeiro (lista simples como a do Dictafone, painel de gravação que sobe do fundo com o tempo grande, a onda ao
+   vivo e Pausa / Concluído); Nova UI atrás de body.os-android no fim (gravações em CARTÕES agrupados por ano e ecrã de
+   gravação inteiro com o degradé vermelho, como o Gravador de voz da One UI 8.5).
+   Regras do CEF: sem backdrop-filter em jogo, sem filter, sem color-mix, sem :has, sem aspect-ratio; só transform/opacity
+   animam; hover só com cor.
+   ============================================================ */
+.vmm .content{ padding-bottom:170px }
+.vmm-main{ display:flex; flex-direction:column; flex:1 0 auto }
+.vmm-chips .chips{ margin-top:2px }
+.vmm-list{ margin:6px 0 0; background:transparent }
+.vmm-list:empty{ display:none }
+.vmm-none{ display:flex; flex-direction:column; flex:1 0 auto } .vmm-none[hidden]{ display:none }
+.vmm-it{ position:relative; contain:layout paint }
+.vmm-it + .vmm-it::before{ content:''; position:absolute; left:20px; right:0; top:0; height:.5px; background:var(--sep) }
+.vmm-ihead{ display:flex; align-items:center; gap:10px; min-height:64px; padding:10px 20px; cursor:pointer }
+.vmm-ihead:active{ background:var(--fill4) }
+.vmm-ib{ flex:1; min-width:0; display:flex; flex-direction:column; gap:3px }
+.vmm-iname{ font-size:var(--t-headline); font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+.vmm-idate{ font-size:var(--t-subhead); color:var(--label2) }
+.vmm-idur{ font-size:var(--t-subhead); color:var(--label2); font-variant-numeric:tabular-nums; flex:none; align-self:flex-end; padding-bottom:2px }
+.vmm-istar{ display:none; color:var(--yellow); flex:none; align-self:flex-start; padding-top:2px } .vmm-istar svg{ fill:currentColor }
+.vmm-it.vmm-isfav .vmm-istar{ display:flex }
+.vmm-it.vmm-open{ background:var(--bg2) }
+.vmm-body{ display:none; padding:2px 20px 16px }
+.vmm-it.vmm-open .vmm-body{ display:block }
+.vmm-wave{ position:relative; height:56px; cursor:pointer; touch-action:none; overflow:hidden }
+.vmm-wave canvas{ display:block; width:100%; height:100% }
+.vmm-wave-b{ position:absolute; inset:0 }
+.vmm-rev{ position:absolute; inset:0; overflow:hidden; will-change:transform; transform:translateX(-100%) }
+.vmm-rev canvas{ will-change:transform; transform:translateX(100%) }
+.vmm-times{ display:flex; justify-content:space-between; font-size:var(--t-cap2); color:var(--label2); font-variant-numeric:tabular-nums; margin-top:4px }
+.vmm-ctl{ display:flex; align-items:center; justify-content:space-between; margin-top:8px; padding:0 4px }
+.vmm-cb{ width:44px; height:44px; border-radius:50%; display:flex; align-items:center; justify-content:center; color:var(--label); cursor:pointer }
+.vmm-cb:active{ background:var(--fill4) }
+.vmm-rate{ font-size:15px; font-weight:700; font-variant-numeric:tabular-nums; color:var(--label) }
+.vmm-ifav.on{ color:var(--yellow) } .vmm-ifav.on svg{ fill:currentColor }
+.vmm-play{ position:relative; width:58px; height:58px; border-radius:50%; background:var(--label); color:var(--bg); display:flex; align-items:center; justify-content:center; cursor:pointer }
+.vmm-play svg{ position:absolute } .vmm-play svg:first-child{ transform:translateX(2px) } .vmm-play svg:nth-child(2){ opacity:0 } .vmm-play .vmm-spin{ display:none }
+.vmm-it.is-playing .vmm-play svg:first-child{ opacity:0 } .vmm-it.is-playing .vmm-play svg:nth-child(2){ opacity:1 }
+.vmm-it.is-loading .vmm-play svg{ opacity:0 }
+.vmm-it.is-loading .vmm-play .vmm-spin{ display:block; width:22px; height:22px; border:2.5px solid rgba(127,127,127,.35); border-top-color:var(--bg); border-radius:50%; animation:spin .8s linear infinite }
+.vmm-acts{ display:flex; gap:6px; margin-top:10px; padding-top:10px; border-top:.5px solid var(--sep) }
+.vmm-act{ flex:1; min-width:0; display:flex; flex-direction:column; align-items:center; gap:4px; padding:6px 2px; border-radius:12px; color:var(--blue); font-size:var(--t-cap2); font-weight:500; cursor:pointer; text-align:center }
+.vmm-act span{ white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:100% }
+.vmm-act:active{ background:var(--fill4) }
+.vmm-idel{ color:var(--red) }
+
+/* ---------- barra de gravação (fixa ao fundo da vista) ---------- */
+.vmm-bar{ position:absolute; left:0; right:0; bottom:0; z-index:6; padding:14px 16px calc(var(--safe-bottom) + 10px); background:var(--material); box-shadow:0 -.5px 0 var(--sep); display:flex; flex-direction:column; align-items:center }
+body:not(.fivem) .vmm-bar{ backdrop-filter:blur(24px) saturate(160%); -webkit-backdrop-filter:blur(24px) saturate(160%) }
+body.fivem .vmm-bar{ background:var(--bg2) }
+.vmm-bar[hidden]{ display:none }
+.vmm-recwrap{ display:flex; flex-direction:column; align-items:center; gap:6px }
+.vmm-recbtn{ width:72px; height:72px; border-radius:50%; display:flex; align-items:center; justify-content:center; box-shadow:inset 0 0 0 3px var(--gray3); cursor:pointer }
+.vmm-recbtn i{ display:block; width:58px; height:58px; border-radius:50%; background:var(--red); transition:transform .25s var(--spring) }
+.vmm-recbtn:active i{ transform:scale(.9) }
+.vmm-cap{ font-size:var(--t-cap2); color:var(--label2); font-variant-numeric:tabular-nums }
+.vmm-panel{ display:none; width:100%; flex-direction:column; align-items:stretch }
+.vmm-bar.open{ padding-top:8px; border-radius:22px 22px 0 0 }
+.vmm-bar.open .vmm-recwrap{ display:none } .vmm-bar.open .vmm-panel{ display:flex }
+.vmm-grab{ align-self:center; width:40px; height:5px; border-radius:3px; background:var(--gray3); margin:0 0 10px; cursor:pointer }
+.vmm-phead{ display:flex; flex-direction:column; align-items:center; gap:2px }
+.vmm-pname{ font-size:var(--t-title3); font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:100% }
+.vmm-pdate{ font-size:var(--t-subhead); color:var(--label2) }
+.vmm-ptime{ text-align:center; margin-top:10px; font-size:44px; line-height:1.05; font-weight:300; font-variant-numeric:tabular-nums; letter-spacing:-.5px; color:var(--label) }
+.vmm-plimit{ text-align:center; font-size:var(--t-foot); font-weight:600; color:var(--label2); font-variant-numeric:tabular-nums; min-height:18px }
+.vmm-bar.vmm-end .vmm-plimit{ color:var(--red) }
+.vmm-livewrap{ position:relative; margin-top:10px }
+.vmm-live{ display:block; width:100%; height:110px; border-radius:14px; background:var(--fill4) }
+.vmm-lhead{ display:none }
+.vmm-pmsg{ min-height:20px; text-align:center; font-size:var(--t-foot); color:var(--label2); padding:6px 0 0 }
+.vmm-bar.is-error .vmm-pmsg{ color:var(--red) }
+.vmm-pbtns{ display:flex; align-items:center; justify-content:space-between; padding:8px 10px 0 }
+.vmm-pb{ display:flex; flex-direction:column; align-items:center; gap:4px; width:92px; color:var(--label2); font-size:var(--t-cap1); font-weight:500; cursor:pointer }
+.vmm-pb:active{ color:var(--label) }
+.vmm-pdone{ color:var(--red) }
+.vmm-stopsq{ display:block; width:22px; height:22px; border-radius:6px; background:currentColor }
+.vmm-pmain{ width:72px; height:72px; border-radius:50%; display:flex; align-items:center; justify-content:center; box-shadow:inset 0 0 0 3px var(--gray3); cursor:pointer }
+.vmm-pause{ display:flex; gap:7px; align-items:center; justify-content:center; width:58px; height:58px; border-radius:50%; background:var(--red) }
+.vmm-pause b{ display:block; width:6px; height:22px; border-radius:2px; background:#fff }
+.vmm-resume{ display:none; width:58px; height:58px; border-radius:50%; background:var(--red) }
+.vmm-bar.is-paused .vmm-pause{ display:none } .vmm-bar.is-paused .vmm-resume{ display:block }
+.vmm-bar.is-paused .vmm-ptime{ color:var(--label2) }
+.vmm-bar.is-error .vmm-pause{ display:none } .vmm-bar.is-error .vmm-resume{ display:block }
+.vmm-bar.is-starting .vmm-pb,.vmm-bar.is-sending .vmm-pb,.vmm-bar.is-stopping .vmm-pb,.vmm-bar.is-error .vmm-pdone{ opacity:.35; pointer-events:none }
+.vmm-bar.is-sending .vmm-pmain,.vmm-bar.is-starting .vmm-pmain,.vmm-bar.is-stopping .vmm-pmain{ opacity:.4; pointer-events:none }
+/* minimizado (toque na pega): só o tempo e os botões, a lista volta a ver-se */
+.vmm-bar.vmm-mini .vmm-livewrap,.vmm-bar.vmm-mini .vmm-phead,.vmm-bar.vmm-mini .vmm-pmsg{ display:none }
+.vmm-bar.vmm-mini .vmm-ptime{ font-size:28px; margin-top:0 }
+
+/* dobráveis: a lista e o painel não se esticam pelos 1340 px do aparelho aberto */
+body.form-fold .vmm-main,body.form-fold .vmm-panel{ max-width:620px; margin-left:auto; margin-right:auto }
+
+/* ============================================================
+   NOVA UI (Android): cartões por ano, botão coral, ecrã de gravação inteiro com degradé vermelho
+   ============================================================ */
+body.os-android .vmm-list{ margin:6px 12px 0 }
+body.os-android .vmm-it{ margin-top:8px; border-radius:var(--ou-r-card,26px); background:var(--ou-surface); box-shadow:var(--ou-shadow-1); contain:layout }
+body.os-android .vmm-it + .vmm-it::before{ display:none }
+body.os-android .vmm-it.vmm-ystart{ margin-top:34px }
+body.os-android .vmm-it.vmm-ystart::after{ content:attr(data-ylabel); position:absolute; left:8px; top:-26px; font-size:14px; font-weight:600; color:var(--label2) }
+body.os-android .vmm-ihead{ padding:16px 20px; min-height:72px; border-radius:var(--ou-r-card,26px) }
+body.os-android .vmm-ihead:active,body.os-android .vmm-it.vmm-open .vmm-ihead{ background:transparent }
+body.os-android .vmm-it.vmm-open{ background:var(--ou-surface) }
+body.os-android .vmm-iname{ font-weight:500 }
+body.os-android .vmm-idate{ font-size:13px }
+body.os-android .vmm-body{ padding:0 20px 16px }
+body.os-android .vmm-play{ background:#F2453D; color:#fff }
+body.os-android .vmm-it.is-loading .vmm-play .vmm-spin{ border-top-color:#fff }
+body.os-android .vmm-act{ color:var(--ou-blue,#3E7BFA); border-radius:999px } body.os-android .vmm-idel{ color:var(--red) }
+body.os-android .vmm-wave{ border-radius:12px }
+/* sem gravar: só o botão coral a flutuar sobre a lista (sem barra por trás) */
+body.os-android .vmm-bar{ padding:16px 20px calc(var(--safe-bottom) + 12px); background:transparent; box-shadow:none; backdrop-filter:none; -webkit-backdrop-filter:none; pointer-events:none }
+body.os-android .vmm-bar > *{ pointer-events:auto }
+body.os-android .vmm-recbtn{ width:76px; height:76px; box-shadow:0 6px 18px rgba(242,69,61,.35) }
+body.os-android .vmm-recbtn i{ width:76px; height:76px; background:#F2453D }
+/* a gravar: o ecrã inteiro da app, branco ou preto com o degradé vermelho de cima a baixo e a onda ao meio */
+body.os-android .vmm-bar.open{ top:0; bottom:0; padding:calc(var(--statusbar-h, 48px) + 18px) 24px calc(var(--safe-bottom) + 22px); border-radius:0; pointer-events:auto;
+  background-color:var(--bg); background-image:linear-gradient(180deg, rgba(242,69,61,0) 0%, rgba(242,69,61,0) 24%, rgba(242,69,61,.14) 62%, rgba(242,69,61,.4) 100%) }
+body.os-android.dark .vmm-bar.open{ background-color:#000; background-image:linear-gradient(180deg, rgba(242,69,61,0) 0%, rgba(242,69,61,0) 24%, rgba(242,69,61,.2) 62%, rgba(242,69,61,.48) 100%) }
+body.os-android .vmm-bar.open .vmm-panel{ flex:1; justify-content:space-between }
+body.os-android .vmm-grab{ display:none }
+body.os-android .vmm-phead{ align-items:flex-start }
+body.os-android .vmm-pname{ font-size:22px; font-weight:600 }
+body.os-android .vmm-pdate{ font-size:14px }
+body.os-android .vmm-ptime{ font-family:var(--font-display); font-size:58px; font-weight:400; margin-top:22px; letter-spacing:0 }
+body.os-android .vmm-plimit{ font-size:14px }
+body.os-android .vmm-live{ height:150px; background:transparent }
+body.os-android .vmm-lhead{ display:block; position:absolute; right:0; top:8px; bottom:8px; width:2px; border-radius:1px; background:#F2453D }
+body.os-android .vmm-pbtns{ padding:0 4px }
+body.os-android .vmm-pb,body.os-android .vmm-pdone{ color:var(--label) }
+/* Parar (= Concluído) da One UI: o quadrado vermelho dentro de um círculo cinzento claro */
+body.os-android .vmm-stopsq{ position:relative; width:56px; height:56px; border-radius:50%; background:rgba(127,127,127,.18) }
+body.os-android .vmm-stopsq::after{ content:''; position:absolute; left:18px; top:18px; width:20px; height:20px; border-radius:5px; background:#F2453D }
+body.os-android .vmm-pmain{ width:84px; height:84px; box-shadow:none; background:#F2453D }
+body.os-android .vmm-pause{ background:transparent; width:84px; height:84px }
+body.os-android .vmm-resume{ width:30px; height:30px; background:#fff }

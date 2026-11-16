@@ -1,0 +1,480 @@
+/* ---------- AppShop · PearOS 27 com Liquid Glass (Hoje · Jogos · Apps · Arcade · Pesquisar · página da app) ----------
+   1.5.0 (2026-11-11, "aprimora o design da loja, algo mais moderno com Liquid Glass"). A estrutura e a arte dos cartões são as
+   de 2026-09-15; muda o acabamento:
+   · VIDRO só na camada de controlo que flutua sobre o conteúdo (regra da Apple e da SPEC 4): avatar da conta, voltar e partilhar
+     (círculos .lg), campo de pesquisa fixo em cápsula .lg, sugestões em pastilhas .lg, botão "Jogar grátis" e a faixa da app dos
+     cartões-história (vidro CLEAR sobre a arte). As cápsulas OBTER/ABRIR têm o mesmo material desenhado na camada própria (::before):
+     é ela que encolhe até ao anel de instalação, por isso não podem ser .lg (o .lg é dono do ::before e do ::after).
+   · Conteúdo SEM vidro: cartões, linhas, capturas e texto ficam opacos, com cantos concêntricos (28) e sombras estáticas suaves.
+   · Profundidade: luz ambiente no topo de cada separador (.as-amb, gradientes radiais com a cor da app do topo, --c1/--c2 do
+     store.js, sem filter), ícones com sombra, separadores finos, barra compacta "scroll edge" do iOS 27 (material + linha fina).
+   · Escuro iOS 27: fundo quase preto, materiais e cartões em cinzento profundo (nunca preto puro).
+   REGRAS CEF: zero filter, zero backdrop-filter em body.fivem (os que há aqui estão em body.os-ios:not(.fivem)), nada de
+   color-mix() (os tons derivados vêm calculados do store.js em --c3/--c4; a tinta da cor de destaque é uma camada branca ou
+   escura POR CIMA de var(--blue)), sem aspect-ratio (alturas fixas ou padding-bottom em %), só transform e opacity animam.
+   ⚠️ NUNCA voltar a declarar .as-btn, .as-group, .as-title, .as-wrap aqui: são as classes da folha de ações do sistema (ui.css,
+   pear27-kit.css) e este ficheiro carrega depois do ui.css. */
+
+/* fundo e tokens da loja. --as-gt: tinta por cima da cor de destaque nas cápsulas OBTER (branca no claro = azul pálido) */
+.as-v{ --as-bg:#F6F6F8; --as-bg0:rgba(246,246,248,0); --as-card:#fff; --as-card2:#fff; --as-cardm:rgba(255,255,255,.74); --as-scr:#fff;
+  --as-ln:rgba(60,60,67,.14); --as-mat:rgba(248,248,250,.80); --as-mat0:rgba(248,248,250,0); --as-gt:rgba(255,255,255,.86);
+  --as-sh:0 18px 40px -20px rgba(0,0,0,.30), 0 2px 6px -2px rgba(0,0,0,.06); --as-shs:0 10px 24px -14px rgba(0,0,0,.28);
+  --as-icsh:0 0 0 .5px rgba(0,0,0,.08), 0 6px 14px -6px rgba(0,0,0,.30);
+  background:var(--as-bg) }
+body.dark .as-v{ --as-bg:#09090B; --as-bg0:rgba(9,9,11,0); --as-card:#1C1C1F; --as-card2:#1C1C1F; --as-cardm:rgba(44,44,50,.62); --as-scr:#1C1C1E;
+  --as-ln:rgba(235,235,245,.13); --as-mat:rgba(30,30,34,.78); --as-mat0:rgba(30,30,34,0); --as-gt:rgba(36,36,42,.80);
+  --as-sh:0 0 0 .5px rgba(255,255,255,.07), 0 18px 40px -20px rgba(0,0,0,.8); --as-shs:0 0 0 .5px rgba(255,255,255,.07);
+  --as-icsh:0 0 0 .5px rgba(255,255,255,.10), 0 6px 14px -6px rgba(0,0,0,.6) }
+/* no jogo não há desfoque por baixo: o material da barra é mais denso */
+body.fivem .as-v{ --as-mat:rgba(246,246,249,.96); --as-mat0:rgba(246,246,249,0); --as-cardm:rgba(255,255,255,.88) }
+body.dark.fivem .as-v{ --as-mat:rgba(26,26,30,.96); --as-mat0:rgba(26,26,30,0); --as-cardm:rgba(40,40,46,.86) }
+
+/* ── luz ambiente (o primeiro filho da .content, por baixo de tudo): a .content isola para o z-index:-1 ficar por cima do fundo
+   da vista e por baixo do conteúdo. Gradientes radiais grandes com a cor da app do topo; a opacidade dá a subtileza ── */
+.as-v > .content{ isolation:isolate }
+/* nasce apagada e acende (.on) quando o store.js tem o tom do ícone: só a opacidade transita */
+.as-amb{ position:absolute; z-index:-1; left:0; right:0; top:0; height:640px; pointer-events:none; opacity:0; transition:opacity .6s ease-out;
+  background:radial-gradient(78% 330px at 8% 0%, var(--c1,#5AA0F2) 0%, rgba(255,255,255,0) 100%), radial-gradient(70% 290px at 100% 70px, var(--c2,#2D6FD1) 0%, rgba(255,255,255,0) 100%) }
+.as-amb.on{ opacity:.24 } body.dark .as-amb.on{ opacity:.32 }
+.as-amb.sea{ --c1:var(--blue); --c2:#A98BF7 } .as-amb.sea.on{ opacity:.14 } body.dark .as-amb.sea.on{ opacity:.22 }
+.as-amb.arc{ --c1:#FF375F; --c2:#7638FA } .as-amb.arc.on{ opacity:.18 } body.dark .as-amb.arc.on{ opacity:.30 }
+/* página da app: o herói é a luz da própria app, mais forte e mais curta (acaba antes da descrição) */
+.as-amb.big{ height:540px;
+  background:radial-gradient(90% 300px at 0% 0%, var(--c1) 0%, rgba(255,255,255,0) 100%), radial-gradient(80% 280px at 100% 40px, var(--c2) 0%, rgba(255,255,255,0) 100%), radial-gradient(60% 200px at 50% 230px, var(--c3) 0%, rgba(255,255,255,0) 100%) }
+.as-amb.big.on{ opacity:.40 } body.dark .as-amb.big.on{ opacity:.46 }
+
+/* ── desempenho ──
+   content-visibility:auto - os blocos fora do ecrã não são medidos nem pintados ("Hoje" tem ~3 000 px de arte com gradientes e
+   ícones grandes); contain-intrinsic-size dá-lhes a altura aproximada para o scroll não saltar (o `auto` lembra a real).
+   Estimativas = alturas de conteúdo MEDIDAS (sem padding). A altura lembrada perde-se quando a vista sai do DOM: o store.js fixa a
+   real (style.containIntrinsicSize) antes de um separador guardado sair. .as-res.sh = resultado com capturas (os 6 primeiros).
+   Só em blocos VERTICAIS de altura estável: nada disto entra nos carrosséis horizontais (.as-fcar/.as-shelf/.as-big), que precisam
+   de ser medidos para o arrasto lateral. */
+.as-story,.as-ccard,.as-lcard,.as-sec,.as-dsec,.as-res,.as-agrid{ content-visibility:auto }
+.as-story,.as-ccard{ contain-intrinsic-size:auto 476px } .as-lcard{ contain-intrinsic-size:auto 385px } .as-sec{ contain-intrinsic-size:auto 280px }
+.as-dsec{ contain-intrinsic-size:auto 280px } .as-res{ contain-intrinsic-size:auto 82px } .as-res.sh{ contain-intrinsic-size:auto 363px } .as-agrid{ contain-intrinsic-size:auto 520px }
+/* rede de segurança da vista deslocada (conteúdo cortado à esquerda, faixa vazia à direita): o push() põe .behind na vista de
+   baixo 2 frames depois, sem ver se ela ainda está por baixo de alguma coisa. Uma .behind que é a ÚLTIMA da pilha nunca é válida. */
+.nav-stack > .view.as-v.behind:last-child{ transform:none; filter:none }
+.nav-stack > .view.as-v.behind:last-child::after{ content:none }
+/* a página que está a SAIR (.leave, 420 ms) nunca recua (o store.js passa o .behind para a raiz) */
+.nav-stack > .view.as-v.leave.behind{ transform:translateX(100%); filter:none }
+.nav-stack > .view.as-v.leave.behind::after{ content:none }
+body[data-motion="reduced"] .nav-stack > .view.as-v.leave.behind{ transform:none }
+/* a linha da tab bar compacta (scale .92) encolhia também o degradê de largura total que está por trás dela */
+.app-window[data-app="appstore"] > .tabbar::before{ left:-24px; right:-24px }
+/* no jogo as sombras largas passam a curtas: cada uma é um raster caro por cartão */
+body.fivem .as-story,body.fivem .as-ccard,body.fivem .as-lcard{ box-shadow:0 8px 16px -8px rgba(0,0,0,.26) }
+body.fivem.dark .as-story,body.fivem.dark .as-ccard,body.fivem.dark .as-lcard{ box-shadow:0 0 0 .5px rgba(255,255,255,.07) }
+body.fivem .as-aic{ box-shadow:0 12px 20px -8px rgba(0,0,0,.45) } body.fivem .as-wall > .as-tw,body.fivem .as-shot .scr{ box-shadow:none }
+body.fivem .as-acart > .as-tw,body.fivem .as-fart .as-aic{ box-shadow:0 8px 14px -6px rgba(0,0,0,.5) }
+
+/* ── barra de navegação: "scroll edge" do iOS 27 (material uniforme + linha fina; o conteúdo dissolve-se numa faixa curta) ── */
+body.os-ios .as-v > .navbar.solid{ background:var(--as-mat); box-shadow:0 .5px 0 var(--as-ln) }
+body.os-ios .as-v > .navbar::after{ background:linear-gradient(180deg, var(--as-mat), var(--as-mat0)) }
+/* glifos sobre o vidro monocromáticos (iOS 26/27): voltar e partilhar com a cor do texto, não azul */
+body.os-ios.os-ios .as-dv > .navbar .nb-back.lg,body.os-ios.os-ios .as-dv > .navbar .as-nshare.lg{ color:var(--label) }
+body.os-ios .as-nshare svg{ width:22px; height:22px; margin-top:-2px }
+
+/* ── título grande com avatar e data ── */
+.as-lt{ display:flex; align-items:center; justify-content:space-between; gap:12px }
+/* o título grande da loja já traz o seu avatar: a reserva dos botões da barra (--lg-btnw do markBare) só o empurrava para dentro */
+.view.as-v.lg-bare .large-title.as-lt{ padding-right:16px }
+/* o avatar da conta num círculo de vidro (.lg): a fotografia/inicial fica dentro, com um aro de 3 px de vidro à volta */
+.as-av{ position:relative; display:flex; align-items:center; justify-content:center; width:42px; height:42px; flex:none; border-radius:50%; cursor:pointer }
+body.os-ios.os-ios .as-v .as-av.lg{ --lg-r:50%; --lg-drop:0 4px 14px rgba(0,0,0,.12) }
+.as-av .avatar{ width:34px; height:34px; margin:0; border-radius:50%!important; font-size:14px; font-weight:600 }
+.as-av.sm{ width:36px; height:36px } .as-av.sm .avatar{ width:28px; height:28px; font-size:12px }
+body.os-ios.os-ios .as-v .as-av.lg:active{ transform:scale(.94) } .as-av{ transition:transform .3s var(--spring2,cubic-bezier(.3,1.22,.4,1)) }
+/* o avatar pequeno da barra só aparece quando o título grande já saiu do ecrã (PearOS) */
+.navbar .as-av.sm{ opacity:0; pointer-events:none; transition:opacity .2s } .navbar.show-title .as-av.sm{ opacity:1; pointer-events:auto }
+.as-date{ padding:0 20px; margin:2px 0 -6px; font-size:13px; font-weight:600; letter-spacing:.2px; color:var(--label2); text-transform:uppercase }
+
+/* ── cabeçalhos de secção ── */
+/* traço fino por cima de cada prateleira, recolhido 20 px de cada lado */
+.as-sec{ padding:6px 0 10px }
+.as-sec::before,.as-dsec::before{ content:''; display:block; height:.5px; margin:0 20px; background:var(--as-ln) }
+.as-sh{ display:flex; align-items:baseline; justify-content:space-between; gap:12px; padding:16px 20px 8px }
+.as-sh b{ min-width:0; font-size:22px; font-weight:700; letter-spacing:-.45px; color:var(--label); white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+.as-sh a{ flex:none; font-size:16px; font-weight:500; color:var(--blue); cursor:pointer } .as-sh a:active{ opacity:.45 }
+
+/* ── cápsula OBTER / ABRIR ──
+   A cápsula é o ::before (ao instalar ENCOLHE e desvanece até ao anel, só transform+opacity). Material de vidro desenhado:
+   · sobre listas: vidro claro TINGIDO pela cor de destaque (camada --as-gt por cima de var(--blue)), texto da cor de destaque,
+     reflexo no canto superior esquerdo, aresta fina e reflexo especular no topo;
+   · .onart (sobre a arte dos cartões): vidro CLEAR com escurecimento e texto branco (no browser com desfoque verdadeiro);
+   · .onglass (dentro da faixa de vidro dos cartões-história): só tinta branca, nunca vidro sobre vidro;
+   · .fill (página da app e barra): proeminente, cheio da cor de destaque com reflexo especular.
+   --rc é a cor do anel. */
+.as-get{ --rc:var(--blue); position:relative; flex:none; display:flex; align-items:center; justify-content:center; min-width:76px; height:30px; padding:0 15px; cursor:pointer; color:var(--blue); font-size:14px; font-weight:700; letter-spacing:.3px; isolation:isolate; -webkit-user-select:none; user-select:none }
+.as-get::before{ content:''; position:absolute; inset:0; z-index:-1; border-radius:15px;
+  background:radial-gradient(120% 150% at 16% 0%, rgba(255,255,255,.55) 0%, rgba(255,255,255,0) 58%), linear-gradient(var(--as-gt,rgba(255,255,255,.86)), var(--as-gt,rgba(255,255,255,.86))), var(--blue);
+  box-shadow:0 3px 10px -4px rgba(0,0,0,.16), inset 0 1px 0 rgba(255,255,255,.85), inset 0 -1px 0 rgba(255,255,255,.30), inset 0 0 0 .5px rgba(0,0,0,.10);
+  transition:transform .32s var(--spring2,cubic-bezier(.3,1.22,.4,1)), opacity .18s }
+body.dark .as-get:not(.onart):not(.fill)::before{ background:radial-gradient(120% 150% at 16% 0%, rgba(255,255,255,.16) 0%, rgba(255,255,255,0) 58%), linear-gradient(var(--as-gt,rgba(36,36,42,.8)), var(--as-gt,rgba(36,36,42,.8))), var(--blue);
+  box-shadow:0 3px 10px -4px rgba(0,0,0,.4), inset 0 1px 0 rgba(255,255,255,.22), inset 0 -1px 0 rgba(255,255,255,.05), inset 0 0 0 .5px rgba(0,0,0,.45) }
+.as-get > span{ white-space:nowrap; transition:opacity .15s, transform .25s var(--spring) }
+.as-get:active::before{ transform:scale(.94) } .as-get:active > span{ opacity:.65 }
+.as-get.is-loading::before{ opacity:0; transform:scaleX(.4) } .as-get.is-loading > span{ opacity:0; transform:scale(.7) }
+.as-get.pop{ animation:asPop .45s var(--spring) } @keyframes asPop{ 0%{ transform:scale(.7) } 60%{ transform:scale(1.07) } 100%{ transform:scale(1) } }
+/* sobre a arte: vidro CLEAR (escurecimento ~35 %, aresta escura, reflexo especular), texto branco */
+.as-get.onart{ --rc:#fff; color:#fff }
+.as-get.onart::before{ background:radial-gradient(120% 150% at 16% 0%, rgba(255,255,255,.30) 0%, rgba(255,255,255,0) 58%), rgba(0,0,0,.34);
+  box-shadow:0 4px 14px -4px rgba(0,0,0,.30), inset 0 1px 0 rgba(255,255,255,.50), inset 0 -1px 0 rgba(255,255,255,.12), inset 0 0 0 .5px rgba(0,0,0,.30) }
+body.os-ios:not(.fivem) .as-get.onart::before{ background:radial-gradient(120% 150% at 16% 0%, rgba(255,255,255,.30) 0%, rgba(255,255,255,0) 58%), rgba(0,0,0,.20); -webkit-backdrop-filter:blur(14px) saturate(160%); backdrop-filter:blur(14px) saturate(160%) }
+/* dentro da faixa de vidro: tinta branca (vibrancy), sem desfoque próprio */
+.as-get.onglass::before,body.os-ios:not(.fivem) .as-get.onglass::before{ background:radial-gradient(120% 150% at 16% 0%, rgba(255,255,255,.28) 0%, rgba(255,255,255,0) 58%), rgba(255,255,255,.22); -webkit-backdrop-filter:none; backdrop-filter:none;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.42), inset 0 0 0 .5px rgba(255,255,255,.14) }
+/* proeminente (página da app): cheio da cor de destaque, reflexo especular, brilho colorido por baixo */
+.as-get.fill{ color:#fff; height:34px; min-width:92px; padding:0 20px; font-size:16px; letter-spacing:.2px }
+.as-get.fill::before{ border-radius:17px; background:radial-gradient(120% 160% at 16% 0%, rgba(255,255,255,.42) 0%, rgba(255,255,255,0) 56%), var(--blue);
+  box-shadow:0 8px 18px -10px var(--blue), inset 0 1px 0 rgba(255,255,255,.50), inset 0 -1px 0 rgba(0,0,0,.10), inset 0 0 0 .5px rgba(0,0,0,.14) }
+.as-get.nav{ height:30px; min-width:74px; padding:0 15px; font-size:14px } .as-get.nav::before{ border-radius:15px }
+/* anel de progresso só com transform: cada metade (overflow:hidden) mostra uma meia-lua que roda 180°; a da direita na 1.ª metade
+   do tempo, a da esquerda na 2.ª. --d (negativo) põe um botão criado a meio da transferência no ponto certo. */
+.as-ring{ position:absolute; left:50%; top:50%; width:28px; height:28px; margin:-14px 0 0 -14px; border-radius:50%; box-shadow:inset 0 0 0 2.5px var(--fill); animation:asRingIn .22s ease-out both }
+.as-get.onart .as-ring{ box-shadow:inset 0 0 0 2.5px rgba(255,255,255,.3) }
+@keyframes asRingIn{ from{ opacity:0; transform:scale(.6) } }
+.as-ring .h{ position:absolute; top:0; width:50%; height:100%; overflow:hidden } .as-ring .h.r{ right:0 } .as-ring .h.l{ left:0 }
+.as-ring .h > i{ position:absolute; top:0; width:200%; height:100%; box-sizing:border-box; border-radius:50%; border:2.5px solid transparent; transform:rotate(-135deg); animation:1.2s linear var(--d, 0ms) both }
+.as-ring .h.r > i{ right:0; border-top-color:var(--rc); border-right-color:var(--rc); animation-name:asHalfR }
+.as-ring .h.l > i{ left:0; border-bottom-color:var(--rc); border-left-color:var(--rc); animation-name:asHalfL }
+@keyframes asHalfR{ 0%{ transform:rotate(-135deg) } 50%,100%{ transform:rotate(45deg) } }
+@keyframes asHalfL{ 0%,50%{ transform:rotate(-135deg) } 100%{ transform:rotate(45deg) } }
+.as-ring > b{ position:absolute; left:50%; top:50%; width:8px; height:8px; margin:-4px 0 0 -4px; border-radius:2px; background:var(--rc) }   /* quadrado "parar" do PearOS */
+.as-bc{ flex:none; display:flex; flex-direction:column; align-items:flex-end; gap:3px; min-width:76px }
+.as-iap{ font-style:normal; font-size:10.5px; line-height:1.1; font-weight:500; color:var(--label2); white-space:nowrap }
+
+/* ── linhas de app ── */
+.as-row{ position:relative; display:flex; align-items:center; gap:12px; min-width:0; padding:10px 0; cursor:pointer; color:var(--label) }
+/* o desenho do ícone-imagem (tamanho + máscara em squircle) vive em `.tile.img`, no shell.css. A máscara corta qualquer sombra do
+   próprio ícone: a sombra de profundidade é do invólucro .as-tw (store.js tileW), com o raio aproximado do squircle */
+.as-tw{ position:relative; display:block; flex:none; border-radius:24%; box-shadow:0 7px 14px -7px rgba(0,0,0,.34) }
+body.dark .as-tw{ box-shadow:0 7px 14px -7px rgba(0,0,0,.8) }
+.as-tw > .tile{ display:block; width:100%; height:100%; box-shadow:none }
+.as-row > .as-tw{ width:62px; height:62px }
+.as-n{ flex:none; width:18px; margin-right:-2px; font-size:17px; font-weight:700; text-align:center; color:var(--label) }
+.as-rb{ flex:1; min-width:0 }
+.as-rb > b{ display:block; font-size:16px; font-weight:600; letter-spacing:-.25px; line-height:1.25; white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+.as-rb > span:not(.as-stars){ display:block; margin-top:1px; font-size:13px; line-height:1.3; color:var(--label2); white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+.as-stars{ display:flex; align-items:center; gap:5px; margin-top:3px; font-size:11px; color:var(--label2); white-space:nowrap }
+.as-stars i{ position:relative; font-style:normal; letter-spacing:1px; line-height:1; color:var(--label4) }
+.as-stars i b{ position:absolute; left:0; top:0; overflow:hidden; white-space:nowrap; font-weight:400; color:var(--label2) }
+.as-stars em{ font-style:normal }
+/* separadores: começam depois do ícone (74 px); na prateleira não há traço na última linha de cada coluna */
+.as-shelf > .as-row:not(:nth-child(3n)):not(:last-child)::after{ content:''; position:absolute; left:74px; right:0; bottom:0; height:.5px; background:var(--as-ln) }
+.as-plist > .as-row + .as-row::before,.as-lrows > .as-row + .as-row::before{ content:''; position:absolute; left:74px; right:0; top:0; height:.5px; background:var(--as-ln) }
+/* nas listas numeradas o traço começa no NOME (ícone 62 + 12 + número 16 + 12 = 102), não por baixo do número */
+.as-shelf > .as-row.num:not(:nth-child(3n)):not(:last-child)::after,.as-plist > .as-row.num + .as-row::before,.as-lrows > .as-row.num + .as-row::before{ left:102px }
+.as-plist{ padding:0 20px } .as-plist.big{ padding-top:2px }
+
+/* ── prateleiras e carrosséis (a coluna seguinte espreita; snap "proximity": com "mandatory" a roda do rato prendia o scroll vertical) ── */
+.as-shelf,.as-fcar,.as-big,.as-shots,.as-revs{ overflow-x:auto; overflow-y:hidden; overscroll-behavior-x:contain; scroll-snap-type:x proximity; scroll-padding:0 20px; scrollbar-width:none }
+.as-shelf::-webkit-scrollbar,.as-fcar::-webkit-scrollbar,.as-big::-webkit-scrollbar,.as-shots::-webkit-scrollbar,.as-revs::-webkit-scrollbar{ display:none }
+.as-shelf{ display:grid; grid-auto-flow:column; grid-template-rows:repeat(3,auto); grid-auto-columns:calc(100% - 20px); column-gap:16px; padding:0 20px 4px }
+.as-shelf.one{ grid-auto-columns:100% } .as-shelf > .as-row{ scroll-snap-align:start }
+/* ícones grandes: a sombra de profundidade precisa de espaço por baixo (o overflow-y:hidden do carrossel cortava-a) */
+.as-big{ display:grid; grid-auto-flow:column; grid-auto-columns:104px; column-gap:16px; padding:4px 20px 12px }
+.as-bi{ min-width:0; cursor:pointer; scroll-snap-align:start }
+.as-bi > .as-tw{ width:104px; height:104px; box-shadow:0 12px 22px -12px rgba(0,0,0,.45); transition:transform .3s var(--spring2,cubic-bezier(.3,1.22,.4,1)) } .as-bi:active > .as-tw{ transform:scale(.95) }
+body.dark .as-bi > .as-tw{ box-shadow:0 12px 22px -12px rgba(0,0,0,.85) }
+.as-bi b{ display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; margin-top:9px; font-size:14px; font-weight:600; letter-spacing:-.15px; line-height:1.25; color:var(--label) }
+.as-bi span{ display:block; margin-top:1px; font-size:13px; color:var(--label2); white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+
+/* ── arte desenhada (cartões, carrossel, Arcade) ── */
+/* gradiente em três camadas (tom claro no canto, tom escuro no canto oposto, base) + formas estáticas; o z-index:-1 das formas
+   fica DENTRO do isolamento do cartão, por cima do fundo e por baixo do ícone e do texto */
+.as-art{ position:relative; overflow:hidden; color:#fff; isolation:isolate;
+  background:radial-gradient(110% 70% at 92% 0%, var(--c3) 0%, rgba(255,255,255,0) 60%), radial-gradient(100% 70% at 0% 100%, var(--c4) 0%, rgba(0,0,0,0) 66%), linear-gradient(160deg, var(--c1), var(--c2)) }
+.as-art.dark{ background:radial-gradient(85% 55% at 88% 6%, var(--c1) 0%, rgba(0,0,0,0) 72%), radial-gradient(90% 60% at 0% 96%, var(--c2) 0%, rgba(0,0,0,0) 72%), linear-gradient(165deg, #1D1829, #07070C) }
+.as-art > .d1{ position:absolute; z-index:-1; width:440px; height:440px; right:-190px; top:-190px; border-radius:50%; border:46px solid rgba(255,255,255,.1) }
+.as-art > .d2{ position:absolute; z-index:-1; width:240px; height:240px; left:-96px; bottom:36px; border-radius:64px; background:rgba(255,255,255,.08); transform:rotate(22deg) }
+.as-art > .d3{ position:absolute; z-index:-1; width:128px; height:128px; left:26px; top:34px; background:radial-gradient(rgba(255,255,255,.42) 1.5px, rgba(255,255,255,0) 2px) 0 0/16px 16px; opacity:.55 }
+.as-art > .glow{ position:absolute; z-index:-1; width:420px; height:420px; left:50%; top:36%; margin:-210px 0 0 -210px; border-radius:50%; background:radial-gradient(closest-side, rgba(255,255,255,.34), rgba(255,255,255,0)) }
+.as-art.dark > .glow{ background:radial-gradient(closest-side, rgba(255,255,255,.16), rgba(255,255,255,0)) } .as-art.dark > .d1{ border-color:rgba(255,255,255,.06) }
+.as-aic{ position:absolute; left:50%; top:36%; width:152px; height:152px; margin:-76px 0 0 -76px; border-radius:22.37%; box-shadow:0 30px 50px -14px rgba(0,0,0,.5) }
+.as-aic > .tile{ width:100%; height:100%; box-shadow:none }
+/* bolhas de glifos: pequenas peças de vidro desenhadas sobre a arte (decorativas, sem .lg) */
+.as-art > .gl{ position:absolute; display:flex; align-items:center; justify-content:center; width:56px; height:56px; border-radius:50%; color:#fff;
+  background:radial-gradient(120% 120% at 20% 0%, rgba(255,255,255,.34) 0%, rgba(255,255,255,0) 58%), rgba(255,255,255,.10); box-shadow:inset 0 1px 0 rgba(255,255,255,.5), inset 0 0 0 .5px rgba(255,255,255,.28), 0 8px 18px -8px rgba(0,0,0,.30) }
+.as-art > .gl svg{ width:26px; height:26px; stroke-width:1.9 }
+.as-art > .g1{ left:38px; top:31%; transform:rotate(-10deg) }
+.as-art > .g2{ right:44px; top:12%; width:46px; height:46px; transform:rotate(12deg) } .as-art > .g2 svg{ width:21px; height:21px }
+.as-art > .g3{ right:36px; top:47%; width:40px; height:40px } .as-art > .g3 svg{ width:18px; height:18px }
+/* v1: ícone mais abaixo (o texto vai em cima) · v2: ícone grande inclinado a sair pelo canto */
+.as-art.v1 > .glow,.as-art.v1 > .as-aic{ top:57% } .as-art.v1 > .g1{ top:50% } .as-art.v1 > .g2{ top:auto; bottom:150px } .as-art.v1 > .g3{ top:40% } .as-art.v1 > .d1{ right:auto; left:-200px; top:auto; bottom:-120px }
+.as-art.v2 > .as-aic{ left:auto; top:auto; right:-14px; bottom:108px; width:196px; height:196px; margin:0; transform:rotate(-12deg) }
+.as-art.v2 > .glow{ left:auto; top:auto; right:-120px; bottom:0; margin:0 } .as-art.v2 > .g1{ top:auto; bottom:170px } .as-art.v2 > .g3{ right:auto; left:128px; top:auto; bottom:250px }
+/* com o texto EM CIMA (.top) as bolhas de glifos descem para baixo do título (3 linhas + subtítulo chegam aos ~200 px) */
+.as-story.top > .g1{ top:58% } .as-story.top > .g2{ top:auto; bottom:112px } .as-story.top > .g3{ top:49% }
+.as-story.top.v2 > .g1{ top:auto; bottom:176px } .as-story.top.v2 > .g3{ left:150px; top:auto; bottom:118px }
+.as-story.top.v2 > .g2{ right:auto; left:118px; bottom:196px }   /* à direita caía EM CIMA do ícone inclinado */
+.as-media{ position:absolute; inset:0; z-index:-1; background:#111 center/cover no-repeat }   /* imagem real (RegisterApp `media`), posta por style no JS */
+
+/* ── cartão-história (Hoje): cantos 28, sombra estática suave, premir encolhe com mola ── */
+.as-story,.as-ccard{ margin:4px 20px 28px; height:476px; border-radius:28px; cursor:pointer; box-shadow:var(--as-sh); transition:transform .4s var(--spring2,cubic-bezier(.3,1.22,.4,1)) }
+.as-story:active,.as-ccard:active,.as-lcard:active{ transform:scale(.97) }
+/* véu escuro por baixo do texto: legível sobre qualquer cor da arte */
+.as-story::after,.as-ccard::after{ content:''; position:absolute; z-index:1; left:0; right:0; bottom:0; height:62%; pointer-events:none; background:linear-gradient(180deg, rgba(0,0,0,0), rgba(0,0,0,.14) 40%, rgba(0,0,0,.46)) }
+.as-story.top::after{ top:0; bottom:auto; height:46%; background:linear-gradient(0deg, rgba(0,0,0,0), rgba(0,0,0,.34)) }
+.as-stx{ position:absolute; z-index:2; left:0; right:0; bottom:100px; padding:0 22px; text-shadow:0 1px 10px rgba(0,0,0,.2) }
+.as-story.top .as-stx{ top:24px; bottom:auto } .as-ccard .as-stx{ bottom:26px }
+.as-stx em{ display:block; font-style:normal; font-size:13px; font-weight:700; letter-spacing:.4px; text-transform:uppercase; opacity:.86 }
+.as-stx b{ display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; max-width:340px; margin-top:4px; font-size:31px; font-weight:800; line-height:1.06; letter-spacing:-.8px }
+.as-stx span{ display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; max-width:330px; margin-top:8px; font-size:16px; font-weight:500; line-height:1.3; opacity:.9 }
+/* faixa da app em baixo: VIDRO CLEAR flutuante (.lg) com cantos concêntricos com o cartão (28 menos a margem de 8 = 20) */
+.as-strip{ position:absolute; z-index:3; left:8px; right:8px; bottom:8px; height:72px; padding:0 12px 0 11px; display:flex; align-items:center; gap:12px }
+/* peças largas: a lente diagonal do sistema fazia um risco escuro a meio; aqui é vertical (luz em cima, sombra em baixo) */
+.as-v{ --as-lens:linear-gradient(180deg, rgba(255,255,255,.30) 0%, rgba(255,255,255,.06) 40%, rgba(255,255,255,0) 55%, rgba(0,0,0,.16) 100%) }
+body.os-ios.os-ios .as-v .as-strip.lg{ --lg-r:20px; --lg-ring:var(--as-lens); --lg-rim:rgba(0,0,0,.30); --lg-spec:rgba(255,255,255,.46); --lg-spec2:rgba(255,255,255,.10); --lg-glow:rgba(255,255,255,.45); --lg-drop:0 8px 22px -8px rgba(0,0,0,.35); color:#fff;
+  background:radial-gradient(130% 120% at 8% 0%, rgba(255,255,255,.24) 0%, rgba(255,255,255,.05) 36%, rgba(255,255,255,0) 58%), rgba(0,0,0,.34) }
+body.os-ios.os-ios:not(.fivem) .as-v .as-strip.lg{ background:radial-gradient(130% 120% at 8% 0%, rgba(255,255,255,.24) 0%, rgba(255,255,255,.05) 36%, rgba(255,255,255,0) 58%), rgba(0,0,0,.18); -webkit-backdrop-filter:blur(20px) saturate(170%); backdrop-filter:blur(20px) saturate(170%) }
+.as-strip > .as-tw{ width:50px; height:50px; box-shadow:0 6px 14px -6px rgba(0,0,0,.5) }
+.as-sb{ flex:1; min-width:0 } .as-sb b{ display:block; font-size:16px; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+.as-sb span{ display:block; margin-top:1px; font-size:13px; opacity:.8; white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+.as-strip .as-iap{ color:rgba(255,255,255,.72) }
+.as-story.nostrip{ cursor:default } .as-story.nostrip:active{ transform:none }
+.as-aglyph{ position:absolute; left:50%; top:60%; width:132px; height:132px; margin:-66px 0 0 -66px; color:rgba(255,255,255,.92) } .as-aglyph svg{ width:100%; height:100%; stroke-width:1.4 }
+/* cartão de coleção: parede de ícones inclinada */
+.as-wall{ position:absolute; z-index:0; left:50%; top:37%; display:grid; grid-template-columns:repeat(4,96px); gap:18px; transform:translate(-50%,-50%) rotate(-14deg) }
+.as-wall > .as-tw{ width:96px; height:96px; box-shadow:0 12px 24px -8px rgba(0,0,0,.38) }
+.as-wall > .as-tw:nth-child(even){ transform:translateY(48px) }
+.as-ccard::after{ height:58%; background:linear-gradient(180deg, rgba(0,0,0,0), rgba(0,0,0,.42) 45%, rgba(0,0,0,.66)) }
+/* cartão-lista: cartão de conteúdo opaco (sem vidro), cantos 28, sombra suave */
+.as-lcard{ margin:4px 20px 28px; padding:20px 18px 8px; border-radius:28px; background:var(--as-card); cursor:pointer; box-shadow:var(--as-sh); transition:transform .4s var(--spring2,cubic-bezier(.3,1.22,.4,1)) }
+.as-lch em{ display:block; font-style:normal; font-size:13px; font-weight:600; letter-spacing:.3px; color:var(--label2); text-transform:uppercase }
+.as-lch b{ display:block; margin:3px 0 8px; font-size:27px; font-weight:800; line-height:1.1; letter-spacing:-.7px; color:var(--label) }
+
+/* ── Jogos / Apps: carrossel 16:10 (altura pela largura com padding-bottom: o CEF não tem aspect-ratio) ── */
+.as-fcar{ display:grid; grid-auto-flow:column; grid-auto-columns:calc(100% - 20px); column-gap:12px; padding:2px 20px 18px }
+.as-fc{ min-width:0; cursor:pointer; scroll-snap-align:start }
+.as-fch{ padding:10px 0 12px }
+.as-fch em{ display:block; font-style:normal; font-size:12px; font-weight:700; letter-spacing:.4px; color:var(--blue); text-transform:uppercase }
+.as-fch b{ display:block; margin-top:2px; font-size:22px; font-weight:600; line-height:1.2; letter-spacing:-.4px; color:var(--label); white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+.as-fch span{ display:block; font-size:16px; line-height:1.25; color:var(--label2); white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+.as-fart{ height:0; padding-bottom:62.5%; border-radius:24px; box-shadow:var(--as-shs); transition:transform .4s var(--spring2,cubic-bezier(.3,1.22,.4,1)) } .as-fc:active .as-fart{ transform:scale(.97) }
+.as-fart > .d1{ width:300px; height:300px; right:-120px; top:-150px; border-width:34px } .as-fart > .d2{ width:150px; height:150px; left:-50px; bottom:34px; border-radius:40px }
+.as-fart > .d3{ left:20px; top:18px; width:96px; height:96px }
+.as-fart > .glow,.as-fart.v1 > .glow,.as-fart.v2 > .glow{ width:300px; height:300px; left:auto; right:-40px; top:44%; bottom:auto; margin:-150px 0 0 0 }
+.as-fart > .as-aic,.as-fart.v1 > .as-aic,.as-fart.v2 > .as-aic{ width:108px; height:108px; left:auto; right:54px; top:26px; bottom:auto; margin:0; transform:rotate(-8deg); box-shadow:0 22px 36px -12px rgba(0,0,0,.5) }
+.as-fart.v1 > .as-aic{ right:auto; left:50%; margin-left:-54px; transform:none } .as-fart.v1 > .glow{ right:auto; left:50%; margin-left:-150px }
+.as-fart > .g1,.as-fart.v1 > .g1,.as-fart.v2 > .g1{ left:42px; top:40px; bottom:auto }
+.as-fart > .g2,.as-fart.v1 > .g2,.as-fart.v2 > .g2{ left:124px; right:auto; top:20px; bottom:auto }
+.as-fart > .g3,.as-fart.v1 > .g3,.as-fart.v2 > .g3{ left:112px; right:auto; top:104px; bottom:auto }
+.as-fart.v1 > .g1{ left:34px } .as-fart.v1 > .g2{ left:auto; right:40px; top:26px } .as-fart.v1 > .g3{ left:auto; right:70px; top:104px }
+/* no carrossel a linha da app é um véu (não vidro) e o OBTER é a cápsula de vidro clear por cima da arte */
+.as-strip.feat{ left:0; right:0; bottom:0; height:auto; padding:44px 14px 13px 14px; background:linear-gradient(180deg, rgba(0,0,0,0), rgba(0,0,0,.42)) }
+.as-strip.feat > .as-tw{ width:42px; height:42px } .as-strip.feat .as-sb b{ font-size:15px } .as-strip.feat .as-sb span{ font-size:12px }
+
+/* ── categorias: mosaicos com a arte da categoria e o rótulo numa cápsula de vidro CLEAR ── */
+.as-catl{ display:grid; grid-template-columns:1fr 1fr; gap:12px; padding:4px 20px 8px }
+.as-cl,.as-ct{ position:relative; overflow:hidden; isolation:isolate; min-width:0; border-radius:22px; color:#fff; cursor:pointer; box-shadow:var(--as-shs);
+  background:radial-gradient(90% 90% at 100% 0%, var(--c3), rgba(255,255,255,0) 70%), radial-gradient(80% 80% at 0% 100%, var(--c4), rgba(0,0,0,0) 70%), linear-gradient(145deg, var(--c1), var(--c2)); transition:transform .4s var(--spring2,cubic-bezier(.3,1.22,.4,1)) }
+.as-cl{ height:96px } .as-ct{ height:116px }
+.as-cl:active,.as-ct:active{ transform:scale(.96) }
+.as-cl > svg,.as-ct > svg{ position:absolute; z-index:-1; right:-8px; top:-6px; width:74px; height:74px; stroke-width:1.6; opacity:.92; transform:rotate(-12deg) }
+.as-cl > b,.as-ct > b{ position:absolute; left:10px; bottom:10px; max-width:calc(100% - 20px); padding:6px 11px; border-radius:14px; font-size:14px; font-weight:700; line-height:1.15; letter-spacing:-.1px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+  background:radial-gradient(120% 150% at 14% 0%, rgba(255,255,255,.30) 0%, rgba(255,255,255,0) 58%), rgba(0,0,0,.24);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.40), inset 0 -1px 0 rgba(255,255,255,.10), inset 0 0 0 .5px rgba(0,0,0,.24), 0 4px 12px -4px rgba(0,0,0,.24) }
+body.os-ios:not(.fivem) .as-cl > b,body.os-ios:not(.fivem) .as-ct > b{ background:radial-gradient(120% 150% at 14% 0%, rgba(255,255,255,.30) 0%, rgba(255,255,255,0) 58%), rgba(0,0,0,.14); -webkit-backdrop-filter:blur(12px) saturate(160%); backdrop-filter:blur(12px) saturate(160%) }
+.as-ct > b{ font-size:15px; padding:7px 12px }
+
+/* ── Arcade ── */
+.as-arch{ position:relative; overflow:hidden; isolation:isolate; margin:4px 20px 18px; height:548px; border-radius:30px; color:#fff; box-shadow:var(--as-sh);
+  background:radial-gradient(80% 50% at 8% 0%, rgba(255,55,95,.55), rgba(255,55,95,0) 70%), radial-gradient(70% 50% at 100% 34%, rgba(118,56,250,.62), rgba(118,56,250,0) 70%), radial-gradient(90% 45% at 50% 100%, rgba(10,132,255,.32), rgba(10,132,255,0) 70%), #07060D }
+.as-arch .as-wall{ top:30% }
+.as-arch > .fade{ position:absolute; z-index:1; left:0; right:0; bottom:0; height:64%; background:linear-gradient(180deg, rgba(7,6,13,0), rgba(7,6,13,.9) 42%, #07060D) }
+.as-artx{ position:absolute; z-index:2; left:0; right:0; bottom:0; display:flex; flex-direction:column; align-items:center; padding:0 22px 22px; text-align:center }
+.as-arlogo{ display:flex; align-items:center; gap:7px; font-size:23px; font-weight:800; letter-spacing:-.4px } .as-arlogo svg{ width:26px; height:26px; color:#FF375F; stroke-width:2.2 }
+.as-artx b{ margin-top:10px; font-size:26px; font-weight:800; line-height:1.1; letter-spacing:-.6px }
+.as-artx p{ margin:8px 0 0; font-size:15px; line-height:1.35; color:rgba(255,255,255,.72) }
+/* "Jogar grátis": cápsula de vidro clear sobre a arte escura (.lg: brilho do toque e lente do sistema), texto branco */
+.as-arbtn{ position:relative; display:flex; align-items:center; justify-content:center; width:100%; height:52px; margin-top:18px; border-radius:26px; color:#fff; font-size:17px; font-weight:700; cursor:pointer; transition:transform .4s var(--spring2,cubic-bezier(.3,1.22,.4,1)) }
+body.os-ios.os-ios .as-v .as-arbtn.lg{ --lg-r:26px; --lg-ring:var(--as-lens); --lg-rim:rgba(0,0,0,.40); --lg-spec:rgba(255,255,255,.55); --lg-spec2:rgba(255,255,255,.12); --lg-glow:rgba(255,255,255,.5); --lg-drop:0 10px 26px -10px rgba(0,0,0,.6); color:#fff;
+  background:radial-gradient(130% 120% at 10% 0%, rgba(255,255,255,.34) 0%, rgba(255,255,255,.08) 36%, rgba(255,255,255,0) 58%), rgba(255,255,255,.16) }
+.as-arbtn:active{ transform:scale(.97) }
+.as-artx > span{ margin-top:10px; font-size:12px; color:rgba(255,255,255,.55) }
+.as-agrid{ display:grid; grid-template-columns:1fr 1fr; gap:16px 12px; padding:4px 20px 8px }
+.as-ac{ min-width:0; cursor:pointer }
+/* mosaico quadrado sem aspect-ratio: altura pela largura (padding-bottom:100%) e o ícone ao centro por posição */
+.as-acart{ height:0; padding-bottom:100%; border-radius:22px; box-shadow:var(--as-shs); transition:transform .4s var(--spring2,cubic-bezier(.3,1.22,.4,1)) } .as-ac:active .as-acart{ transform:scale(.97) }
+.as-acart > .as-tw{ position:absolute; left:50%; top:50%; width:84px; height:84px; margin:-42px 0 0 -42px; box-shadow:0 18px 30px -10px rgba(0,0,0,.6) }
+.as-acart > .d1{ width:220px; height:220px; right:-96px; top:-96px; border-width:26px } .as-acart > .glow{ width:230px; height:230px; top:50%; margin:-115px 0 0 -115px }
+.as-ac b{ display:block; margin-top:9px; font-size:15px; font-weight:600; letter-spacing:-.15px; color:var(--label); white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+.as-ac span{ display:block; font-size:13px; color:var(--label2); white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+
+/* ── Pesquisar: cápsula de vidro FLUTUANTE, presa por baixo da barra quando se desce (sticky); à direita, o círculo de vidro de fechar ── */
+/* ⚠️ o top do sticky conta a partir da caixa de CONTEÚDO do scroll: o padding de cima da .content (barra de estado + 6 no .lg-bare)
+   já fica de fora, por isso aqui vai só a altura da barra menos 12 (fica presa a ~6 px por baixo da barra compacta) */
+.as-search{ position:sticky; z-index:6; top:calc(var(--navbar-h) - 12px); display:flex; align-items:center; gap:10px; padding:4px 16px 12px }
+.as-sf{ position:relative; flex:1; min-width:0; display:flex; align-items:center; gap:9px; height:48px; padding:0 14px 0 16px; color:var(--label2) }
+body.os-ios.os-ios .as-v .as-sf.lg{ --lg-r:24px; --lg-drop:0 8px 26px -10px rgba(0,0,0,.28) }
+body.os-ios.os-ios .as-v .as-sf.lg,body.os-ios.os-ios .as-v .as-cancel.lg,body.os-ios.os-ios .as-v .as-chip.lg{ color:var(--label2) }
+.as-sf > svg{ width:20px; height:20px; flex:none }
+.as-sf input{ flex:1; min-width:0; border:0; background:transparent; outline:none; font:inherit; font-size:17px; color:var(--label) } .as-sf input::placeholder{ color:var(--label2) }
+.as-clr{ display:none; width:22px; height:22px; border-radius:50%; background:var(--label3); color:var(--as-bg); align-items:center; justify-content:center; cursor:pointer; flex:none } .as-clr svg{ width:12px; height:12px; stroke-width:3 }
+.as-search.has .as-clr{ display:flex } .as-search.has .as-mic{ display:none }
+.as-mic{ display:flex; align-items:center; color:var(--label2) } .as-mic svg{ width:20px; height:20px }
+.as-cancel{ position:relative; display:none; width:48px; height:48px; border-radius:50%; align-items:center; justify-content:center; cursor:pointer; flex:none } .as-cancel svg{ width:20px; height:20px }
+body.os-ios.os-ios .as-v .as-cancel.lg{ --lg-r:50%; --lg-drop:0 8px 26px -10px rgba(0,0,0,.28); color:var(--label) }
+.as-search.focus .as-cancel,.as-search.has .as-cancel{ display:flex }
+/* "Descobrir": pastilhas de vidro com a lupa (filtros = controlos, por isso vidro) */
+.as-disc{ display:flex; flex-wrap:wrap; gap:8px; padding:2px 20px 6px }
+.as-chip{ position:relative; display:flex; align-items:center; gap:7px; height:40px; padding:0 15px 0 12px; border-radius:20px; cursor:pointer; font-size:16px; letter-spacing:-.2px; transition:transform .3s var(--spring2,cubic-bezier(.3,1.22,.4,1)) }
+body.os-ios.os-ios .as-v .as-chip.lg{ --lg-r:20px; --lg-drop:0 4px 14px -6px rgba(0,0,0,.20) }
+.as-chip:active{ transform:scale(.96) }
+.as-chip svg{ width:17px; height:17px; flex:none; color:var(--label2) } .as-chip span{ color:var(--label); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:240px }
+.as-cats{ display:grid; grid-template-columns:1fr 1fr; gap:12px; padding:4px 20px 8px }
+/* o corpo da pesquisa ocupa o espaço que sobra: o "Sem resultados" (UI.empty, flex:1) fica AO CENTRO e não colado ao campo */
+.as-sbody,.as-sres{ flex:1 0 auto; display:flex; flex-direction:column }
+.as-rcount{ padding:2px 20px 6px; font-size:13px; font-weight:500; color:var(--label2) }
+.as-res{ position:relative; padding:4px 20px 18px }
+.as-res + .as-res::before{ content:''; position:absolute; left:20px; right:20px; top:0; height:.5px; background:var(--as-ln) }
+/* capturas pequenas dos resultados: a MESMA captura da página da app, reduzida com zoom (3 × 128 px + 2 espaços = 400) */
+.as-mshots{ display:flex; gap:8px; margin-top:4px } .as-mshots .as-shot{ zoom:.598; box-shadow:inset 0 0 0 .5px rgba(0,0,0,.10) }
+
+/* ── capturas desenhadas ── */
+/* a sombra precisa de espaço por baixo: o overflow-y:hidden do carrossel cortava-a (padding em baixo + margem negativa) */
+.as-shots{ display:flex; gap:12px; padding:6px 20px 26px; margin-bottom:-14px }
+.as-shot{ position:relative; flex:none; width:214px; height:464px; overflow:hidden; border-radius:28px; scroll-snap-align:start;
+  background:radial-gradient(90% 50% at 80% 0%, var(--c3), rgba(255,255,255,0) 70%), linear-gradient(170deg, var(--c1), var(--c2)); box-shadow:0 14px 26px -14px rgba(0,0,0,.40), inset 0 0 0 .5px rgba(0,0,0,.08) }
+body.dark .as-shot{ box-shadow:0 0 0 .5px rgba(255,255,255,.08), 0 14px 26px -14px rgba(0,0,0,.8) }
+body.fivem .as-shot{ box-shadow:0 8px 14px -8px rgba(0,0,0,.36) }
+.as-shot.real{ background:#111 center/cover no-repeat }
+.as-shot .cap{ position:absolute; left:14px; right:14px; top:24px; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; text-align:center; font-size:20px; font-weight:800; line-height:1.12; letter-spacing:-.4px; color:#fff }
+.as-shot .scr{ position:absolute; left:20px; right:20px; top:104px; bottom:-30px; display:flex; flex-direction:column; gap:9px; overflow:hidden; padding:32px 12px 0; border:5px solid #0B0B0D; border-radius:32px; background:var(--as-scr); box-shadow:0 18px 30px -12px rgba(0,0,0,.4) }
+.as-shot .scr::before{ content:''; position:absolute; left:50%; top:7px; width:46px; height:13px; margin-left:-23px; border-radius:7px; background:#0B0B0D }   /* ilha */
+.as-shot .scr i{ display:block; flex:none }
+.as-shot .hd{ display:flex; align-items:center; gap:8px; flex:none }
+.as-shot .hd > .tile,.as-shot .hd > .ic{ width:28px; height:28px; flex:none; border-radius:8px; box-shadow:none }
+.as-shot .hd > .ic{ background:linear-gradient(135deg, var(--c1), var(--c2)) }
+.as-shot .hd > .t{ width:72px; height:10px; border-radius:5px; background:var(--label); opacity:.85 }
+.as-shot .hero{ height:96px; border-radius:14px; background:linear-gradient(135deg, var(--c3), var(--c1) 60%, var(--c2)) }
+.as-shot .ln{ height:8px; border-radius:4px; background:var(--fill) } .as-shot .w1{ width:82% } .as-shot .w2{ width:62% } .as-shot .w3{ width:44% }
+.as-shot .rw{ position:relative; height:36px }
+.as-shot .rw::before{ content:''; position:absolute; left:0; top:2px; width:32px; height:32px; border-radius:50%; background:linear-gradient(135deg, var(--c3), var(--c1)) }
+.as-shot .rw::after{ content:''; position:absolute; left:42px; right:6px; top:6px; height:22px; background:linear-gradient(var(--fill), var(--fill)) 0 0/100% 8px no-repeat, linear-gradient(var(--fill3), var(--fill3)) 0 14px/58% 8px no-repeat }
+.as-shot .scr .grid{ display:grid; grid-template-columns:1fr 1fr; gap:8px }   /* .scr no seletor: a .grid é um <i> e ".as-shot .scr i{display:block}" ganhava */
+.as-shot .grid > i{ height:74px; border-radius:12px; background:linear-gradient(135deg, var(--c3), var(--c1)) }
+.as-shot .grid > i:nth-child(2),.as-shot .grid > i:nth-child(3){ background:linear-gradient(135deg, var(--c1), var(--c4)) }
+.as-shot .bub{ width:72%; height:30px; border-radius:15px; background:var(--fill) } .as-shot .bub.r{ align-self:flex-end; background:var(--c1) } .as-shot .bub.s{ width:48% }
+.as-shot .bar{ height:34px; margin-top:auto; margin-bottom:44px; border-radius:17px; box-shadow:inset 0 0 0 1.5px var(--fill) }
+.as-shot .crd{ height:150px; border-radius:16px; background:radial-gradient(80% 80% at 90% 10%, var(--c3), rgba(255,255,255,0) 60%), linear-gradient(135deg, var(--c1), var(--c4)) }
+.as-shot .btn{ height:36px; margin-top:4px; border-radius:18px; background:var(--c1) }
+
+/* ── página de uma app ──
+   A barra flutua sobre o herói (absoluta, como nas raízes .lg-bare): voltar e partilhar são círculos de vidro e o fundo ambiente
+   da app sobe até à barra de estado. Depois do cabeçalho a barra ganha o material e mostra o ícone pequeno e o OBTER (PearOS). */
+.as-dv > .navbar{ position:absolute; left:0; right:0; top:0; pointer-events:none }
+.as-dv > .navbar > *{ pointer-events:auto }
+.as-dv > .content{ padding-top:calc(var(--statusbar-h) + var(--navbar-h) + 2px) }
+.as-dv .navbar .nb-title{ max-width:none; overflow:visible; opacity:0; transition:opacity .2s } .as-dv.as-dnav .navbar .nb-title{ opacity:1 }
+.as-dv .nb-title .tile{ display:block; width:32px; height:32px; box-shadow:var(--as-icsh) }
+.as-dv .nb-right .as-get{ opacity:0; pointer-events:none; transition:opacity .2s } .as-dv.as-dnav .nb-right .as-get{ opacity:1; pointer-events:auto }
+.as-dhead{ display:flex; gap:18px; padding:8px 20px 20px }
+.as-dhead > .as-tw{ width:124px; height:124px; box-shadow:0 22px 36px -16px rgba(0,0,0,.50) }
+body.dark .as-dhead > .as-tw{ box-shadow:0 22px 36px -16px rgba(0,0,0,.9) }
+.as-dhb{ flex:1; min-width:0; display:flex; flex-direction:column }
+.as-dhb h1{ display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; margin:4px 0 0; font-size:26px; font-weight:800; line-height:1.12; letter-spacing:-.7px; color:var(--label) }
+.as-dhb > span{ display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; margin-top:3px; font-size:15px; line-height:1.3; color:var(--label2) }
+.as-dact{ display:flex; align-items:center; justify-content:space-between; margin-top:auto; padding-top:12px }
+.as-dact .as-bc{ align-items:flex-start }
+/* faixa de informação num cartão de material (translúcido sobre a luz da app): quatro colunas com separadores finos */
+.as-infow{ position:relative; margin:0 16px 10px; border-radius:24px; background:var(--as-cardm); box-shadow:0 12px 30px -20px rgba(0,0,0,.30), inset 0 1px 0 rgba(255,255,255,.75), inset 0 0 0 .5px rgba(0,0,0,.06) }
+body.dark .as-infow{ box-shadow:0 12px 30px -20px rgba(0,0,0,.8), inset 0 1px 0 rgba(255,255,255,.10), inset 0 0 0 .5px rgba(255,255,255,.07) }
+body.os-ios:not(.fivem) .as-infow{ -webkit-backdrop-filter:blur(20px) saturate(160%); backdrop-filter:blur(20px) saturate(160%) }
+.as-info{ display:grid; grid-template-columns:1.2fr 1fr 1fr 1fr; padding:0 4px }
+.as-info > div{ position:relative; min-width:0; padding:14px 4px 13px; text-align:center; color:var(--label2) }
+.as-info > div + div::before{ content:''; position:absolute; left:0; top:22px; bottom:20px; width:.5px; background:var(--as-ln) }
+.as-info > div > em{ display:block; font-style:normal; font-size:10.5px; font-weight:600; letter-spacing:.3px; text-transform:uppercase; white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+.as-info > div > b{ display:flex; align-items:center; justify-content:center; height:30px; margin-top:4px; font-size:21px; font-weight:700; letter-spacing:-.3px; white-space:nowrap; color:var(--label2) }
+.as-info > div > b svg{ width:26px; height:26px; stroke-width:1.8 }
+.as-info > div > span:not(.as-stars){ display:block; margin-top:2px; font-size:12px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+.as-info .as-stars{ justify-content:center; margin-top:2px } .as-stars.sm i{ font-size:11px; letter-spacing:.5px }
+.as-dsec{ position:relative; padding:4px 0 16px }
+.as-ver{ display:flex; justify-content:space-between; padding:0 20px 6px; font-size:15px; color:var(--label2) }
+/* texto cortado a 3 linhas com "mais" por cima do fim (o degradê usa a cor do fundo da loja, nos dois temas) */
+.as-clamp{ position:relative; margin:0 20px }
+.as-dsec > .as-clamp:first-child{ margin-top:16px }
+.as-clamp p{ display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; margin:0; font-size:15px; line-height:1.45; color:var(--label) }
+.as-clamp a{ position:absolute; right:0; bottom:0; padding-left:40px; font-size:15px; line-height:1.45; color:var(--blue); cursor:pointer; background:linear-gradient(90deg, var(--as-bg0), var(--as-bg) 38px) }
+.as-clamp.open p{ display:block; -webkit-line-clamp:unset } .as-clamp.open a{ display:none }
+.as-dev{ display:flex; align-items:center; gap:6px; padding:4px 20px 0; font-size:13px; color:var(--label2) } .as-dev svg{ width:15px; height:15px }
+/* cartões de conteúdo da página (programador, classificações, avaliações, informações): opacos, cantos 22, sombra curta */
+.as-devrow,.as-rat,.as-norat,.as-tap,.as-infol,.as-rev{ background:var(--as-card2); box-shadow:var(--as-shs) }
+.as-devrow{ display:flex; align-items:center; justify-content:space-between; margin:14px 16px 0; padding:12px 16px; border-radius:20px; cursor:pointer }
+.as-devrow b{ display:block; font-size:17px; font-weight:500; color:var(--blue) } .as-devrow span{ display:block; font-size:13px; color:var(--label2) } .as-devrow svg{ width:18px; height:18px; color:var(--label3) }
+.as-devrow:active{ opacity:.7 }
+/* classificações: número grande + barras por estrelas */
+.as-rat{ display:flex; align-items:flex-end; gap:22px; margin:0 16px; padding:18px 18px 16px; border-radius:24px }
+.as-ratbig{ flex:none; text-align:center }
+.as-ratbig b{ display:block; font-size:60px; font-weight:800; line-height:.95; letter-spacing:-2.5px; color:var(--label) }
+.as-ratbig span{ display:block; margin-top:4px; font-size:14px; font-weight:600; color:var(--label2) }
+.as-bars{ flex:1; min-width:0; padding-bottom:2px }
+.as-bars > div{ display:flex; align-items:center; gap:8px; height:12px }
+.as-bars i{ flex:none; width:50px; text-align:right; font-style:normal; font-size:8.5px; line-height:1; letter-spacing:.5px; color:var(--label2) }
+.as-bars s{ flex:1; height:4px; overflow:hidden; border-radius:2px; background:var(--fill3); text-decoration:none }
+.as-bars u{ display:block; height:100%; border-radius:2px; background:var(--label2); text-decoration:none }
+.as-bars em{ display:block; margin-top:6px; text-align:right; font-style:normal; font-size:14px; color:var(--label2) }
+.as-revs{ display:grid; grid-auto-flow:column; grid-auto-columns:calc(100% - 28px); column-gap:12px; padding:14px 16px 18px; margin-bottom:-8px }
+.as-rev{ min-width:0; height:172px; overflow:hidden; padding:14px 16px; border-radius:22px; scroll-snap-align:start }
+.as-revh{ display:flex; justify-content:space-between; gap:10px } .as-revh b{ min-width:0; font-size:16px; font-weight:600; color:var(--label); white-space:nowrap; overflow:hidden; text-overflow:ellipsis } .as-revh span{ flex:none; font-size:14px; color:var(--label2) }
+.as-revs2{ display:flex; justify-content:space-between; gap:10px; margin-top:4px }
+.as-revs2 i{ flex:none; font-style:normal; font-size:12px; letter-spacing:1px; color:#FF9500 } .as-revs2 i s{ text-decoration:none; color:var(--label4) }
+.as-revs2 span{ min-width:0; font-size:14px; color:var(--label2); white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+.as-rev p{ display:-webkit-box; -webkit-line-clamp:4; -webkit-box-orient:vertical; overflow:hidden; margin:8px 0 0; font-size:15px; line-height:1.4; color:var(--label) }
+.as-tap{ display:flex; align-items:center; justify-content:space-between; margin:12px 16px 0; padding:8px 10px 8px 16px; border-radius:20px; font-size:15px; color:var(--label2) }
+.as-tap > div{ display:flex; gap:2px }
+.as-tap i{ display:flex; align-items:center; justify-content:center; width:34px; height:34px; color:var(--blue); cursor:pointer; transition:transform .3s var(--spring2,cubic-bezier(.3,1.22,.4,1)) } .as-tap i:active{ transform:scale(.86) }
+.as-tap svg{ width:24px; height:24px; stroke-width:1.6 } .as-tap i.on svg{ fill:currentColor }
+/* classificações a sério: estado sem avaliações, a minha avaliação (editar/remover), folha de escrever, estrelas "vazias" nas listas */
+.as-norat{ display:flex; flex-direction:column; align-items:center; gap:4px; margin:0 16px; padding:20px 20px 18px; border-radius:24px; text-align:center; color:var(--label2) } .as-norat svg{ width:26px; height:26px; color:var(--label3); margin-bottom:4px } .as-norat b{ color:var(--label); font-size:15px } .as-norat span{ font-size:13px }
+.as-myrev{ display:flex; justify-content:space-between; margin:10px 22px 0; font-size:14px } .as-myrev a{ color:var(--blue); cursor:pointer } .as-myrev a + a{ color:var(--red) }
+/* a folha de escrever vive numa folha do sistema (fora da .as-v): o .as-tap volta a ser só uma linha */
+.as-revform .group{ margin:8px 16px } .as-revform textarea{ width:100%; border:none; background:none; font:inherit; font-size:var(--t-body); color:var(--label); outline:none; resize:none } .as-revform .as-tap{ margin-top:6px; background:none; box-shadow:none }
+.as-stars.none i{ opacity:.55 } .as-stars.none em{ color:var(--label3) }
+.as-infol{ margin:0 16px; padding:0 16px; border-radius:22px }
+.as-infol > div{ display:flex; justify-content:space-between; gap:16px; padding:12px 0; border-top:.5px solid var(--as-ln); font-size:15px }
+.as-infol > div:first-child{ border-top:0 }
+.as-infol span{ flex:none; color:var(--label2) } .as-infol b{ min-width:0; font-weight:400; text-align:right; color:var(--label); white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+.as-uninst{ display:flex; align-items:center; justify-content:center; gap:8px; height:52px; margin:8px 16px 16px; border-radius:26px; background:var(--as-card2); box-shadow:var(--as-shs); color:var(--red); font-size:17px; font-weight:500; cursor:pointer; transition:transform .3s var(--spring2,cubic-bezier(.3,1.22,.4,1)) }
+.as-uninst svg{ width:20px; height:20px } .as-uninst:active{ transform:scale(.97) }
+.as-ifinst[hidden]{ display:none }   /* o display:flex acima ganhava ao [hidden] do browser */
+
+/* PearPhone Fold aberto: o texto fica na coluna de 640 (ui.css), mas os carrosséis vão de ponta a ponta do ecrã de 880, como
+   numa loja de tablet (a coluna é 120 px para dentro de cada lado), e mostram duas colunas de apps com a terceira a espreitar */
+body.form-fold .as-shelf,body.form-fold .as-fcar,body.form-fold .as-big,body.form-fold .as-shots,body.form-fold .as-revs{ margin-left:-120px; margin-right:-120px; padding-left:140px; padding-right:140px; scroll-padding:0 140px }
+body.form-fold .as-shelf:not(.one),body.form-fold .as-revs{ grid-auto-columns:300px }
+body.form-fold .as-fcar{ grid-auto-columns:360px }
+/* PearPhone Fold (contrato v2, 2026-10-03): a coluna é a do ui.css (--fold-col) dentro da zona do conteúdo (ecrã menos a barra
+   direita); os carrosséis vão de uma ponta à outra dessa zona e o primeiro cartão alinha com a coluna */
+body.os-ios.form-fold :is(.as-shelf,.as-fcar,.as-big,.as-shots,.as-revs){ --as-g:max(0px,calc((var(--screen-w) - var(--rail-w) - var(--fold-col)) / 2)); margin-left:calc(-1 * var(--as-g)); margin-right:calc(-1 * var(--as-g)); padding-left:calc(var(--as-g) + 20px); padding-right:calc(var(--as-g) + 20px); scroll-padding:0 calc(var(--as-g) + 20px) }
+body.os-ios.form-fold.fold-closed :is(.as-shelf,.as-fcar,.as-big,.as-shots,.as-revs){ --as-g:0px }
+/* a secção tem content-visibility:auto, que recorta o que sai da caixa dela (contenção de pintura): sem isto a prateleira de
+   ponta a ponta continuava cortada na aresta da coluna */
+body.os-ios.form-fold.fold-open .as-sec{ content-visibility:visible }
+/* aberto: o separador Hoje em DUAS colunas de cartões (store.js .as-today), como numa loja de tablet */
+body.form-fold.fold-open .as-today{ --fold-col:1120px }
+body.form-fold.fold-open .as-today > .content,body.form-fold.fold-open .as-today > .content > .as-slot{ display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); align-content:start }
+body.form-fold.fold-open .as-today > .content > :not(.as-story):not(.as-lcard):not(.as-ccard){ grid-column:1 / -1 }
+/* NOVA Fold8 aberto (Nova UI, astore-; a base vive no oneui-apps3.css, que carrega depois, por isso aqui vai mais específico) */
+body.os-android.form-fold.fold-open .view.astore-v{ --fold-col:1100px }
+body.os-android.form-fold.fold-open .view.astore-v.astore-dv{ --fold-col:820px }
+body.os-android.form-fold.fold-open .view.astore-v .astore-card:not(.astore-info){ display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); column-gap:24px }
+body.os-android.form-fold.fold-open .view.astore-v .astore-card:not(.astore-info) > .astore-row:nth-child(2)::before{ display:none }
+body.os-android.form-fold.fold-open .view.astore-v .astore-agrid{ grid-template-columns:repeat(4,minmax(0,1fr)) }
+body.os-android.form-fold.fold-open .view.astore-v .astore-tiles{ gap:22px }
+body.os-android.form-fold.fold-open .view.astore-dv .astore-shot{ width:200px; height:386px }
+
+/* ── acessibilidade (Definições › Acessibilidade): o glass27 trata as peças .lg do sistema; aqui os materiais próprios da loja ──
+   Reduzir transparência: vidro clear e faixas passam a foscos opacos, sem desfoque. Aumentar contraste: aro forte nas cápsulas. */
+body.os-ios.reduce-transparency .as-get.onart::before,body.os-ios.reduce-transparency .as-cl > b,body.os-ios.reduce-transparency .as-ct > b{ background:rgba(36,36,42,.94); -webkit-backdrop-filter:none; backdrop-filter:none }
+body.os-ios.reduce-transparency .as-get.onglass::before{ background:rgba(255,255,255,.30) }
+body.os-ios.os-ios.reduce-transparency .as-v .as-strip.lg{ background:rgba(28,28,32,.95) }
+body.os-ios.os-ios.reduce-transparency .as-v .as-arbtn.lg{ background:rgba(64,64,70,.97) }
+body.os-ios.reduce-transparency .as-infow{ background:var(--as-card); -webkit-backdrop-filter:none; backdrop-filter:none }
+body.os-ios.increase-contrast .as-get:not(.onart):not(.fill)::before{ box-shadow:inset 0 0 0 1.5px var(--blue) }
+body.os-ios.increase-contrast .as-get.onart::before,body.os-ios.increase-contrast .as-cl > b,body.os-ios.increase-contrast .as-ct > b{ box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.75) }
+
+/* ── conta (folha do sistema) ── */
+.as-acc{ display:flex; flex-direction:column; align-items:center; gap:4px; padding:10px 0 6px } .as-acc b{ font-size:20px; font-weight:700; margin-top:8px } .as-acc span{ font-size:14px; color:var(--label2) }

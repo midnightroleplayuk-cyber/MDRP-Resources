@@ -1,0 +1,133 @@
+/* =====================================================================
+   ONION (mercado anónimo) + CRIPTO (carteira).
+   Ambas herdam os componentes do sistema e só trocam as VARIÁVEIS de tema na janela,
+   como o Dark Chat faz - assim as listas, folhas, alertas e barras continuam a ser os do PearOS.
+   Regras CEF respeitadas: sem backdrop-filter próprio, sem filter em camadas grandes.
+   ===================================================================== */
+
+/* ---------- tema partilhado (preto com verde-fósforo) ---------- */
+.onion, .cy{ --bg:#09090C; --bg2:#141419; --label:#E9E9EC; --label2:rgba(233,233,236,.58); --label3:rgba(233,233,236,.34);
+  --sep:rgba(255,255,255,.09); --sep-opaque:#232329; --fill2:rgba(255,255,255,.12); --fill3:rgba(255,255,255,.07); --material:rgba(18,18,22,.92);
+  /* --glass é o que a barra de separadores flutuante e o círculo de pesquisa usam: sem o trocar, a barra ficava CLARA
+     dentro de uma app escura e os rótulos (em --label2 claro) ficavam ilegíveis (foto do utilizador) */
+  --glass:rgba(30,30,36,.86); --glass-border:rgba(255,255,255,.14); --material:rgba(22,22,27,.97) }   /* --material: alertas/menus (sem ele herdavam o CLARO do body.fivem) */
+.onion{ --blue:#7CFF9B }                      /* o "azul" do sistema (botões, valores, seleção) passa a verde-fósforo */
+.cy{ --blue:#F7B23B }                      /* na Cripto o acento é dourado */
+.onion .view, .cy .view{ background:var(--bg) }
+.onion .navbar.solid, .cy .navbar.solid{ background:rgba(9,9,12,.92) }
+.onion .group, .cy .group{ background:var(--bg2) }
+.onion .li-value, .cy .li-value{ color:var(--label2) }
+.onion .empty, .cy .empty{ color:var(--label2) }
+.onion .search, .cy .search{ background:var(--fill3); color:var(--label) }
+.onion .chips span, .cy .chips span{ background:var(--fill3); color:var(--label) }
+.onion .chips span.on{ background:rgba(124,255,155,.16); color:#7CFF9B; box-shadow:inset 0 0 0 .5px rgba(124,255,155,.35) }   /* acento como tinta, nao como bloco: o verde solido fica so para o botao Comprar */
+.onion .li.center.red .li-label{ color:#FF6B6B }
+.onion .seg div.on, .cy .seg div.on{ background:rgba(255,255,255,.16); box-shadow:0 3px 8px rgba(0,0,0,.35), 0 0 0 .5px rgba(255,255,255,.06) }   /* ui.css usa --bg2 (branco no tema claro); aqui --bg2 e mais escuro do que a pista e o segmento ativo desaparecia */
+
+/* ---------- ligação encriptada (arranque) ---------- */
+.on-boot{ background:var(--bg) }
+/* o ecrã de ligação não tem botões nenhuns: a barra de navegação só reservava 112 px vazios com um filete a atravessar o topo,
+   e empurrava o orbe 29 px abaixo do centro do ecrã */
+.on-boot .navbar{ display:none }
+.on-boot .content{ display:flex; align-items:center; justify-content:center; padding-bottom:0 }
+.on-boot-b{ display:flex; flex-direction:column; align-items:center; gap:18px; padding:0 34px; width:100%; max-width:340px; text-align:center }
+.on-orb{ width:92px; height:92px; border-radius:50%; display:flex; align-items:center; justify-content:center; color:#7CFF9B;
+  background:radial-gradient(circle at 50% 40%, rgba(124,255,155,.22), rgba(124,255,155,.04) 62%, transparent 72%);
+  box-shadow:inset 0 0 0 1px rgba(124,255,155,.28); animation:onPulse 2s ease-in-out infinite }
+.on-orb.sm{ width:74px; height:74px; animation:none }
+@keyframes onPulse{ 0%,100%{ transform:scale(1); opacity:.9 } 50%{ transform:scale(1.05); opacity:1 } }
+.on-boot-t{ font-size:var(--t-body); font-weight:600; color:var(--label) }
+.on-hops{ display:flex; flex-direction:column; gap:9px; width:100%; font-family:var(--font-mono); font-size:var(--t-foot) }
+.on-hop{ display:flex; align-items:center; gap:10px; color:var(--label2); opacity:0; transform:translateY(6px); transition:opacity .3s var(--curve), transform .3s var(--curve) }
+.on-hop.in{ opacity:1; transform:none }
+.on-hop i{ width:7px; height:7px; border-radius:50%; background:var(--label3); flex:none }
+.on-hop.ok{ color:#7CFF9B } .on-hop.ok i{ background:#7CFF9B; box-shadow:0 0 8px rgba(124,255,155,.7) }
+
+/* ---------- mercado ---------- */
+.on-warn{ margin:0 var(--margin) 10px; padding:9px 12px; border-radius:12px; background:rgba(124,255,155,.08); box-shadow:inset 0 0 0 .5px rgba(124,255,155,.22);
+  color:#9BFFB4; font-size:var(--t-cap1); text-align:center; line-height:1.35 }
+.on-list{ display:flex; flex-direction:column; gap:10px; padding:8px var(--margin) 16px; flex:1 0 auto }   /* cresce, para o estado vazio (flex:1) se centrar em vez de colar ao título */
+.on-list > .spinner{ margin:auto }
+.on-card{ display:flex; gap:12px; align-items:center; padding:11px; border-radius:18px; background:var(--bg2); box-shadow:inset 0 0 0 .5px var(--sep); cursor:default;
+  transition:transform .2s var(--spring), background .2s }
+.on-card:active{ transform:scale(.985); background:#1A1A20 } .on-card.out{ opacity:.5 }
+.on-thumb{ width:60px; height:60px; flex:none; border-radius:13px; background:#1E1E25; display:flex; align-items:center; justify-content:center; color:var(--label3); overflow:hidden }
+.on-img{ width:100%; height:100%; background-size:cover; background-position:center }
+.on-cb{ flex:1; min-width:0; display:flex; flex-direction:column; gap:3px }
+.on-ct{ font-size:var(--t-body); font-weight:600; color:var(--label); white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+.on-cs{ font-size:var(--t-cap1); color:var(--label2); font-family:var(--font-mono); display:flex; align-items:center; gap:6px; min-width:0 }
+.on-cm{ display:flex; align-items:baseline; gap:8px; margin-top:1px }
+.on-cm span{ font-size:var(--t-cap1); color:var(--label2) }
+.on-price{ font-size:var(--t-subhead); font-weight:700; color:#7CFF9B; font-variant-numeric:tabular-nums }
+.on-price.big{ font-size:26px }
+.on-stars{ display:inline-flex; gap:1px; flex:none } .on-stars i{ color:var(--label3); display:flex } .on-stars i.on{ color:#F7B23B } .on-stars i.half{ color:#F7B23B }   /* cheia = inteira, contorno dourado = meia, contorno cinzento = vazia */
+/* ui.css pinta TODO o svg de .li-value com --blue (verde nesta app): no detalhe as 5 estrelas saiam verdes fosse qual fosse a nota */
+.onion .li-value .on-stars svg{ color:inherit }
+
+/* ---------- detalhe ---------- */
+.on-hero{ aspect-ratio:1 / 1; margin:0 var(--margin); border-radius:20px; background:#16161C; display:flex; align-items:center; justify-content:center; color:var(--label3); overflow:hidden }
+/* foto do anúncio QUADRADA e inteira (pedido do dono): a faixa de 190 px com cover cortava a imagem em cima e em baixo.
+   contain = nunca corta; numa foto quadrada (as da câmara/galeria já o são) fica igual a cover */
+.on-hero .on-img{ background-size:contain; background-repeat:no-repeat }
+.on-head{ padding:16px var(--margin) 4px } .on-head h2{ font-size:var(--t-title3); font-weight:700; margin:0 0 6px }
+.on-head p{ font-size:var(--t-body); color:var(--label2); line-height:1.45; margin:12px 0 0 }
+.on-tags{ display:flex; gap:7px; margin-top:9px } .on-tags span{ padding:4px 10px; border-radius:11px; background:var(--fill3); font-size:var(--t-cap1); color:var(--label2) }
+.on-buy{ background:#7CFF9B; color:#04120A; display:flex; align-items:center; justify-content:center; gap:8px }
+.on-buy svg{ width:22px; height:22px }
+
+/* ---------- encomendas ---------- */
+.on-order{ padding:12px; border-radius:18px; background:var(--bg2); box-shadow:inset 0 0 0 .5px var(--sep); display:flex; flex-direction:column; gap:10px }
+.on-order > .on-ob{ display:flex; flex-direction:column; gap:3px; min-width:0; padding-right:96px }   /* reserva o canto do preco absoluto: um titulo comprido passava-lhe por baixo */
+.on-order{ position:relative } .on-order > .on-price{ position:absolute; right:12px; top:12px }
+.on-status{ font-size:var(--t-cap1); font-weight:600; margin-top:2px }
+.on-order.wait .on-status{ color:#F7B23B } .on-order.ship .on-status{ color:#64D2FF } .on-order.done .on-status{ color:#7CFF9B } .on-order.bad .on-status{ color:#FF6B6B }
+.on-acts{ display:flex; gap:8px; flex-wrap:wrap }
+.on-act{ flex:1; min-width:140px; min-height:44px; padding:0 14px; border-radius:12px; background:var(--fill3); color:var(--label); font-size:var(--t-subhead); font-weight:600;
+  display:flex; align-items:center; justify-content:center; gap:7px; cursor:default; transition:transform .2s var(--spring), background .2s }
+.on-act:active{ transform:scale(.97) } .on-act.ok{ background:rgba(124,255,155,.16); color:#7CFF9B } .on-act.bad{ background:rgba(255,107,107,.14); color:#FF6B6B }
+
+/* ---------- identidade ---------- */
+.on-me{ display:flex; flex-direction:column; align-items:center; gap:8px; padding:10px 0 22px }
+.on-handle{ font-family:var(--font-mono); font-size:var(--t-title3); font-weight:600; color:#7CFF9B }
+.on-rep{ display:flex; align-items:center; gap:8px; font-size:var(--t-foot); color:var(--label2) }
+
+/* ---------- formulário ---------- */
+.on-form, .cy-form{ padding:4px 0 8px } .on-form .group, .cy-form .group{ margin:12px var(--margin) 0 }
+.on-photo{ aspect-ratio:1 / 1; width:calc(100% - 2 * var(--margin)); max-width:300px; margin:0 auto; border-radius:18px; background:#16161C center/contain no-repeat; box-shadow:inset 0 0 0 .5px var(--sep);
+  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:7px; color:var(--label2); font-size:var(--t-cap1); cursor:default }
+.onion .li.static input, .onion .li.static textarea, .cy .li.static input{ background:transparent; color:var(--label); border:none; outline:none; width:100%; font-size:var(--t-body); font-family:inherit }
+.onion .ta{ background:transparent; color:var(--label); border:none; outline:none; width:100%; font-size:var(--t-body); font-family:inherit; resize:none }
+
+/* =====================================================================
+   CRIPTO
+   ===================================================================== */
+/* o holder herda a natureza da .content, para o estado vazio e o spinner se centrarem em vez de colarem ao título */
+.cy-hold{ display:flex; flex-direction:column; flex:1 0 auto } .cy-hold > *{ flex-shrink:0 } .cy-hold > .spinner{ margin:auto }
+.cy-bal{ display:flex; flex-direction:column; align-items:center; gap:2px; padding:6px 0 14px }
+.cy-lb{ font-size:var(--t-cap1); color:var(--label2); text-transform:uppercase; letter-spacing:.5px }
+.cy-big{ font-size:40px; font-weight:700; letter-spacing:-1px; font-variant-numeric:tabular-nums; color:var(--label) }
+.cy-fiat{ font-size:var(--t-body); color:var(--label2) }
+.cy-quote{ display:flex; align-items:center; justify-content:space-between; margin:0 var(--margin); padding:12px 14px; border-radius:16px 16px 0 0; background:var(--bg2); box-shadow:inset 0 0 0 .5px var(--sep) }
+.cy-q1{ display:flex; flex-direction:column; gap:2px } .cy-q1 b{ font-size:var(--t-subhead); font-weight:600 } .cy-q1 span{ font-size:var(--t-cap1); color:var(--label2) }
+.cy-chg{ display:flex; align-items:center; gap:4px; font-size:var(--t-subhead); font-weight:700; font-variant-numeric:tabular-nums }
+.cy-chg.up{ color:#30D158 } .cy-chg.down{ color:#FF453A }
+.cy-chartbox{ margin:0 var(--margin) 16px; height:110px; border-radius:0 0 16px 16px; background:var(--bg2); box-shadow:inset 0 0 0 .5px var(--sep); overflow:hidden }
+.cy-chart{ width:100%; height:100%; display:block }
+.cy-acts{ display:flex; gap:10px; padding:0 var(--margin) 18px }
+.cy-act{ flex:1; min-height:74px; border-radius:16px; background:var(--bg2); box-shadow:inset 0 0 0 .5px var(--sep); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:7px;
+  font-size:var(--t-cap1); font-weight:600; color:var(--label); cursor:default; transition:transform .2s var(--spring) }
+.cy-act:active{ transform:scale(.96) }
+.cy-ai{ width:42px; height:42px; border-radius:50%; background:rgba(247,178,59,.16); color:#F7B23B; display:flex; align-items:center; justify-content:center }
+.cy-rate{ text-align:center; font-size:var(--t-foot); color:var(--label2); padding:6px 0 2px }
+.cy-conv{ text-align:center; font-size:var(--t-body); color:var(--label2); padding:14px 0 4px; font-variant-numeric:tabular-nums }
+
+/* ---------- anúncio do tipo "Item": imagem vem do inventário ---------- */
+.on-photo.item { background-size: 58% auto; background-repeat: no-repeat; background-position: center; }
+.sheet-wrap.onion .mk-item { background: rgba(255,255,255,.06); }
+.sheet-wrap.onion .mk-item:active { background: rgba(255,255,255,.12); }
+.sheet-wrap.onion .mk-item .im { background-color: rgba(255,255,255,.08); }
+.sheet-wrap.onion .mk-item .bd b { color: #E8E8EA; }
+/* dobrável aberto: o mercado e as encomendas em duas colunas de cartões (numa só ficavam linhas de 790 quase vazias); o que não é
+   cartão (aviso, vazio, a carregar) ocupa a linha toda */
+body.form-fold.fold-open .on-list{ display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); align-content:start; align-items:start }
+body.form-fold.fold-open .on-list > :not(.on-card):not(.on-order){ grid-column:1 / -1 }

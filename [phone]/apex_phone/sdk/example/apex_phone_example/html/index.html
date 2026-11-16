@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Taxi Rank</title>
+<!-- the UI kit first (tokens and components), then your own styles -->
+<link rel="stylesheet" href="apexphone-ui.css">
+<link rel="stylesheet" href="app.css">
+</head>
+<body>
+<div class="ap-screen">
+
+  <!-- navigation bar: the status bar of the phone is drawn over the top of it -->
+  <div class="ap-navbar ap-large" id="nav">
+    <div class="ap-nb-left"></div>
+    <div class="ap-nb-title" id="navTitle">Rides</div>
+    <div class="ap-nb-right">
+      <div class="ap-nb-btn ap-glass" id="btnRefresh" title="Refresh">
+        <svg viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 1-2.3-5.7"/><path d="M20 4v5h-5"/></svg>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIDES -->
+  <div class="ap-content ap-has-tabbar" id="pageRides">
+    <div class="ap-large-title">Rides<small id="ridesSub">Loading</small></div>
+    <div class="ap-chips" id="filters">
+      <span class="on" data-f="all">All</span>
+      <span data-f="open">Open</span>
+      <span data-f="mine">Mine</span>
+    </div>
+    <div class="ap-group" id="rideList"></div>
+    <div class="ap-empty" id="ridesEmpty" hidden>
+      <svg viewBox="0 0 24 24"><path d="M5 11l1.5-4.5A2 2 0 0 1 8.4 5h7.2a2 2 0 0 1 1.9 1.5L19 11"/><rect x="3" y="11" width="18" height="7" rx="2"/><circle cx="7.5" cy="18" r="1.5"/><circle cx="16.5" cy="18" r="1.5"/></svg>
+      <b>No rides</b>
+      <span>Nobody is waiting for a taxi right now.</span>
+    </div>
+  </div>
+
+  <!-- NEW RIDE -->
+  <div class="ap-content ap-has-tabbar" id="pageNew" hidden>
+    <div class="ap-large-title">New ride<small>Tell the drivers where you are</small></div>
+    <div class="ap-group-header">Trip</div>
+    <div class="ap-group">
+      <label class="ap-li ap-static"><span class="ap-li-key">Pickup</span><input id="fFrom" type="text" placeholder="Legion Square" maxlength="60" autocapitalize="sentences"></label>
+      <label class="ap-li ap-static"><span class="ap-li-key">Destination</span><input id="fTo" type="text" placeholder="Pillbox Hospital" maxlength="60"></label>
+      <label class="ap-li ap-static"><span class="ap-li-key">Note</span><input id="fNote" type="text" placeholder="Optional" maxlength="140"></label>
+    </div>
+    <div class="ap-group-header">Passengers</div>
+    <div class="ap-seg" id="segPax"><div class="on">1</div><div>2</div><div>3</div><div>4</div></div>
+    <div class="ap-group" style="margin-top:14px">
+      <label class="ap-li ap-static ap-has-icon">
+        <div class="ap-li-icon" style="background:var(--green)"><svg viewBox="0 0 24 24"><path d="M12 22s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="10" r="2.5"/></svg></div>
+        <div class="ap-li-body"><div class="ap-li-label">Share my position</div><div class="ap-li-sub">Drivers get a waypoint to you</div></div>
+        <span class="ap-toggle"><input type="checkbox" id="fShare" checked><span></span></span>
+      </label>
+    </div>
+    <div class="ap-group-footer">The ride is visible to every player with Taxi Rank. Drivers in driver mode get a notification.</div>
+    <div class="ap-btn" id="btnSave">Request a taxi</div>
+  </div>
+
+  <!-- SETTINGS -->
+  <div class="ap-content ap-has-tabbar" id="pageSettings" hidden>
+    <div class="ap-large-title">Settings<small>Saved on the server, per character</small></div>
+    <div class="ap-group-header">Driving</div>
+    <div class="ap-group">
+      <label class="ap-li ap-static ap-has-icon">
+        <div class="ap-li-icon" style="background:var(--orange)"><svg viewBox="0 0 24 24"><path d="M5 11l1.5-4.5A2 2 0 0 1 8.4 5h7.2a2 2 0 0 1 1.9 1.5L19 11"/><rect x="3" y="11" width="18" height="7" rx="2"/></svg></div>
+        <div class="ap-li-body"><div class="ap-li-label">Driver mode</div><div class="ap-li-sub">Notify me about new rides</div></div>
+        <span class="ap-toggle"><input type="checkbox" id="sDriver"><span></span></span>
+      </label>
+      <label class="ap-li ap-static ap-has-icon">
+        <div class="ap-li-icon" style="background:var(--pink)"><svg viewBox="0 0 24 24"><path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/></svg></div>
+        <div class="ap-li-body"><div class="ap-li-label">Sounds</div><div class="ap-li-sub">Phone sounds on new rides</div></div>
+        <span class="ap-toggle"><input type="checkbox" id="sSound" checked><span></span></span>
+      </label>
+      <label class="ap-li ap-static ap-has-icon">
+        <div class="ap-li-icon" style="background:var(--indigo)"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></svg></div>
+        <div class="ap-li-body"><div class="ap-li-label">Compact list</div><div class="ap-li-sub">Hide notes in the list</div></div>
+        <span class="ap-toggle"><input type="checkbox" id="sCompact"><span></span></span>
+      </label>
+    </div>
+    <div class="ap-group-header">About</div>
+    <div class="ap-group">
+      <div class="ap-li ap-static"><div class="ap-li-body"><div class="ap-li-label">Signed in as</div></div><div class="ap-li-value" id="aboutName"></div></div>
+      <div class="ap-li ap-static"><div class="ap-li-body"><div class="ap-li-label">Phone</div></div><div class="ap-li-value" id="aboutOS"></div></div>
+      <div class="ap-li ap-static"><div class="ap-li-body"><div class="ap-li-label">SDK</div></div><div class="ap-li-value" id="aboutSdk"></div></div>
+    </div>
+    <div class="ap-btn ap-secondary" id="btnTestNotify">Send me a test notification</div>
+  </div>
+
+  <!-- floating tab bar -->
+  <div class="ap-tabbar" id="tabbar">
+    <div class="ap-tb-pill">
+      <div class="ap-tab on" data-tab="rides"><svg viewBox="0 0 24 24"><path d="M5 11l1.5-4.5A2 2 0 0 1 8.4 5h7.2a2 2 0 0 1 1.9 1.5L19 11"/><rect x="3" y="11" width="18" height="7" rx="2"/><circle cx="7.5" cy="18" r="1.5"/><circle cx="16.5" cy="18" r="1.5"/></svg><span>Rides</span><i class="ap-tb-badge" id="tabBadge"></i></div>
+      <div class="ap-tab" data-tab="new"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg><span>New</span></div>
+      <div class="ap-tab" data-tab="settings"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg><span>Settings</span></div>
+    </div>
+  </div>
+
+  <!-- ride detail sheet -->
+  <div class="ap-sheet-wrap" id="sheetWrap">
+    <div class="ap-sheet">
+      <div class="ap-sheet-grab"></div>
+      <div class="ap-sheet-head"><div class="ap-sh-l" id="sheetClose">Close</div><b>Ride</b><div class="ap-sh-r"></div></div>
+      <div class="ap-sheet-body">
+        <div class="ap-card">
+          <div class="ap-row" style="gap:14px">
+            <div class="ap-avatar ap-tint ap-lg" id="dAvatar">?</div>
+            <div class="ap-grow">
+              <div class="ap-card-title ap-ellipsis" id="dName"></div>
+              <div class="ap-card-sub" id="dMeta"></div>
+            </div>
+            <span class="ap-pill" id="dStatus">open</span>
+          </div>
+        </div>
+        <div class="ap-group" style="margin-top:12px">
+          <div class="ap-li ap-static"><div class="ap-li-body"><div class="ap-li-label">Pickup</div></div><div class="ap-li-value" id="dFrom"></div></div>
+          <div class="ap-li ap-static"><div class="ap-li-body"><div class="ap-li-label">Destination</div></div><div class="ap-li-value" id="dTo"></div></div>
+          <div class="ap-li ap-static"><div class="ap-li-body"><div class="ap-li-label">Passengers</div></div><div class="ap-li-value" id="dPax"></div></div>
+          <div class="ap-li ap-static" id="dNoteRow"><div class="ap-li-body"><div class="ap-li-label">Note</div><div class="ap-li-sub" id="dNote"></div></div></div>
+        </div>
+      </div>
+      <div class="ap-sheet-foot">
+        <div class="ap-btn" id="btnTake">Take this ride</div>
+        <div class="ap-btn-row">
+          <div class="ap-btn ap-secondary" id="btnWaypoint">Waypoint</div>
+          <div class="ap-btn ap-secondary" id="btnMessage">Message</div>
+          <div class="ap-btn ap-secondary ap-danger" id="btnDelete">Remove</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="ap-toast" id="toast"></div>
+</div>
+
+<script src="apexphone-sdk.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

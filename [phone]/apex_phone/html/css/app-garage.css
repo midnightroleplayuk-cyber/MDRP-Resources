@@ -1,0 +1,15 @@
+/* ---------- Garagem ---------- */
+.gr-summary{ display:flex; margin:4px 16px 8px; background:var(--bg2); border-radius:16px; padding:14px 8px }
+.gr-summary div{ flex:1; text-align:center } .gr-summary b{ display:block; font-size:var(--t-title2); font-weight:700 } .gr-summary span{ font-size:var(--t-cap1); color:var(--label2) }
+.gr-card{ margin:8px 16px 0; background:linear-gradient(160deg,#1F2A3C,#0E141C); color:#fff; border-radius:22px; padding:22px 18px; text-align:center; box-shadow:0 12px 30px rgba(0,0,0,.25) }
+body:not(.dark) .gr-card{ background:linear-gradient(160deg,#2B3A52,#141C29) }
+.gr-icon{ width:84px; height:84px; border-radius:50%; background:rgba(255,255,255,.12); margin:0 auto 12px; display:flex; align-items:center; justify-content:center; color:#fff }
+.gr-name{ font-size:var(--t-title2); font-weight:700 } .gr-model{ color:rgba(255,255,255,.7); font-size:var(--t-subhead) }
+.gr-card .plate{ font-family:var(--font-mono); background:rgba(255,255,255,.14); padding:3px 10px; border-radius:6px; letter-spacing:1px; font-size:var(--t-foot) }
+.gr-card .st{ font-size:var(--t-cap1); font-weight:700; padding:3px 9px; border-radius:8px; color:#fff } .gr-card .st.in{ background:var(--green) } .gr-card .st.out{ background:var(--orange) } .gr-card .st.imp{ background:var(--red) }
+.gr-fuel{ margin-top:16px; text-align:left } .gr-fuel .row{ color:rgba(255,255,255,.8) } .gr-fuel .bar{ height:8px; border-radius:4px; background:rgba(255,255,255,.15); margin-top:6px; overflow:hidden } .gr-fuel .bar span{ display:block; height:100%; border-radius:4px; background:linear-gradient(90deg,#FFD60A,#30D158); transition:width .6s var(--spring) }
+.gr-stats{ display:flex; margin:12px 16px 0; background:var(--bg2); border-radius:16px; padding:14px 8px } .gr-stats div{ flex:1; text-align:center } .gr-stats b{ display:block; font-size:var(--t-headline) } .gr-stats span{ font-size:var(--t-cap1); color:var(--label2) }
+/* 1.1.9 entrega: a linha "Pedir entrega" fica apagada (e sem toques) enquanto o pedido corre e depois de entregue */
+.li.gr-deliver.gr-busy, .li.gr-deliver.gr-done{ opacity:.5; pointer-events:none }
+.li.gr-deliver.gr-busy .li-icon{ animation:gr-pulse 1s ease-in-out infinite }
+@keyframes gr-pulse{ 50%{ opacity:.45 } }

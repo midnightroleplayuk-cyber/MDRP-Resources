@@ -1,0 +1,57 @@
+/* ---------- Diário: classes jnl- ----------
+   Sugestões em cartões de cor, linha do tempo por mês com cartões (texto, foto, estado de espírito, sítio e tempo),
+   editor com textarea do sistema. Sem backdrop-filter em jogo (body.fivem), sem aspect-ratio, sem filter. */
+.jnl-v .content{ padding-bottom:140px }
+.jnl-search{ display:none } .jnl-search.on{ display:flex }
+.jnl-chips{ padding:2px 16px 6px }
+.jnl-sh{ display:flex; align-items:center; justify-content:space-between; padding:14px 20px 8px } .jnl-sh span{ font-size:var(--t-title2); font-weight:700; letter-spacing:-.3px }
+.jnl-sugg{ display:flex; gap:10px; padding:0 16px 4px; overflow-x:auto; scrollbar-width:none } .jnl-sugg::-webkit-scrollbar{ display:none }
+.jnl-sg{ flex:none; width:168px; height:150px; border-radius:18px; padding:14px; color:#fff; display:flex; flex-direction:column; cursor:pointer; position:relative; overflow:hidden; contain:layout paint }
+.jnl-sg.sg-write{ background:linear-gradient(160deg,#8E5CFF,#FF375F) } .jnl-sg.sg-photos{ background:linear-gradient(160deg,#FF9F0A,#FF5E3A) } .jnl-sg.sg-place{ background:linear-gradient(160deg,#0A84FF,#30D158) }
+.jnl-sgi{ width:40px; height:40px; border-radius:12px; background:rgba(255,255,255,.24); display:flex; align-items:center; justify-content:center; flex:none }
+.jnl-sgp{ display:flex; gap:4px; height:40px } .jnl-sgp i{ width:40px; height:40px; border-radius:10px; background:rgba(0,0,0,.25) center/cover; display:block; flex:none }
+.jnl-sg b{ margin-top:auto; font-size:var(--t-subhead); font-weight:700; line-height:1.2 } .jnl-sg span{ font-size:var(--t-cap2); opacity:.88; line-height:1.3; margin-top:2px; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden }
+.jnl-tl{ padding-top:6px }
+.jnl-mh{ font-size:var(--t-foot); font-weight:600; color:var(--label2); text-transform:uppercase; letter-spacing:.3px; padding:16px 20px 8px }
+.jnl-grp{ display:flex; flex-direction:column; gap:12px; padding:0 16px }
+.jnl-card{ background:var(--bg2); border-radius:18px; padding:14px 16px; display:flex; flex-direction:column; gap:10px; cursor:pointer; contain:layout paint }
+.jnl-ch{ display:flex; align-items:center; justify-content:space-between; gap:8px } .jnl-when{ font-size:var(--t-foot); font-weight:600; color:var(--label2); white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+.jnl-fav{ color:var(--label3); display:flex; padding:6px; margin:-6px; flex:none } .jnl-fav.on{ color:var(--yellow) } .jnl-fav svg{ width:18px; height:18px }
+.jnl-ph{ height:170px; border-radius:12px; background:var(--fill3) center/cover } .jnl-ph[hidden]{ display:none }
+.jnl-tx{ margin:0; font-size:var(--t-body); line-height:1.4; display:-webkit-box; -webkit-line-clamp:5; -webkit-box-orient:vertical; overflow:hidden; white-space:pre-wrap; word-break:break-word }
+.jnl-meta{ display:flex; flex-wrap:wrap; gap:6px } .jnl-meta:empty{ display:none }
+.jnl-chip{ display:inline-flex; align-items:center; gap:5px; padding:4px 10px; border-radius:12px; background:var(--fill3); font-size:var(--t-cap2); font-weight:600; color:var(--label2); max-width:100%; min-width:0 } .jnl-chip svg{ width:14px; height:14px; flex:none } .jnl-chip em{ font-style:normal; white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+.jnl-chip.jnl-mood{ color:var(--c) }
+.jnl-more{ margin:16px 16px 0 }
+.jnl-foot{ text-align:center; font-size:var(--t-cap1); color:var(--label3); padding:14px 0 0 }
+/* botão de compor: pílula de vidro ao centro em baixo (PearOS) */
+.jnl-fab{ position:absolute; left:50%; bottom:calc(var(--safe-bottom) + 14px); transform:translateX(-50%); width:66px; height:52px; border-radius:26px; background:var(--material); color:var(--blue); display:flex; align-items:center; justify-content:center; box-shadow:0 8px 24px rgba(0,0,0,.18), inset 0 1px 0 rgba(255,255,255,.6), inset 0 0 0 .5px rgba(0,0,0,.12); cursor:pointer; z-index:20; backdrop-filter:blur(20px) saturate(160%); -webkit-backdrop-filter:blur(20px) saturate(160%) }
+body.fivem .jnl-fab{ backdrop-filter:none; -webkit-backdrop-filter:none; background:var(--bg2) }
+.jnl-fab:active{ transform:translateX(-50%) scale(.94) }
+/* editor */
+.jnl-edit{ padding:0 16px } .jnl-edate{ font-size:var(--t-foot); color:var(--label2); font-weight:600; padding:4px 4px 8px }
+.jnl-ta{ display:block; width:100%; min-height:190px; border:none; outline:none; resize:none; background:var(--bg2); border-radius:16px; padding:14px; font:inherit; font-size:var(--t-body); line-height:1.45; color:var(--label); box-sizing:border-box } .jnl-ta::placeholder{ color:var(--label3) }
+.jnl-count{ text-align:right; font-size:var(--t-cap2); color:var(--label3); padding:4px 6px 0; min-height:18px } .jnl-count.over{ color:var(--red) }
+.jnl-sec{ font-size:var(--t-foot); font-weight:600; color:var(--label2); text-transform:uppercase; letter-spacing:.3px; padding:14px 4px 8px }
+.jnl-moods{ display:grid; grid-template-columns:repeat(6,1fr); gap:6px }
+.jnl-mo{ display:flex; flex-direction:column; align-items:center; gap:5px; cursor:pointer; min-width:0 } .jnl-mo i{ width:48px; height:48px; border-radius:50%; background:var(--bg2); color:var(--label2); display:flex; align-items:center; justify-content:center; box-shadow:inset 0 0 0 .5px var(--sep); transition:background .25s, color .25s, box-shadow .25s } .jnl-mo span{ font-size:10.5px; font-weight:600; color:var(--label2); text-align:center; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:100% }
+.jnl-mo.on i{ background:var(--c); color:#fff; box-shadow:0 0 0 3px var(--bg), 0 0 0 5px var(--c) } .jnl-mo.on span{ color:var(--label) }
+.jnl-tools{ background:var(--bg2); border-radius:16px; overflow:hidden }
+.jnl-tool{ display:flex; align-items:center; gap:12px; padding:12px 14px; position:relative; cursor:pointer } .jnl-tool.hidden{ display:none } .jnl-tool + .jnl-tool::before{ content:''; position:absolute; left:62px; right:0; top:0; height:.5px; background:var(--sep) }
+.jnl-ti{ width:36px; height:36px; border-radius:10px; background:var(--fill3); color:var(--label2); display:flex; align-items:center; justify-content:center; flex:none; transition:background .25s, color .25s } .jnl-tool.on .jnl-ti{ background:var(--blue); color:#fff }
+.jnl-tb{ flex:1; min-width:0 } .jnl-tb b{ display:block; font-weight:600 } .jnl-tb span{ display:block; font-size:var(--t-foot); color:var(--label2); white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+.jnl-thumb{ width:44px; height:44px; border-radius:10px; background:var(--fill3) center/cover; flex:none } .jnl-thumb[hidden]{ display:none } .jnl-tx2{ color:var(--label3); display:flex; flex:none }
+.jnl-del{ margin:18px 0 0; padding:14px; text-align:center; color:var(--red); font-weight:600; background:var(--bg2); border-radius:16px; cursor:pointer }
+
+/* ---------- Nova UI (Android): cartões r26 na superfície, botão flutuante redondo à direita, cabeçalhos sem maiúsculas ---------- */
+body.os-android .jnl-card,body.os-android .jnl-tools,body.os-android .jnl-del,body.os-android .jnl-ta{ border-radius:var(--ou-r-card); background:var(--ou-surface); box-shadow:var(--ou-shadow-1) }
+body.os-android .jnl-sg{ border-radius:22px }
+body.os-android .jnl-sh{ padding:16px 24px 8px } body.os-android .jnl-sh span{ font-size:17px; font-weight:600 }
+body.os-android .jnl-mh{ text-transform:none; letter-spacing:0; font-size:15px; font-weight:600; color:var(--label); padding:18px 24px 8px }
+body.os-android .jnl-sec{ text-transform:none; letter-spacing:0; font-size:15px; font-weight:600; color:var(--label) }
+body.os-android .jnl-fab{ left:auto; right:20px; transform:none; width:56px; height:56px; border-radius:50%; background:#3E7BFA; color:#fff; box-shadow:0 6px 16px rgba(0,0,0,.22); backdrop-filter:none; -webkit-backdrop-filter:none; bottom:calc(var(--safe-bottom) + 20px) }
+body.os-android .jnl-fab:active{ transform:scale(.94) }
+body.os-android .jnl-chip{ background:var(--ou-surface2) }
+body.os-android .jnl-mo i{ background:var(--ou-surface) } body.os-android .jnl-tool.on .jnl-ti{ background:#3E7BFA }
+body.os-android .jnl-ph,body.os-android .jnl-thumb{ border-radius:16px }
+body.os-android.form-fold.fold-open .view > .jnl-fab{ bottom:calc(var(--safe-bottom) + 20px + var(--taskbar-h,0px)) }
