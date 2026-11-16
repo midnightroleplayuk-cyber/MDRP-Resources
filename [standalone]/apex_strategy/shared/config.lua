@@ -308,7 +308,7 @@ Config.interact = {
     --   'text3d'  texto desenhado no mundo + tecla (sem dependências)
     --   'none'    nada; abre-se só por /quadro ou pelo teu próprio
     --             script, via exports.apex_strategy:OpenBoard(id)
-    mode = 'ox_target',
+    mode = 'target',
 
     key      = 38,           -- E
     keyLabel = 'E',          -- o que aparece escrito no aviso
