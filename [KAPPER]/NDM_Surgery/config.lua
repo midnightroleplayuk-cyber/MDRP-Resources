@@ -18,7 +18,7 @@ Config.Tables = {
     },
     {
         label = 'Operating Theatre 2',
-        coords = vector4(-330.61, -126.83, 39.05, 61.0),
+        coords = vector4(-330.61, -126.83, 39.10, 61.0),
     },
 }
 
