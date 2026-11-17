@@ -1,0 +1,187 @@
+Config = {}
+
+-- Clear idle peds and abandoned AI cars out of the estate
+Config.TidyEstate = true
+
+-- Lifts
+Config.LiftConfig = {
+    Interaction = 'ox_target', -- ox_target, qb-target or custom
+    TargetRadius = 0.25,
+    TravelTime = 1500,
+    Icon = 'fas fa-elevator',
+
+    Elevators = {
+        {
+            name = 'harcourt',
+            floors = {
+                { label = 'Ground Floor',
+                  buttons  = { vector3(135.619, -382.414, 43.280), vector3(135.474, -382.890, 43.300) },
+                  tpCoords = vector4(135.897, -383.638, 42.200, 339.7) },
+                { label = '1st Floor',
+                  buttons  = { vector3(135.619, -382.414, 45.980), vector3(135.474, -382.890, 46.000) },
+                  tpCoords = vector4(135.897, -383.638, 44.900, 339.7) },
+                { label = '2nd Floor',
+                  buttons  = { vector3(135.619, -382.414, 48.680), vector3(135.474, -382.890, 48.700) },
+                  tpCoords = vector4(135.897, -383.638, 47.600, 339.7) },
+                { label = '3rd Floor',
+                  buttons  = { vector3(135.619, -382.414, 51.380), vector3(135.474, -382.890, 51.400) },
+                  tpCoords = vector4(135.897, -383.638, 50.300, 339.7) },
+                { label = '4th Floor',
+                  buttons  = { vector3(135.619, -382.414, 54.080), vector3(135.474, -382.890, 54.100) },
+                  tpCoords = vector4(135.897, -383.638, 53.000, 339.7) },
+                { label = '5th Floor',
+                  buttons  = { vector3(135.619, -382.414, 56.780), vector3(135.474, -382.890, 56.800) },
+                  tpCoords = vector4(135.897, -383.638, 55.700, 339.7) },
+                { label = '6th Floor',
+                  buttons  = { vector3(135.619, -382.414, 59.480), vector3(135.474, -382.890, 59.500) },
+                  tpCoords = vector4(135.897, -383.638, 58.400, 339.7) },
+            },
+        },
+        {
+            name = 'larkfield_w',
+            floors = {
+                { label = 'Ground Floor',
+                  buttons  = { vector3(60.300, -347.992, 43.480), vector3(59.824, -347.846, 43.500) },
+                  tpCoords = vector4(59.076, -348.269, 42.400, 249.7) },
+                { label = '1st Floor',
+                  buttons  = { vector3(60.300, -347.992, 46.180), vector3(59.824, -347.846, 46.200) },
+                  tpCoords = vector4(59.076, -348.269, 45.100, 249.7) },
+                { label = '2nd Floor',
+                  buttons  = { vector3(60.300, -347.992, 48.880), vector3(59.824, -347.846, 48.900) },
+                  tpCoords = vector4(59.076, -348.269, 47.800, 249.7) },
+                { label = '3rd Floor',
+                  buttons  = { vector3(60.300, -347.992, 51.580), vector3(59.824, -347.846, 51.600) },
+                  tpCoords = vector4(59.076, -348.269, 50.500, 249.7) },
+            },
+        },
+        {
+            name = 'larkfield_e',
+            floors = {
+                { label = 'Ground Floor',
+                  buttons  = { vector3(112.012, -367.120, 43.480), vector3(112.468, -367.320, 43.500) },
+                  tpCoords = vector4(112.761, -368.128, 42.400, 69.7) },
+                { label = '1st Floor',
+                  buttons  = { vector3(112.012, -367.120, 46.180), vector3(112.468, -367.320, 46.200) },
+                  tpCoords = vector4(112.761, -368.128, 45.100, 69.7) },
+                { label = '2nd Floor',
+                  buttons  = { vector3(112.012, -367.120, 48.880), vector3(112.468, -367.320, 48.900) },
+                  tpCoords = vector4(112.761, -368.128, 47.800, 69.7) },
+                { label = '3rd Floor',
+                  buttons  = { vector3(112.012, -367.120, 51.580), vector3(112.468, -367.320, 51.600) },
+                  tpCoords = vector4(112.761, -368.128, 50.500, 69.7) },
+            },
+        },
+        {
+            name = 'brackley_w',
+            floors = {
+                { label = 'Ground Floor',
+                  buttons  = { vector3(69.688, -323.103, 46.080), vector3(69.212, -322.958, 46.100) },
+                  tpCoords = vector4(68.464, -323.380, 45.000, 249.7) },
+                { label = '1st Floor',
+                  buttons  = { vector3(69.688, -323.103, 48.780), vector3(69.212, -322.958, 48.800) },
+                  tpCoords = vector4(68.464, -323.380, 47.700, 249.7) },
+                { label = '2nd Floor',
+                  buttons  = { vector3(69.688, -323.103, 51.480), vector3(69.212, -322.958, 51.500) },
+                  tpCoords = vector4(68.464, -323.380, 50.400, 249.7) },
+                { label = '3rd Floor',
+                  buttons  = { vector3(69.688, -323.103, 54.180), vector3(69.212, -322.958, 54.200) },
+                  tpCoords = vector4(68.464, -323.380, 53.100, 249.7) },
+            },
+        },
+        {
+            name = 'brackley_e',
+            floors = {
+                { label = 'Ground Floor',
+                  buttons  = { vector3(106.206, -336.611, 46.080), vector3(106.662, -336.811, 46.100) },
+                  tpCoords = vector4(106.955, -337.619, 45.000, 69.7) },
+                { label = '1st Floor',
+                  buttons  = { vector3(106.206, -336.611, 48.780), vector3(106.662, -336.811, 48.800) },
+                  tpCoords = vector4(106.955, -337.619, 47.700, 69.7) },
+                { label = '2nd Floor',
+                  buttons  = { vector3(106.206, -336.611, 51.480), vector3(106.662, -336.811, 51.500) },
+                  tpCoords = vector4(106.955, -337.619, 50.400, 69.7) },
+                { label = '3rd Floor',
+                  buttons  = { vector3(106.206, -336.611, 54.180), vector3(106.662, -336.811, 54.200) },
+                  tpCoords = vector4(106.955, -337.619, 53.100, 69.7) },
+            },
+        },
+        {
+            name = 'linden_w',
+            floors = {
+                { label = 'Ground Floor',
+                  buttons  = { vector3(94.087, -418.066, 41.180), vector3(93.611, -417.921, 41.200) },
+                  tpCoords = vector4(92.863, -418.344, 40.100, 249.7) },
+                { label = '1st Floor',
+                  buttons  = { vector3(94.087, -418.066, 43.880), vector3(93.611, -417.921, 43.900) },
+                  tpCoords = vector4(92.863, -418.344, 42.800, 249.7) },
+                { label = '2nd Floor',
+                  buttons  = { vector3(94.087, -418.066, 46.580), vector3(93.611, -417.921, 46.600) },
+                  tpCoords = vector4(92.863, -418.344, 45.500, 249.7) },
+                { label = '3rd Floor',
+                  buttons  = { vector3(94.087, -418.066, 49.280), vector3(93.611, -417.921, 49.300) },
+                  tpCoords = vector4(92.863, -418.344, 48.200, 249.7) },
+            },
+        },
+        {
+            name = 'linden_e',
+            floors = {
+                { label = 'Ground Floor',
+                  buttons  = { vector3(125.541, -429.701, 41.180), vector3(125.997, -429.901, 41.200) },
+                  tpCoords = vector4(126.290, -430.708, 40.100, 69.7) },
+                { label = '1st Floor',
+                  buttons  = { vector3(125.541, -429.701, 43.880), vector3(125.997, -429.901, 43.900) },
+                  tpCoords = vector4(126.290, -430.708, 42.800, 69.7) },
+                { label = '2nd Floor',
+                  buttons  = { vector3(125.541, -429.701, 46.580), vector3(125.997, -429.901, 46.600) },
+                  tpCoords = vector4(126.290, -430.708, 45.500, 69.7) },
+                { label = '3rd Floor',
+                  buttons  = { vector3(125.541, -429.701, 49.280), vector3(125.997, -429.901, 49.300) },
+                  tpCoords = vector4(126.290, -430.708, 48.200, 69.7) },
+            },
+        },
+        {
+            name = 'mercer_w',
+            floors = {
+                { label = 'Ground Floor',
+                  buttons  = { vector3(63.831, -460.339, 40.580), vector3(63.346, -460.451, 40.600) },
+                  tpCoords = vector4(62.910, -461.191, 39.500, 279.7) },
+                { label = '1st Floor',
+                  buttons  = { vector3(63.831, -460.339, 43.280), vector3(63.346, -460.451, 43.300) },
+                  tpCoords = vector4(62.910, -461.191, 42.200, 279.7) },
+                { label = '2nd Floor',
+                  buttons  = { vector3(63.831, -460.339, 45.980), vector3(63.346, -460.451, 46.000) },
+                  tpCoords = vector4(62.910, -461.191, 44.900, 279.7) },
+                { label = '3rd Floor',
+                  buttons  = { vector3(63.831, -460.339, 48.680), vector3(63.346, -460.451, 48.700) },
+                  tpCoords = vector4(62.910, -461.191, 47.600, 279.7) },
+            },
+        },
+        {
+            name = 'mercer_e',
+            floors = {
+                { label = 'Ground Floor',
+                  buttons  = { vector3(96.888, -454.688, 40.580), vector3(97.383, -454.633, 40.600) },
+                  tpCoords = vector4(98.040, -455.186, 39.500, 99.7) },
+                { label = '1st Floor',
+                  buttons  = { vector3(96.888, -454.688, 43.280), vector3(97.383, -454.633, 43.300) },
+                  tpCoords = vector4(98.040, -455.186, 42.200, 99.7) },
+                { label = '2nd Floor',
+                  buttons  = { vector3(96.888, -454.688, 45.980), vector3(97.383, -454.633, 46.000) },
+                  tpCoords = vector4(98.040, -455.186, 44.900, 99.7) },
+                { label = '3rd Floor',
+                  buttons  = { vector3(96.888, -454.688, 48.680), vector3(97.383, -454.633, 48.700) },
+                  tpCoords = vector4(98.040, -455.186, 47.600, 99.7) },
+            },
+        },
+    },
+
+    -- only used when Interaction = 'custom'
+    CustomInteraction = {
+        add = function(coords, radius, options)
+            -- return exports['my-target']:AddSphere(coords, radius, options)
+        end,
+        remove = function(handle)
+            -- exports['my-target']:RemoveZone(handle)
+        end,
+    },
+}

@@ -1,0 +1,123 @@
+/* ---------- FaceCall (apps/facecall.js) - sem backdrop-filter/filter/color-mix; só transform/opacity animam ---------- */
+
+/* ===== CHAMADA ===== */
+.fc{ position:absolute; inset:0; z-index:150; overflow:hidden; border-radius:57px; background:#000; color:#fff }
+/* o outro lado: poster do contacto em ecrã inteiro (foto ou iniciais grandes) */
+.fc .fc-remote{ position:absolute; inset:0 }
+.fc .fc-poster{ position:absolute; inset:0; background-size:cover!important; background-position:center!important }
+/* sem foto: o gradiente do avatar fica escurecido e com duas manchas de luz (só gradientes: sem filter no CEF) */
+.fc .fc-poster::before{ content:''; position:absolute; inset:0; background:radial-gradient(circle at 25% 18%,rgba(255,255,255,.22),rgba(255,255,255,0) 42%),radial-gradient(circle at 78% 72%,rgba(255,255,255,.14),rgba(255,255,255,0) 40%),linear-gradient(180deg,rgba(0,0,0,.35),rgba(0,0,0,.6)) }
+.fc.has-photo .fc-poster::before{ background:none }
+.fc .fc-remote::after{ content:''; position:absolute; inset:0; background:linear-gradient(180deg,rgba(0,0,0,.45) 0%,rgba(0,0,0,0) 28%,rgba(0,0,0,0) 62%,rgba(0,0,0,.55) 100%); pointer-events:none }
+/* o VÍDEO do outro (frames do telemóvel dele, facecall.js videoLink): por cima do poster, por baixo da bolha, da sombra e dos
+   controlos; o canvas é criado uma vez e só o conteúdo muda. Sem imagem dele volta o poster e, se já houve vídeo, "Vídeo em pausa" */
+.fc .fc-rv{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; opacity:0; transition:opacity .35s; pointer-events:none; background:#000 }
+.fc.rv-on .fc-rv{ opacity:1 }
+.fc.rv-on .fc-center,.fc.rv-on .fc-poster-name{ opacity:0; pointer-events:none }
+.fc .fc-rv-st{ position:absolute; left:50%; top:64%; z-index:2; display:flex; align-items:center; gap:7px; padding:7px 14px; border-radius:999px; background:rgba(0,0,0,.5); color:rgba(255,255,255,.9); font-size:14px; font-weight:500; white-space:nowrap; opacity:0; transform:translateX(-50%); transition:opacity .3s; pointer-events:none }
+.fc .fc-rv-st svg{ width:15px; height:15px }
+.fc.rv-paused .fc-rv-st{ opacity:1 }
+.fc.ended .fc-rv-st{ opacity:0 }
+body.os-ios.form-fold .fc .fc-rv-st{ left:calc((100% - var(--rail-w,96px)) / 2) }   /* ao centro da zona fora da barra direita, como a .fc-center */
+/* bolha grande ao centro: avatar + nome + estado, anéis a pulsar enquanto toca, aro que acende quando o outro fala */
+.fc .fc-center{ position:absolute; left:0; right:0; top:0; bottom:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:14px; padding-bottom:40px; z-index:1 }
+.fc.has-photo .fc-center{ display:none }
+.fc .fc-bigav{ width:150px; height:150px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:56px; font-weight:600; color:#fff; background-size:cover!important; background-position:center!important; box-shadow:0 20px 50px rgba(0,0,0,.4), 0 0 0 4px rgba(255,255,255,0); position:relative; z-index:2 }
+.fc.talk-peer .fc-bigav{ box-shadow:0 20px 50px rgba(0,0,0,.4), 0 0 0 5px rgba(48,209,88,.85) }
+.fc .fc-bigwrap{ position:relative; width:150px; height:150px }
+.fc .fc-rings{ position:absolute; inset:0; pointer-events:none; z-index:1 }
+.fc .fc-rings i{ position:absolute; inset:0; border-radius:50%; border:2px solid rgba(255,255,255,.55); opacity:0; transform:scale(1) }
+.fc.ringing .fc-rings i{ animation:fcRing 2.4s ease-out infinite } .fc.ringing .fc-rings i:nth-child(2){ animation-delay:.8s } .fc.ringing .fc-rings i:nth-child(3){ animation-delay:1.6s }
+@keyframes fcRing{ 0%{ opacity:.7; transform:scale(1) } 100%{ opacity:0; transform:scale(1.9) } }
+.fc .fc-bigname{ font-size:26px; font-weight:600; letter-spacing:-.3px; text-shadow:0 1px 8px rgba(0,0,0,.4); margin-top:6px }
+.fc .fc-bigst{ font-size:16px; color:rgba(255,255,255,.75); font-variant-numeric:tabular-nums; text-shadow:0 1px 6px rgba(0,0,0,.4) }
+.fc .fc-poster-name{ position:absolute; left:0; right:0; bottom:230px; text-align:center; font-size:22px; font-weight:600; text-shadow:0 1px 8px rgba(0,0,0,.4); opacity:0; transition:opacity .3s }
+.fc:not(.has-photo) .fc-poster-name{ opacity:0 }
+/* ponto verde ao lado do tempo quando a chamada está ligada */
+.fc .fc-dot{ display:none; width:7px; height:7px; border-radius:50%; background:#30D158; box-shadow:0 0 6px rgba(48,209,88,.9) }
+.fc.connected .fc-dot{ display:block }
+
+/* topo: avatar + nome + estado, (i) à direita */
+.fc .fc-top{ position:absolute; left:14px; right:14px; top:calc(var(--statusbar-h,54px) + 6px); z-index:4; display:flex; align-items:center; gap:10px; transition:opacity .3s, transform .3s var(--curve,ease) }
+.fc .fc-min{ width:36px; height:36px; display:flex; align-items:center; justify-content:center; opacity:.85; cursor:pointer; flex:none }
+.fc .fc-who{ flex:1; min-width:0; display:flex; align-items:center; gap:10px }
+.fc .fc-av{ width:44px; height:44px; border-radius:50%; flex:none; display:flex; align-items:center; justify-content:center; font-size:17px; font-weight:600; background-size:cover!important; background-position:center!important; box-shadow:0 0 0 1.5px rgba(255,255,255,.25) }
+.fc .fc-t{ display:flex; flex-direction:column; min-width:0 }
+/* .ft-name / .ft-status são as classes que o phone.js pinta (paint); o apps.css antigo dava-lhes margem e posição próprias */
+.fc .ft-name,.fc .ft-status{ position:static; margin:0; text-shadow:none; opacity:1; font-style:normal; z-index:auto }
+.fc .fc-t b{ font-size:17px; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+.fc .fc-t span{ display:flex; align-items:center; gap:5px; font-size:14px; color:rgba(255,255,255,.72); font-variant-numeric:tabular-nums }
+.fc .fc-t span i{ display:flex; opacity:.8 } .fc .fc-t span i svg{ width:14px; height:14px }
+.fc .fc-info{ width:36px; height:36px; display:flex; align-items:center; justify-content:center; opacity:.85; cursor:pointer; flex:none }
+
+/* controlos em vidro */
+.fc .fc-ctl{ position:absolute; left:10px; right:10px; top:calc(var(--statusbar-h,54px) + 66px); z-index:4; display:flex; justify-content:space-around; transition:opacity .3s, transform .3s var(--curve,ease) }
+.fc .fc-b{ display:flex; flex-direction:column; align-items:center; gap:6px; font-size:12px; font-weight:500; color:#fff; cursor:pointer; width:70px }
+.fc .fc-b > div{ width:58px; height:58px; border-radius:50%; display:flex; align-items:center; justify-content:center; background:rgba(120,120,128,.55); box-shadow:inset 0 1px 0 rgba(255,255,255,.18); transition:transform .12s, background .15s }
+.fc .fc-b:active > div{ transform:scale(.92) }
+.fc .fc-b.on > div{ background:#fff; color:#000 }
+.fc .fc-b.end > div{ background:#FF3B30; color:#fff }
+.fc .fc-b svg{ width:25px; height:25px }
+/* estado "a esconder" ao fim de 4 s: sobe e desvanece (os toques continuam a trazê-los) */
+.fc.hud-off .fc-top,.fc.hud-off .fc-ctl{ opacity:0; transform:translateY(-14px); pointer-events:none }
+.fc.hud-off .fc-shot{ opacity:0; pointer-events:none }
+
+/* a MINHA câmara: janela pequena arrastável (encaixa nos cantos) */
+.fc .fc-self{ position:absolute; right:16px; bottom:120px; width:124px; height:186px; z-index:5; border-radius:18px; overflow:hidden; background:#1C1C1E; box-shadow:0 8px 26px rgba(0,0,0,.45), 0 0 0 .5px rgba(255,255,255,.2); transition:left .28s var(--curve,ease), top .28s var(--curve,ease); touch-action:none; cursor:grab }
+.fc .fc-self.drag{ transition:none; cursor:grabbing }
+.fc .fc-self-v{ position:absolute; inset:0 }
+.fc .fc-self-v .cam-app.cam-bare{ position:absolute; inset:0; background:#000 }
+.fc .fc-self-v .viewfinder{ position:absolute; inset:0 }
+.fc .fc-self-v .cam-gl,.fc .fc-self-v .scene{ width:100%!important; height:100%!important; top:0!important; transform:none; object-fit:cover }
+.fc .fc-self-off{ position:absolute; inset:0; display:none; flex-direction:column; align-items:center; justify-content:center; gap:8px; font-size:11px; color:rgba(255,255,255,.7); background:#1C1C1E }
+.fc .fc-me{ width:56px; height:56px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:20px; font-weight:600; color:#fff; background-size:cover!important }
+.fc.self-off .fc-self-off{ display:flex } .fc.self-off .fc-self-v{ visibility:hidden }
+/* eu a falar: aro verde no PiP; silenciado: microfone cortado no canto */
+.fc.talk-me .fc-self{ box-shadow:0 8px 26px rgba(0,0,0,.45), 0 0 0 2.5px rgba(48,209,88,.9) }
+.fc .fc-self-mute{ position:absolute; left:7px; bottom:7px; width:24px; height:24px; border-radius:50%; background:rgba(0,0,0,.55); color:#fff; display:none; align-items:center; justify-content:center; z-index:2 }
+.fc.muted .fc-self-mute{ display:flex }
+.fc .fc-flip{ position:absolute; right:7px; bottom:7px; width:30px; height:30px; border-radius:50%; display:flex; align-items:center; justify-content:center; background:rgba(0,0,0,.45); color:#fff; cursor:pointer; z-index:2 }
+.fc.self-off .fc-flip{ display:none }
+
+/* Live Photo (canto inferior esquerdo) */
+.fc .fc-shot{ position:absolute; left:26px; bottom:calc(var(--safe-bottom,20px) + 26px); z-index:5; width:56px; height:56px; border-radius:50%; border:3px solid #fff; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:opacity .3s }
+.fc .fc-shot > div{ width:42px; height:42px; border-radius:50%; background:#fff }
+.fc .fc-shot:active > div{ transform:scale(.88) }
+.fc .fc-flash{ position:absolute; inset:0; z-index:9; background:#fff; opacity:0; pointer-events:none; border-radius:57px }
+.fc .fc-flash.go{ animation:fcFlash .35s ease-out }
+@keyframes fcFlash{ 0%{ opacity:.8 } 100%{ opacity:0 } }
+
+/* ===== ECRÃ INICIAL (escuro como o FaceTime) ===== */
+.view.fc-home,.fc-home{ --bg:#1C1C1E; --bg2:#2C2C2E; --label:#fff; --label2:rgba(235,235,245,.6); --label3:rgba(235,235,245,.3); --sep:rgba(84,84,88,.6); --fill3:rgba(118,118,128,.24); --glass:rgba(44,44,48,.9); --glass-border:rgba(255,255,255,.14); --material:rgba(28,28,30,.97); background:#1C1C1E; color:#fff }
+.fc-home .content{ background:#1C1C1E }
+.app-window[data-app="facetime"]{ background:#1C1C1E }   /* sem isto o --bg claro do tema aparecia como uma linha nos cantos arredondados */
+/* dobrável aberto (UI.split, facecall.js): o aviso da coluna da direita no escuro da app, nos dois sistemas (o .split-ph do ui.css
+   pinta-se com o --bg do tema, claro) */
+body.form-fold .app-window[data-app="facetime"] > .split-ph{ background:#1C1C1E; color:rgba(235,235,245,.6) }
+body.form-fold .app-window[data-app="facetime"] > .split-ph b{ color:#fff }
+body.form-fold .app-window[data-app="facetime"] > .split-ph .sp-ic{ background:rgba(255,255,255,.08); color:rgba(235,235,245,.45) }
+body.os-android.form-fold .app-window[data-app="facetime"] > .split-ph{ background:#010102 }
+.fc-top-btns{ display:flex; gap:12px; padding:4px 16px 18px }
+.fc-top-btns > div{ flex:1; height:78px; border-radius:16px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px; font-size:15px; font-weight:600; cursor:pointer; transition:transform .12s }
+.fc-top-btns > div:active{ transform:scale(.97) }
+.fc-top-btns .fc-link{ background:#3A3A3C; color:#fff }
+.fc-top-btns .fc-new{ background:#30D158; color:#fff }
+.fc-top-btns svg{ width:24px; height:24px }
+.fc-day{ padding:10px 20px 6px; font-size:13px; font-weight:600; letter-spacing:.3px; text-transform:uppercase; color:rgba(235,235,245,.6); border-bottom:.5px solid rgba(84,84,88,.6) }
+.fc-list{ padding:0 0 6px }
+.fc-row{ display:flex; align-items:center; gap:12px; padding:9px 16px; border-bottom:.5px solid rgba(84,84,88,.35); cursor:pointer }
+.fc-row:active{ background:rgba(118,118,128,.18) }
+.fc-row-av .avatar{ width:48px; height:48px; font-size:18px }
+.fc-row-b{ flex:1; min-width:0; display:flex; flex-direction:column; gap:2px }
+.fc-row-b b{ font-size:17px; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+.fc-row.missed .fc-row-b b{ color:#FF453A }
+.fc-row-b span{ display:flex; align-items:center; gap:5px; font-size:14px; color:rgba(235,235,245,.6) } .fc-row-b span svg{ width:14px; height:14px }
+.fc-row-t{ font-size:15px; color:rgba(235,235,245,.6); flex:none }
+.fc-row-i{ color:#30D158; flex:none; width:32px; height:32px; display:flex; align-items:center; justify-content:center }
+.fc-empty{ display:flex; flex-direction:column; align-items:center; gap:4px; padding:60px 30px; text-align:center } .fc-empty b{ font-size:17px } .fc-empty span{ font-size:14px; color:rgba(235,235,245,.6) }
+/* sem chamadas (4 out): o aviso fica ao centro do espaço que sobra por baixo dos botões, nos dois sistemas (facecall.js .fc-isempty) */
+.fc-home > .content,.afc-home > .content{ display:flex; flex-direction:column } .fc-home > .content > *,.afc-home > .content > *{ flex-shrink:0 }
+.fc-recents.fc-isempty,.afc-recents.fc-isempty{ flex:1 0 auto; display:flex; flex-direction:column }
+.fc-isempty > .fc-empty,body.os-android .fc-isempty > .afc-empty{ flex:1 0 auto; justify-content:center; padding:24px 30px 18% }
+.fc-row-btns{ display:flex; gap:10px } .fc-row-btns span{ width:34px; height:34px; border-radius:50%; background:rgba(48,209,88,.16); color:#30D158; display:flex; align-items:center; justify-content:center; cursor:pointer }
+.fc-new-sheet .search{ margin:2px 16px 8px }

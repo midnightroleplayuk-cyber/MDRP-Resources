@@ -1,0 +1,55 @@
+/* ===================== JOGOS DE AÇÃO 2 - apex_phone 1.5.0 (ronda 2) =====================
+   Só o que Pong (.gm-pong), Hóquei de mesa (.gm-airhockey), Corte (.gm-slice) e Torre (.gm-stack)
+   acrescentam à casca do app-games.css. Nenhuma das propriedades proibidas no CEF (SPEC 2.5 e SPEC-GAMES-2 1.8);
+   só transform e opacity mexem (o abanão da tela é um transform curto escrito pelo JS).
+   Os seletores levam a classe do jogo para ganharem às regras antigas do app-games-action.css.
+   ============================================================================= */
+
+/* a tela: fundo preto por baixo do canvas, cantos do palco e sombra estática */
+.ga2-cv { background: #000; will-change: transform; box-shadow: 0 10px 30px rgba(0,0,0,.45), inset 0 0 0 1px rgba(255,255,255,.06); }
+body.os-android .ga2-cv { border-radius: 20px; }
+
+/* ---------- placar "Tu 3 : 2 IA" em cápsula: rótulos em <em> (traduzíveis), números em <b> com a cor de cada lado ---------- */
+.gm-pong .gm-hint, .gm-airhockey .gm-hint, .gm-slice .gm-hint { gap: 7px; padding: 6px 13px; background: rgba(255,255,255,.08); box-shadow: inset 0 0 0 1px rgba(255,255,255,.08); }
+.gm-pong .gm-hint em, .gm-airhockey .gm-hint em { font-style: normal; font-weight: 600; color: rgba(255,255,255,.58); font-size: 13px; letter-spacing: .02em; }
+.gm-pong .gm-hint b, .gm-airhockey .gm-hint b, .gm-slice .gm-hint b { font-weight: 800; font-variant-numeric: tabular-nums; font-size: 17px; min-width: 12px; text-align: center; }
+.gm-pong .gm-hint i, .gm-airhockey .gm-hint i, .gm-slice .gm-hint i { font-style: normal; color: rgba(255,255,255,.35); font-weight: 700; }
+.gm-pong .gm-hint b.p0 { color: #4DF0FF; }
+.gm-pong .gm-hint b.p1 { color: #FF4FC3; }
+.gm-airhockey .gm-hint b.p0 { color: #6CA6FF; }
+.gm-airhockey .gm-hint b.p1 { color: #FF7A70; }
+.gm-slice .gm-hint b.mu { color: #FFD60A; }
+.gm-slice .gm-hint b.tm { color: #fff; min-width: 38px; }
+.gm-slice .gm-hint svg { width: 16px; height: 16px; color: rgba(255,255,255,.7); }
+.gm-slice .gm-hearts i svg { width: 20px; height: 20px; }
+/* as duas regras acima pintavam de cinzento os corações (o <i> e o svg dentro da cápsula): vidas cheias a vermelho, perdidas apagadas */
+.gm-slice .gm-hint .gm-hearts i { color: rgba(255,255,255,.22); }
+.gm-slice .gm-hint .gm-hearts i.on { color: #FF375F; }
+.gm-slice .gm-hint .gm-hearts svg { color: inherit; }
+.gm-stack .gm-hint em { font-style: normal; font-weight: 600; color: rgba(255,255,255,.62); font-size: 13px; }
+.gm-stack .gm-hint b.pf { color: #FFE27A; font-weight: 800; font-size: 17px; font-variant-numeric: tabular-nums; min-width: 12px; text-align: center; }
+.gm-stack .gm-hint svg { width: 16px; height: 16px; color: #FFE27A; }
+
+/* ---------- barra de opções mais compacta nestes quatro jogos (até quatro linhas no Pong) ---------- */
+.gm-pong .gm-opts, .gm-airhockey .gm-opts, .gm-slice .gm-opts, .gm-stack .gm-opts { gap: 6px 12px; margin-top: 8px; }
+.gm-pong .gm-opt-row .ol, .gm-airhockey .gm-opt-row .ol, .gm-slice .gm-opt-row .ol, .gm-stack .gm-opt-row .ol { font-size: 12px; }
+.gm-pong .gm-seg > div, .gm-airhockey .gm-seg > div, .gm-slice .gm-seg > div, .gm-stack .gm-seg > div { padding: 7px 11px; font-size: 13px; }
+.gm-pong .gm-seg > div.on { background: rgba(191,90,242,.42); color: #fff; }
+.gm-airhockey .gm-seg > div.on { background: rgba(30,107,255,.5); color: #fff; }
+.gm-slice .gm-seg > div.on { background: rgba(255,55,95,.45); color: #fff; }
+.gm-stack .gm-seg > div.on { background: rgba(108,92,231,.55); color: #fff; }
+body.os-android .gm-pong .gm-seg, body.os-android .gm-airhockey .gm-seg, body.os-android .gm-slice .gm-seg, body.os-android .gm-stack .gm-seg { border-radius: 18px; }
+body.os-android .gm-pong .gm-seg > div, body.os-android .gm-airhockey .gm-seg > div, body.os-android .gm-slice .gm-seg > div, body.os-android .gm-stack .gm-seg > div { border-radius: 15px; }
+
+/* ---------- Torre: botão largo "Largar" com a cor do jogo, gradiente e aresta estáticos ---------- */
+.gm-stack .gb.gst-drop { min-width: 200px; height: 56px; border-radius: 18px; background: linear-gradient(180deg, #8577F0 0%, #6C5CE7 55%, #5546C9 100%); box-shadow: inset 0 1px 0 rgba(255,255,255,.35), inset 0 -2px 0 rgba(0,0,0,.18), 0 6px 18px rgba(108,92,231,.35); font-weight: 700; }
+.gm-stack .gb.gst-drop:active { background: linear-gradient(180deg, #7465E0 0%, #5B4CD3 100%); transform: scale(.96); }
+body.os-android .gm-stack .gb.gst-drop { border-radius: 28px; }
+
+/* ---------- deitado (.app-window.ls): a coluna de comandos tem ~170 de largura ---------- */
+.app-window.ls .gm-stack .gb.gst-drop { min-width: 0; width: 150px; padding: 0 10px; font-size: 14px; }
+.app-window.ls .gm-pong .gm-opt-row, .app-window.ls .gm-airhockey .gm-opt-row, .app-window.ls .gm-slice .gm-opt-row, .app-window.ls .gm-stack .gm-opt-row { flex-direction: column; align-items: stretch; gap: 4px; }
+.app-window.ls .gm-pong .gm-opt-row .ol, .app-window.ls .gm-airhockey .gm-opt-row .ol, .app-window.ls .gm-slice .gm-opt-row .ol, .app-window.ls .gm-stack .gm-opt-row .ol { text-align: center; }
+.app-window.ls .gm-pong .gm-seg, .app-window.ls .gm-airhockey .gm-seg, .app-window.ls .gm-slice .gm-seg, .app-window.ls .gm-stack .gm-seg { flex-wrap: wrap; justify-content: center; }
+.app-window.ls .gm-pong .gm-seg > div, .app-window.ls .gm-airhockey .gm-seg > div, .app-window.ls .gm-slice .gm-seg > div, .app-window.ls .gm-stack .gm-seg > div { padding: 6px 8px; font-size: 12px; }
+.app-window.ls .gm-pong .gm-hint em, .app-window.ls .gm-airhockey .gm-hint em { display: none; }

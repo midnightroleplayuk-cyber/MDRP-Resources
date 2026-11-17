@@ -1,0 +1,469 @@
+/* ============================================================================================================
+   Apex Phone UI kit 1.5.0 (apexphone-ui.css)
+   Makes the page of your own phone app look native on both systems of the phone: PearOS 27 (iOS style) and Nova UI 8.5
+   (Android style). Every token below is copied from the phone's own tokens.css / oneui-tokens.css.
+
+   How it is switched: apexphone-sdk.js writes data-os="ios|android" and data-theme="light|dark" on your <html> element
+   (ApexPhone.theme.apply) plus --accent and --ap-tint. Nothing else is needed.
+
+   Rules this kit follows (the game's CEF is an old Chromium drawing a transparent page):
+     no backdrop-filter (it paints an opaque black box in game), no filter on animated elements, no color-mix(), no calc()
+     inside rgba(), no clip-path, no :has(), no aspect-ratio; only transform and opacity animate. The "glass" is a material:
+     gradients, an inner ring and a drop shadow.
+   Geometry: the page is 440 x 956 CSS px on every normal phone. The status bar is drawn over the top 68 px (48 on Android)
+   and the home indicator over the bottom 34 px (20 on Android): --ap-safe-top / --ap-safe-bottom keep your content clear.
+   ============================================================================================================ */
+
+/* ---- Inter (the phone's font). Put the two woff2 files next to this CSS in fonts/ (they are in the example resource);
+        if they are missing the browser tries the copy served by the apex_phone resource, and then the system font. ---- */
+@font-face{ font-family:'Inter'; font-style:normal; font-weight:300 800; font-display:swap;
+  src:url('fonts/Inter-var-latin.woff2') format('woff2'), url('nui://apex_phone/html/fonts/Inter-var-latin.woff2') format('woff2');
+  unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD }
+@font-face{ font-family:'Inter'; font-style:normal; font-weight:300 800; font-display:swap;
+  src:url('fonts/Inter-var-latin-ext.woff2') format('woff2'), url('nui://apex_phone/html/fonts/Inter-var-latin-ext.woff2') format('woff2');
+  unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF }
+
+/* ============================================================
+   TOKENS: PearOS light (default)
+   ============================================================ */
+:root{
+  --ap-screen-w:440px; --ap-screen-h:956px;
+  --ap-safe-top:68px; --ap-safe-bottom:34px; --ap-navbar-h:44px; --ap-tabbar-h:66px;
+  --ap-tint:.5;
+  --font:'Inter',-apple-system,BlinkMacSystemFont,'SF Pro Text','Segoe UI',Roboto,sans-serif;
+  --font-display:var(--font);
+  --t-large:36px; --t-title1:30px; --t-title2:23px; --t-title3:21px; --t-headline:18px; --t-body:18px; --t-callout:17px; --t-subhead:16px; --t-foot:14px; --t-cap1:14px; --t-cap2:13px;
+  --accent:#0088FF;
+  --blue:var(--accent);
+  --red:#FF383C; --orange:#FF8D28; --yellow:#FFCC00; --green:#34C759; --mint:#00C8B3; --teal:#00C3D0; --cyan:#00C0E8; --indigo:#6155F5; --purple:#CB30E0; --pink:#FF2D55; --brown:#AC7F5E;
+  --gray:#8E8E93; --gray2:#AEAEB2; --gray3:#C7C7CC; --gray4:#D1D1D6; --gray5:#E5E5EA; --gray6:#F2F2F7;
+  --label:#000000; --label2:rgba(60,60,67,.60); --label3:rgba(60,60,67,.30); --label4:rgba(60,60,67,.18);
+  --fill:rgba(120,120,120,.20); --fill2:rgba(120,120,128,.16); --fill3:rgba(118,118,128,.12); --fill4:rgba(116,116,128,.08);
+  --bg:#F2F2F7; --bg2:#FFFFFF; --bg3:#F2F2F7;
+  --sep:rgba(0,0,0,.12); --sep-opaque:#C6C6C8; --sep-subtle:rgba(60,60,67,.12);
+  --toggle:var(--green);
+  /* radii (PearOS 26/27: capsules and concentric corners) */
+  --ap-r-group:26px; --ap-r-card:22px; --ap-r-btn:25px; --ap-r-seg:9px; --ap-r-field:12px; --ap-r-sheet:36px; --ap-r-alert:26px; --ap-r-chip:18px; --ap-r-search:22px;
+  /* glass MATERIAL (no blur under it in game, so it is dense enough to read on): tint + specular ring + dark rim + drop */
+  --ap-glass-bg:rgba(255,255,255,.89); --ap-glass-hi:linear-gradient(155deg,rgba(255,255,255,.75) 0%,rgba(255,255,255,.18) 42%,rgba(255,255,255,0) 100%);
+  --ap-glass-ring:inset 0 1px 0 rgba(255,255,255,.70), inset 0 -1px 0 rgba(255,255,255,.16), inset 0 0 0 .5px rgba(0,0,0,.12);
+  --ap-glass-drop:0 10px 30px rgba(0,0,0,.20); --ap-glass-drop-sm:0 4px 14px rgba(0,0,0,.14);
+  --ap-glass-on:rgba(0,0,0,.07);              /* the selected tab inside the pill */
+  --ap-dim:rgba(0,0,0,.40);
+  --ap-shadow-card:none;
+  --ease:cubic-bezier(.32,.72,0,1); --spring:cubic-bezier(.34,1.18,.64,1); --curve:cubic-bezier(.2,.8,.2,1);
+  --motion-fast:120ms; --motion-normal:220ms; --motion-medium:350ms; --motion-sheet:480ms;
+}
+/* ---- PearOS dark ---- */
+:root[data-theme="dark"]{
+  --red:#FF4245; --orange:#FF9230; --yellow:#FFD600; --green:#30D158; --mint:#00DAC3; --teal:#00D2E0; --cyan:#3CD3FE; --indigo:#6D7CFF; --purple:#DB34F2; --pink:#FF375F; --brown:#B78A66;
+  --gray:#8E8E93; --gray2:#636366; --gray3:#48484A; --gray4:#3A3A3C; --gray5:#2C2C2E; --gray6:#1C1C1E;
+  --label:#FFFFFF; --label2:rgba(235,235,245,.60); --label3:rgba(235,235,245,.30); --label4:rgba(235,235,245,.16);
+  --fill:rgba(120,120,128,.36); --fill2:rgba(120,120,128,.32); --fill3:rgba(118,118,128,.24); --fill4:rgba(118,118,128,.18);
+  --bg:#000000; --bg2:#1C1C1E; --bg3:#2C2C2E;
+  --sep:rgba(255,255,255,.12); --sep-opaque:#38383A; --sep-subtle:rgba(235,235,245,.12);
+  --ap-glass-bg:rgba(36,36,40,.90); --ap-glass-hi:linear-gradient(155deg,rgba(255,255,255,.22) 0%,rgba(255,255,255,.06) 42%,rgba(255,255,255,0) 100%);
+  --ap-glass-ring:inset 0 1px 0 rgba(255,255,255,.30), inset 0 -1px 0 rgba(255,255,255,.05), inset 0 0 0 .5px rgba(0,0,0,.42);
+  --ap-glass-on:rgba(255,255,255,.14);
+  --ap-dim:rgba(0,0,0,.55);
+}
+/* ---- Nova UI light ---- */
+:root[data-os="android"]:not([data-theme="dark"]){
+  --ap-safe-top:48px; --ap-safe-bottom:20px; --ap-navbar-h:56px; --ap-tabbar-h:64px;
+  --t-large:34px; --t-title1:28px; --t-title2:22px; --t-title3:20px; --t-headline:18px; --t-body:17px; --t-callout:16px; --t-subhead:15px; --t-foot:14px; --t-cap1:13px; --t-cap2:12px;
+  --red:#F2453D; --orange:#FF8A1F; --yellow:#FFC400; --green:#2DBE60; --mint:#1FC7B4; --teal:#11A9C0; --cyan:#21B6E8; --indigo:#5866F2; --purple:#9B5CF2; --pink:#F5476E; --brown:#A47A5A;
+  --label:rgba(0,0,0,.87); --label2:rgba(0,0,0,.60); --label3:rgba(0,0,0,.38); --label4:rgba(0,0,0,.18);
+  --bg:#F7F7F7; --bg2:#FCFCFF; --bg3:#ECECF0;
+  --fill:rgba(0,0,0,.10); --fill2:rgba(0,0,0,.08); --fill3:rgba(0,0,0,.06); --fill4:rgba(0,0,0,.04);
+  --sep:rgba(0,0,0,.10); --sep-opaque:#E4E4E4; --sep-subtle:rgba(0,0,0,.08);
+  --gray:#8C8C92; --gray2:#A9A9AF; --gray3:#C6C6CC; --gray4:#D7D7DC; --gray5:#E6E6EA; --gray6:#F1F1F4;
+  --toggle:var(--blue);
+  --ap-r-group:26px; --ap-r-card:26px; --ap-r-btn:24px; --ap-r-seg:999px; --ap-r-field:18px; --ap-r-sheet:28px; --ap-r-alert:28px; --ap-r-chip:999px; --ap-r-search:24px;
+  --ap-glass-bg:#FCFCFF; --ap-glass-hi:none; --ap-glass-ring:inset 0 0 0 1px rgba(0,0,0,.06); --ap-glass-drop:0 4px 17px rgba(0,0,0,.10); --ap-glass-drop-sm:0 1px 3px rgba(0,0,0,.08);
+  --ap-glass-on:rgba(0,0,0,.075);
+  --ap-shadow-card:0 1px 3px rgba(0,0,0,.08);
+  --ap-sw-off:#C7C7CC; --ap-seg-bg:#E4E4E7; --ap-seg-on:#FFFFFF; --ap-chev:rgba(0,0,0,.33);
+  --ease:cubic-bezier(.2,.6,.4,1); --spring:cubic-bezier(.2,.6,.4,1); --curve:cubic-bezier(.22,.25,0,1);
+}
+/* ---- Nova UI dark ---- */
+:root[data-os="android"][data-theme="dark"]{
+  --ap-safe-top:48px; --ap-safe-bottom:20px; --ap-navbar-h:56px; --ap-tabbar-h:64px;
+  --t-large:34px; --t-title1:28px; --t-title2:22px; --t-title3:20px; --t-headline:18px; --t-body:17px; --t-callout:16px; --t-subhead:15px; --t-foot:14px; --t-cap1:13px; --t-cap2:12px;
+  --red:#FF5A52; --orange:#FF9A3D; --yellow:#FFC400; --green:#3DD06F; --mint:#1FC7B4; --teal:#11A9C0; --cyan:#21B6E8; --indigo:#5866F2; --purple:#9B5CF2; --pink:#F5476E; --brown:#A47A5A;
+  --label:rgba(255,255,255,.92); --label2:rgba(255,255,255,.60); --label3:rgba(255,255,255,.38); --label4:rgba(255,255,255,.16);
+  --bg:#010102; --bg2:#17171A; --bg3:#232327;
+  --fill:rgba(255,255,255,.14); --fill2:rgba(255,255,255,.11); --fill3:rgba(255,255,255,.08); --fill4:rgba(255,255,255,.05);
+  --sep:rgba(255,255,255,.10); --sep-opaque:#2E2E33; --sep-subtle:rgba(255,255,255,.07);
+  --gray:#8E8E94; --gray2:#6A6A70; --gray3:#4A4A50; --gray4:#38383D; --gray5:#2A2A2F; --gray6:#1C1C20;
+  --toggle:var(--blue);
+  --ap-r-group:26px; --ap-r-card:26px; --ap-r-btn:24px; --ap-r-seg:999px; --ap-r-field:18px; --ap-r-sheet:28px; --ap-r-alert:28px; --ap-r-chip:999px; --ap-r-search:24px;
+  --ap-glass-bg:#1F1F23; --ap-glass-hi:none; --ap-glass-ring:inset 0 0 0 1px rgba(255,255,255,.14); --ap-glass-drop:0 4px 17px rgba(0,0,0,.30); --ap-glass-drop-sm:0 1px 3px rgba(0,0,0,.3);
+  --ap-glass-on:rgba(255,255,255,.13);
+  --ap-shadow-card:none;
+  --ap-sw-off:#48484D; --ap-seg-bg:#26262A; --ap-seg-on:#3A3A40; --ap-chev:rgba(255,255,255,.34);
+  --ap-dim:rgba(0,0,0,.5);
+  --ease:cubic-bezier(.2,.6,.4,1); --spring:cubic-bezier(.2,.6,.4,1); --curve:cubic-bezier(.22,.25,0,1);
+}
+
+/* ============================================================
+   BASE
+   ============================================================ */
+*,*::before,*::after{ box-sizing:border-box }
+html,body{ margin:0; padding:0; height:100%; width:100% }
+body{ font-family:var(--font); font-size:var(--t-body); line-height:1.3; color:var(--label); background:var(--bg); overflow:hidden;
+  -webkit-font-smoothing:antialiased; -webkit-user-select:none; user-select:none; -webkit-tap-highlight-color:transparent; -webkit-text-size-adjust:100% }
+input,textarea,select,button{ font:inherit; color:inherit }
+input,textarea{ -webkit-user-select:text; user-select:text }
+svg{ fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; display:block; flex:none }
+b,strong{ font-weight:600 }
+a{ color:var(--blue); text-decoration:none }
+[hidden],.ap-hidden{ display:none!important }
+::-webkit-scrollbar{ width:0; height:0 }
+
+/* ============================================================
+   LAYOUT: screen, content, safe areas
+   ============================================================ */
+.ap-screen{ position:absolute; inset:0; display:flex; flex-direction:column; background:var(--bg); color:var(--label); overflow:hidden }
+.ap-content{ flex:1; display:flex; flex-direction:column; overflow-y:auto; overflow-x:hidden; overscroll-behavior:contain; padding-bottom:calc(var(--ap-safe-bottom) + 20px); position:relative; scrollbar-width:none }
+.ap-content::-webkit-scrollbar{ display:none }
+.ap-content > *{ flex-shrink:0 }
+.ap-content.ap-has-tabbar{ padding-bottom:calc(var(--ap-safe-bottom) + var(--ap-tabbar-h) + 36px) }
+.ap-safe-top{ padding-top:var(--ap-safe-top) }
+.ap-safe-bottom{ padding-bottom:var(--ap-safe-bottom) }
+.ap-spacer{ flex:1 1 auto }
+.ap-row{ display:flex; align-items:center; gap:10px }
+.ap-grow{ flex:1 1 auto; min-width:0 }
+.ap-center{ text-align:center }
+.ap-muted{ color:var(--label2) }
+.ap-small{ font-size:var(--t-foot) }
+.ap-caption{ font-size:var(--t-cap1); color:var(--label2) }
+.ap-ellipsis{ white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+.ap-section{ padding:22px 32px 8px; font-size:var(--t-foot); font-weight:400; color:var(--label2); text-transform:uppercase; letter-spacing:.2px }
+
+/* ============================================================
+   NAVBAR (status bar space + 44 px). .ap-large: the big title lives in the content as .ap-large-title
+   ============================================================ */
+.ap-navbar{ position:relative; z-index:5; flex:none; padding:var(--ap-safe-top) 16px 0 10px; height:calc(var(--ap-safe-top) + var(--ap-navbar-h)); display:flex; align-items:center; justify-content:space-between; background:transparent }
+.ap-navbar.ap-solid{ background:var(--bg); box-shadow:0 .5px 0 var(--sep) }
+.ap-nb-left,.ap-nb-right{ display:flex; align-items:center; gap:14px; min-width:70px; font-size:var(--t-body); color:var(--blue) }
+.ap-nb-right{ justify-content:flex-end }
+.ap-nb-title{ position:absolute; left:50%; top:calc(var(--ap-safe-top) + 22px); transform:translate(-50%,-50%); font-size:var(--t-headline); font-weight:600; color:var(--label); white-space:nowrap; max-width:200px; overflow:hidden; text-overflow:ellipsis; pointer-events:none; transition:opacity var(--motion-normal) }
+.ap-navbar.ap-large .ap-nb-title{ opacity:0 }
+.ap-navbar.ap-large.ap-show-title .ap-nb-title{ opacity:1 }
+.ap-nb-btn{ display:flex; align-items:center; justify-content:center; min-width:44px; height:44px; padding:0 10px; margin:0 -10px; cursor:pointer; font-weight:400; color:var(--blue) }
+.ap-nb-btn.ap-bold{ font-weight:600 }
+.ap-nb-btn svg{ width:27px; height:27px }
+.ap-nb-btn:active{ opacity:.45 }
+.ap-nb-btn.ap-dis{ opacity:.35; pointer-events:none }
+.ap-nb-back{ display:flex; align-items:center; gap:2px; cursor:pointer; min-width:44px; height:44px; color:var(--blue) }
+.ap-nb-back svg{ width:25px; height:25px }
+.ap-nb-back:active{ opacity:.45 }
+/* glass circle / capsule controls on the bar (PearOS 26/27): material, ring, drop */
+.ap-nb-btn.ap-glass,.ap-nb-back.ap-glass{ width:44px; height:44px; min-width:44px; margin:0; padding:0; border-radius:50%; background:var(--ap-glass-hi), var(--ap-glass-bg); box-shadow:var(--ap-glass-drop-sm), var(--ap-glass-ring); color:var(--label); transition:transform var(--motion-normal) var(--spring), opacity var(--motion-normal) }
+.ap-nb-btn.ap-glass.ap-capsule{ width:auto; padding:0 16px; border-radius:22px; font-size:var(--t-subhead); font-weight:600; gap:6px }
+.ap-nb-btn.ap-glass:active,.ap-nb-back.ap-glass:active{ opacity:1; transform:scale(.92) }
+.ap-nb-btn.ap-glass.ap-tint{ color:var(--blue) }
+.ap-nb-group{ display:flex; align-items:center; gap:0; border-radius:22px; background:var(--ap-glass-hi), var(--ap-glass-bg); box-shadow:var(--ap-glass-drop-sm), var(--ap-glass-ring) }
+.ap-nb-group .ap-nb-btn{ margin:0; min-width:44px; color:var(--label); background:transparent; box-shadow:none }
+
+/* ============================================================
+   LARGE TITLE (inside the content, under the bar)
+   ============================================================ */
+.ap-large-title{ font-size:var(--t-large); font-weight:700; letter-spacing:-.4px; padding:2px 20px 10px; color:var(--label); line-height:1.1 }
+.ap-large-title small{ display:block; font-size:var(--t-subhead); font-weight:400; letter-spacing:0; color:var(--label2); margin-top:4px }
+.ap-title2{ font-size:var(--t-title2); font-weight:700; letter-spacing:-.3px; padding:12px 20px 6px }
+
+/* ============================================================
+   TAB BAR (floating capsule, PearOS 26/27)
+   ============================================================ */
+.ap-tabbar{ position:absolute; left:0; right:0; bottom:calc(var(--ap-safe-bottom) + 10px); z-index:20; display:flex; align-items:center; justify-content:center; gap:10px; padding:0 16px; pointer-events:none; transform-origin:bottom center; transition:transform var(--motion-medium) var(--ease), opacity var(--motion-medium) }
+.ap-tabbar > *{ pointer-events:auto }
+.ap-tabbar.ap-compact{ transform:scale(.92) translateY(4px) }
+.ap-tabbar.ap-hide{ transform:translateY(140px); opacity:0 }
+.ap-tabbar::before{ content:''; position:absolute; left:-24px; right:-24px; bottom:-60px; height:150px; pointer-events:none; z-index:-1; background:linear-gradient(180deg,rgba(0,0,0,0),rgba(0,0,0,.05)) }
+.ap-tb-pill{ display:flex; align-items:center; gap:2px; padding:4px; border-radius:38px; background:var(--ap-glass-hi), var(--ap-glass-bg); box-shadow:var(--ap-glass-drop), var(--ap-glass-ring) }
+.ap-tab{ display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px; min-width:66px; height:58px; border-radius:30px; color:var(--label2); font-size:12px; font-weight:600; cursor:pointer; padding:0 8px; position:relative; transition:background var(--motion-normal), color var(--motion-normal) }
+.ap-tab svg{ width:31px; height:31px; transition:transform var(--motion-medium) var(--spring) }
+.ap-tab.on{ color:var(--blue); background:var(--ap-glass-on) }
+.ap-tab.on svg{ animation:apTabPop .36s var(--spring) }
+.ap-tab:active{ opacity:.6 }
+@keyframes apTabPop{ 0%{ transform:scale(.86) } 100%{ transform:scale(1) } }
+.ap-tab-round{ width:64px; min-width:64px; height:64px; padding:0; border-radius:50%; background:var(--ap-glass-hi), var(--ap-glass-bg); box-shadow:var(--ap-glass-drop), var(--ap-glass-ring); color:var(--label); display:flex; align-items:center; justify-content:center; cursor:pointer }
+.ap-tab-round svg{ width:30px; height:30px }
+.ap-tab-round:active{ opacity:.7 }
+.ap-tab .ap-tb-badge{ position:absolute; top:6px; right:10px; min-width:16px; height:16px; border-radius:8px; background:var(--red); color:#fff; font-size:10px; display:flex; align-items:center; justify-content:center; padding:0 4px }
+.ap-tab .ap-tb-badge.ap-dot{ min-width:9px; width:9px; height:9px; border-radius:5px; padding:0; top:9px; right:13px }
+.ap-tab .ap-tb-badge:empty{ display:none }
+
+/* ============================================================
+   GROUPED LISTS
+   ============================================================ */
+.ap-group-header{ padding:20px 32px 8px; font-size:var(--t-foot); color:var(--label2); text-transform:uppercase; letter-spacing:.2px }
+.ap-group-footer{ padding:8px 32px 4px; font-size:var(--t-foot); color:var(--label2); line-height:1.35 }
+.ap-group{ margin:0 16px; background:var(--bg2); border-radius:var(--ap-r-group); overflow:hidden; box-shadow:var(--ap-shadow-card) }
+.ap-group + .ap-group,.ap-group-footer + .ap-group{ margin-top:16px }
+.ap-li{ display:flex; align-items:center; min-height:48px; padding:7px 16px; gap:13px; cursor:pointer; position:relative; color:var(--label); font-size:var(--t-body); transition:background var(--motion-normal) ease-out }
+.ap-li.ap-static{ cursor:default }
+.ap-li:active:not(.ap-static){ background:var(--fill4); transition:background .04s }
+.ap-li + .ap-li::before{ content:''; position:absolute; left:16px; right:0; top:0; height:.5px; background:var(--sep) }
+.ap-li.ap-has-icon + .ap-li::before{ left:62px }
+.ap-li-icon{ width:30px; height:30px; border-radius:8px; display:flex; align-items:center; justify-content:center; background:var(--blue); color:#fff; flex:none }
+.ap-li-icon svg{ width:19px; height:19px }
+.ap-li-icon.ap-big{ width:44px; height:44px; border-radius:12px } .ap-li-icon.ap-big svg{ width:26px; height:26px }
+.ap-li-body{ flex:1 1 auto; min-width:0; display:flex; flex-direction:column; justify-content:center }
+.ap-li-label{ white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+.ap-li-sub{ font-size:var(--t-foot); color:var(--label2); margin-top:1px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+.ap-li-value{ margin-left:auto; color:var(--label2); font-size:var(--t-body); white-space:nowrap; flex:none }
+.ap-li-value.ap-tint{ color:var(--blue) }
+.ap-chev{ width:14px; height:14px; color:var(--label3); flex:none; stroke-width:2.5 }
+.ap-li-value + .ap-chev{ margin-left:-4px }
+.ap-li.ap-center{ justify-content:center; color:var(--blue); font-weight:500 }
+.ap-li.ap-tint{ color:var(--blue) }
+.ap-li.ap-danger{ color:var(--red) }
+.ap-li.ap-dis{ opacity:.45; pointer-events:none }
+.ap-li .ap-avatar{ width:40px; height:40px }
+/* text fields inside a row */
+.ap-li input[type=text],.ap-li input[type=number],.ap-li input[type=tel],.ap-li input[type=password],.ap-li input[type=email],.ap-li input[type=search],.ap-li textarea{ flex:1; border:none; background:none; outline:none; min-width:0; color:var(--label); padding:0 }
+.ap-li input::placeholder,.ap-li textarea::placeholder,.ap-field input::placeholder,.ap-field textarea::placeholder,.ap-search input::placeholder{ color:var(--label3) }
+.ap-li textarea{ resize:none; min-height:84px; line-height:1.35; padding:4px 0 }
+.ap-li .ap-li-key{ flex:none; min-width:96px; color:var(--label) }
+/* toggle (PearOS 51x31; Nova UI 52x32) */
+.ap-toggle{ position:relative; width:51px; height:31px; flex:none; cursor:pointer; margin-left:auto; display:block }
+.ap-toggle input{ opacity:0; width:0; height:0; position:absolute }
+.ap-toggle span{ position:absolute; inset:0; border-radius:16px; background:var(--fill); transition:background var(--motion-normal) }
+.ap-toggle span::after{ content:''; position:absolute; top:2px; left:2px; width:27px; height:27px; border-radius:50%; background:#fff; box-shadow:0 3px 8px rgba(0,0,0,.15),0 1px 1px rgba(0,0,0,.16); transition:transform var(--motion-normal) var(--spring) }
+.ap-toggle input:checked + span{ background:var(--toggle) }
+.ap-toggle input:checked + span::after{ transform:translateX(20px) }
+.ap-toggle input:disabled + span{ opacity:.4 }
+/* check mark on the right of a row */
+.ap-check{ width:22px; height:22px; color:var(--blue); margin-left:auto; flex:none; opacity:0; transition:opacity var(--motion-fast) }
+.ap-li.on .ap-check{ opacity:1 }
+
+/* ============================================================
+   BUTTONS
+   ============================================================ */
+.ap-btn{ display:flex; align-items:center; justify-content:center; gap:6px; height:50px; border-radius:var(--ap-r-btn); background:var(--blue); color:#fff; font-size:var(--t-headline); font-weight:600; cursor:pointer; margin:12px 20px; border:none; padding:0 20px; transition:transform var(--motion-normal) var(--spring), opacity var(--motion-normal) }
+.ap-btn svg{ width:22px; height:22px }
+.ap-btn:active{ transform:scale(.96); opacity:.88; transition:transform .06s, opacity .06s }
+.ap-btn.ap-secondary{ background:var(--fill3); color:var(--blue) }
+.ap-btn.ap-plain{ background:transparent; color:var(--blue) }
+.ap-btn.ap-danger{ background:var(--red); color:#fff }
+.ap-btn.ap-secondary.ap-danger{ background:var(--fill3); color:var(--red) }
+.ap-btn.ap-small{ height:36px; font-size:var(--t-subhead); padding:0 14px; margin:0; border-radius:18px }
+.ap-btn.ap-tiny{ height:30px; font-size:var(--t-foot); padding:0 12px; margin:0; border-radius:15px }
+.ap-btn.ap-inline{ display:inline-flex; margin:0 }
+.ap-btn.ap-dis,.ap-btn:disabled{ opacity:.4; pointer-events:none }
+.ap-btn-row{ display:flex; gap:10px; padding:0 20px; margin:12px 0 }
+.ap-btn-row .ap-btn{ flex:1; margin:0 }
+/* floating round button (compose): glass circle with the accent glyph, or filled with .ap-fill */
+.ap-fab{ position:absolute; right:20px; bottom:calc(var(--ap-safe-bottom) + 90px); width:58px; height:58px; border-radius:50%; display:flex; align-items:center; justify-content:center; background:var(--ap-glass-hi), var(--ap-glass-bg); box-shadow:var(--ap-glass-drop), var(--ap-glass-ring); color:var(--blue); cursor:pointer; z-index:21; transition:transform var(--motion-normal) var(--spring) }
+.ap-fab svg{ width:28px; height:28px; stroke-width:2.4 }
+.ap-fab:active{ transform:scale(.92) }
+.ap-fab.ap-fill{ background:var(--blue); color:#fff; box-shadow:0 10px 24px rgba(0,0,0,.22) }
+
+/* ============================================================
+   CARD, SEGMENTED, CHIPS, SEARCH, FIELD
+   ============================================================ */
+.ap-card{ margin:0 16px; background:var(--bg2); border-radius:var(--ap-r-card); padding:16px; overflow:hidden; box-shadow:var(--ap-shadow-card) }
+.ap-card + .ap-card{ margin-top:12px }
+.ap-card-title{ font-size:var(--t-headline); font-weight:600; margin-bottom:4px }
+.ap-card-sub{ font-size:var(--t-foot); color:var(--label2) }
+.ap-stat{ font-size:34px; font-weight:700; letter-spacing:-.6px; line-height:1.05 }
+.ap-stat small{ font-size:var(--t-foot); font-weight:500; color:var(--label2); margin-left:4px; letter-spacing:0 }
+.ap-seg{ display:flex; margin:8px 16px; background:var(--fill3); border-radius:var(--ap-r-seg); padding:2px; position:relative }
+.ap-seg > div{ flex:1; text-align:center; font-size:var(--t-foot); font-weight:500; padding:7px 0; border-radius:7px; cursor:pointer; color:var(--label); transition:background var(--motion-normal), box-shadow var(--motion-normal); white-space:nowrap }
+.ap-seg > div.on{ background:var(--bg2); box-shadow:0 3px 8px rgba(0,0,0,.12),0 3px 1px rgba(0,0,0,.04); font-weight:600 }
+.ap-chips{ display:flex; gap:8px; padding:6px 16px; overflow-x:auto; scrollbar-width:none }
+.ap-chips::-webkit-scrollbar{ display:none }
+.ap-chips > span{ flex:none; padding:7px 14px; border-radius:var(--ap-r-chip); background:var(--fill3); font-size:var(--t-subhead); font-weight:500; cursor:pointer; color:var(--label); display:flex; align-items:center; gap:6px; transition:background var(--motion-fast), color var(--motion-fast) }
+.ap-chips > span svg{ width:16px; height:16px }
+.ap-chips > span.on{ background:var(--label); color:var(--bg) }
+.ap-chips > span.ap-tint.on{ background:var(--blue); color:#fff }
+.ap-search{ margin:4px 16px 8px; height:44px; border-radius:var(--ap-r-search); background:var(--fill3); display:flex; align-items:center; gap:8px; padding:0 10px 0 14px; color:var(--label2); flex:none }
+.ap-search svg{ width:20px; height:20px; color:var(--label2) }
+.ap-search input{ flex:1; border:none; background:none; outline:none; min-width:0; color:var(--label); font-size:var(--t-body) }
+.ap-search .ap-clear{ width:20px; height:20px; border-radius:50%; background:var(--label3); color:var(--bg2); display:flex; align-items:center; justify-content:center; cursor:pointer }
+.ap-search .ap-clear svg{ width:12px; height:12px; color:var(--bg2); stroke-width:3 }
+/* standalone field (outside a list) */
+.ap-field{ margin:0 16px; min-height:48px; border-radius:var(--ap-r-field); background:var(--bg2); display:flex; align-items:center; gap:10px; padding:0 14px; box-shadow:var(--ap-shadow-card) }
+.ap-field + .ap-field{ margin-top:10px }
+.ap-field input,.ap-field textarea{ flex:1; border:none; background:none; outline:none; min-width:0; color:var(--label); padding:12px 0 }
+.ap-field textarea{ resize:none; min-height:96px; line-height:1.35 }
+.ap-field label{ color:var(--label2); font-size:var(--t-subhead); flex:none; min-width:84px }
+/* the phone keyboard is typing into this field (ApexPhone.keyboard): ring in the accent, placeholder hidden */
+/* the SDK puts .ap-kb-on on the field AND on its .ap-li / .ap-field / .ap-search wrapper (no :has() in the CEF) */
+input.ap-kb-on,textarea.ap-kb-on{ box-shadow:inset 0 0 0 2px var(--blue); border-radius:8px }
+.ap-li input.ap-kb-on,.ap-field input.ap-kb-on,.ap-search input.ap-kb-on,.ap-li textarea.ap-kb-on,.ap-field textarea.ap-kb-on{ box-shadow:none }
+.ap-li.ap-kb-on,.ap-field.ap-kb-on,.ap-search.ap-kb-on{ box-shadow:inset 0 0 0 2px var(--blue) }
+.ap-kb-on::placeholder{ color:transparent }
+
+/* ============================================================
+   SHEET (bottom), ALERT (centre), TOAST
+   ============================================================ */
+.ap-sheet-wrap{ position:absolute; inset:0; z-index:40; background:var(--ap-dim); opacity:0; pointer-events:none; transition:opacity var(--motion-medium) }
+.ap-sheet-wrap.in{ opacity:1; pointer-events:auto }
+.ap-sheet{ position:absolute; left:0; right:0; bottom:0; background:var(--bg); border-radius:var(--ap-r-sheet) var(--ap-r-sheet) 0 0; max-height:88%; display:flex; flex-direction:column; transform:translateY(100%); transition:transform var(--motion-sheet) var(--ease); color:var(--label); box-shadow:0 -10px 40px rgba(0,0,0,.18) }
+.ap-sheet-wrap.in .ap-sheet{ transform:translateY(0) }
+.ap-sheet-grab{ width:36px; height:5px; border-radius:3px; background:var(--label4); margin:8px auto 0 }
+.ap-sheet-head{ display:flex; align-items:center; justify-content:space-between; padding:10px 16px 6px; min-height:52px }
+.ap-sheet-head b{ font-size:var(--t-headline); font-weight:600; position:absolute; left:50%; transform:translateX(-50%); white-space:nowrap }
+.ap-sheet-head .ap-sh-l,.ap-sheet-head .ap-sh-r{ color:var(--blue); font-size:var(--t-body); cursor:pointer; padding:8px 4px; min-width:44px }
+.ap-sheet-head .ap-sh-r{ font-weight:600; text-align:right }
+.ap-sheet-head .ap-sh-l:active,.ap-sheet-head .ap-sh-r:active{ opacity:.45 }
+.ap-sheet-body{ flex:1; overflow-y:auto; overflow-x:hidden; padding:6px 0 calc(var(--ap-safe-bottom) + 12px); scrollbar-width:none }
+.ap-sheet-body::-webkit-scrollbar{ display:none }
+.ap-sheet-foot{ padding:8px 0 calc(var(--ap-safe-bottom) + 8px) }
+/* alert: material card, centred, scale in */
+.ap-alert-wrap{ position:absolute; inset:0; z-index:50; display:flex; align-items:center; justify-content:center; background:var(--ap-dim); opacity:0; pointer-events:none; transition:opacity var(--motion-normal) }
+.ap-alert-wrap.in{ opacity:1; pointer-events:auto }
+.ap-alert{ width:270px; border-radius:var(--ap-r-alert); background:var(--ap-glass-hi), var(--ap-glass-bg); box-shadow:0 20px 50px rgba(0,0,0,.25), var(--ap-glass-ring); color:var(--label); overflow:hidden; text-align:center; transform:scale(1.12); transition:transform var(--motion-normal) var(--spring) }
+.ap-alert-wrap.in .ap-alert{ transform:scale(1) }
+.ap-alert-body{ padding:19px 16px 16px }
+.ap-alert-title{ font-size:var(--t-headline); font-weight:600 }
+.ap-alert-msg{ font-size:var(--t-foot); margin-top:4px; color:var(--label); line-height:1.35 }
+.ap-alert input{ width:100%; margin-top:12px; height:40px; border-radius:9px; border:.5px solid var(--sep-opaque); background:var(--bg2); padding:0 10px; color:var(--label); outline:none; font-size:var(--t-body) }
+.ap-alert-btns{ display:flex; border-top:.5px solid var(--sep) }
+.ap-alert-btns > div{ flex:1; padding:12px; font-size:var(--t-body); color:var(--blue); cursor:pointer }
+.ap-alert-btns > div + div{ border-left:.5px solid var(--sep) }
+.ap-alert-btns > div.ap-bold{ font-weight:600 }
+.ap-alert-btns > div.ap-danger{ color:var(--red) }
+.ap-alert-btns > div:active{ background:var(--fill4) }
+.ap-alert-btns.ap-stack{ flex-direction:column }
+.ap-alert-btns.ap-stack > div + div{ border-left:none; border-top:.5px solid var(--sep) }
+/* toast: capsule at the bottom, over the tab bar */
+.ap-toast{ position:absolute; left:50%; bottom:calc(var(--ap-safe-bottom) + 96px); transform:translate(-50%,20px); opacity:0; z-index:60; max-width:80%; padding:12px 18px; border-radius:22px; background:var(--ap-glass-hi), var(--ap-glass-bg); box-shadow:var(--ap-glass-drop), var(--ap-glass-ring); color:var(--label); font-size:var(--t-subhead); font-weight:500; text-align:center; pointer-events:none; transition:transform var(--motion-medium) var(--spring), opacity var(--motion-medium) }
+.ap-toast.in{ transform:translate(-50%,0); opacity:1 }
+
+/* ============================================================
+   EMPTY STATE, BADGE, AVATAR, SKELETON, SPINNER, GLASS, MISC
+   ============================================================ */
+.ap-empty{ display:flex; flex:1 0 auto; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:40px 40px 72px; gap:2px; color:var(--label2) }
+.ap-empty svg{ width:64px; height:64px; color:var(--label3); margin-bottom:10px; stroke-width:1.5 }
+.ap-empty b{ color:var(--label); font-size:var(--t-title2); font-weight:700; letter-spacing:-.3px; margin-bottom:2px }
+.ap-empty span{ font-size:var(--t-subhead); color:var(--label2); line-height:1.35 }
+.ap-empty .ap-btn{ margin-top:18px }
+.ap-badge{ display:inline-flex; align-items:center; justify-content:center; min-width:20px; height:20px; padding:0 6px; border-radius:10px; background:var(--red); color:#fff; font-size:12px; font-weight:600; line-height:1 }
+.ap-badge.ap-tint{ background:var(--blue) }
+.ap-badge.ap-gray{ background:var(--fill); color:var(--label2) }
+.ap-badge.ap-green{ background:var(--green) }
+.ap-badge.ap-orange{ background:var(--orange) }
+.ap-pill{ display:inline-flex; align-items:center; gap:4px; padding:3px 9px; border-radius:999px; background:var(--fill3); color:var(--label2); font-size:var(--t-cap2); font-weight:600 }
+.ap-pill.ap-tint{ background:var(--blue); color:#fff }
+.ap-pill.ap-green{ background:var(--green); color:#fff }
+.ap-pill.ap-orange{ background:var(--orange); color:#fff }
+.ap-avatar{ width:44px; height:44px; border-radius:50%; background:var(--fill2); color:var(--label2); display:flex; align-items:center; justify-content:center; font-weight:600; font-size:var(--t-subhead); overflow:hidden; flex:none; text-transform:uppercase }
+.ap-avatar img{ width:100%; height:100%; object-fit:cover; display:block }
+.ap-avatar.ap-tint{ background:var(--blue); color:#fff }
+.ap-avatar.ap-sm{ width:32px; height:32px; font-size:var(--t-cap2) }
+.ap-avatar.ap-lg{ width:72px; height:72px; font-size:var(--t-title2) }
+.ap-skeleton{ pointer-events:none; animation:apSk 1.1s ease-in-out infinite alternate }
+.ap-skeleton .ap-sk{ background:var(--fill3); border-radius:6px; height:13px }
+.ap-skeleton .ap-sk.ap-sk-circle{ width:40px; height:40px; border-radius:50% }
+.ap-skeleton .ap-sk.ap-sk-l1{ width:62% } .ap-skeleton .ap-sk.ap-sk-l2{ width:84%; height:11px; margin-top:7px }
+@keyframes apSk{ from{ opacity:.55 } to{ opacity:1 } }
+.ap-spinner{ width:22px; height:22px; border-radius:50%; border:2.5px solid var(--fill); border-top-color:var(--label2); animation:apSpin .8s linear infinite; margin:16px auto }
+@keyframes apSpin{ to{ transform:rotate(360deg) } }
+/* generic glass material for your own floating pieces (never for content) */
+.ap-glass{ background:var(--ap-glass-hi), var(--ap-glass-bg); box-shadow:var(--ap-glass-drop), var(--ap-glass-ring); color:var(--label) }
+.ap-glass.ap-round{ border-radius:999px }
+.ap-glass.ap-card-r{ border-radius:var(--ap-r-card) }
+/* press glow for glass pieces: set --px/--py in pointerdown, add .ap-press for 400 ms */
+.ap-glass,.ap-tb-pill,.ap-nb-btn.ap-glass,.ap-fab{ position:relative; overflow:hidden }
+.ap-glass::after,.ap-tb-pill::after,.ap-nb-btn.ap-glass::after,.ap-fab::after{ content:''; position:absolute; left:var(--px,50%); top:var(--py,50%); width:120px; height:120px; margin:-60px 0 0 -60px; border-radius:50%; background:radial-gradient(circle,rgba(255,255,255,.55) 0%,rgba(255,255,255,0) 70%); opacity:0; transform:scale(0); pointer-events:none }
+.ap-press::after{ animation:apGlow .4s var(--curve) }
+@keyframes apGlow{ 0%{ opacity:.9; transform:scale(0) } 100%{ opacity:0; transform:scale(2.4) } }
+/* divider line and inset text */
+.ap-hr{ height:.5px; background:var(--sep); margin:12px 16px }
+.ap-note{ padding:6px 32px 0; font-size:var(--t-foot); color:var(--label2); line-height:1.35 }
+/* entry/exit motion for views (transform and opacity only) */
+.ap-fade-in{ animation:apFade var(--motion-normal) var(--curve) both }
+@keyframes apFade{ from{ opacity:0; transform:translateY(8px) } to{ opacity:1; transform:none } }
+
+/* ============================================================
+   NOVA UI (Android): shapes, 56 px bar, left title, floating bottom bar, pill buttons, cards with a soft shadow
+   ============================================================ */
+:root[data-os="android"] body{ --font-display:var(--font) }
+:root[data-os="android"] .ap-navbar{ padding:var(--ap-safe-top) 6px 0; justify-content:flex-start; gap:0 }
+:root[data-os="android"] .ap-navbar.ap-solid{ background:var(--bg); box-shadow:none }
+:root[data-os="android"] .ap-nb-left,:root[data-os="android"] .ap-nb-right{ flex:none; min-width:0; gap:2px; color:var(--label) }
+:root[data-os="android"] .ap-nb-right{ margin-left:auto }
+:root[data-os="android"] .ap-nb-title{ position:static; left:auto; top:auto; transform:none; flex:1 1 auto; min-width:0; max-width:none; padding:0 6px 0 18px; text-align:left; font-size:20px; font-weight:600; opacity:1 }
+:root[data-os="android"] .ap-nb-left:not(:empty) + .ap-nb-title{ padding-left:4px }
+:root[data-os="android"] .ap-navbar.ap-large .ap-nb-title{ opacity:0 }
+:root[data-os="android"] .ap-navbar.ap-large.ap-show-title .ap-nb-title{ opacity:1 }
+:root[data-os="android"] .ap-nb-btn,:root[data-os="android"] .ap-nb-back,:root[data-os="android"] .ap-nb-btn.ap-glass,:root[data-os="android"] .ap-nb-back.ap-glass{ width:auto; min-width:48px; height:48px; margin:0; padding:0 12px; border-radius:24px; background:transparent; box-shadow:none; color:var(--label); font-size:16px; font-weight:600; transform:none; transition:background var(--motion-fast) ease-out, opacity var(--motion-fast) ease-out }
+:root[data-os="android"] .ap-nb-back{ width:48px; padding:0; gap:0 } :root[data-os="android"] .ap-nb-back span{ display:none }
+:root[data-os="android"] .ap-nb-btn svg,:root[data-os="android"] .ap-nb-back svg,:root[data-os="android"] .ap-nb-btn.ap-glass svg{ width:24px; height:24px }
+:root[data-os="android"] .ap-nb-btn.ap-bold,:root[data-os="android"] .ap-nb-btn.ap-tint{ color:var(--blue) }
+:root[data-os="android"] .ap-nb-btn:active,:root[data-os="android"] .ap-nb-back:active,:root[data-os="android"] .ap-nb-btn.ap-glass:active{ background:var(--fill3); opacity:1; transform:none }
+:root[data-os="android"] .ap-nb-btn.ap-glass::after{ content:none }
+:root[data-os="android"] .ap-nb-group{ background:transparent; box-shadow:none }
+/* large title: centred in a 124 px reading zone */
+:root[data-os="android"] .ap-large-title{ display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px; height:124px; padding:0 30px 16px; margin:0; text-align:center; font-size:34px; font-weight:700; letter-spacing:-.2px; line-height:1.14 }
+:root[data-os="android"] .ap-large-title small{ font-size:14px; margin-top:0 }
+/* lists in cards */
+:root[data-os="android"] .ap-group-header{ padding:22px 34px 8px; font-size:14px; font-weight:600; text-transform:none; letter-spacing:0 }
+:root[data-os="android"] .ap-group-footer{ padding:9px 34px 6px }
+:root[data-os="android"] .ap-group{ margin:0 12px }
+:root[data-os="android"] .ap-group + .ap-group,:root[data-os="android"] .ap-group-footer + .ap-group{ margin-top:14px }
+:root[data-os="android"] .ap-li{ min-height:58px; padding:14px 24px; gap:16px }
+:root[data-os="android"] .ap-li + .ap-li::before{ left:24px; right:24px; height:1px; background:var(--sep-subtle) }
+:root[data-os="android"] .ap-li.ap-has-icon + .ap-li::before{ left:78px }
+:root[data-os="android"] .ap-li-label{ font-weight:500; line-height:1.28 }
+:root[data-os="android"] .ap-li-sub{ font-size:14px; margin-top:2px }
+:root[data-os="android"] .ap-li-icon{ width:38px; height:38px; border-radius:50%; background:var(--fill3); color:var(--blue) }
+:root[data-os="android"] .ap-li-icon.ap-fill{ background:var(--blue); color:#fff }
+:root[data-os="android"] .ap-li-icon svg{ width:21px; height:21px }
+:root[data-os="android"] .ap-li-value{ font-size:15px }
+:root[data-os="android"] .ap-chev{ width:16px; height:16px; color:var(--ap-chev) }
+:root[data-os="android"] .ap-toggle{ width:52px; height:32px }
+:root[data-os="android"] .ap-toggle span{ background:var(--ap-sw-off) }
+:root[data-os="android"] .ap-toggle span::after{ width:28px; height:28px; box-shadow:0 2px 4px rgba(0,0,0,.2) }
+:root[data-os="android"] .ap-toggle input:checked + span{ background:var(--blue) }
+/* buttons: full pills */
+:root[data-os="android"] .ap-btn{ height:48px; border-radius:24px; font-size:16px; margin:12px 16px }
+:root[data-os="android"] .ap-btn:active{ transform:none; opacity:.8 }
+:root[data-os="android"] .ap-btn.ap-small{ height:36px; margin:0 }
+:root[data-os="android"] .ap-btn.ap-tiny{ height:30px; margin:0 }
+:root[data-os="android"] .ap-fab{ border-radius:20px; width:56px; height:56px; background:var(--blue); color:#fff; box-shadow:0 6px 16px rgba(0,0,0,.22) }
+:root[data-os="android"] .ap-fab::after{ content:none }
+/* segmented: pill with a white (or dark) moving thumb */
+:root[data-os="android"] .ap-seg{ background:var(--ap-seg-bg); border-radius:999px; padding:3px; margin:8px 16px }
+:root[data-os="android"] .ap-seg > div{ border-radius:999px; padding:8px 0; font-size:14px }
+:root[data-os="android"] .ap-seg > div.on{ background:var(--ap-seg-on); box-shadow:none }
+:root[data-os="android"] .ap-chips > span{ border-radius:999px; background:var(--bg2); box-shadow:inset 0 0 0 1px var(--sep) }
+:root[data-os="android"] .ap-chips > span.on{ background:var(--blue); color:#fff; box-shadow:none }
+:root[data-os="android"] .ap-search{ height:48px; border-radius:24px; margin:4px 16px 8px }
+:root[data-os="android"] .ap-field{ border-radius:var(--ap-r-field); margin:0 12px }
+:root[data-os="android"] .ap-card{ margin:0 12px; border-radius:26px }
+/* floating bottom bar: a wide pill with the tabs, as in Gallery/Phone/Files of One UI 8.5 */
+:root[data-os="android"] .ap-tabbar{ bottom:calc(var(--ap-safe-bottom) + 10px); padding:0 12px }
+:root[data-os="android"] .ap-tabbar::before{ content:none }
+:root[data-os="android"] .ap-tb-pill{ flex:1; justify-content:space-around; padding:6px 8px; border-radius:999px }
+:root[data-os="android"] .ap-tab{ flex:1 1 0; min-width:0; height:52px; border-radius:999px; font-size:12px; font-weight:600; gap:3px }
+:root[data-os="android"] .ap-tab svg{ width:26px; height:26px }
+:root[data-os="android"] .ap-tab.on{ color:var(--label); background:var(--ap-glass-on) }
+:root[data-os="android"] .ap-tab.on svg{ animation:none }
+:root[data-os="android"] .ap-tab-round{ width:56px; min-width:56px; height:56px }
+/* sheet and alert in the Nova UI shapes */
+:root[data-os="android"] .ap-sheet{ border-radius:26px 26px 0 0; background:var(--bg) }
+:root[data-os="android"] .ap-sheet-grab{ width:36px; height:4px; background:var(--label4) }
+:root[data-os="android"] .ap-sheet-head{ padding:8px 12px 12px 24px }
+:root[data-os="android"] .ap-sheet-head b{ position:static; transform:none; flex:1; text-align:left; font-size:22px; font-weight:600 }
+:root[data-os="android"] .ap-sheet-head .ap-sh-l,:root[data-os="android"] .ap-sheet-head .ap-sh-r{ border-radius:999px; padding:10px 14px; font-size:16px; font-weight:600 }
+:root[data-os="android"] .ap-sheet-head .ap-sh-l{ order:3; font-weight:500 }
+:root[data-os="android"] .ap-sheet-head .ap-sh-l:active,:root[data-os="android"] .ap-sheet-head .ap-sh-r:active{ opacity:1; background:var(--fill3) }
+:root[data-os="android"] .ap-alert{ width:312px; border-radius:28px; background:var(--ap-glass-bg); box-shadow:0 12px 40px rgba(0,0,0,.28); text-align:left }
+:root[data-os="android"] .ap-alert-body{ padding:26px 24px 10px }
+:root[data-os="android"] .ap-alert-title{ font-size:20px; font-weight:600 }
+:root[data-os="android"] .ap-alert-msg{ font-size:15px; color:var(--label2); margin-top:8px }
+:root[data-os="android"] .ap-alert-btns{ border-top:none; justify-content:flex-end; padding:4px 14px 14px; gap:4px }
+:root[data-os="android"] .ap-alert-btns > div{ flex:0 0 auto; padding:10px 16px; border-radius:999px; font-weight:600; font-size:15px }
+:root[data-os="android"] .ap-alert-btns > div + div{ border-left:none }
+:root[data-os="android"] .ap-alert-btns > div:active{ background:var(--fill3) }
+:root[data-os="android"] .ap-alert-btns.ap-stack{ flex-direction:row; flex-wrap:wrap }
+:root[data-os="android"] .ap-alert-btns.ap-stack > div + div{ border-top:none }
+:root[data-os="android"] .ap-toast{ border-radius:999px; background:var(--bg3); box-shadow:0 4px 16px rgba(0,0,0,.18) }
+:root[data-os="android"] .ap-empty b{ font-size:20px }
+/* keyboard ring: only on the wrapper row (the input inside keeps none), 1 px line like the One UI focused field */
+:root[data-os="android"] .ap-li.ap-kb-on,:root[data-os="android"] .ap-field.ap-kb-on,:root[data-os="android"] .ap-search.ap-kb-on{ box-shadow:inset 0 0 0 1.5px var(--blue) }

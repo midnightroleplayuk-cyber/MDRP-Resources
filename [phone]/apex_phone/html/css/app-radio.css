@@ -1,0 +1,219 @@
+/* ============================================================
+   RÁDIO (walkie-talkie, html/js/apps/radio.js, 5 out 2026). Prefixo rdo-.
+   PearOS por omissão (mostrador escuro de rádio, botão de falar redondo); Nova UI atrás de body.os-android
+   (cartões, botão de falar em pílula). Regras do CEF: sem backdrop-filter, sem color-mix, sem :has;
+   só transform/opacity animam; nada em ciclo; o hover muda só a cor.
+   ============================================================ */
+.rdo [hidden], .rdo-view .nb-btn[hidden]{ display:none !important }
+.rdo{ display:flex; flex-direction:column; gap:14px; padding:4px 16px 30px; -webkit-user-select:none; user-select:none }
+.rdo-col{ display:flex; flex-direction:column; gap:14px; min-width:0 }
+.rdo button{ font:inherit; border:0; cursor:pointer; -webkit-tap-highlight-color:transparent }
+
+/* ---- aviso (sem voz, desligado, requisitos) ---- */
+.rdo-note{ display:flex; align-items:flex-start; gap:10px; padding:12px 14px; border-radius:14px; background:rgba(255,159,10,.14); color:var(--label); font-size:14.5px; line-height:1.35 }
+.rdo-note-ic{ color:#FF9F0A; flex:none; display:flex; margin-top:1px }
+
+/* ---- mostrador ---- */
+.rdo-dial{ position:relative; border-radius:24px; padding:14px 14px 14px; color:#fff; overflow:hidden;
+  background:linear-gradient(170deg,#2B2F38 0%,#17191F 58%,#0E0F13 100%); box-shadow:0 10px 26px rgba(0,0,0,.2), inset 0 1px 0 rgba(255,255,255,.07) }
+.rdo-top{ display:flex; align-items:center; gap:8px; min-height:28px }
+.rdo-st{ display:inline-flex; align-items:center; gap:7px; height:28px; padding:0 12px 0 10px; border-radius:14px; background:rgba(255,255,255,.09); font-size:13px; white-space:nowrap }
+.rdo-st b{ font-weight:600 }
+.rdo-dot{ width:8px; height:8px; border-radius:50%; background:#8E8E93; flex:none }
+.rdo.on .rdo-dot{ background:#30D158 }
+.rdo.rx .rdo-dot{ background:#64D2FF }
+.rdo.tx .rdo-dot{ background:#FF453A }
+.rdo-zone{ display:inline-flex; align-items:center; gap:5px; height:28px; padding:0 11px 0 9px; border-radius:14px; background:rgba(255,214,10,.14); color:#FFD60A; font-size:12.5px; font-weight:600; min-width:0; overflow:hidden; white-space:nowrap }
+.rdo-zone span{ overflow:hidden; text-overflow:ellipsis }
+.rdo-zone.no{ background:rgba(255,69,58,.16); color:#FF6961 }
+.rdo-lk{ margin-left:auto; width:28px; height:28px; border-radius:50%; display:flex; align-items:center; justify-content:center; background:rgba(255,255,255,.09); color:#FFD60A; flex:none }
+.rdo-freqrow{ display:flex; align-items:center; justify-content:space-between; gap:8px; margin:16px 0 4px }
+.rdo-step{ width:54px; height:54px; border-radius:50%; flex:none; display:flex; align-items:center; justify-content:center; background:rgba(255,255,255,.09); color:#fff; transition:opacity .12s }
+.rdo-step:hover{ background:rgba(255,255,255,.15) }
+.rdo-step:active{ opacity:.6 }
+.rdo-freq{ display:flex; align-items:baseline; justify-content:center; gap:6px; min-width:0; font-variant-numeric:tabular-nums }
+.rdo-fv{ font-size:62px; font-weight:250; letter-spacing:-1.6px; line-height:1; color:rgba(255,255,255,.62); white-space:nowrap }
+.rdo.on .rdo-fv{ color:#fff; font-weight:300 }
+.rdo-unit{ font-size:16px; font-weight:600; color:rgba(255,255,255,.5) }
+.rdo-sub{ text-align:center; font-size:13px; color:rgba(255,255,255,.55); min-height:18px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+.rdo-acts{ display:flex; align-items:center; gap:10px; margin-top:14px }
+.rdo-act{ width:44px; height:44px; border-radius:50%; flex:none; display:flex; align-items:center; justify-content:center; background:rgba(255,255,255,.09); color:#fff; transition:opacity .12s }
+.rdo-act:hover{ background:rgba(255,255,255,.15) }
+.rdo-act:active{ opacity:.6 }
+.rdo-act.sel{ color:#FFD60A }
+.rdo-power{ margin-left:auto; height:44px; padding:0 18px 0 14px; border-radius:22px; display:inline-flex; align-items:center; gap:8px; background:#30D158; color:#06260F; font-size:15px; font-weight:700; transition:opacity .12s }
+.rdo-power:hover{ background:#3CDB63 }
+.rdo-power:active{ opacity:.7 }
+.rdo-pw-ic{ display:flex }
+.rdo.on .rdo-power{ background:rgba(255,69,58,.18); color:#FF6961 }
+.rdo.on .rdo-power:hover{ background:rgba(255,69,58,.26) }
+.rdo.busy .rdo-power{ opacity:.55; pointer-events:none }
+
+/* ---- falar ---- */
+.rdo-pttwrap{ display:flex; flex-direction:column; align-items:center; gap:10px; padding:6px 0 0 }
+.rdo-ptt{ position:relative; width:176px; height:176px; border-radius:50%; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px;
+  background:var(--bg2); color:var(--label3); box-shadow:inset 0 0 0 1px var(--sep); touch-action:none }
+.rdo-ptt-ic{ display:flex }
+.rdo-ptt-t{ font-size:14px; font-weight:700; letter-spacing:.1px; max-width:140px; text-align:center; line-height:1.2 }
+.rdo-ptt-ring{ position:absolute; inset:-9px; border-radius:50%; border:3px solid rgba(255,69,58,.4); opacity:0; transition:opacity .18s ease-out; pointer-events:none }
+.rdo.on .rdo-ptt{ color:#fff; background:radial-gradient(circle at 50% 32%,#41464F 0%,#23262C 70%,#1B1D22 100%); box-shadow:0 12px 28px rgba(0,0,0,.24), inset 0 0 0 4px #30D158 }
+.rdo.on.rx .rdo-ptt{ box-shadow:0 12px 28px rgba(0,0,0,.24), inset 0 0 0 4px #64D2FF }
+.rdo.on .rdo-ptt.live, .rdo.on.tx .rdo-ptt{ background:radial-gradient(circle at 50% 32%,#FF7064 0%,#E5372C 72%,#C9241B 100%); box-shadow:0 14px 30px rgba(201,36,27,.38), inset 0 0 0 4px rgba(255,255,255,.22) }
+.rdo.on .rdo-ptt.live .rdo-ptt-ring, .rdo.on.tx .rdo-ptt-ring{ opacity:1 }
+.rdo-line{ display:flex; align-items:center; gap:8px; min-height:22px; font-size:15px; font-weight:600; color:var(--label); max-width:100%; text-align:center }
+.rdo-line-t{ overflow:hidden; text-overflow:ellipsis; white-space:nowrap }
+.rdo-ldot{ width:8px; height:8px; border-radius:50%; background:var(--label3); flex:none }
+.rdo.on .rdo-ldot{ background:#30D158 }
+.rdo.on.rx .rdo-ldot{ background:#64D2FF }
+.rdo.on.tx .rdo-ldot{ background:#FF453A }
+.rdo:not(.on) .rdo-line{ color:var(--label2); font-weight:500 }
+.rdo-hint{ font-size:12.5px; color:var(--label2); margin-top:-4px }
+
+/* ---- modos de falar (RADIO2): microfone aberto, silenciado, escolha do jogador ---- */
+.rdo-om{ display:inline-flex; align-items:center; gap:5px; height:28px; padding:0 11px 0 9px; border-radius:14px; background:rgba(255,69,58,.2); color:#FF6961; font-size:12.5px; font-weight:700; white-space:nowrap; flex:none }
+.rdo-om-ic{ display:flex }
+.rdo-om.off{ background:rgba(255,255,255,.09); color:rgba(255,255,255,.62) }
+.rdo.on.muted .rdo-ptt{ background:radial-gradient(circle at 50% 32%,#3A3D44 0%,#202227 70%,#18191D 100%); color:rgba(255,255,255,.7); box-shadow:0 12px 28px rgba(0,0,0,.24), inset 0 0 0 4px #8E8E93 }
+.rdo.on.muted .rdo-ldot{ background:#8E8E93 }
+.rdo-mode{ display:flex; align-items:center; gap:12px; width:100%; padding:11px 14px; text-align:left; color:var(--label); transition:opacity .12s }
+.rdo-mode:hover{ background:var(--fill3) }
+.rdo-mode:active{ opacity:.6 }
+.rdo-mode-ic{ width:34px; height:34px; border-radius:50%; flex:none; display:flex; align-items:center; justify-content:center; background:rgba(255,159,10,.16); color:#FF9F0A }
+.rdo-mode-t{ flex:1; min-width:0; display:flex; flex-direction:column; gap:1px }
+.rdo-mode-t b{ font-size:15px; font-weight:600 }
+.rdo-mode-t small{ font-size:13px; color:var(--label2); white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+.rdo-mode-ch{ display:flex; color:var(--label3) }
+.rdo.dis .rdo-mode{ opacity:.45; pointer-events:none }
+
+/* ---- volume ---- */
+.rdo-card{ background:var(--bg2); border-radius:16px }
+.rdo-vol{ display:flex; align-items:center; gap:12px; padding:12px 16px; color:var(--label2) }
+.rdo-vol > svg{ flex:none }
+.rdo-vv{ width:42px; text-align:right; font-size:14px; font-weight:600; color:var(--label); font-variant-numeric:tabular-nums }
+.rdo-range{ --p:60%; flex:1; min-width:0; height:24px; margin:0; background:transparent; -webkit-appearance:none; appearance:none; cursor:pointer }
+.rdo-range::-webkit-slider-runnable-track{ height:6px; border-radius:3px; background:linear-gradient(90deg,var(--label) 0,var(--label) var(--p),var(--fill3) var(--p),var(--fill3) 100%) }
+.rdo-range::-webkit-slider-thumb{ -webkit-appearance:none; width:24px; height:24px; margin-top:-9px; border-radius:50%; background:#fff; box-shadow:0 1px 4px rgba(0,0,0,.28), 0 0 0 .5px rgba(0,0,0,.08) }
+
+/* ---- favoritos ---- */
+.rdo-sec{ display:flex; align-items:baseline; gap:8px; padding:4px 4px 0; margin-bottom:-6px; font-size:13px; font-weight:600; color:var(--label2); text-transform:none }
+.rdo-sec em{ font-style:normal; font-weight:600; color:var(--label3) }
+.rdo-pre{ display:flex; gap:8px; overflow-x:auto; margin:0 -16px; padding:2px 16px 4px; scrollbar-width:none }
+.rdo-pre::-webkit-scrollbar{ display:none }
+.rdo-chip{ flex:none; height:38px; padding:0 14px; border-radius:19px; display:inline-flex; align-items:center; gap:7px; background:var(--bg2); color:var(--label); font-size:15px; transition:opacity .12s }
+.rdo-chip b{ font-weight:700; font-variant-numeric:tabular-nums }
+.rdo-chip small{ font-size:13.5px; color:var(--label2); max-width:110px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap }
+.rdo-chip:hover{ background:var(--fill3) }
+.rdo-chip:active{ opacity:.6 }
+.rdo-chip.cur{ background:var(--label); color:var(--bg) }
+.rdo-chip.cur small{ color:var(--bg); opacity:.7 }
+.rdo-chip.add{ color:var(--accent,#0A84FF); font-weight:600; gap:5px }
+
+/* ---- quem está na frequência ---- */
+.rdo-members{ overflow:hidden }
+.rdo-mrow{ position:relative; display:flex; align-items:center; gap:12px; min-height:58px; padding:9px 14px }
+.rdo-mrow + .rdo-mrow::before{ content:''; position:absolute; top:0; left:62px; right:0; height:.5px; background:var(--sep) }
+.rdo-av{ width:36px; height:36px; border-radius:50%; flex:none; display:flex; align-items:center; justify-content:center; color:#fff; font-size:13.5px; font-weight:700 }
+.rdo-mn{ flex:1; min-width:0 }
+.rdo-mn b{ display:block; font-size:16px; font-weight:600; color:var(--label); white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+.rdo-mn span{ display:block; font-size:13px; color:var(--label2) }
+.rdo-mic{ width:30px; height:30px; border-radius:50%; flex:none; display:flex; align-items:center; justify-content:center; color:#fff; background:#30D158; opacity:0; transition:opacity .15s ease-out }
+.rdo-mrow.talk .rdo-mic{ opacity:1 }
+.rdo-mrow.talk .rdo-mn span{ color:#30D158; font-weight:600 }
+.rdo-mrow.me.talk .rdo-mic{ background:#FF453A }
+.rdo-mrow.me.talk .rdo-mn span{ color:#FF453A }
+.rdo-mrow.open:not(.me) .rdo-mic{ background:#FF9F0A }
+.rdo-mrow.open:not(.me) .rdo-mn span{ color:#C77700 }
+body.dark .rdo-mrow.open:not(.me) .rdo-mn span{ color:#FFB340 }
+.rdo-mempty{ padding:16px; text-align:center; font-size:14px; color:var(--label2) }
+
+/* ---- sem voz / a carregar ---- */
+.rdo.dis .rdo-dial, .rdo.dis .rdo-pttwrap, .rdo.dis .rdo-vol, .rdo.dis .rdo-pre{ opacity:.45; pointer-events:none }
+
+/* ---- teclado de sintonia (folha) ---- */
+.rdo-kp{ padding:6px 22px 26px; display:flex; flex-direction:column; align-items:center }
+.rdo-kp-disp{ display:flex; align-items:baseline; gap:6px; margin:8px 0 2px; font-variant-numeric:tabular-nums }
+.rdo-kp-v{ font-size:56px; font-weight:300; letter-spacing:-1.4px; color:var(--label); line-height:1.05 }
+.rdo-kp-v.ph{ color:var(--label3) }
+.rdo-kp-u{ font-size:16px; font-weight:600; color:var(--label2) }
+.rdo-kp-hint{ font-size:13.5px; color:var(--label2); min-height:18px; margin-bottom:16px }
+.rdo-kp-hint.warn{ color:#FF453A }
+.rdo-kp-grid{ display:grid; grid-template-columns:repeat(3,78px); gap:14px 24px }
+.rdo-key{ width:78px; height:78px; border-radius:50%; border:0; background:var(--fill4,var(--bg2)); color:var(--label); font-size:32px; font-weight:400; display:flex; align-items:center; justify-content:center; font-family:var(--font); transition:opacity .1s }
+.rdo-key:hover{ background:var(--fill3) }
+.rdo-key:active{ opacity:.55 }
+.rdo-key.ph{ visibility:hidden }
+.rdo-key[data-k="del"]{ background:transparent; color:var(--label2) }
+
+/* ---- PearPhone Fold e NOVA Fold8 ABERTOS: duas colunas (mostrador e falar | favoritos e quem está) ---- */
+body.fold-open .rdo{ flex-direction:row; align-items:flex-start; gap:22px; padding-top:8px }
+body.fold-open .rdo-col{ flex:1 1 0 }
+body.fold-open .rdo-pre{ flex-wrap:wrap; overflow:visible; margin:0; padding:2px 0 4px }
+
+/* ============================================================
+   NOVA UI (Android)
+   ============================================================ */
+body.os-android .rdo{ padding:0 14px 30px; gap:12px }
+body.os-android .rdo-note{ border-radius:var(--ou-r-card,26px); padding:14px 16px; background:var(--bg2); box-shadow:var(--ou-shadow-1,none) }
+body.os-android .rdo-dial{ border-radius:var(--ou-r-card,26px); padding:16px 16px 16px; background:var(--bg2); color:var(--label); box-shadow:var(--ou-shadow-1,none) }
+body.os-android .rdo-st{ background:var(--fill4,rgba(120,120,128,.12)); color:var(--label) }
+body.os-android .rdo-zone{ background:rgba(255,159,10,.16); color:#C26A00 }
+body.dark.os-android .rdo-zone{ color:#FFB340 }
+body.os-android .rdo-zone.no{ background:rgba(255,59,48,.14); color:#E5372C }
+body.os-android .rdo-lk{ background:var(--fill4,rgba(120,120,128,.12)); color:var(--ou-blue,#3E7BFA) }
+body.os-android .rdo-step{ width:52px; height:52px; background:rgba(62,123,250,.12); color:var(--ou-blue,#3E7BFA) }
+body.os-android .rdo-step:hover{ background:rgba(62,123,250,.2) }
+body.os-android .rdo-fv{ font-family:var(--font-display,var(--font)); font-size:60px; font-weight:400; letter-spacing:-1px; color:var(--label2) }
+body.os-android .rdo.on .rdo-fv{ color:var(--ou-blue,#3E7BFA); font-weight:500 }
+body.os-android .rdo-unit, body.os-android .rdo-sub{ color:var(--label2) }
+body.os-android .rdo-act{ background:var(--fill4,rgba(120,120,128,.12)); color:var(--label) }
+body.os-android .rdo-act:hover{ background:var(--fill3) }
+body.os-android .rdo-act.sel{ color:#F2A100 }
+body.os-android .rdo-power{ height:46px; border-radius:23px; background:var(--ou-blue,#3E7BFA); color:#fff; padding:0 20px 0 16px }
+body.os-android .rdo-power:hover{ background:#3470EE }
+body.os-android .rdo.on .rdo-power{ background:var(--fill4,rgba(120,120,128,.12)); color:#E5372C }
+/* falar: pílula larga com o microfone à esquerda (o desenho de "manter para falar" da plataforma) */
+body.os-android .rdo-pttwrap{ align-items:stretch; padding-top:2px }
+body.os-android .rdo-ptt{ width:auto; height:112px; border-radius:56px; flex-direction:row; gap:14px; background:var(--bg2); color:var(--label3); box-shadow:var(--ou-shadow-1,none) }
+body.os-android .rdo-ptt-ring{ inset:-6px; border-radius:62px }
+body.os-android .rdo-ptt-ic{ width:56px; height:56px; border-radius:50%; align-items:center; justify-content:center; background:var(--fill4,rgba(120,120,128,.12)) }
+body.os-android .rdo-ptt-t{ font-size:18px; max-width:none; text-align:left }
+body.os-android .rdo.on .rdo-ptt{ background:var(--ou-blue,#3E7BFA); color:#fff; box-shadow:0 8px 22px rgba(62,123,250,.32) }
+body.os-android .rdo.on .rdo-ptt-ic{ background:rgba(255,255,255,.2) }
+body.os-android .rdo.on.rx .rdo-ptt{ background:#1D9C5A; box-shadow:0 8px 22px rgba(29,156,90,.3) }
+body.os-android .rdo.on .rdo-ptt.live, body.os-android .rdo.on.tx .rdo-ptt{ background:#E5372C; box-shadow:0 10px 24px rgba(229,55,44,.34) }
+body.os-android .rdo-line{ justify-content:center }
+body.os-android .rdo-hint{ text-align:center }
+body.os-android .rdo-card{ border-radius:var(--ou-r-card,26px); box-shadow:var(--ou-shadow-1,none) }
+body.os-android .rdo-vol{ padding:14px 18px }
+body.os-android .rdo-range::-webkit-slider-runnable-track{ height:8px; border-radius:4px; background:linear-gradient(90deg,var(--ou-blue,#3E7BFA) 0,var(--ou-blue,#3E7BFA) var(--p),var(--fill3) var(--p),var(--fill3) 100%) }
+body.os-android .rdo-range::-webkit-slider-thumb{ margin-top:-8px; background:var(--ou-blue,#3E7BFA); box-shadow:0 0 0 4px var(--bg2) }
+body.os-android .rdo-sec{ padding:6px 8px 0; font-size:14px; color:var(--ou-blue,#3E7BFA) }
+body.os-android .rdo-sec em{ color:var(--label2) }
+body.os-android .rdo-pre{ margin:0 -14px; padding:2px 14px 4px }
+body.os-android .rdo-chip{ height:40px; border-radius:20px; background:transparent; box-shadow:inset 0 0 0 1px var(--sep) }
+body.os-android .rdo-chip:hover{ background:var(--fill4,rgba(120,120,128,.12)) }
+body.os-android .rdo-chip.cur{ background:var(--ou-blue,#3E7BFA); color:#fff; box-shadow:none }
+body.os-android .rdo-chip.cur small{ color:#fff }
+body.os-android .rdo-chip.add{ color:var(--ou-blue,#3E7BFA) }
+body.os-android .rdo-mrow{ min-height:62px; padding:10px 18px }
+body.os-android .rdo-mrow + .rdo-mrow::before{ left:70px; right:18px }
+body.os-android .rdo-av{ width:40px; height:40px }
+body.os-android .rdo-mic{ background:var(--ou-blue,#3E7BFA) }
+body.os-android .rdo-mrow.talk .rdo-mn span{ color:var(--ou-blue,#3E7BFA) }
+body.os-android .rdo-key{ border-radius:50%; background:var(--bg2); box-shadow:var(--ou-shadow-1,none) }
+body.fold-open.os-android .rdo-pre{ margin:0; padding:2px 0 4px }
+/* dobraveis: a coluna e mais estreita (o conteudo leva zoom): numeros mais pequenos para os botoes +/- respirarem */
+body.form-fold .rdo-fv{ font-size:54px }
+body.os-android .rdo-mrow.me.talk .rdo-mn span{ color:#E5372C }
+body.os-android .rdo-mrow.me.talk .rdo-mic{ background:#E5372C }
+/* RADIO2: microfone aberto / silenciado e a linha do modo na Nova UI */
+body.os-android .rdo-om{ background:rgba(229,55,44,.12); color:#E5372C }
+body.dark.os-android .rdo-om{ color:#FF6961 }
+body.os-android .rdo-om.off{ background:var(--fill4,rgba(120,120,128,.12)); color:var(--label2) }
+body.os-android .rdo.on.muted .rdo-ptt{ background:var(--fill4,rgba(120,120,128,.16)); color:var(--label); box-shadow:var(--ou-shadow-1,none) }
+body.os-android .rdo.on.muted .rdo-ptt-ic{ background:rgba(120,120,128,.18) }
+body.os-android .rdo-mode{ padding:14px 18px }
+body.os-android .rdo-mode-ic{ width:40px; height:40px; background:rgba(62,123,250,.12); color:var(--ou-blue,#3E7BFA) }
+body.os-android .rdo-mrow.open:not(.me) .rdo-mic{ background:#F2A100 }
+body.os-android .rdo-mrow.open:not(.me) .rdo-mn span{ color:#B87A00 }
+body.dark:not(.os-android) .rdo-dial{ box-shadow:0 10px 26px rgba(0,0,0,.3), inset 0 0 0 .5px rgba(255,255,255,.13), inset 0 1px 0 rgba(255,255,255,.07) }

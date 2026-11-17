@@ -1,0 +1,226 @@
+/* ============================================================
+   RECADO · Pessoas, perfil, privacidade e grupos (pacote RC)
+   Design próprio do Recado: acento índigo → ciano (#128C7E → #25D366), cartões brancos/grafite pelos tokens
+   do projeto (var(--bg), var(--bg2), var(--label)…), claro e escuro.
+   Regras do CEF do FiveM: sem filter/backdrop-filter, sem color-mix, sem clip-path; só transform/opacity
+   animam; camadas de ecrã inteiro com border-radius 57px. Prefixo .rcp- deste pacote; as cores vêm dos tokens BASE
+   do Recado (--rc-grad, --rc-accent, --rc-tint, --rc-a1/--rc-a2 do app-recado.css) com o mesmo valor por omissão.
+   As folhas, alertas e menus são montados no #screen, FORA da janela: levam .rcp-sheet (+ .rc-sheet) para herdarem as cores.
+   ============================================================ */
+.rcp, .rcp-sheet, .rcp-lockpad, .rcp-viewer{
+  --rcp-a:var(--rc-a1, #128C7E); --rcp-b:var(--rc-a2, #25D366);
+  --rcp-grad:var(--rc-grad, linear-gradient(135deg, #128C7E, #25D366));
+  --rcp-ink:var(--rc-accent, #128C7E);           /* texto/ícones de acento (contraste AA sobre branco) */
+  --rcp-soft:var(--rc-tint, rgba(18,140,126,.10)); /* fundo suave do acento, sem color-mix */
+  --toggle:var(--rc-a1, #128C7E);   /* os interruptores do ui.css ficam no acento do Recado, da mesma fonte que tudo o resto */
+}
+body.dark .rcp, body.dark .rcp-sheet, body.dark .rcp-lockpad{ --rcp-ink:var(--rc-accent, #8B93FF); --rcp-soft:var(--rc-tint, rgba(37,211,102,.18)); --toggle:#22C55E }
+
+/* navegação e valores no acento do Recado; valores um pouco mais pequenos para os rótulos longos caberem */
+.rcp .nb-back, .rcp .nb-btn:not(.glass){ color:var(--rcp-ink) }
+.rcp-sheet .sheet-head .sh-l, .rcp-sheet .sheet-head .sh-r, .rcp-sheet .as-btn:not(.danger), .rcp-sheet .alert-btns > div:not(.danger){ color:var(--rcp-ink) }
+.rcp .li-value, .rcp-sheet .li-value{ font-size:var(--t-subhead) }
+
+/* ---------- blocos da página ---------- */
+.rcp-page{ padding-bottom:8px }
+.rcp-page > .list > .group:first-child{ margin-top:18px }
+.rcp-holder{ display:flex; flex-direction:column; flex:1 0 auto }
+.rcp-holder > .list:first-child > .group:first-child{ margin-top:10px }
+.rcp .li.rcp-blue, .rcp-sheet .li.rcp-blue{ color:var(--rcp-ink) }
+.rcp .li-sub.rcp-wrap, .rcp-sheet .li-sub.rcp-wrap{ white-space:normal; overflow:visible; word-break:break-word; line-height:1.3 }
+.rcp .empty svg{ color:var(--rcp-a); opacity:.45 }
+
+/* ---------- avatares ---------- */
+.rcp-av{ position:relative; background-size:cover; background-position:center }
+.rcp-av svg{ width:48%; height:48% }
+.rcp-av.has-img{ color:transparent }
+.rcp-av.has-img svg{ opacity:0 }
+.rcp-row .avatar.sm{ width:44px; height:44px; font-size:17px }
+.rcp .li.rcp-row.has-big + .li::before, .rcp-sheet .li.rcp-row.has-big + .li::before{ left:73px }
+
+/* ---------- cabeçalho (perfil e grupo) ---------- */
+.rcp-hero{ display:flex; flex-direction:column; align-items:center; text-align:center; padding:4px 24px 16px }
+.rcp-ring{ position:relative; width:128px; height:128px; flex:none; border-radius:50%; padding:3px; background:var(--rcp-grad); margin-bottom:14px; cursor:pointer;
+  transition:transform var(--motion-normal) var(--spring), opacity var(--motion-normal) var(--curve) }
+.rcp-ring:active{ transform:scale(.96); transition:transform .06s }
+.rcp-ring.is-busy{ opacity:.5; pointer-events:none }
+.rcp-ring.big{ width:148px; height:148px }
+.rcp-hero-av{ width:100%; height:100%; border-radius:50%; padding:3px; background:var(--bg) }
+.rcp-hero-av .avatar{ width:100%; height:100%; font-size:44px; font-weight:600 }
+.rcp-ring.big .rcp-hero-av .avatar{ font-size:52px }
+.rcp-cam{ position:absolute; right:2px; bottom:4px; width:42px; height:42px; border-radius:50%; background:var(--rcp-grad); color:#fff; border:3px solid var(--bg);
+  display:flex; align-items:center; justify-content:center }
+.rcp-cam svg{ width:20px; height:20px }
+.rcp-hero-name{ display:inline-flex; align-items:center; gap:7px; max-width:100%; font-size:var(--t-title2); font-weight:700; letter-spacing:-.35px; line-height:1.2; word-break:break-word; color:var(--label) }
+.rcp-hero-name svg{ width:17px; height:17px; flex:none; color:var(--rcp-ink) }
+.rcp-hero-name.editable{ cursor:pointer }
+.rcp-hero-alt{ margin-top:4px; font-size:var(--t-subhead); color:var(--label2); font-variant-numeric:tabular-nums }
+.rcp-hero-alt:empty{ display:none }
+.rcp-hero-status{ margin-top:8px; display:inline-flex; align-items:center; gap:6px; padding:4px 11px; border-radius:12px; background:var(--fill4); font-size:var(--t-foot); color:var(--label2) }
+.rcp-hero-status:empty{ display:none }
+.rcp-hero-status.online{ background:var(--rcp-soft); color:var(--rcp-ink); font-weight:600 }
+/* mesmo verde do ponto "em linha" da lista (.rc-on) e das Mensagens - era ciano só aqui */
+.rcp-hero-status.online::before{ content:''; width:8px; height:8px; border-radius:50%; background:var(--green) }
+
+/* ---------- ações rápidas (Mensagem · Voz · Vídeo · Partilhar) ---------- */
+.rcp-actions{ display:flex; gap:10px; padding:0 16px 14px }
+.rcp-act{ flex:1 1 0; min-width:0; display:flex; flex-direction:column; align-items:center; gap:6px; padding:12px 0 10px; border-radius:16px; background:var(--bg2);
+  color:var(--rcp-ink); font-size:var(--t-cap1); font-weight:600; cursor:pointer; transition:transform var(--motion-normal) var(--spring), opacity var(--motion-fast) var(--curve) }
+.rcp-act:active{ transform:scale(.94); transition:transform .06s }
+.rcp-act.off{ opacity:.42 }
+.rcp-act span{ max-width:100%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; padding:0 4px }
+.rcp-act-ic{ width:38px; height:38px; border-radius:50%; background:var(--rcp-soft); display:flex; align-items:center; justify-content:center }
+.rcp-act-ic svg{ width:21px; height:21px }
+
+/* ---------- cartões (sobre, descrição) ---------- */
+.rcp-card{ margin:0 16px 2px; padding:12px 16px 13px; border-radius:12px; background:var(--bg2) }
+.rcp-card-k{ font-size:var(--t-foot); color:var(--label2); margin-bottom:3px }
+.rcp-card-v{ font-size:var(--t-body); color:var(--label); line-height:1.35; white-space:pre-wrap; word-break:break-word }
+.rcp-card.placeholder .rcp-card-v{ color:var(--rcp-ink) }
+.rcp-card.editable{ cursor:pointer }
+.rcp-card.editable:active{ background:var(--fill4) }
+
+/* ---------- media partilhada ---------- */
+.rcp-media-row{ margin-top:18px }
+.rcp-media-row .li-value{ font-size:var(--t-subhead) }
+.rcp-thumbs{ display:grid; grid-template-columns:repeat(4, 1fr); gap:6px; padding:0 16px 14px; cursor:pointer }
+.rcp-thumbs.empty{ display:none }
+.rcp-thumb{ aspect-ratio:1; max-width:100%; border-radius:10px; background-color:var(--fill3); background-size:cover; background-position:center }
+.rcp-grid{ display:grid; grid-template-columns:repeat(3, 1fr); gap:3px; padding:8px 3px 0 }
+.rcp-cell{ aspect-ratio:1; max-width:100%; position:relative; background-color:var(--fill3); background-size:cover; background-position:center; cursor:pointer; transition:opacity var(--motion-fast) var(--curve) }
+.rcp-cell:active{ opacity:.7 }
+.rcp-cell-tag{ position:absolute; left:6px; bottom:6px; padding:2px 6px; border-radius:6px; background:rgba(0,0,0,.55); color:#fff; font-size:11px; font-weight:700 }
+.rcp-locked-empty{ display:flex; flex-direction:column; align-items:center; padding-bottom:10px }
+.rcp-locked-empty .empty{ flex:none; min-height:0; padding-bottom:0 }
+body.dark .rcp .empty svg{ opacity:.75 }
+.rcp-more{ margin:14px auto 4px; padding:9px 18px; border-radius:18px; background:var(--rcp-soft); color:var(--rcp-ink); font-size:var(--t-subhead); font-weight:600; cursor:pointer }
+
+/* ---------- linhas de pessoa ---------- */
+.rcp-info{ width:36px; height:36px; margin-right:-8px; flex:none; display:flex; align-items:center; justify-content:center; border-radius:50%; color:var(--rcp-ink); cursor:pointer;
+  transition:transform var(--motion-normal) var(--spring) }
+.rcp-info:active{ transform:scale(.86); transition:transform .06s }
+.rcp-info svg{ width:23px; height:23px }
+.rcp-tag{ flex:none; margin-left:8px; padding:3px 9px; border-radius:10px; background:var(--rcp-soft); color:var(--rcp-ink); font-size:var(--t-cap2); font-weight:700; letter-spacing:.2px }
+.rcp-pill{ flex:none; padding:6px 12px; border-radius:15px; background:var(--rcp-soft); color:var(--rcp-ink); font-size:var(--t-foot); font-weight:600; cursor:pointer; transition:transform var(--motion-normal) var(--spring) }
+.rcp-pill:active{ transform:scale(.94); transition:transform .06s }
+.rcp-sw{ display:inline-block; width:16px; height:16px; border-radius:50%; margin-right:7px; vertical-align:-2px }
+.rcp-quick .group{ margin-top:2px }
+.rcp-top .search{ margin-bottom:10px }
+
+/* ---------- seletor de contactos ---------- */
+.rcp-picker{ padding-top:6px }
+.rcp-chips{ display:flex; gap:8px; overflow-x:auto; padding:2px 16px 10px; scrollbar-width:none }
+.rcp-chips::-webkit-scrollbar{ display:none }
+.rcp-chips:empty{ display:none }
+.rcp-chip{ flex:none; display:inline-flex; align-items:center; gap:6px; height:32px; padding:0 5px 0 12px; border-radius:16px; background:var(--rcp-soft); color:var(--rcp-ink);
+  font-size:var(--t-subhead); font-weight:600; cursor:pointer; animation:rcpChipIn var(--motion-normal) var(--spring) }
+.rcp-chip b{ font-weight:600; max-width:120px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap }
+.rcp-chip i{ width:22px; height:22px; border-radius:50%; background:var(--rcp-a); color:#fff; display:flex; align-items:center; justify-content:center; font-style:normal }
+.rcp-chip i svg{ width:11px; height:11px }
+@keyframes rcpChipIn{ from{ opacity:0; transform:scale(.8) } to{ opacity:1; transform:none } }
+.rcp-count{ padding-top:10px }
+.rcp-pick-list .empty{ padding:28px 40px }
+.rcp-check{ width:24px; height:24px; flex:none; margin-left:auto; border-radius:50%; border:1.5px solid var(--label3); position:relative }
+.rcp-check::after{ content:''; position:absolute; inset:-1.5px; border-radius:50%; background:var(--rcp-grad); opacity:0; transform:scale(.55);
+  transition:opacity var(--motion-fast) var(--curve), transform var(--motion-normal) var(--spring) }
+.rcp-check svg{ position:absolute; left:50%; top:50%; z-index:1; width:13px; height:13px; margin:-6.5px 0 0 -6.5px; color:#fff; opacity:0; transition:opacity var(--motion-fast) var(--curve) }
+.rcp-check.on::after{ opacity:1; transform:none }
+.rcp-check.on svg{ opacity:1 }
+.rcp-check.single{ display:none }
+
+/* ---------- novo grupo ---------- */
+.rcp-ng-head{ display:flex; gap:14px; align-items:flex-start; margin:6px 16px 0; padding:14px; border-radius:16px; background:var(--bg2) }
+.rcp-ng-av{ flex:none; width:76px; height:76px; border-radius:50%; background-color:var(--rcp-soft); background-size:cover; background-position:center; color:var(--rcp-ink);
+  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px; cursor:pointer; font-size:var(--t-cap2); font-weight:600;
+  transition:transform var(--motion-normal) var(--spring) }
+.rcp-ng-av:active{ transform:scale(.94); transition:transform .06s }
+.rcp-ng-av svg{ width:26px; height:26px }
+.rcp-ng-av.has-img > *{ opacity:0 }
+.rcp-ng-fields{ flex:1; min-width:0; display:flex; flex-direction:column }
+.rcp-ng-name{ border:none; background:none; font:inherit; font-size:var(--t-headline); font-weight:600; color:var(--label); outline:none; padding:9px 0; border-bottom:.5px solid var(--sep); min-width:0 }
+.rcp-ng-desc{ border:none; background:none; font:inherit; font-size:var(--t-subhead); color:var(--label); outline:none; resize:none; padding:9px 0 0; min-height:50px; line-height:1.35 }
+.rcp-ng-name::placeholder, .rcp-ng-desc::placeholder{ color:var(--label3) }
+.rcp-newgroup .nb-btn.rcp-create{ color:var(--rcp-ink) }
+.rcp-newgroup.is-busy .content{ opacity:.55; pointer-events:none; transition:opacity var(--motion-normal) var(--curve) }
+
+/* ---------- temas ---------- */
+.rcp-themes{ display:grid; grid-template-columns:repeat(3, 1fr); gap:16px 10px; padding:14px 18px 26px }
+.rcp-theme{ display:flex; flex-direction:column; align-items:center; gap:8px; cursor:pointer; font-size:var(--t-foot); font-weight:500; color:var(--label) }
+.rcp-theme-sw{ width:76px; height:76px; border-radius:24px; position:relative; transition:transform var(--motion-normal) var(--spring) }
+.rcp-theme-sw i{ position:absolute; inset:-6px; border-radius:29px; border:2.5px solid var(--rcp-ink); opacity:0; transition:opacity var(--motion-fast) var(--curve) }
+.rcp-theme.on .rcp-theme-sw i{ opacity:1 }
+.rcp-theme:active .rcp-theme-sw{ transform:scale(.92); transition:transform .06s }
+
+/* ---------- sobre / descrição (folhas) ---------- */
+.rcp-about-ed, .rcp-desc-ed{ padding-top:10px }
+.rcp-desc-ed .group{ padding:10px 16px }
+.rcp-about-n{ text-align:right; font-variant-numeric:tabular-nums }
+.rcp-about-n.over{ color:var(--red) }
+
+/* ---------- convite ---------- */
+.rcp-code-card{ margin:8px 16px 0; padding:26px 18px 20px; border-radius:20px; background:var(--bg2); display:flex; flex-direction:column; align-items:center; text-align:center; position:relative; overflow:hidden }
+.rcp-code-card::before{ content:''; position:absolute; left:0; right:0; top:0; height:6px; background:var(--rcp-grad) }
+.rcp-code-av .avatar{ width:72px; height:72px; font-size:28px }
+.rcp-code-title{ margin-top:10px; font-size:var(--t-headline); font-weight:700; color:var(--label); word-break:break-word }
+.rcp-code-k{ margin-top:18px; font-size:var(--t-cap1); color:var(--label2); text-transform:uppercase; letter-spacing:.6px }
+.rcp-code{ margin-top:6px; font-family:var(--font-mono); font-size:34px; font-weight:700; letter-spacing:3px; color:var(--rcp-ink); user-select:text; -webkit-user-select:text }
+.rcp-code-link{ margin-top:6px; font-size:var(--t-cap1); color:var(--label2); word-break:break-all }
+.rcp-invite .li.danger .li-icon{ background:var(--red) !important }
+
+/* ---------- entrar com código ---------- */
+.rcp-join{ padding:6px 0 22px; text-align:center }
+.rcp-join-ic{ width:64px; height:64px; margin:6px auto 12px; border-radius:20px; background:var(--rcp-grad); color:#fff; display:flex; align-items:center; justify-content:center }
+.rcp-join-ic svg{ width:30px; height:30px }
+.rcp-join-t{ font-size:var(--t-title3); font-weight:700; color:var(--label) }
+.rcp-join-s{ margin:4px 32px 16px; font-size:var(--t-subhead); color:var(--label2) }
+.rcp-join .group .li input.rcp-join-in{ text-align:center; font-family:var(--font-mono); font-size:22px; letter-spacing:3px; text-transform:uppercase }
+.rcp-join-card{ margin:14px 16px 0; padding:18px; border-radius:16px; background:var(--bg2); display:flex; flex-direction:column; align-items:center; animation:rcpUp var(--motion-medium) var(--curve-soft) }
+.rcp-join-av .avatar{ width:72px; height:72px }
+.rcp-join-name{ margin-top:10px; font-size:var(--t-headline); font-weight:700; color:var(--label); word-break:break-word }
+.rcp-join-n{ margin-top:3px; font-size:var(--t-foot); color:var(--label2) }
+.rcp-join-d{ margin-top:10px; font-size:var(--t-subhead); color:var(--label); line-height:1.35; white-space:pre-wrap; word-break:break-word }
+.rcp-join-err{ margin:12px 32px 0; color:var(--red); font-size:var(--t-subhead) }
+@keyframes rcpUp{ from{ opacity:0; transform:translateY(10px) } to{ opacity:1; transform:none } }
+
+/* ---------- desbloquear conversa (ecrã inteiro) ---------- */
+.rcp-lockpad{ position:absolute; inset:0; z-index:185; border-radius:57px; overflow:hidden; background:var(--bg); color:var(--label); display:flex; flex-direction:column; align-items:center;
+  padding:calc(var(--statusbar-h) + 44px) 0 calc(var(--safe-bottom) + 22px); opacity:0; transform:translateY(28px);
+  transition:opacity var(--motion-normal) var(--curve), transform var(--motion-medium) var(--curve-soft) }
+.rcp-lockpad.in{ opacity:1; transform:none }
+.rcp-lp-top{ display:flex; flex-direction:column; align-items:center }
+.rcp-lp-ic{ width:66px; height:66px; border-radius:21px; background:var(--rcp-grad); color:#fff; display:flex; align-items:center; justify-content:center }
+.rcp-lp-ic svg{ width:30px; height:30px }
+.rcp-lp-t{ margin-top:16px; font-size:var(--t-title2); font-weight:700 }
+.rcp-lp-s{ margin-top:6px; min-height:22px; padding:0 30px; text-align:center; font-size:var(--t-subhead); color:var(--label2) }
+.rcp-lp-dots{ display:flex; gap:18px; margin-top:26px }
+.rcp-lp-dots i{ width:14px; height:14px; border-radius:50%; border:1.5px solid var(--label2); position:relative }
+.rcp-lp-dots i::after{ content:''; position:absolute; inset:-1.5px; border-radius:50%; background:var(--rcp-ink); opacity:0; transform:scale(.4);
+  transition:opacity var(--motion-fast) var(--curve), transform var(--motion-normal) var(--spring) }
+.rcp-lp-dots i.on::after{ opacity:1; transform:none }
+.rcp-lp-dots.shake{ animation:rcpShake .42s var(--curve) }
+@keyframes rcpShake{ 0%,100%{ transform:none } 20%{ transform:translateX(-12px) } 40%{ transform:translateX(10px) } 60%{ transform:translateX(-7px) } 80%{ transform:translateX(4px) } }
+.rcp-lp-keys{ margin-top:auto; display:grid; grid-template-columns:repeat(3, 84px); gap:16px 26px; transition:opacity var(--motion-normal) var(--curve) }
+.rcp-lp-keys.off{ opacity:.35; pointer-events:none }
+.rcp-lp-k{ width:84px; height:84px; border-radius:50%; background:var(--fill3); display:flex; align-items:center; justify-content:center; font-family:var(--font); font-size:34px; font-weight:400; color:var(--label); cursor:pointer;
+  transition:transform var(--motion-normal) var(--spring) }
+.rcp-lp-k:active{ transform:scale(.9); transition:transform .06s }
+.rcp-lp-k.blank{ background:none; pointer-events:none }
+.rcp-lp-k.del{ background:none }
+.rcp-lp-k.del svg{ width:30px; height:30px }
+.rcp-lp-cancel{ margin-top:20px; padding:8px 22px; font-size:var(--t-body); font-weight:600; color:var(--rcp-ink); cursor:pointer }
+
+/* ---------- ver foto (ecrã inteiro) ---------- */
+.rcp-viewer{ position:absolute; inset:0; z-index:205; border-radius:57px; overflow:hidden; background:#000; opacity:0; transition:opacity var(--motion-normal) var(--curve); cursor:pointer }
+.rcp-viewer.in{ opacity:1 }
+/* contain: as fotos da media do grupo não são quadradas (cover cortava-as); as de perfil são e enchem a caixa na mesma */
+.rcp-viewer-img{ position:absolute; left:0; right:0; top:50%; aspect-ratio:1; max-width:100%; transform:translateY(-50%) scale(.94); background-size:contain; background-repeat:no-repeat; background-position:center;
+  transition:transform var(--motion-medium) var(--spring) }
+.rcp-viewer.in .rcp-viewer-img{ transform:translateY(-50%) }
+.rcp-viewer-top{ position:absolute; left:0; right:0; top:calc(var(--statusbar-h) + 4px); z-index:1; display:flex; align-items:center; gap:10px; padding:0 18px; color:#fff }
+.rcp-viewer-x{ width:40px; height:40px; border-radius:50%; background:rgba(255,255,255,.16); display:flex; align-items:center; justify-content:center; flex:none }
+.rcp-viewer-x svg{ width:20px; height:20px }
+.rcp-viewer-t{ font-size:var(--t-headline); font-weight:600; overflow:hidden; text-overflow:ellipsis; white-space:nowrap }
+
+/* ---------- reduzir movimento ---------- */
+body[data-motion="reduced"] .rcp-chip, body[data-motion="reduced"] .rcp-join-card, body[data-motion="reduced"] .rcp-lp-dots.shake{ animation:none }
+body[data-motion="reduced"] .rcp-lockpad, body[data-motion="reduced"] .rcp-viewer-img{ transition:opacity var(--motion-fast) linear }

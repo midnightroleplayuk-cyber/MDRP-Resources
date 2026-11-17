@@ -1,0 +1,342 @@
+/* ============================================================
+   PearOS 27 - LIQUID GLASS 1.5.0 (glass27.css). Carregado DEPOIS do liquid27.css e ANTES dos oneui-*.css. Tudo atrás de body.os-ios:
+   o Android (body.os-android) não muda um píxel.
+   O material (o mesmo em todas as peças, pela classe .lg que os templates do shell e do ui.js já trazem; as peças do Centro de
+   controlo e as teclas do teclado levam-no por seletor):
+     · FILL: a tinta (--lg-f), fraca por omissão (segue o cursor Liquid Glass das Definições: --lg-a/--lg-ad/--lg-m/--lg-md e, no
+       jogo, --lg-mf/--lg-mdf, escritos pelo System.apply). Sobre o FUNDO DE ECRÃ (.lg-wp) por baixo da tinta está a cópia
+       PRÉ-DESFOCADA do wallpaper (--wp-blur, ou --wp-lock-blur com .on-lock) posicionada no sítio exato da peça (--gx/--gy,
+       medidos pelo glass.js em offsets até ao #screen, nunca getBoundingClientRect). Funciona igual no browser e no jogo.
+     · LENTE (::before): uma faixa junto à aresta onde o fundo aparece AMPLIADO (a mesma cópia a 106 %, centrada na peça com
+       --gw/--gh) e recortada a anel por -webkit-mask-image (radial-gradient): refração. Sobre conteúdo de app (sem fundo
+       conhecido) a lente é só o gradiente de refração (claro no topo-esquerda, escuro em baixo-direita). A aresta escura fina
+       (iOS 27 "darker rim") e o reflexo especular do topo vivem nas sombras interiores desta camada, que está por cima da lente.
+     · REFLEXO no canto superior esquerdo (luz a ~60°): gradiente radial no próprio elemento. Sombra exterior suave.
+     · TOQUE (::after): um brilho radial branco que nasce no dedo (--px/--py, escritos no pointerdown pelo glass.js) e cresce
+       só por transform/opacity (.lg-touch, 450 ms); as peças pequenas crescem a 1.04 enquanto premidas (.lg-press).
+     · TOM: .lg-light (fundo claro por baixo: tinta branca e texto preto) / .lg-dark (fundo escuro: tinta cinzenta translúcida e
+       texto branco). As peças pequenas sobre o fundo (.lg-tone) trocam de polaridade pelo tom medido do wallpaper (glass.js);
+       as grandes (notificações, pastas) só seguem o tema. Modo escuro mais CLARO do que o 26 (cinzento, não preto).
+   Especificidade: o núcleo usa body.os-ios.os-ios (ganha aos body.dark.fivem .x do liquid27/motion); as cores vêm de variáveis
+   de esquema definidas no body (--lg-fc, --lg-fw, --lg-fd, --lgs-*), por isso tema e jogo não precisam de seletores compostos.
+   Regras do CEF: ZERO backdrop-filter em body.fivem (os que existem aqui estão em body.os-ios:not(.fivem)); nenhum keyframe em
+   box-shadow/filter/width; sem color-mix, sem calc() dentro de rgba(), sem clip-path, sem :has(), sem aspect-ratio.
+   Acessibilidade: body.reduce-transparency (vidro fosco opaco sem lente) e body.increase-contrast (contorno forte, fills opacos).
+   ============================================================ */
+
+/* ---------- tokens e esquemas (no body: tema e jogo resolvem-se aqui) ---------- */
+body.os-ios{
+  --lg-r:22px;
+  --lg-sw:var(--screen-w); --lg-sh:956px;
+  /* ⚠️ --lg-src NÃO se declara aqui: var() resolve-se onde a propriedade é declarada e o --wp-blur vive no #screen (um descendente do body),
+     por isso aqui dava sempre a cor de recurso (#1C1C1E, que no shorthand virava background-color opaco). Está declarada no .lg-wp. */
+  --lg-lens:linear-gradient(135deg, rgba(255,255,255,.44) 0%, rgba(255,255,255,.10) 36%, rgba(255,255,255,0) 50%, rgba(0,0,0,.04) 68%, rgba(0,0,0,.14) 100%);
+  --lg-lens-d:linear-gradient(135deg, rgba(255,255,255,.26) 0%, rgba(255,255,255,.05) 36%, rgba(0,0,0,0) 50%, rgba(0,0,0,.10) 68%, rgba(0,0,0,.24) 100%);
+  --lg-ind:rgba(0,0,0,.08);                                   /* cápsula do separador ativo (iOS 27: mais escura) */
+  /* fills: sobre conteúdo (fc), sobre o fundo de ecrã (fw), escuro (fd), claro denso (fl), sobre camadas escuras (fo), apps escuras (fa) */
+  --lg-fc:rgba(255,255,255,var(--lg-m)); --lg-fw:rgba(255,255,255,var(--lg-a)); --lg-fd:rgba(46,46,54,var(--lg-ad)); --lg-fl:rgba(255,255,255,var(--lg-al,.6));
+  --lg-fo:rgba(255,255,255,.20); --lg-fa:rgba(28,28,34,.46);
+  /* esquema claro: anel, aresta, reflexos, brilho do toque, sombra, texto */
+  --lgs-ring:var(--lg-lens); --lgs-rim:rgba(0,0,0,.14); --lgs-spec:rgba(255,255,255,.72); --lgs-spec2:rgba(255,255,255,.18); --lgs-glow:rgba(255,255,255,.62); --lgs-drop:0 4px 24px rgba(0,0,0,.18); --lgs-fg:#000;
+  /* esquema escuro (iOS 27: cinzento translúcido, aresta mais marcada) */
+  --lgd-ring:var(--lg-lens-d); --lgd-rim:rgba(0,0,0,.42); --lgd-spec:rgba(255,255,255,.34); --lgd-spec2:rgba(255,255,255,.07); --lgd-glow:rgba(255,255,255,.42); --lgd-drop:0 6px 24px rgba(0,0,0,.30); --lgd-fg:#fff }
+body.os-ios.dark{ --lg-ind:rgba(255,255,255,.14); --lg-fc:rgba(72,72,80,var(--lg-md));
+  --lgs-ring:var(--lgd-ring); --lgs-rim:var(--lgd-rim); --lgs-spec:var(--lgd-spec); --lgs-spec2:var(--lgd-spec2); --lgs-glow:var(--lgd-glow); --lgs-drop:var(--lgd-drop); --lgs-fg:#fff }
+body.os-ios.fivem{ --lg-fc:rgba(255,255,255,var(--lg-mf)); --lg-fd:rgba(46,46,54,var(--lg-mdf)); --lg-fa:rgba(28,28,34,.74); --lg-fo:rgba(255,255,255,.24) }
+body.os-ios.dark.fivem{ --lg-fc:rgba(64,64,72,var(--lg-mdf)) }
+
+/* ---------- o elemento ---------- */
+body.os-ios.os-ios .lg{ isolation:isolate; border-radius:var(--lg-r);
+  --lg-f:var(--lg-fc); --lg-ring:var(--lgs-ring); --lg-rim:var(--lgs-rim); --lg-spec:var(--lgs-spec); --lg-spec2:var(--lgs-spec2); --lg-glow:var(--lgs-glow); --lg-drop:var(--lgs-drop); color:var(--lgs-fg);
+  background:radial-gradient(130% 90% at 10% 0%, rgba(255,255,255,.30) 0%, rgba(255,255,255,.08) 34%, rgba(255,255,255,0) 56%), var(--lg-f);
+  border:none; box-shadow:var(--lg-drop) }
+/* as peças ESTÁTICAS precisam de ser o contexto das pseudo-camadas (position:relative); as absolutas (folha, toast, banner, menu, cartão
+   expandido, HUDs, "Fechar tudo") mantêm o position delas: pô-lo no .lg genérico mandava a folha para o topo do ecrã */
+body.os-ios .key.lg,body.os-ios .tb-pill.lg,body.os-ios .tab.tab-search.lg,body.os-ios .nb-btn.lg,body.os-ios .nb-back.lg,body.os-ios .alert.lg,body.os-ios .search.lg,body.os-ios .lib-tile.lg,body.os-ios .gs-ask.lg,
+body.os-ios .folder-box.lg,body.os-ios .edit-bar div.lg,body.os-ios .nh-less.lg,body.os-ios .nh-x.lg,body.os-ios .ls-btn.lg,body.os-ios .hi.folder .tile.lg,body.os-ios .ncard.lg,body.os-ios .lg-pv-pill.lg,body.os-ios .lg-pv-dot.lg{ position:relative }
+/* no browser o desfoque verdadeiro do que está por baixo; no jogo nunca (as peças antigas já estavam desligadas no motion.css; as novas nascem aqui sem ele) */
+body.os-ios.os-ios:not(.fivem) .lg{ -webkit-backdrop-filter:blur(24px) saturate(160%); backdrop-filter:blur(24px) saturate(160%) }
+body.os-ios.os-ios.fivem .lg{ -webkit-backdrop-filter:none!important; backdrop-filter:none!important }
+
+/* ---------- a lente (::before): anel de refração por baixo, aresta escura e reflexo por cima ---------- */
+body.os-ios.os-ios .lg::before{ content:''; position:absolute; inset:0; z-index:-1; pointer-events:none; border-radius:inherit; display:block; width:auto; height:auto; margin:0;
+  background:var(--lg-ring);
+  -webkit-mask-image:radial-gradient(farthest-side at 50% 50%, rgba(0,0,0,0) 0%, rgba(0,0,0,0) 56%, rgba(0,0,0,.5) 74%, #000 90%);
+  mask-image:radial-gradient(farthest-side at 50% 50%, rgba(0,0,0,0) 0%, rgba(0,0,0,0) 56%, rgba(0,0,0,.5) 74%, #000 90%);
+  box-shadow:inset 0 1px 0 var(--lg-spec), inset 0 -1px 0 var(--lg-spec2), inset 0 0 0 .5px var(--lg-rim) }
+/* o ::after fica reservado ao brilho do toque (invisível em repouso) */
+body.os-ios.os-ios .lg::after{ content:''; position:absolute; inset:0; z-index:-1; pointer-events:none; border-radius:inherit; display:block; width:auto; height:auto; margin:0; -webkit-mask:none; mask:none; background:none; box-shadow:none; opacity:0 }
+
+/* ---------- sobre o FUNDO DE ECRÃ (.lg-wp): a cópia pré-desfocada por baixo da tinta, no sítio exato; a lente amplia-a ---------- */
+body.os-ios.os-ios .lg-wp{ --lg-src:var(--wp-blur,var(--wp,#1C1C1E)); --lg-f:var(--lg-fw); --lg-ring:var(--lg-lens); --lg-rim:rgba(0,0,0,.18); --lg-spec:rgba(255,255,255,.66); --lg-spec2:rgba(255,255,255,.16); --lg-glow:rgba(255,255,255,.62); color:#fff;
+  background:radial-gradient(130% 90% at 10% 0%, rgba(255,255,255,.26) 0%, rgba(255,255,255,.06) 34%, rgba(255,255,255,0) 56%), linear-gradient(var(--lg-f),var(--lg-f)), var(--lg-src);
+  background-repeat:no-repeat; background-size:auto, auto, var(--lg-sw) var(--lg-sh); background-position:0 0, 0 0, calc(-1 * var(--gx,0px)) calc(-1 * var(--gy,0px)) }
+body.os-ios.os-ios .lg-wp::before{
+  background:var(--lg-ring), linear-gradient(var(--lg-f),var(--lg-f)), var(--lg-src);
+  background-repeat:no-repeat; background-size:auto, auto, calc(var(--lg-sw) * 1.06) calc(var(--lg-sh) * 1.06);
+  background-position:0 0, 0 0, calc(-1.06 * var(--gx,0px) - .03 * var(--gw,0px)) calc(-1.06 * var(--gy,0px) - .03 * var(--gh,0px)) }
+body.os-ios.os-ios .lg-wp.on-lock{ --lg-src:var(--wp-lock-blur,var(--wp-lock,var(--wp-blur,#1C1C1E))) }
+/* com uma app aberta o que está por baixo é a app, não o fundo: fica só a tinta (a regra do liquid27 [data-lgpos] dizia o mesmo) */
+body.os-ios.os-ios .screen.app-open .lg-wp{ background-image:radial-gradient(130% 90% at 10% 0%, rgba(255,255,255,.26) 0%, rgba(255,255,255,.06) 34%, rgba(255,255,255,0) 56%), linear-gradient(var(--lg-f),var(--lg-f)) }
+body.os-ios.os-ios .screen.app-open .lg-wp::before{ background-image:var(--lg-ring), linear-gradient(var(--lg-f),var(--lg-f)) }
+
+/* ---------- polaridade (glass.js, pelo tom do fundo por baixo das peças .lg-tone) ---------- */
+body.os-ios.os-ios .lg.lg-light{ --lg-f:var(--lg-fl); --lg-ring:var(--lg-lens); --lg-rim:rgba(0,0,0,.14); --lg-spec:rgba(255,255,255,.72); --lg-spec2:rgba(255,255,255,.18); --lg-glow:rgba(255,255,255,.75); --lg-drop:0 3px 14px rgba(0,0,0,.12); color:#000 }   /* sombra mais leve: sobre fundo claro a de .18 lia-se como um halo escuro */
+body.os-ios.os-ios .edit-bar .done.lg{ --lg-drop:0 3px 14px rgba(0,0,0,.12) }
+body.os-ios.os-ios .lg.lg-dark{ --lg-f:var(--lg-fd); --lg-ring:var(--lg-lens-d); --lg-rim:var(--lgd-rim); --lg-spec:var(--lgd-spec); --lg-spec2:var(--lgd-spec2); --lg-glow:var(--lgd-glow); color:#fff }
+
+/* camadas escuras por cima do ecrã (centro de notificações, alternador, Spotlight, pesquisa, cartão expandido): o fundo já é a
+   cópia desfocada pesada e escurecida (motion.css); as peças lá dentro são vidro neutro translúcido com texto branco, sem a cópia */
+body.os-ios.os-ios #nc .lg,body.os-ios.os-ios #switcher .lg,body.os-ios.os-ios .spot .lg,body.os-ios.os-ios .gsearch .lg,body.os-ios.os-ios .n-xwrap .lg{
+  --lg-f:var(--lg-fo); --lg-ring:var(--lg-lens-d); --lg-rim:rgba(0,0,0,.34); --lg-spec:rgba(255,255,255,.42); --lg-spec2:rgba(255,255,255,.08); --lg-glow:rgba(255,255,255,.5); --lg-drop:0 6px 20px rgba(0,0,0,.22); color:#fff;
+  background-image:radial-gradient(130% 90% at 10% 0%, rgba(255,255,255,.22) 0%, rgba(255,255,255,.05) 34%, rgba(255,255,255,0) 56%), linear-gradient(var(--lg-f),var(--lg-f)) }
+body.os-ios.os-ios #nc .lg::before,body.os-ios.os-ios #switcher .lg::before,body.os-ios.os-ios .spot .lg::before,body.os-ios.os-ios .gsearch .lg::before,body.os-ios.os-ios .n-xwrap .lg::before{ background-image:var(--lg-ring), linear-gradient(var(--lg-f),var(--lg-f)) }
+/* apps de tema escuro e barras transparentes (por cima de fotos/mapas): vidro escuro */
+body.os-ios.os-ios .navbar.transparent .lg,body.os-ios.os-ios .dc .lg,body.os-ios.os-ios .dc-ov .lg,body.os-ios.os-ios .view.gm .lg,body.os-ios.os-ios .onion .lg,body.os-ios.os-ios .cy .lg{
+  --lg-f:var(--lg-fa); --lg-ring:var(--lg-lens-d); --lg-rim:var(--lgd-rim); --lg-spec:rgba(255,255,255,.28); --lg-spec2:rgba(255,255,255,.06); --lg-glow:var(--lgd-glow); color:#fff }
+/* nas mesmas apps, as peças GRANDES (alertas, menus, folhas, toasts, action sheets) ficam com o material denso delas (o liquid27 dizia-o com
+   html body .onion .alert; o núcleo daqui ganha-lhe em especificidade, por isso repete-se aqui) */
+body.os-ios.os-ios .onion .alert.lg,body.os-ios.os-ios .cy .alert.lg,body.os-ios.os-ios .dc .alert.lg,body.os-ios.os-ios .dc-ov .alert.lg,body.os-ios.os-ios .onion .ctx.lg,body.os-ios.os-ios .cy .ctx.lg,body.os-ios.os-ios .dc .ctx.lg,body.os-ios.os-ios .dc-ov .ctx.lg,
+body.os-ios.os-ios .onion .sheet.lg,body.os-ios.os-ios .cy .sheet.lg,body.os-ios.os-ios .dc .sheet.lg,body.os-ios.os-ios .dc-ov .sheet.lg,body.os-ios.os-ios .onion .toast.lg,body.os-ios.os-ios .cy .toast.lg,body.os-ios.os-ios .dc .toast.lg,body.os-ios.os-ios .dc-ov .toast.lg{ --lg-f:var(--material,rgba(22,22,27,.95)); color:var(--label) }
+body.os-ios.os-ios .onion .as-group,body.os-ios.os-ios .cy .as-group,body.os-ios.os-ios .dc .as-group,body.os-ios.os-ios .dc-ov .as-group{ background:radial-gradient(130% 90% at 10% 0%, rgba(255,255,255,.12) 0%, rgba(255,255,255,.03) 34%, rgba(255,255,255,0) 56%), var(--material,rgba(22,22,27,.95)); color:var(--label);
+  box-shadow:0 20px 50px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.14), inset 0 -1px 0 rgba(255,255,255,.04), inset 0 0 0 .5px rgba(0,0,0,.5) }
+
+/* ---------- interação: brilho a partir do dedo + crescer enquanto premido ---------- */
+body.os-ios.os-ios .lg.lg-touch{ overflow:hidden }
+body.os-ios.os-ios .lg.lg-touch::after{ inset:auto; left:-50%; top:-50%; width:200%; height:200%; border-radius:50%;
+  background:radial-gradient(closest-side, var(--lg-glow) 0%, rgba(255,255,255,.16) 42%, rgba(255,255,255,0) 100%);
+  transform:translate(var(--px,0px),var(--py,0px)) scale(0); animation:lgGlow .45s cubic-bezier(.2,.7,.3,1) both }
+@keyframes lgGlow{ 0%{ opacity:.95; transform:translate(var(--px,0px),var(--py,0px)) scale(.12) } 100%{ opacity:0; transform:translate(var(--px,0px),var(--py,0px)) scale(1.2) } }
+/* enquanto premido a peça cresce (só as pequenas; os ícones da dock e as teclas do teclado têm o seu próprio gesto) */
+body.os-ios .ls-btn.lg-press,body.os-ios .key.lg-press,body.os-ios .navbar .nb-btn.lg-press,body.os-ios .navbar .nb-back.lg-press,body.os-ios .tab.lg-press,body.os-ios .nh-x.lg-press,body.os-ios .nh-less.lg-press,
+body.os-ios .edit-bar div.lg-press,body.os-ios .gs-ask.lg-press,body.os-ios .cc-tile.lg-press,body.os-ios .cc-power.lg-press,body.os-ios .cc-plus.lg-press,body.os-ios .lg-pv-pill.lg-press,body.os-ios .lg-pv-dot.lg-press{ transform:scale(1.04); transition:transform .18s cubic-bezier(.2,.8,.3,1.2) }
+body.os-ios .sw-all.lg-press{ transform:translateX(-50%) scale(1.04) }
+body.os-ios .edit-bar div.lg,body.os-ios .lg-pv-pill.lg,body.os-ios .lg-pv-dot.lg,body.os-ios .gs-ask.lg{ transition:transform .3s var(--spring2,cubic-bezier(.3,1.22,.4,1)) }
+
+/* ---------- acessibilidade ---------- */
+/* Reduzir transparência: vidro fosco opaco, sem lente nem desfoque (os alfas vão a .97 no System.apply) */
+body.os-ios.os-ios.reduce-transparency .lg::before{ -webkit-mask:none; mask:none; background:none }
+body.os-ios.os-ios.reduce-transparency .lg{ -webkit-backdrop-filter:none!important; backdrop-filter:none!important }
+body.os-ios.os-ios.reduce-transparency .lg-wp,body.os-ios.os-ios.reduce-transparency .lg-wp::before,body.os-ios.os-ios.reduce-transparency #nc .lg,body.os-ios.os-ios.reduce-transparency .spot .lg,body.os-ios.os-ios.reduce-transparency #switcher .lg,body.os-ios.os-ios.reduce-transparency .gsearch .lg{ background-image:linear-gradient(var(--lg-f),var(--lg-f)) }
+body.os-ios.os-ios.reduce-transparency .lg-wp{ --lg-f:rgba(242,242,247,.97); color:#000 }
+body.os-ios.os-ios.reduce-transparency.dark .lg-wp,body.os-ios.os-ios.reduce-transparency .lg-wp.lg-dark,body.os-ios.os-ios.reduce-transparency .ls-btn.lg{ --lg-f:rgba(58,58,64,.97); color:#fff }
+body.os-ios.os-ios.reduce-transparency #nc .lg,body.os-ios.os-ios.reduce-transparency .spot .lg,body.os-ios.os-ios.reduce-transparency #switcher .lg,body.os-ios.os-ios.reduce-transparency .gsearch .lg{ --lg-f:rgba(58,58,64,.97) }
+/* Aumentar contraste: contorno forte e fills opacos */
+body.os-ios.os-ios.increase-contrast .lg{ --lg-rim:rgba(0,0,0,.72); --lg-spec:rgba(255,255,255,.9) }
+body.os-ios.os-ios.increase-contrast.dark .lg,body.os-ios.os-ios.increase-contrast .lg.lg-dark,body.os-ios.os-ios.increase-contrast .ls-btn.lg,body.os-ios.os-ios.increase-contrast #nc .lg,body.os-ios.os-ios.increase-contrast .spot .lg{ --lg-rim:rgba(255,255,255,.6) }
+body.os-ios.os-ios.increase-contrast .lg::before{ box-shadow:inset 0 1px 0 var(--lg-spec), inset 0 0 0 1.5px var(--lg-rim) }
+body.os-ios.os-ios.increase-contrast .tb-ind{ background:rgba(0,0,0,.18) } body.os-ios.os-ios.increase-contrast.dark .tb-ind{ background:rgba(255,255,255,.28) }
+
+/* ============================================================ AS PEÇAS ============================================================ */
+
+/* ---------- dock (home.js põe .lg.lg-wp.lg-tone): raio 38; o tom só muda a tinta (não há texto) ---------- */
+body.os-ios .dock.lg{ --lg-r:38px; contain:paint }
+body.os-ios.os-ios .dock.lg.lg-dark{ --lg-f:rgba(150,150,166,var(--lg-tint)) }   /* zona escura: tinta cinzenta leve (a cópia do fundo faz o resto); segue o cursor */
+body.os-ios.os-ios .dock.lg.lg-light{ --lg-f:var(--lg-fl) }
+body.os-ios.os-ios .dock.lg.over{ --lg-f:rgba(255,255,255,.42) }
+
+/* ---------- pastas: o mosaico fechado é vidro (raio do ícone), a caixa aberta também ---------- */
+body.os-ios .hi.folder .tile.lg{ --lg-r:var(--icon-r); overflow:visible }
+body.os-ios .hi.folder .tile.lg::after{ display:block }   /* o liquid27 escondia o ::after de brilho dos ícones nas pastas; aqui é o brilho do toque */
+body.os-ios.os-ios .hi.folder .tile.lg.over{ --lg-f:rgba(255,255,255,.5) }
+body.os-ios .folder-box.lg{ --lg-r:36px; contain:paint }
+
+/* ---------- barra de edição da home e pílulas pequenas sobre o fundo ---------- */
+body.os-ios .edit-bar div.lg{ --lg-r:18px }
+body.os-ios.os-ios .edit-bar .done.lg{ --lg-f:#fff; color:#000 } body.os-ios.os-ios .edit-bar .done.lg::before{ background-image:var(--lg-lens) }
+
+/* ---------- ecrã bloqueado: botões inferiores (círculos de 52 com lente e aro), teclas do código ---------- */
+body.os-ios .ls-btn.lg{ --lg-r:50%; width:52px; height:52px; --lg-drop:0 4px 16px rgba(0,0,0,.20) }
+/* sem tom medido ainda: o vidro escuro do iOS 26 (lê-se em fundos claros e escuros) */
+body.os-ios.os-ios .ls-btn.lg:not(.lg-light):not(.lg-dark){ --lg-f:rgba(30,30,36,.34); --lg-ring:var(--lg-lens-d); --lg-rim:rgba(0,0,0,.40); --lg-spec:rgba(255,255,255,.40); --lg-spec2:rgba(255,255,255,.08); --lg-glow:var(--lgd-glow); color:#fff }
+body.os-ios.os-ios .ls-btn.lg.on{ --lg-f:#fff; color:#000; --lg-ring:var(--lg-lens) } body.os-ios.os-ios .ls-btn.lg.on::before{ background-image:var(--lg-lens), linear-gradient(#fff,#fff) }
+body.os-ios.os-ios .ls-btn.lg:active,body.os-ios.os-ios .ls-btn.lg.press{ transform:scale(1.04) }
+body.os-ios .key.lg{ --lg-r:50%; --lg-drop:0 0 0 transparent; color:#fff }
+body.os-ios.os-ios .key.lg,body.os-ios.os-ios.fivem .key.lg{ --lg-f:rgba(255,255,255,.18) }
+body.os-ios.os-ios .key.lg:active,body.os-ios.os-ios .key.lg.pressed{ --lg-f:rgba(255,255,255,.58); transform:scale(1.04) }
+body.os-ios .key.lg .abc{ color:rgba(255,255,255,.9) }
+
+/* ---------- notificações ----------
+   Bloqueado: cartão de vidro sobre o fundo (lente nas arestas), tinta branca fosca com texto preto no tema claro (o pedido do dono
+   de 2026-09-19) e cinzenta translúcida com texto branco no tema escuro. Peça grande: não troca de polaridade pelo tom.
+   Centro de notificações, banner e cartão expandido: vidro sobre a camada escura / sobre o conteúdo. */
+body.os-ios .notif-card .ncard.lg,body.os-ios #lock .notif-card .ncard.lg{ --lg-r:24px; contain:paint; padding:11px 14px 12px 12px; gap:12px }
+html body.os-ios.os-ios .notif-card .ncard.lg,html body.os-ios.os-ios #lock .notif-card .ncard.lg{ --lg-f:rgba(255,255,255,.66); background-color:var(--lg-f); color:#000; box-shadow:var(--lg-drop) }
+html body.os-ios.os-ios.fivem .notif-card .ncard.lg,html body.os-ios.os-ios.fivem #lock .notif-card .ncard.lg{ --lg-f:rgba(255,255,255,.80) }
+html body.os-ios.os-ios.dark .notif-card .ncard.lg,html body.os-ios.os-ios.dark #lock .notif-card .ncard.lg{ --lg-f:rgba(72,72,80,.58); --lg-ring:var(--lg-lens-d); --lg-rim:var(--lgd-rim); --lg-spec:rgba(255,255,255,.30); --lg-spec2:rgba(255,255,255,.06); color:#fff }
+html body.os-ios.os-ios.dark.fivem .notif-card .ncard.lg,html body.os-ios.os-ios.dark.fivem #lock .notif-card .ncard.lg{ --lg-f:rgba(64,64,72,.86) }
+html body.os-ios.os-ios .notif-card.press .ncard.lg{ --lg-f:rgba(255,255,255,.82) } html body.os-ios.os-ios.dark .notif-card.press .ncard.lg{ --lg-f:rgba(88,88,96,.88) }
+html body.os-ios.os-ios #nc .notif-card .ncard.lg{ --lg-f:rgba(255,255,255,.72); color:#000; --lg-ring:var(--lg-lens); --lg-rim:rgba(0,0,0,.14); --lg-spec:rgba(255,255,255,.72); --lg-spec2:rgba(255,255,255,.18) }
+html body.os-ios.os-ios.dark #nc .notif-card .ncard.lg{ --lg-f:rgba(72,72,80,.66); color:#fff; --lg-ring:var(--lg-lens-d); --lg-rim:var(--lgd-rim); --lg-spec:rgba(255,255,255,.30); --lg-spec2:rgba(255,255,255,.06) }
+html body.os-ios.os-ios.fivem #nc .notif-card .ncard.lg{ --lg-f:rgba(255,255,255,.86) } html body.os-ios.os-ios.dark.fivem #nc .notif-card .ncard.lg{ --lg-f:rgba(64,64,72,.9) }
+html body.os-ios.os-ios .notif-card .ncard.lg .n-time{ color:rgba(60,60,67,.6) } html body.os-ios.os-ios.dark .notif-card .ncard.lg .n-time{ color:rgba(235,235,245,.6) }
+html body.os-ios.os-ios .nstack .peek{ background-color:rgba(255,255,255,.5); border:none; box-shadow:0 4px 14px rgba(0,0,0,.10), inset 0 1px 0 rgba(255,255,255,.6), inset 0 0 0 .5px rgba(0,0,0,.10) }
+html body.os-ios.os-ios.dark .nstack .peek{ background-color:rgba(72,72,80,.52); box-shadow:0 4px 14px rgba(0,0,0,.18), inset 0 1px 0 rgba(255,255,255,.22), inset 0 0 0 .5px rgba(0,0,0,.38) }
+body.os-ios .nh-x.lg,body.os-ios .nh-less.lg{ --lg-r:15px; --lg-drop:0 2px 10px rgba(0,0,0,.14) }
+body.os-ios.os-ios .nh-x.lg.arm{ --lg-f:rgba(255,255,255,.46) }
+body.os-ios .nbanner .ncard.lg{ --lg-r:22px; contain:paint; color:var(--label) } body.os-ios .nbanner .ncard.lg .n-app,body.os-ios .nbanner .ncard.lg .n-time{ color:var(--label2) }
+/* no jogo não há desfoque do conteúdo por baixo do banner: mais denso, senão o texto da app lê-se através dele */
+body.os-ios.os-ios.fivem .nbanner .ncard.lg,body.os-ios.os-ios.fivem .banner.lg{ --lg-f:rgba(255,255,255,.96) } body.os-ios.os-ios.dark.fivem .nbanner .ncard.lg,body.os-ios.os-ios.dark.fivem .banner.lg{ --lg-f:rgba(64,64,72,.96) }
+body.os-ios.os-ios .n-xwrap .n-x.lg{ --lg-r:24px; contain:paint; --lg-f:rgba(255,255,255,.82); color:#000; --lg-ring:var(--lg-lens); --lg-rim:rgba(0,0,0,.14); --lg-spec:rgba(255,255,255,.72); --lg-spec2:rgba(255,255,255,.18); box-shadow:0 20px 50px rgba(0,0,0,.3) }
+body.os-ios.os-ios.dark .n-xwrap .n-x.lg{ --lg-f:rgba(64,64,72,.92); color:#fff; --lg-ring:var(--lg-lens-d); --lg-rim:var(--lgd-rim); --lg-spec:rgba(255,255,255,.30); --lg-spec2:rgba(255,255,255,.06) }
+body.os-ios.os-ios .n-xwrap .n-x.lg .n-xact{ background:rgba(0,0,0,.06); color:#007AFF } body.os-ios.os-ios.dark .n-xwrap .n-x.lg .n-xact{ background:rgba(255,255,255,.14); color:#fff } body.os-ios.os-ios .n-xwrap .n-x.lg .n-xact.danger{ color:#FF3B30 }
+
+/* ---------- barra de separadores flutuante: pílula de vidro, cápsula do separador ativo que desliza e deforma (glass.js), círculo de pesquisa ---------- */
+body.os-ios .tb-pill.lg{ --lg-r:38px; contain:paint; --lg-drop:0 10px 30px rgba(0,0,0,.20) }
+body.os-ios .tab.tab-search.lg{ --lg-r:50%; --lg-drop:0 10px 30px rgba(0,0,0,.20) }
+body.os-ios .tb-ind{ position:absolute; left:0; top:4px; height:58px; width:66px; border-radius:30px; background:var(--lg-ind); pointer-events:none; z-index:0;
+  transform-origin:0 50%; transform:translateX(var(--tx,0px)) scaleX(var(--sx,1)) scaleY(var(--sy,1)); opacity:0 }
+body.os-ios .tb-ind.on{ opacity:1; transition:transform .5s cubic-bezier(.3,1.35,.4,1), opacity .2s }
+body.os-ios .tb-ind.gel{ transition:transform .14s cubic-bezier(.3,.6,.4,1) }
+body.os-ios .tb-pill.has-ind .tab{ position:relative; z-index:1 }
+body.os-ios .tb-pill.has-ind .tab.on{ background:transparent }
+body.os-ios .tabbar.searching .tb-ind{ opacity:0 }
+body.os-ios .tab.tab-search.lg.on{ color:var(--blue) }
+/* o círculo "abre" ao ser escolhido (o campo de pesquisa da vista recebe o foco): só transform */
+body.os-ios .tab.tab-search.lg.on svg{ animation:tabSearchPop .42s cubic-bezier(.3,1.4,.4,1) }
+@keyframes tabSearchPop{ 0%{ transform:scale(1) } 45%{ transform:scale(1.22) } 100%{ transform:scale(1) } }
+/* compacta ao rolar para baixo, expande ao subir (ui.js põe .compact): como um bloco, com mola */
+body.os-ios .tabbar{ transition:transform .45s var(--spring2,cubic-bezier(.3,1.22,.4,1)), opacity .3s }
+body.os-ios .tabbar.compact{ transform:scale(.86) translateY(12px) }
+body.os-ios.os-ios .tabbar.plain .tb-pill.lg{ background:var(--bg2); box-shadow:none; -webkit-backdrop-filter:none; backdrop-filter:none; contain:none; border-top:.5px solid var(--sep) }
+body.os-ios.os-ios .tabbar.plain .tb-pill.lg::before,body.os-ios.os-ios .tabbar.plain .tb-pill.lg::after,body.os-ios .tabbar.plain .tb-ind{ display:none }
+
+/* ---------- botões da barra de navegação: cápsula (texto) e círculo (glifo / anterior) ---------- */
+body.os-ios .nb-btn.lg:not(.glass),body.os-ios .nb-back.lg{ --lg-r:20px; --lg-drop:0 4px 14px rgba(0,0,0,.10) }
+body.os-ios .nb-back.lg{ --lg-r:50% }
+body.os-ios .nb-btn.lg.glass{ --lg-r:50%; --lg-drop:0 4px 14px rgba(0,0,0,.10) }
+body.os-ios.os-ios .nb-btn.lg:not(.glass):active,body.os-ios.os-ios .nb-back.lg:active,body.os-ios.os-ios .nb-btn.lg.glass:active{ opacity:1; transform:scale(1.04) }
+body.os-ios.os-ios .navbar .nb-btn.lg{ color:var(--blue) } body.os-ios.os-ios .navbar .nb-btn.lg.glass{ color:var(--label) } body.os-ios.os-ios .navbar .nb-back.lg{ color:var(--blue) }
+body.os-ios.os-ios .navbar.transparent .nb-btn.lg,body.os-ios.os-ios .navbar.transparent .nb-back.lg,body.os-ios.os-ios .dc .nb-btn.lg,body.os-ios.os-ios .dc .nb-back.lg,body.os-ios.os-ios .view.gm .nb-btn.lg,body.os-ios.os-ios .view.gm .nb-back.lg,body.os-ios.os-ios .onion .nb-btn.lg,body.os-ios.os-ios .onion .nb-back.lg{ color:#fff }
+
+/* ---------- scroll edge effect (iOS 27 "hard"): a barra ganha material uniforme e uma linha fina em baixo; o conteúdo dissolve-se numa faixa curta ---------- */
+body.os-ios .navbar::after{ content:''; position:absolute; left:0; right:0; top:100%; height:14px; pointer-events:none; z-index:-1; opacity:0; transition:opacity .25s ease-out;
+  background:linear-gradient(180deg, var(--material), rgba(255,255,255,0)) }
+body.os-ios.dark .navbar::after{ background:linear-gradient(180deg, var(--material), rgba(28,28,30,0)) }
+body.os-ios.fivem .navbar::after{ background:linear-gradient(180deg, var(--bg), rgba(255,255,255,0)) } body.os-ios.dark.fivem .navbar::after{ background:linear-gradient(180deg, var(--bg), rgba(0,0,0,0)) }
+body.os-ios .navbar.solid::after{ opacity:1 }
+body.os-ios .navbar.solid{ box-shadow:0 .5px 0 var(--sep) }
+body.os-ios .navbar.transparent::after{ display:none }
+
+/* ---------- alertas, menus, action sheets, folhas, toasts, HUDs ---------- */
+body.os-ios .alert.lg{ --lg-r:30px; contain:paint; --lg-drop:0 20px 50px rgba(0,0,0,.25); color:var(--label) }
+body.os-ios .ctx.lg{ --lg-r:26px; contain:paint; --lg-drop:0 18px 44px rgba(0,0,0,.26); color:var(--label); transform-origin:var(--ox,50%) var(--oy,0%) }
+body.os-ios .ctx-wrap .ctx.lg{ transform:scale(.55); opacity:0; transition:transform .42s cubic-bezier(.3,1.25,.4,1), opacity .18s ease-out }
+body.os-ios .ctx-wrap.in .ctx.lg{ transform:scale(1); opacity:1 }
+body.os-ios[data-motion="reduced"] .ctx-wrap .ctx.lg{ transform:none }
+body.os-ios .toast.lg{ --lg-r:20px; --lg-drop:0 8px 24px rgba(0,0,0,.22); color:var(--label) }
+body.os-ios .banner.lg{ --lg-r:22px; color:var(--label) }
+body.os-ios .hw-hud.lg{ --lg-r:22px; color:var(--label) } body.os-ios .hw-hud.lg.silent{ color:var(--red) }
+body.os-ios.os-ios .vol-hud.lg{ --lg-r:20px; --lg-f:rgba(58,58,62,.66); --lg-ring:var(--lg-lens-d); --lg-rim:var(--lgd-rim); --lg-spec:rgba(255,255,255,.22); --lg-spec2:rgba(255,255,255,.05) } body.os-ios.os-ios.fivem .vol-hud.lg{ --lg-f:rgba(58,58,62,.9) }
+/* action sheet: o ::before é a pega, por isso o material vai no próprio elemento (sem lente) */
+body.os-ios.os-ios .as-group{ border-radius:26px; border:none; background:radial-gradient(130% 90% at 10% 0%, rgba(255,255,255,.30) 0%, rgba(255,255,255,.08) 34%, rgba(255,255,255,0) 56%), var(--lg-fc);
+  box-shadow:0 20px 50px rgba(0,0,0,.25), inset 0 1px 0 var(--lgs-spec), inset 0 -1px 0 var(--lgs-spec2), inset 0 0 0 .5px var(--lgs-rim) }
+body.os-ios.os-ios .as-group.main::before{ background:rgba(127,127,132,.42) }
+/* folhas: margens laterais e cantos concêntricos com o ecrã (57 menos a margem de 8 = 49), pega de vidro, material denso */
+body.os-ios.os-ios .sheet.lg{ left:8px; right:8px; bottom:8px; --lg-r:49px; border-radius:49px; contain:paint; --lg-f:rgba(242,242,247,.90); --lg-drop:0 -6px 40px rgba(0,0,0,.18); color:var(--label) }
+body.os-ios.os-ios.dark .sheet.lg{ --lg-f:rgba(36,36,40,.92) }
+body.os-ios.os-ios.fivem .sheet.lg{ --lg-f:rgba(242,242,247,.97) } body.os-ios.os-ios.dark.fivem .sheet.lg{ --lg-f:rgba(30,30,34,.97) }
+body.os-ios.os-ios .sheet.lg .grabber{ background:rgba(127,127,132,.42); box-shadow:inset 0 .5px 0 rgba(255,255,255,.5) }
+body.os-ios.os-ios .sheet.lg > .content{ padding-bottom:52px }
+/* apps de tema escuro mantêm o material delas nas folhas e menus (liquid27 "html body .onion ..." continua a mandar na cor); a lente passa a escura */
+body.os-ios.os-ios .onion .lg::before,body.os-ios.os-ios .cy .lg::before,body.os-ios.os-ios .dc .lg::before,body.os-ios.os-ios .dc-ov .lg::before{ background-image:var(--lg-lens-d) }
+
+/* ---------- Spotlight, pesquisa global, alternador: pílulas e mosaicos de vidro neutro ---------- */
+body.os-ios .spot .search.lg,body.os-ios .gsearch .search.lg{ --lg-r:23px; color:#fff }
+body.os-ios .spot .lib-tile.lg{ --lg-r:38px }
+body.os-ios .gs-ask.lg{ --lg-r:24px; color:#fff }
+body.os-ios .sw-all.lg{ --lg-r:20px }
+body.os-ios .gsearch .gs-app .tile,body.os-ios .spot .lib-mini{ box-shadow:none }
+
+/* ---------- Centro de controlo (por seletor: o control.js não muda): vidro cinzento neutro com lente de gradiente, aresta escura e reflexo ---------- */
+body.os-ios .cc-mod,body.os-ios .cc-tile,body.os-ios .cc-slider,body.os-ios .cc-power,body.os-ios .cc-plus{ position:relative; isolation:isolate; border:none;
+  background:radial-gradient(130% 85% at 14% 0%, rgba(255,255,255,.30) 0%, rgba(255,255,255,.10) 30%, rgba(255,255,255,0) 52%), radial-gradient(85% 70% at 100% 110%, rgba(255,255,255,.14) 0%, rgba(255,255,255,0) 55%), rgba(118,118,132,.30);
+  box-shadow:0 10px 30px rgba(0,0,0,.28) }
+body.os-ios.fivem .cc-mod,body.os-ios.fivem .cc-tile,body.os-ios.fivem .cc-slider,body.os-ios.fivem .cc-power,body.os-ios.fivem .cc-plus{ background-color:rgba(118,118,132,.36) }
+body.os-ios.dark #cc .cc-mod,body.os-ios.dark #cc .cc-tile,body.os-ios.dark #cc .cc-slider,body.os-ios.dark #cc .cc-power,body.os-ios.dark #cc .cc-plus{ background-color:rgba(88,88,98,.36) }
+body.os-ios .cc-mod::before,body.os-ios .cc-tile::before,body.os-ios .cc-slider::before,body.os-ios .cc-power::before,body.os-ios .cc-plus::before{ content:''; position:absolute; inset:0; z-index:-1; pointer-events:none; border-radius:inherit;
+  background:var(--lg-lens-d);
+  -webkit-mask-image:radial-gradient(farthest-side at 50% 50%, rgba(0,0,0,0) 0%, rgba(0,0,0,0) 56%, rgba(0,0,0,.5) 74%, #000 90%);
+  mask-image:radial-gradient(farthest-side at 50% 50%, rgba(0,0,0,0) 0%, rgba(0,0,0,0) 56%, rgba(0,0,0,.5) 74%, #000 90%);
+  box-shadow:inset 0 1.5px 0 rgba(255,255,255,.55), inset 0 -1px 0 rgba(255,255,255,.08), inset 1px 0 0 rgba(255,255,255,.10), inset 0 0 0 .5px rgba(0,0,0,.36) }
+body.os-ios .cc-slider::before{ z-index:1 }   /* o enchimento branco é um filho absoluto: a aresta e a lente ficam por cima dele, como num vidro verdadeiro */
+body.os-ios .cc-slider .fill{ z-index:0 } body.os-ios .cc-slider .ic{ z-index:2 } body.os-ios .cc-slider .fill .ic{ z-index:3 }
+body.os-ios .cc-tile.on{ color:#000; background:radial-gradient(120% 80% at 14% 0%, rgba(255,255,255,1) 0%, rgba(255,255,255,0) 55%), linear-gradient(160deg, rgba(255,255,255,.96) 0%, rgba(232,232,240,.94) 100%); box-shadow:0 10px 30px rgba(0,0,0,.22) }
+body.os-ios .cc-tile.on::before{ background:var(--lg-lens); box-shadow:inset 0 1px 0 #fff, inset 0 -1px 0 rgba(0,0,0,.06), inset 0 0 0 .5px rgba(0,0,0,.12) }
+body.os-ios .cc-round{ box-shadow:inset 0 1px 0 rgba(255,255,255,.38), inset 0 0 0 .5px rgba(0,0,0,.30), 0 2px 8px rgba(0,0,0,.14) }
+body.os-ios .cc-round.on.orange,body.os-ios .cc-round.on.green,body.os-ios .cc-round.on.blue{ box-shadow:inset 0 1.5px 0 rgba(255,255,255,.55), inset 0 0 0 .5px rgba(0,0,0,.18), 0 6px 16px rgba(0,0,0,.22) }
+/* sliders e interruptores ganham vidro ENQUANTO se arrastam (.drag / .dragging): aro claro e sombra mais funda (estáticos) + scale */
+body.os-ios .cc-slider.drag{ transform:scale(1.05); box-shadow:0 18px 44px rgba(0,0,0,.36), 0 0 0 .5px rgba(255,255,255,.18) }
+body.os-ios .cc-slider.drag::before{ box-shadow:inset 0 1.5px 0 rgba(255,255,255,.8), inset 0 -1px 0 rgba(255,255,255,.14), inset 0 0 0 .5px rgba(0,0,0,.4) }
+body.os-ios .toggle.dragging span,body.os-ios .toggle:active span{ box-shadow:inset 0 1px 0 rgba(255,255,255,.45), inset 0 0 0 .5px rgba(0,0,0,.14), 0 4px 14px rgba(0,0,0,.18) }
+body.os-ios .cc-slider .fill{ background:linear-gradient(180deg, #fff 0%, #F2F2F7 100%) }
+
+/* ---------- teclado: teclas de vidro (claras e translúcidas sobre o fundo fosco do teclado); sem lente (32 teclas) ---------- */
+body.os-ios .kb-key{ background:rgba(255,255,255,.82); box-shadow:0 1px 0 rgba(0,0,0,.26), inset 0 .5px 0 rgba(255,255,255,.95), inset 0 0 0 .5px rgba(0,0,0,.05) }
+body.os-ios .kb-key.fn,body.os-ios .kb-key.ret{ background:rgba(255,255,255,.44) }
+body.os-ios .kb-key.fn:active,body.os-ios .kb-key.fn.pressed,body.os-ios .kb-key.shift.on{ background:rgba(255,255,255,.96) }
+body.os-ios.dark .kb-key{ background:rgba(255,255,255,.22); box-shadow:0 1px 0 rgba(0,0,0,.5), inset 0 .5px 0 rgba(255,255,255,.28), inset 0 0 0 .5px rgba(0,0,0,.2) }
+body.os-ios.dark .kb-key.fn,body.os-ios.dark .kb-key.ret{ background:rgba(255,255,255,.11) }
+body.os-ios.dark .kb-key.fn:active,body.os-ios.dark .kb-key.fn.pressed{ background:rgba(255,255,255,.34) } body.os-ios.dark .kb-key.shift.on{ background:#fff; color:#000 }
+body.os-ios .kb-key.ret.act,body.os-ios.dark .kb-key.ret.act{ background:var(--blue); color:#fff; box-shadow:0 1px 0 rgba(0,0,0,.26), inset 0 .5px 0 rgba(255,255,255,.4) }
+body.os-ios:not(.fivem) #kb{ background:rgba(209,212,218,.78) } body.os-ios.dark:not(.fivem) #kb{ background:rgba(40,40,44,.84) }
+body.os-ios .kb-pop{ box-shadow:0 2px 8px rgba(0,0,0,.28), inset 0 .5px 0 rgba(255,255,255,.9), inset 0 0 0 .5px rgba(0,0,0,.08) }
+
+/* ---------- interruptores: a pastilha ganha aro ---------- */
+body.os-ios .toggle span::after{ box-shadow:0 3px 8px rgba(0,0,0,.15), 0 1px 1px rgba(0,0,0,.16), inset 0 0 0 .5px rgba(0,0,0,.06) }
+
+/* ---------- Definições › Ecrã e brilho › Liquid Glass: pré-visualização com o material novo (settings.js põe .lg.lg-wp.lg-tone e --pv-w/--pv-h) ---------- */
+body.os-ios .lg-pv{ height:112px; flex-direction:column; gap:8px }
+body.os-ios .lg-pv-bg{ background:linear-gradient(120deg,#FF9F0A 0%,#FF375F 30%,#BF5AF2 55%,#0A84FF 80%,#30D158 100%) }
+body.os-ios .lg-pv-bg::after{ background:repeating-linear-gradient(135deg, rgba(255,255,255,.22) 0 14px, rgba(255,255,255,0) 14px 34px) }
+body.os-ios.os-ios .lg-pv .lg{ --lg-sw:var(--pv-w,408px); --lg-sh:var(--pv-h,112px); -webkit-backdrop-filter:none; backdrop-filter:none;
+  --lg-src:linear-gradient(120deg,#FF9F0A 0%,#FF375F 30%,#BF5AF2 55%,#0A84FF 80%,#30D158 100%) }
+body.os-ios .lg-pv-pill.lg{ --lg-r:24px; height:48px; padding:0 20px; gap:8px; font-size:var(--t-subhead); font-weight:600; color:#fff; position:relative }
+body.os-ios .lg-pv-row{ position:relative; display:flex; gap:10px }
+body.os-ios .lg-pv-dot{ width:36px; height:36px; display:flex; align-items:center; justify-content:center; --lg-r:50%; color:#fff }
+body.os-ios .lg-pv-dot svg{ width:17px; height:17px }
+
+/* ============================================================
+   TOM AUTOMÁTICO (iOS 26/27): o relógio, a data, o cadeado, os widgets, a barra de estado, as etiquetas da home e o indicador de casa
+   seguem o TOM DO WALLPAPER medido pelo glass.js (grelha 8×16 da cópia pré-desfocada, em três zonas): #screen.wp-top-light /
+   wp-mid-light / wp-bottom-light (fundo da home) e wpl-* (fundo do bloqueado). O relógio só muda com a cor automática
+   (#lock.clock-auto = a cor gravada é a de origem, #FFFFFF; uma cor escolhida em "Fonte e cor" fica como está). A barra de estado vem
+   pelo System.updateSbTheme (.light-sb); por cima das camadas escuras (Centro de controlo .cc-on, notificações .nc-on, alternador
+   .sw-on, pesquisa e pastas .hm-dim, código .lk-pin) volta a branco. Igual no jogo: o tom vem da imagem, nunca de filtros.
+   ============================================================ */
+body.os-ios{ --lg-ink:rgba(30,30,34,.92); --lg-ink-sh:0 1px 8px rgba(255,255,255,.45) }
+/* barra de estado por cima de camadas escuras: branca mesmo com .light-sb vindo do wallpaper */
+body.os-ios .screen.light-sb:not(.app-open).cc-on .statusbar,body.os-ios .screen.light-sb:not(.app-open).nc-on .statusbar,body.os-ios .screen.light-sb:not(.app-open).sw-on .statusbar,
+body.os-ios .screen.light-sb:not(.app-open).hm-dim .statusbar,body.os-ios .screen.light-sb:not(.app-open).lk-pin .statusbar{ color:#fff }
+/* indicador de casa: sem app segue a BASE do wallpaper (não o topo) */
+body.os-ios .screen.light-sb:not(.app-open):not(.setup-mode) .home-bar{ background:rgba(255,255,255,.92) }
+body.os-ios .screen.wp-bottom-light:not(.locked):not(.app-open):not(.cc-on):not(.nc-on):not(.sw-on):not(.hm-dim):not(.setup-mode) .home-bar,
+body.os-ios .screen.locked.wpl-bottom-light:not(.cc-on):not(.nc-on):not(.lk-pin):not(.setup-mode) .home-bar{ background:rgba(0,0,0,.72) }
+/* bloqueado, topo claro + cor automática: tinta escura no relógio (a cor vai por --clock-rgb, que os dígitos sólidos, o compacto, o
+   contorno e os widgets já leem), na data, no cadeado e nos widgets */
+body.os-ios .screen.wpl-top-light #lock.clock-auto{ --clock-rgb:30,30,34 }
+body.os-ios:not([data-clock="compact"]) .screen.wpl-top-light #lock.clock-auto[data-clockstyle="glass"]:not(.nc-scroll) .lock-clock .n{
+  background-image:linear-gradient(112deg, rgba(255,255,255,.20) 0%, rgba(255,255,255,0) 58%), linear-gradient(180deg, rgba(30,30,34,.90) 0%, rgba(30,30,34,.82) 38%, rgba(30,30,34,.78) 64%, rgba(30,30,34,.88) 100%) }
+body.os-ios[data-clock="compact"] .screen.wpl-top-light #lock.clock-auto .lock-clock .n,body.os-ios .screen.wpl-top-light #lock.clock-auto.nc-scroll .lock-clock .n,
+body.os-ios .screen.wpl-top-light #lock.clock-auto[data-clockstyle="solid"] .lock-clock .n{ text-shadow:0 1px 12px rgba(255,255,255,.45) }
+body.os-ios .screen.wpl-top-light #lock.clock-auto .lock-date,body.os-ios .screen.wpl-top-light #lock.clock-auto .lock-face{ color:var(--lg-ink); text-shadow:var(--lg-ink-sh) }
+body.os-ios .screen.wpl-top-light #lock.clock-auto .lw{ color:var(--lg-ink); background-color:rgba(0,0,0,.06); border-color:rgba(0,0,0,.08); box-shadow:inset 0 .5px 0 rgba(255,255,255,.55); text-shadow:none }
+body.os-ios .screen.wpl-top-light #lock.clock-auto .lw svg{ opacity:1 }
+body.os-ios .screen.wpl-top-light #lock.clock-auto .lkw{ text-shadow:0 1px 6px rgba(255,255,255,.4) }
+body.os-ios .screen.wpl-top-light #lock.clock-auto .lkw-c{ background:rgba(0,0,0,.07); box-shadow:inset 0 0 0 .5px rgba(0,0,0,.08) }
+/* meio claro: cabeçalhos dos grupos de notificações e a cápsula de contagem; base clara: a dica "Deslize para cima" */
+body.os-ios .screen.wpl-mid-light #lock .lock-notifs .nhead{ color:var(--lg-ink); text-shadow:0 1px 6px rgba(255,255,255,.4) }
+body.os-ios .screen.wpl-mid-light #lock .lock-notifs .ncount{ color:var(--lg-ink); background:rgba(255,255,255,.55); border-color:rgba(0,0,0,.08); text-shadow:none }
+body.os-ios .screen.wpl-bottom-light #lock .lock-hint,body.os-ios .screen.wpl-bottom-light #lock.faceok .lock-hint{ color:rgba(30,30,34,.75); text-shadow:0 1px 6px rgba(255,255,255,.4) }
+/* home: etiquetas dos ícones e dos widgets (meio claro); pontos de página e pílula de pesquisa (base clara). As etiquetas dentro da
+   pasta aberta ficam brancas (a camada da pasta escurece o fundo) */
+body.os-ios .screen.wp-mid-light #home .pages .app-name{ color:var(--lg-ink); text-shadow:0 1px 3px rgba(255,255,255,.6) }
+body.os-ios .screen.wp-bottom-light #home .page-dots{ background:rgba(0,0,0,.08) }
+body.os-ios .screen.wp-bottom-light #home .page-dots span{ background:rgba(0,0,0,.28) } body.os-ios .screen.wp-bottom-light #home .page-dots span.on{ background:rgba(30,30,34,.95) }
+body.os-ios .screen.wp-bottom-light #home .page-dots span.lib{ background:none; color:rgba(0,0,0,.32) } body.os-ios .screen.wp-bottom-light #home .page-dots span.lib.on{ color:rgba(30,30,34,.95) }
+body.os-ios .screen.wp-bottom-light #home .search-pill{ color:#000 } body.os-ios .screen.wp-bottom-light #home .search-pill svg{ stroke:#000 }
+
+/* ---------- movimento reduzido: sem crescer ao toque, sem gel ---------- */
+body.os-ios[data-motion="reduced"] .lg.lg-press,body.os-ios[data-motion="reduced"] .sw-all.lg-press{ transform:none }
+body.os-ios[data-motion="reduced"] .lg.lg-touch::after{ animation-duration:.2s }
+body.os-ios[data-motion="reduced"] .tb-ind.on,body.os-ios[data-motion="reduced"] .tb-ind.gel{ transition:transform .16s ease-out, opacity .2s }

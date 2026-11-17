@@ -1,0 +1,303 @@
+/* ============================================================
+   RECADO · CHAMADAS (pacote RF) - separador Chamadas, ecrã da chamada de grupo, convite a tocar,
+   picture-in-picture, folhas (código, ligação, agendar) e a bolha das mensagens `call`.
+   Identidade própria do Recado: índigo #128C7E → ciano #25D366. Claro/escuro pelos tokens (var(--bg)…).
+   Regras do CEF: só transform e opacity animam; sem filter/backdrop-filter; sem color-mix; sem clip-path;
+   camadas de ecrã inteiro com border-radius 57px. Tamanhos dos ícones aqui, nunca no HTML.
+   ============================================================ */
+/* integração: tokens do RF ligados aos base do Recado (app-recado.css).
+   Ficam no :root e não na .rcc-view porque o ecrã da chamada, o convite, o PiP e as folhas montam-se
+   no #screen, FORA da janela - dentro da vista liam os tokens, fora caíam sempre no valor de reserva
+   (era por isso que no tema escuro o avatar da ligação ficava com o índigo escuro #0B7A6B). */
+:root{ --rcc-a:var(--rc-a1,#128C7E); --rcc-b:var(--rc-a2,#25D366); --rcc-ink:var(--rc-accent,#128C7E); --rcc-soft:var(--rc-tint,rgba(18,140,126,.10));
+  --rcc-grad:var(--rc-grad,linear-gradient(135deg,#128C7E,#25D366)) }
+body.dark{ --rcc-ink:var(--rc-accent,#25D366); --rcc-soft:var(--rc-tint,rgba(37,211,102,.16)) }
+
+/* ---------- separador ---------- */
+.rcc-tab{ padding:0 0 24px }
+.rcc-quick{ display:grid; grid-template-columns:repeat(3,1fr); gap:10px; padding:4px 16px 4px }
+.rcc-q{ background:var(--bg2); border-radius:20px; padding:14px 6px 12px; display:flex; flex-direction:column; align-items:center; gap:8px; cursor:pointer; text-align:center; transition:transform .16s var(--curve) }
+.rcc-q:active{ transform:scale(.96) }
+.rcc-q span{ font-size:var(--t-cap2); font-weight:600; color:var(--label); line-height:1.15 }
+.rcc-q-ic{ width:42px; height:42px; border-radius:14px; background:var(--rcc-grad); color:#fff; display:flex; align-items:center; justify-content:center }
+.rcc-q-ic svg{ width:21px; height:21px }
+
+.rcc-h{ display:flex; align-items:center; justify-content:space-between; gap:12px; padding:20px 20px 8px; font-size:var(--t-foot); font-weight:600; color:var(--label2); letter-spacing:.2px }
+.rcc-h .seg{ width:180px; margin:0; flex:none }
+
+.rcc-card-list{ background:var(--bg2); border-radius:20px; margin:0 16px; overflow:hidden }
+.rcc-row,.rcc-sched{ position:relative; display:flex; align-items:center; gap:12px; padding:10px 14px; min-height:66px; cursor:pointer }
+.rcc-row + .rcc-row::before,.rcc-sched + .rcc-sched::before{ content:''; position:absolute; left:70px; right:0; top:0; height:1px; background:var(--sep-subtle) }
+.rcc-row:active,.rcc-sched:active{ background:var(--fill4) }
+.rcc-av{ position:relative; width:44px; height:44px; border-radius:50%; flex:none; display:flex; align-items:center; justify-content:center; color:#fff; font-weight:600; font-size:16px; background-size:cover; background-position:center }
+.rcc-av > svg{ width:46%; height:46% }   /* glifo de grupo que o Recado.avatar (RA) põe no lugar das iniciais */
+.rcc-av-link{ background:var(--rcc-soft); color:var(--rcc-ink) }
+.rcc-av-link svg{ width:21px; height:21px }
+.rcc-av-badge{ position:absolute; right:-3px; bottom:-3px; width:20px; height:20px; border-radius:50%; background:var(--rcc-grad); color:#fff; display:flex; align-items:center; justify-content:center; box-shadow:0 0 0 2px var(--bg2) }
+.rcc-av-badge svg{ width:12px; height:12px; stroke-width:2.4 }
+.rcc-row-b{ flex:1; min-width:0 }
+.rcc-row-n{ font-size:var(--t-callout); font-weight:600; color:var(--label); white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+.rcc-row-n.miss{ color:var(--red) }
+.rcc-row-s{ display:flex; align-items:center; gap:5px; margin-top:2px; font-size:var(--t-cap1); color:var(--label2); white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+.rcc-row-s span{ overflow:hidden; text-overflow:ellipsis }
+.rcc-mono{ font-family:var(--font-mono); letter-spacing:1.5px }
+.rcc-dir{ display:inline-flex; flex:none; width:15px; height:15px; color:var(--label2) }
+.rcc-dir svg{ width:15px; height:15px; stroke-width:2.6 }
+.rcc-dir.in svg,.rcc-dir.out svg{ transform:rotate(45deg) }   /* a seta é que muda (o glifo), não o ângulo */
+.rcc-dir.out{ color:var(--rcc-ink) }
+.rcc-dir.miss{ color:var(--red) }
+.rcc-row-t{ font-size:var(--t-cap1); color:var(--label2); flex:none }
+.rcc-row-go{ color:var(--label3); flex:none }
+.rcc-row-go svg{ width:18px; height:18px }
+.rcc-row.live .rcc-row-s{ color:var(--rcc-ink); font-weight:600 }
+.rcc-again{ width:38px; height:38px; border-radius:50%; flex:none; display:flex; align-items:center; justify-content:center; background:var(--rcc-soft); color:var(--rcc-ink); transition:transform .16s var(--curve) }
+.rcc-again:active{ transform:scale(.9) }
+.rcc-again svg{ width:19px; height:19px }
+
+.rcc-sd{ width:46px; height:50px; border-radius:14px; flex:none; background:var(--rcc-grad); color:#fff; display:flex; flex-direction:column; align-items:center; justify-content:center; line-height:1 }
+.rcc-sd b{ font-size:20px; font-weight:700 }
+.rcc-sd span{ font-size:11px; font-weight:600; text-transform:uppercase; opacity:.9; margin-top:3px }
+.rcc-sgo{ flex:none; height:32px; padding:0 13px; border-radius:16px; display:flex; align-items:center; font-size:var(--t-cap1); font-weight:600; background:var(--fill3); color:var(--label2) }
+.rcc-sgo.on{ background:var(--rcc-grad); color:#fff }
+
+.rcc-livecard{ display:flex; align-items:center; gap:12px; margin:6px 16px 10px; padding:12px 14px; border-radius:20px; background:var(--rcc-grad); color:#fff; cursor:pointer }
+.rcc-lc-ic{ width:38px; height:38px; border-radius:50%; background:rgba(255,255,255,.2); display:flex; align-items:center; justify-content:center; animation:rccBreath 1.8s var(--curve-soft) infinite }
+.rcc-lc-ic svg{ width:18px; height:18px }
+.rcc-lc-b{ flex:1; min-width:0; display:flex; flex-direction:column }
+.rcc-lc-b b{ font-size:var(--t-callout); white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+.rcc-lc-b span{ font-size:var(--t-cap1); opacity:.85 }
+.rcc-lc-go{ height:32px; padding:0 14px; border-radius:16px; background:#fff; color:#065F46; font-weight:700; font-size:var(--t-cap1); display:flex; align-items:center }
+
+.rcc-empty{ display:flex; flex-direction:column; align-items:center; text-align:center; gap:6px; padding:28px 40px 12px; color:var(--label2) }
+.rcc-empty-ic{ width:58px; height:58px; border-radius:50%; background:var(--rcc-soft); color:var(--rcc-ink); display:flex; align-items:center; justify-content:center; margin-bottom:6px }
+.rcc-empty-ic svg{ width:26px; height:26px }
+.rcc-empty b{ color:var(--label); font-size:var(--t-headline) }
+.rcc-empty span{ font-size:var(--t-foot); line-height:1.35 }
+.rcc-foot{ padding:16px 28px 8px; font-size:var(--t-cap2); color:var(--label2); line-height:1.4; text-align:center }
+/* sem chamadas (recado-calls.js marca o separador com .rcc-isempty): o separador estica ate ao fundo e o aviso fica ao
+   centro do espaco livre por baixo de "Recentes", um pouco acima do meio; a nota da voz fica no fundo */
+.content > .rcc-tab.rcc-isempty{ flex:1 0 auto; display:flex; flex-direction:column }
+.rcc-tab.rcc-isempty > *{ flex-shrink:0 }
+.rcc-tab.rcc-isempty > .rcc-empty{ flex:1 0 auto; justify-content:center; padding:28px 40px 56px }
+
+/* ---------- ecrã da chamada de grupo ---------- */
+.rcc-call,.rcc-rs{ position:absolute; inset:0; z-index:150; border-radius:57px; overflow:hidden; color:#fff; display:flex; flex-direction:column;
+  background:linear-gradient(180deg,#0E1233 0%,#0B0F26 52%,#07202A 100%); animation:rccIn .36s var(--curve) both }
+.rcc-rs{ z-index:152; align-items:center }
+.rcc-call.rcc-hidden{ display:none!important }
+.rcc-call.rcc-ending{ opacity:0; transition:opacity .6s ease .25s; pointer-events:none }
+.rcc-bg{ position:absolute; inset:0; overflow:hidden; pointer-events:none }
+.rcc-blob{ position:absolute; width:520px; height:520px; border-radius:50%; will-change:transform }
+.rcc-blob.b1{ left:-210px; top:-170px; background:radial-gradient(closest-side,rgba(18,140,126,.55),rgba(18,140,126,0)); animation:rccDrift1 18s ease-in-out infinite alternate }
+.rcc-blob.b2{ right:-230px; bottom:-120px; background:radial-gradient(closest-side,rgba(37,211,102,.42),rgba(37,211,102,0)); animation:rccDrift2 22s ease-in-out infinite alternate }
+
+.rcc-top{ position:relative; display:flex; align-items:center; gap:10px; padding:calc(var(--statusbar-h) - 4px) 18px 6px }
+.rcc-ib{ width:40px; height:40px; border-radius:50%; background:rgba(255,255,255,.1); display:flex; align-items:center; justify-content:center; cursor:pointer; flex:none }
+.rcc-ib svg{ width:22px; height:22px }
+.rcc-head{ flex:1; min-width:0; text-align:center }
+.rcc-title{ font-size:var(--t-headline); font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+.rcc-status{ display:flex; align-items:center; justify-content:center; gap:6px; margin-top:2px; font-size:var(--t-cap1); color:rgba(255,255,255,.72); font-variant-numeric:tabular-nums }
+.rcc-live{ width:7px; height:7px; border-radius:50%; background:#22D3EE; animation:rccBreath 1.6s ease-in-out infinite }
+.rcc-pending .rcc-live{ background:var(--yellow) }
+
+.rcc-chips{ position:relative; display:flex; flex-wrap:wrap; justify-content:center; gap:6px; padding:0 18px; min-height:0 }
+.rcc-chip{ display:flex; align-items:center; gap:6px; height:26px; padding:0 10px; border-radius:13px; background:rgba(255,255,255,.1); font-size:12px; color:rgba(255,255,255,.88); margin-top:6px }
+.rcc-chip svg{ width:14px; height:14px }
+.rcc-chip-l span{ font-family:var(--font-mono); letter-spacing:1px }
+
+.rcc-grid{ position:relative; flex:1; min-height:0; display:grid; gap:10px; padding:10px 16px 8px; grid-template-columns:1fr 1fr; grid-auto-rows:1fr; --av:78px }
+.rcc-grid[data-n="1"],.rcc-grid[data-n="2"]{ grid-template-columns:1fr; --av:112px }
+.rcc-grid[data-n="1"]{ --av:132px }
+.rcc-grid[data-n="3"] .rcc-tile:first-child,.rcc-grid[data-n="5"] .rcc-tile:first-child,.rcc-grid[data-n="7"] .rcc-tile:first-child{ grid-column:span 2 }
+.rcc-grid[data-n="3"],.rcc-grid[data-n="4"]{ --av:84px }
+.rcc-grid[data-n="5"],.rcc-grid[data-n="6"]{ --av:64px }
+.rcc-grid[data-n="7"],.rcc-grid[data-n="8"]{ --av:50px; gap:8px }
+
+.rcc-tile{ position:relative; min-height:0; border-radius:26px; background:rgba(255,255,255,.055); border:1px solid rgba(255,255,255,.08); display:flex; align-items:center; justify-content:center; overflow:hidden; cursor:pointer; animation:rccTileIn .32s var(--curve) both }
+.rcc-tile::after{ content:''; position:absolute; inset:0; border-radius:inherit; border:2px solid rgba(83,189,235,.85); opacity:0; transition:opacity .18s ease; pointer-events:none }
+.rcc-tile.talking::after{ opacity:1 }
+.rcc-tile.me{ background:rgba(255,255,255,.08) }
+.rcc-sim{ position:absolute; inset:0; opacity:0; transition:opacity .25s ease; background:linear-gradient(160deg,#064E3B 0%,#1E3A8A 45%,#075E54 100%); overflow:hidden }
+.rcc-sim i{ position:absolute; left:-40%; top:-40%; width:180%; height:180%; background:radial-gradient(closest-side,rgba(37,211,102,.28),rgba(37,211,102,0) 70%); animation:rccSim 7s ease-in-out infinite alternate }
+.rcc-tile.back .rcc-sim{ background:linear-gradient(200deg,#134E4A 0%,#0F766E 40%,#1E1B4B 100%) }
+.rcc-sim-tag{ position:absolute; left:10px; top:10px; height:22px; padding:0 8px; border-radius:11px; background:rgba(0,0,0,.34); font-size:11px; font-weight:600; display:flex; align-items:center; color:rgba(255,255,255,.9); letter-spacing:.2px }
+.rcc-tile.video .rcc-sim{ opacity:1 }
+.rcc-grid[data-n="7"] .rcc-sim-tag,.rcc-grid[data-n="8"] .rcc-sim-tag{ display:none }
+.rcc-avwrap{ position:relative; width:var(--av); height:var(--av); margin-bottom:14px }
+.rcc-avwrap .rcc-av{ position:absolute; inset:0; width:100%; height:100%; font-size:calc(var(--av) * .36); box-shadow:0 0 0 3px rgba(255,255,255,.08) }
+.rcc-ring{ position:absolute; inset:-7px; border-radius:50%; border:3px solid #22D3EE; opacity:0; pointer-events:none }
+.rcc-ring.r2{ inset:-7px; border-width:2px; border-color:rgba(83,189,235,.55) }
+.rcc-tile.talking .rcc-ring{ opacity:1; animation:rccTalk 1.1s var(--curve-soft) infinite }
+.rcc-tile.talking .rcc-ring.r2{ animation:rccWave 1.6s ease-out infinite }
+.rcc-tname{ position:absolute; left:12px; right:12px; bottom:10px; display:flex; align-items:center; justify-content:center; gap:6px; font-size:var(--t-cap1); font-weight:600; text-shadow:0 1px 2px rgba(0,0,0,.35) }
+.rcc-nm{ white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+.rcc-ic{ display:none; width:20px; height:20px; border-radius:50%; align-items:center; justify-content:center; flex:none }
+.rcc-ic svg{ width:12px; height:12px; stroke-width:2.6 }
+.rcc-tile.rcc-muted .rcc-ic-mute{ display:flex; background:var(--red) }
+.rcc-tile.lmuted .rcc-ic-lm{ display:flex; background:rgba(255,255,255,.22) }
+.rcc-handb{ position:absolute; right:10px; top:10px; width:32px; height:32px; border-radius:50%; background:var(--yellow); display:flex; align-items:center; justify-content:center; font-size:18px; opacity:0; transform:scale(.4); transition:opacity .2s ease, transform .28s var(--spring) }
+.rcc-tile.hand .rcc-handb{ opacity:1; transform:scale(1); animation:rccHand 1.4s ease-in-out .3s 3 }
+.rcc-grid[data-n="7"] .rcc-avwrap,.rcc-grid[data-n="8"] .rcc-avwrap{ margin-bottom:18px }
+.rcc-grid[data-n="7"] .rcc-handb,.rcc-grid[data-n="8"] .rcc-handb{ width:26px; height:26px; font-size:14px; right:7px; top:7px }
+
+.rcc-wait{ position:relative; height:0; opacity:0; text-align:center; font-size:var(--t-cap1); color:rgba(255,255,255,.7); transition:opacity .2s ease; overflow:hidden; white-space:nowrap; text-overflow:ellipsis; padding:0 24px }
+.rcc-wait.on{ height:20px; opacity:1 }
+
+/* reações a flutuar */
+.rcc-fx{ position:absolute; left:0; right:0; top:0; bottom:0; pointer-events:none; z-index:3 }
+.rcc-float{ position:absolute; bottom:206px; display:flex; flex-direction:column; align-items:center; gap:3px; opacity:0; will-change:transform,opacity }
+.rcc-float.v0{ animation:rccFloat0 2.8s var(--curve-soft) forwards }
+.rcc-float.v1{ animation:rccFloat1 2.9s var(--curve-soft) forwards }
+.rcc-float.v2{ animation:rccFloat2 2.7s var(--curve-soft) forwards }
+.rcc-fe{ font-size:40px; line-height:1 }
+.rcc-fw{ font-size:11px; font-weight:600; padding:2px 7px; border-radius:9px; background:rgba(0,0,0,.35); color:#fff; max-width:120px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+.rcc-fw:empty{ display:none }
+
+.rcc-picker{ position:absolute; left:16px; right:16px; bottom:206px; height:60px; border-radius:30px; background:rgba(22,24,48,.94); border:1px solid rgba(255,255,255,.1); display:flex; align-items:center; justify-content:space-around; padding:0 6px; z-index:4;
+  opacity:0; transform:translateY(12px) scale(.96); pointer-events:none; transition:opacity .18s ease, transform .24s var(--curve) }
+.rcc-picker.open{ opacity:1; transform:none; pointer-events:auto }
+.rcc-emo{ width:38px; height:44px; display:flex; align-items:center; justify-content:center; font-size:26px; cursor:pointer; transition:transform .14s var(--curve) }
+.rcc-emo:active{ transform:scale(1.3) }
+
+/* controlos */
+.rcc-bar{ position:relative; padding:8px 16px calc(var(--safe-bottom) + 6px); z-index:5 }
+.rcc-row2{ display:flex; justify-content:center; gap:8px; margin-bottom:16px }
+.rcc-pill{ height:34px; padding:0 11px; border-radius:17px; background:rgba(255,255,255,.1); display:flex; align-items:center; gap:6px; font-size:12.5px; font-weight:600; color:rgba(255,255,255,.92); cursor:pointer; transition:transform .14s var(--curve), opacity .2s ease; white-space:nowrap }
+.rcc-pill svg{ width:16px; height:16px }
+.rcc-pill:active{ transform:scale(.95) }
+.rcc-pill.on{ background:var(--yellow); color:#1F1300 }
+.rcc-pill.dis{ opacity:.45 }
+.rcc-row1{ display:grid; grid-template-columns:repeat(4,1fr); justify-items:center }
+.rcc-btn{ display:flex; flex-direction:column; align-items:center; gap:7px; cursor:pointer; font-size:12.5px; color:rgba(255,255,255,.85); transition:opacity .2s ease }
+.rcc-bc{ width:64px; height:64px; border-radius:50%; background:rgba(255,255,255,.14); display:flex; align-items:center; justify-content:center; transition:transform .14s var(--curve) }
+.rcc-bc svg{ width:27px; height:27px }
+.rcc-btn:active .rcc-bc{ transform:scale(.92) }
+.rcc-btn.on .rcc-bc{ background:#fff; color:#111827 }
+.rcc-mic.on .rcc-bc{ background:#fff; color:var(--red) }
+.rcc-leave .rcc-bc{ background:var(--red) }
+.rcc-btn.wait,.rcc-pill.wait{ opacity:.4; pointer-events:none }
+
+/* ---------- picture-in-picture ---------- */
+.rcc-pip{ position:absolute; left:0; top:0; width:136px; height:186px; z-index:160; border-radius:26px; color:#fff; overflow:hidden; cursor:grab; touch-action:none;
+  background:linear-gradient(165deg,#272A6B 0%,#161A42 55%,#0B3440 100%); border:1px solid rgba(255,255,255,.14); box-shadow:0 14px 34px rgba(0,0,0,.35);
+  display:flex; flex-direction:column; align-items:center; padding-top:18px; animation:rccPipIn .3s var(--curve) both }
+.rcc-pip.snap{ transition:transform .32s var(--curve) }
+.rcc-pip.video{ background:linear-gradient(160deg,#064E3B 0%,#1E3A8A 45%,#075E54 100%) }
+.rcc-pip-av{ position:relative; width:64px; height:64px }
+.rcc-pip-av .rcc-av{ position:absolute; inset:0; width:100%; height:100%; font-size:23px }
+.rcc-pip.talking .rcc-ring{ opacity:1; animation:rccTalk 1.1s var(--curve-soft) infinite; inset:-6px }
+.rcc-pip-t{ margin-top:10px; max-width:118px; font-size:var(--t-cap2); font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+.rcc-pip-s{ font-size:11.5px; opacity:.72; font-variant-numeric:tabular-nums }
+.rcc-pip-bar{ margin-top:auto; margin-bottom:12px; display:flex; gap:12px }
+.rcc-pip-b{ width:36px; height:36px; border-radius:50%; background:rgba(255,255,255,.16); display:flex; align-items:center; justify-content:center; cursor:pointer }
+.rcc-pip-b svg{ width:17px; height:17px }
+.rcc-pip-b.on{ background:#fff; color:var(--red) }
+.rcc-pip-end{ background:var(--red) }
+body.fivem .rcc-pip{ box-shadow:none; border-color:rgba(255,255,255,.24) }
+
+/* ---------- convite a tocar ---------- */
+.rcc-rs-top{ position:relative; margin-top:calc(var(--statusbar-h) + 26px); display:flex; flex-direction:column; align-items:center; gap:6px }
+.rcc-rs-app{ display:flex; align-items:center; gap:7px; font-size:var(--t-foot); font-weight:700; color:rgba(255,255,255,.9) }
+.rcc-rs-logo{ width:22px; height:22px; border-radius:7px; background:var(--rcc-grad); display:flex; align-items:center; justify-content:center }
+.rcc-rs-logo svg{ width:13px; height:13px; stroke-width:2.6 }
+.rcc-rs-kind{ font-size:var(--t-cap1); color:rgba(255,255,255,.65) }
+.rcc-rs-avwrap{ position:relative; width:136px; height:136px; margin-top:54px }
+.rcc-rs-av{ position:absolute; inset:0; width:100%; height:100%; font-size:48px; box-shadow:0 0 0 4px rgba(255,255,255,.08) }
+.rcc-pulse{ position:absolute; inset:0; border-radius:50%; border:2px solid rgba(83,189,235,.6); animation:rccPulse 2.4s ease-out infinite; pointer-events:none }
+.rcc-pulse.p2{ animation-delay:1.2s }
+.rcc-rs-title{ position:relative; margin-top:30px; font-size:var(--t-title1); font-weight:700; max-width:360px; text-align:center; white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+.rcc-rs-from{ position:relative; margin-top:6px; font-size:var(--t-callout); color:rgba(255,255,255,.75) }
+.rcc-rs-stack{ position:relative; display:flex; align-items:center; margin-top:22px }
+.rcc-rs-stack .rcc-av{ width:34px; height:34px; font-size:13px; margin-left:-9px; box-shadow:0 0 0 2px #0D1230 }
+.rcc-rs-stack .rcc-av:first-child{ margin-left:0 }
+.rcc-rs-stack span{ margin-left:10px; font-size:var(--t-cap1); color:rgba(255,255,255,.7) }
+.rcc-rs-note{ position:relative; margin-top:14px; font-size:var(--t-cap1); color:#67E8F9; min-height:18px; text-align:center; padding:0 40px }
+.rcc-rs-btns{ position:relative; margin-top:auto; margin-bottom:92px; display:flex; gap:120px }
+.rcc-rs-btn{ display:flex; flex-direction:column; align-items:center; gap:9px; font-size:var(--t-foot); color:rgba(255,255,255,.9); cursor:pointer }
+.rcc-rs-btn div{ width:76px; height:76px; border-radius:50%; display:flex; align-items:center; justify-content:center; transition:transform .14s var(--curve) }
+.rcc-rs-btn div svg{ width:32px; height:32px }
+.rcc-rs-btn:active div{ transform:scale(.92) }
+.rcc-rs-btn.rcc-dec div{ background:var(--red) }
+.rcc-rs-btn.rcc-acc div{ background:var(--green); animation:rccNudge 1.6s var(--curve-soft) infinite }
+
+/* ---------- folhas ---------- */
+.rcc-sheet{ padding:6px 20px 26px; color:var(--label) }
+.rcc-sh-ic{ width:56px; height:56px; margin:6px auto 10px; border-radius:18px; background:var(--rcc-grad); color:#fff; display:flex; align-items:center; justify-content:center; box-shadow:var(--rc-glow) }
+.rcc-sh-ic svg{ width:27px; height:27px }
+.rcc-sh-t{ text-align:center; font-size:var(--t-title3); font-weight:700 }
+.rcc-sh-sub{ text-align:center; font-size:var(--t-foot); color:var(--label2); line-height:1.4; margin:8px 6px 0 }
+.rcc-sh-err{ min-height:20px; margin:8px 0 2px; text-align:center; font-size:var(--t-cap1); color:var(--red) }
+.rcc-code-in{ display:block; width:100%; height:62px; margin-top:18px; border:none; outline:none; border-radius:16px; background:var(--fill3); color:var(--label); text-align:center; font-family:var(--font-mono); font-size:28px; font-weight:600; letter-spacing:4px; text-transform:uppercase }
+.rcc-code-in::placeholder{ color:var(--label3) }
+.rcc-code{ margin:16px auto 4px; width:max-content; max-width:100%; padding:12px 20px; border-radius:16px; background:var(--fill3); font-family:var(--font-mono); font-size:30px; font-weight:700; letter-spacing:5px; color:var(--label) }
+.rcc-acts{ display:flex; flex-direction:column; gap:10px; margin-top:18px }
+.rcc-btnp{ height:50px; border-radius:15px; background:var(--fill3); color:var(--label); display:flex; align-items:center; justify-content:center; gap:8px; font-size:var(--t-callout); font-weight:600; cursor:pointer; transition:transform .14s var(--curve) }
+.rcc-btnp svg{ width:19px; height:19px }
+.rcc-btnp:active{ transform:scale(.98) }
+.rcc-btnp.primary{ background:var(--rcc-grad); color:#fff }
+.rcc-btnp.danger{ background:transparent; color:var(--red) }
+.rcc-join .rcc-go{ margin-top:4px }
+.rcc-pick{ padding:4px 0 20px }
+.rcc-pick .rcc-card-list{ margin:0 12px; background:var(--bg2) }
+
+.rcc-sf-target{ display:flex; align-items:center; gap:12px; padding:6px 2px 4px }
+.rcc-sf-tb{ display:flex; flex-direction:column; min-width:0 }
+.rcc-sf-tb b{ font-size:var(--t-headline); white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+.rcc-sf-tb span{ font-size:var(--t-cap1); color:var(--label2) }
+.rcc-lbl{ margin:16px 4px 7px; font-size:var(--t-cap1); font-weight:600; color:var(--label2) }
+.rcc-in{ display:block; width:100%; height:46px; border:none; outline:none; border-radius:13px; background:var(--fill3); color:var(--label); padding:0 14px; font-size:var(--t-callout); font-family:inherit }
+.rcc-in::placeholder{ color:var(--label3) }
+.rcc-segw .seg{ margin:0 }
+/* escuro: o segmento ativo do ui.css usa --bg2, que no tema escuro é quase igual à pista (--fill3) e não se
+   via se estava escolhido "Voz" ou "Vídeo (simulado)", nem "Todas"/"Perdidas" */
+body.dark .rcc-h .seg div.on,body.dark .rcc-segw .seg div.on{ background:rgba(255,255,255,.2); box-shadow:0 3px 8px rgba(0,0,0,.35) }
+.rcc-days{ display:flex; gap:8px; overflow-x:auto; padding:2px 2px 4px; scrollbar-width:none }
+.rcc-days::-webkit-scrollbar{ display:none }
+.rcc-day{ flex:none; width:58px; height:64px; border-radius:15px; background:var(--fill3); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px; cursor:pointer; transition:transform .14s var(--curve) }
+.rcc-day span{ font-size:12px; color:var(--label2); font-weight:600 }
+.rcc-day b{ font-size:20px; color:var(--label) }
+.rcc-day.on{ background:var(--rcc-grad) }
+.rcc-day.on span,.rcc-day.on b{ color:#fff }
+.rcc-day:active{ transform:scale(.95) }
+.rcc-timepick{ display:flex; align-items:center; justify-content:center; gap:22px; padding:4px 0 }
+.rcc-step{ width:48px; height:48px; border-radius:50%; background:var(--fill3); color:var(--label); display:flex; align-items:center; justify-content:center; font-size:26px; font-weight:500; cursor:pointer; transition:transform .14s var(--curve) }
+.rcc-step:active{ transform:scale(.9) }
+.rcc-tv{ min-width:120px; text-align:center; font-size:40px; font-weight:700; font-variant-numeric:tabular-nums; letter-spacing:-.5px }
+/* o --rcc-ink já troca de tom no escuro (vive no :root/body.dark): não é preciso uma regra só para o tema */
+.rcc-sum{ margin-top:14px; text-align:center; font-size:var(--t-callout); font-weight:600; color:var(--rcc-ink) }
+.rcc-sum.bad{ color:var(--red) }
+
+/* ---------- bolha da mensagem `call` ---------- */
+.rcc-msg{ display:flex; align-items:center; gap:10px; min-width:236px; padding:2px 0 }
+.rcc-msg-ic{ width:40px; height:40px; border-radius:50%; flex:none; background:var(--rcc-grad); color:#fff; display:flex; align-items:center; justify-content:center }
+.rcc-msg-ic svg{ width:19px; height:19px }
+.rcc-msg.sched .rcc-msg-ic{ border-radius:13px }
+.rcc-msg.ended .rcc-msg-ic{ background:var(--fill); color:var(--label2) }
+.rcc-msg-b{ flex:1; min-width:0; display:flex; flex-direction:column }
+.rcc-msg-b b{ font-size:var(--t-subhead); white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+.rcc-msg-b span{ font-size:12.5px; opacity:.72 }
+.rcc-msg-go{ flex:none; height:30px; padding:0 13px; border-radius:15px; background:var(--rcc-a); color:#fff; font-size:var(--t-cap2); font-weight:700; display:flex; align-items:center; cursor:pointer }
+
+/* ---------- animações (só transform e opacity) ---------- */
+@keyframes rccIn{ from{ opacity:0; transform:scale(1.03) } to{ opacity:1; transform:none } }
+@keyframes rccTileIn{ from{ opacity:0; transform:scale(.94) } to{ opacity:1; transform:none } }
+@keyframes rccPipIn{ from{ opacity:0 } to{ opacity:1 } }
+@keyframes rccTalk{ 0%{ transform:scale(1); opacity:1 } 50%{ transform:scale(1.07); opacity:.6 } 100%{ transform:scale(1); opacity:1 } }
+@keyframes rccWave{ 0%{ transform:scale(1); opacity:.7 } 100%{ transform:scale(1.38); opacity:0 } }
+@keyframes rccPulse{ 0%{ transform:scale(1); opacity:.8 } 100%{ transform:scale(1.75); opacity:0 } }
+@keyframes rccBreath{ 0%,100%{ opacity:1; transform:scale(1) } 50%{ opacity:.55; transform:scale(.88) } }
+@keyframes rccNudge{ 0%,70%,100%{ transform:translateY(0) } 80%{ transform:translateY(-6px) } 90%{ transform:translateY(0) } }
+@keyframes rccHand{ 0%,100%{ transform:rotate(0) } 25%{ transform:rotate(-14deg) } 75%{ transform:rotate(14deg) } }
+@keyframes rccSim{ from{ transform:translate(-8%,-6%) } to{ transform:translate(10%,8%) } }
+@keyframes rccDrift1{ from{ transform:translate(0,0) scale(1) } to{ transform:translate(90px,120px) scale(1.12) } }
+@keyframes rccDrift2{ from{ transform:translate(0,0) scale(1) } to{ transform:translate(-100px,-140px) scale(1.08) } }
+@keyframes rccFloat0{ 0%{ opacity:0; transform:translate(0,0) scale(.4) } 12%{ opacity:1; transform:translate(0,-34px) scale(1.15) } 70%{ opacity:1 } 100%{ opacity:0; transform:translate(-20px,-330px) scale(.9) } }
+@keyframes rccFloat1{ 0%{ opacity:0; transform:translate(0,0) scale(.4) } 12%{ opacity:1; transform:translate(0,-34px) scale(1.15) } 70%{ opacity:1 } 100%{ opacity:0; transform:translate(24px,-350px) scale(.9) } }
+@keyframes rccFloat2{ 0%{ opacity:0; transform:translate(0,0) scale(.4) } 12%{ opacity:1; transform:translate(0,-34px) scale(1.15) } 70%{ opacity:1 } 100%{ opacity:0; transform:translate(4px,-310px) scale(.9) } }
+
+/* Reduzir movimento: fundo parado, anéis sem pulsar (continuam visíveis), reações só a desvanecer */
+body[data-motion="reduced"] .rcc-blob,body[data-motion="reduced"] .rcc-sim i,body[data-motion="reduced"] .rcc-pulse,body[data-motion="reduced"] .rcc-live,
+body[data-motion="reduced"] .rcc-lc-ic,body[data-motion="reduced"] .rcc-rs-btn.rcc-acc div,body[data-motion="reduced"] .rcc-tile.hand .rcc-handb{ animation:none!important }
+body[data-motion="reduced"] .rcc-tile.talking .rcc-ring{ animation:none!important; opacity:1 }
+body[data-motion="reduced"] .rcc-tile.talking .rcc-ring.r2{ opacity:0 }
+body[data-motion="reduced"] .rcc-float{ animation:rccPipIn .2s ease forwards!important }

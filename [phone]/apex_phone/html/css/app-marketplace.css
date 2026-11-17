@@ -1,0 +1,55 @@
+/* ---------- Marketplace ----------
+   Desenho à Facebook Marketplace / Vinted em PearOS: grelha de DUAS colunas, fotografia quadrada em
+   cima, preço a negrito, título a duas linhas e uma linha de meta discreta. Nada de descrição no
+   cartão (vive no detalhe). Só transform anima (regra do CEF: nada de box-shadow em transição). */
+.mk-list{ padding:6px 16px 20px; display:grid; grid-template-columns:1fr 1fr; gap:16px 12px; align-content:start }
+/* o estado vazio centra-se no espaço livre (o .content não é flex, por isso encostava ao topo com meio ecrã em branco por baixo) */
+.mk-list.is-empty{ display:flex; flex-direction:column; min-height:520px; justify-content:center }
+.mk-card{ display:flex; flex-direction:column; min-width:0; cursor:pointer; transition:transform .22s var(--spring) }
+.mk-card:active{ transform:scale(.97) }
+.mk-thumb{ position:relative; width:100%; aspect-ratio:1 / 1; border-radius:12px; overflow:hidden; background:var(--fill3) center/cover no-repeat }
+.mk-card.sold .mk-thumb{ opacity:.72 }
+.mk-body{ display:flex; flex-direction:column; gap:2px; padding:8px 2px 0; min-width:0 }
+.mk-price{ font:700 17px/1.2 var(--font); color:var(--label) }
+.mk-card.sold .mk-price{ color:var(--label2); text-decoration:line-through }
+.mk-title{ font:400 15px/1.25 var(--font); color:var(--label); display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; word-break:break-word }
+.mk-meta{ font:500 13px/1.2 var(--font); color:var(--label3); white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+.mk-sold{ position:absolute; left:8px; top:8px; font:700 12px/1 var(--font); letter-spacing:.4px; color:#fff; background:var(--red); padding:5px 8px; border-radius:8px }
+.mk-sold.big{ left:16px; top:16px; font-size:15px; padding:6px 12px }
+
+/* ---------- detalhe ---------- */
+.mk-hero{ position:relative; width:100%; aspect-ratio:1 / 1; background:var(--fill3) center/contain no-repeat }   /* quadrada e inteira: o max-height:420 com cover recortava a foto (pedido do dono) */
+.mk-info{ padding:14px 20px 4px }
+.mk-price.big{ font-size:var(--t-title1); line-height:1.15 }
+.mk-info h2{ font-size:var(--t-title2); font-weight:700; margin:4px 0 }
+.mk-info p{ margin-top:10px; line-height:1.5; white-space:pre-wrap }
+.mk-actions{ display:flex; gap:10px; padding:6px 16px 0 } .mk-actions .btn-p{ flex:1; margin:0 }
+
+/* ---------- novo anúncio ---------- */
+.mk-photo{ aspect-ratio:1 / 1; width:calc(100% - 32px); max-width:300px; box-sizing:border-box; border-radius:16px; background:var(--fill3) center/contain no-repeat; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px; color:var(--label2); font:500 15px/1.2 var(--font); cursor:pointer; margin:0 auto }
+.mk-photo:active{ transform:scale(.985) }
+
+/* ---------- escolher item do inventário (anúncio do tipo "Item") ---------- */
+.mk-photo.item { background-size: 62% auto; background-repeat: no-repeat; background-position: center; background-color: var(--fill3); }
+.mk-items { max-height: 420px; overflow-y: auto; }
+.mk-item { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 14px; background: var(--bg); margin-bottom: 8px; min-height: 64px; }
+.mk-item:active { background: var(--fill4); }
+.mk-item .im { width: 56px; height: 56px; flex: 0 0 auto; border-radius: 10px; background: var(--fill3) center/80% auto no-repeat; }
+.mk-item .bd { flex: 1; min-width: 0; }
+.mk-item .bd b { display: block; font: 600 17px/1.25 var(--font); color: var(--label); }
+
+/* ---------- PearPhone Fold aberto (880): grelha de três colunas e a foto do detalhe com altura de cartão (quadrada na
+   coluna de 640 tapava o ecrã todo); a foto continua inteira (contain) ---------- */
+body.form-fold .mk-list{ grid-template-columns:repeat(3,1fr); gap:20px 14px }
+body.form-fold .mk-hero{ aspect-ratio:auto; height:420px; width:auto; margin:4px 16px 0; border-radius:20px; overflow:hidden }
+/* aberto (2026-10-03): a lista numa coluna de 1000 com quatro anúncios por linha (na coluna de leitura eram três cartões enormes);
+   o detalhe fica na coluna de leitura, com a foto e a informação lado a lado */
+body.form-fold.fold-open .view.mk-v{ --fold-col:1000px }
+body.form-fold.fold-open .view.mk-v .mk-list{ grid-template-columns:repeat(4,1fr) }
+body.form-fold.fold-open .view.mk-v .mk-list.is-empty{ display:flex }
+body.form-fold.fold-open .view.mk-det{ --fold-col:1000px }
+body.form-fold.fold-open .view.mk-det > .content{ display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); grid-auto-rows:min-content; column-gap:8px; align-content:start }
+body.form-fold.fold-open .view.mk-det > .content > *{ grid-column:2; min-width:0 }
+body.form-fold.fold-open .view.mk-det > .content > .mk-top{ display:contents }
+body.form-fold.fold-open .view.mk-det .mk-hero{ grid-column:1; grid-row:1 / span 12; align-self:start; height:auto; aspect-ratio:1 / 1; margin:4px 8px 0 16px }
+body.form-fold.fold-open .view.mk-det .mk-info{ grid-column:2 }

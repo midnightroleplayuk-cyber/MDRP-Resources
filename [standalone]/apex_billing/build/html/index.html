@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Apex Billing</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&family=Caveat:wght@400;700&display=swap">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="css/style.css?v=121">
+</head>
+<body>
+
+<div id="notify-container" class="notify-container pos-top-right" aria-live="polite"></div>
+
+<!-- ═══════════════════════════════════════════════════════
+     BILLING PANEL — compact, billing-first
+     ═══════════════════════════════════════════════════════ -->
+<div id="billing-overlay" class="solid-overlay" hidden>
+    <div class="bp">
+
+        <header class="bp-header">
+            <div class="bp-brand">
+                <div class="bp-brand-mark"><i class="fa-solid fa-file-invoice-dollar"></i></div>
+                <div class="bp-brand-text">
+                    <strong><span id="wm-first">APEX</span> <span class="wm-accent" id="wm-second">BILLING</span></strong>
+                    <small id="bp-subtitle">Invoicing for citizens & society</small>
+                </div>
+            </div>
+            <div class="bp-header-right">
+                <span class="bp-pill" id="bp-job-pill" hidden><i class="fa-solid fa-briefcase"></i> <span id="bp-job-pill-text">—</span></span>
+                <button class="bp-icon" id="bp-settings" title="Settings"><i class="fa-solid fa-sliders"></i></button>
+                <button class="bp-icon" id="bp-close"    title="Close"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+        </header>
+
+        <nav class="bp-tabs">
+            <button class="bp-tab active" data-tab="overview"><i class="fa-solid fa-gauge"></i> Overview</button>
+            <button class="bp-tab" data-tab="new"      id="bp-tab-new"     hidden><i class="fa-solid fa-plus"></i> New</button>
+            <button class="bp-tab" data-tab="sent"     id="bp-tab-sent"    hidden><i class="fa-solid fa-paper-plane"></i> Sent</button>
+            <button class="bp-tab" data-tab="invoices"><i class="fa-solid fa-file-invoice"></i> Invoices</button>
+            <button class="bp-tab" data-tab="pending"><i class="fa-solid fa-hourglass-half"></i> Pending <span class="bp-tab-badge" id="bp-pending-badge">0</span></button>
+            <button class="bp-tab" data-tab="overdue"><i class="fa-solid fa-circle-exclamation"></i> Overdue <span class="bp-tab-badge" id="bp-overdue-badge">0</span></button>
+            <button class="bp-tab" data-tab="society"  id="bp-tab-society" hidden><i class="fa-solid fa-briefcase"></i> Society</button>
+        </nav>
+
+        <main class="bp-body" id="bp-body">
+
+            <!-- PANE: OVERVIEW (dashboard) -->
+            <section class="pane" data-pane="overview">
+                <div class="ov-grid">
+                    <div class="ov-hero">
+                        <small>OUTSTANDING ON YOU</small>
+                        <div class="ov-amount" id="ov-outstanding">$0</div>
+                        <div class="ov-hero-sub">
+                            <span><i class="fa-solid fa-hourglass-half"></i> <em id="ov-pending">0</em> pending</span>
+                            <span><i class="fa-solid fa-circle-exclamation"></i> <em id="ov-overdue">0</em> overdue</span>
+                        </div>
+                    </div>
+                    <div class="ov-tile">
+                        <small>PAID THIS WEEK</small>
+                        <strong id="ov-paid-7d">$0</strong>
+                    </div>
+                    <div class="ov-tile">
+                        <small>RECEIVED · TOTAL</small>
+                        <strong id="ov-total">0</strong>
+                    </div>
+                    <div class="ov-tile soc" id="ov-society-tile" hidden>
+                        <small>SOCIETY TREASURY</small>
+                        <strong id="ov-treasury">$0</strong>
+                    </div>
+                </div>
+
+                <div class="ref-pay-card">
+                    <div class="ref-pay-row">
+                        <i class="fa-solid fa-receipt"></i>
+                        <input id="ref-input-ov" class="apex-input" placeholder="Enter invoice number (e.g. INV-2026-000123)">
+                        <button class="btn btn-primary btn-sm" id="ref-lookup-ov"><i class="fa-solid fa-magnifying-glass"></i> Look up & pay</button>
+                    </div>
+                    <small class="ref-hint">Pay any invoice on behalf of someone else by entering its reference.</small>
+                </div>
+
+                <div class="bp-list-head"><h3>Latest activity</h3></div>
+                <div class="inv-list" id="ov-list"></div>
+            </section>
+
+            <!-- PANE: NEW (society members and/or personal billing) -->
+            <section class="pane" data-pane="new" hidden>
+
+                <div class="bp-section">
+                    <div class="bp-section-head"><i class="fa-solid fa-user-tie"></i><h3>Issuing as</h3></div>
+                    <div class="bp-recipient-tabs" id="issue-as-tabs" hidden>
+                        <button class="ia-tab active" data-as="society"><i class="fa-solid fa-briefcase"></i> Society</button>
+                        <button class="ia-tab"        data-as="player"><i class="fa-solid fa-user"></i> Personal</button>
+                    </div>
+                    <div class="issuer-card">
+                        <div class="issuer-ic"><i class="fa-solid fa-briefcase" id="issuer-icon"></i></div>
+                        <div class="issuer-meta">
+                            <strong id="issuer-label">—</strong>
+                            <small id="issuer-grade">—</small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bp-section">
+                    <div class="bp-section-head"><i class="fa-solid fa-user-plus"></i><h3>Recipient</h3></div>
+                    <div class="bp-recipient-tabs">
+                        <button class="rx-tab active" data-rx="nearby"><i class="fa-solid fa-people-arrows"></i> Nearby player</button>
+                        <button class="rx-tab"        data-rx="society" id="rx-tab-society"><i class="fa-solid fa-briefcase"></i> Society</button>
+                    </div>
+                    <select id="rx-nearby-select" class="apex-input">
+                        <option value="">Pick a nearby player…</option>
+                    </select>
+                    <select id="rx-society-select" class="apex-input" hidden>
+                        <option value="">Pick a society…</option>
+                    </select>
+                </div>
+
+                <div class="bp-section">
+                    <div class="bp-section-head"><i class="fa-solid fa-tag"></i><h3>Invoice details</h3></div>
+                    <input id="inv-title" class="apex-input" placeholder="Title — e.g. Vehicle repair, Speeding fine…">
+                    <div class="bp-grid-2">
+                        <div class="bp-field"><label>Due (days)</label><input id="inv-due" type="number" class="apex-input" value="7" min="1" max="60"></div>
+                        <div class="bp-field"><label>VAT %</label><input id="inv-vat" type="number" class="apex-input" value="0" min="0" max="100" step="0.5"></div>
+                    </div>
+                </div>
+
+                <div class="bp-section">
+                    <div class="bp-section-head">
+                        <i class="fa-solid fa-list-ul"></i><h3>Line items</h3>
+                        <button class="bp-section-act" id="li-add"><i class="fa-solid fa-plus"></i> Add</button>
+                    </div>
+                    <div class="li-table" id="li-table"></div>
+                    <div class="qa-row" id="qa-row"></div>
+                </div>
+
+                <div class="bp-section">
+                    <div class="bp-section-head"><i class="fa-solid fa-note-sticky"></i><h3>Notes <small>(optional)</small></h3></div>
+                    <textarea id="inv-notes" class="apex-input" rows="2" placeholder="Shown to the recipient on the invoice."></textarea>
+                </div>
+            </section>
+
+            <!-- PANE: SENT (personal invoices this player issued) -->
+            <section class="pane" data-pane="sent" hidden>
+                <div class="bp-list-head"><h3>Sent by you</h3><span class="bp-count" id="sent-count">0</span></div>
+                <div class="inv-list" id="sent-list"></div>
+            </section>
+
+            <!-- PANE: INVOICES (all received) -->
+            <section class="pane" data-pane="invoices" hidden>
+                <div class="bp-list-head"><h3>Your invoices</h3><span class="bp-count" id="invoices-count">0</span></div>
+                <div class="inv-list" id="invoices-list"></div>
+            </section>
+
+            <!-- PENDING -->
+            <section class="pane" data-pane="pending" hidden>
+                <div class="bp-list-head"><h3>Pending</h3><span class="bp-count" id="pending-count">0</span></div>
+                <div class="inv-list" id="pending-list"></div>
+            </section>
+
+            <!-- OVERDUE -->
+            <section class="pane" data-pane="overdue" hidden>
+                <div class="bp-list-head"><h3>Overdue</h3><span class="bp-count" id="overdue-count">0</span></div>
+                <div class="inv-list" id="overdue-list"></div>
+            </section>
+
+            <!-- PANE: SOCIETY (treasury + all society invoices) -->
+            <section class="pane" data-pane="society" hidden>
+                <div class="bp-society">
+                    <div class="bp-society-card">
+                        <small>TREASURY</small>
+                        <div class="bp-society-treasury" id="soc-treasury">—</div>
+                        <div class="bp-society-kpis">
+                            <div><small>Pending</small><strong id="soc-pending">0</strong></div>
+                            <div><small>Paid</small><strong id="soc-paid">0</strong></div>
+                            <div><small>Revenue</small><strong id="soc-revenue">$0</strong></div>
+                            <div><small>Outstanding</small><strong id="soc-outstanding">$0</strong></div>
+                        </div>
+                    </div>
+                    <div class="bp-list-head"><h3>Society invoices</h3><span class="bp-count" id="society-count">0</span></div>
+                    <div class="inv-list" id="society-list"></div>
+                </div>
+            </section>
+
+        </main>
+
+        <!-- Composer footer (fixed, only visible on the New tab) -->
+        <footer class="bp-footer" id="bp-footer" hidden>
+            <div class="bp-totals">
+                <span><small>Subtotal</small><strong id="bp-sub">$0</strong></span>
+                <span><small>VAT <em id="bp-vat-r">0%</em></small><strong id="bp-tax">$0</strong></span>
+                <span class="grand"><small>Total</small><strong id="bp-total">$0</strong></span>
+            </div>
+            <div class="bp-actions">
+                <button class="btn btn-ghost"   id="bp-preview"><i class="fa-solid fa-eye"></i> Preview</button>
+                <button class="btn btn-primary" id="send-inv"><i class="fa-solid fa-paper-plane"></i> Send invoice</button>
+            </div>
+        </footer>
+    </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     ADMIN PANEL — /billingadmin, staff only
+     ═══════════════════════════════════════════════════════ -->
+<div id="admin-overlay" class="solid-overlay" hidden>
+    <div class="bp bp-admin">
+
+        <header class="bp-header">
+            <div class="bp-brand">
+                <div class="bp-brand-mark ad-mark"><i class="fa-solid fa-shield-halved"></i></div>
+                <div class="bp-brand-text">
+                    <strong>APEX <span class="wm-accent">BILLING</span> · ADMIN</strong>
+                    <small>Server-wide invoice administration</small>
+                </div>
+            </div>
+            <div class="bp-header-right">
+                <span class="bp-pill" id="ad-who-pill"><i class="fa-solid fa-user-shield"></i> <span id="ad-who">—</span></span>
+                <button class="bp-icon" id="ad-refresh" title="Refresh"><i class="fa-solid fa-rotate"></i></button>
+                <button class="bp-icon" id="ad-close"   title="Close"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+        </header>
+
+        <nav class="bp-tabs">
+            <button class="bp-tab active" data-atab="overview"><i class="fa-solid fa-gauge"></i> Overview</button>
+            <button class="bp-tab" data-atab="invoices"><i class="fa-solid fa-magnifying-glass"></i> Invoices</button>
+            <button class="bp-tab" data-atab="societies"><i class="fa-solid fa-briefcase"></i> Societies</button>
+            <button class="bp-tab" data-atab="tools"><i class="fa-solid fa-screwdriver-wrench"></i> Tools</button>
+        </nav>
+
+        <main class="bp-body" id="ad-body">
+
+            <!-- PANE: OVERVIEW -->
+            <section class="apane" data-apane="overview">
+                <div class="ov-grid">
+                    <div class="ov-hero">
+                        <small>OUTSTANDING · SERVER-WIDE</small>
+                        <div class="ov-amount" id="ad-outstanding">$0</div>
+                        <div class="ov-hero-sub">
+                            <span><i class="fa-solid fa-hourglass-half"></i> <em id="ad-pending">0</em> pending</span>
+                            <span><i class="fa-solid fa-circle-exclamation"></i> <em id="ad-overdue">0</em> overdue</span>
+                        </div>
+                    </div>
+                    <div class="ov-tile"><small>COLLECTED · TOTAL</small><strong id="ad-revenue">$0</strong></div>
+                    <div class="ov-tile"><small>COLLECTED · 7 DAYS</small><strong id="ad-paid7">$0</strong></div>
+                    <div class="ov-tile"><small>INVOICES · TOTAL</small><strong id="ad-total">0</strong></div>
+                </div>
+
+                <div class="ad-chips" id="ad-status-chips"></div>
+
+                <div class="bp-list-head"><h3>Top societies by revenue</h3></div>
+                <div class="ad-table" id="ad-top-table"></div>
+            </section>
+
+            <!-- PANE: INVOICES -->
+            <section class="apane" data-apane="invoices" hidden>
+                <div class="ad-filters">
+                    <div class="ad-search">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <input id="ad-q" class="apex-input" placeholder="Number, title, issuer, recipient, citizen ID…">
+                    </div>
+                    <select id="ad-status" class="apex-input">
+                        <option value="all">All statuses</option>
+                        <option value="sent">Pending</option>
+                        <option value="overdue">Overdue</option>
+                        <option value="paid">Paid</option>
+                        <option value="declined">Declined</option>
+                        <option value="expired">Expired</option>
+                        <option value="cancelled">Cancelled</option>
+                    </select>
+                    <select id="ad-society" class="apex-input">
+                        <option value="all">All societies</option>
+                    </select>
+                </div>
+
+                <div class="bp-list-head">
+                    <h3>Results</h3>
+                    <span class="bp-count" id="ad-count">0</span>
+                </div>
+                <div class="inv-list" id="ad-list"></div>
+
+                <div class="ad-pager">
+                    <button class="btn btn-ghost btn-sm" id="ad-prev"><i class="fa-solid fa-chevron-left"></i> Prev</button>
+                    <span id="ad-page-label">Page 1 of 1</span>
+                    <button class="btn btn-ghost btn-sm" id="ad-next">Next <i class="fa-solid fa-chevron-right"></i></button>
+                </div>
+            </section>
+
+            <!-- PANE: SOCIETIES -->
+            <section class="apane" data-apane="societies" hidden>
+                <div class="bp-list-head"><h3>Societies</h3><span class="bp-count" id="ad-soc-count">0</span></div>
+                <div class="ad-table" id="ad-soc-table"></div>
+            </section>
+
+            <!-- PANE: TOOLS -->
+            <section class="apane" data-apane="tools" hidden>
+                <div class="ad-tool">
+                    <div class="ad-tool-meta">
+                        <strong><i class="fa-solid fa-hourglass-end"></i> Run the expire sweep now</strong>
+                        <small>Flips every past-due invoice to <em>expired</em> once it is more than
+                        the configured grace period overdue. Runs on a timer already — this forces it.</small>
+                    </div>
+                    <button class="btn btn-primary btn-sm" data-tool="expire">Run sweep</button>
+                </div>
+
+                <div class="ad-tool">
+                    <div class="ad-tool-meta">
+                        <strong><i class="fa-solid fa-broom"></i> Purge settled invoices</strong>
+                        <small>Permanently deletes paid / declined / cancelled / expired invoices
+                        older than the chosen age. Pending invoices are never touched.</small>
+                    </div>
+                    <div class="ad-tool-act">
+                        <input id="ad-purge-days" type="number" class="apex-input" value="30" min="1" max="3650">
+                        <span class="ad-unit">days</span>
+                        <button class="btn btn-danger btn-sm" data-tool="purge">Purge</button>
+                    </div>
+                </div>
+
+                <div class="ad-tool">
+                    <div class="ad-tool-meta">
+                        <strong><i class="fa-solid fa-rotate"></i> Push config to clients</strong>
+                        <small>Re-sends theme, currency, limits and society rules to everyone online
+                        after editing <code>shared/config.lua</code>. No restart needed.</small>
+                    </div>
+                    <button class="btn btn-ghost btn-sm" data-tool="reload">Push reload</button>
+                </div>
+
+                <div class="ad-note">
+                    <i class="fa-solid fa-circle-info"></i>
+                    <span>Admin actions on a single invoice <strong>only correct the ledger</strong> —
+                    they never move money. Marking an invoice paid does not credit the issuer.</span>
+                </div>
+            </section>
+
+        </main>
+    </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     INVOICE VIEW MODAL — realistic paper, works standalone
+     ═══════════════════════════════════════════════════════ -->
+<div id="invoice-overlay" hidden>
+    <div class="invoice-modal">
+        <header class="im-top">
+            <div class="im-eyebrow" id="im-eyebrow">INVOICE</div>
+            <button class="bp-icon" id="im-close" title="Close"><i class="fa-solid fa-xmark"></i></button>
+        </header>
+        <div class="paper" id="invoice-paper"></div>
+        <footer class="im-actions" id="im-actions"></footer>
+    </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     SETTINGS POPOVER
+     ═══════════════════════════════════════════════════════ -->
+<div id="settings-overlay" hidden>
+    <div class="settings-pop">
+        <header><strong>Settings</strong><button class="bp-icon" id="settings-close"><i class="fa-solid fa-xmark"></i></button></header>
+        <div class="settings-row">
+            <label>Brand colour</label>
+            <div class="color-pick">
+                <div class="color-swatch"><input type="color" id="theme-color"></div>
+                <code class="iban-chip" id="theme-color-hex">#1F5EFF</code>
+                <button class="btn btn-ghost btn-sm" id="theme-reset">Reset</button>
+            </div>
+            <div class="color-presets" id="theme-presets"></div>
+        </div>
+        <div class="settings-row">
+            <label>Background colour</label>
+            <div class="color-pick">
+                <div class="color-swatch" style="background:var(--surface-2)"><input type="color" id="bg-color"></div>
+                <code class="iban-chip" id="bg-color-hex">#0A0A0B</code>
+                <button class="btn btn-ghost btn-sm" id="bg-reset">Reset</button>
+            </div>
+            <div class="color-presets" id="bg-presets"></div>
+        </div>
+    </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     CONFIRM / PROMPT DIALOG
+     ═══════════════════════════════════════════════════════ -->
+<div id="dialog-overlay" hidden>
+    <div class="dialog">
+        <header><strong id="dlg-title">Confirm</strong></header>
+        <p id="dlg-body">…</p>
+        <div id="dlg-input-wrap" hidden><input id="dlg-input" class="apex-input"></div>
+        <footer>
+            <button class="btn btn-ghost"   id="dlg-cancel">Cancel</button>
+            <button class="btn btn-primary" id="dlg-ok">OK</button>
+        </footer>
+    </div>
+</div>
+
+<script src="js/app.js?v=121"></script>
+</body>
+</html>

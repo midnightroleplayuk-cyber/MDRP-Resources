@@ -1,0 +1,427 @@
+/* ============================================================
+   NOVA UI 8.5: ECRA PRINCIPAL, GAVETA DE APPS, PAINEL EDGE, PASTAS E WIDGETS
+   Tudo dentro de body.os-android: o PearPhone (iOS) nao muda um pixel. As unicas regras sem esse prefixo dizem
+   "display:none" a elementos que so a Nova UI cria (barra de edicao, zonas de arrasto, gaveta, Edge) para que nunca
+   aparecam crus depois de uma troca de sistema a quente.
+   Regras do CEF (FiveM): nada de backdrop-filter nem filter (pintam preto); o vidro e a copia PRE-DESFOCADA do fundo
+   (var(--wp-blur), escrita no #screen pelo System.makeBlur) por baixo de uma tinta; so transform/opacity animam;
+   sem color-mix(); sem :has(). Os numeros da grelha batem com home.js (A_TOP 80, A_DOCK_Y 788, A_EDIT_S .8, A_EDIT_DY 34).
+   ============================================================ */
+
+/* ---------- elementos so da Nova UI: escondidos fora dela ---------- */
+#home .ah-ebar,#home .ah-dz,#home .ah-stop,#home .ah-sbar,#home .adr,.aedge-h,.aedge-w{ display:none }
+
+/* ---------- forma do icone Nova UI 8.5 (superelipse ~2,9, mais redonda do que um quadrado de cantos arredondados) em todo o telemovel ----------
+   ⚠️ O caminho e o SQ do icons-android.js (o aro dos icones segue esta forma): mudar os dois juntos */
+body.os-android .tile{ border-radius:34% }
+body.os-android .tile.img,body.os-android .tile > svg,body.os-android .tile > img{
+  -webkit-mask:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><path d='M50 0C88 0 100 12 100 50S88 100 50 100 0 88 0 50 12 0 50 0z'/></svg>") center/100% 100% no-repeat;
+  mask:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><path d='M50 0C88 0 100 12 100 50S88 100 50 100 0 88 0 50 12 0 50 0z'/></svg>") center/100% 100% no-repeat }
+/* a camada de vidro do PearOS 27 (liquid27.css) sai: os icones Nova UI ja trazem o volume e o aro no proprio desenho, e os
+   de terceiros trazem o vidro do PearOS no SVG; uma segunda camada por cima duplicava o reflexo */
+body.os-android .hi .tile::after,body.os-android .dock .tile::after,body.os-android .gs-app .tile::after{ display:none }
+
+/* ---------- ecra principal: grelha, icones, etiquetas ---------- */
+body.os-android #home{ --ah-dock-y:812px; --ah-dots-y:788px }
+body.os-android[data-nav="gesture"] #home{ --ah-dock-y:830px; --ah-dots-y:806px }   /* sem barra de 3 botoes a dock desce */
+body.os-android #home .pages{ top:80px }
+/* icone Nova UI 8.5 (design system: visual 56 em 360 dp, etiqueta 11/400 a 6 do icone): aqui 64 px na celula de 70 do home.js,
+   etiqueta 13/400 a 7 px, uma linha com reticencias */
+body.os-android #home .hi.app .tile,body.os-android #home .hi.folder .tile{ width:64px; height:64px; margin-top:2px }
+/* sombra 3D "a flutuar" (0 2 8 a 15 %, um pouco mais forte para se ler nos fundos claros): um pseudo-elemento do tamanho do
+   icone por tras dele (a mascara do .tile cortava qualquer box-shadow); estatica, nunca anima */
+body.os-android #home .hi.app::before{ content:''; position:absolute; left:50%; top:3px; width:62px; height:62px; margin-left:-31px; border-radius:34%; pointer-events:none;
+  box-shadow:0 3px 9px rgba(0,0,0,.18),0 1px 2px rgba(0,0,0,.10); transition:opacity .15s }
+body.os-android #home .hi.app.pressed::before{ opacity:0 }
+body.os-android #home .hi.app.dragging::before{ opacity:1; box-shadow:0 12px 24px rgba(0,0,0,.34),0 3px 6px rgba(0,0,0,.18) }   /* levantado: sombra maior e fixa */
+body.os-android #home .hi:active .tile,body.os-android #home .hi.pressed .tile{ transform:scale(.94) }
+/* sombra de texto da One UI: em três camadas (contorno curto + halo + difusa) para a etiqueta branca se ler também nos fundos
+   claros (Branco, Azul-celeste) por cima das faixas de luz; estática */
+body.os-android #home .app-name{ margin-top:7px; font-size:13px; line-height:16px; height:16px; font-weight:400; letter-spacing:0; max-width:88px;
+  text-shadow:0 1px 2px rgba(0,0,0,.55),0 0 4px rgba(0,0,0,.34),0 0 10px rgba(0,0,0,.22) }
+/* emblema Nova UI: laranja, colado ao canto do icone */
+body.os-android #home .hi > .badge{ top:-3px; right:-3px; min-width:21px; height:21px; padding:0 6px; border-radius:11px; border:none; background:#FB6A33; font-size:12px; font-weight:600; box-shadow:0 1px 3px rgba(0,0,0,.25) }
+body.os-android #home .rm,body.os-android #home .edit-bar{ display:none!important }   /* sem "−" nem barra de cima do PearOS */
+body.os-android #home.edit .hi.app .tile,body.os-android #home.edit .hi.folder .tile,body.os-android #home.edit .hi.widget .wg{ animation:none }   /* a Nova UI nao treme */
+body.os-android #home .hi.app .tile.over{ transform:scale(1.12) }
+
+/* ---------- dock sem fundo, por cima da barra de navegacao, com o passo da grelha ---------- */
+body.os-android #home .dock{ top:var(--ah-dock-y); left:0; width:440px; height:76px; border-radius:0; border:none; padding:0; background:none!important; box-shadow:none!important; backdrop-filter:none; -webkit-backdrop-filter:none;
+  display:flex; align-items:flex-start; justify-content:center; gap:var(--gap-x); overflow:visible; isolation:auto; transition:opacity .22s,transform .32s var(--ou-curve-out) }
+body.os-android #home .dock::before{ display:none }
+body.os-android #home.edit .dock,body.os-android #home.ah-sel .dock{ opacity:0; transform:translate3d(0,24px,0); pointer-events:none }
+
+/* ---------- indicador de paginas (design system: pontos de 6, intervalo 6, inativo a ~.35; sem capsula; a Biblioteca nao existe)
+   logo acima da dock; a sombra curta deixa o ponto branco ler-se nos fundos claros ---------- */
+body.os-android #home .page-dots{ top:var(--ah-dots-y); left:0; right:0; transform:none; padding:0; gap:6px; border-radius:0; background:none; opacity:1; transition:transform .34s var(--ou-curve-out) }
+body.os-android #home .page-dots span{ width:6px; height:6px; background:rgba(255,255,255,.4); box-shadow:0 0 2px rgba(0,0,0,.28); transition:background-color .2s }
+body.os-android #home .page-dots span.on{ background:#fff; box-shadow:0 0 2px rgba(0,0,0,.32) }
+body.os-android #home .page-dots span.lib{ display:none }
+body.os-android #home .page-dots span:first-child:nth-last-child(2){ visibility:hidden }   /* uma pagina so: sem indicador */
+
+/* ---------- modo de edicao: as paginas encolhem (escala estatica) num cartao; a dock sai; barra de baixo ---------- */
+body.os-android #home .page{ transform-origin:50% 0; transition:transform .34s var(--ou-curve-out) }
+body.os-android #home.edit .page{ transform:translate3d(0,34px,0) scale(.8) }
+body.os-android #home .page::before{ content:''; position:absolute; left:6px; right:6px; top:-24px; bottom:-18px; border-radius:34px; pointer-events:none;
+  background:rgba(255,255,255,.12); box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.22); opacity:0; transition:opacity .25s }
+body.os-android #home.edit .page::before{ opacity:1 }
+body.os-android #home.edit .page-dots{ transform:translate3d(0,calc(680px - var(--ah-dots-y)),0) }   /* por baixo do cartao da pagina encolhida (y 680) */
+body.os-android #home .hi.ah-land{ transform:scale(.8)!important; transform-origin:0 0 }
+body.os-android #home .ah-ebar{ display:flex; position:absolute; left:20px; right:20px; top:768px; height:100px; z-index:31; justify-content:space-evenly; align-items:flex-start;
+  opacity:0; transform:translate3d(0,24px,0); pointer-events:none; transition:opacity .2s,transform .32s var(--ou-curve-out) }
+body.os-android #home.edit .ah-ebar{ opacity:1; transform:none; pointer-events:auto }
+body.os-android #home .ah-eb{ width:112px; padding:12px 4px 10px; border-radius:20px; display:flex; flex-direction:column; align-items:center; gap:8px; cursor:pointer;
+  color:#fff; font-size:13px; font-weight:500; line-height:16px; text-align:center; text-shadow:0 1px 2px rgba(0,0,0,.55),0 0 6px rgba(0,0,0,.3); transition:background .15s }
+body.os-android #home .ah-eb svg{ width:26px; height:26px }
+body.os-android #home .ah-eb:hover{ background:rgba(255,255,255,.10) }
+body.os-android #home .ah-eb:active{ background:rgba(255,255,255,.18) }
+
+/* ---------- arrastar: "Remover" / "Desinstalar" no topo ---------- */
+body.os-android #home .ah-dz{ display:flex; position:absolute; left:16px; right:16px; top:58px; height:60px; gap:12px; z-index:58; pointer-events:none;
+  opacity:0; transform:translate3d(0,-14px,0); transition:opacity .18s,transform .26s var(--ou-curve-out) }
+body.os-android #home .ah-dz.on{ opacity:1; transform:none }
+body.os-android #home .ah-dzb{ flex:1; display:flex; align-items:center; justify-content:center; gap:8px; border-radius:999px; background:rgba(0,0,0,.30);
+  color:#fff; font-size:15px; font-weight:600; text-shadow:0 1px 3px rgba(0,0,0,.3); transition:background .15s }
+body.os-android #home .ah-dzb svg{ width:22px; height:22px }
+body.os-android #home .ah-dzb.hot{ background:rgba(255,255,255,.34) }
+body.os-android #home .ah-dz-uninstall.hot{ background:rgba(242,69,61,.88) }
+
+/* ---------- selecionar varias apps ---------- */
+body.os-android #home.ah-sel .ah-stop{ display:flex; position:absolute; top:58px; left:26px; right:18px; height:44px; z-index:32; align-items:center; justify-content:space-between;
+  color:#fff; font:600 21px/1.2 var(--font-display); text-shadow:0 1px 4px rgba(0,0,0,.4) }
+body.os-android #home .ah-sx{ font-family:'Inter',-apple-system,'Segoe UI',Roboto,sans-serif; font-size:15px; font-weight:600; line-height:1; padding:10px 16px; border-radius:999px; background:rgba(0,0,0,.28); cursor:pointer; text-shadow:none; transition:background .15s }
+body.os-android #home .ah-sx:hover{ background:rgba(0,0,0,.4) }
+body.os-android #home.ah-sel .ah-sbar{ display:flex; position:absolute; left:40px; right:40px; top:790px; height:90px; z-index:32; justify-content:space-evenly; align-items:flex-start }
+body.os-android #home .ah-sbar .ah-eb.off{ opacity:.4; pointer-events:none }
+body.os-android #home.ah-sel .pages .hi.app::after{ content:''; position:absolute; top:-1px; left:1px; z-index:4; width:22px; height:22px; border-radius:50%; box-sizing:border-box;
+  border:2px solid #fff; background:rgba(0,0,0,.28); box-shadow:0 1px 3px rgba(0,0,0,.3) }
+body.os-android #home.ah-sel .pages .hi.app.ah-on::after{ border-color:#3E7BFA; background:#3E7BFA url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3.4' stroke-linecap='round' stroke-linejoin='round'><path d='M5 12.5l4.5 4.5L19 7.5'/></svg>") center/14px no-repeat }
+body.os-android #home.ah-sel .pages .hi.folder,body.os-android #home.ah-sel .pages .hi.widget{ opacity:.4!important }
+
+/* ---------- pasta (design system: squircle translucido de vidro, 2x2 mini icones de 20 a 6 de raio, intervalo 4, margem 8)
+   aqui 64 px: mini icones de 21, intervalo 5; vidro = branco translucido + aro claro de 1 px (sem desfoque no CEF) ---------- */
+body.os-android #home .hi.folder .tile{ border-radius:34%; border:none; background:rgba(255,255,255,.22); box-shadow:inset 0 1px 0 rgba(255,255,255,.5),inset 0 -1px 0 rgba(0,0,0,.08),inset 0 0 0 1px rgba(255,255,255,.22); backdrop-filter:none; -webkit-backdrop-filter:none;
+  grid-template-columns:repeat(2,21px); grid-auto-rows:21px; gap:5px; padding:0; align-content:center; justify-content:center;
+  -webkit-mask:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><path d='M50 0C88 0 100 12 100 50S88 100 50 100 0 88 0 50 12 0 50 0z'/></svg>") center/100% 100% no-repeat;
+  mask:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><path d='M50 0C88 0 100 12 100 50S88 100 50 100 0 88 0 50 12 0 50 0z'/></svg>") center/100% 100% no-repeat }
+/* ⚠️ `.mini` e tambem o mini-leitor de musica (apps.css): posicao absoluta, 58 px, vidro, padding. Sem este reset os mini icones
+   iam parar fora da pasta e a pasta ficava vazia (classe generica partilhada, ver nui-shared-page-class-collision) */
+body.os-android #home .hi.folder .tile .mini{ position:static; inset:auto; z-index:auto; display:block; width:21px; height:21px; padding:0; margin:0; gap:0; border:none; border-radius:32%;
+  overflow:hidden; background:none; backdrop-filter:none; -webkit-backdrop-filter:none; box-shadow:none; cursor:inherit }
+body.os-android #home .hi.folder .tile .mini svg{ width:21px; height:21px; display:block }
+body.os-android #home .hi.folder .tile .mini:nth-child(n+5){ display:none }
+body.os-android #home .hi.folder .tile.over{ transform:scale(1.1); background:rgba(255,255,255,.36) }
+/* pasta aberta: fundo desfocado (copia pre-desfocada) + cartao r26 que cresce a partir do icone. Material do design system:
+   no claro opaco com sombra curta; no escuro VIDRO (o fundo ja esta desfocado e escurecido: tinta branca fraca + aro de 1 px) */
+body.os-android #home .folder-overlay.ah-fo{ background:transparent; backdrop-filter:none; -webkit-backdrop-filter:none; overflow:hidden; justify-content:center; padding-bottom:30px }
+body.os-android #home .folder-overlay.ah-fo::before{ content:''; position:absolute; inset:0; z-index:-1; border-radius:inherit; pointer-events:none;
+  background:linear-gradient(rgba(0,0,0,.34),rgba(0,0,0,.34)),var(--wp-blur,var(--wp,#1C1C1E)) center/cover no-repeat }
+body.os-android #home .ah-fcard{ width:396px; padding:18px 16px 22px; border-radius:26px; background:rgba(252,252,255,.92); color:rgba(0,0,0,.87);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.9),inset 0 0 0 1px rgba(255,255,255,.5),0 4px 17px rgba(0,0,0,.14); opacity:0; transform:scale(.6); transition:transform .34s var(--ou-curve-out),opacity .2s }
+body.os-android.dark #home .ah-fcard{ background:rgba(255,255,255,.1); box-shadow:inset 0 1px 0 rgba(255,255,255,.18),inset 0 -1px 0 rgba(0,0,0,.2),inset 0 0 0 1px rgba(255,255,255,.1); color:#fff }
+body.os-android.dark #home .ah-fname:focus{ background:rgba(255,255,255,.1) }
+body.os-android #home .folder-overlay.in .ah-fcard{ opacity:1; transform:none }
+body.os-android #home .ah-fhead{ display:flex; align-items:center; gap:8px; margin:0 4px 16px }
+body.os-android #home .ah-fname{ flex:1; min-width:0; padding:6px 8px; border:none; border-radius:12px; outline:none; background:none; color:inherit; font:600 22px/1.2 var(--font-display); transition:background .15s }
+body.os-android #home .ah-fname:focus{ background:var(--fill3) }
+body.os-android #home .ah-fadd{ width:40px; height:40px; flex:none; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; color:inherit; transition:background .15s }
+body.os-android #home .ah-fadd:hover{ background:var(--fill3) }
+body.os-android #home .ah-fbox{ display:grid; grid-template-columns:repeat(4,70px); justify-content:space-between; row-gap:18px; padding:0 8px; max-height:560px; overflow-y:auto; overscroll-behavior:contain }
+body.os-android #home .ah-fbox .hi{ position:relative; translate:none; opacity:1; transform:none; animation:none!important }
+body.os-android #home .ah-fbox .app-name{ color:inherit; text-shadow:none }
+
+/* ---------- widgets Nova UI: cartoes r26 opacos claro/escuro, sem etiqueta por baixo, a ocupar as duas linhas ---------- */
+body.os-android .hi.widget .wg{ height:calc(var(--row-step) + var(--icon) + 18px); border-radius:26px; padding:16px 18px; background:#FCFCFF; color:rgba(0,0,0,.87); border:none;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.9),0 2px 10px rgba(0,0,0,.10),0 8px 24px rgba(0,0,0,.08) }   /* 8.5: fio de luz em cima e sombra em duas camadas (flutua) */
+body.os-android .hi.widget.w4x4 .wg{ height:calc(var(--row-step) * 3 + var(--icon) + 18px) }
+body.os-android.dark .hi.widget .wg{ background:#1B1B1F; color:#fff; box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 2px 10px rgba(0,0,0,.26),0 8px 24px rgba(0,0,0,.2) }
+body.os-android .hi.widget .wg.glass{ border:none; backdrop-filter:none; -webkit-backdrop-filter:none }
+body.os-android #home .hi.widget .app-name{ display:none }
+body.os-android .wg .wt{ font-size:13px; font-weight:500; text-transform:none; letter-spacing:0; opacity:.68 }
+body.os-android .wg .wb{ font-family:var(--font-display); font-weight:500 }
+body.os-android .wg .wm{ font-weight:600 }
+/* widget sem cartao ("Tempo e relogio"): texto direto no fundo */
+#home .hi.widget .wg.clear,.hi.widget .wg.clear{ background:none!important; box-shadow:none!important; border:none; padding:2px 4px; color:#fff; overflow:visible }
+#home .hi.widget .wg.clear ~ .app-name{ display:none }   /* aberto num PearPhone (a disposição é da conta), este widget também não leva legenda */
+.ah-cw{ position:absolute; inset:0; display:flex; align-items:center; justify-content:space-between; gap:12px; padding:0 6px; color:#fff;
+  text-shadow:0 1px 3px rgba(0,0,0,.45),0 0 6px rgba(0,0,0,.22),0 0 16px rgba(0,0,0,.18) }
+.ah-cw-l{ min-width:0 }
+.ah-cw-t{ font-family:var(--font-display,'Outfit','Inter',sans-serif); font-size:70px; font-weight:300; line-height:1; letter-spacing:-1.5px; white-space:nowrap }
+.ah-cw-d{ margin-top:10px; font-size:16px; font-weight:500; white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+.ah-cw-r{ flex:none; max-width:46%; display:flex; flex-direction:column; align-items:flex-end; gap:3px; text-align:right }
+.ah-cw-i{ display:flex; align-items:center; gap:8px } .ah-cw-i svg{ width:34px; height:34px }
+.ah-cw-i b{ font-family:var(--font-display,'Outfit','Inter',sans-serif); font-size:40px; font-weight:400; line-height:1 }
+.ah-cw-c{ font-size:15px; font-weight:600; max-width:100%; white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+.ah-cw-hl{ font-size:13px; opacity:.88; white-space:nowrap }
+.ah-cw.s2{ flex-direction:column; align-items:flex-start; justify-content:center; gap:0; padding:0 4px }
+.ah-cw.s2 .ah-cw-t{ font-size:54px } .ah-cw.s2 .ah-cw-d{ margin-top:6px; font-size:14px }
+.ah-cw-w{ display:flex; align-items:center; gap:6px; margin-top:14px; font-size:14px; max-width:100%; white-space:nowrap }
+.ah-cw-w svg{ width:24px; height:24px; flex:none } .ah-cw-w b{ font-size:18px; font-weight:500 } .ah-cw-w span{ overflow:hidden; text-overflow:ellipsis; opacity:.9 }
+/* Notas Nova UI */
+.ah-wn{ position:absolute; inset:0; padding:16px 18px; display:flex; flex-direction:column; gap:10px }
+.ah-wn-h{ display:flex; align-items:center; gap:8px; color:#F08A24; font-size:15px; font-weight:600 } .ah-wn-h svg{ width:18px; height:18px }
+.ah-wn-h em{ margin-left:auto; font-style:normal; font-size:13px; font-weight:500; color:var(--label2) }
+.ah-wn-l{ flex:1; min-height:0; overflow:hidden; display:flex; flex-direction:column; gap:12px }
+.ah-wn-r b{ display:block; font-size:15px; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+.ah-wn-r span{ display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; margin-top:2px; font-size:13.5px; line-height:1.35; color:var(--label2) }
+.ah-wn.s2 .ah-wn-r span{ -webkit-line-clamp:2 }
+.ah-wn.s2 .ah-wn-l{ gap:10px }
+.ah-wn-none{ font-size:14px; color:var(--label2) }
+/* Calendario Nova UI */
+.ah-wc{ position:absolute; inset:0; padding:16px 18px; display:flex; flex-direction:column }
+.ah-wc-h span{ display:block; font-size:14px; font-weight:600; color:#3E7BFA; text-transform:capitalize }
+.ah-wc-h b{ display:block; margin-top:2px; font-family:var(--font-display,'Outfit','Inter',sans-serif); font-size:48px; font-weight:400; line-height:1 }
+.ah-wc-m{ margin-top:4px; font-size:14px; color:var(--label2); text-transform:capitalize }
+.ah-wc-l{ margin-top:auto; min-height:0; overflow:hidden; display:flex; flex-direction:column; gap:9px }
+.ah-wc-ev{ display:flex; gap:9px; align-items:stretch; min-width:0 } .ah-wc-ev i{ width:4px; border-radius:2px; flex:none }
+.ah-wc-ev div{ min-width:0 } .ah-wc-ev b{ display:block; font-size:14px; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+.ah-wc-ev span{ display:block; font-size:12.5px; color:var(--label2) }
+.ah-wc-none{ font-size:14px; color:var(--label2) }
+.ah-wc.s42{ flex-direction:row; align-items:center; gap:20px } .ah-wc.s42 .ah-wc-h{ width:100px; flex:none } .ah-wc.s42 .ah-wc-l{ margin-top:0; flex:1; justify-content:center }
+
+/* ---------- seletor de widgets Nova UI (folha .ah-wpick) ---------- */
+body.os-android .ah-wp{ padding:2px 16px 28px; display:flex; flex-direction:column; gap:12px }
+body.os-android .ah-wp-s{ display:flex; align-items:center; gap:10px; height:48px; padding:0 16px; border-radius:999px; background:var(--fill3); color:var(--label2) }
+body.os-android .ah-wp-s svg{ width:20px; height:20px; flex:none }
+body.os-android .ah-wp-s input{ flex:1; min-width:0; height:100%; border:none; outline:none; background:none; color:var(--label); font:inherit; font-size:16px }
+body.os-android .ah-wp-app{ border-radius:26px; background:var(--ou-surface,#FCFCFF); overflow:hidden }
+body.os-android .ah-wp-app[hidden]{ display:none }
+body.os-android .ah-wp-hd{ display:flex; align-items:center; gap:14px; padding:14px 16px; cursor:pointer; transition:background .15s }
+body.os-android .ah-wp-hd:hover{ background:var(--fill4) }
+body.os-android .ah-wp-hd .tile{ width:44px; height:44px; flex:none }
+body.os-android .ah-wp-gen{ display:flex; align-items:center; justify-content:center; background:#8C8C92; color:#fff }
+body.os-android .ah-wp-t{ flex:1; min-width:0 } body.os-android .ah-wp-t b{ display:block; font-size:16px; font-weight:600; color:var(--label) }
+body.os-android .ah-wp-t span{ font-size:13px; color:var(--label2) }
+body.os-android .ah-wp-ch{ color:var(--label2); display:flex; transition:transform .25s var(--ou-curve-out) }
+body.os-android .ah-wp-app.open .ah-wp-ch{ transform:rotate(180deg) }
+body.os-android .ah-wp-sc{ display:none; align-items:flex-end; gap:14px; padding:2px 16px 18px; overflow-x:auto; scrollbar-width:none }
+body.os-android .ah-wp-sc::-webkit-scrollbar{ display:none }
+body.os-android .ah-wp-app.open .ah-wp-sc{ display:flex }
+body.os-android .ah-wp-pv{ flex:none; display:flex; flex-direction:column; align-items:center; gap:8px; cursor:pointer }
+body.os-android .ah-wp-box{ padding:10px; border-radius:20px; background:linear-gradient(rgba(0,0,0,.12),rgba(0,0,0,.12)),var(--wp-blur,var(--wp,#2A2A30)) center/cover no-repeat; transition:opacity .15s }
+body.os-android .ah-wp-pv:hover .ah-wp-box{ opacity:.88 }
+body.os-android .ah-wp-hi{ position:relative!important; translate:none!important; opacity:1!important; transform:none!important; animation:none!important; display:flex }
+body.os-android .ah-wp-pv.s2x2 .ah-wp-hi{ zoom:.6 } body.os-android .ah-wp-pv.s4x2 .ah-wp-hi{ zoom:.5 } body.os-android .ah-wp-pv.s4x4 .ah-wp-hi{ zoom:.4 }
+body.os-android .ah-wp-lb{ text-align:center } body.os-android .ah-wp-lb b{ display:block; font-size:13px; font-weight:600; color:var(--label) }
+body.os-android .ah-wp-lb span{ font-size:12px; color:var(--label2) }
+body.os-android .ah-wp-none{ padding:24px 0; text-align:center; font-size:14px; color:var(--label2) }
+body.os-android .ah-wp-none[hidden]{ display:none }
+
+/* ---------- menu de um icone (pop-up Nova UI), montado no #screen ---------- */
+body.os-android .ah-mw{ position:absolute; inset:0; z-index:182; border-radius:inherit; background:rgba(0,0,0,0); transition:background .2s }
+body.os-android .ah-mw.in{ background:rgba(0,0,0,.12) }
+/* Android 17: menu translucido (deixa passar um pouco do fundo) com fio de luz em cima; a mola de entrada e a --ou-curve-out */
+body.os-android .ah-m{ position:absolute; width:auto; min-width:256px; max-width:320px; box-sizing:border-box; padding:8px; border-radius:26px; background:rgba(252,252,255,.9); color:rgba(0,0,0,.87);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.8),inset 0 0 0 1px rgba(255,255,255,.4),0 12px 34px rgba(0,0,0,.24),0 2px 6px rgba(0,0,0,.10); opacity:0; transform:scale(.86); transition:transform .26s var(--ou-curve-out),opacity .14s }
+body.os-android.dark .ah-m{ background:rgba(40,40,46,.9); color:#fff; box-shadow:inset 0 1px 0 rgba(255,255,255,.1),inset 0 0 0 1px rgba(255,255,255,.07),0 12px 34px rgba(0,0,0,.4) }
+body.os-android .ah-mw.in .ah-m{ opacity:1; transform:none }
+body.os-android .ah-mw.out .ah-m{ transition:transform .14s ease-in,opacity .12s }
+body.os-android .ah-mr{ display:flex; align-items:center; gap:14px; height:46px; padding:0 14px; border-radius:16px; cursor:pointer; font-size:15px; font-weight:500; transition:background .12s }
+body.os-android .ah-mr span{ min-width:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+body.os-android .ah-mr svg{ width:20px; height:20px; flex:none; color:var(--label2) }
+body.os-android .ah-mr:hover,body.os-android .ah-mb:hover{ background:var(--fill3) }
+body.os-android .ah-ma{ display:flex; margin-top:6px; padding-top:8px; border-top:1px solid var(--sep) }
+body.os-android .ah-ma.solo{ margin-top:0; padding-top:0; border-top:none }
+body.os-android .ah-mb{ flex:1 0 72px; min-width:72px; display:flex; flex-direction:column; align-items:center; gap:5px; padding:9px 2px 7px; border-radius:16px; cursor:pointer;
+  font-size:11px; font-weight:500; line-height:14px; letter-spacing:-.1px; text-align:center; transition:background .12s }
+body.os-android .ah-mb svg{ width:22px; height:22px }
+body.os-android .ah-mb span{ max-width:100%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap }
+body.os-android .ah-mb.danger{ color:var(--red) }
+body.os-android .adr-noic{ display:block; width:20px; height:20px; flex:none }
+
+/* ---------- gaveta de apps (ecra de apps Nova UI 8.5: a barra de pesquisa em capsula de vidro EM CIMA com a pilula da ordem por
+   baixo, grelha de 4 colunas no ecra todo e os pontos das paginas em baixo, por cima da barra de navegacao; ao pesquisar a pilula
+   da ordem sai e os resultados aparecem por baixo da barra). As colunas sao as da home (X0 33, celula 70, intervalo 31,33). ---------- */
+body.os-android #home .adr{ --adr-sb-y:58px; --adr-dots-y:842px }
+body.os-android[data-nav="gesture"] #home .adr{ --adr-dots-y:862px }
+body.os-android #home .adr.on{ display:block; position:absolute; inset:0; z-index:44; overflow:hidden; border-radius:inherit; touch-action:none }
+body.os-android #home .adr-bg{ position:absolute; inset:0; opacity:0; transition:opacity .3s var(--ou-curve-out);
+  background:linear-gradient(rgba(244,244,248,.66),rgba(244,244,248,.66)),var(--wp-blur,var(--wp,#E9E9EE)) center/cover no-repeat }
+body.os-android.dark #home .adr-bg{ background:linear-gradient(rgba(6,6,8,.52),rgba(6,6,8,.52)),var(--wp-blur,var(--wp,#101012)) center/cover no-repeat }
+body.os-android #home .adr-in{ position:absolute; inset:0; opacity:0; transition:opacity .24s ease-out,transform .34s var(--ou-curve-out) }
+body.os-android #home .adr.pull .adr-bg,body.os-android #home .adr.pull .adr-in{ transition:none }
+body.os-android #home .adr.dragout{ pointer-events:none }
+body.os-android #home .adr.dragout .adr-bg,body.os-android #home .adr.dragout .adr-in{ transition:opacity .16s ease-out }
+body.os-android #home .adr-top{ position:absolute; z-index:2; left:16px; right:16px; top:var(--adr-sb-y); display:flex; flex-direction:column; gap:10px }
+/* vidro G1: tinta translucida + fio de luz em cima e aro de 1 px por cima do fundo ja desfocado da gaveta */
+body.os-android #home .adr-sb{ height:48px; display:flex; align-items:center; gap:2px; padding:0 4px 0 12px; border-radius:999px; cursor:text;
+  background:rgba(255,255,255,.62); color:rgba(0,0,0,.62); box-shadow:inset 0 1px 0 rgba(255,255,255,.85),inset 0 0 0 1px rgba(255,255,255,.5),0 2px 8px rgba(0,0,0,.06) }
+body.os-android.dark #home .adr-sb{ background:rgba(255,255,255,.12); color:rgba(255,255,255,.72); box-shadow:inset 0 1px 0 rgba(255,255,255,.16),inset 0 0 0 1px rgba(255,255,255,.08) }
+/* pilula da ordem ("Ordem personalizada" / "Ordem alfabetica" + seta): abre o mesmo menu dos tres pontos; sai ao pesquisar */
+body.os-android #home .adr-tools{ display:flex; justify-content:flex-start; padding:0 2px }
+body.os-android #home .adr.searching .adr-tools{ display:none }
+body.os-android #home .adr-sort{ display:inline-flex; align-items:center; gap:6px; height:34px; padding:0 10px 0 14px; border-radius:17px; cursor:pointer; color:var(--label); font-size:13px; font-weight:600; white-space:nowrap;
+  background:rgba(255,255,255,.5); box-shadow:inset 0 1px 0 rgba(255,255,255,.8),inset 0 0 0 1px rgba(255,255,255,.45); transition:background .15s }
+body.os-android.dark #home .adr-sort{ background:rgba(255,255,255,.1); box-shadow:inset 0 1px 0 rgba(255,255,255,.14),inset 0 0 0 1px rgba(255,255,255,.08) }
+body.os-android #home .adr-sort:hover{ background:rgba(255,255,255,.66) } body.os-android.dark #home .adr-sort:hover{ background:rgba(255,255,255,.16) }
+body.os-android #home .adr-sort svg{ width:16px; height:16px; opacity:.7 }
+body.os-android #home .adr-lead,body.os-android #home .adr-back{ width:32px; height:40px; flex:none; display:flex; align-items:center; justify-content:center }
+body.os-android #home .adr-back{ display:none; border-radius:50%; cursor:pointer }
+body.os-android #home .adr.searching .adr-lead{ display:none } body.os-android #home .adr.searching .adr-back{ display:flex }
+body.os-android #home .adr-q{ flex:1; min-width:0; height:100%; padding:0 6px; border:none; outline:none; background:none; color:var(--label); font:inherit; font-size:16px }
+body.os-android #home .adr-q::placeholder{ color:currentColor; opacity:.8 }
+body.os-android #home .adr-x{ display:none; width:36px; height:36px; flex:none; border-radius:50%; align-items:center; justify-content:center; cursor:pointer }
+body.os-android #home .adr-sb.has .adr-x{ display:flex }
+body.os-android #home .adr-more{ width:40px; height:40px; flex:none; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:background .15s }
+body.os-android #home .adr-more:hover,body.os-android #home .adr-x:hover,body.os-android #home .adr-back:hover{ background:rgba(127,127,127,.16) }
+/* as paginas comecam por baixo da pesquisa e da pilula (58 + 48 + 10 + 34 + 12 = 162): 6 linhas de 112 */
+body.os-android #home .adr-pages{ position:absolute; left:0; right:0; top:162px; height:672px; overflow:hidden }
+body.os-android #home .adr-track{ display:flex; height:100%; transition:transform .34s var(--ou-curve-out) }
+body.os-android #home .adr-track.drag{ transition:none }
+body.os-android #home .adr-page{ flex:none; width:440px; height:100%; box-sizing:border-box; padding:0 33px; display:grid; grid-template-columns:repeat(4,70px); column-gap:31.33px; grid-template-rows:repeat(6,112px); align-content:start }
+/* os icones da gaveta sao os da home (64 px, a mesma sombra do .hi.app::before); so a etiqueta muda de cor com o tema */
+body.os-android #home .adr .hi.adr-it{ position:relative; translate:none; opacity:1; transform:none; animation:none; width:auto; justify-self:stretch; align-self:start }
+body.os-android #home .adr .app-name{ color:var(--label); text-shadow:none }
+body.os-android #home .adr-dots{ position:absolute; left:0; right:0; top:var(--adr-dots-y); display:flex; justify-content:center; gap:6px; pointer-events:none }
+body.os-android #home .adr-dots span{ width:6px; height:6px; border-radius:50%; background:rgba(0,0,0,.24); transition:background-color .2s }
+body.os-android #home .adr-dots span.on{ background:rgba(0,0,0,.74) }
+body.os-android.dark #home .adr-dots span{ background:rgba(255,255,255,.35) } body.os-android.dark #home .adr-dots span.on{ background:#fff }
+body.os-android #home .adr-res{ display:none; position:absolute; left:0; right:0; top:118px; bottom:48px; padding:6px 0 28px; overflow-y:auto; overscroll-behavior:contain;
+  -webkit-mask-image:linear-gradient(180deg,transparent 0,#000 14px,#000 calc(100% - 24px),transparent 100%); mask-image:linear-gradient(180deg,transparent 0,#000 14px,#000 calc(100% - 24px),transparent 100%) }
+body.os-android #home .adr-res .ah-sgrp{ margin-left:16px; margin-right:16px }
+body.os-android #home .adr.searching .adr-res{ display:block }
+body.os-android #home .adr.searching .adr-pages,body.os-android #home .adr.searching .adr-dots{ display:none }
+/* resultados (motor da pesquisa global): as apps em grelha, o resto em listas (estilo das listas: componentes Nova UI) */
+body.os-android .ah-sgrp{ margin:8px 0 18px }
+body.os-android .ah-sh{ padding:0 8px 10px; font-size:14px; font-weight:600; color:var(--label2) }
+body.os-android .ah-sapps{ display:grid; grid-template-columns:repeat(5,1fr); row-gap:16px; padding:16px 4px 14px; border-radius:26px; background:var(--ou-surface,#FCFCFF) }
+body.os-android .ah-sapp{ display:flex; flex-direction:column; align-items:center; gap:7px; min-width:0; cursor:pointer }
+body.os-android .ah-sapp .tile{ width:50px; height:50px }
+body.os-android .ah-sapp span{ max-width:74px; font-size:12px; color:var(--label); white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+body.os-android .ah-shint{ padding:22px 12px; text-align:center; font-size:14px; color:var(--label2) }
+body.os-android #home .adr-res .lib-empty{ padding:30px 0; text-align:center; color:var(--label2) }
+body.os-android #home .adr-res .gs-ask{ border-radius:26px; background:var(--ou-surface,#FCFCFF); color:var(--label) }
+
+/* ---------- painel Edge ---------- */
+body.os-android .aedge-h.on{ display:block; position:absolute; right:0; top:280px; width:18px; height:160px; z-index:105; cursor:pointer; touch-action:none }
+/* cinzento translúcido com aro claro: lê-se tanto no fundo escuro da home como numa app clara */
+body.os-android .aedge-h i{ position:absolute; right:3px; top:30px; width:5px; height:100px; border-radius:3px; background:rgba(150,150,158,.66);
+  box-shadow:0 0 0 .5px rgba(255,255,255,.45),0 1px 3px rgba(0,0,0,.18); transition:background .15s }
+body.os-android .aedge-h:hover i{ background:rgba(120,120,128,.8) }
+body.os-android .screen.locked .aedge-h,body.os-android .screen.camera-mode .aedge-h,body.os-android .screen.setup-mode .aedge-h{ display:none }
+/* telemovel deitado: a borda "direita" do ecra rodado e o topo do jogo; a pega aparecia la em cima (pedido do SysUI) */
+body.os-android.landscape .aedge-h,body.os-android.landscape .aedge-w{ display:none }
+body.os-android .aedge-w.on{ display:block; position:absolute; inset:0; z-index:106; border-radius:inherit; touch-action:none }
+/* painel de VIDRO (design system: "vertical panel, glass tint"): tinta translucida por cima da copia pre-desfocada do fundo,
+   recortada no sitio do painel (x 272, y 168 do ecra de 440x956) para bater com o fundo da home, + aro de 1 px.
+   Com uma app aberta o que esta por baixo e a app: a tinta fica quase opaca */
+body.os-android .aedge-p{ position:absolute; right:12px; top:168px; width:156px; box-sizing:border-box; padding:16px 12px 10px; border-radius:26px; color:rgba(0,0,0,.87);
+  background:linear-gradient(rgba(250,250,252,.8),rgba(250,250,252,.8)),var(--wp-blur,linear-gradient(#ECECF0,#ECECF0)) -272px -168px/440px 956px no-repeat;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.55),0 12px 36px rgba(0,0,0,.24); transform:translate3d(174px,0,0); transition:transform .3s var(--ou-curve-out) }
+body.os-android.dark .aedge-p{ color:#fff;
+  background:linear-gradient(rgba(23,23,26,.58),rgba(23,23,26,.58)),var(--wp-blur,linear-gradient(#17171A,#17171A)) -272px -168px/440px 956px no-repeat;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.12),0 12px 36px rgba(0,0,0,.3) }
+body.os-android .screen.app-open .aedge-p{ background-image:linear-gradient(rgba(250,250,252,.93),rgba(250,250,252,.93)),var(--wp-blur,linear-gradient(#ECECF0,#ECECF0)) }
+body.os-android.dark .screen.app-open .aedge-p{ background-image:linear-gradient(rgba(23,23,26,.9),rgba(23,23,26,.9)),var(--wp-blur,linear-gradient(#17171A,#17171A)) }
+body.os-android .aedge-w.in .aedge-p{ transform:none }
+body.os-android .aedge-w.drag .aedge-p{ transition:none }
+body.os-android .aedge-g{ display:grid; grid-template-columns:repeat(2,1fr); gap:14px 8px; justify-items:center }
+body.os-android .aedge-it{ position:relative; width:56px; height:56px; cursor:pointer; transition:opacity .12s }
+body.os-android .aedge-it::before{ content:''; position:absolute; inset:1px; border-radius:34%; box-shadow:0 2px 7px rgba(0,0,0,.16); pointer-events:none }   /* a mesma sombra "a flutuar" da home */
+body.os-android .aedge-it .tile{ width:56px; height:56px }
+body.os-android .aedge-it:active{ opacity:.7 }
+body.os-android .aedge-empty{ grid-column:1/-1; padding:18px 4px; text-align:center; font-size:13px; line-height:1.4; color:var(--label2) }
+body.os-android .aedge-f{ display:flex; justify-content:center; margin-top:12px; padding-top:8px; border-top:1px solid var(--sep) }
+body.os-android .aedge-ed{ width:48px; height:40px; display:flex; align-items:center; justify-content:center; border-radius:14px; color:var(--label2); cursor:pointer; transition:background .15s }
+body.os-android .aedge-ed:hover{ background:var(--fill3) }
+/* escolher as apps do Edge (folha) */
+body.os-android .aedge-sl{ padding:2px 12px 28px }
+body.os-android .aedge-sh{ padding:4px 8px 12px; font-size:14px; color:var(--label2) }
+body.os-android .aedge-sr{ display:flex; align-items:center; gap:14px; height:60px; padding:0 12px; border-radius:18px; cursor:pointer; transition:background .12s }
+body.os-android .aedge-sr:hover{ background:var(--fill4) }
+body.os-android .aedge-sr .tile{ width:40px; height:40px; flex:none }
+body.os-android .aedge-sr span{ flex:1; min-width:0; font-size:16px; color:var(--label); white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+body.os-android .aedge-ck{ width:24px; height:24px; flex:none; box-sizing:border-box; border-radius:50%; border:2px solid var(--label3) }
+body.os-android .aedge-sr.on .aedge-ck{ border-color:#3E7BFA; background:#3E7BFA url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3.4' stroke-linecap='round' stroke-linejoin='round'><path d='M5 12.5l4.5 4.5L19 7.5'/></svg>") center/14px no-repeat }
+
+/* ---------- reduzir movimento: so a opacidade muda ---------- */
+body.os-android[data-motion="reduced"] #home .page,body.os-android[data-motion="reduced"] #home .adr-in,body.os-android[data-motion="reduced"] .aedge-p,
+body.os-android[data-motion="reduced"] .ah-m,body.os-android[data-motion="reduced"] #home .ah-fcard{ transition-duration:.12s }
+
+/* ============================================================
+   NOVA DOBRAVEL (fechado 670, aberto 1340; referencias 11 e 12 do dono)
+   Fechado: o ecra principal do telemovel espalhado pelos 670 (as 4 colunas com o passo largo do home.js), a pilula de pesquisa
+   por cima da dock e a dock com o passo da grelha. Aberto: duas paginas lado a lado (a atual a esquerda, a seguinte a direita,
+   8 colunas no total) e, ao centro, a pilula de pesquisa por cima de uma dock junta. As medidas da grelha vem do home.js
+   (--icon = celula de 76, o icone tem 70; --gap-x, --grid-w, --page-w, --hm-x0, --hm-sw, --hm-dgap). Sem barra direita.
+   ============================================================ */
+body.os-android.form-fold #home{ --ah-dock-y:806px; --ah-dots-y:724px; --hm-pill-y:742px }
+body.os-android.form-fold[data-nav="gesture"] #home{ --ah-dock-y:828px; --ah-dots-y:746px; --hm-pill-y:764px }
+/* icone = celula - 6 (como o 64 na celula de 70 do telemovel), a sombra "a flutuar" acompanha */
+body.os-android.form-fold #home .hi.app .tile,body.os-android.form-fold #home .hi.folder .tile{ width:calc(var(--icon) - 6px); height:calc(var(--icon) - 6px) }
+body.os-android.form-fold #home .hi.app::before{ width:calc(var(--icon) - 8px); height:calc(var(--icon) - 8px); margin-left:calc(var(--icon) / -2 + 4px) }
+body.os-android.form-fold #home .hi.folder .tile{ grid-template-columns:repeat(2,23px); grid-auto-rows:23px; gap:6px }
+body.os-android.form-fold #home .hi.folder .tile .mini,body.os-android.form-fold #home .hi.folder .tile .mini svg{ width:23px; height:23px }
+/* dock: o ecra todo de largura, icones centrados (fechado com o passo da grelha, aberto juntos) */
+body.os-android.form-fold #home .dock{ width:100%; height:84px; gap:var(--hm-dgap,var(--gap-x)) }
+/* pilula de pesquisa: vidro = copia pre-desfocada do fundo no sitio exato da pilula + tinta + aro de 1 px (sem backdrop-filter) */
+body.os-android.form-fold #home .ah-fs{ display:flex; position:absolute; z-index:3; top:var(--hm-pill-y); left:50%; width:var(--grid-w); margin-left:calc(var(--grid-w) / -2); height:50px; box-sizing:border-box;
+  align-items:center; gap:12px; padding:0 18px 0 16px; border-radius:999px; cursor:pointer; color:rgba(0,0,0,.62); font-size:16px; line-height:20px;
+  background:linear-gradient(rgba(250,250,252,.72),rgba(250,250,252,.72)),var(--wp-blur,var(--wp,#E9E9EE)) no-repeat;
+  background-size:auto,var(--hm-sw,var(--screen-w)) 956px; background-position:0 0,calc(var(--grid-w) / 2 - var(--hm-sw,var(--screen-w)) / 2) calc(-1 * var(--hm-pill-y));
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.55),0 2px 10px rgba(0,0,0,.10); transition:opacity .22s,transform .32s var(--ou-curve-out) }
+body.os-android.form-fold.fold-open #home .ah-fs{ width:440px; margin-left:-220px; background-position:0 0,calc(220px - var(--hm-sw,var(--screen-w)) / 2) calc(-1 * var(--hm-pill-y)) }
+body.os-android.form-fold.dark #home .ah-fs{ color:rgba(255,255,255,.78); background-image:linear-gradient(rgba(36,36,40,.62),rgba(36,36,40,.62)),var(--wp-blur,var(--wp,#1B1B1F)); box-shadow:inset 0 0 0 1px rgba(255,255,255,.12),0 2px 10px rgba(0,0,0,.24) }
+body.os-android.form-fold #home .ah-fs svg{ width:21px; height:21px; flex:none; display:block }
+body.os-android.form-fold #home .ah-fs-t{ flex:1; min-width:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+body.os-android.form-fold #home .ah-fs-m{ display:flex; opacity:.86 }
+body.os-android.form-fold #home .ah-fs:active{ transform:scale(.98) }
+/* edicao e selecao: a pilula sai com a dock */
+body.os-android.form-fold #home.edit .ah-fs,body.os-android.form-fold #home.ah-sel .ah-fs{ opacity:0; transform:translate3d(0,24px,0); pointer-events:none }
+/* aberto: barras e zonas de arrasto ao centro (nao esticadas pelos 1340) */
+body.os-android.form-fold.fold-open #home .ah-ebar{ left:calc(50% - 250px); right:calc(50% - 250px) }
+body.os-android.form-fold.fold-open #home .ah-dz{ left:calc(50% - 300px); right:calc(50% - 300px) }
+body.os-android.form-fold.fold-open #home.ah-sel .ah-sbar{ left:calc(50% - 220px); right:calc(50% - 220px) }
+/* pasta aberta: 4 colunas com a celula do dobravel */
+body.os-android.form-fold #home .ah-fcard{ width:calc(var(--icon) * 4 + 150px) }
+body.os-android.form-fold #home .ah-fbox{ grid-template-columns:repeat(4,var(--icon)); row-gap:20px }
+/* gaveta de apps: a grelha da home (4 colunas; aberto 8, uma metade por pagina da home) e a pesquisa ao centro; no ecra largo e
+   baixo (aberto) cabem 5 linhas de 128 por baixo da pesquisa */
+body.os-android.form-fold #home .adr-page{ width:var(--hm-sw); padding:0 var(--hm-x0); grid-template-columns:repeat(4,var(--icon)); column-gap:var(--gap-x) }
+body.os-android.form-fold.fold-open #home .adr-page.two{ grid-template-rows:repeat(5,128px) }
+/* aberto: uma grelha de 8 x 5 a toda a largura (as pontas alinhadas com as das duas paginas da home) */
+body.os-android.form-fold #home .adr-page.two{ grid-template-columns:repeat(8,var(--icon)); justify-content:space-between; column-gap:0; grid-template-rows:repeat(5,140px) }
+body.os-android.form-fold #home .adr-half{ flex:none; width:var(--page-w); height:100%; box-sizing:border-box; padding:0 var(--hm-x0); display:grid; grid-template-columns:repeat(4,var(--icon)); column-gap:var(--gap-x); grid-template-rows:repeat(6,122px); align-content:start }
+body.os-android.form-fold #home .adr-top{ left:calc(50% - var(--grid-w) / 2); right:calc(50% - var(--grid-w) / 2) }
+body.os-android.form-fold.fold-open #home .adr-top{ left:calc(50% - 220px); right:calc(50% - 220px) }   /* 440, como a pesquisa da home */
+body.os-android.form-fold.fold-open #home .adr-res{ padding-left:calc(50% - 320px); padding-right:calc(50% - 320px) }
+/* painel Edge: o fundo pre-desfocado tem o tamanho do ecra do dobravel (o painel fica a 168 px da aresta direita) */
+body.os-android.form-fold .aedge-p,body.os-android.form-fold.dark .aedge-p{ background-size:auto,var(--screen-w) 956px; background-position:0 0,calc(168px - var(--screen-w)) -168px }
+
+/* ============================================================
+   NOVA UI 9 (One UI 9, ronda 2): PESQUISA NO ECRA PRINCIPAL DO S26
+   O One UI 9 traz a pesquisa integrada por cima da dock (Definicoes do ecra principal > Mostrar pesquisa; o S26 ja tinha a
+   pilula de pesquisa na 8.5): uma pilula a toda a largura, com tinta branca no claro, que abre a pesquisa da gaveta.
+   O no ja existe (home.js cria .ah-fs e liga o toque ao Drawer.open({ search:true })); ate aqui so o dobravel a mostrava.
+   Ordem de cima para baixo como no aparelho: grelha, pontos das paginas, pesquisa, dock. Vidro sem backdrop-filter: a copia
+   pre-desfocada do fundo no sitio exato da pilula (16 a esquerda, --hm-pill-y em cima) + tinta + aro de 1 px.
+   ============================================================ */
+body.os-android:not(.form-fold) #home{ --hm-pill-y:754px; --ah-dots-y:736px }
+body.os-android[data-nav="gesture"]:not(.form-fold) #home{ --hm-pill-y:770px; --ah-dots-y:752px }
+body.os-android:not(.form-fold) #home .ah-fs{ display:flex; position:absolute; z-index:3; top:var(--hm-pill-y); left:16px; width:408px; height:46px; box-sizing:border-box;
+  align-items:center; gap:12px; padding:0 18px 0 18px; border-radius:999px; cursor:pointer; color:rgba(0,0,0,.6); font-size:16px; line-height:20px;
+  background:linear-gradient(rgba(250,250,252,.74),rgba(250,250,252,.74)),var(--wp-blur,var(--wp,#E9E9EE)) no-repeat;
+  background-size:auto,440px 956px; background-position:0 0,-16px calc(-1 * var(--hm-pill-y));
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.6),0 2px 10px rgba(0,0,0,.12); transition:opacity .22s,transform .32s var(--ou-curve-out) }
+body.os-android.dark:not(.form-fold) #home .ah-fs{ color:rgba(255,255,255,.78); background-image:linear-gradient(rgba(36,36,40,.64),rgba(36,36,40,.64)),var(--wp-blur,var(--wp,#1B1B1F)); box-shadow:inset 0 0 0 1px rgba(255,255,255,.12),0 2px 10px rgba(0,0,0,.24) }
+body.os-android:not(.form-fold) #home .ah-fs svg{ width:21px; height:21px; flex:none; display:block }
+body.os-android:not(.form-fold) #home .ah-fs-t{ flex:1; min-width:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+body.os-android:not(.form-fold) #home .ah-fs-m{ display:flex; opacity:.86 }
+body.os-android:not(.form-fold) #home .ah-fs:active{ transform:scale(.98) }
+body.os-android:not(.form-fold) #home.edit .ah-fs,body.os-android:not(.form-fold) #home.ah-sel .ah-fs{ opacity:0; transform:translate3d(0,24px,0); pointer-events:none }
+
+/* ---------- gaveta de apps Nova UI 9: a pesquisa volta para BAIXO ----------
+   One UI 7 pos a pesquisa da gaveta em baixo e a 8.5 tornou-a uma pilula FLUTUANTE mais estreita, com tinta branca, por cima da
+   grelha (SamMobile, How-To Geek; o suporte da Samsung confirma que nao se muda de sitio). Os tres pontos (ordem, editar)
+   continuam dentro da pilula, por isso a pilula da ordem da ronda 1 sai. Tocar na pesquisa leva-a ao topo (so transform) e os
+   resultados aparecem por baixo, como antes. Grelha 4 x 6 logo abaixo da barra de estado, pontos por cima da pesquisa. */
+body.os-android #home .adr{ --adr-sb-y:826px; --adr-dots-y:800px }
+body.os-android[data-nav="gesture"] #home .adr{ --adr-sb-y:846px; --adr-dots-y:820px }
+body.os-android #home .adr-top{ left:28px; right:28px; transition:transform .34s var(--ou-curve-out) }
+body.os-android #home .adr.searching .adr-top{ transform:translate3d(0,calc(58px - var(--adr-sb-y)),0) }
+body.os-android #home .adr-tools{ display:none }
+body.os-android #home .adr-sb{ height:50px; background:rgba(255,255,255,.8); box-shadow:inset 0 1px 0 #fff,inset 0 0 0 1px rgba(255,255,255,.55),0 6px 20px rgba(0,0,0,.12),0 1px 3px rgba(0,0,0,.06) }
+body.os-android.dark #home .adr-sb{ background:rgba(52,52,58,.78); box-shadow:inset 0 1px 0 rgba(255,255,255,.14),inset 0 0 0 1px rgba(255,255,255,.08),0 6px 20px rgba(0,0,0,.3) }
+body.os-android #home .adr-pages{ top:66px }
+body.os-android.form-fold #home .adr-top{ left:calc(50% - var(--grid-w) / 2 + 12px); right:calc(50% - var(--grid-w) / 2 + 12px) }
+body.os-android.form-fold.fold-open #home .adr-top{ left:calc(50% - 200px); right:calc(50% - 200px) }

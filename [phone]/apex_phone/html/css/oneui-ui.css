@@ -1,0 +1,633 @@
+/* ============================================================
+   NOVA UI 8.5 · COMPONENTES (pacote F1a): barras das apps, titulo grande
+   na zona de leitura, listas em cartoes, interruptores, escolhas, pesquisa,
+   separadores flutuantes, dialogos, folhas, menus, toasts; e as Definicoes
+   do Android (classes aset-).
+   Tudo atras de body.os-android: o PearOS nao muda um pixel.
+   · .ou-app   janela de uma app do SISTEMA (ui.js marca-a): barras, listas, interruptores e separadores Nova UI.
+               As apps de terceiros (Instashot, Zapp, Match, Eats...) levam .ou-3p e ficam como no PearOS.
+   · .ou-dlg / .ou-sheet / .ou-as / .ou-ctx / .ou-toast / .ou-banner: camadas do sistema, sempre Nova UI no Android.
+   Regras do CEF: sem backdrop-filter, sem filter, sem color-mix, sem :has; so transform e opacity animam;
+   nada de movimento em loop (o spinner e um indicador, nao um enfeite).
+   ============================================================ */
+
+/* ---------- Variaveis proprias ----------
+   --ou-nav: espaco da barra de 3 botoes por baixo das camadas (0 em gestos, no ecra bloqueado e deitado).
+   --ou-ovb: raio dos cantos de BAIXO das camadas (0 quando assentam na barra). */
+body.os-android{ --ou-nav:0px; --ou-ovb:var(--ou-r-screen,40px); --ou-gapb:24px;
+  --ou-sw-off:#C7C7CC; --ou-dim:rgba(0,0,0,.4); --ou-dim-dlg:rgba(0,0,0,.5); --ou-seg-on:#FFFFFF; --ou-seg-bg:#E4E4E7; --ou-seg-off:#848487;
+  --ou-tb-bg:#FCFCFF; --ou-tb-line:rgba(0,0,0,.06); --ou-tb-on:rgba(0,0,0,.075);
+  --ou-sheet-bg:var(--bg); --ou-sheet-card:var(--ou-surface); --ou-dlg-bg:var(--ou-surface); --ou-menu-bg:var(--ou-surface);
+  /* One UI 8.5 (components.html): contorno das caixas e botoes de opcao #888, seta das listas #ABABAB, icone tonal a 10 %,
+     cursor com botao branco/preto e anel azul, pega das folhas #C0C0C0 */
+  --ou-ctl-off:rgba(0,0,0,.47); --ou-chev:rgba(0,0,0,.33); --ou-ic-a:.11; --ou-thumb:#fff; --ou-track:rgba(0,0,0,.12); --ou-grab:#C0C0C0;
+  --ou-field-line:#E4E4E4 }
+body.os-android.dark{ --ou-sw-off:#48484D; --ou-dim:rgba(0,0,0,.5); --ou-dim-dlg:rgba(0,0,0,.65); --ou-seg-on:#3A3A40; --ou-seg-bg:#26262A; --ou-seg-off:#A0A0A5;
+  --ou-tb-bg:#1F1F23; --ou-tb-line:rgba(255,255,255,.14); --ou-tb-on:rgba(255,255,255,.13);
+  --ou-sheet-bg:#17171A; --ou-sheet-card:#232327; --ou-dlg-bg:#1F1F23; --ou-menu-bg:#26262A;
+  --ou-ctl-off:rgba(255,255,255,.5); --ou-chev:rgba(255,255,255,.34); --ou-ic-a:.2; --ou-thumb:#000; --ou-track:#5A5A5E; --ou-grab:rgba(255,255,255,.3);
+  --ou-field-line:rgba(255,255,255,.16) }
+body.os-android[data-nav="buttons"]:not(.landscape) #screen:not(.locked){ --ou-nav:var(--nav-h,48px); --ou-ovb:0px; --ou-gapb:14px }
+/* --ou-gapb: folga entre os cartoes de baixo (dialogo, lista de acoes) e o fundo; em gestos passa por cima da pega */
+/* TODAS as camadas do ui.js montadas no #screen ficam acima da barra de 3 botoes (contrato 4b), tambem as das apps de
+   terceiros que trazem o tema proprio e por isso nao levam a Nova UI */
+body.os-android #screen > :is(.overlay,.sheet-wrap,.as-wrap,.ctx-wrap){ bottom:var(--ou-nav); border-bottom-left-radius:var(--ou-ovb); border-bottom-right-radius:var(--ou-ovb) }
+
+/* ============================================================
+   BARRA DA APP (56 px) E TITULO GRANDE
+   ============================================================ */
+body.os-android .ou-app .view > .navbar{ height:calc(var(--statusbar-h) + 56px); padding:var(--statusbar-h) 6px 0; justify-content:flex-start; gap:0;
+  background:transparent; box-shadow:none; transition:none }
+body.os-android .ou-app .view > .navbar.solid{ background:var(--bg); box-shadow:none }
+body.os-android .ou-app .view > .navbar.solid::after{ content:none; display:none }
+body.os-android .ou-app .view > .navbar.transparent,body.os-android .ou-app .view > .navbar.transparent.solid{ background:transparent }
+/* a barra nunca se sobrepoe ao titulo grande (o ui.js tira o lg-bare; isto e a rede de seguranca) */
+body.os-android .ou-app .view.lg-bare > .navbar{ position:relative; pointer-events:auto }
+body.os-android .ou-app .view.lg-bare > .content{ padding-top:0 }
+body.os-android .ou-app .view > .navbar .nb-left{ flex:none; min-width:0; gap:0; color:var(--label) }
+body.os-android .ou-app .view > .navbar .nb-right{ flex:none; min-width:0; gap:2px; margin-left:auto; color:var(--label) }
+/* titulo da barra: a esquerda, a seguir a seta (sem seta, alinhado com o texto das listas) */
+body.os-android .ou-app .view > .navbar .nb-title{ position:static; left:auto; top:auto; transform:none; flex:1 1 auto; min-width:0; max-width:none; padding:0 6px 0 4px; text-align:left;
+  font-family:var(--font-display); font-size:20px; font-weight:600; letter-spacing:0; color:var(--label); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; pointer-events:none; transition:opacity .2s ease-out }
+body.os-android .ou-app .view > .navbar .nb-left:empty + .nb-title{ padding-left:18px }
+/* voltar = so a seta; botoes da barra redondos (48 px), sem vidro nem contorno */
+body.os-android .ou-app .view > .navbar .nb-back,
+body.os-android .ou-app .view > .navbar .nb-btn{ display:flex; align-items:center; justify-content:center; width:auto; min-width:48px; height:48px; margin:0; padding:0 12px; border:0; border-radius:24px;
+  background:transparent; box-shadow:none; color:var(--label); font-size:16px; font-weight:600; transform:none; transition:background-color .15s ease-out, opacity .15s ease-out, border-radius .15s var(--ou-curve,ease) }
+body.os-android .ou-app .view > .navbar .nb-back{ width:48px; padding:0 }
+body.os-android .ou-app .view > .navbar .nb-back span{ display:none }
+body.os-android .ou-app .view > .navbar .nb-back svg,body.os-android .ou-app .view > .navbar .nb-btn svg{ width:24px; height:24px; margin:0 }
+body.os-android .ou-app .view > .navbar .nb-btn.bold{ color:var(--blue) }
+/* premir: fundo tonal e a forma passa de circulo a quadrado arredondado em 150 ms (Material 3 Expressive, so nos controlos pequenos) */
+body.os-android .ou-app .view > .navbar .nb-back:active,body.os-android .ou-app .view > .navbar .nb-btn:active{ background:var(--fill3); opacity:1; transform:none; border-radius:14px }
+body.os-android .ou-app .view > .navbar .nb-btn.dis{ opacity:.35 }
+/* barra por cima de fotografias (visualizadores): botoes escuros translucidos para se lerem sobre qualquer imagem */
+body.os-android .ou-app .view > .navbar.transparent .nb-back,body.os-android .ou-app .view > .navbar.transparent .nb-btn{ background:rgba(20,20,24,.42); color:#fff }
+/* zona de leitura: o titulo grande centrado no terco de cima; o ui.js desvanece-o e sobe-o mais devagar do que a lista */
+/* 124 px (era 172): o conteudo comecava baixo demais e o dono pediu "puxar ligeiramente mais para cima" (2026-10-01) */
+body.os-android .ou-app .view > .content > .large-title{ flex:none; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px; height:124px; padding:0 30px 16px; margin:0; text-align:center;
+  font-family:var(--font-display); font-size:34px; font-weight:700; letter-spacing:-.2px; line-height:1.14; color:var(--label); overflow:hidden; transform-origin:50% 100% }
+/* subtitulo dentro da zona de leitura ("3 chamadas perdidas", "85 %"): as apps acrescentam um <small> ao .large-title */
+body.os-android .ou-app .view > .content > .large-title small{ font-family:var(--font); font-size:14px; font-weight:400; letter-spacing:0; line-height:1.3; color:var(--label2) }
+
+/* ---------- Nova UI 8.5: o que rola DESVANECE nas margens da lista, sem corte seco ----------
+   Em baixo sempre (a lista dissolve-se por baixo da barra de separadores flutuante ou da margem); em cima so quando ja ha conteudo
+   por baixo da barra da app (o ui.js poe .solid na barra ao rolar). Uma mascara so no .content das vistas normais: as de ecra
+   inteiro (.full: conversas, visualizadores, camara) ficam de fora. Mascara estatica em gradiente: nada anima, nada e filter. */
+body.os-android .ou-app .view:not(.full) > .content{ -webkit-mask-image:linear-gradient(180deg,#000 0,#000 calc(100% - 22px),transparent 100%); mask-image:linear-gradient(180deg,#000 0,#000 calc(100% - 22px),transparent 100%) }
+body.os-android .ou-app .view:not(.full) > .navbar.solid ~ .content{ -webkit-mask-image:linear-gradient(180deg,transparent 0,#000 30px,#000 calc(100% - 22px),transparent 100%); mask-image:linear-gradient(180deg,transparent 0,#000 30px,#000 calc(100% - 22px),transparent 100%) }
+
+/* ============================================================
+   LISTAS EM CARTOES (apps do sistema e folhas)
+   ============================================================ */
+body.os-android :is(.ou-app,.ou-sheet) .group-header{ padding:22px 34px 8px; font-size:14px; font-weight:600; letter-spacing:0; text-transform:none; color:var(--label2) }
+body.os-android :is(.ou-app,.ou-sheet) .group-footer{ padding:9px 34px 6px; font-size:14px; line-height:1.42; color:var(--label2) }
+/* cartao da lista (components.html "List Items"): squircle 26, branco sobre a superficie com a sombra 1 no claro */
+body.os-android :is(.ou-app,.ou-sheet) .group{ margin:0 12px; border-radius:26px; background:var(--ou-surface); box-shadow:var(--ou-shadow-1); overflow:hidden }
+body.os-android .ou-sheet .group{ background:var(--ou-sheet-card); box-shadow:none }
+body.os-android :is(.ou-app,.ou-sheet) .group + .group,body.os-android :is(.ou-app,.ou-sheet) .group-footer + .group{ margin-top:14px }
+/* linha: 16/24 de margem interior, titulo 17 medio, subtitulo 14 secundario */
+body.os-android :is(.ou-app,.ou-sheet) .li{ min-height:58px; padding:14px 24px; gap:16px; font-size:var(--t-body); color:var(--label) }
+body.os-android :is(.ou-app,.ou-sheet) .li:active:not(.static){ background:var(--fill4) }
+body.os-android :is(.ou-app,.ou-sheet) .li + .li::before{ left:24px; right:24px; height:1px; background:var(--sep-subtle) }
+body.os-android :is(.ou-app,.ou-sheet) .li.has-icon + .li::before{ left:78px }    /* 24 + icone 38 + 16 */
+body.os-android :is(.ou-app,.ou-sheet) .li.has-big + .li::before{ left:90px }     /* 24 + 50 + 16 */
+body.os-android :is(.ou-app,.ou-sheet) .li.ou-lead + .li.ou-lead::before{ left:64px }   /* 24 + caixa 24 + 16 */
+body.os-android :is(.ou-app,.ou-sheet) .li-label{ line-height:1.28; font-weight:500 }
+body.os-android :is(.ou-app,.ou-sheet) .li-sub{ margin-top:2px; font-size:14px; line-height:1.3; color:var(--label2) }
+/* icones redondos TONAIS (components.html): circulo de 38 com a cor a 10 % e o simbolo na cor cheia. O ui.js passa a cor
+   em --ic (no Android); o fundo solido do style fica para as apps de terceiros. Os das apps (tile) e os grandes ficam cheios,
+   e os .li-icon que as apps desenham a mao (sem --ic, ex.: cartao dos Mapas) tambem.
+   PERFUI (2026-10-05): marcados pela classe .ou-tic (posta pelo ui.js junto com o --ic) e nao por [style*="--ic:"]: um seletor
+   de atributo style seguido de "> *" fazia o Chromium refazer a subarvore inteira de QUALQUER elemento a que se mexesse no
+   style (cada transform de um arrasto no #home recalculava o ecra inicial todo). */
+body.os-android :is(.ou-app,.ou-sheet) .li-icon{ width:38px; height:38px; border-radius:50% }
+body.os-android :is(.ou-app,.ou-sheet) .li-icon svg{ width:21px; height:21px }
+body.os-android :is(.ou-app,.ou-sheet) .li-icon.ou-tic:not(.tile):not(.big){ position:relative; background:transparent!important; color:var(--icc,var(--ic))!important }
+body.os-android :is(.ou-app,.ou-sheet) .li-icon.ou-tic:not(.tile):not(.big)::before{ content:''; position:absolute; inset:0; border-radius:50%; background:var(--ic); opacity:var(--ou-ic-a) }
+body.os-android :is(.ou-app,.ou-sheet) .li-icon.ou-tic:not(.tile):not(.big) > *{ position:relative }
+body.os-android :is(.ou-app,.ou-sheet) .li-icon.tile{ border-radius:11px }
+body.os-android :is(.ou-app,.ou-sheet) .li-icon.tile svg{ width:100%; height:100% }
+body.os-android :is(.ou-app,.ou-sheet) .li-icon.big{ width:50px; height:50px; border-radius:50% }
+body.os-android :is(.ou-app,.ou-sheet) .li-icon.big svg{ width:28px; height:28px }
+/* valor POR BAIXO do rotulo (ui.js: .ou-val): azul quando a linha abre uma escolha, cinzento quando so informa */
+.ou-val{ display:none }
+body.os-android :is(.ou-app,.ou-sheet) .li.ou-hv > .li-value{ display:none }
+body.os-android :is(.ou-app,.ou-sheet) .li.ou-hv .ou-val{ display:block; margin-top:2px; font-size:14px; line-height:1.3; color:var(--label2); white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+body.os-android :is(.ou-app,.ou-sheet) .li.ou-hv.ou-tap .ou-val{ color:var(--blue) }
+body.os-android :is(.ou-app,.ou-sheet) .li-value{ font-size:15px; color:var(--label2) }
+body.os-android :is(.ou-app,.ou-sheet) .li-value svg{ color:var(--blue) }
+/* seta de 16 #ABABAB a direita so nas linhas com icone (as de navegacao, como na lista do components.html); as de contactos
+   (avatar) e as de texto continuam sem seta, com o valor por baixo do rotulo */
+body.os-android :is(.ou-app,.ou-sheet) .li-chev,.li-chev.ou-chev-auto{ display:none }
+body.os-android :is(.ou-app,.ou-sheet) .li.has-icon:not(.has-big) > .li-chev:not(.ou-chev-auto),
+body.os-android .ou-app .aset-root .li.has-icon:not(.has-big) > .li-chev.ou-chev-auto{ display:flex; margin-left:0; color:var(--ou-chev) }
+body.os-android :is(.ou-app,.ou-sheet) .li.has-icon:not(.has-big) > .li-chev svg{ width:16px; height:16px }
+body.os-android :is(.ou-app,.ou-sheet) .li.center{ justify-content:center; color:var(--blue); font-weight:600 }
+body.os-android :is(.ou-app,.ou-sheet) .li.blue{ color:var(--blue); font-weight:500 }
+body.os-android :is(.ou-app,.ou-sheet) .li.danger{ color:var(--red); font-weight:500 }
+
+/* ---------- Interruptor Nova UI (components.html): pista 52x32 r16, botao branco de 28; divisoria vertical quando a linha tambem abre uma pagina ---------- */
+body.os-android :is(.ou-app,.ou-sheet) .toggle{ width:52px; height:32px }
+body.os-android :is(.ou-app,.ou-sheet) .toggle span{ border-radius:16px; background:var(--ou-sw-off); transition:background-color .3s cubic-bezier(.4,0,.2,1) }
+body.os-android :is(.ou-app,.ou-sheet) .toggle span::after{ top:2px; left:2px; width:28px; height:28px; background:#fff; box-shadow:0 2px 4px rgba(0,0,0,.2); transition:transform .3s cubic-bezier(.4,0,.2,1) }
+body.os-android :is(.ou-app,.ou-sheet) .toggle input:checked + span{ background:var(--blue) }
+body.os-android :is(.ou-app,.ou-sheet) .toggle input:checked + span::after,
+body.os-android :is(.ou-app,.ou-sheet) .toggle input:checked + span:active::after{ transform:translateX(20px) }
+body.os-android :is(.ou-app,.ou-sheet) .toggle:active span::after{ width:28px }
+body.os-android :is(.ou-app,.ou-sheet) .toggle input:disabled + span{ opacity:.4 }
+/* Nova UI 9 (SESL: switch_thumb_off_stroke #8C8C8C / escuro #8F8F8F): desligado, a bolinha branca leva o contorno cinzento fino
+   em vez da sombra; ligada fica branca e limpa sobre o azul */
+body.os-android :is(.ou-app,.ou-sheet) .toggle span::after{ box-shadow:inset 0 0 0 1.5px #8C8C8C }
+body.os-android.dark :is(.ou-app,.ou-sheet) .toggle span::after{ box-shadow:inset 0 0 0 1.5px #8F8F8F }
+body.os-android :is(.ou-app,.ou-sheet) .toggle input:checked + span::after{ box-shadow:0 1px 2px rgba(0,0,0,.18) }
+body.os-android :is(.ou-app,.ou-sheet) .li.ou-tap.ou-sw .toggle{ margin-left:18px }
+body.os-android :is(.ou-app,.ou-sheet) .li.ou-tap.ou-sw .toggle::before{ content:''; position:absolute; left:-18px; top:-2px; bottom:-2px; width:1px; background:var(--sep) }
+
+/* ---------- Caixa de escolha (quadrado r4, components.html) e botao de opcao (UI.radio: anel de 24 com ponto de 12) ---------- */
+body.os-android :is(.ou-app,.ou-sheet) .check{ width:24px; height:24px; border-radius:4px; border:2px solid var(--ou-ctl-off); box-sizing:border-box; transition:background-color .2s ease-out, border-color .2s ease-out }
+body.os-android :is(.ou-app,.ou-sheet) .check.on{ background:var(--blue); border-color:var(--blue) }
+body.os-android :is(.ou-app,.ou-sheet) .check svg{ width:14px; height:14px; color:#fff; transition:opacity .15s ease-out }
+body.os-android .ou-radio{ position:relative; flex:none; width:24px; height:24px; margin-left:auto; border-radius:50%; border:2px solid var(--ou-ctl-off); box-sizing:border-box; transition:border-color .2s ease-out }
+body.os-android .ou-radio::after{ content:''; position:absolute; inset:4px; border-radius:50%; background:var(--blue); opacity:0; transition:opacity .2s ease-out }
+body.os-android .ou-radio.on{ border-color:var(--blue) }
+body.os-android .ou-radio.on::after{ opacity:1 }
+body.os-android .li > .ou-radio{ order:-1; margin-left:0 }   /* nas listas o botao de opcao fica a esquerda do texto */
+
+/* ---------- Pesquisa, segmentos, fichas ---------- */
+/* pesquisa (components.html "Search Bar"): pilula de 48, 20 de margem interior, lupa de 20, texto 16 */
+body.os-android :is(.ou-app,.ou-sheet) .search{ height:48px; margin:6px 12px 12px; padding:0 16px 0 20px; gap:12px; border-radius:24px; background:var(--ou-surface); color:var(--label2); box-shadow:var(--ou-shadow-1) }
+body.os-android .ou-sheet .search{ background:var(--ou-sheet-card); box-shadow:none }
+body.os-android :is(.ou-app,.ou-sheet) .search:focus-within,body.os-android :is(.ou-app,.ou-sheet) .search.kb-on{ box-shadow:0 0 0 2px var(--blue) }
+body.os-android :is(.ou-app,.ou-sheet) .search svg{ width:20px; height:20px }
+body.os-android :is(.ou-app,.ou-sheet) .search input{ font-size:16px }
+body.os-android :is(.ou-app,.ou-sheet) .search input::placeholder{ color:var(--label3) }
+/* separadores em pilula (components.html "Rounded / Pill Tabs" + grupo de botoes ligados do Material 3 Expressive): fundo #E4E4E7,
+   3 de margem e 3 entre segmentos, ativo branco com a sombra 1 */
+body.os-android :is(.ou-app,.ou-sheet) .seg{ margin:8px 12px; padding:3px; gap:3px; border-radius:999px; background:var(--ou-seg-bg) }
+body.os-android :is(.ou-app,.ou-sheet) .seg div{ min-height:34px; padding:8px 12px; box-sizing:border-box; border-radius:999px; font-size:14px; font-weight:600; color:var(--ou-seg-off); box-shadow:none; transition:background-color .3s var(--ou-curve,ease-out), color .3s ease-out }
+body.os-android :is(.ou-app,.ou-sheet) .seg div.on{ background:var(--ou-seg-on); color:var(--label); box-shadow:0 1px 3px rgba(0,0,0,.08) }
+body.os-android :is(.ou-app,.ou-sheet) .seg div:active{ background:var(--fill3) }
+/* fichas (components.html "Chips"): 9/16, raio 22, 14 medio; contorno 1.5 por escolher, cheia a azul quando escolhida */
+body.os-android :is(.ou-app,.ou-sheet) .chips{ gap:8px; padding:6px 12px }
+body.os-android :is(.ou-app,.ou-sheet) .chips span{ padding:8px 16px; border-radius:22px; background:transparent; border:1.5px solid var(--ou-field-line); color:var(--label); font-size:14px; font-weight:500; line-height:18px; transition:background-color .2s ease-out, border-color .2s ease-out, color .2s ease-out }
+body.os-android :is(.ou-app,.ou-sheet) .chips span.on{ background:var(--blue); border-color:var(--blue); color:#fff }
+
+/* ---------- Estado vazio (so texto), indicador de carregamento, marcas de carregamento, cartoes, botoes ---------- */
+body.os-android :is(.ou-app,.ou-sheet) .empty svg{ display:none }
+body.os-android :is(.ou-app,.ou-sheet) .empty b{ font-size:19px; font-weight:500; letter-spacing:0; color:var(--label2) }
+body.os-android :is(.ou-app,.ou-sheet) .empty span{ font-size:15px; color:var(--label3) }
+/* indicador circular (components.html "Progress"): anel de 4 com um quarto a azul */
+body.os-android :is(.ou-app,.ou-sheet) .spinner{ width:36px; height:36px; border:4px solid var(--ou-field-line); border-top-color:var(--blue); animation:spin 1s linear infinite }
+body.os-android :is(.ou-app,.ou-sheet) .skeleton .sk{ border-radius:8px }
+body.os-android :is(.ou-app,.ou-sheet) .sk-row{ min-height:62px; padding:10px 24px; gap:16px }
+body.os-android :is(.ou-app,.ou-sheet) .sk-row + .sk-row::before{ left:78px; right:24px; height:1px; background:var(--sep-subtle) }
+body.os-android :is(.ou-app,.ou-sheet) .card{ margin:0 12px; padding:20px; border-radius:26px; background:var(--ou-surface); box-shadow:var(--ou-shadow-1) }
+body.os-android .ou-sheet .card{ box-shadow:none }
+body.os-android :is(.ou-app,.ou-sheet) .card + .card{ margin-top:14px }
+body.os-android :is(.ou-app,.ou-sheet) .card-title{ font-size:14px; font-weight:600; letter-spacing:0; text-transform:none; color:var(--label2) }
+/* botoes (components.html "Buttons"): pilula de 52, 17 medio, 24 de margem interior; enfase alta = azul cheio, media = cinzento,
+   contorno = .ou-out (1.5 px), texto = .ou-flat. Premir junta um veu de 10 % (so opacidade). */
+body.os-android :is(.ou-app,.ou-sheet) :is(.btn-p,.prominentButton,.systemButton,.destructiveButton){ position:relative; height:52px; margin:14px 18px; padding:0 24px; border-radius:26px; font-size:17px; font-weight:500; overflow:hidden; transition:opacity .15s ease-out }
+body.os-android :is(.ou-app,.ou-sheet) :is(.btn-p,.prominentButton,.systemButton,.destructiveButton)::after{ content:''; position:absolute; inset:0; border-radius:inherit; background:currentColor; opacity:0; pointer-events:none; transition:opacity .15s ease-out }
+body.os-android :is(.ou-app,.ou-sheet) :is(.btn-p,.prominentButton,.systemButton,.destructiveButton):active{ filter:none; transform:none }
+body.os-android :is(.ou-app,.ou-sheet) :is(.btn-p,.prominentButton,.systemButton,.destructiveButton):active::after{ opacity:.1 }
+body.os-android :is(.ou-app,.ou-sheet) .btn-p.dis{ background:var(--fill2); color:var(--label3); opacity:1 }
+body.os-android :is(.ou-app,.ou-sheet) :is(.btn-s,.systemButton,.btn-p.gray){ background:var(--ou-seg-bg); color:var(--label) }
+body.os-android :is(.ou-app,.ou-sheet) .btn-p.ou-out{ background:transparent; border:1.5px solid var(--label); color:var(--label) }
+body.os-android :is(.ou-app,.ou-sheet) .btn-p.ou-flat{ background:transparent; color:var(--blue) }
+/* botao pequeno (36, raio 18) e redondo: premir so muda a opacidade; o redondo muda tambem de forma (morphing de 150 ms) */
+body.os-android :is(.ou-app,.ou-sheet) .pill-btn{ min-height:36px; padding:0 16px; border-radius:18px; font-size:15px; font-weight:500 }
+body.os-android :is(.ou-app,.ou-sheet) :is(.pill-btn,.btn-round):active{ filter:none; transform:none; opacity:.75 }
+body.os-android :is(.ou-app,.ou-sheet) .btn-round{ transition:opacity .15s ease-out, border-radius .15s var(--ou-curve,ease) }
+body.os-android :is(.ou-app,.ou-sheet) .btn-round:active{ border-radius:30% }
+/* botao flutuante (FAB, Material 3 Expressive): quadrado arredondado de 18 que fica mais redondo ao premir; .fab-menu e a lista
+   de acoes que abre por cima dele (pilulas com icone e nome, a mais importante por ultimo, junto ao botao) */
+body.os-android .ou-app .fab{ width:60px; height:60px; border-radius:18px; box-shadow:0 6px 18px rgba(0,0,0,.2), inset 0 1px 0 rgba(255,255,255,.22); transition:transform .3s var(--ou-curve-out,ease-out), border-radius .15s var(--ou-curve,ease), opacity .15s }
+body.os-android .ou-app .fab:active{ transform:scale(.94); border-radius:30px }
+body.os-android .ou-app .fab.open{ border-radius:30px }
+body.os-android .ou-app .fab-menu{ position:absolute; right:18px; bottom:calc(var(--safe-bottom) + 160px); z-index:26; display:flex; flex-direction:column; align-items:flex-end; gap:10px; pointer-events:none }
+body.os-android .ou-app .fab-menu.in{ pointer-events:auto }
+body.os-android .ou-app .fab-menu > div{ display:flex; align-items:center; gap:10px; height:48px; padding:0 18px 0 14px; border-radius:24px; background:var(--ou-surface); color:var(--label); font-size:15px; font-weight:600; box-shadow:0 6px 18px rgba(0,0,0,.16), inset 0 0 0 1px var(--ou-tb-line); cursor:pointer;
+  opacity:0; transform:translateY(12px) scale(.9); transform-origin:100% 100%; transition:opacity .16s ease-out, transform .3s var(--ou-curve-out,ease-out) }
+body.os-android .ou-app .fab-menu.in > div{ opacity:1; transform:none }
+body.os-android .ou-app .fab-menu > div svg{ width:22px; height:22px; color:var(--blue) }
+body.os-android .ou-app .fab-menu > div:active{ background:var(--ou-surface2) }
+
+/* ---------- Cursor Nova UI (Definicoes: brilho, volumes): pista grossa com o preenchimento ate ao botao (--p, ui de quem o cria) ---------- */
+/* One UI 8.5 (SliderCard): pista de 19 r10, preenchimento azul, botao de 24 (branco no claro, preto no escuro) com anel azul de 2 */
+body.os-android input.ou-range{ -webkit-appearance:none; appearance:none; flex:1; min-width:0; height:19px; margin:0; border-radius:10px; outline:none; cursor:pointer; accent-color:auto;
+  background:linear-gradient(90deg,var(--blue) 0,var(--blue) var(--p,50%),var(--ou-track) var(--p,50%),var(--ou-track) 100%) }
+body.os-android input.ou-range::-webkit-slider-thumb{ -webkit-appearance:none; appearance:none; width:24px; height:24px; border-radius:50%; background:var(--ou-thumb); border:2px solid var(--blue); box-sizing:border-box; box-shadow:0 1px 3px rgba(0,0,0,.2); cursor:pointer }
+
+/* ============================================================
+   BARRA DE SEPARADORES FLUTUANTE (Nova UI 8.5): pilula com icone + rotulo; o ativo leva um realce neutro
+   ============================================================ */
+body.os-android .ou-app > .tabbar:not(.plain){ bottom:calc(var(--safe-bottom) + 12px); gap:10px; padding:0 22px }
+body.os-android .ou-app > .tabbar:not(.plain)::before{ display:none }
+body.os-android .ou-app > .tabbar.compact{ transform:none }
+/* pilula de 64 (Floating Pill Tab Bar / Bottom Navigation da Nova UI 8.5): 6 de margem, 4 entre separadores, icone 24 com o rotulo
+   de 11 por baixo; destacada do fundo por uma sombra suave e um fio de luz em cima (sem vidro: por baixo esta a app, nao o fundo) */
+body.os-android .ou-app > .tabbar:not(.plain) .tb-pill{ padding:6px; gap:4px; border-radius:999px; background:var(--ou-tb-bg); border:0; box-shadow:inset 0 0 0 1px var(--ou-tb-line), inset 0 1px 0 rgba(255,255,255,.55), 0 10px 28px rgba(0,0,0,.14), 0 2px 6px rgba(0,0,0,.06); backdrop-filter:none; -webkit-backdrop-filter:none }
+body.os-android.dark .ou-app > .tabbar:not(.plain) .tb-pill{ box-shadow:inset 0 0 0 1px var(--ou-tb-line), inset 0 1px 0 rgba(255,255,255,.08), 0 10px 28px rgba(0,0,0,.42), 0 2px 6px rgba(0,0,0,.3) }
+body.os-android .ou-app > .tabbar:not(.plain) .tab{ min-width:66px; height:52px; padding:0 12px; gap:4px; border-radius:999px; background:transparent; color:var(--label2); font-size:11px; font-weight:500; letter-spacing:.1px; transition:background-color .25s var(--ou-curve,ease-out), color .2s ease-out }
+body.os-android .ou-app > .tabbar:not(.plain) .tab svg{ width:24px; height:24px; animation:none; transition:none }
+body.os-android .ou-app > .tabbar:not(.plain) .tab.on{ background:var(--ou-tb-on); color:var(--label); font-weight:600 }
+body.os-android .ou-app > .tabbar:not(.plain) .tab:active{ transform:none; opacity:1; background:var(--fill3) }
+body.os-android .ou-app > .tabbar:not(.plain) .tab.tab-search{ width:64px; min-width:64px; height:64px; padding:0; border-radius:50%; border:0; background:var(--ou-tb-bg); color:var(--label); box-shadow:inset 0 0 0 1px var(--ou-tb-line), inset 0 1px 0 rgba(255,255,255,.55), 0 10px 28px rgba(0,0,0,.14), 0 2px 6px rgba(0,0,0,.06); backdrop-filter:none; -webkit-backdrop-filter:none; transition:border-radius .15s var(--ou-curve,ease), background-color .2s ease-out }
+body.os-android.dark .ou-app > .tabbar:not(.plain) .tab.tab-search{ box-shadow:inset 0 0 0 1px var(--ou-tb-line), inset 0 1px 0 rgba(255,255,255,.08), 0 10px 28px rgba(0,0,0,.42) }
+body.os-android .ou-app > .tabbar:not(.plain) .tab.tab-search:active{ border-radius:22px }
+body.os-android .ou-app > .tabbar:not(.plain) .tab.tab-search svg{ width:26px; height:26px }
+body.os-android .ou-app > .tabbar:not(.plain) .tab.tab-search.on{ background:var(--ou-tb-bg); color:var(--blue) }
+body.os-android .ou-app > .tabbar.searching .tb-pill .tab.on{ background:transparent; color:var(--label2); font-weight:500 }
+/* contador (components.html "Badges"): 17 de altura, raio 9, 10 negrito branco sobre vermelho; o ponto tem 10 */
+body.os-android .ou-app > .tabbar:not(.plain) .tab .tb-badge{ top:3px; right:10px; min-width:17px; height:17px; padding:0 4px; border-radius:9px; box-sizing:border-box; font-size:10px; font-weight:700; line-height:17px }
+body.os-android .ou-app > .tabbar:not(.plain) .tab .tb-badge.dot{ min-width:10px; width:10px; height:10px; padding:0; border-radius:50%; top:7px; right:16px }
+/* separador ativo NEUTRO em todas as apps (2026-10-01, pedido do dono): branco sobre barras escuras, preto sobre claras,
+   nunca a cor de destaque da app. .tb-dark/.tb-light vem do UI.tabbar (mede o fundo da barra). */
+body.os-android .tabbar.tb-dark .tab.on, body.os-android .tabbar.tb-dark .tab.on > svg, body.os-android .tabbar.tb-dark .tab.on > span{ color:#fff!important }
+body.os-android .tabbar.tb-light .tab.on, body.os-android .tabbar.tb-light .tab.on > svg, body.os-android .tabbar.tb-light .tab.on > span{ color:#000!important }
+body.os-android .tabbar.tb-dark:not(.plain) .tb-pill .tab.on{ background:rgba(255,255,255,.14)!important }
+body.os-android .tabbar.tb-light:not(.plain) .tb-pill .tab.on{ background:rgba(0,0,0,.07)!important }
+body.os-android .tabbar.searching .tb-pill .tab.on{ background:transparent!important }
+
+/* ============================================================
+   DIALOGO Nova UI (UI.alert / prompt / confirm): em baixo, r28, titulo a esquerda, botoes de texto lado a lado.
+   O pedido de permissao (.perm-ov) e do pacote E e fica de fora.
+   ============================================================ */
+/* One UI 8.5 (DialogBlurred + ORCHESTRATION "Dialog Internal Order"): r28, 24 de margem interior, titulo 20/600, descricao
+   14 com 8 de intervalo, 24 ate a fila de botoes; a fila tem 48, linha de 1 px por cima e uma divisoria vertical entre os botoes.
+   Escurecimento de 50 % no claro e 65 % no escuro. Sem vidro: no jogo nao ha desfoque por tras de uma app. */
+body.os-android .overlay.ou-dlg:not(.perm-ov){ bottom:var(--ou-nav); align-items:flex-end; padding:0 16px var(--ou-gapb); background:var(--ou-dim-dlg); backdrop-filter:none; -webkit-backdrop-filter:none;
+  border-radius:var(--ou-r-screen,40px) var(--ou-r-screen,40px) var(--ou-ovb) var(--ou-ovb) }
+body.os-android .overlay.ou-dlg:not(.perm-ov) .alert{ width:100%; max-width:408px; border:0; border-radius:28px; background:var(--ou-dlg-bg); color:var(--label); text-align:left;
+  box-shadow:0 8px 24px rgba(0,0,0,.12); backdrop-filter:none; -webkit-backdrop-filter:none; filter:none; opacity:0; transform:translateY(40px);
+  transition:transform .3s var(--ou-curve-out), opacity .2s ease-out }
+body.os-android .overlay.ou-dlg.in:not(.perm-ov) .alert{ opacity:1; transform:translateY(calc(-1 * var(--ou-kb, 0px))) }   /* --ou-kb: altura do teclado (ui.js) */
+body.os-android .overlay.ou-dlg:not(.perm-ov) .alert-body{ padding:24px 24px 24px }
+body.os-android .overlay.ou-dlg:not(.perm-ov) .alert-title{ font-size:20px; font-weight:600; line-height:1.3; color:var(--label) }
+body.os-android .overlay.ou-dlg:not(.perm-ov) .alert-title:empty{ display:none }
+body.os-android .overlay.ou-dlg:not(.perm-ov) .alert-msg{ margin-top:8px; font-size:14px; line-height:1.5; color:var(--label2) }
+body.os-android .overlay.ou-dlg:not(.perm-ov) .alert-title:empty + .alert-msg{ margin-top:0; font-size:15px; color:var(--label) }
+/* campo do UI.prompt (components.html "Input Fields"): contorno de 1.5 r18, 52 de altura, azul com foco */
+body.os-android .overlay.ou-dlg:not(.perm-ov) .alert input{ width:100%; height:52px; margin-top:16px; padding:0 16px; box-sizing:border-box; border:1.5px solid var(--ou-field-line); border-radius:18px; background:var(--ou-surface); font-size:17px; color:var(--label); outline:none; transition:border-color .2s ease-out }
+body.os-android .overlay.ou-dlg:not(.perm-ov) .alert input:focus,body.os-android .overlay.ou-dlg:not(.perm-ov) .alert input.kb-on{ border-color:var(--blue) }
+body.os-android .overlay.ou-dlg:not(.perm-ov) .alert-btns{ display:flex; align-items:stretch; margin:0 12px; padding:0 0 8px; border-top:1px solid var(--sep-subtle) }
+body.os-android .overlay.ou-dlg:not(.perm-ov) .alert-btns > div{ position:relative; flex:1; display:flex; align-items:center; justify-content:center; min-height:48px; margin-top:6px; padding:0 8px; border-radius:999px; text-align:center; font-size:17px; font-weight:600; color:var(--label); cursor:pointer; transition:background-color .15s ease-out }   /* Nova UI 9: botoes de texto na cor do texto (preto / branco), so o destrutivo a vermelho (SESL: dialog_button_text = text1, 17 sp) */
+body.os-android .overlay.ou-dlg:not(.perm-ov) .alert-btns > div + div{ border-left:0 }
+body.os-android .overlay.ou-dlg:not(.perm-ov) .alert-btns > div + div::before{ content:''; position:absolute; left:0; top:50%; width:1px; height:24px; margin-top:-12px; background:var(--sep) }
+body.os-android .overlay.ou-dlg:not(.perm-ov) .alert-btns > div.danger{ color:var(--red) }
+body.os-android .overlay.ou-dlg:not(.perm-ov) .alert-btns > div:active{ background:var(--fill3) }
+body.os-android .overlay.ou-dlg:not(.perm-ov) .alert-btns.stack{ flex-direction:column; padding:2px 0 8px }
+body.os-android .overlay.ou-dlg:not(.perm-ov) .alert-btns.stack > div{ margin-top:2px }
+body.os-android .overlay.ou-dlg:not(.perm-ov) .alert-btns.stack > div + div{ border-top:0 }
+body.os-android .overlay.ou-dlg:not(.perm-ov) .alert-btns.stack > div + div::before{ display:none }
+
+/* ============================================================
+   FOLHA Nova UI (UI.sheet): cantos 28 em cima, pega, titulo a esquerda e as acoes como botoes de texto
+   ============================================================ */
+body.os-android .sheet-wrap.ou-sheet{ bottom:var(--ou-nav); background:var(--ou-dim); border-radius:var(--ou-r-screen,40px) var(--ou-r-screen,40px) var(--ou-ovb) var(--ou-ovb) }
+/* components.html "Bottom Sheet": cantos 26 em cima, pega 36x4 #C0C0C0, titulo 22/600 a esquerda com 24 de margem */
+body.os-android .sheet-wrap.ou-sheet .sheet{ max-height:90%; border-radius:26px 26px var(--ou-ovb) var(--ou-ovb); background:var(--ou-sheet-bg); color:var(--label); box-shadow:0 -6px 28px rgba(0,0,0,.14) }
+body.os-android .sheet-wrap.ou-sheet .grabber{ width:36px; height:4px; margin:12px auto 4px; border-radius:2px; background:var(--ou-grab) }
+body.os-android .sheet-wrap.ou-sheet .sheet-head{ gap:2px; padding:8px 12px 12px 24px; color:var(--blue) }
+body.os-android .sheet-wrap.ou-sheet .sheet-head b{ order:-1; flex:1; min-width:0; font-size:22px; font-weight:600; color:var(--label); text-align:left; white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+body.os-android .sheet-wrap.ou-sheet .sheet-head .sh-l,body.os-android .sheet-wrap.ou-sheet .sheet-head .sh-r{ flex:none; padding:10px 14px; border-radius:999px; font-size:16px; font-weight:600; color:var(--blue); cursor:pointer; transition:background-color .12s ease-out }
+body.os-android .sheet-wrap.ou-sheet .sheet-head .sh-l{ font-weight:500 }
+body.os-android .sheet-wrap.ou-sheet .sheet-head .sh-l:empty{ display:none }
+body.os-android .sheet-wrap.ou-sheet .sheet-head .sh-l:active,body.os-android .sheet-wrap.ou-sheet .sheet-head .sh-r:active{ background:var(--fill3) }
+body.os-android .sheet-wrap.ou-sheet .sheet > .content{ padding-bottom:24px }
+
+/* ============================================================
+   LISTA DE ACOES Nova UI (UI.actionSheet): um cartao em baixo com as opcoes em linhas e o Cancelar em texto
+   ============================================================ */
+body.os-android .as-wrap.ou-as{ bottom:var(--ou-nav); padding:0 16px var(--ou-gapb); background:var(--ou-dim-dlg); border-radius:var(--ou-r-screen,40px) var(--ou-r-screen,40px) var(--ou-ovb) var(--ou-ovb) }
+body.os-android .as-wrap.ou-as .as-group{ width:100%; max-width:408px; box-sizing:border-box; margin:0 auto; padding:8px 0 8px; border:0; border-radius:28px; background:var(--ou-dlg-bg); box-shadow:0 8px 24px rgba(0,0,0,.12); backdrop-filter:none; -webkit-backdrop-filter:none }
+body.os-android .as-wrap.ou-as .as-group.main::before{ display:none }
+body.os-android .as-wrap.ou-as .as-title{ padding:16px 24px 8px; border-bottom:0; text-align:left; font-size:15px; font-weight:600; color:var(--label2) }
+body.os-android .as-wrap.ou-as .ou-as-list{ max-height:560px; overflow-y:auto; scrollbar-width:none }
+body.os-android .as-wrap.ou-as .ou-as-list::-webkit-scrollbar{ display:none }
+body.os-android .as-wrap.ou-as .ou-as-list .as-btn{ display:flex; align-items:center; gap:16px; min-height:56px; padding:0 24px; text-align:left; font-size:17px; font-weight:400; color:var(--label); transition:background-color .12s ease-out }
+body.os-android .as-wrap.ou-as .as-btn + .as-btn{ border-top:0 }
+body.os-android .as-wrap.ou-as .ou-as-list .as-btn svg{ flex:none; width:24px; height:24px; color:var(--label2) }
+body.os-android .as-wrap.ou-as .ou-as-list .as-btn span{ flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap }
+body.os-android .as-wrap.ou-as .ou-as-list .as-btn.bold{ font-weight:600 }
+body.os-android .as-wrap.ou-as .ou-as-list .as-btn.danger,body.os-android .as-wrap.ou-as .ou-as-list .as-btn.danger svg{ color:var(--red) }
+body.os-android .as-wrap.ou-as .as-btn:active{ background:var(--fill4) }
+body.os-android .as-wrap.ou-as .ou-as-foot{ display:flex; margin:6px 12px 0; padding:6px 0 0; border-top:1px solid var(--sep-subtle) }
+body.os-android .as-wrap.ou-as .ou-as-foot .as-btn{ flex:1; display:flex; align-items:center; justify-content:center; min-height:48px; padding:0; border-radius:999px; font-size:16px; font-weight:600; color:var(--blue) }
+
+/* ============================================================
+   MENU FLUTUANTE Nova UI (UI.ctxMenu): r26, icone a esquerda, linhas de 52 px
+   ============================================================ */
+body.os-android .ctx-wrap.ou-ctx{ bottom:var(--ou-nav); background:rgba(0,0,0,.2); backdrop-filter:none; -webkit-backdrop-filter:none; border-radius:var(--ou-r-screen,40px) var(--ou-r-screen,40px) var(--ou-ovb) var(--ou-ovb) }
+/* components.html "Menus": r26, 8 em cima e em baixo, linhas 14/24 (52 px), icone 24 secundario com 16 ate ao texto.
+   Android 17: superficie translucida (a tinta deixa passar um pouco do que esta por baixo) com um fio de luz em cima */
+body.os-android .ctx-wrap.ou-ctx .ctx{ width:240px; padding:8px 0; border:0; border-radius:26px; background:var(--ou-menu-tr,var(--ou-menu-bg)); color:var(--label); box-shadow:inset 0 1px 0 rgba(255,255,255,.6), inset 0 0 0 1px rgba(255,255,255,.35), 0 8px 24px rgba(0,0,0,.16); backdrop-filter:none; -webkit-backdrop-filter:none; transform-origin:50% 0 }
+body.os-android.dark .ctx-wrap.ou-ctx .ctx{ box-shadow:inset 0 1px 0 rgba(255,255,255,.1), inset 0 0 0 1px rgba(255,255,255,.08), 0 8px 24px rgba(0,0,0,.4) }
+body.os-android{ --ou-menu-tr:rgba(252,252,255,.9) } body.os-android.dark{ --ou-menu-tr:rgba(40,40,46,.9) }
+body.os-android .ctx-wrap.ou-ctx .ctx > div{ justify-content:flex-start; gap:16px; min-height:52px; padding:0 24px; font-size:16px; color:var(--label); transition:background-color .12s ease-out }
+body.os-android .ctx-wrap.ou-ctx .ctx > div + div{ border-top:0 }
+body.os-android .ctx-wrap.ou-ctx .ctx > div svg{ flex:none; width:24px; height:24px; color:var(--label2) }
+body.os-android .ctx-wrap.ou-ctx .ctx > div span{ flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap }
+body.os-android .ctx-wrap.ou-ctx .ctx > div.danger,body.os-android .ctx-wrap.ou-ctx .ctx > div.danger svg{ color:var(--red) }
+body.os-android .ctx-wrap.ou-ctx .ctx > div:active{ background:var(--fill4) }
+
+/* ============================================================
+   TOAST Nova UI: pilula em baixo, acima da barra de navegacao (--ou-toast)
+   ============================================================ */
+/* One UI 8.5 (Toast 479:8075): pilula ate 328 de largura, #F1F1F3 no claro / #010102 no escuro, sem desfoque, texto 14 */
+body.os-android .toast.ou-toast.ou-toast{ left:50%; bottom:calc(var(--ou-nav) + 76px); width:max-content; max-width:328px; box-sizing:border-box; padding:12px 20px; border:0; border-radius:999px;
+  background:var(--ou-toast); color:var(--ou-toast-tx); font-size:14px; font-weight:400; line-height:1.4; text-align:center; box-shadow:0 0 0 1px rgba(0,0,0,.05), 0 6px 20px rgba(0,0,0,.18); backdrop-filter:none; -webkit-backdrop-filter:none;
+  opacity:0; transform:translate(-50%,10px); transition:transform .3s var(--ou-curve-out), opacity .2s ease-out; pointer-events:none }
+body.os-android.dark .toast.ou-toast.ou-toast{ box-shadow:0 0 0 1px rgba(255,255,255,.12), 0 4px 18px rgba(0,0,0,.5) }
+body.os-android .toast.ou-toast.ou-toast.in{ opacity:1; transform:translate(-50%,0) }
+
+/* ---------- Aviso antigo (UI.banner): cartao flutuante no topo, como as notificacoes da Nova UI ---------- */
+body.os-android .banner.ou-banner{ top:calc(var(--statusbar-h) + 6px); left:10px; right:10px; padding:14px 16px; gap:14px; border-radius:26px; background:var(--ou-surface); color:var(--label);
+  box-shadow:0 10px 30px rgba(0,0,0,.2); backdrop-filter:none; -webkit-backdrop-filter:none; transform:translateY(-150%) }
+body.os-android .banner.ou-banner.in{ transform:none }
+body.os-android .banner.ou-banner .tile{ width:36px; height:36px; border-radius:10px }
+body.os-android .banner.ou-banner .b-title{ font-size:15px; font-weight:600 }
+body.os-android .banner.ou-banner .b-msg{ font-size:14px; color:var(--label2) }
+body.os-android .banner.ou-banner .b-time{ font-size:12px; color:var(--label3) }
+
+/* ============================================================
+   NOVA Fold8 (dobravel, contrato v2): ecra de fora 670 (fechado) e de dentro 1340 (aberto). As apps do sistema abrem em lista |
+   detalhe com ele aberto (ui.js UI.split, --split-l); as vistas de uma coluna ficam na coluna de leitura (ui.css --fold-col).
+   ============================================================ */
+/* a linha aberta a direita: cinzento neutro com cantos de 20 (One UI em ecra grande; nunca azul), o texto continua o dele.
+   --ou-split-sel vem do oneui-tokens.css (claro .055 preto, escuro .09 branco) */
+body.os-android.form-fold .nav-stack.split > .view:first-child .li.split-sel{ background:var(--ou-split-sel); border-radius:20px }
+body.os-android.form-fold .nav-stack.split > .view:first-child .amail-row.split-sel,body.os-android.form-fold .nav-stack.split > .view:first-child .anote-row.split-sel,
+body.os-android.form-fold .nav-stack.split > .view:first-child .aph-row.split-sel > .aph-row-fg{ background:linear-gradient(var(--ou-split-sel),var(--ou-split-sel)),var(--ou-surface); border-radius:20px }
+body.os-android.form-fold .nav-stack.split > .view:first-child .anote-it.split-sel .anote-page{ box-shadow:0 0 0 2px var(--blue) }
+/* Mensagens (linhas proprias; o app-messages.css pinta-as de azul no PearOS): o mesmo cinzento, opaco (as acoes do deslize estao por
+   baixo da linha) e o texto com as cores de sempre */
+body.os-android.form-fold .nav-stack.split > .view:first-child .msl-main.split-sel{ background:linear-gradient(var(--ou-split-sel),var(--ou-split-sel)),var(--ou-surface); border-radius:20px }
+body.os-android.form-fold .nav-stack.split > .view:first-child .msl-main.split-sel .msl-top b{ color:var(--label) }
+body.os-android.form-fold .nav-stack.split > .view:first-child .msl-main.split-sel :is(.msl-time,.msl-sub){ color:var(--label2) }
+body.os-android.form-fold .nav-stack.split > .view:first-child .msl-row.is-unread .msl-main.split-sel :is(.msl-time,.msl-sub){ color:var(--label) }
+/* o 1.o detalhe nao tem o voltar (a lista esta ao lado): sai da barra e o titulo encosta a esquerda */
+body.os-android.form-fold .nav-stack.split > .view.pane-first > .navbar .nb-back{ display:none }
+body.os-android.form-fold .nav-stack.split > .view.pane-first > .navbar .nb-title{ padding-left:18px }
+/* barras COMPACTAS nas duas colunas (One UI em ecra grande, spec_fold 5.1): 64 px, titulo 22/700 a esquerda a 24 px e os botoes a
+   direita de cada coluna; sem a zona de leitura do titulo grande (as duas colunas comecam logo por baixo da barra). Um detalhe
+   aninhado leva a seta antes do titulo. As apps de terceiros tem as regras delas logo abaixo */
+body.os-android.form-fold .ou-app .nav-stack.split > .view > .navbar{ height:calc(var(--statusbar-h) + 64px) }
+body.os-android.form-fold .ou-app .nav-stack.split > .view > .navbar .nb-title{ opacity:1; font-size:22px; font-weight:700; letter-spacing:-.1px }
+body.os-android.form-fold .ou-app .nav-stack.split > .view > .content > .large-title{ display:none }
+/* as apps de terceiros (.ou-3p, barras ao estilo do PearOS: Faturas, Garagem, Dark Chat) também, nas duas colunas: barra de 64 no
+   fluxo (a da lista sobrepunha-se ao título grande), título 22/700 à esquerda a 24 px, botões à direita, o voltar só com a seta e sem
+   o título grande. O Zapp fica de fora: tem o cabeçalho próprio (avatar, título e filtros) */
+body.os-android.form-fold .ou-3p:not(.rc-app) .nav-stack.split > .view > .navbar{ position:relative; height:calc(var(--statusbar-h) + 64px); pointer-events:auto }
+body.os-android.form-fold .ou-3p:not(.rc-app) .nav-stack.split > .view.lg-bare > .content{ padding-top:0 }
+body.os-android.form-fold .ou-3p:not(.rc-app) .nav-stack.split > .view > .navbar .nb-left{ min-width:0 }
+body.os-android.form-fold .ou-3p:not(.rc-app) .nav-stack.split > .view > .navbar .nb-back span{ display:none }
+body.os-android.form-fold .ou-3p:not(.rc-app) .nav-stack.split > .view > .navbar .nb-title{ position:static; transform:none; flex:1 1 auto; min-width:0; max-width:none; padding:0 6px 0 14px;
+  opacity:1; font-size:22px; font-weight:700; letter-spacing:-.1px; text-align:left }
+body.os-android.form-fold .ou-3p:not(.rc-app) .nav-stack.split > .view > .content > .large-title{ display:none }
+/* sem linha entre a lista e o detalhe: as duas colunas partilham o fundo (o detalhe vive em cartoes) */
+body.os-android.form-fold .nav-stack.split > .view:first-child{ box-shadow:none }
+/* folha: cartao de 600 ao centro, encostado a barra de navegacao (no ecra largo a folha de ponta a ponta ficava com meio metro);
+   com a barra de tarefas flutuante em cima (--taskbar-h, android-sysui.js) assenta por cima dela */
+body.os-android.form-fold .sheet-wrap.ou-sheet .sheet{ left:calc(50% - 300px); right:calc(50% - 300px); bottom:var(--taskbar-h,0px) }
+/* dialogos e listas de acoes: 408 fechado (como um telemovel), 500 aberto (37,5 % do ecra deitado), sempre em baixo ao centro e
+   acima da barra de tarefas */
+body.os-android.form-fold .overlay.ou-dlg:not(.perm-ov),body.os-android.form-fold .as-wrap.ou-as{ padding-bottom:calc(var(--ou-gapb) + var(--taskbar-h,0px)) }
+body.os-android.form-fold.fold-open .overlay.ou-dlg:not(.perm-ov) .alert,body.os-android.form-fold.fold-open .as-wrap.ou-as .as-group{ max-width:500px }
+/* toast: por cima da barra de tarefas quando ela esta em cima */
+body.os-android.form-fold .toast.ou-toast.ou-toast{ bottom:calc(var(--ou-nav) + 76px + var(--taskbar-h,0px)) }
+/* o resto do que fica preso ao fundo tambem soma a barra de tarefas flutuante (--taskbar-h; 0 sem ela, e nada muda): folhas e listas
+   de acoes das apps de terceiros (desenho do PearOS), campos de escrever (Dark Chat, Instashot, Twix, Match), o comando dos jogos
+   e o fim das paginas das Definicoes. As apps do sistema tem as regras delas no oneui-apps*.css */
+body.os-android.form-fold .sheet-wrap:not(.ou-sheet) .sheet{ bottom:calc(12px + var(--taskbar-h,0px)) }
+body.os-android.form-fold .as-wrap:not(.ou-as){ padding-bottom:calc(var(--safe-bottom) + 4px + var(--taskbar-h,0px)) }
+body.os-android.form-fold.fold-open .composer{ padding-bottom:calc(var(--safe-bottom) + 6px + var(--taskbar-h,0px)) }
+body.os-android.form-fold.fold-open .gm-wrap{ padding-bottom:calc(var(--safe-bottom,22px) + 6px + var(--taskbar-h,0px)) }
+body.os-android.form-fold.fold-open .app-window[data-app="settings"] .nav-stack > .view:not(.aset-fpv) > .content{ padding-bottom:calc(var(--safe-bottom) + 20px + var(--taskbar-h,0px)) }
+/* aviso (UI.banner) como a notificacao flutuante: fechado com 12 de cada lado, aberto 456 ao centro */
+body.os-android.form-fold .banner.ou-banner{ left:12px; right:12px }
+body.os-android.form-fold.fold-open .banner.ou-banner{ left:calc(50% - 228px); right:calc(50% - 228px) }
+
+/* ============================================================
+   NOVA Fold8 ABERTO: BARRA LATERAL DE NAVEGACAO (UI.tabbar num ecra grande, a "navigation rail" da One UI)
+   Com o ecra de dentro (1340) os separadores de QUALQUER app saem do fundo e ficam numa coluna a ESQUERDA: icone com o rotulo
+   por baixo e o separador ativo na pilula neutra de sempre. A pilha (.nav-stack) e o aviso das duas colunas (.split-ph) comecam a
+   seguir a ela (o conteudo fica com o resto da largura); as camadas da app a ecra inteiro continuam de ponta a ponta. Fechado
+   (670) e nos telemoveis fica a pilula flutuante em baixo. O ui.js poe tudo sozinho; para as apps:
+   · .app-window.tb-win  a janela tem separadores · .tb-vis  a barra esta a vista (as vistas .full e as classes que a escondem,
+     como a .agal-tb-off da Galeria, tiram-na e a pilha volta a ter a largura toda)
+   · --ou-rail-w   largura da coluna (112; so existe com ela). Um elemento preso a esquerda da JANELA soma-a.
+   · --ou-rail-bg  cor da coluna = fundo da vista a frente (ui.js), para a app continuar sem costura
+   · --tb-space    espaco da barra de separadores em baixo por cima do conteudo: 0 com a coluna (sem ela nao existe; um FAB ou uma
+     barra de baixo das apps usa bottom:calc(var(--tb-space, 88px) + ...) para descer quando os separadores vao para o lado)
+   · --taskbar-h   (android-sysui.js) o que a barra de tarefas do sistema tapa por cima da janela: 72 com a flutuante em cima, 0 com
+     botoes (ai o #apps ja acaba na barra). O conteudo com separadores, toasts, dialogos e folhas somam-no.
+   ============================================================ */
+body.os-android.form-fold.fold-open .app-window.tb-win.tb-vis{ --ou-rail-w:112px; --tb-space:0px }
+body.os-android.form-fold.fold-open .app-window.tb-win.tb-vis > .nav-stack{ left:var(--ou-rail-w) }
+body.os-android.form-fold.fold-open .app-window.tb-win.tb-vis.split-on > .split-ph{ left:calc(var(--ou-rail-w) + var(--split-l)) }
+/* a coluna: a barra inteira passa a faixa vertical da cor da vista (sem pilula flutuante, sem degrade por baixo, sem encolher) */
+body.os-android.form-fold.fold-open .app-window > .tabbar{ top:0; bottom:0; left:0; right:auto; width:var(--ou-rail-w,112px); flex-direction:column; justify-content:center; gap:4px;
+  padding:var(--statusbar-h) 0 16px; background:var(--ou-rail-bg,var(--bg)); transform:none; transition:none }
+body.os-android.form-fold.fold-open .app-window > .tabbar.plain:not(.hidden){ display:flex }
+body.os-android.form-fold.fold-open .app-window > .tabbar::before{ display:none }
+body.os-android.form-fold.fold-open .app-window > .tabbar .tb-pill{ flex-direction:column; align-items:center; justify-content:center; gap:4px; width:auto; height:auto; padding:0; margin:0;
+  border:0; border-radius:0; background:transparent; box-shadow:none }
+/* separador: 96 de largura, icone 24 com o rotulo de 12 por baixo (ate duas linhas: "Relogio mundial"); ativo = pilula neutra */
+body.os-android.form-fold.fold-open .app-window > .tabbar .tab{ flex:none; width:96px; min-width:0; height:auto; min-height:60px; padding:8px 4px; gap:4px; border:0; border-radius:24px;
+  box-shadow:none; font-size:12px; font-weight:500; line-height:15px; text-align:center }
+body.os-android.form-fold.fold-open .app-window > .tabbar .tab svg{ flex:none; width:24px; height:24px }
+body.os-android.form-fold.fold-open .app-window > .tabbar:not(.plain) .tab span{ display:block; max-width:100%; overflow:hidden; overflow-wrap:break-word; white-space:normal }
+body.os-android.form-fold.fold-open .app-window > .tabbar .tab.on{ font-weight:600 }
+body.os-android.form-fold.fold-open .app-window > .tabbar .tab .tb-badge{ top:4px; right:22px }
+body.os-android.form-fold.fold-open .app-window > .tabbar .tab .tb-badge.dot{ top:8px; right:30px }
+/* a pesquisa (circulo a parte em baixo) passa a ser mais um separador da coluna, com o rotulo */
+body.os-android.form-fold.fold-open .app-window > .tabbar .tab.tab-search{ width:96px; min-width:0; height:auto; min-height:60px; padding:8px 4px; border:0; border-radius:24px; background:transparent; box-shadow:none; color:var(--label2) }
+body.os-android.form-fold.fold-open .app-window > .tabbar .tab.tab-search svg{ width:24px; height:24px }
+body.os-android.form-fold.fold-open .app-window > .tabbar.tb-light .tab.tab-search.on{ background:rgba(0,0,0,.07) }
+body.os-android.form-fold.fold-open .app-window > .tabbar.tb-dark .tab.tab-search.on{ background:rgba(255,255,255,.14) }
+/* barra simples (Instashot): so os icones, sem pilula (o ativo e o icone cheio, como na app) */
+body.os-android.form-fold.fold-open .app-window > .tabbar.plain .tab{ width:64px; min-height:56px; padding:0 }
+body.os-android.form-fold.fold-open .app-window > .tabbar.plain .tab svg{ width:27px; height:27px }
+/* o conteudo deixa de reservar a pilula de baixo: fica so a margem de sempre e a barra de tarefas */
+body.os-android.form-fold.fold-open .app-window.tb-win.tb-vis .content.has-tabbar{ padding-bottom:calc(var(--safe-bottom) + 20px + var(--taskbar-h,0px)) }
+/* campo de escrever da Vera Chat: aberto, na coluna das mensagens, nunca de ponta a ponta */
+body.os-android.form-fold.fold-open .aai-bar{ padding-left:calc(50% - var(--fold-col) / 2 + 12px); padding-right:calc(50% - var(--fold-col) / 2 + 12px) }
+/* teclado nas duas colunas (keyboard.js paneFit): a janela fica; só a coluna dona do campo encolhe até ao topo das teclas (o
+   cabeçalho dela continua à vista) e, se o campo ainda ficar tapado, sobe o que falta. A outra coluna não mexe */
+body.os-android.form-fold .app-window .nav-stack.split > .view.kb-short{ bottom:var(--kb-h,0px) }
+body.os-android.form-fold .app-window .nav-stack.split > .view.kb-lift{ transform:translateY(var(--kb-shift,0px))!important; transition:transform .5s cubic-bezier(.2,.9,.25,1)!important }
+
+/* ---------- Lista do <select> (ui.js selectPop) ---------- */
+body.os-android .sel-pop{ border-radius:26px; background:var(--ou-menu-bg); box-shadow:0 8px 24px rgba(0,0,0,.16) }
+body.os-android .sel-pop .sel-list{ padding:8px }
+body.os-android .sel-it{ min-height:48px; padding:0 16px; justify-content:flex-start; border-radius:16px; font-size:16px; white-space:nowrap }
+body.os-android .sel-it + .sel-it{ margin-top:2px }
+body.os-android .sel-it.on{ color:var(--blue); font-weight:600; background:var(--fill3) }
+
+/* ============================================================
+   DEFINICOES NOVA UI (settings.js, classes aset-)
+   ============================================================ */
+/* coluna (e nao bloco): a pesquisa das Definicoes vai para o FIM com order e fica presa em baixo (Nova UI 8.5: a barra de pesquisa
+   em baixo, a lista rola por baixo dela) */
+body.os-android .ou-app .aset-body{ display:flex; flex-direction:column; align-items:stretch }
+/* os cartoes proprios das Definicoes levam a mesma sombra 1 dos cartoes das listas (so no claro) */
+body.os-android :is(.aset-navpv,.aset-edgepv,.aset-batt,.aset-hero,.aset-about){ box-shadow:var(--ou-shadow-1) }
+/* cartoes soltos seguidos de uma lista (ou duas listas seguidas): o mesmo intervalo de 14 px que ha entre os cartoes de uma lista */
+body.os-android .ou-app .aset-body > :is(.group,.list) + .list > .group:first-child{ margin-top:14px }
+body.os-android .ou-app .aset-body .li-sub{ white-space:normal; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical }
+/* raiz (components.html "List Items"): icone tonal de 38, titulo 17 medio, resumo 14 por baixo, seta a direita e divisoria
+   alinhada com o texto */
+body.os-android .ou-app .aset-root .group + .group{ margin-top:16px }
+body.os-android .ou-app .aset-root .li{ min-height:72px; padding:15px 24px; gap:16px }
+body.os-android .ou-app .aset-root .li-icon{ width:38px; height:38px }
+body.os-android .ou-app .aset-root .li-icon svg{ width:21px; height:21px }
+body.os-android .ou-app .aset-root .li-label{ font-size:17px; font-weight:500 }
+body.os-android .ou-app .aset-root .li-sub{ margin-top:2px; font-size:14px; white-space:nowrap; display:block; text-overflow:ellipsis }
+/* Nova UI 9 (One UI 8.5 e 9: "menos desarrumacao", os resumos por baixo de cada entrada sairam da pagina principal): linhas
+   compactas so com o icone tonal e o nome; a pesquisa vive so na pilula de baixo (a lupa de cima sai da pagina principal) */
+body.os-android .ou-app .aset-root .li{ min-height:62px; padding:11px 24px }
+body.os-android .ou-app .aset-root .li-sub{ display:none }
+body.os-android .ou-app .aset-root .li-label{ font-size:17.5px }
+body.os-android .app-window[data-app="settings"] .nav-stack > .view:first-child > .navbar .nb-right{ visibility:hidden }
+/* cartao da conta e entrada da pesquisa */
+body.os-android .aset-prof{ display:flex; align-items:center; gap:16px; margin:0 12px 12px; padding:18px 24px; border-radius:26px; background:var(--ou-surface); box-shadow:var(--ou-shadow-1); cursor:pointer; transition:background-color .12s ease-out }
+body.os-android .aset-prof:active{ background:var(--ou-surface2) }
+body.os-android .aset-prof .avatar{ width:58px; height:58px; font-size:22px }
+body.os-android .aset-prof-tx{ flex:1; min-width:0; display:flex; flex-direction:column; gap:2px }
+body.os-android .aset-prof-tx b{ font-family:var(--font-display); font-size:20px; font-weight:600; color:var(--label); white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+body.os-android .aset-prof-tx span{ font-size:14px; color:var(--label2); white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+/* Nova UI 8.5: a pesquisa e uma pilula FLUTUANTE EM BAIXO (ultima da coluna, presa ao fundo do scroll enquanto a lista rola por baixo
+   dela), com sombra suave e fio de luz em cima, acima do desvanecimento da margem (22 px) */
+/* o bottom do sticky conta a partir da caixa de CONTEUDO do scroll (o padding de baixo do .content, safe + 20, fica de fora): 8 menos o
+   safe deixa a pilula a 28 px do fundo da janela, em gestos e com botoes, e por cima da barra de tarefas do dobravel (que entra no padding) */
+body.os-android .aset-find{ order:99; position:sticky; bottom:calc(8px - var(--safe-bottom)); z-index:3; display:flex; align-items:center; gap:12px; height:50px; margin:18px 14px 0; padding:0 20px; border-radius:25px; background:var(--ou-surface);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.7), inset 0 0 0 1px var(--ou-tb-line), 0 10px 28px rgba(0,0,0,.14), 0 2px 6px rgba(0,0,0,.06); color:var(--label3); font-size:16px; cursor:pointer; transition:background-color .12s ease-out }
+body.os-android.dark .aset-find{ background:var(--ou-tb-bg); box-shadow:inset 0 1px 0 rgba(255,255,255,.08), inset 0 0 0 1px var(--ou-tb-line), 0 10px 28px rgba(0,0,0,.42) }
+body.os-android .aset-find svg{ color:var(--label2) }
+body.os-android .aset-find:active{ background:var(--ou-surface2) }
+/* a lista acaba com folga para a pilula nao tapar a ultima linha quando se chega ao fim */
+body.os-android .app-window[data-app="settings"] .nav-stack > .view > .content > .aset-body{ padding-bottom:4px }
+body.os-android .aset-find svg{ flex:none; width:20px; height:20px }
+/* pesquisa: o campo vive na barra; resultados com o caminho por baixo e a palavra a azul */
+body.os-android .ou-app .view.aset-search > .navbar .search.aset-q{ flex:1; min-width:0; height:46px; margin:0 10px 0 2px; padding:0 12px 0 16px; background:var(--ou-surface) }
+body.os-android .aset-sres{ padding-top:8px }
+body.os-android .aset-shint{ padding:48px 40px; text-align:center; font-size:15px; line-height:1.45; color:var(--label3) }
+body.os-android .aset-hl{ color:var(--blue); font-weight:600 }
+/* interruptor principal ("Ligado" / "Desligado") e linhas especiais */
+body.os-android .ou-app .li.aset-master{ min-height:68px; padding:14px 24px }
+body.os-android .ou-app .li.aset-master .li-label{ font-size:19px; font-weight:600 }
+body.os-android .ou-app .li.aset-master.on .li-label{ color:var(--blue) }
+body.os-android .ou-app .li.aset-cur .li-sub{ color:var(--blue) }
+body.os-android .ou-app .li.aset-dis{ color:var(--label3) }
+/* Ecra: claro / escuro */
+body.os-android .aset-modes{ display:flex; justify-content:center; gap:40px; padding:22px 20px 18px }
+body.os-android .aset-mode{ display:flex; flex-direction:column; align-items:center; gap:10px; cursor:pointer }
+body.os-android .aset-mode > span{ font-size:15px; font-weight:500; color:var(--label) }
+body.os-android .aset-mode .ou-radio{ margin-left:0 }
+body.os-android .aset-mode-pv{ width:88px; height:156px; padding:22px 10px 10px; border-radius:16px; display:flex; flex-direction:column; gap:7px; box-sizing:border-box }
+body.os-android .aset-mode-pv.light{ background:#F7F7F7; box-shadow:inset 0 0 0 1px rgba(0,0,0,.12) }
+body.os-android .aset-mode-pv.dark{ background:#010102; box-shadow:inset 0 0 0 1px rgba(255,255,255,.16) }
+body.os-android .aset-mode-pv i{ display:block; height:24px; border-radius:8px }
+body.os-android .aset-mode-pv.light i{ background:#FCFCFF; box-shadow:0 1px 2px rgba(0,0,0,.08) }
+body.os-android .aset-mode-pv.dark i{ background:#1F1F23 }
+body.os-android .aset-mode-pv i:first-child{ width:56%; height:9px; margin-bottom:5px; border-radius:5px; box-shadow:none }
+body.os-android .aset-mode-pv.light i:first-child{ background:rgba(0,0,0,.62) }
+body.os-android .aset-mode-pv.dark i:first-child{ background:rgba(255,255,255,.72) }
+/* cursores (brilho, volumes) */
+body.os-android .aset-slrow{ display:flex; align-items:center; gap:14px; padding:20px 22px; color:var(--label2) }
+body.os-android .aset-slrow svg{ flex:none }
+body.os-android .aset-vols{ padding:6px 0 }
+body.os-android .aset-vol{ padding:12px 22px }
+body.os-android .aset-vol-h{ display:flex; justify-content:space-between; margin-bottom:10px; font-size:15px; color:var(--label) }
+body.os-android .aset-vol-h b{ font-weight:500; color:var(--label2); font-variant-numeric:tabular-nums }
+body.os-android .aset-vol-r{ display:flex; align-items:center; gap:14px; color:var(--label2) }
+body.os-android .aset-vol-r svg{ flex:none }
+/* Barra de navegacao: pre-visualizacao, tipo e ordem dos botoes */
+body.os-android .aset-navpv{ margin:0 12px; padding:22px 0 20px; border-radius:26px; background:var(--ou-surface); display:flex; flex-direction:column; align-items:center }
+body.os-android .aset-navpv-scr{ width:212px; height:112px; padding:18px 16px 0; box-sizing:border-box; border:3px solid var(--label4); border-bottom:0; border-radius:30px 30px 0 0; background:var(--bg); display:flex; flex-direction:column; gap:9px }
+body.os-android .aset-navpv-scr i{ display:block; height:16px; border-radius:8px; background:var(--fill3) }
+body.os-android .aset-navpv-scr i:first-child{ width:50%; height:10px; background:var(--label3) }
+body.os-android .aset-navpv-scr i:nth-child(3){ width:72% }
+body.os-android .aset-navpv-bar{ width:212px; height:48px; box-sizing:border-box; border:3px solid var(--label4); border-top:0; border-radius:0 0 30px 30px; background:var(--bg); display:flex; align-items:center; justify-content:center; padding:0 14px 4px; color:var(--label) }
+body.os-android .aset-nk-row{ display:flex; align-items:center; justify-content:space-around; width:100% }
+body.os-android .aset-nk{ display:flex; width:22px; height:22px }
+body.os-android .aset-nk svg{ width:100%; height:100% }
+body.os-android .aset-pill{ display:block; width:64px; height:4px; border-radius:2px; background:var(--label); opacity:.55 }
+body.os-android .aset-navtypes{ display:flex; gap:8px; padding:18px 12px 16px }
+body.os-android .aset-navtype{ flex:1; display:flex; flex-direction:column; align-items:center; gap:10px; cursor:pointer }
+body.os-android .aset-navtype-ic{ width:150px; max-width:100%; height:46px; padding:0 12px; box-sizing:border-box; border-radius:16px; background:var(--bg); box-shadow:inset 0 0 0 1px var(--sep); display:flex; align-items:center; justify-content:center; color:var(--label) }
+body.os-android .aset-navtype > span{ font-size:15px; font-weight:500; color:var(--label) }
+body.os-android .aset-navtype .ou-radio{ margin-left:0 }
+body.os-android .aset-ord{ display:flex; align-items:center; gap:16px; padding:14px 24px; cursor:pointer; transition:background-color .12s ease-out }
+body.os-android .aset-ord:active{ background:var(--fill4) }
+body.os-android .aset-ord + .aset-ord{ border-top:1px solid var(--sep-subtle) }
+body.os-android .aset-ord .ou-radio{ order:-1; margin-left:0 }
+body.os-android .aset-ord .aset-nk-row{ flex:1; height:44px; padding:0 10px; box-sizing:border-box; border-radius:14px; background:var(--bg); box-shadow:inset 0 0 0 1px var(--sep); color:var(--label) }
+/* Paineis Edge */
+body.os-android .aset-edgepv{ margin:14px 12px 0; height:212px; border-radius:26px; background:var(--ou-surface); display:flex; justify-content:center; overflow:hidden }
+body.os-android .aset-edgepv-ph{ position:relative; width:150px; height:260px; margin-top:26px; box-sizing:border-box; border:3px solid var(--label4); border-radius:30px; background:var(--bg) }
+body.os-android .aset-edgepv-p{ position:absolute; right:12px; top:24px; width:52px; padding:9px 0; border-radius:22px; background:var(--ou-surface2); display:flex; flex-direction:column; align-items:center; gap:8px; box-shadow:0 4px 14px rgba(0,0,0,.14); transition:opacity .2s ease-out }
+body.os-android .aset-edgepv-p i{ display:block; width:32px; height:32px; border-radius:9px; overflow:hidden }
+body.os-android .aset-edgepv-p i svg{ display:block; width:100%; height:100% }
+body.os-android .aset-edgepv-h{ position:absolute; right:-3px; top:52px; width:5px; height:46px; border-radius:3px; background:var(--blue); transition:opacity .2s ease-out }
+body.os-android .aset-edgepv:not(.on) .aset-edgepv-p,body.os-android .aset-edgepv:not(.on) .aset-edgepv-h{ opacity:.18 }
+/* Bateria */
+body.os-android .aset-batt{ margin:0 12px 2px; padding:22px 24px; border-radius:26px; background:var(--ou-surface); display:flex; flex-direction:column; gap:12px }
+body.os-android .aset-batt-num{ font-family:var(--font-display); font-size:52px; font-weight:600; line-height:1; color:var(--label); font-variant-numeric:tabular-nums }
+body.os-android .aset-batt-num small{ margin-left:2px; font-size:24px; font-weight:500; color:var(--label2) }
+body.os-android .aset-batt-bar{ height:14px; border-radius:7px; background:var(--fill3); overflow:hidden }
+body.os-android .aset-batt-bar i{ display:block; height:100%; border-radius:7px; background:#2DBE60 }
+body.os-android .aset-batt.saver .aset-batt-bar i{ background:#F2A31B }
+body.os-android .aset-batt > span{ font-size:14px; color:var(--label2) }
+/* Paleta de cores e cor do relogio */
+body.os-android .aset-pal{ display:grid; grid-template-columns:repeat(4,1fr); gap:18px 6px; padding:22px 14px 18px }
+body.os-android .aset-sw{ display:flex; flex-direction:column; align-items:center; gap:8px; cursor:pointer }
+body.os-android .aset-sw i{ width:50px; height:50px; border-radius:50%; box-shadow:inset 0 0 0 1px rgba(0,0,0,.08) }
+body.os-android .aset-sw.on i{ box-shadow:0 0 0 3px var(--ou-surface), 0 0 0 5.5px var(--label) }
+body.os-android .aset-sw span{ font-size:13px; color:var(--label2); text-align:center }
+body.os-android .aset-sw.on span{ font-weight:600; color:var(--label) }
+body.os-android .aset-swrow{ display:flex; justify-content:space-between; padding:18px 22px }
+body.os-android .aset-swrow i{ width:34px; height:34px; border-radius:50%; cursor:pointer; box-shadow:inset 0 0 0 1px var(--sep) }
+body.os-android .aset-swrow i.on{ box-shadow:inset 0 0 0 1px var(--sep), 0 0 0 3px var(--ou-surface), 0 0 0 5px var(--blue) }
+/* bloco de apresentacao (Biometria, rosto, impressoes, atualizacao) */
+body.os-android .aset-hero{ margin:0 12px 14px; padding:28px 26px 26px; border-radius:26px; background:var(--ou-surface); display:flex; flex-direction:column; align-items:center; gap:8px; text-align:center }
+body.os-android .aset-hero-ic{ width:88px; height:88px; margin-bottom:8px; border-radius:50%; display:flex; align-items:center; justify-content:center; background:var(--fill3); color:var(--blue); background-size:cover; background-position:center }
+body.os-android .aset-hero-ic.shot{ background-color:var(--fill3) }
+body.os-android .aset-hero-ic.upd{ color:#7A5CF0 }
+body.os-android .aset-hero b{ font-size:20px; font-weight:600; color:var(--label) }
+body.os-android .aset-hero span{ max-width:340px; font-size:15px; line-height:1.45; color:var(--label2) }
+body.os-android .aset-hero.sm{ padding:22px 26px 20px }
+body.os-android .aset-hero.sm .aset-hero-ic{ width:64px; height:64px; margin-bottom:4px }
+/* Acerca do telefone */
+body.os-android .aset-about{ margin:0 12px 14px; padding:26px 24px 22px; border-radius:26px; background:var(--ou-surface); display:flex; flex-direction:column; align-items:center; gap:4px; text-align:center }
+body.os-android .aset-about b{ font-family:var(--font-display); font-size:26px; font-weight:600; color:var(--label); max-width:100%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap }
+body.os-android .aset-about span{ font-size:15px; color:var(--label2) }
+body.os-android .aset-about-btn{ margin-top:12px; padding:9px 22px; border-radius:999px; background:var(--fill3); color:var(--label); font-size:15px; font-weight:600; cursor:pointer; transition:background-color .12s ease-out }
+body.os-android .aset-about-btn:active{ background:var(--fill2) }
+/* registo da impressao digital: percentagem em cima, desenho que se enche aresta a aresta, sensor no fundo do ecra */
+body.os-android .ou-app .view.aset-fpv > .content{ padding-bottom:0 }
+body.os-android .aset-fp{ flex:1 0 auto; display:flex; flex-direction:column; align-items:center; padding:20px 28px 0; text-align:center }
+body.os-android .aset-fp-top{ display:flex; flex-direction:column; align-items:center; gap:8px; margin-top:10px }
+body.os-android .aset-fp-pct{ font-family:var(--font-display); line-height:1; color:var(--label) }
+body.os-android .aset-fp-pct b{ font-size:64px; font-weight:600; font-variant-numeric:tabular-nums }
+body.os-android .aset-fp-pct i{ margin-left:2px; font-style:normal; font-size:28px; font-weight:500; color:var(--label2) }
+body.os-android .aset-fp-msg{ margin-top:10px; font-size:20px; font-weight:600; color:var(--label) }
+body.os-android .aset-fp-sub{ max-width:330px; min-height:44px; font-size:15px; line-height:1.45; color:var(--label2) }
+body.os-android .aset-fp-art{ margin-top:26px }
+body.os-android .aset-fp-art svg{ display:block; width:150px; height:150px }
+body.os-android .aset-fp-art .g{ stroke:var(--label4) }
+body.os-android .aset-fp-art .r{ stroke:var(--blue); opacity:0; transition:opacity .28s ease-out }
+body.os-android .aset-fp-art .r.on{ opacity:1 }
+body.os-android .aset-fp-sensor{ position:relative; flex:none; width:104px; height:104px; margin-top:auto; margin-bottom:58px; display:flex; align-items:center; justify-content:center; cursor:pointer; touch-action:none }
+body.os-android .aset-fp-ring{ position:absolute; inset:0; width:100%; height:100%; transform:rotate(-90deg); pointer-events:none }
+body.os-android .aset-fp-ring circle{ fill:none; stroke-width:4 }
+body.os-android .aset-fp-ring .t{ stroke:var(--fill2) }
+body.os-android .aset-fp-ring .b{ stroke:var(--blue); stroke-linecap:round }
+body.os-android .aset-fp-btn{ width:80px; height:80px; border-radius:50%; display:flex; align-items:center; justify-content:center; background:var(--ou-surface); color:var(--label2); transition:background-color .12s ease-out, color .12s ease-out }
+body.os-android .aset-fp-sensor.press .aset-fp-btn{ background:var(--fill2); color:var(--blue) }
+body.os-android .aset-fp-end{ display:none; width:100%; margin-top:auto; margin-bottom:26px }
+body.os-android .aset-fp.done .aset-fp-sensor{ display:none }
+body.os-android .aset-fp.done .aset-fp-end{ display:block }

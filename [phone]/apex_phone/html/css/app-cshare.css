@@ -1,0 +1,93 @@
+/* ---------- Partilha de contactos (CSHARE, html/js/apps/contactshare.js) ----------
+   Folhas do UI.sheet (fundo var(--bg) no PearOS, var(--ou-sheet-bg) na Nova UI), claro e escuro pelas variaveis do sistema.
+   Regras do CEF: sem backdrop-filter, color-mix, :has(); nada anima em ciclo (o "a enviar" e um anel PARADO);
+   o hover so muda a cor; o toque encolhe por transform (camada propria, so no :active). */
+
+/* ----- cartao (cabecalho da folha de envio e pre-visualizacao de quem recebe) ----- */
+.csh-vc{ display:flex; align-items:center; gap:14px; padding:14px 16px; border-radius:18px; background:var(--bg2); text-align:left }
+.csh-vc-av{ flex:none }
+.csh-vc-av .avatar{ width:58px; height:58px; font-size:22px }
+.csh-vc-t{ display:flex; flex-direction:column; gap:2px; min-width:0 }
+.csh-vc-t b{ font-size:var(--t-headline); font-weight:600; color:var(--label); white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+.csh-vc-t span{ font-size:var(--t-subhead); color:var(--label2); font-variant-numeric:tabular-nums }
+.csh-vc-t em{ align-self:flex-start; margin-top:4px; padding:2px 9px; border-radius:999px; font-style:normal; font-size:12px; font-weight:600; color:var(--blue); background:var(--fill); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:100% }
+
+/* ----- folha de envio ----- */
+.csh{ padding:0 16px 10px }
+.csh-head{ padding:2px 0 4px }
+.csh-sec{ padding:14px 0 0 }
+.csh-lbl{ padding:0 4px; font-size:var(--t-foot); font-weight:600; color:var(--label2); text-transform:none }
+.csh-people{ display:flex; flex-wrap:wrap; justify-content:center; gap:14px 8px; padding:12px 0 2px }
+.csh:not(.csh-found) .csh-people{ display:none }
+.csh-hint{ text-align:center; font-size:var(--t-foot); color:var(--label2); padding:10px 4px 2px; line-height:1.35 }
+.csh-nosim .csh-hint{ color:var(--red); font-weight:500; padding:18px 4px 6px }
+.csh-nosim .csh-lbl{ display:none }
+.csh-foot{ margin-top:14px; padding:0 6px; font-size:12px; line-height:1.4; color:var(--label3); text-align:center }
+.csh-alt{ display:flex; align-items:center; justify-content:center; gap:8px; margin:14px auto 2px; padding:11px 18px; border-radius:14px; background:var(--bg2); color:var(--blue); font-size:var(--t-subhead); font-weight:600; cursor:pointer; transition:color .15s }
+.csh-alt .gl{ width:20px; height:20px }
+.csh-alt:hover{ color:var(--label) }
+.csh-nosim .csh-alt,.csh-nosim .csh-foot{ display:none }
+
+/* pessoas por perto: avatar, nome, aparelho e o estado por baixo */
+.csh-p{ width:96px; display:flex; flex-direction:column; align-items:center; text-align:center; cursor:pointer; -webkit-tap-highlight-color:transparent }
+.csh-pav{ position:relative; width:64px; height:64px; margin-bottom:6px }
+.csh-pav .avatar{ width:64px; height:64px; font-size:24px }
+.csh-p:active .csh-pav{ transform:scale(.94); transition:transform .08s }
+/* anel PARADO a volta do avatar: azul a enviar / a espera, verde guardado, vermelho falhou */
+.csh-ring{ position:absolute; inset:-5px; border-radius:50%; border:2.5px solid transparent; pointer-events:none }
+.csh-p.busy .csh-ring{ border-color:var(--blue) }
+.csh-p.sent .csh-ring{ border-color:var(--green) }
+.csh-p.fail .csh-ring{ border-color:var(--red) }
+.csh-pn{ max-width:92px; font-size:var(--t-cap2); font-weight:600; color:var(--label); white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+.csh-pd{ max-width:92px; font-size:11px; color:var(--label2); white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+.csh-st{ min-height:15px; margin-top:1px; font-size:12px; font-weight:500; color:var(--blue); max-width:96px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+.csh-p.sent .csh-st{ color:var(--green) } .csh-p.fail .csh-st{ color:var(--red) }
+
+/* ----- folha de rececao ----- */
+.csh-rc{ padding:0 20px 10px; text-align:center }
+.csh-rc-from{ display:flex; align-items:center; justify-content:center; gap:10px; padding:2px 0 14px }
+.csh-rc-dav .avatar{ width:30px; height:30px; font-size:12px }
+.csh-rc-t{ font-size:var(--t-subhead); color:var(--label); line-height:1.3; text-align:left }
+.csh-rc-t b{ font-weight:700 }
+.csh-rc-card .csh-vc{ flex-direction:column; text-align:center; gap:10px; padding:22px 16px 18px }
+.csh-rc-card .csh-vc-av .avatar{ width:92px; height:92px; font-size:34px }
+.csh-rc-card .csh-vc-t{ align-items:center; max-width:100% }
+.csh-rc-card .csh-vc-t b{ font-size:var(--t-title3); max-width:100% }
+.csh-rc-card .csh-vc-t em{ align-self:center }
+.csh-rc-note{ padding:12px 6px 2px; font-size:var(--t-foot); line-height:1.4; color:var(--label2) }
+.csh-btns{ display:flex; gap:12px; margin-top:16px }
+.csh-btn{ flex:1; height:50px; border-radius:14px; display:flex; align-items:center; justify-content:center; font-size:var(--t-callout); font-weight:600; cursor:pointer; transition:background .15s, color .15s }
+.csh-btn.no{ background:var(--bg2); color:var(--label) }
+.csh-btn.no:hover{ color:var(--red) }
+.csh-btn.yes{ background:var(--blue); color:#fff }
+.csh-btn.yes:hover{ background:var(--accent, var(--blue)) }
+.csh-btn:active{ transform:scale(.97); transition:transform .08s }
+
+/* "O meu cartao" nos Contactos (PearOS): botao redondo de partilhar a direita */
+.csh-mebtn{ flex:none; width:38px; height:38px; margin-left:6px; border-radius:50%; display:flex; align-items:center; justify-content:center; background:var(--fill); color:var(--blue); cursor:pointer; transition:color .15s }
+.csh-mebtn .gl{ width:21px; height:21px }
+.csh-mebtn:hover{ color:var(--label) }
+
+/* ================= Nova UI ================= */
+body.os-android .csh-vc{ background:var(--fill4); border-radius:22px }
+body.os-android .csh-vc-t em{ color:var(--ou-blue); background:var(--fill3) }
+body.os-android .csh{ padding:0 14px 10px }
+body.os-android .csh-lbl{ font-size:14px; color:var(--label2) }
+body.os-android .csh-people{ flex-wrap:nowrap; justify-content:flex-start; overflow-x:auto; scrollbar-width:none; gap:4px }
+body.os-android .csh-people::-webkit-scrollbar{ display:none }
+body.os-android .csh-p{ flex:none; width:90px; padding:6px 0 8px; border-radius:20px; transition:background .15s }
+body.os-android .csh-p:hover{ background:var(--fill4) }
+body.os-android .csh-p.busy .csh-ring{ border-color:var(--ou-blue) }
+body.os-android .csh-st{ color:var(--ou-blue) }
+body.os-android .csh-pn{ font-size:14px }
+body.os-android .csh-hint{ text-align:left; padding:8px 6px 0; font-size:13px }
+body.os-android .csh-found .csh-hint{ color:var(--label3) }
+body.os-android .csh-foot{ text-align:left; padding:0 6px }
+body.os-android .csh-alt{ border-radius:999px; background:var(--fill4); color:var(--ou-blue); margin-top:16px }
+body.os-android .csh-rc-card .csh-vc{ border-radius:26px }
+body.os-android .csh-btn{ height:52px; border-radius:999px; font-size:16px }
+body.os-android .csh-btn.no{ background:var(--fill2); color:var(--label) }
+body.os-android .csh-btn.yes{ background:var(--ou-blue); color:#fff }
+body.os-android .csh-btn.yes:hover{ background:#3470EE }
+/* a partilha do "O meu perfil" (cartao do topo da lista da Nova UI) */
+body.os-android .aph-me .csh-mebtn{ margin-left:auto; background:var(--fill3); color:var(--ou-blue) }

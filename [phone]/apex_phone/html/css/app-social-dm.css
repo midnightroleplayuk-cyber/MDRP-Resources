@@ -1,0 +1,160 @@
+/* ---------- Instashot · Direct (apps/social-dm.js) - sem filter/backdrop-filter/color-mix/:has (CEF 103) ----------
+   (4 nov 2026) Desenho do Instagram nos dois temas. É uma app de TERCEIROS: igual no PearOS e no Android (a janela leva .ou-3p,
+   nenhuma regra da Nova UI lhe toca), por isso as cores são as do Instagram e não os tokens do sistema (--bg cinzento do PearOS,
+   --blue = a cor de destaque escolhida nas Definições). As duas vistas são .full (social-dm.js): a barra de separadores esconde-se
+   e o compositor fica no fundo da janela, por cima de nada.
+   Especificidade: este ficheiro carrega ANTES do liquid27.css e do motion.css (index.html), por isso as regras da barra levam
+   `.view.igdm(-th) > .navbar ...` (0,4,0 / 0,5,0), acima de `body.dark.fivem .nb-btn:not(.glass)` (0,4,1) e `body.fivem .navbar.solid`. */
+.view.igdm,.view.igdm-th{ --igdm-bg:#FFFFFF; --igdm-tx:#000000; --igdm-tx2:#737373; --igdm-line:#DBDBDB; --igdm-them:#EFEFEF; --igdm-me:#3797F0; --igdm-pill:#EFEFEF;
+  --igdm-press:rgba(0,0,0,.05); --igdm-on:#1CD14F; background:var(--igdm-bg); color:var(--igdm-tx) }
+body.dark .view.igdm,body.dark .view.igdm-th{ --igdm-bg:#000000; --igdm-tx:#F5F5F5; --igdm-tx2:#A8A8A8; --igdm-line:#262626; --igdm-them:#262626; --igdm-pill:#262626; --igdm-press:rgba(255,255,255,.07) }
+
+/* ---------- barra de cima: seta simples, título/cabeçalho À ESQUERDA, ícones sem vidro ---------- */
+.view.igdm > .navbar,.view.igdm-th > .navbar{ justify-content:flex-start; gap:4px; padding-left:8px; padding-right:10px }
+.view.igdm > .navbar.solid,.view.igdm-th > .navbar.solid{ background:var(--igdm-bg); -webkit-backdrop-filter:none; backdrop-filter:none; box-shadow:none }
+.view.igdm-th > .navbar.solid{ box-shadow:0 .5px 0 var(--igdm-line) }
+.view.igdm > .navbar.solid::after,.view.igdm-th > .navbar.solid::after{ content:none; display:none }
+.view.igdm > .navbar .nb-left,.view.igdm-th > .navbar .nb-left{ flex:none; min-width:0; gap:0; color:var(--igdm-tx) }
+.view.igdm > .navbar .nb-right,.view.igdm-th > .navbar .nb-right{ flex:none; min-width:0; margin-left:auto; gap:6px; color:var(--igdm-tx) }
+.view.igdm > .navbar .nb-title,.view.igdm-th > .navbar .nb-title{ position:static; left:auto; top:auto; transform:none; flex:1 1 auto; min-width:0; max-width:none; opacity:1; text-align:left; color:var(--igdm-tx) }
+.view.igdm > .navbar .nb-title{ padding-left:4px; font-size:20px; font-weight:700; letter-spacing:-.2px }
+/* o cabeçalho da conversa vive dentro do .nb-title, que no ui.css tem pointer-events:none: sem isto o toque para abrir o perfil nunca chegava */
+.view.igdm-th > .navbar .nb-title{ padding-left:2px; overflow:visible; pointer-events:auto }
+.view.igdm > .navbar .nb-back,.view.igdm-th > .navbar .nb-back,
+.view.igdm > .navbar .nb-btn:not(.glass),.view.igdm-th > .navbar .nb-btn:not(.glass){ display:flex; align-items:center; justify-content:center; width:40px; min-width:40px; height:40px; padding:0; margin:0;
+  border:0; border-radius:50%; background:transparent; box-shadow:none; color:var(--igdm-tx) }
+.view.igdm > .navbar .nb-back span,.view.igdm-th > .navbar .nb-back span{ display:none }
+.view.igdm > .navbar .nb-back svg,.view.igdm-th > .navbar .nb-back svg{ width:28px; height:28px; margin:0 }
+.view.igdm > .navbar .nb-btn:not(.glass) svg,.view.igdm-th > .navbar .nb-btn:not(.glass) svg{ width:26px; height:26px }
+.view.igdm > .navbar .nb-back:active,.view.igdm-th > .navbar .nb-back:active,
+.view.igdm > .navbar .nb-btn:not(.glass):active,.view.igdm-th > .navbar .nb-btn:not(.glass):active{ opacity:.45; transform:none; background:transparent }
+
+/* ---------- LISTA ---------- */
+.view.igdm > .content{ padding-bottom:calc(var(--safe-bottom) + 20px) }
+.view.igdm.has-pile > .content{ padding-bottom:calc(var(--safe-bottom) + 150px) }   /* a última linha sobe acima da pilha dos Instants */
+.view.igdm .search{ margin:4px 16px 6px; height:38px; border-radius:12px; padding:0 10px 0 12px; gap:8px; background:var(--igdm-them); color:var(--igdm-tx2) }
+.view.igdm .search:focus-within,.view.igdm .search.kb-on{ background:var(--igdm-them); box-shadow:none }
+.view.igdm .search svg{ width:18px; height:18px }
+.view.igdm .search input{ font-size:15px; color:var(--igdm-tx) } .view.igdm .search input::placeholder{ color:var(--igdm-tx2) }
+.igdm-sec{ display:flex; align-items:center; padding:12px 16px 6px; font-size:16px; color:var(--igdm-tx) } .igdm-sec b{ font-weight:700 }
+.igdm-list{ flex:1 0 auto; display:flex; flex-direction:column; padding:0 0 6px }
+.igdm-row{ display:flex; align-items:center; gap:12px; padding:8px 16px; cursor:pointer }
+.igdm-row:active{ background:var(--igdm-press) }
+.igdm-av{ position:relative; flex:none }
+.igdm-row .igdm-av .avatar{ width:56px; height:56px; font-size:21px; margin:0 }
+.igdm-rb{ flex:1; min-width:0; display:flex; flex-direction:column; gap:2px }
+.igdm-nm{ font-size:15px; font-weight:400; color:var(--igdm-tx); white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+.igdm-sub{ display:flex; align-items:center; min-width:0; font-size:14px; color:var(--igdm-tx2); white-space:nowrap }
+.igdm-you{ flex:none; margin-right:4px }
+.igdm-prev{ min-width:0; overflow:hidden; text-overflow:ellipsis }
+.igdm-when{ flex:none } .igdm-when::before{ content:'\00B7'; margin:0 5px }
+.igdm-row.igdm-new .igdm-nm,.igdm-row.igdm-new .igdm-sub{ font-weight:700; color:var(--igdm-tx) }
+.igdm-r{ flex:none; display:flex; align-items:center; gap:12px; color:var(--igdm-tx2) }
+.igdm-r u{ display:none; width:8px; height:8px; border-radius:50%; background:var(--igdm-me); text-decoration:none }
+.igdm-row.igdm-new .igdm-r u{ display:block }
+.igdm-camic{ display:flex; padding:6px; margin:-6px; cursor:pointer } .igdm-camic svg{ width:24px; height:24px } .igdm-camic:active{ opacity:.45 }
+/* ponto verde de "ativo" (linha da lista e cabeçalho da conversa) */
+.igdm-av.on::after,.igdm-head-av.on::after{ content:''; position:absolute; right:0; bottom:0; width:15px; height:15px; border-radius:50%; background:var(--igdm-on); border:3px solid var(--igdm-bg); box-sizing:border-box }
+.igdm-head-av.on::after{ right:-2px; bottom:-2px; width:13px; height:13px; border-width:2.5px }
+/* sem conversas: o bloco do Instagram ao centro do espaço que sobra (a regra de base tem min-height:600px para uma .content sem flex) */
+.view.igdm .ig-dm-empty{ min-height:0; flex:1 0 auto; padding-top:48px; padding-bottom:48px }
+.view.igdm .ig-dm-empty b{ color:var(--igdm-tx) } .view.igdm .ig-dm-empty span{ color:var(--igdm-tx2) }
+.view.igdm .ig-dm-empty .go{ background:var(--igdm-me) }
+.view.igdm .igdm-none b{ color:var(--igdm-tx) }
+/* sem a barra de separadores a pilha dos Instants desce para o canto (app-social.css deixa 76 px para a barra) */
+.view.igdm > .ins-pile{ bottom:calc(var(--safe-bottom,22px) + 18px) }
+.view.igdm > .ins-pile .n{ border-color:var(--igdm-bg) }
+
+/* ---------- CONVERSA: cabeçalho ---------- */
+.igdm-head{ display:flex; align-items:center; gap:10px; min-width:0; max-width:100%; cursor:pointer }
+.igdm-head:active{ opacity:.6 }
+.igdm-head-av{ position:relative; flex:none }
+.igdm-head .igdm-head-av .avatar{ width:34px; height:34px; font-size:13px; margin:0 }
+.igdm-head-t{ display:flex; flex-direction:column; align-items:flex-start; min-width:0 }
+.igdm-head-t b{ max-width:100%; font-size:16px; font-weight:600; line-height:1.2; color:var(--igdm-tx); white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+.igdm-head-s{ max-width:100%; font-size:12px; font-weight:400; line-height:1.25; color:var(--igdm-tx2); white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+
+/* ---------- CONVERSA: histórico ---------- */
+.view.igdm-th > .content{ padding-bottom:0 }
+.igdm-thread{ display:flex; flex-direction:column; justify-content:flex-end; flex:1 0 auto; padding:0 12px 10px }
+/* cartão do perfil no início: margin-bottom:auto prende-o em cima e as mensagens ficam em baixo, junto da caixa */
+.igdm-pc{ display:flex; flex-direction:column; align-items:center; text-align:center; gap:2px; padding:28px 16px 24px; margin-bottom:auto }
+.igdm-pc-av{ cursor:pointer; margin-bottom:10px }
+.igdm-pc .igdm-pc-av .avatar{ width:96px; height:96px; font-size:34px; margin:0 }
+.igdm-pc b{ max-width:100%; font-size:20px; font-weight:600; color:var(--igdm-tx); white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+.igdm-pc-sub{ max-width:100%; font-size:14px; color:var(--igdm-tx2); white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+.igdm-pc-btn{ margin-top:14px; height:32px; padding:0 16px; border-radius:8px; background:var(--igdm-them); color:var(--igdm-tx); font-size:14px; font-weight:600; display:flex; align-items:center; cursor:pointer }
+.igdm-pc-btn:active{ opacity:.6 }
+.igdm-sep{ display:flex; justify-content:center; gap:4px; padding:16px 0 6px; font-size:12px; font-weight:600; color:var(--igdm-tx2) }
+.igdm-msg{ display:flex; align-items:flex-end; gap:8px; margin-top:2px; min-width:0 }
+.igdm-msg.grp-first,.igdm-msg.grp-single{ margin-top:8px }
+.igdm-sep + .igdm-msg{ margin-top:2px }
+.igdm-msg.me{ justify-content:flex-end }
+/* avatar ao lado das mensagens dele: o lugar fica sempre reservado, a cara só se vê na última bolha de cada grupo */
+.igdm-msg-av{ flex:none; width:28px; height:28px; cursor:pointer }
+.igdm-msg .igdm-msg-av .avatar{ width:28px; height:28px; font-size:11px; margin:0; visibility:hidden }
+.igdm-msg.grp-last .igdm-msg-av .avatar,.igdm-msg.grp-single .igdm-msg-av .avatar{ visibility:visible }
+.igdm-bub{ max-width:72%; min-width:0 }
+.igdm-b-txt{ padding:8px 13px; border-radius:22px; font-size:15px; line-height:1.34; white-space:pre-wrap; word-break:break-word; overflow-wrap:anywhere; background:var(--igdm-them); color:var(--igdm-tx); user-select:text; -webkit-user-select:text }
+.igdm-msg.me .igdm-b-txt{ background:var(--igdm-me); color:#fff }
+/* grupo: os cantos do lado do autor apertam-se entre bolhas seguidas */
+.igdm-msg.them.grp-first .igdm-bub{ border-bottom-left-radius:6px }
+.igdm-msg.them.grp-mid .igdm-bub{ border-top-left-radius:6px; border-bottom-left-radius:6px }
+.igdm-msg.them.grp-last .igdm-bub{ border-top-left-radius:6px }
+.igdm-msg.me.grp-first .igdm-bub{ border-bottom-right-radius:6px }
+.igdm-msg.me.grp-mid .igdm-bub{ border-top-right-radius:6px; border-bottom-right-radius:6px }
+.igdm-msg.me.grp-last .igdm-bub{ border-top-right-radius:6px }
+/* só emojis: grandes e sem bolha */
+.igdm-thread .igdm-msg .igdm-b-txt.igdm-big{ padding:0 2px; background:transparent; color:var(--igdm-tx); font-size:40px; line-height:1.15 }
+.igdm-img{ width:200px; height:266px; border-radius:18px; background-color:var(--igdm-them); background-size:cover; background-position:center; cursor:pointer }
+.igdm-voice{ padding:6px 12px 6px 8px; border-radius:22px; background:var(--igdm-them); color:var(--igdm-tx) }
+.igdm-msg.me .igdm-voice{ background:var(--igdm-me); color:#fff }
+.igdm-voice .vmsg-player{ min-width:190px }
+.igdm-del{ padding:7px 13px; border-radius:22px; border:1px solid var(--igdm-line); font-size:14px; font-style:italic; color:var(--igdm-tx2) }
+.igdm-status{ align-self:flex-end; padding:4px 4px 0; font-size:12px; color:var(--igdm-tx2) }
+
+/* ---------- CONVERSA: caixa de escrever ----------
+   câmara (círculo azul) · campo · microfone · galeria · emojis; com texto os três ícones dão lugar ao "Enviar" azul.
+   flex-wrap: os emojis rápidos ocupam uma linha por cima da pílula, e o gravador de voz (.vmsg-rec, flex 1 1 100%) a linha toda */
+.igdm-comp{ flex:none; display:flex; flex-wrap:wrap; align-items:center; padding:6px 12px calc(var(--safe-bottom,20px) + 6px); background:var(--igdm-bg) }
+.igdm-emo{ display:none; flex:1 1 100%; justify-content:space-between; padding:0 6px 8px }
+.igdm-comp.emo .igdm-emo{ display:flex }
+.igdm-emo-b{ width:38px; height:38px; display:flex; align-items:center; justify-content:center; font-size:26px; line-height:1; border-radius:50%; cursor:pointer }
+.igdm-emo-b:active{ background:var(--igdm-press) }
+.igdm-pill{ flex:1 1 100%; min-width:0; display:flex; align-items:center; gap:8px; min-height:46px; padding:5px 12px 5px 5px; border-radius:23px; background:var(--igdm-pill) }
+.igdm-cam-btn{ flex:none; width:36px; height:36px; border-radius:50%; background:var(--igdm-me); color:#fff; display:flex; align-items:center; justify-content:center; cursor:pointer }
+.igdm-pill input{ flex:1 1 auto; width:0; min-width:0; height:36px; padding:0 2px; margin:0; border:0; outline:none; background:transparent; font:inherit; font-size:15px; color:var(--igdm-tx) }
+.igdm-pill input::placeholder{ color:var(--igdm-tx2) }
+.igdm-tools{ flex:none; display:flex; align-items:center; gap:12px; color:var(--igdm-tx) }
+.igdm-tools > div{ display:flex; align-items:center; justify-content:center; width:28px; height:36px; cursor:pointer }
+.igdm-tools svg{ width:24px; height:24px }
+.igdm-cam-btn:active,.igdm-tools > div:active{ opacity:.5 }
+.igdm-comp.emo .igdm-stk{ color:var(--igdm-me) }
+.igdm-send{ flex:none; display:none; align-items:center; height:36px; padding:0 4px 0 6px; font-size:15px; font-weight:600; color:var(--igdm-me); cursor:pointer }
+.igdm-send:active{ opacity:.5 }
+.igdm-comp.has-text .igdm-tools{ display:none }
+.igdm-comp.has-text .igdm-send{ display:flex }
+/* emojis abertos e já com texto (tocar num emoji ESCREVE no campo): o sorriso fica ao lado do "Enviar" para os voltar a fechar;
+   antes a fila ficava presa por cima da conversa até se apagar ou enviar o texto */
+.igdm-comp.has-text.emo .igdm-tools{ display:flex }
+.igdm-comp.has-text.emo .igdm-mic,.igdm-comp.has-text.emo .igdm-ph{ display:none }
+.igdm-comp.sending .igdm-send{ opacity:.45 }
+.igdm-comp.rec .igdm-pill,.igdm-comp.rec .igdm-emo{ display:none }
+
+/* folha "Nova mensagem" (quem eu sigo) */
+.igdm-pick{ padding:0 0 6px } .igdm-pick .search{ margin:2px 16px 8px }
+.igdm-pick-list{ min-height:180px }
+
+/* ---------- dobráveis ----------
+   Abertos, as duas vistas usam uma coluna de conversa de 640 (o Instashot pede 1100 para o feed, app-social.css) e a caixa de
+   escrever acompanha essa coluna. Fechados (670) ficam como num telemóvel: a barra de baixo não existe nestas vistas (.full),
+   nem no NOVA Fold8 fechado, onde a pílula flutuante tapava a caixa como nos outros telemóveis. */
+body.form-fold .app-window[data-app] .nav-stack:not(.split) > .view.igdm,
+body.form-fold .app-window[data-app] .nav-stack:not(.split) > .view.igdm-th{ --fold-col:640px }
+/* PearPhone Fold aberto: o título e o cabeçalho estão à esquerda (não ao centro, como no resto do PearOS), por isso a barra encosta-se
+   à coluna como o conteúdo (no NOVA Fold8 o ui.css já o faz a todas as barras) */
+body.os-ios.form-fold.fold-open .app-window .nav-stack:not(.split) > .view.igdm > .navbar,
+body.os-ios.form-fold.fold-open .app-window .nav-stack:not(.split) > .view.igdm-th > .navbar{ padding-left:max(8px,calc(50% - var(--fold-col,640px) / 2)) }
+body.form-fold.fold-open .app-window .nav-stack:not(.split) > .view > .igdm-comp{ padding-left:max(12px,calc(50% - var(--fold-col,640px) / 2 + 12px)); padding-right:max(12px,calc(50% - var(--fold-col,640px) / 2 + 12px)) }
+/* NOVA Fold8 aberto com a barra de tarefas flutuante à vista (--taskbar-h, android-sysui.js): a caixa sobe a altura dela (como o .composer das Mensagens) */
+body.os-android.form-fold.fold-open .view.igdm-th > .igdm-comp{ padding-bottom:calc(var(--safe-bottom,20px) + 6px + var(--taskbar-h,0px)) }

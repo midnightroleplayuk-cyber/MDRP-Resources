@@ -1,0 +1,1305 @@
+/* ============================================================
+   SHELL - lock screen, home (páginas/pastas/widgets/edição),
+   Control Center, Notification Center, App Switcher, teclado,
+   first boot, Vera, earbuds, menu de contexto, chamada recebida
+   ============================================================ */
+
+/* =========================== LOCK =========================== */
+#lock{ z-index:60; color:#fff; transition:opacity .55s var(--ease), transform .55s var(--ease), filter .55s var(--ease) }
+#lock.out{ opacity:0; transform:scale(1.14); filter:blur(14px); pointer-events:none }
+.lock-p1{ position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; transition:opacity .35s var(--ease), transform .35s var(--ease) }
+#lock.pin .lock-p1{ opacity:0; transform:scale(1.06); pointer-events:none }
+.lock-top{ margin-top:74px; text-align:center }
+.lock-date{ font-size:var(--t-title3); font-weight:500; color:rgba(255,255,255,.9); margin-top:2px; text-shadow:0 1px 8px rgba(0,0,0,.25) }
+.lock-clock{ font-size:96px; font-weight:300; line-height:1; letter-spacing:-3px; text-shadow:0 2px 24px rgba(0,0,0,.28); font-variant-numeric:tabular-nums; color:var(--clock-color,#fff) }
+.lock-widgets{ display:flex; gap:10px; margin-top:12px; height:36px }
+.lw{ display:flex; align-items:center; gap:6px; padding:0 10px; height:36px; border-radius:18px; background:rgba(255,255,255,.14); backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px);
+  font-size:var(--t-foot); font-weight:600; border:.5px solid rgba(255,255,255,.14) }
+.lw svg{ width:16px; height:16px }
+.lock-notifs{ position:absolute; left:14px; right:14px; top:300px; bottom:140px; overflow-y:auto; scrollbar-width:none; display:flex; flex-direction:column; gap:8px; padding-top:6px; pointer-events:none }
+.lock-notifs > *{ pointer-events:auto }
+.lock-notifs::-webkit-scrollbar{ display:none }
+.lock-notifs .nhead{ display:flex; justify-content:space-between; align-items:center; font-size:var(--t-foot); font-weight:600; opacity:.85; padding:0 4px }
+.lock-notifs .nhead span:last-child{ cursor:pointer; background:rgba(255,255,255,.18); padding:4px 10px; border-radius:12px }
+.lock-shortcuts{ position:absolute; left:46px; right:46px; bottom:52px; display:flex; justify-content:space-between }
+.ls-btn{ width:54px; height:54px; border-radius:50%; background:rgba(255,255,255,.16); backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px); border:.5px solid rgba(255,255,255,.16);
+  display:flex; align-items:center; justify-content:center; cursor:pointer; transition:background .2s, transform .15s }
+.ls-btn svg{ width:26px; height:26px } .ls-btn:active{ transform:scale(.92) } .ls-btn.on{ background:#fff; color:#000 }
+.lock-hint{ position:absolute; bottom:34px; left:0; right:0; text-align:center; font-size:var(--t-cap1); color:rgba(255,255,255,.55) }
+.lock-p2{ position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; transform:translateY(100%); opacity:0;
+  transition:transform .45s var(--ease), opacity .3s; background:transparent } /* fundo desfocado = cópia do wallpaper (lock.css), sem backdrop-filter */
+#lock.pin .lock-p2{ transform:none; opacity:1 }
+.lock-p2 .lock-clock{ font-size:40px; letter-spacing:-1px; margin-top:96px }
+.passcode{ margin-top:36px; display:flex; flex-direction:column; align-items:center; width:100%; text-align:center }
+.pc-label{ font-size:var(--t-callout); font-weight:500; color:rgba(255,255,255,.94); transition:color .2s; width:100%; text-align:center }
+.pc-label.err{ color:#FF4245 }
+.dots{ display:flex; gap:22px; margin-top:20px; justify-content:center; width:118px; margin-left:auto; margin-right:auto }
+.dot{ width:13px; height:13px; border-radius:50%; border:1.4px solid rgba(255,255,255,.82); transition:background .16s var(--ease), transform .16s var(--ease) }
+.dot.on{ background:#fff; transform:scale(1.06) }
+.dots.shake{ animation:shake .5s cubic-bezier(.36,.07,.19,.97) }
+/* código de 6 dígitos (predefinição do PearOS): a largura de 118 px acima é para 4 pontos - com 6 passa a automática e mais apertada */
+.dots.six{ width:auto; gap:19px } .dots.six .dot{ width:12px; height:12px }
+@keyframes shake{10%,90%{transform:translateX(-2px)}20%,80%{transform:translateX(4px)}30%,50%,70%{transform:translateX(-8px)}40%,60%{transform:translateX(8px)}}
+/* teclado PIN: largura explícita e centrado por margens (não depende do pai) */
+.keypad{ margin:28px auto 0; display:grid; grid-template-columns:repeat(3,85px); gap:15px 29px; width:313px; justify-content:center }
+.key{ width:85px; height:85px; border-radius:50%; border:.5px solid rgba(255,255,255,.16); background:rgba(255,255,255,.11);
+  backdrop-filter:blur(22px) saturate(180%); -webkit-backdrop-filter:blur(22px) saturate(180%); box-shadow:inset 0 .5px 0 rgba(255,255,255,.24);
+  display:flex; flex-direction:column; align-items:center; justify-content:center; cursor:pointer; color:#fff;
+  transition:background .45s ease-out, transform .25s var(--spring) }
+.key:active,.key.pressed{ background:rgba(255,255,255,.5); transform:scale(.94); transition:background .03s, transform .06s }
+.key .num{ font-size:36px; font-weight:400; line-height:1 } .key .abc{ font-size:10px; font-weight:600; letter-spacing:1.6px; margin-top:2px; color:rgba(255,255,255,.88) }
+.key[data-n="0"]{ grid-column:2 } /* última linha só com o 0 (PearOS): sem células vazias */
+.lock-bottom{ position:absolute; bottom:48px; left:0; right:0; display:flex; justify-content:space-between; padding:0 46px; font-size:var(--t-body) }
+.lock-bottom span{ cursor:pointer } .lock-bottom span:active{ opacity:.55 }
+
+/* =========================== HOME =========================== */
+#home{ opacity:0; transform:scale(.93); pointer-events:none; z-index:20; transition:opacity .45s cubic-bezier(.2,.9,.25,1) .05s, transform .5s cubic-bezier(.2,.9,.25,1) .05s }
+#home.in{ opacity:1; transform:scale(1); pointer-events:auto }
+.screen.app-open #home{ transform:scale(.9); opacity:0; transition:opacity .3s ease-out, transform .5s cubic-bezier(.2,.9,.25,1) }
+.pages{ position:absolute; left:0; top:calc(var(--statusbar-h) + 30px); width:100%; height:calc(var(--row-step) * 6); display:flex; transition:transform .38s var(--ease); touch-action:none }
+.pages.drag{ transition:none }
+.page{ flex:none; width:var(--page-w,440px); height:100%; position:relative }
+.hi{ position:absolute; left:0; top:0; translate:var(--x,0px) var(--y,0px); width:var(--icon); display:flex; flex-direction:column; align-items:center; cursor:pointer; transition:translate .3s var(--ease), transform .2s var(--ease), opacity .2s }   /* posição por `translate` (--x/--y de home.js), composta com o transform das animações */
+.hi.app,.hi.folder{ opacity:0; transform:scale(.6) translateY(10px) }
+#home.in .hi.app,#home.in .hi.folder,#home.in .hi.widget{ animation:pop .46s var(--ease) forwards }
+#home.in.edit .hi,#home.in.settled .hi{ animation:none; opacity:1; transform:none }
+@keyframes pop{to{opacity:1;transform:scale(1) translateY(0)}}
+/* toque num ícone: escurece e encolhe de imediato, solta com mola (PearOS) */
+.hi .tile{ transition:transform .28s var(--spring), filter .28s ease-out }
+.hi:active .tile,.hi.pressed .tile{ transform:scale(.88); filter:brightness(.72); transition:transform .07s ease-out, filter .07s ease-out }
+.hi.dragging{ transition:none; z-index:50; pointer-events:none; opacity:.95!important; transform:scale(1.12)!important; animation:none!important }   /* sombra: box-shadow no .tile (motion.css), não drop-shadow */
+.hi.ghost{ opacity:.35!important }
+/* ícone PearOS 26: máscara SQUIRCLE única em todos os ícones (aplicada ao svg/img filho - a caixa .tile mantém a sombra e o aro de arrasto);
+   sombra mínima (os ícones assentam no fundo, sem drop shadow pesado) */
+.tile{ width:var(--tile,var(--icon)); height:var(--tile,var(--icon)); border-radius:var(--icon-r); position:relative; overflow:hidden; background:transparent;
+  box-shadow:0 1px 2px rgba(0,0,0,.14); transition:transform .14s var(--ease), filter .14s }
+/* PearOS 27 · Ícones GRANDES (Personalizar, 1.4.0): só o QUADRADO cresce (--tile), a grelha fica onde está - o --icon mede também os
+   widgets, as colunas da pasta aberta e a geometria do dobrável, por isso nunca se mexe nele. As etiquetas somem (o espaço delas é
+   onde o ícone cresce para baixo) sem tocar na escolha "Etiquetas dos ícones". O ícone transborda por igual para os lados (a .hi
+   centra-o); o "−" e o número das notificações acompanham o canto. Só no PearOS (o Android ignora as chaves novas). */
+body.os-ios #home.hm-large{ --tile:calc(var(--icon) * 1.17) }
+body.os-ios #home.hm-large .app-name{ visibility:hidden }
+body.os-ios #home.hm-large .hi .rm{ left:calc(-7px - (var(--tile) - var(--icon)) / 2) }
+body.os-ios #home.hm-large .hi > .badge{ right:calc(-8px - (var(--tile) - var(--icon)) / 2) }
+body.os-ios #home.hm-large .hi.folder .tile{ grid-template-columns:repeat(3,21px); grid-auto-rows:21px; gap:4.5px; padding:6px }
+body.os-ios #home.hm-large .hi.folder .tile .mini{ width:21px; height:21px; border-radius:6px }
+.tile svg,.tile img{ width:100%; height:100%; display:block; object-fit:cover }
+.tile > svg,.tile > img{ -webkit-mask:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><path d='M30 0h40c18 0 30 12 30 30v40c0 18-12 30-30 30H30C12 100 0 88 0 70V30C0 12 12 0 30 0z'/></svg>") center/100% 100% no-repeat; mask:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><path d='M30 0h40c18 0 30 12 30 30v40c0 18-12 30-30 30H30C12 100 0 88 0 70V30C0 12 12 0 30 0z'/></svg>") center/100% 100% no-repeat }
+.tile > img{ background:#fff }
+/* ícone como IMAGEM de fundo (Icons.tileBox → um nó em vez da árvore SVG): leva a MESMA máscara em squircle do `.tile > svg`,
+   senão ficava com cantos arredondados normais e destoava dos que continuam em SVG (o Relógio, que tem ponteiros vivos) */
+.tile.img{ background-size:100% 100%; background-repeat:no-repeat; background-position:center;
+  -webkit-mask:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><path d='M30 0h40c18 0 30 12 30 30v40c0 18-12 30-30 30H30C12 100 0 88 0 70V30C0 12 12 0 30 0z'/></svg>") center/100% 100% no-repeat;
+  mask:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><path d='M30 0h40c18 0 30 12 30 30v40c0 18-12 30-30 30H30C12 100 0 88 0 70V30C0 12 12 0 30 0z'/></svg>") center/100% 100% no-repeat }
+.tile .lbl-ic{ position:absolute; inset:0; display:flex; align-items:center; justify-content:center; color:#fff; font-size:28px; font-weight:700 }
+.tile .badge,.hi > .badge{ position:absolute; top:-6px; right:-8px; z-index:3; min-width:22px; height:22px; padding:0 6px; border-radius:11px; background:#FF3B30; color:#fff; font-size:12px; font-weight:600; box-shadow:0 1px 3px rgba(0,0,0,.25);
+  display:flex; align-items:center; justify-content:center; border:2px solid rgba(0,0,0,.15); z-index:2 }
+.app-name{ margin-top:5px; font-size:14px; line-height:15px; height:15px; font-weight:500; letter-spacing:-.05px; color:#fff; text-align:center; text-shadow:0 1px 3px rgba(0,0,0,.55); white-space:nowrap; max-width:88px; overflow:hidden; text-overflow:ellipsis }   /* mesma fonte/altura/distância em todas as etiquetas */
+#home.nolabels .app-name{ visibility:hidden }
+/* pasta */
+.hi.folder .tile{ background:rgba(255,255,255,.28); backdrop-filter:blur(20px) saturate(160%); -webkit-backdrop-filter:blur(20px) saturate(160%); border:.5px solid rgba(255,255,255,.2);
+  display:grid; grid-template-columns:repeat(3,18px); grid-auto-rows:18px; gap:4px; padding:5px; align-content:start; justify-content:center }
+.hi.folder .tile .mini{ width:18px; height:18px; border-radius:5px; overflow:hidden }
+/* `.mini` e TAMBEM o mini-leitor da Musica (apps.css: posicao absoluta, 58 px de altura, vidro, sombra, padding):
+   sem este reset os mini-icones das pastas ficavam todos empilhados fora da caixa e a pasta parecia VAZIA (2026-10-01) */
+.hi.folder .tile .mini{ position:static; inset:auto; z-index:auto; display:block; padding:0; margin:0; gap:0; background:none; box-shadow:none; border:none; cursor:inherit; backdrop-filter:none; -webkit-backdrop-filter:none }
+.hi.folder .tile .mini svg,.hi.folder .tile .mini img{ width:100%; height:100% }
+.hi.folder .tile.over{ transform:scale(1.15); background:rgba(255,255,255,.45) }
+.hi.app .tile.over{ transform:scale(1.18); box-shadow:0 0 0 3px rgba(255,255,255,.6) }
+/* widgets */
+.hi.widget{ align-items:stretch }
+.hi.widget.w2x2{ width:calc(var(--icon) * 2 + var(--gap-x)) } .hi.widget.w4x2{ width:var(--grid-w) }
+.hi.widget .wg{ height:calc(var(--icon) * 2 + var(--gap-x)); border-radius:22px; background:rgba(255,255,255,.92); color:#000; padding:14px; overflow:hidden; position:relative;
+  box-shadow:0 1px 3px rgba(0,0,0,.12), inset 0 .5px 0 rgba(255,255,255,.35); display:flex; flex-direction:column }   /* widget 2×2 quadrado (PearOS), material plano com reflexo fino */
+body.dark .hi.widget .wg{ background:rgba(28,28,30,.88); color:#fff }
+.hi.widget .wg.glass{ background:rgba(255,255,255,.22); color:#fff; backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px); border:.5px solid rgba(255,255,255,.18) }
+.hi.widget .wg.tint{ color:#fff }
+.wg .wt{ font-size:var(--t-cap1); font-weight:600; opacity:.6; text-transform:uppercase; letter-spacing:.3px } .wg .wb{ font-size:var(--t-large); font-weight:600; line-height:1.1 }
+.wg .wm{ font-size:var(--t-subhead); font-weight:500 } .wg .ws{ font-size:var(--t-cap1); opacity:.7 } .wg .wrow{ display:flex; align-items:center; gap:8px } .wg .grow{ flex:1; min-width:0 }
+.wg .art{ width:44px; height:44px; border-radius:10px; flex:none }
+.wg .cal-mini{ display:grid; grid-template-columns:repeat(7,1fr); font-size:9px; text-align:center; gap:2px; margin-top:6px } .wg .cal-mini .t{ background:var(--red); color:#fff; border-radius:50% }
+.wg .analog{ position:absolute; right:12px; top:12px; width:64px; height:64px }
+/* widget Notas (PearOS) */
+.wg-notes{ position:absolute; inset:0; display:flex; flex-direction:column }
+.wg-notes .hd{ background:#FFCC00; color:#fff; font-size:17px; font-weight:600; padding:12px 16px; display:flex; align-items:center; gap:8px; flex:none; border-bottom:2px dotted rgba(0,0,0,.14) } .wg-notes .hd svg{ width:20px; height:20px }
+.wg-notes .bd{ flex:1; padding:14px 16px; background:#fff; color:var(--label); min-height:0; overflow:hidden } body.dark .wg-notes .bd{ background:#1C1C1E }
+.wg-notes .bd .t{ font-size:15px; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis } .wg-notes .bd .s{ font-size:15px; color:var(--label2); margin-top:2px; display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden }
+.wg svg.ic{ width:28px; height:28px }
+/* modo de edição */
+/* wiggle PearOS: anima a propriedade `rotate` (deixa `transform` livre para o arrasto/pressão) e cada ícone tem a sua fase e duração - nunca oscilam todos juntos */
+#home.edit .hi.app .tile,#home.edit .hi.folder .tile,#home.edit .hi.widget .wg{ animation:jiggle var(--jt,.28s) ease-in-out var(--jd,0s) infinite alternate }
+#home.edit .hi:nth-child(2n){ --jd:-.14s } #home.edit .hi:nth-child(3n){ --jt:.32s } #home.edit .hi:nth-child(5n){ --jd:-.07s; --jt:.3s } #home.edit .hi:nth-child(7n){ --jd:-.2s; --jt:.26s } #home.edit .hi:nth-child(4n+1){ --jd:-.1s }
+@keyframes jiggle{ from{ rotate:-1.6deg } to{ rotate:1.6deg } }
+.rm{ position:absolute; top:-7px; left:-7px; width:24px; height:24px; border-radius:50%; background:#8E8E93; color:#fff; display:none; align-items:center; justify-content:center; z-index:3;
+  box-shadow:0 1px 4px rgba(0,0,0,.4); border:1.5px solid rgba(255,255,255,.9) } .rm svg{ width:14px; height:14px }
+#home.edit .hi.removable .rm{ display:flex }
+.edit-bar{ position:absolute; top:calc(var(--statusbar-h) - 6px); left:0; right:0; display:none; justify-content:space-between; padding:0 16px; z-index:30 }
+#home.edit .edit-bar{ display:flex }
+.edit-bar div{ height:36px; padding:0 16px; border-radius:18px; background:rgba(255,255,255,.22); backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px); color:#fff; font-size:var(--t-subhead); font-weight:600;
+  display:flex; align-items:center; gap:6px; cursor:pointer; border:.5px solid rgba(255,255,255,.2) } .edit-bar div svg{ width:18px; height:18px }
+.edit-bar .done{ background:#fff; color:#000 }
+.page-dots{ position:absolute; top:calc(var(--pill-y) - 26px); left:50%; transform:translateX(-50%); display:flex; align-items:center; justify-content:center; gap:7px; padding:6px 9px; border-radius:12px; background:rgba(0,0,0,.16); pointer-events:none; opacity:.95 }   /* indicador em cápsula (PearOS 26) */
+.page-dots span{ width:6px; height:6px; border-radius:50%; background:rgba(255,255,255,.4) } .page-dots span.on{ background:#fff }
+.page-dots span.lib{ width:auto; height:auto; background:none; color:rgba(255,255,255,.45); display:flex; align-items:center; margin-left:1px } .page-dots span.lib svg{ width:9px; height:9px; stroke-width:3 } .page-dots span.lib.on{ color:#fff }
+/* Liquid Glass (PearOS 26): pesquisa e dock em vidro claro com aro especular */
+.search-pill{ position:absolute; top:var(--pill-y); left:50%; transform:translateX(-50%); width:var(--pill-w); height:var(--pill-h); border-radius:17px;
+  background:rgba(255,255,255,.2); border:.5px solid rgba(255,255,255,.3); backdrop-filter:blur(18px) saturate(180%); -webkit-backdrop-filter:blur(18px) saturate(180%);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.35), 0 4px 14px rgba(0,0,0,.14);
+  display:flex; align-items:center; justify-content:center; gap:5px; font-size:var(--t-cap1); font-weight:500; cursor:pointer; color:#fff; transition:transform .25s var(--spring), background .2s }
+.search-pill:active{ transform:translateX(-50%) scale(.94); background:rgba(255,255,255,.32) }
+.dock{ position:absolute; top:var(--dock-y); left:var(--dock-x); width:var(--dock-w); height:var(--dock-h); border-radius:38px;
+  background:rgba(255,255,255,.16); border:.5px solid rgba(255,255,255,.32); backdrop-filter:blur(30px) saturate(180%); -webkit-backdrop-filter:blur(30px) saturate(180%);
+  box-shadow:0 6px 18px rgba(0,0,0,.12), inset 0 .5px 0 rgba(255,255,255,.45), inset 0 -.5px 0 rgba(255,255,255,.1); display:flex; align-items:center; justify-content:space-evenly; padding:0 10px; transition:background .2s }   /* Liquid Glass: o fundo vê-se através, aro fino, sombra leve */
+.dock.over{ background:rgba(255,255,255,.28) }
+.dock .hi{ position:static; opacity:1; transform:none; animation:none!important } .dock .hi .app-name{ display:none }
+/* pasta aberta */
+.folder-overlay{ position:absolute; inset:0; z-index:40; display:flex; flex-direction:column; align-items:center; background:rgba(0,0,0,.35); backdrop-filter:blur(26px); -webkit-backdrop-filter:blur(26px);
+  opacity:0; pointer-events:none; transition:opacity .3s }
+.folder-overlay.in{ opacity:1; pointer-events:auto }
+.folder-name{ margin-top:150px; font-size:var(--t-title1); font-weight:600; color:#fff; text-align:center; background:none; border:none; outline:none; text-shadow:0 2px 8px rgba(0,0,0,.4); width:80%; font-family:inherit }
+.folder-box{ margin-top:22px; width:346px; min-height:346px; border-radius:36px; background:rgba(255,255,255,.28); backdrop-filter:blur(30px); -webkit-backdrop-filter:blur(30px); border:.5px solid rgba(255,255,255,.22);
+  padding:24px; display:grid; grid-template-columns:repeat(3,var(--icon)); justify-content:space-between; row-gap:22px; align-content:start; transform:scale(.6); transition:transform .35s var(--spring) }
+.folder-overlay.in .folder-box{ transform:scale(1) }
+.folder-box .hi{ position:static; opacity:1; transform:none; animation:none!important }
+
+/* ====================== CONTROL CENTER ====================== */
+#cc{ position:absolute; inset:0; z-index:120; background:rgba(0,0,0,.22); backdrop-filter:blur(34px) saturate(150%); -webkit-backdrop-filter:blur(34px) saturate(150%);
+  opacity:0; pointer-events:none; transition:opacity .28s var(--ease); color:#fff; touch-action:none }
+#cc.in{ opacity:1; pointer-events:auto }
+.cc-panel{ padding:calc(var(--statusbar-h) + 14px) 35px 0; display:grid; grid-template-columns:repeat(4,82px); grid-auto-rows:82px; gap:14px; justify-content:center;
+  transform:translateY(-30px) scale(.96); transition:transform .32s var(--spring) }
+#cc.in .cc-panel{ transform:none }
+.cc-mod,.cc-tile,.cc-slider{ border-radius:24px; background:rgba(60,60,64,.55); border:.5px solid rgba(255,255,255,.12); box-shadow:inset 0 .5px 0 rgba(255,255,255,.18); position:relative; overflow:hidden }
+.cc-mod{ grid-column:span 2; grid-row:span 2; padding:12px }
+.cc-mod.conn{ display:grid; grid-template-columns:1fr 1fr; grid-template-rows:1fr 1fr; gap:10px; place-items:center }
+.cc-round{ width:62px; height:62px; border-radius:50%; background:rgba(255,255,255,.14); display:flex; align-items:center; justify-content:center; cursor:pointer; transition:background .2s, transform .1s }
+.cc-round svg{ width:28px; height:28px } .cc-round:active{ transform:scale(.92) }
+.cc-round.on.orange{ background:var(--orange) } .cc-round.on.green{ background:var(--green) } .cc-round.on.blue{ background:var(--sys-blue) } .cc-round.on.white{ background:#fff; color:#000 }
+.cc-mod.music{ display:flex; flex-direction:column; justify-content:space-between }
+.cc-mod.music .row{ gap:10px } .cc-mod.music .art{ width:46px; height:46px; border-radius:10px; flex:none; background:linear-gradient(135deg,#888,#333) }
+.cc-mod.music .t{ font-size:var(--t-subhead); font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis } .cc-mod.music .a{ font-size:var(--t-cap1); opacity:.7 }
+.cc-mod.music .ctl{ display:flex; justify-content:space-around; align-items:center } .cc-mod.music .ctl svg{ width:30px; height:30px; cursor:pointer } .cc-mod.music .ctl .play svg{ width:38px; height:38px }
+.cc-tile{ display:flex; align-items:center; justify-content:center; cursor:pointer; transition:background .2s, transform .1s; flex-direction:column; gap:4px; font-size:var(--t-cap1); font-weight:600 }
+.cc-tile svg{ width:30px; height:30px } .cc-tile:active{ transform:scale(.94) } .cc-tile.on{ background:#fff; color:#000 }
+.cc-tile.wide{ grid-column:span 2; flex-direction:row; justify-content:flex-start; padding:0 16px; gap:12px; font-size:var(--t-subhead) }
+.cc-tile.wide svg{ width:26px; height:26px }
+.cc-slider{ grid-row:span 2; cursor:ns-resize }
+.cc-slider .fill{ position:absolute; left:0; right:0; bottom:0; background:#fff; transition:height .05s }
+.cc-slider svg{ position:absolute; bottom:14px; left:50%; transform:translateX(-50%); width:28px; height:28px; color:#8E8E93; mix-blend-mode:difference; z-index:2 }
+.cc-slider.vol .fill{ background:#fff }
+.cc-edit{ grid-column:span 4; text-align:center; font-size:var(--t-foot); color:rgba(255,255,255,.6); cursor:pointer; padding-top:6px }
+
+/* =================== NOTIFICATION CENTER =================== */
+#nc{ position:absolute; inset:0; z-index:119; background:rgba(0,0,0,.28); backdrop-filter:blur(34px) saturate(150%); -webkit-backdrop-filter:blur(34px) saturate(150%);
+  opacity:0; pointer-events:none; transition:opacity .28s var(--ease); color:#fff; display:flex; flex-direction:column }
+#nc.in{ opacity:1; pointer-events:auto }
+.nc-head{ text-align:center; margin-top:78px; transform:translateY(-20px); transition:transform .32s var(--spring) } #nc.in .nc-head{ transform:none }
+.nc-head .d{ font-size:var(--t-subhead); font-weight:500; opacity:.85 } .nc-head .t{ font-size:64px; font-weight:500; letter-spacing:-1.5px; line-height:1.05 }
+.nc-list{ flex:1; overflow-y:auto; scrollbar-width:none; padding:24px 14px 80px; display:flex; flex-direction:column; gap:8px } .nc-list::-webkit-scrollbar{ display:none }
+.nhead{ display:flex; justify-content:space-between; align-items:center; font-size:var(--t-foot); font-weight:600; opacity:.85; padding:6px 4px 0 }
+.nhead span:last-child{ cursor:pointer; background:rgba(255,255,255,.18); padding:4px 10px; border-radius:12px }
+.notif-card{ position:relative; border-radius:22px; overflow:hidden; touch-action:pan-y }
+.notif-card .ncard{ display:flex; gap:12px; align-items:flex-start; padding:12px 14px; border-radius:22px; background:rgba(255,255,255,.18); backdrop-filter:blur(30px); -webkit-backdrop-filter:blur(30px);
+  border:.5px solid rgba(255,255,255,.16); color:#fff; transition:transform .25s var(--ease); cursor:pointer; position:relative; z-index:2 }
+.notif-card .ncard.slid{ transform:translateX(-84px) }
+.notif-card .ncard .tile{ width:38px; height:38px; flex:none; box-shadow:none; border-radius:9px }
+.notif-card .n-app{ font-size:var(--t-cap1); font-weight:600; opacity:.7; text-transform:uppercase } .notif-card .n-title{ font-size:var(--t-subhead); font-weight:600 }
+.notif-card .n-msg{ font-size:var(--t-subhead); opacity:.9; line-height:1.3; display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden }
+.notif-card .n-time{ margin-left:auto; font-size:var(--t-cap1); opacity:.7; flex:none }
+.notif-card .n-acts{ display:flex; gap:8px; margin-top:10px } .notif-card .n-act{ padding:7px 16px; border-radius:14px; background:rgba(255,255,255,.22); font-size:var(--t-subhead); font-weight:600; cursor:pointer; transition:transform .2s var(--spring), background .2s } .notif-card .n-act:active{ transform:scale(.94); background:rgba(255,255,255,.35) }
+.notif-card{ animation:ndrop .4s cubic-bezier(.2,.9,.25,1) } @keyframes ndrop{ from{ opacity:0; transform:translateY(-12px) } }
+.notif-card .n-del{ position:absolute; right:0; top:0; bottom:0; width:76px; display:flex; align-items:center; justify-content:center; background:var(--red); border-radius:22px; cursor:pointer; z-index:1; opacity:0; transition:opacity .2s }
+.notif-card.slid .n-del{ opacity:1 }
+.notif-card .n-del svg{ width:22px; height:22px }
+.notif-card .n-count{ position:absolute; right:14px; bottom:10px; font-size:var(--t-cap1); background:rgba(255,255,255,.25); padding:2px 8px; border-radius:10px }
+.nc-empty{ text-align:center; margin-top:60px; font-size:var(--t-title3); font-weight:600; opacity:.6 }
+#lock .notif-card .ncard{ background:rgba(255,255,255,.16) }
+
+/* ======================= APP SWITCHER ======================= */
+/* PearOS 17/26: cartões a 62 % (273×593, raio 57×.62≈35), app atual centrada à direita, anteriores à esquerda */
+#switcher{ position:absolute; inset:0; z-index:110; opacity:0; pointer-events:none; transition:opacity .28s var(--ease); background:rgba(0,0,0,.14); backdrop-filter:blur(30px) saturate(130%); -webkit-backdrop-filter:blur(30px) saturate(130%) }
+#switcher.in{ opacity:1; pointer-events:auto }
+.sw-track{ position:absolute; inset:0 0 40px 0; display:flex; align-items:center; gap:26px; padding:0 83.5px; overflow-x:auto; scrollbar-width:none; scroll-snap-type:x proximity; scroll-behavior:smooth; touch-action:pan-x; scroll-padding:0 83.5px }   /* deixa espaço ao "Fechar tudo" */
+.sw-track::-webkit-scrollbar{ display:none }
+.sw-item{ flex:none; scroll-snap-align:center; display:flex; flex-direction:column; gap:12px; align-items:flex-start; transition:transform .45s var(--spring2), opacity .3s; touch-action:pan-x; padding-top:8px }
+.sw-item.drag{ transition:none }
+.sw-item.up{ transform:translateY(-130%)!important; opacity:0!important; transition:transform .38s var(--ios), opacity .3s }
+.sw-item.slide{ transform:translateX(-90px); opacity:0 }
+.sw-lbl{ display:flex; align-items:center; gap:8px; width:273px; padding-left:2px; color:#fff; font-size:15px; font-weight:600; letter-spacing:-.1px; text-shadow:0 1px 4px rgba(0,0,0,.35); transition:opacity .25s } .sw-lbl .tile{ width:26px; height:26px; box-shadow:none; border-radius:7px; flex:none }
+.sw-lbl span{ flex:1; min-width:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+/* "×" para fechar a app e "Fechar tudo" (pedido do utilizador, como no telemóvel de referência) */
+.sw-x{ flex:none; width:28px; height:28px; border-radius:50%; background:rgba(255,255,255,.22); border:.5px solid rgba(255,255,255,.22); display:flex; align-items:center; justify-content:center; cursor:pointer; color:#fff; transition:transform .25s var(--spring), background .2s }
+.sw-x svg{ width:13px; height:13px; stroke-width:2.6 } .sw-x:active{ transform:scale(.88); background:rgba(255,255,255,.4) }
+.sw-all{ position:absolute; left:50%; bottom:calc(var(--safe-bottom) + 58px); transform:translateX(-50%); height:40px; padding:0 24px; border-radius:20px; display:flex; align-items:center; justify-content:center;
+  background:rgba(255,255,255,.2); border:.5px solid rgba(255,255,255,.26); backdrop-filter:blur(20px) saturate(160%); -webkit-backdrop-filter:blur(20px) saturate(160%); box-shadow:inset 0 .5px 0 rgba(255,255,255,.35), 0 8px 24px rgba(0,0,0,.2);
+  color:#fff; font-size:15px; font-weight:600; cursor:pointer; white-space:nowrap; transition:transform .25s var(--spring), background .2s, opacity .25s }
+.sw-all:active{ transform:translateX(-50%) scale(.94); background:rgba(255,255,255,.34) } .sw-all.hidden{ display:none }
+body.fivem .sw-all{ backdrop-filter:none; -webkit-backdrop-filter:none }   /* 1.5.0: o botão é vidro .lg (glass27.css), sem backdrop-filter em jogo */
+.sw-card{ width:273px; height:593px; border-radius:36px; overflow:hidden; background:var(--bg); box-shadow:0 22px 50px rgba(0,0,0,.42); cursor:pointer; position:relative; transform-origin:50% 50%; transition:transform .5s var(--spring2) }
+.sw-card.hand{ transition:none }
+/* a própria janela da app, viva, dentro do cartão a 62 % (mesmo elemento - sem clone); .bg/.open/transições da janela não se aplicam aqui */
+.sw-card .app-window.in-card{ display:block!important; position:absolute; left:0; top:0; inset:auto; width:440px; height:956px; opacity:1!important; transform:scale(.6205)!important; transform-origin:top left; pointer-events:none; border-radius:57px; transition:none; will-change:auto }
+.sw-card .app-window.in-card > .nav-stack{ opacity:1; transition:none }
+.sw-ph{ position:absolute; inset:0; background:#000; display:flex; align-items:center; justify-content:center } .sw-ph .tile{ width:96px; height:96px }   /* apps externas (iframe): cartão-símbolo */
+.sw-empty{ position:absolute; inset:0; display:flex; align-items:center; justify-content:center; color:rgba(255,255,255,.7); font-size:var(--t-title3); font-weight:600 }
+
+/* ========================= TECLADO ========================= */
+/* teclado PearOS 26 (revisão 2026-09-08): fundo translúcido, teclas 37×43 raio 5, popup da letra ao pressionar, Enter só azul quando tem ação */
+#kb{ position:absolute; left:0; right:0; bottom:0; z-index:250; background:rgba(209,212,218,.92); backdrop-filter:blur(24px) saturate(160%); -webkit-backdrop-filter:blur(24px) saturate(160%); border-radius:0 0 57px 57px; padding:8px 3px calc(var(--safe-bottom) + 4px); transform:translateY(100%); visibility:hidden; transition:transform .32s var(--ease), visibility .32s; user-select:none; touch-action:none }
+body.dark #kb{ background:rgba(43,43,46,.94) }
+#kb.in{ transform:none; visibility:visible }
+/* durante o assistente inicial o #setup (z 300) tapava o teclado do telemovel (z 250): o nome e o codigo escreviam-se as cegas (2026-10-01) */
+.screen.setup-mode #kb{ z-index:310 }
+.kb-row{ display:flex; justify-content:center; gap:6px; margin-bottom:11px }
+.kb-key{ position:relative; min-width:37px; height:43px; border-radius:5px; background:#fff; color:#000; font-size:23px; display:flex; align-items:center; justify-content:center; cursor:pointer; box-shadow:0 1px 0 #898A8D; flex:none; padding:0 }   /* PearOS: raio 5, 43 pt */
+body.dark .kb-key{ background:#5A5A5E; color:#fff; box-shadow:0 1px 0 #1B1B1D }
+.kb-key.fn:active,.kb-key.fn.pressed{ background:#fff } body.dark .kb-key.fn:active,body.dark .kb-key.fn.pressed{ background:#8E8E93 }   /* PearOS: as letras não escurecem (mostram o popup); as de função clareiam */
+.kb-key.fn{ background:#ACB2BC; font-size:16px; min-width:46px } body.dark .kb-key.fn{ background:#3A3A3D }
+.kb-key.fn svg{ width:22px; height:22px }
+.kb-key.space{ flex:1; max-width:196px; font-size:15px } .kb-key.ret{ min-width:92px; font-size:16px; background:#ACB2BC; color:#000 } body.dark .kb-key.ret{ background:#3A3A3D; color:#fff }
+.kb-key.ret.act{ background:var(--blue); color:#fff } body.dark .kb-key.ret.act{ background:var(--blue); color:#fff }   /* Pesquisar / Enviar / Ir: só então azul */
+.kb-key.shift.on{ background:#fff; color:#000 } body.dark .kb-key.shift.on{ background:#fff; color:#000 }
+/* MAIÚSCULAS SÃO CSS, não DOM (keyboard.js: setShift). As letras ficam sempre em minúscula no
+   HTML e é esta regra que as levanta - antes cada tecla premida reconstruía as 32 teclas e os
+   ~140 ouvintes só para trocar a caixa, várias vezes por frase escrita. O popup da tecla é um
+   filho, herda o text-transform e sobe com ela. */
+#kb.up .kb-key.ltr{ text-transform:uppercase }
+.kb-key.abc{ min-width:52px }
+.kb-pop{ position:absolute; left:50%; bottom:calc(100% - 6px); transform:translateX(-50%); min-width:54px; height:60px; border-radius:11px 11px 12px 12px; background:#fff; color:#000; font-size:38px; display:flex; align-items:center; justify-content:center; box-shadow:0 2px 8px rgba(0,0,0,.28); z-index:5; pointer-events:none; animation:kbPop .08s ease-out } body.dark .kb-pop{ background:#6B6B70; color:#fff }
+@keyframes kbPop{ from{ transform:translateX(-50%) scale(.85); opacity:0 } }
+.kb-emoji{ display:none; flex-wrap:wrap; gap:4px; padding:6px 8px; max-height:190px; overflow-y:auto; scrollbar-width:none } .kb-emoji::-webkit-scrollbar{ display:none }
+.kb-emoji span{ width:40px; height:40px; display:flex; align-items:center; justify-content:center; font-size:26px; cursor:pointer; border-radius:8px } .kb-emoji span:active{ background:rgba(0,0,0,.1) }
+#kb.emoji .kb-rows{ display:none } #kb.emoji .kb-emoji{ display:flex }
+.kb-tools{ display:flex; justify-content:space-between; padding:4px 12px 0; font-size:var(--t-subhead); font-weight:600; color:var(--label2) }
+#kb:not(.emoji) .kb-tools{ display:none }   /* o PearPhone não tem fila de ferramentas debaixo das teclas; só no painel de emoji (ABC / esconder) */
+
+/* ========================= FIRST BOOT ========================= */
+#setup{ position:absolute; inset:0; z-index:300; background:var(--bg); color:var(--label); display:none; flex-direction:column; overflow:hidden }
+#setup.in{ display:flex }
+/* ANCORADO a #setup: `.stp` é também a classe dos EMBLEMAS de estado (Faturas, Serviços, Garagem, Casa - `<span class="st pending">`).
+   Sem a âncora, este `position:absolute; inset:0` esticava cada emblema por cima de TODO o conteúdo da app, com a cor do emblema
+   e a intercetar os toques da lista por baixo. Nas Faturas havia um destes por cada fatura. */
+.stp{ position:absolute; inset:0; display:flex; flex-direction:column; padding:calc(var(--statusbar-h) + 30px) 28px calc(var(--safe-bottom) + 16px); transition:transform .45s var(--ease), opacity .3s, background-color .3s var(--curve); background:var(--bg) }
+.stp.enter{ transform:translateX(100%) } .stp.leave{ transform:translateX(-30%); opacity:0 }
+.stp.enter-back{ transform:translateX(-30%); opacity:0 } .stp.leave-back{ transform:translateX(100%) }   /* voltar: o passo anterior entra pela esquerda e o atual sai pela direita */
+.st-back{ position:absolute; left:14px; top:calc(var(--statusbar-h) - 4px); height:44px; display:flex; align-items:center; gap:1px; padding:0 10px 0 4px; color:var(--blue); font-size:var(--t-body); cursor:pointer; z-index:3; transition:opacity .15s }
+.st-back svg{ width:22px; height:22px } .st-back:active{ opacity:.45 }
+.stp h1{ font-size:var(--t-large); font-weight:700; letter-spacing:-.5px; margin-top:20px; text-align:center; overflow-wrap:anywhere }
+.stp .sub{ text-align:center; color:var(--label2); font-size:var(--t-body); margin-top:8px; line-height:1.4; overflow-wrap:anywhere; word-break:break-word }   /* CJK sem espaços: quebra em qualquer sítio, senão transborda */
+.stp .body{ flex:1; overflow-y:auto; scrollbar-width:none; margin-top:24px } .stp .body::-webkit-scrollbar{ display:none }
+.stp .foot{ padding-top:14px; display:flex; flex-direction:column; gap:10px }
+.stp .hero{ display:flex; justify-content:center; margin-top:20px } .stp .hero svg{ width:72px; height:72px; color:var(--blue) }
+/* ecrã de boas-vindas PearOS: fundo abstrato suave (gradientes radiais - sem filter) e "hello" branco em cursiva a rodar de idioma */
+/* ecrã "olá" do PearPhone 18 (foto do utilizador): azul-marinho profundo com grandes formas em pétala (lavanda / azul / turquesa), sem desfoque, e a palavra
+   em caligrafia de caneta fina (Parisienne, embutida em html/fonts - ver tokens.css) */
+/* manchas de luz suaves a fundirem-se (lavanda, azul-royal, turquesa) sobre azul-marinho - gradientes radiais com queda macia, sem bordas duras nem filter */
+/* revisão 2026-09-08: só manchas de luz MUITO largas e macias (sem pétalas/elipses geométricas), com profundidade: lavanda em cima, turquesa em baixo, azul-royal à direita */
+.stp.hello-step{ padding:0; cursor:pointer; overflow:hidden; background:
+  radial-gradient(72% 56% at 18% 12%, rgba(204,212,255,.92) 0%, rgba(150,170,255,.5) 36%, rgba(120,142,255,0) 78%),
+  radial-gradient(66% 60% at 86% 26%, rgba(84,120,255,.9) 0%, rgba(58,92,232,.44) 42%, rgba(58,92,232,0) 80%),
+  radial-gradient(50% 40% at 50% 46%, rgba(255,255,255,.08) 0%, rgba(255,255,255,0) 72%),
+  radial-gradient(78% 58% at 12% 90%, rgba(86,228,210,.9) 0%, rgba(96,204,244,.48) 42%, rgba(96,204,244,0) 80%),
+  radial-gradient(62% 58% at 90% 94%, rgba(104,140,255,.84) 0%, rgba(64,96,236,.4) 44%, rgba(64,96,236,0) 80%),
+  linear-gradient(170deg,#0a1440 0%,#14307a 48%,#0b2262 100%) }
+.stp.hello-step::before,.stp.hello-step::after,.hello-shape{ display:none }
+.stp.hello-step .body{ margin:0; position:relative; z-index:1; display:flex; align-items:center; justify-content:center; padding-bottom:110px; width:100% }   /* 110 (era 70): a palavra sobe ~20 px, equilibra com a ilha */
+/* a palavra: roundhand de copperplate (MonteCarlo 400 - o modelo da Snell Roundhand: hairlines finas, contraste alto, inclinação constante;
+   pedido do utilizador de 2026-09-08: traço mais leve, hastes do h/l delicadas, terminações afiladas, um toque menor, sem sombra visível).
+   A caixa é só a da palavra (inline-block, largura auto) com padding em em à volta: a máscara e o blur recortam/estendem pela caixa, e uma caixa
+   estreita fica ≥ 28 px dentro do ecrã (o blur(7px) estende a superfície ~21 px - regra CEF: nada com filter a sair do ecrã). setup.js (fit)
+   encolhe a letra se a palavra não couber em 440 − 56 − 48. letter-spacing −1 px (a cursiva liga na mesma; só aperta). */
+.hello{ font-family:'MonteCarlo','Italianno','Allura','Segoe Script','Snell Roundhand',cursive; font-size:120px; font-weight:400; font-synthesis:none; line-height:1; color:#fff; text-align:center; display:inline-block; width:auto; max-width:calc(100% - 56px); margin:0; padding:.16em 24px .3em; text-shadow:0 1px 3px rgba(10,20,60,.18); opacity:0; transition:opacity .35s var(--ease); white-space:nowrap; box-sizing:border-box; letter-spacing:-1px; transform-origin:50% 55% }
+.hello[lang="ja"],.hello[lang="zh-Hans"],.hello[lang="ko"],.hello[lang="ar"],.hello[lang="hi"],.hello[lang="ru"]{ font-family:-apple-system,'Segoe UI',sans-serif; font-weight:400; font-size:74px; letter-spacing:0; padding:.3em 24px .3em }   /* escritas sem cursiva: sistema, peso normal */
+/* entrada (especificação do utilizador): invisível, desfocada, um pouco mais pequena e 8 px abaixo → aparece, perde o blur, sobe até ao sítio
+   com um "settle" mínimo (1,01 → 1) - 1,3 s, cubic-bezier(.22,.75,.25,1), .25 s de atraso - e, AO MESMO TEMPO, uma revelação suave da esquerda
+   para a direita: máscara de gradiente muito largo (a transição ocupa ~57 % da largura da palavra - não parece máquina de escrever nem máscara dura).
+   O último keyframe do blur é 
+   `filter:none` (não fica nenhuma superfície de filter depois da animação). */
+/* 2026-09-08 (feedback: "do blur ao branco dá um salto, faz mal aos olhos"): (1) a palavra vive numa camada própria (will-change) durante toda a
+   vida, para o texto ser rasterizado SEMPRE da mesma forma, com ou sem filtro - era a troca de rasterização no fim do filtro que "saltava";
+   (2) o desfoque é leve (2.5 px, não 7: numa caligrafia fina 7 px engrossava e clareava a palavra) e desaparece CEDO, numa animação própria de
+   .8 s, enquanto a palavra ainda está a ganhar opacidade - nunca há um momento "opaca e desfocada" seguido de "nítida" */
+.hello{ will-change:transform }
+.hello.in{ opacity:1; -webkit-mask-image:linear-gradient(90deg,#000 0%,#000 38%,rgba(0,0,0,0) 60%,rgba(0,0,0,0) 100%); mask-image:linear-gradient(90deg,#000 0%,#000 38%,rgba(0,0,0,0) 60%,rgba(0,0,0,0) 100%);
+  -webkit-mask-size:260% 100%; mask-size:260% 100%; -webkit-mask-repeat:no-repeat; mask-repeat:no-repeat;
+  animation:helloIn 1.3s cubic-bezier(.22,.75,.25,1) .25s both, helloWrite 1.3s cubic-bezier(.22,.75,.25,1) .25s both, helloBlur .8s cubic-bezier(.25,.6,.3,1) .25s both }
+@keyframes helloIn{ 0%{ opacity:0; transform:translateY(8px) scale(.96) } 50%{ opacity:1; transform:translateY(-1px) scale(1.01) } 100%{ opacity:1; transform:translateY(0) scale(1) } }
+@keyframes helloBlur{ 0%{ filter:blur(2.5px) } 70%{ filter:blur(.4px) } 100%{ filter:none } }
+@keyframes helloWrite{ from{ -webkit-mask-position:100% 0; mask-position:100% 0 } to{ -webkit-mask-position:0% 0; mask-position:0% 0 } }
+/* mudança de idioma: a palavra atual desvanece, sobe um pouco e desfoca só ao de leve; a seguinte entra com helloIn */
+.hello.out{ animation:helloOut .34s cubic-bezier(.4,0,.6,1) both } @keyframes helloOut{ from{ opacity:1; filter:none; transform:none } to{ opacity:0; filter:blur(2px); transform:translateY(-6px) scale(.985) } }
+/* ⚠️ CEF (regra do projeto: animar só transform/opacity): no jogo saem as duas animações de `filter` - a palavra
+   entra com o helloIn + helloWrite (sem o helloBlur) e sai sem desfocar. O motivo original do desfoque fica de pé:
+   o "salto" que ele evitava era a troca de rasterização no FIM do filtro, e sem filtro nunca há troca nenhuma. */
+body.fivem .hello.in{ animation:helloIn 1.3s cubic-bezier(.22,.75,.25,1) .25s both, helloWrite 1.3s cubic-bezier(.22,.75,.25,1) .25s both }
+body.fivem .hello.out{ animation:helloOutFv .34s cubic-bezier(.4,0,.6,1) both } @keyframes helloOutFv{ from{ opacity:1; transform:none } to{ opacity:0; transform:translateY(-6px) scale(.985) } }
+.hello-hint{ position:absolute; left:0; right:0; bottom:calc(var(--safe-bottom) + 30px); text-align:center; color:rgba(255,255,255,.74); font-size:15px; font-weight:600; letter-spacing:-.1px; text-shadow:0 1px 4px rgba(10,20,60,.22); z-index:1 }
+.hello-info{ position:absolute; right:22px; bottom:calc(var(--safe-bottom) + 25px); width:28px; height:28px; border-radius:50%; display:flex; align-items:center; justify-content:center; color:#fff; background:rgba(255,255,255,.16); border:.5px solid rgba(255,255,255,.3); box-shadow:inset 0 .5px 0 rgba(255,255,255,.35); z-index:1 } .hello-info svg{ width:16px; height:16px }   /* controlo de sistema em vidro */
+/* idiomas: globo grande, lista centrada com texto centrado e seta à direita */
+.stp.lang-step .hero{ margin-top:26px } .stp.lang-step .hero svg{ width:96px; height:96px } .stp.lang-step .body{ margin-top:40px }
+.stp.lang-step .list .group{ margin:0 auto; max-width:330px } .stp.lang-step .li{ position:relative; justify-content:center; text-align:center }
+.stp.lang-step .li .li-body{ flex:none; text-align:center } .stp.lang-step .li .li-chev{ position:absolute; right:14px; top:50%; transform:translateY(-50%); margin:0 }
+/* passo Aparência (PearOS 26): mini-PearPhone com o fundo atual, relógio e notificações que crescem com o tamanho escolhido; três opções com visto */
+.stp.ap-step .body{ display:flex; flex-direction:column; align-items:center; margin-top:14px }
+.ap-mock{ --k:1; position:relative; width:214px; height:456px; border-radius:36px; overflow:hidden; background:#000; box-shadow:0 14px 34px rgba(0,0,0,.22), inset 0 0 0 .5px rgba(0,0,0,.25); flex:none }
+.ap-wp{ position:absolute; inset:0; background-size:cover; background-position:center }
+.ap-clock{ position:absolute; left:0; right:0; top:58px; text-align:center; color:#fff; font-size:calc(40px * var(--k)); font-weight:700; letter-spacing:-1px; text-shadow:0 2px 12px rgba(0,0,0,.3); transition:font-size .25s var(--ease) }
+.ap-n{ position:absolute; left:14px; right:14px; height:calc(22px * var(--k)); border-radius:10px; background:rgba(255,255,255,.55); transition:height .25s var(--ease), bottom .25s var(--ease) } .ap-n::before{ content:''; position:absolute; left:8px; top:50%; transform:translateY(-50%); width:calc(12px * var(--k)); height:calc(12px * var(--k)); border-radius:4px; background:#fff }
+.ap-n:nth-of-type(3){ bottom:calc(76px + 30px * var(--k)) } .ap-n:nth-of-type(4){ bottom:76px } .ap-n:nth-of-type(4)::before{ background:#0A84FF }
+.ap-btn{ position:absolute; bottom:26px; width:calc(24px * var(--k)); height:calc(24px * var(--k)); border-radius:50%; background:rgba(255,255,255,.28); display:flex; align-items:center; justify-content:center; color:#fff; transition:width .25s,height .25s } .ap-btn.l{ left:22px } .ap-btn.r{ right:22px } .ap-btn svg{ width:calc(12px * var(--k)); height:calc(12px * var(--k)) }
+.ap-hb{ position:absolute; bottom:8px; left:50%; transform:translateX(-50%); width:70px; height:4px; border-radius:2px; background:#fff }
+.ap-opts{ display:flex; justify-content:space-around; width:100%; max-width:340px; margin-top:22px }
+.ap-opt{ display:flex; flex-direction:column; align-items:center; gap:10px; cursor:pointer; font-size:var(--t-body); color:var(--label) }
+.ap-radio{ width:24px; height:24px; border-radius:50%; border:1.5px solid var(--label3); display:flex; align-items:center; justify-content:center; color:#fff; transition:background .2s, border-color .2s, transform .3s var(--spring) } .ap-radio svg{ opacity:0; width:14px; height:14px; stroke-width:3 }
+.ap-opt.on .ap-radio{ background:var(--blue); border-color:var(--blue); transform:scale(1.08) } .ap-opt.on .ap-radio svg{ opacity:1 } .ap-opt:active .ap-radio{ transform:scale(.92) }
+/* todos os passos: caixas e listas centradas (pedido do utilizador) */
+.stp .st-input{ max-width:320px; margin:0 auto; display:block }
+.stp .list .group{ max-width:340px; margin-left:auto; margin-right:auto } .stp .list .group-footer,.stp .list .group-header{ text-align:center }
+.st-card{ width:300px; margin:0 auto; background:var(--bg2); border-radius:22px; padding:18px 20px; box-shadow:0 8px 24px rgba(0,0,0,.08), inset 0 .5px 0 rgba(255,255,255,.5); display:flex; flex-direction:column; align-items:center; gap:0 }
+.st-card.sim{ background:linear-gradient(160deg,#fff,#eef3ff); border:.5px solid rgba(0,0,0,.06) } body.dark .st-card.sim{ background:linear-gradient(160deg,#2c2c2e,#1c1c1e) }
+.sim-chip{ width:44px; height:34px; border-radius:8px; background:linear-gradient(135deg,#f3d27a,#c9932e); position:relative; margin:4px 0 10px; box-shadow:inset 0 0 0 1px rgba(0,0,0,.15) }
+.sim-chip::before{ content:''; position:absolute; inset:7px 10px; border:1px solid rgba(0,0,0,.25); border-radius:4px }
+.sim-num{ font-size:30px; font-weight:600; letter-spacing:.5px; font-variant-numeric:tabular-nums; margin-bottom:8px }
+.sim-row{ display:flex; flex-direction:column; align-items:center; gap:2px; padding:9px 0; width:100% } .sim-row + .sim-row{ border-top:.5px solid var(--sep) }
+.sim-row span{ font-size:12px; color:var(--label2); text-transform:uppercase; letter-spacing:.5px } .sim-row b{ font-size:17px; font-weight:600 }
+.stp .link{ text-align:center; color:var(--blue); font-size:var(--t-body); cursor:pointer; padding:6px }
+.st-input{ height:52px; border-radius:14px; background:var(--bg2); border:.5px solid var(--sep-opaque); padding:0 16px; font-size:var(--t-body); color:var(--label); outline:none; width:100%; text-align:center }
+.st-input:focus{ border-color:var(--blue) }
+.stp .pin-dots{ justify-content:center; margin:26px 0 } .stp .keypad .key{ background:var(--fill3); color:var(--label); border:none; backdrop-filter:none; box-shadow:none } .stp .keypad .key .abc{ color:var(--label2) }
+.stp .pc-label{ color:var(--label); text-align:center } .stp .pc-label.err{ color:var(--red) }
+.stp .opt{ display:flex; gap:12px; justify-content:center; flex-wrap:wrap }
+.stp .opt .o{ width:100px; text-align:center; cursor:pointer } .stp .opt .o .pv{ height:170px; border-radius:20px; border:3px solid transparent; overflow:hidden; position:relative }
+.stp .opt .o.on .pv{ border-color:var(--blue) } .stp .opt .o .pv .wallpaper{ position:absolute; inset:0 } .stp .opt .o .pv .wallpaper::after{ display:none }
+.stp .opt .o .lb{ font-size:var(--t-subhead); margin-top:8px }
+.stp .avatars{ display:flex; gap:12px; justify-content:center; flex-wrap:wrap; margin-top:10px }
+.stp .avatars .av{ width:56px; height:56px; border-radius:50%; cursor:pointer; border:3px solid transparent } .stp .avatars .av.on{ border-color:var(--blue) }
+.stp .dots-prog{ display:flex; justify-content:center; gap:6px } .stp .dots-prog span{ width:6px; height:6px; border-radius:50%; background:var(--label4) } .stp .dots-prog span.on{ background:var(--blue) }
+.stp .num-big{ text-align:center; font-size:var(--t-title1); font-weight:600; font-variant-numeric:tabular-nums; margin:10px 0 }
+/* ===== assistente PearOS 26 (revisão 2026-09-08): a mesma grelha em todos os passos, campos e cartões nativos, botão cápsula a 20 px ===== */
+.stp{ border-radius:57px }                               /* camada de ecrã inteiro → raio do ecrã (regra CEF); ancorado, senão arredondava os emblemas de estado */
+.stp .btn-p{ margin:0 -8px }                                    /* .stp tem 28 px de padding → o botão fica a 20 px das bordas, como no PearOS */
+.stp .foot .link{ padding:10px 6px }
+.st-input{ height:50px; border:none; border-radius:12px; background:var(--bg2); padding:0 16px; font:inherit; font-size:17px; color:var(--label); text-align:left; -webkit-appearance:none; appearance:none; box-shadow:0 0 0 .5px var(--sep); transition:box-shadow .2s }
+.st-input:focus{ border-color:transparent; box-shadow:0 0 0 1.5px var(--blue) }
+.stp .st-err{ font-size:var(--t-foot); color:var(--red); text-align:center; min-height:18px; margin-top:8px; padding:0 16px }
+.st-card{ width:100%; max-width:340px; border-radius:16px; box-shadow:none; padding:14px 16px } .st-card.sim{ background:var(--bg2); border:none } body.dark .st-card.sim{ background:var(--bg2) }
+.stp.lang-step .body{ margin-top:28px; padding-bottom:12px; -webkit-mask-image:linear-gradient(180deg,transparent 0,#000 18px,#000 calc(100% - 28px),transparent 100%); mask-image:linear-gradient(180deg,transparent 0,#000 18px,#000 calc(100% - 28px),transparent 100%) }   /* desvanecimento nas bordas do scroll */
+.stp .keypad{ grid-template-columns:repeat(3,76px); grid-auto-rows:76px; gap:16px 24px; width:276px; margin:16px auto 0 } .stp .keypad .key{ width:76px; height:76px } .stp .keypad .key .num{ font-size:34px }
+.stp .pc-label{ font-size:var(--t-subhead); font-weight:500; text-shadow:none; line-height:22px; color:var(--label2) } .stp .pc-label.err{ color:var(--red) }
+.stp .opt{ gap:14px 12px } .stp .opt .o{ width:116px } .stp .opt .o .pv{ height:244px; border-radius:22px; border:none; box-shadow:inset 0 0 0 .5px rgba(0,0,0,.12); transition:transform .25s var(--spring), box-shadow .2s }
+.stp .opt .o.on .pv{ box-shadow:0 0 0 2.5px var(--blue), inset 0 0 0 .5px rgba(0,0,0,.12) } .stp .opt .o:active .pv{ transform:scale(.97) }
+.stp .opt .o .pv::after{ content:''; position:absolute; right:8px; bottom:8px; width:22px; height:22px; border-radius:50%; background:var(--blue) url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'><path d='m5 12 5 5L20 7'/></svg>") center/13px no-repeat; opacity:0; transform:scale(.6); transition:opacity .2s, transform .25s var(--spring) }
+.stp .opt .o.on .pv::after{ opacity:1; transform:scale(1) }
+/* previews Claro / Escuro / Automático: mini-PearPhone com barra, lista agrupada e indicador, nas cores reais de cada tema */
+/* (As regras .th-mock.light/.dark/.auto foram RETIRADAS em 2026-09-09: o preview passou a ser um
+   `.th-face` por tema - ver o bloco "Claro ou escuro" no fim do ficheiro. O gradiente de 135° do
+   `.auto` era o "triângulo preto solto" de que o utilizador se queixou, e tinha mais especificidade
+   que as regras novas, por isso reaparecia mesmo depois de as substituir.) */
+
+/* ===== assistente, revisão 2026-09-09 ===== */
+/* O anel azul de foco do campo de texto é um box-shadow DESENHADO FORA da caixa; como `.stp .body` faz scroll (overflow-y:auto, que também
+   recorta na horizontal), o anel do primeiro elemento ficava cortado no topo ("está a cortar o azul em volta"). 4 px de padding devolvem-lhe o espaço
+   e o margin-top desce o mesmo para a composição não mexer. */
+.stp .body{ margin-top:20px; padding:4px 4px 0 }
+.stp.lang-step .body{ margin-top:24px }
+/* Idiomas: sugeridos primeiro, resto atrás de "Mostrar mais idiomas" (uma lista corrida de 15 obrigava a scroll às cegas) */
+.st-langs{ display:flex; flex-direction:column; align-items:center } .st-langs .list{ width:100% }
+.stp.lang-step .li-sub{ text-align:center; font-size:var(--t-foot); color:var(--label2) }
+.stp.lang-step .li.lang-on .li-label{ color:var(--blue); font-weight:600 }
+.st-more{ margin:16px auto 4px; display:inline-flex; align-items:center; gap:7px; padding:11px 18px; border-radius:22px; background:var(--fill3); color:var(--blue); font-size:var(--t-body); font-weight:600; cursor:default; transition:transform .2s var(--spring), background .2s }
+.st-more:active{ transform:scale(.96) } .st-more svg{ width:15px; height:15px }
+/* Face Key ou código: dois cartões no mesmo formato dos passos do fundo e do tema, com mini-ecrã preto */
+.stp .opt.fid .o .pv{ background:#000; display:flex; align-items:center; justify-content:center }
+.stp .opt .o .lb2{ font-size:var(--t-cap1); color:var(--label2); margin-top:3px; line-height:1.3; min-height:32px }   /* min-height: as duas colunas acabam à mesma altura mesmo com legendas de tamanhos diferentes */
+.stp .opt.fid{ padding-bottom:8px }
+.fid-mock{ display:flex; flex-direction:column; align-items:center; justify-content:center; gap:14px; color:#fff } .fid-mock.pin{ gap:20px }
+.fid-glyph svg{ width:58px; height:58px } .fid-lb{ font-size:13px; font-weight:600; letter-spacing:.2px; opacity:.9 }
+.fid-dots{ display:flex; gap:13px } .fid-dots i{ width:9px; height:9px; border-radius:50%; box-shadow:inset 0 0 0 1.2px rgba(255,255,255,.85) } .fid-dots i:nth-child(-n+2){ background:#fff; box-shadow:none }
+.fid-dots.six{ gap:8px } .fid-dots.six i{ width:8px; height:8px }
+.fid-keys{ display:grid; grid-template-columns:repeat(3,20px); gap:10px } .fid-keys i{ width:20px; height:20px; border-radius:50%; background:rgba(255,255,255,.22) }
+/* ---------- Configurar o Face Key: anel de traços + cara ao centro (PearOS) ----------
+   os traços são posicionados por rotate()+translateY() a partir do centro; sem backdrop-filter (regra do CEF). */
+.fid-enroll{ position:relative; width:246px; height:246px; margin:26px auto 8px }
+.fid-ticks{ position:absolute; inset:0 }
+.fid-ticks i{ position:absolute; left:50%; top:50%; width:3px; height:15px; margin:-7.5px 0 0 -1.5px; border-radius:2px; background:var(--label4); transform-origin:50% 50%; transition:background .18s var(--ease), box-shadow .18s var(--ease) }
+.fid-ticks i.on{ background:var(--green); box-shadow:0 0 7px rgba(52,199,89,.55) }
+.fid-frame{ position:absolute; left:50%; top:50%; width:158px; height:158px; margin:-79px 0 0 -79px; border-radius:50%; background:#000; display:flex; align-items:center; justify-content:center; overflow:hidden }
+.fid-frame .fid-glyph{ color:#fff; transition:opacity .3s var(--ease), transform .3s var(--spring) }
+.fid-frame .fid-glyph svg{ width:74px; height:74px }
+.fid-check{ position:absolute; color:var(--green); opacity:0; transform:scale(.5); transition:opacity .3s var(--ease), transform .42s var(--spring) }
+.fid-check svg{ width:74px; height:74px; stroke-width:2.4 }
+.fid-enroll.ok .fid-glyph{ opacity:0; transform:scale(.7) } .fid-enroll.ok .fid-check{ opacity:1; transform:scale(1) }
+.fid-enroll.ok .fid-ticks i{ background:var(--green); box-shadow:0 0 7px rgba(52,199,89,.55) }
+.fid-enroll.flash .fid-frame{ animation:fidFlash .5s var(--ease) }
+@keyframes fidFlash{ 0%,100%{ box-shadow:0 0 0 0 rgba(52,199,89,0) } 45%{ box-shadow:0 0 0 7px rgba(52,199,89,.32) } }
+.stp .btn-p.dim{ opacity:.42; pointer-events:none }
+/* o anel fica centrado na vertical entre o subtítulo e o botão (sem a mancha branca em baixo) */
+.stp.fid-step .body{ display:flex; flex-direction:column; justify-content:center; overflow:visible }
+.stp.fid-step .sub{ min-height:40px }   /* o texto muda entre análises: altura fixa para o anel não saltar */
+/* (idem: as antigas .th-mock .th-list / .th-hb deram lugar às .th-face no fim do ficheiro) */
+
+/* ============================ AURA ============================ */
+#vera{ position:absolute; left:0; right:0; bottom:0; z-index:160; transform:translateY(100%); visibility:hidden; transition:transform .4s var(--ease), visibility .4s; padding:0 12px calc(var(--safe-bottom) + 6px) }
+#vera.in{ transform:none; visibility:visible }
+.vera-card{ border-radius:30px; background:var(--material); backdrop-filter:blur(40px) saturate(160%); -webkit-backdrop-filter:blur(40px) saturate(160%); border:.5px solid var(--glass-border);
+  color:var(--label); padding:18px 16px 14px; box-shadow:0 20px 60px rgba(0,0,0,.35) }
+.vera-orb{ width:64px; height:64px; border-radius:50%; margin:0 auto 10px; background:conic-gradient(from 0deg,#FF375F,#FF9F0A,#FFD60A,#30D158,#64D2FF,#BF5AF2,#FF375F);
+  animation:orb 3s linear infinite; box-shadow:0 0 30px rgba(120,80,255,.45); position:relative }
+.vera-orb::after{ content:''; position:absolute; inset:8px; border-radius:50%; background:var(--material); backdrop-filter:blur(6px) }
+.vera-orb.listening{ animation-duration:1s; box-shadow:0 0 44px rgba(255,80,160,.6) }
+@keyframes orb{ to{ transform:rotate(360deg) } }
+.vera-resp{ min-height:44px; text-align:center; font-size:var(--t-body); padding:0 6px 10px; line-height:1.35 }
+.vera-chips{ display:flex; gap:8px; overflow-x:auto; scrollbar-width:none; padding-bottom:10px } .vera-chips::-webkit-scrollbar{ display:none }
+.vera-chips span{ flex:none; padding:7px 12px; border-radius:16px; background:var(--fill3); font-size:var(--t-foot); font-weight:500; cursor:pointer }
+.vera-in{ display:flex; gap:8px; align-items:center } .vera-in input{ flex:1; height:42px; border-radius:21px; background:var(--fill3); border:none; padding:0 16px; font-size:var(--t-body); color:var(--label); outline:none }
+.vera-in .mic{ width:42px; height:42px; border-radius:50%; background:var(--blue); color:#fff; display:flex; align-items:center; justify-content:center; cursor:pointer } .vera-in .mic svg{ width:20px; height:20px }
+.vera-edge{ position:absolute; inset:0; pointer-events:none; border-radius:57px; box-shadow:inset 0 0 0 3px transparent; transition:box-shadow .3s; z-index:159 }
+.vera-edge.on{ box-shadow:inset 0 0 40px 6px rgba(120,80,255,.55) }
+
+/* ========================== EARBUDS ========================== */
+/* Cartão dos AirBuds (pedido 2026-09-16: formato QUADRADO, centrado em baixo - 320×320, não uma folha ao comprido) */
+.earbuds-card{ position:absolute; left:50%; width:320px; min-height:320px; bottom:calc(var(--safe-bottom) + 14px); z-index:170; border-radius:34px; background:var(--material); backdrop-filter:blur(40px); -webkit-backdrop-filter:blur(40px);
+  color:var(--label); padding:22px 18px 18px; box-shadow:0 20px 60px rgba(0,0,0,.35); border:.5px solid var(--glass-border); transform:translate(-50%,130%); transition:transform .45s var(--spring); text-align:center; display:flex; flex-direction:column; justify-content:center; box-sizing:border-box }
+.earbuds-card.in{ transform:translate(-50%,0) }
+.eb-img{ display:flex; justify-content:center; gap:16px; margin:4px 0 14px; align-items:flex-end }
+.eb-pod{ width:30px; height:70px; border-radius:15px 15px 18px 18px; background:linear-gradient(180deg,#FFFFFF,#D9D9DE); box-shadow:0 8px 18px rgba(0,0,0,.2) }
+.eb-case{ width:86px; height:70px; border-radius:22px; background:linear-gradient(180deg,#F5F5F7,#C9C9CE); box-shadow:0 8px 18px rgba(0,0,0,.2); position:relative }
+.eb-case::after{ content:''; position:absolute; left:12px; right:12px; top:27px; height:2px; background:rgba(0,0,0,.18); border-radius:1px }
+.eb-name{ font-size:var(--t-title3); font-weight:600 } .eb-bat{ display:flex; justify-content:center; gap:18px; margin-top:8px; font-size:var(--t-foot); color:var(--label2) }
+.earbuds-card .btn-p{ margin:16px 0 0!important }
+.eb-hint{ margin-top:10px; font-size:var(--t-cap2); color:var(--label2); text-align:center; line-height:1.3; padding:0 6px }   /* AirBuds: o que muda ao ligar (música só para ti, com o telemóvel fechado) */
+.eb-bat b{ color:var(--label) }
+/* Slate Buds (2026-10-01): a fotografia do par (img/slate_buds.png, 500×500 com fundo transparente) no lugar dos AirBuds
+   desenhados por CSS, nos dois cartões (PearOS .eb-img e Nova UI .abud-art) */
+.eb-img.eb-slate{ margin:0 0 6px; align-items:center } .eb-img.eb-slate img{ display:block; width:132px; height:132px; object-fit:contain }
+body.os-android .abud-card .abud-art.abud-slate{ gap:0; height:132px; margin:4px 0 2px }
+body.os-android .abud-card .abud-art.abud-slate img{ display:block; width:132px; height:132px; object-fit:contain }
+
+/* ======================= MENU DE CONTEXTO ======================= */
+.ctx-wrap{ position:absolute; inset:0; z-index:180; background:rgba(0,0,0,.25); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px); opacity:0; transition:opacity .2s }
+.ctx-wrap.in{ opacity:1 }
+.ctx{ position:absolute; width:250px; border-radius:22px; background:var(--material); backdrop-filter:blur(30px); -webkit-backdrop-filter:blur(30px); color:var(--label); overflow:hidden;
+  box-shadow:0 10px 40px rgba(0,0,0,.3); transform:scale(.6); transform-origin:top left; transition:transform .25s var(--spring); border:.5px solid var(--glass-border) }
+.ctx-wrap.in .ctx{ transform:scale(1) }
+.ctx div{ display:flex; align-items:center; justify-content:space-between; padding:11px 16px; font-size:var(--t-callout); cursor:pointer } .ctx div + div{ border-top:.5px solid var(--sep) }
+.ctx div svg{ width:20px; height:20px } .ctx div.danger{ color:var(--red) } .ctx div:active{ background:var(--fill4) }
+.ctx-preview{ position:absolute; pointer-events:none; transform:scale(1.1); transition:transform .35s var(--spring2) } .ctx-preview .tile{ box-shadow:0 14px 28px rgba(0,0,0,.4) }
+.ctx-preview .tile{ width:100%; height:100%; box-shadow:none } .ctx-wrap:not(.in) .ctx-preview{ transform:scale(1) }
+
+/* ======================= CHAMADA RECEBIDA ======================= */
+/* PearOS 17: ecrã inteiro escuro tingido pelas cores do avatar (--c1/--c2), sem backdrop-filter (camada de ecrã inteiro - cantos no CEF) */
+.incoming{ position:absolute; inset:0; z-index:150; display:flex; flex-direction:column; align-items:center; color:#fff; border-radius:57px; overflow:hidden;
+  /* SEM color-mix(): tons ja calculados no phone.js (--t1/--t2) - ver a nota em apps.css (.call-screen) */
+  background:radial-gradient(90% 60% at 50% 22%,var(--t1,#343945) 0%,transparent 70%), radial-gradient(120% 80% at 50% 100%,var(--t2,#2D3036) 0%,transparent 70%), linear-gradient(180deg,#1C1F26,#0A0B0F);
+  animation:icIn .45s var(--spring2) both }
+@keyframes icIn{ from{ opacity:0; transform:scale(1.06) } to{ opacity:1; transform:none } }
+@keyframes fadein{ from{ opacity:0 } }
+.incoming .ic-top{ margin-top:calc(var(--statusbar-h) + 52px); text-align:center; animation:icText .5s var(--spring2) .05s both } @keyframes icText{ from{ opacity:0; transform:translateY(-8px) } }
+.incoming .ic-name{ font-size:30px; font-weight:500; letter-spacing:-.3px; line-height:1.15 }
+.incoming .ic-sub{ font-size:var(--t-title3); color:rgba(255,255,255,.7); margin-top:6px }
+.incoming .cs-avatar{ width:128px; height:128px; border-radius:50%; margin-top:34px; font-size:46px; font-weight:500; box-shadow:0 18px 44px rgba(0,0,0,.35), inset 0 0 0 .5px rgba(255,255,255,.25) }
+.incoming .cs-avwrap{ margin-top:34px; width:144px; height:144px } .incoming .cs-avwrap .cs-avatar{ margin-top:0 } .incoming .cs-rings{ left:8px; top:8px; width:128px; height:128px }
+.incoming .ic-sub{ display:flex; align-items:center; justify-content:center; gap:6px } .incoming .ic-sub svg{ opacity:.8 }
+/* bloqueado: "deslizar para atender" - calha em vidro, botão verde que segue o dedo (--p = progresso 0..1) */
+.incoming .ic-slide{ --p:0; position:relative; width:calc(100% - 64px); height:74px; margin-bottom:14px; border-radius:37px; background:rgba(255,255,255,.14); border:.5px solid rgba(255,255,255,.18); display:flex; align-items:center; justify-content:center; box-shadow:0 10px 26px rgba(0,0,0,.25) }
+.incoming .ic-slide > span{ font-size:var(--t-body); font-weight:500; color:rgba(255,255,255,.85); padding-left:52px; animation:icShimmer 2.2s ease-in-out infinite }
+@keyframes icShimmer{ 0%,100%{ opacity:.55 } 50%{ opacity:1 } }
+.incoming .ic-knob{ position:absolute; left:4px; top:4px; width:66px; height:66px; border-radius:50%; background:#34C759; color:#fff; display:flex; align-items:center; justify-content:center; box-shadow:0 6px 16px rgba(0,0,0,.3); cursor:grab; touch-action:none; transition:transform .3s var(--spring2); animation:icNudge 2.2s ease-in-out infinite }
+.incoming .ic-knob.drag{ transition:none; animation:none; cursor:grabbing }
+@keyframes icNudge{ 0%,100%{ transform:translateX(0) } 50%{ transform:translateX(10px) } }
+.incoming .ic-declink{ margin-bottom:58px; font-size:var(--t-foot); color:rgba(255,255,255,.7); padding:8px 16px; cursor:pointer }
+.incoming .ic-declink:active{ color:#fff }
+.incoming .ic-mini{ margin-top:auto; margin-bottom:26px; display:flex; justify-content:space-between; width:100%; padding:0 70px }
+.incoming .ic-mini > div{ display:flex; flex-direction:column; align-items:center; gap:8px; font-size:var(--t-cap1); color:rgba(255,255,255,.9); cursor:pointer }
+.incoming .ic-mini > div > div{ width:46px; height:46px; border-radius:50%; background:rgba(255,255,255,.16); border:.5px solid rgba(255,255,255,.18); display:flex; align-items:center; justify-content:center; transition:transform .25s var(--spring), background .2s }
+.incoming .ic-mini > div:active > div{ transform:scale(.9); background:rgba(255,255,255,.3) } .incoming .ic-mini svg{ width:22px; height:22px }
+.incoming .ic-btns{ margin-bottom:64px; display:flex; justify-content:space-between; width:100%; padding:0 66px }
+.incoming .ic-btn{ display:flex; flex-direction:column; align-items:center; gap:10px; font-size:var(--t-foot); font-weight:500; cursor:pointer }
+.incoming .ic-btn > div{ width:78px; height:78px; border-radius:50%; display:flex; align-items:center; justify-content:center; box-shadow:0 10px 26px rgba(0,0,0,.3); transition:transform .25s var(--spring), filter .2s } .incoming .ic-btn > div svg{ width:36px; height:36px }
+.incoming .ic-btn:active > div{ transform:scale(.9); filter:brightness(.85) }
+.incoming .ic-btn.ic-dec > div{ background:#FF3B30 } .incoming .ic-btn.ic-acc > div{ background:#34C759; animation:ring 1.4s ease-in-out infinite }
+@keyframes ring{ 0%,100%{ transform:rotate(0) } 10%{ transform:rotate(-12deg) } 20%{ transform:rotate(12deg) } 30%{ transform:rotate(-8deg) } 40%{ transform:rotate(8deg) } 50%{ transform:rotate(0) } }
+/* banner de chamada (quando o telemóvel está numa app) */
+.call-banner{ position:absolute; top:58px; left:12px; right:12px; z-index:151;   /* por baixo da ilha (fora dos cantos do ecrã) */ border-radius:26px; background:rgba(40,40,44,.92); backdrop-filter:blur(30px); -webkit-backdrop-filter:blur(30px); color:#fff;
+  padding:12px 14px; display:flex; align-items:center; gap:12px; box-shadow:0 10px 30px rgba(0,0,0,.35); transform:translateY(-140%); transition:transform .45s var(--spring) }
+.call-banner.in{ transform:none }
+.call-banner .cs-avatar{ width:44px; height:44px; font-size:16px; margin:0 }
+.call-banner .btn-c{ width:44px; height:44px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; flex:none } .call-banner .btn-c svg{ width:20px; height:20px }
+.call-banner .btn-c.dec{ background:var(--red) } .call-banner .btn-c.acc{ background:var(--green) }
+
+/* ========================= LANTERNA ========================= */
+.torch-glow{ position:absolute; inset:0; z-index:5; pointer-events:none; background:radial-gradient(60% 40% at 50% 100%,rgba(255,250,220,.35),transparent 70%); opacity:0; transition:opacity .3s }
+.torch-glow.on{ opacity:1 }
+
+/* ========================= SPOTLIGHT ========================= */
+/* Biblioteca de Apps = mais uma PÁGINA (PearOS): vive à direita da última página, entra a deslizar e faz scroll vertical (.res); arrastar para a direita volta */
+.spot{ position:absolute; inset:0; z-index:45; background:rgba(0,0,0,.3); backdrop-filter:blur(30px); -webkit-backdrop-filter:blur(30px); transform:translateX(100%); pointer-events:none; transition:transform .38s var(--ease); display:flex; flex-direction:column; color:#fff; will-change:transform }
+.spot.in{ transform:none; pointer-events:auto } .spot.drag{ transition:none } .spot.in.out{ transform:translateX(100%); pointer-events:none }
+/* Biblioteca de Apps (PearOS): pílula de pesquisa larga no topo, quadrados de categoria em 2 colunas */
+.spot .spot-bar{ display:flex; align-items:center; gap:4px; padding:calc(var(--statusbar-h) + 14px) 22px 10px; flex:none }
+.spot .search{ margin:0; flex:1; height:46px; border-radius:23px; padding:0 16px; gap:10px; background:rgba(255,255,255,.22); border:.5px solid rgba(255,255,255,.3); color:#fff; font-size:var(--t-headline) }
+/* a Biblioteca de Apps redefine o seu próprio svg, por isso o aumento em ui.css não lhe
+   chega - sem esta linha ficava a ÚNICA lupa pequena do sistema */
+.spot .search svg{ width:22px; height:22px } .spot .search input{ color:#fff; font-size:var(--t-headline); width:0 } .spot .search input::placeholder{ color:rgba(255,255,255,.75) } .spot .search{ min-width:0 }   /* o mesmo da pesquisa global: com texto o "Cancelar" saía do ecrã */
+.spot .spot-cancel{ flex:none; display:none; padding:0 4px 0 12px; font-size:var(--t-body); color:#fff; cursor:pointer; text-shadow:0 1px 4px rgba(0,0,0,.3) } .spot .spot-cancel:active{ opacity:.5 }
+.spot.searching .spot-cancel{ display:block }
+.spot .lib{ display:grid; grid-template-columns:1fr 1fr; gap:24px 20px; padding:8px 22px 150px; justify-items:center }
+.spot .lib-cat{ display:flex; flex-direction:column; align-items:center; gap:9px; width:100% }
+.spot .lib-tile{ width:100%; aspect-ratio:1; border-radius:38px; background:rgba(255,255,255,.24); border:.5px solid rgba(255,255,255,.3); box-shadow:inset 0 1px 0 rgba(255,255,255,.3), 0 8px 24px rgba(0,0,0,.14);
+  backdrop-filter:blur(20px) saturate(160%); -webkit-backdrop-filter:blur(20px) saturate(160%); display:grid; grid-template-columns:1fr 1fr; grid-template-rows:1fr 1fr; gap:14px; padding:18px; box-sizing:border-box; place-items:center; cursor:pointer }
+.spot .lib-tile .hi{ position:static; opacity:1; transform:none; animation:none; width:64px } .spot .lib-tile .hi .tile{ width:64px; height:64px }
+.spot .lib-mini{ width:64px; height:64px; border-radius:15px; background:rgba(255,255,255,.22); display:grid; grid-template-columns:1fr 1fr; grid-template-rows:1fr 1fr; gap:5px; padding:7px; box-sizing:border-box; cursor:pointer }
+.spot .lib-mini .tile{ width:100%; height:100%; border-radius:6px; box-shadow:none }
+.spot .lib-lb{ font-size:13px; font-weight:500; color:#fff; text-shadow:0 1px 4px rgba(0,0,0,.4); text-align:center }
+.spot .lib-back{ display:flex; align-items:center; gap:2px; padding:6px 16px 0; color:#fff; font-size:var(--t-body); cursor:pointer } .spot .lib-back svg{ width:22px; height:22px }
+.spot .lib-empty{ text-align:center; padding:60px 20px; color:rgba(255,255,255,.7); font-size:var(--t-title3); font-weight:600 }
+.search-pill{ display:none }   /* a pesquisa saiu do ecrã principal (pedido do utilizador): a Biblioteca abre a deslizar para além da última página ou a puxar para baixo */
+.spot .res{ flex:1; overflow-y:auto; scrollbar-width:none; padding-bottom:120px } .spot .res::-webkit-scrollbar{ display:none }
+.spot .group{ background:rgba(255,255,255,.14) } .spot .li{ color:#fff } .spot .li-sub{ color:rgba(255,255,255,.6) } .spot .group-header{ color:rgba(255,255,255,.7) }
+.spot .app-row{ display:flex; gap:14px; padding:10px 20px; flex-wrap:wrap } .spot .app-row .hi{ position:static; opacity:1; transform:none; animation:none }
+
+/* ============================================================================
+   ASSISTENTE - REVISÃO PearOS 26 (2026-09-09)
+   Um SÓ cabeçalho, um SÓ botão e um SÓ campo para os 13 passos: as regras
+   partilhadas ficam aqui em cima e cada passo só acrescenta o que lhe é próprio.
+   Cores por token semântico (--label-primary, --system-blue, …) - nada fixo,
+   por isso o tema escuro acompanha sozinho.
+   ============================================================================ */
+
+/* ---- Botão "Anterior" (SystemNavigationBack): alvo de 44 px, desenho pequeno ---- */
+.stp .st-back{ left:16px; top:calc(var(--statusbar-h) - 6px); height:44px; min-width:44px; gap:1px;
+  padding:0 12px 0 6px; font-size:var(--t-subhead); font-weight:400; letter-spacing:-.2px; color:var(--system-blue) }
+.stp .st-back svg{ width:19px; height:19px; stroke-width:2.6 }
+.stp .st-back:active{ opacity:.4 }
+
+/* ---- Cabecalho (SetupIcon + SetupTitle + SetupSubtitle) ---- */
+.stp .hero{ margin-top:0 } .stp .hero svg{ width:46px; height:46px; color:var(--system-blue); stroke-width:1.7 }
+.stp h1{ font-size:23px; font-weight:600; letter-spacing:-.45px; margin-top:22px; color:var(--label-primary) }
+.stp .sub{ font-size:13px; line-height:1.46; color:var(--label2-strong); margin:8px auto 0; max-width:292px }
+
+/* ---- Botao principal (SystemAction): capsula de 52 px a 20 px das bordas ----
+   Resposta ao toque: encolhe para .98, escurece e volta com mola (o .96 global e para as apps). */
+.stp .btn-p{ height:52px; border-radius:26px; margin:0 -8px; font-size:17px; font-weight:600; letter-spacing:-.2px;
+  transition:transform .34s var(--spring2), filter .16s var(--curve), opacity .22s var(--curve) }
+.stp .btn-p:active{ transform:scale(.98); filter:brightness(.9); transition:transform .09s var(--curve), filter .09s var(--curve) }
+.stp .btn-p.dim{ opacity:.4; pointer-events:none }
+.stp .foot{ padding-top:16px; gap:6px }
+.stp .foot .link{ font-size:var(--t-subhead); font-weight:400; padding:9px 6px }
+
+/* ---- Campo de texto (PearOS): 50 px, raio 12, anel azul SO com foco ---- */
+.stp .st-input{ height:50px; border-radius:12px; padding:0 15px; font-size:var(--t-body); text-align:left;
+  background:var(--secondary-system-background); color:var(--label-primary);
+  box-shadow:0 0 0 .5px var(--separator); transition:box-shadow .18s var(--curve) }
+.stp .st-input:focus{ box-shadow:0 0 0 2px var(--system-blue) }
+.stp .st-input::placeholder{ color:var(--label-secondary) }
+
+/* ---- Cartao agrupado (IOSList): raio 13, fundo secundario, sem sombra pesada ---- */
+.stp .st-card{ border-radius:13px; background:var(--secondary-system-grouped-background); box-shadow:none; padding:4px 16px }
+.stp .st-card.sim{ background:var(--secondary-system-grouped-background); border:none }
+body.dark .stp .st-card.sim{ background:var(--secondary-system-grouped-background) }
+.stp .sim-row{ padding:11px 0; gap:3px }
+.stp .sim-row + .sim-row{ border-top:none; position:relative }
+.stp .sim-row + .sim-row::before{ content:''; position:absolute; left:0; right:0; top:0; height:.5px; background:var(--sep-subtle) }
+.stp .sim-row span{ font-size:10px; font-weight:600; letter-spacing:.6px; color:var(--label-secondary) }
+.stp .sim-row b{ font-size:14px; font-weight:500; color:var(--label-primary); letter-spacing:-.1px }
+.stp .list .group-footer{ font-size:12px; line-height:1.4; color:var(--label2-strong); max-width:300px; margin:0 auto; padding:8px 6px 0 }
+/* ---- Passo "Aparencia": mini-PearPhone realista + seletor nativo ----
+   O preview deixa de dominar (176x382 em vez de 214x456), ganha proporcao de ecra (0,46) e o raio
+   correto para o tamanho (57/440 = 0,13 -> 23 px), com a moldura desenhada por inset em vez de borda.
+   TUDO o que esta la dentro reage a --k: relogio, altura das notificacoes, linhas de texto, icones e espacos. */
+.stp.ap-step .body{ display:flex; flex-direction:column; align-items:center; justify-content:center; margin-top:14px }
+.ap-mock{ --k:1; width:176px; height:382px; border-radius:23px;
+  box-shadow:0 10px 26px rgba(0,0,0,.16), inset 0 0 0 2.5px #1C1C1E, inset 0 0 0 3.2px rgba(255,255,255,.07) }
+.ap-isl{ position:absolute; top:8px; left:50%; transform:translateX(-50%); width:50px; height:15px; border-radius:8px; background:#000; z-index:2 }
+.ap-clock{ top:44px; font-size:calc(34px * var(--k)); font-weight:600; letter-spacing:-.8px; transition:font-size .25s var(--curve) }
+.ap-n{ left:11px; right:11px; height:calc(27px * var(--k)); border-radius:9px; background:rgba(255,255,255,.5);
+  display:flex; align-items:center; gap:calc(6px * var(--k)); padding:0 calc(8px * var(--k));
+  transition:height .25s var(--curve), bottom .25s var(--curve), gap .25s var(--curve), padding .25s var(--curve) }
+.ap-n::before{ display:none }                                   /* o ponto antigo deu lugar ao icone .ap-n i */
+.ap-n i{ width:calc(12px * var(--k)); height:calc(12px * var(--k)); border-radius:3.5px; background:#fff; flex:none; transition:width .25s var(--curve), height .25s var(--curve) }
+.ap-n.n2 i{ background:#0A84FF }
+.ap-nt{ display:flex; flex-direction:column; gap:calc(3px * var(--k)); flex:1; min-width:0 }
+.ap-nt span{ display:block; height:calc(4px * var(--k)); border-radius:2px; background:rgba(255,255,255,.95); transition:height .25s var(--curve) }
+.ap-nt span:last-child{ width:62%; background:rgba(255,255,255,.64) }
+.ap-n.n1{ bottom:calc(60px + 34px * var(--k)) } .ap-n.n2{ bottom:60px }
+.ap-btn{ bottom:19px; width:calc(26px * var(--k)); height:calc(26px * var(--k)) }
+.ap-btn.l{ left:17px } .ap-btn.r{ right:17px }
+.ap-btn svg{ width:calc(13px * var(--k)); height:calc(13px * var(--k)) }
+.ap-hb{ bottom:7px; width:58px; height:3.5px }
+/* seletor: tres colunas exatamente iguais, circulo pequeno e area de toque grande */
+.ap-opts{ display:grid; grid-template-columns:repeat(3,1fr); justify-content:initial; width:100%; max-width:300px; margin-top:26px }
+.ap-opt{ gap:9px; padding:10px 0 6px; min-height:44px; font-size:13px; font-weight:400; color:var(--label-secondary);
+  transition:color .2s var(--curve) }
+.ap-opt.on{ color:var(--label-primary); font-weight:500 }
+/* reutiliza o `.check` do sistema (ui.css): aqui só o glifo branco, a mola e o peso do traço.
+   `color:#fff` é obrigatório - o visto usa currentColor e sem isto herdava o preto do rótulo. */
+.ap-opt .check{ color:#fff; transition:background var(--motion-fast), border-color var(--motion-fast), transform .3s var(--spring) }
+.ap-opt .check svg{ stroke-width:2.6; transition:opacity var(--motion-fast) }
+.ap-opt.on .check{ background:var(--system-blue); border-color:var(--system-blue) }
+.ap-opt.on .check svg{ opacity:1 }
+.ap-opt:active .check{ transform:scale(.92) }
+/* ---- Passo "Criar conta": campo PearOS com @ fixo, botao de limpar e estado por baixo ---- */
+.stp.acc-step .body{ display:flex; flex-direction:column; justify-content:center; padding-bottom:60px }
+.st-field{ position:relative; display:flex; align-items:center; width:100%; max-width:320px; margin:0 auto }
+.st-field .st-at{ position:absolute; left:15px; font-size:var(--t-body); color:var(--label-tertiary); pointer-events:none }
+.st-field .st-input{ padding:0 40px 0 32px; text-align:left }
+.st-clear{ position:absolute; right:11px; width:28px; height:28px; display:flex; align-items:center; justify-content:center;
+  color:var(--label-tertiary); cursor:pointer; opacity:0; transform:scale(.7); pointer-events:none;
+  transition:opacity .16s var(--curve), transform .22s var(--spring) }
+.st-clear.show{ opacity:1; transform:none; pointer-events:auto } .st-clear:active{ opacity:.5 }
+.stp .st-err{ font-size:12px; min-height:20px; margin-top:10px; transition:color .18s var(--curve) }
+.stp .st-err.ok{ color:var(--system-green) } .stp .st-err.bad{ color:var(--system-red) } .stp .st-err.wait{ color:var(--label-secondary) }
+.stp .st-err.ok::after{ content:' \2713' }
+
+/* ---- Passo "Numero de telefone": cartao agrupado, numero em destaque ---- */
+.stp.sim-step .body{ display:flex; flex-direction:column; justify-content:center; padding-bottom:40px }
+.stp .st-card.sim{ padding:18px 18px 4px }
+.stp .sim-chip{ width:34px; height:26px; border-radius:6px; margin:0 0 12px;
+  background:linear-gradient(135deg,#E3CFA2,#B9A075); box-shadow:inset 0 0 0 1px rgba(0,0,0,.12) }   /* SIM discreto, sem amarelo forte */
+.stp .sim-chip::before{ inset:5px 8px; border-color:rgba(0,0,0,.18) }
+.stp .sim-num{ font-size:21px; font-weight:600; letter-spacing:.4px; margin-bottom:14px; color:var(--label-primary) }
+.stp .st-card.sim .sim-row + .sim-row::before{ left:0; right:0 }
+.stp .st-card.sim .sim-row{ align-items:center }
+
+/* ---- Passo "Criar codigo": pontos e teclado do PearPhone ---- */
+/* como no PearPhone: pontos logo por baixo do título e teclado a seguir - o ar fica EM BAIXO,
+   onde vivem "Apagar" e "Opções de código", e não entre o subtítulo e os pontos */
+.stp.pin-step .body{ display:flex; flex-direction:column; justify-content:flex-start }
+.stp .pin-dots{ margin:34px 0 2px; gap:22px; width:auto }
+.stp .pin-dots.six{ gap:19px }
+.stp .pin-dots .dot{ width:13px; height:13px; border:none; background:transparent;
+  box-shadow:inset 0 0 0 1.5px var(--label-tertiary); transition:background .13s var(--curve), box-shadow .13s var(--curve) }
+.stp .pin-dots.six .dot{ width:12px; height:12px }
+.stp .pin-dots .dot.on{ background:var(--label-primary); box-shadow:none }
+.stp .pin-dots .dot.pop{ animation:pinPop .16s var(--spring) }
+@keyframes pinPop{ 0%{ transform:scale(.55) } 60%{ transform:scale(1.14) } 100%{ transform:scale(1) } }
+/* teclas redondas, distancias iguais nas duas direcoes */
+.stp .keypad{ grid-template-columns:repeat(3,62px); grid-auto-rows:62px; gap:18px 22px; width:230px; margin:20px auto 0 }
+.stp .keypad .key{ width:62px; height:62px; border-radius:50%; background:var(--tertiary-system-fill); color:var(--label-primary);
+  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:0;
+  transition:transform .28s var(--spring), background .2s var(--curve) }
+.stp .keypad .key .num{ font-size:29px; font-weight:400; line-height:1.02; letter-spacing:-.4px }
+.stp .keypad .key .abc{ font-size:9px; font-weight:600; letter-spacing:1.4px; color:var(--label-secondary); margin-top:1px }
+.stp .keypad .key:active,.stp .keypad .key.press{ transform:scale(.95); background:var(--secondary-system-fill); transition:transform .07s var(--curve), background .07s var(--curve) }
+/* "Apagar" so aparece com digitos introduzidos */
+.stp .foot .st-del{ opacity:0; pointer-events:none; transition:opacity .18s var(--curve) }
+.stp .foot .st-del.show{ opacity:1; pointer-events:auto }
+.stp .st-pinopt{ color:var(--system-blue) }
+
+/* ---- Passo "Face Key ou codigo": dois cartoes claros com um mini-ecra dentro ----
+   Os retangulos pretos de 244 px pareciam mockups; agora o cartao e claro (fundo secundario) e o
+   preto fica so no mini-ecra, com raio menor e altura mais curta. */
+.stp.fidopt-step .body{ display:flex; flex-direction:column; justify-content:center; padding-bottom:40px }
+.stp .opt.fid{ gap:14px; align-items:stretch }   /* os dois cartões acabam sempre à mesma altura */
+.stp .opt.fid .o{ display:flex; flex-direction:column }
+.stp .opt.fid .o{ width:150px; background:var(--secondary-system-grouped-background); border-radius:17px; padding:12px 12px 14px;
+  box-shadow:inset 0 0 0 .5px var(--separator); transition:box-shadow .19s var(--curve), transform .19s var(--curve) }
+.stp .opt.fid .o.on{ box-shadow:inset 0 0 0 2px var(--system-blue) }
+.stp .opt.fid .o:active{ transform:scale(.98) }
+.stp .opt.fid .o .pv{ height:176px; border-radius:12px; background:#1C1C1E; box-shadow:none }
+.stp .opt.fid .o.on .pv{ box-shadow:none }
+.stp .opt.fid .o .pv::after{ right:6px; bottom:6px; width:20px; height:20px; background-size:12px }
+.stp .opt.fid .o .lb{ font-size:14px; font-weight:600; margin-top:10px; color:var(--label-primary) }
+.stp .opt.fid .o .lb2{ font-size:11.5px; color:var(--label-secondary); min-height:28px; margin-top:2px }
+.stp .opt.fid .fid-glyph svg{ width:52px; height:52px }
+.stp .opt.fid .fid-keys{ grid-template-columns:repeat(3,22px); gap:11px } .stp .opt.fid .fid-keys i{ width:22px; height:22px }
+.stp .opt.fid .fid-dots i{ width:10px; height:10px } .stp .opt.fid .fid-dots.six{ gap:9px }
+/* ---- Passo "Configurar o Face Key": scanner mais acima e ring segmentado ---- */
+.stp.fid-step .body{ justify-content:center; padding-bottom:56px }   /* sobe o scanner para o centro otico */
+.fid-enroll{ width:230px; height:230px; margin:6px auto 0 }
+.fid-ticks i{ width:2.6px; height:14px; margin:-7px 0 0 -1.3px; background:var(--label4);
+  transition:background .22s var(--curve), box-shadow .22s var(--curve) }
+.fid-ticks i.on{ background:var(--system-green); box-shadow:0 0 6px rgba(52,199,89,.5) }
+.fid-frame{ width:148px; height:148px; margin:-74px 0 0 -74px; background:#1C1C1E }
+.fid-frame .fid-glyph svg{ width:68px; height:68px }
+/* micro-movimento do glifo so enquanto le (respiracao lenta, sem exageros) */
+.fid-enroll[data-state="scan1"] .fid-glyph,.fid-enroll[data-state="scan2"] .fid-glyph{ animation:fidBreathe 2.1s ease-in-out infinite }
+@keyframes fidBreathe{ 0%,100%{ transform:scale(1); opacity:.92 } 50%{ transform:scale(1.045); opacity:1 } }
+.fid-check svg{ width:66px; height:66px }
+
+/* ---- Passo "Avatar" ---- */
+.stp.av-step .body{ display:flex; flex-direction:column; justify-content:center }
+.av-preview{ display:flex; flex-direction:column; align-items:center }
+.av-preview .avatar{ width:78px; height:78px; border-radius:50%; font-size:29px; font-weight:500; letter-spacing:-.5px;
+  color:#fff; display:flex; align-items:center; justify-content:center; box-shadow:0 4px 12px rgba(0,0,0,.10);
+  transition:background .22s var(--curve) }
+.av-preview .nm{ font-size:16px; font-weight:600; letter-spacing:-.3px; margin-top:16px; color:var(--label-primary) }
+.av-preview .hn{ font-size:12px; color:var(--label-secondary); margin-top:2px }
+.stp .avatars{ display:grid; grid-template-columns:repeat(6,44px); justify-content:center; gap:14px 12px; margin-top:26px }
+.stp .avatars .av{ width:44px; height:44px; border:none; box-shadow:none; display:flex; align-items:center; justify-content:center;
+  color:#fff; transition:transform .2s var(--spring), box-shadow .2s var(--curve) }
+.stp .avatars .av svg{ width:17px; height:17px; stroke-width:3.2; opacity:0; transform:scale(.5);
+  transition:opacity .16s var(--curve), transform .26s var(--spring) }
+.stp .avatars .av.on{ box-shadow:0 0 0 2px var(--system-background), 0 0 0 4px var(--system-blue) }   /* UM anel, com respiro */
+.stp .avatars .av.on svg{ opacity:1; transform:none }
+.stp .avatars .av:active{ transform:scale(.92) }
+.av-later{ font-size:12px; line-height:1.42; color:var(--label2-strong); text-align:center; max-width:300px; margin:24px auto 0 }
+.avatar.pop{ animation:avPop .3s var(--spring) } @keyframes avPop{ 0%{ transform:scale(.9) } 60%{ transform:scale(1.05) } 100%{ transform:scale(1) } }
+
+/* ---- Passo "Imagem de fundo": CARROSSEL de cartões com a proporção do ecrã (galeria de fundos do PearOS) ----
+   Cada cartão é um mini ecrã bloqueado (ilha, data, relógio, barra de início) por cima do fundo; deslizam na horizontal
+   com paragem ao centro e sobram para as bordas (o carrossel fura o padding do passo com margens negativas).
+   Antes eram colunas `flex-wrap:nowrap` de 118 px pensadas para TRÊS fundos: com cinco ficavam tiras de 45 px. */
+.stp.wp-step .body{ display:flex; flex-direction:column; justify-content:center }
+/* o corpo do passo alarga até às bordas do ecrã (o .stp tem 28 px de padding) e o carrossel enche-o: os cartões das pontas
+   espreitam pela borda, como na galeria do PearOS, sem o corpo ganhar deslocamento horizontal */
+.stp.wp-step .body{ margin-left:-28px; margin-right:-28px; padding-left:28px; padding-right:28px; overflow-x:hidden }
+/* O carrossel tem SEMPRE a largura do ecrã (440) e fica centrado no corpo; o padding lateral é meio ecrã − meio cartão
+   (220 − 75), em px: o antigo calc(50% − 75px) media 50% do CORPO (não do carrossel) e o 1.º cartão parava 28 px à
+   esquerda do centro, com um vazio à esquerda (2026-10-01). position:relative: o offsetLeft dos cartões passa a contar
+   a partir do carrossel, que é o que o center() do setup.js usa. */
+.stp.wp-step .opt.wp-car{ display:flex; flex-wrap:nowrap; justify-content:flex-start; gap:16px; overflow-x:auto; overflow-y:hidden; overscroll-behavior-x:contain; position:relative;
+  scroll-snap-type:x mandatory; scrollbar-width:none; width:440px; margin:0 calc(50% - 220px); padding:12px 145px 4px; box-sizing:border-box }
+.stp.wp-step .opt.wp-car::-webkit-scrollbar{ display:none }
+.stp.wp-step .opt.wp-car .o{ flex:none; width:150px; scroll-snap-align:center; text-align:center; cursor:pointer }
+.stp.wp-step .opt.wp-car .o .pv{ position:relative; height:324px; border-radius:30px; overflow:hidden; background-size:cover; background-position:center; background-repeat:no-repeat;
+  box-shadow:inset 0 0 0 .5px rgba(0,0,0,.14); transition:transform .3s var(--spring), box-shadow .2s }
+.stp.wp-step .opt.wp-car .o.on .pv{ box-shadow:0 0 0 3px var(--system-background), 0 0 0 5.5px var(--system-blue), inset 0 0 0 .5px rgba(0,0,0,.14) }
+.stp.wp-step .opt.wp-car .o:active .pv{ transform:scale(.97) }
+/* o mini ecrã bloqueado: ilha, data, relógio (fino como o do PearOS), barra de início - em branco nos fundos escuros, em preto nos claros */
+.stp.wp-step .pv .pv-isl{ position:absolute; left:50%; top:10px; width:36px; height:11px; margin-left:-18px; border-radius:6px; background:#000 }
+.stp.wp-step .pv .pv-date{ position:absolute; left:0; right:0; top:40px; font-size:11px; font-weight:600; letter-spacing:.2px; text-align:center }
+.stp.wp-step .pv .pv-time{ position:absolute; left:0; right:0; top:52px; font-size:44px; font-weight:300; letter-spacing:-1.5px; line-height:1; text-align:center; font-variant-numeric:tabular-nums }
+.stp.wp-step .pv .pv-hb{ position:absolute; left:50%; bottom:8px; width:48px; height:4px; margin-left:-24px; border-radius:2px }
+/* (classes pv-dark/pv-light e não dk/lt: `.dk` é a tecla do teclado do Telefone em apps.css - 80×80, redonda - e apanhava o cartão) */
+.stp.wp-step .pv.pv-dark .pv-date,.stp.wp-step .pv.pv-dark .pv-time{ color:#fff; text-shadow:0 1px 6px rgba(0,0,0,.35) } .stp.wp-step .pv.pv-dark .pv-hb{ background:rgba(255,255,255,.9) }
+.stp.wp-step .pv.pv-light .pv-date,.stp.wp-step .pv.pv-light .pv-time{ color:rgba(0,0,0,.82) } .stp.wp-step .pv.pv-light .pv-hb{ background:rgba(0,0,0,.75) }
+/* selo do visto dentro do canto do cartão */
+.stp.wp-step .opt.wp-car .o .pv::after{ right:10px; bottom:10px; width:26px; height:26px; background-size:14px; box-shadow:0 1px 4px rgba(0,0,0,.25) }
+.stp.wp-step .opt.wp-car .o .lb{ font-size:13px; line-height:1.3; margin-top:12px; min-height:34px; color:var(--label-secondary); font-weight:500;
+  display:flex; align-items:flex-start; justify-content:center; text-align:center; transition:color .2s }
+.stp.wp-step .opt.wp-car .o.on .lb{ color:var(--system-blue); font-weight:600 }
+
+/* ---- Passo "Claro ou escuro": o MESMO mini-ecra nos tres, so com o tema trocado ---- */
+.stp.th-step .body{ display:flex; flex-direction:column; justify-content:center }
+.stp.th-step .opt{ gap:14px } .stp.th-step .opt .o{ width:112px }
+.stp.th-step .opt .o .pv{ height:230px; border-radius:18px; overflow:hidden }
+.stp.th-step .opt .o .lb{ font-size:12px; margin-top:9px; color:var(--label-primary) }
+.th-mock{ background:transparent }
+.th-face{ position:absolute; inset:0; background:#F2F2F7 }
+.th-face.dark{ background:#000 }
+.th-half{ position:absolute; top:0; bottom:0; left:50%; right:0; overflow:hidden }   /* metade direita, sem clip-path */
+/* 200 % da metade = a largura toda do preview, ancorada à DIREITA.
+   `left:auto` é obrigatório: o `.th-face` base tem `inset:0`, e com left+right+width definidos o `left` ganha
+   - era isso que empurrava a metade escura para fora do cartão. */
+.th-half .th-face{ position:absolute; top:0; bottom:0; left:auto; right:0; width:200%; height:100% }
+.th-face .th-sb{ position:absolute; top:9px; left:50%; transform:translateX(-50%); width:32px; height:9px; border-radius:5px; background:#000 }
+.th-face.dark .th-sb{ box-shadow:0 0 0 .5px rgba(255,255,255,.22) }
+.th-face .th-list{ position:absolute; left:9px; right:9px; top:36px; border-radius:9px; overflow:hidden; background:#fff; box-shadow:0 0 0 .5px rgba(0,0,0,.06) }
+.th-face.dark .th-list{ background:#1C1C1E; box-shadow:none }
+.th-face .th-list i{ display:block; height:22px; border-top:.5px solid rgba(0,0,0,.1); position:relative }
+.th-face.dark .th-list i{ border-top-color:rgba(255,255,255,.1) }
+.th-face .th-list i:first-child{ border-top:none }
+.th-face .th-list i::before{ content:''; position:absolute; left:7px; top:7px; width:8px; height:8px; border-radius:2.5px; background:#0A84FF }
+.th-face .th-list i:nth-child(2)::before{ background:#34C759 } .th-face .th-list i:nth-child(3)::before{ background:#FF9500 }
+.th-face .th-list i::after{ content:''; position:absolute; left:21px; top:9px; width:44%; height:4px; border-radius:2px; background:rgba(0,0,0,.26) }
+.th-face.dark .th-list i::after{ background:rgba(255,255,255,.38) }
+.th-face .th-hb{ position:absolute; bottom:7px; left:50%; transform:translateX(-50%); width:44px; height:3.5px; border-radius:2px; background:rgba(0,0,0,.32) }
+.th-face.dark .th-hb{ background:rgba(255,255,255,.42) }
+/* Trocar de tema no próprio ecrã: 300 ms, sem clarão. NÃO se toca na transição do `.stp` (é ela que faz
+   o passo entrar a deslizar) - só nas superfícies lá dentro; o fundo do próprio passo leva
+   `background-color` acrescentado ao shorthand original, mais acima neste ficheiro. */
+.stp .st-card,.stp .group,.stp .li,.stp .st-input,.stp h1,.stp .sub,.stp .group-footer{
+  transition:background-color .3s var(--curve), color .3s var(--curve), box-shadow .3s var(--curve) }
+
+/* ---- Passo "Vera" ---- */
+.stp.vera-step .body{ display:flex; flex-direction:column; justify-content:center; margin-top:14px }
+.stp.vera-step .hero svg{ animation:heroPop .5s var(--spring) both }
+@keyframes heroPop{ from{ opacity:0; transform:scale(.72) } to{ opacity:1; transform:scale(1) } }
+
+/* ---- Ultimo passo "Tudo pronto" ---- */
+.stp.done-step .body{ display:flex; flex-direction:column; justify-content:center; padding-bottom:30px }
+.stp.done-step .hero svg{ color:var(--system-blue); width:50px; height:50px; animation:doneRing .5s var(--spring) both }
+@keyframes doneRing{ from{ opacity:0; transform:scale(.55) } 65%{ opacity:1; transform:scale(1.06) } to{ opacity:1; transform:scale(1) } }
+/* o visto DESENHA-SE (o path do checkCircle; o círculo é um <circle>).
+   O tracejado vive só dentro dos keyframes: se as animações não correrem, o visto fica visível na mesma. */
+.stp.done-step .hero svg path{ animation:doneDraw .42s var(--curve) .2s both }
+@keyframes doneDraw{ from{ stroke-dasharray:14; stroke-dashoffset:14 } to{ stroke-dasharray:14; stroke-dashoffset:0 } }
+.stp.done-step .st-card{ padding:6px 16px }
+
+/* ---- O assistente TRANSFORMA-SE na Home ---- */
+.stp.finishing{ background:transparent; transition:background-color .34s var(--curve) }
+.stp.finishing .hero,.stp.finishing h1,.stp.finishing .sub,.stp.finishing .body,.stp.finishing .foot,.stp.finishing .st-back{
+  opacity:0; transform:scale(.97) translateY(-6px); transition:opacity .3s var(--curve), transform .42s var(--curve) }
+.screen.boot-in #home .pages{ animation:bootPages .58s var(--spring) both }
+.screen.boot-in #home .dock{ animation:bootDock .62s var(--spring) .06s both }
+.screen.boot-in #home .wg{ animation:bootWidget .5s var(--spring) .1s both }
+@keyframes bootPages{ from{ opacity:0; transform:scale(.93) } to{ opacity:1; transform:none } }
+@keyframes bootDock{ from{ opacity:0; transform:translateY(30px) } to{ opacity:1; transform:none } }
+@keyframes bootWidget{ from{ opacity:0; transform:scale(.9) } to{ opacity:1; transform:none } }
+/* ============================================================================
+   CENTRAR SEM PARTIR O SCROLL
+   `.stp .body` tem overflow-y:auto. Num contentor que faz scroll, `justify-content:center`
+   torna o TOPO do conteudo inacessivel assim que ele cresce (comportamento do Chromium/CEF):
+   a lista de 15 idiomas ou um teclado aberto ficariam cortados em cima, sem forma de la chegar.
+   Dois espacadores flexiveis fazem o mesmo efeito visual e encolhem a zero quando falta espaco.
+   ============================================================================ */
+.stp.ap-step .body,.stp.acc-step .body,.stp.sim-step .body,.stp.fidopt-step .body,.stp.av-step .body,
+.stp.wp-step .body,.stp.th-step .body,.stp.vera-step .body,.stp.done-step .body,.stp.lang-step .body{
+  display:flex; flex-direction:column; justify-content:flex-start; min-height:0 }
+.stp.ap-step .body::before,.stp.acc-step .body::before,.stp.sim-step .body::before,.stp.fidopt-step .body::before,
+.stp.av-step .body::before,.stp.wp-step .body::before,.stp.th-step .body::before,.stp.vera-step .body::before,
+.stp.done-step .body::before,.stp.lang-step .body::before,
+.stp.ap-step .body::after,.stp.acc-step .body::after,.stp.sim-step .body::after,.stp.fidopt-step .body::after,
+.stp.av-step .body::after,.stp.wp-step .body::after,.stp.th-step .body::after,.stp.vera-step .body::after,
+.stp.done-step .body::after,.stp.lang-step .body::after{ content:''; display:block; flex:1 1 0; min-height:0 }
+/* o espacador de baixo puxa um pouco mais, para o bloco assentar acima do centro geometrico (centro otico) */
+.stp.ap-step .body::after,.stp.acc-step .body::after,.stp.sim-step .body::after,.stp.fidopt-step .body::after,
+.stp.av-step .body::after,.stp.wp-step .body::after,.stp.th-step .body::after,.stp.vera-step .body::after,
+.stp.done-step .body::after,.stp.lang-step .body::after{ flex-grow:1.3 }
+.stp.ap-step .body::before,.stp.acc-step .body::before,.stp.sim-step .body::before,.stp.fidopt-step .body::before,
+.stp.av-step .body::before,.stp.wp-step .body::before,.stp.th-step .body::before,.stp.vera-step .body::before,
+.stp.done-step .body::before,.stp.lang-step .body::before{ flex-grow:.7 }
+
+/* ============================================================================
+   PASSO "IDIOMA"
+   Cartao de idiomas com linhas de 48 px, separadores quase invisiveis e SEM linha de regiao:
+   a lista de idiomas do PearOS e de uma so linha (a regiao escolhe-se noutro ecra), e era a segunda
+   linha espremida que fazia isto parecer uma tabela HTML.
+   ============================================================================ */
+.stp.lang-step .hero{ margin-top:0 } .stp.lang-step .hero svg{ width:88px; height:88px }   /* globo 5-10 % mais pequeno */
+.stp.lang-step h1{ margin-top:26px }
+.stp.lang-step .body{ margin-top:26px; padding:18px 4px 26px }   /* padding a condizer com as paradas da mascara de scroll */
+.stp.lang-step .list .group{ max-width:320px }
+.stp.lang-step .li{ min-height:48px; padding:6px 16px; font-size:var(--t-callout); font-weight:400; color:var(--label-primary) }
+.stp.lang-step .li + .li::before{ left:16px; right:16px; background:var(--sep-subtle) }   /* simetrico e tenue */
+.stp.lang-step .li.lang-on .li-label{ color:var(--system-blue); font-weight:600 }
+/* "Mostrar mais idiomas": acao de texto, sem pilula. O chevron encosta-se ao texto. */
+.stp .st-more{ margin:14px auto 0; padding:10px 12px; background:none; border-radius:0; gap:3px;
+  font-size:var(--t-subhead); font-weight:400; color:var(--system-blue); cursor:pointer;
+  transition:opacity .15s var(--curve) }
+.stp .st-more:active{ opacity:.4; transform:none; background:none }
+.stp .st-more svg{ width:12px; height:12px; margin-top:1px; stroke-width:2.6 }
+/* ============================================================================
+   ESCALA DO CABECALHO - correcao 2026-09-09
+   Os 23 px de titulo / 46 px de icone vinham de uma spec de barra de navegacao, nao de um ecra de
+   assistente: ficavam MENORES do que o conteudo por baixo (os digitos do teclado do codigo tem 29 px,
+   as linhas das listas 16-17 px, os previews 176-382 px). O titulo volta a dominar a composicao.
+   ============================================================================ */
+.stp .hero svg{ width:60px; height:60px }
+.stp h1{ font-size:var(--t-title1); font-weight:600; letter-spacing:-.55px; margin-top:20px }   /* 28 px */
+.stp .sub{ font-size:var(--t-subhead); line-height:1.42; max-width:312px; margin-top:8px }      /* 15 px */
+.stp .st-back{ font-size:16px } .stp .st-back svg{ width:20px; height:20px }
+.stp .list .group-footer{ font-size:13px; max-width:312px }
+/* ecras com icone proprio: mantem-se a hierarquia (o globo continua a ser o maior) */
+.stp.lang-step .hero svg{ width:84px; height:84px }
+.stp.done-step .hero svg{ width:62px; height:62px }
+/* o subtitulo do Face Key muda de texto entre leituras: 2 linhas reservadas para o anel nao saltar */
+.stp.fid-step .sub{ min-height:44px }
+/* ============================================================================
+   ESCALA DEFINITIVA DO ASSISTENTE - 2026-09-09 (3.ª tentativa, com capturas do JOGO)
+   No jogo o aparelho e desenhado a ~60 % (--scale), por isso a spec de 22-24 px de titulo /
+   13 px de legenda / 46 px de icone dava 14 px / 8 px / 28 px no ecra do jogador: ilegivel, e
+   com o conteudo pequeno sobrava metade do ecra vazio. Sobe TUDO - cabecalho e conteudo - para
+   a composicao encher o telemovel como num PearPhone a serio.
+   ============================================================================ */
+.stp .hero svg{ width:76px; height:76px }
+.stp h1{ font-size:var(--t-large); font-weight:700; letter-spacing:-.7px; margin-top:18px }   /* 34 px */
+.stp .sub{ font-size:var(--t-body); line-height:1.38; max-width:344px; margin-top:9px }       /* 17 px */
+.stp .st-back{ font-size:var(--t-body) } .stp .st-back svg{ width:22px; height:22px }
+.stp .list .group-footer{ font-size:14px; max-width:330px }
+.stp.lang-step .hero svg{ width:96px; height:96px }
+.stp.done-step .hero svg{ width:80px; height:80px }
+.stp.fid-step .sub{ min-height:48px }
+/* o bloco de conteudo sobe: menos ar entre a legenda e ele, mais em baixo (junto ao botao) */
+.stp.ap-step .body::before,.stp.acc-step .body::before,.stp.sim-step .body::before,.stp.fidopt-step .body::before,
+.stp.av-step .body::before,.stp.wp-step .body::before,.stp.th-step .body::before,.stp.vera-step .body::before,
+.stp.done-step .body::before,.stp.lang-step .body::before{ flex-grow:.45 }
+.stp.ap-step .body::after,.stp.acc-step .body::after,.stp.sim-step .body::after,.stp.fidopt-step .body::after,
+.stp.av-step .body::after,.stp.wp-step .body::after,.stp.th-step .body::after,.stp.vera-step .body::after,
+.stp.done-step .body::after,.stp.lang-step .body::after{ flex-grow:1.55 }
+
+/* ---- conteudo de cada passo, a mesma subida ---- */
+/* Idioma */
+.stp.lang-step .list .group{ max-width:344px }
+.stp.lang-step .li{ min-height:54px; font-size:var(--t-body); padding:7px 18px }
+.stp.lang-step .li + .li::before{ left:18px; right:18px }
+.stp .st-more{ font-size:var(--t-body); gap:4px } .stp .st-more svg{ width:14px; height:14px }
+/* Criar conta */
+.st-field{ max-width:344px }
+.stp .st-input{ height:56px; font-size:19px; border-radius:13px }
+.st-field .st-at{ left:17px; font-size:19px } .st-field .st-input{ padding:0 44px 0 36px }
+.st-clear{ right:13px; width:30px; height:30px } .st-clear svg{ width:21px; height:21px }
+.stp .st-err{ font-size:14px; min-height:22px; margin-top:12px }
+/* Numero de telefone */
+.stp .st-card{ max-width:344px; padding:6px 20px }
+.stp .st-card.sim{ padding:22px 20px 6px }
+.stp .sim-chip{ width:46px; height:35px; border-radius:7px; margin:0 0 16px }
+.stp .sim-chip::before{ inset:7px 10px }
+.stp .sim-num{ font-size:27px; letter-spacing:.6px; margin-bottom:18px }
+.stp .sim-row{ padding:13px 0; gap:4px }
+.stp .sim-row span{ font-size:11px; letter-spacing:.7px }
+.stp .sim-row b{ font-size:var(--t-body); font-weight:600 }
+/* Criar codigo */
+.stp .pin-dots{ margin:38px 0 2px; gap:26px } .stp .pin-dots.six{ gap:23px }
+.stp .pin-dots .dot{ width:15px; height:15px; box-shadow:inset 0 0 0 1.6px var(--label-tertiary) }
+.stp .pin-dots.six .dot{ width:14px; height:14px }
+.stp .keypad{ grid-template-columns:repeat(3,74px); grid-auto-rows:74px; gap:20px 26px; width:274px; margin:26px auto 0 }
+.stp .keypad .key{ width:74px; height:74px }
+.stp .keypad .key .num{ font-size:34px } .stp .keypad .key .abc{ font-size:10px; letter-spacing:1.6px }
+/* Face Key: escolha */
+.stp .opt.fid{ gap:16px } .stp .opt.fid .o{ width:166px; border-radius:19px; padding:13px 13px 16px }
+.stp .opt.fid .o .pv{ height:206px; border-radius:14px }
+.stp .opt.fid .o .lb{ font-size:16px; margin-top:12px } .stp .opt.fid .o .lb2{ font-size:13px; min-height:34px }
+.stp .opt.fid .fid-glyph svg{ width:60px; height:60px }
+.stp .opt.fid .fid-keys{ grid-template-columns:repeat(3,25px); gap:12px } .stp .opt.fid .fid-keys i{ width:25px; height:25px }
+.stp .opt.fid .fid-dots i{ width:11px; height:11px }
+.stp .opt.fid .o .pv::after{ right:8px; bottom:8px; width:24px; height:24px; background-size:14px }
+/* Configurar o Face Key */
+.fid-enroll{ width:252px; height:252px }
+.fid-ticks i{ width:2.9px; height:16px; margin:-8px 0 0 -1.45px }
+.fid-frame{ width:164px; height:164px; margin:-82px 0 0 -82px }
+.fid-frame .fid-glyph svg{ width:76px; height:76px } .fid-check svg{ width:74px; height:74px }
+/* Aparencia */
+.ap-mock{ width:198px; height:430px; border-radius:26px }
+.ap-isl{ top:9px; width:56px; height:17px }
+.ap-clock{ top:50px; font-size:calc(38px * var(--k)) }
+.ap-n{ left:12px; right:12px; height:calc(30px * var(--k)) }
+.ap-n.n1{ bottom:calc(68px + 38px * var(--k)) } .ap-n.n2{ bottom:68px }
+.ap-btn{ bottom:22px; width:calc(29px * var(--k)); height:calc(29px * var(--k)) }
+.ap-btn.l{ left:19px } .ap-btn.r{ right:19px }
+.ap-hb{ bottom:8px; width:64px; height:4px }
+.ap-opts{ max-width:330px; margin-top:30px }
+.ap-opt{ gap:11px; font-size:15px }
+.ap-opt .check{ width:26px; height:26px } .ap-opt .check svg{ width:15px; height:15px }
+/* Avatar */
+.av-preview .avatar{ width:88px; height:88px; font-size:33px }
+.av-preview .nm{ font-size:18px; margin-top:18px } .av-preview .hn{ font-size:14px }
+.stp .avatars{ grid-template-columns:repeat(6,48px); gap:16px 14px; margin-top:30px }
+.stp .avatars .av{ width:48px; height:48px } .stp .avatars .av svg{ width:19px; height:19px }
+.av-later{ font-size:13px; max-width:330px; margin-top:28px }
+/* Claro/escuro (a Imagem de fundo passou a carrossel - regras acima, .wp-car) */
+/* três colunas TÊM de caber em 440 − 2×28 = 384 px: 3×118 + 2×14 = 382 (com 122+16 passava para 398 e quebrava linha) */
+.stp.th-step .opt{ gap:14px; flex-wrap:nowrap }
+.stp.th-step .opt .o{ width:118px }
+.stp.th-step .opt .o .pv{ height:252px; border-radius:20px }
+.stp.th-step .opt .o .lb{ font-size:13px; margin-top:10px }
+.th-face .th-sb{ top:10px; width:36px; height:10px }
+.th-face .th-list{ left:10px; right:10px; top:40px; border-radius:10px }
+.th-face .th-list i{ height:25px }
+.th-face .th-hb{ bottom:8px; width:48px; height:4px }
+/* Tudo pronto */
+.stp.done-step .st-card{ padding:8px 20px }
+/* ============================================================
+   FACE ID A SÉRIO - a cara AO VIVO DENTRO do telemóvel (js/shell/faceid.js)
+   O círculo do meio (.fid-frame) leva uma <canvas> WebGL com a vista do jogo lá dentro
+   (js/gamerender.js). Como a câmara scriptada do client/camera.lua já está presa à cara do
+   personagem, é a cara que aparece ali - e o aparelho NUNCA sai da frente.
+   ⚠️ Nada de backdrop-filter: o CEF do FiveM compõe-no a preto opaco.
+   ============================================================ */
+.fid-ring{ display:none }
+.fid-gl{ display:none }
+/* `.fid-live` só é posta quando o visor arranca MESMO (no browser não arranca: fica o glifo a
+   respirar e o anel enche-se pelo relógio). */
+.fid-enroll.fid-live .fid-gl{ display:block; position:absolute; inset:0; z-index:0;
+  width:100%; height:100%; border-radius:50%; object-fit:cover }
+.fid-enroll.fid-live .fid-frame{ background:#000 }
+.fid-enroll.fid-live .fid-glyph{ opacity:0 }                                  /* vê-se a cara, não o desenho */
+/* o anel e o visto são irmãos POSICIONADOS do canvas: sem z-index ficavam por baixo dele */
+.fid-enroll.fid-live .fid-ring{ display:block; position:absolute; inset:0; z-index:1; border-radius:50%;
+  pointer-events:none; box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.34) }
+.fid-enroll.fid-live .fid-check{ z-index:2 }
+.fid-enroll.fid-live.ok .fid-ring{ box-shadow:inset 0 0 0 2px var(--system-green,#34C759) }
+.fid-enroll.fid-live.ok .fid-check{ opacity:1; transform:scale(1) }
+
+/* miniatura da cara guardada (assistente, Definições, ilha, ecrã bloqueado) */
+.fid-shot{ width:34px; height:34px; border-radius:50%; background-size:cover; background-position:center; flex:none; margin-left:auto; margin-right:10px;
+  box-shadow:0 0 0 1.5px rgba(255,255,255,.5), 0 2px 6px rgba(0,0,0,.25) }
+.li .fid-shot{ margin-right:2px }
+.isl-face{ display:block; width:22px; height:22px; border-radius:50%; background-size:cover; background-position:center; box-shadow:0 0 0 1.5px rgba(255,255,255,.55) }
+.lf-shot{ display:block; width:20px; height:20px; border-radius:50%; background-size:cover; background-position:center; box-shadow:0 0 0 1.5px rgba(255,255,255,.6) }
+
+/* ---------- Inscrição em painel (Definições › Face Key e código › Configurar) ----------
+   "Inteiro" é o ecrã DO TELEMÓVEL: o painel vive dentro do aparelho, nunca por cima do jogo. */
+.fid-modal{ position:absolute; inset:0; z-index:340; background:var(--bg); color:var(--label);
+  display:flex; flex-direction:column; padding:calc(var(--statusbar-h) + 34px) 28px calc(var(--safe-bottom) + 18px);
+  opacity:0; transform:scale(1.04); transition:opacity .28s var(--ease), transform .32s var(--ease) }
+.fid-modal.in{ opacity:1; transform:none }
+.fid-modal .fid-head{ text-align:center; flex:none }
+.fid-modal .fid-head h2{ font-size:var(--t-title2,26px); font-weight:700; letter-spacing:-.4px }
+.fid-modal .fid-head .sub{ color:var(--label2); font-size:var(--t-body); margin-top:8px; line-height:1.4; min-height:44px }
+.fid-modal .fid-body{ flex:1; display:flex; align-items:center; justify-content:center; overflow:visible }
+.fid-modal .fid-foot{ flex:none; display:flex; flex-direction:column; gap:10px }
+.fid-modal .btn-p.dim{ opacity:.45; pointer-events:none }
+
+/* ---------- Câmara nativa: ecrã de cortesia (o telemóvel está fora do ecrã enquanto ela corre) ---------- */
+.cam-native{ position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px;
+  background:#000; color:#fff; text-align:center; padding:0 32px }
+.cn-icon{ opacity:.9; margin-bottom:6px } .cn-icon svg{ width:46px; height:46px }
+.cn-t{ font-size:20px; font-weight:700; letter-spacing:-.3px; margin-bottom:6px }
+.cn-k{ font-size:14px; color:rgba(255,255,255,.72) } .cn-k b{ color:#fff; font-weight:600 }
+
+/* ---------- Anel do Face Key: mais suave e com o traço "atual" em destaque ----------
+   O traço "atual" era BRANCO (o anel vivia por cima do jogo); dentro do telemóvel, com o tema
+   claro, branco sobre branco não se via - passa a azul do sistema, que lê nos dois temas. */
+.fid-ticks i{ transition:background .22s var(--ease), box-shadow .22s var(--ease), opacity .22s var(--ease) }
+.fid-enroll .fid-ticks i.now{ background:var(--system-blue,#0A84FF); box-shadow:0 0 9px rgba(10,132,255,.75) }
+.fid-enroll.fid-live .fid-frame{ transition:box-shadow .3s var(--ease) }
+
+/* ============================================================
+   PAINEL DA CÂMARA (ecrã inteiro, no tema do telemóvel)
+   Vive fora de `.stage`: não apanha o zoom do aparelho nem o body.shot que o esconde.
+   Sem cursor - só informa. Nada de backdrop-filter (o CEF do FiveM compõe-no a preto).
+   ============================================================ */
+.cam-hud{ position:fixed; inset:0; z-index:9998; pointer-events:none; font-family:inherit; color:#fff;
+  opacity:1; transition:opacity .18s var(--ease) }
+.cam-hud.off{ opacity:0 }
+.cam-hud .ch-flash{ position:absolute; inset:0; background:#fff; opacity:0 }
+.cam-hud .ch-flash.go{ animation:chFlash .42s ease-out }
+@keyframes chFlash{ 0%{ opacity:.85 } 100%{ opacity:0 } }
+.ch-top{ position:absolute; top:26px; left:50%; transform:translateX(-50%); display:flex; align-items:center; gap:9px;
+  background:rgba(0,0,0,.55); border:1px solid rgba(255,255,255,.16); border-radius:999px; padding:8px 18px 8px 14px;
+  font-size:15px; font-weight:600; letter-spacing:.2px }
+.ch-rec{ width:8px; height:8px; border-radius:50%; background:#FF453A; box-shadow:0 0 8px rgba(255,69,58,.8); animation:chPulse 1.8s ease-in-out infinite }
+@keyframes chPulse{ 0%,100%{ opacity:1 } 50%{ opacity:.35 } }
+.ch-bar{ position:absolute; left:0; right:0; bottom:34px; display:flex; align-items:center; justify-content:center; gap:22px }
+.ch-thumb{ width:54px; height:54px; border-radius:12px; background:rgba(255,255,255,.10); background-size:cover; background-position:center;
+  border:1.5px solid rgba(255,255,255,.45); opacity:0; transition:opacity .3s var(--ease), transform .4s var(--spring) }
+.ch-thumb.on{ opacity:1 }
+.ch-keys{ display:flex; align-items:center; gap:10px;
+  background:rgba(0,0,0,.55); border:1px solid rgba(255,255,255,.16); border-radius:18px; padding:10px 14px }
+.ch-key{ display:flex; align-items:center; gap:8px; padding:0 8px; font-size:14px; color:rgba(255,255,255,.82) }
+.ch-key + .ch-key{ border-left:1px solid rgba(255,255,255,.14) }
+.ch-key b{ display:inline-flex; align-items:center; justify-content:center; min-width:26px; height:24px; padding:0 8px;
+  border-radius:7px; background:rgba(255,255,255,.92); color:#111; font-size:12.5px; font-weight:700; letter-spacing:.2px }
+.ch-toast{ position:absolute; left:50%; bottom:112px; transform:translateX(-50%) translateY(8px);
+  background:rgba(0,0,0,.62); border:1px solid rgba(255,255,255,.16); border-radius:999px; padding:9px 20px;
+  font-size:14.5px; font-weight:600; opacity:0; transition:opacity .25s var(--ease), transform .35s var(--spring) }
+.ch-toast.in{ opacity:1; transform:translateX(-50%) translateY(0) }
+.ch-toast.bad{ background:rgba(180,30,25,.72); border-color:rgba(255,120,110,.4) }
+
+/* ============================================================
+   FACE ID - NÃO EXISTE MODO A ECRÃ INTEIRO
+   Houve aqui um bloco `.fid-full` que punha o anel por cima do jogo e escondia o aparelho
+   (`body.fid-open .stage{opacity:0}`). Foi REJEITADO: o telemóvel tem de ficar sempre à direita,
+   à vista. A cara passou a entrar no círculo do anel por WebGL (ver o bloco "FACE ID A SÉRIO"),
+   por isso nada disto é preciso - e não deve voltar.
+   ============================================================ */
+
+/* hideUI (o Lua manda-o mesmo antes de disparar) tem de apagar TAMBÉM os overlays a ecrã inteiro:
+   vivem fora de `.stage`, por isso o painel da câmara entraria na fotografia */
+body.shot .cam-hud{ opacity:0!important; transition:none }
+/* ===================== N2 (2026-09-15): widgets 4×4, animações de widget, pesquisa global, widgets externos ===================== */
+/* widget GRANDE 4×4: a mesma largura do 4×2 e a altura de quatro linhas da grelha (2 × --row-step + a altura do 2×2) */
+.hi.widget.w4x4{ width:var(--grid-w) }
+.hi.widget.w4x4 .wg{ height:calc(var(--row-step) * 2 + var(--icon) * 2 + var(--gap-x)) }
+/* entrar / sair (adicionar, remover, redimensionar): só transform e opacity. Especificidade acima de `#home.in.settled .hi` (que tira as animações) */
+#home .hi.widget.born{ animation:wBorn .5s var(--spring) both }
+#home .hi.widget.dying{ animation:wDie .22s var(--ease) forwards; pointer-events:none }
+@keyframes wBorn{ from{ opacity:0; transform:scale(.72) } to{ opacity:1; transform:none } }
+@keyframes wDie{ from{ opacity:1; transform:none } to{ opacity:0; transform:scale(.72) } }
+
+/* ---------- pesquisa global (home.js: puxar para baixo nas páginas) ----------
+   Camada de ecrã inteiro (raio 57): segue o dedo por opacity + transform do conteúdo (.gs-in). Escondida fica visibility:hidden
+   (atraso igual à saída) para não ser composta nem apanhar toques. */
+.gsearch{ position:absolute; inset:0; z-index:46; border-radius:57px; overflow:hidden; color:#fff; background:rgba(0,0,0,.34); backdrop-filter:blur(30px); -webkit-backdrop-filter:blur(30px);
+  opacity:0; visibility:hidden; pointer-events:none; transition:opacity .26s var(--ease), visibility 0s linear .26s }
+.gsearch.in,.gsearch.pulling{ visibility:visible; transition:opacity .26s var(--ease), visibility 0s }
+.gsearch.in{ opacity:1; pointer-events:auto }
+.gsearch.pulling,.gsearch.gs-instant{ transition:none }
+.gsearch .gs-in{ position:absolute; inset:0; display:flex; flex-direction:column; transform:translateY(-40px); transition:transform .45s var(--spring) }
+.gsearch.in .gs-in{ transform:none }
+.gsearch.pulling .gs-in,.gsearch.gs-instant .gs-in{ transition:none }
+.gsearch .gs-bar{ display:flex; align-items:center; gap:4px; padding:calc(var(--statusbar-h) + 14px) 22px 10px; flex:none }
+.gsearch .search{ margin:0; flex:1; height:46px; border-radius:23px; padding:0 16px; gap:10px; background:rgba(255,255,255,.22); border:.5px solid rgba(255,255,255,.3); color:#fff; font-size:var(--t-headline) }
+.gsearch .search svg{ width:22px; height:22px } .gsearch .search input{ color:#fff; font-size:var(--t-headline); width:0 } .gsearch .search input::placeholder{ color:rgba(255,255,255,.75) }   /* input width:0 + .search min-width:0: com texto escrito o X aparecia e o "Cancelar" era empurrado para fora do ecrã (a largura natural do input não encolhia) */ .gsearch .search{ min-width:0 }
+.gsearch .gs-cancel{ flex:none; padding:0 4px 0 12px; font-size:var(--t-body); color:#fff; cursor:pointer; text-shadow:0 1px 4px rgba(0,0,0,.3) } .gsearch .gs-cancel:active{ opacity:.5 }
+.gsearch .gs-res{ flex:1; min-height:0; overflow-y:auto; scrollbar-width:none; padding-bottom:120px } .gsearch .gs-res::-webkit-scrollbar{ display:none }
+.gsearch .group{ background:rgba(255,255,255,.14) } .gsearch .li{ color:#fff } .gsearch .li-sub{ color:rgba(255,255,255,.62) } .gsearch .group-header{ color:rgba(255,255,255,.72) }
+.gsearch .lib-empty{ text-align:center; padding:60px 20px; color:rgba(255,255,255,.7); font-size:var(--t-title3); font-weight:600 }
+.gsearch .gs-hint{ padding:28px 30px; font-size:var(--t-subhead); font-weight:500 }
+.gsearch .gs-sect .group-header{ padding-left:22px }
+.gsearch .gs-apps{ display:grid; grid-template-columns:repeat(4,1fr); gap:16px 0; padding:6px 14px 8px; justify-items:center }
+.gsearch .gs-app{ display:flex; flex-direction:column; align-items:center; gap:5px; width:80px; cursor:pointer }
+.gsearch .gs-app .tile{ width:var(--icon); height:var(--icon) } .gsearch .gs-app:active .tile{ transform:scale(.9) }
+.gsearch .gs-app span{ font-size:12px; font-weight:500; max-width:80px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; text-shadow:0 1px 3px rgba(0,0,0,.45) }
+/* NO JOGO: sem backdrop-filter (cunhas pretas no CEF) - por baixo, a cópia PRÉ-DESFOCADA do fundo + tinta, só enquanto está visível (padrão do motion.css) */
+body.fivem .gsearch{ backdrop-filter:none; -webkit-backdrop-filter:none; background:transparent }
+body.fivem .gsearch.in::before,body.fivem .gsearch.pulling::before{ content:''; position:absolute; inset:0; z-index:-1; pointer-events:none; border-radius:57px;
+  background:linear-gradient(rgba(0,0,0,.42),rgba(0,0,0,.42)), var(--wp-blur,var(--wp,#1C1C1E)) center/cover no-repeat }
+body.fivem .gsearch .search{ backdrop-filter:none!important; -webkit-backdrop-filter:none!important }
+
+/* ---------- widgets EXTERNOS por template (widgets.js: stat / list / progress / text, tudo em textContent) ---------- */
+.wg.ext{ color:inherit }
+.wx-tpl{ display:flex; flex-direction:column; gap:4px; height:100%; min-height:0; position:relative }
+.wx-tpl .wb{ margin-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+.wx-tpl .wx-ic{ position:absolute; right:0; top:0; width:28px; height:28px; opacity:.8 } .wx-tpl .wx-ic svg{ width:28px; height:28px }
+.wx-list{ display:flex; flex-direction:column; gap:6px; margin-top:6px; min-height:0; overflow:hidden }
+.wx-row{ display:flex; align-items:center; gap:8px; font-size:13px; line-height:16px } .wx-row .wx-tx{ flex:1; min-width:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis } .wx-row .wx-rt{ flex:none; opacity:.65; font-variant-numeric:tabular-nums }
+.wx-bar{ position:relative; height:8px; border-radius:4px; background:rgba(127,127,127,.25); overflow:hidden; margin-top:auto }
+.wx-bar i{ position:absolute; inset:0; border-radius:4px; background:var(--blue); transform-origin:0 50%; transform:scaleX(0) }
+.wx-text{ font-size:14px; line-height:1.35; overflow:hidden; display:-webkit-box; -webkit-line-clamp:6; -webkit-box-orient:vertical; margin-top:4px }
+.hi.widget.w4x4 .wx-text{ -webkit-line-clamp:16 }
+
+/* ============================================================
+   DOBRÁVEIS: ECRÃ PRINCIPAL (2026-10-02, referências 13 e 14 do dono)
+   A disposição é a da conta (4 × 6 por página). FECHADO vê-se uma página; ABERTO duas lado a lado (a atual à esquerda, a
+   seguinte à direita), cada uma com metade da zona de conteúdo. As medidas da grelha vêm TODAS do home.js (geo), escritas no
+   #home: --icon (célula), --gap-x, --row-step, --grid-w, --page-w, --hm-top, --hm-x0, --hm-cwid (largura da zona de conteúdo),
+   --hm-sw (ecrã), --hm-dots-y, --hm-dgap. Nos telemóveis normais nada disto existe: o #home não leva nada inline.
+   PearPhone Fold (PearOS): a dock está na BARRA DIREITA (system.js Rail adota o .dock) e a zona de conteúdo acaba nela
+   (--rail-w): a janela das páginas (.pgv) corta ali. NOVA (Android): oneui-home.css.
+   Regras do CEF: nada de backdrop-filter nem filter novos, sem color-mix, sem :has(); só transform/opacity animam.
+   ============================================================ */
+.pgv{ position:absolute; inset:0 }   /* a janela das páginas: no telemóvel ocupa o #home e não corta nada */
+#home .ah-fs{ display:none }   /* pílula de pesquisa: só no NOVA dobrável */
+/* abrir/fechar: os ícones mudam de sítio de uma vez (home.js relayout), sem deslizar */
+#home.hm-snap .hi,#home.hm-snap .pages,#home.hm-snap .page-dots,#home.hm-snap .page{ transition:none!important }
+/* a grelha começa onde o home.js diz; as etiquetas podem ser tão largas como a célula mais o intervalo */
+body.form-fold #home.hm-fold .pages{ top:var(--hm-top) }
+body.form-fold #home.hm-fold .app-name{ max-width:calc(var(--icon) + var(--gap-x) - 10px) }
+/* pasta fechada: os mini-ícones crescem com o ícone (a caixa de 3 × 18 ficava pequena no ícone de 84) */
+body.os-ios.form-fold #home.hm-fold .hi.folder .tile{ grid-template-columns:repeat(3,20px); grid-auto-rows:20px; gap:5px; padding:7px; align-content:center }
+body.os-ios.form-fold #home.hm-fold .hi.folder .tile .mini{ width:20px; height:20px; border-radius:5.5px }
+/* widgets: a caixa cresce com a grelha (2 × 84 + 39) e o conteúdo cresce com ela por `zoom` (nítido no CEF; nunca scale), com o
+   mesmo desenho do telemóvel: dentro do widget mede-se como no 440 (largura / 1,21) */
+body.os-ios.form-fold #home.hm-fold .hi.widget .wg{ zoom:1.21; height:calc((var(--icon) * 2 + var(--gap-x)) / 1.21) }
+body.os-ios.form-fold #home.hm-fold .hi.widget.w4x4 .wg{ height:calc((var(--row-step) * 2 + var(--icon) * 2 + var(--gap-x)) / 1.21) }
+/* Duo (2026-10-03): cantos dos widgets 38 (31 × 1,21); etiquetas 17 px semibold com sombra suave (o Duo usa 19; 17 é o teto para
+   os nomes em pt-PT caberem nos 113 da etiqueta) */
+body.os-ios.form-fold #home.hm-fold .hi.widget .wg{ border-radius:31px }
+body.os-ios.form-fold #home.hm-fold .app-name{ margin-top:6px; font-size:17px; line-height:20px; height:20px; font-weight:600; letter-spacing:-.2px; text-shadow:0 2px 5px rgba(0,0,0,.4) }
+
+/* ---------- PearPhone Fold: zona de conteúdo à esquerda da barra direita ---------- */
+body.os-ios.form-fold #home .pgv{ right:var(--rail-w); overflow:hidden }
+body.os-ios.form-fold #home .page-dots{ top:var(--hm-dots-y); left:calc(var(--hm-cwid) / 2) }
+/* pontos do Duo: sem cápsula, círculos de 10 com 12 entre eles, em repouso a .35, o atual branco e um pouco maior; a Biblioteca
+   de Apps (à direita do último ecrã) fica um glifo simples de 10. Fechado o centro fica a 42 do fundo; aberto, por baixo da
+   última fila (referência 14) */
+body.os-ios.form-fold #home .page-dots{ gap:12px; padding:0; border-radius:0; background:none; opacity:1 }
+body.os-ios.form-fold.fold-closed #home .page-dots{ top:904px }
+body.os-ios.form-fold.fold-open #home .page-dots{ top:calc(var(--hm-dots-y) + 10px) }
+body.os-ios.form-fold #home .page-dots span{ width:10px; height:10px; background:rgba(255,255,255,.35); transition:background-color .2s, transform .25s var(--spring) }
+body.os-ios.form-fold #home .page-dots span.on{ background:#fff; transform:scale(1.15) }
+body.os-ios.form-fold #home .page-dots span.lib{ width:10px; height:10px; margin:0; background:none; color:rgba(255,255,255,.35); justify-content:center }
+body.os-ios.form-fold #home .page-dots span.lib.on{ background:none; color:#fff }
+body.os-ios.form-fold #home .page-dots span.lib svg{ width:10px; height:10px }
+/* edição: "+ Widget" e "Concluído" no topo da zona de conteúdo (sem barra de estado em cima, a grelha começa mais acima) */
+body.os-ios.form-fold #home .edit-bar{ top:14px; right:var(--rail-w); padding:0 22px }
+body.os-ios.form-fold #screen[data-wp-tone="light"] #home .edit-bar .addw{ color:#000; box-shadow:inset 0 0 0 .5px rgba(0,0,0,.12),var(--lg-drop) }   /* fundo claro: o "+ Widget" branco sumia */
+/* largar na dock da barra: o aro acende (o vidro e a sombra ficam os da barra) */
+body.os-ios.form-fold #home .rl-dock.over{ --rl-tint:rgba(255,255,255,.56); box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.9),inset 0 1px 0 var(--rl-spec),var(--rl-drop) }
+body.os-ios.form-fold #home .rl-dock:empty{ min-height:96px }   /* dock sem apps: fica um lugar redondo onde largar */
+/* camadas da home a ecrã inteiro (pasta, Biblioteca, pesquisa): a pilha de estado da barra fica por cima delas, a branco */
+body.os-ios.form-fold #screen.hm-dim .rail[data-st="home"]{ --rl-fg:#fff; --rl-tint:rgba(255,255,255,.16); --rl-rim:rgba(255,255,255,.24); --rl-spec:rgba(255,255,255,.3) }
+/* pasta aberta: o escurecido cobre o ecrã todo, a caixa fica ao centro da zona de conteúdo e cresce com o ícone */
+body.os-ios.form-fold #home .folder-overlay{ padding-right:var(--rail-w) }
+body.os-ios.form-fold #home .folder-name{ margin-top:132px; font-size:35px; font-weight:600 }   /* Duo: title3 semibold */
+body.os-ios.form-fold #home .folder-box{ width:calc(var(--icon) * 3 + 150px); min-height:calc(var(--icon) * 3 + 150px); padding:32px; row-gap:28px; border-radius:38px }
+/* Biblioteca de Apps (mais um ecrã à direita do último): o fundo cobre o ecrã, o conteúdo fica na zona de conteúdo. Fechado
+   2 colunas de quadrados, aberto 4; os ícones dos quadrados com o tamanho dos da home */
+body.os-ios.form-fold #home .spot .spot-bar{ padding-left:calc(50% - var(--rail-w) / 2 - 260px); padding-right:calc(50% + var(--rail-w) / 2 - 260px) }
+body.os-ios.form-fold #home .spot .res{ padding-right:var(--rail-w) }
+body.os-ios.form-fold #home .spot .lib{ grid-template-columns:repeat(2,1fr); gap:24px 22px; padding:8px 26px 150px }
+body.os-ios.form-fold.fold-open #home .spot .lib{ grid-template-columns:repeat(4,1fr); gap:28px 26px; padding:8px 48px 150px }
+body.os-ios.form-fold #home .spot .lib-tile{ padding:22px; gap:16px; border-radius:46px }
+body.os-ios.form-fold #home .spot .lib-tile .hi{ width:var(--icon) }
+body.os-ios.form-fold #home .spot .lib-tile .hi .tile{ width:var(--icon); height:var(--icon) }
+body.os-ios.form-fold #home .spot .lib-mini{ width:var(--icon); height:var(--icon); border-radius:20px; padding:9px; gap:6px }
+body.os-ios.form-fold #home .spot .lib-lb{ font-size:14px }
+/* pesquisa (Spotlight, o botão redondo da barra ou puxar para baixo): coluna de 520 ao centro da zona de conteúdo */
+body.os-ios.form-fold #home .gsearch .gs-bar{ padding-left:calc(50% - var(--rail-w) / 2 - 260px); padding-right:calc(50% + var(--rail-w) / 2 - 260px) }
+body.os-ios.form-fold #home .gsearch .gs-res{ padding-right:var(--rail-w) }
+
+/* =========================== VISTA HOJE (home.js tdv*, widgets.js) ===========================
+   A página SÓ DE WIDGETS à esquerda da 1.a página, nos dois sistemas (o aspeto da Nova UI está no oneui-widgets.css). Camada
+   por cima das páginas e da dock e abaixo da Biblioteca (45) e da pesquisa (46). Fundo = cópia PRÉ-DESFOCADA do wallpaper
+   (--wp-blur, System.makeBlur) com tinta escura, nunca backdrop-filter; só opacity e transform animam. Os widgets são os
+   mesmos .hi.widget do ecrã principal (as medidas vêm das mesmas variáveis do #home), postos numa grelha em vez de --x/--y. */
+.tdv{ position:absolute; inset:0; z-index:43; visibility:hidden; pointer-events:none; overflow:hidden; border-radius:var(--scr-r,57px); color:#fff; transition:visibility 0s .5s }
+.tdv.in,.tdv.drag{ visibility:visible; transition:none }
+.tdv.in{ pointer-events:auto }
+.tdv-bg{ position:absolute; inset:0; opacity:0; pointer-events:none; transition:opacity .42s var(--ease);
+  background:linear-gradient(rgba(0,0,0,.28),rgba(0,0,0,.28)), var(--wp-blur,var(--wp,#1C1C1E)) center/cover no-repeat }
+.tdv.in .tdv-bg{ opacity:1 }
+.tdv-sc{ position:absolute; inset:0; overflow-x:hidden; overflow-y:auto; scrollbar-width:none; transform:translate3d(-100%,0,0); transition:transform .5s var(--spring2,var(--ease)) }
+.tdv-sc::-webkit-scrollbar{ display:none }
+.tdv.in .tdv-sc{ transform:none }
+.tdv.drag .tdv-bg,.tdv.drag .tdv-sc,.tdv.tdv-now,.tdv.tdv-now .tdv-bg,.tdv.tdv-now .tdv-sc{ transition:none }
+.tdv-body{ position:relative; box-sizing:border-box; min-height:100%; padding:calc(var(--statusbar-h) + 2px) 0 132px; display:flex; flex-direction:column; align-items:center;
+  --tdv-cols:2; --tdv-gap:var(--gap-x); --tdv-cw:calc(var(--icon) * 2 + var(--gap-x)); --tdv-gw:calc(var(--tdv-cw) * var(--tdv-cols) + var(--tdv-gap) * (var(--tdv-cols) - 1)) }
+/* pesquisa (abre a mesma pesquisa global do puxar para baixo) */
+.tdv-srch{ box-sizing:border-box; width:min(var(--tdv-gw),560px); height:38px; flex:none; border-radius:19px; padding:0 12px; display:flex; align-items:center; gap:7px; cursor:pointer;
+  background:rgba(255,255,255,.17); box-shadow:inset 0 0 0 .5px rgba(255,255,255,.2); color:rgba(255,255,255,.72); font-size:17px; transition:background-color .2s }
+.tdv-srch:hover{ background:rgba(255,255,255,.23) }
+.tdv-srch svg{ width:18px; height:18px; flex:none } .tdv-srch span{ flex:1; min-width:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis } .tdv-srch i{ display:flex; font-style:normal }
+/* barra da edição (só aparece a manter premido na página): "Adicionar widget" e Concluído, no lugar da pesquisa */
+.tdv-bar{ box-sizing:border-box; width:var(--tdv-gw); height:38px; flex:none; display:none; align-items:center; justify-content:space-between; gap:10px }
+.tdv.tdv-ed .tdv-bar{ display:flex } .tdv.tdv-ed .tdv-srch{ display:none }
+.tdv-add{ height:36px; min-width:0; padding:0 15px 0 11px; border-radius:18px; display:flex; align-items:center; gap:5px; cursor:pointer; background:rgba(255,255,255,.22); box-shadow:inset 0 0 0 .5px rgba(255,255,255,.24);
+  color:#fff; font-size:var(--t-subhead,15px); font-weight:600; white-space:nowrap; transition:background-color .2s }
+.tdv-add span{ overflow:hidden; text-overflow:ellipsis }
+.tdv-add svg{ width:18px; height:18px; flex:none; stroke-width:2.6 } .tdv-add:hover{ background:rgba(255,255,255,.3) }
+.tdv-done{ height:36px; padding:0 17px; border-radius:18px; display:flex; align-items:center; cursor:pointer; background:#fff; color:#000; font-size:var(--t-subhead,15px); font-weight:600; transition:background-color .2s }
+.tdv-done:hover{ background:#E9E9EE }
+.tdv-add:active,.tdv-done:active,.tdv-srch:active{ opacity:.6 }
+/* grelha: colunas do tamanho de um widget 2x2 do ecrã principal; os largos ocupam duas; dense = os pequenos enchem os vazios */
+.tdv-grid{ display:grid; grid-template-columns:repeat(var(--tdv-cols),var(--tdv-cw)); column-gap:var(--tdv-gap); row-gap:14px; grid-auto-flow:row dense; justify-content:center; margin-top:20px }
+#home .tdv .hi.widget.tdv-w{ position:relative; left:auto; top:auto; translate:none; width:auto; min-width:0; opacity:1; transform:none; transition:transform .2s var(--ease), opacity .2s; cursor:pointer }
+#home .tdv .hi.widget.tdv-w:not(.born):not(.dying){ animation:none }
+#home .tdv .hi.widget.tdv-w .wg{ animation:none; transition:opacity .15s }
+#home .tdv .hi.widget.tdv-w.pressed .wg{ opacity:.78 }
+.tdv-w.w4x2,.tdv-w.w4x4{ grid-column:span 2 }
+#home .tdv .tdv-lb{ max-width:100%; margin-top:7px; font-size:13px; line-height:16px; height:16px; font-weight:500 }
+#home .tdv .hi.widget.tdv-w.tdv-dragging{ z-index:6; transition:none; cursor:grabbing } #home .tdv .tdv-dragging .wg{ box-shadow:0 14px 36px rgba(0,0,0,.34) }
+/* "−" da edição (o .rm do ecrã principal tem outras regras; este é só da Vista Hoje) */
+.tdv-rm{ position:absolute; top:-8px; left:-8px; z-index:3; width:26px; height:26px; border-radius:50%; display:none; align-items:center; justify-content:center; cursor:pointer;
+  background:#8E8E93; color:#fff; box-shadow:0 1px 4px rgba(0,0,0,.4); border:1.5px solid rgba(255,255,255,.9); box-sizing:border-box }
+.tdv-rm svg{ width:14px; height:14px; stroke-width:3 } .tdv-rm:hover{ background:#7C7C82 }
+.tdv.tdv-ed .tdv-rm{ display:flex }
+/* tremer da edição (PearOS), o mesmo do ecrã principal (anima `rotate`, deixa o transform para o arrasto) */
+body:not(.os-android) #home .tdv.tdv-ed .hi.widget.tdv-w:not(.tdv-dragging) .wg{ animation:jiggle var(--jt,.28s) ease-in-out var(--jd,0s) infinite alternate }
+#home .tdv .tdv-w:nth-child(2n){ --jd:-.14s } #home .tdv .tdv-w:nth-child(3n){ --jt:.32s } #home .tdv .tdv-w:nth-child(5n){ --jd:-.07s; --jt:.3s }
+/* sem widgets */
+.tdv-none{ margin-top:70px; padding:0 40px; display:flex; flex-direction:column; align-items:center; gap:6px; text-align:center; text-shadow:0 1px 3px rgba(0,0,0,.35) }
+.tdv-none[hidden]{ display:none }
+.tdv-none b{ font-size:20px; font-weight:600 } .tdv-none span{ font-size:15px; color:rgba(255,255,255,.78) }
+/* dobráveis: o conteúdo acaba na barra direita (PearPhone Fold); aberto, 4 colunas */
+body.os-ios.form-fold #home .tdv-body{ padding-right:var(--rail-w); padding-top:48px }
+body.form-fold.fold-open #home .tdv-body{ --tdv-cols:4 }
+body.os-ios.form-fold #home.tdv-on .rl-home{ z-index:44 }   /* a dock e a pesquisa da barra direita continuam à vista por cima */
+/* legendas: o dobrável tem regras próprias para o .app-name (largura de um ícone); aqui ocupam a largura do widget */
+#home .tdv .hi.widget.tdv-w .app-name.tdv-lb{ max-width:100%; width:100% }
+
+/* ---------- widgets novos da Vista Hoje (widgets.js): Cripto, Calendário mensal, Mapas (PearOS) ---------- */
+/* Cripto: cartão preto como o da Bolsa, ticker, variação a verde / vermelho, linha do preço e a cotação */
+.tdv-cy{ position:absolute; inset:0; box-sizing:border-box; padding:14px 15px 13px; display:flex; flex-direction:column; background:#000; color:#fff }
+.tdv-cy-h{ display:flex; align-items:flex-start; justify-content:space-between; gap:6px; flex:none; min-width:0 }
+.tdv-cy-h > div{ min-width:0 }
+.tdv-cy-h b{ display:block; font-size:19px; font-weight:700; line-height:22px; letter-spacing:-.2px }
+.tdv-cy-h span{ display:block; margin-top:1px; font-size:12px; line-height:15px; color:rgba(235,235,245,.6); white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+.tdv-cy-h i{ flex:none; width:22px; height:22px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-style:normal; font-size:13px; font-weight:700; color:#fff; background:linear-gradient(160deg,#F7B23B,#E58A12) }
+.tdv-cy-c{ display:block; margin-top:5px; font-style:normal; font-size:12.5px; font-weight:600; line-height:15px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; font-variant-numeric:tabular-nums }
+.tdv-cy.up .tdv-cy-c{ color:#30D158 } .tdv-cy.dn .tdv-cy-c{ color:#FF453A }
+.tdv-cy-g{ display:block; flex:1; min-height:0; width:100%; margin:6px 0 4px; overflow:visible }
+.tdv-cy-g .l{ fill:none; stroke-width:2; stroke-linejoin:round; stroke-linecap:round; stroke:#30D158 } .tdv-cy.dn .tdv-cy-g .l{ stroke:#FF453A }
+.tdv-cy-g .a{ fill:#30D158; opacity:.16 } .tdv-cy.dn .tdv-cy-g .a{ fill:#FF453A }
+.tdv-cy-g .b{ fill:none; stroke:rgba(235,235,245,.32); stroke-width:1; stroke-dasharray:2 3 }
+.tdv-cy-p{ display:block; flex:none; font-size:21px; font-weight:600; line-height:24px; letter-spacing:-.3px; text-align:right; white-space:nowrap; font-variant-numeric:tabular-nums }
+.tdv-cy.s42{ flex-direction:row; gap:16px; padding:16px 18px }
+.tdv-cy.s42 .tdv-cy-l{ width:136px; flex:none; display:flex; flex-direction:column; justify-content:space-between }
+.tdv-cy.s42 .tdv-cy-h i{ display:none }
+.tdv-cy.s42 .tdv-cy-v{ display:flex; flex-direction:column; gap:3px }
+.tdv-cy.s42 .tdv-cy-p{ text-align:left; font-size:26px; line-height:30px } .tdv-cy.s42 .tdv-cy-c{ margin-top:0 }
+.tdv-cy.s42 .tdv-cy-r{ flex:1; min-width:0; display:flex } .tdv-cy.s42 .tdv-cy-g{ margin:6px 0 }
+/* Calendário mensal: o mês a vermelho, as iniciais e os dias; hoje num círculo vermelho */
+.tdv-cm{ position:absolute; inset:0; box-sizing:border-box; padding:12px 11px 9px; display:flex; flex-direction:column }
+.tdv-cm-h{ flex:none; padding-left:5px; font-size:12px; font-weight:700; line-height:15px; letter-spacing:.3px; color:#FF3B30; text-transform:uppercase }
+.tdv-cm-g{ flex:1; min-height:0; margin-top:3px; display:grid; grid-template-columns:repeat(7,1fr); grid-auto-rows:1fr; align-items:center; justify-items:center; font-size:10.5px; font-weight:600; font-variant-numeric:tabular-nums }
+.tdv-cm-g i{ font-style:normal; font-size:9.5px; font-weight:700; opacity:.5 }
+.tdv-cm-g span{ position:relative; width:18px; height:18px; border-radius:50%; display:flex; align-items:center; justify-content:center; line-height:1 }
+.tdv-cm-g span.on{ background:#FF3B30; color:#fff }
+.tdv-cm-g span.ev::after{ content:''; position:absolute; left:50%; bottom:-2px; width:3px; height:3px; margin-left:-1.5px; border-radius:50%; background:currentColor; opacity:.6 }
+.tdv-cm.r6 .tdv-cm-g span{ width:16px; height:16px }
+/* Mapas: cartão azul com ruas desenhadas, o glifo da app e o sítio em baixo */
+.tdv-mp{ position:absolute; inset:0; overflow:hidden; color:#fff; background:linear-gradient(160deg,#5AA2FF 0%,#2F7CF6 55%,#1E62DF 100%) }
+.tdv-mp-bg{ position:absolute; inset:0; width:100%; height:100% }
+.tdv-mp-bg .st path{ fill:none; stroke:rgba(255,255,255,.16); stroke-width:3 }
+.tdv-mp-bg .hw path{ fill:none; stroke:rgba(255,255,255,.32); stroke-width:7; stroke-linecap:round }
+.tdv-mp-bg .pk{ fill:rgba(130,235,175,.22) } .tdv-mp-bg .wt{ fill:rgba(8,36,120,.24) }
+.tdv-mp-ic{ position:absolute; left:14px; top:13px; width:32px; height:32px; display:flex; color:#fff }
+.tdv-mp-ic svg{ width:100%; height:100% }
+.tdv-mp-t{ position:absolute; left:14px; right:12px; bottom:13px; text-shadow:0 1px 3px rgba(0,20,80,.3) }
+.tdv-mp-t b{ display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; font-size:16px; font-weight:700; line-height:19px }
+.tdv-mp-t span{ display:flex; align-items:center; gap:4px; margin-top:2px; font-size:13px; font-weight:500; line-height:16px; opacity:.9; white-space:nowrap }
+.tdv-mp-t span svg{ width:12px; height:12px; flex:none }

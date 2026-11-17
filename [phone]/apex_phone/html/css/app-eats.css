@@ -1,0 +1,261 @@
+/* ===================== EATS - entrega de comida =====================
+   Regras de CEF respeitadas: ZERO backdrop-filter, zero filter, zero color-mix().
+   As "fotografias" são SVG planos (EatsArt), por isso não há imagens a descarregar
+   e as listas longas ficam baratas com content-visibility.
+   ==================================================================== */
+
+.view.ea .content { background: var(--bg2); }
+
+/* Arte de comida: o gradiente enche a caixa, o desenho fica inteiro e centrado.
+   `--artz` encolhe o desenho nas caixas grandes (herói) para não parecer um autocolante. */
+.ea-artwrap { position: relative; width: 100%; height: 100%; display: block; overflow: hidden; }
+.ea-artwrap .ea-art { position: absolute; left: 50%; top: 50%; width: var(--artz, 86%); height: var(--artz, 86%); transform: translate(-50%, -50%); display: block; }
+.ea-hero .ea-artwrap { --artz: 78%; }
+.ea-card .ea-thumb .ea-artwrap { --artz: 96%; }
+.ea-sheet .ea-shero .ea-artwrap { --artz: 80%; }
+.ea-cat .ea-cico .ea-artwrap { --artz: 82%; }
+.ea-gtile .ea-artwrap { --artz: 84%; }
+.ea .ea-h { font: 600 var(--t-headline)/1.25 var(--font); color: var(--label); margin: 18px 16px 8px; display: flex; align-items: center; justify-content: space-between; }
+.ea .ea-h .ea-sort { color: var(--accent); display: flex; }
+
+/* ---------- morada no topo ---------- */
+.ea-addr { display: flex; align-items: center; gap: 6px; margin: 2px 16px 10px; color: var(--label); font: 600 15px/1 var(--font); }
+.ea-addr svg { color: var(--accent); }
+.ea-addr .l { max-width: 300px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* ---------- categorias ---------- */
+.ea-cats { display: flex; gap: 12px; overflow-x: auto; padding: 4px 16px 6px; scrollbar-width: none; scroll-snap-type: x proximity; }
+.ea-cats::-webkit-scrollbar { display: none; }
+.ea-cat { flex: 0 0 auto; width: 68px; text-align: center; scroll-snap-align: start; }
+.ea-cat .ea-cico { width: 60px; height: 60px; border-radius: 20px; overflow: hidden; background: var(--fill3); box-shadow: 0 1px 2px rgba(0,0,0,.06); transition: transform .18s var(--ease); }
+.ea-cat span { display: block; margin-top: 6px; font: 500 11px/1.2 var(--font); color: var(--label2); }
+.ea-cat.on .ea-cico { outline: 2.5px solid var(--accent); outline-offset: 2px; }
+.ea-cat.on span { color: var(--label); font-weight: 600; }
+.ea-cat:active .ea-cico { transform: scale(.94); }
+
+/* ---------- cartão de restaurante ---------- */
+.ea-list { padding-bottom: 96px; }
+.ea-card { margin: 0 16px 16px; border-radius: 18px; overflow: hidden; background: var(--bg); box-shadow: 0 1px 3px rgba(0,0,0,.08); content-visibility: auto; contain-intrinsic-size: 200px; }
+.ea-card .ea-thumb { position: relative; height: 132px; overflow: hidden; }
+.ea-card .ea-artwrap { width: 100%; height: 100%; }
+.ea-card.sm { width: 208px; flex: 0 0 auto; margin: 0; }
+.ea-card.sm .ea-thumb { height: 96px; }
+.ea-card:active { transform: scale(.985); }
+.ea-card.closed .ea-thumb { opacity: .55; }
+.ea-tag { position: absolute; left: 10px; bottom: 10px; background: var(--accent); color: #fff; font: 700 11px/1 var(--font); padding: 6px 9px; border-radius: 8px; }
+.ea-closed { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,.42); color: #fff; font: 700 15px/1 var(--font); }
+.ea-fav { position: absolute; right: 10px; top: 10px; width: 30px; height: 30px; border-radius: 50%; background: rgba(255,255,255,.92); display: flex; align-items: center; justify-content: center; color: #8A8A8E; }
+.ea-fav.on { color: var(--red); }
+.ea-fav.on svg { fill: currentColor; }
+.ea-cbody { padding: 10px 12px 12px; }
+.ea-crow { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; }
+.ea-crow b { font: 600 16px/1.2 var(--font); color: var(--label); }
+.ea-rate { display: inline-flex; align-items: center; gap: 3px; font: 600 13px/1 var(--font); color: var(--label); }
+.ea-rate svg { color: var(--yellow); fill: currentColor; }
+.ea-meta { display: flex; gap: 12px; margin-top: 7px; font: 500 12px/1 var(--font); color: var(--label2); }
+.ea-meta span { display: inline-flex; align-items: center; gap: 4px; }
+
+.ea-rail { display: flex; gap: 12px; overflow-x: auto; padding: 2px 16px 6px; scrollbar-width: none; scroll-snap-type: x proximity; }
+.ea-rail::-webkit-scrollbar { display: none; }
+.ea-rail .ea-card { scroll-snap-align: start; }
+
+/* ---------- Eats Pro ---------- */
+.ea-pro { margin: 6px 16px 4px; padding: 14px 16px; border-radius: 16px; background: linear-gradient(135deg, #1E1E22, #3A3A40); color: #fff; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.ea-pro b { display: block; font: 700 16px/1.2 var(--font); }
+.ea-pro span { font: 500 12px/1.3 var(--font); opacity: .78; }
+.ea-pro .btn-p { margin: 0; background: #fff; color: #111; padding: 0 16px; height: 38px; flex: 0 0 auto; }
+
+/* ---------- grelha de categorias (pesquisa) ---------- */
+.ea-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 0 16px; }
+.ea-gtile { position: relative; height: 92px; border-radius: 16px; overflow: hidden; background: var(--fill3); }
+.ea-gtile .ea-artwrap { width: 100%; height: 100%; }
+.ea-gtile span { position: absolute; left: 12px; bottom: 10px; font: 700 14px/1 var(--font); color: #1C1C1E; }
+
+/* ---------- restaurante ---------- */
+.ea-hero { position: relative; height: 210px; margin: -1px 0 0; overflow: hidden; }
+.ea-hero .ea-artwrap { width: 100%; height: 100%; }
+.ea-hgrad { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,.28), rgba(0,0,0,0) 45%, rgba(0,0,0,.06)); }
+.ea-rhead { padding: 14px 16px 4px; background: var(--bg2); }
+.ea-rhead h2 { font: 700 24px/1.15 var(--font); color: var(--label); margin: 0 0 6px; }
+.ea-rmeta { display: flex; align-items: center; gap: 6px; font: 500 13px/1 var(--font); color: var(--label2); }
+.ea-rbar { display: flex; gap: 8px; margin: 14px 0 4px; }
+.ea-rbar > div { flex: 1; background: var(--bg); border-radius: 14px; padding: 10px 8px; text-align: center; }
+.ea-rbar b { display: block; font: 600 14px/1.2 var(--font); color: var(--label); }
+.ea-rbar span { font: 500 11px/1.2 var(--font); color: var(--label3); }
+.ea-promo { margin: 10px 0 0; padding: 10px 12px; border-radius: 12px; background: var(--fill4); color: var(--label); font: 600 13px/1.3 var(--font); display: flex; align-items: center; gap: 8px; }
+.ea-promo svg { color: var(--accent); }
+.ea-warn { margin: 10px 0 0; padding: 10px 12px; border-radius: 12px; background: rgba(255,159,10,.16); color: #9A5B00; font: 600 12px/1.35 var(--font); }
+
+.ea-secnav { position: sticky; top: 0; z-index: 4; display: flex; gap: 18px; overflow-x: auto; padding: 12px 16px 10px; background: var(--bg2); border-bottom: .5px solid var(--sep); scrollbar-width: none; }
+.ea-secnav::-webkit-scrollbar { display: none; }
+.ea-secnav span { flex: 0 0 auto; font: 600 14px/1 var(--font); color: var(--label3); padding-bottom: 6px; border-bottom: 2.5px solid transparent; }
+.ea-secnav span.on { color: var(--label); border-color: var(--accent); }
+
+.ea-menu { padding-bottom: 110px; }
+.ea-dish { display: flex; gap: 12px; padding: 14px 16px; background: var(--bg2); border-bottom: .5px solid var(--sep); content-visibility: auto; contain-intrinsic-size: 104px; }
+.ea-dish:active { background: var(--fill4); }
+.ea-dbody { flex: 1; min-width: 0; }
+.ea-dbody b { font: 600 16px/1.25 var(--font); color: var(--label); display: block; }
+.ea-pop { display: inline-block; margin-left: 7px; vertical-align: 2px; background: var(--fill3); color: var(--label2); font: 700 10px/1 var(--font); padding: 4px 6px; border-radius: 6px; }
+.ea-ddesc { font: 400 13px/1.35 var(--font); color: var(--label2); margin: 4px 0 6px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.ea-dprice { font: 600 14px/1 var(--font); color: var(--label); }
+.ea-dthumb { position: relative; width: 92px; height: 92px; flex: 0 0 auto; border-radius: 12px; overflow: hidden; background: var(--fill3); }
+.ea-dthumb .ea-artwrap { width: 100%; height: 100%; }
+.ea-add { position: absolute; right: 5px; bottom: 5px; width: 26px; height: 26px; border-radius: 50%; background: #fff; color: #1C1C1E; display: flex; align-items: center; justify-content: center; box-shadow: 0 1px 3px rgba(0,0,0,.22); }
+
+/* ---------- folha de prato ---------- */
+.ea-dsheet .sheet-head b { font-size: 0; }
+.ea-sheet .ea-shero { height: 180px; margin: -4px -16px 0; overflow: hidden; border-radius: 14px; }
+.ea-sheet .ea-shero .ea-artwrap { width: 100%; height: 100%; }
+.ea-sh { padding: 14px 2px 4px; }
+.ea-sh h3 { font: 700 21px/1.2 var(--font); color: var(--label); margin: 0 0 6px; }
+.ea-sh p { font: 400 14px/1.4 var(--font); color: var(--label2); margin: 0 0 8px; }
+.ea-sprice { font: 600 17px/1 var(--font); color: var(--label); }
+.ea-og { margin-top: 16px; }
+.ea-ogh { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 8px; }
+.ea-ogh b { font: 600 15px/1 var(--font); color: var(--label); }
+.ea-oc { display: flex; align-items: center; gap: 10px; padding: 12px 12px; background: var(--bg); border-radius: 12px; margin-bottom: 7px; }
+.ea-oc .mk { width: 21px; height: 21px; border-radius: 6px; border: 1.6px solid var(--gray3); display: flex; align-items: center; justify-content: center; color: transparent; flex: 0 0 auto; }
+.ea-oc .mk.rd { border-radius: 50%; }
+.ea-oc.on .mk { background: var(--accent); border-color: var(--accent); color: #fff; }
+.ea-oc .nm { flex: 1; font: 500 14px/1.2 var(--font); color: var(--label); }
+.ea-oc .pr { font: 600 13px/1 var(--font); color: var(--label2); }
+.ea-note { margin-top: 16px; }
+.ea-qty { display: flex; align-items: center; justify-content: center; gap: 22px; margin: 18px 0 4px; }
+.ea-qty .m, .ea-qty .p { width: 40px; height: 40px; border-radius: 50%; background: var(--fill3); display: flex; align-items: center; justify-content: center; font: 500 22px/1 var(--font); color: var(--label); }
+.ea-qty b { font: 600 19px/1 var(--font); color: var(--label); min-width: 28px; text-align: center; }
+
+/* ---------- barra do carrinho ---------- */
+.ea-cartbar { position: absolute; left: 16px; right: 16px; bottom: 98px; height: 52px; border-radius: 26px; background: var(--accent); color: #fff; display: flex; align-items: center; gap: 12px; padding: 0 8px 0 8px; z-index: 40; opacity: 0; transform: translateY(20px); pointer-events: none; transition: opacity .22s var(--ease), transform .28s var(--spring); box-shadow: 0 6px 18px rgba(0,0,0,.22); }
+.ea-cartbar.show { opacity: 1; transform: none; pointer-events: auto; }
+.ea-cartbar:active { transform: scale(.98); }
+.ea-cartbar .n { width: 36px; height: 36px; border-radius: 18px; background: rgba(255,255,255,.22); display: flex; align-items: center; justify-content: center; font: 700 15px/1 var(--font); }
+.ea-cartbar .t { flex: 1; font: 600 15px/1 var(--font); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ea-cartbar .p { font: 700 15px/1 var(--font); padding-right: 10px; }
+
+/* ---------- carrinho ---------- */
+.ea-cl { padding: 6px 0 0; }
+.ea-cline { display: flex; gap: 12px; padding: 12px 16px; align-items: center; }
+.ea-cline .th { width: 56px; height: 56px; border-radius: 12px; overflow: hidden; flex: 0 0 auto; background: var(--fill3); }
+.ea-cline .th .ea-artwrap { width: 100%; height: 100%; }
+.ea-cline .bd { flex: 1; min-width: 0; }
+.ea-cline .bd b { font: 600 15px/1.25 var(--font); color: var(--label); }
+.ea-cline .pz { font: 600 15px/1 var(--font); color: var(--label); }
+.ea-step { display: inline-flex; align-items: center; gap: 12px; margin-top: 7px; background: var(--fill4); border-radius: 14px; padding: 4px 10px; }
+.ea-step span { font: 500 17px/1 var(--font); color: var(--label); width: 18px; text-align: center; }
+.ea-step b { font: 600 14px/1 var(--font); color: var(--label); min-width: 14px; text-align: center; }
+
+.ea-extras { padding-top: 6px; }
+.ea-tip { margin-top: 4px; }
+.ea-tip .row { display: flex; gap: 8px; padding: 0 16px; overflow-x: auto; scrollbar-width: none; }
+.ea-tip .row::-webkit-scrollbar { display: none; }
+.ea-tip .row span { flex: 0 0 auto; padding: 9px 14px; border-radius: 16px; background: var(--bg); color: var(--label); font: 600 13px/1 var(--font); border: 1px solid var(--sep); }
+.ea-tip .row span.on { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+.ea-sumbox { padding: 4px 0; }
+.ea-srow { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; padding: 9px 16px; font: 400 14px/1.35 var(--font); color: var(--label); }
+.ea-srow b { font-weight: 600; white-space: nowrap; }
+.ea-srow.ok b { color: var(--green); }
+.ea-srow.tot { border-top: .5px solid var(--sep); margin-top: 4px; padding-top: 12px; font-weight: 700; font-size: 16px; }
+.ea-srow.tot b { font-size: 17px; }
+.ea-go { margin: 16px 16px 40px; }
+.ea-go.off { background: var(--fill3); color: var(--label3); }
+.ea-go.busy { opacity: .6; }
+.btn-p.danger-t { background: transparent; color: var(--red); }
+
+/* ---------- seguimento ---------- */
+.ea-track .content { background: var(--bg); }
+.ea-map { height: 232px; overflow: hidden; position: relative; background: var(--fill4); }
+.ea-map .w { position: absolute; left: 0; top: 0; transform-origin: 0 0; will-change: transform; }
+.ea-map .w img { position: absolute; width: 256px; height: 256px; display: block; }
+.ea-map .rt { position: absolute; left: 0; top: 0; overflow: visible; }
+.ea-map .pin { position: absolute; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; box-shadow: 0 2px 6px rgba(0,0,0,.3); }
+.ea-map .pin.rest { background: #FF9F0A; }
+.ea-map .pin.dest { background: #0A84FF; }
+.ea-map .pin.cour { background: #30D158; width: 34px; height: 34px; }
+.ea-tcard { padding: 16px 0 40px; }
+.ea-teta { padding: 0 16px 12px; }
+.ea-teta b { display: block; font: 700 30px/1.1 var(--font); color: var(--label); }
+.ea-teta span { font: 500 14px/1.3 var(--font); color: var(--label2); }
+.ea-steps { display: flex; gap: 6px; padding: 0 16px 14px; }
+.ea-steps div { flex: 1; height: 5px; border-radius: 3px; background: var(--fill3); transition: background .3s var(--ease); }
+.ea-steps div.on { background: var(--green); }
+.ea-tstat { display: flex; align-items: center; gap: 8px; padding: 0 16px 14px; color: var(--label); font: 600 15px/1 var(--font); }
+.ea-tstat svg { color: var(--green); }
+.ea-cour { display: flex; align-items: center; gap: 12px; margin: 0 16px; padding: 12px; border-radius: 16px; background: var(--bg2); }
+.ea-cour .bd { flex: 1; min-width: 0; }
+.ea-cour .bd b { display: block; font: 600 15px/1.2 var(--font); color: var(--label); }
+.ea-cbtns { display: flex; gap: 8px; }
+.ea-cbtns .cb { width: 38px; height: 38px; border-radius: 50%; background: var(--fill3); display: flex; align-items: center; justify-content: center; color: var(--accent); }
+
+/* ---------- pedidos ---------- */
+.ea-order { display: flex; align-items: center; gap: 12px; padding: 12px 16px; }
+.ea-order:active { background: var(--fill4); }
+.ea-order .th { width: 54px; height: 54px; border-radius: 12px; overflow: hidden; flex: 0 0 auto; background: var(--fill3); }
+.ea-order .th .ea-artwrap { width: 100%; height: 100%; }
+.ea-order .bd { flex: 1; min-width: 0; }
+.ea-order .bd b { font: 600 15px/1.25 var(--font); color: var(--label); }
+.ea-order .ea-oact { color: var(--label3); display: flex; }
+.ea-ost { display: inline-block; margin-top: 5px; font: 700 11px/1 var(--font); padding: 4px 7px; border-radius: 6px; background: var(--fill3); color: var(--label2); }
+.ea-ost.pending, .ea-ost.accepted { background: rgba(255,159,10,.18); color: #9A5B00; }
+.ea-ost.ready { background: rgba(90,200,250,.2); color: #0A6E96; }
+.ea-ost.picked { background: rgba(48,209,88,.18); color: #14713A; }
+.ea-ost.delivered { background: var(--fill3); color: var(--label2); }
+.ea-ost.cancelled { background: rgba(255,69,58,.16); color: #9A1F17; }
+.ea-order.live .th { outline: 2px solid var(--green); outline-offset: -2px; }
+.ea-odet { text-align: center; padding: 8px 16px 4px; }
+.ea-odet .th { width: 92px; height: 92px; border-radius: 22px; overflow: hidden; margin: 0 auto 12px; }
+.ea-odet .th .ea-artwrap { width: 100%; height: 100%; }
+.ea-odet h2 { font: 700 22px/1.2 var(--font); color: var(--label); margin: 0 0 4px; }
+
+/* ---------- conta / estafeta ---------- */
+.ea-me { display: flex; align-items: center; gap: 14px; padding: 6px 16px 12px; }
+.ea-me b { display: block; font: 700 19px/1.2 var(--font); color: var(--label); }
+.ea-job, .ea-offer { margin: 0 16px 12px; padding: 14px; border-radius: 16px; background: var(--bg); box-shadow: 0 1px 3px rgba(0,0,0,.07); }
+.ea-job .jh, .ea-offer .oh { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 4px; }
+.ea-job .jh b, .ea-offer .oh b { font: 600 16px/1.2 var(--font); color: var(--label); }
+.ea-offer .pay { font: 700 16px/1 var(--font); color: var(--green); }
+.ea-job .jb { display: flex; gap: 8px; margin-top: 12px; }
+.ea-job .jb .btn-p { margin: 0; flex: 1; }
+.ea-offer .acc { margin: 12px 0 0; }
+.ea-rate-sheet .ea-stars { display: flex; justify-content: center; gap: 10px; padding: 8px 0 18px; }
+.ea-rate-sheet .ea-stars span { font-size: 38px; line-height: 1; color: var(--gray4); }
+.ea-rate-sheet .ea-stars span.on { color: var(--yellow); }
+
+/* ---------- modo escuro ---------- */
+body[data-theme="dark"] .ea-fav, body.dark .ea-fav { background: rgba(28,28,30,.86); }
+body.dark .ea-add { background: #2C2C2E; color: #fff; }
+body.dark .ea-warn { background: rgba(255,159,10,.2); color: #FFC46B; }
+body.dark .ea-gtile span { color: #1C1C1E; }
+body.dark .ea-ost.pending, body.dark .ea-ost.accepted { color: #FFC46B; }
+body.dark .ea-ost.ready { color: #7FD4F5; }
+body.dark .ea-ost.picked { color: #6BE08F; }
+body.dark .ea-ost.cancelled { color: #FF8078; }
+
+/* No jogo: sem sombras longas nem transições supérfluas (motion.css manda o resto) */
+body.fivem .ea-card, body.fivem .ea-job, body.fivem .ea-offer { box-shadow: 0 1px 2px rgba(0,0,0,.10); }
+body.fivem .ea-cartbar { box-shadow: 0 3px 10px rgba(0,0,0,.24); }
+/* dobráveis: o carrinho fica na coluna do conteúdo (aberto, uma pílula de 520 ao centro); no PearPhone Fold acaba antes da barra
+   direita e desce para onde estava a barra de separadores (que passou para a barra direita) */
+body.form-fold .app-window > .ea-cartbar { left: max(16px, calc(50% - var(--rail-w) / 2 - 260px)); right: max(calc(var(--rail-w) + 16px), calc(50% + var(--rail-w) / 2 - 260px)); }
+body.os-ios.form-fold .app-window > .ea-cartbar { right: max(calc(var(--rail-w) + 16px), calc(50% + var(--rail-w) / 2 - 260px)); bottom: calc(var(--safe-bottom) + 10px); }
+/* NOVA Fold8 aberto com a barra lateral (sem a pílula dos separadores em baixo): o carrinho desce e fica ao centro do conteúdo */
+body.os-android.form-fold.fold-open .app-window.tb-vis > .ea-cartbar { left: calc(50% + var(--ou-rail-w, 0px) / 2 - 260px); right: calc(50% - var(--ou-rail-w, 0px) / 2 - 260px); bottom: calc(var(--safe-bottom) + 14px + var(--taskbar-h, 0px)); }
+/* dobráveis: a vista pinta o fundo do conteúdo (a barra lateral do NOVA aberto copia a cor da vista: era cinzenta ao lado do branco) */
+body.form-fold .view.ea { background: var(--bg2); }
+/* dobráveis: os restaurantes numa grelha de cartões com pelo menos 300 (uma coluna no PearPhone Fold fechado, duas no NOVA fechado,
+   três aberto, numa coluna de 1000); títulos, preferidos, Eats Pro e avisos ficam na linha inteira */
+body.form-fold .view.ea .ea-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); column-gap: 16px; padding-left: 16px; padding-right: 16px; align-content: start; }
+body.form-fold .view.ea .ea-list > :not(.ea-card) { grid-column: 1 / -1; min-width: 0; }
+body.form-fold .view.ea .ea-list > .ea-card { margin: 0 0 16px; }
+body.form-fold .view.ea .ea-list > .ea-h { margin-left: 0; margin-right: 0; }
+body.form-fold .view.ea .ea-list > .ea-pro { margin-left: 0; margin-right: 0; }
+body.form-fold .view.ea .ea-list > .ea-rail { margin-left: -16px; margin-right: -16px; }
+body.form-fold .view.ea .ea-list > .ea-grid { padding-left: 0; padding-right: 0; }
+body.form-fold.fold-open .view.ea { --fold-col: 1000px; }
+/* aberto: as categorias da pesquisa em quatro colunas e a ementa do restaurante em duas (os pratos de ponta a ponta da coluna
+   deixavam a fotografia a 900 px do nome) */
+body.form-fold.fold-open .view.ea .ea-grid { grid-template-columns: repeat(4, 1fr); }
+body.form-fold.fold-open .view.ea .ea-sec { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 24px; }
+body.form-fold.fold-open .view.ea .ea-sec > .ea-h { grid-column: 1 / -1; }
+body.fivem .ea-cat .ea-cico { transition: none; }

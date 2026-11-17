@@ -1,0 +1,267 @@
+/* ============================================================
+   NOVA UI: WIDGETS DO ECRA PRINCIPAL (Android). Tudo atras de body.os-android.
+   Carregado depois do oneui-home.css.
+   Squircle r26 opaco (claro/escuro), padding interno 16 a 20, tipo de letra de ecra nos numeros grandes. Cada widget desenha
+   uma camada interna (.aw-*) a encher o cartao (position:absolute; inset:0): o .wg da o raio, o overflow e a sombra.
+   Regras do CEF: sem filter nem backdrop-filter, sem color-mix(), sem :has(); nada anima em ciclo.
+   ============================================================ */
+
+/* ---------- comum: cabecalho (icone de app pequeno + nome + total) e estado vazio ---------- */
+body.os-android .aw-hd{ display:flex; align-items:center; gap:8px; flex:none; min-width:0; height:26px }
+body.os-android .aw-hd b{ min-width:0; font-size:15px; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+body.os-android .aw-hd em{ margin-left:auto; padding-left:6px; font-style:normal; font-size:14px; font-weight:500; color:var(--label2); font-variant-numeric:tabular-nums }
+body.os-android .aw-hic{ width:26px; height:26px; flex:none; border-radius:9px; display:flex; align-items:center; justify-content:center; color:#fff }
+body.os-android .aw-hic svg{ width:15px; height:15px }
+body.os-android .aw-hic.o{ background:linear-gradient(160deg,#FFA445,#F2741A) }
+body.os-android .aw-hic.b{ background:linear-gradient(160deg,#5A94FF,#2E6AF0) }
+body.os-android .aw-hic.g{ background:linear-gradient(160deg,#44D27E,#1DA955) }
+body.os-android .aw-none{ flex:1; min-height:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px; color:var(--label2); font-size:14px; line-height:18px; text-align:center }
+body.os-android .aw-none svg{ width:28px; height:28px; opacity:.7 }
+
+/* ---------- Meteorologia: cartao azul-ceu opaco (cinzento-azulado com chuva/nevoeiro, azul-noite de noite) ---------- */
+body.os-android .hi.widget .wg[data-type="weather"],body.os-android .hi.widget .wg[data-type="weather4"]{ background:transparent!important; box-shadow:0 2px 10px rgba(0,0,0,.14) }
+body.os-android .aw-wx{ position:absolute; inset:0; border-radius:inherit; overflow:hidden; display:flex; color:#fff;
+  background:linear-gradient(135deg,#74ACF2 0%,#5692EA 50%,#3D7BE0 100%) }
+body.os-android .aw-wx.t-g{ background:linear-gradient(135deg,#97ACC8 0%,#7790B2 50%,#5A7397 100%) }
+body.os-android .aw-wx.t-n{ background:linear-gradient(135deg,#40599A 0%,#2C4079 50%,#1C2855 100%) }
+body.os-android.dark .aw-wx{ background:linear-gradient(135deg,#5E95E2 0%,#437AD0 50%,#2D60B6 100%) }
+body.os-android.dark .aw-wx.t-g{ background:linear-gradient(135deg,#7D92B0 0%,#617899 50%,#485D7E 100%) }
+body.os-android.dark .aw-wx.t-n{ background:linear-gradient(135deg,#34497F 0%,#243566 50%,#172146 100%) }
+/* lado esquerdo: glifo grande, temperatura, estado, max./min., sitio */
+body.os-android .aw-wx-l{ flex:1; min-width:0; display:flex; flex-direction:column; justify-content:space-between; padding:11px 4px 15px 18px }
+body.os-android .aw-wx-l > .aw-g{ flex:none; margin-left:-5px }
+body.os-android .aw-wx-t{ font-family:var(--font-display); font-size:38px; font-weight:400; line-height:1; letter-spacing:-.5px; white-space:nowrap }
+body.os-android .aw-wx-c{ margin-top:6px; font-size:14px; font-weight:500; line-height:18px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+body.os-android .aw-wx-hl{ margin-top:1px; font-size:13px; line-height:17px; white-space:nowrap; font-variant-numeric:tabular-nums }
+body.os-android .aw-wx-loc{ margin-top:1px; display:flex; align-items:center; gap:3px; font-size:13px; line-height:17px; opacity:.82; white-space:nowrap; min-width:0 }
+body.os-android .aw-wx-loc svg{ width:12px; height:12px; flex:none }
+body.os-android .aw-wx-loc span{ min-width:0; overflow:hidden; text-overflow:ellipsis }
+/* painel claro com os proximos dias: dia, glifo de dia e de noite, max. (branco) e min. (translucido) */
+body.os-android .aw-wx-f{ flex:none; width:180px; margin:12px 12px 12px 0; padding:4px 14px; border-radius:18px; background:rgba(255,255,255,.2); display:flex; flex-direction:column; justify-content:space-evenly }
+body.os-android .aw-wx-r{ display:flex; align-items:center; gap:4px; font-size:14px; line-height:18px; white-space:nowrap }
+body.os-android .aw-wx-r b{ width:34px; flex:none; font-weight:500 }
+body.os-android .aw-wx-r i{ flex:1; display:flex; justify-content:center; gap:3px; font-style:normal }
+body.os-android .aw-wx-r i svg{ width:22px; height:22px; flex:none }
+body.os-android .aw-wx-r > span,body.os-android .aw-wx-r em{ min-width:28px; flex:none; text-align:right; font-variant-numeric:tabular-nums }
+body.os-android .aw-wx-r > span{ font-weight:500 }
+body.os-android .aw-wx-r em{ font-style:normal; opacity:.72 }
+/* 2x2: so o lado esquerdo */
+body.os-android .aw-wx.s2 .aw-wx-l{ padding:13px 14px 16px 18px }
+/* 4x4: em cima o lado esquerdo e sensacao/humidade/vento; em baixo 5 dias com o estado por extenso */
+body.os-android .aw-wx.s44{ flex-direction:column; padding:4px 12px 12px }
+body.os-android .aw-wx-top{ flex:1; min-height:0; display:flex }
+body.os-android .aw-wx.s44 .aw-wx-l{ padding:10px 0 8px 8px }
+body.os-android .aw-wx.s44 .aw-wx-t{ font-size:54px; letter-spacing:-1px }
+body.os-android .aw-wx-st{ flex:none; width:150px; display:flex; flex-direction:column; justify-content:flex-end; gap:9px; padding:0 8px 10px 0 }
+body.os-android .aw-wx-st div{ display:flex; justify-content:space-between; align-items:baseline; gap:8px; font-size:13px; line-height:17px; white-space:nowrap }
+body.os-android .aw-wx-st span{ opacity:.8 }
+body.os-android .aw-wx-st b{ font-size:14px; font-weight:600 }
+body.os-android .aw-wx.s44 .aw-wx-f{ width:auto; margin:6px 0 0; padding:4px 16px; flex:none }
+body.os-android .aw-wx.s44 .aw-wx-r{ height:36px; gap:8px }
+body.os-android .aw-wx.s44 .aw-wx-r b{ width:38px }
+body.os-android .aw-wx.s44 .aw-wx-r i{ flex:none }
+body.os-android .aw-wx.s44 .aw-wx-r > span,body.os-android .aw-wx.s44 .aw-wx-r em{ min-width:34px }
+body.os-android .aw-wx-r > .aw-wx-lb{ flex:1; width:auto; min-width:0; text-align:left; font-weight:400; opacity:.86; overflow:hidden; text-overflow:ellipsis }
+
+/* ---------- Calendario: superficie, dia da semana a azul, numero grande, semana/mes e proximos eventos ---------- */
+body.os-android .aw-cal{ position:absolute; inset:0; display:flex; flex-direction:column; padding:16px 18px }
+body.os-android .aw-cal-d span{ display:block; font-size:14px; font-weight:600; line-height:18px; color:var(--ou-blue,#3E7BFA); white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+body.os-android .aw-cal-d b{ display:block; margin-top:3px; font-family:var(--font-display); font-size:52px; font-weight:400; line-height:1; letter-spacing:-1px }
+body.os-android .aw-cal-d em{ display:block; margin-top:5px; font-style:normal; font-size:14px; line-height:18px; color:var(--label2) }
+body.os-android .aw-cal-l{ display:flex; flex-direction:column; gap:10px; min-height:0; overflow:hidden }
+body.os-android .aw-cal.s2 .aw-cal-l{ margin-top:auto }
+body.os-android .aw-cal-ev{ display:flex; gap:10px; min-width:0 }
+body.os-android .aw-cal-ev i{ width:4px; border-radius:2px; flex:none }
+body.os-android .aw-cal-ev div{ flex:1; min-width:0 }
+body.os-android .aw-cal-ev b{ display:block; font-size:14px; font-weight:600; line-height:18px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+body.os-android .aw-cal-ev span{ display:block; margin-top:1px; font-size:12.5px; line-height:16px; color:var(--label2); white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+body.os-android .aw-cal-none b{ display:block; font-size:14px; font-weight:600; line-height:18px }
+body.os-android .aw-cal-none span{ display:block; margin-top:2px; font-size:12.5px; line-height:16px; color:var(--label2) }
+/* 4x2: data a esquerda; semana (segunda primeiro) e eventos a direita */
+body.os-android .aw-cal.s42{ flex-direction:row; gap:14px; padding:17px 16px 16px 20px }
+body.os-android .aw-cal.s42 .aw-cal-d{ width:98px; flex:none; display:flex; flex-direction:column }
+body.os-android .aw-cal-d small{ margin-top:auto; font-size:12.5px; line-height:16px; color:var(--label3) }
+body.os-android .aw-cal-r{ flex:1; min-width:0; display:flex; flex-direction:column; gap:15px }
+body.os-android .aw-cal-wk{ display:grid; grid-template-columns:repeat(7,1fr) }
+body.os-android .aw-cal-wk div{ position:relative; display:flex; flex-direction:column; align-items:center; gap:3px }
+body.os-android .aw-cal-wk i{ font-style:normal; font-size:11.5px; font-weight:500; line-height:14px; color:var(--label2) }
+body.os-android .aw-cal-wk b,body.os-android .aw-cal-mo b{ width:28px; height:28px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:14px; font-weight:500; font-variant-numeric:tabular-nums }
+body.os-android .aw-cal-wk u,body.os-android .aw-cal-mo u{ position:absolute; left:50%; bottom:-6px; width:4px; height:4px; margin-left:-2px; border-radius:50%; background:var(--ou-blue,#3E7BFA) }
+/* 4x4: mes inteiro */
+body.os-android .aw-cal.s44{ padding:18px 16px 16px }
+body.os-android .aw-cal-mh{ display:flex; align-items:baseline; gap:8px; padding:0 8px }
+body.os-android .aw-cal-mh b{ font-family:var(--font-display); font-size:22px; font-weight:500; line-height:28px }
+body.os-android .aw-cal-mh span{ font-size:15px; color:var(--label2) }
+body.os-android .aw-cal-mo{ display:grid; grid-template-columns:repeat(7,1fr); margin-top:8px }
+body.os-android .aw-cal-mo > i{ font-style:normal; text-align:center; font-size:11.5px; font-weight:500; line-height:22px; color:var(--label2) }
+body.os-android .aw-cal-mo div{ position:relative; height:35px; display:flex; align-items:center; justify-content:center }
+body.os-android .aw-cal-mo b{ width:27px; height:27px }
+body.os-android .aw-cal-mo u{ bottom:0 }
+body.os-android .aw-cal.s44 .aw-cal-l{ margin-top:auto; padding:12px 2px 0; border-top:1px solid var(--sep) }
+/* domingo a vermelho, fora do mes apagado, hoje num circulo azul (por esta ordem: a ultima ganha) */
+body.os-android .aw-cal-wk .su i,body.os-android .aw-cal-wk .su b,body.os-android .aw-cal-mo > i.su,body.os-android .aw-cal-mo .su b{ color:var(--red) }
+body.os-android .aw-cal-mo .out b{ color:var(--label3) }
+body.os-android .aw-cal-wk .on b,body.os-android .aw-cal-mo .on b{ background:var(--ou-blue,#3E7BFA); color:#fff }
+
+/* ---------- Relogio: mostrador redondo; 4x2 com a hora digital, a data e a cidade ---------- */
+body.os-android .aw-clk{ position:absolute; inset:0; display:flex; align-items:center }
+body.os-android .aw-dial{ flex:none; display:block }
+body.os-android .aw-dial-f{ fill:var(--ou-surface2,#F1F1F3) }
+body.os-android .aw-dial-m{ fill:var(--label3); stroke:none }
+body.os-android .aw-clk-c{ font-size:13px; font-weight:500; line-height:17px; color:var(--label2); white-space:nowrap }
+body.os-android .aw-clk.s2{ flex-direction:column; justify-content:center; gap:9px; padding:10px 0 8px }
+body.os-android .aw-clk.s2 .aw-dial{ width:136px; height:136px }
+body.os-android .aw-clk.s42{ gap:18px; padding:0 18px }
+body.os-android .aw-clk.s42 .aw-dial{ width:140px; height:140px }
+body.os-android .aw-clk-r{ flex:1; min-width:0 }
+body.os-android .aw-clk-t{ font-family:var(--font-display); font-size:52px; font-weight:300; line-height:1; letter-spacing:-1px; font-variant-numeric:tabular-nums; white-space:nowrap }
+body.os-android .aw-clk-d{ margin-top:10px; font-size:14px; font-weight:500; line-height:18px }
+body.os-android .aw-clk-d span{ display:block; color:var(--label2); font-weight:400 }
+body.os-android .aw-clk-r .aw-clk-c{ margin-top:6px; display:flex; align-items:center; gap:3px }
+body.os-android .aw-clk-r .aw-clk-c svg{ width:12px; height:12px; flex:none }
+
+/* ---------- Notas: lista (2x2) ou fichas (4x2, 4x4) ---------- */
+body.os-android .aw-nt,body.os-android .aw-rm,body.os-android .aw-bk{ position:absolute; inset:0; display:flex; flex-direction:column; padding:16px 16px 16px 18px }
+body.os-android .aw-nt-l{ margin-top:10px; display:flex; flex-direction:column; min-height:0; overflow:hidden }
+body.os-android .aw-nt-r{ padding:8px 0 }
+body.os-android .aw-nt-r + .aw-nt-r{ border-top:1px solid var(--sep) }
+body.os-android .aw-nt-r b{ display:block; font-size:14.5px; font-weight:600; line-height:19px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+body.os-android .aw-nt-r span{ display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; margin-top:1px; font-size:13px; line-height:17px; color:var(--label2) }
+body.os-android .aw-nt-g{ flex:1; min-height:0; margin-top:12px; display:grid; grid-template-columns:1fr 1fr; gap:8px }
+body.os-android .aw-nt.s44 .aw-nt-g{ grid-template-rows:1fr 1fr }
+body.os-android .aw-nt-c{ min-width:0; min-height:0; overflow:hidden; display:flex; flex-direction:column; padding:12px 12px 10px; border-radius:16px; background:var(--ou-surface2,#F1F1F3) }
+body.os-android .aw-nt-c b{ font-size:14px; font-weight:600; line-height:18px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+body.os-android .aw-nt-c span{ flex:1; min-height:0; margin-top:3px; font-size:12.5px; line-height:16px; color:var(--label2); display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden }
+body.os-android .aw-nt.s44 .aw-nt-c span{ -webkit-line-clamp:6 }
+body.os-android .aw-nt-c em{ margin-top:6px; font-style:normal; font-size:11.5px; line-height:14px; color:var(--label3) }
+
+/* ---------- Lembretes: circulos por marcar e linhas finas ---------- */
+body.os-android .aw-rm-l{ margin-top:6px; display:flex; flex-direction:column; min-height:0; overflow:hidden }
+body.os-android .aw-rm-r{ display:flex; align-items:center; gap:12px; min-height:40px; flex:none; font-size:14px; line-height:18px }
+body.os-android .aw-rm-r + .aw-rm-r{ border-top:1px solid var(--sep) }
+body.os-android .aw-rm-r i{ width:18px; height:18px; flex:none; box-sizing:border-box; border-radius:50%; border:2px solid var(--label3) }
+body.os-android .aw-rm-r span{ min-width:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+body.os-android .aw-rm.s2 .aw-rm-r{ min-height:37px; gap:10px; font-size:13.5px }
+
+/* ---------- Bateria: anel com o telemovel ao centro ---------- */
+body.os-android .aw-bt{ position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:12px 14px }
+body.os-android .aw-bt-ring svg{ width:104px; height:104px; display:block }
+body.os-android .aw-bt-tr{ stroke:var(--fill,rgba(0,0,0,.1)) }
+body.os-android .aw-bt b{ margin-top:10px; font-family:var(--font-display); font-size:26px; font-weight:500; line-height:30px }
+body.os-android .aw-bt span{ max-width:100%; font-size:12.5px; line-height:16px; color:var(--label2); white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+
+/* ---------- Banco: saldo grande e o dinheiro vivo numa ficha ---------- */
+body.os-android .aw-bk-m{ flex:1; min-height:0; display:flex; flex-direction:column; justify-content:space-between; margin-top:10px }
+body.os-android .aw-bk-v{ min-width:0 }
+body.os-android .aw-bk-v span{ display:block; font-size:12.5px; line-height:16px; color:var(--label2) }
+body.os-android .aw-bk-v b{ display:block; margin-top:2px; font-family:var(--font-display); font-size:24px; font-weight:500; line-height:30px; white-space:nowrap }
+body.os-android .aw-bk-v b.sm{ font-size:19px }
+body.os-android .aw-bk-c{ display:flex; align-items:center; gap:10px; padding:9px 12px; border-radius:16px; background:var(--ou-surface2,#F1F1F3) }
+body.os-android .aw-bk-c svg{ width:18px; height:18px; flex:none; color:#1DA955 }
+body.os-android .aw-bk-c div{ min-width:0 }
+body.os-android .aw-bk-c span{ display:block; font-size:12px; line-height:15px; color:var(--label2) }
+body.os-android .aw-bk-c b{ display:block; font-size:14.5px; font-weight:600; line-height:19px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+body.os-android .aw-bk.s42 .aw-bk-m{ flex-direction:row; align-items:flex-end; gap:16px }
+body.os-android .aw-bk.s42 .aw-bk-v{ flex:1 }
+body.os-android .aw-bk.s42 .aw-bk-v b{ font-size:34px; line-height:40px }
+body.os-android .aw-bk.s42 .aw-bk-v b.sm{ font-size:27px }
+body.os-android .aw-bk.s42 .aw-bk-c{ flex:none; width:136px; padding:11px 12px }
+
+/* ---------- Musica: capa grande, estado a cor, titulo e artista ---------- */
+body.os-android .aw-mu{ position:absolute; inset:0; display:flex; padding:16px }
+body.os-android .aw-mu .art{ flex:none; border-radius:16px; background:linear-gradient(140deg,#A58BFF,#6B4EF2) center/cover no-repeat }
+body.os-android .aw-mu-tx{ min-width:0; display:flex; flex-direction:column }
+body.os-android .aw-mu-st{ display:flex; align-items:center; gap:4px; font-size:12px; font-weight:600; line-height:16px; color:#7A5AF8 }
+body.os-android.dark .aw-mu-st{ color:#A891FF }
+body.os-android .aw-mu-st svg{ width:13px; height:13px; flex:none }
+body.os-android .aw-mu-tx > b{ margin-top:3px; font-size:15px; font-weight:600; line-height:19px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+body.os-android .aw-mu-tx > span{ font-size:13px; line-height:17px; color:var(--label2); white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+body.os-android .aw-mu.s2{ flex-direction:column }
+body.os-android .aw-mu.s2 .art{ width:88px; height:88px }
+body.os-android .aw-mu.s2 .aw-mu-tx{ margin-top:auto }
+body.os-android .aw-mu.s42{ align-items:center; gap:16px }
+body.os-android .aw-mu.s42 .art{ width:150px; height:150px; border-radius:18px }
+body.os-android .aw-mu.s42 .aw-mu-tx{ flex:1 }
+body.os-android .aw-mu.s42 .aw-mu-tx > b{ margin-top:6px; font-size:18px; line-height:23px; white-space:normal; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical }
+body.os-android .aw-mu.s42 .aw-mu-tx > span{ margin-top:2px; font-size:14px }
+/* sem faixa: convite para abrir a app */
+body.os-android .aw-mu.none{ flex-direction:column; align-items:center; justify-content:center; gap:12px; text-align:center }
+body.os-android .aw-mu.none.s42{ flex-direction:row; justify-content:flex-start; gap:16px; padding:0 24px; text-align:left }
+body.os-android .aw-mu-ic{ width:52px; height:52px; flex:none; border-radius:50%; display:flex; align-items:center; justify-content:center; color:#fff; background:linear-gradient(140deg,#A58BFF,#6B4EF2) }
+body.os-android .aw-mu-ic svg{ width:26px; height:26px }
+body.os-android .aw-mu.none .aw-mu-tx{ margin-top:0 }
+body.os-android .aw-mu.none .aw-mu-tx > b{ margin-top:0; white-space:normal }
+body.os-android .aw-mu.none .aw-mu-tx > span{ margin-top:2px; font-size:12.5px; white-space:normal }
+
+/* ---------- seletor de widgets: no escuro os cartoes das apps tinham a cor da folha e nao se viam ---------- */
+body.os-android.dark .ah-wp-app{ background:var(--ou-surface2,#232327) }
+body.os-android.dark .ah-wp-hd:hover{ background:var(--fill4) }
+
+/* ---------- Fotos: a foto a encher o cartao, veu escuro em baixo para a legenda ---------- */
+body.os-android .aw-ph{ position:absolute; inset:0 }
+body.os-android .aw-ph .wph,body.os-android .aw-ph-g .wph{ background:#2A2A30 center/cover no-repeat }
+body.os-android .aw-ph .wph{ position:absolute; inset:0 }
+body.os-android .aw-ph-cap{ position:absolute; left:0; right:0; bottom:0; padding:30px 16px 14px; color:#fff; background:linear-gradient(rgba(0,0,0,0),rgba(0,0,0,.5)) }
+body.os-android .aw-ph-cap b{ display:block; font-size:12.5px; font-weight:500; line-height:16px; opacity:.9 }
+body.os-android .aw-ph-cap span{ display:block; font-size:15px; font-weight:600; line-height:20px }
+body.os-android .aw-ph-g{ position:absolute; inset:0; display:grid; grid-template-columns:1fr 1fr; grid-template-rows:1fr 1fr; gap:3px }
+body.os-android .aw-ph-g.n2{ grid-template-rows:1fr }
+body.os-android .aw-ph-g.n3 .wph:first-child{ grid-row:span 2 }
+body.os-android .aw-ph.none{ display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px; padding:16px; text-align:center; color:#fff;
+  background:linear-gradient(150deg,#FFA08E 0%,#FF6F8E 55%,#E8508A 100%) }
+body.os-android .aw-ph-ic{ width:52px; height:52px; margin-bottom:8px; border-radius:50%; display:flex; align-items:center; justify-content:center; background:rgba(255,255,255,.24) }
+body.os-android .aw-ph-ic svg{ width:26px; height:26px }
+body.os-android .aw-ph.none > b{ font-size:15px; font-weight:600; line-height:19px }
+body.os-android .aw-ph.none > span{ font-size:12.5px; line-height:16px; opacity:.92 }
+
+/* ---------- VISTA HOJE na Nova UI (home.js tdv*; a base comum esta no shell.css) ----------
+   A mesma pagina so de widgets a esquerda da 1.a, na linguagem da Nova UI: fundo pre-desfocado mais escuro, pesquisa em
+   pilula de 50 px (a da home do dobravel), grelha de cartoes r26 sem legendas (como no ecra principal), sem tremer na edicao
+   (aro claro em volta de cada cartao e o "-" redondo); manter premido mostra "Adicionar widget" e "Concluido" em pilulas escuras. */
+body.os-android .tdv-bg{ background:linear-gradient(rgba(8,8,12,.4),rgba(8,8,12,.4)), var(--wp-blur,var(--wp,#141418)) center/cover no-repeat }
+body.os-android .tdv-sc{ transition:transform .42s var(--ou-curve-out,var(--ease)) }
+body.os-android .tdv-body{ padding-top:calc(var(--statusbar-h) + 12px) }
+body.os-android .tdv-srch{ height:50px; border-radius:25px; padding:0 18px; gap:12px; font-size:16px; color:rgba(0,0,0,.6); background:rgba(250,250,252,.86); box-shadow:0 2px 10px rgba(0,0,0,.16) }
+body.os-android .tdv-srch:hover{ background:rgba(250,250,252,.94) }
+body.os-android .tdv-srch svg{ width:21px; height:21px }
+body.os-android.dark .tdv-srch{ color:rgba(255,255,255,.75); background:rgba(36,36,40,.86); box-shadow:inset 0 0 0 1px rgba(255,255,255,.1), 0 2px 10px rgba(0,0,0,.24) }
+body.os-android.dark .tdv-srch:hover{ background:rgba(44,44,48,.92) }
+body.os-android .tdv-bar{ height:50px }
+body.os-android .tdv-add{ height:44px; padding:0 20px 0 14px; border-radius:22px; font-size:16px; background:rgba(0,0,0,.32); box-shadow:inset 0 0 0 1px rgba(255,255,255,.18) }
+body.os-android .tdv-add:hover{ background:rgba(0,0,0,.42) }
+body.os-android .tdv-done{ height:44px; padding:0 22px; border-radius:22px; background:rgba(0,0,0,.32); color:#fff; box-shadow:inset 0 0 0 1px rgba(255,255,255,.18); font-size:16px }
+body.os-android .tdv-done:hover{ background:rgba(0,0,0,.42) }
+body.os-android .tdv-grid{ margin-top:22px; row-gap:18px }
+body.os-android #home .tdv .hi.widget.tdv-w .wg{ box-shadow:0 2px 10px rgba(0,0,0,.16) }
+body.os-android #home .tdv.tdv-ed .hi.widget.tdv-w .wg{ box-shadow:0 0 0 2px rgba(255,255,255,.78), 0 2px 10px rgba(0,0,0,.16) }
+body.os-android .tdv-rm{ top:-9px; left:-9px; width:28px; height:28px; background:#F2453D; border:2px solid #fff }
+body.os-android .tdv-rm:hover{ background:#DE3A33 }
+body.os-android.form-fold #home .tdv-body{ padding-top:calc(var(--statusbar-h) + 18px); --tdv-gap:28px }   /* o intervalo de 76 da grelha dos icones separava demasiado os cartoes */
+
+/* Cripto (Nova UI): cartao da superficie com o simbolo laranja, nome, variacao numa ficha e a cotacao em letra de ecra */
+body.os-android .tdv-cy{ background:transparent; color:inherit; padding:16px 18px 15px }
+body.os-android .tdv-cy-h i{ width:26px; height:26px; border-radius:9px; font-size:14px; background:linear-gradient(160deg,#FFA445,#F2741A) }
+body.os-android .tdv-cy-h b{ font-size:17px; font-weight:600 }
+body.os-android .tdv-cy-h span{ color:var(--label2) }
+body.os-android .tdv-cy-c{ align-self:flex-start; margin-top:6px; padding:2px 8px; border-radius:9px; font-size:12px }
+body.os-android .tdv-cy.up .tdv-cy-c{ color:#1A9E50; background:rgba(45,190,96,.14) } body.os-android .tdv-cy.dn .tdv-cy-c{ color:#E5392F; background:rgba(242,69,61,.12) }
+body.os-android.dark .tdv-cy.up .tdv-cy-c{ color:#4CD483 } body.os-android.dark .tdv-cy.dn .tdv-cy-c{ color:#FF6A62 }
+body.os-android .tdv-cy-g .l{ stroke:#2DBE60 } body.os-android .tdv-cy.dn .tdv-cy-g .l{ stroke:#F2453D }
+body.os-android .tdv-cy-g .a{ fill:#2DBE60 } body.os-android .tdv-cy.dn .tdv-cy-g .a{ fill:#F2453D }
+body.os-android .tdv-cy-g .b{ stroke:rgba(128,128,140,.4) }
+body.os-android .tdv-cy-p{ font-family:var(--font-display); font-weight:500; font-size:22px; text-align:left }
+body.os-android .tdv-cy.s42 .tdv-cy-p{ font-size:28px }
+/* Calendario mensal (Nova UI): o mes a azul, domingo a vermelho, hoje num circulo azul */
+body.os-android .tdv-cm{ padding:15px 14px 12px }
+body.os-android .tdv-cm-h{ font-size:14px; font-weight:600; letter-spacing:0; color:var(--ou-blue,#3E7BFA); padding-left:4px; text-transform:capitalize }
+body.os-android .tdv-cm-g{ font-size:11.5px; font-weight:500; margin-top:5px }
+body.os-android .tdv-cm-g i{ font-weight:600; opacity:.55 }
+body.os-android .tdv-cm-g i:nth-child(7){ color:#F2453D; opacity:.85 }
+body.os-android .tdv-cm-g span{ width:22px; height:22px }
+body.os-android .tdv-cm-g span.on{ background:var(--ou-blue,#3E7BFA); color:#fff; font-weight:700 }
+body.os-android .tdv-cm.r6 .tdv-cm-g span{ width:19px; height:19px }
+/* Mapas (Nova UI): o mesmo mapa desenhado num azul mais suave, o glifo numa ficha redonda */
+body.os-android .tdv-mp{ background:linear-gradient(150deg,#6AA6F8 0%,#4C8DF6 50%,#2E6AF0 100%) }
+body.os-android .tdv-mp-ic{ left:16px; top:15px; width:40px; height:40px; padding:8px; box-sizing:border-box; border-radius:50%; background:rgba(255,255,255,.24) }
+body.os-android .tdv-mp-t{ left:18px; bottom:16px }
+body.os-android .tdv-mp-t b{ font-size:17px; font-weight:600 }

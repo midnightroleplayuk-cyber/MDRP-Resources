@@ -1,0 +1,475 @@
+/* Android: ecra bloqueado Nova UI, AOD, codigo, impressao digital, Now Bar. So atua com body.os-android. */
+
+/* ============================================================
+   NOVA UI 8.5: ECRÃ BLOQUEADO (lock.js buildAndroid)
+   Medidas do Figma da One UI 8.5 (451×978) passadas para os 440×956 do ecrã:
+     cadeado 24 a y 47 · data a 130 · relógio empilhado a 175 (112 px, entrelinha 82, 12 entre linhas)
+     widgets 138×62 a 376 · "Deslize para desbloquear" centrado a 824 · atalhos 48 e Now Bar 248×64 a 860.
+   Tudo o que é Android vive em body.os-android: o PearOS não muda um pixel.
+   Regras do CEF: sem backdrop-filter nem filter (o vidro é a cópia PRÉ-DESFOCADA do fundo, --wp-lock-blur, alinhada
+   com --gx/--gy pelo lock.js), sem color-mix, sem :has(); só transform/opacity animam; nada anima em ciclo.
+   As regras do PearOS para as mesmas classes (.lock-p1, .lock-notifs, .lock-np...) têm por vezes atributos e classes
+   de estado (data-clockalign, .nc-scroll, data-clocksize): onde isso acontece repete-se o seletor com o mesmo peso.
+   ============================================================ */
+
+/* ---------- geometria do relógio (o resto das posições deriva destas variáveis) ---------- */
+body.os-android #lock{ --als-fs:112px; --als-lh:82px; --als-gap:12px; --als-ct:175px;
+  --als-cb:calc(var(--als-ct) + 2 * var(--als-lh) + var(--als-gap));   /* fundo do relógio */
+  transition:opacity .34s var(--ou-curve-out), transform .46s var(--ou-curve-out) }
+body.os-android[data-clocksize="small"] #lock{ --als-fs:96px; --als-lh:70px; --als-gap:10px }
+body.os-android[data-clocksize="large"] #lock{ --als-fs:132px; --als-lh:97px; --als-gap:14px }
+body.os-android #lock[data-clockpos="middle"]{ --als-ct:316px }
+
+/* desbloquear: o ecrã bloqueado cresce um pouco e desvanece (a home entra por baixo). Sem filter */
+body.os-android #lock.out{ opacity:0; transform:scale(1.07); filter:none }
+
+/* ---------- vidro: cópia pré-desfocada do fundo + véu (Figma: rgba(23,23,26,.3) + blur 6/12, sem contorno claro) ----------
+   --als-tint é o véu de cada peça: widgets e Now Bar rgba(23,23,26,.3), atalhos rgba(55,55,55,.3) (cinzento, "glass weak").
+   O contorno do Figma é de .25 px rgba(55,55,55,.3): aqui um fio quase invisível, só para a peça não se perder em fundos lisos */
+body.os-android #lock [data-glass]{ --als-tint:rgba(23,23,26,.3);
+  background-color:transparent;
+  background-image:linear-gradient(var(--als-tint),var(--als-tint)), var(--wp-lock-blur, none);
+  background-repeat:no-repeat; background-size:auto, 440px 956px;
+  background-position:0 0, calc(-1 * var(--gx, 0px)) calc(-1 * var(--gy, 0px));
+  /* Nova UI 8.5: fio de luz em cima, aresta escura em baixo e o aro fino (so box-shadow, nunca filter) */
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.2), inset 0 -1px 0 rgba(0,0,0,.16), inset 0 0 0 .5px rgba(255,255,255,.1) }
+body.os-android #lock.als-lt [data-glass]{ box-shadow:inset 0 1px 0 rgba(255,255,255,.14), inset 0 -1px 0 rgba(0,0,0,.22), inset 0 0 0 .5px rgba(255,255,255,.08) }
+/* fundo claro: o texto dos cartões continua branco, por isso o véu escurece um pouco para se ler */
+body.os-android #lock.als-lt [data-glass]{ --als-tint:rgba(23,23,26,.42) }
+body.os-android #lock.als-lt .als-sc[data-glass]{ --als-tint:rgba(40,40,44,.4) }
+
+/* ---------- cadeado cheio 24 px a branco .8 (abre ao desbloquear; o reconhecimento facial anima-o) ---------- */
+body.os-android #lock .lock-face,body.os-android #lock.nc-scroll .lock-face{ position:absolute; left:0; right:0; top:50px; height:24px; margin:0; z-index:4; order:0;
+  display:flex; justify-content:center; align-items:center; color:#fff; opacity:.82; pointer-events:none }
+body.os-android #lock .lock-face svg{ width:24px; height:24px; filter:none }
+
+/* ---------- data + tempo + relógio empilhado ---------- */
+body.os-android #lock .als-top{ position:absolute; left:0; right:0; top:calc(var(--als-ct) - 45px); z-index:3; display:flex; flex-direction:column; align-items:center;
+  color:#fff; pointer-events:none; transform-origin:50% 0; transition:transform .42s var(--ou-curve-out), opacity .3s var(--ou-curve) }
+body.os-android #lock .als-top.wake{ animation:alsWake .5s var(--ou-curve-out) both }
+@keyframes alsWake{ from{ opacity:0; transform:translateY(10px) } to{ opacity:1; transform:none } }
+/* Figma: "Sat, May 3 · lua · 24°" a 24/400 com 10 entre as três peças; em pt-PT a data é mais comprida, fica a 23 */
+body.os-android #lock .als-date{ height:20px; margin-bottom:25px; display:flex; align-items:center; gap:10px; font-size:23px; font-weight:400; line-height:20px; letter-spacing:0;
+  white-space:nowrap; text-shadow:0 1px 8px rgba(0,0,0,.22) }
+body.os-android #lock .als-wx{ display:inline-flex; align-items:center; gap:10px }
+body.os-android #lock .als-wx:empty{ display:none }
+body.os-android #lock .als-wx svg{ width:20px; height:20px }
+body.os-android #lock .als-clock{ display:flex; flex-direction:column; align-items:center; gap:var(--als-gap);
+  font-family:var(--font-clock); font-size:var(--als-fs); line-height:var(--als-lh); font-weight:400; letter-spacing:-1px;
+  color:rgb(var(--clock-rgb, 255,255,255)); text-shadow:0 2px 14px rgba(0,0,0,.16) }
+body.os-android #lock .als-row{ display:flex; height:var(--als-lh) }
+body.os-android #lock .als-d{ position:relative; display:inline-block; height:var(--als-lh) }
+body.os-android #lock .als-d .n{ display:inline-block; transition:transform .34s var(--ou-curve-out), opacity .24s var(--ou-curve) }
+body.os-android #lock .als-d .n.in{ opacity:0; transform:translateY(16%) }
+body.os-android #lock .als-d .n.out{ position:absolute; left:0; top:0; opacity:0; transform:translateY(-16%) }
+/* estilos do relógio (editor): fonte → peso (o peso escolhido ganha à fonte, como no PearOS) */
+body.os-android[data-clockfont="thin"] #lock .als-clock{ font-weight:200 }
+body.os-android[data-clockfont="bold"] #lock .als-clock{ font-weight:800; letter-spacing:-2px }
+body.os-android[data-clockfont="rounded"] #lock .als-clock{ font-family:var(--font-rounded); font-weight:600; letter-spacing:-2px }
+body.os-android[data-clockfont="mono"] #lock .als-clock{ font-family:var(--font-mono); font-weight:500; letter-spacing:0 }
+body.os-android[data-clockweight="light"] #lock .als-clock{ font-weight:300 }
+body.os-android[data-clockweight="bold"] #lock .als-clock{ font-weight:700 }
+/* "Vidro" (o estilo de origem do PearOS) não existe na Nova UI: lê-se como cor cheia. Contorno = só o traço */
+body.os-android #lock[data-clockstyle="outline"] .als-clock{ color:transparent; -webkit-text-stroke:2px rgba(var(--clock-rgb, 255,255,255),.95); text-shadow:none }
+/* alinhamento à esquerda / direita: a coluna inteira (data, relógio, widgets) encosta a 34 px */
+body.os-android #lock[data-clockalign="left"] .als-top{ align-items:flex-start; padding-left:34px }
+body.os-android #lock[data-clockalign="left"] .als-clock{ align-items:flex-start }
+body.os-android #lock[data-clockalign="right"] .als-top{ align-items:flex-end; padding-right:34px }
+body.os-android #lock[data-clockalign="right"] .als-clock{ align-items:flex-end }
+
+/* fundo claro por trás do relógio (lock.js mede-o): TODO o texto do ecrã bloqueado passa a escuro de uma vez (data, ícone do
+   tempo, cadeado, relógio, dica, sensor), uma só cor para o ecrã inteiro, como a Nova UI faz sozinha. O relógio só muda se tiver
+   a cor de origem (.als-cw); os cartões de vidro ficam escuros (lêem-se bem em fundo claro) */
+body.os-android #lock.als-lt .als-top,body.os-android #lock.als-lt .lock-face{ color:#15171B }
+body.os-android #lock.als-lt .als-date{ text-shadow:0 1px 8px rgba(255,255,255,.3) }
+body.os-android #lock.als-lt.als-cw .als-clock{ color:rgba(21,23,27,.92); text-shadow:0 2px 14px rgba(255,255,255,.18) }
+body.os-android #lock.als-lt.als-cw[data-clockstyle="outline"] .als-clock{ color:transparent; -webkit-text-stroke-color:rgba(21,23,27,.9) }
+body.os-android #lock.als-lt .als-hint,body.os-android #lock.als-lt .als-tip{ color:rgba(21,23,27,.88); text-shadow:0 1px 6px rgba(255,255,255,.35) }
+body.os-android #lock.als-lt .als-fp{ color:rgba(21,23,27,.86) }
+body.os-android #lock.als-lt .als-fp-ring{ border-color:rgba(21,23,27,.85); background:rgba(0,0,0,.06) }
+body.os-android #lock.als-lt .als-nb-dots i{ background:rgba(21,23,27,.3) } body.os-android #lock.als-lt .als-nb-dots i.on{ background:rgba(21,23,27,.85) }
+
+/* ---------- widgets (cartões de vidro 138×62, raio 20, 16 entre eles) ---------- */
+body.os-android #lock .lock-widgets,body.os-android #lock[data-clockalign] .lock-widgets,body.os-android #lock.nc-scroll .lock-widgets{ position:absolute; left:0; right:0; top:calc(var(--als-cb) + 25px);
+  height:62px; margin:0; padding:0 20px; display:flex; justify-content:center; gap:16px; z-index:2; transition:opacity .3s var(--ou-curve), transform .42s var(--ou-curve-out) }
+body.os-android #lock[data-clockalign="left"] .lock-widgets{ justify-content:flex-start; padding-left:34px }
+body.os-android #lock[data-clockalign="right"] .lock-widgets{ justify-content:flex-end; padding-right:34px }
+body.os-android #lock .lock-widgets[data-n="3"]{ gap:8px; padding:0 14px }
+/* Figma (cartão de atividade): padding 10 à esquerda e 14 à direita, 10 entre o glifo e o texto; sem fundo atrás do glifo */
+body.os-android #lock .als-w{ flex:none; width:138px; height:62px; box-sizing:border-box; border-radius:20px; padding:0 14px 0 10px; display:flex; align-items:center; gap:8px;
+  color:#fff; cursor:pointer; overflow:hidden; transition:opacity .2s }
+body.os-android #lock .lock-widgets[data-n="3"] .als-w{ width:132px; padding:0 10px 0 8px; gap:6px }
+body.os-android #lock .lock-widgets[data-n="3"] .als-wi{ width:38px; height:38px } body.os-android #lock .lock-widgets[data-n="3"] .als-wi svg{ width:23px; height:23px }
+body.os-android #lock .lock-widgets[data-n="3"] .als-wt b{ font-size:15px } body.os-android #lock .lock-widgets[data-n="3"] .als-wt span{ font-size:11px; letter-spacing:-.1px }
+body.os-android #lock .als-w:active{ opacity:.78 }
+body.os-android #lock .als-wi{ position:relative; flex:none; width:42px; height:42px; display:flex; align-items:center; justify-content:center }
+body.os-android #lock .als-wi svg{ width:25px; height:25px }
+/* medidor da bateria (Figma 50×48): arco de 270° aberto em baixo, calha branca .3 e carga branca .85, traço grosso com pontas redondas */
+body.os-android #lock .als-wi.arc > svg:not(.als-arc){ width:17px; height:17px; margin-top:-1px }
+body.os-android #lock .lock-widgets[data-n="3"] .als-wi.arc > svg:not(.als-arc){ width:16px; height:16px }
+body.os-android #lock .als-arc{ position:absolute; left:-3px; top:-3px; width:48px!important; height:48px!important; fill:none; stroke-width:4.6; stroke-linecap:round }
+body.os-android #lock .lock-widgets[data-n="3"] .als-arc{ width:44px!important; height:44px!important }
+body.os-android #lock .als-arc circle{ stroke:rgba(255,255,255,.3) }
+body.os-android #lock .als-arc circle.v{ stroke:rgba(255,255,255,.88) }
+body.os-android #lock .als-wt{ min-width:0; display:flex; flex-direction:column; gap:1px }
+body.os-android #lock .als-wt b{ font-size:16px; font-weight:600; line-height:19px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; font-variant-numeric:tabular-nums }
+body.os-android #lock .als-wt span{ font-size:12px; font-weight:600; line-height:15px; color:rgba(255,255,255,.8); white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+
+/* ---------- notificações: a caixa fica entre os widgets e o fundo; os CARTÕES são do painel (notify.js / oneui-panel.css) ----------
+   A .lock-notifs vive dentro de .als-nbox, que é quem tem a geometria. Os !important são só os da geometria da caixa interior:
+   o PearOS posiciona-a com seletores de peso (1,4,1) (relógio ao meio + "A tocar" + tamanho) que na Nova UI não fazem sentido.
+   Na Nova UI as notificações descem a partir do relógio (a mais recente em cima) e esbatem-se em baixo. */
+body.os-android #lock .als-nbox{ position:absolute; left:0; right:0; top:calc(var(--als-cb) + 28px); bottom:150px; z-index:2; pointer-events:none; transition:opacity .3s var(--ou-curve) }
+body.os-android #lock.als-hasw .als-nbox{ top:calc(var(--als-cb) + 25px + 62px + 18px) }
+body.os-android #lock.als-fpon .als-nbox{ bottom:184px }
+body.os-android #lock .als-nbox .lock-notifs{ position:absolute!important; top:0!important; bottom:0!important; left:0!important; right:0!important; max-height:none!important;
+  padding:2px 16px 18px; flex-direction:column; justify-content:flex-start; overflow-y:auto; overscroll-behavior:contain;
+  -webkit-mask-image:linear-gradient(180deg,#000 0,#000 calc(100% - 34px),transparent 100%); mask-image:linear-gradient(180deg,#000 0,#000 calc(100% - 34px),transparent 100%) }
+body.os-android .screen.peek1 #lock .als-nbox .lock-notifs{ justify-content:flex-start; -webkit-mask-image:none; mask-image:none }
+/* lista aberta maior do que a caixa (notify.js põe #lock.nc-scroll): o relógio sobe e encolhe, os widgets saem e a caixa cresce para cima */
+body.os-android #lock.nc-scroll .als-top{ transform:translateY(-36px) scale(.5) }
+body.os-android #lock .als-date{ transition:opacity .25s var(--ou-curve) }
+body.os-android #lock.nc-scroll .als-date{ opacity:0 }
+body.os-android #lock.nc-scroll .lock-widgets{ opacity:0; pointer-events:none; transform:translateY(-20px) }
+body.os-android #lock.nc-scroll .als-nbox{ top:236px }
+
+/* ---------- dica, impressão digital, atalhos e Now Bar ---------- */
+body.os-android #lock .als-hint{ position:absolute; left:0; right:0; top:814px; height:20px; text-align:center; font-size:16px; font-weight:400; line-height:20px; color:#fff;
+  text-shadow:0 1px 6px rgba(0,0,0,.32); pointer-events:none; transition:opacity .25s var(--ou-curve) }
+body.os-android #lock.als-fpon .als-hint{ opacity:0 }
+body.os-android #lock .als-hint.nudge{ animation:alsNudge .46s var(--ou-curve-out) }
+@keyframes alsNudge{ 0%{ transform:none } 35%{ transform:translateY(-7px) } 100%{ transform:none } }
+body.os-android #lock .als-tip{ position:absolute; left:28px; right:28px; top:746px; text-align:center; font-size:14px; font-weight:500; line-height:19px; color:#fff;
+  text-shadow:0 1px 6px rgba(0,0,0,.4); pointer-events:none; opacity:0; transform:translateY(6px); transition:opacity .25s var(--ou-curve), transform .3s var(--ou-curve-out) }
+body.os-android #lock .als-tip.on{ opacity:1; transform:none }
+
+/* sensor no ecrã: ícone discreto ao centro, por cima do teclado do PIN também (fica fora do .lock-p1/.lock-p2) */
+body.os-android #lock .als-fp{ position:absolute; left:50%; top:784px; width:56px; height:56px; margin-left:-28px; z-index:8; display:none; align-items:center; justify-content:center;
+  border-radius:50%; color:rgba(255,255,255,.92); cursor:pointer; -webkit-tap-highlight-color:transparent; transition:opacity .3s var(--ou-curve) }
+body.os-android #lock.als-fpon .als-fp{ display:flex }
+body.os-android #lock .als-fpg{ position:relative; z-index:1; width:42px; height:42px; filter:none; transition:transform .3s var(--ou-curve-out), opacity .2s }
+/* anel de leitura: só transform/opacity (aparece ao tocar, cresce durante os 450 ms e some ao reconhecer) */
+body.os-android #lock .als-fp-ring{ position:absolute; inset:-5px; border-radius:50%; border:2px solid rgba(255,255,255,.95); background:rgba(255,255,255,.10);
+  opacity:0; transform:scale(.7); transition:opacity .18s var(--ou-curve), transform .2s var(--ou-curve) }
+body.os-android #lock .als-fp.read .als-fp-ring{ opacity:1; transform:scale(1); transition:opacity .15s var(--ou-curve), transform .45s linear }
+body.os-android #lock .als-fp.read .als-fpg{ transform:scale(.9) }
+body.os-android #lock .als-fp.ok .als-fp-ring{ opacity:0; transform:scale(1.3); transition:opacity .22s var(--ou-curve), transform .26s var(--ou-curve-out) }
+body.os-android #lock .als-fp.ok .als-fpg{ opacity:0; transform:scale(1.1) }
+body.os-android #lock.out .als-fp,body.os-android #lock.ok .als-fp{ opacity:0; pointer-events:none }
+body.os-android .screen.aod #lock .als-fp{ opacity:.5; pointer-events:none }
+
+/* atalhos 47 px redondos (Figma: vidro cinzento rgba(55,55,55,.3) + blur 6, glifo cheio de 24), em baixo à esquerda e à direita,
+   ao centro da linha de 64 da Now Bar; arrastam-se para abrir */
+body.os-android #lock .lock-shortcuts,body.os-android #lock[data-clockalign] .lock-shortcuts{ position:absolute; left:30px; right:30px; top:868.5px; bottom:auto; height:47px; display:flex; justify-content:space-between; z-index:3 }
+body.os-android #lock .als-sc{ position:relative; width:47px; height:47px; border-radius:50%; display:flex; align-items:center; justify-content:center; color:#fff; cursor:pointer;
+  -webkit-tap-highlight-color:transparent; transition:transform .32s var(--ou-curve-out), background-color .2s var(--ou-curve), color .2s }
+body.os-android #lock .als-sc[data-glass]{ --als-tint:rgba(55,55,55,.3) }
+body.os-android #lock .als-sc > svg{ position:relative; z-index:1; width:24px; height:24px }
+body.os-android #lock .als-sc.none{ visibility:hidden }
+body.os-android #lock .als-sc.on{ background-image:none; background-color:#fff; color:#000 }
+/* premir: o circulo passa a quadrado arredondado (Material 3 Expressive) e volta ao largar */
+body.os-android #lock .als-sc{ transition:transform .32s var(--ou-curve-out), background-color .2s var(--ou-curve), color .2s, border-radius .15s var(--ou-curve) }
+body.os-android #lock .als-sc.press{ border-radius:16px }
+body.os-android #lock .als-sc-r{ position:absolute; inset:0; border-radius:50%; background:rgba(255,255,255,.2); pointer-events:none;
+  opacity:calc(var(--sc-k, 0) * .9); transform:scale(calc(1 + var(--sc-k, 0) * 1.5)) }
+body.os-android #lock .als-sc.press .als-sc-r{ opacity:calc(.35 + var(--sc-k, 0) * .55) }
+body.os-android #lock .als-sc.fire .als-sc-r{ opacity:0; transform:scale(3.2); transition:transform .28s var(--ou-curve-out), opacity .28s }
+
+/* Now Bar: pílula de vidro de 64 que ocupa a linha dos atalhos entre os dois (Figma: flex 1, 14 de cada lado; véu
+   rgba(23,23,26,.3) + blur 12, padding 12 / 18 / 12 / 12, 14 entre peças, ícone 40 redondo, título 16/600 e subtítulo 12/500) */
+body.os-android #lock .lock-np{ position:absolute; left:91px; right:91px; top:860px; bottom:auto; width:auto; height:64px; display:block; z-index:3;
+  opacity:0; transform:translateY(10px); pointer-events:none; transition:opacity .28s var(--ou-curve), transform .38s var(--ou-curve-out) }
+body.os-android #lock .lock-np.on{ opacity:1; transform:none; pointer-events:auto }
+body.os-android #lock .als-nb{ position:relative; height:64px; border-radius:999px; overflow:hidden; color:#fff; cursor:pointer; -webkit-tap-highlight-color:transparent; transition:opacity .15s, transform .3s var(--ou-curve-out) }
+body.os-android #lock .als-nb.press{ opacity:.86; transform:scale(.985) }
+/* Now Bar: sombra funda para a pilula flutuar sobre o fundo (a aresta e o fio de luz vem do [data-glass]) */
+body.os-android #lock .lock-np .als-nb{ box-shadow:inset 0 1px 0 rgba(255,255,255,.22), inset 0 -1px 0 rgba(0,0,0,.18), inset 0 0 0 .5px rgba(255,255,255,.1), 0 8px 24px rgba(0,0,0,.2) }
+body.os-android #lock .als-nb-in{ height:100%; box-sizing:border-box; display:flex; align-items:center; gap:14px; padding:12px 18px 12px 12px }
+body.os-android #lock .als-nb-in.swap{ animation:alsSwap .3s var(--ou-curve-out) }
+@keyframes alsSwap{ from{ opacity:0; transform:translateX(12px) } to{ opacity:1; transform:none } }
+body.os-android #lock .als-nb-ic{ flex:none; width:40px; height:40px; border-radius:20px; display:flex; align-items:center; justify-content:center; color:#fff; background:rgba(255,255,255,.18) center/cover no-repeat }
+body.os-android #lock .als-nb-ic svg{ width:20px; height:20px }
+body.os-android #lock .als-nb-ic.als-k-call{ background-color:#2DBE60 } body.os-android #lock .als-nb-ic.als-k-nav{ background-color:#0C8FAE } body.os-android #lock .als-nb-ic.als-k-timer{ background-color:#FF8A1F }
+body.os-android #lock .als-nb-ic.als-k-charge{ background-color:#4ED877; color:#0B3D1C }
+body.os-android #lock .als-nb-tx{ flex:1; min-width:0; display:flex; flex-direction:column; gap:3px }
+body.os-android #lock .als-nb-tx b{ font-size:16px; font-weight:600; line-height:18px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+body.os-android #lock .als-nb-tx span{ font-size:12px; font-weight:500; line-height:14px; color:#fff; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; font-variant-numeric:tabular-nums }
+body.os-android #lock .als-nb-tx span:empty{ display:none }
+body.os-android #lock .als-nb-act{ flex:none; width:32px; height:32px; margin-right:-6px; border-radius:50%; display:flex; align-items:center; justify-content:center; color:#fff }
+body.os-android #lock .als-nb-act:empty{ display:none }
+body.os-android #lock .als-nb-act svg{ width:24px; height:24px }
+body.os-android #lock .als-nb-act.als-a-end{ background:#F2453D } body.os-android #lock .als-nb-act.als-a-end svg{ width:19px; height:19px }
+body.os-android #lock .als-nb-dots{ position:absolute; left:0; right:0; top:71px; display:flex; justify-content:center; gap:5px; pointer-events:none }
+body.os-android #lock .als-nb-dots i{ width:5px; height:5px; border-radius:50%; background:rgba(255,255,255,.4); transition:background .2s }
+body.os-android #lock .als-nb-dots i.on{ background:#fff }
+
+/* cartão do leitor (toque na Now Bar com música): por cima da linha de baixo, entra de baixo. Figma (Media Player Card):
+   408×180, raio 36, padding 14 / 29 (aqui 24 dos lados), véu com a cor da capa (lock.js põe --als-tint a partir de cur.c) */
+body.os-android #lock .als-mx{ position:absolute; left:16px; right:16px; top:664px; height:180px; box-sizing:border-box; padding:18px 24px 14px; border-radius:36px; z-index:4; color:#fff;
+  display:flex; flex-direction:column; opacity:0; transform:translateY(16px); pointer-events:none; transition:opacity .24s var(--ou-curve), transform .34s var(--ou-curve-out);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.22), inset 0 -1px 0 rgba(0,0,0,.2), inset 0 0 0 .5px rgba(255,255,255,.1), 0 14px 36px rgba(0,0,0,.26) }
+body.os-android #lock .als-mx.on{ opacity:1; transform:none; pointer-events:auto }
+body.os-android #lock .als-mx-top{ display:flex; align-items:center; gap:12px; cursor:pointer }
+body.os-android #lock .als-mx-art{ flex:none; width:52px; height:52px; border-radius:12px; background:#2A2A2E center/cover no-repeat }
+body.os-android #lock .als-mx-tx{ flex:1; min-width:0; display:flex; flex-direction:column }
+body.os-android #lock .als-mx-tx b{ font-size:16px; font-weight:600; line-height:20px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+body.os-android #lock .als-mx-tx span{ font-size:13px; line-height:17px; color:rgba(255,255,255,.75); white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+body.os-android #lock .als-mx-app{ flex:none; width:30px; height:30px; border-radius:50%; display:flex; align-items:center; justify-content:center; background:rgba(255,255,255,.16) }
+body.os-android #lock .als-mx-app svg{ width:16px; height:16px }
+body.os-android #lock .als-mx-bar{ position:relative; height:4px; margin-top:16px; border-radius:2px; background:rgba(255,255,255,.26); overflow:hidden }
+body.os-android #lock .als-mx-bar i{ position:absolute; inset:0; background:#fff; transform-origin:0 50%; transform:scaleX(0); transition:transform 1s linear }
+body.os-android #lock .als-mx-tm{ display:flex; justify-content:space-between; margin-top:5px; font-size:11px; font-weight:500; color:rgba(255,255,255,.7); font-variant-numeric:tabular-nums }
+body.os-android #lock .als-mx-ctl{ display:flex; justify-content:center; align-items:center; gap:34px; margin-top:2px }
+body.os-android #lock .als-mx-ctl div{ width:40px; height:40px; display:flex; align-items:center; justify-content:center; border-radius:50%; cursor:pointer; transition:background-color .15s }
+body.os-android #lock .als-mx-ctl div:active{ background-color:rgba(255,255,255,.16) }
+body.os-android #lock .als-mx-ctl svg{ width:26px; height:26px } body.os-android #lock .als-mx-ctl .pp svg{ width:32px; height:32px }
+/* Nova UI 9 (One UI 9: o leitor do bloqueado ganhou botoes redondos para anterior / reproduzir / seguinte e uma barra maior;
+   a Now Bar passou a um fundo mais escuro): so desenho, a marcacao e do lock.js */
+body.os-android #lock .lock-np .als-nb,body.os-android #lock.als-lt .lock-np .als-nb{ --als-tint:rgba(12,12,16,.52) }
+body.os-android #lock .als-mx-ctl{ gap:22px; margin-top:2px }
+body.os-android #lock .als-mx-ctl div{ width:46px; height:46px; background:rgba(255,255,255,.18) }
+body.os-android #lock .als-mx-ctl div:active{ background-color:rgba(255,255,255,.3) }
+body.os-android #lock .als-mx-ctl .pp{ width:56px; height:56px; background:#fff; color:#141418 }
+body.os-android #lock .als-mx-ctl .pp:active{ background-color:#E6E6EA }
+body.os-android #lock .als-mx-ctl svg{ width:22px; height:22px } body.os-android #lock .als-mx-ctl .pp svg{ width:26px; height:26px }
+body.os-android #lock .als-mx-bar{ height:6px; margin-top:12px; border-radius:3px }
+
+/* ---------- teclado do PIN (Nova UI): fundo desfocado escuro, cadeado, título, campo com pontos, 3×4 sem círculos ---------- */
+body.os-android #lock .lock-p2{ transform:translateY(28px); transition:transform .4s var(--ou-curve-out), opacity .26s var(--ou-curve) }
+/* body.os-android soma uma classe: os estados do PearOS (#lock.pin, #lock.ok) têm de ser repetidos aqui para ganharem */
+body.os-android #lock.pin .lock-p2{ transform:none }
+body.os-android #lock.ok .lock-p2{ transform:scale(.96); opacity:0; transition:transform .3s var(--ou-curve), opacity .22s }
+body.os-android #lock.pin .lock-face{ opacity:0 }
+body.os-android #lock.pin .lock-p2::before{ background:linear-gradient(rgba(0,0,0,.44),rgba(0,0,0,.44)), var(--wp-lock-blur2, var(--wp-lock-blur, #141416)) center/cover no-repeat }
+body.os-android #lock.pin .lock-p1{ opacity:0; transform:scale(.97); pointer-events:none }
+body.os-android #lock.pin .als-top{ opacity:0; transform:translateY(-14px) scale(.96) }
+body.os-android #lock .als-ph{ position:absolute; left:24px; right:24px; top:126px; display:flex; flex-direction:column; align-items:center; text-align:center; color:#fff }
+body.os-android #lock .als-ph-lk{ opacity:.82 } body.os-android #lock .als-ph-lk svg{ width:24px; height:24px }
+body.os-android #lock .als-pt{ margin-top:16px; font-family:var(--font-display); font-size:22px; font-weight:400; line-height:28px; letter-spacing:.1px }
+body.os-android #lock .als-ps{ margin-top:8px; min-height:20px; font-size:15px; font-weight:400; line-height:20px; color:rgba(255,255,255,.78) }
+body.os-android #lock .als-ps.err{ color:#FF8A80 }
+body.os-android #lock .als-field{ position:absolute; left:84px; right:84px; top:262px; height:52px; display:flex; align-items:center; justify-content:center }
+body.os-android #lock .als-field::after{ content:''; position:absolute; left:0; right:0; bottom:0; height:1.5px; border-radius:1px; background:rgba(255,255,255,.5) }
+body.os-android #lock .als-dots{ display:flex; align-items:center; gap:16px; height:14px }
+body.os-android #lock .als-dots.six{ gap:13px }
+body.os-android #lock .als-dot{ display:none; width:13px; height:13px; border-radius:50%; background:#fff }
+body.os-android #lock .als-dot.on{ display:block }
+body.os-android #lock .als-dot.pop{ animation:alsDot .22s var(--ou-curve-out) }
+@keyframes alsDot{ from{ transform:scale(.3); opacity:0 } to{ transform:none; opacity:1 } }
+body.os-android #lock .als-dots.err .als-dot{ background:#FF8A80 }
+body.os-android #lock .als-dots.shake{ animation:alsShake .46s cubic-bezier(.36,.07,.19,.97) }
+@keyframes alsShake{ 15%,85%{ transform:translateX(-3px) } 30%,70%{ transform:translateX(7px) } 45%{ transform:translateX(-9px) } 60%{ transform:translateX(9px) } }
+body.os-android #lock .als-pad{ position:absolute; left:34px; right:34px; top:404px; display:grid; grid-template-columns:repeat(3,1fr); grid-auto-rows:88px; transition:opacity .3s }
+body.os-android #lock.als-fpon .als-pad{ top:368px; grid-auto-rows:84px }
+body.os-android #lock.cool .als-pad{ opacity:.32; pointer-events:none }
+body.os-android #lock.cool .als-field{ opacity:.4 }
+body.os-android #lock .als-key{ position:relative; display:flex; flex-direction:column; align-items:center; justify-content:center; color:#fff; cursor:pointer; user-select:none; -webkit-tap-highlight-color:transparent }
+/* toque: um círculo claro aparece por trás do dígito (só opacity/transform; a tecla não tem círculo em repouso) */
+body.os-android #lock .als-key::before{ content:''; position:absolute; left:50%; top:50%; width:76px; height:76px; margin:-38px 0 0 -38px; border-radius:50%; background:rgba(255,255,255,.2);
+  opacity:0; transform:scale(.82); transition:opacity .3s var(--ou-curve), transform .3s var(--ou-curve-out); pointer-events:none }
+body.os-android #lock .als-key.pressed::before,body.os-android #lock .als-key:active::before{ opacity:1; transform:none; transition:opacity .05s, transform .1s }
+body.os-android #lock .als-kn{ position:relative; font-family:var(--font-display); font-size:34px; font-weight:400; line-height:38px }
+body.os-android #lock .als-kl{ position:relative; min-height:13px; font-size:10.5px; font-weight:600; letter-spacing:1.6px; line-height:13px; color:rgba(255,255,255,.62) }
+body.os-android #lock .als-kdel svg{ position:relative; width:28px; height:28px }
+body.os-android #lock .als-kok{ font-size:19px; font-weight:600; letter-spacing:.4px }
+body.os-android #lock .als-pfoot{ position:absolute; left:0; right:0; bottom:70px; display:flex; justify-content:space-between; padding:0 34px; font-size:16px; font-weight:500; color:#fff }
+body.os-android #lock .als-pfoot span{ padding:8px 6px; cursor:pointer; transition:opacity .15s }
+body.os-android #lock .als-pfoot span:active{ opacity:.55 }
+
+/* ---------- NOVA dobrável (contrato v2): o ecrã bloqueado fechado (670) e aberto (1340) ----------
+   O desenho é o do S26 (tudo ao centro); muda só o que não pode esticar com o ecrã: o vidro (a cópia do fundo tem o tamanho
+   do ecrã), a Now Bar, o cartão do leitor, a caixa das notificações e o teclado do PIN ficam com a largura de um telemóvel ao
+   centro. Os atalhos continuam nos cantos de baixo (como a Nova UI num ecrã grande). */
+body.os-android.form-fold #lock [data-glass]{ background-size:auto, var(--screen-w) 956px }
+body.os-android.form-fold #lock .lock-np{ left:calc(50% - 129px); right:calc(50% - 129px) }
+body.os-android.form-fold #lock .als-mx{ left:calc(50% - 204px); right:calc(50% - 204px) }
+body.os-android.form-fold #lock .als-nbox{ left:calc(50% - 270px); right:calc(50% - 270px) }
+body.os-android.form-fold #lock .als-tip{ left:calc(50% - 192px); right:calc(50% - 192px) }
+body.os-android.form-fold #lock .als-field{ left:calc(50% - 136px); right:calc(50% - 136px) }
+body.os-android.form-fold #lock .als-pad{ left:calc(50% - 186px); right:calc(50% - 186px) }
+body.os-android.form-fold #lock .als-pfoot{ left:calc(50% - 220px); right:calc(50% - 220px) }
+body.os-android.form-fold #lock .als-ph{ left:calc(50% - 196px); right:calc(50% - 196px) }
+/* aberto: tudo um pouco mais acima (o ecrã é baixo e largo) e o relógio empilhado um pouco maior */
+body.os-android.form-fold.fold-open #lock{ --als-ct:150px; --als-fs:120px; --als-lh:88px }
+body.os-android.form-fold.fold-open[data-clocksize="small"] #lock{ --als-fs:102px; --als-lh:75px }
+body.os-android.form-fold.fold-open[data-clocksize="large"] #lock{ --als-fs:140px; --als-lh:103px }
+body.os-android.form-fold.fold-open #lock[data-clockpos="middle"]{ --als-ct:280px }
+
+/* ---------- ALWAYS ON DISPLAY (hardware.js paintAOD, dentro do véu .screen-off) ----------
+   Na Nova UI o AOD repete o ecrã bloqueado no mesmo sítio e mais esbatido: a data por cima (23/400), o relógio na mesma fonte
+   e peso, e por baixo a bateria e os ícones das apps com notificações. Só cor e posição: a marcação é do hardware.js */
+body.os-android .screen-off.aod .aod-wrap{ top:130px }
+body.os-android .screen-off.aod .aod-date{ order:-1; margin:0 0 24px; height:20px; font-size:23px; font-weight:400; line-height:20px; color:rgba(255,255,255,.72); white-space:nowrap }
+/* algarismos proporcionais, como os do ecrã bloqueado (os tabulares da Outfit têm o "1" com pé e liam-se como outra fonte) */
+body.os-android .screen-off.aod .aod-clock{ font-size:104px; font-weight:400; line-height:96px; letter-spacing:-1px; font-variant-numeric:normal; color:rgba(255,255,255,.86) }
+body.os-android .screen-off.aod .aod-batt{ margin-top:24px; font-size:14px; color:rgba(255,255,255,.6) }
+body.os-android .screen-off.aod .aod-notifs{ margin-top:20px; color:rgba(255,255,255,.7) }
+
+/* ============================================================
+   EDITOR DO ECRÃ BLOQUEADO (lockgallery.js, Android)
+   O ecrã fica em tamanho real com as zonas editáveis contornadas; "Cancelar" / "Concluído" em cima, "Fundo" em baixo;
+   tocar numa zona sobe a folha com as opções dela. A folha é opaca (sem desfoque) e sobe por transform.
+   ============================================================ */
+body.os-android .als-ed{ position:absolute; inset:0; z-index:62; pointer-events:none; opacity:0; transition:opacity .28s var(--ou-curve) }
+/* trocar para o PearOS depois de abrir o editor: o .als-ed fica no #screen sem estilo (bloco estatico com "Cancelar / Concluido" por baixo das camadas) */
+body:not(.os-android) .als-ed{ display:none }
+body.os-android .als-ed.on{ opacity:1 }
+body.os-android .als-ed.on .als-ed-top,body.os-android .als-ed.on .als-ed-wbtn,body.os-android .als-ed.on .als-ed-sheet.on{ pointer-events:auto }
+body.os-android .als-ed-top{ position:absolute; left:0; right:0; top:54px; height:40px; display:flex; justify-content:space-between; align-items:center; padding:0 12px;
+  transform:translateY(-8px); transition:transform .34s var(--ou-curve-out) }
+body.os-android .als-ed.on .als-ed-top{ transform:none }
+body.os-android .als-ed-b{ height:38px; padding:0 16px; border-radius:19px; display:flex; align-items:center; font-size:16px; font-weight:600; color:#fff; cursor:pointer;
+  text-shadow:0 1px 6px rgba(0,0,0,.4); transition:background-color .15s }
+body.os-android .als-ed-b:active{ background-color:rgba(255,255,255,.18) }
+body.os-android .als-ed-wall{ position:absolute; left:0; right:0; top:866px; display:flex; justify-content:center; transition:opacity .22s var(--ou-curve), transform .3s var(--ou-curve-out) }
+body.os-android .als-ed.als-ed-sh .als-ed-wall{ opacity:0; transform:translateY(10px) }
+body.os-android .als-ed.als-ed-sh .als-ed-wbtn{ pointer-events:none }
+body.os-android .als-ed-wbtn{ height:46px; padding:0 22px 0 18px; border-radius:23px; display:flex; align-items:center; gap:8px; color:#fff; font-size:15px; font-weight:600; cursor:pointer;
+  background:rgba(23,23,26,.62); box-shadow:inset 0 0 0 .5px rgba(255,255,255,.22), 0 6px 18px rgba(0,0,0,.22); transition:background-color .15s }
+body.os-android .als-ed-wbtn:active{ background-color:rgba(60,60,66,.8) }
+body.os-android .als-ed-wbtn svg{ width:20px; height:20px }
+/* a folha */
+body.os-android .als-ed-sheet{ position:absolute; left:0; right:0; bottom:0; max-height:500px; box-sizing:border-box; display:flex; flex-direction:column; color:var(--label);
+  background:var(--ou-surface); border-radius:28px 28px 0 0; box-shadow:0 -10px 30px rgba(0,0,0,.28); padding-bottom:calc(var(--safe-bottom, 20px) + 6px);
+  transform:translateY(106%); transition:transform .4s var(--ou-curve-out) }
+body.os-android .als-ed-sheet.on{ transform:none }
+body.os-android .als-ed-grab{ flex:none; width:36px; height:4px; border-radius:2px; background:var(--label4); margin:8px auto 0 }
+body.os-android .als-ed-head{ flex:none; display:flex; align-items:center; justify-content:space-between; padding:8px 18px 2px 24px }
+body.os-android .als-ed-head b{ font-family:var(--font-display); font-size:20px; font-weight:600 }
+body.os-android .als-ed-ok{ font-size:16px; font-weight:600; color:var(--ou-blue); padding:8px 8px; cursor:pointer }
+body.os-android .als-ed-body{ min-height:0; overflow-y:auto; overscroll-behavior:contain; padding:0 20px 8px; scrollbar-width:none }
+body.os-android .als-ed-body::-webkit-scrollbar{ display:none }
+body.os-android .als-ed-sec{ margin-top:14px; min-width:0 }
+body.os-android .als-ed-st{ font-size:13px; font-weight:600; color:var(--label2); margin:0 4px 8px }
+body.os-android .als-ed-sec.cur .als-ed-st{ color:var(--ou-blue) }
+/* estilos do relógio: mini relógios empilhados sobre o fundo do próprio ecrã (cópia desfocada) */
+body.os-android .als-ed-styles{ display:flex; gap:10px; overflow-x:auto; scrollbar-width:none; margin:0 -20px; padding:3px 20px 4px }
+body.os-android .als-ed-styles::-webkit-scrollbar{ display:none }
+body.os-android .als-ed-sty{ position:relative; flex:none; width:82px; height:104px; border-radius:18px; cursor:pointer; overflow:hidden;
+  background:linear-gradient(rgba(0,0,0,.18),rgba(0,0,0,.18)), var(--wp-lock-blur, #2A2A2E) center/cover no-repeat }
+body.os-android .als-ed-sty::after{ content:''; position:absolute; inset:0; border-radius:18px; box-shadow:inset 0 0 0 2.5px var(--ou-blue); opacity:0; transition:opacity .2s }
+body.os-android .als-ed-sty.on::after{ opacity:1 }
+body.os-android .als-ed-mini{ display:flex; flex-direction:column; align-items:center; gap:2px; padding-top:13px; font-family:var(--font-clock); font-size:31px; line-height:26px; font-weight:400; color:#fff; letter-spacing:-.5px }
+body.os-android .als-ed-sty[data-f="thin"] .als-ed-mini{ font-weight:200 }
+body.os-android .als-ed-sty[data-f="bold"] .als-ed-mini{ font-weight:800 }
+body.os-android .als-ed-sty[data-f="rounded"] .als-ed-mini{ font-family:var(--font-rounded); font-weight:600 }
+body.os-android .als-ed-sty[data-f="mono"] .als-ed-mini{ font-family:var(--font-mono); font-weight:500; font-size:27px; letter-spacing:0 }
+body.os-android .als-ed-sty[data-s="outline"] .als-ed-mini{ color:transparent; -webkit-text-stroke:1.2px #fff }
+body.os-android .als-ed-sty i{ position:absolute; left:4px; right:4px; bottom:9px; text-align:center; font-style:normal; font-size:11px; font-weight:600; color:rgba(255,255,255,.88); white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+/* cores */
+body.os-android .als-ed-colors{ display:flex; justify-content:space-between; padding:0 2px }
+body.os-android .als-ed-colors > div{ width:40px; height:40px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; box-shadow:inset 0 0 0 2px transparent; transition:box-shadow .2s }
+body.os-android .als-ed-colors > div i{ width:30px; height:30px; border-radius:50%; box-shadow:inset 0 0 0 1px rgba(128,128,128,.35) }
+body.os-android .als-ed-colors > div.on{ box-shadow:inset 0 0 0 2px var(--ou-blue) }
+/* segmentados (dois por linha) */
+body.os-android .als-ed-two{ display:grid; grid-template-columns:1fr 1fr; gap:12px }
+body.os-android .als-ed-seg{ display:flex; height:38px; box-sizing:border-box; border-radius:19px; background:var(--fill3); padding:3px; gap:2px }
+body.os-android .als-ed-seg > div{ flex:1; min-width:0; display:flex; align-items:center; justify-content:center; border-radius:16px; font-size:12.5px; font-weight:600; color:var(--label2);
+  cursor:pointer; white-space:nowrap; overflow:hidden; transition:background-color .2s, color .2s }
+body.os-android .als-ed-seg > div.on{ background:var(--ou-blue); color:#fff }
+/* widgets */
+body.os-android .als-ed-grid{ display:grid; grid-template-columns:1fr 1fr; gap:10px }
+body.os-android .als-ed-opt{ position:relative; height:58px; box-sizing:border-box; border-radius:18px; background:var(--fill4); display:flex; align-items:center; gap:10px; padding:0 12px;
+  font-size:14px; font-weight:500; cursor:pointer; box-shadow:inset 0 0 0 1.5px transparent; transition:box-shadow .2s, background-color .2s }
+body.os-android .als-ed-opt span{ min-width:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+body.os-android .als-ed-oi{ flex:none; width:36px; height:36px; border-radius:50%; background:var(--fill3); display:flex; align-items:center; justify-content:center }
+body.os-android .als-ed-oi svg{ width:20px; height:20px }
+body.os-android .als-ed-opt i{ flex:none; margin-left:auto; width:22px; height:22px; border-radius:50%; display:flex; align-items:center; justify-content:center; color:transparent; box-shadow:inset 0 0 0 1.5px var(--label4) }
+body.os-android .als-ed-opt i svg{ width:14px; height:14px }
+body.os-android .als-ed-opt.on{ box-shadow:inset 0 0 0 1.5px var(--ou-blue) }
+body.os-android .als-ed-opt.on i{ background:var(--ou-blue); color:#fff; box-shadow:none }
+/* atalhos */
+body.os-android .als-ed-ctl{ display:grid; grid-template-columns:repeat(5,1fr); gap:10px 4px }
+body.os-android .als-ed-ctl > div{ display:flex; flex-direction:column; align-items:center; gap:5px; cursor:pointer; min-width:0 }
+body.os-android .als-ed-ci{ width:48px; height:48px; border-radius:50%; background:var(--fill3); display:flex; align-items:center; justify-content:center; color:var(--label); transition:background-color .2s, color .2s }
+body.os-android .als-ed-ci svg{ width:22px; height:22px }
+body.os-android .als-ed-ctl > div span{ max-width:76px; font-size:11px; line-height:13px; color:var(--label2); text-align:center; white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+body.os-android .als-ed-ctl > div.on .als-ed-ci{ background:var(--ou-blue); color:#fff }
+body.os-android .als-ed-ctl > div.on span{ color:var(--label) }
+/* fundo */
+body.os-android .als-ed-row{ display:flex; gap:10px; overflow-x:auto; scrollbar-width:none; margin:0 -20px; padding:3px 20px 4px }
+body.os-android .als-ed-row::-webkit-scrollbar{ display:none }
+body.os-android .als-ed-wp{ flex:none; width:68px; display:flex; flex-direction:column; align-items:center; gap:6px; cursor:pointer }
+body.os-android .als-ed-wp i{ width:68px; height:148px; border-radius:14px; background:#2A2A2E center/cover no-repeat; display:flex; align-items:center; justify-content:center; color:var(--label2);
+  box-shadow:inset 0 0 0 1px rgba(128,128,128,.2); transition:box-shadow .2s }
+body.os-android .als-ed-wp.more i{ background:var(--fill3) }
+body.os-android .als-ed-wp span{ max-width:68px; font-size:11px; line-height:13px; color:var(--label2); white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+body.os-android .als-ed-wp.on i{ box-shadow:0 0 0 2.5px var(--ou-blue) }
+body.os-android .als-ed-dot{ flex:none; width:44px; height:44px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; box-shadow:inset 0 0 0 2px transparent; transition:box-shadow .2s }
+body.os-android .als-ed-dot i{ width:34px; height:34px; border-radius:50%; background:center/cover no-repeat; box-shadow:inset 0 0 0 1px rgba(128,128,128,.3) }
+body.os-android .als-ed-dot.on{ box-shadow:inset 0 0 0 2px var(--ou-blue) }
+
+/* o ecrã bloqueado em modo de edição: zonas contornadas (a escolhida mais forte), o resto do momento sai */
+body.os-android #lock .als-top::after,body.os-android #lock .lock-widgets::after{ content:''; position:absolute; border:1.5px solid rgba(255,255,255,.62); border-radius:22px;
+  pointer-events:none; opacity:0; transition:opacity .25s var(--ou-curve), border-color .2s }
+body.os-android #lock .als-top::after{ top:-12px; bottom:-12px; left:58px; right:58px }
+body.os-android #lock[data-clockalign="left"] .als-top::after{ left:18px; right:96px }
+body.os-android #lock[data-clockalign="right"] .als-top::after{ left:96px; right:18px }
+body.os-android #lock .lock-widgets::after{ top:-9px; bottom:-9px; left:12px; right:12px }
+body.os-android .screen.als-edit #lock .als-top::after,body.os-android .screen.als-edit #lock .lock-widgets::after{ opacity:1 }
+body.os-android .screen.als-edit #lock[data-aed="clock"] .als-top::after,body.os-android .screen.als-edit #lock[data-aed="widgets"] .lock-widgets::after{ border-color:#fff; border-width:2px }
+body.os-android .screen.als-edit #lock .lock-widgets:empty::before{ content:'+ ' attr(data-empty); position:absolute; left:0; right:0; top:0; bottom:0; display:flex; align-items:center; justify-content:center;
+  font-size:14px; font-weight:600; color:rgba(255,255,255,.9); text-shadow:0 1px 6px rgba(0,0,0,.35) }
+body.os-android .screen.als-edit #lock .als-top,body.os-android .screen.als-edit #lock .lock-widgets{ cursor:pointer; pointer-events:auto }
+body.os-android .screen.als-edit #lock .als-sc{ box-shadow:0 0 0 2px rgba(255,255,255,.62) }
+body.os-android .screen.als-edit #lock[data-aed="controls"] .als-sc{ box-shadow:0 0 0 2.5px #fff }
+body.os-android .screen.als-edit #lock .als-sc.none{ visibility:visible; background-image:none; background-color:transparent; box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.62) }
+body.os-android .screen.als-edit #lock .als-nbox,body.os-android .screen.als-edit #lock .lock-np,body.os-android .screen.als-edit #lock .als-hint,body.os-android .screen.als-edit #lock .als-tip,
+body.os-android .screen.als-edit #lock .als-mx,body.os-android .screen.als-edit #lock .lock-face,body.os-android .screen.als-edit #lock .als-fp,body.os-android .screen.als-edit #lock .als-nb-dots{ opacity:0; pointer-events:none }
+body.os-android .screen.als-edit #lock .als-nbox,body.os-android .screen.als-edit-out #lock .als-nbox{ transition:opacity .25s }
+/* NOVA dobrável: os contornos abraçam o relógio e os widgets (não o ecrã de ponta a ponta) e a folha das opções fica com a
+   largura de um telemóvel largo, ao centro do ecrã de dentro */
+body.os-android.form-fold #lock .als-top::after{ left:calc(50% - 162px); right:calc(50% - 162px) }
+body.os-android.form-fold #lock[data-clockalign="left"] .als-top::after{ left:18px; right:auto; width:326px }
+body.os-android.form-fold #lock[data-clockalign="right"] .als-top::after{ left:auto; right:18px; width:326px }
+body.os-android.form-fold #lock .lock-widgets::after{ left:calc(50% - 208px); right:calc(50% - 208px) }
+body.os-android.form-fold.fold-open .als-ed-sheet{ left:calc(50% - 320px); right:calc(50% - 320px) }
+
+/* ============================================================
+   REGISTO DO ROSTO (faceid.js, Android): "Reconhecimento facial" com o aspeto da Nova UI
+   Título grande na zona de leitura, "Posicione o rosto no círculo", anel de progresso azul sem brilho,
+   e em baixo "Cancelar" (texto) e "Continuar" (pílula azul).
+   ============================================================ */
+body.os-android .fid-modal{ padding:calc(var(--statusbar-h) + 64px) 24px calc(var(--safe-bottom) + 14px); background:var(--bg) }
+body.os-android .fid-modal .fid-head h2{ font-family:var(--font-display); font-size:28px; font-weight:600; letter-spacing:0; line-height:34px }
+body.os-android .fid-modal .fid-head .sub{ margin-top:10px; font-size:15px; line-height:21px; color:var(--label2) }
+body.os-android .fid-modal .fid-foot{ flex-direction:row-reverse; justify-content:space-between; align-items:center; gap:12px }
+body.os-android .fid-modal .fid-foot .btn-p{ width:auto; min-width:128px; height:46px; padding:0 26px; border-radius:23px; display:flex; align-items:center; justify-content:center;
+  background:var(--ou-blue); color:#fff; font-size:16px; font-weight:600; box-shadow:none }
+body.os-android .fid-modal .fid-foot .link{ padding:12px 10px; font-size:16px; font-weight:600; color:var(--label) }
+body.os-android .fid-ticks i{ background:var(--label4) }
+body.os-android .fid-ticks i.on,body.os-android .fid-enroll.ok .fid-ticks i,body.os-android .fid-enroll .fid-ticks i.now{ background:var(--ou-blue); box-shadow:none }
+body.os-android .fid-enroll .fid-ticks i.now{ opacity:.6 }
+body.os-android .fid-frame{ background:#101012; box-shadow:inset 0 0 0 1px rgba(255,255,255,.08) }
+body.os-android .fid-check{ color:var(--ou-blue) }
+body.os-android .fid-enroll.fid-live.ok .fid-ring{ box-shadow:inset 0 0 0 2px var(--ou-blue) }
+body.os-android .fid-enroll[data-state="scan1"] .fid-glyph,body.os-android .fid-enroll[data-state="scan2"] .fid-glyph{ animation:none }
+/* ---------- miniatura do ecrã bloqueado (LockGallery.thumb nas Definições): o mesmo desenho, em 440×956, reduzido por quem a usa ---------- */
+body.os-android .als-mock{ position:absolute; inset:0; color:#fff; pointer-events:none; --fs:112px; --lh:82px; --gp:12px; --ct:175px }
+body.os-android .als-mock[data-z="small"]{ --fs:96px; --lh:70px; --gp:10px }
+body.os-android .als-mock[data-z="large"]{ --fs:132px; --lh:97px; --gp:14px }
+body.os-android .als-mock[data-p="middle"]{ --ct:316px }
+body.os-android .als-mock-lk{ position:absolute; left:0; right:0; top:50px; height:24px; display:flex; align-items:center; justify-content:center; opacity:.82 }
+body.os-android .als-mock-lk svg{ width:22px; height:22px }
+body.os-android .als-mock-top{ position:absolute; left:0; right:0; top:calc(var(--ct) - 45px); display:flex; flex-direction:column; align-items:center }
+body.os-android .als-mock[data-a="left"] .als-mock-top{ align-items:flex-start; padding-left:34px }
+body.os-android .als-mock[data-a="right"] .als-mock-top{ align-items:flex-end; padding-right:34px }
+body.os-android .als-mock-dt{ height:20px; margin-bottom:25px; font-size:23px; line-height:20px; white-space:nowrap; text-shadow:0 1px 8px rgba(0,0,0,.28) }
+body.os-android .als-mock-ck{ display:flex; flex-direction:column; align-items:inherit; gap:var(--gp); font-family:var(--font-clock); font-size:var(--fs); line-height:var(--lh); font-weight:400;
+  letter-spacing:-1px; color:rgb(var(--clock-rgb, 255,255,255)) }
+body.os-android .als-mock-ck span{ height:var(--lh) }
+body.os-android .als-mock[data-f="thin"] .als-mock-ck{ font-weight:200 }
+body.os-android .als-mock[data-f="bold"] .als-mock-ck{ font-weight:800 }
+body.os-android .als-mock[data-f="rounded"] .als-mock-ck{ font-family:var(--font-rounded); font-weight:600 }
+body.os-android .als-mock[data-f="mono"] .als-mock-ck{ font-family:var(--font-mono); font-weight:500; letter-spacing:0 }
+body.os-android .als-mock[data-w="light"] .als-mock-ck{ font-weight:300 }
+body.os-android .als-mock[data-w="bold"] .als-mock-ck{ font-weight:700 }
+body.os-android .als-mock[data-s="outline"] .als-mock-ck{ color:transparent; -webkit-text-stroke:2px rgba(var(--clock-rgb, 255,255,255),.95) }
+body.os-android .als-mock-w{ display:flex; gap:16px; margin-top:25px }
+body.os-android .als-mock-w i{ width:138px; height:62px; border-radius:20px; background:rgba(23,23,26,.42); display:flex; align-items:center; padding-left:21px; box-sizing:border-box }
+body.os-android .als-mock-w[data-n="3"]{ gap:8px } body.os-android .als-mock-w[data-n="3"] i{ width:128px }
+body.os-android .als-mock-w i svg{ width:20px; height:20px }
+body.os-android .als-mock-sc{ position:absolute; left:30px; right:30px; top:868.5px; display:flex; justify-content:space-between }
+body.os-android .als-mock-sc i{ width:47px; height:47px; border-radius:50%; background:rgba(55,55,55,.42); display:flex; align-items:center; justify-content:center }
+body.os-android .als-mock-sc i.none{ visibility:hidden }
+body.os-android .als-mock-sc i svg{ width:23px; height:23px }

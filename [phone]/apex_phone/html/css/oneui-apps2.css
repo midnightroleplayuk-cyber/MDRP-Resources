@@ -1,0 +1,548 @@
+/* ============================================================
+   NOVA UI 8.5 (Android): Câmara, Galeria, Editor de fotos, Partilha rápida, Relógio e Calculadora.
+   Só atua com body.os-android: o PearOS não muda um pixel.
+   Prefixos: acam- (Câmara), agal- (Galeria e editor), aqs- (Partilha rápida), aclk- (Relógio),
+   acalc- (Calculadora). A página é UMA só: nada de classes genéricas.
+   Regras do CEF do jogo: nada de backdrop-filter nem filter, nada de color-mix, só transform e
+   opacity animam, hover só com cor, nada de enfeites em loop.
+   ============================================================ */
+
+/* ================================================================
+   CÂMARA (o visor continua a ser a <canvas> do jogo: só muda o que está à volta)
+   ================================================================ */
+body.os-android .cam-app.acam{ display:block; background:#000; color:#fff }
+body.os-android .acam-gl{ display:block; width:24px; height:24px }
+body.os-android .acam-top{ position:absolute; left:0; right:0; top:var(--statusbar-h); height:52px; z-index:4; display:flex; align-items:center; padding:0 10px }
+body.os-android .acam-tc{ flex:1; display:flex; align-items:center; justify-content:space-evenly; padding-left:8px }
+body.os-android .acam-ic{ position:relative; width:46px; height:46px; border-radius:50%; flex:none; display:flex; align-items:center; justify-content:center; color:#fff; cursor:pointer; transition:color .15s, background .15s, opacity .15s }
+body.os-android .acam-ic:hover{ background:rgba(255,255,255,.1) }
+body.os-android .acam-ic.on{ color:#FFD23F }
+body.os-android .acam-ic.dis{ opacity:.4 }
+body.os-android .acam-ratio{ display:flex; align-items:center; justify-content:center; min-width:30px; height:20px; padding:0 4px; box-sizing:border-box; border:1.6px solid currentColor; border-radius:5px; font-size:10.5px; font-weight:700; letter-spacing:.2px; line-height:1 }
+body.os-android .acam-tmw,body.os-android .acam-tlw{ position:relative; display:block }
+body.os-android .acam-tlw svg{ display:block; width:24px; height:24px; stroke-width:1.7 }
+body.os-android .acam-badge{ position:absolute; right:-10px; bottom:-6px; font-style:normal; font-size:10px; font-weight:700 }
+body.os-android .acam .viewfinder.acam-vf{ position:absolute; left:0; right:0; top:calc(var(--statusbar-h) + 52px); bottom:0; flex:none; overflow:hidden; background:#000 }
+body.os-android .acam-frame{ position:absolute; left:0; top:0; width:100%; height:75%; overflow:hidden; background:#0B0B0D }
+body.os-android .acam-frame .cam-gl{ position:absolute; left:0; top:0; width:100%; height:100%; max-height:none; transform:none; object-fit:fill }
+body.os-android .acam .cam-count{ font-family:var(--font-display); font-size:110px; font-weight:300 }
+body.os-android .acam .cam-tilt{ left:16px; right:16px; bottom:76px; padding:6px 14px; border-radius:var(--ou-r-pill); background:rgba(0,0,0,.5); color:rgba(255,255,255,.8) }
+body.os-android .acam .cam-tilt input[type=range]{ accent-color:#fff }
+body.os-android .acam .cam-tilt .cam-tilt-val{ color:#fff }
+body.os-android .acam .rec-time{ position:absolute; top:14px; left:50%; transform:translateX(-50%); z-index:3; display:flex; align-items:center; gap:7px; padding:4px 12px; border-radius:var(--ou-r-pill); background:rgba(0,0,0,.5); color:#fff; font-size:14px; font-weight:600; font-variant-numeric:tabular-nums }
+body.os-android .acam .rec-time::before{ content:''; width:8px; height:8px; border-radius:50%; background:#F2453D }
+/* zoom em pílula por cima do obturador (o JS põe o `top` logo acima do fundo da imagem) */
+body.os-android .acam-zoom{ position:absolute; left:50%; top:620px; transform:translateX(-50%); z-index:3; display:flex; align-items:center; gap:4px; padding:4px; border-radius:var(--ou-r-pill); background:rgba(0,0,0,.4) }
+body.os-android .acam-zoom span{ width:38px; height:38px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:12.5px; font-weight:600; color:#fff; cursor:pointer; transition:background .15s }
+body.os-android .acam-zoom span:hover{ background:rgba(255,255,255,.12) }
+body.os-android .acam-zoom span.on{ width:46px; height:46px; background:rgba(0,0,0,.6); font-size:14px; font-weight:700 }
+body.os-android .acam-zoom b{ display:block; font-weight:inherit }
+/* modos + barra de baixo */
+body.os-android .acam-bottom{ position:absolute; left:0; right:0; bottom:0; z-index:3; padding-bottom:calc(var(--safe-bottom) + 8px) }
+body.os-android .acam-modes{ position:relative; height:46px; overflow:hidden }
+body.os-android .acam-strip{ position:absolute; left:0; top:0; height:46px; display:flex; align-items:center; gap:4px; white-space:nowrap; transition:transform .3s var(--ou-curve) }
+body.os-android .acam-strip span{ height:34px; padding:0 15px; border-radius:var(--ou-r-pill); display:flex; align-items:center; font-size:15px; font-weight:600; color:rgba(255,255,255,.7); cursor:pointer; transition:color .15s, background .15s }
+body.os-android .acam-strip span:hover{ color:#fff }
+body.os-android .acam-strip span.on{ background:rgba(255,255,255,.2); color:#fff }
+body.os-android .acam-bar{ height:104px; display:flex; align-items:center; justify-content:space-between; padding:0 38px }
+body.os-android .acam-thumb{ width:52px; height:52px; box-sizing:border-box; border-radius:50%; border:2px solid rgba(255,255,255,.85); background-color:#2A2A2E; background-size:cover; background-position:center; cursor:pointer }
+body.os-android .acam-shutter{ width:80px; height:80px; border-radius:50%; display:flex; align-items:center; justify-content:center; background:rgba(255,255,255,.3); cursor:pointer }
+body.os-android .acam-shutter > div{ position:relative; width:66px; height:66px; border-radius:50%; background:#fff; transition:background .12s }
+body.os-android .acam-shutter:hover > div{ background:#F2F2F2 }
+body.os-android .acam-shutter:active > div{ background:#D9D9D9 }
+body.os-android .acam-shutter.rec > div::after{ content:''; position:absolute; left:50%; top:50%; width:24px; height:24px; margin:-12px 0 0 -12px; border-radius:50%; background:#F2453D }
+body.os-android .acam-shutter.recording > div::after{ width:22px; height:22px; margin:-11px 0 0 -11px; border-radius:6px }
+body.os-android .acam-flip{ width:52px; height:52px; border-radius:50%; display:flex; align-items:center; justify-content:center; background:rgba(255,255,255,.16); color:#fff; cursor:pointer; transition:background .15s }
+body.os-android .acam-flip:hover{ background:rgba(255,255,255,.26) }
+/* a gravar: só fica o que serve para gravar */
+body.os-android .acam.acam-recording .acam-tc,body.os-android .acam.acam-recording .acam-ic[data-a="set"],body.os-android .acam.acam-recording .acam-modes,body.os-android .acam.acam-recording .acam-thumb,body.os-android .acam.acam-recording .acam-flip{ visibility:hidden }
+/* Mais modos */
+body.os-android .acam-more{ position:absolute; inset:0; z-index:6; display:flex; align-items:flex-end; padding:0 18px calc(var(--safe-bottom) + 172px); background:rgba(0,0,0,.78) }
+body.os-android .acam-more-in{ width:100% }
+body.os-android .acam-more-in > b{ display:block; padding:0 6px 18px; font-size:16px; font-weight:600 }
+body.os-android .acam-more-g{ display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:18px 6px }
+body.os-android .acam-more-g > div{ display:flex; flex-direction:column; align-items:center; gap:8px; font-size:13px; cursor:pointer }
+body.os-android .acam-more-g span{ width:60px; height:60px; border-radius:50%; display:flex; align-items:center; justify-content:center; background:rgba(255,255,255,.14); transition:background .15s }
+body.os-android .acam-more-g > div:hover span{ background:rgba(255,255,255,.24) }
+body.os-android .acam-more-g i{ font-style:normal }
+/* NOVA Fold8 aberto: a imagem fica ao centro com a largura dela e as barras de cima e de baixo acompanham-na (de ponta a ponta
+   nos 1340 os ícones de cima ficavam a 220 px uns dos outros e a miniatura e o trocar a 600 do obturador) */
+/* (3 out, imagem 18 do dono, a câmara de um Fold aberto) a imagem ao centro; as opções numa pílula VERTICAL à esquerda; à
+   direita, em coluna, trocar câmara (em cima), obturador (ao meio) e a miniatura da galeria (em baixo); os modos por baixo, ao
+   centro, por cima da barra de tarefas */
+body.os-android.form-fold.fold-open .acam-top{ left:150px; right:auto; top:50%; width:58px; height:auto; transform:translateY(-50%); flex-direction:column; padding:8px 0; gap:4px; border-radius:29px; background:rgba(34,34,36,.86) }
+body.os-android.form-fold.fold-open .acam-tc{ flex:none; flex-direction:column; justify-content:flex-start; gap:4px; padding-left:0 }
+body.os-android.form-fold.fold-open .acam-bar{ position:absolute; left:auto; right:146px; bottom:236px; width:96px; height:440px; padding:0; flex-direction:column-reverse; justify-content:space-between; align-items:center; box-sizing:border-box }
+body.os-android.form-fold.fold-open .acam-more{ padding-left:calc(50% - 320px); padding-right:calc(50% - 320px) }
+/* telemóvel deitado: os ícones rodam para ficarem direitos (o visor roda o frame do jogo) */
+body.os-android .acam .acam-rt{ transition:transform .4s var(--ou-curve) }
+body.os-android.landscape .acam .acam-rt,body.os-android.landscape .acam .cam-count{ transform:rotate(90deg) }
+
+/* ================================================================
+   RELÓGIO
+   ================================================================ */
+body.os-android .aclk-v{ background:var(--bg); color:var(--label) }
+body.os-android .aclk-v > .aclk-sb{ position:absolute; left:0; right:0; top:0; height:var(--statusbar-h); background:var(--bg); z-index:6 }
+body.os-android .aclk-v > .aclk-sc{ position:absolute; left:0; right:0; top:var(--statusbar-h); bottom:0; display:block; overflow-y:auto; overflow-x:hidden; padding:0 0 calc(var(--safe-bottom) + 28px); scrollbar-width:none; overscroll-behavior:contain }
+body.os-android .aclk-v > .aclk-sc::-webkit-scrollbar{ display:none }
+body.os-android .aclk-v > .aclk-sc.has-tabbar{ padding-bottom:calc(var(--safe-bottom) + 112px) }
+
+/* zona de leitura (terço de cima) + barra que fica presa ao fazer scroll */
+body.os-android .aclk-hero{ height:204px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px; padding:0 30px; text-align:center }
+body.os-android .aclk-ht{ font-family:var(--font-display); font-size:29px; font-weight:500; line-height:1.2; color:var(--label) }
+body.os-android .aclk-hs{ font-size:15px; line-height:1.35; color:var(--label2) }
+body.os-android .aclk-hero.big .aclk-ht{ font-size:66px; font-weight:300; line-height:1; letter-spacing:-1.5px; font-variant-numeric:tabular-nums }
+body.os-android .aclk-bar{ position:sticky; top:0; z-index:5; height:56px; display:flex; align-items:center; justify-content:space-between; gap:8px; padding:0 8px 0 24px; background:var(--bg) }
+body.os-android .aclk-bt{ min-width:0; font-family:var(--font-display); font-size:20px; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; opacity:0; transition:opacity .18s var(--ou-curve) }
+body.os-android .aclk-col .aclk-bt{ opacity:1 }
+body.os-android .aclk-ba{ display:flex; gap:2px; flex:none }
+body.os-android .aclk-ib{ width:48px; height:48px; border-radius:50%; display:flex; align-items:center; justify-content:center; color:var(--label); cursor:pointer; transition:background .15s }
+body.os-android .aclk-ib:hover{ background:var(--fill3) }
+body.os-android .aclk-ib svg{ width:24px; height:24px; stroke-width:1.8 }
+
+/* cartões */
+body.os-android .aclk-list{ display:flex; flex-direction:column; gap:10px; padding:2px 16px 0 }
+body.os-android .aclk-card{ background:var(--ou-surface); border-radius:var(--ou-r-card) }
+body.os-android .aclk-foot{ padding:16px 30px 0; font-size:13px; line-height:1.45; color:var(--label3); text-align:center }
+body.os-android .aclk-empty{ display:flex; flex-direction:column; gap:6px; align-items:center; padding:36px 24px; text-align:center }
+body.os-android .aclk-empty b{ font-size:17px; font-weight:600; color:var(--label2) }
+body.os-android .aclk-empty span{ font-size:14px; color:var(--label3) }
+/* lista vazia (clock.js marca a vista com .aclk-isempty): a coluna estica ate ao fundo e o aviso fica ao centro do espaco
+   livre, um pouco acima do meio. So enquanto esta vazia: a lista cheia nao muda */
+body.os-android .aclk-v.aclk-isempty > .aclk-sc{ display:flex; flex-direction:column }
+body.os-android .aclk-v.aclk-isempty > .aclk-sc > *{ flex-shrink:0 }
+body.os-android .aclk-v.aclk-isempty > .aclk-sc > .aclk-body,
+body.os-android .aclk-v.aclk-isempty > .aclk-sc > .aclk-body > .aclk-list{ flex:1 0 auto; display:flex; flex-direction:column }
+body.os-android .aclk-v.aclk-isempty .aclk-list > .aclk-empty{ flex:1 0 auto; justify-content:center; padding-bottom:84px }
+
+/* alarme */
+body.os-android .aclk-al{ display:flex; align-items:center; gap:14px; padding:16px 20px 18px 24px; cursor:pointer; transition:background .15s }
+body.os-android .aclk-al:hover{ background:var(--ou-surface2) }
+body.os-android .aclk-al-l{ flex:1; min-width:0 }
+body.os-android .aclk-al-n{ display:block; font-size:14px; color:var(--label2); white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+body.os-android .aclk-al-t{ display:flex; align-items:baseline; gap:6px; margin-top:2px }
+body.os-android .aclk-al-t b{ font-family:var(--font-display); font-size:40px; font-weight:400; line-height:1.05; letter-spacing:-.6px; font-variant-numeric:tabular-nums; color:var(--label) }
+body.os-android .aclk-al-t i{ font-style:normal; font-size:16px; font-weight:500; color:var(--label2) }
+body.os-android .aclk-al-d{ display:flex; gap:5px; flex:none; font-size:13px; font-weight:600; color:var(--label4) }
+body.os-android .aclk-al-d .on{ color:var(--ou-blue) }
+body.os-android .aclk-al-d .sun.on{ color:var(--red) }
+body.os-android .aclk-al .toggle{ flex:none }
+body.os-android .aclk-al.off .aclk-al-t b,body.os-android .aclk-al.off .aclk-al-n,body.os-android .aclk-al.off .aclk-al-t i{ color:var(--label3) }
+body.os-android .aclk-al.off .aclk-al-d .on{ color:var(--label3) }
+
+/* relógio mundial */
+body.os-android .aclk-city{ display:flex; align-items:center; gap:12px; padding:18px 22px 18px 24px }
+body.os-android .aclk-cl{ flex:1; min-width:0 }
+body.os-android .aclk-cl b{ display:block; font-size:18px; font-weight:600; color:var(--label); white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+body.os-android .aclk-cs{ display:block; margin-top:3px; font-size:14px; color:var(--label2) }
+body.os-android .aclk-ct{ display:flex; align-items:baseline; gap:5px; flex:none }
+body.os-android .aclk-ct b{ font-family:var(--font-display); font-size:36px; font-weight:300; letter-spacing:-.5px; font-variant-numeric:tabular-nums; color:var(--label) }
+body.os-android .aclk-ct i{ font-style:normal; font-size:14px; font-weight:500; color:var(--label2) }
+
+/* rodas (horas do alarme, tempo do temporizador) */
+body.os-android .aclk-wh{ flex:none; width:88px; height:168px; overflow-y:auto; overflow-x:hidden; scroll-snap-type:y mandatory; scrollbar-width:none; overscroll-behavior:contain; cursor:grab }
+body.os-android .aclk-wh::-webkit-scrollbar{ display:none }
+body.os-android .aclk-wh-in{ padding:56px 0 }
+body.os-android .aclk-wh-it{ height:56px; display:flex; align-items:center; justify-content:center; scroll-snap-align:center; font-family:var(--font-display); font-size:30px; font-weight:300; color:var(--label4); font-variant-numeric:tabular-nums; cursor:pointer; transition:color .15s }
+body.os-android .aclk-wh-it:hover{ color:var(--label3) }
+body.os-android .aclk-wh-it.on{ font-size:46px; font-weight:400; color:var(--label) }
+body.os-android .aclk-wh-sep{ flex:none; width:22px; text-align:center; font-family:var(--font-display); font-size:40px; font-weight:300; color:var(--label2); padding-bottom:6px }
+body.os-android .aclk-wh.aclk-wh-ap{ width:66px; margin-right:6px }
+body.os-android .aclk-wh-ap .aclk-wh-it{ font-family:inherit; font-size:18px; font-weight:500 }
+body.os-android .aclk-wh-ap .aclk-wh-it.on{ font-size:22px; font-weight:600 }
+
+/* editor de alarme (página inteira) */
+body.os-android .aclk-ed > .aclk-sc{ bottom:calc(var(--safe-bottom) + 64px); padding:0 16px 24px }
+body.os-android .aclk-ed-time{ display:flex; align-items:center; justify-content:center; padding:44px 0 36px }
+body.os-android .aclk-ed-rep{ padding:18px 18px 20px }
+body.os-android .aclk-ed-when{ display:flex; justify-content:space-between; align-items:baseline; gap:12px; padding:0 4px 16px; font-size:15px }
+body.os-android .aclk-ed-when span{ color:var(--label) }
+body.os-android .aclk-ed-when b{ font-weight:500; color:var(--ou-blue); text-align:right }
+body.os-android .aclk-dsel{ display:flex; justify-content:space-between }
+body.os-android .aclk-dsel > div{ width:42px; height:42px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:15px; font-weight:600; color:var(--label2); cursor:pointer; transition:background .15s, color .15s }
+body.os-android .aclk-dsel > div:hover{ background:var(--fill3) }
+body.os-android .aclk-dsel > div.sun{ color:var(--red) }
+body.os-android .aclk-dsel > div.on{ background:var(--ou-blue); color:#fff }
+body.os-android .aclk-ed-nm{ margin-top:12px; padding:0 20px }
+body.os-android .aclk-ed-nm input{ display:block; width:100%; height:56px; border:none; background:none; outline:none; font:inherit; font-size:17px; color:var(--label) }
+body.os-android .aclk-ed-nm input::placeholder{ color:var(--label3) }
+body.os-android .aclk-ed-del{ width:max-content; margin:22px auto 0; padding:12px 18px; border-radius:var(--ou-r-pill); font-size:16px; font-weight:600; color:var(--red); cursor:pointer; transition:background .15s }
+body.os-android .aclk-ed-del:hover{ background:var(--fill3) }
+body.os-android .aclk-ed-btns{ position:absolute; left:0; right:0; bottom:var(--safe-bottom); height:64px; display:flex; align-items:stretch; padding:0 12px; background:var(--bg); z-index:5 }
+body.os-android .aclk-tb{ flex:1; display:flex; align-items:center; justify-content:center; font-size:17px; font-weight:600; color:var(--label); cursor:pointer; border-radius:var(--ou-r-btn); transition:color .15s, background .15s }
+body.os-android .aclk-tb:hover{ background:var(--fill4); color:var(--ou-blue) }
+
+/* cronómetro */
+body.os-android .aclk-plain > .aclk-sc{ display:flex; flex-direction:column; padding-bottom:calc(var(--safe-bottom) + 176px) }
+body.os-android .aclk-plain > .aclk-sc.has-tabbar{ padding-bottom:calc(var(--safe-bottom) + 176px) }
+body.os-android .aclk-sw{ display:flex; flex-direction:column; align-items:center; padding-top:186px }
+body.os-android .aclk-sw.has-laps{ padding-top:64px }
+body.os-android .aclk-sw-d{ display:flex; align-items:baseline; font-family:var(--font-display); font-variant-numeric:tabular-nums; color:var(--label) }
+body.os-android .aclk-sw-d b{ font-size:76px; font-weight:300; letter-spacing:-2px; line-height:1 }
+body.os-android .aclk-sw-d i{ font-style:normal; font-size:42px; font-weight:300; color:var(--label2); margin-left:2px }
+body.os-android .aclk-laps{ display:none; align-self:stretch; padding:30px 24px 0 }
+body.os-android .aclk-sw.has-laps .aclk-laps{ display:block }
+body.os-android .aclk-lap-h,body.os-android .aclk-lap{ display:grid; grid-template-columns:.8fr 1.3fr 1.3fr; text-align:center }
+body.os-android .aclk-lap-h{ padding-bottom:10px; font-size:13px; color:var(--label2); border-bottom:1px solid var(--sep) }
+body.os-android .aclk-lap{ padding:12px 0; font-size:16px; font-variant-numeric:tabular-nums; color:var(--label); border-bottom:1px solid var(--sep-subtle) }
+body.os-android .aclk-lap span:first-child{ color:var(--label2) }
+
+/* botões grandes em pílula (cronómetro e temporizador), por cima da barra de separadores */
+body.os-android .aclk-btns{ position:absolute; left:24px; right:24px; bottom:calc(var(--safe-bottom) + 92px); display:flex; gap:14px; z-index:4 }
+/* NOVA Fold8: os botões ficam numa coluna de 480 ao centro (de ponta a ponta no ecrã largo era uma pílula de metro e meio) */
+body.os-android.form-fold .aclk-btns{ left:max(24px,calc(50% - 240px)); right:max(24px,calc(50% - 240px)) }
+body.os-android .aclk-pb{ flex:1; height:56px; border-radius:var(--ou-r-pill); display:flex; align-items:center; justify-content:center; font-size:17px; font-weight:600; cursor:pointer; transition:background .15s, opacity .15s }
+body.os-android .aclk-pb.gray{ background:var(--fill2); color:var(--label) }
+body.os-android .aclk-pb.gray:hover{ background:var(--fill) }
+body.os-android .aclk-pb.blue{ background:var(--ou-blue); color:#fff }
+body.os-android .aclk-pb.blue:hover{ background:#3470EE }
+body.os-android .aclk-pb.red{ background:var(--red); color:#fff }
+body.os-android .aclk-pb.dis{ opacity:.42 }
+
+/* temporizador */
+body.os-android .aclk-tm-pick{ display:flex; flex-direction:column; align-items:center; padding-top:76px }
+body.os-android .aclk-tm-lbl{ display:flex; gap:22px; padding-bottom:6px }
+body.os-android .aclk-tm-lbl span{ width:88px; text-align:center; font-size:14px; color:var(--label2) }
+body.os-android .aclk-tm-wh{ display:flex; align-items:center }
+body.os-android .aclk-pre-h{ align-self:stretch; padding:44px 30px 14px; font-size:14px; font-weight:500; color:var(--label2) }
+/* NOVA Fold8: o título fica por cima dos três temporizadores (332 = 3 × 100 + 2 × 16), não na ponta da coluna larga */
+body.os-android.form-fold .aclk-pre-h{ align-self:center; width:332px; box-sizing:border-box; padding-left:4px; padding-right:4px }
+body.os-android .aclk-pre{ display:flex; gap:16px; justify-content:center }
+body.os-android .aclk-pre-it{ width:100px; height:100px; border-radius:50%; background:var(--ou-surface); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px; cursor:pointer; transition:background .15s }
+body.os-android .aclk-pre-it:hover{ background:var(--ou-surface2) }
+body.os-android .aclk-pre-it b{ font-family:var(--font-display); font-size:16px; font-weight:500; font-variant-numeric:tabular-nums; color:var(--label) }
+body.os-android .aclk-pre-it span{ font-size:13px; color:var(--label2) }
+body.os-android .aclk-tm-run{ display:flex; justify-content:center; padding-top:84px }
+body.os-android .aclk-ring{ position:relative; width:300px; height:300px }
+body.os-android .aclk-ring svg{ display:block; width:100%; height:100% }
+body.os-android .aclk-ring circle{ fill:none; stroke-width:9 }
+body.os-android .aclk-ring circle.bg{ stroke:var(--fill2) }
+body.os-android .aclk-ring circle.arc{ stroke:var(--ou-blue); stroke-linecap:round }
+body.os-android .aclk-ring-t{ position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px }
+body.os-android .aclk-ring-t b{ font-family:var(--font-display); font-size:62px; font-weight:300; letter-spacing:-1.5px; font-variant-numeric:tabular-nums; color:var(--label) }
+body.os-android .aclk-ring-t span{ font-size:15px; color:var(--label2) }
+
+/* ================================================================
+   CALCULADORA
+   ================================================================ */
+body.os-android:not(.dark) .acalc{ --acalc-bg:#FCFCFF; --acalc-key:#EFEFF3; --acalc-key2:#E3E3E9; --acalc-acc:#1F9D4C; --acalc-eq:#22A552 }
+body.os-android.dark .acalc{ --acalc-bg:#010102; --acalc-key:#1C1C20; --acalc-key2:#2A2A30; --acalc-acc:#3DD06F; --acalc-eq:#2AB85A }
+body.os-android .acalc{ position:absolute; inset:0; display:flex; flex-direction:column; background:var(--acalc-bg); color:var(--label) }
+body.os-android .acalc-sb{ flex:none; height:var(--statusbar-h) }
+body.os-android .acalc-disp{ flex:1; min-height:0; display:flex; flex-direction:column; justify-content:flex-end; align-items:stretch; padding:12px 30px 8px }
+body.os-android .acalc-ex{ max-height:3.6em; overflow-y:auto; scrollbar-width:none; text-align:right; word-break:break-all; font-family:var(--font-display); font-weight:300; line-height:1.18; color:var(--label); font-variant-numeric:tabular-nums }
+body.os-android .acalc-ex::-webkit-scrollbar{ display:none }
+body.os-android .acalc-ex.s1{ font-size:56px } body.os-android .acalc-ex.s2{ font-size:46px } body.os-android .acalc-ex.s3{ font-size:37px } body.os-android .acalc-ex.s4{ font-size:30px }
+body.os-android .acalc-ex i{ font-style:normal; color:var(--acalc-acc) }
+body.os-android .acalc-ph{ color:var(--label3) }
+body.os-android .acalc-pv{ min-height:40px; margin-top:6px; text-align:right; font-family:var(--font-display); font-size:30px; font-weight:300; color:var(--label3); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; font-variant-numeric:tabular-nums }
+body.os-android .acalc-pv.err{ font-family:inherit; font-size:17px; font-weight:500; color:var(--red); white-space:normal; line-height:40px }
+body.os-android .acalc-tools{ flex:none; height:56px; display:flex; align-items:center; margin:0 16px; padding:0 4px; border-bottom:1px solid var(--sep) }
+body.os-android .acalc-gap{ flex:1 }
+body.os-android .acalc-tl{ width:48px; height:48px; border-radius:50%; display:flex; align-items:center; justify-content:center; color:var(--label2); cursor:pointer; transition:background .15s, color .15s }
+body.os-android .acalc-tl:hover{ background:var(--fill3) }
+body.os-android .acalc-tl.on{ color:var(--acalc-acc) }
+body.os-android .acalc-tl svg{ width:24px; height:24px; stroke-width:1.8 }
+body.os-android .acalc-pad{ flex:none; position:relative; padding:16px 22px calc(var(--safe-bottom) + 14px) }
+body.os-android .acalc-keys{ display:grid; grid-template-columns:repeat(4,1fr); gap:14px 16px }
+body.os-android .acalc-k{ aspect-ratio:1; border-radius:50%; background:var(--acalc-key); display:flex; align-items:center; justify-content:center; font-size:31px; font-weight:400; color:var(--label); cursor:pointer; user-select:none; transition:background .12s }
+body.os-android .acalc-k:hover{ background:var(--acalc-key2) }
+body.os-android .acalc-k:active,body.os-android .acalc-k.kd{ background:var(--acalc-key2) }
+body.os-android .acalc-k.op{ color:var(--acalc-acc); font-size:33px }
+body.os-android .acalc-k[data-k="paren"]{ font-size:26px; letter-spacing:2px }
+body.os-android .acalc-k.red{ color:var(--red); font-size:30px; font-weight:500 }
+body.os-android .acalc-k.eq{ background:var(--acalc-eq); color:#fff; font-size:36px }
+body.os-android .acalc-k.eq:hover,body.os-android .acalc-k.eq:active,body.os-android .acalc-k.eq.kd{ background:var(--acalc-acc) }
+body.os-android .acalc-k[data-k="sign"]{ font-size:24px }
+/* histórico: por cima das três colunas dos números (os operadores continuam à mão, como na Nova UI) */
+body.os-android .acalc-hist{ position:absolute; left:16px; top:10px; bottom:calc(var(--safe-bottom) + 10px); right:117px; display:flex; flex-direction:column; background:var(--acalc-bg); border-right:1px solid var(--sep); padding-right:6px }
+body.os-android .acalc-hl{ flex:1; min-height:0; overflow-y:auto; scrollbar-width:none; padding:2px 10px 8px 6px }
+body.os-android .acalc-hl::-webkit-scrollbar{ display:none }
+body.os-android .acalc-hi{ padding:12px 8px; text-align:right; border-radius:16px; cursor:pointer; transition:background .15s }
+body.os-android .acalc-hi:hover{ background:var(--fill4) }
+body.os-android .acalc-hx{ font-size:17px; color:var(--label2); word-break:break-all; font-variant-numeric:tabular-nums }
+body.os-android .acalc-hx i{ font-style:normal; color:var(--acalc-acc) }
+body.os-android .acalc-hr{ margin-top:4px; font-family:var(--font-display); font-size:24px; font-weight:400; color:var(--acalc-acc); word-break:break-all; font-variant-numeric:tabular-nums }
+body.os-android .acalc-he{ padding:40px 8px; text-align:center; font-size:15px; color:var(--label3) }
+body.os-android .acalc-hc{ flex:none; align-self:center; margin:8px 0 2px; height:44px; padding:0 22px; border-radius:var(--ou-r-pill); background:var(--acalc-key); display:flex; align-items:center; font-size:15px; font-weight:600; color:var(--label); cursor:pointer; transition:background .15s }
+body.os-android .acalc-hc:hover{ background:var(--acalc-key2) }
+/* NOVA Fold8: fechado, o visor e o teclado com a largura de um telemóvel ao centro (esticadas a 670 as teclas não cabiam na
+   altura); aberto, numa coluna de 640 com as teclas em pílula, como a calculadora de um ecrã grande */
+body.os-android.form-fold .acalc-disp,body.os-android.form-fold .acalc-tools,body.os-android.form-fold .acalc-pad{ width:100%; max-width:470px; margin-left:auto; margin-right:auto; box-sizing:border-box }
+body.os-android.form-fold.fold-open .acalc-disp,body.os-android.form-fold.fold-open .acalc-tools,body.os-android.form-fold.fold-open .acalc-pad{ max-width:640px }
+body.os-android.form-fold.fold-open .acalc-k{ aspect-ratio:1.9; border-radius:999px }
+/* barra de tarefas flutuante à vista (gestos, --taskbar-h do android-sysui.js): a última fila de teclas sobe a altura dela (o
+   visor encolhe), em vez de ficar por baixo da barra */
+body.os-android.form-fold.fold-open .acalc-pad{ padding-bottom:calc(var(--safe-bottom) + 14px + var(--taskbar-h,0px)) }
+
+/* ================================================================
+   GALERIA
+   ================================================================ */
+body.os-android .agal-v{ background:var(--bg); color:var(--label) }
+body.os-android .agal-v > .agal-sb{ position:absolute; left:0; right:0; top:0; height:var(--statusbar-h); background:var(--bg); z-index:6 }
+body.os-android .agal-v > .agal-sc{ position:absolute; left:0; right:0; top:var(--statusbar-h); bottom:0; display:block; overflow-y:auto; overflow-x:hidden; padding:0 0 calc(var(--safe-bottom) + 24px); scrollbar-width:none; overscroll-behavior:contain }
+body.os-android .agal-v > .agal-sc::-webkit-scrollbar{ display:none }
+body.os-android .agal-v > .agal-sc.has-tabbar{ padding-bottom:calc(var(--safe-bottom) + var(--tb-space, 88px) + 24px + var(--taskbar-h, 0px)) }   /* 88 + 24 = os 112 de sempre; com a barra lateral do NOVA Fold8 aberto (--tb-space 0) fica só a margem */
+body.os-android .agal-v.agal-selecting > .agal-sc{ padding-bottom:calc(var(--safe-bottom) + 92px) }
+body.os-android .agal-hero{ height:204px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px; padding:0 30px; text-align:center }
+body.os-android .agal-ht{ font-family:var(--font-display); font-size:34px; font-weight:500; line-height:1.15; color:var(--label) }
+body.os-android .agal-hs{ font-size:15px; color:var(--label2) }
+body.os-android .agal-bar{ position:sticky; top:0; z-index:5; height:56px; display:flex; align-items:center; gap:2px; padding:0 8px; background:var(--bg) }
+body.os-android .agal-bl{ display:flex; align-items:center; flex:none }
+body.os-android .agal-bt{ flex:1; min-width:0; padding-left:14px; font-family:var(--font-display); font-size:20px; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; opacity:0; transition:opacity .18s var(--ou-curve) }
+body.os-android .agal-col .agal-bt,body.os-android .agal-selecting .agal-bt{ opacity:1 }
+body.os-android .agal-ba{ display:flex; flex:none }
+body.os-android .agal-ib{ width:48px; height:48px; border-radius:50%; display:flex; align-items:center; justify-content:center; flex:none; color:var(--label); cursor:pointer; transition:background .15s }
+body.os-android .agal-ib:hover{ background:var(--fill3) }
+body.os-android .agal-gl{ width:24px; height:24px; display:block }
+body.os-android .agal-empty{ display:flex; flex-direction:column; align-items:center; gap:6px; padding:64px 34px; text-align:center }
+body.os-android .agal-empty b{ font-size:17px; font-weight:600; color:var(--label2) }
+body.os-android .agal-empty span{ font-size:14px; line-height:1.4; color:var(--label3) }
+/* grelha ou historias vazias (photos.js marca a vista com .agal-isempty): a coluna estica ate ao fundo e o aviso fica ao
+   centro do espaco livre, um pouco acima do meio. So enquanto esta vazia: a galeria cheia nao muda */
+body.os-android .agal-v.agal-isempty > .agal-sc{ display:flex; flex-direction:column }
+body.os-android .agal-v.agal-isempty > .agal-sc > *{ flex-shrink:0 }
+body.os-android .agal-v.agal-isempty > .agal-sc > .agal-body,
+body.os-android .agal-v.agal-isempty > .agal-sc > .agal-body > .agal-stl{ flex:1 0 auto; display:flex; flex-direction:column }
+body.os-android .agal-v.agal-isempty .agal-body .agal-empty{ flex:1 0 auto; justify-content:center; padding:24px 34px 84px }
+body.os-android .tabbar.agal-tb-off{ display:none }
+
+/* seleção: Tudo à esquerda, ✕ à direita, contagem no título */
+body.os-android .agal-all,body.os-android .agal-ib.agal-selx{ display:none }
+body.os-android .agal-selecting .agal-all{ display:flex }
+body.os-android .agal-selecting .agal-ib.agal-selx{ display:flex }
+body.os-android .agal-selecting .agal-ib.agal-norm,body.os-android .agal-selecting .agal-ib.agal-back{ display:none }
+body.os-android .agal-all{ align-items:center; gap:10px; height:48px; padding:0 10px 0 14px; border-radius:24px; font-size:15px; color:var(--label); cursor:pointer; transition:background .15s }
+body.os-android .agal-all:hover{ background:var(--fill4) }
+body.os-android .agal-ck{ display:block; position:relative; width:22px; height:22px; flex:none; box-sizing:border-box; border-radius:50%; border:1.8px solid var(--label3) }
+body.os-android .on > .agal-ck{ background:var(--ou-blue); border-color:var(--ou-blue) }
+body.os-android .on > .agal-ck::after{ content:''; position:absolute; left:6.2px; top:2.6px; width:5px; height:10px; border:solid #fff; border-width:0 2px 2px 0; transform:rotate(45deg) }
+
+/* grelha com cabeçalhos por dia */
+body.os-android .agal-sec{ margin-bottom:8px }
+body.os-android .agal-sh{ display:flex; align-items:center; gap:10px; height:44px; padding:0 18px; font-size:15px; font-weight:600; color:var(--label) }
+body.os-android .agal-sh .agal-ck{ display:none }
+body.os-android .agal-selecting .agal-sh{ cursor:pointer }
+body.os-android .agal-selecting .agal-sh .agal-ck{ display:block }
+body.os-android .agal-grid{ display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:2px }
+body.os-android .agal-th{ aspect-ratio:1; position:relative; background-color:var(--fill3); background-size:cover; background-position:center; cursor:pointer }
+body.os-android .agal-th .agal-ck{ display:none; position:absolute; left:7px; top:7px; border-color:#fff; background:rgba(0,0,0,.2) }
+body.os-android .agal-selecting .agal-th .agal-ck{ display:block }
+body.os-android .agal-th.on > .agal-ck{ background:var(--ou-blue); border-color:#fff }
+body.os-android .agal-selecting .agal-th.on::before{ content:''; position:absolute; inset:0; background:rgba(0,0,0,.22) }
+body.os-android .agal-vd{ position:absolute; right:6px; bottom:5px; display:flex; align-items:center; gap:2px; font-size:12px; font-weight:600; color:#fff; text-shadow:0 1px 3px rgba(0,0,0,.7) }
+body.os-android .agal-vd .agal-gl{ width:12px; height:12px }
+
+/* barra de ações da seleção (substitui os separadores) */
+body.os-android .agal-selbar{ position:absolute; left:0; right:0; bottom:0; z-index:8; display:none; gap:4px; padding:6px 12px calc(var(--safe-bottom) + 6px); background:var(--bg); border-top:1px solid var(--sep-subtle) }
+body.os-android .agal-selecting > .agal-selbar{ display:flex }
+body.os-android .agal-selbar > div{ flex:1; height:62px; border-radius:18px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px; font-size:12px; font-weight:500; color:var(--label); cursor:pointer; transition:background .15s, opacity .15s }
+body.os-android .agal-selbar > div:hover{ background:var(--fill4) }
+body.os-android .agal-selbar > div.dis{ opacity:.35 }
+body.os-android .agal-selbar > div.on{ color:var(--pink) }
+
+/* álbuns */
+body.os-android .agal-alb{ display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:22px 14px; padding:2px 18px 0 }
+body.os-android .agal-al{ min-width:0; cursor:pointer }
+body.os-android .agal-alc{ aspect-ratio:1; border-radius:20px; background-color:var(--fill3); background-size:cover; background-position:center; transition:opacity .15s }
+body.os-android .agal-al:hover .agal-alc{ opacity:.88 }
+body.os-android .agal-al b{ display:block; margin-top:9px; font-size:16px; font-weight:600; color:var(--label); white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+body.os-android .agal-al span{ display:block; margin-top:1px; font-size:14px; color:var(--label2) }
+
+/* histórias */
+body.os-android .agal-stl{ display:flex; flex-direction:column; gap:14px; padding:2px 16px 0 }
+body.os-android .agal-st{ position:relative; height:236px; border-radius:var(--ou-r-card); overflow:hidden; background:var(--fill3); cursor:pointer }
+body.os-android .agal-stc{ position:absolute; inset:0; background-size:cover; background-position:center }
+body.os-android .agal-sto{ position:absolute; left:0; right:0; bottom:0; padding:48px 22px 18px; color:#fff; background:linear-gradient(180deg,rgba(0,0,0,0),rgba(0,0,0,.18) 30%,rgba(0,0,0,.58)) }
+body.os-android .agal-sto b{ display:block; font-family:var(--font-display); font-size:22px; font-weight:600; line-height:1.2 }
+body.os-android .agal-sto span{ display:block; margin-top:3px; font-size:14px; opacity:.88 }
+
+/* menu (≡): atalhos em círculo + botões em pílula, dentro da folha do sistema */
+body.os-android .sheet-wrap.agal-mn-wrap .sheet-head{ display:none }
+body.os-android .agal-mn{ padding:10px 6px 8px }
+body.os-android .agal-mn-row{ display:flex; justify-content:space-between; padding:4px 2px 20px }
+body.os-android .agal-mn-t{ width:86px; display:flex; flex-direction:column; align-items:center; gap:8px; font-size:14px; color:var(--label); text-align:center; cursor:pointer }
+body.os-android .agal-mn-t > div{ width:56px; height:56px; border-radius:50%; display:flex; align-items:center; justify-content:center; background:var(--ou-chip); color:var(--label); transition:background .15s }
+body.os-android:not(.dark) .agal-mn-t > div{ box-shadow:0 4px 8px -1px rgba(0,0,0,.18) }
+body.os-android.dark .agal-mn-t > div{ background:#2A2A2F; box-shadow:0 4px 4px rgba(0,0,0,.25) }
+body.os-android .agal-mn-t:hover > div{ background:var(--ou-surface2) }
+body.os-android .agal-mn-pills{ display:flex; gap:10px }
+body.os-android .agal-mn-p{ flex:1; min-width:0; height:54px; border-radius:28px; display:flex; align-items:center; justify-content:center; gap:9px; padding:0 12px; background:var(--ou-surface2); font-size:14px; font-weight:500; color:var(--label); cursor:pointer; transition:background .15s }
+body.os-android.dark .agal-mn-p{ background:#2A2A2F }
+body.os-android .agal-mn-p:hover{ background:var(--fill2) }
+body.os-android .agal-mn-p span{ white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+
+/* visualizador: segue o tema; tocar na foto esconde as barras e o fundo fica preto */
+body.os-android .agal-pv{ position:absolute; inset:0; z-index:60; background:var(--bg); color:var(--label); opacity:0; transition:opacity .2s var(--ou-curve), background-color .2s }
+body.os-android .agal-pv.in{ opacity:1 }
+body.os-android .agal-pv.bare{ background:#000 }
+body.os-android .agal-pv-img{ position:absolute; inset:0; touch-action:pan-y }
+body.os-android .agal-pv-img > div{ width:100%; height:100%; background-size:contain; background-repeat:no-repeat; background-position:center }
+body.os-android .agal-pv-top{ position:absolute; left:0; right:0; top:0; height:calc(var(--statusbar-h) + 56px); padding:var(--statusbar-h) 6px 0; display:flex; align-items:center; gap:2px; background:var(--bg); transition:opacity .2s }
+body.os-android .agal-pv-t{ flex:1; min-width:0; padding-left:4px }
+body.os-android .agal-pv-t b{ display:block; font-size:16px; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+body.os-android .agal-pv-t span{ display:block; font-size:13px; color:var(--label2) }
+body.os-android .agal-pv-bar{ position:absolute; left:0; right:0; bottom:0; display:flex; justify-content:space-around; padding:8px 12px calc(var(--safe-bottom) + 8px); background:var(--bg); transition:opacity .2s }
+body.os-android .agal-pv-bar > div{ width:66px; height:52px; border-radius:26px; display:flex; align-items:center; justify-content:center; color:var(--label); cursor:pointer; transition:background .15s, color .15s }
+body.os-android .agal-pv-bar > div:hover{ background:var(--fill3) }
+body.os-android .agal-pv-bar > div.on{ color:var(--pink) }
+body.os-android .agal-pv.bare .agal-pv-top,body.os-android .agal-pv.bare .agal-pv-bar{ opacity:0; pointer-events:none }
+
+/* seletor de fotos das outras apps (Photos.pick): a grelha de 4 colunas da Galeria */
+body.os-android .sheet-wrap.ou-sheet.agal-pick .photo-grid{ grid-template-columns:repeat(4,minmax(0,1fr)); gap:2px; padding-top:4px }
+body.os-android .sheet-wrap.ou-sheet.agal-pick .photo{ background-color:var(--fill3); cursor:pointer }
+body.os-android .sheet-wrap.ou-sheet.agal-pick .photo-grid .empty{ grid-column:1 / -1 !important; padding:48px 20px; text-align:center; color:var(--label3) }
+
+/* deitado (956×440): mais colunas e sem a zona de leitura */
+body.os-android .app-window.ls .agal-hero{ display:none }
+body.os-android .app-window.ls .agal-bt{ opacity:1 }
+body.os-android .app-window.ls .agal-grid{ grid-template-columns:repeat(8,minmax(0,1fr)) }
+body.os-android .app-window.ls .agal-alb{ grid-template-columns:repeat(5,minmax(0,1fr)) }
+body.os-android .app-window.ls .agal-st{ height:200px }
+/* NOVA Fold8: a grelha vai de ponta a ponta com mais colunas (cinco fechado, nove aberto) e os álbuns em três / seis */
+body.os-android.form-fold .agal-grid{ grid-template-columns:repeat(5,minmax(0,1fr)) }
+body.os-android.form-fold.fold-open .agal-grid{ grid-template-columns:repeat(9,minmax(0,1fr)) }
+body.os-android.form-fold .agal-alb{ grid-template-columns:repeat(3,minmax(0,1fr)) }
+body.os-android.form-fold.fold-open .agal-alb{ grid-template-columns:repeat(6,minmax(0,1fr)) }
+body.os-android.form-fold.fold-open .app-window[data-app="photos"] .nav-stack:not(.split) > .view > .content{ padding-left:0; padding-right:0 }
+/* a barra da seleção fica por cima da barra de tarefas flutuante (--taskbar-h, android-sysui.js) */
+body.os-android.form-fold.fold-open .agal-selbar{ bottom:var(--taskbar-h, 0px) }
+
+/* ================================================================
+   EDITOR DE FOTOS (sempre escuro, como o editor da Nova UI)
+   ================================================================ */
+body.os-android .agal-ed{ --agal-ed-track:rgba(255,255,255,.22); --agal-ed-fill:#3E7BFA; position:absolute; inset:0; z-index:70; display:flex; flex-direction:column; background:#000; color:#fff; opacity:0; transition:opacity .22s var(--ou-curve) }
+body.os-android .agal-ed.in{ opacity:1 }
+body.os-android .agal-ed.busy{ pointer-events:none }
+body.os-android .agal-ed-gl{ display:block; width:24px; height:24px }
+body.os-android .agal-ed-top{ flex:none; height:calc(var(--statusbar-h) + 56px); padding:var(--statusbar-h) 8px 0; display:flex; align-items:center; gap:2px }
+body.os-android .agal-ed-ib{ width:48px; height:48px; border-radius:50%; flex:none; display:flex; align-items:center; justify-content:center; color:#fff; cursor:pointer; transition:background .15s, opacity .15s }
+body.os-android .agal-ed-ib:hover{ background:rgba(255,255,255,.12) }
+body.os-android .agal-ed-gap{ flex:1 }
+body.os-android .agal-ed-rv{ height:40px; padding:0 14px; border-radius:20px; display:flex; align-items:center; font-size:15px; font-weight:600; color:#fff; cursor:pointer; transition:background .15s, opacity .15s }
+body.os-android .agal-ed-rv:hover{ background:rgba(255,255,255,.12) }
+body.os-android .agal-ed-save{ height:40px; margin:0 4px; padding:0 20px; border-radius:20px; display:flex; align-items:center; background:var(--ou-blue); font-size:15px; font-weight:600; color:#fff; cursor:pointer; transition:background .15s, color .15s }
+body.os-android .agal-ed-save:hover{ background:#3470EE }
+body.os-android .agal-ed-top .dis{ opacity:.35; pointer-events:none }
+body.os-android .agal-ed-top .agal-ed-save.dis{ opacity:1; background:rgba(255,255,255,.14); color:rgba(255,255,255,.45) }
+body.os-android .agal-ed-stage{ flex:1; min-height:0; position:relative; display:flex; align-items:center; justify-content:center; padding:12px 16px; cursor:pointer }
+body.os-android .agal-ed-cv{ display:block; max-width:100%; max-height:100%; border-radius:4px }
+body.os-android .agal-ed-cmp{ position:absolute; right:16px; bottom:12px; width:44px; height:44px; border-radius:50%; display:flex; align-items:center; justify-content:center; background:rgba(44,44,48,.9); color:#fff; cursor:pointer; transition:background .15s }
+body.os-android .agal-ed.cmp .agal-ed-cmp{ background:var(--ou-blue) }
+body.os-android .agal-ed-opts{ flex:none; min-height:164px; padding:8px 0 6px; display:flex; flex-direction:column; justify-content:center; gap:16px }
+body.os-android .agal-ed-tools{ flex:none; display:flex; justify-content:space-around; padding:6px 24px calc(var(--safe-bottom) + 8px); border-top:1px solid rgba(255,255,255,.08) }
+body.os-android .agal-ed-tools > div{ flex:1; max-width:120px; height:62px; border-radius:18px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:5px; font-size:12px; font-weight:500; color:rgba(255,255,255,.55); cursor:pointer; transition:color .15s, background .15s }
+body.os-android .agal-ed-tools > div:hover{ background:rgba(255,255,255,.06) }
+body.os-android .agal-ed-tools > div.on{ color:#fff }
+body.os-android .agal-ed-tools > div.on .agal-ed-gl{ color:var(--ou-blue) }
+/* Tom: círculos com o valor lá dentro quando mexidos */
+body.os-android .agal-ed-chips{ display:flex; justify-content:center; gap:6px; padding:0 12px; overflow-x:auto; scrollbar-width:none }
+body.os-android .agal-ed-chips::-webkit-scrollbar,body.os-android .agal-ed-fils::-webkit-scrollbar{ display:none }
+body.os-android .agal-ed-chip{ flex:none; width:74px; display:flex; flex-direction:column; align-items:center; gap:7px; font-size:12px; color:rgba(255,255,255,.6); cursor:pointer; transition:color .15s }
+body.os-android .agal-ed-cc{ width:52px; height:52px; box-sizing:border-box; border-radius:50%; display:flex; align-items:center; justify-content:center; background:rgba(255,255,255,.08); border:1.5px solid transparent; color:#fff; transition:background .15s, border-color .15s }
+body.os-android .agal-ed-cc b{ font-size:15px; font-weight:600; font-variant-numeric:tabular-nums }
+body.os-android .agal-ed-chip:hover .agal-ed-cc{ background:rgba(255,255,255,.13) }
+body.os-android .agal-ed-chip.on{ color:#fff }
+body.os-android .agal-ed-chip.on .agal-ed-cc{ border-color:var(--ou-blue) }
+body.os-android .agal-ed-chip.set .agal-ed-cc{ background:rgba(62,123,250,.24) }
+/* cursor: faixa fina com o preenchimento a partir do zero */
+body.os-android .agal-ed-sl{ display:flex; align-items:center; gap:14px; padding:0 22px 0 26px }
+body.os-android .agal-ed-sl input{ -webkit-appearance:none; appearance:none; flex:1; min-width:0; height:26px; margin:0; background:transparent; outline:none; cursor:pointer }
+body.os-android .agal-ed-sl input::-webkit-slider-runnable-track{ height:4px; border-radius:2px; background:linear-gradient(90deg,var(--agal-ed-track) var(--a,0%),var(--agal-ed-fill) var(--a,0%),var(--agal-ed-fill) var(--c,0%),var(--agal-ed-track) var(--c,0%)) }
+body.os-android .agal-ed-sl input::-webkit-slider-thumb{ -webkit-appearance:none; appearance:none; width:22px; height:22px; margin-top:-9px; border-radius:50%; background:#fff; border:none; box-shadow:0 1px 4px rgba(0,0,0,.45) }
+body.os-android .agal-ed-sl b{ width:42px; text-align:right; font-size:15px; font-weight:600; font-variant-numeric:tabular-nums }
+body.os-android .agal-ed-hint{ height:26px; line-height:26px; text-align:center; font-size:13px; color:rgba(255,255,255,.45) }
+/* Filtros */
+body.os-android .agal-ed-fils{ display:flex; gap:10px; padding:0 16px; overflow-x:auto; scrollbar-width:none }
+body.os-android .agal-ed-fil{ flex:none; width:70px; display:flex; flex-direction:column; align-items:center; gap:7px; font-size:12px; color:rgba(255,255,255,.6); cursor:pointer; transition:color .15s }
+body.os-android .agal-ed-fil canvas{ display:block; width:64px; height:64px; box-sizing:border-box; border-radius:14px; border:2px solid transparent }
+body.os-android .agal-ed-fil.on{ color:#fff }
+body.os-android .agal-ed-fil.on canvas{ border-color:var(--ou-blue) }
+/* Transformar */
+body.os-android .agal-ed-tr{ display:flex; justify-content:center; gap:30px }
+body.os-android .agal-ed-tr > div{ display:flex; flex-direction:column; align-items:center; gap:6px; font-size:12px; color:rgba(255,255,255,.72); cursor:pointer }
+body.os-android .agal-ed-tr > div > div{ width:48px; height:48px; border-radius:50%; display:flex; align-items:center; justify-content:center; background:rgba(255,255,255,.08); color:#fff; transition:background .15s }
+body.os-android .agal-ed-tr > div:hover > div{ background:rgba(255,255,255,.14) }
+body.os-android .agal-ed-asp{ display:flex; justify-content:center; gap:8px }
+body.os-android .agal-ed-asp > div{ height:34px; padding:0 15px; border-radius:17px; display:flex; align-items:center; font-size:13px; font-weight:600; color:rgba(255,255,255,.75); background:rgba(255,255,255,.08); cursor:pointer; transition:background .15s, color .15s }
+body.os-android .agal-ed-asp > div:hover{ background:rgba(255,255,255,.14) }
+body.os-android .agal-ed-asp > div.on{ background:#fff; color:#000 }
+/* deitado (janela 956×440): a imagem à esquerda, as opções e as ferramentas numa coluna à direita */
+body.os-android .app-window.ls .agal-ed{ display:grid; grid-template-columns:minmax(0,1fr) 380px; grid-template-rows:auto minmax(0,1fr) auto; grid-template-areas:"top top" "stage opts" "stage tools" }
+body.os-android .app-window.ls .agal-ed-top{ grid-area:top; height:auto; padding-top:var(--statusbar-h); padding-bottom:4px }
+body.os-android .app-window.ls .agal-ed-stage{ grid-area:stage; padding:6px 12px 10px }
+body.os-android .app-window.ls .agal-ed-opts{ grid-area:opts; min-height:0; overflow-y:auto; scrollbar-width:none }
+body.os-android .app-window.ls .agal-ed-tools{ grid-area:tools; padding:4px 12px calc(var(--safe-bottom) + 4px) }
+body.os-android .app-window.ls .agal-ed-tools > div{ height:54px }
+
+/* ================================================================
+   PARTILHA RÁPIDA (folhas do sistema: o invólucro e o fundo são os da folha da Nova UI)
+   ================================================================ */
+body.os-android .sheet-wrap.aqs-wrap .sheet-head{ display:none }
+body.os-android .aqs-gl{ display:block; width:20px; height:20px }
+body.os-android .aqs{ padding:6px 2px 8px }
+body.os-android .aqs-head{ display:flex; align-items:center; gap:14px; padding:6px 10px 18px; border-bottom:1px solid var(--sep) }
+body.os-android .aqs-th{ width:52px; height:52px; flex:none; border-radius:12px; background-color:var(--fill3); background-size:cover; background-position:center }
+body.os-android .aqs-ht{ min-width:0 }
+body.os-android .aqs-ht b{ display:block; font-size:18px; font-weight:600; color:var(--label) }
+body.os-android .aqs-ht span{ display:block; margin-top:2px; font-size:14px; color:var(--label2) }
+body.os-android .aqs-sec{ padding:18px 4px 2px }
+body.os-android .aqs-st{ display:flex; align-items:center; gap:10px; padding:0 6px; font-size:16px; font-weight:600; color:var(--label) }
+body.os-android .aqs-ic{ width:30px; height:30px; flex:none; border-radius:50%; display:flex; align-items:center; justify-content:center; background:var(--ou-blue); color:#fff }
+body.os-android .aqs-ic .aqs-gl{ width:18px; height:18px }
+body.os-android .aqs-lbl{ padding:14px 6px 0; font-size:14px; font-weight:600; color:var(--label2) }
+body.os-android .aqs-hint{ padding:8px 6px 0; font-size:13px; line-height:1.4; color:var(--label2) }
+body.os-android .aqs-found .aqs-hint{ padding-top:4px; color:var(--label3) }
+body.os-android .aqs-people{ display:flex; gap:4px; padding:10px 2px 0; overflow-x:auto; scrollbar-width:none }
+body.os-android .aqs-people::-webkit-scrollbar,body.os-android .aqs-apps::-webkit-scrollbar{ display:none }
+body.os-android .aqs:not(.aqs-found) .aqs-people{ display:none }
+body.os-android .aqs-p{ flex:none; width:90px; display:flex; flex-direction:column; align-items:center; gap:2px; padding:6px 0 8px; border-radius:20px; text-align:center; cursor:pointer; transition:background .15s }
+body.os-android .aqs-p:hover{ background:var(--fill4) }
+body.os-android .aqs-av{ position:relative; width:64px; height:64px; margin-bottom:6px }
+body.os-android .aqs-av .avatar{ width:64px; height:64px; font-size:23px }
+body.os-android .aqs-ring{ position:absolute; left:-4px; top:-4px; width:72px; height:72px; pointer-events:none }
+body.os-android .aqs-ring circle{ fill:none; stroke:transparent; stroke-width:3; stroke-linecap:round }
+body.os-android .aqs-p.busy .aqs-ring{ animation:aqsSpin 1s linear infinite }
+body.os-android .aqs-p.busy .aqs-ring circle{ stroke:var(--ou-blue); stroke-dasharray:60 154 }
+body.os-android .aqs-p.sent .aqs-ring circle{ stroke:var(--green) }
+body.os-android .aqs-p.fail .aqs-ring circle{ stroke:var(--red) }
+@keyframes aqsSpin{ to{ transform:rotate(360deg) } }
+body.os-android .aqs-pn{ max-width:84px; font-size:14px; font-weight:600; color:var(--label); white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+body.os-android .aqs-pd{ max-width:84px; font-size:12px; color:var(--label2); white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+body.os-android .aqs-p .ad-st{ min-height:15px; font-size:12px; font-weight:500; color:var(--label2) }
+body.os-android .aqs-p.busy .ad-st{ color:var(--ou-blue) }
+body.os-android .aqs-p.sent .ad-st{ color:var(--green) }
+body.os-android .aqs-p.fail .ad-st{ color:var(--red) }
+body.os-android .aqs-vis{ margin:16px 6px 0; padding:14px; border-radius:20px; background:var(--fill4); font-size:14px; color:var(--label2) }
+body.os-android .aqs-seg{ display:flex; gap:2px; margin-top:10px; padding:3px; border-radius:var(--ou-r-pill); background:var(--fill3) }
+body.os-android .aqs-seg > div{ flex:1; height:36px; border-radius:var(--ou-r-pill); display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:600; color:var(--label2); cursor:pointer; transition:background .15s, color .15s }
+body.os-android .aqs-seg > div:hover{ color:var(--label) }
+body.os-android:not(.dark) .aqs-seg > div.on{ background:#fff; color:var(--label); box-shadow:0 1px 3px rgba(0,0,0,.12) }
+body.os-android.dark .aqs-seg > div.on{ background:#3A3A40; color:var(--label) }
+body.os-android .aqs-apps{ display:flex; gap:2px; padding:14px 0 0; overflow-x:auto; scrollbar-width:none }
+body.os-android .aqs-app{ flex:none; width:86px; display:flex; flex-direction:column; align-items:center; gap:7px; padding:6px 0 8px; border-radius:18px; font-size:13px; color:var(--label); cursor:pointer; transition:background .15s }
+body.os-android .aqs-app:hover{ background:var(--fill4) }
+body.os-android .aqs-app span{ max-width:80px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+body.os-android .aqs-ai{ width:54px; height:54px; border-radius:17px; overflow:hidden }
+body.os-android .aqs-ai > svg{ display:block; width:100%; height:100% }
+/* receção: pop-up em baixo */
+body.os-android .aqs-rc{ display:flex; flex-direction:column; align-items:center; padding:6px 6px 8px; text-align:center }
+body.os-android .aqs-rc-h{ display:flex; align-items:center; gap:9px; font-size:15px; font-weight:600; color:var(--label2) }
+body.os-android .aqs-rc-t{ margin-top:16px; font-size:20px; font-weight:500; line-height:1.3; color:var(--label) }
+body.os-android .aqs-rc-t b{ font-weight:700 }
+body.os-android .aqs-rc-img{ margin-top:18px; width:208px; height:208px; border-radius:22px; background-color:var(--fill3); background-size:cover; background-position:center; box-shadow:0 6px 18px rgba(0,0,0,.16) }
+body.os-android .aqs-rc-dev{ margin-top:16px; display:flex; align-items:center; gap:8px; font-size:14px; color:var(--label2) }
+body.os-android .aqs-rc-dev .avatar{ width:28px; height:28px; font-size:11px }
+body.os-android .aqs-rc-note{ max-width:330px; margin-top:10px; font-size:13px; line-height:1.4; color:var(--label3) }
+body.os-android .aqs-rc-btns{ align-self:stretch; display:flex; gap:12px; margin-top:22px }
+body.os-android .aqs-btn{ flex:1; height:52px; border-radius:var(--ou-r-pill); display:flex; align-items:center; justify-content:center; font-size:16px; font-weight:600; cursor:pointer; transition:background .15s }
+body.os-android .aqs-btn.no{ background:var(--fill2); color:var(--label) }
+body.os-android .aqs-btn.no:hover{ background:var(--fill) }
+body.os-android .aqs-btn.yes{ background:var(--ou-blue); color:#fff }
+body.os-android .aqs-btn.yes:hover{ background:#3470EE }
+/* página das definições */
+body.os-android .aqs-hero{ display:flex; flex-direction:column; align-items:center; gap:8px; padding:24px 34px 18px; text-align:center }
+body.os-android .aqs-hero-ic{ width:64px; height:64px; border-radius:50%; display:flex; align-items:center; justify-content:center; background:var(--ou-blue); color:#fff }
+body.os-android .aqs-hero-ic .aqs-gl{ width:34px; height:34px }
+body.os-android .aqs-hero b{ font-size:22px; font-weight:600; color:var(--label) }
+body.os-android .aqs-hero span{ font-size:14px; line-height:1.45; color:var(--label2) }

@@ -1,0 +1,561 @@
+/* ============================================================
+   COMPONENTES PearOS - navbar, listas, toggles, tab bar, botões,
+   alerts, sheets, action sheets, banners, cards
+   ============================================================ */
+
+/* ---------- Liquid Glass (PearOS 26) - material único para barras, docks, controlos flutuantes, menus, alertas ----------
+   translúcido + blur/saturação + reflexo fino no topo + aresta quase invisível + sombra suave. Não se aplica a conteúdo. */
+.glass,.glassButton,.circularGlassButton{ background:var(--glass); border:.5px solid var(--glass-border); backdrop-filter:var(--glass-blur); -webkit-backdrop-filter:var(--glass-blur); box-shadow:var(--glass-shadow), inset 0 1px 0 var(--glass-hi); color:var(--label) }
+.glassButton{ display:inline-flex; align-items:center; justify-content:center; gap:6px; height:44px; padding:0 18px; border-radius:22px; font-size:var(--t-body); font-weight:600; cursor:pointer; transition:transform var(--motion-normal) var(--spring), background var(--motion-normal) }
+.circularGlassButton{ display:inline-flex; align-items:center; justify-content:center; width:44px; height:44px; border-radius:50%; cursor:pointer; transition:transform var(--motion-normal) var(--spring), background var(--motion-normal) }
+.glassButton svg,.circularGlassButton svg{ width:22px; height:22px }
+.glassButton:active,.circularGlassButton:active{ transform:scale(.94); background:var(--fill2) }
+
+/* ---------- Nav stack ---------- */
+.nav-stack{ position:absolute; inset:0; overflow:hidden }
+/* sem `will-change:transform` na regra base: são DEZENAS de vistas retidas nas 7 janelas que o
+   sistema guarda em memória, cada uma a pedir uma camada de GPU permanente para uma animação que
+   acontece uma vez. O motion.css dá-o só aos quatro estados que mexem (.enter/.leave/.swiping/.behind). */
+.view{ position:absolute; inset:0; background:var(--bg); color:var(--label); display:flex; flex-direction:column;
+  transition:transform .38s cubic-bezier(.2,.9,.25,1), filter .38s cubic-bezier(.2,.9,.25,1) }
+.view.enter{ transform:translateX(100%) } .view.behind{ transform:translateX(-28%); filter:brightness(.82) } .view.leave{ transform:translateX(100%) }
+.view.swiping{ transition:none }
+.view.tab-in .content{ animation:tabIn .26s cubic-bezier(.2,.9,.25,1) } @keyframes tabIn{ from{ opacity:0; transform:translateY(8px) } }
+/* Título grande com a barra vazia: a barra sai do fluxo (fica a sobrepor) e o conteúdo começa logo abaixo da barra de estado.
+   Ganham-se os 44 px de faixa branca que havia por cima do título, e o estado com scroll continua igual (.navbar.solid tapa o topo). */
+.view.lg-bare .navbar{ position:absolute; left:0; right:0; top:0; pointer-events:none }
+.view.lg-bare .navbar > *{ pointer-events:auto }   /* a barra sobrepõe o conteúdo: só os botões apanham toques */
+.view.lg-bare .content{ padding-top:calc(var(--statusbar-h) + 6px) }   /* 6 px de respiro, como no PearOS (colado à barra de estado ficava apertado) */
+.view.lg-bare .large-title{ padding-right:var(--lg-btnw, 20px) }       /* reserva o espaço dos botões que agora ficam ao nível do título */
+/* Utilitário: conteúdo curto CENTRADO na vertical (cls:'center-short' no UI.view). As margens automáticas centram quando cabe
+   e resolvem a 0 quando o conteúdo passa da altura - ao contrário de justify-content, que num contentor com scroll cortaria o topo.
+   O título grande fica de fora do centro, encostado ao topo, como no PearOS. */
+.view.center-short .content > *:not(.large-title):first-of-type,
+.view.center-short .content > .large-title + *{ margin-top:auto }
+.view.center-short .content > *:last-child{ margin-bottom:auto }
+
+/* ---------- Navbar ---------- */
+.navbar{ position:relative; z-index:5; flex:none; padding-top:var(--statusbar-h); height:calc(var(--statusbar-h) + var(--navbar-h)); display:flex; align-items:center; justify-content:space-between;
+  padding-left:10px; padding-right:16px; background:transparent; transition:background .25s, box-shadow .25s }
+.navbar.solid{ background:var(--material); backdrop-filter:blur(24px) saturate(180%); -webkit-backdrop-filter:blur(24px) saturate(180%); box-shadow:0 .5px 0 var(--sep) }
+.nb-left,.nb-right{ display:flex; align-items:center; gap:14px; min-width:70px; font-size:var(--t-body); color:var(--blue) }
+.nb-right{ justify-content:flex-end }
+.nb-title{ position:absolute; left:50%; top:calc(var(--statusbar-h) + 22px); transform:translate(-50%,-50%); font-size:var(--t-headline); font-weight:600; color:var(--label); opacity:0; transition:opacity .2s;
+  white-space:nowrap; max-width:200px; overflow:hidden; text-overflow:ellipsis; pointer-events:none }
+/* só .show-title: a barra fica sólida a y>6 mas o título grande só sai a y>38 - com .solid aqui o título aparecia DUAS vezes nesses 32 px de scroll */
+.navbar.show-title .nb-title{ opacity:1 }
+.nb-back{ display:flex; align-items:center; gap:2px; cursor:pointer; font-weight:400 } .nb-back svg{ width:25px; height:25px }
+.nb-btn{ cursor:pointer; font-weight:400 } .nb-btn.bold{ font-weight:600 } .nb-btn svg{ width:27px; height:27px; display:block }
+/* alvo de toque de 44 px (PearOS) nos botões de ícone da barra: o glifo tinha só 24 px. O :not(.glass) é obrigatório - o círculo de vidro tem 38 px e ficaria oval. */
+.nb-btn:not(.glass),.nb-back{ display:flex; align-items:center; justify-content:center; min-width:44px; height:44px; padding:0 10px; margin:0 -10px }
+.nb-back{ justify-content:flex-start }
+.nb-btn:active,.nb-back:active{ opacity:.45 } .nb-btn.dis{ opacity:.35; pointer-events:none }
+/* controlo de sistema PearOS 26 na barra: círculo de vidro (+, compor, enviar…) */
+/* ⚠️ `.nb-btn.glass svg` é MAIS ESPECÍFICO do que `.nb-btn svg`: enquanto esteve nos 20 px,
+   subir a regra genérica para 27 não chegava aqui - e é aqui que vivem o avião de papel e o
+   coração do Instashot, que o utilizador viu pequenos. Agora acompanha a barra de navegação. */
+.nb-btn.glass{ width:44px; height:44px; border-radius:50%; display:flex; align-items:center; justify-content:center; background:var(--fill3); color:var(--label); transition:transform var(--motion-normal) var(--spring), background var(--motion-normal) }
+.nb-btn.glass svg{ width:27px; height:27px } .nb-btn.glass:active{ opacity:1; transform:scale(.92); background:var(--fill2) }
+
+/* ---------- Conteúdo ---------- */
+/* A área de conteúdo é uma COLUNA FLEX. Assim o espaço que sobra pode ser dado a quem o deve ocupar (estados vazios, editores),
+   em vez de ficar um vazio branco em baixo com tudo encostado ao topo. `flex-shrink:0` em todos os filhos mantém o
+   comportamento de bloco de sempre: nada é espremido quando o conteúdo passa da altura do ecrã. */
+.content{ flex:1; display:flex; flex-direction:column; overflow-y:auto; overflow-x:hidden; overscroll-behavior:contain; padding-bottom:calc(var(--safe-bottom) + 20px); scrollbar-width:none; position:relative }
+.content > *{ flex-shrink:0 }
+/* "holder" sem classe - o <div> vazio que as apps criam para trocar spinner→conteúdo. Como é um bloco normal, o `flex:1` do
+   estado vazio lá dentro não tinha nada para consumir e o "Sem X" colava-se ao título. Só o ÚLTIMO filho, para nenhum holder
+   a meio da vista roubar o espaço aos irmãos seguintes. */
+.content > div:not([class]):last-child{ flex:1 0 auto; display:flex; flex-direction:column }
+/* PERFUI (2026-10-05): saiu a regra `.content > div:not([class]):last-child > *{ flex-shrink:0 }`. Um seletor de ATRIBUTO
+   [class] num antepassado seguido de `> *` faz o Chromium refazer o estilo da subarvore INTEIRA de qualquer elemento a que
+   se mude uma classe: cada classList no <body> ou no #screen recalculava os ~1700-6000 nos do telemovel (21 ms com o CPU a
+   1/4, medido). Nao muda nada a vista: o holder e `flex:1 0 auto` (nunca fica mais baixo do que o conteudo) e os itens de
+   um flex em coluna ja nao encolhem abaixo do conteudo (min-height:auto), por isso o flex-shrink dos filhos nunca atua. */
+.content::-webkit-scrollbar{ display:none }
+.content.has-tabbar{ padding-bottom:130px }
+.large-title{ font-size:var(--t-large); font-weight:700; letter-spacing:-.4px; padding:2px 20px 10px; color:var(--label) }
+.section-title{ font-size:var(--t-title2); font-weight:700; padding:22px 20px 8px }
+.section-title.row{ display:flex; justify-content:space-between; align-items:center } .section-title .more{ font-size:var(--t-subhead); font-weight:500; color:var(--blue); cursor:pointer }
+
+/* ---------- Listas agrupadas (inset) ---------- */
+.group-header{ font-size:var(--t-foot); color:var(--label2); text-transform:uppercase; letter-spacing:.3px; padding:22px 32px 7px }
+.group-footer{ font-size:var(--t-foot); color:var(--label2); padding:7px 32px 6px; line-height:1.35 }
+.group{ margin:0 16px; background:var(--bg2); border-radius:12px; overflow:hidden }
+.group + .group{ margin-top:18px }
+.group-footer + .group{ margin-top:18px }   /* com um rodapé pelo meio os cartões deixam de ser irmãos adjacentes e colavam-se ao texto */
+.li{ display:flex; align-items:center; min-height:48px; padding:7px 16px; gap:13px; cursor:pointer; position:relative; color:var(--label); font-size:var(--t-body) }
+.li.static{ cursor:default } .li:active:not(.static){ background:var(--fill4) }
+.li + .li::before{ content:''; position:absolute; left:16px; right:0; top:0; height:.5px; background:var(--sep) }
+/* ⚠️ Estes valores acompanham o .li-icon. Ao subir a caixa para 37 px (linha 81) o separador
+   ficou 8 px desalinhado em TODAS as listas com ícone - regressão da passagem anterior.
+   A conta é: padding-left 16 + caixa + gap 13. */
+.li.has-icon + .li::before{ left:66px } .li.has-big + .li::before{ left:79px }
+.li-icon{ width:37px; height:37px; border-radius:9px; flex:none; display:flex; align-items:center; justify-content:center; color:#fff; overflow:hidden }
+.li-icon svg{ width:25px; height:25px } .li-icon img{ width:100%; height:100%; object-fit:cover }
+.li-icon.big{ width:50px; height:50px; border-radius:50% } .li-icon.big svg{ width:30px; height:30px }
+.li-icon.tile{ border-radius:8px; box-shadow:none } .li-icon.tile svg{ width:100%; height:100% }
+.li-body{ flex:1; min-width:0 }
+.li-label{ white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+.li-sub{ font-size:var(--t-subhead); color:var(--label2); margin-top:1px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+.li-value{ color:var(--label2); font-size:var(--t-body); white-space:nowrap; margin-left:auto } .li-value svg{ width:23px; height:23px; display:block; color:var(--blue) }   /* visto de seleção em azul */
+/* sliders PearOS (brilho, volumes): pista fina, botão branco grande */
+.group input[type=range]{ -webkit-appearance:none; appearance:none; height:4px; border-radius:2px; background:var(--fill); outline:none; cursor:pointer }
+.group input[type=range]::-webkit-slider-thumb{ -webkit-appearance:none; appearance:none; width:28px; height:28px; border-radius:50%; background:#fff; box-shadow:0 3px 8px rgba(0,0,0,.18), 0 0 0 .5px rgba(0,0,0,.06); cursor:pointer }
+.li-chev{ color:var(--label3); display:flex; margin-left:-4px } .li-chev svg{ width:16px; height:16px }
+/* .li-body é flex:1 e ocupava a linha toda, por isso o justify-content:center não centrava nada e os botões de lista ("Terminar sessão", "Trocar SIM", "Bloquear ecrã"…) ficavam à esquerda */
+.li.center{ justify-content:center; color:var(--blue) } .li.center .li-body{ flex:0 1 auto } .li.center .li-label{ text-align:center }
+.li.danger{ color:var(--red) } .li.blue{ color:var(--blue) }
+.li input[type=text],.li input[type=number],.li input[type=tel],.li input[type=password]{ flex:1; border:none; background:none; font:inherit; color:var(--label); outline:none; min-width:0 }
+.li input::placeholder{ color:var(--label3) }
+.li input[type=range]{ flex:1; accent-color:var(--blue) }
+
+/* ---------- Toggle ---------- */
+.toggle{ position:relative; width:51px; height:31px; flex:none; cursor:pointer; margin-left:auto }
+.toggle input{ opacity:0; width:0; height:0; position:absolute }
+.toggle span{ position:absolute; inset:0; border-radius:16px; background:var(--fill); transition:background .2s }
+.toggle span::after{ content:''; position:absolute; top:2px; left:2px; width:27px; height:27px; border-radius:50%; background:#fff; box-shadow:0 3px 8px rgba(0,0,0,.15),0 1px 1px rgba(0,0,0,.16); transition:transform .22s var(--spring) }
+.toggle input:checked + span{ background:var(--toggle,var(--green)) }
+.toggle input:checked + span::after{ transform:translateX(20px) }
+
+/* ---------- Checkbox circular ---------- */
+.check{ width:22px; height:22px; border-radius:50%; border:1.5px solid var(--label3); flex:none; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:background var(--motion-fast), border-color var(--motion-fast) }
+.check svg{ width:12px; height:12px; opacity:0 } .check.on{ background:var(--blue); border-color:var(--blue) } .check.on svg{ opacity:1 }
+
+/* ---------- Search ---------- */
+/* campo de pesquisa do sistema (PearOS 26: cápsula, lupa, X para limpar quando há texto, foco suave) - o mesmo em todas as apps */
+/* campo de pesquisa: usado por 17+ apps (Definições, Contactos, Mensagens, Notas, Lembretes,
+   Mapas, AppShop…). A lupa a 16 px dava ~10 px reais depois do zoom do jogo. */
+.search{ margin:4px 16px 8px; height:44px; border-radius:22px; background:var(--fill3); display:flex; align-items:center; gap:8px; padding:0 10px 0 14px; color:var(--label2); transition:background var(--motion-normal), box-shadow var(--motion-normal) }
+.search:focus-within{ background:var(--fill2); box-shadow:0 0 0 .5px var(--sep) }
+.search svg{ width:22px; height:22px; flex:none }
+.search input{ flex:1; border:none; background:none; font:inherit; font-size:var(--t-body); color:var(--label); outline:none; min-width:0 } .search input::placeholder{ color:var(--label3) }
+.search .s-clr{ display:none; width:18px; height:18px; border-radius:50%; background:var(--label3); color:var(--bg2); align-items:center; justify-content:center; cursor:pointer; flex:none } .search .s-clr svg{ width:10px; height:10px }
+.search.has .s-clr{ display:flex }
+
+/* ---------- Segmented ---------- */
+.seg{ display:flex; margin:8px 16px; background:var(--fill3); border-radius:9px; padding:2px; position:relative }
+.seg div{ flex:1; text-align:center; font-size:var(--t-foot); font-weight:500; padding:6px 0; border-radius:7px; cursor:pointer; color:var(--label); transition:background .2s, box-shadow .2s }
+.seg div.on{ background:var(--bg2); box-shadow:0 3px 8px rgba(0,0,0,.12),0 3px 1px rgba(0,0,0,.04); font-weight:600 }
+
+/* ---------- Botões ---------- */
+/* botões do sistema (PearOS 26): cápsulas de 50 px, 17 semibold, margem 20; pressionar = scale .96 + ligeira redução de luminosidade, solta com mola.
+   Nomes universais: .prominentButton (= .btn-p, azul), .systemButton (= .btn-s, cinzento), .destructiveButton (= .btn-p.red), .circularGlassButton / .glassButton (acima) */
+.btn-p,.prominentButton,.systemButton,.destructiveButton{ display:flex; align-items:center; justify-content:center; height:50px; border-radius:25px; background:var(--blue); color:#fff; font-size:var(--t-headline); font-weight:600; cursor:pointer; margin:12px 20px; border:none; gap:6px }
+.btn-p,.prominentButton,.systemButton,.destructiveButton{ transition:transform var(--motion-normal) var(--spring), filter var(--motion-normal) } .btn-p:active,.prominentButton:active,.systemButton:active,.destructiveButton:active{ filter:brightness(.88); transform:scale(.96); transition:transform .06s, filter .06s } .btn-p.dis{ opacity:.4; pointer-events:none }
+.li{ transition:background var(--motion-normal) ease-out } .li:active:not(.static){ transition:background .04s }
+.pill-btn{ transition:transform var(--motion-normal) var(--spring), background var(--motion-normal) } .pill-btn:active{ transform:scale(.94); transition:transform .06s }
+.tab{ transition:background var(--motion-normal), color var(--motion-normal), transform var(--motion-normal) var(--spring) } .tab:active{ transform:scale(.92); opacity:1 }
+.btn-s,.systemButton{ background:var(--fill3); color:var(--blue) } .btn-p.red,.destructiveButton{ background:var(--red) } .btn-p.green{ background:var(--green) } .btn-p.gray{ background:var(--fill3); color:var(--label) }
+.btn-round{ width:54px; height:54px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; background:var(--fill3); color:var(--label); transition:transform var(--motion-normal) var(--spring), filter var(--motion-normal) }
+.btn-round svg{ width:24px; height:24px } .btn-round:active{ filter:brightness(.85); transform:scale(.94) }
+.pill-btn{ display:inline-flex; align-items:center; justify-content:center; padding:6px 14px; border-radius:15px; background:var(--fill3); color:var(--blue); font-size:var(--t-subhead); font-weight:600; cursor:pointer; min-width:64px; gap:4px }
+.pill-btn.on{ background:var(--blue); color:#fff } .pill-btn.gray{ color:var(--label) } .pill-btn.red{ background:var(--red); color:#fff } .pill-btn.green{ background:var(--green); color:#fff }
+.pill-btn svg{ width:20px; height:20px }
+.chips{ display:flex; gap:8px; padding:6px 16px; overflow-x:auto; scrollbar-width:none } .chips::-webkit-scrollbar{ display:none }
+.chips span{ flex:none; padding:7px 14px; border-radius:18px; background:var(--fill3); font-size:var(--t-subhead); font-weight:500; cursor:pointer; color:var(--label) } .chips span.on{ background:var(--label); color:var(--bg) }
+
+/* ---------- Tab bar (PearOS 26 flutuante) ---------- */
+.tabbar{ position:absolute; left:0; right:0; bottom:calc(var(--safe-bottom) + 10px); z-index:20; display:flex; align-items:center; justify-content:center; gap:10px; padding:0 16px; pointer-events:none; transition:transform .3s var(--ease), opacity .3s }
+.tabbar > *{ pointer-events:auto }
+/* scroll para baixo: a barra compacta-se ligeiramente; para cima volta ao tamanho (ui.js) */
+/* a barra encolhe COMO UM BLOCO: escalar a pílula e o círculo em separado afastava-os (cada um recolhia em torno do seu próprio centro)
+   e a barra parecia partir-se em duas ao rolar */
+.tabbar{ transform-origin:bottom center } .tabbar.compact{ transform:scale(.92) translateY(4px) }
+/* -24 px de cada lado: com a barra encolhida (.compact escala 0.92) as arestas do desvanecimento ficavam
+   à vista como duas linhas verticais nos cantos; assim o degradê passa sempre da largura do ecrã */
+.tabbar::before{ content:''; position:absolute; left:-24px; right:-24px; bottom:-60px; height:150px; pointer-events:none; z-index:-1; background:linear-gradient(180deg,rgba(0,0,0,0),rgba(0,0,0,.05)) }
+.tb-pill{ display:flex; align-items:center; gap:2px; padding:4px; border-radius:38px;
+  background:var(--glass); border:.5px solid var(--glass-border); backdrop-filter:blur(28px) saturate(180%); -webkit-backdrop-filter:blur(28px) saturate(180%);
+  box-shadow:0 10px 30px rgba(0,0,0,.22), inset 0 .5px 0 rgba(255,255,255,.35) }
+.tabbar.hidden{ display:none }
+.tab{ display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px; min-width:66px; height:58px; border-radius:30px; color:var(--label2); font-size:12px; font-weight:600; cursor:pointer;
+  transition:background var(--motion-normal), color var(--motion-normal); padding:0 8px; position:relative }
+.tab svg{ transition:transform var(--motion-medium) var(--spring) } .tab.on svg{ animation:tabPop .36s var(--spring) } @keyframes tabPop{ 0%{ transform:scale(.86) } 100%{ transform:scale(1) } }   /* separador escolhido: micro-escala e volta */
+.tab svg{ width:31px; height:31px } .tab.on{ color:var(--blue); background:var(--fill3) } .tab:active{ opacity:.6 }
+/* círculo de pesquisa à parte (PearOS 26): só o ícone; ativo = tinta azul */
+.tab.tab-search{ width:64px; min-width:64px; height:64px; padding:0; border-radius:50%; background:var(--glass); border:.5px solid var(--glass-border); color:var(--label);
+  backdrop-filter:blur(28px) saturate(180%); -webkit-backdrop-filter:blur(28px) saturate(180%); box-shadow:0 10px 30px rgba(0,0,0,.22), inset 0 .5px 0 rgba(255,255,255,.35) }
+.tab.tab-search span{ display:none } .tab.tab-search svg{ width:32px; height:32px } .tab.tab-search.on{ color:var(--blue); background:var(--glass) }
+.tabbar.searching .tb-pill .tab.on{ background:transparent; color:var(--label2) }
+.tab .tb-badge{ position:absolute; top:6px; right:10px; min-width:16px; height:16px; border-radius:8px; background:var(--red); color:#fff; font-size:10px; display:flex; align-items:center; justify-content:center; padding:0 4px }
+/* ponto vermelho sem número, como o Instagram usa no avião das mensagens */
+.tab .tb-badge.dot{ min-width:9px; width:9px; height:9px; border-radius:5px; padding:0; top:9px; right:13px }
+
+/* ---------- Cards ---------- */
+.card{ margin:0 16px; background:var(--bg2); border-radius:16px; padding:16px; overflow:hidden } .card + .card{ margin-top:12px }
+.card-title{ font-size:var(--t-foot); font-weight:600; color:var(--label2); text-transform:uppercase; letter-spacing:.3px; margin-bottom:8px }
+.row{ display:flex; align-items:center; gap:12px } .row.between{ justify-content:space-between }
+.muted{ color:var(--label2) } .small{ font-size:var(--t-foot) } .bold{ font-weight:600 } .hr{ height:.5px; background:var(--sep); margin:10px 0 }
+.avatar{ width:60px; height:60px; border-radius:50%; background:linear-gradient(160deg,#9AA0AA,#5E6470); color:#fff; display:flex; align-items:center; justify-content:center; font-size:24px; font-weight:500; flex:none; overflow:hidden }
+.avatar img{ width:100%; height:100%; object-fit:cover }
+.avatar.sm{ width:40px; height:40px; font-size:16px } .avatar.xs{ width:30px; height:30px; font-size:12px } .avatar.lg{ width:90px; height:90px; font-size:34px }
+
+/* ---------- Empty ---------- */
+/* estado vazio no estilo ContentUnavailableView: glifo fino, título 22/700, descrição secundária */
+/* o estado vazio fica CENTRADO no espaço livre da vista (antes assentava logo abaixo do título e deixava meio ecrã em branco) */
+.empty{ display:flex; flex:1 0 auto; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:40px 40px 72px; gap:2px; color:var(--label2) }
+.empty svg{ width:64px; height:64px; color:var(--label3); margin-bottom:10px } .empty b{ color:var(--label); font-size:var(--t-title2); font-weight:700; letter-spacing:-.3px; margin-bottom:2px } .empty span{ font-size:var(--t-subhead); color:var(--label2); line-height:1.35 }
+.empty.compact{ padding:28px 40px } .empty.compact svg{ width:40px; height:40px }
+/* holder (com classe) que so tem o aviso: o UI.empty marca-o com .ui-isempty enquanto for o ultimo filho da .content (ui.js,
+   emptyFit). Estica ate ao fundo e o aviso fica ao centro do espaco livre. A classe repetida ganha as grelhas das apps no
+   dobravel aberto (.ea-list, .on-list passam a grid com 4 classes); um holder escondido continua escondido */
+.content > .ui-isempty.ui-isempty.ui-isempty.ui-isempty:not(.hidden):not([hidden]){ flex:1 0 auto; display:flex; flex-direction:column; justify-content:center; align-items:stretch }
+.ui-isempty.ui-isempty > .empty{ flex:1 0 auto; justify-content:center }
+/* aviso proprio de uma app (UI.emptyFit(el), sem o padding de baixo do .empty): sobe um pouco acima do meio, como no PearOS */
+.ui-isempty.ui-isempty > :not(.empty){ margin-bottom:48px }
+.spinner{ width:22px; height:22px; border:2.5px solid var(--label4); border-top-color:var(--label2); border-radius:50%; animation:spin .8s linear infinite; margin:20px auto }
+/* ---------- Skeletons (UI.skeleton) ----------
+   Blocos cinzentos com a forma do conteúdo que vem a caminho. Só o INVÓLUCRO anima, e só a opacidade
+   (uma camada; nada de gradiente a correr por transform bloco a bloco nem de filter - regras do CEF). */
+.skeleton{ pointer-events:none; animation:skPulse 1.1s ease-in-out infinite alternate }
+@keyframes skPulse{ from{ opacity:1 } to{ opacity:.45 } }
+.skeleton .sk{ background:var(--fill3); border-radius:6px }
+.sk-list{ padding-top:6px }
+.sk-group{ background:var(--bg2) }
+.sk-row{ display:flex; align-items:center; gap:13px; min-height:60px; padding:8px 16px; position:relative }
+.sk-row + .sk-row::before{ content:''; position:absolute; left:69px; right:0; top:0; height:.5px; background:var(--sep) }
+.sk-av{ width:40px; height:40px; border-radius:50%!important; flex:none }
+.sk-lines{ flex:1; min-width:0; display:flex; flex-direction:column; gap:7px }
+.skeleton .sk-l1{ height:13px; width:62% } .skeleton .sk-l2{ height:11px; width:84% }
+.skeleton .sk-l1.w0{ width:48% } .skeleton .sk-l1.w2{ width:70% } .skeleton .sk-l2.w0{ width:66% } .skeleton .sk-l2.w2{ width:92% }
+.sk-cells{ display:grid; grid-template-columns:repeat(3,1fr); gap:2px }
+.skeleton .sk-cell{ aspect-ratio:1; border-radius:0 }
+.sk-feed{ display:flex; flex-direction:column; gap:22px; padding:10px 0 }
+.sk-post{ display:flex; flex-direction:column; gap:9px }
+.sk-post .sk-head{ display:flex; align-items:center; gap:10px; padding:0 14px }
+.sk-post .sk-head .sk-av{ width:34px; height:34px }
+.sk-post .sk-media{ height:300px; border-radius:0 }
+.sk-post > .sk-l1,.sk-post > .sk-l2{ margin:0 14px }
+@keyframes spin{ to{ transform:rotate(360deg) } }
+
+/* ---------- Alert ---------- */
+.overlay{ position:absolute; inset:0; z-index:200; background:rgba(0,0,0,.35); display:flex; align-items:center; justify-content:center; opacity:0; transition:opacity .2s; backdrop-filter:blur(2px) }
+.overlay.in{ opacity:1 }
+.alert{ width:270px; border-radius:26px; background:var(--material); backdrop-filter:blur(30px) saturate(160%); -webkit-backdrop-filter:blur(30px) saturate(160%); color:var(--label); overflow:hidden; transform:scale(1.12); transition:transform .22s var(--spring); text-align:center; border:.5px solid var(--glass-border); box-shadow:0 20px 50px rgba(0,0,0,.25) }   /* PearOS 26: cantos mais redondos, vidro */
+.overlay.in .alert{ transform:scale(1) }
+.alert-body{ padding:19px 16px 16px } .alert-title{ font-size:var(--t-headline); font-weight:600 } .alert-msg{ font-size:var(--t-foot); margin-top:4px; color:var(--label); line-height:1.35 }
+/* o código da recusa do servidor por baixo da frase (UI.alert `foot`, 4 nov 2026): pequeno, apagado, monoespaçado */
+.alert-foot{ font-size:var(--t-cap1); margin-top:6px; color:var(--label3); font-family:ui-monospace,Menlo,Consolas,monospace; word-break:break-all }
+/* é aqui que se escreve em todos os UI.prompt (Calendário, Lembretes, Surf, hashtags das
+   stories): estava a --t-foot, ou seja ~8 px reais dentro do jogo */
+.alert input{ width:100%; margin-top:12px; height:40px; border-radius:9px; border:.5px solid var(--sep-opaque); background:var(--bg2); padding:0 10px; font:inherit; font-size:var(--t-body); color:var(--label); outline:none }
+.alert-btns{ display:flex; border-top:.5px solid var(--sep) } .alert-btns div{ flex:1; padding:12px; font-size:var(--t-body); color:var(--blue); cursor:pointer } .alert-btns div + div{ border-left:.5px solid var(--sep) }
+.alert-btns div.bold{ font-weight:600 } .alert-btns div.danger{ color:var(--red) } .alert-btns div:active{ background:var(--fill4) }
+.alert-btns.stack{ flex-direction:column } .alert-btns.stack div + div{ border-left:none; border-top:.5px solid var(--sep) }
+
+/* ---------- CAMPO A SER ESCRITO (2026-09-20) ----------
+   Ao tocar num campo, o texto de exemplo sai e o cursor fica sozinho - é assim que se percebe que o campo já está ativo.
+   Vale para o foco do browser E para a classe `.kb-on` que o teclado do telemóvel põe no campo (shell/keyboard.js): no jogo
+   o teclado é o nosso e o `:focus` do CEF nem sempre chega. */
+input:focus::placeholder,textarea:focus::placeholder,.kb-on::placeholder{ color:transparent!important }
+input::placeholder,textarea::placeholder{ transition:color .15s ease-out }
+/* e o campo acende, como no iOS */
+.st-input.kb-on,.stp .st-input.kb-on{ box-shadow:0 0 0 2px var(--system-blue,var(--blue))!important }
+.search.kb-on,.search:focus-within{ box-shadow:0 0 0 2px var(--blue) }
+
+/* ---------- Definições › Notificações › "Mostrar como" (Contagem · Pilha · Lista), com os mini-telemóveis do iOS ---------- */
+.nd-pick{ display:flex; justify-content:space-around; padding:18px 10px 14px }
+.nd-opt{ display:flex; flex-direction:column; align-items:center; gap:10px; cursor:pointer }
+.nd-opt span{ font-size:var(--t-subhead); padding:5px 12px; border-radius:14px; color:var(--label) }
+.nd-opt.on span{ background:var(--blue); color:#fff; font-weight:600 }
+.nd-ph{ position:relative; width:58px; height:104px; border-radius:12px; border:2px solid var(--label3); background:var(--bg) }
+.nd-opt.on .nd-ph{ border-color:var(--blue) }
+.nd-ph i{ position:absolute; left:8px; right:8px; border-radius:3px; background:var(--label3) }
+.nd-ph .t{ top:8px; height:6px; width:16px; left:50%; margin-left:-8px; background:var(--label3); border-radius:3px }
+.nd-ph .c{ bottom:9px; height:12px; left:14px; right:14px; border-radius:6px; background:var(--blue) }
+.nd-ph .s1{ bottom:9px; height:16px; background:var(--blue) } .nd-ph .s2{ bottom:28px; height:5px; left:12px; right:12px; opacity:.45; background:var(--blue) }
+.nd-ph .l{ height:14px } .nd-ph .l:nth-child(2){ bottom:9px } .nd-ph .l:nth-child(3){ bottom:27px } .nd-ph .l:nth-child(4){ bottom:45px }
+
+/* ---------- pedido de PERMISSÃO (Perm.request) ao estilo iOS 26: ícone da app + símbolo, texto centrado, botões em cápsula ---------- */
+.overlay.perm-ov .alert{ width:300px; border-radius:34px; text-align:center }
+.perm-ov .alert-body{ padding:26px 22px 6px; display:flex; flex-direction:column; align-items:center }
+.perm-ov .perm-ic{ position:relative; width:64px; height:64px; margin-bottom:14px }
+.perm-ov .perm-tile{ width:64px; height:64px; border-radius:15px; box-shadow:0 4px 14px rgba(0,0,0,.18); overflow:hidden }
+.perm-ov .perm-badge{ position:absolute; right:-7px; bottom:-7px; width:28px; height:28px; border-radius:50%; display:flex; align-items:center; justify-content:center; color:#fff; background:#0A84FF; box-shadow:0 0 0 3px var(--material,#F2F2F7), 0 2px 6px rgba(0,0,0,.2) }
+.perm-ov .perm-badge svg{ width:15px; height:15px }
+.perm-ov .perm-badge.k-camera{ background:#8E8E93 } .perm-ov .perm-badge.k-mic{ background:#FF9500 } .perm-ov .perm-badge.k-location{ background:#0A84FF }
+.perm-ov .perm-badge.k-photos{ background:#FF2D55 } .perm-ov .perm-badge.k-contacts{ background:#8E8E93 } .perm-ov .perm-badge.k-notifications{ background:#FF3B30 }
+.perm-ov .perm-badge.k-sms{ background:#34C759 } .perm-ov .perm-badge.k-bank{ background:#30B0C7 }
+.perm-ov .alert-title{ font-size:17px; font-weight:700; line-height:1.28; letter-spacing:-.2px }
+.perm-ov .alert-msg{ font-size:14px; line-height:1.38; margin-top:7px; color:var(--label2) }
+.overlay.perm-ov .alert-btns{ border-top:none; padding:16px 16px 16px; gap:8px; flex-direction:column }
+.overlay.perm-ov .alert-btns > div{ flex:none; height:48px; padding:0 14px; display:flex; align-items:center; justify-content:center; border-radius:24px; border:none; font-size:17px; font-weight:500; color:var(--blue); background:rgba(120,120,128,.14); transition:transform .12s, background .15s }
+.overlay.perm-ov .alert-btns > div + div{ border:none }
+.overlay.perm-ov .alert-btns > div.bold{ background:#0A84FF; color:#fff; font-weight:600 }
+.overlay.perm-ov .alert-btns > div:active{ transform:scale(.97); background:rgba(120,120,128,.24) }
+.overlay.perm-ov .alert-btns > div.bold:active{ background:#0071E3 }
+
+/* ---------- Sheet ---------- */
+.sheet-wrap{ position:absolute; inset:0; z-index:190; background:rgba(0,0,0,.4); opacity:0; transition:opacity .25s }
+.sheet-wrap.in{ opacity:1 }
+.sheet{ position:absolute; left:0; right:0; bottom:0; background:var(--bg); border-radius:36px 36px 0 0; max-height:88%; display:flex; flex-direction:column; transform:translateY(100%); transition:transform .38s var(--ease); color:var(--label); box-shadow:0 -10px 40px rgba(0,0,0,.18) }   /* PearOS 26: raio 36 */
+.sheet-wrap.in .sheet{ transform:translateY(var(--kb-shift,0px)) }
+.sheet .grabber{ width:36px; height:5px; border-radius:3px; background:var(--label4); margin:8px auto 4px }
+.sheet .sheet-head{ display:flex; align-items:center; justify-content:space-between; padding:8px 16px; font-size:var(--t-body); color:var(--blue) } .sheet .sheet-head b{ color:var(--label); font-weight:600 }
+.sheet .content{ padding-bottom:40px }
+/* folha mais alta do que o espaço acima do teclado virtual (shell/keyboard.js place): encolhe até lá e o conteúdo rola.
+   !important porque o dobrável e a Nova UI têm max-height próprios para a folha */
+.sheet.kb-tall{ max-height:var(--kb-max)!important }
+.sheet.kb-tall > .content{ flex:1; min-height:0; overflow-y:auto; overscroll-behavior:contain; scrollbar-width:none } .sheet.kb-tall > .content::-webkit-scrollbar{ display:none }
+/* UI.sheet `foot` (4 nov 2026): preso ao fundo da folha, fora do que rola - o compositor dos comentários fica sempre à vista e a
+   lista rola por cima dele (a folha continua limitada pelo max-height de cima; o .content é que encolhe) */
+.sheet.has-foot > .content{ flex:1 1 auto; min-height:0; padding-bottom:12px }
+.sheet > .sheet-foot{ flex:none; position:relative }
+
+/* ---------- Action sheet ---------- */
+.as-wrap{ position:absolute; inset:0; z-index:195; background:rgba(0,0,0,.35); opacity:0; transition:opacity .22s; display:flex; flex-direction:column; justify-content:flex-end; padding:0 10px calc(var(--safe-bottom) + 4px) }
+.as-wrap.in{ opacity:1 }
+.as-group{ border-radius:22px; background:var(--material); backdrop-filter:blur(30px) saturate(160%); -webkit-backdrop-filter:blur(30px) saturate(160%); overflow:hidden; transform:translateY(60px); transition:transform .3s var(--ease); margin-top:8px; border:.5px solid var(--glass-border) }
+.as-wrap.in .as-group{ transform:none }
+.as-group.main::before{ content:''; display:block; width:36px; height:5px; border-radius:3px; background:var(--label4); margin:8px auto 2px }   /* pega (grabber) */
+.as-title{ padding:12px; text-align:center; font-size:var(--t-foot); color:var(--label2); border-bottom:.5px solid var(--sep) }
+.as-btn{ padding:16px; text-align:center; font-size:var(--t-title3); color:var(--blue); cursor:pointer } .as-btn + .as-btn{ border-top:.5px solid var(--sep) }
+.as-btn.danger{ color:var(--red) } .as-btn.bold{ font-weight:600 } .as-btn:active{ background:var(--fill4) }
+
+/* ---------- Banner ---------- */
+/* top:58 (não 14): a ilha ocupa 11→48 e a lente da câmara está lá dentro - a 14 px o banner tapava a câmara (queixa in-game 2026-09-08).
+   Mesma geometria do banner de notificações (.nbanner em notify.css) para os dois serem indistinguíveis. */
+.banner{ position:absolute; top:58px; left:12px; right:12px; z-index:335; padding:12px 14px; border-radius:22px; background:var(--material); backdrop-filter:blur(30px); -webkit-backdrop-filter:blur(30px); color:var(--label);
+  box-shadow:0 10px 30px rgba(0,0,0,.25); display:flex; gap:12px; align-items:center; transform:translateY(-140%); transition:transform .45s var(--spring); cursor:pointer; touch-action:pan-x }
+.banner.in{ transform:none }
+.banner .tile{ width:38px; height:38px; flex:none; box-shadow:none; border-radius:9px }
+.banner .b-title{ font-size:var(--t-subhead); font-weight:600 } .banner .b-msg{ font-size:var(--t-subhead); color:var(--label2); display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden }
+.banner .b-time{ margin-left:auto; font-size:var(--t-cap1); color:var(--label2); align-self:flex-start }
+
+/* ---------- Toast ---------- */
+/* max-width + quebra de linha: com `nowrap` e sem limite, um toast comprido (p.ex. o do "Editar" das
+   Mensagens) esticava para fora do ecrã e aparecia cortado dos DOIS lados. Um toast curto continua
+   numa linha só - só quebra quando não cabe. */
+.toast{ position:absolute; left:50%; bottom:120px; transform:translateX(-50%); z-index:310; background:var(--material); color:var(--label); padding:10px 18px; border-radius:20px; font-size:var(--t-subhead); font-weight:500; backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px); box-shadow:0 8px 24px rgba(0,0,0,.25); opacity:0; border:.5px solid var(--glass-border);
+  box-sizing:border-box; width:max-content; max-width:calc(100% - 44px); white-space:normal; text-align:center; line-height:1.32; overflow-wrap:anywhere }
+
+/* ---------- Picker (roda simplificada) ---------- */
+.picker{ display:flex; justify-content:center; gap:8px; padding:20px 0 }
+.picker select{ font:inherit; font-size:22px; background:var(--bg2); color:var(--label); border:none; border-radius:10px; padding:10px 8px; outline:none }
+
+/* ---------- Utilitários ---------- */
+/* ⚠️⚠️ NÃO USAR `.pad` NO TELEMÓVEL: é também a RAIZ do painel admin (admin.css: position:fixed; inset:0; z-index:2200;
+   opacity:0) e as duas folhas de estilo vivem na mesma página. Um `<div class="pad">` dentro de uma app vira uma camada
+   invisível por cima de tudo e engole os cliques (foi o "Publicar" do Tweeter que nunca publicava, 26 out 2026). Fica a
+   regra só para não mudar nada a quem já a tenha; para margem lateral, `padding:0 16px` no próprio elemento. */
+.pad{ padding:0 16px } .mt{ margin-top:12px } .mb{ margin-bottom:12px }
+.flex{ display:flex } .col{ flex-direction:column } .center{ align-items:center; justify-content:center } .grow{ flex:1 } .hidden{ display:none!important }
+textarea.ta{ width:100%; border:none; background:none; font:inherit; font-size:var(--t-body); color:var(--label); outline:none; resize:none; line-height:1.45 }
+.img-ph{ background:linear-gradient(135deg,var(--c1,#888),var(--c2,#333)); background-size:cover; background-position:center }
+
+/* ===== Barra de separadores ao estilo do Instagram (.tabbar.plain) =====
+   Medida na captura real que o utilizador enviou (896 px de largura, k=440/896):
+   5 icones de ~27pt, centros a 44 / 132 / 222 / 307 / 397 pt, banda de 29pt de altura
+   a ~28pt do fundo do ecra. Sem pilula, sem rotulos, encostada as bordas. */
+.tabbar.plain{ left:0; right:0; bottom:0; padding:0; gap:0; display:block }
+.tabbar.plain .tb-pill{ display:flex; width:100%; align-items:center; justify-content:space-around;
+  height:calc(58px + var(--safe-bottom)); padding:0 6px var(--safe-bottom); gap:0;
+  border-radius:0; background:var(--bg2); border:0; border-top:.5px solid var(--sep); box-shadow:none }
+.tabbar.plain .tab{ flex:1 1 0; min-width:0; height:100%; gap:0; border-radius:0; background:transparent }
+.tabbar.plain .tab span{ display:none }                 /* o Instagram nao rotula os separadores */
+.tabbar.plain .tab svg{ width:27px; height:27px }
+.tabbar.plain .tab.on{ background:transparent; color:var(--label) }
+.tabbar.plain .tab:active{ background:transparent; opacity:.5 }
+.tabbar.plain.compact{ transform:none }                 /* a barra fixa nao encolhe com o scroll */
+/* A barra deixa de flutuar, por isso o conteudo tem de reservar a altura toda.
+   A classe vai na JANELA (posta pelo UI.tabbar), nao na vista: as vistas sao recriadas a
+   cada troca de separador e perderiam a marca. O `.has-tabbar` generico reserva 130 px para
+   a pilula flutuante; aqui basta a altura real da barra. */
+.app-window.plain-tabbar .content.has-tabbar{ padding-bottom:calc(66px + var(--safe-bottom)) }
+
+/* ---------- <select> do telemóvel (ui.js selectPop): cápsula + lista própria em vez da do Windows ---------- */
+.device select{ -webkit-appearance:none; appearance:none; border:none; outline:none; font:inherit; font-size:20px; font-weight:600; font-variant-numeric:tabular-nums;
+  color:var(--label); background:var(--fill3,rgba(118,118,128,.12)); border-radius:10px; padding:6px 14px; text-align:center; text-align-last:center; cursor:pointer }
+.sel-back{ position:absolute; inset:0; z-index:400; border-radius:57px }
+.sel-pop{ position:absolute; z-index:401; overflow:hidden; border-radius:14px; background:var(--material,rgba(250,250,252,.98)); box-shadow:0 14px 40px rgba(0,0,0,.28), 0 0 0 .5px rgba(0,0,0,.08);
+  opacity:0; transform:scale(.94); transform-origin:50% 0; transition:opacity .14s, transform .18s var(--spring,ease) }
+.sel-pop.in{ opacity:1; transform:none }
+.sel-pop .sel-list{ max-height:inherit; overflow-y:auto; padding:6px; scrollbar-width:none } .sel-pop .sel-list::-webkit-scrollbar{ display:none }
+.sel-it{ min-height:40px; display:flex; align-items:center; justify-content:center; border-radius:9px; font-size:17px; font-variant-numeric:tabular-nums; color:var(--label); cursor:pointer }
+.sel-it:active{ background:var(--fill3,rgba(118,118,128,.12)) }
+.sel-it.on{ color:var(--blue); font-weight:700; background:rgba(0,122,255,.10) }
+
+/* ============================================================
+   DOBRÁVEIS (contrato v2, 2026-10-02): PearPhone Fold (PearOS) e NOVA Fold8 (Nova UI). Ecrã de fora 670×956 (fechado) e de
+   dentro 1340×956 (aberto). Tudo debaixo de body.form-fold: os telemóveis normais ficam exatamente iguais.
+   --split-l: largura da LISTA nas duas colunas (UI.split, só aberto); --fold-col: coluna de leitura das vistas de uma coluna
+   (aberto). PearPhone Fold: a BARRA DIREITA (system.js Rail) ocupa --rail-w à direita; o conteúdo das apps acaba antes dela e
+   os botões das barras e os separadores vivem lá (ui.js railSync). O NOVA não tem barra (--rail-w é 0).
+   ============================================================ */
+body.form-fold{ --split-l:440px; --fold-col:760px }
+body.os-android.form-fold{ --split-l:520px; --fold-col:820px }
+/* PearPhone Fold: a lista do Duo (barra lateral das Definições, 34 % = 456; com o zoom do conteúdo aberto, 368 × 1,25 = 460) */
+body.os-ios.form-fold{ --split-l:460px }
+
+/* ---------- PearPhone Fold: DENSIDADE (2026-10-03, decisão do dono: as apps do Duo, referências 15 e 16) ----------
+   O CONTEÚDO das apps tem zoom próprio (--az, tokens.css: 1,45 fechado, 1,25 aberto): a pilha, o aviso das duas colunas e as camadas
+   que a app põe na janela; as camadas que ela abre no ecrã (folhas, listas de ações, menus, toasts, listas de <select>) levam .az
+   (ui.js appCtx). NUNCA a barra direita nem o sistema (bloqueado, ecrã principal, Centro de controlo, notificações, alternador).
+   Zoom e não scale: nítido no CEF e o layout refaz-se (fechado a zona do conteúdo fica com ~378 px, um telemóvel; aberto ~970).
+   Ficam de fora as camadas VERTICAIS com a geometria do telemóvel (440 × 956, liquid27.css "Camadas a ecrã inteiro"): o desenho
+   delas é a altura do ecrã e com zoom não caberiam.
+   Lá dentro as medidas do ECRÃ passam aos px do conteúdo (as cópias --*-v do tokens.css a dividir por --az): a barra (--rail-w), as
+   larguras, a barra de estado, a área do indicador, a lista das duas colunas (368 aberto) e os cantos do ecrã. Quem faz contas com o
+   ponteiro ou com retângulos dentro do conteúdo usa UI.vrect / UI.zoom(el) (ui.js) */
+body.os-ios.form-fold .app-window > :not(.tabbar):not(.st-ed):not(.ig-add):not(.story-view):not(.ins-layer):not(.rcu-viewer):not(.rcu-comp):not(.rcu-cam):not(.rcb-mc):not(.msg-cam),
+body.os-ios.form-fold .az{ zoom:var(--az);
+  --rail-w:calc(var(--rail-wv) / var(--az)); --screen-w:calc(var(--screen-wv) / var(--az)); --screen-h:calc(956px / var(--az)); --fold-w:var(--screen-w);
+  --fold-cw:calc(var(--fold-cwv) / var(--az)); --fold-ow:calc(var(--fold-owv) / var(--az)); --split-l:calc(var(--split-lv) / var(--az));
+  --statusbar-h:calc(68px / var(--az)); --safe-top:var(--statusbar-h); --safe-bottom:calc(34px / var(--az));
+  --scr-tl:calc(var(--scr-tlv) / var(--az)); --scr-tr:calc(var(--scr-trv) / var(--az)); --scr-br:calc(var(--scr-brv) / var(--az)); --scr-bl:calc(var(--scr-blv) / var(--az));
+  --scr-r:var(--scr-tl) var(--scr-tr) var(--scr-br) var(--scr-bl);
+  --fold-cols:var(--az-cols); --fold-pcols:var(--az-pcols) }
+
+/* ---------- AJUDAS PARA AS APPS NOS DOBRÁVEIS (nada as usa por omissão: os telemóveis não mudam) ----------
+   GRELHA RESPONSIVA .ugrid: enche a largura do CONTENTOR com colunas de pelo menos --ug-min (300 por omissão: cartões) e --ug-gap
+   entre elas (12). Num telemóvel (440) dá 1 coluna, no dobrável fechado (670) 2, aberto (1340) 3 a 4; dentro de uma das duas
+   colunas segue a largura dela. --ug-max limita a largura da grelha (fica ao centro).
+     .ugrid.ug-photo  fotografias quadradas (mínimo 140, 2 px): 3 colunas no telemóvel, 4 fechado, 8 a 9 aberto
+     .ugrid.ug-tile   mosaicos (mínimo 200, 12 px): 2 / 3 / 5 a 6 colunas
+     .ugrid > .ug-wide  ocupa a linha inteira (cabeçalhos de secção, um cartão de destaque)
+   COLUNAS EXPLÍCITAS para quem desenha a grelha em JS ou com repeat(): --fold-cols (cartões: 1 telemóvel, 2 fechado, 3 aberto) e
+   --fold-pcols (fotografias: 3, 4, 9), no body. Ex.: grid-template-columns:repeat(var(--fold-pcols,3),1fr).
+   COLUNA DE LEITURA das vistas de uma coluna (aberto): --fold-col (760 PearPhone Fold, 820 NOVA). Numa vista: .v-wide = 1000 (listas e
+   cartões largos, 75 % do ecrã deitado) e .v-full = sem coluna (a vista ocupa a largura toda: galerias, mapas, painéis próprios).
+   --fold-gut: a margem de cada lado dessa coluna (só nas vistas de uma coluna com o dobrável aberto; 0 nos outros casos). Um FAB ou uma
+   barra de baixo presos à vista ficam na aresta da coluna com right:calc(var(--fold-gut, 0px) + 20px). */
+.ugrid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(min(100%,var(--ug-min,300px)),1fr)); gap:var(--ug-gap,12px); width:100%; max-width:var(--ug-max,none); margin-left:auto; margin-right:auto; box-sizing:border-box }
+.ugrid.ug-photo{ --ug-min:140px; --ug-gap:2px } .ugrid.ug-photo > *{ aspect-ratio:1; min-width:0; overflow:hidden }
+.ugrid.ug-tile{ --ug-min:200px }
+.ugrid > *{ min-width:0 } .ugrid > .ug-wide{ grid-column:1 / -1 }
+body{ --fold-cols:1; --fold-pcols:3 }
+body.form-fold{ --fold-cols:2; --fold-pcols:4 }
+body.form-fold.fold-open{ --fold-cols:3; --fold-pcols:9 }
+body.form-fold .view.v-wide{ --fold-col:1000px }
+body.form-fold .view.v-full{ --fold-col:100000px }
+body.form-fold.fold-open .app-window .nav-stack:not(.split) > .view{ --fold-gut:max(0px,calc(50% - var(--fold-col) / 2)) }
+
+/* ---------- PearPhone Fold: a app continua por baixo da barra direita (o Duo, referências 15 e 16) ----------
+   O FUNDO da app vai até à aresta direita e os botões da barra flutuam por cima dele; o que se lê ou toca acaba antes da coluna.
+   Como: a pilha, as raízes, as vistas e as camadas de ponta a ponta ganham uma BORDA direita transparente com a largura da barra.
+   A caixa de dentro (onde vive o conteúdo, as percentagens e o que é absolute) fica exatamente igual à de antes e o fundo do
+   próprio elemento pinta por baixo da borda (origin border-box: os degradês e as imagens não recomeçam na aresta). Os filhos de
+   ponta a ponta de cada raiz (barras, conteúdo, fundos, ui.js marca-os com .fb-x) passam a borda com uma margem negativa, e as
+   camadas da janela de ponta a ponta (.fb-wide, ui.js) chegam à aresta. O que rola, o detalhe das duas colunas e as vistas que
+   entram e saem levam a faixa com eles: nada é copiado nem pintado à parte. */
+body.os-ios.form-fold .app-window > :not(.tabbar){ right:var(--rail-w) }
+body.os-ios.form-fold .app-window > .nav-stack{ right:0 }
+body.os-ios.form-fold .app-window > .nav-stack:not(.split) > *,body.os-ios.form-fold .app-window > .nav-stack.split > :not(:first-child){ border-right:var(--rail-w) solid transparent; background-origin:border-box!important }
+body.os-ios.form-fold .app-window > .nav-stack:not(.split) > * > :is(.navbar,.content,.fb-x),
+body.os-ios.form-fold .app-window > .nav-stack.split > :not(:first-child) > :is(.navbar,.content,.fb-x){ margin-right:calc(-1 * var(--rail-w)); border-right:var(--rail-w) solid transparent; background-origin:border-box!important }
+/* raiz que recorta (ui.js .fb-clip): o recorte deixa passar a largura da barra, para o fundo e o mapa chegarem à aresta */
+/* ⚠️ valor FIXO e não var(--rail-w): dentro do zoom do conteúdo o --rail-w é um calc() a dividir (122px / 1,45) e o
+   overflow-clip-margin com esse var() dá 0 (medido no Edge), o mapa e o fundo voltavam a parar na barra. 140 px cobre a barra
+   nos dois estados (84 fechado, 102 aberto, em px do conteúdo); a janela da app continua a recortar na aresta do ecrã. */
+body.os-ios.form-fold .app-window > .nav-stack:not(.split) > .fb-clip,body.os-ios.form-fold .app-window > .nav-stack.split > .fb-clip:not(:first-child){ overflow:clip; overflow-clip-margin:140px }
+/* o mapa do Encontrar vai até à aresta (a lista dele, por cima, continua a acabar antes da barra) */
+body.os-ios.form-fold .app-window > .nav-stack > .fm > .fm-mapwrap.fb-x{ border-right:0 }
+body.os-ios.form-fold .app-window > .fb-wide,body.os-ios.form-fold .app-window.split-on > .split-ph,
+body.os-ios.form-fold .app-window > :is(.viewer,.reader,.player,.mt-match,.rcc-call,.rcc-rs,.rcp-lockpad,.rcp-viewer,.pe,.rcb-viewer,.rcu-imgview){ right:0; border-right:var(--rail-w) solid transparent; background-origin:border-box!important }
+/* o desvanecer por baixo da barra de cima sólida (liquid27.css) e o véu da vista de trás no jogo (motion.css) são ::after presos à
+   caixa de padding: passam a borda até à aresta, como o fundo */
+body.os-ios.form-fold .app-window > .nav-stack:not(.split) > * > .navbar.solid::after,
+body.os-ios.form-fold .app-window > .nav-stack.split > :not(:first-child) > .navbar.solid::after,
+body.fivem.os-ios.form-fold .app-window > .nav-stack:not(.split) > .view.behind::after,
+body.fivem.os-ios.form-fold .app-window > .nav-stack.split > .view.behind:not(:first-child)::after{ right:calc(-1 * var(--rail-w)) }
+/* os separadores são uma pílula vertical na coluna: a barra de baixo some e o conteúdo deixa de lhe reservar espaço */
+body.os-ios.form-fold .app-window > .tabbar{ display:none }
+body.os-ios.form-fold .content.has-tabbar,body.os-ios.form-fold .app-window.plain-tabbar .content.has-tabbar{ padding-bottom:calc(var(--safe-bottom) + 20px) }
+/* os botões da barra de cima ficam no DOM (as apps mexem neles e o círculo da coluna toca neles) mas não se veem */
+body.os-ios.form-fold .view > .navbar .nb-btn,body.os-ios.form-fold .view > .navbar .nb-back{ position:absolute; left:0; top:0; visibility:hidden; pointer-events:none }
+/* barra de cima só com botões (foram todos para a coluna): o conteúdo sobe para logo abaixo do topo */
+body.os-ios.form-fold .view.nb-empty > .navbar{ height:var(--statusbar-h) }
+/* título da barra (vistas sem título grande e o que aparece ao rolar): mais largo, a coluna é mais larga que um telemóvel */
+body.form-fold .navbar .nb-title{ max-width:360px }
+/* palavra num círculo da coluna (botão de texto sem glifo conhecido) */
+.rail-apps .rl-word{ display:block; max-width:50px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-size:11px; font-weight:700; letter-spacing:-.2px }
+
+/* ---------- aberto: as vistas de uma coluna ficam numa coluna de leitura ao centro (as listas não esticam a 1232/1340) ---------- */
+body.form-fold.fold-open .app-window .nav-stack:not(.split) > .view > .content{ padding-left:max(0px,calc(50% - var(--fold-col) / 2)); padding-right:max(0px,calc(50% - var(--fold-col) / 2)) }
+body.os-android.form-fold.fold-open .app-window .nav-stack:not(.split) > .view > .navbar{ padding-left:max(6px,calc(50% - var(--fold-col) / 2)); padding-right:max(6px,calc(50% - var(--fold-col) / 2)) }
+/* barra ao estilo do Instagram (Nova UI; no PearOS os separadores estão na coluna): o fundo de ponta a ponta, os ícones na coluna */
+body.form-fold.fold-open .tabbar.plain .tb-pill{ padding-left:calc(50% - 300px); padding-right:calc(50% - 300px) }
+
+/* ---------- Lista | detalhe (UI.split, só ABERTO) ----------
+   A raiz (a lista) fica à esquerda com --split-l e o detalhe ocupa o resto (até à barra direita, no PearOS). A raiz fica por cima
+   (z-index) para a vista de trás do detalhe deslizar por baixo dela, e nunca se mexe. */
+.split-ph{ display:none }
+body.form-fold .app-window.split-on > .split-ph{ position:absolute; top:0; bottom:0; left:var(--split-l); right:var(--rail-w); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px;
+  padding:0 56px 70px; text-align:center; background:var(--bg); color:var(--label2) }
+.split-ph .sp-ic{ width:76px; height:76px; border-radius:50%; background:var(--fill4,rgba(120,120,128,.08)); color:var(--label3); display:flex; align-items:center; justify-content:center; margin-bottom:12px }
+.split-ph .sp-ic:empty{ display:none }
+.split-ph .sp-ic svg{ width:38px; height:38px }
+.split-ph b{ font-size:var(--t-title3); font-weight:600; color:var(--label); letter-spacing:-.2px }
+.split-ph span{ font-size:var(--t-subhead); line-height:1.38; max-width:300px }
+body.form-fold .nav-stack.split > .view{ left:var(--split-l) }
+body.form-fold .nav-stack.split > .view:first-child{ left:0; right:auto; width:var(--split-l); z-index:2; transform:none!important; filter:none!important; box-shadow:.5px 0 0 var(--sep) }
+body.form-fold .nav-stack.split > .view.pane-first > .navbar .nb-back{ visibility:hidden; pointer-events:none }
+body.form-fold .nav-stack.split > .view.pane-in{ opacity:0; transform:translateX(18px) }
+body.form-fold .nav-stack.split > .view.pane-out{ transition:none }
+/* a barra de separadores (Nova UI) é da lista */
+body.form-fold .app-window.split-on > .tabbar{ right:calc(100% - var(--split-l)) }
+/* linha escolhida na lista (a que está aberta à direita): no PearPhone Fold a cápsula cinzenta do Duo (fill, cantos de 18; o texto e
+   os ícones ficam com as cores deles); a Nova UI tem o realce dela (oneui-ui.css); as apps com linhas próprias (Mensagens, Zapp)
+   dão a sua cor à .split-sel no CSS delas */
+body.os-ios.form-fold .nav-stack.split > .view:first-child .li.split-sel{ background:var(--fill); border-radius:18px }
+body.form-fold .nav-stack.split > .view:first-child .li.split-sel::before,body.form-fold .nav-stack.split > .view:first-child .li.split-sel + .li::before{ opacity:0 }
+/* PearPhone Fold: a pesquisa da LISTA desce para o fundo dela numa pílula de vidro (referência 16), presa ao fundo ao rolar; por
+   baixo dela a lista desvanece para o fundo (as linhas não se leem através da pílula) */
+body.os-ios.form-fold .nav-stack.split > .view:first-child > .content{ padding-bottom:0 }
+/* a pesquisa dentro de um invólucro (.pane-wrap: o do Zapp leva também os filtros) passa a ser filha direta do conteúdo para a
+   regra de baixo (o invólucro deixa de ter caixa; os filtros ficam onde estavam) */
+body.os-ios.form-fold .nav-stack.split > .view:first-child > .content > .pane-wrap{ display:contents }
+/* Duo: pílula de 60 (raio 30), lupa 24 e texto 18; vidro branco com a aresta do Duo (1 px de sombra curta + contorno de .5), como os
+   botões da barra direita sobre apps claras; no escuro o vidro escuro da barra */
+body.os-ios.form-fold .nav-stack.split > .view:first-child > .content > .search,
+body.os-ios.form-fold .nav-stack.split > .view:first-child > .content > .pane-wrap > .search{ order:99; position:sticky; bottom:22px; z-index:3; flex:none; height:60px; margin:auto 16px 22px; padding:0 16px 0 20px; gap:10px; border-radius:30px;
+  background:#fff; box-shadow:inset 0 1px 0 #fff,0 1px 2px rgba(0,0,0,.08),0 0 0 .5px rgba(0,0,0,.08) }
+body.os-ios.form-fold .nav-stack.split > .view:first-child > .content > .search svg,
+body.os-ios.form-fold .nav-stack.split > .view:first-child > .content > .pane-wrap > .search svg{ width:24px; height:24px }
+body.os-ios.form-fold .nav-stack.split > .view:first-child > .content > .search input,
+body.os-ios.form-fold .nav-stack.split > .view:first-child > .content > .pane-wrap > .search input{ font-size:18px }
+body.os-ios.form-fold .nav-stack.split > .view:first-child > .content > .search .s-clr svg,
+body.os-ios.form-fold .nav-stack.split > .view:first-child > .content > .pane-wrap > .search .s-clr svg{ width:10px; height:10px }
+body.os-ios.form-fold.dark .nav-stack.split > .view:first-child > .content > .search,
+body.os-ios.form-fold.dark .nav-stack.split > .view:first-child > .content > .pane-wrap > .search{ background:#2C2C2E; box-shadow:inset 0 0 0 .5px rgba(255,255,255,.14),inset 0 1px 0 rgba(255,255,255,.1),0 4px 14px rgba(0,0,0,.34) }
+body.os-ios.form-fold .nav-stack.split > .view.pane-search:first-child::after{ content:''; position:absolute; left:0; right:0; bottom:0; height:108px; z-index:2; pointer-events:none;
+  background:linear-gradient(180deg,transparent,var(--pane-bg,var(--bg)) 62%) }
+
+/* trocar a vista de cima sem empilhar (UI.replace: o email anterior/seguinte) */
+.view.v-swap{ transition:opacity .22s ease-out, transform .3s var(--curve) }
+.view.v-swap.v-in{ opacity:0; transform:translateY(14px) }
+
+/* ---------- Camadas: folhas, listas de ações, alertas, menus (dentro da zona do conteúdo, à esquerda da barra direita) ---------- */
+/* o véu dos alertas e dos menus não desfoca no dobrável: no ecrã largo o browser devolvia o fundo em espelho junto às bordas
+   (no jogo já é sem desfoque); fica a tinta que o jogo usa (motion.css, body.fivem .ctx-wrap, continua a mandar no jogo) */
+body.form-fold .overlay{ backdrop-filter:none; -webkit-backdrop-filter:none }
+body.form-fold .ctx-wrap{ backdrop-filter:none; -webkit-backdrop-filter:none; background:rgba(0,0,0,.3) }
+/* alerta e pedido de texto: ao centro da zona do conteúdo */
+body.form-fold .overlay{ padding-right:var(--rail-w) }
+/* folha: cartão de vidro de 520 a flutuar 12 px acima do fundo, com os quatro cantos redondos */
+body.form-fold .sheet{ left:calc(50% - var(--rail-w) / 2 - 260px); right:calc(50% + var(--rail-w) / 2 - 260px); bottom:12px; border-radius:38px; max-height:calc(88% - 12px) }
+/* lista de ações: 520 ao centro da zona do conteúdo */
+body.form-fold .as-wrap{ padding-left:calc(50% - var(--rail-w) / 2 - 260px); padding-right:calc(50% + var(--rail-w) / 2 - 260px) }
+body.os-ios.form-fold .as-group{ border-radius:30px }
+/* PearPhone Fold (Duo, spec_duo 3.9): folha e lista de ações com 554 (o cartão do Duo), ao centro da zona do conteúdo e nunca a menos
+   de 12 da aresta nem da barra direita (fechado a zona tem 548); véu .25. No escuro a folha é a superfície do Duo (#1C1C1E) e as
+   linhas dentro dela #2C2C2E (no preto da app a folha desaparecia). Por :where() para os temas das apps continuarem a mandar */
+body.os-ios.form-fold .sheet{ left:max(12px,calc(50% - var(--rail-w) / 2 - 277px)); right:max(calc(var(--rail-w) + 12px),calc(50% + var(--rail-w) / 2 - 277px)) }
+body.os-ios.form-fold .as-wrap{ padding-left:max(12px,calc(50% - var(--rail-w) / 2 - 277px)); padding-right:max(calc(var(--rail-w) + 12px),calc(50% + var(--rail-w) / 2 - 277px)) }
+:where(body.os-ios.form-fold) .sheet-wrap{ background:rgba(0,0,0,.25) }
+body.os-ios.form-fold.dark .sheet{ --bg:#1C1C1E; --bg2:#2C2C2E }
+/* alerta do Duo (cartão de 554, título 29, texto 22): o nosso de 270 com zoom 1,45 (nítido no CEF, ao contrário do scale) = 392,
+   título 26, texto 20, botões 26. Com um campo de texto sobe para o terço de cima, para o teclado não o tapar */
+body.os-ios.form-fold .overlay .alert{ zoom:1.45 }
+body.os-ios.form-fold .overlay.al-input{ align-items:flex-start; padding-top:120px }
+/* aviso dentro da app: a mesma geometria do banner das notificações no fold (.nbanner, liquid27.css), ao centro */
+body.form-fold .banner{ left:calc(50% - 250px); right:calc(50% - 250px) }
+body.form-fold .toast{ max-width:396px }
+/* camadas abertas por uma app no PearPhone Fold (.az, com o zoom do conteúdo; os px aqui são os dela): folha e lista de ações com a
+   largura de um telemóvel (444, ou a zona do conteúdo menos 12 de cada lado: fechado ~354), cantos de 38 px reais; o toast nunca
+   passa da zona do conteúdo e fica à mesma altura de sempre (120 px reais do fundo) */
+body.os-ios.form-fold .sheet-wrap.az .sheet{ left:max(12px,calc(50% - var(--rail-w) / 2 - 222px)); right:max(calc(var(--rail-w) + 12px),calc(50% + var(--rail-w) / 2 - 222px)); border-radius:calc(38px / var(--az)) }
+body.os-ios.form-fold .as-wrap.az{ padding-left:max(12px,calc(50% - var(--rail-w) / 2 - 222px)); padding-right:max(calc(var(--rail-w) + 12px),calc(50% + var(--rail-w) / 2 - 222px)) }
+body.os-ios.form-fold .as-wrap.az .as-group{ border-radius:calc(30px / var(--az)) }
+body.os-ios.form-fold .toast.az{ bottom:calc(120px / var(--az)); max-width:min(396px,calc(var(--screen-w) - var(--rail-w) - 32px)) }

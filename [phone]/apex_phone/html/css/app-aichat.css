@@ -1,0 +1,30 @@
+/* ---------- Vera Chat (apps/aichat.js) - sem backdrop-filter/filter/color-mix (regras do CEF) ---------- */
+.aic{ display:flex; flex-direction:column }
+.aic .aic-list{ flex:1 1 auto; padding:8px 14px 12px; gap:6px }
+.aic-msg{ display:flex; max-width:100% }
+.aic-msg.me{ justify-content:flex-end }
+.aic-b{ max-width:78%; padding:9px 13px; border-radius:19px; font-size:var(--t-body); line-height:1.35; white-space:pre-wrap; word-break:break-word; user-select:text }
+.aic-msg.me .aic-b{ background:var(--blue); color:#fff; border-bottom-right-radius:6px }
+.aic-msg.ai .aic-b{ background:var(--fill2,#E9E9EB); color:var(--label); border-bottom-left-radius:6px }
+.aic-msg.err .aic-b{ background:rgba(255,59,48,.12); color:var(--red) }
+/* "a escrever…": três pontos por opacidade */
+.aic-msg.typing .aic-b{ display:flex; gap:5px; padding:13px 14px }
+.aic-msg.typing i{ width:7px; height:7px; border-radius:50%; background:var(--label2); opacity:.3; animation:aicDot 1.2s infinite }
+.aic-msg.typing i:nth-child(2){ animation-delay:.2s } .aic-msg.typing i:nth-child(3){ animation-delay:.4s }
+@keyframes aicDot{ 0%,60%,100%{ opacity:.25 } 30%{ opacity:.9 } }
+.aic-hero{ display:flex; flex-direction:column; align-items:center; text-align:center; gap:8px; padding:40px 16px 8px; margin:auto 0 }
+.aic-orb{ width:74px; height:74px; border-radius:24px; display:flex; align-items:center; justify-content:center; color:#fff; background:linear-gradient(135deg,#FF4F8B,#8E5CFF 50%,#2F7BFF) }
+.aic-orb svg{ width:36px; height:36px }
+.aic-hero b{ font-size:var(--t-title3); font-weight:700; color:var(--label) }
+.aic-hero span{ font-size:var(--t-foot); color:var(--label2); max-width:290px }
+.aic-sugg{ display:flex; flex-wrap:wrap; justify-content:center; gap:8px; margin-top:10px }
+.aic-chip{ padding:8px 12px; border-radius:16px; background:var(--bg2,#fff); color:var(--blue); font-size:var(--t-foot); font-weight:500; cursor:pointer; box-shadow:0 1px 2px rgba(0,0,0,.08) }
+.aic-chip:active{ transform:scale(.96) }
+.aic-bar{ flex:none; display:flex; align-items:center; gap:8px; padding:8px 12px calc(var(--safe-bottom,20px) + 8px); background:var(--bg) ; border-top:.5px solid var(--sep,rgba(60,60,67,.18)) }
+.aic-in{ flex:1; height:38px; border-radius:19px; border:1px solid var(--sep,rgba(60,60,67,.29)); padding:0 14px; font:inherit; font-size:var(--t-body); background:var(--bg2,#fff); color:var(--label); outline:none }
+.aic-send{ width:34px; height:34px; border-radius:50%; background:var(--blue); color:#fff; display:flex; align-items:center; justify-content:center; cursor:pointer; flex:none }
+.aic-send svg{ width:20px; height:20px }
+.aic-send.dis{ opacity:.4; pointer-events:none }
+/* PearPhone Fold aberto: a barra de escrever acompanha a coluna da conversa (640 ao centro, ui.css) */
+/* dobrável aberto: o campo de escrever fica na coluna de leitura das mensagens (ui.css --fold-col) */
+body.form-fold.fold-open .aic-bar{ padding-left:calc(50% - var(--fold-col) / 2 + 12px); padding-right:calc(50% - var(--fold-col) / 2 + 12px) }

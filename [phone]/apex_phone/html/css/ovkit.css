@@ -1,0 +1,366 @@
+/* ============================================================
+   OVKIT - o material e as peças partilhadas da LOJA de telemóveis e do PAINEL /phoneadmin, 2026-11-11
+   Linguagem do Apex Inventory (ox_inventory redesenhado): janelas de vidro por cima do jogo (sem ecrã inteiro),
+   faixa de cabeçalho tingida pela marca, tabuleiros rebaixados lisos, mosaicos com cantos,
+   botões em relevo escuro e o principal com contorno da marca (nunca fundo claro).
+   Cores: a marca e o fundo vêm do painel (Aparência), escritas pelo OvTheme (js/overlay.js) como --k-* na raiz de
+   cada camada (.pad e .xs-root). Os valores daqui são os de origem: azul Apex sobre o cinza escuro dos scripts Apex (#131314).
+   Regras do CEF do FiveM: sem backdrop-filter, filter, color-mix, :has, aspect-ratio; só transform/opacity animam;
+   sem box-shadow inset em peças pequenas e redondas (o CEF pinta pontos claros fora dos cantos); sem luz a seguir o rato.
+   Tudo vive debaixo de .ovk: nada daqui toca no telemóvel.
+   ============================================================ */
+@font-face { font-family: 'JetBrains Mono'; font-style: normal; font-weight: 400; font-display: swap; src: url('../fonts/JetBrainsMono-latin-400.woff2') format('woff2'); }
+@font-face { font-family: 'JetBrains Mono'; font-style: normal; font-weight: 500; font-display: swap; src: url('../fonts/JetBrainsMono-latin-500.woff2') format('woff2'); }
+@font-face { font-family: 'JetBrains Mono'; font-style: normal; font-weight: 700; font-display: swap; src: url('../fonts/JetBrainsMono-latin-700.woff2') format('woff2'); }
+
+/* ---------------------------------------------------------------- tokens */
+.ovk {
+  /* escritos pelo OvTheme (estes são os de origem) */
+  --k-acc: #1F5EFF;
+  --k-acc-rgb: 31, 94, 255;
+  --k-acc-hi: #4579FF;
+  --k-acc-lo: #1A4FD6;
+  --k-acc-ink: #FFFFFF;
+  --k-acc-txt: #7DA0FF;
+  --k-bg: #131314;
+  --k-bg-rgb: 19, 19, 20;
+  --k-tint: 0.86;
+  --k-ink-rgb: 242, 243, 245;
+
+  /* derivados (não se escrevem noutro sítio) */
+  --k-pane: rgba(var(--k-bg-rgb), var(--k-tint));
+  --k-pane-deep: rgba(var(--k-bg-rgb), 0.97);
+  --k-t1: rgb(var(--k-ink-rgb));
+  --k-t2: rgba(var(--k-ink-rgb), 0.78);
+  --k-t3: rgba(var(--k-ink-rgb), 0.58);
+  --k-t4: rgba(var(--k-ink-rgb), 0.4);
+  --k-l1: rgba(var(--k-ink-rgb), 0.07);
+  --k-l2: rgba(var(--k-ink-rgb), 0.12);
+  --k-l3: rgba(var(--k-ink-rgb), 0.2);
+  --k-tile: rgba(var(--k-ink-rgb), 0.045);
+  --k-tile-h: rgba(var(--k-ink-rgb), 0.09);
+  --k-ring: rgba(var(--k-ink-rgb), 0.08);
+  --k-ok: #3FB97F; --k-ok-rgb: 63, 185, 127;
+  --k-warn: #D9A441; --k-warn-rgb: 217, 164, 65;
+  --k-bad: #E0574C; --k-bad-rgb: 224, 87, 76;
+  --k-r: 9px;
+  --k-r-sm: 6px;
+  --k-pr: 18px;
+  --k-mono: 'JetBrains Mono', 'SF Mono', Consolas, monospace;
+  --k-font: 'Inter', system-ui, sans-serif;
+  --k-ease: cubic-bezier(.22, .61, .36, 1);
+  --k-emph: cubic-bezier(.16, 1, .3, 1);
+  --k-exit: cubic-bezier(.4, 0, 1, 1);
+  --k-fast: 130ms;
+  --k-base: 220ms;
+  --k-shadow: 0 30px 80px rgba(0, 0, 0, .55), 0 2px 10px rgba(0, 0, 0, .35);
+
+  font-family: var(--k-font);
+  color: var(--k-t1);
+  -webkit-font-smoothing: antialiased;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -.005em;
+}
+.ovk *, .ovk *::before, .ovk *::after { box-sizing: border-box; }
+.ovk ::selection { background: rgba(var(--k-acc-rgb), .32); color: var(--k-t1); }
+.ovk input, .ovk textarea { caret-color: var(--k-acc-txt); }
+.ovk ::-webkit-scrollbar { width: 6px; height: 6px; }
+.ovk ::-webkit-scrollbar-track { background: transparent; }
+.ovk ::-webkit-scrollbar-thumb { background: rgba(var(--k-ink-rgb), .14); border-radius: 8px; }
+.ovk ::-webkit-scrollbar-thumb:hover { background: rgba(var(--k-ink-rgb), .24); }
+.ovk .ovk-mono, .ovk-mono { font-family: var(--k-mono); font-feature-settings: 'tnum'; letter-spacing: 0; }
+
+/* ---------------------------------------------------------------- a janela (Liquid Glass sem desfoque) */
+/* o vidro é feito de luz: tinta do fundo, brilho no topo, banda de refração junto às bordas e um aro de 1 px */
+.ovk-win {
+  position: relative;
+  isolation: isolate;
+  border-radius: var(--k-pr);
+  box-shadow: var(--k-shadow);
+}
+.ovk-win::before {
+  content: '';
+  position: absolute; top: 0; right: 0; bottom: 0; left: 0;
+  z-index: -1;
+  border-radius: inherit;
+  pointer-events: none;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, .07), rgba(255, 255, 255, .012) 38%, rgba(255, 255, 255, 0) 64%),
+    radial-gradient(1100px 420px at 0% 0%, rgba(var(--k-acc-rgb), .10), rgba(var(--k-acc-rgb), 0) 70%),
+    linear-gradient(var(--k-pane), var(--k-pane));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, .11),
+    inset 0 -1px 0 rgba(255, 255, 255, .025),
+    inset 0 0 0 1px rgba(255, 255, 255, .035),
+    inset 0 0 0 5px rgba(255, 255, 255, .022),
+    inset 0 0 40px -16px rgba(255, 255, 255, .13);
+}
+.ovk-win::after {
+  content: '';
+  position: absolute; top: 0; right: 0; bottom: 0; left: 0;
+  z-index: -1;
+  padding: 1px;
+  border-radius: inherit;
+  pointer-events: none;
+  background: linear-gradient(165deg, rgba(255, 255, 255, .36), rgba(255, 255, 255, .07) 32%, rgba(255, 255, 255, .05) 62%, rgba(255, 255, 255, .17));
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+}
+/* entrada e saída da janela (só transform/opacity) */
+@keyframes ovk-in { from { opacity: 0; transform: translateY(14px) scale(.985); } to { opacity: 1; transform: none; } }
+@keyframes ovk-out { from { opacity: 1; transform: none; } to { opacity: 0; transform: translateY(8px) scale(.99); } }
+.ovk-win.ovk-enter { animation: ovk-in 320ms var(--k-emph) both; }
+.ovk-win.ovk-leave { animation: ovk-out 170ms var(--k-exit) both; pointer-events: none; }
+
+/* ---------------------------------------------------------------- faixa de cabeçalho */
+.ovk-head {
+  position: relative;
+  display: flex; align-items: center; gap: 14px;
+  padding: 16px 20px 15px;
+  border-radius: var(--k-pr) var(--k-pr) 0 0;
+  background:
+    radial-gradient(560px 150px at 0% 0%, rgba(var(--k-acc-rgb), .22), rgba(var(--k-acc-rgb), 0) 70%),
+    linear-gradient(180deg, rgba(var(--k-acc-rgb), .08), rgba(var(--k-acc-rgb), 0) 92%);
+}
+.ovk-head::after {
+  content: '';
+  position: absolute; left: 0; right: 0; bottom: 0; height: 1px;
+  background: linear-gradient(90deg, rgba(var(--k-acc-rgb), .62), rgba(var(--k-acc-rgb), .14) 45%, var(--k-l1));
+  pointer-events: none;
+}
+.ovk-badge {
+  flex: none;
+  width: 40px; height: 40px;
+  border-radius: 11px;
+  display: inline-flex; align-items: center; justify-content: center;
+  color: var(--k-acc-ink);
+  background: linear-gradient(160deg, var(--k-acc-hi), var(--k-acc-lo));
+}
+.ovk-badge svg { width: 21px; height: 21px; }
+.ovk-badge.sm { width: 30px; height: 30px; border-radius: 8px; }
+.ovk-badge.sm svg { width: 16px; height: 16px; }
+.ovk-title { font-size: 17px; font-weight: 700; letter-spacing: -.015em; line-height: 1.2; color: var(--k-t1); }
+.ovk-sub { font-size: 12px; color: var(--k-t3); line-height: 1.35; }
+/* "AO VIVO", "ABERTA": ponto de estado + texto mono */
+.ovk-live { display: inline-flex; align-items: center; gap: 6px; font-family: var(--k-mono); font-size: 10.5px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--k-acc-txt); }
+.ovk-live::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--k-ok); }
+.ovk-live.ok { color: var(--k-ok); }
+
+/* ---------------------------------------------------------------- painéis dentro da janela */
+.ovk-panel {
+  position: relative;
+  border-radius: 13px;
+  background:
+    linear-gradient(180deg, rgba(var(--k-ink-rgb), .04), rgba(var(--k-ink-rgb), .015)),
+    rgba(var(--k-bg-rgb), .38);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .06), inset 0 0 0 1px rgba(var(--k-ink-rgb), .075);
+}
+.ovk-panel.lit {
+  background:
+    radial-gradient(260px 120px at 100% 0%, rgba(var(--k-acc-rgb), .12), rgba(var(--k-acc-rgb), 0) 70%),
+    linear-gradient(180deg, rgba(var(--k-ink-rgb), .04), rgba(var(--k-ink-rgb), .015)),
+    rgba(var(--k-bg-rgb), .38);
+}
+.ovk-panel-h { display: flex; align-items: center; gap: 10px; padding: 14px 16px 12px; border-bottom: 1px solid var(--k-l1); }
+.ovk-panel-t { font-size: 14px; font-weight: 700; letter-spacing: -.01em; color: var(--k-t1); }
+.ovk-panel-s { font-size: 11.5px; color: var(--k-t3); margin-top: 1px; }
+/* etiqueta de secção: traço da marca + texto mono */
+.ovk-label { display: flex; align-items: center; gap: 8px; font-family: var(--k-mono); font-size: 10.5px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--k-t3); }
+.ovk-label::before { content: ''; width: 10px; height: 2px; border-radius: 1px; background: var(--k-acc); flex: none; }
+
+/* ---------------------------------------------------------------- tabuleiro rebaixado (liso: a grelha de pontos saiu a 12 nov) */
+.ovk-tray {
+  position: relative;
+  border-radius: 12px;
+  background: linear-gradient(180deg, rgba(0, 0, 0, .16), rgba(0, 0, 0, .25));
+  box-shadow: inset 0 1px 0 rgba(0, 0, 0, .25), inset 0 0 0 1px rgba(var(--k-ink-rgb), .05), 0 1px 0 rgba(255, 255, 255, .05);
+}
+.ovk-tray.plain { background: linear-gradient(180deg, rgba(0, 0, 0, .16), rgba(0, 0, 0, .25)); }
+
+/* ---------------------------------------------------------------- mosaico (o "slot" do inventário) */
+.ovk-tile {
+  position: relative;
+  border-radius: var(--k-r);
+  background:
+    radial-gradient(54% 26% at 50% 80%, rgba(0, 0, 0, .34), rgba(0, 0, 0, 0) 72%),
+    radial-gradient(62% 50% at 50% 42%, rgba(var(--k-ink-rgb), .08), rgba(var(--k-ink-rgb), 0) 72%),
+    linear-gradient(180deg, rgba(var(--k-ink-rgb), .085), rgba(var(--k-ink-rgb), .035) 55%, rgba(0, 0, 0, .18));
+  box-shadow: inset 0 0 0 1px rgba(var(--k-ink-rgb), .07);
+  transition: background-color var(--k-fast) var(--k-ease), box-shadow var(--k-fast) var(--k-ease);
+}
+.ovk-tile:hover {
+  background:
+    radial-gradient(54% 26% at 50% 80%, rgba(0, 0, 0, .3), rgba(0, 0, 0, 0) 72%),
+    radial-gradient(62% 50% at 50% 42%, rgba(var(--k-acc-rgb), .14), rgba(var(--k-acc-rgb), 0) 72%),
+    linear-gradient(180deg, rgba(var(--k-ink-rgb), .11), rgba(var(--k-ink-rgb), .05) 55%, rgba(0, 0, 0, .14));
+}
+.ovk-tile.on { box-shadow: inset 0 0 0 1.5px var(--k-acc), 0 0 0 3px rgba(var(--k-acc-rgb), .16); }
+.ovk-tile.is-empty { background: linear-gradient(180deg, rgba(0, 0, 0, .17), rgba(0, 0, 0, .07)); box-shadow: inset 0 0 0 1px rgba(var(--k-ink-rgb), .05); }
+/* os quatro cantos (span vazio dentro do mosaico) */
+.ovk-corners {
+  --ck: 7px;
+  --cc: rgba(var(--k-ink-rgb), .2);
+  position: absolute; top: 2px; left: 2px; right: 2px; bottom: 2px;
+  pointer-events: none;
+  background:
+    linear-gradient(var(--cc), var(--cc)) left top / var(--ck) 1px no-repeat,
+    linear-gradient(var(--cc), var(--cc)) left top / 1px var(--ck) no-repeat,
+    linear-gradient(var(--cc), var(--cc)) right top / var(--ck) 1px no-repeat,
+    linear-gradient(var(--cc), var(--cc)) right top / 1px var(--ck) no-repeat,
+    linear-gradient(var(--cc), var(--cc)) left bottom / var(--ck) 1px no-repeat,
+    linear-gradient(var(--cc), var(--cc)) left bottom / 1px var(--ck) no-repeat,
+    linear-gradient(var(--cc), var(--cc)) right bottom / var(--ck) 1px no-repeat,
+    linear-gradient(var(--cc), var(--cc)) right bottom / 1px var(--ck) no-repeat;
+}
+.ovk-corners.big { --ck: 16px; --cc: rgba(var(--k-ink-rgb), .26); top: 10px; left: 10px; right: 10px; bottom: 10px; }
+.ovk-tile.is-empty .ovk-corners { --cc: rgba(var(--k-ink-rgb), .075); }
+.ovk-tile:hover .ovk-corners { --cc: rgba(var(--k-acc-rgb), .85); }
+.ovk-tile.on .ovk-corners { --cc: var(--k-acc); --ck: 10px; }
+
+/* ---------------------------------------------------------------- célula rebaixada (rótulo mono + valor) */
+.ovk-cell {
+  min-width: 0;
+  padding: 8px 11px 9px;
+  border-radius: var(--k-r-sm);
+  background: rgba(0, 0, 0, .24);
+  box-shadow: inset 0 0 0 1px rgba(var(--k-ink-rgb), .06);
+}
+.ovk-cell .k { display: block; font-family: var(--k-mono); font-size: 9.5px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--k-t4); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ovk-cell .v { display: block; margin-top: 2px; font-size: 13.5px; font-weight: 700; color: var(--k-t1); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ovk-cell .v.mono { font-family: var(--k-mono); font-weight: 700; }
+
+/* ---------------------------------------------------------------- botões */
+.ovk-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  height: 36px; padding: 0 14px;
+  border: 0; border-radius: var(--k-r);
+  font: inherit; font-size: 12.5px; font-weight: 700; letter-spacing: 0; white-space: nowrap;
+  color: var(--k-t1);
+  cursor: pointer;
+  background: linear-gradient(180deg, rgba(var(--k-ink-rgb), .08), rgba(var(--k-ink-rgb), .03) 60%, rgba(0, 0, 0, .16));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .12), inset 0 0 0 1px rgba(var(--k-ink-rgb), .1), 0 1px 0 rgba(0, 0, 0, .3);
+  transition: background-color var(--k-fast) var(--k-ease), box-shadow var(--k-fast) var(--k-ease), color var(--k-fast) var(--k-ease), transform var(--k-fast) var(--k-ease);
+}
+.ovk-btn svg { width: 16px; height: 16px; flex: none; }
+.ovk-btn:hover { background: linear-gradient(180deg, rgba(var(--k-ink-rgb), .12), rgba(var(--k-ink-rgb), .05) 60%, rgba(0, 0, 0, .14)); box-shadow: inset 0 1px 0 rgba(255, 255, 255, .14), inset 0 0 0 1px rgba(var(--k-ink-rgb), .22), 0 1px 0 rgba(0, 0, 0, .3); }
+.ovk-btn:active { transform: translateY(1px); }
+.ovk-btn:focus-visible { outline: none; box-shadow: inset 0 0 0 1.5px var(--k-acc), 0 0 0 3px rgba(var(--k-acc-rgb), .22); }
+.ovk-btn[disabled], .ovk-btn.off { opacity: .42; pointer-events: none; }
+/* principal: fundo escuro tingido pela marca, contorno e texto na cor da marca */
+.ovk-btn.pri {
+  color: var(--k-acc-txt);
+  background: linear-gradient(180deg, rgba(var(--k-acc-rgb), .2), rgba(var(--k-acc-rgb), .07) 60%, rgba(0, 0, 0, .14));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .1), inset 0 0 0 1px rgba(var(--k-acc-rgb), .78), 0 1px 0 rgba(0, 0, 0, .3);
+}
+.ovk-btn.pri:hover { color: var(--k-t1); background: linear-gradient(180deg, rgba(var(--k-acc-rgb), .3), rgba(var(--k-acc-rgb), .12) 60%, rgba(0, 0, 0, .12)); box-shadow: inset 0 1px 0 rgba(255, 255, 255, .12), inset 0 0 0 1px var(--k-acc), 0 1px 0 rgba(0, 0, 0, .3); }
+.ovk-btn.danger { color: #FF8F86; background: linear-gradient(180deg, rgba(var(--k-bad-rgb), .14), rgba(var(--k-bad-rgb), .05) 60%, rgba(0, 0, 0, .14)); box-shadow: inset 0 1px 0 rgba(255, 255, 255, .08), inset 0 0 0 1px rgba(var(--k-bad-rgb), .55), 0 1px 0 rgba(0, 0, 0, .3); }
+.ovk-btn.danger:hover { color: #FFB3AD; box-shadow: inset 0 1px 0 rgba(255, 255, 255, .1), inset 0 0 0 1px var(--k-bad), 0 1px 0 rgba(0, 0, 0, .3); }
+.ovk-btn.ghost { background: transparent; box-shadow: inset 0 0 0 1px var(--k-l2); color: var(--k-t2); }
+.ovk-btn.ghost:hover { background: var(--k-tile); color: var(--k-t1); box-shadow: inset 0 0 0 1px var(--k-l3); }
+.ovk-btn.flat { background: transparent; box-shadow: none; color: var(--k-t2); }
+.ovk-btn.flat:hover { background: var(--k-tile); color: var(--k-t1); }
+.ovk-btn.sm { height: 30px; padding: 0 11px; font-size: 12px; border-radius: 8px; }
+.ovk-btn.big { height: 44px; padding: 0 18px; font-size: 13.5px; }
+.ovk-btn.icon { width: 36px; padding: 0; }
+.ovk-btn.icon.sm { width: 30px; }
+/* insígnia do ícone dentro do botão (barra de ações do inventário) */
+.ovk-btn .ovk-ic { width: 26px; height: 26px; margin-left: -9px; border-radius: 6px; display: inline-flex; align-items: center; justify-content: center; color: var(--k-t2); background: rgba(var(--k-bg-rgb), .55); flex: none; }
+.ovk-btn:hover .ovk-ic { color: var(--k-t1); background: rgba(var(--k-ink-rgb), .1); }
+.ovk-btn.pri .ovk-ic { color: var(--k-acc-txt); }
+
+/* fechar: quadrado escuro com a tecla ESC ao lado */
+.ovk-close { display: inline-flex; align-items: center; gap: 8px; height: 36px; padding: 0 6px 0 9px; border: 0; border-radius: var(--k-r); cursor: pointer; color: var(--k-t2); background: linear-gradient(180deg, rgba(var(--k-bg-rgb), .7), rgba(var(--k-bg-rgb), .9)); box-shadow: inset 0 1px 0 rgba(255, 255, 255, .07), inset 0 0 0 1px rgba(var(--k-ink-rgb), .12); transition: box-shadow var(--k-fast) var(--k-ease), color var(--k-fast) var(--k-ease); }
+.ovk-close:hover { color: var(--k-t1); box-shadow: inset 0 1px 0 rgba(255, 255, 255, .08), inset 0 0 0 1px rgba(var(--k-ink-rgb), .3); }
+.ovk-close svg { width: 16px; height: 16px; }
+/* tecla: borda em vez de sombra interior */
+.ovk-key { display: inline-flex; align-items: center; justify-content: center; min-width: 22px; height: 20px; padding: 0 6px; border-radius: 5px; font-family: var(--k-mono); font-size: 10px; font-weight: 700; letter-spacing: .04em; color: var(--k-t2); background: rgba(var(--k-ink-rgb), .08); border: 1px solid rgba(var(--k-ink-rgb), .16); border-bottom-width: 2px; white-space: nowrap; }
+
+/* ---------------------------------------------------------------- fichas (categorias, filtros) */
+.ovk-chip {
+  display: inline-flex; align-items: center; gap: 7px;
+  height: 32px; padding: 0 12px;
+  border: 0; border-radius: 9px;
+  font: inherit; font-size: 12.5px; font-weight: 600; white-space: nowrap;
+  color: var(--k-t2); cursor: pointer;
+  background: rgba(var(--k-ink-rgb), .045);
+  box-shadow: inset 0 0 0 1px rgba(var(--k-ink-rgb), .08);
+  transition: background-color var(--k-fast) var(--k-ease), box-shadow var(--k-fast) var(--k-ease), color var(--k-fast) var(--k-ease);
+}
+.ovk-chip svg { width: 15px; height: 15px; flex: none; opacity: .8; }
+.ovk-chip .n { font-family: var(--k-mono); font-size: 10.5px; font-weight: 500; color: var(--k-t4); }
+.ovk-chip:hover { color: var(--k-t1); background: rgba(var(--k-ink-rgb), .08); box-shadow: inset 0 0 0 1px rgba(var(--k-ink-rgb), .16); }
+.ovk-chip.on { color: var(--k-t1); background: rgba(var(--k-acc-rgb), .14); box-shadow: inset 0 0 0 1px rgba(var(--k-acc-rgb), .8); }
+.ovk-chip.on .n { color: var(--k-acc-txt); }
+.ovk-chip.on svg { opacity: 1; color: var(--k-acc-txt); }
+/* etiqueta pequena (estado, raridade, "Novo") */
+.ovk-tag { display: inline-flex; align-items: center; gap: 5px; height: 22px; padding: 0 8px; border-radius: 6px; font-family: var(--k-mono); font-size: 10px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; white-space: nowrap; color: var(--k-acc-txt); background: rgba(var(--k-acc-rgb), .1); border: 1px solid rgba(var(--k-acc-rgb), .45); }
+.ovk-tag svg { width: 12px; height: 12px; }
+.ovk-tag.ok { color: var(--k-ok); background: rgba(var(--k-ok-rgb), .1); border-color: rgba(var(--k-ok-rgb), .45); }
+.ovk-tag.warn { color: var(--k-warn); background: rgba(var(--k-warn-rgb), .1); border-color: rgba(var(--k-warn-rgb), .45); }
+.ovk-tag.bad { color: #FF8F86; background: rgba(var(--k-bad-rgb), .1); border-color: rgba(var(--k-bad-rgb), .45); }
+.ovk-tag.mute { color: var(--k-t3); background: rgba(var(--k-ink-rgb), .05); border-color: var(--k-l2); }
+
+/* ---------------------------------------------------------------- campos */
+.ovk-in {
+  height: 36px; width: 100%; padding: 0 12px;
+  border: 0; border-radius: var(--k-r); outline: none;
+  font: inherit; font-size: 13px; color: var(--k-t1);
+  background: rgba(0, 0, 0, .3);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, .35), inset 0 0 0 1px rgba(var(--k-ink-rgb), .08);
+  transition: box-shadow var(--k-fast) var(--k-ease);
+}
+.ovk-in::placeholder { color: var(--k-t4); }
+.ovk-in:hover { box-shadow: inset 0 2px 4px rgba(0, 0, 0, .35), inset 0 0 0 1px rgba(var(--k-ink-rgb), .16); }
+.ovk-in:focus { box-shadow: inset 0 2px 4px rgba(0, 0, 0, .35), inset 0 0 0 1px rgba(var(--k-acc-rgb), .85); }
+.ovk-in.mono { font-family: var(--k-mono); font-size: 12.5px; }
+.ovk-in.bad { box-shadow: inset 0 2px 4px rgba(0, 0, 0, .35), inset 0 0 0 1px rgba(var(--k-bad-rgb), .8); }
+textarea.ovk-in { height: auto; min-height: 80px; padding: 10px 12px; line-height: 1.45; resize: vertical; }
+/* pesquisa: ícone dentro do campo */
+.ovk-search { position: relative; display: flex; align-items: center; }
+.ovk-search > svg { position: absolute; left: 11px; width: 15px; height: 15px; color: var(--k-t4); pointer-events: none; }
+.ovk-search > .ovk-in { padding-left: 34px; }
+.ovk-search > .ovk-key { position: absolute; right: 8px; }
+
+/* interruptor: trilho rebaixado, ligado = gradiente da marca */
+.ovk-sw { position: relative; flex: none; width: 40px; height: 23px; border: 0; padding: 0; border-radius: 12px; cursor: pointer; background: rgba(0, 0, 0, .38); border: 1px solid rgba(var(--k-ink-rgb), .12); transition: background-color var(--k-fast) var(--k-ease), border-color var(--k-fast) var(--k-ease); }
+.ovk-sw > i { position: absolute; top: 2px; left: 2px; width: 17px; height: 17px; border-radius: 50%; background: #DDE3EE; transition: transform var(--k-base) var(--k-emph); }
+.ovk-sw.on { background: linear-gradient(160deg, var(--k-acc-hi), var(--k-acc-lo)); border-color: rgba(var(--k-acc-rgb), .9); }
+.ovk-sw.on > i { transform: translateX(17px); background: #FFFFFF; }
+.ovk-sw[disabled] { opacity: .4; pointer-events: none; }
+
+/* segmentos: calha rebaixada, a opção ligada em relevo com texto da marca */
+.ovk-seg { display: inline-flex; gap: 3px; padding: 3px; border-radius: 10px; background: rgba(0, 0, 0, .28); box-shadow: inset 0 0 0 1px rgba(var(--k-ink-rgb), .07); }
+.ovk-seg > button { flex: 1 1 0; display: inline-flex; align-items: center; justify-content: center; gap: 7px; height: 30px; padding: 0 12px; border: 0; border-radius: 7px; font: inherit; font-size: 12.5px; font-weight: 600; color: var(--k-t3); background: transparent; cursor: pointer; white-space: nowrap; transition: background-color var(--k-fast) var(--k-ease), color var(--k-fast) var(--k-ease), box-shadow var(--k-fast) var(--k-ease); }
+.ovk-seg > button svg { width: 15px; height: 15px; }
+.ovk-seg > button:hover { color: var(--k-t1); }
+.ovk-seg > button.on { color: var(--k-t1); background: linear-gradient(180deg, rgba(var(--k-ink-rgb), .1), rgba(var(--k-ink-rgb), .04)); box-shadow: inset 0 1px 0 rgba(255, 255, 255, .1), inset 0 0 0 1px rgba(var(--k-acc-rgb), .7); }
+.ovk-seg > button.on svg { color: var(--k-acc-txt); }
+
+/* deslizador: pista rebaixada com enchimento da marca (--p = 0..100), polegar escuro com aro */
+.ovk-range { -webkit-appearance: none; appearance: none; width: 100%; height: 22px; margin: 0; background: transparent; cursor: pointer; --p: 50; }
+.ovk-range::-webkit-slider-runnable-track { height: 6px; border-radius: 3px; background: linear-gradient(90deg, var(--k-acc-lo), var(--k-acc-hi)) 0 0 / calc(var(--p) * 1%) 100% no-repeat, rgba(0, 0, 0, .4); border: 1px solid rgba(var(--k-ink-rgb), .1); }
+.ovk-range::-webkit-slider-thumb { -webkit-appearance: none; width: 16px; height: 16px; margin-top: -6px; border-radius: 50%; background: #10172A; border: 2px solid var(--k-acc-txt); }
+
+/* barra de progresso (o filho <i> enche por transform) */
+.ovk-bar { position: relative; height: 5px; border-radius: 3px; overflow: hidden; background: rgba(0, 0, 0, .35); box-shadow: inset 0 0 0 1px rgba(var(--k-ink-rgb), .05); }
+.ovk-bar > i { position: absolute; top: 0; left: 0; bottom: 0; width: 100%; transform-origin: 0 50%; background: linear-gradient(90deg, var(--k-acc-lo), var(--k-acc-hi)); transition: transform 380ms var(--k-emph); }
+
+/* ---------------------------------------------------------------- tabela */
+.ovk-tbl { width: 100%; border-collapse: collapse; }
+.ovk-tbl th { padding: 10px 12px; text-align: left; font-family: var(--k-mono); font-size: 9.5px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--k-t4); border-bottom: 1px solid var(--k-l1); white-space: nowrap; }
+.ovk-tbl td { padding: 11px 12px; font-size: 13px; color: var(--k-t2); border-bottom: 1px solid var(--k-l1); }
+.ovk-tbl tr:last-child td { border-bottom: 0; }
+.ovk-tbl tbody tr { transition: background-color var(--k-fast) var(--k-ease); }
+.ovk-tbl tbody tr:hover { background: rgba(var(--k-ink-rgb), .035); }
+.ovk-tbl td.mono { font-family: var(--k-mono); font-size: 12px; }
+
+/* ---------------------------------------------------------------- estado vazio (sempre ao centro) */
+.ovk-empty { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 8px; padding: 34px 20px; color: var(--k-t3); }
+.ovk-empty .ic { width: 52px; height: 52px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; color: var(--k-t3); background: linear-gradient(180deg, rgba(0, 0, 0, .2), rgba(0, 0, 0, .08)); border: 1px solid rgba(var(--k-ink-rgb), .08); }
+.ovk-empty .ic svg { width: 22px; height: 22px; }
+.ovk-empty b { font-size: 14px; font-weight: 700; color: var(--k-t1); }
+.ovk-empty span { font-size: 12px; max-width: 320px; }
+
+/* ---------------------------------------------------------------- camada que segura a janela (centro do ecrã, sem left:50%) */
+.ovk-layer { position: fixed; top: 0; left: 0; right: 0; bottom: 0; display: flex; align-items: center; justify-content: center; pointer-events: none; }
+.ovk-layer > .ovk-win { pointer-events: auto; }

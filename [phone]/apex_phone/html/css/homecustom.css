@@ -1,0 +1,133 @@
+/* ============================================================
+   PearOS 27 - PERSONALIZAR O ECRÃ PRINCIPAL (1.4.0): a folha "Personalizar" (js/shell/homecustom.js) e o MATERIAL dos ícones nos
+   estilos Transparente/Colorido. Carregado logo a seguir ao liquid27.css (usa o kit .lg27; nunca o redefine, só mede e posiciona
+   as peças próprias).
+   Regras do CEF: sem filter, sem backdrop-filter no jogo (o kit já o tira em body.fivem), sem color-mix, sem calc() dentro de
+   rgba(); só transform/opacity animam. Tudo o que é dos ícones é body.os-ios: o Android ignora as chaves novas.
+   ============================================================ */
+
+/* ---------- material dos ícones ----------
+   Transparente: o desenho (icons.js) fica só com o glifo branco; o vidro do quadrado vem daqui. Por body (não por #home): segue
+   para o clone da galeria, a pré-visualização do menu de contexto, as listas e a AppShop. Colorido: uma tinta por baixo, para os
+   ícones de imagem enquanto a cópia tingida não chega. */
+body.os-ios[data-icons="clear"] .tile.img,body.os-ios[data-icons="clear"] .tile > svg:not(.gl),body.os-ios[data-icons="clear"] .hi.folder .mini > svg{ background-color:rgba(255,255,255,.22) }
+body.os-ios[data-icons="clear"][data-icontone="dark"] .tile.img,body.os-ios[data-icons="clear"][data-icontone="dark"] .tile > svg:not(.gl),body.os-ios[data-icons="clear"][data-icontone="dark"] .hi.folder .mini > svg{ background-color:rgba(44,44,46,.5) }
+body.os-ios[data-icons="tinted"] .tile.img{ background-color:rgba(var(--icon-tint-rgb,10,132,255),.18) }
+/* No ecrã principal do telemóvel o Transparente é vidro FOSCO: por baixo do glifo (var(--tli), a imagem da regra .tl-*) entra a
+   tinta e a cópia PRÉ-DESFOCADA do fundo (--wp-blur, a mesma da dock), alinhada com o sítio do ícone pelas --x/--y que a home já
+   escreve em cada .hi. Sem backdrop-filter (no jogo pinta preto e é a operação mais cara do CEF). A arrastar páginas a cópia vai com
+   o ícone (desalinha um instante, como as outras peças de vidro); nos dobráveis fica só a tinta (duas páginas lado a lado). */
+body.os-ios.form-bar[data-icons="clear"] #home .pages .hi .tile.img{ background-color:transparent;
+  background-image:var(--tli), linear-gradient(rgba(255,255,255,.2),rgba(255,255,255,.2)), var(--wp-blur,none);
+  background-size:100% 100%, 100% 100%, 440px 956px;
+  background-position:center, center, calc((var(--tile,var(--icon)) - var(--icon)) / 2 - var(--x,0px)) calc(-30px - var(--statusbar-h,68px) - var(--y,0px)) }
+body.os-ios.form-bar[data-icons="clear"][data-icontone="dark"] #home .pages .hi .tile.img{ background-image:var(--tli), linear-gradient(rgba(30,30,32,.5),rgba(30,30,32,.5)), var(--wp-blur,none) }
+/* o Relógio (SVG inline por causa dos ponteiros vivos) leva o mesmo vidro no fundo do próprio <svg>, que já tem a máscara squircle */
+body.os-ios.form-bar[data-icons="clear"] #home .pages .hi .tile > svg:not(.gl){ background-color:transparent;
+  background-image:linear-gradient(rgba(255,255,255,.2),rgba(255,255,255,.2)), var(--wp-blur,none); background-repeat:no-repeat; background-size:100% 100%, 440px 956px;
+  background-position:center, calc((var(--tile,var(--icon)) - var(--icon)) / 2 - var(--x,0px)) calc(-30px - var(--statusbar-h,68px) - var(--y,0px)) }
+body.os-ios.form-bar[data-icons="clear"][data-icontone="dark"] #home .pages .hi .tile > svg:not(.gl){ background-image:linear-gradient(rgba(30,30,32,.5),rgba(30,30,32,.5)), var(--wp-blur,none) }
+
+/* ---------- os WIDGETS do ecrã principal seguem o estilo dos ícones (1.4.1) ----------
+   Nos estilos Colorido e Transparente fica tudo com o mesmo material, como no iOS 26: cartões brancos e o gradiente azul da Meteorologia no
+   meio de ícones tingidos saltavam à vista. Por body (não por #home): segue para o clone da galeria. !important porque há widgets com o
+   fundo e a cor no atributo style (Meteorologia) e nada ganha a um style sem ele; o .glass e o clone (lockgallery.css) também ficam para trás.
+   .wg.clear (o "Tempo e relógio", sem cartão) e os widgets de apps externas (.ext, desenham o seu próprio) ficam como estão.
+   As cores por dentro (o vermelho do Calendário, o azul dos Lembretes, o verde da Bateria e do banco) passam à cor do texto; os ícones e
+   gráficos usam currentColor, por isso seguem. Colorido: vidro escuro com a tinta (--icon-tint-rgb, icons.js) e texto na tinta clara
+   (--icon-tint-lt, lock.js: o mesmo tom dos glifos). Sem filter nem color-mix: duas camadas de cor, válido no CEF. */
+body.os-ios[data-icons="tinted"] .hi.widget .wg:not(.clear):not(.ext){ background:linear-gradient(rgba(var(--icon-tint-rgb,10,132,255),.22),rgba(var(--icon-tint-rgb,10,132,255),.22)), rgba(20,20,22,.78)!important; color:rgb(var(--icon-tint-lt,214,230,250))!important; border:none; box-shadow:inset 0 0 0 .5px rgba(var(--icon-tint-lt,214,230,250),.22), inset 0 1px 0 rgba(255,255,255,.1) }
+body.os-ios[data-icons="clear"] .hi.widget .wg:not(.clear):not(.ext){ background:rgba(255,255,255,.18)!important; color:#fff!important; border:none; box-shadow:var(--lg-ring); text-shadow:0 1px 3px rgba(0,0,0,.22) }
+body.os-ios[data-icons="clear"][data-icontone="dark"] .hi.widget .wg:not(.clear):not(.ext){ background:rgba(30,30,32,.35)!important }
+/* no browser o vidro é mesmo fosco; no jogo não há backdrop-filter (body.fivem): no telemóvel vem a cópia pré-desfocada do fundo, alinhada como a dos
+   ícones Transparente (--x/--y da .hi), e fora dele (dobráveis: duas páginas lado a lado, clone da galeria) a tinta sobe para ler-se sem desfoque */
+body.os-ios[data-icons="clear"]:not(.fivem) .hi.widget .wg:not(.clear):not(.ext){ -webkit-backdrop-filter:blur(20px) saturate(150%); backdrop-filter:blur(20px) saturate(150%) }
+body.fivem.os-ios[data-icons="clear"] .hi.widget .wg:not(.clear):not(.ext){ background:rgba(255,255,255,.32)!important; -webkit-backdrop-filter:none; backdrop-filter:none }
+body.fivem.os-ios[data-icons="clear"][data-icontone="dark"] .hi.widget .wg:not(.clear):not(.ext){ background:rgba(30,30,32,.55)!important }
+body.fivem.os-ios.form-bar[data-icons="clear"] #home .pages .hi.widget .wg:not(.clear):not(.ext){ background-color:transparent!important; background-image:linear-gradient(rgba(255,255,255,.18),rgba(255,255,255,.18)), var(--wp-blur,none)!important; background-repeat:no-repeat!important; background-size:100% 100%, 440px 956px!important;
+  background-position:center, calc(-1 * var(--x,0px)) calc(-30px - var(--statusbar-h,68px) - var(--y,0px))!important }
+body.fivem.os-ios.form-bar[data-icons="clear"][data-icontone="dark"] #home .pages .hi.widget .wg:not(.clear):not(.ext){ background-image:linear-gradient(rgba(30,30,32,.35),rgba(30,30,32,.35)), var(--wp-blur,none)!important }
+/* por dentro */
+body.os-ios[data-icons="tinted"] .hi.widget .wg:not(.clear):not(.ext) *,body.os-ios[data-icons="clear"] .hi.widget .wg:not(.clear):not(.ext) *{ color:inherit!important }
+body.os-ios[data-icons="tinted"] .hi.widget .wg:not(.clear):not(.ext) svg circle[stroke-dasharray],body.os-ios[data-icons="clear"] .hi.widget .wg:not(.clear):not(.ext) svg circle[stroke-dasharray]{ stroke:currentColor }
+body.os-ios[data-icons="tinted"] .hi.widget .wg .wg-notes .hd,body.os-ios[data-icons="clear"] .hi.widget .wg .wg-notes .hd,body.os-ios[data-icons="tinted"] .hi.widget .wg .wg-notes .bd,body.os-ios[data-icons="clear"] .hi.widget .wg .wg-notes .bd{ background:transparent }
+body.os-ios[data-icons="tinted"] .hi.widget .wg .wg-notes .hd,body.os-ios[data-icons="clear"] .hi.widget .wg .wg-notes .hd{ border-bottom-color:rgba(255,255,255,.2) }
+/* o marcador redondo do dia de hoje e o ponteiro dos segundos usavam o vermelho do sistema */
+body.os-ios[data-icons="tinted"] .hi.widget .wg .cal-mini .t{ background:rgb(var(--icon-tint-lt,214,230,250)); color:#141416!important }
+body.os-ios[data-icons="clear"] .hi.widget .wg .cal-mini .t{ background:#fff; color:#141416!important }
+/* fotografia e capa de disco não recebem filtro: uma tinta por cima, para não ficarem o único retângulo a cores */
+body.os-ios[data-icons="tinted"] .hi.widget .wg[data-type="photos"]::after,body.os-ios[data-icons="tinted"] .hi.widget .wg .art::after{ content:''; position:absolute; inset:0; border-radius:inherit; background:rgba(var(--icon-tint-rgb,10,132,255),.42); pointer-events:none }
+body.os-ios[data-icons="tinted"] .hi.widget .wg .art{ position:relative; overflow:hidden }
+
+/* ---------- a folha ----------
+   Vidro REGULAR escuro (.lg27.regular.dk + [data-lgpos], postos pelo JS) a flutuar 8 px acima do fundo e dos lados, com o raio
+   grande do canto do ecrã. O invólucro não escurece nem apanha toques: a home fica à vista e continua a deslizar por trás. */
+.sheet-wrap.hc-sheet{ background:transparent; pointer-events:none }
+.sheet-wrap.hc-sheet .sheet{ position:absolute; pointer-events:auto; left:8px; right:8px; bottom:8px; max-height:64%; --lg27-r:46px; border-radius:46px; color:#fff; overflow:hidden; padding-bottom:30px }
+/* tom ESCURO do vidro sempre (texto branco, como na fotografia), pela variável do próprio kit (--lg27-bg). Não pela classe .dk do kit:
+   o apps.css tem um .dk antigo (círculo de 80 px) que encolhia a folha */
+.sheet-wrap.hc-sheet .sheet.lg27.regular.hc-glass{ --lg27-bg:rgba(30,30,32,var(--lg-ad,.49)); color:#fff }
+body.fivem .sheet-wrap.hc-sheet .sheet.lg27.regular.hc-glass{ --lg27-bg:rgba(30,30,32,var(--lg-mdf,.9)) }
+body.fivem .sheet-wrap.hc-sheet .sheet.lg27.regular.hc-glass[data-lgpos]{ --lg27-bg:rgba(30,30,32,var(--lg-ad,.49)) }
+.sheet-wrap.hc-sheet:not(.in) .sheet{ transform:translateY(calc(100% + 16px)) }
+.hc-sheet .grabber{ display:none }   /* PearOS 27: sem pega à vista - arrasta-se pelo cabeçalho */
+.hc-sheet .sheet-head{ position:relative; justify-content:center; min-height:36px; padding:22px 76px 4px }
+.hc-sheet .sheet-head b{ font-size:18px; font-weight:600; color:#fff; letter-spacing:-.2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+.hc-sheet .sh-l,.hc-sheet .sh-r{ display:none }
+.hc-sheet .sheet > .content{ padding-bottom:0 }
+.hc-hb{ position:absolute; top:16px; width:44px; height:44px; display:flex; align-items:center; justify-content:center; color:#fff; border-radius:50%; cursor:default; transition:transform .22s cubic-bezier(.3,1.35,.5,1) }
+.hc-hb:active{ transform:scale(.88); transition:transform .08s ease-out }
+.hc-sun{ left:18px } .hc-size{ right:18px; color:#CDEBFF }
+.hc-sun.hc-dk svg{ transform:scaleX(-1) }   /* tom escuro: a metade cheia passa para o outro lado (hc-dk e não .dk: o apps.css tem um .dk global) */
+
+/* quatro estilos: o ícone do Meteorologia em cada um (66 px, squircle) e a etiqueta; a escolhida ganha a pastilha */
+.hc-styles{ display:grid; grid-template-columns:repeat(4,99px); justify-content:center; padding:18px 0 0 }
+.hc-st{ display:flex; flex-direction:column; align-items:center; cursor:default }
+.hc-pv{ width:66px; height:66px; background-size:100% 100%; background-repeat:no-repeat; transition:transform .22s cubic-bezier(.3,1.35,.5,1);
+  -webkit-mask:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><path d='M30 0h40c18 0 30 12 30 30v40c0 18-12 30-30 30H30C12 100 0 88 0 70V30C0 12 12 0 30 0z'/></svg>") center/100% 100% no-repeat;
+  mask:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><path d='M30 0h40c18 0 30 12 30 30v40c0 18-12 30-30 30H30C12 100 0 88 0 70V30C0 12 12 0 30 0z'/></svg>") center/100% 100% no-repeat }
+.hc-st:active .hc-pv{ transform:scale(.92); transition:transform .08s ease-out }
+.hc-pv-clear{ background-color:rgba(255,255,255,.24) }
+.hc-root[data-tone="dark"] .hc-pv-clear{ background-color:rgba(60,60,64,.55) }
+/* em português as etiquetas são mais compridas do que as colunas (Predefinido, Transparente): ficam inteiras e transbordam por igual
+   para os lados (a coluna centra-as); entre vizinhas sobra sempre espaço, mesmo com a pastilha */
+.hc-st span{ flex:none; margin-top:14px; height:30px; padding:0 12px; border-radius:15px; display:flex; align-items:center; font-size:15px; font-weight:500; letter-spacing:-.25px; color:rgba(255,255,255,.8); white-space:nowrap }
+.hc-st.on span{ background:rgba(255,255,255,.16); color:#fff; box-shadow:inset 0 .5px 0 rgba(255,255,255,.28), inset 0 0 0 .5px rgba(255,255,255,.1) }
+
+/* matiz (arco-íris) e saturação (cor → branco): cápsulas de 32 px, ponto branco com a cor dentro (move-se por transform) */
+.hc-tint{ padding:34px 33px 0 }
+.hc-sl{ position:relative; height:32px; border-radius:16px; touch-action:none; cursor:default; box-shadow:inset 0 1px 0 rgba(255,255,255,.35), inset 0 0 0 .5px rgba(0,0,0,.12) }
+.hc-sl + .hc-sl{ margin-top:23px }
+.hc-hue{ background-image:linear-gradient(90deg,#F2493B,#F7A43A 9%,#F2E23E 18%,#7BEA4E 32%,#46E9C9 46%,#36C6F2 56%,#2F86F4 66%,#7A5CF2 77%,#D64EE6 88%,#F2493B) }
+.hc-kr{ position:absolute; left:16px; right:16px; top:0; bottom:0; pointer-events:none; transform:translateX(calc(var(--v,0) * 100%)) }
+.hc-kn{ position:absolute; left:-17px; top:-1px; width:34px; height:34px; border-radius:50%; box-sizing:border-box; border:3.5px solid #fff; background-color:#F2493B; box-shadow:0 2px 8px rgba(0,0,0,.28) }
+.hc-sl.drag .hc-kn{ transform:scale(1.08) }
+
+/* cores sugeridas pelo fundo + conta-gotas; a escolhida leva o anel branco */
+.hc-sugg{ display:flex; justify-content:center; gap:34px; padding-top:23px }
+.hc-sg{ position:relative; width:46px; height:46px; border-radius:50%; flex:none; display:flex; align-items:center; justify-content:center; color:#fff; cursor:default;
+  box-shadow:0 0 0 4px rgba(0,0,0,.1), inset 0 1px 0 rgba(255,255,255,.3); transition:transform .22s cubic-bezier(.3,1.35,.5,1) }
+.hc-sg:active{ transform:scale(.9); transition:transform .08s ease-out }
+.hc-sg.on{ box-shadow:0 0 0 4px #fff, 0 2px 10px rgba(0,0,0,.25) }
+.hc-sg svg{ pointer-events:none }
+.hc-hint{ display:none; text-align:center; font-size:13px; line-height:16px; color:rgba(255,255,255,.75); padding:12px 24px 0 }
+.hc-root.picking .hc-hint{ display:block }
+
+/* Claro | Escuro | Auto: o GlassContainer do kit (.lg27-group), sem material próprio à volta, como na fotografia; a pastilha escolhida
+   em vidro claro sobre o escuro (aqui, e não com o .dk do kit, pela mesma colisão com o .dk do apps.css) */
+.hc-tone{ display:flex; width:max-content; margin:26px auto 0 }
+.hc-tone.lg27-group > *{ height:37px; padding:0 19px; font-size:17px; font-weight:500; color:rgba(255,255,255,.62) }
+.hc-tone.lg27-group > .on{ background:rgba(255,255,255,.17); color:#fff; box-shadow:inset 0 .5px 0 rgba(255,255,255,.3), inset 0 0 0 .5px rgba(255,255,255,.08) }
+.hc-tone.lg27-group > * + *::before{ display:none }   /* na fotografia não há divisórias entre os segmentos */
+
+/* o que cada estilo mostra: cursores e cores só no Colorido; o tom no Transparente e no Colorido */
+.hc-root:not([data-mode="tinted"]) .hc-tint,.hc-root:not([data-mode="tinted"]) .hc-sugg,.hc-root:not([data-mode="tinted"]) .hc-hint{ display:none }
+.hc-root[data-mode="default"] .hc-tone,.hc-root[data-mode="dark"] .hc-tone{ display:none }
+
+/* ---------- conta-gotas: camada transparente por cima da home (por baixo da folha, z 190) ----------
+   Camada de ecrã inteiro: raio 57 px como todas (e o --scr-r nos dobráveis); não pinta nada, só apanha o toque */
+.hc-pick{ position:absolute; inset:0; z-index:186; border-radius:57px; cursor:crosshair; touch-action:none }
+body.fivem .hc-pick{ border-radius:57px }
+body.os-ios.form-fold .hc-pick{ border-radius:var(--scr-r,57px) }
+.hc-loupe{ position:absolute; left:0; top:0; width:58px; height:58px; margin:-29px 0 0 -29px; border-radius:50%; box-sizing:border-box; border:4px solid #fff; box-shadow:0 6px 18px rgba(0,0,0,.4); background:#888; opacity:0; pointer-events:none; transition:opacity .15s }
+.hc-pick.on .hc-loupe{ opacity:1 }

@@ -1,0 +1,133 @@
+/* ============================================================
+   Fase 2 (pacote M4): mensagens de voz (gravador + leitor) e ecrãs de grupo
+   Regras do CEF do FiveM: sem filter/backdrop-filter, animações SÓ com transform/opacity,
+   sem color-mix e sem clip-path. Prefixos próprios (vmsg-, grp-): o gr- já é da Garagem e o
+   vm- da Música.
+   ============================================================ */
+
+/* ---------- GRAVADOR ----------
+   O host (normalmente o compositor das Mensagens) recebe .vmsg-host enquanto se grava: o resto do
+   conteúdo dele sai de cena e a faixa ocupa a largura toda. Ao terminar a classe sai e tudo volta. */
+.vmsg-host > :not(.vmsg-rec){ display:none !important }
+.vmsg-rec{ flex:1 1 100%; width:100%; min-width:0; height:44px; display:flex; align-items:center; gap:10px; position:relative; color:var(--label);
+  user-select:none; -webkit-user-select:none; animation:vmsgIn var(--motion-normal) var(--curve) }
+@keyframes vmsgIn{ from{ opacity:0; transform:translateY(8px) } to{ opacity:1; transform:none } }
+.vmsg-rec-x,.vmsg-rec-send,.vmsg-rec-play{ width:44px; height:44px; flex:none; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer;
+  transition:transform var(--motion-normal) var(--spring), opacity var(--motion-normal) var(--curve) }
+.vmsg-rec-x:active,.vmsg-rec-send:active,.vmsg-rec-play:active{ transform:scale(.88); transition:transform .06s }
+.vmsg-rec-x svg,.vmsg-rec-send svg,.vmsg-rec-play svg{ width:22px; height:22px }
+.vmsg-rec-x{ background:var(--fill3); color:var(--red) }
+.vmsg-rec-send{ background:var(--blue); color:#fff }
+.vmsg-rec-send svg{ width:24px; height:24px }
+.vmsg-rec-play{ background:var(--fill3); color:var(--blue); display:none; position:relative }
+.vmsg-rec-play svg{ position:absolute; left:50%; top:50%; margin:-11px 0 0 -11px; transition:opacity var(--motion-fast) var(--curve) }
+.vmsg-rec-play svg:nth-of-type(2){ opacity:0 }
+.vmsg-rec.is-previewing .vmsg-rec-play svg:nth-of-type(1){ opacity:0 } .vmsg-rec.is-previewing .vmsg-rec-play svg:nth-of-type(2){ opacity:1 }
+.vmsg-rec-mid{ flex:1; min-width:0; height:44px; border-radius:22px; background:var(--bg2); border:.5px solid var(--sep-opaque); position:relative; overflow:hidden; touch-action:none }
+.vmsg-rec-track{ position:absolute; inset:0; display:flex; align-items:center; gap:9px; padding:0 14px; transition:transform var(--motion-medium) var(--spring) }
+.vmsg-rec-dot{ width:10px; height:10px; flex:none; border-radius:50%; background:var(--red); opacity:.35 }
+.vmsg-rec.is-recording .vmsg-rec-dot{ opacity:1; animation:vmsgPulse 1.1s ease-in-out infinite }
+@keyframes vmsgPulse{ 0%,100%{ opacity:1 } 50%{ opacity:.4 } }   /* nunca abaixo de .4: um ponto quase apagado parecia "não está a gravar" */
+.vmsg-rec-time{ flex:none; min-width:38px; font-size:var(--t-subhead); font-weight:600; font-variant-numeric:tabular-nums }
+.vmsg-rec-bars{ flex:1; min-width:0; height:26px; display:flex; align-items:center; justify-content:space-between; gap:2px; color:var(--label) }
+.vmsg-rec-bars i{ flex:1 1 0; max-width:4px; height:100%; border-radius:2px; background:currentColor; opacity:.55; transform:scaleY(.08); transition:transform 90ms var(--curve) }
+.vmsg-rec.is-recording .vmsg-rec-bars i{ color:var(--red); background:var(--red); opacity:.8 }
+.vmsg-rec.is-review .vmsg-rec-bars i{ background:var(--blue); opacity:.85 }
+.vmsg-rec-hint{ position:absolute; right:0; top:0; bottom:0; display:flex; align-items:center; gap:2px; padding:0 14px 0 12px; background:var(--bg2); color:var(--label2);
+  font-size:var(--t-foot); pointer-events:none; opacity:0; transition:opacity var(--motion-medium) var(--curve) }
+.vmsg-rec-hint svg{ width:15px; height:15px }
+.vmsg-rec.is-recording:not(.hint-off) .vmsg-rec-hint{ opacity:1 }
+.vmsg-rec-msg{ position:absolute; inset:0; z-index:2; display:flex; align-items:center; padding:0 16px; background:var(--bg2); color:var(--label2); font-size:var(--t-foot); line-height:1.15; overflow:hidden }
+.vmsg-rec-msg:empty{ display:none }
+.vmsg-rec.is-error .vmsg-rec-msg{ color:var(--label) }
+.vmsg-rec.is-error .vmsg-rec-send,.vmsg-rec.is-starting .vmsg-rec-send{ opacity:.35; pointer-events:none }
+.vmsg-rec.is-error .vmsg-rec-send{ display:none }
+.vmsg-rec.is-review .vmsg-rec-play{ display:flex }
+.vmsg-rec.is-review .vmsg-rec-dot{ display:none }
+.vmsg-rec.is-sending .vmsg-rec-x,.vmsg-rec.is-sending .vmsg-rec-send,.vmsg-rec.is-stopping .vmsg-rec-send{ opacity:.4; pointer-events:none }
+
+/* ---------- LEITOR (dentro da bolha; herda a cor do texto da bolha: branco na azul, label na cinzenta) ---------- */
+.vmsg-player{ display:flex; align-items:center; gap:9px; min-width:220px; max-width:100%; padding:2px 0; color:inherit; user-select:none; -webkit-user-select:none }
+.vmsg-btn{ width:34px; height:34px; flex:none; position:relative; border-radius:50%; cursor:pointer; transition:transform var(--motion-normal) var(--spring) }
+.vmsg-btn:active{ transform:scale(.86); transition:transform .06s }
+.vmsg-btn svg{ position:absolute; left:50%; top:50%; width:22px; height:22px; margin:-11px 0 0 -11px; transition:opacity var(--motion-fast) var(--curve), transform var(--motion-normal) var(--spring) }
+.vmsg-btn svg:nth-of-type(2){ opacity:0; transform:scale(.6) }
+.vmsg-player.is-playing .vmsg-btn svg:nth-of-type(1){ opacity:0; transform:scale(.6) }
+.vmsg-player.is-playing .vmsg-btn svg:nth-of-type(2){ opacity:1; transform:none }
+.vmsg-spin{ position:absolute; inset:4px; border-radius:50%; border:2.5px solid currentColor; border-right-color:transparent; opacity:0; pointer-events:none }
+.vmsg-player.is-loading .vmsg-spin{ opacity:.9; animation:vmsgSpin .8s linear infinite }
+.vmsg-player.is-loading .vmsg-btn svg{ opacity:0 }
+@keyframes vmsgSpin{ to{ transform:rotate(360deg) } }
+.vmsg-body{ flex:1; min-width:0; display:flex; flex-direction:column; gap:4px }
+.vmsg-wave{ position:relative; height:28px; overflow:hidden; cursor:pointer; touch-action:none }
+.vmsg-bars{ position:absolute; inset:0; display:flex; align-items:center; justify-content:space-between; gap:2px }
+.vmsg-bars i{ flex:1 1 0; min-width:1.5px; max-width:3px; height:100%; border-radius:2px; background:currentColor }
+.vmsg-wave > .vmsg-bars i{ opacity:.36 }
+/* progresso: a camada desliza (translateX) e o conteúdo dela desliza o mesmo ao contrário - ver setProg() no voicemsg.js */
+.vmsg-rev{ position:absolute; inset:0; overflow:hidden; transform:translateX(-100%) }
+.vmsg-rev > .vmsg-bars{ transform:translateX(100%) }
+.vmsg-meta{ display:flex; justify-content:space-between; font-size:var(--t-cap2); line-height:1; opacity:.75; font-variant-numeric:tabular-nums; white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+.vmsg-rate{ flex:none; min-width:38px; height:24px; padding:0 7px; border-radius:12px; position:relative; display:flex; align-items:center; justify-content:center;
+  font-size:var(--t-cap2); font-weight:700; cursor:pointer; font-variant-numeric:tabular-nums; transition:transform var(--motion-normal) var(--spring) }
+.vmsg-rate::before{ content:''; position:absolute; inset:0; border-radius:inherit; background:currentColor; opacity:.16 }   /* fundo na cor do texto sem color-mix */
+.vmsg-rate:active{ transform:scale(.9); transition:transform .06s }
+.vmsg-player.is-error .vmsg-wave{ opacity:.35 }
+.vmsg-player.is-error .vmsg-rate{ display:none }
+.vmsg-player.is-error .vmsg-btn svg:nth-of-type(1){ opacity:.5 }
+
+/* ---------- GRUPOS ---------- */
+.grp-av{ position:relative; background-size:cover; background-position:center; color:#fff }
+.grp-av svg{ width:46%; height:46%; transition:opacity var(--motion-fast) var(--curve) }
+.grp-av.has-img svg{ opacity:0 }
+.avatar.grp-av.lg{ width:96px; height:96px }
+
+/* folha "Novo grupo" */
+.grp-new-head{ display:flex; align-items:center; gap:14px; padding:6px 16px 4px }
+.grp-new-head .group{ flex:1; margin:0; min-width:0 }
+.grp-av-pick{ flex:none; display:flex; flex-direction:column; align-items:center; gap:4px; cursor:pointer; transition:transform var(--motion-normal) var(--spring) }
+.grp-av-pick:active{ transform:scale(.94); transition:transform .06s }
+.grp-av-pick .grp-av{ width:64px; height:64px; background:var(--fill3); color:var(--blue) }
+.grp-av-pick .grp-av svg{ width:28px; height:28px }
+.grp-av-pick span{ font-size:var(--t-cap1); color:var(--blue) }
+.grp-new-note{ padding:4px 32px 0 110px; font-size:var(--t-cap1); color:var(--label2) }
+.grp-sheet.is-busy .sheet > .content{ opacity:.55; pointer-events:none; transition:opacity var(--motion-normal) var(--curve) }
+.grp-sheet.is-busy .sh-r{ opacity:.6; pointer-events:none }
+
+/* seletor de membros */
+.grp-picker{ padding-top:8px }
+.grp-chips{ display:flex; gap:8px; overflow-x:auto; padding:2px 16px 10px; scrollbar-width:none }
+.grp-chips::-webkit-scrollbar{ display:none }
+.grp-chips:empty{ display:none }
+.grp-chip{ flex:none; display:inline-flex; align-items:center; gap:6px; height:32px; padding:0 5px 0 12px; border-radius:16px; background:var(--fill3); color:var(--label);
+  font-size:var(--t-subhead); cursor:pointer; animation:grpChipIn var(--motion-normal) var(--spring) }
+.grp-chip b{ font-weight:500; max-width:120px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap }
+.grp-chip i{ width:22px; height:22px; border-radius:50%; background:var(--fill); display:flex; align-items:center; justify-content:center; font-style:normal; color:var(--label2) }
+.grp-chip i svg{ width:11px; height:11px }
+@keyframes grpChipIn{ from{ opacity:0; transform:scale(.8) } to{ opacity:1; transform:none } }
+.grp-count{ padding-top:12px }
+.grp-list .empty{ padding:28px 40px }
+.grp-list .empty svg{ width:44px; height:44px }
+.grp-check{ width:24px; height:24px; flex:none; margin-left:auto; border-radius:50%; border:1.5px solid var(--label3); position:relative }
+.grp-check::after{ content:''; position:absolute; inset:-1.5px; border-radius:50%; background:var(--blue); opacity:0; transform:scale(.55);
+  transition:opacity var(--motion-fast) var(--curve), transform var(--motion-normal) var(--spring) }
+.grp-check svg{ position:absolute; left:50%; top:50%; z-index:1; width:13px; height:13px; margin:-6.5px 0 0 -6.5px; color:#fff; opacity:0; transition:opacity var(--motion-fast) var(--curve) }
+.grp-check.on::after{ opacity:1; transform:none }
+.grp-check.on svg{ opacity:1 }
+
+/* vista de informação */
+.grp-hero{ display:flex; flex-direction:column; align-items:center; text-align:center; padding:10px 24px 6px }
+.grp-hero-av{ margin-bottom:12px; transition:opacity var(--motion-normal) var(--curve), transform var(--motion-normal) var(--spring) }
+.grp-hero-av.is-editable{ cursor:pointer }
+.grp-hero-av.is-editable:active{ transform:scale(.95); transition:transform .06s }
+.grp-hero-av.is-busy{ opacity:.45; pointer-events:none }
+.grp-hero-title{ display:inline-flex; align-items:center; gap:6px; max-width:100%; font-size:var(--t-title2); font-weight:700; letter-spacing:-.3px; line-height:1.2; word-break:break-word }
+.grp-hero-title.is-editable{ cursor:pointer }
+.grp-hero-title svg{ width:17px; height:17px; flex:none; color:var(--blue) }
+.grp-hero-sub{ margin-top:3px; font-size:var(--t-subhead); color:var(--label2) }
+.grp-role{ flex:none; margin-left:8px; font-size:var(--t-foot); color:var(--label2) }
+.grp-role.admin{ color:var(--blue); font-weight:600 }
+.grp-info .li.blue .li-label{ color:var(--blue) }
+
+/* reduzir movimento: nada pulsa nem salta */
+body[data-motion="reduced"] .vmsg-rec,body[data-motion="reduced"] .vmsg-rec.is-recording .vmsg-rec-dot,body[data-motion="reduced"] .grp-chip{ animation:none }
+body[data-motion="reduced"] .vmsg-rec-bars i{ transition:none }
