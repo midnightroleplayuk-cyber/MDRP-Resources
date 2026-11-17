@@ -55,6 +55,15 @@ local function ospIsDead()
     return ok and dead == true
 end
 
+-- OSP skips its downed / dead animation loop while `onBackboard` is set, so we set it while the
+-- patient is on the MRI table. That lets the MRI lying pose (and table slide) be used instead.
+local holdingOsp = false
+local function setOspHold(on)
+    if on == holdingOsp then return end
+    holdingOsp = on
+    LocalPlayer.state:set('onBackboard', on, true)
+end
+
 local function jobGroups()
     local groups = {}
     for job, grade in pairs(Config.Jobs) do groups[job] = grade end
@@ -65,7 +74,6 @@ end
 -- Lying on the table
 ---------------------------------------------------------------------------
 local function playLie(ped)
-    if ospIsDead() then return end -- OSP keeps its own downed pose
     lib.requestAnimDict(Config.LieAnim.dict)
     TaskPlayAnim(ped, Config.LieAnim.dict, Config.LieAnim.clip, 8.0, 1.0, -1, 1, 0, false, false, false)
 end
@@ -78,12 +86,12 @@ local function getUp()
     local ped = cache.ped
     removeCarrier(ped)
     FreezeEntityPosition(ped, false)
-    if not ospIsDead() then
-        ClearPedTasks(ped)
-        local t = Config.Scanners[id].table
-        local side = GetOffsetFromEntityInWorldCoords(ped, 1.2, 0.0, 0.0)
-        SetEntityCoords(ped, side.x, side.y, t.z - 0.9, false, false, false, false)
-    end
+    ClearPedTasks(ped)
+    local t = Config.Scanners[id].table
+    local side = GetOffsetFromEntityInWorldCoords(ped, 1.2, 0.0, 0.0)
+    SetEntityCoords(ped, side.x, side.y, t.z - 0.9, false, false, false, false)
+    -- hand the pose back to OSP (downed / dead players go back to its own animation)
+    setOspHold(false)
     lib.hideTextUI()
     TriggerServerEvent('NDM_MRI:server:leftTable', id)
 end
@@ -94,12 +102,15 @@ RegisterNetEvent('NDM_MRI:client:lieDown', function(id)
     local ped = cache.ped
     local t = s.table
 
+    -- stop OSP's downed / dead animation from fighting the MRI pose
+    setOspHold(true)
+
     DoScreenFadeOut(400)
     while not IsScreenFadedOut() do Wait(50) end
 
     -- table carrier (for the scan movement) is set up first, while the screen is dark
     local ent = nil
-    if s.bore and not ospIsDead() then
+    if s.bore then
         ent = prepareCarrier(id, vector3(t.x, t.y, t.z + 0.02), t.w)
     end
 
@@ -121,7 +132,29 @@ RegisterNetEvent('NDM_MRI:client:lieDown', function(id)
 
     CreateThread(function()
         while lyingOn == id do
-            if not ospIsDead() and not IsEntityPlayingAnim(ped, Config.LieAnim.dict, Config.LieAnim.clip, 3) then
+            ped = cache.ped
+            -- died while on the table (e.g. last stand -> dead): OSP doesn't revive the ped while
+            -- the hold is on, so bring it back to a living (OSP "dead") ped on the table ourselves
+            if IsEntityDead(ped) then
+                Wait(500)
+                ped = PlayerPedId()
+                if lyingOn == id and IsEntityDead(ped) then
+                    local hadCarrier = carrier ~= nil
+                    local c = hadCarrier and GetEntityCoords(ped) or vector3(t.x, t.y, t.z + 0.02)
+                    DetachEntity(ped, true, false)
+                    NetworkResurrectLocalPlayer(c.x, c.y, c.z, t.w, true, false)
+                    ped = PlayerPedId()
+                    SetEntityCoords(ped, c.x, c.y, c.z, false, false, false, false)
+                    SetEntityHeading(ped, t.w)
+                    playLie(ped)
+                    if hadCarrier and carrier then
+                        SetPedCanRagdoll(ped, false)
+                        AttachEntityToEntity(ped, carrier, 0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, false, false, false, true, 2, true)
+                    else
+                        FreezeEntityPosition(ped, true)
+                    end
+                end
+            elseif not IsEntityPlayingAnim(ped, Config.LieAnim.dict, Config.LieAnim.clip, 3) then
                 playLie(ped)
             end
             Wait(1000)
@@ -483,4 +516,5 @@ AddEventHandler('onResourceStop', function(res)
     if res ~= GetCurrentResourceName() then return end
     removeCarrier(cache.ped)
     if lyingOn then FreezeEntityPosition(cache.ped, false) ClearPedTasks(cache.ped) lib.hideTextUI() end
+    setOspHold(false)
 end)
