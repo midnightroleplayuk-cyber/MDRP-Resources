@@ -367,7 +367,8 @@ local function registerTargets()
                 local playerIndex = NetworkGetPlayerIndexFromPed(entity)
                 if playerIndex == -1 then return false end
                 local playerState = Player(GetPlayerServerId(playerIndex))
-                return playerState and playerState.state.onBackboard
+                -- onMedicalTable = NDM MRI / surgery table borrowing the flag, not a real backboard
+                return playerState and playerState.state.onBackboard and not playerState.state.onMedicalTable
             end,
             onSelect = function(data)
                 local serverId = GetPlayerServerId(NetworkGetPlayerIndexFromPed(data.entity))
