@@ -3255,17 +3255,30 @@ return {
     weight = 2000,
     stack = false,
 },
-    ['bvm'] = {
-        label = 'BVM',
-        weight = 400,
-        stack = false,
-        close = true,
-        consume = 0,
-        description = 'Bag valve mask used to ventilate patients with low oxygen',
-        client = {
-            export = 'MDXBvm.useBvm',
-        },
+['bvm'] = {
+    label = 'BVM',
+    weight = 400,
+    stack = false,
+    close = true,
+    consume = 0,
+    description = 'Bag valve mask used to ventilate patients with low oxygen',
+    client = {
+        export = 'MDXBvm.useBvm',
     },
+},
+
+['backboard'] = {
+    label = 'Backboard',
+    weight = 3,
+    stack = false,
+    close = true,
+    consume = 0,
+    description = 'Spinal backboard. A patient on it can only be placed on a folded stretcher.',
+    client = {
+        export = 'MDXBackboard.useBackboard',
+    },
+},
+
     
 -- CAR RENTAL 
 ['rental_paper'] = {
@@ -6098,6 +6111,14 @@ return {
     description = 'A printed invoice. Inspect it to view details and pay.',
 },
 
-
+-- PAWN SHOP 
+['pawn_shipment_box'] = {
+   label = 'Shipment Box',
+   weight = 5000,
+   stack = false,
+   close = true,
+   consume = 0,
+   description = 'A sealed shipment box. Deliver it to the truck.',
+},
 
 }

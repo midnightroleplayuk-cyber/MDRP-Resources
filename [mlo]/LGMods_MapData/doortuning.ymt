@@ -1056,6 +1056,31 @@
         <StdDoorRotDir>StdDoorOpenBothDir</StdDoorRotDir>
       </Tuning>
     </Item>
+    <Item>
+      <Name>VWHospitalShutter</Name>
+      <Tuning>
+        <AutoOpenVolumeOffset x="0.000000" y="0.000000" z="0.000000" />
+        <Flags>DontCloseWhenTouched</Flags>
+        <AutoOpenRadiusModifier value="2.000000" />
+        <AutoOpenRate value="0.500000" />
+        <AutoOpenCosineAngleBetweenThreshold value="-1.000000" />
+        <AutoOpenCloseRateTaper value="true" />
+        <UseAutoOpenTriggerBox value="false" />
+        <CustomTriggerBox value="false" />
+        <TriggerBoxMinMax>
+          <min x="0.000000" y="0.000000" z="0.000000" w="0.000000" />
+          <max x="0.000000" y="0.000000" z="0.000000" w="0.000000" />
+        </TriggerBoxMinMax>
+        <BreakableByVehicle value="false" />
+        <BreakingImpulse value="0.000000" />
+        <ShouldLatchShut value="false" />
+        <MassMultiplier value="1.000000" />
+        <WeaponImpulseMultiplier value="1.000000" />
+        <RotationLimitAngle value="0.000000" />
+        <TorqueAngularVelocityLimit value="5.000000" />
+        <StdDoorRotDir>StdDoorOpenBothDir</StdDoorRotDir>
+      </Tuning>
+    </Item>
   </NamedTuningArray>
   <ModelToTuneMapping>
     <Item>
@@ -1633,6 +1658,129 @@
     <Item>
       <ModelName>test_door_01</ModelName>
       <TuningName>CustomSlidingGate</TuningName>
+    </Item>
+    <!-- LGMods Vinewood University Hospital (LGMods_VW_Hospital) -->
+    <Item>
+      <ModelName>lgmods_vw_hosp_firedoor_796</ModelName>
+      <TuningName>DefaultStandardLatchShut</TuningName>
+    </Item>
+    <Item>
+      <ModelName>lgmods_vw_hosp_firedoor_870</ModelName>
+      <TuningName>DefaultStandardLatchShut</TuningName>
+    </Item>
+    <Item>
+      <ModelName>lgmods_vw_hosp_firedoor_950</ModelName>
+      <TuningName>DefaultStandardLatchShut</TuningName>
+    </Item>
+    <Item>
+      <ModelName>lgmods_vw_hosp_firedoor_1194</ModelName>
+      <TuningName>DefaultStandardLatchShut</TuningName>
+    </Item>
+    <Item>
+      <ModelName>lgmods_vw_hosp_firedoor_1194_solid</ModelName>
+      <TuningName>DefaultStandardLatchShut</TuningName>
+    </Item>
+    <Item>
+      <ModelName>lgmods_vw_hosp_firedoor_1244</ModelName>
+      <TuningName>DefaultStandardLatchShut</TuningName>
+    </Item>
+    <Item>
+      <ModelName>lgmods_vw_hosp_firedoor_1244_solid</ModelName>
+      <TuningName>DefaultStandardLatchShut</TuningName>
+    </Item>
+    <Item>
+      <ModelName>lgmods_vw_hosp_firedoor_slave_441</ModelName>
+      <TuningName>DefaultStandardLatchShut</TuningName>
+    </Item>
+    <Item>
+      <ModelName>lgmods_vw_hosp_firedoor_slave_491</ModelName>
+      <TuningName>DefaultStandardLatchShut</TuningName>
+    </Item>
+    <Item>
+      <ModelName>lgmods_vw_hosp_autodoor_entrance_e</ModelName>
+      <TuningName>HospitalSliding</TuningName>
+    </Item>
+    <Item>
+      <ModelName>lgmods_vw_hosp_autodoor_entrance_w</ModelName>
+      <TuningName>HospitalSliding</TuningName>
+    </Item>
+    <Item>
+      <ModelName>lgmods_vw_hosp_autodoor_resus</ModelName>
+      <TuningName>HospitalSliding</TuningName>
+    </Item>
+    <Item>
+      <ModelName>lgmods_vw_hosp_autodoor_garage</ModelName>
+      <TuningName>HospitalSliding</TuningName>
+    </Item>
+    <Item>
+      <ModelName>lgmods_vw_hosp_shutter_ambulance</ModelName>
+      <TuningName>VWHospitalShutter</TuningName>
+    </Item>
+    <Item>
+      <ModelName>lgmods_vw_hosp_shutter_carpark</ModelName>
+      <TuningName>VWHospitalShutter</TuningName>
+    </Item>
+    <!-- LGMods Cluck & Ember (LGMods_CluckEmber) -->
+    <Item>
+      <ModelName>lgmods_ce_shopdoor_1000</ModelName>
+      <TuningName>DefaultStandardLatchShut</TuningName>
+    </Item>
+    <Item>
+      <ModelName>lgmods_ce_shopdoor_1250</ModelName>
+      <TuningName>DefaultStandardLatchShut</TuningName>
+    </Item>
+    <Item>
+      <ModelName>lgmods_ce_firedoor_1244</ModelName>
+      <TuningName>DefaultStandardLatchShut</TuningName>
+    </Item>
+    <Item>
+      <ModelName>lgmods_ce_firedoor_1244s</ModelName>
+      <TuningName>DefaultStandardLatchShut</TuningName>
+    </Item>
+    <Item>
+      <ModelName>lgmods_ce_fireexit_1210</ModelName>
+      <TuningName>DefaultStandardLatchShut</TuningName>
+    </Item>
+    <Item>
+      <ModelName>lgmods_ce_cubicle_door</ModelName>
+      <TuningName>DefaultStandardLatchShut</TuningName>
+    </Item>
+    <!-- LGMods Fast Fit (LGMods_FastFit) -->
+    <Item>
+      <ModelName>lgmods_fastfit_frontdoor</ModelName>
+      <TuningName>DefaultStandardLatchShut</TuningName>
+    </Item>
+    <Item>
+      <ModelName>lgmods_fastfit_firedoor</ModelName>
+      <TuningName>DefaultStandardLatchShut</TuningName>
+    </Item>
+    <Item>
+      <ModelName>lgmods_fastfit_wc_door</ModelName>
+      <TuningName>DefaultStandardLatchShut</TuningName>
+    </Item>
+    <Item>
+      <ModelName>lgmods_fastfit_fireexit_door_l</ModelName>
+      <TuningName>DefaultStandardLatchShut</TuningName>
+    </Item>
+    <Item>
+      <ModelName>lgmods_fastfit_fireexit_door_r</ModelName>
+      <TuningName>DefaultStandardLatchShut</TuningName>
+    </Item>
+    <Item>
+      <ModelName>lgmods_fastfit_gar_door_1</ModelName>
+      <TuningName>DefaultGarage</TuningName>
+    </Item>
+    <Item>
+      <ModelName>lgmods_fastfit_gar_door_2</ModelName>
+      <TuningName>DefaultGarage</TuningName>
+    </Item>
+    <Item>
+      <ModelName>lgmods_fastfit_gar_door_3</ModelName>
+      <TuningName>DefaultGarage</TuningName>
+    </Item>
+    <Item>
+      <ModelName>lgmods_fastfit_gar_door_4</ModelName>
+      <TuningName>DefaultGarage</TuningName>
     </Item>
   </ModelToTuneMapping>
 </CDoorTuningFile>
