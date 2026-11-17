@@ -197,6 +197,67 @@ Config.Hospitals = {
             vector3(-265.3901, 6343.8438, 32.6363),
         },
     },
+        {
+        label = "Police Station Medical Room",
+        blip = {
+            enable = false,
+            icon = 61,
+            color = 6,
+            scale = 0.8,
+            coords = vector3(-250.86, 6313.62, 32.43), -- TODO: placeholder (pharmacy position), raycast a proper spot
+        },
+        checking = {
+            vector4(-253.05, 6324.81, 32.45, 215.52)
+        },
+        duty = {
+            vector4(-255.76, 6332.22, 32.45, 38.03)
+        },
+        helicopter = {
+
+        },
+        shop = {
+            vector3(-257.9102, 6338.9126, 32.4071),
+        },
+        elevator = {
+
+        },
+        stash = {
+            vector3(-263.0877, 6343.9976, 32.6824),
+        },
+        bloodstorage = {
+
+        },
+        donation = {
+
+        },
+        bloodanalysis = {
+
+        },
+        pharmacy = {
+            vector4(-267.9306, 6318.0181, 32.4452, 229.8135),
+        },
+        beds = {
+
+        },
+        Xray = {
+
+        },
+        IncomingScreenPos = {
+
+        },
+        IncomingScreenSoundPos = {
+
+        },
+        StationaryECG = {
+            
+        },
+
+        -- Following actions only support integration for default esx
+        boss = {},
+        cloakroom = {
+            vector3(-265.3901, 6343.8438, 32.6363),
+        },
+    },
 }
 
 Config.JailBeds = {
