@@ -3,7 +3,7 @@ game 'gta5'
 lua54 'yes'
 
 name 'ndm_goodciv'
-author 'NDM Network'
+author 'NDM Development'
 description 'GoodCiv: civilian first-responder volunteers who answer life-threatening medical calls when no medics are on duty'
 version '1.0.0'
 

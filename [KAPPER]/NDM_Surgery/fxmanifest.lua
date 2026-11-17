@@ -4,8 +4,8 @@ lua54 'yes'
 
 name 'NDM_Surgery'
 description 'Surgery add-on for osp_ambulance: anaesthesia, bullet removal, internal damage repair and stitching'
-author 'NDM'
-version '1.0.0'
+author 'NDM Development'
+version '0.10.0'
 
 shared_scripts {
     '@ox_lib/init.lua',
