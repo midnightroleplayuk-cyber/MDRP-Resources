@@ -1,0 +1,51 @@
+USING YOUR OWN EXCAVATOR (or mixer / tipper) IN REGION 8
+========================================================
+
+Two things have to be told to the script: which model to use, and which part
+of that model is the bucket. Nothing has to be renamed in ZModeler.
+
+1. NAME THE MODEL
+   config/jobs/excavator.lua
+       vehicles = { jcbModel = 'your_model', tiptruckModel = 'twtiptruck' },
+
+2. MAKE ITS ARM MOVE
+   config/systems/vehicle_anim_controls.lua
+   Moving parts of a machine are vehicle DOORS on the model. Copy the twdigmas
+   block, put your model name on it and list its doors:
+
+       your_model = {
+           parts = {
+               { door = 1, controlGroup = 1, min = 0.0, max = 1.0, speed = 0.01 },
+           }
+       },
+
+   controlGroup 1 = G / H, 2 = arrow up / down, 3 = arrow right / left,
+   4 = E / Q. Sit in the machine and press the keys to see which door moves.
+
+3. POINT THE SCRIPT AT THE BUCKET
+   config/systems/excavator.lua
+       bucketBone       = 49,                        -- index OR name: 'bucket'
+       bucketBoneOffset = vec3(0.045, 0.390, -0.045),
+
+   bucketBone may be a bone index or a bone name from your model.
+   bucketBoneOffset moves the dig point from that bone to the bucket lip.
+
+   To measure both, set Config.DebugCommands = true (config/config.lua),
+   restart the resource and use:
+
+       /excspawn    spawn a test machine and truck next to you
+       /excbones    lists the bones closest to you - stand at the bucket lip
+                    and the first line is usually the one you want
+       /excbucket 49        set the bucket bone by index
+       /excbucket bucket    ...or by name
+       /excbucket           stand at the bucket lip, run it, and the offset
+                            is measured from where you stand
+       /excdump     stand where the dirt should land in the truck bed
+       /excdig      stand with the bucket at the sand pile
+       /excsave     prints the finished config block - paste it into
+                    config/systems/excavator.lua
+
+   Turn Config.DebugCommands back off when you are done.
+
+If the machine does not dig, the bucket bone is wrong: run /excbones again
+next to the bucket and compare the index with what is in the config.

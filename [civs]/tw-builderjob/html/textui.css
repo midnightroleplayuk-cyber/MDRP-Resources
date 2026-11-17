@@ -1,0 +1,114 @@
+@font-face {
+    font-family: GilroyMedium;
+    src: url(./font/Gilroy-Medium_0.ttf);
+    font-style: normal;
+  }
+
+  @font-face {
+    font-family: GilroySBold;
+    src: url(./font/Gilroy-SemiBold_0.ttf);
+    font-style: normal;
+  }
+
+  @font-face {
+    font-family: GilroyRegular;
+    src: url(./font/Gilroy-Medium_0.ttf);
+    font-style: normal;
+  }
+
+  @font-face {
+    font-family: GilroyBold;
+    src: url(./font/Gilroy-Bold_0.ttf);
+    font-style: normal;
+  }
+
+  @font-face {
+    font-family: Nature;
+    src: url(./font/Nature.ttf);
+    font-style: normal;
+  }
+
+.textui-container {
+    position: fixed;
+    left: calc(1.5 * var(--u));
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: calc(0.2 * var(--u));
+    pointer-events: none;
+    z-index: 9999;
+    width: auto;
+}
+
+.textui-item {
+    border-radius: calc(0.6 * var(--u));
+    display: flex;
+    align-items: center;
+    gap: calc(0.5 * var(--u));
+    opacity: 0;
+    background: rgba(24, 22, 21, 0.94);
+    transform: translateX(-1vw);
+    animation: textui-slideIn 0.3s ease forwards;
+    min-width: fit-content;
+    white-space: nowrap;
+    padding-left: calc(0.2 * var(--u)) !important;
+    padding: calc(0.2 * var(--u)) calc(0.6 * var(--u));
+}
+
+@keyframes textui-slideIn {
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.textui-item.fadeOut {
+    animation: textui-slideOut 0.3s ease forwards;
+}
+
+@keyframes textui-slideOut {
+    to {
+        opacity: 0;
+        transform: translateX(-1vw);
+    }
+}
+
+.textui-key {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.05);
+    color: #fff;
+    border-radius: calc(0.5 * var(--u));
+    font-weight: 600;
+    font-size: calc(1 * var(--u));
+    min-width: calc(2 * var(--u));
+    min-height: calc(2 * var(--u));
+    text-align: center;
+    font-family: GilroySBold;
+}
+
+.textui-text {
+    color: #ffffffa1;
+    font-size: calc(0.85 * var(--u));
+    font-weight: 500;
+    letter-spacing: calc(0.02 * var(--u));
+    font-family: GilroyMedium;
+}
+
+.textui-container .hidden {
+    display: none !important;
+}
+
+.textui-enter-active {
+    animation: textui-slideIn 0.3s ease forwards;
+}
+
+.textui-leave-active {
+    animation: textui-slideOut 0.3s ease forwards;
+}
+
+.textui-move {
+    transition: transform 0.3s ease;
+}
