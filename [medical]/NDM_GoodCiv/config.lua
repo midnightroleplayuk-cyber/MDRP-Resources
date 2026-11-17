@@ -130,7 +130,7 @@ Config.Alerts = {
     -- How many carriers may accept the same incident.
     MaxResponders = 2,
     -- If nobody accepts, re-alert carriers this many seconds later (0 = never).
-    RealertAfter = 90
+    RealertAfter = 90,
     -- Incident closes automatically after this many seconds with no handover.
     IncidentLifetime = 900,
     -- Default keys (players can rebind in Settings > Key Bindings > FiveM).
