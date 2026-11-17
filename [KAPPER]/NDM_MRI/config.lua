@@ -44,7 +44,8 @@ Config.SoundVolume = 0.3           -- 0.0 - 1.0 at the table
 Config.SoundRange = 15.00           -- metres; volume fades out to nothing at this distance
 
 -- Refuse patients who are in OSP stage 1 (last stand / downed) or stage 2 (dead).
-Config.BlockDowned = true
+-- false = downed / dead patients can be put on the table and scanned.
+Config.BlockDowned = false
 
 -- Mark fractures found by the MRI as imaged in OSP (same as the OSP X-ray does), so medics can
 -- go straight to splint / cast without an X-ray.
