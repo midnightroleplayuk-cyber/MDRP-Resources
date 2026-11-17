@@ -197,7 +197,8 @@ Config.Hospitals = {
             vector3(-265.3901, 6343.8438, 32.6363),
         },
     },
-        {
+    
+    {
         label = "Police Station Medical Room",
         blip = {
             enable = false,
