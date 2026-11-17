@@ -14,11 +14,11 @@ Config.RequireOnDuty = true
 Config.Tables = {
     {
         label = 'Operating Theatre 1',
-        coords = vector4(-328.63, -120.55, 39.68, 151.5),
+        coords = vector4(-328.63, -120.55, 39.08, 151.5),
     },
     {
         label = 'Operating Theatre 2',
-        coords = vector4(-330.61, -126.83, 39.10, 61.0),
+        coords = vector4(-330.61, -126.83, 39.07, 151.5),
     },
 }
 
