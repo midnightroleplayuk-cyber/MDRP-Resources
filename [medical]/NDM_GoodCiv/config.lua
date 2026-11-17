@@ -32,7 +32,7 @@ Config.Carriers = {
     -- Set to nil to only allow signing up at a sign-up ped (Config.SignupPeds).
     Command = 'goodciv',
     -- Players with these jobs can never be carriers (they have their own dispatch).
-    BlockedJobs = { 'police', 'sheriff', 'ambulance', 'ems', 'doctor', 'fire' },
+    BlockedJobs = { 'police', 'ambulance', 'fire' },
     -- Optional item a carrier must hold to sign up and to receive alerts (nil = none).
     -- e.g. 'firstaid_kit'
     RequiredItem = nil,
@@ -124,13 +124,13 @@ Config.SignupPeds = {
 ---------------------------------------------------------------------------
 Config.Alerts = {
     -- Only carriers within this distance (metres) of the patient are alerted. 0 = everyone.
-    Radius = 2500.0,
+    Radius = 0.0,
     -- Seconds an alert stays on screen before it is auto-declined.
-    Timeout = 30,
+    Timeout = 60,
     -- How many carriers may accept the same incident.
     MaxResponders = 2,
     -- If nobody accepts, re-alert carriers this many seconds later (0 = never).
-    RealertAfter = 60,
+    RealertAfter = 90
     -- Incident closes automatically after this many seconds with no handover.
     IncidentLifetime = 900,
     -- Default keys (players can rebind in Settings > Key Bindings > FiveM).
@@ -246,8 +246,8 @@ Config.Treatment = {
     CPR = {
         Duration = 20,         -- seconds per CPR cycle
         TargetBpm = { 100, 120 },
-        BaseChance = 0.25,     -- chance of ROSC with zero technique
-        TechniqueBonus = 0.55, -- added on top, scaled by compression quality (0-1)
+        BaseChance = 0.45,     -- chance of ROSC with zero technique
+        TechniqueBonus = 0.60, -- added on top, scaled by compression quality (0-1)
         UntreatedBleedPenalty = 0.6, -- chance multiplier if major bleed not controlled
         Cooldown = 3,
         -- Successful CPR brings the patient round on scene (see Config.WakeUp) instead of
@@ -262,8 +262,8 @@ Config.Treatment = {
     -- Success brings them round on scene (same as CPR: Config.WakeUp, injured until check-in).
     Rouse = {
         Duration = 8,
-        BaseChance = 0.3,       -- chance per attempt
-        PerAttemptBonus = 0.1,  -- added for each failed attempt, so persistence pays off
+        BaseChance = 0.4,       -- chance per attempt
+        PerAttemptBonus = 0.2,  -- added for each failed attempt, so persistence pays off
         Cooldown = 3,
     },
 }
@@ -277,7 +277,7 @@ Config.Transport = {
     -- Max distance (metres) from the responder to the vehicle used.
     VehicleDistance = 6.0,
     -- Speed limit (mph) for the driver while the patient is onboard. 0 = no limit.
-    SpeedLimitMph = 70,
+    SpeedLimitMph = 90,
     -- A hit that removes this much vehicle body health counts as a crash.
     CrashThreshold = 80.0,
     -- Chance a crash makes a stable patient arrest again.
@@ -287,9 +287,7 @@ Config.Transport = {
 }
 
 Config.Hospitals = {
-    { label = 'Pillbox Hill Medical', coords = vector3(298.6, -584.5, 43.3), drop = vector4(307.6, -595.3, 43.3, 70.0), radius = 30.0 },
-    { label = 'Mount Zonah Medical', coords = vector3(-449.7, -340.8, 34.5), drop = vector4(-448.5, -336.6, 34.5, 80.0), radius = 30.0 },
-    { label = 'Sandy Shores Medical', coords = vector3(1839.4, 3672.9, 34.3), drop = vector4(1838.3, 3674.3, 34.3, 210.0), radius = 30.0 },
+    { label = 'Burton Hospital', coords = vector3(-310.03, -159.45, 40.24), drop = vector4(-312.82, -152.9, 40.24, 25.16), radius = 60.0 },
     { label = 'Paleto Bay Medical', coords = vector3(-247.8, 6331.2, 32.4), drop = vector4(-251.2, 6334.1, 32.4, 225.0), radius = 30.0 },
 }
 
@@ -350,7 +348,7 @@ Config.Rewards = {
         -- person (by FiveM licence, so swapping characters doesn't reset it). 0 = off.
         PairCooldown = 3600,
         -- Max paid calls per responder per rolling hour. 0 = no limit.
-        MaxPerHour = 4,
+        MaxPerHour = 6,
     },
 }
 

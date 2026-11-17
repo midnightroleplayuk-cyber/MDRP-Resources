@@ -62,6 +62,8 @@ local function setOspHold(on)
     if on == holdingOsp then return end
     holdingOsp = on
     LocalPlayer.state:set('onBackboard', on, true)
+    -- tells MDXBackboard this isn't a real backboard (hides its "Remove backboard" option)
+    LocalPlayer.state:set('onMedicalTable', on, true)
 end
 
 local function jobGroups()

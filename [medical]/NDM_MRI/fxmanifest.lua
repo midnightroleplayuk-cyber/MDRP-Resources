@@ -4,7 +4,7 @@ lua54 'yes'
 
 name 'NDM_MRI'
 description 'MRI scanner add-on for osp_ambulance: scan noise, progress bar and an injury report read from OSP'
-author 'NDM'
+author 'NDM Development'
 version '1.0.0'
 
 shared_scripts {
