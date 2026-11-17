@@ -18,7 +18,7 @@ Config.Tables = {
     },
     {
         label = 'Operating Theatre 2',
-        coords = vector4(-330.61, -126.83, 39.68, 61.0),
+        coords = vector4(-330.61, -126.83, 39.25, 61.0),
     },
 }
 
@@ -131,8 +131,8 @@ Config.Procedures = {
         item = nil,
         removeItem = false,
         heal = 3,
-        failBleed = 0.15,
-        failPain = 0.8,
+        failBleed = 0.8,
+        failPain = 0.3,
     },
     -- Fracture repair (ORIF): fixes the bone outright, no splint / cast / heal timer needed.
     fracture = {
