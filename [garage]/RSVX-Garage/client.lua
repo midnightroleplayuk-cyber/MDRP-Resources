@@ -45,13 +45,16 @@ local function openGarage(garage)
     local vehicles = {}
 
     for i, vehicle in ipairs(garage.vehicles) do
-        if not vehicle.job or vehicle.job == job.name then
+        local locked = job.grade.level < vehicle.grade
+        local visible = not vehicle.job or vehicle.job == job.name
+
+        if visible and not (locked and Config.HideLockedVehicles) then
             vehicles[#vehicles + 1] = {
                 index = i,
                 label = vehicle.label,
                 model = vehicle.model,
                 grade = vehicle.grade,
-                locked = job.grade.level < vehicle.grade,
+                locked = locked,
             }
         end
     end
@@ -167,6 +170,56 @@ local function captureVehicle()
     }
 end
 
+local PROP_IDS = { 0, 1, 2, 6, 7 }
+
+local function applyOutfit(ped, outfit)
+    SetPedDefaultComponentVariation(ped)
+    SetPedHeadBlendData(ped, 0, 0, 0, 0, 0, 0, 0.0, 0.0, 0.0, false)
+
+    for _, c in ipairs(outfit.components or {}) do
+        SetPedComponentVariation(ped, c.id, c.drawable, c.texture, 0)
+    end
+
+    for _, c in ipairs(outfit.props or {}) do
+        if c.drawable < 0 then
+            ClearPedProp(ped, c.id)
+        else
+            SetPedPropIndex(ped, c.id, c.drawable, c.texture, true)
+        end
+    end
+
+    if outfit.hair then SetPedHairColor(ped, outfit.hair.colour, outfit.hair.highlight) end
+end
+
+local function captureOutfit()
+    local ped = cache.ped
+    local outfit = {
+        model = GetEntityArchetypeName(ped),
+        components = {},
+        props = {},
+        hair = { colour = GetPedHairColor(ped), highlight = GetPedHairHighlightColor(ped) },
+    }
+
+    for id = 0, 11 do
+        outfit.components[#outfit.components + 1] = {
+            id = id,
+            drawable = GetPedDrawableVariation(ped, id),
+            texture = GetPedTextureVariation(ped, id),
+        }
+    end
+
+    for _, id in ipairs(PROP_IDS) do
+        local drawable = GetPedPropIndex(ped, id)
+        outfit.props[#outfit.props + 1] = {
+            id = id,
+            drawable = drawable,
+            texture = drawable >= 0 and GetPedPropTextureIndex(ped, id) or 0,
+        }
+    end
+
+    return outfit
+end
+
 local function clear()
     for _, point in ipairs(points) do point:remove() end
     for _, ped in pairs(peds) do
@@ -190,6 +243,7 @@ local function build()
 
             local ped = CreatePed(4, model, cfg.x, cfg.y, cfg.z - 1.0, cfg.w, false, false)
             SetModelAsNoLongerNeeded(model)
+            if cfg.outfit then applyOutfit(ped, cfg.outfit) end
             FreezeEntityPosition(ped, true)
             SetEntityInvincible(ped, true)
             SetBlockingOfNonTemporaryEvents(ped, true)
@@ -282,6 +336,10 @@ end)
 
 RegisterNUICallback('capture', function(_, cb)
     cb(captureVehicle())
+end)
+
+RegisterNUICallback('captureOutfit', function(_, cb)
+    cb(captureOutfit())
 end)
 
 RegisterNUICallback('save', function(data, cb)

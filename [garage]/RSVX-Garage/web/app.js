@@ -21,6 +21,9 @@ const MODS = [
     ['armour', 'Armour'],
 ];
 
+const COMPONENTS = ['Head', 'Mask', 'Hair', 'Arms', 'Legs', 'Bag', 'Shoes', 'Accessory', 'Undershirt', 'Body armour', 'Decals', 'Top'];
+const PROPS = [[0, 'Hat'], [1, 'Glasses'], [2, 'Ear'], [6, 'Watch'], [7, 'Bracelet']];
+
 function post(name, data = {}) {
     return fetch(`https://${resource}/${name}`, {
         method: 'POST',
@@ -69,7 +72,7 @@ function renderGarage() {
             </div>
             <button class="small" data-action="close">Close</button>
         </header>
-        <ul class="rows">${rows || '<li class="empty">No vehicles have been set up here.</li>'}</ul>
+        <ul class="rows">${rows || '<li class="empty">No vehicles are available to you here.</li>'}</ul>
         <footer>
             <button data-action="return">Return vehicle</button>
             <button class="primary" data-action="takeout" ${canTake() ? '' : 'disabled'}>Take out</button>
@@ -84,6 +87,32 @@ function blankVehicle() {
         extrasMode: 'default', extras: '',
         mods: { engine: -1, brakes: -1, transmission: -1, suspension: -1, armour: -1, turbo: false, windowTint: 0 },
         primary: '', secondary: '',
+    };
+}
+
+function toDraftOutfit(outfit) {
+    const components = Array.isArray(outfit?.components) ? outfit.components : [];
+    const props = Array.isArray(outfit?.props) ? outfit.props : [];
+    return {
+        components: COMPONENTS.map((_, id) => {
+            const c = components.find((x) => x.id === id);
+            return { drawable: c?.drawable ?? 0, texture: c?.texture ?? 0 };
+        }),
+        props: PROPS.map(([id]) => {
+            const c = props.find((x) => x.id === id);
+            return { id, drawable: c?.drawable ?? -1, texture: c?.texture ?? 0 };
+        }),
+        hairColour: outfit?.hair?.colour ?? 0,
+        hairHighlight: outfit?.hair?.highlight ?? 0,
+    };
+}
+
+function fromDraftOutfit(o) {
+    const n = (value, fallback) => (Number.isFinite(Number(value)) && value !== '' ? Number(value) : fallback);
+    return {
+        components: o.components.map((c, id) => ({ id, drawable: n(c.drawable, 0), texture: n(c.texture, 0) })),
+        props: o.props.map((c) => ({ id: c.id, drawable: n(c.drawable, -1), texture: n(c.texture, 0) })),
+        hair: { colour: n(o.hairColour, 0), highlight: n(o.hairHighlight, 0) },
     };
 }
 
@@ -113,6 +142,8 @@ function toDraft(g) {
         platePrefix: g.platePrefix || '',
         pedModel: g.ped?.model || 's_m_y_cop_01',
         ped: g.ped ? { x: g.ped.x, y: g.ped.y, z: g.ped.z, w: g.ped.w } : null,
+        outfitMode: g.ped?.outfit ? 'custom' : 'default',
+        outfit: toDraftOutfit(g.ped?.outfit),
         jobs: Object.entries(jobs).map(([name, grade]) => ({ name, grade })),
         spawns: Array.isArray(g.spawns) ? g.spawns.map((s) => ({ ...s })) : [],
         vehicles: Array.isArray(g.vehicles) ? g.vehicles.map(toDraftVehicle) : [],
@@ -130,7 +161,11 @@ function fromDraft(d) {
         id: d.id,
         label: d.label,
         platePrefix: d.platePrefix,
-        ped: d.ped ? { ...d.ped, model: d.pedModel } : null,
+        ped: d.ped ? {
+            ...d.ped,
+            model: d.pedModel,
+            outfit: d.outfitMode === 'custom' ? fromDraftOutfit(d.outfit) : null,
+        } : null,
         jobs: Object.fromEntries(
             d.jobs.filter((j) => j.name.trim()).map((j) => [j.name.trim(), Number(j.grade) || 0]),
         ),
@@ -209,6 +244,42 @@ function vehicleForm(v, i) {
         </div>`;
 }
 
+function outfitBlock(d) {
+    const cell = (label, path, c) => `
+        <label>${label}
+            <span class="pair">
+                <input type="number" min="-1" data-path="${path}.drawable" value="${esc(c.drawable)}" title="Drawable">
+                <input type="number" min="0" data-path="${path}.texture" value="${esc(c.texture)}" title="Texture">
+            </span>
+        </label>`;
+
+    const custom = d.outfitMode === 'custom' ? `
+        <div class="grid cols-4">
+            ${COMPONENTS.map((name, i) => cell(name, `outfit.components.${i}`, d.outfit.components[i])).join('')}
+            ${d.outfit.props.map((c, i) => cell(PROPS[i][1], `outfit.props.${i}`, c)).join('')}
+            <label>Hair colour
+                <span class="pair">
+                    <input type="number" min="0" data-path="outfit.hairColour" value="${esc(d.outfit.hairColour)}" title="Colour">
+                    <input type="number" min="0" data-path="outfit.hairHighlight" value="${esc(d.outfit.hairHighlight)}" title="Highlight">
+                </span>
+            </label>
+        </div>
+        <p class="hint">Each pair is drawable then texture. Hat, glasses, ear, watch and bracelet use -1 for none.</p>` : '';
+
+    return `
+        <div class="block">
+            <h2>Attendant clothing</h2>
+            <div class="line">
+                <select data-path="outfitMode" data-rerender>
+                    <option value="default" ${d.outfitMode === 'default' ? 'selected' : ''}>Model default</option>
+                    <option value="custom" ${d.outfitMode === 'custom' ? 'selected' : ''}>Custom clothing</option>
+                </select>
+                <button class="small" data-action="capture-outfit">Copy what I'm wearing</button>
+            </div>
+            ${custom}
+        </div>`;
+}
+
 function editor() {
     const d = state.draft;
     if (!d) return '<p>Pick a garage on the left, or create a new one.</p>';
@@ -230,6 +301,8 @@ function editor() {
         <div class="line">
             <span class="grow"><strong>${esc(v.label) || 'Unnamed vehicle'}</strong> <span class="mono">${esc(v.model)}</span></span>
             <span class="mono">${v.job ? `${esc(v.job)} ` : ''}grade ${esc(Number(v.grade) || 0)}+</span>
+            <button class="small" data-action="move-vehicle" data-index="${i}" data-step="-1" ${i === 0 ? 'disabled' : ''}>Up</button>
+            <button class="small" data-action="move-vehicle" data-index="${i}" data-step="1" ${i === d.vehicles.length - 1 ? 'disabled' : ''}>Down</button>
             <button class="small" data-action="edit-vehicle" data-index="${i}">${state.editing === i ? 'Editing' : 'Edit'}</button>
             <button class="small danger" data-action="remove-vehicle" data-index="${i}">Remove</button>
         </div>`).join('');
@@ -247,6 +320,8 @@ function editor() {
                 <button class="small" data-action="set-ped">Use where I'm standing</button>
             </div>
         </div>
+
+        ${outfitBlock(d)}
 
         <div class="block">
             <h2>Jobs and minimum grade</h2>
@@ -350,6 +425,14 @@ const actions = {
         const pos = await post('position');
         if (pos) state.draft.ped = pos;
     },
+    async 'capture-outfit'() {
+        const captured = await post('captureOutfit');
+        if (!captured) return setStatus('Could not read your outfit.', true);
+        state.draft.pedModel = captured.model;
+        state.draft.outfit = toDraftOutfit(captured);
+        state.draft.outfitMode = 'custom';
+        setStatus(`Copied clothing from ${captured.model}.`);
+    },
     'add-job'() { state.draft.jobs.push({ name: '', grade: 0 }); },
     'remove-job'(el) { state.draft.jobs.splice(Number(el.dataset.index), 1); },
     async 'add-spawn'() {
@@ -360,6 +443,15 @@ const actions = {
     'add-vehicle'() {
         state.draft.vehicles.push(blankVehicle());
         state.editing = state.draft.vehicles.length - 1;
+    },
+    'move-vehicle'(el) {
+        const from = Number(el.dataset.index);
+        const to = from + Number(el.dataset.step);
+        const list = state.draft.vehicles;
+        if (to < 0 || to >= list.length) return;
+        [list[from], list[to]] = [list[to], list[from]];
+        if (state.editing === from) state.editing = to;
+        else if (state.editing === to) state.editing = from;
     },
     'edit-vehicle'(el) { state.editing = Number(el.dataset.index); },
     'done-vehicle'() { state.editing = null; },
