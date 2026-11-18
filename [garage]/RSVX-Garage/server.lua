@@ -1,7 +1,9 @@
 local MOD_NAMES = { 'engine', 'brakes', 'transmission', 'suspension', 'armour' }
 
 local garages = {}
+-- Keyed by citizenid so a vehicle is still the player's after a crash or timeout.
 local out = {}
+local plates = {}
 
 local function notify(src, message, kind)
     TriggerClientEvent('ox_lib:notify', src, { title = 'Garage', description = message, type = kind or 'error' })
@@ -213,7 +215,7 @@ local function authorise(src, id)
         return
     end
 
-    return garage, job
+    return garage, job, player.PlayerData.citizenid
 end
 
 local function freeSpawn(garage)
@@ -238,14 +240,14 @@ end
 
 RegisterNetEvent('rsvx_garage:takeOut', function(id, index)
     local src = source
-    local garage, job = authorise(src, id)
+    local garage, job, cid = authorise(src, id)
     if not garage then return end
 
     local vehicle = garage.vehicles[tonumber(index)]
     if not vehicle or job.grade.level < vehicle.grade then return end
     if vehicle.job and vehicle.job ~= job.name then return end
 
-    local current = out[src]
+    local current = out[cid]
     if current == true or (current and DoesEntityExist(current)) then
         return notify(src, 'Return your current vehicle first.')
     end
@@ -253,35 +255,45 @@ RegisterNetEvent('rsvx_garage:takeOut', function(id, index)
     local spawn = freeSpawn(garage)
     if not spawn then return notify(src, 'All bays are blocked.') end
 
-    out[src] = true
-    local ok, _, veh = pcall(qbx.spawnVehicle, { model = joaat(vehicle.model), spawnSource = spawn })
+    out[cid] = true
+    local plate = makePlate(garage.platePrefix)
+    local ok, _, veh = pcall(qbx.spawnVehicle, {
+        model = joaat(vehicle.model),
+        spawnSource = spawn,
+        props = { plate = plate },
+    })
     if not ok or not veh or veh == 0 then
-        out[src] = nil
+        out[cid] = nil
         return notify(src, 'Vehicle failed to spawn.')
     end
-    out[src] = veh
+    out[cid] = veh
 
-    SetVehicleNumberPlateText(veh, makePlate(garage.platePrefix))
+    -- Keys are tied to the plate, so wait until the new plate has actually applied before handing them out.
+    local deadline = GetGameTimer() + 5000
+    while DoesEntityExist(veh) and GetGameTimer() < deadline
+        and GetVehicleNumberPlateText(veh):match('^%s*(.-)%s*$') ~= plate do
+        SetVehicleNumberPlateText(veh, plate)
+        Wait(100)
+    end
 
     local state = Entity(veh).state
     state:set('fuel', Config.FuelLevel, true)
     state:set('rsvxGarage', vehicle, true)
 
-    if GetResourceState('qbx_vehiclekeys') == 'started' then
-        exports.qbx_vehiclekeys:GiveKeys(src, veh)
-    end
+    plates[cid] = plate
+    Config.GiveKeys(src, veh, plate)
 
     notify(src, ('%s is ready in the bay.'):format(vehicle.label), 'success')
 end)
 
 RegisterNetEvent('rsvx_garage:return', function(id)
     local src = source
-    local garage = authorise(src, id)
+    local garage, _, cid = authorise(src, id)
     if not garage then return end
 
-    local veh = out[src]
+    local veh = out[cid]
     if not veh or veh == true or not DoesEntityExist(veh) then
-        out[src] = nil
+        out[cid] = nil
         return notify(src, 'You have no vehicle out.')
     end
 
@@ -290,8 +302,10 @@ RegisterNetEvent('rsvx_garage:return', function(id)
         return notify(src, 'Bring the vehicle back to the garage first.')
     end
 
+    Config.RemoveKeys(src, veh, plates[cid])
     DeleteEntity(veh)
-    out[src] = nil
+    out[cid] = nil
+    plates[cid] = nil
     notify(src, 'Vehicle returned.', 'success')
 end)
 
@@ -336,12 +350,4 @@ lib.addCommand(Config.Command, {
     restricted = Config.AdminGroup,
 }, function(source)
     TriggerClientEvent('rsvx_garage:openAdmin', source, garages)
-end)
-
-AddEventHandler('playerDropped', function()
-    local veh = out[source]
-    out[source] = nil
-    if Config.DeleteOnDrop and veh and veh ~= true and DoesEntityExist(veh) then
-        DeleteEntity(veh)
-    end
 end)
