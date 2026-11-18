@@ -174,16 +174,31 @@ local function rejectWithCard(deferrals, title, facts, help, plain, links)
         deferrals.done(plain)
     end
 
-    local ok, err = pcall(function()
-        local card = HelmConnectCard({ headline = title, color = 'attention', facts = facts, help = help, links = links, close = true })
-        deferrals.presentCard(card, function() finish() end)
-    end)
+    -- If the card never draws, the player still reads why instead of "Checking access...".
+    deferrals.update(plain)
+
+    local ok, card = pcall(HelmConnectCard, { headline = title, color = 'attention', facts = facts, help = help, links = links, close = true })
     if not ok then
-        print(('^3[helm]^7 could not show the rejection card (%s); using the plain message'):format(tostring(err)))
+        print(('^3[helm]^7 could not build the rejection card (%s); using the plain message'):format(tostring(card)))
         finish()
         return
     end
-    SetTimeout(CARD_SECONDS * 1000, finish)
+
+    -- A single presentCard sent straight after the panel answer can be dropped by the client, so it is re-sent
+    -- every second (as the queue and qbx_core do) until the player closes it or CARD_SECONDS pass.
+    CreateThread(function()
+        local untilAt = GetGameTimer() + CARD_SECONDS * 1000
+        while not finished and GetGameTimer() < untilAt do
+            Wait(0)
+            local sent, err = pcall(deferrals.presentCard, card, function() finish() end)
+            if not sent then
+                print(('^3[helm]^7 could not show the rejection card (%s); using the plain message'):format(tostring(err)))
+                break
+            end
+            Wait(1000)
+        end
+        finish()
+    end)
 end
 
 -- ---------------------------------------------------------------------------
