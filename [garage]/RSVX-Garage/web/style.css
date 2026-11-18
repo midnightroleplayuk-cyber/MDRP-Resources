@@ -187,6 +187,10 @@ label > input, label > select { margin-top: 3px; }
 .line > .grow { flex: 1; }
 .line input { width: auto; flex: 1; }
 .line input.narrow { flex: none; width: 90px; }
+.line select { width: auto; flex: 1; }
+.pair { display: flex; gap: 6px; }
+.block > .grid { margin-top: 10px; }
+.block > .grid + .hint { margin-top: 8px; }
 .actions { display: flex; gap: 8px; margin-top: 8px; }
 
 .vehicle-form {

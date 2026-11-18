@@ -65,6 +65,47 @@ local function coords(value)
     return { x = x, y = y, z = z, w = tonumber(value.w) or 0.0 }
 end
 
+local PROP_IDS = { [0] = true, [1] = true, [2] = true, [6] = true, [7] = true }
+
+local function sanitiseOutfit(data)
+    if type(data) ~= 'table' then return end
+    local outfit = { components = {}, props = {} }
+
+    if type(data.components) == 'table' then
+        for i = 1, math.min(#data.components, 12) do
+            local entry = data.components[i]
+            local id = type(entry) == 'table' and int(entry.id, 0, 11)
+            if id then
+                outfit.components[#outfit.components + 1] = {
+                    id = id,
+                    drawable = int(entry.drawable, 0, 2000) or 0,
+                    texture = int(entry.texture, 0, 255) or 0,
+                }
+            end
+        end
+    end
+
+    if type(data.props) == 'table' then
+        for i = 1, math.min(#data.props, 5) do
+            local entry = data.props[i]
+            local id = type(entry) == 'table' and int(entry.id, 0, 7)
+            if id and PROP_IDS[id] then
+                outfit.props[#outfit.props + 1] = {
+                    id = id,
+                    drawable = int(entry.drawable, -1, 2000) or -1,
+                    texture = int(entry.texture, 0, 255) or 0,
+                }
+            end
+        end
+    end
+
+    if type(data.hair) == 'table' then
+        outfit.hair = { colour = int(data.hair.colour, 0, 255) or 0, highlight = int(data.hair.highlight, 0, 255) or 0 }
+    end
+
+    return outfit
+end
+
 local function sanitiseVehicle(data)
     if type(data) ~= 'table' then return end
     local label, model = text(data.label, 40), text(data.model, 40)
@@ -112,6 +153,7 @@ local function sanitiseGarage(data)
     local ped = coords(data.ped)
     if not ped then return nil, 'Set the attendant position.' end
     ped.model = text(data.ped.model, 40) or 's_m_y_cop_01'
+    ped.outfit = sanitiseOutfit(data.ped.outfit)
 
     local garage = {
         label = label,
