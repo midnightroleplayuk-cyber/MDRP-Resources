@@ -8,16 +8,16 @@
 -- ------------------------------------------------------------
 AdminSchema = {
     groups = {
-        { id = 'general', label = 'General',          icon = 'gear' },
-        { id = 'calls',   label = 'Calls',            icon = 'phone' },
-        { id = 'number',  label = 'Number',           icon = 'sim' },
-        { id = 'sim',     label = 'eSIM',             icon = 'sim' },   -- eSIM (2026-10-04, server/sim.lua)
-        { id = 'psim',    label = 'Physical SIM',     icon = 'sim' },   -- PSIM: SIM cards in inventory (2026-10-05, server/psim.lua)
-        { id = 'social',  label = 'Social',           icon = 'users' },
-        { id = 'radio',   label = 'Radio',            icon = 'mic' },   -- RADIO: radio app (2026-10-05, server/radio.lua)
-        { id = 'cshare',  label = 'Contact Sharing',  icon = 'personCircle' },   -- CSHARE: contact cards nearby (2026-10-05, server/contactshare.lua)
-        { id = 'recording', label = 'Recordings',     icon = 'mic' },   -- MEDIA (ronda 2): limites de gravação por telemóvel (server/recording.lua lê-os a cada uso)
-        { id = 'limits',  label = 'Limits',           icon = 'gauge' },
+        { id = 'general',   label = 'General',          icon = 'gear' },
+        { id = 'calls',     label = 'Calls',            icon = 'phone' },
+        { id = 'number',    label = 'Number',           icon = 'sim' },
+        { id = 'sim',       label = 'eSIM',             icon = 'sim' },   -- eSIM (2026-10-04, server/sim.lua)
+        { id = 'psim',      label = 'Physical SIM',     icon = 'sim' },   -- PSIM: SIM cards in inventory (2026-10-05, server/psim.lua)
+        { id = 'social',    label = 'Social',           icon = 'users' },
+        { id = 'radio',     label = 'Radio',            icon = 'mic' },   -- RADIO: radio app (2026-10-05, server/radio.lua)
+        { id = 'cshare',    label = 'Contact Sharing',  icon = 'personCircle' },   -- CSHARE: contact cards nearby (2026-10-05, server/contactshare.lua)
+        { id = 'recording', label = 'Recordings',       icon = 'mic' },   -- MEDIA (ronda 2): limites de gravação por telemóvel (server/recording.lua lê-os a cada uso)
+        { id = 'limits',    label = 'Limits',           icon = 'gauge' },
     },
     settings = {
         { path = 'Recording.enabled', group = 'recording', type = 'bool', label = 'Record video in the Camera' },
