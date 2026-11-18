@@ -231,7 +231,7 @@ Locales["en"] = {
     ["Esse número já está com o jogador."] = "The player already has that number.",
     -- 1.5.2: Config.Services labels (the dispatch / MDT alert goes out in Config.DefaultLanguage)
     ["Polícia"] = "Police",
-    ["EMS"] = "EMS",
+    ["EMS"] = "MHS",
     ["Mecânico"] = "Mechanic",
     ["Táxi"] = "Taxi",
     ["Imobiliária"] = "Real Estate",
