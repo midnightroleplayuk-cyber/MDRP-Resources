@@ -57,7 +57,7 @@ AdminSchema = {
         { path = 'Recording.social.reels', group = 'recording', type = 'bool', label = 'Videos on Reels' },
         { path = 'Recording.social.twix', group = 'recording', type = 'bool', label = 'Videos on Twix' },
         { path = 'Recording.social.recado', group = 'recording', type = 'bool', label = 'Videos on Recado' },
-        { path = 'Recording.social.maxSeconds', group = 'recording', type = 'int', label = 'Maximum duration of a posted video (seconds; 0 = use the phone's limit)', min = 0, max = 120 },
+        { path = 'Recording.social.maxSeconds', group = 'recording', type = 'int', label = 'Maximum duration of a posted video (seconds; 0 = use the phone limit)', min = 0, max = 120 },
         { path = 'Recording.social.maxMB', group = 'recording', type = 'num', label = 'Maximum size of a posted video (MB)', min = 0.5, max = 18, step = 0.5 },
         { path = 'DefaultLanguage', group = 'general', type = 'select', label = 'Language for new accounts',
           options = { 'en', 'pt', 'es', 'fr', 'de', 'it', 'nl', 'pl', 'sv', 'da', 'tr', 'ru', 'ja', 'ko', 'zh-Hans', 'zh-Hant' } },
