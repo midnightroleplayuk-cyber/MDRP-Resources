@@ -147,8 +147,11 @@ Config.Job                = {
             regionJobTask = {},
         },
 
+        -- R3 (Alta, site2) DISABLED: the new Alta estate sits on this site. While
+        -- off, the tower crane and site scenery for site2 are not spawned.
         {
             regionID = 3,
+            enabled = false,
             regionInfo = {
                 regionName = TL('regionName_tower2', 'Tower Crane — Site 2'),
                 regionNameKey = 'regionName_tower2',
