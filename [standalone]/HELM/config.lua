@@ -1,7 +1,7 @@
 Config = {}
 
 -- Helm panel address. Already set to the hosted panel, so most servers only need the token below.
-Config.PanelUrl = 'https://helm-panel.onrender.com'
+Config.PanelUrl = 'https://helmpanel.co.uk/'
 
 -- The server token is NOT set here: this file is sent to every player's game client. It lives in
 -- server_config.lua (server only), or set `set helm_token "hs_..."` in server.cfg.
