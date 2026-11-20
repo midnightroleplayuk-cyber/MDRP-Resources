@@ -172,7 +172,7 @@ Config.Interactions = {
 }
 
 Config.FireRadial = {
-    enabled = true
+    enabled = false
 }
 
 Config.PlayerCarry = {

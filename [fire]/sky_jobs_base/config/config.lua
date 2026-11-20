@@ -2042,7 +2042,7 @@ Config.PlayerIdentityCard = {
 }
 
 Config.JobRadial = {
-    enabled = true, -- Controls Sky's radial UI. Set false for an external radial using getExternalRadialActions / triggerExternalRadialMenuAction, or use ox_target / qb-target. Exports and direct action keybinds remain available. Tablet access through a target system uses the tablet item's usable-item flow.
+    enabled = false, -- Controls Sky's radial UI. Set false for an external radial using getExternalRadialActions / triggerExternalRadialMenuAction, or use ox_target / qb-target. Exports and direct action keybinds remain available. Tablet access through a target system uses the tablet item's usable-item flow.
     key = "g",
     mode = "toggle", -- "hold" (hold key, release to select) or "toggle" (press to open/close)
     logo = "", -- Radial centre logo: HTTPS image URL or path relative to source/html. Empty hides it; "logo.svg" uses the shipped Sky logo.
