@@ -177,10 +177,12 @@ Config.Procedures = {
 -- Based on pickle_surgery by Pickle Mods, see CREDITS.md.
 --
 -- Each table can optionally set where the mini-game happens, if the default doesn't line up in game:
---   scene   = vector4(...)  -- scene centre (default: the table coords, 0.85 lower)
+--   scene   = vector4(...)  -- scene centre (default: the table coords + sceneHeight)
 --   surgeon = vector4(...)  -- where the surgeon is put (default: right-hand side of the table)
 Config.MajorSurgery = {
     enabled = true,
+    sceneHeight = 0.0,          -- move every surgery scene up (+) / down (-). Test values in game with /surgeryheight
+
     training = true,            -- "Surgical training" on the table: practise on a dummy, no patient needed
     showControls = {            -- show the control hints during the mini-game
         patient = false,

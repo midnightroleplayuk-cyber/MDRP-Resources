@@ -34,14 +34,29 @@ end
 ---------------------------------------------------------------------------
 -- Table scene positions
 ---------------------------------------------------------------------------
--- Scene centre: the mini-game props are placed relative to this point. By default it sits 0.85
--- below the table's patient position (the patient ped is attached 0.85 above it).
+-- Scene centre: the mini-game props are placed relative to this point (the patient / dummy is
+-- attached 0.85 above it). Default: the table coords + Config.MajorSurgery.sceneHeight.
+local heightOverride = nil -- set with /surgeryheight while testing
+
 function GetSceneCenter(id)
     local tbl = Config.Tables[id]
     if tbl.scene then return vector3(tbl.scene.x, tbl.scene.y, tbl.scene.z), tbl.scene.w end
     local t = tbl.coords
-    return vector3(t.x, t.y, t.z - 0.85), t.w
+    local h = heightOverride or Config.MajorSurgery.sceneHeight or 0.0
+    return vector3(t.x, t.y, t.z + h), t.w
 end
+
+-- /surgeryheight 0.1  -> move the whole surgery scene up 0.1 (negative = down), then start training again.
+-- Put the value that looks right into Config.MajorSurgery.sceneHeight.
+RegisterCommand('surgeryheight', function(_, args)
+    local v = tonumber(args[1])
+    if not v then
+        return ShowNotification(('Scene height is %.2f. Use /surgeryheight <number>'):format(
+            heightOverride or Config.MajorSurgery.sceneHeight or 0.0))
+    end
+    heightOverride = v
+    ShowNotification(('Scene height set to %.2f (until restart). Start training again to see it.'):format(v))
+end, false)
 
 -- Where the surgeon stands during the mini-game (by default on the right side of the table)
 function GetSurgeonSpot(id)

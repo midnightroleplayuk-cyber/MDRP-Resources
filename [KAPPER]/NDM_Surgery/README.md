@@ -41,8 +41,10 @@ the syringe. Running out of blood fails the surgery (complication, or death with
 
 **Surgical training** on the table lets medics practise every mini-game on a dummy.
 
-If the organs / dummy don't line up with your table in game, set `scene` (and optionally `surgeon`)
-on that table in `Config.Tables`. The major surgery code is based on pickle_surgery by Pickle Mods,
+If the organs / dummy are too high or low, try values in game with `/surgeryheight <number>` (e.g.
+`0.1` up, `-0.1` down) and start training again, then put the value that looks right in
+`Config.MajorSurgery.sceneHeight`. For a single table that's off, set `scene` (and optionally
+`surgeon`) on it in `Config.Tables`. The major surgery code is based on pickle_surgery by Pickle Mods,
 see `CREDITS.md` and `LICENSE`.
 
 Each procedure is a progress bar followed by an ox_lib skill check. Failing the skill check causes a
