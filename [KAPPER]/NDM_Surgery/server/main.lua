@@ -420,138 +420,6 @@ local function applyProcedure(job, s, passed)
 end
 
 ---------------------------------------------------------------------------
--- Major surgery (organ / limb mini-games, based on pickle_surgery by Pickle Mods - see CREDITS.md)
----------------------------------------------------------------------------
-local function majorCfg(key)
-    for _, m in ipairs(Config.MajorSurgeries) do
-        if m.key == key then return m end
-    end
-end
-
--- Is there something for this surgery to fix? (only checked when requireFinding = true)
-local function majorAvailable(m, bpd, s)
-    if not m.requireFinding then return true end
-    for _, part in ipairs(m.parts) do
-        local list = woundList(bpd, part)
-        if m.repairInternal and hasInternal(bpd, part, list, s.open[part]) then return true end
-        if m.repairFracture then
-            local state, fixable = fractureStatus(bpd, part)
-            if state and fixable then return true end
-        end
-    end
-    if m.repairFracture then return false, 'No confirmed fracture to reconstruct' end
-    return false, 'No internal damage found'
-end
-
-local function missingItems(src, items)
-    local missing = {}
-    for _, it in ipairs(items or {}) do
-        local ok, count = pcall(function() return exports.ox_inventory:GetItemCount(src, it.name) end)
-        if not ok or (count or 0) < (it.amount or 1) then
-            missing[#missing + 1] = ('%s x%d'):format(itemLabel(it.name), it.amount or 1)
-        end
-    end
-    return #missing > 0 and table.concat(missing, ', ') or nil
-end
-
-local function takeItems(src, items)
-    for _, it in ipairs(items or {}) do
-        if it.remove then pcall(function() exports.ox_inventory:RemoveItem(src, it.name, it.amount or 1) end) end
-    end
-end
-
-local function giveRewards(src, rewards)
-    for _, r in ipairs(rewards or {}) do
-        if r.type == 'cash' or r.type == 'bank' then
-            local player = exports.qbx_core:GetPlayer(src)
-            if player then player.Functions.AddMoney(r.type, r.amount, 'surgery') end
-        elseif r.type == 'item' then
-            giveItem(src, r.name, r.amount or 1)
-        end
-    end
-end
-
--- OSP results of a major surgery on a real patient
-local function applyMajor(job, m, success, cancelledBy)
-    local patient = job.patient
-    if not patient or GetPlayerPed(patient) == 0 then return false end
-    local bd = getBodyDamage(patient)
-    if not bd then return false end
-    local bpd = bd.BodyPartDamage
-    local s = session(job.id, patient)
-
-    if success then
-        for _, part in ipairs(m.parts) do
-            local list = woundList(bpd, part)
-            if m.repairInternal then
-                local remaining = {}
-                for _, w in ipairs(list) do
-                    if not Config.InternalWounds[w] then remaining[#remaining + 1] = w end
-                end
-                list = remaining
-                bpd.DamageType[part] = math.min(num(bpd.DamageType[part], 0), 1)
-                if countBullets(list) == 0 and countIn(list, Config.ShrapnelWounds) == 0 then
-                    bpd.Bleeding[part] = Config.OpenBleed
-                end
-            end
-            if m.repairFracture and bpd.Fractures[part] then
-                if bpd.Fractures[part] == 'splint' and type(bpd.CosmeticFractures) == 'table' then
-                    TriggerClientEvent('osp_ambulance:removeCastCl', patient, { BodyPart = part })
-                end
-                bpd.Fractures[part] = false
-                bpd.FractureTime[part] = 0
-            end
-            bpd.Wounds[part] = list
-            s.open[part] = true
-            bpd.NeedSewed[part] = true
-        end
-        addLog(bd, ('Surgery: %s completed'):format(m.label:lower()))
-        saveBodyDamage(patient, bd)
-        if (m.heal or 0) > 0 then TriggerClientEvent('osp_ambulance:treatmentHealCl', patient, m.heal) end
-        return false
-    end
-
-    -- failed / cancelled: complication, or death if configured
-    for _, part in ipairs(m.parts) do
-        s.open[part] = true
-        bpd.NeedSewed[part] = true
-        if (m.failBleed or 0) > 0 then
-            bpd.Bleeding[part] = math.min(num(bpd.Bleeding[part], 0) + m.failBleed, 2.0)
-        end
-    end
-    bd.Pain = num(bd.Pain, 0) + (m.failPain or 0)
-    addLog(bd, ('Surgery: complication during %s'):format(m.label:lower()))
-    saveBodyDamage(patient, bd)
-    return Config.MajorSurgery.killOnFail and cancelledBy ~= 'server'
-end
-
--- cancelledBy = 'server' when the server stopped it (someone left / moved away)
-local function finishMajor(id, success, reason, cancelledBy)
-    local job = Busy[id]
-    if not job or not job.major then return end
-    Busy[id] = nil
-    local m = majorCfg(job.key)
-
-    local kill = false
-    if not job.training then kill = applyMajor(job, m, success, cancelledBy) end
-
-    if success then
-        giveRewards(job.medic, job.training and m.trainingRewards or m.rewards)
-        notify(job.medic, job.training and ('Training complete: %s'):format(m.label)
-            or ('%s successful, stitch the incision'):format(m.label), 'success')
-    else
-        notify(job.medic, reason or 'Surgery failed', 'error')
-    end
-
-    if GetPlayerPed(job.medic) ~= 0 then
-        TriggerClientEvent('NDM_Surgery:client:majorSurgeonEnd', job.medic, id)
-    end
-    if job.patient and GetPlayerPed(job.patient) ~= 0 then
-        TriggerClientEvent('NDM_Surgery:client:majorPatientEnd', job.patient, id, kill)
-    end
-end
-
----------------------------------------------------------------------------
 -- Callbacks
 ---------------------------------------------------------------------------
 lib.callback.register('NDM_Surgery:server:overview', function(src, id)
@@ -600,20 +468,8 @@ lib.callback.register('NDM_Surgery:server:overview', function(src, id)
     elseif bd.inLastStand == true then state = 'Critical'
     elseif s.sedated then state = 'Under anaesthesia' end
 
-    local major = {}
-    if Config.MajorSurgery.enabled then
-        for _, m in ipairs(Config.MajorSurgeries) do
-            local available, reason = majorAvailable(m, bpd, s)
-            major[#major + 1] = {
-                key = m.key, label = m.label, description = m.description, icon = m.icon,
-                available = available, reason = reason,
-            }
-        end
-    end
-
     local bp = type(bd.BloodPressure) == 'table' and bd.BloodPressure or {}
     return true, {
-        major = major,
         patient = (type(bd.playerName) == 'string' and bd.playerName ~= 'UNKNOWN' and bd.playerName) or getName(patient),
         state = state,
         sedated = s.sedated,
@@ -661,7 +517,7 @@ end)
 
 lib.callback.register('NDM_Surgery:server:finish', function(src, id, token, completed, passed)
     local job = Busy[id]
-    if not job or job.major or job.token ~= token or job.medic ~= src then return false, 'No procedure in progress', 'error' end
+    if not job or job.token ~= token or job.medic ~= src then return false, 'No procedure in progress', 'error' end
     Busy[id] = nil
 
     local cfg = Config.Procedures[job.proc]
@@ -684,85 +540,6 @@ lib.callback.register('NDM_Surgery:server:finish', function(src, id, token, comp
     return applyProcedure(job, s, passed == true)
 end)
 
-lib.callback.register('NDM_Surgery:server:beginMajor', function(src, id, key, training)
-    local mc = Config.MajorSurgery
-    if not mc.enabled then return false, 'Major surgery is disabled' end
-    local t = opTable(id)
-    if not t then return false, 'Unknown table' end
-    local m = majorCfg(key)
-    if not m then return false, 'Unknown surgery' end
-    if not isMedic(src, m.minGrade) then return false, 'You are not trained for this surgery' end
-    if distTo(src, t.coords) > Config.SurgeonRange + 1.0 then return false, 'You are too far from the table' end
-    if Busy[id] then return false, 'The operating table is in use' end
-
-    local patient = nil
-    training = training == true
-    if training then
-        if not mc.training then return false, 'Surgical training is disabled' end
-        if patientOn(id) then return false, 'There is a patient on the table' end
-    else
-        patient = patientOn(id)
-        if not patient then return false, 'There is no patient on the operating table' end
-        if patient == src then return false, 'You can\'t operate on yourself' end
-        if not Config.AllowDowned and isDowned(patient) then
-            return false, 'The patient must be stabilised (not downed or dead) before surgery'
-        end
-        local s = session(id, patient)
-        if needsAnaesthesia(patient, s) then return false, 'The patient needs to be put under anaesthesia first' end
-        local bd = getBodyDamage(patient)
-        if not bd then return false, 'Could not read the patient\'s medical data' end
-        local ok, reason = majorAvailable(m, bd.BodyPartDamage, s)
-        if not ok then return false, reason end
-        local missing = missingItems(src, m.items)
-        if missing then return false, 'Missing: ' .. missing end
-        takeItems(src, m.items)
-    end
-
-    local job = {
-        major = true, id = id, key = key, training = training,
-        medic = src, patient = patient,
-        token = math.random(1, 2147483647), startedAt = os.time(),
-    }
-    Busy[id] = job
-
-    if patient then
-        TriggerClientEvent('NDM_Surgery:client:majorPatient', patient, id, key)
-    end
-
-    -- cancel if anyone walks off, or the failsafe runs out
-    CreateThread(function()
-        while Busy[id] == job do
-            Wait(2000)
-            if Busy[id] ~= job then break end
-            if distTo(job.medic, t.coords) > mc.maxDistance then
-                finishMajor(id, false, 'Surgery cancelled: you left the table', 'server')
-            elseif patient and (GetPlayerPed(patient) == 0 or distTo(patient, t.coords) > mc.maxDistance) then
-                finishMajor(id, false, 'Surgery cancelled: the patient left the table', 'server')
-            elseif os.time() - job.startedAt > mc.maxTime then
-                finishMajor(id, false, 'Surgery cancelled: took too long', 'server')
-            end
-        end
-    end)
-
-    return true, { id = id, key = key, token = job.token, training = training }
-end)
-
-RegisterNetEvent('NDM_Surgery:server:finishMajor', function(id, token, success, reason)
-    local src = source
-    local job = Busy[id]
-    if not job or not job.major or job.medic ~= src or job.token ~= token then
-        -- stale scene (e.g. the server already cancelled it): just close it on the surgeon's side
-        return TriggerClientEvent('NDM_Surgery:client:majorSurgeonEnd', src, id)
-    end
-    success = success == true
-    if success and os.time() - job.startedAt < (Config.MajorSurgery.minTime or 0) then
-        success = false
-        reason = 'The surgery was rushed'
-    end
-    if type(reason) ~= 'string' then reason = nil end
-    finishMajor(id, success, reason and reason:sub(1, 100), 'surgeon')
-end)
-
 ---------------------------------------------------------------------------
 -- Table events
 ---------------------------------------------------------------------------
@@ -774,7 +551,6 @@ RegisterNetEvent('NDM_Surgery:server:layPatient', function(id, target)
     if not Config.AllowDowned and isDowned(target) then
         return notify(src, 'The patient must be stabilised (not downed or dead) before surgery', 'error')
     end
-    if Busy[id] then return notify(src, 'The operating table is in use', 'error') end
     if Occupant[id] and GetPlayerPed(Occupant[id]) ~= 0 then
         return notify(src, 'The operating table is already occupied', 'error')
     end
@@ -789,7 +565,6 @@ RegisterNetEvent('NDM_Surgery:server:selfLie', function(id)
     local src = source
     local t = opTable(id)
     if not t or distTo(src, t.coords) > 4.0 then return end
-    if Busy[id] then return notify(src, 'The operating table is in use', 'error') end
     if Occupant[id] and Occupant[id] ~= src and GetPlayerPed(Occupant[id]) ~= 0 then
         return notify(src, 'The operating table is already occupied', 'error')
     end
@@ -827,14 +602,6 @@ AddEventHandler('playerDropped', function()
         if occ == src then Occupant[id] = nil Sessions[id] = nil end
     end
     for id, job in pairs(Busy) do
-        if job.major then
-            if job.medic == src then
-                finishMajor(id, false, 'The surgeon left', 'server')
-            elseif job.patient == src then
-                finishMajor(id, false, 'The patient is gone', 'server')
-            end
-        elseif job.medic == src or job.patient == src then
-            Busy[id] = nil
-        end
+        if job.medic == src or job.patient == src then Busy[id] = nil end
     end
 end)

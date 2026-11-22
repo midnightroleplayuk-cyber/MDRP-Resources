@@ -28,10 +28,6 @@ local function setOspHold(on)
     LocalPlayer.state:set('onMedicalTable', on, true)
 end
 
-function IsSedated()
-    return sedated
-end
-
 local function refreshTextUI()
     if sedated then
         lib.showTextUI('You are under general anaesthesia')
@@ -96,17 +92,6 @@ local function getUp()
     TriggerServerEvent('NDM_Surgery:server:leftTable', id)
 end
 
--- Called after a major surgery mini-game lets go of the patient
-function ResumeTablePose()
-    if not lyingOn then return end
-    local t = Config.Tables[lyingOn].coords
-    local ped = cache.ped
-    SetEntityCoords(ped, t.x, t.y, t.z + 0.02, false, false, false, false)
-    SetEntityHeading(ped, t.w)
-    playLie(ped)
-    FreezeEntityPosition(ped, true)
-end
-
 RegisterNetEvent('NDM_Surgery:client:lieDown', function(id)
     local tbl = Config.Tables[id]
     if not tbl or lyingOn then return end
@@ -133,9 +118,7 @@ RegisterNetEvent('NDM_Surgery:client:lieDown', function(id)
     CreateThread(function()
         while lyingOn == id do
             ped = cache.ped
-            if IsSurgeryPatient() then
-                -- the major surgery scene holds the pose
-            elseif IsEntityDead(ped) then
+            if IsEntityDead(ped) then
                 Wait(500)
                 ped = PlayerPedId()
                 if lyingOn == id and IsEntityDead(ped) then
@@ -156,7 +139,7 @@ RegisterNetEvent('NDM_Surgery:client:lieDown', function(id)
     CreateThread(function()
         while lyingOn == id do
             -- 73 = X
-            if IsControlJustPressed(0, 73) and not sedated and not ospIsDead() and not IsSurgeryPatient() then
+            if IsControlJustPressed(0, 73) and not sedated and not ospIsDead() then
                 getUp()
             end
             Wait(0)
@@ -172,7 +155,6 @@ end)
 -- Surgery menu (surgeon)
 ---------------------------------------------------------------------------
 local openSurgeryMenu
-local startMajor
 
 local function runProcedure(id, proc, part)
     if operating then return end
@@ -203,27 +185,6 @@ local function runProcedure(id, proc, part)
     local _, msg, kind = lib.callback.await('NDM_Surgery:server:finish', false, id, data.token, completed, passed)
     if msg then notify(msg, kind) end
     if Config.ReopenMenu and completed then openSurgeryMenu(id) end
-end
-
-startMajor = function(id, key, training)
-    if operating or IsSurgeryActive() then return end
-    local ok, data = lib.callback.await('NDM_Surgery:server:beginMajor', false, id, key, training)
-    if not ok then return notify(data or 'Could not start the surgery', 'error') end
-    StartMajorScene(data)
-end
-
-local function trainingMenu(id)
-    local options = {}
-    for _, m in ipairs(Config.MajorSurgeries) do
-        options[#options + 1] = {
-            title = m.label,
-            description = m.description,
-            icon = m.icon,
-            onSelect = function() startMajor(id, m.key, true) end,
-        }
-    end
-    lib.registerContext({ id = 'NDM_Surgery_training', title = 'Surgical training', options = options })
-    lib.showContext('NDM_Surgery_training')
 end
 
 local function partSummary(p)
@@ -352,34 +313,6 @@ openSurgeryMenu = function(id)
         }
     end
 
-    if Config.MajorSurgery.enabled and info.major and #info.major > 0 then
-        local majorOptions = {}
-        for _, m in ipairs(info.major) do
-            majorOptions[#majorOptions + 1] = {
-                title = m.label,
-                description = m.available and m.description or m.reason,
-                icon = m.icon,
-                disabled = info.needsAnaesthesia or not m.available,
-                onSelect = function() startMajor(id, m.key, false) end,
-            }
-        end
-        lib.registerContext({
-            id = 'NDM_Surgery_major',
-            title = 'Major surgery',
-            menu = 'NDM_Surgery_main',
-            options = majorOptions,
-        })
-        options[#options + 1] = {
-            title = 'Major surgery',
-            description = info.needsAnaesthesia and 'The patient needs general anaesthesia first'
-                or 'Organ transplants and limb reconstruction',
-            icon = 'fa-solid fa-heart-pulse',
-            iconColor = '#c2255c',
-            menu = 'NDM_Surgery_major',
-            arrow = true,
-        }
-    end
-
     if info.sedated then
         options[#options + 1] = {
             title = 'Wake patient',
@@ -422,7 +355,7 @@ CreateThread(function()
                     label = 'Perform surgery',
                     groups = groups,
                     distance = 2.5,
-                    canInteract = function() return not operating and lyingOn == nil and not IsSurgeryActive() end,
+                    canInteract = function() return not operating and lyingOn == nil end,
                     onSelect = function() openSurgeryMenu(id) end,
                 },
                 {
@@ -433,18 +366,6 @@ CreateThread(function()
                     distance = 2.5,
                     canInteract = function() return lyingOn == nil end,
                     onSelect = function() layNearestPatient(id) end,
-                },
-                {
-                    name = 'NDM_Surgery_training_' .. id,
-                    icon = 'fa-solid fa-graduation-cap',
-                    label = 'Surgical training',
-                    groups = groups,
-                    distance = 2.5,
-                    canInteract = function()
-                        return Config.MajorSurgery.enabled and Config.MajorSurgery.training
-                            and not operating and lyingOn == nil and not IsSurgeryActive()
-                    end,
-                    onSelect = function() trainingMenu(id) end,
                 },
                 {
                     name = 'NDM_Surgery_remove_' .. id,
