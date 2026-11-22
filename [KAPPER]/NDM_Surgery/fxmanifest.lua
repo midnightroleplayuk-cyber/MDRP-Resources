@@ -3,8 +3,8 @@ game 'gta5'
 lua54 'yes'
 
 name 'NDM_Surgery'
-description 'Surgery add-on for osp_ambulance: anaesthesia, bullet removal, internal damage repair, stitching and major surgery mini-games'
-author 'NDM Development (major surgery based on pickle_surgery by Pickle Mods, see CREDITS.md)'
+description 'Surgery: anaesthesia, bullet removal, internal damage repair, stitching and major surgery mini-games'
+author 'Axis Hub'
 version '0.11.0'
 
 ui_page 'html/index.html'
