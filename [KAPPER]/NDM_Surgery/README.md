@@ -28,7 +28,22 @@ done here shows up in the OSP medical menu (and the NDM_MRI report).
 8. **Wound debridement** — cleans and closes cuts, lacerations and abrasions on a body part in one go
    (no general anaesthesia needed, no stitching after).
 9. **Stitching** — closes the incision. If the area has no wounds left, bleeding and damage reset.
-10. **Wake patient**, then **Remove patient from operating table**.
+10. **Major surgery** — hands-on mini-games: heart / kidney / lung transplant (fix internal damage on
+    the torso) and arm / leg reconstruction (fix fractures on both limbs). Needs anaesthesia like the
+    other incisions. Stitch the area afterwards.
+11. **Wake patient**, then **Remove patient from operating table**.
+
+### Major surgery
+Mouse moves the hand, left click lowers it, right click rotates, space grabs tools / organs,
+Backspace / Esc cancels. Keep an eye on the blood counter: every open bleed drains it, close them with
+the syringe. Running out of blood fails the surgery (complication, or death with
+`Config.MajorSurgery.killOnFail = true`).
+
+**Surgical training** on the table lets medics practise every mini-game on a dummy.
+
+If the organs / dummy don't line up with your table in game, set `scene` (and optionally `surgeon`)
+on that table in `Config.Tables`. The major surgery code is based on pickle_surgery by Pickle Mods,
+see `CREDITS.md` and `LICENSE`.
 
 Each procedure is a progress bar followed by an ox_lib skill check. Failing the skill check causes a
 complication (extra bleeding + pain) and the step has to be done again.

@@ -3,16 +3,35 @@ game 'gta5'
 lua54 'yes'
 
 name 'NDM_Surgery'
-description 'Surgery add-on for osp_ambulance: anaesthesia, bullet removal, internal damage repair and stitching'
-author 'NDM Development'
-version '0.10.0'
+description 'Surgery add-on for osp_ambulance: anaesthesia, bullet removal, internal damage repair, stitching and major surgery mini-games'
+author 'NDM Development (major surgery based on pickle_surgery by Pickle Mods, see CREDITS.md)'
+version '0.11.0'
+
+ui_page 'html/index.html'
+
+files {
+    'html/index.html',
+    'html/style.css',
+    'html/script.js',
+    'html/fonts/*.ttf',
+    'html/images/*.png',
+}
+
+data_file 'DLC_ITYP_REQUEST' 'stream/mrc_human_torso.ytyp'
 
 shared_scripts {
     '@ox_lib/init.lua',
     'config.lua',
 }
 
-client_script 'client/main.lua'
+client_scripts {
+    'client/hands.lua',
+    'client/bleed.lua',
+    'client/surgeries/*.lua',
+    'client/major.lua',
+    'client/main.lua',
+}
+
 server_script 'server/main.lua'
 
 dependencies {
