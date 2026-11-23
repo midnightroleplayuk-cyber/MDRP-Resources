@@ -9,15 +9,20 @@ in cardiac arrest, but only while no medics are on duty (the same count GoodCiv 
 - NDM_GoodCiv (optional, for the medic count; falls back to qbx_core duty counts)
 
 ## Setup
-1. Stand at each cabinet spot, run `/defibpos` (needs the `publicdefib.admin` ace) and add it to
-   `Config.Cabinets`. The default entry is a placeholder.
-2. Optional: set `Config.CabinetProp` (or `prop` per cabinet) to spawn a cabinet model, and put a
-   Discord webhook in `server/webhooks.lua`.
-3. `ensure NDM_PublicDefib` after osp_ambulance and NDM_GoodCiv.
-
-```
-add_ace group.admin publicdefib.admin allow
-```
+1. `ensure NDM_AED_Prop` (the cabinet model) and `ensure NDM_PublicDefib` after osp_ambulance and
+   NDM_GoodCiv.
+2. Give admins the ace:
+   ```
+   add_ace group.admin publicdefib.admin allow
+   ```
+3. Place cabinets in game:
+   - `/defibplace`: aim at a wall, a see-through cabinet follows your aim and sticks flat to the wall.
+     Arrow Up / Down for height, E to place, Backspace to cancel. Name it and it's saved on the
+     server (KVP) and appears for everyone straight away.
+   - `/defibcabinets`: list every cabinet with its state, teleport to it, reset it, or remove one
+     you placed.
+   - Cabinets in `Config.Cabinets` still work too (`/defibpos` copies where you stand facing the wall).
+4. Optional: a Discord webhook in `server/webhooks.lua`.
 
 ## How it works
 1. **Take defibrillator** at a cabinet (only unlocked when no medics are on duty).

@@ -18,10 +18,12 @@ Config.Availability = {
 ---------------------------------------------------------------------------
 -- Cabinets
 ---------------------------------------------------------------------------
--- coords = where the cabinet is (x, y, z, heading the cabinet faces). Use /defibpos (admins) to copy
--- your position. prop = model spawned there (nil = none, e.g. if the MLO already has one).
+-- Easiest: place cabinets in game with /defibplace (admins). Aim at a wall, adjust the height,
+-- press E and name it. They're saved on the server and show up for everyone straight away.
+-- Manage them with /defibcabinets (teleport / reset / remove).
 --
--- !! PLACEHOLDERS: add your real locations !!
+-- Cabinets can also be listed here: coords = where you stand facing the wall (/defibpos copies it).
+-- prop = model for that cabinet, propCoords = exact model position + heading (optional).
 Config.Cabinets = {
     { label = 'Burton Hospital entrance', coords = vector4(-303.5, -152.2, 40.24, 70.0) },
     { label = 'Legion Park 1', coords = vector4(220.0, -869.93, 30.97, 63.15) },
@@ -106,4 +108,4 @@ Config.Logs = {
     Username = 'Public Defib Logs',
 }
 
-Config.AdminAce = 'publicdefib.admin'   -- /defibpos, /defibreset
+Config.AdminAce = 'publicdefib.admin'   -- /defibplace, /defibcabinets, /defibpos, /defibreset

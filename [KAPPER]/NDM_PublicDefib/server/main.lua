@@ -1,6 +1,7 @@
 -- NDM_PublicDefib server. Everything is decided here: availability, distance, timing, the AED
 -- analysis and whether a shock works. Clients only play animations and progress bars.
 
+local Defs = {}       -- [id] = { label, coords = vector4 (interaction point), prop = vector4|nil, placed = bool }
 local Cabinets = {}   -- [id] = { state = 'ready' | 'out' | 'restock', carrier, restockAt }
 local Carriers = {}   -- [src] = { cabinet, takenAt, warned, used }
 local Sessions = {}   -- [patient] = { user, analyses, lastAnalyse, shockAdvised, ospShockable, shocks }
@@ -9,6 +10,7 @@ local Pending = {}    -- [src] = { action, arg, token, startedAt, duration }
 local Cooldown = {}   -- [license] = os.time() the player may take a defib again
 
 local SHOCKABLE = { vFib = true, vTach = true, torsades = true, VF = true, VT = true }
+local KVP_KEY = 'placed_cabinets'
 
 ---------------------------------------------------------------------------
 -- Helpers
@@ -66,6 +68,13 @@ local function ospLog(patient, text)
     table.insert(bd.MessageLog, os.date('%H:%M') .. ' | ' .. text)
     Player(patient).state:set('BodyDamage', bd, true)
     TriggerClientEvent('osp_ambulance:SaveDataCl', patient, bd, true)
+end
+
+local function v4(t) return vector4(t.x + 0.0, t.y + 0.0, t.z + 0.0, (t.w or 0) + 0.0) end
+local function plain(v) return v and { x = v.x, y = v.y, z = v.z, w = v.w } or nil end
+
+local function fmtCoords(v)
+    return ('%.2f, %.2f, %.2f'):format(v.x, v.y, v.z)
 end
 
 ---------------------------------------------------------------------------
@@ -128,8 +137,16 @@ local function isRestockMedic(src)
 end
 
 ---------------------------------------------------------------------------
--- State sync (clients only use this for labels / props)
+-- Cabinet list + state sync (clients only use this for targets / props / labels)
 ---------------------------------------------------------------------------
+local function syncDefs()
+    local out = {}
+    for id, d in pairs(Defs) do
+        out[id] = { label = d.label, coords = plain(d.coords), prop = plain(d.prop), model = d.model, placed = d.placed }
+    end
+    GlobalState.NDM_PublicDefib_defs = out
+end
+
 local function sync()
     local states = {}
     for id, c in pairs(Cabinets) do states[id] = c.state end
@@ -138,6 +155,7 @@ end
 
 local function setCabinet(id, state)
     local c = Cabinets[id]
+    if not c then return end
     c.state = state
     c.carrier = nil
     c.restockAt = state == 'restock' and Config.Restock.AutoMinutes > 0
@@ -145,7 +163,39 @@ local function setCabinet(id, state)
     sync()
 end
 
-for id in ipairs(Config.Cabinets) do Cabinets[id] = { state = 'ready' } end
+local function savePlaced()
+    local list = {}
+    for id, d in pairs(Defs) do
+        if d.placed then
+            list[#list + 1] = { id = id, label = d.label, coords = plain(d.coords), prop = plain(d.prop) }
+        end
+    end
+    SetResourceKvp(KVP_KEY, json.encode(list))
+end
+
+local function addDef(id, def)
+    Defs[id] = def
+    Cabinets[id] = Cabinets[id] or { state = 'ready' }
+end
+
+-- config cabinets: coords = where you stand facing the wall
+for i, cab in ipairs(Config.Cabinets) do
+    addDef('cfg_' .. i, { label = cab.label, coords = cab.coords, prop = cab.propCoords, model = cab.prop, placed = false })
+end
+
+-- cabinets placed in game
+do
+    local raw = GetResourceKvpString(KVP_KEY)
+    local ok, list = pcall(json.decode, raw or '[]')
+    for _, p in ipairs(ok and type(list) == 'table' and list or {}) do
+        if type(p.id) == 'string' and p.coords then
+            addDef(p.id, { label = p.label or 'Public defibrillator', coords = v4(p.coords),
+                prop = p.prop and v4(p.prop) or nil, placed = true })
+        end
+    end
+end
+
+syncDefs()
 sync()
 
 ---------------------------------------------------------------------------
@@ -160,7 +210,7 @@ local function endSession(patient, reason, notifyUser)
     if notifyUser and reason then notify(s.user, reason, 'inform') end
 end
 
--- lost = defib not brought back (cabinet needs restocking)
+-- returned = brought back to its cabinet. Not returned = lost (cabinet needs restocking)
 local function endCarry(src, returned, reason)
     local c = Carriers[src]
     if not c then return end
@@ -174,10 +224,10 @@ local function endCarry(src, returned, reason)
         TriggerClientEvent('NDM_PublicDefib:client:carry', src, nil)
         if reason then notify(src, reason, returned and 'success' or 'error') end
     end
-    local cab = Config.Cabinets[c.cabinet]
+    local def = Defs[c.cabinet]
     log(returned and 'Defib returned' or 'Defib lost', returned and GREEN or RED, {
-        { 'Player', playerName(src) }, { 'Cabinet', cab.label, true }, { 'Used', c.used and 'Yes' or 'No', true },
-        { 'Reason', reason or '-' },
+        { 'Player', playerName(src) }, { 'Cabinet', def and def.label or c.cabinet, true },
+        { 'Used', c.used and 'Yes' or 'No', true }, { 'Reason', reason or '-' },
     })
 end
 
@@ -194,10 +244,10 @@ local DURATION = {
 }
 
 local function cabinetFor(src, id)
-    local cab = type(id) == 'number' and Config.Cabinets[id]
-    if not cab then return nil, 'Unknown cabinet' end
-    if dist(src, cab.coords) > Config.TakeDistance + 1.0 then return nil, 'You are too far from the cabinet' end
-    return cab
+    local def = type(id) == 'string' and Defs[id]
+    if not def then return nil, 'Unknown cabinet' end
+    if dist(src, def.coords) > Config.TakeDistance + 1.0 then return nil, 'You are too far from the cabinet' end
+    return def
 end
 
 -- Returns ok, error. Checked at begin AND again at finish.
@@ -226,7 +276,7 @@ CHECK['return'] = function(src, id)
     local c = Carriers[src]
     if not c then return false, 'You are not carrying a defibrillator' end
     if c.cabinet ~= id then
-        return false, ('This defibrillator belongs to: %s'):format(Config.Cabinets[c.cabinet].label)
+        return false, ('This defibrillator belongs to: %s'):format(Defs[c.cabinet] and Defs[c.cabinet].label or '?')
     end
     return true
 end
@@ -285,7 +335,7 @@ DO.take = function(src, id)
     sync()
     Carriers[src] = { cabinet = id, takenAt = os.time(), used = false }
     TriggerClientEvent('NDM_PublicDefib:client:carry', src, id)
-    log('Defib taken', BLUE, { { 'Player', playerName(src) }, { 'Cabinet', Config.Cabinets[id].label, true },
+    log('Defib taken', BLUE, { { 'Player', playerName(src) }, { 'Cabinet', Defs[id].label, true },
         { 'Medics on duty', medicsOnDuty(), true } })
     return true, 'Defibrillator taken. Bring it back to this cabinet when you\'re done', 'success'
 end
@@ -300,7 +350,7 @@ DO.restock = function(src, id)
     if (Config.Restock.Reward or 0) > 0 then
         pcall(function() exports.qbx_core:GetPlayer(src).Functions.AddMoney('cash', Config.Restock.Reward, 'defib restock') end)
     end
-    log('Cabinet restocked', GREEN, { { 'Medic', playerName(src) }, { 'Cabinet', Config.Cabinets[id].label, true } })
+    log('Cabinet restocked', GREEN, { { 'Medic', playerName(src) }, { 'Cabinet', Defs[id].label, true } })
     return true, 'Cabinet restocked', 'success'
 end
 
@@ -354,7 +404,7 @@ DO.shock = function(src, patient)
     ospLog(patient, ('Public defibrillator: shock %d delivered%s'):format(s.shocks, success and ', pulse returned' or ''))
     log(success and 'Defib shock - ROSC' or 'Defib shock - no change', success and GREEN or ORANGE, {
         { 'User', playerName(src) }, { 'Patient', playerName(patient) },
-        { 'Shock', s.shocks, true }, { 'Cabinet', Config.Cabinets[carry.cabinet].label, true },
+        { 'Shock', s.shocks, true }, { 'Cabinet', Defs[carry.cabinet] and Defs[carry.cabinet].label or '?', true },
     })
 
     if success then
@@ -414,8 +464,8 @@ CreateThread(function()
         local now = os.time()
 
         for src, c in pairs(Carriers) do
-            local cab = Config.Cabinets[c.cabinet]
-            local d = dist(src, cab.coords)
+            local def = Defs[c.cabinet]
+            local d = def and dist(src, def.coords) or 0
             if GetPlayerPed(src) == 0 then
                 endCarry(src, false, 'Carrier left')
             elseif patientState(src) then
@@ -426,7 +476,7 @@ CreateThread(function()
                 endCarry(src, false, 'You kept the defibrillator too long. It has been reported missing')
             elseif d > Config.Carry.WarnDistance and not c.warned then
                 c.warned = true
-                notify(src, ('The defibrillator alarm is sounding: go back towards %s'):format(cab.label), 'error')
+                notify(src, ('The defibrillator alarm is sounding: go back towards %s'):format(def.label), 'error')
             elseif d <= Config.Carry.WarnDistance then
                 c.warned = false
             end
@@ -463,7 +513,7 @@ AddEventHandler('playerDropped', function()
 end)
 
 ---------------------------------------------------------------------------
--- Admin
+-- Admin: placing / managing cabinets
 ---------------------------------------------------------------------------
 local function isAdmin(src)
     return src == 0 or IsPlayerAceAllowed(src, Config.AdminAce)
@@ -471,11 +521,71 @@ end
 
 lib.callback.register('NDM_PublicDefib:isAdmin', function(src) return isAdmin(src) end)
 
--- /defibreset [cabinet number | all]
+local function validVec(t)
+    return type(t) == 'table' and tonumber(t.x) and tonumber(t.y) and tonumber(t.z) and tonumber(t.w)
+end
+
+-- data = { label, coords = {x,y,z,w} (interaction point), prop = {x,y,z,w} (prop origin + heading) }
+lib.callback.register('NDM_PublicDefib:place', function(src, data)
+    if not isAdmin(src) then return false, 'No permission' end
+    if type(data) ~= 'table' or not validVec(data.coords) or not validVec(data.prop) then return false, 'Bad placement' end
+    local label = type(data.label) == 'string' and data.label:gsub('[%c<>]', ''):sub(1, 48) or ''
+    if label == '' then return false, 'Give the cabinet a name' end
+    local coords, prop = v4(data.coords), v4(data.prop)
+    if dist(src, coords) > 15.0 or #(vector3(coords.x, coords.y, coords.z) - vector3(prop.x, prop.y, prop.z)) > 2.0 then
+        return false, 'Bad placement'
+    end
+    local id
+    repeat id = ('p_%d_%d'):format(os.time(), math.random(1000, 9999)) until not Defs[id]
+    addDef(id, { label = label, coords = coords, prop = prop, placed = true })
+    savePlaced()
+    syncDefs()
+    sync()
+    log('Cabinet placed', BLUE, { { 'Admin', playerName(src) }, { 'Cabinet', label, true }, { 'Coords', fmtCoords(coords), true } })
+    return true, ('Cabinet "%s" placed'):format(label)
+end)
+
+lib.callback.register('NDM_PublicDefib:list', function(src)
+    if not isAdmin(src) then return nil end
+    local list = {}
+    for id, d in pairs(Defs) do
+        list[#list + 1] = { id = id, label = d.label, coords = plain(d.coords), placed = d.placed, state = Cabinets[id].state }
+    end
+    table.sort(list, function(a, b) return a.label < b.label end)
+    return list
+end)
+
+lib.callback.register('NDM_PublicDefib:admin', function(src, action, id)
+    if not isAdmin(src) then return false, 'No permission' end
+    local def = type(id) == 'string' and Defs[id]
+    if not def then return false, 'Unknown cabinet' end
+
+    local carrier = Cabinets[id].carrier
+    if action == 'reset' or action == 'remove' then
+        if carrier and Carriers[carrier] then endCarry(carrier, true, 'An admin returned the defibrillator') end
+    end
+
+    if action == 'reset' then
+        setCabinet(id, 'ready')
+        return true, 'Cabinet reset'
+    elseif action == 'remove' then
+        if not def.placed then return false, 'This cabinet is in config.lua, remove it there' end
+        Defs[id] = nil
+        Cabinets[id] = nil
+        savePlaced()
+        syncDefs()
+        sync()
+        log('Cabinet removed', RED, { { 'Admin', playerName(src) }, { 'Cabinet', def.label, true } })
+        return true, ('Cabinet "%s" removed'):format(def.label)
+    end
+    return false, 'Unknown action'
+end)
+
+-- /defibreset all  (console or admin)
 RegisterCommand('defibreset', function(src, args)
     if not isAdmin(src) then return end
     for id in pairs(Cabinets) do
-        if args[1] == 'all' or tonumber(args[1]) == id then
+        if args[1] == 'all' or args[1] == id then
             local carrier = Cabinets[id].carrier
             if carrier and Carriers[carrier] then endCarry(carrier, true, 'An admin returned the defibrillator') end
             setCabinet(id, 'ready')
