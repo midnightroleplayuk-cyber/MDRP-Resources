@@ -76,7 +76,11 @@ RegisterNetEvent('osp_ambulance:openCheckInMenu', function(data)
     OpenCheckInMenu(data and data.hospitalID)
 end)
 
-local function SpawnCheckInPed(hospitalId, index, coords)
+-- Bumped on every reload. A reload that was overtaken while waiting for the model stops
+-- spawning, otherwise two overlapping reloads each spawn a full set of peds (duplicates).
+local checkInReloadId = 0
+
+local function SpawnCheckInPed(hospitalId, index, coords, reloadId)
     if type(coords) == 'table' and coords.coords then
         coords = coords.coords
     end
@@ -86,6 +90,7 @@ local function SpawnCheckInPed(hospitalId, index, coords)
 
     local model = joaat(Config.CheckInNPCModel or 's_m_m_doctor_01')
     lib.requestModel(model)
+    if reloadId ~= checkInReloadId then return end
 
     local heading = coords.w or 0.0
     local ped = CreatePed(0, model, coords.x, coords.y, coords.z - 1.0, heading, false, false)
@@ -132,6 +137,8 @@ local function DeleteCheckInPeds()
 end
 
 function ReloadCheckInLocations()
+    checkInReloadId = checkInReloadId + 1
+    local reloadId = checkInReloadId
     checkInZoneActive = false
 
     if Config.UseTarget then
@@ -161,7 +168,8 @@ function ReloadCheckInLocations()
     for hospitalId, hospital in pairs(Config.Hospitals) do
         if type(hospital.checking) == 'table' then
             for index, coords in pairs(hospital.checking) do
-                SpawnCheckInPed(hospitalId, index, coords)
+                if reloadId ~= checkInReloadId then return end
+                SpawnCheckInPed(hospitalId, index, coords, reloadId)
             end
         end
     end

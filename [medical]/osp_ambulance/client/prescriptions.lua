@@ -582,7 +582,11 @@ RegisterNetEvent('osp_ambulance:openPharmacy', function()
     OpenPharmacyMenu()
 end)
 
-local function SpawnPharmacyPed(hospitalId, index, coords)
+-- Bumped on every reload. A reload that was overtaken while waiting for the model stops
+-- spawning, otherwise two overlapping reloads each spawn a full set of peds (duplicates).
+local pharmacyReloadId = 0
+
+local function SpawnPharmacyPed(hospitalId, index, coords, reloadId)
     if type(coords) == 'table' and coords.coords then
         coords = coords.coords
     end
@@ -593,6 +597,7 @@ local function SpawnPharmacyPed(hospitalId, index, coords)
     local heading = coords.w or 0.0
     local model = joaat(Config.PharmacyNPCModel or 's_m_m_doctor_01')
     lib.requestModel(model)
+    if reloadId ~= pharmacyReloadId then return end
 
     local ped = CreatePed(0, model, coords.x, coords.y, coords.z - 1.0, heading, false, false)
     SetEntityHeading(ped, heading)
@@ -637,6 +642,8 @@ local function DeletePharmacyPeds()
 end
 
 function ReloadPharmacyLocations()
+    pharmacyReloadId = pharmacyReloadId + 1
+    local reloadId = pharmacyReloadId
     pharmacyCheck = false
     removeTextUi()
 
@@ -672,7 +679,8 @@ function ReloadPharmacyLocations()
     for hospitalId, hospital in pairs(Config.Hospitals) do
         if type(hospital.pharmacy) == 'table' then
             for index, coords in pairs(hospital.pharmacy) do
-                SpawnPharmacyPed(hospitalId, index, coords)
+                if reloadId ~= pharmacyReloadId then return end
+                SpawnPharmacyPed(hospitalId, index, coords, reloadId)
             end
         end
     end

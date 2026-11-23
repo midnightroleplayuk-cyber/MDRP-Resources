@@ -25,7 +25,7 @@ Config.Availability = {
 -- Cabinets can also be listed here: coords = where you stand facing the wall (/defibpos copies it).
 -- prop = model for that cabinet, propCoords = exact model position + heading (optional).
 Config.Cabinets = {
-    { label = 'Burton Hospital entrance', coords = vector4(-303.5, -152.2, 40.24, 70.0) },
+    -- { label = 'Burton Hospital entrance', coords = vector4(-303.5, -152.2, 40.24, 70.0) },
     -- { label = 'Legion Square', coords = vector4(...) },
 }
 
