@@ -142,7 +142,8 @@ end
 local function syncDefs()
     local out = {}
     for id, d in pairs(Defs) do
-        out[id] = { label = d.label, coords = plain(d.coords), prop = plain(d.prop), model = d.model, placed = d.placed }
+        out[id] = { label = d.label, coords = plain(d.coords), prop = plain(d.prop), model = d.model,
+            placed = d.placed, noProp = d.noProp }
     end
     GlobalState.NDM_PublicDefib_defs = out
 end
@@ -167,7 +168,7 @@ local function savePlaced()
     local list = {}
     for id, d in pairs(Defs) do
         if d.placed then
-            list[#list + 1] = { id = id, label = d.label, coords = plain(d.coords), prop = plain(d.prop) }
+            list[#list + 1] = { id = id, label = d.label, coords = plain(d.coords), prop = plain(d.prop), noProp = d.noProp }
         end
     end
     SetResourceKvp(KVP_KEY, json.encode(list))
@@ -190,7 +191,7 @@ do
     for _, p in ipairs(ok and type(list) == 'table' and list or {}) do
         if type(p.id) == 'string' and p.coords then
             addDef(p.id, { label = p.label or 'Public defibrillator', coords = v4(p.coords),
-                prop = p.prop and v4(p.prop) or nil, placed = true })
+                prop = p.prop and v4(p.prop) or nil, noProp = p.noProp == true, placed = true })
         end
     end
 end
@@ -525,19 +526,24 @@ local function validVec(t)
     return type(t) == 'table' and tonumber(t.x) and tonumber(t.y) and tonumber(t.z) and tonumber(t.w)
 end
 
--- data = { label, coords = {x,y,z,w} (interaction point), prop = {x,y,z,w} (prop origin + heading) }
+-- data = { label, coords = {x,y,z,w} (interaction point), prop = {x,y,z,w} (prop origin + heading),
+--          noProp = true for an interaction spot only (no cabinet model spawned) }
 lib.callback.register('NDM_PublicDefib:place', function(src, data)
     if not isAdmin(src) then return false, 'No permission' end
-    if type(data) ~= 'table' or not validVec(data.coords) or not validVec(data.prop) then return false, 'Bad placement' end
+    if type(data) ~= 'table' or not validVec(data.coords) then return false, 'Bad placement' end
+    local noProp = data.noProp == true
+    if not noProp and not validVec(data.prop) then return false, 'Bad placement' end
     local label = type(data.label) == 'string' and data.label:gsub('[%c<>]', ''):sub(1, 48) or ''
     if label == '' then return false, 'Give the cabinet a name' end
-    local coords, prop = v4(data.coords), v4(data.prop)
-    if dist(src, coords) > 15.0 or #(vector3(coords.x, coords.y, coords.z) - vector3(prop.x, prop.y, prop.z)) > 2.0 then
+    local coords = v4(data.coords)
+    local prop = not noProp and v4(data.prop) or nil
+    if dist(src, coords) > 15.0
+        or (prop and #(vector3(coords.x, coords.y, coords.z) - vector3(prop.x, prop.y, prop.z)) > 2.0) then
         return false, 'Bad placement'
     end
     local id
     repeat id = ('p_%d_%d'):format(os.time(), math.random(1000, 9999)) until not Defs[id]
-    addDef(id, { label = label, coords = coords, prop = prop, placed = true })
+    addDef(id, { label = label, coords = coords, prop = prop, noProp = noProp, placed = true })
     savePlaced()
     syncDefs()
     sync()
@@ -549,7 +555,8 @@ lib.callback.register('NDM_PublicDefib:list', function(src)
     if not isAdmin(src) then return nil end
     local list = {}
     for id, d in pairs(Defs) do
-        list[#list + 1] = { id = id, label = d.label, coords = plain(d.coords), placed = d.placed, state = Cabinets[id].state }
+        list[#list + 1] = { id = id, label = d.label, coords = plain(d.coords), placed = d.placed,
+            noProp = d.noProp, state = Cabinets[id].state }
     end
     table.sort(list, function(a, b) return a.label < b.label end)
     return list

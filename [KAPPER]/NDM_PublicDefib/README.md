@@ -19,6 +19,8 @@ in cardiac arrest, but only while no medics are on duty (the same count GoodCiv 
    - `/defibplace`: aim at a wall, a see-through cabinet follows your aim and sticks flat to the wall.
      Arrow Up / Down for height, E to place, Backspace to cancel. Name it and it's saved on the
      server (KVP) and appears for everyone straight away.
+     Press G to switch to **interaction spot only**: no model is spawned, a green dot shows where the
+     target goes. Use it where the map / MLO already has a defib cabinet: aim at it and press E.
    - `/defibcabinets`: list every cabinet with its state, teleport to it, reset it, or remove one
      you placed.
    - Cabinets in `Config.Cabinets` still work too (`/defibpos` copies where you stand facing the wall).

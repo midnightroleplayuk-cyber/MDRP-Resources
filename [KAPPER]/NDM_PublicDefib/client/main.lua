@@ -186,7 +186,7 @@ local function rebuild(list)
     defs = {}
     for id, d in pairs(list or {}) do
         defs[id] = { label = d.label, coords = vec4(d.coords), prop = d.prop and vec4(d.prop) or nil,
-            model = d.model, placed = d.placed }
+            model = d.model, placed = d.placed, noProp = d.noProp }
         addCabinet(id, defs[id])
     end
     refreshTextUI()
@@ -206,7 +206,7 @@ CreateThread(function()
     while true do
         local pc = GetEntityCoords(cache.ped)
         for id, def in pairs(defs) do
-            local model = def.model or Config.CabinetProp
+            local model = not def.noProp and (def.model or Config.CabinetProp) or nil
             if type(model) == 'string' then model = joaat(model) end
             if model then
                 local pos, heading = propPlacement(def)
@@ -298,62 +298,94 @@ local function placeTool()
     end
     local model = Config.CabinetProp
     if type(model) == 'string' then model = joaat(model) end
-    if not model or not IsModelInCdimage(model) then
-        return notify('Cabinet model not found. Is the prop resource running?', 'error')
-    end
+    local haveModel = model and IsModelInCdimage(model)
+
+    -- 'cabinet' = wall-mounted cabinet model + its interaction spot
+    -- 'spot'    = interaction spot only (e.g. aim at a cabinet the map / MLO already has)
+    local mode = haveModel and 'cabinet' or 'spot'
+    if not haveModel then notify('Cabinet model not found, only interaction spots can be placed', 'error') end
 
     placing = true
-    lib.requestModel(model)
-    local pc = GetEntityCoords(cache.ped)
-    local ghost = CreateObject(model, pc.x, pc.y, pc.z, false, false, false)
-    SetModelAsNoLongerNeeded(model)
-    SetEntityCollision(ghost, false, false)
-    SetEntityAlpha(ghost, 190, false)
-    FreezeEntityPosition(ghost, true)
+    local ghost
+    if haveModel then
+        lib.requestModel(model)
+        local pc = GetEntityCoords(cache.ped)
+        ghost = CreateObject(model, pc.x, pc.y, pc.z, false, false, false)
+        SetModelAsNoLongerNeeded(model)
+        SetEntityCollision(ghost, false, false)
+        SetEntityAlpha(ghost, 190, false)
+        FreezeEntityPosition(ghost, true)
+    end
 
-    lib.showTextUI('[E] Place  \n[Arrow Up/Down] Height  \n[Backspace] Cancel', { position = 'left-center' })
+    local function showHelp()
+        lib.showTextUI(('Mode: %s  \n[G] Switch mode  \n[E] Place  \n%s[Backspace] Cancel'):format(
+            mode == 'cabinet' and 'Cabinet' or 'Interaction spot only',
+            mode == 'cabinet' and '[Arrow Up/Down] Height  \n' or ''), { position = 'left-center' })
+    end
+    showHelp()
 
     local height = 0.0
     local result = nil
     while placing do
         DisableControlAction(0, 24, true)  -- attack
         DisableControlAction(0, 25, true)  -- aim
+        DisableControlAction(0, 47, true)  -- G (weapon)
         DisableControlAction(0, 140, true)
         DisableControlAction(0, 141, true)
         DisableControlAction(0, 142, true)
         DisableControlAction(0, 172, true) -- arrow up
         DisableControlAction(0, 173, true) -- arrow down
 
+        if haveModel and IsDisabledControlJustPressed(0, 47) then
+            mode = mode == 'cabinet' and 'spot' or 'cabinet'
+            showHelp()
+        end
+
         local hit, coords, normal = camRay(8.0)
         local onWall = hit and math.abs(normal.z) < 0.35
 
-        if onWall then
-            local heading = GetHeadingFromVector_2d(normal.x, normal.y)
-            local origin = vector3(coords.x, coords.y, coords.z - CABINET_HALF_HEIGHT + height)
-            SetEntityVisible(ghost, true, false)
-            SetEntityCoordsNoOffset(ghost, origin.x, origin.y, origin.z, false, false, false)
-            SetEntityHeading(ghost, heading)
+        if mode == 'cabinet' then
+            if onWall then
+                local heading = GetHeadingFromVector_2d(normal.x, normal.y)
+                local origin = vector3(coords.x, coords.y, coords.z - CABINET_HALF_HEIGHT + height)
+                SetEntityVisible(ghost, true, false)
+                SetEntityCoordsNoOffset(ghost, origin.x, origin.y, origin.z, false, false, false)
+                SetEntityHeading(ghost, heading)
 
-            if IsDisabledControlJustPressed(0, 172) then height = height + 0.05 end
-            if IsDisabledControlJustPressed(0, 173) then height = height - 0.05 end
+                if IsDisabledControlJustPressed(0, 172) then height = height + 0.05 end
+                if IsDisabledControlJustPressed(0, 173) then height = height - 0.05 end
 
-            if IsControlJustPressed(0, 38) then -- E
-                local front = vector3(coords.x, coords.y, origin.z + CABINET_HALF_HEIGHT) + vector3(normal.x, normal.y, 0.0) * 0.25
-                result = {
-                    prop = { x = origin.x, y = origin.y, z = origin.z, w = heading },
-                    coords = { x = front.x, y = front.y, z = front.z, w = heading },
-                }
-                placing = false
+                if IsControlJustPressed(0, 38) then -- E
+                    local front = vector3(coords.x, coords.y, origin.z + CABINET_HALF_HEIGHT) + vector3(normal.x, normal.y, 0.0) * 0.25
+                    result = {
+                        prop = { x = origin.x, y = origin.y, z = origin.z, w = heading },
+                        coords = { x = front.x, y = front.y, z = front.z, w = heading },
+                    }
+                    placing = false
+                end
+            else
+                SetEntityVisible(ghost, false, false)
             end
         else
-            SetEntityVisible(ghost, false, false)
+            if ghost then SetEntityVisible(ghost, false, false) end
+            if hit then
+                -- the spot sits just off whatever you aim at (wall, existing cabinet, object)
+                local spot = coords + normal * 0.1
+                DrawMarker(28, spot.x, spot.y, spot.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.12, 0.12, 0.12,
+                    46, 204, 113, 200, false, false, 2, false, nil, nil, false)
+                if IsControlJustPressed(0, 38) then -- E
+                    local heading = onWall and GetHeadingFromVector_2d(normal.x, normal.y) or GetEntityHeading(cache.ped)
+                    result = { noProp = true, coords = { x = spot.x, y = spot.y, z = spot.z, w = heading } }
+                    placing = false
+                end
+            end
         end
 
         if IsControlJustPressed(0, 177) then placing = false end -- backspace
         Wait(0)
     end
 
-    DeleteEntity(ghost)
+    if ghost then DeleteEntity(ghost) end
     lib.hideTextUI()
     refreshTextUI()
     if not result then return notify('Placement cancelled', 'inform') end
@@ -381,7 +413,8 @@ local function cabinetMenu()
     for _, c in ipairs(list) do
         options[#options + 1] = {
             title = c.label,
-            description = ('%s · %s'):format(STATE_LABEL[c.state] or c.state, c.placed and 'placed in game' or 'config.lua'),
+            description = ('%s · %s%s'):format(STATE_LABEL[c.state] or c.state,
+                c.placed and 'placed in game' or 'config.lua', c.noProp and ' · spot only' or ''),
             icon = 'fa-solid fa-heart-pulse',
             onSelect = function()
                 local sub = {
