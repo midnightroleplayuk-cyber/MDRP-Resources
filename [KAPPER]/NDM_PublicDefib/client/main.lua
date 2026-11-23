@@ -288,12 +288,14 @@ local function camRay(maxDist)
     -- 1 = map, 16 = objects
     local handle = StartExpensiveSynchronousShapeTestLosProbe(from.x, from.y, from.z, to.x, to.y, to.z, 17, cache.ped, 4)
     local _, hit, coords, normal = GetShapeTestResult(handle)
-    return hit == 1, coords, normal
+    return hit == true or hit == 1, coords, normal
 end
 
 local function placeTool()
     if placing then return end
-    if not lib.callback.await('NDM_PublicDefib:isAdmin', false) then return end
+    if not lib.callback.await('NDM_PublicDefib:isAdmin', false) then
+        return notify(('No permission (needs the %s ace)'):format(Config.AdminAce), 'error')
+    end
     local model = Config.CabinetProp
     if type(model) == 'string' then model = joaat(model) end
     if not model or not IsModelInCdimage(model) then
@@ -428,12 +430,17 @@ local function cabinetMenu()
 end
 
 RegisterCommand('defibcabinets', function()
-    if lib.callback.await('NDM_PublicDefib:isAdmin', false) then cabinetMenu() end
+    if not lib.callback.await('NDM_PublicDefib:isAdmin', false) then
+        return notify(('No permission (needs the %s ace)'):format(Config.AdminAce), 'error')
+    end
+    cabinetMenu()
 end, false)
 
 -- copy your position for a config.lua cabinet (stand facing the wall)
 RegisterCommand('defibpos', function()
-    if not lib.callback.await('NDM_PublicDefib:isAdmin', false) then return end
+    if not lib.callback.await('NDM_PublicDefib:isAdmin', false) then
+        return notify(('No permission (needs the %s ace)'):format(Config.AdminAce), 'error')
+    end
     local c, h = GetEntityCoords(cache.ped), GetEntityHeading(cache.ped)
     local line = ('vector4(%.2f, %.2f, %.2f, %.1f)'):format(c.x, c.y, c.z, h)
     lib.setClipboard(line)
