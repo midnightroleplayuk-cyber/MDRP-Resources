@@ -30,6 +30,10 @@ Config.Cabinets = {
 }
 
 Config.CabinetProp = 'uk_aed_cabinet'         -- e.g. `prop_ld_health_pack`; per cabinet: prop = `model`
+-- Cabinet prop position from coords (where you stand, facing the wall):
+--   forward = metres in front of you to the wall, up = bottom edge of the cabinet vs. your coords
+-- Per cabinet you can instead set propCoords = vector4(...) for the exact prop position + heading.
+Config.CabinetPropOffset = { forward = 0.6, up = 0.0 }
 Config.HandProp = {               -- what you carry
     model = `prop_ld_health_pack`,
     bone = 57005,

@@ -169,14 +169,26 @@ CreateThread(function()
         local pc = GetEntityCoords(cache.ped)
         for id, cab in ipairs(Config.Cabinets) do
             local model = cab.prop or Config.CabinetProp
+            if type(model) == 'string' then model = joaat(model) end
             if model then
                 local c = cab.coords
                 local near = #(pc - vector3(c.x, c.y, c.z)) < 80.0
-                if near and not cabinetProps[id] then
+                if near and not cabinetProps[id] and IsModelInCdimage(model) then
+                    -- coords = where you stand facing the wall: the cabinet goes on the wall in front,
+                    -- turned round to face you (its origin is the bottom of the back panel, front = +Y)
+                    local pos, heading
+                    if cab.propCoords then
+                        pos, heading = vector3(cab.propCoords.x, cab.propCoords.y, cab.propCoords.z), cab.propCoords.w
+                    else
+                        local o = Config.CabinetPropOffset
+                        local r = math.rad(c.w)
+                        pos = vector3(c.x - math.sin(r) * o.forward, c.y + math.cos(r) * o.forward, c.z + o.up)
+                        heading = (c.w + 180.0) % 360.0
+                    end
                     lib.requestModel(model)
-                    local obj = CreateObject(model, c.x, c.y, c.z, false, false, false)
+                    local obj = CreateObject(model, pos.x, pos.y, pos.z, false, false, false)
                     SetModelAsNoLongerNeeded(model)
-                    SetEntityHeading(obj, c.w)
+                    SetEntityHeading(obj, heading)
                     FreezeEntityPosition(obj, true)
                     cabinetProps[id] = obj
                 elseif not near and cabinetProps[id] then
