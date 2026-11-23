@@ -29,7 +29,7 @@ Config.Cabinets = {
     -- { label = 'Legion Square', coords = vector4(...) },
 }
 
-Config.CabinetProp = nil         -- e.g. `prop_ld_health_pack`; per cabinet: prop = `model`
+Config.CabinetProp = 'uk_aed_cabinet'         -- e.g. `prop_ld_health_pack`; per cabinet: prop = `model`
 Config.HandProp = {               -- what you carry
     model = `prop_ld_health_pack`,
     bone = 57005,
