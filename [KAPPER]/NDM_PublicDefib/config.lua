@@ -37,7 +37,7 @@ Config.CabinetPropOffset = { forward = 0.6, up = 0.0 }
 Config.HandProp = {               -- what you carry
     model = `prop_ld_bomb`,
     bone = 57005,
-    offset = vector3(0.13, 0.0, -0.08),
+    offset = vector3(0.22, 0.0, -0.08),   -- 1st number: bigger = lower in the hand
     rotation = vector3(-90.0, 0.0, 90.0),
 }
 
