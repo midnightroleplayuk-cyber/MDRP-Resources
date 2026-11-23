@@ -35,7 +35,7 @@ Config.CabinetProp = 'uk_aed_cabinet'         -- e.g. `prop_ld_health_pack`; per
 -- Per cabinet you can instead set propCoords = vector4(...) for the exact prop position + heading.
 Config.CabinetPropOffset = { forward = 0.6, up = 0.0 }
 Config.HandProp = {               -- what you carry
-    model = `ecg`,
+    model = `prop_ld_bomb`,
     bone = 57005,
     offset = vector3(0.13, 0.0, -0.08),
     rotation = vector3(-90.0, 0.0, 90.0),
