@@ -24,8 +24,8 @@ Config.Availability = {
 -- !! PLACEHOLDERS: add your real locations !!
 Config.Cabinets = {
     { label = 'Burton Hospital entrance', coords = vector4(-303.5, -152.2, 40.24, 70.0) },
-    { label = 'Legion Park 1', coords = vector4(124.24, -1041.09, 29.55, 162.56) },
-    { label = 'Legion Park 2', coords = vector4(-250.0, -210.0, 35.0, 90.0) },
+    { label = 'Legion Park 1', coords = vector4(135.62, -1031.96, 24.58, 250.23) },
+    { label = 'Legion Park 2', coords = vector4(219.28, -869.43, 30.97, 247.29) },
     -- { label = 'Legion Square', coords = vector4(...) },
 }
 
