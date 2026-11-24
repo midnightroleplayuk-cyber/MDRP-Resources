@@ -14,6 +14,7 @@ shared_scripts {
     'config/business.lua',
     'config/crafting.lua',
     'config/club.lua',
+    'config/props.lua',
 }
 
 client_scripts {
@@ -24,6 +25,7 @@ client_scripts {
     'modules/ownership/client.lua',
     'modules/crafting/client.lua',
     'modules/club/client.lua',
+    'modules/dining/client.lua',
 }
 
 server_scripts {
@@ -39,6 +41,7 @@ server_scripts {
     'modules/ownership/server.lua',
     'modules/crafting/server.lua',
     'modules/club/server.lua',
+    'modules/dining/server.lua',
     'modules/management/server.lua',
     'core/server.lua',
 }
@@ -59,4 +62,5 @@ dependencies {
     'ox_inventory',
     'ox_target',
     'apex_banking',
+    'NDM_Business_assets',
 }

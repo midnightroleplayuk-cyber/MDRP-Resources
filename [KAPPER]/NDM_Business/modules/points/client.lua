@@ -4,14 +4,45 @@ local MAX_PLACE_DISTANCE = 20.0
 
 local Points = {}
 local Zones = {}
+local Props = {}
+local BadModels = {}
 local placing = false
 local loaded = false
+local ghostEntity = nil
+
+local PROP_IN = 80.0
+local PROP_OUT = 100.0
 
 local function removeZone(id)
     if Zones[id] then
         exports.ox_target:removeZone(Zones[id])
         Zones[id] = nil
     end
+end
+
+local function removeProp(id)
+    local entity = Props[id]
+    if not entity then return end
+    Props[id] = nil
+    if DoesEntityExist(entity) then
+        exports.ox_target:removeLocalEntity(entity)
+        DeleteEntity(entity)
+    end
+end
+
+local function usesProp(point)
+    return point.model and point.model ~= '' and not BadModels[point.model]
+end
+
+-- Loads a model, and remembers a missing one so that location falls back to an invisible point.
+local function loadModel(model)
+    local hash = joaat(model)
+    if IsModelInCdimage(hash) and pcall(lib.requestModel, hash) then return hash end
+    if not BadModels[model] then
+        BadModels[model] = true
+        print(('^3[%s] prop model %s could not be loaded.^7'):format(NDM.Resource, model))
+    end
+    return nil
 end
 
 local function interact(point)
@@ -25,7 +56,7 @@ local function interact(point)
     end
     if point.type == 'register' or point.type == 'shop' then
         NDM.OpenRegister(point.id)
-    elseif point.type == 'crafting' then
+    elseif point.type == 'crafting' or NDM.PointTypeById[point.type].station then
         NDM.OpenCrafting(point.id)
     elseif point.type == 'sale' then
         NDM.OpenSale(point.id)
@@ -33,12 +64,16 @@ local function interact(point)
         NDM.OpenClubEntry(point.id)
     elseif point.type == 'bar' then
         NDM.OpenBar(point.id)
+    elseif point.type == 'seat' then
+        NDM.Sit(point.id)
+    elseif point.type == 'menu_board' then
+        NDM.OpenMenuBoard(point.id)
     end
 end
 
-local function addZone(point)
+local function targetOptions(point)
     local definition = NDM.PointTypeById[point.type]
-    if not definition or definition.noTarget then return end
+    if not definition or definition.noTarget then return nil end
     local options = {
         {
             name = ('ndm_business_point_%d'):format(point.id),
@@ -63,11 +98,38 @@ local function addZone(point)
             onSelect = function() NDM.DeliverBox() end,
         }
     end
+    return options
+end
+
+local function addZone(point)
+    if usesProp(point) then return end
+    local options = targetOptions(point)
+    if not options then return end
     Zones[point.id] = exports.ox_target:addSphereZone({
         coords = vec3(point.x, point.y, point.z),
         radius = 0.6,
         options = options,
     })
+end
+
+local function spawnProp(point)
+    local hash = loadModel(point.model)
+    if not hash then return end
+    -- The point may have been moved or removed while the model was loading.
+    if Points[point.id] ~= point or Props[point.id] then
+        SetModelAsNoLongerNeeded(hash)
+        return
+    end
+
+    local entity = CreateObjectNoOffset(hash, point.x, point.y, point.z, false, false, false)
+    SetModelAsNoLongerNeeded(hash)
+    if entity == 0 then return end
+    SetEntityHeading(entity, point.heading)
+    FreezeEntityPosition(entity, true)
+    Props[point.id] = entity
+
+    local options = targetOptions(point)
+    if options then exports.ox_target:addLocalEntity(entity, options) end
 end
 
 local function loadPoints()
@@ -87,11 +149,13 @@ end
 RegisterNetEvent('ndm_business:points:updated', function(point)
     if type(point) ~= 'table' or not point.id then return end
     removeZone(point.id)
+    removeProp(point.id)
     Points[point.id] = point
 end)
 
 RegisterNetEvent('ndm_business:points:removed', function(id)
     removeZone(id)
+    removeProp(id)
     Points[id] = nil
 end)
 
@@ -103,6 +167,7 @@ CreateThread(function()
     loadPoints()
     while true do
         local coords = GetEntityCoords(cache.ped)
+        local toSpawn = {}
         for id, point in pairs(Points) do
             local distance = #(coords - vec3(point.x, point.y, point.z))
             if distance <= ZONE_IN and not Zones[id] then
@@ -110,7 +175,14 @@ CreateThread(function()
             elseif distance > ZONE_OUT and Zones[id] then
                 removeZone(id)
             end
+            if distance <= PROP_IN and usesProp(point) and not Props[id] then
+                toSpawn[#toSpawn + 1] = point
+            elseif distance > PROP_OUT and Props[id] then
+                removeProp(id)
+            end
         end
+        -- Model loading yields, so it must not run while iterating over Points.
+        for _, point in ipairs(toSpawn) do spawnProp(point) end
         Wait(1000)
     end
 end)
@@ -118,10 +190,27 @@ end)
 local BLOCKED_CONTROLS = { 14, 15, 16, 17, 24, 25, 37, 38, 44, 140, 141, 142, 172, 173, 194, 199, 200, 257, 263 }
 
 -- Returns coordinates and heading, or nil when the player cancels.
-local function runPlacer(startHeading, startHeightOffset)
+local function clearGhost()
+    if ghostEntity and DoesEntityExist(ghostEntity) then DeleteEntity(ghostEntity) end
+    ghostEntity = nil
+end
+
+local function runPlacer(startHeading, startHeightOffset, model)
     local heading = startHeading or GetEntityHeading(cache.ped)
     local heightOffset = startHeightOffset or 0.0
     local target
+
+    if model and model ~= '' then
+        local hash = loadModel(model)
+        if hash then
+            local start = GetEntityCoords(cache.ped)
+            ghostEntity = CreateObjectNoOffset(hash, start.x, start.y, start.z - 20.0, false, false, false)
+            SetModelAsNoLongerNeeded(hash)
+            SetEntityAlpha(ghostEntity, 160, false)
+            SetEntityCollision(ghostEntity, false, false)
+            FreezeEntityPosition(ghostEntity, true)
+        end
+    end
 
     lib.showTextUI('[E] Place  \n[Scroll] Rotate  \n[Arrow Up/Down] Height  \n[Backspace] Cancel')
 
@@ -149,15 +238,21 @@ local function runPlacer(startHeading, startHeightOffset)
             local tip = point + forward * 0.6
             DrawMarker(28, point.x, point.y, point.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.18, 0.18, 0.18, red, green, 132, 190, false, false, 2, false, nil, nil, false)
             DrawLine(point.x, point.y, point.z, tip.x, tip.y, tip.z, red, green, 132, 255)
+            if ghostEntity then
+                SetEntityCoordsNoOffset(ghostEntity, point.x, point.y, point.z, false, false, false)
+                SetEntityHeading(ghostEntity, heading)
+            end
         end
 
         if IsDisabledControlJustPressed(0, 194) then
+            clearGhost()
             lib.hideTextUI()
             return nil
         end
 
         if IsDisabledControlJustPressed(0, 38) then
             if target and inRange then
+                clearGhost()
                 lib.hideTextUI()
                 return vec3(target.x, target.y, target.z + heightOffset), heading
             end
@@ -187,7 +282,22 @@ function NDM.StartPlacement(options)
 
     CreateThread(function()
         local existing = options.pointId and Points[tonumber(options.pointId)]
-        local coords, heading = runPlacer(existing and existing.heading or nil)
+        local previewModel = options.model
+        if previewModel == nil and existing then previewModel = existing.model end
+
+        -- Hide the current prop so the placement ray and preview are not blocked by it.
+        local currentProp = existing and Props[existing.id]
+        if currentProp then
+            SetEntityVisible(currentProp, false, false)
+            SetEntityCollision(currentProp, false, false)
+        end
+
+        local coords, heading = runPlacer(existing and existing.heading or nil, nil, previewModel)
+
+        if currentProp and DoesEntityExist(currentProp) then
+            SetEntityVisible(currentProp, true, false)
+            SetEntityCollision(currentProp, true, true)
+        end
 
         if coords then
             local ok, result = pcall(lib.callback.await, 'ndm_business:mgmt:savePoint', false, {
@@ -195,6 +305,7 @@ function NDM.StartPlacement(options)
                 pointId = options.pointId,
                 type = options.type,
                 label = options.label,
+                model = options.model,
                 x = coords.x,
                 y = coords.y,
                 z = coords.z,
@@ -215,5 +326,7 @@ end
 AddEventHandler('onResourceStop', function(resource)
     if resource ~= GetCurrentResourceName() then return end
     if placing then lib.hideTextUI() end
+    clearGhost()
     for id in pairs(Zones) do removeZone(id) end
+    for id in pairs(Props) do removeProp(id) end
 end)

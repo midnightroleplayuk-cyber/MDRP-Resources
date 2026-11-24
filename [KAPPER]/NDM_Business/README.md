@@ -62,6 +62,29 @@ Wages are handled by apex_banking in its Business tab. Invoices are handled by a
 - Managers set pass and drink prices and remove bans in the Club tab.
 - Settings are in `config/club.lua`.
 
+## Restaurants
+
+1. Place a Stock room, Grill, Fryer, Prep station, Drinks machine and Register from Locations.
+2. Order raw ingredients and cups in Stock, then complete the supply run.
+3. Grill patties and fry sides. Finished food goes into venue stock.
+4. Build burgers at the Prep station from grilled patties and ingredients.
+5. Set sale prices in Menu and sell from the Register.
+
+Recipes are in `config/crafting.lua`. A Crafting station can make every recipe.
+
+Any venue can also place:
+
+- **Seat:** aim at the chair's cushion. Players sit there and press E to stand. If they sit
+  too high or low, use Move and adjust the height with the arrow keys.
+- **Menu board:** shows customers the items with a sale price and whether they are sold out.
+
+## Props
+
+- Custom props are in `NDM_Business_assets`, which starts automatically with this resource.
+- Each location in Locations is either an invisible interaction point or a physical prop.
+- To change an existing location, pick a new Appearance on its row, press Move and place it.
+- The props offered for each location type are in `config/props.lua`.
+
 ## Rules
 
 - Keep the Pickle resources running until their replacement has been tested in-game.

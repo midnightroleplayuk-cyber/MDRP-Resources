@@ -123,5 +123,18 @@ function NDM.DB.Init()
               'ndm_business_depots', 'ndm_business_supply_orders', 'ndm_business_ledger'
           )
     ]])
-    return tonumber(found) == expected
+    if tonumber(found) ~= expected then return false end
+
+    local function hasModelColumn()
+        return tonumber(MySQL.scalar.await([[
+            SELECT COUNT(*) FROM information_schema.columns
+            WHERE table_schema = DATABASE()
+              AND table_name = 'ndm_business_points'
+              AND column_name = 'model'
+        ]])) == 1
+    end
+    if not hasModelColumn() then
+        MySQL.query.await("ALTER TABLE `ndm_business_points` ADD COLUMN `model` VARCHAR(64) NOT NULL DEFAULT '' AFTER `heading`")
+    end
+    return hasModelColumn()
 end

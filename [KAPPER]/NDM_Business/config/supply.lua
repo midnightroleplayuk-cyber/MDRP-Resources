@@ -28,6 +28,21 @@ NDM.SupplyConfig = {
             { item = 'ketchup', price = 2 },
             { item = 'mustard', price = 2 },
             { item = 'mayo', price = 2 },
+
+            -- Made in the kitchen. These cannot be ordered from a depot.
+            { item = 'grilled_burger', price = 0, crafted = true },
+            { item = 'grilled_chicken_burger', price = 0, crafted = true },
+            { item = 'burger', price = 0, crafted = true },
+            { item = 'cheeseburger', price = 0, crafted = true },
+            { item = 'double_burger', price = 0, crafted = true },
+            { item = 'chicken_burger', price = 0, crafted = true },
+            { item = 'fries', price = 0, crafted = true },
+            { item = 'chicken_nuggets', price = 0, crafted = true },
+            { item = 'cola', price = 0, crafted = true },
+            { item = 'sprunk', price = 0, crafted = true },
+            { item = 'water', price = 0, crafted = true },
+            { item = 'coffee', price = 0, crafted = true },
+            { item = 'milkshake', price = 0, crafted = true },
         },
         club = {
             { item = 'screwdriver_drink', price = 4 },

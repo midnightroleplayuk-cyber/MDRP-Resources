@@ -42,3 +42,10 @@ Keep these credits for any asset that is brought into this resource.
   sell-back and transfer rules and crafting flow are adapted from `pickle_businesses`.
 - 2026-11-24: Added club passes, bar service, drunk effects and player security. Drink data,
   pass prices and drunk thresholds are adapted from `pickle_clubs`; the bar flow is new code.
+- 2026-11-24: Added optional physical props for locations and copied the Pickle restaurant and
+  coaster props into `NDM_Business_assets`.
+- 2026-11-24: Added restaurant grill, fryer, prep and drinks stations. Ingredient names and the
+  raw-to-cooked-to-assembled food chain are adapted from `pickle_restaurants`; the
+  stock-based station flow is new code.
+- 2026-11-24: Added seats and menu boards. The seat animation and frozen-seat approach are
+  adapted from `pickle_restaurants`; the seat tracking and board are new code.

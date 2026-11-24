@@ -18,6 +18,7 @@ local function publicRow(point)
         y = point.y,
         z = point.z,
         heading = point.heading,
+        model = point.model or '',
         forSale = venue.owner_citizenid == nil and (tonumber(venue.metadata.sale_price) or 0) > 0,
     }
 end
@@ -59,6 +60,7 @@ function NDM.Points.ForVenue(venueId)
                 x = point.x,
                 y = point.y,
                 z = point.z,
+                model = point.model or '',
             }
         end
     end
@@ -101,11 +103,18 @@ function NDM.Points.Save(src, venueId, data)
     local label = tostring(data.label or ''):gsub('^%s+', ''):gsub('%s+$', ''):sub(1, 40)
     if label == '' then label = existing and existing.label or definition.label end
 
+    -- An empty model is an invisible interaction point.
+    local model = existing and existing.model or ''
+    if data.model ~= nil then
+        model = tostring(data.model)
+        if model ~= '' and not NDM.IsPropAllowed(pointType, model) then return false, 'invalid_point' end
+    end
+
     if existing then
-        MySQL.update.await('UPDATE `ndm_business_points` SET `label` = ?, `x` = ?, `y` = ?, `z` = ?, `heading` = ? WHERE `id` = ?', {
-            label, x, y, z, heading, existing.id,
+        MySQL.update.await('UPDATE `ndm_business_points` SET `label` = ?, `x` = ?, `y` = ?, `z` = ?, `heading` = ?, `model` = ? WHERE `id` = ?', {
+            label, x, y, z, heading, model, existing.id,
         })
-        existing.label, existing.x, existing.y, existing.z, existing.heading = label, x, y, z, heading
+        existing.label, existing.x, existing.y, existing.z, existing.heading, existing.model = label, x, y, z, heading, model
     else
         local count = 0
         for _, point in pairs(Cache) do
@@ -113,11 +122,11 @@ function NDM.Points.Save(src, venueId, data)
         end
         if count >= MAX_POINTS_PER_VENUE then return false, 'too_many_points' end
 
-        local id = MySQL.insert.await('INSERT INTO `ndm_business_points` (`venue_id`, `type`, `label`, `x`, `y`, `z`, `heading`) VALUES (?, ?, ?, ?, ?, ?, ?)', {
-            venue.id, pointType, label, x, y, z, heading,
+        local id = MySQL.insert.await('INSERT INTO `ndm_business_points` (`venue_id`, `type`, `label`, `x`, `y`, `z`, `heading`, `model`) VALUES (?, ?, ?, ?, ?, ?, ?, ?)', {
+            venue.id, pointType, label, x, y, z, heading, model,
         })
         if not id then return false, 'error' end
-        existing = { id = id, venue_id = venue.id, type = pointType, label = label, x = x, y = y, z = z, heading = heading }
+        existing = { id = id, venue_id = venue.id, type = pointType, label = label, x = x, y = y, z = z, heading = heading, model = model }
         Cache[id] = existing
     end
 

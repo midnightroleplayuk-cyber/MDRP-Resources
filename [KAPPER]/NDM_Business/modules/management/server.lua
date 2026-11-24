@@ -193,7 +193,11 @@ local function buildData(venueId, src)
         data.pointTypes = {}
         for _, pointType in ipairs(NDM.PointTypes) do
             if not pointType.venueTypes or pointType.venueTypes[venue.type] then
-                data.pointTypes[#data.pointTypes + 1] = { id = pointType.id, label = pointType.label }
+                data.pointTypes[#data.pointTypes + 1] = {
+                    id = pointType.id,
+                    label = pointType.label,
+                    props = NDM.PropOptions[pointType.id] or {},
+                }
             end
         end
         if venue.type == 'club' then data.club = NDM.Club.PanelData(venue) end

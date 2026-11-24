@@ -7,7 +7,10 @@ local nextToken = 0
 
 local function contextFor(src, pointId)
     local point = NDM.Points.Get(pointId)
-    if not point or point.type ~= 'crafting' then return nil, 'This station is not available.' end
+    local definition = point and NDM.PointTypeById[point.type]
+    if not definition or (point.type ~= 'crafting' and not definition.station) then
+        return nil, 'This station is not available.'
+    end
     local venue = NDM.Venue.Get(point.venue_id)
     if not venue or not NDM.Venue.HasPerm(venue.id, src, 'work') then return nil, 'You do not work here.' end
     local ped = GetPlayerPed(src)
@@ -17,13 +20,14 @@ local function contextFor(src, pointId)
     return point, venue
 end
 
-local function recipesFor(venue)
+local function recipesFor(venue, pointType)
     local catalog = {}
     for _, entry in ipairs(NDM.Supply.Catalog(venue)) do catalog[entry.item] = entry end
 
     local recipes = {}
     for _, recipe in ipairs(NDM.CraftingConfig.recipes[venue.type] or {}) do
         local valid = recipe.output and catalog[recipe.output.item] ~= nil
+        if pointType ~= 'crafting' and recipe.station ~= pointType then valid = false end
         for item in pairs(recipe.ingredients or {}) do
             if not catalog[item] then valid = false end
         end
@@ -32,8 +36,8 @@ local function recipesFor(venue)
     return recipes, catalog
 end
 
-local function recipeById(venue, id)
-    for _, recipe in ipairs((recipesFor(venue))) do
+local function recipeById(venue, id, pointType)
+    for _, recipe in ipairs((recipesFor(venue, pointType))) do
         if recipe.id == id then return recipe end
     end
     return nil
@@ -57,7 +61,7 @@ lib.callback.register('ndm_business:crafting:list', function(src, payload)
     local point, venue = contextFor(src, payload.point)
     if not point then return { ok = false, error = venue } end
 
-    local recipes, catalog = recipesFor(venue)
+    local recipes, catalog = recipesFor(venue, point.type)
     local list = {}
     for _, recipe in ipairs(recipes) do
         local needs = {}
@@ -82,7 +86,7 @@ lib.callback.register('ndm_business:crafting:start', function(src, payload)
     local point, venue = contextFor(src, payload.point)
     if not point then return { ok = false, error = venue } end
 
-    local recipe = recipeById(venue, payload.recipe)
+    local recipe = recipeById(venue, payload.recipe, point.type)
     if not recipe then return { ok = false, error = 'That recipe is not available.' } end
     if not canCraft(venue, recipe) then return { ok = false, error = 'There is not enough stock.' } end
 

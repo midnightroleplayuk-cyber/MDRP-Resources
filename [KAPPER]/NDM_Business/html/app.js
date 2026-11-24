@@ -205,6 +205,19 @@ function renderFinance() {
     </div>`;
 }
 
+function pointModelOptions(typeId, selected) {
+    const type = list(state.data && state.data.pointTypes).find((entry) => entry.id === typeId);
+    const props = type ? list(type.props) : [];
+    const choices = [{ model: '', label: 'Interaction point (invisible)' }, ...props];
+    return choices.map((choice) => `<option value="${esc(choice.model)}" ${choice.model === (selected || '') ? 'selected' : ''}>${esc(choice.label)}</option>`).join('');
+}
+
+document.addEventListener('change', (event) => {
+    if (event.target.id !== 'point-type') return;
+    const select = document.getElementById('point-model');
+    if (select) select.innerHTML = pointModelOptions(event.target.value, '');
+});
+
 function renderPoints() {
     const types = list(state.data.pointTypes);
     const options = types.map((type) => `<option value="${esc(type.id)}">${esc(type.label)}</option>`).join('');
@@ -213,6 +226,7 @@ function renderPoints() {
         return `<tr>
             <td>${esc(point.label)}</td>
             <td>${esc(point.typeLabel)}</td>
+            <td><select id="point-model-${point.id}">${pointModelOptions(point.type, point.model)}</select></td>
             <td class="muted">${Number(point.x).toFixed(1)}, ${Number(point.y).toFixed(1)}, ${Number(point.z).toFixed(1)}</td>
             <td class="actions"><button data-act="movePoint" data-point="${point.id}" ${state.busy ? 'disabled' : ''}>Move</button></td>
             <td class="actions"><button class="danger ${armed ? 'armed' : ''}" data-act="deletePoint" data-point="${point.id}" ${state.busy ? 'disabled' : ''}>${armed ? 'Confirm' : 'Remove'}</button></td>
@@ -224,13 +238,14 @@ function renderPoints() {
             <h2>Add a location</h2>
             <div class="row">
                 <label class="field"><span>Type</span><select id="point-type">${options}</select></label>
+                <label class="field"><span>Appearance</span><select id="point-model">${pointModelOptions(types[0] && types[0].id, '')}</select></label>
                 <label class="field"><span>Name (optional)</span><input id="point-label" maxlength="40" placeholder="Front counter"></label>
                 <button class="primary" data-act="placePoint" ${state.busy ? 'disabled' : ''}>Place in world</button>
             </div>
         </div>
         <div class="card">
             <h2>Placed locations</h2>
-            ${rows ? `<table><thead><tr><th>Name</th><th>Type</th><th>Position</th><th></th><th></th></tr></thead><tbody>${rows}</tbody></table>` : '<div class="muted">Nothing has been placed yet.</div>'}
+            ${rows ? `<table><thead><tr><th>Name</th><th>Type</th><th>Appearance</th><th>Position</th><th></th><th></th></tr></thead><tbody>${rows}</tbody></table>` : '<div class="muted">Nothing has been placed yet.</div>'}
         </div>
     </div>`;
 }
@@ -592,11 +607,14 @@ app.addEventListener('click', async (event) => {
         beginPlacement({
             type: document.getElementById('point-type').value,
             label: document.getElementById('point-label').value,
+            model: document.getElementById('point-model').value,
         });
         return;
     }
     if (action === 'movePoint') {
-        beginPlacement({ pointId: Number(button.dataset.point) });
+        const pointId = Number(button.dataset.point);
+        const model = document.getElementById(`point-model-${pointId}`).value;
+        beginPlacement({ pointId, model });
         return;
     }
     if (action === 'deletePoint') {

@@ -89,6 +89,7 @@ RegisterNUICallback('place', function(body, cb)
         pointId = tonumber(body.pointId),
         type = body.type,
         label = body.label,
+        model = body.model,
     })
 end)
 
