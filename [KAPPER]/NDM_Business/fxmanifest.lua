@@ -62,5 +62,4 @@ dependencies {
     'ox_inventory',
     'ox_target',
     'apex_banking',
-    'NDM_Business_assets',
 }

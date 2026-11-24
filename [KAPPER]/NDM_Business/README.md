@@ -80,7 +80,8 @@ Any venue can also place:
 
 ## Props
 
-- Custom props are in `NDM_Business_assets`, which starts automatically with this resource.
+- Custom props are in `NDM_Business_assets`. Start it before this resource. If it is missing,
+  prop locations fall back to invisible interaction points and the F8 console names the model.
 - Each location in Locations is either an invisible interaction point or a physical prop.
 - To change an existing location, pick a new Appearance on its row, press Move and place it.
 - The props offered for each location type are in `config/props.lua`.
