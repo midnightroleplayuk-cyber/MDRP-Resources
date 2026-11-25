@@ -11,22 +11,30 @@ One resource for restaurants, clubs and player-owned businesses on Qbox, ox_inve
 5. **Restaurants:** cooking, dining, kiosks, screens, delivery and phone app.
 6. **Cutover:** migrate data one venue type at a time, then retire that Pickle resource.
 
-## Testing the core
+## Setting up businesses
 
-These commands require `group.admin`:
+Everything is set up in game from `/business`. There are no setup commands.
 
-- `/ndmbiz_create <restaurant|club|business> <job> <name>`
-- `/ndmbiz_list`
-- `/ndmbiz_balance <venue>`
-- `/ndmbiz_perms <venue> <player>`
+Admins see a **Business setup** button, and the panel opens straight to it when no business
+exists yet. From there an admin can:
 
-Bosses, venue owners, admins and staff with management permissions can open the panel with
-`/business`. Staff with `manage_venue` can place management desks, registers and stock rooms
-from its Locations tab.
+- create a restaurant, club or business and choose the job its staff are hired into;
+- list an unowned business for sale, give it to an online player, or remove its owner;
+- see every business's balance and press Manage to open it;
+- delete a business, which removes its owner from the job and deletes its locations, stock,
+  prices, club passes and bans, order history and ledger. Money in the job's bank account and
+  staff in the job are not touched. A business with an open stock order cannot be deleted;
+- place and remove supplier depots.
+
+Only admins see a business's Locations tab, so owners and staff cannot place, move or remove
+locations. Admin means the `command` ace, for example `group.admin`.
+
+Bosses, owners and staff with management permissions use the same `/business` panel to run
+their own business.
 
 ## Supply runs
 
-1. An admin places a depot with `/ndmbiz_depot_add <name>`.
+1. An admin places a depot from Business setup.
 2. A manager places a stock room, then pays for an order in `/business` under Stock.
 3. Staff collect boxes at the depot and load them into one vehicle.
 4. Staff drive back, take the boxes out and deliver them to the stock room.
@@ -46,9 +54,9 @@ Wages are handled by apex_banking in its Business tab. Invoices are handled by a
 
 ## Businesses
 
-- `/ndmbiz_setprice <venue> <price>` lists an unowned venue. Place a For sale sign so players can buy it.
-- `/ndmbiz_owner <venue> <player>` gives a venue to a player for free.
-- `/ndmbiz_clearowner <venue>` removes its owner.
+- Admins list an unowned business for sale in Business setup and place a For sale sign so
+  players can buy it.
+- Admins can also give a business to an online player for free, or remove its owner.
 - Owners can transfer or sell the venue from the Ownership tab.
 - Customer shop points sell menu items from stock without staff.
 - Crafting stations turn venue stock into new stock using recipes in `config/crafting.lua`.

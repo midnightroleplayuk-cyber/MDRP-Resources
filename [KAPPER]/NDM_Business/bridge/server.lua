@@ -53,6 +53,25 @@ function Bridge.GetJobGrades(jobName)
     return grades
 end
 
+function Bridge.GetJobs()
+    local jobs = {}
+    for name, job in pairs(qbx:GetJobs() or {}) do
+        if name ~= 'unemployed' then
+            jobs[#jobs + 1] = { name = name, label = job.label or name }
+        end
+    end
+    table.sort(jobs, function(a, b) return a.label < b.label end)
+    return jobs
+end
+
+-- Works for offline characters too. Returns nil when the character no longer exists.
+function Bridge.GetNameByCitizenId(citizenId)
+    local player = qbx:GetPlayerByCitizenId(citizenId) or qbx:GetOfflinePlayer(citizenId)
+    local info = player and player.PlayerData and player.PlayerData.charinfo
+    if not info then return nil end
+    return ('%s %s'):format(info.firstname or '', info.lastname or '')
+end
+
 function Bridge.GetJobLabel(jobName)
     local job = qbx:GetJob(jobName)
     return job and job.label or jobName

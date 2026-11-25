@@ -135,6 +135,18 @@ function NDM.Points.Save(src, venueId, data)
     return true
 end
 
+-- Drops a deleted venue's points from memory and from every client. The rows are deleted by the caller.
+function NDM.Points.ForgetVenue(venueId)
+    local removed = {}
+    for id, point in pairs(Cache) do
+        if point.venue_id == venueId then removed[#removed + 1] = id end
+    end
+    for _, id in ipairs(removed) do
+        Cache[id] = nil
+        TriggerClientEvent('ndm_business:points:removed', -1, id)
+    end
+end
+
 function NDM.Points.Remove(venueId, pointId)
     local point = Cache[tonumber(pointId)]
     if not point or point.venue_id ~= venueId then return false, 'invalid_point' end

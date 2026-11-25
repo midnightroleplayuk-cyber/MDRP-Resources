@@ -136,7 +136,8 @@ end
 
 function NDM.Stock.Add(venueId, item, quantity)
     quantity = math.floor(tonumber(quantity) or 0)
-    if quantity <= 0 then return false end
+    -- A craft that finishes after its venue was deleted must not recreate stock rows.
+    if quantity <= 0 or not NDM.Venue.Get(venueId) then return false end
     Stock[venueId] = Stock[venueId] or {}
     Stock[venueId][item] = (Stock[venueId][item] or 0) + quantity
     MySQL.insert([[
@@ -158,6 +159,15 @@ end
 
 function NDM.Supply.HasOpenOrder(venueId)
     return openOrderFor(venueId) ~= nil
+end
+
+-- True while an order is open or its payment is still processing.
+function NDM.Supply.IsBusy(venueId)
+    return Ordering[venueId] == true or openOrderFor(venueId) ~= nil
+end
+
+function NDM.Stock.ForgetVenue(venueId)
+    Stock[venueId] = nil
 end
 
 -- Loading ---------------------------------------------------------------------
@@ -508,47 +518,30 @@ lib.callback.register('ndm_business:supply:saveDepot', function(src, payload)
     return { ok = true, id = id }
 end)
 
-lib.addCommand('ndmbiz_depot_add', {
-    help = 'Place a supplier depot',
-    restricted = 'group.admin',
-    params = {
-        { name = 'name', type = 'longString', help = 'Depot name' },
-    },
-}, function(source, args)
-    if source == 0 then return print('Run this command in-game.') end
-    TriggerClientEvent('ndm_business:supply:placeDepot', source, args.name)
-end)
-
-lib.addCommand('ndmbiz_depot_list', {
-    help = 'List supplier depots',
-    restricted = 'group.admin',
-}, function(source)
-    local count = 0
+function NDM.Supply.DepotList()
+    local list = {}
     for id, depot in pairs(Depots) do
-        count = count + 1
-        Bridge.Notify(source, ('#%d %s (%.1f, %.1f, %.1f)'):format(id, depot.label, depot.x, depot.y, depot.z))
-    end
-    if count == 0 then Bridge.Notify(source, 'No depots exist yet.') end
-end)
-
-lib.addCommand('ndmbiz_depot_remove', {
-    help = 'Remove a supplier depot',
-    restricted = 'group.admin',
-    params = {
-        { name = 'depot', type = 'number', help = 'Depot ID' },
-    },
-}, function(source, args)
-    if not Depots[args.depot] then return Bridge.Notify(source, 'Depot not found.', 'error') end
-    for _, order in pairs(Orders) do
-        if order.depot_id == args.depot then
-            return Bridge.Notify(source, 'That depot still has an open stock order.', 'error')
+        local open = 0
+        for _, order in pairs(Orders) do
+            if order.depot_id == id then open = open + 1 end
         end
+        list[#list + 1] = { id = id, label = depot.label, x = depot.x, y = depot.y, z = depot.z, openOrders = open }
     end
-    MySQL.update.await('DELETE FROM `ndm_business_depots` WHERE `id` = ?', { args.depot })
-    Depots[args.depot] = nil
-    TriggerClientEvent('ndm_business:supply:depot', -1, args.depot, nil)
-    Bridge.Notify(source, 'Depot removed.', 'success')
-end)
+    table.sort(list, function(a, b) return a.label < b.label end)
+    return list
+end
+
+function NDM.Supply.RemoveDepot(id)
+    id = tonumber(id)
+    if not id or not Depots[id] then return false, 'invalid_depot' end
+    for _, order in pairs(Orders) do
+        if order.depot_id == id then return false, 'depot_in_use' end
+    end
+    MySQL.update.await('DELETE FROM `ndm_business_depots` WHERE `id` = ?', { id })
+    Depots[id] = nil
+    TriggerClientEvent('ndm_business:supply:depot', -1, id, nil)
+    return true, 'Depot removed.'
+end
 
 -- Only the carrier's own box prop is accepted, so this cannot be aimed at another entity.
 RegisterNetEvent('ndm_business:supply:carryProp', function(netId)

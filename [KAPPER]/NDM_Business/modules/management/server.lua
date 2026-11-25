@@ -188,7 +188,8 @@ local function buildData(venueId, src)
     if actor.permissions.view_finances or actor.permissions.manage_finances then
         data.finance = buildFinance(venue, actor)
     end
-    if actor.permissions.manage_venue then
+    -- Only admins create and move locations. Owners and staff run the venue once it is built.
+    if Bridge.IsAdmin(src) then
         data.points = NDM.Points.ForVenue(venue.id)
         data.pointTypes = {}
         for _, pointType in ipairs(NDM.PointTypes) do
@@ -200,7 +201,9 @@ local function buildData(venueId, src)
                 }
             end
         end
-        if venue.type == 'club' then data.club = NDM.Club.PanelData(venue) end
+    end
+    if actor.permissions.manage_venue and venue.type == 'club' then
+        data.club = NDM.Club.PanelData(venue)
     end
     if actor.permissions.manage_stock then
         data.stock = NDM.Supply.PanelData(venue, src)
@@ -247,7 +250,12 @@ end
 lib.callback.register('ndm_business:mgmt:open', function(src, payload)
     if not NDM.Ready then return { ok = false, error = errorText('not_ready') } end
     local venues = venueList(src)
-    if #venues == 0 then return { ok = false, error = 'You do not manage a business.' } end
+    local isAdmin = Bridge.IsAdmin(src)
+    if #venues == 0 then
+        -- Admins can open the panel before any business exists, so they can create one.
+        if isAdmin then return { ok = true, venues = {}, admin = true } end
+        return { ok = false, error = 'You do not manage a business.' }
+    end
 
     local selected = venues[1].id
     local requested = type(payload) == 'table' and tonumber(payload.venue) or nil
@@ -259,7 +267,7 @@ lib.callback.register('ndm_business:mgmt:open', function(src, payload)
         if not allowed then return { ok = false, error = errorText('no_permission') } end
         selected = requested
     end
-    return { ok = true, venues = venues, data = buildData(selected, src) }
+    return { ok = true, venues = venues, data = buildData(selected, src), admin = isAdmin }
 end)
 
 registerAction('getData', function()
@@ -367,15 +375,15 @@ registerAction('withdraw', function(src, venue, _, payload)
     return true, 'Withdrawal complete.'
 end)
 
-registerAction('savePoint', function(src, venue, actor, payload)
-    if actor.permissions.manage_venue ~= true then return false, 'no_permission' end
+registerAction('savePoint', function(src, venue, _, payload)
+    if not Bridge.IsAdmin(src) then return false, 'no_permission' end
     local saved, err = NDM.Points.Save(src, venue.id, payload)
     if not saved then return false, err end
     return true, 'Location saved.'
 end)
 
-registerAction('deletePoint', function(_, venue, actor, payload)
-    if actor.permissions.manage_venue ~= true then return false, 'no_permission' end
+registerAction('deletePoint', function(src, venue, _, payload)
+    if not Bridge.IsAdmin(src) then return false, 'no_permission' end
     local removed, err = NDM.Points.Remove(venue.id, payload.pointId)
     if not removed then return false, err end
     return true, 'Location removed.'

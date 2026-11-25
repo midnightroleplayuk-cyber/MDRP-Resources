@@ -204,6 +204,10 @@ function NDM.Register.MenuData(venue)
     return items
 end
 
+function NDM.Register.ForgetVenue(venueId)
+    Prices[venueId] = nil
+end
+
 function NDM.Register.SetPrice(venue, item, price)
     local isListed = false
     for _, entry in ipairs(NDM.Supply.Catalog(venue)) do

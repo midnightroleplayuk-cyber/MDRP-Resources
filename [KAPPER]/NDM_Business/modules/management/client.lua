@@ -23,6 +23,16 @@ local ACTIONS = {
     clubUnban = true,
 }
 
+local ADMIN_ACTIONS = {
+    data = true,
+    createVenue = true,
+    setSalePrice = true,
+    setOwner = true,
+    clearOwner = true,
+    deleteVenue = true,
+    removeDepot = true,
+}
+
 local function setOpen(open)
     isOpen = open
     SetNuiFocus(open, open)
@@ -51,7 +61,7 @@ function NDM.OpenPanel(venueId, tab)
             return
         end
         setOpen(true)
-        SendNUIMessage({ action = 'open', venues = result.venues, data = result.data, tab = tab })
+        SendNUIMessage({ action = 'open', venues = result.venues, data = result.data, tab = tab, admin = result.admin == true })
     end)
 end
 
@@ -78,6 +88,29 @@ RegisterNUICallback('request', function(body, cb)
         return
     end
     cb(result)
+end)
+
+RegisterNUICallback('admin', function(body, cb)
+    local action = body and body.action
+    if not ADMIN_ACTIONS[action] then
+        cb({ ok = false, error = 'Unknown action.' })
+        return
+    end
+    local ok, result = pcall(lib.callback.await, 'ndm_business:admin:' .. action, false, body.payload)
+    if not ok or type(result) ~= 'table' then
+        cb({ ok = false, error = 'The server did not respond.' })
+        return
+    end
+    cb(result)
+end)
+
+RegisterNUICallback('placeDepot', function(body, cb)
+    cb({})
+    local label = type(body) == 'table' and tostring(body.label or '') or ''
+    setOpen(false)
+    NDM.PlaceDepot(label, function()
+        NDM.OpenPanel(nil, 'admin')
+    end)
 end)
 
 RegisterNUICallback('place', function(body, cb)

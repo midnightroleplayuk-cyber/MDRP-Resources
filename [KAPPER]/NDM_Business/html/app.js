@@ -23,6 +23,8 @@ const state = {
     armedPoint: null,
     cart: {},
     view: 'panel',
+    isAdmin: false,
+    admin: null,
 };
 
 let toastTimer = null;
@@ -413,9 +415,239 @@ function beginPlacement(body) {
     post('place', { venue, ...body }).catch(() => {});
 }
 
+function adminHeader() {
+    const back = state.data ? `<button data-act="leaveAdmin" ${state.busy ? 'disabled' : ''}>Back to venue</button>` : '';
+    return `<header class="head">
+            <div class="grow"><h1>Business setup</h1><p>Admin only</p></div>
+            ${back}
+            <button data-act="close">Close</button>
+        </header>`;
+}
+
+function renderAdmin() {
+    const scroll = app.querySelector('.content')?.scrollTop || 0;
+    const admin = state.admin;
+    if (!admin) {
+        app.innerHTML = `${adminHeader()}<section class="content"><div class="muted">Loading…</div></section>`;
+        return;
+    }
+    const disabled = state.busy ? 'disabled' : '';
+    const typeOptions = list(admin.types).map((t) => `<option value="${esc(t.id)}">${esc(t.label)}</option>`).join('');
+    const jobOptions = list(admin.jobs).map((j) => `<option value="${esc(j.name)}">${esc(j.label)} (${esc(j.name)})</option>`).join('');
+    const playerOptions = list(admin.players).map((p) => `<option value="${p.id}">${esc(p.name)} (${p.id})</option>`).join('');
+
+    const venueRows = list(admin.venues).map((venue) => {
+        const clearKey = `clear-${venue.id}`;
+        const armed = state.armedPoint === clearKey;
+        const deleteArmed = state.armedPoint === `delete-${venue.id}`;
+        const ownerControls = venue.owner
+            ? `<button class="danger ${armed ? 'armed' : ''}" data-act="adminClearOwner" data-venue="${venue.id}" ${disabled}>${armed ? 'Confirm' : 'Remove owner'}</button>`
+            : `<div class="row"><select id="owner-${venue.id}" aria-label="Choose new owner" ${playerOptions ? '' : 'disabled'}>${playerOptions || '<option>Nobody online</option>'}</select>
+                <button data-act="adminSetOwner" data-venue="${venue.id}" ${state.busy || !playerOptions ? 'disabled' : ''}>Give</button></div>`;
+        const priceControls = venue.owner
+            ? '<span class="muted">Owned</span>'
+            : `<div class="row"><input id="sale-${venue.id}" type="number" min="0" step="1" aria-label="Sale price for ${esc(venue.label)}" value="${venue.salePrice || ''}" placeholder="Not for sale">
+                <button data-act="adminSetPrice" data-venue="${venue.id}" ${disabled}>Save</button></div>`;
+        return `<tr>
+            <td>${esc(venue.label)}<div class="muted">${esc(venue.typeLabel)} · ${esc(venue.jobLabel)}</div></td>
+            <td>${venue.owner ? esc(venue.owner) : '<span class="muted">None</span>'}</td>
+            <td class="num">${esc(money(venue.balance))}</td>
+            <td>${priceControls}</td>
+            <td>${ownerControls}</td>
+            <td class="actions"><button data-act="adminManage" data-venue="${venue.id}" ${disabled}>Manage</button></td>
+            <td class="actions"><button class="danger ${deleteArmed ? 'armed' : ''}" data-act="adminDelete" data-venue="${venue.id}" ${disabled}>${deleteArmed ? 'Confirm' : 'Delete'}</button></td>
+        </tr>`;
+    }).join('');
+
+    const depotRows = list(admin.depots).map((depot) => {
+        const key = `depot-${depot.id}`;
+        const armed = state.armedPoint === key;
+        return `<tr>
+            <td>${esc(depot.label)}</td>
+            <td class="muted">${Number(depot.x).toFixed(1)}, ${Number(depot.y).toFixed(1)}, ${Number(depot.z).toFixed(1)}</td>
+            <td class="num">${depot.openOrders}</td>
+            <td class="actions"><button class="danger ${armed ? 'armed' : ''}" data-act="adminRemoveDepot" data-depot="${depot.id}" ${disabled}>${armed ? 'Confirm' : 'Remove'}</button></td>
+        </tr>`;
+    }).join('');
+
+    app.innerHTML = `${adminHeader()}
+        <section class="content"><div class="stack">
+            <div class="card">
+                <h2>Create a business</h2>
+                <p class="muted">Staff are hired into the job you choose. After creating it, press Manage and place its locations in the Locations tab.</p>
+                <div class="row">
+                    <label class="field"><span>Name</span><input id="new-label" maxlength="64" placeholder="Burger Shot"></label>
+                    <label class="field"><span>Type</span><select id="new-type">${typeOptions}</select></label>
+                    <label class="field"><span>Job</span><select id="new-job" ${jobOptions ? '' : 'disabled'}>${jobOptions || '<option>No jobs found</option>'}</select></label>
+                    <button class="primary" data-act="adminCreate" ${state.busy || !jobOptions ? 'disabled' : ''}>Create</button>
+                </div>
+            </div>
+            <div class="card">
+                <h2>Businesses</h2>
+                ${venueRows ? `<table><thead><tr><th>Business</th><th>Owner</th><th class="num">Balance</th><th>Sale price</th><th>Ownership</th><th></th><th></th></tr></thead><tbody>${venueRows}</tbody></table>` : '<div class="muted">No businesses exist yet.</div>'}
+            </div>
+            <div class="card">
+                <h2>Supplier depots</h2>
+                <p class="muted">Staff collect stock orders here. Stand near where the depot should be, then place it.</p>
+                <div class="row">
+                    <label class="field"><span>Depot name</span><input id="depot-label" maxlength="40" placeholder="Docks warehouse"></label>
+                    <button class="primary" data-act="adminPlaceDepot" ${disabled}>Place in world</button>
+                </div>
+                ${depotRows ? `<table><thead><tr><th>Depot</th><th>Position</th><th class="num">Open orders</th><th></th></tr></thead><tbody>${depotRows}</tbody></table>` : '<div class="muted">No depots have been placed yet.</div>'}
+            </div>
+        </div></section>`;
+    app.querySelector('.content').scrollTop = scroll;
+}
+
+async function adminRequest(action, payload) {
+    if (state.busy) return null;
+    state.busy = true;
+    render();
+    let result;
+    try {
+        result = await post('admin', { action, payload: payload || {} });
+    } catch (error) {
+        result = { ok: false, error: 'The server did not respond.' };
+    }
+    state.busy = false;
+    if (result.admin) state.admin = result.admin;
+    if (Array.isArray(result.venues)) state.venues = result.venues;
+    if (!result.ok) toast(result.error, true);
+    else toast(result.message, false);
+    render();
+    return result;
+}
+
+function openAdmin() {
+    state.view = 'admin';
+    state.armedPoint = null;
+    render();
+    adminRequest('data');
+}
+
+async function openVenue(id) {
+    const previous = state.data;
+    state.data = { venue: { id } };
+    const result = await request('getData');
+    if (!result || !result.ok || !result.data) {
+        state.data = previous;
+        render();
+        return;
+    }
+    state.view = 'panel';
+    state.tab = 'overview';
+    state.nearby = [];
+    state.drafts = {};
+    state.armedFire = null;
+    state.armedPoint = null;
+    render();
+}
+
+function adminClick(action, button) {
+    if (action === 'close') {
+        closePanel();
+        return;
+    }
+    if (action === 'leaveAdmin') {
+        state.view = 'panel';
+        state.armedPoint = null;
+        if (!visibleTabs().some(([id]) => id === state.tab)) state.tab = 'overview';
+        render();
+        return;
+    }
+    const venue = Number(button.dataset.venue);
+    if (action === 'adminCreate') {
+        const label = document.getElementById('new-label').value.trim();
+        if (!label) {
+            toast('Enter a business name.', true);
+            return;
+        }
+        adminRequest('createVenue', {
+            label,
+            type: document.getElementById('new-type').value,
+            job: document.getElementById('new-job').value,
+        });
+        return;
+    }
+    if (action === 'adminSetPrice') {
+        const raw = document.getElementById(`sale-${venue}`).value;
+        const price = raw === '' ? 0 : Number(raw);
+        if (!Number.isInteger(price) || price < 0) {
+            toast('Enter a whole price, or 0 to remove the listing.', true);
+            return;
+        }
+        adminRequest('setSalePrice', { venue, price });
+        return;
+    }
+    if (action === 'adminSetOwner') {
+        adminRequest('setOwner', { venue, target: Number(document.getElementById(`owner-${venue}`).value) });
+        return;
+    }
+    if (action === 'adminClearOwner') {
+        const key = `clear-${venue}`;
+        if (state.armedPoint !== key) {
+            state.armedPoint = key;
+            render();
+            return;
+        }
+        state.armedPoint = null;
+        adminRequest('clearOwner', { venue });
+        return;
+    }
+    if (action === 'adminManage') {
+        openVenue(venue);
+        return;
+    }
+    if (action === 'adminDelete') {
+        const key = `delete-${venue}`;
+        if (state.armedPoint !== key) {
+            state.armedPoint = key;
+            toast('This removes its locations, stock, prices and history. Press Confirm to delete it.', true);
+            render();
+            return;
+        }
+        state.armedPoint = null;
+        adminRequest('deleteVenue', { venue }).then((result) => {
+            if (result && result.ok && state.data && state.data.venue && state.data.venue.id === venue) {
+                state.data = null;
+                render();
+            }
+        });
+        return;
+    }
+    if (action === 'adminPlaceDepot') {
+        const label = document.getElementById('depot-label').value.trim();
+        if (!label) {
+            toast('Enter a depot name.', true);
+            return;
+        }
+        app.hidden = true;
+        toastEl.hidden = true;
+        state.data = null;
+        state.admin = null;
+        post('placeDepot', { label }).catch(() => {});
+        return;
+    }
+    if (action === 'adminRemoveDepot') {
+        const depot = Number(button.dataset.depot);
+        const key = `depot-${depot}`;
+        if (state.armedPoint !== key) {
+            state.armedPoint = key;
+            render();
+            return;
+        }
+        state.armedPoint = null;
+        adminRequest('removeDepot', { depot });
+    }
+}
+
 function render() {
     if (state.view === 'register') {
         renderRegister();
+        return;
+    }
+    if (state.view === 'admin') {
+        renderAdmin();
         return;
     }
     if (!state.data) return;
@@ -438,6 +670,7 @@ function render() {
     app.innerHTML = `<header class="head">
             <div class="grow"><h1>${esc(venue.label)}</h1><p>${esc(venue.type)} · ${esc(venue.jobLabel)}</p></div>
             ${selector}
+            ${state.isAdmin ? '<button data-act="openAdmin">Business setup</button>' : ''}
             <button data-act="close">Close</button>
         </header>
         <nav class="tabs">${visibleTabs().map(([id, label]) => `<button class="tab ${state.tab === id ? 'active' : ''}" data-tab="${id}">${label}</button>`).join('')}</nav>
@@ -450,6 +683,7 @@ function closePanel() {
     toastEl.hidden = true;
     state.view = 'panel';
     state.data = null;
+    state.admin = null;
     state.nearby = [];
     state.drafts = {};
     state.armedFire = null;
@@ -497,6 +731,14 @@ app.addEventListener('click', async (event) => {
     if (!button || button.disabled) return;
     const action = button.dataset.act;
 
+    if (state.view === 'admin') {
+        adminClick(action, button);
+        return;
+    }
+    if (action === 'openAdmin') {
+        openAdmin();
+        return;
+    }
     if (action === 'close') closePanel();
     if (action === 'nearby') findNearby();
     if (action === 'stockOrder') {
@@ -716,7 +958,13 @@ window.addEventListener('message', ({ data: message }) => {
         state.armedFire = null;
         state.armedPoint = null;
         state.busy = false;
+        state.isAdmin = Boolean(message.admin);
+        state.admin = null;
         app.hidden = false;
+        if (state.isAdmin && (message.tab === 'admin' || !state.data)) {
+            openAdmin();
+            return;
+        }
         render();
     }
     if (message.action === 'close') {

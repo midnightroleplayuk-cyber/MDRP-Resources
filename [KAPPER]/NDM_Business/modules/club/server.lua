@@ -220,6 +220,11 @@ function NDM.Club.SaveSettings(venue, payload)
     return true
 end
 
+function NDM.Club.ForgetVenue(venueId)
+    Passes[venueId] = nil
+    Bans[venueId] = nil
+end
+
 function NDM.Club.Unban(venue, citizenId)
     if not Bans[venue.id] or Bans[venue.id][citizenId] == nil then return false, 'invalid_player' end
     Bans[venue.id][citizenId] = nil

@@ -85,6 +85,24 @@ function NDM.Venue.Create(data)
     return Cache[id]
 end
 
+-- Deletes the venue and everything stored for it in one transaction.
+function NDM.Venue.Delete(venueId)
+    local id = tonumber(venueId)
+    if not id or not Cache[id] then return false end
+    local queries = {}
+    for _, tableName in ipairs({
+        'ndm_business_points', 'ndm_business_stock', 'ndm_business_prices',
+        'ndm_business_club_passes', 'ndm_business_club_bans', 'ndm_business_supply_orders',
+        'ndm_business_ledger',
+    }) do
+        queries[#queries + 1] = { query = ('DELETE FROM `%s` WHERE `venue_id` = ?'):format(tableName), values = { id } }
+    end
+    queries[#queries + 1] = { query = 'DELETE FROM `ndm_business_venues` WHERE `id` = ?', values = { id } }
+    if not MySQL.transaction.await(queries) then return false end
+    Cache[id] = nil
+    return true
+end
+
 function NDM.Venue.SaveOwnership(venue)
     MySQL.update.await('UPDATE `ndm_business_venues` SET `owner_citizenid` = ?, `metadata` = ? WHERE `id` = ?', {
         venue.owner_citizenid,

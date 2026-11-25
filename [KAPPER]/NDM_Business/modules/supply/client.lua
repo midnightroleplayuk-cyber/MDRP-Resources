@@ -208,10 +208,14 @@ RegisterNetEvent('ndm_business:supply:depot', function(id, depot)
     if depot then addDepotZone(depot) else removeDepotZone(id) end
 end)
 
-RegisterNetEvent('ndm_business:supply:placeDepot', function(label)
+-- Opened from the Admin view of /business. `done` runs afterwards, even when placement is cancelled.
+function NDM.PlaceDepot(label, done)
     CreateThread(function()
         local coords, heading = NDM.RunPlacer()
-        if not coords then return end
+        if not coords then
+            if done then done() end
+            return
+        end
         local ok, result = pcall(lib.callback.await, 'ndm_business:supply:saveDepot', false, {
             label = label,
             x = coords.x,
@@ -224,8 +228,9 @@ RegisterNetEvent('ndm_business:supply:placeDepot', function(label)
         else
             lib.notify({ type = 'error', description = result and result.error or 'The server did not respond.' })
         end
+        if done then done() end
     end)
-end)
+end
 
 RegisterNetEvent('QBCore:Client:OnPlayerLoaded', function()
     CreateThread(refreshState)

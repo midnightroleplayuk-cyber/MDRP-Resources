@@ -34,7 +34,6 @@ server_scripts {
     'core/db.lua',
     'core/venues.lua',
     'core/money.lua',
-    'core/commands.lua',
     'modules/points/server.lua',
     'modules/supply/server.lua',
     'modules/register/server.lua',
@@ -42,6 +41,7 @@ server_scripts {
     'modules/crafting/server.lua',
     'modules/club/server.lua',
     'modules/dining/server.lua',
+    'modules/admin/server.lua',
     'modules/management/server.lua',
     'core/server.lua',
 }

@@ -145,62 +145,49 @@ function NDM.Ownership.Transfer(src, venue, target)
     return true
 end
 
-lib.addCommand('ndmbiz_setprice', {
-    help = 'List an unowned venue for sale, or use 0 to remove the listing',
-    restricted = 'group.admin',
-    params = {
-        { name = 'venue', type = 'number', help = 'Venue ID' },
-        { name = 'price', type = 'number', help = 'Sale price' },
-    },
-}, function(source, args)
-    local venue = NDM.Venue.Get(args.venue)
-    if not venue then return Bridge.Notify(source, 'Venue not found.', 'error') end
-    if venue.owner_citizenid then return Bridge.Notify(source, 'Clear the owner first.', 'error') end
-    if args.price ~= 0 and not NDM.WholeMoney(args.price) then return Bridge.Notify(source, 'Invalid price.', 'error') end
+-- Admin setup actions, called from the Admin view of /business.
+function NDM.Ownership.AdminSetPrice(venue, price)
+    if not venue then return false, 'invalid_venue' end
+    if venue.owner_citizenid then return false, 'has_owner' end
+    price = tonumber(price)
+    if not price or price ~= math.floor(price) or (price ~= 0 and not NDM.WholeMoney(price)) then
+        return false, 'invalid_price'
+    end
 
-    venue.metadata.sale_price = args.price ~= 0 and NDM.WholeMoney(args.price) or nil
+    venue.metadata.sale_price = price ~= 0 and NDM.WholeMoney(price) or nil
     NDM.Venue.SaveOwnership(venue)
     NDM.Points.RefreshVenue(venue.id)
-    Bridge.Notify(source, args.price ~= 0 and ('%s is listed for $%d.'):format(venue.label, salePrice(venue))
-        or ('%s is no longer for sale.'):format(venue.label), 'success')
-end)
+    if price == 0 then return true, ('%s is no longer for sale.'):format(venue.label) end
+    return true, ('%s is listed for $%d.'):format(venue.label, salePrice(venue))
+end
 
-lib.addCommand('ndmbiz_owner', {
-    help = 'Give a venue to a player without charging them',
-    restricted = 'group.admin',
-    params = {
-        { name = 'venue', type = 'number', help = 'Venue ID' },
-        { name = 'player', type = 'playerId', help = 'Player server ID' },
-    },
-}, function(source, args)
-    local venue = NDM.Venue.Get(args.venue)
-    local citizenId = Bridge.GetCitizenId(args.player)
-    if not venue or not citizenId then return Bridge.Notify(source, 'Venue or player not found.', 'error') end
-    if Busy[venue.id] then return Bridge.Notify(source, 'Ownership is already changing.', 'error') end
+function NDM.Ownership.AdminSetOwner(venue, target)
+    if not venue then return false, 'invalid_venue' end
+    local citizenId = target and Bridge.GetCitizenId(target)
+    if not citizenId then return false, 'invalid_player' end
+    if Busy[venue.id] then return false, 'busy' end
 
     Busy[venue.id] = true
     venue.metadata.sale_price = nil
     venue.metadata.purchase_price = nil
     assignOwner(venue, citizenId)
     Busy[venue.id] = nil
-    Bridge.Notify(source, ('%s now has an owner.'):format(venue.label), 'success')
-    Bridge.Notify(args.player, ('You now own %s.'):format(venue.label), 'success')
-end)
+    Bridge.Notify(target, ('You now own %s.'):format(venue.label), 'success')
+    return true, ('%s now has an owner.'):format(venue.label)
+end
 
-lib.addCommand('ndmbiz_clearowner', {
-    help = 'Remove the owner of a venue',
-    restricted = 'group.admin',
-    params = {
-        { name = 'venue', type = 'number', help = 'Venue ID' },
-    },
-}, function(source, args)
-    local venue = NDM.Venue.Get(args.venue)
-    if not venue then return Bridge.Notify(source, 'Venue not found.', 'error') end
-    if Busy[venue.id] then return Bridge.Notify(source, 'Ownership is already changing.', 'error') end
+function NDM.Ownership.IsBusy(venueId)
+    return Busy[venueId] == true
+end
+
+function NDM.Ownership.AdminClearOwner(venue)
+    if not venue then return false, 'invalid_venue' end
+    if not venue.owner_citizenid then return false, 'no_owner' end
+    if Busy[venue.id] then return false, 'busy' end
 
     Busy[venue.id] = true
     venue.metadata.purchase_price = nil
     assignOwner(venue, nil)
     Busy[venue.id] = nil
-    Bridge.Notify(source, ('%s no longer has an owner.'):format(venue.label), 'success')
-end)
+    return true, ('%s no longer has an owner.'):format(venue.label)
+end
