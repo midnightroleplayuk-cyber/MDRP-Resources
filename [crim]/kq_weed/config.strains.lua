@@ -22,7 +22,7 @@ Config.weedTypes = {
             },
             seeds = {
                 -- The chances of receiving any seeds back
-                chance = 50,
+                chance = 25,
                 -- Min/max amounts of seed once the random chance hits
                 min = 1,
                 max = 2,
@@ -73,7 +73,7 @@ Config.weedTypes = {
         -- 0 = Green (classic) -- 1 = Light purple -- 2 = Red -- 3 = Blue -- 4 = Yellow -- 5 = Bright pink -- 6 = White -- 7 = Black/dark
         -- The following colors are more extreme and less realistic
         -- 8 = Neon Green -- 9 = Cyan/Red -- 10 = Pink -- 11 = Gold -- 12 = Cyan -- 13 = Red/pink -- 14 = Yellow/Blue -- 15 = Purple/Red
-        plantColor = 0,
+        plantColor = 8,
 
         -- Amount of buds needed for a brick
         -- Recommended 10 - 40 buds per brick
@@ -105,7 +105,7 @@ Config.weedTypes = {
             },
             seeds = {
                 -- The chances of receiving any seeds back
-                chance = 30,
+                chance = 25,
                 -- Min/max amounts of seed once the random chance hits
                 min = 1,
                 max = 2,
@@ -140,7 +140,7 @@ Config.weedTypes = {
         -- Full growth lifespan in minutes
         -- The time players have between the plant fully growing and it dying after not being picked
         -- Recommended minimum of 4 minutes
-        collectionLifespan = 30,
+        collectionLifespan = 45,
 
         -- Requires "optimal conditions" to grow
         -- Optimal conditions are defined in the config where pots are created, or by a player placed pot with a grow tent
@@ -190,7 +190,7 @@ Config.weedTypes = {
             },
             seeds = {
                 -- The chances of receiving any seeds back
-                chance = 35,
+                chance = 25,
                 -- Min/max amounts of seed once the random chance hits
                 min = 1,
                 max = 2,
@@ -217,7 +217,7 @@ Config.weedTypes = {
         -- Full growth lifespan in minutes
         -- The time players have between the plant fully growing and it dying after not being picked
         -- Recommended minimum of 4 minutes
-        collectionLifespan = 20,
+        collectionLifespan = 45,
 
         -- Requires "optimal conditions" to grow
         -- Optimal conditions are defined in the config where pots are created, or by a player placed pot with a grow tent
@@ -226,7 +226,7 @@ Config.weedTypes = {
 
         growthMultipliers = {
             -- The growth speed multiplier of the plant when planted in a pot with optimal conditions
-            optimalConditions = 1.0,
+            optimalConditions = 1.2,
         },
 
         -- Chance of insect infestation to occur throughout the plants growth process
@@ -269,7 +269,7 @@ Config.weedTypes = {
             },
             seeds = {
                 -- The chances of receiving any seeds back
-                chance = 35,
+                chance = 25,
                 -- Min/max amounts of seed once the random chance hits
                 min = 1,
                 max = 3,
@@ -296,7 +296,7 @@ Config.weedTypes = {
         -- Full growth lifespan in minutes
         -- The time players have between the plant fully growing and it dying after not being picked
         -- Recommended minimum of 4 minutes
-        collectionLifespan = 60,
+        collectionLifespan = 45,
 
         -- Requires "optimal conditions" to grow
         -- Optimal conditions are defined in the config where pots are created, or by a player placed pot with a grow tent
@@ -305,7 +305,7 @@ Config.weedTypes = {
 
         growthMultipliers = {
             -- The growth speed multiplier of the plant when planted in a pot with optimal conditions
-            optimalConditions = 1.0,
+            optimalConditions = 1.2,
         },
 
         -- Chance of insect infestation to occur throughout the plants growth process
@@ -316,7 +316,7 @@ Config.weedTypes = {
         -- 0 = Green (classic) -- 1 = Light purple -- 2 = Red -- 3 = Blue -- 4 = Yellow -- 5 = Bright pink -- 6 = White -- 7 = Black/dark
         -- The following colors are more extreme and less realistic
         -- 8 = Neon Green -- 9 = Cyan/Red -- 10 = Pink -- 11 = Gold -- 12 = Cyan -- 13 = Red/pink -- 14 = Yellow/Blue -- 15 = Purple/Red
-        plantColor = 3,
+        plantColor = 12,
 
         -- Amount of buds needed for a brick
         -- Recommended 10 - 40 buds per brick
