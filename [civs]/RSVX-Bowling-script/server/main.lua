@@ -3,9 +3,9 @@ local FULL = Physics.FULL
 
 local defs = {}        -- lane definitions sent to clients, by id
 local lanes = {}       -- live game state, by id
-local saved = {}       -- lanes placed in game (data/lanes.json)
-local screenEdits = {} -- screens moved in game (data/screens.json), keyed by lane position
-local layout = { pairs = {}, panels = {}, cfg = {} } -- lane pairs, control panels, and in-game edits to config lanes (data/layout.json)
+local saved = {}       -- lanes placed in game (rsvx_bowling_data 'lanes')
+local screenEdits = {} -- screens moved in game (rsvx_bowling_data 'screens'), keyed by lane position
+local layout = { pairs = {}, panels = {}, cfg = {} } -- lane pairs, control panels, and in-game edits to config lanes (rsvx_bowling_data 'layout')
 local playerLane = {}  -- src -> lane id
 
 local function plain(v)
@@ -168,26 +168,40 @@ local function allStates()
     return out
 end
 
+-- In-game edits live in the database (one JSON row per kind). The old
+-- data/*.json files are only read once, to migrate them into the table.
+local function dbRead(key)
+    local raw = MySQL.scalar.await('SELECT data FROM rsvx_bowling_data WHERE name = ?', { key })
+    if not raw then
+        raw = LoadResourceFile(RES, ('data/%s.json'):format(key))
+        if raw then
+            MySQL.insert.await('INSERT IGNORE INTO rsvx_bowling_data (name, data) VALUES (?, ?)', { key, raw })
+            print(('[rsvx_bowling] migrated data/%s.json to the database'):format(key))
+        end
+    end
+    local ok, data = pcall(json.decode, raw or '')
+    return ok and type(data) == 'table' and data or {}
+end
+
+local function dbWrite(key, value)
+    MySQL.insert('INSERT INTO rsvx_bowling_data (name, data) VALUES (?, ?) ON DUPLICATE KEY UPDATE data = VALUES(data)',
+        { key, json.encode(value) })
+end
+
 local function loadSaved()
-    local raw = LoadResourceFile(RES, 'data/lanes.json')
-    saved = raw and json.decode(raw) or {}
-    if type(saved) ~= 'table' then saved = {} end
+    saved = dbRead('lanes')
 end
 
 local function loadScreens()
-    local raw = LoadResourceFile(RES, 'data/screens.json')
-    screenEdits = raw and json.decode(raw) or {}
-    if type(screenEdits) ~= 'table' then screenEdits = {} end
+    screenEdits = dbRead('screens')
 end
 
 local function writeScreens()
-    SaveResourceFile(RES, 'data/screens.json', json.encode(screenEdits, { indent = true }), -1)
+    dbWrite('screens', screenEdits)
 end
 
 local function loadLayout()
-    local raw = LoadResourceFile(RES, 'data/layout.json')
-    local data = raw and json.decode(raw)
-    if type(data) ~= 'table' then data = {} end
+    local data = dbRead('layout')
     layout = {
         pairs = type(data.pairs) == 'table' and data.pairs or {},
         panels = type(data.panels) == 'table' and data.panels or {},
@@ -196,7 +210,7 @@ local function loadLayout()
 end
 
 local function writeLayout()
-    SaveResourceFile(RES, 'data/layout.json', json.encode(layout, { indent = true }), -1)
+    dbWrite('layout', layout)
 end
 
 local function unpair(key)
@@ -212,15 +226,27 @@ local function rebuildAndSync()
 end
 
 local function writeSaved()
-    SaveResourceFile(RES, 'data/lanes.json', json.encode(saved, { indent = true }), -1)
+    dbWrite('lanes', saved)
 end
 
-loadSaved()
-loadScreens()
-loadLayout()
-buildDefs()
+local dataReady = false
+MySQL.ready(function()
+    MySQL.query.await([[
+        CREATE TABLE IF NOT EXISTS `rsvx_bowling_data` (
+            `name` VARCHAR(32) NOT NULL,
+            `data` LONGTEXT NOT NULL,
+            PRIMARY KEY (`name`)
+        )
+    ]])
+    loadSaved()
+    loadScreens()
+    loadLayout()
+    rebuildAndSync()
+    dataReady = true
+end)
 
 lib.callback.register('rsvx_bowling:init', function()
+    while not dataReady do Wait(100) end
     return defs, allStates()
 end)
 
