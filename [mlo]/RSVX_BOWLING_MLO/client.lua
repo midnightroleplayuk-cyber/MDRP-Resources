@@ -13,9 +13,8 @@ RegisterCommand('bowling', function()
 end, false)
 
 -- sitting on the modelled lane sofas and lounge booths (BowlingSeats, generated into seats.lua):
--- walk up to a seat and press E to sit, E again to stand up
+-- third eye (ox_target) on a seat -> "Sit down", X to stand up again
 local SIT_SCENARIO = 'PROP_HUMAN_SEAT_CHAIR_MP_PLAYER'
-local SIT_RANGE = 1.2
 local seated = nil
 
 local function help(text)
@@ -33,38 +32,41 @@ local function seatTaken(seat, me)
     return false
 end
 
-CreateThread(function()
-    while true do
-        local wait = 750
-        local ped = PlayerPedId()
-        local pos = GetEntityCoords(ped)
-        if seated then
-            wait = 0
-            help('Press ~INPUT_CONTEXT~ to stand up')
-            if IsControlJustReleased(0, 38) or #(pos - seated.xyz) > 1.5 then
+local function sit(seat)
+    local ped = PlayerPedId()
+    if seated or IsPedInAnyVehicle(ped, false) or seatTaken(seat, ped) then return end
+    TaskStartScenarioAtPosition(ped, SIT_SCENARIO, seat.x, seat.y, seat.z, seat.w, 0, true, true)
+    seated = seat
+    CreateThread(function()
+        while seated do
+            help('Press ~INPUT_VEH_DUCK~ to stand up')
+            if IsControlJustReleased(0, 73) or #(GetEntityCoords(ped) - seated.xyz) > 1.5 then
                 ClearPedTasks(ped)
                 seated = nil
             end
-        elseif not IsPedInAnyVehicle(ped, false) then
-            local best, bestDist = nil, SIT_RANGE
-            for _, seat in ipairs(BowlingSeats) do
-                local d = #(pos - seat.xyz)
-                if d < bestDist then
-                    best, bestDist = seat, d
-                end
-            end
-            if best then
-                wait = 0
-                help('Press ~INPUT_CONTEXT~ to sit')
-                if IsControlJustReleased(0, 38) and not seatTaken(best, ped) then
-                    TaskStartScenarioAtPosition(ped, SIT_SCENARIO, best.x, best.y, best.z, best.w, 0, true, true)
-                    seated = best
-                end
-            elseif #(pos - BowlingSeats[1].xyz) > 60.0 then
-                wait = 2000   -- nowhere near the bowling alley
-            end
+            Wait(0)
         end
-        Wait(wait)
+    end)
+end
+
+local seatZones = {}
+CreateThread(function()
+    for i, seat in ipairs(BowlingSeats) do
+        seatZones[i] = exports.ox_target:addSphereZone({
+            coords = vec3(seat.x, seat.y, seat.z + 0.1),
+            radius = 0.4,
+            debug = false,
+            options = {
+                {
+                    name = 'rsvx_bowling_sit_' .. i,
+                    icon = 'fa-solid fa-chair',
+                    label = 'Sit down',
+                    distance = 2.0,
+                    canInteract = function() return not seated end,
+                    onSelect = function() sit(seat) end,
+                },
+            },
+        })
     end
 end)
 
@@ -83,6 +85,8 @@ AddEventHandler('onResourceStop', function(res)
     if res ~= GetCurrentResourceName() then return end
     if navBlock then RemoveNavmeshBlockingObject(navBlock) end
     if scenBlock then RemoveScenarioBlockingArea(scenBlock, false) end
+    for _, id in pairs(seatZones) do exports.ox_target:removeZone(id) end
+    if seated then ClearPedTasks(PlayerPedId()) end
 end)
 
 -- other resources (a server sit script, target menus) can read the same points
