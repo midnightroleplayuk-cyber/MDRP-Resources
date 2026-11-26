@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>RSVX Bowling</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <section id="board" class="board hud" hidden></section>
+
+  <div id="panes" hidden></div>
+
+  <div id="banner" hidden>
+    <strong id="banner-text"></strong>
+    <span id="banner-name"></span>
+  </div>
+
+  <section id="aim" hidden>
+    <div class="row" data-phase="setup">
+      <label>Position</label>
+      <div class="track"><i id="aim-offset"></i></div>
+      <kbd>A</kbd><kbd>D</kbd>
+    </div>
+    <div class="row" data-phase="setup">
+      <label>Aim</label>
+      <div class="track centre"><i id="aim-needle"></i></div>
+      <kbd>&larr;</kbd><kbd>&rarr;</kbd>
+    </div>
+    <div class="row" data-phase="setup">
+      <label>Spin</label>
+      <div class="track centre"><i id="aim-spin"></i></div>
+      <kbd>Q</kbd><kbd>E</kbd>
+    </div>
+    <div class="row" data-phase="power">
+      <label>Power</label>
+      <div class="track fill"><b id="aim-power"></b></div>
+    </div>
+    <p><kbd>SPACE</kbd> <span id="aim-hint"></span> <kbd>BACKSPACE</kbd> put the ball down <kbd>SHIFT</kbd> fine</p>
+  </section>
+
+  <script src="app.js"></script>
+</body>
+</html>
