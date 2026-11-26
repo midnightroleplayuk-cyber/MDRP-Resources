@@ -3,7 +3,7 @@ game 'gta5'
 
 name 'vinewood_licensing'
 author 'Vinewood Studios'
-version '2.0.4'
+version '2.0.5'
 description 'Vinewood Licensing - UK DVLA style licensing for Qbox: theory, practical, provisional, photocard, points and bans'
 
 lua54 'yes'
@@ -68,5 +68,3 @@ files {
     'web/assets/licence/*.svg',
     'locales/*.json'
 }
-
-dependency '/assetpacks'

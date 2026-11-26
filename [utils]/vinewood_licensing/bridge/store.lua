@@ -97,8 +97,42 @@ function Store.SetLicences(src, licences)
     local entry = load(cid, src)
     entry.licences = licences or {}
     persist(cid)
-    -- keep the framework copy in step for other resources
-    if FW.SupportsMetadata() then FW.SetMetadata(src, 'licences', entry.licences) end
+    if FW.SupportsMetadata() then Store.MirrorLicences(src, entry.licences) end
+end
+
+--- Writes our categories into metadata.licences WITHOUT destroying what the
+--- framework (or another resource) already keeps there. qb/qbx ship
+--- { driver, business, weapon }, and vehicle-key and shop scripts read those -
+--- replacing the table wholesale is what breaks them.
+function Store.MirrorLicences(src, licences)
+    if not FW.SupportsMetadata() then return end
+
+    local existing = FW.GetMetadata(src, 'licences')
+    local merged = {}
+    if type(existing) == 'table' then
+        for k, v in pairs(existing) do merged[k] = v end
+    end
+
+    -- our own category keys
+    for key in pairs(Config.VehicleCategories or {}) do
+        merged[key] = licences[key] == true or nil
+    end
+
+    -- framework-standard keys (e.g. car -> driver) so other scripts keep working
+    local map = Config.FrameworkLicenceMirror
+    if type(map) == 'table' then
+        local wanted = {}
+        for key, target in pairs(map) do
+            if type(target) == 'string' then
+                wanted[target] = wanted[target] or (licences[key] == true)
+            end
+        end
+        for target, held in pairs(wanted) do
+            merged[target] = held or nil
+        end
+    end
+
+    FW.SetMetadata(src, 'licences', merged)
 end
 
 --- The DVLA record: photo, provisional entitlement, points, ban.

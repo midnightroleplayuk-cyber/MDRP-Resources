@@ -30,11 +30,11 @@ Config.Locations = {
         Distance = 8.0,        -- how close before they can use it
         Label = 'DVLA Desk',
         Icon = 'fa-solid fa-id-card',
-        Blip = { Enabled = true, Sprite = 498, Colour = 2, Scale = 0.7 }
+        Blip = { Enabled = false, Sprite = 498, Colour = 38, Scale = 0.7 }
     },
     ExamCentre = {
         Enabled = true,
-        Coords = vec3(208.69, -1382.76, 30.93),   -- CHANGE ME: where tests are booked
+        Coords = vector3(206.55, -1391.05, 30.56),   -- CHANGE ME: where tests are booked
         Heading = 273.0,
         Size = vec3(4.0, 4.0, 3.0),
         Distance = 8.0,
@@ -65,13 +65,22 @@ Config.QuestionCountPerExam = 10
 -- in Config.VehicleCategories below. 'mph' or 'kmh'.
 Config.SpeedUnit = 'mph'
 
+-- On Qbox/QBCore the categories are mirrored into metadata.licences so other
+-- resources (vehicle keys, shops, job scripts) keep working. Map each category
+-- to the framework key it should set. Set to false to turn mirroring off.
+Config.FrameworkLicenceMirror = {
+    car = 'driver',
+    bike = 'driver',
+    truck = 'driver'
+}
+
 Config.VehicleCategories = {
     car = {
         Label = 'Car (B)',
         Enabled = true,
-        VehicleModel = 'remus',
+        VehicleModel = 'sultanrs',
         VehicleSpawn = vector4(219.05, -1375.71, 30.56, 209.76),
-        MaxSpeed = 60,   -- in Config.SpeedUnit
+        MaxSpeed = 50,   -- in Config.SpeedUnit
         TimeLimitSeconds = 300,
         MaxMistakesTheory = 3,
         MaxMistakesPractical = 5
@@ -81,17 +90,17 @@ Config.VehicleCategories = {
         Enabled = true,
         VehicleModel = 'bati',
         VehicleSpawn = vector4(219.05, -1375.71, 30.56, 209.76),
-        MaxSpeed = 60,   -- in Config.SpeedUnit
+        MaxSpeed = 55,   -- in Config.SpeedUnit
         TimeLimitSeconds = 300,
         MaxMistakesTheory = 3,
         MaxMistakesPractical = 5
     },
     truck = {
         Label = 'Truck (C)',
-        Enabled = true,
+        Enabled = false,
         VehicleModel = 'packer',
         VehicleSpawn = vector4(219.05, -1375.71, 30.56, 209.76),
-        MaxSpeed = 54,   -- in Config.SpeedUnit
+        MaxSpeed = 45,   -- in Config.SpeedUnit
         TimeLimitSeconds = 420,
         MaxMistakesTheory = 4,
         MaxMistakesPractical = 6
@@ -111,14 +120,14 @@ Config.Provisional = {
     Photo = {
         Enabled = true,
         -- API key lives in server/config.lua (server-only, never sent to clients)
-        Encoding = 'png',       -- png | jpg | webp
-        Quality = 1.0,
+        Encoding = 'jpg',       -- png | jpg | webp
+        Quality = 0.92,
         CountdownSeconds = 3,
         -- the picture is cropped and shrunk before leaving the client
         Output = {
             Width = 420,
             Height = 540,
-            Quality = 1.0
+            Quality = 0.85
         },
         Camera = {
             Distance = 0.95,     -- how far in front of the face (higher = further back)

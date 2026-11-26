@@ -78,3 +78,27 @@ PROVISIONAL LICENCE (added)
 3) Settings live in shared/config.lua under Config.Provisional
    (price, payment account, whether it's required before exams, camera
    distance/FOV for the photo booth, countdown length).
+
+
+================================================================
+LICENCE PHOTOS IN THE INVENTORY (ox_inventory)
+================================================================
+
+The photo is attached to the item as `metadata.imageurl` (a full Fivemanage
+URL). ox_inventory shows that in place of the item icon automatically - no
+images need copying into ox_inventory/web/images.
+
+If photos appear on the licence card but NOT on the item in the inventory,
+check your ox_inventory convars:
+
+    # If this is set, ox_inventory only allows metadata image URLs from hosts
+    # listed in inventory:validhosts. Fivemanage is in the default list.
+    set inventory:webhook ""
+
+    set inventory:validhosts {
+        "r2.fivemanage.com": true,
+        "i.fmfile.com": true
+    }
+
+If you upload photos somewhere other than Fivemanage, add that host to
+inventory:validhosts or the image is rejected.
