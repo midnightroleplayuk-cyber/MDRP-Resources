@@ -40,6 +40,19 @@ Config.Strength = {
     hearing  = 30.0,   -- metres other players hear the bell from
 }
 
+Config.Pinball = {
+    balls    = 3,
+    ballSave = 5,      -- seconds after a launch in which a drained ball is handed back (once per ball)
+    camera   = true,   -- on the custom table, look down at the playfield while playing
+}
+
+Config.Hockey = {
+    goals = 7,         -- first to this many wins
+    time  = 180,       -- seconds; whoever is ahead when it runs out wins
+    ai    = 0.6,       -- computer opponent: 0.3 is easy, 0.9 is hard
+    camera = true,     -- on the custom table, fix the view above your end and hide your own character
+}
+
 Config.Machines = {
     snake = {
         label = 'Viper',
@@ -140,6 +153,61 @@ Config.Machines = {
             { label = 'Phone',  item = 'phone',  count = 1, model = `prop_npc_phone_02`,   weight = 7,  z = 0.03 },
             { label = '£50',    money = 50,                 model = `prop_cash_pile_01`,   weight = 7 },
         },
+    },
+    -- fallback = cabinet used if model does not exist on your game build
+    kapperman = {
+        label = 'KapperMan',
+        item  = 'arcade_kapperman',
+        physical = `rsvx_kapperman`,
+        model = `ch_prop_arcade_invade_01a`, fallback = `ch_prop_arcade_space_01a`,
+        price = 2,
+        maxScore = 500000, maxPerSecond = 120,
+        ticketEvery = 300,
+    },
+    pinball = {
+        label = 'Pinball',
+        item  = 'arcade_pinball',
+        physical = `rsvx_pinball`,
+        model = `ch_prop_arcade_wizard_01a`, fallback = `ch_prop_arcade_space_01a`,
+        price = 2,
+        maxScore = 5000000, maxPerSecond = 2000,
+        ticketEvery = 2000,
+        boardFooter = 'Pinball high scores',
+        boardColours = { bar = '#3f1c61', edge = '#f2c14a', text = '#f4e6c2', lead = '#f2c14a' },
+    },
+    -- versus = a second player can join at the other end of the custom table
+    airhockey = {
+        label = 'Air Hockey',
+        item  = 'arcade_airhockey',
+        physical = `rsvx_hockey`,
+        model = `prop_airhockey_01`, fallback = `ch_prop_arcade_street_01b`,
+        price = 2,
+        maxScore = 1, maxPerSecond = 1,
+        tally = true,      -- the leaderboard counts wins instead of keeping a best score
+        versus = true,
+        boardFooter = 'Air Hockey: most wins',
+        boardColours = { bar = '#17191c', edge = '#c8392b', text = '#eceef0', lead = '#e0503f' },
+    },
+    -- Leaderboards to place next to the tables, like the Bell Ringer one.
+    pinball_board = {
+        label = 'Pinball Leaderboard',
+        item  = 'arcade_pinballboard',
+        physical = `rsvx_pinball_board`,
+        model = `prop_tv_flat_01`,
+        display = 'pinball',
+        price = 0,
+        board = false,
+        maxScore = 0, maxPerSecond = 0,
+    },
+    airhockey_board = {
+        label = 'Air Hockey Leaderboard',
+        item  = 'arcade_hockeyboard',
+        physical = `rsvx_hockey_board`,
+        model = `prop_tv_flat_01`,
+        display = 'airhockey',
+        price = 0,
+        board = false,
+        maxScore = 0, maxPerSecond = 0,
     },
     fortune = {
         label = 'Mystic',

@@ -6,6 +6,8 @@ Physical = {}
 local Rigs   = {}
 local Tweens = {}
 local Games  = {}
+local Remote = {}
+local Table
 local ticking = false
 
 local SIN10, COS10 = math.sin(math.rad(10.0)), math.cos(math.rad(10.0))
@@ -31,6 +33,8 @@ local PART_MODELS = {
     strength = { `rsvx_bell_puck`, `rsvx_bell_hammer` },
     whack    = { `rsvx_mole_mole`, `rsvx_mole_mallet` },
     hoops    = { `rsvx_hoops_hoop`, `rsvx_hoops_ball` },
+    pinball  = { `rsvx_pinball_ball`, `rsvx_pinball_flipper` },
+    airhockey = { `rsvx_hockey_puck`, `rsvx_hockey_mallet`, `rsvx_hockey_mallet2` },
 }
 
 local function clamp(v, lo, hi) return v < lo and lo or v > hi and hi or v end
@@ -100,10 +104,11 @@ local function resetRig(rig, relay)
     end
 end
 
-RegisterNetEvent('rsvx_arcade:fx', function(id, key, x, y, z, ms)
+RegisterNetEvent('rsvx_arcade:fx', function(id, key, x, y, z, ms, ...)
     local rig = Rigs[id]
     if not rig or rig.mine then return end
     if key == '@reset' then return resetRig(rig) end
+    if Remote[key] then return Remote[key](rig, x, y, z, ms, ...) end
     if type(x) == 'number' and type(y) == 'number' and type(z) == 'number' then
         move(rig, key, x, y, z, ms)
         if rig.kind == 'strength' and key == 'puck' and z >= 0.2 + Config.Strength.bell / 1000 * 2.25 - 0.001 then
@@ -177,6 +182,79 @@ function Build.claw(rig)
     end
     for i = 1, #PRIZE_SPOTS do addPrize(rig, i) end
 end
+
+-- Pinball and air hockey are worked out by the page (web/games/pinball.js, airhockey.js) and the parts are
+-- placed from what it reports. These numbers have to match that layout and the Blender models.
+local PIN = { y0 = -0.50, z0 = 0.86, tilt = 6.5, r = 0.016, lx = -0.1237, rx = 0.0787, py = 0.12, restX = 0.2275, restY = 0.046 }
+local PIN_SIN, PIN_COS = math.sin(math.rad(PIN.tilt)), math.cos(math.rad(PIN.tilt))
+local HOCKEY = { z = 0.80, mallet = 0.055, halfW = 0.5, halfL = 1.0, speed = 2.4, accel = 18.0 }
+
+local function numbers(...)
+    for i = 1, select('#', ...) do
+        if type((select(i, ...))) ~= 'number' then return false end
+    end
+    return true
+end
+
+local function pinPos(u, v, lift)
+    return u, PIN.y0 + v * PIN_COS - lift * PIN_SIN, PIN.z0 + v * PIN_SIN + lift * PIN_COS
+end
+
+local function qmul(ax, ay, az, aw, bx, by, bz, bw)
+    return aw * bx + ax * bw + ay * bz - az * by,
+        aw * by - ax * bz + ay * bw + az * bx,
+        aw * bz + ax * by - ay * bx + az * bw,
+        aw * bw - ax * bx - ay * by - az * bz
+end
+
+local function turnPart(rig, part, spin, tilt)
+    local h, t, s = math.rad(rig.heading) * 0.5, math.rad(tilt) * 0.5, math.rad(spin) * 0.5
+    local x, y, z, w = qmul(0.0, 0.0, math.sin(h), math.cos(h), math.sin(t), 0.0, 0.0, math.cos(t))
+    x, y, z, w = qmul(x, y, z, w, 0.0, 0.0, math.sin(s), math.cos(s))
+    SetEntityQuaternion(part.obj, x, y, z, w)
+end
+
+local function pinFlippers(rig, left, right)
+    if rig.parts.fl then turnPart(rig, rig.parts.fl, left, PIN.tilt) end
+    if rig.parts.fr then turnPart(rig, rig.parts.fr, right, PIN.tilt) end
+end
+
+function Build.pinball(rig)
+    local x, y, z = pinPos(PIN.restX, PIN.restY, PIN.r)
+    addPart(rig, 'ball', `rsvx_pinball_ball`, x, y, z)
+    x, y, z = pinPos(PIN.lx, PIN.py, 0.012)
+    addPart(rig, 'fl', `rsvx_pinball_flipper`, x, y, z)
+    x, y, z = pinPos(PIN.rx, PIN.py, 0.012)
+    addPart(rig, 'fr', `rsvx_pinball_flipper`, x, y, z)
+    pinFlippers(rig, -28.0, 208.0)
+end
+
+function Build.airhockey(rig)
+    addPart(rig, 'puck', `rsvx_hockey_puck`, 0.0, -0.35, HOCKEY.z)
+    addPart(rig, 'mallet1', `rsvx_hockey_mallet`, 0.0, -0.75, HOCKEY.z)
+    addPart(rig, 'mallet2', `rsvx_hockey_mallet2`, 0.0, 0.75, HOCKEY.z)
+end
+
+Remote['@pinball'] = function(rig, u, v, left, right)
+    if rig.kind ~= 'pinball' or not numbers(u, v, left, right) then return end
+    local x, y, z = pinPos(u, v, PIN.r)
+    move(rig, 'ball', x, y, z, 90)
+    pinFlippers(rig, left, right)
+end
+
+Remote['@hockey'] = function(rig, px, py, ax, ay, bx, by, s1, s2, flags)
+    if rig.kind ~= 'airhockey' or not numbers(px, py, ax, ay, bx, by, s1, s2, flags) then return end
+    rig.live, rig.s1, rig.s2 = GetGameTimer(), s1, s2
+    rig.full, rig.over = flags & 1 ~= 0, flags & 2 ~= 0
+    move(rig, 'puck', px, py, HOCKEY.z, 90)
+    move(rig, 'mallet1', ax, ay, HOCKEY.z, 90)
+    if not rig.guest then move(rig, 'mallet2', bx, by, HOCKEY.z, 90) end
+end
+
+RegisterNUICallback('table', function(data, cb)
+    Table = data
+    cb(1)
+end)
 
 function Build.strength(rig)
     addPart(rig, 'puck', `rsvx_bell_puck`, 0.0, 0.11, 0.2)
@@ -541,6 +619,229 @@ function Games.hoops(rig, submit)
     Wait(600)
 end
 
+local function tableCam(rig, fx, fy, fz, tx, ty, tz, fov)
+    local from = GetOffsetFromEntityInWorldCoords(rig.base, fx, fy, fz)
+    local at = GetOffsetFromEntityInWorldCoords(rig.base, tx, ty, tz)
+    rig.cam = CreateCamWithParams('DEFAULT_SCRIPTED_CAMERA', from.x, from.y, from.z, 0.0, 0.0, 0.0, fov, false, 2)
+    PointCamAtCoord(rig.cam, at.x, at.y, at.z)
+    SetCamActive(rig.cam, true)
+    RenderScriptCams(true, true, 500, true, false)
+end
+
+local function stopCam(rig)
+    if not rig.cam then return end
+    RenderScriptCams(false, true, 500, true, false)
+    DestroyCam(rig.cam, false)
+    rig.cam = nil
+end
+
+local function hockeyCam(rig, side)
+    if Config.Hockey.camera ~= false then tableCam(rig, 0.0, side * 1.5, 2.3, 0.0, -side * 0.1, 0.8, 50.0) end
+end
+
+local function startTable(game, opts)
+    Table = nil
+    SendNUIMessage({ action = 'table', game = game, opts = opts })
+    local giveUp = GetGameTimer() + 3000
+    while not Table do
+        Wait(0)
+        controls()
+        if GetGameTimer() > giveUp then error('the ' .. game .. ' table did not start') end
+    end
+    if Table.failed then error('the page has no ' .. game .. ' table') end
+end
+
+function Games.pinball(rig, submit)
+    startTable('pinball', Config.Pinball)
+    if Config.Pinball.camera ~= false then tableCam(rig, 0.0, -0.95, 2.1, 0.0, -0.03, 0.91, 45.0) end
+    local left, right, plunge = false, false, false
+    local lastSend, lastHud, score = 0, 0, 0
+    while true do
+        Wait(0)
+        controls()
+        local l, r = held(174) or held(34), held(175) or held(35)
+        local p = held(22) or held(173) or held(33)
+        if l ~= left or r ~= right or p ~= plunge then
+            left, right, plunge = l, r, p
+            SendNUIMessage({ action = 'tableInput', input = { left = l, right = r, plunge = p } })
+        end
+
+        local s, now = Table, GetGameTimer()
+        score = s.score or score
+        local x, y, z = pinPos(s.x, s.y, PIN.r)
+        move(rig, 'ball', x, y, z, 0)
+        pinFlippers(rig, s.la, s.ra)
+        if now - lastSend > 80 then
+            lastSend = now
+            TriggerServerEvent('rsvx_arcade:fx', rig.id, '@pinball', s.x, s.y, s.la, s.ra)
+        end
+        if now - lastHud > 250 then
+            lastHud = now
+            hud(('Pinball  \nScore: %d   Balls: %d   Bonus: x%d%s  \n[A] [D] Flippers   Hold [Space] to launch  \n[Backspace] Give up')
+                :format(score, math.max(s.balls, 0), s.mult, s.save and '   Ball save' or ''))
+        end
+        if s.over or tapped(177) then break end
+    end
+    SendNUIMessage({ action = 'tableStop' })
+    submit(score)
+    Wait(800)
+    resetRig(rig, true)
+    pinFlippers(rig, -28.0, 208.0)
+end
+
+local function axis(plus1, plus2, minus1, minus2)
+    return ((held(plus1) or held(plus2)) and 1 or 0) - ((held(minus1) or held(minus2)) and 1 or 0)
+end
+
+local function clock(seconds)
+    return ('%d:%02d'):format(seconds // 60, seconds % 60)
+end
+
+function Games.airhockey(rig, submit)
+    local side = GetOffsetFromEntityGivenWorldCoords(rig.base, GetEntityCoords(cache.ped)).y > 0.0 and 1 or -1
+    local flip = -side
+    rig.remote, rig.guestAt = false, nil
+    startTable('airhockey', Config.Hockey)
+    hockeyCam(rig, side)
+
+    local ax, ay, guest, lastSend, lastHud = 0, 0, false, 0, 0
+    local s
+    local function relay(over)
+        TriggerServerEvent('rsvx_arcade:fx', rig.id, '@hockey', s.px * flip, s.py * flip, s.ax * flip, s.ay * flip,
+            s.bx * flip, s.by * flip, s.s1, s.s2, (guest and 1 or 0) + (over and 2 or 0))
+    end
+
+    while true do
+        Wait(0)
+        controls()
+        if rig.cam then SetEntityLocallyInvisible(cache.ped) end
+        local nx, ny = axis(175, 35, 174, 34), axis(172, 32, 173, 33)
+        if nx ~= ax or ny ~= ay then
+            ax, ay = nx, ny
+            SendNUIMessage({ action = 'tableInput', input = { p1 = { x = ax, y = ay } } })
+        end
+        if rig.remote ~= guest then
+            guest = rig.remote
+            SendNUIMessage({ action = 'tableInput', input = { p2 = guest and 'remote' or 'ai' } })
+        end
+        if guest and rig.guestAt then
+            SendNUIMessage({ action = 'tableInput', input = { p2 = { x = rig.guestAt.x * flip, y = rig.guestAt.y * flip } } })
+            rig.guestAt = nil
+        end
+
+        s = Table
+        local now = GetGameTimer()
+        move(rig, 'puck', s.px * flip, s.py * flip, HOCKEY.z, 0)
+        move(rig, 'mallet1', s.ax * flip, s.ay * flip, HOCKEY.z, 0)
+        move(rig, 'mallet2', s.bx * flip, s.by * flip, HOCKEY.z, 0)
+        if now - lastSend > 80 then
+            lastSend = now
+            relay(false)
+        end
+        if now - lastHud > 250 then
+            lastHud = now
+            hud(('Air Hockey  \nYou %d - %d %s   %s  \n[W] [A] [S] [D] Move your mallet  \n[Backspace] Give up')
+                :format(s.s1, s.s2, guest and 'Player 2' or 'Computer', clock(s.time or 0)))
+        end
+        if s.over or tapped(177) then break end
+    end
+
+    SendNUIMessage({ action = 'tableStop' })
+    relay(true)
+    if s.over then
+        notify(s.s1 > s.s2 and ('You won %d - %d.'):format(s.s1, s.s2)
+            or s.s1 < s.s2 and ('You lost %d - %d.'):format(s.s1, s.s2) or ('A draw, %d each.'):format(s.s1),
+            s.s1 > s.s2 and 'success' or 'inform')
+    end
+    submit(s.over and s.s1 > s.s2 and 1 or 0, s.over and guest and s.s2 > s.s1 and 'guest' or nil)
+    rig.remote = false
+    Wait(800)
+    resetRig(rig, true)
+end
+
+RegisterNetEvent('rsvx_arcade:guest', function(id, joined)
+    local rig = Rigs[id]
+    if not rig or not rig.mine then return end
+    rig.remote = joined
+    notify(joined and 'A second player has joined.' or 'The second player has left. The computer takes over.')
+end)
+
+RegisterNetEvent('rsvx_arcade:guestPos', function(id, x, y)
+    local rig = Rigs[id]
+    if rig and rig.mine and numbers(x, y) then rig.guestAt = { x = x, y = y } end
+end)
+
+RegisterNetEvent('rsvx_arcade:guestEnd', function(id)
+    local rig = Rigs[id]
+    if rig then rig.guest = false end
+end)
+
+function Physical.joinable(id)
+    local rig = Rigs[id]
+    return rig ~= nil and rig.kind == 'airhockey' and not rig.mine and not rig.guest and not rig.full
+        and rig.live ~= nil and GetGameTimer() - rig.live < 1500 and rig.parts.mallet1 ~= nil and rig.parts.mallet2 ~= nil
+end
+
+function Physical.join(m)
+    local rig = Rigs[m.id]
+    if not Physical.joinable(m.id) then return end
+    local ok, err = lib.callback.await('rsvx_arcade:join', false, m.id)
+    if not ok then return notify(err, 'error') end
+
+    rig.guest, rig.over, rig.live = true, false, GetGameTimer()
+    local ped = cache.ped
+    local side = rig.parts.mallet1.y > 0.0 and -1 or 1
+    TaskTurnPedToFaceEntity(ped, rig.base, 600)
+    Wait(600)
+    FreezeEntityPosition(ped, true)
+    hockeyCam(rig, side)
+
+    local H = HOCKEY
+    local x, y, vx, vy = 0.0, side * 0.75, 0.0, 0.0
+    local lastSend, lastHud = 0, 0
+    while rig.guest and Rigs[m.id] == rig do
+        Wait(0)
+        controls()
+        if rig.cam then SetEntityLocallyInvisible(ped) end
+        local dt = GetFrameTime()
+        local wx = -side * axis(175, 35, 174, 34) * H.speed
+        local wy = -side * axis(172, 32, 173, 33) * H.speed
+        local dx, dy = wx - vx, wy - vy
+        local d, max = math.sqrt(dx * dx + dy * dy), H.accel * dt
+        if d <= max then vx, vy = wx, wy else vx, vy = vx + dx / d * max, vy + dy / d * max end
+        x = clamp(x + vx * dt, -H.halfW + H.mallet, H.halfW - H.mallet)
+        y = y + vy * dt
+        if side > 0 then y = clamp(y, H.mallet, H.halfL - H.mallet) else y = clamp(y, -H.halfL + H.mallet, -H.mallet) end
+        move(rig, 'mallet2', x, y, H.z, 0)
+
+        local now = GetGameTimer()
+        if now - lastSend > 66 then
+            lastSend = now
+            TriggerServerEvent('rsvx_arcade:guestPos', m.id, x, y)
+        end
+        if now - lastHud > 250 then
+            lastHud = now
+            hud(('Air Hockey  \nYou %d - %d Player 1  \n[W] [A] [S] [D] Move your mallet  \n[Backspace] Leave')
+                :format(rig.s2 or 0, rig.s1 or 0))
+        end
+        if rig.over or tapped(177) or now - rig.live > 3000 then break end
+    end
+
+    local finished = rig.over
+    rig.guest = false
+    stopCam(rig)
+    FreezeEntityPosition(ped, false)
+    ClearPedTasks(ped)
+    lib.hideTextUI()
+    TriggerServerEvent('rsvx_arcade:leave')
+    if finished then
+        local mine, theirs = rig.s2 or 0, rig.s1 or 0
+        notify(mine > theirs and ('You won %d - %d.'):format(mine, theirs)
+            or mine < theirs and ('You lost %d - %d.'):format(mine, theirs) or ('A draw, %d each.'):format(mine),
+            mine > theirs and 'success' or 'inform')
+    end
+end
+
 function Physical.has(id)
     return Rigs[id] ~= nil
 end
@@ -570,7 +871,10 @@ function Physical.play(m, cfg)
     FreezeEntityPosition(ped, false)
     ClearPedTasks(ped)
     lib.hideTextUI()
+    SendNUIMessage({ action = 'tableStop' })
+    stopCam(rig)
     rig.mine = false
+    rig.remote = false
     if rig.kind == 'claw' and Rigs[m.id] == rig then restock(rig) end
     TriggerServerEvent('rsvx_arcade:leave')
     if not ok then

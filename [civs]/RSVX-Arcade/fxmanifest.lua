@@ -5,7 +5,7 @@ lua54 'yes'
 name 'RSVX_Arcade'
 author 'RSVX'
 description 'Placeable, playable arcade machines'
-version '1.4.0'
+version '1.8.2'
 
 shared_scripts {
     '@ox_lib/init.lua',

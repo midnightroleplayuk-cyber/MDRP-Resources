@@ -1,6 +1,7 @@
 local Machines = {}
 local Sessions = {}
 local InUse    = {}
+local Guests   = {}
 local Boards   = {}
 local ready    = false
 local PERMANENT = '@permanent'
@@ -63,10 +64,36 @@ local function give(src, player, entry)
     end
 end
 
+local function record(game, cid, player, score, add)
+    local previous = MySQL.scalar.await(
+        'SELECT score FROM rsvx_arcade_scores WHERE game = ? AND citizenid = ?', { game, cid }) or 0
+    if add then score = previous + score end
+    if score <= previous then return false end
+    local info = player.PlayerData.charinfo
+    local name = ('%s %s.'):format(info.firstname, info.lastname:sub(1, 1))
+    MySQL.query.await([[
+        INSERT INTO rsvx_arcade_scores (game, citizenid, name, score) VALUES (?, ?, ?, ?)
+        ON DUPLICATE KEY UPDATE score = VALUES(score), name = VALUES(name)
+    ]], { game, cid, name, score })
+    return true
+end
+
 local function release(src)
     Sessions[src] = nil
     for id, user in pairs(InUse) do
-        if user == src then InUse[id] = nil end
+        if user == src then
+            InUse[id] = nil
+            if Guests[id] then
+                TriggerClientEvent('rsvx_arcade:guestEnd', Guests[id], id)
+                Guests[id] = nil
+            end
+        end
+    end
+    for id, guest in pairs(Guests) do
+        if guest == src then
+            Guests[id] = nil
+            if InUse[id] then TriggerClientEvent('rsvx_arcade:guest', InUse[id], id, false) end
+        end
     end
 end
 
@@ -287,6 +314,29 @@ lib.callback.register('rsvx_arcade:play', function(src, id)
     return { game = m.game, label = cfg.label, price = cfg.price, board = Boards[m.game] or {} }
 end)
 
+lib.callback.register('rsvx_arcade:join', function(src, id)
+    local m = Machines[id]
+    local cid, player = getCid(src)
+    if not cid or not m then return false, 'That machine is gone.' end
+    local cfg, host = Config.Machines[m.game], InUse[id]
+    if not cfg.versus or not host or host == src then return false, 'Nobody is playing.' end
+    if Guests[id] then return false, 'Someone has already joined.' end
+    if not near(src, m, 3.5) then return false, 'Get closer.' end
+    if cfg.price > 0 and not player.Functions.RemoveMoney(Config.PayAccount, cfg.price, 'arcade-play') then
+        return false, ('You need %s%d.'):format(Config.Currency, cfg.price)
+    end
+
+    release(src)
+    Guests[id] = src
+    TriggerClientEvent('rsvx_arcade:guest', host, id, true)
+    return true
+end)
+
+RegisterNetEvent('rsvx_arcade:guestPos', function(id, x, y)
+    if Guests[id] ~= source or type(x) ~= 'number' or type(y) ~= 'number' then return end
+    if InUse[id] then TriggerClientEvent('rsvx_arcade:guestPos', InUse[id], id, x, y) end
+end)
+
 lib.callback.register('rsvx_arcade:submit', function(src, score, spot)
     local s = Sessions[src]
     Sessions[src] = nil
@@ -303,20 +353,21 @@ lib.callback.register('rsvx_arcade:submit', function(src, score, spot)
 
     local out = { board = Boards[s.game] or {}, tickets = 0 }
 
-    if cfg.board ~= false and score > 0 then
-        local previous = MySQL.scalar.await(
-            'SELECT score FROM rsvx_arcade_scores WHERE game = ? AND citizenid = ?', { s.game, cid }) or 0
-        if score > previous then
-            local info = player.PlayerData.charinfo
-            local name = ('%s %s.'):format(info.firstname, info.lastname:sub(1, 1))
-            MySQL.query.await([[
-                INSERT INTO rsvx_arcade_scores (game, citizenid, name, score) VALUES (?, ?, ?, ?)
-                ON DUPLICATE KEY UPDATE score = VALUES(score), name = VALUES(name)
-            ]], { s.game, cid, name, score })
-            out.best = true
+    if cfg.tally then
+        local changed = score > 0 and record(s.game, cid, player, 1, true)
+        local guest = spot == 'guest' and Guests[s.id]
+        if guest then
+            local guestCid, guestPlayer = getCid(guest)
+            if guestCid and record(s.game, guestCid, guestPlayer, 1, true) then changed = true end
+        end
+        if changed then
             out.board = loadBoard(s.game)
             TriggerClientEvent('rsvx_arcade:board', -1, s.game, out.board)
         end
+    elseif cfg.board ~= false and score > 0 and record(s.game, cid, player, score, false) then
+        out.best = true
+        out.board = loadBoard(s.game)
+        TriggerClientEvent('rsvx_arcade:board', -1, s.game, out.board)
     end
 
     if Config.Tickets.enabled and cfg.ticketEvery then
@@ -353,9 +404,9 @@ lib.callback.register('rsvx_arcade:submit', function(src, score, spot)
     return out
 end)
 
-RegisterNetEvent('rsvx_arcade:fx', function(id, key, x, y, z, ms)
-    if InUse[id] ~= source or type(key) ~= 'string' then return end
-    TriggerClientEvent('rsvx_arcade:fx', -1, id, key, x, y, z, ms)
+RegisterNetEvent('rsvx_arcade:fx', function(id, key, ...)
+    if InUse[id] ~= source or type(key) ~= 'string' or select('#', ...) > 10 then return end
+    TriggerClientEvent('rsvx_arcade:fx', -1, id, key, ...)
 end)
 
 RegisterNetEvent('rsvx_arcade:leave', function()

@@ -216,6 +216,36 @@
     }
     requestAnimationFrame(loop);
 
+    const SOUNDS = {
+        bumper: [660, 0.05], target: [880, 0.06, 'triangle'], bonus: [1320, 0.25, 'triangle'], flip: [140, 0.03, 'sawtooth'],
+        launch: [220, 0.12, 'sawtooth'], drain: [110, 0.4, 'sawtooth'], saved: [520, 0.15],
+        hit: [300, 0.04], wall: [180, 0.03], goal: [880, 0.3, 'triangle'],
+    };
+    let table = null, tableTimer = null, tableBusy = false, tableLast = 0;
+
+    function stopTable() {
+        if (tableTimer) clearInterval(tableTimer);
+        table = null; tableTimer = null; tableBusy = false;
+    }
+
+    function startTable(d) {
+        stopTable();
+        const kind = (window.RSVXSims || {})[d.game];
+        if (!kind) return post('table', { failed: true });
+        table = kind.create(d.opts || {});
+        tableLast = performance.now();
+        tableTimer = setInterval(() => {
+            if (!table) return;
+            const now = performance.now();
+            table.step(Math.min((now - tableLast) / 1000, 0.05));
+            tableLast = now;
+            if (!d.quiet) table.events().forEach(e => { if (SOUNDS[e]) beep(...SOUNDS[e]); });
+            if (tableBusy) return;
+            tableBusy = true;
+            post('table', table.snapshot()).then(() => { tableBusy = false; });
+        }, 16);
+    }
+
     const ALIAS = { KeyW: 'ArrowUp', KeyS: 'ArrowDown', KeyA: 'ArrowLeft', KeyD: 'ArrowRight', NumpadEnter: 'Enter' };
 
     window.addEventListener('keydown', e => {
@@ -244,6 +274,9 @@
         const d = e.data || {};
         if (d.action === 'open') open(d);
         else if (d.action === 'bell') bell(d.volume);
+        else if (d.action === 'table') startTable(d);
+        else if (d.action === 'tableInput') { if (table) table.input(d.input); }
+        else if (d.action === 'tableStop') stopTable();
         else if (d.action === 'close') { mode = 'off'; game = null; cab.hidden = true; }
     });
 

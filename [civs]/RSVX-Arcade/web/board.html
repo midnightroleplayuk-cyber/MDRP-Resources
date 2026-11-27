@@ -12,11 +12,11 @@ html, body { width: 512px; height: 648px; overflow: hidden; background: #0d0c0b;
 .row .pos { width: 58px; color: #8d8468; }
 .row .name { flex: 1; overflow: hidden; white-space: nowrap; text-transform: uppercase; }
 .row .score { width: 110px; text-align: right; }
-.row.first { color: #f2c14a; }
-.row.first .pos { color: #f2c14a; }
+.row.first { color: var(--lead, #f2c14a); }
+.row.first .pos { color: var(--lead, #f2c14a); }
 #empty { position: absolute; left: 0; right: 0; top: 240px; text-align: center; font-size: 36px; color: #8d8468; text-transform: uppercase; }
 #footer { position: absolute; left: 0; right: 0; bottom: 0; height: 70px; line-height: 70px; text-align: center;
-    background: #b3261c; color: #f4e6c2; font-size: 32px; letter-spacing: 1px; text-transform: uppercase; border-top: 4px solid #f2c14a; }
+    background: var(--bar, #b3261c); color: var(--text, #f4e6c2); font-size: 32px; letter-spacing: 1px; text-transform: uppercase; border-top: 4px solid var(--edge, #f2c14a); }
 </style>
 </head>
 <body>
@@ -25,6 +25,10 @@ html, body { width: 512px; height: 648px; overflow: hidden; background: #0d0c0b;
 <div id="footer"></div>
 <script>
 function render(data) {
+    const c = data.colours || {};
+    for (const k of ['bar', 'edge', 'text', 'lead']) {
+        if (c[k]) document.documentElement.style.setProperty('--' + k, c[k]);
+    }
     const rows = (data.rows || []).slice(0, 10);
     const box = document.getElementById('rows');
     box.textContent = '';

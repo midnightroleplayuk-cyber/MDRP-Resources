@@ -18,6 +18,7 @@ end
 
 function ArcadeModel(cfg)
     if cfg.physical and IsModelValid(cfg.physical) then return cfg.physical, true end
+    if cfg.fallback and not IsModelValid(cfg.model) then return cfg.fallback, false end
     return cfg.model, false
 end
 
@@ -48,7 +49,7 @@ local function play(m)
         price = res.price,
         currency = Config.Currency,
         board = res.board,
-        tune = res.game == 'strength' and Config.Strength or nil,
+        tune = ({ strength = Config.Strength, pinball = Config.Pinball, airhockey = Config.Hockey })[res.game],
     })
 end
 
@@ -89,6 +90,7 @@ local function spawn(m)
     lib.requestModel(model, 5000)
 
     ArcadeSweep(cfg.model, m.x, m.y, m.z, 0.6)
+    if cfg.fallback then ArcadeSweep(cfg.fallback, m.x, m.y, m.z, 0.6) end
     if cfg.physical then ArcadeSweep(cfg.physical, m.x, m.y, m.z, 0.6) end
 
     local ent = CreateObjectNoOffset(model, m.x, m.y, m.z, false, false, false)
@@ -118,6 +120,14 @@ local function spawn(m)
             distance = 2.0,
             canInteract = function() return not cfg.display end,
             onSelect = function() play(m) end,
+        },
+        {
+            name = 'rsvx_arcade_join',
+            icon = 'fa-solid fa-user-plus',
+            label = cfg.price > 0 and ('Join as player 2 (%s%d)'):format(Config.Currency, cfg.price) or 'Join as player 2',
+            distance = 2.5,
+            canInteract = function() return cfg.versus and Physical.joinable(m.id) end,
+            onSelect = function() Physical.join(m) end,
         },
         {
             name = 'rsvx_arcade_collect',
@@ -151,7 +161,7 @@ local function load()
     local mine = GetResourceMetadata(GetCurrentResourceName(), 'version', 0)
     if serverVersion ~= mine then
         print(('[RSVX_Arcade] ^1server script is v%s but the client is v%s. Stop and start the resource (or restart the server) so both halves match.^7')
-            :format(serverVersion or 'older than 1.4.0', mine or '?'))
+            :format(serverVersion or '1.3.0 or older', mine or '?'))
         if isAdmin then notify('Arcade server script is out of date. Stop and start RSVX_Arcade.', 'error') end
     end
     for id in pairs(Spawned) do despawn(id) end
@@ -217,7 +227,8 @@ local function boardPayload(game)
     local prize = bellPrize(game)
     return json.encode({
         rows = BoardRows[game] or {},
-        footer = prize and ('Ring the bell and win %s%d'):format(Config.Currency, prize.money) or '',
+        footer = prize and ('Ring the bell and win %s%d'):format(Config.Currency, prize.money) or Config.Machines[game].boardFooter or '',
+        colours = Config.Machines[game].boardColours,
     })
 end
 
